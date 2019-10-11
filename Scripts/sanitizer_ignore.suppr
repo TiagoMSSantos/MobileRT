@@ -1,0 +1,12 @@
+# stdlib
+#src:*string*
+#fun:*basic_stringbuf*
+#fun:*basic_string*
+#fun:*basic_ostream*
+#fun:*__interceptor_strlen*
+
+# third_party
+#src:*tiny_obj_loader*
+
+# app
+#fun:*work_thread*

@@ -1,0 +1,55 @@
+{
+   ignore-gtk_widget_show
+   Memcheck:Leak
+	 ...
+   fun:gtk_widget_show
+}
+
+{
+   ignore-gtk_window_new
+   Memcheck:Leak
+	 ...
+   fun:gtk_window_new
+}
+
+{
+   ignore-gtk_main
+   Memcheck:Leak
+	 ...
+   fun:gtk_main
+}
+
+{
+   ignore-gtk_image_new_from_pixbuf
+   Memcheck:Leak
+	 ...
+   fun:gtk_image_new_from_pixbuf
+}
+
+{
+   ignore-gtk_init
+   Memcheck:Leak
+	 ...
+   fun:gtk_init
+}
+
+{
+   ignore-gdk_pixbuf_new_from_data
+   Memcheck:Leak
+	 ...
+   fun:gdk_pixbuf_new_from_data
+}
+
+{
+   ignore-libpixman-1
+   Memcheck:Leak
+   ...
+   obj:*/libpixman-1.so*
+}
+
+{
+   ignore-libglib-2.0
+   Memcheck:Leak
+   ...
+   obj:*/libglib-2.0.so.*
+}

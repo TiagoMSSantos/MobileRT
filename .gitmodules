@@ -1,0 +1,19 @@
+[submodule "third_party/glm"]
+	path = app/third_party/glm
+	url = https://github.com/g-truc/glm
+	branch = master
+
+[submodule "third_party/tinyobjloader"]
+	path = app/third_party/tinyobjloader
+	url = https://github.com/syoyo/tinyobjloader
+	branch = master
+
+[submodule "third_party/googletest"]
+	path = app/third_party/googletest
+	url = https://github.com/google/googletest
+	branch = master
+
+[submodule "third_party/GSL"]
+	path = app/third_party/GSL
+	url = https://github.com/Microsoft/GSL
+	branch = master
