@@ -1,8 +1,0 @@
-Executable : /mnt/D/Linux/Android_SDK/cmake/3.6.4111459/bin/cmake
-arguments : 
---build
-/mnt/D/Projects/MobileRayTracer/app/.cxx/cmake/debug/x86_64
---target
-glm_shared
-jvmArgs : 
-

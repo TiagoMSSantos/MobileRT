@@ -1,7 +1,3 @@
-//
-// Created by puscas on 30/07/17.
-//
-
 #include "MobileRT/ObjectLoader.hpp"
 
 using ::MobileRT::ObjectLoader;

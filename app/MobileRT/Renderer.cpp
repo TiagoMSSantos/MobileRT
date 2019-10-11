@@ -1,7 +1,3 @@
-//
-// Created by Tiago on 09-Feb-17.
-//
-
 #include "MobileRT/Renderer.hpp"
 #include <gsl/gsl>
 #include <thread>

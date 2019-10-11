@@ -1,7 +1,3 @@
-//
-// Created by puscas on 07-04-2017.
-//
-
 #include "Components/Samplers/Constant.hpp"
 
 using ::Components::Constant;

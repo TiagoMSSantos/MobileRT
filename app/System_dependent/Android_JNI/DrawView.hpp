@@ -1,7 +1,3 @@
-//
-// Created by Tiago on 15-Feb-17.
-//
-
 #ifndef APP_DRAWVIEW_HPP
 #define APP_DRAWVIEW_HPP
 

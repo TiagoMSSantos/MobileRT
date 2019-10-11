@@ -1,7 +1,3 @@
-//
-// Created by Tiago on 21-11-2016.
-//
-
 #include "MobileRT/Sampler.hpp"
 
 using ::MobileRT::Sampler;

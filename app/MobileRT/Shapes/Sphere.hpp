@@ -1,7 +1,3 @@
-//
-// Created by Tiago on 16-10-2016.
-//
-
 #ifndef MOBILERT_SHAPES_SPHERE_HPP
 #define MOBILERT_SHAPES_SPHERE_HPP
 

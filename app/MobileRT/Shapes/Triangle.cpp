@@ -1,8 +1,3 @@
-//
-// Created by Tiago on 15-11-2016.
-// Uses: Moller and Trumbore
-//
-
 #include "MobileRT/Shapes/Triangle.hpp"
 
 using ::MobileRT::AABB;

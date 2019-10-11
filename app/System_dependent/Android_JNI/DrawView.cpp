@@ -1,7 +1,3 @@
-//
-// Created by Tiago on 14-10-2016.
-//
-
 #include "DrawView.hpp"
 #include <android/bitmap.h>
 #include <glm/glm.hpp>

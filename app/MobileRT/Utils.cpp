@@ -1,7 +1,3 @@
-//
-// Created by Tiago on 14-11-2016.
-//
-
 #include "MobileRT/Utils.hpp"
 
 namespace MobileRT {

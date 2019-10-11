@@ -1,7 +1,3 @@
-//
-// Created by Tiago on 19-04-2017.
-//
-
 #include "Components/Samplers/MersenneTwister.hpp"
 
 using ::Components::MersenneTwister;

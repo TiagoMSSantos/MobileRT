@@ -1,7 +1,3 @@
-//
-// Created by Tiago on 16-10-2016.
-//
-
 #include "Components/Shaders/NoShadows.hpp"
 #include <glm/glm.hpp>
 

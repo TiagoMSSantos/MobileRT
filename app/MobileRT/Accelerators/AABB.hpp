@@ -1,7 +1,3 @@
-//
-// Created by puscas on 06-03-2017.
-//
-
 #ifndef MOBILERT_ACCELERATORS_AABB_HPP
 #define MOBILERT_ACCELERATORS_AABB_HPP
 

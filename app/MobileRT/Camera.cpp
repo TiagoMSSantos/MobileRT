@@ -1,7 +1,3 @@
-//
-// Created by Tiago on 23-Jan-17.
-//
-
 #include "MobileRT/Camera.hpp"
 #include <array>
 #include <glm/gtc/constants.hpp>

@@ -1,7 +1,3 @@
-//ain/cpp
-// Created by Tiago on 22-Jun-17.
-//
-
 #ifndef COMPONENTS_CAMERAS_ORTHOGRAPHIC_HPP
 #define COMPONENTS_CAMERAS_ORTHOGRAPHIC_HPP
 

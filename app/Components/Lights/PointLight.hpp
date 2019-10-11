@@ -1,7 +1,3 @@
-//
-// Created by Tiago on 16-10-2016.
-//
-
 #ifndef COMPONENTS_LIGHTS_POINTLIGHT_HPP
 #define COMPONENTS_LIGHTS_POINTLIGHT_HPP
 

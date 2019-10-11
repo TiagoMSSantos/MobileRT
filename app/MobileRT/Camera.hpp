@@ -1,7 +1,3 @@
-//
-// Created by Tiago on 14/01/2017.
-//
-
 #ifndef MOBILERT_CAMERA_HPP
 #define MOBILERT_CAMERA_HPP
 

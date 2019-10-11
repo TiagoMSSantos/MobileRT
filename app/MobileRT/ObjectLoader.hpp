@@ -1,7 +1,3 @@
-//
-// Created by puscas on 30/07/17.
-//
-
 #ifndef MOBILERT_OBJECTLOADER_HPP
 #define MOBILERT_OBJECTLOADER_HPP
 

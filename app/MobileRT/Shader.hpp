@@ -1,7 +1,3 @@
-//
-// Created by Tiago on 16-10-2016.
-//
-
 #ifndef MOBILERT_SHADER_HPP
 #define MOBILERT_SHADER_HPP
 

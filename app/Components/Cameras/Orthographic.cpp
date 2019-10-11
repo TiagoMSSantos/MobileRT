@@ -1,7 +1,3 @@
-//
-// Created by Tiago on 22-Jun-17.
-//
-
 #include "Components/Cameras/Orthographic.hpp"
 
 using ::Components::Orthographic;

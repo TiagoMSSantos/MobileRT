@@ -1,7 +1,3 @@
-//
-// Created by Tiago on 6-Mar-17.
-//
-
 #include "RegularGrid.hpp"
 
 using ::MobileRT::RegularGrid;

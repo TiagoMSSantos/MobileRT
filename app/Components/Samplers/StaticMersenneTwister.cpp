@@ -1,7 +1,3 @@
-//
-// Created by Tiago on 10-08-2017.
-//
-
 #include "Components/Samplers/StaticMersenneTwister.hpp"
 #include <array>
 

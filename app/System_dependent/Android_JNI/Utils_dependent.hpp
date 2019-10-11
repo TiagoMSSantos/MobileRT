@@ -1,7 +1,3 @@
-//
-// Created by Tiago on 20-09-2018.
-//
-
 #ifndef UTILS_DEPENDENT_HPP
 #define UTILS_DEPENDENT_HPP
 

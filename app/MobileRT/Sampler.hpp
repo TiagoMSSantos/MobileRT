@@ -1,7 +1,3 @@
-//
-// Created by Tiago on 21-11-2016.
-//
-
 #ifndef MOBILERT_SAMPLER_HPP
 #define MOBILERT_SAMPLER_HPP
 

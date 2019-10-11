@@ -1,7 +1,3 @@
-//
-// Created by puscas on 20-02-2017.
-//
-
 #ifndef COMPONENTS_SHADERS_PATHTRACER_HPP
 #define COMPONENTS_SHADERS_PATHTRACER_HPP
 

@@ -1,7 +1,3 @@
-//
-// Created by Tiago on 16-10-2016.
-//
-
 #ifndef MOBILERT_MATERIAL_HPP
 #define MOBILERT_MATERIAL_HPP
 

@@ -1,7 +1,3 @@
-//
-// Created by puscas on 30/07/17.
-//
-
 #include "Components/ObjectLoaders/OBJLoader.hpp"
 #include "Components/Lights/AreaLight.hpp"
 #include <cstring>

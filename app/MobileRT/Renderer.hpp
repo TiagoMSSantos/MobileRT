@@ -1,7 +1,3 @@
-//
-// Created by Tiago on 09-Feb-17.
-//
-
 #ifndef MOBILERT_RENDERER_HPP
 #define MOBILERT_RENDERER_HPP
 

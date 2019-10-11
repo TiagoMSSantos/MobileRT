@@ -1,7 +1,3 @@
-//
-// Created by Tiago on 16-10-2016.
-//
-
 #include "MobileRT/Shader.hpp"
 #include "MobileRT/Utils.hpp"
 #include <array>

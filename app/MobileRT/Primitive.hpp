@@ -1,7 +1,3 @@
-//
-// Created by Tiago on 17/08/17.
-//
-
 #ifndef MOBILERT_PRIMITIVE_HPP
 #define MOBILERT_PRIMITIVE_HPP
 

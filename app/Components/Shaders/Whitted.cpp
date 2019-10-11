@@ -1,7 +1,3 @@
-//
-// Created by Tiago on 16-10-2016.
-//
-
 #include "Components/Shaders/Whitted.hpp"
 
 using ::Components::Whitted;

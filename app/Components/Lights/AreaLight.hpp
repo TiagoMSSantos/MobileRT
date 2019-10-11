@@ -1,7 +1,3 @@
-//
-// Created by puscas on 03-03-2017.
-//
-
 #ifndef COMPONENTS_LIGHTS_AREALIGHT_HPP
 #define COMPONENTS_LIGHTS_AREALIGHT_HPP
 

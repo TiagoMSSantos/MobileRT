@@ -1,7 +1,3 @@
-//
-// Created by Tiago on 14/01/2017.
-//
-
 #ifndef MOBILERT_LIGHT_HPP
 #define MOBILERT_LIGHT_HPP
 

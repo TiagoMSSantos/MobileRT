@@ -1,7 +1,3 @@
-//
-// Created by Tiago on 16-10-2016.
-//
-
 #ifndef COMPONENTS_SHADERS_NOSHADOWS_HPP
 #define COMPONENTS_SHADERS_NOSHADOWS_HPP
 

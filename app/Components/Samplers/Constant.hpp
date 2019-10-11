@@ -1,7 +1,3 @@
-//
-// Created by Tiago on 07-04-2017.
-//
-
 #ifndef COMPONENTS_SAMPLERS_CONSTANT_HPP
 #define COMPONENTS_SAMPLERS_CONSTANT_HPP
 

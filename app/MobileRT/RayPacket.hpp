@@ -1,7 +1,3 @@
-//
-// Created by Tiago on 11-03-2018.
-//
-
 #ifndef MOBILERT_RAYPACKET_HPP
 #define MOBILERT_RAYPACKET_HPP
 

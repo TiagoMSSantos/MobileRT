@@ -1,7 +1,3 @@
-//
-// Created by Tiago on 21-11-2016.
-//
-
 #ifndef COMPONENTS_SAMPLERS_HALTONSEQ_HPP
 #define COMPONENTS_SAMPLERS_HALTONSEQ_HPP
 

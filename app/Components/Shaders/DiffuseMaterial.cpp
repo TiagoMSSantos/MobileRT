@@ -1,7 +1,3 @@
-//
-// Created by puscas on 31/07/17.
-//
-
 #include "Components/Shaders/DiffuseMaterial.hpp"
 
 using ::Components::DiffuseMaterial;

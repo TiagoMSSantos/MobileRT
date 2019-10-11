@@ -1,7 +1,3 @@
-//
-// Created by Tiago on 26-07-2017.
-//
-
 #ifndef COMPONENTS_SHADERS_DEPTHMAP_HPP
 #define COMPONENTS_SHADERS_DEPTHMAP_HPP
 

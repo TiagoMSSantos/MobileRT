@@ -1,7 +1,3 @@
-//
-// Created by Tiago on 02-Aug-17.
-//
-
 #ifndef APP_SCENES_HPP
 #define APP_SCENES_HPP
 

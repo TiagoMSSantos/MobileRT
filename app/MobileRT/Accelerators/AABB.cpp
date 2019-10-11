@@ -1,7 +1,3 @@
-//
-// Created by puscas on 06-03-2017.
-//
-
 #include "MobileRT/Accelerators/AABB.hpp"
 #include "MobileRT/Utils.hpp"
 

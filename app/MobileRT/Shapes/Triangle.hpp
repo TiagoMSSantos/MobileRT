@@ -1,7 +1,3 @@
-//
-// Created by Tiago on 15-11-2016.
-//
-
 #ifndef MOBILERT_SHAPES_TRIANGLE_HPP
 #define MOBILERT_SHAPES_TRIANGLE_HPP
 

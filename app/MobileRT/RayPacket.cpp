@@ -1,7 +1,3 @@
-//
-// Created by Tiago on 11-03-2018.
-//
-
 #include "MobileRT/RayPacket.hpp"
 #include <atomic>
 
