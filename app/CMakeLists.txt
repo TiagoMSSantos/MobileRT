@@ -1,10 +1,11 @@
 cmake_minimum_required( VERSION 3.6.0 )
 
+set( COMMON_FLAGS "" )
+
 # Set CMAKE_SYSTEM_NAME
 if( DEFINED ANDROID_ABI )
 	set( CMAKE_SYSTEM_NAME "Android" )
 	set( MOBILE_DEPENDENT_HEADERS "${CMAKE_SOURCE_DIR}/System_dependent/Android_JNI" )
-	set( COMMON_FLAGS "" )
 	set( COMMON_FLAGS_RELEASE "-Wno-unused-command-line-argument" )
 else()
 	set( CMAKE_SYSTEM_NAME "Linux" )
@@ -17,6 +18,10 @@ else()
 	if( CMAKE_BUILD_TYPE_L MATCHES debug )
 			set( CMAKE_DEBUG_POSTFIX "d" )
 	endif()
+endif()
+
+if( CMAKE_CXX_COMPILER MATCHES "clang" OR DEFINED ANDROID_ABI )
+	set( COMMON_FLAGS "${COMMON_FLAGS}" -Weverything -ferror-limit=1 )
 endif()
 
 # Remove default flags
@@ -57,7 +62,7 @@ set( GSL_HEADERS "${CMAKE_SOURCE_DIR}/third_party/GSL/include" )
 set( GLM_HEADERS "${CMAKE_SOURCE_DIR}/third_party/glm" )
 
 # Set common flags
-set( COMMON_FLAGS "${COMMON_FLAGS}" -std=c++17 -pedantic-errors -Weverything -pedantic -Wpedantic -Wall -Wextra -Wfatal-errors -Werror -ferror-limit=1 )
+set( COMMON_FLAGS "${COMMON_FLAGS}" -std=c++17 -pedantic-errors -pedantic -Wpedantic -Wall -Wextra -Wfatal-errors -Werror )
 set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-c++98-compat-pedantic -Wno-padded )
 set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-exit-time-destructors -Wno-global-constructors )
 set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-gnu-anonymous-struct -Wno-nested-anon-types )
@@ -119,7 +124,7 @@ target_compile_options( ${PROJECT_NAME} PRIVATE $<$<CONFIG:RELEASE>:${COMMON_FLA
 #target_compile_options( ${PROJECT_NAME} PRIVATE $<$<NOT:$<BOOL:ANDROID_ABI MATCHES "^mips(64)?$" >>:-flto=full> )
 
 target_link_libraries( ${PROJECT_NAME}
-PRIVATE glm Components tinyobjloader
+PRIVATE glm_static Components tinyobjloader
 general "${COMMON_LINKER_FLAGS}"
 debug "${COMMON_LINKER_FLAGS_DEBUG}"
 optimized "${COMMON_LINKER_FLAGS_RELEASE}"

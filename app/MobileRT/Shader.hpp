@@ -20,9 +20,9 @@ namespace MobileRT {
         BVH<Triangle> bvhTriangles_{};
 
         enum Accelerator {
-            NAIVE = 0,
-            REGULAR_GRID,
-            BVH
+            ACC_NAIVE = 0,
+            ACC_REGULAR_GRID,
+            ACC_BVH
         };
 
     private:

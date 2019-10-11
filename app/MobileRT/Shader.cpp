@@ -44,10 +44,10 @@ Shader::Shader(
 
 void Shader::initializeAccelerators(Camera *const camera) noexcept {
     switch (accelerator_) {
-        case Accelerator::NAIVE: {
+        case Accelerator::ACC_NAIVE: {
             break;
         }
-        case Accelerator::REGULAR_GRID: {
+        case Accelerator::ACC_REGULAR_GRID: {
             ::glm::vec3 min {RayLengthMax};
             ::glm::vec3 max {-RayLengthMax};
             ::std::vector<Primitive<Triangle> *> triangles{convertVector(this->scene_.triangles_)};
@@ -61,7 +61,7 @@ void Shader::initializeAccelerators(Camera *const camera) noexcept {
             regularGrid_ = RegularGrid {sceneBounds, &scene_, 32};
             break;
         }
-        case Accelerator::BVH: {
+        case Accelerator::ACC_BVH: {
             bvhPlanes_ = ::MobileRT::BVH<MobileRT::Plane> {::std::move(scene_.planes_)};
             bvhSpheres_ = ::MobileRT::BVH<MobileRT::Sphere> {::std::move(scene_.spheres_)};
             bvhTriangles_ = ::MobileRT::BVH<MobileRT::Triangle> {::std::move(scene_.triangles_)};
@@ -82,17 +82,17 @@ Shader::~Shader() noexcept {
 bool Shader::shadowTrace(Intersection intersection, const Ray &ray) noexcept {
     const float lastDist {intersection.length_};
     switch (accelerator_) {
-        case Accelerator::NAIVE: {
+        case Accelerator::ACC_NAIVE: {
             intersection = this->scene_.shadowTrace(intersection, ray);
             break;
         }
 
-        case Accelerator::REGULAR_GRID: {
+        case Accelerator::ACC_REGULAR_GRID: {
             intersection = this->regularGrid_.shadowTrace(intersection, ray);
             break;
         }
 
-        case Accelerator::BVH: {
+        case Accelerator::ACC_BVH: {
             intersection = this->bvhPlanes_.shadowTrace(intersection, ray);
             intersection = this->bvhSpheres_.shadowTrace(intersection, ray);
             intersection = this->bvhTriangles_.shadowTrace(intersection, ray);
@@ -107,17 +107,17 @@ bool Shader::rayTrace(::glm::vec3 *rgb, const Ray &ray) noexcept {
     Intersection intersection{RayLengthMax, nullptr};
     const float lastDist {intersection.length_};
     switch (accelerator_) {
-        case Accelerator::NAIVE: {
+        case Accelerator::ACC_NAIVE: {
             intersection = this->scene_.trace(intersection, ray);
             break;
         }
 
-        case Accelerator::REGULAR_GRID: {
+        case Accelerator::ACC_REGULAR_GRID: {
             intersection = this->regularGrid_.trace(intersection, ray);
             break;
         }
 
-        case Accelerator::BVH: {
+        case Accelerator::ACC_BVH: {
             intersection = this->bvhPlanes_.trace(intersection, ray);
             intersection = this->bvhSpheres_.trace(intersection, ray);
             intersection = this->bvhTriangles_.trace(intersection, ray);

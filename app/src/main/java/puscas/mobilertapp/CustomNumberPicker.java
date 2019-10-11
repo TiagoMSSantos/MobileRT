@@ -16,7 +16,7 @@ public final class CustomNumberPicker extends NumberPicker {
     @Override
     public void addView(final View child, final ViewGroup.LayoutParams params) {
         super.addView(child, params);
-        final float textSize = 15.0f;//15.0f
+        final float textSize = 15.0f;
         final int color = Color.parseColor("#000000");
         ((TextView) child).setTextSize(textSize);
         ((TextView) child).setTextColor(color);

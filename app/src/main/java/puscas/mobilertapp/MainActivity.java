@@ -90,7 +90,7 @@ public final class MainActivity extends Activity {
                 [pickerSamplesLight_.getValue() - 1]);
         final String strResolution = pickerSizes_.getDisplayedValues()[pickerSizes_.getValue() - 1];
         final int width = Integer.parseInt(strResolution.substring(0, strResolution.indexOf('x')));
-        final int height = Integer.parseInt(strResolution.substring(strResolution.indexOf('x') + 1, strResolution.length()));
+        final int height = Integer.parseInt(strResolution.substring(strResolution.indexOf('x') + 1));
         final String objText = objFile + ".obj";
         final String matText = objFile + ".mtl";
 
