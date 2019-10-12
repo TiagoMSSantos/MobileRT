@@ -7,8 +7,6 @@ uniform sampler2D uniformTexture;
 varying vec2 fragmentTexCoord;
 
 float toneMap (const float value) {
-	//return 1.0 - cos(sqrt(value));
-	//return pow(1.0 - exp(-value * 1.0), 1.0 / 2.2);
 	return value;
 }
 

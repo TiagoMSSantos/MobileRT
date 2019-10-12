@@ -44,6 +44,7 @@ class MainRenderer implements Renderer {
     private int shaderProgramRaster;
     private DrawView drawView_ = null;
     boolean rasterize_;
+    private boolean firstFrame_;
 
     private void checkGLError() {
         final int glError = GLES20.glGetError();
@@ -106,6 +107,7 @@ class MainRenderer implements Renderer {
         height_ = height;
         realWidth_ = realWidth;
         realHeight_ = realHeight;
+        firstFrame_ = true;
     }
 
     private Bitmap copyFrameBuffer() {
@@ -146,6 +148,10 @@ class MainRenderer implements Renderer {
                 copyFrame(drawView_.arrayVertices, drawView_.arrayColors, drawView_.arrayCamera, drawView_.numberPrimitives_);
             }
 
+
+        }
+        if (firstFrame_) {
+            firstFrame_ = false;
             drawView_.renderIntoBitmap(bitmap_, drawView_.numThreads_, true);
             drawView_.renderTask_ = new RenderTask(drawView_.viewText_, drawView_::requestRender, drawView_::finishRender);
             drawView_.renderTask_.execute();
@@ -454,10 +460,8 @@ class MainRenderer implements Renderer {
         final float hfovFactor = width_ > height_ ? ratio : 1.0f;
         final float vfovFactor = width_ < height_ ? ratio : 1.0f;
         final float fovX = bbCamera.getFloat(16 * floatSize);
-        float fovY = bbCamera.getFloat(17 * floatSize);
-        fovY *= 0.918f;
-        float aspect = hfovFactor > vfovFactor ? hfovFactor : 1.0f / vfovFactor;
-        //aspect *= 0.9f;
+        final float fovY = bbCamera.getFloat(17 * floatSize) * 0.918f;
+        final float aspect = hfovFactor > vfovFactor ? hfovFactor : 1.0f / vfovFactor;
 
         final float sizeH = bbCamera.getFloat(18 * floatSize);
         final float sizeV = bbCamera.getFloat(19 * floatSize);

@@ -101,4 +101,13 @@
         android:layout_below="@+id/pickerSamplesPixel"
         android:orientation="vertical"/>
 
+    <CheckBox
+        android:id="@+id/preview"
+        android:layout_width="82dp"
+        android:layout_height="17dp"
+        android:layout_below="@+id/pickerShader"
+        android:layout_margin="10dp"
+        android:layout_centerHorizontal="true"
+        android:text="@string/preview" />
+
 </RelativeLayout>

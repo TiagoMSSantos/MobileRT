@@ -12,7 +12,6 @@ static ::std::mutex mutex_{};
 static ::std::int32_t width_{0};
 static ::std::int32_t height_{0};
 static float fps_{0.0f};
-static ::std::int64_t timeFrame_{0};
 static ::std::int64_t timeRenderer_{0};
 static ::std::int32_t numberOfLights_{0};
 
@@ -970,7 +969,6 @@ void Java_puscas_mobilertapp_DrawView_finishRender(
     }
     working_ = State::IDLE;
     LOG("WORKING = IDLE");
-    timeFrame_ = 0;
     fps_ = 0.0f;
     timeRenderer_ = 0;
     env->ExceptionClear();
@@ -1026,15 +1024,9 @@ void Java_puscas_mobilertapp_DrawView_renderIntoBitmap(
             LOG("nThreads = ", nThreads);
             {
                 const ::std::lock_guard<::std::mutex> lock {mutex_};
-                const ::std::chrono::steady_clock::time_point start{
-                        ::std::chrono::steady_clock::now()};
                 if (renderer_ != nullptr) {
                     renderer_->renderFrame(dstPixels, nThreads, stride);
                 }
-                const ::std::chrono::steady_clock::time_point end{
-                        ::std::chrono::steady_clock::now()};
-                timeFrame_ = ::std::chrono::duration_cast<::std::chrono::milliseconds>(
-                        end - start).count();
             }
             LOG("FINISHED RENDERING");
             FPS();

@@ -198,14 +198,13 @@ public class DrawView extends GLSurfaceView {
         viewText_.start_ = 0;
         viewText_.printText();
 
-        renderer_.rasterize_ = true;
         viewText_.start_ = SystemClock.elapsedRealtime();
         requestRender();
     }
 
     int createScene(final int scene, final int shader, final int numThreads, final int accelerator,
                     final int samplesPixel, final int samplesLight, final int width, final int height,
-                    final String objFile, final String matText) {
+                    final String objFile, final String matText, final boolean rasterize) {
         freeArrays();
         viewText_.resetPrint(width, height, numThreads, samplesPixel, samplesLight);
 
@@ -223,6 +222,8 @@ public class DrawView extends GLSurfaceView {
         final int realHeight = getHeight();
 
         renderer_.setBitmap(width, height, realWidth, realHeight);
+
+        renderer_.rasterize_ = rasterize;
         return 0;
     }
 

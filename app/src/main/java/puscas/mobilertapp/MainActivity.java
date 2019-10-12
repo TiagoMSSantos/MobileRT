@@ -22,6 +22,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.CheckBox;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -59,6 +60,7 @@ public final class MainActivity extends Activity {
     private NumberPicker pickerSamplesPixel_;
     private NumberPicker pickerSamplesLight_;
     private NumberPicker pickerSizes_;
+    private CheckBox rasterize_;
     private String objFile_;
 
     private static int getNumCoresOldPhones() {
@@ -93,12 +95,13 @@ public final class MainActivity extends Activity {
         final int height = Integer.parseInt(strResolution.substring(strResolution.indexOf('x') + 1));
         final String objText = objFile + ".obj";
         final String matText = objFile + ".mtl";
+        final boolean rasterize = rasterize_.isChecked();
 
         switch (drawView_.viewText_.isWorking()) {
             case 0:
             case 2:
             case 3://if ray-tracer is idle
-                final int ret = drawView_.createScene(scene, shader, threads, accelerator, samplesPixel, samplesLight, width, height, objText, matText);
+                final int ret = drawView_.createScene(scene, shader, threads, accelerator, samplesPixel, samplesLight, width, height, objText, matText, rasterize);
                 if (ret != -1) {
                     drawView_.startRender();
                 } else {
@@ -476,6 +479,8 @@ public final class MainActivity extends Activity {
         pickerSizes_.setWrapSelectorWheel(true);
         pickerSizes_.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
         pickerSizes_.setValue(defaultPickerSizes);
+
+        rasterize_ = findViewById(R.id.preview);
 
         ViewTreeObserver vto = drawView_.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(() -> {
