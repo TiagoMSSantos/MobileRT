@@ -18,15 +18,15 @@ namespace MobileRT {
 
         explicit AABB(const ::glm::vec3 &pointMin, const ::glm::vec3 &pointMax) noexcept;
 
-        AABB(const AABB &AABB) noexcept = default;
+        AABB(const AABB &aabb) noexcept = default;
 
-        AABB(AABB &&AABB) noexcept = default;
+        AABB(AABB &&aabb) noexcept = default;
 
         ~AABB() noexcept = default;
 
-        AABB &operator=(const AABB &AABB) noexcept = default;
+        AABB &operator=(const AABB &aabb) noexcept = default;
 
-        AABB &operator=(AABB &&AABB) noexcept = default;
+        AABB &operator=(AABB &&aabb) noexcept = default;
 
         float getSurfaceArea() const noexcept;
     };
