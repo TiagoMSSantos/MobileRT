@@ -450,7 +450,7 @@ jint Java_puscas_mobilertapp_DrawView_initialize(
                             ::glm::vec3 {-0.5f, 1.58f, -0.5f},
                             ::glm::vec3 {0.5f, 1.58f, -0.5f}));*/
                 }
-                
+
                 //conference
                 if (::std::strstr(objFileName, "conference") != nullptr) {
                     ::std::unique_ptr<MobileRT::Sampler> samplerPoint1{
@@ -1075,59 +1075,12 @@ void Java_puscas_mobilertapp_DrawView_renderIntoBitmap(
 }
 
 extern "C"
-::std::int32_t Java_puscas_mobilertapp_DrawView_traceTouch(
-        JNIEnv *env,
-        jobject /*thiz*/,
-        jfloat const /*jx*/,
-        jfloat const /*jy*/) noexcept {
-    //const float u {static_cast<float> (jx) / width_};
-    //const float v {static_cast<float> (jy) / height_};
-    //const ::MobileRT::Ray &ray {renderer_->camera_->generateRay (u, v, 0.0f, 0.0f)};
-    //::MobileRT::Intersection intersection {};
-    //const ::std::int32_t primitiveID {renderer_->shader_->traceTouch(&intersection, ray)};
-    const ::std::int32_t primitiveID {-1};
-    env->ExceptionClear();
-    return primitiveID;
-}
-
-extern "C"
-void Java_puscas_mobilertapp_ViewText_moveTouch(
-        JNIEnv *env,
-        jobject /*thiz*/,
-        jfloat const /*jx*/,
-        jfloat const /*jy*/,
-        jint const /*primitiveIndex*/
-) noexcept {
-    /*const float u {static_cast<float> (jx) / width_};
-    const float v {static_cast<float> (jy) / height_};
-    const ::MobileRT::Ray &ray {renderer_->camera_->generateRay(u, v, 0.0f, 0.0f)};
-    const ::std::uint32_t index {static_cast<::std::uint32_t>(primitiveIndex)};
-    const ::MobileRT::Plane plane {
-            ::glm::vec3 {0.0f, 0.0f, renderer_->shader_->scene_.planes_[index].shape_.getZ()},
-            ::glm::vec3 {0.0f, 0.0f, -1.0f}};
-    ::MobileRT::Intersection intersection {};
-    plane.intersect(ray);
-    renderer_->shader_->scene_.planes_[index].shape_.moveTo(intersection.point_[0],
-                                                            intersection.point_[1];*/
-    env->ExceptionClear();
-}
-
-extern "C"
 float Java_puscas_mobilertapp_ViewText_getFPS(
         JNIEnv *env,
         jobject /*thiz*/
 ) noexcept {
     env->ExceptionClear();
     return fps_;
-}
-
-extern "C"
-::std::int64_t Java_puscas_mobilertapp_ViewText_getTimeFrame(
-        JNIEnv *const env,
-        jobject /*thiz*/
-) noexcept {
-    env->ExceptionClear();
-    return timeFrame_;
 }
 
 extern "C"

@@ -9,7 +9,6 @@ import android.opengl.GLSurfaceView;
 import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -115,8 +114,6 @@ public class DrawView extends GLSurfaceView {
 
     native void renderIntoBitmap(final Bitmap image, final int numThreads, final boolean async);
 
-    native int traceTouch(final float x, final float y);
-
     native int resize(final int size);
 
     native void finishRender();
@@ -201,8 +198,6 @@ public class DrawView extends GLSurfaceView {
         viewText_.start_ = 0;
         viewText_.printText();
 
-        final DrawView.TouchHandler touchHandler = new DrawView.TouchHandler();
-        this.setOnTouchListener(touchHandler);
         renderer_.rasterize_ = true;
         viewText_.start_ = SystemClock.elapsedRealtime();
         requestRender();
@@ -231,99 +226,12 @@ public class DrawView extends GLSurfaceView {
         return 0;
     }
 
-    private int getTouchListIndex(final int pointerID) {
-        final int touchesSize = renderTask_.touches_.size();
-        for (int i = 0; i < touchesSize; i++) {
-            final TouchTracker thisTouch = renderTask_.touches_.get(i);
-            if (pointerID == thisTouch.pointerID_) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
     enum Stage {
         idle(0), busy(1), end(2), stop(3);
         final int id_;
 
         Stage(final int id) {
             this.id_ = id;
-        }
-    }
-
-    final class TouchHandler implements View.OnTouchListener {
-        TouchHandler() {
-            super();
-        }
-
-        @Override
-        public final boolean onTouch(final View view, final MotionEvent motionEvent) {
-            if (viewText_.isWorking() != Stage.busy.id_) {
-                return false;
-            }
-            switch (motionEvent.getActionMasked()) {
-                case MotionEvent.ACTION_DOWN:
-                case MotionEvent.ACTION_POINTER_DOWN: {
-                    final int actionIndex = motionEvent.getActionIndex();
-                    final float x = motionEvent.getX(actionIndex);
-                    final float y = motionEvent.getY(actionIndex);
-                    final int primitiveID = traceTouch(x, y);
-                    if (primitiveID < 0) {
-                        return false;
-                    }
-                    final int pointerID = motionEvent.getPointerId(actionIndex);
-                    final TouchTracker thisTouch = new TouchTracker(
-                            pointerID, primitiveID, x, y);
-                    renderTask_.touches_.add(thisTouch);
-                    /*System.out.println("[TouchHandler," + Thread.currentThread().getId() + "]"
-                            + "ACTION_DOWN (" + x + "," + y + ")" + " ID:" + primitiveID);
-                            System.out.flush();*/
-                }
-                break;
-
-                case MotionEvent.ACTION_MOVE:
-                    final int pointerCount = motionEvent.getPointerCount();
-                    for (int i = 0; i < pointerCount; i++) {
-                        final int pointerID = motionEvent.getPointerId(i);
-                        final int touchListIndex = getTouchListIndex(pointerID);
-                        if (touchListIndex < 0) {
-                            continue;
-                        }
-                        final TouchTracker touch = renderTask_.touches_.get(touchListIndex);
-                        touch.x_ = motionEvent.getX(i);
-                        touch.y_ = motionEvent.getY(i);
-                        /*System.out.println("[TouchHandler," + Thread.currentThread().getId() + "]"
-                         + "ACTION_MOVE (" + touch.x_ + "," + touch.y_ + ")"
-                         + " ID:" + touch.primitiveID_);System.out.flush();*/
-                    }
-                    break;
-
-                case MotionEvent.ACTION_POINTER_UP:
-                    /*System.out.println("[TouchHandler," + Thread.currentThread().getId() + "]" +
-                     "ACTION_POINTER_UP");System.out.flush();*/
-                    final int actionIndex = motionEvent.getActionIndex();
-                    final int pointerID = motionEvent.getPointerId(actionIndex);
-                    final int touchListIndex = getTouchListIndex(pointerID);
-                    if (touchListIndex < 0) {
-                        return false;
-                    }
-                    renderTask_.touches_.remove(touchListIndex);
-                    break;
-
-                case MotionEvent.ACTION_UP:
-                case MotionEvent.ACTION_CANCEL:
-                    /*System.out.println("[TouchHandler," + Thread.currentThread().getId() + "]" +
-                     "ACTION_CANCEL");System.out.flush();*/
-                    renderTask_.touches_.clear();
-                    break;
-
-                default:
-                    /*System.out.println("[TouchHandler," + Thread.currentThread().getId() + "]" +
-                     "default");System.out.flush();*/
-                    return false;
-            }
-            performClick();
-            return true;
         }
     }
 }

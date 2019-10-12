@@ -62,8 +62,6 @@ namespace MobileRT {
 
         bool shadowTrace(Intersection intersection, const Ray &ray) noexcept;
 
-        Intersection traceTouch(Intersection intersection, const Ray &ray) noexcept;
-
         virtual void resetSampling() noexcept;
 
         ::std::uint32_t getLightIndex ();

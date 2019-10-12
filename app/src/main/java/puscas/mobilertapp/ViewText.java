@@ -39,8 +39,6 @@ class ViewText {
 
     native long getTimeRenderer();
 
-    native void moveTouch(final float x, final float y, final int primitiveId);
-
     native int getSample();
 
     native int isWorking();

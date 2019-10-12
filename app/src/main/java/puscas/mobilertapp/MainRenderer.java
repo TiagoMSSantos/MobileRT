@@ -110,8 +110,8 @@ class MainRenderer implements Renderer {
 
     private Bitmap copyFrameBuffer() {
         final int sizePixels = realWidth_ * realHeight_;
-        final int b[] = new int[sizePixels];
-        final int bt[] = new int[sizePixels];
+        final int[] b = new int[sizePixels];
+        final int[] bt = new int[sizePixels];
         final IntBuffer ib = IntBuffer.wrap(b);
         ib.position(0);
 

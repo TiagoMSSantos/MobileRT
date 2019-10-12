@@ -5,15 +5,12 @@ import android.os.Debug;
 import android.os.SystemClock;
 import android.util.Log;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 final class RenderTask extends AsyncTask<Void, Void, Void> {
-    final List<TouchTracker> touches_ = new ArrayList<>(1);
     private final ScheduledExecutorService scheduler_ = Executors.newSingleThreadScheduledExecutor();
     private final ViewText viewText_;
     private final Runnable updateRender_;
@@ -26,11 +23,6 @@ final class RenderTask extends AsyncTask<Void, Void, Void> {
         updateRender_ = updateRender;
         finishRender_ = finishRender;
         timer_ = () -> {
-            final int touchesSize = touches_.size();
-            for (int i = 0; i < touchesSize; i++) {
-                final TouchTracker touch = touches_.get(i);
-                viewText_.moveTouch(touch.x_, touch.y_, touch.primitiveID_);
-            }
             viewText_.FPS();
             viewText_.fpsT_ = String.format(Locale.US, "fps:%.1f", viewText_.getFPS());
             viewText_.fpsRenderT_ = String.format(Locale.US, "[%.1f]", viewText_.fps_);

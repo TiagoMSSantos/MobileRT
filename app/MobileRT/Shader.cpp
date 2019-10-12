@@ -70,11 +70,6 @@ void Shader::initializeAccelerators(Camera *const camera) noexcept {
     }
 }
 
-Intersection Shader::traceTouch(Intersection intersection, const Ray &ray) noexcept {
-    const Intersection &res{this->scene_.trace(intersection, ray)};
-    return res;
-}
-
 Shader::~Shader() noexcept {
     LOG("SHADER DELETED");
 }

@@ -98,30 +98,7 @@ void Java_puscas_mobilertapp_DrawView_renderIntoBitmap(
 ) noexcept;
 
 extern "C"
-jint Java_puscas_mobilertapp_DrawView_traceTouch(
-        JNIEnv *env,
-        jobject thiz,
-        jfloat jx,
-        jfloat jy
-) noexcept;
-
-extern "C"
-void Java_puscas_mobilertapp_ViewText_moveTouch(
-        JNIEnv *env,
-        jobject thiz,
-        jfloat jx,
-        jfloat jy,
-        jint primitiveIndex
-) noexcept;
-
-extern "C"
 jfloat Java_puscas_mobilertapp_ViewText_getFPS(
-        JNIEnv *env,
-        jobject thiz
-) noexcept;
-
-extern "C"
-jlong Java_puscas_mobilertapp_ViewText_getTimeFrame(
         JNIEnv *env,
         jobject thiz
 ) noexcept;
