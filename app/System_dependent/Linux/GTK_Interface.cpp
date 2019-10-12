@@ -12,31 +12,33 @@
         ::std::exit(1);
     }
 
-    const ::std::int32_t threads{static_cast<::std::int32_t> (strtol(argv[1], nullptr, 0))};
-    const ::std::int32_t shader{static_cast<::std::int32_t> (strtol(argv[2], nullptr, 0))};
-    const ::std::int32_t scene{static_cast<::std::int32_t> (strtol(argv[3], nullptr, 0))};
-    const ::std::int32_t samplesPixel{static_cast<::std::int32_t> (strtol(argv[4], nullptr, 0))};
-    const ::std::int32_t samplesLight{static_cast<::std::int32_t> (strtol(argv[5], nullptr, 0))};
+    const ::gsl::span<char*> args {argv, argc};
+
+    const ::std::int32_t threads{static_cast<::std::int32_t> (strtol(args[1], nullptr, 0))};
+    const ::std::int32_t shader{static_cast<::std::int32_t> (strtol(args[2], nullptr, 0))};
+    const ::std::int32_t scene{static_cast<::std::int32_t> (strtol(args[3], nullptr, 0))};
+    const ::std::int32_t samplesPixel{static_cast<::std::int32_t> (strtol(args[4], nullptr, 0))};
+    const ::std::int32_t samplesLight{static_cast<::std::int32_t> (strtol(args[5], nullptr, 0))};
 
     const ::std::int32_t width_{
-            ::MobileRT::roundDownToMultipleOf(static_cast<::std::int32_t> (strtol(argv[6], nullptr, 0)),
+            ::MobileRT::roundDownToMultipleOf(static_cast<::std::int32_t> (strtol(args[6], nullptr, 0)),
                                               static_cast<::std::int32_t>(::std::sqrt(
                                                       ::MobileRT::NumberOfBlocks)))};
 
     const ::std::int32_t height_{
-            ::MobileRT::roundDownToMultipleOf(static_cast<::std::int32_t> (strtol(argv[7], nullptr, 0)),
+            ::MobileRT::roundDownToMultipleOf(static_cast<::std::int32_t> (strtol(args[7], nullptr, 0)),
                                               static_cast<::std::int32_t>(::std::sqrt(
                                                       ::MobileRT::NumberOfBlocks)))};
 
-    const ::std::int32_t accelerator{static_cast<::std::int32_t> (strtol(argv[8], nullptr, 0))};
+    const ::std::int32_t accelerator{static_cast<::std::int32_t> (strtol(args[8], nullptr, 0))};
 
-    const ::std::int32_t repeats{static_cast<::std::int32_t> (strtol(argv[9], nullptr, 0))};
-    const char *const pathObj{argv[10]};
-    const char *const pathMtl{argv[11]};
+    const ::std::int32_t repeats{static_cast<::std::int32_t> (strtol(args[9], nullptr, 0))};
+    const char *const pathObj{args[10]};
+    const char *const pathMtl{args[11]};
 
-    ::std::istringstream ssPrintStdOut(argv[12]);
-    ::std::istringstream ssAsync(argv[13]);
-    ::std::istringstream ssShowImage(argv[14]);
+    ::std::istringstream ssPrintStdOut(args[12]);
+    ::std::istringstream ssAsync(args[13]);
+    ::std::istringstream ssShowImage(args[14]);
     bool printStdOut{true};
     bool async{true};
     bool showImage{true};
