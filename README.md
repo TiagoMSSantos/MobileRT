@@ -7,6 +7,8 @@
 ### Main tasks
 
 * Give out of memory error when the memory is not enough to load the scene
-* Use library to read texture images
 * Implement loading of textures
-* Rewrite code in a data oriented design
+* Separate Material from Primitive in order to save memory
+* Fix memory leak in Java UI
+* Add comments in the code
+* Fix load of obj files in Android 10

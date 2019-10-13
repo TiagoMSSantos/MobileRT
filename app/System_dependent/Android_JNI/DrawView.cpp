@@ -38,7 +38,7 @@ void JNI_OnUnload(JavaVM * /*vm*/, void * /*reserved*/) {
 }
 
 extern "C"
-jobject Java_puscas_mobilertapp_DrawView_initCameraArray(
+jobject Java_puscas_mobilertapp_MainRenderer_initCameraArray(
         JNIEnv *env,
         jobject /*thiz*/
 ) noexcept {
@@ -100,7 +100,7 @@ jobject Java_puscas_mobilertapp_DrawView_initCameraArray(
 }
 
 extern "C"
-jobject Java_puscas_mobilertapp_DrawView_initVerticesArray(
+jobject Java_puscas_mobilertapp_MainRenderer_initVerticesArray(
         JNIEnv *env,
         jobject /*thiz*/
 ) noexcept {
@@ -150,7 +150,7 @@ jobject Java_puscas_mobilertapp_DrawView_initVerticesArray(
 }
 
 extern "C"
-jobject Java_puscas_mobilertapp_DrawView_initColorsArray(
+jobject Java_puscas_mobilertapp_MainRenderer_initColorsArray(
         JNIEnv *env,
         jobject /*thiz*/
 ) noexcept {
@@ -249,7 +249,7 @@ static ::std::streampos fileSize(const char *filePath) {
 }
 
 extern "C"
-jint Java_puscas_mobilertapp_DrawView_initialize(
+jint Java_puscas_mobilertapp_MainRenderer_initialize(
         JNIEnv *env,
         jobject const thiz,
         jint const scene,
@@ -265,9 +265,9 @@ jint Java_puscas_mobilertapp_DrawView_initialize(
     width_ = width;
     height_ = height;
     LOG("INITIALIZE");
-    const jclass mainActivityClass{env->FindClass("puscas/mobilertapp/DrawView")};
-    const jmethodID mainActivityMethodId{
-            env->GetMethodID(mainActivityClass, "getFreeMemStatic", "(I)Z")};
+    const jclass rendererClass{env->FindClass("puscas/mobilertapp/MainRenderer")};
+    const jmethodID isLowMemoryMethodId{
+            env->GetMethodID(rendererClass, "isLowMemory", "(I)Z")};
     const jstring globalObjFile {static_cast<jstring>(env->NewGlobalRef(localObjFile))};
     const jstring globalMatFile {static_cast<jstring>(env->NewGlobalRef(localMatFile))};
 
@@ -354,10 +354,12 @@ jint Java_puscas_mobilertapp_DrawView_initialize(
                 const char *const objFileName {(env)->GetStringUTFChars(globalObjFile, &isCopy)};
                 const char *const matFileName {(env)->GetStringUTFChars(globalMatFile, &isCopy)};
 
-                assert(mainActivityMethodId != nullptr);
+                assert(isLowMemoryMethodId != nullptr);
+                assert(objFileName != nullptr);
+                assert(matFileName != nullptr);
                 {
                     const jboolean result {
-                            env->CallBooleanMethod(thiz, mainActivityMethodId, 1)};
+                            env->CallBooleanMethod(thiz, isLowMemoryMethodId, 1)};
                     if (result) {
                         return -1;
                     }
@@ -366,19 +368,22 @@ jint Java_puscas_mobilertapp_DrawView_initialize(
                 ::Components::OBJLoader objLoader{objFileName, matFileName};
                 {
                     const jboolean result {
-                            env->CallBooleanMethod(thiz, mainActivityMethodId, 1)};
+                            env->CallBooleanMethod(thiz, isLowMemoryMethodId, 1)};
                     if (result) {
                         return -1;
                     }
                 }
 
-                const auto objSize{fileSize(objFileName) / 1048576};
+                const auto objSize{fileSize(objFileName)};
                 {
-                    const ::std::int32_t neededMem{static_cast<::std::int32_t> (3 * objSize)};
+                    const ::std::int32_t neededMem{static_cast<::std::int32_t> (3 * (objSize / 1048576))};
                     const jboolean result{
-                            env->CallBooleanMethod(thiz, mainActivityMethodId, neededMem)};
+                            env->CallBooleanMethod(thiz, isLowMemoryMethodId, neededMem)};
                     if (result) {
                         return -1;
+                    }
+                    if (objSize <= 0) {
+                        return -2;
                     }
                 }
                 const ::std::int32_t triangleSize{sizeof(::MobileRT::Triangle)};
@@ -392,7 +397,7 @@ jint Java_puscas_mobilertapp_DrawView_initialize(
                 const ::std::int32_t memFloat{(2 * numberPrimitives * floatSize) / 1048576};
                 {
                     const jboolean result {
-                            env->CallBooleanMethod(thiz, mainActivityMethodId,
+                            env->CallBooleanMethod(thiz, isLowMemoryMethodId,
                                                    memPrimitives + memNodes + memAABB + memFloat)};
                     if (result) {
                         return -1;
@@ -409,7 +414,7 @@ jint Java_puscas_mobilertapp_DrawView_initialize(
                 }
                 {
                     const jboolean result {
-                            env->CallBooleanMethod(thiz, mainActivityMethodId, 1)};
+                            env->CallBooleanMethod(thiz, isLowMemoryMethodId, 1)};
                     if (result) {
                         return -1;
                     }
@@ -939,7 +944,7 @@ jint Java_puscas_mobilertapp_DrawView_initialize(
 
     {
       const jboolean result {
-              env->CallBooleanMethod(thiz, mainActivityMethodId, 1)};
+              env->CallBooleanMethod(thiz, isLowMemoryMethodId, 1)};
       if (result) {
           return -1;
       }
@@ -949,7 +954,7 @@ jint Java_puscas_mobilertapp_DrawView_initialize(
 }
 
 extern "C"
-void Java_puscas_mobilertapp_DrawView_finishRender(
+void Java_puscas_mobilertapp_MainRenderer_finishRender(
         JNIEnv *env,
         jobject /*thiz*/
 ) noexcept {
@@ -975,7 +980,7 @@ void Java_puscas_mobilertapp_DrawView_finishRender(
 }
 
 extern "C"
-void Java_puscas_mobilertapp_DrawView_renderIntoBitmap(
+void Java_puscas_mobilertapp_MainRenderer_renderIntoBitmap(
         JNIEnv *const env,
         jobject /*thiz*/,
         jobject localBitmap,
@@ -1103,7 +1108,7 @@ extern "C"
 }
 
 extern "C"
-::std::int32_t Java_puscas_mobilertapp_DrawView_resize(
+::std::int32_t Java_puscas_mobilertapp_MainActivity_resize(
         JNIEnv *env,
         jobject /*thiz*/,
         jint const size
@@ -1125,7 +1130,7 @@ extern "C"
 }
 
 extern "C"
-jobject Java_puscas_mobilertapp_DrawView_freeNativeBuffer(
+jobject Java_puscas_mobilertapp_MainRenderer_freeNativeBuffer(
         JNIEnv *env,
         jobject /*thiz*/,
         jobject bufferRef

@@ -10,7 +10,6 @@ import java.util.Locale;
 class ViewText {
     float fps_;
     long start_ = 0;
-    int period_ = 0;
     TextView textView_ = null;
     Button buttonRender_ = null;
     String stageT_ = null;

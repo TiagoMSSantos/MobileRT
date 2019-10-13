@@ -13,15 +13,17 @@ import java.util.concurrent.TimeUnit;
 final class RenderTask extends AsyncTask<Void, Void, Void> {
     private final ScheduledExecutorService scheduler_ = Executors.newSingleThreadScheduledExecutor();
     private final ViewText viewText_;
-    private final Runnable updateRender_;
+    private final Runnable requestRender_;
     private final Runnable timer_;
     private final Runnable finishRender_;
+    private final int period_;
 
-    RenderTask(final ViewText viewText, final Runnable updateRender, final Runnable finishRender) {
+    RenderTask(final ViewText viewText, final Runnable requestRender, final Runnable finishRender, final int period) {
         super();
         viewText_ = viewText;
-        updateRender_ = updateRender;
+        requestRender_ = requestRender;
         finishRender_ = finishRender;
+        period_ = period;
         timer_ = () -> {
             viewText_.FPS();
             viewText_.fpsT_ = String.format(Locale.US, "fps:%.1f", viewText_.getFPS());
@@ -34,7 +36,7 @@ final class RenderTask extends AsyncTask<Void, Void, Void> {
             viewText_.sampleT_ = "," + viewText_.getSample();
             final int stage = viewText_.isWorking();
             viewText_.stageT_ = DrawView.Stage.values()[stage].toString();
-            updateRender_.run();
+            requestRender.run();
             publishProgress();
             if (stage != DrawView.Stage.busy.id_) {
                 scheduler_.shutdown();
@@ -44,7 +46,7 @@ final class RenderTask extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected final Void doInBackground(final Void... params) {
-        scheduler_.scheduleAtFixedRate(timer_, 0L, viewText_.period_, TimeUnit.MILLISECONDS);
+        scheduler_.scheduleAtFixedRate(timer_, 0L, period_, TimeUnit.MILLISECONDS);
         boolean running = true;
         do {
             try {
@@ -66,7 +68,7 @@ final class RenderTask extends AsyncTask<Void, Void, Void> {
     protected final void onPostExecute(final Void result) {
         viewText_.printText();
         viewText_.buttonRender_.setText(R.string.render);
-        updateRender_.run();
+        requestRender_.run();
         finishRender_.run();
     }
 }
