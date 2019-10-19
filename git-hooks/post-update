@@ -1,0 +1,14 @@
+#!/bin/bash
+#
+# An example hook script to prepare a packed repository for use over
+# dumb transports.
+#
+# To enable this hook, rename this file to "post-update".
+
+echo "hook post-update:"
+echo "1 = $1"
+echo "2 = $2"
+echo "3 = $3"
+echo "4 = $4"
+
+exec git update-server-info
