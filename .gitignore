@@ -49,3 +49,4 @@
 **/*.loa
 **/*.lol
 **/*.cxx
+**/git-hooks
