@@ -37,6 +37,7 @@
 * Add system tests
 * Add git hooks to check git commit messages
 * Add git hooks to submit Jenkins' jobs after each git push
+* Support to export rendered image to file
 
 ### Documentation
 * Improve README
