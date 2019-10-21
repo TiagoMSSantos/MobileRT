@@ -74,15 +74,25 @@ configurations {
 
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.1.0'
+
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.2'
     androidTestImplementation 'de.mannodermaus.junit5:android-test-core:1.0.0'
-    androidTestRuntimeOnly 'de.mannodermaus.junit5:android-test-runner:1.0.0'
     androidTestImplementation 'androidx.test:rules:1.2.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-intents:3.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-accessibility:3.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-web:3.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-idling-resource:3.2.0'
+    androidTestImplementation 'androidx.test.espresso.idling:idling-concurrent:3.2.0'
+
+    androidTestRuntimeOnly 'de.mannodermaus.junit5:android-test-runner:1.0.0'
 }
 
 //dependencies {
-    //implementation 'androidx.appcompat:appcompat:1.1.0'
 
     /*androidTestImplementation 'junit:junit:4.12'
     androidTestImplementation 'org.mockito:mockito-core:1.10.19'
@@ -96,17 +106,7 @@ dependencies {
 
     androidTestImplementation 'androidx.test:core:1.2.0'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'androidx.test.ext:truth:1.2.0'
-    androidTestImplementation 'androidx.test:runner:1.2.0'
-    androidTestImplementation 'androidx.test:rules:1.2.0'
-
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.2.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-intents:3.2.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-accessibility:3.2.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-web:3.2.0'
-    androidTestImplementation 'androidx.test.espresso.idling:idling-concurrent:3.2.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-idling-resource:3.2.0'*/
+    androidTestImplementation 'androidx.test.ext:truth:1.2.0'*/
 
     // (Required) Writing and executing Unit Tests on the JUnit Platform
     //testImplementation "org.junit.jupiter:junit-jupiter-api:5.5.2"
