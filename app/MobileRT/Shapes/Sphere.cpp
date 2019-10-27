@@ -46,15 +46,6 @@ Intersection Sphere::intersect(const Intersection &intersection, const Ray &ray)
     return res;
 }
 
-void Sphere::moveTo(const float x, const float y) noexcept {
-    this->center_[0] = x;
-    this->center_[1] = y;
-}
-
-float Sphere::getZ() const noexcept {
-    return this->center_[2];
-}
-
 AABB Sphere::getAABB() const noexcept {
     const float radius {::std::sqrt(this->sq_radius_)};
     const ::glm::vec3 &min {this->center_ - radius};

@@ -6,12 +6,13 @@ import android.os.SystemClock;
 import android.util.Log;
 
 import java.util.Locale;
+import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 final class RenderTask extends AsyncTask<Void, Void, Void> {
-    private final ScheduledExecutorService scheduler_ = Executors.newSingleThreadScheduledExecutor();
+    private final ScheduledExecutorService scheduler_ = Executors.newScheduledThreadPool(1);
     private final ViewText viewText_;
     private final Runnable requestRender_;
     private final Runnable timer_;
@@ -51,8 +52,8 @@ final class RenderTask extends AsyncTask<Void, Void, Void> {
         do {
             try {
                 running = !scheduler_.awaitTermination(1, TimeUnit.DAYS);
-            } catch (final InterruptedException e) {
-                Log.e("InterruptedException", e.getMessage());
+            } catch (final InterruptedException ex) {
+                Log.e("InterruptedException", Objects.requireNonNull(ex.getMessage()));
                 System.exit(1);
             }
         } while (running);

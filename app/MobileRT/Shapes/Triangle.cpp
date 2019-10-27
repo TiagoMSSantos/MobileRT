@@ -55,13 +55,6 @@ Intersection Triangle::intersect(const Intersection &intersection, const Ray &ra
     return res;
 }
 
-void Triangle::moveTo(const float /*x*/, const float /*y*/) noexcept {
-}
-
-float Triangle::getZ() const noexcept {
-    return 0.0f;
-}
-
 AABB Triangle::getAABB() const noexcept {
     const ::glm::vec3 &pointB {pointA_ + AB_};
     const ::glm::vec3 &pointC {pointA_ + AC_};

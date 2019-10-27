@@ -39,13 +39,6 @@ Intersection Plane::intersect(const Intersection &intersection, const Ray &ray) 
     return res;
 }
 
-void Plane::moveTo(const float /*x*/, const float /*y*/) noexcept {
-}
-
-float Plane::getZ() const noexcept {
-    return 0.0f;
-}
-
 ::glm::vec3 Plane::getRightVector() const noexcept {
     ::glm::vec3 right {};
     if (this->normal_[0] >= 1) {

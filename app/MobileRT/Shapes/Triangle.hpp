@@ -32,10 +32,6 @@ namespace MobileRT {
 
         Intersection intersect(const Intersection &intersection, const Ray &ray) const noexcept;
 
-        void moveTo(float x, float y) noexcept;
-
-        float getZ() const noexcept;
-
         AABB getAABB() const noexcept;
 
         bool intersect(const AABB &box) const noexcept;

@@ -5,12 +5,18 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.opengl.GLSurfaceView;
+import android.os.Looper;
 import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
@@ -23,11 +29,15 @@ public class DrawView extends GLSurfaceView {
 
     MainRenderer renderer_ = new MainRenderer();
     private boolean changingConfigurations = false;
+    private ExecutorService executorService_;
+    private Future<?> lastTask_;
 
     public DrawView(final Context context) {
         super(context);
         renderer_.prepareRenderer(this::requestRender);
         renderer_.viewText_.resetPrint(getWidth(), getHeight(), 0, 0, 0);
+        executorService_ = Executors.newFixedThreadPool(1);
+        lastTask_ = executorService_.submit(Looper::prepare);
         init();
     }
 
@@ -35,7 +45,8 @@ public class DrawView extends GLSurfaceView {
         super(context, attrs);
         renderer_.prepareRenderer(this::requestRender);
         renderer_.viewText_.resetPrint(getWidth(), getHeight(), 0, 0, 0);
-        //init();
+        executorService_ = Executors.newFixedThreadPool(1);
+        lastTask_ = executorService_.submit(Looper::prepare);
     }
 
     public void onDestroy() {
@@ -122,34 +133,64 @@ public class DrawView extends GLSurfaceView {
     void stopDrawing() {
         this.setOnTouchListener(null);
         stopRender();
+        renderer_.waitForLastTask();
+        renderer_.finishRender();
     }
 
-    void startRender(final boolean rasterize) {
+    void renderScene(final int scene, final int shader, final int numThreads, final int accelerator,
+                            final int samplesPixel, final int samplesLight, final int width, final int height,
+                            final String objFile, final String matText, final boolean rasterize) {
+
+        renderer_.viewText_.start_ = 0;
+        renderer_.viewText_.printText();
+
+        try {// Wait for last task
+            lastTask_.get();
+            lastTask_.cancel(false);
+        } catch (final ExecutionException ex) {
+            ex.printStackTrace();
+        } catch (final InterruptedException ex) {
+            ex.printStackTrace();
+        }
+
+        lastTask_ = executorService_.submit(() -> {
+            renderer_.waitForLastTask();
+
+            final int ret = createScene(scene, shader, numThreads, accelerator, samplesPixel, samplesLight, width,
+                    height, objFile, matText);
+            if (ret != -1) {
+                startRender(rasterize);
+            } else {
+                stopDrawing();
+            }
+        });
+    }
+
+    private void startRender(final boolean rasterize) {
         renderer_.freeArrays();
 
         if (rasterize) {
             renderer_.initArrays();
         }
-        renderer_.viewText_.buttonRender_.setText(R.string.stop);
-        renderer_.viewText_.start_ = 0;
-        renderer_.viewText_.printText();
 
         renderer_.viewText_.start_ = SystemClock.elapsedRealtime();
         requestRender();
     }
 
-    int createScene(final int scene, final int shader, final int numThreads, final int accelerator,
+    private int createScene(final int scene, final int shader, final int numThreads, final int accelerator,
                     final int samplesPixel, final int samplesLight, final int width, final int height,
                     final String objFile, final String matText) {
         renderer_.freeArrays();
         renderer_.viewText_.resetPrint(width, height, numThreads, samplesPixel, samplesLight);
 
-        renderer_.numberPrimitives_ = renderer_.initialize(scene, shader, width, height, accelerator, samplesPixel, samplesLight, objFile, matText);
+        renderer_.numberPrimitives_ = renderer_.initialize(scene, shader, width, height, accelerator, samplesPixel,
+                samplesLight, objFile, matText);
         if (renderer_.numberPrimitives_ == -1) {
             Log.e("MobileRT", "Device without enough memory to render the scene.");
             for (int i = 0; i < 1; ++i) {
                 Toast.makeText(getContext(), "Device without enough memory to render the scene.", Toast.LENGTH_LONG).show();
             }
+            renderer_.viewText_.buttonRender_.setText(R.string.render);
             return -1;
         }
         if (renderer_.numberPrimitives_ == -2) {
@@ -157,6 +198,7 @@ public class DrawView extends GLSurfaceView {
             for (int i = 0; i < 1; ++i) {
                 Toast.makeText(getContext(), "Could not load the scene.", Toast.LENGTH_LONG).show();
             }
+            renderer_.viewText_.buttonRender_.setText(R.string.render);
             return -1;
         }
         renderer_.viewText_.nPrimitivesT_ = ",p=" + renderer_.numberPrimitives_ + ",l=" + getNumberOfLights();

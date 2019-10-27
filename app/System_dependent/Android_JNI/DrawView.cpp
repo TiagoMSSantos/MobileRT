@@ -4,14 +4,14 @@
 #include <fstream>
 #include <mutex>
 
-static ::State working_{State::IDLE};
+static ::std::atomic<::State> state_{State::IDLE};
 static ::std::unique_ptr<::MobileRT::Renderer> renderer_{nullptr};
 static ::std::unique_ptr<::JavaVM> javaVM_{nullptr};
 static ::std::unique_ptr<::std::thread> thread_{nullptr};
 static ::std::mutex mutex_{};
 static ::std::int32_t width_{0};
 static ::std::int32_t height_{0};
-static float fps_{0.0f};
+static float fps_{0.0F};
 static ::std::int64_t timeRenderer_{0};
 static ::std::int32_t numberOfLights_{0};
 
@@ -56,22 +56,22 @@ jobject Java_puscas_mobilertapp_MainRenderer_initCameraArray(
             floatBuffer[i++] = camera->position_.x;
             floatBuffer[i++] = camera->position_.y;
             floatBuffer[i++] = camera->position_.z;
-            floatBuffer[i++] = 1.0f;
+            floatBuffer[i++] = 1.0F;
 
             floatBuffer[i++] = camera->direction_.x;
             floatBuffer[i++] = camera->direction_.y;
             floatBuffer[i++] = camera->direction_.z;
-            floatBuffer[i++] = 1.0f;
+            floatBuffer[i++] = 1.0F;
 
             floatBuffer[i++] = camera->up_.x;
             floatBuffer[i++] = camera->up_.y;
             floatBuffer[i++] = camera->up_.z;
-            floatBuffer[i++] = 1.0f;
+            floatBuffer[i++] = 1.0F;
 
             floatBuffer[i++] = camera->right_.x;
             floatBuffer[i++] = camera->right_.y;
             floatBuffer[i++] = camera->right_.z;
-            floatBuffer[i++] = 1.0f;
+            floatBuffer[i++] = 1.0F;
 
             ::Components::Perspective *perspective{
                     dynamic_cast<::Components::Perspective *>(camera)};
@@ -82,14 +82,14 @@ jobject Java_puscas_mobilertapp_MainRenderer_initCameraArray(
                 const float vFov{perspective->getVFov()};
                 floatBuffer[i++] = hFov;
                 floatBuffer[i++] = vFov;
-                floatBuffer[i++] = 0.0f;
-                floatBuffer[i++] = 0.0f;
+                floatBuffer[i++] = 0.0F;
+                floatBuffer[i++] = 0.0F;
             }
             if (orthographic != nullptr) {
                 const float sizeH{orthographic->getSizeH()};
                 const float sizeV{orthographic->getSizeV()};
-                floatBuffer[i++] = 0.0f;
-                floatBuffer[i++] = 0.0f;
+                floatBuffer[i++] = 0.0F;
+                floatBuffer[i++] = 0.0F;
                 floatBuffer[i++] = sizeH;
                 floatBuffer[i] = sizeV;
             }
@@ -218,7 +218,7 @@ extern "C"
         JNIEnv *env,
         jobject /*thiz*/
 ) noexcept {
-    const ::std::int32_t res{static_cast<::std::int32_t> (working_)};
+    const ::std::int32_t res{static_cast<::std::int32_t> (state_.load())};
     env->ExceptionClear();
     return res;
 }
@@ -229,10 +229,10 @@ void Java_puscas_mobilertapp_DrawView_stopRender(
         jobject /*thiz*/
 ) noexcept {
     //TODO: Fix this race condition
+    state_ = State::STOPPED;
     if (renderer_ != nullptr) {
         renderer_->stopRender();
     }
-    working_ = State::STOPPED;
     LOG("WORKING = STOPPED");
     env->ExceptionClear();
 }
@@ -251,7 +251,7 @@ static ::std::streampos fileSize(const char *filePath) {
 extern "C"
 jint Java_puscas_mobilertapp_MainRenderer_initialize(
         JNIEnv *env,
-        jobject const thiz,
+        jobject thiz,
         jint const scene,
         jint const shader,
         jint const width,
@@ -262,6 +262,9 @@ jint Java_puscas_mobilertapp_MainRenderer_initialize(
         jstring const localObjFile,
         jstring const localMatFile
 ) noexcept {
+    state_ = State::BUSY;
+    LOG("WORKING = BUSY");
+
     width_ = width;
     height_ = height;
     LOG("INITIALIZE");
@@ -972,7 +975,7 @@ void Java_puscas_mobilertapp_MainRenderer_finishRender(
             LOG("DELETED RENDERER");
         }
     }
-    working_ = State::IDLE;
+    state_ = State::IDLE;
     LOG("WORKING = IDLE");
     fps_ = 0.0f;
     timeRenderer_ = 0;
@@ -987,10 +990,10 @@ void Java_puscas_mobilertapp_MainRenderer_renderIntoBitmap(
         jint const nThreads,
         jboolean const async
 ) noexcept {
-    jobject globalBitmap{static_cast<jobject>(env->NewGlobalRef(localBitmap))};
-
-    working_ = State::BUSY;
+    state_ = State::BUSY;
     LOG("WORKING = BUSY");
+
+    jobject globalBitmap{static_cast<jobject>(env->NewGlobalRef(localBitmap))};
 
     auto lambda {
         [=]() noexcept -> void {
@@ -1036,30 +1039,33 @@ void Java_puscas_mobilertapp_MainRenderer_renderIntoBitmap(
             LOG("FINISHED RENDERING");
             FPS();
             rep--;
-        } while (working_ != State::STOPPED && rep > 0);
-        if (working_ != State::STOPPED) {
-            working_ = State::FINISHED;
-            LOG("WORKING = FINISHED");
-        }
-        {
-            const ::std::int32_t result {AndroidBitmap_unlockPixels(env, globalBitmap)};
-            assert(result == JNI_OK);
-            static_cast<void> (result);
-        }
+        } while (state_ != State::STOPPED && rep > 0);
+            {
+                const ::std::lock_guard<::std::mutex> lock{mutex_};
+                if (state_ != State::STOPPED) {
+                    state_ = State::FINISHED;
+                    LOG("WORKING = FINISHED");
+                }
+                {
+                    const ::std::int32_t result{AndroidBitmap_unlockPixels(env, globalBitmap)};
+                    assert(result == JNI_OK);
+                    static_cast<void> (result);
+                }
 
-        env->DeleteGlobalRef(globalBitmap);
-        {
-            const ::std::int32_t result {javaVM_->GetEnv(reinterpret_cast<void **>(const_cast<JNIEnv **>(&env)),
-                                              JNI_VERSION_1_6)};
-            assert(result == JNI_OK);
-            static_cast<void> (result);
-        }
-            env->ExceptionClear();
-        if (jniThread == JNI_EDETACHED) {
-            const ::std::int32_t result {javaVM_->DetachCurrentThread()};
-            assert(result == JNI_OK);
-            static_cast<void> (result);
-        }
+                env->DeleteGlobalRef(globalBitmap);
+                {
+                    const ::std::int32_t result{javaVM_->GetEnv(reinterpret_cast<void **>(const_cast<JNIEnv **>(&env)),
+                                                                JNI_VERSION_1_6)};
+                    assert(result == JNI_OK);
+                    static_cast<void> (result);
+                }
+                env->ExceptionClear();
+                if (jniThread == JNI_EDETACHED) {
+                    const ::std::int32_t result{javaVM_->DetachCurrentThread()};
+                    assert(result == JNI_OK);
+                    static_cast<void> (result);
+                }
+            }
     }};
 
     if (async) {

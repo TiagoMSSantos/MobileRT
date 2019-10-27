@@ -15,6 +15,7 @@ import android.net.Uri;
 import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,15 +34,13 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
-
-import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
-import static android.os.Environment.getExternalStorageDirectory;
 
 public final class MainActivity extends Activity {
 
@@ -50,8 +49,8 @@ public final class MainActivity extends Activity {
             System.loadLibrary("MobileRT");
             System.loadLibrary("Components");
             System.loadLibrary("AppInterface");
-        } catch (Exception e) {
-            Log.e("LINK ERROR", "WARNING: Could not load native library: " + e.getMessage());
+        } catch (final Exception ex) {
+            Log.e("LINK ERROR", "WARNING: Could not load native library: " + ex.getMessage());
             System.exit(1);
         }
     }
@@ -65,7 +64,7 @@ public final class MainActivity extends Activity {
     private NumberPicker pickerSamplesLight_;
     private NumberPicker pickerSizes_;
     private CheckBox checkBoxRasterize_;
-    private String objFile_;
+    private String objFilePath_;
 
     private native int resize(final int size);
 
@@ -74,6 +73,7 @@ public final class MainActivity extends Activity {
         try {
             final File dir = new File("/sys/devices/system/cpu/");
             final File[] files = dir.listFiles(new CpuFilter());
+            assert files != null;
             res = files.length;
         } catch (final RuntimeException ignored) {
             Log.e("getNumCoresOldPhones", "Can't get number of cores available!!!");
@@ -102,27 +102,28 @@ public final class MainActivity extends Activity {
         final String objText = objFile + ".obj";
         final String matText = objFile + ".mtl";
         final boolean rasterize = checkBoxRasterize_.isChecked();
+        final int stage = drawView_.renderer_.viewText_.isWorking();
 
-        switch (drawView_.renderer_.viewText_.isWorking()) {
+        switch (stage) {
             case 0:
             case 2:
             case 3://if ray tracer is idle
-                final int ret = drawView_.createScene(scene, shader, threads, accelerator, samplesPixel, samplesLight, width, height, objText, matText);
-                if (ret != -1) {
-                    drawView_.startRender(rasterize);
-                } else {
-                    this.drawView_.stopDrawing();
-                }
+                drawView_.renderer_.viewText_.buttonRender_.setText(R.string.stop);
+                drawView_.renderScene(scene, shader, threads, accelerator, samplesPixel, samplesLight, width, height,
+                        objText, matText, rasterize);
                 break;
 
             default://if ray tracer is busy
+                drawView_.renderer_.viewText_.buttonRender_.setText(R.string.render);
                 this.drawView_.stopDrawing();
                 break;
         }
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(final int requestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull final int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
@@ -136,7 +137,7 @@ public final class MainActivity extends Activity {
         if (data != null) {
             final Uri uri = data.getData();
             if (resultCode == Activity.RESULT_OK && uri != null) {
-                final String sdCardDir = getExternalStorageDirectory() + "/";
+                final String sdCardDir = Environment.getExternalStorageDirectory() + "/";
                 String filePath = uri.getEncodedPath();
                 if (filePath != null) {
                     filePath = filePath.replace("%2F", "/");
@@ -145,7 +146,7 @@ public final class MainActivity extends Activity {
                     filePath = filePath.replace("/document", "/storage");
 
                     final int lastIndex = filePath.lastIndexOf('.');
-                    objFile_ = filePath.substring(0, lastIndex);
+                    objFilePath_ = filePath.substring(0, lastIndex);
                 }
             }
         }
@@ -186,7 +187,7 @@ public final class MainActivity extends Activity {
     }
 
     @Override
-    public void onRestoreInstanceState(final Bundle savedInstanceState) {
+    public void onRestoreInstanceState(@NonNull final Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         final int scene = savedInstanceState.getInt("pickerScene");
         final int shader = savedInstanceState.getInt("pickerShader");
@@ -207,7 +208,7 @@ public final class MainActivity extends Activity {
     }
 
     @Override
-    public void onSaveInstanceState(final Bundle savedInstanceState) {
+    public void onSaveInstanceState(@NonNull final Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
         final int scene = pickerScene_.getValue();
         final int shader = pickerShader_.getValue();
@@ -239,13 +240,13 @@ public final class MainActivity extends Activity {
             if (bytes > 0) {
                 asset = new String(buffer);
             }
-        } catch (final OutOfMemoryError e1) {
+        } catch (final OutOfMemoryError ex1) {
             Log.e("Assets", "Not enough memory for asset  " + filename);
-            Log.e("Assets", e1.getMessage());
-            throw e1;
-        } catch (final IOException e2) {
+            Log.e("Assets", Objects.requireNonNull(ex1.getMessage()));
+            throw ex1;
+        } catch (final IOException ex2) {
             Log.e("Assets", "Couldn't read asset " + filename);
-            Log.e("Assets", e2.getMessage());
+            Log.e("Assets", Objects.requireNonNull(ex2.getMessage()));
             System.exit(1);
         }
         return asset;
@@ -254,8 +255,8 @@ public final class MainActivity extends Activity {
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        if (objFile_ != null) {
-            startStopRender(objFile_);
+        if (objFilePath_ != null) {
+            startStopRender(objFilePath_);
         }
     }
 
@@ -270,7 +271,7 @@ public final class MainActivity extends Activity {
         super.onPause();
         drawView_.setPreserveEGLContextOnPause(true);
         drawView_.onPause();
-        objFile_ = null;
+        objFilePath_ = null;
     }
 
     private boolean checkGL20Support() {
@@ -321,8 +322,8 @@ public final class MainActivity extends Activity {
 
         try {
             setContentView(R.layout.activity_main);
-        } catch (final RuntimeException e) {
-            Log.e("RuntimeException", e.getMessage());
+        } catch (final RuntimeException ex) {
+            Log.e("RuntimeException", Objects.requireNonNull(ex.getMessage()));
             System.exit(1);
         }
 
@@ -385,7 +386,7 @@ public final class MainActivity extends Activity {
         }
 
         pickerScene_.setMinValue(0);
-        final String[] scenes = {"Cornell", "Spheres", "Cornell2", "Spheres2", "OBJ"};
+        final String[] scenes = {"Cornell", "Spheres", "Cornell2", "Spheres2", "OBJ", "Test", "Wrong file"};
         pickerScene_.setMaxValue(scenes.length - 1);
         pickerScene_.setWrapSelectorWheel(true);
         pickerScene_.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
@@ -427,10 +428,10 @@ public final class MainActivity extends Activity {
         final String[] samplesLight;
         try {
             samplesLight = new String[maxSamplesLight];
-        } catch (final OutOfMemoryError e) {
-            e.fillInStackTrace();
-            Log.e("mobilertapp:", e.getMessage());
-            throw e;
+        } catch (final OutOfMemoryError ex) {
+            ex.fillInStackTrace();
+            Log.e("mobilertapp:", ex.getMessage());
+            throw ex;
         }
         for (int i = 0; i < maxSamplesLight; i++) {
             samplesLight[i] = Integer.toString(i + 1);
@@ -476,10 +477,10 @@ public final class MainActivity extends Activity {
         final String[] sizes;
         try {
             sizes = new String[maxSizes];
-        } catch (final OutOfMemoryError e) {
-            e.fillInStackTrace();
-            Log.e("mobilertapp:", e.getMessage());
-            throw e;
+        } catch (final OutOfMemoryError ex) {
+            ex.fillInStackTrace();
+            Log.e("mobilertapp:", ex.getMessage());
+            throw ex;
         }
         sizes[0] = String.format(Locale.US, "%.2f", 0.05f) + 'x';
         for (int i = 2; i < maxSizes; i++) {
@@ -524,18 +525,35 @@ public final class MainActivity extends Activity {
             pickerSizes_.setDisplayedValues(sizes);
         });
 
-        ActivityCompat.requestPermissions(this, new String[]{READ_EXTERNAL_STORAGE}, 0);
+        ActivityCompat.requestPermissions(this, new String[]{
+                android.Manifest.permission.READ_EXTERNAL_STORAGE
+        }, 0);
     }
 
     public void startRender(final View view) {
+        objFilePath_ = "";
         final int scene = pickerScene_.getValue();
         final int isWorking = drawView_.renderer_.viewText_.isWorking();
-        if (scene >= 4 && isWorking != 1) {
-            CheckStoragePermission();
-            showFileChooser();
-            return;
+        if (isWorking != 1) {
+            if (scene == 4) {
+                CheckStoragePermission();
+                showFileChooser();
+                return;
+            } else if (scene == 5) {
+                CheckStoragePermission();
+                final String objFile = "conference/conference";
+                //final String objFile = "buddha/buddha";
+                //final String objFile = "powerplant/powerplant";
+                //final String objFile = "San_Miguel/san-miguel";
+
+                String sdCardPath = Environment.getExternalStorageDirectory() + "/";
+                sdCardPath = sdCardPath.replace("/storage/sdcard0", "/storage/extSdCard");
+                sdCardPath = sdCardPath.replace("/emulated/0", "/1D19-170B");
+                objFilePath_ = sdCardPath + "WavefrontOBJs/" + objFile;
+            }
         }
-        startStopRender("");
+
+        startStopRender(objFilePath_);
     }
 
     private static final class CpuFilter implements FileFilter {

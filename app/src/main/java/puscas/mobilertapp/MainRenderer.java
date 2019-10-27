@@ -13,6 +13,11 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -55,11 +60,14 @@ class MainRenderer implements Renderer {
     private int realHeight_ = 1;
     private int shaderProgram_ = 0;
     private int shaderProgramRaster_ = 0;
-    private boolean firstFrame_ = true;
-
+    private boolean firstFrame_ = false;
+    private RenderTask renderTask_ = null;
+    private final Executor executor = Executors.newFixedThreadPool(1);
+    private Lock lock_ = null;
 
     native void finishRender();
-    native int initialize(final int scene, final int shader, final int width, final int height, final int accelerator, final int samplesPixel, final int samplesLight, final String objFile, final String matText);
+    native int initialize(final int scene, final int shader, final int width, final int height, final int accelerator,
+                          final int samplesPixel, final int samplesLight, final String objFile, final String matText);
 
     private native void renderIntoBitmap(final Bitmap image, final int numThreads, final boolean async);
     private native ByteBuffer initVerticesArray();
@@ -107,6 +115,11 @@ class MainRenderer implements Renderer {
 
     void prepareRenderer(final Runnable requestRender) {
         this.requestRender_ = requestRender;
+        lock_ = new ReentrantLock();
+        lock_.lock();
+        renderTask_ = new RenderTask(viewText_, () -> {}, () -> {}, 1);
+        renderTask_.executeOnExecutor(executor);
+        lock_.unlock();
     }
 
     private void checkGLError() {
@@ -212,8 +225,11 @@ class MainRenderer implements Renderer {
             }
 
             renderIntoBitmap(bitmap_, numThreads_, true);
-            final RenderTask renderTask = new RenderTask(viewText_, requestRender_, this::finishRender, 250);
-            renderTask.execute();
+            lock_.lock();
+            waitForLastTask();
+            renderTask_ = new RenderTask(viewText_, requestRender_, this::finishRender, 250);
+            renderTask_.executeOnExecutor(executor);
+            lock_.unlock();
         }
 
 
@@ -251,6 +267,24 @@ class MainRenderer implements Renderer {
         checkGLError();
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0);
         checkGLError();
+    }
+
+    void waitForLastTask() {
+        Log.d("Test", "WAITING");
+        lock_.lock();
+        if (renderTask_ != null) {
+            try {
+                renderTask_.get();
+                renderTask_.cancel(false);
+                renderTask_ = null;
+            } catch (final ExecutionException ex) {
+                ex.printStackTrace();
+            } catch (final InterruptedException ex) {
+                ex.printStackTrace();
+            }
+        }
+        Log.d("Test", "WAITED");
+        lock_.unlock();
     }
 
     @Override
