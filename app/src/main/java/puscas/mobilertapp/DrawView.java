@@ -10,7 +10,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
@@ -132,6 +131,7 @@ public class DrawView extends GLSurfaceView {
         renderer_.waitForLastTask();
         executorService_.shutdown();
         boolean running = true;
+        Log.d("Test", "waiting executorService_");
         do {
             try {
                 running = !executorService_.awaitTermination(1, TimeUnit.DAYS);
@@ -140,6 +140,7 @@ public class DrawView extends GLSurfaceView {
                 //System.exit(1);
             }
         } while (running);
+        Log.d("Test", "new executorService_");
         executorService_ = Executors.newFixedThreadPool(1);
         renderer_.finishRender();
     }
@@ -179,7 +180,11 @@ public class DrawView extends GLSurfaceView {
                     renderer_.viewText_.start_ = SystemClock.elapsedRealtime();
                     requestRender();
                 } else {
-                    stopDrawing();
+                    stopRender();
+                    renderer_.freeArrays();
+                    renderer_.rasterize_ = true;
+                    renderer_.viewText_.start_ = SystemClock.elapsedRealtime();
+                    new RenderTask(renderer_.viewText_, this::requestRender, renderer_::finishRender, 250).executeOnExecutor(executorService_);
                 }
                 Log.d("Test executor", "renderScene 2");
             }
@@ -197,18 +202,18 @@ public class DrawView extends GLSurfaceView {
                 samplesLight, objFile, matText);
         if (renderer_.numberPrimitives_ == -1) {
             Log.e("MobileRT", "Device without enough memory to render the scene.");
-            for (int i = 0; i < 1; ++i) {
+            /*for (int i = 0; i < 1; ++i) {
                 Toast.makeText(getContext(), "Device without enough memory to render the scene.", Toast.LENGTH_LONG).show();
             }
-            renderer_.viewText_.buttonRender_.setText(R.string.render);
+            renderer_.viewText_.buttonRender_.setText(R.string.render);*/
             return -1;
         }
         if (renderer_.numberPrimitives_ == -2) {
             Log.e("MobileRT", "Could not load the scene.");
-            for (int i = 0; i < 1; ++i) {
+            /*for (int i = 0; i < 1; ++i) {
                 Toast.makeText(getContext(), "Could not load the scene.", Toast.LENGTH_LONG).show();
             }
-            renderer_.viewText_.buttonRender_.setText(R.string.render);
+            renderer_.viewText_.buttonRender_.setText(R.string.render);*/
             return -1;
         }
         renderer_.viewText_.nPrimitivesT_ = ",p=" + renderer_.numberPrimitives_ + ",l=" + getNumberOfLights();

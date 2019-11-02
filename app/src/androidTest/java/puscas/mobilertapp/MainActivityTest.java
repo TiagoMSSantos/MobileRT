@@ -149,13 +149,13 @@ class MainActivityTest {
             final int finalCounterSPL = this.counterSPL++ % 100;
             final int finalCounterResolution = this.counterResolution++ % 9;
             final int finalCounterThreads = this.counterThreads++ % 4;
-            /*assertPickerValue(R.id.pickerScene, finalCounterScene >= 4 && finalCounterScene <= 5? 6 : finalCounterScene);
+            assertPickerValue(R.id.pickerScene, finalCounterScene >= 4 && finalCounterScene <= 6? 0 : finalCounterScene);
             assertPickerValue(R.id.pickerAccelerator, finalCounterAccelerator);
             assertPickerValue(R.id.pickerShader, finalCounterShader);
             assertPickerValue(R.id.pickerSize, finalCounterResolution <= 6? 6 : finalCounterResolution);
             assertPickerValue(R.id.pickerSamplesPixel, finalCounterSPP == 0? 1 : finalCounterSPP);
             assertPickerValue(R.id.pickerSamplesLight, finalCounterSPL == 0? 1 : finalCounterSPL);
-            assertPickerValue(R.id.pickerThreads, finalCounterThreads == 0? 1 : finalCounterThreads);*/
+            assertPickerValue(R.id.pickerThreads, finalCounterThreads == 0? 1 : finalCounterThreads);
 
             final int finalIndex = (index - 1) % buttonTextList.size();
             Espresso.onView(ViewMatchers.withId(R.id.renderButton)).perform(new ViewAction() {
