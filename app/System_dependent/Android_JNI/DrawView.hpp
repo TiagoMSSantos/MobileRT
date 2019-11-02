@@ -48,6 +48,12 @@ void Java_puscas_mobilertapp_DrawView_stopRender(
 ) noexcept;
 
 extern "C"
+void Java_puscas_mobilertapp_DrawView_startRender(
+        JNIEnv *env,
+        jobject thiz
+) noexcept;
+
+extern "C"
 jint Java_puscas_mobilertapp_DrawView_getNumberOfLights(
         JNIEnv *env,
         jobject thiz

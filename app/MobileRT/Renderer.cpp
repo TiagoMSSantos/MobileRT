@@ -20,8 +20,7 @@ Renderer::Renderer(::std::unique_ptr<Shader> shader,
         height_{height},
         domainSize_{(width / blockSizeX_) * (height / blockSizeY_)},
         resolution_{width * height},
-        samplesPixel_{samplesPixel},
-        finished_{false} {
+        samplesPixel_{samplesPixel} {
     this->shader_->initializeAccelerators(camera_.get());
 }
 
@@ -53,14 +52,12 @@ void Renderer::renderFrame(::std::uint32_t *const bitmap, const ::std::int32_t n
 
     LOG("Resolution = ", width_, "x", height_);
     LOG("FINISH");
-    finished_ = true;
 }
 
 void Renderer::stopRender() noexcept {
     this->blockSizeX_ = 0;
     this->blockSizeY_ = 0;
     this->samplerPixel_->stopSampling();
-    for(;finished_ == false;);
 }
 
 void Renderer::renderScene(::std::uint32_t *const bitmap, const ::std::int32_t tid, const ::std::uint32_t width) noexcept {

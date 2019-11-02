@@ -542,6 +542,7 @@ public final class MainActivity extends Activity {
             } else if (scene == 5) {
                 CheckStoragePermission();
                 final String objFile = "conference/conference";
+                //final String objFile = "teapot/teapot";
                 //final String objFile = "buddha/buddha";
                 //final String objFile = "powerplant/powerplant";
                 //final String objFile = "San_Miguel/san-miguel";

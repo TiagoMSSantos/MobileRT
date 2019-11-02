@@ -88,8 +88,15 @@ class MainActivityTest {
     void testUI() {
         mainActivityActivityTestRule.launchActivity(null);
 
-        testRenderButton(1);
-        testRenderButton(100);
+        Espresso.onView(ViewMatchers.withId(R.id.renderButton))
+        .check((view, exception) -> {
+            final Button button = view.findViewById(R.id.renderButton);
+            Assertions.assertEquals("Render", button.getText().toString(), "Button message");
+        });
+
+        testRenderButton(4);
+        testRenderButton(500);
+
         testPickerNumbers();
         testPreviewCheckBox();
 
@@ -99,16 +106,24 @@ class MainActivityTest {
     private void testPickerNumbers() {
         IntStream.rangeClosed(0, 2).forEach(value -> assertPickerValue(R.id.pickerAccelerator, value));
         IntStream.rangeClosed(1, 100).forEach(value -> assertPickerValue(R.id.pickerSamplesLight, value));
-        IntStream.rangeClosed(0, 4).forEach(value -> assertPickerValue(R.id.pickerScene, value));
+        IntStream.rangeClosed(0, 6).forEach(value -> assertPickerValue(R.id.pickerScene, value));
         IntStream.rangeClosed(0, 4).forEach(value -> assertPickerValue(R.id.pickerShader, value));
         IntStream.rangeClosed(1, 4).forEach(value -> assertPickerValue(R.id.pickerThreads, value));
         IntStream.rangeClosed(1, 10).forEach(value -> assertPickerValue(R.id.pickerSamplesPixel, value));
         IntStream.rangeClosed(1, 9).forEach(value -> assertPickerValue(R.id.pickerSize, value));
     }
 
+    private int counterScene = 0;
+    private int counterAccelerator = 0;
+    private int counterShader = 0;
+    private int counterResolution = 0;
+    private int counterSPL = 0;
+    private int counterSPP = 0;
+    private int counterThreads= 0;
+
     private void testRenderButton(final int repetitions) {
-        if (repetitions < 2) {
-            assertPickerValue(R.id.pickerSamplesPixel, 3);
+        if (repetitions <= 4) {
+            assertPickerValue(R.id.pickerSamplesPixel, 1);
             assertPickerValue(R.id.pickerScene, 5);
             assertPickerValue(R.id.pickerThreads, 4);
             assertPickerValue(R.id.pickerSize, 9);
@@ -124,14 +139,24 @@ class MainActivityTest {
             assertPickerValue(R.id.pickerAccelerator, 2);
             assertPickerValue(R.id.pickerShader, 2);
         }
-        Espresso.onView(ViewMatchers.withId(R.id.renderButton))
-        .check((view, exception) -> {
-            final Button button = view.findViewById(R.id.renderButton);
-            Assertions.assertEquals("Render", button.getText().toString(), "Button message");
-        });
 
         final List<String> buttonTextList = ImmutableList.<String>builder().add("Stop", "Render").build();
         IntStream.rangeClosed(1, buttonTextList.size() * repetitions).forEach(index -> {
+            final int finalCounterScene = this.counterScene++ % 6;
+            final int finalCounterAccelerator = this.counterAccelerator++ % 2;
+            final int finalCounterShader = this.counterShader++ % 4;
+            final int finalCounterSPP = this.counterSPP++ % 10;
+            final int finalCounterSPL = this.counterSPL++ % 100;
+            final int finalCounterResolution = this.counterResolution++ % 9;
+            final int finalCounterThreads = this.counterThreads++ % 4;
+            /*assertPickerValue(R.id.pickerScene, finalCounterScene >= 4 && finalCounterScene <= 5? 6 : finalCounterScene);
+            assertPickerValue(R.id.pickerAccelerator, finalCounterAccelerator);
+            assertPickerValue(R.id.pickerShader, finalCounterShader);
+            assertPickerValue(R.id.pickerSize, finalCounterResolution <= 6? 6 : finalCounterResolution);
+            assertPickerValue(R.id.pickerSamplesPixel, finalCounterSPP == 0? 1 : finalCounterSPP);
+            assertPickerValue(R.id.pickerSamplesLight, finalCounterSPL == 0? 1 : finalCounterSPL);
+            assertPickerValue(R.id.pickerThreads, finalCounterThreads == 0? 1 : finalCounterThreads);*/
+
             final int finalIndex = (index - 1) % buttonTextList.size();
             Espresso.onView(ViewMatchers.withId(R.id.renderButton)).perform(new ViewAction() {
                 @Override

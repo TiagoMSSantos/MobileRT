@@ -5,7 +5,6 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.opengl.GLSurfaceView;
-import android.os.Looper;
 import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -13,10 +12,10 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.concurrent.ExecutionException;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
@@ -29,15 +28,12 @@ public class DrawView extends GLSurfaceView {
 
     MainRenderer renderer_ = new MainRenderer();
     private boolean changingConfigurations = false;
-    private ExecutorService executorService_;
-    private Future<?> lastTask_;
+    private ExecutorService executorService_ = Executors.newFixedThreadPool(1);
 
     public DrawView(final Context context) {
         super(context);
         renderer_.prepareRenderer(this::requestRender);
         renderer_.viewText_.resetPrint(getWidth(), getHeight(), 0, 0, 0);
-        executorService_ = Executors.newFixedThreadPool(1);
-        lastTask_ = executorService_.submit(Looper::prepare);
         init();
     }
 
@@ -45,15 +41,13 @@ public class DrawView extends GLSurfaceView {
         super(context, attrs);
         renderer_.prepareRenderer(this::requestRender);
         renderer_.viewText_.resetPrint(getWidth(), getHeight(), 0, 0, 0);
-        executorService_ = Executors.newFixedThreadPool(1);
-        lastTask_ = executorService_.submit(Looper::prepare);
     }
 
-    public void onDestroy() {
+    synchronized public void onDestroy() {
         super.onDetachedFromWindow();
     }
 
-    private void init() {
+    synchronized private void init() {
         changingConfigurations = false;
 
         EGLContextFactory eglContextFactory = new GLSurfaceView.EGLContextFactory() {
@@ -86,26 +80,26 @@ public class DrawView extends GLSurfaceView {
         setEGLContextFactory(eglContextFactory);
     }
 
-    private native void stopRender();
-
-    private native int getNumberOfLights();
+    synchronized private native void stopRender();
+    synchronized private native void startRender();
+    synchronized private native int getNumberOfLights();
 
     @Override
-    public void onPause() {
+    synchronized public void onPause() {
         super.onPause();
         changingConfigurations = getActivity().isChangingConfigurations();
         //setVisibility(View.GONE);
     }
 
     @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
+    synchronized public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus && getVisibility() == View.GONE) {
             setVisibility(View.VISIBLE);
         }
     }
 
-    private Activity getActivity() {
+    synchronized private Activity getActivity() {
         Context context = getContext();
         while (!(context instanceof Activity) && context instanceof ContextWrapper) {
             context = ((ContextWrapper) context).getBaseContext();
@@ -117,12 +111,12 @@ public class DrawView extends GLSurfaceView {
     }
 
     @Override
-    public boolean performClick() {
+    synchronized public boolean performClick() {
         super.performClick();
         return true;
     }
 
-    void setViewAndActivityManager(final TextView textView, final ActivityManager activityManager) {
+    synchronized void setViewAndActivityManager(final TextView textView, final ActivityManager activityManager) {
         renderer_.viewText_.textView_ = textView;
         renderer_.viewText_.printText();
         renderer_.activityManager_ = activityManager;
@@ -130,56 +124,72 @@ public class DrawView extends GLSurfaceView {
     }
 
 
-    void stopDrawing() {
+    synchronized void stopDrawing() {
+        Log.d("Test", "stopDrawing");
         this.setOnTouchListener(null);
+        Log.d("Test", "stopRender");
         stopRender();
         renderer_.waitForLastTask();
+        executorService_.shutdown();
+        boolean running = true;
+        do {
+            try {
+                running = !executorService_.awaitTermination(1, TimeUnit.DAYS);
+            } catch (final InterruptedException ex) {
+                Log.e("InterruptedException", Objects.requireNonNull(ex.getMessage()));
+                //System.exit(1);
+            }
+        } while (running);
+        executorService_ = Executors.newFixedThreadPool(1);
         renderer_.finishRender();
     }
 
-    void renderScene(final int scene, final int shader, final int numThreads, final int accelerator,
+    synchronized void renderScene(final int scene, final int shader, final int numThreads, final int accelerator,
                             final int samplesPixel, final int samplesLight, final int width, final int height,
                             final String objFile, final String matText, final boolean rasterize) {
-
+        Log.d("Test", "renderScene");
         renderer_.viewText_.start_ = 0;
         renderer_.viewText_.printText();
 
-        try {// Wait for last task
-            lastTask_.get();
-            lastTask_.cancel(false);
-        } catch (final ExecutionException ex) {
-            ex.printStackTrace();
-        } catch (final InterruptedException ex) {
-            ex.printStackTrace();
-        }
+        renderer_.waitForLastTask();
+        executorService_.shutdown();
+        boolean running = true;
+        do {
+            try {
+                running = !executorService_.awaitTermination(1, TimeUnit.DAYS);
+            } catch (final InterruptedException ex) {
+                Log.e("InterruptedException", Objects.requireNonNull(ex.getMessage()));
+                //System.exit(1);
+            }
+        } while (running);
+        executorService_ = Executors.newFixedThreadPool(1);
+        startRender();
 
-        lastTask_ = executorService_.submit(() -> {
-            renderer_.waitForLastTask();
+        executorService_.submit(() -> {
+            Log.d("Test executor", "renderScene");
+            synchronized (this) {
+                renderer_.waitForLastTask();
 
-            final int ret = createScene(scene, shader, numThreads, accelerator, samplesPixel, samplesLight, width,
-                    height, objFile, matText);
-            if (ret != -1) {
-                startRender(rasterize);
-            } else {
-                stopDrawing();
+                final int ret = createScene(scene, shader, numThreads, accelerator, samplesPixel, samplesLight, width,
+                        height, objFile, matText);
+                if (ret != -1) {
+                    Log.d("Test", "startRender");
+                    renderer_.freeArrays();
+                    renderer_.rasterize_ = true;
+                    renderer_.viewText_.start_ = SystemClock.elapsedRealtime();
+                    requestRender();
+                } else {
+                    stopDrawing();
+                }
+                Log.d("Test executor", "renderScene 2");
             }
         });
     }
 
-    private void startRender(final boolean rasterize) {
-        renderer_.freeArrays();
-
-        if (rasterize) {
-            renderer_.initArrays();
-        }
-
-        renderer_.viewText_.start_ = SystemClock.elapsedRealtime();
-        requestRender();
-    }
-
-    private int createScene(final int scene, final int shader, final int numThreads, final int accelerator,
+    synchronized private int createScene(final int scene, final int shader, final int numThreads, final int accelerator,
                     final int samplesPixel, final int samplesLight, final int width, final int height,
                     final String objFile, final String matText) {
+        Log.d("Test", "createScene");
         renderer_.freeArrays();
         renderer_.viewText_.resetPrint(width, height, numThreads, samplesPixel, samplesLight);
 

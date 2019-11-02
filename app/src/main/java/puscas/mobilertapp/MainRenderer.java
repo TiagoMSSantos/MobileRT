@@ -13,11 +13,11 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.concurrent.ExecutionException;
+import java.util.Objects;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.TimeUnit;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -46,6 +46,7 @@ class MainRenderer implements Renderer {
     Bitmap bitmap_ = null;
     int numThreads_ = 0;
     int numberPrimitives_ = 0;
+    boolean rasterize_ = false;
 
     private final ActivityManager.MemoryInfo memoryInfo_ = new ActivityManager.MemoryInfo();
     private FloatBuffer floatBufferVertices_ = null;
@@ -63,37 +64,45 @@ class MainRenderer implements Renderer {
     private boolean firstFrame_ = false;
     private RenderTask renderTask_ = null;
     private final Executor executor = Executors.newFixedThreadPool(1);
-    private Lock lock_ = null;
+    private ExecutorService executorService_ = Executors.newFixedThreadPool(1);
 
-    native void finishRender();
-    native int initialize(final int scene, final int shader, final int width, final int height, final int accelerator,
+    synchronized native void finishRender();
+    synchronized native int initialize(final int scene, final int shader, final int width, final int height, final int accelerator,
                           final int samplesPixel, final int samplesLight, final String objFile, final String matText);
 
-    private native void renderIntoBitmap(final Bitmap image, final int numThreads, final boolean async);
-    private native ByteBuffer initVerticesArray();
-    private native ByteBuffer initColorsArray();
-    private native ByteBuffer initCameraArray();
-    private native ByteBuffer freeNativeBuffer(final ByteBuffer bb);
+    synchronized private native void renderIntoBitmap(final Bitmap image, final int numThreads, final boolean async);
+    synchronized private native ByteBuffer initVerticesArray();
+    synchronized private native ByteBuffer initColorsArray();
+    synchronized private native ByteBuffer initCameraArray();
+    synchronized private native ByteBuffer freeNativeBuffer(final ByteBuffer bb);
 
-    void freeArrays() {
+    synchronized void freeArrays() {
+        Log.d("Test", "freeArrays");
+        Log.d("Test", "arrayVertices_");
         arrayVertices_ = freeNativeBuffer(arrayVertices_);
+        Log.d("Test", "arrayColors_");
         arrayColors_ = freeNativeBuffer(arrayColors_);
+        Log.d("Test", "arrayCamera_");
         arrayCamera_ = freeNativeBuffer(arrayCamera_);
     }
 
-    void initArrays() {
+    synchronized private void initArrays() {
+        Log.d("Test", "initArrays");
+        Log.d("Test", "arrayVertices_");
         arrayVertices_ = initVerticesArray();
 
         if (isLowMemory(1)) {
             freeArrays();
         }
 
+        Log.d("Test", "arrayColors_");
         arrayColors_ = initColorsArray();
 
         if (isLowMemory(1)) {
             freeArrays();
         }
 
+        Log.d("Test", "arrayCamera_");
         arrayCamera_ = initCameraArray();
 
         if (isLowMemory(1)) {
@@ -101,7 +110,7 @@ class MainRenderer implements Renderer {
         }
     }
 
-    private boolean isLowMemory(final int memoryNeed) {
+    synchronized private boolean isLowMemory(final int memoryNeed) {
         boolean res = true;
         if (memoryNeed >= 0) {
             activityManager_.getMemoryInfo(memoryInfo_);
@@ -113,16 +122,13 @@ class MainRenderer implements Renderer {
         return res;
     }
 
-    void prepareRenderer(final Runnable requestRender) {
+    synchronized void prepareRenderer(final Runnable requestRender) {
         this.requestRender_ = requestRender;
-        lock_ = new ReentrantLock();
-        lock_.lock();
         renderTask_ = new RenderTask(viewText_, () -> {}, () -> {}, 1);
         renderTask_.executeOnExecutor(executor);
-        lock_.unlock();
     }
 
-    private void checkGLError() {
+    synchronized private void checkGLError() {
         final int glError = GLES20.glGetError();
         String stringError = null;
         switch (glError) {
@@ -149,7 +155,7 @@ class MainRenderer implements Renderer {
         System.exit(1);
     }
 
-    private int loadShader(final int shaderType, final String source) {
+    synchronized private int loadShader(final int shaderType, final String source) {
         final int shader = GLES20.glCreateShader(shaderType);
         checkGLError();
         if (shader != 0) {
@@ -176,7 +182,7 @@ class MainRenderer implements Renderer {
         return shader;
     }
 
-    void setBitmap(final int width, final int height, final int realWidth, final int realHeight) {
+    synchronized void setBitmap(final int width, final int height, final int realWidth, final int realHeight) {
         bitmap_ = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         bitmap_.eraseColor(Color.BLACK);
         width_ = width;
@@ -186,7 +192,7 @@ class MainRenderer implements Renderer {
         firstFrame_ = true;
     }
 
-    private Bitmap copyFrameBuffer() {
+    synchronized private Bitmap copyFrameBuffer() {
         final int sizePixels = realWidth_ * realHeight_;
         final int[] b = new int[sizePixels];
         final int[] bt = new int[sizePixels];
@@ -217,19 +223,22 @@ class MainRenderer implements Renderer {
     }
 
     @Override
-    public void onDrawFrame(final GL10 gl) {
+    synchronized public void onDrawFrame(final GL10 gl) {
         if (firstFrame_) {
             firstFrame_ = false;
+            if (rasterize_) {
+                rasterize_ = false;
+                initArrays();
+            }
+            Log.d("Test", "onDrawFrame");
+            waitForLastTask();
             if (arrayVertices_ != null && arrayColors_ != null && arrayCamera_ != null) {
                 copyFrame(arrayVertices_, arrayColors_, arrayCamera_, numberPrimitives_);
             }
 
             renderIntoBitmap(bitmap_, numThreads_, true);
-            lock_.lock();
-            waitForLastTask();
             renderTask_ = new RenderTask(viewText_, requestRender_, this::finishRender, 250);
-            renderTask_.executeOnExecutor(executor);
-            lock_.unlock();
+            renderTask_.executeOnExecutor(executorService_);
         }
 
 
@@ -269,26 +278,24 @@ class MainRenderer implements Renderer {
         checkGLError();
     }
 
-    void waitForLastTask() {
+    synchronized void waitForLastTask() {
         Log.d("Test", "WAITING");
-        lock_.lock();
-        if (renderTask_ != null) {
+        executorService_.shutdown();
+        boolean running = true;
+        do {
             try {
-                renderTask_.get();
-                renderTask_.cancel(false);
-                renderTask_ = null;
-            } catch (final ExecutionException ex) {
-                ex.printStackTrace();
+                running = !executorService_.awaitTermination(1, TimeUnit.DAYS);
             } catch (final InterruptedException ex) {
-                ex.printStackTrace();
+                Log.e("InterruptedException", Objects.requireNonNull(ex.getMessage()));
+                //System.exit(1);
             }
-        }
+        } while (running);
+        executorService_ = Executors.newFixedThreadPool(1);
         Log.d("Test", "WAITED");
-        lock_.unlock();
     }
 
     @Override
-    public void onSurfaceChanged(final GL10 gl, final int width, final int height) {
+    synchronized public void onSurfaceChanged(final GL10 gl, final int width, final int height) {
         GLES20.glViewport(0, 0, width, height);
         checkGLError();
 
@@ -297,7 +304,7 @@ class MainRenderer implements Renderer {
     }
 
     @Override
-    public void onSurfaceCreated(final GL10 gl, final EGLConfig config) {
+    synchronized public void onSurfaceCreated(final GL10 gl, final EGLConfig config) {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_STENCIL_BUFFER_BIT);
         checkGLError();
 
@@ -426,7 +433,7 @@ class MainRenderer implements Renderer {
         checkGLError();
     }
 
-    private void copyFrame(final ByteBuffer bbVertices, final ByteBuffer bbColors, final ByteBuffer bbCamera, final int numberPrimitives) {
+    synchronized private void copyFrame(final ByteBuffer bbVertices, final ByteBuffer bbColors, final ByteBuffer bbCamera, final int numberPrimitives) {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_STENCIL_BUFFER_BIT);
         checkGLError();
 
