@@ -22,7 +22,7 @@ else()
 endif()
 
 target_link_libraries( ${PROJECT_NAME}
-PRIVATE glm_static atomic
+PRIVATE glm atomic
 general "${COMMON_LINKER_FLAGS}"
 debug "${COMMON_LINKER_FLAGS_DEBUG}"
 optimized "${COMMON_LINKER_FLAGS_RELEASE}"

@@ -124,7 +124,7 @@ target_compile_options( ${PROJECT_NAME} PRIVATE $<$<CONFIG:RELEASE>:${COMMON_FLA
 #target_compile_options( ${PROJECT_NAME} PRIVATE $<$<NOT:$<BOOL:ANDROID_ABI MATCHES "^mips(64)?$" >>:-flto=full> )
 
 target_link_libraries( ${PROJECT_NAME}
-PRIVATE glm_static Components tinyobjloader
+PRIVATE glm Components tinyobjloader
 general "${COMMON_LINKER_FLAGS}"
 debug "${COMMON_LINKER_FLAGS_DEBUG}"
 optimized "${COMMON_LINKER_FLAGS_RELEASE}"
