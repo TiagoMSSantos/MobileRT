@@ -231,7 +231,7 @@ static void FPS() noexcept {
 }
 
 extern "C"
-::std::int32_t Java_puscas_mobilertapp_ViewText_isWorking(
+::std::int32_t Java_puscas_mobilertapp_ViewText_getState(
         JNIEnv *env,
         jobject /*thiz*/
 ) noexcept {

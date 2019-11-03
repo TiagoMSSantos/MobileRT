@@ -22,7 +22,10 @@ import java.util.concurrent.TimeUnit;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-class MainRenderer implements Renderer {
+/**
+ * The OpenGL rendered that shows the ray tracer engine rendered image.
+ */
+final class MainRenderer implements Renderer {
     private final float[] verticesTexture = {
             -1.0f, 1.0f, 0.0f, 1.0f,
             -1.0f, -1.0f, 0.0f, 1.0f,
@@ -155,7 +158,7 @@ class MainRenderer implements Renderer {
         System.exit(1);
     }
 
-    synchronized private int loadShader(final int shaderType, final String source) {
+    private synchronized int loadShader(final int shaderType, final String source) {
         final int shader = GLES20.glCreateShader(shaderType);
         checkGLError();
         if (shader != 0) {
@@ -176,7 +179,7 @@ class MainRenderer implements Renderer {
                 System.exit(1);
             }
         } else {
-            Log.e("MobileRT", "GLES20.glCreateShader = 0");
+            Log.e("loadShader", "GLES20.glCreateShader = 0");
             System.exit(1);
         }
         return shader;
@@ -287,7 +290,6 @@ class MainRenderer implements Renderer {
                 running = !executorService_.awaitTermination(1, TimeUnit.DAYS);
             } catch (final InterruptedException ex) {
                 Log.e("InterruptedException", Objects.requireNonNull(ex.getMessage()));
-                //System.exit(1);
             }
         } while (running);
         executorService_ = Executors.newFixedThreadPool(1);

@@ -18,7 +18,8 @@
         android:largeHeap="true"
         android:theme="@style/AppTheme"
         android:requestLegacyExternalStorage="true"
-        tools:ignore="UnpackedNativeCode">
+        tools:ignore="UnpackedNativeCode"
+        tools:targetApi="q">
         <activity
             android:name="puscas.mobilertapp.MainActivity"
             android:hardwareAccelerated="true">

@@ -62,7 +62,7 @@ jint Java_puscas_mobilertapp_DrawView_getNumberOfLights(
 
 // ViewText
 extern "C"
-jint Java_puscas_mobilertapp_ViewText_isWorking(
+jint Java_puscas_mobilertapp_ViewText_getState(
         JNIEnv *env,
         jobject thiz
 ) noexcept;

@@ -86,7 +86,7 @@ class MainActivityTest {
 
     @Test
     void testUI() {
-        mainActivityActivityTestRule.launchActivity(null);
+        this.mainActivityActivityTestRule.launchActivity(null);
 
         Espresso.onView(ViewMatchers.withId(R.id.renderButton))
         .check((view, exception) -> {

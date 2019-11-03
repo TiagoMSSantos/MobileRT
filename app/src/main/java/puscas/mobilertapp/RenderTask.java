@@ -21,37 +21,37 @@ final class RenderTask extends AsyncTask<Void, Void, Void> {
 
     RenderTask(final ViewText viewText, final Runnable requestRender, final Runnable finishRender, final int period) {
         super();
-        viewText_ = viewText;
-        requestRender_ = requestRender;
-        finishRender_ = finishRender;
-        period_ = period;
-        timer_ = () -> {
-            viewText_.FPS();
-            viewText_.fpsT_ = String.format(Locale.US, "fps:%.1f", viewText_.getFPS());
-            viewText_.fpsRenderT_ = String.format(Locale.US, "[%.1f]", viewText_.fps_);
-            final long timeRenderer = viewText_.getTimeRenderer();
-            viewText_.timeFrameT_ = String.format(Locale.US, ",t:%.2fs", timeRenderer / 1000.0f);
+        this.viewText_ = viewText;
+        this.requestRender_ = requestRender;
+        this.finishRender_ = finishRender;
+        this.period_ = period;
+        this.timer_ = () -> {
+            this.viewText_.FPS();
+            this.viewText_.fpsT_ = String.format(Locale.US, "fps:%.1f", this.viewText_.getFPS());
+            this.viewText_.fpsRenderT_ = String.format(Locale.US, "[%.1f]", this.viewText_.fps_);
+            final long timeRenderer = this.viewText_.getTimeRenderer();
+            this.viewText_.timeFrameT_ = String.format(Locale.US, ",t:%.2fs", timeRenderer / 1000.0f);
             final long currentTime = SystemClock.elapsedRealtime();
-            viewText_.timeT_ = String.format(Locale.US, "[%.2fs]", (currentTime - viewText_.start_) / 1000.0f);
-            viewText_.allocatedT_ = ",m:" + Debug.getNativeHeapAllocatedSize() / 1048576L + "mb";
-            viewText_.sampleT_ = "," + viewText_.getSample();
-            final int stage = viewText_.isWorking();
-            viewText_.stageT_ = DrawView.Stage.values()[stage].toString();
+            this.viewText_.timeT_ = String.format(Locale.US, "[%.2fs]", (currentTime - this.viewText_.start_) / 1000.0f);
+            this.viewText_.allocatedT_ = ",m:" + Debug.getNativeHeapAllocatedSize() / 1048576L + "mb";
+            this.viewText_.sampleT_ = "," + this.viewText_.getSample();
+            final int stage = this.viewText_.getState();
+            this.viewText_.stageT_ = Stage.values()[stage].toString();
             requestRender.run();
-            publishProgress();
-            if (stage != DrawView.Stage.busy.id_) {
-                scheduler_.shutdown();
+            this.publishProgress();
+            if (stage != Stage.busy.getId_()) {
+                this.scheduler_.shutdown();
             }
         };
     }
 
     @Override
     protected final Void doInBackground(final Void... params) {
-        scheduler_.scheduleAtFixedRate(timer_, 0L, period_, TimeUnit.MILLISECONDS);
+        this.scheduler_.scheduleAtFixedRate(this.timer_, 0L, this.period_, TimeUnit.MILLISECONDS);
         boolean running = true;
         do {
             try {
-                running = !scheduler_.awaitTermination(1, TimeUnit.DAYS);
+                running = !this.scheduler_.awaitTermination(1, TimeUnit.DAYS);
             } catch (final InterruptedException ex) {
                 Log.e("InterruptedException", Objects.requireNonNull(ex.getMessage()));
                 System.exit(1);
@@ -61,15 +61,15 @@ final class RenderTask extends AsyncTask<Void, Void, Void> {
     }
 
     @Override
-    protected final void onProgressUpdate(final Void... progress) {
-        viewText_.printText();
+    protected final void onProgressUpdate(final Void... values) {
+        this.viewText_.printText();
     }
 
     @Override
     protected final void onPostExecute(final Void result) {
-        viewText_.printText();
-        viewText_.buttonRender_.setText(R.string.render);
-        requestRender_.run();
-        finishRender_.run();
+        this.viewText_.printText();
+        this.viewText_.buttonRender_.setText(R.string.render);
+        this.requestRender_.run();
+        this.finishRender_.run();
     }
 }

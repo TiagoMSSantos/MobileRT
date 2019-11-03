@@ -10,62 +10,75 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 
-public class DrawView extends GLSurfaceView {
-    private static final int EGL_CONTEXT_CLIENT_VERSION_VALUE = 2;
-    private static EGLContext retainedGlContext = null;
+/**
+ * OpenGL view to show the scene being rendered.
+ */
+public final class DrawView extends GLSurfaceView {
+    private static final Logger LOGGER = Logger.getLogger(DrawView.class.getName());
 
-    MainRenderer renderer_ = new MainRenderer();
+    private static final int EGL_CONTEXT_CLIENT_VERSION_VALUE = 2;
+    private static EGLContext retainedGLContext = null;
+
+    final MainRenderer renderer_ = new MainRenderer();
     private boolean changingConfigurations = false;
     private ExecutorService executorService_ = Executors.newFixedThreadPool(1);
 
     public DrawView(final Context context) {
         super(context);
-        renderer_.prepareRenderer(this::requestRender);
-        renderer_.viewText_.resetPrint(getWidth(), getHeight(), 0, 0, 0);
-        init();
+        this.renderer_.prepareRenderer(this::requestRender);
+        this.renderer_.viewText_.resetPrint(this.getWidth(), this.getHeight(), 0, 0, 0);
+        this.init();
     }
 
-    public DrawView(final Context context, final AttributeSet attrs) {
+    public DrawView(@NonNull final Context context, @NonNull final AttributeSet attrs) {
         super(context, attrs);
-        renderer_.prepareRenderer(this::requestRender);
-        renderer_.viewText_.resetPrint(getWidth(), getHeight(), 0, 0, 0);
+        this.renderer_.prepareRenderer(this::requestRender);
+        this.renderer_.viewText_.resetPrint(this.getWidth(), this.getHeight(), 0, 0, 0);
     }
 
-    synchronized public void onDestroy() {
+    synchronized void onDestroy() {
         super.onDetachedFromWindow();
+
+        LOGGER.log(Level.INFO, "onDestroy");
     }
 
-    synchronized private void init() {
-        changingConfigurations = false;
+    private synchronized void init() {
+        this.changingConfigurations = false;
 
-        EGLContextFactory eglContextFactory = new GLSurfaceView.EGLContextFactory() {
-            private final int EGL_CONTEXT_CLIENT_VERSION = 2;
+        final GLSurfaceView.EGLContextFactory eglContextFactory = new GLSurfaceView.EGLContextFactory() {
+            private static final int EGL_CONTEXT_CLIENT_VERSION = 2;
 
-            public EGLContext createContext(EGL10 egl, EGLDisplay display, EGLConfig config) {
-                if (retainedGlContext != null) {
-                    final EGLContext eglContext = retainedGlContext;
-                    retainedGlContext = null;
+            public EGLContext createContext(final EGL10 egl, final EGLDisplay display, final EGLConfig eglConfig) {
+                if (retainedGLContext != null) {
+                    final EGLContext eglContext = retainedGLContext;
+                    retainedGLContext = null;
                     return eglContext;
                 }
 
-                int[] attrib_list = {EGL_CONTEXT_CLIENT_VERSION, EGL_CONTEXT_CLIENT_VERSION_VALUE, EGL10.EGL_NONE};
-                return egl.eglCreateContext(display, config, EGL10.EGL_NO_CONTEXT, attrib_list);
+                final int[] attribList = {this.EGL_CONTEXT_CLIENT_VERSION, EGL_CONTEXT_CLIENT_VERSION_VALUE,
+                        EGL10.EGL_NONE};
+                return egl.eglCreateContext(display, eglConfig, EGL10.EGL_NO_CONTEXT, attribList);
             }
 
-            public void destroyContext(EGL10 egl, EGLDisplay display, EGLContext context) {
-                if (changingConfigurations) {
-                    retainedGlContext = context;
+            public void destroyContext(final EGL10 egl, final EGLDisplay display, final EGLContext context) {
+                if (DrawView.this.changingConfigurations) {
+                    retainedGLContext = context;
                     return;
                 }
 
@@ -75,31 +88,33 @@ public class DrawView extends GLSurfaceView {
             }
         };
 
-        setEGLContextClientVersion(EGL_CONTEXT_CLIENT_VERSION_VALUE);
-        setEGLContextFactory(eglContextFactory);
+        this.setEGLContextClientVersion(EGL_CONTEXT_CLIENT_VERSION_VALUE);
+        this.setEGLContextFactory(eglContextFactory);
     }
 
-    synchronized private native void stopRender();
-    synchronized private native void startRender();
-    synchronized private native int getNumberOfLights();
+    private synchronized native void stopRender();
+    private synchronized native void startRender();
+    private synchronized native int getNumberOfLights();
 
     @Override
-    synchronized public void onPause() {
+    public synchronized void onPause() {
         super.onPause();
-        changingConfigurations = getActivity().isChangingConfigurations();
+        this.changingConfigurations = this.getActivity().isChangingConfigurations();
         //setVisibility(View.GONE);
+
+        LOGGER.log(Level.INFO, "onPause");
     }
 
     @Override
-    synchronized public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        if (hasFocus && getVisibility() == View.GONE) {
-            setVisibility(View.VISIBLE);
+    public synchronized void onWindowFocusChanged(final boolean hasWindowFocus) {
+        super.onWindowFocusChanged(hasWindowFocus);
+        if (hasWindowFocus && this.getVisibility() == View.GONE) {
+            this.setVisibility(View.VISIBLE);
         }
     }
 
-    synchronized private Activity getActivity() {
-        Context context = getContext();
+    private synchronized Activity getActivity() {
+        Context context = this.getContext();
         while (!(context instanceof Activity) && context instanceof ContextWrapper) {
             context = ((ContextWrapper) context).getBaseContext();
         }
@@ -110,16 +125,16 @@ public class DrawView extends GLSurfaceView {
     }
 
     @Override
-    synchronized public boolean performClick() {
+    public synchronized boolean performClick() {
         super.performClick();
         return true;
     }
 
     synchronized void setViewAndActivityManager(final TextView textView, final ActivityManager activityManager) {
-        renderer_.viewText_.textView_ = textView;
-        renderer_.viewText_.printText();
-        renderer_.activityManager_ = activityManager;
-        setRenderer(renderer_);
+        this.renderer_.viewText_.textView_ = textView;
+        this.renderer_.viewText_.printText();
+        this.renderer_.activityManager_ = activityManager;
+        this.setRenderer(this.renderer_);
     }
 
 
@@ -127,110 +142,98 @@ public class DrawView extends GLSurfaceView {
         Log.d("Test", "stopDrawing");
         this.setOnTouchListener(null);
         Log.d("Test", "stopRender");
-        stopRender();
-        renderer_.waitForLastTask();
-        executorService_.shutdown();
+        this.stopRender();
+
+        this.waitForLastTask();
+
+        this.renderer_.finishRender();
+    }
+
+    private synchronized void waitForLastTask() {
+        this.renderer_.waitForLastTask();
+        this.executorService_.shutdown();
         boolean running = true;
-        Log.d("Test", "waiting executorService_");
         do {
             try {
-                running = !executorService_.awaitTermination(1, TimeUnit.DAYS);
+                running = !this.executorService_.awaitTermination(1L, TimeUnit.DAYS);
             } catch (final InterruptedException ex) {
                 Log.e("InterruptedException", Objects.requireNonNull(ex.getMessage()));
-                //System.exit(1);
             }
         } while (running);
-        Log.d("Test", "new executorService_");
-        executorService_ = Executors.newFixedThreadPool(1);
-        renderer_.finishRender();
+        this.executorService_ = Executors.newFixedThreadPool(1);
     }
 
     synchronized void renderScene(final int scene, final int shader, final int numThreads, final int accelerator,
                             final int samplesPixel, final int samplesLight, final int width, final int height,
                             final String objFile, final String matText, final boolean rasterize) {
         Log.d("Test", "renderScene");
-        renderer_.viewText_.start_ = 0;
-        renderer_.viewText_.printText();
+        this.renderer_.viewText_.start_ = 0L;
+        this.renderer_.viewText_.printText();
 
-        renderer_.waitForLastTask();
-        executorService_.shutdown();
-        boolean running = true;
-        do {
-            try {
-                running = !executorService_.awaitTermination(1, TimeUnit.DAYS);
-            } catch (final InterruptedException ex) {
-                Log.e("InterruptedException", Objects.requireNonNull(ex.getMessage()));
-                //System.exit(1);
-            }
-        } while (running);
-        executorService_ = Executors.newFixedThreadPool(1);
-        startRender();
+        this.startRender();
 
-        executorService_.submit(() -> {
+        this.executorService_.submit(() -> {
             Log.d("Test executor", "renderScene");
             synchronized (this) {
-                renderer_.waitForLastTask();
+                this.renderer_.waitForLastTask();
 
-                final int ret = createScene(scene, shader, numThreads, accelerator, samplesPixel, samplesLight, width,
+                final int ret = this.createScene(scene, shader, numThreads, accelerator, samplesPixel, samplesLight, width,
                         height, objFile, matText);
+                Log.d("Test", "startRender");
+                this.renderer_.freeArrays();
+                this.renderer_.rasterize_ = rasterize;
+                this.renderer_.viewText_.start_ = SystemClock.elapsedRealtime();
                 if (ret != -1) {
-                    Log.d("Test", "startRender");
-                    renderer_.freeArrays();
-                    renderer_.rasterize_ = true;
-                    renderer_.viewText_.start_ = SystemClock.elapsedRealtime();
-                    requestRender();
+                    this.requestRender();
                 } else {
-                    stopRender();
-                    renderer_.freeArrays();
-                    renderer_.rasterize_ = true;
-                    renderer_.viewText_.start_ = SystemClock.elapsedRealtime();
-                    new RenderTask(renderer_.viewText_, this::requestRender, renderer_::finishRender, 250).executeOnExecutor(executorService_);
+                    this.stopRender();
+                    this.post(() -> this.renderer_.viewText_.buttonRender_.setText(R.string.render));
+                    this.requestRender();
+                    this.renderer_.finishRender();
                 }
                 Log.d("Test executor", "renderScene 2");
             }
         });
     }
 
-    synchronized private int createScene(final int scene, final int shader, final int numThreads, final int accelerator,
-                    final int samplesPixel, final int samplesLight, final int width, final int height,
-                    final String objFile, final String matText) {
+    private synchronized int createScene(final int scene, final int shader, final int numThreads, final int accelerator,
+                                         final int samplesPixel, final int samplesLight, final int width, final int height,
+                                         final String objFile, final String matText) {
         Log.d("Test", "createScene");
-        renderer_.freeArrays();
-        renderer_.viewText_.resetPrint(width, height, numThreads, samplesPixel, samplesLight);
+        this.renderer_.freeArrays();
+        this.renderer_.viewText_.resetPrint(width, height, numThreads, samplesPixel, samplesLight);
 
-        renderer_.numberPrimitives_ = renderer_.initialize(scene, shader, width, height, accelerator, samplesPixel,
+        this.renderer_.numberPrimitives_ = this.renderer_.initialize(scene, shader, width, height, accelerator, samplesPixel,
                 samplesLight, objFile, matText);
-        if (renderer_.numberPrimitives_ == -1) {
-            Log.e("MobileRT", "Device without enough memory to render the scene.");
-            /*for (int i = 0; i < 1; ++i) {
-                Toast.makeText(getContext(), "Device without enough memory to render the scene.", Toast.LENGTH_LONG).show();
-            }
-            renderer_.viewText_.buttonRender_.setText(R.string.render);*/
-            return -1;
-        }
-        if (renderer_.numberPrimitives_ == -2) {
-            Log.e("MobileRT", "Could not load the scene.");
-            /*for (int i = 0; i < 1; ++i) {
-                Toast.makeText(getContext(), "Could not load the scene.", Toast.LENGTH_LONG).show();
-            }
-            renderer_.viewText_.buttonRender_.setText(R.string.render);*/
-            return -1;
-        }
-        renderer_.viewText_.nPrimitivesT_ = ",p=" + renderer_.numberPrimitives_ + ",l=" + getNumberOfLights();
-        renderer_.numThreads_ = numThreads;
-        final int realWidth = getWidth();
-        final int realHeight = getHeight();
+        if (this.renderer_.numberPrimitives_ == -1) {
+            Log.e("createScene", "Device without enough memory to render the scene.");
+            this.post(() -> {
+                for (int i = 0; i < 1; ++i) {
+                    Toast.makeText(this.getContext(), "Device without enough memory to render the scene.",
+                            Toast.LENGTH_LONG).show();
+                }
+            });
 
-        renderer_.setBitmap(width, height, realWidth, realHeight);
+            //renderer_.viewText_.buttonRender_.setText(R.string.render);
+            return -1;
+        }
+        if (this.renderer_.numberPrimitives_ == -2) {
+            Log.e("createScene", "Could not load the scene.");
+            this.post(() -> {
+                for (int i = 0; i < 1; ++i) {
+                    Toast.makeText(this.getContext(), "Could not load the scene.", Toast.LENGTH_LONG).show();
+                }
+            });
+            //renderer_.viewText_.buttonRender_.setText(R.string.render);
+            return -1;
+        }
+        this.renderer_.viewText_.nPrimitivesT_ = ",p=" + this.renderer_.numberPrimitives_ + ",l=" + this.getNumberOfLights();
+        this.renderer_.numThreads_ = numThreads;
+        final int realWidth = this.getWidth();
+        final int realHeight = this.getHeight();
+
+        this.renderer_.setBitmap(width, height, realWidth, realHeight);
         return 0;
     }
 
-    enum Stage {
-        idle(0), busy(1), end(2), stop(3);
-        final int id_;
-
-        Stage(final int id) {
-            this.id_ = id;
-        }
-    }
 }
