@@ -40,7 +40,7 @@ void JNI_OnUnload(JavaVM * /*vm*/, void * /*reserved*/) {
 }
 
 extern "C"
-jobject Java_puscas_mobilertapp_MainRenderer_initCameraArray(
+jobject Java_puscas_mobilertapp_MainRenderer_RTInitCameraArray(
         JNIEnv *env,
         jobject /*thiz*/
 ) noexcept {
@@ -107,7 +107,7 @@ jobject Java_puscas_mobilertapp_MainRenderer_initCameraArray(
 }
 
 extern "C"
-jobject Java_puscas_mobilertapp_MainRenderer_initVerticesArray(
+jobject Java_puscas_mobilertapp_MainRenderer_RTInitVerticesArray(
         JNIEnv *env,
         jobject /*thiz*/
 ) noexcept {
@@ -129,13 +129,13 @@ jobject Java_puscas_mobilertapp_MainRenderer_initVerticesArray(
                         for (const ::MobileRT::Primitive<::MobileRT::Triangle> &triangle : triangles) {
                             const ::glm::vec4 &pointA{triangle.shape_.pointA_.x,
                                                       triangle.shape_.pointA_.y,
-                                                      triangle.shape_.pointA_.z, 1.0f};
+                                                      triangle.shape_.pointA_.z, 1.0F};
                             const ::glm::vec4 &pointB{pointA.x + triangle.shape_.AB_.x,
                                                       pointA.y + triangle.shape_.AB_.y,
-                                                      pointA.z + triangle.shape_.AB_.z, 1.0f};
+                                                      pointA.z + triangle.shape_.AB_.z, 1.0F};
                             const ::glm::vec4 &pointC{pointA.x + triangle.shape_.AC_.x,
                                                       pointA.y + triangle.shape_.AC_.y,
-                                                      pointA.z + triangle.shape_.AC_.z, 1.0f};
+                                                      pointA.z + triangle.shape_.AC_.z, 1.0F};
 
                             floatBuffer[i++] = pointA.x;
                             floatBuffer[i++] = pointA.y;
@@ -162,7 +162,7 @@ jobject Java_puscas_mobilertapp_MainRenderer_initVerticesArray(
 }
 
 extern "C"
-jobject Java_puscas_mobilertapp_MainRenderer_initColorsArray(
+jobject Java_puscas_mobilertapp_MainRenderer_RTInitColorsArray(
         JNIEnv *env,
         jobject /*thiz*/
 ) noexcept {
@@ -195,17 +195,17 @@ jobject Java_puscas_mobilertapp_MainRenderer_initColorsArray(
                             floatBuffer[i++] = color.r;
                             floatBuffer[i++] = color.g;
                             floatBuffer[i++] = color.b;
-                            floatBuffer[i++] = 1.0f;
+                            floatBuffer[i++] = 1.0F;
 
                             floatBuffer[i++] = color.r;
                             floatBuffer[i++] = color.g;
                             floatBuffer[i++] = color.b;
-                            floatBuffer[i++] = 1.0f;
+                            floatBuffer[i++] = 1.0F;
 
                             floatBuffer[i++] = color.r;
                             floatBuffer[i++] = color.g;
                             floatBuffer[i++] = color.b;
-                            floatBuffer[i++] = 1.0f;
+                            floatBuffer[i++] = 1.0F;
                         }
                     }
                 }
@@ -224,24 +224,14 @@ static void FPS() noexcept {
     const ::std::int64_t timeElapsed{
             ::std::chrono::duration_cast<std::chrono::milliseconds>(time - timebase_).count()};
     if (timeElapsed > 1000) {
-        fps_ = (frame * 1000.0f) / timeElapsed;
+        fps_ = (frame * 1000.0F) / timeElapsed;
         timebase_ = time;
         frame = 0;
     }
 }
 
 extern "C"
-::std::int32_t Java_puscas_mobilertapp_ViewText_getState(
-        JNIEnv *env,
-        jobject /*thiz*/
-) noexcept {
-    const ::std::int32_t res{static_cast<::std::int32_t> (state_.load())};
-    env->ExceptionClear();
-    return res;
-}
-
-extern "C"
-void Java_puscas_mobilertapp_DrawView_startRender(
+void Java_puscas_mobilertapp_DrawView_RTStartRender(
         JNIEnv *env,
         jobject /*thiz*/
 ) noexcept {
@@ -252,7 +242,7 @@ void Java_puscas_mobilertapp_DrawView_startRender(
 }
 
 extern "C"
-void Java_puscas_mobilertapp_DrawView_stopRender(
+void Java_puscas_mobilertapp_DrawView_RTStopRender(
         JNIEnv *env,
         jobject /*thiz*/
 ) noexcept {
@@ -294,7 +284,7 @@ static ::std::streampos fileSize(const char *filePath) {
 }
 
 extern "C"
-jint Java_puscas_mobilertapp_MainRenderer_initialize(
+jint Java_puscas_mobilertapp_MainRenderer_RTInitialize(
         JNIEnv *env,
         jobject thiz,
         jint scene,
@@ -323,8 +313,8 @@ jint Java_puscas_mobilertapp_MainRenderer_initialize(
             renderer_ = nullptr;
             const float ratio {
                 ::std::max(static_cast<float>(width_) / height_, static_cast<float>(height_) / width_)};
-            const float hfovFactor{width_ > height_ ? ratio : 1.0f};
-            const float vfovFactor{width_ < height_ ? ratio : 1.0f};
+            const float hfovFactor{width_ > height_ ? ratio : 1.0F};
+            const float vfovFactor{width_ < height_ ? ratio : 1.0F};
             ::MobileRT::Scene scene_{};
             ::std::unique_ptr<MobileRT::Sampler> samplerPixel{};
             ::std::unique_ptr<MobileRT::Shader> shader_{};
@@ -332,12 +322,12 @@ jint Java_puscas_mobilertapp_MainRenderer_initialize(
             ::glm::vec3 maxDist{0, 0, 0};
             switch (scene) {
                 case 0: {
-                    const float fovX{45.0f * hfovFactor};
-                    const float fovY{45.0f * vfovFactor};
+                    const float fovX{45.0F * hfovFactor};
+                    const float fovY{45.0F * vfovFactor};
                     camera = ::std::make_unique<Components::Perspective>(
-                            ::glm::vec3 {0.0f, 0.0f, -3.4f},
-                            ::glm::vec3 {0.0f, 0.0f, 1.0f},
-                            ::glm::vec3 {0.0f, 1.0f, 0.0f},
+                            ::glm::vec3 {0.0F, 0.0F, -3.4F},
+                            ::glm::vec3 {0.0F, 0.0F, 1.0F},
+                            ::glm::vec3 {0.0F, 1.0F, 0.0F},
                             fovX, fovY);
                     scene_ = cornellBoxScene(::std::move(scene_));
                     maxDist = ::glm::vec3 {1, 1, 1};
@@ -345,35 +335,35 @@ jint Java_puscas_mobilertapp_MainRenderer_initialize(
                     break;
 
                 case 1: {
-                    const float sizeH{10.0f * hfovFactor};
-                    const float sizeV{10.0f * vfovFactor};
+                    const float sizeH{10.0F * hfovFactor};
+                    const float sizeV{10.0F * vfovFactor};
                     /*camera = ::std::make_unique<Components::Perspective>(
-                            ::glm::vec3 {4.0f, 4.0f, -8.0f},
-                            ::glm::vec3 {4.0f, 4.0f, 4.0f},
-                            ::glm::vec3 {0.0f, 1.0f, 0.0f},
-                            45.0f * hfovFactor, 45.0f * vfovFactor);*/
+                            ::glm::vec3 {4.0F, 4.0F, -8.0F},
+                            ::glm::vec3 {4.0F, 4.0F, 4.0F},
+                            ::glm::vec3 {0.0F, 1.0F, 0.0F},
+                            45.0F * hfovFactor, 45.0F * vfovFactor);*/
                     camera = ::std::make_unique<Components::Orthographic>(
-                            ::glm::vec3 {0.0f, 1.0f, -10.0f},
-                            ::glm::vec3 {0.0f, 1.0f, 7.0f},
-                            ::glm::vec3 {0.0f, 1.0f, 0.0f},
+                            ::glm::vec3 {0.0F, 1.0F, -10.0F},
+                            ::glm::vec3 {0.0F, 1.0F, 7.0F},
+                            ::glm::vec3 {0.0F, 1.0F, 0.0F},
                             sizeH, sizeV);
                     /*camera = ::std::make_unique<Components::Perspective>(
-                      ::glm::vec3 {0.0f, 0.5f, 1.0f},
-                      ::glm::vec3 {0.0f, 0.0f, 7.0f},
-                      ::glm::vec3 {0.0f, 1.0f, 0.0f},
-                      60.0f  * hfovFactor, 60.0f * vfovFactor);*/
+                      ::glm::vec3 {0.0F, 0.5F, 1.0F},
+                      ::glm::vec3 {0.0F, 0.0F, 7.0F},
+                      ::glm::vec3 {0.0F, 1.0F, 0.0F},
+                      60.0F  * hfovFactor, 60.0F * vfovFactor);*/
                     scene_ = spheresScene(::std::move(scene_));
                     maxDist = ::glm::vec3 {8, 8, 8};
                 }
                     break;
 
                 case 2: {
-                    const float fovX{45.0f * hfovFactor};
-                    const float fovY{45.0f * vfovFactor};
+                    const float fovX{45.0F * hfovFactor};
+                    const float fovY{45.0F * vfovFactor};
                     camera = ::std::make_unique<Components::Perspective>(
-                            ::glm::vec3 {0.0f, 0.0f, -3.4f},
-                            ::glm::vec3 {0.0f, 0.0f, 1.0f},
-                            ::glm::vec3 {0.0f, 1.0f, 0.0f},
+                            ::glm::vec3 {0.0F, 0.0F, -3.4F},
+                            ::glm::vec3 {0.0F, 0.0F, 1.0F},
+                            ::glm::vec3 {0.0F, 1.0F, 0.0F},
                             fovX, fovY);
                     scene_ = cornellBoxScene2(::std::move(scene_));
                     maxDist = ::glm::vec3 {1, 1, 1};
@@ -381,12 +371,12 @@ jint Java_puscas_mobilertapp_MainRenderer_initialize(
                     break;
 
                 case 3: {
-                    const float fovX{60.0f * hfovFactor};
-                    const float fovY{60.0f * vfovFactor};
+                    const float fovX{60.0F * hfovFactor};
+                    const float fovY{60.0F * vfovFactor};
                     camera = ::std::make_unique<Components::Perspective>(
-                            ::glm::vec3 {0.0f, 0.5f, 1.0f},
-                            ::glm::vec3 {0.0f, 0.0f, 7.0f},
-                            ::glm::vec3 {0.0f, 1.0f, 0.0f},
+                            ::glm::vec3 {0.0F, 0.5F, 1.0F},
+                            ::glm::vec3 {0.0F, 0.0F, 7.0F},
+                            ::glm::vec3 {0.0F, 1.0F, 0.0F},
                             fovX, fovY);
                     scene_ = spheresScene2(::std::move(scene_));
                     maxDist = ::glm::vec3 {8, 8, 8};
@@ -466,21 +456,21 @@ jint Java_puscas_mobilertapp_MainRenderer_initialize(
                         }
                     }
 
-                    const float fovX{45.0f * hfovFactor};
-                    const float fovY{45.0f * vfovFactor};
+                    const float fovX{45.0F * hfovFactor};
+                    const float fovY{45.0F * vfovFactor};
                     maxDist = ::glm::vec3 {1, 1, 1};
-                    const ::MobileRT::Material &lightMat{::glm::vec3 {0.0f, 0.0f, 0.0f},
-                                                         ::glm::vec3 {0.0f, 0.0f, 0.0f},
-                                                         ::glm::vec3 {0.0f, 0.0f, 0.0f},
-                                                         1.0f,
-                                                         ::glm::vec3 {0.9f, 0.9f, 0.9f}};
+                    const ::MobileRT::Material &lightMat{::glm::vec3 {0.0F, 0.0F, 0.0F},
+                                                         ::glm::vec3 {0.0F, 0.0F, 0.0F},
+                                                         ::glm::vec3 {0.0F, 0.0F, 0.0F},
+                                                         1.0F,
+                                                         ::glm::vec3 {0.9F, 0.9F, 0.9F}};
 
                     //cornellbox
                     if (::std::strstr(objFileName, "CornellBox") != nullptr) {
                         camera = ::std::make_unique<Components::Perspective>(
-                                ::glm::vec3 {0.0f, 0.7f, 3.0f},
-                                ::glm::vec3 {0.0f, 0.7f, -1.0f},
-                                ::glm::vec3 {0.0f, 1.0f, 0.0f},
+                                ::glm::vec3 {0.0F, 0.7F, 3.0F},
+                                ::glm::vec3 {0.0F, 0.7F, -1.0F},
+                                ::glm::vec3 {0.0F, 1.0F, 0.0F},
                                 fovX, fovY);
 
                         /*::std::unique_ptr<MobileRT::Sampler> samplerPoint1{
@@ -488,17 +478,17 @@ jint Java_puscas_mobilertapp_MainRenderer_initialize(
                         scene_.lights_.emplace_back(::std::make_unique<::Components::AreaLight>(
                                 lightMat,
                                 ::std::move(samplerPoint1),
-                                ::glm::vec3 {0.5f, 1.58f, 0.5f},
-                                ::glm::vec3 {-0.5f, 1.58f, 0.5f},
-                                ::glm::vec3 {-0.5f, 1.58f, -0.5f}));
+                                ::glm::vec3 {0.5F, 1.58F, 0.5F},
+                                ::glm::vec3 {-0.5F, 1.58F, 0.5F},
+                                ::glm::vec3 {-0.5F, 1.58F, -0.5F}));
                         ::std::unique_ptr<MobileRT::Sampler> samplerPoint2{
                                 ::std::make_unique<Components::StaticHaltonSeq>()};
                         scene_.lights_.emplace_back(::std::make_unique<::Components::AreaLight>(
                                 lightMat,
                                 ::std::move(samplerPoint2),
-                                ::glm::vec3 {0.5f, 1.58f, 0.5f},
-                                ::glm::vec3 {-0.5f, 1.58f, -0.5f},
-                                ::glm::vec3 {0.5f, 1.58f, -0.5f}));*/
+                                ::glm::vec3 {0.5F, 1.58F, 0.5F},
+                                ::glm::vec3 {-0.5F, 1.58F, -0.5F},
+                                ::glm::vec3 {0.5F, 1.58F, -0.5F}));*/
                     }
 
                     //conference
@@ -508,122 +498,122 @@ jint Java_puscas_mobilertapp_MainRenderer_initialize(
                         scene_.lights_.emplace_back(::std::make_unique<::Components::AreaLight>(
                                 lightMat,
                                 ::std::move(samplerPoint1),
-                                ::glm::vec3 {-100.0f, 640.0f, -100.0f},
-                                ::glm::vec3 {100.0f, 640.0f, -100.0f},
-                                ::glm::vec3 {100.0f, 640.0f, 100.0f}));
+                                ::glm::vec3 {-100.0F, 640.0F, -100.0F},
+                                ::glm::vec3 {100.0F, 640.0F, -100.0F},
+                                ::glm::vec3 {100.0F, 640.0F, 100.0F}));
                         ::std::unique_ptr<MobileRT::Sampler> samplerPoint2{
                                 ::std::make_unique<Components::StaticHaltonSeq>()};
                         scene_.lights_.emplace_back(::std::make_unique<::Components::AreaLight>(
                                 lightMat,
                                 ::std::move(samplerPoint2),
-                                ::glm::vec3 {-100.0f, 640.0f, -100.0f},
-                                ::glm::vec3 {100.0f, 640.0f, 100.0f},
-                                ::glm::vec3 {-100.0f, 640.0f, 100.0f}));
+                                ::glm::vec3 {-100.0F, 640.0F, -100.0F},
+                                ::glm::vec3 {100.0F, 640.0F, 100.0F},
+                                ::glm::vec3 {-100.0F, 640.0F, 100.0F}));
                         camera = ::std::make_unique<::Components::Perspective>(
-                                ::glm::vec3 {460.0f, 500.0f, -1000.0f},
-                                ::glm::vec3 {0.0f, 400.0f, 0.0f},
-                                ::glm::vec3 {0.0f, 1.0f, 0.0f},
+                                ::glm::vec3 {460.0F, 500.0F, -1000.0F},
+                                ::glm::vec3 {0.0F, 400.0F, 0.0F},
+                                ::glm::vec3 {0.0F, 1.0F, 0.0F},
                                 fovX, fovY);
                     }
 
                     //teapot
                     if (::std::strstr(objFileName, "teapot") != nullptr) {
                         camera = ::std::make_unique<::Components::Perspective>(
-                                ::glm::vec3 {0.0f, 30.0f, -200.0f},
-                                ::glm::vec3 {0.0f, 30.0f, 100.0f},
-                                ::glm::vec3 {0.0f, 1.0f, 0.0f},
+                                ::glm::vec3 {0.0F, 30.0F, -200.0F},
+                                ::glm::vec3 {0.0F, 30.0F, 100.0F},
+                                ::glm::vec3 {0.0F, 1.0F, 0.0F},
                                 fovX, fovY);
                         ::std::unique_ptr<MobileRT::Sampler> samplerPoint1{
                                 ::std::make_unique<Components::StaticHaltonSeq>()};
                         scene_.lights_.emplace_back(::std::make_unique<::Components::AreaLight>(
                                 lightMat,
                                 ::std::move(samplerPoint1),
-                                ::glm::vec3 {-30.0f, 100.0f, -30.0f},
-                                ::glm::vec3 {30.0f, 100.0f, -30.0f},
-                                ::glm::vec3 {30.0f, 100.0f, 30.0f}));
+                                ::glm::vec3 {-30.0F, 100.0F, -30.0F},
+                                ::glm::vec3 {30.0F, 100.0F, -30.0F},
+                                ::glm::vec3 {30.0F, 100.0F, 30.0F}));
                         ::std::unique_ptr<MobileRT::Sampler> samplerPoint2{
                                 ::std::make_unique<Components::StaticHaltonSeq>()};
                         scene_.lights_.emplace_back(::std::make_unique<::Components::AreaLight>(
                                 lightMat,
                                 ::std::move(samplerPoint2),
-                                ::glm::vec3 {-30.0f, 100.0f, -30.0f},
-                                ::glm::vec3 {30.0f, 100.0f, 30.0f},
-                                ::glm::vec3 {-30.0f, 100.0f, 30.0f}));
+                                ::glm::vec3 {-30.0F, 100.0F, -30.0F},
+                                ::glm::vec3 {30.0F, 100.0F, 30.0F},
+                                ::glm::vec3 {-30.0F, 100.0F, 30.0F}));
                     }
 
                     //dragon
                     if (::std::strstr(objFileName, "dragon") != nullptr) {
                         camera = ::std::make_unique<::Components::Perspective>(
-                                ::glm::vec3 {0.0f, 0.0f, -1.5f},
-                                ::glm::vec3 {0.0f, 0.0f, 0.0f},
-                                ::glm::vec3 {0.0f, 1.0f, 0.0f},
+                                ::glm::vec3 {0.0F, 0.0F, -1.5F},
+                                ::glm::vec3 {0.0F, 0.0F, 0.0F},
+                                ::glm::vec3 {0.0F, 1.0F, 0.0F},
                                 fovX, fovY);
                         ::std::unique_ptr<MobileRT::Sampler> samplerPoint1{
                                 ::std::make_unique<Components::StaticHaltonSeq>()};
                         scene_.lights_.emplace_back(::std::make_unique<::Components::AreaLight>(
                                 lightMat,
                                 ::std::move(samplerPoint1),
-                                ::glm::vec3 {-0.3f, 1.0f, -0.3f},
-                                ::glm::vec3 {0.3f, 1.0f, -0.3f},
-                                ::glm::vec3 {0.3f, 1.0f, 0.3f}));
+                                ::glm::vec3 {-0.3F, 1.0F, -0.3F},
+                                ::glm::vec3 {0.3F, 1.0F, -0.3F},
+                                ::glm::vec3 {0.3F, 1.0F, 0.3F}));
                         ::std::unique_ptr<MobileRT::Sampler> samplerPoint2{
                                 ::std::make_unique<Components::StaticHaltonSeq>()};
                         scene_.lights_.emplace_back(::std::make_unique<::Components::AreaLight>(
                                 lightMat,
                                 ::std::move(samplerPoint2),
-                                ::glm::vec3 {-0.3f, 1.0f, -0.3f},
-                                ::glm::vec3 {0.3f, 1.0f, 0.3f},
-                                ::glm::vec3 {-0.3f, 1.0f, 0.3f}));
+                                ::glm::vec3 {-0.3F, 1.0F, -0.3F},
+                                ::glm::vec3 {0.3F, 1.0F, 0.3F},
+                                ::glm::vec3 {-0.3F, 1.0F, 0.3F}));
                     }
 
                     //bedroom
                     if (::std::strstr(objFileName, "bedroom") != nullptr) {
                         camera = ::std::make_unique<::Components::Perspective>(
-                                ::glm::vec3 {0.0f, 0.0f, -2.5f},
-                                ::glm::vec3 {0.0f, 0.0f, 0.0f},
-                                ::glm::vec3 {0.0f, 1.0f, 0.0f},
+                                ::glm::vec3 {0.0F, 0.0F, -2.5F},
+                                ::glm::vec3 {0.0F, 0.0F, 0.0F},
+                                ::glm::vec3 {0.0F, 1.0F, 0.0F},
                                 fovX, fovY);
                         ::std::unique_ptr<MobileRT::Sampler> samplerPoint1{
                                 ::std::make_unique<Components::StaticHaltonSeq>()};
                         scene_.lights_.emplace_back(::std::make_unique<::Components::AreaLight>(
                                 lightMat,
                                 ::std::move(samplerPoint1),
-                                ::glm::vec3 {-0.3f, 1.0f, -0.3f},
-                                ::glm::vec3 {0.3f, 1.0f, -0.3f},
-                                ::glm::vec3 {0.3f, 1.0f, 0.3f}));
+                                ::glm::vec3 {-0.3F, 1.0F, -0.3F},
+                                ::glm::vec3 {0.3F, 1.0F, -0.3F},
+                                ::glm::vec3 {0.3F, 1.0F, 0.3F}));
                         ::std::unique_ptr<MobileRT::Sampler> samplerPoint2{
                                 ::std::make_unique<Components::StaticHaltonSeq>()};
                         scene_.lights_.emplace_back(::std::make_unique<::Components::AreaLight>(
                                 lightMat,
                                 ::std::move(samplerPoint2),
-                                ::glm::vec3 {-0.3f, 1.0f, -0.3f},
-                                ::glm::vec3 {0.3f, 1.0f, 0.3f},
-                                ::glm::vec3 {-0.3f, 1.0f, 0.3f}));
+                                ::glm::vec3 {-0.3F, 1.0F, -0.3F},
+                                ::glm::vec3 {0.3F, 1.0F, 0.3F},
+                                ::glm::vec3 {-0.3F, 1.0F, 0.3F}));
                     }
 
                     //breakfast_room
                     if (::std::strstr(objFileName, "breakfast_room")) {
                         camera = ::std::make_unique<::Components::Perspective>(
-                                ::glm::vec3 {0.0f, 0.0f, -5.0f},
-                                ::glm::vec3 {0.0f, 0.0f, 0.0f},
-                                ::glm::vec3 {0.0f, 1.0f, 0.0f},
+                                ::glm::vec3 {0.0F, 0.0F, -5.0F},
+                                ::glm::vec3 {0.0F, 0.0F, 0.0F},
+                                ::glm::vec3 {0.0F, 1.0F, 0.0F},
                                 fovX, fovY);
                         ::std::unique_ptr<MobileRT::Sampler> samplerPoint1{
                                 ::std::make_unique<Components::StaticHaltonSeq>()};
                         scene_.lights_.emplace_back(::std::make_unique<::Components::AreaLight>(
                                 lightMat,
                                 ::std::move(samplerPoint1),
-                                ::glm::vec3 {-0.3f, 1.0f, -0.3f},
-                                ::glm::vec3 {0.3f, 1.0f, -0.3f},
-                                ::glm::vec3 {0.3f, 1.0f, 0.3f}));
+                                ::glm::vec3 {-0.3F, 1.0F, -0.3F},
+                                ::glm::vec3 {0.3F, 1.0F, -0.3F},
+                                ::glm::vec3 {0.3F, 1.0F, 0.3F}));
                         ::std::unique_ptr<MobileRT::Sampler> samplerPoint2{
                                 ::std::make_unique<Components::StaticHaltonSeq>()};
                         scene_.lights_.emplace_back(::std::make_unique<::Components::AreaLight>(
                                 lightMat,
                                 ::std::move(samplerPoint2),
-                                ::glm::vec3 {-0.3f, 1.0f, -0.3f},
-                                ::glm::vec3 {0.3f, 1.0f, 0.3f},
-                                ::glm::vec3 {-0.3f, 1.0f, 0.3f}));
+                                ::glm::vec3 {-0.3F, 1.0F, -0.3F},
+                                ::glm::vec3 {0.3F, 1.0F, 0.3F},
+                                ::glm::vec3 {-0.3F, 1.0F, 0.3F}));
                     }
 
                     //buddha
@@ -633,22 +623,22 @@ jint Java_puscas_mobilertapp_MainRenderer_initialize(
                         scene_.lights_.emplace_back(::std::make_unique<::Components::AreaLight>(
                                 lightMat,
                                 ::std::move(samplerPoint1),
-                                ::glm::vec3 {-0.3f, 1.0f, -0.3f},
-                                ::glm::vec3 {0.3f, 1.0f, -0.3f},
-                                ::glm::vec3 {0.3f, 1.0f, 0.3f}));
+                                ::glm::vec3 {-0.3F, 1.0F, -0.3F},
+                                ::glm::vec3 {0.3F, 1.0F, -0.3F},
+                                ::glm::vec3 {0.3F, 1.0F, 0.3F}));
                         ::std::unique_ptr<MobileRT::Sampler> samplerPoint2{
                                 ::std::make_unique<Components::StaticHaltonSeq>()};
                         scene_.lights_.emplace_back(::std::make_unique<::Components::AreaLight>(
                                 lightMat,
                                 ::std::move(samplerPoint2),
-                                ::glm::vec3 {-0.3f, 1.0f, -0.3f},
-                                ::glm::vec3 {0.3f, 1.0f, 0.3f},
-                                ::glm::vec3 {-0.3f, 1.0f, 0.3f}));
+                                ::glm::vec3 {-0.3F, 1.0F, -0.3F},
+                                ::glm::vec3 {0.3F, 1.0F, 0.3F},
+                                ::glm::vec3 {-0.3F, 1.0F, 0.3F}));
 
                         camera = ::std::make_unique<::Components::Perspective>(
-                                ::glm::vec3 {0.0f, 0.0f, -2.5f},
-                                ::glm::vec3 {0.0f, 0.0f, 0.0f},
-                                ::glm::vec3 {0.0f, 1.0f, 0.0f},
+                                ::glm::vec3 {0.0F, 0.0F, -2.5F},
+                                ::glm::vec3 {0.0F, 0.0F, 0.0F},
+                                ::glm::vec3 {0.0F, 1.0F, 0.0F},
                                 fovX, fovY);
                     }
 
@@ -659,22 +649,22 @@ jint Java_puscas_mobilertapp_MainRenderer_initialize(
                         scene_.lights_.emplace_back(::std::make_unique<::Components::AreaLight>(
                                 lightMat,
                                 ::std::move(samplerPoint1),
-                                ::glm::vec3 {-0.3f, 1.0f, -0.3f},
-                                ::glm::vec3 {0.3f, 1.0f, -0.3f},
-                                ::glm::vec3 {0.3f, 1.0f, 0.3f}));
+                                ::glm::vec3 {-0.3F, 1.0F, -0.3F},
+                                ::glm::vec3 {0.3F, 1.0F, -0.3F},
+                                ::glm::vec3 {0.3F, 1.0F, 0.3F}));
                         ::std::unique_ptr<MobileRT::Sampler> samplerPoint2{
                                 ::std::make_unique<Components::StaticHaltonSeq>()};
                         scene_.lights_.emplace_back(::std::make_unique<::Components::AreaLight>(
                                 lightMat,
                                 ::std::move(samplerPoint2),
-                                ::glm::vec3 {-0.3f, 1.0f, -0.3f},
-                                ::glm::vec3 {0.3f, 1.0f, 0.3f},
-                                ::glm::vec3 {-0.3f, 1.0f, 0.3f}));
+                                ::glm::vec3 {-0.3F, 1.0F, -0.3F},
+                                ::glm::vec3 {0.3F, 1.0F, 0.3F},
+                                ::glm::vec3 {-0.3F, 1.0F, 0.3F}));
 
                         camera = ::std::make_unique<::Components::Perspective>(
-                                ::glm::vec3 {0.0f, 0.0f, -2.5f},
-                                ::glm::vec3 {-11442.307617f, -12999.129883, -12729.150391},
-                                ::glm::vec3 {0.0f, 1.0f, 0.0f},
+                                ::glm::vec3 {0.0F, 0.0F, -2.5F},
+                                ::glm::vec3 {-11442.307617F, -12999.129883, -12729.150391},
+                                ::glm::vec3 {0.0F, 1.0F, 0.0F},
                                 fovX, fovY);
                     }
 
@@ -685,22 +675,22 @@ jint Java_puscas_mobilertapp_MainRenderer_initialize(
                         scene_.lights_.emplace_back(::std::make_unique<::Components::AreaLight>(
                                 lightMat,
                                 ::std::move(samplerPoint1),
-                                ::glm::vec3 {-0.3f, 1.0f, -0.3f},
-                                ::glm::vec3 {0.3f, 1.0f, -0.3f},
-                                ::glm::vec3 {0.3f, 1.0f, 0.3f}));
+                                ::glm::vec3 {-0.3F, 1.0F, -0.3F},
+                                ::glm::vec3 {0.3F, 1.0F, -0.3F},
+                                ::glm::vec3 {0.3F, 1.0F, 0.3F}));
                         ::std::unique_ptr<MobileRT::Sampler> samplerPoint2{
                                 ::std::make_unique<Components::StaticHaltonSeq>()};
                         scene_.lights_.emplace_back(::std::make_unique<::Components::AreaLight>(
                                 lightMat,
                                 ::std::move(samplerPoint2),
-                                ::glm::vec3 {-0.3f, 1.0f, -0.3f},
-                                ::glm::vec3 {0.3f, 1.0f, 0.3f},
-                                ::glm::vec3 {-0.3f, 1.0f, 0.3f}));
+                                ::glm::vec3 {-0.3F, 1.0F, -0.3F},
+                                ::glm::vec3 {0.3F, 1.0F, 0.3F},
+                                ::glm::vec3 {-0.3F, 1.0F, 0.3F}));
 
                         camera = ::std::make_unique<::Components::Perspective>(
-                                ::glm::vec3 {0.0f, 0.0f, -2.5f},
-                                ::glm::vec3 {0.0f, 0.0f, 0.0f},
-                                ::glm::vec3 {0.0f, 1.0f, 0.0f},
+                                ::glm::vec3 {0.0F, 0.0F, -2.5F},
+                                ::glm::vec3 {0.0F, 0.0F, 0.0F},
+                                ::glm::vec3 {0.0F, 1.0F, 0.0F},
                                 fovX, fovY);
                     }
 
@@ -711,68 +701,68 @@ jint Java_puscas_mobilertapp_MainRenderer_initialize(
                         scene_.lights_.emplace_back(::std::make_unique<::Components::AreaLight>(
                                 lightMat,
                                 ::std::move(samplerPoint1),
-                                ::glm::vec3 {-1.0f, 2.1f, 1.0f},
-                                ::glm::vec3 {1.0f, 2.1f, -1.0f},
-                                ::glm::vec3 {1.0f, 2.1f, 1.0f}));
+                                ::glm::vec3 {-1.0F, 2.1F, 1.0F},
+                                ::glm::vec3 {1.0F, 2.1F, -1.0F},
+                                ::glm::vec3 {1.0F, 2.1F, 1.0F}));
                         ::std::unique_ptr<MobileRT::Sampler> samplerPoint2{
                                 ::std::make_unique<Components::StaticHaltonSeq>()};
                         scene_.lights_.emplace_back(::std::make_unique<::Components::AreaLight>(
                                 lightMat,
                                 ::std::move(samplerPoint2),
-                                ::glm::vec3 {-1.0f, 2.1f, 1.0f},
-                                ::glm::vec3 {-1.0f, 2.1f, -1.0f},
-                                ::glm::vec3 {1.0f, 2.1f, -1.0f}));
+                                ::glm::vec3 {-1.0F, 2.1F, 1.0F},
+                                ::glm::vec3 {-1.0F, 2.1F, -1.0F},
+                                ::glm::vec3 {1.0F, 2.1F, -1.0F}));
 
-                        const ::MobileRT::Material planeMaterialBack{::glm::vec3 {0.7f, 0.7f, 0.7f}};
-                        const ::glm::vec3 planePointDown{0.0f, -1.0f, 0.0f};
-                        const ::glm::vec3 planeNormalDown{0.0f, 1.0f, 0.0f};
+                        const ::MobileRT::Material planeMaterialBack{::glm::vec3 {0.7F, 0.7F, 0.7F}};
+                        const ::glm::vec3 planePointDown{0.0F, -1.0F, 0.0F};
+                        const ::glm::vec3 planeNormalDown{0.0F, 1.0F, 0.0F};
                         const ::MobileRT::Plane planeDown{planePointDown, planeNormalDown};
                         const ::MobileRT::Primitive<::MobileRT::Plane> planePrimitiveDown{planeDown,
                                                                                           planeMaterialBack};
                         scene_.planes_.emplace_back(planePrimitiveDown);
 
-                        const ::glm::vec3 planePointUp{0.0f, 2.2f, 0.0f};
-                        const ::glm::vec3 planeNormalUp{0.0f, -1.0f, 0.0f};
+                        const ::glm::vec3 planePointUp{0.0F, 2.2F, 0.0F};
+                        const ::glm::vec3 planeNormalUp{0.0F, -1.0F, 0.0F};
                         const ::MobileRT::Plane planeUp{planePointUp, planeNormalUp};
                         const ::MobileRT::Primitive<::MobileRT::Plane> planePrimitiveUp{planeUp,
                                                                                         planeMaterialBack};
                         scene_.planes_.emplace_back(planePrimitiveUp);
 
-                        const ::MobileRT::Material planeMaterialLeft{::glm::vec3 {0.9f, 0.0f, 0.0f}};
-                        const ::glm::vec3 planePointLeft{-4.1f, 0.0f, 0.0f};
-                        const ::glm::vec3 planeNormalLeft{1.0f, 0.0f, 0.0f};
+                        const ::MobileRT::Material planeMaterialLeft{::glm::vec3 {0.9F, 0.0F, 0.0F}};
+                        const ::glm::vec3 planePointLeft{-4.1F, 0.0F, 0.0F};
+                        const ::glm::vec3 planeNormalLeft{1.0F, 0.0F, 0.0F};
                         const ::MobileRT::Plane planeLeft{planePointLeft, planeNormalLeft};
                         const ::MobileRT::Primitive<::MobileRT::Plane> planePrimitiveLeft{planeLeft,
                                                                                           planeMaterialLeft};
                         scene_.planes_.emplace_back(planePrimitiveLeft);
 
-                        const ::MobileRT::Material planeMaterialRight{::glm::vec3 {0.0f, 0.0f, 0.9f}};
-                        const ::glm::vec3 planePointRight{1.1f, 0.0f, 0.0f};
-                        const ::glm::vec3 planeNormalRight{-1.0f, 0.0f, 0.0f};
+                        const ::MobileRT::Material planeMaterialRight{::glm::vec3 {0.0F, 0.0F, 0.9F}};
+                        const ::glm::vec3 planePointRight{1.1F, 0.0F, 0.0F};
+                        const ::glm::vec3 planeNormalRight{-1.0F, 0.0F, 0.0F};
                         const ::MobileRT::Plane planeRight{planePointRight, planeNormalRight};
                         const ::MobileRT::Primitive<::MobileRT::Plane> planePrimitiveRight{planeRight,
                                                                                            planeMaterialRight};
                         scene_.planes_.emplace_back(planePrimitiveRight);
 
-                        const ::glm::vec3 planePointBack{0.0f, 0.0f, -4.6f};
-                        const ::glm::vec3 planeNormalBack{0.0f, 0.0f, 1.0f};
+                        const ::glm::vec3 planePointBack{0.0F, 0.0F, -4.6F};
+                        const ::glm::vec3 planeNormalBack{0.0F, 0.0F, 1.0F};
                         const ::MobileRT::Plane planeBack{planePointBack, planeNormalBack};
                         const ::MobileRT::Primitive<::MobileRT::Plane> planePrimitiveBack{planeBack,
                                                                                           planeMaterialBack};
                         scene_.planes_.emplace_back(planePrimitiveBack);
 
-                        const ::MobileRT::Material planeMaterialForward{::glm::vec3 {0.0f, 0.9f, 0.9f}};
-                        const ::glm::vec3 planePointForward{0.0f, 0.0f, 2.3f};
-                        const ::glm::vec3 planeNormalForward{0.0f, 0.0f, -1.0f};
+                        const ::MobileRT::Material planeMaterialForward{::glm::vec3 {0.0F, 0.9F, 0.9F}};
+                        const ::glm::vec3 planePointForward{0.0F, 0.0F, 2.3F};
+                        const ::glm::vec3 planeNormalForward{0.0F, 0.0F, -1.0F};
                         const ::MobileRT::Plane planeForward{planePointForward, planeNormalForward};
                         const ::MobileRT::Primitive<::MobileRT::Plane> planePrimitiveForward{
                                 planeForward, planeMaterialForward};
                         scene_.planes_.emplace_back(planePrimitiveForward);
 
                         camera = ::std::make_unique<::Components::Perspective>(
-                                ::glm::vec3 {-4.0f, 2.0f, -4.5f},
-                                ::glm::vec3 {0.0f, 0.0f, 0.0f},
-                                ::glm::vec3 {0.0f, 1.0f, 0.0f},
+                                ::glm::vec3 {-4.0F, 2.0F, -4.5F},
+                                ::glm::vec3 {0.0F, 0.0F, 0.0F},
+                                ::glm::vec3 {0.0F, 1.0F, 0.0F},
                                 fovX, fovY);
                     }
 
@@ -783,22 +773,22 @@ jint Java_puscas_mobilertapp_MainRenderer_initialize(
                         scene_.lights_.emplace_back(::std::make_unique<::Components::AreaLight>(
                                 lightMat,
                                 ::std::move(samplerPoint1),
-                                ::glm::vec3 {-1.0f, 1.5f, 1.0f},
-                                ::glm::vec3 {1.0f, 1.5f, -1.0f},
-                                ::glm::vec3 {1.0f, 1.5f, 1.0f}));
+                                ::glm::vec3 {-1.0F, 1.5F, 1.0F},
+                                ::glm::vec3 {1.0F, 1.5F, -1.0F},
+                                ::glm::vec3 {1.0F, 1.5F, 1.0F}));
                         ::std::unique_ptr<MobileRT::Sampler> samplerPoint2{
                                 ::std::make_unique<Components::StaticHaltonSeq>()};
                         scene_.lights_.emplace_back(::std::make_unique<::Components::AreaLight>(
                                 lightMat,
                                 ::std::move(samplerPoint2),
-                                ::glm::vec3 {-1.0f, 1.5f, 1.0f},
-                                ::glm::vec3 {-1.0f, 1.5f, -1.0f},
-                                ::glm::vec3 {1.0f, 1.5f, -1.0f}));
+                                ::glm::vec3 {-1.0F, 1.5F, 1.0F},
+                                ::glm::vec3 {-1.0F, 1.5F, -1.0F},
+                                ::glm::vec3 {1.0F, 1.5F, -1.0F}));
 
                         camera = ::std::make_unique<::Components::Perspective>(
-                                ::glm::vec3 {-1.0f, -1.0f, -1.0f},
-                                ::glm::vec3 {0.005265f, 0.801842f, -0.150495f},
-                                ::glm::vec3 {0.0f, 1.0f, 0.0f},
+                                ::glm::vec3 {-1.0F, -1.0F, -1.0F},
+                                ::glm::vec3 {0.005265F, 0.801842F, -0.150495F},
+                                ::glm::vec3 {0.0F, 1.0F, 0.0F},
                                 fovX, fovY);
                     }
 
@@ -809,22 +799,22 @@ jint Java_puscas_mobilertapp_MainRenderer_initialize(
                         scene_.lights_.emplace_back(::std::make_unique<::Components::AreaLight>(
                                 lightMat,
                                 ::std::move(samplerPoint1),
-                                ::glm::vec3 {-0.5f, 1.5f, 0.5f},
-                                ::glm::vec3 {0.5f, 1.5f, -0.5f},
-                                ::glm::vec3 {0.5f, 1.5f, 0.5f}));
+                                ::glm::vec3 {-0.5F, 1.5F, 0.5F},
+                                ::glm::vec3 {0.5F, 1.5F, -0.5F},
+                                ::glm::vec3 {0.5F, 1.5F, 0.5F}));
                         ::std::unique_ptr<MobileRT::Sampler> samplerPoint2{
                                 ::std::make_unique<Components::StaticHaltonSeq>()};
                         scene_.lights_.emplace_back(::std::make_unique<::Components::AreaLight>(
                                 lightMat,
                                 ::std::move(samplerPoint2),
-                                ::glm::vec3 {-0.5f, 1.5f, 0.5f},
-                                ::glm::vec3 {-0.5f, 1.5f, -0.5f},
-                                ::glm::vec3 {0.5f, 1.5f, -0.5f}));
+                                ::glm::vec3 {-0.5F, 1.5F, 0.5F},
+                                ::glm::vec3 {-0.5F, 1.5F, -0.5F},
+                                ::glm::vec3 {0.5F, 1.5F, -0.5F}));
 
                         camera = ::std::make_unique<::Components::Perspective>(
-                                ::glm::vec3 {-2.0f, 0.0f, -2.0f},
-                                ::glm::vec3 {0.0f, 0.5f, 0.0f},
-                                ::glm::vec3 {0.0f, 1.0f, 0.0f},
+                                ::glm::vec3 {-2.0F, 0.0F, -2.0F},
+                                ::glm::vec3 {0.0F, 0.5F, 0.0F},
+                                ::glm::vec3 {0.0F, 1.0F, 0.0F},
                                 fovX, fovY);
                     }
 
@@ -835,22 +825,22 @@ jint Java_puscas_mobilertapp_MainRenderer_initialize(
                         scene_.lights_.emplace_back(::std::make_unique<::Components::AreaLight>(
                                 lightMat,
                                 ::std::move(samplerPoint1),
-                                ::glm::vec3 {-0.5f, 1.5f, 0.5f},
-                                ::glm::vec3 {0.5f, 1.5f, -0.5f},
-                                ::glm::vec3 {0.5f, 1.5f, 0.5f}));
+                                ::glm::vec3 {-0.5F, 1.5F, 0.5F},
+                                ::glm::vec3 {0.5F, 1.5F, -0.5F},
+                                ::glm::vec3 {0.5F, 1.5F, 0.5F}));
                         ::std::unique_ptr<MobileRT::Sampler> samplerPoint2{
                                 ::std::make_unique<Components::StaticHaltonSeq>()};
                         scene_.lights_.emplace_back(::std::make_unique<::Components::AreaLight>(
                                 lightMat,
                                 ::std::move(samplerPoint2),
-                                ::glm::vec3 {-0.5f, 1.5f, 0.5f},
-                                ::glm::vec3 {-0.5f, 1.5f, -0.5f},
-                                ::glm::vec3 {0.5f, 1.5f, -0.5f}));
+                                ::glm::vec3 {-0.5F, 1.5F, 0.5F},
+                                ::glm::vec3 {-0.5F, 1.5F, -0.5F},
+                                ::glm::vec3 {0.5F, 1.5F, -0.5F}));
 
                         camera = ::std::make_unique<::Components::Perspective>(
-                                ::glm::vec3 {-19.3901f, 0.798561f, 6.01737f},
-                                ::glm::vec3 {-49.3901f, 0.798561f, 6.01737f},
-                                ::glm::vec3 {0.0f, 1.0f, 0.0f},
+                                ::glm::vec3 {-19.3901F, 0.798561F, 6.01737F},
+                                ::glm::vec3 {-49.3901F, 0.798561F, 6.01737F},
+                                ::glm::vec3 {0.0F, 1.0F, 0.0F},
                                 fovX, fovY);
                     }
 
@@ -861,22 +851,22 @@ jint Java_puscas_mobilertapp_MainRenderer_initialize(
                         scene_.lights_.emplace_back(::std::make_unique<::Components::AreaLight>(
                                 lightMat,
                                 ::std::move(samplerPoint1),
-                                ::glm::vec3 {-0.5f, 1.5f, 0.5f},
-                                ::glm::vec3 {0.5f, 1.5f, -0.5f},
-                                ::glm::vec3 {0.5f, 1.5f, 0.5f}));
+                                ::glm::vec3 {-0.5F, 1.5F, 0.5F},
+                                ::glm::vec3 {0.5F, 1.5F, -0.5F},
+                                ::glm::vec3 {0.5F, 1.5F, 0.5F}));
                         ::std::unique_ptr<MobileRT::Sampler> samplerPoint2{
                                 ::std::make_unique<Components::StaticHaltonSeq>()};
                         scene_.lights_.emplace_back(::std::make_unique<::Components::AreaLight>(
                                 lightMat,
                                 ::std::move(samplerPoint2),
-                                ::glm::vec3 {-0.5f, 1.5f, 0.5f},
-                                ::glm::vec3 {-0.5f, 1.5f, -0.5f},
-                                ::glm::vec3 {0.5f, 1.5f, -0.5f}));
+                                ::glm::vec3 {-0.5F, 1.5F, 0.5F},
+                                ::glm::vec3 {-0.5F, 1.5F, -0.5F},
+                                ::glm::vec3 {0.5F, 1.5F, -0.5F}));
 
                         camera = ::std::make_unique<::Components::Perspective>(
-                                ::glm::vec3 {-6.0f, 3.798561f, -6.0f},
-                                ::glm::vec3 {0.5110f, 0.8459f, -0.7924f},
-                                ::glm::vec3 {0.0f, 1.0f, 0.0f},
+                                ::glm::vec3 {-6.0F, 3.798561F, -6.0F},
+                                ::glm::vec3 {0.5110F, 0.8459F, -0.7924F},
+                                ::glm::vec3 {0.0F, 1.0F, 0.0F},
                                 fovX, fovY);
                     }
 
@@ -887,22 +877,22 @@ jint Java_puscas_mobilertapp_MainRenderer_initialize(
                         scene_.lights_.emplace_back(::std::make_unique<::Components::AreaLight>(
                                 lightMat,
                                 ::std::move(samplerPoint1),
-                                ::glm::vec3 {-50.5f, 41.5f, 50.5f},
-                                ::glm::vec3 {50.5f, 41.5f, -50.5f},
-                                ::glm::vec3 {50.5f, 41.5f, 50.5f}));
+                                ::glm::vec3 {-50.5F, 41.5F, 50.5F},
+                                ::glm::vec3 {50.5F, 41.5F, -50.5F},
+                                ::glm::vec3 {50.5F, 41.5F, 50.5F}));
                         ::std::unique_ptr<MobileRT::Sampler> samplerPoint2{
                                 ::std::make_unique<Components::StaticHaltonSeq>()};
                         scene_.lights_.emplace_back(::std::make_unique<::Components::AreaLight>(
                                 lightMat,
                                 ::std::move(samplerPoint2),
-                                ::glm::vec3 {-50.5f, 41.5f, 50.5f},
-                                ::glm::vec3 {-50.5f, 41.5f, -50.5f},
-                                ::glm::vec3 {50.5f, 41.5f, -50.5f}));
+                                ::glm::vec3 {-50.5F, 41.5F, 50.5F},
+                                ::glm::vec3 {-50.5F, 41.5F, -50.5F},
+                                ::glm::vec3 {50.5F, 41.5F, -50.5F}));
 
                         camera = ::std::make_unique<::Components::Perspective>(
-                                ::glm::vec3 {11.0754f - 50.0f, 22.8368f + 10.0f, -0.2654f - 50.0f},
-                                ::glm::vec3 {11.0754f, 22.8368f, -0.2654f},
-                                ::glm::vec3 {0.0f, 1.0f, 0.0f},
+                                ::glm::vec3 {11.0754F - 50.0F, 22.8368F + 10.0F, -0.2654F - 50.0F},
+                                ::glm::vec3 {11.0754F, 22.8368F, -0.2654F},
+                                ::glm::vec3 {0.0F, 1.0F, 0.0F},
                                 fovX, fovY);
                     }
 
@@ -914,7 +904,7 @@ jint Java_puscas_mobilertapp_MainRenderer_initialize(
             if (samplesPixel > 1) {
                 samplerPixel = ::std::make_unique<Components::StaticHaltonSeq>();
             } else {
-                samplerPixel = ::std::make_unique<Components::Constant>(0.5f);
+                samplerPixel = ::std::make_unique<Components::Constant>(0.5F);
             }
             switch (shader) {
                 case 1: {
@@ -998,7 +988,7 @@ jint Java_puscas_mobilertapp_MainRenderer_initialize(
 }
 
 extern "C"
-void Java_puscas_mobilertapp_MainRenderer_finishRender(
+void Java_puscas_mobilertapp_MainRenderer_RTFinishRender(
         JNIEnv *env,
         jobject /*thiz*/
 ) noexcept {
@@ -1024,7 +1014,7 @@ void Java_puscas_mobilertapp_MainRenderer_finishRender(
 }
 
 extern "C"
-void Java_puscas_mobilertapp_MainRenderer_renderIntoBitmap(
+void Java_puscas_mobilertapp_MainRenderer_RTRenderIntoBitmap(
         JNIEnv *env,
         jobject /*thiz*/,
         jobject localBitmap,
@@ -1046,9 +1036,8 @@ void Java_puscas_mobilertapp_MainRenderer_renderIntoBitmap(
             assert(result == JNI_OK);
             static_cast<void>(result);
         }
-        const ::std::int32_t jniThread {jniError == JNI_EDETACHED? JNI_EDETACHED : JNI_OK};
 
-            ::std::uint32_t *dstPixels{nullptr};
+        ::std::uint32_t *dstPixels{nullptr};
         {
             const ::std::int32_t ret {AndroidBitmap_lockPixels(env, globalBitmap, reinterpret_cast<void **>(&dstPixels))};
             //dstPixels = static_cast<::std::uint32_t *>(env->GetDirectBufferAddress(globalByteBuffer));
@@ -1101,7 +1090,7 @@ void Java_puscas_mobilertapp_MainRenderer_renderIntoBitmap(
                 static_cast<void> (result);
             }
             env->ExceptionClear();
-            if (jniThread == JNI_EDETACHED) {
+            if (jniError == JNI_EDETACHED) {
                 const ::std::int32_t result{javaVM_->DetachCurrentThread()};
                 assert(result == JNI_OK);
                 static_cast<void> (result);
@@ -1119,7 +1108,17 @@ void Java_puscas_mobilertapp_MainRenderer_renderIntoBitmap(
 }
 
 extern "C"
-float Java_puscas_mobilertapp_ViewText_getFPS(
+::std::int32_t Java_puscas_mobilertapp_RenderTask_RTGetState(
+        JNIEnv *env,
+        jobject /*thiz*/
+) noexcept {
+    const ::std::int32_t res{static_cast<::std::int32_t> (state_.load())};
+    env->ExceptionClear();
+    return res;
+}
+
+extern "C"
+float Java_puscas_mobilertapp_RenderTask_RTGetFps(
         JNIEnv *env,
         jobject /*thiz*/
 ) noexcept {
@@ -1128,7 +1127,7 @@ float Java_puscas_mobilertapp_ViewText_getFPS(
 }
 
 extern "C"
-jlong Java_puscas_mobilertapp_ViewText_getTimeRenderer(
+jlong Java_puscas_mobilertapp_RenderTask_RTGetTimeRenderer(
         JNIEnv *env,
         jobject /*thiz*/
 ) noexcept {
@@ -1137,7 +1136,7 @@ jlong Java_puscas_mobilertapp_ViewText_getTimeRenderer(
 }
 
 extern "C"
-::std::int32_t Java_puscas_mobilertapp_ViewText_getSample(
+::std::int32_t Java_puscas_mobilertapp_RenderTask_RTGetSample(
         JNIEnv *env,
         jobject /*thiz*/
 ) noexcept {
@@ -1155,20 +1154,19 @@ extern "C"
 }
 
 extern "C"
-::std::int32_t Java_puscas_mobilertapp_MainActivity_resize(
+::std::int32_t Java_puscas_mobilertapp_MainActivity_RTResize(
         JNIEnv *env,
         jobject /*thiz*/,
         jint size
 ) noexcept {
-    const ::std::int32_t res{::MobileRT::roundDownToMultipleOf(size,
-                                                               static_cast<::std::int32_t>(::std::sqrt(
-                                                                       MobileRT::NumberOfBlocks)))};
+    const ::std::int32_t res{::MobileRT::roundDownToMultipleOf(
+            size, static_cast<::std::int32_t>(::std::sqrt(::MobileRT::NumberOfBlocks)))};
     env->ExceptionClear();
     return res;
 }
 
 extern "C"
-::std::int32_t Java_puscas_mobilertapp_DrawView_getNumberOfLights(
+::std::int32_t Java_puscas_mobilertapp_DrawView_RTGetNumberOfLights(
         JNIEnv *env,
         jobject /*thiz*/
 ) noexcept {
@@ -1177,7 +1175,7 @@ extern "C"
 }
 
 extern "C"
-jobject Java_puscas_mobilertapp_MainRenderer_freeNativeBuffer(
+jobject Java_puscas_mobilertapp_MainRenderer_RTFreeNativeBuffer(
         JNIEnv *env,
         jobject /*thiz*/,
         jobject bufferRef

@@ -9,7 +9,7 @@ AABB::AABB(const ::glm::vec3 &pointMin, const ::glm::vec3 &pointMax) noexcept :
 }
 
 bool ::MobileRT::intersect(const AABB &box, const Ray &ray) noexcept {
-    const float invDirX {1.0f / ray.direction_[0]};
+    const float invDirX {1.0F / ray.direction_[0]};
     const float rayOrgX {ray.origin_[0]};
     const float t1X {(box.pointMin_[0] - rayOrgX) * invDirX};
     const float t2X {(box.pointMax_[0] - rayOrgX) * invDirX};
@@ -17,7 +17,7 @@ bool ::MobileRT::intersect(const AABB &box, const Ray &ray) noexcept {
     float tmax {::std::max(t1X, t2X)};
 
     for (::std::int32_t axis {1}; axis < 3; ++axis) {
-        const float invDir {1.0f / ray.direction_[axis]};
+        const float invDir {1.0F / ray.direction_[axis]};
         const float rayOrg {ray.origin_[axis]};
         const float t1 {(box.pointMin_[axis] - rayOrg) * invDir};
         const float t2 {(box.pointMax_[axis] - rayOrg) * invDir};
@@ -26,7 +26,7 @@ bool ::MobileRT::intersect(const AABB &box, const Ray &ray) noexcept {
         tmax = ::std::min(tmax, ::std::max(t1, t2));
     }
 
-    const bool intersected {tmax >= ::std::max(tmin, 0.0f)};
+    const bool intersected {tmax >= ::std::max(tmin, 0.0F)};
     return intersected;
 }
 

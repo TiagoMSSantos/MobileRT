@@ -42,19 +42,19 @@ void JNI_OnUnload(JavaVM *vm, void *reserved);
 
 // DrawView
 extern "C"
-void Java_puscas_mobilertapp_DrawView_stopRender(
+void Java_puscas_mobilertapp_DrawView_RTStopRender(
         JNIEnv *env,
         jobject thiz
 ) noexcept;
 
 extern "C"
-void Java_puscas_mobilertapp_DrawView_startRender(
+void Java_puscas_mobilertapp_DrawView_RTStartRender(
         JNIEnv *env,
         jobject thiz
 ) noexcept;
 
 extern "C"
-jint Java_puscas_mobilertapp_DrawView_getNumberOfLights(
+jint Java_puscas_mobilertapp_DrawView_RTGetNumberOfLights(
         JNIEnv *env,
         jobject thiz
 ) noexcept;
@@ -62,25 +62,25 @@ jint Java_puscas_mobilertapp_DrawView_getNumberOfLights(
 
 // ViewText
 extern "C"
-jint Java_puscas_mobilertapp_ViewText_getState(
+jint Java_puscas_mobilertapp_RenderTask_RTGetState(
         JNIEnv *env,
         jobject thiz
 ) noexcept;
 
 extern "C"
-jfloat Java_puscas_mobilertapp_ViewText_getFPS(
+jfloat Java_puscas_mobilertapp_RenderTask_RTGetFps(
+        JNIEnv *env,
+        jobject
+) noexcept;
+
+extern "C"
+jlong Java_puscas_mobilertapp_RenderTask_RTGetTimeRenderer(
         JNIEnv *env,
         jobject thiz
 ) noexcept;
 
 extern "C"
-jlong Java_puscas_mobilertapp_ViewText_getTimeRenderer(
-        JNIEnv *env,
-        jobject thiz
-) noexcept;
-
-extern "C"
-jint Java_puscas_mobilertapp_ViewText_getSample(
+jint Java_puscas_mobilertapp_RenderTask_RTGetSample(
         JNIEnv *env,
         jobject thiz
 ) noexcept;
@@ -88,7 +88,7 @@ jint Java_puscas_mobilertapp_ViewText_getSample(
 
 // MainActivity
 extern "C"
-jint Java_puscas_mobilertapp_MainActivity_resize(
+jint Java_puscas_mobilertapp_MainActivity_RTResize(
         JNIEnv *env,
         jobject thiz,
         jint size
@@ -97,13 +97,13 @@ jint Java_puscas_mobilertapp_MainActivity_resize(
 
 // MainRenderer
 extern "C"
-void Java_puscas_mobilertapp_MainRenderer_finishRender(
+void Java_puscas_mobilertapp_MainRenderer_RTFinishRender(
         JNIEnv *env,
         jobject thiz
 ) noexcept;
 
 extern "C"
-void Java_puscas_mobilertapp_MainRenderer_renderIntoBitmap(
+void Java_puscas_mobilertapp_MainRenderer_RTRenderIntoBitmap(
         JNIEnv *env,
         jobject thiz,
         jobject dstBitmap,
@@ -112,32 +112,32 @@ void Java_puscas_mobilertapp_MainRenderer_renderIntoBitmap(
 ) noexcept;
 
 extern "C"
-jobject Java_puscas_mobilertapp_MainRenderer_initVerticesArray(
+jobject Java_puscas_mobilertapp_MainRenderer_RTInitVerticesArray(
         JNIEnv *env,
         jobject thiz
 ) noexcept;
 
 extern "C"
-jobject Java_puscas_mobilertapp_MainRenderer_initColorsArray(
+jobject Java_puscas_mobilertapp_MainRenderer_RTInitColorsArray(
         JNIEnv *env,
         jobject thiz
 ) noexcept;
 
 extern "C"
-jobject Java_puscas_mobilertapp_MainRenderer_initCameraArray(
+jobject Java_puscas_mobilertapp_MainRenderer_RTInitCameraArray(
         JNIEnv *env,
         jobject thiz
 ) noexcept;
 
 extern "C"
-jobject Java_puscas_mobilertapp_MainRenderer_freeNativeBuffer(
+jobject Java_puscas_mobilertapp_MainRenderer_RTFreeNativeBuffer(
         JNIEnv *env,
         jobject thiz,
         jobject bufferRef
 ) noexcept;
 
 extern "C"
-jint Java_puscas_mobilertapp_MainRenderer_initialize(
+jint Java_puscas_mobilertapp_MainRenderer_RTInitialize(
         JNIEnv *env,
         jobject thiz,
         jint scene,

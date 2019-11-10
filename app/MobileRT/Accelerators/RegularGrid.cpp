@@ -24,7 +24,7 @@ RegularGrid::RegularGrid(AABB sceneBounds, Scene *const scene,
         gridSize_ / (m_Extends.pointMax_ - m_Extends.pointMin_)[1],
         gridSize_ / (m_Extends.pointMax_ - m_Extends.pointMin_)[2]},
         // precalculate size of a cell (for x, y, and z)
-        m_CW{(m_Extends.pointMax_ - m_Extends.pointMin_) * (1.0f / gridSize_)},
+        m_CW{(m_Extends.pointMax_ - m_Extends.pointMin_) * (1.0F / gridSize_)},
         scene_{scene} {
     LOG("scene min=(", m_Extends.pointMin_[0], ", ", m_Extends.pointMin_[1], ", ",
         m_Extends.pointMin_[2], ") max=(", m_Extends.pointMax_[0], ", ",
@@ -75,9 +75,9 @@ void RegularGrid::addPrimitives
     const float dx{sizeX / gridSize_};
     const float dy{sizeY / gridSize_};
     const float dz{sizeZ / gridSize_};
-    const float dx_reci{dx > 0 ? 1.0f / dx : 1.0f};
-    const float dy_reci{dy > 0 ? 1.0f / dy : 1.0f};
-    const float dz_reci{dz > 0 ? 1.0f / dz : 1.0f};
+    const float dx_reci{dx > 0 ? 1.0F / dx : 1.0F};
+    const float dy_reci{dy > 0 ? 1.0F / dy : 1.0F};
+    const float dz_reci{dz > 0 ? 1.0F / dz : 1.0F};
 
     // store primitives in the grid cells
     for (T &primitive : primitives) {
@@ -207,7 +207,7 @@ Intersection RegularGrid::intersect(
 
     ::glm::vec3 tmax{}, tdelta{};
     if (::std::fabs(ray.direction_[0]) > ::std::numeric_limits<float>::epsilon()) {
-        const float rxr{1.0f / ray.direction_[0]};
+        const float rxr{1.0F / ray.direction_[0]};
         tmax[0] = ((cb[0] - ray.origin_[0]) * rxr);
         tdelta[0] = (m_CW[0] * stepX * rxr);
     } else {
@@ -215,7 +215,7 @@ Intersection RegularGrid::intersect(
     }
 
     if (::std::fabs(ray.direction_[1]) > ::std::numeric_limits<float>::epsilon()) {
-        const float ryr{1.0f / ray.direction_[1]};
+        const float ryr{1.0F / ray.direction_[1]};
         tmax[1] = ((cb[1] - ray.origin_[1]) * ryr);
         tdelta[1] = (m_CW[1] * stepY * ryr);
     } else {
@@ -223,7 +223,7 @@ Intersection RegularGrid::intersect(
     }
 
     if (::std::fabs(ray.direction_[2]) > ::std::numeric_limits<float>::epsilon()) {
-        const float rzr{1.0f / ray.direction_[2]};
+        const float rzr{1.0F / ray.direction_[2]};
         tmax[2] = ((cb[2] - ray.origin_[2]) * rzr);
         tdelta[2] = (m_CW[2] * stepZ * rzr);
     } else {

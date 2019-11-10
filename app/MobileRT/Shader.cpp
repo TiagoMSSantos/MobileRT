@@ -57,7 +57,7 @@ void Shader::initializeAccelerators(Camera *const camera) noexcept {
             Scene::getBounds<Primitive<Sphere>>(spheres, &min, &max);
             Scene::getBounds<Primitive<Plane>>(planes, &min, &max);
             Scene::getBounds(::std::vector<Camera *> {camera}, &min, &max);
-            const AABB sceneBounds {min - 0.01f, max + 0.01f};
+            const AABB sceneBounds {min - 0.01F, max + 0.01F};
             regularGrid_ = RegularGrid {sceneBounds, &scene_, 32};
             break;
         }
@@ -145,17 +145,17 @@ void Shader::resetSampling() noexcept {
     const float cosTheta{::std::sqrt(
             r2)};// square root of distance from center - cos(theta) = cos(elevation angle)
 
-    ::glm::vec3 u{::std::abs(normal[0]) > 0.1f ? ::glm::vec3 {0.0f, 1.0f, 0.0f} :
-                  ::glm::vec3 {1.0f, 0.0f, 0.0f}};
+    ::glm::vec3 u{::std::abs(normal[0]) > 0.1F ? ::glm::vec3 {0.0F, 1.0F, 0.0F} :
+                  ::glm::vec3 {1.0F, 0.0F, 0.0F}};
     u = ::glm::normalize(::glm::cross(u, normal));// second axis
     const ::glm::vec3 &v{::glm::cross(normal, u)};// final axis
 
     ::glm::vec3 direction{u * (::std::cos(phi) * cosTheta) +
                           v * (::std::sin(phi) * cosTheta) +
-                          normal * ::std::sqrt(1.0f - r2)};
+                          normal * ::std::sqrt(1.0F - r2)};
     direction = ::glm::normalize(direction);
 
-    /*float phi2 {::std::acos(::std::sqrt(1.0f - uniformRandom1))};
+    /*float phi2 {::std::acos(::std::sqrt(1.0F - uniformRandom1))};
     float theta2 = ::glm::two_pi<float>() * r2;
     ::glm::vec3 dir {sin(phi2) * cos(theta2),
                     cos(phi2),
@@ -173,6 +173,6 @@ void Shader::resetSampling() noexcept {
     const ::std::uint32_t sizeLights {static_cast<::std::uint32_t>(scene_.lights_.size())};
     const float randomNumber {*it};
     const ::std::uint32_t chosenLight {
-        static_cast<::std::uint32_t> (::std::floor(randomNumber * sizeLights * 0.99999f))};
+        static_cast<::std::uint32_t> (::std::floor(randomNumber * sizeLights * 0.99999F))};
     return chosenLight;
 }

@@ -19,7 +19,7 @@ bool Whitted::shade(
     }
 
     const ::glm::vec3 &Le{intersection.material_->Le_};
-    //stop if it intersects a light source
+    //STOP if it intersects a light source
     if (::glm::any(::glm::greaterThan(Le, ::glm::vec3 {0}))) {
         *rgb = Le;
         return true;

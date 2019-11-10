@@ -7,75 +7,75 @@
 
 MobileRT::Scene cornellBoxScene(MobileRT::Scene scene) noexcept {
     // point light - white
-    const ::MobileRT::Material lightMat {::glm::vec3 {0.0f, 0.0f, 0.0f},
-                                      ::glm::vec3 {0.0f, 0.0f, 0.0f},
-                                      ::glm::vec3 {0.0f, 0.0f, 0.0f},
-                                      1.0f,
-                                      ::glm::vec3 {0.9f, 0.9f, 0.9f}};
+    const ::MobileRT::Material lightMat {::glm::vec3 {0.0F, 0.0F, 0.0F},
+                                      ::glm::vec3 {0.0F, 0.0F, 0.0F},
+                                      ::glm::vec3 {0.0F, 0.0F, 0.0F},
+                                      1.0F,
+                                      ::glm::vec3 {0.9F, 0.9F, 0.9F}};
     scene.lights_.emplace_back(::std::make_unique<Components::PointLight>(lightMat,
-                                                                        ::glm::vec3 {0.0f,
-                                                                                           0.99f,
-                                                                                           0.0f}));
+                                                                        ::glm::vec3 {0.0F,
+                                                                                           0.99F,
+                                                                                           0.0F}));
 
     // triangle - yellow
-    const ::MobileRT::Material yellowMat {::glm::vec3 {0.9f, 0.9f, 0.0f}};
+    const ::MobileRT::Material yellowMat {::glm::vec3 {0.9F, 0.9F, 0.0F}};
     scene.triangles_.emplace_back(MobileRT::Triangle {
-            ::glm::vec3 {0.5f, -0.5f, 0.99f},
-            ::glm::vec3 {0.5f, 0.5f, 1.001f},
-            ::glm::vec3 {-0.5f, -0.5f, 0.99f}}, yellowMat);
+            ::glm::vec3 {0.5F, -0.5F, 0.99F},
+            ::glm::vec3 {0.5F, 0.5F, 1.001F},
+            ::glm::vec3 {-0.5F, -0.5F, 0.99F}}, yellowMat);
 
     // sphere - mirror
-    const ::MobileRT::Material MirrorMat {::glm::vec3 {0.0f, 0.0f, 0.0f},
-                                       ::glm::vec3 {0.9f, 0.9f, 0.9f}};
+    const ::MobileRT::Material MirrorMat {::glm::vec3 {0.0F, 0.0F, 0.0F},
+                                       ::glm::vec3 {0.9F, 0.9F, 0.9F}};
     scene.spheres_.emplace_back(MobileRT::Sphere {
-            ::glm::vec3 {0.45f, -0.65f, 0.4f}, 0.35f}, MirrorMat);
+            ::glm::vec3 {0.45F, -0.65F, 0.4F}, 0.35F}, MirrorMat);
 
     // sphere - green
-    const ::MobileRT::Material GreenMat {::glm::vec3 {0.0f, 0.9f, 0.0f},
-                                      ::glm::vec3 {0.0f, 0.2f, 0.0f}};
+    const ::MobileRT::Material GreenMat {::glm::vec3 {0.0F, 0.9F, 0.0F},
+                                      ::glm::vec3 {0.0F, 0.2F, 0.0F}};
     scene.spheres_.emplace_back(MobileRT::Sphere {
-            ::glm::vec3 {-0.45f, -0.1f, 0.0f}, 0.35f}, GreenMat);
+            ::glm::vec3 {-0.45F, -0.1F, 0.0F}, 0.35F}, GreenMat);
 
     // back wall - white
-    const ::MobileRT::Material lightGrayMat {::glm::vec3 {0.7f, 0.7f, 0.7f}};
+    const ::MobileRT::Material lightGrayMat {::glm::vec3 {0.7F, 0.7F, 0.7F}};
     scene.planes_.emplace_back(MobileRT::Plane {
-                                       ::glm::vec3 {0.0f, 0.0f, 1.0f}, ::glm::vec3 {0.0f, 0.0f, -1.0f}},
+                                       ::glm::vec3 {0.0F, 0.0F, 1.0F}, ::glm::vec3 {0.0F, 0.0F, -1.0F}},
                                lightGrayMat);
 
     // front wall - light blue
-    /*const ::MobileRT::Material &lightBlueMat {::glm::vec3 {0.0f, 0.9f, 0.9f}};
+    /*const ::MobileRT::Material &lightBlueMat {::glm::vec3 {0.0F, 0.9F, 0.9F}};
      scene.planes_.emplace_back (MobileRT::Plane {
-       ::glm::vec3 {0.0f, 0.0f, -3.5f}, ::glm::vec3 {0.0f, 0.0f, 1.0f}}, lightBlueMat);*/
+       ::glm::vec3 {0.0F, 0.0F, -3.5F}, ::glm::vec3 {0.0F, 0.0F, 1.0F}}, lightBlueMat);*/
 
     // floor - white
     scene.planes_.emplace_back(MobileRT::Plane {
-                                       ::glm::vec3 {0.0f, -1.0f, 0.0f}, ::glm::vec3 {0.0f, 1.0f, 0.0f}},
+                                       ::glm::vec3 {0.0F, -1.0F, 0.0F}, ::glm::vec3 {0.0F, 1.0F, 0.0F}},
                                lightGrayMat);
 
     // ceiling - white
     scene.planes_.emplace_back(MobileRT::Plane {
-                                       ::glm::vec3 {0.0f, 1.0f, 0.0f}, ::glm::vec3 {0.0f, -1.0f, 0.0f}},
+                                       ::glm::vec3 {0.0F, 1.0F, 0.0F}, ::glm::vec3 {0.0F, -1.0F, 0.0F}},
                                lightGrayMat);
 
     // left wall - red
-    const ::MobileRT::Material redMat {::glm::vec3 {0.9f, 0.0f, 0.0f}};
+    const ::MobileRT::Material redMat {::glm::vec3 {0.9F, 0.0F, 0.0F}};
     scene.planes_.emplace_back(MobileRT::Plane {
-            ::glm::vec3 {-1.0f, 0.0f, 0.0f}, ::glm::vec3 {1.0f, 0.0f, 0.0f}}, redMat);
+            ::glm::vec3 {-1.0F, 0.0F, 0.0F}, ::glm::vec3 {1.0F, 0.0F, 0.0F}}, redMat);
 
     // right wall - blue
-    const ::MobileRT::Material blueMat {::glm::vec3 {0.0f, 0.0f, 0.9f}};
+    const ::MobileRT::Material blueMat {::glm::vec3 {0.0F, 0.0F, 0.9F}};
     scene.planes_.emplace_back(MobileRT::Plane {
-            ::glm::vec3 {1.0f, 0.0f, 0.0f}, ::glm::vec3 {-1.0f, 0.0f, 0.0f}}, blueMat);
+            ::glm::vec3 {1.0F, 0.0F, 0.0F}, ::glm::vec3 {-1.0F, 0.0F, 0.0F}}, blueMat);
 
     return scene;
 }
 
 MobileRT::Scene cornellBoxScene2(MobileRT::Scene scene) noexcept {
-    const ::MobileRT::Material lightMat {::glm::vec3 {0.0f, 0.0f, 0.0f},
-                                      ::glm::vec3 {0.0f, 0.0f, 0.0f},
-                                      ::glm::vec3 {0.0f, 0.0f, 0.0f},
-                                      1.0f,
-                                      ::glm::vec3 {0.9f, 0.9f, 0.9f}};
+    const ::MobileRT::Material lightMat {::glm::vec3 {0.0F, 0.0F, 0.0F},
+                                      ::glm::vec3 {0.0F, 0.0F, 0.0F},
+                                      ::glm::vec3 {0.0F, 0.0F, 0.0F},
+                                      1.0F,
+                                      ::glm::vec3 {0.9F, 0.9F, 0.9F}};
     ::std::unique_ptr<MobileRT::Sampler> samplerPoint1{
             ::std::make_unique<Components::StaticHaltonSeq>()};
     //::std::unique_ptr<MobileRT::Sampler> samplerPoint1 {::std::make_unique<Components::MersenneTwister> ()};
@@ -86,164 +86,164 @@ MobileRT::Scene cornellBoxScene2(MobileRT::Scene scene) noexcept {
     scene.lights_.emplace_back(::std::make_unique<Components::AreaLight>(lightMat,
             /*scene.lights_.emplace_back(
 ::std::make_unique<Components::PointLight> (lightMat,
-   ::glm::vec3 {0.70f, 0.99f, 0.0f}));*/
+   ::glm::vec3 {0.70F, 0.99F, 0.0F}));*/
                                                                          ::std::move(samplerPoint1),
-                                                                         ::glm::vec3 {-0.25f,
-                                                                                            0.99f,
-                                                                                            -0.25f},
-                                                                         ::glm::vec3 {0.25f,
-                                                                                            0.99f,
-                                                                                            -0.25f},
-                                                                         ::glm::vec3 {0.25f,
-                                                                                            0.99f,
-                                                                                            0.25f}));
+                                                                         ::glm::vec3 {-0.25F,
+                                                                                            0.99F,
+                                                                                            -0.25F},
+                                                                         ::glm::vec3 {0.25F,
+                                                                                            0.99F,
+                                                                                            -0.25F},
+                                                                         ::glm::vec3 {0.25F,
+                                                                                            0.99F,
+                                                                                            0.25F}));
 
     scene.lights_.emplace_back(::std::make_unique<Components::AreaLight>(lightMat,
                                                                          ::std::move(samplerPoint2),
-                                                                         ::glm::vec3 {0.25f,
-                                                                                            0.99f,
-                                                                                            0.25f},
-                                                                         ::glm::vec3 {-0.25f,
-                                                                                            0.99f,
-                                                                                            0.25f},
-                                                                         ::glm::vec3 {-0.25f,
-                                                                                            0.99f,
-                                                                                            -0.25f}));
+                                                                         ::glm::vec3 {0.25F,
+                                                                                            0.99F,
+                                                                                            0.25F},
+                                                                         ::glm::vec3 {-0.25F,
+                                                                                            0.99F,
+                                                                                            0.25F},
+                                                                         ::glm::vec3 {-0.25F,
+                                                                                            0.99F,
+                                                                                            -0.25F}));
 
     // triangle - yellow
-    const ::MobileRT::Material yellowMat {::glm::vec3 {0.9f, 0.9f, 0.0f}};
+    const ::MobileRT::Material yellowMat {::glm::vec3 {0.9F, 0.9F, 0.0F}};
     scene.triangles_.emplace_back(MobileRT::Triangle {
-            ::glm::vec3 {0.5f, -0.5f, 0.99f},
-            ::glm::vec3 {0.5f, 0.5f, 1.001f},
-            ::glm::vec3 {-0.5f, -0.5f, 0.99f}}, yellowMat);
+            ::glm::vec3 {0.5F, -0.5F, 0.99F},
+            ::glm::vec3 {0.5F, 0.5F, 1.001F},
+            ::glm::vec3 {-0.5F, -0.5F, 0.99F}}, yellowMat);
 
     // triangle - green
-    const ::MobileRT::Material greenMat {::glm::vec3 {0.0f, 0.9f, 0.0f}};
+    const ::MobileRT::Material greenMat {::glm::vec3 {0.0F, 0.9F, 0.0F}};
     scene.triangles_.emplace_back(MobileRT::Triangle {
-            ::glm::vec3 {-0.5f, 0.5f, 0.99f},
-            ::glm::vec3 {-0.5f, -0.5f, 0.99f},
-            ::glm::vec3 {0.5f, 0.5f, 0.99f}}, greenMat);
+            ::glm::vec3 {-0.5F, 0.5F, 0.99F},
+            ::glm::vec3 {-0.5F, -0.5F, 0.99F},
+            ::glm::vec3 {0.5F, 0.5F, 0.99F}}, greenMat);
 
     // sphere - mirror
-    const ::MobileRT::Material MirrorMat {::glm::vec3 {0.0f, 0.0f, 0.0f},
-                                       ::glm::vec3 {0.9f, 0.9f, 0.9f}};
+    const ::MobileRT::Material MirrorMat {::glm::vec3 {0.0F, 0.0F, 0.0F},
+                                       ::glm::vec3 {0.9F, 0.9F, 0.9F}};
     scene.spheres_.emplace_back(MobileRT::Sphere {
-            ::glm::vec3 {0.45f, -0.65f, 0.4f}, 0.35f}, MirrorMat);
+            ::glm::vec3 {0.45F, -0.65F, 0.4F}, 0.35F}, MirrorMat);
 
     // sphere - transmission
-    const ::MobileRT::Material TransmissionMat {::glm::vec3 {0.0f, 0.0f, 0.0f},
-                                             ::glm::vec3 {0.0f, 0.0f, 0.0f},
-                                             ::glm::vec3 {0.9f, 0.9f, 0.9f}, 1.9f};
+    const ::MobileRT::Material TransmissionMat {::glm::vec3 {0.0F, 0.0F, 0.0F},
+                                             ::glm::vec3 {0.0F, 0.0F, 0.0F},
+                                             ::glm::vec3 {0.9F, 0.9F, 0.9F}, 1.9F};
     scene.spheres_.emplace_back(MobileRT::Sphere {
-            ::glm::vec3 {-0.4f, -0.3f, 0.0f}, 0.35f}, TransmissionMat);
+            ::glm::vec3 {-0.4F, -0.3F, 0.0F}, 0.35F}, TransmissionMat);
 
     // back wall - white
-    const ::MobileRT::Material lightGrayMat {::glm::vec3 {0.7f, 0.7f, 0.7f}};
+    const ::MobileRT::Material lightGrayMat {::glm::vec3 {0.7F, 0.7F, 0.7F}};
     scene.planes_.emplace_back(MobileRT::Plane {
-                                       ::glm::vec3 {0.0f, 0.0f, 1.0f}, ::glm::vec3 {0.0f, 0.0f, -1.0f}},
+                                       ::glm::vec3 {0.0F, 0.0F, 1.0F}, ::glm::vec3 {0.0F, 0.0F, -1.0F}},
                                lightGrayMat);
 
     // front wall - light blue
-    const ::MobileRT::Material lightBlueMat {::glm::vec3 {0.0f, 0.9f, 0.9f}};
+    const ::MobileRT::Material lightBlueMat {::glm::vec3 {0.0F, 0.9F, 0.9F}};
     scene.planes_.emplace_back(MobileRT::Plane {
-                                       ::glm::vec3 {0.0f, 0.0f, -4.0f}, ::glm::vec3 {0.0f, 0.0f, 1.0f}},
+                                       ::glm::vec3 {0.0F, 0.0F, -4.0F}, ::glm::vec3 {0.0F, 0.0F, 1.0F}},
                                lightBlueMat);
 
     // floor - white
     scene.planes_.emplace_back(MobileRT::Plane {
-                                       ::glm::vec3 {0.0f, -1.0f, 0.0f}, ::glm::vec3 {0.0f, 1.0f, 0.0f}},
+                                       ::glm::vec3 {0.0F, -1.0F, 0.0F}, ::glm::vec3 {0.0F, 1.0F, 0.0F}},
                                lightGrayMat);
     // ceiling - white
     scene.planes_.emplace_back(MobileRT::Plane {
-                                       ::glm::vec3 {0.0f, 1.0f, 0.0f}, ::glm::vec3 {0.0f, -1.0f, 0.0f}},
+                                       ::glm::vec3 {0.0F, 1.0F, 0.0F}, ::glm::vec3 {0.0F, -1.0F, 0.0F}},
                                lightGrayMat);
     // left wall - red
-    const ::MobileRT::Material redMat {::glm::vec3 {0.9f, 0.0f, 0.0f}};
+    const ::MobileRT::Material redMat {::glm::vec3 {0.9F, 0.0F, 0.0F}};
     scene.planes_.emplace_back(MobileRT::Plane {
-            ::glm::vec3 {-1.0f, 0.0f, 0.0f}, ::glm::vec3 {1.0f, 0.0f, 0.0f}}, redMat);
+            ::glm::vec3 {-1.0F, 0.0F, 0.0F}, ::glm::vec3 {1.0F, 0.0F, 0.0F}}, redMat);
 
     // right wall - blue
-    const ::MobileRT::Material blueMat {::glm::vec3 {0.0f, 0.0f, 0.9f}};
+    const ::MobileRT::Material blueMat {::glm::vec3 {0.0F, 0.0F, 0.9F}};
     scene.planes_.emplace_back(MobileRT::Plane {
-            ::glm::vec3 {1.0f, 0.0f, 0.0f}, ::glm::vec3 {-1.0f, 0.0f, 0.0f}}, blueMat);
+            ::glm::vec3 {1.0F, 0.0F, 0.0F}, ::glm::vec3 {-1.0F, 0.0F, 0.0F}}, blueMat);
 
     return scene;
 }
 
 MobileRT::Scene spheresScene(MobileRT::Scene scene) noexcept {
     // create one light source
-    /*const ::MobileRT::Material &lightMat {::glm::vec3 {0.0f, 0.0f, 0.0f},
-                                       ::glm::vec3 {0.0f, 0.0f, 0.0f},
-                                       ::glm::vec3 {0.0f, 0.0f, 0.0f},
-                                       1.0f,
-                                       ::glm::vec3 {0.9f, 0.9f, 0.9f}};
+    /*const ::MobileRT::Material &lightMat {::glm::vec3 {0.0F, 0.0F, 0.0F},
+                                       ::glm::vec3 {0.0F, 0.0F, 0.0F},
+                                       ::glm::vec3 {0.0F, 0.0F, 0.0F},
+                                       1.0F,
+                                       ::glm::vec3 {0.9F, 0.9F, 0.9F}};
     scene.lights_.emplace_back (::std::make_unique<Components::PointLight> (lightMat,
-                                                                ::glm::vec3 {0.0f, 15.0f,
-                                                                                   4.0f}));*/
+                                                                ::glm::vec3 {0.0F, 15.0F,
+                                                                                   4.0F}));*/
 
     // create diffuse Materials
-    const ::MobileRT::Material sandMat{::glm::vec3 {0.914f, 0.723f, 0.531f}};
-    const ::MobileRT::Material redMat {::glm::vec3 {0.9f, 0.0f, 0.0f}};
-    /*const ::MobileRT::Material &mirrorMat {::glm::vec3 {0.0f, 0.0f, 0.0f},
-                                        ::glm::vec3 {0.9f, 0.9f, 0.9f}};*/
-    //const ::MobileRT::Material &greenMat {::glm::vec3 {0.0f, 0.9f, 0.0f}};
+    const ::MobileRT::Material sandMat{::glm::vec3 {0.914F, 0.723F, 0.531F}};
+    const ::MobileRT::Material redMat {::glm::vec3 {0.9F, 0.0F, 0.0F}};
+    /*const ::MobileRT::Material &mirrorMat {::glm::vec3 {0.0F, 0.0F, 0.0F},
+                                        ::glm::vec3 {0.9F, 0.9F, 0.9F}};*/
+    //const ::MobileRT::Material &greenMat {::glm::vec3 {0.0F, 0.9F, 0.0F}};
     // create one sphere
     scene.spheres_.emplace_back(MobileRT::Sphere {
-            ::glm::vec3 {4.0f, 4.0f, 4.0f}, 4.0f}, redMat);
+            ::glm::vec3 {4.0F, 4.0F, 4.0F}, 4.0F}, redMat);
     scene.triangles_.emplace_back (MobileRT::Triangle {
-            ::glm::vec3 {0.0f, 10.0f, 10.0f},
-            ::glm::vec3 {0.0f, 0.0f, 10.0f},
-            ::glm::vec3 {10.0f, 0.0f, 10.0f}}, sandMat);
+            ::glm::vec3 {0.0F, 10.0F, 10.0F},
+            ::glm::vec3 {0.0F, 0.0F, 10.0F},
+            ::glm::vec3 {10.0F, 0.0F, 10.0F}}, sandMat);
     /*scene.triangles_.emplace_back (MobileRT::Triangle {
-      ::glm::vec3 {10.0f, 10.0f, 10.0f},
-      ::glm::vec3 {10.0f, 0.0f, 10.0f},
-      ::glm::vec3 {0.0f, 10.0f, 10.0f}}, greenMat);*/
+      ::glm::vec3 {10.0F, 10.0F, 10.0F},
+      ::glm::vec3 {10.0F, 0.0F, 10.0F},
+      ::glm::vec3 {0.0F, 10.0F, 10.0F}}, greenMat);*/
     /*scene.spheres_.emplace_back (MobileRT::Sphere {
-      ::glm::vec3 {-1.0f, 1.0f, 6.0f}, 1.0f}, redMat);*/
+      ::glm::vec3 {-1.0F, 1.0F, 6.0F}, 1.0F}, redMat);*/
     /*scene.spheres_.emplace_back (MobileRT::Sphere {
-      ::glm::vec3 {1.5f, 2.0f, 7.0f}, 1.0f}, mirrorMat);
+      ::glm::vec3 {1.5F, 2.0F, 7.0F}, 1.0F}, mirrorMat);
     scene.spheres_.emplace_back (MobileRT::Sphere {
-     ::glm::vec3 {0.0f, 0.5f, 4.5f}, 0.5f}, greenMat);
+     ::glm::vec3 {0.0F, 0.5F, 4.5F}, 0.5F}, greenMat);
 
     scene.planes_.emplace_back (MobileRT::Plane {
-     ::glm::vec3 {0.0f, 0.0f, 0.0f},
-                                    ::glm::vec3 {0.0f, 1.0f, 0.0f}}, sandMat);*/
+     ::glm::vec3 {0.0F, 0.0F, 0.0F},
+                                    ::glm::vec3 {0.0F, 1.0F, 0.0F}}, sandMat);*/
     return scene;
 }
 
 MobileRT::Scene spheresScene2(MobileRT::Scene scene) noexcept {
     // create one light source
-    const ::MobileRT::Material lightMat {::glm::vec3 {0.0f, 0.0f, 0.0f},
-                                      ::glm::vec3 {0.0f, 0.0f, 0.0f},
-                                      ::glm::vec3 {0.0f, 0.0f, 0.0f},
-                                      1.0f,
-                                      ::glm::vec3 {0.9f, 0.9f, 0.9f}};
+    const ::MobileRT::Material lightMat {::glm::vec3 {0.0F, 0.0F, 0.0F},
+                                      ::glm::vec3 {0.0F, 0.0F, 0.0F},
+                                      ::glm::vec3 {0.0F, 0.0F, 0.0F},
+                                      1.0F,
+                                      ::glm::vec3 {0.9F, 0.9F, 0.9F}};
     scene.lights_.emplace_back(::std::make_unique<Components::PointLight>(lightMat,
-                                                                          ::glm::vec3 {0.0f,
-                                                                                            15.0f,
-                                                                                            4.0f}));
+                                                                          ::glm::vec3 {0.0F,
+                                                                                            15.0F,
+                                                                                            4.0F}));
 
     // create diffuse Materials
-    const ::MobileRT::Material sandMat {::glm::vec3 {0.914f, 0.723f, 0.531f}};
-    const ::MobileRT::Material redMat {::glm::vec3 {0.9f, 0.0f, 0.0f}};
-    const ::MobileRT::Material blueMat {::glm::vec3 {0.0f, 0.0f, 0.9f}};
-    const ::MobileRT::Material yellowMat {::glm::vec3 {0.9f, 0.9f, 0.0f},
-                                       ::glm::vec3 {0.8f, 0.8f, 0.4f}};
-    const ::MobileRT::Material mirrorMat {::glm::vec3 {0.2f, 0.2f, 0.2f},
-                                       ::glm::vec3 {0.9f, 0.9f, 0.9f}};
-    const ::MobileRT::Material greenMat {::glm::vec3 {0.0f, 0.9f, 0.0f}};
+    const ::MobileRT::Material sandMat {::glm::vec3 {0.914F, 0.723F, 0.531F}};
+    const ::MobileRT::Material redMat {::glm::vec3 {0.9F, 0.0F, 0.0F}};
+    const ::MobileRT::Material blueMat {::glm::vec3 {0.0F, 0.0F, 0.9F}};
+    const ::MobileRT::Material yellowMat {::glm::vec3 {0.9F, 0.9F, 0.0F},
+                                       ::glm::vec3 {0.8F, 0.8F, 0.4F}};
+    const ::MobileRT::Material mirrorMat {::glm::vec3 {0.2F, 0.2F, 0.2F},
+                                       ::glm::vec3 {0.9F, 0.9F, 0.9F}};
+    const ::MobileRT::Material greenMat {::glm::vec3 {0.0F, 0.9F, 0.0F}};
     // create one sphere
     scene.spheres_.emplace_back(MobileRT::Sphere {
-            ::glm::vec3 {-1.0f, 1.0f, 6.0f}, 1.0f}, redMat);
+            ::glm::vec3 {-1.0F, 1.0F, 6.0F}, 1.0F}, redMat);
     scene.spheres_.emplace_back(MobileRT::Sphere {
-            ::glm::vec3 {-0.5f, 2.0f, 5.0f}, 0.3f}, blueMat);
+            ::glm::vec3 {-0.5F, 2.0F, 5.0F}, 0.3F}, blueMat);
     scene.spheres_.emplace_back(MobileRT::Sphere {
-            ::glm::vec3 {0.0f, 2.0f, 7.0f}, 1.0f}, mirrorMat);
+            ::glm::vec3 {0.0F, 2.0F, 7.0F}, 1.0F}, mirrorMat);
     scene.spheres_.emplace_back(MobileRT::Sphere {
-            ::glm::vec3 {0.5f, 0.5f, 5.0f}, 0.2f}, yellowMat);
+            ::glm::vec3 {0.5F, 0.5F, 5.0F}, 0.2F}, yellowMat);
     scene.spheres_.emplace_back(MobileRT::Sphere {
-            ::glm::vec3 {1.0f, 0.5f, 4.5f}, 0.5f}, greenMat);
+            ::glm::vec3 {1.0F, 0.5F, 4.5F}, 0.5F}, greenMat);
     scene.planes_.emplace_back(MobileRT::Plane {
-            ::glm::vec3 {0.0f, 0.0f, 0.0f}, ::glm::vec3 {0.0f, 1.0f, 0.0f}}, sandMat);
+            ::glm::vec3 {0.0F, 0.0F, 0.0F}, ::glm::vec3 {0.0F, 1.0F, 0.0F}}, sandMat);
     return scene;
 }

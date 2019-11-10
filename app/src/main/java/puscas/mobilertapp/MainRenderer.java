@@ -4,134 +4,231 @@ import android.app.ActivityManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.opengl.GLES20;
-import android.opengl.GLSurfaceView.Renderer;
+import android.opengl.GLSurfaceView;
 import android.opengl.GLUtils;
 import android.opengl.Matrix;
-import android.util.Log;
+import android.os.AsyncTask;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.Objects;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Logger;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import static puscas.mobilertapp.ConstantsRenderer.NUMBER_THREADS;
+import static puscas.mobilertapp.ConstantsRenderer.VERTEX_COLOR;
+import static puscas.mobilertapp.ConstantsRenderer.VERTEX_POSITION;
+import static puscas.mobilertapp.ConstantsRenderer.VERTEX_TEX_COORD;
+
 /**
- * The OpenGL rendered that shows the ray tracer engine rendered image.
+ * The OpenGL renderer that shows the Ray Tracer engine rendered image.
  */
-final class MainRenderer implements Renderer {
+final class MainRenderer implements GLSurfaceView.Renderer {
+
+    /**
+     * The {@link Logger} for this class.
+     */
+    private static final Logger LOGGER = Logger.getLogger(MainRenderer.class.getName());
+
+    /**
+     * The vertices coordinates for the texture where the Ray Tracer {@link Bitmap} will be applied.
+     */
     private final float[] verticesTexture = {
-            -1.0f, 1.0f, 0.0f, 1.0f,
-            -1.0f, -1.0f, 0.0f, 1.0f,
-            1.0f, -1.0f, 0.0f, 1.0f,
-            1.0f, 1.0f, 0.0f, 1.0f,
+            -1.0F, 1.0F, 0.0F, 1.0F,
+            -1.0F, -1.0F, 0.0F, 1.0F,
+            1.0F, -1.0F, 0.0F, 1.0F,
+            1.0F, 1.0F, 0.0F, 1.0F,
     };
+
+    /**
+     * The texture coordinates of the texture containing the Ray Tracer {@link Bitmap}.
+     */
     private final float[] texCoords = {
-            0.0f, 0.0f,
-            0.0f, 1.0f,
-            1.0f, 1.0f,
-            1.0f, 0.0f
+            0.0F, 0.0F,
+            0.0F, 1.0F,
+            1.0F, 1.0F,
+            1.0F, 0.0F
     };
 
+    /**
+     * Some information about the memory like the available memory on the system.
+     */
+    private final ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
 
-    final ViewText viewText_ = new ViewText();
-    String vertexShaderCode_ = null;
-    String fragmentShaderCode_ = null;
-    String vertexShaderCodeRaster_ = null;
-    String fragmentShaderCodeRaster_ = null;
-    ActivityManager activityManager_ = null;
-    Bitmap bitmap_ = null;
-    int numThreads_ = 0;
-    int numberPrimitives_ = 0;
-    boolean rasterize_ = false;
+    /**
+     * A {@link Lock} for the {@link ExecutorService} containing {@link ConstantsRenderer#NUMBER_THREADS} thread where
+     * the {@link RenderTask} will be executed.
+     */
+    private final Lock lockExecutorService = new ReentrantLock();
 
-    private final ActivityManager.MemoryInfo memoryInfo_ = new ActivityManager.MemoryInfo();
-    private FloatBuffer floatBufferVertices_ = null;
-    private FloatBuffer floatBufferTexture_ = null;
-    private ByteBuffer arrayVertices_ = null;
-    private ByteBuffer arrayColors_ = null;
-    private ByteBuffer arrayCamera_ = null;
-    private Runnable requestRender_ = null;
-    private int width_ = 1;
-    private int height_ = 1;
-    private int realWidth_ = 1;
-    private int realHeight_ = 1;
-    private int shaderProgram_ = 0;
-    private int shaderProgramRaster_ = 0;
-    private boolean firstFrame_ = false;
-    private RenderTask renderTask_ = null;
-    private final Executor executor = Executors.newFixedThreadPool(1);
-    private ExecutorService executorService_ = Executors.newFixedThreadPool(1);
+    /**
+     * The vertex shader code.
+     */
+    private String vertexShaderCode = null;
 
-    synchronized native void finishRender();
-    synchronized native int initialize(final int scene, final int shader, final int width, final int height, final int accelerator,
-                          final int samplesPixel, final int samplesLight, final String objFile, final String matText);
+    /**
+     * The fragment shader code.
+     */
+    private String fragmentShaderCode = null;
 
-    synchronized private native void renderIntoBitmap(final Bitmap image, final int numThreads, final boolean async);
-    synchronized private native ByteBuffer initVerticesArray();
-    synchronized private native ByteBuffer initColorsArray();
-    synchronized private native ByteBuffer initCameraArray();
-    synchronized private native ByteBuffer freeNativeBuffer(final ByteBuffer bb);
+    /**
+     * The vertex shader code for the rasterizer.
+     */
+    private String vertexShaderCodeRaster = null;
 
-    synchronized void freeArrays() {
-        Log.d("Test", "freeArrays");
-        Log.d("Test", "arrayVertices_");
-        arrayVertices_ = freeNativeBuffer(arrayVertices_);
-        Log.d("Test", "arrayColors_");
-        arrayColors_ = freeNativeBuffer(arrayColors_);
-        Log.d("Test", "arrayCamera_");
-        arrayCamera_ = freeNativeBuffer(arrayCamera_);
-    }
+    /**
+     * The fragment shader code for the rasterizer.
+     */
+    private String fragmentShaderCodeRaster = null;
 
-    synchronized private void initArrays() {
-        Log.d("Test", "initArrays");
-        Log.d("Test", "arrayVertices_");
-        arrayVertices_ = initVerticesArray();
+    /**
+     * The {@link ActivityManager} used to get information about the memory state of the system.
+     *
+     * @see ActivityManager#getMemoryInfo(ActivityManager.MemoryInfo)
+     */
+    private ActivityManager activityManager = null;
 
-        if (isLowMemory(1)) {
-            freeArrays();
-        }
+    /**
+     * The {@link Bitmap} where the Ray Tracer engine will render the scene.
+     */
+    private Bitmap bitmap = null;
 
-        Log.d("Test", "arrayColors_");
-        arrayColors_ = initColorsArray();
+    /**
+     * The number of threads to be used by the Ray Tracer engine.
+     */
+    private int numThreads = 0;
 
-        if (isLowMemory(1)) {
-            freeArrays();
-        }
+    /**
+     * The number of primitives in the scene.
+     */
+    private int numberPrimitives = 0;
 
-        Log.d("Test", "arrayCamera_");
-        arrayCamera_ = initCameraArray();
+    /**
+     * The number of lights in the scene.
+     */
+    private int numberLights = 0;
 
-        if (isLowMemory(1)) {
-            freeArrays();
-        }
-    }
+    /**
+     * Whether should rasterize (render preview) or not.
+     */
+    private boolean rasterize = false;
 
-    synchronized private boolean isLowMemory(final int memoryNeed) {
-        boolean res = true;
-        if (memoryNeed >= 0) {
-            activityManager_.getMemoryInfo(memoryInfo_);
-            final long availMem = memoryInfo_.availMem / 1048576L;
-            final boolean lowMem = memoryInfo_.lowMemory;
-            final boolean notEnoughMem = availMem <= (1 + memoryNeed);
-            res = notEnoughMem || lowMem;
-        }
-        return res;
-    }
+    /**
+     * The vertices positions of the {@link MainRenderer#verticesTexture}.
+     */
+    private FloatBuffer floatBufferVertices = null;
 
-    synchronized void prepareRenderer(final Runnable requestRender) {
-        this.requestRender_ = requestRender;
-        renderTask_ = new RenderTask(viewText_, () -> {}, () -> {}, 1);
-        renderTask_.executeOnExecutor(executor);
-    }
+    /**
+     * The texture coordinates of the {@link MainRenderer#texCoords}.
+     */
+    private FloatBuffer floatBufferTexture = null;
 
-    synchronized private void checkGLError() {
+    /**
+     * The vertices positions in the scene.
+     */
+    private ByteBuffer arrayVertices = null;
+
+    /**
+     * The vertices colors in the scene.
+     */
+    private ByteBuffer arrayColors = null;
+
+    /**
+     * The camera (e.g.: eye, direction, up and fov) in the scene.
+     */
+    private ByteBuffer arrayCamera = null;
+
+    /**
+     * A reference to the {@link DrawView#requestRender()} method.
+     */
+    private Runnable requestRender = null;
+
+    /**
+     * The width of the {@link Bitmap}.
+     */
+    private int width = 1;
+
+    /**
+     * The height of the {@link Bitmap}.
+     */
+    private int height = 1;
+
+    /**
+     * The width of the {@link DrawView}.
+     */
+    private int viewWidth = 1;
+
+    /**
+     * The height of the {@link DrawView}.
+     */
+    private int viewHeight = 1;
+
+    /**
+     * The OpenGL program shader for the 2 triangles containing a texture with {@link Bitmap}.
+     */
+    private int shaderProgram = 0;
+
+    /**
+     * The OpenGL program shader for the rasterization of the scene (preview).
+     */
+    private int shaderProgramRaster = 0;
+
+    /**
+     * Determine if it is the first frame to render.
+     * It is important because it should only call the Ray Tracer engine at the first frame and the others just
+     * update the texture with the {@link Bitmap}.
+     */
+    private boolean firstFrame = false;
+
+    /**
+     * The {@link TextView} which will output the debug information about the Ray Tracer engine.
+     */
+    private TextView textView = null;
+
+    /**
+     * The {@link Button} which can start and STOP the Ray Tracer engine.
+     * It is important to let the {@link RenderTask} update its state after the rendering process.
+     */
+    private Button buttonRender = null;
+
+    /**
+     * The number of samples per pixel.
+     */
+    private int samplesPixel = 0;
+
+    /**
+     * The number of samples per light.
+     */
+    private int samplesLight = 0;
+
+    /**
+     * A custom {@link AsyncTask} which will update the {@link View} with the updated {@link Bitmap} and debug
+     * information.
+     */
+    private RenderTask renderTask = null;
+
+    /**
+     * A thread pool containing {@link ConstantsRenderer#NUMBER_THREADS} threads with the purpose of executing the
+     * {@link MainRenderer#renderTask}.
+     */
+    private ExecutorService executorService = Executors.newFixedThreadPool(NUMBER_THREADS);
+
+    /**
+     * Helper method which checks and prints errors in the OpenGL framework.
+     */
+    private static void checksGLError() {
         final int glError = GLES20.glGetError();
         String stringError = null;
         switch (glError) {
@@ -154,290 +251,340 @@ final class MainRenderer implements Renderer {
                 stringError = "GL_OUT_OF_MEMORY";
                 break;
         }
-        Log.e("LOG", "glError = " + GLUtils.getEGLErrorString(glError) + ": " + stringError);
+        LOGGER.severe("glError = " + GLUtils.getEGLErrorString(glError) + ": " + stringError);
         System.exit(1);
     }
 
-    private synchronized int loadShader(final int shaderType, final String source) {
+    /**
+     * Helper method which loads an OpenGL shader.
+     *
+     * @param shaderType The type of the shader (vertex or fragment shader).
+     * @param source     The code of the shader.
+     * @return The OpenGL index of the shader.
+     */
+    private static int loadShader(final int shaderType, final String source) {
         final int shader = GLES20.glCreateShader(shaderType);
-        checkGLError();
-        if (shader != 0) {
+        checksGLError();
+        if (shader == 0) {
+            LOGGER.severe("GLES20.glCreateShader = 0");
+            System.exit(1);
+        } else {
             GLES20.glShaderSource(shader, source);
-            checkGLError();
+            checksGLError();
             GLES20.glCompileShader(shader);
-            checkGLError();
+            checksGLError();
             final int[] compiled = new int[1];
             GLES20.glGetShaderiv(shader, GLES20.GL_COMPILE_STATUS, compiled, 0);
-            checkGLError();
+            checksGLError();
             if (compiled[0] == 0) {
-                Log.e("SHADER", "Could not compile shader " + shaderType + ':');
-                Log.e("SHADER", GLES20.glGetShaderInfoLog(shader));
-                checkGLError();
-                Log.e("SHADER", source);
+                LOGGER.severe("Could not compile shader " + shaderType + ':');
+                LOGGER.severe(GLES20.glGetShaderInfoLog(shader));
+                checksGLError();
+                LOGGER.severe(source);
                 GLES20.glDeleteShader(shader);
-                checkGLError();
+                checksGLError();
                 System.exit(1);
             }
-        } else {
-            Log.e("loadShader", "GLES20.glCreateShader = 0");
-            System.exit(1);
         }
         return shader;
     }
 
-    synchronized void setBitmap(final int width, final int height, final int realWidth, final int realHeight) {
-        bitmap_ = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        bitmap_.eraseColor(Color.BLACK);
-        width_ = width;
-        height_ = height;
-        realWidth_ = realWidth;
-        realHeight_ = realHeight;
-        firstFrame_ = true;
+    /**
+     * Sets the {@link MainRenderer#textView}.
+     *
+     * @param textView The new {@link TextView} to set.
+     */
+    void setTextView(final TextView textView) {
+        this.textView = textView;
     }
 
-    synchronized private Bitmap copyFrameBuffer() {
-        final int sizePixels = realWidth_ * realHeight_;
-        final int[] b = new int[sizePixels];
-        final int[] bt = new int[sizePixels];
-        final IntBuffer ib = IntBuffer.wrap(b);
-        ib.position(0);
+    /**
+     * Updates the text in the render {@link Button}.
+     *
+     * @param state The resource identifier of the string resource to be displayed.
+     */
+    void updateButton(final int state) {
+        this.buttonRender.setText(state);
+    }
 
-        GLES20.glReadPixels(0, 0, realWidth_, realHeight_, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, ib);
-        checkGLError();
+    /**
+     * Sets the {@link MainRenderer#buttonRender}.
+     *
+     * @param buttonRender The new {@link Button} to set.
+     */
+    void setButtonRender(final Button buttonRender) {
+        this.buttonRender = buttonRender;
+    }
 
-        //remember, that OpenGL bitmap is incompatible with Android bitmap
-        //and so, some correction need.
-        for (int i = 0; i < realHeight_; i++) {
-            for (int j = 0; j < realWidth_; j++) {
-                final int oldPixelId = i * realWidth_ + j;
-                final int newPixelId = (realHeight_ - i - 1) * realWidth_ + j;
-                final int pixel = b[oldPixelId];
-                final int red = pixel & 0xff;
-                final int green = (pixel >> 8) & 0xff;
-                final int blue = (pixel >> 16) & 0xff;
-                final int alpha = (pixel >> 24) & 0xff;
-                final int newPixel = (red << 16) | (green << 8) | blue | (alpha << 24);
-                bt[newPixelId] = newPixel;
-            }
+    /**
+     * Gets an {@code int} which represents the current Ray Tracer engine {@link State}.
+     *
+     * @return The current Ray Tracer engine {@link State}.
+     */
+    State getState() {
+        return State.values()[this.renderTask.RTGetState()];
+    }
+
+    /**
+     * Resets some stats about the Ray Tracer engine.
+     *
+     * @param numThreads       The number of threads.
+     * @param samplesPixel     The number of samples per pixel.
+     * @param samplesLight     The number of samples per light.
+     * @param numberPrimitives The number of primitives in the scene.
+     * @param numberLights     The number of lights in the scene.
+     */
+    void resetStats(
+            final int numThreads,
+            final int samplesPixel,
+            final int samplesLight,
+            final int numberPrimitives,
+            final int numberLights) {
+        this.numThreads = numThreads;
+        this.samplesPixel = samplesPixel;
+        this.samplesLight = samplesLight;
+        this.numberPrimitives = numberPrimitives;
+        this.numberLights = numberLights;
+    }
+
+    /**
+     * Stops the Ray Tracer engine and updates its {@link State} to {@link State#IDLE}.
+     */
+    native void RTFinishRender();
+
+    /**
+     * Loads the scene and constructs the Ray Tracer renderer.
+     *
+     * @param scene        The scene to load.
+     * @param shader       The shader to use.
+     * @param width        The width of the image plane.
+     * @param height       The height of the image plane.
+     * @param accelerator  The accelerator to use.
+     * @param samplesPixel The number of samples per pixel.
+     * @param samplesLight The number of samples per light.
+     * @param objFile      The path to the OBJ file containing the scene.
+     * @param matText      The path to the MTL file containing the materials of the scene.
+     * @return The number of primitives or -1 if an error occurs.
+     */
+    native int RTInitialize(
+            final int scene,
+            final int shader,
+            final int width,
+            final int height,
+            final int accelerator,
+            final int samplesPixel,
+            final int samplesLight,
+            final String objFile,
+            final String matText
+    );
+
+    /**
+     * Let Ray Tracer engine start to render the scene.
+     * It can render synchronously or asynchronously controlled by the {@code async} argument.
+     *
+     * @param image      The {@link Bitmap} where the Ray Tracer will render the scene into.
+     * @param numThreads The number of threads to be used by the Ray Tracer engine.
+     * @param async      If {@code true} let the Ray Tracer engine render the scene asynchronously or otherwise
+     *                   synchronously.
+     */
+    private native void RTRenderIntoBitmap(final Bitmap image, final int numThreads, final boolean async);
+
+    /**
+     * Creates a native array with all the positions of triangles in the scene.
+     *
+     * @return A new array with all the primitives' vertices.
+     */
+    private native ByteBuffer RTInitVerticesArray();
+
+    /**
+     * Creates a native array with all the colors of triangles in the scene.
+     *
+     * @return A new array with all the primitives' colors.
+     */
+    private native ByteBuffer RTInitColorsArray();
+
+    /**
+     * Creates a native array with the camera's position, direction, up and right vectors in the scene.
+     *
+     * @return A new array with the camera's position and vectors.
+     */
+    private native ByteBuffer RTInitCameraArray();
+
+    /**
+     * Free the memory of a native array.
+     * The memory allocated with {@link MainRenderer#RTInitVerticesArray()},
+     * {@link MainRenderer#RTInitColorsArray()} and {@link MainRenderer#RTInitCameraArray()} methods should be
+     * free using this method.
+     *
+     * @param byteBuffer A reference to {@link ByteBuffer} to free its memory.
+     * @return A {@code null} reference.
+     */
+    private native ByteBuffer RTFreeNativeBuffer(final ByteBuffer byteBuffer);
+
+    /**
+     * Free the memory of {@link MainRenderer#arrayVertices}, {@link MainRenderer#arrayColors} and
+     * {@link MainRenderer#arrayCamera} native arrays.
+     */
+    void freeArrays() {
+        this.arrayVertices = RTFreeNativeBuffer(this.arrayVertices);
+        this.arrayColors = RTFreeNativeBuffer(this.arrayColors);
+        this.arrayCamera = RTFreeNativeBuffer(this.arrayCamera);
+    }
+
+    /**
+     * Helper method which initializes the {@link MainRenderer#arrayVertices}, {@link MainRenderer#arrayColors} and
+     * {@link MainRenderer#arrayCamera} native arrays.
+     */
+    private void initArrays() {
+        this.arrayVertices = RTInitVerticesArray();
+
+        if (isLowMemory(1)) {
+            freeArrays();
         }
 
-        final Bitmap bitmapAux = Bitmap.createBitmap(bt, realWidth_, realHeight_, Bitmap.Config.ARGB_8888);
-        return Bitmap.createScaledBitmap(bitmapAux, width_, height_, true);
-    }
+        this.arrayColors = RTInitColorsArray();
 
-    @Override
-    synchronized public void onDrawFrame(final GL10 gl) {
-        if (firstFrame_) {
-            firstFrame_ = false;
-            if (rasterize_) {
-                rasterize_ = false;
-                initArrays();
-            }
-            Log.d("Test", "onDrawFrame");
-            waitForLastTask();
-            if (arrayVertices_ != null && arrayColors_ != null && arrayCamera_ != null) {
-                copyFrame(arrayVertices_, arrayColors_, arrayCamera_, numberPrimitives_);
-            }
-
-            renderIntoBitmap(bitmap_, numThreads_, true);
-            renderTask_ = new RenderTask(viewText_, requestRender_, this::finishRender, 250);
-            renderTask_.executeOnExecutor(executorService_);
+        if (isLowMemory(1)) {
+            freeArrays();
         }
 
+        this.arrayCamera = RTInitCameraArray();
 
-        GLES20.glUseProgram(shaderProgram_);
-        checkGLError();
-
-
-        final int positionAttrib = GLES20.glGetAttribLocation(shaderProgram_, "vertexPosition");
-        checkGLError();
-        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, positionAttrib);
-        checkGLError();
-        GLES20.glEnableVertexAttribArray(positionAttrib);
-        checkGLError();
-        GLES20.glVertexAttribPointer(positionAttrib, 4, GLES20.GL_FLOAT, false, 0, floatBufferVertices_);
-        checkGLError();
-
-        final int texCoordAttrib = GLES20.glGetAttribLocation(shaderProgram_, "vertexTexCoord");
-        checkGLError();
-        GLES20.glEnableVertexAttribArray(texCoordAttrib);
-        checkGLError();
-        GLES20.glVertexAttribPointer(texCoordAttrib, 2, GLES20.GL_FLOAT, false, 0, floatBufferTexture_);
-        checkGLError();
-
-
-        final int vertexCount = verticesTexture.length / (Float.SIZE / Byte.SIZE);
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_FAN, positionAttrib, vertexCount);
-        checkGLError();
-
-        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, bitmap_, GLES20.GL_UNSIGNED_BYTE, 0);
-        checkGLError();
-
-        GLES20.glDisableVertexAttribArray(positionAttrib);
-        checkGLError();
-        GLES20.glDisableVertexAttribArray(texCoordAttrib);
-        checkGLError();
-        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0);
-        checkGLError();
+        if (isLowMemory(1)) {
+            freeArrays();
+        }
     }
 
-    synchronized void waitForLastTask() {
-        Log.d("Test", "WAITING");
-        executorService_.shutdown();
-        boolean running = true;
-        do {
-            try {
-                running = !executorService_.awaitTermination(1, TimeUnit.DAYS);
-            } catch (final InterruptedException ex) {
-                Log.e("InterruptedException", Objects.requireNonNull(ex.getMessage()));
-            }
-        } while (running);
-        executorService_ = Executors.newFixedThreadPool(1);
-        Log.d("Test", "WAITED");
+    /**
+     * Helper method which verifies if the Android device has low free memory.
+     *
+     * @param memoryNeed Number of MegaBytes needed to be allocated.
+     * @return {@code True} if the device doesn't have enough memory to be allocated, otherwise {@code false}.
+     */
+    private boolean isLowMemory(final int memoryNeed) {
+        boolean res = true;
+        if (memoryNeed >= 0) {
+            this.activityManager.getMemoryInfo(this.memoryInfo);
+            final long availMem = this.memoryInfo.availMem / 1048576L;
+            final boolean lowMem = this.memoryInfo.lowMemory;
+            final boolean insufficientMem = availMem <= (long) (1 + memoryNeed);
+            res = insufficientMem || lowMem;
+        }
+        return res;
     }
 
-    @Override
-    synchronized public void onSurfaceChanged(final GL10 gl, final int width, final int height) {
-        GLES20.glViewport(0, 0, width, height);
-        checkGLError();
+    /**
+     * Prepares this object by setting up the {@link MainRenderer#requestRender} and
+     * {@link MainRenderer#renderTask} fields.
+     *
+     * @param requestRender A {@link Runnable} of {@link GLSurfaceView#requestRender()} method.
+     */
+    void prepareRenderer(final Runnable requestRender) {
+        LOGGER.info("prepareRenderer");
 
-        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap_, 0);
-        checkGLError();
+        this.requestRender = requestRender;
+        this.renderTask = new RenderTask.Builder(() -> { }, () -> { }, this.textView, this.buttonRender).build();
     }
 
-    @Override
-    synchronized public void onSurfaceCreated(final GL10 gl, final EGLConfig config) {
+    /**
+     * Creates a new {@link Bitmap} with the size of {@code width} and {@code height} and also sets the
+     * {@link MainRenderer#viewWidth} and {@link MainRenderer#viewHeight} fields.
+     *
+     * @param width      The width of the new {@link Bitmap}.
+     * @param height     The height of the new {@link Bitmap}.
+     * @param widthView  The width of the {@link GLSurfaceView}.
+     * @param heightView The height of the {@link GLSurfaceView}.
+     */
+    void setBitmap(final int width, final int height, final int widthView, final int heightView) {
+        this.bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        this.bitmap.eraseColor(Color.BLACK);
+        this.width = width;
+        this.height = height;
+        this.viewWidth = widthView;
+        this.viewHeight = heightView;
+        this.firstFrame = true;
+    }
+
+    /**
+     * Helper method that reads and copies the pixels in the frame buffer to a new {@link Bitmap}.
+     *
+     * @return A new {@link Bitmap} with the colors of the pixels in the OpenGL frame buffer.
+     */
+    private Bitmap copyFrameBuffer() {
+        final int sizePixels = this.viewWidth * this.viewHeight;
+        final int[] arrayBytesPixels = new int[sizePixels];
+        final int[] arrayBytesNewBitmap = new int[sizePixels];
+        final IntBuffer intBuffer = IntBuffer.wrap(arrayBytesPixels);
+        intBuffer.position(0);
+
+        GLES20.glReadPixels(0, 0, this.viewWidth, this.viewHeight, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE,
+                intBuffer);
+        checksGLError();
+
+        // Remember, that OpenGL bitmap is incompatible with Android bitmap and so, some correction need.
+        int id = 0;
+        for (final int pixel : arrayBytesPixels) {
+            final int column = id % this.viewWidth;
+            final int line = id / this.viewWidth;
+            final int newPixelId = (this.viewHeight - line - 1) * this.viewWidth + column;
+            id++;
+
+            final int red = pixel & 0xff;
+            final int green = (pixel >> 8) & 0xff;
+            final int blue = (pixel >> 16) & 0xff;
+            final int alpha = (pixel >> 24) & 0xff;
+            final int newPixel = (red << 16) | (green << 8) | blue;
+            arrayBytesNewBitmap[newPixelId] = alpha << 24 | newPixel;
+        }
+
+        final Bitmap bitmapAux = Bitmap.createBitmap(arrayBytesNewBitmap, this.viewWidth, this.viewHeight,
+                Bitmap.Config.ARGB_8888);
+        return Bitmap.createScaledBitmap(bitmapAux, this.width, this.height, true);
+    }
+
+    /**
+     * Shuts down and waits for the {@link MainRenderer#executorService} to terminate.
+     * In the END, resets {@link MainRenderer#executorService} to a new thread pool with
+     * {@link ConstantsRenderer#NUMBER_THREADS} threads.
+     */
+    void waitForLastTask() {
+        LOGGER.info("WAITING");
+
+        this.lockExecutorService.lock();
+        try {
+            this.executorService.shutdown();
+            boolean running = true;
+            do {
+                running = !this.executorService.awaitTermination(1L, TimeUnit.DAYS);
+            } while (running);
+            this.executorService = Executors.newFixedThreadPool(NUMBER_THREADS);
+        } catch (final InterruptedException ex) {
+            LOGGER.warning(Objects.requireNonNull(ex.getMessage()));
+        } finally {
+            this.lockExecutorService.unlock();
+        }
+
+        LOGGER.info("WAITED");
+    }
+
+    /**
+     * Helper method which rasterizes a frame by using the camera and the primitives received by parameters in the
+     * OpenGL pipeline.
+     *
+     * @param bbVertices       The primitives' vertices in the scene.
+     * @param bbColors         The primitives' colors in the scene.
+     * @param bbCamera         The camera's position and vectors in the scene.
+     * @param numberPrimitives The number of primitives in the scene.
+     * @throws LowMemoryException This {@link Exception} is thrown if the Android device has low free memory.
+     */
+    private void copyFrame(
+            final ByteBuffer bbVertices,
+            final ByteBuffer bbColors,
+            final ByteBuffer bbCamera,
+            final int numberPrimitives
+    ) throws LowMemoryException {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_STENCIL_BUFFER_BIT);
-        checkGLError();
-
-        //Enable culling
-        GLES20.glEnable(GLES20.GL_CULL_FACE);
-        checkGLError();
-
-        GLES20.glEnable(GLES20.GL_BLEND);
-        checkGLError();
-
-        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
-        checkGLError();
-
-        GLES20.glCullFace(GLES20.GL_BACK);
-        checkGLError();
-
-        GLES20.glFrontFace(GLES20.GL_CCW);
-        checkGLError();
-
-        GLES20.glClearDepthf(1.0f);
-        checkGLError();
-
-        GLES20.glDepthMask(true);
-        checkGLError();
-
-        GLES20.glDepthFunc(GLES20.GL_LEQUAL);
-        checkGLError();
-
-        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-        checkGLError();
-
-        //Create geometry and texCoords buffers
-        final int byteBufferVerticesSize = verticesTexture.length * (Float.SIZE / Byte.SIZE);
-        final ByteBuffer bbVertices = ByteBuffer.allocateDirect(byteBufferVerticesSize);
-        bbVertices.order(ByteOrder.nativeOrder());
-        floatBufferVertices_ = bbVertices.asFloatBuffer();
-        floatBufferVertices_.put(verticesTexture);
-        floatBufferVertices_.position(0);
-
-        final int byteBufferTexCoordsSize = texCoords.length * (Float.SIZE / Byte.SIZE);
-        final ByteBuffer byteBufferTexCoords = ByteBuffer.allocateDirect(byteBufferTexCoordsSize);
-        byteBufferTexCoords.order(ByteOrder.nativeOrder());
-        floatBufferTexture_ = byteBufferTexCoords.asFloatBuffer();
-        floatBufferTexture_.put(texCoords);
-        floatBufferTexture_.position(0);
-
-
-        //Load shaders
-        final int vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, vertexShaderCode_);
-        final int fragmentShader = loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode_);
-
-        //Create Program
-        shaderProgram_ = GLES20.glCreateProgram();
-        checkGLError();
-
-        if (shaderProgram_ == 0) {
-            Log.e("PROGRAM SHADER", "Could not create program: ");
-            Log.e("PROGRAM SHADER", GLES20.glGetProgramInfoLog(0));
-            System.exit(1);
-        }
-
-        //Attach and link shaders to program
-        GLES20.glAttachShader(shaderProgram_, vertexShader);
-        checkGLError();
-
-        GLES20.glAttachShader(shaderProgram_, fragmentShader);
-        checkGLError();
-
-
-        final int Number_Texures = 1;
-        final int[] textureHandle = new int[Number_Texures];
-        GLES20.glGenTextures(Number_Texures, textureHandle, 0);
-        if (textureHandle[0] == 0) {
-            Log.e("Error loading texture.", "Error loading texture");
-            System.exit(1);
-        }
-
-
-        //Bind Attributes
-        final int positionAttrib = 0;
-        GLES20.glBindAttribLocation(shaderProgram_, positionAttrib, "vertexPosition");
-        checkGLError();
-        GLES20.glVertexAttribPointer(positionAttrib, 4, GLES20.GL_FLOAT, false, 0, floatBufferVertices_);
-        checkGLError();
-        GLES20.glEnableVertexAttribArray(positionAttrib);
-        checkGLError();
-
-        final int texCoordAttrib = 1;
-        GLES20.glBindAttribLocation(shaderProgram_, texCoordAttrib, "vertexTexCoord");
-        checkGLError();
-        GLES20.glVertexAttribPointer(texCoordAttrib, 2, GLES20.GL_FLOAT, false, 0, floatBufferTexture_);
-        checkGLError();
-        GLES20.glEnableVertexAttribArray(texCoordAttrib);
-        checkGLError();
-
-
-        GLES20.glLinkProgram(shaderProgram_);
-        checkGLError();
-
-        final int[] linkStatus = new int[1];
-        GLES20.glGetProgramiv(shaderProgram_, GLES20.GL_LINK_STATUS, linkStatus, 0);
-        checkGLError();
-
-        if (linkStatus[0] != GLES20.GL_TRUE) {
-            Log.e("PROGRAM SHADER LOG", "Could not link program: ");
-            Log.e("PROGRAM SHADER LOG", GLES20.glGetProgramInfoLog(shaderProgram_));
-            GLES20.glDeleteProgram(shaderProgram_);
-            System.exit(1);
-        }
-
-        //Shader program 1
-        GLES20.glUseProgram(shaderProgram_);
-        checkGLError();
-
-        // Bind to the texture in OpenGL
-        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-        checkGLError();
-
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle[0]);
-        checkGLError();
-
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
-        checkGLError();
-
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
-        checkGLError();
-    }
-
-    synchronized private void copyFrame(final ByteBuffer bbVertices, final ByteBuffer bbColors, final ByteBuffer bbCamera, final int numberPrimitives) {
-        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_STENCIL_BUFFER_BIT);
-        checkGLError();
+        checksGLError();
 
         final int floatSize = Float.SIZE / Byte.SIZE;
         final int triangleMembers = floatSize * 9;
@@ -446,97 +593,97 @@ final class MainRenderer implements Renderer {
         final int neededMemory = (numberPrimitives * triangleSize) / 1048576;
 
         if (isLowMemory(neededMemory)) {
-            return;
+            throw new LowMemoryException();
         }
 
         bbVertices.order(ByteOrder.nativeOrder());
         bbVertices.position(0);
 
         if (isLowMemory(1)) {
-            return;
+            throw new LowMemoryException();
         }
 
         bbColors.order(ByteOrder.nativeOrder());
         bbColors.position(0);
 
         if (isLowMemory(1)) {
-            return;
+            throw new LowMemoryException();
         }
 
         bbCamera.order(ByteOrder.nativeOrder());
         bbCamera.position(0);
 
         if (isLowMemory(1)) {
-            return;
+            throw new LowMemoryException();
         }
 
-        //Create Program
-        if (shaderProgramRaster_ != 0) {
-            GLES20.glDeleteProgram(shaderProgramRaster_);
-            checkGLError();
-            shaderProgramRaster_ = 0;
+        // Create Program
+        if (this.shaderProgramRaster != 0) {
+            GLES20.glDeleteProgram(this.shaderProgramRaster);
+            checksGLError();
+            this.shaderProgramRaster = 0;
         }
-        shaderProgramRaster_ = GLES20.glCreateProgram();
-        checkGLError();
+        this.shaderProgramRaster = GLES20.glCreateProgram();
+        checksGLError();
 
         final int positionAttrib2 = 0;
-        GLES20.glBindAttribLocation(shaderProgramRaster_, positionAttrib2, "vertexPosition");
-        checkGLError();
+        GLES20.glBindAttribLocation(this.shaderProgramRaster, positionAttrib2, VERTEX_POSITION);
+        checksGLError();
         GLES20.glVertexAttribPointer(positionAttrib2, 4, GLES20.GL_FLOAT, false, 0, bbVertices);
-        checkGLError();
+        checksGLError();
         GLES20.glEnableVertexAttribArray(positionAttrib2);
-        checkGLError();
+        checksGLError();
 
         final int colorAttrib2 = 1;
-        GLES20.glBindAttribLocation(shaderProgramRaster_, colorAttrib2, "vertexColor");
-        checkGLError();
+        GLES20.glBindAttribLocation(this.shaderProgramRaster, colorAttrib2, VERTEX_COLOR);
+        checksGLError();
         GLES20.glVertexAttribPointer(colorAttrib2, 4, GLES20.GL_FLOAT, false, 0, bbColors);
-        checkGLError();
+        checksGLError();
         GLES20.glEnableVertexAttribArray(colorAttrib2);
-        checkGLError();
+        checksGLError();
 
-        //Load shaders
-        final int vertexShaderRaster = loadShader(GLES20.GL_VERTEX_SHADER, vertexShaderCodeRaster_);
-        final int fragmentShaderRaster = loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCodeRaster_);
+        // Load shaders
+        final int vertexShaderRaster = loadShader(GLES20.GL_VERTEX_SHADER, this.vertexShaderCodeRaster);
+        final int fragmentShaderRaster = loadShader(GLES20.GL_FRAGMENT_SHADER, this.fragmentShaderCodeRaster);
 
-        //Attach and link shaders to program
-        GLES20.glAttachShader(shaderProgramRaster_, vertexShaderRaster);
-        checkGLError();
+        // Attach and link shaders to program
+        GLES20.glAttachShader(this.shaderProgramRaster, vertexShaderRaster);
+        checksGLError();
 
-        GLES20.glAttachShader(shaderProgramRaster_, fragmentShaderRaster);
-        checkGLError();
+        GLES20.glAttachShader(this.shaderProgramRaster, fragmentShaderRaster);
+        checksGLError();
 
-        GLES20.glLinkProgram(shaderProgramRaster_);
-        checkGLError();
+        GLES20.glLinkProgram(this.shaderProgramRaster);
+        checksGLError();
 
         final int[] attachedShadersRaster = new int[1];
-        GLES20.glGetProgramiv(shaderProgramRaster_, GLES20.GL_ATTACHED_SHADERS, attachedShadersRaster, 0);
-        checkGLError();
+        GLES20.glGetProgramiv(this.shaderProgramRaster, GLES20.GL_ATTACHED_SHADERS, attachedShadersRaster, 0);
+        checksGLError();
 
         final int[] linkStatusRaster = new int[1];
-        GLES20.glGetProgramiv(shaderProgramRaster_, GLES20.GL_LINK_STATUS, linkStatusRaster, 0);
-        checkGLError();
+        GLES20.glGetProgramiv(this.shaderProgramRaster, GLES20.GL_LINK_STATUS, linkStatusRaster, 0);
+        checksGLError();
 
         if (isLowMemory(1)) {
-            return;
+            throw new LowMemoryException();
         }
 
         if (linkStatusRaster[0] != GLES20.GL_TRUE) {
-            final String strError = GLES20.glGetProgramInfoLog(shaderProgramRaster_);
-            Log.e("PROGRAM SHADER LOG", "attachedShadersRaster = " + attachedShadersRaster[0]);
-            Log.e("PROGRAM SHADER LOG", "Could not link program rasterizer: " + strError);
-            checkGLError();
-            GLES20.glDeleteProgram(shaderProgramRaster_);
-            checkGLError();
+            final String strError = GLES20.glGetProgramInfoLog(this.shaderProgramRaster);
+            LOGGER.severe("attachedShadersRaster = " + attachedShadersRaster[0]);
+            LOGGER.severe("Could not link program rasterizer: " + strError);
+            checksGLError();
+            GLES20.glDeleteProgram(this.shaderProgramRaster);
+            checksGLError();
             System.exit(1);
         }
 
 
-        GLES20.glUseProgram(shaderProgramRaster_);
-        checkGLError();
+        GLES20.glUseProgram(this.shaderProgramRaster);
+        checksGLError();
 
-        final float zNear = 0.1f;
-        final float zFar = 1.0e38f;
+        final float zNear = 0.1F;
+        final float zFar = 1.0e38F;
 
         final float eyeX = bbCamera.getFloat(0);
         final float eyeY = bbCamera.getFloat(floatSize);
@@ -554,12 +701,13 @@ final class MainRenderer implements Renderer {
         final float centerY = eyeY + dirY;
         final float centerZ = eyeZ + dirZ;
 
-        final float ratio = Math.max((float) width_ / height_, (float) height_ / width_);
-        final float hfovFactor = width_ > height_ ? ratio : 1.0f;
-        final float vfovFactor = width_ < height_ ? ratio : 1.0f;
+        final float ratio = Math.max((float) this.width / (float) this.height,
+                (float) this.height / (float) this.width);
+        final float hFovFactor = this.width > this.height ? ratio : 1.0F;
+        final float vFovFactor = this.width < this.height ? ratio : 1.0F;
         final float fovX = bbCamera.getFloat(16 * floatSize);
-        final float fovY = bbCamera.getFloat(17 * floatSize) * 0.918f;
-        final float aspect = hfovFactor > vfovFactor ? hfovFactor : 1.0f / vfovFactor;
+        final float fovY = bbCamera.getFloat(17 * floatSize) * 0.918F;
+        final float aspect = hFovFactor > vFovFactor ? hFovFactor : 1.0F / vFovFactor;
 
         final float sizeH = bbCamera.getFloat(18 * floatSize);
         final float sizeV = bbCamera.getFloat(19 * floatSize);
@@ -569,81 +717,368 @@ final class MainRenderer implements Renderer {
         final float[] modelMatrix = new float[16];
         Matrix.setIdentityM(modelMatrix, 0);
 
-        if (fovX > 0.0f && fovY > 0.0f) {
+        if (fovX > 0.0F && fovY > 0.0F) {
             Matrix.perspectiveM(projectionMatrix, 0, fovY, aspect, zNear, zFar);
         }
 
-        if (sizeH > 0.0f && sizeV > 0.0f) {
-            Matrix.orthoM(projectionMatrix, 0, -sizeH / 2, sizeH / 2, -sizeV / 2, sizeV / 2, zNear, zFar);
+        if (sizeH > 0.0F && sizeV > 0.0F) {
+            Matrix.orthoM(projectionMatrix, 0, -sizeH / 2.0F, sizeH / 2.0F,
+                    -sizeV / 2.0F, sizeV / 2.0F, zNear, zFar);
         }
 
         Matrix.setLookAtM(viewMatrix, 0,
                 eyeX, eyeY, eyeZ,
                 centerX, centerY, centerZ,
                 upX, upY, upZ);
-        final int handleModel = GLES20.glGetUniformLocation(shaderProgramRaster_, "uniformModelMatrix");
-        checkGLError();
-        final int handleView = GLES20.glGetUniformLocation(shaderProgramRaster_, "uniformViewMatrix");
-        checkGLError();
-        final int handleProjection = GLES20.glGetUniformLocation(shaderProgramRaster_, "uniformProjectionMatrix");
-        checkGLError();
+        final int handleModel = GLES20.glGetUniformLocation(this.shaderProgramRaster, "uniformModelMatrix");
+        checksGLError();
+        final int handleView = GLES20.glGetUniformLocation(this.shaderProgramRaster, "uniformViewMatrix");
+        checksGLError();
+        final int handleProjection = GLES20.glGetUniformLocation(this.shaderProgramRaster, "uniformProjectionMatrix");
+        checksGLError();
 
         GLES20.glUniformMatrix4fv(handleModel, 1, false, modelMatrix, 0);
-        checkGLError();
+        checksGLError();
         GLES20.glUniformMatrix4fv(handleView, 1, false, viewMatrix, 0);
-        checkGLError();
+        checksGLError();
         GLES20.glUniformMatrix4fv(handleProjection, 1, false, projectionMatrix, 0);
-        checkGLError();
+        checksGLError();
 
         if (isLowMemory(1)) {
-            return;
+            throw new LowMemoryException();
         }
 
-        final int positionAttrib = GLES20.glGetAttribLocation(shaderProgramRaster_, "vertexPosition");
-        checkGLError();
+        final int positionAttrib = GLES20.glGetAttribLocation(this.shaderProgramRaster, VERTEX_POSITION);
+        checksGLError();
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, positionAttrib);
-        checkGLError();
+        checksGLError();
         GLES20.glEnableVertexAttribArray(positionAttrib);
-        checkGLError();
+        checksGLError();
         GLES20.glVertexAttribPointer(positionAttrib, 4, GLES20.GL_FLOAT, false, 0, bbVertices);
-        checkGLError();
+        checksGLError();
 
         if (isLowMemory(1)) {
-            return;
+            throw new LowMemoryException();
         }
 
-        final int colorAttrib = GLES20.glGetAttribLocation(shaderProgramRaster_, "vertexColor");
-        checkGLError();
+        final int colorAttrib = GLES20.glGetAttribLocation(this.shaderProgramRaster, VERTEX_COLOR);
+        checksGLError();
         GLES20.glEnableVertexAttribArray(colorAttrib);
-        checkGLError();
+        checksGLError();
         GLES20.glVertexAttribPointer(colorAttrib, 4, GLES20.GL_FLOAT, false, 0, bbColors);
-        checkGLError();
+        checksGLError();
 
         if (isLowMemory(1)) {
-            return;
+            throw new LowMemoryException();
         }
 
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
-        checkGLError();
+        checksGLError();
 
-        final int vertexCount = bbVertices.capacity() / (floatSize * 4);
+        final int vertexCount = bbVertices.capacity() / (floatSize << 2);
 
         if (!isLowMemory(1)) {
             GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, vertexCount);
-            checkGLError();
-            Log.d("LOG", "glDrawArrays Complete");
+            checksGLError();
+            LOGGER.info("glDrawArrays Complete");
         }
 
         GLES20.glDisable(GLES20.GL_DEPTH_TEST);
-        checkGLError();
+        checksGLError();
 
         GLES20.glDisableVertexAttribArray(positionAttrib);
-        checkGLError();
+        checksGLError();
         GLES20.glDisableVertexAttribArray(colorAttrib);
-        checkGLError();
+        checksGLError();
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0);
-        checkGLError();
+        checksGLError();
 
-        bitmap_ = copyFrameBuffer();
+        this.bitmap = copyFrameBuffer();
+    }
+
+    /**
+     * Sets {@link MainRenderer#vertexShaderCode}.
+     *
+     * @param vertexShaderCode The new {@link MainRenderer#vertexShaderCode}.
+     */
+    void setVertexShaderCode(final String vertexShaderCode) {
+        this.vertexShaderCode = vertexShaderCode;
+    }
+
+    /**
+     * Sets {@link MainRenderer#fragmentShaderCode}.
+     *
+     * @param fragmentShaderCode The new {@link MainRenderer#fragmentShaderCode}.
+     */
+    void setFragmentShaderCode(final String fragmentShaderCode) {
+        this.fragmentShaderCode = fragmentShaderCode;
+    }
+
+    /**
+     * Sets {@link MainRenderer#vertexShaderCodeRaster}.
+     *
+     * @param vertexShaderCode The new {@link MainRenderer#vertexShaderCodeRaster}.
+     */
+    void setVertexShaderCodeRaster(final String vertexShaderCode) {
+        this.vertexShaderCodeRaster = vertexShaderCode;
+    }
+
+    /**
+     * Sets {@link MainRenderer#fragmentShaderCodeRaster}.
+     *
+     * @param fragmentShaderCode The new {@link MainRenderer#fragmentShaderCodeRaster}.
+     */
+    void setFragmentShaderCodeRaster(final String fragmentShaderCode) {
+        this.fragmentShaderCodeRaster = fragmentShaderCode;
+    }
+
+    /**
+     * Sets {@link MainRenderer#activityManager}.
+     *
+     * @param activityManager The new {@link MainRenderer#activityManager}.
+     */
+    void setActivityManager(final ActivityManager activityManager) {
+        this.activityManager = activityManager;
+    }
+
+    /**
+     * Sets {@link MainRenderer#bitmap}.
+     *
+     * @param bitmap The new {@link MainRenderer#bitmap}.
+     */
+    void setBitmap(final Bitmap bitmap) {
+        this.bitmap = bitmap;
+    }
+
+    /**
+     * Sets {@link MainRenderer#rasterize}.
+     *
+     * @param rasterize The new {@link MainRenderer#rasterize}.
+     */
+    void setRasterize(final boolean rasterize) {
+        this.rasterize = rasterize;
+    }
+
+    @Override
+    public void onDrawFrame(final GL10 gl) {
+        if (this.firstFrame) {
+            LOGGER.info("onDrawFrame");
+
+            this.firstFrame = false;
+            if (this.rasterize) {
+                this.rasterize = false;
+                initArrays();
+            }
+            waitForLastTask();
+            if (this.arrayVertices != null && this.arrayColors != null && this.arrayCamera != null) {
+                try {
+                    copyFrame(this.arrayVertices, this.arrayColors, this.arrayCamera, this.numberPrimitives);
+                } catch (final LowMemoryException ex) {
+                    LOGGER.warning("Low memory to rasterize a frame!!!");
+                }
+            }
+
+            RTRenderIntoBitmap(this.bitmap, this.numThreads, true);
+
+            final RenderTask.Builder renderTaskBuilder = new RenderTask.Builder(this.requestRender,
+                    this::RTFinishRender, this.textView, this.buttonRender);
+
+            this.renderTask = renderTaskBuilder
+                    .withUpdateInterval(250L)
+                    .withWidth(this.width)
+                    .withHeight(this.height)
+                    .withNumThreads(this.numThreads)
+                    .withSamplesPixel(this.samplesPixel)
+                    .withSamplesLight(this.samplesLight)
+                    .withNumPrimitives(this.numberPrimitives)
+                    .withNumLights(this.numberLights)
+                    .build();
+
+            this.lockExecutorService.lock();
+            try {
+                this.renderTask.executeOnExecutor(this.executorService);
+            } finally {
+                this.lockExecutorService.unlock();
+            }
+        }
+
+        GLES20.glUseProgram(this.shaderProgram);
+        checksGLError();
+
+
+        final int positionAttrib = GLES20.glGetAttribLocation(this.shaderProgram, VERTEX_POSITION);
+        checksGLError();
+        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, positionAttrib);
+        checksGLError();
+        GLES20.glEnableVertexAttribArray(positionAttrib);
+        checksGLError();
+        GLES20.glVertexAttribPointer(positionAttrib, 4, GLES20.GL_FLOAT, false, 0,
+                this.floatBufferVertices);
+        checksGLError();
+
+        final int texCoordAttrib = GLES20.glGetAttribLocation(this.shaderProgram, VERTEX_TEX_COORD);
+        checksGLError();
+        GLES20.glEnableVertexAttribArray(texCoordAttrib);
+        checksGLError();
+        GLES20.glVertexAttribPointer(texCoordAttrib, 2, GLES20.GL_FLOAT, false, 0,
+                this.floatBufferTexture);
+        checksGLError();
+
+
+        final int vertexCount = this.verticesTexture.length / (Float.SIZE / Byte.SIZE);
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_FAN, positionAttrib, vertexCount);
+        checksGLError();
+
+        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, this.bitmap, GLES20.GL_UNSIGNED_BYTE, 0);
+        checksGLError();
+
+        GLES20.glDisableVertexAttribArray(positionAttrib);
+        checksGLError();
+        GLES20.glDisableVertexAttribArray(texCoordAttrib);
+        checksGLError();
+        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0);
+        checksGLError();
+    }
+
+    @Override
+    public void onSurfaceChanged(final GL10 gl, final int width, final int height) {
+        LOGGER.info("onSurfaceChanged");
+
+        GLES20.glViewport(0, 0, width, height);
+        checksGLError();
+
+        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, this.bitmap, 0);
+        checksGLError();
+    }
+
+    @Override
+    public void onSurfaceCreated(final GL10 gl, final EGLConfig config) {
+        LOGGER.info("onSurfaceCreated");
+
+        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_STENCIL_BUFFER_BIT);
+        checksGLError();
+
+        // Enable culling
+        GLES20.glEnable(GLES20.GL_CULL_FACE);
+        checksGLError();
+
+        GLES20.glEnable(GLES20.GL_BLEND);
+        checksGLError();
+
+        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+        checksGLError();
+
+        GLES20.glCullFace(GLES20.GL_BACK);
+        checksGLError();
+
+        GLES20.glFrontFace(GLES20.GL_CCW);
+        checksGLError();
+
+        GLES20.glClearDepthf(1.0F);
+        checksGLError();
+
+        GLES20.glDepthMask(true);
+        checksGLError();
+
+        GLES20.glDepthFunc(GLES20.GL_LEQUAL);
+        checksGLError();
+
+        GLES20.glClearColor(0.0F, 0.0F, 0.0F, 0.0F);
+        checksGLError();
+
+        // Create geometry and texCoords buffers
+        final int byteBufferVerticesSize = this.verticesTexture.length * (Float.SIZE / Byte.SIZE);
+        final ByteBuffer bbVertices = ByteBuffer.allocateDirect(byteBufferVerticesSize);
+        bbVertices.order(ByteOrder.nativeOrder());
+        this.floatBufferVertices = bbVertices.asFloatBuffer();
+        this.floatBufferVertices.put(this.verticesTexture);
+        this.floatBufferVertices.position(0);
+
+        final int byteBufferTexCoordsSize = this.texCoords.length * (Float.SIZE / Byte.SIZE);
+        final ByteBuffer byteBufferTexCoords = ByteBuffer.allocateDirect(byteBufferTexCoordsSize);
+        byteBufferTexCoords.order(ByteOrder.nativeOrder());
+        this.floatBufferTexture = byteBufferTexCoords.asFloatBuffer();
+        this.floatBufferTexture.put(this.texCoords);
+        this.floatBufferTexture.position(0);
+
+
+        // Load shaders
+        final int vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, this.vertexShaderCode);
+        final int fragmentShader = loadShader(GLES20.GL_FRAGMENT_SHADER, this.fragmentShaderCode);
+
+        // Create Program
+        this.shaderProgram = GLES20.glCreateProgram();
+        checksGLError();
+
+        if (this.shaderProgram == 0) {
+            LOGGER.severe("Could not create program: ");
+            LOGGER.severe(GLES20.glGetProgramInfoLog(0));
+            System.exit(1);
+        }
+
+        // Attach and link shaders to program
+        GLES20.glAttachShader(this.shaderProgram, vertexShader);
+        checksGLError();
+
+        GLES20.glAttachShader(this.shaderProgram, fragmentShader);
+        checksGLError();
+
+
+        final int numberTextures = 1;
+        final int[] textureHandle = new int[numberTextures];
+        GLES20.glGenTextures(numberTextures, textureHandle, 0);
+        if (textureHandle[0] == 0) {
+            LOGGER.severe("Error loading texture.");
+            System.exit(1);
+        }
+
+
+        // Bind Attributes
+        final int positionAttrib = 0;
+        GLES20.glBindAttribLocation(this.shaderProgram, positionAttrib, VERTEX_POSITION);
+        checksGLError();
+        GLES20.glVertexAttribPointer(positionAttrib, 4, GLES20.GL_FLOAT, false, 0, this.floatBufferVertices);
+        checksGLError();
+        GLES20.glEnableVertexAttribArray(positionAttrib);
+        checksGLError();
+
+        final int texCoordAttrib = 1;
+        GLES20.glBindAttribLocation(this.shaderProgram, texCoordAttrib, VERTEX_TEX_COORD);
+        checksGLError();
+        GLES20.glVertexAttribPointer(texCoordAttrib, 2, GLES20.GL_FLOAT, false, 0, this.floatBufferTexture);
+        checksGLError();
+        GLES20.glEnableVertexAttribArray(texCoordAttrib);
+        checksGLError();
+
+
+        GLES20.glLinkProgram(this.shaderProgram);
+        checksGLError();
+
+        final int[] linkStatus = new int[1];
+        GLES20.glGetProgramiv(this.shaderProgram, GLES20.GL_LINK_STATUS, linkStatus, 0);
+        checksGLError();
+
+        if (linkStatus[0] != GLES20.GL_TRUE) {
+            LOGGER.severe(GLES20.glGetProgramInfoLog(this.shaderProgram));
+            GLES20.glDeleteProgram(this.shaderProgram);
+            System.exit(1);
+        }
+
+        // Shader program 1
+        GLES20.glUseProgram(this.shaderProgram);
+        checksGLError();
+
+        // Bind to the texture in OpenGL
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+        checksGLError();
+
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle[0]);
+        checksGLError();
+
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
+        checksGLError();
+
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
+        checksGLError();
     }
 }

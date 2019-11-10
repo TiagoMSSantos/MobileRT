@@ -5,9 +5,7 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.opengl.GLSurfaceView;
-import android.os.SystemClock;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,222 +16,298 @@ import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.microedition.khronos.egl.EGL10;
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.egl.EGLContext;
-import javax.microedition.khronos.egl.EGLDisplay;
+import static puscas.mobilertapp.ConstantsError.UNABLE_TO_FIND_AN_ACTIVITY;
+import static puscas.mobilertapp.ConstantsMethods.ON_DETACHED_FROM_WINDOW;
+import static puscas.mobilertapp.ConstantsMethods.RENDER_SCENE;
+import static puscas.mobilertapp.ConstantsRenderer.NUMBER_THREADS;
+import static puscas.mobilertapp.ConstantsToast.COULD_NOT_LOAD_THE_SCENE;
+import static puscas.mobilertapp.ConstantsToast.DEVICE_WITHOUT_ENOUGH_MEMORY;
+import static puscas.mobilertapp.MyEGLContextFactory.EGL_CONTEXT_CLIENT_VERSION;
 
 /**
- * OpenGL view to show the scene being rendered.
+ * The {@link GLSurfaceView} to show the scene being rendered.
  */
 public final class DrawView extends GLSurfaceView {
+
+    /**
+     * The {@link Logger} for this class.
+     */
     private static final Logger LOGGER = Logger.getLogger(DrawView.class.getName());
 
-    private static final int EGL_CONTEXT_CLIENT_VERSION_VALUE = 2;
-    private static EGLContext retainedGLContext = null;
+    /**
+     * The {@link GLSurfaceView.Renderer}.
+     */
+    private final MainRenderer renderer = new MainRenderer();
 
-    final MainRenderer renderer_ = new MainRenderer();
-    private boolean changingConfigurations = false;
-    private ExecutorService executorService_ = Executors.newFixedThreadPool(1);
+    /**
+     * @see Activity#isChangingConfigurations()
+     */
+    private boolean changingConfigs = false;
 
-    public DrawView(final Context context) {
+    /**
+     * The {@link ExecutorService} which holds {@link ConstantsRenderer#NUMBER_THREADS} number of threads that will
+     * create Ray Tracer engine renderer.
+     */
+    private ExecutorService executorService = Executors.newFixedThreadPool(NUMBER_THREADS);
+
+    /**
+     * The constructor for this class.
+     *
+     * @param context The context of the Android system.
+     */
+    public DrawView(@NonNull final Context context) {
         super(context);
-        this.renderer_.prepareRenderer(this::requestRender);
-        this.renderer_.viewText_.resetPrint(this.getWidth(), this.getHeight(), 0, 0, 0);
-        this.init();
+
+        this.renderer.prepareRenderer(this::requestRender);
+        initEGLContextFactory();
     }
 
+    /**
+     * The constructor for this class.
+     *
+     * @param context The context of the Android system.
+     * @param attrs   The attributes of the Android system.
+     */
     public DrawView(@NonNull final Context context, @NonNull final AttributeSet attrs) {
         super(context, attrs);
-        this.renderer_.prepareRenderer(this::requestRender);
-        this.renderer_.viewText_.resetPrint(this.getWidth(), this.getHeight(), 0, 0, 0);
+
+        this.renderer.prepareRenderer(this::requestRender);
     }
 
-    synchronized void onDestroy() {
-        super.onDetachedFromWindow();
+    /**
+     * Helper method which initiates the {@link GLSurfaceView.EGLContextFactory}.
+     */
+    private void initEGLContextFactory() {
+        this.changingConfigs = false;
 
-        LOGGER.log(Level.INFO, "onDestroy");
+        final GLSurfaceView.EGLContextFactory eglContextFactory = new MyEGLContextFactory(this);
+        setEGLContextClientVersion(EGL_CONTEXT_CLIENT_VERSION);
+        setEGLContextFactory(eglContextFactory);
     }
 
-    private synchronized void init() {
-        this.changingConfigurations = false;
+    /**
+     * Stops the Ray Tracer engine and sets its {@link State} to {@link State#STOP}.
+     */
+    private native void RTStopRender();
 
-        final GLSurfaceView.EGLContextFactory eglContextFactory = new GLSurfaceView.EGLContextFactory() {
-            private static final int EGL_CONTEXT_CLIENT_VERSION = 2;
+    /**
+     * Sets the Ray Tracer engine {@link State} to {@link State#BUSY}.
+     */
+    private native void RTStartRender();
 
-            public EGLContext createContext(final EGL10 egl, final EGLDisplay display, final EGLConfig eglConfig) {
-                if (retainedGLContext != null) {
-                    final EGLContext eglContext = retainedGLContext;
-                    retainedGLContext = null;
-                    return eglContext;
-                }
+    /**
+     * Gets the number of lights in the scene.
+     *
+     * @return The number of lights.
+     */
+    private native int RTGetNumberOfLights();
 
-                final int[] attribList = {this.EGL_CONTEXT_CLIENT_VERSION, EGL_CONTEXT_CLIENT_VERSION_VALUE,
-                        EGL10.EGL_NONE};
-                return egl.eglCreateContext(display, eglConfig, EGL10.EGL_NO_CONTEXT, attribList);
-            }
-
-            public void destroyContext(final EGL10 egl, final EGLDisplay display, final EGLContext context) {
-                if (DrawView.this.changingConfigurations) {
-                    retainedGLContext = context;
-                    return;
-                }
-
-                if (!egl.eglDestroyContext(display, context)) {
-                    throw new RuntimeException("eglDestroyContext failed: error " + egl.eglGetError());
-                }
-            }
-        };
-
-        this.setEGLContextClientVersion(EGL_CONTEXT_CLIENT_VERSION_VALUE);
-        this.setEGLContextFactory(eglContextFactory);
-    }
-
-    private synchronized native void stopRender();
-    private synchronized native void startRender();
-    private synchronized native int getNumberOfLights();
-
-    @Override
-    public synchronized void onPause() {
-        super.onPause();
-        this.changingConfigurations = this.getActivity().isChangingConfigurations();
-        //setVisibility(View.GONE);
-
-        LOGGER.log(Level.INFO, "onPause");
-    }
-
-    @Override
-    public synchronized void onWindowFocusChanged(final boolean hasWindowFocus) {
-        super.onWindowFocusChanged(hasWindowFocus);
-        if (hasWindowFocus && this.getVisibility() == View.GONE) {
-            this.setVisibility(View.VISIBLE);
-        }
-    }
-
-    private synchronized Activity getActivity() {
-        Context context = this.getContext();
+    /**
+     * Helper method which gets the instance of the {@link Activity}.
+     *
+     * @return The current {@link Activity}.
+     */
+    private Activity getActivity() {
+        Context context = getContext();
         while (!(context instanceof Activity) && context instanceof ContextWrapper) {
             context = ((ContextWrapper) context).getBaseContext();
         }
         if (context instanceof Activity) {
             return (Activity) context;
         }
-        throw new IllegalStateException("Unable to find an activity: " + context);
+        throw new IllegalStateException(UNABLE_TO_FIND_AN_ACTIVITY + context);
     }
 
-    @Override
-    public synchronized boolean performClick() {
-        super.performClick();
-        return true;
+    /**
+     * Sets the {@link DrawView#renderer} as the {@link GLSurfaceView.Renderer} of this object.
+     *
+     * @param textView        The {@link TextView} to set in the {@link DrawView#renderer}.
+     * @param activityManager The {@link ActivityManager} to set in the {@link DrawView#renderer}.
+     */
+    void setViewAndActivityManager(final TextView textView, final ActivityManager activityManager) {
+        this.renderer.setTextView(textView);
+        this.renderer.setActivityManager(activityManager);
+        setRenderer(this.renderer);
     }
 
-    synchronized void setViewAndActivityManager(final TextView textView, final ActivityManager activityManager) {
-        this.renderer_.viewText_.textView_ = textView;
-        this.renderer_.viewText_.printText();
-        this.renderer_.activityManager_ = activityManager;
-        this.setRenderer(this.renderer_);
+    /**
+     * Stops the Ray Tracer engine and waits for it to stop rendering.
+     */
+    void stopDrawing() {
+        LOGGER.info("stopDrawing");
+
+        this.renderer.updateButton(R.string.render);
+        setOnTouchListener(null);
+        RTStopRender();
+
+        waitForLastTask();
+
+        this.renderer.RTFinishRender();
     }
 
-
-    synchronized void stopDrawing() {
-        Log.d("Test", "stopDrawing");
-        this.setOnTouchListener(null);
-        Log.d("Test", "stopRender");
-        this.stopRender();
-
-        this.waitForLastTask();
-
-        this.renderer_.finishRender();
-    }
-
-    private synchronized void waitForLastTask() {
-        this.renderer_.waitForLastTask();
-        this.executorService_.shutdown();
+    /**
+     * Waits for the Ray Tracer engine to stop rendering.
+     */
+    private void waitForLastTask() {
+        this.renderer.waitForLastTask();
+        this.executorService.shutdown();
         boolean running = true;
         do {
             try {
-                running = !this.executorService_.awaitTermination(1L, TimeUnit.DAYS);
+                running = !this.executorService.awaitTermination(1L, TimeUnit.DAYS);
             } catch (final InterruptedException ex) {
-                Log.e("InterruptedException", Objects.requireNonNull(ex.getMessage()));
+                LOGGER.warning(Objects.requireNonNull(ex.getMessage()));
             }
         } while (running);
-        this.executorService_ = Executors.newFixedThreadPool(1);
+        this.executorService = Executors.newFixedThreadPool(NUMBER_THREADS);
     }
 
-    synchronized void renderScene(final int scene, final int shader, final int numThreads, final int accelerator,
-                            final int samplesPixel, final int samplesLight, final int width, final int height,
-                            final String objFile, final String matText, final boolean rasterize) {
-        Log.d("Test", "renderScene");
-        this.renderer_.viewText_.start_ = 0L;
-        this.renderer_.viewText_.printText();
+    /**
+     * Asynchronously creates the requested scene and starts rendering it.
+     *
+     * @param scene        The requested scene to render.
+     * @param shader       The requested shader to use.
+     * @param numThreads   The number of threads to be used in the Ray Tracer engine.
+     * @param accelerator  The accelerator to use.
+     * @param samplesPixel The requested number of samples per pixel.
+     * @param samplesLight The requested number of samples per light.
+     * @param width        The width of the {@link android.graphics.Bitmap} that holds the rendered image.
+     * @param height       The height of the {@link android.graphics.Bitmap} that holds the rendered image.
+     * @param objFile      The path to the OBJ file containing the scene.
+     * @param matText      The path to the MAT file containing the materials of the scene.
+     * @param rasterize    Whether should show a preview (rasterize one frame) or not.
+     */
+    void renderScene(
+            final int scene,
+            final int shader,
+            final int numThreads,
+            final int accelerator,
+            final int samplesPixel,
+            final int samplesLight,
+            final int width,
+            final int height,
+            final String objFile,
+            final String matText,
+            final boolean rasterize
+    ) {
+        LOGGER.info(RENDER_SCENE);
 
-        this.startRender();
+        RTStartRender();
+        this.renderer.updateButton(R.string.stop);
 
-        this.executorService_.submit(() -> {
-            Log.d("Test executor", "renderScene");
-            synchronized (this) {
-                this.renderer_.waitForLastTask();
+        this.executorService.submit(() -> {
+            LOGGER.info(RENDER_SCENE);
 
-                final int ret = this.createScene(scene, shader, numThreads, accelerator, samplesPixel, samplesLight, width,
-                        height, objFile, matText);
-                Log.d("Test", "startRender");
-                this.renderer_.freeArrays();
-                this.renderer_.rasterize_ = rasterize;
-                this.renderer_.viewText_.start_ = SystemClock.elapsedRealtime();
-                if (ret != -1) {
-                    this.requestRender();
-                } else {
-                    this.stopRender();
-                    this.post(() -> this.renderer_.viewText_.buttonRender_.setText(R.string.render));
-                    this.requestRender();
-                    this.renderer_.finishRender();
-                }
-                Log.d("Test executor", "renderScene 2");
-            }
+            this.renderer.waitForLastTask();
+
+            createScene(scene, shader, numThreads, accelerator, samplesPixel, samplesLight,
+                    width, height, objFile, matText);
+            this.renderer.freeArrays();
+            this.renderer.setRasterize(rasterize);
+            requestRender();
         });
     }
 
-    private synchronized int createScene(final int scene, final int shader, final int numThreads, final int accelerator,
-                                         final int samplesPixel, final int samplesLight, final int width, final int height,
-                                         final String objFile, final String matText) {
-        Log.d("Test", "createScene");
-        this.renderer_.freeArrays();
-        this.renderer_.viewText_.resetPrint(width, height, numThreads, samplesPixel, samplesLight);
+    /**
+     * Loads the scene and creates the Ray Tracer renderer.
+     *
+     * @param scene        The requested scene to render.
+     * @param shader       The requested shader to use.
+     * @param numThreads   The number of threads to be used in the Ray Tracer engine.
+     * @param accelerator  The accelerator to use.
+     * @param samplesPixel The requested number of samples per pixel.
+     * @param samplesLight The requested number of samples per light.
+     * @param width        The width of the {@link android.graphics.Bitmap} that holds the rendered image.
+     * @param height       The height of the {@link android.graphics.Bitmap} that holds the rendered image.
+     * @param objFile      The path to the OBJ file containing the scene.
+     * @param matText      The path to the MAT file containing the materials of the scene.
+     */
+    private void createScene(
+            final int scene,
+            final int shader,
+            final int numThreads,
+            final int accelerator,
+            final int samplesPixel,
+            final int samplesLight,
+            final int width,
+            final int height,
+            final String objFile,
+            final String matText
+    ) {
+        LOGGER.info("createScene");
 
-        this.renderer_.numberPrimitives_ = this.renderer_.initialize(scene, shader, width, height, accelerator, samplesPixel,
-                samplesLight, objFile, matText);
-        if (this.renderer_.numberPrimitives_ == -1) {
-            Log.e("createScene", "Device without enough memory to render the scene.");
-            this.post(() -> {
-                for (int i = 0; i < 1; ++i) {
-                    Toast.makeText(this.getContext(), "Device without enough memory to render the scene.",
-                            Toast.LENGTH_LONG).show();
-                }
-            });
+        this.renderer.freeArrays();
 
-            //renderer_.viewText_.buttonRender_.setText(R.string.render);
-            return -1;
+        final int numberPrimitives = this.renderer.RTInitialize(scene, shader, width, height, accelerator,
+                samplesPixel, samplesLight, objFile, matText);
+        if (numberPrimitives == -1) {
+            LOGGER.warning(DEVICE_WITHOUT_ENOUGH_MEMORY);
+
+            post(() -> Toast.makeText(getContext(), DEVICE_WITHOUT_ENOUGH_MEMORY, Toast.LENGTH_LONG).show());
         }
-        if (this.renderer_.numberPrimitives_ == -2) {
-            Log.e("createScene", "Could not load the scene.");
-            this.post(() -> {
-                for (int i = 0; i < 1; ++i) {
-                    Toast.makeText(this.getContext(), "Could not load the scene.", Toast.LENGTH_LONG).show();
-                }
-            });
-            //renderer_.viewText_.buttonRender_.setText(R.string.render);
-            return -1;
-        }
-        this.renderer_.viewText_.nPrimitivesT_ = ",p=" + this.renderer_.numberPrimitives_ + ",l=" + this.getNumberOfLights();
-        this.renderer_.numThreads_ = numThreads;
-        final int realWidth = this.getWidth();
-        final int realHeight = this.getHeight();
+        if (numberPrimitives == -2) {
+            LOGGER.warning(COULD_NOT_LOAD_THE_SCENE);
 
-        this.renderer_.setBitmap(width, height, realWidth, realHeight);
-        return 0;
+            post(() -> Toast.makeText(getContext(), COULD_NOT_LOAD_THE_SCENE, Toast.LENGTH_LONG).show());
+        }
+        this.renderer.resetStats(numThreads, samplesPixel, samplesLight, numberPrimitives, RTGetNumberOfLights());
+
+        final int widthView = getWidth();
+        final int heightView = getHeight();
+
+        this.renderer.setBitmap(width, height, widthView, heightView);
     }
 
+    /**
+     * Gets the {@link MainRenderer}.
+     *
+     * @return The {@link MainRenderer} of this object.
+     */
+    MainRenderer getRenderer() {
+        return this.renderer;
+    }
+
+    /**
+     * Gets the {@link Activity#isChangingConfigurations()}.
+     *
+     * @return The {@link DrawView#changingConfigs}.
+     */
+    boolean isChangingConfigs() {
+        return this.changingConfigs;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        LOGGER.info("onPause");
+
+        final Activity activity = getActivity();
+        this.changingConfigs = activity.isChangingConfigurations();
+    }
+
+    @Override
+    public void onWindowFocusChanged(final boolean hasWindowFocus) {
+        super.onWindowFocusChanged(hasWindowFocus);
+        LOGGER.info("onWindowFocusChanged");
+
+        if (hasWindowFocus && getVisibility() == View.GONE) {
+            setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        LOGGER.info(ON_DETACHED_FROM_WINDOW);
+    }
+
+    @Override
+    public boolean performClick() {
+        super.performClick();
+        LOGGER.info("performClick");
+
+        return true;
+    }
 }

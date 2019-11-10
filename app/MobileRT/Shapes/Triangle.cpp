@@ -24,16 +24,16 @@ Intersection Triangle::intersect(const Intersection &intersection, const Ray &ra
     }
 
     //u v = barycentric coordinates (uv-space are inside a unit triangle)
-    const float normalizedProjectionInv {1.0f / normalizedProjection};
+    const float normalizedProjectionInv {1.0F / normalizedProjection};
     const ::glm::vec3 &vectorToCamera {ray.origin_ - pointA_};
     const float u {normalizedProjectionInv * ::glm::dot(vectorToCamera, perpendicularVector)};
-    if (u < 0.0f || u > 1.0f) {
+    if (u < 0.0F || u > 1.0F) {
         return intersection;
     }
 
     const ::glm::vec3 &upPerpendicularVector {::glm::cross(vectorToCamera, AB_)};
     const float v {normalizedProjectionInv * ::glm::dot (ray.direction_, upPerpendicularVector)};
-    if (v < 0.0f || (u + v) > 1.0f) {
+    if (v < 0.0F || (u + v) > 1.0F) {
         return intersection;
     }
 
@@ -47,7 +47,7 @@ Intersection Triangle::intersect(const Intersection &intersection, const Ray &ra
     const ::glm::vec3 &intersectionNormal1{::glm::normalize(::glm::cross(AB_, AC_))};
     const ::glm::vec3 &intersectionNormal2{::glm::normalize(::glm::cross(AC_, AB_))};
     const ::glm::vec3 &intersectionNormal{
-            ::glm::dot(intersectionNormal1, ray.direction_) < 0.0f ? intersectionNormal1
+            ::glm::dot(intersectionNormal1, ray.direction_) < 0.0F ? intersectionNormal1
                                                                    : intersectionNormal2};
 
     const ::glm::vec3 &intersectionPoint{ray.origin_ + ray.direction_ * distanceToIntersection};

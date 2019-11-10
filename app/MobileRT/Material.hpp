@@ -19,7 +19,7 @@ namespace MobileRT {
             const ::glm::vec3 &Kd,
             const ::glm::vec3 &Ks = ::glm::vec3 {},
             const ::glm::vec3 &Kt = ::glm::vec3 {},
-            float refractiveIndice = 1.0f, const ::glm::vec3 &Le = ::glm::vec3 {}) noexcept;
+            float refractiveIndice = 1.0F, const ::glm::vec3 &Le = ::glm::vec3 {}) noexcept;
 
         Material(const Material &material) noexcept = default;
 

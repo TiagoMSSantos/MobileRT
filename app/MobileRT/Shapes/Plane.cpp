@@ -60,8 +60,8 @@ Intersection Plane::intersect(const Intersection &intersection, const Ray &ray) 
 
 AABB Plane::getAABB() const noexcept {
     const ::glm::vec3 &rightDir {getRightVector()};
-    const ::glm::vec3 &min {this->point_ + rightDir * -100.0f};
-    const ::glm::vec3 &max {this->point_ + rightDir * 100.0f};
+    const ::glm::vec3 &min {this->point_ + rightDir * -100.0F};
+    const ::glm::vec3 &max {this->point_ + rightDir * 100.0F};
     const AABB res {min, max};
     return res;
 }
@@ -89,22 +89,22 @@ bool Plane::intersect(const AABB &box) const noexcept {
     const ::glm::vec3 &positiveVertex {box.pointMax_};
     const ::glm::vec3 &negativeVertex {box.pointMin_};
 
-    /*if (this->normal_[0] >= 0.0f) {
+    /*if (this->normal_[0] >= 0.0F) {
       positiveVertex[0] = box.pointMax_[0];
       negativeVertex[0] = box.pointMin_[0];
-    } else if (this->normal_[1] >= 0.0f) {
+    } else if (this->normal_[1] >= 0.0F) {
       positiveVertex[1] = box.pointMax_[1];
       negativeVertex[1] = box.pointMin_[1];
-    } else if (this->normal_[2] >= 0.0f) {
+    } else if (this->normal_[2] >= 0.0F) {
       positiveVertex[2] = box.pointMax_[2];
       negativeVertex[2] = box.pointMin_[2];
-    } else if (this->normal_[0] < 0.0f) {
+    } else if (this->normal_[0] < 0.0F) {
       positiveVertex[0] = box.pointMin_[0];
       negativeVertex[0] = box.pointMax_[0];
-    } else if (this->normal_[1] < 0.0f) {
+    } else if (this->normal_[1] < 0.0F) {
       positiveVertex[1] = box.pointMin_[1];
       negativeVertex[1] = box.pointMax_[1];
-    } else if (this->normal_[2] < 0.0f) {
+    } else if (this->normal_[2] < 0.0F) {
       positiveVertex[2] = box.pointMin_[2];
       negativeVertex[2] = box.pointMax_[2];
     }*/
