@@ -1,8 +1,10 @@
 apply plugin: 'com.android.application'
+apply plugin: 'jacoco'
 
 android {
     compileSdkVersion 29
     buildToolsVersion '29.0.2'
+    publishNonDefault true
     signingConfigs {
         Puscas {
             setKeyAlias 'Puscas'
@@ -41,11 +43,13 @@ android {
             setSigningConfig signingConfigs.Puscas
             setDebuggable true
             setJniDebuggable true
+            testCoverageEnabled true
         }
         release {
             setSigningConfig signingConfigs.Puscas
             setDebuggable false
             setJniDebuggable false
+            testCoverageEnabled false
         }
     }
     productFlavors {
@@ -54,6 +58,13 @@ android {
         exclude 'META-INF/LICENSE.md'
         exclude 'META-INF/LICENSE-notice.md'
     }
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+        animationsDisabled = true
+    }
+
 //    testBuildType 'release'
 }
 
@@ -66,14 +77,19 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'com.google.guava:guava:28.1-android'
 
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.mockito:mockito-core:3.2.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.2'
+
+    androidTestImplementation 'junit:junit:4.12'
     androidTestImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.2'
     androidTestImplementation 'org.mockito:mockito-core:3.2.0'
     androidTestImplementation 'de.mannodermaus.junit5:android-test-core:1.0.0'
-    androidTestImplementation 'junit:junit:4.12'
+
+    androidTestImplementation 'androidx.test:core:1.2.0'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test:rules:1.2.0'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'androidx.test:core:1.2.0'
 
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.2.0'

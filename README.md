@@ -31,18 +31,19 @@
 - [ ] Change Linux's UI from GTK to Qt
 
 ### System
-- [ ] Add comments in the Android UI
+- [x] Add comments in the Android UI
 - [ ] Add comments in the JNI layer
 - [ ] Add comments in the MobileRT
-- [ ] Give out of memory error when the memory is not enough to load the scene
+- [x] Give out of memory error when the memory is not enough to load the scene
 - [ ] Add unit tests (more code coverage)
-- [ ] Add system tests
+- [x] Add instrumented unit tests
 - [ ] Add git hooks to check git commit messages
 - [ ] Add git hooks to submit Jenkins' jobs after each git push
 - [ ] Support to export rendered image to file
+- [x] Add CI / CD support from github (actions) for the Google Test unit tests
 
 ### Documentation
-- [ ] Improve README
+- [x] Improve README
 - [ ] Write documentation
 - [ ] Update gif image
 - [ ] Benchmark against popular ray tracers like PBRT
