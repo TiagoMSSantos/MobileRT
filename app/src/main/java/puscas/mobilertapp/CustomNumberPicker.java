@@ -16,7 +16,8 @@ import static puscas.mobilertapp.ConstantsUI.COLOR_NUMBER_PICKER;
 import static puscas.mobilertapp.ConstantsUI.TEXT_SIZE;
 
 /**
- * Custom number picker for the User Interface with smaller text size and black color for all the number pickers used.
+ * Custom {@link NumberPicker} for the User Interface with smaller text size and black color for all the number pickers
+ * used.
  */
 public final class CustomNumberPicker extends NumberPicker {
 

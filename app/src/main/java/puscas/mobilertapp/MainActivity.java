@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -173,7 +174,7 @@ public final class MainActivity extends Activity {
      *
      * @param sceneFilePath The path to a directory containing the OBJ and MTL files of a scene to render.
      */
-    private void startStopRender(final String sceneFilePath) {
+    private void startRender(@NonNull final String sceneFilePath) {
         final int scene = this.pickerScene.getValue();
         final int shader = this.pickerShader.getValue();
         final int threads = this.pickerThreads.getValue();
@@ -188,33 +189,20 @@ public final class MainActivity extends Activity {
         final String objFilePath = sceneFilePath + ".obj";
         final String mtlFilePath = sceneFilePath + ".mtl";
         final boolean rasterize = this.checkBoxRasterize.isChecked();
-        final MainRenderer renderer = this.drawView.getRenderer();
-        final State state = renderer.getState();
 
-        switch (state) {
-            case STOP:
-            case END:
-            case IDLE:
-                this.drawView.renderScene(
-                        scene,
-                        shader,
-                        threads,
-                        accelerator,
-                        samplesPixel,
-                        samplesLight,
-                        width,
-                        height,
-                        objFilePath,
-                        mtlFilePath,
-                        rasterize
-                );
-                break;
-
-            case BUSY:
-            default:
-                this.drawView.stopDrawing();
-                break;
-        }
+        this.drawView.renderScene(
+                scene,
+                shader,
+                threads,
+                accelerator,
+                samplesPixel,
+                samplesLight,
+                width,
+                height,
+                objFilePath,
+                mtlFilePath,
+                rasterize
+        );
     }
 
     /**
@@ -225,9 +213,9 @@ public final class MainActivity extends Activity {
         final Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("*/*");
         intent.addCategory(Intent.CATEGORY_OPENABLE);
-        final int openFileCode = 1;
         try {
             final Intent intentChooseFile = Intent.createChooser(intent, "Select a File to Upload");
+            final int openFileCode = 1;
             startActivityForResult(intentChooseFile, openFileCode);
         } catch (final android.content.ActivityNotFoundException ex) {
             Toast.makeText(this, PLEASE_INSTALL_FILE_MANAGER, Toast.LENGTH_LONG).show();
@@ -237,7 +225,7 @@ public final class MainActivity extends Activity {
     /**
      * Helper method which asks the user for permission to read the external SD card if it doesn't have yet.
      */
-    private void checksStoragePermission() {
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN) private void checksStoragePermission() {
         final int permissionStorageCode = 1;
         final int permissionCheckRead = ContextCompat.checkSelfPermission(
                 this,
@@ -318,32 +306,39 @@ public final class MainActivity extends Activity {
         final Scene scene = Scene.values()[this.pickerScene.getValue()];
         final MainRenderer renderer = this.drawView.getRenderer();
         final State state = renderer.getState();
-        if (state != State.BUSY) {
-            switch(scene) {
+        if (state == State.BUSY) {
+            this.drawView.stopDrawing();
+        } else {
+            switch (scene) {
                 case OBJ:
                     showFileChooser();
                     break;
 
                 case TEST:
-                    final String sceneFile = "conference/conference";
-//                    final String sceneFile = "teapot/teapot";
-//                    final String sceneFile = "buddha/buddha";
-//                    final String sceneFile = "powerplant/powerplant";
-//                    final String sceneFile = "San_Miguel/san-miguel";
+                    final String scenePath = "conference/conference";
+//                    final String scenePath = "teapot/teapot";
+//                    final String scenePath = "buddha/buddha";
+//                    final String scenePath = "powerplant/powerplant";
+//                    final String scenePath = "San_Miguel/san-miguel";
 
                     String sdCardPath = Environment.getExternalStorageDirectory().getPath();
+
                     // Fix Android device path to an external SD card.
                     sdCardPath = sdCardPath.replace("/storage/sdcard0", "/storage/extSdCard");
                     // Fix Android emulator path to an external SD card.
                     sdCardPath = sdCardPath.replace("/emulated/0", "/" + SDCARD_EMULATOR_NAME);
-                    this.sceneFilePath = sdCardPath + "/WavefrontOBJs/" + sceneFile;
+
+                    this.sceneFilePath = sdCardPath + "/WavefrontOBJs/" + scenePath;
+                    startRender(this.sceneFilePath);
                     break;
+
+                default:
+                    startRender(this.sceneFilePath);
             }
         }
-        startStopRender(this.sceneFilePath);
     }
 
-    @Override
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN) @Override
     protected final void onCreate(@Nullable final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -556,7 +551,7 @@ public final class MainActivity extends Activity {
         super.onPostResume();
 
         if (this.sceneFilePath != null) {
-            this.startStopRender(this.sceneFilePath);
+            startRender(this.sceneFilePath);
         }
     }
 
@@ -658,12 +653,12 @@ public final class MainActivity extends Activity {
 
         final Uri uri = data.getData();
         if (resultCode == Activity.RESULT_OK && uri != null) {
-            final String sdCardDir = Environment.getExternalStorageDirectory().getPath();
-            String filePath = uri.getEncodedPath();
+            String filePath = uri.getPath();
             if (filePath != null) {
+                final String sdCardDir = Environment.getExternalStorageDirectory().getPath();
+
                 // Fix path to SD card.
-                filePath = filePath.replace("%2F", "/");
-                filePath = filePath.replace("%3A", "/");
+                filePath = filePath.replace(":", "/");
                 filePath = filePath.replace("/document/primary/", sdCardDir);
                 filePath = filePath.replace("/document", "/storage");
 

@@ -5,7 +5,7 @@ import android.view.View;
 import java.util.logging.Logger;
 
 /**
- * Utility class with the text constants.
+ * Utility class with the text constants for the names of methods.
  */
 final class ConstantsMethods {
 

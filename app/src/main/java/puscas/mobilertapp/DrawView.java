@@ -216,7 +216,7 @@ public final class DrawView extends GLSurfaceView {
      * @param scene        The requested scene to render.
      * @param shader       The requested shader to use.
      * @param numThreads   The number of threads to be used in the Ray Tracer engine.
-     * @param accelerator  The accelerator to use.
+     * @param accelerator  The acceleration structure to use.
      * @param samplesPixel The requested number of samples per pixel.
      * @param samplesLight The requested number of samples per light.
      * @param width        The width of the {@link android.graphics.Bitmap} that holds the rendered image.
@@ -240,19 +240,19 @@ public final class DrawView extends GLSurfaceView {
 
         this.renderer.freeArrays();
 
-        final int numberPrimitives = this.renderer.RTInitialize(scene, shader, width, height, accelerator,
+        final int numPrimitives = this.renderer.RTInitialize(scene, shader, width, height, accelerator,
                 samplesPixel, samplesLight, objFile, matText);
-        if (numberPrimitives == -1) {
+        if (numPrimitives == -1) {
             LOGGER.warning(DEVICE_WITHOUT_ENOUGH_MEMORY);
 
             post(() -> Toast.makeText(getContext(), DEVICE_WITHOUT_ENOUGH_MEMORY, Toast.LENGTH_LONG).show());
         }
-        if (numberPrimitives == -2) {
+        if (numPrimitives == -2) {
             LOGGER.warning(COULD_NOT_LOAD_THE_SCENE);
 
             post(() -> Toast.makeText(getContext(), COULD_NOT_LOAD_THE_SCENE, Toast.LENGTH_LONG).show());
         }
-        this.renderer.resetStats(numThreads, samplesPixel, samplesLight, numberPrimitives, RTGetNumberOfLights());
+        this.renderer.resetStats(numThreads, samplesPixel, samplesLight, numPrimitives, RTGetNumberOfLights());
 
         final int widthView = getWidth();
         final int heightView = getHeight();

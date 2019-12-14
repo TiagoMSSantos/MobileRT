@@ -12,6 +12,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.common.base.Preconditions;
+import com.google.common.base.Supplier;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
@@ -113,12 +116,12 @@ final class MainRenderer implements GLSurfaceView.Renderer {
     /**
      * The number of primitives in the scene.
      */
-    private int numberPrimitives = 0;
+    private int numPrimitives = 0;
 
     /**
      * The number of lights in the scene.
      */
-    private int numberLights = 0;
+    private int numLights = 0;
 
     /**
      * Whether should rasterize (render preview) or not.
@@ -156,12 +159,12 @@ final class MainRenderer implements GLSurfaceView.Renderer {
     private Runnable requestRender = null;
 
     /**
-     * The width of the {@link Bitmap}.
+     * The width of the {@link Bitmap} where the Ray Tracer engine will render the scene.
      */
     private int width = 1;
 
     /**
-     * The height of the {@link Bitmap}.
+     * The height of the {@link Bitmap} where the Ray Tracer engine will render the scene.
      */
     private int height = 1;
 
@@ -176,7 +179,7 @@ final class MainRenderer implements GLSurfaceView.Renderer {
     private int viewHeight = 1;
 
     /**
-     * The OpenGL program shader for the 2 triangles containing a texture with {@link Bitmap}.
+     * The OpenGL program shader for the 2 triangles containing a texture with {@link Bitmap} for the rendered image.
      */
     private int shaderProgram = 0;
 
@@ -198,7 +201,7 @@ final class MainRenderer implements GLSurfaceView.Renderer {
     private TextView textView = null;
 
     /**
-     * The {@link Button} which can start and STOP the Ray Tracer engine.
+     * The {@link Button} which can start and stop the Ray Tracer engine.
      * It is important to let the {@link RenderTask} update its state after the rendering process.
      */
     private Button buttonRender = null;
@@ -230,29 +233,28 @@ final class MainRenderer implements GLSurfaceView.Renderer {
      */
     private static void checksGLError() {
         final int glError = GLES20.glGetError();
-        String stringError = null;
-        switch (glError) {
-            case GLES20.GL_NO_ERROR:
-                return;
+        if (glError != GLES20.GL_NO_ERROR) {
+            final Supplier<String> stringError = () -> {
+                switch (glError) {
+                    case GLES20.GL_INVALID_ENUM:
+                        return "GL_INVALID_ENUM";
 
-            case GLES20.GL_INVALID_ENUM:
-                stringError = "GL_INVALID_ENUM";
-                break;
+                    case GLES20.GL_INVALID_VALUE:
+                        return "GL_INVALID_VALUE";
 
-            case GLES20.GL_INVALID_VALUE:
-                stringError = "GL_INVALID_VALUE";
-                break;
+                    case GLES20.GL_INVALID_OPERATION:
+                        return "GL_INVALID_OPERATION";
 
-            case GLES20.GL_INVALID_OPERATION:
-                stringError = "GL_INVALID_OPERATION";
-                break;
+                    case GLES20.GL_OUT_OF_MEMORY:
+                        return "GL_OUT_OF_MEMORY";
 
-            case GLES20.GL_OUT_OF_MEMORY:
-                stringError = "GL_OUT_OF_MEMORY";
-                break;
+                    default:
+                        return "GL_UNKNOWN_ERROR";
+                }
+            };
+            LOGGER.severe(stringError.get() + ": " + GLUtils.getEGLErrorString(glError));
+            System.exit(1);
         }
-        LOGGER.severe("glError = " + GLUtils.getEGLErrorString(glError) + ": " + stringError);
-        System.exit(1);
     }
 
     /**
@@ -328,23 +330,23 @@ final class MainRenderer implements GLSurfaceView.Renderer {
     /**
      * Resets some stats about the Ray Tracer engine.
      *
-     * @param numThreads       The number of threads.
-     * @param samplesPixel     The number of samples per pixel.
-     * @param samplesLight     The number of samples per light.
-     * @param numberPrimitives The number of primitives in the scene.
-     * @param numberLights     The number of lights in the scene.
+     * @param numThreads    The number of threads.
+     * @param samplesPixel  The number of samples per pixel.
+     * @param samplesLight  The number of samples per light.
+     * @param numPrimitives The number of primitives in the scene.
+     * @param numLights     The number of lights in the scene.
      */
     void resetStats(
             final int numThreads,
             final int samplesPixel,
             final int samplesLight,
-            final int numberPrimitives,
-            final int numberLights) {
+            final int numPrimitives,
+            final int numLights) {
         this.numThreads = numThreads;
         this.samplesPixel = samplesPixel;
         this.samplesLight = samplesLight;
-        this.numberPrimitives = numberPrimitives;
-        this.numberLights = numberLights;
+        this.numPrimitives = numPrimitives;
+        this.numLights = numLights;
     }
 
     /**
@@ -362,8 +364,8 @@ final class MainRenderer implements GLSurfaceView.Renderer {
      * @param accelerator  The accelerator to use.
      * @param samplesPixel The number of samples per pixel.
      * @param samplesLight The number of samples per light.
-     * @param objFile      The path to the OBJ file containing the scene.
-     * @param matText      The path to the MTL file containing the materials of the scene.
+     * @param objFilePath  The path to the OBJ file containing the scene.
+     * @param matFilePath  The path to the MTL file containing the materials of the scene.
      * @return The number of primitives or -1 if an error occurs.
      */
     native int RTInitialize(
@@ -374,8 +376,8 @@ final class MainRenderer implements GLSurfaceView.Renderer {
             final int accelerator,
             final int samplesPixel,
             final int samplesLight,
-            final String objFile,
-            final String matText
+            final String objFilePath,
+            final String matFilePath
     );
 
     /**
@@ -458,19 +460,16 @@ final class MainRenderer implements GLSurfaceView.Renderer {
     /**
      * Helper method which verifies if the Android device has low free memory.
      *
-     * @param memoryNeed Number of MegaBytes needed to be allocated.
+     * @param memoryNeeded Number of MegaBytes needed to be allocated.
      * @return {@code True} if the device doesn't have enough memory to be allocated, otherwise {@code false}.
      */
-    private boolean isLowMemory(final int memoryNeed) {
-        boolean res = true;
-        if (memoryNeed >= 0) {
-            this.activityManager.getMemoryInfo(this.memoryInfo);
-            final long availMem = this.memoryInfo.availMem / 1048576L;
-            final boolean lowMem = this.memoryInfo.lowMemory;
-            final boolean insufficientMem = availMem <= (long) (1 + memoryNeed);
-            res = insufficientMem || lowMem;
-        }
-        return res;
+    private boolean isLowMemory(final int memoryNeeded) {
+        Preconditions.checkArgument(memoryNeeded > 0, "The requested memory must be a positive value");
+
+        this.activityManager.getMemoryInfo(this.memoryInfo);
+        final long availMem = this.memoryInfo.availMem / 1048576L;
+        final boolean insufficientMem = availMem <= (long) (1 + memoryNeeded);
+        return insufficientMem || this.memoryInfo.lowMemory;
     }
 
     /**
@@ -571,17 +570,17 @@ final class MainRenderer implements GLSurfaceView.Renderer {
      * Helper method which rasterizes a frame by using the camera and the primitives received by parameters in the
      * OpenGL pipeline.
      *
-     * @param bbVertices       The primitives' vertices in the scene.
-     * @param bbColors         The primitives' colors in the scene.
-     * @param bbCamera         The camera's position and vectors in the scene.
-     * @param numberPrimitives The number of primitives in the scene.
+     * @param bbVertices    The primitives' vertices in the scene.
+     * @param bbColors      The primitives' colors in the scene.
+     * @param bbCamera      The camera's position and vectors in the scene.
+     * @param numPrimitives The number of primitives in the scene.
      * @throws LowMemoryException This {@link Exception} is thrown if the Android device has low free memory.
      */
     private void copyFrame(
             final ByteBuffer bbVertices,
             final ByteBuffer bbColors,
             final ByteBuffer bbCamera,
-            final int numberPrimitives
+            final int numPrimitives
     ) throws LowMemoryException {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_STENCIL_BUFFER_BIT);
         checksGLError();
@@ -590,9 +589,9 @@ final class MainRenderer implements GLSurfaceView.Renderer {
         final int triangleMembers = floatSize * 9;
         final int triangleMethods = 8 * 11;
         final int triangleSize = triangleMembers + triangleMethods;
-        final int neededMemory = (numberPrimitives * triangleSize) / 1048576;
+        final int neededMemoryMb = 1 + ((numPrimitives * triangleSize) / 1048576);
 
-        if (isLowMemory(neededMemory)) {
+        if (isLowMemory(neededMemoryMb)) {
             throw new LowMemoryException();
         }
 
@@ -872,7 +871,7 @@ final class MainRenderer implements GLSurfaceView.Renderer {
             waitForLastTask();
             if (this.arrayVertices != null && this.arrayColors != null && this.arrayCamera != null) {
                 try {
-                    copyFrame(this.arrayVertices, this.arrayColors, this.arrayCamera, this.numberPrimitives);
+                    copyFrame(this.arrayVertices, this.arrayColors, this.arrayCamera, this.numPrimitives);
                 } catch (final LowMemoryException ex) {
                     LOGGER.warning("Low memory to rasterize a frame!!!");
                 }
@@ -890,8 +889,8 @@ final class MainRenderer implements GLSurfaceView.Renderer {
                     .withNumThreads(this.numThreads)
                     .withSamplesPixel(this.samplesPixel)
                     .withSamplesLight(this.samplesLight)
-                    .withNumPrimitives(this.numberPrimitives)
-                    .withNumLights(this.numberLights)
+                    .withNumPrimitives(this.numPrimitives)
+                    .withNumLights(this.numLights)
                     .build();
 
             this.lockExecutorService.lock();
@@ -1024,9 +1023,9 @@ final class MainRenderer implements GLSurfaceView.Renderer {
         checksGLError();
 
 
-        final int numberTextures = 1;
-        final int[] textureHandle = new int[numberTextures];
-        GLES20.glGenTextures(numberTextures, textureHandle, 0);
+        final int numTextures = 1;
+        final int[] textureHandle = new int[numTextures];
+        GLES20.glGenTextures(numTextures, textureHandle, 0);
         if (textureHandle[0] == 0) {
             LOGGER.severe("Error loading texture.");
             System.exit(1);

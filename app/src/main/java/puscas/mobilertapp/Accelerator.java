@@ -10,7 +10,7 @@ import static puscas.mobilertapp.ConstantsMethods.GET_NAMES;
 enum Accelerator {
 
     /**
-     * The naive accelerator.
+     * No accelerator.
      */
     NAIVE("Naive"),
 
@@ -25,7 +25,7 @@ enum Accelerator {
     BVH("BVH"),
 
     /**
-     * No accelerator.
+     * Nothing. So it doesn't even render the scene.
      */
     NONE("None");
 
@@ -42,7 +42,7 @@ enum Accelerator {
     /**
      * The constructor for this {@link Enum}.
      *
-     * @param name The accelerator for the Ray Tracer engine.
+     * @param name The name of the acceleration structure for the Ray Tracer engine.
      */
     Accelerator(final String name) {
         this.name = name;
