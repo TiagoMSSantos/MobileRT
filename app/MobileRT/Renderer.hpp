@@ -11,19 +11,19 @@
 namespace MobileRT {
     class Renderer final {
     public:
-        ::std::unique_ptr<Camera> camera_{};
-        ::std::unique_ptr<Shader> shader_{};
+        ::std::unique_ptr<Camera> camera_ {};
+        ::std::unique_ptr<Shader> shader_ {};
 
     private:
-        ::std::unique_ptr<Sampler> samplerPixel_{};
-        ::std::uint32_t blockSizeX_{};
-        ::std::uint32_t blockSizeY_{};
-        ::std::uint32_t sample_{};
-        const ::std::uint32_t width_{};
-        const ::std::uint32_t height_{};
-        const ::std::uint32_t domainSize_{};
-        const ::std::uint32_t resolution_{};
-        const ::std::uint32_t samplesPixel_{};
+        ::std::unique_ptr<Sampler> samplerPixel_ {};
+        ::std::uint32_t blockSizeX_ {};
+        ::std::uint32_t blockSizeY_ {};
+        ::std::uint32_t sample_ {};
+        const ::std::uint32_t width_ {};
+        const ::std::uint32_t height_ {};
+        const ::std::uint32_t domainSize_ {};
+        const ::std::uint32_t resolution_ {};
+        const ::std::uint32_t samplesPixel_ {};
         ::std::atomic<::std::uint32_t> block_ {};
 
     private:

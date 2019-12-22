@@ -26,11 +26,11 @@ namespace MobileRT {
     template<typename T>
     ::std::vector<T *> convertVector(::std::vector<T> &source) noexcept;
 
-    const float RayLengthMax{1.0e+30f};
-    const ::std::int32_t RayDepthMin{4};
-    const ::std::int32_t RayDepthMax{8};
-    const ::std::int32_t NumberOfBlocks{256};
-    const float Epsilon{1.0e-06f};
+    const float RayLengthMax {1.0e+30f};
+    const ::std::int32_t RayDepthMin {4};
+    const ::std::int32_t RayDepthMax {8};
+    const ::std::int32_t NumberOfBlocks {256};
+    const float Epsilon {1.0e-06f};
 
     ::std::int32_t roundDownToMultipleOf(::std::int32_t value, ::std::int32_t multiple) noexcept;
 
@@ -61,7 +61,7 @@ namespace MobileRT {
         } else {
             filePos = 0;
         }
-        const ::std::string &res{filePath.substr(filePos)};
+        const ::std::string &res {filePath.substr(filePos)};
         return res;
     }
 

@@ -27,7 +27,7 @@ namespace MobileRT {
         Intersection shadowTrace(::std::vector<T> &primitives, Intersection intersection,
                          const Ray &ray) const noexcept;
 
-        static void AABBbounds(const AABB &box, ::glm::vec3 *min, ::glm::vec3 *max);
+        static void getAABBbounds(const AABB &box, glm::vec3 *const min, glm::vec3 *const max);
 
     public:
         explicit Scene() = default;
@@ -54,7 +54,7 @@ namespace MobileRT {
         static void getBounds(
             const ::std::vector<T *> primitives, ::glm::vec3 *const min, ::glm::vec3 *const max) {
             for (const T *const primitive : primitives) {
-                AABBbounds(primitive->getAABB(), min, max);
+                getAABBbounds(primitive->getAABB(), min, max);
             }
         }
     };

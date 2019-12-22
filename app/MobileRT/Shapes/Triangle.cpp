@@ -153,9 +153,8 @@ bool Triangle::intersect(const AABB &box) const noexcept {
     const float lastDist {intersection.length_};
     intersection = intersect(intersection, ray);
     const bool intersectedRay {intersection.length_ < lastDist};
-    const bool insideTriangle{isOverTriangle(vec)};
-    const bool res{
-            intersectedAB || intersectedAC || intersectedBC || intersectedRay || insideTriangle};
+    const bool insideTriangle {isOverTriangle(vec)};
+    const bool res {intersectedAB || intersectedAC || intersectedBC || intersectedRay || insideTriangle};
 
     return res;
 }

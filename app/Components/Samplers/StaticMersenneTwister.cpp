@@ -2,6 +2,7 @@
 #include <array>
 
 using ::Components::StaticMersenneTwister;
+
 namespace {
     const ::std::uint32_t MASK{0xFFFFF};
     const ::std::uint32_t SIZE{MASK + 1};
