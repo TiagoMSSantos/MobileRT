@@ -6,7 +6,7 @@
 namespace Components {
     class CameraFactory {
         public:
-            ::std::unique_ptr<::MobileRT::Camera> loadFromFile(const ::std::string &filePath) const;
+            ::std::unique_ptr<::MobileRT::Camera> loadFromFile(const ::std::string &filePath, float aspectRatio) const;
     };
 }//namespace Components
 

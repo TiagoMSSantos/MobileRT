@@ -702,13 +702,10 @@ final class MainRenderer implements GLSurfaceView.Renderer {
         final float centerY = eyeY + dirY;
         final float centerZ = eyeZ + dirZ;
 
-        final float ratio = Math.max((float) this.width / (float) this.height,
-                (float) this.height / (float) this.width);
-        final float hFovFactor = this.width > this.height ? ratio : 1.0F;
-        final float vFovFactor = this.width < this.height ? ratio : 1.0F;
-        final float fovX = bbCamera.getFloat(16 * floatSize);
-        final float fovY = bbCamera.getFloat(17 * floatSize) * 0.918F;
-        final float aspect = hFovFactor > vFovFactor ? hFovFactor : 1.0F / vFovFactor;
+        final float aspect = (float) this.width / (float) this.height;
+        final float fixAspect = 0.955F;
+        final float fovX = bbCamera.getFloat(16 * floatSize) * fixAspect;
+        final float fovY = bbCamera.getFloat(17 * floatSize) * fixAspect;
 
         final float sizeH = bbCamera.getFloat(18 * floatSize);
         final float sizeV = bbCamera.getFloat(19 * floatSize);

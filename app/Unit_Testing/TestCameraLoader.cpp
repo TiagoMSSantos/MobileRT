@@ -23,7 +23,7 @@ f 44 45
     )"};
 
     ::std::stringstream stream {data};
-    const auto camera {::Components::PerspectiveLoader().loadFromStream(::std::move(stream))};
+    const auto camera {::Components::PerspectiveLoader().loadFromStream(::std::move(stream), 1.0f)};
     const auto perspectiveCamera {dynamic_cast<const ::Components::Perspective*> (camera.get())};
 
     ASSERT_TRUE(perspectiveCamera != nullptr);

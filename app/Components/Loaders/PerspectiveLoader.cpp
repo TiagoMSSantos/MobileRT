@@ -15,7 +15,8 @@ namespace {
     };
 }//namespace
 
-::std::unique_ptr<::MobileRT::Camera> PerspectiveLoader::loadFromStream(::std::istream &&cameraDefinition) const {
+::std::unique_ptr<::MobileRT::Camera> PerspectiveLoader::loadFromStream(
+        ::std::istream &&cameraDefinition, const float aspectRatio) const {
     ::glm::vec3 position {};
     ::glm::vec3 lookAt {};
     ::glm::vec3 up {};
@@ -53,7 +54,7 @@ namespace {
                     position,
                     lookAt,
                     up,
-                    fov[0], fov[1])
+                    fov[0] * aspectRatio, fov[1])
     };
 
     return camera;

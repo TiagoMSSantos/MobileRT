@@ -3,18 +3,18 @@
 
 using ::Components::CameraFactory;
 
-::std::unique_ptr<::MobileRT::Camera> CameraFactory::loadFromFile (const ::std::string &filePath) const {
+::std::unique_ptr<::MobileRT::Camera> CameraFactory::loadFromFile (
+        const ::std::string &filePath, const float aspectRatio) const {
     ::std::unique_ptr<::MobileRT::Camera> camera {};
 
     ::std::ifstream infile {filePath};
     ::std::string line {};
     while (::std::getline(infile, line)) {
-        ::std::istringstream iss {line};
         const char key {line[0]};
-        const ::std::string value {&line[2]};
+        line.erase(0, 1);
         if (key == 't') {
-            if (value == "perspective") {
-                camera = ::Components::PerspectiveLoader().loadFromStream(::std::move(infile));
+            if (line.find("perspective") != ::std::string::npos) {
+                camera = ::Components::PerspectiveLoader().loadFromStream(::std::move(infile), aspectRatio);
             }
         }
     }
