@@ -40,6 +40,10 @@ namespace MobileRT {
         const ::glm::vec3 &sample, ::std::uint32_t avg, ::std::uint32_t numSample) noexcept;
 
 
+    ::glm::vec3 toVec3(const char *values) noexcept;
+
+    ::glm::vec2 toVec2(const char *values) noexcept;
+
     template<typename ...Args>
     void log(Args &&... args) noexcept {
         ::std::ostringstream oss{""};

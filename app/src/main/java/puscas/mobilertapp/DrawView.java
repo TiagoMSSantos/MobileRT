@@ -175,8 +175,9 @@ public final class DrawView extends GLSurfaceView {
      * @param samplesLight The requested number of samples per light.
      * @param width        The width of the {@link android.graphics.Bitmap} that holds the rendered image.
      * @param height       The height of the {@link android.graphics.Bitmap} that holds the rendered image.
-     * @param objFile      The path to the OBJ file containing the scene.
-     * @param matText      The path to the MAT file containing the materials of the scene.
+     * @param objFilePath  The path to the OBJ file containing the scene.
+     * @param matFilePath  The path to the MAT file containing the materials of the scene.
+     * @param camFilePath  The path to the CAM file containing the camera in the scene.
      * @param rasterize    Whether should show a preview (rasterize one frame) or not.
      */
     void renderScene(
@@ -188,8 +189,9 @@ public final class DrawView extends GLSurfaceView {
             final int samplesLight,
             final int width,
             final int height,
-            final String objFile,
-            final String matText,
+            final String objFilePath,
+            final String matFilePath,
+            final String camFilePath,
             final boolean rasterize
     ) {
         LOGGER.info(RENDER_SCENE);
@@ -203,7 +205,7 @@ public final class DrawView extends GLSurfaceView {
             this.renderer.waitForLastTask();
 
             createScene(scene, shader, numThreads, accelerator, samplesPixel, samplesLight,
-                    width, height, objFile, matText);
+                    width, height, objFilePath, matFilePath, camFilePath);
             this.renderer.freeArrays();
             this.renderer.setRasterize(rasterize);
             requestRender();
@@ -221,8 +223,9 @@ public final class DrawView extends GLSurfaceView {
      * @param samplesLight The requested number of samples per light.
      * @param width        The width of the {@link android.graphics.Bitmap} that holds the rendered image.
      * @param height       The height of the {@link android.graphics.Bitmap} that holds the rendered image.
-     * @param objFile      The path to the OBJ file containing the scene.
-     * @param matText      The path to the MAT file containing the materials of the scene.
+     * @param objFilePath  The path to the OBJ file containing the scene.
+     * @param matFilePath  The path to the MAT file containing the materials of the scene.
+     * @param camFilePath  The path to the CAM file containing the camera in the scene.
      */
     private void createScene(
             final int scene,
@@ -233,15 +236,16 @@ public final class DrawView extends GLSurfaceView {
             final int samplesLight,
             final int width,
             final int height,
-            final String objFile,
-            final String matText
+            final String objFilePath,
+            final String matFilePath,
+            final String camFilePath
     ) {
         LOGGER.info("createScene");
 
         this.renderer.freeArrays();
 
         final int numPrimitives = this.renderer.RTInitialize(scene, shader, width, height, accelerator,
-                samplesPixel, samplesLight, objFile, matText);
+                samplesPixel, samplesLight, objFilePath, matFilePath, camFilePath);
         if (numPrimitives == -1) {
             LOGGER.warning(DEVICE_WITHOUT_ENOUGH_MEMORY);
 

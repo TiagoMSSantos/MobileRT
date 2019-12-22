@@ -59,7 +59,7 @@ bool PathTracer::shade(
         if (sizeLights > 0) {
             const ::std::uint32_t samplesLight {this->samplesLight_};
             //direct light
-            for (::std::uint32_t i {0}; i < samplesLight; ++i) {
+            for (::std::uint32_t i {}; i < samplesLight; ++i) {
                 //PDF = 1 / sizeLights
                 const ::std::uint32_t chosenLight {getLightIndex()};
                 Light &light(*scene_.lights_[chosenLight]);

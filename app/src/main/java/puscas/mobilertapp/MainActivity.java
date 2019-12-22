@@ -188,6 +188,7 @@ public final class MainActivity extends Activity {
         final int height = Integer.parseInt(strResolution.substring(strResolution.indexOf('x') + 1));
         final String objFilePath = sceneFilePath + ".obj";
         final String mtlFilePath = sceneFilePath + ".mtl";
+        final String camFilePath = sceneFilePath + ".cam";
         final boolean rasterize = this.checkBoxRasterize.isChecked();
 
         this.drawView.renderScene(
@@ -201,6 +202,7 @@ public final class MainActivity extends Activity {
                 height,
                 objFilePath,
                 mtlFilePath,
+                camFilePath,
                 rasterize
         );
     }
@@ -315,8 +317,8 @@ public final class MainActivity extends Activity {
                     break;
 
                 case TEST:
-                    final String scenePath = "conference/conference";
-//                    final String scenePath = "teapot/teapot";
+//                    final String scenePath = "conference/conference";
+                    final String scenePath = "teapot/teapot";
 //                    final String scenePath = "buddha/buddha";
 //                    final String scenePath = "powerplant/powerplant";
 //                    final String scenePath = "San_Miguel/san-miguel";

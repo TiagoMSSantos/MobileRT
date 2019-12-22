@@ -10,14 +10,14 @@ namespace MobileRT {
 
     // https://en.wikipedia.org/wiki/Halton_sequence
     float haltonSequence(::std::uint32_t index, const ::std::uint32_t base) noexcept {
-        float f{1.0F};
-        float result{0.0F};
+        float fraction{1.0F};
+        float nextValue{};
         while (index > 0) {
-            f /= base;
-            result += f * (index % base);
+            fraction /= base;
+            nextValue += fraction * (index % base);
             index = static_cast<::std::uint32_t> (::std::floor(index / base));
         }
-        return result;
+        return nextValue;
     }
 
     // newAvg = ((size - 1) * oldAvg + newNum) / size;
@@ -44,4 +44,27 @@ namespace MobileRT {
 
         return res;
     }
+
+    ::glm::vec3 toVec3(const char *const values) noexcept {
+        ::std::stringstream data {values};
+        float x {};
+        float y {};
+        float z {};
+        data >> x;
+        data >> y;
+        data >> z;
+
+        return ::glm::vec3 {x, y, z};
+    }
+
+    ::glm::vec2 toVec2(const char *const values) noexcept {
+        ::std::stringstream data {values};
+        float x {};
+        float y {};
+        data >> x;
+        data >> y;
+
+        return ::glm::vec2 {x, y};
+    }
+
 }// namespace MobileRT

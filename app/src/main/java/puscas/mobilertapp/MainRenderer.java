@@ -366,7 +366,8 @@ final class MainRenderer implements GLSurfaceView.Renderer {
      * @param samplesLight The number of samples per light.
      * @param objFilePath  The path to the OBJ file containing the scene.
      * @param matFilePath  The path to the MTL file containing the materials of the scene.
-     * @return The number of primitives or -1 if an error occurs.
+     * @param camFilePath  The path to the CAM file containing the camera in the scene.
+     * @return The number of primitives or a negative value if an error occurs.
      */
     native int RTInitialize(
             final int scene,
@@ -377,7 +378,8 @@ final class MainRenderer implements GLSurfaceView.Renderer {
             final int samplesPixel,
             final int samplesLight,
             final String objFilePath,
-            final String matFilePath
+            final String matFilePath,
+            final String camFilePath
     );
 
     /**

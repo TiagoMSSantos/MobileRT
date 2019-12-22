@@ -8,7 +8,7 @@
 namespace MobileRT {
     class Sampler {
     public:
-        ::std::atomic<::std::uint32_t> sample_{0};
+        ::std::atomic<::std::uint32_t> sample_{};
         const ::std::uint32_t domainSize_{::std::numeric_limits<::std::uint32_t>::max()};
         ::std::uint32_t samples_{::std::numeric_limits<::std::uint32_t>::max()};
 

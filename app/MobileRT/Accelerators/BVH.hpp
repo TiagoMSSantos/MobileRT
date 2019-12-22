@@ -16,8 +16,8 @@ namespace MobileRT {
 
     struct BVHNode {
         AABB box_ {};
-        ::std::uint32_t indexOffset_ {0};
-        ::std::uint32_t numberPrimitives_ {0};
+        ::std::uint32_t indexOffset_ {};
+        ::std::uint32_t numberPrimitives_ {};
     };
 
     template<typename T, typename Iterator>
@@ -87,10 +87,10 @@ namespace MobileRT {
 
     template<typename T>
     void BVH<T>::build() noexcept {
-        ::std::uint32_t id {0};
-        ::std::uint32_t begin {0};
+        ::std::uint32_t id {};
+        ::std::uint32_t begin {};
         ::std::uint32_t end {static_cast<::std::uint32_t>(primitives_.size())};
-        ::std::uint32_t maxId {0};
+        ::std::uint32_t maxId {};
 
         ::std::array<::std::uint32_t, 512> stackId {};
         ::std::array<::std::uint32_t, 512> stackBegin {};
@@ -161,7 +161,7 @@ namespace MobileRT {
         if(primitives_.empty()) {
             return intersection;
         }
-        ::std::uint32_t id {0};
+        ::std::uint32_t id {};
         ::std::array<::std::uint32_t, 512> stackId {};
 
         auto itStackId {stackId.begin()};
@@ -175,7 +175,7 @@ namespace MobileRT {
 
                 const ::std::uint32_t numberPrimitives {node.numberPrimitives_};
                 if (numberPrimitives > 0) {
-                    for (::std::uint32_t i {0}; i < numberPrimitives; ++i) {
+                    for (::std::uint32_t i {}; i < numberPrimitives; ++i) {
                         auto& primitive {*(itPrimitives + static_cast<::std::int32_t> (node.indexOffset_ + i))};
                         intersection = primitive.intersect(intersection, ray);
                     }
@@ -217,7 +217,7 @@ namespace MobileRT {
         if(primitives_.empty()) {
             return intersection;
         }
-        ::std::uint32_t id {0};
+        ::std::uint32_t id {};
         ::std::array<::std::uint32_t, 512> stackId {};
 
         auto itStackId {stackId.begin()};
@@ -231,7 +231,7 @@ namespace MobileRT {
 
                 const ::std::uint32_t numberPrimitives {node.numberPrimitives_};
                 if (numberPrimitives > 0) {
-                    for (::std::uint32_t i {0}; i < numberPrimitives; ++i) {
+                    for (::std::uint32_t i {}; i < numberPrimitives; ++i) {
                         auto& primitive {*(itPrimitives + static_cast<::std::int32_t> (node.indexOffset_ + i))};
                         const float lastDist {intersection.length_};
                         intersection = primitive.intersect(intersection, ray);

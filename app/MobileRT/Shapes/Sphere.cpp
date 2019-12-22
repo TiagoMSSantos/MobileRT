@@ -55,7 +55,7 @@ AABB Sphere::getAABB() const noexcept {
 }
 
 bool Sphere::intersect(const AABB &box) const noexcept {
-    float dmin {0};
+    float dmin {};
     const ::glm::vec3 &v1 {box.pointMin_};
     const ::glm::vec3 &v2 {box.pointMax_};
     if (center_[0] < v1[0]) {

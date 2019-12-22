@@ -54,7 +54,7 @@ RegularGrid::~RegularGrid() noexcept {
 }
 
 ::std::int32_t RegularGrid::bitCounter(::std::uint32_t n) const noexcept {
-    ::std::int32_t counter{0};
+    ::std::int32_t counter{};
     while (n > 0) {
         ++counter;
         n >>= 1;
@@ -66,7 +66,7 @@ template<typename T>
 void RegularGrid::addPrimitives
         (::std::vector<T> &primitives,
          ::std::vector<::std::vector<T *>> &grid_primitives) noexcept {
-    ::std::int32_t index{0};
+    ::std::int32_t index{};
 
     // calculate cell width, height and depth
     const float sizeX{m_Extends.pointMax_[0] - m_Extends.pointMin_[0]};

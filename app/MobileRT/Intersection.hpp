@@ -10,9 +10,9 @@ namespace MobileRT {
     public:
         ::glm::vec3 point_{};   // intersection point
         ::glm::vec3 normal_{};    // intersection normal
-        const Material *material_{nullptr};// material of the intersected primitive
+        const Material *material_{};// material of the intersected primitive
         float length_{RayLengthMax};// ray length parameter
-        const void *primitive_{nullptr};
+        const void *primitive_{};
 
     public:
         explicit Intersection () noexcept = delete;

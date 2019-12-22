@@ -129,7 +129,7 @@ void Shader::resetSampling() noexcept {
 }
 
 ::glm::vec3 Shader::getCosineSampleHemisphere(const ::glm::vec3 &normal) const noexcept {
-    static ::std::atomic<::std::uint32_t> sampler {0};
+    static ::std::atomic<::std::uint32_t> sampler {};
     const ::std::uint32_t current1 {sampler.fetch_add(1, ::std::memory_order_relaxed)};
     const ::std::uint32_t current2 {sampler.fetch_add(1, ::std::memory_order_relaxed)};
 
@@ -165,7 +165,7 @@ void Shader::resetSampling() noexcept {
 }
 
 ::std::uint32_t Shader::getLightIndex () {
-    static ::std::atomic<::std::uint32_t> sampler {0};
+    static ::std::atomic<::std::uint32_t> sampler {};
     const ::std::uint32_t current {sampler.fetch_add(1, ::std::memory_order_relaxed)};
 
     const auto it {VALUES.begin() + (current & MASK)};

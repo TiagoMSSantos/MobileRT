@@ -1,7 +1,7 @@
 #!/bin/bash
 
-FILE_TO_SEARCH="MobileRayTracer.jks"
-FIND_MOBILERT=$(find / -iname "${FILE_TO_SEARCH}" 2> /dev/null | head -n 1)
+FILE_TO_SEARCH="MobileRT.jks"
+FIND_MOBILERT=$(find /mnt/D/Projects -iname "${FILE_TO_SEARCH}" 2> /dev/null | head -n 1)
 MOBILERT_PATH="${FIND_MOBILERT//\/app\/"${FILE_TO_SEARCH}"/}"
 
 echo "MOBILERT_PATH = ${MOBILERT_PATH}"
@@ -138,7 +138,7 @@ function clangtidy {
   -I ${COMPONENTS_SRCS} \
   -I ${DEPENDENT_SRCS}/Linux \
   -I ${SCENES_SRCS} \
-	-isystem ${THIRDPARTY_HEADERS} \
+  -isystem ${THIRDPARTY_HEADERS} \
   -isystem ${GSL_HEADERS} \
   -isystem ${GLM_HEADERS} \
   -isystem /usr/include/c++/7 \

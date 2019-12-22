@@ -12,9 +12,6 @@ namespace MobileRT {
 
     class Camera {
     protected:
-        ::std::atomic<::std::uint32_t> block_ {0};
-
-    protected:
         float degToRad(float deg) const noexcept;
 
         float radToDeg(float rad) const noexcept;
@@ -26,30 +23,24 @@ namespace MobileRT {
         ::glm::vec3 up_{};
 
     public:
-        explicit Camera () noexcept = delete;
-
         explicit Camera(const ::glm::vec3 &position,
                         const ::glm::vec3 &lookAt, const ::glm::vec3 &up) noexcept;
 
         Camera(const Camera &camera) noexcept;
 
-        Camera(Camera &&camera) noexcept = delete;
+        Camera(Camera &&camera) noexcept = default;
 
         virtual ~Camera() noexcept;
 
-        Camera &operator=(const Camera &camera) noexcept = delete;
+        Camera &operator=(const Camera &camera) noexcept = default;
 
-        Camera &operator=(Camera &&camera) noexcept = delete;
+        Camera &operator=(Camera &&camera) noexcept = default;
 
         virtual Ray generateRay(float u, float v,
                                 float deviationU,
                                 float deviationV) const noexcept = 0;
 
-        float getBlock(::std::uint32_t sample) noexcept;
-
         virtual AABB getAABB() const noexcept;
-
-        void resetSampling() noexcept;
     };
 }//namespace MobileRT
 

@@ -32,7 +32,7 @@ bool NoShadows::shade(
             static_cast<::std::uint32_t>(scene_.lights_.size())};
         if (sizeLights > 0) {
             const ::std::uint32_t samplesLight {this->samplesLight_};
-            for (::std::uint32_t j {0}; j < samplesLight; ++j) {
+            for (::std::uint32_t j {}; j < samplesLight; ++j) {
                 const ::std::uint32_t chosenLight {getLightIndex()};
                 Light &light(*scene_.lights_[chosenLight]);
                 const ::glm::vec3 &lightPosition {light.getPosition()};

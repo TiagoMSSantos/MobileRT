@@ -24,9 +24,11 @@ namespace MobileRT {
         const ::std::uint32_t domainSize_{};
         const ::std::uint32_t resolution_{};
         const ::std::uint32_t samplesPixel_{};
+        ::std::atomic<::std::uint32_t> block_ {};
 
     private:
         void renderScene(::std::uint32_t *bitmap, ::std::int32_t tid, ::std::uint32_t width) noexcept;
+        float getBlock(::std::uint32_t sample) noexcept;
 
     public:
         explicit Renderer () noexcept = delete;

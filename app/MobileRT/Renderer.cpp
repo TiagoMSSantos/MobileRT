@@ -4,6 +4,22 @@
 #include <vector>
 
 using ::MobileRT::Renderer;
+using ::MobileRT::NumberOfBlocks;
+
+namespace {
+    ::std::array<float, NumberOfBlocks> VALUES;
+
+    bool FillThings() {
+        for (auto it {VALUES.begin()}; it < VALUES.end(); std::advance(it, 1)) {
+            const ::std::uint32_t index {static_cast<uint32_t>(::std::distance(VALUES.begin(), it))};
+            *it = ::MobileRT::haltonSequence(index, 2);
+        }
+        static ::std::random_device randomDevice {"/dev/urandom"};
+        static ::std::mt19937 generator {randomDevice()};
+        ::std::shuffle(VALUES.begin(), VALUES.end(), generator);
+        return true;
+    }
+}//namespace
 
 Renderer::Renderer(::std::unique_ptr<Shader> shader,
                    ::std::unique_ptr<Camera> camera,
@@ -15,12 +31,15 @@ Renderer::Renderer(::std::unique_ptr<Shader> shader,
         samplerPixel_{::std::move(samplerPixel)},
         blockSizeX_{width / static_cast<::std::uint32_t>(::std::sqrt(NumberOfBlocks))},
         blockSizeY_{height / static_cast<::std::uint32_t>(::std::sqrt(NumberOfBlocks))},
-        sample_{0},
+        sample_{},
         width_{width},
         height_{height},
         domainSize_{(width / blockSizeX_) * (height / blockSizeY_)},
         resolution_{width * height},
         samplesPixel_{samplesPixel} {
+    static bool unused{FillThings()};
+    static_cast<void> (unused);
+
     this->shader_->initializeAccelerators(camera_.get());
 }
 
@@ -34,13 +53,13 @@ void Renderer::renderFrame(::std::uint32_t *const bitmap, const ::std::int32_t n
     this->sample_ = 0;
     this->samplerPixel_->resetSampling();
     this->shader_->resetSampling();
-    this->camera_->resetSampling();
+    this->block_ = 0;
 
     const ::std::int32_t numChildren{numThreads - 1};
     ::std::vector<::std::thread> threads {};
     threads.reserve(static_cast<::std::uint32_t>(numChildren));
 
-    for (::std::int32_t i{0}; i < numChildren; ++i) {
+    for (::std::int32_t i{}; i < numChildren; ++i) {
         threads.emplace_back(&Renderer::renderScene, this, bitmap, i, realWidth);
     }
     renderScene(bitmap, numChildren, realWidth);
@@ -71,9 +90,9 @@ void Renderer::renderScene(::std::uint32_t *const bitmap, const ::std::int32_t t
     ::gsl::span<::std::uint32_t> spanBitmap (bitmap, static_cast<::std::int32_t> (width_ * height_));
     const auto bitmapItBegin {spanBitmap.begin()};
 
-    for (::std::uint32_t sample{0}; sample < samples; ++sample) {
+    for (::std::uint32_t sample{}; sample < samples; ++sample) {
         while (true) {
-            const float block{this->camera_->getBlock(sample)};
+            const float block{getBlock(sample)};
             if (block >= 1.0f) { break; }
             const ::std::uint32_t roundBlock{
                     static_cast<::std::uint32_t> (::std::roundf(block * this->domainSize_))};
@@ -113,4 +132,15 @@ void Renderer::renderScene(::std::uint32_t *const bitmap, const ::std::int32_t t
 
 ::std::uint32_t Renderer::getSample() const noexcept {
     return this->sample_;
+}
+
+float Renderer::getBlock(const ::std::uint32_t sample) noexcept {
+    const ::std::uint32_t current{
+            this->block_.fetch_add(1, ::std::memory_order_relaxed) - NumberOfBlocks * sample};
+    if (current >= NumberOfBlocks) {
+        this->block_.fetch_sub(1, ::std::memory_order_relaxed);
+        return 1.0f;
+    }
+    const auto it {VALUES.begin() + current};
+    return *it;
 }

@@ -1,25 +1,6 @@
 #ifndef APP_DRAWVIEW_HPP
 #define APP_DRAWVIEW_HPP
 
-#include "Scenes/Scenes.hpp"
-#include "Components/Cameras/Orthographic.hpp"
-#include "Components/Cameras/Perspective.hpp"
-#include "Components/Lights/AreaLight.hpp"
-#include "Components/Lights/PointLight.hpp"
-#include "Components/ObjectLoaders/OBJLoader.hpp"
-#include "Components/Samplers/Constant.hpp"
-#include "Components/Samplers/HaltonSeq.hpp"
-#include "Components/Samplers/MersenneTwister.hpp"
-#include "Components/Samplers/StaticHaltonSeq.hpp"
-#include "Components/Samplers/StaticMersenneTwister.hpp"
-#include "Components/Samplers/Stratified.hpp"
-#include "Components/Shaders/DepthMap.hpp"
-#include "Components/Shaders/DiffuseMaterial.hpp"
-#include "Components/Shaders/NoShadows.hpp"
-#include "Components/Shaders/PathTracer.hpp"
-#include "Components/Shaders/Whitted.hpp"
-#include "MobileRT/Renderer.hpp"
-#include "MobileRT/Scene.hpp"
 #include <android/asset_manager.h>
 #include <android/asset_manager_jni.h>
 #include <android/bitmap.h>
@@ -148,7 +129,8 @@ jint Java_puscas_mobilertapp_MainRenderer_RTInitialize(
         jint samplesPixel,
         jint samplesLight,
         jstring localObjFile,
-        jstring localMatFile
+        jstring localMatFile,
+        jstring localCamFile
 ) noexcept;
 
 #endif //APP_DRAWVIEW_HPP

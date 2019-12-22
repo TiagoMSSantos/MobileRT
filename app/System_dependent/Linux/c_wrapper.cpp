@@ -3,7 +3,7 @@
 #include "Components/Cameras/Perspective.hpp"
 #include "Components/Lights/AreaLight.hpp"
 #include "Components/Lights/PointLight.hpp"
-#include "Components/ObjectLoaders/OBJLoader.hpp"
+#include "Components/Loaders/OBJLoader.hpp"
 #include "Components/Samplers/Constant.hpp"
 #include "Components/Samplers/HaltonSeq.hpp"
 #include "Components/Samplers/MersenneTwister.hpp"
@@ -30,10 +30,10 @@ work_thread(
     ::std::int32_t repeats, const ::std::int32_t accelerator, const bool printStdOut,
     const char *const objFileName, const char *const mtlFileName) {
     ::std::ostringstream ss{""};
-    ::std::streambuf *old_buf_stdout{nullptr};
-    ::std::streambuf *old_buf_stderr{nullptr};
-    ::std::chrono::duration<double> timeCreating{0};
-    ::std::chrono::duration<double> timeRendering{0};
+    ::std::streambuf *old_buf_stdout{};
+    ::std::streambuf *old_buf_stderr{};
+    ::std::chrono::duration<double> timeCreating{};
+    ::std::chrono::duration<double> timeRendering{};
     if (!printStdOut) {
         old_buf_stdout = ::std::cout.rdbuf(ss.rdbuf());
         old_buf_stderr = ::std::cerr.rdbuf(ss.rdbuf());
@@ -53,7 +53,7 @@ work_thread(
         LOG("pathMtl = ", mtlFileName);
 
         ::std::unique_ptr<::MobileRT::Renderer> renderer_ {};
-        ::std::int32_t numberOfLights_ {0};
+        ::std::int32_t numberOfLights_ {};
 
         const float ratio {
             ::std::max(static_cast<float>(width) / height, static_cast<float>(height) / width)};
