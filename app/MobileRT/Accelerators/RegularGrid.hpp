@@ -9,35 +9,33 @@
 
 namespace MobileRT {
 
+    template<typename T>
     class RegularGrid final {
     private:
-        ::std::vector<::std::vector<Primitive < Triangle> *>> triangles_;
-        ::std::vector<::std::vector<Primitive < Sphere> *>> spheres_;
-        ::std::vector<::std::vector<Primitive < Plane> *>> planes_;
-        ::std::int32_t gridSize_{};
-        ::std::int32_t gridShift_{};
-        AABB m_Extends{};
-        ::glm::vec3 m_SR{};
-        ::glm::vec3 m_CW{};
-        Scene *scene_{};
+        ::std::vector<::std::vector<Primitive <T> *>> primitives_;
+        ::std::int32_t gridSize_ {};
+        ::std::int32_t gridShift_ {};
+        AABB box_ {};
+        ::glm::vec3 cellSizeInverted_ {};
+        ::glm::vec3 cellSize_ {};
 
     private:
-        template<typename T>
-        void addPrimitives
-                (::std::vector<T> &primitives,
-                 ::std::vector<::std::vector<T *>> &grid_primitives) noexcept;
+        template<typename P>
+        void addPrimitives(::std::vector<P> &&primitives) noexcept;
 
-        template<typename T>
-        Intersection intersect(const ::std::vector<::std::vector<T *>> &primitivesMatrix,
-                       Intersection intersection,
-                       const Ray &ray, bool shadowTrace = false) noexcept;
+        template<typename P>
+        Intersection intersect(Intersection intersection,const Ray &ray, bool shadowTrace = false) noexcept;
 
-        ::std::int32_t bitCounter(::std::uint32_t n) const noexcept;
+        ::std::int32_t bitCounter(::std::uint32_t value) const noexcept;
 
     public:
         explicit RegularGrid() noexcept = default;
 
-        explicit RegularGrid(AABB sceneBounds, Scene *scene, ::std::int32_t gridSize) noexcept;
+        explicit RegularGrid(
+                AABB sceneBounds,
+                ::std::int32_t gridSize,
+                ::std::vector<::MobileRT::Primitive<T>> &&primitives
+        ) noexcept;
 
         RegularGrid(const RegularGrid &regularGrid) noexcept = delete;
 
@@ -53,6 +51,330 @@ namespace MobileRT {
 
         Intersection shadowTrace(Intersection intersection, const Ray &ray) noexcept;
     };
+
+
+
+    template<typename T>
+    RegularGrid<T>::RegularGrid(
+        AABB sceneBounds,
+        const ::std::int32_t gridSize,
+        ::std::vector<::MobileRT::Primitive<T>> &&primitives
+    ) noexcept :
+        primitives_ {
+            ::std::vector<::std::vector<::MobileRT::Primitive<T> *>> {
+                static_cast<::std::size_t> (gridSize * gridSize * gridSize)}
+        },
+        gridSize_ {gridSize},
+        gridShift_ {bitCounter(static_cast<::std::uint32_t>(gridSize)) - 1},
+        box_(sceneBounds),//world boundaries
+        // precalculate 1 / size of a cell (for x, y and z)
+        cellSizeInverted_ {gridSize_ / (box_.pointMax_ - box_.pointMin_)[0],
+              gridSize_ / (box_.pointMax_ - box_.pointMin_)[1],
+              gridSize_ / (box_.pointMax_ - box_.pointMin_)[2]},
+        // precalculate size of a cell (for x, y, and z)
+        cellSize_ {(box_.pointMax_ - box_.pointMin_) * (1.0F / gridSize_)} {
+        LOG("scene min=(",
+            box_.pointMin_[0], ", ",
+            box_.pointMin_[1], ", ",
+            box_.pointMin_[2], ") max=(",
+            box_.pointMax_[0], ", ",
+            box_.pointMax_[1], ", ",
+            box_.pointMax_[2], ")"
+        );
+
+        const ::std::size_t vectorSize {static_cast<::std::size_t>(gridSize * gridSize * gridSize)};
+        primitives_.reserve(vectorSize);
+
+        addPrimitives<Primitive<T>>(::std::move(primitives));
+        LOG("PRIMITIVES = ", this->primitives_.size());
+    }
+
+    template<typename T>
+    RegularGrid<T>::~RegularGrid() noexcept {
+        primitives_.clear();
+        ::std::vector<::std::vector<Primitive<T> *>> {}.swap(primitives_);
+    }
+
+    template<typename T>
+    ::std::int32_t RegularGrid<T>::bitCounter(::std::uint32_t value) const noexcept {
+        ::std::int32_t counter {};
+        while (value > 0) {
+            ++counter;
+            value >>= 1;
+        }
+        return counter;
+    }
+
+    template<typename T>
+    template<typename P>
+    void RegularGrid<T>::addPrimitives(
+            ::std::vector<P> &&primitives
+    ) noexcept {
+        ::std::int32_t index {};
+
+        // calculate cell width, height and depth
+        const float sizeX {box_.pointMax_[0] - box_.pointMin_[0]};
+        const float sizeY {box_.pointMax_[1] - box_.pointMin_[1]};
+        const float sizeZ {box_.pointMax_[2] - box_.pointMin_[2]};
+        const float dx {sizeX / gridSize_};
+        const float dy {sizeY / gridSize_};
+        const float dz {sizeZ / gridSize_};
+        const float dx_reci {dx > 0 ? 1.0F / dx : 1.0F};
+        const float dy_reci {dy > 0 ? 1.0F / dy : 1.0F};
+        const float dz_reci {dz > 0 ? 1.0F / dz : 1.0F};
+
+        // store primitives in the grid cells
+        for (P &primitive : primitives) {
+            ++index;
+            const AABB bound {primitive.getAABB()};
+            const ::glm::vec3 &bv1 {bound.pointMin_};
+            const ::glm::vec3 &bv2 {bound.pointMax_};
+
+            // find out which cells could contain the primitive (based on aabb)
+            ::std::int32_t x1 {static_cast<::std::int32_t>((bv1[0] - box_.pointMin_[0]) * dx_reci)};
+            ::std::int32_t x2 {static_cast<::std::int32_t>((bv2[0] - box_.pointMin_[0]) * dx_reci) + 1};
+            x1 = (x1 < 0) ? 0 : x1;
+            x2 = (x2 > (gridSize_ - 1)) ? gridSize_ - 1 : x2;
+            x2 = ::std::fabs(sizeX) < ::std::numeric_limits<float>::epsilon()? 0 : x2;
+            x1 = x1 > x2 ? x2 : x1;
+            ::std::int32_t y1 {static_cast<::std::int32_t>((bv1[1] - box_.pointMin_[1]) * dy_reci)};
+            ::std::int32_t y2 {static_cast<::std::int32_t>((bv2[1] - box_.pointMin_[1]) * dy_reci) + 1};
+            y1 = (y1 < 0) ? 0 : y1;
+            y2 = (y2 > (gridSize_ - 1)) ? gridSize_ - 1 : y2;
+            y2 = ::std::fabs(sizeY) < ::std::numeric_limits<float>::epsilon()? 0 : y2;
+            y1 = y1 > y2 ? y2 : y1;
+            ::std::int32_t z1 {static_cast<::std::int32_t>((bv1[2] - box_.pointMin_[2]) * dz_reci)};
+            ::std::int32_t z2 {static_cast<::std::int32_t>((bv2[2] - box_.pointMin_[2]) * dz_reci) + 1};
+            z1 = (z1 < 0) ? 0 : z1;
+            z2 = (z2 > (gridSize_ - 1)) ? gridSize_ - 1 : z2;
+            z2 = ::std::fabs(sizeZ) < ::std::numeric_limits<float>::epsilon()? 0 : z2;
+            z1 = ::std::min(z2, z1);
+
+            //loop over candidate cells
+            for (::std::int32_t x {x1}; x <= x2; ++x) {
+                for (::std::int32_t y {y1}; y <= y2; ++y) {
+                    for (::std::int32_t z {z1}; z <= z2; ++z) {
+                        // construct aabb for current cell
+                        const ::std::size_t idx {
+                                static_cast<::std::size_t>(x) +
+                                static_cast<::std::size_t>(y) * static_cast<::std::size_t>(gridSize_) +
+                                static_cast<::std::size_t>(z) * static_cast<::std::size_t>(gridSize_) *
+                                static_cast<::std::size_t>(gridSize_)};
+                        const ::glm::vec3 &pos {box_.pointMin_[0] + x * dx,
+                                                box_.pointMin_[1] + y * dy,
+                                                box_.pointMin_[2] + z * dz};
+                        const AABB &cell {pos, pos + ::glm::vec3 {dx, dy, dz}};
+                        //LOG("min=(", pos[0], ", ", pos[1], ", ", pos[2], ") max=(", dx, ", ", dy, ",", dz, ")");
+                        // do an accurate aabb / primitive intersection test
+                        const bool intersectedBox{::MobileRT::intersect(primitive, cell)};
+                        if (intersectedBox) {
+                            this->primitives_[idx].emplace_back(&primitive);
+                            //LOG("add idx = ", idx, " index = ", index);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    template<typename T>
+    Intersection RegularGrid<T>::trace(Intersection intersection, const Ray &ray) noexcept {
+        intersection = intersect<::MobileRT::Primitive<T>>(intersection, ray);
+        return intersection;
+    }
+
+    template<typename T>
+    Intersection RegularGrid<T>::shadowTrace(Intersection intersection, const Ray &ray) noexcept {
+        intersection = intersect<::MobileRT::Primitive<T>>(intersection, ray, true);
+        return intersection;
+    }
+
+    template<typename T>
+    template<typename P>
+    Intersection RegularGrid<T>::intersect(Intersection intersection, const Ray &ray, const bool shadowTrace) noexcept {
+        // setup 3DDDA (double check reusability of primary ray data)
+        const ::glm::vec3 &cell {(ray.origin_ - box_.pointMin_) * cellSizeInverted_};
+        ::std::int32_t X {static_cast<::std::int32_t>(cell[0])};
+        ::std::int32_t Y {static_cast<::std::int32_t>(cell[1])};
+        ::std::int32_t Z {static_cast<::std::int32_t>(cell[2])};
+        const bool notInGrid {(X < 0) || (X >= gridSize_) ||
+                              (Y < 0) || (Y >= gridSize_) ||
+                              (Z < 0) || (Z >= gridSize_)};
+        if (notInGrid && gridSize_ > 1) {
+            return intersection;
+        }
+
+        ::std::int32_t stepX {}, outX {};
+        ::std::int32_t stepY {}, outY {};
+        ::std::int32_t stepZ {}, outZ {};
+        ::glm::vec3 cb {};
+        if (ray.direction_[0] > 0) {
+            stepX = 1;
+            outX = gridSize_;
+            cb[0] = (box_.pointMin_[0] + (X + 1) * cellSize_[0]);
+        } else {
+            stepX = -1;
+            outX = -1;
+            cb[0] = (box_.pointMin_[0] + X * cellSize_[0]);
+        }
+
+        if (ray.direction_[1] > 0) {
+            stepY = 1;
+            outY = gridSize_;
+            cb[1] = (box_.pointMin_[1] + (Y + 1) * cellSize_[1]);
+        } else {
+            stepY = -1;
+            outY = -1;
+            cb[1] = (box_.pointMin_[1] + Y * cellSize_[1]);
+        }
+
+        if (ray.direction_[2] > 0) {
+            stepZ = 1;
+            outZ = gridSize_;
+            cb[2] = (box_.pointMin_[2] + (Z + 1) * cellSize_[2]);
+        } else {
+            stepZ = -1;
+            outZ = -1;
+            cb[2] = (box_.pointMin_[2] + Z * cellSize_[2]);
+        }
+
+        ::glm::vec3 tmax {}, tdelta {};
+        if (::std::fabs(ray.direction_[0]) > ::std::numeric_limits<float>::epsilon()) {
+            const float rxr {1.0F / ray.direction_[0]};
+            tmax[0] = ((cb[0] - ray.origin_[0]) * rxr);
+            tdelta[0] = (cellSize_[0] * stepX * rxr);
+        } else {
+            tmax[0] = RayLengthMax;
+        }
+
+        if (::std::fabs(ray.direction_[1]) > ::std::numeric_limits<float>::epsilon()) {
+            const float ryr {1.0F / ray.direction_[1]};
+            tmax[1] = ((cb[1] - ray.origin_[1]) * ryr);
+            tdelta[1] = (cellSize_[1] * stepY * ryr);
+        } else {
+            tmax[1] = RayLengthMax;
+        }
+
+        if (::std::fabs(ray.direction_[2]) > ::std::numeric_limits<float>::epsilon()) {
+            const float rzr {1.0F / ray.direction_[2]};
+            tmax[2] = ((cb[2] - ray.origin_[2]) * rzr);
+            tdelta[2] = (cellSize_[2] * stepZ * rzr);
+        } else {
+            tmax[2] = RayLengthMax;
+        }
+
+        // start stepping
+        // trace primary ray
+        while (true) {
+            const ::std::int32_t index {
+                static_cast<int32_t>(
+                     static_cast<::std::uint32_t> (X) +
+                    (static_cast<::std::uint32_t> (Y) << (static_cast<::std::uint32_t> (gridShift_))) +
+                    (static_cast<::std::uint32_t> (Z) << (static_cast<::std::uint32_t> (gridShift_) * 2u))
+                )
+            };
+            const auto it {this->primitives_.begin() + index};
+            ::std::vector<P *> primitivesList {*it};
+            for (auto *const primitive : primitivesList) {
+                const float lastDist {intersection.length_};
+                intersection = primitive->intersect(intersection, ray);
+                if (intersection.length_ < lastDist) {
+                    if (shadowTrace) {
+                        return intersection;
+                    }
+                    goto testloop;
+                }
+            }
+
+            if (tmax[0] < tmax[1]) {
+                if (tmax[0] < tmax[2]) {
+                    X += stepX;
+                    if (X == outX) {
+                        return intersection;
+                    }
+                    tmax[0] = (tmax[0] + tdelta[0]);
+                } else {
+                    Z += stepZ;
+                    if (Z == outZ) {
+                        return intersection;
+                    }
+                    tmax[2] = (tmax[2] + tdelta[2]);
+                }
+            } else {
+                if (tmax[1] < tmax[2]) {
+                    Y += stepY;
+                    if (Y == outY) {
+                        return intersection;
+                    }
+                    tmax[1] = (tmax[1] + tdelta[1]);
+                } else {
+                    Z += stepZ;
+                    if (Z == outZ) {
+                        return intersection;
+                    }
+                    tmax[2] = (tmax[2] + tdelta[2]);
+                }
+            }
+
+        }
+        testloop:
+        while (true) {
+            const ::std::int32_t index {
+                static_cast<int32_t> (
+                     static_cast<::std::uint32_t> (X) +
+                    (static_cast<::std::uint32_t> (Y) << (static_cast<::std::uint32_t> (gridShift_))) +
+                    (static_cast<::std::uint32_t> (Z) << (static_cast<::std::uint32_t> (gridShift_) * 2u))
+                )
+            };
+            const auto it {this->primitives_.begin() + index};
+            ::std::vector<P *> primitivesList {*it};
+            for (auto *const primitive : primitivesList) {
+                intersection = primitive->intersect(intersection, ray);
+            }
+            if (tmax[0] < tmax[1]) {
+                if (tmax[0] < tmax[2]) {
+                    if (intersection.length_ < tmax[0]) {
+                        break;
+                    }
+                    X += stepX;
+                    if (X == outX) {
+                        break;
+                    }
+                    tmax[0] = (tmax[0] + tdelta[0]);
+                } else {
+                    if (intersection.length_ < tmax[2]) {
+                        break;
+                    }
+                    Z += stepZ;
+                    if (Z == outZ) {
+                        break;
+                    }
+                    tmax[2] = (tmax[2] + tdelta[2]);
+                }
+            } else {
+                if (tmax[1] < tmax[2]) {
+                    if (intersection.length_ < tmax[1]) {
+                        break;
+                    }
+                    Y += stepY;
+                    if (Y == outY) {
+                        break;
+                    }
+                    tmax[1] = (tmax[1] + tdelta[1]);
+                } else {
+                    if (intersection.length_ < tmax[2]) {
+                        break;
+                    }
+                    Z += stepZ;
+                    if (Z == outZ) {
+                        break;
+                    }
+                    tmax[2] = (tmax[2] + tdelta[2]);
+                }
+            }
+        }
+        return intersection;
+    }
 }//namespace MobileRT
 
 #endif //MOBILERT_ACCELERATORS_REGULARGRID_HPP

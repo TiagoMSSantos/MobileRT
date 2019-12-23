@@ -13,11 +13,14 @@ namespace MobileRT {
     class Shader {
     public:
         Scene scene_ {};
-        RegularGrid regularGrid_ {};
 
-        BVH<Plane> bvhPlanes_{};
-        BVH<Sphere> bvhSpheres_{};
-        BVH<Triangle> bvhTriangles_{};
+        RegularGrid<Plane> gridPlanes_ {};
+        RegularGrid<Sphere> gridSpheres_ {};
+        RegularGrid<Triangle> gridTriangles_ {};
+
+        BVH<Plane> bvhPlanes_ {};
+        BVH<Sphere> bvhSpheres_ {};
+        BVH<Triangle> bvhTriangles_ {};
 
         enum Accelerator {
             ACC_NAIVE = 0,
@@ -32,8 +35,7 @@ namespace MobileRT {
         const ::std::uint32_t samplesLight_{};
 
     protected:
-        virtual bool shade(
-            ::glm::vec3 *rgb, const Intersection &intersection, const Ray &ray) noexcept = 0;
+        virtual bool shade(::glm::vec3 *rgb, const Intersection &intersection, const Ray &ray) noexcept = 0;
 
         ::glm::vec3 getCosineSampleHemisphere(const ::glm::vec3 &normal) const noexcept;
 
@@ -43,10 +45,7 @@ namespace MobileRT {
     public:
         explicit Shader () noexcept = delete;
 
-        explicit Shader(
-            Scene scene,
-            ::std::uint32_t samplesLight,
-            Accelerator accelerator) noexcept;
+        explicit Shader(Scene scene, ::std::uint32_t samplesLight, Accelerator accelerator) noexcept;
 
         Shader(const Shader &shader) noexcept = delete;
 

@@ -21,8 +21,7 @@ namespace MobileRT {
     };
 
     template<typename T, typename Iterator>
-    ::std::uint32_t getSplitIndex_SAH (
-        Iterator itBegin, Iterator itEnd) noexcept;
+    ::std::uint32_t getSplitIndexSAH(Iterator itBegin, Iterator itEnd) noexcept;
 
     template<typename T>
     class BVH final {
@@ -38,8 +37,7 @@ namespace MobileRT {
     public:
         explicit BVH() noexcept = default;
 
-        explicit BVH<T>(
-                ::std::vector<Primitive<T>> &&primitives) noexcept;
+        explicit BVH<T>(::std::vector<Primitive<T>> &&primitives) noexcept;
 
         BVH(const BVH &bVH) noexcept = delete;
 
@@ -51,13 +49,9 @@ namespace MobileRT {
 
         BVH &operator=(BVH &&bVH) noexcept = default;
 
-        Intersection trace(
-          Intersection intersection,
-          const Ray &ray) noexcept;
+        Intersection trace(Intersection intersection, const Ray &ray) noexcept;
 
-        Intersection shadowTrace(
-          Intersection intersection,
-          const Ray &ray) noexcept;
+        Intersection shadowTrace(Intersection intersection, const Ray &ray) noexcept;
     };
 
 
@@ -134,7 +128,7 @@ namespace MobileRT {
                 maxId = left + 1 > maxId? left + 1 : maxId;
 
                 const ::std::uint32_t splitIndex {boxPrimitivesSize <= 2*maxLeafSize? 2 :
-                    static_cast<::std::uint32_t>(getSplitIndex_SAH<T>(boxes.begin(), boxes.end()))
+                    static_cast<::std::uint32_t>(getSplitIndexSAH<T>(boxes.begin(), boxes.end()))
                 };
 
                 *itStackId = left + 1;
@@ -271,8 +265,8 @@ namespace MobileRT {
     }
 
     template<typename T, typename Iterator>
-    ::std::uint32_t getSplitIndex_SAH (
-        const Iterator itBegin, const Iterator itEnd) noexcept {
+    ::std::uint32_t getSplitIndexSAH(
+            const Iterator itBegin, const Iterator itEnd) noexcept {
             const ::std::uint32_t N {static_cast<::std::uint32_t>(itEnd - itBegin)};
             const auto itBoxes {itBegin};
 
