@@ -16,7 +16,7 @@ else()
 	# Add postfix when build type is debug
 	string( TOLOWER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_L )
 	if( CMAKE_BUILD_TYPE_L MATCHES debug )
-			set( CMAKE_DEBUG_POSTFIX "d" )
+		set( CMAKE_DEBUG_POSTFIX "d" )
 	endif()
 endif()
 
@@ -29,19 +29,22 @@ set( ANDROID_COMPILER_FLAGS "" CACHE STRING "CUSTOM" FORCE )
 
 set( CMAKE_CXX_FLAGS "-fPIC -Wno-weak-vtables" CACHE STRING "CUSTOM" FORCE )
 set( CMAKE_CXX_FLAGS_DEBUG "-D_GLIBCXX_DEBUG" CACHE STRING "CUSTOM" FORCE )
-set( CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG -ffunction-sections -fdata-sections -fno-exceptions" CACHE STRING "CUSTOM" FORCE )
+set( CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG -ffunction-sections -fdata-sections -fno-exceptions"
+		CACHE STRING "CUSTOM" FORCE )
 set( CMAKE_CXX_FLAGS_RELWITHDEBINFO "" CACHE STRING "CUSTOM" FORCE )
 set( CMAKE_CXX_FLAGS_MINSIZEREL "" CACHE STRING "CUSTOM" FORCE )
 
 set( CMAKE_EXE_LINKER_FLAGS "" CACHE STRING "CUSTOM" FORCE )
 set( CMAKE_EXE_LINKER_FLAGS_DEBUG "" CACHE STRING "CUSTOM" FORCE )
-set( CMAKE_EXE_LINKER_FLAGS_RELEASE "-Wl,-gc-sections -O3 -discard-all -fno-rtti -fno-exceptions -s -flto=full" CACHE STRING "CUSTOM" FORCE )
+set( CMAKE_EXE_LINKER_FLAGS_RELEASE "-Wl,-gc-sections -O3 -discard-all -fno-rtti -fno-exceptions -s -flto=full"
+		CACHE STRING "CUSTOM" FORCE )
 set( CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO "" CACHE STRING "CUSTOM" FORCE )
 set( CMAKE_EXE_LINKER_FLAGS_MINSIZEREL "" CACHE STRING "CUSTOM" FORCE )
 
 set( CMAKE_SHARED_LINKER_FLAGS "" CACHE STRING "CUSTOM" FORCE )
 set( CMAKE_SHARED_LINKER_FLAGS_DEBUG "" CACHE STRING "CUSTOM" FORCE )
-set( CMAKE_SHARED_LINKER_FLAGS_RELEASE "-Wl,-gc-sections -O3 -discard-all -fno-rtti -fno-exceptions -s -flto=full" CACHE STRING "CUSTOM" FORCE )
+set( CMAKE_SHARED_LINKER_FLAGS_RELEASE "-Wl,-gc-sections -O3 -discard-all -fno-rtti -fno-exceptions -s -flto=full"
+		CACHE STRING "CUSTOM" FORCE )
 set( CMAKE_SHARED_LINKER_FLAGS_RELWITHDEBINFO "" CACHE STRING "CUSTOM" FORCE )
 set( CMAKE_SHARED_LINKER_FLAGS_MINSIZEREL "" CACHE STRING "CUSTOM" FORCE )
 
@@ -62,7 +65,8 @@ set( GSL_HEADERS "${CMAKE_SOURCE_DIR}/third_party/GSL/include" )
 set( GLM_HEADERS "${CMAKE_SOURCE_DIR}/third_party/glm" )
 
 # Set common flags
-set( COMMON_FLAGS "${COMMON_FLAGS}" -std=c++17 -pedantic-errors -pedantic -Wpedantic -Wall -Wextra -Wfatal-errors -Werror )
+set( COMMON_FLAGS "${COMMON_FLAGS}"
+		-std=c++11 -pedantic-errors -pedantic -Wpedantic -Wall -Wextra -Wfatal-errors -Werror )
 set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-c++98-compat-pedantic -Wno-padded )
 set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-exit-time-destructors -Wno-global-constructors )
 set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-gnu-anonymous-struct -Wno-nested-anon-types )
@@ -105,7 +109,11 @@ else ()
 	add_executable( ${PROJECT_NAME} ${SCENES_SOURCES} ${MOBILE_DEPENDENT_SOURCES} )
 
 	target_include_directories( ${PROJECT_NAME} PRIVATE "${GTK2_INCLUDE_DIRS}" )
-	target_compile_options( ${PROJECT_NAME} PRIVATE -Wno-reserved-id-macro -Wno-documentation-unknown-command -Wno-old-style-cast -Wno-documentation -Wno-zero-as-null-pointer-constant -Wno-redundant-parens -Wno-unused-variable -Wno-weak-vtables -Wno-sign-conversion )
+	target_compile_options( ${PROJECT_NAME} PRIVATE
+		-Wno-reserved-id-macro -Wno-documentation-unknown-command -Wno-old-style-cast -Wno-documentation
+		-Wno-zero-as-null-pointer-constant -Wno-redundant-parens -Wno-unused-variable -Wno-weak-vtables
+		-Wno-sign-conversion
+	)
 	target_link_libraries( ${PROJECT_NAME} PRIVATE "${GTK2_LIBRARIES}" GSL )
 endif()
 

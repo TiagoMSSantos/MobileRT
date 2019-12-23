@@ -4,9 +4,9 @@
 using ::Components::StaticMersenneTwister;
 
 namespace {
-    const ::std::uint32_t MASK{0xFFFFF};
-    const ::std::uint32_t SIZE{MASK + 1};
-    ::std::array<float, SIZE> VALUES;
+    const ::std::uint32_t MASK {0xFFFFF};
+    const ::std::uint32_t SIZE {MASK + 1};
+    ::std::array<float, SIZE> VALUES {};
 
     bool FillThings() {
         static ::std::uniform_real_distribution<float> uniform_dist {0.0F, 1.0F};

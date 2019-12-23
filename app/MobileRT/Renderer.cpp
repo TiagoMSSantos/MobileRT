@@ -1,5 +1,4 @@
 #include "MobileRT/Renderer.hpp"
-#include <gsl/gsl>
 #include <thread>
 #include <vector>
 
@@ -7,7 +6,7 @@ using ::MobileRT::Renderer;
 using ::MobileRT::NumberOfBlocks;
 
 namespace {
-    ::std::array<float, NumberOfBlocks> VALUES;
+    ::std::array<float, NumberOfBlocks> VALUES {};
 
     bool FillThings() {
         for (auto it {VALUES.begin()}; it < VALUES.end(); std::advance(it, 1)) {
@@ -37,7 +36,7 @@ Renderer::Renderer(::std::unique_ptr<Shader> shader,
         domainSize_{(width / blockSizeX_) * (height / blockSizeY_)},
         resolution_{width * height},
         samplesPixel_{samplesPixel} {
-    static bool unused{FillThings()};
+    static bool unused {FillThings()};
     static_cast<void> (unused);
 
     this->shader_->initializeAccelerators(camera_.get());
@@ -48,7 +47,7 @@ void Renderer::renderFrame(::std::uint32_t *const bitmap, const ::std::int32_t n
     LOG("numThreads = ", numThreads);
     const ::std::uint32_t realWidth {stride / static_cast<::std::uint32_t>(sizeof(::std::uint32_t))};
     LOG("realWidth = ", realWidth);
-    LOG("width_ = ", width_);
+    LOG("width_ = ", this->width_);
 
     this->sample_ = 0;
     this->samplerPixel_->resetSampling();
@@ -87,9 +86,6 @@ void Renderer::renderScene(::std::uint32_t *const bitmap, const ::std::int32_t t
     ::glm::vec3 pixelRGB {};
     const ::std::uint32_t samples {this->samplesPixel_};
 
-    ::gsl::span<::std::uint32_t> spanBitmap (bitmap, static_cast<::std::int32_t> (this->width_ * this->height_));
-    const auto bitmapItBegin {spanBitmap.begin()};
-
     for (::std::uint32_t sample {}; sample < samples; ++sample) {
         while (true) {
             const float block {getBlock(sample)};
@@ -119,7 +115,7 @@ void Renderer::renderScene(::std::uint32_t *const bitmap, const ::std::int32_t t
                     pixelRGB = {};
                     this->shader_->rayTrace(&pixelRGB, ray);
                     const ::std::uint32_t pixelIndex {yWidth + x};
-                    ::std::uint32_t &bitmapPixel {*(bitmapItBegin + static_cast<::std::int32_t> (pixelIndex))};
+                    ::std::uint32_t &bitmapPixel {bitmap[pixelIndex]};
                     const ::std::uint32_t pixelColor {::MobileRT::incrementalAvg(pixelRGB, bitmapPixel, sample + 1)};
                     bitmapPixel = pixelColor;
                 }

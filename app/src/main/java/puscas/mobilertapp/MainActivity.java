@@ -83,6 +83,11 @@ public final class MainActivity extends Activity {
     }
 
     /**
+     * The request code for the new {@link Activity} to open an OBJ file.
+     */
+    private static final int OPEN_FILE_REQUEST_CODE = 1;
+
+    /**
      * The custom {@link GLSurfaceView} for displaying OpenGL rendering.
      */
     private DrawView drawView = null;
@@ -217,8 +222,7 @@ public final class MainActivity extends Activity {
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         try {
             final Intent intentChooseFile = Intent.createChooser(intent, "Select a File to Upload");
-            final int openFileCode = 1;
-            startActivityForResult(intentChooseFile, openFileCode);
+            startActivityForResult(intentChooseFile, OPEN_FILE_REQUEST_CODE);
         } catch (final android.content.ActivityNotFoundException ex) {
             Toast.makeText(this, PLEASE_INSTALL_FILE_MANAGER, Toast.LENGTH_LONG).show();
         }
@@ -340,7 +344,8 @@ public final class MainActivity extends Activity {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN) @Override
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    @Override
     protected final void onCreate(@Nullable final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -650,11 +655,11 @@ public final class MainActivity extends Activity {
     }
 
     @Override
-    protected final void onActivityResult(final int requestCode, final int resultCode, @NonNull final Intent data) {
+    protected final void onActivityResult(final int requestCode, final int resultCode, @Nullable final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        final Uri uri = data.getData();
-        if (resultCode == Activity.RESULT_OK && uri != null) {
+        if (resultCode == Activity.RESULT_OK && requestCode == OPEN_FILE_REQUEST_CODE) {
+            final Uri uri = data.getData();
             String filePath = uri.getPath();
             if (filePath != null) {
                 final String sdCardDir = Environment.getExternalStorageDirectory().getPath();

@@ -28,7 +28,7 @@ namespace MobileRT {
 
     const float RayLengthMax {1.0e+30f};
     const ::std::int32_t RayDepthMin {4};
-    const ::std::int32_t RayDepthMax {8};
+    const ::std::int32_t RayDepthMax {6};
     const ::std::int32_t NumberOfBlocks {256};
     const float Epsilon {1.0e-06f};
 
@@ -46,7 +46,7 @@ namespace MobileRT {
 
     template<typename ...Args>
     void log(Args &&... args) noexcept {
-        ::std::ostringstream oss{""};
+        ::std::ostringstream oss {""};
         static_cast<void> (::std::initializer_list<::std::int32_t> {(oss << args, 0)...});
         oss << '\n';
         const ::std::string &line {oss.str()};
@@ -67,11 +67,20 @@ namespace MobileRT {
 
     template<typename T>
     ::std::vector<T *> convertVector(::std::vector<T> &source) noexcept {
-        ::std::vector<T *> target(source.size());
+        ::std::vector<T *> target (source.size());
         ::std::transform(source.begin(), source.end(), target.begin(),
                          [](T &t) noexcept -> T * { return &t; });
         return target;
     }
 }//namespace MobileRT
+
+#if __cplusplus <= 201103L
+namespace std {
+    template<typename T, typename... Args>
+    ::std::unique_ptr<T> make_unique(Args &&... args) {
+        return ::std::unique_ptr<T>(new T(::std::forward<Args>(args)...));
+    }
+}//namespace std
+#endif
 
 #endif //MOBILERT_UTILS_HPP

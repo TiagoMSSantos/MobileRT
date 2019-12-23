@@ -130,9 +130,9 @@ jobject Java_puscas_mobilertapp_MainRenderer_RTInitVerticesArray(
         JNIEnv *env,
         jobject /*thiz*/
 ) noexcept {
-    jobject directBuffer{};
+    jobject directBuffer {};
     {
-        const ::std::lock_guard<::std::mutex> lock{mutex_};
+        const ::std::lock_guard<::std::mutex> lock {mutex_};
         if (renderer_ != nullptr) {
             const ::std::vector<::MobileRT::Primitive<::MobileRT::Triangle>> &triangles {
                     !renderer_->shader_->scene_.triangles_.empty()
@@ -140,7 +140,7 @@ jobject Java_puscas_mobilertapp_MainRenderer_RTInitVerticesArray(
                     : renderer_->shader_->bvhTriangles_.primitives_
             };
             const unsigned long arraySize {triangles.size() * 3 * 4};
-            const jlong arrayBytes{static_cast<jlong> (arraySize) * static_cast<jlong> (sizeof(jfloat))};
+            const jlong arrayBytes {static_cast<jlong> (arraySize) * static_cast<jlong> (sizeof(jfloat))};
             if (arraySize > 0) {
                 float *const floatBuffer {new float[arraySize]};
                 if (floatBuffer != nullptr) {
@@ -196,10 +196,10 @@ jobject Java_puscas_mobilertapp_MainRenderer_RTInitColorsArray(
                     ? renderer_->shader_->scene_.triangles_
                     : renderer_->shader_->bvhTriangles_.primitives_
             };
-            const unsigned long arraySize{triangles.size() * 3 * 4};
-            const jlong arrayBytes{static_cast<jlong> (arraySize) * static_cast<jlong> (sizeof(jfloat))};
+            const unsigned long arraySize {triangles.size() * 3 * 4};
+            const jlong arrayBytes {static_cast<jlong> (arraySize) * static_cast<jlong> (sizeof(jfloat))};
             if (arraySize > 0) {
-                float *const floatBuffer{new float[arraySize]};
+                float *const floatBuffer {new float[arraySize]};
                 if (floatBuffer != nullptr) {
                     directBuffer = env->NewDirectByteBuffer(floatBuffer, arrayBytes);
                     if (directBuffer != nullptr) {
@@ -245,7 +245,7 @@ static void updateFps() noexcept {
     ++frame;
     const ::std::chrono::steady_clock::time_point timeNow {::std::chrono::steady_clock::now()};
     const ::std::int64_t timeElapsed {
-            ::std::chrono::duration_cast<std::chrono::milliseconds>(timeNow - timebase).count()
+        ::std::chrono::duration_cast<std::chrono::milliseconds>(timeNow - timebase).count()
     };
     if (timeElapsed > 1000) {
         fps_ = (frame * 1000.0F) / timeElapsed;
@@ -443,8 +443,7 @@ jint Java_puscas_mobilertapp_MainRenderer_RTInitialize(
                     const ::std::int32_t memFloat {(2 * numberPrimitives * floatSize) / 1048576};
                     const ::std::int32_t neededMemoryMb {1 + memPrimitives + memNodes + memAABB + memFloat};
                     {
-                        const jboolean lowMem {
-                                env->CallBooleanMethod(thiz, isLowMemoryMethodId, neededMemoryMb)};
+                        const jboolean lowMem {env->CallBooleanMethod(thiz, isLowMemoryMethodId, neededMemoryMb)};
                         if (lowMem) {
                             return -1;
                         }
@@ -474,66 +473,78 @@ jint Java_puscas_mobilertapp_MainRenderer_RTInitialize(
                 }
                     break;
             }
-            if (samplesPixel <= 1) {
-                samplerPixel = ::std::make_unique<Components::Constant>(0.5F);
-            } else {
-                samplerPixel = ::std::make_unique<Components::StaticHaltonSeq>();
-            }
+            samplerPixel = samplesPixel <= 1
+                ? ::std::unique_ptr<::MobileRT::Sampler> (::std::make_unique<Components::Constant> (0.5F))
+                : ::std::unique_ptr<::MobileRT::Sampler> (::std::make_unique<Components::StaticHaltonSeq> ());
             switch (shader) {
                 case 1: {
-                    shader_ = ::std::make_unique<Components::Whitted>(::std::move(scene_), samplesLight,
-                                                                      ::MobileRT::Shader::Accelerator(
-                                                                              accelerator));
+                    shader_ = ::std::make_unique<Components::Whitted>(
+                            ::std::move(scene_),
+                            static_cast<::std::uint32_t> (samplesLight),
+                            ::MobileRT::Shader::Accelerator(accelerator)
+                    );
                     break;
                 }
 
                 case 2: {
-                    ::std::unique_ptr<MobileRT::Sampler> samplerRussianRoulette{
-                            ::std::make_unique<Components::StaticHaltonSeq>()};
+                    ::std::unique_ptr<MobileRT::Sampler> samplerRussianRoulette {
+                            ::std::make_unique<Components::StaticHaltonSeq>()
+                    };
 
                     shader_ = ::std::make_unique<Components::PathTracer>(
-                            ::std::move(scene_), ::std::move(samplerRussianRoulette), samplesLight,
-                            ::MobileRT::Shader::Accelerator(accelerator));
+                            ::std::move(scene_),
+                            ::std::move(samplerRussianRoulette),
+                            static_cast<::std::uint32_t> (samplesLight),
+                            ::MobileRT::Shader::Accelerator(accelerator)
+                    );
                     break;
                 }
 
                 case 3: {
-                    shader_ = ::std::make_unique<Components::DepthMap>(::std::move(scene_), maxDist,
-                                                                       ::MobileRT::Shader::Accelerator(
-                                                                               accelerator));
+                    shader_ = ::std::make_unique<Components::DepthMap>(
+                            ::std::move(scene_), maxDist, ::MobileRT::Shader::Accelerator(accelerator)
+                    );
                     break;
                 }
 
                 case 4: {
-                    shader_ = ::std::make_unique<Components::DiffuseMaterial>(::std::move(scene_),
-                                                                              ::MobileRT::Shader::Accelerator(
-                                                                                      accelerator));
+                    shader_ = ::std::make_unique<Components::DiffuseMaterial>(
+                            ::std::move(scene_), ::MobileRT::Shader::Accelerator(accelerator)
+                    );
                     break;
                 }
 
                 default: {
-                    shader_ = ::std::make_unique<Components::NoShadows>(::std::move(scene_), samplesLight,
-                                                                        ::MobileRT::Shader::Accelerator(
-                                                                                accelerator));
+                    shader_ = ::std::make_unique<Components::NoShadows>(
+                            ::std::move(scene_),
+                            static_cast<::std::uint32_t> (samplesLight),
+                            ::MobileRT::Shader::Accelerator(accelerator)
+                    );
                     break;
                 }
             }
-            const ::std::int32_t triangles{
-                    static_cast<int32_t> (shader_->scene_.triangles_.size())};
-            const ::std::int32_t spheres{
-                    static_cast<int32_t> (shader_->scene_.spheres_.size())};
-            const ::std::int32_t planes{
-                    static_cast<::std::int32_t> (shader_->scene_.planes_.size())};
+            const ::std::int32_t triangles {
+                    static_cast<int32_t> (shader_->scene_.triangles_.size())
+            };
+            const ::std::int32_t spheres {
+                    static_cast<int32_t> (shader_->scene_.spheres_.size())
+            };
+            const ::std::int32_t planes {
+                    static_cast<::std::int32_t> (shader_->scene_.planes_.size())
+            };
             numLights_ = static_cast<::std::int32_t> (shader_->scene_.lights_.size());
-            const ::std::int32_t nPrimitives{triangles + spheres + planes};
-            const ::std::chrono::time_point<::std::chrono::system_clock> start{
-                    ::std::chrono::system_clock::now()};
+            const ::std::int32_t nPrimitives {triangles + spheres + planes};
+            const ::std::chrono::time_point<::std::chrono::system_clock> start {
+                    ::std::chrono::system_clock::now()
+            };
             renderer_ = ::std::make_unique<::MobileRT::Renderer>(
                     ::std::move(shader_), ::std::move(camera), ::std::move(samplerPixel),
                     static_cast<::std::uint32_t>(width), static_cast<::std::uint32_t>(height),
-                    static_cast<::std::uint32_t>(samplesPixel));
-            const ::std::chrono::time_point<::std::chrono::system_clock> end{
-                    ::std::chrono::system_clock::now()};
+                    static_cast<::std::uint32_t>(samplesPixel)
+            );
+            const ::std::chrono::time_point<::std::chrono::system_clock> end {
+                    ::std::chrono::system_clock::now()
+            };
             timeRenderer_ = ::std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
             LOG("TIME CONSTRUCTION RENDERER = ", timeRenderer_, "ms");
             /*LOG("TRIANGLES = ", triangles);
@@ -564,7 +575,7 @@ void Java_puscas_mobilertapp_MainRenderer_RTFinishRender(
 ) noexcept {
     //TODO: Fix this race condition
     {
-        const ::std::lock_guard<::std::mutex> lock{mutex_};
+        const ::std::lock_guard<::std::mutex> lock {mutex_};
         state_ = State::FINISHED;
         LOG("STATE = FINISHED");
         if (renderer_ != nullptr) {
@@ -591,14 +602,14 @@ void Java_puscas_mobilertapp_MainRenderer_RTRenderIntoBitmap(
         jint nThreads,
         jboolean async
 ) noexcept {
-    jobject globalBitmap{static_cast<jobject>(env->NewGlobalRef(localBitmap))};
+    jobject globalBitmap {static_cast<jobject>(env->NewGlobalRef(localBitmap))};
 
     auto lambda {
         [=]() noexcept -> void {
             assert(env != nullptr);
             const ::std::int32_t jniError {
-                    javaVM_->GetEnv(reinterpret_cast<void **>(const_cast<JNIEnv **>(&env)),
-                                    JNI_VERSION_1_6)};
+                    javaVM_->GetEnv(reinterpret_cast<void **>(const_cast<JNIEnv **>(&env)), JNI_VERSION_1_6)
+            };
 
             assert(jniError == JNI_OK || jniError == JNI_EDETACHED);
             {
@@ -622,7 +633,7 @@ void Java_puscas_mobilertapp_MainRenderer_RTRenderIntoBitmap(
                 LOG("ret = ", ret);
             }
 
-            const ::std::uint32_t stride{info.stride};
+            const ::std::uint32_t stride {info.stride};
             ::std::int32_t rep {1};
             while (state_ == State::BUSY && rep > 0) {
                 LOG("STARTING RENDERING");
@@ -641,32 +652,34 @@ void Java_puscas_mobilertapp_MainRenderer_RTRenderIntoBitmap(
             finishedRendering_ = true;
             rendered_.notify_all();
             {
-                const ::std::lock_guard<::std::mutex> lock{mutex_};
+                const ::std::lock_guard<::std::mutex> lock {mutex_};
                 if (state_ != State::STOPPED) {
                     state_ = State::FINISHED;
                     LOG("STATE = FINISHED");
                 }
                 {
-                    const ::std::int32_t result{AndroidBitmap_unlockPixels(env, globalBitmap)};
+                    const ::std::int32_t result {AndroidBitmap_unlockPixels(env, globalBitmap)};
                     assert(result == JNI_OK);
                     static_cast<void> (result);
                 }
 
                 env->DeleteGlobalRef(globalBitmap);
                 {
-                    const ::std::int32_t result{javaVM_->GetEnv(reinterpret_cast<void **>(const_cast<JNIEnv **>(&env)),
-                                                                JNI_VERSION_1_6)};
+                    const ::std::int32_t result {
+                        javaVM_->GetEnv(reinterpret_cast<void **>(const_cast<JNIEnv **>(&env)), JNI_VERSION_1_6)
+                    };
                     assert(result == JNI_OK);
                     static_cast<void> (result);
                 }
                 env->ExceptionClear();
                 if (jniError == JNI_EDETACHED) {
-                    const ::std::int32_t result{javaVM_->DetachCurrentThread()};
+                    const ::std::int32_t result {javaVM_->DetachCurrentThread()};
                     assert(result == JNI_OK);
                     static_cast<void> (result);
                 }
             }
-        }};
+        }
+    };
 
     if (async) {
         thread_ = ::std::make_unique<::std::thread>(lambda);
@@ -710,7 +723,7 @@ extern "C"
         JNIEnv *env,
         jobject /*thiz*/
 ) noexcept {
-    ::std::uint32_t sample{};
+    ::std::uint32_t sample {};
     {
         //const ::std::lock_guard<::std::mutex> lock {mutex_};
         //TODO: Fix this race condition
@@ -729,8 +742,11 @@ extern "C"
         jobject /*thiz*/,
         jint size
 ) noexcept {
-    const ::std::int32_t res {::MobileRT::roundDownToMultipleOf(
-            size, static_cast<::std::int32_t>(::std::sqrt(::MobileRT::NumberOfBlocks)))};
+    const ::std::int32_t res {
+        ::MobileRT::roundDownToMultipleOf(
+            size, static_cast<::std::int32_t>(::std::sqrt(::MobileRT::NumberOfBlocks))
+        )
+    };
     env->ExceptionClear();
     return res;
 }

@@ -4,9 +4,9 @@
 using ::Components::StaticHaltonSeq;
 
 namespace {
-    const ::std::uint32_t MASK{0xFFFFF};
-    const ::std::uint32_t SIZE{MASK + 1};
-    ::std::array<float, SIZE> VALUES{};
+    const ::std::uint32_t MASK {0xFFFFF};
+    const ::std::uint32_t SIZE {MASK + 1};
+    ::std::array<float, SIZE> VALUES {};
 
     bool FillThings() {
         for (auto it {VALUES.begin()}; it < VALUES.end(); std::advance(it, 1)) {
