@@ -520,6 +520,13 @@ public final class MainActivity extends Activity {
 
         this.checkBoxRasterize = this.findViewById(R.id.preview);
         this.checkBoxRasterize.setChecked(defaultCheckBoxRasterize);
+        final int scale = Math.round(getResources().getDisplayMetrics().density);
+        this.checkBoxRasterize.setPadding(
+            this.checkBoxRasterize.getPaddingLeft() - (5 * scale),
+            this.checkBoxRasterize.getPaddingTop(),
+            this.checkBoxRasterize.getPaddingRight(),
+            this.checkBoxRasterize.getPaddingBottom()
+        );
 
         final ViewTreeObserver vto = this.drawView.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(() -> {
