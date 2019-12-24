@@ -47,7 +47,7 @@ namespace MobileRT {
 
     template<typename T>
     AABB Primitive<T>::getAABB() const noexcept {
-        const AABB &res{this->shape_.getAABB()};
+        const AABB &res {this->shape_.getAABB()};
         return res;
     }
 

@@ -54,11 +54,11 @@ void Renderer::renderFrame(::std::uint32_t *const bitmap, const ::std::int32_t n
     this->shader_->resetSampling();
     this->block_ = 0;
 
-    const ::std::int32_t numChildren{numThreads - 1};
+    const ::std::int32_t numChildren {numThreads - 1};
     ::std::vector<::std::thread> threads {};
     threads.reserve(static_cast<::std::uint32_t>(numChildren));
 
-    for (::std::int32_t i{}; i < numChildren; ++i) {
+    for (::std::int32_t i {}; i < numChildren; ++i) {
         threads.emplace_back(&Renderer::renderScene, this, bitmap, i, realWidth);
     }
     renderScene(bitmap, numChildren, realWidth);

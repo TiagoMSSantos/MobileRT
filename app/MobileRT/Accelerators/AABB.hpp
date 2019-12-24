@@ -29,6 +29,8 @@ namespace MobileRT {
         AABB &operator=(AABB &&aabb) noexcept = default;
 
         float getSurfaceArea() const noexcept;
+
+        ::glm::vec3 getMidPoint() const noexcept;
     };
 
     AABB surroundingBox(const AABB &box1, const AABB &box2) noexcept;

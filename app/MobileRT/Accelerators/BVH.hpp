@@ -12,16 +12,19 @@
 
 namespace MobileRT {
 
-    static const ::std::uint32_t maxLeafSize {2};
+    static const ::std::int32_t maxLeafSize {2};
 
     struct BVHNode {
         AABB box_ {};
-        ::std::uint32_t indexOffset_ {};
-        ::std::uint32_t numberPrimitives_ {};
+        ::std::int32_t indexOffset_ {};
+        ::std::int32_t numberPrimitives_ {};
     };
 
     template<typename T, typename Iterator>
-    ::std::uint32_t getSplitIndexSAH(Iterator itBegin, Iterator itEnd) noexcept;
+    ::std::int32_t getSplitIndexSah(Iterator itBegin, Iterator itEnd) noexcept;
+
+    template<typename T, typename Iterator>
+    ::std::int32_t getMaxAxis(Iterator itBegin, Iterator itEnd) noexcept;
 
     template<typename T>
     class BVH final {
@@ -39,15 +42,15 @@ namespace MobileRT {
 
         explicit BVH<T>(::std::vector<Primitive<T>> &&primitives) noexcept;
 
-        BVH(const BVH &bVH) noexcept = delete;
+        BVH(const BVH &bvh) noexcept = delete;
 
-        BVH(BVH &&bVH) noexcept = default;
+        BVH(BVH &&bvh) noexcept = default;
 
         ~BVH() noexcept;
 
-        BVH &operator=(const BVH &bVH) noexcept = delete;
+        BVH &operator=(const BVH &bvh) noexcept = delete;
 
-        BVH &operator=(BVH &&bVH) noexcept = default;
+        BVH &operator=(BVH &&bvh) noexcept = default;
 
         Intersection trace(Intersection intersection, const Ray &ray) noexcept;
 
@@ -60,125 +63,136 @@ namespace MobileRT {
     BVH<T>::BVH(::std::vector<Primitive<T>> &&primitives) noexcept {
         if (primitives.empty()) {
             BVHNode bvhNode {};
-            boxes_.emplace_back(bvhNode);
+            this->boxes_.emplace_back(bvhNode);
             return;
         }
-        primitives_ = ::std::move(primitives);
-        const ::std::uint32_t numberPrimitives {static_cast<::std::uint32_t>(primitives_.size())};
-        const ::std::uint32_t maxNodes {numberPrimitives * 2 - 1};
-        boxes_.resize(maxNodes);
+        this->primitives_ = ::std::move(primitives);
+        const auto numberPrimitives {(this->primitives_.size())};
+        const auto maxNodes {numberPrimitives * 2 - 1};
+        this->boxes_.resize(maxNodes);
         build();
     }
 
     template<typename T>
     BVH<T>::~BVH() noexcept {
-        boxes_.clear();
-        primitives_.clear();
+        this->boxes_.clear();
+        this->primitives_.clear();
 
-        ::std::vector<BVHNode>{}.swap(boxes_);
-        ::std::vector<Primitive < T>> {}.swap(primitives_);
+        ::std::vector<BVHNode> {}.swap(this->boxes_);
+        ::std::vector<Primitive<T>> {}.swap(this->primitives_);
     }
 
     template<typename T>
     void BVH<T>::build() noexcept {
-        ::std::uint32_t id {};
-        ::std::uint32_t begin {};
-        ::std::uint32_t end {static_cast<::std::uint32_t>(primitives_.size())};
-        ::std::uint32_t maxId {};
+        ::std::int32_t currentBoxIndex {};
+        ::std::int32_t beginBoxIndex {};
+        ::std::int32_t endBoxIndex {static_cast<::std::int32_t>(this->primitives_.size())};
+        ::std::int32_t maxNodeIndex {};
 
-        ::std::array<::std::uint32_t, 512> stackId {};
-        ::std::array<::std::uint32_t, 512> stackBegin {};
-        ::std::array<::std::uint32_t, 512> stackEnd {};
+        ::std::array<::std::int32_t, 512> stackBoxIndex {};
+        ::std::array<::std::int32_t, 512> stackBoxBegin {};
+        ::std::array<::std::int32_t, 512> stackBoxEnd {};
 
-        auto itStackId {stackId.begin()};
-        ::std::advance(itStackId, 1);
+        auto itStackBoxIndex {stackBoxIndex.begin()};
+        ::std::advance(itStackBoxIndex, 1);
 
-        auto itStackBegin {stackBegin.begin()};
-        ::std::advance(itStackBegin, 1);
+        auto itStackBoxBegin {stackBoxBegin.begin()};
+        ::std::advance(itStackBoxBegin, 1);
 
-        auto itStackEnd {stackEnd.begin()};
-        ::std::advance(itStackEnd, 1);
+        auto itStackBoxEnd {stackBoxEnd.begin()};
+        ::std::advance(itStackBoxEnd, 1);
 
-        const auto itBoxes {boxes_.begin()};
-        const auto itPrimitives {primitives_.begin()};
+        const auto itBoxes {this->boxes_.begin()};
+        const auto itPrimitives {this->primitives_.begin()};
+        const auto itStackBoxIndexBegin {stackBoxIndex.cbegin()};
+
         do {
-            (itBoxes + static_cast<::std::int32_t> (id))->box_ = (itPrimitives + static_cast<::std::int32_t> (begin))->getAABB();
-            ::std::vector<AABB> boxes {(itBoxes + static_cast<::std::int32_t> (id))->box_};
-            const ::std::uint32_t boxPrimitivesSize {end - begin};
-            boxes.reserve(boxPrimitivesSize);
-            for (::std::uint32_t i {begin + 1}; i < end; ++i) {
-                const AABB &new_box {(itPrimitives + static_cast<::std::int32_t> (i))->getAABB()};
-                (itBoxes + static_cast<::std::int32_t> (id))->box_ = surroundingBox(new_box, (itBoxes + static_cast<::std::int32_t> (id))->box_);
-                boxes.emplace_back(new_box);
+            const auto &currentBox {itBoxes + currentBoxIndex};
+            const auto boxPrimitivesSize {endBoxIndex - beginBoxIndex};
+            const auto maxAxis {getMaxAxis<T>(itPrimitives + beginBoxIndex, itPrimitives + endBoxIndex)};
+            ::std::sort(itPrimitives + beginBoxIndex, itPrimitives + endBoxIndex,
+                    [&](const ::MobileRT::Primitive<T>& a, const ::MobileRT::Primitive<T>& b){
+                        const auto box1 {a.getAABB()};
+                        const auto box2 {b.getAABB()};
+                        return box1.getMidPoint()[maxAxis] < box2.getMidPoint()[maxAxis];
+                    }
+            );
+
+            currentBox->box_ = (itPrimitives + beginBoxIndex)->getAABB();
+            ::std::vector<AABB> boxes {currentBox->box_};
+            boxes.reserve(static_cast<::std::uint32_t> (boxPrimitivesSize));
+            for (::std::int32_t i {beginBoxIndex + 1}; i < endBoxIndex; ++i) {
+                const AABB &newBox {(itPrimitives + i)->getAABB()};
+                currentBox->box_ = surroundingBox(newBox, currentBox->box_);
+                boxes.emplace_back(newBox);
             }
 
             if (boxPrimitivesSize <= maxLeafSize) {
-                (itBoxes + static_cast<::std::int32_t> (id))->indexOffset_ = begin;
-                (itBoxes + static_cast<::std::int32_t> (id))->numberPrimitives_ = boxPrimitivesSize;
+                currentBox->indexOffset_ = beginBoxIndex;
+                currentBox->numberPrimitives_ = boxPrimitivesSize;
 
-                ::std::advance(itStackId, -1); // pop
-                id = *itStackId;
-                ::std::advance(itStackBegin, -1); // pop
-                begin = *itStackBegin;
-                ::std::advance(itStackEnd, -1); // pop
-                end = *itStackEnd;
+                ::std::advance(itStackBoxIndex, -1); // pop
+                currentBoxIndex = *itStackBoxIndex;
+                ::std::advance(itStackBoxBegin, -1); // pop
+                beginBoxIndex = *itStackBoxBegin;
+                ::std::advance(itStackBoxEnd, -1); // pop
+                endBoxIndex = *itStackBoxEnd;
             } else {
-                const ::std::uint32_t left {maxId + 1};
-                (itBoxes + static_cast<::std::int32_t> (id))->indexOffset_ = left;
-                maxId = left + 1 > maxId? left + 1 : maxId;
+                const auto left {maxNodeIndex + 1};
+                const auto right {left + 1};
+                const auto splitIndex {getSplitIndexSah<T>(boxes.begin(), boxes.end())};
 
-                const ::std::uint32_t splitIndex {boxPrimitivesSize <= 2*maxLeafSize? 2 :
-                    static_cast<::std::uint32_t>(getSplitIndexSAH<T>(boxes.begin(), boxes.end()))
-                };
+                currentBox->indexOffset_ = left;
+                maxNodeIndex = ::std::max(right, maxNodeIndex);
 
-                *itStackId = left + 1;
-                ::std::advance(itStackId, 1); // push
-                *itStackBegin = begin + splitIndex;
-                ::std::advance(itStackBegin, 1); // push
-                *itStackEnd = end;
-                ::std::advance(itStackEnd, 1); // push
+                *itStackBoxIndex = right;
+                ::std::advance(itStackBoxIndex, 1); // push
+                *itStackBoxBegin = beginBoxIndex + splitIndex;
+                ::std::advance(itStackBoxBegin, 1); // push
+                *itStackBoxEnd = endBoxIndex;
+                ::std::advance(itStackBoxEnd, 1); // push
 
-                id = left;
-                end = begin + splitIndex;
+                currentBoxIndex = left;
+                endBoxIndex = beginBoxIndex + splitIndex;
             }
-        } while(itStackId > stackId.begin());
-        LOG("maxNodeId = ", maxId);
-        boxes_.erase (boxes_.begin() + static_cast<::std::int32_t>(maxId) + 1, boxes_.end());
-        boxes_.shrink_to_fit();
-        ::std::vector<BVHNode>{boxes_}.swap(boxes_);
+        } while(itStackBoxIndex > itStackBoxIndexBegin);
+
+        LOG("maxNodeId = ", maxNodeIndex);
+        this->boxes_.erase (this->boxes_.begin() + maxNodeIndex + 1, this->boxes_.end());
+        this->boxes_.shrink_to_fit();
+        ::std::vector<BVHNode> {this->boxes_}.swap(this->boxes_);
     }
 
     template<typename T>
-    Intersection BVH<T>::trace(
-            Intersection intersection,
-            const Ray &ray) noexcept {
-        if(primitives_.empty()) {
+    Intersection BVH<T>::trace(Intersection intersection, const Ray &ray) noexcept {
+        if(this->primitives_.empty()) {
             return intersection;
         }
-        ::std::uint32_t id {};
-        ::std::array<::std::uint32_t, 512> stackId {};
+        ::std::int32_t id {};
+        ::std::array<::std::int32_t, 512> stackId {};
 
         auto itStackId {stackId.begin()};
         ::std::advance(itStackId, 1);
 
-        const auto itBoxes {boxes_.begin()};
-        const auto itPrimitives {primitives_.begin()};
+        const auto itBoxes {this->boxes_.begin()};
+        const auto itPrimitives {this->primitives_.begin()};
         do {
-            const BVHNode &node {*(itBoxes + static_cast<::std::int32_t> (id))};
+            const BVHNode &node {*(itBoxes + id)};
             if (intersect(node.box_, ray)) {
 
-                const ::std::uint32_t numberPrimitives {node.numberPrimitives_};
+                const ::std::int32_t numberPrimitives {node.numberPrimitives_};
                 if (numberPrimitives > 0) {
-                    for (::std::uint32_t i {}; i < numberPrimitives; ++i) {
-                        auto& primitive {*(itPrimitives + static_cast<::std::int32_t> (node.indexOffset_ + i))};
+                    for (::std::int32_t i {}; i < numberPrimitives; ++i) {
+                        auto& primitive {*(itPrimitives + node.indexOffset_ + i)};
                         intersection = primitive.intersect(intersection, ray);
                     }
                     ::std::advance(itStackId, -1); // pop
                     id = *itStackId;
                 } else {
-                    const ::std::uint32_t left {node.indexOffset_};
-                    const BVHNode &childL {*(itBoxes + static_cast<::std::int32_t> (left))};
-                    const BVHNode &childR {*(itBoxes + static_cast<::std::int32_t> (left + 1))};
+                    const ::std::int32_t left {node.indexOffset_};
+                    const ::std::int32_t right {node.indexOffset_ + 1};
+                    const BVHNode &childL {*(itBoxes + left)};
+                    const BVHNode &childR {*(itBoxes + right)};
 
                     const bool traverseL {intersect(childL.box_, ray)};
                     const bool traverseR {intersect(childR.box_, ray)};
@@ -187,9 +201,9 @@ namespace MobileRT {
                         ::std::advance(itStackId, -1); // pop
                         id = *itStackId;
                     } else {
-                        id = (traverseL) ? left : left + 1;
+                        id = (traverseL) ? left : right;
                         if (traverseL && traverseR) {
-                            *itStackId = left + 1;
+                            *itStackId = right;
                             ::std::advance(itStackId, 1); // push
                         }
                     }
@@ -205,28 +219,26 @@ namespace MobileRT {
     }
 
     template<typename T>
-    Intersection BVH<T>::shadowTrace(
-        Intersection intersection,
-        const Ray &ray) noexcept {
-        if(primitives_.empty()) {
+    Intersection BVH<T>::shadowTrace(Intersection intersection, const Ray &ray) noexcept {
+        if(this->primitives_.empty()) {
             return intersection;
         }
-        ::std::uint32_t id {};
-        ::std::array<::std::uint32_t, 512> stackId {};
+        ::std::int32_t id {};
+        ::std::array<::std::int32_t, 512> stackId {};
 
         auto itStackId {stackId.begin()};
         ::std::advance(itStackId, 1);
 
-        const auto itBoxes {boxes_.begin()};
-        const auto itPrimitives {primitives_.begin()};
+        const auto itBoxes {this->boxes_.begin()};
+        const auto itPrimitives {this->primitives_.begin()};
         do {
-            const BVHNode &node {*(itBoxes + static_cast<::std::int32_t> (id))};
+            const BVHNode &node {*(itBoxes + id)};
             if (intersect(node.box_, ray)) {
 
-                const ::std::uint32_t numberPrimitives {node.numberPrimitives_};
+                const ::std::int32_t numberPrimitives {node.numberPrimitives_};
                 if (numberPrimitives > 0) {
-                    for (::std::uint32_t i {}; i < numberPrimitives; ++i) {
-                        auto& primitive {*(itPrimitives + static_cast<::std::int32_t> (node.indexOffset_ + i))};
+                    for (::std::int32_t i {}; i < numberPrimitives; ++i) {
+                        auto& primitive {*(itPrimitives + node.indexOffset_ + i)};
                         const float lastDist {intersection.length_};
                         intersection = primitive.intersect(intersection, ray);
                         if (intersection.length_ < lastDist) {
@@ -236,9 +248,10 @@ namespace MobileRT {
                     ::std::advance(itStackId, -1); // pop
                     id = *itStackId;
                 } else {
-                    const ::std::uint32_t left {node.indexOffset_};
-                    const BVHNode &childL {*(itBoxes + static_cast<::std::int32_t> (left))};
-                    const BVHNode &childR {*(itBoxes + static_cast<::std::int32_t> (left + 1))};
+                    const ::std::int32_t left {node.indexOffset_};
+                    const ::std::int32_t right {node.indexOffset_ + 1};
+                    const BVHNode &childL {*(itBoxes + left)};
+                    const BVHNode &childR {*(itBoxes + left + 1)};
 
                     const bool traverseL {intersect(childL.box_, ray)};
                     const bool traverseR {intersect(childR.box_, ray)};
@@ -247,9 +260,9 @@ namespace MobileRT {
                         ::std::advance(itStackId, -1); // pop
                         id = *itStackId;
                     } else {
-                        id = (traverseL) ? left : left + 1;
+                        id = (traverseL) ? left : right;
                         if (traverseL && traverseR) {
-                            *itStackId = left + 1;
+                            *itStackId = right;
                             ::std::advance(itStackId, 1); // push
                         }
                     }
@@ -264,44 +277,81 @@ namespace MobileRT {
         return intersection;
     }
 
+    /**
+     * Gets the index to where the vector of boxes should be split.
+     *
+     * @tparam T        The type of the Shape.
+     * @tparam Iterator The type of the iterator.
+     * @param itBegin   The iterator of the first box in the vector.
+     * @param itEnd     The iterator of the last box in the vector.
+     * @return The index where the vector of boxes should be split.
+     */
     template<typename T, typename Iterator>
-    ::std::uint32_t getSplitIndexSAH(
-            const Iterator itBegin, const Iterator itEnd) noexcept {
-            const ::std::uint32_t N {static_cast<::std::uint32_t>(itEnd - itBegin)};
-            const auto itBoxes {itBegin};
+    ::std::int32_t getSplitIndexSah(const Iterator itBegin, const Iterator itEnd) noexcept {
+        const auto numberBoxes {itEnd - itBegin};
+        const auto itBoxes {itBegin};
+        const auto sizeUnsigned {static_cast<::std::uint32_t> (numberBoxes)};
 
-            ::std::vector<float> left_area (N - maxLeafSize);
-            AABB left_box {*itBoxes};
-            const auto itLeftArea {left_area.begin()};
-            *itLeftArea = left_box.getSurfaceArea();
-            for (::std::uint32_t i {1}; i < N - maxLeafSize; ++i) {
-                left_box = surroundingBox(left_box, *(itBoxes + static_cast<::std::int32_t> (i)));
-                *(itLeftArea + static_cast<::std::int32_t> (i)) = left_box.getSurfaceArea();
-            }
+        ::std::vector<float> leftArea (sizeUnsigned);
+        auto leftBox {*itBoxes};
+        const auto itLeftArea {leftArea.begin()};
+        *itLeftArea = leftBox.getSurfaceArea();
+        for (::std::int32_t i {1}; i < numberBoxes; ++i) {
+            leftBox = surroundingBox(leftBox, *(itBoxes + i));
+            *(itLeftArea + i) = leftBox.getSurfaceArea();
+        }
 
-            ::std::vector<float> right_area (N - maxLeafSize);
-            AABB right_box {*(itBoxes + static_cast<::std::int32_t> (N) - 1)};
-            const auto itRightArea {right_area.begin()};
-            *(itRightArea + static_cast<::std::int32_t> (N - maxLeafSize - 1)) = right_box.getSurfaceArea();
-            for (::std::uint32_t i {N - 2}; i > maxLeafSize; --i) {
-                right_box = surroundingBox(right_box, *(itBoxes + static_cast<::std::int32_t> (i)));
-                *(itRightArea + static_cast<::std::int32_t> (i - maxLeafSize)) = right_box.getSurfaceArea();
-            }
+        ::std::vector<float> rightArea (sizeUnsigned);
+        auto rightBox {*(itBoxes + numberBoxes - 1)};
+        const auto itRightArea {rightArea.begin()};
+        *(itRightArea + (numberBoxes - 1)) = 0;
+        *(itRightArea + (numberBoxes - 2)) = rightBox.getSurfaceArea();
+        for (auto i {numberBoxes - 3}; i >= 0; --i) {
+            rightBox = surroundingBox(rightBox, *(itBoxes + i + 1));
+            *(itRightArea + i) = rightBox.getSurfaceArea();
+        }
 
-            ::std::uint32_t splitIndex {maxLeafSize};
-            float min_SAH {
-                maxLeafSize * *(itLeftArea + static_cast<::std::int32_t> (maxLeafSize - 1)) +
-                (N - maxLeafSize) * *(itRightArea + static_cast<::std::int32_t> (maxLeafSize - 1))};
-            for (::std::uint32_t i {maxLeafSize}; i < N - maxLeafSize; ++i) {
-                const float SAH_left {(i + 1) * *(itLeftArea + static_cast<::std::int32_t> (i))};
-                const float SAH_right {(N - (i + 1)) * *(itRightArea + static_cast<::std::int32_t> (i))};
-                const float SAH {SAH_left + SAH_right};
-                if (SAH < min_SAH) {
-                    splitIndex = i + 1;
-                    min_SAH = SAH;
-                }
+        ::std::int32_t splitIndex {1};
+        auto minSah {1 * *(itLeftArea) + (numberBoxes - 1) * *(itRightArea)};
+        for (::std::int32_t i {1}; i < numberBoxes - 1; ++i) {
+            const auto numBoxesLeft {i + 1};
+            const auto numBoxesRight {numberBoxes - numBoxesLeft};
+            const auto areaLeft {*(itLeftArea + i)};
+            const auto areaRight {*(itRightArea + i)};
+            const auto leftSah {numBoxesLeft * areaLeft};
+            const auto rightSah {numBoxesRight * areaRight};
+            const auto sah {leftSah + rightSah};
+            if (sah < minSah) {
+                splitIndex = i + 1;
+                minSah = sah;
             }
-            return splitIndex;
+        }
+        return splitIndex;
+    }
+
+    template<typename T, typename Iterator>
+    ::std::int32_t getMaxAxis(Iterator itBegin, Iterator itEnd) noexcept {
+        ::glm::vec3 min {::std::numeric_limits<float>::max()};
+        ::glm::vec3 max {::std::numeric_limits<float>::min()};
+
+        for (auto it {itBegin}; it < itEnd; ::std::advance(it, 1)) {
+            const auto box {it->getAABB()};
+            min = ::glm::min(min, box.pointMin_);
+            max = ::glm::max(max, box.pointMax_);
+        }
+
+        const float maxDistX {max[0] - min[0]};
+        const float maxDistY {max[1] - min[1]};
+        const float maxDistZ {max[2] - min[2]};
+
+        const ::std::int32_t maxAxis {
+            maxDistX >= maxDistY && maxDistX >= maxDistZ
+            ? 0
+            : maxDistY >= maxDistX && maxDistY >= maxDistZ
+                ? 1
+                : 2
+        };
+        return maxAxis;
     }
 
 }//namespace MobileRT

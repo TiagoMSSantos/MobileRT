@@ -31,9 +31,9 @@ bool ::MobileRT::intersect(const AABB &box, const Ray &ray) noexcept {
 }
 
 float AABB::getSurfaceArea() const noexcept {
-    const float lengthX {pointMax_[0] - pointMin_[0]};
-    const float lengthY {pointMax_[1] - pointMin_[1]};
-    const float lengthZ {pointMax_[2] - pointMin_[2]};
+    const float lengthX {this->pointMax_[0] - this->pointMin_[0]};
+    const float lengthY {this->pointMax_[1] - this->pointMin_[1]};
+    const float lengthZ {this->pointMax_[2] - this->pointMin_[2]};
 
     const float bottomTopArea {2 * lengthX * lengthZ};
     const float sideAreaXY {2 * lengthX * lengthY};
@@ -42,6 +42,12 @@ float AABB::getSurfaceArea() const noexcept {
     const float surfaceArea {bottomTopArea + sideAreaXY + sideAreaZY};
 
     return surfaceArea;
+}
+
+::glm::vec3 AABB::getMidPoint() const noexcept {
+    const ::glm::vec3 length {this->pointMax_ - this->pointMin_};
+
+    return this->pointMin_ + length / 2.0f;
 }
 
 namespace MobileRT {
