@@ -192,9 +192,17 @@ namespace MobileRT {
     Intersection RegularGrid<T>::intersect(Intersection intersection, const Ray &ray, const bool shadowTrace) noexcept {
         // setup 3DDDA (double check reusability of primary ray data)
         const ::glm::vec3 &cell {(ray.origin_ - box_.pointMin_) * this->cellSizeInverted_};
-        ::std::int32_t cellX {static_cast<::std::int32_t>(cell[0])};
-        ::std::int32_t cellY {static_cast<::std::int32_t>(cell[1])};
-        ::std::int32_t cellZ {static_cast<::std::int32_t>(cell[2])};
+        auto cellX {static_cast<::std::int32_t>(cell[0])};
+        auto cellY {static_cast<::std::int32_t>(cell[1])};
+        auto cellZ {static_cast<::std::int32_t>(cell[2])};
+
+//        cellX = ::std::min(cellX, this->gridSize_ - 1);
+//        cellX = ::std::max(cellX, 0);
+//        cellY = ::std::min(cellY, this->gridSize_ - 1);
+//        cellY = ::std::max(cellY, 0);
+//        cellZ = ::std::min(cellZ, this->gridSize_ - 1);
+//        cellZ = ::std::max(cellZ, 0);
+
         const bool notInGrid {(cellX < 0) || (cellX >= this->gridSize_) ||
                               (cellY < 0) || (cellY >= this->gridSize_) ||
                               (cellZ < 0) || (cellZ >= this->gridSize_)};

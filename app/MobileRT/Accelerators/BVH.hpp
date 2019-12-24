@@ -20,6 +20,17 @@ namespace MobileRT {
         ::std::int32_t numberPrimitives_ {};
     };
 
+    struct BuildNode {
+        AABB box_ {};
+        ::glm::vec3 midPoint_ {};
+        ::std::int32_t oldIndex_ {};
+
+        explicit BuildNode(AABB box, ::glm::vec3 midPoint, ::std::int32_t oldIndex) noexcept
+        : box_{box}, midPoint_{midPoint}, oldIndex_{oldIndex} {
+
+        }
+    };
+
     template<typename T, typename Iterator>
     ::std::int32_t getSplitIndexSah(Iterator itBegin, Iterator itEnd) noexcept;
 
@@ -30,12 +41,13 @@ namespace MobileRT {
     class BVH final {
     private:
         ::std::vector<BVHNode> boxes_ {};
+        ::std::vector<BuildNode> auxNodes_ {};
 
     public:
         ::std::vector<Primitive<T>> primitives_ {};
 
     private:
-        void build() noexcept;
+        void build(::std::vector<::MobileRT::Primitive<T>> &&primitives) noexcept;
 
     public:
         explicit BVH() noexcept = default;
@@ -66,11 +78,10 @@ namespace MobileRT {
             this->boxes_.emplace_back(bvhNode);
             return;
         }
-        this->primitives_ = ::std::move(primitives);
-        const auto numberPrimitives {(this->primitives_.size())};
+        const auto numberPrimitives {(primitives.size())};
         const auto maxNodes {numberPrimitives * 2 - 1};
         this->boxes_.resize(maxNodes);
-        build();
+        build(::std::move(primitives));
     }
 
     template<typename T>
@@ -83,10 +94,11 @@ namespace MobileRT {
     }
 
     template<typename T>
-    void BVH<T>::build() noexcept {
+    void BVH<T>::build(::std::vector<::MobileRT::Primitive<T>> &&primitives) noexcept {
         ::std::int32_t currentBoxIndex {};
         ::std::int32_t beginBoxIndex {};
-        ::std::int32_t endBoxIndex {static_cast<::std::int32_t>(this->primitives_.size())};
+        const auto primitivesSize {primitives.size()};
+        ::std::int32_t endBoxIndex {static_cast<::std::int32_t>(primitivesSize)};
         ::std::int32_t maxNodeIndex {};
 
         ::std::array<::std::int32_t, 512> stackBoxIndex {};
@@ -103,26 +115,35 @@ namespace MobileRT {
         ::std::advance(itStackBoxEnd, 1);
 
         const auto itBoxes {this->boxes_.begin()};
-        const auto itPrimitives {this->primitives_.begin()};
         const auto itStackBoxIndexBegin {stackBoxIndex.cbegin()};
+
+        this->auxNodes_.reserve(primitivesSize);
+        for (::std::uint32_t i {0}; i < primitivesSize; ++i) {
+            const auto &primitive {primitives [i]};
+            const auto box {primitive.getAABB()};
+            BuildNode node {box, box.getMidPoint(), static_cast<::std::int32_t> (i)};
+            this->auxNodes_.emplace_back(::std::move(node));
+        }
+        const auto itNodes {this->auxNodes_.begin()};
 
         do {
             const auto &currentBox {itBoxes + currentBoxIndex};
             const auto boxPrimitivesSize {endBoxIndex - beginBoxIndex};
-            const auto maxAxis {getMaxAxis<T>(itPrimitives + beginBoxIndex, itPrimitives + endBoxIndex)};
-            ::std::sort(itPrimitives + beginBoxIndex, itPrimitives + endBoxIndex,
-                    [&](const ::MobileRT::Primitive<T>& a, const ::MobileRT::Primitive<T>& b){
-                        const auto box1 {a.getAABB()};
-                        const auto box2 {b.getAABB()};
-                        return box1.getMidPoint()[maxAxis] < box2.getMidPoint()[maxAxis];
+            const auto itBegin {itNodes + beginBoxIndex};
+
+            const auto itEnd {itNodes + endBoxIndex};
+            const auto maxAxis {getMaxAxis<T>(itBegin, itEnd)};
+            ::std::sort(itBegin, itEnd,
+                    [&](const BuildNode &node1, const BuildNode &node2) {
+                        return node1.midPoint_[maxAxis] < node2.midPoint_[maxAxis];
                     }
             );
 
-            currentBox->box_ = (itPrimitives + beginBoxIndex)->getAABB();
+            currentBox->box_ = itBegin->box_;
             ::std::vector<AABB> boxes {currentBox->box_};
             boxes.reserve(static_cast<::std::uint32_t> (boxPrimitivesSize));
             for (::std::int32_t i {beginBoxIndex + 1}; i < endBoxIndex; ++i) {
-                const AABB &newBox {(itPrimitives + i)->getAABB()};
+                const AABB &newBox {(itNodes + i)->box_};
                 currentBox->box_ = surroundingBox(newBox, currentBox->box_);
                 boxes.emplace_back(newBox);
             }
@@ -161,6 +182,13 @@ namespace MobileRT {
         this->boxes_.erase (this->boxes_.begin() + maxNodeIndex + 1, this->boxes_.end());
         this->boxes_.shrink_to_fit();
         ::std::vector<BVHNode> {this->boxes_}.swap(this->boxes_);
+
+        this->primitives_.reserve(primitivesSize);
+        for (::std::uint32_t i {0}; i < primitivesSize; ++i) {
+            const auto &node {this->auxNodes_[i]};
+            const auto oldIndex {static_cast<::std::uint32_t> (node.oldIndex_)};
+            this->primitives_.emplace_back(::std::move(primitives[oldIndex]));
+        }
     }
 
     template<typename T>
@@ -335,7 +363,7 @@ namespace MobileRT {
         ::glm::vec3 max {::std::numeric_limits<float>::min()};
 
         for (auto it {itBegin}; it < itEnd; ::std::advance(it, 1)) {
-            const auto box {it->getAABB()};
+            const auto &box {it->box_};
             min = ::glm::min(min, box.pointMin_);
             max = ::glm::max(max, box.pointMax_);
         }
