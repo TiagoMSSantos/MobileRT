@@ -6,10 +6,11 @@ MOBILERT_PATH="${FIND_MOBILERT//\/app\/"${FILE_TO_SEARCH}"/}"
 
 echo "MOBILERT_PATH = ${MOBILERT_PATH}"
 
-BIN_PATH="${MOBILERT_PATH}/build_native/bin"
+BIN_DEBUG_PATH="${MOBILERT_PATH}/build_debug/bin"
+BIN_RELEASE_PATH="${MOBILERT_PATH}/build_release/bin"
 SCRIPTS_PATH="${MOBILERT_PATH}/Scripts"
 PLOT_SCRIPTS_PATH="${SCRIPTS_PATH}/Plot_Scripts"
-OBJS_PATH="${MOBILERT_PATH}/WavefrontOBJs"
+OBJS_PATH="${MOBILERT_PATH}/../WavefrontOBJs"
 
 MOBILERT_SRCS="${MOBILERT_PATH}/app"
 COMPONENTS_SRCS="${MOBILERT_PATH}/app"
@@ -34,44 +35,71 @@ done
 
 OBJ="${OBJS_PATH}/conference/conference.obj"
 MTL="${OBJS_PATH}/conference/conference.mtl"
+CAM="${OBJS_PATH}/conference/conference.cam"
 
 OBJ="${OBJS_PATH}/teapot/teapot.obj"
 MTL="${OBJS_PATH}/teapot/teapot.mtl"
+CAM="${OBJS_PATH}/teapot/teapot.cam"
 
 OBJ="${OBJS_PATH}/sponza/sponza.obj"
 MTL="${OBJS_PATH}/sponza/sponza.mtl"
+CAM="${OBJS_PATH}/sponza/sponza.cam"
 
 OBJ="${OBJS_PATH}/powerplant/powerplant.obj"
 MTL="${OBJS_PATH}/powerplant/powerplant.mtl"
+CAM="${OBJS_PATH}/powerplant/powerplant.cam"
 
 OBJ="${OBJS_PATH}/San_Miguel/san-miguel.obj"
 MTL="${OBJS_PATH}/San_Miguel/san-miguel.mtl"
+CAM="${OBJS_PATH}/San_Miguel/san-miguel.cam"
 
 OBJ="${OBJS_PATH}/CornellBox/CornellBox-Empty-CO.obj"
 MTL="${OBJS_PATH}/CornellBox/CornellBox-Empty-CO.mtl"
+CAM="${OBJS_PATH}/CornellBox/CornellBox-Empty-CO.cam"
+
 OBJ="${OBJS_PATH}/CornellBox/CornellBox-Empty-RG.obj"
 MTL="${OBJS_PATH}/CornellBox/CornellBox-Empty-RG.mtl"
+CAM="${OBJS_PATH}/CornellBox/CornellBox-Empty-CO.cam"
+
 OBJ="${OBJS_PATH}/CornellBox/CornellBox-Empty-Squashed.obj"
 MTL="${OBJS_PATH}/CornellBox/CornellBox-Empty-Squashed.mtl"
+CAM="${OBJS_PATH}/CornellBox/CornellBox-Empty-CO.cam"
+
 OBJ="${OBJS_PATH}/CornellBox/CornellBox-Empty-White.obj"
 MTL="${OBJS_PATH}/CornellBox/CornellBox-Empty-White.mtl"
+CAM="${OBJS_PATH}/CornellBox/CornellBox-Empty-CO.cam"
+
 OBJ="${OBJS_PATH}/CornellBox/CornellBox-Glossy-Floor.obj"
 MTL="${OBJS_PATH}/CornellBox/CornellBox-Glossy-Floor.mtl"
+CAM="${OBJS_PATH}/CornellBox/CornellBox-Empty-CO.cam"
+
 OBJ="${OBJS_PATH}/CornellBox/CornellBox-Glossy.obj"
 MTL="${OBJS_PATH}/CornellBox/CornellBox-Glossy.mtl"
+CAM="${OBJS_PATH}/CornellBox/CornellBox-Empty-CO.cam"
+
 OBJ="${OBJS_PATH}/CornellBox/CornellBox-Mirror.obj"
 MTL="${OBJS_PATH}/CornellBox/CornellBox-Mirror.mtl"
+CAM="${OBJS_PATH}/CornellBox/CornellBox-Empty-CO.cam"
+
 OBJ="${OBJS_PATH}/CornellBox/CornellBox-Original.obj"
 MTL="${OBJS_PATH}/CornellBox/CornellBox-Original.mtl"
+CAM="${OBJS_PATH}/CornellBox/CornellBox-Empty-CO.cam"
+
 OBJ="${OBJS_PATH}/CornellBox/CornellBox-Sphere.obj"
 MTL="${OBJS_PATH}/CornellBox/CornellBox-Sphere.mtl"
+CAM="${OBJS_PATH}/CornellBox/CornellBox-Empty-CO.cam"
+
 OBJ="${OBJS_PATH}/CornellBox/CornellBox-Water.obj"
 MTL="${OBJS_PATH}/CornellBox/CornellBox-Water.mtl"
+CAM="${OBJS_PATH}/CornellBox/CornellBox-Empty-CO.cam"
+
 OBJ="${OBJS_PATH}/CornellBox/water.obj"
 MTL="${OBJS_PATH}/CornellBox/water.mtl"
+CAM="${OBJS_PATH}/CornellBox/CornellBox-Empty-CO.cam"
 
 OBJ="${OBJS_PATH}/conference/conference.obj"
 MTL="${OBJS_PATH}/conference/conference.mtl"
+CAM="${OBJS_PATH}/conference/conference.cam"
 
 export ASAN_OPTIONS="suppressions=sanitizer_ignore.suppr:verbosity=1:strict_string_checks=1:detect_stack_use_after_return=1:check_initialization_order=1:strict_init_order=1:halt_on_error=0:detect_odr_violation=1"
 
@@ -115,10 +143,11 @@ function execute {
   #kcachegrind perf.callgrind
   #perf stat \
   #perf record -g --call-graph 'fp' -- \
-  ${BIN_PATH}/AppInterface \
+  perf record -g --call-graph 'fp' --  \
+  ${BIN_RELEASE_PATH}/AppInterface \
             ${THREAD} ${SHADER} ${SCENE} ${SPP} ${SPL} ${WIDTH} ${HEIGHT} ${ACC} ${REP} \
-            ${OBJ} ${MTL} ${PRINT} ${ASYNC} ${SHOWIMAGE}
-  #perf report -g '' --show-nr-samples --hierarchy
+            ${OBJ} ${MTL} ${CAM} ${PRINT} ${ASYNC} ${SHOWIMAGE}
+  perf report -g '' --show-nr-samples --hierarchy
 }
 
 
@@ -171,9 +200,9 @@ function profile {
 
             PLOT_FILE="SC${SCENE}${SEP}SH${SHADER}${SEP}A${ACC}${SEP}R${WIDTH}x${HEIGHT}"
 
-            ${BIN_PATH}/AppInterface \
+            ${BIN_DEBUG_PATH}/AppInterfaced \
             ${THREAD} ${SHADER} ${SCENE} ${SPP} ${SPL} ${WIDTH} ${HEIGHT} ${ACC} ${REP} \
-            ${OBJ} ${MTL} ${PRINT} ${ASYNC} ${SHOWIMAGE} \
+            ${OBJ} ${MTL} ${CAM} ${PRINT} ${ASYNC} ${SHOWIMAGE} \
             | awk -v threads="${THREAD}" -f ${PLOT_SCRIPTS_PATH}/parser_out.awk 2>&1 \
             | tee -a ${PLOT_GRAPHS}/${PLOT_FILE}.dat
 
@@ -202,7 +231,7 @@ do
     ${PARAM4}) awk -f "${PLOT_SCRIPTS_PATH}/parser_median.awk" "${PLOT_SCRIPTS_PATH}/test.dat"  ;;
     ${PARAM5}) execute ;;
     ${PARAM6}) clangtidy ;;
-    ${PARAM7}) ${BIN_PATH}/GoogleTestd ;;
+    ${PARAM7}) ${BIN_DEBUG_PATH}/GoogleTestd ;;
     *) echo ""
        echo "Wrong Parameter: ${P}"
        echo "The valid parameters are:"

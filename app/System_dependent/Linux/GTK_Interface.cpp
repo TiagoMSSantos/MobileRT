@@ -6,19 +6,19 @@
 #include <gtk/gtk.h>
 
 ::std::int32_t main(::std::int32_t argc, char **argv) noexcept {
-    if (argc != 15) {
-        LOG("Wrong number of arguments: ", argc, ", must be 15");
+    if (argc != 16) {
+        LOG("Wrong number of arguments: ", argc, ", must be 16");
         ::std::cin.ignore();
         ::std::exit(1);
     }
 
     const ::gsl::span<char*> args {argv, argc};
 
-    const ::std::int32_t threads{static_cast<::std::int32_t> (strtol(args[1], nullptr, 0))};
-    const ::std::int32_t shader{static_cast<::std::int32_t> (strtol(args[2], nullptr, 0))};
-    const ::std::int32_t scene{static_cast<::std::int32_t> (strtol(args[3], nullptr, 0))};
-    const ::std::int32_t samplesPixel{static_cast<::std::int32_t> (strtol(args[4], nullptr, 0))};
-    const ::std::int32_t samplesLight{static_cast<::std::int32_t> (strtol(args[5], nullptr, 0))};
+    const ::std::int32_t threads {static_cast<::std::int32_t> (strtol(args[1], nullptr, 0))};
+    const ::std::int32_t shader {static_cast<::std::int32_t> (strtol(args[2], nullptr, 0))};
+    const ::std::int32_t scene {static_cast<::std::int32_t> (strtol(args[3], nullptr, 0))};
+    const ::std::int32_t samplesPixel {static_cast<::std::int32_t> (strtol(args[4], nullptr, 0))};
+    const ::std::int32_t samplesLight {static_cast<::std::int32_t> (strtol(args[5], nullptr, 0))};
 
     const ::std::int32_t width_{
             ::MobileRT::roundDownToMultipleOf(static_cast<::std::int32_t> (strtol(args[6], nullptr, 0)),
@@ -30,18 +30,19 @@
                                               static_cast<::std::int32_t>(::std::sqrt(
                                                       ::MobileRT::NumberOfBlocks)))};
 
-    const ::std::int32_t accelerator{static_cast<::std::int32_t> (strtol(args[8], nullptr, 0))};
+    const ::std::int32_t accelerator {static_cast<::std::int32_t> (strtol(args[8], nullptr, 0))};
 
-    const ::std::int32_t repeats{static_cast<::std::int32_t> (strtol(args[9], nullptr, 0))};
-    const char *const pathObj{args[10]};
-    const char *const pathMtl{args[11]};
+    const ::std::int32_t repeats {static_cast<::std::int32_t> (strtol(args[9], nullptr, 0))};
+    const char *const pathObj {args[10]};
+    const char *const pathMtl {args[11]};
+    const char *const pathCam {args[12]};
 
-    ::std::istringstream ssPrintStdOut(args[12]);
-    ::std::istringstream ssAsync(args[13]);
-    ::std::istringstream ssShowImage(args[14]);
-    bool printStdOut{true};
-    bool async{true};
-    bool showImage{true};
+    ::std::istringstream ssPrintStdOut (args[13]);
+    ::std::istringstream ssAsync (args[14]);
+    ::std::istringstream ssShowImage (args[15]);
+    bool printStdOut {true};
+    bool async {true};
+    bool showImage {true};
 
     ssPrintStdOut >> ::std::boolalpha;
     ssPrintStdOut >> printStdOut;
@@ -49,10 +50,10 @@
     ssShowImage >> ::std::boolalpha >> showImage;
 
     const ::std::uint32_t size {static_cast<::std::uint32_t>(width_) * static_cast<::std::uint32_t>(height_)};
-    ::std::vector<::std::uint32_t> bitmap(size);
+    ::std::vector<::std::uint32_t> bitmap (size);
 
     RayTrace(bitmap.data(), width_, height_, threads, shader, scene, samplesPixel, samplesLight,
-             repeats, accelerator, printStdOut, async, pathObj, pathMtl);
+             repeats, accelerator, printStdOut, async, pathObj, pathMtl, pathCam);
 
     if (!showImage) {
         return 0;
