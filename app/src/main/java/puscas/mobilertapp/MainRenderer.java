@@ -12,6 +12,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.annotation.Keep;
+
 import com.google.common.base.Preconditions;
 import com.google.common.base.Supplier;
 
@@ -465,6 +467,7 @@ final class MainRenderer implements GLSurfaceView.Renderer {
      * @param memoryNeeded Number of MegaBytes needed to be allocated.
      * @return {@code True} if the device doesn't have enough memory to be allocated, otherwise {@code false}.
      */
+    @Keep
     private boolean isLowMemory(final int memoryNeeded) {
         Preconditions.checkArgument(memoryNeeded > 0, "The requested memory must be a positive value");
 

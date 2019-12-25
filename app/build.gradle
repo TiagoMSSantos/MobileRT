@@ -2,18 +2,17 @@ apply plugin: 'com.android.application'
 apply plugin: 'jacoco'
 
 android {
+    signingConfigs {
+        release {
+            setStoreFile file('MobileRT.jks')
+            setStorePassword '123456'
+            setKeyPassword '123456'
+            setKeyAlias 'Puscas'
+        }
+    }
     compileSdkVersion 29
     buildToolsVersion '29.0.2'
     publishNonDefault true
-    signingConfigs {
-        Puscas {
-            setKeyAlias 'Puscas'
-            setStoreFile file('MobileRT.jks')
-            setKeyPassword '123456'
-            setStorePassword '123456'
-            v2SigningEnabled true
-        }
-    }
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 29
@@ -27,7 +26,6 @@ android {
                 arguments = ['-DCMAKE_VERBOSE_MAKEFILE=ON']
             }
         }
-        signingConfig = signingConfigs.Puscas
     }
     externalNativeBuild {
         cmake {
@@ -40,16 +38,30 @@ android {
     }
     buildTypes {
         debug {
-            setSigningConfig signingConfigs.Puscas
             setDebuggable true
             setJniDebuggable true
             setTestCoverageEnabled true
+            setVersionNameSuffix 'd'
+            setRenderscriptDebuggable true
+            renderscriptOptimLevel 0
+            setMinifyEnabled false
+            multiDexEnabled false
+            setSigningConfig null
+            setMinifyEnabled false
+            setShrinkResources false
         }
         release {
-            setSigningConfig signingConfigs.Puscas
             setDebuggable false
             setJniDebuggable false
-            setTestCoverageEnabled true
+            setTestCoverageEnabled false
+            setVersionNameSuffix 'r'
+            setRenderscriptDebuggable false
+            renderscriptOptimLevel 3
+            multiDexEnabled false
+            setSigningConfig signingConfigs.release
+            setMinifyEnabled true
+            setShrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
     productFlavors {
@@ -66,7 +78,6 @@ android {
     }
 
     testBuildType 'debug'
-//    testBuildType 'release'
 }
 
 configurations {
@@ -79,7 +90,7 @@ dependencies {
     releaseImplementation project(path:':app', configuration:'release')
 
     implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'com.google.guava:guava:28.1-android'
+    implementation 'com.google.guava:guava:28.1-jre'
 
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:3.2.0'
