@@ -146,21 +146,23 @@ namespace MobileRT {
             z1 = ::std::max(0, z1);
             z2 = ::std::min(z2, this->gridSize_ - 1);
             z2 = ::std::fabs(sizeZ) < ::std::numeric_limits<float>::epsilon()? 0 : z2;
-            z1 = ::std::min(z2, z1);
+            z1 = ::std::min(z1, z2);
 
             //loop over candidate cells
             for (::std::int32_t x {x1}; x <= x2; ++x) {
                 for (::std::int32_t y {y1}; y <= y2; ++y) {
                     for (::std::int32_t z {z1}; z <= z2; ++z) {
                         // construct aabb for current cell
-                        const auto idx {
-                                static_cast<::std::size_t>(x) +
-                                static_cast<::std::size_t>(y) * static_cast<::std::size_t>(this->gridSize_) +
-                                static_cast<::std::size_t>(z) * static_cast<::std::size_t>(this->gridSize_) *
-                                static_cast<::std::size_t>(this->gridSize_)};
-                        const ::glm::vec3 &pos {this->box_.pointMin_[0] + x * dx,
-                                                this->box_.pointMin_[1] + y * dy,
-                                                this->box_.pointMin_[2] + z * dz};
+                        const auto idx {static_cast<::std::size_t>(
+                            x +
+                            y * this->gridSize_ +
+                            z * this->gridSize_ * this->gridSize_
+                        )};
+                        const ::glm::vec3 &pos {
+                            this->box_.pointMin_[0] + x * dx,
+                            this->box_.pointMin_[1] + y * dy,
+                            this->box_.pointMin_[2] + z * dz
+                        };
                         const AABB &cell {pos, pos + ::glm::vec3 {dx, dy, dz}};
                         //LOG("min=(", pos[0], ", ", pos[1], ", ", pos[2], ") max=(", dx, ", ", dy, ",", dz, ")");
                         // do an accurate aabb / primitive intersection test

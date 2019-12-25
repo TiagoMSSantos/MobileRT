@@ -25,8 +25,8 @@ namespace MobileRT {
         ::glm::vec3 midPoint_ {};
         ::std::int32_t oldIndex_ {};
 
-        explicit BuildNode(AABB box, ::glm::vec3 midPoint, ::std::int32_t oldIndex) noexcept
-        : box_{box}, midPoint_{midPoint}, oldIndex_{oldIndex} {
+        explicit BuildNode(AABB &&box, ::glm::vec3 &&midPoint, const ::std::int32_t oldIndex) noexcept
+            : box_{::std::move(box)}, midPoint_{::std::move(midPoint)}, oldIndex_{oldIndex} {
 
         }
     };
@@ -118,10 +118,10 @@ namespace MobileRT {
         const auto itStackBoxIndexBegin {stackBoxIndex.cbegin()};
 
         this->auxNodes_.reserve(primitivesSize);
-        for (::std::uint32_t i {0}; i < primitivesSize; ++i) {
+        for (::std::uint32_t i {}; i < primitivesSize; ++i) {
             const auto &primitive {primitives [i]};
-            const auto box {primitive.getAABB()};
-            BuildNode node {box, box.getMidPoint(), static_cast<::std::int32_t> (i)};
+            auto &&box {primitive.getAABB()};
+            BuildNode &&node {::std::move(box), box.getMidPoint(), static_cast<::std::int32_t> (i)};
             this->auxNodes_.emplace_back(::std::move(node));
         }
         const auto itNodes {this->auxNodes_.begin()};
@@ -134,9 +134,9 @@ namespace MobileRT {
             const auto itEnd {itNodes + endBoxIndex};
             const auto maxAxis {getMaxAxis<T>(itBegin, itEnd)};
             ::std::sort(itBegin, itEnd,
-                    [&](const BuildNode &node1, const BuildNode &node2) {
-                        return node1.midPoint_[maxAxis] < node2.midPoint_[maxAxis];
-                    }
+                        [&](const BuildNode &node1, const BuildNode &node2) {
+                            return node1.midPoint_[maxAxis] < node2.midPoint_[maxAxis];
+                        }
             );
 
             currentBox->box_ = itBegin->box_;
@@ -184,7 +184,7 @@ namespace MobileRT {
         ::std::vector<BVHNode> {this->boxes_}.swap(this->boxes_);
 
         this->primitives_.reserve(primitivesSize);
-        for (::std::uint32_t i {0}; i < primitivesSize; ++i) {
+        for (::std::uint32_t i {}; i < primitivesSize; ++i) {
             const auto &node {this->auxNodes_[i]};
             const auto oldIndex {static_cast<::std::uint32_t> (node.oldIndex_)};
             this->primitives_.emplace_back(::std::move(primitives[oldIndex]));
@@ -199,6 +199,7 @@ namespace MobileRT {
         ::std::int32_t id {};
         ::std::array<::std::int32_t, 512> stackId {};
 
+        const auto begin {stackId.cbegin()};
         auto itStackId {stackId.begin()};
         ::std::advance(itStackId, 1);
 
@@ -242,7 +243,7 @@ namespace MobileRT {
                 id = *itStackId;
             }
 
-        } while (itStackId > stackId.begin());
+        } while (itStackId > begin);
         return intersection;
     }
 
@@ -254,6 +255,7 @@ namespace MobileRT {
         ::std::int32_t id {};
         ::std::array<::std::int32_t, 512> stackId {};
 
+        const auto begin {stackId.cbegin()};
         auto itStackId {stackId.begin()};
         ::std::advance(itStackId, 1);
 
@@ -301,7 +303,7 @@ namespace MobileRT {
                 id = *itStackId;
             }
 
-        } while (itStackId > stackId.begin());
+        } while (itStackId > begin);
         return intersection;
     }
 
@@ -318,31 +320,32 @@ namespace MobileRT {
     ::std::int32_t getSplitIndexSah(const Iterator itBegin, const Iterator itEnd) noexcept {
         const auto numberBoxes {itEnd - itBegin};
         const auto itBoxes {itBegin};
-        const auto sizeUnsigned {static_cast<::std::uint32_t> (numberBoxes)};
+        const auto numBoxes {numberBoxes - 1};
+        const auto sizeUnsigned {static_cast<::std::uint32_t> (numBoxes)};
 
         ::std::vector<float> leftArea (sizeUnsigned);
         auto leftBox {*itBoxes};
         const auto itLeftArea {leftArea.begin()};
         *itLeftArea = leftBox.getSurfaceArea();
-        for (::std::int32_t i {1}; i < numberBoxes; ++i) {
+        for (auto i {1}; i < numBoxes; ++i) {
             leftBox = surroundingBox(leftBox, *(itBoxes + i));
             *(itLeftArea + i) = leftBox.getSurfaceArea();
         }
 
         ::std::vector<float> rightArea (sizeUnsigned);
-        auto rightBox {*(itBoxes + numberBoxes - 1)};
+        auto rightBox {*(itBoxes + numBoxes)};
         const auto itRightArea {rightArea.begin()};
-        *(itRightArea + (numberBoxes - 1)) = 0;
-        *(itRightArea + (numberBoxes - 2)) = rightBox.getSurfaceArea();
-        for (auto i {numberBoxes - 3}; i >= 0; --i) {
+        *(itRightArea + numBoxes - 1) = rightBox.getSurfaceArea();
+        for (auto i {numBoxes - 2}; i >= 0; --i) {
             rightBox = surroundingBox(rightBox, *(itBoxes + i + 1));
             *(itRightArea + i) = rightBox.getSurfaceArea();
         }
 
         ::std::int32_t splitIndex {1};
-        auto minSah {1 * *(itLeftArea) + (numberBoxes - 1) * *(itRightArea)};
-        for (::std::int32_t i {1}; i < numberBoxes - 1; ++i) {
-            const auto numBoxesLeft {i + 1};
+        auto minSah {*(itLeftArea) + numBoxes * *(itRightArea)};
+        for (auto i {1}; i < numBoxes; ++i) {
+            const auto nextSplit {i + 1};
+            const auto numBoxesLeft {nextSplit};
             const auto numBoxesRight {numberBoxes - numBoxesLeft};
             const auto areaLeft {*(itLeftArea + i)};
             const auto areaRight {*(itRightArea + i)};
@@ -350,7 +353,7 @@ namespace MobileRT {
             const auto rightSah {numBoxesRight * areaRight};
             const auto sah {leftSah + rightSah};
             if (sah < minSah) {
-                splitIndex = i + 1;
+                splitIndex = nextSplit;
                 minSah = sah;
             }
         }
@@ -358,26 +361,24 @@ namespace MobileRT {
     }
 
     template<typename T, typename Iterator>
-    ::std::int32_t getMaxAxis(Iterator itBegin, Iterator itEnd) noexcept {
-        ::glm::vec3 min {::std::numeric_limits<float>::max()};
-        ::glm::vec3 max {::std::numeric_limits<float>::min()};
+    ::std::int32_t getMaxAxis(const Iterator itBegin, const Iterator itEnd) noexcept {
+        ::glm::vec3 min {itBegin->box_.pointMin_};
+        ::glm::vec3 max {itBegin->box_.pointMax_};
 
-        for (auto it {itBegin}; it < itEnd; ::std::advance(it, 1)) {
+        for (auto it {itBegin + 1}; it < itEnd; ::std::advance(it, 1)) {
             const auto &box {it->box_};
             min = ::glm::min(min, box.pointMin_);
             max = ::glm::max(max, box.pointMax_);
         }
 
-        const float maxDistX {max[0] - min[0]};
-        const float maxDistY {max[1] - min[1]};
-        const float maxDistZ {max[2] - min[2]};
+        const auto maxDist {max - min};
 
         const ::std::int32_t maxAxis {
-            maxDistX >= maxDistY && maxDistX >= maxDistZ
-            ? 0
-            : maxDistY >= maxDistX && maxDistY >= maxDistZ
-                ? 1
-                : 2
+                maxDist[0] >= maxDist[1] && maxDist[0] >= maxDist[2]
+                ? 0
+                : maxDist[1] >= maxDist[0] && maxDist[1] >= maxDist[2]
+                  ? 1
+                  : 2
         };
         return maxAxis;
     }

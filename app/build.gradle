@@ -3,7 +3,7 @@ apply plugin: 'jacoco'
 
 android {
     signingConfigs {
-        release {
+        Puscas {
             setStoreFile file('MobileRT.jks')
             setStorePassword '123456'
             setKeyPassword '123456'
@@ -46,8 +46,7 @@ android {
             renderscriptOptimLevel 0
             setMinifyEnabled false
             multiDexEnabled false
-            setSigningConfig null
-            setMinifyEnabled false
+            setSigningConfig signingConfigs.Puscas
             setShrinkResources false
         }
         release {
@@ -57,9 +56,9 @@ android {
             setVersionNameSuffix 'r'
             setRenderscriptDebuggable false
             renderscriptOptimLevel 3
-            multiDexEnabled false
-            setSigningConfig signingConfigs.release
             setMinifyEnabled true
+            multiDexEnabled false
+            setSigningConfig signingConfigs.Puscas
             setShrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }

@@ -5,7 +5,8 @@ using ::MobileRT::AABB;
 using ::MobileRT::Ray;
 
 AABB::AABB(const ::glm::vec3 &pointMin, const ::glm::vec3 &pointMax) noexcept :
-        pointMin_{pointMin}, pointMax_{pointMax} {
+        pointMin_{pointMin},
+        pointMax_{pointMax} {
 }
 
 bool ::MobileRT::intersect(const AABB &box, const Ray &ray) noexcept {
@@ -16,7 +17,7 @@ bool ::MobileRT::intersect(const AABB &box, const Ray &ray) noexcept {
     float tmin {::std::min(t1X, t2X)};
     float tmax {::std::max(t1X, t2X)};
 
-    for (::std::int32_t axis {1}; axis < 3; ++axis) {
+    for (auto axis {1}; axis < 3; ++axis) {
         const float invDir {1.0F / ray.direction_[axis]};
         const float rayOrg {ray.origin_[axis]};
         const float t1 {(box.pointMin_[axis] - rayOrg) * invDir};
@@ -45,18 +46,16 @@ float AABB::getSurfaceArea() const noexcept {
 }
 
 ::glm::vec3 AABB::getMidPoint() const noexcept {
-    const ::glm::vec3 length {this->pointMax_ - this->pointMin_};
+    const ::glm::vec3 &length {this->pointMax_ - this->pointMin_};
 
     return this->pointMin_ + length / 2.0f;
 }
 
 namespace MobileRT {
     AABB surroundingBox(const AABB &box1, const AABB &box2) noexcept {
-        const ::glm::vec3 &min {
-                ::glm::min(box1.pointMin_, box2.pointMin_)};
-        const ::glm::vec3 &max {
-                ::glm::max(box1.pointMax_, box2.pointMax_)};
-        const AABB res {min, max};
+        const ::glm::vec3 &min {::glm::min(box1.pointMin_, box2.pointMin_)};
+        const ::glm::vec3 &max {::glm::max(box1.pointMax_, box2.pointMax_)};
+        const AABB &res {min, max};
 
         return res;
     }
