@@ -40,7 +40,7 @@ namespace MobileRT {
         ::glm::vec3 getCosineSampleHemisphere(const ::glm::vec3 &normal) const noexcept;
 
     public:
-        void initializeAccelerators(Camera *camera) noexcept;
+        void initializeAccelerators() noexcept;
 
     public:
         explicit Shader () noexcept = delete;

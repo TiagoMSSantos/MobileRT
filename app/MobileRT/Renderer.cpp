@@ -39,7 +39,7 @@ Renderer::Renderer(::std::unique_ptr<Shader> shader,
     static bool unused {FillThings()};
     static_cast<void> (unused);
 
-    this->shader_->initializeAccelerators(camera_.get());
+    this->shader_->initializeAccelerators();
 }
 
 void Renderer::renderFrame(::std::uint32_t *const bitmap, const ::std::int32_t numThreads,

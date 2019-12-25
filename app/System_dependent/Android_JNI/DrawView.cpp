@@ -71,7 +71,7 @@ jobject Java_puscas_mobilertapp_MainRenderer_RTInitCameraArray(
         if (renderer_ != nullptr) {
             ::MobileRT::Camera *const camera {renderer_->camera_.get()};
             const ::std::uint64_t arraySize {20};
-            const jlong arrayBytes {static_cast<jlong> (arraySize) * static_cast<jlong> (sizeof(jfloat))};
+            const auto arrayBytes {static_cast<jlong> (arraySize) * static_cast<jlong> (sizeof(jfloat))};
             float *const floatBuffer {new float[arraySize]};
 
             if (floatBuffer != nullptr) {
@@ -99,8 +99,8 @@ jobject Java_puscas_mobilertapp_MainRenderer_RTInitCameraArray(
                     floatBuffer[i++] = camera->right_.z;
                     floatBuffer[i++] = 1.0F;
 
-                    ::Components::Perspective *perspective {dynamic_cast<::Components::Perspective *>(camera)};
-                    ::Components::Orthographic *orthographic {dynamic_cast<::Components::Orthographic *>(camera)};
+                    const auto *const perspective {dynamic_cast<::Components::Perspective*> (camera)};
+                    const auto *const orthographic {dynamic_cast<::Components::Orthographic*> (camera)};
                     if (perspective != nullptr) {
                         const float hFov {perspective->getHFov()};
                         const float vFov {perspective->getVFov()};
@@ -140,7 +140,7 @@ jobject Java_puscas_mobilertapp_MainRenderer_RTInitVerticesArray(
                     : renderer_->shader_->bvhTriangles_.primitives_
             };
             const unsigned long arraySize {triangles.size() * 3 * 4};
-            const jlong arrayBytes {static_cast<jlong> (arraySize) * static_cast<jlong> (sizeof(jfloat))};
+            const auto arrayBytes {static_cast<jlong> (arraySize) * static_cast<jlong> (sizeof(jfloat))};
             if (arraySize > 0) {
                 float *const floatBuffer {new float[arraySize]};
                 if (floatBuffer != nullptr) {
@@ -197,7 +197,7 @@ jobject Java_puscas_mobilertapp_MainRenderer_RTInitColorsArray(
                     : renderer_->shader_->bvhTriangles_.primitives_
             };
             const unsigned long arraySize {triangles.size() * 3 * 4};
-            const jlong arrayBytes {static_cast<jlong> (arraySize) * static_cast<jlong> (sizeof(jfloat))};
+            const auto arrayBytes {static_cast<jlong> (arraySize) * static_cast<jlong> (sizeof(jfloat))};
             if (arraySize > 0) {
                 float *const floatBuffer {new float[arraySize]};
                 if (floatBuffer != nullptr) {
@@ -320,15 +320,15 @@ jint Java_puscas_mobilertapp_MainRenderer_RTInitialize(
     LOG("INITIALIZE");
     const jclass rendererClass {env->FindClass("puscas/mobilertapp/MainRenderer")};
     const jmethodID isLowMemoryMethodId {env->GetMethodID(rendererClass, "isLowMemory", "(I)Z")};
-    const jstring globalObjFile {static_cast<jstring>(env->NewGlobalRef(localObjFile))};
-    const jstring globalMatFile {static_cast<jstring>(env->NewGlobalRef(localMatFile))};
-    const jstring globalCamFile {static_cast<jstring>(env->NewGlobalRef(localCamFile))};
+    const auto globalObjFile {static_cast<jstring>(env->NewGlobalRef(localObjFile))};
+    const auto globalMatFile {static_cast<jstring>(env->NewGlobalRef(localMatFile))};
+    const auto globalCamFile {static_cast<jstring>(env->NewGlobalRef(localCamFile))};
 
     const ::std::int32_t res {
         [&]() noexcept -> ::std::int32_t {
             const ::std::lock_guard<::std::mutex> lock {mutex_};
             renderer_ = nullptr;
-            const float ratio {static_cast<float>(width) / height};
+            const auto ratio {static_cast<float>(width) / height};
             ::MobileRT::Scene scene_ {};
             ::std::unique_ptr<::MobileRT::Sampler> samplerPixel {};
             ::std::unique_ptr<::MobileRT::Shader> shader_ {};
@@ -425,7 +425,7 @@ jint Java_puscas_mobilertapp_MainRenderer_RTInitialize(
                         return -2;
                     }
                     {
-                        const ::std::int32_t neededMemoryMb {1 + static_cast<::std::int32_t> (3 * (objSize / 1048576))};
+                        const auto neededMemoryMb {1 + static_cast<::std::int32_t> (3 * (objSize / 1048576))};
                         const jboolean lowMem {env->CallBooleanMethod(thiz, isLowMemoryMethodId, neededMemoryMb)};
                         if (lowMem) {
                             finishedRendering_ = true;
@@ -523,15 +523,9 @@ jint Java_puscas_mobilertapp_MainRenderer_RTInitialize(
                     break;
                 }
             }
-            const ::std::int32_t triangles {
-                    static_cast<int32_t> (shader_->scene_.triangles_.size())
-            };
-            const ::std::int32_t spheres {
-                    static_cast<int32_t> (shader_->scene_.spheres_.size())
-            };
-            const ::std::int32_t planes {
-                    static_cast<::std::int32_t> (shader_->scene_.planes_.size())
-            };
+            const auto triangles {static_cast<::std::int32_t> (shader_->scene_.triangles_.size())};
+            const auto spheres {static_cast<::std::int32_t> (shader_->scene_.spheres_.size())};
+            const auto planes {static_cast<::std::int32_t> (shader_->scene_.planes_.size())};
             numLights_ = static_cast<::std::int32_t> (shader_->scene_.lights_.size());
             const ::std::int32_t nPrimitives {triangles + spheres + planes};
             const ::std::chrono::time_point<::std::chrono::system_clock> start {
@@ -602,7 +596,7 @@ void Java_puscas_mobilertapp_MainRenderer_RTRenderIntoBitmap(
         jint nThreads,
         jboolean async
 ) noexcept {
-    jobject globalBitmap {static_cast<jobject>(env->NewGlobalRef(localBitmap))};
+    auto globalBitmap {static_cast<jobject>(env->NewGlobalRef(localBitmap))};
 
     auto lambda {
         [=]() noexcept -> void {
@@ -620,7 +614,9 @@ void Java_puscas_mobilertapp_MainRenderer_RTRenderIntoBitmap(
 
             ::std::uint32_t *dstPixels{};
             {
-                const ::std::int32_t ret {AndroidBitmap_lockPixels(env, globalBitmap, reinterpret_cast<void **>(&dstPixels))};
+                const ::std::int32_t ret {
+                    AndroidBitmap_lockPixels(env, globalBitmap, reinterpret_cast<void **>(&dstPixels))
+                };
                 //dstPixels = static_cast<::std::uint32_t *>(env->GetDirectBufferAddress(globalByteBuffer));
                 assert(ret == JNI_OK);
                 LOG("ret = ", ret);
@@ -695,7 +691,7 @@ extern "C"
         JNIEnv *env,
         jobject /*thiz*/
 ) noexcept {
-    const ::std::int32_t res {static_cast<::std::int32_t> (state_.load())};
+    const auto res {static_cast<::std::int32_t> (state_.load())};
     env->ExceptionClear();
     return res;
 }
@@ -732,7 +728,7 @@ extern "C"
         }
     }
     env->ExceptionClear();
-    const ::std::int32_t res {static_cast<::std::int32_t> (sample)};
+    const auto res {static_cast<::std::int32_t> (sample)};
     return res;
 }
 

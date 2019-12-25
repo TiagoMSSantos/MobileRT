@@ -91,11 +91,8 @@
     gtk_widget_show_all(window);
     g_timeout_add_seconds(1, static_cast<::std::int32_t (*)(
         gpointer)>(
-            [](gpointer user_data) noexcept -> ::std::int32_t {
-                //gtk_widget_draw(reinterpret_cast<GtkWidget*>(user_data), nullptr);
-                gtk_widget_queue_draw (reinterpret_cast<GtkWidget*>(user_data));
-                //while (gtk_events_pending ())
-                //   gtk_main_iteration ();
+            [](gpointer userData) noexcept -> ::std::int32_t {
+                gtk_widget_queue_draw (reinterpret_cast<GtkWidget*>(userData));
                 return 1;
             }), window);
     gtk_main();
