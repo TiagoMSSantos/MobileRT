@@ -13,8 +13,9 @@
 - [ ] Add gpu ray tracing support for comparison
 - [ ] Add more types of shapes
 - [ ] Support more types of models besides .obj files
-- [ ] Move naive acceleration structure to a class different than Scene
+- [x] Move naive acceleration structure to a class different than Scene
 - [ ] Implement KD-Tree
+- [ ] Make acceleration structures compatible with the lights
 
 ### Ray tracing JNI layer
 - [ ] Refactor DrawView translation unit
@@ -22,6 +23,8 @@
 - [x] Remove race conditions
 
 ### Ray tracing shaders
+- [ ] Fix Path Tracing algorithm
+- [ ] Improve shaders performance
 - [ ] Add Bidirectional Path Tracing
 - [ ] Add Metropolis light transport
 - [ ] Add shader for debug purposes (wireframe of shapes and boxes)
