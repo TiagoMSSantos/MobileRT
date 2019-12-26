@@ -12,63 +12,66 @@
 
 namespace MobileRT {
 
-    static const ::std::int32_t maxLeafSize {2};
-
     struct BVHNode {
         AABB box_ {};
         ::std::int32_t indexOffset_ {};
         ::std::int32_t numberPrimitives_ {};
     };
 
-    struct BuildNode {
-        AABB box_ {};
-        ::glm::vec3 midPoint_ {};
-        ::std::int32_t oldIndex_ {};
-
-        explicit BuildNode(AABB &&box, ::glm::vec3 &&midPoint, const ::std::int32_t oldIndex) noexcept
-            : box_{::std::move(box)}, midPoint_{::std::move(midPoint)}, oldIndex_{oldIndex} {
-
-        }
-    };
-
-    template<typename T, typename Iterator>
-    ::std::int32_t getSplitIndexSah(Iterator itBegin, Iterator itEnd) noexcept;
-
-    template<typename T, typename Iterator>
-    ::std::int32_t getMaxAxis(Iterator itBegin, Iterator itEnd) noexcept;
-
     template<typename T>
     class BVH final {
-    private:
-        ::std::vector<BVHNode> boxes_ {};
-        ::std::vector<BuildNode> auxNodes_ {};
+        private:
+            static const ::std::int32_t maxLeafSize {2};
 
-    public:
-        ::std::vector<Primitive<T>> primitives_ {};
+            struct BuildNode {
+                AABB box_ {};
+                ::glm::vec3 midPoint_ {};
+                ::std::int32_t oldIndex_ {};
 
-    private:
-        void build(::std::vector<::MobileRT::Primitive<T>> &&primitives) noexcept;
+                explicit BuildNode(AABB &&box, ::glm::vec3 &&midPoint, const ::std::int32_t oldIndex) noexcept :
+                        box_ {::std::move(box)},
+                        midPoint_ {::std::move(midPoint)},
+                        oldIndex_ {oldIndex} {
 
-        Intersection intersect(Intersection intersection,const Ray &ray, bool shadowTrace = false) noexcept;
+                }
+            };
 
-    public:
-        explicit BVH() noexcept = default;
+        private:
+            ::std::vector<BVHNode> boxes_ {};
+            ::std::vector<BuildNode> auxNodes_ {};
 
-        explicit BVH<T>(::std::vector<Primitive<T>> &&primitives) noexcept;
+        public:
+            ::std::vector<Primitive<T>> primitives_ {};
 
-        BVH(const BVH &bvh) noexcept = delete;
+        private:
+            void build(::std::vector<::MobileRT::Primitive<T>> &&primitives) noexcept;
 
-        BVH(BVH &&bvh) noexcept = default;
+            Intersection intersect(Intersection intersection,const Ray &ray, bool shadowTrace = false) noexcept;
 
-        ~BVH() noexcept;
+            template<typename Iterator>
+            ::std::int32_t getSplitIndexSah(Iterator itBegin, Iterator itEnd) noexcept;
 
-        BVH &operator=(const BVH &bvh) noexcept = delete;
+            template<typename Iterator>
+            ::std::int32_t getMaxAxis(Iterator itBegin, Iterator itEnd) noexcept;
 
-        BVH &operator=(BVH &&bvh) noexcept = default;
+        public:
+            explicit BVH() noexcept = default;
 
-        Intersection trace(Intersection intersection, const Ray &ray) noexcept;
+            explicit BVH<T>(::std::vector<Primitive<T>> &&primitives) noexcept;
 
-        Intersection shadowTrace(Intersection intersection, const Ray &ray) noexcept;
+            BVH(const BVH &bvh) noexcept = delete;
+
+            BVH(BVH &&bvh) noexcept = default;
+
+            ~BVH() noexcept;
+
+            BVH &operator=(const BVH &bvh) noexcept = delete;
+
+            BVH &operator=(BVH &&bvh) noexcept = default;
+
+            Intersection trace(Intersection intersection, const Ray &ray) noexcept;
+
+            Intersection shadowTrace(Intersection intersection, const Ray &ray) noexcept;
     };
 
 
@@ -134,7 +137,7 @@ namespace MobileRT {
             const auto itBegin {itNodes + beginBoxIndex};
 
             const auto itEnd {itNodes + endBoxIndex};
-            const auto maxAxis {getMaxAxis<T>(itBegin, itEnd)};
+            const auto maxAxis {getMaxAxis(itBegin, itEnd)};
             ::std::sort(itBegin, itEnd,
                         [&](const BuildNode &node1, const BuildNode &node2) {
                             return node1.midPoint_[maxAxis] < node2.midPoint_[maxAxis];
@@ -163,7 +166,7 @@ namespace MobileRT {
             } else {
                 const auto left {maxNodeIndex + 1};
                 const auto right {left + 1};
-                const auto splitIndex {getSplitIndexSah<T>(boxes.begin(), boxes.end())};
+                const auto splitIndex {getSplitIndexSah(boxes.begin(), boxes.end())};
 
                 currentBox->indexOffset_ = left;
                 maxNodeIndex = ::std::max(right, maxNodeIndex);
@@ -238,18 +241,18 @@ namespace MobileRT {
                 } else {
                     const ::std::int32_t left {node.indexOffset_};
                     const ::std::int32_t right {node.indexOffset_ + 1};
-                    const BVHNode &childL {*(itBoxes + left)};
-                    const BVHNode &childR {*(itBoxes + right)};
+                    const BVHNode &childLeft {*(itBoxes + left)};
+                    const BVHNode &childRight {*(itBoxes + right)};
 
-                    const bool traverseL {childL.box_.intersect(ray)};
-                    const bool traverseR {childR.box_.intersect(ray)};
+                    const bool traverseLeft {childLeft.box_.intersect(ray)};
+                    const bool traverseRight {childRight.box_.intersect(ray)};
 
-                    if (!traverseL && !traverseR) {
+                    if (!traverseLeft && !traverseRight) {
                         ::std::advance(itStackId, -1); // pop
                         id = *itStackId;
                     } else {
-                        id = (traverseL) ? left : right;
-                        if (traverseL && traverseR) {
+                        id = (traverseLeft) ? left : right;
+                        if (traverseLeft && traverseRight) {
                             *itStackId = right;
                             ::std::advance(itStackId, 1); // push
                         }
@@ -268,14 +271,14 @@ namespace MobileRT {
     /**
      * Gets the index to where the vector of boxes should be split.
      *
-     * @tparam T        The type of the Shape.
      * @tparam Iterator The type of the iterator.
      * @param itBegin   The iterator of the first box in the vector.
      * @param itEnd     The iterator of the last box in the vector.
      * @return The index where the vector of boxes should be split.
      */
-    template<typename T, typename Iterator>
-    ::std::int32_t getSplitIndexSah(const Iterator itBegin, const Iterator itEnd) noexcept {
+    template<typename T>
+    template<typename Iterator>
+    ::std::int32_t BVH<T>::getSplitIndexSah(const Iterator itBegin, const Iterator itEnd) noexcept {
         const auto numberBoxes {itEnd - itBegin};
         const auto itBoxes {itBegin};
         const auto numBoxes {numberBoxes - 1};
@@ -318,8 +321,9 @@ namespace MobileRT {
         return splitIndex;
     }
 
-    template<typename T, typename Iterator>
-    ::std::int32_t getMaxAxis(const Iterator itBegin, const Iterator itEnd) noexcept {
+    template<typename T>
+    template<typename Iterator>
+    ::std::int32_t BVH<T>::getMaxAxis(const Iterator itBegin, const Iterator itEnd) noexcept {
         ::glm::vec3 min {itBegin->box_.pointMin_};
         ::glm::vec3 max {itBegin->box_.pointMax_};
 

@@ -41,6 +41,9 @@ Shader::Shader(Scene scene, const ::std::uint32_t samplesLight, const Accelerato
 void Shader::initializeAccelerators() noexcept {
     switch (accelerator_) {
         case Accelerator::ACC_NAIVE: {
+            this->naivePlanes_ = ::MobileRT::Naive<Primitive<Plane>> {::std::move(this->scene_.planes_)};
+            this->naiveSpheres_ = ::MobileRT::Naive<Primitive<Sphere>> {::std::move(this->scene_.spheres_)};
+            this->naiveTriangles_ = ::MobileRT::Naive<Primitive<Triangle>> {::std::move(this->scene_.triangles_)};
             break;
         }
 
@@ -93,7 +96,9 @@ bool Shader::shadowTrace(Intersection intersection, const Ray &ray) noexcept {
     const float lastDist {intersection.length_};
     switch (this->accelerator_) {
         case Accelerator::ACC_NAIVE: {
-            intersection = this->scene_.shadowTrace(intersection, ray);
+            intersection = this->naivePlanes_.shadowTrace(intersection, ray);
+            intersection = this->naiveSpheres_.shadowTrace(intersection, ray);
+            intersection = this->naiveTriangles_.shadowTrace(intersection, ray);
             break;
         }
 
@@ -120,7 +125,9 @@ bool Shader::rayTrace(::glm::vec3 *rgb, const Ray &ray) noexcept {
     const float lastDist {intersection.length_};
     switch (this->accelerator_) {
         case Accelerator::ACC_NAIVE: {
-            intersection = this->scene_.trace(intersection, ray);
+            intersection = this->naivePlanes_.trace(intersection, ray);
+            intersection = this->naiveSpheres_.trace(intersection, ray);
+            intersection = this->naiveTriangles_.trace(intersection, ray);
             break;
         }
 
@@ -128,7 +135,6 @@ bool Shader::rayTrace(::glm::vec3 *rgb, const Ray &ray) noexcept {
             intersection = this->gridPlanes_.trace(intersection, ray);
             intersection = this->gridSpheres_.trace(intersection, ray);
             intersection = this->gridTriangles_.trace(intersection, ray);
-            intersection = this->scene_.traceLights(intersection, ray);
             break;
         }
 
@@ -136,10 +142,10 @@ bool Shader::rayTrace(::glm::vec3 *rgb, const Ray &ray) noexcept {
             intersection = this->bvhPlanes_.trace(intersection, ray);
             intersection = this->bvhSpheres_.trace(intersection, ray);
             intersection = this->bvhTriangles_.trace(intersection, ray);
-            intersection = this->scene_.traceLights(intersection, ray);
             break;
         }
     }
+    intersection = this->scene_.traceLights(intersection, ray);
     const bool res {intersection.length_ < lastDist && shade(rgb, intersection, ray)};
     return res;
 }

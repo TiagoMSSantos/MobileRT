@@ -2,6 +2,7 @@
 #define MOBILERT_SHADER_HPP
 
 #include "MobileRT/Accelerators/BVH.hpp"
+#include "MobileRT/Accelerators/Naive.hpp"
 #include "MobileRT/Accelerators/RegularGrid.hpp"
 #include "MobileRT/Camera.hpp"
 #include "MobileRT/Intersection.hpp"
@@ -13,6 +14,10 @@ namespace MobileRT {
     class Shader {
     public:
         Scene scene_ {};
+
+        Naive<::MobileRT::Primitive<Plane>> naivePlanes_ {};
+        Naive<::MobileRT::Primitive<Sphere>> naiveSpheres_ {};
+        Naive<::MobileRT::Primitive<Triangle>> naiveTriangles_ {};
 
         RegularGrid<Plane> gridPlanes_ {};
         RegularGrid<Sphere> gridSpheres_ {};
@@ -39,6 +44,8 @@ namespace MobileRT {
 
         ::glm::vec3 getCosineSampleHemisphere(const ::glm::vec3 &normal) const noexcept;
 
+        ::std::uint32_t getLightIndex ();
+
     public:
         void initializeAccelerators() noexcept;
 
@@ -62,8 +69,6 @@ namespace MobileRT {
         bool shadowTrace(Intersection intersection, const Ray &ray) noexcept;
 
         virtual void resetSampling() noexcept;
-
-        ::std::uint32_t getLightIndex ();
     };
 }//namespace MobileRT
 

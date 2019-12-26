@@ -62,7 +62,7 @@ void Renderer::renderFrame(::std::uint32_t *const bitmap, const ::std::int32_t n
         threads.emplace_back(&Renderer::renderScene, this, bitmap, i, realWidth);
     }
     renderScene(bitmap, numChildren, realWidth);
-    for (::std::thread &thread : threads) {
+    for (auto &thread : threads) {
         thread.join();
     }
     threads.clear();
@@ -79,34 +79,30 @@ void Renderer::stopRender() noexcept {
 }
 
 void Renderer::renderScene(::std::uint32_t *const bitmap, const ::std::int32_t tid, const ::std::uint32_t width) noexcept {
-    const float INV_IMG_WIDTH {1.0f / this->width_};
-    const float INV_IMG_HEIGHT {1.0f / this->height_};
+    const float invImgWidth {1.0f / this->width_};
+    const float invImgHeight {1.0f / this->height_};
     const float pixelWidth {0.5f / this->width_};
     const float pixelHeight {0.5f / this->height_};
-    ::glm::vec3 pixelRGB {};
     const ::std::uint32_t samples {this->samplesPixel_};
+    ::glm::vec3 pixelRGB {};
 
     for (::std::uint32_t sample {}; sample < samples; ++sample) {
         while (true) {
-            const float block {getBlock(sample)};
-            if (block >= 1.0f) {
+            const float tile {getTile(sample)};
+            if (tile >= 1.0f) {
                 break;
             }
-            const ::std::uint32_t roundBlock {static_cast<::std::uint32_t> (::std::roundf(block * this->domainSize_))};
-            const ::std::uint32_t pixel {
-                static_cast<::std::uint32_t>(roundBlock * this->blockSizeX_ % this->resolution_)
-            };
-            const ::std::uint32_t startY {
-                    ((pixel / this->width_) * this->blockSizeY_) % this->height_
-            };
+            const auto roundBlock {static_cast<::std::uint32_t> (::std::roundf(tile * this->domainSize_))};
+            const auto pixel {static_cast<::std::uint32_t>(roundBlock * this->blockSizeX_ % this->resolution_)};
+            const ::std::uint32_t startY {((pixel / this->width_) * this->blockSizeY_) % this->height_};
             const ::std::uint32_t endY {startY + this->blockSizeY_};
             for (::std::uint32_t y {startY}; y < endY; ++y) {
-                const float v {y * INV_IMG_HEIGHT};
+                const float v {y * invImgHeight};
                 const ::std::uint32_t yWidth {y * width};
                 const ::std::uint32_t startX {(pixel + yWidth) % this->width_};
                 const ::std::uint32_t endX {startX + this->blockSizeX_};
                 for (::std::uint32_t x {startX}; x < endX; ++x) {
-                    const float u {x * INV_IMG_WIDTH};
+                    const float u {x * invImgWidth};
                     const float r1 {this->samplerPixel_->getSample()};
                     const float r2 {this->samplerPixel_->getSample()};
                     const float deviationU {(r1 - 0.5f) * 2.0f * pixelWidth};
@@ -132,7 +128,7 @@ void Renderer::renderScene(::std::uint32_t *const bitmap, const ::std::int32_t t
     return this->sample_;
 }
 
-float Renderer::getBlock(const ::std::uint32_t sample) noexcept {
+float Renderer::getTile(const ::std::uint32_t sample) noexcept {
     const ::std::uint32_t current {this->block_.fetch_add(1, ::std::memory_order_relaxed) - NumberOfBlocks * sample};
     if (current >= NumberOfBlocks) {
         this->block_.fetch_sub(1, ::std::memory_order_relaxed);

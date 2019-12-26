@@ -28,7 +28,7 @@ namespace MobileRT {
 
     private:
         void renderScene(::std::uint32_t *bitmap, ::std::int32_t tid, ::std::uint32_t width) noexcept;
-        float getBlock(::std::uint32_t sample) noexcept;
+        float getTile(const uint32_t sample) noexcept;
 
     public:
         explicit Renderer () noexcept = delete;
