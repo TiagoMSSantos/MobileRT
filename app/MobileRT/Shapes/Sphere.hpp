@@ -10,7 +10,7 @@ namespace MobileRT {
     class Sphere final {
     private:
         ::glm::vec3 center_ {};
-        float sq_radius_ {};
+        float sqRadius_ {};
 
     public:
         explicit Sphere () noexcept = delete;

@@ -9,8 +9,8 @@
 namespace MobileRT {
     class Plane final {
     private:
-        ::glm::vec3 normal_{};    // normal to the plane
-        ::glm::vec3 point_{};   // point in the plane
+        ::glm::vec3 normal_ {};
+        ::glm::vec3 point_ {};
 
     private:
         ::glm::vec3 getRightVector() const noexcept;
