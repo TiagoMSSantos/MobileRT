@@ -31,11 +31,11 @@ namespace MobileRT {
         float getSurfaceArea() const noexcept;
 
         ::glm::vec3 getMidPoint() const noexcept;
+
+        bool intersect(const Ray &ray) const noexcept;
     };
 
     AABB surroundingBox(const AABB &box1, const AABB &box2) noexcept;
-
-    bool intersect(const AABB &box, const Ray &ray) noexcept;
 }//namespace MobileRT
 
 #endif //MOBILERT_ACCELERATORS_AABB_HPP

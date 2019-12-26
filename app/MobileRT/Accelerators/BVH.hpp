@@ -49,6 +49,8 @@ namespace MobileRT {
     private:
         void build(::std::vector<::MobileRT::Primitive<T>> &&primitives) noexcept;
 
+        Intersection intersect(Intersection intersection,const Ray &ray, bool shadowTrace = false) noexcept;
+
     public:
         explicit BVH() noexcept = default;
 
@@ -193,62 +195,18 @@ namespace MobileRT {
 
     template<typename T>
     Intersection BVH<T>::trace(Intersection intersection, const Ray &ray) noexcept {
-        if(this->primitives_.empty()) {
-            return intersection;
-        }
-        ::std::int32_t id {};
-        ::std::array<::std::int32_t, 512> stackId {};
-
-        const auto begin {stackId.cbegin()};
-        auto itStackId {stackId.begin()};
-        ::std::advance(itStackId, 1);
-
-        const auto itBoxes {this->boxes_.begin()};
-        const auto itPrimitives {this->primitives_.begin()};
-        do {
-            const BVHNode &node {*(itBoxes + id)};
-            if (intersect(node.box_, ray)) {
-
-                const ::std::int32_t numberPrimitives {node.numberPrimitives_};
-                if (numberPrimitives > 0) {
-                    for (::std::int32_t i {}; i < numberPrimitives; ++i) {
-                        auto& primitive {*(itPrimitives + node.indexOffset_ + i)};
-                        intersection = primitive.intersect(intersection, ray);
-                    }
-                    ::std::advance(itStackId, -1); // pop
-                    id = *itStackId;
-                } else {
-                    const ::std::int32_t left {node.indexOffset_};
-                    const ::std::int32_t right {node.indexOffset_ + 1};
-                    const BVHNode &childL {*(itBoxes + left)};
-                    const BVHNode &childR {*(itBoxes + right)};
-
-                    const bool traverseL {intersect(childL.box_, ray)};
-                    const bool traverseR {intersect(childR.box_, ray)};
-
-                    if (!traverseL && !traverseR) {
-                        ::std::advance(itStackId, -1); // pop
-                        id = *itStackId;
-                    } else {
-                        id = (traverseL) ? left : right;
-                        if (traverseL && traverseR) {
-                            *itStackId = right;
-                            ::std::advance(itStackId, 1); // push
-                        }
-                    }
-                }
-
-            } else {
-                ::std::advance(itStackId, -1); // pop
-                id = *itStackId;
-            }
-
-        } while (itStackId > begin);
+        intersection = intersect(intersection, ray);
         return intersection;
     }
 
     template<typename T>
     Intersection BVH<T>::shadowTrace(Intersection intersection, const Ray &ray) noexcept {
+        intersection = intersect(intersection, ray, true);
+        return intersection;
+    }
+
+    template<typename T>
+    Intersection BVH<T>::intersect(Intersection intersection, const Ray &ray, const bool shadowTrace) noexcept {
         if(this->primitives_.empty()) {
             return intersection;
         }
@@ -263,7 +221,7 @@ namespace MobileRT {
         const auto itPrimitives {this->primitives_.begin()};
         do {
             const BVHNode &node {*(itBoxes + id)};
-            if (intersect(node.box_, ray)) {
+            if (node.box_.intersect(ray)) {
 
                 const ::std::int32_t numberPrimitives {node.numberPrimitives_};
                 if (numberPrimitives > 0) {
@@ -271,7 +229,7 @@ namespace MobileRT {
                         auto& primitive {*(itPrimitives + node.indexOffset_ + i)};
                         const float lastDist {intersection.length_};
                         intersection = primitive.intersect(intersection, ray);
-                        if (intersection.length_ < lastDist) {
+                        if (shadowTrace && intersection.length_ < lastDist) {
                             return intersection;
                         }
                     }
@@ -281,10 +239,10 @@ namespace MobileRT {
                     const ::std::int32_t left {node.indexOffset_};
                     const ::std::int32_t right {node.indexOffset_ + 1};
                     const BVHNode &childL {*(itBoxes + left)};
-                    const BVHNode &childR {*(itBoxes + left + 1)};
+                    const BVHNode &childR {*(itBoxes + right)};
 
-                    const bool traverseL {intersect(childL.box_, ray)};
-                    const bool traverseR {intersect(childR.box_, ray)};
+                    const bool traverseL {childL.box_.intersect(ray)};
+                    const bool traverseR {childR.box_.intersect(ray)};
 
                     if (!traverseL && !traverseR) {
                         ::std::advance(itStackId, -1); // pop
