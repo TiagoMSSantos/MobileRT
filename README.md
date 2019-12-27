@@ -6,7 +6,7 @@
 
 ### Ray tracing engine
 - [ ] Implement loading of textures
-- [ ] Separate Material from Primitive in order to save memory
+- [x] Separate Material from Primitive in order to save memory
 - [x] Improve BVH
 - [x] Improve Regular Grid
 - [ ] Add ray packet intersections
@@ -57,6 +57,6 @@
 ### Documentation
 - [x] Improve README
 - [ ] Write documentation
-- [ ] Update gif image
+- [x] Update gif image
 - [ ] Benchmark against popular ray tracers like PBRT
 - [ ] Benchmark against previous version of MobileRT

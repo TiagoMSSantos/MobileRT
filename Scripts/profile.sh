@@ -155,7 +155,7 @@ function execute {
 function clangtidy {
   clang-tidy \
 	-analyze-temporary-dtors \
-	-checks='*,-*llvm-header-guard*,-fuchsia-default-arguments' \
+	-checks='*,-*llvm-header-guard*,-fuchsia-default-arguments,-fuchsia-overloaded-operator' \
 	-header-filter='.*' \
   ${MOBILERT_SRCS}/MobileRT/*.*pp \
   ${MOBILERT_SRCS}/MobileRT/*/*.*pp \

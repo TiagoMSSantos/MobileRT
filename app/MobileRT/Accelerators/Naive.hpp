@@ -1,6 +1,7 @@
 #ifndef MOBILERT_ACCELERATORS_NAIVE_HPP
 #define MOBILERT_ACCELERATORS_NAIVE_HPP
 
+#include "MobileRT/Intersection.hpp"
 #include "MobileRT/Ray.hpp"
 #include <vector>
 

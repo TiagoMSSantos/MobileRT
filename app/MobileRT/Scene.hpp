@@ -3,12 +3,12 @@
 
 #include "MobileRT/Accelerators/AABB.hpp"
 #include "MobileRT/Intersection.hpp"
-#include "MobileRT/Shapes/Plane.hpp"
-#include "MobileRT/Shapes/Sphere.hpp"
-#include "MobileRT/Shapes/Triangle.hpp"
 #include "MobileRT/Light.hpp"
 #include "MobileRT/Material.hpp"
 #include "MobileRT/Ray.hpp"
+#include "MobileRT/Shapes/Plane.hpp"
+#include "MobileRT/Shapes/Sphere.hpp"
+#include "MobileRT/Shapes/Triangle.hpp"
 #include "MobileRT/Utils.hpp"
 #include <glm/glm.hpp>
 #include <vector>

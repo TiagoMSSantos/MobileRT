@@ -75,7 +75,7 @@ namespace MobileRT {
         return res;
     }
 
-    bool equal(const ::glm::vec3 a, const ::glm::vec3 b) noexcept {
+    bool equal(const ::glm::vec3 &a, const ::glm::vec3 &b) noexcept {
         const auto sameX {equal(a[0], b[0])};
         const auto sameY {equal(a[1], b[1])};
         const auto sameZ {equal(a[2], b[2])};
