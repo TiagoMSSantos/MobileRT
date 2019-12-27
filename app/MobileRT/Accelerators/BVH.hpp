@@ -29,8 +29,8 @@ namespace MobileRT {
                 ::std::int32_t oldIndex_ {};
 
                 explicit BuildNode(AABB &&box, ::glm::vec3 &&midPoint, const ::std::int32_t oldIndex) noexcept :
-                    box_ {::std::move(box)},
-                    midPoint_ {::std::move(midPoint)},
+                    box_ {box},
+                    midPoint_ {midPoint},
                     oldIndex_ {oldIndex} {
 
                 }
@@ -54,7 +54,7 @@ namespace MobileRT {
         public:
             explicit BVH() noexcept = default;
 
-            explicit BVH<T>(::std::vector<Primitive<T>> &&primitives) noexcept;
+            explicit BVH(::std::vector<Primitive<T>> &&primitives) noexcept;
 
             BVH(const BVH &bvh) noexcept = delete;
 
@@ -102,7 +102,7 @@ namespace MobileRT {
         ::std::int32_t currentBoxIndex {};
         ::std::int32_t beginBoxIndex {};
         const auto primitivesSize {primitives.size()};
-        ::std::int32_t endBoxIndex {static_cast<::std::int32_t>(primitivesSize)};
+        ::std::int32_t endBoxIndex {static_cast<::std::int32_t> (primitivesSize)};
         ::std::int32_t maxNodeIndex {};
 
         ::std::array<::std::int32_t, 512> stackBoxIndex {};

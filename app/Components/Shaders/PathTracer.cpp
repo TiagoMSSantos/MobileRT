@@ -2,11 +2,12 @@
 #include <glm/gtc/constants.hpp>
 
 using ::Components::PathTracer;
-using ::MobileRT::Light;
 using ::MobileRT::Sampler;
 using ::MobileRT::Intersection;
 using ::MobileRT::Ray;
 using ::MobileRT::Scene;
+using ::MobileRT::RayDepthMin;
+using ::MobileRT::RayDepthMax;
 
 PathTracer::PathTracer(Scene scene,
                        ::std::unique_ptr<Sampler> samplerRussianRoulette,
@@ -20,7 +21,7 @@ PathTracer::PathTracer(Scene scene,
 //pag 28 slides Monte Carlo
 bool PathTracer::shade(::glm::vec3 *const rgb, const Intersection &intersection, const Ray &ray) noexcept {
     const auto rayDepth {ray.depth_};
-    if (rayDepth > ::MobileRT::RayDepthMax) {
+    if (rayDepth > RayDepthMax) {
         return false;
     }
 
@@ -86,7 +87,7 @@ bool PathTracer::shade(::glm::vec3 *const rgb, const Intersection &intersection,
         }
 
         //indirect light
-        if (rayDepth <= ::MobileRT::RayDepthMin || this->samplerRussianRoulette_->getSample() > finishProbability) {
+        if (rayDepth <= RayDepthMin || this->samplerRussianRoulette_->getSample() > finishProbability) {
             const auto &newDirection {getCosineSampleHemisphere(shadingNormal)};
             const Ray normalizedSecundaryRay {newDirection, intersection.point_, rayDepth + 1, intersection.primitive_};
 
@@ -102,7 +103,7 @@ bool PathTracer::shade(::glm::vec3 *const rgb, const Intersection &intersection,
             //LiD += kD * LiD_RGB * cos (dir, normal) / (PDF * continueProbability)
             //LiD += kD * LiD_RGB * Pi / continueProbability
             LiD += kD * LiD_RGB;
-            if (rayDepth > ::MobileRT::RayDepthMin) {
+            if (rayDepth > RayDepthMin) {
                 LiD /= continueProbability * 0.5F;
             }
 

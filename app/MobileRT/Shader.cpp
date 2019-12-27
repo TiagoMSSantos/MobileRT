@@ -9,7 +9,6 @@
 using ::MobileRT::BVH;
 using ::MobileRT::RegularGrid;
 using ::MobileRT::Naive;
-using ::MobileRT::Camera;
 using ::MobileRT::Intersection;
 using ::MobileRT::Ray;
 using ::MobileRT::Primitive;
@@ -26,7 +25,7 @@ namespace {
 
     bool fillThings() {
         for (auto it {values.begin()}; it < values.end(); std::advance(it, 1)) {
-            const auto index {static_cast<::std::uint32_t>(::std::distance(values.begin(), it))};
+            const auto index {static_cast<::std::uint32_t> (::std::distance(values.begin(), it))};
             *it = ::MobileRT::haltonSequence(index, 2);
         }
         static ::std::random_device randomDevice {};
@@ -58,7 +57,7 @@ void Shader::initializeAccelerators(Scene scene) noexcept {
         }
 
         case Accelerator::ACC_REGULAR_GRID: {
-            const auto gridSize {32};
+            const auto gridSize {32U};
             this->gridPlanes_ = RegularGrid<Plane> {::std::move(scene.planes_), gridSize};
             this->gridSpheres_ = RegularGrid<Sphere> {::std::move(scene.spheres_), gridSize};
             this->gridTriangles_ = RegularGrid<Triangle> {::std::move(scene.triangles_), gridSize};
@@ -165,7 +164,7 @@ void Shader::resetSampling() noexcept {
     const auto uniformRandom1 {*it1};
     const auto uniformRandom2 {*it2};
 
-    const auto phi {::glm::two_pi<float>() * uniformRandom1};// random angle around - azimuthal angle
+    const auto phi {::glm::two_pi<float> () * uniformRandom1};// random angle around - azimuthal angle
     const auto r2 {uniformRandom2};// random distance from center
     const auto cosTheta {::std::sqrt(r2)};// square root of distance from center - cos(theta) = cos(elevation angle)
 
@@ -190,7 +189,7 @@ void Shader::resetSampling() noexcept {
 
     const auto it {values.begin() + (current & mask)};
 
-    const auto sizeLights {static_cast<::std::uint32_t>(this->lights_.size())};
+    const auto sizeLights {static_cast<::std::uint32_t> (this->lights_.size())};
     const auto randomNumber {*it};
     const auto chosenLight {static_cast<::std::uint32_t> (::std::floor(randomNumber * sizeLights * 0.99999F))};
     return chosenLight;

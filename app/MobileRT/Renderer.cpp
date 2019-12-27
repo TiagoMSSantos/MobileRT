@@ -10,7 +10,7 @@ namespace {
 
     bool fillThings() {
         for (auto it {values.begin()}; it < values.end(); std::advance(it, 1)) {
-            const ::std::uint32_t index {static_cast<uint32_t>(::std::distance(values.begin(), it))};
+            const ::std::uint32_t index {static_cast<uint32_t> (::std::distance(values.begin(), it))};
             *it = ::MobileRT::haltonSequence(index, 2);
         }
         static ::std::random_device randomDevice {};
@@ -28,8 +28,8 @@ Renderer::Renderer(::std::unique_ptr<Shader> shader,
         camera_ {::std::move(camera)},
         shader_ {::std::move(shader)},
         samplerPixel_ {::std::move(samplerPixel)},
-        blockSizeX_ {width / static_cast<::std::int32_t>(::std::sqrt(NumberOfBlocks))},
-        blockSizeY_ {height / static_cast<::std::int32_t>(::std::sqrt(NumberOfBlocks))},
+        blockSizeX_ {width / static_cast<::std::int32_t> (::std::sqrt(NumberOfBlocks))},
+        blockSizeY_ {height / static_cast<::std::int32_t> (::std::sqrt(NumberOfBlocks))},
         sample_ {},
         width_ {width},
         height_ {height},
@@ -51,7 +51,7 @@ void Renderer::renderFrame(::std::int32_t *const bitmap, const ::std::int32_t nu
 
     const auto numChildren {numThreads - 1};
     ::std::vector<::std::thread> threads {};
-    threads.reserve(static_cast<::std::uint32_t>(numChildren));
+    threads.reserve(static_cast<::std::uint32_t> (numChildren));
 
     for (::std::int32_t i {}; i < numChildren; ++i) {
         threads.emplace_back(&Renderer::renderScene, this, bitmap, i);
@@ -61,7 +61,6 @@ void Renderer::renderFrame(::std::int32_t *const bitmap, const ::std::int32_t nu
         thread.join();
     }
     threads.clear();
-    ::std::vector<::std::thread> {}.swap(threads);
 
     LOG("FINISH");
 }
@@ -87,7 +86,7 @@ void Renderer::renderScene(::std::int32_t *const bitmap, const ::std::int32_t ti
                 break;
             }
             const auto roundBlock {static_cast<::std::int32_t> (::std::roundf(tile * this->domainSize_))};
-            const auto pixel {static_cast<::std::int32_t>(roundBlock * this->blockSizeX_ % this->resolution_)};
+            const auto pixel {roundBlock * this->blockSizeX_ % this->resolution_};
             const auto startY {((pixel / this->width_) * this->blockSizeY_) % this->height_};
             const auto endY {startY + this->blockSizeY_};
             for (auto y {startY}; y < endY; ++y) {
@@ -105,9 +104,9 @@ void Renderer::renderScene(::std::int32_t *const bitmap, const ::std::int32_t ti
                     pixelRgb = {};
                     this->shader_->rayTrace(&pixelRgb, ray);
                     const auto pixelIndex {yWidth + x};
-                    auto &bitmapPixel {bitmap[pixelIndex]};
-                    const auto pixelColor {::MobileRT::incrementalAvg(pixelRgb, bitmapPixel, sample + 1)};
-                    bitmapPixel = pixelColor;
+                    ::std::int32_t *bitmapPixel {&bitmap[pixelIndex]};
+                    const auto pixelColor {::MobileRT::incrementalAvg(pixelRgb, *bitmapPixel, sample + 1)};
+                    *bitmapPixel = pixelColor;
                 }
             }
         }

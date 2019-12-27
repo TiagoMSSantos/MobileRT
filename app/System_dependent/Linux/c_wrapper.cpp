@@ -3,8 +3,8 @@
 #include "Components/Cameras/Perspective.hpp"
 #include "Components/Lights/AreaLight.hpp"
 #include "Components/Lights/PointLight.hpp"
-#include "Components/Loaders/OBJLoader.hpp"
 #include "Components/Loaders/CameraFactory.hpp"
+#include "Components/Loaders/OBJLoader.hpp"
 #include "Components/Samplers/Constant.hpp"
 #include "Components/Samplers/HaltonSeq.hpp"
 #include "Components/Samplers/MersenneTwister.hpp"
@@ -25,7 +25,7 @@
 
 static void
 work_thread(
-    ::std::uint32_t *const bitmap, const ::std::int32_t width,
+    ::std::int32_t *const bitmap, const ::std::int32_t width,
     const ::std::int32_t height, const ::std::int32_t threads,
     const ::std::int32_t shader, const ::std::int32_t scene, const ::std::int32_t samplesPixel, const ::std::int32_t samplesLight,
     ::std::int32_t repeats, const ::std::int32_t accelerator, const bool printStdOut,
@@ -57,7 +57,7 @@ work_thread(
         ::std::unique_ptr<::MobileRT::Renderer> renderer_ {};
         ::std::int32_t numberOfLights_ {};
 
-        const auto ratio {static_cast<float>(width) / height};
+        const auto ratio {static_cast<float> (width) / height};
         ::MobileRT::Scene scene_ {};
         ::std::unique_ptr<::MobileRT::Sampler> samplerPixel {};
         ::std::unique_ptr<::MobileRT::Shader> shader_ {};
@@ -66,7 +66,7 @@ work_thread(
 
         switch (scene) {
             case 0:
-                camera = ::std::make_unique<::Components::Perspective>(
+                camera = ::std::make_unique<::Components::Perspective> (
                         ::glm::vec3 {0.0F, 0.0F, -3.4F},
                         ::glm::vec3 {0.0F, 0.0F, 1.0F},
                         ::glm::vec3 {0.0F, 1.0F, 0.0F},
@@ -76,7 +76,7 @@ work_thread(
                 break;
 
             case 1:
-                camera = ::std::make_unique<::Components::Orthographic>(
+                camera = ::std::make_unique<::Components::Orthographic> (
                         ::glm::vec3 {0.0F, 1.0F, -10.0F},
                         ::glm::vec3 {0.0F, 1.0F, 7.0F},
                         ::glm::vec3 {0.0F, 1.0F, 0.0F},
@@ -86,7 +86,7 @@ work_thread(
                 break;
 
             case 2:
-                camera = ::std::make_unique<::Components::Perspective>(
+                camera = ::std::make_unique<::Components::Perspective> (
                         ::glm::vec3 {0.0F, 0.0F, -3.4F},
                         ::glm::vec3 {0.0F, 0.0F, 1.0F},
                         ::glm::vec3 {0.0F, 1.0F, 0.0F},
@@ -96,7 +96,7 @@ work_thread(
                 break;
 
             case 3:
-                camera = ::std::make_unique<::Components::Perspective>(
+                camera = ::std::make_unique<::Components::Perspective> (
                         ::glm::vec3 {0.0F, 0.5F, 1.0F},
                         ::glm::vec3 {0.0F, 0.0F, 7.0F},
                         ::glm::vec3 {0.0F, 1.0F, 0.0F},
@@ -110,10 +110,10 @@ work_thread(
                 if (!objLoader.isProcessed()) {
                     exit(0);
                 }
-                //objLoader.fillScene (&scene_, []() { return ::std::make_unique<::Components::HaltonSeq> (); });
-                //objLoader.fillScene (&scene_, []() {return ::std::make_unique<::Components::MersenneTwister> (); });
-                objLoader.fillScene(&scene_, []() { return ::std::make_unique<Components::StaticHaltonSeq>(); });
-                //objLoader.fillScene(&scene_, []() { return ::std::make_unique<Components::StaticMersenneTwister>(); });
+                //objLoader.fillScene(&scene_, []() {return ::std::make_unique<::Components::HaltonSeq> ();});
+                //objLoader.fillScene(&scene_, []() {return ::std::make_unique<::Components::MersenneTwister> ();});
+                objLoader.fillScene(&scene_, []() {return ::std::make_unique<Components::StaticHaltonSeq> (); });
+                //objLoader.fillScene(&scene_, []() {return ::std::make_unique<Components::StaticMersenneTwister> ();});
 
                 const auto cameraFactory {::Components::CameraFactory()};
                 camera = cameraFactory.loadFromFile(camFilePath, ratio);
@@ -122,22 +122,25 @@ work_thread(
                 break;
         }
         if (samplesPixel > 1) {
-            samplerPixel = ::std::make_unique<::Components::StaticHaltonSeq>();
+            samplerPixel = ::std::make_unique<::Components::StaticHaltonSeq> ();
         } else {
-            samplerPixel = ::std::make_unique<::Components::Constant>(0.5F);
+            samplerPixel = ::std::make_unique<::Components::Constant> (0.5F);
         }
+        const auto startCreating {::std::chrono::system_clock::now()};
         switch (shader) {
             case 1: {
-                shader_ = ::std::make_unique<::Components::Whitted>(
+                shader_ = ::std::make_unique<::Components::Whitted> (
                   ::std::move(scene_), samplesLight, ::MobileRT::Shader::Accelerator(accelerator)
                 );
                 break;
             }
 
             case 2: {
-                ::std::unique_ptr<MobileRT::Sampler> samplerRussianRoulette {::std::make_unique<::Components::StaticHaltonSeq>()};
+                ::std::unique_ptr<MobileRT::Sampler> samplerRussianRoulette {
+                    ::std::make_unique<::Components::StaticHaltonSeq> ()
+                };
 
-                shader_ = ::std::make_unique<::Components::PathTracer>(
+                shader_ = ::std::make_unique<::Components::PathTracer> (
                   ::std::move(scene_), ::std::move(samplerRussianRoulette), samplesLight,
                   ::MobileRT::Shader::Accelerator(accelerator)
                 );
@@ -145,40 +148,38 @@ work_thread(
             }
 
             case 3: {
-              shader_ = ::std::make_unique<::Components::DepthMap>(
+              shader_ = ::std::make_unique<::Components::DepthMap> (
                 ::std::move(scene_), maxDist, ::MobileRT::Shader::Accelerator(accelerator)
             );
                 break;
             }
 
             case 4: {
-              shader_ = ::std::make_unique<::Components::DiffuseMaterial>(
+              shader_ = ::std::make_unique<::Components::DiffuseMaterial> (
                 ::std::move(scene_), ::MobileRT::Shader::Accelerator(accelerator)
               );
               break;
             }
 
             default: {
-              shader_ = ::std::make_unique<::Components::NoShadows>(
+              shader_ = ::std::make_unique<::Components::NoShadows> (
                 ::std::move(scene_), samplesLight, ::MobileRT::Shader::Accelerator(accelerator)
               );
               break;
             }
         }
-        const ::std::int32_t triangles {static_cast<::std::int32_t> (shader_->scene_.triangles_.size())};
-        const ::std::int32_t spheres {static_cast<::std::int32_t> (shader_->scene_.spheres_.size())};
-        const ::std::int32_t planes {static_cast<::std::int32_t> (shader_->scene_.planes_.size())};
-        numberOfLights_ = static_cast<::std::int32_t> (shader_->scene_.lights_.size());
+        const auto endCreating {::std::chrono::system_clock::now()};
+        const auto planes {static_cast<::std::int32_t> (shader_->getPlanes().size())};
+        const auto spheres {static_cast<::std::int32_t> (shader_->getSpheres().size())};
+        const auto triangles {static_cast<::std::int32_t> (shader_->getTriangles().size())};
+        numberOfLights_ = static_cast<::std::int32_t> (shader_->getLights().size());
         const ::std::int32_t nPrimitives {triangles + spheres + planes};
 
         LOG("Started creating Renderer");
-        const auto startCreating {::std::chrono::system_clock::now()};
-        renderer_ = ::std::make_unique<::MobileRT::Renderer>(
+        renderer_ = ::std::make_unique<::MobileRT::Renderer> (
                 ::std::move(shader_), ::std::move(camera), ::std::move(samplerPixel),
-                static_cast<::std::uint32_t>(width), static_cast<::std::uint32_t>(height),
-                static_cast<::std::uint32_t>(samplesPixel)
+                width, height, samplesPixel
         );
-        const auto endCreating {::std::chrono::system_clock::now()};
         timeCreating = endCreating - startCreating;
         LOG("Renderer created = ", timeCreating.count());
 
@@ -198,7 +199,7 @@ work_thread(
         LOG("Started rendering scene");
         const auto startRendering {::std::chrono::system_clock::now()};
         do {
-            renderer_->renderFrame(bitmap, threads, width * sizeof(::std::uint32_t));
+            renderer_->renderFrame(bitmap, threads);
             repeats--;
         } while (repeats > 0);
         const auto endRendering {::std::chrono::system_clock::now()};
@@ -215,7 +216,7 @@ work_thread(
     LOG("Rendering Time in secs = ", timeRendering.count());
 }
 
-void RayTrace(::std::uint32_t *const bitmap, const ::std::int32_t width, const ::std::int32_t height, const ::std::int32_t threads,
+void RayTrace(::std::int32_t *const bitmap, const ::std::int32_t width, const ::std::int32_t height, const ::std::int32_t threads,
               const ::std::int32_t shader, const ::std::int32_t scene, const ::std::int32_t samplesPixel, const ::std::int32_t samplesLight,
               const ::std::int32_t repeats, const ::std::int32_t accelerator, const bool printStdOut, const bool async,
               const char *const pathObj, const char *const pathMtl, const char *const pathCam) {

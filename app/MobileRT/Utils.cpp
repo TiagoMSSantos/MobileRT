@@ -23,29 +23,26 @@ namespace MobileRT {
     // newAvg = ((size - 1) * oldAvg + newNum) / size;
     ::std::int32_t incrementalAvg(
             const ::glm::vec3 &sample, const ::std::int32_t avg, const ::std::int32_t numSample) noexcept {
+        const auto avgUnsigned {static_cast<::std::uint32_t> (avg)};
+        const auto numSampleUnsigned {static_cast<::std::uint32_t> (numSample)};
 
-        const auto lastRed {avg & 0xFF};
-        const auto lastGreen {(avg >> 8) & 0xFF};
-        const auto lastBlue {(avg >> 16) & 0xFF};
+        const auto lastRed {avgUnsigned & 0xFFU};
+        const auto lastGreen {(avgUnsigned >> 8U) & 0xFFU};
+        const auto lastBlue {(avgUnsigned >> 16U) & 0xFFU};
 
-        const auto samplerRed {static_cast<::std::int32_t> (sample[0] * 255)};
-        const auto samplerGreen {static_cast<::std::int32_t> (sample[1] * 255)};
-        const auto samplerBlue {static_cast<::std::int32_t> (sample[2] * 255)};
+        const auto samplerRed {static_cast<::std::uint32_t> (sample[0] * 255U)};
+        const auto samplerGreen {static_cast<::std::uint32_t> (sample[1] * 255U)};
+        const auto samplerBlue {static_cast<::std::uint32_t> (sample[2] * 255U)};
 
-        const auto currentRed {((numSample - 1) * lastRed + samplerRed) / numSample};
-        const auto currentGreen {((numSample - 1) * lastGreen + samplerGreen) / numSample};
-        const auto currentBlue {((numSample - 1) * lastBlue + samplerBlue) / numSample};
+        const auto currentRed {((numSampleUnsigned - 1U) * lastRed + samplerRed) / numSampleUnsigned};
+        const auto currentGreen {((numSampleUnsigned - 1U) * lastGreen + samplerGreen) / numSampleUnsigned};
+        const auto currentBlue {((numSampleUnsigned - 1U) * lastBlue + samplerBlue) / numSampleUnsigned};
 
-        const auto retR {::std::min(currentRed, 255)};
-        const auto retG {::std::min(currentGreen, 255)};
-        const auto retB {::std::min(currentBlue, 255)};
+        const auto retR {::std::min(currentRed, 255U)};
+        const auto retG {::std::min(currentGreen, 255U)};
+        const auto retB {::std::min(currentBlue, 255U)};
 
-        const auto res {static_cast<::std::int32_t>(
-            (0xFF000000) |
-            static_cast<::std::uint32_t> (retB) << 16 |
-            static_cast<::std::uint32_t> (retG) << 8 |
-            static_cast<::std::uint32_t> (retR)
-        )};
+        const auto res {static_cast<::std::int32_t> (0xFF000000 | retB << 16U | retG << 8U | retR)};
 
         return res;
     }

@@ -78,6 +78,6 @@ namespace MobileRT {
         return this->primitives_;
     }
 
-}
+}//namespace MobileRT
 
 #endif //MOBILERT_ACCELERATORS_NAIVE_HPP

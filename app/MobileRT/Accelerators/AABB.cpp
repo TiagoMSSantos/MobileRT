@@ -27,7 +27,7 @@ bool AABB::intersect(const Ray &ray) const noexcept {
         tMax = ::std::min(tMax, ::std::max(t1, t2));
     }
 
-    const bool intersected {tMax >= ::std::max(tMin, 0.0F)};
+    const auto intersected {tMax >= ::std::max(tMin, 0.0F)};
     return intersected;
 }
 

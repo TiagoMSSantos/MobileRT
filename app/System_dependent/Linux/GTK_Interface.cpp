@@ -22,12 +22,12 @@
 
     const ::std::int32_t width_{
             ::MobileRT::roundDownToMultipleOf(static_cast<::std::int32_t> (strtol(args[6], nullptr, 0)),
-                                              static_cast<::std::int32_t>(::std::sqrt(
+                                              static_cast<::std::int32_t> (::std::sqrt(
                                                       ::MobileRT::NumberOfBlocks)))};
 
     const ::std::int32_t height_{
             ::MobileRT::roundDownToMultipleOf(static_cast<::std::int32_t> (strtol(args[7], nullptr, 0)),
-                                              static_cast<::std::int32_t>(::std::sqrt(
+                                              static_cast<::std::int32_t> (::std::sqrt(
                                                       ::MobileRT::NumberOfBlocks)))};
 
     const ::std::int32_t accelerator {static_cast<::std::int32_t> (strtol(args[8], nullptr, 0))};
@@ -49,8 +49,8 @@
     ssAsync >> ::std::boolalpha >> async;
     ssShowImage >> ::std::boolalpha >> showImage;
 
-    const ::std::uint32_t size {static_cast<::std::uint32_t>(width_) * static_cast<::std::uint32_t>(height_)};
-    ::std::vector<::std::uint32_t> bitmap (size);
+    const ::std::uint32_t size {static_cast<::std::uint32_t> (width_) * static_cast<::std::uint32_t> (height_)};
+    ::std::vector<::std::int32_t> bitmap (size);
 
     RayTrace(bitmap.data(), width_, height_, threads, shader, scene, samplesPixel, samplesLight,
              repeats, accelerator, printStdOut, async, pathObj, pathMtl, pathCam);
@@ -67,7 +67,7 @@
             }
     ), nullptr);
     auto key_handler (static_cast<bool (*)(
-            GtkWidget *, GdkEventKey *, gpointer)>(
+            GtkWidget *, GdkEventKey *, gpointer)> (
                                [](GtkWidget *const gtkWidget, GdkEventKey *const event,
                                   gpointer /*user_data*/) noexcept -> bool {
                                     switch(event->keyval) {
@@ -83,7 +83,7 @@
         GTK_OBJECT(window), "key_press_event", GTK_SIGNAL_FUNC(key_handler), nullptr);
 
    GdkPixbuf *const pixbuff {
-        gdk_pixbuf_new_from_data(reinterpret_cast<unsigned char*>(bitmap.data()),
+        gdk_pixbuf_new_from_data(reinterpret_cast<unsigned char*> (bitmap.data()),
         GDK_COLORSPACE_RGB, TRUE, 8,
         static_cast<::std::int32_t> (width_), static_cast<::std::int32_t> (height_),
         static_cast<::std::int32_t> (width_ * 4), nullptr, nullptr)};
@@ -91,9 +91,9 @@
     gtk_container_add(GTK_CONTAINER(window), image);
     gtk_widget_show_all(window);
     g_timeout_add_seconds(1, static_cast<::std::int32_t (*)(
-        gpointer)>(
+        gpointer)> (
             [](gpointer userData) noexcept -> ::std::int32_t {
-                gtk_widget_queue_draw (reinterpret_cast<GtkWidget*>(userData));
+                gtk_widget_queue_draw (reinterpret_cast<GtkWidget*> (userData));
                 return 1;
             }), window);
     gtk_main();

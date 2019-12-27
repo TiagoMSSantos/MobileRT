@@ -7,7 +7,6 @@ using ::MobileRT::Sphere;
 using ::MobileRT::Triangle;
 using ::MobileRT::Primitive;
 using ::MobileRT::Light;
-using ::MobileRT::Intersection;
 
 Scene::~Scene() noexcept {
     //may not free the memory

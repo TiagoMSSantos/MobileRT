@@ -2,7 +2,6 @@
 #include <glm/glm.hpp>
 
 using ::Components::NoShadows;
-using ::MobileRT::Light;
 using ::MobileRT::Intersection;
 using ::MobileRT::Ray;
 using ::MobileRT::Scene;
@@ -34,7 +33,7 @@ bool NoShadows::shade(::glm::vec3 *const rgb, const Intersection &intersection, 
                 //vectorIntersectCameraNormalized = light.position_ - intersection.point_
                 const auto &vectorToLightNormalized {::glm::normalize(lightPosition - intersection.point_)};
                 const auto cosNl {::glm::dot(shadingNormal, vectorToLightNormalized)};
-                if (cosNl > 0.0f) {
+                if (cosNl > 0.0F) {
                     //rgb += kD * radLight * cosNl;
                     *rgb += light.radiance_.Le_ * cosNl;
                 }
@@ -43,6 +42,6 @@ bool NoShadows::shade(::glm::vec3 *const rgb, const Intersection &intersection, 
             *rgb /= samplesLight;
         } // end direct
     }
-    *rgb += kD * 0.1f;//ambient light
+    *rgb += kD * 0.1F;//ambient light
     return false;
 }

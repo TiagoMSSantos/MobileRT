@@ -1,10 +1,10 @@
 #include "Components/Shaders/Whitted.hpp"
 
 using ::Components::Whitted;
-using ::MobileRT::Light;
 using ::MobileRT::Intersection;
 using ::MobileRT::Ray;
 using ::MobileRT::Scene;
+using ::MobileRT::RayDepthMax;
 
 Whitted::Whitted(Scene scene, const ::std::int32_t samplesLight, Accelerator accelerator) noexcept :
     Shader {::std::move(scene), samplesLight, accelerator} {
@@ -12,7 +12,7 @@ Whitted::Whitted(Scene scene, const ::std::int32_t samplesLight, Accelerator acc
 
 bool Whitted::shade(::glm::vec3 *const rgb, const Intersection &intersection, const Ray &ray) noexcept {
     const auto rayDepth {ray.depth_};
-    if (rayDepth > ::MobileRT::RayDepthMax) {
+    if (rayDepth > RayDepthMax) {
         return false;
     }
 
@@ -83,6 +83,6 @@ bool Whitted::shade(::glm::vec3 *const rgb, const Intersection &intersection, co
         rayTrace(&LiT_RGB, transmissionRay);
         *rgb += kT * LiT_RGB;
     }
-    *rgb += kD *  0.1f;//ambient light
+    *rgb += kD *  0.1F;//ambient light
     return false;
 }

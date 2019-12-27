@@ -15,7 +15,7 @@ namespace MobileRT {
         ::std::vector<::std::vector<::MobileRT::Primitive<T>*>> grid_;
         ::std::vector<::MobileRT::Primitive<T>> primitives_;
         ::std::int32_t gridSize_ {};
-        ::std::int32_t gridShift_ {};
+        ::std::uint32_t gridShift_ {};
         AABB worldBoundaries_ {};
         ::glm::vec3 cellSizeInverted_ {};
         ::glm::vec3 cellSize_ {};
@@ -26,12 +26,12 @@ namespace MobileRT {
         template<typename P>
         Intersection intersect(Intersection intersection,const Ray &ray, bool shadowTrace = false) noexcept;
 
-        ::std::int32_t bitCounter(::std::uint32_t value) const noexcept;
+        ::std::uint32_t bitCounter(::std::uint32_t value) const noexcept;
 
     public:
         explicit RegularGrid() noexcept = default;
 
-        explicit RegularGrid(::std::vector<::MobileRT::Primitive<T>> &&primitives,::std::int32_t gridSize) noexcept;
+        explicit RegularGrid(::std::vector<::MobileRT::Primitive<T>> &&primitives,::std::uint32_t gridSize) noexcept;
 
         RegularGrid(const RegularGrid &regularGrid) noexcept = delete;
 
@@ -54,7 +54,7 @@ namespace MobileRT {
 
     template<typename T>
     RegularGrid<T>::RegularGrid(
-        ::std::vector<::MobileRT::Primitive<T>> &&primitives, const ::std::int32_t gridSize
+        ::std::vector<::MobileRT::Primitive<T>> &&primitives, const ::std::uint32_t gridSize
     ) noexcept :
         grid_ {
             ::std::vector<::std::vector<::MobileRT::Primitive<T>*>> {
@@ -62,8 +62,8 @@ namespace MobileRT {
             }
         },
         primitives_ {::std::move(primitives)},
-        gridSize_ {gridSize},
-        gridShift_ {bitCounter(static_cast<::std::uint32_t>(gridSize)) - 1},
+        gridSize_ {static_cast<::std::int32_t> (gridSize)},
+        gridShift_ {bitCounter(gridSize - 1U)},
         worldBoundaries_ {Scene::getBounds<::MobileRT::Primitive<T>> (primitives_)},
         // precalculate 1 / size of a cell (for x, y and z)
         cellSizeInverted_ {
@@ -93,8 +93,8 @@ namespace MobileRT {
     }
 
     template<typename T>
-    ::std::int32_t RegularGrid<T>::bitCounter(::std::uint32_t value) const noexcept {
-        ::std::int32_t counter {};
+    ::std::uint32_t RegularGrid<T>::bitCounter(::std::uint32_t value) const noexcept {
+        ::std::uint32_t counter {};
         while (value > 0) {
             ++counter;
             value >>= 1;
@@ -123,20 +123,20 @@ namespace MobileRT {
             const auto &bv2 {bound.pointMax_};
 
             // find out which cells could contain the primitive (based on aabb)
-            auto x1 {static_cast<::std::int32_t>((bv1[0] - this->worldBoundaries_.pointMin_[0]) * dxReci)};
-            auto x2 {static_cast<::std::int32_t>((bv2[0] - this->worldBoundaries_.pointMin_[0]) * dxReci) + 1};
+            auto x1 {static_cast<::std::int32_t> ((bv1[0] - this->worldBoundaries_.pointMin_[0]) * dxReci)};
+            auto x2 {static_cast<::std::int32_t> ((bv2[0] - this->worldBoundaries_.pointMin_[0]) * dxReci) + 1};
             x1 = ::std::max(0, x1);
             x2 = ::std::min(x2, this->gridSize_ - 1);
             x2 = ::std::fabs(size[0]) < ::std::numeric_limits<float>::epsilon()? 0 : x2;
             x1 = ::std::min(x1, x2);
-            auto y1 {static_cast<::std::int32_t>((bv1[1] - this->worldBoundaries_.pointMin_[1]) * dyReci)};
-            auto y2 {static_cast<::std::int32_t>((bv2[1] - this->worldBoundaries_.pointMin_[1]) * dyReci) + 1};
+            auto y1 {static_cast<::std::int32_t> ((bv1[1] - this->worldBoundaries_.pointMin_[1]) * dyReci)};
+            auto y2 {static_cast<::std::int32_t> ((bv2[1] - this->worldBoundaries_.pointMin_[1]) * dyReci) + 1};
             y1 = ::std::max(0, y1);
             y2 = ::std::min(y2, this->gridSize_ - 1);
             y2 = ::std::fabs(size[1]) < ::std::numeric_limits<float>::epsilon()? 0 : y2;
             y1 = ::std::min(y1, y2);
-            auto z1 {static_cast<::std::int32_t>((bv1[2] - this->worldBoundaries_.pointMin_[2]) * dzReci)};
-            auto z2 {static_cast<::std::int32_t>((bv2[2] - this->worldBoundaries_.pointMin_[2]) * dzReci) + 1};
+            auto z1 {static_cast<::std::int32_t> ((bv1[2] - this->worldBoundaries_.pointMin_[2]) * dzReci)};
+            auto z2 {static_cast<::std::int32_t> ((bv2[2] - this->worldBoundaries_.pointMin_[2]) * dzReci) + 1};
             z1 = ::std::max(0, z1);
             z2 = ::std::min(z2, this->gridSize_ - 1);
             z2 = ::std::fabs(size[2]) < ::std::numeric_limits<float>::epsilon()? 0 : z2;
@@ -147,7 +147,7 @@ namespace MobileRT {
                 for (auto y {y1}; y <= y2; ++y) {
                     for (auto z {z1}; z <= z2; ++z) {
                         // construct aabb for current cell
-                        const auto idx {static_cast<::std::size_t>(
+                        const auto idx {static_cast<::std::size_t> (
                             x +
                             y * this->gridSize_ +
                             z * this->gridSize_ * this->gridSize_
@@ -173,13 +173,13 @@ namespace MobileRT {
 
     template<typename T>
     Intersection RegularGrid<T>::trace(Intersection intersection, const Ray &ray) noexcept {
-        intersection = intersect<::MobileRT::Primitive<T>>(intersection, ray);
+        intersection = intersect<::MobileRT::Primitive<T>> (intersection, ray);
         return intersection;
     }
 
     template<typename T>
     Intersection RegularGrid<T>::shadowTrace(Intersection intersection, const Ray &ray) noexcept {
-        intersection = intersect<::MobileRT::Primitive<T>>(intersection, ray, true);
+        intersection = intersect<::MobileRT::Primitive<T>> (intersection, ray, true);
         return intersection;
     }
 
@@ -188,9 +188,9 @@ namespace MobileRT {
     Intersection RegularGrid<T>::intersect(Intersection intersection, const Ray &ray, const bool shadowTrace) noexcept {
         // setup 3DDDA (double check reusability of primary ray data)
         const auto &cell {(ray.origin_ - this->worldBoundaries_.pointMin_) * this->cellSizeInverted_};
-        auto cellX {static_cast<::std::int32_t>(cell[0])};
-        auto cellY {static_cast<::std::int32_t>(cell[1])};
-        auto cellZ {static_cast<::std::int32_t>(cell[2])};
+        auto cellX {static_cast<::std::int32_t> (cell[0])};
+        auto cellY {static_cast<::std::int32_t> (cell[1])};
+        auto cellZ {static_cast<::std::int32_t> (cell[2])};
 
         cellX = ::std::min(cellX, this->gridSize_ - 1);
         cellX = ::std::max(cellX, 0);
@@ -265,7 +265,7 @@ namespace MobileRT {
                 static_cast<::std::int32_t> (
                      static_cast<::std::uint32_t> (cellX) +
                     (static_cast<::std::uint32_t> (cellY) << (this->gridShift_)) +
-                    (static_cast<::std::uint32_t> (cellZ) << (this->gridShift_ * 2))
+                    (static_cast<::std::uint32_t> (cellZ) << (this->gridShift_ * 2U))
                 )
             };
             const auto itPrimitive {this->grid_.begin() + index};
@@ -318,7 +318,7 @@ namespace MobileRT {
                 static_cast<::std::int32_t> (
                      static_cast<::std::uint32_t> (cellX) +
                     (static_cast<::std::uint32_t> (cellY) << (this->gridShift_)) +
-                    (static_cast<::std::uint32_t> (cellZ) << (this->gridShift_) * 2)
+                    (static_cast<::std::uint32_t> (cellZ) << (this->gridShift_ * 2U))
                 )
             };
             const auto itPrimitives {this->grid_.begin() + index};
