@@ -213,6 +213,7 @@ const ::std::vector<::MobileRT::Primitive<Plane>>& Shader::getPlanes() const noe
             return this->bvhPlanes_.getPrimitives();
         }
     }
+    return this->naivePlanes_.getPrimitives();
 }
 
 const ::std::vector<::MobileRT::Primitive<Sphere>>& Shader::getSpheres() const noexcept {
@@ -233,6 +234,7 @@ const ::std::vector<::MobileRT::Primitive<Sphere>>& Shader::getSpheres() const n
             return this->bvhSpheres_.getPrimitives();
         }
     }
+    return this->naiveSpheres_.getPrimitives();
 }
 
 const ::std::vector<::MobileRT::Primitive<Triangle>>& Shader::getTriangles() const noexcept {
@@ -253,6 +255,7 @@ const ::std::vector<::MobileRT::Primitive<Triangle>>& Shader::getTriangles() con
             return this->bvhTriangles_.getPrimitives();
         }
     }
+    return this->naiveTriangles_.getPrimitives();
 }
 
 const ::std::vector<::std::unique_ptr<Light>>& Shader::getLights() const noexcept {
