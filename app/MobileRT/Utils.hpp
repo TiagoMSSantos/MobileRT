@@ -23,9 +23,6 @@ namespace MobileRT {
 
     inline ::std::string getFileName(const char *filepath) noexcept;
 
-    template<typename T>
-    ::std::vector<T *> convertVector(::std::vector<T> &source) noexcept;
-
     const float RayLengthMax {1.0e+30f};
     const ::std::int32_t RayDepthMin {4};
     const ::std::int32_t RayDepthMax {6};
@@ -61,14 +58,6 @@ namespace MobileRT {
         }
         const ::std::string &res {filePath.substr(filePos)};
         return res;
-    }
-
-    template<typename T>
-    ::std::vector<T *> convertVector(::std::vector<T> &source) noexcept {
-        ::std::vector<T *> target (source.size());
-        ::std::transform(source.begin(), source.end(), target.begin(),
-                         [](T &t) noexcept -> T * { return &t; });
-        return target;
     }
 }//namespace MobileRT
 

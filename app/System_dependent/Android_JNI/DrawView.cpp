@@ -608,17 +608,16 @@ void Java_puscas_mobilertapp_MainRenderer_RTRenderIntoBitmap(
                 static_cast<void>(result);
             }
 
-            ::std::uint32_t *dstPixels{};
+            ::std::uint32_t *dstPixels {};
             {
                 const ::std::int32_t ret {
                     AndroidBitmap_lockPixels(env, globalBitmap, reinterpret_cast<void **>(&dstPixels))
                 };
-                //dstPixels = static_cast<::std::uint32_t *>(env->GetDirectBufferAddress(globalByteBuffer));
                 assert(ret == JNI_OK);
                 LOG("ret = ", ret);
             }
 
-            AndroidBitmapInfo info{};
+            AndroidBitmapInfo info {};
             {
                 const ::std::int32_t ret {AndroidBitmap_getInfo(env, globalBitmap, &info)};
                 assert(ret == JNI_OK);
@@ -760,7 +759,7 @@ jobject Java_puscas_mobilertapp_MainRenderer_RTFreeNativeBuffer(
 ) noexcept {
     if (bufferRef != nullptr) {
         void *buffer {env->GetDirectBufferAddress(bufferRef)};
-        float *const floatBuffer {static_cast<float *>(buffer)};
+        float *const floatBuffer {static_cast<float*>(buffer)};
         delete[] floatBuffer;
     }
     return nullptr;
