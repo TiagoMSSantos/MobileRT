@@ -31,11 +31,7 @@ namespace MobileRT {
     public:
         explicit RegularGrid() noexcept = default;
 
-        explicit RegularGrid(
-                AABB sceneBounds,
-                ::std::int32_t gridSize,
-                ::std::vector<::MobileRT::Primitive<T>> &&primitives
-        ) noexcept;
+        explicit RegularGrid(::std::vector<::MobileRT::Primitive<T>> &&primitives,::std::int32_t gridSize) noexcept;
 
         RegularGrid(const RegularGrid &regularGrid) noexcept = delete;
 
@@ -58,7 +54,7 @@ namespace MobileRT {
 
     template<typename T>
     RegularGrid<T>::RegularGrid(
-        AABB sceneBounds, const ::std::int32_t gridSize, ::std::vector<::MobileRT::Primitive<T>> &&primitives
+        ::std::vector<::MobileRT::Primitive<T>> &&primitives, const ::std::int32_t gridSize
     ) noexcept :
         grid_ {
             ::std::vector<::std::vector<::MobileRT::Primitive<T>*>> {
@@ -68,7 +64,7 @@ namespace MobileRT {
         primitives_ {::std::move(primitives)},
         gridSize_ {gridSize},
         gridShift_ {bitCounter(static_cast<::std::uint32_t>(gridSize)) - 1},
-        box_ {::std::move(sceneBounds)},//world boundaries
+        box_ {Scene::getBounds<::MobileRT::Primitive<T>> (primitives_)},//world boundaries
         // precalculate 1 / size of a cell (for x, y and z)
         cellSizeInverted_ {
             gridSize_ / (box_.pointMax_ - box_.pointMin_)[0],

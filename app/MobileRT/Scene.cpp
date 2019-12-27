@@ -1,5 +1,6 @@
 #include "MobileRT/Scene.hpp"
 
+using ::MobileRT::AABB;
 using ::MobileRT::Scene;
 using ::MobileRT::Plane;
 using ::MobileRT::Sphere;
@@ -24,7 +25,7 @@ Scene::~Scene() noexcept {
     LOG("SCENE DELETED");
 }
 
-void Scene::getAABBbounds(const AABB &box, ::glm::vec3 *const min, ::glm::vec3 *const max) {
-    *min = ::glm::min(box.pointMin_, *min);
-    *max = ::glm::max(box.pointMax_, *max);
+AABB Scene::getAABBbounds(const AABB &box1, const AABB &box2) {
+    const AABB box {::glm::min(box1.pointMin_, box2.pointMin_), ::glm::max(box1.pointMax_, box2.pointMax_)};
+    return box;
 }

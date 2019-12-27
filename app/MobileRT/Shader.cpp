@@ -7,6 +7,8 @@
 #include <utility>
 
 using ::MobileRT::BVH;
+using ::MobileRT::RegularGrid;
+using ::MobileRT::Naive;
 using ::MobileRT::Camera;
 using ::MobileRT::Intersection;
 using ::MobileRT::Ray;
@@ -49,44 +51,24 @@ void Shader::initializeAccelerators(Scene scene) noexcept {
         }
 
         case Accelerator::ACC_NAIVE: {
-            this->naivePlanes_ = ::MobileRT::Naive<Plane> {::std::move(scene.planes_)};
-            this->naiveSpheres_ = ::MobileRT::Naive<Sphere> {::std::move(scene.spheres_)};
-            this->naiveTriangles_ = ::MobileRT::Naive<Triangle> {::std::move(scene.triangles_)};
+            this->naivePlanes_ = Naive<Plane> {::std::move(scene.planes_)};
+            this->naiveSpheres_ = Naive<Sphere> {::std::move(scene.spheres_)};
+            this->naiveTriangles_ = Naive<Triangle> {::std::move(scene.triangles_)};
             break;
         }
 
         case Accelerator::ACC_REGULAR_GRID: {
-            ::glm::vec3 minPlanes {RayLengthMax};
-            ::glm::vec3 maxPlanes {-RayLengthMax};
-            ::glm::vec3 minSpheres {RayLengthMax};
-            ::glm::vec3 maxSpheres {-RayLengthMax};
-            ::glm::vec3 minTriangles {RayLengthMax};
-            ::glm::vec3 maxTriangles {-RayLengthMax};
-
-            Scene::getBounds<Primitive<Plane>> (scene.planes_, &minPlanes, &maxPlanes);
-            Scene::getBounds<Primitive<Sphere>> (scene.spheres_, &minSpheres, &maxSpheres);
-            Scene::getBounds<Primitive<Triangle>> (scene.triangles_, &minTriangles, &maxTriangles);
-
-            const AABB sceneBoundsPlanes {minPlanes, maxPlanes};
-            const AABB sceneBoundsSpheres {minSpheres, maxSpheres};
-            const AABB sceneBoundsTriangles {minTriangles, maxTriangles};
-
-            this->gridPlanes_ = ::MobileRT::RegularGrid<::MobileRT::Plane> {
-                    sceneBoundsPlanes, 32, ::std::move(scene.planes_)
-            };
-            this->gridSpheres_ = ::MobileRT::RegularGrid<::MobileRT::Sphere> {
-                    sceneBoundsSpheres, 32, ::std::move(scene.spheres_)
-            };
-            this->gridTriangles_ = ::MobileRT::RegularGrid<::MobileRT::Triangle> {
-                    sceneBoundsTriangles, 32, ::std::move(scene.triangles_)
-            };
+            const auto gridSize {32};
+            this->gridPlanes_ = RegularGrid<Plane> {::std::move(scene.planes_), gridSize};
+            this->gridSpheres_ = RegularGrid<Sphere> {::std::move(scene.spheres_), gridSize};
+            this->gridTriangles_ = RegularGrid<Triangle> {::std::move(scene.triangles_), gridSize};
             break;
         }
 
         case Accelerator::ACC_BVH: {
-            this->bvhPlanes_ = ::MobileRT::BVH<Plane> {::std::move(scene.planes_)};
-            this->bvhSpheres_ = ::MobileRT::BVH<Sphere> {::std::move(scene.spheres_)};
-            this->bvhTriangles_ = ::MobileRT::BVH<Triangle> {::std::move(scene.triangles_)};
+            this->bvhPlanes_ = BVH<Plane> {::std::move(scene.planes_)};
+            this->bvhSpheres_ = BVH<Sphere> {::std::move(scene.spheres_)};
+            this->bvhTriangles_ = BVH<Triangle> {::std::move(scene.triangles_)};
             break;
         }
     }
