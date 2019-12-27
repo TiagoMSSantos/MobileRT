@@ -135,9 +135,7 @@ jobject Java_puscas_mobilertapp_MainRenderer_RTInitVerticesArray(
         const ::std::lock_guard<::std::mutex> lock {mutex_};
         if (renderer_ != nullptr) {
             const ::std::vector<::MobileRT::Primitive<::MobileRT::Triangle>> &triangles {
-                    !renderer_->shader_->scene_.triangles_.empty()
-                    ? renderer_->shader_->scene_.triangles_
-                    : renderer_->shader_->bvhTriangles_.primitives_
+                renderer_->shader_->getTriangles()
             };
             const unsigned long arraySize {triangles.size() * 3 * 4};
             const auto arrayBytes {static_cast<jlong> (arraySize) * static_cast<jlong> (sizeof(jfloat))};
@@ -192,9 +190,7 @@ jobject Java_puscas_mobilertapp_MainRenderer_RTInitColorsArray(
         const ::std::lock_guard<::std::mutex> lock {mutex_};
         if (renderer_ != nullptr) {
             const ::std::vector<::MobileRT::Primitive<::MobileRT::Triangle>> &triangles{
-                    !renderer_->shader_->scene_.triangles_.empty()
-                    ? renderer_->shader_->scene_.triangles_
-                    : renderer_->shader_->bvhTriangles_.primitives_
+                renderer_->shader_->getTriangles()
             };
             const unsigned long arraySize {triangles.size() * 3 * 4};
             const auto arrayBytes {static_cast<jlong> (arraySize) * static_cast<jlong> (sizeof(jfloat))};
@@ -476,6 +472,9 @@ jint Java_puscas_mobilertapp_MainRenderer_RTInitialize(
             samplerPixel = samplesPixel <= 1
                 ? ::std::unique_ptr<::MobileRT::Sampler> (::std::make_unique<Components::Constant> (0.5F))
                 : ::std::unique_ptr<::MobileRT::Sampler> (::std::make_unique<Components::StaticHaltonSeq> ());
+            const ::std::chrono::time_point<::std::chrono::system_clock> start {
+                    ::std::chrono::system_clock::now()
+            };
             switch (shader) {
                 case 1: {
                     shader_ = ::std::make_unique<Components::Whitted>(
@@ -523,22 +522,19 @@ jint Java_puscas_mobilertapp_MainRenderer_RTInitialize(
                     break;
                 }
             }
-            const auto triangles {static_cast<::std::int32_t> (shader_->scene_.triangles_.size())};
-            const auto spheres {static_cast<::std::int32_t> (shader_->scene_.spheres_.size())};
-            const auto planes {static_cast<::std::int32_t> (shader_->scene_.planes_.size())};
-            numLights_ = static_cast<::std::int32_t> (shader_->scene_.lights_.size());
-            const ::std::int32_t nPrimitives {triangles + spheres + planes};
-            const ::std::chrono::time_point<::std::chrono::system_clock> start {
+            const ::std::chrono::time_point<::std::chrono::system_clock> end {
                     ::std::chrono::system_clock::now()
             };
+            const auto planes {static_cast<::std::int32_t> (shader_->getPlanes().size())};
+            const auto spheres {static_cast<::std::int32_t> (shader_->getSpheres().size())};
+            const auto triangles {static_cast<::std::int32_t> (shader_->getTriangles().size())};
+            numLights_ = static_cast<::std::int32_t> (shader_->getLights().size());
+            const ::std::int32_t nPrimitives {triangles + spheres + planes};
             renderer_ = ::std::make_unique<::MobileRT::Renderer>(
                     ::std::move(shader_), ::std::move(camera), ::std::move(samplerPixel),
                     static_cast<::std::uint32_t>(width), static_cast<::std::uint32_t>(height),
                     static_cast<::std::uint32_t>(samplesPixel)
             );
-            const ::std::chrono::time_point<::std::chrono::system_clock> end {
-                    ::std::chrono::system_clock::now()
-            };
             timeRenderer_ = ::std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
             LOG("TIME CONSTRUCTION RENDERER = ", timeRenderer_, "ms");
             /*LOG("TRIANGLES = ", triangles);

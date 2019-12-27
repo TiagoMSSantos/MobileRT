@@ -13,11 +13,17 @@
 namespace MobileRT {
     class Shader {
     public:
-        Scene scene_ {};
+        enum Accelerator {
+            ACC_NONE = 0,
+            ACC_NAIVE,
+            ACC_REGULAR_GRID,
+            ACC_BVH,
+        };
 
-        Naive<::MobileRT::Primitive<Plane>> naivePlanes_ {};
-        Naive<::MobileRT::Primitive<Sphere>> naiveSpheres_ {};
-        Naive<::MobileRT::Primitive<Triangle>> naiveTriangles_ {};
+    private:
+        Naive<Plane> naivePlanes_ {};
+        Naive<Sphere> naiveSpheres_ {};
+        Naive<Triangle> naiveTriangles_ {};
 
         RegularGrid<Plane> gridPlanes_ {};
         RegularGrid<Sphere> gridSpheres_ {};
@@ -27,17 +33,15 @@ namespace MobileRT {
         BVH<Sphere> bvhSpheres_ {};
         BVH<Triangle> bvhTriangles_ {};
 
-        enum Accelerator {
-            ACC_NAIVE = 0,
-            ACC_REGULAR_GRID,
-            ACC_BVH
-        };
-
     private:
-        const Accelerator accelerator_{};
+        const Accelerator accelerator_ {};
 
     protected:
-        const ::std::uint32_t samplesLight_{};
+        const ::std::uint32_t samplesLight_ {};
+        ::std::vector<::std::unique_ptr<Light>> lights_ {};
+
+    private:
+        Intersection traceLights(Intersection intersection, const Ray &ray) const noexcept;
 
     protected:
         virtual bool shade(::glm::vec3 *rgb, const Intersection &intersection, const Ray &ray) noexcept = 0;
@@ -47,7 +51,7 @@ namespace MobileRT {
         ::std::uint32_t getLightIndex ();
 
     public:
-        void initializeAccelerators() noexcept;
+        void initializeAccelerators(Scene scene) noexcept;
 
     public:
         explicit Shader () noexcept = delete;
@@ -69,6 +73,14 @@ namespace MobileRT {
         bool shadowTrace(Intersection intersection, const Ray &ray) noexcept;
 
         virtual void resetSampling() noexcept;
+
+        const ::std::vector<::MobileRT::Primitive<Plane>>& getPlanes() const noexcept;
+
+        const ::std::vector<::MobileRT::Primitive<Sphere>>& getSpheres() const noexcept;
+
+        const ::std::vector<::MobileRT::Primitive<Triangle>>& getTriangles() const noexcept;
+
+        const ::std::vector<::std::unique_ptr<Light>>& getLights() const noexcept;
     };
 }//namespace MobileRT
 

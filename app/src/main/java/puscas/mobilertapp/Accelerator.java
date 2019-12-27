@@ -10,6 +10,11 @@ import static puscas.mobilertapp.ConstantsMethods.GET_NAMES;
 enum Accelerator {
 
     /**
+     * Nothing. So it doesn't even render the scene.
+     */
+    NONE("None"),
+
+    /**
      * No accelerator.
      */
     NAIVE("Naive"),
@@ -22,12 +27,7 @@ enum Accelerator {
     /**
      * The bounding volume hierarchy accelerator.
      */
-    BVH("BVH"),
-
-    /**
-     * Nothing. So it doesn't even render the scene.
-     */
-    NONE("None");
+    BVH("BVH");
 
     /**
      * The {@link Logger} for this class.

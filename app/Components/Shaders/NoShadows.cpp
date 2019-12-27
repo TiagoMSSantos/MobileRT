@@ -9,7 +9,7 @@ using ::MobileRT::Scene;
 
 NoShadows::NoShadows(Scene scene, const ::std::uint32_t samplesLight,
                      const Accelerator accelerator) noexcept :
-        Shader{::std::move(scene), samplesLight, accelerator} {
+    Shader {::std::move(scene), samplesLight, accelerator} {
 }
 
 bool NoShadows::shade(
@@ -24,17 +24,17 @@ bool NoShadows::shade(
 
     const ::glm::vec3 &kD {intersection.material_->Kd_};
 
-    const ::glm::vec3 &shadingNormal{intersection.normal_};
+    const ::glm::vec3 &shadingNormal {intersection.normal_};
 
     // direct lighting - only for diffuse materials
     if (::glm::any(::glm::greaterThan(kD, ::glm::vec3 {0}))) {
         const ::std::uint32_t sizeLights {
-            static_cast<::std::uint32_t>(scene_.lights_.size())};
+            static_cast<::std::uint32_t>(this->lights_.size())};
         if (sizeLights > 0) {
             const ::std::uint32_t samplesLight {this->samplesLight_};
             for (::std::uint32_t j {}; j < samplesLight; ++j) {
                 const ::std::uint32_t chosenLight {getLightIndex()};
-                Light &light(*scene_.lights_[chosenLight]);
+                Light &light(*this->lights_[chosenLight]);
                 const ::glm::vec3 &lightPosition {light.getPosition()};
                 //vectorIntersectCameraNormalized = light.position_ - intersection.point_
                 const ::glm::vec3 &vectorToLightNormalized {

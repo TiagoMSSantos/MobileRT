@@ -5,8 +5,8 @@ using ::MobileRT::AABB;
 using ::MobileRT::Ray;
 
 AABB::AABB(const ::glm::vec3 &pointMin, const ::glm::vec3 &pointMax) noexcept :
-        pointMin_{pointMin},
-        pointMax_{pointMax} {
+    pointMin_ {pointMin},
+    pointMax_ {pointMax} {
 }
 
 bool AABB::intersect(const Ray &ray) const noexcept {
@@ -14,8 +14,8 @@ bool AABB::intersect(const Ray &ray) const noexcept {
     const float rayOrgX {ray.origin_[0]};
     const float t1X {(this->pointMin_[0] - rayOrgX) * invDirX};
     const float t2X {(this->pointMax_[0] - rayOrgX) * invDirX};
-    float tmin {::std::min(t1X, t2X)};
-    float tmax {::std::max(t1X, t2X)};
+    float tMin {::std::min(t1X, t2X)};
+    float tMax {::std::max(t1X, t2X)};
 
     for (auto axis {1}; axis < 3; ++axis) {
         const float invDir {1.0F / ray.direction_[axis]};
@@ -23,11 +23,11 @@ bool AABB::intersect(const Ray &ray) const noexcept {
         const float t1 {(this->pointMin_[axis] - rayOrg) * invDir};
         const float t2 {(this->pointMax_[axis] - rayOrg) * invDir};
 
-        tmin = ::std::max(tmin, ::std::min(t1, t2));
-        tmax = ::std::min(tmax, ::std::max(t1, t2));
+        tMin = ::std::max(tMin, ::std::min(t1, t2));
+        tMax = ::std::min(tMax, ::std::max(t1, t2));
     }
 
-    const bool intersected {tmax >= ::std::max(tmin, 0.0F)};
+    const bool intersected {tMax >= ::std::max(tMin, 0.0F)};
     return intersected;
 }
 

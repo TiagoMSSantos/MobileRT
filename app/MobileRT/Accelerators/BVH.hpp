@@ -29,19 +29,16 @@ namespace MobileRT {
                 ::std::int32_t oldIndex_ {};
 
                 explicit BuildNode(AABB &&box, ::glm::vec3 &&midPoint, const ::std::int32_t oldIndex) noexcept :
-                        box_ {::std::move(box)},
-                        midPoint_ {::std::move(midPoint)},
-                        oldIndex_ {oldIndex} {
+                    box_ {::std::move(box)},
+                    midPoint_ {::std::move(midPoint)},
+                    oldIndex_ {oldIndex} {
 
                 }
             };
 
         private:
             ::std::vector<BVHNode> boxes_ {};
-            ::std::vector<BuildNode> auxNodes_ {};
-
-        public:
-            ::std::vector<Primitive<T>> primitives_ {};
+            ::std::vector<::MobileRT::Primitive<T>> primitives_ {};
 
         private:
             void build(::std::vector<::MobileRT::Primitive<T>> &&primitives) noexcept;
@@ -72,12 +69,14 @@ namespace MobileRT {
             Intersection trace(Intersection intersection, const Ray &ray) noexcept;
 
             Intersection shadowTrace(Intersection intersection, const Ray &ray) noexcept;
+
+            const ::std::vector<::MobileRT::Primitive<T>>& getPrimitives() const noexcept;
     };
 
 
 
     template<typename T>
-    BVH<T>::BVH(::std::vector<Primitive<T>> &&primitives) noexcept {
+    BVH<T>::BVH(::std::vector<::MobileRT::Primitive<T>> &&primitives) noexcept {
         if (primitives.empty()) {
             BVHNode bvhNode {};
             this->boxes_.emplace_back(bvhNode);
@@ -95,7 +94,7 @@ namespace MobileRT {
         this->primitives_.clear();
 
         ::std::vector<BVHNode> {}.swap(this->boxes_);
-        ::std::vector<Primitive<T>> {}.swap(this->primitives_);
+        ::std::vector<::MobileRT::Primitive<T>> {}.swap(this->primitives_);
     }
 
     template<typename T>
@@ -122,14 +121,15 @@ namespace MobileRT {
         const auto itBoxes {this->boxes_.begin()};
         const auto itStackBoxIndexBegin {stackBoxIndex.cbegin()};
 
-        this->auxNodes_.reserve(primitivesSize);
+        ::std::vector<BuildNode> buildNodes {};
+        buildNodes.reserve(primitivesSize);
         for (::std::uint32_t i {}; i < primitivesSize; ++i) {
             const auto &primitive {primitives [i]};
             auto &&box {primitive.getAABB()};
             BuildNode &&node {::std::move(box), box.getMidPoint(), static_cast<::std::int32_t> (i)};
-            this->auxNodes_.emplace_back(::std::move(node));
+            buildNodes.emplace_back(::std::move(node));
         }
-        const auto itNodes {this->auxNodes_.begin()};
+        const auto itNodes {buildNodes.begin()};
 
         do {
             const auto &currentBox {itBoxes + currentBoxIndex};
@@ -139,9 +139,9 @@ namespace MobileRT {
             const auto itEnd {itNodes + endBoxIndex};
             const auto maxAxis {getMaxAxis(itBegin, itEnd)};
             ::std::sort(itBegin, itEnd,
-                        [&](const BuildNode &node1, const BuildNode &node2) {
-                            return node1.midPoint_[maxAxis] < node2.midPoint_[maxAxis];
-                        }
+                [&](const BuildNode &node1, const BuildNode &node2) {
+                    return node1.midPoint_[maxAxis] < node2.midPoint_[maxAxis];
+                }
             );
 
             currentBox->box_ = itBegin->box_;
@@ -190,7 +190,7 @@ namespace MobileRT {
 
         this->primitives_.reserve(primitivesSize);
         for (::std::uint32_t i {}; i < primitivesSize; ++i) {
-            const auto &node {this->auxNodes_[i]};
+            const auto &node {buildNodes[i]};
             const auto oldIndex {static_cast<::std::uint32_t> (node.oldIndex_)};
             this->primitives_.emplace_back(::std::move(primitives[oldIndex]));
         }
@@ -213,17 +213,17 @@ namespace MobileRT {
         if(this->primitives_.empty()) {
             return intersection;
         }
-        ::std::int32_t id {};
-        ::std::array<::std::int32_t, 512> stackId {};
+        ::std::int32_t boxIndex {};
+        ::std::array<::std::int32_t, 512> stackBoxIndex {};
 
-        const auto begin {stackId.cbegin()};
-        auto itStackId {stackId.begin()};
-        ::std::advance(itStackId, 1);
+        const auto beginBoxIndex {stackBoxIndex.cbegin()};
+        auto itStackBoxIndex {stackBoxIndex.begin()};
+        ::std::advance(itStackBoxIndex, 1);
 
         const auto itBoxes {this->boxes_.begin()};
         const auto itPrimitives {this->primitives_.begin()};
         do {
-            const BVHNode &node {*(itBoxes + id)};
+            const BVHNode &node {*(itBoxes + boxIndex)};
             if (node.box_.intersect(ray)) {
 
                 const ::std::int32_t numberPrimitives {node.numberPrimitives_};
@@ -236,8 +236,8 @@ namespace MobileRT {
                             return intersection;
                         }
                     }
-                    ::std::advance(itStackId, -1); // pop
-                    id = *itStackId;
+                    ::std::advance(itStackBoxIndex, -1); // pop
+                    boxIndex = *itStackBoxIndex;
                 } else {
                     const ::std::int32_t left {node.indexOffset_};
                     const ::std::int32_t right {node.indexOffset_ + 1};
@@ -248,23 +248,23 @@ namespace MobileRT {
                     const bool traverseRight {childRight.box_.intersect(ray)};
 
                     if (!traverseLeft && !traverseRight) {
-                        ::std::advance(itStackId, -1); // pop
-                        id = *itStackId;
+                        ::std::advance(itStackBoxIndex, -1); // pop
+                        boxIndex = *itStackBoxIndex;
                     } else {
-                        id = (traverseLeft) ? left : right;
+                        boxIndex = (traverseLeft) ? left : right;
                         if (traverseLeft && traverseRight) {
-                            *itStackId = right;
-                            ::std::advance(itStackId, 1); // push
+                            *itStackBoxIndex = right;
+                            ::std::advance(itStackBoxIndex, 1); // push
                         }
                     }
                 }
 
             } else {
-                ::std::advance(itStackId, -1); // pop
-                id = *itStackId;
+                ::std::advance(itStackBoxIndex, -1); // pop
+                boxIndex = *itStackBoxIndex;
             }
 
-        } while (itStackId > begin);
+        } while (itStackBoxIndex > beginBoxIndex);
         return intersection;
     }
 
@@ -336,14 +336,20 @@ namespace MobileRT {
         const auto maxDist {max - min};
 
         const ::std::int32_t maxAxis {
-                maxDist[0] >= maxDist[1] && maxDist[0] >= maxDist[2]
-                ? 0
-                : maxDist[1] >= maxDist[0] && maxDist[1] >= maxDist[2]
-                  ? 1
-                  : 2
+            maxDist[0] >= maxDist[1] && maxDist[0] >= maxDist[2]
+            ? 0
+            : maxDist[1] >= maxDist[0] && maxDist[1] >= maxDist[2]
+                ? 1
+                : 2
         };
         return maxAxis;
     }
+
+    template<typename T>
+    const ::std::vector<::MobileRT::Primitive<T>>& BVH<T>::getPrimitives() const noexcept {
+        return this->primitives_;
+    }
+
 
 }//namespace MobileRT
 

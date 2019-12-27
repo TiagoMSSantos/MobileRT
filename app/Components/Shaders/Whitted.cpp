@@ -38,12 +38,12 @@ bool Whitted::shade(
     // shadowed direct lighting - only for diffuse materials
     if (::glm::any(::glm::greaterThan(kD, ::glm::vec3 {0}))) {
         const ::std::uint32_t sizeLights {
-            static_cast<::std::uint32_t>(scene_.lights_.size())};
+            static_cast<::std::uint32_t>(this->lights_.size())};
         if (sizeLights > 0) {
             const ::std::uint32_t samplesLight {this->samplesLight_};
             for (::std::uint32_t i {}; i < samplesLight; ++i) {
                 const ::std::uint32_t chosenLight {getLightIndex()};
-                Light &light(*scene_.lights_[chosenLight]);
+                Light &light(*this->lights_[chosenLight]);
                 const ::glm::vec3 lightPosition {light.getPosition()};
                 //calculates vector starting in intersection to the light
                 ::glm::vec3 vectorToLight {lightPosition - intersection.point_};

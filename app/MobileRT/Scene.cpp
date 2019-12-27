@@ -4,6 +4,8 @@ using ::MobileRT::Scene;
 using ::MobileRT::Plane;
 using ::MobileRT::Sphere;
 using ::MobileRT::Triangle;
+using ::MobileRT::Primitive;
+using ::MobileRT::Light;
 using ::MobileRT::Intersection;
 
 Scene::~Scene() noexcept {
@@ -14,25 +16,12 @@ Scene::~Scene() noexcept {
     this->lights_.clear();
 
     //force free memory
-    ::std::vector<MobileRT::Primitive<MobileRT::Plane>>{}.swap(this->planes_);
-    ::std::vector<MobileRT::Primitive<MobileRT::Sphere>>{}.swap(this->spheres_);
-    ::std::vector<MobileRT::Primitive<MobileRT::Triangle>>{}.swap(this->triangles_);
-    ::std::vector<::std::unique_ptr<Light>>{}.swap(this->lights_);
+    ::std::vector<Primitive<Plane>> {}.swap(this->planes_);
+    ::std::vector<Primitive<Sphere>> {}.swap(this->spheres_);
+    ::std::vector<Primitive<Triangle>> {}.swap(this->triangles_);
+    ::std::vector<::std::unique_ptr<Light>> {}.swap(this->lights_);
 
     LOG("SCENE DELETED");
-}
-
-Intersection Scene::traceLights(Intersection intersection, const Ray &ray) const noexcept {
-    for (const auto &light : this->lights_) {
-        intersection = light->intersect(intersection, ray);
-    }
-    return intersection;
-}
-
-void Scene::resetSampling() noexcept {
-    for (const auto &light : this->lights_) {
-        light->resetSampling();
-    }
 }
 
 void Scene::getAABBbounds(const AABB &box, ::glm::vec3 *const min, ::glm::vec3 *const max) {

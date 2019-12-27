@@ -10,8 +10,8 @@
 namespace MobileRT {
     class AABB final {
     public:
-        ::glm::vec3 pointMin_{};
-        ::glm::vec3 pointMax_{};
+        ::glm::vec3 pointMin_ {};
+        ::glm::vec3 pointMax_ {};
 
     public:
         explicit AABB() noexcept = default;

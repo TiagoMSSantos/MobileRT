@@ -177,9 +177,9 @@ public final class MainActivity extends Activity {
     /**
      * Helper method which starts or stops the rendering process.
      *
-     * @param sceneFilePath The path to a directory containing the OBJ and MTL files of a scene to render.
+     * @param scenePath The path to a directory containing the OBJ and MTL files of a scene to render.
      */
-    private void startRender(@NonNull final String sceneFilePath) {
+    private void startRender(@NonNull final String scenePath) {
         final int scene = this.pickerScene.getValue();
         final int shader = this.pickerShader.getValue();
         final int threads = this.pickerThreads.getValue();
@@ -191,9 +191,9 @@ public final class MainActivity extends Activity {
         final String strResolution = this.pickerResolutions.getDisplayedValues()[this.pickerResolutions.getValue() - 1];
         final int width = Integer.parseInt(strResolution.substring(0, strResolution.indexOf('x')));
         final int height = Integer.parseInt(strResolution.substring(strResolution.indexOf('x') + 1));
-        final String objFilePath = sceneFilePath + ".obj";
-        final String mtlFilePath = sceneFilePath + ".mtl";
-        final String camFilePath = sceneFilePath + ".cam";
+        final String objFilePath = scenePath + ".obj";
+        final String mtlFilePath = scenePath + ".mtl";
+        final String camFilePath = scenePath + ".cam";
         final boolean rasterize = this.checkBoxRasterize.isChecked();
 
         this.drawView.renderScene(
@@ -352,7 +352,7 @@ public final class MainActivity extends Activity {
         int defaultPickerScene = 0;
         int defaultPickerShader = 0;
         int defaultPickerThreads = 1;
-        int defaultPickerAccelerator = 0;
+        int defaultPickerAccelerator = 1;
         int defaultPickerSamplesPixel = 1;
         int defaultPickerSamplesLight = 1;
         int defaultPickerSizes = 4;

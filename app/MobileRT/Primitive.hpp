@@ -35,6 +35,8 @@ namespace MobileRT {
         AABB getAABB() const noexcept;
 
         Intersection intersect(Intersection intersection, const Ray &ray) noexcept;
+
+        bool intersect(const AABB &box) noexcept;
     };
 
 
@@ -68,8 +70,8 @@ namespace MobileRT {
 
 
     template<typename T>
-    bool intersect(const Primitive<T> &primitive, const AABB &box) noexcept {
-        const auto res {primitive.shape_.intersect(box)};
+    bool Primitive<T>::intersect(const AABB &box) noexcept {
+        const auto res {this->shape_.intersect(box)};
         return res;
     }
 
