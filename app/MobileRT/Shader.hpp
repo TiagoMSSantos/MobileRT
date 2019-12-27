@@ -33,6 +33,8 @@ namespace MobileRT {
         BVH<Sphere> bvhSpheres_ {};
         BVH<Triangle> bvhTriangles_ {};
 
+        ::std::vector<Material> materials_ {};
+
     private:
         const Accelerator accelerator_ {};
 
@@ -74,11 +76,13 @@ namespace MobileRT {
 
         virtual void resetSampling() noexcept;
 
-        const ::std::vector<::MobileRT::Primitive<Plane>>& getPlanes() const noexcept;
+        const ::std::vector<Plane>& getPlanes() const noexcept;
 
-        const ::std::vector<::MobileRT::Primitive<Sphere>>& getSpheres() const noexcept;
+        const ::std::vector<Sphere>& getSpheres() const noexcept;
 
-        const ::std::vector<::MobileRT::Primitive<Triangle>>& getTriangles() const noexcept;
+        const ::std::vector<Triangle>& getTriangles() const noexcept;
+
+        const ::std::vector<Material>& getMaterials() const noexcept;
 
         const ::std::vector<::std::unique_ptr<Light>>& getLights() const noexcept;
     };

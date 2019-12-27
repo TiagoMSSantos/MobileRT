@@ -4,9 +4,10 @@ using ::MobileRT::AABB;
 using ::MobileRT::Plane;
 using ::MobileRT::Intersection;
 
-Plane::Plane(const ::glm::vec3 &point, const ::glm::vec3 &normal) noexcept :
+Plane::Plane(const ::glm::vec3 &point, const ::glm::vec3 &normal, const ::std::int32_t materialIndex) noexcept :
     normal_ {::glm::normalize(normal)},
-    point_ {point} {
+    point_ {point},
+    materialIndex_ {materialIndex} {
 }
 
 Intersection Plane::intersect(const Intersection &intersection, const Ray &ray) const noexcept {
@@ -34,7 +35,7 @@ Intersection Plane::intersect(const Intersection &intersection, const Ray &ray) 
 
     // if so, then we have an intersection
     const auto intersectionPoint {ray.origin_ + ray.direction_ * distanceToIntersection};
-    const Intersection res {intersectionPoint, distanceToIntersection, this->normal_, this};
+    const Intersection res {intersectionPoint, distanceToIntersection, this->normal_, this, this->materialIndex_};
     return res;
 }
 

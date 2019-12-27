@@ -4,10 +4,12 @@ using ::MobileRT::AABB;
 using ::MobileRT::Triangle;
 using ::MobileRT::Intersection;
 
-Triangle::Triangle(const ::glm::vec3 &pointA, const ::glm::vec3 &pointB, const ::glm::vec3 &pointC) noexcept :
+Triangle::Triangle(const ::glm::vec3 &pointA, const ::glm::vec3 &pointB, const ::glm::vec3 &pointC,
+        const ::std::int32_t materialIndex) noexcept :
     AC_ {pointC - pointA},
     AB_ {pointB - pointA},
-    pointA_ {pointA} {
+    pointA_ {pointA},
+    materialIndex_ {materialIndex} {
 }
 
 Intersection Triangle::intersect(const Intersection &intersection, const Ray &ray) const noexcept {
@@ -50,7 +52,7 @@ Intersection Triangle::intersect(const Intersection &intersection, const Ray &ra
     };
 
     const auto& intersectionPoint {ray.origin_ + ray.direction_ * distanceToIntersection};
-    const Intersection res {intersectionPoint, distanceToIntersection, intersectionNormal, this};
+    const Intersection res {intersectionPoint, distanceToIntersection, intersectionNormal, this, this->materialIndex_};
     return res;
 }
 

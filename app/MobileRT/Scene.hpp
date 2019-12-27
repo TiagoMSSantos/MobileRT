@@ -3,9 +3,11 @@
 
 #include "MobileRT/Accelerators/AABB.hpp"
 #include "MobileRT/Intersection.hpp"
+#include "MobileRT/Shapes/Plane.hpp"
+#include "MobileRT/Shapes/Sphere.hpp"
+#include "MobileRT/Shapes/Triangle.hpp"
 #include "MobileRT/Light.hpp"
 #include "MobileRT/Material.hpp"
-#include "MobileRT/Primitive.hpp"
 #include "MobileRT/Ray.hpp"
 #include "MobileRT/Utils.hpp"
 #include <glm/glm.hpp>
@@ -14,10 +16,11 @@
 namespace MobileRT {
     class Scene final {
     public:
-        ::std::vector<::MobileRT::Primitive<Triangle>> triangles_ {};
-        ::std::vector<::MobileRT::Primitive<Sphere>> spheres_ {};
-        ::std::vector<::MobileRT::Primitive<Plane>> planes_ {};
+        ::std::vector<Triangle> triangles_ {};
+        ::std::vector<Sphere> spheres_ {};
+        ::std::vector<Plane> planes_ {};
         ::std::vector<::std::unique_ptr<Light>> lights_ {};
+        ::std::vector<Material> materials_ {};
 
     private:
         static ::MobileRT::AABB getBoxBounds(const AABB &box1, const AABB &box2);

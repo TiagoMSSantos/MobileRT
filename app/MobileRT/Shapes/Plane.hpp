@@ -11,6 +11,7 @@ namespace MobileRT {
     private:
         ::glm::vec3 normal_ {};
         ::glm::vec3 point_ {};
+        ::std::int32_t materialIndex_ {-1};
 
     private:
         ::glm::vec3 getRightVector() const noexcept;
@@ -18,7 +19,7 @@ namespace MobileRT {
     public:
         explicit Plane () noexcept = delete;
 
-        explicit Plane(const ::glm::vec3 &point, const ::glm::vec3 &normal) noexcept;
+        explicit Plane(const ::glm::vec3 &point, const ::glm::vec3 &normal, ::std::int32_t materialIndex) noexcept;
 
         Plane(const Plane &plane) noexcept = default;
 

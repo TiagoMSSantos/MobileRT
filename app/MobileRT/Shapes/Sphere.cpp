@@ -5,9 +5,10 @@ using ::MobileRT::AABB;
 using ::MobileRT::Sphere;
 using ::MobileRT::Intersection;
 
-Sphere::Sphere(const ::glm::vec3 &center, const float radius) noexcept :
+Sphere::Sphere(const ::glm::vec3 &center, const float radius, const ::std::int32_t materialIndex) noexcept :
     center_ {center},
-    sqRadius_ {radius * radius} {
+    sqRadius_ {radius * radius},
+    materialIndex_ {materialIndex} {
 }
 
 Intersection Sphere::intersect(const Intersection &intersection, const Ray &ray) const noexcept {
@@ -41,7 +42,7 @@ Intersection Sphere::intersect(const Intersection &intersection, const Ray &ray)
     // if so, then we have an intersection
     const auto &intersectionPoint {ray.origin_ + ray.direction_ * distanceToIntersection};
     const auto &intersectionNormal {::glm::normalize(intersectionPoint - this->center_)};
-    const Intersection res {intersectionPoint, distanceToIntersection, intersectionNormal, nullptr};
+    const Intersection res {intersectionPoint, distanceToIntersection, intersectionNormal, nullptr, this->materialIndex_};
     return res;
 }
 

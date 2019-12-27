@@ -11,12 +11,12 @@ using ::MobileRT::RegularGrid;
 using ::MobileRT::Naive;
 using ::MobileRT::Intersection;
 using ::MobileRT::Ray;
-using ::MobileRT::Primitive;
 using ::MobileRT::Shader;
 using ::MobileRT::Plane;
 using ::MobileRT::Sphere;
 using ::MobileRT::Triangle;
 using ::MobileRT::Light;
+using ::MobileRT::Material;
 
 namespace {
     const ::std::uint32_t mask {0xFFFFF};
@@ -36,6 +36,7 @@ namespace {
 }//namespace
 
 Shader::Shader(Scene scene, const ::std::int32_t samplesLight, const Accelerator accelerator) noexcept :
+    materials_ {::std::move(scene.materials_)},
     accelerator_ {accelerator},
     samplesLight_ {samplesLight} {
     static auto unused {fillThings()};
@@ -74,38 +75,6 @@ void Shader::initializeAccelerators(Scene scene) noexcept {
     this->lights_ = ::std::move(scene.lights_);
 }
 
-bool Shader::shadowTrace(Intersection intersection, const Ray &ray) noexcept {
-    const auto lastDist {intersection.length_};
-    switch (this->accelerator_) {
-        case Accelerator::ACC_NONE: {
-            break;
-        }
-
-        case Accelerator::ACC_NAIVE: {
-            intersection = this->naivePlanes_.shadowTrace(intersection, ray);
-            intersection = this->naiveSpheres_.shadowTrace(intersection, ray);
-            intersection = this->naiveTriangles_.shadowTrace(intersection, ray);
-            break;
-        }
-
-        case Accelerator::ACC_REGULAR_GRID: {
-            intersection = this->gridPlanes_.shadowTrace(intersection, ray);
-            intersection = this->gridSpheres_.shadowTrace(intersection, ray);
-            intersection = this->gridTriangles_.shadowTrace(intersection, ray);
-            break;
-        }
-
-        case Accelerator::ACC_BVH: {
-            intersection = this->bvhPlanes_.shadowTrace(intersection, ray);
-            intersection = this->bvhSpheres_.shadowTrace(intersection, ray);
-            intersection = this->bvhTriangles_.shadowTrace(intersection, ray);
-            break;
-        }
-    }
-    const bool res {intersection.length_ < lastDist};
-    return res;
-}
-
 bool Shader::rayTrace(::glm::vec3 *rgb, const Ray &ray) noexcept {
     Intersection intersection {RayLengthMax, nullptr};
     const auto lastDist {intersection.length_};
@@ -136,7 +105,42 @@ bool Shader::rayTrace(::glm::vec3 *rgb, const Ray &ray) noexcept {
         }
     }
     intersection = traceLights(intersection, ray);
-    const auto res {intersection.length_ < lastDist && shade(rgb, intersection, ray)};
+    const auto matIndex {intersection.materialIndex_};
+    if (matIndex >= 0) {
+        intersection.material_ = &this->materials_[static_cast<::std::uint32_t> (matIndex)];
+    };
+    return intersection.length_ < lastDist && shade(rgb, intersection, ray);
+}
+
+bool Shader::shadowTrace(Intersection intersection, const Ray &ray) noexcept {
+    const auto lastDist {intersection.length_};
+    switch (this->accelerator_) {
+        case Accelerator::ACC_NONE: {
+            break;
+        }
+
+        case Accelerator::ACC_NAIVE: {
+            intersection = this->naivePlanes_.shadowTrace(intersection, ray);
+            intersection = this->naiveSpheres_.shadowTrace(intersection, ray);
+            intersection = this->naiveTriangles_.shadowTrace(intersection, ray);
+            break;
+        }
+
+        case Accelerator::ACC_REGULAR_GRID: {
+            intersection = this->gridPlanes_.shadowTrace(intersection, ray);
+            intersection = this->gridSpheres_.shadowTrace(intersection, ray);
+            intersection = this->gridTriangles_.shadowTrace(intersection, ray);
+            break;
+        }
+
+        case Accelerator::ACC_BVH: {
+            intersection = this->bvhPlanes_.shadowTrace(intersection, ray);
+            intersection = this->bvhSpheres_.shadowTrace(intersection, ray);
+            intersection = this->bvhTriangles_.shadowTrace(intersection, ray);
+            break;
+        }
+    }
+    const auto res {intersection.length_ < lastDist};
     return res;
 }
 
@@ -195,7 +199,7 @@ void Shader::resetSampling() noexcept {
     return chosenLight;
 }
 
-const ::std::vector<::MobileRT::Primitive<Plane>>& Shader::getPlanes() const noexcept {
+const ::std::vector<Plane>& Shader::getPlanes() const noexcept {
     switch (this->accelerator_) {
         case Accelerator::ACC_NONE: {
             return this->naivePlanes_.getPrimitives();
@@ -216,7 +220,7 @@ const ::std::vector<::MobileRT::Primitive<Plane>>& Shader::getPlanes() const noe
     return this->naivePlanes_.getPrimitives();
 }
 
-const ::std::vector<::MobileRT::Primitive<Sphere>>& Shader::getSpheres() const noexcept {
+const ::std::vector<Sphere>& Shader::getSpheres() const noexcept {
     switch (this->accelerator_) {
         case Accelerator::ACC_NONE: {
             return this->naiveSpheres_.getPrimitives();
@@ -237,7 +241,7 @@ const ::std::vector<::MobileRT::Primitive<Sphere>>& Shader::getSpheres() const n
     return this->naiveSpheres_.getPrimitives();
 }
 
-const ::std::vector<::MobileRT::Primitive<Triangle>>& Shader::getTriangles() const noexcept {
+const ::std::vector<Triangle>& Shader::getTriangles() const noexcept {
     switch (this->accelerator_) {
         case Accelerator::ACC_NONE: {
             return this->naiveTriangles_.getPrimitives();
@@ -260,4 +264,8 @@ const ::std::vector<::MobileRT::Primitive<Triangle>>& Shader::getTriangles() con
 
 const ::std::vector<::std::unique_ptr<Light>>& Shader::getLights() const noexcept {
     return this->lights_;
+}
+
+const ::std::vector<Material>& Shader::getMaterials() const noexcept {
+    return this->materials_;
 }

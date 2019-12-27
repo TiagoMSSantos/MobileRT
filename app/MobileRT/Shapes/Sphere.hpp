@@ -11,11 +11,12 @@ namespace MobileRT {
     private:
         ::glm::vec3 center_ {};
         float sqRadius_ {};
+        ::std::int32_t materialIndex_ {-1};
 
     public:
         explicit Sphere () noexcept = delete;
 
-        explicit Sphere(const ::glm::vec3 &center, float radius) noexcept;
+        explicit Sphere(const ::glm::vec3 &center, float radius, ::std::int32_t materialIndex) noexcept;
 
         Sphere(const Sphere &sphere) noexcept = default;
 

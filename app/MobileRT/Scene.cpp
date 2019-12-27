@@ -5,7 +5,6 @@ using ::MobileRT::Scene;
 using ::MobileRT::Plane;
 using ::MobileRT::Sphere;
 using ::MobileRT::Triangle;
-using ::MobileRT::Primitive;
 using ::MobileRT::Light;
 
 Scene::~Scene() noexcept {
@@ -16,9 +15,9 @@ Scene::~Scene() noexcept {
     this->lights_.clear();
 
     //force free memory
-    ::std::vector<Primitive<Plane>> {}.swap(this->planes_);
-    ::std::vector<Primitive<Sphere>> {}.swap(this->spheres_);
-    ::std::vector<Primitive<Triangle>> {}.swap(this->triangles_);
+    ::std::vector<Plane> {}.swap(this->planes_);
+    ::std::vector<Sphere> {}.swap(this->spheres_);
+    ::std::vector<Triangle> {}.swap(this->triangles_);
     ::std::vector<::std::unique_ptr<Light>> {}.swap(this->lights_);
 
     LOG("SCENE DELETED");

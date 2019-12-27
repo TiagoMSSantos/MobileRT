@@ -15,8 +15,8 @@ protected:
 
 	virtual void SetUp() {
 		triangle = new Triangle{::glm::vec3 {0,0,0},
-														::glm::vec3 {0,1,0},
-														::glm::vec3 {0,0,1}};
+								::glm::vec3 {0,1,0},
+								::glm::vec3 {0,0,1}, -1};
 	}
 
 	virtual void TearDown() {
@@ -125,7 +125,7 @@ TEST_F(TestTriangle, intersectBoxInside08) {
 	const Triangle triangle2 {
 		::glm::vec3 {10.0f, 0.0f, 10.0f},
 		::glm::vec3 {0.0f, 0.0f, 10.0f},
-		::glm::vec3 {0.0f, 10.0f, 10.0f}};
+		::glm::vec3 {0.0f, 10.0f, 10.0f}, -1};
 	const ::glm::vec3 min {1.25f, 1.25f, 10};
 	const ::glm::vec3 max {2.5f, 2.5f, 10};
 	const AABB box {min, max};
@@ -137,7 +137,7 @@ TEST_F(TestTriangle, intersectBoxInside09) {
 	const Triangle triangle2 {
 		::glm::vec3 {10.0f, 0.0f, 10.0f},
 		::glm::vec3 {0.0f, 0.0f, 10.0f},
-		::glm::vec3 {0.0f, 10.0f, 10.0f}};
+		::glm::vec3 {0.0f, 10.0f, 10.0f}, -1};
 	const ::glm::vec3 min {-1, -1, 10};
 	const ::glm::vec3 max {11, 11, 10};
 	const AABB box {min, max};
@@ -149,7 +149,7 @@ TEST_F(TestTriangle, intersectBoxInside10) {
 	const Triangle triangle2 {
 		::glm::vec3 {1, 1.59000003f, -1.03999996f},
 		::glm::vec3 {-1.01999998f, 1.59000003f, -1.03999996f},
-		::glm::vec3 {-0.990000009f, 0, -1.03999996f}};
+		::glm::vec3 {-0.990000009f, 0, -1.03999996f}, -1};
 	const ::glm::vec3 min {-11.0200005f, 0.794949531f, -11.04f};
 	const ::glm::vec3 max {-0.0100002289f, 11.5899992f, -0.0250005722f};
 	const AABB box {min, max};

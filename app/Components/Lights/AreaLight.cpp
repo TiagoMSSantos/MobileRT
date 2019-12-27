@@ -11,7 +11,7 @@ AreaLight::AreaLight(
     ::std::unique_ptr<Sampler> samplerPointLight,
     const ::glm::vec3 &pointA, const ::glm::vec3 &pointB, const ::glm::vec3 &pointC) noexcept :
         Light {radiance},
-        triangle_ {pointA, pointB, pointC},
+        triangle_ {pointA, pointB, pointC, -1},
         samplerPointLight_ {::std::move(samplerPointLight)} {
 }
 
@@ -33,6 +33,10 @@ void AreaLight::resetSampling() noexcept {
 Intersection AreaLight::intersect(Intersection intersection, const Ray &ray) const noexcept {
     const auto lastDist {intersection.length_};
     intersection = this->triangle_.intersect(intersection, ray);
-    intersection.material_ = intersection.length_ < lastDist? &this->radiance_ : intersection.material_;
+    const auto intersected {intersection.length_ < lastDist};
+    if (intersected) {
+        intersection.material_ = &this->radiance_;
+        intersection.materialIndex_ = -1;
+    }
     return intersection;
 }

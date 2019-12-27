@@ -38,10 +38,10 @@ namespace MobileRT {
 
         private:
             ::std::vector<BVHNode> boxes_ {};
-            ::std::vector<::MobileRT::Primitive<T>> primitives_ {};
+            ::std::vector<T> primitives_ {};
 
         private:
-            void build(::std::vector<::MobileRT::Primitive<T>> &&primitives) noexcept;
+            void build(::std::vector<T> &&primitives) noexcept;
 
             Intersection intersect(Intersection intersection,const Ray &ray, bool shadowTrace = false) noexcept;
 
@@ -54,7 +54,7 @@ namespace MobileRT {
         public:
             explicit BVH() noexcept = default;
 
-            explicit BVH(::std::vector<Primitive<T>> &&primitives) noexcept;
+            explicit BVH(::std::vector<T> &&primitives) noexcept;
 
             BVH(const BVH &bvh) noexcept = delete;
 
@@ -70,13 +70,13 @@ namespace MobileRT {
 
             Intersection shadowTrace(Intersection intersection, const Ray &ray) noexcept;
 
-            const ::std::vector<::MobileRT::Primitive<T>>& getPrimitives() const noexcept;
+            const ::std::vector<T>& getPrimitives() const noexcept;
     };
 
 
 
     template<typename T>
-    BVH<T>::BVH(::std::vector<::MobileRT::Primitive<T>> &&primitives) noexcept {
+    BVH<T>::BVH(::std::vector<T> &&primitives) noexcept {
         if (primitives.empty()) {
             BVHNode bvhNode {};
             this->boxes_.emplace_back(bvhNode);
@@ -94,11 +94,11 @@ namespace MobileRT {
         this->primitives_.clear();
 
         ::std::vector<BVHNode> {}.swap(this->boxes_);
-        ::std::vector<::MobileRT::Primitive<T>> {}.swap(this->primitives_);
+        ::std::vector<T> {}.swap(this->primitives_);
     }
 
     template<typename T>
-    void BVH<T>::build(::std::vector<::MobileRT::Primitive<T>> &&primitives) noexcept {
+    void BVH<T>::build(::std::vector<T> &&primitives) noexcept {
         ::std::int32_t currentBoxIndex {};
         ::std::int32_t beginBoxIndex {};
         const auto primitivesSize {primitives.size()};
@@ -346,7 +346,7 @@ namespace MobileRT {
     }
 
     template<typename T>
-    const ::std::vector<::MobileRT::Primitive<T>>& BVH<T>::getPrimitives() const noexcept {
+    const ::std::vector<T>& BVH<T>::getPrimitives() const noexcept {
         return this->primitives_;
     }
 

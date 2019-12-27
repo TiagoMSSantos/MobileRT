@@ -11,9 +11,11 @@ Intersection::Intersection(
     const ::glm::vec3 &intPoint,
     const float dist,
     const ::glm::vec3 &normal,
-    const void *const primitive) noexcept :
+    const void *const primitive,
+    const ::std::int32_t materialIndex) noexcept :
     point_ {intPoint},
     normal_ {normal},
     length_ {dist},
-    primitive_ {primitive} {
+    primitive_ {primitive},
+    materialIndex_ {materialIndex} {
 }

@@ -65,7 +65,7 @@ jobject Java_puscas_mobilertapp_MainRenderer_RTInitCameraArray(
         JNIEnv *env,
         jobject /*thiz*/
 ) noexcept {
-    jobject directBuffer{};
+    jobject directBuffer {};
     {
         const ::std::lock_guard<::std::mutex> lock {mutex_};
         if (renderer_ != nullptr) {
@@ -134,9 +134,7 @@ jobject Java_puscas_mobilertapp_MainRenderer_RTInitVerticesArray(
     {
         const ::std::lock_guard<::std::mutex> lock {mutex_};
         if (renderer_ != nullptr) {
-            const ::std::vector<::MobileRT::Primitive<::MobileRT::Triangle>> &triangles {
-                renderer_->shader_->getTriangles()
-            };
+            const auto &triangles {renderer_->shader_->getTriangles()};
             const auto arraySize {static_cast<::std::int64_t> (triangles.size() * 3 * 4)};
             const auto arrayBytes {arraySize * static_cast<jlong> (sizeof(jfloat))};
             if (arraySize > 0) {
@@ -145,16 +143,16 @@ jobject Java_puscas_mobilertapp_MainRenderer_RTInitVerticesArray(
                     directBuffer = env->NewDirectByteBuffer(floatBuffer, arrayBytes);
                     if (directBuffer != nullptr) {
                         int i {};
-                        for (const ::MobileRT::Primitive<::MobileRT::Triangle> &triangle : triangles) {
-                            const ::glm::vec4 &pointA {triangle.shape_.pointA_.x,
-                                                       triangle.shape_.pointA_.y,
-                                                       triangle.shape_.pointA_.z, 1.0F};
-                            const ::glm::vec4 &pointB {pointA.x + triangle.shape_.AB_.x,
-                                                       pointA.y + triangle.shape_.AB_.y,
-                                                       pointA.z + triangle.shape_.AB_.z, 1.0F};
-                            const ::glm::vec4 &pointC {pointA.x + triangle.shape_.AC_.x,
-                                                       pointA.y + triangle.shape_.AC_.y,
-                                                       pointA.z + triangle.shape_.AC_.z, 1.0F};
+                        for (const auto &triangle : triangles) {
+                            const ::glm::vec4 &pointA {triangle.pointA_.x,
+                                                       triangle.pointA_.y,
+                                                       triangle.pointA_.z, 1.0F};
+                            const ::glm::vec4 &pointB {pointA.x + triangle.AB_.x,
+                                                       pointA.y + triangle.AB_.y,
+                                                       pointA.z + triangle.AB_.z, 1.0F};
+                            const ::glm::vec4 &pointC {pointA.x + triangle.AC_.x,
+                                                       pointA.y + triangle.AC_.y,
+                                                       pointA.z + triangle.AC_.z, 1.0F};
 
                             floatBuffer[i++] = pointA.x;
                             floatBuffer[i++] = pointA.y;
@@ -189,9 +187,7 @@ jobject Java_puscas_mobilertapp_MainRenderer_RTInitColorsArray(
     {
         const ::std::lock_guard<::std::mutex> lock {mutex_};
         if (renderer_ != nullptr) {
-            const ::std::vector<::MobileRT::Primitive<::MobileRT::Triangle>> &triangles {
-                renderer_->shader_->getTriangles()
-            };
+            const auto &triangles {renderer_->shader_->getTriangles()};
             const auto arraySize {static_cast<::std::int64_t> (triangles.size() * 3 * 4)};
             const auto arrayBytes {arraySize * static_cast<::std::int64_t> (sizeof(jfloat))};
             if (arraySize > 0) {
@@ -201,10 +197,17 @@ jobject Java_puscas_mobilertapp_MainRenderer_RTInitColorsArray(
                     if (directBuffer != nullptr) {
                         int i {};
                         for (const auto &triangle : triangles) {
-                            const auto &kD {triangle.material_.Kd_};
-                            const auto &kS {triangle.material_.Ks_};
-                            const auto &kT {triangle.material_.Kt_};
-                            const auto &lE {triangle.material_.Le_};
+                            const auto materialIndex {triangle.materialIndex_};
+                            auto material {::MobileRT::Material {}};
+                            if (materialIndex >= 0) {
+                                material = renderer_->shader_->getMaterials()
+                                    [static_cast<::std::uint32_t> (materialIndex)];
+                            }
+
+                            const auto &kD {material.Kd_};
+                            const auto &kS {material.Ks_};
+                            const auto &kT {material.Kt_};
+                            const auto &lE {material.Le_};
                             auto color {kD};
 
                             color = ::glm::all(::glm::greaterThan(kS, color)) ? kS : color;
@@ -239,10 +242,8 @@ static void updateFps() noexcept {
     static ::std::int32_t frame {};
     static ::std::chrono::steady_clock::time_point timebase {};
     ++frame;
-    const ::std::chrono::steady_clock::time_point timeNow {::std::chrono::steady_clock::now()};
-    const ::std::int64_t timeElapsed {
-        ::std::chrono::duration_cast<std::chrono::milliseconds> (timeNow - timebase).count()
-    };
+    const auto timeNow {::std::chrono::steady_clock::now()};
+    const auto timeElapsed {::std::chrono::duration_cast<std::chrono::milliseconds> (timeNow - timebase).count()};
     if (timeElapsed > 1000) {
         fps_ = (frame * 1000.0F) / timeElapsed;
         timebase = timeNow;
@@ -290,9 +291,9 @@ void Java_puscas_mobilertapp_DrawView_RTStopRender(
 static ::std::streampos fileSize(const char *filePath) {
     ::std::ifstream file {filePath, ::std::ios::binary};
 
-    const ::std::streampos fileBegin {file.tellg()};
+    const auto fileBegin {file.tellg()};
     file.seekg(0, ::std::ios::end);
-    const ::std::streampos fileSize {file.tellg() - fileBegin};
+    const auto fileSize {file.tellg() - fileBegin};
     file.close();
 
     return fileSize;
@@ -314,8 +315,8 @@ jint Java_puscas_mobilertapp_MainRenderer_RTInitialize(
         jstring localCamFile
 ) noexcept {
     LOG("INITIALIZE");
-    const jclass rendererClass {env->FindClass("puscas/mobilertapp/MainRenderer")};
-    const jmethodID isLowMemoryMethodId {env->GetMethodID(rendererClass, "isLowMemory", "(I)Z")};
+    const auto rendererClass {env->FindClass("puscas/mobilertapp/MainRenderer")};
+    const auto isLowMemoryMethodId {env->GetMethodID(rendererClass, "isLowMemory", "(I)Z")};
     const auto globalObjFile {static_cast<jstring> (env->NewGlobalRef(localObjFile))};
     const auto globalMatFile {static_cast<jstring> (env->NewGlobalRef(localMatFile))};
     const auto globalCamFile {static_cast<jstring> (env->NewGlobalRef(localCamFile))};
@@ -332,8 +333,8 @@ jint Java_puscas_mobilertapp_MainRenderer_RTInitialize(
             ::glm::vec3 maxDist {};
             switch (scene) {
                 case 0: {
-                    const float fovX {45.0F * ratio};
-                    const float fovY {45.0F};
+                    const auto fovX {45.0F * ratio};
+                    const auto fovY {45.0F};
                     camera = ::std::make_unique<Components::Perspective> (
                         ::glm::vec3 {0.0F, 0.0F, -3.4F},
                         ::glm::vec3 {0.0F, 0.0F, 1.0F},
@@ -346,8 +347,8 @@ jint Java_puscas_mobilertapp_MainRenderer_RTInitialize(
                     break;
 
                 case 1: {
-                    const float sizeH {10.0F * ratio};
-                    const float sizeV {10.0F};
+                    const auto sizeH {10.0F * ratio};
+                    const auto sizeV {10.0F};
                     camera = ::std::make_unique<Components::Orthographic> (
                         ::glm::vec3 {0.0F, 1.0F, -10.0F},
                         ::glm::vec3 {0.0F, 1.0F, 7.0F},
@@ -360,8 +361,8 @@ jint Java_puscas_mobilertapp_MainRenderer_RTInitialize(
                     break;
 
                 case 2: {
-                    const float fovX {45.0F * ratio};
-                    const float fovY {45.0F};
+                    const auto fovX {45.0F * ratio};
+                    const auto fovY {45.0F};
                     camera = ::std::make_unique<Components::Perspective> (
                         ::glm::vec3{0.0F, 0.0F, -3.4F},
                         ::glm::vec3{0.0F, 0.0F, 1.0F},
@@ -374,8 +375,8 @@ jint Java_puscas_mobilertapp_MainRenderer_RTInitialize(
                     break;
 
                 case 3: {
-                    const float fovX {60.0F * ratio};
-                    const float fovY {60.0F};
+                    const auto fovX {60.0F * ratio};
+                    const auto fovY {60.0F};
                     camera = ::std::make_unique<Components::Perspective> (
                         ::glm::vec3{0.0F, 0.5F, 1.0F},
                         ::glm::vec3{0.0F, 0.0F, 7.0F},
@@ -388,17 +389,17 @@ jint Java_puscas_mobilertapp_MainRenderer_RTInitialize(
                     break;
 
                 default: {
-                    jboolean isCopy{JNI_FALSE};
-                    const char *const objFilePath {env->GetStringUTFChars(globalObjFile, &isCopy)};
-                    const char *const matFilePath {env->GetStringUTFChars(globalMatFile, &isCopy)};
-                    const char *const camFilePath {env->GetStringUTFChars(globalCamFile, &isCopy)};
+                    jboolean isCopy {JNI_FALSE};
+                    const auto *const objFilePath {env->GetStringUTFChars(globalObjFile, &isCopy)};
+                    const auto *const matFilePath {env->GetStringUTFChars(globalMatFile, &isCopy)};
+                    const auto *const camFilePath {env->GetStringUTFChars(globalCamFile, &isCopy)};
 
                     assert(isLowMemoryMethodId != nullptr);
                     assert(objFilePath != nullptr);
                     assert(matFilePath != nullptr);
                     assert(camFilePath != nullptr);
                     {
-                        const jboolean lowMem {env->CallBooleanMethod(thiz, isLowMemoryMethodId, 1)};
+                        const auto lowMem {env->CallBooleanMethod(thiz, isLowMemoryMethodId, 1)};
                         if (lowMem) {
                             return -1;
                         }
@@ -407,7 +408,7 @@ jint Java_puscas_mobilertapp_MainRenderer_RTInitialize(
                     const auto cameraFactory {::Components::CameraFactory()};
                     camera = cameraFactory.loadFromFile(camFilePath, ratio);
 
-                    ::Components::OBJLoader objLoader{objFilePath, matFilePath};
+                    ::Components::OBJLoader objLoader {objFilePath, matFilePath};
                     {
                         const jboolean lowMem {env->CallBooleanMethod(thiz, isLowMemoryMethodId, 1)};
                         if (lowMem) {
@@ -422,7 +423,7 @@ jint Java_puscas_mobilertapp_MainRenderer_RTInitialize(
                     }
                     {
                         const auto neededMemoryMb {1 + static_cast<::std::int32_t> (3 * (objSize / 1048576))};
-                        const jboolean lowMem {env->CallBooleanMethod(thiz, isLowMemoryMethodId, neededMemoryMb)};
+                        const auto lowMem {env->CallBooleanMethod(thiz, isLowMemoryMethodId, neededMemoryMb)};
                         if (lowMem) {
                             finishedRendering_ = true;
                             return -1;
@@ -439,7 +440,7 @@ jint Java_puscas_mobilertapp_MainRenderer_RTInitialize(
                     const ::std::int32_t memFloat {(2 * numberPrimitives * floatSize) / 1048576};
                     const ::std::int32_t neededMemoryMb {1 + memPrimitives + memNodes + memAABB + memFloat};
                     {
-                        const jboolean lowMem {env->CallBooleanMethod(thiz, isLowMemoryMethodId, neededMemoryMb)};
+                        const auto lowMem {env->CallBooleanMethod(thiz, isLowMemoryMethodId, neededMemoryMb)};
                         if (lowMem) {
                             return -1;
                         }
@@ -448,7 +449,7 @@ jint Java_puscas_mobilertapp_MainRenderer_RTInitialize(
                     if (!objLoader.isProcessed()) {
                         return -1;
                     }
-                    const bool sceneBuilt {objLoader.fillScene(
+                    const auto sceneBuilt {objLoader.fillScene(
                             &scene_, []() {return ::std::make_unique<Components::StaticHaltonSeq> ();}
                     )};
                     if (!sceneBuilt) {
@@ -472,7 +473,7 @@ jint Java_puscas_mobilertapp_MainRenderer_RTInitialize(
             samplerPixel = samplesPixel <= 1
                 ? ::std::unique_ptr<::MobileRT::Sampler> (::std::make_unique<Components::Constant> (0.5F))
                 : ::std::unique_ptr<::MobileRT::Sampler> (::std::make_unique<Components::StaticHaltonSeq> ());
-            const ::std::chrono::time_point<::std::chrono::system_clock> start {::std::chrono::system_clock::now()};
+            const auto start {::std::chrono::system_clock::now()};
             switch (shader) {
                 case 1: {
                     shader_ = ::std::make_unique<Components::Whitted> (
@@ -524,6 +525,7 @@ jint Java_puscas_mobilertapp_MainRenderer_RTInitialize(
             const auto planes {static_cast<::std::int32_t> (shader_->getPlanes().size())};
             const auto spheres {static_cast<::std::int32_t> (shader_->getSpheres().size())};
             const auto triangles {static_cast<::std::int32_t> (shader_->getTriangles().size())};
+            const auto materials {static_cast<::std::int32_t> (shader_->getMaterials().size())};
             numLights_ = static_cast<::std::int32_t> (shader_->getLights().size());
             const auto nPrimitives {triangles + spheres + planes};
             renderer_ = ::std::make_unique<::MobileRT::Renderer> (
@@ -532,10 +534,11 @@ jint Java_puscas_mobilertapp_MainRenderer_RTInitialize(
             );
             timeRenderer_ = ::std::chrono::duration_cast<std::chrono::milliseconds> (end - start).count();
             LOG("TIME CONSTRUCTION RENDERER = ", timeRenderer_, "ms");
-            /*LOG("TRIANGLES = ", triangles);
-            LOG("SPHERES = ", spheres);
             LOG("PLANES = ", planes);
-            LOG("LIGHTS = ", numLights_);*/
+            LOG("SPHERES = ", spheres);
+            LOG("TRIANGLES = ", triangles);
+            LOG("LIGHTS = ", numLights_);
+            LOG("MATERIALS = ", materials);
             return nPrimitives;
         }()};
 
@@ -544,7 +547,7 @@ jint Java_puscas_mobilertapp_MainRenderer_RTInitialize(
     LOG("PRIMITIVES = ", res);
 
     {
-        const jboolean lowMem {env->CallBooleanMethod(thiz, isLowMemoryMethodId, 1)};
+        const auto lowMem {env->CallBooleanMethod(thiz, isLowMemoryMethodId, 1)};
         if (lowMem) {
             return -1;
         }
@@ -592,20 +595,20 @@ void Java_puscas_mobilertapp_MainRenderer_RTRenderIntoBitmap(
     auto lambda {
         [=]() noexcept -> void {
             assert(env != nullptr);
-            const ::std::int32_t jniError {
+            const auto jniError {
                 javaVM_->GetEnv(reinterpret_cast<void**> (const_cast<JNIEnv**> (&env)), JNI_VERSION_1_6)
             };
 
             assert(jniError == JNI_OK || jniError == JNI_EDETACHED);
             {
-                const ::std::int32_t result {javaVM_->AttachCurrentThread(const_cast<JNIEnv**> (&env), nullptr)};
+                const auto result {javaVM_->AttachCurrentThread(const_cast<JNIEnv**> (&env), nullptr)};
                 assert(result == JNI_OK);
                 static_cast<void> (result);
             }
 
             ::std::int32_t *dstPixels {};
             {
-                const ::std::int32_t ret {
+                const auto ret {
                     AndroidBitmap_lockPixels(env, globalBitmap, reinterpret_cast<void**> (&dstPixels))
                 };
                 assert(ret == JNI_OK);
@@ -614,7 +617,7 @@ void Java_puscas_mobilertapp_MainRenderer_RTRenderIntoBitmap(
 
             AndroidBitmapInfo info {};
             {
-                const ::std::int32_t ret {AndroidBitmap_getInfo(env, globalBitmap, &info)};
+                const auto ret {AndroidBitmap_getInfo(env, globalBitmap, &info)};
                 assert(ret == JNI_OK);
                 LOG("ret = ", ret);
             }
@@ -643,14 +646,14 @@ void Java_puscas_mobilertapp_MainRenderer_RTRenderIntoBitmap(
                     LOG("STATE = FINISHED");
                 }
                 {
-                    const ::std::int32_t result {AndroidBitmap_unlockPixels(env, globalBitmap)};
+                    const auto result {AndroidBitmap_unlockPixels(env, globalBitmap)};
                     assert(result == JNI_OK);
                     static_cast<void> (result);
                 }
 
                 env->DeleteGlobalRef(globalBitmap);
                 {
-                    const ::std::int32_t result {
+                    const auto result {
                         javaVM_->GetEnv(reinterpret_cast<void**> (const_cast<JNIEnv**> (&env)), JNI_VERSION_1_6)
                     };
                     assert(result == JNI_OK);
@@ -658,7 +661,7 @@ void Java_puscas_mobilertapp_MainRenderer_RTRenderIntoBitmap(
                 }
                 env->ExceptionClear();
                 if (jniError == JNI_EDETACHED) {
-                    const ::std::int32_t result {javaVM_->DetachCurrentThread()};
+                    const auto result {javaVM_->DetachCurrentThread()};
                     assert(result == JNI_OK);
                     static_cast<void> (result);
                 }
@@ -726,7 +729,7 @@ extern "C"
         jobject /*thiz*/,
         jint size
 ) noexcept {
-    const ::std::int32_t res {
+    const auto res {
         ::MobileRT::roundDownToMultipleOf(
             size, static_cast<::std::int32_t> (::std::sqrt(::MobileRT::NumberOfBlocks))
         )
@@ -751,7 +754,7 @@ jobject Java_puscas_mobilertapp_MainRenderer_RTFreeNativeBuffer(
         jobject bufferRef
 ) noexcept {
     if (bufferRef != nullptr) {
-        void *buffer {env->GetDirectBufferAddress(bufferRef)};
+        auto *buffer {env->GetDirectBufferAddress(bufferRef)};
         float *const floatBuffer {static_cast<float*> (buffer)};
         delete[] floatBuffer;
     }

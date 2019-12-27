@@ -69,4 +69,18 @@ namespace MobileRT {
         return ::glm::vec2 {x, y};
     }
 
+    bool equal(const float a, const float b) noexcept {
+        const auto absValue {::std::fabs(a - b)};
+        const auto res {absValue < Epsilon};
+        return res;
+    }
+
+    bool equal(const ::glm::vec3 a, const ::glm::vec3 b) noexcept {
+        const auto sameX {equal(a[0], b[0])};
+        const auto sameY {equal(a[1], b[1])};
+        const auto sameZ {equal(a[2], b[2])};
+        const auto same {sameX && sameY && sameZ};
+        return same;
+    }
+
 }// namespace MobileRT

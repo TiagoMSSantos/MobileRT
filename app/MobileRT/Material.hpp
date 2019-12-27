@@ -30,6 +30,8 @@ namespace MobileRT {
         Material &operator=(const Material &material) noexcept = default;
 
         Material &operator=(Material &&material) noexcept = default;
+
+        bool operator==(const Material &material) noexcept;
     };
 }//namespace MobileRT
 

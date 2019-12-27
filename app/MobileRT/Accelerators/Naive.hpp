@@ -1,7 +1,6 @@
 #ifndef MOBILERT_ACCELERATORS_NAIVE_HPP
 #define MOBILERT_ACCELERATORS_NAIVE_HPP
 
-#include "MobileRT/Primitive.hpp"
 #include "MobileRT/Ray.hpp"
 #include <vector>
 
@@ -10,7 +9,7 @@ namespace MobileRT {
     template<typename T>
     class Naive final {
         private:
-            ::std::vector<::MobileRT::Primitive<T>> primitives_ {};
+            ::std::vector<T> primitives_ {};
 
         private:
             Intersection intersect(Intersection intersection, const Ray &ray, bool shadowTrace = false) noexcept;
@@ -18,7 +17,7 @@ namespace MobileRT {
         public:
             explicit Naive() noexcept = default;
 
-            explicit Naive(::std::vector<::MobileRT::Primitive<T>> &&primitives) noexcept;
+            explicit Naive(::std::vector<T> &&primitives) noexcept;
 
             Naive(const Naive &naive) noexcept = delete;
 
@@ -34,11 +33,11 @@ namespace MobileRT {
 
             Intersection shadowTrace(Intersection intersection, const Ray &ray) noexcept;
 
-            const ::std::vector<::MobileRT::Primitive<T>>& getPrimitives() const noexcept;
+            const ::std::vector<T>& getPrimitives() const noexcept;
     };
 
     template<typename T>
-    Naive<T>::Naive(::std::vector<::MobileRT::Primitive<T>> &&primitives) noexcept :
+    Naive<T>::Naive(::std::vector<T> &&primitives) noexcept :
         primitives_ {::std::move(primitives)} {
 
     }
@@ -46,7 +45,7 @@ namespace MobileRT {
     template<typename T>
     Naive<T>::~Naive() noexcept {
         this->primitives_.clear();
-        ::std::vector<::MobileRT::Primitive<T>> {}.swap(this->primitives_);
+        ::std::vector<T> {}.swap(this->primitives_);
     }
 
     template<typename T>
@@ -74,7 +73,7 @@ namespace MobileRT {
     }
 
     template<typename T>
-    const ::std::vector<::MobileRT::Primitive<T>>& Naive<T>::getPrimitives() const noexcept {
+    const ::std::vector<T>& Naive<T>::getPrimitives() const noexcept {
         return this->primitives_;
     }
 

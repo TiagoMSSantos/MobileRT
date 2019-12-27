@@ -39,6 +39,10 @@ namespace MobileRT {
 
     ::glm::vec2 toVec2(const char *values) noexcept;
 
+    bool equal(const float a, const float b) noexcept;
+
+    bool equal(const ::glm::vec3 a, const ::glm::vec3 b) noexcept;
+
     template<typename ...Args>
     void log(Args &&... args) noexcept {
         ::std::ostringstream oss {""};

@@ -8,10 +8,12 @@ using ::Components::AreaLight;
 using ::Components::OBJLoader;
 using ::MobileRT::Material;
 using ::MobileRT::Scene;
+using ::MobileRT::Triangle;
+using ::MobileRT::Sampler;
 
 OBJLoader::OBJLoader(::std::string objFilePath, ::std::string matFilePath) noexcept :
-        objFilePath_ {::std::move(objFilePath)},
-        mtlFilePath_ {::std::move(matFilePath)} {
+    objFilePath_ {::std::move(objFilePath)},
+    mtlFilePath_ {::std::move(matFilePath)} {
 }
 
 ::std::int32_t OBJLoader::process() noexcept {
@@ -62,8 +64,8 @@ OBJLoader::OBJLoader(::std::string objFilePath, ::std::string matFilePath) noexc
 }
 
 bool OBJLoader::fillScene(Scene *const scene,
-                          ::std::function<::std::unique_ptr<MobileRT::Sampler>()> lambda) noexcept {
-    scene->triangles_.reserve(static_cast<::std::size_t> (numberTriangles_));
+                          ::std::function<::std::unique_ptr<Sampler>()> lambda) noexcept {
+    scene->triangles_.reserve(static_cast<::std::size_t> (this->numberTriangles_));
 
     for (const auto &shape : this->shapes_) {
         // Loop over faces(polygon)
@@ -81,7 +83,7 @@ bool OBJLoader::fillScene(Scene *const scene,
             for (::std::size_t vertex {}; vertex < faceVertices; vertex += 3) {
                 const auto itIdx {shape.mesh.indices.begin() + static_cast<::std::int32_t> (indexOffset + vertex)};
 
-                const ::tinyobj::index_t idx1 {*(itIdx + 0)};
+                const auto idx1 {*(itIdx + 0)};
                 const auto itVertex1 {this->attrib_.vertices.begin() + 3 * idx1.vertex_index};
                 const auto vx1 {*(itVertex1 + 0)};
                 const auto vy1 {*(itVertex1 + 1)};
@@ -116,7 +118,6 @@ bool OBJLoader::fillScene(Scene *const scene,
                 const ::glm::vec3 &vertex1 {-vx1, vy1, vz1};
                 const ::glm::vec3 &vertex2 {-vx2, vy2, vz2};
                 const ::glm::vec3 &vertex3 {-vx3, vy3, vz3};
-                const ::MobileRT::Triangle &triangle {vertex1, vertex2, vertex3};
 
                 // per-face material
                 const auto itMaterialShape {shape.mesh.material_ids.begin() + static_cast<::std::int32_t> (face)};
@@ -148,22 +149,53 @@ bool OBJLoader::fillScene(Scene *const scene,
                     const ::glm::vec3 &emission {e1, e2, e3};
                     const auto indexRefraction {mat.ior};
                     const Material material {diffuse, specular, transmittance, indexRefraction, emission};
+                    const auto itFoundMat {::std::find(scene->materials_.begin(), scene->materials_.end(), material)};
+
                     if (e1 > 0.0F || e2 > 0.0F || e3 > 0.0F) {
                         const ::glm::vec3 &p1 {vx1, vy1, vz1};
                         const ::glm::vec3 &p2 {vx2, vy2, vz2};
                         const ::glm::vec3 &p3 {vx3, vy3, vz3};
                         scene->lights_.emplace_back(::std::make_unique<AreaLight>(material, lambda(), p1, p2, p3));
                     } else {
-                        scene->triangles_.emplace_back(triangle, material);
+                        if(itFoundMat != scene->materials_.cend()) {
+                            const auto materialIndex {static_cast<::std::int32_t> (
+                                itFoundMat - scene->materials_.cbegin()
+                            )};
+                            const Triangle &triangle {vertex1, vertex2, vertex3, materialIndex};
+
+                            scene->triangles_.emplace_back(triangle);
+                        } else {
+                            const auto materialIndex {static_cast<::std::int32_t> (scene->materials_.size())};
+                            const Triangle &triangle {vertex1, vertex2, vertex3, materialIndex};
+
+                            scene->triangles_.emplace_back(triangle);
+                            scene->materials_.emplace_back(material);
+                        }
                     }
+
                 } else {
+
                     const ::glm::vec3 &diffuse {red, green, blue};
                     const ::glm::vec3 &specular {0.0F, 0.0F, 0.0F};
                     const ::glm::vec3 &transmittance {0.0F, 0.0F, 0.0F};
                     const auto indexRefraction {1.0F};
                     const ::glm::vec3 &emission {0.0F, 0.0F, 0.0F};
                     const Material material {diffuse, specular, transmittance, indexRefraction, emission};
-                    scene->triangles_.emplace_back(triangle, material);
+                    const auto itFoundMat {::std::find(scene->materials_.begin(), scene->materials_.end(), material)};
+
+                    if(itFoundMat != scene->materials_.end()) {
+                        const auto materialIndex {static_cast<::std::int32_t> (
+                            itFoundMat - scene->materials_.cbegin()
+                        )};
+                        const Triangle &triangle {vertex1, vertex2, vertex3, materialIndex};
+                        scene->triangles_.emplace_back(triangle);
+                    } else {
+                        const auto materialIndex {static_cast<::std::int32_t> (scene->materials_.size())};
+                        const Triangle &triangle {vertex1, vertex2, vertex3, materialIndex};
+
+                        scene->triangles_.emplace_back(triangle);
+                        scene->materials_.emplace_back(material);
+                    }
                 }
             }
             indexOffset += faceVertices;
