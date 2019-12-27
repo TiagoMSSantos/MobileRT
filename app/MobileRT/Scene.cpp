@@ -25,7 +25,7 @@ Scene::~Scene() noexcept {
     LOG("SCENE DELETED");
 }
 
-AABB Scene::getAABBbounds(const AABB &box1, const AABB &box2) {
+AABB Scene::getBoxBounds(const AABB &box1, const AABB &box2) {
     const AABB box {::glm::min(box1.pointMin_, box2.pointMin_), ::glm::max(box1.pointMax_, box2.pointMax_)};
     return box;
 }

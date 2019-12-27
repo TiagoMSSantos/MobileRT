@@ -19,11 +19,11 @@ namespace Components {
             const ::MobileRT::Ray &ray) noexcept final;
 
     public:
-        explicit PathTracer () noexcept = delete;
+        explicit PathTracer() noexcept = delete;
 
         explicit PathTracer(::MobileRT::Scene scene,
                             ::std::unique_ptr<::MobileRT::Sampler> samplerRussianRoulette,
-                            ::std::uint32_t samplesLight, Accelerator accelerator) noexcept;
+                            ::std::int32_t samplesLight, Accelerator accelerator) noexcept;
 
         PathTracer(const PathTracer &pathTracer) noexcept = delete;
 

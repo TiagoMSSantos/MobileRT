@@ -24,9 +24,9 @@ namespace {
 
     ::std::string line {};
     while (::std::getline(cameraDefinition, line)) {
-        const char key {line[0]};
+        const auto key {line[0]};
         line.erase(0, 1);
-        const char* const value {line.c_str()};
+        const auto* const value {line.c_str()};
         switch (key) {
             case POSITION:
                 position = ::MobileRT::toVec3(value);
@@ -50,11 +50,12 @@ namespace {
     }
 
     ::std::unique_ptr<::MobileRT::Camera> camera {
-            ::std::make_unique<::Components::Perspective>(
-                    position,
-                    lookAt,
-                    up,
-                    fov[0] * aspectRatio, fov[1])
+        ::std::make_unique<::Components::Perspective>(
+                position,
+                lookAt,
+                up,
+                fov[0] * aspectRatio, fov[1]
+        )
     };
 
     return camera;

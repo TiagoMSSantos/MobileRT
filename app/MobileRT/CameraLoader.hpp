@@ -7,10 +7,15 @@ namespace MobileRT {
     class CameraLoader {
     public:
         explicit CameraLoader() noexcept = default;
+
         CameraLoader(const CameraLoader& cameraLoader) noexcept = default;
+
         CameraLoader(CameraLoader&& cameraLoader) noexcept = default;
+
         CameraLoader &operator=(const CameraLoader &cameraLoader) noexcept = default;
+
         CameraLoader &operator=(CameraLoader &&cameraLoader) noexcept = default;
+
         virtual ~CameraLoader() noexcept = default;
 
         virtual ::std::unique_ptr<Camera> loadFromStream(

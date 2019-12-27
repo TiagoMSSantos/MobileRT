@@ -108,19 +108,19 @@ namespace MobileRT {
 
         // calculate cell width, height and depth
         const auto size {this->worldBoundaries_.pointMax_ - this->worldBoundaries_.pointMin_};
-        const float dx {size[0] / this->gridSize_};
-        const float dy {size[1] / this->gridSize_};
-        const float dz {size[2] / this->gridSize_};
-        const float dxReci {dx > 0 ? 1.0F / dx : 1.0F};
-        const float dyReci {dy > 0 ? 1.0F / dy : 1.0F};
-        const float dzReci {dz > 0 ? 1.0F / dz : 1.0F};
+        const auto dx {size[0] / this->gridSize_};
+        const auto dy {size[1] / this->gridSize_};
+        const auto dz {size[2] / this->gridSize_};
+        const auto dxReci {dx > 0 ? 1.0F / dx : 1.0F};
+        const auto dyReci {dy > 0 ? 1.0F / dy : 1.0F};
+        const auto dzReci {dz > 0 ? 1.0F / dz : 1.0F};
 
         // store primitives in the grid cells
         for (auto &primitive : this->primitives_) {
             ++index;
-            const AABB bound {primitive.getAABB()};
-            const ::glm::vec3 &bv1 {bound.pointMin_};
-            const ::glm::vec3 &bv2 {bound.pointMax_};
+            const auto bound {primitive.getAABB()};
+            const auto &bv1 {bound.pointMin_};
+            const auto &bv2 {bound.pointMax_};
 
             // find out which cells could contain the primitive (based on aabb)
             auto x1 {static_cast<::std::int32_t>((bv1[0] - this->worldBoundaries_.pointMin_[0]) * dxReci)};
@@ -143,9 +143,9 @@ namespace MobileRT {
             z1 = ::std::min(z1, z2);
 
             //loop over candidate cells
-            for (::std::int32_t x {x1}; x <= x2; ++x) {
-                for (::std::int32_t y {y1}; y <= y2; ++y) {
-                    for (::std::int32_t z {z1}; z <= z2; ++z) {
+            for (auto x {x1}; x <= x2; ++x) {
+                for (auto y {y1}; y <= y2; ++y) {
+                    for (auto z {z1}; z <= z2; ++z) {
                         // construct aabb for current cell
                         const auto idx {static_cast<::std::size_t>(
                             x +
@@ -160,7 +160,7 @@ namespace MobileRT {
                         const AABB &cell {pos, pos + ::glm::vec3 {dx, dy, dz}};
                         //LOG("min=(", pos[0], ", ", pos[1], ", ", pos[2], ") max=(", dx, ", ", dy, ",", dz, ")");
                         // do an accurate aabb / primitive intersection test
-                        const bool intersectedBox {primitive.intersect(cell)};
+                        const auto intersectedBox {primitive.intersect(cell)};
                         if (intersectedBox) {
                             this->grid_[idx].emplace_back(&primitive);
                             //LOG("add idx = ", idx, " index = ", index);
@@ -187,7 +187,7 @@ namespace MobileRT {
     template<typename P>
     Intersection RegularGrid<T>::intersect(Intersection intersection, const Ray &ray, const bool shadowTrace) noexcept {
         // setup 3DDDA (double check reusability of primary ray data)
-        const ::glm::vec3 &cell {(ray.origin_ - this->worldBoundaries_.pointMin_) * this->cellSizeInverted_};
+        const auto &cell {(ray.origin_ - this->worldBoundaries_.pointMin_) * this->cellSizeInverted_};
         auto cellX {static_cast<::std::int32_t>(cell[0])};
         auto cellY {static_cast<::std::int32_t>(cell[1])};
         auto cellZ {static_cast<::std::int32_t>(cell[2])};
@@ -235,7 +235,7 @@ namespace MobileRT {
 
         ::glm::vec3 tmax {}, tdelta {};
         if (::std::fabs(ray.direction_[0]) > ::std::numeric_limits<float>::epsilon()) {
-            const float rxr {1.0F / ray.direction_[0]};
+            const auto rxr {1.0F / ray.direction_[0]};
             tmax[0] = ((cb[0] - ray.origin_[0]) * rxr);
             tdelta[0] = (this->cellSize_[0] * stepX * rxr);
         } else {
@@ -243,7 +243,7 @@ namespace MobileRT {
         }
 
         if (::std::fabs(ray.direction_[1]) > ::std::numeric_limits<float>::epsilon()) {
-            const float ryr {1.0F / ray.direction_[1]};
+            const auto ryr {1.0F / ray.direction_[1]};
             tmax[1] = ((cb[1] - ray.origin_[1]) * ryr);
             tdelta[1] = (this->cellSize_[1] * stepY * ryr);
         } else {
@@ -251,7 +251,7 @@ namespace MobileRT {
         }
 
         if (::std::fabs(ray.direction_[2]) > ::std::numeric_limits<float>::epsilon()) {
-            const float rzr {1.0F / ray.direction_[2]};
+            const auto rzr {1.0F / ray.direction_[2]};
             tmax[2] = ((cb[2] - ray.origin_[2]) * rzr);
             tdelta[2] = (this->cellSize_[2] * stepZ * rzr);
         } else {
@@ -262,16 +262,16 @@ namespace MobileRT {
         // trace primary ray
         while (true) {
             const auto index {
-                static_cast<::std::int32_t>(
+                static_cast<::std::int32_t> (
                      static_cast<::std::uint32_t> (cellX) +
-                    (static_cast<::std::uint32_t> (cellY) << (static_cast<::std::uint32_t> (this->gridShift_))) +
-                    (static_cast<::std::uint32_t> (cellZ) << (static_cast<::std::uint32_t> (this->gridShift_) * 2u))
+                    (static_cast<::std::uint32_t> (cellY) << (this->gridShift_)) +
+                    (static_cast<::std::uint32_t> (cellZ) << (this->gridShift_ * 2))
                 )
             };
             const auto itPrimitive {this->grid_.begin() + index};
             ::std::vector<P*> primitivesList {*itPrimitive};
             for (auto *const primitive : primitivesList) {
-                const float lastDist {intersection.length_};
+                const auto lastDist {intersection.length_};
                 intersection = primitive->intersect(intersection, ray);
                 if (intersection.length_ < lastDist) {
                     if (shadowTrace) {
@@ -317,8 +317,8 @@ namespace MobileRT {
             const auto index {
                 static_cast<::std::int32_t> (
                      static_cast<::std::uint32_t> (cellX) +
-                    (static_cast<::std::uint32_t> (cellY) << (static_cast<::std::uint32_t> (this->gridShift_))) +
-                    (static_cast<::std::uint32_t> (cellZ) << (static_cast<::std::uint32_t> (this->gridShift_) * 2u))
+                    (static_cast<::std::uint32_t> (cellY) << (this->gridShift_)) +
+                    (static_cast<::std::uint32_t> (cellZ) << (this->gridShift_) * 2)
                 )
             };
             const auto itPrimitives {this->grid_.begin() + index};

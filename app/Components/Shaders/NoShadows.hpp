@@ -13,12 +13,12 @@ namespace Components {
             const ::MobileRT::Ray &ray) noexcept final;
 
     public:
-        explicit NoShadows () noexcept = delete;
+        explicit NoShadows() noexcept = delete;
 
         explicit NoShadows(
             ::MobileRT::Scene scene,
-            ::std::uint32_t samplesLight,
-            Accelerator accelerator) noexcept;
+            ::std::int32_t samplesLight,
+            ::MobileRT::Shader::Accelerator accelerator) noexcept;
 
         NoShadows(const NoShadows &noShadows) noexcept = delete;
 

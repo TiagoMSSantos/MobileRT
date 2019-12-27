@@ -10,8 +10,8 @@
 namespace Components {
     class PerspectiveLoader final : public ::MobileRT::CameraLoader {
         public:
-            ::std::unique_ptr<::MobileRT::Camera> loadFromStream(::std::istream &&cameraDefinition, float aspectRatio)
-            const final;
+            ::std::unique_ptr<::MobileRT::Camera> loadFromStream(
+                    ::std::istream &&cameraDefinition, float aspectRatio) const final;
     };
 }//namespace Components
 

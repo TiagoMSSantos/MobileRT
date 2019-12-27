@@ -15,7 +15,7 @@ namespace Components {
     public:
         explicit DiffuseMaterial () noexcept = delete;
 
-        explicit DiffuseMaterial(::MobileRT::Scene scene, Accelerator accelerator) noexcept;
+        explicit DiffuseMaterial(::MobileRT::Scene scene, ::MobileRT::Shader::Accelerator accelerator) noexcept;
 
         DiffuseMaterial(const DiffuseMaterial &diffuseMaterial) noexcept = delete;
 

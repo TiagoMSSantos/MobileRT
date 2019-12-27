@@ -8,8 +8,7 @@ namespace Components {
     public:
         explicit Stratified() noexcept = default;
 
-        explicit Stratified(::std::uint32_t width, ::std::uint32_t height,
-                            ::std::uint32_t samples) noexcept;
+        explicit Stratified(::std::uint32_t width, ::std::uint32_t height, ::std::uint32_t samples) noexcept;
 
         Stratified(const Stratified &stratified) noexcept = delete;
 

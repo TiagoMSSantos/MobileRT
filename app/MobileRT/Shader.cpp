@@ -20,26 +20,26 @@ using ::MobileRT::Triangle;
 using ::MobileRT::Light;
 
 namespace {
-    const ::std::uint32_t MASK {0xFFFFF};
-    const ::std::uint32_t SIZE {MASK + 1};
-    ::std::array<float, SIZE> VALUES {};
+    const ::std::uint32_t mask {0xFFFFF};
+    const ::std::uint32_t size {mask + 1};
+    ::std::array<float, size> values {};
 
-    bool FillThings() {
-        for (auto it {VALUES.begin()}; it < VALUES.end(); std::advance(it, 1)) {
-            const ::std::uint32_t index {static_cast<::std::uint32_t>(::std::distance(VALUES.begin(), it))};
+    bool fillThings() {
+        for (auto it {values.begin()}; it < values.end(); std::advance(it, 1)) {
+            const auto index {static_cast<::std::uint32_t>(::std::distance(values.begin(), it))};
             *it = ::MobileRT::haltonSequence(index, 2);
         }
-        static ::std::random_device randomDevice {"/dev/urandom"};
+        static ::std::random_device randomDevice {};
         static ::std::mt19937 generator {randomDevice()};
-        ::std::shuffle(VALUES.begin(), VALUES.end(), generator);
+        ::std::shuffle(values.begin(), values.end(), generator);
         return true;
     }
 }//namespace
 
-Shader::Shader(Scene scene, const ::std::uint32_t samplesLight, const Accelerator accelerator) noexcept :
-        accelerator_ {accelerator},
-        samplesLight_ {samplesLight} {
-    static bool unused{FillThings()};
+Shader::Shader(Scene scene, const ::std::int32_t samplesLight, const Accelerator accelerator) noexcept :
+    accelerator_ {accelerator},
+    samplesLight_ {samplesLight} {
+    static auto unused {fillThings()};
     static_cast<void> (unused);
     initializeAccelerators(::std::move(scene));
 }
@@ -75,12 +75,8 @@ void Shader::initializeAccelerators(Scene scene) noexcept {
     this->lights_ = ::std::move(scene.lights_);
 }
 
-Shader::~Shader() noexcept {
-    LOG("SHADER DELETED");
-}
-
 bool Shader::shadowTrace(Intersection intersection, const Ray &ray) noexcept {
-    const float lastDist {intersection.length_};
+    const auto lastDist {intersection.length_};
     switch (this->accelerator_) {
         case Accelerator::ACC_NONE: {
             break;
@@ -113,7 +109,7 @@ bool Shader::shadowTrace(Intersection intersection, const Ray &ray) noexcept {
 
 bool Shader::rayTrace(::glm::vec3 *rgb, const Ray &ray) noexcept {
     Intersection intersection {RayLengthMax, nullptr};
-    const float lastDist {intersection.length_};
+    const auto lastDist {intersection.length_};
     switch (this->accelerator_) {
         case Accelerator::ACC_NONE: {
             break;
@@ -141,7 +137,7 @@ bool Shader::rayTrace(::glm::vec3 *rgb, const Ray &ray) noexcept {
         }
     }
     intersection = traceLights(intersection, ray);
-    const bool res {intersection.length_ < lastDist && shade(rgb, intersection, ray)};
+    const auto res {intersection.length_ < lastDist && shade(rgb, intersection, ray)};
     return res;
 }
 
@@ -160,18 +156,18 @@ void Shader::resetSampling() noexcept {
 
 ::glm::vec3 Shader::getCosineSampleHemisphere(const ::glm::vec3 &normal) const noexcept {
     static ::std::atomic<::std::uint32_t> sampler {};
-    const ::std::uint32_t current1 {sampler.fetch_add(1, ::std::memory_order_relaxed)};
-    const ::std::uint32_t current2 {sampler.fetch_add(1, ::std::memory_order_relaxed)};
+    const auto current1 {sampler.fetch_add(1, ::std::memory_order_relaxed)};
+    const auto current2 {sampler.fetch_add(1, ::std::memory_order_relaxed)};
 
-    const auto it1 {VALUES.begin() + (current1 & MASK)};
-    const auto it2 {VALUES.begin() + (current2 & MASK)};
+    const auto it1 {values.begin() + (current1 & mask)};
+    const auto it2 {values.begin() + (current2 & mask)};
 
-    const float uniformRandom1 {*it1};
-    const float uniformRandom2 {*it2};
+    const auto uniformRandom1 {*it1};
+    const auto uniformRandom2 {*it2};
 
-    const float phi {::glm::two_pi<float>() * uniformRandom1};// random angle around - azimuthal angle
-    const float r2 {uniformRandom2};// random distance from center
-    const float cosTheta {::std::sqrt(r2)};// square root of distance from center - cos(theta) = cos(elevation angle)
+    const auto phi {::glm::two_pi<float>() * uniformRandom1};// random angle around - azimuthal angle
+    const auto r2 {uniformRandom2};// random distance from center
+    const auto cosTheta {::std::sqrt(r2)};// square root of distance from center - cos(theta) = cos(elevation angle)
 
     ::glm::vec3 u {::std::abs(normal[0]) > 0.1F
         ? ::glm::vec3 {0.0F, 1.0F, 0.0F}
@@ -190,12 +186,12 @@ void Shader::resetSampling() noexcept {
 
 ::std::uint32_t Shader::getLightIndex () {
     static ::std::atomic<::std::uint32_t> sampler {};
-    const ::std::uint32_t current {sampler.fetch_add(1, ::std::memory_order_relaxed)};
+    const auto current {sampler.fetch_add(1, ::std::memory_order_relaxed)};
 
-    const auto it {VALUES.begin() + (current & MASK)};
+    const auto it {values.begin() + (current & mask)};
 
     const auto sizeLights {static_cast<::std::uint32_t>(this->lights_.size())};
-    const float randomNumber {*it};
+    const auto randomNumber {*it};
     const auto chosenLight {static_cast<::std::uint32_t> (::std::floor(randomNumber * sizeLights * 0.99999F))};
     return chosenLight;
 }

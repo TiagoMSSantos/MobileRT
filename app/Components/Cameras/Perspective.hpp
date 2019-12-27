@@ -7,8 +7,8 @@ namespace Components {
 
     class Perspective final : public ::MobileRT::Camera {
     private:
-        float hFov_{};
-        float vFov_{};
+        float hFov_ {};
+        float vFov_ {};
 
     private:
         float fastArcTan(float value) const noexcept;

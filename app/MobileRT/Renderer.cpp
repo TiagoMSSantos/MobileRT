@@ -6,16 +6,16 @@ using ::MobileRT::Renderer;
 using ::MobileRT::NumberOfBlocks;
 
 namespace {
-    ::std::array<float, NumberOfBlocks> VALUES {};
+    ::std::array<float, NumberOfBlocks> values {};
 
-    bool FillThings() {
-        for (auto it {VALUES.begin()}; it < VALUES.end(); std::advance(it, 1)) {
-            const ::std::uint32_t index {static_cast<uint32_t>(::std::distance(VALUES.begin(), it))};
+    bool fillThings() {
+        for (auto it {values.begin()}; it < values.end(); std::advance(it, 1)) {
+            const ::std::uint32_t index {static_cast<uint32_t>(::std::distance(values.begin(), it))};
             *it = ::MobileRT::haltonSequence(index, 2);
         }
-        static ::std::random_device randomDevice {"/dev/urandom"};
+        static ::std::random_device randomDevice {};
         static ::std::mt19937 generator {randomDevice()};
-        ::std::shuffle(VALUES.begin(), VALUES.end(), generator);
+        ::std::shuffle(values.begin(), values.end(), generator);
         return true;
     }
 }//namespace
@@ -23,50 +23,46 @@ namespace {
 Renderer::Renderer(::std::unique_ptr<Shader> shader,
                    ::std::unique_ptr<Camera> camera,
                    ::std::unique_ptr<Sampler> samplerPixel,
-                   const ::std::uint32_t width, const ::std::uint32_t height,
-                   const ::std::uint32_t samplesPixel) noexcept :
-        camera_{::std::move(camera)},
-        shader_{::std::move(shader)},
-        samplerPixel_{::std::move(samplerPixel)},
-        blockSizeX_{width / static_cast<::std::uint32_t>(::std::sqrt(NumberOfBlocks))},
-        blockSizeY_{height / static_cast<::std::uint32_t>(::std::sqrt(NumberOfBlocks))},
-        sample_{},
-        width_{width},
-        height_{height},
-        domainSize_{(width / blockSizeX_) * (height / blockSizeY_)},
-        resolution_{width * height},
-        samplesPixel_{samplesPixel} {
-    static bool unused {FillThings()};
+                   const ::std::int32_t width, const ::std::int32_t height,
+                   const ::std::int32_t samplesPixel) noexcept :
+        camera_ {::std::move(camera)},
+        shader_ {::std::move(shader)},
+        samplerPixel_ {::std::move(samplerPixel)},
+        blockSizeX_ {width / static_cast<::std::int32_t>(::std::sqrt(NumberOfBlocks))},
+        blockSizeY_ {height / static_cast<::std::int32_t>(::std::sqrt(NumberOfBlocks))},
+        sample_ {},
+        width_ {width},
+        height_ {height},
+        domainSize_ {(width / blockSizeX_) * (height / blockSizeY_)},
+        resolution_ {width * height},
+        samplesPixel_ {samplesPixel} {
+    static auto unused {fillThings()};
     static_cast<void> (unused);
 }
 
-void Renderer::renderFrame(::std::uint32_t *const bitmap, const ::std::int32_t numThreads,
-                           const ::std::uint32_t stride) noexcept {
+void Renderer::renderFrame(::std::int32_t *const bitmap, const ::std::int32_t numThreads) noexcept {
     LOG("numThreads = ", numThreads);
-    const ::std::uint32_t realWidth {stride / static_cast<::std::uint32_t>(sizeof(::std::uint32_t))};
-    LOG("realWidth = ", realWidth);
-    LOG("width_ = ", this->width_);
+    LOG("Resolution = ", this->width_, "x", this->height_);
 
     this->sample_ = 0;
     this->samplerPixel_->resetSampling();
     this->shader_->resetSampling();
     this->block_ = 0;
 
-    const ::std::int32_t numChildren {numThreads - 1};
+    const auto numChildren {numThreads - 1};
     ::std::vector<::std::thread> threads {};
     threads.reserve(static_cast<::std::uint32_t>(numChildren));
 
     for (::std::int32_t i {}; i < numChildren; ++i) {
-        threads.emplace_back(&Renderer::renderScene, this, bitmap, i, realWidth);
+        threads.emplace_back(&Renderer::renderScene, this, bitmap, i);
     }
-    renderScene(bitmap, numChildren, realWidth);
+    renderScene(bitmap, numChildren);
     for (auto &thread : threads) {
         thread.join();
     }
     threads.clear();
     ::std::vector<::std::thread> {}.swap(threads);
 
-    LOG("Resolution = ", width_, "x", height_);
     LOG("FINISH");
 }
 
@@ -76,41 +72,41 @@ void Renderer::stopRender() noexcept {
     this->samplerPixel_->stopSampling();
 }
 
-void Renderer::renderScene(::std::uint32_t *const bitmap, const ::std::int32_t tid, const ::std::uint32_t width) noexcept {
-    const float invImgWidth {1.0f / this->width_};
-    const float invImgHeight {1.0f / this->height_};
-    const float pixelWidth {0.5f / this->width_};
-    const float pixelHeight {0.5f / this->height_};
-    const ::std::uint32_t samples {this->samplesPixel_};
-    ::glm::vec3 pixelRGB {};
+void Renderer::renderScene(::std::int32_t *const bitmap, const ::std::int32_t tid) noexcept {
+    const auto invImgWidth {1.0F / this->width_};
+    const auto invImgHeight {1.0F / this->height_};
+    const auto pixelWidth {0.5F / this->width_};
+    const auto pixelHeight {0.5F / this->height_};
+    const auto samples {this->samplesPixel_};
+    ::glm::vec3 pixelRgb {};
 
-    for (::std::uint32_t sample {}; sample < samples; ++sample) {
+    for (::std::int32_t sample {}; sample < samples; ++sample) {
         while (true) {
-            const float tile {getTile(sample)};
-            if (tile >= 1.0f) {
+            const auto tile {getTile(sample)};
+            if (tile >= 1.0F) {
                 break;
             }
-            const auto roundBlock {static_cast<::std::uint32_t> (::std::roundf(tile * this->domainSize_))};
-            const auto pixel {static_cast<::std::uint32_t>(roundBlock * this->blockSizeX_ % this->resolution_)};
-            const ::std::uint32_t startY {((pixel / this->width_) * this->blockSizeY_) % this->height_};
-            const ::std::uint32_t endY {startY + this->blockSizeY_};
-            for (::std::uint32_t y {startY}; y < endY; ++y) {
-                const float v {y * invImgHeight};
-                const ::std::uint32_t yWidth {y * width};
-                const ::std::uint32_t startX {(pixel + yWidth) % this->width_};
-                const ::std::uint32_t endX {startX + this->blockSizeX_};
-                for (::std::uint32_t x {startX}; x < endX; ++x) {
-                    const float u {x * invImgWidth};
-                    const float r1 {this->samplerPixel_->getSample()};
-                    const float r2 {this->samplerPixel_->getSample()};
-                    const float deviationU {(r1 - 0.5f) * 2.0f * pixelWidth};
-                    const float deviationV {(r2 - 0.5f) * 2.0f * pixelHeight};
-                    const Ray &ray {this->camera_->generateRay(u, v, deviationU, deviationV)};
-                    pixelRGB = {};
-                    this->shader_->rayTrace(&pixelRGB, ray);
-                    const ::std::uint32_t pixelIndex {yWidth + x};
-                    ::std::uint32_t &bitmapPixel {bitmap[pixelIndex]};
-                    const ::std::uint32_t pixelColor {::MobileRT::incrementalAvg(pixelRGB, bitmapPixel, sample + 1)};
+            const auto roundBlock {static_cast<::std::int32_t> (::std::roundf(tile * this->domainSize_))};
+            const auto pixel {static_cast<::std::int32_t>(roundBlock * this->blockSizeX_ % this->resolution_)};
+            const auto startY {((pixel / this->width_) * this->blockSizeY_) % this->height_};
+            const auto endY {startY + this->blockSizeY_};
+            for (auto y {startY}; y < endY; ++y) {
+                const auto v {y * invImgHeight};
+                const auto yWidth {y * this->width_};
+                const auto startX {(pixel + yWidth) % this->width_};
+                const auto endX {startX + this->blockSizeX_};
+                for (auto x {startX}; x < endX; ++x) {
+                    const auto u {x * invImgWidth};
+                    const auto r1 {this->samplerPixel_->getSample()};
+                    const auto r2 {this->samplerPixel_->getSample()};
+                    const auto deviationU {(r1 - 0.5F) * 2.0F * pixelWidth};
+                    const auto deviationV {(r2 - 0.5F) * 2.0F * pixelHeight};
+                    const auto &ray {this->camera_->generateRay(u, v, deviationU, deviationV)};
+                    pixelRgb = {};
+                    this->shader_->rayTrace(&pixelRgb, ray);
+                    const auto pixelIndex {yWidth + x};
+                    auto &bitmapPixel {bitmap[pixelIndex]};
+                    const auto pixelColor {::MobileRT::incrementalAvg(pixelRgb, bitmapPixel, sample + 1)};
                     bitmapPixel = pixelColor;
                 }
             }
@@ -122,16 +118,16 @@ void Renderer::renderScene(::std::uint32_t *const bitmap, const ::std::int32_t t
     }
 }
 
-::std::uint32_t Renderer::getSample() const noexcept {
+::std::int32_t Renderer::getSample() const noexcept {
     return this->sample_;
 }
 
-float Renderer::getTile(const ::std::uint32_t sample) noexcept {
-    const ::std::uint32_t current {this->block_.fetch_add(1, ::std::memory_order_relaxed) - NumberOfBlocks * sample};
+float Renderer::getTile(const ::std::int32_t sample) noexcept {
+    const auto current {this->block_.fetch_add(1, ::std::memory_order_relaxed) - NumberOfBlocks * sample};
     if (current >= NumberOfBlocks) {
         this->block_.fetch_sub(1, ::std::memory_order_relaxed);
-        return 1.0f;
+        return 1.0F;
     }
-    const auto it {VALUES.begin() + current};
+    const auto it {values.begin() + current};
     return *it;
 }

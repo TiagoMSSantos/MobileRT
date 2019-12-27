@@ -37,7 +37,7 @@ namespace MobileRT {
         const Accelerator accelerator_ {};
 
     protected:
-        const ::std::uint32_t samplesLight_ {};
+        const ::std::int32_t samplesLight_ {};
         ::std::vector<::std::unique_ptr<Light>> lights_ {};
 
     private:
@@ -56,13 +56,13 @@ namespace MobileRT {
     public:
         explicit Shader () noexcept = delete;
 
-        explicit Shader(Scene scene, ::std::uint32_t samplesLight, Accelerator accelerator) noexcept;
+        explicit Shader(Scene scene, ::std::int32_t samplesLight, Accelerator accelerator) noexcept;
 
         Shader(const Shader &shader) noexcept = delete;
 
         Shader(Shader &&shader) noexcept = default;
 
-        virtual ~Shader() noexcept;
+        virtual ~Shader() noexcept = default;
 
         Shader &operator=(const Shader &shader) noexcept = delete;
 

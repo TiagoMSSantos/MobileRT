@@ -6,20 +6,20 @@
 namespace MobileRT {
     class Material final {
     public:
-        ::glm::vec3 Le_{};   // emission light
-        ::glm::vec3 Kd_{};   // diffuse reflection
-        ::glm::vec3 Ks_{};   // specular reflection
-        ::glm::vec3 Kt_{};   // specular transmission
-        float refractiveIndice_{};
+        ::glm::vec3 Le_ {};   // emission light
+        ::glm::vec3 Kd_ {};   // diffuse reflection
+        ::glm::vec3 Ks_ {};   // specular reflection
+        ::glm::vec3 Kt_ {};   // specular transmission
+        float refractiveIndice_ {};
 
     public:
         explicit Material () noexcept = default;
 
         explicit Material(
-            const ::glm::vec3 &Kd,
-            const ::glm::vec3 &Ks = ::glm::vec3 {},
-            const ::glm::vec3 &Kt = ::glm::vec3 {},
-            float refractiveIndice = 1.0F, const ::glm::vec3 &Le = ::glm::vec3 {}) noexcept;
+            const ::glm::vec3 &kD,
+            const ::glm::vec3 &kS = ::glm::vec3 {},
+            const ::glm::vec3 &kT = ::glm::vec3 {},
+            float refractiveIndice = 1.0F, const ::glm::vec3 &lE = ::glm::vec3 {}) noexcept;
 
         Material(const Material &material) noexcept = default;
 

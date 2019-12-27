@@ -4,9 +4,9 @@ using ::MobileRT::Sampler;
 
 Sampler::Sampler(const ::std::uint32_t width, const ::std::uint32_t height,
                  const ::std::uint32_t samples) noexcept :
-        domainSize_{(width / (width / static_cast<::std::uint32_t>(::std::sqrt(NumberOfBlocks)))) *
-                    (height / (width / static_cast<::std::uint32_t>(::std::sqrt(NumberOfBlocks))))},
-        samples_{samples} {
+    domainSize_ {(width / (width / static_cast<::std::uint32_t>(::std::sqrt(NumberOfBlocks)))) *
+                (height / (width / static_cast<::std::uint32_t>(::std::sqrt(NumberOfBlocks))))},
+    samples_ {samples} {
 }
 
 void Sampler::resetSampling() noexcept {
@@ -15,10 +15,6 @@ void Sampler::resetSampling() noexcept {
 
 void Sampler::stopSampling() noexcept {
     this->samples_ = 0;
-}
-
-Sampler::~Sampler() noexcept {
-    LOG("SAMPLER DELETED");
 }
 
 float Sampler::getSample() noexcept {

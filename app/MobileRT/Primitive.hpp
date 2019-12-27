@@ -43,13 +43,13 @@ namespace MobileRT {
 
     template<typename T>
     Primitive<T>::Primitive(const T &shape, const Material &material) noexcept :
-        shape_{shape},
-        material_{material} {
+        shape_ {shape},
+        material_ {material} {
     }
 
     template<typename T>
     AABB Primitive<T>::getAABB() const noexcept {
-        const AABB &res {this->shape_.getAABB()};
+        const auto &res {this->shape_.getAABB()};
         return res;
     }
 
@@ -57,7 +57,7 @@ namespace MobileRT {
     template<typename T>
     Intersection Primitive<T>::intersect(Intersection intersection, const Ray &ray) noexcept {
         if (this->lastRayID_ != ray.id_) {
-            const float lastDist {intersection.length_};
+            const auto lastDist {intersection.length_};
             intersection = this->shape_.intersect(intersection, ray);
             if (intersection.length_ < lastDist) {
                 intersection.material_ = &this->material_;

@@ -10,8 +10,7 @@ namespace Components {
     public:
         explicit HaltonSeq() noexcept = default;
 
-        explicit HaltonSeq(::std::uint32_t width, ::std::uint32_t height,
-                           ::std::uint32_t samples) noexcept;
+        explicit HaltonSeq(::std::uint32_t width, ::std::uint32_t height, ::std::uint32_t samples) noexcept;
 
         HaltonSeq(const HaltonSeq &haltonSeq) noexcept = delete;
 

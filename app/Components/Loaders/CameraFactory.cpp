@@ -10,12 +10,17 @@ using ::Components::CameraFactory;
     ::std::ifstream infile {filePath};
     ::std::string line {};
     while (::std::getline(infile, line)) {
-        const char key {line[0]};
+        const auto key {line[0]};
         line.erase(0, 1);
-        if (key == 't') {
-            if (line.find("perspective") != ::std::string::npos) {
-                camera = ::Components::PerspectiveLoader().loadFromStream(::std::move(infile), aspectRatio);
-            }
+        switch (key) {
+            case 't':
+                if (line.find("perspective") != ::std::string::npos) {
+                    camera = ::Components::PerspectiveLoader().loadFromStream(::std::move(infile), aspectRatio);
+                }
+                break;
+
+            default:
+                break;
         }
     }
 

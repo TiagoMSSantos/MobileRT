@@ -51,7 +51,7 @@ namespace MobileRT {
 
     template<typename T>
     Intersection Naive<T>::intersect(Intersection intersection, const Ray &ray, const bool shadowTrace) noexcept {
-        const float lastDist {intersection.length_};
+        const auto lastDist {intersection.length_};
         for (auto &primitive : this->primitives_) {
             intersection = primitive.intersect(intersection, ray);
             if (shadowTrace && intersection.length_ < lastDist) {

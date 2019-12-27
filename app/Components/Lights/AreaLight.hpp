@@ -12,10 +12,10 @@ namespace Components {
     class AreaLight final : public ::MobileRT::Light {
     private:
         ::MobileRT::Triangle triangle_;
-        ::std::unique_ptr<::MobileRT::Sampler> samplerPointLight_{};
+        ::std::unique_ptr<::MobileRT::Sampler> samplerPointLight_ {};
 
     public:
-        explicit AreaLight () noexcept = delete;
+        explicit AreaLight() noexcept = delete;
 
         explicit AreaLight(
             const ::MobileRT::Material &radiance,

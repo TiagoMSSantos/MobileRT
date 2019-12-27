@@ -20,7 +20,7 @@ namespace MobileRT {
         ::std::vector<::std::unique_ptr<Light>> lights_ {};
 
     private:
-        static ::MobileRT::AABB getAABBbounds(const AABB &box1, const AABB &box2);
+        static ::MobileRT::AABB getBoxBounds(const AABB &box1, const AABB &box2);
 
     public:
         explicit Scene() = default;
@@ -39,7 +39,7 @@ namespace MobileRT {
         static ::MobileRT::AABB getBounds(const ::std::vector<T> &primitives) {
             ::MobileRT::AABB bounds {::glm::vec3 {RayLengthMax}, ::glm::vec3 {-RayLengthMax}};
             for (const auto &primitive : primitives) {
-                bounds = getAABBbounds(primitive.getAABB(), bounds);
+                bounds = getBoxBounds(primitive.getAABB(), bounds);
             }
             return bounds;
         }

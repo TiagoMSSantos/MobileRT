@@ -19,7 +19,7 @@ namespace MobileRT {
 
         Light(Light &&light) noexcept = delete;
 
-        virtual ~Light() noexcept;
+        virtual ~Light() noexcept = default;
 
         Light &operator=(const Light &light) noexcept = delete;
 

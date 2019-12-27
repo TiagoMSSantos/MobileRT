@@ -7,13 +7,12 @@ namespace Components {
 
     class PointLight final : public ::MobileRT::Light {
     private:
-        ::glm::vec3 position_{};
+        ::glm::vec3 position_ {};
 
     public:
-        explicit PointLight () noexcept = delete;
+        explicit PointLight() noexcept = delete;
 
-        explicit PointLight(
-            const ::MobileRT::Material &radiance, const ::glm::vec3 &position) noexcept;
+        explicit PointLight(const ::MobileRT::Material &radiance, const ::glm::vec3 &position) noexcept;
 
         PointLight(const PointLight &pointLight) noexcept = delete;
 

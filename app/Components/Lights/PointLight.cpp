@@ -6,8 +6,8 @@ using ::MobileRT::Intersection;
 using ::MobileRT::Ray;
 
 PointLight::PointLight(const Material &radiance, const ::glm::vec3 &position) noexcept :
-        Light(radiance),
-        position_{position} {
+        Light {radiance},
+        position_ {position} {
 }
 
 ::glm::vec3 PointLight::getPosition() noexcept {

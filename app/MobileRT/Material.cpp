@@ -3,12 +3,12 @@
 using ::MobileRT::Material;
 
 Material::Material(
-        const ::glm::vec3 &Kd, const ::glm::vec3 &Ks,
-        const ::glm::vec3 &Kt, const float refractiveIndice,
-        const ::glm::vec3 &Le) noexcept :
-        Le_{Le},
-        Kd_{Kd},
-        Ks_{Ks},
-        Kt_{Kt},
-        refractiveIndice_{refractiveIndice} {
+    const ::glm::vec3 &kD, const ::glm::vec3 &kS,
+    const ::glm::vec3 &kT, const float refractiveIndice,
+    const ::glm::vec3 &lE) noexcept :
+    Le_ {lE},
+    Kd_ {kD},
+    Ks_ {kS},
+    Kt_ {kT},
+    refractiveIndice_ {refractiveIndice} {
 }

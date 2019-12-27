@@ -223,14 +223,14 @@ namespace MobileRT {
         const auto itBoxes {this->boxes_.begin()};
         const auto itPrimitives {this->primitives_.begin()};
         do {
-            const BVHNode &node {*(itBoxes + boxIndex)};
+            const auto &node {*(itBoxes + boxIndex)};
             if (node.box_.intersect(ray)) {
 
-                const ::std::int32_t numberPrimitives {node.numberPrimitives_};
+                const auto numberPrimitives {node.numberPrimitives_};
                 if (numberPrimitives > 0) {
                     for (::std::int32_t i {}; i < numberPrimitives; ++i) {
                         auto& primitive {*(itPrimitives + node.indexOffset_ + i)};
-                        const float lastDist {intersection.length_};
+                        const auto lastDist {intersection.length_};
                         intersection = primitive.intersect(intersection, ray);
                         if (shadowTrace && intersection.length_ < lastDist) {
                             return intersection;
@@ -239,13 +239,13 @@ namespace MobileRT {
                     ::std::advance(itStackBoxIndex, -1); // pop
                     boxIndex = *itStackBoxIndex;
                 } else {
-                    const ::std::int32_t left {node.indexOffset_};
-                    const ::std::int32_t right {node.indexOffset_ + 1};
-                    const BVHNode &childLeft {*(itBoxes + left)};
-                    const BVHNode &childRight {*(itBoxes + right)};
+                    const auto left {node.indexOffset_};
+                    const auto right {node.indexOffset_ + 1};
+                    const auto &childLeft {*(itBoxes + left)};
+                    const auto &childRight {*(itBoxes + right)};
 
-                    const bool traverseLeft {childLeft.box_.intersect(ray)};
-                    const bool traverseRight {childRight.box_.intersect(ray)};
+                    const auto traverseLeft {childLeft.box_.intersect(ray)};
+                    const auto traverseRight {childRight.box_.intersect(ray)};
 
                     if (!traverseLeft && !traverseRight) {
                         ::std::advance(itStackBoxIndex, -1); // pop
@@ -302,7 +302,7 @@ namespace MobileRT {
             *(itRightArea + i) = rightBox.getSurfaceArea();
         }
 
-        ::std::int32_t splitIndex {1};
+        auto splitIndex {1};
         auto minSah {*(itLeftArea) + numBoxes * *(itRightArea)};
         for (auto i {1}; i < numBoxes; ++i) {
             const auto nextSplit {i + 1};
@@ -324,8 +324,8 @@ namespace MobileRT {
     template<typename T>
     template<typename Iterator>
     ::std::int32_t BVH<T>::getMaxAxis(const Iterator itBegin, const Iterator itEnd) noexcept {
-        ::glm::vec3 min {itBegin->box_.pointMin_};
-        ::glm::vec3 max {itBegin->box_.pointMax_};
+        auto min {itBegin->box_.pointMin_};
+        auto max {itBegin->box_.pointMax_};
 
         for (auto it {itBegin + 1}; it < itEnd; ::std::advance(it, 1)) {
             const auto &box {it->box_};
@@ -335,7 +335,7 @@ namespace MobileRT {
 
         const auto maxDist {max - min};
 
-        const ::std::int32_t maxAxis {
+        const auto maxAxis {
             maxDist[0] >= maxDist[1] && maxDist[0] >= maxDist[2]
             ? 0
             : maxDist[1] >= maxDist[0] && maxDist[1] >= maxDist[2]

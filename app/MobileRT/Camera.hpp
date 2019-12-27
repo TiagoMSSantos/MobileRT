@@ -17,10 +17,10 @@ namespace MobileRT {
         float radToDeg(float rad) const noexcept;
 
     public:
-        ::glm::vec3 position_{};
-        ::glm::vec3 direction_{};
-        ::glm::vec3 right_{};
-        ::glm::vec3 up_{};
+        ::glm::vec3 position_ {};
+        ::glm::vec3 direction_ {};
+        ::glm::vec3 right_ {};
+        ::glm::vec3 up_ {};
 
     public:
         explicit Camera(const ::glm::vec3 &position,
@@ -30,7 +30,7 @@ namespace MobileRT {
 
         Camera(Camera &&camera) noexcept = default;
 
-        virtual ~Camera() noexcept;
+        virtual ~Camera() noexcept = default;
 
         Camera &operator=(const Camera &camera) noexcept = default;
 

@@ -33,7 +33,7 @@ namespace MobileRT {
 
     float haltonSequence(::std::uint32_t index, ::std::uint32_t base) noexcept;
 
-    ::std::uint32_t incrementalAvg(const ::glm::vec3 &sample, ::std::uint32_t avg, ::std::uint32_t numSample) noexcept;
+    ::std::int32_t incrementalAvg(const ::glm::vec3 &sample, ::std::int32_t avg, ::std::int32_t numSample) noexcept;
 
     ::glm::vec3 toVec3(const char *values) noexcept;
 
@@ -44,19 +44,19 @@ namespace MobileRT {
         ::std::ostringstream oss {""};
         static_cast<void> (::std::initializer_list<::std::int32_t> {(oss << args, 0)...});
         oss << '\n';
-        const ::std::string &line {oss.str()};
+        const auto &line {oss.str()};
         ::Dependent::printString(line);
     }
 
     ::std::string getFileName(const char *const filepath) noexcept {
         const ::std::string &filePath {filepath};
-        ::std::string::size_type filePos {filePath.rfind('/')};
+        auto filePos {filePath.rfind('/')};
         if (filePos != ::std::string::npos) {
             ++filePos;
         } else {
             filePos = 0;
         }
-        const ::std::string &res {filePath.substr(filePos)};
+        const auto &res {filePath.substr(filePos)};
         return res;
     }
 }//namespace MobileRT
