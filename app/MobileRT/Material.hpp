@@ -1,6 +1,7 @@
 #ifndef MOBILERT_MATERIAL_HPP
 #define MOBILERT_MATERIAL_HPP
 
+#include "Texture.hpp"
 #include <glm/glm.hpp>
 
 namespace MobileRT {
@@ -11,23 +12,26 @@ namespace MobileRT {
         ::glm::vec3 Ks_ {};   // specular reflection
         ::glm::vec3 Kt_ {};   // specular transmission
         float refractiveIndice_ {};
+        Texture texture_ {};
 
     public:
-        explicit Material () noexcept = default;
+        explicit Material() noexcept = default;
 
         explicit Material(
             const ::glm::vec3 &kD,
             const ::glm::vec3 &kS = ::glm::vec3 {},
             const ::glm::vec3 &kT = ::glm::vec3 {},
-            float refractiveIndice = 1.0F, const ::glm::vec3 &lE = ::glm::vec3 {}) noexcept;
+            float refractiveIndice = 1.0F,
+            const ::glm::vec3 &lE = ::glm::vec3 {},
+            Texture texture = Texture {}) noexcept;
 
-        Material(const Material &material) noexcept = default;
+        Material(const Material &material) = default;
 
         Material(Material &&material) noexcept = default;
 
         ~Material() noexcept = default;
 
-        Material &operator=(const Material &material) noexcept = default;
+        Material &operator=(const Material &material) = default;
 
         Material &operator=(Material &&material) noexcept = default;
 

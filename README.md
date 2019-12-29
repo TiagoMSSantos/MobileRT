@@ -16,6 +16,7 @@
 - [x] Move naive acceleration structure to a class different than Scene
 - [ ] Implement KD-Tree
 - [ ] Make acceleration structures compatible with the lights
+- [ ] Investigate if samplers are properly working
 
 ### Ray tracing JNI layer
 - [ ] Refactor DrawView translation unit

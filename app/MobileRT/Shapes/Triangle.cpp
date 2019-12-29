@@ -5,10 +5,24 @@ using ::MobileRT::Triangle;
 using ::MobileRT::Intersection;
 
 Triangle::Triangle(const ::glm::vec3 &pointA, const ::glm::vec3 &pointB, const ::glm::vec3 &pointC,
-        const ::std::int32_t materialIndex) noexcept :
+        const ::std::int32_t materialIndex
+) noexcept :
     AC_ {pointC - pointA},
     AB_ {pointB - pointA},
     pointA_ {pointA},
+    materialIndex_ {materialIndex} {
+}
+
+Triangle::Triangle(const ::glm::vec3 &pointA, const ::glm::vec3 &pointB, const ::glm::vec3 &pointC,
+    const ::glm::vec2 &texCoordA, const ::glm::vec2 &texCoordB, const ::glm::vec2 &texCoordC,
+    const ::std::int32_t materialIndex
+) noexcept :
+    AC_ {pointC - pointA},
+    AB_ {pointB - pointA},
+    pointA_ {pointA},
+    texCoordA_ {texCoordA},
+    texCoordB_ {texCoordB},
+    texCoordC_ {texCoordC},
     materialIndex_ {materialIndex} {
 }
 
@@ -52,7 +66,10 @@ Intersection Triangle::intersect(const Intersection &intersection, const Ray &ra
     };
 
     const auto& intersectionPoint {ray.origin_ + ray.direction_ * distanceToIntersection};
-    const Intersection res {intersectionPoint, distanceToIntersection, intersectionNormal, this, this->materialIndex_};
+    const auto w {1.0F - u - v};
+    const auto& texCoords {this->texCoordA_ * w + this->texCoordB_ * u + this->texCoordC_ * v};
+    const Intersection res {intersectionPoint, distanceToIntersection, intersectionNormal, this,
+                            this->materialIndex_, texCoords};
     return res;
 }
 
@@ -128,7 +145,7 @@ bool Triangle::intersect(const AABB &box) const noexcept {
 
     auto isOverTriangle {
         [&](const ::glm::vec3 &vec) noexcept -> bool {
-            const ::glm::vec3 &perpendicularVector {::glm::cross(vec, this->AC_)};
+            const auto &perpendicularVector {::glm::cross(vec, this->AC_)};
             const auto normalizedProjection {::glm::dot(this->AB_, perpendicularVector)};
             const auto res {::std::abs(normalizedProjection) < Epsilon};
             return res;

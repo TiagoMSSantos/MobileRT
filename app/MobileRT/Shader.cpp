@@ -108,6 +108,11 @@ bool Shader::rayTrace(::glm::vec3 *rgb, const Ray &ray) noexcept {
     const auto matIndex {intersection.materialIndex_};
     if (matIndex >= 0) {
         intersection.material_ = &this->materials_[static_cast<::std::uint32_t> (matIndex)];
+        const auto &texCoords {intersection.texCoords_};
+        const auto &texture {intersection.material_->texture_};
+        if (texCoords[0] >= 0 && texCoords[1] >= 0) {
+            intersection.material_->Kd_ = texture.loadColor(texCoords);
+        }
     };
     return intersection.length_ < lastDist && shade(rgb, intersection, ray);
 }

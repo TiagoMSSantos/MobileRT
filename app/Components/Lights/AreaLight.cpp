@@ -30,7 +30,7 @@ void AreaLight::resetSampling() noexcept {
     this->samplerPointLight_->resetSampling();
 }
 
-Intersection AreaLight::intersect(Intersection intersection, const Ray &ray) const noexcept {
+Intersection AreaLight::intersect(Intersection intersection, const Ray &ray) noexcept {
     const auto lastDist {intersection.length_};
     intersection = this->triangle_.intersect(intersection, ray);
     const auto intersected {intersection.length_ < lastDist};

@@ -40,7 +40,7 @@ namespace Components {
 
         ::MobileRT::Intersection intersect(
             ::MobileRT::Intersection intersection,
-            const ::MobileRT::Ray &ray) const noexcept final;
+            const ::MobileRT::Ray &ray) noexcept final;
     };
 }//namespace Components
 

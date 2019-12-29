@@ -8,10 +8,10 @@
 namespace MobileRT {
     class Light {
     public:
-        const Material radiance_{};
+        Material radiance_ {};
 
     public:
-        explicit Light () noexcept = delete;
+        explicit Light() noexcept = delete;
 
         explicit Light(const Material &radiance) noexcept;
 
@@ -29,7 +29,7 @@ namespace MobileRT {
 
         virtual void resetSampling() noexcept = 0;
 
-        virtual Intersection intersect(Intersection intersection, const Ray &ray) const noexcept = 0;
+        virtual Intersection intersect(Intersection intersection, const Ray &ray) noexcept = 0;
     };
 }//namespace MobileRT
 

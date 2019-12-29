@@ -1,13 +1,15 @@
 #include "Components/Loaders/OBJLoader.hpp"
 #include "Components/Lights/AreaLight.hpp"
-#include <cstring>
+#include "MobileRT/Texture.hpp"
 #include <fstream>
-#include <tinyobjloader/tiny_obj_loader.h>
+#include <map>
+#include <utility>
 
 using ::Components::AreaLight;
 using ::Components::OBJLoader;
 using ::MobileRT::Material;
 using ::MobileRT::Scene;
+using ::MobileRT::Texture;
 using ::MobileRT::Triangle;
 using ::MobileRT::Sampler;
 
@@ -29,7 +31,10 @@ OBJLoader::OBJLoader(::std::string objFilePath, ::std::string matFilePath) noexc
 
     LOG("Going to call tinyobj::LoadObj");
     const auto ret {
-        ::tinyobj::LoadObj(&attrib_, &shapes_, &materials_, &warnings, &errors, &objStream, matStreamReaderPtr, true)
+        ::tinyobj::LoadObj(
+                &this->attrib_, &this->shapes_, &this->materials_,
+                &warnings, &errors, &objStream, matStreamReaderPtr, true
+        )
     };
     LOG("Called tinyobj::LoadObj");
 
@@ -66,6 +71,9 @@ OBJLoader::OBJLoader(::std::string objFilePath, ::std::string matFilePath) noexc
 bool OBJLoader::fillScene(Scene *const scene,
                           ::std::function<::std::unique_ptr<Sampler>()> lambda) noexcept {
     scene->triangles_.reserve(static_cast<::std::size_t> (this->numberTriangles_));
+    const ::std::string delimiter {"/"};
+    const ::std::string filePath {this->objFilePath_.substr(0, this->objFilePath_.find_last_of(delimiter)) + "/"};
+    ::std::map<::std::string, Texture> textures {};
 
     for (const auto &shape : this->shapes_) {
         // Loop over faces(polygon)
@@ -93,15 +101,6 @@ bool OBJLoader::fillScene(Scene *const scene,
                 const auto red {*(itColor + 0)};
                 const auto green {*(itColor + 1)};
                 const auto blue {*(itColor + 2)};
-
-                if (!this->attrib_.texcoords.empty()) {
-                    const auto itTexCoords {
-                        this->attrib_.texcoords.begin() + 2 * static_cast<::std::int32_t> (idx1.texcoord_index)
-                    };
-                    const auto tx {*(itTexCoords + 0)};
-                    const auto ty {*(itTexCoords + 1)};
-                    LOG(tx, ty);
-                }
 
                 const auto idx2 {*(itIdx + 1)};
                 const auto itVertex2 {this->attrib_.vertices.begin() + 3 * idx2.vertex_index};
@@ -132,7 +131,7 @@ bool OBJLoader::fillScene(Scene *const scene,
                     const auto s1 {mat.specular[0]};
                     const auto s2 {mat.specular[1]};
                     const auto s3 {mat.specular[2]};
-                    const ::glm::vec3 &specular {s1 / 2.0F, s2 / 2.0F, s3 / 2.0F};
+                    const ::glm::vec3 &specular {s1, s2, s3};
                     const auto t1 {mat.transmittance[0] * (1.0F - mat.dissolve)};
                     const auto t2 {mat.transmittance[1] * (1.0F - mat.dissolve)};
                     const auto t3 {mat.transmittance[2] * (1.0F - mat.dissolve)};
@@ -148,9 +147,53 @@ bool OBJLoader::fillScene(Scene *const scene,
                     }
                     const ::glm::vec3 &emission {e1, e2, e3};
                     const auto indexRefraction {mat.ior};
-                    const Material material {diffuse, specular, transmittance, indexRefraction, emission};
-                    const auto itFoundMat {::std::find(scene->materials_.begin(), scene->materials_.end(), material)};
 
+                    const auto hasTexture {mat.diffuse_texname != ""};
+                    const auto haxCoordTex {!this->attrib_.texcoords.empty()};
+                    Texture texture {};
+                    ::glm::vec2 texCoordA {-1};
+                    ::glm::vec2 texCoordB {-1};
+                    ::glm::vec2 texCoordC {-1};
+                    auto texturePath {filePath + mat.diffuse_texname};
+                    auto texturePath2 {filePath + mat.diffuse_texname};
+                    if (hasTexture && haxCoordTex) {
+                        const auto itTexCoords1 {
+                            this->attrib_.texcoords.begin() + 2 * static_cast<::std::int32_t> (idx1.texcoord_index)
+                        };
+                        const auto tx1 {*(itTexCoords1 + 0)};
+                        const auto ty1 {*(itTexCoords1 + 1)};
+                        LOG(tx1, ty1);
+
+                        const auto itTexCoords2 {
+                            this->attrib_.texcoords.begin() + 2 * static_cast<::std::int32_t> (idx2.texcoord_index)
+                        };
+                        const auto tx2 {*(itTexCoords2 + 0)};
+                        const auto ty2 {*(itTexCoords2 + 1)};
+                        LOG(tx2, ty2);
+
+                        const auto itTexCoords3 {
+                            this->attrib_.texcoords.begin() + 2 * static_cast<::std::int32_t> (idx3.texcoord_index)
+                        };
+                        const auto tx3 {*(itTexCoords3 + 0)};
+                        const auto ty3 {*(itTexCoords3 + 1)};
+                        LOG(tx3, ty3);
+
+                        texCoordA = ::glm::vec2 {tx1, ty1};
+                        texCoordB = ::glm::vec2 {tx2, ty2};
+                        texCoordC = ::glm::vec2 {tx3, ty3};
+
+                        auto itTexture {textures.find(texturePath)};
+                        if(itTexture == textures.end()) {
+                            texture = Texture::createTexture(texturePath.c_str());
+                            auto pair {::std::make_pair<::std::string, Texture> (
+                                    ::std::move(texturePath), ::std::move(texture)
+                            )};
+                            textures.emplace(::std::move(pair));
+                        }
+                        texture = textures.find(texturePath2)->second;
+                    }
+                    const Material material {diffuse, specular, transmittance, indexRefraction, emission, texture};
+                    const auto itFoundMat {::std::find(scene->materials_.begin(), scene->materials_.end(), material)};
                     if (e1 > 0.0F || e2 > 0.0F || e3 > 0.0F) {
                         const ::glm::vec3 &p1 {vx1, vy1, vz1};
                         const ::glm::vec3 &p2 {vx2, vy2, vz2};
@@ -161,20 +204,20 @@ bool OBJLoader::fillScene(Scene *const scene,
                             const auto materialIndex {static_cast<::std::int32_t> (
                                 itFoundMat - scene->materials_.cbegin()
                             )};
-                            const Triangle &triangle {vertex1, vertex2, vertex3, materialIndex};
+                            const Triangle &triangle {vertex1, vertex2, vertex3,
+                                                      texCoordA, texCoordB, texCoordC, materialIndex};
 
                             scene->triangles_.emplace_back(triangle);
                         } else {
                             const auto materialIndex {static_cast<::std::int32_t> (scene->materials_.size())};
-                            const Triangle &triangle {vertex1, vertex2, vertex3, materialIndex};
+                            const Triangle &triangle {vertex1, vertex2, vertex3,
+                                                      texCoordA, texCoordB, texCoordC, materialIndex};
 
                             scene->triangles_.emplace_back(triangle);
                             scene->materials_.emplace_back(material);
                         }
                     }
-
                 } else {
-
                     const ::glm::vec3 &diffuse {red, green, blue};
                     const ::glm::vec3 &specular {0.0F, 0.0F, 0.0F};
                     const ::glm::vec3 &transmittance {0.0F, 0.0F, 0.0F};
@@ -182,7 +225,6 @@ bool OBJLoader::fillScene(Scene *const scene,
                     const ::glm::vec3 &emission {0.0F, 0.0F, 0.0F};
                     const Material material {diffuse, specular, transmittance, indexRefraction, emission};
                     const auto itFoundMat {::std::find(scene->materials_.begin(), scene->materials_.end(), material)};
-
                     if(itFoundMat != scene->materials_.end()) {
                         const auto materialIndex {static_cast<::std::int32_t> (
                             itFoundMat - scene->materials_.cbegin()
@@ -192,7 +234,6 @@ bool OBJLoader::fillScene(Scene *const scene,
                     } else {
                         const auto materialIndex {static_cast<::std::int32_t> (scene->materials_.size())};
                         const Triangle &triangle {vertex1, vertex2, vertex3, materialIndex};
-
                         scene->triangles_.emplace_back(triangle);
                         scene->materials_.emplace_back(material);
                     }

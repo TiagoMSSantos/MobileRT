@@ -10,22 +10,24 @@ namespace MobileRT {
     public:
         ::glm::vec3 point_ {};
         ::glm::vec3 normal_ {};
-        const Material *material_ {};
+        Material *material_ {};
         float length_ {RayLengthMax};
         const void *primitive_ {};
         ::std::int32_t materialIndex_ {};
+        ::glm::vec2 texCoords_ {-1};
 
     public:
-        explicit Intersection () noexcept = delete;
+        explicit Intersection() noexcept = delete;
 
         explicit Intersection(float dist, const void *primitive) noexcept;
 
         explicit Intersection(
-                const ::glm::vec3 &intPoint,
-                float dist,
-                const ::glm::vec3 &normal,
-                const void *primitive,
-                ::std::int32_t materialIndex) noexcept;
+            const ::glm::vec3 &intPoint,
+            float dist,
+            const ::glm::vec3 &normal,
+            const void *primitive,
+            ::std::int32_t materialIndex,
+            ::glm::vec2 texCoords = ::glm::vec2 {-1}) noexcept;
 
         Intersection(const Intersection &intersection) noexcept = default;
 
