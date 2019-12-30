@@ -9,6 +9,10 @@ Sampler::Sampler(const ::std::uint32_t width, const ::std::uint32_t height,
     samples_ {samples} {
 }
 
+Sampler::~Sampler() noexcept {
+    LOG("SAMPLER DESTROYED!!!");
+}
+
 void Sampler::resetSampling() noexcept {
     this->sample_ = 0;
 }

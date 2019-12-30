@@ -21,7 +21,7 @@ Texture::Texture(
 ::glm::vec3 Texture::loadColor(const ::glm::vec2 &texCoords) const noexcept {
     const auto u {static_cast<::std::int32_t> (texCoords[0] * this->width_)};
     const auto v {static_cast<::std::int32_t> (texCoords[1] * this->height_)};
-    const auto index {v * this->width_* this->channels_ + u * this->channels_};
+    const auto index {static_cast<::std::uint32_t> (v * this->width_* this->channels_ + u * this->channels_)};
 
     const ::glm::vec3 vec {
         this->image_[index + 0] / 255.0F,

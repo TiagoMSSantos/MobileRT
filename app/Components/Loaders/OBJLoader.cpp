@@ -1,6 +1,7 @@
 #include "Components/Loaders/OBJLoader.hpp"
 #include "Components/Lights/AreaLight.hpp"
 #include "MobileRT/Texture.hpp"
+#include <cstring>
 #include <fstream>
 #include <map>
 #include <utility>

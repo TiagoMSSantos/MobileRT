@@ -14,15 +14,21 @@ protected:
 	Triangle *triangle {};
 
 	virtual void SetUp() {
-		triangle = new Triangle{::glm::vec3 {0,0,0},
-								::glm::vec3 {0,1,0},
-								::glm::vec3 {0,0,1}, -1};
+		triangle = new Triangle {::glm::vec3 {0,0,0},
+								 ::glm::vec3 {0,1,0},
+								 ::glm::vec3 {0,0,1}, -1};
 	}
 
 	virtual void TearDown() {
 		delete triangle;
 	}
+
+	~TestTriangle() noexcept;
 };
+
+TestTriangle::~TestTriangle() noexcept {
+    LOG("TESTTRIANGLE DESTROYED!!!");
+}
 
 TEST_F(TestTriangle, ConstructorVALUES) {
 	ASSERT_EQ(0.0f, triangle->pointA_[0]);
@@ -197,7 +203,7 @@ TEST_F(TestTriangle, intersectRayInside01) {
 	const ::glm::vec3 orig {2, 0, 0};
 	const ::glm::vec3 dir {::glm::vec3 {0, 0, 0} - orig};
 	const Ray ray {dir, orig, 1};
-    Intersection intersection{::MobileRT::RayLengthMax, nullptr};
+    Intersection intersection {::MobileRT::RayLengthMax, nullptr};
 	const float lastDist {intersection.length_};
 	intersection = triangle->intersect(intersection, ray);
 	ASSERT_EQ(true, intersection.length_ < lastDist);
@@ -207,7 +213,7 @@ TEST_F(TestTriangle, intersectRayInside02) {
 	const ::glm::vec3 orig {2, 0, 0};
 	const ::glm::vec3 dir {::glm::vec3 {0, 1, 0} - orig};
 	const Ray ray {dir, orig, 1};
-    Intersection intersection{::MobileRT::RayLengthMax, nullptr};
+    Intersection intersection {::MobileRT::RayLengthMax, nullptr};
 	const float lastDist {intersection.length_};
 	intersection = triangle->intersect(intersection, ray);
 	ASSERT_EQ(true, intersection.length_ < lastDist);
@@ -217,7 +223,7 @@ TEST_F(TestTriangle, intersectRayInside03) {
 	const ::glm::vec3 orig {2, 0, 0};
 	const ::glm::vec3 dir {::glm::vec3 {0, 0, 1} - orig};
 	const Ray ray {dir, orig, 1};
-    Intersection intersection{::MobileRT::RayLengthMax, nullptr};
+    Intersection intersection {::MobileRT::RayLengthMax, nullptr};
 	const float lastDist {intersection.length_};
 	intersection = triangle->intersect(intersection, ray);
 	ASSERT_EQ(true, intersection.length_ < lastDist);
@@ -227,7 +233,7 @@ TEST_F(TestTriangle, intersectRayInside04) {
 	const ::glm::vec3 orig {2, 0, 0};
 	const ::glm::vec3 dir {::glm::vec3 {0, 1, 0} - orig};
 	const Ray ray {dir, orig, 1};
-    Intersection intersection{::MobileRT::RayLengthMax, nullptr};
+    Intersection intersection {::MobileRT::RayLengthMax, nullptr};
 	const float lastDist {intersection.length_};
 	intersection = triangle->intersect(intersection, ray);
 	ASSERT_EQ(true, intersection.length_ < lastDist);
@@ -237,7 +243,7 @@ TEST_F(TestTriangle, intersectRayOutside01) {
 	const ::glm::vec3 orig {2, 0, 0};
 	const ::glm::vec3 dir {::glm::vec3 {0, 1.000001, 0} - orig};
 	const Ray ray {dir, orig, 1};
-    Intersection intersection{::MobileRT::RayLengthMax, nullptr};
+    Intersection intersection {::MobileRT::RayLengthMax, nullptr};
 	const float lastDist {intersection.length_};
 	intersection = triangle->intersect(intersection, ray);
 	ASSERT_EQ(false, intersection.length_ < lastDist);
@@ -247,7 +253,7 @@ TEST_F(TestTriangle, intersectRayOutside02) {
 	const ::glm::vec3 orig {2, 0, 0};
 	const ::glm::vec3 dir {::glm::vec3 {0, 0, 1.000001} - orig};
 	const Ray ray {dir, orig, 1};
-    Intersection intersection{::MobileRT::RayLengthMax, nullptr};
+    Intersection intersection {::MobileRT::RayLengthMax, nullptr};
 	const float lastDist {intersection.length_};
 	intersection = triangle->intersect(intersection, ray);
 	ASSERT_EQ(false, intersection.length_ < lastDist);
@@ -257,7 +263,7 @@ TEST_F(TestTriangle, intersectRayOutside03) {
 	const ::glm::vec3 orig {2, 2, 2};
 	const ::glm::vec3 dir {::glm::vec3 {0.000001, 0, 0} - orig};
 	const Ray ray {dir, orig, 1};
-    Intersection intersection{::MobileRT::RayLengthMax, nullptr};
+    Intersection intersection {::MobileRT::RayLengthMax, nullptr};
 	const float lastDist {intersection.length_};
 	intersection = triangle->intersect(intersection, ray);
 	ASSERT_EQ(false, intersection.length_ < lastDist);
@@ -267,7 +273,7 @@ TEST_F(TestTriangle, intersectRayOutside04) {
 	const ::glm::vec3 orig {2, 2, 2};
 	const ::glm::vec3 dir {::glm::vec3 {-1, 0, 0} - orig};
 	const Ray ray {dir, orig, 1};
-    Intersection intersection{::MobileRT::RayLengthMax, nullptr};
+    Intersection intersection {::MobileRT::RayLengthMax, nullptr};
 	const float lastDist {intersection.length_};
 	intersection = triangle->intersect(intersection, ray);
 	ASSERT_EQ(false, intersection.length_ < lastDist);
@@ -277,7 +283,7 @@ TEST_F(TestTriangle, intersectRayOutside05) {
 	const ::glm::vec3 orig {2, 0, 0};
 	const ::glm::vec3 dir {::glm::vec3 {0, -0.000001, 0} - orig};
 	const Ray ray {dir, orig, 1};
-    Intersection intersection{::MobileRT::RayLengthMax, nullptr};
+    Intersection intersection {::MobileRT::RayLengthMax, nullptr};
 	const float lastDist {intersection.length_};
 	intersection = triangle->intersect(intersection, ray);
 	ASSERT_EQ(false, intersection.length_ < lastDist);
@@ -287,7 +293,7 @@ TEST_F(TestTriangle, intersectRayOutside06) {
 	const ::glm::vec3 orig {2, 0, 0};
 	const ::glm::vec3 dir {::glm::vec3 {0, 0, -0.000001} - orig};
 	const Ray ray {dir, orig, 1};
-    Intersection intersection{::MobileRT::RayLengthMax, nullptr};
+    Intersection intersection {::MobileRT::RayLengthMax, nullptr};
 	const float lastDist {intersection.length_};
 	intersection = triangle->intersect(intersection, ray);
 	ASSERT_EQ(false, intersection.length_ < lastDist);

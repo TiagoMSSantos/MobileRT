@@ -22,7 +22,7 @@ namespace MobileRT {
 
         Sampler(Sampler &&sampler) noexcept = delete;
 
-        virtual ~Sampler() noexcept = default;
+        virtual ~Sampler() noexcept;
 
         Sampler &operator=(const Sampler &sampler) noexcept = delete;
 

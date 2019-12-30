@@ -27,7 +27,7 @@ endif()
 # Remove default flags
 set( ANDROID_COMPILER_FLAGS "" CACHE STRING "CUSTOM" FORCE )
 
-set( CMAKE_CXX_FLAGS "-fPIC -Wno-weak-vtables" CACHE STRING "CUSTOM" FORCE )
+set( CMAKE_CXX_FLAGS "-fPIC" CACHE STRING "CUSTOM" FORCE )
 set( CMAKE_CXX_FLAGS_DEBUG "-D_GLIBCXX_DEBUG" CACHE STRING "CUSTOM" FORCE )
 set( CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG -ffunction-sections -fdata-sections -fno-exceptions"
 		CACHE STRING "CUSTOM" FORCE )
@@ -61,15 +61,13 @@ set( MOBILE_RT_HEADERS "${CMAKE_SOURCE_DIR}" )
 set( MOBILE_RC_HEADERS "${CMAKE_SOURCE_DIR}" )
 set( SCENES_HEADERS "${CMAKE_SOURCE_DIR}/Scenes" )
 set( THIRD_PARTY_HEADERS "${CMAKE_SOURCE_DIR}/third_party" )
-set( GSL_HEADERS "${CMAKE_SOURCE_DIR}/third_party/GSL/include" )
 set( GLM_HEADERS "${CMAKE_SOURCE_DIR}/third_party/glm" )
 
 # Set common flags
 set( COMMON_FLAGS "${COMMON_FLAGS}"
 		-std=c++11 -pedantic-errors -pedantic -Wpedantic -Wall -Wextra -Wfatal-errors -Werror )
 set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-c++98-compat-pedantic -Wno-padded )
-set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-exit-time-destructors -Wno-global-constructors )
-set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-gnu-anonymous-struct -Wno-nested-anon-types )
+set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-exit-time-destructors )
 
 set( COMMON_FLAGS_DEBUG -O0 -g3 -fno-optimize-sibling-calls -fno-omit-frame-pointer )
 
@@ -108,13 +106,8 @@ else ()
 	find_package( GTK2 REQUIRED )
 	add_executable( ${PROJECT_NAME} ${SCENES_SOURCES} ${MOBILE_DEPENDENT_SOURCES} )
 
-	target_include_directories( ${PROJECT_NAME} PRIVATE "${GTK2_INCLUDE_DIRS}" )
-	target_compile_options( ${PROJECT_NAME} PRIVATE
-		-Wno-reserved-id-macro -Wno-documentation-unknown-command -Wno-old-style-cast -Wno-documentation
-		-Wno-zero-as-null-pointer-constant -Wno-redundant-parens -Wno-unused-variable -Wno-weak-vtables
-		-Wno-sign-conversion
-	)
-	target_link_libraries( ${PROJECT_NAME} PRIVATE "${GTK2_LIBRARIES}" GSL )
+	target_include_directories( ${PROJECT_NAME} SYSTEM PRIVATE "${GTK2_INCLUDE_DIRS}" )
+	target_link_libraries( ${PROJECT_NAME} PRIVATE "${GTK2_LIBRARIES}" )
 endif()
 
 set_target_properties( ${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "${CMAKE_DEBUG_POSTFIX}" )
@@ -122,10 +115,9 @@ set_target_properties( ${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "${CMAKE_DEBUG_P
 target_include_directories( ${PROJECT_NAME} PUBLIC "${MOBILE_RC_HEADERS}" )
 target_include_directories( ${PROJECT_NAME} PUBLIC "${SCENES_HEADERS}" )
 target_include_directories( ${PROJECT_NAME} PUBLIC "${MOBILE_APP_SOURCES}" )
-target_include_directories( ${PROJECT_NAME} PUBLIC "${GSL_HEADERS}" )
-target_include_directories( ${PROJECT_NAME} PUBLIC "${GLM_HEADERS}" )
+target_include_directories( ${PROJECT_NAME} SYSTEM PUBLIC "${GLM_HEADERS}" )
 
-target_compile_options( ${PROJECT_NAME} PRIVATE ${COMMON_FLAGS} )
+target_compile_options( ${PROJECT_NAME} PRIVATE ${COMMON_FLAGS} -Wno-global-constructors )
 target_compile_options( ${PROJECT_NAME} PRIVATE $<$<CONFIG:DEBUG>:${COMMON_FLAGS_DEBUG}> )
 target_compile_options( ${PROJECT_NAME} PRIVATE $<$<CONFIG:RELEASE>:${COMMON_FLAGS_RELEASE}> )
 

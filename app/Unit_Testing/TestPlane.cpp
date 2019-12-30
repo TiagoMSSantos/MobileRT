@@ -3,7 +3,6 @@
 
 using ::MobileRT::AABB;
 using ::MobileRT::Plane;
-using ::glm::vec3;
 
 class TestPlane : public testing::Test {
 protected:
@@ -16,7 +15,13 @@ protected:
 	virtual void TearDown() {
 		delete plane;
 	}
+
+	~TestPlane() noexcept;
 };
+
+TestPlane::~TestPlane() noexcept {
+    LOG("TESTPLANE DESTROYED!!!");
+}
 
 TEST_F(TestPlane, IntersectBoxOutsideX) {
 	const AABB box {::glm::vec3 {1, 0, 0}, ::glm::vec3 {2, 1, 1}};

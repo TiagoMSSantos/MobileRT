@@ -13,11 +13,6 @@
 	url = https://github.com/google/googletest
 	branch = master
 
-[submodule "third_party/GSL"]
-	path = app/third_party/GSL
-	url = https://github.com/Microsoft/GSL
-	branch = master
-
 [submodule "third_party/stb"]
     path = app/third_party/stb
     url = https://github.com/nothings/stb

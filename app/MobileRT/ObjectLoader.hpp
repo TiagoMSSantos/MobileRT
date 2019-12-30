@@ -21,7 +21,7 @@ namespace MobileRT {
 
         ObjectLoader(ObjectLoader &&objectLoader) noexcept = delete;
 
-        virtual ~ObjectLoader() noexcept = default;
+        virtual ~ObjectLoader() noexcept;
 
         ObjectLoader &operator=(const ObjectLoader &objectLoader) noexcept = delete;
 

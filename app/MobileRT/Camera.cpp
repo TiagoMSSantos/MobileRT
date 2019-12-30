@@ -4,19 +4,16 @@
 using ::MobileRT::AABB;
 using ::MobileRT::Camera;
 
-AABB Camera::getAABB() const noexcept {
-    const auto &min {this->position_};
-    const auto &max {this->position_};
-    const AABB &res {min, max};
-    return res;
-}
-
 //Left hand rule
 Camera::Camera(const ::glm::vec3 &position, const ::glm::vec3 &lookAt, const ::glm::vec3 &up) noexcept :
         position_ {position},
         direction_ {::glm::normalize(lookAt - position)},
         right_ {::glm::cross(up, direction_)},
         up_ {::glm::cross(direction_, right_)} {
+}
+
+Camera::~Camera() noexcept {
+    LOG("CAMERA DESTROYED!!!");
 }
 
 Camera::Camera(const Camera &camera) noexcept {
@@ -34,4 +31,11 @@ float Camera::degToRad(const float deg) const noexcept {
 float Camera::radToDeg(const float rad) const noexcept {
     const auto degrees {(rad / ::glm::pi<float>()) * 180.0f};
     return degrees;
+}
+
+AABB Camera::getAABB() const noexcept {
+    const auto &min {this->position_};
+    const auto &max {this->position_};
+    const AABB &res {min, max};
+    return res;
 }

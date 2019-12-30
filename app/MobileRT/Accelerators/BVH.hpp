@@ -15,7 +15,7 @@ namespace MobileRT {
     struct BVHNode {
         AABB box_ {};
         ::std::int32_t indexOffset_ {};
-        ::std::int32_t numberPrimitives_ {};
+        ::std::int32_t numPrimitives_ {};
     };
 
     template<typename T>
@@ -82,8 +82,8 @@ namespace MobileRT {
             this->boxes_.emplace_back(bvhNode);
             return;
         }
-        const auto numberPrimitives {(primitives.size())};
-        const auto maxNodes {numberPrimitives * 2 - 1};
+        const auto numPrimitives {(primitives.size())};
+        const auto maxNodes {numPrimitives * 2 - 1};
         this->boxes_.resize(maxNodes);
         build(::std::move(primitives));
     }
@@ -155,7 +155,7 @@ namespace MobileRT {
 
             if (boxPrimitivesSize <= maxLeafSize) {
                 currentBox->indexOffset_ = beginBoxIndex;
-                currentBox->numberPrimitives_ = boxPrimitivesSize;
+                currentBox->numPrimitives_ = boxPrimitivesSize;
 
                 ::std::advance(itStackBoxIndex, -1); // pop
                 currentBoxIndex = *itStackBoxIndex;
@@ -226,7 +226,7 @@ namespace MobileRT {
             const auto &node {*(itBoxes + boxIndex)};
             if (node.box_.intersect(ray)) {
 
-                const auto numberPrimitives {node.numberPrimitives_};
+                const auto numberPrimitives {node.numPrimitives_};
                 if (numberPrimitives > 0) {
                     for (::std::int32_t i {}; i < numberPrimitives; ++i) {
                         auto& primitive {*(itPrimitives + node.indexOffset_ + i)};

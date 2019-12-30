@@ -1,8 +1,6 @@
 #include "Components/Loaders/PerspectiveLoader.hpp"
 #include <gtest/gtest.h>
 
-using ::glm::vec3;
-
 class TestCameraLoader : public testing::Test {
 protected:
 
@@ -11,7 +9,13 @@ protected:
 
     virtual void TearDown() {
     }
+
+    ~TestCameraLoader() noexcept;
 };
+
+TestCameraLoader::~TestCameraLoader() noexcept {
+    LOG("TESTCAMERALOADER DESTROYED!!!");
+}
 
 TEST_F(TestCameraLoader, TestCameraLoader1) {
     const ::std::string data {R"(
