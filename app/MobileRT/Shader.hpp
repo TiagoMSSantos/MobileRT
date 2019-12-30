@@ -43,48 +43,48 @@ namespace MobileRT {
         ::std::vector<::std::unique_ptr<Light>> lights_ {};
 
     private:
-        Intersection traceLights(Intersection intersection, const Ray &ray) const noexcept;
+        Intersection traceLights(Intersection intersection, const Ray &ray) const;
 
     protected:
-        virtual bool shade(::glm::vec3 *rgb, const Intersection &intersection, const Ray &ray) noexcept = 0;
+        virtual bool shade(::glm::vec3 *rgb, const Intersection &intersection, const Ray &ray) = 0;
 
-        ::glm::vec3 getCosineSampleHemisphere(const ::glm::vec3 &normal) const noexcept;
+        ::glm::vec3 getCosineSampleHemisphere(const ::glm::vec3 &normal) const;
 
         ::std::uint32_t getLightIndex ();
 
     public:
-        void initializeAccelerators(Scene scene) noexcept;
+        void initializeAccelerators(Scene scene);
 
     public:
-        explicit Shader () noexcept = delete;
+        explicit Shader () = delete;
 
-        explicit Shader(Scene scene, ::std::int32_t samplesLight, Accelerator accelerator) noexcept;
+        explicit Shader(Scene scene, ::std::int32_t samplesLight, Accelerator accelerator);
 
-        Shader(const Shader &shader) noexcept = delete;
+        Shader(const Shader &shader) = delete;
 
         Shader(Shader &&shader) noexcept = default;
 
-        virtual ~Shader() noexcept = default;
+        virtual ~Shader() = default;
 
-        Shader &operator=(const Shader &shader) noexcept = delete;
+        Shader &operator=(const Shader &shader) = delete;
 
         Shader &operator=(Shader &&shader) noexcept = delete;
 
-        bool rayTrace(::glm::vec3 *rgb, const Ray &ray) noexcept;
+        bool rayTrace(::glm::vec3 *rgb, const Ray &ray);
 
-        bool shadowTrace(Intersection intersection, const Ray &ray) noexcept;
+        bool shadowTrace(Intersection intersection, const Ray &ray);
 
-        virtual void resetSampling() noexcept;
+        virtual void resetSampling();
 
-        const ::std::vector<Plane>& getPlanes() const noexcept;
+        const ::std::vector<Plane>& getPlanes() const;
 
-        const ::std::vector<Sphere>& getSpheres() const noexcept;
+        const ::std::vector<Sphere>& getSpheres() const;
 
-        const ::std::vector<Triangle>& getTriangles() const noexcept;
+        const ::std::vector<Triangle>& getTriangles() const;
 
-        const ::std::vector<Material>& getMaterials() const noexcept;
+        const ::std::vector<Material>& getMaterials() const;
 
-        const ::std::vector<::std::unique_ptr<Light>>& getLights() const noexcept;
+        const ::std::vector<::std::unique_ptr<Light>>& getLights() const;
     };
 }//namespace MobileRT
 

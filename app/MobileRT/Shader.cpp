@@ -35,7 +35,7 @@ namespace {
     }
 }//namespace
 
-Shader::Shader(Scene scene, const ::std::int32_t samplesLight, const Accelerator accelerator) noexcept :
+Shader::Shader(Scene scene, const ::std::int32_t samplesLight, const Accelerator accelerator) :
     materials_ {::std::move(scene.materials_)},
     accelerator_ {accelerator},
     samplesLight_ {samplesLight} {
@@ -44,7 +44,8 @@ Shader::Shader(Scene scene, const ::std::int32_t samplesLight, const Accelerator
     initializeAccelerators(::std::move(scene));
 }
 
-void Shader::initializeAccelerators(Scene scene) noexcept {
+void Shader::initializeAccelerators(Scene scene) {
+    LOG("initializeAccelerators");
     switch (this->accelerator_) {
         case Accelerator::ACC_NONE: {
             break;
@@ -75,7 +76,7 @@ void Shader::initializeAccelerators(Scene scene) noexcept {
     this->lights_ = ::std::move(scene.lights_);
 }
 
-bool Shader::rayTrace(::glm::vec3 *rgb, const Ray &ray) noexcept {
+bool Shader::rayTrace(::glm::vec3 *rgb, const Ray &ray) {
     Intersection intersection {RayLengthMax, nullptr};
     const auto lastDist {intersection.length_};
     switch (this->accelerator_) {
@@ -117,7 +118,7 @@ bool Shader::rayTrace(::glm::vec3 *rgb, const Ray &ray) noexcept {
     return intersection.length_ < lastDist && shade(rgb, intersection, ray);
 }
 
-bool Shader::shadowTrace(Intersection intersection, const Ray &ray) noexcept {
+bool Shader::shadowTrace(Intersection intersection, const Ray &ray) {
     const auto lastDist {intersection.length_};
     switch (this->accelerator_) {
         case Accelerator::ACC_NONE: {
@@ -149,20 +150,20 @@ bool Shader::shadowTrace(Intersection intersection, const Ray &ray) noexcept {
     return res;
 }
 
-Intersection Shader::traceLights(Intersection intersection, const Ray &ray) const noexcept {
+Intersection Shader::traceLights(Intersection intersection, const Ray &ray) const {
     for (const auto &light : this->lights_) {
         intersection = light->intersect(intersection, ray);
     }
     return intersection;
 }
 
-void Shader::resetSampling() noexcept {
+void Shader::resetSampling() {
     for (const auto &light : this->lights_) {
         light->resetSampling();
     }
 }
 
-::glm::vec3 Shader::getCosineSampleHemisphere(const ::glm::vec3 &normal) const noexcept {
+::glm::vec3 Shader::getCosineSampleHemisphere(const ::glm::vec3 &normal) const {
     static ::std::atomic<::std::uint32_t> sampler {};
     const auto current1 {sampler.fetch_add(1, ::std::memory_order_relaxed)};
     const auto current2 {sampler.fetch_add(1, ::std::memory_order_relaxed)};
@@ -204,7 +205,7 @@ void Shader::resetSampling() noexcept {
     return chosenLight;
 }
 
-const ::std::vector<Plane>& Shader::getPlanes() const noexcept {
+const ::std::vector<Plane>& Shader::getPlanes() const {
     switch (this->accelerator_) {
         case Accelerator::ACC_NONE: {
             return this->naivePlanes_.getPrimitives();
@@ -225,7 +226,7 @@ const ::std::vector<Plane>& Shader::getPlanes() const noexcept {
     return this->naivePlanes_.getPrimitives();
 }
 
-const ::std::vector<Sphere>& Shader::getSpheres() const noexcept {
+const ::std::vector<Sphere>& Shader::getSpheres() const {
     switch (this->accelerator_) {
         case Accelerator::ACC_NONE: {
             return this->naiveSpheres_.getPrimitives();
@@ -246,7 +247,7 @@ const ::std::vector<Sphere>& Shader::getSpheres() const noexcept {
     return this->naiveSpheres_.getPrimitives();
 }
 
-const ::std::vector<Triangle>& Shader::getTriangles() const noexcept {
+const ::std::vector<Triangle>& Shader::getTriangles() const {
     switch (this->accelerator_) {
         case Accelerator::ACC_NONE: {
             return this->naiveTriangles_.getPrimitives();
@@ -267,10 +268,10 @@ const ::std::vector<Triangle>& Shader::getTriangles() const noexcept {
     return this->naiveTriangles_.getPrimitives();
 }
 
-const ::std::vector<::std::unique_ptr<Light>>& Shader::getLights() const noexcept {
+const ::std::vector<::std::unique_ptr<Light>>& Shader::getLights() const {
     return this->lights_;
 }
 
-const ::std::vector<Material>& Shader::getMaterials() const noexcept {
+const ::std::vector<Material>& Shader::getMaterials() const {
     return this->materials_;
 }

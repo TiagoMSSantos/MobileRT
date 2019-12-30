@@ -16,26 +16,26 @@ namespace Components {
         bool shade(
             ::glm::vec3 *rgb,
             const ::MobileRT::Intersection &intersection,
-            const ::MobileRT::Ray &ray) noexcept final;
+            const ::MobileRT::Ray &ray) final;
 
     public:
-        explicit PathTracer() noexcept = delete;
+        explicit PathTracer() = delete;
 
         explicit PathTracer(::MobileRT::Scene scene,
                             ::std::unique_ptr<::MobileRT::Sampler> samplerRussianRoulette,
-                            ::std::int32_t samplesLight, Accelerator accelerator) noexcept;
+                            ::std::int32_t samplesLight, Accelerator accelerator);
 
-        PathTracer(const PathTracer &pathTracer) noexcept = delete;
+        PathTracer(const PathTracer &pathTracer) = delete;
 
         PathTracer(PathTracer &&pathTracer) noexcept = delete;
 
-        ~PathTracer() noexcept final = default;
+        ~PathTracer() final = default;
 
-        PathTracer &operator=(const PathTracer &pathTracer) noexcept = delete;
+        PathTracer &operator=(const PathTracer &pathTracer) = delete;
 
         PathTracer &operator=(PathTracer &&pathTracer) noexcept = delete;
 
-        void resetSampling() noexcept final;
+        void resetSampling() final;
     };
 }//namespace Components
 

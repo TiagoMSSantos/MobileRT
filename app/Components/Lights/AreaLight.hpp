@@ -15,32 +15,32 @@ namespace Components {
         ::std::unique_ptr<::MobileRT::Sampler> samplerPointLight_ {};
 
     public:
-        explicit AreaLight() noexcept = delete;
+        explicit AreaLight() = delete;
 
         explicit AreaLight(
             const ::MobileRT::Material &radiance,
             ::std::unique_ptr<::MobileRT::Sampler> samplerPointLight,
             const ::glm::vec3 &pointA,
             const ::glm::vec3 &pointB,
-            const ::glm::vec3 &pointC) noexcept;
+            const ::glm::vec3 &pointC);
 
-        AreaLight(const AreaLight &areaLight) noexcept = delete;
+        AreaLight(const AreaLight &areaLight) = delete;
 
         AreaLight(AreaLight &&areaLight) noexcept = delete;
 
-        ~AreaLight() noexcept final = default;
+        ~AreaLight() final = default;
 
-        AreaLight &operator=(const AreaLight &areaLight) noexcept = delete;
+        AreaLight &operator=(const AreaLight &areaLight) = delete;
 
         AreaLight &operator=(AreaLight &&areaLight) noexcept = delete;
 
-        ::glm::vec3 getPosition() noexcept final;
+        ::glm::vec3 getPosition() final;
 
-        void resetSampling() noexcept final;
+        void resetSampling() final;
 
         ::MobileRT::Intersection intersect(
             ::MobileRT::Intersection intersection,
-            const ::MobileRT::Ray &ray) noexcept final;
+            const ::MobileRT::Ray &ray) final;
     };
 }//namespace Components
 

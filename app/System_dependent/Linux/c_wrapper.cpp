@@ -55,7 +55,7 @@ work_thread(
         LOG("camFilePath = ", camFilePath);
 
         ::std::unique_ptr<::MobileRT::Renderer> renderer_ {};
-        ::std::int32_t numberOfLights_ {};
+        ::std::int32_t numLights {};
 
         const auto ratio {static_cast<float> (width) / height};
         ::MobileRT::Scene scene_ {};
@@ -172,7 +172,7 @@ work_thread(
         const auto planes {static_cast<::std::int32_t> (shader_->getPlanes().size())};
         const auto spheres {static_cast<::std::int32_t> (shader_->getSpheres().size())};
         const auto triangles {static_cast<::std::int32_t> (shader_->getTriangles().size())};
-        numberOfLights_ = static_cast<::std::int32_t> (shader_->getLights().size());
+        numLights = static_cast<::std::int32_t> (shader_->getLights().size());
         const ::std::int32_t nPrimitives {triangles + spheres + planes};
 
         LOG("Started creating Renderer");
@@ -187,7 +187,7 @@ work_thread(
         LOG("SPHERES = ", spheres);
         LOG("PLANES = ", planes);
         LOG("PRIMITIVES = ", nPrimitives);
-        LOG("LIGHTS = ", numberOfLights_);
+        LOG("LIGHTS = ", numLights);
         LOG("threads = ", threads);
         LOG("shader = ", shader);
         LOG("scene = ", scene);

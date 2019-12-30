@@ -3,24 +3,24 @@
 using ::MobileRT::Sampler;
 
 Sampler::Sampler(const ::std::uint32_t width, const ::std::uint32_t height,
-                 const ::std::uint32_t samples) noexcept :
+                 const ::std::uint32_t samples) :
     domainSize_ {(width / (width / static_cast<::std::uint32_t>(::std::sqrt(NumberOfBlocks)))) *
                 (height / (width / static_cast<::std::uint32_t>(::std::sqrt(NumberOfBlocks))))},
     samples_ {samples} {
 }
 
-Sampler::~Sampler() noexcept {
+Sampler::~Sampler() {
     LOG("SAMPLER DESTROYED!!!");
 }
 
-void Sampler::resetSampling() noexcept {
+void Sampler::resetSampling() {
     this->sample_ = 0;
 }
 
-void Sampler::stopSampling() noexcept {
+void Sampler::stopSampling() {
     this->samples_ = 0;
 }
 
-float Sampler::getSample() noexcept {
+float Sampler::getSample() {
     return getSample(0);
 }

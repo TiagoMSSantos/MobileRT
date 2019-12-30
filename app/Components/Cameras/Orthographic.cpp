@@ -6,7 +6,7 @@ using ::MobileRT::Ray;
 
 Orthographic::Orthographic(
     const ::glm::vec3 &position, const ::glm::vec3 &lookAt, const ::glm::vec3 &up,
-    const float sizeH, const float sizeV) noexcept :
+    const float sizeH, const float sizeV) :
         Camera {position, lookAt, up},
         sizeH_ {sizeH / 2.0F},
         sizeV_ {sizeV / 2.0F} {
@@ -17,7 +17,7 @@ Orthographic::Orthographic(
 /* deviationU = [-0.5F / width, 0.5F / width] */
 /* deviationV = [-0.5F / height, 0.5F / height] */
 Ray Orthographic::generateRay(const float u, const float v,
-                              const float deviationU, const float deviationV) const noexcept {
+                              const float deviationU, const float deviationV) const {
     const auto rightFactor {(u - 0.5F) * this->sizeH_};
     const auto &right {this->right_ * rightFactor + this->right_ * deviationU};
     const auto upFactor {(0.5F - v) * this->sizeV_};
@@ -26,7 +26,7 @@ Ray Orthographic::generateRay(const float u, const float v,
     return ray;
 }
 
-AABB Orthographic::getAABB() const noexcept {
+AABB Orthographic::getAABB() const {
     const auto &min {
         this->position_ +
         this->right_ * (0.0F - 0.5F) * this->sizeH_ + this->right_ * -0.5F +
@@ -41,10 +41,10 @@ AABB Orthographic::getAABB() const noexcept {
     return res;
 }
 
-float Orthographic::getSizeH() const noexcept {
+float Orthographic::getSizeH() const {
     return this->sizeH_;
 }
 
-float Orthographic::getSizeV() const noexcept {
+float Orthographic::getSizeV() const {
     return this->sizeV_;
 }

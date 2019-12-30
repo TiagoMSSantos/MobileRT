@@ -28,13 +28,13 @@ namespace MobileRT {
     public:
         explicit Scene() = default;
 
-        Scene(const Scene &scene) noexcept = delete;
+        Scene(const Scene &scene) = delete;
 
         Scene(Scene &&scene) noexcept = default;
 
-        ~Scene() noexcept;
+        ~Scene();
 
-        Scene &operator=(const Scene &scene) noexcept = delete;
+        Scene &operator=(const Scene &scene) = delete;
 
         Scene &operator=(Scene &&scene) noexcept = default;
 

@@ -15,7 +15,7 @@ namespace MobileRT {
         Texture texture_ {};
 
     public:
-        explicit Material() noexcept = default;
+        explicit Material() = default;
 
         explicit Material(
             const ::glm::vec3 &kD,
@@ -23,19 +23,19 @@ namespace MobileRT {
             const ::glm::vec3 &kT = ::glm::vec3 {},
             float refractiveIndice = 1.0F,
             const ::glm::vec3 &lE = ::glm::vec3 {},
-            Texture texture = Texture {}) noexcept;
+            Texture texture = Texture {});
 
         Material(const Material &material) = default;
 
         Material(Material &&material) noexcept = default;
 
-        ~Material() noexcept = default;
+        ~Material() = default;
 
         Material &operator=(const Material &material) = default;
 
         Material &operator=(Material &&material) noexcept = default;
 
-        bool operator==(const Material &material) noexcept;
+        bool operator==(const Material &material);
     };
 }//namespace MobileRT
 

@@ -10,23 +10,23 @@ namespace Components {
         bool shade(
             ::glm::vec3 *rgb,
             const ::MobileRT::Intersection &intersection,
-            const ::MobileRT::Ray &ray) noexcept final;
+            const ::MobileRT::Ray &ray) final;
 
     public:
-        explicit Whitted () noexcept = delete;
+        explicit Whitted () = delete;
 
         explicit Whitted(
             ::MobileRT::Scene scene,
             ::std::int32_t samplesLight,
-            ::MobileRT::Shader::Accelerator accelerator) noexcept;
+            ::MobileRT::Shader::Accelerator accelerator);
 
-        Whitted(const Whitted &whitted) noexcept = delete;
+        Whitted(const Whitted &whitted) = delete;
 
         Whitted(Whitted &&whitted) noexcept = delete;
 
-        ~Whitted() noexcept final = default;
+        ~Whitted() final = default;
 
-        Whitted &operator=(const Whitted &whitted) noexcept = delete;
+        Whitted &operator=(const Whitted &whitted) = delete;
 
         Whitted &operator=(Whitted &&whitted) noexcept = delete;
     };

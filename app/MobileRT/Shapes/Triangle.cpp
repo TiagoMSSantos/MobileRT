@@ -6,7 +6,7 @@ using ::MobileRT::Intersection;
 
 Triangle::Triangle(const ::glm::vec3 &pointA, const ::glm::vec3 &pointB, const ::glm::vec3 &pointC,
         const ::std::int32_t materialIndex
-) noexcept :
+) :
     AC_ {pointC - pointA},
     AB_ {pointB - pointA},
     pointA_ {pointA},
@@ -16,7 +16,7 @@ Triangle::Triangle(const ::glm::vec3 &pointA, const ::glm::vec3 &pointB, const :
 Triangle::Triangle(const ::glm::vec3 &pointA, const ::glm::vec3 &pointB, const ::glm::vec3 &pointC,
     const ::glm::vec2 &texCoordA, const ::glm::vec2 &texCoordB, const ::glm::vec2 &texCoordC,
     const ::std::int32_t materialIndex
-) noexcept :
+) :
     AC_ {pointC - pointA},
     AB_ {pointB - pointA},
     pointA_ {pointA},
@@ -26,7 +26,7 @@ Triangle::Triangle(const ::glm::vec3 &pointA, const ::glm::vec3 &pointB, const :
     materialIndex_ {materialIndex} {
 }
 
-Intersection Triangle::intersect(const Intersection &intersection, const Ray &ray) const noexcept {
+Intersection Triangle::intersect(const Intersection &intersection, const Ray &ray) const {
     if (ray.primitive_ == this) {
         return intersection;
     }
@@ -73,7 +73,7 @@ Intersection Triangle::intersect(const Intersection &intersection, const Ray &ra
     return res;
 }
 
-AABB Triangle::getAABB() const noexcept {
+AABB Triangle::getAABB() const {
     const auto &pointB {this->pointA_ + this->AB_};
     const auto &pointC {this->pointA_ + this->AC_};
     const auto &min {::glm::min(this->pointA_, ::glm::min(pointB, pointC))};
@@ -82,9 +82,9 @@ AABB Triangle::getAABB() const noexcept {
     return res;
 }
 
-bool Triangle::intersect(const AABB &box) const noexcept {
+bool Triangle::intersect(const AABB &box) const {
     auto intersectRayAABB {
-        [&](const ::glm::vec3 &orig, const ::glm::vec3 &vec) noexcept -> bool {
+        [&](const ::glm::vec3 &orig, const ::glm::vec3 &vec) -> bool {
             ::glm::vec3 t1 {};
             ::glm::vec3 t2 {}; // vectors to hold the T-values for every direction
             auto tNear {::std::numeric_limits<float>::min()};
@@ -144,7 +144,7 @@ bool Triangle::intersect(const AABB &box) const noexcept {
         }};
 
     auto isOverTriangle {
-        [&](const ::glm::vec3 &vec) noexcept -> bool {
+        [&](const ::glm::vec3 &vec) -> bool {
             const auto &perpendicularVector {::glm::cross(vec, this->AC_)};
             const auto normalizedProjection {::glm::dot(this->AB_, perpendicularVector)};
             const auto res {::std::abs(normalizedProjection) < Epsilon};

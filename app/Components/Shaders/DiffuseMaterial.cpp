@@ -5,11 +5,11 @@ using ::MobileRT::Intersection;
 using ::MobileRT::Ray;
 using ::MobileRT::Scene;
 
-DiffuseMaterial::DiffuseMaterial(Scene scene, const Accelerator accelerator) noexcept :
+DiffuseMaterial::DiffuseMaterial(Scene scene, const Accelerator accelerator) :
     Shader {::std::move(scene), 0, accelerator} {
 }
 
-bool DiffuseMaterial::shade(::glm::vec3 *const rgb, const Intersection &intersection, const Ray &/*ray*/) noexcept {
+bool DiffuseMaterial::shade(::glm::vec3 *const rgb, const Intersection &intersection, const Ray &/*ray*/) {
     const auto &lE {intersection.material_->Le_};
     const auto &kD {intersection.material_->Kd_};
     const auto &kS {intersection.material_->Ks_};

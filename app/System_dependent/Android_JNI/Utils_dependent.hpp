@@ -5,10 +5,10 @@
 #include <string>
 
 namespace Dependent {
-    inline void printString(const ::std::string &log) noexcept;
+    inline void printString(const ::std::string &log);
 }//namespace Dependent
 
-void Dependent::printString(const ::std::string &log) noexcept {
+void Dependent::printString(const ::std::string &log) {
     __android_log_print(ANDROID_LOG_DEBUG, "LOG", "%s", log.c_str());
 }
 

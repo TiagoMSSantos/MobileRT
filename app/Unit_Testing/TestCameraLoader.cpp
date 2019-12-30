@@ -10,10 +10,10 @@ protected:
     virtual void TearDown() {
     }
 
-    ~TestCameraLoader() noexcept;
+    ~TestCameraLoader();
 };
 
-TestCameraLoader::~TestCameraLoader() noexcept {
+TestCameraLoader::~TestCameraLoader() {
     LOG("TESTCAMERALOADER DESTROYED!!!");
 }
 

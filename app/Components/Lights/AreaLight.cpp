@@ -9,13 +9,13 @@ using ::MobileRT::Intersection;
 AreaLight::AreaLight(
     const Material &radiance,
     ::std::unique_ptr<Sampler> samplerPointLight,
-    const ::glm::vec3 &pointA, const ::glm::vec3 &pointB, const ::glm::vec3 &pointC) noexcept :
+    const ::glm::vec3 &pointA, const ::glm::vec3 &pointB, const ::glm::vec3 &pointC) :
         Light {radiance},
         triangle_ {pointA, pointB, pointC, -1},
         samplerPointLight_ {::std::move(samplerPointLight)} {
 }
 
-::glm::vec3 AreaLight::getPosition() noexcept {
+::glm::vec3 AreaLight::getPosition() {
     auto r {this->samplerPointLight_->getSample()};
     auto s {this->samplerPointLight_->getSample()};
     if (r + s >= 1.0f) {
@@ -26,11 +26,11 @@ AreaLight::AreaLight(
     return position;
 }
 
-void AreaLight::resetSampling() noexcept {
+void AreaLight::resetSampling() {
     this->samplerPointLight_->resetSampling();
 }
 
-Intersection AreaLight::intersect(Intersection intersection, const Ray &ray) noexcept {
+Intersection AreaLight::intersect(Intersection intersection, const Ray &ray) {
     const auto lastDist {intersection.length_};
     intersection = this->triangle_.intersect(intersection, ray);
     const auto intersected {intersection.length_ < lastDist};

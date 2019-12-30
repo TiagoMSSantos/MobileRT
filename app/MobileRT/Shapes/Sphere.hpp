@@ -14,25 +14,25 @@ namespace MobileRT {
         ::std::int32_t materialIndex_ {-1};
 
     public:
-        explicit Sphere () noexcept = delete;
+        explicit Sphere () = delete;
 
-        explicit Sphere(const ::glm::vec3 &center, float radius, ::std::int32_t materialIndex) noexcept;
+        explicit Sphere(const ::glm::vec3 &center, float radius, ::std::int32_t materialIndex);
 
-        Sphere(const Sphere &sphere) noexcept = default;
+        Sphere(const Sphere &sphere) = default;
 
         Sphere(Sphere &&sphere) noexcept = default;
 
-        ~Sphere() noexcept = default;
+        ~Sphere() = default;
 
-        Sphere &operator=(const Sphere &sphere) noexcept = default;
+        Sphere &operator=(const Sphere &sphere) = default;
 
         Sphere &operator=(Sphere &&sphere) noexcept = default;
 
-        Intersection intersect(const Intersection &intersection, const Ray &ray) const noexcept;
+        Intersection intersect(const Intersection &intersection, const Ray &ray) const;
 
-        AABB getAABB() const noexcept;
+        AABB getAABB() const;
 
-        bool intersect(const AABB &box) const noexcept;
+        bool intersect(const AABB &box) const;
     };
 }//namespace MobileRT
 

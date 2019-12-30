@@ -382,7 +382,7 @@ final class MainRenderer implements GLSurfaceView.Renderer {
             final String objFilePath,
             final String matFilePath,
             final String camFilePath
-    );
+    ) throws Exception;
 
     /**
      * Let Ray Tracer engine start to render the scene.

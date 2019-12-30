@@ -2,10 +2,10 @@
 
 using ::MobileRT::ObjectLoader;
 
-bool ObjectLoader::isProcessed() const noexcept {
+bool ObjectLoader::isProcessed() const {
     return this->isProcessed_;
 }
 
-ObjectLoader::~ObjectLoader() noexcept {
+ObjectLoader::~ObjectLoader() {
     LOG("OBJECTLOADER DESTROYED!!!");
 }

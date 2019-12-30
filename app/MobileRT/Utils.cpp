@@ -2,14 +2,14 @@
 
 namespace MobileRT {
 
-    ::std::int32_t roundDownToMultipleOf(const ::std::int32_t value, const ::std::int32_t multiple) noexcept {
+    ::std::int32_t roundDownToMultipleOf(const ::std::int32_t value, const ::std::int32_t multiple) {
         const auto rest {value % multiple};
         const auto res {rest > 1 ? value - rest : value};
         return res;
     }
 
     // https://en.wikipedia.org/wiki/Halton_sequence
-    float haltonSequence(::std::uint32_t index, const ::std::uint32_t base) noexcept {
+    float haltonSequence(::std::uint32_t index, const ::std::uint32_t base) {
         auto fraction {1.0F};
         auto nextValue {0.0F};
         while (index > 0) {
@@ -22,7 +22,7 @@ namespace MobileRT {
 
     // newAvg = ((size - 1) * oldAvg + newNum) / size;
     ::std::int32_t incrementalAvg(
-            const ::glm::vec3 &sample, const ::std::int32_t avg, const ::std::int32_t numSample) noexcept {
+            const ::glm::vec3 &sample, const ::std::int32_t avg, const ::std::int32_t numSample) {
         const auto avgUnsigned {static_cast<::std::uint32_t> (avg)};
         const auto numSampleUnsigned {static_cast<::std::uint32_t> (numSample)};
 
@@ -47,7 +47,7 @@ namespace MobileRT {
         return res;
     }
 
-    ::glm::vec3 toVec3(const char *const values) noexcept {
+    ::glm::vec3 toVec3(const char *const values) {
         ::std::stringstream data {values};
         auto x {0.0F};
         auto y {0.0F};
@@ -59,7 +59,7 @@ namespace MobileRT {
         return ::glm::vec3 {x, y, z};
     }
 
-    ::glm::vec2 toVec2(const char *const values) noexcept {
+    ::glm::vec2 toVec2(const char *const values) {
         ::std::stringstream data {values};
         auto x {0.0F};
         auto y {0.0F};
@@ -69,13 +69,13 @@ namespace MobileRT {
         return ::glm::vec2 {x, y};
     }
 
-    bool equal(const float a, const float b) noexcept {
+    bool equal(const float a, const float b) {
         const auto absValue {::std::fabs(a - b)};
         const auto res {absValue < Epsilon};
         return res;
     }
 
-    bool equal(const ::glm::vec3 &a, const ::glm::vec3 &b) noexcept {
+    bool equal(const ::glm::vec3 &a, const ::glm::vec3 &b) {
         const auto sameX {equal(a[0], b[0])};
         const auto sameY {equal(a[1], b[1])};
         const auto sameZ {equal(a[2], b[2])};

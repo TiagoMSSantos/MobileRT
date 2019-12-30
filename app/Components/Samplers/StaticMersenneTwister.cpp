@@ -17,12 +17,12 @@ namespace {
     }
 }//namespace
 
-StaticMersenneTwister::StaticMersenneTwister() noexcept {
+StaticMersenneTwister::StaticMersenneTwister() {
     static auto unused {fillThings()};
     static_cast<void> (unused);
 }
 
-float StaticMersenneTwister::getSample(const ::std::uint32_t /*sample*/) noexcept {
+float StaticMersenneTwister::getSample(const ::std::uint32_t /*sample*/) {
     const auto current {this->sample_.fetch_add(1, ::std::memory_order_relaxed)};
     const auto it {values.begin() + (current & mask)};
     return *it;

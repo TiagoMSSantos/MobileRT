@@ -16,10 +16,10 @@ protected:
 		delete plane;
 	}
 
-	~TestPlane() noexcept;
+	~TestPlane();
 };
 
-TestPlane::~TestPlane() noexcept {
+TestPlane::~TestPlane() {
     LOG("TESTPLANE DESTROYED!!!");
 }
 

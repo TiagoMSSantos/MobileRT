@@ -11,31 +11,31 @@ namespace Components {
         float sizeV_ {};
 
     public:
-        explicit Orthographic () noexcept = delete;
+        explicit Orthographic() = delete;
 
         explicit Orthographic(const ::glm::vec3 &position,
                               const ::glm::vec3 &lookAt, const ::glm::vec3 &up,
-                              float sizeH, float sizeV) noexcept;
+                              float sizeH, float sizeV);
 
-        Orthographic(const Orthographic &orthographic) noexcept = default;
+        Orthographic(const Orthographic &orthographic) = default;
 
         Orthographic(Orthographic &&orthographic) noexcept = delete;
 
-        ~Orthographic() noexcept final = default;
+        ~Orthographic() final = default;
 
-        Orthographic &operator=(const Orthographic &orthographic) noexcept = delete;
+        Orthographic &operator=(const Orthographic &orthographic) = delete;
 
         Orthographic &operator=(Orthographic &&orthographic) noexcept = delete;
 
         ::MobileRT::Ray generateRay(float u, float v,
                         float deviationU,
-                        float deviationV) const noexcept final;
+                        float deviationV) const final;
 
-        ::MobileRT::AABB getAABB() const noexcept final;
+        ::MobileRT::AABB getAABB() const final;
 
-        float getSizeH() const noexcept;
+        float getSizeH() const;
 
-        float getSizeV() const noexcept;
+        float getSizeV() const;
     };
 }//namespace Components
 

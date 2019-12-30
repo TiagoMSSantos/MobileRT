@@ -8,21 +8,21 @@
 namespace Components {
     class HaltonSeq final : public ::MobileRT::Sampler {
     public:
-        explicit HaltonSeq() noexcept = default;
+        explicit HaltonSeq() = default;
 
-        explicit HaltonSeq(::std::uint32_t width, ::std::uint32_t height, ::std::uint32_t samples) noexcept;
+        explicit HaltonSeq(::std::uint32_t width, ::std::uint32_t height, ::std::uint32_t samples);
 
-        HaltonSeq(const HaltonSeq &haltonSeq) noexcept = delete;
+        HaltonSeq(const HaltonSeq &haltonSeq) = delete;
 
         HaltonSeq(HaltonSeq &&haltonSeq) noexcept = delete;
 
-        ~HaltonSeq() noexcept final = default;
+        ~HaltonSeq() final = default;
 
-        HaltonSeq &operator=(const HaltonSeq &haltonSeq) noexcept = delete;
+        HaltonSeq &operator=(const HaltonSeq &haltonSeq) = delete;
 
         HaltonSeq &operator=(HaltonSeq &&haltonSeq) noexcept = delete;
 
-        float getSample(::std::uint32_t sample) noexcept final;
+        float getSample(::std::uint32_t sample) final;
     };
 }//namespace Components
 

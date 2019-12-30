@@ -8,21 +8,21 @@
 namespace Components {
     class StaticHaltonSeq final : public ::MobileRT::Sampler {
     public:
-        explicit StaticHaltonSeq() noexcept;
+        explicit StaticHaltonSeq();
 
-        explicit StaticHaltonSeq(::std::uint32_t width, ::std::uint32_t height, ::std::uint32_t samples) noexcept;
+        explicit StaticHaltonSeq(::std::uint32_t width, ::std::uint32_t height, ::std::uint32_t samples);
 
-        StaticHaltonSeq(const StaticHaltonSeq &random) noexcept = delete;
+        StaticHaltonSeq(const StaticHaltonSeq &random) = delete;
 
         StaticHaltonSeq(StaticHaltonSeq &&random) noexcept = delete;
 
-        ~StaticHaltonSeq() noexcept final = default;
+        ~StaticHaltonSeq() final = default;
 
-        StaticHaltonSeq &operator=(const StaticHaltonSeq &random) noexcept = delete;
+        StaticHaltonSeq &operator=(const StaticHaltonSeq &random) = delete;
 
         StaticHaltonSeq &operator=(StaticHaltonSeq &&random) noexcept = delete;
 
-        float getSample(::std::uint32_t sample) noexcept final;
+        float getSample(::std::uint32_t sample) final;
     };
 }//namespace Components
 

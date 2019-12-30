@@ -15,7 +15,7 @@ using ::Components::AreaLight;
 using ::Components::PointLight;
 using ::Components::StaticHaltonSeq;
 
-Scene cornellBoxScene(Scene scene) noexcept {
+Scene cornellBoxScene(Scene scene) {
     // point light - white
     const Material lightMat {::glm::vec3 {0.0F, 0.0F, 0.0F},
                                       ::glm::vec3 {0.0F, 0.0F, 0.0F},
@@ -95,7 +95,7 @@ Scene cornellBoxScene(Scene scene) noexcept {
     return scene;
 }
 
-Scene cornellBoxScene2(Scene scene) noexcept {
+Scene cornellBoxScene2(Scene scene) {
     const Material lightMat {::glm::vec3 {0.0F, 0.0F, 0.0F},
                                       ::glm::vec3 {0.0F, 0.0F, 0.0F},
                                       ::glm::vec3 {0.0F, 0.0F, 0.0F},
@@ -200,7 +200,7 @@ Scene cornellBoxScene2(Scene scene) noexcept {
     return scene;
 }
 
-Scene spheresScene(Scene scene) noexcept {
+Scene spheresScene(Scene scene) {
     // create diffuse Materials
     const Material sandMat {::glm::vec3 {0.914F, 0.723F, 0.531F}};
     const Material redMat {::glm::vec3 {0.9F, 0.0F, 0.0F}};
@@ -220,7 +220,7 @@ Scene spheresScene(Scene scene) noexcept {
     return scene;
 }
 
-Scene spheresScene2(Scene scene) noexcept {
+Scene spheresScene2(Scene scene) {
     // create one light source
     const Material lightMat {::glm::vec3 {0.0F, 0.0F, 0.0F},
                                       ::glm::vec3 {0.0F, 0.0F, 0.0F},

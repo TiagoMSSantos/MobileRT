@@ -11,25 +11,25 @@ namespace MobileRT {
         Material radiance_ {};
 
     public:
-        explicit Light() noexcept = delete;
+        explicit Light() = delete;
 
-        explicit Light(const Material &radiance) noexcept;
+        explicit Light(Material radiance);
 
-        Light(const Light &light) noexcept = delete;
+        Light(const Light &light) = delete;
 
         Light(Light &&light) noexcept = delete;
 
-        virtual ~Light() noexcept;
+        virtual ~Light();
 
-        Light &operator=(const Light &light) noexcept = delete;
+        Light &operator=(const Light &light) = delete;
 
         Light &operator=(Light &&light) noexcept = delete;
 
-        virtual ::glm::vec3 getPosition() noexcept = 0;
+        virtual ::glm::vec3 getPosition() = 0;
 
-        virtual void resetSampling() noexcept = 0;
+        virtual void resetSampling() = 0;
 
-        virtual Intersection intersect(Intersection intersection, const Ray &ray) noexcept = 0;
+        virtual Intersection intersect(Intersection intersection, const Ray &ray) = 0;
     };
 }//namespace MobileRT
 

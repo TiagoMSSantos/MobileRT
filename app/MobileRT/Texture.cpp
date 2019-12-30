@@ -10,15 +10,15 @@ Texture::Texture(
     ::std::int32_t width,
     ::std::int32_t height,
     ::std::int32_t channels
-) noexcept :
-    image_ {image},
+) :
+    image_ {::std::move(image)},
     width_ {width},
     height_ {height},
     channels_ {channels} {
 
 }
 
-::glm::vec3 Texture::loadColor(const ::glm::vec2 &texCoords) const noexcept {
+::glm::vec3 Texture::loadColor(const ::glm::vec2 &texCoords) const {
     const auto u {static_cast<::std::int32_t> (texCoords[0] * this->width_)};
     const auto v {static_cast<::std::int32_t> (texCoords[1] * this->height_)};
     const auto index {static_cast<::std::uint32_t> (v * this->width_* this->channels_ + u * this->channels_)};
@@ -31,7 +31,7 @@ Texture::Texture(
     return vec;
 }
 
-Texture Texture::createTexture(const char *const textureFilePath) noexcept {
+Texture Texture::createTexture(const char *const textureFilePath) {
     ::std::int32_t width {};
     ::std::int32_t height {};
     ::std::int32_t channels {};
@@ -41,7 +41,7 @@ Texture Texture::createTexture(const char *const textureFilePath) noexcept {
     return texture;
 }
 
-bool Texture::operator==(const Texture &texture) noexcept {
+bool Texture::operator==(const Texture &texture) {
     const auto sameWidth {this->width_ == texture.width_};
     const auto sameHeight {this->height_ == texture.height_};
     const auto sameChannels {this->channels_ == texture.channels_};

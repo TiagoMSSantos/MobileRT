@@ -15,24 +15,24 @@ namespace Components {
         ::std::vector<::tinyobj::material_t> materials_ {};
 
     public:
-        explicit OBJLoader () noexcept = delete;
+        explicit OBJLoader () = delete;
 
-        explicit OBJLoader(::std::string objFilePath, ::std::string matFilePath) noexcept;
+        explicit OBJLoader(::std::string objFilePath, ::std::string matFilePath);
 
-        OBJLoader(const OBJLoader &objLoader) noexcept = delete;
+        OBJLoader(const OBJLoader &objLoader) = delete;
 
         OBJLoader(OBJLoader &&objLoader) noexcept = delete;
 
-        ~OBJLoader() noexcept final;
+        ~OBJLoader() final;
 
-        OBJLoader &operator=(const OBJLoader &objLoader) noexcept = delete;
+        OBJLoader &operator=(const OBJLoader &objLoader) = delete;
 
         OBJLoader &operator=(OBJLoader &&objLoader) noexcept = delete;
 
-        ::std::int32_t process() noexcept final;
+        ::std::int32_t process() final;
 
         bool fillScene(::MobileRT::Scene *scene,
-                       ::std::function<::std::unique_ptr<::MobileRT::Sampler>()> lambda) noexcept final;
+                       ::std::function<::std::unique_ptr<::MobileRT::Sampler>()> lambda) final;
     };
 }//namespace Components
 

@@ -17,9 +17,9 @@ namespace MobileRT {
         ::glm::vec2 texCoords_ {-1};
 
     public:
-        explicit Intersection() noexcept = delete;
+        explicit Intersection() = delete;
 
-        explicit Intersection(float dist, const void *primitive) noexcept;
+        explicit Intersection(float dist, const void *primitive);
 
         explicit Intersection(
             const ::glm::vec3 &intPoint,
@@ -27,15 +27,15 @@ namespace MobileRT {
             const ::glm::vec3 &normal,
             const void *primitive,
             ::std::int32_t materialIndex,
-            ::glm::vec2 texCoords = ::glm::vec2 {-1}) noexcept;
+            ::glm::vec2 texCoords = ::glm::vec2 {-1});
 
-        Intersection(const Intersection &intersection) noexcept = default;
+        Intersection(const Intersection &intersection) = default;
 
         Intersection(Intersection &&intersection) noexcept = default;
 
-        ~Intersection() noexcept = default;
+        ~Intersection() = default;
 
-        Intersection &operator=(const Intersection &intersection) noexcept = delete;
+        Intersection &operator=(const Intersection &intersection) = delete;
 
         Intersection &operator=(Intersection &&intersection) noexcept = default;
     };

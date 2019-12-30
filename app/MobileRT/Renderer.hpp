@@ -27,33 +27,33 @@ namespace MobileRT {
         ::std::atomic<::std::int32_t> block_ {};
 
     private:
-        void renderScene(::std::int32_t *bitmap, ::std::int32_t tid) noexcept;
-        float getTile(::std::int32_t sample) noexcept;
+        void renderScene(::std::int32_t *bitmap, ::std::int32_t tid);
+        float getTile(::std::int32_t sample);
 
     public:
-        explicit Renderer () noexcept = delete;
+        explicit Renderer () = delete;
 
         explicit Renderer(::std::unique_ptr<Shader> shader,
                           ::std::unique_ptr<Camera> camera,
                           ::std::unique_ptr<Sampler> samplerPixel,
                           ::std::int32_t width, ::std::int32_t height,
-                          ::std::int32_t samplesPixel) noexcept;
+                          ::std::int32_t samplesPixel);
 
-        Renderer(const Renderer &renderer) noexcept = delete;
+        Renderer(const Renderer &renderer) = delete;
 
         Renderer(Renderer &&renderer) noexcept = delete;
 
-        ~Renderer() noexcept = default;
+        ~Renderer() = default;
 
-        Renderer &operator=(const Renderer &renderer) noexcept = delete;
+        Renderer &operator=(const Renderer &renderer) = delete;
 
         Renderer &operator=(Renderer &&renderer) noexcept = delete;
 
-        void renderFrame(::std::int32_t *bitmap, ::std::int32_t numThreads) noexcept;
+        void renderFrame(::std::int32_t *bitmap, ::std::int32_t numThreads);
 
-        void stopRender() noexcept;
+        void stopRender();
 
-        ::std::int32_t getSample() const noexcept;
+        ::std::int32_t getSample() const;
     };
 }//namespace MobileRT
 

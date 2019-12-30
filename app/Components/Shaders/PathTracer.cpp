@@ -12,14 +12,14 @@ using ::MobileRT::RayDepthMax;
 PathTracer::PathTracer(Scene scene,
                        ::std::unique_ptr<Sampler> samplerRussianRoulette,
                        const ::std::int32_t samplesLight,
-                       const Accelerator accelerator) noexcept :
+                       const Accelerator accelerator) :
     Shader {::std::move(scene), samplesLight, accelerator},
     samplerRussianRoulette_ {::std::move(samplerRussianRoulette)} {
     LOG("samplesLight = ", this->samplesLight_);
 }
 
 //pag 28 slides Monte Carlo
-bool PathTracer::shade(::glm::vec3 *const rgb, const Intersection &intersection, const Ray &ray) noexcept {
+bool PathTracer::shade(::glm::vec3 *const rgb, const Intersection &intersection, const Ray &ray) {
     const auto rayDepth {ray.depth_};
     if (rayDepth > RayDepthMax) {
         return false;
@@ -142,7 +142,7 @@ bool PathTracer::shade(::glm::vec3 *const rgb, const Intersection &intersection,
     return intersectedLight;
 }
 
-void PathTracer::resetSampling() noexcept {
+void PathTracer::resetSampling() {
     Shader::resetSampling();
     this->samplerRussianRoulette_->resetSampling();
 }

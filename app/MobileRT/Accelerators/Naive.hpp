@@ -13,44 +13,44 @@ namespace MobileRT {
             ::std::vector<T> primitives_ {};
 
         private:
-            Intersection intersect(Intersection intersection, const Ray &ray, bool shadowTrace = false) noexcept;
+            Intersection intersect(Intersection intersection, const Ray &ray, bool shadowTrace = false);
 
         public:
-            explicit Naive() noexcept = default;
+            explicit Naive() = default;
 
-            explicit Naive(::std::vector<T> &&primitives) noexcept;
+            explicit Naive(::std::vector<T> &&primitives);
 
-            Naive(const Naive &naive) noexcept = delete;
+            Naive(const Naive &naive) = delete;
 
             Naive(Naive &&naive) noexcept = default;
 
-            ~Naive() noexcept;
+            ~Naive();
 
-            Naive &operator=(const Naive &naive) noexcept = delete;
+            Naive &operator=(const Naive &naive) = delete;
 
             Naive &operator=(Naive &&naive) noexcept = default;
 
-            Intersection trace(Intersection intersection, const Ray &ray) noexcept;
+            Intersection trace(Intersection intersection, const Ray &ray);
 
-            Intersection shadowTrace(Intersection intersection, const Ray &ray) noexcept;
+            Intersection shadowTrace(Intersection intersection, const Ray &ray);
 
-            const ::std::vector<T>& getPrimitives() const noexcept;
+            const ::std::vector<T>& getPrimitives() const;
     };
 
     template<typename T>
-    Naive<T>::Naive(::std::vector<T> &&primitives) noexcept :
+    Naive<T>::Naive(::std::vector<T> &&primitives) :
         primitives_ {::std::move(primitives)} {
 
     }
 
     template<typename T>
-    Naive<T>::~Naive() noexcept {
+    Naive<T>::~Naive() {
         this->primitives_.clear();
         ::std::vector<T> {}.swap(this->primitives_);
     }
 
     template<typename T>
-    Intersection Naive<T>::intersect(Intersection intersection, const Ray &ray, const bool shadowTrace) noexcept {
+    Intersection Naive<T>::intersect(Intersection intersection, const Ray &ray, const bool shadowTrace) {
         const auto lastDist {intersection.length_};
         for (auto &primitive : this->primitives_) {
             intersection = primitive.intersect(intersection, ray);
@@ -62,19 +62,19 @@ namespace MobileRT {
     }
 
     template<typename T>
-    Intersection Naive<T>::trace(Intersection intersection, const Ray &ray) noexcept {
+    Intersection Naive<T>::trace(Intersection intersection, const Ray &ray) {
         intersection = intersect(intersection, ray);
         return intersection;
     }
 
     template<typename T>
-    Intersection Naive<T>::shadowTrace(Intersection intersection, const Ray &ray) noexcept {
+    Intersection Naive<T>::shadowTrace(Intersection intersection, const Ray &ray) {
         intersection = intersect(intersection, ray, true);
         return intersection;
     }
 
     template<typename T>
-    const ::std::vector<T>& Naive<T>::getPrimitives() const noexcept {
+    const ::std::vector<T>& Naive<T>::getPrimitives() const {
         return this->primitives_;
     }
 

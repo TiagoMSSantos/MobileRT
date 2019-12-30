@@ -24,7 +24,7 @@ Renderer::Renderer(::std::unique_ptr<Shader> shader,
                    ::std::unique_ptr<Camera> camera,
                    ::std::unique_ptr<Sampler> samplerPixel,
                    const ::std::int32_t width, const ::std::int32_t height,
-                   const ::std::int32_t samplesPixel) noexcept :
+                   const ::std::int32_t samplesPixel) :
         camera_ {::std::move(camera)},
         shader_ {::std::move(shader)},
         samplerPixel_ {::std::move(samplerPixel)},
@@ -40,7 +40,7 @@ Renderer::Renderer(::std::unique_ptr<Shader> shader,
     static_cast<void> (unused);
 }
 
-void Renderer::renderFrame(::std::int32_t *const bitmap, const ::std::int32_t numThreads) noexcept {
+void Renderer::renderFrame(::std::int32_t *const bitmap, const ::std::int32_t numThreads) {
     LOG("numThreads = ", numThreads);
     LOG("Resolution = ", this->width_, "x", this->height_);
 
@@ -65,13 +65,13 @@ void Renderer::renderFrame(::std::int32_t *const bitmap, const ::std::int32_t nu
     LOG("FINISH");
 }
 
-void Renderer::stopRender() noexcept {
+void Renderer::stopRender() {
     this->blockSizeX_ = 0;
     this->blockSizeY_ = 0;
     this->samplerPixel_->stopSampling();
 }
 
-void Renderer::renderScene(::std::int32_t *const bitmap, const ::std::int32_t tid) noexcept {
+void Renderer::renderScene(::std::int32_t *const bitmap, const ::std::int32_t tid) {
     const auto invImgWidth {1.0F / this->width_};
     const auto invImgHeight {1.0F / this->height_};
     const auto pixelWidth {0.5F / this->width_};
@@ -117,11 +117,11 @@ void Renderer::renderScene(::std::int32_t *const bitmap, const ::std::int32_t ti
     }
 }
 
-::std::int32_t Renderer::getSample() const noexcept {
+::std::int32_t Renderer::getSample() const {
     return this->sample_;
 }
 
-float Renderer::getTile(const ::std::int32_t sample) noexcept {
+float Renderer::getTile(const ::std::int32_t sample) {
     const auto current {this->block_.fetch_add(1, ::std::memory_order_relaxed) - NumberOfBlocks * sample};
     if (current >= NumberOfBlocks) {
         this->block_.fetch_sub(1, ::std::memory_order_relaxed);

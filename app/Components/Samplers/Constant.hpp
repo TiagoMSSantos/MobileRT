@@ -9,21 +9,21 @@ namespace Components {
         const float value_ {};
 
     public:
-        explicit Constant () noexcept = delete;
+        explicit Constant () = delete;
 
-        explicit Constant(float value) noexcept;
+        explicit Constant(float value);
 
-        Constant(const Constant &constant) noexcept = delete;
+        Constant(const Constant &constant) = delete;
 
         Constant(Constant &&constant) noexcept = delete;
 
-        ~Constant() noexcept final = default;
+        ~Constant() final = default;
 
-        Constant &operator=(const Constant &constant) noexcept = delete;
+        Constant &operator=(const Constant &constant) = delete;
 
         Constant &operator=(Constant &&constant) noexcept = delete;
 
-        float getSample(::std::uint32_t sample) noexcept final;
+        float getSample(::std::uint32_t sample) final;
     };
 }//namespace Components
 

@@ -17,6 +17,8 @@
 - [ ] Implement KD-Tree
 - [ ] Make acceleration structures compatible with the lights
 - [ ] Investigate if samplers are properly working
+- [x] Add exceptions
+- [ ] Check all allocations' exceptions
 
 ### Ray tracing JNI layer
 - [ ] Refactor DrawView translation unit

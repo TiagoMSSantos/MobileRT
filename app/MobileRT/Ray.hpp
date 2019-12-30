@@ -14,18 +14,18 @@ namespace MobileRT {
         const void *const primitive_ {};
 
     public:
-        explicit Ray () noexcept = delete;
+        explicit Ray () = delete;
 
         explicit Ray(const ::glm::vec3 &dir, const ::glm::vec3 &origin,
-                     ::std::int32_t depth, const void *primitive = nullptr) noexcept;
+                     ::std::int32_t depth, const void *primitive = nullptr);
 
-        Ray(const Ray &ray) noexcept = default;
+        Ray(const Ray &ray) = default;
 
         Ray(Ray &&ray) noexcept = default;
 
-        ~Ray() noexcept = default;
+        ~Ray() = default;
 
-        Ray &operator=(const Ray &ray) noexcept = delete;
+        Ray &operator=(const Ray &ray) = delete;
 
         Ray &operator=(Ray &&ray) noexcept = delete;
     };

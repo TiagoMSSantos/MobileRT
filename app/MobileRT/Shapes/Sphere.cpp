@@ -5,13 +5,13 @@ using ::MobileRT::AABB;
 using ::MobileRT::Sphere;
 using ::MobileRT::Intersection;
 
-Sphere::Sphere(const ::glm::vec3 &center, const float radius, const ::std::int32_t materialIndex) noexcept :
+Sphere::Sphere(const ::glm::vec3 &center, const float radius, const ::std::int32_t materialIndex) :
     center_ {center},
     sqRadius_ {radius * radius},
     materialIndex_ {materialIndex} {
 }
 
-Intersection Sphere::intersect(const Intersection &intersection, const Ray &ray) const noexcept {
+Intersection Sphere::intersect(const Intersection &intersection, const Ray &ray) const {
     //stackoverflow.com/questions/1986378/how-to-set-up-quadratic-equation-for-a-ray-sphere-intersection
     const auto &originToCenter {this->center_ - ray.origin_};
     const auto projectionOnDirection {::glm::dot(originToCenter, ray.direction_)};
@@ -46,7 +46,7 @@ Intersection Sphere::intersect(const Intersection &intersection, const Ray &ray)
     return res;
 }
 
-AABB Sphere::getAABB() const noexcept {
+AABB Sphere::getAABB() const {
     const auto radius {::std::sqrt(this->sqRadius_)};
     const auto &min {this->center_ - radius};
     const auto &max {this->center_ + radius};
@@ -54,7 +54,7 @@ AABB Sphere::getAABB() const noexcept {
     return res;
 }
 
-bool Sphere::intersect(const AABB &box) const noexcept {
+bool Sphere::intersect(const AABB &box) const {
     auto dmin {0.0F};
     const auto &v1 {box.pointMin_};
     const auto &v2 {box.pointMax_};

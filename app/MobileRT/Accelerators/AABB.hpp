@@ -14,28 +14,28 @@ namespace MobileRT {
         ::glm::vec3 pointMax_ {};
 
     public:
-        explicit AABB() noexcept = default;
+        explicit AABB() = default;
 
-        explicit AABB(const ::glm::vec3 &pointMin, const ::glm::vec3 &pointMax) noexcept;
+        explicit AABB(const ::glm::vec3 &pointMin, const ::glm::vec3 &pointMax);
 
-        AABB(const AABB &aabb) noexcept = default;
+        AABB(const AABB &aabb) = default;
 
         AABB(AABB &&aabb) noexcept = default;
 
-        ~AABB() noexcept = default;
+        ~AABB() = default;
 
-        AABB &operator=(const AABB &aabb) noexcept = default;
+        AABB &operator=(const AABB &aabb) = default;
 
         AABB &operator=(AABB &&aabb) noexcept = default;
 
-        float getSurfaceArea() const noexcept;
+        float getSurfaceArea() const;
 
-        ::glm::vec3 getMidPoint() const noexcept;
+        ::glm::vec3 getMidPoint() const;
 
-        bool intersect(const Ray &ray) const noexcept;
+        bool intersect(const Ray &ray) const;
     };
 
-    AABB surroundingBox(const AABB &box1, const AABB &box2) noexcept;
+    AABB surroundingBox(const AABB &box1, const AABB &box2);
 }//namespace MobileRT
 
 #endif //MOBILERT_ACCELERATORS_AABB_HPP

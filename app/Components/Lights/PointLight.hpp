@@ -10,27 +10,27 @@ namespace Components {
         ::glm::vec3 position_ {};
 
     public:
-        explicit PointLight() noexcept = delete;
+        explicit PointLight() = delete;
 
-        explicit PointLight(const ::MobileRT::Material &radiance, const ::glm::vec3 &position) noexcept;
+        explicit PointLight(const ::MobileRT::Material &radiance, const ::glm::vec3 &position);
 
-        PointLight(const PointLight &pointLight) noexcept = delete;
+        PointLight(const PointLight &pointLight) = delete;
 
         PointLight(PointLight &&pointLight) noexcept = delete;
 
-        ~PointLight() noexcept final = default;
+        ~PointLight() final = default;
 
-        PointLight &operator=(const PointLight &pointLight) noexcept = delete;
+        PointLight &operator=(const PointLight &pointLight) = delete;
 
         PointLight &operator=(PointLight &&pointLight) noexcept = delete;
 
-        ::glm::vec3 getPosition() noexcept final;
+        ::glm::vec3 getPosition() final;
 
-        void resetSampling() noexcept final;
+        void resetSampling() final;
 
         ::MobileRT::Intersection intersect(
             ::MobileRT::Intersection intersection,
-            const ::MobileRT::Ray &ray) noexcept final;
+            const ::MobileRT::Ray &ray) final;
     };
 }//namespace Components
 

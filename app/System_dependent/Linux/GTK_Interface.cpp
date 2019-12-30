@@ -4,7 +4,7 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 
-::std::int32_t main(::std::int32_t argc, char **argv) noexcept {
+::std::int32_t main(::std::int32_t argc, char **argv) {
     if (argc != 16) {
         LOG("Wrong number of arguments: ", argc, ", must be 16");
         ::std::cin.ignore();
@@ -59,14 +59,14 @@
     gtk_init(&argc, &argv);
     GtkWidget *const window {gtk_window_new(GTK_WINDOW_TOPLEVEL)};
     gtk_signal_connect(GTK_OBJECT(window), "destroy", GTK_SIGNAL_FUNC(
-            []() noexcept -> void {
+            []() -> void {
                 gtk_main_quit();
             }
     ), nullptr);
     auto key_handler (static_cast<bool (*)(
             GtkWidget *, GdkEventKey *, gpointer)> (
                                [](GtkWidget *const gtkWidget, GdkEventKey *const event,
-                                  gpointer /*user_data*/) noexcept -> bool {
+                                  gpointer /*user_data*/) -> bool {
                                     switch(event->keyval) {
                                         case GDK_KEY_Escape:
                                             gtk_widget_destroy(gtkWidget);
@@ -89,7 +89,7 @@
     gtk_widget_show_all(window);
     g_timeout_add_seconds(1, static_cast<::std::int32_t (*)(
         gpointer)> (
-            [](gpointer userData) noexcept -> ::std::int32_t {
+            [](gpointer userData) -> ::std::int32_t {
                 gtk_widget_queue_draw (reinterpret_cast<GtkWidget*> (userData));
                 return 1;
             }), window);

@@ -23,10 +23,10 @@ protected:
 		delete triangle;
 	}
 
-	~TestTriangle() noexcept;
+	~TestTriangle();
 };
 
-TestTriangle::~TestTriangle() noexcept {
+TestTriangle::~TestTriangle() {
     LOG("TESTTRIANGLE DESTROYED!!!");
 }
 

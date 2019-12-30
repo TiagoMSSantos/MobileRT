@@ -12,23 +12,23 @@ namespace Components {
     private:
         bool shade(
             ::glm::vec3 *rgb, const ::MobileRT::Intersection &intersection, const ::MobileRT::Ray &ray
-        ) noexcept final;
+        ) final;
 
     public:
-        explicit DepthMap() noexcept = delete;
+        explicit DepthMap() = delete;
 
         explicit DepthMap(
             ::MobileRT::Scene scene,
             const ::glm::vec3 &maxPoint,
-            ::MobileRT::Shader::Accelerator accelerator) noexcept;
+            ::MobileRT::Shader::Accelerator accelerator);
 
-        DepthMap(const DepthMap &depthMap) noexcept = delete;
+        DepthMap(const DepthMap &depthMap) = delete;
 
         DepthMap(DepthMap &&depthMap) noexcept = delete;
 
-        ~DepthMap() noexcept final = default;
+        ~DepthMap() final = default;
 
-        DepthMap &operator=(const DepthMap &depthMap) noexcept = delete;
+        DepthMap &operator=(const DepthMap &depthMap) = delete;
 
         DepthMap &operator=(DepthMap &&depthMap) noexcept = delete;
     };

@@ -7,7 +7,7 @@ using ::MobileRT::Sphere;
 using ::MobileRT::Triangle;
 using ::MobileRT::Light;
 
-Scene::~Scene() noexcept {
+Scene::~Scene() {
     //may not free the memory
     this->planes_.clear();
     this->spheres_.clear();

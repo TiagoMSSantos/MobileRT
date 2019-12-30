@@ -7,19 +7,19 @@
 namespace Components {
     class StaticMersenneTwister final : public ::MobileRT::Sampler {
     public:
-        explicit StaticMersenneTwister() noexcept;
+        explicit StaticMersenneTwister();
 
-        StaticMersenneTwister(const StaticMersenneTwister &random) noexcept = delete;
+        StaticMersenneTwister(const StaticMersenneTwister &random) = delete;
 
         StaticMersenneTwister(StaticMersenneTwister &&random) noexcept = delete;
 
-        ~StaticMersenneTwister() noexcept final = default;
+        ~StaticMersenneTwister() final = default;
 
-        StaticMersenneTwister &operator=(const StaticMersenneTwister &random) noexcept = delete;
+        StaticMersenneTwister &operator=(const StaticMersenneTwister &random) = delete;
 
         StaticMersenneTwister &operator=(StaticMersenneTwister &&random) noexcept = delete;
 
-        float getSample(::std::uint32_t sample) noexcept final;
+        float getSample(::std::uint32_t sample) final;
     };
 }//namespace Components
 

@@ -10,23 +10,23 @@ namespace Components {
         bool shade(
             ::glm::vec3 *rgb,
             const ::MobileRT::Intersection &intersection,
-            const ::MobileRT::Ray &ray) noexcept final;
+            const ::MobileRT::Ray &ray) final;
 
     public:
-        explicit NoShadows() noexcept = delete;
+        explicit NoShadows() = delete;
 
         explicit NoShadows(
             ::MobileRT::Scene scene,
             ::std::int32_t samplesLight,
-            ::MobileRT::Shader::Accelerator accelerator) noexcept;
+            ::MobileRT::Shader::Accelerator accelerator);
 
-        NoShadows(const NoShadows &noShadows) noexcept = delete;
+        NoShadows(const NoShadows &noShadows) = delete;
 
         NoShadows(NoShadows &&noShadows) noexcept = delete;
 
-        ~NoShadows() noexcept final = default;
+        ~NoShadows() final = default;
 
-        NoShadows &operator=(const NoShadows &noShadows) noexcept = delete;
+        NoShadows &operator=(const NoShadows &noShadows) = delete;
 
         NoShadows &operator=(NoShadows &&noShadows) noexcept = delete;
     };

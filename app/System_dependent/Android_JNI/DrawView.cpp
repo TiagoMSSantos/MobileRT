@@ -64,7 +64,7 @@ extern "C"
 jobject Java_puscas_mobilertapp_MainRenderer_RTInitCameraArray(
         JNIEnv *env,
         jobject /*thiz*/
-) noexcept {
+) {
     jobject directBuffer {};
     {
         const ::std::lock_guard<::std::mutex> lock {mutex_};
@@ -77,7 +77,7 @@ jobject Java_puscas_mobilertapp_MainRenderer_RTInitCameraArray(
             if (floatBuffer != nullptr) {
                 directBuffer = env->NewDirectByteBuffer(floatBuffer, arrayBytes);
                 if (directBuffer != nullptr) {
-                    int i {};
+                    ::std::int32_t i {};
 
                     floatBuffer[i++] = camera->position_.x;
                     floatBuffer[i++] = camera->position_.y;
@@ -129,7 +129,7 @@ extern "C"
 jobject Java_puscas_mobilertapp_MainRenderer_RTInitVerticesArray(
         JNIEnv *env,
         jobject /*thiz*/
-) noexcept {
+) {
     jobject directBuffer {};
     {
         const ::std::lock_guard<::std::mutex> lock {mutex_};
@@ -142,7 +142,7 @@ jobject Java_puscas_mobilertapp_MainRenderer_RTInitVerticesArray(
                 if (floatBuffer != nullptr) {
                     directBuffer = env->NewDirectByteBuffer(floatBuffer, arrayBytes);
                     if (directBuffer != nullptr) {
-                        int i {};
+                        ::std::int32_t i {};
                         for (const auto &triangle : triangles) {
                             const ::glm::vec4 &pointA {triangle.pointA_.x,
                                                        triangle.pointA_.y,
@@ -182,7 +182,7 @@ extern "C"
 jobject Java_puscas_mobilertapp_MainRenderer_RTInitColorsArray(
         JNIEnv *env,
         jobject /*thiz*/
-) noexcept {
+) {
     jobject directBuffer {};
     {
         const ::std::lock_guard<::std::mutex> lock {mutex_};
@@ -195,7 +195,7 @@ jobject Java_puscas_mobilertapp_MainRenderer_RTInitColorsArray(
                 if (floatBuffer != nullptr) {
                     directBuffer = env->NewDirectByteBuffer(floatBuffer, arrayBytes);
                     if (directBuffer != nullptr) {
-                        int i {};
+                        ::std::int32_t i {};
                         for (const auto &triangle : triangles) {
                             const auto materialIndex {triangle.materialIndex_};
                             auto material {::MobileRT::Material {}};
@@ -238,7 +238,7 @@ jobject Java_puscas_mobilertapp_MainRenderer_RTInitColorsArray(
     return directBuffer;
 }
 
-static void updateFps() noexcept {
+static void updateFps() {
     static ::std::int32_t frame {};
     static ::std::chrono::steady_clock::time_point timebase {};
     ++frame;
@@ -255,7 +255,7 @@ extern "C"
 void Java_puscas_mobilertapp_DrawView_RTStartRender(
         JNIEnv *env,
         jobject /*thiz*/
-) noexcept {
+) {
     finishedRendering_ = false;
     state_ = State::BUSY;
     LOG("STATE = BUSY");
@@ -266,7 +266,7 @@ extern "C"
 void Java_puscas_mobilertapp_DrawView_RTStopRender(
         JNIEnv *env,
         jobject /*thiz*/
-) noexcept {
+) {
     //TODO: Fix this race condition
     while (!finishedRendering_ && renderer_ != nullptr) {
         state_ = State::STOPPED;
@@ -290,6 +290,7 @@ void Java_puscas_mobilertapp_DrawView_RTStopRender(
 
 static ::std::streampos fileSize(const char *filePath) {
     ::std::ifstream file {filePath, ::std::ios::binary};
+    file.exceptions(file.exceptions() | ::std::ifstream::goodbit | ::std::ifstream::badbit | ::std::ifstream::failbit);
 
     const auto fileBegin {file.tellg()};
     file.seekg(0, ::std::ios::end);
@@ -313,254 +314,268 @@ jint Java_puscas_mobilertapp_MainRenderer_RTInitialize(
         jstring localObjFile,
         jstring localMatFile,
         jstring localCamFile
-) noexcept {
+) {
     LOG("INITIALIZE");
-    const auto rendererClass {env->FindClass("puscas/mobilertapp/MainRenderer")};
-    const auto isLowMemoryMethodId {env->GetMethodID(rendererClass, "isLowMemory", "(I)Z")};
-    const auto globalObjFile {static_cast<jstring> (env->NewGlobalRef(localObjFile))};
-    const auto globalMatFile {static_cast<jstring> (env->NewGlobalRef(localMatFile))};
-    const auto globalCamFile {static_cast<jstring> (env->NewGlobalRef(localCamFile))};
+    try {
+        const auto rendererClass {env->FindClass("puscas/mobilertapp/MainRenderer")};
+        const auto isLowMemoryMethodId {env->GetMethodID(rendererClass, "isLowMemory", "(I)Z")};
+        const auto globalObjFile {static_cast<jstring> (env->NewGlobalRef(localObjFile))};
+        const auto globalMatFile {static_cast<jstring> (env->NewGlobalRef(localMatFile))};
+        const auto globalCamFile {static_cast<jstring> (env->NewGlobalRef(localCamFile))};
 
-    const ::std::int32_t res {
-        [&]() noexcept -> ::std::int32_t {
-            const ::std::lock_guard<::std::mutex> lock {mutex_};
-            renderer_ = nullptr;
-            const auto ratio {static_cast<float> (width) / height};
-            ::MobileRT::Scene scene_ {};
-            ::std::unique_ptr<::MobileRT::Sampler> samplerPixel {};
-            ::std::unique_ptr<::MobileRT::Shader> shader_ {};
-            ::std::unique_ptr<::MobileRT::Camera> camera {};
-            ::glm::vec3 maxDist {};
-            switch (scene) {
-                case 0: {
-                    const auto fovX {45.0F * ratio};
-                    const auto fovY {45.0F};
-                    camera = ::std::make_unique<Components::Perspective> (
-                        ::glm::vec3 {0.0F, 0.0F, -3.4F},
-                        ::glm::vec3 {0.0F, 0.0F, 1.0F},
-                        ::glm::vec3 {0.0F, 1.0F, 0.0F},
-                        fovX, fovY
-                    );
-                    scene_ = cornellBoxScene(::std::move(scene_));
-                    maxDist = ::glm::vec3{1, 1, 1};
-                }
-                    break;
+        const auto res {
+            [&]() -> ::std::int32_t {
+                const ::std::lock_guard<::std::mutex> lock {mutex_};
+                renderer_ = nullptr;
+                const auto ratio {static_cast<float> (width) / height};
+                ::MobileRT::Scene scene_ {};
+                ::std::unique_ptr<::MobileRT::Sampler> samplerPixel {};
+                ::std::unique_ptr<::MobileRT::Shader> shader_ {};
+                ::std::unique_ptr<::MobileRT::Camera> camera {};
+                ::glm::vec3 maxDist {};
+                LOG("LOADING SCENE");
+                switch (scene) {
+                    case 0: {
+                        const auto fovX {45.0F * ratio};
+                        const auto fovY {45.0F};
+                        camera = ::std::make_unique<Components::Perspective> (
+                            ::glm::vec3 {0.0F, 0.0F, -3.4F},
+                            ::glm::vec3 {0.0F, 0.0F, 1.0F},
+                            ::glm::vec3 {0.0F, 1.0F, 0.0F},
+                            fovX, fovY
+                        );
+                        scene_ = cornellBoxScene(::std::move(scene_));
+                        maxDist = ::glm::vec3{1, 1, 1};
+                    }
+                        break;
 
-                case 1: {
-                    const auto sizeH {10.0F * ratio};
-                    const auto sizeV {10.0F};
-                    camera = ::std::make_unique<Components::Orthographic> (
-                        ::glm::vec3 {0.0F, 1.0F, -10.0F},
-                        ::glm::vec3 {0.0F, 1.0F, 7.0F},
-                        ::glm::vec3 {0.0F, 1.0F, 0.0F},
-                        sizeH, sizeV
-                    );
-                    scene_ = spheresScene(::std::move(scene_));
-                    maxDist = ::glm::vec3{8, 8, 8};
-                }
-                    break;
+                    case 1: {
+                        const auto sizeH {10.0F * ratio};
+                        const auto sizeV {10.0F};
+                        camera = ::std::make_unique<Components::Orthographic> (
+                            ::glm::vec3 {0.0F, 1.0F, -10.0F},
+                            ::glm::vec3 {0.0F, 1.0F, 7.0F},
+                            ::glm::vec3 {0.0F, 1.0F, 0.0F},
+                            sizeH, sizeV
+                        );
+                        scene_ = spheresScene(::std::move(scene_));
+                        maxDist = ::glm::vec3{8, 8, 8};
+                    }
+                        break;
 
-                case 2: {
-                    const auto fovX {45.0F * ratio};
-                    const auto fovY {45.0F};
-                    camera = ::std::make_unique<Components::Perspective> (
-                        ::glm::vec3{0.0F, 0.0F, -3.4F},
-                        ::glm::vec3{0.0F, 0.0F, 1.0F},
-                        ::glm::vec3{0.0F, 1.0F, 0.0F},
-                        fovX, fovY
-                    );
-                    scene_ = cornellBoxScene2(::std::move(scene_));
-                    maxDist = ::glm::vec3{1, 1, 1};
-                }
-                    break;
+                    case 2: {
+                        const auto fovX {45.0F * ratio};
+                        const auto fovY {45.0F};
+                        camera = ::std::make_unique<Components::Perspective> (
+                            ::glm::vec3{0.0F, 0.0F, -3.4F},
+                            ::glm::vec3{0.0F, 0.0F, 1.0F},
+                            ::glm::vec3{0.0F, 1.0F, 0.0F},
+                            fovX, fovY
+                        );
+                        scene_ = cornellBoxScene2(::std::move(scene_));
+                        maxDist = ::glm::vec3{1, 1, 1};
+                    }
+                        break;
 
-                case 3: {
-                    const auto fovX {60.0F * ratio};
-                    const auto fovY {60.0F};
-                    camera = ::std::make_unique<Components::Perspective> (
-                        ::glm::vec3{0.0F, 0.5F, 1.0F},
-                        ::glm::vec3{0.0F, 0.0F, 7.0F},
-                        ::glm::vec3{0.0F, 1.0F, 0.0F},
-                        fovX, fovY
-                    );
-                    scene_ = spheresScene2(::std::move(scene_));
-                    maxDist = ::glm::vec3 {8, 8, 8};
-                }
-                    break;
+                    case 3: {
+                        const auto fovX {60.0F * ratio};
+                        const auto fovY {60.0F};
+                        camera = ::std::make_unique<Components::Perspective> (
+                            ::glm::vec3{0.0F, 0.5F, 1.0F},
+                            ::glm::vec3{0.0F, 0.0F, 7.0F},
+                            ::glm::vec3{0.0F, 1.0F, 0.0F},
+                            fovX, fovY
+                        );
+                        scene_ = spheresScene2(::std::move(scene_));
+                        maxDist = ::glm::vec3 {8, 8, 8};
+                    }
+                        break;
 
-                default: {
-                    jboolean isCopy {JNI_FALSE};
-                    const auto *const objFilePath {env->GetStringUTFChars(globalObjFile, &isCopy)};
-                    const auto *const matFilePath {env->GetStringUTFChars(globalMatFile, &isCopy)};
-                    const auto *const camFilePath {env->GetStringUTFChars(globalCamFile, &isCopy)};
+                    default: {
+                        jboolean isCopy {JNI_FALSE};
+                        const auto *const objFilePath {env->GetStringUTFChars(globalObjFile, &isCopy)};
+                        const auto *const matFilePath {env->GetStringUTFChars(globalMatFile, &isCopy)};
+                        const auto *const camFilePath {env->GetStringUTFChars(globalCamFile, &isCopy)};
 
-                    assert(isLowMemoryMethodId != nullptr);
-                    assert(objFilePath != nullptr);
-                    assert(matFilePath != nullptr);
-                    assert(camFilePath != nullptr);
-                    {
-                        const auto lowMem {env->CallBooleanMethod(thiz, isLowMemoryMethodId, 1)};
-                        if (lowMem) {
-                            return -1;
+                        assert(isLowMemoryMethodId != nullptr);
+                        assert(objFilePath != nullptr);
+                        assert(matFilePath != nullptr);
+                        assert(camFilePath != nullptr);
+                        {
+                            const auto lowMem {env->CallBooleanMethod(thiz, isLowMemoryMethodId, 1)};
+                            if (lowMem) {
+                                return -1;
+                            }
                         }
-                    }
 
-                    const auto cameraFactory {::Components::CameraFactory()};
-                    camera = cameraFactory.loadFromFile(camFilePath, ratio);
+                        const auto cameraFactory {::Components::CameraFactory()};
+                        camera = cameraFactory.loadFromFile(camFilePath, ratio);
 
-                    ::Components::OBJLoader objLoader {objFilePath, matFilePath};
-                    {
-                        const jboolean lowMem {env->CallBooleanMethod(thiz, isLowMemoryMethodId, 1)};
-                        if (lowMem) {
-                            return -1;
+                        ::Components::OBJLoader objLoader {objFilePath, matFilePath};
+                        {
+                            const jboolean lowMem {env->CallBooleanMethod(thiz, isLowMemoryMethodId, 1)};
+                            if (lowMem) {
+                                return -1;
+                            }
                         }
-                    }
 
-                    const auto objSize {fileSize(objFilePath)};
-                    if (objSize <= 0) {
-                        finishedRendering_ = true;
-                        return -2;
-                    }
-                    {
-                        const auto neededMemoryMb {1 + static_cast<::std::int32_t> (3 * (objSize / 1048576))};
-                        const auto lowMem {env->CallBooleanMethod(thiz, isLowMemoryMethodId, neededMemoryMb)};
-                        if (lowMem) {
+                        const auto objSize {fileSize(objFilePath)};
+                        if (objSize <= 0) {
                             finishedRendering_ = true;
+                            return -2;
+                        }
+                        {
+                            const auto neededMemoryMb {1 + static_cast<::std::int32_t> (3 * (objSize / 1048576))};
+                            const auto lowMem {env->CallBooleanMethod(thiz, isLowMemoryMethodId, neededMemoryMb)};
+                            if (lowMem) {
+                                finishedRendering_ = true;
+                                return -1;
+                            }
+                        }
+                        const ::std::int32_t triangleSize {sizeof(::MobileRT::Triangle)};
+                        const ::std::int32_t bvhNodeSize {sizeof(::MobileRT::BVHNode)};
+                        const ::std::int32_t aabbSize {sizeof(::MobileRT::AABB)};
+                        const ::std::int32_t floatSize {sizeof(float)};
+                        const ::std::int32_t numberPrimitives {objLoader.process()};
+                        const ::std::int32_t memPrimitives {(numberPrimitives * triangleSize) / 1048576};
+                        const ::std::int32_t memNodes {(2 * numberPrimitives * bvhNodeSize) / 1048576};
+                        const ::std::int32_t memAABB {(2 * numberPrimitives * aabbSize) / 1048576};
+                        const ::std::int32_t memFloat {(2 * numberPrimitives * floatSize) / 1048576};
+                        const ::std::int32_t neededMemoryMb {1 + memPrimitives + memNodes + memAABB + memFloat};
+                        {
+                            const auto lowMem {env->CallBooleanMethod(thiz, isLowMemoryMethodId, neededMemoryMb)};
+                            if (lowMem) {
+                                return -1;
+                            }
+                        }
+
+                        if (!objLoader.isProcessed()) {
                             return -1;
                         }
-                    }
-                    const ::std::int32_t triangleSize {sizeof(::MobileRT::Triangle)};
-                    const ::std::int32_t bvhNodeSize {sizeof(::MobileRT::BVHNode)};
-                    const ::std::int32_t aabbSize {sizeof(::MobileRT::AABB)};
-                    const ::std::int32_t floatSize {sizeof(float)};
-                    const ::std::int32_t numberPrimitives {objLoader.process()};
-                    const ::std::int32_t memPrimitives {(numberPrimitives * triangleSize) / 1048576};
-                    const ::std::int32_t memNodes {(2 * numberPrimitives * bvhNodeSize) / 1048576};
-                    const ::std::int32_t memAABB {(2 * numberPrimitives * aabbSize) / 1048576};
-                    const ::std::int32_t memFloat {(2 * numberPrimitives * floatSize) / 1048576};
-                    const ::std::int32_t neededMemoryMb {1 + memPrimitives + memNodes + memAABB + memFloat};
-                    {
-                        const auto lowMem {env->CallBooleanMethod(thiz, isLowMemoryMethodId, neededMemoryMb)};
-                        if (lowMem) {
+                        const auto sceneBuilt {objLoader.fillScene(
+                                &scene_, []() {return ::std::make_unique<Components::StaticHaltonSeq> ();}
+                        )};
+                        if (!sceneBuilt) {
                             return -1;
                         }
-                    }
-
-                    if (!objLoader.isProcessed()) {
-                        return -1;
-                    }
-                    const auto sceneBuilt {objLoader.fillScene(
-                            &scene_, []() {return ::std::make_unique<Components::StaticHaltonSeq> ();}
-                    )};
-                    if (!sceneBuilt) {
-                        return -1;
-                    }
-                    {
-                        const jboolean lowMem {env->CallBooleanMethod(thiz, isLowMemoryMethodId, 1)};
-                        if (lowMem) {
-                            return -1;
+                        {
+                            const jboolean lowMem {env->CallBooleanMethod(thiz, isLowMemoryMethodId, 1)};
+                            if (lowMem) {
+                                return -1;
+                            }
                         }
+
+                        maxDist = ::glm::vec3 {1, 1, 1};
+
+                        env->ReleaseStringUTFChars(globalObjFile, objFilePath);
+                        env->ReleaseStringUTFChars(globalMatFile, matFilePath);
+                        env->ReleaseStringUTFChars(globalCamFile, camFilePath);
                     }
-
-                    maxDist = ::glm::vec3 {1, 1, 1};
-
-                    env->ReleaseStringUTFChars(globalObjFile, objFilePath);
-                    env->ReleaseStringUTFChars(globalMatFile, matFilePath);
-                    env->ReleaseStringUTFChars(globalCamFile, camFilePath);
+                        break;
                 }
-                    break;
+                samplerPixel = samplesPixel <= 1
+                    ? ::std::unique_ptr<::MobileRT::Sampler> (::std::make_unique<Components::Constant> (0.5F))
+                    : ::std::unique_ptr<::MobileRT::Sampler> (::std::make_unique<Components::StaticHaltonSeq> ());
+                LOG("LOADING SHADER");
+                const auto start {::std::chrono::system_clock::now()};
+                switch (shader) {
+                    case 1: {
+                        shader_ = ::std::make_unique<Components::Whitted> (
+                            ::std::move(scene_),
+                            samplesLight,
+                            ::MobileRT::Shader::Accelerator(accelerator)
+                        );
+                        break;
+                    }
+
+                    case 2: {
+                        ::std::unique_ptr<MobileRT::Sampler> samplerRussianRoulette {
+                            ::std::make_unique<Components::StaticHaltonSeq> ()
+                        };
+
+                        shader_ = ::std::make_unique<Components::PathTracer> (
+                            ::std::move(scene_),
+                            ::std::move(samplerRussianRoulette),
+                            samplesLight,
+                            ::MobileRT::Shader::Accelerator(accelerator)
+                        );
+                        break;
+                    }
+
+                    case 3: {
+                        shader_ = ::std::make_unique<Components::DepthMap> (
+                            ::std::move(scene_), maxDist, ::MobileRT::Shader::Accelerator(accelerator)
+                        );
+                        break;
+                    }
+
+                    case 4: {
+                        shader_ = ::std::make_unique<Components::DiffuseMaterial> (
+                            ::std::move(scene_), ::MobileRT::Shader::Accelerator(accelerator)
+                        );
+                        break;
+                    }
+
+                    default: {
+                        shader_ = ::std::make_unique<Components::NoShadows> (
+                            ::std::move(scene_),
+                            samplesLight,
+                            ::MobileRT::Shader::Accelerator(accelerator)
+                        );
+                        break;
+                    }
+                }
+                const auto end {::std::chrono::system_clock::now()};
+
+                LOG("LOADING RENDERER");
+                const auto planes {static_cast<::std::int32_t> (shader_->getPlanes().size())};
+                const auto spheres {static_cast<::std::int32_t> (shader_->getSpheres().size())};
+                const auto triangles {static_cast<::std::int32_t> (shader_->getTriangles().size())};
+                const auto materials {static_cast<::std::int32_t> (shader_->getMaterials().size())};
+                numLights_ = static_cast<::std::int32_t> (shader_->getLights().size());
+                const auto nPrimitives {triangles + spheres + planes};
+                renderer_ = ::std::make_unique<::MobileRT::Renderer> (
+                    ::std::move(shader_), ::std::move(camera), ::std::move(samplerPixel),
+                    width, height, samplesPixel
+                );
+                timeRenderer_ = ::std::chrono::duration_cast<std::chrono::milliseconds> (end - start).count();
+                LOG("TIME CONSTRUCTION RENDERER = ", timeRenderer_, "ms");
+                LOG("PLANES = ", planes);
+                LOG("SPHERES = ", spheres);
+                LOG("TRIANGLES = ", triangles);
+                LOG("LIGHTS = ", numLights_);
+                LOG("MATERIALS = ", materials);
+                return nPrimitives;
+            }()};
+
+
+        env->ExceptionClear();
+        LOG("PRIMITIVES = ", res);
+
+        {
+            const auto lowMem {env->CallBooleanMethod(thiz, isLowMemoryMethodId, 1)};
+            if (lowMem) {
+                return -1;
             }
-            samplerPixel = samplesPixel <= 1
-                ? ::std::unique_ptr<::MobileRT::Sampler> (::std::make_unique<Components::Constant> (0.5F))
-                : ::std::unique_ptr<::MobileRT::Sampler> (::std::make_unique<Components::StaticHaltonSeq> ());
-            const auto start {::std::chrono::system_clock::now()};
-            switch (shader) {
-                case 1: {
-                    shader_ = ::std::make_unique<Components::Whitted> (
-                        ::std::move(scene_),
-                        samplesLight,
-                        ::MobileRT::Shader::Accelerator(accelerator)
-                    );
-                    break;
-                }
-
-                case 2: {
-                    ::std::unique_ptr<MobileRT::Sampler> samplerRussianRoulette {
-                        ::std::make_unique<Components::StaticHaltonSeq> ()
-                    };
-
-                    shader_ = ::std::make_unique<Components::PathTracer> (
-                        ::std::move(scene_),
-                        ::std::move(samplerRussianRoulette),
-                        samplesLight,
-                        ::MobileRT::Shader::Accelerator(accelerator)
-                    );
-                    break;
-                }
-
-                case 3: {
-                    shader_ = ::std::make_unique<Components::DepthMap> (
-                        ::std::move(scene_), maxDist, ::MobileRT::Shader::Accelerator(accelerator)
-                    );
-                    break;
-                }
-
-                case 4: {
-                    shader_ = ::std::make_unique<Components::DiffuseMaterial> (
-                        ::std::move(scene_), ::MobileRT::Shader::Accelerator(accelerator)
-                    );
-                    break;
-                }
-
-                default: {
-                    shader_ = ::std::make_unique<Components::NoShadows> (
-                        ::std::move(scene_),
-                        samplesLight,
-                        ::MobileRT::Shader::Accelerator(accelerator)
-                    );
-                    break;
-                }
-            }
-            const auto end {::std::chrono::system_clock::now()};
-            const auto planes {static_cast<::std::int32_t> (shader_->getPlanes().size())};
-            const auto spheres {static_cast<::std::int32_t> (shader_->getSpheres().size())};
-            const auto triangles {static_cast<::std::int32_t> (shader_->getTriangles().size())};
-            const auto materials {static_cast<::std::int32_t> (shader_->getMaterials().size())};
-            numLights_ = static_cast<::std::int32_t> (shader_->getLights().size());
-            const auto nPrimitives {triangles + spheres + planes};
-            renderer_ = ::std::make_unique<::MobileRT::Renderer> (
-                ::std::move(shader_), ::std::move(camera), ::std::move(samplerPixel),
-                width, height, samplesPixel
-            );
-            timeRenderer_ = ::std::chrono::duration_cast<std::chrono::milliseconds> (end - start).count();
-            LOG("TIME CONSTRUCTION RENDERER = ", timeRenderer_, "ms");
-            LOG("PLANES = ", planes);
-            LOG("SPHERES = ", spheres);
-            LOG("TRIANGLES = ", triangles);
-            LOG("LIGHTS = ", numLights_);
-            LOG("MATERIALS = ", materials);
-            return nPrimitives;
-        }()};
-
-
-    env->ExceptionClear();
-    LOG("PRIMITIVES = ", res);
-
-    {
-        const auto lowMem {env->CallBooleanMethod(thiz, isLowMemoryMethodId, 1)};
-        if (lowMem) {
-            return -1;
         }
+        return res;
+    } catch (const ::std::bad_alloc &ba) {
+        const auto lowMemClass {env->FindClass("puscas/mobilertapp/LowMemoryException")};
+        return env->ThrowNew(lowMemClass, ba.what());
+    } catch (::std::exception exception) {
+        const auto exceptionClass {env->FindClass("java/lang/Exception")};
+        return env->ThrowNew(exceptionClass, exception.what());
+    } catch (...) {
+        const auto exceptionClass {env->FindClass("java/lang/Exception")};
+        return env->ThrowNew(exceptionClass, "Unknown error");
     }
-
-    return res;
 }
 
 extern "C"
 void Java_puscas_mobilertapp_MainRenderer_RTFinishRender(
         JNIEnv *env,
         jobject /*thiz*/
-) noexcept {
+) {
     //TODO: Fix this race condition
     {
         const ::std::lock_guard<::std::mutex> lock {mutex_};
@@ -589,11 +604,11 @@ void Java_puscas_mobilertapp_MainRenderer_RTRenderIntoBitmap(
         jobject localBitmap,
         jint nThreads,
         jboolean async
-) noexcept {
+) {
     auto globalBitmap {static_cast<jobject> (env->NewGlobalRef(localBitmap))};
 
     auto lambda {
-        [=]() noexcept -> void {
+        [=]() -> void {
             assert(env != nullptr);
             const auto jniError {
                 javaVM_->GetEnv(reinterpret_cast<void**> (const_cast<JNIEnv**> (&env)), JNI_VERSION_1_6)
@@ -682,7 +697,7 @@ extern "C"
 ::std::int32_t Java_puscas_mobilertapp_RenderTask_RTGetState(
         JNIEnv *env,
         jobject /*thiz*/
-) noexcept {
+) {
     const auto res {static_cast<::std::int32_t> (state_.load())};
     env->ExceptionClear();
     return res;
@@ -692,7 +707,7 @@ extern "C"
 float Java_puscas_mobilertapp_RenderTask_RTGetFps(
         JNIEnv *env,
         jobject /*thiz*/
-) noexcept {
+) {
     env->ExceptionClear();
     return fps_;
 }
@@ -701,7 +716,7 @@ extern "C"
 jlong Java_puscas_mobilertapp_RenderTask_RTGetTimeRenderer(
         JNIEnv *env,
         jobject /*thiz*/
-) noexcept {
+) {
     env->ExceptionClear();
     return timeRenderer_;
 }
@@ -710,7 +725,7 @@ extern "C"
 ::std::int32_t Java_puscas_mobilertapp_RenderTask_RTGetSample(
         JNIEnv *env,
         jobject /*thiz*/
-) noexcept {
+) {
     ::std::int32_t sample {};
     {
         //const ::std::lock_guard<::std::mutex> lock {mutex_};
@@ -728,7 +743,7 @@ extern "C"
         JNIEnv *env,
         jobject /*thiz*/,
         jint size
-) noexcept {
+) {
     const auto res {
         ::MobileRT::roundDownToMultipleOf(
             size, static_cast<::std::int32_t> (::std::sqrt(::MobileRT::NumberOfBlocks))
@@ -742,7 +757,7 @@ extern "C"
 ::std::int32_t Java_puscas_mobilertapp_DrawView_RTGetNumberOfLights(
         JNIEnv *env,
         jobject /*thiz*/
-) noexcept {
+) {
     env->ExceptionClear();
     return numLights_;
 }
@@ -752,7 +767,7 @@ jobject Java_puscas_mobilertapp_MainRenderer_RTFreeNativeBuffer(
         JNIEnv *env,
         jobject /*thiz*/,
         jobject bufferRef
-) noexcept {
+) {
     if (bufferRef != nullptr) {
         auto *buffer {env->GetDirectBufferAddress(bufferRef)};
         float *const floatBuffer {static_cast<float*> (buffer)};

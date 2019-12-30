@@ -12,9 +12,9 @@ namespace MobileRT {
 
     class Camera {
     protected:
-        float degToRad(float deg) const noexcept;
+        float degToRad(float deg) const;
 
-        float radToDeg(float rad) const noexcept;
+        float radToDeg(float rad) const;
 
     public:
         ::glm::vec3 position_ {};
@@ -24,23 +24,23 @@ namespace MobileRT {
 
     public:
         explicit Camera(const ::glm::vec3 &position,
-                        const ::glm::vec3 &lookAt, const ::glm::vec3 &up) noexcept;
+                        const ::glm::vec3 &lookAt, const ::glm::vec3 &up);
 
-        Camera(const Camera &camera) noexcept;
+        Camera(const Camera &camera);
 
         Camera(Camera &&camera) noexcept = default;
 
-        virtual ~Camera() noexcept;
+        virtual ~Camera();
 
-        Camera &operator=(const Camera &camera) noexcept = default;
+        Camera &operator=(const Camera &camera) = default;
 
         Camera &operator=(Camera &&camera) noexcept = default;
 
         virtual Ray generateRay(float u, float v,
                                 float deviationU,
-                                float deviationV) const noexcept = 0;
+                                float deviationV) const = 0;
 
-        virtual AABB getAABB() const noexcept;
+        virtual AABB getAABB() const;
     };
 }//namespace MobileRT
 

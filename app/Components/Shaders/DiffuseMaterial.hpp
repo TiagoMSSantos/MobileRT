@@ -10,20 +10,20 @@ namespace Components {
         bool shade(
             ::glm::vec3 *rgb,
             const ::MobileRT::Intersection &intersection,
-            const ::MobileRT::Ray &ray) noexcept final;
+            const ::MobileRT::Ray &ray) final;
 
     public:
-        explicit DiffuseMaterial () noexcept = delete;
+        explicit DiffuseMaterial () = delete;
 
-        explicit DiffuseMaterial(::MobileRT::Scene scene, ::MobileRT::Shader::Accelerator accelerator) noexcept;
+        explicit DiffuseMaterial(::MobileRT::Scene scene, ::MobileRT::Shader::Accelerator accelerator);
 
-        DiffuseMaterial(const DiffuseMaterial &diffuseMaterial) noexcept = delete;
+        DiffuseMaterial(const DiffuseMaterial &diffuseMaterial) = delete;
 
         DiffuseMaterial(DiffuseMaterial &&diffuseMaterial) noexcept = delete;
 
-        ~DiffuseMaterial() noexcept final = default;
+        ~DiffuseMaterial() final = default;
 
-        DiffuseMaterial &operator=(const DiffuseMaterial &diffuseMaterial) noexcept = delete;
+        DiffuseMaterial &operator=(const DiffuseMaterial &diffuseMaterial) = delete;
 
         DiffuseMaterial &operator=(DiffuseMaterial &&diffuseMaterial) noexcept = delete;
     };

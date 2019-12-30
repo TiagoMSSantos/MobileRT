@@ -19,9 +19,9 @@ namespace MobileRT {
 #endif
 
     template<typename ...Args>
-    void log(Args &&... args) noexcept;
+    void log(Args &&... args);
 
-    inline ::std::string getFileName(const char *filepath) noexcept;
+    inline ::std::string getFileName(const char *filepath);
 
     const float RayLengthMax {1.0e+30f};
     const ::std::int32_t RayDepthMin {4};
@@ -29,22 +29,22 @@ namespace MobileRT {
     const ::std::int32_t NumberOfBlocks {256};
     const float Epsilon {1.0e-06f};
 
-    ::std::int32_t roundDownToMultipleOf(::std::int32_t value, ::std::int32_t multiple) noexcept;
+    ::std::int32_t roundDownToMultipleOf(::std::int32_t value, ::std::int32_t multiple);
 
-    float haltonSequence(::std::uint32_t index, ::std::uint32_t base) noexcept;
+    float haltonSequence(::std::uint32_t index, ::std::uint32_t base);
 
-    ::std::int32_t incrementalAvg(const ::glm::vec3 &sample, ::std::int32_t avg, ::std::int32_t numSample) noexcept;
+    ::std::int32_t incrementalAvg(const ::glm::vec3 &sample, ::std::int32_t avg, ::std::int32_t numSample);
 
-    ::glm::vec3 toVec3(const char *values) noexcept;
+    ::glm::vec3 toVec3(const char *values);
 
-    ::glm::vec2 toVec2(const char *values) noexcept;
+    ::glm::vec2 toVec2(const char *values);
 
-    bool equal(float a, float b) noexcept;
+    bool equal(float a, float b);
 
-    bool equal(const ::glm::vec3 &a, const ::glm::vec3 &b) noexcept;
+    bool equal(const ::glm::vec3 &a, const ::glm::vec3 &b);
 
     template<typename ...Args>
-    void log(Args &&... args) noexcept {
+    void log(Args &&... args) {
         ::std::ostringstream oss {""};
         static_cast<void> (::std::initializer_list<::std::int32_t> {(oss << args, 0)...});
         oss << '\n';
@@ -52,7 +52,7 @@ namespace MobileRT {
         ::Dependent::printString(line);
     }
 
-    ::std::string getFileName(const char *const filepath) noexcept {
+    ::std::string getFileName(const char *const filepath) {
         const ::std::string &filePath {filepath};
         auto filePos {filePath.rfind('/')};
         if (filePos != ::std::string::npos) {

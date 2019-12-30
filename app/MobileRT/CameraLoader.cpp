@@ -2,6 +2,6 @@
 
 using ::MobileRT::CameraLoader;
 
-CameraLoader::~CameraLoader() noexcept {
+CameraLoader::~CameraLoader() {
     LOG("CAMERALOADER DESTROYED!!!");
 }

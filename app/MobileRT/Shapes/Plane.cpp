@@ -4,13 +4,13 @@ using ::MobileRT::AABB;
 using ::MobileRT::Plane;
 using ::MobileRT::Intersection;
 
-Plane::Plane(const ::glm::vec3 &point, const ::glm::vec3 &normal, const ::std::int32_t materialIndex) noexcept :
+Plane::Plane(const ::glm::vec3 &point, const ::glm::vec3 &normal, const ::std::int32_t materialIndex) :
     normal_ {::glm::normalize(normal)},
     point_ {point},
     materialIndex_ {materialIndex} {
 }
 
-Intersection Plane::intersect(const Intersection &intersection, const Ray &ray) const noexcept {
+Intersection Plane::intersect(const Intersection &intersection, const Ray &ray) const {
     if (ray.primitive_ == this) {
         return intersection;
     }
@@ -39,7 +39,7 @@ Intersection Plane::intersect(const Intersection &intersection, const Ray &ray) 
     return res;
 }
 
-::glm::vec3 Plane::getRightVector() const noexcept {
+::glm::vec3 Plane::getRightVector() const {
     ::glm::vec3 right {};
     if (this->normal_[0] >= 1) {
         right = ::glm::vec3 {0, 1, 1};
@@ -58,7 +58,7 @@ Intersection Plane::intersect(const Intersection &intersection, const Ray &ray) 
     return right;
 }
 
-AABB Plane::getAABB() const noexcept {
+AABB Plane::getAABB() const {
     const auto &rightDir {getRightVector()};
     const auto &min {this->point_ + rightDir * -100.0F};
     const auto &max {this->point_ + rightDir * 100.0F};
@@ -66,7 +66,7 @@ AABB Plane::getAABB() const noexcept {
     return res;
 }
 
-float Plane::distance(const ::glm::vec3 &point) const noexcept {
+float Plane::distance(const ::glm::vec3 &point) const {
     //Plane Equation
     //a(x-x0)+b(y-y0)+c(z-z0) = 0
     //abc = normal
@@ -89,7 +89,7 @@ float Plane::distance(const ::glm::vec3 &point) const noexcept {
     return res;
 }
 
-bool Plane::intersect(const AABB &box) const noexcept {
+bool Plane::intersect(const AABB &box) const {
     const auto &positiveVertex {box.pointMax_};
     const auto &negativeVertex {box.pointMin_};
 

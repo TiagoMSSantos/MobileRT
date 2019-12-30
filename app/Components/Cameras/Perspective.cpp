@@ -7,7 +7,7 @@ using ::MobileRT::Ray;
 
 Perspective::Perspective(
     const ::glm::vec3 &position, const ::glm::vec3 &lookAt, const ::glm::vec3 &up,
-    const float hFov, const float vFov) noexcept :
+    const float hFov, const float vFov) :
         Camera {position, lookAt, up},
         hFov_ {degToRad(hFov)},
         vFov_ {degToRad(vFov)} {
@@ -18,7 +18,7 @@ Perspective::Perspective(
 /* deviationU = [-0.5F / width, 0.5F / width] */
 /* deviationV = [-0.5F / height, 0.5F / height] */
 Ray Perspective::generateRay(const float u, const float v,
-                             const float deviationU, const float deviationV) const noexcept {
+                             const float deviationU, const float deviationV) const {
     const auto tanValueRight {this->hFov_ * (u - 0.5F)};
     const auto rightFactor {fastArcTan(tanValueRight) + deviationU};
     const auto &right {this->right_ * rightFactor};
@@ -32,7 +32,7 @@ Ray Perspective::generateRay(const float u, const float v,
 }
 
 //http://nghiaho.com/?p=997
-float Perspective::fastArcTan(const float value) const noexcept {
+float Perspective::fastArcTan(const float value) const {
     const auto absValue {::std::abs(value)};
     const auto res {
         ::glm::quarter_pi<float>() * value - (value * (absValue - 1.0F)) * (0.2447F + (0.0663F * absValue))
@@ -40,12 +40,12 @@ float Perspective::fastArcTan(const float value) const noexcept {
     return res;
 }
 
-float Perspective::getHFov() const noexcept {
+float Perspective::getHFov() const {
     const auto degrees {radToDeg(this->hFov_)};
     return degrees;
 }
 
-float Perspective::getVFov() const noexcept {
+float Perspective::getVFov() const {
     const auto degrees {radToDeg(this->vFov_)};
     return degrees;
 }

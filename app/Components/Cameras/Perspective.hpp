@@ -11,31 +11,31 @@ namespace Components {
         float vFov_ {};
 
     private:
-        float fastArcTan(float value) const noexcept;
+        float fastArcTan(float value) const;
 
     public:
-        explicit Perspective () noexcept = delete;
+        explicit Perspective() = delete;
 
         explicit Perspective(const ::glm::vec3 &position,
                              const ::glm::vec3 &lookAt, const ::glm::vec3 &up,
-                             float hFov, float vFov) noexcept;
+                             float hFov, float vFov);
 
-        Perspective(const Perspective &perspective) noexcept = default;
+        Perspective(const Perspective &perspective) = default;
 
         Perspective(Perspective &&perspective) noexcept = delete;
 
-        ~Perspective() noexcept final = default;
+        ~Perspective() final = default;
 
-        Perspective &operator=(const Perspective &perspective) noexcept = delete;
+        Perspective &operator=(const Perspective &perspective) = delete;
 
         Perspective &operator=(Perspective &&perspective) noexcept = delete;
 
         ::MobileRT::Ray generateRay(float u, float v,
-                        float deviationU, float deviationV) const noexcept final;
+                        float deviationU, float deviationV) const final;
 
-        float getHFov() const noexcept;
+        float getHFov() const;
 
-        float getVFov() const noexcept;
+        float getVFov() const;
     };
 }//namespace Components
 

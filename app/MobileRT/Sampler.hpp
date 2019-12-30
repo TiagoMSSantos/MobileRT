@@ -13,28 +13,28 @@ namespace MobileRT {
         ::std::uint32_t samples_ {::std::numeric_limits<::std::uint32_t>::max()};
 
     public:
-        explicit Sampler() noexcept = default;
+        explicit Sampler() = default;
 
         explicit Sampler(::std::uint32_t width, ::std::uint32_t height,
-                         ::std::uint32_t samples) noexcept;
+                         ::std::uint32_t samples);
 
-        Sampler(const Sampler &sampler) noexcept = delete;
+        Sampler(const Sampler &sampler) = delete;
 
         Sampler(Sampler &&sampler) noexcept = delete;
 
-        virtual ~Sampler() noexcept;
+        virtual ~Sampler();
 
-        Sampler &operator=(const Sampler &sampler) noexcept = delete;
+        Sampler &operator=(const Sampler &sampler) = delete;
 
         Sampler &operator=(Sampler &&sampler) noexcept = delete;
 
-        void resetSampling() noexcept;
+        void resetSampling();
 
-        void stopSampling() noexcept;
+        void stopSampling();
 
-        virtual float getSample(::std::uint32_t sample) noexcept = 0;
+        virtual float getSample(::std::uint32_t sample) = 0;
 
-        float getSample() noexcept;
+        float getSample();
     };
 }//namespace MobileRT
 

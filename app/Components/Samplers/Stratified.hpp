@@ -6,21 +6,21 @@
 namespace Components {
     class Stratified final : public ::MobileRT::Sampler {
     public:
-        explicit Stratified() noexcept = default;
+        explicit Stratified() = default;
 
-        explicit Stratified(::std::uint32_t width, ::std::uint32_t height, ::std::uint32_t samples) noexcept;
+        explicit Stratified(::std::uint32_t width, ::std::uint32_t height, ::std::uint32_t samples);
 
-        Stratified(const Stratified &stratified) noexcept = delete;
+        Stratified(const Stratified &stratified) = delete;
 
         Stratified(Stratified &&stratified) noexcept = delete;
 
-        ~Stratified() noexcept final = default;
+        ~Stratified() final = default;
 
-        Stratified &operator=(const Stratified &stratified) noexcept = delete;
+        Stratified &operator=(const Stratified &stratified) = delete;
 
         Stratified &operator=(Stratified &&stratified) noexcept = delete;
 
-        float getSample(::std::uint32_t sample) noexcept final;
+        float getSample(::std::uint32_t sample) final;
     };
 }//namespace Components
 

@@ -6,11 +6,11 @@ using ::MobileRT::Ray;
 using ::MobileRT::Scene;
 using ::MobileRT::RayDepthMax;
 
-Whitted::Whitted(Scene scene, const ::std::int32_t samplesLight, Accelerator accelerator) noexcept :
+Whitted::Whitted(Scene scene, const ::std::int32_t samplesLight, Accelerator accelerator) :
     Shader {::std::move(scene), samplesLight, accelerator} {
 }
 
-bool Whitted::shade(::glm::vec3 *const rgb, const Intersection &intersection, const Ray &ray) noexcept {
+bool Whitted::shade(::glm::vec3 *const rgb, const Intersection &intersection, const Ray &ray) {
     const auto rayDepth {ray.depth_};
     if (rayDepth > RayDepthMax) {
         return false;

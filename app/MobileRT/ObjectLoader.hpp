@@ -15,24 +15,24 @@ namespace MobileRT {
         ::std::int32_t numberTriangles_ {-1};
 
     public:
-        explicit ObjectLoader() noexcept = default;
+        explicit ObjectLoader() = default;
 
-        ObjectLoader(const ObjectLoader &objectLoader) noexcept = delete;
+        ObjectLoader(const ObjectLoader &objectLoader) = delete;
 
         ObjectLoader(ObjectLoader &&objectLoader) noexcept = delete;
 
-        virtual ~ObjectLoader() noexcept;
+        virtual ~ObjectLoader();
 
-        ObjectLoader &operator=(const ObjectLoader &objectLoader) noexcept = delete;
+        ObjectLoader &operator=(const ObjectLoader &objectLoader) = delete;
 
         ObjectLoader &operator=(ObjectLoader &&objectLoader) noexcept = delete;
 
-        virtual ::std::int32_t process() noexcept = 0;
+        virtual ::std::int32_t process() = 0;
 
-        bool isProcessed() const noexcept;
+        bool isProcessed() const;
 
         virtual bool fillScene(Scene *scene,
-                               ::std::function<::std::unique_ptr<Sampler>()> lambda) noexcept = 0;
+                               ::std::function<::std::unique_ptr<Sampler>()> lambda) = 0;
     };
 }//namespace MobileRT
 

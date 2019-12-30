@@ -2,10 +2,10 @@
 
 using ::MobileRT::Light;
 
-Light::Light(const Material &radiance) noexcept :
-    radiance_ {radiance} {
+Light::Light(Material radiance) :
+    radiance_ {::std::move(radiance)} {
 }
 
-Light::~Light() noexcept {
+Light::~Light() {
     LOG("LIGHT DESTROYED!!!");
 }

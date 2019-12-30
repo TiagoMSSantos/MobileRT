@@ -14,16 +14,20 @@ using ::MobileRT::Texture;
 using ::MobileRT::Triangle;
 using ::MobileRT::Sampler;
 
-OBJLoader::OBJLoader(::std::string objFilePath, ::std::string matFilePath) noexcept :
+OBJLoader::OBJLoader(::std::string objFilePath, ::std::string matFilePath) :
     objFilePath_ {::std::move(objFilePath)},
     mtlFilePath_ {::std::move(matFilePath)} {
 }
 
-::std::int32_t OBJLoader::process() noexcept {
+::std::int32_t OBJLoader::process() {
     ::std::ifstream objStream {this->objFilePath_};
-    objStream.exceptions(::std::ifstream::goodbit | ::std::ifstream::badbit);
+    objStream.exceptions(
+            objStream.exceptions() |::std::ifstream::goodbit | ::std::ifstream::badbit | ::std::ifstream::failbit
+    );
     ::std::ifstream matStream {this->mtlFilePath_};
-    matStream.exceptions(::std::ifstream::goodbit | ::std::ifstream::badbit);
+    matStream.exceptions(
+            matStream.exceptions() |::std::ifstream::goodbit | ::std::ifstream::badbit | ::std::ifstream::failbit
+    );
     ::tinyobj::MaterialStreamReader matStreamReader {matStream};
     ::tinyobj::MaterialStreamReader *const matStreamReaderPtr {!this->mtlFilePath_.empty()? &matStreamReader : nullptr};
     ::std::string errors {};
@@ -70,7 +74,7 @@ OBJLoader::OBJLoader(::std::string objFilePath, ::std::string matFilePath) noexc
 }
 
 bool OBJLoader::fillScene(Scene *const scene,
-                          ::std::function<::std::unique_ptr<Sampler>()> lambda) noexcept {
+                          ::std::function<::std::unique_ptr<Sampler>()> lambda) {
     scene->triangles_.reserve(static_cast<::std::size_t> (this->numberTriangles_));
     const ::std::string delimiter {"/"};
     const ::std::string filePath {this->objFilePath_.substr(0, this->objFilePath_.find_last_of(delimiter)) + "/"};
@@ -149,7 +153,7 @@ bool OBJLoader::fillScene(Scene *const scene,
                     const ::glm::vec3 &emission {e1, e2, e3};
                     const auto indexRefraction {mat.ior};
 
-                    const auto hasTexture {mat.diffuse_texname != ""};
+                    const auto hasTexture {!mat.diffuse_texname.empty()};
                     const auto haxCoordTex {!this->attrib_.texcoords.empty()};
                     Texture texture {};
                     ::glm::vec2 texCoordA {-1};
@@ -163,21 +167,18 @@ bool OBJLoader::fillScene(Scene *const scene,
                         };
                         const auto tx1 {*(itTexCoords1 + 0)};
                         const auto ty1 {*(itTexCoords1 + 1)};
-                        LOG(tx1, ty1);
 
                         const auto itTexCoords2 {
                             this->attrib_.texcoords.begin() + 2 * static_cast<::std::int32_t> (idx2.texcoord_index)
                         };
                         const auto tx2 {*(itTexCoords2 + 0)};
                         const auto ty2 {*(itTexCoords2 + 1)};
-                        LOG(tx2, ty2);
 
                         const auto itTexCoords3 {
                             this->attrib_.texcoords.begin() + 2 * static_cast<::std::int32_t> (idx3.texcoord_index)
                         };
                         const auto tx3 {*(itTexCoords3 + 0)};
                         const auto ty3 {*(itTexCoords3 + 1)};
-                        LOG(tx3, ty3);
 
                         texCoordA = ::glm::vec2 {tx1, ty1};
                         texCoordB = ::glm::vec2 {tx2, ty2};
@@ -186,9 +187,7 @@ bool OBJLoader::fillScene(Scene *const scene,
                         auto itTexture {textures.find(texturePath)};
                         if(itTexture == textures.end()) {
                             texture = Texture::createTexture(texturePath.c_str());
-                            auto pair {::std::make_pair<::std::string, Texture> (
-                                    ::std::move(texturePath), ::std::move(texture)
-                            )};
+                            auto pair {::std::make_pair (::std::move(texturePath), ::std::move(texture))};
                             textures.emplace(::std::move(pair));
                         }
                         texture = textures.find(texturePath2)->second;
@@ -247,7 +246,7 @@ bool OBJLoader::fillScene(Scene *const scene,
     return true;
 }
 
-OBJLoader::~OBJLoader() noexcept {
+OBJLoader::~OBJLoader() {
     this->objFilePath_.clear();
     this->mtlFilePath_.clear();
     this->attrib_.normals.clear();

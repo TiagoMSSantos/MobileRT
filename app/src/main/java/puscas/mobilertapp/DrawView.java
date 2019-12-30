@@ -244,24 +244,23 @@ public final class DrawView extends GLSurfaceView {
 
         this.renderer.freeArrays();
 
-        final int numPrimitives = this.renderer.RTInitialize(scene, shader, width, height, accelerator,
-                samplesPixel, samplesLight, objFilePath, matFilePath, camFilePath);
-        if (numPrimitives == -1) {
-            LOGGER.warning(DEVICE_WITHOUT_ENOUGH_MEMORY);
-
+        try {
+            final int numPrimitives = this.renderer.RTInitialize(scene, shader, width, height, accelerator,
+                    samplesPixel, samplesLight, objFilePath, matFilePath, camFilePath);
+            this.renderer.resetStats(numThreads, samplesPixel, samplesLight, numPrimitives, RTGetNumberOfLights());
+        } catch(final LowMemoryException ex) {
+            this.renderer.resetStats(-1, -1, -1, -1, -1);
+            LOGGER.severe(ex.getMessage());
             post(() -> Toast.makeText(getContext(), DEVICE_WITHOUT_ENOUGH_MEMORY, Toast.LENGTH_LONG).show());
-        }
-        if (numPrimitives == -2) {
-            LOGGER.warning(COULD_NOT_LOAD_THE_SCENE);
-
+        } catch(final Exception ex) {
+            this.renderer.resetStats(-2, -2, -2, -2, -2);
+            LOGGER.severe(ex.getMessage());
             post(() -> Toast.makeText(getContext(), COULD_NOT_LOAD_THE_SCENE, Toast.LENGTH_LONG).show());
+        } finally {
+            final int widthView = getWidth();
+            final int heightView = getHeight();
+            this.renderer.setBitmap(width, height, widthView, heightView);
         }
-        this.renderer.resetStats(numThreads, samplesPixel, samplesLight, numPrimitives, RTGetNumberOfLights());
-
-        final int widthView = getWidth();
-        final int heightView = getHeight();
-
-        this.renderer.setBitmap(width, height, widthView, heightView);
     }
 
     /**

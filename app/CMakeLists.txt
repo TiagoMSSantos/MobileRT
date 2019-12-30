@@ -29,21 +29,21 @@ set( ANDROID_COMPILER_FLAGS "" CACHE STRING "CUSTOM" FORCE )
 
 set( CMAKE_CXX_FLAGS "-fPIC" CACHE STRING "CUSTOM" FORCE )
 set( CMAKE_CXX_FLAGS_DEBUG "-D_GLIBCXX_DEBUG" CACHE STRING "CUSTOM" FORCE )
-set( CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG -ffunction-sections -fdata-sections -fno-exceptions"
+set( CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG -ffunction-sections -fdata-sections"
 		CACHE STRING "CUSTOM" FORCE )
 set( CMAKE_CXX_FLAGS_RELWITHDEBINFO "" CACHE STRING "CUSTOM" FORCE )
 set( CMAKE_CXX_FLAGS_MINSIZEREL "" CACHE STRING "CUSTOM" FORCE )
 
 set( CMAKE_EXE_LINKER_FLAGS "" CACHE STRING "CUSTOM" FORCE )
 set( CMAKE_EXE_LINKER_FLAGS_DEBUG "" CACHE STRING "CUSTOM" FORCE )
-set( CMAKE_EXE_LINKER_FLAGS_RELEASE "-Wl,-gc-sections -O3 -discard-all -fno-rtti -fno-exceptions -s -flto=full"
+set( CMAKE_EXE_LINKER_FLAGS_RELEASE "-Wl,-gc-sections -O3 -discard-all -fno-rtti -s -flto=full"
 		CACHE STRING "CUSTOM" FORCE )
 set( CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO "" CACHE STRING "CUSTOM" FORCE )
 set( CMAKE_EXE_LINKER_FLAGS_MINSIZEREL "" CACHE STRING "CUSTOM" FORCE )
 
 set( CMAKE_SHARED_LINKER_FLAGS "" CACHE STRING "CUSTOM" FORCE )
 set( CMAKE_SHARED_LINKER_FLAGS_DEBUG "" CACHE STRING "CUSTOM" FORCE )
-set( CMAKE_SHARED_LINKER_FLAGS_RELEASE "-Wl,-gc-sections -O3 -discard-all -fno-rtti -fno-exceptions -s -flto=full"
+set( CMAKE_SHARED_LINKER_FLAGS_RELEASE "-Wl,-gc-sections -O3 -discard-all -fno-rtti -s -flto=full"
 		CACHE STRING "CUSTOM" FORCE )
 set( CMAKE_SHARED_LINKER_FLAGS_RELWITHDEBINFO "" CACHE STRING "CUSTOM" FORCE )
 set( CMAKE_SHARED_LINKER_FLAGS_MINSIZEREL "" CACHE STRING "CUSTOM" FORCE )
@@ -74,7 +74,7 @@ set( COMMON_FLAGS_DEBUG -O0 -g3 -fno-optimize-sibling-calls -fno-omit-frame-poin
 set( COMMON_FLAGS_RELEASE "${COMMON_FLAGS_RELEASE}" -O3 -DNDEBUG -ffunction-sections -fdata-sections -flto=full )
 
 # Set common linker flags
-set( COMMON_LINKER_FLAGS -Wl,-gc-sections -O3 -discard-all -fno-rtti -fno-exceptions )
+set( COMMON_LINKER_FLAGS -Wl,-gc-sections -O3 -discard-all -fno-rtti )
 
 set( COMMON_LINKER_FLAGS_DEBUG  )
 

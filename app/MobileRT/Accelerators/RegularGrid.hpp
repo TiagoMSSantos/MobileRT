@@ -20,32 +20,32 @@ namespace MobileRT {
         ::glm::vec3 cellSize_ {};
 
     private:
-        void addPrimitives() noexcept;
+        void addPrimitives();
 
-        Intersection intersect(Intersection intersection,const Ray &ray, bool shadowTrace = false) noexcept;
+        Intersection intersect(Intersection intersection,const Ray &ray, bool shadowTrace = false);
 
-        ::std::uint32_t bitCounter(::std::uint32_t value) const noexcept;
+        ::std::uint32_t bitCounter(::std::uint32_t value) const;
 
     public:
-        explicit RegularGrid() noexcept = default;
+        explicit RegularGrid() = default;
 
-        explicit RegularGrid(::std::vector<T> &&primitives,::std::uint32_t gridSize) noexcept;
+        explicit RegularGrid(::std::vector<T> &&primitives,::std::uint32_t gridSize);
 
-        RegularGrid(const RegularGrid &regularGrid) noexcept = delete;
+        RegularGrid(const RegularGrid &regularGrid) = delete;
 
         RegularGrid(RegularGrid &&regularGrid) noexcept = default;
 
-        ~RegularGrid() noexcept;
+        ~RegularGrid();
 
-        RegularGrid &operator=(const RegularGrid &regularGrid) noexcept = delete;
+        RegularGrid &operator=(const RegularGrid &regularGrid) = delete;
 
         RegularGrid &operator=(RegularGrid &&regularGrid) noexcept = default;
 
-        Intersection trace(Intersection intersection, const Ray &ray) noexcept;
+        Intersection trace(Intersection intersection, const Ray &ray);
 
-        Intersection shadowTrace(Intersection intersection, const Ray &ray) noexcept;
+        Intersection shadowTrace(Intersection intersection, const Ray &ray);
 
-        const ::std::vector<T>& getPrimitives() const noexcept;
+        const ::std::vector<T>& getPrimitives() const;
     };
 
 
@@ -53,7 +53,7 @@ namespace MobileRT {
     template<typename T>
     RegularGrid<T>::RegularGrid(
         ::std::vector<T> &&primitives, const ::std::uint32_t gridSize
-    ) noexcept :
+    ) :
         grid_ {
             ::std::vector<::std::vector<T*>> {
                 static_cast<::std::size_t> (gridSize * gridSize * gridSize)
@@ -85,13 +85,13 @@ namespace MobileRT {
     }
 
     template<typename T>
-    RegularGrid<T>::~RegularGrid() noexcept {
+    RegularGrid<T>::~RegularGrid() {
         this->grid_.clear();
         ::std::vector<::std::vector<T*>> {}.swap(this->grid_);
     }
 
     template<typename T>
-    ::std::uint32_t RegularGrid<T>::bitCounter(::std::uint32_t value) const noexcept {
+    ::std::uint32_t RegularGrid<T>::bitCounter(::std::uint32_t value) const {
         ::std::uint32_t counter {};
         while (value > 0) {
             ++counter;
@@ -101,7 +101,7 @@ namespace MobileRT {
     }
 
     template<typename T>
-    void RegularGrid<T>::addPrimitives() noexcept {
+    void RegularGrid<T>::addPrimitives() {
         ::std::int32_t index {};
 
         // calculate cell width, height and depth
@@ -170,19 +170,19 @@ namespace MobileRT {
     }
 
     template<typename T>
-    Intersection RegularGrid<T>::trace(Intersection intersection, const Ray &ray) noexcept {
+    Intersection RegularGrid<T>::trace(Intersection intersection, const Ray &ray) {
         intersection = intersect (intersection, ray);
         return intersection;
     }
 
     template<typename T>
-    Intersection RegularGrid<T>::shadowTrace(Intersection intersection, const Ray &ray) noexcept {
+    Intersection RegularGrid<T>::shadowTrace(Intersection intersection, const Ray &ray) {
         intersection = intersect (intersection, ray, true);
         return intersection;
     }
 
     template<typename T>
-    Intersection RegularGrid<T>::intersect(Intersection intersection, const Ray &ray, const bool shadowTrace) noexcept {
+    Intersection RegularGrid<T>::intersect(Intersection intersection, const Ray &ray, const bool shadowTrace) {
         // setup 3DDDA (double check reusability of primary ray data)
         const auto &cell {(ray.origin_ - this->worldBoundaries_.pointMin_) * this->cellSizeInverted_};
         auto cellX {static_cast<::std::int32_t> (cell[0])};
@@ -369,7 +369,7 @@ namespace MobileRT {
     }
 
     template<typename T>
-    const ::std::vector<T>& RegularGrid<T>::getPrimitives() const noexcept {
+    const ::std::vector<T>& RegularGrid<T>::getPrimitives() const {
         return this->primitives_;
     }
 

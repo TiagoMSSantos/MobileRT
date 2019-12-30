@@ -18,7 +18,8 @@ DEPENDENT_SRCS="${MOBILERT_PATH}/app/System_dependent"
 SCENES_SRCS="${MOBILERT_PATH}/app/Scenes"
 
 THIRDPARTY_HEADERS="${MOBILERT_PATH}/app/third_party"
-GLM_HEADERS="${MOBILERT_PATH}/app/third_party/glm"
+GLM_HEADERS="${THIRDPARTY_HEADERS}/glm"
+STB_HEADERS="${THIRDPARTY_HEADERS}/stb"
 GTK_HEADERS="$(pkg-config --cflags gtk+-2.0)"
 GTK_HEADERS="${GTK_HEADERS//-I/-isystem}"
 
@@ -168,6 +169,7 @@ function clangtidy {
   -I ${SCENES_SRCS} \
   -isystem ${THIRDPARTY_HEADERS} \
   -isystem ${GLM_HEADERS} \
+  -isystem ${STB_HEADERS} \
   -isystem /usr/include/c++/7 \
   -isystem /usr/include/c++/v1 \
   -isystem /usr/include/x86_64-linux-gnu/c++/7 \

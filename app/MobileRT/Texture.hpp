@@ -13,30 +13,30 @@ namespace MobileRT {
             ::std::int32_t channels_ {};
 
         public:
-            explicit Texture() noexcept = default;
+            explicit Texture() = default;
 
             explicit Texture(
                 ::std::vector<::std::uint8_t> image,
                 ::std::int32_t width,
                 ::std::int32_t height,
                 ::std::int32_t channels
-            ) noexcept;
+            );
 
             Texture(const Texture &texture) = default;
 
             Texture(Texture &&texture) noexcept = default;
 
-            ~Texture() noexcept = default;
+            ~Texture() = default;
 
             Texture &operator=(const Texture &texture) = default;
 
             Texture &operator=(Texture &&texture) noexcept = default;
 
-            ::glm::vec3 loadColor(const ::glm::vec2 &texCoords) const noexcept;
+            ::glm::vec3 loadColor(const ::glm::vec2 &texCoords) const;
 
-            bool operator==(const Texture &texture) noexcept;
+            bool operator==(const Texture &texture);
 
-            static Texture createTexture(const char *textureFilePath) noexcept;
+            static Texture createTexture(const char *textureFilePath);
     };
 }//namespace MobileRT
 
