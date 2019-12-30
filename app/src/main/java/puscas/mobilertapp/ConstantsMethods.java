@@ -15,8 +15,8 @@ final class ConstantsMethods {
     private static final Logger LOGGER = Logger.getLogger(ConstantsMethods.class.getName());
 
     /**
-     * The name of the {@link DrawView#renderScene(int, int, int, int, int, int, int, int, String, String, boolean)}
-     * method.
+     * The name of the
+     * {@link DrawView#renderScene(int, int, int, int, int, int, int, int, String, String, String, boolean)} method.
      */
     static final String RENDER_SCENE = "renderScene";
 

@@ -139,7 +139,7 @@ public final class MainActivity extends Activity {
 
     /**
      * Auxiliary method to readjust the width and height of the image by rounding down the value to a multiple of the
-     * number of blocks in the Ray Tracer engine.
+     * number of tiles in the Ray Tracer engine.
      */
     private native int RTResize(final int size);
 

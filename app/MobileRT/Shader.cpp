@@ -24,7 +24,7 @@ namespace {
     ::std::array<float, size> values {};
 
     bool fillThings() {
-        for (auto it {values.begin()}; it < values.end(); std::advance(it, 1)) {
+        for (auto it {values.begin()}; it < values.end(); ::std::advance(it, 1)) {
             const auto index {static_cast<::std::uint32_t> (::std::distance(values.begin(), it))};
             *it = ::MobileRT::haltonSequence(index, 2);
         }

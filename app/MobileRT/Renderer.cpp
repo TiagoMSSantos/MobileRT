@@ -9,7 +9,7 @@ namespace {
     ::std::array<float, NumberOfBlocks> values {};
 
     bool fillThings() {
-        for (auto it {values.begin()}; it < values.end(); std::advance(it, 1)) {
+        for (auto it {values.begin()}; it < values.end(); ::std::advance(it, 1)) {
             const ::std::uint32_t index {static_cast<uint32_t> (::std::distance(values.begin(), it))};
             *it = ::MobileRT::haltonSequence(index, 2);
         }

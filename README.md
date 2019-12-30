@@ -18,7 +18,7 @@
 - [ ] Make acceleration structures compatible with the lights
 - [ ] Investigate if samplers are properly working
 - [x] Add exceptions
-- [ ] Check all allocations' exceptions
+- [x] Check all allocations' exceptions
 - [x] Add normals per vertice for triangles
 
 ### Ray tracing JNI layer
@@ -51,7 +51,7 @@
 - [x] Give out of memory error when the memory is not enough to load the scene
 - [ ] Add unit tests (more code coverage)
 - [x] Add instrumented unit tests
-- [ ] Add git hooks to check git commit messages
+- [x] Add git hooks to check git commit messages
 - [x] Add git hooks to submit Jenkins' jobs after each git push
 - [ ] Support to export rendered image to file
 - [x] Add CI / CD support from github (actions) for the Google Test unit tests

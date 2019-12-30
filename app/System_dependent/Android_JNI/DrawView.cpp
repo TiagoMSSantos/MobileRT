@@ -65,64 +65,78 @@ jobject Java_puscas_mobilertapp_MainRenderer_RTInitCameraArray(
         JNIEnv *env,
         jobject /*thiz*/
 ) {
-    jobject directBuffer {};
-    {
-        const ::std::lock_guard<::std::mutex> lock {mutex_};
-        if (renderer_ != nullptr) {
-            ::MobileRT::Camera *const camera {renderer_->camera_.get()};
-            const ::std::int64_t arraySize {20};
-            const auto arrayBytes {arraySize * sizeof(jfloat)};
-            float *const floatBuffer {new float[arraySize]};
+    try {
+        jobject directBuffer {};
+        {
+            const ::std::lock_guard<::std::mutex> lock {mutex_};
+            if (renderer_ != nullptr) {
+                ::MobileRT::Camera *const camera {renderer_->camera_.get()};
+                const ::std::int64_t arraySize {20};
+                const auto arrayBytes {arraySize * sizeof(jfloat)};
+                float *const floatBuffer {new float[arraySize]};
 
-            if (floatBuffer != nullptr) {
-                directBuffer = env->NewDirectByteBuffer(floatBuffer, arrayBytes);
-                if (directBuffer != nullptr) {
-                    ::std::int32_t i {};
+                if (floatBuffer != nullptr) {
+                    directBuffer = env->NewDirectByteBuffer(floatBuffer, arrayBytes);
+                    if (directBuffer != nullptr) {
+                        ::std::int32_t i {};
 
-                    floatBuffer[i++] = camera->position_.x;
-                    floatBuffer[i++] = camera->position_.y;
-                    floatBuffer[i++] = camera->position_.z;
-                    floatBuffer[i++] = 1.0F;
+                        floatBuffer[i++] = camera->position_.x;
+                        floatBuffer[i++] = camera->position_.y;
+                        floatBuffer[i++] = camera->position_.z;
+                        floatBuffer[i++] = 1.0F;
 
-                    floatBuffer[i++] = camera->direction_.x;
-                    floatBuffer[i++] = camera->direction_.y;
-                    floatBuffer[i++] = camera->direction_.z;
-                    floatBuffer[i++] = 1.0F;
+                        floatBuffer[i++] = camera->direction_.x;
+                        floatBuffer[i++] = camera->direction_.y;
+                        floatBuffer[i++] = camera->direction_.z;
+                        floatBuffer[i++] = 1.0F;
 
-                    floatBuffer[i++] = camera->up_.x;
-                    floatBuffer[i++] = camera->up_.y;
-                    floatBuffer[i++] = camera->up_.z;
-                    floatBuffer[i++] = 1.0F;
+                        floatBuffer[i++] = camera->up_.x;
+                        floatBuffer[i++] = camera->up_.y;
+                        floatBuffer[i++] = camera->up_.z;
+                        floatBuffer[i++] = 1.0F;
 
-                    floatBuffer[i++] = camera->right_.x;
-                    floatBuffer[i++] = camera->right_.y;
-                    floatBuffer[i++] = camera->right_.z;
-                    floatBuffer[i++] = 1.0F;
+                        floatBuffer[i++] = camera->right_.x;
+                        floatBuffer[i++] = camera->right_.y;
+                        floatBuffer[i++] = camera->right_.z;
+                        floatBuffer[i++] = 1.0F;
 
-                    const auto *const perspective {dynamic_cast<::Components::Perspective*> (camera)};
-                    const auto *const orthographic {dynamic_cast<::Components::Orthographic*> (camera)};
-                    if (perspective != nullptr) {
-                        const float hFov {perspective->getHFov()};
-                        const float vFov {perspective->getVFov()};
-                        floatBuffer[i++] = hFov;
-                        floatBuffer[i++] = vFov;
-                        floatBuffer[i++] = 0.0F;
-                        floatBuffer[i++] = 0.0F;
-                    }
-                    if (orthographic != nullptr) {
-                        const float sizeH {orthographic->getSizeH()};
-                        const float sizeV {orthographic->getSizeV()};
-                        floatBuffer[i++] = 0.0F;
-                        floatBuffer[i++] = 0.0F;
-                        floatBuffer[i++] = sizeH;
-                        floatBuffer[i] = sizeV;
+                        const auto *const perspective {dynamic_cast<::Components::Perspective*> (camera)};
+                        const auto *const orthographic {dynamic_cast<::Components::Orthographic*> (camera)};
+                        if (perspective != nullptr) {
+                            const float hFov {perspective->getHFov()};
+                            const float vFov {perspective->getVFov()};
+                            floatBuffer[i++] = hFov;
+                            floatBuffer[i++] = vFov;
+                            floatBuffer[i++] = 0.0F;
+                            floatBuffer[i++] = 0.0F;
+                        }
+                        if (orthographic != nullptr) {
+                            const float sizeH {orthographic->getSizeH()};
+                            const float sizeV {orthographic->getSizeV()};
+                            floatBuffer[i++] = 0.0F;
+                            floatBuffer[i++] = 0.0F;
+                            floatBuffer[i++] = sizeH;
+                            floatBuffer[i] = sizeV;
+                        }
                     }
                 }
             }
+            env->ExceptionClear();
         }
-        env->ExceptionClear();
+        return directBuffer;
+    } catch (const ::std::bad_alloc &badAlloc) {
+        const auto lowMemClass {env->FindClass("puscas/mobilertapp/LowMemoryException")};
+        env->ThrowNew(lowMemClass, badAlloc.what());
+        return nullptr;
+    } catch (const ::std::exception &exception) {
+        const auto exceptionClass {env->FindClass("java/lang/Exception")};
+        env->ThrowNew(exceptionClass, exception.what());
+        return nullptr;
+    } catch (...) {
+        const auto exceptionClass {env->FindClass("java/lang/Exception")};
+        env->ThrowNew(exceptionClass, "Unknown error");
+        return nullptr;
     }
-    return directBuffer;
 }
 
 extern "C"
@@ -130,52 +144,66 @@ jobject Java_puscas_mobilertapp_MainRenderer_RTInitVerticesArray(
         JNIEnv *env,
         jobject /*thiz*/
 ) {
-    jobject directBuffer {};
-    {
-        const ::std::lock_guard<::std::mutex> lock {mutex_};
-        if (renderer_ != nullptr) {
-            const auto &triangles {renderer_->shader_->getTriangles()};
-            const auto arraySize {static_cast<::std::int64_t> (triangles.size() * 3 * 4)};
-            const auto arrayBytes {arraySize * static_cast<jlong> (sizeof(jfloat))};
-            if (arraySize > 0) {
-                float *const floatBuffer {new float[arraySize]};
-                if (floatBuffer != nullptr) {
-                    directBuffer = env->NewDirectByteBuffer(floatBuffer, arrayBytes);
-                    if (directBuffer != nullptr) {
-                        ::std::int32_t i {};
-                        for (const auto &triangle : triangles) {
-                            const ::glm::vec4 &pointA {triangle.pointA_.x,
-                                                       triangle.pointA_.y,
-                                                       triangle.pointA_.z, 1.0F};
-                            const ::glm::vec4 &pointB {pointA.x + triangle.AB_.x,
-                                                       pointA.y + triangle.AB_.y,
-                                                       pointA.z + triangle.AB_.z, 1.0F};
-                            const ::glm::vec4 &pointC {pointA.x + triangle.AC_.x,
-                                                       pointA.y + triangle.AC_.y,
-                                                       pointA.z + triangle.AC_.z, 1.0F};
+    try {
+        jobject directBuffer {};
+        {
+            const ::std::lock_guard<::std::mutex> lock {mutex_};
+            if (renderer_ != nullptr) {
+                const auto &triangles {renderer_->shader_->getTriangles()};
+                const auto arraySize {static_cast<::std::int64_t> (triangles.size() * 3 * 4)};
+                const auto arrayBytes {arraySize * static_cast<jlong> (sizeof(jfloat))};
+                if (arraySize > 0) {
+                    float *const floatBuffer {new float[arraySize]};
+                    if (floatBuffer != nullptr) {
+                        directBuffer = env->NewDirectByteBuffer(floatBuffer, arrayBytes);
+                        if (directBuffer != nullptr) {
+                            ::std::int32_t i {};
+                            for (const auto &triangle : triangles) {
+                                const ::glm::vec4 &pointA {triangle.pointA_.x,
+                                                           triangle.pointA_.y,
+                                                           triangle.pointA_.z, 1.0F};
+                                const ::glm::vec4 &pointB {pointA.x + triangle.AB_.x,
+                                                           pointA.y + triangle.AB_.y,
+                                                           pointA.z + triangle.AB_.z, 1.0F};
+                                const ::glm::vec4 &pointC {pointA.x + triangle.AC_.x,
+                                                           pointA.y + triangle.AC_.y,
+                                                           pointA.z + triangle.AC_.z, 1.0F};
 
-                            floatBuffer[i++] = pointA.x;
-                            floatBuffer[i++] = pointA.y;
-                            floatBuffer[i++] = -pointA.z;
-                            floatBuffer[i++] = pointA.w;
+                                floatBuffer[i++] = pointA.x;
+                                floatBuffer[i++] = pointA.y;
+                                floatBuffer[i++] = -pointA.z;
+                                floatBuffer[i++] = pointA.w;
 
-                            floatBuffer[i++] = pointB.x;
-                            floatBuffer[i++] = pointB.y;
-                            floatBuffer[i++] = -pointB.z;
-                            floatBuffer[i++] = pointB.w;
+                                floatBuffer[i++] = pointB.x;
+                                floatBuffer[i++] = pointB.y;
+                                floatBuffer[i++] = -pointB.z;
+                                floatBuffer[i++] = pointB.w;
 
-                            floatBuffer[i++] = pointC.x;
-                            floatBuffer[i++] = pointC.y;
-                            floatBuffer[i++] = -pointC.z;
-                            floatBuffer[i++] = pointC.w;
+                                floatBuffer[i++] = pointC.x;
+                                floatBuffer[i++] = pointC.y;
+                                floatBuffer[i++] = -pointC.z;
+                                floatBuffer[i++] = pointC.w;
+                            }
                         }
                     }
                 }
             }
+            env->ExceptionClear();
         }
-        env->ExceptionClear();
+        return directBuffer;
+    } catch (const ::std::bad_alloc &badAlloc) {
+        const auto lowMemClass {env->FindClass("puscas/mobilertapp/LowMemoryException")};
+        env->ThrowNew(lowMemClass, badAlloc.what());
+        return nullptr;
+    } catch (const ::std::exception &exception) {
+        const auto exceptionClass {env->FindClass("java/lang/Exception")};
+        env->ThrowNew(exceptionClass, exception.what());
+        return nullptr;
+    } catch (...) {
+        const auto exceptionClass {env->FindClass("java/lang/Exception")};
+        env->ThrowNew(exceptionClass, "Unknown error");
+        return nullptr;
     }
-    return directBuffer;
 }
 
 extern "C"
@@ -183,59 +211,73 @@ jobject Java_puscas_mobilertapp_MainRenderer_RTInitColorsArray(
         JNIEnv *env,
         jobject /*thiz*/
 ) {
-    jobject directBuffer {};
-    {
-        const ::std::lock_guard<::std::mutex> lock {mutex_};
-        if (renderer_ != nullptr) {
-            const auto &triangles {renderer_->shader_->getTriangles()};
-            const auto arraySize {static_cast<::std::int64_t> (triangles.size() * 3 * 4)};
-            const auto arrayBytes {arraySize * static_cast<::std::int64_t> (sizeof(jfloat))};
-            if (arraySize > 0) {
-                float *const floatBuffer {new float[arraySize]};
-                if (floatBuffer != nullptr) {
-                    directBuffer = env->NewDirectByteBuffer(floatBuffer, arrayBytes);
-                    if (directBuffer != nullptr) {
-                        ::std::int32_t i {};
-                        for (const auto &triangle : triangles) {
-                            const auto materialIndex {triangle.materialIndex_};
-                            auto material {::MobileRT::Material {}};
-                            if (materialIndex >= 0) {
-                                material = renderer_->shader_->getMaterials()
-                                    [static_cast<::std::uint32_t> (materialIndex)];
+    try {
+        jobject directBuffer {};
+        {
+            const ::std::lock_guard<::std::mutex> lock {mutex_};
+            if (renderer_ != nullptr) {
+                const auto &triangles {renderer_->shader_->getTriangles()};
+                const auto arraySize {static_cast<::std::int64_t> (triangles.size() * 3 * 4)};
+                const auto arrayBytes {arraySize * static_cast<::std::int64_t> (sizeof(jfloat))};
+                if (arraySize > 0) {
+                    float *const floatBuffer {new float[arraySize]};
+                    if (floatBuffer != nullptr) {
+                        directBuffer = env->NewDirectByteBuffer(floatBuffer, arrayBytes);
+                        if (directBuffer != nullptr) {
+                            ::std::int32_t i {};
+                            for (const auto &triangle : triangles) {
+                                const auto materialIndex {triangle.materialIndex_};
+                                auto material {::MobileRT::Material {}};
+                                if (materialIndex >= 0) {
+                                    material = renderer_->shader_->getMaterials()
+                                        [static_cast<::std::uint32_t> (materialIndex)];
+                                }
+
+                                const auto &kD {material.Kd_};
+                                const auto &kS {material.Ks_};
+                                const auto &kT {material.Kt_};
+                                const auto &lE {material.Le_};
+                                auto color {kD};
+
+                                color = ::glm::all(::glm::greaterThan(kS, color)) ? kS : color;
+                                color = ::glm::all(::glm::greaterThan(kT, color)) ? kT : color;
+                                color = ::glm::all(::glm::greaterThan(lE, color)) ? lE : color;
+
+                                floatBuffer[i++] = color.r;
+                                floatBuffer[i++] = color.g;
+                                floatBuffer[i++] = color.b;
+                                floatBuffer[i++] = 1.0F;
+
+                                floatBuffer[i++] = color.r;
+                                floatBuffer[i++] = color.g;
+                                floatBuffer[i++] = color.b;
+                                floatBuffer[i++] = 1.0F;
+
+                                floatBuffer[i++] = color.r;
+                                floatBuffer[i++] = color.g;
+                                floatBuffer[i++] = color.b;
+                                floatBuffer[i++] = 1.0F;
                             }
-
-                            const auto &kD {material.Kd_};
-                            const auto &kS {material.Ks_};
-                            const auto &kT {material.Kt_};
-                            const auto &lE {material.Le_};
-                            auto color {kD};
-
-                            color = ::glm::all(::glm::greaterThan(kS, color)) ? kS : color;
-                            color = ::glm::all(::glm::greaterThan(kT, color)) ? kT : color;
-                            color = ::glm::all(::glm::greaterThan(lE, color)) ? lE : color;
-
-                            floatBuffer[i++] = color.r;
-                            floatBuffer[i++] = color.g;
-                            floatBuffer[i++] = color.b;
-                            floatBuffer[i++] = 1.0F;
-
-                            floatBuffer[i++] = color.r;
-                            floatBuffer[i++] = color.g;
-                            floatBuffer[i++] = color.b;
-                            floatBuffer[i++] = 1.0F;
-
-                            floatBuffer[i++] = color.r;
-                            floatBuffer[i++] = color.g;
-                            floatBuffer[i++] = color.b;
-                            floatBuffer[i++] = 1.0F;
                         }
                     }
                 }
             }
+            env->ExceptionClear();
         }
-        env->ExceptionClear();
+        return directBuffer;
+    } catch (const ::std::bad_alloc &badAlloc) {
+        const auto lowMemClass {env->FindClass("puscas/mobilertapp/LowMemoryException")};
+        env->ThrowNew(lowMemClass, badAlloc.what());
+        return nullptr;
+    } catch (const ::std::exception &exception) {
+        const auto exceptionClass {env->FindClass("java/lang/Exception")};
+        env->ThrowNew(exceptionClass, exception.what());
+        return nullptr;
+    } catch (...) {
+        const auto exceptionClass {env->FindClass("java/lang/Exception")};
+        env->ThrowNew(exceptionClass, "Unknown error");
+        return nullptr;
     }
-    return directBuffer;
 }
 
 static void updateFps() {
@@ -576,7 +618,6 @@ void Java_puscas_mobilertapp_MainRenderer_RTFinishRender(
         JNIEnv *env,
         jobject /*thiz*/
 ) {
-    //TODO: Fix this race condition
     {
         const ::std::lock_guard<::std::mutex> lock {mutex_};
         state_ = State::FINISHED;
