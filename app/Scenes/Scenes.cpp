@@ -107,17 +107,21 @@ Scene cornellBoxScene2(Scene scene) {
     scene.lights_.emplace_back(::std::make_unique<AreaLight> (
         lightMat,
         ::std::move(samplerPoint1),
-        ::glm::vec3 {-0.25F, 0.99F, -0.25F},
-        ::glm::vec3 {0.25F, 0.99F, -0.25F},
-        ::glm::vec3 {0.25F, 0.99F, 0.25F}
+        Triangle {
+            ::glm::vec3{-0.25F, 0.99F, -0.25F},
+            ::glm::vec3{0.25F, 0.99F, -0.25F},
+            ::glm::vec3{0.25F, 0.99F, 0.25F}, -1
+        }
     ));
 
     scene.lights_.emplace_back(::std::make_unique<AreaLight> (
         lightMat,
         ::std::move(samplerPoint2),
-        ::glm::vec3 {0.25F, 0.99F, 0.25F},
-        ::glm::vec3 {-0.25F, 0.99F, 0.25F},
-        ::glm::vec3 {-0.25F, 0.99F, -0.25F}
+        Triangle {
+            ::glm::vec3{0.25F, 0.99F, 0.25F},
+            ::glm::vec3{-0.25F, 0.99F, 0.25F},
+            ::glm::vec3{-0.25F, 0.99F, -0.25F}, -1
+        }
     ));
 
     // triangle - yellow

@@ -1,4 +1,5 @@
 #include "MobileRT/Shapes/Triangle.hpp"
+#include <cmath>
 
 using ::MobileRT::AABB;
 using ::MobileRT::Triangle;
@@ -10,7 +11,47 @@ Triangle::Triangle(const ::glm::vec3 &pointA, const ::glm::vec3 &pointB, const :
     AC_ {pointC - pointA},
     AB_ {pointB - pointA},
     pointA_ {pointA},
+    normalA_ {::glm::normalize(::glm::cross(AC_, AB_))},
+    normalB_ {::glm::normalize(::glm::cross(AC_, AB_))},
+    normalC_ {::glm::normalize(::glm::cross(AC_, AB_))},
     materialIndex_ {materialIndex} {
+
+    assert(::std::isfinite(this->normalA_[0]));
+    assert(::std::isfinite(this->normalA_[1]));
+    assert(::std::isfinite(this->normalA_[2]));
+
+    assert(::std::isfinite(this->normalB_[0]));
+    assert(::std::isfinite(this->normalB_[1]));
+    assert(::std::isfinite(this->normalB_[2]));
+
+    assert(::std::isfinite(this->normalC_[0]));
+    assert(::std::isfinite(this->normalC_[1]));
+    assert(::std::isfinite(this->normalC_[2]));
+}
+
+Triangle::Triangle(const ::glm::vec3 &pointA, const ::glm::vec3 &pointB, const ::glm::vec3 &pointC,
+                   const ::glm::vec3 &normalA, const ::glm::vec3 &normalB, const ::glm::vec3 &normalC,
+                   const ::std::int32_t materialIndex
+) :
+    AC_ {pointC - pointA},
+    AB_ {pointB - pointA},
+    pointA_ {pointA},
+    normalA_ {::glm::normalize(normalA)},
+    normalB_ {::glm::normalize(normalB)},
+    normalC_ {::glm::normalize(normalC)},
+    materialIndex_ {materialIndex} {
+
+    assert(::std::isfinite(this->normalA_[0]));
+    assert(::std::isfinite(this->normalA_[1]));
+    assert(::std::isfinite(this->normalA_[2]));
+
+    assert(::std::isfinite(this->normalB_[0]));
+    assert(::std::isfinite(this->normalB_[1]));
+    assert(::std::isfinite(this->normalB_[2]));
+
+    assert(::std::isfinite(this->normalC_[0]));
+    assert(::std::isfinite(this->normalC_[1]));
+    assert(::std::isfinite(this->normalC_[2]));
 }
 
 Triangle::Triangle(const ::glm::vec3 &pointA, const ::glm::vec3 &pointB, const ::glm::vec3 &pointC,
@@ -20,10 +61,54 @@ Triangle::Triangle(const ::glm::vec3 &pointA, const ::glm::vec3 &pointB, const :
     AC_ {pointC - pointA},
     AB_ {pointB - pointA},
     pointA_ {pointA},
+    normalA_ {::glm::normalize(::glm::cross(AC_, AB_))},
+    normalB_ {::glm::normalize(::glm::cross(AC_, AB_))},
+    normalC_ {::glm::normalize(::glm::cross(AC_, AB_))},
     texCoordA_ {texCoordA},
     texCoordB_ {texCoordB},
     texCoordC_ {texCoordC},
     materialIndex_ {materialIndex} {
+
+    assert(::std::isfinite(this->normalA_[0]));
+    assert(::std::isfinite(this->normalA_[1]));
+    assert(::std::isfinite(this->normalA_[2]));
+
+    assert(::std::isfinite(this->normalB_[0]));
+    assert(::std::isfinite(this->normalB_[1]));
+    assert(::std::isfinite(this->normalB_[2]));
+
+    assert(::std::isfinite(this->normalC_[0]));
+    assert(::std::isfinite(this->normalC_[1]));
+    assert(::std::isfinite(this->normalC_[2]));
+}
+
+Triangle::Triangle(const ::glm::vec3 &pointA, const ::glm::vec3 &pointB, const ::glm::vec3 &pointC,
+                   const ::glm::vec3 &normalA, const ::glm::vec3 &normalB, const ::glm::vec3 &normalC,
+                   const ::glm::vec2 &texCoordA, const ::glm::vec2 &texCoordB, const ::glm::vec2 &texCoordC,
+                   const ::std::int32_t materialIndex
+) :
+    AC_ {pointC - pointA},
+    AB_ {pointB - pointA},
+    pointA_ {pointA},
+    normalA_ {normalA},
+    normalB_ {normalB},
+    normalC_ {normalC},
+    texCoordA_ {texCoordA},
+    texCoordB_ {texCoordB},
+    texCoordC_ {texCoordC},
+    materialIndex_ {materialIndex} {
+
+    assert(::std::isfinite(this->normalA_[0]));
+    assert(::std::isfinite(this->normalA_[1]));
+    assert(::std::isfinite(this->normalA_[2]));
+
+    assert(::std::isfinite(this->normalB_[0]));
+    assert(::std::isfinite(this->normalB_[1]));
+    assert(::std::isfinite(this->normalB_[2]));
+
+    assert(::std::isfinite(this->normalC_[0]));
+    assert(::std::isfinite(this->normalC_[1]));
+    assert(::std::isfinite(this->normalC_[2]));
 }
 
 Intersection Triangle::intersect(const Intersection &intersection, const Ray &ray) const {
@@ -58,18 +143,14 @@ Intersection Triangle::intersect(const Intersection &intersection, const Ray &ra
     if (distanceToIntersection < Epsilon || distanceToIntersection >= intersection.length_) {
         return intersection;
     }
-    const auto &intersectionNormal1 {::glm::normalize(::glm::cross(this->AB_, this->AC_))};
-    const auto &intersectionNormal2 {::glm::normalize(::glm::cross(this->AC_, this->AB_))};
-    const auto &intersectionNormal {::glm::dot(intersectionNormal1, ray.direction_) < 0.0F
-        ? intersectionNormal1
-        : intersectionNormal2
-    };
 
-    const auto& intersectionPoint {ray.origin_ + ray.direction_ * distanceToIntersection};
     const auto w {1.0F - u - v};
+    const auto &intersectionNormal {::glm::normalize(this->normalA_ * w + this->normalB_ * u + this->normalC_ * v)};
     const auto& texCoords {this->texCoordA_ * w + this->texCoordB_ * u + this->texCoordC_ * v};
+    const auto& intersectionPoint {ray.origin_ + ray.direction_ * distanceToIntersection};
     const Intersection res {intersectionPoint, distanceToIntersection, intersectionNormal, this,
                             this->materialIndex_, texCoords};
+
     return res;
 }
 

@@ -19,6 +19,7 @@
 - [ ] Investigate if samplers are properly working
 - [x] Add exceptions
 - [ ] Check all allocations' exceptions
+- [x] Add normals per vertice for triangles
 
 ### Ray tracing JNI layer
 - [ ] Refactor DrawView translation unit

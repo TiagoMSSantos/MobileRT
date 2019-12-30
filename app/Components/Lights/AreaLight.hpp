@@ -20,9 +20,7 @@ namespace Components {
         explicit AreaLight(
             const ::MobileRT::Material &radiance,
             ::std::unique_ptr<::MobileRT::Sampler> samplerPointLight,
-            const ::glm::vec3 &pointA,
-            const ::glm::vec3 &pointB,
-            const ::glm::vec3 &pointC);
+            const ::MobileRT::Triangle &triangle);
 
         AreaLight(const AreaLight &areaLight) = delete;
 

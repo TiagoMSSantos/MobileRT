@@ -322,7 +322,8 @@ public final class MainActivity extends Activity {
 
                 case TEST:
 //                    final String scenePath = "conference/conference";
-                    final String scenePath = "teapot/teapot";
+//                    final String scenePath = "teapot/teapot";
+                    final String scenePath = "CornellBox/CornellBox-Water";
 //                    final String scenePath = "buddha/buddha";
 //                    final String scenePath = "powerplant/powerplant";
 //                    final String scenePath = "San_Miguel/san-miguel";

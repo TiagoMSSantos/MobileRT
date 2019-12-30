@@ -559,10 +559,10 @@ jint Java_puscas_mobilertapp_MainRenderer_RTInitialize(
             }
         }
         return res;
-    } catch (const ::std::bad_alloc &ba) {
+    } catch (const ::std::bad_alloc &badAlloc) {
         const auto lowMemClass {env->FindClass("puscas/mobilertapp/LowMemoryException")};
-        return env->ThrowNew(lowMemClass, ba.what());
-    } catch (::std::exception exception) {
+        return env->ThrowNew(lowMemClass, badAlloc.what());
+    } catch (const ::std::exception &exception) {
         const auto exceptionClass {env->FindClass("java/lang/Exception")};
         return env->ThrowNew(exceptionClass, exception.what());
     } catch (...) {

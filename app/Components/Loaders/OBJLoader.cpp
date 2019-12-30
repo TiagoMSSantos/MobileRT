@@ -102,11 +102,6 @@ bool OBJLoader::fillScene(Scene *const scene,
                 const auto vy1 {*(itVertex1 + 1)};
                 const auto vz1 {*(itVertex1 + 2)};
 
-                const auto itColor {this->attrib_.colors.begin() + 3 * static_cast<::std::int32_t> (idx1.vertex_index)};
-                const auto red {*(itColor + 0)};
-                const auto green {*(itColor + 1)};
-                const auto blue {*(itColor + 2)};
-
                 const auto idx2 {*(itIdx + 1)};
                 const auto itVertex2 {this->attrib_.vertices.begin() + 3 * idx2.vertex_index};
                 const auto vx2 {*(itVertex2 + 0)};
@@ -122,6 +117,37 @@ bool OBJLoader::fillScene(Scene *const scene,
                 const ::glm::vec3 &vertex1 {-vx1, vy1, vz1};
                 const ::glm::vec3 &vertex2 {-vx2, vy2, vz2};
                 const ::glm::vec3 &vertex3 {-vx3, vy3, vz3};
+
+                ::glm::vec3 normal1 {-1};
+                ::glm::vec3 normal2 {-1};
+                ::glm::vec3 normal3 {-1};
+
+                if (!this->attrib_.normals.empty()) {
+                    const auto itNormal1 {this->attrib_.normals.begin() + 3 * idx1.normal_index};
+                    const auto normal1X {*(itNormal1 + 0)};
+                    const auto normal1Y {*(itNormal1 + 1)};
+                    const auto normal1Z {*(itNormal1 + 2)};
+
+                    const auto itNormal2 {this->attrib_.normals.begin() + 3 * idx2.normal_index};
+                    const auto normal2X {*(itNormal2 + 0)};
+                    const auto normal2Y {*(itNormal2 + 1)};
+                    const auto normal2Z {*(itNormal2 + 2)};
+
+                    const auto itNormal3 {this->attrib_.normals.begin() + 3 * idx3.normal_index};
+                    const auto normal3X {*(itNormal3 + 0)};
+                    const auto normal3Y {*(itNormal3 + 1)};
+                    const auto normal3Z {*(itNormal3 + 2)};
+
+                    normal1 = ::glm::vec3 {-normal1X, normal1Y, normal1Z};
+                    normal2 = ::glm::vec3 {-normal2X, normal2Y, normal2Z};
+                    normal3 = ::glm::vec3 {-normal3X, normal3Y, normal3Z};
+                } else {
+                    const auto AB {vertex2 - vertex1};
+                    const auto AC {vertex3 - vertex1};
+                    normal1 = ::glm::vec3 {::glm::normalize(::glm::cross(AC, AB))};
+                    normal2 = ::glm::vec3 {::glm::normalize(::glm::cross(AC, AB))};
+                    normal3 = ::glm::vec3 {::glm::normalize(::glm::cross(AC, AB))};
+                }
 
                 // per-face material
                 const auto itMaterialShape {shape.mesh.material_ids.begin() + static_cast<::std::int32_t> (face)};
@@ -195,22 +221,24 @@ bool OBJLoader::fillScene(Scene *const scene,
                     const Material material {diffuse, specular, transmittance, indexRefraction, emission, texture};
                     const auto itFoundMat {::std::find(scene->materials_.begin(), scene->materials_.end(), material)};
                     if (e1 > 0.0F || e2 > 0.0F || e3 > 0.0F) {
-                        const ::glm::vec3 &p1 {vx1, vy1, vz1};
-                        const ::glm::vec3 &p2 {vx2, vy2, vz2};
-                        const ::glm::vec3 &p3 {vx3, vy3, vz3};
-                        scene->lights_.emplace_back(::std::make_unique<AreaLight>(material, lambda(), p1, p2, p3));
+                        const Triangle &triangle {vertex1, vertex2, vertex3,
+                                                  normal1, normal2, normal3,
+                                                  texCoordA, texCoordB, texCoordC, -1};
+                        scene->lights_.emplace_back(::std::make_unique<AreaLight>(material, lambda(), triangle));
                     } else {
                         if(itFoundMat != scene->materials_.cend()) {
                             const auto materialIndex {static_cast<::std::int32_t> (
                                 itFoundMat - scene->materials_.cbegin()
                             )};
                             const Triangle &triangle {vertex1, vertex2, vertex3,
+                                                      normal1, normal2, normal3,
                                                       texCoordA, texCoordB, texCoordC, materialIndex};
 
                             scene->triangles_.emplace_back(triangle);
                         } else {
                             const auto materialIndex {static_cast<::std::int32_t> (scene->materials_.size())};
                             const Triangle &triangle {vertex1, vertex2, vertex3,
+                                                      normal1, normal2, normal3,
                                                       texCoordA, texCoordB, texCoordC, materialIndex};
 
                             scene->triangles_.emplace_back(triangle);
@@ -218,6 +246,11 @@ bool OBJLoader::fillScene(Scene *const scene,
                         }
                     }
                 } else {
+                    const auto itColor {this->attrib_.colors.begin() + 3 * idx1.vertex_index};
+                    const auto red {*(itColor + 0)};
+                    const auto green {*(itColor + 1)};
+                    const auto blue {*(itColor + 2)};
+
                     const ::glm::vec3 &diffuse {red, green, blue};
                     const ::glm::vec3 &specular {0.0F, 0.0F, 0.0F};
                     const ::glm::vec3 &transmittance {0.0F, 0.0F, 0.0F};
@@ -229,11 +262,11 @@ bool OBJLoader::fillScene(Scene *const scene,
                         const auto materialIndex {static_cast<::std::int32_t> (
                             itFoundMat - scene->materials_.cbegin()
                         )};
-                        const Triangle &triangle {vertex1, vertex2, vertex3, materialIndex};
+                        const Triangle &triangle {vertex1, vertex2, vertex3, normal1, normal2, normal3, materialIndex};
                         scene->triangles_.emplace_back(triangle);
                     } else {
                         const auto materialIndex {static_cast<::std::int32_t> (scene->materials_.size())};
-                        const Triangle &triangle {vertex1, vertex2, vertex3, materialIndex};
+                        const Triangle &triangle {vertex1, vertex2, vertex3, normal1, normal2, normal3, materialIndex};
                         scene->triangles_.emplace_back(triangle);
                         scene->materials_.emplace_back(material);
                     }

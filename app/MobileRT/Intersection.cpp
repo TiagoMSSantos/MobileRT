@@ -19,4 +19,7 @@ Intersection::Intersection(
     primitive_ {primitive},
     materialIndex_ {materialIndex},
     texCoords_ {texCoords} {
+    assert(::std::isfinite(this->normal_[0]));
+    assert(::std::isfinite(this->normal_[1]));
+    assert(::std::isfinite(this->normal_[2]));
 }
