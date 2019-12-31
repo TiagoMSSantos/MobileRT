@@ -27,8 +27,6 @@ namespace MobileRT {
 
         ObjectLoader &operator=(ObjectLoader &&objectLoader) noexcept = delete;
 
-        virtual ::std::int32_t process() = 0;
-
         bool isProcessed() const;
 
         virtual bool fillScene(Scene *scene,

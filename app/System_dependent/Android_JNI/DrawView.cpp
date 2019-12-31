@@ -330,22 +330,10 @@ void Java_puscas_mobilertapp_DrawView_RTStopRender(
     LOG("stopRender finished");
 }
 
-static ::std::streampos fileSize(const char *filePath) {
-    ::std::ifstream file {filePath, ::std::ios::binary};
-    file.exceptions(file.exceptions() | ::std::ifstream::goodbit | ::std::ifstream::badbit | ::std::ifstream::failbit);
-
-    const auto fileBegin {file.tellg()};
-    file.seekg(0, ::std::ios::end);
-    const auto fileSize {file.tellg() - fileBegin};
-    file.close();
-
-    return fileSize;
-}
-
 extern "C"
 jint Java_puscas_mobilertapp_MainRenderer_RTInitialize(
         JNIEnv *env,
-        jobject thiz,
+        jobject /*thiz*/,
         jint scene,
         jint shader,
         jint width,
@@ -359,8 +347,6 @@ jint Java_puscas_mobilertapp_MainRenderer_RTInitialize(
 ) {
     LOG("INITIALIZE");
     try {
-        const auto rendererClass {env->FindClass("puscas/mobilertapp/MainRenderer")};
-        const auto isLowMemoryMethodId {env->GetMethodID(rendererClass, "isLowMemory", "(I)Z")};
         const auto globalObjFile {static_cast<jstring> (env->NewGlobalRef(localObjFile))};
         const auto globalMatFile {static_cast<jstring> (env->NewGlobalRef(localMatFile))};
         const auto globalCamFile {static_cast<jstring> (env->NewGlobalRef(localCamFile))};
@@ -439,57 +425,14 @@ jint Java_puscas_mobilertapp_MainRenderer_RTInitialize(
                         const auto *const matFilePath {env->GetStringUTFChars(globalMatFile, &isCopy)};
                         const auto *const camFilePath {env->GetStringUTFChars(globalCamFile, &isCopy)};
 
-                        assert(isLowMemoryMethodId != nullptr);
                         assert(objFilePath != nullptr);
                         assert(matFilePath != nullptr);
                         assert(camFilePath != nullptr);
-                        {
-                            const auto lowMem {env->CallBooleanMethod(thiz, isLowMemoryMethodId, 1)};
-                            if (lowMem) {
-                                return -1;
-                            }
-                        }
 
                         const auto cameraFactory {::Components::CameraFactory()};
                         camera = cameraFactory.loadFromFile(camFilePath, ratio);
 
                         ::Components::OBJLoader objLoader {objFilePath, matFilePath};
-                        {
-                            const jboolean lowMem {env->CallBooleanMethod(thiz, isLowMemoryMethodId, 1)};
-                            if (lowMem) {
-                                return -1;
-                            }
-                        }
-
-                        const auto objSize {fileSize(objFilePath)};
-                        if (objSize <= 0) {
-                            finishedRendering_ = true;
-                            return -2;
-                        }
-                        {
-                            const auto neededMemoryMb {1 + static_cast<::std::int32_t> (3 * (objSize / 1048576))};
-                            const auto lowMem {env->CallBooleanMethod(thiz, isLowMemoryMethodId, neededMemoryMb)};
-                            if (lowMem) {
-                                finishedRendering_ = true;
-                                return -1;
-                            }
-                        }
-                        const ::std::int32_t triangleSize {sizeof(::MobileRT::Triangle)};
-                        const ::std::int32_t bvhNodeSize {sizeof(::MobileRT::BVHNode)};
-                        const ::std::int32_t aabbSize {sizeof(::MobileRT::AABB)};
-                        const ::std::int32_t floatSize {sizeof(float)};
-                        const ::std::int32_t numberPrimitives {objLoader.process()};
-                        const ::std::int32_t memPrimitives {(numberPrimitives * triangleSize) / 1048576};
-                        const ::std::int32_t memNodes {(2 * numberPrimitives * bvhNodeSize) / 1048576};
-                        const ::std::int32_t memAABB {(2 * numberPrimitives * aabbSize) / 1048576};
-                        const ::std::int32_t memFloat {(2 * numberPrimitives * floatSize) / 1048576};
-                        const ::std::int32_t neededMemoryMb {1 + memPrimitives + memNodes + memAABB + memFloat};
-                        {
-                            const auto lowMem {env->CallBooleanMethod(thiz, isLowMemoryMethodId, neededMemoryMb)};
-                            if (lowMem) {
-                                return -1;
-                            }
-                        }
 
                         if (!objLoader.isProcessed()) {
                             return -1;
@@ -499,12 +442,6 @@ jint Java_puscas_mobilertapp_MainRenderer_RTInitialize(
                         )};
                         if (!sceneBuilt) {
                             return -1;
-                        }
-                        {
-                            const jboolean lowMem {env->CallBooleanMethod(thiz, isLowMemoryMethodId, 1)};
-                            if (lowMem) {
-                                return -1;
-                            }
                         }
 
                         maxDist = ::glm::vec3 {1, 1, 1};
@@ -590,16 +527,8 @@ jint Java_puscas_mobilertapp_MainRenderer_RTInitialize(
                 return nPrimitives;
             }()};
 
-
         env->ExceptionClear();
         LOG("PRIMITIVES = ", res);
-
-        {
-            const auto lowMem {env->CallBooleanMethod(thiz, isLowMemoryMethodId, 1)};
-            if (lowMem) {
-                return -1;
-            }
-        }
         return res;
     } catch (const ::std::bad_alloc &badAlloc) {
         const auto lowMemClass {env->FindClass("puscas/mobilertapp/LowMemoryException")};

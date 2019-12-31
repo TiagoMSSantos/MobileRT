@@ -17,9 +17,7 @@ using ::MobileRT::Sampler;
 OBJLoader::OBJLoader(::std::string objFilePath, ::std::string matFilePath) :
     objFilePath_ {::std::move(objFilePath)},
     mtlFilePath_ {::std::move(matFilePath)} {
-}
 
-::std::int32_t OBJLoader::process() {
     ::std::ifstream objStream {this->objFilePath_};
     objStream.exceptions(
             objStream.exceptions() |::std::ifstream::goodbit | ::std::ifstream::badbit | ::std::ifstream::failbit
@@ -36,10 +34,10 @@ OBJLoader::OBJLoader(::std::string objFilePath, ::std::string matFilePath) :
 
     LOG("Going to call tinyobj::LoadObj");
     const auto ret {
-        ::tinyobj::LoadObj(
-                &this->attrib_, &this->shapes_, &this->materials_,
-                &warnings, &errors, &objStream, matStreamReaderPtr, true
-        )
+            ::tinyobj::LoadObj(
+                    &this->attrib_, &this->shapes_, &this->materials_,
+                    &warnings, &errors, &objStream, matStreamReaderPtr, true
+            )
     };
     LOG("Called tinyobj::LoadObj");
 
@@ -57,7 +55,6 @@ OBJLoader::OBJLoader(::std::string objFilePath, ::std::string matFilePath) :
     }
 
     if (ret) {
-        this->isProcessed_ = true;
         this->numberTriangles_ = 0;
         for (const auto &shape : this->shapes_) {
             for (const auto numFaceVertice : shape.mesh.num_face_vertices) {
@@ -65,12 +62,11 @@ OBJLoader::OBJLoader(::std::string objFilePath, ::std::string matFilePath) :
                 this->numberTriangles_ += triangles;
             }
         }
+        this->isProcessed_ = true;
     } else {
         this->isProcessed_ = false;
         this->numberTriangles_ = -1;
     }
-
-    return this->numberTriangles_;
 }
 
 bool OBJLoader::fillScene(Scene *const scene,

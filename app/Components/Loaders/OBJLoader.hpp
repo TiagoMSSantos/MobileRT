@@ -29,8 +29,6 @@ namespace Components {
 
         OBJLoader &operator=(OBJLoader &&objLoader) noexcept = delete;
 
-        ::std::int32_t process() final;
-
         bool fillScene(::MobileRT::Scene *scene,
                        ::std::function<::std::unique_ptr<::MobileRT::Sampler>()> lambda) final;
     };
