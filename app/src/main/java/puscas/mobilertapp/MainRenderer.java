@@ -398,21 +398,21 @@ final class MainRenderer implements GLSurfaceView.Renderer {
      *
      * @return A new array with all the primitives' vertices.
      */
-    private native ByteBuffer RTInitVerticesArray();
+    private native ByteBuffer RTInitVerticesArray() throws Exception;
 
     /**
      * Creates a native array with all the colors of triangles in the scene.
      *
      * @return A new array with all the primitives' colors.
      */
-    private native ByteBuffer RTInitColorsArray();
+    private native ByteBuffer RTInitColorsArray() throws Exception;
 
     /**
      * Creates a native array with the camera's position, direction, up and right vectors in the scene.
      *
      * @return A new array with the camera's position and vectors.
      */
-    private native ByteBuffer RTInitCameraArray();
+    private native ByteBuffer RTInitCameraArray() throws Exception;
 
     /**
      * Free the memory of a native array.
@@ -439,7 +439,7 @@ final class MainRenderer implements GLSurfaceView.Renderer {
      * Helper method which initializes the {@link MainRenderer#arrayVertices}, {@link MainRenderer#arrayColors} and
      * {@link MainRenderer#arrayCamera} native arrays.
      */
-    private void initArrays() {
+    private void initArrays() throws Exception {
         this.arrayVertices = RTInitVerticesArray();
 
         if (isLowMemory(1)) {
@@ -865,7 +865,11 @@ final class MainRenderer implements GLSurfaceView.Renderer {
             this.firstFrame = false;
             if (this.rasterize) {
                 this.rasterize = false;
-                initArrays();
+                try {
+                    initArrays();
+                } catch (final Exception ex) {
+                    LOGGER.warning(ex.getMessage());
+                }
             }
             waitForLastTask();
             if (this.arrayVertices != null && this.arrayColors != null && this.arrayCamera != null) {

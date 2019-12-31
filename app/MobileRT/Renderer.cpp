@@ -10,7 +10,7 @@ namespace {
 
     bool fillThings() {
         for (auto it {values.begin()}; it < values.end(); ::std::advance(it, 1)) {
-            const ::std::uint32_t index {static_cast<uint32_t> (::std::distance(values.begin(), it))};
+            const auto index {static_cast<::std::uint32_t> (::std::distance(values.begin(), it))};
             *it = ::MobileRT::haltonSequence(index, 2);
         }
         static ::std::random_device randomDevice {};
@@ -78,6 +78,7 @@ void Renderer::renderScene(::std::int32_t *const bitmap, const ::std::int32_t ti
     const auto pixelHeight {0.5F / this->height_};
     const auto samples {this->samplesPixel_};
     ::glm::vec3 pixelRgb {};
+    LOG("renderScene");
 
     for (::std::int32_t sample {}; sample < samples; ++sample) {
         while (true) {

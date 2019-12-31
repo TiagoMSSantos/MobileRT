@@ -30,15 +30,21 @@ OBJLoader::OBJLoader(::std::string objFilePath, ::std::string matFilePath) :
     ::tinyobj::MaterialStreamReader *const matStreamReaderPtr {!this->mtlFilePath_.empty()? &matStreamReader : nullptr};
     ::std::string errors {};
     ::std::string warnings {};
-    errno = 0;
 
     LOG("Going to call tinyobj::LoadObj");
+    errno = 0;
+
     const auto ret {
             ::tinyobj::LoadObj(
                     &this->attrib_, &this->shapes_, &this->materials_,
                     &warnings, &errors, &objStream, matStreamReaderPtr, true
             )
     };
+
+    if (errno) {
+        const auto &strError {::std::strerror(errno)};
+        LOG("Error (errno): ", strError);
+    }
     LOG("Called tinyobj::LoadObj");
 
     if (!errors.empty()) {
@@ -47,11 +53,6 @@ OBJLoader::OBJLoader(::std::string objFilePath, ::std::string matFilePath) :
 
     if (!warnings.empty()) {
         LOG("Warning: ", warnings);
-    }
-
-    if (errno) {
-        const auto &strError {::std::strerror(errno)};
-        LOG("Error (errno): ", strError);
     }
 
     if (ret) {
@@ -71,6 +72,7 @@ OBJLoader::OBJLoader(::std::string objFilePath, ::std::string matFilePath) :
 
 bool OBJLoader::fillScene(Scene *const scene,
                           ::std::function<::std::unique_ptr<Sampler>()> lambda) {
+    LOG("FILLING SCENE");
     scene->triangles_.reserve(static_cast<::std::size_t> (this->numberTriangles_));
     const ::std::string delimiter {"/"};
     const ::std::string filePath {this->objFilePath_.substr(0, this->objFilePath_.find_last_of(delimiter)) + "/"};

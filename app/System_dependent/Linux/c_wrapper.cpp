@@ -106,7 +106,6 @@ work_thread(
                 break;
             default: {
                 ::Components::OBJLoader objLoader {objFilePath, mtlFilePath};
-                objLoader.process();
                 if (!objLoader.isProcessed()) {
                     exit(0);
                 }

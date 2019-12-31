@@ -433,6 +433,7 @@ jint Java_puscas_mobilertapp_MainRenderer_RTInitialize(
                         camera = cameraFactory.loadFromFile(camFilePath, ratio);
 
                         ::Components::OBJLoader objLoader {objFilePath, matFilePath};
+                        LOG("OBJLOADER PROCESSED");
 
                         if (!objLoader.isProcessed()) {
                             return -1;
