@@ -128,7 +128,7 @@ ACCELERATORS="1 2"
 
 function execute {
   THREAD="4"
-  SHADER="4"
+  SHADER="1"
   SCENE="4"
   ACC="3"
   PRINT="true"
