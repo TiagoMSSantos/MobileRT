@@ -182,7 +182,7 @@ final class RenderTask extends AsyncTask<Void, Void, Void> {
         this.sampleT = ",0";
 
         this.timer = () -> {
-            FPS();
+            updateFps();
 
             this.fpsT = String.format(Locale.US, "fps:%.1f", RTGetFps());
             this.fpsRenderT = String.format(Locale.US, "[%.1f]", this.fps);
@@ -234,7 +234,7 @@ final class RenderTask extends AsyncTask<Void, Void, Void> {
     /**
      * Auxiliary method which calculates the number of times {@link RenderTask#timer} was called and in each second.
      */
-    private void FPS() {
+    private void updateFps() {
         this.frame++;
         final float time = (float) SystemClock.elapsedRealtime();
         if ((time - this.timebase) > 1000.0F) {

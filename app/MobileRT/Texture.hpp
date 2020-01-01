@@ -34,7 +34,9 @@ namespace MobileRT {
 
             ::glm::vec3 loadColor(const ::glm::vec2 &texCoords) const;
 
-            bool operator==(const Texture &texture);
+            bool isValid() const;
+
+            bool operator==(const Texture &texture) const;
 
             static Texture createTexture(const char *textureFilePath);
     };

@@ -1,4 +1,5 @@
 #include "MobileRT/Texture.hpp"
+#include "Utils.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
@@ -15,7 +16,7 @@ Texture::Texture(
     width_ {width},
     height_ {height},
     channels_ {channels} {
-
+    LOG("new Texture: ", this->width_, "x", this->height_, ", c: ", this->channels_, ", size: ", this->image_.size());
 }
 
 ::glm::vec3 Texture::loadColor(const ::glm::vec2 &texCoords) const {
@@ -41,11 +42,15 @@ Texture Texture::createTexture(const char *const textureFilePath) {
     return texture;
 }
 
-bool Texture::operator==(const Texture &texture) {
+bool Texture::operator==(const Texture &texture) const {
     const auto sameWidth {this->width_ == texture.width_};
     const auto sameHeight {this->height_ == texture.height_};
     const auto sameChannels {this->channels_ == texture.channels_};
     const auto sameSize {this->image_.size() == texture.image_.size()};
     const auto same {sameWidth && sameHeight && sameChannels && sameSize};
     return same;
+}
+
+bool Texture::isValid() const {
+    return this->width_ > 0 && this->height_> 0 && this->channels_ > 0 && !this->image_.empty();
 }

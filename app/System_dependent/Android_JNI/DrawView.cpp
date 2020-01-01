@@ -576,92 +576,104 @@ void Java_puscas_mobilertapp_MainRenderer_RTRenderIntoBitmap(
         jint nThreads,
         jboolean async
 ) {
-    auto globalBitmap {static_cast<jobject> (env->NewGlobalRef(localBitmap))};
+    try {
+        auto globalBitmap {static_cast<jobject> (env->NewGlobalRef(localBitmap))};
 
-    auto lambda {
-        [=]() -> void {
-            assert(env != nullptr);
-            const auto jniError {
-                javaVM_->GetEnv(reinterpret_cast<void**> (const_cast<JNIEnv**> (&env)), JNI_VERSION_1_6)
-            };
-
-            assert(jniError == JNI_OK || jniError == JNI_EDETACHED);
-            {
-                const auto result {javaVM_->AttachCurrentThread(const_cast<JNIEnv**> (&env), nullptr)};
-                assert(result == JNI_OK);
-                static_cast<void> (result);
-            }
-
-            ::std::int32_t *dstPixels {};
-            {
-                const auto ret {
-                    AndroidBitmap_lockPixels(env, globalBitmap, reinterpret_cast<void**> (&dstPixels))
+        auto lambda {
+            [=]() -> void {
+                assert(env != nullptr);
+                const auto jniError{
+                        javaVM_->GetEnv(reinterpret_cast<void **> (const_cast<JNIEnv **> (&env)), JNI_VERSION_1_6)
                 };
-                assert(ret == JNI_OK);
-                LOG("ret = ", ret);
-            }
 
-            AndroidBitmapInfo info {};
-            {
-                const auto ret {AndroidBitmap_getInfo(env, globalBitmap, &info)};
-                assert(ret == JNI_OK);
-                LOG("ret = ", ret);
-            }
-
-            ::std::int32_t rep {1};
-            while (state_ == State::BUSY && rep > 0) {
-                LOG("STARTING RENDERING");
-                LOG("nThreads = ", nThreads);
+                assert(jniError == JNI_OK || jniError == JNI_EDETACHED);
                 {
-                    const ::std::lock_guard<::std::mutex> lock {mutex_};
-                    rendered_.notify_all();
-                    if (renderer_ != nullptr) {
-                        renderer_->renderFrame(dstPixels, nThreads);
+                    const auto result{javaVM_->AttachCurrentThread(const_cast<JNIEnv **> (&env), nullptr)};
+                    assert(result == JNI_OK);
+                    static_cast<void> (result);
+                }
+
+                ::std::int32_t *dstPixels{};
+                {
+                    const auto ret{
+                            AndroidBitmap_lockPixels(env, globalBitmap, reinterpret_cast<void **> (&dstPixels))
+                    };
+                    assert(ret == JNI_OK);
+                    LOG("ret = ", ret);
+                }
+
+                AndroidBitmapInfo info{};
+                {
+                    const auto ret{AndroidBitmap_getInfo(env, globalBitmap, &info)};
+                    assert(ret == JNI_OK);
+                    LOG("ret = ", ret);
+                }
+
+                ::std::int32_t rep{1};
+                while (state_ == State::BUSY && rep > 0) {
+                    LOG("STARTING RENDERING");
+                    LOG("nThreads = ", nThreads);
+                    {
+                        const ::std::lock_guard<::std::mutex> lock{mutex_};
+                        rendered_.notify_all();
+                        if (renderer_ != nullptr) {
+                            renderer_->renderFrame(dstPixels, nThreads);
+                        }
+                    }
+                    LOG("FINISHED RENDERING");
+                    updateFps();
+                    rep--;
+                }
+                finishedRendering_ = true;
+                rendered_.notify_all();
+                {
+                    const ::std::lock_guard<::std::mutex> lock{mutex_};
+                    if (state_ != State::STOPPED) {
+                        state_ = State::FINISHED;
+                        LOG("STATE = FINISHED");
+                    }
+                    {
+                        const auto result{AndroidBitmap_unlockPixels(env, globalBitmap)};
+                        assert(result == JNI_OK);
+                        static_cast<void> (result);
+                    }
+
+                    env->DeleteGlobalRef(globalBitmap);
+                    {
+                        const auto result{
+                                javaVM_->GetEnv(reinterpret_cast<void **> (const_cast<JNIEnv **> (&env)),
+                                                JNI_VERSION_1_6)
+                        };
+                        assert(result == JNI_OK);
+                        static_cast<void> (result);
+                    }
+                    env->ExceptionClear();
+                    if (jniError == JNI_EDETACHED) {
+                        const auto result{javaVM_->DetachCurrentThread()};
+                        assert(result == JNI_OK);
+                        static_cast<void> (result);
                     }
                 }
-                LOG("FINISHED RENDERING");
-                updateFps();
-                rep--;
             }
-            finishedRendering_ = true;
-            rendered_.notify_all();
-            {
-                const ::std::lock_guard<::std::mutex> lock {mutex_};
-                if (state_ != State::STOPPED) {
-                    state_ = State::FINISHED;
-                    LOG("STATE = FINISHED");
-                }
-                {
-                    const auto result {AndroidBitmap_unlockPixels(env, globalBitmap)};
-                    assert(result == JNI_OK);
-                    static_cast<void> (result);
-                }
+        };
 
-                env->DeleteGlobalRef(globalBitmap);
-                {
-                    const auto result {
-                        javaVM_->GetEnv(reinterpret_cast<void**> (const_cast<JNIEnv**> (&env)), JNI_VERSION_1_6)
-                    };
-                    assert(result == JNI_OK);
-                    static_cast<void> (result);
-                }
-                env->ExceptionClear();
-                if (jniError == JNI_EDETACHED) {
-                    const auto result {javaVM_->DetachCurrentThread()};
-                    assert(result == JNI_OK);
-                    static_cast<void> (result);
-                }
-            }
+        if (async) {
+            thread_ = ::std::make_unique<::std::thread>(lambda);
+            thread_->detach();
+        } else {
+            lambda();
         }
-    };
-
-    if (async) {
-        thread_ = ::std::make_unique<::std::thread> (lambda);
-        thread_->detach();
-    } else {
-        lambda();
+        env->ExceptionClear();
+    } catch (const ::std::bad_alloc &badAlloc) {
+        const auto lowMemClass {env->FindClass("puscas/mobilertapp/LowMemoryException")};
+        env->ThrowNew(lowMemClass, badAlloc.what());
+    } catch (const ::std::exception &exception) {
+        const auto exceptionClass {env->FindClass("java/lang/Exception")};
+        env->ThrowNew(exceptionClass, exception.what());
+    } catch (...) {
+        const auto exceptionClass {env->FindClass("java/lang/Exception")};
+        env->ThrowNew(exceptionClass, "Unknown error");
     }
-    env->ExceptionClear();
 }
 
 extern "C"

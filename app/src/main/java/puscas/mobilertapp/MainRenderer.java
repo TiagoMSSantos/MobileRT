@@ -391,7 +391,7 @@ final class MainRenderer implements GLSurfaceView.Renderer {
      * @param async      If {@code true} let the Ray Tracer engine render the scene asynchronously or otherwise
      *                   synchronously.
      */
-    private native void RTRenderIntoBitmap(final Bitmap image, final int numThreads, final boolean async);
+    private native void RTRenderIntoBitmap(final Bitmap image, final int numThreads, final boolean async) throws Exception;
 
     /**
      * Creates a native array with all the positions of triangles in the scene.
@@ -880,7 +880,11 @@ final class MainRenderer implements GLSurfaceView.Renderer {
                 }
             }
 
-            RTRenderIntoBitmap(this.bitmap, this.numThreads, true);
+            try {
+                RTRenderIntoBitmap(this.bitmap, this.numThreads, true);
+            } catch (final Exception ex) {
+                LOGGER.warning(ex.getMessage());
+            }
 
             final RenderTask.Builder renderTaskBuilder = new RenderTask.Builder(this.requestRender,
                     this::RTFinishRender, this.textView, this.buttonRender);

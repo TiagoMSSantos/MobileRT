@@ -216,6 +216,11 @@ bool OBJLoader::fillScene(Scene *const scene,
                         }
                         texture = textures.find(texturePath2)->second;
                     }
+                    if (!texture.isValid()) {
+                        texCoordA = ::glm::vec2 {-1};
+                        texCoordB = ::glm::vec2 {-1};
+                        texCoordC = ::glm::vec2 {-1};
+                    }
                     const Material material {diffuse, specular, transmittance, indexRefraction, emission, texture};
                     const auto itFoundMat {::std::find(scene->materials_.begin(), scene->materials_.end(), material)};
                     if (e1 > 0.0F || e2 > 0.0F || e3 > 0.0F) {

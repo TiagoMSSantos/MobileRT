@@ -74,6 +74,8 @@ void Shader::initializeAccelerators(Scene scene) {
         }
     }
     this->lights_ = ::std::move(scene.lights_);
+    LOG("materials = ", this->materials_.size());
+    LOG("lights = ", this->lights_.size());
 }
 
 bool Shader::rayTrace(::glm::vec3 *rgb, const Ray &ray) {
@@ -108,10 +110,11 @@ bool Shader::rayTrace(::glm::vec3 *rgb, const Ray &ray) {
     intersection = traceLights(intersection, ray);
     const auto matIndex {intersection.materialIndex_};
     if (matIndex >= 0) {
-        intersection.material_ = &this->materials_[static_cast<::std::uint32_t> (matIndex)];
+        auto &material {this->materials_[static_cast<::std::uint32_t> (matIndex)]};
+        intersection.material_ = &material;
         const auto &texCoords {intersection.texCoords_};
-        const auto &texture {intersection.material_->texture_};
         if (texCoords[0] >= 0 && texCoords[1] >= 0) {
+            const auto &texture {material.texture_};
             intersection.material_->Kd_ = texture.loadColor(texCoords);
         }
     };
