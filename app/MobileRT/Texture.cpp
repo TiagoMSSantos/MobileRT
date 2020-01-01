@@ -16,7 +16,6 @@ Texture::Texture(
     width_ {width},
     height_ {height},
     channels_ {channels} {
-    LOG("new Texture: ", this->width_, "x", this->height_, ", c: ", this->channels_, ", size: ", this->image_.size());
 }
 
 ::glm::vec3 Texture::loadColor(const ::glm::vec2 &texCoords) const {
@@ -39,6 +38,7 @@ Texture Texture::createTexture(const char *const textureFilePath) {
     ::std::uint8_t *data {stbi_load(textureFilePath, &width, &height, &channels, 3)};
     ::std::vector<::std::uint8_t> image (data, data + (width * height * channels));
     Texture texture {image, width, height, channels};
+    LOG("new Texture: ", width, "x", height, ", c: ", channels, ", size: ", image.size(), ", file: ", textureFilePath);
     return texture;
 }
 

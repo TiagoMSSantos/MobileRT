@@ -67,43 +67,43 @@ CAM="${OBJS_PATH}/CornellBox/CornellBox-Empty-CO.cam"
 
 OBJ="${OBJS_PATH}/CornellBox/CornellBox-Empty-Squashed.obj"
 MTL="${OBJS_PATH}/CornellBox/CornellBox-Empty-Squashed.mtl"
-CAM="${OBJS_PATH}/CornellBox/CornellBox-Empty-CO.cam"
+CAM="${OBJS_PATH}/CornellBox/CornellBox-Empty-Squashed.cam"
 
 OBJ="${OBJS_PATH}/CornellBox/CornellBox-Empty-White.obj"
 MTL="${OBJS_PATH}/CornellBox/CornellBox-Empty-White.mtl"
-CAM="${OBJS_PATH}/CornellBox/CornellBox-Empty-CO.cam"
+CAM="${OBJS_PATH}/CornellBox/CornellBox-Empty-White.cam"
 
 OBJ="${OBJS_PATH}/CornellBox/CornellBox-Glossy-Floor.obj"
 MTL="${OBJS_PATH}/CornellBox/CornellBox-Glossy-Floor.mtl"
-CAM="${OBJS_PATH}/CornellBox/CornellBox-Empty-CO.cam"
+CAM="${OBJS_PATH}/CornellBox/CornellBox-Glossy-Floor.cam"
 
 OBJ="${OBJS_PATH}/CornellBox/CornellBox-Glossy.obj"
 MTL="${OBJS_PATH}/CornellBox/CornellBox-Glossy.mtl"
-CAM="${OBJS_PATH}/CornellBox/CornellBox-Empty-CO.cam"
+CAM="${OBJS_PATH}/CornellBox/CornellBox-Glossy.cam"
 
 OBJ="${OBJS_PATH}/CornellBox/CornellBox-Mirror.obj"
 MTL="${OBJS_PATH}/CornellBox/CornellBox-Mirror.mtl"
-CAM="${OBJS_PATH}/CornellBox/CornellBox-Empty-CO.cam"
+CAM="${OBJS_PATH}/CornellBox/CornellBox-Mirror.cam"
 
 OBJ="${OBJS_PATH}/CornellBox/CornellBox-Original.obj"
 MTL="${OBJS_PATH}/CornellBox/CornellBox-Original.mtl"
-CAM="${OBJS_PATH}/CornellBox/CornellBox-Empty-CO.cam"
+CAM="${OBJS_PATH}/CornellBox/CornellBox-Original.cam"
 
 OBJ="${OBJS_PATH}/CornellBox/CornellBox-Sphere.obj"
 MTL="${OBJS_PATH}/CornellBox/CornellBox-Sphere.mtl"
-CAM="${OBJS_PATH}/CornellBox/CornellBox-Empty-CO.cam"
+CAM="${OBJS_PATH}/CornellBox/CornellBox-Sphere.cam"
 
 OBJ="${OBJS_PATH}/CornellBox/CornellBox-Water.obj"
 MTL="${OBJS_PATH}/CornellBox/CornellBox-Water.mtl"
-CAM="${OBJS_PATH}/CornellBox/CornellBox-Empty-CO.cam"
+CAM="${OBJS_PATH}/CornellBox/CornellBox-Water.cam"
 
 OBJ="${OBJS_PATH}/CornellBox/water.obj"
 MTL="${OBJS_PATH}/CornellBox/water.mtl"
-CAM="${OBJS_PATH}/CornellBox/CornellBox-Empty-CO.cam"
+CAM="${OBJS_PATH}/CornellBox/water.cam"
 
-OBJ="${OBJS_PATH}/../San_Miguel/san-miguel-low-poly.obj"
-MTL="${OBJS_PATH}/../San_Miguel/san-miguel-low-poly.mtl"
-CAM="${OBJS_PATH}/../San_Miguel/san-miguel-low-poly.cam"
+OBJ="${OBJS_PATH}/../San_Miguel/san-miguel.obj"
+MTL="${OBJS_PATH}/../San_Miguel/san-miguel.mtl"
+CAM="${OBJS_PATH}/../San_Miguel/san-miguel.cam"
 
 export ASAN_OPTIONS="suppressions=sanitizer_ignore.suppr:verbosity=1:strict_string_checks=1:detect_stack_use_after_return=1:check_initialization_order=1:strict_init_order=1:halt_on_error=0:detect_odr_violation=1"
 
