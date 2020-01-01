@@ -23,7 +23,7 @@ namespace MobileRT {
             const ::glm::vec3 &kT = ::glm::vec3 {},
             float refractiveIndice = 1.0F,
             const ::glm::vec3 &lE = ::glm::vec3 {},
-            Texture texture = Texture {});
+            const Texture &texture = Texture {});
 
         Material(const Material &material) = default;
 
