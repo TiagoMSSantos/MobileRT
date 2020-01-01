@@ -31,11 +31,13 @@ work_thread(
     ::std::int32_t repeats, const ::std::int32_t accelerator, const bool printStdOut,
     const char *const objFilePath, const char *const mtlFilePath, const char *const camFilePath) {
     try {
-        ::std::ostringstream ss{""};
-        ::std::streambuf *old_buf_stdout{};
-        ::std::streambuf *old_buf_stderr{};
-        ::std::chrono::duration<double> timeCreating{};
-        ::std::chrono::duration<double> timeRendering{};
+        ::std::ostringstream ss {""};
+        ::std::streambuf *old_buf_stdout {};
+        ::std::streambuf *old_buf_stderr {};
+        ::std::chrono::duration<double> timeCreating {};
+        ::std::chrono::duration<double> timeRendering {};
+        ::std::chrono::duration<double> timeLoading {};
+        ::std::chrono::duration<double> timeFilling {};
         if (!printStdOut) {
             old_buf_stdout = ::std::cout.rdbuf(ss.rdbuf());
             old_buf_stderr = ::std::cerr.rdbuf(ss.rdbuf());
@@ -105,14 +107,22 @@ work_thread(
                     maxDist = ::glm::vec3 {8, 8, 8};
                     break;
                 default: {
+                    const auto startLoading {::std::chrono::system_clock::now()};
                     ::Components::OBJLoader objLoader {objFilePath, mtlFilePath};
                     if (!objLoader.isProcessed()) {
                         exit(0);
                     }
+                    const auto endLoading {::std::chrono::system_clock::now()};
+                    timeLoading = endLoading - startLoading;
+                    LOG("OBJLoader loaded = ", timeLoading.count());
+                    const auto startFilling {::std::chrono::system_clock::now()};
                     //objLoader.fillScene(&scene_, []() {return ::std::make_unique<::Components::HaltonSeq> ();});
                     //objLoader.fillScene(&scene_, []() {return ::std::make_unique<::Components::MersenneTwister> ();});
                     objLoader.fillScene(&scene_, []() {return ::std::make_unique<Components::StaticHaltonSeq> (); });
                     //objLoader.fillScene(&scene_, []() {return ::std::make_unique<Components::StaticMersenneTwister> ();});
+                    const auto endFilling {::std::chrono::system_clock::now()};
+                    timeFilling = endFilling - startFilling;
+                    LOG("Scene filled = ", timeFilling.count());
 
                     const auto cameraFactory {::Components::CameraFactory()};
                     camera = cameraFactory.loadFromFile(camFilePath, ratio);
@@ -168,6 +178,9 @@ work_thread(
                 }
             }
             const auto endCreating {::std::chrono::system_clock::now()};
+            timeCreating = endCreating - startCreating;
+            LOG("Shader created = ", timeCreating.count());
+
             const auto planes {static_cast<::std::int32_t> (shader_->getPlanes().size())};
             const auto spheres {static_cast<::std::int32_t> (shader_->getSpheres().size())};
             const auto triangles {static_cast<::std::int32_t> (shader_->getTriangles().size())};
@@ -179,8 +192,6 @@ work_thread(
                     ::std::move(shader_), ::std::move(camera), ::std::move(samplerPixel),
                     width, height, samplesPixel
             );
-            timeCreating = endCreating - startCreating;
-            LOG("Renderer created = ", timeCreating.count());
 
             LOG("TRIANGLES = ", triangles);
             LOG("SPHERES = ", spheres);
@@ -211,6 +222,8 @@ work_thread(
             ::std::cerr.rdbuf(old_buf_stderr);
         }
 
+        LOG("Loading Time in secs = ", timeLoading.count());
+        LOG("Filling Time in secs = ", timeFilling.count());
         LOG("Creating Time in secs = ", timeCreating.count());
         LOG("Rendering Time in secs = ", timeRendering.count());
     } catch (const ::std::bad_alloc &badAlloc) {
