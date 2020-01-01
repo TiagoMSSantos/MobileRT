@@ -5,7 +5,8 @@
 ## TODO
 
 ### Ray tracing engine
-- [ ] Implement loading of textures
+- [x] Implement loading of textures
+- [ ] Add support for textures for different materials
 - [x] Separate Material from Primitive in order to save memory
 - [x] Improve BVH
 - [x] Improve Regular Grid
