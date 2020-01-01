@@ -36,9 +36,10 @@ Texture Texture::createTexture(const char *const textureFilePath) {
     ::std::int32_t height {};
     ::std::int32_t channels {};
     ::std::uint8_t *data {stbi_load(textureFilePath, &width, &height, &channels, 3)};
+    LOG("new Texture: ", width, "x", height, ", c: ", channels, ", file:", textureFilePath);
     ::std::vector<::std::uint8_t> image (data, data + (width * height * channels));
+    stbi_image_free(data);
     Texture texture {image, width, height, channels};
-    LOG("new Texture: ", width, "x", height, ", c: ", channels, ", size: ", image.size(), ", file: ", textureFilePath);
     return texture;
 }
 

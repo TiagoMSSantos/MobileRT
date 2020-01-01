@@ -83,4 +83,21 @@ namespace MobileRT {
         return same;
     }
 
+    ::glm::vec2 normalize(const ::glm::vec2 &textureCoordinates) {
+        ::glm::vec2 texCoords {textureCoordinates};
+        while(texCoords[0] < 0) {
+            texCoords[0] += 1;
+        }
+        while(texCoords[1] < 0) {
+            texCoords[1] += 1;
+        }
+        while(texCoords[0] > 1) {
+            texCoords[0] -= 1;
+        }
+        while(texCoords[1] > 1) {
+            texCoords[1] -= 1;
+        }
+        return texCoords;
+    }
+
 }// namespace MobileRT

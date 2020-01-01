@@ -43,6 +43,8 @@ namespace MobileRT {
 
     bool equal(const ::glm::vec3 &a, const ::glm::vec3 &b);
 
+    ::glm::vec2 normalize(const ::glm::vec2 &textureCoordinates);
+
     template<typename ...Args>
     void log(Args &&... args) {
         ::std::ostringstream oss {""};

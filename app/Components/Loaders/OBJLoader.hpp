@@ -3,6 +3,7 @@
 
 #include "MobileRT/ObjectLoader.hpp"
 #include "MobileRT/Sampler.hpp"
+#define TINYOBJLOADER_IMPLEMENTATION
 #include <tinyobjloader/tiny_obj_loader.h>
 
 namespace Components {

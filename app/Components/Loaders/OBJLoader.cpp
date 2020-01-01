@@ -32,18 +32,20 @@ OBJLoader::OBJLoader(::std::string objFilePath, ::std::string matFilePath) :
     ::std::string warnings {};
 
     LOG("Going to call tinyobj::LoadObj");
+    LOG("OBJ file path: ", this->objFilePath_);
+    LOG("MTL file path: ", this->mtlFilePath_);
+    LOG("Error (errno): ", ::std::strerror(errno));
     errno = 0;
 
     const auto ret {
             ::tinyobj::LoadObj(
                     &this->attrib_, &this->shapes_, &this->materials_,
-                    &warnings, &errors, &objStream, matStreamReaderPtr, true
+                    &warnings, &errors, &objStream, matStreamReaderPtr, true, false
             )
     };
 
     if (errno) {
-        const auto &strError {::std::strerror(errno)};
-        LOG("Error (errno): ", strError);
+        LOG("Error (errno): ", ::std::strerror(errno));
     }
     LOG("Called tinyobj::LoadObj");
 
@@ -220,6 +222,10 @@ bool OBJLoader::fillScene(Scene *const scene,
                         texCoordA = ::glm::vec2 {-1};
                         texCoordB = ::glm::vec2 {-1};
                         texCoordC = ::glm::vec2 {-1};
+                    } else {
+                        texCoordA = ::MobileRT::normalize(texCoordA);
+                        texCoordB = ::MobileRT::normalize(texCoordB);
+                        texCoordC = ::MobileRT::normalize(texCoordC);
                     }
                     const Material material {diffuse, specular, transmittance, indexRefraction, emission, texture};
                     const auto itFoundMat {::std::find(scene->materials_.begin(), scene->materials_.end(), material)};
