@@ -1,2 +1,2 @@
 -optimizationpasses 99999
--keep class puscas.mobilertapp.LowMemoryException
+-keep class puscas.mobilertapp.LowMemoryException {*;}

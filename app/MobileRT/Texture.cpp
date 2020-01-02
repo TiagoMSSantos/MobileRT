@@ -7,15 +7,28 @@
 using ::MobileRT::Texture;
 
 Texture::Texture(
-    ::std::vector<::std::uint8_t> image,
+    ::std::uint8_t *data,
     ::std::int32_t width,
     ::std::int32_t height,
     ::std::int32_t channels
 ) :
-    image_ {::std::move(image)},
+    image_ {data},
     width_ {width},
     height_ {height},
     channels_ {channels} {
+}
+
+Texture::Texture(
+        ::std::shared_ptr<::std::uint8_t> pointer,
+        ::std::int32_t width,
+        ::std::int32_t height,
+        ::std::int32_t channels
+) :
+        pointer_ {pointer},
+        image_ {pointer_.get()},
+        width_ {width},
+        height_ {height},
+        channels_ {channels} {
 }
 
 ::glm::vec3 Texture::loadColor(const ::glm::vec2 &texCoords) const {
@@ -35,11 +48,18 @@ Texture Texture::createTexture(const char *const textureFilePath) {
     ::std::int32_t width {};
     ::std::int32_t height {};
     ::std::int32_t channels {};
-    ::std::uint8_t *data {stbi_load(textureFilePath, &width, &height, &channels, 3)};
-    LOG("new Texture: ", width, "x", height, ", c: ", channels, ", file:", textureFilePath);
-    ::std::vector<::std::uint8_t> image (data, data + (width * height * channels));
-    stbi_image_free(data);
-    Texture texture {image, width, height, channels};
+    const auto info {stbi_info(textureFilePath, &width, &height, &channels)};
+    ::std::uint8_t *data {stbi_load(textureFilePath, &width, &height, &channels, 0)};
+    LOG("new Texture: ", width, "x", height, ", c: ", channels, ", info: ", info , ", file:", textureFilePath);
+    if (data == nullptr) {
+        const auto &error {stbi_failure_reason()};
+        LOG("Error reading texture: ", error);
+    }
+    ::std::shared_ptr<::std::uint8_t> pointer {data, [] (::std::uint8_t *const internalData) {
+        stbi_image_free(internalData);
+        LOG("Deleted texture");
+    }};
+    Texture texture {pointer, width, height, channels};
     return texture;
 }
 
@@ -47,11 +67,11 @@ bool Texture::operator==(const Texture &texture) const {
     const auto sameWidth {this->width_ == texture.width_};
     const auto sameHeight {this->height_ == texture.height_};
     const auto sameChannels {this->channels_ == texture.channels_};
-    const auto sameSize {this->image_.size() == texture.image_.size()};
-    const auto same {sameWidth && sameHeight && sameChannels && sameSize};
+    const auto samePointer {this->image_ == texture.image_};
+    const auto same {sameWidth & sameHeight & sameChannels & samePointer};
     return same;
 }
 
 bool Texture::isValid() const {
-    return this->width_ > 0 && this->height_> 0 && this->channels_ > 0 && !this->image_.empty();
+    return this->width_ > 0 && this->height_> 0 && this->channels_ > 0 && this->image_;
 }

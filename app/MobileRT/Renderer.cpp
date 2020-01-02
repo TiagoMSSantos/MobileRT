@@ -3,10 +3,10 @@
 #include <vector>
 
 using ::MobileRT::Renderer;
-using ::MobileRT::NumberOfBlocks;
+using ::MobileRT::NumberOfTiles;
 
 namespace {
-    ::std::array<float, NumberOfBlocks> values {};
+    ::std::array<float, NumberOfTiles> values {};
 
     bool fillThings() {
         for (auto it {values.begin()}; it < values.end(); ::std::advance(it, 1)) {
@@ -28,8 +28,8 @@ Renderer::Renderer(::std::unique_ptr<Shader> shader,
         camera_ {::std::move(camera)},
         shader_ {::std::move(shader)},
         samplerPixel_ {::std::move(samplerPixel)},
-        blockSizeX_ {width / static_cast<::std::int32_t> (::std::sqrt(NumberOfBlocks))},
-        blockSizeY_ {height / static_cast<::std::int32_t> (::std::sqrt(NumberOfBlocks))},
+        blockSizeX_ {width / static_cast<::std::int32_t> (::std::sqrt(NumberOfTiles))},
+        blockSizeY_ {height / static_cast<::std::int32_t> (::std::sqrt(NumberOfTiles))},
         sample_ {},
         width_ {width},
         height_ {height},
@@ -123,8 +123,8 @@ void Renderer::renderScene(::std::int32_t *const bitmap, const ::std::int32_t ti
 }
 
 float Renderer::getTile(const ::std::int32_t sample) {
-    const auto current {this->block_.fetch_add(1, ::std::memory_order_relaxed) - NumberOfBlocks * sample};
-    if (current >= NumberOfBlocks) {
+    const auto current {this->block_.fetch_add(1, ::std::memory_order_relaxed) - NumberOfTiles * sample};
+    if (current >= NumberOfTiles) {
         this->block_.fetch_sub(1, ::std::memory_order_relaxed);
         return 1.0F;
     }

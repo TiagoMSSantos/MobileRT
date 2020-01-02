@@ -250,11 +250,11 @@ public final class DrawView extends GLSurfaceView {
             this.renderer.resetStats(numThreads, samplesPixel, samplesLight, numPrimitives, RTGetNumberOfLights());
         } catch(final LowMemoryException ex) {
             this.renderer.resetStats(-1, -1, -1, -1, -1);
-            LOGGER.severe(ex.getMessage());
+            LOGGER.severe("LowMemoryException: " + ex.getMessage());
             post(() -> Toast.makeText(getContext(), DEVICE_WITHOUT_ENOUGH_MEMORY, Toast.LENGTH_LONG).show());
-        } catch(final Exception ex) {
+        } catch(final RuntimeException ex) {
             this.renderer.resetStats(-2, -2, -2, -2, -2);
-            LOGGER.severe(ex.getMessage());
+            LOGGER.severe("RuntimeException: " + ex.getMessage());
             post(() -> Toast.makeText(getContext(), COULD_NOT_LOAD_THE_SCENE, Toast.LENGTH_LONG).show());
         } finally {
             final int widthView = getWidth();

@@ -380,7 +380,7 @@ final class MainRenderer implements GLSurfaceView.Renderer {
             final String objFilePath,
             final String matFilePath,
             final String camFilePath
-    ) throws Exception;
+    ) throws LowMemoryException;
 
     /**
      * Let Ray Tracer engine start to render the scene.

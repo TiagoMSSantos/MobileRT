@@ -1,5 +1,6 @@
 #include "System_dependent/Linux/c_wrapper.h"
 #include "MobileRT/Utils.hpp"
+#include "../../MobileRT/Utils.hpp"
 #include <cmath>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
@@ -20,12 +21,12 @@
     const ::std::int32_t width_{
             ::MobileRT::roundDownToMultipleOf(static_cast<::std::int32_t> (strtol(argv[6], nullptr, 0)),
                                               static_cast<::std::int32_t> (::std::sqrt(
-                                                      ::MobileRT::NumberOfBlocks)))};
+                                                      ::MobileRT::NumberOfTiles)))};
 
     const ::std::int32_t height_{
             ::MobileRT::roundDownToMultipleOf(static_cast<::std::int32_t> (strtol(argv[7], nullptr, 0)),
                                               static_cast<::std::int32_t> (::std::sqrt(
-                                                      ::MobileRT::NumberOfBlocks)))};
+                                                      ::MobileRT::NumberOfTiles)))};
 
     const ::std::int32_t accelerator {static_cast<::std::int32_t> (strtol(argv[8], nullptr, 0))};
 

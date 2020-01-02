@@ -3,11 +3,14 @@
 
 #include <glm/glm.hpp>
 #include <vector>
+#include <memory>
+
 
 namespace MobileRT {
     class Texture {
         private:
-            ::std::vector<::std::uint8_t> image_ {};
+            ::std::shared_ptr<::std::uint8_t> pointer_ {};
+            ::std::uint8_t* image_ {};
             ::std::int32_t width_ {};
             ::std::int32_t height_ {};
             ::std::int32_t channels_ {};
@@ -16,7 +19,14 @@ namespace MobileRT {
             explicit Texture() = default;
 
             explicit Texture(
-                ::std::vector<::std::uint8_t> image,
+                ::std::uint8_t *data,
+                ::std::int32_t width,
+                ::std::int32_t height,
+                ::std::int32_t channels
+            );
+
+            explicit Texture(
+                ::std::shared_ptr<::std::uint8_t> pointer,
                 ::std::int32_t width,
                 ::std::int32_t height,
                 ::std::int32_t channels

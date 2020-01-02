@@ -533,13 +533,31 @@ jint Java_puscas_mobilertapp_MainRenderer_RTInitialize(
         return res;
     } catch (const ::std::bad_alloc &badAlloc) {
         const auto lowMemClass {env->FindClass("puscas/mobilertapp/LowMemoryException")};
-        return env->ThrowNew(lowMemClass, badAlloc.what());
+        const auto res {env->ThrowNew(lowMemClass, badAlloc.what())};
+        if (res != 0) {
+            LOG("ERROR: ", res);
+        } else {
+            LOG("LowMemoryException thrown");
+        }
+        return -1;
     } catch (const ::std::exception &exception) {
-        const auto exceptionClass {env->FindClass("java/lang/Exception")};
-        return env->ThrowNew(exceptionClass, exception.what());
+        const auto exceptionClass {env->FindClass("java/lang/RuntimeException")};
+        const auto res {env->ThrowNew(exceptionClass, exception.what())};
+        if (res != 0) {
+            LOG("ERROR: ", res);
+        } else {
+            LOG("RuntimeException thrown");
+        }
+        return -2;
     } catch (...) {
-        const auto exceptionClass {env->FindClass("java/lang/Exception")};
-        return env->ThrowNew(exceptionClass, "Unknown error");
+        const auto exceptionClass {env->FindClass("java/lang/RuntimeException")};
+        const auto res {env->ThrowNew(exceptionClass, "Unknown error")};
+        if (res != 0) {
+            LOG("ERROR: ", res);
+        } else {
+            LOG("RuntimeException thrown");
+        }
+        return -3;
     }
 }
 
@@ -729,7 +747,7 @@ extern "C"
 ) {
     const auto res {
         ::MobileRT::roundDownToMultipleOf(
-            size, static_cast<::std::int32_t> (::std::sqrt(::MobileRT::NumberOfBlocks))
+            size, static_cast<::std::int32_t> (::std::sqrt(::MobileRT::NumberOfTiles))
         )
     };
     env->ExceptionClear();

@@ -21,6 +21,7 @@
 - [x] Add exceptions
 - [x] Check all allocations' exceptions
 - [x] Add normals per vertice for triangles
+- [x] Improve loading of textures
 
 ### Ray tracing JNI layer
 - [ ] Refactor DrawView translation unit
