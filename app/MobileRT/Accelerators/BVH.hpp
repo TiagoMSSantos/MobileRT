@@ -12,12 +12,6 @@
 
 namespace MobileRT {
 
-    struct BVHNode {
-        AABB box_ {};
-        ::std::int32_t indexOffset_ {};
-        ::std::int32_t numPrimitives_ {};
-    };
-
     template<typename T>
     class BVH final {
         private:
@@ -28,12 +22,18 @@ namespace MobileRT {
                 ::glm::vec3 midPoint_ {};
                 ::std::int32_t oldIndex_ {};
 
-                explicit BuildNode(AABB &&box, ::glm::vec3 &&midPoint, const ::std::int32_t oldIndex) :
-                    box_ {box},
-                    midPoint_ {midPoint},
+                explicit BuildNode(AABB &&box, const ::std::int32_t oldIndex) :
+                    box_ {::std::move(box)},
+                    midPoint_ {box_.getMidPoint()},
                     oldIndex_ {oldIndex} {
 
                 }
+            };
+
+            struct BVHNode {
+                AABB box_ {};
+                ::std::int32_t indexOffset_ {};
+                ::std::int32_t numPrimitives_ {};
             };
 
         private:
@@ -43,13 +43,13 @@ namespace MobileRT {
         private:
             void build(::std::vector<T> &&primitives);
 
-            Intersection intersect(Intersection intersection,const Ray &ray, bool shadowTrace = false);
+            Intersection intersect(Intersection intersection, const Ray &ray, bool shadowTrace = false);
 
             template<typename Iterator>
             ::std::int32_t getSplitIndexSah(Iterator itBegin, Iterator itEnd);
 
             template<typename Iterator>
-            ::std::int32_t getMaxAxis(Iterator itBegin, Iterator itEnd);
+            AABB getSurroundingBox(Iterator itBegin, Iterator itEnd);
 
         public:
             explicit BVH() = default;
@@ -119,7 +119,6 @@ namespace MobileRT {
         auto itStackBoxEnd {stackBoxEnd.begin()};
         ::std::advance(itStackBoxEnd, 1);
 
-        const auto itBoxes {this->boxes_.begin()};
         const auto itStackBoxIndexBegin {stackBoxIndex.cbegin()};
 
         ::std::vector<BuildNode> buildNodes {};
@@ -127,30 +126,55 @@ namespace MobileRT {
         for (::std::uint32_t i {}; i < primitivesSize; ++i) {
             const auto &primitive {primitives [i]};
             auto &&box {primitive.getAABB()};
-            BuildNode &&node {::std::move(box), box.getMidPoint(), static_cast<::std::int32_t> (i)};
+            BuildNode &&node {::std::move(box), static_cast<::std::int32_t> (i)};
             buildNodes.emplace_back(::std::move(node));
         }
-        const auto itNodes {buildNodes.begin()};
 
         do {
-            const auto &currentBox {itBoxes + currentBoxIndex};
+            const auto &currentBox {this->boxes_.begin() + currentBoxIndex};
             const auto boxPrimitivesSize {endBoxIndex - beginBoxIndex};
-            const auto itBegin {itNodes + beginBoxIndex};
+            const auto itBegin {buildNodes.begin() + beginBoxIndex};
 
-            const auto itEnd {itNodes + endBoxIndex};
-            const auto maxAxis {getMaxAxis(itBegin, itEnd)};
-            ::std::sort(itBegin, itEnd,
-                [&](const BuildNode &node1, const BuildNode &node2) {
-                    return node1.midPoint_[maxAxis] < node2.midPoint_[maxAxis];
-                }
-            );
+            const auto itEnd {buildNodes.begin() + endBoxIndex};
+            const auto surroundingBox {getSurroundingBox(itBegin, itEnd)};
+            const auto maxDist {surroundingBox.pointMax_ - surroundingBox.pointMin_};
+            const auto maxAxis {
+                    maxDist[0] >= maxDist[1] && maxDist[0] >= maxDist[2]
+                    ? 0
+                    : maxDist[1] >= maxDist[0] && maxDist[1] >= maxDist[2]
+                      ? 1
+                      : 2
+            };
+
+//            ::std::sort(itBegin, itEnd,
+//                [&](const BuildNode &node1, const BuildNode &node2) {
+//                    return node1.midPoint_[maxAxis] < node2.midPoint_[maxAxis];
+//                }
+//            );
+
+            const auto &startBox {surroundingBox.pointMin_[maxAxis]};
+            const auto &endBox {surroundingBox.pointMax_[maxAxis]};
+            const auto numBuckets {10.0f};
+            const auto step {maxDist / numBuckets};
+            auto itBucket {::std::partition(itBegin, itEnd,
+                             [&](const BuildNode &node) {
+                                 return node.midPoint_[maxAxis] < startBox;
+                             }
+            )};
+            for (float bucket {startBox + step[maxAxis]}; bucket < endBox; bucket += step[maxAxis]) {
+                itBucket = ::std::partition(itBucket, itEnd,
+                        [&](const BuildNode &node) {
+                            return node.midPoint_[maxAxis] < bucket;
+                        }
+                );
+            }
 
             currentBox->box_ = itBegin->box_;
             ::std::vector<AABB> boxes {currentBox->box_};
             boxes.reserve(static_cast<::std::uint32_t> (boxPrimitivesSize));
             for (::std::int32_t i {beginBoxIndex + 1}; i < endBoxIndex; ++i) {
-                const AABB &newBox {(itNodes + i)->box_};
-                currentBox->box_ = surroundingBox(newBox, currentBox->box_);
+                const AABB &newBox {buildNodes[static_cast<::std::uint32_t> (i)].box_};
+                currentBox->box_ = ::MobileRT::surroundingBox(newBox, currentBox->box_);
                 boxes.emplace_back(newBox);
             }
 
@@ -324,26 +348,15 @@ namespace MobileRT {
 
     template<typename T>
     template<typename Iterator>
-    ::std::int32_t BVH<T>::getMaxAxis(const Iterator itBegin, const Iterator itEnd) {
-        auto min {itBegin->box_.pointMin_};
-        auto max {itBegin->box_.pointMax_};
+    AABB BVH<T>::getSurroundingBox(const Iterator itBegin, const Iterator itEnd) {
+        AABB maxBox {itBegin->box_.pointMin_, itBegin->box_.pointMax_};
 
         for (auto it {itBegin + 1}; it < itEnd; ::std::advance(it, 1)) {
             const auto &box {it->box_};
-            min = ::glm::min(min, box.pointMin_);
-            max = ::glm::max(max, box.pointMax_);
+            maxBox = surroundingBox(maxBox, box);
         }
 
-        const auto maxDist {max - min};
-
-        const auto maxAxis {
-            maxDist[0] >= maxDist[1] && maxDist[0] >= maxDist[2]
-            ? 0
-            : maxDist[1] >= maxDist[0] && maxDist[1] >= maxDist[2]
-                ? 1
-                : 2
-        };
-        return maxAxis;
+        return maxBox;
     }
 
     template<typename T>
