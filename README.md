@@ -22,6 +22,8 @@
 - [x] Check all allocations' exceptions
 - [x] Add normals per vertice for triangles
 - [x] Improve loading of textures
+- [ ] Parallelize build of Regular Grid
+- [ ] Parallelize build of BVH
 
 ### Ray tracing JNI layer
 - [ ] Refactor DrawView translation unit

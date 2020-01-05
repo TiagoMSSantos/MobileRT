@@ -40,7 +40,7 @@ OBJLoader::OBJLoader(::std::string objFilePath, ::std::string matFilePath) :
     const auto ret {
             ::tinyobj::LoadObj(
                     &this->attrib_, &this->shapes_, &this->materials_,
-                    &warnings, &errors, &objStream, matStreamReaderPtr, true, false
+                    &warnings, &errors, &objStream, matStreamReaderPtr, true, true
             )
     };
 

@@ -152,16 +152,18 @@ namespace MobileRT {
 //                }
 //            );
 
+            const auto numBuckets {10};
+            const auto step {maxDist / static_cast<float> (numBuckets)};
+            const auto stepAxis {step[maxAxis]};
             const auto &startBox {surroundingBox.pointMin_[maxAxis]};
-            const auto &endBox {surroundingBox.pointMax_[maxAxis]};
-            const auto numBuckets {10.0f};
-            const auto step {maxDist / numBuckets};
+            const auto bucket1 {startBox + stepAxis};
             auto itBucket {::std::partition(itBegin, itEnd,
                              [&](const BuildNode &node) {
-                                 return node.midPoint_[maxAxis] < startBox;
+                                 return node.midPoint_[maxAxis] < bucket1;
                              }
             )};
-            for (float bucket {startBox + step[maxAxis]}; bucket < endBox; bucket += step[maxAxis]) {
+            for (::std::int32_t i = 2; i < numBuckets; ++i) {
+                const auto bucket {startBox + stepAxis * i};
                 itBucket = ::std::partition(itBucket, itEnd,
                         [&](const BuildNode &node) {
                             return node.midPoint_[maxAxis] < bucket;
@@ -172,7 +174,7 @@ namespace MobileRT {
             currentBox->box_ = itBegin->box_;
             ::std::vector<AABB> boxes {currentBox->box_};
             boxes.reserve(static_cast<::std::uint32_t> (boxPrimitivesSize));
-            for (::std::int32_t i {beginBoxIndex + 1}; i < endBoxIndex; ++i) {
+            for (::std::int32_t i = beginBoxIndex + 1; i < endBoxIndex; ++i) {
                 const AABB &newBox {buildNodes[static_cast<::std::uint32_t> (i)].box_};
                 currentBox->box_ = ::MobileRT::surroundingBox(newBox, currentBox->box_);
                 boxes.emplace_back(newBox);

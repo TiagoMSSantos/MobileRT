@@ -41,6 +41,10 @@ OBJ="${OBJS_PATH}/teapot/teapot.obj"
 MTL="${OBJS_PATH}/teapot/teapot.mtl"
 CAM="${OBJS_PATH}/teapot/teapot.cam"
 
+OBJ="${OBJS_PATH}/buddha/buddha.obj"
+MTL="${OBJS_PATH}/buddha/buddha.mtl"
+CAM="${OBJS_PATH}/buddha/buddha.cam"
+
 OBJ="${OBJS_PATH}/sponza/sponza.obj"
 MTL="${OBJS_PATH}/sponza/sponza.mtl"
 CAM="${OBJS_PATH}/sponza/sponza.cam"
@@ -126,17 +130,17 @@ SHADERS="1 2"
 SCENES="2"
 ACCELERATORS="1 2"
 
-function execute {
-  THREAD="4"
-  SHADER="1"
-  SCENE="4"
-  ACC="3"
-  PRINT="true"
-  SHOWIMAGE="true"
-  ASYNC="true"
-  SPP="1"
-  SPL="1"
+THREAD="4"
+SHADER="1"
+SCENE="4"
+ACC="3"
+PRINT="true"
+SHOWIMAGE="true"
+ASYNC="true"
+SPP="1"
+SPL="1"
 
+function execute {
   echo ""
   echo "THREAD = "${THREAD}
   echo "SHADER = "${SHADER}
@@ -147,13 +151,23 @@ function execute {
   #kcachegrind perf.callgrind
   #perf stat \
   #perf record -g --call-graph 'fp' -- \
-  #perf record -g --call-graph 'fp' --  \
   ${BIN_RELEASE_PATH}/AppInterface \
             ${THREAD} ${SHADER} ${SCENE} ${SPP} ${SPL} ${WIDTH} ${HEIGHT} ${ACC} ${REP} \
             ${OBJ} ${MTL} ${CAM} ${PRINT} ${ASYNC} ${SHOWIMAGE}
   #perf report -g '' --show-nr-samples --hierarchy
 }
 
+function debug {
+  echo ""
+  echo "THREAD = "${THREAD}
+  echo "SHADER = "${SHADER}
+  echo "SCENE = "${SCENE}
+  echo "ACC = "${ACC}
+
+  ${BIN_DEBUG_PATH}/AppInterfaced \
+            ${THREAD} ${SHADER} ${SCENE} ${SPP} ${SPL} ${WIDTH} ${HEIGHT} ${ACC} ${REP} \
+            ${OBJ} ${MTL} ${CAM} ${PRINT} ${ASYNC} ${SHOWIMAGE}
+}
 
 
 function clangtidy {
@@ -225,6 +239,7 @@ PARAM4="test"
 PARAM5="exec"
 PARAM6="tidy"
 PARAM7="gtest"
+PARAM8="debug"
 
 for P in ${@}
 do
@@ -236,6 +251,7 @@ do
     ${PARAM5}) execute ;;
     ${PARAM6}) clangtidy ;;
     ${PARAM7}) ${BIN_DEBUG_PATH}/GoogleTestd ;;
+    ${PARAM8}) debug ;;
     *) echo ""
        echo "Wrong Parameter: ${P}"
        echo "The valid parameters are:"
