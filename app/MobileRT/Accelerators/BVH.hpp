@@ -19,12 +19,12 @@ namespace MobileRT {
 
             struct BuildNode {
                 AABB box_ {};
-                ::glm::vec3 midPoint_ {};
+                ::glm::vec3 centroid_ {};
                 ::std::int32_t oldIndex_ {};
 
                 explicit BuildNode(AABB &&box, const ::std::int32_t oldIndex) :
                     box_ {::std::move(box)},
-                    midPoint_ {box_.getMidPoint()},
+                    centroid_ {box_.getCentroid()},
                     oldIndex_ {oldIndex} {
 
                 }
@@ -148,7 +148,7 @@ namespace MobileRT {
 
 //            ::std::sort(itBegin, itEnd,
 //                [&](const BuildNode &node1, const BuildNode &node2) {
-//                    return node1.midPoint_[maxAxis] < node2.midPoint_[maxAxis];
+//                    return node1.centroid_[maxAxis] < node2.centroid_[maxAxis];
 //                }
 //            );
 
@@ -159,14 +159,14 @@ namespace MobileRT {
             const auto bucket1 {startBox + stepAxis};
             auto itBucket {::std::partition(itBegin, itEnd,
                              [&](const BuildNode &node) {
-                                 return node.midPoint_[maxAxis] < bucket1;
+                                 return node.centroid_[maxAxis] < bucket1;
                              }
             )};
             for (::std::int32_t i = 2; i < numBuckets; ++i) {
                 const auto bucket {startBox + stepAxis * i};
                 itBucket = ::std::partition(itBucket, itEnd,
                         [&](const BuildNode &node) {
-                            return node.midPoint_[maxAxis] < bucket;
+                            return node.centroid_[maxAxis] < bucket;
                         }
                 );
             }

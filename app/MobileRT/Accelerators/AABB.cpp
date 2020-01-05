@@ -43,7 +43,7 @@ float AABB::getSurfaceArea() const {
     return surfaceArea;
 }
 
-::glm::vec3 AABB::getMidPoint() const {
+::glm::vec3 AABB::getCentroid() const {
     const auto &length {(this->pointMax_ - this->pointMin_) / 2.0F};
     const auto &res {this->pointMin_ + length};
     return res;

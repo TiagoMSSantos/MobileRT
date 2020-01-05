@@ -30,7 +30,7 @@ namespace MobileRT {
 
         float getSurfaceArea() const;
 
-        ::glm::vec3 getMidPoint() const;
+        ::glm::vec3 getCentroid() const;
 
         bool intersect(const Ray &ray) const;
     };
