@@ -109,9 +109,9 @@ OBJ="${OBJS_PATH}/CornellBox/water.obj"
 MTL="${OBJS_PATH}/CornellBox/water.mtl"
 CAM="${OBJS_PATH}/CornellBox/water.cam"
 
-OBJ="${OBJS_PATH}/conference/conference.obj"
-MTL="${OBJS_PATH}/conference/conference.mtl"
-CAM="${OBJS_PATH}/conference/conference.cam"
+OBJ="${OBJS_PATH}/../San_Miguel/san-miguel-low-poly.obj"
+MTL="${OBJS_PATH}/../San_Miguel/san-miguel-low-poly.mtl"
+CAM="${OBJS_PATH}/../San_Miguel/san-miguel-low-poly.cam"
 
 export ASAN_OPTIONS="suppressions=sanitizer_ignore.suppr:verbosity=1:strict_string_checks=1:detect_stack_use_after_return=1:check_initialization_order=1:strict_init_order=1:halt_on_error=0:detect_odr_violation=1"
 
@@ -135,7 +135,7 @@ SCENES="2"
 ACCELERATORS="1 2"
 
 THREAD="8"
-SHADER="1"
+SHADER="3"
 SCENE="4"
 ACC="3"
 PRINT="true"

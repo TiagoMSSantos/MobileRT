@@ -454,7 +454,7 @@ public final class MainActivity extends Activity {
         this.pickerShader.setValue(defaultPickerShader);
         this.pickerShader.setDisplayedValues(shaders);
 
-        final int maxSamplesPixel = 10;
+        final int maxSamplesPixel = 99;
         final String[] samplesPixel = new String[maxSamplesPixel];
         for (int i = 0; i < maxSamplesPixel; i++) {
             samplesPixel[i] = Integer.toString((i + 1) * (i + 1));

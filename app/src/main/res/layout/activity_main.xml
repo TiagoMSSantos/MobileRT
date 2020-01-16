@@ -56,7 +56,7 @@
 
     <puscas.mobilertapp.CustomNumberPicker
         android:id="@+id/pickerSamplesPixel"
-        android:layout_width="30dp"
+        android:layout_width="40dp"
         android:layout_height="60dp"
         android:layout_alignBottom="@+id/renderButton"
         android:layout_toEndOf="@+id/pickerShader"
