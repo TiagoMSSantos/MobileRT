@@ -1,10 +1,25 @@
 #!/bin/bash
 
 FILE_TO_SEARCH="MobileRT.jks"
-FIND_MOBILERT=$(find /mnt/D/Projects -iname "${FILE_TO_SEARCH}" 2> /dev/null | head -n 1)
+PATH_TO_SEARCH="/mnt/D/Projects"
+FIND_MOBILERT=$(find ${PATH_TO_SEARCH} -iname "${FILE_TO_SEARCH}" 2> /dev/null | head -n 1)
 MOBILERT_PATH="${FIND_MOBILERT//\/app\/"${FILE_TO_SEARCH}"/}"
 
+echo "FILE_TO_SEARCH = ${FILE_TO_SEARCH}"
+echo "PATH_TO_SEARCH = ${PATH_TO_SEARCH}"
+echo "FIND_MOBILERT = ${FIND_MOBILERT}"
 echo "MOBILERT_PATH = ${MOBILERT_PATH}"
+
+if [ -z "${MOBILERT_PATH}" ]
+then
+    PATH_TO_SEARCH="/"
+    FIND_MOBILERT=$(find ${PATH_TO_SEARCH} -iname "${FILE_TO_SEARCH}" 2> /dev/null | head -n 1)
+    MOBILERT_PATH="${FIND_MOBILERT//\/app\/"${FILE_TO_SEARCH}"/}"
+
+    echo "PATH_TO_SEARCH2 = ${PATH_TO_SEARCH}"
+    echo "FIND_MOBILERT2 = ${FIND_MOBILERT}"
+    echo "MOBILERT_PATH2 = ${MOBILERT_PATH}"
+fi
 
 BIN_DEBUG_PATH="${MOBILERT_PATH}/build_debug/bin"
 BIN_RELEASE_PATH="${MOBILERT_PATH}/build_release/bin"
@@ -135,8 +150,8 @@ SCENES="2"
 ACCELERATORS="1 2"
 
 THREAD="8"
-SHADER="3"
-SCENE="4"
+SHADER="1"
+SCENE="2"
 ACC="3"
 PRINT="true"
 SHOWIMAGE="true"

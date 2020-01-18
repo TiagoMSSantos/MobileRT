@@ -1,0 +1,6 @@
+version: '2.1'
+services:
+    mobileRT:
+        build: .
+        image: 'ptpuscas/mobile_rt:latest'
+        network_mode: host

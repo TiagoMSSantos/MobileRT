@@ -22,6 +22,7 @@ endif()
 
 if( CMAKE_CXX_COMPILER MATCHES "clang" OR DEFINED ANDROID_ABI )
 	set( COMMON_FLAGS "${COMMON_FLAGS}" -Weverything -ferror-limit=1 )
+	set( COMMON_FLAGS_RELEASE "${COMMON_FLAGS_RELEASE}" -flto=full )
 endif()
 
 # Remove default flags
@@ -71,7 +72,7 @@ set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-exit-time-destructors -fopenmp )
 
 set( COMMON_FLAGS_DEBUG -O0 -g3 -fno-optimize-sibling-calls -fno-omit-frame-pointer )
 
-set( COMMON_FLAGS_RELEASE "${COMMON_FLAGS_RELEASE}" -O3 -DNDEBUG -ffunction-sections -fdata-sections -flto=full )
+set( COMMON_FLAGS_RELEASE "${COMMON_FLAGS_RELEASE}" -O3 -DNDEBUG -ffunction-sections -fdata-sections )
 
 # Set common linker flags
 set( COMMON_LINKER_FLAGS -Wl,-gc-sections -O3 -discard-all -fno-rtti -fopenmp )
