@@ -2,6 +2,19 @@
 
 ![alt text](Example.gif)
 
+## Portable
+This Ray tracer is compatible with Android and Linux.
+If you have docker installed, you can try it with ease by using following command to get the docker image:
+```bash
+docker pull ptpuscas/mobile_rt
+```
+
+The to execute the container, just type:
+```bash
+docker run -v /tmp/.X11-unix:/tmp/.X11-unix ptpuscas/mobile_rt
+```
+And you should see a tiny cornell box with 2 spheres :)
+
 ## TODO
 
 ### Ray tracing engine
@@ -61,6 +74,11 @@
 - [x] Add CI / CD support from github (actions) for the Google Test unit tests
 - [ ] Remove repeated code
 - [ ] Remove unnecessary casts
+
+### Docker
+- [x] Make a docker image with MobileRT
+- [ ] Add models to the docker container
+- [ ] Use docker compose to launch multiple containers and distribute the load
 
 ### Documentation
 - [x] Improve README
