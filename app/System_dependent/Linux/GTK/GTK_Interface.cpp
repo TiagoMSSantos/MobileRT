@@ -1,6 +1,5 @@
 #include "System_dependent/Linux/c_wrapper.h"
 #include "MobileRT/Utils.hpp"
-#include "../../MobileRT/Utils.hpp"
 #include <cmath>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>

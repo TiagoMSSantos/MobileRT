@@ -37,6 +37,7 @@ And you should see a tiny cornell box with 2 spheres :)
 - [x] Improve loading of textures
 - [ ] Parallelize build of Regular Grid
 - [ ] Parallelize build of BVH
+- [x] Add support for Boost
 
 ### Ray tracing JNI layer
 - [ ] Refactor DrawView translation unit

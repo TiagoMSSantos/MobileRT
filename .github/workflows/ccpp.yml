@@ -13,11 +13,12 @@ jobs:
       env:
         CC: gcc
         CXX: g++
+        QT_ACCESSIBILITY: 1
       run: mkdir build_native
-       
-    - name: Install Ubuntu Dependencies (GTK)
-      run: sudo apt-get install --no-install-recommends -y libgtk2.0-dev
-          
+
+    - name: Install Ubuntu Dependencies
+      run: sudo apt-get update && sudo apt-get install -y libgtk2.0-dev libqt4-dev
+
     - name: Run CMake
       if: success()
       working-directory: build_native
@@ -27,7 +28,7 @@ jobs:
       if: success()
       working-directory: build_native
       run: make
-    
+
     - name: Run Google Test
       if: success()
       working-directory: build_native/bin

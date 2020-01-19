@@ -6,6 +6,7 @@ ARG build_type=Release
 ARG build_dir=build_release
 
 ENV DISPLAY=:1
+ENV QT_ACCESSIBILITY=0
 
 RUN echo "build_dir = $build_dir"
 RUN echo "build_type = $build_type"
@@ -13,11 +14,9 @@ RUN echo "DISPLAY = $DISPLAY"
 
 # Install dependencies
 RUN apt-get update -y
-RUN apt-get upgrade -y
-RUN apt-get install -y cmake
-RUN apt-get install -y g++
+RUN apt-get install -y cmake git g++
 RUN apt-get install -y libgtk2.0-dev
-RUN apt-get install -y git
+RUN apt-get install -y libqt4-dev
 
 # Copy contents
 RUN git clone https://github.com/TiagoMSSantos/MobileRT.git
@@ -32,4 +31,3 @@ RUN make
 
 # Execute
 CMD bash ../Scripts/profile.sh exec
-

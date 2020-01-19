@@ -17,3 +17,8 @@
     path = app/third_party/stb
     url = https://github.com/nothings/stb
     branch = master
+
+[submodule "third_party/boost"]
+    path = app/third_party/boost
+    url = https://github.com/boostorg/boost
+    branch = master

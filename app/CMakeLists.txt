@@ -1,6 +1,7 @@
 cmake_minimum_required( VERSION 3.6.0 )
 
 set( COMMON_FLAGS "" )
+set( CMAKE_AUTOMOC ON )
 
 # Set CMAKE_SYSTEM_NAME
 if( DEFINED ANDROID_ABI )
@@ -63,6 +64,8 @@ set( MOBILE_RC_HEADERS "${CMAKE_SOURCE_DIR}" )
 set( SCENES_HEADERS "${CMAKE_SOURCE_DIR}/Scenes" )
 set( THIRD_PARTY_HEADERS "${CMAKE_SOURCE_DIR}/third_party" )
 set( GLM_HEADERS "${CMAKE_SOURCE_DIR}/third_party/glm" )
+set( QT_HEADERS "${CMAKE_SOURCE_DIR}/System_dependent/Linux/QT/MobileRT" )
+set( QT_HEADERS "${QT_HEADERS}" "${CMAKE_SOURCE_DIR}/System_dependent/Linux/QT/build-MobileRT-Desktop-${CMAKE_BUILD_TYPE}" )
 
 # Set common flags
 set( COMMON_FLAGS "${COMMON_FLAGS}"
@@ -105,10 +108,13 @@ if( DEFINED ANDROID_ABI )
 	target_link_libraries( ${PROJECT_NAME} PRIVATE android jnigraphics )
 else ()
 	find_package( GTK2 REQUIRED )
+	find_package ( Qt4 REQUIRED QtGui QtXml QtCore )
 	add_executable( ${PROJECT_NAME} ${SCENES_SOURCES} ${MOBILE_DEPENDENT_SOURCES} )
 
+	target_include_directories( ${PROJECT_NAME} SYSTEM PRIVATE "${QT_HEADERS}" )
 	target_include_directories( ${PROJECT_NAME} SYSTEM PRIVATE "${GTK2_INCLUDE_DIRS}" )
 	target_link_libraries( ${PROJECT_NAME} PRIVATE "${GTK2_LIBRARIES}" )
+	target_link_libraries( ${PROJECT_NAME} PRIVATE Qt4::QtGui Qt4::QtXml Qt4::QtCore )
 endif()
 
 set_target_properties( ${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "${CMAKE_DEBUG_POSTFIX}" )
@@ -118,7 +124,8 @@ target_include_directories( ${PROJECT_NAME} PUBLIC "${SCENES_HEADERS}" )
 target_include_directories( ${PROJECT_NAME} PUBLIC "${MOBILE_APP_SOURCES}" )
 target_include_directories( ${PROJECT_NAME} SYSTEM PUBLIC "${GLM_HEADERS}" )
 
-target_compile_options( ${PROJECT_NAME} PRIVATE ${COMMON_FLAGS} -Wno-global-constructors )
+target_compile_options( ${PROJECT_NAME} PRIVATE ${COMMON_FLAGS} -Wno-global-constructors
+		-Wno-zero-as-null-pointer-constant )
 target_compile_options( ${PROJECT_NAME} PRIVATE $<$<CONFIG:DEBUG>:${COMMON_FLAGS_DEBUG}> )
 target_compile_options( ${PROJECT_NAME} PRIVATE $<$<CONFIG:RELEASE>:${COMMON_FLAGS_RELEASE}> )
 
