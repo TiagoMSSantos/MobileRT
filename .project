@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>MobileRayTracer</name>
-	<comment>Project MobileRayTracer created by Buildship.</comment>
+	<name>MobileRT</name>
+	<comment>Android Ray Tracer</comment>
 	<projects>
 	</projects>
 	<buildSpec>

@@ -61,6 +61,7 @@ And you should see a tiny cornell box with 2 spheres :)
 - [x] Fix load of obj files in Android 10
 - [ ] Change Linux's UI from GTK to Qt
 - [ ] Improve Java UI code to more Object Oriented
+- [ ] Change Android icon
 
 ### System
 - [x] Add comments in the Android UI

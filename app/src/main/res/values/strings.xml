@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Mobile RayTracer</string>
+    <string name="app_name">MobileRT</string>
     <string name="time">Time</string>
     <string name="render">Render</string>
     <string name="stop">Stop</string>
