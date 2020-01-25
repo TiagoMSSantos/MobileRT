@@ -10,7 +10,6 @@ MainWindow::MainWindow(QWidget *parent) :
     m_ui(new Ui::MainWindow)
 {
     m_ui->setupUi(this);
-//    connect(ui->exit_button, SIGNAL(clicked()), this, SLOT(exit_app()));
     m_graphicsPixmapItem = m_scene->addPixmap(m_pixmap);
     m_ui->graphicsView->setScene(m_scene);
     m_ui->graphicsView->show();
@@ -38,7 +37,7 @@ void MainWindow::setImage(const ::std::vector<::std::int32_t> &bitmap, const ::s
 
     QTimer *timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(update_image()));
-    timer->start(100); //time specified in ms
+    timer->start(1000);
 
     this->resize(width + 2, height + 44);
     m_ui->graphicsView->resize(width + 2, height + 2);
@@ -56,7 +55,6 @@ void MainWindow::draw(const ::std::vector<::std::int32_t> &bitmap, const ::std::
     const QImage image {
         QImage(reinterpret_cast<const ::std::uint8_t *> (bitmap.data()), width, height, ::QImage::Format::Format_ARGB32).rgbSwapped()
     };
-    m_pixmap.convertFromImage(image, ::Qt::NoFormatConversion);
-    m_scene->removeItem(m_graphicsPixmapItem);
-    m_graphicsPixmapItem = m_scene->addPixmap(m_pixmap);
+    m_pixmap = ::QPixmap::fromImage(image, ::Qt::NoFormatConversion);
+    m_graphicsPixmapItem->setPixmap(m_pixmap);
 }

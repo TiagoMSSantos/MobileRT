@@ -11,13 +11,13 @@ docker pull ptpuscas/mobile_rt
 
 The to execute the container, just type:
 ```bash
-xhost +; docker run -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY -it ptpuscas/mobile_rt
+xhost +; docker run -v /tmp/.X11-unix:/tmp/.X11-unix -v ${PWD}/../WavefrontOBJs:/WavefrontOBJs -e DISPLAY=$DISPLAY -it ptpuscas/mobile_rt
 ```
 And you should see a tiny cornell box with 2 spheres :)
 
 ## Create docker image
 ```bash
-docker build -t ptpuscas/mobile_rt -f docker_image/Dockerfile --no-cache=true .
+docker build -t ptpuscas/mobile_rt -f docker_image/Dockerfile --no-cache=false --build-arg build_type=Release .
 ```
 
 ## TODO

@@ -3,6 +3,8 @@
 **/*.idea*
 **/*.vscode*
 **/*.cxx*
+**/*.git*
 **/app/*build*
 **/app/*release*
 *build*
+**/WavefrontOBJs*
