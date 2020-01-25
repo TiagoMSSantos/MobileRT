@@ -21,8 +21,8 @@ then
     echo "MOBILERT_PATH2 = ${MOBILERT_PATH}"
 fi
 
-BIN_DEBUG_PATH="${MOBILERT_PATH}/build_debug/bin"
-BIN_RELEASE_PATH="${MOBILERT_PATH}/build_release/bin"
+BIN_DEBUG_PATH="${MOBILERT_PATH}/build_Debug/bin"
+BIN_RELEASE_PATH="${MOBILERT_PATH}/build_Release/bin"
 SCRIPTS_PATH="${MOBILERT_PATH}/Scripts"
 PLOT_SCRIPTS_PATH="${SCRIPTS_PATH}/Plot_Scripts"
 OBJS_PATH="${MOBILERT_PATH}/../WavefrontOBJs"

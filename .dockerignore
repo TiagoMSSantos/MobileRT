@@ -1,3 +1,8 @@
-**/.*
-**/*git*
-**/build*
+**/*.github*
+**/*.gradle*
+**/*.idea*
+**/*.vscode*
+**/*.cxx*
+**/app/*build*
+**/app/*release*
+*build*

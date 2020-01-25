@@ -27,8 +27,8 @@ INCLUDEPATH += /mnt/D/Projects/MobileRT/app/System_dependent/Linux
 INCLUDEPATH += /mnt/D/Projects/MobileRT/app/third_party
 INCLUDEPATH += /mnt/D/Projects/MobileRT/app/Scenes
 
-#LIBS += -L/mnt/D/Projects/MobileRT/build_debug/lib -lMobileRTd -lComponentsd
-LIBS += -L/mnt/D/Projects/MobileRT/build_release/lib -lMobileRT -lComponents
+#LIBS += -L/mnt/D/Projects/MobileRT/build_Debug/lib -lMobileRTd -lComponentsd
+LIBS += -L/mnt/D/Projects/MobileRT/build_Release/lib -lMobileRT -lComponents
 
 SOURCES += \
         /mnt/D/Projects/MobileRT/app/Scenes/Scenes.cpp \
