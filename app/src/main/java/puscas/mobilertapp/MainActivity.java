@@ -231,7 +231,8 @@ public final class MainActivity extends Activity {
     /**
      * Helper method which asks the user for permission to read the external SD card if it doesn't have yet.
      */
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN) private void checksStoragePermission() {
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    private void checksStoragePermission() {
         final int permissionStorageCode = 1;
         final int permissionCheckRead = ContextCompat.checkSelfPermission(
                 this,

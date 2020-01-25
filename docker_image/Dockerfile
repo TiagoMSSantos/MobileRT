@@ -6,7 +6,8 @@ ARG build_type=Release
 ARG build_dir=build_release
 
 ENV DISPLAY=:1
-ENV QT_ACCESSIBILITY=0
+ENV QT_ACCESSIBILITY=1
+ENV QT_GRAPHICSSYSTEM="native"
 
 RUN echo "build_dir = $build_dir"
 RUN echo "build_type = $build_type"
@@ -14,7 +15,7 @@ RUN echo "DISPLAY = $DISPLAY"
 
 # Install dependencies
 RUN apt-get update -y
-RUN apt-get install -y cmake git g++
+RUN apt-get install -y cmake git g++ vim
 RUN apt-get install -y libgtk2.0-dev
 RUN apt-get install -y libqt4-dev
 

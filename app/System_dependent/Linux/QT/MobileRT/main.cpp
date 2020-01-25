@@ -7,12 +7,20 @@
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
-    MainWindow w;
+    /*
+     * ${THREAD} ${SHADER} ${SCENE} ${SPP} ${SPL} ${WIDTH} ${HEIGHT} ${ACC} ${REP} \
+            ${OBJ} ${MTL} ${CAM} ${PRINT} ${ASYNC} ${SHOWIMAGE}
+     */
+//    const char* argv[] {"appName",
+//        "2", "2", "4", "1", "1", "800", "800", "3", "1",
+//        "/mnt/D/Projects/WavefrontOBJs/conference/conference.obj",
+//        "/mnt/D/Projects/WavefrontOBJs/conference/conference.mtl",
+//        "/mnt/D/Projects/WavefrontOBJs/conference/conference.cam",
+//        "true", "true", "true"};
+//    argc = 16;
 
     if (argc != 16) {
         LOG("Wrong number of arguments: ", argc, ", must be 16");
-        ::std::cin.ignore();
         ::std::exit(1);
     }
 
@@ -22,12 +30,12 @@ int main(int argc, char *argv[])
     const ::std::int32_t samplesPixel {static_cast<::std::int32_t> (strtol(argv[4], nullptr, 0))};
     const ::std::int32_t samplesLight {static_cast<::std::int32_t> (strtol(argv[5], nullptr, 0))};
 
-    const ::std::int32_t width_{
+    const ::std::int32_t width_ {
             ::MobileRT::roundDownToMultipleOf(static_cast<::std::int32_t> (strtol(argv[6], nullptr, 0)),
                                               static_cast<::std::int32_t> (::std::sqrt(
                                                       ::MobileRT::NumberOfTiles)))};
 
-    const ::std::int32_t height_{
+    const ::std::int32_t height_ {
             ::MobileRT::roundDownToMultipleOf(static_cast<::std::int32_t> (strtol(argv[7], nullptr, 0)),
                                               static_cast<::std::int32_t> (::std::sqrt(
                                                       ::MobileRT::NumberOfTiles)))};
@@ -61,7 +69,13 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    w.show();
+    QApplication application {argc, argv};
+    MainWindow mainWindow {};
 
-    return a.exec();
+//    mainWindow.draw(bitmap, width_, height_);
+    mainWindow.setImage(bitmap, width_, height_);
+
+    mainWindow.show();
+
+    return application.exec();
 }
