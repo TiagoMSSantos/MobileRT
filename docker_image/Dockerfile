@@ -5,6 +5,7 @@ FROM ubuntu:18.04
 RUN apt-get update -y && \
     apt-get install -y --no-install-recommends \
     cmake \
+    ca-certificates \
     git \
     g++ \
     vim \
@@ -33,7 +34,8 @@ RUN cd MobileRT && \
       -DCMAKE_CXX_COMPILER=g++ \
       -DCMAKE_BUILD_TYPE=${build_type} \
       ../app/ && \
-    make
+    make && \
+    find ./*/* -not -path bin -not -path lib ! -name AppInterface ! -name *.so -delete
 
 # Execute
 WORKDIR /MobileRT/build_${build_type}
