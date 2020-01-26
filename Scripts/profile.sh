@@ -25,7 +25,7 @@ BIN_DEBUG_PATH="${MOBILERT_PATH}/build_Debug/bin"
 BIN_RELEASE_PATH="${MOBILERT_PATH}/build_Release/bin"
 SCRIPTS_PATH="${MOBILERT_PATH}/Scripts"
 PLOT_SCRIPTS_PATH="${SCRIPTS_PATH}/Plot_Scripts"
-OBJS_PATH="${MOBILERT_PATH}/../WavefrontOBJs"
+OBJS_PATH="${MOBILERT_PATH}/WavefrontOBJs"
 
 MOBILERT_SRCS="${MOBILERT_PATH}/app"
 COMPONENTS_SRCS="${MOBILERT_PATH}/app"
@@ -149,7 +149,7 @@ SHADERS="1 2"
 SCENES="2"
 ACCELERATORS="1 2"
 
-THREAD="8"
+THREAD=$(nproc --all)
 SHADER="2"
 SCENE="4"
 ACC="3"
@@ -263,23 +263,27 @@ PARAM6="tidy"
 PARAM7="gtest"
 PARAM8="Debug"
 
-for P in ${@}
-do
-  case ${P} in
-    ${PARAM1}) profile; sleep 2s ;;
-    ${PARAM2}) . ${PLOT_SCRIPTS_PATH}/plot.sh 0;;
-    ${PARAM3}) . ${PLOT_SCRIPTS_PATH}/plot.sh 1;;
-    ${PARAM4}) awk -f "${PLOT_SCRIPTS_PATH}/parser_median.awk" "${PLOT_SCRIPTS_PATH}/test.dat"  ;;
-    ${PARAM5}) execute ;;
-    ${PARAM6}) clangtidy ;;
-    ${PARAM7}) ${BIN_DEBUG_PATH}/GoogleTestd ;;
-    ${PARAM8}) debug ;;
-    *) echo ""
-       echo "Wrong Parameter: ${P}"
-       echo "The valid parameters are:"
-       echo "${PARAM1} - Profile application and log the measured times."
-       echo "${PARAM2} - Draw a graph with GNU Plot."
-       break
-       ;;
-  esac
-done
+if [ $# -eq 0 ]; then
+    execute
+else
+    for P in ${@}
+    do
+      case ${P} in
+        ${PARAM1}) profile; sleep 2s ;;
+        ${PARAM2}) . ${PLOT_SCRIPTS_PATH}/plot.sh 0;;
+        ${PARAM3}) . ${PLOT_SCRIPTS_PATH}/plot.sh 1;;
+        ${PARAM4}) awk -f "${PLOT_SCRIPTS_PATH}/parser_median.awk" "${PLOT_SCRIPTS_PATH}/test.dat"  ;;
+        ${PARAM5}) execute ;;
+        ${PARAM6}) clangtidy ;;
+        ${PARAM7}) ${BIN_DEBUG_PATH}/GoogleTestd ;;
+        ${PARAM8}) debug ;;
+        *) echo ""
+           echo "Wrong Parameter: ${P}"
+           echo "The valid parameters are:"
+           echo "${PARAM1} - Profile application and log the measured times."
+           echo "${PARAM2} - Draw a graph with GNU Plot."
+           break
+           ;;
+      esac
+    done
+fi

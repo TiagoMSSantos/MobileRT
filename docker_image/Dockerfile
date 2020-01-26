@@ -2,14 +2,14 @@
 FROM ubuntu:18.04
 
 # Install dependencies
-#RUN apt-get update -y && \
-#    apt-get install -y --no-install-recommends \
+RUN apt-get update -y && \
+    apt-get install -y --no-install-recommends \
+    vim
 #    build-essential \
 #    cmake \
 #    ca-certificates \
 #    git \
 #    g++ \
-#    vim \
 #    libgtk2.0-dev \
 #    libqt4-dev
 
@@ -28,6 +28,7 @@ ENV DISPLAY=":1" \
 
 # Compile Ray Tracer
 #RUN cd MobileRT && \
+#    mv WavefrontOBJs ../
 #    mkdir -p build_${build_type} && \
 #    cd build_${build_type} && \
 #    cmake \

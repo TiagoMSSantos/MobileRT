@@ -21,7 +21,6 @@
 **/*.callgrind
 **/*.dat
 **/node_modules/**
-**/WavefrontOBJs/**
 **/*.aux
 **/*.lof
 **/*.log
@@ -64,4 +63,7 @@
 **/*.yml*
 **/*Plot_Graphs*
 **/*app
-!**/build_Release*
+**/WavefrontOBJs/**
+
+!build_Release*
+!WavefrontOBJs/conference*
