@@ -19,7 +19,6 @@
 **/*.data*
 **/*.py
 **/*.callgrind
-**/*.so
 **/*.dat
 **/node_modules/**
 **/WavefrontOBJs/**
@@ -64,3 +63,5 @@
 **/*makefile*
 **/*.yml*
 **/*Plot_Graphs*
+**/*app
+!**/build_Release*

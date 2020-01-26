@@ -13,7 +13,7 @@ echo "MOBILERT_PATH = ${MOBILERT_PATH}"
 if [ -z "${MOBILERT_PATH}" ]
 then
     PATH_TO_SEARCH="/"
-    FIND_MOBILERT=$(find ${PATH_TO_SEARCH} -iname "${FILE_TO_SEARCH}" 2> /dev/null | head -n 1)
+    FIND_MOBILERT=$(find ${PATH_TO_SEARCH} -iname "MobileRT" 2> /dev/null | head -n 1)
     MOBILERT_PATH="${FIND_MOBILERT//\/app\/"${FILE_TO_SEARCH}"/}"
 
     echo "PATH_TO_SEARCH2 = ${PATH_TO_SEARCH}"
@@ -35,8 +35,6 @@ SCENES_SRCS="${MOBILERT_PATH}/app/Scenes"
 THIRDPARTY_HEADERS="${MOBILERT_PATH}/app/third_party"
 GLM_HEADERS="${THIRDPARTY_HEADERS}/glm"
 STB_HEADERS="${THIRDPARTY_HEADERS}/stb"
-GTK_HEADERS="$(pkg-config --cflags gtk+-2.0)"
-GTK_HEADERS="${GTK_HEADERS//-I/-isystem}"
 
 if [ -z "${PLOT_GRAPHS}" ]; then
   PLOT_GRAPHS="Plot_Graphs"
@@ -125,9 +123,9 @@ MTL="${OBJS_PATH}/CornellBox/water.mtl"
 CAM="${OBJS_PATH}/CornellBox/water.cam"
 
 
-OBJ="${OBJS_PATH}/San_Miguel/san-miguel-low-poly.obj"
-MTL="${OBJS_PATH}/San_Miguel/san-miguel-low-poly.mtl"
-CAM="${OBJS_PATH}/San_Miguel/san-miguel-low-poly.cam"
+OBJ="${OBJS_PATH}/conference/conference.obj"
+MTL="${OBJS_PATH}/conference/conference.mtl"
+CAM="${OBJS_PATH}/conference/conference.cam"
 
 
 export ASAN_OPTIONS="suppressions=sanitizer_ignore.suppr:verbosity=1:strict_string_checks=1:detect_stack_use_after_return=1:check_initialization_order=1:strict_init_order=1:halt_on_error=0:detect_odr_violation=1"
@@ -192,6 +190,9 @@ function debug {
 
 
 function clangtidy {
+  GTK_HEADERS="$(pkg-config --cflags gtk+-2.0)"
+  GTK_HEADERS="${GTK_HEADERS//-I/-isystem}"
+
   clang-tidy \
 	-analyze-temporary-dtors \
 	-checks='*,-*llvm-header-guard*,-fuchsia-default-arguments,-fuchsia-overloaded-operator' \
