@@ -87,7 +87,7 @@
     GtkWidget *const image {gtk_image_new_from_pixbuf(pixbuff)};
     gtk_container_add(GTK_CONTAINER(window), image);
     gtk_widget_show_all(window);
-    g_timeout_add_seconds(1, static_cast<::std::int32_t (*)(
+    g_timeout_add(20, static_cast<::std::int32_t (*)(
         gpointer)> (
             [](gpointer userData) -> ::std::int32_t {
                 gtk_widget_queue_draw (reinterpret_cast<GtkWidget*> (userData));
