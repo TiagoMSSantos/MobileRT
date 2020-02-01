@@ -30,10 +30,15 @@ public:
     QAction *actionOpen;
     QAction *actionExit;
     QAction *actionRender;
+    QAction *actionConfig;
+    QAction *actionAbout;
+    QAction *actionStop;
     QWidget *centralWidget;
     QGraphicsView *graphicsView;
     QMenuBar *menuBar;
     QMenu *menuFile;
+    QMenu *menuEdit;
+    QMenu *menuHelp;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
 
@@ -48,6 +53,12 @@ public:
         actionExit->setObjectName(QString::fromUtf8("actionExit"));
         actionRender = new QAction(MainWindow);
         actionRender->setObjectName(QString::fromUtf8("actionRender"));
+        actionConfig = new QAction(MainWindow);
+        actionConfig->setObjectName(QString::fromUtf8("actionConfig"));
+        actionAbout = new QAction(MainWindow);
+        actionAbout->setObjectName(QString::fromUtf8("actionAbout"));
+        actionStop = new QAction(MainWindow);
+        actionStop->setObjectName(QString::fromUtf8("actionStop"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         graphicsView = new QGraphicsView(centralWidget);
@@ -59,6 +70,10 @@ public:
         menuBar->setGeometry(QRect(0, 0, 400, 26));
         menuFile = new QMenu(menuBar);
         menuFile->setObjectName(QString::fromUtf8("menuFile"));
+        menuEdit = new QMenu(menuBar);
+        menuEdit->setObjectName(QString::fromUtf8("menuEdit"));
+        menuHelp = new QMenu(menuBar);
+        menuHelp->setObjectName(QString::fromUtf8("menuHelp"));
         MainWindow->setMenuBar(menuBar);
         mainToolBar = new QToolBar(MainWindow);
         mainToolBar->setObjectName(QString::fromUtf8("mainToolBar"));
@@ -68,23 +83,37 @@ public:
         MainWindow->setStatusBar(statusBar);
 
         menuBar->addAction(menuFile->menuAction());
+        menuBar->addAction(menuEdit->menuAction());
+        menuBar->addAction(menuHelp->menuAction());
         menuFile->addAction(actionOpen);
-        menuFile->addAction(actionRender);
         menuFile->addAction(actionExit);
+        menuEdit->addAction(actionRender);
+        menuEdit->addAction(actionStop);
+        menuEdit->addAction(actionConfig);
+        menuHelp->addAction(actionAbout);
 
         retranslateUi(MainWindow);
-        QObject::connect(actionExit, SIGNAL(triggered()), MainWindow, SLOT(close()));
+        QObject::connect(actionExit, SIGNAL(triggered()), MainWindow, SLOT(exit_app()));
+        QObject::connect(actionOpen, SIGNAL(triggered()), MainWindow, SLOT(select_obj()));
+        QObject::connect(actionAbout, SIGNAL(triggered()), MainWindow, SLOT(about()));
+        QObject::connect(actionConfig, SIGNAL(triggered()), MainWindow, SLOT(select_config()));
+        QObject::connect(actionStop, SIGNAL(triggered()), MainWindow, SLOT(stop_render()));
 
         QMetaObject::connectSlotsByName(MainWindow);
     } // setupUi
 
     void retranslateUi(QMainWindow *MainWindow)
     {
-        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", 0, QApplication::UnicodeUTF8));
+        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MobileRT", 0, QApplication::UnicodeUTF8));
         actionOpen->setText(QApplication::translate("MainWindow", "Open", 0, QApplication::UnicodeUTF8));
         actionExit->setText(QApplication::translate("MainWindow", "Exit", 0, QApplication::UnicodeUTF8));
         actionRender->setText(QApplication::translate("MainWindow", "Render", 0, QApplication::UnicodeUTF8));
+        actionConfig->setText(QApplication::translate("MainWindow", "Config", 0, QApplication::UnicodeUTF8));
+        actionAbout->setText(QApplication::translate("MainWindow", "About", 0, QApplication::UnicodeUTF8));
+        actionStop->setText(QApplication::translate("MainWindow", "Stop", 0, QApplication::UnicodeUTF8));
         menuFile->setTitle(QApplication::translate("MainWindow", "File", 0, QApplication::UnicodeUTF8));
+        menuEdit->setTitle(QApplication::translate("MainWindow", "Edit", 0, QApplication::UnicodeUTF8));
+        menuHelp->setTitle(QApplication::translate("MainWindow", "Help", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
 };

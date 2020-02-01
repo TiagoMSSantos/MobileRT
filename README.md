@@ -2,18 +2,41 @@
 
 ![alt text](Example.gif)
 
-## Portable
-This Ray Tracer is compatible with Android and Linux.
-If you have docker installed, you can try it with ease by using following command to get the docker image and execute
- the container:
+## Run docker image
+This C++ Ray Tracer is compatible with Android and Linux.
+If you have docker installed, you can try it with ease by using the following
+commands to get the docker image and execute the container:
 ```bash
+docker pull ptpuscas/mobile_rt
 xhost +; docker run -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY -it ptpuscas/mobile_rt
 ```
 And you should see a the conference room model like the image above :)
 
-## Create docker image
+## Build docker image
 ```bash
 docker build -t ptpuscas/mobile_rt -f docker_image/Dockerfile --no-cache=false --build-arg build_type=Release .
+```
+
+## Compile Ray tracer
+To Compile this ray tracer, you need to install cmake and have a C++ compiler.
+You will also need the QT4 library and of course the git.
+```bash
+sudo apt-get update
+sudo apt-get install cmake libqt4-dev build-essential ca-certificates git g++ libgtk2.0-dev
+```
+Then, to compile this code, just create a build directory and compile it, like
+for example:
+```bash
+mkdir build_Release
+cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=Release ../app/
+```
+
+## Run Ray tracer
+To try this ray tracer just use the profile.sh script available in the Scripts
+directory. For example, you can just type inside the created build_Release
+directory, the following command:
+```bash
+../Scripts/profile.sh Release
 ```
 
 ## TODO

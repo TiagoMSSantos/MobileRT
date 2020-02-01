@@ -6,6 +6,9 @@
 #include <QTimer>
 #include <QFileDialog>
 #include "System_dependent/Linux/c_wrapper.h"
+#include "about.h"
+#include <chrono>
+#include <thread>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -13,7 +16,6 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     m_ui->setupUi(this);
 
-    this->setWindowTitle("MobileRT");
     m_graphicsPixmapItem = m_graphicsScene->addPixmap(m_pixmap);
     m_ui->graphicsView->setScene(m_graphicsScene);
     m_ui->graphicsView->show();
@@ -26,7 +28,8 @@ MainWindow::~MainWindow()
 
 void MainWindow::exit_app()
 {
-    ::QApplication::exit();
+    stop_render();
+    close();
 }
 
 void MainWindow::update_image()
@@ -38,23 +41,8 @@ void MainWindow::on_actionRender_triggered() {
     restart();
 }
 
-void MainWindow::on_actionOpen_triggered() {
-    QString fileName {
-        ::QFileDialog::getOpenFileName(this, tr("Select OBJ file"), "../", tr("OBJ file (*.obj)"))
-    };
-
-    fileName = fileName.section(".", 0, 0);
-
-    m_pathObj = fileName.toStdString() + ".obj";
-    m_pathMtl = fileName.toStdString() + ".mtl";
-    m_pathCam = fileName.toStdString() + ".cam";
-
-    ::std::cout << "m_pathObj: " << m_pathObj << ::std::endl;
-    ::std::cout << "m_pathMtl: " << m_pathMtl << ::std::endl;
-    ::std::cout << "m_pathCam: " << m_pathCam << ::std::endl;
-}
-
 void MainWindow::restart() {
+    stopRender();
     m_timer->stop();
     disconnect(m_timer, SIGNAL(timeout()));
 
@@ -121,4 +109,43 @@ void MainWindow::draw(const ::std::vector<::std::int32_t> &bitmap, const ::std::
     };
     m_pixmap = ::QPixmap::fromImage(image, ::Qt::NoFormatConversion);
     m_graphicsPixmapItem->setPixmap(m_pixmap);
+}
+
+void MainWindow::select_obj()
+{
+    ::QFileDialog dialog {};
+    dialog.setWindowTitle("Select OBJ file");
+    dialog.setDirectory("../");
+    dialog.setNameFilter("OBJ file (*.obj)");
+
+    if (dialog.exec()) {
+        const auto fileName {dialog.selectedFiles().at(0).section(".", 0, 0).toStdString()};
+        m_pathObj = fileName + ".obj";
+        m_pathMtl = fileName + ".mtl";
+        m_pathCam = fileName + ".cam";
+    }
+    ::std::cout << "m_pathObj: " << m_pathObj << ::std::endl;
+}
+
+void MainWindow::select_config()
+{
+    Config config {};
+    if (config.exec()) {
+        m_shader = config.getShader();
+        m_accelerator = config.getAccelerator();
+    }
+}
+
+void MainWindow::about()
+{
+    About about {};
+    about.exec();
+}
+
+void MainWindow::stop_render()
+{
+    stopRender();
+    m_timer->stop();
+    disconnect(m_timer, SIGNAL(timeout()));
+    ::std::this_thread::sleep_for(::std::chrono::seconds(1));
 }

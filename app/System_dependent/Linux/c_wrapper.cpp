@@ -23,6 +23,8 @@
 #include <cstring>
 #include <fstream>
 
+static ::std::unique_ptr<::MobileRT::Renderer> renderer_ {};
+
 static void
 work_thread(
     ::std::int32_t *const bitmap, const ::std::int32_t width,
@@ -56,8 +58,6 @@ work_thread(
             LOG("objFilePath = ", objFilePath);
             LOG("mtlFilePath = ", mtlFilePath);
             LOG("camFilePath = ", camFilePath);
-
-            ::std::unique_ptr<::MobileRT::Renderer> renderer_ {};
 
             const auto ratio {static_cast<float> (width) / height};
             ::MobileRT::Scene scene_ {};
@@ -232,6 +232,12 @@ work_thread(
         LOG("exception: ", exception.what());
     } catch (...) {
         LOG("Unknown error");
+    }
+}
+
+void stopRender() {
+    if (renderer_ != nullptr) {
+        renderer_->stopRender();
     }
 }
 

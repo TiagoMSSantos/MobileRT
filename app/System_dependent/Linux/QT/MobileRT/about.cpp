@@ -1,0 +1,23 @@
+#include "about.h"
+#include "ui_about.h"
+#include <QDesktopServices>
+#include <QUrl>
+#include <iostream>
+
+About::About(QWidget *parent) :
+    QDialog(parent),
+    ui(new Ui::About)
+{
+    ui->setupUi(this);
+}
+
+About::~About()
+{
+    delete ui;
+}
+
+void About::open_link(const QString &link)
+{
+    ::std::cout << "Opening link: " << link.toStdString() << ::std::endl;
+    QDesktopServices::openUrl(QUrl(link));
+}

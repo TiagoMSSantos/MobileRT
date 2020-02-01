@@ -5,6 +5,7 @@
 #include <QKeyEvent>
 #include <vector>
 #include <QGraphicsScene>
+#include "config.h"
 
 namespace Ui {
 class MainWindow;
@@ -53,10 +54,15 @@ private:
     ::std::string m_pathCam {};
 
 public slots:
-    void exit_app();
     void update_image();
-    void on_actionOpen_triggered();
     void on_actionRender_triggered();
+
+private slots:
+    void select_obj();
+    void select_config();
+    void exit_app();
+    void about();
+    void stop_render();
 };
 
 #endif // MAINWINDOW_H
