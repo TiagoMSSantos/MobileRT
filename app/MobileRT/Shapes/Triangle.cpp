@@ -5,7 +5,10 @@ using ::MobileRT::AABB;
 using ::MobileRT::Triangle;
 using ::MobileRT::Intersection;
 
-Triangle::Triangle(const ::glm::vec3 &pointA, const ::glm::vec3 &pointB, const ::glm::vec3 &pointC,
+Triangle::Triangle(
+        const ::glm::vec3 &pointA,
+        const ::glm::vec3 &pointB,
+        const ::glm::vec3 &pointC,
         const ::std::int32_t materialIndex
 ) :
     AC_ {pointC - pointA},
@@ -16,22 +19,23 @@ Triangle::Triangle(const ::glm::vec3 &pointA, const ::glm::vec3 &pointB, const :
     normalC_ {::glm::normalize(::glm::cross(AC_, AB_))},
     materialIndex_ {materialIndex} {
 
-    assert(::std::isfinite(this->normalA_[0]));
-    assert(::std::isfinite(this->normalA_[1]));
-    assert(::std::isfinite(this->normalA_[2]));
+    assert(!::glm::all(::glm::isnan(this->normalA_)));
+    assert(!::glm::all(::glm::isnan(this->normalB_)));
+    assert(!::glm::all(::glm::isnan(this->normalC_)));
 
-    assert(::std::isfinite(this->normalB_[0]));
-    assert(::std::isfinite(this->normalB_[1]));
-    assert(::std::isfinite(this->normalB_[2]));
-
-    assert(::std::isfinite(this->normalC_[0]));
-    assert(::std::isfinite(this->normalC_[1]));
-    assert(::std::isfinite(this->normalC_[2]));
+    assert(!::glm::all(::glm::isinf(this->normalA_)));
+    assert(!::glm::all(::glm::isinf(this->normalB_)));
+    assert(!::glm::all(::glm::isinf(this->normalC_)));
 }
 
-Triangle::Triangle(const ::glm::vec3 &pointA, const ::glm::vec3 &pointB, const ::glm::vec3 &pointC,
-                   const ::glm::vec3 &normalA, const ::glm::vec3 &normalB, const ::glm::vec3 &normalC,
-                   const ::std::int32_t materialIndex
+Triangle::Triangle(
+        const ::glm::vec3 &pointA,
+        const ::glm::vec3 &pointB,
+        const ::glm::vec3 &pointC,
+        const ::glm::vec3 &normalA,
+        const ::glm::vec3 &normalB,
+        const ::glm::vec3 &normalC,
+        const ::std::int32_t materialIndex
 ) :
     AC_ {pointC - pointA},
     AB_ {pointB - pointA},
@@ -41,22 +45,23 @@ Triangle::Triangle(const ::glm::vec3 &pointA, const ::glm::vec3 &pointB, const :
     normalC_ {::glm::normalize(normalC)},
     materialIndex_ {materialIndex} {
 
-    assert(::std::isfinite(this->normalA_[0]));
-    assert(::std::isfinite(this->normalA_[1]));
-    assert(::std::isfinite(this->normalA_[2]));
+    assert(!::glm::all(::glm::isnan(this->normalA_)));
+    assert(!::glm::all(::glm::isnan(this->normalB_)));
+    assert(!::glm::all(::glm::isnan(this->normalC_)));
 
-    assert(::std::isfinite(this->normalB_[0]));
-    assert(::std::isfinite(this->normalB_[1]));
-    assert(::std::isfinite(this->normalB_[2]));
-
-    assert(::std::isfinite(this->normalC_[0]));
-    assert(::std::isfinite(this->normalC_[1]));
-    assert(::std::isfinite(this->normalC_[2]));
+    assert(!::glm::all(::glm::isinf(this->normalA_)));
+    assert(!::glm::all(::glm::isinf(this->normalB_)));
+    assert(!::glm::all(::glm::isinf(this->normalC_)));
 }
 
-Triangle::Triangle(const ::glm::vec3 &pointA, const ::glm::vec3 &pointB, const ::glm::vec3 &pointC,
-    const ::glm::vec2 &texCoordA, const ::glm::vec2 &texCoordB, const ::glm::vec2 &texCoordC,
-    const ::std::int32_t materialIndex
+Triangle::Triangle(
+        const ::glm::vec3 &pointA,
+        const ::glm::vec3 &pointB,
+        const ::glm::vec3 &pointC,
+        const ::glm::vec2 &texCoordA,
+        const ::glm::vec2 &texCoordB,
+        const ::glm::vec2 &texCoordC,
+        const ::std::int32_t materialIndex
 ) :
     AC_ {pointC - pointA},
     AB_ {pointB - pointA},
@@ -69,23 +74,26 @@ Triangle::Triangle(const ::glm::vec3 &pointA, const ::glm::vec3 &pointB, const :
     texCoordC_ {texCoordC},
     materialIndex_ {materialIndex} {
 
-    assert(::std::isfinite(this->normalA_[0]));
-    assert(::std::isfinite(this->normalA_[1]));
-    assert(::std::isfinite(this->normalA_[2]));
+    assert(!::glm::all(::glm::isnan(this->normalA_)));
+    assert(!::glm::all(::glm::isnan(this->normalB_)));
+    assert(!::glm::all(::glm::isnan(this->normalC_)));
 
-    assert(::std::isfinite(this->normalB_[0]));
-    assert(::std::isfinite(this->normalB_[1]));
-    assert(::std::isfinite(this->normalB_[2]));
-
-    assert(::std::isfinite(this->normalC_[0]));
-    assert(::std::isfinite(this->normalC_[1]));
-    assert(::std::isfinite(this->normalC_[2]));
+    assert(!::glm::all(::glm::isinf(this->normalA_)));
+    assert(!::glm::all(::glm::isinf(this->normalB_)));
+    assert(!::glm::all(::glm::isinf(this->normalC_)));
 }
 
-Triangle::Triangle(const ::glm::vec3 &pointA, const ::glm::vec3 &pointB, const ::glm::vec3 &pointC,
-                   const ::glm::vec3 &normalA, const ::glm::vec3 &normalB, const ::glm::vec3 &normalC,
-                   const ::glm::vec2 &texCoordA, const ::glm::vec2 &texCoordB, const ::glm::vec2 &texCoordC,
-                   const ::std::int32_t materialIndex
+Triangle::Triangle(
+        const ::glm::vec3 &pointA,
+        const ::glm::vec3 &pointB,
+        const ::glm::vec3 &pointC,
+        const ::glm::vec3 &normalA,
+        const ::glm::vec3 &normalB,
+        const ::glm::vec3 &normalC,
+        const ::glm::vec2 &texCoordA,
+        const ::glm::vec2 &texCoordB,
+        const ::glm::vec2 &texCoordC,
+        const ::std::int32_t materialIndex
 ) :
     AC_ {pointC - pointA},
     AB_ {pointB - pointA},
@@ -98,17 +106,13 @@ Triangle::Triangle(const ::glm::vec3 &pointA, const ::glm::vec3 &pointB, const :
     texCoordC_ {texCoordC},
     materialIndex_ {materialIndex} {
 
-    assert(::std::isfinite(this->normalA_[0]));
-    assert(::std::isfinite(this->normalA_[1]));
-    assert(::std::isfinite(this->normalA_[2]));
+    assert(!::glm::all(::glm::isnan(this->normalA_)));
+    assert(!::glm::all(::glm::isnan(this->normalB_)));
+    assert(!::glm::all(::glm::isnan(this->normalC_)));
 
-    assert(::std::isfinite(this->normalB_[0]));
-    assert(::std::isfinite(this->normalB_[1]));
-    assert(::std::isfinite(this->normalB_[2]));
-
-    assert(::std::isfinite(this->normalC_[0]));
-    assert(::std::isfinite(this->normalC_[1]));
-    assert(::std::isfinite(this->normalC_[2]));
+    assert(!::glm::all(::glm::isinf(this->normalA_)));
+    assert(!::glm::all(::glm::isinf(this->normalB_)));
+    assert(!::glm::all(::glm::isinf(this->normalC_)));
 }
 
 Intersection Triangle::intersect(const Intersection &intersection, const Ray &ray) const {

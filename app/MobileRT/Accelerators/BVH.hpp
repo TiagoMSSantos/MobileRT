@@ -23,7 +23,7 @@ namespace MobileRT {
                 ::std::int32_t oldIndex_ {};
 
                 explicit BuildNode(AABB &&box, const ::std::int32_t oldIndex) :
-                    box_ {::std::move(box)},
+                    box_ {box},
                     centroid_ {box_.getCentroid()},
                     oldIndex_ {oldIndex} {
 

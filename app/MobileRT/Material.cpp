@@ -6,13 +6,13 @@ using ::MobileRT::Material;
 Material::Material(
     const ::glm::vec3 &kD, const ::glm::vec3 &kS,
     const ::glm::vec3 &kT, const float refractiveIndice,
-    const ::glm::vec3 &lE, const Texture &texture) :
+    const ::glm::vec3 &lE, Texture texture) :
     Le_ {lE},
     Kd_ {kD},
     Ks_ {kS},
     Kt_ {kT},
     refractiveIndice_ {refractiveIndice},
-    texture_ {texture} {
+    texture_ {::std::move(texture)} {
 }
 
 bool Material::operator==(const Material &material) {

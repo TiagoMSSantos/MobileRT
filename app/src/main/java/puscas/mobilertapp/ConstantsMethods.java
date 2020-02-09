@@ -31,7 +31,7 @@ final class ConstantsMethods {
     static final String ON_DESTROY = "onDestroy";
 
     /**
-     * The name of the {@link MainActivity#onDetachedFromWindow()} and {@link DrawView#onDetachedFromWindow()} method.
+     * The name of the {@link MainActivity#onDetachedFromWindow()} method.
      */
     static final String ON_DETACHED_FROM_WINDOW = "onDetachedFromWindow";
 

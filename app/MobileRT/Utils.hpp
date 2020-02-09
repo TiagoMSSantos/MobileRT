@@ -12,7 +12,7 @@
 #include <vector>
 
 namespace MobileRT {
-#define LOG(...) {::MobileRT::log(::MobileRT::getFileName(__FILE__), ":", __LINE__, ": ", __VA_ARGS__);}
+#define LOG(...) ::MobileRT::log(::MobileRT::getFileName(__FILE__), ":", __LINE__, ": ", __VA_ARGS__)
 
 #ifndef LOG
 #define LOG(...)

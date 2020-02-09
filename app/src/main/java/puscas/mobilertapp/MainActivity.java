@@ -71,6 +71,11 @@ public final class MainActivity extends Activity {
      */
     private static final Logger LOGGER = Logger.getLogger(MainActivity.class.getName());
 
+    /**
+     * The latest version of Android API which needs the old method of getting the number of CPU cores.
+     */
+    private static final int OLD_API_GET_CORES = 17;
+
     static {
         try {
             System.loadLibrary("MobileRT");
@@ -144,7 +149,8 @@ public final class MainActivity extends Activity {
     private native int RTResize(final int size);
 
     /**
-     * Helper method that gets the number of CPU cores in the Android device for devices with the SDK API version < 17.
+     * Helper method that gets the number of CPU cores in the Android device for devices with the SDK API version <
+     * {@link #OLD_API_GET_CORES}.
      *
      * @return The number of CPU cores.
      */
@@ -169,7 +175,7 @@ public final class MainActivity extends Activity {
      * @return The number of CPU cores.
      */
     private static int getNumOfCores() {
-        return (Build.VERSION.SDK_INT < 17)
+        return (Build.VERSION.SDK_INT < OLD_API_GET_CORES)
                 ? MainActivity.getNumCoresOldPhones()
                 : Runtime.getRuntime().availableProcessors();
     }
@@ -407,7 +413,7 @@ public final class MainActivity extends Activity {
         if (supportES2 && MainActivity.checkGL20Support()) {
             this.drawView.setVisibility(View.INVISIBLE);
             this.drawView.setEGLContextClientVersion(2);
-            this.drawView.setEGLConfigChooser(8, 8, 8, 8, 24, 0);
+            this.drawView.setEGLConfigChooser(8, 8, 8, 8, 3 * 8, 0);
 
             final MainRenderer renderer = this.drawView.getRenderer();
             final Bitmap bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
@@ -456,16 +462,21 @@ public final class MainActivity extends Activity {
         this.pickerShader.setDisplayedValues(shaders);
 
         final int maxSamplesPixel = 99;
-        final String[] samplesPixel = new String[maxSamplesPixel];
-        for (int i = 0; i < maxSamplesPixel; i++) {
-            samplesPixel[i] = Integer.toString((i + 1) * (i + 1));
+        try {
+            final String[] samplesPixel = new String[maxSamplesPixel];
+            for (int i = 0; i < maxSamplesPixel; i++) {
+                samplesPixel[i] = Integer.toString((i + 1) * (i + 1));
+            }
+            this.pickerSamplesPixel.setMinValue(1);
+            this.pickerSamplesPixel.setMaxValue(maxSamplesPixel);
+            this.pickerSamplesPixel.setWrapSelectorWheel(true);
+            this.pickerSamplesPixel.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+            this.pickerSamplesPixel.setValue(defaultPickerSamplesPixel);
+            this.pickerSamplesPixel.setDisplayedValues(samplesPixel);
+        } catch (final OutOfMemoryError ex) {
+            LOGGER.severe(ex.getMessage());
+            throw ex;
         }
-        this.pickerSamplesPixel.setMinValue(1);
-        this.pickerSamplesPixel.setMaxValue(maxSamplesPixel);
-        this.pickerSamplesPixel.setWrapSelectorWheel(true);
-        this.pickerSamplesPixel.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-        this.pickerSamplesPixel.setValue(defaultPickerSamplesPixel);
-        this.pickerSamplesPixel.setDisplayedValues(samplesPixel);
 
         final int maxSamplesLight = 100;
         final String[] samplesLight;
@@ -508,9 +519,11 @@ public final class MainActivity extends Activity {
             LOGGER.severe(ex.getMessage());
             throw ex;
         }
-        resolutions[0] = String.format(Locale.US, "%.2f", 0.05F) + 'x';
+        final float lowestResolution = 0.05F;
+        resolutions[0] = String.format(Locale.US, "%.2f", lowestResolution) + 'x';
+        final float correction = 0.1F;
         for (int i = 2; i < maxSizes; i++) {
-            final float value = ((float) i + 1.0F) * 0.1F;
+            final float value = ((float) i + 1.0F) * correction;
             resolutions[i - 1] = String.format(Locale.US, "%.2f", value * value) + 'x';
         }
         resolutions[maxSizes - 1] = String.format(Locale.US, "%.2f", 1.0F) + 'x';
@@ -535,13 +548,13 @@ public final class MainActivity extends Activity {
             final float widthView = (float) this.drawView.getWidth();
             final float heightView = (float) this.drawView.getHeight();
 
-            float size = 0.05F;
+            float size = lowestResolution;
             int width = RTResize(Math.round(widthView * size));
             int height = RTResize(Math.round(heightView * size));
             resolutions[0] = Integer.toString(width)+ 'x' + height;
 
             for (int i = 2; i < maxSizes; i++) {
-                size = ((float) i + 1.0F) * 0.1F;
+                size = ((float) i + 1.0F) * correction;
                 width = RTResize(Math.round(widthView * size * size));
                 height = RTResize(Math.round(heightView * size * size));
                 resolutions[i - 1] = String.valueOf(width) + 'x' + height;
@@ -668,7 +681,9 @@ public final class MainActivity extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == Activity.RESULT_OK && requestCode == OPEN_FILE_REQUEST_CODE) {
+            assert data != null;
             final Uri uri = data.getData();
+            assert uri != null;
             String filePath = uri.getPath();
             if (filePath != null) {
                 final String sdCardDir = Environment.getExternalStorageDirectory().getPath();

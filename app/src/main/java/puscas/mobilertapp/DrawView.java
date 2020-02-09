@@ -301,7 +301,7 @@ public final class DrawView extends GLSurfaceView {
     }
 
     @Override
-    public void onDetachedFromWindow() {
+    protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         LOGGER.info(ON_DETACHED_FROM_WINDOW);
     }

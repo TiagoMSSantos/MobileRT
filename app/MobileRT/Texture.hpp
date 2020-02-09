@@ -2,9 +2,8 @@
 #define MOBILERT_TEXTURE_HPP
 
 #include <glm/glm.hpp>
-#include <vector>
 #include <memory>
-
+#include <vector>
 
 namespace MobileRT {
     class Texture {
@@ -17,13 +16,6 @@ namespace MobileRT {
 
         public:
             explicit Texture() = default;
-
-            explicit Texture(
-                ::std::uint8_t *data,
-                ::std::int32_t width,
-                ::std::int32_t height,
-                ::std::int32_t channels
-            );
 
             explicit Texture(
                 ::std::shared_ptr<::std::uint8_t> pointer,

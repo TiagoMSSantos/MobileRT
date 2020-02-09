@@ -237,8 +237,9 @@ final class RenderTask extends AsyncTask<Void, Void, Void> {
     private void updateFps() {
         this.frame++;
         final float time = (float) SystemClock.elapsedRealtime();
-        if ((time - this.timebase) > 1000.0F) {
-            this.fps = ((float) this.frame * 1000.0F) / (time - this.timebase);
+        final float oneSecond = 1000.0F;
+        if ((time - this.timebase) > oneSecond) {
+            this.fps = ((float) this.frame * oneSecond) / (time - this.timebase);
             this.timebase = time;
             this.frame = 0;
         }
@@ -249,8 +250,8 @@ final class RenderTask extends AsyncTask<Void, Void, Void> {
      */
     private void printText() {
         final String aux = this.fpsT + this.fpsRenderT + this.resolutionT + this.threadsT + this.samplesPixelT +
-                this.samplesLightT + this.sampleT + '\n'
-                + this.stageT + this.allocatedT + this.timeFrameT + this.timeT + this.primitivesT;
+                this.samplesLightT + this.sampleT + System.getProperty("line.separator") +
+                this.stageT + this.allocatedT + this.timeFrameT + this.timeT + this.primitivesT;
         this.textView.get().setText(aux);
     }
 

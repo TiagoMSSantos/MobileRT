@@ -7,24 +7,12 @@
 using ::MobileRT::Texture;
 
 Texture::Texture(
-    ::std::uint8_t *data,
-    ::std::int32_t width,
-    ::std::int32_t height,
-    ::std::int32_t channels
-) :
-    image_ {data},
-    width_ {width},
-    height_ {height},
-    channels_ {channels} {
-}
-
-Texture::Texture(
         ::std::shared_ptr<::std::uint8_t> pointer,
         ::std::int32_t width,
         ::std::int32_t height,
         ::std::int32_t channels
 ) :
-        pointer_ {pointer},
+        pointer_ {::std::move(pointer)},
         image_ {pointer_.get()},
         width_ {width},
         height_ {height},
@@ -68,10 +56,10 @@ bool Texture::operator==(const Texture &texture) const {
     const auto sameHeight {this->height_ == texture.height_};
     const auto sameChannels {this->channels_ == texture.channels_};
     const auto samePointer {this->image_ == texture.image_};
-    const auto same {sameWidth & sameHeight & sameChannels & samePointer};
+    const auto same {sameWidth && sameHeight && sameChannels && samePointer};
     return same;
 }
 
 bool Texture::isValid() const {
-    return this->width_ > 0 && this->height_> 0 && this->channels_ > 0 && this->image_;
+    return this->width_ > 0 && this->height_> 0 && this->channels_ > 0 && this->image_ != nullptr;
 }

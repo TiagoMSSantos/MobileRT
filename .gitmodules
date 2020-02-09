@@ -1,7 +1,7 @@
 [submodule "third_party/glm"]
 	path = app/third_party/glm
 	url = https://github.com/g-truc/glm
-	branch = master
+	branch = 0.9.9.7
 
 [submodule "third_party/tinyobjloader"]
 	path = app/third_party/tinyobjloader
@@ -11,7 +11,7 @@
 [submodule "third_party/googletest"]
 	path = app/third_party/googletest
 	url = https://github.com/google/googletest
-	branch = master
+	branch = release-1.10.0
 
 [submodule "third_party/stb"]
     path = app/third_party/stb
@@ -21,4 +21,4 @@
 [submodule "third_party/boost"]
     path = app/third_party/boost
     url = https://github.com/boostorg/boost
-    branch = master
+    branch = boost-1.72.0

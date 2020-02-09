@@ -117,7 +117,7 @@ bool Shader::rayTrace(::glm::vec3 *rgb, const Ray &ray) {
             const auto &texture {material.texture_};
             intersection.material_->Kd_ = texture.loadColor(texCoords);
         }
-    };
+    }
     return intersection.length_ < lastDist && shade(rgb, intersection, ray);
 }
 

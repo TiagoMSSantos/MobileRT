@@ -46,6 +46,11 @@ final class MainRenderer implements GLSurfaceView.Renderer {
     private static final Logger LOGGER = Logger.getLogger(MainRenderer.class.getName());
 
     /**
+     * The default update interval in milliseconds of {@link RenderTask}.
+     */
+    private static final long DEFAULT_UPDATE_INTERVAL = 250L;
+
+    /**
      * The vertices coordinates for the texture where the Ray Tracer {@link Bitmap} will be applied.
      */
     private final float[] verticesTexture = {
@@ -391,7 +396,11 @@ final class MainRenderer implements GLSurfaceView.Renderer {
      * @param async      If {@code true} let the Ray Tracer engine render the scene asynchronously or otherwise
      *                   synchronously.
      */
-    private native void RTRenderIntoBitmap(final Bitmap image, final int numThreads, final boolean async) throws Exception;
+    private native void RTRenderIntoBitmap(
+            final Bitmap image,
+            final int numThreads,
+            final boolean async
+    ) throws Exception;
 
     /**
      * Creates a native array with all the positions of triangles in the scene.
@@ -531,11 +540,11 @@ final class MainRenderer implements GLSurfaceView.Renderer {
             id++;
 
             final int red = pixel & 0xff;
-            final int green = (pixel >> 8) & 0xff;
-            final int blue = (pixel >> 16) & 0xff;
-            final int alpha = (pixel >> 24) & 0xff;
-            final int newPixel = (red << 16) | (green << 8) | blue;
-            arrayBytesNewBitmap[newPixelId] = alpha << 24 | newPixel;
+            final int green = (pixel >> (1 * 8)) & 0xff;
+            final int blue = (pixel >> (2 * 8)) & 0xff;
+            final int alpha = (pixel >> ((3 * 8))) & 0xff;
+            final int newPixel = (red << (2 * 8)) | (green << (1 * 8)) | blue;
+            arrayBytesNewBitmap[newPixelId] = alpha << (3 * 8) | newPixel;
         }
 
         final Bitmap bitmapAux = Bitmap.createBitmap(arrayBytesNewBitmap, this.viewWidth, this.viewHeight,
@@ -720,8 +729,9 @@ final class MainRenderer implements GLSurfaceView.Renderer {
         }
 
         if (sizeH > 0.0F && sizeV > 0.0F) {
-            Matrix.orthoM(projectionMatrix, 0, -sizeH / 2.0F, sizeH / 2.0F,
-                    -sizeV / 2.0F, sizeV / 2.0F, zNear, zFar);
+            final float correction = 2.0F;
+            Matrix.orthoM(projectionMatrix, 0, -sizeH / correction, sizeH / correction,
+                    -sizeV / correction, sizeV / correction, zNear, zFar);
         }
 
         Matrix.setLookAtM(viewMatrix, 0,
@@ -890,7 +900,7 @@ final class MainRenderer implements GLSurfaceView.Renderer {
                     this::RTFinishRender, this.textView, this.buttonRender);
 
             this.renderTask = renderTaskBuilder
-                    .withUpdateInterval(250L)
+                    .withUpdateInterval(DEFAULT_UPDATE_INTERVAL)
                     .withWidth(this.width)
                     .withHeight(this.height)
                     .withNumThreads(this.numThreads)
