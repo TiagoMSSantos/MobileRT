@@ -1,16 +1,17 @@
-# Ray Tracer for Android
+# Mobile Ray Tracer (MobileRT)<br/>
+# a portable Ray Tracing (RT) library for Android
 
 ![alt text](Example.gif)
 
 ## Run docker image
-This C++ Ray Tracer is compatible with Android and Linux.
-If you have docker installed, you can try it with ease by using the following
-commands to get the docker image and execute the container:
+This C++ Ray Tracer is compatible with Android and Linux.<br/>
+For Linux, if you have docker installed, you can try it with ease by using the following
+commands to get the docker image and execute the container:<br/>
 ```bash
 docker pull ptpuscas/mobile_rt
 xhost +; docker run -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY -it ptpuscas/mobile_rt
 ```
-And you should see a the conference room model like the image above :)
+And you should see a the conference room model like the image above :)<br/>
 
 ## Build docker image
 ```bash
@@ -19,7 +20,7 @@ docker build -t ptpuscas/mobile_rt -f docker_image/Dockerfile --no-cache=false -
 
 ## Compile Ray tracer
 To Compile this ray tracer, you need to install cmake and have a C++ compiler.
-You will also need the QT4 library and of course the git.
+You will also need the QT4 library and of course the git.<br/>
 ```bash
 sudo apt-get update
 sudo apt-get install cmake libqt4-dev build-essential ca-certificates git g++ libgtk2.0-dev
@@ -34,10 +35,13 @@ cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=Re
 ## Run Ray tracer
 To try this ray tracer just use the profile.sh script available in the Scripts
 directory. For example, you can just type inside the created build_Release
-directory, the following command:
+directory, the following command:<br/>
 ```bash
 ../Scripts/profile.sh Release
 ```
+
+## Android
+To try this ray tracer for Android just download the [APK](https://github.com/TiagoMSSantos/MobileRT/blob/master/app/release/app-release.apk?raw=true) file available in the repository.
 
 ## TODO
 
