@@ -17,9 +17,9 @@ android {
         minSdkVersion 16
         targetSdkVersion 29
         setTestInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
-        testInstrumentationRunnerArgument 'runnerBuilder', 'de.mannodermaus.junit5.AndroidJUnit5Builder'
+        testInstrumentationRunnerArguments clearPackageData: 'true'
         ndk {
-            abiFilters 'x86', 'x86_64', 'armeabi-v7a', 'arm64-v8a'
+            abiFilters 'x86', 'armeabi-v7a', 'x86_64', 'arm64-v8a'
         }
         externalNativeBuild {
             cmake {
@@ -89,16 +89,13 @@ dependencies {
     releaseImplementation project(path:':app', configuration:'release')
 
     implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'com.google.guava:guava:28.1-jre'
+    implementation 'com.google.guava:guava:28.2-jre'
 
-    testImplementation 'junit:junit:4.12'
-    testImplementation 'org.mockito:mockito-core:3.2.0'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.2'
-
-    androidTestImplementation 'junit:junit:4.12'
     androidTestImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.2'
+    androidTestImplementation 'junit:junit:4.13'
+    androidTestImplementation "com.google.truth:truth:1.0.1"
     androidTestImplementation 'org.mockito:mockito-core:3.2.0'
-    androidTestImplementation 'de.mannodermaus.junit5:android-test-core:1.0.0'
+    androidTestImplementation 'org.mockito:mockito-android:2.23.4'
 
     androidTestImplementation 'androidx.test:core:1.2.0'
     androidTestImplementation 'androidx.test:runner:1.2.0'
@@ -112,6 +109,4 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-web:3.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-idling-resource:3.2.0'
     androidTestImplementation 'androidx.test.espresso.idling:idling-concurrent:3.2.0'
-
-    androidTestRuntimeOnly 'de.mannodermaus.junit5:android-test-runner:1.0.0'
 }

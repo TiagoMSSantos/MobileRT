@@ -1,9 +1,7 @@
 package puscas.mobilertapp;
 
 import android.widget.Button;
-
 import org.junit.jupiter.api.Assertions;
-
 import java.util.logging.Logger;
 
 import static puscas.mobilertapp.ConstantsUI.SDCARD_EMULATOR_NAME;

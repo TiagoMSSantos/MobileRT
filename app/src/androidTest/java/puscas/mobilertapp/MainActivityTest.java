@@ -14,13 +14,13 @@ import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.rule.ActivityTestRule;
 
 import org.hamcrest.Matcher;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.List;
@@ -41,7 +41,7 @@ import static puscas.mobilertapp.Constants.STOP;
 import static puscas.mobilertapp.Constants.TEAR_DOWN;
 import static puscas.mobilertapp.Constants.TEAR_DOWN_ALL;
 
-final class MainActivityTest {
+public final class MainActivityTest {
 
     /**
      * The {@link Logger} for this class.
@@ -93,16 +93,16 @@ final class MainActivityTest {
     /**
      * A setup method which is called first.
      */
-    @BeforeAll
-    static void setUpAll() {
+    @BeforeClass
+    public static void setUpAll() {
         LOGGER.info(SET_UP_ALL);
     }
 
     /**
      * A tear down method which is called last.
      */
-    @AfterAll
-    static void tearDownAll() {
+    @AfterClass
+    public static void tearDownAll() {
         LOGGER.info(TEAR_DOWN_ALL);
     }
 
@@ -212,16 +212,16 @@ final class MainActivityTest {
     /**
      * Setup method called before each test.
      */
-    @BeforeEach
-    void setUp() {
+    @Before
+    public void setUp() {
         LOGGER.info(SET_UP);
     }
 
     /**
      * Tear down method called after each test.
      */
-    @AfterEach
-    void tearDown() {
+    @After
+    public void tearDown() {
         LOGGER.info(TEAR_DOWN);
     }
 
@@ -229,7 +229,7 @@ final class MainActivityTest {
      * Tests that a file in the Android device exists.
      */
     @Test
-    void testFilesExist() {
+    public final void testFilesExist() {
         final List<String> paths = ImmutableList.<String>builder().add(
                 OBJ_FILE_CONFERENCE,
                 OBJ_FILE_TEAPOT
@@ -244,7 +244,7 @@ final class MainActivityTest {
      * Tests that a file in the Android device is readable.
      */
     @Test
-    void testFileReads() {
+    public final void testFileReads() {
         final List<String> paths = ImmutableList.<String>builder().add(
                 OBJ_FILE_CONFERENCE,
                 OBJ_FILE_TEAPOT
@@ -260,7 +260,7 @@ final class MainActivityTest {
      * Tests that a file does not exist in the Android device.
      */
     @Test
-    final void testFilesNotExist() {
+    public final void testFilesNotExist() {
         final List<String> paths = ImmutableList.<String>builder().add(
                 EMPTY_FILE,
                 OBJ_FILE_NOT_EXISTS
@@ -276,8 +276,8 @@ final class MainActivityTest {
      * Tests changing all the {@link NumberPicker} and clicking the render {@link Button} many times.
      */
     @Test
-    void testUI() {
-        this.mainActivityActivityTestRule.launchActivity(null);
+    public final void testUI() {
+        this.mainActivityActivityTestRule.getActivity();
 
         Espresso.onView(ViewMatchers.withId(R.id.renderButton))
                 .check((view, exception) -> {

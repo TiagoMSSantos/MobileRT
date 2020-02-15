@@ -73,14 +73,14 @@ set( QT_HEADERS "${QT_HEADERS}"
 set( COMMON_FLAGS "${COMMON_FLAGS}"
 		-std=c++11 -pedantic-errors -pedantic -Wpedantic -Wall -Wextra -Wfatal-errors -Werror )
 set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-c++98-compat-pedantic -Wno-padded )
-set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-exit-time-destructors -fopenmp )
+set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-exit-time-destructors )
 
 set( COMMON_FLAGS_DEBUG -O0 -g3 -fno-optimize-sibling-calls -fno-omit-frame-pointer )
 
 set( COMMON_FLAGS_RELEASE "${COMMON_FLAGS_RELEASE}" -O3 -DNDEBUG -ffunction-sections -fdata-sections )
 
 # Set common linker flags
-set( COMMON_LINKER_FLAGS -Wl,-gc-sections -O3 -discard-all -fno-rtti -fopenmp )
+set( COMMON_LINKER_FLAGS -Wl,-gc-sections -O3 -discard-all -fno-rtti )
 
 set( COMMON_LINKER_FLAGS_DEBUG  )
 
@@ -127,7 +127,7 @@ target_include_directories( ${PROJECT_NAME} PUBLIC "${MOBILE_APP_SOURCES}" )
 target_include_directories( ${PROJECT_NAME} SYSTEM PUBLIC "${GLM_HEADERS}" )
 
 target_compile_options( ${PROJECT_NAME} PRIVATE ${COMMON_FLAGS} -Wno-global-constructors
-		-Wno-zero-as-null-pointer-constant )
+		-Wno-zero-as-null-pointer-constant -Wno-redundant-parens )
 target_compile_options( ${PROJECT_NAME} PRIVATE $<$<CONFIG:DEBUG>:${COMMON_FLAGS_DEBUG}> )
 target_compile_options( ${PROJECT_NAME} PRIVATE $<$<CONFIG:RELEASE>:${COMMON_FLAGS_RELEASE}> )
 
