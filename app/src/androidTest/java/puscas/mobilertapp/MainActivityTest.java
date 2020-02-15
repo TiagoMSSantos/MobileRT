@@ -230,6 +230,7 @@ public final class MainActivityTest {
      */
     @Test
     public final void testFilesExist() {
+        LOGGER.info("testFilesExist");
         final List<String> paths = ImmutableList.<String>builder().add(
                 OBJ_FILE_CONFERENCE,
                 OBJ_FILE_TEAPOT
@@ -245,6 +246,7 @@ public final class MainActivityTest {
      */
     @Test
     public final void testFileReads() {
+        LOGGER.info("testFileReads");
         final List<String> paths = ImmutableList.<String>builder().add(
                 OBJ_FILE_CONFERENCE,
                 OBJ_FILE_TEAPOT
@@ -261,6 +263,7 @@ public final class MainActivityTest {
      */
     @Test
     public final void testFilesNotExist() {
+        LOGGER.info("testFilesNotExist");
         final List<String> paths = ImmutableList.<String>builder().add(
                 EMPTY_FILE,
                 OBJ_FILE_NOT_EXISTS
@@ -277,6 +280,7 @@ public final class MainActivityTest {
      */
     @Test
     public final void testUI() {
+        LOGGER.info("testUI");
         this.mainActivityActivityTestRule.getActivity();
 
         Espresso.onView(ViewMatchers.withId(R.id.renderButton))
@@ -286,7 +290,7 @@ public final class MainActivityTest {
                 });
 
         testRenderButton(4);
-        testRenderButton(300);
+        testRenderButton(2 * 100);
 
         testPickerNumbers();
         testPreviewCheckBox();

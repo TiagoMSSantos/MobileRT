@@ -12,7 +12,6 @@ android {
     }
     compileSdkVersion 29
     buildToolsVersion '29.0.3'
-    publishNonDefault true
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 29
@@ -56,10 +55,10 @@ android {
             setVersionNameSuffix 'r'
             setRenderscriptDebuggable false
             renderscriptOptimLevel 3
-            setMinifyEnabled true
+            setMinifyEnabled false
             multiDexEnabled false
             setSigningConfig signingConfigs.Puscas
-            setShrinkResources true
+            setShrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -75,8 +74,7 @@ android {
         }
         animationsDisabled = true
     }
-
-    testBuildType 'debug'
+//    setTestBuildType 'release'
 }
 
 configurations {
@@ -92,7 +90,7 @@ dependencies {
     implementation 'com.google.guava:guava:28.2-jre'
 
     androidTestImplementation 'net.sourceforge.streamsupport:streamsupport:1.7.1'
-    androidTestImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.2'
+    androidTestImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
     androidTestImplementation 'junit:junit:4.13'
     androidTestImplementation "com.google.truth:truth:1.0.1"
     androidTestImplementation 'org.mockito:mockito-core:3.2.0'

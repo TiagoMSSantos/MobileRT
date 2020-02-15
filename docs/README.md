@@ -9,7 +9,7 @@ For Linux, if you have docker installed, you can try it with ease by using the f
 commands to get the docker image and execute the container:<br/>
 ```bash
 docker pull ptpuscas/mobile_rt
-xhost +; docker run -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY -it ptpuscas/mobile_rt
+xhost +; docker run -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=${DISPLAY} -it ptpuscas/mobile_rt
 ```
 And you should see a the conference room model like the image above :)<br/>
 
@@ -41,7 +41,9 @@ directory, the following command:<br/>
 ```
 
 ## Android
-To try this ray tracer for Android just download the [APK](https://github.com/TiagoMSSantos/MobileRT/blob/master/app/release/app-release.apk?raw=true) file available in the repository.
+To try this ray tracer for Android just download the
+[APK](https://github.com/TiagoMSSantos/MobileRT/blob/master/app/release/app-release.apk?raw=true) file available in the
+repository.
 
 ## TODO
 
@@ -97,7 +99,9 @@ To try this ray tracer for Android just download the [APK](https://github.com/Ti
 - [ ] Add comments in the MobileRT
 - [x] Give out of memory error when the memory is not enough to load the scene
 - [ ] Add unit tests (more code coverage)
-- [x] Add instrumented unit tests
+- [x] Add Android instrumented unit tests
+- [ ] Make Android instrumented tests run on debug and release
+- [ ] Make all Android instrumented tests pass without flakiness
 - [x] Add git hooks to check git commit messages
 - [x] Add git hooks to submit Jenkins' jobs after each git push
 - [ ] Support to export rendered image to file
