@@ -91,6 +91,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'com.google.guava:guava:28.2-jre'
 
+    androidTestImplementation 'net.sourceforge.streamsupport:streamsupport:1.7.1'
     androidTestImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.2'
     androidTestImplementation 'junit:junit:4.13'
     androidTestImplementation "com.google.truth:truth:1.0.1"

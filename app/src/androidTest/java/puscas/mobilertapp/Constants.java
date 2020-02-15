@@ -4,8 +4,6 @@ import android.widget.Button;
 import org.junit.jupiter.api.Assertions;
 import java.util.logging.Logger;
 
-import static puscas.mobilertapp.ConstantsUI.SDCARD_EMULATOR_NAME;
-
 /**
  * Some text messages used in the Android tests.
  */
@@ -19,7 +17,7 @@ final class Constants {
     /**
      * The instrumentation tests constants.
      */
-    private static final String OBJ_PATH = "/storage/" + SDCARD_EMULATOR_NAME + "/WavefrontOBJs";
+    private static final String OBJ_PATH = MainActivity.getSDCardPath() + "/WavefrontOBJs";
 
     /**
      * The path to the conference OBJ file which should exist.

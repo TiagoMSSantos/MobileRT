@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Assertions;
 import java.io.File;
 import java.util.List;
 import java.util.logging.Logger;
-import java.util.stream.IntStream;
+import java8.util.stream.IntStreams;
 
 import static puscas.mobilertapp.Constants.CHECK_BOX_MESSAGE;
 import static puscas.mobilertapp.Constants.EMPTY_FILE;
@@ -110,13 +110,13 @@ public final class MainActivityTest {
      * Helper method which tests the range of the {@link NumberPicker} in the UI.
      */
     private static void testPickerNumbers() {
-        IntStream.rangeClosed(0, 2).forEach(value -> assertPickerValue(R.id.pickerAccelerator, value));
-        IntStream.rangeClosed(1, 100).forEach(value -> assertPickerValue(R.id.pickerSamplesLight, value));
-        IntStream.rangeClosed(0, 6).forEach(value -> assertPickerValue(R.id.pickerScene, value));
-        IntStream.rangeClosed(0, 4).forEach(value -> assertPickerValue(R.id.pickerShader, value));
-        IntStream.rangeClosed(1, 4).forEach(value -> assertPickerValue(R.id.pickerThreads, value));
-        IntStream.rangeClosed(1, 10).forEach(value -> assertPickerValue(R.id.pickerSamplesPixel, value));
-        IntStream.rangeClosed(1, 9).forEach(value -> assertPickerValue(R.id.pickerSize, value));
+        IntStreams.rangeClosed(0, 2).forEach(value -> assertPickerValue(R.id.pickerAccelerator, value));
+        IntStreams.rangeClosed(1, 100).forEach(value -> assertPickerValue(R.id.pickerSamplesLight, value));
+        IntStreams.rangeClosed(0, 6).forEach(value -> assertPickerValue(R.id.pickerScene, value));
+        IntStreams.rangeClosed(0, 4).forEach(value -> assertPickerValue(R.id.pickerShader, value));
+        IntStreams.rangeClosed(1, 4).forEach(value -> assertPickerValue(R.id.pickerThreads, value));
+        IntStreams.rangeClosed(1, 10).forEach(value -> assertPickerValue(R.id.pickerSamplesPixel, value));
+        IntStreams.rangeClosed(1, 9).forEach(value -> assertPickerValue(R.id.pickerSize, value));
     }
 
     /**
@@ -142,7 +142,7 @@ public final class MainActivityTest {
         }
 
         final List<String> buttonTextList = ImmutableList.<String>builder().add(STOP, RENDER).build();
-        IntStream.rangeClosed(1, buttonTextList.size() * repetitions).forEach(index -> {
+        IntStreams.rangeClosed(1, buttonTextList.size() * repetitions).forEach(index -> {
             final int finalCounterScene = this.counterScene % 6;
             this.counterScene++;
             final int finalCounterAccelerator = this.counterAccelerator % 2;
@@ -234,10 +234,10 @@ public final class MainActivityTest {
                 OBJ_FILE_CONFERENCE,
                 OBJ_FILE_TEAPOT
         ).build();
-        paths.forEach(path -> {
+        for(final String path : paths) {
             final File file = new File(path);
             Assertions.assertTrue(file.exists(), FILE_SHOULD_EXIST);
-        });
+        }
     }
 
     /**
@@ -249,11 +249,11 @@ public final class MainActivityTest {
                 OBJ_FILE_CONFERENCE,
                 OBJ_FILE_TEAPOT
         ).build();
-        paths.forEach(path -> {
+        for(final String path : paths) {
             final File file = new File(path);
             Assertions.assertTrue(file.exists(), FILE_SHOULD_EXIST);
             Assertions.assertTrue(file.canRead(), "File should be readable!");
-        });
+        }
     }
 
     /**
@@ -265,11 +265,11 @@ public final class MainActivityTest {
                 EMPTY_FILE,
                 OBJ_FILE_NOT_EXISTS
         ).build();
-        paths.forEach(path -> {
+        for (final String path : paths) {
             final File file = new File(path);
             Assertions.assertFalse(file.exists(), "File should not exist!");
             Assertions.assertFalse(file.canRead(), "File should not be readable!");
-        });
+        }
     }
 
     /**

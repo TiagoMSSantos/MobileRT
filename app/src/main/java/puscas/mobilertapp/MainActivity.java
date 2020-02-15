@@ -335,12 +335,7 @@ public final class MainActivity extends Activity {
 //                    final String scenePath = "powerplant/powerplant";
 //                    final String scenePath = "San_Miguel/san-miguel";
 
-                    String sdCardPath = Environment.getExternalStorageDirectory().getPath();
-
-                    // Fix Android device path to an external SD card.
-                    sdCardPath = sdCardPath.replace("/storage/sdcard0", "/storage/extSdCard");
-                    // Fix Android emulator path to an external SD card.
-                    sdCardPath = sdCardPath.replace("/emulated/0", "/" + SDCARD_EMULATOR_NAME);
+                    final String sdCardPath = getSDCardPath();
 
                     this.sceneFilePath = sdCardPath + "/WavefrontOBJs/" + scenePath;
                     startRender(this.sceneFilePath);
@@ -350,6 +345,22 @@ public final class MainActivity extends Activity {
                     startRender(this.sceneFilePath);
             }
         }
+    }
+
+    /**
+     * Gets the path to the SD card.
+     * <p>
+     * This method should get the correct path independently of the device / emulator used.
+     *
+     * @return The path to the SD card.
+     */
+    @NonNull
+    public static String getSDCardPath() {
+        LOGGER.info("Getting SD card path");
+        String sdCardPath = Environment.getExternalStorageDirectory().getPath();
+        sdCardPath = sdCardPath.replace("/storage/sdcard0", "/storage/extSdCard");
+        sdCardPath = sdCardPath.replace("/emulated/0", "/" + SDCARD_EMULATOR_NAME);
+        return sdCardPath;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
