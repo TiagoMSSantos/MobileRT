@@ -26,6 +26,7 @@ import java.io.File;
 import java.util.List;
 import java.util.logging.Logger;
 import java8.util.stream.IntStreams;
+import java8.util.stream.StreamSupport;
 
 import static puscas.mobilertapp.Constants.CHECK_BOX_MESSAGE;
 import static puscas.mobilertapp.Constants.EMPTY_FILE;
@@ -239,10 +240,11 @@ public final class MainActivityTest {
                 activity.getSDCardPath() + OBJ_FILE_CONFERENCE,
                 activity.getSDCardPath() + OBJ_FILE_TEAPOT
         ).build();
-        for(final String path : paths) {
-            final File file = new File(path);
-            Assertions.assertTrue(file.exists(), FILE_SHOULD_EXIST);
-        }
+        StreamSupport.stream(paths)
+            .forEach(path -> {
+                final File file = new File(path);
+                Assertions.assertTrue(file.exists(), FILE_SHOULD_EXIST);
+            });
     }
 
     /**
@@ -256,11 +258,12 @@ public final class MainActivityTest {
                 activity.getSDCardPath() + OBJ_FILE_CONFERENCE,
                 activity.getSDCardPath() + OBJ_FILE_TEAPOT
         ).build();
-        for(final String path : paths) {
-            final File file = new File(path);
-            Assertions.assertTrue(file.exists(), FILE_SHOULD_EXIST);
-            Assertions.assertTrue(file.canRead(), "File should be readable!");
-        }
+        StreamSupport.stream(paths)
+            .forEach(path -> {
+                final File file = new File(path);
+                Assertions.assertTrue(file.exists(), FILE_SHOULD_EXIST);
+                Assertions.assertTrue(file.canRead(), "File should be readable!");
+            });
     }
 
     /**
@@ -274,11 +277,12 @@ public final class MainActivityTest {
                 EMPTY_FILE,
                 activity.getSDCardPath() + OBJ_FILE_NOT_EXISTS
         ).build();
-        for (final String path : paths) {
-            final File file = new File(path);
-            Assertions.assertFalse(file.exists(), "File should not exist!");
-            Assertions.assertFalse(file.canRead(), "File should not be readable!");
-        }
+        StreamSupport.stream(paths)
+            .forEach(path -> {
+                final File file = new File(path);
+                Assertions.assertFalse(file.exists(), "File should not exist!");
+                Assertions.assertFalse(file.canRead(), "File should not be readable!");
+            });
     }
 
     /**

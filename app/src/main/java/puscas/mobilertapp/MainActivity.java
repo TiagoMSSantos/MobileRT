@@ -35,9 +35,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+import java8.util.stream.IntStreams;
 import java8.util.stream.StreamSupport;
 
-import java.util.Locale;
 import java.util.Objects;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -475,33 +475,22 @@ public final class MainActivity extends Activity {
         this.pickerShader.setDisplayedValues(shaders);
 
         final int maxSamplesPixel = 99;
-        try {
-            final String[] samplesPixel = new String[maxSamplesPixel];
-            for (int i = 0; i < maxSamplesPixel; i++) {
-                samplesPixel[i] = Integer.toString((i + 1) * (i + 1));
-            }
-            this.pickerSamplesPixel.setMinValue(1);
-            this.pickerSamplesPixel.setMaxValue(maxSamplesPixel);
-            this.pickerSamplesPixel.setWrapSelectorWheel(true);
-            this.pickerSamplesPixel.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-            this.pickerSamplesPixel.setValue(defaultPickerSamplesPixel);
-            this.pickerSamplesPixel.setDisplayedValues(samplesPixel);
-        } catch (final OutOfMemoryError ex) {
-            LOGGER.severe(ex.getMessage());
-            throw ex;
-        }
+        final String[] samplesPixel = IntStreams.range(0, maxSamplesPixel)
+                .map(value -> (value + 1) * (value + 1))
+                .mapToObj(String::valueOf)
+                .toArray(String[]::new);
+        this.pickerSamplesPixel.setMinValue(1);
+        this.pickerSamplesPixel.setMaxValue(maxSamplesPixel);
+        this.pickerSamplesPixel.setWrapSelectorWheel(true);
+        this.pickerSamplesPixel.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+        this.pickerSamplesPixel.setValue(defaultPickerSamplesPixel);
+        this.pickerSamplesPixel.setDisplayedValues(samplesPixel);
 
         final int maxSamplesLight = 100;
-        final String[] samplesLight;
-        try {
-            samplesLight = new String[maxSamplesLight];
-        } catch (final OutOfMemoryError ex) {
-            LOGGER.severe(ex.getMessage());
-            throw ex;
-        }
-        for (int i = 0; i < maxSamplesLight; i++) {
-            samplesLight[i] = Integer.toString(i + 1);
-        }
+        final String[] samplesLight = IntStreams.range(0, maxSamplesLight)
+                .map(value -> value + 1)
+                .mapToObj(String::valueOf)
+                .toArray(String[]::new);
         this.pickerSamplesLight.setMinValue(1);
         this.pickerSamplesLight.setMaxValue(maxSamplesLight);
         this.pickerSamplesLight.setWrapSelectorWheel(true);
@@ -525,23 +514,8 @@ public final class MainActivity extends Activity {
         this.pickerThreads.setValue(defaultPickerThreads);
 
         final int maxSizes = 9;
-        final String[] resolutions;
-        try {
-            resolutions = new String[maxSizes];
-        } catch (final OutOfMemoryError ex) {
-            LOGGER.severe(ex.getMessage());
-            throw ex;
-        }
-        final float lowestResolution = 0.05F;
-        resolutions[0] = String.format(Locale.US, "%.2f", lowestResolution) + 'x';
-        final float correction = 0.1F;
-        for (int i = 2; i < maxSizes; i++) {
-            final float value = ((float) i + 1.0F) * correction;
-            resolutions[i - 1] = String.format(Locale.US, "%.2f", value * value) + 'x';
-        }
-        resolutions[maxSizes - 1] = String.format(Locale.US, "%.2f", 1.0F) + 'x';
         this.pickerResolutions.setMinValue(1);
-        this.pickerResolutions.setMaxValue(maxSizes);
+        this.pickerResolutions.setMaxValue(maxSizes - 1);
         this.pickerResolutions.setWrapSelectorWheel(true);
         this.pickerResolutions.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
         this.pickerResolutions.setValue(defaultPickerSizes);
@@ -558,23 +532,19 @@ public final class MainActivity extends Activity {
 
         final ViewTreeObserver vto = this.drawView.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(() -> {
-            final float widthView = (float) this.drawView.getWidth();
-            final float heightView = (float) this.drawView.getHeight();
+            final double widthView = (double) this.drawView.getWidth();
+            final double heightView = (double) this.drawView.getHeight();
 
-            float size = lowestResolution;
-            int width = RTResize(Math.round(widthView * size));
-            int height = RTResize(Math.round(heightView * size));
-            resolutions[0] = Integer.toString(width)+ 'x' + height;
-
-            for (int i = 2; i < maxSizes; i++) {
-                size = ((float) i + 1.0F) * correction;
-                width = RTResize(Math.round(widthView * size * size));
-                height = RTResize(Math.round(heightView * size * size));
-                resolutions[i - 1] = String.valueOf(width) + 'x' + height;
-            }
-            final int fullWidth = RTResize(Math.round(widthView));
-            final int fullHeight = RTResize(Math.round(heightView));
-            resolutions[maxSizes - 1] = String.valueOf(fullWidth) + 'x' + fullHeight;
+            final String[] resolutions = IntStreams.rangeClosed(2, maxSizes)
+                    .mapToDouble(value -> (double) value)
+                    .map(value -> (value + 1.0) * 0.1)
+                    .map(value -> value * value)
+                    .mapToObj(value -> {
+                        final int width = RTResize((int) Math.round(widthView * value));
+                        final int height = RTResize((int) Math.round(heightView * value));
+                        return String.valueOf(width) + 'x' + height;
+                    })
+                    .toArray(String[]::new);
 
             this.pickerResolutions.setDisplayedValues(resolutions);
         });

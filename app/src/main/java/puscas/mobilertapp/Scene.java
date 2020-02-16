@@ -2,6 +2,8 @@ package puscas.mobilertapp;
 
 import java.util.logging.Logger;
 
+import java8.util.J8Arrays;
+
 import static puscas.mobilertapp.ConstantsMethods.GET_NAMES;
 
 /**
@@ -76,14 +78,8 @@ enum Scene {
     static String[] getNames() {
         LOGGER.info(GET_NAMES);
 
-        final Scene[] scenes = values();
-        final int lengthScenes = scenes.length;
-        final String[] namesScenes = new String[lengthScenes];
-
-        for (int i = 0; i < lengthScenes; i++) {
-            namesScenes[i] = scenes[i].getName();
-        }
-
-        return namesScenes;
+        return J8Arrays.stream(values())
+                .map(Scene::getName)
+                .toArray(String[]::new);
     }
 }

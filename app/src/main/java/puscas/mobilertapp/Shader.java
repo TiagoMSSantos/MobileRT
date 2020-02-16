@@ -2,6 +2,8 @@ package puscas.mobilertapp;
 
 import java.util.logging.Logger;
 
+import java8.util.J8Arrays;
+
 import static puscas.mobilertapp.ConstantsMethods.GET_NAMES;
 
 /**
@@ -66,14 +68,8 @@ enum Shader {
     static String[] getNames() {
         LOGGER.info(GET_NAMES);
 
-        final Shader[] shaders = values();
-        final int lengthShaders = shaders.length;
-        final String[] namesShaders = new String[lengthShaders];
-
-        for (int i = 0; i < lengthShaders; i++) {
-            namesShaders[i] = shaders[i].getName();
-        }
-
-        return namesShaders;
+        return J8Arrays.stream(values())
+                .map(Shader::getName)
+                .toArray(String[]::new);
     }
 }

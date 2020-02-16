@@ -2,6 +2,8 @@ package puscas.mobilertapp;
 
 import java.util.logging.Logger;
 
+import java8.util.J8Arrays;
+
 import static puscas.mobilertapp.ConstantsMethods.GET_NAMES;
 
 /**
@@ -61,14 +63,8 @@ enum Accelerator {
     static String[] getNames() {
         LOGGER.info(GET_NAMES);
 
-        final Accelerator[] accelerators = values();
-        final int lengthAccelerators = accelerators.length;
-        final String[] namesAccelerators = new String[lengthAccelerators];
-
-        for (int i = 0; i < lengthAccelerators; i++) {
-            namesAccelerators[i] = accelerators[i].getName();
-        }
-
-        return namesAccelerators;
+        return J8Arrays.stream(values())
+                .map(Accelerator::getName)
+                .toArray(String[]::new);
     }
 }
