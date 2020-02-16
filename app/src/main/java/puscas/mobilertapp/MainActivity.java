@@ -14,7 +14,6 @@ import android.net.Uri;
 import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -35,6 +34,9 @@ import com.google.common.base.Preconditions;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+
+import java8.util.stream.StreamSupport;
+
 import java.util.Locale;
 import java.util.Objects;
 import java.util.logging.Logger;
@@ -59,7 +61,6 @@ import static puscas.mobilertapp.ConstantsUI.PICKER_SCENE;
 import static puscas.mobilertapp.ConstantsUI.PICKER_SHADER;
 import static puscas.mobilertapp.ConstantsUI.PICKER_SIZES;
 import static puscas.mobilertapp.ConstantsUI.PICKER_THREADS;
-import static puscas.mobilertapp.ConstantsUI.SDCARD_EMULATOR_NAME;
 
 /**
  * The main {@link Activity} for the Android User Interface.
@@ -355,11 +356,12 @@ public final class MainActivity extends Activity {
      * @return The path to the SD card.
      */
     @NonNull
-    public static String getSDCardPath() {
+    public String getSDCardPath() {
         LOGGER.info("Getting SD card path");
-        String sdCardPath = Environment.getExternalStorageDirectory().getPath();
-        sdCardPath = sdCardPath.replace("/storage/sdcard0", "/storage/extSdCard");
-        sdCardPath = sdCardPath.replace("/emulated/0", "/" + SDCARD_EMULATOR_NAME);
+        final File[] dirs = ContextCompat.getExternalFilesDirs(this.getApplicationContext(), null);
+        final File externalStorageDirectory = dirs.length > 1? dirs[1] : dirs[0];
+        String sdCardPath = externalStorageDirectory.getAbsolutePath();
+        sdCardPath = sdCardPath.substring(0, sdCardPath.indexOf("Android") - 1);
         return sdCardPath;
     }
 
@@ -695,19 +697,19 @@ public final class MainActivity extends Activity {
             assert data != null;
             final Uri uri = data.getData();
             assert uri != null;
-            String filePath = uri.getPath();
-            if (filePath != null) {
-                final String sdCardDir = Environment.getExternalStorageDirectory().getPath();
 
-                // Fix path to SD card.
-                filePath = filePath.replace(":", "/");
-                filePath = filePath.replace("/document/primary/", sdCardDir);
-                filePath = filePath.replace("/document", "/storage");
+            String filePath = StreamSupport.stream(uri.getPathSegments())
+                    .reduce("", (accumulator, segment) -> accumulator + "/" + segment);
 
-                final int lastIndex = filePath.lastIndexOf('.');
-                // Remove extension of file.
-                this.sceneFilePath = filePath.substring(0, lastIndex);
-            }
+            final int removeIndex = filePath.indexOf(':');
+            filePath = removeIndex >= 0? filePath.substring(removeIndex) : filePath;
+            filePath = filePath.replace(":", "/");
+            filePath = filePath.replace("/sdcard/", "/");
+            filePath = filePath.substring(0, filePath.lastIndexOf('.'));
+
+            final String sdCardDir = getSDCardPath();
+
+            this.sceneFilePath = sdCardDir + filePath;
         }
     }
 }

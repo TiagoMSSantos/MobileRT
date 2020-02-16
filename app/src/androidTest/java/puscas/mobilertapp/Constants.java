@@ -17,7 +17,7 @@ final class Constants {
     /**
      * The instrumentation tests constants.
      */
-    private static final String OBJ_PATH = MainActivity.getSDCardPath() + "/WavefrontOBJs";
+    private static final String OBJ_PATH = "/WavefrontOBJs";
 
     /**
      * The path to the conference OBJ file which should exist.

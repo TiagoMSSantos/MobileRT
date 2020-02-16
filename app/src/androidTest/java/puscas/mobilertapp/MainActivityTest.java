@@ -41,6 +41,9 @@ import static puscas.mobilertapp.Constants.STOP;
 import static puscas.mobilertapp.Constants.TEAR_DOWN;
 import static puscas.mobilertapp.Constants.TEAR_DOWN_ALL;
 
+/**
+ * The test suite for {@link MainActivity}.
+ */
 public final class MainActivityTest {
 
     /**
@@ -231,9 +234,10 @@ public final class MainActivityTest {
     @Test
     public final void testFilesExist() {
         LOGGER.info("testFilesExist");
+        final MainActivity activity = this.mainActivityActivityTestRule.getActivity();
         final List<String> paths = ImmutableList.<String>builder().add(
-                OBJ_FILE_CONFERENCE,
-                OBJ_FILE_TEAPOT
+                activity.getSDCardPath() + OBJ_FILE_CONFERENCE,
+                activity.getSDCardPath() + OBJ_FILE_TEAPOT
         ).build();
         for(final String path : paths) {
             final File file = new File(path);
@@ -247,9 +251,10 @@ public final class MainActivityTest {
     @Test
     public final void testFileReads() {
         LOGGER.info("testFileReads");
+        final MainActivity activity = this.mainActivityActivityTestRule.getActivity();
         final List<String> paths = ImmutableList.<String>builder().add(
-                OBJ_FILE_CONFERENCE,
-                OBJ_FILE_TEAPOT
+                activity.getSDCardPath() + OBJ_FILE_CONFERENCE,
+                activity.getSDCardPath() + OBJ_FILE_TEAPOT
         ).build();
         for(final String path : paths) {
             final File file = new File(path);
@@ -264,9 +269,10 @@ public final class MainActivityTest {
     @Test
     public final void testFilesNotExist() {
         LOGGER.info("testFilesNotExist");
+        final MainActivity activity = this.mainActivityActivityTestRule.getActivity();
         final List<String> paths = ImmutableList.<String>builder().add(
                 EMPTY_FILE,
-                OBJ_FILE_NOT_EXISTS
+                activity.getSDCardPath() + OBJ_FILE_NOT_EXISTS
         ).build();
         for (final String path : paths) {
             final File file = new File(path);

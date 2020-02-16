@@ -86,12 +86,21 @@ repository.
 - [x] Read and construct lights and cameras from files
 - [x] Remove unnecessary primitives, lights and cameras in the code
 
-### User Interface
+### Android Interface
 - [x] Fix memory leak in Java UI
 - [x] Fix load of obj files in Android 10
-- [ ] Change Linux's UI from GTK to Qt
 - [ ] Improve Java UI code to more Object Oriented
 - [ ] Change Android icon
+- [x] Add compiler warnings in Gradle
+- [x] Remove usage of deprecated methods
+- [x] Add Android instrumented unit tests
+- [ ] Make Android instrumented tests run on debug and release
+- [ ] Make all Android instrumented tests pass without flakiness
+- [x] Use java streams to reduce complexity
+
+### Linux Interface
+- [x] Change Linux's UI from GTK to Qt
+- [ ] Add options in Qt UI
 
 ### System
 - [x] Add comments in the Android UI
@@ -99,9 +108,6 @@ repository.
 - [ ] Add comments in the MobileRT
 - [x] Give out of memory error when the memory is not enough to load the scene
 - [ ] Add unit tests (more code coverage)
-- [x] Add Android instrumented unit tests
-- [ ] Make Android instrumented tests run on debug and release
-- [ ] Make all Android instrumented tests pass without flakiness
 - [x] Add git hooks to check git commit messages
 - [x] Add git hooks to submit Jenkins' jobs after each git push
 - [ ] Support to export rendered image to file

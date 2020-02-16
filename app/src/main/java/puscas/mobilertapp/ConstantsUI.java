@@ -58,11 +58,6 @@ final class ConstantsUI {
     static final String CHECK_BOX_RASTERIZE = "checkBoxRasterize";
 
     /**
-     * The name of the external SD card folder in the Android Emulator.
-     */
-    static final String SDCARD_EMULATOR_NAME = "1319-320A";
-
-    /**
      * The color for the UI's {@link android.widget.NumberPicker}.
      */
     static final String COLOR_NUMBER_PICKER = "#000000";

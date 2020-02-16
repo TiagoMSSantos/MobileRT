@@ -1,6 +1,12 @@
 apply plugin: 'com.android.application'
 apply plugin: 'jacoco'
 
+allprojects {
+    tasks.withType(JavaCompile) {
+        options.compilerArgs << '-Xlint:all'
+    }
+}
+
 android {
     signingConfigs {
         Puscas {
@@ -17,6 +23,9 @@ android {
         targetSdkVersion 29
         setTestInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         testInstrumentationRunnerArguments clearPackageData: 'true'
+        setApplicationId 'puscas.mobilertapp'
+        setVersionName '1.0'
+        setVersionCode 1
         ndk {
             abiFilters 'x86', 'armeabi-v7a', 'x86_64', 'arm64-v8a'
         }
@@ -74,7 +83,7 @@ android {
         }
         animationsDisabled = true
     }
-//    setTestBuildType 'release'
+    setTestBuildType 'release'
 }
 
 configurations {
@@ -83,16 +92,13 @@ configurations {
 }
 
 dependencies {
-    debugImplementation project(path:':app', configuration:'debug')
-    releaseImplementation project(path:':app', configuration:'release')
-
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'com.google.guava:guava:28.2-jre'
+    implementation 'net.sourceforge.streamsupport:streamsupport:1.7.1'
 
-    androidTestImplementation 'net.sourceforge.streamsupport:streamsupport:1.7.1'
     androidTestImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
     androidTestImplementation 'junit:junit:4.13'
-    androidTestImplementation "com.google.truth:truth:1.0.1"
+    androidTestImplementation 'com.google.truth:truth:1.0.1'
     androidTestImplementation 'org.mockito:mockito-core:3.2.0'
     androidTestImplementation 'org.mockito:mockito-android:2.23.4'
 
