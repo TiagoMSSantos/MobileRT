@@ -15,6 +15,8 @@ import android.widget.TextView;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Supplier;
 
+import org.jetbrains.annotations.Contract;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
@@ -516,7 +518,36 @@ final class MainRenderer implements GLSurfaceView.Renderer {
     }
 
     /**
-     * Helper method that reads and copies the pixels in the frame buffer to a new {@link Bitmap}.
+     * Converts a pixel from OpenGL format to a pixel of Android format.
+     *
+     * @param pixel A pixel from OpenGL format.
+     * @return A pixel from Android format.
+     */
+    @Contract(pure = true)
+    private static int convertPixelOpenGLToAndroid(final int pixel) {
+        final int red = pixel & 0xff;
+        final int green = (pixel >> (1 * 8)) & 0xff;
+        final int blue = (pixel >> (2 * 8)) & 0xff;
+        final int alpha = (pixel >> ((3 * 8))) & 0xff;
+        final int newPixel = (red << (2 * 8)) | (green << (1 * 8)) | blue;
+        return alpha << (3 * 8) | newPixel;
+    }
+
+    /**
+     * Converts an index of a pixel from OpenGL format to an index of a pixel of Android format.
+     *
+     * @param index An index of a pixel from OpenGL format.
+     * @return An index of a pixel from Android format.
+     */
+    @Contract(pure = true)
+    private int convertIndexOpenGLToAndroid(final int index) {
+        final int column = index % this.viewWidth;
+        final int line = index / this.viewWidth;
+        return (this.viewHeight - line - 1) * this.viewWidth + column;
+    }
+
+    /**
+     * Helper method that reads and copies the pixels in the OpenGL frame buffer to a new {@link Bitmap}.
      *
      * @return A new {@link Bitmap} with the colors of the pixels in the OpenGL frame buffer.
      */
@@ -527,34 +558,27 @@ final class MainRenderer implements GLSurfaceView.Renderer {
         final IntBuffer intBuffer = IntBuffer.wrap(arrayBytesPixels);
         intBuffer.position(0);
 
-        GLES20.glReadPixels(0, 0, this.viewWidth, this.viewHeight, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE,
-                intBuffer);
+        GLES20.glReadPixels(
+                0, 0, this.viewWidth, this.viewHeight, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, intBuffer
+        );
         checksGLError();
 
-        // Remember, that OpenGL bitmap is incompatible with Android bitmap and so, some correction need.
-        int id = 0;
+        int index = 0;
         for (final int pixel : arrayBytesPixels) {
-            final int column = id % this.viewWidth;
-            final int line = id / this.viewWidth;
-            final int newPixelId = (this.viewHeight - line - 1) * this.viewWidth + column;
-            id++;
-
-            final int red = pixel & 0xff;
-            final int green = (pixel >> (1 * 8)) & 0xff;
-            final int blue = (pixel >> (2 * 8)) & 0xff;
-            final int alpha = (pixel >> ((3 * 8))) & 0xff;
-            final int newPixel = (red << (2 * 8)) | (green << (1 * 8)) | blue;
-            arrayBytesNewBitmap[newPixelId] = alpha << (3 * 8) | newPixel;
+            final int newIndex = convertIndexOpenGLToAndroid(index);
+            ++index;
+            arrayBytesNewBitmap[newIndex] = convertPixelOpenGLToAndroid(pixel);
         }
 
-        final Bitmap bitmapAux = Bitmap.createBitmap(arrayBytesNewBitmap, this.viewWidth, this.viewHeight,
-                Bitmap.Config.ARGB_8888);
+        final Bitmap bitmapAux = Bitmap.createBitmap(
+                arrayBytesNewBitmap, this.viewWidth, this.viewHeight, Bitmap.Config.ARGB_8888
+        );
         return Bitmap.createScaledBitmap(bitmapAux, this.width, this.height, true);
     }
 
     /**
      * Shuts down and waits for the {@link MainRenderer#executorService} to terminate.
-     * In the END, resets {@link MainRenderer#executorService} to a new thread pool with
+     * In the end, resets {@link MainRenderer#executorService} to a new thread pool with
      * {@link ConstantsRenderer#NUMBER_THREADS} threads.
      */
     void waitForLastTask() {
@@ -734,15 +758,19 @@ final class MainRenderer implements GLSurfaceView.Renderer {
                     -sizeV / correction, sizeV / correction, zNear, zFar);
         }
 
-        Matrix.setLookAtM(viewMatrix, 0,
+        Matrix.setLookAtM(
+                viewMatrix, 0,
                 eyeX, eyeY, eyeZ,
                 centerX, centerY, centerZ,
-                upX, upY, upZ);
+                upX, upY, upZ
+        );
         final int handleModel = GLES20.glGetUniformLocation(this.shaderProgramRaster, "uniformModelMatrix");
         checksGLError();
         final int handleView = GLES20.glGetUniformLocation(this.shaderProgramRaster, "uniformViewMatrix");
         checksGLError();
-        final int handleProjection = GLES20.glGetUniformLocation(this.shaderProgramRaster, "uniformProjectionMatrix");
+        final int handleProjection = GLES20.glGetUniformLocation(
+                this.shaderProgramRaster, "uniformProjectionMatrix"
+        );
         checksGLError();
 
         GLES20.glUniformMatrix4fv(handleModel, 1, false, modelMatrix, 0);
@@ -896,8 +924,9 @@ final class MainRenderer implements GLSurfaceView.Renderer {
                 LOGGER.warning(ex.getMessage());
             }
 
-            final RenderTask.Builder renderTaskBuilder = new RenderTask.Builder(this.requestRender,
-                    this::RTFinishRender, this.textView, this.buttonRender);
+            final RenderTask.Builder renderTaskBuilder = new RenderTask.Builder(
+                    this.requestRender, this::RTFinishRender, this.textView, this.buttonRender
+            );
 
             this.renderTask = renderTaskBuilder
                     .withUpdateInterval(DEFAULT_UPDATE_INTERVAL)
@@ -928,16 +957,18 @@ final class MainRenderer implements GLSurfaceView.Renderer {
         checksGLError();
         GLES20.glEnableVertexAttribArray(positionAttrib);
         checksGLError();
-        GLES20.glVertexAttribPointer(positionAttrib, 4, GLES20.GL_FLOAT, false, 0,
-                this.floatBufferVertices);
+        GLES20.glVertexAttribPointer(
+                positionAttrib, 4, GLES20.GL_FLOAT, false, 0, this.floatBufferVertices
+        );
         checksGLError();
 
         final int texCoordAttrib = GLES20.glGetAttribLocation(this.shaderProgram, VERTEX_TEX_COORD);
         checksGLError();
         GLES20.glEnableVertexAttribArray(texCoordAttrib);
         checksGLError();
-        GLES20.glVertexAttribPointer(texCoordAttrib, 2, GLES20.GL_FLOAT, false, 0,
-                this.floatBufferTexture);
+        GLES20.glVertexAttribPointer(
+                texCoordAttrib, 2, GLES20.GL_FLOAT, false, 0, this.floatBufferTexture
+        );
         checksGLError();
 
 
@@ -1053,7 +1084,9 @@ final class MainRenderer implements GLSurfaceView.Renderer {
         final int positionAttrib = 0;
         GLES20.glBindAttribLocation(this.shaderProgram, positionAttrib, VERTEX_POSITION);
         checksGLError();
-        GLES20.glVertexAttribPointer(positionAttrib, 4, GLES20.GL_FLOAT, false, 0, this.floatBufferVertices);
+        GLES20.glVertexAttribPointer(
+                positionAttrib, 4, GLES20.GL_FLOAT, false, 0, this.floatBufferVertices
+        );
         checksGLError();
         GLES20.glEnableVertexAttribArray(positionAttrib);
         checksGLError();
@@ -1061,7 +1094,9 @@ final class MainRenderer implements GLSurfaceView.Renderer {
         final int texCoordAttrib = 1;
         GLES20.glBindAttribLocation(this.shaderProgram, texCoordAttrib, VERTEX_TEX_COORD);
         checksGLError();
-        GLES20.glVertexAttribPointer(texCoordAttrib, 2, GLES20.GL_FLOAT, false, 0, this.floatBufferTexture);
+        GLES20.glVertexAttribPointer(
+                texCoordAttrib, 2, GLES20.GL_FLOAT, false, 0, this.floatBufferTexture
+        );
         checksGLError();
         GLES20.glEnableVertexAttribArray(texCoordAttrib);
         checksGLError();

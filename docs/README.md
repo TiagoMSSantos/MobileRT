@@ -1,7 +1,7 @@
 # Mobile Ray Tracer (MobileRT)<br/>
 # a portable Ray Tracing (RT) library for Android
 
-![alt text](Example.gif)
+<img src="Example.gif" alt="RayTracer" width="400"/>
 
 ## Run docker image
 This C++ Ray Tracer is compatible with Android and Linux.<br/>
