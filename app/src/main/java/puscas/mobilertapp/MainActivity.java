@@ -30,17 +30,18 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-import java8.util.stream.IntStreams;
-import java8.util.stream.StreamSupport;
-
-import java.util.Objects;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
+
+import java8.util.stream.IntStreams;
+import java8.util.stream.StreamSupport;
+import java8.util.Objects;
 
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
@@ -160,7 +161,7 @@ public final class MainActivity extends Activity {
         try {
             final File dir = new File("/sys/devices/system/cpu/");
             final File[] files = dir.listFiles((pathname) -> Pattern.matches("cpu[0-9]+", pathname.getName()));
-            Preconditions.checkNotNull(Objects.requireNonNull(files), "");
+            Preconditions.checkNotNull(files);
 
             numCores = files.length;
         } catch (final RuntimeException ex) {
@@ -271,11 +272,11 @@ public final class MainActivity extends Activity {
             }
         } catch (final OutOfMemoryError ex1) {
             LOGGER.severe("Not enough memory for asset  " + filePath);
-            LOGGER.severe(Objects.requireNonNull(ex1.getMessage()));
+            LOGGER.severe(ex1.getMessage());
             throw ex1;
         } catch (final IOException ex2) {
             LOGGER.severe("Couldn't read asset " + filePath);
-            LOGGER.severe(Objects.requireNonNull(ex2.getMessage()));
+            LOGGER.severe(ex2.getMessage());
             System.exit(1);
         }
         return asset;
@@ -361,7 +362,10 @@ public final class MainActivity extends Activity {
         final File[] dirs = ContextCompat.getExternalFilesDirs(this.getApplicationContext(), null);
         final File externalStorageDirectory = dirs.length > 1? dirs[1] : dirs[0];
         String sdCardPath = externalStorageDirectory.getAbsolutePath();
-        sdCardPath = sdCardPath.substring(0, sdCardPath.indexOf("Android") - 1);
+        final int removeIndex = sdCardPath.indexOf("Android");
+        if (removeIndex >= 1) {
+            sdCardPath = sdCardPath.substring(0, removeIndex - 1);
+        }
         return sdCardPath;
     }
 
@@ -378,7 +382,7 @@ public final class MainActivity extends Activity {
         int defaultPickerSamplesLight = 1;
         int defaultPickerSizes = 4;
         boolean defaultCheckBoxRasterize = true;
-        if (savedInstanceState != null) {
+        if (Objects.nonNull(savedInstanceState)) {
             defaultPickerScene = savedInstanceState.getInt(PICKER_SCENE);
             defaultPickerShader = savedInstanceState.getInt(PICKER_SHADER);
             defaultPickerThreads = savedInstanceState.getInt(PICKER_THREADS);
@@ -392,7 +396,7 @@ public final class MainActivity extends Activity {
         try {
             setContentView(R.layout.activity_main);
         } catch (final RuntimeException ex) {
-            LOGGER.severe(Objects.requireNonNull(ex.getMessage()));
+            LOGGER.severe(ex.getMessage());
             System.exit(1);
         }
 
@@ -418,7 +422,7 @@ public final class MainActivity extends Activity {
         Preconditions.checkNotNull(this.drawView);
         Preconditions.checkNotNull(textView);
         Preconditions.checkNotNull(renderButton);
-        Preconditions.checkNotNull(Objects.requireNonNull(assetManager));
+        Preconditions.checkNotNull(assetManager);
 
         final ConfigurationInfo configurationInfo = assetManager.getDeviceConfigurationInfo();
         final boolean supportES2 = (configurationInfo.reqGlEsVersion >= REQUIRED_OPENGL_VERSION);
@@ -536,15 +540,15 @@ public final class MainActivity extends Activity {
             final double heightView = (double) this.drawView.getHeight();
 
             final String[] resolutions = IntStreams.rangeClosed(2, maxSizes)
-                    .mapToDouble(value -> (double) value)
-                    .map(value -> (value + 1.0) * 0.1)
-                    .map(value -> value * value)
-                    .mapToObj(value -> {
-                        final int width = RTResize((int) Math.round(widthView * value));
-                        final int height = RTResize((int) Math.round(heightView * value));
-                        return String.valueOf(width) + 'x' + height;
-                    })
-                    .toArray(String[]::new);
+                .mapToDouble(value -> (double) value)
+                .map(value -> (value + 1.0) * 0.1)
+                .map(value -> value * value)
+                .mapToObj(value -> {
+                    final int width = RTResize(Long.valueOf(Math.round(widthView * value)).intValue());
+                    final int height = RTResize(Long.valueOf(Math.round(heightView * value)).intValue());
+                    return String.valueOf(width) + 'x' + height;
+                })
+                .toArray(String[]::new);
 
             this.pickerResolutions.setDisplayedValues(resolutions);
         });
@@ -562,7 +566,7 @@ public final class MainActivity extends Activity {
     protected final void onPostResume() {
         super.onPostResume();
 
-        if (this.sceneFilePath != null) {
+        if (!Strings.isNullOrEmpty(this.sceneFilePath)) {
             startRender(this.sceneFilePath);
         }
     }
@@ -664,22 +668,24 @@ public final class MainActivity extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == Activity.RESULT_OK && requestCode == OPEN_FILE_REQUEST_CODE) {
-            assert data != null;
+            Preconditions.checkNotNull(data);
             final Uri uri = data.getData();
-            assert uri != null;
+            Preconditions.checkNotNull(uri);
 
+            final String sdCardName = "sdcard";
             String filePath = StreamSupport.stream(uri.getPathSegments())
-                    .reduce("", (accumulator, segment) -> accumulator + "/" + segment);
+                .skip(1L)
+                .reduce("", (accumulator, segment) -> accumulator + "/" + segment)
+                .replace("/" + sdCardName + "/", "/");
 
             final int removeIndex = filePath.indexOf(':');
             filePath = removeIndex >= 0? filePath.substring(removeIndex) : filePath;
             filePath = filePath.replace(":", "/");
-            filePath = filePath.replace("/sdcard/", "/");
             filePath = filePath.substring(0, filePath.lastIndexOf('.'));
 
-            final String sdCardDir = getSDCardPath();
+            final String sdCardPath = getSDCardPath();
 
-            this.sceneFilePath = sdCardDir + filePath;
+            this.sceneFilePath = sdCardPath + filePath;
         }
     }
 }

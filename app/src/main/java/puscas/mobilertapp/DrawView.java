@@ -12,7 +12,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -158,7 +157,7 @@ public final class DrawView extends GLSurfaceView {
             try {
                 running = !this.executorService.awaitTermination(1L, TimeUnit.DAYS);
             } catch (final InterruptedException ex) {
-                LOGGER.warning(Objects.requireNonNull(ex.getMessage()));
+                LOGGER.warning(ex.getMessage());
             }
         } while (running);
         this.executorService = Executors.newFixedThreadPool(NUMBER_THREADS);

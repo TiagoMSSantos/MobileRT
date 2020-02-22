@@ -21,13 +21,14 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
+
+import java8.util.Objects;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -593,7 +594,7 @@ final class MainRenderer implements GLSurfaceView.Renderer {
             } while (running);
             this.executorService = Executors.newFixedThreadPool(NUMBER_THREADS);
         } catch (final InterruptedException ex) {
-            LOGGER.warning(Objects.requireNonNull(ex.getMessage()));
+            LOGGER.warning(ex.getMessage());
         } finally {
             this.lockExecutorService.unlock();
         }
@@ -910,7 +911,9 @@ final class MainRenderer implements GLSurfaceView.Renderer {
                 }
             }
             waitForLastTask();
-            if (this.arrayVertices != null && this.arrayColors != null && this.arrayCamera != null) {
+            if (Objects.nonNull(this.arrayVertices) &&
+                Objects.nonNull(this.arrayColors) &&
+                Objects.nonNull(this.arrayCamera)) {
                 try {
                     copyFrame(this.arrayVertices, this.arrayColors, this.arrayCamera, this.numPrimitives);
                 } catch (final LowMemoryException ex) {

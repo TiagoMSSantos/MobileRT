@@ -11,7 +11,6 @@ import androidx.annotation.NonNull;
 
 import java.lang.ref.WeakReference;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -33,6 +32,16 @@ final class RenderTask extends AsyncTask<Void, Void, Void> {
     private static final Logger LOGGER = Logger.getLogger(RenderTask.class.getName());
 
     /**
+     * The number of milliseconds in a second.
+     */
+    private static final float SECOND_IN_MS = 1000.0F;
+
+    /**
+     * The number of bytes in a mega byte.
+     */
+    private static final long MB_IN_BYTES = 1048576L;
+
+    /**
      * An {@link ExecutorService} which schedules every {@link RenderTask#updateInterval}
      * {@code TimeUnit.MILLISECONDS} the {@link RenderTask#timer} {@link Runnable}.
      */
@@ -50,7 +59,7 @@ final class RenderTask extends AsyncTask<Void, Void, Void> {
 
     /**
      * A {@link Runnable} to the {@link MainRenderer#RTFinishRender} method which stops the Ray Tracer engine and sets
-     * the {@link RenderTask#stageT} to {@link State#IDLE}.
+     * the {@link RenderTask#stateT} to {@link State#IDLE}.
      */
     private final Runnable finishRender;
 
@@ -120,7 +129,7 @@ final class RenderTask extends AsyncTask<Void, Void, Void> {
     /**
      * The current Ray Tracer engine {@link State}.
      */
-    private String stageT = null;
+    private String stateT = null;
 
     /**
      * The frames per second of the Ray Tracer engine.
@@ -161,24 +170,24 @@ final class RenderTask extends AsyncTask<Void, Void, Void> {
         super();
         LOGGER.info("RenderTask");
 
-        this.requestRender = builder.requestRender;
-        this.finishRender = builder.finishRender;
-        this.updateInterval = builder.updateInterval;
-        this.primitivesT = ",p=" + builder.numPrimitives + ",l=" + builder.numLights;
-        this.resolutionT = ",r:" + builder.width + 'x' + builder.height;
-        this.threadsT = ",t:" + builder.numThreads;
-        this.samplesPixelT = ",spp:" + builder.samplesPixel;
-        this.samplesLightT = ",spl:" + builder.samplesLight;
-        this.buttonRender = new WeakReference<>(builder.buttonRender);
-        this.textView = new WeakReference<>(builder.textView);
+        this.requestRender = builder.getRequestRender();
+        this.finishRender = builder.getFinishRender();
+        this.updateInterval = builder.getUpdateInterval();
+        this.primitivesT = ",p=" + builder.getNumPrimitives() + ",l=" + builder.getNumLights();
+        this.resolutionT = ",r:" + builder.getWidth() + 'x' + builder.getHeight();
+        this.threadsT = ",t:" + builder.getNumThreads();
+        this.samplesPixelT = ",spp:" + builder.getSamplesPixel();
+        this.samplesLightT = ",spl:" + builder.getSamplesLight();
+        this.buttonRender = new WeakReference<>(builder.getButtonRender());
+        this.textView = new WeakReference<>(builder.getTextView());
 
         this.startTimeStamp = SystemClock.elapsedRealtime();
         this.fpsT = String.format(Locale.US, "fps:%.2f", 0.0F);
         this.fpsRenderT = String.format(Locale.US, "[%.2f]", 0.0F);
         this.timeFrameT = String.format(Locale.US, ",t:%.2fs", 0.0F);
         this.timeT = String.format(Locale.US, "[%.2fs]", 0.0F);
-        this.stageT = " " + State.values()[0];
-        this.allocatedT = ",m:" + Debug.getNativeHeapAllocatedSize() / 1048576L + "mb";
+        this.stateT = " " + State.IDLE.getId();
+        this.allocatedT = ",m:" + Debug.getNativeHeapAllocatedSize() / MB_IN_BYTES + "mb";
         this.sampleT = ",0";
 
         this.timer = () -> {
@@ -187,14 +196,14 @@ final class RenderTask extends AsyncTask<Void, Void, Void> {
             this.fpsT = String.format(Locale.US, "fps:%.1f", RTGetFps());
             this.fpsRenderT = String.format(Locale.US, "[%.1f]", this.fps);
             final long timeRenderer = RTGetTimeRenderer();
-            this.timeFrameT = String.format(Locale.US, ",t:%.2fs", (float) timeRenderer / 1000.0F);
+            this.timeFrameT = String.format(Locale.US, ",t:%.2fs", (float) timeRenderer / SECOND_IN_MS);
             final long currentTime = SystemClock.elapsedRealtime();
-            this.timeT = String.format(Locale.US, "[%.2fs]", (float) (currentTime - this.startTimeStamp) / 1000.0F);
-            this.allocatedT = ",m:" + Debug.getNativeHeapAllocatedSize() / 1048576L + "mb";
+            this.timeT = String.format(Locale.US, "[%.2fs]",(float) (currentTime - this.startTimeStamp) / SECOND_IN_MS);
+            this.allocatedT = ",m:" + Debug.getNativeHeapAllocatedSize() / MB_IN_BYTES + "mb";
             this.sampleT = "," + RTGetSample();
 
             final State currentState = State.values()[RTGetState()];
-            this.stageT = currentState.toString();
+            this.stateT = currentState.toString();
             this.requestRender.run();
             publishProgress();
             if (currentState != State.BUSY) {
@@ -237,7 +246,7 @@ final class RenderTask extends AsyncTask<Void, Void, Void> {
     private void updateFps() {
         this.frame++;
         final float time = (float) SystemClock.elapsedRealtime();
-        final float oneSecond = 1000.0F;
+        final float oneSecond = SECOND_IN_MS;
         if ((time - this.timebase) > oneSecond) {
             this.fps = ((float) this.frame * oneSecond) / (time - this.timebase);
             this.timebase = time;
@@ -251,7 +260,7 @@ final class RenderTask extends AsyncTask<Void, Void, Void> {
     private void printText() {
         final String aux = this.fpsT + this.fpsRenderT + this.resolutionT + this.threadsT + this.samplesPixelT +
                 this.samplesLightT + this.sampleT + System.getProperty("line.separator") +
-                this.stageT + this.allocatedT + this.timeFrameT + this.timeT + this.primitivesT;
+                this.stateT + this.allocatedT + this.timeFrameT + this.timeT + this.primitivesT;
         this.textView.get().setText(aux);
     }
 
@@ -270,7 +279,7 @@ final class RenderTask extends AsyncTask<Void, Void, Void> {
             try {
                 running = !this.scheduler.awaitTermination(1L, TimeUnit.DAYS);
             } catch (final InterruptedException ex) {
-                LOGGER.severe(Objects.requireNonNull(ex.getMessage()));
+                LOGGER.severe(ex.getMessage());
                 System.exit(1);
             }
         } while (running);
@@ -306,7 +315,7 @@ final class RenderTask extends AsyncTask<Void, Void, Void> {
     /**
      * The builder for this class.
      */
-    static class Builder {
+    static final class Builder {
 
         /**
          * The {@link Logger} for this class.
@@ -508,5 +517,88 @@ final class RenderTask extends AsyncTask<Void, Void, Void> {
             return new RenderTask(this);
         }
 
+        /**
+         * @see RenderTask#requestRender
+         */
+        Runnable getRequestRender() {
+            return this.requestRender;
+        }
+
+        /**
+         * @see RenderTask#finishRender
+         */
+        Runnable getFinishRender() {
+            return this.finishRender;
+        }
+
+        /**
+         * @see RenderTask.Builder#withUpdateInterval(long)
+         */
+        long getUpdateInterval() {
+            return this.updateInterval;
+        }
+
+        /**
+         * @see RenderTask.Builder#withNumPrimitives(int)
+         */
+        int getNumPrimitives() {
+            return this.numPrimitives;
+        }
+
+        /**
+         * @see RenderTask.Builder#withNumLights(int)
+         */
+        int getNumLights() {
+            return this.numLights;
+        }
+
+        /**
+         * @see RenderTask.Builder#withWidth(int)
+         */
+        public int getWidth() {
+            return this.width;
+        }
+
+        /**
+         * @see RenderTask.Builder#withHeight(int)
+         */
+        public int getHeight() {
+            return this.height;
+        }
+
+        /**
+         * @see RenderTask.Builder#withNumThreads(int)
+         */
+        int getNumThreads() {
+            return this.numThreads;
+        }
+
+        /**
+         * @see RenderTask.Builder#withSamplesPixel(int)
+         */
+        public int getSamplesPixel() {
+            return this.samplesPixel;
+        }
+
+        /**
+         * @see RenderTask.Builder#withSamplesLight(int)
+         */
+        public int getSamplesLight() {
+            return this.samplesLight;
+        }
+
+        /**
+         * @see RenderTask#buttonRender
+         */
+        Button getButtonRender() {
+            return this.buttonRender;
+        }
+
+        /**
+         * @see RenderTask#textView
+         */
+        TextView getTextView() {
+            return this.textView;
+        }
     }
 }

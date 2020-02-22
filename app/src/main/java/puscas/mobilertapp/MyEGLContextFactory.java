@@ -5,6 +5,8 @@ import android.opengl.GLSurfaceView;
 
 import java.util.logging.Logger;
 
+import java8.util.Objects;
+
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
@@ -48,7 +50,7 @@ class MyEGLContextFactory implements GLSurfaceView.EGLContextFactory {
     public final EGLContext createContext(final EGL10 egl, final EGLDisplay display, final EGLConfig eglConfig) {
         LOGGER.info("createContext");
 
-        if (this.eglContext != null) {
+        if (Objects.nonNull(this.eglContext)) {
             this.eglContext = null;
         } else {
             final int[] attribList = {
