@@ -42,7 +42,9 @@ Intersection Sphere::intersect(const Intersection &intersection, const Ray &ray)
     // if so, then we have an intersection
     const auto &intersectionPoint {ray.origin_ + ray.direction_ * distanceToIntersection};
     const auto &intersectionNormal {::glm::normalize(intersectionPoint - this->center_)};
-    const Intersection res {intersectionPoint, distanceToIntersection, intersectionNormal, nullptr, this->materialIndex_};
+    const Intersection res {
+        intersectionPoint, distanceToIntersection, intersectionNormal, nullptr, this->materialIndex_
+    };
     return res;
 }
 

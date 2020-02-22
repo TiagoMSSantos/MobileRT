@@ -12,6 +12,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
 import com.google.common.base.Preconditions;
 import com.google.common.base.Supplier;
 
@@ -29,19 +31,22 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
 
 import java8.util.Objects;
+import puscas.mobilertapp.exceptions.LowMemoryException;
+import puscas.mobilertapp.utils.ConstantsRenderer;
+import puscas.mobilertapp.utils.State;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import static puscas.mobilertapp.ConstantsRenderer.NUMBER_THREADS;
-import static puscas.mobilertapp.ConstantsRenderer.VERTEX_COLOR;
-import static puscas.mobilertapp.ConstantsRenderer.VERTEX_POSITION;
-import static puscas.mobilertapp.ConstantsRenderer.VERTEX_TEX_COORD;
+import static puscas.mobilertapp.utils.ConstantsRenderer.NUMBER_THREADS;
+import static puscas.mobilertapp.utils.ConstantsRenderer.VERTEX_COLOR;
+import static puscas.mobilertapp.utils.ConstantsRenderer.VERTEX_POSITION;
+import static puscas.mobilertapp.utils.ConstantsRenderer.VERTEX_TEX_COORD;
 
 /**
  * The OpenGL renderer that shows the Ray Tracer engine rendered image.
  */
-final class MainRenderer implements GLSurfaceView.Renderer {
+public final class MainRenderer implements GLSurfaceView.Renderer {
 
     /**
      * The {@link Logger} for this class.
@@ -261,7 +266,7 @@ final class MainRenderer implements GLSurfaceView.Renderer {
                 }
             };
             LOGGER.severe(stringError.get() + ": " + GLUtils.getEGLErrorString(glError));
-            System.exit(1);
+            throw new RuntimeException(stringError.get() + ": " + GLUtils.getEGLErrorString(glError));
         }
     }
 
@@ -276,8 +281,9 @@ final class MainRenderer implements GLSurfaceView.Renderer {
         final int shader = GLES20.glCreateShader(shaderType);
         checksGLError();
         if (shader == 0) {
-            LOGGER.severe("GLES20.glCreateShader = 0");
-            System.exit(1);
+            final String msg = "GLES20.glCreateShader = 0";
+            LOGGER.severe(msg);
+            throw new RuntimeException(msg);
         } else {
             GLES20.glShaderSource(shader, source);
             checksGLError();
@@ -293,7 +299,7 @@ final class MainRenderer implements GLSurfaceView.Renderer {
                 LOGGER.severe(source);
                 GLES20.glDeleteShader(shader);
                 checksGLError();
-                System.exit(1);
+                throw new RuntimeException(GLES20.glGetShaderInfoLog(shader));
             }
         }
         return shader;
@@ -710,7 +716,7 @@ final class MainRenderer implements GLSurfaceView.Renderer {
             checksGLError();
             GLES20.glDeleteProgram(this.shaderProgramRaster);
             checksGLError();
-            System.exit(1);
+            throw new RuntimeException(strError);
         }
 
 
@@ -897,7 +903,7 @@ final class MainRenderer implements GLSurfaceView.Renderer {
     }
 
     @Override
-    public void onDrawFrame(final GL10 gl) {
+    public void onDrawFrame(@NonNull final GL10 gl) {
         if (this.firstFrame) {
             LOGGER.info("onDrawFrame");
 
@@ -991,7 +997,7 @@ final class MainRenderer implements GLSurfaceView.Renderer {
     }
 
     @Override
-    public void onSurfaceChanged(final GL10 gl, final int width, final int height) {
+    public void onSurfaceChanged(@NonNull final GL10 gl, final int width, final int height) {
         LOGGER.info("onSurfaceChanged");
 
         GLES20.glViewport(0, 0, width, height);
@@ -1002,7 +1008,7 @@ final class MainRenderer implements GLSurfaceView.Renderer {
     }
 
     @Override
-    public void onSurfaceCreated(final GL10 gl, final EGLConfig config) {
+    public void onSurfaceCreated(@NonNull final GL10 gl, @NonNull final EGLConfig config) {
         LOGGER.info("onSurfaceCreated");
 
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_STENCIL_BUFFER_BIT);
@@ -1063,7 +1069,7 @@ final class MainRenderer implements GLSurfaceView.Renderer {
         if (this.shaderProgram == 0) {
             LOGGER.severe("Could not create program: ");
             LOGGER.severe(GLES20.glGetProgramInfoLog(0));
-            System.exit(1);
+            throw new RuntimeException(GLES20.glGetProgramInfoLog(0));
         }
 
         // Attach and link shaders to program
@@ -1078,8 +1084,9 @@ final class MainRenderer implements GLSurfaceView.Renderer {
         final int[] textureHandle = new int[numTextures];
         GLES20.glGenTextures(numTextures, textureHandle, 0);
         if (textureHandle[0] == 0) {
-            LOGGER.severe("Error loading texture.");
-            System.exit(1);
+            final String msg = "Error loading texture.";
+            LOGGER.severe(msg);
+            throw new RuntimeException(msg);
         }
 
 
@@ -1115,7 +1122,7 @@ final class MainRenderer implements GLSurfaceView.Renderer {
         if (linkStatus[0] != GLES20.GL_TRUE) {
             LOGGER.severe(GLES20.glGetProgramInfoLog(this.shaderProgram));
             GLES20.glDeleteProgram(this.shaderProgram);
-            System.exit(1);
+            throw new RuntimeException(GLES20.glGetProgramInfoLog(this.shaderProgram));
         }
 
         // Shader program 1

@@ -125,7 +125,7 @@ jobject Java_puscas_mobilertapp_MainRenderer_RTInitCameraArray(
         }
         return directBuffer;
     } catch (const ::std::bad_alloc &badAlloc) {
-        const auto lowMemClass {env->FindClass("puscas/mobilertapp/LowMemoryException")};
+        const auto lowMemClass {env->FindClass("puscas/mobilertapp/exceptions/LowMemoryException")};
         env->ThrowNew(lowMemClass, badAlloc.what());
         return nullptr;
     } catch (const ::std::exception &exception) {
@@ -192,7 +192,7 @@ jobject Java_puscas_mobilertapp_MainRenderer_RTInitVerticesArray(
         }
         return directBuffer;
     } catch (const ::std::bad_alloc &badAlloc) {
-        const auto lowMemClass {env->FindClass("puscas/mobilertapp/LowMemoryException")};
+        const auto lowMemClass {env->FindClass("puscas/mobilertapp/exceptions/LowMemoryException")};
         env->ThrowNew(lowMemClass, badAlloc.what());
         return nullptr;
     } catch (const ::std::exception &exception) {
@@ -266,7 +266,7 @@ jobject Java_puscas_mobilertapp_MainRenderer_RTInitColorsArray(
         }
         return directBuffer;
     } catch (const ::std::bad_alloc &badAlloc) {
-        const auto lowMemClass {env->FindClass("puscas/mobilertapp/LowMemoryException")};
+        const auto lowMemClass {env->FindClass("puscas/mobilertapp/exceptions/LowMemoryException")};
         env->ThrowNew(lowMemClass, badAlloc.what());
         return nullptr;
     } catch (const ::std::exception &exception) {
@@ -532,7 +532,7 @@ jint Java_puscas_mobilertapp_MainRenderer_RTInitialize(
         LOG("PRIMITIVES = ", res);
         return res;
     } catch (const ::std::bad_alloc &badAlloc) {
-        const auto lowMemClass {env->FindClass("puscas/mobilertapp/LowMemoryException")};
+        const auto lowMemClass {env->FindClass("puscas/mobilertapp/exceptions/LowMemoryException")};
         const auto res {env->ThrowNew(lowMemClass, badAlloc.what())};
         if (res != 0) {
             LOG("ERROR: ", res);
@@ -683,7 +683,7 @@ void Java_puscas_mobilertapp_MainRenderer_RTRenderIntoBitmap(
         }
         env->ExceptionClear();
     } catch (const ::std::bad_alloc &badAlloc) {
-        const auto lowMemClass {env->FindClass("puscas/mobilertapp/LowMemoryException")};
+        const auto lowMemClass {env->FindClass("puscas/mobilertapp/exceptions/LowMemoryException")};
         env->ThrowNew(lowMemClass, badAlloc.what());
     } catch (const ::std::exception &exception) {
         const auto exceptionClass {env->FindClass("java/lang/Exception")};

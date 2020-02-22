@@ -3,6 +3,8 @@ package puscas.mobilertapp;
 import android.app.Activity;
 import android.opengl.GLSurfaceView;
 
+import androidx.annotation.NonNull;
+
 import java.util.logging.Logger;
 
 import java8.util.Objects;
@@ -12,9 +14,9 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 
-import static puscas.mobilertapp.ConstantsError.EGL_DESTROY_CONTEXT_FAILED;
+import static puscas.mobilertapp.utils.ConstantsError.EGL_DESTROY_CONTEXT_FAILED;
 
-class MyEGLContextFactory implements GLSurfaceView.EGLContextFactory {
+public class MyEGLContextFactory implements GLSurfaceView.EGLContextFactory {
 
     /**
      * The {@link Logger} for this class.
@@ -47,7 +49,10 @@ class MyEGLContextFactory implements GLSurfaceView.EGLContextFactory {
     }
 
     @Override
-    public final EGLContext createContext(final EGL10 egl, final EGLDisplay display, final EGLConfig eglConfig) {
+    public final EGLContext createContext(
+            @NonNull final EGL10 egl,
+            @NonNull final EGLDisplay display,
+            @NonNull final EGLConfig eglConfig) {
         LOGGER.info("createContext");
 
         if (Objects.nonNull(this.eglContext)) {
@@ -63,7 +68,9 @@ class MyEGLContextFactory implements GLSurfaceView.EGLContextFactory {
     }
 
     @Override
-    public final void destroyContext(final EGL10 egl, final EGLDisplay display, final EGLContext context) {
+    public final void destroyContext(@NonNull final EGL10 egl,
+                                     @NonNull final EGLDisplay display,
+                                     @NonNull final EGLContext context) {
         LOGGER.info("destroyContext");
 
         if (this.drawView.isChangingConfigs()) {

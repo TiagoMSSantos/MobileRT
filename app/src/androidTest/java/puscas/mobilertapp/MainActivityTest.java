@@ -14,6 +14,7 @@ import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.rule.ActivityTestRule;
 
 import org.hamcrest.Matcher;
+import org.jetbrains.annotations.NotNull;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -28,19 +29,19 @@ import java.util.logging.Logger;
 import java8.util.stream.IntStreams;
 import java8.util.stream.StreamSupport;
 
-import static puscas.mobilertapp.Constants.CHECK_BOX_MESSAGE;
-import static puscas.mobilertapp.Constants.EMPTY_FILE;
-import static puscas.mobilertapp.Constants.FILE_SHOULD_EXIST;
-import static puscas.mobilertapp.Constants.OBJ_FILE_CONFERENCE;
-import static puscas.mobilertapp.Constants.OBJ_FILE_NOT_EXISTS;
-import static puscas.mobilertapp.Constants.OBJ_FILE_TEAPOT;
-import static puscas.mobilertapp.Constants.PREVIEW;
-import static puscas.mobilertapp.Constants.RENDER;
-import static puscas.mobilertapp.Constants.SET_UP;
-import static puscas.mobilertapp.Constants.SET_UP_ALL;
-import static puscas.mobilertapp.Constants.STOP;
-import static puscas.mobilertapp.Constants.TEAR_DOWN;
-import static puscas.mobilertapp.Constants.TEAR_DOWN_ALL;
+import static puscas.mobilertapp.utils.Constants.CHECK_BOX_MESSAGE;
+import static puscas.mobilertapp.utils.Constants.EMPTY_FILE;
+import static puscas.mobilertapp.utils.Constants.FILE_SHOULD_EXIST;
+import static puscas.mobilertapp.utils.Constants.OBJ_FILE_CONFERENCE;
+import static puscas.mobilertapp.utils.Constants.OBJ_FILE_NOT_EXISTS;
+import static puscas.mobilertapp.utils.Constants.OBJ_FILE_TEAPOT;
+import static puscas.mobilertapp.utils.Constants.PREVIEW;
+import static puscas.mobilertapp.utils.Constants.RENDER;
+import static puscas.mobilertapp.utils.Constants.SET_UP;
+import static puscas.mobilertapp.utils.Constants.SET_UP_ALL;
+import static puscas.mobilertapp.utils.Constants.STOP;
+import static puscas.mobilertapp.utils.Constants.TEAR_DOWN;
+import static puscas.mobilertapp.utils.Constants.TEAR_DOWN_ALL;
 
 /**
  * The test suite for {@link MainActivity}.
@@ -373,14 +374,14 @@ public final class MainActivityTest {
         }
 
         @Override
-        public final Matcher<View> getConstraints() {
+        public final @NotNull Matcher<View> getConstraints() {
             LOGGER_PICKER.info("assertPickerValue#getConstraints");
 
             return ViewMatchers.isAssignableFrom(NumberPicker.class);
         }
 
         @Override
-        public final String getDescription() {
+        public final @NotNull String getDescription() {
             LOGGER_PICKER.info("assertPickerValue#getDescription");
 
             return "Set the value of a NumberPicker";
@@ -412,14 +413,14 @@ public final class MainActivityTest {
         }
 
         @Override
-        public final Matcher<View> getConstraints() {
+        public final @NotNull Matcher<View> getConstraints() {
             LOGGER_CHECKBOX.info("testPreviewCheckBox#getConstraints");
 
             return ViewMatchers.isAssignableFrom(CheckBox.class);
         }
 
         @Override
-        public final String getDescription() {
+        public final @NotNull String getDescription() {
             LOGGER_CHECKBOX.info("testPreviewCheckBox#getDescription");
 
             return "Click preview checkbox";

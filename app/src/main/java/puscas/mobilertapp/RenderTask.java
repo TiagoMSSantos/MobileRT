@@ -8,6 +8,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import org.jetbrains.annotations.Contract;
 
 import java.lang.ref.WeakReference;
 import java.util.Locale;
@@ -17,14 +20,18 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
-import static puscas.mobilertapp.ConstantsMethods.ON_CANCELLED;
-import static puscas.mobilertapp.ConstantsRenderer.NUMBER_THREADS;
+import java8.util.Optional;
+import puscas.mobilertapp.utils.State;
+
+import static puscas.mobilertapp.utils.ConstantsMethods.ON_CANCELLED;
+import static puscas.mobilertapp.utils.ConstantsRenderer.NUMBER_THREADS;
+import static puscas.mobilertapp.utils.ConstantsUI.LINE_SEPARATOR;
 
 /**
  * An asynchronous task to render a frame and update the {@link TextView} text.
  * At the end of the task, it sets the render {@link Button} to "Render".
  */
-final class RenderTask extends AsyncTask<Void, Void, Void> {
+public final class RenderTask extends AsyncTask<Void, Void, Void> {
 
     /**
      * The {@link Logger} for this class.
@@ -259,9 +266,9 @@ final class RenderTask extends AsyncTask<Void, Void, Void> {
      */
     private void printText() {
         final String aux = this.fpsT + this.fpsRenderT + this.resolutionT + this.threadsT + this.samplesPixelT +
-                this.samplesLightT + this.sampleT + System.getProperty("line.separator") +
+                this.samplesLightT + this.sampleT + LINE_SEPARATOR +
                 this.stateT + this.allocatedT + this.timeFrameT + this.timeT + this.primitivesT;
-        this.textView.get().setText(aux);
+        Optional.ofNullable(this.textView.get()).ifPresent(x -> x.setText(aux));
     }
 
     @Override
@@ -269,8 +276,9 @@ final class RenderTask extends AsyncTask<Void, Void, Void> {
 
     }
 
+    @Nullable
     @Override
-    protected final Void doInBackground(final Void... params) {
+    protected final Void doInBackground(@NonNull final Void... params) {
         LOGGER.info("doInBackground");
 
         this.scheduler.scheduleAtFixedRate(this.timer, 0L, this.updateInterval, TimeUnit.MILLISECONDS);
@@ -280,34 +288,34 @@ final class RenderTask extends AsyncTask<Void, Void, Void> {
                 running = !this.scheduler.awaitTermination(1L, TimeUnit.DAYS);
             } catch (final InterruptedException ex) {
                 LOGGER.severe(ex.getMessage());
-                System.exit(1);
+                throw new RuntimeException(ex);
             }
         } while (running);
         return null;
     }
 
     @Override
-    protected final void onProgressUpdate(final Void... values) {
+    protected final void onProgressUpdate(@NonNull final Void... values) {
         printText();
     }
 
     @Override
-    protected final void onPostExecute(final Void result) {
+    protected final void onPostExecute(@NonNull final Void result) {
         printText();
 
-        this.buttonRender.get().setText(R.string.render);
+        Optional.ofNullable(this.buttonRender.get()).ifPresent(button -> button.setText(R.string.render));
         this.requestRender.run();
         this.finishRender.run();
     }
 
     @Override
-    protected void onCancelled(final Void result) {
+    public void onCancelled(@NonNull final Void result) {
         super.onCancelled(result);
         LOGGER.info(ON_CANCELLED);
     }
 
     @Override
-    protected void onCancelled() {
+    public void onCancelled() {
         super.onCancelled();
         LOGGER.info(ON_CANCELLED);
     }
@@ -511,6 +519,7 @@ final class RenderTask extends AsyncTask<Void, Void, Void> {
          *
          * @return A new instance of {@link RenderTask}.
          */
+        @Contract(" -> new")
         @NonNull final RenderTask build() {
             LOGGER_BUILDER.info("build");
 
@@ -520,6 +529,7 @@ final class RenderTask extends AsyncTask<Void, Void, Void> {
         /**
          * @see RenderTask#requestRender
          */
+        @Contract(pure = true)
         Runnable getRequestRender() {
             return this.requestRender;
         }
@@ -527,6 +537,7 @@ final class RenderTask extends AsyncTask<Void, Void, Void> {
         /**
          * @see RenderTask#finishRender
          */
+        @Contract(pure = true)
         Runnable getFinishRender() {
             return this.finishRender;
         }
@@ -534,6 +545,7 @@ final class RenderTask extends AsyncTask<Void, Void, Void> {
         /**
          * @see RenderTask.Builder#withUpdateInterval(long)
          */
+        @Contract(pure = true)
         long getUpdateInterval() {
             return this.updateInterval;
         }
@@ -541,6 +553,7 @@ final class RenderTask extends AsyncTask<Void, Void, Void> {
         /**
          * @see RenderTask.Builder#withNumPrimitives(int)
          */
+        @Contract(pure = true)
         int getNumPrimitives() {
             return this.numPrimitives;
         }
@@ -548,6 +561,7 @@ final class RenderTask extends AsyncTask<Void, Void, Void> {
         /**
          * @see RenderTask.Builder#withNumLights(int)
          */
+        @Contract(pure = true)
         int getNumLights() {
             return this.numLights;
         }
@@ -555,6 +569,7 @@ final class RenderTask extends AsyncTask<Void, Void, Void> {
         /**
          * @see RenderTask.Builder#withWidth(int)
          */
+        @Contract(pure = true)
         public int getWidth() {
             return this.width;
         }
@@ -562,6 +577,7 @@ final class RenderTask extends AsyncTask<Void, Void, Void> {
         /**
          * @see RenderTask.Builder#withHeight(int)
          */
+        @Contract(pure = true)
         public int getHeight() {
             return this.height;
         }
@@ -569,6 +585,7 @@ final class RenderTask extends AsyncTask<Void, Void, Void> {
         /**
          * @see RenderTask.Builder#withNumThreads(int)
          */
+        @Contract(pure = true)
         int getNumThreads() {
             return this.numThreads;
         }
@@ -576,6 +593,7 @@ final class RenderTask extends AsyncTask<Void, Void, Void> {
         /**
          * @see RenderTask.Builder#withSamplesPixel(int)
          */
+        @Contract(pure = true)
         public int getSamplesPixel() {
             return this.samplesPixel;
         }
@@ -583,6 +601,7 @@ final class RenderTask extends AsyncTask<Void, Void, Void> {
         /**
          * @see RenderTask.Builder#withSamplesLight(int)
          */
+        @Contract(pure = true)
         public int getSamplesLight() {
             return this.samplesLight;
         }
@@ -590,6 +609,7 @@ final class RenderTask extends AsyncTask<Void, Void, Void> {
         /**
          * @see RenderTask#buttonRender
          */
+        @Contract(pure = true)
         Button getButtonRender() {
             return this.buttonRender;
         }
@@ -597,6 +617,7 @@ final class RenderTask extends AsyncTask<Void, Void, Void> {
         /**
          * @see RenderTask#textView
          */
+        @Contract(pure = true)
         TextView getTextView() {
             return this.textView;
         }

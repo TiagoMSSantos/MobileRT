@@ -16,7 +16,8 @@
         android:requestLegacyExternalStorage="true"
         android:theme="@style/AppTheme"
         tools:remove="android:appComponentFactory"
-        tools:targetApi="q">
+        tools:targetApi="q"
+        android:extractNativeLibs="false">
         <activity
             android:name="puscas.mobilertapp.MainActivity">
             <intent-filter tools:ignore="GoogleAppIndexingWarning">

@@ -12,17 +12,23 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import org.jetbrains.annotations.Contract;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
-import static puscas.mobilertapp.ConstantsError.UNABLE_TO_FIND_AN_ACTIVITY;
-import static puscas.mobilertapp.ConstantsMethods.ON_DETACHED_FROM_WINDOW;
-import static puscas.mobilertapp.ConstantsMethods.RENDER_SCENE;
-import static puscas.mobilertapp.ConstantsRenderer.NUMBER_THREADS;
-import static puscas.mobilertapp.ConstantsToast.COULD_NOT_LOAD_THE_SCENE;
-import static puscas.mobilertapp.ConstantsToast.DEVICE_WITHOUT_ENOUGH_MEMORY;
+import puscas.mobilertapp.exceptions.LowMemoryException;
+import puscas.mobilertapp.utils.ConstantsRenderer;
+import puscas.mobilertapp.utils.State;
+
+import static puscas.mobilertapp.utils.ConstantsError.UNABLE_TO_FIND_AN_ACTIVITY;
+import static puscas.mobilertapp.utils.ConstantsMethods.ON_DETACHED_FROM_WINDOW;
+import static puscas.mobilertapp.utils.ConstantsMethods.RENDER_SCENE;
+import static puscas.mobilertapp.utils.ConstantsRenderer.NUMBER_THREADS;
+import static puscas.mobilertapp.utils.ConstantsToast.COULD_NOT_LOAD_THE_SCENE;
+import static puscas.mobilertapp.utils.ConstantsToast.DEVICE_WITHOUT_ENOUGH_MEMORY;
 import static puscas.mobilertapp.MyEGLContextFactory.EGL_CONTEXT_CLIENT_VERSION;
 
 /**
@@ -179,7 +185,7 @@ public final class DrawView extends GLSurfaceView {
      * @param camFilePath  The path to the CAM file containing the camera in the scene.
      * @param rasterize    Whether should show a preview (rasterize one frame) or not.
      */
-    void renderScene(
+    public void renderScene(
             final int scene,
             final int shader,
             final int numThreads,
@@ -188,11 +194,10 @@ public final class DrawView extends GLSurfaceView {
             final int samplesLight,
             final int width,
             final int height,
-            final String objFilePath,
-            final String matFilePath,
-            final String camFilePath,
-            final boolean rasterize
-    ) {
+            @NonNull final String objFilePath,
+            @NonNull final String matFilePath,
+            @NonNull final String camFilePath,
+            final boolean rasterize) {
         LOGGER.info(RENDER_SCENE);
 
         RTStartRender();
@@ -237,8 +242,7 @@ public final class DrawView extends GLSurfaceView {
             final int height,
             final String objFilePath,
             final String matFilePath,
-            final String camFilePath
-    ) {
+            final String camFilePath) {
         LOGGER.info("createScene");
 
         this.renderer.freeArrays();
@@ -267,6 +271,7 @@ public final class DrawView extends GLSurfaceView {
      *
      * @return The {@link MainRenderer} of this object.
      */
+    @Contract(pure = true)
     MainRenderer getRenderer() {
         return this.renderer;
     }
@@ -276,6 +281,7 @@ public final class DrawView extends GLSurfaceView {
      *
      * @return The {@link DrawView#changingConfigs}.
      */
+    @Contract(pure = true)
     boolean isChangingConfigs() {
         return this.changingConfigs;
     }

@@ -32,36 +32,43 @@ import androidx.core.content.ContextCompat;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
-
-import java8.util.stream.IntStreams;
-import java8.util.stream.StreamSupport;
-import java8.util.Objects;
 
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 
-import static puscas.mobilertapp.ConstantsError.CANT_GET_NUMBER_OF_CORES_AVAILABLE;
-import static puscas.mobilertapp.ConstantsMethods.ON_DESTROY;
-import static puscas.mobilertapp.ConstantsMethods.ON_DETACHED_FROM_WINDOW;
-import static puscas.mobilertapp.ConstantsMethods.START_RENDER;
-import static puscas.mobilertapp.ConstantsRenderer.REQUIRED_OPENGL_VERSION;
-import static puscas.mobilertapp.ConstantsToast.PLEASE_INSTALL_FILE_MANAGER;
-import static puscas.mobilertapp.ConstantsUI.CHECK_BOX_RASTERIZE;
-import static puscas.mobilertapp.ConstantsUI.PICKER_ACCELERATOR;
-import static puscas.mobilertapp.ConstantsUI.PICKER_SAMPLES_LIGHT;
-import static puscas.mobilertapp.ConstantsUI.PICKER_SAMPLES_PIXEL;
-import static puscas.mobilertapp.ConstantsUI.PICKER_SCENE;
-import static puscas.mobilertapp.ConstantsUI.PICKER_SHADER;
-import static puscas.mobilertapp.ConstantsUI.PICKER_SIZES;
-import static puscas.mobilertapp.ConstantsUI.PICKER_THREADS;
+import java8.util.Objects;
+import java8.util.Optional;
+import java8.util.stream.IntStreams;
+import java8.util.stream.StreamSupport;
+import puscas.mobilertapp.utils.Accelerator;
+import puscas.mobilertapp.utils.Scene;
+import puscas.mobilertapp.utils.Shader;
+import puscas.mobilertapp.utils.State;
+
+import static puscas.mobilertapp.utils.ConstantsMethods.ON_DESTROY;
+import static puscas.mobilertapp.utils.ConstantsMethods.ON_DETACHED_FROM_WINDOW;
+import static puscas.mobilertapp.utils.ConstantsMethods.START_RENDER;
+import static puscas.mobilertapp.utils.ConstantsRenderer.REQUIRED_OPENGL_VERSION;
+import static puscas.mobilertapp.utils.ConstantsToast.PLEASE_INSTALL_FILE_MANAGER;
+import static puscas.mobilertapp.utils.ConstantsUI.CHECK_BOX_RASTERIZE;
+import static puscas.mobilertapp.utils.ConstantsUI.LINE_SEPARATOR;
+import static puscas.mobilertapp.utils.ConstantsUI.PICKER_ACCELERATOR;
+import static puscas.mobilertapp.utils.ConstantsUI.PICKER_SAMPLES_LIGHT;
+import static puscas.mobilertapp.utils.ConstantsUI.PICKER_SAMPLES_PIXEL;
+import static puscas.mobilertapp.utils.ConstantsUI.PICKER_SCENE;
+import static puscas.mobilertapp.utils.ConstantsUI.PICKER_SHADER;
+import static puscas.mobilertapp.utils.ConstantsUI.PICKER_SIZES;
+import static puscas.mobilertapp.utils.ConstantsUI.PICKER_THREADS;
 
 /**
  * The main {@link Activity} for the Android User Interface.
@@ -78,6 +85,11 @@ public final class MainActivity extends Activity {
      */
     private static final int OLD_API_GET_CORES = 17;
 
+    /**
+     * The path where the CPU topology information is at.
+     */
+    private static final String SYS_DEVICES_SYSTEM_CPU = "/sys/devices/system/cpu/";
+
     static {
         try {
             System.loadLibrary("MobileRT");
@@ -85,7 +97,7 @@ public final class MainActivity extends Activity {
             System.loadLibrary("AppInterface");
         } catch (final RuntimeException ex) {
             LOGGER.severe("WARNING: Could not load native library: " + ex.getMessage());
-            System.exit(1);
+            throw new RuntimeException(ex);
         }
     }
 
@@ -157,18 +169,9 @@ public final class MainActivity extends Activity {
      * @return The number of CPU cores.
      */
     private static int getNumCoresOldPhones() {
-        int numCores = 0;
-        try {
-            final File dir = new File("/sys/devices/system/cpu/");
-            final File[] files = dir.listFiles((pathname) -> Pattern.matches("cpu[0-9]+", pathname.getName()));
-            Preconditions.checkNotNull(files);
-
-            numCores = files.length;
-        } catch (final RuntimeException ex) {
-            LOGGER.severe(CANT_GET_NUMBER_OF_CORES_AVAILABLE);
-            System.exit(1);
-        }
-        return numCores;
+        final File cpuTopologyPath = new File(SYS_DEVICES_SYSTEM_CPU);
+        final File[] files = cpuTopologyPath.listFiles(pathname -> Pattern.matches("cpu[0-9]+", pathname.getName()));
+        return Optional.ofNullable(files).map(filesInPath -> filesInPath.length).get();
     }
 
     /**
@@ -178,7 +181,7 @@ public final class MainActivity extends Activity {
      */
     private static int getNumOfCores() {
         return (Build.VERSION.SDK_INT < OLD_API_GET_CORES)
-                ? MainActivity.getNumCoresOldPhones()
+                ? getNumCoresOldPhones()
                 : Runtime.getRuntime().availableProcessors();
     }
 
@@ -262,14 +265,22 @@ public final class MainActivity extends Activity {
      */
     private String readTextAsset(final String filePath) {
         final AssetManager assetManager = getAssets();
-        String asset = null;
-        try (final InputStream stream = assetManager.open(filePath)) {
-            final int size = stream.available();
-            final byte[] buffer = new byte[size];
-            final int bytes = stream.read(buffer);
-            if (bytes > 0) {
-                asset = new String(buffer);
+//        String asset = null;
+        try (final InputStream inputStream = assetManager.open(filePath);
+             final InputStreamReader isReader = new InputStreamReader(inputStream, Charset.defaultCharset());
+             final BufferedReader reader = new BufferedReader(isReader)) {
+
+            final StringBuilder sb = new StringBuilder(1);
+            String str = reader.readLine();
+            while (str != null) {
+                sb.append(str).append(LINE_SEPARATOR);
+                str = reader.readLine();
             }
+            return sb.toString();
+//            final int size = inputStream.available();
+//            final byte[] buffer = new byte[size];
+//            final int bytes = inputStream.read(buffer);
+//            asset = bytes > 0? new String(buffer) : null;
         } catch (final OutOfMemoryError ex1) {
             LOGGER.severe("Not enough memory for asset  " + filePath);
             LOGGER.severe(ex1.getMessage());
@@ -277,9 +288,9 @@ public final class MainActivity extends Activity {
         } catch (final IOException ex2) {
             LOGGER.severe("Couldn't read asset " + filePath);
             LOGGER.severe(ex2.getMessage());
-            System.exit(1);
+            throw new RuntimeException(ex2);
         }
-        return asset;
+//        return asset;
     }
 
     /**
@@ -359,7 +370,7 @@ public final class MainActivity extends Activity {
     @NonNull
     public String getSDCardPath() {
         LOGGER.info("Getting SD card path");
-        final File[] dirs = ContextCompat.getExternalFilesDirs(this.getApplicationContext(), null);
+        final File[] dirs = ContextCompat.getExternalFilesDirs(getApplicationContext(), null);
         final File externalStorageDirectory = dirs.length > 1? dirs[1] : dirs[0];
         String sdCardPath = externalStorageDirectory.getAbsolutePath();
         final int removeIndex = sdCardPath.indexOf("Android");
@@ -371,7 +382,7 @@ public final class MainActivity extends Activity {
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
-    protected final void onCreate(@Nullable final Bundle savedInstanceState) {
+    public final void onCreate(@Nullable final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         int defaultPickerScene = 0;
@@ -397,7 +408,7 @@ public final class MainActivity extends Activity {
             setContentView(R.layout.activity_main);
         } catch (final RuntimeException ex) {
             LOGGER.severe(ex.getMessage());
-            System.exit(1);
+            throw new RuntimeException(ex);
         }
 
         this.drawView = this.findViewById(R.id.drawLayout);
@@ -451,15 +462,16 @@ public final class MainActivity extends Activity {
             this.drawView.setVisibility(View.VISIBLE);
 
             renderButton.setOnLongClickListener((final View view) -> {
-                this.recreate();
+                recreate();
                 return false;
             });
             renderer.setButtonRender(renderButton);
 
             this.drawView.setPreserveEGLContextOnPause(true);
         } else {
-            LOGGER.severe("Your device doesn't support ES 2. (" + configurationInfo.reqGlEsVersion + ')');
-            System.exit(1);
+            final String msg = "Your device doesn't support ES 2. (" + configurationInfo.reqGlEsVersion + ')';
+            LOGGER.severe(msg);
+            throw new RuntimeException(msg);
         }
 
         final String[] scenes = Scene.getNames();
@@ -510,7 +522,7 @@ public final class MainActivity extends Activity {
         this.pickerAccelerator.setValue(defaultPickerAccelerator);
         this.pickerAccelerator.setDisplayedValues(accelerators);
 
-        final int maxCores = MainActivity.getNumOfCores();
+        final int maxCores = getNumOfCores();
         this.pickerThreads.setMinValue(1);
         this.pickerThreads.setMaxValue(maxCores);
         this.pickerThreads.setWrapSelectorWheel(true);
@@ -656,7 +668,7 @@ public final class MainActivity extends Activity {
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         super.onDestroy();
         LOGGER.info(ON_DESTROY);
 

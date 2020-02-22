@@ -8,7 +8,7 @@
                 android:paddingTop="@dimen/activity_vertical_margin"
                 tools:context="puscas.mobilertapp.MainActivity">
 
-    <puscas.mobilertapp.CustomNumberPicker
+    <puscas.mobilertapp.utils.CustomNumberPicker
         android:id="@+id/pickerScene"
         android:layout_width="80dp"
         android:layout_height="60dp"
@@ -17,14 +17,14 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"/>
 
-    <puscas.mobilertapp.CustomNumberPicker
+    <puscas.mobilertapp.utils.CustomNumberPicker
         android:id="@+id/pickerShader"
         android:layout_width="80dp"
         android:layout_height="60dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"/>
 
-    <puscas.mobilertapp.CustomNumberPicker
+    <puscas.mobilertapp.utils.CustomNumberPicker
         android:id="@+id/pickerThreads"
         android:layout_width="80dp"
         android:layout_height="60dp"
@@ -54,7 +54,7 @@
         android:textAllCaps="false"
         android:textSize="17sp"/>
 
-    <puscas.mobilertapp.CustomNumberPicker
+    <puscas.mobilertapp.utils.CustomNumberPicker
         android:id="@+id/pickerSamplesPixel"
         android:layout_width="40dp"
         android:layout_height="60dp"
@@ -62,7 +62,7 @@
         android:layout_toEndOf="@+id/pickerShader"
         android:layout_toRightOf="@+id/pickerShader" />
 
-    <puscas.mobilertapp.CustomNumberPicker
+    <puscas.mobilertapp.utils.CustomNumberPicker
         android:id="@+id/pickerSamplesLight"
         android:layout_width="30dp"
         android:layout_height="60dp"
@@ -70,7 +70,7 @@
         android:layout_toLeftOf="@+id/pickerSize"
         android:layout_toStartOf="@+id/pickerSize" />
 
-    <puscas.mobilertapp.CustomNumberPicker
+    <puscas.mobilertapp.utils.CustomNumberPicker
         android:id="@+id/pickerAccelerator"
         android:layout_width="60dp"
         android:layout_height="60dp"
@@ -82,7 +82,7 @@
         android:layout_toLeftOf="@+id/pickerSamplesPixel"
         android:layout_toStartOf="@+id/pickerSamplesPixel"/>
 
-    <puscas.mobilertapp.CustomNumberPicker
+    <puscas.mobilertapp.utils.CustomNumberPicker
         android:id="@+id/pickerSize"
         android:layout_width="80dp"
         android:layout_height="60dp"

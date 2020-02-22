@@ -1,2 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<external-path name="root" path="/" />
+<paths>
+    <external-path name="root" path="/" />
+</paths>
