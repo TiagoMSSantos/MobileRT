@@ -2,7 +2,7 @@
 	path = app/third_party/glm
 	url = https://github.com/g-truc/glm
     update = checkout
-	branch = 0.9.9.7
+	branch = master
     fetchRecurseSubmodules = true
     ignore = none
     shallow = false
@@ -20,7 +20,7 @@
 	path = app/third_party/googletest
 	url = https://github.com/google/googletest
     update = checkout
-	branch = release-1.10.0
+	branch = master
     fetchRecurseSubmodules = true
     ignore = none
     shallow = false
@@ -38,7 +38,7 @@
     path = app/third_party/boost
     url = https://github.com/boostorg/boost
     update = checkout
-    branch = boost-1.72.0
+    branch = master
     fetchRecurseSubmodules = true
     ignore = none
     shallow = false

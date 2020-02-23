@@ -73,6 +73,16 @@ public final class ConstantsUI {
     public static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
     /**
+     * The file separator in the current system.
+     */
+    public static final String FILE_SEPARATOR = System.getProperty("file.separator");
+
+    /**
+     * The path separator in the current system.
+     */
+    public static final String PATH_SEPARATOR = System.getProperty("path.separator");
+
+    /**
      * A private constructor in order to prevent instantiating this helper class.
      */
     private ConstantsUI() {

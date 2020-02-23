@@ -15,7 +15,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Supplier;
 
 import org.jetbrains.annotations.Contract;
 
@@ -30,13 +29,15 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
 
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.opengles.GL10;
+
 import java8.util.Objects;
+import java8.util.function.Supplier;
+import puscas.mobilertapp.exceptions.FailureException;
 import puscas.mobilertapp.exceptions.LowMemoryException;
 import puscas.mobilertapp.utils.ConstantsRenderer;
 import puscas.mobilertapp.utils.State;
-
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL10;
 
 import static puscas.mobilertapp.utils.ConstantsRenderer.NUMBER_THREADS;
 import static puscas.mobilertapp.utils.ConstantsRenderer.VERTEX_COLOR;
@@ -265,8 +266,9 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
                         return "GL_UNKNOWN_ERROR";
                 }
             };
-            LOGGER.severe(stringError.get() + ": " + GLUtils.getEGLErrorString(glError));
-            throw new RuntimeException(stringError.get() + ": " + GLUtils.getEGLErrorString(glError));
+            final String msg = stringError.get() + ": " + GLUtils.getEGLErrorString(glError);
+            LOGGER.severe(msg);
+            throw new FailureException(msg);
         }
     }
 
@@ -283,7 +285,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         if (shader == 0) {
             final String msg = "GLES20.glCreateShader = 0";
             LOGGER.severe(msg);
-            throw new RuntimeException(msg);
+            throw new FailureException(msg);
         } else {
             GLES20.glShaderSource(shader, source);
             checksGLError();
@@ -293,13 +295,14 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
             GLES20.glGetShaderiv(shader, GLES20.GL_COMPILE_STATUS, compiled, 0);
             checksGLError();
             if (compiled[0] == 0) {
-                LOGGER.severe("Could not compile shader " + shaderType + ':');
+                final String msg = "Could not compile shader " + shaderType + ':';
+                LOGGER.severe(msg);
                 LOGGER.severe(GLES20.glGetShaderInfoLog(shader));
                 checksGLError();
                 LOGGER.severe(source);
                 GLES20.glDeleteShader(shader);
                 checksGLError();
-                throw new RuntimeException(GLES20.glGetShaderInfoLog(shader));
+                throw new FailureException(GLES20.glGetShaderInfoLog(shader));
             }
         }
         return shader;
@@ -338,7 +341,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * @return The current Ray Tracer engine {@link State}.
      */
     State getState() {
-        return State.values()[this.renderTask.RTGetState()];
+        return State.values()[this.renderTask.rtGetState()];
     }
 
     /**
@@ -366,35 +369,15 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
     /**
      * Stops the Ray Tracer engine and updates its {@link State} to {@link State#IDLE}.
      */
-    native void RTFinishRender();
+    native void rtFinishRender();
 
     /**
      * Loads the scene and constructs the Ray Tracer renderer.
      *
-     * @param scene        The scene to load.
-     * @param shader       The shader to use.
-     * @param width        The width of the image plane.
-     * @param height       The height of the image plane.
-     * @param accelerator  The accelerator to use.
-     * @param samplesPixel The number of samples per pixel.
-     * @param samplesLight The number of samples per light.
-     * @param objFilePath  The path to the OBJ file containing the scene.
-     * @param matFilePath  The path to the MTL file containing the materials of the scene.
-     * @param camFilePath  The path to the CAM file containing the camera in the scene.
+     * @param config The ray tracer configuration.
      * @return The number of primitives or a negative value if an error occurs.
      */
-    native int RTInitialize(
-            final int scene,
-            final int shader,
-            final int width,
-            final int height,
-            final int accelerator,
-            final int samplesPixel,
-            final int samplesLight,
-            final String objFilePath,
-            final String matFilePath,
-            final String camFilePath
-    ) throws LowMemoryException;
+    native int rtInitialize(final Config config) throws LowMemoryException;
 
     /**
      * Let Ray Tracer engine start to render the scene.
@@ -405,72 +388,72 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * @param async      If {@code true} let the Ray Tracer engine render the scene asynchronously or otherwise
      *                   synchronously.
      */
-    private native void RTRenderIntoBitmap(
+    private native void rtRenderIntoBitmap(
             final Bitmap image,
             final int numThreads,
             final boolean async
-    ) throws Exception;
+    ) throws LowMemoryException;
 
     /**
      * Creates a native array with all the positions of triangles in the scene.
      *
      * @return A new array with all the primitives' vertices.
      */
-    private native ByteBuffer RTInitVerticesArray() throws Exception;
+    private native ByteBuffer rtInitVerticesArray() throws LowMemoryException;
 
     /**
      * Creates a native array with all the colors of triangles in the scene.
      *
      * @return A new array with all the primitives' colors.
      */
-    private native ByteBuffer RTInitColorsArray() throws Exception;
+    private native ByteBuffer rtInitColorsArray() throws LowMemoryException;
 
     /**
      * Creates a native array with the camera's position, direction, up and right vectors in the scene.
      *
      * @return A new array with the camera's position and vectors.
      */
-    private native ByteBuffer RTInitCameraArray() throws Exception;
+    private native ByteBuffer rtInitCameraArray() throws LowMemoryException;
 
     /**
      * Free the memory of a native array.
-     * The memory allocated with {@link MainRenderer#RTInitVerticesArray()},
-     * {@link MainRenderer#RTInitColorsArray()} and {@link MainRenderer#RTInitCameraArray()} methods should be
+     * The memory allocated with {@link MainRenderer#rtInitVerticesArray()},
+     * {@link MainRenderer#rtInitColorsArray()} and {@link MainRenderer#rtInitCameraArray()} methods should be
      * free using this method.
      *
      * @param byteBuffer A reference to {@link ByteBuffer} to free its memory.
      * @return A {@code null} reference.
      */
-    private native ByteBuffer RTFreeNativeBuffer(final ByteBuffer byteBuffer);
+    private native ByteBuffer rtFreeNativeBuffer(final ByteBuffer byteBuffer);
 
     /**
      * Free the memory of {@link MainRenderer#arrayVertices}, {@link MainRenderer#arrayColors} and
      * {@link MainRenderer#arrayCamera} native arrays.
      */
     void freeArrays() {
-        this.arrayVertices = RTFreeNativeBuffer(this.arrayVertices);
-        this.arrayColors = RTFreeNativeBuffer(this.arrayColors);
-        this.arrayCamera = RTFreeNativeBuffer(this.arrayCamera);
+        this.arrayVertices = rtFreeNativeBuffer(this.arrayVertices);
+        this.arrayColors = rtFreeNativeBuffer(this.arrayColors);
+        this.arrayCamera = rtFreeNativeBuffer(this.arrayCamera);
     }
 
     /**
      * Helper method which initializes the {@link MainRenderer#arrayVertices}, {@link MainRenderer#arrayColors} and
      * {@link MainRenderer#arrayCamera} native arrays.
      */
-    private void initArrays() throws Exception {
-        this.arrayVertices = RTInitVerticesArray();
+    private void initArrays() throws LowMemoryException {
+        this.arrayVertices = rtInitVerticesArray();
 
         if (isLowMemory(1)) {
             freeArrays();
         }
 
-        this.arrayColors = RTInitColorsArray();
+        this.arrayColors = rtInitColorsArray();
 
         if (isLowMemory(1)) {
             freeArrays();
         }
 
-        this.arrayCamera = RTInitCameraArray();
+        this.arrayCamera = rtInitCameraArray();
 
         if (isLowMemory(1)) {
             freeArrays();
@@ -535,7 +518,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         final int red = pixel & 0xff;
         final int green = (pixel >> (1 * 8)) & 0xff;
         final int blue = (pixel >> (2 * 8)) & 0xff;
-        final int alpha = (pixel >> ((3 * 8))) & 0xff;
+        final int alpha = (pixel >> (3 * 8)) & 0xff;
         final int newPixel = (red << (2 * 8)) | (green << (1 * 8)) | blue;
         return alpha << (3 * 8) | newPixel;
     }
@@ -601,6 +584,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
             this.executorService = Executors.newFixedThreadPool(NUMBER_THREADS);
         } catch (final InterruptedException ex) {
             LOGGER.warning(ex.getMessage());
+            Thread.currentThread().interrupt();
         } finally {
             this.lockExecutorService.unlock();
         }
@@ -711,12 +695,14 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
 
         if (linkStatusRaster[0] != GLES20.GL_TRUE) {
             final String strError = GLES20.glGetProgramInfoLog(this.shaderProgramRaster);
-            LOGGER.severe("attachedShadersRaster = " + attachedShadersRaster[0]);
-            LOGGER.severe("Could not link program rasterizer: " + strError);
+            final String msg = "attachedShadersRaster = " + attachedShadersRaster[0];
+            final String msg2 = "Could not link program rasterizer: " + strError;
+            LOGGER.severe(msg);
+            LOGGER.severe(msg2);
             checksGLError();
             GLES20.glDeleteProgram(this.shaderProgramRaster);
             checksGLError();
-            throw new RuntimeException(strError);
+            throw new FailureException(strError);
         }
 
 
@@ -928,13 +914,13 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
             }
 
             try {
-                RTRenderIntoBitmap(this.bitmap, this.numThreads, true);
+                rtRenderIntoBitmap(this.bitmap, this.numThreads, true);
             } catch (final Exception ex) {
                 LOGGER.warning(ex.getMessage());
             }
 
             final RenderTask.Builder renderTaskBuilder = new RenderTask.Builder(
-                    this.requestRender, this::RTFinishRender, this.textView, this.buttonRender
+                    this.requestRender, this::rtFinishRender, this.textView, this.buttonRender
             );
 
             this.renderTask = renderTaskBuilder
@@ -1069,7 +1055,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         if (this.shaderProgram == 0) {
             LOGGER.severe("Could not create program: ");
             LOGGER.severe(GLES20.glGetProgramInfoLog(0));
-            throw new RuntimeException(GLES20.glGetProgramInfoLog(0));
+            throw new FailureException(GLES20.glGetProgramInfoLog(0));
         }
 
         // Attach and link shaders to program
@@ -1086,7 +1072,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         if (textureHandle[0] == 0) {
             final String msg = "Error loading texture.";
             LOGGER.severe(msg);
-            throw new RuntimeException(msg);
+            throw new FailureException(msg);
         }
 
 
@@ -1122,7 +1108,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         if (linkStatus[0] != GLES20.GL_TRUE) {
             LOGGER.severe(GLES20.glGetProgramInfoLog(this.shaderProgram));
             GLES20.glDeleteProgram(this.shaderProgram);
-            throw new RuntimeException(GLES20.glGetProgramInfoLog(this.shaderProgram));
+            throw new FailureException(GLES20.glGetProgramInfoLog(this.shaderProgram));
         }
 
         // Shader program 1

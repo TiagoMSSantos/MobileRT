@@ -12,24 +12,29 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.google.common.base.Strings;
+
 import org.jetbrains.annotations.Contract;
 
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
 import puscas.mobilertapp.exceptions.LowMemoryException;
 import puscas.mobilertapp.utils.ConstantsRenderer;
 import puscas.mobilertapp.utils.State;
 
+import static puscas.mobilertapp.MyEGLContextFactory.EGL_CONTEXT_CLIENT_VERSION;
 import static puscas.mobilertapp.utils.ConstantsError.UNABLE_TO_FIND_AN_ACTIVITY;
 import static puscas.mobilertapp.utils.ConstantsMethods.ON_DETACHED_FROM_WINDOW;
 import static puscas.mobilertapp.utils.ConstantsMethods.RENDER_SCENE;
 import static puscas.mobilertapp.utils.ConstantsRenderer.NUMBER_THREADS;
 import static puscas.mobilertapp.utils.ConstantsToast.COULD_NOT_LOAD_THE_SCENE;
 import static puscas.mobilertapp.utils.ConstantsToast.DEVICE_WITHOUT_ENOUGH_MEMORY;
-import static puscas.mobilertapp.MyEGLContextFactory.EGL_CONTEXT_CLIENT_VERSION;
 
 /**
  * The {@link GLSurfaceView} to show the scene being rendered.
@@ -95,19 +100,19 @@ public final class DrawView extends GLSurfaceView {
     /**
      * Stops the Ray Tracer engine and sets its {@link State} to {@link State#STOP}.
      */
-    private native void RTStopRender();
+    private native void rtStopRender();
 
     /**
      * Sets the Ray Tracer engine {@link State} to {@link State#BUSY}.
      */
-    private native void RTStartRender();
+    private native void rtStartRender();
 
     /**
      * Gets the number of lights in the scene.
      *
      * @return The number of lights.
      */
-    private native int RTGetNumberOfLights();
+    private native int rtGetNumberOfLights();
 
     /**
      * Helper method which gets the instance of the {@link Activity}.
@@ -145,11 +150,11 @@ public final class DrawView extends GLSurfaceView {
 
         this.renderer.updateButton(R.string.render);
         setOnTouchListener(null);
-        RTStopRender();
+        rtStopRender();
 
         waitForLastTask();
 
-        this.renderer.RTFinishRender();
+        this.renderer.rtFinishRender();
     }
 
     /**
@@ -164,6 +169,7 @@ public final class DrawView extends GLSurfaceView {
                 running = !this.executorService.awaitTermination(1L, TimeUnit.DAYS);
             } catch (final InterruptedException ex) {
                 LOGGER.warning(ex.getMessage());
+                Thread.currentThread().interrupt();
             }
         } while (running);
         this.executorService = Executors.newFixedThreadPool(NUMBER_THREADS);
@@ -172,97 +178,73 @@ public final class DrawView extends GLSurfaceView {
     /**
      * Asynchronously creates the requested scene and starts rendering it.
      *
-     * @param scene        The requested scene to render.
-     * @param shader       The requested shader to use.
-     * @param numThreads   The number of threads to be used in the Ray Tracer engine.
-     * @param accelerator  The accelerator to use.
-     * @param samplesPixel The requested number of samples per pixel.
-     * @param samplesLight The requested number of samples per light.
-     * @param width        The width of the {@link android.graphics.Bitmap} that holds the rendered image.
-     * @param height       The height of the {@link android.graphics.Bitmap} that holds the rendered image.
-     * @param objFilePath  The path to the OBJ file containing the scene.
-     * @param matFilePath  The path to the MAT file containing the materials of the scene.
-     * @param camFilePath  The path to the CAM file containing the camera in the scene.
-     * @param rasterize    Whether should show a preview (rasterize one frame) or not.
+     * @param config     The ray tracer configuration.
+     * @param numThreads The number of threads to be used in the Ray Tracer engine.
+     * @param rasterize  Whether should show a preview (rasterize one frame) or not.
      */
     public void renderScene(
-            final int scene,
-            final int shader,
+            final Config config,
             final int numThreads,
-            final int accelerator,
-            final int samplesPixel,
-            final int samplesLight,
-            final int width,
-            final int height,
-            @NonNull final String objFilePath,
-            @NonNull final String matFilePath,
-            @NonNull final String camFilePath,
             final boolean rasterize) {
         LOGGER.info(RENDER_SCENE);
 
-        RTStartRender();
+        rtStartRender();
         this.renderer.updateButton(R.string.stop);
 
-        this.executorService.submit(() -> {
+        final Future<Boolean> result = this.executorService.submit(() -> {
             LOGGER.info(RENDER_SCENE);
 
             this.renderer.waitForLastTask();
 
-            createScene(scene, shader, numThreads, accelerator, samplesPixel, samplesLight,
-                    width, height, objFilePath, matFilePath, camFilePath);
+            createScene(config, numThreads);
             this.renderer.freeArrays();
             this.renderer.setRasterize(rasterize);
             requestRender();
+            return Boolean.TRUE;
         });
+        try {
+            final Boolean done = result.get(1L, TimeUnit.SECONDS);
+            final String msg = "Renderer launched: " + done;
+            LOGGER.info(msg);
+        } catch (final ExecutionException | TimeoutException ex) {
+            LOGGER.warning(Strings.nullToEmpty(ex.getMessage()));
+        } catch (final InterruptedException ex) {
+            LOGGER.warning(ex.getMessage());
+            Thread.currentThread().interrupt();
+        }
+
     }
 
     /**
      * Loads the scene and creates the Ray Tracer renderer.
      *
-     * @param scene        The requested scene to render.
-     * @param shader       The requested shader to use.
-     * @param numThreads   The number of threads to be used in the Ray Tracer engine.
-     * @param accelerator  The acceleration structure to use.
-     * @param samplesPixel The requested number of samples per pixel.
-     * @param samplesLight The requested number of samples per light.
-     * @param width        The width of the {@link android.graphics.Bitmap} that holds the rendered image.
-     * @param height       The height of the {@link android.graphics.Bitmap} that holds the rendered image.
-     * @param objFilePath  The path to the OBJ file containing the scene.
-     * @param matFilePath  The path to the MAT file containing the materials of the scene.
-     * @param camFilePath  The path to the CAM file containing the camera in the scene.
+     * @param config     The ray tracer configuration.
+     * @param numThreads The number of threads to be used in the Ray Tracer engine.
      */
     private void createScene(
-            final int scene,
-            final int shader,
-            final int numThreads,
-            final int accelerator,
-            final int samplesPixel,
-            final int samplesLight,
-            final int width,
-            final int height,
-            final String objFilePath,
-            final String matFilePath,
-            final String camFilePath) {
+            final Config config,
+            final int numThreads) {
         LOGGER.info("createScene");
 
         this.renderer.freeArrays();
 
         try {
-            final int numPrimitives = this.renderer.RTInitialize(scene, shader, width, height, accelerator,
-                    samplesPixel, samplesLight, objFilePath, matFilePath, camFilePath);
-            this.renderer.resetStats(numThreads, samplesPixel, samplesLight, numPrimitives, RTGetNumberOfLights());
-        } catch(final LowMemoryException ex) {
+            final int numPrimitives = this.renderer.rtInitialize(config);
+            this.renderer.resetStats(
+                    numThreads, config.getSamplesPixel(), config.getSamplesLight(), numPrimitives, rtGetNumberOfLights()
+            );
+        } catch (final LowMemoryException ex) {
             this.renderer.resetStats(-1, -1, -1, -1, -1);
             LOGGER.severe("LowMemoryException: " + ex.getMessage());
             post(() -> Toast.makeText(getContext(), DEVICE_WITHOUT_ENOUGH_MEMORY, Toast.LENGTH_LONG).show());
-        } catch(final RuntimeException ex) {
+        } catch (final RuntimeException ex) {
             this.renderer.resetStats(-2, -2, -2, -2, -2);
             LOGGER.severe("RuntimeException: " + ex.getMessage());
             post(() -> Toast.makeText(getContext(), COULD_NOT_LOAD_THE_SCENE, Toast.LENGTH_LONG).show());
         } finally {
             final int widthView = getWidth();
             final int heightView = getHeight();
-            this.renderer.setBitmap(width, height, widthView, heightView);
+            this.renderer.setBitmap(config.getWidth(), config.getHeight(), widthView, heightView);
         }
     }
 

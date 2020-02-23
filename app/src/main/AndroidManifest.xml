@@ -17,7 +17,7 @@
         android:theme="@style/AppTheme"
         tools:remove="android:appComponentFactory"
         tools:targetApi="q"
-        android:extractNativeLibs="false">
+        android:extractNativeLibs="true">
         <activity
             android:name="puscas.mobilertapp.MainActivity">
             <intent-filter tools:ignore="GoogleAppIndexingWarning">

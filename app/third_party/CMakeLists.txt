@@ -36,6 +36,11 @@ execute_process( COMMAND git pull --rebase
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/boost )
 
 
+# Checkout to specific versions
+execute_process( COMMAND git checkout release-1.10.0
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/googletest )
+
+
 # Add third party dependencies
 add_subdirectory( glm )
 add_subdirectory( tinyobjloader )

@@ -61,7 +61,7 @@ void JNI_OnUnload(JavaVM *const /*jvm*/, void * /*reserved*/) {
 }
 
 extern "C"
-jobject Java_puscas_mobilertapp_MainRenderer_RTInitCameraArray(
+jobject Java_puscas_mobilertapp_MainRenderer_rtInitCameraArray(
         JNIEnv *env,
         jobject /*thiz*/
 ) {
@@ -129,18 +129,18 @@ jobject Java_puscas_mobilertapp_MainRenderer_RTInitCameraArray(
         env->ThrowNew(lowMemClass, badAlloc.what());
         return nullptr;
     } catch (const ::std::exception &exception) {
-        const auto exceptionClass {env->FindClass("java/lang/Exception")};
+        const auto exceptionClass {env->FindClass("java/lang/RuntimeException")};
         env->ThrowNew(exceptionClass, exception.what());
         return nullptr;
     } catch (...) {
-        const auto exceptionClass {env->FindClass("java/lang/Exception")};
+        const auto exceptionClass {env->FindClass("java/lang/RuntimeException")};
         env->ThrowNew(exceptionClass, "Unknown error");
         return nullptr;
     }
 }
 
 extern "C"
-jobject Java_puscas_mobilertapp_MainRenderer_RTInitVerticesArray(
+jobject Java_puscas_mobilertapp_MainRenderer_rtInitVerticesArray(
         JNIEnv *env,
         jobject /*thiz*/
 ) {
@@ -196,18 +196,18 @@ jobject Java_puscas_mobilertapp_MainRenderer_RTInitVerticesArray(
         env->ThrowNew(lowMemClass, badAlloc.what());
         return nullptr;
     } catch (const ::std::exception &exception) {
-        const auto exceptionClass {env->FindClass("java/lang/Exception")};
+        const auto exceptionClass {env->FindClass("java/lang/RuntimeException")};
         env->ThrowNew(exceptionClass, exception.what());
         return nullptr;
     } catch (...) {
-        const auto exceptionClass {env->FindClass("java/lang/Exception")};
+        const auto exceptionClass {env->FindClass("java/lang/RuntimeException")};
         env->ThrowNew(exceptionClass, "Unknown error");
         return nullptr;
     }
 }
 
 extern "C"
-jobject Java_puscas_mobilertapp_MainRenderer_RTInitColorsArray(
+jobject Java_puscas_mobilertapp_MainRenderer_rtInitColorsArray(
         JNIEnv *env,
         jobject /*thiz*/
 ) {
@@ -270,11 +270,11 @@ jobject Java_puscas_mobilertapp_MainRenderer_RTInitColorsArray(
         env->ThrowNew(lowMemClass, badAlloc.what());
         return nullptr;
     } catch (const ::std::exception &exception) {
-        const auto exceptionClass {env->FindClass("java/lang/Exception")};
+        const auto exceptionClass {env->FindClass("java/lang/RuntimeException")};
         env->ThrowNew(exceptionClass, exception.what());
         return nullptr;
     } catch (...) {
-        const auto exceptionClass {env->FindClass("java/lang/Exception")};
+        const auto exceptionClass {env->FindClass("java/lang/RuntimeException")};
         env->ThrowNew(exceptionClass, "Unknown error");
         return nullptr;
     }
@@ -294,7 +294,7 @@ static void updateFps() {
 }
 
 extern "C"
-void Java_puscas_mobilertapp_DrawView_RTStartRender(
+void Java_puscas_mobilertapp_DrawView_rtStartRender(
         JNIEnv *env,
         jobject /*thiz*/
 ) {
@@ -305,7 +305,7 @@ void Java_puscas_mobilertapp_DrawView_RTStartRender(
 }
 
 extern "C"
-void Java_puscas_mobilertapp_DrawView_RTStopRender(
+void Java_puscas_mobilertapp_DrawView_rtStopRender(
         JNIEnv *env,
         jobject /*thiz*/
 ) {
@@ -331,38 +331,61 @@ void Java_puscas_mobilertapp_DrawView_RTStopRender(
 }
 
 extern "C"
-jint Java_puscas_mobilertapp_MainRenderer_RTInitialize(
+jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
         JNIEnv *env,
         jobject /*thiz*/,
-        jint scene,
-        jint shader,
-        jint width,
-        jint height,
-        jint accelerator,
-        jint samplesPixel,
-        jint samplesLight,
-        jstring localObjFile,
-        jstring localMatFile,
-        jstring localCamFile
+        jobject localConfig
 ) {
     LOG("INITIALIZE");
     try {
-        const auto globalObjFile {static_cast<jstring> (env->NewGlobalRef(localObjFile))};
-        const auto globalMatFile {static_cast<jstring> (env->NewGlobalRef(localMatFile))};
-        const auto globalCamFile {static_cast<jstring> (env->NewGlobalRef(localCamFile))};
+        const auto configClass {env->GetObjectClass(localConfig)};
+
+        const auto sceneMethodId {env->GetMethodID(configClass, "getScene", "()I")};
+        const auto sceneIndex {env->CallIntMethod(localConfig, sceneMethodId)};
+
+        const auto shaderMethodId {env->GetMethodID(configClass, "getShader", "()I")};
+        const auto shaderIndex {env->CallIntMethod(localConfig, shaderMethodId)};
+
+        const auto acceleratorMethodId {env->GetMethodID(configClass, "getAccelerator", "()I")};
+        const auto acceleratorIndex {env->CallIntMethod(localConfig, acceleratorMethodId)};
+
+        const auto widthMethodId {env->GetMethodID(configClass, "getWidth", "()I")};
+        const auto width {env->CallIntMethod(localConfig, widthMethodId)};
+
+        const auto heightMethodId {env->GetMethodID(configClass, "getHeight", "()I")};
+        const auto height {env->CallIntMethod(localConfig, heightMethodId)};
+
+        const auto samplesPixelMethodId {env->GetMethodID(configClass, "getSamplesPixel", "()I")};
+        const auto samplesPixel {env->CallIntMethod(localConfig, samplesPixelMethodId)};
+
+        const auto samplesLightMethodId {env->GetMethodID(configClass, "getSamplesLight", "()I")};
+        const auto samplesLight {env->CallIntMethod(localConfig, samplesLightMethodId)};
+
+        jboolean isCopy {JNI_FALSE};
+        const auto objMethodId {env->GetMethodID(configClass, "getObjFilePath", "()Ljava/lang/String;")};
+        const auto localObjFilePath {static_cast<jstring> (env->CallObjectMethod(localConfig, objMethodId))};
+        const auto *const objFilePath {env->GetStringUTFChars(localObjFilePath, &isCopy)};
+
+        const auto mtlMethodId {env->GetMethodID(configClass, "getMatFilePath", "()Ljava/lang/String;")};
+        const auto localMatFilePath {static_cast<jstring> (env->CallObjectMethod(localConfig, mtlMethodId))};
+        const auto *const matFilePath {env->GetStringUTFChars(localMatFilePath, &isCopy)};
+
+        const auto camMethodId {env->GetMethodID(configClass, "getCamFilePath", "()Ljava/lang/String;")};
+        const auto localCamFilePath {static_cast<jstring> (env->CallObjectMethod(localConfig, camMethodId))};
+        const auto *const camFilePath {env->GetStringUTFChars(localCamFilePath, &isCopy)};
 
         const auto res {
             [&]() -> ::std::int32_t {
                 const ::std::lock_guard<::std::mutex> lock {mutex_};
                 renderer_ = nullptr;
                 const auto ratio {static_cast<float> (width) / height};
-                ::MobileRT::Scene scene_ {};
+                ::MobileRT::Scene scene {};
                 ::std::unique_ptr<::MobileRT::Sampler> samplerPixel {};
-                ::std::unique_ptr<::MobileRT::Shader> shader_ {};
+                ::std::unique_ptr<::MobileRT::Shader> shader {};
                 ::std::unique_ptr<::MobileRT::Camera> camera {};
                 ::glm::vec3 maxDist {};
                 LOG("LOADING SCENE");
-                switch (scene) {
+                switch (sceneIndex) {
                     case 0: {
                         const auto fovX {45.0F * ratio};
                         const auto fovY {45.0F};
@@ -372,7 +395,7 @@ jint Java_puscas_mobilertapp_MainRenderer_RTInitialize(
                             ::glm::vec3 {0.0F, 1.0F, 0.0F},
                             fovX, fovY
                         );
-                        scene_ = cornellBoxScene(::std::move(scene_));
+                        scene = cornellBoxScene(::std::move(scene));
                         maxDist = ::glm::vec3{1, 1, 1};
                     }
                         break;
@@ -386,7 +409,7 @@ jint Java_puscas_mobilertapp_MainRenderer_RTInitialize(
                             ::glm::vec3 {0.0F, 1.0F, 0.0F},
                             sizeH, sizeV
                         );
-                        scene_ = spheresScene(::std::move(scene_));
+                        scene = spheresScene(::std::move(scene));
                         maxDist = ::glm::vec3{8, 8, 8};
                     }
                         break;
@@ -400,7 +423,7 @@ jint Java_puscas_mobilertapp_MainRenderer_RTInitialize(
                             ::glm::vec3{0.0F, 1.0F, 0.0F},
                             fovX, fovY
                         );
-                        scene_ = cornellBoxScene2(::std::move(scene_));
+                        scene = cornellBoxScene2(::std::move(scene));
                         maxDist = ::glm::vec3{1, 1, 1};
                     }
                         break;
@@ -414,17 +437,12 @@ jint Java_puscas_mobilertapp_MainRenderer_RTInitialize(
                             ::glm::vec3{0.0F, 1.0F, 0.0F},
                             fovX, fovY
                         );
-                        scene_ = spheresScene2(::std::move(scene_));
+                        scene = spheresScene2(::std::move(scene));
                         maxDist = ::glm::vec3 {8, 8, 8};
                     }
                         break;
 
                     default: {
-                        jboolean isCopy {JNI_FALSE};
-                        const auto *const objFilePath {env->GetStringUTFChars(globalObjFile, &isCopy)};
-                        const auto *const matFilePath {env->GetStringUTFChars(globalMatFile, &isCopy)};
-                        const auto *const camFilePath {env->GetStringUTFChars(globalCamFile, &isCopy)};
-
                         assert(objFilePath != nullptr);
                         assert(matFilePath != nullptr);
                         assert(camFilePath != nullptr);
@@ -439,17 +457,13 @@ jint Java_puscas_mobilertapp_MainRenderer_RTInitialize(
                             return -1;
                         }
                         const auto sceneBuilt {objLoader.fillScene(
-                                &scene_, []() {return ::std::make_unique<Components::StaticHaltonSeq> ();}
+                                &scene, []() {return ::std::make_unique<Components::StaticHaltonSeq> ();}
                         )};
                         if (!sceneBuilt) {
                             return -1;
                         }
 
                         maxDist = ::glm::vec3 {1, 1, 1};
-
-                        env->ReleaseStringUTFChars(globalObjFile, objFilePath);
-                        env->ReleaseStringUTFChars(globalMatFile, matFilePath);
-                        env->ReleaseStringUTFChars(globalCamFile, camFilePath);
                     }
                         break;
                 }
@@ -458,12 +472,12 @@ jint Java_puscas_mobilertapp_MainRenderer_RTInitialize(
                     : ::std::unique_ptr<::MobileRT::Sampler> (::std::make_unique<Components::StaticHaltonSeq> ());
                 LOG("LOADING SHADER");
                 const auto start {::std::chrono::system_clock::now()};
-                switch (shader) {
+                switch (shaderIndex) {
                     case 1: {
-                        shader_ = ::std::make_unique<Components::Whitted> (
-                            ::std::move(scene_),
+                        shader = ::std::make_unique<Components::Whitted> (
+                            ::std::move(scene),
                             samplesLight,
-                            ::MobileRT::Shader::Accelerator(accelerator)
+                            ::MobileRT::Shader::Accelerator(acceleratorIndex)
                         );
                         break;
                     }
@@ -473,34 +487,34 @@ jint Java_puscas_mobilertapp_MainRenderer_RTInitialize(
                             ::std::make_unique<Components::StaticHaltonSeq> ()
                         };
 
-                        shader_ = ::std::make_unique<Components::PathTracer> (
-                            ::std::move(scene_),
+                        shader = ::std::make_unique<Components::PathTracer> (
+                            ::std::move(scene),
                             ::std::move(samplerRussianRoulette),
                             samplesLight,
-                            ::MobileRT::Shader::Accelerator(accelerator)
+                            ::MobileRT::Shader::Accelerator(acceleratorIndex)
                         );
                         break;
                     }
 
                     case 3: {
-                        shader_ = ::std::make_unique<Components::DepthMap> (
-                            ::std::move(scene_), maxDist, ::MobileRT::Shader::Accelerator(accelerator)
+                        shader = ::std::make_unique<Components::DepthMap> (
+                            ::std::move(scene), maxDist, ::MobileRT::Shader::Accelerator(acceleratorIndex)
                         );
                         break;
                     }
 
                     case 4: {
-                        shader_ = ::std::make_unique<Components::DiffuseMaterial> (
-                            ::std::move(scene_), ::MobileRT::Shader::Accelerator(accelerator)
+                        shader = ::std::make_unique<Components::DiffuseMaterial> (
+                            ::std::move(scene), ::MobileRT::Shader::Accelerator(acceleratorIndex)
                         );
                         break;
                     }
 
                     default: {
-                        shader_ = ::std::make_unique<Components::NoShadows> (
-                            ::std::move(scene_),
+                        shader = ::std::make_unique<Components::NoShadows> (
+                            ::std::move(scene),
                             samplesLight,
-                            ::MobileRT::Shader::Accelerator(accelerator)
+                            ::MobileRT::Shader::Accelerator(acceleratorIndex)
                         );
                         break;
                     }
@@ -508,14 +522,14 @@ jint Java_puscas_mobilertapp_MainRenderer_RTInitialize(
                 const auto end {::std::chrono::system_clock::now()};
 
                 LOG("LOADING RENDERER");
-                const auto planes {static_cast<::std::int32_t> (shader_->getPlanes().size())};
-                const auto spheres {static_cast<::std::int32_t> (shader_->getSpheres().size())};
-                const auto triangles {static_cast<::std::int32_t> (shader_->getTriangles().size())};
-                const auto materials {static_cast<::std::int32_t> (shader_->getMaterials().size())};
-                numLights_ = static_cast<::std::int32_t> (shader_->getLights().size());
+                const auto planes {static_cast<::std::int32_t> (shader->getPlanes().size())};
+                const auto spheres {static_cast<::std::int32_t> (shader->getSpheres().size())};
+                const auto triangles {static_cast<::std::int32_t> (shader->getTriangles().size())};
+                const auto materials {static_cast<::std::int32_t> (shader->getMaterials().size())};
+                numLights_ = static_cast<::std::int32_t> (shader->getLights().size());
                 const auto nPrimitives {triangles + spheres + planes};
                 renderer_ = ::std::make_unique<::MobileRT::Renderer> (
-                    ::std::move(shader_), ::std::move(camera), ::std::move(samplerPixel),
+                    ::std::move(shader), ::std::move(camera), ::std::move(samplerPixel),
                     width, height, samplesPixel
                 );
                 timeRenderer_ = ::std::chrono::duration_cast<std::chrono::milliseconds> (end - start).count();
@@ -562,7 +576,7 @@ jint Java_puscas_mobilertapp_MainRenderer_RTInitialize(
 }
 
 extern "C"
-void Java_puscas_mobilertapp_MainRenderer_RTFinishRender(
+void Java_puscas_mobilertapp_MainRenderer_rtFinishRender(
         JNIEnv *env,
         jobject /*thiz*/
 ) {
@@ -587,7 +601,7 @@ void Java_puscas_mobilertapp_MainRenderer_RTFinishRender(
 }
 
 extern "C"
-void Java_puscas_mobilertapp_MainRenderer_RTRenderIntoBitmap(
+void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
         JNIEnv *env,
         jobject /*thiz*/,
         jobject localBitmap,
@@ -686,16 +700,16 @@ void Java_puscas_mobilertapp_MainRenderer_RTRenderIntoBitmap(
         const auto lowMemClass {env->FindClass("puscas/mobilertapp/exceptions/LowMemoryException")};
         env->ThrowNew(lowMemClass, badAlloc.what());
     } catch (const ::std::exception &exception) {
-        const auto exceptionClass {env->FindClass("java/lang/Exception")};
+        const auto exceptionClass {env->FindClass("java/lang/RuntimeException")};
         env->ThrowNew(exceptionClass, exception.what());
     } catch (...) {
-        const auto exceptionClass {env->FindClass("java/lang/Exception")};
+        const auto exceptionClass {env->FindClass("java/lang/RuntimeException")};
         env->ThrowNew(exceptionClass, "Unknown error");
     }
 }
 
 extern "C"
-::std::int32_t Java_puscas_mobilertapp_RenderTask_RTGetState(
+::std::int32_t Java_puscas_mobilertapp_RenderTask_rtGetState(
         JNIEnv *env,
         jobject /*thiz*/
 ) {
@@ -705,7 +719,7 @@ extern "C"
 }
 
 extern "C"
-float Java_puscas_mobilertapp_RenderTask_RTGetFps(
+float Java_puscas_mobilertapp_RenderTask_rtGetFps(
         JNIEnv *env,
         jobject /*thiz*/
 ) {
@@ -714,7 +728,7 @@ float Java_puscas_mobilertapp_RenderTask_RTGetFps(
 }
 
 extern "C"
-jlong Java_puscas_mobilertapp_RenderTask_RTGetTimeRenderer(
+jlong Java_puscas_mobilertapp_RenderTask_rtGetTimeRenderer(
         JNIEnv *env,
         jobject /*thiz*/
 ) {
@@ -723,7 +737,7 @@ jlong Java_puscas_mobilertapp_RenderTask_RTGetTimeRenderer(
 }
 
 extern "C"
-::std::int32_t Java_puscas_mobilertapp_RenderTask_RTGetSample(
+::std::int32_t Java_puscas_mobilertapp_RenderTask_rtGetSample(
         JNIEnv *env,
         jobject /*thiz*/
 ) {
@@ -740,7 +754,7 @@ extern "C"
 }
 
 extern "C"
-::std::int32_t Java_puscas_mobilertapp_MainActivity_RTResize(
+::std::int32_t Java_puscas_mobilertapp_MainActivity_rtResize(
         JNIEnv *env,
         jobject /*thiz*/,
         jint size
@@ -755,7 +769,7 @@ extern "C"
 }
 
 extern "C"
-::std::int32_t Java_puscas_mobilertapp_DrawView_RTGetNumberOfLights(
+::std::int32_t Java_puscas_mobilertapp_DrawView_rtGetNumberOfLights(
         JNIEnv *env,
         jobject /*thiz*/
 ) {
@@ -764,7 +778,7 @@ extern "C"
 }
 
 extern "C"
-jobject Java_puscas_mobilertapp_MainRenderer_RTFreeNativeBuffer(
+jobject Java_puscas_mobilertapp_MainRenderer_rtFreeNativeBuffer(
         JNIEnv *env,
         jobject /*thiz*/,
         jobject bufferRef

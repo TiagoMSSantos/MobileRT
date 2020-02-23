@@ -65,7 +65,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
     private final Runnable timer;
 
     /**
-     * A {@link Runnable} to the {@link MainRenderer#RTFinishRender} method which stops the Ray Tracer engine and sets
+     * A {@link Runnable} to the {@link MainRenderer#rtFinishRender} method which stops the Ray Tracer engine and sets
      * the {@link RenderTask#stateT} to {@link State#IDLE}.
      */
     private final Runnable finishRender;
@@ -95,13 +95,13 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
      * The {@link TextView} which outputs debug information about the Ray Tracer engine like the current rendering
      * time and the fps.
      */
-    private final WeakReference<TextView> textView;
+    private final WeakReference<TextView> textViewRef;
 
     /**
      * The {@link Button} which starts and stops the rendering process.
      * This is needed in order to change its text at the end of the rendering process.
      */
-    private final WeakReference<Button> buttonRender;
+    private final WeakReference<Button> buttonRenderRef;
 
     /**
      * The number of primitives and lights in the scene.
@@ -154,7 +154,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
     private String timeT = null;
 
     /**
-     * A {@link String} containing the {@link RenderTask#fps} in order to print it in the {@link RenderTask#textView}.
+     * A {@link String} containing the {@link RenderTask#fps} in order to print it in the {@link RenderTask#textViewRef}.
      */
     private String fpsRenderT = null;
 
@@ -185,8 +185,8 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
         this.threadsT = ",t:" + builder.getNumThreads();
         this.samplesPixelT = ",spp:" + builder.getSamplesPixel();
         this.samplesLightT = ",spl:" + builder.getSamplesLight();
-        this.buttonRender = new WeakReference<>(builder.getButtonRender());
-        this.textView = new WeakReference<>(builder.getTextView());
+        this.buttonRenderRef = new WeakReference<>(builder.getButtonRender());
+        this.textViewRef = new WeakReference<>(builder.getTextView());
 
         this.startTimeStamp = SystemClock.elapsedRealtime();
         this.fpsT = String.format(Locale.US, "fps:%.2f", 0.0F);
@@ -200,16 +200,16 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
         this.timer = () -> {
             updateFps();
 
-            this.fpsT = String.format(Locale.US, "fps:%.1f", RTGetFps());
+            this.fpsT = String.format(Locale.US, "fps:%.1f", rtGetFps());
             this.fpsRenderT = String.format(Locale.US, "[%.1f]", this.fps);
-            final long timeRenderer = RTGetTimeRenderer();
+            final long timeRenderer = rtGetTimeRenderer();
             this.timeFrameT = String.format(Locale.US, ",t:%.2fs", (float) timeRenderer / SECOND_IN_MS);
             final long currentTime = SystemClock.elapsedRealtime();
             this.timeT = String.format(Locale.US, "[%.2fs]",(float) (currentTime - this.startTimeStamp) / SECOND_IN_MS);
             this.allocatedT = ",m:" + Debug.getNativeHeapAllocatedSize() / MB_IN_BYTES + "mb";
-            this.sampleT = "," + RTGetSample();
+            this.sampleT = "," + rtGetSample();
 
-            final State currentState = State.values()[RTGetState()];
+            final State currentState = State.values()[rtGetState()];
             this.stateT = currentState.toString();
             this.requestRender.run();
             publishProgress();
@@ -224,28 +224,28 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
      *
      * @return The number of frames per second.
      */
-    native float RTGetFps();
+    native float rtGetFps();
 
     /**
      * Gets the time, in milliseconds, spent constructing the Ray Tracer renderer.
      *
      * @return The time spent constructing the Ray Tracer renderer.
      */
-    native long RTGetTimeRenderer();
+    native long rtGetTimeRenderer();
 
     /**
      * Gets the current sample for all the pixels.
      *
      * @return The current sample for all the pixels.
      */
-    native int RTGetSample();
+    native int rtGetSample();
 
     /**
      * Gets an {@code int} which represents the current Ray Tracer engine {@link State}.
      *
      * @return The current Ray Tracer engine {@link State}.
      */
-    native int RTGetState();
+    native int rtGetState();
 
     /**
      * Auxiliary method which calculates the number of times {@link RenderTask#timer} was called and in each second.
@@ -262,18 +262,18 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
     }
 
     /**
-     * Auxiliary method which sets the current debug information in the {@link RenderTask#textView}.
+     * Auxiliary method which sets the current debug information in the {@link RenderTask#textViewRef}.
      */
     private void printText() {
         final String aux = this.fpsT + this.fpsRenderT + this.resolutionT + this.threadsT + this.samplesPixelT +
                 this.samplesLightT + this.sampleT + LINE_SEPARATOR +
                 this.stateT + this.allocatedT + this.timeFrameT + this.timeT + this.primitivesT;
-        Optional.ofNullable(this.textView.get()).ifPresent(x -> x.setText(aux));
+        Optional.ofNullable(this.textViewRef.get()).ifPresent(textView -> textView.setText(aux));
     }
 
     @Override
     protected void onPreExecute() {
-
+        LOGGER.info("onPreExecute");
     }
 
     @Nullable
@@ -288,7 +288,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
                 running = !this.scheduler.awaitTermination(1L, TimeUnit.DAYS);
             } catch (final InterruptedException ex) {
                 LOGGER.severe(ex.getMessage());
-                throw new RuntimeException(ex);
+                Thread.currentThread().interrupt();
             }
         } while (running);
         return null;
@@ -303,7 +303,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
     protected final void onPostExecute(@NonNull final Void result) {
         printText();
 
-        Optional.ofNullable(this.buttonRender.get()).ifPresent(button -> button.setText(R.string.render));
+        Optional.ofNullable(this.buttonRenderRef.get()).ifPresent(button -> button.setText(R.string.render));
         this.requestRender.run();
         this.finishRender.run();
     }
@@ -341,12 +341,12 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
         private final Runnable finishRender;
 
         /**
-         * @see RenderTask#textView
+         * @see RenderTask#textViewRef
          */
         private final TextView textView;
 
         /**
-         * @see RenderTask#buttonRender
+         * @see RenderTask#buttonRenderRef
          */
         private final Button buttonRender;
 
@@ -395,15 +395,14 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
          *
          * @param requestRender The new value for {@link RenderTask#requestRender} field.
          * @param finishRender  The new value for {@link RenderTask#finishRender} field.
-         * @param textView      The new value for {@link RenderTask#textView} field.
-         * @param buttonRender  The new value for {@link RenderTask#buttonRender} field.
+         * @param textView      The new value for {@link RenderTask#textViewRef} field.
+         * @param buttonRender  The new value for {@link RenderTask#buttonRenderRef} field.
          */
         Builder(
                 @NonNull final Runnable requestRender,
                 @NonNull final Runnable finishRender,
                 @NonNull final TextView textView,
-                @NonNull final Button buttonRender
-        ) {
+                @NonNull final Button buttonRender) {
             this.requestRender = requestRender;
             this.finishRender = finishRender;
             this.textView = textView;
@@ -607,7 +606,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
         }
 
         /**
-         * @see RenderTask#buttonRender
+         * @see RenderTask#buttonRenderRef
          */
         @Contract(pure = true)
         Button getButtonRender() {
@@ -615,7 +614,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
         }
 
         /**
-         * @see RenderTask#textView
+         * @see RenderTask#textViewRef
          */
         @Contract(pure = true)
         TextView getTextView() {

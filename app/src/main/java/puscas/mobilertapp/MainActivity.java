@@ -10,7 +10,6 @@ import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.net.Uri;
 import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
@@ -46,10 +45,10 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 
-import java8.util.Objects;
 import java8.util.Optional;
 import java8.util.stream.IntStreams;
 import java8.util.stream.StreamSupport;
+import puscas.mobilertapp.exceptions.FailureException;
 import puscas.mobilertapp.utils.Accelerator;
 import puscas.mobilertapp.utils.Scene;
 import puscas.mobilertapp.utils.Shader;
@@ -61,7 +60,9 @@ import static puscas.mobilertapp.utils.ConstantsMethods.START_RENDER;
 import static puscas.mobilertapp.utils.ConstantsRenderer.REQUIRED_OPENGL_VERSION;
 import static puscas.mobilertapp.utils.ConstantsToast.PLEASE_INSTALL_FILE_MANAGER;
 import static puscas.mobilertapp.utils.ConstantsUI.CHECK_BOX_RASTERIZE;
+import static puscas.mobilertapp.utils.ConstantsUI.FILE_SEPARATOR;
 import static puscas.mobilertapp.utils.ConstantsUI.LINE_SEPARATOR;
+import static puscas.mobilertapp.utils.ConstantsUI.PATH_SEPARATOR;
 import static puscas.mobilertapp.utils.ConstantsUI.PICKER_ACCELERATOR;
 import static puscas.mobilertapp.utils.ConstantsUI.PICKER_SAMPLES_LIGHT;
 import static puscas.mobilertapp.utils.ConstantsUI.PICKER_SAMPLES_PIXEL;
@@ -85,19 +86,13 @@ public final class MainActivity extends Activity {
      */
     private static final int OLD_API_GET_CORES = 17;
 
-    /**
-     * The path where the CPU topology information is at.
-     */
-    private static final String SYS_DEVICES_SYSTEM_CPU = "/sys/devices/system/cpu/";
-
     static {
         try {
             System.loadLibrary("MobileRT");
             System.loadLibrary("Components");
             System.loadLibrary("AppInterface");
         } catch (final RuntimeException ex) {
-            LOGGER.severe("WARNING: Could not load native library: " + ex.getMessage());
-            throw new RuntimeException(ex);
+            throw new FailureException(ex);
         }
     }
 
@@ -160,7 +155,7 @@ public final class MainActivity extends Activity {
      * Auxiliary method to readjust the width and height of the image by rounding down the value to a multiple of the
      * number of tiles in the Ray Tracer engine.
      */
-    private native int RTResize(final int size);
+    private native int rtResize(final int size);
 
     /**
      * Helper method that gets the number of CPU cores in the Android device for devices with the SDK API version <
@@ -168,8 +163,9 @@ public final class MainActivity extends Activity {
      *
      * @return The number of CPU cores.
      */
-    private static int getNumCoresOldPhones() {
-        final File cpuTopologyPath = new File(SYS_DEVICES_SYSTEM_CPU);
+    private int getNumCoresOldPhones() {
+        final String cpuInfoPath = readTextAsset("Utils" + FILE_SEPARATOR + "cpuInfoPath.txt");
+        final File cpuTopologyPath = new File(cpuInfoPath.trim());
         final File[] files = cpuTopologyPath.listFiles(pathname -> Pattern.matches("cpu[0-9]+", pathname.getName()));
         return Optional.ofNullable(files).map(filesInPath -> filesInPath.length).get();
     }
@@ -179,7 +175,7 @@ public final class MainActivity extends Activity {
      *
      * @return The number of CPU cores.
      */
-    private static int getNumOfCores() {
+    private int getNumOfCores() {
         return (Build.VERSION.SDK_INT < OLD_API_GET_CORES)
                 ? getNumCoresOldPhones()
                 : Runtime.getRuntime().availableProcessors();
@@ -193,7 +189,6 @@ public final class MainActivity extends Activity {
     private void startRender(@NonNull final String scenePath) {
         final int scene = this.pickerScene.getValue();
         final int shader = this.pickerShader.getValue();
-        final int threads = this.pickerThreads.getValue();
         final int accelerator = this.pickerAccelerator.getValue();
         final int samplesPixel = Integer.parseInt(this.pickerSamplesPixel.getDisplayedValues()
                 [this.pickerSamplesPixel.getValue() - 1]);
@@ -205,22 +200,24 @@ public final class MainActivity extends Activity {
         final String objFilePath = scenePath + ".obj";
         final String mtlFilePath = scenePath + ".mtl";
         final String camFilePath = scenePath + ".cam";
+
+        final int threads = this.pickerThreads.getValue();
         final boolean rasterize = this.checkBoxRasterize.isChecked();
 
-        this.drawView.renderScene(
-                scene,
-                shader,
-                threads,
-                accelerator,
-                samplesPixel,
-                samplesLight,
-                width,
-                height,
-                objFilePath,
-                mtlFilePath,
-                camFilePath,
-                rasterize
-        );
+        final Config config = new Config.Builder()
+                .withScene(scene)
+                .withShader(shader)
+                .withAccelerator(accelerator)
+                .withSamplesPixel(samplesPixel)
+                .withSamplesLight(samplesLight)
+                .withWidth(width)
+                .withHeight(height)
+                .withOBJ(objFilePath)
+                .withMAT(mtlFilePath)
+                .withCAM(camFilePath)
+                .build();
+
+        this.drawView.renderScene(config, threads, rasterize);
     }
 
     /**
@@ -265,7 +262,6 @@ public final class MainActivity extends Activity {
      */
     private String readTextAsset(final String filePath) {
         final AssetManager assetManager = getAssets();
-//        String asset = null;
         try (final InputStream inputStream = assetManager.open(filePath);
              final InputStreamReader isReader = new InputStreamReader(inputStream, Charset.defaultCharset());
              final BufferedReader reader = new BufferedReader(isReader)) {
@@ -277,20 +273,11 @@ public final class MainActivity extends Activity {
                 str = reader.readLine();
             }
             return sb.toString();
-//            final int size = inputStream.available();
-//            final byte[] buffer = new byte[size];
-//            final int bytes = inputStream.read(buffer);
-//            asset = bytes > 0? new String(buffer) : null;
         } catch (final OutOfMemoryError ex1) {
-            LOGGER.severe("Not enough memory for asset  " + filePath);
-            LOGGER.severe(ex1.getMessage());
-            throw ex1;
+            throw new FailureException(ex1);
         } catch (final IOException ex2) {
-            LOGGER.severe("Couldn't read asset " + filePath);
-            LOGGER.severe(ex2.getMessage());
-            throw new RuntimeException(ex2);
+            throw new FailureException(ex2);
         }
-//        return asset;
     }
 
     /**
@@ -341,16 +328,11 @@ public final class MainActivity extends Activity {
                     break;
 
                 case TEST:
-//                    final String scenePath = "conference/conference";
-//                    final String scenePath = "teapot/teapot";
                     final String scenePath = "CornellBox/CornellBox-Water";
-//                    final String scenePath = "buddha/buddha";
-//                    final String scenePath = "powerplant/powerplant";
-//                    final String scenePath = "San_Miguel/san-miguel";
 
                     final String sdCardPath = getSDCardPath();
 
-                    this.sceneFilePath = sdCardPath + "/WavefrontOBJs/" + scenePath;
+                    this.sceneFilePath = sdCardPath + FILE_SEPARATOR + "WavefrontOBJs" + FILE_SEPARATOR + scenePath;
                     startRender(this.sceneFilePath);
                     break;
 
@@ -393,7 +375,7 @@ public final class MainActivity extends Activity {
         int defaultPickerSamplesLight = 1;
         int defaultPickerSizes = 4;
         boolean defaultCheckBoxRasterize = true;
-        if (Objects.nonNull(savedInstanceState)) {
+        if (savedInstanceState != null) {
             defaultPickerScene = savedInstanceState.getInt(PICKER_SCENE);
             defaultPickerShader = savedInstanceState.getInt(PICKER_SHADER);
             defaultPickerThreads = savedInstanceState.getInt(PICKER_THREADS);
@@ -407,8 +389,7 @@ public final class MainActivity extends Activity {
         try {
             setContentView(R.layout.activity_main);
         } catch (final RuntimeException ex) {
-            LOGGER.severe(ex.getMessage());
-            throw new RuntimeException(ex);
+            throw new FailureException(ex);
         }
 
         this.drawView = this.findViewById(R.id.drawLayout);
@@ -471,7 +452,7 @@ public final class MainActivity extends Activity {
         } else {
             final String msg = "Your device doesn't support ES 2. (" + configurationInfo.reqGlEsVersion + ')';
             LOGGER.severe(msg);
-            throw new RuntimeException(msg);
+            throw new FailureException(msg);
         }
 
         final String[] scenes = Scene.getNames();
@@ -556,8 +537,8 @@ public final class MainActivity extends Activity {
                 .map(value -> (value + 1.0) * 0.1)
                 .map(value -> value * value)
                 .mapToObj(value -> {
-                    final int width = RTResize(Long.valueOf(Math.round(widthView * value)).intValue());
-                    final int height = RTResize(Long.valueOf(Math.round(heightView * value)).intValue());
+                    final int width = rtResize((int) Math.round(widthView * value));
+                    final int height = rtResize((int) Math.round(heightView * value));
                     return String.valueOf(width) + 'x' + height;
                 })
                 .toArray(String[]::new);
@@ -647,7 +628,7 @@ public final class MainActivity extends Activity {
         outState.putBoolean(CHECK_BOX_RASTERIZE, rasterize);
 
         final MainRenderer renderer = this.drawView.getRenderer();
-        renderer.RTFinishRender();
+        renderer.rtFinishRender();
         renderer.freeArrays();
     }
 
@@ -679,25 +660,23 @@ public final class MainActivity extends Activity {
     protected final void onActivityResult(final int requestCode, final int resultCode, @Nullable final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == Activity.RESULT_OK && requestCode == OPEN_FILE_REQUEST_CODE) {
-            Preconditions.checkNotNull(data);
-            final Uri uri = data.getData();
-            Preconditions.checkNotNull(uri);
+        if (resultCode == Activity.RESULT_OK && requestCode == OPEN_FILE_REQUEST_CODE && data != null) {
+            Optional.of(data.getData()).ifPresent(uri -> {
+                final String sdCardName = "sdcard";
+                String filePath = StreamSupport.stream(uri.getPathSegments())
+                        .skip(1L)
+                        .reduce("", (accumulator, segment) -> accumulator + FILE_SEPARATOR + segment)
+                        .replace(FILE_SEPARATOR + sdCardName + FILE_SEPARATOR, FILE_SEPARATOR);
 
-            final String sdCardName = "sdcard";
-            String filePath = StreamSupport.stream(uri.getPathSegments())
-                .skip(1L)
-                .reduce("", (accumulator, segment) -> accumulator + "/" + segment)
-                .replace("/" + sdCardName + "/", "/");
+                final int removeIndex = filePath.indexOf(PATH_SEPARATOR);
+                filePath = removeIndex >= 0 ? filePath.substring(removeIndex) : filePath;
+                filePath = filePath.replace(PATH_SEPARATOR, FILE_SEPARATOR);
+                filePath = filePath.substring(0, filePath.lastIndexOf('.'));
 
-            final int removeIndex = filePath.indexOf(':');
-            filePath = removeIndex >= 0? filePath.substring(removeIndex) : filePath;
-            filePath = filePath.replace(":", "/");
-            filePath = filePath.substring(0, filePath.lastIndexOf('.'));
+                final String sdCardPath = getSDCardPath();
 
-            final String sdCardPath = getSDCardPath();
-
-            this.sceneFilePath = sdCardPath + filePath;
+                this.sceneFilePath = sdCardPath + filePath;
+            });
         }
     }
 }
