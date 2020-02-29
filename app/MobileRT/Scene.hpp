@@ -14,6 +14,9 @@
 #include <vector>
 
 namespace MobileRT {
+    /**
+     * A class which represents a scene for the Ray Tracer engine to cast rays into.
+     */
     class Scene final {
     public:
         ::std::vector<Triangle> triangles_ {};
@@ -38,6 +41,13 @@ namespace MobileRT {
 
         Scene &operator=(Scene &&scene) noexcept = default;
 
+        /**
+         * Calculates the bounding boxes which surrounds all the primitives in a vector.
+         *
+         * @tparam T The type of the primitives.
+         * @param primitives The primitives to calculate the bounding box.
+         * @return The bounding box which surrounds all the primitives.
+         */
         template<typename T>
         static ::MobileRT::AABB getBounds(const ::std::vector<T> &primitives) {
             ::MobileRT::AABB bounds {::glm::vec3 {RayLengthMax}, ::glm::vec3 {-RayLengthMax}};

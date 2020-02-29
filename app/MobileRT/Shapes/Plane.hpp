@@ -7,6 +7,9 @@
 #include <glm/glm.hpp>
 
 namespace MobileRT {
+    /**
+     * A class which represents a plane in the scene.
+     */
     class Plane final {
     private:
         ::glm::vec3 normal_ {};

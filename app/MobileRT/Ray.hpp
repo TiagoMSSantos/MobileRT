@@ -5,6 +5,11 @@
 #include <glm/glm.hpp>
 
 namespace MobileRT {
+    /**
+     * A class which represents a ray casted into the scene.
+     * <br>
+     * A ray consists of an origin and a direction of a vector.
+     */
     class Ray final {
     public:
         const ::glm::vec3 origin_ {};

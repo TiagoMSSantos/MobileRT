@@ -7,6 +7,9 @@
 #include <glm/glm.hpp>
 
 namespace MobileRT {
+    /**
+     * A class which represents a triangle in the scene.
+     */
     class Triangle final {
     public:
         ::glm::vec3 AC_ {};

@@ -9,6 +9,9 @@
 #include <string>
 
 namespace MobileRT {
+    /**
+     * A class which loads a scene from a file and fills the scene with the loaded geometry.
+     */
     class ObjectLoader {
     protected:
         bool isProcessed_ {false};

@@ -10,6 +10,9 @@
 
 namespace MobileRT {
 
+    /**
+     * A class which represents a camera in the scene.
+     */
     class Camera {
     protected:
         float degToRad(float deg) const;

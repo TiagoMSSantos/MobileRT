@@ -56,3 +56,4 @@
 **/System_dependent/**/*build*/**/MobileRT
 **/System_dependent/**/*.pro*
 *libraries*
+**/documentation

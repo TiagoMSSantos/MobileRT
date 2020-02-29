@@ -150,7 +150,7 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitVerticesArray(
             const ::std::lock_guard<::std::mutex> lock {mutex_};
             if (renderer_ != nullptr) {
                 const auto &triangles {renderer_->shader_->getTriangles()};
-                const auto arraySize {static_cast<::std::int64_t> (triangles.size() * 3 * 4)};
+                const auto arraySize {static_cast<::std::uint32_t> (triangles.size() * 3 * 4)};
                 const auto arrayBytes {arraySize * static_cast<jlong> (sizeof(jfloat))};
                 if (arraySize > 0) {
                     float *const floatBuffer {new float[arraySize]};
@@ -217,7 +217,7 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitColorsArray(
             const ::std::lock_guard<::std::mutex> lock {mutex_};
             if (renderer_ != nullptr) {
                 const auto &triangles {renderer_->shader_->getTriangles()};
-                const auto arraySize {static_cast<::std::int64_t> (triangles.size() * 3 * 4)};
+                const auto arraySize {static_cast<::std::uint32_t> (triangles.size() * 3 * 4)};
                 const auto arrayBytes {arraySize * static_cast<::std::int64_t> (sizeof(jfloat))};
                 if (arraySize > 0) {
                     float *const floatBuffer {new float[arraySize]};

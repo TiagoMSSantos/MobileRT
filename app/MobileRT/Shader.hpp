@@ -11,6 +11,10 @@
 #include "MobileRT/Scene.hpp"
 
 namespace MobileRT {
+    /**
+     * A class which contains the scene geometry into an acceleration structure and takes care of casting rays into the
+     * scene.
+     */
     class Shader {
     public:
         enum Accelerator {

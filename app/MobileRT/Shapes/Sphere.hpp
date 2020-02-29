@@ -7,6 +7,9 @@
 #include <glm/glm.hpp>
 
 namespace MobileRT {
+    /**
+     * A class which represents a sphere in the scene.
+     */
     class Sphere final {
     private:
         ::glm::vec3 center_ {};

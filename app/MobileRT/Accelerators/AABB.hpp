@@ -8,6 +8,11 @@
 #include <vector>
 
 namespace MobileRT {
+    /**
+     * A class which represents an Axis Aligned Bounding Box.
+     * <br>
+     * This type of bounding box consists of a box where all the edges are aligned with the axis of the scene.
+     */
     class AABB final {
     public:
         ::glm::vec3 pointMin_ {};

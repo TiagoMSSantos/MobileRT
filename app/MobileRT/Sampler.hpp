@@ -6,6 +6,9 @@
 #include <limits>
 
 namespace MobileRT {
+    /**
+     * A class which abstracts a random number generator.
+     */
     class Sampler {
     public:
         ::std::atomic<::std::uint32_t> sample_ {};

@@ -6,6 +6,11 @@
 #include <glm/glm.hpp>
 
 namespace MobileRT {
+    /**
+     * A class which represents a light in the scene.
+     * <br>
+     * A light is a primitive which contains a material that emits light (i.e. a source of light).
+     */
     class Light {
     public:
         Material radiance_ {};

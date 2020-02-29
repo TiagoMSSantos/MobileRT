@@ -7,6 +7,15 @@
 
 namespace MobileRT {
 
+    /**
+     * A class which represents the Naive acceleration structure.
+     * <br>
+     * This is basically a structure where all the primitives are just stored in a vector without any specific order.
+     * So, there is no acceleration structure and the intersection method must try to intersect the ray with all the
+     * primitives in the vector.
+     *
+     * @tparam T The type of the primitives.
+     */
     template<typename T>
     class Naive final {
         private:
@@ -37,18 +46,43 @@ namespace MobileRT {
             const ::std::vector<T>& getPrimitives() const;
     };
 
+    /**
+     * The constructor.
+     *
+     * @tparam T The type of the primitives.
+     * @param primitives The primitives.
+     */
     template<typename T>
     Naive<T>::Naive(::std::vector<T> &&primitives) :
         primitives_ {::std::move(primitives)} {
 
     }
 
+    /**
+     * The destructor.
+     *
+     * @tparam T The type of the primitives.
+     */
     template<typename T>
     Naive<T>::~Naive() {
         this->primitives_.clear();
         ::std::vector<T> {}.swap(this->primitives_);
     }
 
+    /**
+     * Helper method which calculates the intersection point from the origin of the ray.
+     * <br>
+     * This method supports two modes:<br>
+     *  - trace the ray until finding the nearest intersection point from the origin of the ray<br>
+     *  - trace the ray until finding any intersection point from the origin of the ray<br>
+     *
+     * @tparam T The type of the primitives.
+     * @param intersection The previous intersection point of the ray (used to update its data in case it is found a
+     * nearest intersection poin.
+     * @param ray          The casted ray.
+     * @param shadowTrace  Whether it shouldn't find the nearest intersection point.
+     * @return The intersection point of the ray in the scene.
+     */
     template<typename T>
     Intersection Naive<T>::intersect(Intersection intersection, const Ray &ray, const bool shadowTrace) {
         const auto lastDist {intersection.length_};
@@ -61,18 +95,43 @@ namespace MobileRT {
         return intersection;
     }
 
+    /**
+     * This method casts a ray into the geometry and calculates the nearest intersection point from the origin of the
+     * ray.
+     *
+     * @tparam T The type of the primitives.
+     * @param intersection The current intersection of the ray with previous primitives.
+     * @param ray          The ray to be casted.
+     * @return The intersection of the ray with the geometry.
+     */
     template<typename T>
     Intersection Naive<T>::trace(Intersection intersection, const Ray &ray) {
         intersection = intersect(intersection, ray);
         return intersection;
     }
 
+    /**
+     * This method casts a ray into the geometry and calculates a random intersection point.
+     * The intersection point itself is not important, the important is to determine if the ray intersects some
+     * primitive in the scene or not.
+     *
+     * @tparam T The type of the primitives.
+     * @param intersection The current intersection of the ray with previous primitives.
+     * @param ray          The ray to be casted.
+     * @return The intersection of the ray with the geometry.
+     */
     template<typename T>
     Intersection Naive<T>::shadowTrace(Intersection intersection, const Ray &ray) {
         intersection = intersect(intersection, ray, true);
         return intersection;
     }
 
+    /**
+     * Gets the primitives.
+     *
+     * @tparam T The type of the primitives.
+     * @return The primitives.
+     */
     template<typename T>
     const ::std::vector<T>& Naive<T>::getPrimitives() const {
         return this->primitives_;

@@ -8,6 +8,11 @@ using ::MobileRT::NumberOfTiles;
 namespace {
     ::std::array<float, NumberOfTiles> values {};
 
+    /**
+     * A helper method which prepares an array with random numbers generated.
+     *
+     * @return Whether the array was prepared or not.
+     */
     bool fillThings() {
         for (auto it {values.begin()}; it < values.end(); ::std::advance(it, 1)) {
             const auto index {static_cast<::std::uint32_t> (::std::distance(values.begin(), it))};
@@ -20,6 +25,16 @@ namespace {
     }
 }//namespace
 
+/**
+ * The constructor.
+ *
+ * @param shader       The shader to use to render the scene.
+ * @param camera       The canera in the scene.
+ * @param samplerPixel The sampler to use for the pixel jittering.
+ * @param width        The width of the image to render.
+ * @param height       The height of the image to render.
+ * @param samplesPixel The number of samples per pixel.
+ */
 Renderer::Renderer(::std::unique_ptr<Shader> shader,
                    ::std::unique_ptr<Camera> camera,
                    ::std::unique_ptr<Sampler> samplerPixel,
@@ -40,6 +55,12 @@ Renderer::Renderer(::std::unique_ptr<Shader> shader,
     static_cast<void> (unused);
 }
 
+/**
+ * Starts the rendering process of the scene into a bitmap.
+ *
+ * @param bitmap     The bitmap where the rendered scene should be put.
+ * @param numThreads The number of threads to use during the rendering process.
+ */
 void Renderer::renderFrame(::std::int32_t *const bitmap, const ::std::int32_t numThreads) {
     LOG("numThreads = ", numThreads);
     LOG("Resolution = ", this->width_, "x", this->height_);
@@ -65,12 +86,21 @@ void Renderer::renderFrame(::std::int32_t *const bitmap, const ::std::int32_t nu
     LOG("FINISH");
 }
 
+/**
+ * Stops the rendering process.
+ */
 void Renderer::stopRender() {
     this->blockSizeX_ = 0;
     this->blockSizeY_ = 0;
     this->samplerPixel_->stopSampling();
 }
 
+/**
+ * Helper method which a thread renders the scene into the bitmap.
+ *
+ * @param bitmap The bitmap where the rendered scene should be put.
+ * @param tid    The thread id.
+ */
 void Renderer::renderScene(::std::int32_t *const bitmap, const ::std::int32_t tid) {
     const auto invImgWidth {1.0F / this->width_};
     const auto invImgHeight {1.0F / this->height_};
@@ -118,10 +148,23 @@ void Renderer::renderScene(::std::int32_t *const bitmap, const ::std::int32_t ti
     }
 }
 
+/**
+ * Gets the number of samples per pixel already rendered.
+ *
+ * @return The current number of samples per pixel.
+ */
 ::std::int32_t Renderer::getSample() const {
     return this->sample_;
 }
 
+/**
+ * Helper method which calculates a random value between 0 and 1.
+ * <br>
+ * This method never repeats the calculated value for the same given sample.
+ *
+ * @param sample The current sample of samples per pixel.
+ * @return A random value between 0 and 1.
+ */
 float Renderer::getTile(const ::std::int32_t sample) {
     const auto current {this->block_.fetch_add(1, ::std::memory_order_relaxed) - NumberOfTiles * sample};
     if (current >= NumberOfTiles) {

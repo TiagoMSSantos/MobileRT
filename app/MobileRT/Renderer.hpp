@@ -9,6 +9,10 @@
 #include <thread>
 
 namespace MobileRT {
+    /**
+     * The main class of the Ray Tracer engine.
+     * After setup this object, it provides methods to start and stop the rendering process of a scene.
+     */
     class Renderer final {
     public:
         ::std::unique_ptr<Camera> camera_ {};

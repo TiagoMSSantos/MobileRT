@@ -344,7 +344,7 @@ public final class MainActivity extends Activity {
 
     /**
      * Gets the path to the SD card.
-     * <p>
+     * <br>
      * This method should get the correct path independently of the device / emulator used.
      *
      * @return The path to the SD card.

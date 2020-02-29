@@ -4,6 +4,9 @@
 #include "MobileRT/Camera.hpp"
 
 namespace MobileRT {
+    /**
+     * A class which loads a camera from a file stream.
+     */
     class CameraLoader {
     public:
         explicit CameraLoader() = default;

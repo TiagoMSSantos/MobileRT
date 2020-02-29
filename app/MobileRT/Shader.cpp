@@ -23,6 +23,11 @@ namespace {
     const ::std::uint32_t size {mask + 1};
     ::std::array<float, size> values {};
 
+    /**
+     * A helper method which prepares an array with random numbers generated.
+     *
+     * @return Whether the array was prepared or not.
+     */
     bool fillThings() {
         for (auto it {values.begin()}; it < values.end(); ::std::advance(it, 1)) {
             const auto index {static_cast<::std::uint32_t> (::std::distance(values.begin(), it))};
@@ -35,6 +40,13 @@ namespace {
     }
 }//namespace
 
+/**
+ * The constructor.
+ *
+ * @param scene        The scene.
+ * @param samplesLight The number of samples per light.
+ * @param accelerator  The acceleration structure to use.
+ */
 Shader::Shader(Scene scene, const ::std::int32_t samplesLight, const Accelerator accelerator) :
     materials_ {::std::move(scene.materials_)},
     accelerator_ {accelerator},
@@ -44,6 +56,11 @@ Shader::Shader(Scene scene, const ::std::int32_t samplesLight, const Accelerator
     initializeAccelerators(::std::move(scene));
 }
 
+/**
+ * Puts all the primitives of the scene into an acceleration structure.
+ *
+ * @param scene The scene geometry.
+ */
 void Shader::initializeAccelerators(Scene scene) {
     LOG("initializeAccelerators");
     switch (this->accelerator_) {
@@ -78,6 +95,13 @@ void Shader::initializeAccelerators(Scene scene) {
     LOG("lights = ", this->lights_.size());
 }
 
+/**
+ * Determines if a casted ray intersects a light source in the scene or not.
+ *
+ * @param rgb A pointer where the color value of the pixel should be put.
+ * @param ray The casted ray into the scene.
+ * @return Whether the casted ray intersects a light source in the scene or not.
+ */
 bool Shader::rayTrace(::glm::vec3 *rgb, const Ray &ray) {
     Intersection intersection {RayLengthMax, nullptr};
     const auto lastDist {intersection.length_};
@@ -121,6 +145,13 @@ bool Shader::rayTrace(::glm::vec3 *rgb, const Ray &ray) {
     return intersection.length_ < lastDist && shade(rgb, intersection, ray);
 }
 
+/**
+ * Determines if a casted ray intersects a primitive in the scene between the origin of the ray and a light source.
+ *
+ * @param intersection The intersection which contains the distance from the origin of the ray to the light source.
+ * @param ray          The casted ray.
+ * @return Whether the casted ray intersects a primitive in the scene or not.
+ */
 bool Shader::shadowTrace(Intersection intersection, const Ray &ray) {
     const auto lastDist {intersection.length_};
     switch (this->accelerator_) {
@@ -153,6 +184,13 @@ bool Shader::shadowTrace(Intersection intersection, const Ray &ray) {
     return res;
 }
 
+/**
+ * Helper method which calculates the nearest intersection point of a casted ray and the light sources.
+ *
+ * @param intersection The current intersection of the ray with previous primitives.
+ * @param ray          The casted ray.
+ * @return The intersection of the casted ray and the light sources.
+ */
 Intersection Shader::traceLights(Intersection intersection, const Ray &ray) const {
     for (const auto &light : this->lights_) {
         intersection = light->intersect(intersection, ray);
@@ -160,12 +198,21 @@ Intersection Shader::traceLights(Intersection intersection, const Ray &ray) cons
     return intersection;
 }
 
+/**
+ * Resets the sampling process of all the lights in the scene.
+ */
 void Shader::resetSampling() {
     for (const auto &light : this->lights_) {
         light->resetSampling();
     }
 }
 
+/**
+ * Helper method which generates a random 3D direction in a hemisphere in world coordinates.
+ *
+ * @param normal The normal of the hemisphere.
+ * @return A random direction in a hemisphere.
+ */
 ::glm::vec3 Shader::getCosineSampleHemisphere(const ::glm::vec3 &normal) const {
     static ::std::atomic<::std::uint32_t> sampler {};
     const auto current1 {sampler.fetch_add(1, ::std::memory_order_relaxed)};
@@ -196,6 +243,11 @@ void Shader::resetSampling() {
     return direction;
 }
 
+/**
+ * Calculates the index of a random chosen light in the scene.
+ *
+ * @return The index of a random chosen light.
+ */
 ::std::uint32_t Shader::getLightIndex () {
     static ::std::atomic<::std::uint32_t> sampler {};
     const auto current {sampler.fetch_add(1, ::std::memory_order_relaxed)};
@@ -208,6 +260,11 @@ void Shader::resetSampling() {
     return chosenLight;
 }
 
+/**
+ * Gets the planes in the scene.
+ *
+ * @return The planes in the scene.
+ */
 const ::std::vector<Plane>& Shader::getPlanes() const {
     switch (this->accelerator_) {
         case Accelerator::ACC_NONE: {
@@ -229,6 +286,11 @@ const ::std::vector<Plane>& Shader::getPlanes() const {
     return this->naivePlanes_.getPrimitives();
 }
 
+/**
+ * Gets the spheres in the scene.
+ *
+ * @return The spheres in the scene.
+ */
 const ::std::vector<Sphere>& Shader::getSpheres() const {
     switch (this->accelerator_) {
         case Accelerator::ACC_NONE: {
@@ -250,6 +312,11 @@ const ::std::vector<Sphere>& Shader::getSpheres() const {
     return this->naiveSpheres_.getPrimitives();
 }
 
+/**
+ * Gets the triangles in the scene.
+ *
+ * @return The triangles in the scene.
+ */
 const ::std::vector<Triangle>& Shader::getTriangles() const {
     switch (this->accelerator_) {
         case Accelerator::ACC_NONE: {
@@ -271,10 +338,20 @@ const ::std::vector<Triangle>& Shader::getTriangles() const {
     return this->naiveTriangles_.getPrimitives();
 }
 
+/**
+ * Gets the lights in the scene.
+ *
+ * @return The lights in the scene.
+ */
 const ::std::vector<::std::unique_ptr<Light>>& Shader::getLights() const {
     return this->lights_;
 }
 
+/**
+ * Gets the materials in the scene.
+ *
+ * @return The materials in the scene.
+ */
 const ::std::vector<Material>& Shader::getMaterials() const {
     return this->materials_;
 }

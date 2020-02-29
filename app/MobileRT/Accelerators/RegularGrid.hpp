@@ -9,6 +9,17 @@
 
 namespace MobileRT {
 
+    /**
+     * A class which represents the Regular Grid acceleration structure.
+     * <br>
+     * This is a structure where all the primitives are stored in a matrix where each cell represents a 3D space of
+     * the scene.
+     * So the scene geometry is divided in many boxes (each cell of the 3D matrix) and when a ray is casted into the
+     * scene, it tries to intersect the nearest cell and then the primitives inside it until it finds the nearest
+     * intersection point.
+     *
+     * @tparam T The type of the primitives.
+     */
     template<typename T>
     class RegularGrid final {
     private:
@@ -51,6 +62,13 @@ namespace MobileRT {
 
 
 
+    /**
+     * The constructor.
+     *
+     * @tparam T The type of the primitives.
+     * @param primitives The primitives in the scene.
+     * @param gridSize   The size of the cells in all the axes.
+     */
     template<typename T>
     RegularGrid<T>::RegularGrid(
         ::std::vector<T> &&primitives, const ::std::uint32_t gridSize
@@ -85,12 +103,24 @@ namespace MobileRT {
         addPrimitives();
     }
 
+    /**
+     * The destructor.
+     *
+     * @tparam T The type of the primitives.
+     */
     template<typename T>
     RegularGrid<T>::~RegularGrid() {
         this->grid_.clear();
         ::std::vector<::std::vector<T*>> {}.swap(this->grid_);
     }
 
+    /**
+     * Helper method which calculates the number bits set in an unsigned integer.
+     *
+     * @tparam T The type of the primitives.
+     * @param value The value to count the number of the bits set.
+     * @return The number of bits set in the value.
+     */
     template<typename T>
     ::std::uint32_t RegularGrid<T>::bitCounter(::std::uint32_t value) const {
         ::std::uint32_t counter {};
@@ -101,6 +131,11 @@ namespace MobileRT {
         return counter;
     }
 
+    /**
+     * Helper method which adds the primitives into the grid.
+     *
+     * @tparam T The type of the primitives.
+     */
     template<typename T>
     void RegularGrid<T>::addPrimitives() {
 
@@ -173,18 +208,51 @@ namespace MobileRT {
         }
     }
 
+    /**
+     * This method casts a ray into the geometry and calculates the nearest intersection point from the origin of the
+     * ray.
+     *
+     * @tparam T The type of the primitives.
+     * @param intersection The current intersection of the ray with previous primitives.
+     * @param ray          The ray to be casted.
+     * @return The intersection of the ray with the geometry.
+     */
     template<typename T>
     Intersection RegularGrid<T>::trace(Intersection intersection, const Ray &ray) {
         intersection = intersect (intersection, ray);
         return intersection;
     }
 
+    /**
+     * This method casts a ray into the geometry and calculates a random intersection point.
+     * The intersection point itself is not important, the important is to determine if the ray intersects some
+     * primitive in the scene or not.
+     *
+     * @tparam T The type of the primitives.
+     * @param intersection The current intersection of the ray with previous primitives.
+     * @param ray          The ray to be casted.
+     * @return The intersection of the ray with the geometry.
+     */
     template<typename T>
     Intersection RegularGrid<T>::shadowTrace(Intersection intersection, const Ray &ray) {
         intersection = intersect (intersection, ray, true);
         return intersection;
     }
 
+    /**
+     * Helper method which calculates the intersection point from the origin of the ray.
+     * <br>
+     * This method supports two modes:<br>
+     *  - trace the ray until finding the nearest intersection point from the origin of the ray<br>
+     *  - trace the ray until finding any intersection point from the origin of the ray<br>
+     *
+     * @tparam T The type of the primitives.
+     * @param intersection The previous intersection point of the ray (used to update its data in case it is found a
+     * nearest intersection poin.
+     * @param ray          The casted ray.
+     * @param shadowTrace  Whether it shouldn't find the nearest intersection point.
+     * @return The intersection point of the ray in the scene.
+     */
     template<typename T>
     Intersection RegularGrid<T>::intersect(Intersection intersection, const Ray &ray, const bool shadowTrace) {
         // setup 3DDDA (double check reusability of primary ray data)
@@ -372,6 +440,12 @@ namespace MobileRT {
         return intersection;
     }
 
+    /**
+     * Gets the primitives.
+     *
+     * @tparam T The type of the primitives.
+     * @return The primitives.
+     */
     template<typename T>
     const ::std::vector<T>& RegularGrid<T>::getPrimitives() const {
         return this->primitives_;

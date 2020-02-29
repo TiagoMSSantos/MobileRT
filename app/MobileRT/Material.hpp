@@ -5,6 +5,11 @@
 #include <glm/glm.hpp>
 
 namespace MobileRT {
+    /**
+     * A class which represents the material of a primitive in the scene.
+     * <br>
+     * A material consists of the type of interactions that a light does when it hits the object.
+     */
     class Material final {
     public:
         ::glm::vec3 Le_ {};   // emission light

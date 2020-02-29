@@ -6,6 +6,9 @@
 #include <glm/glm.hpp>
 
 namespace MobileRT {
+    /**
+     * A class which represents an intersection of a ray with a primitive.
+     */
     class Intersection final {
     public:
         ::glm::vec3 point_ {};

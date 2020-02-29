@@ -2,11 +2,27 @@
 
 using ::MobileRT::Intersection;
 
+/**
+ * The constructor.
+ *
+ * @param dist      The distance between the intersection point and the origin of the ray.
+ * @param primitive The pointer to the intersected primitive.
+ */
 Intersection::Intersection(const float dist, const void *const primitive) :
     length_ {dist},
     primitive_ {primitive} {
 }
 
+/**
+ * The constructor.
+ *
+ * @param intPoint      The intersection point.
+ * @param dist          The distance between the intersection point and the origin of the ray.
+ * @param normal        The normal of the intersected point.
+ * @param primitive     The pointer to the intersected primitive.
+ * @param materialIndex The index of the material of the intersected shape.
+ * @param texCoords     The texture coordinates of the intersected point.
+ */
 Intersection::Intersection(
     const ::glm::vec3 &intPoint,
     const float dist,

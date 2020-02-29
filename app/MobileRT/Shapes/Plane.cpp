@@ -4,12 +4,26 @@ using ::MobileRT::AABB;
 using ::MobileRT::Plane;
 using ::MobileRT::Intersection;
 
+/**
+ * The constructor.
+ *
+ * @param point         A point in the plane.
+ * @param normal        The normal of the plane.
+ * @param materialIndex The index of the material of the plane.
+ */
 Plane::Plane(const ::glm::vec3 &point, const ::glm::vec3 &normal, const ::std::int32_t materialIndex) :
     normal_ {::glm::normalize(normal)},
     point_ {point},
     materialIndex_ {materialIndex} {
 }
 
+/**
+ * Determines if a ray intersects this plane or not and calculates the intersection point.
+ *
+ * @param intersection The previous intersection of the ray in the scene.
+ * @param ray          The casted ray into the scene.
+ * @return The intersection point.
+ */
 Intersection Plane::intersect(const Intersection &intersection, const Ray &ray) const {
     if (ray.primitive_ == this) {
         return intersection;
@@ -39,6 +53,11 @@ Intersection Plane::intersect(const Intersection &intersection, const Ray &ray) 
     return res;
 }
 
+/**
+ * The helper method which calculates the right vector.
+ *
+ * @return The right vector.
+ */
 ::glm::vec3 Plane::getRightVector() const {
     ::glm::vec3 right {};
     if (this->normal_[0] >= 1) {
@@ -58,6 +77,11 @@ Intersection Plane::intersect(const Intersection &intersection, const Ray &ray) 
     return right;
 }
 
+/**
+ * Calculates the bounding box of the plane.
+ *
+ * @return The bounding box of the plane.
+ */
 AABB Plane::getAABB() const {
     const auto &rightDir {getRightVector()};
     const auto &min {this->point_ + rightDir * -100.0F};
@@ -66,6 +90,12 @@ AABB Plane::getAABB() const {
     return res;
 }
 
+/**
+ * Calculates the distance between a point and the plane.
+ *
+ * @param point A 3D point in the scene.
+ * @return The distance between the point and the plane.
+ */
 float Plane::distance(const ::glm::vec3 &point) const {
     //Plane Equation
     //a(x-x0)+b(y-y0)+c(z-z0) = 0
@@ -89,6 +119,12 @@ float Plane::distance(const ::glm::vec3 &point) const {
     return res;
 }
 
+/**
+ * Checks if a bounding box intersects the plane or not.
+ *
+ * @param box A bounding box.
+ * @return Whether if the bounding box intersects the plane or not.
+ */
 bool Plane::intersect(const AABB &box) const {
     const auto &positiveVertex {box.pointMax_};
     const auto &negativeVertex {box.pointMin_};

@@ -5,6 +5,14 @@ using ::MobileRT::AABB;
 using ::MobileRT::Triangle;
 using ::MobileRT::Intersection;
 
+/**
+ * The constructor.
+ *
+ * @param pointA        A vertex of the triangle.
+ * @param pointB        A vertex of the triangle.
+ * @param pointC        A vertex of the triangle.
+ * @param materialIndex The index of the material of the triangle.
+ */
 Triangle::Triangle(
         const ::glm::vec3 &pointA,
         const ::glm::vec3 &pointB,
@@ -28,6 +36,17 @@ Triangle::Triangle(
     assert(!::glm::all(::glm::isinf(this->normalC_)));
 }
 
+/**
+ * The constructor.
+ *
+ * @param pointA        A vertex of the triangle.
+ * @param pointB        A vertex of the triangle.
+ * @param pointC        A vertex of the triangle.
+ * @param normalA       The normal of the first vertex.
+ * @param normalB       The normal of the second vertex.
+ * @param normalC       The normal of the third vertex.
+ * @param materialIndex The index of the material of the triangle.
+ */
 Triangle::Triangle(
         const ::glm::vec3 &pointA,
         const ::glm::vec3 &pointB,
@@ -54,6 +73,17 @@ Triangle::Triangle(
     assert(!::glm::all(::glm::isinf(this->normalC_)));
 }
 
+/**
+ * The constructor.
+ *
+ * @param pointA        A vertex of the triangle.
+ * @param pointB        A vertex of the triangle.
+ * @param pointC        A vertex of the triangle.
+ * @param texCoordA     The texture coordinates of the first vertex.
+ * @param texCoordB     The texture coordinates of the second vertex.
+ * @param texCoordC     The texture coordinates of the third vertex.
+ * @param materialIndex The index of the material of the triangle.
+ */
 Triangle::Triangle(
         const ::glm::vec3 &pointA,
         const ::glm::vec3 &pointB,
@@ -83,6 +113,20 @@ Triangle::Triangle(
     assert(!::glm::all(::glm::isinf(this->normalC_)));
 }
 
+/**
+ * The constructor.
+ *
+ * @param pointA        A vertex of the triangle.
+ * @param pointB        A vertex of the triangle.
+ * @param pointC        A vertex of the triangle.
+ * @param normalA       The normal of the first vertex.
+ * @param normalB       The normal of the second vertex.
+ * @param normalC       The normal of the third vertex.
+ * @param texCoordA     The texture coordinates of the first vertex.
+ * @param texCoordB     The texture coordinates of the second vertex.
+ * @param texCoordC     The texture coordinates of the third vertex.
+ * @param materialIndex The index of the material of the triangle.
+ */
 Triangle::Triangle(
         const ::glm::vec3 &pointA,
         const ::glm::vec3 &pointB,
@@ -115,6 +159,13 @@ Triangle::Triangle(
     assert(!::glm::all(::glm::isinf(this->normalC_)));
 }
 
+/**
+ * Determines if a ray intersects this triangle or not and calculates the intersection point.
+ *
+ * @param intersection The previous intersection of the ray in the scene.
+ * @param ray          The casted ray into the scene.
+ * @return The intersection point.
+ */
 Intersection Triangle::intersect(const Intersection &intersection, const Ray &ray) const {
     if (ray.primitive_ == this) {
         return intersection;
@@ -158,6 +209,11 @@ Intersection Triangle::intersect(const Intersection &intersection, const Ray &ra
     return res;
 }
 
+/**
+ * Calculates the bounding box of the triangle.
+ *
+ * @return The bounding box of the triangle.
+ */
 AABB Triangle::getAABB() const {
     const auto &pointB {this->pointA_ + this->AB_};
     const auto &pointC {this->pointA_ + this->AC_};
@@ -167,6 +223,12 @@ AABB Triangle::getAABB() const {
     return res;
 }
 
+/**
+ * Checks if a bounding box intersects the triangle or not.
+ *
+ * @param box A bounding box.
+ * @return Whether if the bounding box intersects the triangle or not.
+ */
 bool Triangle::intersect(const AABB &box) const {
     auto intersectRayAABB {
         [&](const ::glm::vec3 &orig, const ::glm::vec3 &vec) -> bool {

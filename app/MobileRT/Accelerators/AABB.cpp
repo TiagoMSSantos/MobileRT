@@ -4,11 +4,23 @@
 using ::MobileRT::AABB;
 using ::MobileRT::Ray;
 
+/**
+ * Constructor.
+ *
+ * @param pointMin The point of the AABB in the bottom corner.
+ * @param pointMax The point of the AABB in the upper corner.
+ */
 AABB::AABB(const ::glm::vec3 &pointMin, const ::glm::vec3 &pointMax) :
     pointMin_ {pointMin},
     pointMax_ {pointMax} {
 }
 
+/**
+ * Checks if a ray intersects this AABB.
+ *
+ * @param ray A casted ray.
+ * @return Whether the ray intersected this AABB.
+ */
 bool AABB::intersect(const Ray &ray) const {
     const auto invDirX {1.0F / ray.direction_[0]};
     const auto rayOrgX {ray.origin_[0]};
@@ -31,6 +43,11 @@ bool AABB::intersect(const Ray &ray) const {
     return intersected;
 }
 
+/**
+ * Calculates the surface area of this AABB.
+ *
+ * @return The surface area.
+ */
 float AABB::getSurfaceArea() const {
     const auto length {this->pointMax_ - this->pointMin_};
 
@@ -43,6 +60,13 @@ float AABB::getSurfaceArea() const {
     return surfaceArea;
 }
 
+/**
+ * Calculates the centroid of this AABB.
+ * <br>
+ * The centroid or geometric center of a plane figure is the arithmetic mean position of all the points in the figure.
+ *
+ * @return The centroid.
+ */
 ::glm::vec3 AABB::getCentroid() const {
     const auto &length {(this->pointMax_ - this->pointMin_) / 2.0F};
     const auto &res {this->pointMin_ + length};
@@ -50,6 +74,13 @@ float AABB::getSurfaceArea() const {
 }
 
 namespace MobileRT {
+    /**
+     * Calculates a box which surrounds both boxes received by the parameters.
+     *
+     * @param box1 A box.
+     * @param box2 A box.
+     * @return A box which surrounds both boxes.
+     */
     AABB surroundingBox(const AABB &box1, const AABB &box2) {
         const auto &min {::glm::min(box1.pointMin_, box2.pointMin_)};
         const auto &max {::glm::max(box1.pointMax_, box2.pointMax_)};

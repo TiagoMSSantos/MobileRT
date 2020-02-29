@@ -3,6 +3,16 @@
 
 using ::MobileRT::Material;
 
+/**
+ * The constructor.
+ *
+ * @param kD               The diffuse reflection.
+ * @param kS               The specular reflection.
+ * @param kT               The specular refraction.
+ * @param refractiveIndice The refractive index or index of refraction of the material.
+ * @param lE               The emission of light, in case of a light source.
+ * @param texture          The texture of the material.
+ */
 Material::Material(
     const ::glm::vec3 &kD, const ::glm::vec3 &kS,
     const ::glm::vec3 &kT, const float refractiveIndice,
@@ -15,6 +25,13 @@ Material::Material(
     texture_ {::std::move(texture)} {
 }
 
+/**
+ * The operator equals.
+ * This method determine if a material is the same as this one.
+ *
+ * @param material A material.
+ * @return Whether the material is equal to this one.
+ */
 bool Material::operator==(const Material &material) {
     const auto sameKd {::MobileRT::equal(this->Kd_, material.Kd_)};
     const auto sameKs {::MobileRT::equal(this->Ks_, material.Ks_)};

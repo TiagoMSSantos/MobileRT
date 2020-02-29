@@ -5,12 +5,26 @@ using ::MobileRT::AABB;
 using ::MobileRT::Sphere;
 using ::MobileRT::Intersection;
 
+/**
+ * The constructor.
+ *
+ * @param center        The center of the sphere.
+ * @param radius        The radius of the sphere.
+ * @param materialIndex The index of the material of the sphere.
+ */
 Sphere::Sphere(const ::glm::vec3 &center, const float radius, const ::std::int32_t materialIndex) :
     center_ {center},
     sqRadius_ {radius * radius},
     materialIndex_ {materialIndex} {
 }
 
+/**
+ * Determines if a ray intersects this sphere or not and calculates the intersection point.
+ *
+ * @param intersection The previous intersection of the ray in the scene.
+ * @param ray          The casted ray into the scene.
+ * @return The intersection point.
+ */
 Intersection Sphere::intersect(const Intersection &intersection, const Ray &ray) const {
     //stackoverflow.com/questions/1986378/how-to-set-up-quadratic-equation-for-a-ray-sphere-intersection
     const auto &originToCenter {this->center_ - ray.origin_};
@@ -48,6 +62,11 @@ Intersection Sphere::intersect(const Intersection &intersection, const Ray &ray)
     return res;
 }
 
+/**
+ * Calculates the bounding box of the sphere.
+ *
+ * @return The bounding box of the sphere.
+ */
 AABB Sphere::getAABB() const {
     const auto radius {::std::sqrt(this->sqRadius_)};
     const auto &min {this->center_ - radius};
@@ -56,6 +75,12 @@ AABB Sphere::getAABB() const {
     return res;
 }
 
+/**
+ * Checks if a bounding box intersects the sphere or not.
+ *
+ * @param box A bounding box.
+ * @return Whether if the bounding box intersects the sphere or not.
+ */
 bool Sphere::intersect(const AABB &box) const {
     auto dmin {0.0F};
     const auto &v1 {box.pointMin_};

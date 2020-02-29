@@ -12,16 +12,32 @@
 
 namespace MobileRT {
 
+    /**
+     * A class which represents the Bounding Volume Hierarchy acceleration structure.
+     *
+     * @tparam T The type of the primitives.
+     */
     template<typename T>
     class BVH final {
         private:
             static const ::std::int32_t maxLeafSize {2};
 
+            /**
+             * An auxiliary node used for the construction of the BVH.
+             * It is used to order all the AABBs by the position of the centroid.
+             */
             struct BuildNode {
                 AABB box_ {};
                 ::glm::vec3 centroid_ {};
                 ::std::int32_t oldIndex_ {};
 
+                /**
+                 * The constructor.
+                 *
+                 * @param box      The box to store in the node.
+                 * @param oldIndex The old index of the box in the original vector (used to put the box in the proper
+                 * position.
+                 */
                 explicit BuildNode(AABB &&box, const ::std::int32_t oldIndex) :
                     box_ {box},
                     centroid_ {box_.getCentroid()},
@@ -30,6 +46,9 @@ namespace MobileRT {
                 }
             };
 
+            /**
+             * A node of the BVH vector.
+             */
             struct BVHNode {
                 AABB box_ {};
                 ::std::int32_t indexOffset_ {};
@@ -75,6 +94,12 @@ namespace MobileRT {
 
 
 
+    /**
+     * The constructor.
+     *
+     * @tparam T The type of the primitives.
+     * @param primitives The vector containing all the primitives to store in the BVH.
+     */
     template<typename T>
     BVH<T>::BVH(::std::vector<T> &&primitives) {
         if (primitives.empty()) {
@@ -89,6 +114,11 @@ namespace MobileRT {
         build(::std::move(primitives));
     }
 
+    /**
+     * The destructor.
+     *
+     * @tparam T The type of the primitives.
+     */
     template<typename T>
     BVH<T>::~BVH() {
         this->boxes_.clear();
@@ -98,6 +128,12 @@ namespace MobileRT {
         ::std::vector<T> {}.swap(this->primitives_);
     }
 
+    /**
+     * A helper method which builds the BVH structure.
+     *
+     * @tparam T The type of the primitives.
+     * @param primitives A vector containing all the primitives to store in the BVH.
+     */
     template<typename T>
     void BVH<T>::build(::std::vector<T> &&primitives) {
         ::std::int32_t currentBoxIndex {};
@@ -223,18 +259,51 @@ namespace MobileRT {
         }
     }
 
+    /**
+     * This method casts a ray into the geometry and calculates the nearest intersection point from the origin of the
+     * ray.
+     *
+     * @tparam T The type of the primitives.
+     * @param intersection The current intersection of the ray with previous primitives.
+     * @param ray          The ray to be casted.
+     * @return The intersection of the ray with the geometry.
+     */
     template<typename T>
     Intersection BVH<T>::trace(Intersection intersection, const Ray &ray) {
         intersection = intersect(intersection, ray);
         return intersection;
     }
 
+    /**
+     * This method casts a ray into the geometry and calculates a random intersection point.
+     * The intersection point itself is not important, the important is to determine if the ray intersects some
+     * primitive in the scene or not.
+     *
+     * @tparam T The type of the primitives.
+     * @param intersection The current intersection of the ray with previous primitives.
+     * @param ray          The ray to be casted.
+     * @return The intersection of the ray with the geometry.
+     */
     template<typename T>
     Intersection BVH<T>::shadowTrace(Intersection intersection, const Ray &ray) {
         intersection = intersect(intersection, ray, true);
         return intersection;
     }
 
+    /**
+     * Helper method which calculates the intersection point from the origin of the ray.
+     * <br>
+     * This method supports two modes:<br>
+     *  - trace the ray until finding the nearest intersection point from the origin of the ray<br>
+     *  - trace the ray until finding any intersection point from the origin of the ray<br>
+     *
+     * @tparam T The type of the primitives.
+     * @param intersection The previous intersection point of the ray (used to update its data in case it is found a
+     * nearest intersection poin.
+     * @param ray          The casted ray.
+     * @param shadowTrace  Whether it shouldn't find the nearest intersection point.
+     * @return The intersection point of the ray in the scene.
+     */
     template<typename T>
     Intersection BVH<T>::intersect(Intersection intersection, const Ray &ray, const bool shadowTrace) {
         if(this->primitives_.empty()) {
@@ -298,7 +367,7 @@ namespace MobileRT {
     /**
      * Gets the index to where the vector of boxes should be split.
      *
-     * @tparam Iterator The type of the iterator.
+     * @tparam Iterator The type of the iterator of the AABBs.
      * @param itBegin   The iterator of the first box in the vector.
      * @param itEnd     The iterator of the last box in the vector.
      * @return The index where the vector of boxes should be split.
@@ -348,6 +417,14 @@ namespace MobileRT {
         return splitIndex;
     }
 
+    /**
+     * Calculates a surrounding box of all the build nodes vector received via arguments.
+     *
+     * @tparam Iterator The type of the iterator of the BuildNodes.
+     * @param itBegin The iterator of the first node in the vector.
+     * @param itEnd   The iterator of the last node in the vector.
+     * @return A box surrounding all the boxes of the nodes.
+     */
     template<typename T>
     template<typename Iterator>
     AABB BVH<T>::getSurroundingBox(const Iterator itBegin, const Iterator itEnd) {
@@ -361,6 +438,12 @@ namespace MobileRT {
         return maxBox;
     }
 
+    /**
+     * Gets the primitives.
+     *
+     * @tparam T The type of the primitives.
+     * @return The primitives.
+     */
     template<typename T>
     const ::std::vector<T>& BVH<T>::getPrimitives() const {
         return this->primitives_;

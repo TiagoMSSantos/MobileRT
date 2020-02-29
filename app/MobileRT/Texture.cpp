@@ -6,6 +6,14 @@
 
 using ::MobileRT::Texture;
 
+/**
+ * The constructor.
+ *
+ * @param pointer  A shared_ptr to the texture data.
+ * @param width    The width of the texture.
+ * @param height   The height of the texture.
+ * @param channels The number of channels in the texture.
+ */
 Texture::Texture(
         ::std::shared_ptr<::std::uint8_t> pointer,
         ::std::int32_t width,
@@ -19,6 +27,12 @@ Texture::Texture(
         channels_ {channels} {
 }
 
+/**
+ * Gets the color of a point in the texture.
+ *
+ * @param texCoords The texture coordinates.
+ * @return The color of the point.
+ */
 ::glm::vec3 Texture::loadColor(const ::glm::vec2 &texCoords) const {
     const auto u {static_cast<::std::int32_t> (texCoords[0] * this->width_)};
     const auto v {static_cast<::std::int32_t> (texCoords[1] * this->height_)};
@@ -32,6 +46,12 @@ Texture::Texture(
     return vec;
 }
 
+/**
+ * A factory which loads a texture file and creates a new Texture.
+ *
+ * @param textureFilePath The path to the texture file.
+ * @return A new texture.
+ */
 Texture Texture::createTexture(const char *const textureFilePath) {
     ::std::int32_t width {};
     ::std::int32_t height {};
@@ -51,6 +71,12 @@ Texture Texture::createTexture(const char *const textureFilePath) {
     return texture;
 }
 
+/**
+ * The operator equals.
+ *
+ * @param texture A texture.
+ * @return Whether both textures are equal.
+ */
 bool Texture::operator==(const Texture &texture) const {
     const auto sameWidth {this->width_ == texture.width_};
     const auto sameHeight {this->height_ == texture.height_};
@@ -60,6 +86,11 @@ bool Texture::operator==(const Texture &texture) const {
     return same;
 }
 
+/**
+ * Checks if the texture is valid or not.
+ *
+ * @return Whether the texture is a valid one or not.
+ */
 bool Texture::isValid() const {
     return this->width_ > 0 && this->height_> 0 && this->channels_ > 0 && this->image_ != nullptr;
 }

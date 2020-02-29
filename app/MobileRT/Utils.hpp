@@ -45,6 +45,12 @@ namespace MobileRT {
 
     ::glm::vec2 normalize(const ::glm::vec2 &textureCoordinates);
 
+    /**
+     * Helper method which prints all the parameters in the console output.
+     *
+     * @tparam Args The type of the arguments.
+     * @param args The arguments to print.
+     */
     template<typename ...Args>
     void log(Args &&... args) {
         ::std::ostringstream oss {""};
@@ -54,6 +60,12 @@ namespace MobileRT {
         ::Dependent::printString(line);
     }
 
+    /**
+     * Helper method which gets the name of the file of a file path.
+     *
+     * @param filepath The path to a file.
+     * @return The name of the file.
+     */
     ::std::string getFileName(const char *const filepath) {
         const ::std::string &filePath {filepath};
         auto filePos {filePath.rfind('/')};
@@ -69,6 +81,14 @@ namespace MobileRT {
 
 #if __cplusplus <= 201103L
 namespace std {
+    /**
+     * The make_unique method to be used when the version of the C++ language is older than C++14.
+     *
+     * @tparam T    The type of the object to construct.
+     * @tparam Args The type of the arguments.
+     * @param args The arguments to build the object.
+     * @return A unique_ptr of an object of type T.
+     */
     template<typename T, typename... Args>
     ::std::unique_ptr<T> make_unique(Args &&... args) {
         return ::std::unique_ptr<T>(new T(::std::forward<Args>(args)...));
