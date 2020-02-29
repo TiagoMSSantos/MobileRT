@@ -17,6 +17,7 @@ android {
     }
     setCompileSdkVersion 29
     setBuildToolsVersion '29.0.3'
+    setNdkVersion '21.0.6113669'
     defaultConfig {
         setMinSdkVersion 16
         setTargetSdkVersion 29
