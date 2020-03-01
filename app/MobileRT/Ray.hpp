@@ -12,11 +12,11 @@ namespace MobileRT {
      */
     class Ray final {
     public:
-        const ::glm::vec3 origin_ {};
-        const ::glm::vec3 direction_  {};
-        const ::std::int32_t depth_{};
-        const ::std::int32_t id_ {};
-        const void *const primitive_ {};
+        const ::glm::vec3 origin_ {0};
+        const ::glm::vec3 direction_  {0};
+        const ::std::int32_t depth_{-1};
+        const ::std::int32_t id_ {-1};
+        const void *const primitive_ {nullptr};
 
     public:
         explicit Ray () = delete;

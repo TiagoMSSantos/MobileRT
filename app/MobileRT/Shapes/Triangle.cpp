@@ -201,8 +201,8 @@ Intersection Triangle::intersect(const Intersection &intersection, const Ray &ra
 
     const auto w {1.0F - u - v};
     const auto &intersectionNormal {::glm::normalize(this->normalA_ * w + this->normalB_ * u + this->normalC_ * v)};
-    const auto& texCoords {this->texCoordA_ * w + this->texCoordB_ * u + this->texCoordC_ * v};
-    const auto& intersectionPoint {ray.origin_ + ray.direction_ * distanceToIntersection};
+    const auto &texCoords {this->texCoordA_ * w + this->texCoordB_ * u + this->texCoordC_ * v};
+    const auto &intersectionPoint {ray.origin_ + ray.direction_ * distanceToIntersection};
     const Intersection res {intersectionPoint, distanceToIntersection, intersectionNormal, this,
                             this->materialIndex_, texCoords};
 
@@ -308,7 +308,7 @@ bool Triangle::intersect(const AABB &box) const {
     const auto &pointB {this->pointA_ + this->AB_};
     const auto &pointC {this->pointA_ + this->AC_};
     const auto intersectedBC {intersectRayAABB(pointB, pointC - pointB)};
-    Intersection intersection {RayLengthMax, nullptr};
+    Intersection intersection {};
     const auto lastDist {intersection.length_};
     intersection = intersect(intersection, ray);
     const auto intersectedRay {intersection.length_ < lastDist};

@@ -23,11 +23,12 @@ namespace MobileRT {
 
     inline ::std::string getFileName(const char *filepath);
 
+    const float Epsilon {1.0e-06f};
     const float RayLengthMax {1.0e+30f};
-    const ::std::int32_t RayDepthMin {4};
+    const ::std::int32_t RayDepthMin {1};
     const ::std::int32_t RayDepthMax {6};
     const ::std::int32_t NumberOfTiles {256};
-    const float Epsilon {1.0e-06f};
+    const ::std::int32_t SizeOfStack {512};
 
     ::std::int32_t roundDownToMultipleOf(::std::int32_t value, ::std::int32_t multiple);
 

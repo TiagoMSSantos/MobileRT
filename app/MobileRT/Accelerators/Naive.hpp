@@ -78,7 +78,7 @@ namespace MobileRT {
      *
      * @tparam T The type of the primitives.
      * @param intersection The previous intersection point of the ray (used to update its data in case it is found a
-     * nearest intersection poin.
+     * nearest intersection point.
      * @param ray          The casted ray.
      * @param shadowTrace  Whether it shouldn't find the nearest intersection point.
      * @return The intersection point of the ray in the scene.

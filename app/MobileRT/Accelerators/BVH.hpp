@@ -142,9 +142,9 @@ namespace MobileRT {
         ::std::int32_t endBoxIndex {static_cast<::std::int32_t> (primitivesSize)};
         ::std::int32_t maxNodeIndex {};
 
-        ::std::array<::std::int32_t, 512> stackBoxIndex {};
-        ::std::array<::std::int32_t, 512> stackBoxBegin {};
-        ::std::array<::std::int32_t, 512> stackBoxEnd {};
+        ::std::array<::std::int32_t, SizeOfStack> stackBoxIndex {};
+        ::std::array<::std::int32_t, SizeOfStack> stackBoxBegin {};
+        ::std::array<::std::int32_t, SizeOfStack> stackBoxEnd {};
 
         auto itStackBoxIndex {stackBoxIndex.begin()};
         ::std::advance(itStackBoxIndex, 1);
@@ -299,7 +299,7 @@ namespace MobileRT {
      *
      * @tparam T The type of the primitives.
      * @param intersection The previous intersection point of the ray (used to update its data in case it is found a
-     * nearest intersection poin.
+     * nearest intersection point.
      * @param ray          The casted ray.
      * @param shadowTrace  Whether it shouldn't find the nearest intersection point.
      * @return The intersection point of the ray in the scene.
@@ -310,7 +310,7 @@ namespace MobileRT {
             return intersection;
         }
         ::std::int32_t boxIndex {};
-        ::std::array<::std::int32_t, 512> stackBoxIndex {};
+        ::std::array<::std::int32_t, SizeOfStack> stackBoxIndex {};
 
         const auto beginBoxIndex {stackBoxIndex.cbegin()};
         auto itStackBoxIndex {stackBoxIndex.begin()};
@@ -325,7 +325,7 @@ namespace MobileRT {
                 const auto numberPrimitives {node.numPrimitives_};
                 if (numberPrimitives > 0) {
                     for (::std::int32_t i {}; i < numberPrimitives; ++i) {
-                        auto& primitive {*(itPrimitives + node.indexOffset_ + i)};
+                        auto &primitive {*(itPrimitives + node.indexOffset_ + i)};
                         const auto lastDist {intersection.length_};
                         intersection = primitive.intersect(intersection, ray);
                         if (shadowTrace && intersection.length_ < lastDist) {

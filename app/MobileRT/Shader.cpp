@@ -103,7 +103,7 @@ void Shader::initializeAccelerators(Scene scene) {
  * @return Whether the casted ray intersects a light source in the scene or not.
  */
 bool Shader::rayTrace(::glm::vec3 *rgb, const Ray &ray) {
-    Intersection intersection {RayLengthMax, nullptr};
+    Intersection intersection {};
     const auto lastDist {intersection.length_};
     switch (this->accelerator_) {
         case Accelerator::ACC_NONE: {

@@ -6,11 +6,9 @@ using ::MobileRT::Intersection;
  * The constructor.
  *
  * @param dist      The distance between the intersection point and the origin of the ray.
- * @param primitive The pointer to the intersected primitive.
  */
-Intersection::Intersection(const float dist, const void *const primitive) :
-    length_ {dist},
-    primitive_ {primitive} {
+Intersection::Intersection(const float dist) :
+    length_ {dist} {
 }
 
 /**
