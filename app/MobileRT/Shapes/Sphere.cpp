@@ -49,7 +49,7 @@ Intersection Sphere::intersect(const Intersection &intersection, const Ray &ray)
     //distance between intersection and camera = smaller root = closer intersection
     const auto distanceToIntersection {::std::min(distanceToIntersection1, distanceToIntersection2) / (2.0f * a)};
 
-    if (distanceToIntersection < 1.0e-05f || distanceToIntersection >= intersection.length_) {
+    if (distanceToIntersection < EpsilonLarge || distanceToIntersection >= intersection.length_) {
         return intersection;
     }
 

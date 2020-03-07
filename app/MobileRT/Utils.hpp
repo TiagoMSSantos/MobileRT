@@ -23,8 +23,9 @@ namespace MobileRT {
 
     inline ::std::string getFileName(const char *filepath);
 
-    const float Epsilon {1.0e-06f};
-    const float RayLengthMax {1.0e+30f};
+    const float EpsilonLarge {1.0e-05F};
+    const float Epsilon {1.0e-06F};
+    const float RayLengthMax {1.0e+30F};
     const ::std::int32_t RayDepthMin {1};
     const ::std::int32_t RayDepthMax {6};
     const ::std::int32_t NumberOfTiles {256};
@@ -45,6 +46,8 @@ namespace MobileRT {
     bool equal(const ::glm::vec3 &a, const ::glm::vec3 &b);
 
     ::glm::vec2 normalize(const ::glm::vec2 &textureCoordinates);
+
+    float fresnel(const ::glm::vec3 &I, const ::glm::vec3 &N, float ior);
 
     /**
      * Helper method which prints all the parameters in the console output.

@@ -39,6 +39,15 @@ namespace MobileRT {
 
         Camera &operator=(Camera &&camera) noexcept = default;
 
+        /**
+         * Generates a ray with the origin in the camera.
+         *
+         * @param u          u = x / width
+         * @param v          v = y / height
+         * @param deviationU deviationU = [-0.5F / width, 0.5F / width]
+         * @param deviationV deviationV = [-0.5F / height, 0.5F / height]
+         * @return The new generated ray.
+         */
         virtual Ray generateRay(float u, float v,
                                 float deviationU,
                                 float deviationV) const = 0;

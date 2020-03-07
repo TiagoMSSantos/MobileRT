@@ -35,6 +35,12 @@ namespace MobileRT {
 
         void stopSampling();
 
+        /**
+         * Calculates a new sample.
+         *
+         * @param sample The index of the desired sample.
+         * @return A random value between 0 and 1.
+         */
         virtual float getSample(::std::uint32_t sample) = 0;
 
         float getSample();

@@ -31,44 +31,44 @@ TestTriangle::~TestTriangle() {
 }
 
 TEST_F(TestTriangle, ConstructorVALUES) {
-	ASSERT_EQ(0.0f, triangle->pointA_[0]);
-	ASSERT_EQ(0.0f, triangle->pointA_[1]);
-	ASSERT_EQ(0.0f, triangle->pointA_[2]);
+	ASSERT_EQ(0.0F, triangle->pointA_[0]);
+	ASSERT_EQ(0.0F, triangle->pointA_[1]);
+	ASSERT_EQ(0.0F, triangle->pointA_[2]);
 
 	const ::glm::vec3 pointB {triangle->pointA_ + triangle->AB_};
 	const ::glm::vec3 pointC {triangle->pointA_ + triangle->AC_};
-	ASSERT_EQ(0.0f, pointB[0]);
-	ASSERT_EQ(1.0f, pointB[1]);
-	ASSERT_EQ(0.0f, pointB[2]);
+	ASSERT_EQ(0.0F, pointB[0]);
+	ASSERT_EQ(1.0F, pointB[1]);
+	ASSERT_EQ(0.0F, pointB[2]);
 
-	ASSERT_EQ(0.0f, pointC[0]);
-	ASSERT_EQ(0.0f, pointC[1]);
-	ASSERT_EQ(1.0f, pointC[2]);
+	ASSERT_EQ(0.0F, pointC[0]);
+	ASSERT_EQ(0.0F, pointC[1]);
+	ASSERT_EQ(1.0F, pointC[2]);
 
-	ASSERT_EQ(0.0f, triangle->AC_[0]);
-	ASSERT_EQ(0.0f, triangle->AC_[1]);
-	ASSERT_EQ(1.0f, triangle->AC_[2]);
+	ASSERT_EQ(0.0F, triangle->AC_[0]);
+	ASSERT_EQ(0.0F, triangle->AC_[1]);
+	ASSERT_EQ(1.0F, triangle->AC_[2]);
 
-	ASSERT_EQ(0.0f, triangle->AB_[0]);
-	ASSERT_EQ(1.0f, triangle->AB_[1]);
-	ASSERT_EQ(0.0f, triangle->AB_[2]);
+	ASSERT_EQ(0.0F, triangle->AB_[0]);
+	ASSERT_EQ(1.0F, triangle->AB_[1]);
+	ASSERT_EQ(0.0F, triangle->AB_[2]);
 
 	const ::glm::vec3 bc {pointC - pointB};
-	ASSERT_EQ(0.0f, bc[0]);
-	ASSERT_EQ(-1.0f, bc[1]);
-	ASSERT_EQ(1.0f, bc[2]);
+	ASSERT_EQ(0.0F, bc[0]);
+	ASSERT_EQ(-1.0F, bc[1]);
+	ASSERT_EQ(1.0F, bc[2]);
 }
 
 TEST_F(TestTriangle, AABB) {
 	const AABB box {triangle->getAABB()};
 
-	ASSERT_EQ(0.0f, box.pointMin_[0]);
-	ASSERT_EQ(0.0f, box.pointMin_[1]);
-	ASSERT_EQ(0.0f, box.pointMin_[2]);
+	ASSERT_EQ(0.0F, box.pointMin_[0]);
+	ASSERT_EQ(0.0F, box.pointMin_[1]);
+	ASSERT_EQ(0.0F, box.pointMin_[2]);
 
-	ASSERT_EQ(0.0f, box.pointMax_[0]);
-	ASSERT_EQ(1.0f, box.pointMax_[1]);
-	ASSERT_EQ(1.0f, box.pointMax_[2]);
+	ASSERT_EQ(0.0F, box.pointMax_[0]);
+	ASSERT_EQ(1.0F, box.pointMax_[1]);
+	ASSERT_EQ(1.0F, box.pointMax_[2]);
 }
 
 TEST_F(TestTriangle, intersectBoxInside01) {
@@ -105,23 +105,23 @@ TEST_F(TestTriangle, intersectBoxInside04) {
 
 TEST_F(TestTriangle, intersectBoxInside05) {
 	const ::glm::vec3 min {-1, -1, -1};
-	const ::glm::vec3 max {0.1f, 0.1f, 0.1f};
+	const ::glm::vec3 max {0.1F, 0.1F, 0.1F};
 	const AABB box {min, max};
 	const bool intersected {triangle->intersect(box)};
 	ASSERT_EQ(true, intersected);
 }
 
 TEST_F(TestTriangle, intersectBoxInside06) {
-	const ::glm::vec3 min {-1, 0.4f, 0.4f};
-	const ::glm::vec3 max {1, 1.4f, 1.4f};
+	const ::glm::vec3 min {-1, 0.4F, 0.4F};
+	const ::glm::vec3 max {1, 1.4F, 1.4F};
 	const AABB box {min, max};
 	const bool intersected {triangle->intersect(box)};
 	ASSERT_EQ(true, intersected);
 }
 
 TEST_F(TestTriangle, intersectBoxInside07) {
-	const ::glm::vec3 min {-1, 0.4f, 0.7f};
-	const ::glm::vec3 max {1, 1.4f, 1.4f};
+	const ::glm::vec3 min {-1, 0.4F, 0.7F};
+	const ::glm::vec3 max {1, 1.4F, 1.4F};
 	const AABB box {min, max};
 	const bool intersected {triangle->intersect(box)};
 	ASSERT_EQ(false, intersected);
@@ -129,11 +129,11 @@ TEST_F(TestTriangle, intersectBoxInside07) {
 
 TEST_F(TestTriangle, intersectBoxInside08) {
 	const Triangle triangle2 {
-		::glm::vec3 {10.0f, 0.0f, 10.0f},
-		::glm::vec3 {0.0f, 0.0f, 10.0f},
-		::glm::vec3 {0.0f, 10.0f, 10.0f}, -1};
-	const ::glm::vec3 min {1.25f, 1.25f, 10};
-	const ::glm::vec3 max {2.5f, 2.5f, 10};
+		::glm::vec3 {10.0F, 0.0F, 10.0F},
+		::glm::vec3 {0.0F, 0.0F, 10.0F},
+		::glm::vec3 {0.0F, 10.0F, 10.0F}, -1};
+	const ::glm::vec3 min {1.25F, 1.25F, 10};
+	const ::glm::vec3 max {2.5F, 2.5F, 10};
 	const AABB box {min, max};
 	const bool intersected {triangle2.intersect(box)};
 	ASSERT_EQ(true, intersected);
@@ -141,9 +141,9 @@ TEST_F(TestTriangle, intersectBoxInside08) {
 
 TEST_F(TestTriangle, intersectBoxInside09) {
 	const Triangle triangle2 {
-		::glm::vec3 {10.0f, 0.0f, 10.0f},
-		::glm::vec3 {0.0f, 0.0f, 10.0f},
-		::glm::vec3 {0.0f, 10.0f, 10.0f}, -1};
+		::glm::vec3 {10.0F, 0.0F, 10.0F},
+		::glm::vec3 {0.0F, 0.0F, 10.0F},
+		::glm::vec3 {0.0F, 10.0F, 10.0F}, -1};
 	const ::glm::vec3 min {-1, -1, 10};
 	const ::glm::vec3 max {11, 11, 10};
 	const AABB box {min, max};
@@ -153,50 +153,50 @@ TEST_F(TestTriangle, intersectBoxInside09) {
 
 TEST_F(TestTriangle, intersectBoxInside10) {
 	const Triangle triangle2 {
-		::glm::vec3 {1, 1.59000003f, -1.03999996f},
-		::glm::vec3 {-1.01999998f, 1.59000003f, -1.03999996f},
-		::glm::vec3 {-0.990000009f, 0, -1.03999996f}, -1};
-	const ::glm::vec3 min {-11.0200005f, 0.794949531f, -11.04f};
-	const ::glm::vec3 max {-0.0100002289f, 11.5899992f, -0.0250005722f};
+		::glm::vec3 {1, 1.59000003F, -1.03999996F},
+		::glm::vec3 {-1.01999998F, 1.59000003F, -1.03999996F},
+		::glm::vec3 {-0.990000009F, 0, -1.03999996F}, -1};
+	const ::glm::vec3 min {-11.0200005F, 0.794949531F, -11.04F};
+	const ::glm::vec3 max {-0.0100002289F, 11.5899992F, -0.0250005722F};
 	const AABB box {min, max};
 	const bool intersected {triangle2.intersect(box)};
 	ASSERT_EQ(true, intersected);
 }
 
 TEST_F(TestTriangle, ConstructorCOPY) {
-	const ::glm::vec3 point1 {1.0f, 2.0f, 3.0f};
+	const ::glm::vec3 point1 {1.0F, 2.0F, 3.0F};
 
-	ASSERT_EQ(1.0f, point1[0]);
-	ASSERT_EQ(2.0f, point1[1]);
-	ASSERT_EQ(3.0f, point1[2]);
+	ASSERT_EQ(1.0F, point1[0]);
+	ASSERT_EQ(2.0F, point1[1]);
+	ASSERT_EQ(3.0F, point1[2]);
 }
 
 TEST_F(TestTriangle, ConstructorMOVE) {
-	const ::glm::vec3 point1 {1.0f, 2.0f, 3.0f};
+	const ::glm::vec3 point1 {1.0F, 2.0F, 3.0F};
 
-	ASSERT_EQ(1.0f, point1[0]);
-	ASSERT_EQ(2.0f, point1[1]);
-	ASSERT_EQ(3.0f, point1[2]);
+	ASSERT_EQ(1.0F, point1[0]);
+	ASSERT_EQ(2.0F, point1[1]);
+	ASSERT_EQ(3.0F, point1[2]);
 }
 
 TEST_F(TestTriangle, OperatorLESS) {
-	const ::glm::vec3 point1 {3.0f, 2.0f, 1.0f};
-	const ::glm::vec3 point2 {1.0f, 2.0f, 3.0f};
+	const ::glm::vec3 point1 {3.0F, 2.0F, 1.0F};
+	const ::glm::vec3 point2 {1.0F, 2.0F, 3.0F};
 	const ::glm::vec3 vector {point2 - point1};
 
-	ASSERT_EQ(-2.0f, vector[0]);
-	ASSERT_EQ(0.0f, vector[1]);
-	ASSERT_EQ(2.0f, vector[2]);
+	ASSERT_EQ(-2.0F, vector[0]);
+	ASSERT_EQ(0.0F, vector[1]);
+	ASSERT_EQ(2.0F, vector[2]);
 }
 
 TEST_F(TestTriangle, OperatorMORE) {
-	const ::glm::vec3 vector {3.0f, 2.0f, 1.0f};
-	const ::glm::vec3 point {1.0f, 2.0f, 3.0f};
+	const ::glm::vec3 vector {3.0F, 2.0F, 1.0F};
+	const ::glm::vec3 point {1.0F, 2.0F, 3.0F};
 	const ::glm::vec3 dest {point + vector};
 
-	ASSERT_EQ(4.0f, dest[0]);
-	ASSERT_EQ(4.0f, dest[1]);
-	ASSERT_EQ(4.0f, dest[2]);
+	ASSERT_EQ(4.0F, dest[0]);
+	ASSERT_EQ(4.0F, dest[1]);
+	ASSERT_EQ(4.0F, dest[2]);
 }
 
 TEST_F(TestTriangle, intersectRayInside01) {

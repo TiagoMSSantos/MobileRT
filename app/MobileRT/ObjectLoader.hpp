@@ -32,6 +32,13 @@ namespace MobileRT {
 
         bool isProcessed() const;
 
+        /**
+         * Fills the scene with the triangles loaded from a geometry file, like .OBJ and .MTL.
+         *
+         * @param scene  The scene to fill with geometry.
+         * @param lambda A lambda which returns a sampler.
+         * @return True if it succeeded to fill the scene or false otherwise.
+         */
         virtual bool fillScene(Scene *scene,
                                ::std::function<::std::unique_ptr<Sampler>()> lambda) = 0;
     };

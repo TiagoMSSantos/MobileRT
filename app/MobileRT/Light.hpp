@@ -30,10 +30,25 @@ namespace MobileRT {
 
         Light &operator=(Light &&light) noexcept = delete;
 
+        /**
+         * Gets the position of the light.
+         *
+         * @return The position of the light.
+         */
         virtual ::glm::vec3 getPosition() = 0;
 
+        /**
+         * Resets the sampling counter.
+         */
         virtual void resetSampling() = 0;
 
+        /**
+         * Determines if a ray intersects this light or not and calculates the intersection point.
+         *
+         * @param intersection The previous intersection of the ray in the scene.
+         * @param ray          The casted ray into the scene.
+         * @return The intersection point.
+         */
         virtual Intersection intersect(Intersection intersection, const Ray &ray) = 0;
     };
 }//namespace MobileRT

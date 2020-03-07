@@ -34,6 +34,10 @@ Triangle::Triangle(
     assert(!::glm::all(::glm::isinf(this->normalA_)));
     assert(!::glm::all(::glm::isinf(this->normalB_)));
     assert(!::glm::all(::glm::isinf(this->normalC_)));
+
+    assert(!equal(this->normalA_, ::glm::vec3 {0}));
+    assert(!equal(this->normalB_, ::glm::vec3 {0}));
+    assert(!equal(this->normalC_, ::glm::vec3 {0}));
 }
 
 /**
@@ -71,6 +75,10 @@ Triangle::Triangle(
     assert(!::glm::all(::glm::isinf(this->normalA_)));
     assert(!::glm::all(::glm::isinf(this->normalB_)));
     assert(!::glm::all(::glm::isinf(this->normalC_)));
+
+    assert(!equal(this->normalA_, ::glm::vec3 {0}));
+    assert(!equal(this->normalB_, ::glm::vec3 {0}));
+    assert(!equal(this->normalC_, ::glm::vec3 {0}));
 }
 
 /**
@@ -111,6 +119,10 @@ Triangle::Triangle(
     assert(!::glm::all(::glm::isinf(this->normalA_)));
     assert(!::glm::all(::glm::isinf(this->normalB_)));
     assert(!::glm::all(::glm::isinf(this->normalC_)));
+
+    assert(!equal(this->normalA_, ::glm::vec3 {0}));
+    assert(!equal(this->normalB_, ::glm::vec3 {0}));
+    assert(!equal(this->normalC_, ::glm::vec3 {0}));
 }
 
 /**
@@ -157,6 +169,10 @@ Triangle::Triangle(
     assert(!::glm::all(::glm::isinf(this->normalA_)));
     assert(!::glm::all(::glm::isinf(this->normalB_)));
     assert(!::glm::all(::glm::isinf(this->normalC_)));
+
+    assert(!equal(this->normalA_, ::glm::vec3 {0}));
+    assert(!equal(this->normalB_, ::glm::vec3 {0}));
+    assert(!equal(this->normalC_, ::glm::vec3 {0}));
 }
 
 /**

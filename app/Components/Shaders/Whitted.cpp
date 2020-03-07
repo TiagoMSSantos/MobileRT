@@ -65,6 +65,11 @@ bool Whitted::shade(::glm::vec3 *const rgb, const Intersection &intersection, co
         } // end direct + ambient
     }
 
+    const auto destIor {intersection.material_->refractiveIndice_};
+    const auto sourceIor {1.0F};
+    const auto ior {sourceIor / destIor};
+    const auto kr {::MobileRT::fresnel(ray.direction_, shadingNormal, destIor)};
+
     // specular reflection
     if (::glm::any(::glm::greaterThan(kS, ::glm::vec3 {0}))) {
         const auto &reflectionDir {::glm::reflect(ray.direction_, shadingNormal)};
@@ -76,11 +81,12 @@ bool Whitted::shade(::glm::vec3 *const rgb, const Intersection &intersection, co
 
     // specular transmission
     if (::glm::any(::glm::greaterThan(kT, ::glm::vec3 {0}))) {
-        const auto refractiveIndice {1.0F / intersection.material_->refractiveIndice_};
-        const auto &refractDir {::glm::refract(ray.direction_, shadingNormal, refractiveIndice)};
+        const auto kt {1.0F - kr};
+        const auto &refractDir {::glm::refract(ray.direction_, shadingNormal, ior)};
         const Ray &transmissionRay {refractDir, intersection.point_, rayDepth + 1, intersection.primitive_};
         ::glm::vec3 LiT_RGB {};
         rayTrace(&LiT_RGB, transmissionRay);
+        static_cast<void>(kt);
         *rgb += kT * LiT_RGB;
     }
     *rgb += kD *  0.1F;//ambient light

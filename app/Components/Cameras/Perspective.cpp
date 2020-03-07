@@ -13,10 +13,6 @@ Perspective::Perspective(
         vFov_ {degToRad(vFov)} {
 }
 
-/* u = x / width */
-/* v = y / height */
-/* deviationU = [-0.5F / width, 0.5F / width] */
-/* deviationV = [-0.5F / height, 0.5F / height] */
 Ray Perspective::generateRay(const float u, const float v,
                              const float deviationU, const float deviationV) const {
     const auto tanValueRight {this->hFov_ * (u - 0.5F)};

@@ -121,8 +121,8 @@ namespace MobileRT {
     }
 
     /**
-     * Determines whether two glm::vec3 are equal.
-     * This method assumes two glm::vec3 are equal if the difference between them is less than Epsilon.
+     * Determines whether two ::glm::vec3 are equal.
+     * This method assumes two ::glm::vec3 are equal if the difference between them is less than Epsilon.
      *
      * @param a A floating value.
      * @param b A floating value.
@@ -158,6 +158,39 @@ namespace MobileRT {
             texCoords[1] -= 1;
         }
         return texCoords;
+    }
+
+    /**
+     * Calculates the refraction part from the Fresnel equation.
+     *
+     * @param I   The incident vector.
+     * @param N   The normal vector;
+     * @param ior The index of refraction of the material.
+     * @return The refraction part from the Fresnel equation.
+     */
+    float fresnel(const ::glm::vec3 &I, const ::glm::vec3 &N, const float ior) {
+        float cosi {::glm::clamp(-1.0F, 1.0F, ::glm::dot(I, N))};
+        float etai {1};
+        float etat {ior};
+        if (cosi > 0) {
+            ::std::swap(etai, etat);
+        }
+        // Compute sini using Snell's law
+        const float sint {etai / etat * ::std::sqrt(::std::max(0.0F, 1.0F - cosi * cosi))};
+        float kr {0.0F};
+        // Total internal reflection
+        if (sint >= 1) {
+            kr = 1;
+        } else {
+            const float cost {::std::sqrt(::std::max(0.0F, 1.0F - sint * sint))};
+            cosi = ::std::abs(cosi);
+            const float Rs {((etat * cosi) - (etai * cost)) / ((etat * cosi) + (etai * cost))};
+            const float Rp {((etai * cosi) - (etat * cost)) / ((etai * cosi) + (etat * cost))};
+            kr = (Rs * Rs + Rp * Rp) / 2;
+        }
+        // As a consequence of the conservation of energy, transmittance is given by:
+        // kt = 1 - kr;
+        return kr;
     }
 
 }//namespace MobileRT

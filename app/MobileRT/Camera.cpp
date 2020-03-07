@@ -44,7 +44,7 @@ Camera::Camera(const Camera &camera) {
  * @return The number of radians.
  */
 float Camera::degToRad(const float deg) const {
-    const auto radians {(deg * ::glm::pi<float>()) / 180.0f};
+    const auto radians {(deg * ::glm::pi<float>()) / 180.0F};
     return radians;
 }
 
@@ -55,7 +55,7 @@ float Camera::degToRad(const float deg) const {
  * @return The number of degrees.
  */
 float Camera::radToDeg(const float rad) const {
-    const auto degrees {(rad / ::glm::pi<float>()) * 180.0f};
+    const auto degrees {(rad / ::glm::pi<float>()) * 180.0F};
     return degrees;
 }
 

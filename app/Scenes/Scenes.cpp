@@ -37,7 +37,8 @@ Scene cornellBoxScene(Scene scene) {
 
     // sphere - mirror
     const Material mirrorMat {::glm::vec3 {0.0F, 0.0F, 0.0F},
-                                       ::glm::vec3 {0.9F, 0.9F, 0.9F}};
+                              ::glm::vec3 {0.9F, 0.9F, 0.9F},
+                              ::glm::vec3 {0.0F, 0.0F, 0.0F}, 1.5F};
     scene.spheres_.emplace_back(Sphere {
             ::glm::vec3 {0.45F, -0.65F, 0.4F}, 0.35F, static_cast<::std::int32_t> (scene.materials_.size())});
     scene.materials_.emplace_back(mirrorMat);
@@ -142,7 +143,8 @@ Scene cornellBoxScene2(Scene scene) {
 
     // sphere - mirror
     const Material mirrorMat {::glm::vec3 {0.0F, 0.0F, 0.0F},
-                                       ::glm::vec3 {0.9F, 0.9F, 0.9F}};
+                              ::glm::vec3 {0.9F, 0.9F, 0.9F},
+                              ::glm::vec3 {0.0F, 0.0F, 0.0F}, 1.5F};
     scene.spheres_.emplace_back(Sphere {
             ::glm::vec3 {0.45F, -0.65F, 0.4F}, 0.35F,
             static_cast<::std::int32_t> (scene.materials_.size())});
@@ -150,8 +152,8 @@ Scene cornellBoxScene2(Scene scene) {
 
     // sphere - transmission
     const Material transmissionMat {::glm::vec3 {0.0F, 0.0F, 0.0F},
-                                             ::glm::vec3 {0.0F, 0.0F, 0.0F},
-                                             ::glm::vec3 {0.9F, 0.9F, 0.9F}, 1.9F};
+                                    ::glm::vec3 {0.0F, 0.0F, 0.0F},
+                                    ::glm::vec3 {0.9F, 0.9F, 0.9F}, 1.9F};
     scene.spheres_.emplace_back(Sphere {
             ::glm::vec3 {-0.4F, -0.3F, 0.0F}, 0.35F,
             static_cast<::std::int32_t> (scene.materials_.size())});
@@ -239,7 +241,9 @@ Scene spheresScene2(Scene scene) {
     const Material redMat {::glm::vec3 {0.9F, 0.0F, 0.0F}};
     const Material blueMat {::glm::vec3 {0.0F, 0.0F, 0.9F}};
     const Material yellowMat {::glm::vec3 {0.9F, 0.9F, 0.0F}, ::glm::vec3 {0.8F, 0.8F, 0.4F}};
-    const Material mirrorMat {::glm::vec3 {0.2F, 0.2F, 0.2F}, ::glm::vec3 {0.9F, 0.9F, 0.9F}};
+    const Material mirrorMat {::glm::vec3 {0.2F, 0.2F, 0.2F},
+                              ::glm::vec3 {0.9F, 0.9F, 0.9F},
+                              ::glm::vec3 {0.0F, 0.0F, 0.0F}, 1.5F};
     const Material greenMat {::glm::vec3 {0.0F, 0.9F, 0.0F}};
 
     // create one sphere

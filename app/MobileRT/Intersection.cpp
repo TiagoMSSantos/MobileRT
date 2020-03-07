@@ -5,7 +5,7 @@ using ::MobileRT::Intersection;
 /**
  * The constructor.
  *
- * @param dist      The distance between the intersection point and the origin of the ray.
+ * @param dist The distance between the intersection point and the origin of the ray.
  */
 Intersection::Intersection(const float dist) :
     length_ {dist} {
@@ -33,6 +33,7 @@ Intersection::Intersection(
     primitive_ {primitive},
     materialIndex_ {materialIndex},
     texCoords_ {texCoords} {
-    assert(!::glm::all(::glm::isnan(this->normal_)));
-    assert(!::glm::all(::glm::isinf(this->normal_)));
+        assert(!::glm::all(::glm::isnan(this->normal_)));
+        assert(!::glm::all(::glm::isinf(this->normal_)));
+        assert(!equal(this->normal_, ::glm::vec3 {0}));
 }

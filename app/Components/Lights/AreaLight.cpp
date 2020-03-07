@@ -18,7 +18,7 @@ AreaLight::AreaLight(
 ::glm::vec3 AreaLight::getPosition() {
     auto r {this->samplerPointLight_->getSample()};
     auto s {this->samplerPointLight_->getSample()};
-    if (r + s >= 1.0f) {
+    if (r + s >= 1.0F) {
         r = 1.0f - r;
         s = 1.0f - s;
     }

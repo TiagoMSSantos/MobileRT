@@ -12,10 +12,6 @@ Orthographic::Orthographic(
         sizeV_ {sizeV / 2.0F} {
 }
 
-/* u = x / width */
-/* v = y / height */
-/* deviationU = [-0.5F / width, 0.5F / width] */
-/* deviationV = [-0.5F / height, 0.5F / height] */
 Ray Orthographic::generateRay(const float u, const float v,
                               const float deviationU, const float deviationV) const {
     const auto rightFactor {(u - 0.5F) * this->sizeH_};

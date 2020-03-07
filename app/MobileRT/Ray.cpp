@@ -31,4 +31,7 @@ Ray::Ray(const ::glm::vec3 &dir, const ::glm::vec3 &origin,
     depth_ {depth},
     id_ {getId()},
     primitive_ {primitive} {
+        assert(!::glm::all(::glm::isnan(this->direction_)));
+        assert(!::glm::all(::glm::isinf(this->direction_)));
+        assert(!equal(this->direction_, ::glm::vec3 {0}));
 }
