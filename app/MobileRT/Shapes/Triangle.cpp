@@ -1,5 +1,6 @@
 #include "MobileRT/Shapes/Triangle.hpp"
 #include <cmath>
+#include <boost/assert.hpp>
 
 using ::MobileRT::AABB;
 using ::MobileRT::Triangle;
@@ -27,17 +28,17 @@ Triangle::Triangle(
     normalC_ {::glm::normalize(::glm::cross(AC_, AB_))},
     materialIndex_ {materialIndex} {
 
-    assert(!::glm::all(::glm::isnan(this->normalA_)));
-    assert(!::glm::all(::glm::isnan(this->normalB_)));
-    assert(!::glm::all(::glm::isnan(this->normalC_)));
+    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalA_)), "normalA can't be NAN.");
+    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalB_)), "normalB can't be NAN.");
+    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalC_)), "normalC can't be NAN.");
 
-    assert(!::glm::all(::glm::isinf(this->normalA_)));
-    assert(!::glm::all(::glm::isinf(this->normalB_)));
-    assert(!::glm::all(::glm::isinf(this->normalC_)));
+    BOOST_ASSERT_MSG(!::glm::all(::glm::isinf(this->normalA_)), "normalA can't be infinite.");
+    BOOST_ASSERT_MSG(!::glm::all(::glm::isinf(this->normalB_)), "normalB can't be infinite.");
+    BOOST_ASSERT_MSG(!::glm::all(::glm::isinf(this->normalC_)), "normalC can't be infinite.");
 
-    assert(!equal(this->normalA_, ::glm::vec3 {0}));
-    assert(!equal(this->normalB_, ::glm::vec3 {0}));
-    assert(!equal(this->normalC_, ::glm::vec3 {0}));
+    BOOST_ASSERT_MSG(!equal(this->normalA_, ::glm::vec3 {0}), "normalA can't be zero.");
+    BOOST_ASSERT_MSG(!equal(this->normalB_, ::glm::vec3 {0}), "normalB can't be zero.");
+    BOOST_ASSERT_MSG(!equal(this->normalC_, ::glm::vec3 {0}), "normalC can't be zero.");
 }
 
 /**
@@ -68,17 +69,17 @@ Triangle::Triangle(
     normalC_ {::glm::normalize(normalC)},
     materialIndex_ {materialIndex} {
 
-    assert(!::glm::all(::glm::isnan(this->normalA_)));
-    assert(!::glm::all(::glm::isnan(this->normalB_)));
-    assert(!::glm::all(::glm::isnan(this->normalC_)));
+    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalA_)), "normalA can't be NAN.");
+    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalB_)), "normalB can't be NAN.");
+    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalC_)), "normalC can't be NAN.");
 
-    assert(!::glm::all(::glm::isinf(this->normalA_)));
-    assert(!::glm::all(::glm::isinf(this->normalB_)));
-    assert(!::glm::all(::glm::isinf(this->normalC_)));
+    BOOST_ASSERT_MSG(!::glm::all(::glm::isinf(this->normalA_)), "normalA can't be infinite.");
+    BOOST_ASSERT_MSG(!::glm::all(::glm::isinf(this->normalB_)), "normalB can't be infinite.");
+    BOOST_ASSERT_MSG(!::glm::all(::glm::isinf(this->normalC_)), "normalC can't be infinite.");
 
-    assert(!equal(this->normalA_, ::glm::vec3 {0}));
-    assert(!equal(this->normalB_, ::glm::vec3 {0}));
-    assert(!equal(this->normalC_, ::glm::vec3 {0}));
+    BOOST_ASSERT_MSG(!equal(this->normalA_, ::glm::vec3 {0}), "normalA can't be zero.");
+    BOOST_ASSERT_MSG(!equal(this->normalB_, ::glm::vec3 {0}), "normalB can't be zero.");
+    BOOST_ASSERT_MSG(!equal(this->normalC_, ::glm::vec3 {0}), "normalC can't be zero.");
 }
 
 /**
@@ -112,17 +113,17 @@ Triangle::Triangle(
     texCoordC_ {texCoordC},
     materialIndex_ {materialIndex} {
 
-    assert(!::glm::all(::glm::isnan(this->normalA_)));
-    assert(!::glm::all(::glm::isnan(this->normalB_)));
-    assert(!::glm::all(::glm::isnan(this->normalC_)));
+    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalA_)), "normalA can't be NAN.");
+    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalB_)), "normalB can't be NAN.");
+    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalC_)), "normalC can't be NAN.");
 
-    assert(!::glm::all(::glm::isinf(this->normalA_)));
-    assert(!::glm::all(::glm::isinf(this->normalB_)));
-    assert(!::glm::all(::glm::isinf(this->normalC_)));
+    BOOST_ASSERT_MSG(!::glm::all(::glm::isinf(this->normalA_)), "normalA can't be infinite.");
+    BOOST_ASSERT_MSG(!::glm::all(::glm::isinf(this->normalB_)), "normalB can't be infinite.");
+    BOOST_ASSERT_MSG(!::glm::all(::glm::isinf(this->normalC_)), "normalC can't be infinite.");
 
-    assert(!equal(this->normalA_, ::glm::vec3 {0}));
-    assert(!equal(this->normalB_, ::glm::vec3 {0}));
-    assert(!equal(this->normalC_, ::glm::vec3 {0}));
+    BOOST_ASSERT_MSG(!equal(this->normalA_, ::glm::vec3 {0}), "normalA can't be zero.");
+    BOOST_ASSERT_MSG(!equal(this->normalB_, ::glm::vec3 {0}), "normalB can't be zero.");
+    BOOST_ASSERT_MSG(!equal(this->normalC_, ::glm::vec3 {0}), "normalC can't be zero.");
 }
 
 /**
@@ -162,17 +163,17 @@ Triangle::Triangle(
     texCoordC_ {texCoordC},
     materialIndex_ {materialIndex} {
 
-    assert(!::glm::all(::glm::isnan(this->normalA_)));
-    assert(!::glm::all(::glm::isnan(this->normalB_)));
-    assert(!::glm::all(::glm::isnan(this->normalC_)));
+    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalA_)), "normalA can't be NAN.");
+    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalB_)), "normalB can't be NAN.");
+    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalC_)), "normalC can't be NAN.");
 
-    assert(!::glm::all(::glm::isinf(this->normalA_)));
-    assert(!::glm::all(::glm::isinf(this->normalB_)));
-    assert(!::glm::all(::glm::isinf(this->normalC_)));
+    BOOST_ASSERT_MSG(!::glm::all(::glm::isinf(this->normalA_)), "normalA can't be infinite.");
+    BOOST_ASSERT_MSG(!::glm::all(::glm::isinf(this->normalB_)), "normalB can't be infinite.");
+    BOOST_ASSERT_MSG(!::glm::all(::glm::isinf(this->normalC_)), "normalC can't be infinite.");
 
-    assert(!equal(this->normalA_, ::glm::vec3 {0}));
-    assert(!equal(this->normalB_, ::glm::vec3 {0}));
-    assert(!equal(this->normalC_, ::glm::vec3 {0}));
+    BOOST_ASSERT_MSG(!equal(this->normalA_, ::glm::vec3 {0}), "normalA can't be zero.");
+    BOOST_ASSERT_MSG(!equal(this->normalB_, ::glm::vec3 {0}), "normalB can't be zero.");
+    BOOST_ASSERT_MSG(!equal(this->normalC_, ::glm::vec3 {0}), "normalC can't be zero.");
 }
 
 /**

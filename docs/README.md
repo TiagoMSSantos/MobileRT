@@ -67,14 +67,16 @@ repository.
 - [x] Improve loading of textures
 - [ ] Parallelize build of Regular Grid
 - [ ] Parallelize build of BVH
-- [x] Add support for Boost
+- [x] Add support for C++ Boost
+- [x] Add message to assertions
 
 ### Ray tracing JNI layer
 - [ ] Refactor DrawView translation unit
 - [ ] Improve DrawView code readability
-- [x] Remove race conditions
+- [ ] Remove race conditions
 
 ### Ray tracing shaders
+- [ ] Fix refraction
 - [ ] Fix Path Tracing algorithm
 - [ ] Improve shaders performance
 - [ ] Add Bidirectional Path Tracing
@@ -103,9 +105,9 @@ repository.
 - [ ] Add options in Qt UI
 
 ### System
-- [x] Add comments in the Android UI
-- [ ] Add comments in the JNI layer
-- [ ] Add comments in the MobileRT
+- [x] Add javadoc in the Android UI
+- [ ] Add documentation in the JNI layer
+- [x] Add documentation in the MobileRT
 - [x] Give out of memory error when the memory is not enough to load the scene
 - [ ] Add unit tests (more code coverage)
 - [x] Add git hooks to check git commit messages

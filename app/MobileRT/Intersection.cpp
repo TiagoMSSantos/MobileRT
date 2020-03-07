@@ -1,4 +1,5 @@
 #include "MobileRT/Intersection.hpp"
+#include <boost/assert.hpp>
 
 using ::MobileRT::Intersection;
 
@@ -33,7 +34,7 @@ Intersection::Intersection(
     primitive_ {primitive},
     materialIndex_ {materialIndex},
     texCoords_ {texCoords} {
-        assert(!::glm::all(::glm::isnan(this->normal_)));
-        assert(!::glm::all(::glm::isinf(this->normal_)));
-        assert(!equal(this->normal_, ::glm::vec3 {0}));
+        BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normal_)), "normal can't be NAN.");
+        BOOST_ASSERT_MSG(!::glm::all(::glm::isinf(this->normal_)), "normal can't be infinite.");
+        BOOST_ASSERT_MSG(!equal(this->normal_, ::glm::vec3 {0}), "normal can't be zero.");
 }

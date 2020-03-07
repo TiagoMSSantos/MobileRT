@@ -27,6 +27,7 @@
 #include <fstream>
 #include <mutex>
 #include <string>
+#include <boost/assert.hpp>
 
 static float fps_ {};
 static ::std::atomic<::State> state_ {State::IDLE};
@@ -47,10 +48,10 @@ extern "C"
     JNIEnv *jniEnv {};
     {
         const ::std::int32_t result {javaVM_->GetEnv(reinterpret_cast<void**> (&jniEnv), JNI_VERSION_1_6)};
-        assert(result == JNI_OK);
+        BOOST_ASSERT_MSG(result == JNI_OK, "JNI was not loaded properly.");
         static_cast<void> (result);
     }
-    assert(jniEnv != nullptr);
+    BOOST_ASSERT_MSG(jniEnv != nullptr, "JNIEnv was not loaded properly.");
     jniEnv->ExceptionClear();
     return JNI_VERSION_1_6;
 }
@@ -443,9 +444,9 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
                         break;
 
                     default: {
-                        assert(objFilePath != nullptr);
-                        assert(matFilePath != nullptr);
-                        assert(camFilePath != nullptr);
+                        BOOST_ASSERT_MSG(objFilePath != nullptr, "OBJ file path not valid.");
+                        BOOST_ASSERT_MSG(matFilePath != nullptr, "MTL file path not valid.");
+                        BOOST_ASSERT_MSG(camFilePath != nullptr, "CAM file path not valid.");
 
                         const auto cameraFactory {::Components::CameraFactory()};
                         camera = cameraFactory.loadFromFile(camFilePath, ratio);
@@ -613,15 +614,15 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
 
         auto lambda {
             [=]() -> void {
-                assert(env != nullptr);
+                BOOST_ASSERT_MSG(env != nullptr, "JNIEnv not valid.");
                 const auto jniError{
                         javaVM_->GetEnv(reinterpret_cast<void **> (const_cast<JNIEnv **> (&env)), JNI_VERSION_1_6)
                 };
 
-                assert(jniError == JNI_OK || jniError == JNI_EDETACHED);
+                BOOST_ASSERT_MSG(jniError == JNI_OK || jniError == JNI_EDETACHED, "JNIEnv not valid.");
                 {
                     const auto result{javaVM_->AttachCurrentThread(const_cast<JNIEnv **> (&env), nullptr)};
-                    assert(result == JNI_OK);
+                    BOOST_ASSERT_MSG(result == JNI_OK, "Couldn't attach current thread to JVM.");
                     static_cast<void> (result);
                 }
 
@@ -630,14 +631,14 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
                     const auto ret{
                             AndroidBitmap_lockPixels(env, globalBitmap, reinterpret_cast<void **> (&dstPixels))
                     };
-                    assert(ret == JNI_OK);
+                    BOOST_ASSERT_MSG(ret == JNI_OK, "Couldn't lock the Android bitmap pixels.");
                     LOG("ret = ", ret);
                 }
 
                 AndroidBitmapInfo info{};
                 {
                     const auto ret{AndroidBitmap_getInfo(env, globalBitmap, &info)};
-                    assert(ret == JNI_OK);
+                    BOOST_ASSERT_MSG(ret == JNI_OK, "Couldn't get the Android bitmap information structure.");
                     LOG("ret = ", ret);
                 }
 
@@ -666,7 +667,7 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
                     }
                     {
                         const auto result{AndroidBitmap_unlockPixels(env, globalBitmap)};
-                        assert(result == JNI_OK);
+                        BOOST_ASSERT_MSG(result == JNI_OK, "Couldn't unlock the Android bitmap pixels.");
                         static_cast<void> (result);
                     }
 
@@ -676,13 +677,13 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
                                 javaVM_->GetEnv(reinterpret_cast<void **> (const_cast<JNIEnv **> (&env)),
                                                 JNI_VERSION_1_6)
                         };
-                        assert(result == JNI_OK);
+                        BOOST_ASSERT_MSG(result == JNI_OK || jniError == JNI_EDETACHED, "JNIEnv not valid.");
                         static_cast<void> (result);
                     }
                     env->ExceptionClear();
                     if (jniError == JNI_EDETACHED) {
                         const auto result{javaVM_->DetachCurrentThread()};
-                        assert(result == JNI_OK);
+                        BOOST_ASSERT_MSG(result == JNI_OK, "Couldn't detach the current thread from JVM.");
                         static_cast<void> (result);
                     }
                 }
