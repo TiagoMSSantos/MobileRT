@@ -1,4 +1,4 @@
-cmake_minimum_required( VERSION 3.6.0 )
+cmake_minimum_required( VERSION 3.0...3.0 FATAL_ERROR )
 
 set( COMMON_FLAGS "" )
 set( CMAKE_AUTOMOC ON )
@@ -86,15 +86,15 @@ set( COMMON_LINKER_FLAGS_DEBUG  )
 
 set( COMMON_LINKER_FLAGS_RELEASE -s -flto=full )
 
+# Project
+project( AppInterface VERSION 1.0.0.0 LANGUAGES CXX )
+
 # Add sub directories
 add_subdirectory( MobileRT )
 add_subdirectory( Components )
 add_subdirectory( third_party )
 add_subdirectory( System_dependent )
 add_subdirectory( Unit_Testing )
-
-# Project
-project( AppInterface VERSION 1.0.0.0 LANGUAGES CXX )
 
 include( CheckCXXCompilerFlag )
 CHECK_CXX_COMPILER_FLAG( "-finline-limit=150" FLAG__FINLINE_LIMIT__SUPPORTED )
