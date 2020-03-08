@@ -144,19 +144,7 @@ namespace MobileRT {
      * @return A normalized vec2 value.
      */
     ::glm::vec2 normalize(const ::glm::vec2 &textureCoordinates) {
-        ::glm::vec2 texCoords {textureCoordinates};
-        while(texCoords[0] < 0) {
-            texCoords[0] += 1;
-        }
-        while(texCoords[1] < 0) {
-            texCoords[1] += 1;
-        }
-        while(texCoords[0] > 1) {
-            texCoords[0] -= 1;
-        }
-        while(texCoords[1] > 1) {
-            texCoords[1] -= 1;
-        }
+        const auto texCoords {::glm::fract(textureCoordinates)};
         return texCoords;
     }
 
@@ -170,7 +158,7 @@ namespace MobileRT {
      */
     float fresnel(const ::glm::vec3 &I, const ::glm::vec3 &N, const float ior) {
         float cosi {::glm::clamp(-1.0F, 1.0F, ::glm::dot(I, N))};
-        float etai {1};
+        float etai {1.0F};
         float etat {ior};
         if (cosi > 0) {
             ::std::swap(etai, etat);
@@ -179,14 +167,14 @@ namespace MobileRT {
         const float sint {etai / etat * ::std::sqrt(::std::max(0.0F, 1.0F - cosi * cosi))};
         float kr {0.0F};
         // Total internal reflection
-        if (sint >= 1) {
-            kr = 1;
+        if (sint >= 1.0F) {
+            kr = 1.0F;
         } else {
             const float cost {::std::sqrt(::std::max(0.0F, 1.0F - sint * sint))};
             cosi = ::std::abs(cosi);
             const float Rs {((etat * cosi) - (etai * cost)) / ((etat * cosi) + (etai * cost))};
             const float Rp {((etai * cosi) - (etat * cost)) / ((etai * cosi) + (etat * cost))};
-            kr = (Rs * Rs + Rp * Rp) / 2;
+            kr = (Rs * Rs + Rp * Rp) / 2.0F;
         }
         // As a consequence of the conservation of energy, transmittance is given by:
         // kt = 1 - kr;

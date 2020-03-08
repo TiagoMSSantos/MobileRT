@@ -1,5 +1,5 @@
 # Mobile Ray Tracer (MobileRT)<br/>
-# a portable Ray Tracing (RT) library for Android
+# A portable Ray Tracing (RT) library for Android and Linux
 
 <img src="Example.gif" alt="RayTracer" width="400"/>
 
@@ -45,6 +45,19 @@ To try this ray tracer for Android just download the
 [APK](https://github.com/TiagoMSSantos/MobileRT/blob/master/app/release/app-release.apk?raw=true) file available in the
 repository.
 
+## Models OBJ
+To get some OBJ models, just download some from here: [OBJs](https://casual-effects.com/data/).
+Then you need to add some lights, like for example with 3D Blender.
+Just make sure the light material has the light emission component (Ke) with some positive values in the MTL file.
+Finally, add a CAM file with some contents like below to have a perspective camera:
+```
+t perspective #type of the camera
+p 0 0 0 #position of the camera x y z
+l 0 0 1 #look at of the camera x y z
+u 0 1 0 #up vector of the camera x y z
+f 45 45 #field of view of the camera u v
+```
+
 ## TODO
 
 ### Ray tracing engine
@@ -54,6 +67,7 @@ repository.
 - [x] Improve BVH
 - [x] Improve Regular Grid
 - [ ] Add ray packet intersections
+- [ ] Optimize BVH with ray packet intersections
 - [ ] Add gpu ray tracing support for comparison
 - [ ] Add more types of shapes
 - [ ] Support more types of models besides .obj files
@@ -69,6 +83,7 @@ repository.
 - [ ] Parallelize build of BVH
 - [x] Add support for C++ Boost
 - [x] Add message to assertions
+- [ ] Optimize loading of scene
 
 ### Ray tracing JNI layer
 - [ ] Refactor DrawView translation unit

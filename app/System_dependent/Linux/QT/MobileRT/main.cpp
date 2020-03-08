@@ -4,19 +4,18 @@
 #include "MobileRT/Utils.hpp"
 #include <cmath>
 
-int main(int argc, char **/*argv*/)
-{
+int main(int argc, char **argv) {
     /*
      * ${THREAD} ${SHADER} ${SCENE} ${SPP} ${SPL} ${WIDTH} ${HEIGHT} ${ACC} ${REP} \
             ${OBJ} ${MTL} ${CAM} ${PRINT} ${ASYNC} ${SHOWIMAGE}
      */
-    const char* argv[] {"appName",
-        "2", "2", "4", "1", "1", "800", "800", "3", "1",
-        "/mnt/D/Projects/MobileRT/WavefrontOBJs/conference/conference.obj",
-        "/mnt/D/Projects/MobileRT/WavefrontOBJs/conference/conference.mtl",
-        "/mnt/D/Projects/MobileRT/WavefrontOBJs/conference/conference.cam",
-        "true", "true", "true"};
-    argc = 16;
+//    const char* argv[] {"appName",
+//        "2", "2", "4", "1", "1", "800", "800", "3", "1",
+//        "/mnt/D/Projects/MobileRT/WavefrontOBJs/conference/conference.obj",
+//        "/mnt/D/Projects/MobileRT/WavefrontOBJs/conference/conference.mtl",
+//        "/mnt/D/Projects/MobileRT/WavefrontOBJs/conference/conference.cam",
+//        "true", "true", "true"};
+//    argc = 16;
 
     if (argc != 16) {
         LOG("Wrong number of arguments: ", argc, ", must be 16");
