@@ -4,9 +4,11 @@
 #include "Utils_dependent.hpp"
 
 #include <algorithm>
+#include <array>
 #include <chrono>
 #include <cmath>
 #include <glm/glm.hpp>
+#include <random>
 #include <sstream>
 #include <thread>
 #include <vector>
@@ -80,6 +82,24 @@ namespace MobileRT {
         }
         const auto &res {filePath.substr(filePos)};
         return res;
+    }
+
+     /**
+      * A helper method which prepares an array with random numbers generated.
+      *
+      * @tparam T The type of the elements in the array.
+      * @tparam S The size of the array.
+      * @param values The pointer to an array where the random numbers should be put.
+      */
+    template<typename T, ::std::size_t S>
+    void fillArray(::std::array<T, S> *const values) {
+        for (auto it {values->begin()}; it < values->end(); ::std::advance(it, 1)) {
+            const auto index {static_cast<::std::uint32_t> (::std::distance(values->begin(), it))};
+            *it = ::MobileRT::haltonSequence(index, 2);
+        }
+        ::std::random_device randomDevice {};
+        ::std::mt19937 generator {randomDevice()};
+        ::std::shuffle(values->begin(), values->end(), generator);
     }
 }//namespace MobileRT
 

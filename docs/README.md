@@ -84,6 +84,7 @@ f 45 45 #field of view of the camera u v
 - [x] Add support for C++ Boost
 - [x] Add message to assertions
 - [ ] Optimize loading of scene
+- [x] Add builder for Triangle
 
 ### Ray tracing JNI layer
 - [ ] Refactor DrawView translation unit
@@ -130,9 +131,14 @@ f 45 45 #field of view of the camera u v
 - [x] Add git hooks to submit Jenkins' jobs after each git push
 - [ ] Support to export rendered image to file
 - [x] Add CI / CD support from github (actions) for the Google Test unit tests
-- [ ] Add support for a tool to detect duplicated code
-- [ ] Remove Java duplicated code
-- [ ] Remove C++ duplicated code
+- [x] Add support for a tool to detect duplicated code (jscpd)
+- [ ] Remove MobileRT duplicated code
+- [ ] Remove Components duplicated code
+- [ ] Remove Android JNI duplicated code
+- [ ] Remove Android UI duplicated code
+- [ ] Remove Qt duplicated code
+- [ ] Remove Java tests duplicated code
+- [ ] Remove C++ tests duplicated code
 - [ ] Remove unnecessary casts
 
 ### Docker

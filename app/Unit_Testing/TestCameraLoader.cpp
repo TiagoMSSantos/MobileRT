@@ -27,23 +27,23 @@ f 44 45
     )"};
 
     ::std::stringstream stream {data};
-    const auto camera {::Components::PerspectiveLoader().loadFromStream(::std::move(stream), 1.0f)};
+    const auto camera {::Components::PerspectiveLoader().loadFromStream(::std::move(stream), 1.0F)};
     const auto perspectiveCamera {dynamic_cast<const ::Components::Perspective*> (camera.get())};
 
     ASSERT_TRUE(perspectiveCamera != nullptr);
 
-    ASSERT_FLOAT_EQ(perspectiveCamera->position_.x, 0.0f);
-    ASSERT_FLOAT_EQ(perspectiveCamera->position_.y, 30.0f);
-    ASSERT_FLOAT_EQ(perspectiveCamera->position_.z, -200.0f);
+    ASSERT_FLOAT_EQ(perspectiveCamera->position_.x, 0.0F);
+    ASSERT_FLOAT_EQ(perspectiveCamera->position_.y, 30.0F);
+    ASSERT_FLOAT_EQ(perspectiveCamera->position_.z, -200.0F);
 
-    ASSERT_FLOAT_EQ(perspectiveCamera->direction_.x, 0.0f);
-    ASSERT_FLOAT_EQ(perspectiveCamera->direction_.y, 0.0f);
-    ASSERT_FLOAT_EQ(perspectiveCamera->direction_.z, 1.0f);
+    ASSERT_FLOAT_EQ(perspectiveCamera->direction_.x, 0.0F);
+    ASSERT_FLOAT_EQ(perspectiveCamera->direction_.y, 0.0F);
+    ASSERT_FLOAT_EQ(perspectiveCamera->direction_.z, 1.0F);
 
-    ASSERT_FLOAT_EQ(perspectiveCamera->up_.x, 0.0f);
-    ASSERT_FLOAT_EQ(perspectiveCamera->up_.y, 1.0f);
-    ASSERT_FLOAT_EQ(perspectiveCamera->up_.z, 0.0f);
+    ASSERT_FLOAT_EQ(perspectiveCamera->up_.x, 0.0F);
+    ASSERT_FLOAT_EQ(perspectiveCamera->up_.y, 1.0F);
+    ASSERT_FLOAT_EQ(perspectiveCamera->up_.z, 0.0F);
 
-    ASSERT_FLOAT_EQ(perspectiveCamera->getHFov(), 44.0f);
-    ASSERT_FLOAT_EQ(perspectiveCamera->getVFov(), 45.0f);
+    ASSERT_FLOAT_EQ(perspectiveCamera->getHFov(), 44.0F);
+    ASSERT_FLOAT_EQ(perspectiveCamera->getVFov(), 45.0F);
 }

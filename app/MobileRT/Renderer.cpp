@@ -7,22 +7,6 @@ using ::MobileRT::NumberOfTiles;
 
 namespace {
     ::std::array<float, NumberOfTiles> values {};
-
-    /**
-     * A helper method which prepares an array with random numbers generated.
-     *
-     * @return Whether the array was prepared or not.
-     */
-    bool fillThings() {
-        for (auto it {values.begin()}; it < values.end(); ::std::advance(it, 1)) {
-            const auto index {static_cast<::std::uint32_t> (::std::distance(values.begin(), it))};
-            *it = ::MobileRT::haltonSequence(index, 2);
-        }
-        static ::std::random_device randomDevice {};
-        static ::std::mt19937 generator {randomDevice()};
-        ::std::shuffle(values.begin(), values.end(), generator);
-        return true;
-    }
 }//namespace
 
 /**
@@ -51,8 +35,7 @@ Renderer::Renderer(::std::unique_ptr<Shader> shader,
         domainSize_ {(width / blockSizeX_) * (height / blockSizeY_)},
         resolution_ {width * height},
         samplesPixel_ {samplesPixel} {
-    static auto unused {fillThings()};
-    static_cast<void> (unused);
+    fillArray(&values);
 }
 
 /**

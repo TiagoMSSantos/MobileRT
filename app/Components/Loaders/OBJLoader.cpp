@@ -255,9 +255,12 @@ bool OBJLoader::fillScene(Scene *const scene,
                     const Material material {diffuse, specular, transmittance, indexRefraction, emission, texture};
                     const auto itFoundMat {::std::find(scene->materials_.begin(), scene->materials_.end(), material)};
                     if (e1 > 0.0F || e2 > 0.0F || e3 > 0.0F) {
-                        const Triangle &triangle {vertex1, vertex2, vertex3,
-                                                  normal1, normal2, normal3,
-                                                  texCoordA, texCoordB, texCoordC, -1};
+                        const Triangle &triangle {
+                            Triangle::Builder(vertex1, vertex2, vertex3)
+                                .withNormals(normal1, normal2, normal3)
+                                .withTexCoords(texCoordA, texCoordB, texCoordC)
+                                .build()
+                        };
                         scene->lights_.emplace_back(::std::make_unique<AreaLight>(material, lambda(), triangle));
                         const auto lightPos {scene->lights_.back()->getPosition()};
                         LOG("Light position at: x:", lightPos[0], ", y:", lightPos[1], ", z:", lightPos[2]);
@@ -266,16 +269,24 @@ bool OBJLoader::fillScene(Scene *const scene,
                             const auto materialIndex {static_cast<::std::int32_t> (
                                 itFoundMat - scene->materials_.cbegin()
                             )};
-                            const Triangle &triangle {vertex1, vertex2, vertex3,
-                                                      normal1, normal2, normal3,
-                                                      texCoordA, texCoordB, texCoordC, materialIndex};
+                            const Triangle &triangle {
+                                    Triangle::Builder(vertex1, vertex2, vertex3)
+                                            .withNormals(normal1, normal2, normal3)
+                                            .withTexCoords(texCoordA, texCoordB, texCoordC)
+                                            .withMaterialIndex(materialIndex)
+                                            .build()
+                            };
 
                             scene->triangles_.emplace_back(triangle);
                         } else {
                             const auto materialIndex {static_cast<::std::int32_t> (scene->materials_.size())};
-                            const Triangle &triangle {vertex1, vertex2, vertex3,
-                                                      normal1, normal2, normal3,
-                                                      texCoordA, texCoordB, texCoordC, materialIndex};
+                            const Triangle &triangle {
+                                    Triangle::Builder(vertex1, vertex2, vertex3)
+                                            .withNormals(normal1, normal2, normal3)
+                                            .withTexCoords(texCoordA, texCoordB, texCoordC)
+                                            .withMaterialIndex(materialIndex)
+                                            .build()
+                            };
 
                             scene->triangles_.emplace_back(triangle);
                             scene->materials_.emplace_back(material);
@@ -298,11 +309,21 @@ bool OBJLoader::fillScene(Scene *const scene,
                         const auto materialIndex {static_cast<::std::int32_t> (
                             itFoundMat - scene->materials_.begin()
                         )};
-                        const Triangle &triangle {vertex1, vertex2, vertex3, normal1, normal2, normal3, materialIndex};
+                        const Triangle &triangle {
+                                Triangle::Builder(vertex1, vertex2, vertex3)
+                                        .withNormals(normal1, normal2, normal3)
+                                        .withMaterialIndex(materialIndex)
+                                        .build()
+                        };
                         scene->triangles_.emplace_back(triangle);
                     } else {
                         const auto materialIndex {static_cast<::std::int32_t> (scene->materials_.size())};
-                        const Triangle &triangle {vertex1, vertex2, vertex3, normal1, normal2, normal3, materialIndex};
+                        const Triangle &triangle {
+                                Triangle::Builder(vertex1, vertex2, vertex3)
+                                        .withNormals(normal1, normal2, normal3)
+                                        .withMaterialIndex(materialIndex)
+                                        .build()
+                        };
                         scene->triangles_.emplace_back(triangle);
                         scene->materials_.emplace_back(material);
                     }

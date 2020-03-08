@@ -14,9 +14,14 @@ protected:
 	Triangle *triangle {};
 
 	virtual void SetUp() {
-		triangle = new Triangle {::glm::vec3 {0,0,0},
-								 ::glm::vec3 {0,1,0},
-								 ::glm::vec3 {0,0,1}, -1};
+	    triangle = new Triangle (
+	            Triangle::Builder(
+                    ::glm::vec3 {0, 0, 0},
+                    ::glm::vec3 {0, 1, 0},
+                    ::glm::vec3 {0, 0, 1}
+                )
+                .build()
+            );
 	}
 
 	virtual void TearDown() {
@@ -128,10 +133,14 @@ TEST_F(TestTriangle, intersectBoxInside07) {
 }
 
 TEST_F(TestTriangle, intersectBoxInside08) {
-	const Triangle triangle2 {
-		::glm::vec3 {10.0F, 0.0F, 10.0F},
-		::glm::vec3 {0.0F, 0.0F, 10.0F},
-		::glm::vec3 {0.0F, 10.0F, 10.0F}, -1};
+    const Triangle &triangle2 {
+        Triangle::Builder(
+                ::glm::vec3 {10.0F, 0.0F, 10.0F},
+                ::glm::vec3 {0.0F, 0.0F, 10.0F},
+                ::glm::vec3 {0.0F, 10.0F, 10.0F}
+        )
+        .build()
+    };
 	const ::glm::vec3 min {1.25F, 1.25F, 10};
 	const ::glm::vec3 max {2.5F, 2.5F, 10};
 	const AABB box {min, max};
@@ -140,10 +149,14 @@ TEST_F(TestTriangle, intersectBoxInside08) {
 }
 
 TEST_F(TestTriangle, intersectBoxInside09) {
-	const Triangle triangle2 {
-		::glm::vec3 {10.0F, 0.0F, 10.0F},
-		::glm::vec3 {0.0F, 0.0F, 10.0F},
-		::glm::vec3 {0.0F, 10.0F, 10.0F}, -1};
+    const Triangle &triangle2 {
+        Triangle::Builder(
+                ::glm::vec3 {10.0F, 0.0F, 10.0F},
+                ::glm::vec3 {0.0F, 0.0F, 10.0F},
+                ::glm::vec3 {0.0F, 10.0F, 10.0F}
+        )
+        .build()
+    };
 	const ::glm::vec3 min {-1, -1, 10};
 	const ::glm::vec3 max {11, 11, 10};
 	const AABB box {min, max};
@@ -152,10 +165,14 @@ TEST_F(TestTriangle, intersectBoxInside09) {
 }
 
 TEST_F(TestTriangle, intersectBoxInside10) {
-	const Triangle triangle2 {
-		::glm::vec3 {1, 1.59000003F, -1.03999996F},
-		::glm::vec3 {-1.01999998F, 1.59000003F, -1.03999996F},
-		::glm::vec3 {-0.990000009F, 0, -1.03999996F}, -1};
+    const Triangle &triangle2 {
+        Triangle::Builder(
+            ::glm::vec3 {1, 1.59000003F, -1.03999996F},
+            ::glm::vec3 {-1.01999998F, 1.59000003F, -1.03999996F},
+            ::glm::vec3 {-0.990000009F, 0, -1.03999996F}
+        )
+        .build()
+    };
 	const ::glm::vec3 min {-11.0200005F, 0.794949531F, -11.04F};
 	const ::glm::vec3 max {-0.0100002289F, 11.5899992F, -0.0250005722F};
 	const AABB box {min, max};

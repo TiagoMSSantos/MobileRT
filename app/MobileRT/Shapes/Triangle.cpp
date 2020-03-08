@@ -9,160 +9,26 @@ using ::MobileRT::Intersection;
 /**
  * The constructor.
  *
- * @param pointA        A vertex of the triangle.
- * @param pointB        A vertex of the triangle.
- * @param pointC        A vertex of the triangle.
- * @param materialIndex The index of the material of the triangle.
+ * @param builder A triangle builder.
  */
-Triangle::Triangle(
-        const ::glm::vec3 &pointA,
-        const ::glm::vec3 &pointB,
-        const ::glm::vec3 &pointC,
-        const ::std::int32_t materialIndex
-) :
-    AC_ {pointC - pointA},
-    AB_ {pointB - pointA},
-    pointA_ {pointA},
-    normalA_ {::glm::normalize(::glm::cross(AC_, AB_))},
-    normalB_ {::glm::normalize(::glm::cross(AC_, AB_))},
-    normalC_ {::glm::normalize(::glm::cross(AC_, AB_))},
-    materialIndex_ {materialIndex} {
-
-    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalA_)), "normalA can't be NaN.");
-    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalB_)), "normalB can't be NaN.");
-    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalC_)), "normalC can't be NaN.");
-
-    BOOST_ASSERT_MSG(!::glm::all(::glm::isinf(this->normalA_)), "normalA can't be infinite.");
-    BOOST_ASSERT_MSG(!::glm::all(::glm::isinf(this->normalB_)), "normalB can't be infinite.");
-    BOOST_ASSERT_MSG(!::glm::all(::glm::isinf(this->normalC_)), "normalC can't be infinite.");
-
-    BOOST_ASSERT_MSG(!equal(this->normalA_, ::glm::vec3 {0}), "normalA can't be zero.");
-    BOOST_ASSERT_MSG(!equal(this->normalB_, ::glm::vec3 {0}), "normalB can't be zero.");
-    BOOST_ASSERT_MSG(!equal(this->normalC_, ::glm::vec3 {0}), "normalC can't be zero.");
+Triangle::Triangle(const Triangle::Builder &builder) :
+        AC_ {builder.AC_},
+        AB_ {builder.AB_},
+        pointA_ {builder.pointA_},
+        normalA_ {builder.normalA_},
+        normalB_ {builder.normalB_},
+        normalC_ {builder.normalC_},
+        texCoordA_ {builder.texCoordA_},
+        texCoordB_ {builder.texCoordB_},
+        texCoordC_ {builder.texCoordC_},
+        materialIndex_ {builder.materialIndex_} {
+    checkArguments();
 }
 
 /**
- * The constructor.
- *
- * @param pointA        A vertex of the triangle.
- * @param pointB        A vertex of the triangle.
- * @param pointC        A vertex of the triangle.
- * @param normalA       The normal of the first vertex.
- * @param normalB       The normal of the second vertex.
- * @param normalC       The normal of the third vertex.
- * @param materialIndex The index of the material of the triangle.
+ * Helper method which checks for invalid normals in the triangle.
  */
-Triangle::Triangle(
-        const ::glm::vec3 &pointA,
-        const ::glm::vec3 &pointB,
-        const ::glm::vec3 &pointC,
-        const ::glm::vec3 &normalA,
-        const ::glm::vec3 &normalB,
-        const ::glm::vec3 &normalC,
-        const ::std::int32_t materialIndex
-) :
-    AC_ {pointC - pointA},
-    AB_ {pointB - pointA},
-    pointA_ {pointA},
-    normalA_ {::glm::normalize(normalA)},
-    normalB_ {::glm::normalize(normalB)},
-    normalC_ {::glm::normalize(normalC)},
-    materialIndex_ {materialIndex} {
-
-    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalA_)), "normalA can't be NaN.");
-    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalB_)), "normalB can't be NaN.");
-    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalC_)), "normalC can't be NaN.");
-
-    BOOST_ASSERT_MSG(!::glm::all(::glm::isinf(this->normalA_)), "normalA can't be infinite.");
-    BOOST_ASSERT_MSG(!::glm::all(::glm::isinf(this->normalB_)), "normalB can't be infinite.");
-    BOOST_ASSERT_MSG(!::glm::all(::glm::isinf(this->normalC_)), "normalC can't be infinite.");
-
-    BOOST_ASSERT_MSG(!equal(this->normalA_, ::glm::vec3 {0}), "normalA can't be zero.");
-    BOOST_ASSERT_MSG(!equal(this->normalB_, ::glm::vec3 {0}), "normalB can't be zero.");
-    BOOST_ASSERT_MSG(!equal(this->normalC_, ::glm::vec3 {0}), "normalC can't be zero.");
-}
-
-/**
- * The constructor.
- *
- * @param pointA        A vertex of the triangle.
- * @param pointB        A vertex of the triangle.
- * @param pointC        A vertex of the triangle.
- * @param texCoordA     The texture coordinates of the first vertex.
- * @param texCoordB     The texture coordinates of the second vertex.
- * @param texCoordC     The texture coordinates of the third vertex.
- * @param materialIndex The index of the material of the triangle.
- */
-Triangle::Triangle(
-        const ::glm::vec3 &pointA,
-        const ::glm::vec3 &pointB,
-        const ::glm::vec3 &pointC,
-        const ::glm::vec2 &texCoordA,
-        const ::glm::vec2 &texCoordB,
-        const ::glm::vec2 &texCoordC,
-        const ::std::int32_t materialIndex
-) :
-    AC_ {pointC - pointA},
-    AB_ {pointB - pointA},
-    pointA_ {pointA},
-    normalA_ {::glm::normalize(::glm::cross(AC_, AB_))},
-    normalB_ {::glm::normalize(::glm::cross(AC_, AB_))},
-    normalC_ {::glm::normalize(::glm::cross(AC_, AB_))},
-    texCoordA_ {texCoordA},
-    texCoordB_ {texCoordB},
-    texCoordC_ {texCoordC},
-    materialIndex_ {materialIndex} {
-
-    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalA_)), "normalA can't be NaN.");
-    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalB_)), "normalB can't be NaN.");
-    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalC_)), "normalC can't be NaN.");
-
-    BOOST_ASSERT_MSG(!::glm::all(::glm::isinf(this->normalA_)), "normalA can't be infinite.");
-    BOOST_ASSERT_MSG(!::glm::all(::glm::isinf(this->normalB_)), "normalB can't be infinite.");
-    BOOST_ASSERT_MSG(!::glm::all(::glm::isinf(this->normalC_)), "normalC can't be infinite.");
-
-    BOOST_ASSERT_MSG(!equal(this->normalA_, ::glm::vec3 {0}), "normalA can't be zero.");
-    BOOST_ASSERT_MSG(!equal(this->normalB_, ::glm::vec3 {0}), "normalB can't be zero.");
-    BOOST_ASSERT_MSG(!equal(this->normalC_, ::glm::vec3 {0}), "normalC can't be zero.");
-}
-
-/**
- * The constructor.
- *
- * @param pointA        A vertex of the triangle.
- * @param pointB        A vertex of the triangle.
- * @param pointC        A vertex of the triangle.
- * @param normalA       The normal of the first vertex.
- * @param normalB       The normal of the second vertex.
- * @param normalC       The normal of the third vertex.
- * @param texCoordA     The texture coordinates of the first vertex.
- * @param texCoordB     The texture coordinates of the second vertex.
- * @param texCoordC     The texture coordinates of the third vertex.
- * @param materialIndex The index of the material of the triangle.
- */
-Triangle::Triangle(
-        const ::glm::vec3 &pointA,
-        const ::glm::vec3 &pointB,
-        const ::glm::vec3 &pointC,
-        const ::glm::vec3 &normalA,
-        const ::glm::vec3 &normalB,
-        const ::glm::vec3 &normalC,
-        const ::glm::vec2 &texCoordA,
-        const ::glm::vec2 &texCoordB,
-        const ::glm::vec2 &texCoordC,
-        const ::std::int32_t materialIndex
-) :
-    AC_ {pointC - pointA},
-    AB_ {pointB - pointA},
-    pointA_ {pointA},
-    normalA_ {normalA},
-    normalB_ {normalB},
-    normalC_ {normalC},
-    texCoordA_ {texCoordA},
-    texCoordB_ {texCoordB},
-    texCoordC_ {texCoordC},
-    materialIndex_ {materialIndex} {
-
+void Triangle::checkArguments() {
     BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalA_)), "normalA can't be NaN.");
     BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalB_)), "normalB can't be NaN.");
     BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalC_)), "normalC can't be NaN.");
@@ -333,4 +199,80 @@ bool Triangle::intersect(const AABB &box) const {
     const auto res {intersectedAB || intersectedAC || intersectedBC || intersectedRay || insideTriangle};
 
     return res;
+}
+
+/**
+ * The constructor.
+ *
+ * @param pointA A vertex of the triangle.
+ * @param pointB A vertex of the triangle.
+ * @param pointC A vertex of the triangle.
+ */
+Triangle::Builder::Builder(
+        const ::glm::vec3 &pointA,
+        const ::glm::vec3 &pointB,
+        const ::glm::vec3 &pointC
+) :
+        AC_ {pointC - pointA},
+        AB_ {pointB - pointA},
+        pointA_ {pointA},
+        normalA_ {::glm::normalize(::glm::cross(AC_, AB_))},
+        normalB_ {::glm::normalize(::glm::cross(AC_, AB_))},
+        normalC_ {::glm::normalize(::glm::cross(AC_, AB_))} {
+}
+
+/**
+ * The constructor.
+ *
+ * @param normalA A normal of the triangle.
+ * @param normalB A normal of the triangle.
+ * @param normalC A normal of the triangle.
+ * @return A builder for the triangle.
+ */
+Triangle::Builder Triangle::Builder::withNormals(
+        const ::glm::vec3 &normalA,
+        const ::glm::vec3 &normalB,
+        const ::glm::vec3 &normalC) {
+    this->normalA_ = normalA;
+    this->normalB_ = normalB;
+    this->normalC_ = normalC;
+    return *this;
+}
+
+/**
+ * The constructor.
+ *
+ * @param texCoordA A texture coordinate of the triangle.
+ * @param texCoordB A texture coordinate of the triangle.
+ * @param texCoordC A texture coordinate of the triangle.
+ * @return A builder for the triangle.
+ */
+Triangle::Builder Triangle::Builder::withTexCoords(
+        const ::glm::vec2 &texCoordA,
+        const ::glm::vec2 &texCoordB,
+        const ::glm::vec2 &texCoordC) {
+    this->texCoordA_ = texCoordA;
+    this->texCoordB_ = texCoordB;
+    this->texCoordC_ = texCoordC;
+    return *this;
+}
+
+/**
+ * The constructor.
+ *
+ * @param materialIndex The index of the material for the triangle.
+ * @return A builder for the triangle.
+ */
+Triangle::Builder Triangle::Builder::withMaterialIndex(const ::std::int32_t materialIndex) {
+    this->materialIndex_ = materialIndex;
+    return *this;
+}
+
+/**
+ * The build method.
+ *
+ * @return A new instance of a triangle.
+ */
+Triangle Triangle::Builder::build() {
+    return Triangle(*this);
 }

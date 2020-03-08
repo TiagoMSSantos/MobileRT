@@ -29,10 +29,17 @@ Scene cornellBoxScene(Scene scene) {
 
     // triangle - yellow
     const Material yellowMat {::glm::vec3 {0.9F, 0.9F, 0.0F}};
-    scene.triangles_.emplace_back(Triangle {
-            ::glm::vec3 {0.5F, -0.5F, 0.99F},
-            ::glm::vec3 {0.5F, 0.5F, 1.001F},
-            ::glm::vec3 {-0.5F, -0.5F, 0.99F}, static_cast<::std::int32_t> (scene.materials_.size())});
+    const Triangle &triangle {
+            Triangle::Builder(
+                    ::glm::vec3 {0.5F, -0.5F, 0.99F},
+                    ::glm::vec3 {0.5F, 0.5F, 1.001F},
+                    ::glm::vec3 {-0.5F, -0.5F, 0.99F}
+                    )
+                    .withMaterialIndex(static_cast<::std::int32_t> (scene.materials_.size()))
+                    .build()
+    };
+
+    scene.triangles_.emplace_back(triangle);
     scene.materials_.emplace_back(yellowMat);
 
     // sphere - mirror
@@ -105,40 +112,65 @@ Scene cornellBoxScene2(Scene scene) {
     ::std::unique_ptr<Sampler> samplerPoint1 {::std::make_unique<StaticHaltonSeq> ()};
     ::std::unique_ptr<Sampler> samplerPoint2 {::std::make_unique<StaticHaltonSeq> ()};
 
+    const Triangle &triangle1 {
+            Triangle::Builder(
+                    ::glm::vec3{-0.25F, 0.99F, -0.25F},
+                    ::glm::vec3{0.25F, 0.99F, -0.25F},
+                    ::glm::vec3{0.25F, 0.99F, 0.25F}
+            )
+                    .build()
+    };
+
+    const Triangle &triangle2 {
+            Triangle::Builder(
+                    ::glm::vec3{0.25F, 0.99F, 0.25F},
+                    ::glm::vec3{-0.25F, 0.99F, 0.25F},
+                    ::glm::vec3{-0.25F, 0.99F, -0.25F}
+            )
+                    .build()
+    };
+
     scene.lights_.emplace_back(::std::make_unique<AreaLight> (
         lightMat,
         ::std::move(samplerPoint1),
-        Triangle {
-            ::glm::vec3{-0.25F, 0.99F, -0.25F},
-            ::glm::vec3{0.25F, 0.99F, -0.25F},
-            ::glm::vec3{0.25F, 0.99F, 0.25F}, -1
-        }
+        triangle1
     ));
 
     scene.lights_.emplace_back(::std::make_unique<AreaLight> (
         lightMat,
         ::std::move(samplerPoint2),
-        Triangle {
-            ::glm::vec3{0.25F, 0.99F, 0.25F},
-            ::glm::vec3{-0.25F, 0.99F, 0.25F},
-            ::glm::vec3{-0.25F, 0.99F, -0.25F}, -1
-        }
+        triangle2
     ));
+
+    const Triangle &triangle3 {
+            Triangle::Builder(
+                    ::glm::vec3 {0.5F, -0.5F, 0.99F},
+                    ::glm::vec3 {0.5F, 0.5F, 1.001F},
+                    ::glm::vec3 {-0.5F, -0.5F, 0.99F}
+            )
+            .withMaterialIndex(static_cast<::std::int32_t> (scene.materials_.size()))
+            .build()
+    };
 
     // triangle - yellow
     const Material yellowMat {::glm::vec3 {0.9F, 0.9F, 0.0F}};
-    scene.triangles_.emplace_back(Triangle {
-            ::glm::vec3 {0.5F, -0.5F, 0.99F},
-            ::glm::vec3 {0.5F, 0.5F, 1.001F},
-            ::glm::vec3 {-0.5F, -0.5F, 0.99F}, static_cast<::std::int32_t> (scene.materials_.size())});
+    scene.triangles_.emplace_back(triangle3);
     scene.materials_.emplace_back(yellowMat);
 
     // triangle - green
     const Material greenMat {::glm::vec3 {0.0F, 0.9F, 0.0F}};
-    scene.triangles_.emplace_back(Triangle {
-            ::glm::vec3 {-0.5F, 0.5F, 0.99F},
-            ::glm::vec3 {-0.5F, -0.5F, 0.99F},
-            ::glm::vec3 {0.5F, 0.5F, 0.99F}, static_cast<::std::int32_t> (scene.materials_.size())});
+
+    const Triangle &triangle4 {
+            Triangle::Builder(
+                    ::glm::vec3 {-0.5F, 0.5F, 0.99F},
+                    ::glm::vec3 {-0.5F, -0.5F, 0.99F},
+                    ::glm::vec3 {0.5F, 0.5F, 0.99F}
+            )
+            .withMaterialIndex(static_cast<::std::int32_t> (scene.materials_.size()))
+            .build()
+    };
+
+    scene.triangles_.emplace_back(triangle4);
     scene.materials_.emplace_back(greenMat);
 
     // sphere - mirror
@@ -217,11 +249,18 @@ Scene spheresScene(Scene scene) {
         static_cast<::std::int32_t> (scene.materials_.size())
     });
     scene.materials_.emplace_back(redMat);
-    scene.triangles_.emplace_back (Triangle {
-            ::glm::vec3 {0.0F, 10.0F, 10.0F},
-            ::glm::vec3 {0.0F, 0.0F, 10.0F},
-            ::glm::vec3 {10.0F, 0.0F, 10.0F},
-            static_cast<::std::int32_t> (scene.materials_.size())});
+
+    const Triangle &triangle {
+            Triangle::Builder(
+                    ::glm::vec3 {0.0F, 10.0F, 10.0F},
+                    ::glm::vec3 {0.0F, 0.0F, 10.0F},
+                    ::glm::vec3 {10.0F, 0.0F, 10.0F}
+            )
+            .withMaterialIndex(static_cast<::std::int32_t> (scene.materials_.size()))
+            .build()
+    };
+
+    scene.triangles_.emplace_back(triangle);
     scene.materials_.emplace_back(sandMat);
     return scene;
 }

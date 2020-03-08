@@ -38,6 +38,8 @@ namespace MobileRT {
 
         ::std::uint32_t bitCounter(::std::uint32_t value) const;
 
+        ::std::int32_t getCellIndex(::std::int32_t cellX, ::std::int32_t cellY, ::std::int32_t cellZ) const;
+
     public:
         explicit RegularGrid() = default;
 
@@ -330,13 +332,7 @@ namespace MobileRT {
         // start stepping
         // trace primary ray
         while (true) {
-            const auto index {
-                static_cast<::std::int32_t> (
-                     static_cast<::std::uint32_t> (cellX) +
-                    (static_cast<::std::uint32_t> (cellY) << (this->gridShift_)) +
-                    (static_cast<::std::uint32_t> (cellZ) << (this->gridShift_ * 2U))
-                )
-            };
+            const auto index {getCellIndex(cellX, cellY, cellZ)};
             const auto itPrimitive {this->grid_.begin() + index};
             auto primitivesList {*itPrimitive};
             for (auto *const primitive : primitivesList) {
@@ -383,13 +379,7 @@ namespace MobileRT {
         }
         testloop:
         while (true) {
-            const auto index {
-                static_cast<::std::int32_t> (
-                     static_cast<::std::uint32_t> (cellX) +
-                    (static_cast<::std::uint32_t> (cellY) << (this->gridShift_)) +
-                    (static_cast<::std::uint32_t> (cellZ) << (this->gridShift_ * 2U))
-                )
-            };
+            const auto index {getCellIndex(cellX, cellY, cellZ)};
             const auto itPrimitives {this->grid_.begin() + index};
             auto primitivesList {*itPrimitives};
             for (auto *const primitive : primitivesList) {
@@ -438,6 +428,29 @@ namespace MobileRT {
             }
         }
         return intersection;
+    }
+
+    /**
+     * Helper method which calculates the cell index in the grid.
+     *
+     * @param cellX The index of X.
+     * @param cellY The index of Y.
+     * @param cellZ The index of Z.
+     * @return The index of the cell in the grid.
+     */
+    template<typename T>
+    ::std::int32_t RegularGrid<T>::getCellIndex(
+            const ::std::int32_t cellX,
+            const ::std::int32_t cellY,
+            const ::std::int32_t cellZ) const {
+        const auto index {
+            static_cast<::std::int32_t> (
+                 static_cast<::std::uint32_t> (cellX) +
+                 (static_cast<::std::uint32_t> (cellY) << (this->gridShift_)) +
+                 (static_cast<::std::uint32_t> (cellZ) << (this->gridShift_ * 2U))
+            )
+        };
+        return index;
     }
 
     /**

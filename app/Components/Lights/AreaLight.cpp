@@ -19,8 +19,8 @@ AreaLight::AreaLight(
     auto r {this->samplerPointLight_->getSample()};
     auto s {this->samplerPointLight_->getSample()};
     if (r + s >= 1.0F) {
-        r = 1.0f - r;
-        s = 1.0f - s;
+        r = 1.0F - r;
+        s = 1.0F - s;
     }
     const auto &position {this->triangle_.pointA_ + r * this->triangle_.AB_ + s * this->triangle_.AC_};
     return position;

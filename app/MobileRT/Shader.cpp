@@ -22,22 +22,6 @@ namespace {
     const ::std::uint32_t mask {0xFFFFF};
     const ::std::uint32_t size {mask + 1};
     ::std::array<float, size> values {};
-
-    /**
-     * A helper method which prepares an array with random numbers generated.
-     *
-     * @return Whether the array was prepared or not.
-     */
-    bool fillThings() {
-        for (auto it {values.begin()}; it < values.end(); ::std::advance(it, 1)) {
-            const auto index {static_cast<::std::uint32_t> (::std::distance(values.begin(), it))};
-            *it = ::MobileRT::haltonSequence(index, 2);
-        }
-        static ::std::random_device randomDevice {};
-        static ::std::mt19937 generator {randomDevice()};
-        ::std::shuffle(values.begin(), values.end(), generator);
-        return true;
-    }
 }//namespace
 
 /**
@@ -51,8 +35,7 @@ Shader::Shader(Scene scene, const ::std::int32_t samplesLight, const Accelerator
     materials_ {::std::move(scene.materials_)},
     accelerator_ {accelerator},
     samplesLight_ {samplesLight} {
-    static auto unused {fillThings()};
-    static_cast<void> (unused);
+    fillArray(&values);
     initializeAccelerators(::std::move(scene));
 }
 

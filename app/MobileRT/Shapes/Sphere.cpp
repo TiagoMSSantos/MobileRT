@@ -33,11 +33,11 @@ Intersection Sphere::intersect(const Intersection &intersection, const Ray &ray)
     const auto originToCenterMagnitude {::glm::length(originToCenter)};
     //a = 1.0 - normalized vectors
     const auto a {::glm::dot(ray.direction_, ray.direction_)};
-    const auto b {2.0f * -projectionOnDirection};
+    const auto b {2.0F * -projectionOnDirection};
     const auto c {originToCenterMagnitude * originToCenterMagnitude - this->sqRadius_};
-    const auto discriminant {b * b - 4.0f * a * c};
+    const auto discriminant {b * b - 4.0F * a * c};
     //don't intersect (ignores tangent point of the sphere)
-    if (discriminant < 0.0f) {
+    if (discriminant < 0.0F) {
         return intersection;
     }
 
@@ -47,7 +47,7 @@ Intersection Sphere::intersect(const Intersection &intersection, const Ray &ray)
     const auto distanceToIntersection1 {-b + rootDiscriminant};
     const auto distanceToIntersection2 {-b - rootDiscriminant};
     //distance between intersection and camera = smaller root = closer intersection
-    const auto distanceToIntersection {::std::min(distanceToIntersection1, distanceToIntersection2) / (2.0f * a)};
+    const auto distanceToIntersection {::std::min(distanceToIntersection1, distanceToIntersection2) / (2.0F * a)};
 
     if (distanceToIntersection < EpsilonLarge || distanceToIntersection >= intersection.length_) {
         return intersection;
