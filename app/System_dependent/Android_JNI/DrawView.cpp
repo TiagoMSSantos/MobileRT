@@ -615,39 +615,39 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
         auto lambda {
             [=]() -> void {
                 BOOST_ASSERT_MSG(env != nullptr, "JNIEnv not valid.");
-                const auto jniError{
+                const auto jniError {
                         javaVM_->GetEnv(reinterpret_cast<void **> (const_cast<JNIEnv **> (&env)), JNI_VERSION_1_6)
                 };
 
                 BOOST_ASSERT_MSG(jniError == JNI_OK || jniError == JNI_EDETACHED, "JNIEnv not valid.");
                 {
-                    const auto result{javaVM_->AttachCurrentThread(const_cast<JNIEnv **> (&env), nullptr)};
+                    const auto result {javaVM_->AttachCurrentThread(const_cast<JNIEnv **> (&env), nullptr)};
                     BOOST_ASSERT_MSG(result == JNI_OK, "Couldn't attach current thread to JVM.");
                     static_cast<void> (result);
                 }
 
-                ::std::int32_t *dstPixels{};
+                ::std::int32_t *dstPixels {};
                 {
-                    const auto ret{
+                    const auto ret {
                             AndroidBitmap_lockPixels(env, globalBitmap, reinterpret_cast<void **> (&dstPixels))
                     };
                     BOOST_ASSERT_MSG(ret == JNI_OK, "Couldn't lock the Android bitmap pixels.");
                     LOG("ret = ", ret);
                 }
 
-                AndroidBitmapInfo info{};
+                AndroidBitmapInfo info {};
                 {
-                    const auto ret{AndroidBitmap_getInfo(env, globalBitmap, &info)};
+                    const auto ret {AndroidBitmap_getInfo(env, globalBitmap, &info)};
                     BOOST_ASSERT_MSG(ret == JNI_OK, "Couldn't get the Android bitmap information structure.");
                     LOG("ret = ", ret);
                 }
 
-                ::std::int32_t rep{1};
+                ::std::int32_t rep {1};
                 while (state_ == State::BUSY && rep > 0) {
                     LOG("STARTING RENDERING");
                     LOG("nThreads = ", nThreads);
                     {
-                        const ::std::lock_guard<::std::mutex> lock{mutex_};
+                        const ::std::lock_guard<::std::mutex> lock {mutex_};
                         rendered_.notify_all();
                         if (renderer_ != nullptr) {
                             renderer_->renderFrame(dstPixels, nThreads);
@@ -660,20 +660,20 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
                 finishedRendering_ = true;
                 rendered_.notify_all();
                 {
-                    const ::std::lock_guard<::std::mutex> lock{mutex_};
+                    const ::std::lock_guard<::std::mutex> lock {mutex_};
                     if (state_ != State::STOPPED) {
                         state_ = State::FINISHED;
                         LOG("STATE = FINISHED");
                     }
                     {
-                        const auto result{AndroidBitmap_unlockPixels(env, globalBitmap)};
+                        const auto result {AndroidBitmap_unlockPixels(env, globalBitmap)};
                         BOOST_ASSERT_MSG(result == JNI_OK, "Couldn't unlock the Android bitmap pixels.");
                         static_cast<void> (result);
                     }
 
                     env->DeleteGlobalRef(globalBitmap);
                     {
-                        const auto result{
+                        const auto result {
                                 javaVM_->GetEnv(reinterpret_cast<void **> (const_cast<JNIEnv **> (&env)),
                                                 JNI_VERSION_1_6)
                         };
@@ -682,7 +682,7 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
                     }
                     env->ExceptionClear();
                     if (jniError == JNI_EDETACHED) {
-                        const auto result{javaVM_->DetachCurrentThread()};
+                        const auto result {javaVM_->DetachCurrentThread()};
                         BOOST_ASSERT_MSG(result == JNI_OK, "Couldn't detach the current thread from JVM.");
                         static_cast<void> (result);
                     }

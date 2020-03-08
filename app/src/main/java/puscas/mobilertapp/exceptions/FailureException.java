@@ -3,7 +3,7 @@ package puscas.mobilertapp.exceptions;
 import androidx.annotation.NonNull;
 
 /**
- * An {@link Exception} which represents the system with low memory.
+ * An {@link Exception} which represents the system with a failure.
  */
 public class FailureException extends RuntimeException {
 

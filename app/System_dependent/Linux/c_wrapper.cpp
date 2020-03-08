@@ -64,7 +64,7 @@ work_thread(
             ::std::unique_ptr<::MobileRT::Sampler> samplerPixel {};
             ::std::unique_ptr<::MobileRT::Shader> shader_ {};
             ::std::unique_ptr<::MobileRT::Camera> camera {};
-            ::glm::vec3 maxDist{};
+            ::glm::vec3 maxDist {};
 
             switch (scene) {
                 case 0:

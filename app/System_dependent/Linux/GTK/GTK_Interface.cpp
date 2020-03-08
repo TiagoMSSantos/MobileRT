@@ -17,12 +17,12 @@
     const ::std::int32_t samplesPixel {static_cast<::std::int32_t> (strtol(argv[4], nullptr, 0))};
     const ::std::int32_t samplesLight {static_cast<::std::int32_t> (strtol(argv[5], nullptr, 0))};
 
-    const ::std::int32_t width_{
+    const ::std::int32_t width_ {
             ::MobileRT::roundDownToMultipleOf(static_cast<::std::int32_t> (strtol(argv[6], nullptr, 0)),
                                               static_cast<::std::int32_t> (::std::sqrt(
                                                       ::MobileRT::NumberOfTiles)))};
 
-    const ::std::int32_t height_{
+    const ::std::int32_t height_ {
             ::MobileRT::roundDownToMultipleOf(static_cast<::std::int32_t> (strtol(argv[7], nullptr, 0)),
                                               static_cast<::std::int32_t> (::std::sqrt(
                                                       ::MobileRT::NumberOfTiles)))};
@@ -67,7 +67,7 @@
             GtkWidget *, GdkEventKey *, gpointer)> (
                                [](GtkWidget *const gtkWidget, GdkEventKey *const event,
                                   gpointer /*user_data*/) -> bool {
-                                    switch(event->keyval) {
+                                    switch (event->keyval) {
                                         case GDK_KEY_Escape:
                                             gtk_widget_destroy(gtkWidget);
                                             gtk_main_quit();

@@ -226,7 +226,7 @@ public final class MainActivity extends Activity {
      */
     private void showFileChooser() {
         final Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("*/*");
+        intent.setType("*" + FILE_SEPARATOR + "*");
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         try {
             final Intent intentChooseFile = Intent.createChooser(intent, "Select a File to Upload");
@@ -328,10 +328,8 @@ public final class MainActivity extends Activity {
                     break;
 
                 case TEST:
-                    final String scenePath = "CornellBox/CornellBox-Water";
-
+                    final String scenePath = "CornellBox" + FILE_SEPARATOR + "CornellBox-Water";
                     final String sdCardPath = getSDCardPath();
-
                     this.sceneFilePath = sdCardPath + FILE_SEPARATOR + "WavefrontOBJs" + FILE_SEPARATOR + scenePath;
                     startRender(this.sceneFilePath);
                     break;
@@ -392,16 +390,16 @@ public final class MainActivity extends Activity {
             throw new FailureException(ex);
         }
 
-        this.drawView = this.findViewById(R.id.drawLayout);
-        this.pickerScene = this.findViewById(R.id.pickerScene);
-        this.pickerShader = this.findViewById(R.id.pickerShader);
-        this.pickerSamplesPixel = this.findViewById(R.id.pickerSamplesPixel);
-        this.pickerSamplesLight = this.findViewById(R.id.pickerSamplesLight);
-        this.pickerAccelerator = this.findViewById(R.id.pickerAccelerator);
-        this.pickerThreads = this.findViewById(R.id.pickerThreads);
-        this.pickerResolutions = this.findViewById(R.id.pickerSize);
-        final TextView textView = this.findViewById(R.id.timeText);
-        final Button renderButton = this.findViewById(R.id.renderButton);
+        this.drawView = findViewById(R.id.drawLayout);
+        this.pickerScene = findViewById(R.id.pickerScene);
+        this.pickerShader = findViewById(R.id.pickerShader);
+        this.pickerSamplesPixel = findViewById(R.id.pickerSamplesPixel);
+        this.pickerSamplesLight = findViewById(R.id.pickerSamplesLight);
+        this.pickerAccelerator = findViewById(R.id.pickerAccelerator);
+        this.pickerThreads = findViewById(R.id.pickerThreads);
+        this.pickerResolutions = findViewById(R.id.pickerSize);
+        final TextView textView = findViewById(R.id.timeText);
+        final Button renderButton = findViewById(R.id.renderButton);
         final ActivityManager assetManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
 
         Preconditions.checkNotNull(this.pickerResolutions);
@@ -428,10 +426,10 @@ public final class MainActivity extends Activity {
             final Bitmap bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
             bitmap.eraseColor(Color.DKGRAY);
             renderer.setBitmap(bitmap);
-            final String vertexShader = this.readTextAsset("Shaders/VertexShader.glsl");
-            final String fragmentShader = this.readTextAsset("Shaders/FragmentShader.glsl");
-            final String vertexShaderRaster = this.readTextAsset("Shaders/VertexShaderRaster.glsl");
-            final String fragmentShaderRaster = this.readTextAsset("Shaders/FragmentShaderRaster.glsl");
+            final String vertexShader = readTextAsset("Shaders" + FILE_SEPARATOR + "VertexShader.glsl");
+            final String fragmentShader = readTextAsset("Shaders" + FILE_SEPARATOR + "FragmentShader.glsl");
+            final String vertexShaderRaster = readTextAsset("Shaders" + FILE_SEPARATOR + "VertexShaderRaster.glsl");
+            final String fragmentShaderRaster = readTextAsset("Shaders" + FILE_SEPARATOR + "FragmentShaderRaster.glsl");
             renderer.setVertexShaderCode(vertexShader);
             renderer.setFragmentShaderCode(fragmentShader);
             renderer.setVertexShaderCodeRaster(vertexShaderRaster);

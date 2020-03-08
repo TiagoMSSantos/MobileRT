@@ -34,7 +34,7 @@ Intersection::Intersection(
     primitive_ {primitive},
     materialIndex_ {materialIndex},
     texCoords_ {texCoords} {
-        BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normal_)), "normal can't be NAN.");
+        BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normal_)), "normal can't be NaN.");
         BOOST_ASSERT_MSG(!::glm::all(::glm::isinf(this->normal_)), "normal can't be infinite.");
         BOOST_ASSERT_MSG(!equal(this->normal_, ::glm::vec3 {0}), "normal can't be zero.");
 }

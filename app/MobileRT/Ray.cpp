@@ -32,7 +32,7 @@ Ray::Ray(const ::glm::vec3 &dir, const ::glm::vec3 &origin,
     depth_ {depth},
     id_ {getId()},
     primitive_ {primitive} {
-        BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->direction_)), "direction can't be NAN.");
+        BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->direction_)), "direction can't be NaN.");
         BOOST_ASSERT_MSG(!::glm::all(::glm::isinf(this->direction_)), "direction can't be infinite.");
         BOOST_ASSERT_MSG(!equal(this->direction_, ::glm::vec3 {0}), "direction can't be zero.");
 }

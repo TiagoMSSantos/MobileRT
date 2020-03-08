@@ -87,6 +87,7 @@ f 45 45 #field of view of the camera u v
 
 ### Ray tracing JNI layer
 - [ ] Refactor DrawView translation unit
+- [ ] Remove duplicated code from different layers
 - [ ] Improve DrawView code readability
 - [ ] Remove race conditions
 
@@ -129,7 +130,9 @@ f 45 45 #field of view of the camera u v
 - [x] Add git hooks to submit Jenkins' jobs after each git push
 - [ ] Support to export rendered image to file
 - [x] Add CI / CD support from github (actions) for the Google Test unit tests
-- [ ] Remove repeated code
+- [ ] Add support for a tool to detect duplicated code
+- [ ] Remove Java duplicated code
+- [ ] Remove C++ duplicated code
 - [ ] Remove unnecessary casts
 
 ### Docker

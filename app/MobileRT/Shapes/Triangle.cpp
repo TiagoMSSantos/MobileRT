@@ -28,9 +28,9 @@ Triangle::Triangle(
     normalC_ {::glm::normalize(::glm::cross(AC_, AB_))},
     materialIndex_ {materialIndex} {
 
-    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalA_)), "normalA can't be NAN.");
-    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalB_)), "normalB can't be NAN.");
-    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalC_)), "normalC can't be NAN.");
+    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalA_)), "normalA can't be NaN.");
+    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalB_)), "normalB can't be NaN.");
+    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalC_)), "normalC can't be NaN.");
 
     BOOST_ASSERT_MSG(!::glm::all(::glm::isinf(this->normalA_)), "normalA can't be infinite.");
     BOOST_ASSERT_MSG(!::glm::all(::glm::isinf(this->normalB_)), "normalB can't be infinite.");
@@ -69,9 +69,9 @@ Triangle::Triangle(
     normalC_ {::glm::normalize(normalC)},
     materialIndex_ {materialIndex} {
 
-    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalA_)), "normalA can't be NAN.");
-    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalB_)), "normalB can't be NAN.");
-    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalC_)), "normalC can't be NAN.");
+    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalA_)), "normalA can't be NaN.");
+    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalB_)), "normalB can't be NaN.");
+    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalC_)), "normalC can't be NaN.");
 
     BOOST_ASSERT_MSG(!::glm::all(::glm::isinf(this->normalA_)), "normalA can't be infinite.");
     BOOST_ASSERT_MSG(!::glm::all(::glm::isinf(this->normalB_)), "normalB can't be infinite.");
@@ -113,9 +113,9 @@ Triangle::Triangle(
     texCoordC_ {texCoordC},
     materialIndex_ {materialIndex} {
 
-    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalA_)), "normalA can't be NAN.");
-    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalB_)), "normalB can't be NAN.");
-    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalC_)), "normalC can't be NAN.");
+    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalA_)), "normalA can't be NaN.");
+    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalB_)), "normalB can't be NaN.");
+    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalC_)), "normalC can't be NaN.");
 
     BOOST_ASSERT_MSG(!::glm::all(::glm::isinf(this->normalA_)), "normalA can't be infinite.");
     BOOST_ASSERT_MSG(!::glm::all(::glm::isinf(this->normalB_)), "normalB can't be infinite.");
@@ -163,9 +163,9 @@ Triangle::Triangle(
     texCoordC_ {texCoordC},
     materialIndex_ {materialIndex} {
 
-    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalA_)), "normalA can't be NAN.");
-    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalB_)), "normalB can't be NAN.");
-    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalC_)), "normalC can't be NAN.");
+    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalA_)), "normalA can't be NaN.");
+    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalB_)), "normalB can't be NaN.");
+    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalC_)), "normalC can't be NaN.");
 
     BOOST_ASSERT_MSG(!::glm::all(::glm::isinf(this->normalA_)), "normalA can't be infinite.");
     BOOST_ASSERT_MSG(!::glm::all(::glm::isinf(this->normalB_)), "normalB can't be infinite.");
