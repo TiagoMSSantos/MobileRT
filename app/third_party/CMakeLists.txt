@@ -43,13 +43,8 @@ execute_process( COMMAND git pull --all --rebase --recurse-submodules --progress
 
 execute_process( COMMAND git checkout master --progress
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/boost )
-execute_process( COMMAND git pull --rebase --recurse-submodules --progress --jobs=${JOBS}
+execute_process( COMMAND git pull --all --rebase --recurse-submodules --progress --jobs=${JOBS}
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/boost )
-
-
-# Checkout to specific versions
-execute_process( COMMAND git -c advice.detachedHead=false checkout release-1.10.0 --progress
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/googletest )
 
 
 # Add third party dependencies

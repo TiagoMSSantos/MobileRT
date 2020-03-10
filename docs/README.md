@@ -1,55 +1,72 @@
-# Mobile Ray Tracer (MobileRT)<br/>
-# A portable Ray Tracing (RT) library for Android and Linux
+# MobileRT: Mobile Ray Tracing engine <br/>
+- A portable Ray Tracing (RT) engine for multiple devices <br/>
+- Already available interfaces for Android and Linux <br/>
 
 <img src="Example.gif" alt="RayTracer" width="400"/>
 
 ## Run docker image
-This C++ Ray Tracer is compatible with Android and Linux.<br/>
-For Linux, if you have docker installed, you can try it with ease by using the following
-commands to get the docker image and execute the container:<br/>
+This C++ Ray Tracer is compatible with Android and Linux. <br/>
+
+For Linux, if [docker](https://www.docker.com/) is installed, it is possible to
+try this ray tracer with ease by using the following commands to get the docker
+image and execute the container: <br/>
 ```bash
 docker pull ptpuscas/mobile_rt
 xhost +; docker run -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=${DISPLAY} -it ptpuscas/mobile_rt
 ```
-And you should see a the conference room model like the image above :)<br/>
+And a docker container should start and render the conference room model like
+the image above :) <br/>
 
 ## Build docker image
+For the most curious, this is the command used to build the docker image:
 ```bash
 docker build -t ptpuscas/mobile_rt -f docker_image/Dockerfile --no-cache=false --build-arg build_type=Release .
 ```
 
 ## Compile Ray tracer
-To Compile this ray tracer, you need to install cmake and have a C++ compiler.
-You will also need the QT4 library and of course the git.<br/>
+It is also possible to clone this repository and compile this ray tracer by
+yourself.
+To compile it, it is essential to install cmake and have a C++ compiler.
+It is also needed the [Qt4](https://www.qt.io/) library and the
+[git](https://git-scm.com/) control system to get the code from the repository.
+<br/>
 ```bash
 sudo apt-get update
 sudo apt-get install cmake libqt4-dev build-essential ca-certificates git g++ libgtk2.0-dev
 ```
-Then, to compile this code, just create a build directory and compile it, like
-for example:
+Then, to finally compile this code, just create a build directory and compile
+in it, like for example:
 ```bash
 mkdir build_Release
 cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=Release ../app/
 ```
 
 ## Run Ray tracer
-To try this ray tracer just use the profile.sh script available in the Scripts
-directory. For example, you can just type inside the created build_Release
-directory, the following command:<br/>
+This ray tracer comes with a script with many functionalities useful to run
+static code analyzers and to benchmark the ray tracer itself.
+To execute the ray tracer just use the profile.sh script available in the
+Scripts directory.
+For example, inside the build_Release directory (which should be inside the root
+folder of this project) that contains all the object files compiled previously,
+the following command should start the ray tracer: <br/>
 ```bash
 ../Scripts/profile.sh Release
 ```
 
 ## Android
 To try this ray tracer for Android just download the
-[APK](https://github.com/TiagoMSSantos/MobileRT/blob/master/app/release/app-release.apk?raw=true) file available in the
-repository.
+[APK](https://github.com/TiagoMSSantos/MobileRT/blob/master/app/release/app-release.apk?raw=true)
+file available in the repository.
 
-## Models OBJ
-To get some OBJ models, just download some from here: [OBJs](https://casual-effects.com/data/).
-Then you need to add some lights, like for example with 3D Blender.
-Just make sure the light material has the light emission component (Ke) with some positive values in the MTL file.
-Finally, add a CAM file with some contents like below to have a perspective camera:
+## Models Wavefront OBJ
+To get some OBJ models, just download some from here:
+[OBJs](https://casual-effects.com/data/).
+Then, it will just be needed to add some lights in the scene geometry, by using
+some modeling application like [3D Blender](https://www.blender.org/).
+One thing to have it in account is to make sure the light material has the
+light emission component (Ke) with some positive values in the ".mtl" file.
+Finally, add a camera file with the extension ".cam" that should contain a
+definition of a perspective camera, like for example:
 ```
 t perspective #type of the camera
 p 0 0 0 #position of the camera x y z
@@ -61,77 +78,101 @@ f 45 45 #field of view of the camera u v
 ## TODO
 
 ### Ray tracing engine
-- [x] Implement loading of textures
-- [ ] Add support for textures for different materials
-- [x] Separate Material from Primitive in order to save memory
-- [x] Improve BVH
-- [x] Improve Regular Grid
-- [ ] Add ray packet intersections
-- [ ] Optimize BVH with ray packet intersections
-- [ ] Add gpu ray tracing support for comparison
-- [ ] Add more types of shapes
-- [ ] Support more types of models besides .obj files
-- [x] Move naive acceleration structure to a class different than Scene
-- [ ] Implement KD-Tree
-- [ ] Make acceleration structures compatible with the lights
-- [ ] Investigate if samplers are properly working
-- [x] Add exceptions
-- [x] Check all allocations' exceptions
-- [x] Add normals per vertice for triangles
-- [x] Improve loading of textures
+- [x] Support load of textures
+- [ ] Support for textures with different materials
+- [x] Support acceleration structures
+- [x] Split Material from Primitive in order to save memory
+- [x] Make all acceleration structures as templates (to let compiler generate
+better optimized code)
+- [ ] Support ray packet intersections
+- [ ] Support acceleration structures with ray packet intersections
+- [ ] Support GPU ray tracing (to compare with CPU)
+- [x] Split naive acceleration structure from Scene
+- [ ] Support KD-Tree
+- [ ] Support acceleration structures compatible with the lights
+- [x] Support triangles with normals per vertex
 - [ ] Parallelize build of Regular Grid
 - [ ] Parallelize build of BVH
-- [x] Add support for C++ Boost
-- [x] Add message to assertions
-- [ ] Optimize loading of scene
-- [x] Add builder for Triangle
-
-### Ray tracing JNI layer
-- [ ] Refactor DrawView translation unit
-- [ ] Remove duplicated code from different layers
-- [ ] Improve DrawView code readability
-- [ ] Remove race conditions
 
 ### Ray tracing shaders
-- [ ] Fix refraction
+- [ ] Fix refractions
 - [ ] Fix Path Tracing algorithm
 - [ ] Improve shaders performance
 - [ ] Add Bidirectional Path Tracing
 - [ ] Add Metropolis light transport
-- [ ] Add shader for debug purposes (wireframe of shapes and boxes)
+- [ ] Support shader for debug purposes (wireframe of shapes and boxes)
 
-### Ray tracing test cases
-- [ ] Prepare more scene models with Blender for testing
-- [x] Read and construct lights and cameras from files
-- [x] Remove unnecessary primitives, lights and cameras in the code
+### Ray tracing JNI layer
+- [ ] Refactor DrawView translation unit
+- [ ] Improve DrawView code readability
+- [ ] Fix race conditions
 
 ### Android Interface
 - [x] Fix memory leak in Java UI
 - [x] Fix load of obj files in Android 10
 - [ ] Improve Java UI code to more Object Oriented
 - [ ] Change Android icon
-- [x] Add compiler warnings in Gradle
 - [x] Remove usage of deprecated methods
 - [x] Add Android instrumented unit tests
 - [ ] Make Android instrumented tests run on debug and release
 - [ ] Make all Android instrumented tests pass without flakiness
-- [x] Use java streams to reduce complexity
 
 ### Linux Interface
 - [x] Change Linux's UI from GTK to Qt
-- [ ] Add options in Qt UI
+- [x] Support options menu in GUI
+- [x] Support about menu in GUI
+- [x] Support for selection of OBJ files in GUI
+- [ ] Support selection of all ray tracer options in GUI
+
+### Building process
+- [x] Support compiler warnings for clang / g++ in CMake
+- [x] Support compiler warnings for Java
+- [x] Support warnings for Gradle
+- [x] Support rules with optimizations for proguard
+- [x] Support C++ compilation with optimization flags
+- [ ] Support CMake jobs to improve building time
+- [x] Support CMake to clone the third party repositories
+- [x] Support CMake to pull new versions of third party repositories
+- [x] Split the Android application in 3 layers:
+    - [x] MobileRT (ray tracing engine)
+    - [x] Rendering components (cameras, lights, loaders, samplers, shaders)
+    - [x] UI (Android through JNI, Linux through Qt)
+
+### Third party frameworks / libraries used
+- [x] C++ [Boost libraries](https://www.boost.org/)
+- [x] C++ [OpenGL Mathematics](https://glm.g-truc.net/0.9.9/index.html)
+library
+- [x] C++ [tinyobjloader](https://github.com/tinyobjloader/tinyobjloader)
+library
+- [x] C [STB libraries](https://github.com/nothings/stb)
+- [x] C++ [Google Test](https://github.com/google/googletest) framework
+for unit tests
+- [x] Java [Google Guava](https://github.com/google/guava) libraries
+- [x] Java [streams](https://github.com/stefan-zobel/streamsupport) to
+reduce complexity
+- [x] Java [Apache Commons](https://commons.apache.org/) framework
+- [x] Java [JUnit4](https://junit.org/junit4/) framework for
+unit tests
+- [x] Java [AssertJ](https://assertj.github.io/doc/) library for
+unit tests assertions
+- [x] Java [Mockito](https://site.mockito.org/) framework for
+mocking in unit tests
+- [x] Java Google [Truth](https://truth.dev/) library for
+unit tests 
+- [x] Java Android [Espresso](https://developer.android.com/training/testing/espresso)
+library for instrumented tests
 
 ### System
-- [x] Add javadoc in the Android UI
-- [ ] Add documentation in the JNI layer
-- [x] Add documentation in the MobileRT
-- [x] Give out of memory error when the memory is not enough to load the scene
-- [ ] Add unit tests (more code coverage)
-- [x] Add git hooks to check git commit messages
-- [x] Add git hooks to submit Jenkins' jobs after each git push
-- [ ] Support to export rendered image to file
-- [x] Add CI / CD support from github (actions) for the Google Test unit tests
-- [x] Add support for a tool to detect duplicated code (jscpd)
+- [x] Support doxygen documentation in the MobileRT
+- [ ] Support doxygen documentation in the Components
+- [ ] Support doxygen documentation in the JNI layer
+- [x] Support javadoc in the Android UI
+- [ ] Support unit tests (code coverage)
+- [x] Support git hooks to check git commit messages
+- [x] Support git hooks to submit Jenkins' jobs after each git push
+- [ ] Support to export rendered image to a file
+- [x] Support CI / CD from github (actions) for the unit tests
+- [x] Support for a tool to detect duplicated code (jscpd)
 - [ ] Remove MobileRT duplicated code
 - [ ] Remove Components duplicated code
 - [ ] Remove Android JNI duplicated code
@@ -139,16 +180,22 @@ f 45 45 #field of view of the camera u v
 - [ ] Remove Qt duplicated code
 - [ ] Remove Java tests duplicated code
 - [ ] Remove C++ tests duplicated code
-- [ ] Remove unnecessary casts
+- [x] Support compiler exceptions to let the user know gracefully that the
+system does not have enough memory to render the scene
+- [ ] Optimize load of scenes from files
+- [x] Add message reasons to all assertions
+- [x] Load lights and cameras from files
+- [ ] Prepare more scene models
 
 ### Docker
 - [x] Make a docker image with MobileRT
-- [x] Add an example model to the docker container
+- [x] Add an example model to the docker image
+- [ ] Make the ray tracer distribute the load across different engines
 - [ ] Use docker compose to launch multiple containers and distribute the load
 
 ### Documentation
-- [x] Improve README
-- [ ] Write documentation
+- [x] Support backlog in README
+- [x] Support code documentation
 - [x] Update gif image
 - [ ] Benchmark against popular ray tracers like PBRT
 - [ ] Benchmark against previous version of MobileRT
