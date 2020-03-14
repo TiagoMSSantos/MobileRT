@@ -1,0 +1,20 @@
+language: cpp
+os: linux
+dist: bionic
+compiler:
+  - clang
+
+git:
+  submodules: false
+
+before_install:
+  - sudo apt-get update && sudo apt-get install -y libgtk2.0-dev libqt4-dev
+
+install:
+  - mkdir build_native
+  - cd build_native
+  - cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_BUILD_TYPE=Debug ../app/
+  - make
+
+script:
+  - ./bin/GoogleTestd

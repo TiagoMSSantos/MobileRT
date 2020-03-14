@@ -19,9 +19,3 @@ protected:
 TestTextureLoader::~TestTextureLoader() {
     LOG("TestTextureLoader DESTROYED!!!");
 }
-
-TEST_F(TestTextureLoader, TestTextureLoader1) {
-    const auto texture {Texture::createTexture("/mnt/D/Projects/San_Miguel/textures/FL29pet1.png")};
-
-    EXPECT_NO_THROW(texture.isValid());
-}

@@ -3,42 +3,42 @@
 	url = https://github.com/g-truc/glm
     update = checkout
 	branch = master
-    fetchRecurseSubmodules = true
+    fetchRecurseSubmodules = false
     ignore = none
-    shallow = false
+    shallow = true
 
 [submodule "third_party/tinyobjloader"]
 	path = app/third_party/tinyobjloader
 	url = https://github.com/syoyo/tinyobjloader
     update = checkout
     branch = master
-    fetchRecurseSubmodules = true
+    fetchRecurseSubmodules = false
     ignore = none
-    shallow = false
+    shallow = true
 
 [submodule "third_party/googletest"]
 	path = app/third_party/googletest
 	url = https://github.com/google/googletest
     update = checkout
 	branch = master
-    fetchRecurseSubmodules = true
+    fetchRecurseSubmodules = false
     ignore = none
-    shallow = false
+    shallow = true
 
 [submodule "third_party/stb"]
     path = app/third_party/stb
     url = https://github.com/nothings/stb
     update = checkout
     branch = master
-    fetchRecurseSubmodules = true
+    fetchRecurseSubmodules = false
     ignore = none
-    shallow = false
+    shallow = true
 
 [submodule "third_party/boost"]
     path = app/third_party/boost
     url = https://github.com/boostorg/boost
     update = checkout
     branch = master
-    fetchRecurseSubmodules = true
+    fetchRecurseSubmodules = false
     ignore = none
-    shallow = false
+    shallow = true

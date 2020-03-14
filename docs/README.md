@@ -2,6 +2,9 @@
 - A portable Ray Tracing (RT) engine for multiple devices <br/>
 - Already available interfaces for Android and Linux <br/>
 
+[![Build Status](https://travis-ci.com/TiagoMSSantos/MobileRT.svg?branch=master)](https://travis-ci.com/TiagoMSSantos/MobileRT)
+[![Copy Paste Status](../jscpd-report/jscpd-badge.svg)](../jscpd-report/jscpd-report.html)
+
 <img src="Example.gif" alt="RayTracer" width="400"/>
 
 ## Run docker image
