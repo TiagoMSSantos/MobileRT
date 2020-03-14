@@ -2,7 +2,7 @@ language: cpp
 os: linux
 dist: bionic
 compiler:
-  - clang
+  - gcc
 
 git:
   submodules: false
@@ -13,8 +13,13 @@ before_install:
 install:
   - mkdir build_native
   - cd build_native
-  - cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_BUILD_TYPE=Debug ../app/
+  - cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_BUILD_TYPE=Debug -ENABLE_COVERAGE_ALL=On ../app/
   - make
 
 script:
   - ./bin/GoogleTestd
+
+after_success:
+  - lcov --capture --directory . --output-file coverage.info
+  - genhtml coverage.info --output-directory code_coverage_report
+  - bash <(curl -s https://codecov.io/bash) -t 717e75e2-b149-4997-adb4-a3fa1bde237f

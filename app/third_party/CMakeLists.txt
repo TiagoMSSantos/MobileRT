@@ -19,6 +19,9 @@ execute_process( COMMAND git clone https://github.com/nothings/stb --progress --
 execute_process( COMMAND git clone https://github.com/boostorg/boost --progress --jobs=${JOBS}
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} ERROR_QUIET )
 
+execute_process( COMMAND git clone https://github.com/RWTH-HPC/CMake-codecov --progress --jobs=${JOBS}
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} ERROR_QUIET )
+
 
 # Update repositories
 execute_process( COMMAND git checkout master --progress
@@ -45,6 +48,11 @@ execute_process( COMMAND git checkout master --progress
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/boost )
 execute_process( COMMAND git pull --all --rebase --recurse-submodules --progress --jobs=${JOBS}
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/boost )
+
+execute_process( COMMAND git checkout master --progress
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/CMake-codecov )
+execute_process( COMMAND git pull --all --rebase --recurse-submodules --progress --jobs=${JOBS}
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/CMake-codecov )
 
 
 # Add third party dependencies

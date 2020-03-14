@@ -2,6 +2,8 @@ cmake_minimum_required( VERSION 3.0...3.0 FATAL_ERROR )
 
 set( COMMON_FLAGS "" )
 set( CMAKE_AUTOMOC ON )
+set( CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/third_party/CMake-codecov/cmake" ${CMAKE_MODULE_PATH} )
+find_package( codecov REQUIRED )
 
 # Set CMAKE_SYSTEM_NAME
 if( DEFINED ANDROID_ABI )
@@ -75,14 +77,14 @@ set( COMMON_FLAGS "${COMMON_FLAGS}"
 set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-c++98-compat-pedantic -Wno-padded )
 set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-exit-time-destructors )
 
-set( COMMON_FLAGS_DEBUG -O0 -g3 -fno-optimize-sibling-calls -fno-omit-frame-pointer )
+set( COMMON_FLAGS_DEBUG -O0 -g3 -fno-optimize-sibling-calls -fno-omit-frame-pointer -ftest-coverage -fprofile-arcs )
 
 set( COMMON_FLAGS_RELEASE "${COMMON_FLAGS_RELEASE}" -O3 -DNDEBUG -ffunction-sections -fdata-sections )
 
 # Set common linker flags
 set( COMMON_LINKER_FLAGS -Wl,-gc-sections -O3 -discard-all -fno-rtti )
 
-set( COMMON_LINKER_FLAGS_DEBUG  )
+set( COMMON_LINKER_FLAGS_DEBUG -lgcov --coverage )
 
 set( COMMON_LINKER_FLAGS_RELEASE -s -flto=full )
 
@@ -107,11 +109,13 @@ file( GLOB_RECURSE SCENES_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/Scenes/**.cpp" )
 
 if( DEFINED ANDROID_ABI )
 	add_library( ${PROJECT_NAME} SHARED ${SCENES_SOURCES} ${MOBILE_DEPENDENT_SOURCES} )
+	add_coverage( ${PROJECT_NAME} )
 	target_link_libraries( ${PROJECT_NAME} PRIVATE android jnigraphics )
 else ()
 	find_package( GTK2 REQUIRED )
 	find_package ( Qt4 REQUIRED QtGui QtXml QtCore )
 	add_executable( ${PROJECT_NAME} ${SCENES_SOURCES} ${MOBILE_DEPENDENT_SOURCES} )
+	add_coverage( ${PROJECT_NAME} )
 
 	target_include_directories( ${PROJECT_NAME} SYSTEM PRIVATE "${QT_HEADERS}" )
 	target_include_directories( ${PROJECT_NAME} SYSTEM PRIVATE "${GTK2_INCLUDE_DIRS}" )
@@ -139,6 +143,8 @@ general "${COMMON_LINKER_FLAGS}"
 debug "${COMMON_LINKER_FLAGS_DEBUG}"
 optimized "${COMMON_LINKER_FLAGS_RELEASE}"
 )
+
+coverage_evaluate()
 
 # Print all set variables
 get_cmake_property( _variableNames VARIABLES )

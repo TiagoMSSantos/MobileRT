@@ -3,6 +3,7 @@ project( Components VERSION 1.0.0.0 LANGUAGES CXX )
 file( GLOB_RECURSE MOBILE_RC_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/**.cpp" )
 
 add_library( ${PROJECT_NAME} SHARED ${MOBILE_RC_SOURCES} )
+add_coverage( ${PROJECT_NAME} )
 set_target_properties( ${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "${CMAKE_DEBUG_POSTFIX}" )
 
 target_include_directories( ${PROJECT_NAME} SYSTEM PUBLIC "${THIRD_PARTY_HEADERS}" )

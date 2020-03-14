@@ -22,7 +22,7 @@ jobs:
     - name: Run CMake
       if: success()
       working-directory: build_native
-      run: cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_BUILD_TYPE=Debug ../app/
+      run: cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_BUILD_TYPE=Debug -ENABLE_COVERAGE_ALL=On ../app/
 
     - name: Run Make
       if: success()

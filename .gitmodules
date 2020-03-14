@@ -42,3 +42,12 @@
     fetchRecurseSubmodules = false
     ignore = none
     shallow = true
+
+[submodule "third_party/CMake-codecov"]
+	path = app/third_party/CMake-codecov
+	url = https://github.com/RWTH-HPC/CMake-codecov
+    update = checkout
+    branch = master
+    fetchRecurseSubmodules = false
+    ignore = none
+    shallow = true

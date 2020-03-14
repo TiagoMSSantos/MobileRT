@@ -2,8 +2,10 @@
 - A portable Ray Tracing (RT) engine for multiple devices <br/>
 - Already available interfaces for Android and Linux <br/>
 
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Build Status](https://travis-ci.com/TiagoMSSantos/MobileRT.svg?branch=master)](https://travis-ci.com/TiagoMSSantos/MobileRT)
-[![Copy Paste Status](../jscpd-report/jscpd-badge.svg)](../jscpd-report/jscpd-report.html)
+[![codecov](https://codecov.io/gh/TiagoMSSantos/MobileRT/branch/master/graph/badge.svg)](https://codecov.io/gh/TiagoMSSantos/MobileRT)
+[![Copy Paste Status](https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/jscpd-report/jscpd-badge.svg?sanitize=true)](https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/jscpd-report/jscpd-report.html?sanitize=false)
 
 <img src="Example.gif" alt="RayTracer" width="400"/>
 
