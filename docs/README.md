@@ -6,6 +6,7 @@
 [![Build Status](https://travis-ci.com/TiagoMSSantos/MobileRT.svg?branch=master)](https://travis-ci.com/TiagoMSSantos/MobileRT)
 [![codecov](https://codecov.io/gh/TiagoMSSantos/MobileRT/branch/master/graph/badge.svg)](https://codecov.io/gh/TiagoMSSantos/MobileRT)
 [![Copy Paste Status](https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/jscpd-report/jscpd-badge.svg?sanitize=true)](https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/jscpd-report/jscpd-report.html?sanitize=false)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FTiagoMSSantos%2FMobileRT.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FTiagoMSSantos%2FMobileRT?ref=badge_shield)
 
 <img src="Example.gif" alt="RayTracer" width="400"/>
 
@@ -204,3 +205,7 @@ system does not have enough memory to render the scene
 - [x] Update gif image
 - [ ] Benchmark against popular ray tracers like PBRT
 - [ ] Benchmark against previous version of MobileRT
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FTiagoMSSantos%2FMobileRT.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FTiagoMSSantos%2FMobileRT?ref=badge_large)
