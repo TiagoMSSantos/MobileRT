@@ -1,0 +1,775 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="x-ua-compatible" content="ie=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><title>jscpd, Copy/Paste Detector</title><link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w" crossorigin="anonymous"><script>function collapseExpandAll() {
+    document.querySelectorAll('.clone').forEach(function (cloneElement) {
+        cloneElement.classList.remove('expanded');
+    });
+    document.querySelector('.clones').classList.toggle('collapsed');
+}
+
+function expandCollapse(event) {
+    if (event.target.classList.contains('expand') || event.target.classList.contains('collapse')) {
+        this.classList.toggle('expanded');
+    }
+
+}
+
+window.onload = function () {
+
+    var codes = document.querySelectorAll('pre');
+
+
+    codes.forEach(function (code) {
+        code.innerHTML = '<span class="line-number"></span>' + code.innerHTML + '<span class="cl"></span>';
+
+        var length = parseInt(code.getAttribute('data-length'));
+        var firstStart = parseInt(code.getAttribute('data-first-start'));
+        var secondStart = parseInt(code.getAttribute('data-second-start'));
+
+        for (var j = 0; j <= length; j++) {
+            var line_num = code.getElementsByTagName('span')[0];
+            line_num.innerHTML += '<span>' + (firstStart + j) + ' ' + (secondStart + j) + '</span>';
+        }
+
+    });
+
+    document.querySelectorAll('.clone').forEach(function (cloneElement) {
+        cloneElement.addEventListener('click', expandCollapse)
+    });
+}
+</script><style>* {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+a {
+    text-decoration: none;
+    color: rgb(61, 146, 201);
+}
+
+a:hover,
+a:focus {
+    text-decoration: underline;
+}
+
+h3 {
+    font-weight: 100;
+}
+
+#layout {
+    padding: 0;
+}
+
+.header {
+    text-align: center;
+    top: auto;
+    margin: 3em auto;
+}
+
+.sidebar {
+    background: rgb(61, 79, 93);
+    color: #fff;
+}
+
+.nav-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.nav-item {
+    display: inline-block;
+    *display: inline;
+    zoom: 1;
+}
+
+.nav-item a {
+    background: transparent;
+    border: 2px solid rgb(176, 202, 219);
+    color: #fff;
+    margin-top: 1em;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-size: 85%;
+}
+
+.nav-item a:hover,
+.nav-item a:focus {
+    border: 2px solid rgb(61, 146, 201);
+    text-decoration: none;
+}
+
+.content-subhead {
+    text-transform: uppercase;
+    color: #aaa;
+    border-bottom: 1px solid #eee;
+    padding: 0.4em 0;
+    font-size: 120%;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+}
+
+.content {
+    padding: 2em 1em 0;
+}
+
+.clone {
+    padding-bottom: 2em;
+
+}
+
+.clone header button {
+    float: left;
+    font-size: 110%;
+    margin: 0.1em 0.3em;
+}
+
+.clone .expand {
+    display: none;
+}
+
+.clone .collapse {
+    display: block;
+}
+
+.collapsed .clone pre {
+    display: none;
+}
+
+.collapsed .clone .expand {
+    display: block;
+}
+
+.collapsed .clone .collapse {
+    display: none;
+}
+
+.clone.expanded .expand {
+    display: none !important;
+}
+
+.clone.expanded .collapse {
+    display: block !important;
+}
+
+.clone.expanded pre {
+    display: block !important;
+}
+
+.clone pre {
+    max-width: 800px;
+}
+
+.clone pre .line-number {
+    font: normal normal 12px/14px "Courier New", Courier, Monospace;
+    display: block;
+    float: left;
+    margin: 0 1em 0 -1em;
+    border-right: 0.1em solid #444;
+    text-align: right;
+}
+
+.clone pre .line-number span {
+    display: block;
+    padding: 0 .5em 0 1em;
+
+}
+
+.clone pre .cl {
+    display: block;
+    clear: both;
+}
+
+.clone-title {
+    font-size: 1.1em;
+    color: #222;
+    margin-bottom: 0.2em;
+}
+
+.clone-description {
+    font-family: Georgia, "Cambria", serif;
+    color: #444;
+    line-height: 1.1em;
+    font-size: 80%;
+}
+
+.controls {
+    text-align: right;
+}
+
+.controls button {
+    font-size: 70%;
+}
+
+.mode-stats {
+    color: #999;
+    font-size: 90%;
+    margin: 0;
+}
+
+.mode-rate {
+    margin: 0 0.1em;
+    padding: 0.3em 1em;
+    color: #fff;
+    background: #999;
+    font-size: 80%;
+}
+
+.stats {
+    width: 100%;
+    margin: 1em 0;
+}
+
+.clones-excellent {
+    background: #5aba59;
+}
+
+.clones-fine {
+    background: #4d85d1;
+}
+
+.clones-danger {
+    background: #df2d4f;
+}
+
+.footer {
+    padding: 1em 0;
+    color: #999;
+    font-size: 70%;
+}
+
+@media (min-width: 48em) {
+    .content {
+        padding: 2em 3em 0;
+        margin-left: 25%;
+    }
+
+    .header {
+        text-align: right;
+    }
+
+    .sidebar {
+        position: fixed;
+        top: 0;
+        width: 25%;
+        bottom: 0;
+        padding: 1em;
+    }
+
+    .footer {
+        text-align: center;
+
+    }
+}</style></head><body><div class="pure-g" id="layout"><div class="sidebar pure-u-1 pure-u-md-1-4"><div class="header"><img src="https://raw.githubusercontent.com/kucherenko/jscpd/1.0.0-alpha/assets/logo-small-box.svg?sanitize=true" width="190"><nav class="nav"><ul class="nav-list"><li class="nav-item"><a class="pure-button" href="#cpp">cpp</a></li><li class="nav-item"><a class="pure-button" href="#c">c</a></li><li class="nav-item"><a class="pure-button" href="#java">java</a></li></ul></nav></div></div><div class="content pure-u-1 pure-u-md-3-4"><div class="controls"><div class="pure-u"><button class="pure-button" onclick="collapseExpandAll()">Collapse/Expand All</button></div></div><table class="pure-table stats"><thead><tr><th>Total files</th><th>Total lines of code</th><th>Duplicated lines</th><th>% of duplications</th></tr></thead><tbody><tr><td>111</td><td>9507</td><td>513</td><td>5.4%</td></tr></tbody></table><div class="clones collapsed"><a name="cpp"></a><h1 class="content-subhead">cpp</h1><div class="mode-stats"><p><span class="mode-rate">6.51%</span> Total files: 89, total lines of code: 7193, duplicated lines: 468</p></div><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/MobileRT/Shader.cpp[138:70 - 146:58]<br/>app/MobileRT/Shader.cpp[89:34 - 97:52]</div></header><div class="clone-description"><pre data-first-start="138" data-second-start="89" data-length="8">
+    const auto lastDist {intersection.length_};
+    switch (this-&gt;accelerator_) {
+        case Accelerator::ACC_NONE: {
+            break;
+        }
+
+        case Accelerator::ACC_NAIVE: {
+            intersection = this-&gt;naivePlanes_.shadowTrace</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Scenes/Scenes.cpp[106:38 - 112:7]<br/>app/Scenes/Scenes.cpp[19:27 - 25:10]</div></header><div class="clone-description"><pre data-first-start="106" data-second-start="19" data-length="6">
+    const Material lightMat {::glm::vec3 {0.0F, 0.0F, 0.0F},
+                                      ::glm::vec3 {0.0F, 0.0F, 0.0F},
+                                      ::glm::vec3 {0.0F, 0.0F, 0.0F},
+                                      1.0F,
+                                      ::glm::vec3 {0.9F, 0.9F, 0.9F}};
+    ::</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Scenes/Scenes.cpp[145:30 - 150:13]<br/>app/Scenes/Scenes.cpp[32:29 - 37:21]</div></header><div class="clone-description"><pre data-first-start="145" data-second-start="32" data-length="5"> {
+            Triangle::Builder(
+                    ::glm::vec3 {0.5F, -0.5F, 0.99F},
+                    ::glm::vec3 {0.5F, 0.5F, 1.001F},
+                    ::glm::vec3 {-0.5F, -0.5F, 0.99F}
+            </pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Scenes/Scenes.cpp[174:43 - 182:1]<br/>app/Scenes/Scenes.cpp[43:44 - 50:55]</div></header><div class="clone-description"><pre data-first-start="174" data-second-start="43" data-length="8">);
+
+    // sphere - mirror
+    const Material mirrorMat {::glm::vec3 {0.0F, 0.0F, 0.0F},
+                              ::glm::vec3 {0.9F, 0.9F, 0.9F},
+                              ::glm::vec3 {0.0F, 0.0F, 0.0F}, 1.5F};
+    scene.spheres_.emplace_back(Sphere {
+            ::glm::vec3 {0.45F, -0.65F, 0.4F}, 0.35F,
+</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Scenes/Scenes.cpp[192:50 - 203:10]<br/>app/Scenes/Scenes.cpp[58:43 - 71:90]</div></header><div class="clone-description"><pre data-first-start="192" data-second-start="58" data-length="11">);
+
+    // back wall - white
+    const Material lightGrayMat {::glm::vec3 {0.7F, 0.7F, 0.7F}};
+    scene.planes_.emplace_back(Plane {
+        ::glm::vec3 {0.0F, 0.0F, 1.0F}, ::glm::vec3 {0.0F, 0.0F, -1.0F},
+        static_cast&lt;::std::int32_t&gt; (scene.materials_.size())
+    });
+    scene.materials_.emplace_back(lightGrayMat);
+
+    // front wall - light blue
+    const</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Scenes/Scenes.cpp[208:49 - 216:5]<br/>app/Scenes/Scenes.cpp[71:90 - 80:1]</div></header><div class="clone-description"><pre data-first-start="208" data-second-start="71" data-length="8">
+
+    // floor - white
+    scene.planes_.emplace_back(Plane {
+        ::glm::vec3 {0.0F, -1.0F, 0.0F}, ::glm::vec3 {0.0F, 1.0F, 0.0F},
+        static_cast&lt;::std::int32_t&gt; (scene.materials_.size())
+    });
+    scene.materials_.emplace_back(lightGrayMat);
+    </pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Scenes/Scenes.cpp[215:49 - 222:5]<br/>app/Scenes/Scenes.cpp[79:1 - 87:1]</div></header><div class="clone-description"><pre data-first-start="215" data-second-start="79" data-length="7">
+    // ceiling - white
+    scene.planes_.emplace_back(Plane {
+        ::glm::vec3 {0.0F, 1.0F, 0.0F}, ::glm::vec3 {0.0F, -1.0F, 0.0F},
+        static_cast&lt;::std::int32_t&gt; (scene.materials_.size())
+    });
+    scene.materials_.emplace_back(lightGrayMat);
+    </pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Scenes/Scenes.cpp[221:49 - 233:9]<br/>app/Scenes/Scenes.cpp[86:1 - 98:13]</div></header><div class="clone-description"><pre data-first-start="221" data-second-start="86" data-length="12">
+    // left wall - red
+    const Material redMat {::glm::vec3 {0.9F, 0.0F, 0.0F}};
+    scene.planes_.emplace_back(Plane {
+        ::glm::vec3 {-1.0F, 0.0F, 0.0F}, ::glm::vec3 {1.0F, 0.0F, 0.0F},
+        static_cast&lt;::std::int32_t&gt; (scene.materials_.size())
+    });
+    scene.materials_.emplace_back(redMat);
+
+    // right wall - blue
+    const Material blueMat {::glm::vec3 {0.0F, 0.0F, 0.9F}};
+    scene.planes_.emplace_back(Plane {
+        </pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Scenes/Scenes.cpp[269:31 - 276:1]<br/>app/Scenes/Scenes.cpp[19:27 - 25:5]</div></header><div class="clone-description"><pre data-first-start="269" data-second-start="19" data-length="7">
+    const Material lightMat {::glm::vec3 {0.0F, 0.0F, 0.0F},
+                                      ::glm::vec3 {0.0F, 0.0F, 0.0F},
+                                      ::glm::vec3 {0.0F, 0.0F, 0.0F},
+                                      1.0F,
+                                      ::glm::vec3 {0.9F, 0.9F, 0.9F}};
+
+</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Unit_Testing/TestPlane.cpp[67:59 - 73:32]<br/>app/Unit_Testing/TestPlane.cpp[60:60 - 66:39]</div></header><div class="clone-description"><pre data-first-start="67" data-second-start="60" data-length="6">1}, -1};
+	const AABB box {::glm::vec3 {0, 0, -1.5F}, ::glm::vec3 {0, 1, 2.5F}};
+	const bool intersected {plane.intersect(box)};
+	ASSERT_EQ(true, intersected);
+}
+
+TEST_F(TestPlane, DistancePoint</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Unit_Testing/TestTriangle.cpp[88:32 - 95:42]<br/>app/Unit_Testing/TestTriangle.cpp[80:35 - 87:42]</div></header><div class="clone-description"><pre data-first-start="88" data-second-start="80" data-length="7">};
+	const ::glm::vec3 max {2, 2, 2};
+	const AABB box {min, max};
+	const bool intersected {triangle-&gt;intersect(box)};
+	ASSERT_EQ(true, intersected);
+}
+
+TEST_F(TestTriangle, intersectBoxInside03</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Unit_Testing/TestTriangle.cpp[97:32 - 103:42]<br/>app/Unit_Testing/TestTriangle.cpp[81:32 - 87:42]</div></header><div class="clone-description"><pre data-first-start="97" data-second-start="81" data-length="6">};
+	const AABB box {min, max};
+	const bool intersected {triangle-&gt;intersect(box)};
+	ASSERT_EQ(true, intersected);
+}
+
+TEST_F(TestTriangle, intersectBoxInside04</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Unit_Testing/TestTriangle.cpp[105:36 - 111:42]<br/>app/Unit_Testing/TestTriangle.cpp[81:32 - 87:42]</div></header><div class="clone-description"><pre data-first-start="105" data-second-start="81" data-length="6">};
+	const AABB box {min, max};
+	const bool intersected {triangle-&gt;intersect(box)};
+	ASSERT_EQ(true, intersected);
+}
+
+TEST_F(TestTriangle, intersectBoxInside05</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Unit_Testing/TestTriangle.cpp[113:41 - 119:42]<br/>app/Unit_Testing/TestTriangle.cpp[81:32 - 87:42]</div></header><div class="clone-description"><pre data-first-start="113" data-second-start="81" data-length="6">};
+	const AABB box {min, max};
+	const bool intersected {triangle-&gt;intersect(box)};
+	ASSERT_EQ(true, intersected);
+}
+
+TEST_F(TestTriangle, intersectBoxInside06</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Unit_Testing/TestTriangle.cpp[121:38 - 127:42]<br/>app/Unit_Testing/TestTriangle.cpp[81:32 - 87:42]</div></header><div class="clone-description"><pre data-first-start="121" data-second-start="81" data-length="6">};
+	const AABB box {min, max};
+	const bool intersected {triangle-&gt;intersect(box)};
+	ASSERT_EQ(true, intersected);
+}
+
+TEST_F(TestTriangle, intersectBoxInside07</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Unit_Testing/TestTriangle.cpp[151:42 - 160:26]<br/>app/Unit_Testing/TestTriangle.cpp[135:42 - 144:30]</div></header><div class="clone-description"><pre data-first-start="151" data-second-start="135" data-length="9">) {
+    const Triangle &amp;triangle2 {
+        Triangle::Builder(
+                ::glm::vec3 {10.0F, 0.0F, 10.0F},
+                ::glm::vec3 {0.0F, 0.0F, 10.0F},
+                ::glm::vec3 {0.0F, 10.0F, 10.0F}
+        )
+        .build()
+    };
+	const ::glm::vec3 min {-</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Unit_Testing/TestTriangle.cpp[161:31 - 167:42]<br/>app/Unit_Testing/TestTriangle.cpp[145:35 - 151:42]</div></header><div class="clone-description"><pre data-first-start="161" data-second-start="145" data-length="6">, 10};
+	const AABB box {min, max};
+	const bool intersected {triangle2.intersect(box)};
+	ASSERT_EQ(true, intersected);
+}
+
+TEST_F(TestTriangle, intersectBoxInside10</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Unit_Testing/TestTriangle.cpp[177:68 - 183:37]<br/>app/Unit_Testing/TestTriangle.cpp[145:39 - 151:42]</div></header><div class="clone-description"><pre data-first-start="177" data-second-start="145" data-length="6">};
+	const AABB box {min, max};
+	const bool intersected {triangle2.intersect(box)};
+	ASSERT_EQ(true, intersected);
+}
+
+TEST_F(TestTriangle, ConstructorCOPY</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Unit_Testing/TestTriangle.cpp[191:37 - 199:34]<br/>app/Unit_Testing/TestTriangle.cpp[183:37 - 191:37]</div></header><div class="clone-description"><pre data-first-start="191" data-second-start="183" data-length="8">) {
+	const ::glm::vec3 point1 {1.0F, 2.0F, 3.0F};
+
+	ASSERT_EQ(1.0F, point1[0]);
+	ASSERT_EQ(2.0F, point1[1]);
+	ASSERT_EQ(3.0F, point1[2]);
+}
+
+TEST_F(TestTriangle, OperatorLESS</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Unit_Testing/TestTriangle.cpp[231:42 - 239:42]<br/>app/Unit_Testing/TestTriangle.cpp[221:42 - 229:42]</div></header><div class="clone-description"><pre data-first-start="231" data-second-start="221" data-length="8">, 0} - orig};
+	const Ray ray {dir, orig, 1};
+    Intersection intersection {};
+	const float lastDist {intersection.length_};
+	intersection = triangle-&gt;intersect(intersection, ray);
+	ASSERT_EQ(true, intersection.length_ &lt; lastDist);
+}
+
+TEST_F(TestTriangle, intersectRayInside03</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Unit_Testing/TestTriangle.cpp[241:45 - 249:42]<br/>app/Unit_Testing/TestTriangle.cpp[221:45 - 229:42]</div></header><div class="clone-description"><pre data-first-start="241" data-second-start="221" data-length="8">} - orig};
+	const Ray ray {dir, orig, 1};
+    Intersection intersection {};
+	const float lastDist {intersection.length_};
+	intersection = triangle-&gt;intersect(intersection, ray);
+	ASSERT_EQ(true, intersection.length_ &lt; lastDist);
+}
+
+TEST_F(TestTriangle, intersectRayInside04</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Unit_Testing/TestTriangle.cpp[249:42 - 259:43]<br/>app/Unit_Testing/TestTriangle.cpp[229:42 - 229:42]</div></header><div class="clone-description"><pre data-first-start="249" data-second-start="229" data-length="10">) {
+	const ::glm::vec3 orig {2, 0, 0};
+	const ::glm::vec3 dir {::glm::vec3 {0, 1, 0} - orig};
+	const Ray ray {dir, orig, 1};
+    Intersection intersection {};
+	const float lastDist {intersection.length_};
+	intersection = triangle-&gt;intersect(intersection, ray);
+	ASSERT_EQ(true, intersection.length_ &lt; lastDist);
+}
+
+TEST_F(TestTriangle, intersectRayOutside01</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Unit_Testing/TestTriangle.cpp[261:49 - 266:17]<br/>app/Unit_Testing/TestTriangle.cpp[221:42 - 226:16]</div></header><div class="clone-description"><pre data-first-start="261" data-second-start="221" data-length="5">, 0} - orig};
+	const Ray ray {dir, orig, 1};
+    Intersection intersection {};
+	const float lastDist {intersection.length_};
+	intersection = triangle-&gt;intersect(intersection, ray);
+	ASSERT_EQ(false</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Unit_Testing/TestTriangle.cpp[271:52 - 279:43]<br/>app/Unit_Testing/TestTriangle.cpp[221:45 - 269:43]</div></header><div class="clone-description"><pre data-first-start="271" data-second-start="221" data-length="8">} - orig};
+	const Ray ray {dir, orig, 1};
+    Intersection intersection {};
+	const float lastDist {intersection.length_};
+	intersection = triangle-&gt;intersect(intersection, ray);
+	ASSERT_EQ(false, intersection.length_ &lt; lastDist);
+}
+
+TEST_F(TestTriangle, intersectRayOutside03</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Unit_Testing/TestTriangle.cpp[281:46 - 289:43]<br/>app/Unit_Testing/TestTriangle.cpp[221:39 - 269:43]</div></header><div class="clone-description"><pre data-first-start="281" data-second-start="221" data-length="8">, 0, 0} - orig};
+	const Ray ray {dir, orig, 1};
+    Intersection intersection {};
+	const float lastDist {intersection.length_};
+	intersection = triangle-&gt;intersect(intersection, ray);
+	ASSERT_EQ(false, intersection.length_ &lt; lastDist);
+}
+
+TEST_F(TestTriangle, intersectRayOutside04</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Unit_Testing/TestTriangle.cpp[291:40 - 299:43]<br/>app/Unit_Testing/TestTriangle.cpp[221:39 - 269:43]</div></header><div class="clone-description"><pre data-first-start="291" data-second-start="221" data-length="8">, 0, 0} - orig};
+	const Ray ray {dir, orig, 1};
+    Intersection intersection {};
+	const float lastDist {intersection.length_};
+	intersection = triangle-&gt;intersect(intersection, ray);
+	ASSERT_EQ(false, intersection.length_ &lt; lastDist);
+}
+
+TEST_F(TestTriangle, intersectRayOutside05</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Unit_Testing/TestTriangle.cpp[301:50 - 309:43]<br/>app/Unit_Testing/TestTriangle.cpp[221:42 - 269:43]</div></header><div class="clone-description"><pre data-first-start="301" data-second-start="221" data-length="8">, 0} - orig};
+	const Ray ray {dir, orig, 1};
+    Intersection intersection {};
+	const float lastDist {intersection.length_};
+	intersection = triangle-&gt;intersect(intersection, ray);
+	ASSERT_EQ(false, intersection.length_ &lt; lastDist);
+}
+
+TEST_F(TestTriangle, intersectRayOutside06</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Unit_Testing/TestTriangle.cpp[311:53 - 318:1]<br/>app/Unit_Testing/TestTriangle.cpp[221:45 - 268:1]</div></header><div class="clone-description"><pre data-first-start="311" data-second-start="221" data-length="7">} - orig};
+	const Ray ray {dir, orig, 1};
+    Intersection intersection {};
+	const float lastDist {intersection.length_};
+	intersection = triangle-&gt;intersect(intersection, ray);
+	ASSERT_EQ(false, intersection.length_ &lt; lastDist);
+}
+</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Components/Lights/PointLight.hpp[25:54 - 37:42]<br/>app/Components/Lights/AreaLight.hpp[33:51 - 45:41]</div></header><div class="clone-description"><pre data-first-start="25" data-second-start="33" data-length="12">) noexcept = delete;
+
+        ::glm::vec3 getPosition() final;
+
+        void resetSampling() final;
+
+        ::MobileRT::Intersection intersect(
+            ::MobileRT::Intersection intersection,
+            const ::MobileRT::Ray &amp;ray) final;
+    };
+}//namespace Components
+
+#endif //COMPONENTS_LIGHTS_POINTLIGHT_HPP</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Components/Loaders/OBJLoader.cpp[162:82 - 176:1]<br/>app/Components/Loaders/OBJLoader.cpp[144:73 - 157:19]</div></header><div class="clone-description"><pre data-first-start="162" data-second-start="144" data-length="14">};
+
+                    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(normal1)), &quot;normal1 can't be NaN.&quot;);
+                    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(normal2)), &quot;normal2 can't be NaN.&quot;);
+                    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(normal3)), &quot;normal3 can't be NaN.&quot;);
+
+                    BOOST_ASSERT_MSG(!::glm::all(::glm::isinf(normal1)), &quot;normal1 can't be infinite.&quot;);
+                    BOOST_ASSERT_MSG(!::glm::all(::glm::isinf(normal2)), &quot;normal2 can't be infinite.&quot;);
+                    BOOST_ASSERT_MSG(!::glm::all(::glm::isinf(normal3)), &quot;normal3 can't be infinite.&quot;);
+
+                    BOOST_ASSERT_MSG(!::MobileRT::equal(normal1, ::glm::vec3 {0}), &quot;normal1 can't be zero.&quot;);
+                    BOOST_ASSERT_MSG(!::MobileRT::equal(normal2, ::glm::vec3 {0}), &quot;normal2 can't be zero.&quot;);
+                    BOOST_ASSERT_MSG(!::MobileRT::equal(normal3, ::glm::vec3 {0}), &quot;normal3 can't be zero.&quot;);
+                }
+</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Components/Loaders/OBJLoader.cpp[282:108 - 292:29]<br/>app/Components/Loaders/OBJLoader.cpp[271:29 - 281:25]</div></header><div class="clone-description"><pre data-first-start="282" data-second-start="271" data-length="10">)};
+                            const Triangle &amp;triangle {
+                                    Triangle::Builder(vertex1, vertex2, vertex3)
+                                            .withNormals(normal1, normal2, normal3)
+                                            .withTexCoords(texCoordA, texCoordB, texCoordC)
+                                            .withMaterialIndex(materialIndex)
+                                            .build()
+                            };
+
+                            scene-&gt;triangles_.emplace_back(triangle);
+                            </pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Components/Loaders/OBJLoader.cpp[320:104 - 328:25]<br/>app/Components/Loaders/OBJLoader.cpp[311:25 - 319:21]</div></header><div class="clone-description"><pre data-first-start="320" data-second-start="311" data-length="8">)};
+                        const Triangle &amp;triangle {
+                                Triangle::Builder(vertex1, vertex2, vertex3)
+                                        .withNormals(normal1, normal2, normal3)
+                                        .withMaterialIndex(materialIndex)
+                                        .build()
+                        };
+                        scene-&gt;triangles_.emplace_back(triangle);
+                        </pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Components/Samplers/StaticHaltonSeq.cpp[4:36 - 11:1]<br/>app/MobileRT/Shader.cpp[19:27 - 25:2]</div></header><div class="clone-description"><pre data-first-start="4" data-second-start="19" data-length="7">;
+
+namespace {
+    const ::std::uint32_t mask {0xFFFFF};
+    const ::std::uint32_t size {mask + 1};
+    ::std::array&lt;float, size&gt; values {};
+
+</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Components/Samplers/StaticMersenneTwister.cpp[4:42 - 12:15]<br/>app/MobileRT/Shader.cpp[19:27 - 12:12]</div></header><div class="clone-description"><pre data-first-start="4" data-second-start="19" data-length="8">;
+
+namespace {
+    const ::std::uint32_t mask {0xFFFFF};
+    const ::std::uint32_t size {mask + 1};
+    ::std::array&lt;float, size&gt; values {};
+
+    bool fillThings() {
+        static</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Components/Samplers/StaticMersenneTwister.cpp[25:28 - 30:1]<br/>app/Components/Samplers/StaticHaltonSeq.cpp[35:22 - 40:1]</div></header><div class="clone-description"><pre data-first-start="25" data-second-start="35" data-length="5">::getSample(const ::std::uint32_t /*sample*/) {
+    const auto current {this-&gt;sample_.fetch_add(1, ::std::memory_order_relaxed)};
+    const auto it {values.begin() + (current &amp; mask)};
+    return *it;
+}
+</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Components/Samplers/Stratified.cpp[10:17 - 16:32]<br/>app/Components/Samplers/HaltonSeq.cpp[10:16 - 16:23]</div></header><div class="clone-description"><pre data-first-start="10" data-second-start="10" data-length="6">::getSample(const ::std::uint32_t sample) {
+    const auto current {this-&gt;sample_.fetch_add(1, ::std::memory_order_relaxed)};
+    if (current &gt;= (this-&gt;domainSize_ * (sample + 1))) {
+        this-&gt;sample_.fetch_sub(1, ::std::memory_order_relaxed);
+        return 1.0F;
+    }
+    const auto res {static_cast</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Components/Shaders/NoShadows.hpp[8:20 - 16:27]<br/>app/Components/Shaders/DiffuseMaterial.hpp[8:26 - 16:33]</div></header><div class="clone-description"><pre data-first-start="8" data-second-start="8" data-length="8"> final : public ::MobileRT::Shader {
+    private:
+        bool shade(
+            ::glm::vec3 *rgb,
+            const ::MobileRT::Intersection &amp;intersection,
+            const ::MobileRT::Ray &amp;ray) final;
+
+    public:
+        explicit NoShadows</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Components/Shaders/PathTracer.cpp[27:1 - 34:5]<br/>app/Components/Shaders/NoShadows.cpp[13:102 - 21:1]</div></header><div class="clone-description"><pre data-first-start="27" data-second-start="13" data-length="7">
+    const auto &amp;lE {intersection.material_-&gt;Le_};
+    //stop if it intersects a light source
+    if (::glm::any(::glm::greaterThan(lE, ::glm::vec3 {0}))) {
+        *rgb = lE;
+        return true;
+    }
+    </pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Components/Shaders/PathTracer.cpp[54:22 - 59:27]<br/>app/Components/Shaders/NoShadows.cpp[24:52 - 29:16]</div></header><div class="clone-description"><pre data-first-start="54" data-second-start="24" data-length="5">
+    if (::glm::any(::glm::greaterThan(kD, ::glm::vec3 {0}))) {
+        const auto sizeLights {this-&gt;lights_.size()};
+        if (sizeLights &gt; 0) {
+            const auto samplesLight {this-&gt;samplesLight_};
+            //direct light</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Components/Shaders/PathTracer.hpp[14:1 - 22:28]<br/>app/Components/Shaders/DiffuseMaterial.hpp[8:62 - 16:33]</div></header><div class="clone-description"><pre data-first-start="14" data-second-start="8" data-length="8">
+    private:
+        bool shade(
+            ::glm::vec3 *rgb,
+            const ::MobileRT::Intersection &amp;intersection,
+            const ::MobileRT::Ray &amp;ray) final;
+
+    public:
+        explicit PathTracer</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Components/Shaders/Whitted.cpp[13:13 - 20:43]<br/>app/Components/Shaders/PathTracer.cpp[22:16 - 29:43]</div></header><div class="clone-description"><pre data-first-start="13" data-second-start="22" data-length="7">::shade(::glm::vec3 *const rgb, const Intersection &amp;intersection, const Ray &amp;ray) {
+    const auto rayDepth {ray.depth_};
+    if (rayDepth &gt; RayDepthMax) {
+        return false;
+    }
+
+    const auto &amp;lE {intersection.material_-&gt;Le_};
+    //STOP if it intersects a light source</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Components/Shaders/Whitted.cpp[20:43 - 27:19]<br/>app/Components/Shaders/NoShadows.cpp[15:43 - 22:30]</div></header><div class="clone-description"><pre data-first-start="20" data-second-start="15" data-length="7">
+    if (::glm::any(::glm::greaterThan(lE, ::glm::vec3 {0}))) {
+        *rgb = lE;
+        return true;
+    }
+
+    const auto &amp;kD {intersection.material_-&gt;Kd_};
+    const auto &amp;kS</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Components/Shaders/Whitted.cpp[24:6 - 30:67]<br/>app/Components/Shaders/PathTracer.cpp[37:24 - 18:7]</div></header><div class="clone-description"><pre data-first-start="24" data-second-start="37" data-length="6">
+
+    const auto &amp;kD {intersection.material_-&gt;Kd_};
+    const auto &amp;kS {intersection.material_-&gt;Ks_};
+    const auto &amp;kT {intersection.material_-&gt;Kt_};
+
+    // the normal always points to outside objects (e.g., spheres)</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Components/Shaders/Whitted.cpp[36:61 - 41:34]<br/>app/Components/Shaders/NoShadows.cpp[24:52 - 29:34]</div></header><div class="clone-description"><pre data-first-start="36" data-second-start="24" data-length="5">
+    if (::glm::any(::glm::greaterThan(kD, ::glm::vec3 {0}))) {
+        const auto sizeLights {this-&gt;lights_.size()};
+        if (sizeLights &gt; 0) {
+            const auto samplesLight {this-&gt;samplesLight_};
+            for (::std::int32_t i</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Components/Shaders/Whitted.cpp[45:74 - 50:22]<br/>app/Components/Shaders/PathTracer.cpp[65:64 - 70:34]</div></header><div class="clone-description"><pre data-first-start="45" data-second-start="65" data-length="5">
+                auto vectorToLight {lightPosition - intersection.point_};
+                //distance from intersection to the light (and normalize it)
+                const auto distanceToLight {::glm::length(vectorToLight)};
+                vectorToLight = ::glm::normalize(vectorToLight);
+                const</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Components/Shaders/Whitted.hpp[8:18 - 16:25]<br/>app/Components/Shaders/DiffuseMaterial.hpp[8:26 - 16:33]</div></header><div class="clone-description"><pre data-first-start="8" data-second-start="8" data-length="8"> final : public ::MobileRT::Shader {
+    private:
+        bool shade(
+            ::glm::vec3 *rgb,
+            const ::MobileRT::Intersection &amp;intersection,
+            const ::MobileRT::Ray &amp;ray) final;
+
+    public:
+        explicit Whitted</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/MobileRT/Accelerators/Naive.hpp[40:43 - 49:5]<br/>app/MobileRT/Accelerators/BVH.hpp[86:37 - 96:1]</div></header><div class="clone-description"><pre data-first-start="40" data-second-start="86" data-length="9">) noexcept = default;
+
+            Intersection trace(Intersection intersection, const Ray &amp;ray);
+
+            Intersection shadowTrace(Intersection intersection, const Ray &amp;ray);
+
+            const ::std::vector&lt;T&gt;&amp; getPrimitives() const;
+    };
+
+    </pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/MobileRT/Accelerators/Naive.hpp[108:23 - 124:23]<br/>app/MobileRT/Accelerators/BVH.hpp[272:21 - 288:21]</div></header><div class="clone-description"><pre data-first-start="108" data-second-start="272" data-length="16">&lt;T&gt;::trace(Intersection intersection, const Ray &amp;ray) {
+        intersection = intersect(intersection, ray);
+        return intersection;
+    }
+
+    /**
+     * This method casts a ray into the geometry and calculates a random intersection point.
+     * The intersection point itself is not important, the important is to determine if the ray intersects some
+     * primitive in the scene or not.
+     *
+     * @tparam T The type of the primitives.
+     * @param intersection The current intersection of the ray with previous primitives.
+     * @param ray          The ray to be casted.
+     * @return The intersection of the ray with the geometry.
+     */
+    template&lt;typename T&gt;
+    Intersection Naive</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/MobileRT/Accelerators/RegularGrid.hpp[369:50 - 378:1]<br/>app/MobileRT/Accelerators/RegularGrid.hpp[355:50 - 363:15]</div></header><div class="clone-description"><pre data-first-start="369" data-second-start="355" data-length="9">]);
+                } else {
+                    cellZ += stepZ;
+                    if (cellZ == outZ) {
+                        return intersection;
+                    }
+                    tmax[2] = (tmax[2] + tdelta[2]);
+                }
+            }
+</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/MobileRT/Accelerators/RegularGrid.hpp[404:30 - 410:23]<br/>app/MobileRT/Accelerators/RegularGrid.hpp[359:44 - 365:26]</div></header><div class="clone-description"><pre data-first-start="404" data-second-start="359" data-length="6">;
+                    }
+                    tmax[2] = (tmax[2] + tdelta[2]);
+                }
+            } else {
+                if (tmax[1] &lt; tmax[2]) {
+                    if</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/MobileRT/Accelerators/RegularGrid.hpp[417:50 - 429:1]<br/>app/MobileRT/Accelerators/RegularGrid.hpp[397:50 - 408:15]</div></header><div class="clone-description"><pre data-first-start="417" data-second-start="397" data-length="12">]);
+                } else {
+                    if (intersection.length_ &lt; tmax[2]) {
+                        break;
+                    }
+                    cellZ += stepZ;
+                    if (cellZ == outZ) {
+                        break;
+                    }
+                    tmax[2] = (tmax[2] + tdelta[2]);
+                }
+            }
+</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/MobileRT/Shapes/Triangle.cpp[151:39 - 156:34]<br/>app/MobileRT/Shapes/Triangle.cpp[134:39 - 139:34]</div></header><div class="clone-description"><pre data-first-start="151" data-second-start="134" data-length="5">], tFar);
+                if ((tNear &gt; tFar) || (tFar &lt; 0)) {
+                    return false;
+                }
+            }
+            if (::std::fabs(vec[2</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/MobileRT/Shapes/Triangle.hpp[45:48 - 53:1]<br/>app/MobileRT/Shapes/Sphere.hpp[32:42 - 39:5]</div></header><div class="clone-description"><pre data-first-start="45" data-second-start="32" data-length="8">) noexcept = default;
+
+        Intersection intersect(const Intersection &amp;intersection, const Ray &amp;ray) const;
+
+        AABB getAABB() const;
+
+        bool intersect(const AABB &amp;box) const;
+
+</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/System_dependent/Linux/c_wrapper.cpp[90:23 - 96:46]<br/>app/System_dependent/Linux/c_wrapper.cpp[70:23 - 76:45]</div></header><div class="clone-description"><pre data-first-start="90" data-second-start="70" data-length="6">:
+                    camera = ::std::make_unique&lt;::Components::Perspective&gt; (
+                            ::glm::vec3 {0.0F, 0.0F, -3.4F},
+                            ::glm::vec3 {0.0F, 0.0F, 1.0F},
+                            ::glm::vec3 {0.0F, 1.0F, 0.0F},
+                            45.0F * ratio, 45.0F);
+                    scene_ = cornellBoxScene2</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/System_dependent/Linux/c_wrapper.cpp[200:39 - 206:28]<br/>app/System_dependent/Linux/c_wrapper.cpp[49:37 - 55:29]</div></header><div class="clone-description"><pre data-first-start="200" data-second-start="49" data-length="6">);
+            LOG(&quot;threads = &quot;, threads);
+            LOG(&quot;shader = &quot;, shader);
+            LOG(&quot;scene = &quot;, scene);
+            LOG(&quot;samplesPixel = &quot;, samplesPixel);
+            LOG(&quot;samplesLight = &quot;, samplesLight);
+            LOG(&quot;width_ = &quot;</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/System_dependent/Linux/QT/MobileRT/main.cpp[21:64 - 31:31]<br/>app/System_dependent/Linux/GTK/GTK_Interface.cpp[10:27 - 20:32]</div></header><div class="clone-description"><pre data-first-start="21" data-second-start="10" data-length="10">);
+        ::std::exit(1);
+    }
+
+    const ::std::int32_t threads {static_cast&lt;::std::int32_t&gt; (strtol(argv[1], nullptr, 0))};
+    const ::std::int32_t shader {static_cast&lt;::std::int32_t&gt; (strtol(argv[2], nullptr, 0))};
+    const ::std::int32_t scene {static_cast&lt;::std::int32_t&gt; (strtol(argv[3], nullptr, 0))};
+    const ::std::int32_t samplesPixel {static_cast&lt;::std::int32_t&gt; (strtol(argv[4], nullptr, 0))};
+    const ::std::int32_t samplesLight {static_cast&lt;::std::int32_t&gt; (strtol(argv[5], nullptr, 0))};
+
+    const ::std::int32_t width</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/System_dependent/Linux/QT/MobileRT/main.cpp[31:31 - 36:32]<br/>app/System_dependent/Linux/GTK/GTK_Interface.cpp[20:32 - 25:33]</div></header><div class="clone-description"><pre data-first-start="31" data-second-start="20" data-length="5"> {
+            ::MobileRT::roundDownToMultipleOf(static_cast&lt;::std::int32_t&gt; (strtol(argv[6], nullptr, 0)),
+                                              static_cast&lt;::std::int32_t&gt; (::std::sqrt(
+                                                      ::MobileRT::NumberOfTiles)))};
+
+    const ::std::int32_t height</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/System_dependent/Linux/QT/MobileRT/main.cpp[36:32 - 59:5]<br/>app/System_dependent/Linux/GTK/GTK_Interface.cpp[25:33 - 49:1]</div></header><div class="clone-description"><pre data-first-start="36" data-second-start="25" data-length="23"> {
+            ::MobileRT::roundDownToMultipleOf(static_cast&lt;::std::int32_t&gt; (strtol(argv[7], nullptr, 0)),
+                                              static_cast&lt;::std::int32_t&gt; (::std::sqrt(
+                                                      ::MobileRT::NumberOfTiles)))};
+
+    const ::std::int32_t accelerator {static_cast&lt;::std::int32_t&gt; (strtol(argv[8], nullptr, 0))};
+
+    const ::std::int32_t repeats {static_cast&lt;::std::int32_t&gt; (strtol(argv[9], nullptr, 0))};
+    const char *const pathObj {argv[10]};
+    const char *const pathMtl {argv[11]};
+    const char *const pathCam {argv[12]};
+
+    ::std::istringstream ssPrintStdOut (argv[13]);
+    ::std::istringstream ssAsync (argv[14]);
+    ::std::istringstream ssShowImage (argv[15]);
+    bool printStdOut {true};
+    bool async {true};
+    bool showImage {true};
+
+    ssPrintStdOut &gt;&gt; ::std::boolalpha;
+    ssPrintStdOut &gt;&gt; printStdOut;
+    ssAsync &gt;&gt; ::std::boolalpha &gt;&gt; async;
+    ssShowImage &gt;&gt; ::std::boolalpha &gt;&gt; showImage;
+    </pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/System_dependent/Linux/QT/MobileRT/mainwindow.cpp[80:24 - 89:1]<br/>app/System_dependent/Linux/QT/MobileRT/mainwindow.cpp[49:53 - 57:2]</div></header><div class="clone-description"><pre data-first-start="80" data-second-start="49" data-length="9">;
+
+    RayTrace(m_bitmap.data(), m_width, m_height, m_threads, m_shader, m_scene, m_samplesPixel, m_samplesLight,
+             m_repeats, m_accelerator, m_printStdOut, m_async, m_pathObj.c_str(), m_pathMtl.c_str(), m_pathCam.c_str());
+
+    m_timer = new QTimer(this);
+    connect(m_timer, SIGNAL(timeout()), this, SLOT(update_image()));
+    m_timer-&gt;start(1000);
+
+</pre></div></section><a name="c"></a><h1 class="content-subhead">c</h1><div class="mode-stats"><p><span class="mode-rate">0%</span> Total files: 4, total lines of code: 149, duplicated lines: 0</p></div><a name="java"></a><h1 class="content-subhead">java</h1><div class="mode-stats"><p><span class="mode-rate">2.08%</span> Total files: 18, total lines of code: 2165, duplicated lines: 45</p></div><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/androidTest/java/puscas/mobilertapp/MainActivityTest.java[141:50 - 148:1]<br/>app/src/androidTest/java/puscas/mobilertapp/MainActivityTest.java[133:50 - 139:11]</div></header><div class="clone-description"><pre data-first-start="141" data-second-start="133" data-length="7">);
+            assertPickerValue(R.id.pickerThreads, 4);
+            assertPickerValue(R.id.pickerSize, 9);
+            assertPickerValue(R.id.pickerSamplesLight, 1);
+            assertPickerValue(R.id.pickerAccelerator, 2);
+            assertPickerValue(R.id.pickerShader, 2);
+        }
+</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/androidTest/java/puscas/mobilertapp/MainActivityTest.java[256:36 - 266:17]<br/>app/src/androidTest/java/puscas/mobilertapp/MainActivityTest.java[238:37 - 248:13]</div></header><div class="clone-description"><pre data-first-start="256" data-second-start="238" data-length="10">);
+        final MainActivity activity = this.mainActivityActivityTestRule.getActivity();
+        final List&lt;String&gt; paths = ImmutableList.&lt;String&gt;builder().add(
+                activity.getSDCardPath() + OBJ_FILE_CONFERENCE,
+                activity.getSDCardPath() + OBJ_FILE_TEAPOT
+        ).build();
+        StreamSupport.stream(paths)
+            .forEach(path -&gt; {
+                final File file = new File(path);
+                Assertions.assertTrue(file.exists(), FILE_SHOULD_EXIST);
+                </pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/main/java/puscas/mobilertapp/utils/Scene.java[1:1 - 15:4]<br/>app/src/main/java/puscas/mobilertapp/utils/Accelerator.java[1:1 - 15:4]</div></header><div class="clone-description"><pre data-first-start="1" data-second-start="1" data-length="14">package puscas.mobilertapp.utils;
+
+import androidx.annotation.NonNull;
+
+import org.jetbrains.annotations.Contract;
+
+import java.util.logging.Logger;
+
+import java8.util.J8Arrays;
+
+import static puscas.mobilertapp.utils.ConstantsMethods.GET_NAMES;
+
+/**
+ * The available scenes for the Ray Tracer engine.
+ */</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/main/java/puscas/mobilertapp/utils/Shader.java[1:1 - 15:4]<br/>app/src/main/java/puscas/mobilertapp/utils/Accelerator.java[1:1 - 15:4]</div></header><div class="clone-description"><pre data-first-start="1" data-second-start="1" data-length="14">package puscas.mobilertapp.utils;
+
+import androidx.annotation.NonNull;
+
+import org.jetbrains.annotations.Contract;
+
+import java.util.logging.Logger;
+
+import java8.util.J8Arrays;
+
+import static puscas.mobilertapp.utils.ConstantsMethods.GET_NAMES;
+
+/**
+ * The available shaders for the Ray Tracer engine.
+ */</pre></div></section></div><div class="footer"><p>© 2013-2018 jscpd, copy/paste detector</p></div></div></div></body></html>

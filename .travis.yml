@@ -2,13 +2,13 @@ language: cpp
 os: linux
 dist: bionic
 compiler:
-  - clang
+  - gcc
 
 git:
   submodules: false
 
 before_install:
-  - sudo apt-get update && sudo apt-get install -y libgtk2.0-dev libqt4-dev
+  - sudo apt-get update && sudo apt-get install -y libgtk2.0-dev libqt4-dev lcov
 
 install:
   - mkdir build_native
@@ -18,3 +18,8 @@ install:
 
 script:
   - ./bin/GoogleTestd
+
+after_success:
+  - lcov --capture --base-directory . --directory . --no-external --output-file coverage.info
+  - genhtml coverage.info --output-directory code_coverage_report
+  - bash <(curl -s https://codecov.io/bash) -t 717e75e2-b149-4997-adb4-a3fa1bde237f

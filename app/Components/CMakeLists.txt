@@ -11,11 +11,13 @@ target_include_directories( ${PROJECT_NAME} PUBLIC "${MOBILE_RC_HEADERS}" )
 
 target_compile_options( ${PROJECT_NAME} PRIVATE ${COMMON_FLAGS} )
 target_compile_options( ${PROJECT_NAME} PRIVATE $<$<CONFIG:DEBUG>:${COMMON_FLAGS_DEBUG}> )
+target_compile_options( ${PROJECT_NAME} PRIVATE $<$<CONFIG:DEBUG>:${COMMON_FLAGS_TEST}> )
 target_compile_options( ${PROJECT_NAME} PRIVATE $<$<CONFIG:RELEASE>:${COMMON_FLAGS_RELEASE}> )
 
 target_link_libraries( ${PROJECT_NAME}
 PUBLIC tinyobjloader MobileRT PRIVATE
 general "${COMMON_LINKER_FLAGS}"
 debug "${COMMON_LINKER_FLAGS_DEBUG}"
+debug "${COMMON_LINKER_FLAGS_TEST}"
 optimized "${COMMON_LINKER_FLAGS_RELEASE}"
 )

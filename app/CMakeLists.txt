@@ -26,6 +26,10 @@ if( CMAKE_CXX_COMPILER MATCHES "clang" OR DEFINED ANDROID_ABI )
 	set( COMMON_FLAGS_RELEASE "${COMMON_FLAGS_RELEASE}" -flto=full )
 endif()
 
+if( CMAKE_CXX_COMPILER MATCHES "gcc" )
+    set( COMMON_LINKER_FLAGS_TEST -lgcov )
+endif()
+
 # Remove default flags
 set( ANDROID_COMPILER_FLAGS "" CACHE STRING "CUSTOM" FORCE )
 
@@ -75,12 +79,16 @@ set( COMMON_FLAGS "${COMMON_FLAGS}"
 set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-c++98-compat-pedantic -Wno-padded )
 set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-exit-time-destructors )
 
+set( COMMON_FLAGS_TEST -ftest-coverage -fprofile-arcs )
+
 set( COMMON_FLAGS_DEBUG -O0 -g3 -fno-optimize-sibling-calls -fno-omit-frame-pointer )
 
 set( COMMON_FLAGS_RELEASE "${COMMON_FLAGS_RELEASE}" -O3 -DNDEBUG -ffunction-sections -fdata-sections )
 
 # Set common linker flags
 set( COMMON_LINKER_FLAGS -Wl,-gc-sections -O3 -discard-all -fno-rtti )
+
+set( COMMON_LINKER_FLAGS_TEST ${COMMON_LINKER_FLAGS_TEST} --coverage )
 
 set( COMMON_LINKER_FLAGS_DEBUG  )
 
@@ -91,8 +99,8 @@ project( AppInterface VERSION 1.0.0.0 LANGUAGES CXX )
 
 # Add sub directories
 add_subdirectory( MobileRT )
-add_subdirectory( Components )
 add_subdirectory( third_party )
+add_subdirectory( Components )
 add_subdirectory( System_dependent )
 add_subdirectory( Unit_Testing )
 
@@ -129,6 +137,7 @@ target_include_directories( ${PROJECT_NAME} SYSTEM PUBLIC "${GLM_HEADERS}" )
 target_compile_options( ${PROJECT_NAME} PRIVATE ${COMMON_FLAGS} -Wno-global-constructors
 		-Wno-zero-as-null-pointer-constant -Wno-redundant-parens )
 target_compile_options( ${PROJECT_NAME} PRIVATE $<$<CONFIG:DEBUG>:${COMMON_FLAGS_DEBUG}> )
+target_compile_options( ${PROJECT_NAME} PRIVATE $<$<CONFIG:DEBUG>:${COMMON_FLAGS_TEST}> )
 target_compile_options( ${PROJECT_NAME} PRIVATE $<$<CONFIG:RELEASE>:${COMMON_FLAGS_RELEASE}> )
 
 #target_compile_options( ${PROJECT_NAME} PRIVATE $<$<NOT:$<BOOL:ANDROID_ABI MATCHES "^mips(64)?$" >>:-flto=full> )
@@ -137,12 +146,13 @@ target_link_libraries( ${PROJECT_NAME}
 PRIVATE glm Components tinyobjloader
 general "${COMMON_LINKER_FLAGS}"
 debug "${COMMON_LINKER_FLAGS_DEBUG}"
+debug "${COMMON_LINKER_FLAGS_TEST}"
 optimized "${COMMON_LINKER_FLAGS_RELEASE}"
 )
 
 # Print all set variables
 get_cmake_property( _variableNames VARIABLES )
 foreach ( _variableName ${_variableNames} )
-  #message( STATUS "${_variableName}=${${_variableName}}" )
+#  message( STATUS "${_variableName}=${${_variableName}}" )
 endforeach()
 #message( FATAL_ERROR "FINISHED" )

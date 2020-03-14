@@ -2,8 +2,13 @@
 - A portable Ray Tracing (RT) engine for multiple devices <br/>
 - Already available interfaces for Android and Linux <br/>
 
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/LICENSE)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FTiagoMSSantos%2FMobileRT.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FTiagoMSSantos%2FMobileRT?ref=badge_shield)
+[![BCH compliance](https://bettercodehub.com/edge/badge/TiagoMSSantos/MobileRT?branch=master)](https://bettercodehub.com/results/TiagoMSSantos/MobileRT)
+[![Documentation](https://codedocs.xyz/TiagoMSSantos/MobileRT.svg)](https://codedocs.xyz/TiagoMSSantos/MobileRT/)
 [![Build Status](https://travis-ci.com/TiagoMSSantos/MobileRT.svg?branch=master)](https://travis-ci.com/TiagoMSSantos/MobileRT)
-[![Copy Paste Status](../jscpd-report/jscpd-badge.svg)](../jscpd-report/jscpd-report.html)
+[![codecov](https://codecov.io/gh/TiagoMSSantos/MobileRT/branch/master/graph/badge.svg)](https://codecov.io/gh/TiagoMSSantos/MobileRT)
+[![Copy Paste Status](https://tiagomssantos.github.io/MobileRT/jscpd-report/jscpd-badge.svg)](https://tiagomssantos.github.io/MobileRT/jscpd-report/jscpd-report)
 
 <img src="Example.gif" alt="RayTracer" width="400"/>
 
@@ -202,3 +207,22 @@ system does not have enough memory to render the scene
 - [x] Update gif image
 - [ ] Benchmark against popular ray tracers like PBRT
 - [ ] Benchmark against previous version of MobileRT
+
+### Code Coverage
+Here are the commands to generate the code coverage report:
+```bash
+cd build_Debug
+cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=Debug ../app/
+make
+./bin/GoogleTestd
+cd ..
+lcov --capture --base-directory . --directory . --no-external --output-file coverage.info
+genhtml coverage.info --output-directory code_coverage_report
+bash <(curl -s https://codecov.io/bash) -t 717e75e2-b149-4997-adb4-a3fa1bde237f
+```
+
+### Code Duplication
+Here are the commands to generate the code duplication report:
+```bash
+jscpd -c .jscpd.json .
+```
