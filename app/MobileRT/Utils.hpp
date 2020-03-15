@@ -23,6 +23,12 @@ namespace MobileRT {
     template<typename ...Args>
     void log(Args &&... args);
 
+    template<typename T, ::std::size_t S>
+    void fillArrayWithHaltonSeq(::std::array<T, S> *values);
+
+    template<typename T, ::std::size_t S>
+    void fillArrayWithMersenneTwister(::std::array<T, S> *values);
+
     inline ::std::string getFileName(const char *filepath);
 
     const float EpsilonLarge {1.0e-05F};
@@ -32,6 +38,8 @@ namespace MobileRT {
     const ::std::int32_t RayDepthMax {6};
     const ::std::int32_t NumberOfTiles {256};
     const ::std::int32_t SizeOfStack {512};
+    const ::std::uint32_t ARRAY_MASK {0xFFFFF};
+    const ::std::size_t ARRAY_SIZE {ARRAY_MASK + 1};
 
     ::std::int32_t roundDownToMultipleOf(::std::int32_t value, ::std::int32_t multiple);
 
@@ -86,13 +94,15 @@ namespace MobileRT {
 
      /**
       * A helper method which prepares an array with random numbers generated.
+      * <p>
+      * This method uses the Halton sequence to fill the array and then shuffles the sequence.
       *
       * @tparam T The type of the elements in the array.
       * @tparam S The size of the array.
       * @param values The pointer to an array where the random numbers should be put.
       */
     template<typename T, ::std::size_t S>
-    void fillArray(::std::array<T, S> *const values) {
+    void fillArrayWithHaltonSeq(::std::array<T, S> *const values) {
         for (auto it {values->begin()}; it < values->end(); ::std::advance(it, 1)) {
             const auto index {static_cast<::std::uint32_t> (::std::distance(values->begin(), it))};
             *it = ::MobileRT::haltonSequence(index, 2);
@@ -100,6 +110,23 @@ namespace MobileRT {
         ::std::random_device randomDevice {};
         ::std::mt19937 generator {randomDevice()};
         ::std::shuffle(values->begin(), values->end(), generator);
+    }
+
+    /**
+      * A helper method which prepares an array with random numbers generated.
+      * <p>
+      * This method uses the Mersenne Twister generator to fill the array.
+      *
+      * @tparam T The type of the elements in the array.
+      * @tparam S The size of the array.
+      * @param values The pointer to an array where the random numbers should be put.
+      */
+    template<typename T, ::std::size_t S>
+    void fillArrayWithMersenneTwister(::std::array<T, S> *const values) {
+        static ::std::uniform_real_distribution<float> uniformDist {0.0F, 1.0F};
+        static ::std::random_device randomDevice {};
+        static ::std::mt19937 generator {randomDevice()};
+        ::std::generate(values->begin(), values->end(), []() {return uniformDist(generator);});
     }
 }//namespace MobileRT
 

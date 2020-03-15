@@ -17,7 +17,7 @@ jobs:
       run: mkdir build_native
 
     - name: Install Ubuntu Dependencies
-      run: sudo apt-get update && sudo apt-get install -y libgtk2.0-dev libqt4-dev lcov
+      run: sudo apt-get update && sudo apt-get install -y libqt4-dev
 
     - name: Run CMake
       if: success()

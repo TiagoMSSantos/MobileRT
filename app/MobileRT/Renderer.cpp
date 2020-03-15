@@ -35,7 +35,7 @@ Renderer::Renderer(::std::unique_ptr<Shader> shader,
         domainSize_ {(width / blockSizeX_) * (height / blockSizeY_)},
         resolution_ {width * height},
         samplesPixel_ {samplesPixel} {
-    fillArray(&values);
+    fillArrayWithHaltonSeq(&values);
 }
 
 /**

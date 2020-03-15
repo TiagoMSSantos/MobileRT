@@ -142,37 +142,24 @@ bool OBJLoader::fillScene(Scene *const scene,
                     normal1 = ::glm::vec3 {-normal1X, normal1Y, normal1Z};
                     normal2 = ::glm::vec3 {-normal2X, normal2Y, normal2Z};
                     normal3 = ::glm::vec3 {-normal3X, normal3Y, normal3Z};
-
-                    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(normal1)), "normal1 can't be NaN.");
-                    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(normal2)), "normal2 can't be NaN.");
-                    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(normal3)), "normal3 can't be NaN.");
-
-                    BOOST_ASSERT_MSG(!::glm::all(::glm::isinf(normal1)), "normal1 can't be infinite.");
-                    BOOST_ASSERT_MSG(!::glm::all(::glm::isinf(normal2)), "normal2 can't be infinite.");
-                    BOOST_ASSERT_MSG(!::glm::all(::glm::isinf(normal3)), "normal3 can't be infinite.");
-
-                    BOOST_ASSERT_MSG(!::MobileRT::equal(normal1, ::glm::vec3 {0}), "normal1 can't be zero.");
-                    BOOST_ASSERT_MSG(!::MobileRT::equal(normal2, ::glm::vec3 {0}), "normal2 can't be zero.");
-                    BOOST_ASSERT_MSG(!::MobileRT::equal(normal3, ::glm::vec3 {0}), "normal3 can't be zero.");
                 } else {
                     const auto AB {vertex2 - vertex1};
                     const auto AC {vertex3 - vertex1};
                     normal1 = ::glm::vec3 {::glm::normalize(::glm::cross(AC, AB))};
                     normal2 = ::glm::vec3 {::glm::normalize(::glm::cross(AC, AB))};
                     normal3 = ::glm::vec3 {::glm::normalize(::glm::cross(AC, AB))};
-
-                    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(normal1)), "normal1 can't be NaN.");
-                    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(normal2)), "normal2 can't be NaN.");
-                    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(normal3)), "normal3 can't be NaN.");
-
-                    BOOST_ASSERT_MSG(!::glm::all(::glm::isinf(normal1)), "normal1 can't be infinite.");
-                    BOOST_ASSERT_MSG(!::glm::all(::glm::isinf(normal2)), "normal2 can't be infinite.");
-                    BOOST_ASSERT_MSG(!::glm::all(::glm::isinf(normal3)), "normal3 can't be infinite.");
-
-                    BOOST_ASSERT_MSG(!::MobileRT::equal(normal1, ::glm::vec3 {0}), "normal1 can't be zero.");
-                    BOOST_ASSERT_MSG(!::MobileRT::equal(normal2, ::glm::vec3 {0}), "normal2 can't be zero.");
-                    BOOST_ASSERT_MSG(!::MobileRT::equal(normal3, ::glm::vec3 {0}), "normal3 can't be zero.");
                 }
+                BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(normal1)), "normal1 can't be NaN.");
+                BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(normal2)), "normal2 can't be NaN.");
+                BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(normal3)), "normal3 can't be NaN.");
+
+                BOOST_ASSERT_MSG(!::glm::all(::glm::isinf(normal1)), "normal1 can't be infinite.");
+                BOOST_ASSERT_MSG(!::glm::all(::glm::isinf(normal2)), "normal2 can't be infinite.");
+                BOOST_ASSERT_MSG(!::glm::all(::glm::isinf(normal3)), "normal3 can't be infinite.");
+
+                BOOST_ASSERT_MSG(!::MobileRT::equal(normal1, ::glm::vec3 {0}), "normal1 can't be zero.");
+                BOOST_ASSERT_MSG(!::MobileRT::equal(normal2, ::glm::vec3 {0}), "normal2 can't be zero.");
+                BOOST_ASSERT_MSG(!::MobileRT::equal(normal3, ::glm::vec3 {0}), "normal3 can't be zero.");
 
                 // per-face material
                 const auto itMaterialShape {shape.mesh.material_ids.cbegin() + static_cast<::std::int32_t> (face)};
@@ -265,29 +252,21 @@ bool OBJLoader::fillScene(Scene *const scene,
                         const auto lightPos {scene->lights_.back()->getPosition()};
                         LOG("Light position at: x:", lightPos[0], ", y:", lightPos[1], ", z:", lightPos[2]);
                     } else {
+                        Triangle::Builder builder {
+                                Triangle::Builder(vertex1, vertex2, vertex3)
+                                        .withNormals(normal1, normal2, normal3)
+                                        .withTexCoords(texCoordA, texCoordB, texCoordC)
+                        };
+
                         if(itFoundMat != scene->materials_.cend()) {
                             const auto materialIndex {static_cast<::std::int32_t> (
                                 itFoundMat - scene->materials_.cbegin()
                             )};
-                            const Triangle &triangle {
-                                    Triangle::Builder(vertex1, vertex2, vertex3)
-                                            .withNormals(normal1, normal2, normal3)
-                                            .withTexCoords(texCoordA, texCoordB, texCoordC)
-                                            .withMaterialIndex(materialIndex)
-                                            .build()
-                            };
-
+                            const Triangle &triangle {builder.withMaterialIndex(materialIndex).build()};
                             scene->triangles_.emplace_back(triangle);
                         } else {
                             const auto materialIndex {static_cast<::std::int32_t> (scene->materials_.size())};
-                            const Triangle &triangle {
-                                    Triangle::Builder(vertex1, vertex2, vertex3)
-                                            .withNormals(normal1, normal2, normal3)
-                                            .withTexCoords(texCoordA, texCoordB, texCoordC)
-                                            .withMaterialIndex(materialIndex)
-                                            .build()
-                            };
-
+                            const Triangle &triangle {builder.withMaterialIndex(materialIndex).build()};
                             scene->triangles_.emplace_back(triangle);
                             scene->materials_.emplace_back(material);
                         }
@@ -305,25 +284,19 @@ bool OBJLoader::fillScene(Scene *const scene,
                     const ::glm::vec3 &emission {0.0F, 0.0F, 0.0F};
                     const Material material {diffuse, specular, transmittance, indexRefraction, emission};
                     const auto itFoundMat {::std::find(scene->materials_.begin(), scene->materials_.end(), material)};
+                    Triangle::Builder builder {
+                            Triangle::Builder(vertex1, vertex2, vertex3)
+                                    .withNormals(normal1, normal2, normal3)
+                    };
                     if(itFoundMat != scene->materials_.cend()) {
                         const auto materialIndex {static_cast<::std::int32_t> (
                             itFoundMat - scene->materials_.begin()
                         )};
-                        const Triangle &triangle {
-                                Triangle::Builder(vertex1, vertex2, vertex3)
-                                        .withNormals(normal1, normal2, normal3)
-                                        .withMaterialIndex(materialIndex)
-                                        .build()
-                        };
+                        const Triangle &triangle {builder.withMaterialIndex(materialIndex).build()};
                         scene->triangles_.emplace_back(triangle);
                     } else {
                         const auto materialIndex {static_cast<::std::int32_t> (scene->materials_.size())};
-                        const Triangle &triangle {
-                                Triangle::Builder(vertex1, vertex2, vertex3)
-                                        .withNormals(normal1, normal2, normal3)
-                                        .withMaterialIndex(materialIndex)
-                                        .build()
-                        };
+                        const Triangle &triangle {builder.withMaterialIndex(materialIndex).build()};
                         scene->triangles_.emplace_back(triangle);
                         scene->materials_.emplace_back(material);
                     }

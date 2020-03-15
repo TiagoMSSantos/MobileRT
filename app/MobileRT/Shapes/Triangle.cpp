@@ -28,7 +28,7 @@ Triangle::Triangle(const Triangle::Builder &builder) :
 /**
  * Helper method which checks for invalid normals in the triangle.
  */
-void Triangle::checkArguments() {
+void Triangle::checkArguments() const {
     BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalA_)), "normalA can't be NaN.");
     BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalB_)), "normalB can't be NaN.");
     BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalC_)), "normalC can't be NaN.");
@@ -107,6 +107,17 @@ AABB Triangle::getAABB() const {
 }
 
 /**
+ * Checks if near and far are valid.
+ *
+ * @param near The distance of near..
+ * @param far  The distance of far.
+ * @return Whether they are invalid or not.
+ */
+bool Triangle::isNearFarInvalid(const float near, const float far) const {
+    return (near > far) || (far < 0);
+}
+
+/**
  * Checks if a bounding box intersects the triangle or not.
  *
  * @param box A bounding box.
@@ -132,7 +143,7 @@ bool Triangle::intersect(const AABB &box) const {
                 }
                 tNear = ::std::max(t1[0], tNear);
                 tFar = ::std::min(t2[0], tFar);
-                if ((tNear > tFar) || (tFar < 0)) {
+                if (isNearFarInvalid(tNear, tFar)) {
                     return false;
                 }
             }
@@ -149,7 +160,7 @@ bool Triangle::intersect(const AABB &box) const {
                 }
                 tNear = ::std::max(t1[1], tNear);
                 tFar = ::std::min(t2[1], tFar);
-                if ((tNear > tFar) || (tFar < 0)) {
+                if (isNearFarInvalid(tNear, tFar)) {
                     return false;
                 }
             }
@@ -166,7 +177,7 @@ bool Triangle::intersect(const AABB &box) const {
                 }
                 tNear = ::std::max(t1[2], tNear);
                 tFar = ::std::min(t2[2], tFar);
-                if ((tNear > tFar) || (tFar < 0)) {
+                if (isNearFarInvalid(tNear, tFar)) {
                     return false;
                 }
             }

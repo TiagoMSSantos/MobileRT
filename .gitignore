@@ -59,4 +59,4 @@
 **/documentation
 **/.jscpd*
 **/code_coverage_report/**
-**/coverage.info
+**/*coverage*.info

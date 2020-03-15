@@ -4,26 +4,13 @@
 using ::Components::StaticMersenneTwister;
 
 namespace {
-    const ::std::uint32_t mask {0xFFFFF};
-    const ::std::uint32_t size {mask + 1};
-    ::std::array<float, size> values {};
-
-    bool fillThings() {
-        static ::std::uniform_real_distribution<float> uniformDist {0.0F, 1.0F};
-        static ::std::random_device randomDevice {};
-        static ::std::mt19937 generator {randomDevice()};
-        ::std::generate(values.begin(), values.end(), []() {return uniformDist(generator);});
-        return true;
-    }
+    ::std::array<float, ::MobileRT::ARRAY_SIZE> values {};
 }//namespace
 
 StaticMersenneTwister::StaticMersenneTwister() {
-    static auto unused {fillThings()};
-    static_cast<void> (unused);
+    ::MobileRT::fillArrayWithMersenneTwister(&values);
 }
 
 float StaticMersenneTwister::getSample(const ::std::uint32_t /*sample*/) {
-    const auto current {this->sample_.fetch_add(1, ::std::memory_order_relaxed)};
-    const auto it {values.begin() + (current & mask)};
-    return *it;
+    return Sampler::getSampleFromArray(values);
 }

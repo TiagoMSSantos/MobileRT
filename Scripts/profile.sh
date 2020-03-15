@@ -150,8 +150,8 @@ SCENES="2"
 ACCELERATORS="1 2"
 
 THREAD=$(nproc --all)
-SHADER="2"
-SCENE="4"
+SHADER="1"
+SCENE="2"
 ACC="3"
 PRINT="true"
 SHOWIMAGE="true"

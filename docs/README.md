@@ -40,7 +40,7 @@ It is also needed the [Qt4](https://www.qt.io/) library and the
 <br/>
 ```bash
 sudo apt-get update
-sudo apt-get install cmake libqt4-dev build-essential ca-certificates git g++ libgtk2.0-dev
+sudo apt-get install cmake libqt4-dev build-essential ca-certificates git g++
 ```
 Then, to finally compile this code, just create a build directory and compile
 in it, like for example:
@@ -126,7 +126,7 @@ better optimized code)
 - [ ] Make all Android instrumented tests pass without flakiness
 
 ### Linux Interface
-- [x] Change Linux's UI from GTK to Qt
+- [x] Support Linux's UI with Qt
 - [x] Support options menu in GUI
 - [x] Support about menu in GUI
 - [x] Support for selection of OBJ files in GUI
@@ -211,13 +211,17 @@ system does not have enough memory to render the scene
 ### Code Coverage
 Here are the commands to generate the code coverage report:
 ```bash
+rm -rf build_Debug/*
 cd build_Debug
 cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=Debug ../app/
 make
-./bin/GoogleTestd
 cd ..
-lcov --capture --base-directory . --directory . --no-external --output-file coverage.info
-genhtml coverage.info --output-directory code_coverage_report
+lcov -c -i -d . --no-external -o code_coverage_base.info
+./build_Debug/bin/GoogleTestd
+lcov -c -d . --no-external -o code_coverage_test.info
+lcov -a code_coverage_base.info -a code_coverage_test.info -o code_coverage.info
+lcov --remove code_coverage.info -o code_coverage.info '*third_party*' '*build*'
+genhtml code_coverage.info -o code_coverage_report --no-branch-coverage -t MobileRT_code_coverage
 bash <(curl -s https://codecov.io/bash) -t 717e75e2-b149-4997-adb4-a3fa1bde237f
 ```
 

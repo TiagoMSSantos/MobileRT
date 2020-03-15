@@ -131,20 +131,15 @@ public final class MainActivityTest {
         if (repetitions <= 4) {
             assertPickerValue(R.id.pickerSamplesPixel, 1);
             assertPickerValue(R.id.pickerScene, 5);
-            assertPickerValue(R.id.pickerThreads, 4);
-            assertPickerValue(R.id.pickerSize, 9);
-            assertPickerValue(R.id.pickerSamplesLight, 1);
-            assertPickerValue(R.id.pickerAccelerator, 2);
-            assertPickerValue(R.id.pickerShader, 2);
         } else {
             assertPickerValue(R.id.pickerSamplesPixel, 3);
             assertPickerValue(R.id.pickerScene, 2);
-            assertPickerValue(R.id.pickerThreads, 4);
-            assertPickerValue(R.id.pickerSize, 9);
-            assertPickerValue(R.id.pickerSamplesLight, 1);
-            assertPickerValue(R.id.pickerAccelerator, 2);
-            assertPickerValue(R.id.pickerShader, 2);
         }
+        assertPickerValue(R.id.pickerThreads, 4);
+        assertPickerValue(R.id.pickerSize, 9);
+        assertPickerValue(R.id.pickerSamplesLight, 1);
+        assertPickerValue(R.id.pickerAccelerator, 2);
+        assertPickerValue(R.id.pickerShader, 2);
 
         final List<String> buttonTextList = ImmutableList.<String>builder().add(STOP, RENDER).build();
         IntStreams.rangeClosed(1, buttonTextList.size() * repetitions).forEach(index -> {
@@ -231,29 +226,11 @@ public final class MainActivityTest {
     }
 
     /**
-     * Tests that a file in the Android device exists.
+     * Tests that a file in the Android device exists and is readable.
      */
     @Test
-    public final void testFilesExist() {
+    public final void testFilesExistAndReadable() {
         LOGGER.info("testFilesExist");
-        final MainActivity activity = this.mainActivityActivityTestRule.getActivity();
-        final List<String> paths = ImmutableList.<String>builder().add(
-                activity.getSDCardPath() + OBJ_FILE_CONFERENCE,
-                activity.getSDCardPath() + OBJ_FILE_TEAPOT
-        ).build();
-        StreamSupport.stream(paths)
-            .forEach(path -> {
-                final File file = new File(path);
-                Assertions.assertTrue(file.exists(), FILE_SHOULD_EXIST);
-            });
-    }
-
-    /**
-     * Tests that a file in the Android device is readable.
-     */
-    @Test
-    public final void testFileReads() {
-        LOGGER.info("testFileReads");
         final MainActivity activity = this.mainActivityActivityTestRule.getActivity();
         final List<String> paths = ImmutableList.<String>builder().add(
                 activity.getSDCardPath() + OBJ_FILE_CONFERENCE,

@@ -19,9 +19,7 @@ using ::MobileRT::Light;
 using ::MobileRT::Material;
 
 namespace {
-    const ::std::uint32_t mask {0xFFFFF};
-    const ::std::uint32_t size {mask + 1};
-    ::std::array<float, size> values {};
+    ::std::array<float, ::MobileRT::ARRAY_SIZE> values {};
 }//namespace
 
 /**
@@ -35,7 +33,7 @@ Shader::Shader(Scene scene, const ::std::int32_t samplesLight, const Accelerator
     materials_ {::std::move(scene.materials_)},
     accelerator_ {accelerator},
     samplesLight_ {samplesLight} {
-    fillArray(&values);
+    fillArrayWithHaltonSeq(&values);
     initializeAccelerators(::std::move(scene));
 }
 
@@ -47,10 +45,6 @@ Shader::Shader(Scene scene, const ::std::int32_t samplesLight, const Accelerator
 void Shader::initializeAccelerators(Scene scene) {
     LOG("initializeAccelerators");
     switch (this->accelerator_) {
-        case Accelerator::ACC_NONE: {
-            break;
-        }
-
         case Accelerator::ACC_NAIVE: {
             this->naivePlanes_ = Naive<Plane> {::std::move(scene.planes_)};
             this->naiveSpheres_ = Naive<Sphere> {::std::move(scene.spheres_)};
@@ -89,10 +83,6 @@ bool Shader::rayTrace(::glm::vec3 *rgb, const Ray &ray) {
     Intersection intersection {};
     const auto lastDist {intersection.length_};
     switch (this->accelerator_) {
-        case Accelerator::ACC_NONE: {
-            break;
-        }
-
         case Accelerator::ACC_NAIVE: {
             intersection = this->naivePlanes_.trace(intersection, ray);
             intersection = this->naiveSpheres_.trace(intersection, ray);
@@ -138,10 +128,6 @@ bool Shader::rayTrace(::glm::vec3 *rgb, const Ray &ray) {
 bool Shader::shadowTrace(Intersection intersection, const Ray &ray) {
     const auto lastDist {intersection.length_};
     switch (this->accelerator_) {
-        case Accelerator::ACC_NONE: {
-            break;
-        }
-
         case Accelerator::ACC_NAIVE: {
             intersection = this->naivePlanes_.shadowTrace(intersection, ray);
             intersection = this->naiveSpheres_.shadowTrace(intersection, ray);
@@ -201,8 +187,8 @@ void Shader::resetSampling() {
     const auto current1 {sampler.fetch_add(1, ::std::memory_order_relaxed)};
     const auto current2 {sampler.fetch_add(1, ::std::memory_order_relaxed)};
 
-    const auto it1 {values.begin() + (current1 & mask)};
-    const auto it2 {values.begin() + (current2 & mask)};
+    const auto it1 {values.begin() + (current1 & ::MobileRT::ARRAY_MASK)};
+    const auto it2 {values.begin() + (current2 & ::MobileRT::ARRAY_MASK)};
 
     const auto uniformRandom1 {*it1};
     const auto uniformRandom2 {*it2};
@@ -235,7 +221,7 @@ void Shader::resetSampling() {
     static ::std::atomic<::std::uint32_t> sampler {};
     const auto current {sampler.fetch_add(1, ::std::memory_order_relaxed)};
 
-    const auto it {values.begin() + (current & mask)};
+    const auto it {values.begin() + (current & ::MobileRT::ARRAY_MASK)};
 
     const auto sizeLights {static_cast<::std::uint32_t> (this->lights_.size())};
     const auto randomNumber {*it};
@@ -250,10 +236,6 @@ void Shader::resetSampling() {
  */
 const ::std::vector<Plane>& Shader::getPlanes() const {
     switch (this->accelerator_) {
-        case Accelerator::ACC_NONE: {
-            return this->naivePlanes_.getPrimitives();
-        }
-
         case Accelerator::ACC_NAIVE: {
             return this->naivePlanes_.getPrimitives();
         }
@@ -276,10 +258,6 @@ const ::std::vector<Plane>& Shader::getPlanes() const {
  */
 const ::std::vector<Sphere>& Shader::getSpheres() const {
     switch (this->accelerator_) {
-        case Accelerator::ACC_NONE: {
-            return this->naiveSpheres_.getPrimitives();
-        }
-
         case Accelerator::ACC_NAIVE: {
             return this->naiveSpheres_.getPrimitives();
         }
@@ -302,10 +280,6 @@ const ::std::vector<Sphere>& Shader::getSpheres() const {
  */
 const ::std::vector<Triangle>& Shader::getTriangles() const {
     switch (this->accelerator_) {
-        case Accelerator::ACC_NONE: {
-            return this->naiveTriangles_.getPrimitives();
-        }
-
         case Accelerator::ACC_NAIVE: {
             return this->naiveTriangles_.getPrimitives();
         }

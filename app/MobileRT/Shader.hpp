@@ -18,8 +18,7 @@ namespace MobileRT {
     class Shader {
     public:
         enum Accelerator {
-            ACC_NONE = 0,
-            ACC_NAIVE,
+            ACC_NAIVE = 1,
             ACC_REGULAR_GRID,
             ACC_BVH,
         };

@@ -117,13 +117,10 @@ if( DEFINED ANDROID_ABI )
 	add_library( ${PROJECT_NAME} SHARED ${SCENES_SOURCES} ${MOBILE_DEPENDENT_SOURCES} )
 	target_link_libraries( ${PROJECT_NAME} PRIVATE android jnigraphics )
 else ()
-	find_package( GTK2 REQUIRED )
 	find_package ( Qt4 REQUIRED QtGui QtXml QtCore )
 	add_executable( ${PROJECT_NAME} ${SCENES_SOURCES} ${MOBILE_DEPENDENT_SOURCES} )
 
 	target_include_directories( ${PROJECT_NAME} SYSTEM PRIVATE "${QT_HEADERS}" )
-	target_include_directories( ${PROJECT_NAME} SYSTEM PRIVATE "${GTK2_INCLUDE_DIRS}" )
-	target_link_libraries( ${PROJECT_NAME} PRIVATE "${GTK2_LIBRARIES}" )
 	target_link_libraries( ${PROJECT_NAME} PRIVATE Qt4::QtGui Qt4::QtXml Qt4::QtCore )
 endif()
 

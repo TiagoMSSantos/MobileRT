@@ -29,7 +29,9 @@ namespace MobileRT {
     private:
         explicit Triangle(const Triangle::Builder &builder);
 
-        void checkArguments();
+        void checkArguments() const;
+
+        bool isNearFarInvalid(float near, float far) const;
 
     public:
         explicit Triangle() = delete;
@@ -51,7 +53,7 @@ namespace MobileRT {
         bool intersect(const AABB &box) const;
 
         class Builder final {
-        public:
+        private:
             ::glm::vec3 AC_ {};
             ::glm::vec3 AB_ {};
             ::glm::vec3 pointA_ {};
@@ -62,7 +64,9 @@ namespace MobileRT {
             ::glm::vec2 texCoordB_ {-1};
             ::glm::vec2 texCoordC_ {-1};
             ::std::int32_t materialIndex_ {-1};
+            friend class Triangle;
 
+        public:
             explicit Builder(
                     const ::glm::vec3 &pointA,
                     const ::glm::vec3 &pointB,

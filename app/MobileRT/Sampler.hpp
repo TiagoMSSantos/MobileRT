@@ -44,6 +44,22 @@ namespace MobileRT {
         virtual float getSample(::std::uint32_t sample) = 0;
 
         float getSample();
+
+    protected:
+        /**
+         * An auxiliary method that increments the sample counter and gets the
+         * current sample from an array received via parameters.
+         *
+         * @tparam S The size of the array.
+         * @param values The array to read the current sample.
+         * @return The value in the array corresponding to the current sample.
+         */
+        template <const ::std::size_t S>
+        float getSampleFromArray(const ::std::array<float, S> &values) {
+            const auto current {this->sample_.fetch_add(1, ::std::memory_order_relaxed)};
+            const auto it {values.begin() + (current & ::MobileRT::ARRAY_MASK)};
+            return *it;
+        }
     };
 }//namespace MobileRT
 
