@@ -57,7 +57,7 @@ namespace MobileRT {
         template <const ::std::size_t S>
         float getSampleFromArray(const ::std::array<float, S> &values) {
             const auto current {this->sample_.fetch_add(1, ::std::memory_order_relaxed)};
-            const auto it {values.begin() + (current & ::MobileRT::ARRAY_MASK)};
+            const auto it {values.begin() + (current & ::MobileRT::ArrayMask)};
             return *it;
         }
     };

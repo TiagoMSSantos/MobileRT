@@ -22,7 +22,6 @@ Camera::Camera(const ::glm::vec3 &position, const ::glm::vec3 &lookAt, const ::g
  * The destructor.
  */
 Camera::~Camera() {
-    LOG("CAMERA DESTROYED!!!");
 }
 
 /**

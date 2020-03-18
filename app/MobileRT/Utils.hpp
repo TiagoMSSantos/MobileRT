@@ -37,9 +37,10 @@ namespace MobileRT {
     const ::std::int32_t RayDepthMin {1};
     const ::std::int32_t RayDepthMax {6};
     const ::std::int32_t NumberOfTiles {256};
+    const ::std::int32_t NumberOfAxes {3};
     const ::std::int32_t SizeOfStack {512};
-    const ::std::uint32_t ARRAY_MASK {0xFFFFF};
-    const ::std::size_t ARRAY_SIZE {ARRAY_MASK + 1};
+    const ::std::uint32_t ArrayMask {0xFFFFF};
+    const ::std::size_t ArraySize {ArrayMask + 1};
 
     ::std::int32_t roundDownToMultipleOf(::std::int32_t value, ::std::int32_t multiple);
 

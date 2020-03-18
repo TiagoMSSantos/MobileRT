@@ -20,7 +20,6 @@ Sampler::Sampler(const ::std::uint32_t width, const ::std::uint32_t height,
  * The destructor.
  */
 Sampler::~Sampler() {
-    LOG("SAMPLER DESTROYED!!!");
 }
 
 /**

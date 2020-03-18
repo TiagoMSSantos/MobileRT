@@ -41,6 +41,12 @@ namespace MobileRT {
         float distance(const ::glm::vec3 &point) const;
 
         bool intersect(const AABB &box) const;
+
+        ::glm::vec3 getNormal () const;
+
+        ::glm::vec3 getPoint () const;
+
+        ::std::int32_t getMaterialIndex () const;
     };
 }//namespace MobileRT
 

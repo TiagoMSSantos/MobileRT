@@ -15,5 +15,4 @@ Light::Light(Material radiance) :
  * The destructor.
  */
 Light::~Light() {
-    LOG("LIGHT DESTROYED!!!");
 }

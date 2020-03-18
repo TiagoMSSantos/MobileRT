@@ -15,9 +15,9 @@ Triangle::Triangle(const Triangle::Builder &builder) :
         AC_ {builder.AC_},
         AB_ {builder.AB_},
         pointA_ {builder.pointA_},
-        normalA_ {builder.normalA_},
-        normalB_ {builder.normalB_},
-        normalC_ {builder.normalC_},
+        normalA_ {::glm::normalize(builder.normalA_)},
+        normalB_ {::glm::normalize(builder.normalB_)},
+        normalC_ {::glm::normalize(builder.normalC_)},
         texCoordA_ {builder.texCoordA_},
         texCoordB_ {builder.texCoordB_},
         texCoordC_ {builder.texCoordC_},
@@ -210,6 +210,96 @@ bool Triangle::intersect(const AABB &box) const {
     const auto res {intersectedAB || intersectedAC || intersectedBC || intersectedRay || insideTriangle};
 
     return res;
+}
+
+/**
+ * Gets the AC vector of this triangle.
+ *
+ * @return The AC vector.
+ */
+::glm::vec3 Triangle::getAC () const {
+    return this->AC_;
+}
+
+/**
+ * Gets the AB vector of this triangle.
+ *
+ * @return The AB vector.
+ */
+::glm::vec3 Triangle::getAB () const {
+    return this->AB_;
+}
+
+/**
+ * Gets the point A of this triangle.
+ *
+ * @return The point A.
+ */
+::glm::vec3  Triangle::getA() const {
+    return this->pointA_;
+}
+
+/**
+ * Gets the normal of vertex A of this triangle.
+ *
+ * @return The normal A.
+ */
+::glm::vec3 Triangle::getNormalA () const {
+    return this->normalA_;
+}
+
+/**
+ * Gets the normal of vertex B of this triangle.
+ *
+ * @return The normal B.
+ */
+::glm::vec3 Triangle::getNormalB () const {
+    return this->normalB_;
+}
+
+/**
+ * Gets the normal of vertex C of this triangle.
+ *
+ * @return The normal C.
+ */
+::glm::vec3 Triangle::getNormalC () const {
+    return this->normalC_;
+}
+
+/**
+ * Gets the texture coordinate of vertex A of this triangle.
+ *
+ * @return The texture coordinate A.
+ */
+::glm::vec2 Triangle::getTexCoordA() const {
+    return this->texCoordA_;
+}
+
+/**
+ * Gets the texture coordinate of vertex B of this triangle.
+ *
+ * @return The texture coordinate B.
+ */
+::glm::vec2 Triangle::getTexCoordB() const {
+    return this->texCoordB_;
+}
+
+/**
+ * Gets the texture coordinate of vertex C of this triangle.
+ *
+ * @return The texture coordinate C.
+ */
+::glm::vec2 Triangle::getTexCoordC() const {
+    return this->texCoordC_;
+}
+
+/**
+ * Gets the material index of this plane.
+ *
+ * @return The material index.
+ */
+::std::int32_t Triangle::getMaterialIndex () const {
+    return this->materialIndex_;
 }
 
 /**

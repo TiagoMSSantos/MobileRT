@@ -6,5 +6,4 @@ using ::MobileRT::CameraLoader;
  * The destructor.
  */
 CameraLoader::~CameraLoader() {
-    LOG("CAMERALOADER DESTROYED!!!");
 }

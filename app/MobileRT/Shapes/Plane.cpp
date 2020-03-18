@@ -135,3 +135,30 @@ bool Plane::intersect(const AABB &box) const {
 
     return res;
 }
+
+/**
+ * Gets the normal of this plane.
+ *
+ * @return The normal.
+ */
+::glm::vec3 Plane::getNormal () const {
+    return this->normal_;
+}
+
+/**
+ * Gets the point of this plane.
+ *
+ * @return The point.
+ */
+::glm::vec3 Plane::getPoint () const {
+    return this->point_;
+}
+
+/**
+ * Gets the material index of this plane.
+ *
+ * @return The material index.
+ */
+::std::int32_t Plane::getMaterialIndex () const {
+    return this->materialIndex_;
+}

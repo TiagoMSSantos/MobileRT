@@ -14,7 +14,6 @@ protected:
 };
 
 TestCameraLoader::~TestCameraLoader() {
-    LOG("TESTCAMERALOADER DESTROYED!!!");
 }
 
 TEST_F(TestCameraLoader, TestCameraLoader1) {

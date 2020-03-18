@@ -4,7 +4,7 @@
 using ::Components::StaticMersenneTwister;
 
 namespace {
-    ::std::array<float, ::MobileRT::ARRAY_SIZE> values {};
+    ::std::array<float, ::MobileRT::ArraySize> values {};
 }//namespace
 
 StaticMersenneTwister::StaticMersenneTwister() {

@@ -32,7 +32,6 @@ protected:
 };
 
 TestTriangle::~TestTriangle() {
-    LOG("TESTTRIANGLE DESTROYED!!!");
 }
 
 static const Triangle triangle2 {
@@ -68,13 +67,60 @@ static void assertRayTriangle(const glm::vec3 &orig, const glm::vec3 &dir, const
     ASSERT_EQ(expectedInt, intersection.length_ < lastDist);
 }
 
-TEST_F(TestTriangle, ConstructorVALUES) {
-	ASSERT_EQ(0.0F, triangle->pointA_[0]);
-	ASSERT_EQ(0.0F, triangle->pointA_[1]);
-	ASSERT_EQ(0.0F, triangle->pointA_[2]);
+/**
+ * Tests the Triangle constructor.
+ */
+TEST_F(TestTriangle, TestConstructor) {
+    const auto A {::glm::vec3 {10.0F, 0.0F, 10.0F}};
+    const auto B {::glm::vec3 {0.0F, 0.0F, 10.0F}};
+    const auto C {::glm::vec3 {0.0F, 10.0F, 10.0F}};
+    const auto normalA {::glm::vec3 {1, 2 ,3}};
+    const auto normalB {::glm::vec3 {4, 5 ,6}};
+    const auto normalC {::glm::vec3 {7, 8 ,9}};
+    const auto texCoordsA {::glm::vec2 {1, 2}};
+    const auto texCoordsB {::glm::vec2 {4, 5}};
+    const auto texCoordsC {::glm::vec2 {7, 8}};
+    const auto materialIndex {19};
+	const Triangle triangle4 {
+        Triangle::Builder(A, B, C)
+        .withNormals(normalA, normalB, normalC)
+        .withTexCoords(texCoordsA, texCoordsB, texCoordsC)
+        .withMaterialIndex(materialIndex)
+        .build()
+	};
+    const auto pointA {triangle4.getA()};
+    const auto pointB {pointA + triangle4.getAB()};
+    const auto pointC {pointA + triangle4.getAC()};
+	const auto normalA2 {::glm::normalize(normalA)};
+	const auto normalB2 {::glm::normalize(normalB)};
+	const auto normalC2 {::glm::normalize(normalC)};
 
-	const ::glm::vec3 pointB {triangle->pointA_ + triangle->AB_};
-	const ::glm::vec3 pointC {triangle->pointA_ + triangle->AC_};
+    ASSERT_EQ(materialIndex, triangle4.getMaterialIndex());
+    for(int i {0}; i < ::MobileRT::NumberOfAxes; ++i) {
+        ASSERT_FLOAT_EQ(A[i], pointA[i]);
+        ASSERT_FLOAT_EQ(B[i], pointB[i]);
+        ASSERT_FLOAT_EQ(C[i], pointC[i]);
+        ASSERT_FLOAT_EQ(normalA2[i], triangle4.getNormalA()[i]);
+        ASSERT_FLOAT_EQ(normalB2[i], triangle4.getNormalB()[i]);
+        ASSERT_FLOAT_EQ(normalC2[i], triangle4.getNormalC()[i]);
+    }
+	for(int i {0}; i < 2; ++i) {
+		ASSERT_FLOAT_EQ(texCoordsA[i], triangle4.getTexCoordA()[i]);
+		ASSERT_FLOAT_EQ(texCoordsB[i], triangle4.getTexCoordB()[i]);
+		ASSERT_FLOAT_EQ(texCoordsC[i], triangle4.getTexCoordC()[i]);
+	}
+}
+
+TEST_F(TestTriangle, ConstructorVALUES) {
+	const auto pointA {triangle->getA()};
+	const auto AC {triangle->getAC()};
+	const auto AB {triangle->getAB()};
+	ASSERT_EQ(0.0F, pointA[0]);
+	ASSERT_EQ(0.0F, pointA[1]);
+	ASSERT_EQ(0.0F, pointA[2]);
+
+	const ::glm::vec3 pointB {pointA + AB};
+	const ::glm::vec3 pointC {pointA + AC};
 	ASSERT_EQ(0.0F, pointB[0]);
 	ASSERT_EQ(1.0F, pointB[1]);
 	ASSERT_EQ(0.0F, pointB[2]);
@@ -83,13 +129,13 @@ TEST_F(TestTriangle, ConstructorVALUES) {
 	ASSERT_EQ(0.0F, pointC[1]);
 	ASSERT_EQ(1.0F, pointC[2]);
 
-	ASSERT_EQ(0.0F, triangle->AC_[0]);
-	ASSERT_EQ(0.0F, triangle->AC_[1]);
-	ASSERT_EQ(1.0F, triangle->AC_[2]);
+	ASSERT_EQ(0.0F, AC[0]);
+	ASSERT_EQ(0.0F, AC[1]);
+	ASSERT_EQ(1.0F, AC[2]);
 
-	ASSERT_EQ(0.0F, triangle->AB_[0]);
-	ASSERT_EQ(1.0F, triangle->AB_[1]);
-	ASSERT_EQ(0.0F, triangle->AB_[2]);
+	ASSERT_EQ(0.0F, AB[0]);
+	ASSERT_EQ(1.0F, AB[1]);
+	ASSERT_EQ(0.0F, AB[2]);
 
 	const ::glm::vec3 bc {pointC - pointB};
 	ASSERT_EQ(0.0F, bc[0]);

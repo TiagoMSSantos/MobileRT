@@ -19,7 +19,7 @@ using ::MobileRT::Light;
 using ::MobileRT::Material;
 
 namespace {
-    ::std::array<float, ::MobileRT::ARRAY_SIZE> values {};
+    ::std::array<float, ::MobileRT::ArraySize> values {};
 }//namespace
 
 /**
@@ -187,8 +187,8 @@ void Shader::resetSampling() {
     const auto current1 {sampler.fetch_add(1, ::std::memory_order_relaxed)};
     const auto current2 {sampler.fetch_add(1, ::std::memory_order_relaxed)};
 
-    const auto it1 {values.begin() + (current1 & ::MobileRT::ARRAY_MASK)};
-    const auto it2 {values.begin() + (current2 & ::MobileRT::ARRAY_MASK)};
+    const auto it1 {values.begin() + (current1 & ::MobileRT::ArrayMask)};
+    const auto it2 {values.begin() + (current2 & ::MobileRT::ArrayMask)};
 
     const auto uniformRandom1 {*it1};
     const auto uniformRandom2 {*it2};
@@ -221,7 +221,7 @@ void Shader::resetSampling() {
     static ::std::atomic<::std::uint32_t> sampler {};
     const auto current {sampler.fetch_add(1, ::std::memory_order_relaxed)};
 
-    const auto it {values.begin() + (current & ::MobileRT::ARRAY_MASK)};
+    const auto it {values.begin() + (current & ::MobileRT::ArrayMask)};
 
     const auto sizeLights {static_cast<::std::uint32_t> (this->lights_.size())};
     const auto randomNumber {*it};

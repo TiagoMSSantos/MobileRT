@@ -22,7 +22,7 @@ AreaLight::AreaLight(
         r = 1.0F - r;
         s = 1.0F - s;
     }
-    const auto &position {this->triangle_.pointA_ + r * this->triangle_.AB_ + s * this->triangle_.AC_};
+    const auto &position {this->triangle_.getA() + r * this->triangle_.getAB() + s * this->triangle_.getAC()};
     return position;
 }
 

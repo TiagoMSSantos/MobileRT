@@ -30,7 +30,7 @@ namespace MobileRT {
             const ::glm::vec3 &normal,
             const void *primitive,
             ::std::int32_t materialIndex,
-            ::glm::vec2 texCoords = ::glm::vec2 {-1});
+            const ::glm::vec2 &texCoords = ::glm::vec2 {-1});
 
         Intersection(const Intersection &intersection) = default;
 

@@ -14,7 +14,7 @@ namespace MobileRT {
     public:
         class Builder;
 
-    public:
+    private:
         ::glm::vec3 AC_ {};
         ::glm::vec3 AB_ {};
         ::glm::vec3 pointA_ {};
@@ -51,6 +51,26 @@ namespace MobileRT {
         AABB getAABB() const;
 
         bool intersect(const AABB &box) const;
+
+        ::glm::vec3 getAC() const;
+
+        ::glm::vec3 getAB() const;
+
+        ::glm::vec3 getA() const;
+
+        ::glm::vec3 getNormalA () const;
+
+        ::glm::vec3 getNormalB () const;
+
+        ::glm::vec3 getNormalC () const;
+
+        ::glm::vec2 getTexCoordA () const;
+
+        ::glm::vec2 getTexCoordB () const;
+
+        ::glm::vec2 getTexCoordC () const;
+
+        ::std::int32_t getMaterialIndex () const;
 
         class Builder final {
         private:

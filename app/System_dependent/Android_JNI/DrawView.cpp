@@ -160,15 +160,15 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitVerticesArray(
                         if (directBuffer != nullptr) {
                             ::std::int32_t i {};
                             for (const auto &triangle : triangles) {
-                                const ::glm::vec4 &pointA {triangle.pointA_.x,
-                                                           triangle.pointA_.y,
-                                                           triangle.pointA_.z, 1.0F};
-                                const ::glm::vec4 &pointB {pointA.x + triangle.AB_.x,
-                                                           pointA.y + triangle.AB_.y,
-                                                           pointA.z + triangle.AB_.z, 1.0F};
-                                const ::glm::vec4 &pointC {pointA.x + triangle.AC_.x,
-                                                           pointA.y + triangle.AC_.y,
-                                                           pointA.z + triangle.AC_.z, 1.0F};
+                                const ::glm::vec4 &pointA {triangle.getA().x,
+                                                           triangle.getA().y,
+                                                           triangle.getA().z, 1.0F};
+                                const ::glm::vec4 &pointB {pointA.x + triangle.getAB().x,
+                                                           pointA.y + triangle.getAB().y,
+                                                           pointA.z + triangle.getAB().z, 1.0F};
+                                const ::glm::vec4 &pointC {pointA.x + triangle.getAC().x,
+                                                           pointA.y + triangle.getAC().y,
+                                                           pointA.z + triangle.getAC().z, 1.0F};
 
                                 floatBuffer[i++] = pointA.x;
                                 floatBuffer[i++] = pointA.y;
@@ -227,7 +227,7 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitColorsArray(
                         if (directBuffer != nullptr) {
                             ::std::int32_t i {};
                             for (const auto &triangle : triangles) {
-                                const auto materialIndex {triangle.materialIndex_};
+                                const auto materialIndex {triangle.getMaterialIndex()};
                                 auto material {::MobileRT::Material {}};
                                 if (materialIndex >= 0) {
                                     material = renderer_->shader_->getMaterials()

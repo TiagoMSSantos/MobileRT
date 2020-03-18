@@ -259,7 +259,31 @@ h3 {
         text-align: center;
 
     }
-}</style></head><body><div class="pure-g" id="layout"><div class="sidebar pure-u-1 pure-u-md-1-4"><div class="header"><img src="https://raw.githubusercontent.com/kucherenko/jscpd/1.0.0-alpha/assets/logo-small-box.svg?sanitize=true" width="190"><nav class="nav"><ul class="nav-list"><li class="nav-item"><a class="pure-button" href="#cpp">cpp</a></li><li class="nav-item"><a class="pure-button" href="#c">c</a></li><li class="nav-item"><a class="pure-button" href="#java">java</a></li></ul></nav></div></div><div class="content pure-u-1 pure-u-md-3-4"><div class="controls"><div class="pure-u"><button class="pure-button" onclick="collapseExpandAll()">Collapse/Expand All</button></div></div><table class="pure-table stats"><thead><tr><th>Total files</th><th>Total lines of code</th><th>Duplicated lines</th><th>% of duplications</th></tr></thead><tbody><tr><td>110</td><td>9238</td><td>191</td><td>2.07%</td></tr></tbody></table><div class="clones collapsed"><a name="cpp"></a><h1 class="content-subhead">cpp</h1><div class="mode-stats"><p><span class="mode-rate">2.35%</span> Total files: 88, total lines of code: 6947, duplicated lines: 163</p></div><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Components/Lights/PointLight.hpp[25:54 - 35:42]<br/>app/Components/Lights/AreaLight.hpp[33:51 - 43:41]</div></header><div class="clone-description"><pre data-first-start="25" data-second-start="33" data-length="10">) noexcept = delete;
+}</style></head><body><div class="pure-g" id="layout"><div class="sidebar pure-u-1 pure-u-md-1-4"><div class="header"><img src="https://raw.githubusercontent.com/kucherenko/jscpd/1.0.0-alpha/assets/logo-small-box.svg?sanitize=true" width="190"><nav class="nav"><ul class="nav-list"><li class="nav-item"><a class="pure-button" href="#cpp">cpp</a></li><li class="nav-item"><a class="pure-button" href="#c">c</a></li><li class="nav-item"><a class="pure-button" href="#java">java</a></li></ul></nav></div></div><div class="content pure-u-1 pure-u-md-3-4"><div class="controls"><div class="pure-u"><button class="pure-button" onclick="collapseExpandAll()">Collapse/Expand All</button></div></div><table class="pure-table stats"><thead><tr><th>Total files</th><th>Total lines of code</th><th>Duplicated lines</th><th>% of duplications</th></tr></thead><tbody><tr><td>112</td><td>9576</td><td>215</td><td>2.25%</td></tr></tbody></table><div class="clones collapsed"><a name="cpp"></a><h1 class="content-subhead">cpp</h1><div class="mode-stats"><p><span class="mode-rate">2.57%</span> Total files: 90, total lines of code: 7285, duplicated lines: 187</p></div><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Unit_Testing/TestIntersection.cpp[53:42 - 63:1]<br/>app/Unit_Testing/TestIntersection.cpp[31:97 - 41:1]</div></header><div class="clone-description"><pre data-first-start="53" data-second-start="31" data-length="10">};
+
+    ASSERT_EQ(dist, intersection.length_);
+    ASSERT_EQ(primitive, intersection.primitive_);
+    ASSERT_EQ(materialIndex, intersection.materialIndex_);
+    for(int i {0}; i &lt; ::MobileRT::NumberOfAxes; ++i) {
+        ASSERT_FLOAT_EQ(intPoint[i], intersection.point_[i]);
+        ASSERT_FLOAT_EQ(normal[i], intersection.normal_[i]);
+    }
+}
+</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Unit_Testing/TestPlane.cpp[65:38 - 70:10]<br/>app/Unit_Testing/TestPlane.cpp[47:38 - 52:10]</div></header><div class="clone-description"><pre data-first-start="65" data-second-start="47" data-length="5">) {
+    const auto materialIndex {19};
+    const ::glm::vec3 point {1, 2, 3};
+    const ::glm::vec3 normal {4, 5, 6};
+    const auto normal2 {::glm::normalize(normal)};
+    Plane</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Unit_Testing/TestPlane.cpp[71:43 - 80:7]<br/>app/Unit_Testing/TestPlane.cpp[53:30 - 64:4]</div></header><div class="clone-description"><pre data-first-start="71" data-second-start="53" data-length="9">};
+
+    ASSERT_EQ(materialIndex, plane3.getMaterialIndex());
+    for(int i {0}; i &lt; ::MobileRT::NumberOfAxes; ++i) {
+        ASSERT_FLOAT_EQ(point[i], plane3.getPoint()[i]);
+        ASSERT_FLOAT_EQ(normal2[i], plane3.getNormal()[i]);
+    }
+}
+
+TEST_F</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Components/Lights/PointLight.hpp[25:54 - 35:42]<br/>app/Components/Lights/AreaLight.hpp[33:51 - 43:41]</div></header><div class="clone-description"><pre data-first-start="25" data-second-start="33" data-length="10">) noexcept = delete;
 
         ::glm::vec3 getPosition() final;
 

@@ -15,5 +15,4 @@ bool ObjectLoader::isProcessed() const {
  * The destructor.
  */
 ObjectLoader::~ObjectLoader() {
-    LOG("OBJECTLOADER DESTROYED!!!");
 }

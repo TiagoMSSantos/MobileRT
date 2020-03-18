@@ -17,5 +17,4 @@ protected:
 };
 
 TestTextureLoader::~TestTextureLoader() {
-    LOG("TestTextureLoader DESTROYED!!!");
 }

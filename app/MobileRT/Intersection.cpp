@@ -27,7 +27,8 @@ Intersection::Intersection(
     const float dist,
     const ::glm::vec3 &normal,
     const void *const primitive,
-    const ::std::int32_t materialIndex, ::glm::vec2 texCoords) :
+    const ::std::int32_t materialIndex,
+    const ::glm::vec2 &texCoords) :
     point_ {intPoint},
     normal_ {normal},
     length_ {dist},

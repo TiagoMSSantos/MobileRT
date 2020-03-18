@@ -20,10 +20,62 @@ protected:
 };
 
 TestPlane::~TestPlane() {
-    LOG("TESTPLANE DESTROYED!!!");
 }
 
 static const AABB box {::glm::vec3 {0, 0, -1.5F}, ::glm::vec3 {0, 1, 2.5F}};
+
+/**
+ * Tests the Plane constructor.
+ */
+TEST_F(TestPlane, TestConstructor) {
+	const auto materialIndex {19};
+	const ::glm::vec3 point {1, 2, 3};
+	const ::glm::vec3 normal {4, 5, 6};
+    const auto normal2 {::glm::normalize(normal)};
+    const Plane plane2 {point, normal, materialIndex};
+
+	ASSERT_EQ(materialIndex, plane2.getMaterialIndex());
+	for(int i {0}; i < ::MobileRT::NumberOfAxes; ++i) {
+        ASSERT_FLOAT_EQ(point[i], plane2.getPoint()[i]);
+        ASSERT_FLOAT_EQ(normal2[i], plane2.getNormal()[i]);
+	}
+}
+
+/**
+ * Tests the Plane copy constructor.
+ */
+TEST_F(TestPlane, TestCopyConstructor) {
+    const auto materialIndex {19};
+    const ::glm::vec3 point {1, 2, 3};
+    const ::glm::vec3 normal {4, 5, 6};
+    const auto normal2 {::glm::normalize(normal)};
+    const Plane plane2 {point, normal, materialIndex};
+    const auto plane3 {plane2};
+
+    ASSERT_EQ(materialIndex, plane3.getMaterialIndex());
+    for(int i {0}; i < ::MobileRT::NumberOfAxes; ++i) {
+        ASSERT_FLOAT_EQ(point[i], plane3.getPoint()[i]);
+        ASSERT_FLOAT_EQ(normal2[i], plane3.getNormal()[i]);
+    }
+}
+
+/**
+ * Tests the Plane move constructor.
+ */
+TEST_F(TestPlane, TestMoveConstructor) {
+    const auto materialIndex {19};
+    const ::glm::vec3 point {1, 2, 3};
+    const ::glm::vec3 normal {4, 5, 6};
+    const auto normal2 {::glm::normalize(normal)};
+    Plane plane2 {point, normal, materialIndex};
+    const auto plane3 {::std::move(plane2)};
+
+    ASSERT_EQ(materialIndex, plane3.getMaterialIndex());
+    for(int i {0}; i < ::MobileRT::NumberOfAxes; ++i) {
+        ASSERT_FLOAT_EQ(point[i], plane3.getPoint()[i]);
+        ASSERT_FLOAT_EQ(normal2[i], plane3.getNormal()[i]);
+    }
+}
 
 TEST_F(TestPlane, IntersectBoxOutsideX) {
 	const AABB box2 {::glm::vec3 {1, 0, 0}, ::glm::vec3 {2, 1, 1}};
