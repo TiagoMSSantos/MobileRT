@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import com.google.common.base.Strings;
 
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -27,6 +28,7 @@ import java.util.logging.Logger;
 import puscas.mobilertapp.exceptions.LowMemoryException;
 import puscas.mobilertapp.utils.ConstantsRenderer;
 import puscas.mobilertapp.utils.State;
+import puscas.mobilertapp.utils.Utils;
 
 import static puscas.mobilertapp.MyEGLContextFactory.EGL_CONTEXT_CLIENT_VERSION;
 import static puscas.mobilertapp.utils.ConstantsError.UNABLE_TO_FIND_AN_ACTIVITY;
@@ -163,15 +165,7 @@ public final class DrawView extends GLSurfaceView {
     private void waitForLastTask() {
         this.renderer.waitForLastTask();
         this.executorService.shutdown();
-        boolean running = true;
-        do {
-            try {
-                running = !this.executorService.awaitTermination(1L, TimeUnit.DAYS);
-            } catch (final InterruptedException ex) {
-                LOGGER.warning(ex.getMessage());
-                Thread.currentThread().interrupt();
-            }
-        } while (running);
+        Utils.waitExecutorToFinish(this.executorService);
         this.executorService = Executors.newFixedThreadPool(NUMBER_THREADS);
     }
 
@@ -234,18 +228,26 @@ public final class DrawView extends GLSurfaceView {
                     numThreads, config.getSamplesPixel(), config.getSamplesLight(), numPrimitives, rtGetNumberOfLights()
             );
         } catch (final LowMemoryException ex) {
-            this.renderer.resetStats(-1, -1, -1, -1, -1);
-            LOGGER.severe("LowMemoryException: " + ex.getMessage());
-            post(() -> Toast.makeText(getContext(), DEVICE_WITHOUT_ENOUGH_MEMORY, Toast.LENGTH_LONG).show());
+            warningError(ex, DEVICE_WITHOUT_ENOUGH_MEMORY);
         } catch (final RuntimeException ex) {
-            this.renderer.resetStats(-2, -2, -2, -2, -2);
-            LOGGER.severe("RuntimeException: " + ex.getMessage());
-            post(() -> Toast.makeText(getContext(), COULD_NOT_LOAD_THE_SCENE, Toast.LENGTH_LONG).show());
+            warningError(ex, COULD_NOT_LOAD_THE_SCENE);
         } finally {
             final int widthView = getWidth();
             final int heightView = getHeight();
             this.renderer.setBitmap(config.getWidth(), config.getHeight(), widthView, heightView);
         }
+    }
+
+    /**
+     * A helper method that warnings the user about a system error.
+     *
+     * @param exception    The exception caught.
+     * @param errorMessage The error message.
+     */
+    private void warningError(final @NotNull Exception exception, final CharSequence errorMessage) {
+        this.renderer.resetStats(-1, -1, -1, -1, -1);
+        LOGGER.severe(exception.getClass() + ":" + exception.getMessage());
+        post(() -> Toast.makeText(getContext(), errorMessage, Toast.LENGTH_LONG).show());
     }
 
     /**

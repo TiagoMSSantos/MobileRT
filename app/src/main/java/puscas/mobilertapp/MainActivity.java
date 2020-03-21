@@ -154,6 +154,9 @@ public final class MainActivity extends Activity {
     /**
      * Auxiliary method to readjust the width and height of the image by rounding down the value to a multiple of the
      * number of tiles in the Ray Tracer engine.
+     *
+     * @param size The value to be rounded down to a multiple of the number of tiles in the Ray Tracer engine.
+     * @return The highest value that is smaller than the size passed by parameter and is a multiple of the number of tiles.
      */
     private native int rtResize(final int size);
 

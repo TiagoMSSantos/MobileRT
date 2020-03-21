@@ -68,16 +68,16 @@ public final class Config {
      * @param builder The {@link Config.Builder} for this class.
      */
     private Config(final @NotNull Config.Builder builder) {
-        this.scene = builder.getScene();
-        this.shader = builder.getShader();
-        this.accelerator = builder.getAccelerator();
-        this.width = builder.getWidth();
-        this.height = builder.getHeight();
-        this.samplesPixel = builder.getSamplesPixel();
-        this.samplesLight = builder.getSamplesLight();
-        this.objFilePath = builder.getObjFilePath();
-        this.matFilePath = builder.getMatFilePath();
-        this.camFilePath = builder.getCamFilePath();
+        this.scene = builder.scene;
+        this.shader = builder.shader;
+        this.accelerator = builder.accelerator;
+        this.width = builder.width;
+        this.height = builder.height;
+        this.samplesPixel = builder.samplesPixel;
+        this.samplesLight = builder.samplesLight;
+        this.objFilePath = builder.objFilePath;
+        this.matFilePath = builder.matFilePath;
+        this.camFilePath = builder.camFilePath;
     }
 
 
@@ -230,7 +230,7 @@ public final class Config {
          */
         @Contract("_ -> this")
         @NonNull
-        final Config.Builder withScene(final int scene) {
+        Config.Builder withScene(final int scene) {
             LOGGER_BUILDER.info("withScene");
 
             this.scene = scene;
@@ -245,7 +245,7 @@ public final class Config {
          */
         @Contract("_ -> this")
         @NonNull
-        final Config.Builder withShader(final int shader) {
+        Config.Builder withShader(final int shader) {
             LOGGER_BUILDER.info("withShader");
 
             this.shader = shader;
@@ -260,7 +260,7 @@ public final class Config {
          */
         @Contract("_ -> this")
         @NonNull
-        final Config.Builder withAccelerator(final int accelerator) {
+        Config.Builder withAccelerator(final int accelerator) {
             LOGGER_BUILDER.info("withAccelerator");
 
             this.accelerator = accelerator;
@@ -275,7 +275,7 @@ public final class Config {
          */
         @Contract("_ -> this")
         @NonNull
-        final Config.Builder withWidth(final int width) {
+        Config.Builder withWidth(final int width) {
             LOGGER_BUILDER.info("withWidth");
 
             this.width = width;
@@ -290,7 +290,7 @@ public final class Config {
          */
         @Contract("_ -> this")
         @NonNull
-        final Config.Builder withHeight(final int height) {
+        Config.Builder withHeight(final int height) {
             LOGGER_BUILDER.info("withHeight");
 
             this.height = height;
@@ -305,7 +305,7 @@ public final class Config {
          */
         @Contract("_ -> this")
         @NonNull
-        final Config.Builder withSamplesPixel(final int samplesPixel) {
+        Config.Builder withSamplesPixel(final int samplesPixel) {
             LOGGER_BUILDER.info("withSamplesPixel");
 
             this.samplesPixel = samplesPixel;
@@ -320,7 +320,7 @@ public final class Config {
          */
         @Contract("_ -> this")
         @NonNull
-        final Config.Builder withSamplesLight(final int samplesLight) {
+        Config.Builder withSamplesLight(final int samplesLight) {
             LOGGER_BUILDER.info("withSamplesLight");
 
             this.samplesLight = samplesLight;
@@ -335,7 +335,7 @@ public final class Config {
          */
         @Contract("_ -> this")
         @NonNull
-        final Config.Builder withOBJ(final String objFilePath) {
+        Config.Builder withOBJ(final String objFilePath) {
             LOGGER_BUILDER.info("withOBJ");
 
             this.objFilePath = objFilePath;
@@ -350,7 +350,7 @@ public final class Config {
          */
         @Contract("_ -> this")
         @NonNull
-        final Config.Builder withMAT(final String matFilePath) {
+        Config.Builder withMAT(final String matFilePath) {
             LOGGER_BUILDER.info("withMAT");
 
             this.matFilePath = matFilePath;
@@ -365,7 +365,7 @@ public final class Config {
          */
         @Contract("_ -> this")
         @NonNull
-        final Config.Builder withCAM(final String camFilePath) {
+        Config.Builder withCAM(final String camFilePath) {
             LOGGER_BUILDER.info("withCAM");
 
             this.camFilePath = camFilePath;
@@ -379,93 +379,10 @@ public final class Config {
          */
         @Contract(" -> new")
         @NonNull
-        final Config build() {
+        Config build() {
             LOGGER_BUILDER.info("build");
 
             return new Config(this);
-        }
-
-
-
-        /**
-         * @see Config.Builder#withScene(int)
-         */
-        @Contract(pure = true)
-        public int getScene() {
-            return this.scene;
-        }
-
-        /**
-         * @see Config.Builder#withShader(int)
-         */
-        @Contract(pure = true)
-        public int getShader() {
-            return this.shader;
-        }
-
-        /**
-         * @see Config.Builder#withAccelerator(int)
-         */
-        @Contract(pure = true)
-        public int getAccelerator() {
-            return this.accelerator;
-        }
-
-        /**
-         * @see Config.Builder#withWidth(int)
-         */
-        @Contract(pure = true)
-        public int getWidth() {
-            return this.width;
-        }
-
-        /**
-         * @see Config.Builder#withHeight(int)
-         */
-        @Contract(pure = true)
-        public int getHeight() {
-            return this.height;
-        }
-
-        /**
-         * @see Config.Builder#withSamplesPixel(int)
-         */
-        @Contract(pure = true)
-        public int getSamplesPixel() {
-            return this.samplesPixel;
-        }
-
-        /**
-         * @see Config.Builder#withSamplesLight(int)
-         */
-        @Contract(pure = true)
-        public int getSamplesLight() {
-            return this.samplesLight;
-        }
-
-
-        /**
-         * @see Config.Builder#withOBJ(String)
-         */
-        @Contract(pure = true)
-        public String getObjFilePath() {
-            return this.objFilePath;
-        }
-
-        /**
-         * @see Config.Builder#withMAT(String)
-         */
-        @Contract(pure = true)
-        public String getMatFilePath() {
-            return this.matFilePath;
-        }
-
-        /**
-         * @see Config.Builder#withCAM(String)
-         */
-        @Contract(pure = true)
-        public String getCamFilePath() {
-            return this.camFilePath;
         }
     }
 }

@@ -38,6 +38,7 @@ import puscas.mobilertapp.exceptions.FailureException;
 import puscas.mobilertapp.exceptions.LowMemoryException;
 import puscas.mobilertapp.utils.ConstantsRenderer;
 import puscas.mobilertapp.utils.State;
+import puscas.mobilertapp.utils.Utils;
 
 import static puscas.mobilertapp.utils.ConstantsRenderer.NUMBER_THREADS;
 import static puscas.mobilertapp.utils.ConstantsRenderer.VERTEX_COLOR;
@@ -295,9 +296,8 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
             GLES20.glGetShaderiv(shader, GLES20.GL_COMPILE_STATUS, compiled, 0);
             checksGLError();
             if (compiled[0] == 0) {
-                final String msg = "Could not compile shader " + shaderType + ':';
+                final String msg = "Could not compile shader " + shaderType + ':' + GLES20.glGetShaderInfoLog(shader);
                 LOGGER.severe(msg);
-                LOGGER.severe(GLES20.glGetShaderInfoLog(shader));
                 checksGLError();
                 LOGGER.severe(source);
                 GLES20.glDeleteShader(shader);
@@ -577,14 +577,8 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         this.lockExecutorService.lock();
         try {
             this.executorService.shutdown();
-            boolean running = true;
-            do {
-                running = !this.executorService.awaitTermination(1L, TimeUnit.DAYS);
-            } while (running);
+            Utils.waitExecutorToFinish(this.executorService);
             this.executorService = Executors.newFixedThreadPool(NUMBER_THREADS);
-        } catch (final InterruptedException ex) {
-            LOGGER.warning(ex.getMessage());
-            Thread.currentThread().interrupt();
         } finally {
             this.lockExecutorService.unlock();
         }

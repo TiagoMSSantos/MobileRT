@@ -121,11 +121,13 @@ public final class MainActivityTest {
         IntStreams.rangeClosed(0, 4).forEach(value -> assertPickerValue(R.id.pickerShader, value));
         IntStreams.rangeClosed(1, 4).forEach(value -> assertPickerValue(R.id.pickerThreads, value));
         IntStreams.rangeClosed(1, 10).forEach(value -> assertPickerValue(R.id.pickerSamplesPixel, value));
-        IntStreams.rangeClosed(1, 9).forEach(value -> assertPickerValue(R.id.pickerSize, value));
+        IntStreams.rangeClosed(1, 8).forEach(value -> assertPickerValue(R.id.pickerSize, value));
     }
 
     /**
      * Helper method which tests clicking the render {@link Button}.
+     *
+     * @param repetitions The number of repetitions.
      */
     private void testRenderButton(final int repetitions) {
         if (repetitions <= 4) {
@@ -136,13 +138,13 @@ public final class MainActivityTest {
             assertPickerValue(R.id.pickerScene, 2);
         }
         assertPickerValue(R.id.pickerThreads, 4);
-        assertPickerValue(R.id.pickerSize, 9);
+        assertPickerValue(R.id.pickerSize, 8);
         assertPickerValue(R.id.pickerSamplesLight, 1);
         assertPickerValue(R.id.pickerAccelerator, 2);
         assertPickerValue(R.id.pickerShader, 2);
 
         final List<String> buttonTextList = ImmutableList.<String>builder().add(STOP, RENDER).build();
-        IntStreams.rangeClosed(1, buttonTextList.size() * repetitions).forEach(index -> {
+        IntStreams.rangeClosed(0, buttonTextList.size() * repetitions).forEach(currentIndex -> {
             final int finalCounterScene = this.counterScene % 6;
             this.counterScene++;
             final int finalCounterAccelerator = this.counterAccelerator % 2;
@@ -157,21 +159,25 @@ public final class MainActivityTest {
             this.counterResolution++;
             final int finalCounterThreads = this.counterThreads % 4;
             this.counterThreads++;
-            assertPickerValue(R.id.pickerScene, finalCounterScene >= 4 ? 0 : finalCounterScene);
-            assertPickerValue(R.id.pickerAccelerator, finalCounterAccelerator);
-            assertPickerValue(R.id.pickerShader, finalCounterShader);
-            assertPickerValue(R.id.pickerSize, finalCounterResolution <= 6 ? 6 : finalCounterResolution);
-            assertPickerValue(R.id.pickerSamplesPixel, finalCounterSPP == 0 ? 1 : finalCounterSPP);
-            assertPickerValue(R.id.pickerSamplesLight, finalCounterSPL == 0 ? 1 : finalCounterSPL);
-            assertPickerValue(R.id.pickerThreads, finalCounterThreads == 0 ? 1 : finalCounterThreads);
+            assertPickerValue(R.id.pickerScene, Math.min(finalCounterScene, 3));
+            assertPickerValue(R.id.pickerAccelerator, Math.max(finalCounterAccelerator, 0));
+            assertPickerValue(R.id.pickerShader, Math.max(finalCounterShader, 0));
+            assertPickerValue(R.id.pickerSize, Math.max(finalCounterResolution, 6));
+            assertPickerValue(R.id.pickerSamplesPixel, Math.max(finalCounterSPP, 1));
+            assertPickerValue(R.id.pickerSamplesLight, Math.max(finalCounterSPL, 1));
+            assertPickerValue(R.id.pickerThreads, Math.max(finalCounterThreads, 1));
 
-            final int finalIndex = (index - 1) % buttonTextList.size();
+            final int expectedIndex = currentIndex % buttonTextList.size();
+            final String expectedButtonText = buttonTextList.get(expectedIndex);
             final ViewInteraction viewInteraction = Espresso.onView(ViewMatchers.withId(R.id.renderButton));
             viewInteraction.perform(new MainActivityTest.ViewActionRenderButton());
             viewInteraction.check((view, exception) -> {
-                final Button button = view.findViewById(R.id.renderButton);
-                Assertions.assertEquals(buttonTextList.get(finalIndex), button.getText().toString(),
-                        "Button message at index " + index);
+                final Button renderButton = view.findViewById(R.id.renderButton);
+                Assertions.assertEquals(
+                    expectedButtonText,
+                    renderButton.getText().toString(),
+                    "Button message at currentIndex " + currentIndex
+                );
             });
         });
     }
@@ -181,32 +187,48 @@ public final class MainActivityTest {
      */
     private static void testPreviewCheckBox() {
         final ViewInteraction viewInteraction = Espresso.onView(ViewMatchers.withId(R.id.preview));
-        viewInteraction.check((view, exception) -> {
-            final CheckBox checkbox = view.findViewById(R.id.preview);
-            Assertions.assertEquals(PREVIEW, checkbox.getText().toString(), CHECK_BOX_MESSAGE);
-            Assertions.assertTrue(checkbox.isChecked(), "Check box should be checked");
-        });
+        viewInteraction.check((view, exception) ->
+            assertCheckBox(view, R.id.preview, PREVIEW, CHECK_BOX_MESSAGE, true)
+        );
         viewInteraction.perform(new MainActivityTest.ViewActionCheckBox());
-        viewInteraction.check((view, exception) -> {
-            final CheckBox checkbox = view.findViewById(R.id.preview);
-            Assertions.assertEquals(PREVIEW, checkbox.getText().toString(), CHECK_BOX_MESSAGE);
-            Assertions.assertFalse(checkbox.isChecked(), "Check box should not be checked");
-        });
+        viewInteraction.check((view, exception) ->
+            assertCheckBox(view, R.id.preview, PREVIEW, CHECK_BOX_MESSAGE, false)
+        );
+    }
+
+    /**
+     * Asserts the {@link CheckBox} expected value.
+     *
+     * @param view                The {@link View}.
+     * @param id                  The id of the {@link CheckBox}.
+     * @param expectedDescription The expected description of the {@link CheckBox}.
+     * @param checkBoxMessage     The message.
+     * @param expectedValue       The expected value for the {@link CheckBox}.
+     */
+    private static void assertCheckBox(
+            final @NotNull View view,
+            final int id,
+            final String expectedDescription,
+            final String checkBoxMessage,
+            final boolean expectedValue) {
+        final CheckBox checkbox = view.findViewById(id);
+        Assertions.assertEquals(expectedDescription, checkbox.getText().toString(), checkBoxMessage);
+        Assertions.assertEquals(expectedValue, checkbox.isChecked(), "Check box has not the expected value");
     }
 
     /**
      * Helper method which changes the {@code value} of a {@link NumberPicker}.
      *
-     * @param pickerId The identifier of the {@link NumberPicker}.
-     * @param value    The new value for the {@link NumberPicker}.
+     * @param pickerId      The identifier of the {@link NumberPicker}.
+     * @param expectedValue The new expectedValue for the {@link NumberPicker}.
      */
-    private static void assertPickerValue(final int pickerId, final int value) {
+    private static void assertPickerValue(final int pickerId, final int expectedValue) {
         Espresso.onView(ViewMatchers.withId(pickerId))
-                .perform(new MainActivityTest.ViewActionNumberPicker(value))
-                .check((view, exception) -> {
-                    final NumberPicker numberPicker = view.findViewById(pickerId);
-                    Assertions.assertEquals(value, numberPicker.getValue(), "Number picker message");
-                });
+            .perform(new MainActivityTest.ViewActionNumberPicker(expectedValue))
+            .check((view, exception) -> {
+                final NumberPicker numberPicker = view.findViewById(pickerId);
+                Assertions.assertEquals(expectedValue, numberPicker.getValue(), "Number picker message");
+            });
     }
 
     /**
@@ -229,12 +251,12 @@ public final class MainActivityTest {
      * Tests that a file in the Android device exists and is readable.
      */
     @Test
-    public final void testFilesExistAndReadable() {
+    public void testFilesExistAndReadable() {
         LOGGER.info("testFilesExist");
         final MainActivity activity = this.mainActivityActivityTestRule.getActivity();
         final List<String> paths = ImmutableList.<String>builder().add(
-                activity.getSDCardPath() + OBJ_FILE_CONFERENCE,
-                activity.getSDCardPath() + OBJ_FILE_TEAPOT
+            activity.getSDCardPath() + OBJ_FILE_CONFERENCE,
+            activity.getSDCardPath() + OBJ_FILE_TEAPOT
         ).build();
         StreamSupport.stream(paths)
             .forEach(path -> {
@@ -248,12 +270,12 @@ public final class MainActivityTest {
      * Tests that a file does not exist in the Android device.
      */
     @Test
-    public final void testFilesNotExist() {
+    public void testFilesNotExist() {
         LOGGER.info("testFilesNotExist");
         final MainActivity activity = this.mainActivityActivityTestRule.getActivity();
         final List<String> paths = ImmutableList.<String>builder().add(
-                EMPTY_FILE,
-                activity.getSDCardPath() + OBJ_FILE_NOT_EXISTS
+            EMPTY_FILE,
+            activity.getSDCardPath() + OBJ_FILE_NOT_EXISTS
         ).build();
         StreamSupport.stream(paths)
             .forEach(path -> {
@@ -267,15 +289,15 @@ public final class MainActivityTest {
      * Tests changing all the {@link NumberPicker} and clicking the render {@link Button} many times.
      */
     @Test
-    public final void testUI() {
+    public void testUI() {
         LOGGER.info("testUI");
         this.mainActivityActivityTestRule.getActivity();
 
         Espresso.onView(ViewMatchers.withId(R.id.renderButton))
-                .check((view, exception) -> {
-                    final Button button = view.findViewById(R.id.renderButton);
-                    Assertions.assertEquals(RENDER, button.getText().toString(), "Button message");
-                });
+            .check((view, exception) -> {
+                final Button button = view.findViewById(R.id.renderButton);
+                Assertions.assertEquals(RENDER, button.getText().toString(), "Button message");
+            });
 
         testRenderButton(4);
         testRenderButton(2 * 100);

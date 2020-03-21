@@ -11,6 +11,7 @@
 [![Copy Paste Status](https://tiagomssantos.github.io/MobileRT/jscpd-report/jscpd-badge.svg)](https://tiagomssantos.github.io/MobileRT/jscpd-report/jscpd-report)
 [![Maintainability](https://api.codeclimate.com/v1/badges/6a80c282c888f405d779/maintainability)](https://codeclimate.com/github/TiagoMSSantos/MobileRT/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/6a80c282c888f405d779/test_coverage)](https://codeclimate.com/github/TiagoMSSantos/MobileRT/test_coverage)
+[![codebeat badge](https://codebeat.co/badges/337fce91-f222-434d-b904-6206ea5e29f0)](https://codebeat.co/projects/github-com-tiagomssantos-mobilert-master)
 
 <img src="Example.gif" alt="RayTracer" width="400"/>
 

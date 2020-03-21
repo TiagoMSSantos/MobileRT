@@ -40,10 +40,10 @@ public final class AcceleratorTest {
     public void testGetNames() {
         LOGGER.info("testGetNames");
         Assertions.assertThat(Accelerator.getNames()).contains(
-                Accelerator.NONE.getName(),
-                Accelerator.NAIVE.getName(),
-                Accelerator.REG_GRID.getName(),
-                Accelerator.BVH.getName()
+            Accelerator.NONE.getName(),
+            Accelerator.NAIVE.getName(),
+            Accelerator.REG_GRID.getName(),
+            Accelerator.BVH.getName()
         );
     }
 }

@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 
 import java8.util.Optional;
 import puscas.mobilertapp.utils.State;
+import puscas.mobilertapp.utils.Utils;
 
 import static puscas.mobilertapp.utils.ConstantsMethods.ON_CANCELLED;
 import static puscas.mobilertapp.utils.ConstantsRenderer.NUMBER_THREADS;
@@ -52,7 +53,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
      * An {@link ExecutorService} which schedules every {@link RenderTask#updateInterval}
      * {@code TimeUnit.MILLISECONDS} the {@link RenderTask#timer} {@link Runnable}.
      */
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(NUMBER_THREADS);
+    private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(NUMBER_THREADS);
 
     /**
      * A {@link Runnable} to the {@link DrawView#requestRender} method which is called in the {@link RenderTask#timer}.
@@ -214,7 +215,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
             this.requestRender.run();
             publishProgress();
             if (currentState != State.BUSY) {
-                this.scheduler.shutdown();
+                this.executorService.shutdown();
             }
         };
     }
@@ -281,16 +282,8 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
     protected final Void doInBackground(@NonNull final Void... params) {
         LOGGER.info("doInBackground");
 
-        this.scheduler.scheduleAtFixedRate(this.timer, 0L, this.updateInterval, TimeUnit.MILLISECONDS);
-        boolean running = true;
-        do {
-            try {
-                running = !this.scheduler.awaitTermination(1L, TimeUnit.DAYS);
-            } catch (final InterruptedException ex) {
-                LOGGER.severe(ex.getMessage());
-                Thread.currentThread().interrupt();
-            }
-        } while (running);
+        this.executorService.scheduleAtFixedRate(this.timer, 0L, this.updateInterval, TimeUnit.MILLISECONDS);
+        Utils.waitExecutorToFinish(this.executorService);
         return null;
     }
 
