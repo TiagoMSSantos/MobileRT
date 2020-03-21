@@ -18,6 +18,43 @@ TestIntersection::~TestIntersection() {
 }
 
 /**
+ * Tests the Intersection constructor with invalid parameters.
+ */
+TEST_F(TestIntersection, TestInvalidConstructor) {
+    const auto intPoint {::glm::vec3 {10.0F, 0.0F, 10.0F}};
+    const float dist {1.2F};
+    const auto normal {::glm::vec3 {0.0F, 0.0F, 0.0F}};
+    const auto primitive {nullptr};
+    const auto materialIndex {0};
+    const ::glm::vec2 texCoords {0.4F, 0.6F};
+
+    ASSERT_DEBUG_DEATH(const Intersection intersection (intPoint, dist, normal, primitive, materialIndex, texCoords);, "");
+}
+
+/**
+ * Tests the Intersection constructor with invalid parameters.
+ */
+TEST_F(TestIntersection, TestInvalidConstructor2) {
+    const auto intPoint {::glm::vec3 {10.0F, 0.0F, 10.0F}};
+    const float dist {0.0F};
+    const auto normal {::glm::vec3 {0.0F, 0.0F, 10.0F}};
+    const auto primitive {nullptr};
+    const auto materialIndex {0};
+    const ::glm::vec2 texCoords {0.4F, 0.6F};
+
+    ASSERT_DEBUG_DEATH(const Intersection intersection (intPoint, dist, normal, primitive, materialIndex, texCoords);, "");
+}
+
+/**
+ * Tests the Intersection constructor with invalid parameters.
+ */
+TEST_F(TestIntersection, TestInvalidConstructor3) {
+    const float dist {0.0F};
+
+    ASSERT_DEBUG_DEATH(const Intersection intersection (dist);, "");
+}
+
+/**
  * Tests the Intersection constructor.
  */
 TEST_F(TestIntersection, TestConstructor) {

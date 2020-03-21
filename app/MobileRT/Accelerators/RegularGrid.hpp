@@ -77,7 +77,7 @@ namespace MobileRT {
     ) :
         grid_ {
             ::std::vector<::std::vector<T*>> {
-                static_cast<::std::size_t> (gridSize * gridSize * gridSize)
+                static_cast<::std::uint32_t> (gridSize * gridSize * gridSize)
             }
         },
         primitives_ {::std::move(primitives)},
@@ -154,7 +154,7 @@ namespace MobileRT {
 
         // store primitives in the grid cells
 //        #pragma omp parallel for num_threads(2)
-        for (::std::size_t index = 0; index < numPrimitives; ++index) {
+        for (::std::uint32_t index {0}; index < numPrimitives; ++index) {
             auto &primitive {this->primitives_[index]};
             const auto bound {primitive.getAABB()};
             const auto &bv1 {bound.pointMin_};
@@ -185,7 +185,7 @@ namespace MobileRT {
                 for (auto y {y1}; y <= y2; ++y) {
                     for (auto z {z1}; z <= z2; ++z) {
                         // construct aabb for current cell
-                        const auto idx {static_cast<::std::size_t> (
+                        const auto idx {static_cast<::std::uint32_t> (
                             x +
                             y * this->gridSize_ +
                             z * this->gridSize_ * this->gridSize_

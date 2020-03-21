@@ -32,4 +32,4 @@ jobs:
     - name: Run Google Test
       if: success()
       working-directory: build_native/bin
-      run: ./GoogleTestd
+      run: ./UnitTestsd

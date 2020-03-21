@@ -1,6 +1,6 @@
 #include "MobileRT/Shapes/Triangle.hpp"
-#include <cmath>
 #include <boost/assert.hpp>
+#include <cmath>
 
 using ::MobileRT::AABB;
 using ::MobileRT::Triangle;

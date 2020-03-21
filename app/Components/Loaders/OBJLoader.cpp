@@ -62,7 +62,7 @@ OBJLoader::OBJLoader(::std::string objFilePath, ::std::string matFilePath) :
         this->numberTriangles_ = 0;
         for (const auto &shape : this->shapes_) {
             for (const auto numFaceVertice : shape.mesh.num_face_vertices) {
-                const auto triangles {static_cast<::std::size_t>(numFaceVertice / 3)};
+                const auto triangles {static_cast<::std::uint32_t>(numFaceVertice / 3)};
                 this->numberTriangles_ += triangles;
             }
         }
@@ -76,17 +76,17 @@ OBJLoader::OBJLoader(::std::string objFilePath, ::std::string matFilePath) :
 bool OBJLoader::fillScene(Scene *const scene,
                           ::std::function<::std::unique_ptr<Sampler>()> lambda) {
     LOG("FILLING SCENE");
-    scene->triangles_.reserve(static_cast<::std::size_t> (this->numberTriangles_));
+    scene->triangles_.reserve(static_cast<::std::uint32_t> (this->numberTriangles_));
     const ::std::string delimiter {"/"};
     const ::std::string filePath {this->objFilePath_.substr(0, this->objFilePath_.find_last_of(delimiter)) + "/"};
     ::std::map<::std::string, Texture> textures {};
 
     for (const auto &shape : this->shapes_) {
         // Loop over faces(polygon)
-        ::std::size_t indexOffset {};
-        for (::std::size_t face {}; face < shape.mesh.num_face_vertices.size(); ++face) {
+        ::std::uint32_t indexOffset {};
+        for (::std::uint32_t face {}; face < shape.mesh.num_face_vertices.size(); ++face) {
             const auto it {shape.mesh.num_face_vertices.cbegin() + static_cast<::std::int32_t> (face)};
-            const ::std::size_t faceVertices {*it};
+            const ::std::uint32_t faceVertices {*it};
 
             if (faceVertices % 3 != 0) {
                 LOG("num_face_vertices [", face, "] = ", faceVertices);
@@ -94,7 +94,7 @@ bool OBJLoader::fillScene(Scene *const scene,
             }
 
             // Loop over vertices in the face.
-            for (::std::size_t vertex {}; vertex < faceVertices; vertex += 3) {
+            for (::std::uint32_t vertex {}; vertex < faceVertices; vertex += 3) {
                 const auto itIdx {shape.mesh.indices.cbegin() + static_cast<::std::int32_t> (indexOffset + vertex)};
 
                 const auto idx1 {*(itIdx + 0)};

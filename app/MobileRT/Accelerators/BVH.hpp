@@ -142,9 +142,9 @@ namespace MobileRT {
         ::std::int32_t endBoxIndex {static_cast<::std::int32_t> (primitivesSize)};
         ::std::int32_t maxNodeIndex {};
 
-        ::std::array<::std::int32_t, SizeOfStack> stackBoxIndex {};
-        ::std::array<::std::int32_t, SizeOfStack> stackBoxBegin {};
-        ::std::array<::std::int32_t, SizeOfStack> stackBoxEnd {};
+        ::std::array<::std::int32_t, StackSize> stackBoxIndex {};
+        ::std::array<::std::int32_t, StackSize> stackBoxBegin {};
+        ::std::array<::std::int32_t, StackSize> stackBoxEnd {};
 
         auto itStackBoxIndex {stackBoxIndex.begin()};
         ::std::advance(itStackBoxIndex, 1);
@@ -310,7 +310,7 @@ namespace MobileRT {
             return intersection;
         }
         ::std::int32_t boxIndex {};
-        ::std::array<::std::int32_t, SizeOfStack> stackBoxIndex {};
+        ::std::array<::std::int32_t, StackSize> stackBoxIndex {};
 
         const auto beginBoxIndex {stackBoxIndex.cbegin()};
         auto itStackBoxIndex {stackBoxIndex.begin()};

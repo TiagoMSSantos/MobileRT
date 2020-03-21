@@ -217,7 +217,7 @@ cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=De
 make
 cd ..
 lcov -c -i -d . --no-external -o code_coverage_base.info
-./build_Debug/bin/GoogleTestd
+./build_Debug/bin/UnitTestsd
 lcov -c -d . --no-external -o code_coverage_test.info
 lcov -a code_coverage_base.info -a code_coverage_test.info -o code_coverage.info
 lcov --remove code_coverage.info -o code_coverage.info '*third_party*' '*build*'

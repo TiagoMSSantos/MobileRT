@@ -10,6 +10,7 @@ using ::MobileRT::Intersection;
  */
 Intersection::Intersection(const float dist) :
     length_ {dist} {
+        BOOST_ASSERT_MSG(this->length_ > 0, "length can't be negative or zero.");
 }
 
 /**
@@ -38,4 +39,5 @@ Intersection::Intersection(
         BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normal_)), "normal can't be NaN.");
         BOOST_ASSERT_MSG(!::glm::all(::glm::isinf(this->normal_)), "normal can't be infinite.");
         BOOST_ASSERT_MSG(!equal(this->normal_, ::glm::vec3 {0}), "normal can't be zero.");
+        BOOST_ASSERT_MSG(this->length_ > 0, "length can't be negative or zero.");
 }

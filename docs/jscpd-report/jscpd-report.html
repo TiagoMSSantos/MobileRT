@@ -259,7 +259,24 @@ h3 {
         text-align: center;
 
     }
-}</style></head><body><div class="pure-g" id="layout"><div class="sidebar pure-u-1 pure-u-md-1-4"><div class="header"><img src="https://raw.githubusercontent.com/kucherenko/jscpd/1.0.0-alpha/assets/logo-small-box.svg?sanitize=true" width="190"><nav class="nav"><ul class="nav-list"><li class="nav-item"><a class="pure-button" href="#cpp">cpp</a></li><li class="nav-item"><a class="pure-button" href="#c">c</a></li><li class="nav-item"><a class="pure-button" href="#java">java</a></li></ul></nav></div></div><div class="content pure-u-1 pure-u-md-3-4"><div class="controls"><div class="pure-u"><button class="pure-button" onclick="collapseExpandAll()">Collapse/Expand All</button></div></div><table class="pure-table stats"><thead><tr><th>Total files</th><th>Total lines of code</th><th>Duplicated lines</th><th>% of duplications</th></tr></thead><tbody><tr><td>112</td><td>9576</td><td>215</td><td>2.25%</td></tr></tbody></table><div class="clones collapsed"><a name="cpp"></a><h1 class="content-subhead">cpp</h1><div class="mode-stats"><p><span class="mode-rate">2.57%</span> Total files: 90, total lines of code: 7285, duplicated lines: 187</p></div><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Unit_Testing/TestIntersection.cpp[53:42 - 63:1]<br/>app/Unit_Testing/TestIntersection.cpp[31:97 - 41:1]</div></header><div class="clone-description"><pre data-first-start="53" data-second-start="31" data-length="10">};
+}</style></head><body><div class="pure-g" id="layout"><div class="sidebar pure-u-1 pure-u-md-1-4"><div class="header"><img src="https://raw.githubusercontent.com/kucherenko/jscpd/1.0.0-alpha/assets/logo-small-box.svg?sanitize=true" width="190"><nav class="nav"><ul class="nav-list"><li class="nav-item"><a class="pure-button" href="#cpp">cpp</a></li><li class="nav-item"><a class="pure-button" href="#c">c</a></li><li class="nav-item"><a class="pure-button" href="#java">java</a></li></ul></nav></div></div><div class="content pure-u-1 pure-u-md-3-4"><div class="controls"><div class="pure-u"><button class="pure-button" onclick="collapseExpandAll()">Collapse/Expand All</button></div></div><table class="pure-table stats"><thead><tr><th>Total files</th><th>Total lines of code</th><th>Duplicated lines</th><th>% of duplications</th></tr></thead><tbody><tr><td>112</td><td>9663</td><td>237</td><td>2.45%</td></tr></tbody></table><div class="clones collapsed"><a name="cpp"></a><h1 class="content-subhead">cpp</h1><div class="mode-stats"><p><span class="mode-rate">2.84%</span> Total files: 90, total lines of code: 7372, duplicated lines: 209</p></div><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Unit_Testing/TestIntersection.cpp[40:54 - 51:49]<br/>app/Unit_Testing/TestIntersection.cpp[26:53 - 37:49]</div></header><div class="clone-description"><pre data-first-start="40" data-second-start="26" data-length="11">}};
+    const auto primitive {nullptr};
+    const auto materialIndex {0};
+    const ::glm::vec2 texCoords {0.4F, 0.6F};
+
+    ASSERT_DEBUG_DEATH(const Intersection intersection (intPoint, dist, normal, primitive, materialIndex, texCoords);, &quot;&quot;);
+}
+
+/**
+ * Tests the Intersection constructor with invalid parameters.
+ */
+TEST_F(TestIntersection, TestInvalidConstructor3</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Unit_Testing/TestIntersection.cpp[62:27 - 68:10]<br/>app/Unit_Testing/TestIntersection.cpp[39:27 - 45:23]</div></header><div class="clone-description"><pre data-first-start="62" data-second-start="39" data-length="6">};
+    const auto normal {::glm::vec3 {0.0F, 0.0F, 10.0F}};
+    const auto primitive {nullptr};
+    const auto materialIndex {0};
+    const ::glm::vec2 texCoords {0.4F, 0.6F};
+
+    const</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Unit_Testing/TestIntersection.cpp[90:42 - 100:1]<br/>app/Unit_Testing/TestIntersection.cpp[68:97 - 78:1]</div></header><div class="clone-description"><pre data-first-start="90" data-second-start="68" data-length="10">};
 
     ASSERT_EQ(dist, intersection.length_);
     ASSERT_EQ(primitive, intersection.primitive_);
@@ -283,7 +300,12 @@ h3 {
     }
 }
 
-TEST_F</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Components/Lights/PointLight.hpp[25:54 - 35:42]<br/>app/Components/Lights/AreaLight.hpp[33:51 - 43:41]</div></header><div class="clone-description"><pre data-first-start="25" data-second-start="33" data-length="10">) noexcept = delete;
+TEST_F</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Unit_Testing/TestRay.cpp[53:23 - 58:19]<br/>app/Unit_Testing/TestRay.cpp[35:32 - 40:18]</div></header><div class="clone-description"><pre data-first-start="53" data-second-start="35" data-length="5">) {
+    const auto direction {::glm::vec3 {10.0F, 0.0F, 10.0F}};
+    const auto origin {::glm::vec3 {0.0F, 0.0F, 10.0F}};
+    const auto depth {19};
+    const auto primitive {nullptr};
+    const Ray ray1</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Components/Lights/PointLight.hpp[25:54 - 35:42]<br/>app/Components/Lights/AreaLight.hpp[33:51 - 43:41]</div></header><div class="clone-description"><pre data-first-start="25" data-second-start="33" data-length="10">) noexcept = delete;
 
         ::glm::vec3 getPosition() final;
 

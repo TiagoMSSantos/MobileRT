@@ -68,6 +68,36 @@ static void assertRayTriangle(const glm::vec3 &orig, const glm::vec3 &dir, const
 }
 
 /**
+ * Tests the Triangle constructor with invalid parameters.
+ */
+TEST_F(TestTriangle, TestInvalidConstructor) {
+	const auto A {::glm::vec3 {0.0F, 0.0F, 0.0F}};
+	const auto B {::glm::vec3 {0.0F, 0.0F, 0.0F}};
+	const auto C {::glm::vec3 {0.0F, 0.0F, 0.0F}};
+
+    ASSERT_DEBUG_DEATH(Triangle::Builder(A, B, C).build();, "");
+}
+
+/**
+ * Tests the Triangle constructor with invalid parameters.
+ */
+TEST_F(TestTriangle, TestInvalidConstructor2) {
+    const auto A {::glm::vec3 {10.0F, 0.0F, 10.0F}};
+    const auto B {::glm::vec3 {0.0F, 0.0F, 10.0F}};
+    const auto C {::glm::vec3 {0.0F, 10.0F, 10.0F}};
+    const auto normalA {::glm::vec3 {0, 0 ,0}};
+    const auto normalB {::glm::vec3 {0, 0 ,0}};
+    const auto normalC {::glm::vec3 {0, 0 ,0}};
+
+    ASSERT_DEBUG_DEATH(
+            Triangle::Builder(A, B, C)
+            .withNormals(normalA, normalB, normalC)
+            .build();,
+            ""
+    );
+}
+
+/**
  * Tests the Triangle constructor.
  */
 TEST_F(TestTriangle, TestConstructor) {

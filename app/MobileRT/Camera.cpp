@@ -19,12 +19,6 @@ Camera::Camera(const ::glm::vec3 &position, const ::glm::vec3 &lookAt, const ::g
 }
 
 /**
- * The destructor.
- */
-Camera::~Camera() {
-}
-
-/**
  * The copy constructor.
  *
  * @param camera A camera to copy.

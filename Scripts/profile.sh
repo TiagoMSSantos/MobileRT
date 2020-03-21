@@ -35,6 +35,8 @@ SCENES_SRCS="${MOBILERT_PATH}/app/Scenes"
 THIRDPARTY_HEADERS="${MOBILERT_PATH}/app/third_party"
 GLM_HEADERS="${THIRDPARTY_HEADERS}/glm"
 STB_HEADERS="${THIRDPARTY_HEADERS}/stb"
+BOOST_HEADERS_ROOT="${THIRDPARTY_HEADERS}/boost/libs/"
+BOOST_HEADERS="${BOOST_HEADERS_ROOT}/assert/include"
 
 if [ -z "${PLOT_GRAPHS}" ]; then
   PLOT_GRAPHS="Plot_Graphs"
@@ -202,7 +204,7 @@ function clangtidy {
   ${COMPONENTS_SRCS}/Components/*/*.*pp \
 	${DEPENDENT_SRCS}/Linux/*.*pp \
   ${SCENES_SRCS}/*.*pp \
-	-- -std=c++17 -ferror-limit=1 -stdlib=libc++ \
+	-- -std=c++11 -ferror-limit=1 -stdlib=libc++ \
   -I ${MOBILERT_SRCS} \
   -I ${COMPONENTS_SRCS} \
   -I ${DEPENDENT_SRCS}/Linux \
@@ -210,6 +212,7 @@ function clangtidy {
   -isystem ${THIRDPARTY_HEADERS} \
   -isystem ${GLM_HEADERS} \
   -isystem ${STB_HEADERS} \
+  -isystem ${BOOST_HEADERS} \
   -isystem /usr/include/c++/7 \
   -isystem /usr/include/c++/v1 \
   -isystem /usr/include/x86_64-linux-gnu/c++/7 \
@@ -275,7 +278,7 @@ else
         ${PARAM4}) awk -f "${PLOT_SCRIPTS_PATH}/parser_median.awk" "${PLOT_SCRIPTS_PATH}/test.dat"  ;;
         ${PARAM5}) execute ;;
         ${PARAM6}) clangtidy ;;
-        ${PARAM7}) ${BIN_DEBUG_PATH}/GoogleTestd ;;
+        ${PARAM7}) ${BIN_DEBUG_PATH}/UnitTestsd ;;
         ${PARAM8}) debug ;;
         *) echo ""
            echo "Wrong Parameter: ${P}"

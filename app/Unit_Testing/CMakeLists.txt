@@ -1,4 +1,4 @@
-project( GoogleTest VERSION 1.0.0.0 LANGUAGES CXX )
+project( UnitTests VERSION 1.0.0.0 LANGUAGES CXX )
 
 file( GLOB_RECURSE GTEST_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/**.cpp" )
 
@@ -8,7 +8,7 @@ set_target_properties( ${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "${CMAKE_DEBUG_P
 target_include_directories( ${PROJECT_NAME} SYSTEM PUBLIC "${THIRD_PARTY_HEADERS}/googletest/googletest/include" )
 target_include_directories( ${PROJECT_NAME} SYSTEM PUBLIC "/usr/include/libcxxabi" )
 
-target_compile_options( ${PROJECT_NAME} PRIVATE ${COMMON_FLAGS} -Wno-global-constructors )
+target_compile_options( ${PROJECT_NAME} PRIVATE ${COMMON_FLAGS} -Wno-global-constructors -Wno-used-but-marked-unused -Wno-covered-switch-default )
 target_compile_options( ${PROJECT_NAME} PRIVATE $<$<CONFIG:DEBUG>:${COMMON_FLAGS_DEBUG}> )
 target_compile_options( ${PROJECT_NAME} PRIVATE $<$<CONFIG:RELEASE>:${COMMON_FLAGS_RELEASE}> )
 
