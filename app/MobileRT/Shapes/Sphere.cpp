@@ -83,8 +83,8 @@ AABB Sphere::getAABB() const {
  */
 bool Sphere::intersect(const AABB &box) const {
     auto dmin {0.0F};
-    const auto &v1 {box.pointMin_};
-    const auto &v2 {box.pointMax_};
+    const auto &v1 {box.getPointMin()};
+    const auto &v2 {box.getPointMax()};
     if (this->center_[0] < v1[0]) {
         dmin = dmin + (this->center_[0] - v1[0]) * (this->center_[0] - v1[0]);
     } else if (this->center_[0] > v2[0]) {

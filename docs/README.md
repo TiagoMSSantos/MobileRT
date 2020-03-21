@@ -2,13 +2,15 @@
 - A portable Ray Tracing (RT) engine for multiple devices <br/>
 - Already available interfaces for Android and Linux <br/>
 
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/LICENSE)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/LICENSE)
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FTiagoMSSantos%2FMobileRT.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FTiagoMSSantos%2FMobileRT?ref=badge_shield)
 [![BCH compliance](https://bettercodehub.com/edge/badge/TiagoMSSantos/MobileRT?branch=master)](https://bettercodehub.com/results/TiagoMSSantos/MobileRT)
 [![Documentation](https://codedocs.xyz/TiagoMSSantos/MobileRT.svg)](https://codedocs.xyz/TiagoMSSantos/MobileRT/)
 [![Build Status](https://travis-ci.com/TiagoMSSantos/MobileRT.svg?branch=master)](https://travis-ci.com/TiagoMSSantos/MobileRT)
 [![codecov](https://codecov.io/gh/TiagoMSSantos/MobileRT/branch/master/graph/badge.svg)](https://codecov.io/gh/TiagoMSSantos/MobileRT)
 [![Copy Paste Status](https://tiagomssantos.github.io/MobileRT/jscpd-report/jscpd-badge.svg)](https://tiagomssantos.github.io/MobileRT/jscpd-report/jscpd-report)
+[![Maintainability](https://api.codeclimate.com/v1/badges/6a80c282c888f405d779/maintainability)](https://codeclimate.com/github/TiagoMSSantos/MobileRT/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/6a80c282c888f405d779/test_coverage)](https://codeclimate.com/github/TiagoMSSantos/MobileRT/test_coverage)
 
 <img src="Example.gif" alt="RayTracer" width="400"/>
 
@@ -211,7 +213,7 @@ system does not have enough memory to render the scene
 ### Code Coverage
 Here are the commands to generate the code coverage report:
 ```bash
-rm -rf build_Debug/*
+find build_Debug/* -name *.gcda | xargs rm
 cd build_Debug
 cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=Debug ../app/
 make

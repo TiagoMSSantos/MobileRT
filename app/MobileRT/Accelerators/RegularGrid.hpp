@@ -86,19 +86,21 @@ namespace MobileRT {
         worldBoundaries_ {Scene::getBounds<T> (primitives_)},
         // precalculate 1 / size of a cell (for x, y and z)
         cellSizeInverted_ {
-            gridSize_ / (worldBoundaries_.pointMax_ - worldBoundaries_.pointMin_)[0],
-            gridSize_ / (worldBoundaries_.pointMax_ - worldBoundaries_.pointMin_)[1],
-            gridSize_ / (worldBoundaries_.pointMax_ - worldBoundaries_.pointMin_)[2]
+            gridSize_ / (worldBoundaries_.getPointMax() - worldBoundaries_.getPointMin())[0],
+            gridSize_ / (worldBoundaries_.getPointMax() - worldBoundaries_.getPointMin())[1],
+            gridSize_ / (worldBoundaries_.getPointMax() - worldBoundaries_.getPointMin())[2]
         },
         // precalculate size of a cell (for x, y, and z)
-        cellSize_ {(worldBoundaries_.pointMax_ - worldBoundaries_.pointMin_) * (1.0F / gridSize_)} {
+        cellSize_ {(worldBoundaries_.getPointMax() - worldBoundaries_.getPointMin()) * (1.0F / gridSize_)} {
+        const auto worldBoundsMin {this->worldBoundaries_.getPointMin()};
+        const auto worldBoundsMax {this->worldBoundaries_.getPointMax()};
         LOG("scene min=(",
-            this->worldBoundaries_.pointMin_[0], ", ",
-            this->worldBoundaries_.pointMin_[1], ", ",
-            this->worldBoundaries_.pointMin_[2], ") max=(",
-            this->worldBoundaries_.pointMax_[0], ", ",
-            this->worldBoundaries_.pointMax_[1], ", ",
-            this->worldBoundaries_.pointMax_[2], ")"
+            worldBoundsMin[0], ", ",
+            worldBoundsMin[1], ", ",
+            worldBoundsMin[2], ") max=(",
+            worldBoundsMax[0], ", ",
+            worldBoundsMax[1], ", ",
+            worldBoundsMax[2], ")"
         );
 
         LOG("PRIMITIVES = ", this->primitives_.size());
@@ -140,9 +142,11 @@ namespace MobileRT {
      */
     template<typename T>
     void RegularGrid<T>::addPrimitives() {
+        const auto worldBoundsMin {this->worldBoundaries_.getPointMin()};
+        const auto worldBoundsMax {this->worldBoundaries_.getPointMax()};
 
         // calculate cell width, height and depth
-        const auto size {this->worldBoundaries_.pointMax_ - this->worldBoundaries_.pointMin_};
+        const auto size {worldBoundsMax - worldBoundsMin};
         const auto dx {size[0] / this->gridSize_};
         const auto dy {size[1] / this->gridSize_};
         const auto dz {size[2] / this->gridSize_};
@@ -157,24 +161,24 @@ namespace MobileRT {
         for (::std::uint32_t index {0}; index < numPrimitives; ++index) {
             auto &primitive {this->primitives_[index]};
             const auto bound {primitive.getAABB()};
-            const auto &bv1 {bound.pointMin_};
-            const auto &bv2 {bound.pointMax_};
+            const auto &bv1 {bound.getPointMin()};
+            const auto &bv2 {bound.getPointMax()};
 
             // find out which cells could contain the primitive (based on aabb)
-            auto x1 {static_cast<::std::int32_t> ((bv1[0] - this->worldBoundaries_.pointMin_[0]) * dxReci)};
-            auto x2 {static_cast<::std::int32_t> ((bv2[0] - this->worldBoundaries_.pointMin_[0]) * dxReci) + 1};
+            auto x1 {static_cast<::std::int32_t> ((bv1[0] - worldBoundsMin[0]) * dxReci)};
+            auto x2 {static_cast<::std::int32_t> ((bv2[0] - worldBoundsMin[0]) * dxReci) + 1};
             x1 = ::std::max(0, x1);
             x2 = ::std::min(x2, this->gridSize_ - 1);
             x2 = ::std::fabs(size[0]) < ::std::numeric_limits<float>::epsilon()? 0 : x2;
             x1 = ::std::min(x1, x2);
-            auto y1 {static_cast<::std::int32_t> ((bv1[1] - this->worldBoundaries_.pointMin_[1]) * dyReci)};
-            auto y2 {static_cast<::std::int32_t> ((bv2[1] - this->worldBoundaries_.pointMin_[1]) * dyReci) + 1};
+            auto y1 {static_cast<::std::int32_t> ((bv1[1] - worldBoundsMin[1]) * dyReci)};
+            auto y2 {static_cast<::std::int32_t> ((bv2[1] - worldBoundsMin[1]) * dyReci) + 1};
             y1 = ::std::max(0, y1);
             y2 = ::std::min(y2, this->gridSize_ - 1);
             y2 = ::std::fabs(size[1]) < ::std::numeric_limits<float>::epsilon()? 0 : y2;
             y1 = ::std::min(y1, y2);
-            auto z1 {static_cast<::std::int32_t> ((bv1[2] - this->worldBoundaries_.pointMin_[2]) * dzReci)};
-            auto z2 {static_cast<::std::int32_t> ((bv2[2] - this->worldBoundaries_.pointMin_[2]) * dzReci) + 1};
+            auto z1 {static_cast<::std::int32_t> ((bv1[2] - worldBoundsMin[2]) * dzReci)};
+            auto z2 {static_cast<::std::int32_t> ((bv2[2] - worldBoundsMin[2]) * dzReci) + 1};
             z1 = ::std::max(0, z1);
             z2 = ::std::min(z2, this->gridSize_ - 1);
             z2 = ::std::fabs(size[2]) < ::std::numeric_limits<float>::epsilon()? 0 : z2;
@@ -191,9 +195,9 @@ namespace MobileRT {
                             z * this->gridSize_ * this->gridSize_
                         )};
                         const ::glm::vec3 &pos {
-                            this->worldBoundaries_.pointMin_[0] + x * dx,
-                            this->worldBoundaries_.pointMin_[1] + y * dy,
-                            this->worldBoundaries_.pointMin_[2] + z * dz
+                                worldBoundsMin[0] + x * dx,
+                                worldBoundsMin[1] + y * dy,
+                                worldBoundsMin[2] + z * dz
                         };
                         const AABB &cell {pos, pos + ::glm::vec3 {dx, dy, dz}};
                         //LOG("min=(", pos[0], ", ", pos[1], ", ", pos[2], ") max=(", dx, ", ", dy, ",", dz, ")");
@@ -257,8 +261,10 @@ namespace MobileRT {
      */
     template<typename T>
     Intersection RegularGrid<T>::intersect(Intersection intersection, const Ray &ray, const bool shadowTrace) {
+        const auto worldBoundsMin {this->worldBoundaries_.getPointMin()};
+
         // setup 3DDDA (double check reusability of primary ray data)
-        const auto &cell {(ray.origin_ - this->worldBoundaries_.pointMin_) * this->cellSizeInverted_};
+        const auto &cell {(ray.origin_ - worldBoundsMin) * this->cellSizeInverted_};
         auto cellX {static_cast<::std::int32_t> (cell[0])};
         auto cellY {static_cast<::std::int32_t> (cell[1])};
         auto cellZ {static_cast<::std::int32_t> (cell[2])};
@@ -277,31 +283,31 @@ namespace MobileRT {
         if (ray.direction_[0] > 0) {
             stepX = 1;
             outX = this->gridSize_;
-            cb[0] = (this->worldBoundaries_.pointMin_[0] + (cellX + 1) * this->cellSize_[0]);
+            cb[0] = (worldBoundsMin[0] + (cellX + 1) * this->cellSize_[0]);
         } else {
             stepX = -1;
             outX = -1;
-            cb[0] = (this->worldBoundaries_.pointMin_[0] + cellX * this->cellSize_[0]);
+            cb[0] = (worldBoundsMin[0] + cellX * this->cellSize_[0]);
         }
 
         if (ray.direction_[1] > 0) {
             stepY = 1;
             outY = this->gridSize_;
-            cb[1] = (this->worldBoundaries_.pointMin_[1] + (cellY + 1) * this->cellSize_[1]);
+            cb[1] = (worldBoundsMin[1] + (cellY + 1) * this->cellSize_[1]);
         } else {
             stepY = -1;
             outY = -1;
-            cb[1] = (this->worldBoundaries_.pointMin_[1] + cellY * this->cellSize_[1]);
+            cb[1] = (worldBoundsMin[1] + cellY * this->cellSize_[1]);
         }
 
         if (ray.direction_[2] > 0) {
             stepZ = 1;
             outZ = this->gridSize_;
-            cb[2] = (this->worldBoundaries_.pointMin_[2] + (cellZ + 1) * this->cellSize_[2]);
+            cb[2] = (worldBoundsMin[2] + (cellZ + 1) * this->cellSize_[2]);
         } else {
             stepZ = -1;
             outZ = -1;
-            cb[2] = (this->worldBoundaries_.pointMin_[2] + cellZ * this->cellSize_[2]);
+            cb[2] = (worldBoundsMin[2] + cellZ * this->cellSize_[2]);
         }
 
         ::glm::vec3 tmax {}, tdelta {};

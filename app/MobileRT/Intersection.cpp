@@ -10,7 +10,7 @@ using ::MobileRT::Intersection;
  */
 Intersection::Intersection(const float dist) :
     length_ {dist} {
-        BOOST_ASSERT_MSG(this->length_ > 0, "length can't be negative or zero.");
+    checkArguments();
 }
 
 /**
@@ -36,8 +36,24 @@ Intersection::Intersection(
     primitive_ {primitive},
     materialIndex_ {materialIndex},
     texCoords_ {texCoords} {
-        BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normal_)), "normal can't be NaN.");
-        BOOST_ASSERT_MSG(!::glm::all(::glm::isinf(this->normal_)), "normal can't be infinite.");
-        BOOST_ASSERT_MSG(!equal(this->normal_, ::glm::vec3 {0}), "normal can't be zero.");
-        BOOST_ASSERT_MSG(this->length_ > 0, "length can't be negative or zero.");
+    checkArguments();
+}
+
+/**
+ * Helper method which checks for invalid fields.
+ */
+void Intersection::checkArguments() const {
+    BOOST_ASSERT_MSG(isValid(this->normal_), "normal must have valid values.");
+    BOOST_ASSERT_MSG(!equal(this->normal_, ::glm::vec3 {0}), "normal can't be zero.");
+
+    BOOST_ASSERT_MSG(isValid(this->point_), "point must have valid values.");
+
+    BOOST_ASSERT_MSG(isValid(this->texCoords_), "texCoords must have valid values.");
+
+    BOOST_ASSERT_MSG(isValid(this->length_), "length must have valid values.");
+    BOOST_ASSERT_MSG(::std::isnormal(this->length_), "length can't be negative or zero.");
+
+    BOOST_ASSERT_MSG(this->material_ == nullptr, "material must be null.");
+
+    BOOST_ASSERT_MSG(this->materialIndex_ >= -1, "materialIndex must be valid.");
 }

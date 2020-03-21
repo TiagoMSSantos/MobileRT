@@ -14,9 +14,12 @@ namespace MobileRT {
      * This type of bounding box consists of a box where all the edges are aligned with the axis of the scene.
      */
     class AABB final {
-    public:
+    private:
         ::glm::vec3 pointMin_ {};
         ::glm::vec3 pointMax_ {};
+
+    private:
+        void checkArguments() const;
 
     public:
         explicit AABB() = default;
@@ -38,6 +41,10 @@ namespace MobileRT {
         ::glm::vec3 getCentroid() const;
 
         bool intersect(const Ray &ray) const;
+
+        ::glm::vec3 getPointMin() const;
+
+        ::glm::vec3 getPointMax() const;
     };
 
     AABB surroundingBox(const AABB &box1, const AABB &box2);

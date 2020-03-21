@@ -126,8 +126,8 @@ float Plane::distance(const ::glm::vec3 &point) const {
  * @return Whether if the bounding box intersects the plane or not.
  */
 bool Plane::intersect(const AABB &box) const {
-    const auto &positiveVertex {box.pointMax_};
-    const auto &negativeVertex {box.pointMin_};
+    const auto &positiveVertex {box.getPointMax()};
+    const auto &negativeVertex {box.getPointMin()};
 
     const auto distanceP {distance(positiveVertex)};
     const auto distanceN {distance(negativeVertex)};

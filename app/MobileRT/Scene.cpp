@@ -34,6 +34,6 @@ Scene::~Scene() {
  * @return The bounding box which surrounds the bounding boxes.
  */
 AABB Scene::getBoxBounds(const AABB &box1, const AABB &box2) {
-    const AABB box {::glm::min(box1.pointMin_, box2.pointMin_), ::glm::max(box1.pointMax_, box2.pointMax_)};
+    const AABB box {::glm::min(box1.getPointMin(), box2.getPointMin()), ::glm::max(box1.getPointMax(), box2.getPointMax())};
     return box;
 }

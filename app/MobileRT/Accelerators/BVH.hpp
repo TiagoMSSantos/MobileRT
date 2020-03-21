@@ -173,7 +173,7 @@ namespace MobileRT {
 
             const auto itEnd {buildNodes.begin() + endBoxIndex};
             const auto surroundingBox {getSurroundingBox(itBegin, itEnd)};
-            const auto maxDist {surroundingBox.pointMax_ - surroundingBox.pointMin_};
+            const auto maxDist {surroundingBox.getPointMax() - surroundingBox.getPointMin()};
             const auto maxAxis {
                     maxDist[0] >= maxDist[1] && maxDist[0] >= maxDist[2]
                     ? 0
@@ -191,7 +191,7 @@ namespace MobileRT {
             const auto numBuckets {10};
             const auto step {maxDist / static_cast<float> (numBuckets)};
             const auto stepAxis {step[maxAxis]};
-            const auto &startBox {surroundingBox.pointMin_[maxAxis]};
+            const auto &startBox {surroundingBox.getPointMin()[maxAxis]};
             const auto bucket1 {startBox + stepAxis};
             auto itBucket {::std::partition(itBegin, itEnd,
                              [&](const BuildNode &node) {
@@ -428,7 +428,7 @@ namespace MobileRT {
     template<typename T>
     template<typename Iterator>
     AABB BVH<T>::getSurroundingBox(const Iterator itBegin, const Iterator itEnd) {
-        AABB maxBox {itBegin->box_.pointMin_, itBegin->box_.pointMax_};
+        AABB maxBox {itBegin->box_.getPointMin(), itBegin->box_.getPointMax()};
 
         for (auto it {itBegin + 1}; it < itEnd; ::std::advance(it, 1)) {
             const auto &box {it->box_};

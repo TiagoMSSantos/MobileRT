@@ -1,6 +1,8 @@
 #include "MobileRT/Accelerators/AABB.hpp"
 #include "MobileRT/Utils.hpp"
 
+#include <boost/assert.hpp>
+
 using ::MobileRT::AABB;
 using ::MobileRT::Ray;
 
@@ -13,6 +15,16 @@ using ::MobileRT::Ray;
 AABB::AABB(const ::glm::vec3 &pointMin, const ::glm::vec3 &pointMax) :
     pointMin_ {pointMin},
     pointMax_ {pointMax} {
+    checkArguments();
+}
+
+/**
+ * Helper method which checks for invalid fields.
+ */
+void AABB::checkArguments() const {
+    BOOST_ASSERT_MSG(isValid(this->pointMin_), "pointMin must be valid.");
+    BOOST_ASSERT_MSG(isValid(this->pointMax_), "pointMax must be valid.");
+    BOOST_ASSERT_MSG(!equal(this->pointMax_ - this->pointMin_, ::glm::vec3 {0}), "length can't be zero.");
 }
 
 /**
@@ -73,6 +85,24 @@ float AABB::getSurfaceArea() const {
     return res;
 }
 
+/**
+ * Gets the point min of this AABB.
+ *
+ * @return The point min.
+ */
+::glm::vec3 AABB::getPointMin() const {
+    return this->pointMin_;
+}
+
+/**
+ * Gets the point max of this AABB.
+ *
+ * @return The point max.
+ */
+::glm::vec3 AABB::getPointMax() const {
+    return this->pointMax_;
+}
+
 namespace MobileRT {
     /**
      * Calculates a box which surrounds both boxes received by the parameters.
@@ -82,8 +112,8 @@ namespace MobileRT {
      * @return A box which surrounds both boxes.
      */
     AABB surroundingBox(const AABB &box1, const AABB &box2) {
-        const auto &min {::glm::min(box1.pointMin_, box2.pointMin_)};
-        const auto &max {::glm::max(box1.pointMax_, box2.pointMax_)};
+        const auto &min {::glm::min(box1.getPointMin(), box2.getPointMin())};
+        const auto &max {::glm::max(box1.getPointMax(), box2.getPointMax())};
         const AABB &res {min, max};
 
         return res;

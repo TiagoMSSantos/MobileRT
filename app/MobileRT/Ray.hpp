@@ -18,6 +18,9 @@ namespace MobileRT {
         const ::std::int32_t id_ {-1};
         const void *const primitive_ {nullptr};
 
+    private:
+        void checkArguments() const;
+
     public:
         explicit Ray () = delete;
 

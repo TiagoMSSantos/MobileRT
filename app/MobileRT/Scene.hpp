@@ -54,9 +54,11 @@ namespace MobileRT {
             for (const auto &primitive : primitives) {
                 bounds = getBoxBounds(primitive.getAABB(), bounds);
             }
-            bounds.pointMin_ -= ::glm::vec3 {Epsilon};
-            bounds.pointMax_ += ::glm::vec3 {Epsilon};
-            return bounds;
+            const ::MobileRT::AABB res {
+                bounds.getPointMin() - ::glm::vec3 {Epsilon},
+                bounds.getPointMax() + ::glm::vec3 {Epsilon}
+            };
+            return res;
         }
     };
 }//namespace MobileRT

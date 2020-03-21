@@ -12,12 +12,15 @@ namespace MobileRT {
     class Intersection final {
     public:
         ::glm::vec3 point_ {0};
-        ::glm::vec3 normal_ {0};
+        ::glm::vec3 normal_ {1};
         Material *material_ {nullptr};
         float length_ {RayLengthMax};
         const void *primitive_ {nullptr};
         ::std::int32_t materialIndex_ {-1};
         ::glm::vec2 texCoords_ {-1};
+
+    private:
+        void checkArguments() const;
 
     public:
         explicit Intersection() = default;

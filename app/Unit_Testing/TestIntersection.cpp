@@ -80,20 +80,9 @@ TEST_F(TestIntersection, TestConstructor) {
  * Tests the Intersection constructor.
  */
 TEST_F(TestIntersection, TestConstructor2) {
-    const auto intPoint {::glm::vec3 {0}};
-    const float dist {1.2F};
-    const auto normal {::glm::vec3 {0}};
-    const auto primitive {nullptr};
-    const auto materialIndex {-1};
-    const ::glm::vec2 texCoords {-1};
+    const float dist {0.1F};
 
     const Intersection intersection {dist};
 
     ASSERT_EQ(dist, intersection.length_);
-    ASSERT_EQ(primitive, intersection.primitive_);
-    ASSERT_EQ(materialIndex, intersection.materialIndex_);
-    for(int i {0}; i < ::MobileRT::NumberOfAxes; ++i) {
-        ASSERT_FLOAT_EQ(intPoint[i], intersection.point_[i]);
-        ASSERT_FLOAT_EQ(normal[i], intersection.normal_[i]);
-    }
 }

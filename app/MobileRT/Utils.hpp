@@ -56,6 +56,11 @@ namespace MobileRT {
 
     bool equal(const ::glm::vec3 &a, const ::glm::vec3 &b);
 
+    template<::std::int32_t S, typename T>
+    bool isValid(const ::glm::vec<S, T> value);
+
+    bool isValid(const float value);
+
     ::glm::vec2 normalize(const ::glm::vec2 &textureCoordinates);
 
     float fresnel(const ::glm::vec3 &I, const ::glm::vec3 &N, float ior);
@@ -108,8 +113,8 @@ namespace MobileRT {
             const auto index {static_cast<::std::uint32_t> (::std::distance(values->begin(), it))};
             *it = ::MobileRT::haltonSequence(index, 2);
         }
-        ::std::random_device randomDevice {};
-        ::std::mt19937 generator {randomDevice()};
+        static ::std::random_device randomDevice {};
+        static ::std::mt19937 generator {randomDevice()};
         ::std::shuffle(values->begin(), values->end(), generator);
     }
 
@@ -128,6 +133,20 @@ namespace MobileRT {
         static ::std::random_device randomDevice {};
         static ::std::mt19937 generator {randomDevice()};
         ::std::generate(values->begin(), values->end(), []() {return uniformDist(generator);});
+    }
+
+    /**
+     * Determines whether a ::glm::vec is valid or not.
+     *
+     * @param value A vec floating point values.
+     * @return Whether the vec is valid or not.
+     */
+    template<::std::int32_t S, typename T>
+    bool isValid(const ::glm::vec<S, T> value) {
+        const auto isNaN {::glm::all(::glm::isnan(value))};
+        const auto isInf {::glm::all(::glm::isinf(value))};
+        const auto res {!isNaN && !isInf};
+        return res;
     }
 }//namespace MobileRT
 

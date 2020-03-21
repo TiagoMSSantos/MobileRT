@@ -26,19 +26,16 @@ Triangle::Triangle(const Triangle::Builder &builder) :
 }
 
 /**
- * Helper method which checks for invalid normals in the triangle.
+ * Helper method which checks for invalid fields.
  */
 void Triangle::checkArguments() const {
-    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalA_)), "normalA can't be NaN.");
-    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalB_)), "normalB can't be NaN.");
-    BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->normalC_)), "normalC can't be NaN.");
-
-    BOOST_ASSERT_MSG(!::glm::all(::glm::isinf(this->normalA_)), "normalA can't be infinite.");
-    BOOST_ASSERT_MSG(!::glm::all(::glm::isinf(this->normalB_)), "normalB can't be infinite.");
-    BOOST_ASSERT_MSG(!::glm::all(::glm::isinf(this->normalC_)), "normalC can't be infinite.");
-
+    BOOST_ASSERT_MSG(isValid(this->normalA_), "normalA must be valid.");
     BOOST_ASSERT_MSG(!equal(this->normalA_, ::glm::vec3 {0}), "normalA can't be zero.");
+
+    BOOST_ASSERT_MSG(isValid(this->normalB_), "normalB must be valid.");
     BOOST_ASSERT_MSG(!equal(this->normalB_, ::glm::vec3 {0}), "normalB can't be zero.");
+
+    BOOST_ASSERT_MSG(isValid(this->normalC_), "normalC must be valid.");
     BOOST_ASSERT_MSG(!equal(this->normalC_, ::glm::vec3 {0}), "normalC can't be zero.");
 }
 
@@ -132,12 +129,12 @@ bool Triangle::intersect(const AABB &box) const {
             auto tFar {::std::numeric_limits<float>::max()};
             if (::std::fabs(vec[0]) < ::std::numeric_limits<float>::epsilon()) {
                 // ray parallel to planes in this direction
-                if ((orig[0] < box.pointMin_[0]) || ((orig[0] + vec[0]) > box.pointMax_[0])) {
+                if ((orig[0] < box.getPointMin()[0]) || ((orig[0] + vec[0]) > box.getPointMax()[0])) {
                     return false; // parallel AND outside box : no intersection possible
                 }
             } else { // ray not parallel to planes in this direction
-                t1[0] = ((box.pointMin_[0] - orig[0]) / vec[0]);
-                t2[0] = ((box.pointMax_[0] - orig[0]) / vec[0]);
+                t1[0] = ((box.getPointMin()[0] - orig[0]) / vec[0]);
+                t2[0] = ((box.getPointMax()[0] - orig[0]) / vec[0]);
                 if (t1[0] > t2[0]) { // we want t1 to hold values for intersection with near plane
                     ::std::swap(t1, t2);
                 }
@@ -149,12 +146,12 @@ bool Triangle::intersect(const AABB &box) const {
             }
             if (::std::fabs(vec[1]) < ::std::numeric_limits<float>::epsilon()) {
                 // ray parallel to planes in this direction
-                if ((orig[1] < box.pointMin_[1]) || ((orig[1] + vec[1]) > box.pointMax_[1])) {
+                if ((orig[1] < box.getPointMin()[1]) || ((orig[1] + vec[1]) > box.getPointMax()[1])) {
                     return false; // parallel AND outside box : no intersection possible
                 }
             } else { // ray not parallel to planes in this direction
-                t1[1] = ((box.pointMin_[1] - orig[1]) / vec[1]);
-                t2[1] = ((box.pointMax_[1] - orig[1]) / vec[1]);
+                t1[1] = ((box.getPointMin()[1] - orig[1]) / vec[1]);
+                t2[1] = ((box.getPointMax()[1] - orig[1]) / vec[1]);
                 if (t1[1] > t2[1]) { // we want t1 to hold values for intersection with near plane
                     ::std::swap(t1, t2);
                 }
@@ -166,12 +163,12 @@ bool Triangle::intersect(const AABB &box) const {
             }
             if (::std::fabs(vec[2]) < ::std::numeric_limits<float>::epsilon()) {
                 // ray parallel to planes in this direction
-                if ((orig[2] < box.pointMin_[2]) || ((orig[2] + vec[2]) > box.pointMax_[2])) {
+                if ((orig[2] < box.getPointMin()[2]) || ((orig[2] + vec[2]) > box.getPointMax()[2])) {
                     return false; // parallel AND outside box : no intersection possible
                 }
             } else { // ray not parallel to planes in this direction
-                t1[2] = ((box.pointMin_[2] - orig[2]) / vec[2]);
-                t2[2] = ((box.pointMax_[2] - orig[2]) / vec[2]);
+                t1[2] = ((box.getPointMin()[2] - orig[2]) / vec[2]);
+                t2[2] = ((box.getPointMax()[2] - orig[2]) / vec[2]);
                 if (t1[2] > t2[2]) { // we want t1 to hold values for intersection with near plane
                     ::std::swap(t1, t2);
                 }
@@ -193,8 +190,8 @@ bool Triangle::intersect(const AABB &box) const {
         }
     };
 
-    const auto &min {box.pointMin_};
-    const auto &max {box.pointMax_};
+    const auto &min {box.getPointMin()};
+    const auto &max {box.getPointMax()};
     const auto &vec {max - min};
     const Ray &ray {vec, min, 1};
     const auto intersectedAB {intersectRayAABB(this->pointA_, this->AB_)};

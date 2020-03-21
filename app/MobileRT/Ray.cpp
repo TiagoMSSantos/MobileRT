@@ -32,7 +32,13 @@ Ray::Ray(const ::glm::vec3 &dir, const ::glm::vec3 &origin,
     depth_ {depth},
     id_ {getId()},
     primitive_ {primitive} {
-        BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(this->direction_)), "direction can't be NaN.");
-        BOOST_ASSERT_MSG(!::glm::all(::glm::isinf(this->direction_)), "direction can't be infinite.");
-        BOOST_ASSERT_MSG(!equal(this->direction_, ::glm::vec3 {0}), "direction can't be zero.");
+    checkArguments();
+}
+
+/**
+ * Helper method which checks for invalid fields.
+ */
+void Ray::checkArguments() const {
+    BOOST_ASSERT_MSG(isValid(this->direction_), "direction must be valid.");
+    BOOST_ASSERT_MSG(!equal(this->direction_, ::glm::vec3 {0}), "direction can't be zero.");
 }

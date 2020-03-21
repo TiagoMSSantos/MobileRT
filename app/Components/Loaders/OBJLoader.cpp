@@ -149,16 +149,13 @@ bool OBJLoader::fillScene(Scene *const scene,
                     normal2 = ::glm::vec3 {::glm::normalize(::glm::cross(AC, AB))};
                     normal3 = ::glm::vec3 {::glm::normalize(::glm::cross(AC, AB))};
                 }
-                BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(normal1)), "normal1 can't be NaN.");
-                BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(normal2)), "normal2 can't be NaN.");
-                BOOST_ASSERT_MSG(!::glm::all(::glm::isnan(normal3)), "normal3 can't be NaN.");
-
-                BOOST_ASSERT_MSG(!::glm::all(::glm::isinf(normal1)), "normal1 can't be infinite.");
-                BOOST_ASSERT_MSG(!::glm::all(::glm::isinf(normal2)), "normal2 can't be infinite.");
-                BOOST_ASSERT_MSG(!::glm::all(::glm::isinf(normal3)), "normal3 can't be infinite.");
-
+                BOOST_ASSERT_MSG(::MobileRT::isValid(normal1), "normal1 must be valid.");
                 BOOST_ASSERT_MSG(!::MobileRT::equal(normal1, ::glm::vec3 {0}), "normal1 can't be zero.");
+
+                BOOST_ASSERT_MSG(::MobileRT::isValid(normal2), "normal2 must be valid.");
                 BOOST_ASSERT_MSG(!::MobileRT::equal(normal2, ::glm::vec3 {0}), "normal2 can't be zero.");
+
+                BOOST_ASSERT_MSG(::MobileRT::isValid(normal3), "normal3 must be valid.");
                 BOOST_ASSERT_MSG(!::MobileRT::equal(normal3, ::glm::vec3 {0}), "normal3 can't be zero.");
 
                 // per-face material

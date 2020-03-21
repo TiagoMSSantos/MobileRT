@@ -176,13 +176,13 @@ TEST_F(TestTriangle, ConstructorVALUES) {
 TEST_F(TestTriangle, AABB) {
 	const AABB box {triangle->getAABB()};
 
-	ASSERT_EQ(0.0F, box.pointMin_[0]);
-	ASSERT_EQ(0.0F, box.pointMin_[1]);
-	ASSERT_EQ(0.0F, box.pointMin_[2]);
+	ASSERT_EQ(0.0F, box.getPointMin()[0]);
+	ASSERT_EQ(0.0F, box.getPointMin()[1]);
+	ASSERT_EQ(0.0F, box.getPointMin()[2]);
 
-	ASSERT_EQ(0.0F, box.pointMax_[0]);
-	ASSERT_EQ(1.0F, box.pointMax_[1]);
-	ASSERT_EQ(1.0F, box.pointMax_[2]);
+	ASSERT_EQ(0.0F, box.getPointMax()[0]);
+	ASSERT_EQ(1.0F, box.getPointMax()[1]);
+	ASSERT_EQ(1.0F, box.getPointMax()[2]);
 }
 
 TEST_F(TestTriangle, intersectBoxInside01) {

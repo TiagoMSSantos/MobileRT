@@ -108,10 +108,11 @@ namespace MobileRT {
 
     /**
      * Determines whether two floating point values are equal.
+     * <br>
      * This method assumes two floats are equal if the difference between them is less than Epsilon.
      *
-     * @param a A floating value.
-     * @param b A floating value.
+     * @param a A floating point value.
+     * @param b A floating point value.
      * @return Whether the two values are equal or not.
      */
     bool equal(const float a, const float b) {
@@ -122,18 +123,32 @@ namespace MobileRT {
 
     /**
      * Determines whether two ::glm::vec3 are equal.
+     * <br>
      * This method assumes two ::glm::vec3 are equal if the difference between them is less than Epsilon.
      *
-     * @param a A floating value.
-     * @param b A floating value.
+     * @param a A vec3 floating point values.
+     * @param b A vec3 floating point values.
      * @return Whether the two vec3 are equal or not.
      */
     bool equal(const ::glm::vec3 &a, const ::glm::vec3 &b) {
-        const auto sameX {equal(a[0], b[0])};
-        const auto sameY {equal(a[1], b[1])};
-        const auto sameZ {equal(a[2], b[2])};
-        const auto same {sameX && sameY && sameZ};
-        return same;
+        bool res {equal(a[0], b[0])};
+        for (auto i {1}; i < NumberOfAxes; ++i) {
+            res = res && equal(a[i], b[i]);
+        }
+        return res;
+    }
+
+    /**
+     * Determines whether a floating point value is valid or not.
+     *
+     * @param value A floating point value.
+     * @return Whether the floating point value is valid or not.
+     */
+    bool isValid(const float value) {
+        const auto isNaN {::std::isnan(value)};
+        const auto isInf {::std::isinf(value)};
+        const auto res {!isNaN && !isInf};
+        return res;
     }
 
     /**
