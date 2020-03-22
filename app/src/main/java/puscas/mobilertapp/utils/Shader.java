@@ -75,7 +75,7 @@ public enum Shader {
         LOGGER.info(GET_NAMES);
 
         return J8Arrays.stream(values())
-                .map(Shader::getName)
-                .toArray(String[]::new);
+            .map(Shader::getName)
+            .toArray(String[]::new);
     }
 }

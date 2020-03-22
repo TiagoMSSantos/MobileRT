@@ -25,10 +25,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
+import java8.util.Optional;
 import puscas.mobilertapp.exceptions.LowMemoryException;
 import puscas.mobilertapp.utils.ConstantsRenderer;
 import puscas.mobilertapp.utils.State;
-import puscas.mobilertapp.utils.Utils;
 
 import static puscas.mobilertapp.MyEGLContextFactory.EGL_CONTEXT_CLIENT_VERSION;
 import static puscas.mobilertapp.utils.ConstantsError.UNABLE_TO_FIND_AN_ACTIVITY;
@@ -62,7 +62,12 @@ public final class DrawView extends GLSurfaceView {
      * The {@link ExecutorService} which holds {@link ConstantsRenderer#NUMBER_THREADS} number of threads that will
      * create Ray Tracer engine renderer.
      */
-    private ExecutorService executorService = Executors.newFixedThreadPool(NUMBER_THREADS);
+    private final ExecutorService executorService = Executors.newFixedThreadPool(NUMBER_THREADS);
+
+    /**
+     * The last task submitted to {@link ExecutorService}.
+     */
+    private Future<Boolean> lastTask = null;
 
     /**
      * The constructor for this class.
@@ -150,23 +155,10 @@ public final class DrawView extends GLSurfaceView {
     void stopDrawing() {
         LOGGER.info("stopDrawing");
 
-        this.renderer.updateButton(R.string.render);
-        setOnTouchListener(null);
+        this.lastTask.cancel(false);
+        waitLastTask();
         rtStopRender();
-
-        waitForLastTask();
-
-        this.renderer.rtFinishRender();
-    }
-
-    /**
-     * Waits for the Ray Tracer engine to stop rendering.
-     */
-    private void waitForLastTask() {
-        this.renderer.waitForLastTask();
-        this.executorService.shutdown();
-        Utils.waitExecutorToFinish(this.executorService);
-        this.executorService = Executors.newFixedThreadPool(NUMBER_THREADS);
+        this.renderer.waitLastTask();
     }
 
     /**
@@ -182,31 +174,36 @@ public final class DrawView extends GLSurfaceView {
             final boolean rasterize) {
         LOGGER.info(RENDER_SCENE);
 
+        waitLastTask();
         rtStartRender();
-        this.renderer.updateButton(R.string.stop);
 
-        final Future<Boolean> result = this.executorService.submit(() -> {
+        this.lastTask = this.executorService.submit(() -> {
             LOGGER.info(RENDER_SCENE);
 
-            this.renderer.waitForLastTask();
+            this.renderer.waitLastTask();
 
-            createScene(config, numThreads);
-            this.renderer.freeArrays();
-            this.renderer.setRasterize(rasterize);
+            createScene(config, numThreads, rasterize);
             requestRender();
             return Boolean.TRUE;
         });
-        try {
-            final Boolean done = result.get(1L, TimeUnit.SECONDS);
-            final String msg = "Renderer launched: " + done;
-            LOGGER.info(msg);
-        } catch (final ExecutionException | TimeoutException ex) {
-            LOGGER.warning(Strings.nullToEmpty(ex.getMessage()));
-        } catch (final InterruptedException ex) {
-            LOGGER.warning(ex.getMessage());
-            Thread.currentThread().interrupt();
-        }
+        this.renderer.updateButton(R.string.stop);
+    }
 
+    /**
+     * Waits for the result of the last task submitted to the {@link ExecutorService}.
+     */
+    private void waitLastTask() {
+        Optional.ofNullable(this.lastTask)
+            .ifPresent(task -> {
+                try {
+                    task.get(1L, TimeUnit.DAYS);
+                } catch (final ExecutionException | TimeoutException | RuntimeException ex) {
+                    LOGGER.warning(Strings.nullToEmpty(ex.getMessage()));
+                } catch (final InterruptedException ex) {
+                    LOGGER.warning(Strings.nullToEmpty(ex.getMessage()));
+                    Thread.currentThread().interrupt();
+                }
+            });
     }
 
     /**
@@ -214,10 +211,12 @@ public final class DrawView extends GLSurfaceView {
      *
      * @param config     The ray tracer configuration.
      * @param numThreads The number of threads to be used in the Ray Tracer engine.
+     * @param rasterize  Whether should show a preview (rasterize one frame) or not.
      */
     private void createScene(
             final Config config,
-            final int numThreads) {
+            final int numThreads,
+            final boolean rasterize) {
         LOGGER.info("createScene");
 
         this.renderer.freeArrays();
@@ -234,7 +233,7 @@ public final class DrawView extends GLSurfaceView {
         } finally {
             final int widthView = getWidth();
             final int heightView = getHeight();
-            this.renderer.setBitmap(config.getWidth(), config.getHeight(), widthView, heightView);
+            this.renderer.setBitmap(config.getWidth(), config.getHeight(), widthView, heightView, rasterize);
         }
     }
 

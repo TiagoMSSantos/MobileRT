@@ -178,16 +178,16 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
         super();
         LOGGER.info("RenderTask");
 
-        this.requestRender = builder.getRequestRender();
-        this.finishRender = builder.getFinishRender();
-        this.updateInterval = builder.getUpdateInterval();
-        this.primitivesT = ",p=" + builder.getNumPrimitives() + ",l=" + builder.getNumLights();
-        this.resolutionT = ",r:" + builder.getWidth() + 'x' + builder.getHeight();
-        this.threadsT = ",t:" + builder.getNumThreads();
-        this.samplesPixelT = ",spp:" + builder.getSamplesPixel();
-        this.samplesLightT = ",spl:" + builder.getSamplesLight();
-        this.buttonRenderRef = new WeakReference<>(builder.getButtonRender());
-        this.textViewRef = new WeakReference<>(builder.getTextView());
+        this.requestRender = builder.requestRender;
+        this.finishRender = builder.finishRender;
+        this.updateInterval = builder.updateInterval;
+        this.primitivesT = ",p=" + builder.numPrimitives + ",l=" + builder.numLights;
+        this.resolutionT = ",r:" + builder.width + 'x' + builder.height;
+        this.threadsT = ",t:" + builder.numThreads;
+        this.samplesPixelT = ",spp:" + builder.samplesPixel;
+        this.samplesLightT = ",spl:" + builder.samplesLight;
+        this.buttonRenderRef = new WeakReference<>(builder.buttonRender);
+        this.textViewRef = new WeakReference<>(builder.textView);
 
         this.startTimeStamp = SystemClock.elapsedRealtime();
         this.fpsT = String.format(Locale.US, "fps:%.2f", 0.0F);
@@ -279,7 +279,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
 
     @Nullable
     @Override
-    protected final Void doInBackground(@NonNull final Void... params) {
+    protected Void doInBackground(@NonNull final Void... params) {
         LOGGER.info("doInBackground");
 
         this.executorService.scheduleAtFixedRate(this.timer, 0L, this.updateInterval, TimeUnit.MILLISECONDS);
@@ -288,12 +288,12 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
     }
 
     @Override
-    protected final void onProgressUpdate(@NonNull final Void... values) {
+    protected void onProgressUpdate(@NonNull final Void... values) {
         printText();
     }
 
     @Override
-    protected final void onPostExecute(@NonNull final Void result) {
+    protected void onPostExecute(@NonNull final Void result) {
         printText();
 
         Optional.ofNullable(this.buttonRenderRef.get()).ifPresent(button -> button.setText(R.string.render));
@@ -408,7 +408,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
          * @param updateInterval The new value for {@link RenderTask#updateInterval} field.
          * @return The builder with {@link RenderTask.Builder#updateInterval} already set.
          */
-        @NonNull final RenderTask.Builder withUpdateInterval(final long updateInterval) {
+        @NonNull RenderTask.Builder withUpdateInterval(final long updateInterval) {
             LOGGER_BUILDER.info("withUpdateInterval");
 
             this.updateInterval = updateInterval;
@@ -421,7 +421,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
          * @param width The new value for width in {@link RenderTask#resolutionT} field.
          * @return The builder with {@link RenderTask.Builder#width} already set.
          */
-        @NonNull final RenderTask.Builder withWidth(final int width) {
+        @NonNull RenderTask.Builder withWidth(final int width) {
             LOGGER_BUILDER.info("withWidth");
 
             this.width = width;
@@ -434,7 +434,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
          * @param height The new value for height in {@link RenderTask#resolutionT} field.
          * @return The builder with {@link RenderTask.Builder#height} already set.
          */
-        @NonNull final RenderTask.Builder withHeight(final int height) {
+        @NonNull RenderTask.Builder withHeight(final int height) {
             LOGGER_BUILDER.info("withHeight");
 
             this.height = height;
@@ -447,7 +447,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
          * @param numThreads The new value for {@link RenderTask#threadsT} field.
          * @return The builder with {@link RenderTask.Builder#numThreads} already set.
          */
-        @NonNull final RenderTask.Builder withNumThreads(final int numThreads) {
+        @NonNull RenderTask.Builder withNumThreads(final int numThreads) {
             LOGGER_BUILDER.info("withNumThreads");
 
             this.numThreads = numThreads;
@@ -460,7 +460,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
          * @param samplesPixel The new value for {@link RenderTask#samplesPixelT} field.
          * @return The builder with {@link RenderTask.Builder#samplesPixel} already set.
          */
-        @NonNull final RenderTask.Builder withSamplesPixel(final int samplesPixel) {
+        @NonNull RenderTask.Builder withSamplesPixel(final int samplesPixel) {
             LOGGER_BUILDER.info("withSamplesPixel");
 
             this.samplesPixel = samplesPixel;
@@ -473,7 +473,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
          * @param samplesLight The new value for {@link RenderTask#samplesLightT} field.
          * @return The builder with {@link RenderTask.Builder#samplesLight} already set.
          */
-        @NonNull final RenderTask.Builder withSamplesLight(final int samplesLight) {
+        @NonNull RenderTask.Builder withSamplesLight(final int samplesLight) {
             LOGGER_BUILDER.info("withSamplesLight");
 
             this.samplesLight = samplesLight;
@@ -486,7 +486,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
          * @param numPrimitives The new value for {@link RenderTask#primitivesT} field.
          * @return The builder with {@link RenderTask.Builder#numPrimitives} already set.
          */
-        @NonNull final RenderTask.Builder withNumPrimitives(final int numPrimitives) {
+        @NonNull RenderTask.Builder withNumPrimitives(final int numPrimitives) {
             LOGGER_BUILDER.info("withNumPrimitives");
 
             this.numPrimitives = numPrimitives;
@@ -499,7 +499,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
          * @param numLights The new value for number of lights in {@link RenderTask#primitivesT} field.
          * @return The builder with {@link RenderTask.Builder#numLights} already set.
          */
-        @NonNull final RenderTask.Builder withNumLights(final int numLights) {
+        @NonNull RenderTask.Builder withNumLights(final int numLights) {
             LOGGER_BUILDER.info("withNumLights");
 
             this.numLights = numLights;
@@ -512,106 +512,10 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
          * @return A new instance of {@link RenderTask}.
          */
         @Contract(" -> new")
-        @NonNull final RenderTask build() {
+        @NonNull RenderTask build() {
             LOGGER_BUILDER.info("build");
 
             return new RenderTask(this);
-        }
-
-        /**
-         * @see RenderTask#requestRender
-         */
-        @Contract(pure = true)
-        Runnable getRequestRender() {
-            return this.requestRender;
-        }
-
-        /**
-         * @see RenderTask#finishRender
-         */
-        @Contract(pure = true)
-        Runnable getFinishRender() {
-            return this.finishRender;
-        }
-
-        /**
-         * @see RenderTask.Builder#withUpdateInterval(long)
-         */
-        @Contract(pure = true)
-        long getUpdateInterval() {
-            return this.updateInterval;
-        }
-
-        /**
-         * @see RenderTask.Builder#withNumPrimitives(int)
-         */
-        @Contract(pure = true)
-        int getNumPrimitives() {
-            return this.numPrimitives;
-        }
-
-        /**
-         * @see RenderTask.Builder#withNumLights(int)
-         */
-        @Contract(pure = true)
-        int getNumLights() {
-            return this.numLights;
-        }
-
-        /**
-         * @see RenderTask.Builder#withWidth(int)
-         */
-        @Contract(pure = true)
-        public int getWidth() {
-            return this.width;
-        }
-
-        /**
-         * @see RenderTask.Builder#withHeight(int)
-         */
-        @Contract(pure = true)
-        public int getHeight() {
-            return this.height;
-        }
-
-        /**
-         * @see RenderTask.Builder#withNumThreads(int)
-         */
-        @Contract(pure = true)
-        int getNumThreads() {
-            return this.numThreads;
-        }
-
-        /**
-         * @see RenderTask.Builder#withSamplesPixel(int)
-         */
-        @Contract(pure = true)
-        public int getSamplesPixel() {
-            return this.samplesPixel;
-        }
-
-        /**
-         * @see RenderTask.Builder#withSamplesLight(int)
-         */
-        @Contract(pure = true)
-        public int getSamplesLight() {
-            return this.samplesLight;
-        }
-
-        /**
-         * @see RenderTask#buttonRenderRef
-         */
-        @Contract(pure = true)
-        Button getButtonRender() {
-            return this.buttonRender;
-        }
-
-        /**
-         * @see RenderTask#textViewRef
-         */
-        @Contract(pure = true)
-        TextView getTextView() {
-            return this.textView;
         }
     }
 }

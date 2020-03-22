@@ -38,7 +38,7 @@ static ::std::mutex mutex_ {};
 static ::std::int32_t numLights_ {};
 static ::std::int64_t timeRenderer_ {};
 static ::std::condition_variable rendered_ {};
-static ::std::atomic<bool> finishedRendering_ {};
+static ::std::atomic<bool> finishedRendering_ {true};
 
 extern "C"
 ::std::int32_t JNI_OnLoad(JavaVM *const jvm, void * /*reserved*/) {
@@ -299,6 +299,8 @@ void Java_puscas_mobilertapp_DrawView_rtStartRender(
         JNIEnv *env,
         jobject /*thiz*/
 ) {
+    ::std::unique_lock<std::mutex> lock {mutex_};
+    rendered_.wait(lock, [&]{return finishedRendering_ == true;});
     finishedRendering_ = false;
     state_ = State::BUSY;
     LOG("STATE = BUSY");
@@ -310,22 +312,20 @@ void Java_puscas_mobilertapp_DrawView_rtStopRender(
         JNIEnv *env,
         jobject /*thiz*/
 ) {
-    //TODO: Fix this race condition
-    while (!finishedRendering_ && renderer_ != nullptr) {
+    {
+        LOG("Will get lock");
         state_ = State::STOPPED;
         LOG("STATE = STOPPED");
-        renderer_->stopRender();
-    }
-    state_ = State::STOPPED;
-    LOG("STATE = STOPPED");
-    {
         ::std::unique_lock<std::mutex> lock {mutex_};
+        LOG("Got lock, waiting for renderer to finish");
         while (!finishedRendering_) {
-            rendered_.wait(lock);
             if (renderer_ != nullptr) {
+                LOG("RENDERER STOP");
                 renderer_->stopRender();
             }
+            rendered_.wait(lock, [&]{return finishedRendering_ == true;});
         }
+        LOG("Renderer finished");
     }
     env->ExceptionClear();
     LOG("stopRender finished");
@@ -589,7 +589,6 @@ void Java_puscas_mobilertapp_MainRenderer_rtFinishRender(
             renderer_->stopRender();
         }
         if (thread_ != nullptr) {
-            renderer_ = nullptr;
             thread_ = nullptr;
             LOG("DELETED RENDERER");
         }
@@ -647,8 +646,7 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
                     LOG("STARTING RENDERING");
                     LOG("nThreads = ", nThreads);
                     {
-                        const ::std::lock_guard<::std::mutex> lock {mutex_};
-                        rendered_.notify_all();
+//                        const ::std::lock_guard<::std::mutex> lock {mutex_};
                         if (renderer_ != nullptr) {
                             renderer_->renderFrame(dstPixels, nThreads);
                         }
@@ -744,8 +742,7 @@ extern "C"
 ) {
     ::std::int32_t sample {};
     {
-        //const ::std::lock_guard<::std::mutex> lock {mutex_};
-        //TODO: Fix this race condition
+        const ::std::lock_guard<::std::mutex> lock {mutex_};
         if (renderer_ != nullptr) {
             sample = renderer_->getSample();
         }

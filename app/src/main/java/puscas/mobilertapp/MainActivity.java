@@ -8,8 +8,6 @@ import android.content.Intent;
 import android.content.pm.ConfigurationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
-import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
@@ -45,6 +43,7 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 
+import java8.util.Objects;
 import java8.util.Optional;
 import java8.util.stream.IntStreams;
 import java8.util.stream.StreamSupport;
@@ -63,6 +62,7 @@ import static puscas.mobilertapp.utils.ConstantsUI.CHECK_BOX_RASTERIZE;
 import static puscas.mobilertapp.utils.ConstantsUI.FILE_SEPARATOR;
 import static puscas.mobilertapp.utils.ConstantsUI.LINE_SEPARATOR;
 import static puscas.mobilertapp.utils.ConstantsUI.PATH_SEPARATOR;
+import static puscas.mobilertapp.utils.ConstantsUI.PATH_SHADERS;
 import static puscas.mobilertapp.utils.ConstantsUI.PICKER_ACCELERATOR;
 import static puscas.mobilertapp.utils.ConstantsUI.PICKER_SAMPLES_LIGHT;
 import static puscas.mobilertapp.utils.ConstantsUI.PICKER_SAMPLES_PIXEL;
@@ -208,17 +208,17 @@ public final class MainActivity extends Activity {
         final boolean rasterize = this.checkBoxRasterize.isChecked();
 
         final Config config = new Config.Builder()
-                .withScene(scene)
-                .withShader(shader)
-                .withAccelerator(accelerator)
-                .withSamplesPixel(samplesPixel)
-                .withSamplesLight(samplesLight)
-                .withWidth(width)
-                .withHeight(height)
-                .withOBJ(objFilePath)
-                .withMAT(mtlFilePath)
-                .withCAM(camFilePath)
-                .build();
+            .withScene(scene)
+            .withShader(shader)
+            .withAccelerator(accelerator)
+            .withSamplesPixel(samplesPixel)
+            .withSamplesLight(samplesLight)
+            .withWidth(width)
+            .withHeight(height)
+            .withOBJ(objFilePath)
+            .withMAT(mtlFilePath)
+            .withCAM(camFilePath)
+            .build();
 
         this.drawView.renderScene(config, threads, rasterize);
     }
@@ -265,13 +265,13 @@ public final class MainActivity extends Activity {
      */
     private String readTextAsset(final String filePath) {
         final AssetManager assetManager = getAssets();
-        try (final InputStream inputStream = assetManager.open(filePath);
-             final InputStreamReader isReader = new InputStreamReader(inputStream, Charset.defaultCharset());
-             final BufferedReader reader = new BufferedReader(isReader)) {
+        try (InputStream inputStream = assetManager.open(filePath);
+             InputStreamReader isReader = new InputStreamReader(inputStream, Charset.defaultCharset());
+             BufferedReader reader = new BufferedReader(isReader)) {
 
             final StringBuilder sb = new StringBuilder(1);
             String str = reader.readLine();
-            while (str != null) {
+            while (Objects.nonNull(str)) {
                 sb.append(str).append(LINE_SEPARATOR);
                 str = reader.readLine();
             }
@@ -365,27 +365,18 @@ public final class MainActivity extends Activity {
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
-    public final void onCreate(@Nullable final Bundle savedInstanceState) {
+    public void onCreate(@Nullable final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        int defaultPickerScene = 0;
-        int defaultPickerShader = 0;
-        int defaultPickerThreads = 1;
-        int defaultPickerAccelerator = 1;
-        int defaultPickerSamplesPixel = 1;
-        int defaultPickerSamplesLight = 1;
-        int defaultPickerSizes = 4;
-        boolean defaultCheckBoxRasterize = true;
-        if (savedInstanceState != null) {
-            defaultPickerScene = savedInstanceState.getInt(PICKER_SCENE);
-            defaultPickerShader = savedInstanceState.getInt(PICKER_SHADER);
-            defaultPickerThreads = savedInstanceState.getInt(PICKER_THREADS);
-            defaultPickerAccelerator = savedInstanceState.getInt(PICKER_ACCELERATOR);
-            defaultPickerSamplesPixel = savedInstanceState.getInt(PICKER_SAMPLES_PIXEL);
-            defaultPickerSamplesLight = savedInstanceState.getInt(PICKER_SAMPLES_LIGHT);
-            defaultPickerSizes = savedInstanceState.getInt(PICKER_SIZES);
-            defaultCheckBoxRasterize = savedInstanceState.getBoolean(CHECK_BOX_RASTERIZE);
-        }
+        final Optional<Bundle> instance = Optional.ofNullable(savedInstanceState);
+        final int defaultPickerScene = instance.map(x -> x.getInt(PICKER_SCENE)).orElse(0);
+        final int defaultPickerShader = instance.map(x -> x.getInt(PICKER_SHADER)).orElse(0);
+        final int defaultPickerThreads = instance.map(x -> x.getInt(PICKER_THREADS)).orElse(1);
+        final int defaultPickerAccelerator = instance.map(x -> x.getInt(PICKER_ACCELERATOR)).orElse(1);
+        final int defaultPickerSamplesPixel = instance.map(x -> x.getInt(PICKER_SAMPLES_PIXEL)).orElse(1);
+        final int defaultPickerSamplesLight = instance.map(x -> x.getInt(PICKER_SAMPLES_LIGHT)).orElse(1);
+        final int defaultPickerSizes = instance.map(x -> x.getInt(PICKER_SIZES)).orElse(4);
+        final boolean defaultCheckBoxRasterize = instance.map(x -> x.getBoolean(CHECK_BOX_RASTERIZE)).orElse(true);
 
         try {
             setContentView(R.layout.activity_main);
@@ -426,13 +417,11 @@ public final class MainActivity extends Activity {
             this.drawView.setEGLConfigChooser(8, 8, 8, 8, 3 * 8, 0);
 
             final MainRenderer renderer = this.drawView.getRenderer();
-            final Bitmap bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
-            bitmap.eraseColor(Color.DKGRAY);
-            renderer.setBitmap(bitmap);
-            final String vertexShader = readTextAsset("Shaders" + FILE_SEPARATOR + "VertexShader.glsl");
-            final String fragmentShader = readTextAsset("Shaders" + FILE_SEPARATOR + "FragmentShader.glsl");
-            final String vertexShaderRaster = readTextAsset("Shaders" + FILE_SEPARATOR + "VertexShaderRaster.glsl");
-            final String fragmentShaderRaster = readTextAsset("Shaders" + FILE_SEPARATOR + "FragmentShaderRaster.glsl");
+            renderer.setBitmap(1, 1, 1, 1, false);
+            final String vertexShader = readTextAsset(PATH_SHADERS + FILE_SEPARATOR + "VertexShader.glsl");
+            final String fragmentShader = readTextAsset(PATH_SHADERS + FILE_SEPARATOR + "FragmentShader.glsl");
+            final String vertexShaderRaster = readTextAsset(PATH_SHADERS + FILE_SEPARATOR + "VertexShaderRaster.glsl");
+            final String fragmentShaderRaster = readTextAsset(PATH_SHADERS + FILE_SEPARATOR + "FragmentShaderRaster.glsl");
             renderer.setVertexShaderCode(vertexShader);
             renderer.setFragmentShaderCode(fragmentShader);
             renderer.setVertexShaderCodeRaster(vertexShaderRaster);
@@ -474,9 +463,9 @@ public final class MainActivity extends Activity {
 
         final int maxSamplesPixel = 99;
         final String[] samplesPixel = IntStreams.range(0, maxSamplesPixel)
-                .map(value -> (value + 1) * (value + 1))
-                .mapToObj(String::valueOf)
-                .toArray(String[]::new);
+            .map(value -> (value + 1) * (value + 1))
+            .mapToObj(String::valueOf)
+            .toArray(String[]::new);
         this.pickerSamplesPixel.setMinValue(1);
         this.pickerSamplesPixel.setMaxValue(maxSamplesPixel);
         this.pickerSamplesPixel.setWrapSelectorWheel(true);
@@ -486,9 +475,9 @@ public final class MainActivity extends Activity {
 
         final int maxSamplesLight = 100;
         final String[] samplesLight = IntStreams.range(0, maxSamplesLight)
-                .map(value -> value + 1)
-                .mapToObj(String::valueOf)
-                .toArray(String[]::new);
+            .map(value -> value + 1)
+            .mapToObj(String::valueOf)
+            .toArray(String[]::new);
         this.pickerSamplesLight.setMinValue(1);
         this.pickerSamplesLight.setMaxValue(maxSamplesLight);
         this.pickerSamplesLight.setWrapSelectorWheel(true);
@@ -557,7 +546,7 @@ public final class MainActivity extends Activity {
     }
 
     @Override
-    protected final void onPostResume() {
+    protected void onPostResume() {
         super.onPostResume();
 
         if (!Strings.isNullOrEmpty(this.sceneFilePath)) {
@@ -566,14 +555,14 @@ public final class MainActivity extends Activity {
     }
 
     @Override
-    protected final void onResume() {
+    protected void onResume() {
         super.onResume();
 
         this.drawView.onResume();
     }
 
     @Override
-    protected final void onPause() {
+    protected void onPause() {
         super.onPause();
 
         this.drawView.setPreserveEGLContextOnPause(true);
@@ -582,7 +571,7 @@ public final class MainActivity extends Activity {
     }
 
     @Override
-    protected final void onRestoreInstanceState(@NonNull final Bundle savedInstanceState) {
+    protected void onRestoreInstanceState(@NonNull final Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         LOGGER.info("onRestoreInstanceState");
 
@@ -606,7 +595,7 @@ public final class MainActivity extends Activity {
     }
 
     @Override
-    protected final void onSaveInstanceState(@NonNull final Bundle outState) {
+    protected void onSaveInstanceState(@NonNull final Bundle outState) {
         super.onSaveInstanceState(outState);
         LOGGER.info("onSaveInstanceState");
 
@@ -658,26 +647,28 @@ public final class MainActivity extends Activity {
     }
 
     @Override
-    protected final void onActivityResult(final int requestCode, final int resultCode, @Nullable final Intent data) {
+    protected void onActivityResult(final int requestCode, final int resultCode, @Nullable final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == Activity.RESULT_OK && requestCode == OPEN_FILE_REQUEST_CODE && data != null) {
-            Optional.of(data.getData()).ifPresent(uri -> {
-                final String sdCardName = "sdcard";
-                String filePath = StreamSupport.stream(uri.getPathSegments())
+        if (resultCode == Activity.RESULT_OK && requestCode == OPEN_FILE_REQUEST_CODE) {
+            Optional.ofNullable(data)
+                .map(Intent::getData)
+                .ifPresent(uri -> {
+                    final String sdCardName = "sdcard";
+                    String filePath = StreamSupport.stream(uri.getPathSegments())
                         .skip(1L)
                         .reduce("", (accumulator, segment) -> accumulator + FILE_SEPARATOR + segment)
                         .replace(FILE_SEPARATOR + sdCardName + FILE_SEPARATOR, FILE_SEPARATOR);
 
-                final int removeIndex = filePath.indexOf(PATH_SEPARATOR);
-                filePath = removeIndex >= 0 ? filePath.substring(removeIndex) : filePath;
-                filePath = filePath.replace(PATH_SEPARATOR, FILE_SEPARATOR);
-                filePath = filePath.substring(0, filePath.lastIndexOf('.'));
+                    final int removeIndex = filePath.indexOf(PATH_SEPARATOR);
+                    filePath = removeIndex >= 0 ? filePath.substring(removeIndex) : filePath;
+                    filePath = filePath.replace(PATH_SEPARATOR, FILE_SEPARATOR);
+                    filePath = filePath.substring(0, filePath.lastIndexOf('.'));
 
-                final String sdCardPath = getSDCardPath();
+                    final String sdCardPath = getSDCardPath();
 
-                this.sceneFilePath = sdCardPath + filePath;
-            });
+                    this.sceneFilePath = sdCardPath + filePath;
+                });
         }
     }
 }

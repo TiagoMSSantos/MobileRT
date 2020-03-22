@@ -15,6 +15,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 
 import org.jetbrains.annotations.Contract;
 
@@ -24,7 +25,6 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
@@ -33,6 +33,7 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import java8.util.Objects;
+import java8.util.Optional;
 import java8.util.function.Supplier;
 import puscas.mobilertapp.exceptions.FailureException;
 import puscas.mobilertapp.exceptions.LowMemoryException;
@@ -341,7 +342,10 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * @return The current Ray Tracer engine {@link State}.
      */
     State getState() {
-        return State.values()[this.renderTask.rtGetState()];
+        final State currentState = Optional.ofNullable(this.renderTask)
+            .map(task -> State.values()[task.rtGetState()])
+            .orElseGet(() -> State.IDLE);
+        return currentState;
     }
 
     /**
@@ -485,7 +489,6 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         LOGGER.info("prepareRenderer");
 
         this.requestRender = requestRender;
-        this.renderTask = new RenderTask.Builder(() -> { }, () -> { }, this.textView, this.buttonRender).build();
     }
 
     /**
@@ -496,8 +499,9 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * @param height     The height of the new {@link Bitmap}.
      * @param widthView  The width of the {@link GLSurfaceView}.
      * @param heightView The height of the {@link GLSurfaceView}.
+     * @param rasterize  The new {@link MainRenderer#rasterize}.
      */
-    void setBitmap(final int width, final int height, final int widthView, final int heightView) {
+    void setBitmap(final int width, final int height, final int widthView, final int heightView, final boolean rasterize) {
         this.bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         this.bitmap.eraseColor(Color.BLACK);
         this.width = width;
@@ -505,6 +509,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         this.viewWidth = widthView;
         this.viewHeight = heightView;
         this.firstFrame = true;
+        this.rasterize = rasterize;
     }
 
     /**
@@ -571,7 +576,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * In the end, resets {@link MainRenderer#executorService} to a new thread pool with
      * {@link ConstantsRenderer#NUMBER_THREADS} threads.
      */
-    void waitForLastTask() {
+    void waitLastTask() {
         LOGGER.info("WAITING");
 
         this.lockExecutorService.lock();
@@ -864,39 +869,20 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         this.activityManager = activityManager;
     }
 
-    /**
-     * Sets {@link MainRenderer#bitmap}.
-     *
-     * @param bitmap The new {@link MainRenderer#bitmap}.
-     */
-    void setBitmap(final Bitmap bitmap) {
-        this.bitmap = bitmap;
-    }
-
-    /**
-     * Sets {@link MainRenderer#rasterize}.
-     *
-     * @param rasterize The new {@link MainRenderer#rasterize}.
-     */
-    void setRasterize(final boolean rasterize) {
-        this.rasterize = rasterize;
-    }
-
     @Override
     public void onDrawFrame(@NonNull final GL10 gl) {
         if (this.firstFrame) {
+            this.firstFrame = false;
             LOGGER.info("onDrawFrame");
 
-            this.firstFrame = false;
             if (this.rasterize) {
                 this.rasterize = false;
                 try {
                     initArrays();
                 } catch (final Exception ex) {
-                    LOGGER.warning(ex.getMessage());
+                    LOGGER.warning(Strings.nullToEmpty(ex.getMessage()));
                 }
             }
-            waitForLastTask();
             if (Objects.nonNull(this.arrayVertices) &&
                 Objects.nonNull(this.arrayColors) &&
                 Objects.nonNull(this.arrayCamera)) {
@@ -910,7 +896,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
             try {
                 rtRenderIntoBitmap(this.bitmap, this.numThreads, true);
             } catch (final Exception ex) {
-                LOGGER.warning(ex.getMessage());
+                LOGGER.warning(Strings.nullToEmpty(ex.getMessage()));
             }
 
             final RenderTask.Builder renderTaskBuilder = new RenderTask.Builder(
@@ -918,15 +904,15 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
             );
 
             this.renderTask = renderTaskBuilder
-                    .withUpdateInterval(DEFAULT_UPDATE_INTERVAL)
-                    .withWidth(this.width)
-                    .withHeight(this.height)
-                    .withNumThreads(this.numThreads)
-                    .withSamplesPixel(this.samplesPixel)
-                    .withSamplesLight(this.samplesLight)
-                    .withNumPrimitives(this.numPrimitives)
-                    .withNumLights(this.numLights)
-                    .build();
+                .withUpdateInterval(DEFAULT_UPDATE_INTERVAL)
+                .withWidth(this.width)
+                .withHeight(this.height)
+                .withNumThreads(this.numThreads)
+                .withSamplesPixel(this.samplesPixel)
+                .withSamplesLight(this.samplesLight)
+                .withNumPrimitives(this.numPrimitives)
+                .withNumLights(this.numLights)
+                .build();
 
             this.lockExecutorService.lock();
             try {

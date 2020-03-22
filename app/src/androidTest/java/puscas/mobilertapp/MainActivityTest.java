@@ -26,6 +26,7 @@ import org.junit.jupiter.api.Assertions;
 import java.io.File;
 import java.util.List;
 import java.util.logging.Logger;
+
 import java8.util.stream.IntStreams;
 import java8.util.stream.StreamSupport;
 
@@ -170,7 +171,7 @@ public final class MainActivityTest {
             final int expectedIndex = currentIndex % buttonTextList.size();
             final String expectedButtonText = buttonTextList.get(expectedIndex);
             final ViewInteraction viewInteraction = Espresso.onView(ViewMatchers.withId(R.id.renderButton));
-            viewInteraction.perform(new MainActivityTest.ViewActionRenderButton());
+            viewInteraction.perform(new ViewActionButton());
             viewInteraction.check((view, exception) -> {
                 final Button renderButton = view.findViewById(R.id.renderButton);
                 Assertions.assertEquals(
@@ -190,7 +191,7 @@ public final class MainActivityTest {
         viewInteraction.check((view, exception) ->
             assertCheckBox(view, R.id.preview, PREVIEW, CHECK_BOX_MESSAGE, true)
         );
-        viewInteraction.perform(new MainActivityTest.ViewActionCheckBox());
+        viewInteraction.perform(new ViewActionButton());
         viewInteraction.check((view, exception) ->
             assertCheckBox(view, R.id.preview, PREVIEW, CHECK_BOX_MESSAGE, false)
         );
@@ -300,7 +301,7 @@ public final class MainActivityTest {
             });
 
         testRenderButton(4);
-        testRenderButton(2 * 100);
+        testRenderButton(10);
 
         testPickerNumbers();
         testPreviewCheckBox();
@@ -311,18 +312,18 @@ public final class MainActivityTest {
     /**
      * Auxiliary class which represents the render {@link Button}.
      */
-    private static class ViewActionRenderButton implements ViewAction {
+    private static class ViewActionButton implements ViewAction {
 
         /**
          * The {@link Logger} for this class.
          */
         private static final Logger LOGGER_BUTTON =
-                Logger.getLogger(MainActivityTest.ViewActionRenderButton.class.getName());
+                Logger.getLogger(ViewActionButton.class.getName());
 
         /**
          * The constructor for this class.
          */
-        ViewActionRenderButton() {
+        ViewActionButton() {
         }
 
         @Override
@@ -391,45 +392,6 @@ public final class MainActivityTest {
             LOGGER_PICKER.info("assertPickerValue#perform");
 
             ((NumberPicker) view).setValue(this.value);
-        }
-    }
-
-    /**
-     * Auxiliary class which represents the preview {@link CheckBox}.
-     */
-    private static class ViewActionCheckBox implements ViewAction {
-
-        /**
-         * The {@link Logger} for this class.
-         */
-        private static final Logger LOGGER_CHECKBOX =
-                Logger.getLogger(MainActivityTest.ViewActionCheckBox.class.getName());
-
-        /**
-         * The constructor for this class.
-         */
-        ViewActionCheckBox() {
-        }
-
-        @Override
-        public final @NotNull Matcher<View> getConstraints() {
-            LOGGER_CHECKBOX.info("testPreviewCheckBox#getConstraints");
-
-            return ViewMatchers.isAssignableFrom(CheckBox.class);
-        }
-
-        @Override
-        public final @NotNull String getDescription() {
-            LOGGER_CHECKBOX.info("testPreviewCheckBox#getDescription");
-
-            return "Click preview checkbox";
-        }
-
-        @Override
-        public final void perform(final UiController uiController, final View view) {
-            LOGGER_CHECKBOX.info("testPreviewCheckBox#perform");
-
-            view.performClick();
         }
     }
 }

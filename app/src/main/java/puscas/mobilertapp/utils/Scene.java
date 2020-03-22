@@ -85,7 +85,7 @@ public enum Scene {
         LOGGER.info(GET_NAMES);
 
         return J8Arrays.stream(values())
-                .map(Scene::getName)
-                .toArray(String[]::new);
+            .map(Scene::getName)
+            .toArray(String[]::new);
     }
 }

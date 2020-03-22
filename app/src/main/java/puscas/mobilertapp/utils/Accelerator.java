@@ -72,7 +72,7 @@ public enum Accelerator {
         LOGGER.info(GET_NAMES);
 
         return J8Arrays.stream(values())
-                .map(Accelerator::getName)
-                .toArray(String[]::new);
+            .map(Accelerator::getName)
+            .toArray(String[]::new);
     }
 }

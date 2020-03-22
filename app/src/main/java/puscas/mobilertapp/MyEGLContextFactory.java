@@ -7,12 +7,12 @@ import androidx.annotation.NonNull;
 
 import java.util.logging.Logger;
 
-import java8.util.Objects;
-
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
+
+import java8.util.Objects;
 
 import static puscas.mobilertapp.utils.ConstantsError.EGL_DESTROY_CONTEXT_FAILED;
 
@@ -59,8 +59,8 @@ public class MyEGLContextFactory implements GLSurfaceView.EGLContextFactory {
             this.eglContext = null;
         } else {
             final int[] attribList = {
-                    EGL_CONTEXT_CLIENT_VERSION,
-                    EGL10.EGL_NONE
+                EGL_CONTEXT_CLIENT_VERSION,
+                EGL10.EGL_NONE
             };
             this.eglContext = egl.eglCreateContext(display, eglConfig, EGL10.EGL_NO_CONTEXT, attribList);
         }

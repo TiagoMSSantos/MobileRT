@@ -83,6 +83,11 @@ public final class ConstantsUI {
     public static final String PATH_SEPARATOR = System.getProperty("path.separator");
 
     /**
+     * The path to the shaders folder in the assets.
+     */
+    public static final String PATH_SHADERS = "Shaders";
+
+    /**
      * A private constructor in order to prevent instantiating this helper class.
      */
     private ConstantsUI() {
