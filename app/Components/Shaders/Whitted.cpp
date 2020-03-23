@@ -18,7 +18,7 @@ bool Whitted::shade(::glm::vec3 *const rgb, const Intersection &intersection, co
 
     const auto &lE {intersection.material_->Le_};
     //STOP if it intersects a light source
-    if (::glm::any(::glm::greaterThan(lE, ::glm::vec3 {0}))) {
+    if (::MobileRT::hasPositiveValue(lE)) {
         *rgb = lE;
         return true;
     }
@@ -34,7 +34,7 @@ bool Whitted::shade(::glm::vec3 *const rgb, const Intersection &intersection, co
     const auto &shadingNormal {intersection.normal_};
 
     // shadowed direct lighting - only for diffuse materials
-    if (::glm::any(::glm::greaterThan(kD, ::glm::vec3 {0}))) {
+    if (::MobileRT::hasPositiveValue(kD)) {
         const auto sizeLights {this->lights_.size()};
         if (sizeLights > 0) {
             const auto samplesLight {this->samplesLight_};
@@ -71,7 +71,7 @@ bool Whitted::shade(::glm::vec3 *const rgb, const Intersection &intersection, co
     const auto kr {::MobileRT::fresnel(ray.direction_, shadingNormal, destIor)};
 
     // specular reflection
-    if (::glm::any(::glm::greaterThan(kS, ::glm::vec3 {0}))) {
+    if (::MobileRT::hasPositiveValue(kS)) {
         const auto &reflectionDir {::glm::reflect(ray.direction_, shadingNormal)};
         const Ray &specularRay {reflectionDir, intersection.point_, rayDepth + 1, intersection.primitive_};
         ::glm::vec3 LiS_RGB {};
@@ -80,7 +80,7 @@ bool Whitted::shade(::glm::vec3 *const rgb, const Intersection &intersection, co
     }
 
     // specular transmission
-    if (::glm::any(::glm::greaterThan(kT, ::glm::vec3 {0}))) {
+    if (::MobileRT::hasPositiveValue(kT)) {
         const auto kt {1.0F - kr};
         const auto &refractDir {::glm::refract(ray.direction_, shadingNormal, ior)};
         const Ray &transmissionRay {refractDir, intersection.point_, rayDepth + 1, intersection.primitive_};

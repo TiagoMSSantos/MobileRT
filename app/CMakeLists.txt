@@ -95,7 +95,7 @@ set( COMMON_LINKER_FLAGS_DEBUG  )
 set( COMMON_LINKER_FLAGS_RELEASE -s -flto=full )
 
 # Project
-project( AppInterface VERSION 1.0.0.0 LANGUAGES CXX )
+project( AppMobileRT VERSION 1.0.0.0 LANGUAGES CXX )
 
 # Add sub directories
 add_subdirectory( MobileRT )

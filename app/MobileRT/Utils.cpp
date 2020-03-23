@@ -107,6 +107,16 @@ namespace MobileRT {
     }
 
     /**
+     * Converts an array of floats to a vec3.
+     *
+     * @param values The array of floats that should contain 3 values.
+     * @return The values put into a vec3.
+     */
+    ::glm::vec3 toVec3(const float *const values) {
+        return ::glm::vec3 {values[0], values[1], values[2]};
+    }
+
+    /**
      * Determines whether two floating point values are equal.
      * <br>
      * This method assumes two floats are equal if the difference between them is less than Epsilon.
@@ -161,6 +171,22 @@ namespace MobileRT {
     ::glm::vec2 normalize(const ::glm::vec2 &textureCoordinates) {
         const auto texCoords {::glm::fract(textureCoordinates)};
         return texCoords;
+    }
+
+    /**
+     * Normalizes a vec3.
+     * This means that the vec3 values are putting into the [0, 1] range values.
+     *
+     * @param color The vec3 value.
+     * @return A normalized vec3 value.
+     */
+    ::glm::vec3 normalize(const ::glm::vec3 &color) {
+        const auto max {::std::max(::std::max(color[0], color[1]), color[2])};
+        auto res {color};
+        if (max > 1.0F) {
+            res = color / max;
+        }
+        return res;
     }
 
     /**

@@ -259,7 +259,7 @@ h3 {
         text-align: center;
 
     }
-}</style></head><body><div class="pure-g" id="layout"><div class="sidebar pure-u-1 pure-u-md-1-4"><div class="header"><img src="https://raw.githubusercontent.com/kucherenko/jscpd/1.0.0-alpha/assets/logo-small-box.svg?sanitize=true" width="190"><nav class="nav"><ul class="nav-list"><li class="nav-item"><a class="pure-button" href="#cpp">cpp</a></li><li class="nav-item"><a class="pure-button" href="#c">c</a></li><li class="nav-item"><a class="pure-button" href="#java">java</a></li></ul></nav></div></div><div class="content pure-u-1 pure-u-md-3-4"><div class="controls"><div class="pure-u"><button class="pure-button" onclick="collapseExpandAll()">Collapse/Expand All</button></div></div><table class="pure-table stats"><thead><tr><th>Total files</th><th>Total lines of code</th><th>Duplicated lines</th><th>% of duplications</th></tr></thead><tbody><tr><td>119</td><td>9767</td><td>227</td><td>2.32%</td></tr></tbody></table><div class="clones collapsed"><a name="cpp"></a><h1 class="content-subhead">cpp</h1><div class="mode-stats"><p><span class="mode-rate">2.65%</span> Total files: 91, total lines of code: 7505, duplicated lines: 199</p></div><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Unit_Testing/TestIntersection.cpp[40:54 - 51:49]<br/>app/Unit_Testing/TestIntersection.cpp[26:53 - 37:49]</div></header><div class="clone-description"><pre data-first-start="40" data-second-start="26" data-length="11">}};
+}</style></head><body><div class="pure-g" id="layout"><div class="sidebar pure-u-1 pure-u-md-1-4"><div class="header"><img src="https://raw.githubusercontent.com/kucherenko/jscpd/1.0.0-alpha/assets/logo-small-box.svg?sanitize=true" width="190"><nav class="nav"><ul class="nav-list"><li class="nav-item"><a class="pure-button" href="#cpp">cpp</a></li><li class="nav-item"><a class="pure-button" href="#c">c</a></li><li class="nav-item"><a class="pure-button" href="#java">java</a></li></ul></nav></div></div><div class="content pure-u-1 pure-u-md-3-4"><div class="controls"><div class="pure-u"><button class="pure-button" onclick="collapseExpandAll()">Collapse/Expand All</button></div></div><table class="pure-table stats"><thead><tr><th>Total files</th><th>Total lines of code</th><th>Duplicated lines</th><th>% of duplications</th></tr></thead><tbody><tr><td>119</td><td>9781</td><td>227</td><td>2.32%</td></tr></tbody></table><div class="clones collapsed"><a name="cpp"></a><h1 class="content-subhead">cpp</h1><div class="mode-stats"><p><span class="mode-rate">2.65%</span> Total files: 91, total lines of code: 7514, duplicated lines: 199</p></div><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Unit_Testing/TestIntersection.cpp[40:54 - 51:49]<br/>app/Unit_Testing/TestIntersection.cpp[26:53 - 37:49]</div></header><div class="clone-description"><pre data-first-start="40" data-second-start="26" data-length="11">}};
     const auto primitive {nullptr};
     const auto materialIndex {0};
     const ::glm::vec2 texCoords {0.4F, 0.6F};
@@ -322,12 +322,12 @@ TEST_F</pre></div></section><section class="clone"><header><button class="pure-b
         explicit NoShadows</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Components/Shaders/PathTracer.cpp[27:1 - 34:5]<br/>app/Components/Shaders/NoShadows.cpp[13:102 - 21:1]</div></header><div class="clone-description"><pre data-first-start="27" data-second-start="13" data-length="7">
     const auto &amp;lE {intersection.material_-&gt;Le_};
     //stop if it intersects a light source
-    if (::glm::any(::glm::greaterThan(lE, ::glm::vec3 {0}))) {
+    if (::MobileRT::hasPositiveValue(lE)) {
         *rgb = lE;
         return true;
     }
     </pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Components/Shaders/PathTracer.cpp[54:22 - 59:27]<br/>app/Components/Shaders/NoShadows.cpp[24:52 - 29:16]</div></header><div class="clone-description"><pre data-first-start="54" data-second-start="24" data-length="5">
-    if (::glm::any(::glm::greaterThan(kD, ::glm::vec3 {0}))) {
+    if (::MobileRT::hasPositiveValue(kD)) {
         const auto sizeLights {this-&gt;lights_.size()};
         if (sizeLights &gt; 0) {
             const auto samplesLight {this-&gt;samplesLight_};
@@ -347,7 +347,7 @@ TEST_F</pre></div></section><section class="clone"><header><button class="pure-b
 
     const auto &amp;lE {intersection.material_-&gt;Le_};
     //STOP if it intersects a light source</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Components/Shaders/Whitted.cpp[20:43 - 27:19]<br/>app/Components/Shaders/NoShadows.cpp[15:43 - 22:30]</div></header><div class="clone-description"><pre data-first-start="20" data-second-start="15" data-length="7">
-    if (::glm::any(::glm::greaterThan(lE, ::glm::vec3 {0}))) {
+    if (::MobileRT::hasPositiveValue(lE)) {
         *rgb = lE;
         return true;
     }
@@ -360,7 +360,7 @@ TEST_F</pre></div></section><section class="clone"><header><button class="pure-b
     const auto &amp;kT {intersection.material_-&gt;Kt_};
 
     // the normal always points to outside objects (e.g., spheres)</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Components/Shaders/Whitted.cpp[36:61 - 41:34]<br/>app/Components/Shaders/NoShadows.cpp[24:52 - 29:34]</div></header><div class="clone-description"><pre data-first-start="36" data-second-start="24" data-length="5">
-    if (::glm::any(::glm::greaterThan(kD, ::glm::vec3 {0}))) {
+    if (::MobileRT::hasPositiveValue(kD)) {
         const auto sizeLights {this-&gt;lights_.size()};
         if (sizeLights &gt; 0) {
             const auto samplesLight {this-&gt;samplesLight_};
@@ -458,7 +458,7 @@ TEST_F</pre></div></section><section class="clone"><header><button class="pure-b
     connect(m_timer, SIGNAL(timeout()), this, SLOT(update_image()));
     m_timer-&gt;start(1000);
 
-</pre></div></section><a name="c"></a><h1 class="content-subhead">c</h1><div class="mode-stats"><p><span class="mode-rate">0%</span> Total files: 4, total lines of code: 149, duplicated lines: 0</p></div><a name="java"></a><h1 class="content-subhead">java</h1><div class="mode-stats"><p><span class="mode-rate">1.33%</span> Total files: 24, total lines of code: 2113, duplicated lines: 28</p></div><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/main/java/puscas/mobilertapp/utils/Scene.java[1:1 - 15:4]<br/>app/src/main/java/puscas/mobilertapp/utils/Accelerator.java[1:1 - 15:4]</div></header><div class="clone-description"><pre data-first-start="1" data-second-start="1" data-length="14">package puscas.mobilertapp.utils;
+</pre></div></section><a name="c"></a><h1 class="content-subhead">c</h1><div class="mode-stats"><p><span class="mode-rate">0%</span> Total files: 4, total lines of code: 149, duplicated lines: 0</p></div><a name="java"></a><h1 class="content-subhead">java</h1><div class="mode-stats"><p><span class="mode-rate">1.32%</span> Total files: 24, total lines of code: 2118, duplicated lines: 28</p></div><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/main/java/puscas/mobilertapp/utils/Scene.java[1:1 - 15:4]<br/>app/src/main/java/puscas/mobilertapp/utils/Accelerator.java[1:1 - 15:4]</div></header><div class="clone-description"><pre data-first-start="1" data-second-start="1" data-length="14">package puscas.mobilertapp.utils;
 
 import androidx.annotation.NonNull;
 

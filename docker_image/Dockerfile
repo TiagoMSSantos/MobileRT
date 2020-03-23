@@ -36,7 +36,7 @@ ENV DISPLAY=":1" \
 #      -DCMAKE_BUILD_TYPE=${build_type} \
 #      ../app/ && \
 #    make && \
-#    find ./*/* -not -path bin -not -path lib ! -name AppInterface ! -name *.so -delete
+#    find ./*/* -not -path bin -not -path lib ! -name AppMobileRT ! -name *.so -delete
 
 # Execute
 WORKDIR /MobileRT/build_${build_type}

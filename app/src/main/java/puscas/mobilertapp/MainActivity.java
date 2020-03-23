@@ -90,7 +90,7 @@ public final class MainActivity extends Activity {
         try {
             System.loadLibrary("MobileRT");
             System.loadLibrary("Components");
-            System.loadLibrary("AppInterface");
+            System.loadLibrary("AppMobileRT");
         } catch (final RuntimeException ex) {
             throw new FailureException(ex);
         }

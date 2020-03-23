@@ -879,7 +879,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
                 this.rasterize = false;
                 try {
                     initArrays();
-                } catch (final Exception ex) {
+                } catch (final LowMemoryException ex) {
                     LOGGER.warning(Strings.nullToEmpty(ex.getMessage()));
                 }
             }

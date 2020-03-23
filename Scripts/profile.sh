@@ -153,7 +153,7 @@ ACCELERATORS="1 2"
 
 THREAD=$(nproc --all)
 SHADER="1"
-SCENE="2"
+SCENE="4"
 ACC="3"
 PRINT="true"
 SHOWIMAGE="true"
@@ -172,7 +172,7 @@ function execute {
   #kcachegrind perf.callgrind
   #perf stat \
   #perf record -g --call-graph 'fp' -- \
-  ${BIN_RELEASE_PATH}/AppInterface \
+  ${BIN_RELEASE_PATH}/AppMobileRT \
             ${THREAD} ${SHADER} ${SCENE} ${SPP} ${SPL} ${WIDTH} ${HEIGHT} ${ACC} ${REP} \
             ${OBJ} ${MTL} ${CAM} ${PRINT} ${ASYNC} ${SHOWIMAGE}
   #perf report -g '' --show-nr-samples --hierarchy
@@ -185,7 +185,7 @@ function debug {
   echo "SCENE = "${SCENE}
   echo "ACC = "${ACC}
 
-  ${BIN_DEBUG_PATH}/AppInterfaced \
+  ${BIN_DEBUG_PATH}/AppMobileRTd \
             ${THREAD} ${SHADER} ${SCENE} ${SPP} ${SPL} ${WIDTH} ${HEIGHT} ${ACC} ${REP} \
             ${OBJ} ${MTL} ${CAM} ${PRINT} ${ASYNC} ${SHOWIMAGE}
 }
@@ -243,7 +243,7 @@ function profile {
 
             PLOT_FILE="SC${SCENE}${SEP}SH${SHADER}${SEP}A${ACC}${SEP}R${WIDTH}x${HEIGHT}"
 
-            ${BIN_DEBUG_PATH}/AppInterfaced \
+            ${BIN_DEBUG_PATH}/AppMobileRTd \
             ${THREAD} ${SHADER} ${SCENE} ${SPP} ${SPL} ${WIDTH} ${HEIGHT} ${ACC} ${REP} \
             ${OBJ} ${MTL} ${CAM} ${PRINT} ${ASYNC} ${SHOWIMAGE} \
             | awk -v threads="${THREAD}" -f ${PLOT_SCRIPTS_PATH}/parser_out.awk 2>&1 \

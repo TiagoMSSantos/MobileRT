@@ -21,11 +21,11 @@ OBJLoader::OBJLoader(::std::string objFilePath, ::std::string matFilePath) :
 
     ::std::ifstream objStream {this->objFilePath_};
     objStream.exceptions(
-            objStream.exceptions() |::std::ifstream::goodbit | ::std::ifstream::badbit | ::std::ifstream::failbit
+        objStream.exceptions() |::std::ifstream::goodbit | ::std::ifstream::badbit | ::std::ifstream::failbit
     );
     ::std::ifstream matStream {this->mtlFilePath_};
     matStream.exceptions(
-            matStream.exceptions() |::std::ifstream::goodbit | ::std::ifstream::badbit | ::std::ifstream::failbit
+        matStream.exceptions() |::std::ifstream::goodbit | ::std::ifstream::badbit | ::std::ifstream::failbit
     );
     ::tinyobj::MaterialStreamReader matStreamReader {matStream};
     ::tinyobj::MaterialStreamReader *const matStreamReaderPtr {!this->mtlFilePath_.empty()? &matStreamReader : nullptr};
@@ -39,10 +39,10 @@ OBJLoader::OBJLoader(::std::string objFilePath, ::std::string matFilePath) :
     errno = 0;
 
     const auto ret {
-            ::tinyobj::LoadObj(
-                    &this->attrib_, &this->shapes_, &this->materials_,
-                    &warnings, &errors, &objStream, matStreamReaderPtr, true, true
-            )
+        ::tinyobj::LoadObj(
+            &this->attrib_, &this->shapes_, &this->materials_,
+            &warnings, &errors, &objStream, matStreamReaderPtr, true, true
+        )
     };
 
     if (errno) {
@@ -67,9 +67,6 @@ OBJLoader::OBJLoader(::std::string objFilePath, ::std::string matFilePath) :
             }
         }
         this->isProcessed_ = true;
-    } else {
-        this->isProcessed_ = false;
-        this->numberTriangles_ = -1;
     }
 }
 
@@ -149,14 +146,6 @@ bool OBJLoader::fillScene(Scene *const scene,
                     normal2 = ::glm::vec3 {::glm::normalize(::glm::cross(AC, AB))};
                     normal3 = ::glm::vec3 {::glm::normalize(::glm::cross(AC, AB))};
                 }
-                BOOST_ASSERT_MSG(::MobileRT::isValid(normal1), "normal1 must be valid.");
-                BOOST_ASSERT_MSG(!::MobileRT::equal(normal1, ::glm::vec3 {0}), "normal1 can't be zero.");
-
-                BOOST_ASSERT_MSG(::MobileRT::isValid(normal2), "normal2 must be valid.");
-                BOOST_ASSERT_MSG(!::MobileRT::equal(normal2, ::glm::vec3 {0}), "normal2 can't be zero.");
-
-                BOOST_ASSERT_MSG(::MobileRT::isValid(normal3), "normal3 must be valid.");
-                BOOST_ASSERT_MSG(!::MobileRT::equal(normal3, ::glm::vec3 {0}), "normal3 can't be zero.");
 
                 // per-face material
                 const auto itMaterialShape {shape.mesh.material_ids.cbegin() + static_cast<::std::int32_t> (face)};
@@ -164,28 +153,10 @@ bool OBJLoader::fillScene(Scene *const scene,
                 if (materialId >= 0) {
                     const auto itMaterial {this->materials_.cbegin() + static_cast<::std::int32_t> (materialId)};
                     const auto &mat {*itMaterial};
-                    const auto d1 {mat.diffuse[0]};
-                    const auto d2 {mat.diffuse[1]};
-                    const auto d3 {mat.diffuse[2]};
-                    const ::glm::vec3 &diffuse {d1, d2, d3};
-                    const auto s1 {mat.specular[0]};
-                    const auto s2 {mat.specular[1]};
-                    const auto s3 {mat.specular[2]};
-                    const ::glm::vec3 &specular {s1, s2, s3};
-                    const auto t1 {mat.transmittance[0] * (1.0F - mat.dissolve)};
-                    const auto t2 {mat.transmittance[1] * (1.0F - mat.dissolve)};
-                    const auto t3 {mat.transmittance[2] * (1.0F - mat.dissolve)};
-                    const ::glm::vec3 &transmittance {t1, t2, t3};
-                    auto e1 {mat.emission[0]};
-                    auto e2 {mat.emission[1]};
-                    auto e3 {mat.emission[2]};
-                    const auto max {::std::max(::std::max(e1, e2), e3)};
-                    if (max > 1.0F) {
-                        e1 /= max;
-                        e2 /= max;
-                        e3 /= max;
-                    }
-                    const ::glm::vec3 &emission {e1, e2, e3};
+                    const ::glm::vec3 &diffuse {::MobileRT::toVec3(mat.diffuse)};
+                    const ::glm::vec3 &specular {::MobileRT::toVec3(mat.specular)};
+                    const ::glm::vec3 &transmittance {::MobileRT::toVec3(mat.transmittance) * (1.0F - mat.dissolve)};
+                    const ::glm::vec3 &emission {::MobileRT::normalize(::MobileRT::toVec3(mat.emission))};
                     const auto indexRefraction {mat.ior};
 
                     const auto hasTexture {!mat.diffuse_texname.empty()};
@@ -236,10 +207,10 @@ bool OBJLoader::fillScene(Scene *const scene,
                         texCoordB = ::MobileRT::normalize(texCoordB);
                         texCoordC = ::MobileRT::normalize(texCoordC);
                     }
-                    const Material material {diffuse, specular, transmittance, indexRefraction, emission, texture};
+                    Material material {diffuse, specular, transmittance, indexRefraction, emission, texture};
                     const auto itFoundMat {::std::find(scene->materials_.begin(), scene->materials_.end(), material)};
-                    if (e1 > 0.0F || e2 > 0.0F || e3 > 0.0F) {
-                        const Triangle &triangle {
+                    if (::MobileRT::hasPositiveValue(emission)) {
+                        const auto &triangle {
                             Triangle::Builder(vertex1, vertex2, vertex3)
                                 .withNormals(normal1, normal2, normal3)
                                 .withTexCoords(texCoordA, texCoordB, texCoordC)
@@ -250,22 +221,22 @@ bool OBJLoader::fillScene(Scene *const scene,
                         LOG("Light position at: x:", lightPos[0], ", y:", lightPos[1], ", z:", lightPos[2]);
                     } else {
                         Triangle::Builder builder {
-                                Triangle::Builder(vertex1, vertex2, vertex3)
-                                        .withNormals(normal1, normal2, normal3)
-                                        .withTexCoords(texCoordA, texCoordB, texCoordC)
+                            Triangle::Builder(vertex1, vertex2, vertex3)
+                                .withNormals(normal1, normal2, normal3)
+                                .withTexCoords(texCoordA, texCoordB, texCoordC)
                         };
 
                         if(itFoundMat != scene->materials_.cend()) {
                             const auto materialIndex {static_cast<::std::int32_t> (
                                 itFoundMat - scene->materials_.cbegin()
                             )};
-                            const Triangle &triangle {builder.withMaterialIndex(materialIndex).build()};
-                            scene->triangles_.emplace_back(triangle);
+                            auto &&triangle {builder.withMaterialIndex(materialIndex).build()};
+                            scene->triangles_.emplace_back(::std::move(triangle));
                         } else {
                             const auto materialIndex {static_cast<::std::int32_t> (scene->materials_.size())};
-                            const Triangle &triangle {builder.withMaterialIndex(materialIndex).build()};
-                            scene->triangles_.emplace_back(triangle);
-                            scene->materials_.emplace_back(material);
+                            auto &&triangle {builder.withMaterialIndex(materialIndex).build()};
+                            scene->triangles_.emplace_back(::std::move(triangle));
+                            scene->materials_.emplace_back(::std::move(material));
                         }
                     }
                 } else {
@@ -279,23 +250,23 @@ bool OBJLoader::fillScene(Scene *const scene,
                     const ::glm::vec3 &transmittance {0.0F, 0.0F, 0.0F};
                     const auto indexRefraction {1.0F};
                     const ::glm::vec3 &emission {0.0F, 0.0F, 0.0F};
-                    const Material material {diffuse, specular, transmittance, indexRefraction, emission};
+                    Material material {diffuse, specular, transmittance, indexRefraction, emission};
                     const auto itFoundMat {::std::find(scene->materials_.begin(), scene->materials_.end(), material)};
                     Triangle::Builder builder {
-                            Triangle::Builder(vertex1, vertex2, vertex3)
-                                    .withNormals(normal1, normal2, normal3)
+                        Triangle::Builder(vertex1, vertex2, vertex3)
+                            .withNormals(normal1, normal2, normal3)
                     };
                     if(itFoundMat != scene->materials_.cend()) {
                         const auto materialIndex {static_cast<::std::int32_t> (
                             itFoundMat - scene->materials_.begin()
                         )};
-                        const Triangle &triangle {builder.withMaterialIndex(materialIndex).build()};
-                        scene->triangles_.emplace_back(triangle);
+                        auto &&triangle {builder.withMaterialIndex(materialIndex).build()};
+                        scene->triangles_.emplace_back(::std::move(triangle));
                     } else {
                         const auto materialIndex {static_cast<::std::int32_t> (scene->materials_.size())};
-                        const Triangle &triangle {builder.withMaterialIndex(materialIndex).build()};
-                        scene->triangles_.emplace_back(triangle);
-                        scene->materials_.emplace_back(material);
+                        auto &&triangle {builder.withMaterialIndex(materialIndex).build()};
+                        scene->triangles_.emplace_back(::std::move(triangle));
+                        scene->materials_.emplace_back(::std::move(material));
                     }
                 }
             }

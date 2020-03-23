@@ -195,16 +195,14 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitVerticesArray(
     } catch (const ::std::bad_alloc &badAlloc) {
         const auto lowMemClass {env->FindClass("puscas/mobilertapp/exceptions/LowMemoryException")};
         env->ThrowNew(lowMemClass, badAlloc.what());
-        return nullptr;
     } catch (const ::std::exception &exception) {
         const auto exceptionClass {env->FindClass("java/lang/RuntimeException")};
         env->ThrowNew(exceptionClass, exception.what());
-        return nullptr;
     } catch (...) {
         const auto exceptionClass {env->FindClass("java/lang/RuntimeException")};
         env->ThrowNew(exceptionClass, "Unknown error");
-        return nullptr;
     }
+    return nullptr;
 }
 
 extern "C"
@@ -269,16 +267,14 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitColorsArray(
     } catch (const ::std::bad_alloc &badAlloc) {
         const auto lowMemClass {env->FindClass("puscas/mobilertapp/exceptions/LowMemoryException")};
         env->ThrowNew(lowMemClass, badAlloc.what());
-        return nullptr;
     } catch (const ::std::exception &exception) {
         const auto exceptionClass {env->FindClass("java/lang/RuntimeException")};
         env->ThrowNew(exceptionClass, exception.what());
-        return nullptr;
     } catch (...) {
         const auto exceptionClass {env->FindClass("java/lang/RuntimeException")};
         env->ThrowNew(exceptionClass, "Unknown error");
-        return nullptr;
     }
+    return nullptr;
 }
 
 static void updateFps() {

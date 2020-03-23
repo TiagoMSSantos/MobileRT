@@ -52,16 +52,23 @@ namespace MobileRT {
 
     ::glm::vec2 toVec2(const char *values);
 
+    ::glm::vec3 toVec3(const float *values);
+
     bool equal(float a, float b);
 
     bool equal(const ::glm::vec3 &a, const ::glm::vec3 &b);
 
     template<::std::int32_t S, typename T>
-    bool isValid(const ::glm::vec<S, T> value);
+    bool isValid(const ::glm::vec<S, T> &value);
+
+    template<::std::int32_t S, typename T>
+    bool hasPositiveValue(const ::glm::vec<S, T> &value);
 
     bool isValid(const float value);
 
     ::glm::vec2 normalize(const ::glm::vec2 &textureCoordinates);
+
+    ::glm::vec3 normalize(const ::glm::vec3 &color);
 
     float fresnel(const ::glm::vec3 &I, const ::glm::vec3 &N, float ior);
 
@@ -138,15 +145,30 @@ namespace MobileRT {
     /**
      * Determines whether a ::glm::vec is valid or not.
      *
+     * @tparam S The size of ::glm::vec.
+     * @tparam T The type of ::glm::vec.
      * @param value A vec floating point values.
      * @return Whether the vec is valid or not.
      */
     template<::std::int32_t S, typename T>
-    bool isValid(const ::glm::vec<S, T> value) {
+    bool isValid(const ::glm::vec<S, T> &value) {
         const auto isNaN {::glm::all(::glm::isnan(value))};
         const auto isInf {::glm::all(::glm::isinf(value))};
         const auto res {!isNaN && !isInf};
         return res;
+    }
+
+    /**
+     * Determines whether a ::glm::vec has positive values or not.
+     *
+     * @tparam S The size of ::glm::vec.
+     * @tparam T The type of ::glm::vec.
+     * @param value A vec floating point values.
+     * @return Whether the vec has positive values or not.
+     */
+    template<::std::int32_t S, typename T>
+    bool hasPositiveValue(const ::glm::vec<S, T> &value) {
+        return ::glm::any(::glm::greaterThan(value, ::glm::vec<S, T> {0}));
     }
 }//namespace MobileRT
 

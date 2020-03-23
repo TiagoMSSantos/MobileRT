@@ -13,7 +13,7 @@ NoShadows::NoShadows(Scene scene, const ::std::int32_t samplesLight, const Accel
 bool NoShadows::shade(::glm::vec3 *const rgb, const Intersection &intersection, const Ray &/*ray*/) {
     const auto &lE {intersection.material_->Le_};
     //stop if it intersects a light source
-    if (::glm::any(::glm::greaterThan(lE, ::glm::vec3 {0}))) {
+    if (::MobileRT::hasPositiveValue(lE)) {
         *rgb = lE;
         return true;
     }
@@ -22,7 +22,7 @@ bool NoShadows::shade(::glm::vec3 *const rgb, const Intersection &intersection, 
     const auto &shadingNormal {intersection.normal_};
 
     // direct lighting - only for diffuse materials
-    if (::glm::any(::glm::greaterThan(kD, ::glm::vec3 {0}))) {
+    if (::MobileRT::hasPositiveValue(kD)) {
         const auto sizeLights {this->lights_.size()};
         if (sizeLights > 0) {
             const auto samplesLight {this->samplesLight_};
