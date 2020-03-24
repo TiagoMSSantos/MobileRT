@@ -158,7 +158,7 @@ public final class MainActivity extends Activity {
      * @param size The value to be rounded down to a multiple of the number of tiles in the Ray Tracer engine.
      * @return The highest value that is smaller than the size passed by parameter and is a multiple of the number of tiles.
      */
-    private native int rtResize(final int size);
+    private native int rtResize(int size);
 
     /**
      * Helper method that gets the number of CPU cores in the Android device for devices with the SDK API version <
