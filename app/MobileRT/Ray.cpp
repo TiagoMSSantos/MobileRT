@@ -41,4 +41,6 @@ Ray::Ray(const ::glm::vec3 &dir, const ::glm::vec3 &origin,
 void Ray::checkArguments() const {
     BOOST_ASSERT_MSG(isValid(this->direction_), "direction must be valid.");
     BOOST_ASSERT_MSG(!equal(this->direction_, ::glm::vec3 {0}), "direction can't be zero.");
+
+    BOOST_ASSERT_MSG(isValid(this->origin_), "origin must be valid.");
 }

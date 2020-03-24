@@ -85,7 +85,7 @@ namespace MobileRT {
 
         bool rayTrace(::glm::vec3 *rgb, const Ray &ray);
 
-        bool shadowTrace(Intersection intersection, const Ray &ray);
+        bool shadowTrace(float distance, const Ray &ray);
 
         virtual void resetSampling();
 

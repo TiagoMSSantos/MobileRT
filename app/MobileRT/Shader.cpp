@@ -121,12 +121,12 @@ bool Shader::rayTrace(::glm::vec3 *rgb, const Ray &ray) {
 /**
  * Determines if a casted ray intersects a primitive in the scene between the origin of the ray and a light source.
  *
- * @param intersection The intersection which contains the distance from the origin of the ray to the light source.
- * @param ray          The casted ray.
+ * @param distance The distance from the origin of the ray to the light source.
+ * @param ray      The casted ray.
  * @return Whether the casted ray intersects a primitive in the scene or not.
  */
-bool Shader::shadowTrace(Intersection intersection, const Ray &ray) {
-    const auto lastDist {intersection.length_};
+bool Shader::shadowTrace(const float distance, const Ray &ray) {
+    Intersection intersection {distance};
     switch (this->accelerator_) {
         case Accelerator::ACC_NAIVE: {
             intersection = this->naivePlanes_.shadowTrace(intersection, ray);
@@ -149,7 +149,7 @@ bool Shader::shadowTrace(Intersection intersection, const Ray &ray) {
             break;
         }
     }
-    const auto res {intersection.length_ < lastDist};
+    const auto res {intersection.length_ < distance};
     return res;
 }
 
