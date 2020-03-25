@@ -16,6 +16,9 @@ namespace MobileRT {
         float sqRadius_ {};
         ::std::int32_t materialIndex_ {-1};
 
+    private:
+        void checkArguments() const;
+
     public:
         explicit Sphere () = delete;
 

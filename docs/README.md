@@ -183,6 +183,9 @@ library for instrumented tests
 - [x] Support git hooks to check git commit messages
 - [x] Support git hooks to submit Jenkins' jobs after each git push
 - [ ] Support to export rendered image to a file
+- [ ] Support to store rendered image to a database
+- [ ] Support to load image from a database
+- [ ] Support to continue rendering an image loaded from a database
 - [x] Support CI / CD from github (actions) for the unit tests
 - [x] Support for a tool to detect duplicated code (jscpd)
 - [ ] Remove MobileRT duplicated code

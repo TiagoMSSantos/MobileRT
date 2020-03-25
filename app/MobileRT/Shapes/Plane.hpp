@@ -19,6 +19,8 @@ namespace MobileRT {
     private:
         ::glm::vec3 getRightVector() const;
 
+        void checkArguments() const;
+
     public:
         explicit Plane () = delete;
 

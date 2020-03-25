@@ -127,15 +127,30 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitCameraArray(
         return directBuffer;
     } catch (const ::std::bad_alloc &badAlloc) {
         const auto lowMemClass {env->FindClass("puscas/mobilertapp/exceptions/LowMemoryException")};
-        env->ThrowNew(lowMemClass, badAlloc.what());
+        const auto res {env->ThrowNew(lowMemClass, badAlloc.what())};
+        if (res != 0) {
+            LOG("ERROR: ", res);
+        } else {
+            LOG("LowMemoryException thrown");
+        }
         return nullptr;
     } catch (const ::std::exception &exception) {
         const auto exceptionClass {env->FindClass("java/lang/RuntimeException")};
-        env->ThrowNew(exceptionClass, exception.what());
+        const auto res { env->ThrowNew(exceptionClass, exception.what())};
+        if (res != 0) {
+            LOG("ERROR: ", res);
+        } else {
+            LOG("RuntimeException thrown");
+        }
         return nullptr;
     } catch (...) {
         const auto exceptionClass {env->FindClass("java/lang/RuntimeException")};
-        env->ThrowNew(exceptionClass, "Unknown error");
+        const auto res {env->ThrowNew(exceptionClass, "Unknown error")};
+        if (res != 0) {
+            LOG("ERROR: ", res);
+        } else {
+            LOG("RuntimeException thrown");
+        }
         return nullptr;
     }
 }
@@ -194,13 +209,28 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitVerticesArray(
         return directBuffer;
     } catch (const ::std::bad_alloc &badAlloc) {
         const auto lowMemClass {env->FindClass("puscas/mobilertapp/exceptions/LowMemoryException")};
-        env->ThrowNew(lowMemClass, badAlloc.what());
+        const auto res {env->ThrowNew(lowMemClass, badAlloc.what())};
+        if (res != 0) {
+            LOG("ERROR: ", res);
+        } else {
+            LOG("LowMemoryException thrown");
+        }
     } catch (const ::std::exception &exception) {
         const auto exceptionClass {env->FindClass("java/lang/RuntimeException")};
-        env->ThrowNew(exceptionClass, exception.what());
+        const auto res {env->ThrowNew(exceptionClass, exception.what())};
+        if (res != 0) {
+            LOG("ERROR: ", res);
+        } else {
+            LOG("RuntimeException thrown");
+        }
     } catch (...) {
         const auto exceptionClass {env->FindClass("java/lang/RuntimeException")};
-        env->ThrowNew(exceptionClass, "Unknown error");
+        const auto res {env->ThrowNew(exceptionClass, "Unknown error")};
+        if (res != 0) {
+            LOG("ERROR: ", res);
+        } else {
+            LOG("RuntimeException thrown");
+        }
     }
     return nullptr;
 }
@@ -266,13 +296,28 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitColorsArray(
         return directBuffer;
     } catch (const ::std::bad_alloc &badAlloc) {
         const auto lowMemClass {env->FindClass("puscas/mobilertapp/exceptions/LowMemoryException")};
-        env->ThrowNew(lowMemClass, badAlloc.what());
+        const auto res {env->ThrowNew(lowMemClass, badAlloc.what())};
+        if (res != 0) {
+            LOG("ERROR: ", res);
+        } else {
+            LOG("LowMemoryException thrown");
+        }
     } catch (const ::std::exception &exception) {
         const auto exceptionClass {env->FindClass("java/lang/RuntimeException")};
-        env->ThrowNew(exceptionClass, exception.what());
+        const auto res {env->ThrowNew(exceptionClass, exception.what())};
+        if (res != 0) {
+            LOG("ERROR: ", res);
+        } else {
+            LOG("RuntimeException thrown");
+        }
     } catch (...) {
         const auto exceptionClass {env->FindClass("java/lang/RuntimeException")};
-        env->ThrowNew(exceptionClass, "Unknown error");
+        const auto res {env->ThrowNew(exceptionClass, "Unknown error")};
+        if (res != 0) {
+            LOG("ERROR: ", res);
+        } else {
+            LOG("RuntimeException thrown");
+        }
     }
     return nullptr;
 }
@@ -314,13 +359,13 @@ void Java_puscas_mobilertapp_DrawView_rtStopRender(
         LOG("STATE = STOPPED");
         ::std::unique_lock<std::mutex> lock {mutex_};
         LOG("Got lock, waiting for renderer to finish");
-        while (!finishedRendering_) {
+//        while (!finishedRendering_) {
             if (renderer_ != nullptr) {
                 LOG("RENDERER STOP");
                 renderer_->stopRender();
             }
-            rendered_.wait(lock, [&]{return finishedRendering_ == true;});
-        }
+//            rendered_.wait(lock, [&]{return finishedRendering_ == true;});
+//        }
         LOG("Renderer finished");
     }
     env->ExceptionClear();
@@ -592,6 +637,7 @@ void Java_puscas_mobilertapp_MainRenderer_rtFinishRender(
         LOG("STATE = IDLE");
         fps_ = 0.0F;
         timeRenderer_ = 0;
+        finishedRendering_ = true;
         env->ExceptionClear();
     }
 }
@@ -693,13 +739,28 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
         env->ExceptionClear();
     } catch (const ::std::bad_alloc &badAlloc) {
         const auto lowMemClass {env->FindClass("puscas/mobilertapp/exceptions/LowMemoryException")};
-        env->ThrowNew(lowMemClass, badAlloc.what());
+        const auto res {env->ThrowNew(lowMemClass, badAlloc.what())};
+        if (res != 0) {
+            LOG("ERROR: ", res);
+        } else {
+            LOG("LowMemoryException thrown");
+        }
     } catch (const ::std::exception &exception) {
         const auto exceptionClass {env->FindClass("java/lang/RuntimeException")};
-        env->ThrowNew(exceptionClass, exception.what());
+        const auto res {env->ThrowNew(exceptionClass, exception.what())};
+        if (res != 0) {
+            LOG("ERROR: ", res);
+        } else {
+            LOG("RuntimeException thrown");
+        }
     } catch (...) {
         const auto exceptionClass {env->FindClass("java/lang/RuntimeException")};
-        env->ThrowNew(exceptionClass, "Unknown error");
+        const auto res {env->ThrowNew(exceptionClass, "Unknown error")};
+        if (res != 0) {
+            LOG("ERROR: ", res);
+        } else {
+            LOG("RuntimeException thrown");
+        }
     }
 }
 

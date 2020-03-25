@@ -18,6 +18,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -32,7 +33,6 @@ import java.util.logging.Logger;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import java8.util.Objects;
 import java8.util.Optional;
 import java8.util.function.Supplier;
 import puscas.mobilertapp.exceptions.FailureException;
@@ -430,6 +430,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * {@link MainRenderer#arrayCamera} native arrays.
      */
     void freeArrays() {
+        LOGGER.info("freeArrays");
         this.arrayVertices = rtFreeNativeBuffer(this.arrayVertices);
         this.arrayColors = rtFreeNativeBuffer(this.arrayColors);
         this.arrayCamera = rtFreeNativeBuffer(this.arrayCamera);
@@ -441,13 +442,15 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      */
     private void initArrays() throws LowMemoryException {
         checksFreeMemory(1, this::freeArrays);
+
         this.arrayVertices = rtInitVerticesArray();
-
         checksFreeMemory(1, this::freeArrays);
+
         this.arrayColors = rtInitColorsArray();
-
         checksFreeMemory(1, this::freeArrays);
+
         this.arrayCamera = rtInitCameraArray();
+        checksFreeMemory(1, this::freeArrays);
     }
 
     /**
@@ -617,10 +620,10 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * @throws LowMemoryException This {@link Exception} is thrown if the Android device has low free memory.
      */
     private Bitmap copyFrame(
-        final ByteBuffer bbVertices,
-        final ByteBuffer bbColors,
-        final ByteBuffer bbCamera,
-        final int numPrimitives
+            final @NotNull ByteBuffer bbVertices,
+            final @NotNull ByteBuffer bbColors,
+            final @NotNull ByteBuffer bbCamera,
+            final int numPrimitives
     ) throws LowMemoryException {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_STENCIL_BUFFER_BIT);
         checksGLError();

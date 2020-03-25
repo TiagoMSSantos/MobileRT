@@ -1,5 +1,6 @@
 #include "MobileRT/Shapes/Sphere.hpp"
 #include <algorithm>
+#include <boost/assert.hpp>
 
 using ::MobileRT::AABB;
 using ::MobileRT::Sphere;
@@ -13,9 +14,20 @@ using ::MobileRT::Intersection;
  * @param materialIndex The index of the material of the sphere.
  */
 Sphere::Sphere(const ::glm::vec3 &center, const float radius, const ::std::int32_t materialIndex) :
-    center_ {center},
-    sqRadius_ {radius * radius},
-    materialIndex_ {materialIndex} {
+        center_ {center},
+        sqRadius_ {radius * radius},
+        materialIndex_ {materialIndex} {
+    checkArguments();
+}
+
+/**
+ * Helper method which checks for invalid fields.
+ */
+void Sphere::checkArguments() const {
+    BOOST_ASSERT_MSG(isValid(this->center_), "center must be valid.");
+
+    BOOST_ASSERT_MSG(isValid(this->sqRadius_), "sqRadius must be valid.");
+    BOOST_ASSERT_MSG(!equal(this->sqRadius_, 0.0F), "normal can't be zero.");
 }
 
 /**

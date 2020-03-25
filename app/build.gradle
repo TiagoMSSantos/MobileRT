@@ -2,7 +2,10 @@ apply plugin: 'com.android.application'
 
 allprojects {
     tasks.withType(JavaCompile) {
-        options.compilerArgs << '-Xlint:all' << '-AprintErrorStack' << '-AprintAllQualifiers'
+        options.compilerArgs \
+            << '-Xlint:all' \
+            << '-AprintErrorStack' << '-AprintAllQualifiers' \
+            << '-verbose' << '-Werror'
     }
 }
 

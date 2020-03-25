@@ -39,8 +39,12 @@ void Triangle::checkArguments() const {
     BOOST_ASSERT_MSG(!equal(this->normalC_, ::glm::vec3 {0}), "normalC can't be zero.");
 
     BOOST_ASSERT_MSG(isValid(this->pointA_), "pointA must be valid.");
+
     BOOST_ASSERT_MSG(isValid(this->AB_), "AB must be valid.");
+    BOOST_ASSERT_MSG(!equal(this->AB_, ::glm::vec3 {0}), "AB can't be zero.");
+
     BOOST_ASSERT_MSG(isValid(this->AC_), "AC must be valid.");
+    BOOST_ASSERT_MSG(!equal(this->AC_, ::glm::vec3 {0}), "AC can't be zero.");
 
     BOOST_ASSERT_MSG(isValid(this->texCoordA_), "texCoordA must be valid.");
     BOOST_ASSERT_MSG(isValid(this->texCoordB_), "texCoordB must be valid.");

@@ -1,4 +1,5 @@
 #include "MobileRT/Shapes/Plane.hpp"
+#include <boost/assert.hpp>
 
 using ::MobileRT::AABB;
 using ::MobileRT::Plane;
@@ -12,9 +13,20 @@ using ::MobileRT::Intersection;
  * @param materialIndex The index of the material of the plane.
  */
 Plane::Plane(const ::glm::vec3 &point, const ::glm::vec3 &normal, const ::std::int32_t materialIndex) :
-    normal_ {::glm::normalize(normal)},
-    point_ {point},
-    materialIndex_ {materialIndex} {
+        normal_ {::glm::normalize(normal)},
+        point_ {point},
+        materialIndex_ {materialIndex} {
+    checkArguments();
+}
+
+/**
+ * Helper method which checks for invalid fields.
+ */
+void Plane::checkArguments() const {
+    BOOST_ASSERT_MSG(isValid(this->normal_), "normal must be valid.");
+    BOOST_ASSERT_MSG(!equal(this->normal_, ::glm::vec3 {0}), "normal can't be zero.");
+
+    BOOST_ASSERT_MSG(isValid(this->point_), "point must be valid.");
 }
 
 /**

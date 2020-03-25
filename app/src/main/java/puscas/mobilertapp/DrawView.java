@@ -182,9 +182,19 @@ public final class DrawView extends GLSurfaceView {
 
             this.renderer.waitLastTask();
 
-            createScene(config, numThreads, rasterize);
-            requestRender();
-            return Boolean.TRUE;
+            try {
+                createScene(config, numThreads, rasterize);
+                requestRender();
+                return Boolean.TRUE;
+            } catch (final LowMemoryException ex) {
+                warningError(ex, DEVICE_WITHOUT_ENOUGH_MEMORY);
+            } catch (final RuntimeException ex) {
+                warningError(ex, COULD_NOT_LOAD_THE_SCENE);
+            }
+            rtStopRender();
+            this.renderer.rtFinishRender();
+            this.renderer.updateButton(R.string.render);
+            return Boolean.FALSE;
         });
         this.renderer.updateButton(R.string.stop);
     }
@@ -216,25 +226,18 @@ public final class DrawView extends GLSurfaceView {
     private void createScene(
             final Config config,
             final int numThreads,
-            final boolean rasterize) {
+            final boolean rasterize) throws LowMemoryException {
         LOGGER.info("createScene");
 
         this.renderer.freeArrays();
 
-        try {
-            final int numPrimitives = this.renderer.rtInitialize(config);
-            this.renderer.resetStats(
-                    numThreads, config.getSamplesPixel(), config.getSamplesLight(), numPrimitives, rtGetNumberOfLights()
-            );
-        } catch (final LowMemoryException ex) {
-            warningError(ex, DEVICE_WITHOUT_ENOUGH_MEMORY);
-        } catch (final RuntimeException ex) {
-            warningError(ex, COULD_NOT_LOAD_THE_SCENE);
-        } finally {
-            final int widthView = getWidth();
-            final int heightView = getHeight();
-            this.renderer.setBitmap(config.getWidth(), config.getHeight(), widthView, heightView, rasterize);
-        }
+        final int numPrimitives = this.renderer.rtInitialize(config);
+        this.renderer.resetStats(
+            numThreads, config.getSamplesPixel(), config.getSamplesLight(), numPrimitives, rtGetNumberOfLights()
+        );
+        final int widthView = getWidth();
+        final int heightView = getHeight();
+        this.renderer.setBitmap(config.getWidth(), config.getHeight(), widthView, heightView, rasterize);
     }
 
     /**

@@ -35,8 +35,10 @@ OBJLoader::OBJLoader(::std::string objFilePath, ::std::string matFilePath) :
     LOG("Going to call tinyobj::LoadObj");
     LOG("OBJ file path: ", this->objFilePath_);
     LOG("MTL file path: ", this->mtlFilePath_);
-    LOG("Error (errno): ", ::std::strerror(errno));
-    errno = 0;
+    if (errno != 0) {
+        LOG("errno (", errno, "): ", ::std::strerror(errno));
+        errno = 0;
+    }
 
     const auto ret {
         ::tinyobj::LoadObj(
@@ -45,8 +47,8 @@ OBJLoader::OBJLoader(::std::string objFilePath, ::std::string matFilePath) :
         )
     };
 
-    if (errno) {
-        LOG("Error (errno): ", ::std::strerror(errno));
+    if (errno != 0) {
+        LOG("errno (", errno, "): ", ::std::strerror(errno));
     }
     LOG("Called tinyobj::LoadObj");
 
