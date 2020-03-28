@@ -11,9 +11,8 @@
 #include <thread>
 
 MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    m_ui(new Ui::MainWindow)
-{
+        QMainWindow(parent),
+        m_ui(new Ui::MainWindow) {
     m_ui->setupUi(this);
 
     m_graphicsPixmapItem = m_graphicsScene->addPixmap(m_pixmap);
@@ -21,19 +20,16 @@ MainWindow::MainWindow(QWidget *parent) :
     m_ui->graphicsView->show();
 }
 
-MainWindow::~MainWindow()
-{
+MainWindow::~MainWindow() {
     delete m_ui;
 }
 
-void MainWindow::exit_app()
-{
+void MainWindow::exit_app() {
     stop_render();
     close();
 }
 
-void MainWindow::update_image()
-{
+void MainWindow::update_image() {
     draw(m_bitmap, m_width, m_height);
 }
 
@@ -46,6 +42,19 @@ void MainWindow::restart() {
     m_timer->stop();
     disconnect(m_timer, SIGNAL(timeout()));
 
+    m_width = ::MobileRT::roundDownToMultipleOf(this->width() - 2,
+                                              static_cast<::std::int32_t> (::std::sqrt(
+                                                      ::MobileRT::NumberOfTiles)));
+
+    m_height = ::MobileRT::roundDownToMultipleOf(this->height() - 70,
+                                              static_cast<::std::int32_t> (::std::sqrt(
+                                                      ::MobileRT::NumberOfTiles)));
+
+    const ::std::uint32_t size {static_cast<::std::uint32_t> (m_width) * static_cast<::std::uint32_t> (m_height)};
+    LOG("width = ", m_width);
+    LOG("height = ", m_height);
+    m_bitmap = ::std::vector<::std::int32_t> (size);
+
     ::std::fill(m_bitmap.begin(), m_bitmap.end(), 0);
 
     RayTrace(m_bitmap.data(), m_width, m_height, m_threads, m_shader, m_scene, m_samplesPixel, m_samplesLight,
@@ -54,6 +63,9 @@ void MainWindow::restart() {
     m_timer = new QTimer(this);
     connect(m_timer, SIGNAL(timeout()), this, SLOT(update_image()));
     m_timer->start(1000);
+
+    this->resize(m_width + 2, m_height + 70);
+    m_ui->graphicsView->resize(m_width + 2, m_height + 2);
 }
 
 void MainWindow::setImage(::std::int32_t width, ::std::int32_t height, ::std::int32_t threads,
@@ -79,6 +91,9 @@ void MainWindow::setImage(::std::int32_t width, ::std::int32_t height, ::std::in
     m_pathMtl = pathMtl;
     m_pathCam = pathCam;
 
+    LOG("width = ", m_width);
+    LOG("height = ", m_height);
+
     RayTrace(m_bitmap.data(), m_width, m_height, m_threads, m_shader, m_scene, m_samplesPixel, m_samplesLight,
              m_repeats, m_accelerator, m_printStdOut, m_async, m_pathObj.c_str(), m_pathMtl.c_str(), m_pathCam.c_str());
 
@@ -86,8 +101,8 @@ void MainWindow::setImage(::std::int32_t width, ::std::int32_t height, ::std::in
     connect(m_timer, SIGNAL(timeout()), this, SLOT(update_image()));
     m_timer->start(1000);
 
-    this->setMinimumSize(width + 2, height + 70);
-    m_ui->graphicsView->setMinimumSize(width + 2, height + 2);
+    this->resize(m_width + 2, m_height + 70);
+    m_ui->graphicsView->resize(m_width + 2, m_height + 2);
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *keyEvent) {
@@ -111,8 +126,7 @@ void MainWindow::draw(const ::std::vector<::std::int32_t> &bitmap, const ::std::
     m_graphicsPixmapItem->setPixmap(m_pixmap);
 }
 
-void MainWindow::select_obj()
-{
+void MainWindow::select_obj() {
     ::QFileDialog dialog {};
     dialog.setWindowTitle("Select OBJ file");
     dialog.setDirectory("../");
@@ -127,8 +141,7 @@ void MainWindow::select_obj()
     ::std::cout << "m_pathObj: " << m_pathObj << ::std::endl;
 }
 
-void MainWindow::select_config()
-{
+void MainWindow::select_config() {
     Config config {m_shader, m_accelerator, m_scene, m_samplesPixel, m_samplesLight};
     if (config.exec()) {
         m_shader = config.getShader();
@@ -139,14 +152,12 @@ void MainWindow::select_config()
     }
 }
 
-void MainWindow::about()
-{
+void MainWindow::about() {
     About about {};
     about.exec();
 }
 
-void MainWindow::stop_render()
-{
+void MainWindow::stop_render() {
     stopRender();
     m_timer->stop();
     disconnect(m_timer, SIGNAL(timeout()));
