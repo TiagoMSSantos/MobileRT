@@ -73,37 +73,25 @@ namespace MobileRT {
     }
 
     /**
-     * Converts a sequence of chars to a vec3.
-     *
-     * @param values The sequence of chars that should contain 3 values.
-     * @return The values parsed into a vec3.
-     */
-    ::glm::vec3 toVec3(const char *const values) {
-        ::std::stringstream data {values};
-        auto x {0.0F};
-        auto y {0.0F};
-        auto z {0.0F};
-        data >> x;
-        data >> y;
-        data >> z;
-
-        return ::glm::vec3 {x, y, z};
-    }
-
-    /**
      * Converts a sequence of chars to a vec2.
      *
      * @param values The sequence of chars that should contain 2 values.
      * @return The values parsed into a vec2.
      */
     ::glm::vec2 toVec2(const char *const values) {
-        ::std::stringstream data {values};
-        auto x {0.0F};
-        auto y {0.0F};
-        data >> x;
-        data >> y;
+        const auto parsedValues {toArray<2, float>(values)};
+        return {parsedValues[0], parsedValues[1]};
+    }
 
-        return ::glm::vec2 {x, y};
+    /**
+     * Converts a sequence of chars to a vec3.
+     *
+     * @param values The sequence of chars that should contain 3 values.
+     * @return The values parsed into a vec3.
+     */
+    ::glm::vec3 toVec3(const char *const values) {
+        const auto parsedValues {toArray<3, float>(values)};
+        return {parsedValues[0], parsedValues[1], parsedValues[2]};
     }
 
     /**

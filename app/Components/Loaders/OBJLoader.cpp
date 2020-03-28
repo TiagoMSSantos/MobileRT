@@ -232,12 +232,12 @@ bool OBJLoader::fillScene(Scene *const scene,
                             const auto materialIndex {static_cast<::std::int32_t> (
                                 itFoundMat - scene->materials_.cbegin()
                             )};
-                            auto &&triangle {builder.withMaterialIndex(materialIndex).build()};
-                            scene->triangles_.emplace_back(::std::move(triangle));
+                            const auto &triangle {builder.withMaterialIndex(materialIndex).build()};
+                            scene->triangles_.emplace_back(triangle);
                         } else {
                             const auto materialIndex {static_cast<::std::int32_t> (scene->materials_.size())};
-                            auto &&triangle {builder.withMaterialIndex(materialIndex).build()};
-                            scene->triangles_.emplace_back(::std::move(triangle));
+                            const auto &triangle {builder.withMaterialIndex(materialIndex).build()};
+                            scene->triangles_.emplace_back(triangle);
                             scene->materials_.emplace_back(::std::move(material));
                         }
                     }
@@ -262,12 +262,12 @@ bool OBJLoader::fillScene(Scene *const scene,
                         const auto materialIndex {static_cast<::std::int32_t> (
                             itFoundMat - scene->materials_.begin()
                         )};
-                        auto &&triangle {builder.withMaterialIndex(materialIndex).build()};
-                        scene->triangles_.emplace_back(::std::move(triangle));
+                        const auto &triangle {builder.withMaterialIndex(materialIndex).build()};
+                        scene->triangles_.emplace_back(triangle);
                     } else {
                         const auto materialIndex {static_cast<::std::int32_t> (scene->materials_.size())};
-                        auto &&triangle {builder.withMaterialIndex(materialIndex).build()};
-                        scene->triangles_.emplace_back(::std::move(triangle));
+                        const auto &triangle {builder.withMaterialIndex(materialIndex).build()};
+                        scene->triangles_.emplace_back(triangle);
                         scene->materials_.emplace_back(::std::move(material));
                     }
                 }

@@ -164,7 +164,7 @@ namespace MobileRT {
             buildNodes.emplace_back(::std::move(node));
         }
 
-        const auto maxLeafSize {2};
+        const auto maxLeafSize {4};
         const auto numBuckets {10};
 
         do {
@@ -200,7 +200,7 @@ namespace MobileRT {
             )};
             for (::std::int32_t i {2}; i < numBuckets; ++i) {
                 const auto bucket {startBox + stepAxis * i};
-                itBucket = ::std::partition(itBucket, itEnd,
+                itBucket = ::std::partition(::std::move(itBucket), itEnd,
                         [&](const BuildNode &node) {
                             return node.centroid_[maxAxis] < bucket;
                         }

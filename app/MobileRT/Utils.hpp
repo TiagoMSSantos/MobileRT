@@ -48,9 +48,12 @@ namespace MobileRT {
 
     ::std::int32_t incrementalAvg(const ::glm::vec3 &sample, ::std::int32_t avg, ::std::int32_t numSample);
 
-    ::glm::vec3 toVec3(const char *values);
+    template<::std::int32_t S, typename T>
+    inline ::std::array<T, S> toArray(const char *values);
 
     ::glm::vec2 toVec2(const char *values);
+
+    ::glm::vec3 toVec3(const char *values);
 
     ::glm::vec3 toVec3(const float *values);
 
@@ -169,6 +172,24 @@ namespace MobileRT {
     template<::std::int32_t S, typename T>
     bool hasPositiveValue(const ::glm::vec<S, T> &value) {
         return ::glm::any(::glm::greaterThan(value, ::glm::vec<S, T> {0}));
+    }
+
+    /**
+     * Converts a sequence of chars to an array.
+     *
+     * @tparam S The number of values to parse.
+     * @tparam T The type of the values to parse.
+     * @param values The values to parse.
+     * @return An array with the values parsed.
+     */
+    template<::std::int32_t S, typename T>
+    inline ::std::array<T, S> toArray(const char *const values) {
+        ::std::stringstream data {values};
+        ::std::array<float, S> parsedValues {0.0F};
+        for (auto i {0u}; i < S; ++i) {
+            data >> parsedValues[i];
+        }
+        return parsedValues;
     }
 }//namespace MobileRT
 
