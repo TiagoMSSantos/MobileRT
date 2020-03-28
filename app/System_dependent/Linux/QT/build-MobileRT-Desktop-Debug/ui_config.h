@@ -26,9 +26,11 @@ class Ui_Config
 public:
     QDialogButtonBox *buttonBox;
     QToolButton *shaderButton;
-    QLabel *label;
-    QLabel *label_2;
+    QLabel *shaderLabel;
+    QLabel *acceleratorLabel;
     QToolButton *acceleratorButton;
+    QLabel *sceneLabel;
+    QToolButton *sceneButton;
 
     void setupUi(QDialog *Config)
     {
@@ -47,22 +49,30 @@ public:
         shaderButton->setAutoRepeatDelay(300);
         shaderButton->setAutoRepeatInterval(100);
         shaderButton->setPopupMode(QToolButton::InstantPopup);
-        label = new QLabel(Config);
-        label->setObjectName(QString::fromUtf8("label"));
-        label->setGeometry(QRect(40, 60, 80, 21));
-        label_2 = new QLabel(Config);
-        label_2->setObjectName(QString::fromUtf8("label_2"));
-        label_2->setGeometry(QRect(0, 110, 191, 21));
+        shaderLabel = new QLabel(Config);
+        shaderLabel->setObjectName(QString::fromUtf8("shaderLabel"));
+        shaderLabel->setGeometry(QRect(40, 60, 61, 21));
+        acceleratorLabel = new QLabel(Config);
+        acceleratorLabel->setObjectName(QString::fromUtf8("acceleratorLabel"));
+        acceleratorLabel->setGeometry(QRect(0, 110, 191, 21));
         acceleratorButton = new QToolButton(Config);
         acceleratorButton->setObjectName(QString::fromUtf8("acceleratorButton"));
         acceleratorButton->setGeometry(QRect(239, 100, 151, 28));
         acceleratorButton->setPopupMode(QToolButton::InstantPopup);
+        sceneLabel = new QLabel(Config);
+        sceneLabel->setObjectName(QString::fromUtf8("sceneLabel"));
+        sceneLabel->setGeometry(QRect(50, 150, 61, 21));
+        sceneButton = new QToolButton(Config);
+        sceneButton->setObjectName(QString::fromUtf8("sceneButton"));
+        sceneButton->setGeometry(QRect(240, 140, 151, 28));
+        sceneButton->setPopupMode(QToolButton::InstantPopup);
 
         retranslateUi(Config);
         QObject::connect(buttonBox, SIGNAL(accepted()), Config, SLOT(accept()));
         QObject::connect(buttonBox, SIGNAL(rejected()), Config, SLOT(reject()));
         QObject::connect(shaderButton, SIGNAL(triggered(QAction*)), Config, SLOT(selected_shader(QAction*)));
         QObject::connect(acceleratorButton, SIGNAL(triggered(QAction*)), Config, SLOT(selected_accelerator(QAction*)));
+        QObject::connect(sceneButton, SIGNAL(triggered(QAction*)), Config, SLOT(selected_scene(QAction*)));
 
         QMetaObject::connectSlotsByName(Config);
     } // setupUi
@@ -71,9 +81,11 @@ public:
     {
         Config->setWindowTitle(QApplication::translate("Config", "Dialog", 0, QApplication::UnicodeUTF8));
         shaderButton->setText(QApplication::translate("Config", "Shader", 0, QApplication::UnicodeUTF8));
-        label->setText(QApplication::translate("Config", "Shader", 0, QApplication::UnicodeUTF8));
-        label_2->setText(QApplication::translate("Config", "Acceleration Structure", 0, QApplication::UnicodeUTF8));
+        shaderLabel->setText(QApplication::translate("Config", "Shader", 0, QApplication::UnicodeUTF8));
+        acceleratorLabel->setText(QApplication::translate("Config", "Acceleration Structure", 0, QApplication::UnicodeUTF8));
         acceleratorButton->setText(QApplication::translate("Config", "Accelerator", 0, QApplication::UnicodeUTF8));
+        sceneLabel->setText(QApplication::translate("Config", "Scene", 0, QApplication::UnicodeUTF8));
+        sceneButton->setText(QApplication::translate("Config", "Scene", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
 };

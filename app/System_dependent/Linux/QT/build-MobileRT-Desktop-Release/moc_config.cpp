@@ -22,7 +22,7 @@ static const uint qt_meta_data_Config[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-       2,   14, // methods
+       3,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -32,6 +32,7 @@ static const uint qt_meta_data_Config[] = {
  // slots: signature, parameters, type, tag, flags
       15,    8,    7,    7, 0x08,
       41,    8,    7,    7, 0x08,
+      72,    8,    7,    7, 0x08,
 
        0        // eod
 };
@@ -39,6 +40,7 @@ static const uint qt_meta_data_Config[] = {
 static const char qt_meta_stringdata_Config[] = {
     "Config\0\0action\0selected_shader(QAction*)\0"
     "selected_accelerator(QAction*)\0"
+    "selected_scene(QAction*)\0"
 };
 
 void Config::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -49,6 +51,7 @@ void Config::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void
         switch (_id) {
         case 0: _t->selected_shader((*reinterpret_cast< QAction*(*)>(_a[1]))); break;
         case 1: _t->selected_accelerator((*reinterpret_cast< QAction*(*)>(_a[1]))); break;
+        case 2: _t->selected_scene((*reinterpret_cast< QAction*(*)>(_a[1]))); break;
         default: ;
         }
     }
@@ -86,9 +89,9 @@ int Config::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 2)
+        if (_id < 3)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 2;
+        _id -= 3;
     }
     return _id;
 }

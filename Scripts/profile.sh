@@ -1,25 +1,22 @@
 #!/bin/bash
 
-FILE_TO_SEARCH="MobileRT.jks"
 PATH_TO_SEARCH="/mnt/D/Projects"
+FILE_TO_SEARCH="MobileRT.jks"
+
 FIND_MOBILERT=$(find ${PATH_TO_SEARCH} -iname "${FILE_TO_SEARCH}" 2> /dev/null | head -n 1)
 MOBILERT_PATH="${FIND_MOBILERT//\/app\/"${FILE_TO_SEARCH}"/}"
-
-echo "FILE_TO_SEARCH = ${FILE_TO_SEARCH}"
-echo "PATH_TO_SEARCH = ${PATH_TO_SEARCH}"
-echo "FIND_MOBILERT = ${FIND_MOBILERT}"
-echo "MOBILERT_PATH = ${MOBILERT_PATH}"
 
 if [ -z "${MOBILERT_PATH}" ]
 then
     PATH_TO_SEARCH="/"
     FIND_MOBILERT=$(find ${PATH_TO_SEARCH} -iname "MobileRT" 2> /dev/null | head -n 1)
     MOBILERT_PATH="${FIND_MOBILERT//\/app\/"${FILE_TO_SEARCH}"/}"
-
-    echo "PATH_TO_SEARCH2 = ${PATH_TO_SEARCH}"
-    echo "FIND_MOBILERT2 = ${FIND_MOBILERT}"
-    echo "MOBILERT_PATH2 = ${MOBILERT_PATH}"
 fi
+
+echo "FILE_TO_SEARCH = ${FILE_TO_SEARCH}"
+echo "PATH_TO_SEARCH = ${PATH_TO_SEARCH}"
+echo "FIND_MOBILERT = ${FIND_MOBILERT}"
+echo "MOBILERT_PATH = ${MOBILERT_PATH}"
 
 BIN_DEBUG_PATH="${MOBILERT_PATH}/build_Debug/bin"
 BIN_RELEASE_PATH="${MOBILERT_PATH}/build_Release/bin"
