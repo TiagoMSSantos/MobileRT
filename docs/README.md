@@ -14,7 +14,8 @@
 [![Test Coverage](https://api.codeclimate.com/v1/badges/6a80c282c888f405d779/test_coverage)](https://codeclimate.com/github/TiagoMSSantos/MobileRT/test_coverage)
 [![codebeat badge](https://codebeat.co/badges/337fce91-f222-434d-b904-6206ea5e29f0)](https://codebeat.co/projects/github-com-tiagomssantos-mobilert-master)
 
-<img src="Example.gif" alt="RayTracer" width="400"/>
+<img src="Example_Android.gif" alt="MobileRT: Android" width="400"/>
+<img src="Example_Linux.gif" alt="MobileRT: Linux" height="400"/>
 
 ## Run docker image
 This C++ Ray Tracer is compatible with Android and Linux. <br/>
