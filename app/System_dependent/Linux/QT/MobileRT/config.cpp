@@ -3,7 +3,11 @@
 #include "MobileRT/Utils.hpp"
 #include <iostream>
 
-Config::Config(::std::int32_t shader, ::std::int32_t accelerator, ::std::int32_t scene) :
+Config::Config(::std::int32_t shader,
+               ::std::int32_t accelerator,
+               ::std::int32_t scene,
+               ::std::int32_t spp,
+               ::std::int32_t spl) :
     QDialog(nullptr),
     ui(new Ui::Config)
 {
@@ -13,6 +17,8 @@ Config::Config(::std::int32_t shader, ::std::int32_t accelerator, ::std::int32_t
     m_shader = shader;
     m_accelerator = accelerator;
     m_scene = scene;
+    m_spp = spp;
+    m_spl = spl;
 
     ui->shaderButton->addAction(new QAction("No Shadows", this));
     ui->shaderButton->addAction(new QAction("Whitted", this));
@@ -33,6 +39,14 @@ Config::Config(::std::int32_t shader, ::std::int32_t accelerator, ::std::int32_t
     ui->sceneButton->addAction(new QAction("Spheres2", this));
     ui->sceneButton->addAction(new QAction("OBJ", this));
     ui->sceneButton->setDefaultAction(ui->sceneButton->actions().at(scene));
+
+    ui->sppSpinBox->setMinimum(1);
+    ui->sppSpinBox->setMaximum(100);
+    ui->sppSpinBox->setValue(spp);
+
+    ui->splSpinBox->setMinimum(1);
+    ui->splSpinBox->setMaximum(100);
+    ui->splSpinBox->setValue(spl);
 }
 
 Config::~Config()
@@ -52,6 +66,14 @@ Config::~Config()
     return m_scene;
 }
 
+::std::int32_t Config::getSPP() {
+    return m_spp;
+}
+
+::std::int32_t Config::getSPL() {
+    return m_spl;
+}
+
 void Config::selected_shader(QAction *action) {
     m_shader = ui->shaderButton->actions().indexOf(action);
     ui->shaderButton->setDefaultAction(action);
@@ -65,4 +87,14 @@ void Config::selected_accelerator(QAction *action) {
 void Config::selected_scene(QAction *action) {
     m_scene = ui->sceneButton->actions().indexOf(action);
     ui->sceneButton->setDefaultAction(action);
+}
+
+void Config::selected_spp(int value) {
+    ui->sppSpinBox->setValue(value);
+    m_spp = value;
+}
+
+void Config::selected_spl(int value) {
+    ui->splSpinBox->setValue(value);
+    m_spl = value;
 }

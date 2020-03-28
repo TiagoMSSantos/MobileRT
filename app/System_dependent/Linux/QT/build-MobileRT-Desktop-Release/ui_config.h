@@ -17,6 +17,7 @@
 #include <QtGui/QDialogButtonBox>
 #include <QtGui/QHeaderView>
 #include <QtGui/QLabel>
+#include <QtGui/QSpinBox>
 #include <QtGui/QToolButton>
 
 QT_BEGIN_NAMESPACE
@@ -31,6 +32,10 @@ public:
     QToolButton *acceleratorButton;
     QLabel *sceneLabel;
     QToolButton *sceneButton;
+    QSpinBox *sppSpinBox;
+    QLabel *sppLabel;
+    QLabel *splLabel;
+    QSpinBox *splSpinBox;
 
     void setupUi(QDialog *Config)
     {
@@ -44,28 +49,40 @@ public:
         buttonBox->setStandardButtons(QDialogButtonBox::Cancel|QDialogButtonBox::Ok);
         shaderButton = new QToolButton(Config);
         shaderButton->setObjectName(QString::fromUtf8("shaderButton"));
-        shaderButton->setGeometry(QRect(240, 60, 150, 30));
+        shaderButton->setGeometry(QRect(240, 20, 150, 30));
         shaderButton->setAcceptDrops(false);
         shaderButton->setAutoRepeatDelay(300);
         shaderButton->setAutoRepeatInterval(100);
         shaderButton->setPopupMode(QToolButton::InstantPopup);
         shaderLabel = new QLabel(Config);
         shaderLabel->setObjectName(QString::fromUtf8("shaderLabel"));
-        shaderLabel->setGeometry(QRect(40, 60, 61, 21));
+        shaderLabel->setGeometry(QRect(40, 30, 61, 21));
         acceleratorLabel = new QLabel(Config);
         acceleratorLabel->setObjectName(QString::fromUtf8("acceleratorLabel"));
-        acceleratorLabel->setGeometry(QRect(0, 110, 191, 21));
+        acceleratorLabel->setGeometry(QRect(10, 70, 191, 21));
         acceleratorButton = new QToolButton(Config);
         acceleratorButton->setObjectName(QString::fromUtf8("acceleratorButton"));
-        acceleratorButton->setGeometry(QRect(239, 100, 151, 28));
+        acceleratorButton->setGeometry(QRect(240, 70, 151, 28));
         acceleratorButton->setPopupMode(QToolButton::InstantPopup);
         sceneLabel = new QLabel(Config);
         sceneLabel->setObjectName(QString::fromUtf8("sceneLabel"));
-        sceneLabel->setGeometry(QRect(50, 150, 61, 21));
+        sceneLabel->setGeometry(QRect(50, 120, 61, 21));
         sceneButton = new QToolButton(Config);
         sceneButton->setObjectName(QString::fromUtf8("sceneButton"));
-        sceneButton->setGeometry(QRect(240, 140, 151, 28));
+        sceneButton->setGeometry(QRect(240, 120, 151, 28));
         sceneButton->setPopupMode(QToolButton::InstantPopup);
+        sppSpinBox = new QSpinBox(Config);
+        sppSpinBox->setObjectName(QString::fromUtf8("sppSpinBox"));
+        sppSpinBox->setGeometry(QRect(240, 160, 151, 30));
+        sppLabel = new QLabel(Config);
+        sppLabel->setObjectName(QString::fromUtf8("sppLabel"));
+        sppLabel->setGeometry(QRect(30, 160, 161, 21));
+        splLabel = new QLabel(Config);
+        splLabel->setObjectName(QString::fromUtf8("splLabel"));
+        splLabel->setGeometry(QRect(30, 200, 161, 21));
+        splSpinBox = new QSpinBox(Config);
+        splSpinBox->setObjectName(QString::fromUtf8("splSpinBox"));
+        splSpinBox->setGeometry(QRect(240, 200, 151, 30));
 
         retranslateUi(Config);
         QObject::connect(buttonBox, SIGNAL(accepted()), Config, SLOT(accept()));
@@ -73,6 +90,8 @@ public:
         QObject::connect(shaderButton, SIGNAL(triggered(QAction*)), Config, SLOT(selected_shader(QAction*)));
         QObject::connect(acceleratorButton, SIGNAL(triggered(QAction*)), Config, SLOT(selected_accelerator(QAction*)));
         QObject::connect(sceneButton, SIGNAL(triggered(QAction*)), Config, SLOT(selected_scene(QAction*)));
+        QObject::connect(sppSpinBox, SIGNAL(valueChanged(int)), Config, SLOT(selected_spp(int)));
+        QObject::connect(splSpinBox, SIGNAL(valueChanged(int)), Config, SLOT(selected_spl(int)));
 
         QMetaObject::connectSlotsByName(Config);
     } // setupUi
@@ -86,6 +105,8 @@ public:
         acceleratorButton->setText(QApplication::translate("Config", "Accelerator", 0, QApplication::UnicodeUTF8));
         sceneLabel->setText(QApplication::translate("Config", "Scene", 0, QApplication::UnicodeUTF8));
         sceneButton->setText(QApplication::translate("Config", "Scene", 0, QApplication::UnicodeUTF8));
+        sppLabel->setText(QApplication::translate("Config", "Samples per pixel", 0, QApplication::UnicodeUTF8));
+        splLabel->setText(QApplication::translate("Config", "Samples per light", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
 };

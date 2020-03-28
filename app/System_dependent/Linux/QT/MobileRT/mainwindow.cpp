@@ -129,11 +129,13 @@ void MainWindow::select_obj()
 
 void MainWindow::select_config()
 {
-    Config config {m_shader, m_accelerator, m_scene};
+    Config config {m_shader, m_accelerator, m_scene, m_samplesPixel, m_samplesLight};
     if (config.exec()) {
         m_shader = config.getShader();
         m_accelerator = config.getAccelerator();
         m_scene = config.getScene();
+        m_samplesPixel = config.getSPP();
+        m_samplesLight = config.getSPL();
     }
 }
 
