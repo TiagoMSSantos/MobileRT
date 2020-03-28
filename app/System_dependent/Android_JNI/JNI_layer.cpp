@@ -1,4 +1,4 @@
-#include "DrawView.hpp"
+#include "JNI_layer.hpp"
 
 #include "Components/Cameras/Orthographic.hpp"
 #include "Components/Cameras/Perspective.hpp"
@@ -429,60 +429,28 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
                 ::glm::vec3 maxDist {};
                 LOG("LOADING SCENE");
                 switch (sceneIndex) {
-                    case 0: {
-                        const auto fovX {45.0F * ratio};
-                        const auto fovY {45.0F};
-                        camera = ::std::make_unique<Components::Perspective> (
-                            ::glm::vec3 {0.0F, 0.0F, -3.4F},
-                            ::glm::vec3 {0.0F, 0.0F, 1.0F},
-                            ::glm::vec3 {0.0F, 1.0F, 0.0F},
-                            fovX, fovY
-                        );
-                        scene = cornellBoxScene(::std::move(scene));
+                    case 0:
+                        scene = cornellBox_Scene(::std::move(scene));
+                        camera = cornellBox_Cam(ratio);
                         maxDist = ::glm::vec3{1, 1, 1};
-                    }
                         break;
 
-                    case 1: {
-                        const auto sizeH {10.0F * ratio};
-                        const auto sizeV {10.0F};
-                        camera = ::std::make_unique<Components::Orthographic> (
-                            ::glm::vec3 {0.0F, 1.0F, -10.0F},
-                            ::glm::vec3 {0.0F, 1.0F, 7.0F},
-                            ::glm::vec3 {0.0F, 1.0F, 0.0F},
-                            sizeH, sizeV
-                        );
-                        scene = spheresScene(::std::move(scene));
+                    case 1:
+                        scene = spheres_Scene(::std::move(scene));
+                        camera = spheres_Cam(ratio);
                         maxDist = ::glm::vec3{8, 8, 8};
-                    }
                         break;
 
-                    case 2: {
-                        const auto fovX {45.0F * ratio};
-                        const auto fovY {45.0F};
-                        camera = ::std::make_unique<Components::Perspective> (
-                            ::glm::vec3{0.0F, 0.0F, -3.4F},
-                            ::glm::vec3{0.0F, 0.0F, 1.0F},
-                            ::glm::vec3{0.0F, 1.0F, 0.0F},
-                            fovX, fovY
-                        );
-                        scene = cornellBoxScene2(::std::move(scene));
+                    case 2:
+                        scene = cornellBox2_Scene(::std::move(scene));
+                        camera = cornellBox2_Cam(ratio);
                         maxDist = ::glm::vec3{1, 1, 1};
-                    }
                         break;
 
-                    case 3: {
-                        const auto fovX {60.0F * ratio};
-                        const auto fovY {60.0F};
-                        camera = ::std::make_unique<Components::Perspective> (
-                            ::glm::vec3{0.0F, 0.5F, 1.0F},
-                            ::glm::vec3{0.0F, 0.0F, 7.0F},
-                            ::glm::vec3{0.0F, 1.0F, 0.0F},
-                            fovX, fovY
-                        );
-                        scene = spheresScene2(::std::move(scene));
+                    case 3:
+                        scene = spheres2_Scene(::std::move(scene));
+                        camera = spheres2_Cam(ratio);
                         maxDist = ::glm::vec3 {8, 8, 8};
-                    }
                         break;
 
                     default: {

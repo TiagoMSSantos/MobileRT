@@ -1,4 +1,4 @@
-#include "c_wrapper.h"
+#include "C_wrapper.h"
 #include "Components/Cameras/Orthographic.hpp"
 #include "Components/Cameras/Perspective.hpp"
 #include "Components/Lights/AreaLight.hpp"
@@ -18,7 +18,8 @@
 #include "Components/Shaders/Whitted.hpp"
 #include "MobileRT/Renderer.hpp"
 #include "MobileRT/Scene.hpp"
-#include "Scenes.hpp"
+#include "Scenes/Scenes.hpp"
+
 #include <chrono>
 #include <cstring>
 #include <fstream>
@@ -29,7 +30,7 @@ static void
 work_thread(
     ::std::int32_t *const bitmap, const ::std::int32_t width,
     const ::std::int32_t height, const ::std::int32_t threads,
-    const ::std::int32_t shader, const ::std::int32_t scene, const ::std::int32_t samplesPixel, const ::std::int32_t samplesLight,
+    const ::std::int32_t shader, const ::std::int32_t sceneIndex, const ::std::int32_t samplesPixel, const ::std::int32_t samplesLight,
     ::std::int32_t repeats, const ::std::int32_t accelerator, const bool printStdOut,
     const char *const objFilePath, const char *const mtlFilePath, const char *const camFilePath) {
     try {
@@ -49,7 +50,7 @@ work_thread(
             LOG("height_ = ", height);
             LOG("threads = ", threads);
             LOG("shader = ", shader);
-            LOG("scene = ", scene);
+            LOG("scene = ", sceneIndex);
             LOG("samplesPixel = ", samplesPixel);
             LOG("samplesLight = ", samplesLight);
             LOG("repeats = ", repeats);
@@ -60,52 +61,37 @@ work_thread(
             LOG("camFilePath = ", camFilePath);
 
             const auto ratio {static_cast<float> (width) / height};
-            ::MobileRT::Scene scene_ {};
+            ::MobileRT::Scene scene {};
             ::std::unique_ptr<::MobileRT::Sampler> samplerPixel {};
             ::std::unique_ptr<::MobileRT::Shader> shader_ {};
             ::std::unique_ptr<::MobileRT::Camera> camera {};
             ::glm::vec3 maxDist {};
 
-            switch (scene) {
+            switch (sceneIndex) {
                 case 0:
-                    camera = ::std::make_unique<::Components::Perspective> (
-                            ::glm::vec3 {0.0F, 0.0F, -3.4F},
-                            ::glm::vec3 {0.0F, 0.0F, 1.0F},
-                            ::glm::vec3 {0.0F, 1.0F, 0.0F},
-                            45.0F * ratio, 45.0F);
-                    scene_ = cornellBoxScene(::std::move(scene_));
-                    maxDist = ::glm::vec3 {1, 1, 1};
+                    scene = cornellBox_Scene(::std::move(scene));
+                    camera = cornellBox_Cam(ratio);
+                    maxDist = ::glm::vec3{1, 1, 1};
                     break;
 
                 case 1:
-                    camera = ::std::make_unique<::Components::Orthographic> (
-                            ::glm::vec3 {0.0F, 1.0F, -10.0F},
-                            ::glm::vec3 {0.0F, 1.0F, 7.0F},
-                            ::glm::vec3 {0.0F, 1.0F, 0.0F},
-                            10.0F * ratio, 10.0F);
-                    scene_ = spheresScene(::std::move(scene_));
-                    maxDist = ::glm::vec3 {8, 8, 8};
+                    scene = spheres_Scene(::std::move(scene));
+                    camera = spheres_Cam(ratio);
+                    maxDist = ::glm::vec3{8, 8, 8};
                     break;
 
                 case 2:
-                    camera = ::std::make_unique<::Components::Perspective> (
-                            ::glm::vec3 {0.0F, 0.0F, -3.4F},
-                            ::glm::vec3 {0.0F, 0.0F, 1.0F},
-                            ::glm::vec3 {0.0F, 1.0F, 0.0F},
-                            45.0F * ratio, 45.0F);
-                    scene_ = cornellBoxScene2(::std::move(scene_));
-                    maxDist = ::glm::vec3 {1, 1, 1};
+                    scene = cornellBox2_Scene(::std::move(scene));
+                    camera = cornellBox2_Cam(ratio);
+                    maxDist = ::glm::vec3{1, 1, 1};
                     break;
 
                 case 3:
-                    camera = ::std::make_unique<::Components::Perspective> (
-                            ::glm::vec3 {0.0F, 0.5F, 1.0F},
-                            ::glm::vec3 {0.0F, 0.0F, 7.0F},
-                            ::glm::vec3 {0.0F, 1.0F, 0.0F},
-                            60.0F * ratio, 60.0F);
-                    scene_ = spheresScene2(::std::move(scene_));
+                    scene = spheres2_Scene(::std::move(scene));
+                    camera = spheres2_Cam(ratio);
                     maxDist = ::glm::vec3 {8, 8, 8};
                     break;
+
                 default: {
                     const auto startLoading {::std::chrono::system_clock::now()};
                     ::Components::OBJLoader objLoader {objFilePath, mtlFilePath};
@@ -116,10 +102,10 @@ work_thread(
                     timeLoading = endLoading - startLoading;
                     LOG("OBJLoader loaded = ", timeLoading.count());
                     const auto startFilling {::std::chrono::system_clock::now()};
-                    //objLoader.fillScene(&scene_, []() {return ::std::make_unique<::Components::HaltonSeq> ();});
-                    //objLoader.fillScene(&scene_, []() {return ::std::make_unique<::Components::MersenneTwister> ();});
-                    objLoader.fillScene(&scene_, []() {return ::std::make_unique<Components::StaticHaltonSeq> (); });
-                    //objLoader.fillScene(&scene_, []() {return ::std::make_unique<Components::StaticMersenneTwister> ();});
+                    //objLoader.fillScene(&scene, []() {return ::std::make_unique<::Components::HaltonSeq> ();});
+                    //objLoader.fillScene(&scene, []() {return ::std::make_unique<::Components::MersenneTwister> ();});
+                    objLoader.fillScene(&scene, []() {return ::std::make_unique<Components::StaticHaltonSeq> (); });
+                    //objLoader.fillScene(&scene, []() {return ::std::make_unique<Components::StaticMersenneTwister> ();});
                     const auto endFilling {::std::chrono::system_clock::now()};
                     timeFilling = endFilling - startFilling;
                     LOG("Scene filled = ", timeFilling.count());
@@ -139,7 +125,7 @@ work_thread(
             switch (shader) {
                 case 1: {
                     shader_ = ::std::make_unique<::Components::Whitted> (
-                    ::std::move(scene_), samplesLight, ::MobileRT::Shader::Accelerator(accelerator)
+                    ::std::move(scene), samplesLight, ::MobileRT::Shader::Accelerator(accelerator)
                     );
                     break;
                 }
@@ -150,7 +136,7 @@ work_thread(
                     };
 
                     shader_ = ::std::make_unique<::Components::PathTracer> (
-                    ::std::move(scene_), ::std::move(samplerRussianRoulette), samplesLight,
+                    ::std::move(scene), ::std::move(samplerRussianRoulette), samplesLight,
                     ::MobileRT::Shader::Accelerator(accelerator)
                     );
                     break;
@@ -158,21 +144,21 @@ work_thread(
 
                 case 3: {
                 shader_ = ::std::make_unique<::Components::DepthMap> (
-                    ::std::move(scene_), maxDist, ::MobileRT::Shader::Accelerator(accelerator)
+                    ::std::move(scene), maxDist, ::MobileRT::Shader::Accelerator(accelerator)
                 );
                     break;
                 }
 
                 case 4: {
                 shader_ = ::std::make_unique<::Components::DiffuseMaterial> (
-                    ::std::move(scene_), ::MobileRT::Shader::Accelerator(accelerator)
+                    ::std::move(scene), ::MobileRT::Shader::Accelerator(accelerator)
                 );
                 break;
                 }
 
                 default: {
                 shader_ = ::std::make_unique<::Components::NoShadows> (
-                    ::std::move(scene_), samplesLight, ::MobileRT::Shader::Accelerator(accelerator)
+                    ::std::move(scene), samplesLight, ::MobileRT::Shader::Accelerator(accelerator)
                 );
                 break;
                 }
@@ -200,7 +186,7 @@ work_thread(
             LOG("LIGHTS = ", numLights);
             LOG("threads = ", threads);
             LOG("shader = ", shader);
-            LOG("scene = ", scene);
+            LOG("scene = ", sceneIndex);
             LOG("samplesPixel = ", samplesPixel);
             LOG("samplesLight = ", samplesLight);
             LOG("width_ = ", width);

@@ -34,23 +34,27 @@ protected:
 TestTriangle::~TestTriangle() {
 }
 
-static const Triangle triangle2 {
-        Triangle::Builder(
-                ::glm::vec3 {10.0F, 0.0F, 10.0F},
-                ::glm::vec3 {0.0F, 0.0F, 10.0F},
-                ::glm::vec3 {0.0F, 10.0F, 10.0F}
-        )
-                .build()
-};
+namespace {
+	const Triangle triangle2 {
+			Triangle::Builder(
+					::glm::vec3 {10.0F, 0.0F, 10.0F},
+					::glm::vec3 {0.0F, 0.0F, 10.0F},
+					::glm::vec3 {0.0F, 10.0F, 10.0F}
+			)
+					.build()
+	};
 
-const Triangle triangle3 {
-        Triangle::Builder(
-                ::glm::vec3 {1, 1.59000003F, -1.03999996F},
-                ::glm::vec3 {-1.01999998F, 1.59000003F, -1.03999996F},
-                ::glm::vec3 {-0.990000009F, 0, -1.03999996F}
-        )
-                .build()
-};
+	const Triangle triangle3 {
+			Triangle::Builder(
+					::glm::vec3 {1, 1.59000003F, -1.03999996F},
+					::glm::vec3 {-1.01999998F, 1.59000003F, -1.03999996F},
+					::glm::vec3 {-0.990000009F, 0, -1.03999996F}
+			)
+					.build()
+	};
+}
+
+
 
 static void assertBoxIntersectsTriangle(const glm::vec3 &min, const glm::vec3 &max, const Triangle &triangle) {
     const AABB box {min, max};

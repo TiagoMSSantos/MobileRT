@@ -1,7 +1,7 @@
 #include "mainwindow.h"
-#include <QApplication>
-
 #include "MobileRT/Utils.hpp"
+
+#include <QApplication>
 #include <cmath>
 
 int main(int argc, char **argv) {

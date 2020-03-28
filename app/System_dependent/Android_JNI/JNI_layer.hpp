@@ -1,5 +1,5 @@
-#ifndef APP_DRAWVIEW_HPP
-#define APP_DRAWVIEW_HPP
+#ifndef APP_JNI_LAYER_HPP
+#define APP_JNI_LAYER_HPP
 
 #include <android/asset_manager.h>
 #include <android/asset_manager_jni.h>
@@ -124,4 +124,4 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
         jobject localConfig
 );
 
-#endif //APP_DRAWVIEW_HPP
+#endif //APP_JNI_LAYER_HPP

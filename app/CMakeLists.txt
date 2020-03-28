@@ -70,7 +70,7 @@ set( THIRD_PARTY_HEADERS "${CMAKE_SOURCE_DIR}/third_party" )
 set( GLM_HEADERS "${CMAKE_SOURCE_DIR}/third_party/glm" )
 set( QT_HEADERS "${CMAKE_SOURCE_DIR}/System_dependent/Linux/QT/MobileRT" )
 set( QT_HEADERS "${QT_HEADERS}"
-		"${CMAKE_SOURCE_DIR}/System_dependent/Linux/QT/build-MobileRT-Desktop-${CMAKE_BUILD_TYPE}"
+		"${CMAKE_SOURCE_DIR}/System_dependent/Linux/Qt/build-${CMAKE_BUILD_TYPE}"
 )
 
 # Set common flags

@@ -1,13 +1,14 @@
-#include "mainwindow.h"
-#include "ui_mainwindow.h"
-#include "MobileRT/Utils.hpp"
-#include <QImage>
-#include <QGraphicsPixmapItem>
-#include <QTimer>
-#include <QFileDialog>
-#include "System_dependent/Linux/c_wrapper.h"
 #include "about.h"
+#include "mainwindow.h"
+#include "MobileRT/Utils.hpp"
+#include "System_dependent/Linux/C_wrapper.h"
+#include "ui_mainwindow.h"
+
 #include <chrono>
+#include <QGraphicsPixmapItem>
+#include <QImage>
+#include <QFileDialog>
+#include <QTimer>
 #include <thread>
 
 MainWindow::MainWindow(QWidget *parent) :

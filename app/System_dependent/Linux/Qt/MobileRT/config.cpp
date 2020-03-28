@@ -1,6 +1,7 @@
 #include "config.h"
-#include "ui_config.h"
 #include "MobileRT/Utils.hpp"
+#include "ui_config.h"
+
 #include <iostream>
 
 Config::Config(::std::int32_t shader,
@@ -8,9 +9,8 @@ Config::Config(::std::int32_t shader,
                ::std::int32_t scene,
                ::std::int32_t spp,
                ::std::int32_t spl) :
-    QDialog(nullptr),
-    ui(new Ui::Config)
-{
+        QDialog(nullptr),
+        ui(new Ui::Config) {
     ui->setupUi(this);
     LOG("Config");
 
@@ -49,8 +49,7 @@ Config::Config(::std::int32_t shader,
     ui->splSpinBox->setValue(spl);
 }
 
-Config::~Config()
-{
+Config::~Config() {
     delete ui;
 }
 

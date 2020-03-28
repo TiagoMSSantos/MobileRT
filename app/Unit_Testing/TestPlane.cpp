@@ -22,7 +22,10 @@ protected:
 TestPlane::~TestPlane() {
 }
 
-static const AABB box {::glm::vec3 {0, 0, -1.5F}, ::glm::vec3 {0, 1, 2.5F}};
+namespace {
+	const AABB box {::glm::vec3 {0, 0, -1.5F}, ::glm::vec3 {0, 1, 2.5F}};
+}
+
 
 /**
  * Tests the Plane constructor.

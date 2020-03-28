@@ -1,18 +1,18 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
-#include <QKeyEvent>
-#include <vector>
-#include <QGraphicsScene>
 #include "config.h"
 
+#include <QGraphicsScene>
+#include <QKeyEvent>
+#include <QMainWindow>
+#include <vector>
+
 namespace Ui {
-class MainWindow;
+    class MainWindow;
 }
 
-class MainWindow : public QMainWindow
-{
+class MainWindow : public QMainWindow {
     Q_OBJECT
 
 public:

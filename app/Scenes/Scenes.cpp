@@ -3,6 +3,7 @@
 #include "Components/Samplers/MersenneTwister.hpp"
 #include "Components/Samplers/StaticHaltonSeq.hpp"
 #include "Scenes/Scenes.hpp"
+
 #include <glm/glm.hpp>
 
 using ::MobileRT::Material;
@@ -15,49 +16,51 @@ using ::Components::AreaLight;
 using ::Components::PointLight;
 using ::Components::StaticHaltonSeq;
 
-static const Material lightMat {::glm::vec3 {0.0F, 0.0F, 0.0F},
-                         ::glm::vec3 {0.0F, 0.0F, 0.0F},
-                         ::glm::vec3 {0.0F, 0.0F, 0.0F},
-                         1.0F,
-                         ::glm::vec3 {0.9F, 0.9F, 0.9F}};
+namespace {
+    const Material lightMat {::glm::vec3 {0.0F, 0.0F, 0.0F},
+                                    ::glm::vec3 {0.0F, 0.0F, 0.0F},
+                                    ::glm::vec3 {0.0F, 0.0F, 0.0F},
+                                    1.0F,
+                                    ::glm::vec3 {0.9F, 0.9F, 0.9F}};
 
-static const Material mirrorMat {::glm::vec3 {0.0F, 0.0F, 0.0F},
-                          ::glm::vec3 {0.9F, 0.9F, 0.9F},
-                          ::glm::vec3 {0.0F, 0.0F, 0.0F}, 1.0F};
+    const Material mirrorMat {::glm::vec3 {0.0F, 0.0F, 0.0F},
+                                     ::glm::vec3 {0.9F, 0.9F, 0.9F},
+                                     ::glm::vec3 {0.0F, 0.0F, 0.0F}, 1.0F};
 
-static const Material transmissionMat {::glm::vec3 {0.0F, 0.0F, 0.0F},
-                                ::glm::vec3 {0.0F, 0.0F, 0.0F},
-                                ::glm::vec3 {0.9F, 0.9F, 0.9F}, 1.9F};
+    const Material transmissionMat {::glm::vec3 {0.0F, 0.0F, 0.0F},
+                                           ::glm::vec3 {0.0F, 0.0F, 0.0F},
+                                           ::glm::vec3 {0.9F, 0.9F, 0.9F}, 1.9F};
 
-static const Material lightGrayMat {::glm::vec3 {0.7F, 0.7F, 0.7F}};
+    const Material lightGrayMat {::glm::vec3 {0.7F, 0.7F, 0.7F}};
 
-static const Material redMat {::glm::vec3 {0.9F, 0.0F, 0.0F}};
+    const Material redMat {::glm::vec3 {0.9F, 0.0F, 0.0F}};
 
-static const Material yellowMat {::glm::vec3 {0.9F, 0.9F, 0.0F}};
+    const Material yellowMat {::glm::vec3 {0.9F, 0.9F, 0.0F}};
 
-static const Material greenMat {::glm::vec3 {0.0F, 0.9F, 0.0F}};
+    const Material greenMat {::glm::vec3 {0.0F, 0.9F, 0.0F}};
 
-static const Material blueMat {::glm::vec3 {0.0F, 0.0F, 0.9F}};
+    const Material blueMat {::glm::vec3 {0.0F, 0.0F, 0.9F}};
 
-static const Material sandMat {::glm::vec3 {0.914F, 0.723F, 0.531F}};
+    const Material sandMat {::glm::vec3 {0.914F, 0.723F, 0.531F}};
 
-static const Material lightBlueMat {::glm::vec3 {0.0F, 0.9F, 0.9F}};
+    const Material lightBlueMat {::glm::vec3 {0.0F, 0.9F, 0.9F}};
 
-static Triangle::Builder triangleBuilder {Triangle::Builder(
-        ::glm::vec3 {0.5F, -0.5F, 0.99F},
-        ::glm::vec3 {0.5F, 0.5F, 1.001F},
-        ::glm::vec3 {-0.5F, -0.5F, 0.99F}
-)};
+    Triangle::Builder triangleBuilder {Triangle::Builder(
+            ::glm::vec3 {0.5F, -0.5F, 0.99F},
+            ::glm::vec3 {0.5F, 0.5F, 1.001F},
+            ::glm::vec3 {-0.5F, -0.5F, 0.99F}
+    )};
 
-static const ::glm::vec3 back {0.0F, 0.0F, 1.0F};
+    const ::glm::vec3 back {0.0F, 0.0F, 1.0F};
 
-static const ::glm::vec3 front {0.0F, 0.0F, -1.0F};
+    const ::glm::vec3 front {0.0F, 0.0F, -1.0F};
 
-static const ::glm::vec3 bottom {0.0F, -1.0F, 0.0F};
+    const ::glm::vec3 bottom {0.0F, -1.0F, 0.0F};
 
-static const ::glm::vec3 top {0.0F, 1.0F, 0.0F};
+    const ::glm::vec3 top {0.0F, 1.0F, 0.0F};
+}
 
-static Scene cornellBox(Scene scene) {
+inline Scene cornellBox(Scene scene) {
     // back wall - white
     scene.planes_.emplace_back(Plane {
             back, front,
@@ -103,7 +106,7 @@ static Scene cornellBox(Scene scene) {
     return scene;
 }
 
-Scene cornellBoxScene(Scene scene) {
+Scene cornellBox_Scene(Scene scene) {
     scene.lights_.emplace_back(::std::make_unique<PointLight> (
             lightMat,
             ::glm::vec3 {0.0F, 0.99F, 0.0F}
@@ -132,7 +135,19 @@ Scene cornellBoxScene(Scene scene) {
     return scene;
 }
 
-Scene cornellBoxScene2(Scene scene) {
+::std::unique_ptr<::MobileRT::Camera> cornellBox_Cam(const float ratio) {
+    const auto fovX {45.0F * ratio};
+    const auto fovY {45.0F};
+    auto res {::std::make_unique<Components::Perspective> (
+            ::glm::vec3 {0.0F, 0.0F, -3.4F},
+            ::glm::vec3 {0.0F, 0.0F, 1.0F},
+            ::glm::vec3 {0.0F, 1.0F, 0.0F},
+            fovX, fovY
+    )};
+    return ::std::move(res);
+}
+
+Scene cornellBox2_Scene(Scene scene) {
     ::std::unique_ptr<Sampler> samplerPoint1 {::std::make_unique<StaticHaltonSeq> ()};
     ::std::unique_ptr<Sampler> samplerPoint2 {::std::make_unique<StaticHaltonSeq> ()};
 
@@ -206,7 +221,19 @@ Scene cornellBoxScene2(Scene scene) {
     return scene;
 }
 
-Scene spheresScene(Scene scene) {
+::std::unique_ptr<::MobileRT::Camera> cornellBox2_Cam(const float ratio) {
+    const auto fovX {45.0F * ratio};
+    const auto fovY {45.0F};
+    auto res {::std::make_unique<Components::Perspective> (
+            ::glm::vec3 {0.0F, 0.0F, -3.4F},
+            ::glm::vec3 {0.0F, 0.0F, 1.0F},
+            ::glm::vec3 {0.0F, 1.0F, 0.0F},
+            fovX, fovY
+    )};
+    return ::std::move(res);
+}
+
+Scene spheres_Scene(Scene scene) {
     // create one sphere
     scene.spheres_.emplace_back(Sphere {
         ::glm::vec3 {4.0F, 4.0F, 4.0F}, 4.0F,
@@ -229,7 +256,19 @@ Scene spheresScene(Scene scene) {
     return scene;
 }
 
-Scene spheresScene2(Scene scene) {
+::std::unique_ptr<::MobileRT::Camera> spheres_Cam(float ratio) {
+    const auto sizeH {10.0F * ratio};
+    const auto sizeV {10.0F};
+    auto res {::std::make_unique<Components::Orthographic> (
+            ::glm::vec3 {0.0F, 1.0F, -10.0F},
+            ::glm::vec3 {0.0F, 1.0F, 7.0F},
+            ::glm::vec3 {0.0F, 1.0F, 0.0F},
+            sizeH, sizeV
+    )};
+    return ::std::move(res);
+}
+
+Scene spheres2_Scene(Scene scene) {
     scene.lights_.emplace_back(::std::make_unique<PointLight> (lightMat, ::glm::vec3 {0.0F, 15.0F, 4.0F}));
 
     // create one sphere
@@ -253,4 +292,16 @@ Scene spheresScene2(Scene scene) {
     scene.materials_.emplace_back(sandMat);
 
     return scene;
+}
+
+::std::unique_ptr<::MobileRT::Camera> spheres2_Cam(float ratio) {
+    const auto fovX {60.0F * ratio};
+    const auto fovY {60.0F};
+    auto  res {::std::make_unique<Components::Perspective> (
+            ::glm::vec3{0.0F, 0.5F, 1.0F},
+            ::glm::vec3{0.0F, 0.0F, 7.0F},
+            ::glm::vec3{0.0F, 1.0F, 0.0F},
+            fovX, fovY
+    )};
+    return ::std::move(res);
 }
