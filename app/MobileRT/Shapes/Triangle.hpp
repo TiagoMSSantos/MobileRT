@@ -27,7 +27,7 @@ namespace MobileRT {
         ::std::int32_t materialIndex_ {-1};
 
     private:
-        explicit Triangle(const Triangle::Builder &builder);
+        explicit Triangle(const Triangle::Builder &builder) noexcept;
 
         void checkArguments() const;
 
@@ -91,7 +91,7 @@ namespace MobileRT {
                     const ::glm::vec3 &pointA,
                     const ::glm::vec3 &pointB,
                     const ::glm::vec3 &pointC
-            );
+            ) noexcept;
 
             Builder withNormals(
                     const ::glm::vec3 &normalA,

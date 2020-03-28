@@ -468,7 +468,7 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
                             return -1;
                         }
                         const auto sceneBuilt {objLoader.fillScene(
-                                &scene, []() {return ::std::make_unique<Components::StaticHaltonSeq> ();}
+                                &scene, []() {return ::MobileRT::std::make_unique<Components::StaticHaltonSeq> ();}
                         )};
                         if (!sceneBuilt) {
                             return -1;
@@ -479,13 +479,13 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
                         break;
                 }
                 samplerPixel = samplesPixel <= 1
-                    ? ::std::unique_ptr<::MobileRT::Sampler> (::std::make_unique<Components::Constant> (0.5F))
-                    : ::std::unique_ptr<::MobileRT::Sampler> (::std::make_unique<Components::StaticHaltonSeq> ());
+                    ? ::std::unique_ptr<::MobileRT::Sampler> (::MobileRT::std::make_unique<Components::Constant> (0.5F))
+                    : ::std::unique_ptr<::MobileRT::Sampler> (::MobileRT::std::make_unique<Components::StaticHaltonSeq> ());
                 LOG("LOADING SHADER");
                 const auto start {::std::chrono::system_clock::now()};
                 switch (shaderIndex) {
                     case 1: {
-                        shader = ::std::make_unique<Components::Whitted> (
+                        shader = ::MobileRT::std::make_unique<Components::Whitted> (
                             ::std::move(scene),
                             samplesLight,
                             ::MobileRT::Shader::Accelerator(acceleratorIndex)
@@ -495,10 +495,10 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
 
                     case 2: {
                         ::std::unique_ptr<MobileRT::Sampler> samplerRussianRoulette {
-                            ::std::make_unique<Components::StaticHaltonSeq> ()
+                                ::MobileRT::std::make_unique<Components::StaticHaltonSeq> ()
                         };
 
-                        shader = ::std::make_unique<Components::PathTracer> (
+                        shader = ::MobileRT::std::make_unique<Components::PathTracer> (
                             ::std::move(scene),
                             ::std::move(samplerRussianRoulette),
                             samplesLight,
@@ -508,21 +508,21 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
                     }
 
                     case 3: {
-                        shader = ::std::make_unique<Components::DepthMap> (
+                        shader = ::MobileRT::std::make_unique<Components::DepthMap> (
                             ::std::move(scene), maxDist, ::MobileRT::Shader::Accelerator(acceleratorIndex)
                         );
                         break;
                     }
 
                     case 4: {
-                        shader = ::std::make_unique<Components::DiffuseMaterial> (
+                        shader = ::MobileRT::std::make_unique<Components::DiffuseMaterial> (
                             ::std::move(scene), ::MobileRT::Shader::Accelerator(acceleratorIndex)
                         );
                         break;
                     }
 
                     default: {
-                        shader = ::std::make_unique<Components::NoShadows> (
+                        shader = ::MobileRT::std::make_unique<Components::NoShadows> (
                             ::std::move(scene),
                             samplesLight,
                             ::MobileRT::Shader::Accelerator(acceleratorIndex)
@@ -539,7 +539,7 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
                 const auto materials {static_cast<::std::int32_t> (shader->getMaterials().size())};
                 numLights_ = static_cast<::std::int32_t> (shader->getLights().size());
                 const auto nPrimitives {triangles + spheres + planes};
-                renderer_ = ::std::make_unique<::MobileRT::Renderer> (
+                renderer_ = ::MobileRT::std::make_unique<::MobileRT::Renderer> (
                     ::std::move(shader), ::std::move(camera), ::std::move(samplerPixel),
                     width, height, samplesPixel
                 );
@@ -700,7 +700,7 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
         };
 
         if (async) {
-            thread_ = ::std::make_unique<::std::thread>(lambda);
+            thread_ = ::MobileRT::std::make_unique<::std::thread>(lambda);
             thread_->detach();
         } else {
             lambda();

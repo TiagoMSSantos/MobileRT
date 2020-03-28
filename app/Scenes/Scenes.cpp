@@ -58,7 +58,7 @@ namespace {
     const ::glm::vec3 bottom {0.0F, -1.0F, 0.0F};
 
     const ::glm::vec3 top {0.0F, 1.0F, 0.0F};
-}
+}//namespace
 
 inline Scene cornellBox(Scene scene) {
     // back wall - white
@@ -107,7 +107,7 @@ inline Scene cornellBox(Scene scene) {
 }
 
 Scene cornellBox_Scene(Scene scene) {
-    scene.lights_.emplace_back(::std::make_unique<PointLight> (
+    scene.lights_.emplace_back(::MobileRT::std::make_unique<PointLight> (
             lightMat,
             ::glm::vec3 {0.0F, 0.99F, 0.0F}
     ));
@@ -138,7 +138,7 @@ Scene cornellBox_Scene(Scene scene) {
 ::std::unique_ptr<::MobileRT::Camera> cornellBox_Cam(const float ratio) {
     const auto fovX {45.0F * ratio};
     const auto fovY {45.0F};
-    auto res {::std::make_unique<Components::Perspective> (
+    auto res {::MobileRT::std::make_unique<Components::Perspective> (
             ::glm::vec3 {0.0F, 0.0F, -3.4F},
             ::glm::vec3 {0.0F, 0.0F, 1.0F},
             ::glm::vec3 {0.0F, 1.0F, 0.0F},
@@ -148,8 +148,8 @@ Scene cornellBox_Scene(Scene scene) {
 }
 
 Scene cornellBox2_Scene(Scene scene) {
-    ::std::unique_ptr<Sampler> samplerPoint1 {::std::make_unique<StaticHaltonSeq> ()};
-    ::std::unique_ptr<Sampler> samplerPoint2 {::std::make_unique<StaticHaltonSeq> ()};
+    ::std::unique_ptr<Sampler> samplerPoint1 {::MobileRT::std::make_unique<StaticHaltonSeq> ()};
+    ::std::unique_ptr<Sampler> samplerPoint2 {::MobileRT::std::make_unique<StaticHaltonSeq> ()};
 
     const Triangle triangle1 {
             Triangle::Builder(
@@ -169,13 +169,13 @@ Scene cornellBox2_Scene(Scene scene) {
                     .build()
     };
 
-    scene.lights_.emplace_back(::std::make_unique<AreaLight> (
+    scene.lights_.emplace_back(::MobileRT::std::make_unique<AreaLight> (
         lightMat,
         ::std::move(samplerPoint1),
         triangle1
     ));
 
-    scene.lights_.emplace_back(::std::make_unique<AreaLight> (
+    scene.lights_.emplace_back(::MobileRT::std::make_unique<AreaLight> (
         lightMat,
         ::std::move(samplerPoint2),
         triangle2
@@ -224,7 +224,7 @@ Scene cornellBox2_Scene(Scene scene) {
 ::std::unique_ptr<::MobileRT::Camera> cornellBox2_Cam(const float ratio) {
     const auto fovX {45.0F * ratio};
     const auto fovY {45.0F};
-    auto res {::std::make_unique<Components::Perspective> (
+    auto res {::MobileRT::std::make_unique<Components::Perspective> (
             ::glm::vec3 {0.0F, 0.0F, -3.4F},
             ::glm::vec3 {0.0F, 0.0F, 1.0F},
             ::glm::vec3 {0.0F, 1.0F, 0.0F},
@@ -259,7 +259,7 @@ Scene spheres_Scene(Scene scene) {
 ::std::unique_ptr<::MobileRT::Camera> spheres_Cam(float ratio) {
     const auto sizeH {10.0F * ratio};
     const auto sizeV {10.0F};
-    auto res {::std::make_unique<Components::Orthographic> (
+    auto res {::MobileRT::std::make_unique<Components::Orthographic> (
             ::glm::vec3 {0.0F, 1.0F, -10.0F},
             ::glm::vec3 {0.0F, 1.0F, 7.0F},
             ::glm::vec3 {0.0F, 1.0F, 0.0F},
@@ -269,7 +269,7 @@ Scene spheres_Scene(Scene scene) {
 }
 
 Scene spheres2_Scene(Scene scene) {
-    scene.lights_.emplace_back(::std::make_unique<PointLight> (lightMat, ::glm::vec3 {0.0F, 15.0F, 4.0F}));
+    scene.lights_.emplace_back(::MobileRT::std::make_unique<PointLight> (lightMat, ::glm::vec3 {0.0F, 15.0F, 4.0F}));
 
     // create one sphere
     scene.spheres_.emplace_back(Sphere {::glm::vec3 {-1.0F, 1.0F, 6.0F}, 1.0F,
@@ -297,7 +297,7 @@ Scene spheres2_Scene(Scene scene) {
 ::std::unique_ptr<::MobileRT::Camera> spheres2_Cam(float ratio) {
     const auto fovX {60.0F * ratio};
     const auto fovY {60.0F};
-    auto  res {::std::make_unique<Components::Perspective> (
+    auto  res {::MobileRT::std::make_unique<Components::Perspective> (
             ::glm::vec3{0.0F, 0.5F, 1.0F},
             ::glm::vec3{0.0F, 0.0F, 7.0F},
             ::glm::vec3{0.0F, 1.0F, 0.0F},

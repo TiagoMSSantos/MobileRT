@@ -11,7 +11,7 @@ using ::MobileRT::Intersection;
  *
  * @param builder A triangle builder.
  */
-Triangle::Triangle(const Triangle::Builder &builder) :
+Triangle::Triangle(const Triangle::Builder &builder) noexcept :
         AC_ {builder.AC_},
         AB_ {builder.AB_},
         pointA_ {builder.pointA_},
@@ -322,7 +322,7 @@ Triangle::Builder::Builder(
         const ::glm::vec3 &pointA,
         const ::glm::vec3 &pointB,
         const ::glm::vec3 &pointC
-) :
+) noexcept :
         AC_ {pointC - pointA},
         AB_ {pointB - pointA},
         pointA_ {pointA},

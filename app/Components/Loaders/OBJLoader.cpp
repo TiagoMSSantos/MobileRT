@@ -218,7 +218,7 @@ bool OBJLoader::fillScene(Scene *const scene,
                                 .withTexCoords(texCoordA, texCoordB, texCoordC)
                                 .build()
                         };
-                        scene->lights_.emplace_back(::std::make_unique<AreaLight>(material, lambda(), triangle));
+                        scene->lights_.emplace_back(::MobileRT::std::make_unique<AreaLight>(material, lambda(), triangle));
                         const auto lightPos {scene->lights_.back()->getPosition()};
                         LOG("Light position at: x:", lightPos[0], ", y:", lightPos[1], ", z:", lightPos[2]);
                     } else {

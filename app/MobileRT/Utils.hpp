@@ -191,23 +191,39 @@ namespace MobileRT {
         }
         return parsedValues;
     }
-}//namespace MobileRT
 
-#if __cplusplus <= 201103L
-namespace std {
-    /**
-     * The make_unique method to be used when the version of the C++ language is older than C++14.
-     *
-     * @tparam T    The type of the object to construct.
-     * @tparam Args The type of the arguments.
-     * @param args The arguments to build the object.
-     * @return A unique_ptr of an object of type T.
-     */
-    template<typename T, typename... Args>
-    ::std::unique_ptr<T> make_unique(Args &&... args) {
-        return ::std::unique_ptr<T>(new T(::std::forward<Args>(args)...));
-    }
-}//namespace std
-#endif
+
+    namespace std {
+        #if __cplusplus <= 201103L
+            /**
+             * The make_unique method to be used when the version of the C++ language is older than C++14.
+             *
+             * @tparam T    The type of the object to construct.
+             * @tparam Args The type of the arguments.
+             * @param args The arguments to build the object.
+             * @return A unique_ptr of an object of type T.
+             */
+            template<typename T, typename... Args>
+            ::std::unique_ptr<T> make_unique(Args &&... args) {
+                return ::std::unique_ptr<T>(new T(::std::forward<Args>(args)...));
+            }
+        #else
+            /**
+             * The make_unique method to be used when the version of the C++ language is C++14 or newer..
+             *
+             * @tparam T    The type of the object to construct.
+             * @tparam Args The type of the arguments.
+             * @param args The arguments to build the object.
+             * @return A unique_ptr of an object of type T.
+             */
+            template<typename T, typename... Args>
+            ::std::unique_ptr<T> make_unique(Args &&... args) {
+                return ::std::make_unique(args);
+            }
+        #endif
+    }//namespace std
+
+
+}//namespace MobileRT
 
 #endif //MOBILERT_UTILS_HPP

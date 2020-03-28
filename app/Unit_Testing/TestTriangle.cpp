@@ -52,17 +52,17 @@ namespace {
 			)
 					.build()
 	};
-}
+}//namespace
 
 
 
-static void assertBoxIntersectsTriangle(const glm::vec3 &min, const glm::vec3 &max, const Triangle &triangle) {
+inline void assertBoxIntersectsTriangle(const glm::vec3 &min, const glm::vec3 &max, const Triangle &triangle) {
     const AABB box {min, max};
     const bool intersected {triangle.intersect(box)};
     ASSERT_EQ(true, intersected);
 }
 
-static void assertRayTriangle(const glm::vec3 &orig, const glm::vec3 &dir, const Triangle &triangle,
+inline void assertRayTriangle(const glm::vec3 &orig, const glm::vec3 &dir, const Triangle &triangle,
         const bool expectedInt) {
     const Ray ray {dir, orig, 1};
     Intersection intersection {};

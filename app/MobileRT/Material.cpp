@@ -16,7 +16,7 @@ using ::MobileRT::Material;
 Material::Material(
     const ::glm::vec3 &kD, const ::glm::vec3 &kS,
     const ::glm::vec3 &kT, const float refractiveIndice,
-    const ::glm::vec3 &lE, Texture texture) :
+    const ::glm::vec3 &lE, Texture texture) noexcept :
     Le_ {lE},
     Kd_ {kD},
     Ks_ {kS},

@@ -51,7 +51,7 @@ namespace {
     position[0] = -position[0];
 
     ::std::unique_ptr<::MobileRT::Camera> camera {
-        ::std::make_unique<::Components::Perspective> (
+            ::MobileRT::std::make_unique<::Components::Perspective> (
                 position,
                 lookAt,
                 up,

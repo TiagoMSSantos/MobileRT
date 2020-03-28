@@ -24,7 +24,7 @@ TestPlane::~TestPlane() {
 
 namespace {
 	const AABB box {::glm::vec3 {0, 0, -1.5F}, ::glm::vec3 {0, 1, 2.5F}};
-}
+}//namespace
 
 
 /**

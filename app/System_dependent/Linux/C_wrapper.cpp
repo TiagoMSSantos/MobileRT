@@ -102,10 +102,10 @@ work_thread(
                     timeLoading = endLoading - startLoading;
                     LOG("OBJLoader loaded = ", timeLoading.count());
                     const auto startFilling {::std::chrono::system_clock::now()};
-                    //objLoader.fillScene(&scene, []() {return ::std::make_unique<::Components::HaltonSeq> ();});
-                    //objLoader.fillScene(&scene, []() {return ::std::make_unique<::Components::MersenneTwister> ();});
-                    objLoader.fillScene(&scene, []() {return ::std::make_unique<Components::StaticHaltonSeq> (); });
-                    //objLoader.fillScene(&scene, []() {return ::std::make_unique<Components::StaticMersenneTwister> ();});
+                    //objLoader.fillScene(&scene, []() {return ::MobileRT::std::make_unique<::Components::HaltonSeq> ();});
+                    //objLoader.fillScene(&scene, []() {return ::MobileRT::std::make_unique<::Components::MersenneTwister> ();});
+                    objLoader.fillScene(&scene, []() {return ::MobileRT::std::make_unique<Components::StaticHaltonSeq> (); });
+                    //objLoader.fillScene(&scene, []() {return ::MobileRT::std::make_unique<Components::StaticMersenneTwister> ();});
                     const auto endFilling {::std::chrono::system_clock::now()};
                     timeFilling = endFilling - startFilling;
                     LOG("Scene filled = ", timeFilling.count());
@@ -117,14 +117,14 @@ work_thread(
                     break;
             }
             if (samplesPixel > 1) {
-                samplerPixel = ::std::make_unique<::Components::StaticHaltonSeq> ();
+                samplerPixel = ::MobileRT::std::make_unique<::Components::StaticHaltonSeq> ();
             } else {
-                samplerPixel = ::std::make_unique<::Components::Constant> (0.5F);
+                samplerPixel = ::MobileRT::std::make_unique<::Components::Constant> (0.5F);
             }
             const auto startCreating {::std::chrono::system_clock::now()};
             switch (shader) {
                 case 1: {
-                    shader_ = ::std::make_unique<::Components::Whitted> (
+                    shader_ = ::MobileRT::std::make_unique<::Components::Whitted> (
                     ::std::move(scene), samplesLight, ::MobileRT::Shader::Accelerator(accelerator)
                     );
                     break;
@@ -132,10 +132,10 @@ work_thread(
 
                 case 2: {
                     ::std::unique_ptr<MobileRT::Sampler> samplerRussianRoulette {
-                        ::std::make_unique<::Components::StaticHaltonSeq> ()
+                            ::MobileRT::std::make_unique<::Components::StaticHaltonSeq> ()
                     };
 
-                    shader_ = ::std::make_unique<::Components::PathTracer> (
+                    shader_ = ::MobileRT::std::make_unique<::Components::PathTracer> (
                     ::std::move(scene), ::std::move(samplerRussianRoulette), samplesLight,
                     ::MobileRT::Shader::Accelerator(accelerator)
                     );
@@ -143,21 +143,21 @@ work_thread(
                 }
 
                 case 3: {
-                shader_ = ::std::make_unique<::Components::DepthMap> (
+                shader_ = ::MobileRT::std::make_unique<::Components::DepthMap> (
                     ::std::move(scene), maxDist, ::MobileRT::Shader::Accelerator(accelerator)
                 );
                     break;
                 }
 
                 case 4: {
-                shader_ = ::std::make_unique<::Components::DiffuseMaterial> (
+                shader_ = ::MobileRT::std::make_unique<::Components::DiffuseMaterial> (
                     ::std::move(scene), ::MobileRT::Shader::Accelerator(accelerator)
                 );
                 break;
                 }
 
                 default: {
-                shader_ = ::std::make_unique<::Components::NoShadows> (
+                shader_ = ::MobileRT::std::make_unique<::Components::NoShadows> (
                     ::std::move(scene), samplesLight, ::MobileRT::Shader::Accelerator(accelerator)
                 );
                 break;
@@ -174,7 +174,7 @@ work_thread(
             const auto nPrimitives {triangles + spheres + planes};
 
             LOG("Started creating Renderer");
-            renderer_ = ::std::make_unique<::MobileRT::Renderer> (
+            renderer_ = ::MobileRT::std::make_unique<::MobileRT::Renderer> (
                     ::std::move(shader_), ::std::move(camera), ::std::move(samplerPixel),
                     width, height, samplesPixel
             );
