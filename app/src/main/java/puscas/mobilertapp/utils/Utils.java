@@ -30,6 +30,7 @@ public final class Utils {
      * @param executorService The {@link ExecutorService}.
      */
     public static void waitExecutorToFinish(@NonNull final ExecutorService executorService) {
+        LOGGER.info("waitExecutorToFinish");
         boolean running = true;
         do {
             try {
@@ -39,5 +40,6 @@ public final class Utils {
                 Thread.currentThread().interrupt();
             }
         } while (running);
+        LOGGER.info("waitExecutorToFinish finished");
     }
 }

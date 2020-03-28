@@ -145,7 +145,7 @@ public final class MainActivityTest {
         assertPickerValue(R.id.pickerShader, 2);
 
         final List<String> buttonTextList = ImmutableList.<String>builder().add(STOP, RENDER).build();
-        IntStreams.rangeClosed(0, buttonTextList.size() * repetitions).forEach(currentIndex -> {
+        IntStreams.range(0, buttonTextList.size() * repetitions).forEach(currentIndex -> {
             final int finalCounterScene = this.counterScene % 6;
             this.counterScene++;
             final int finalCounterAccelerator = this.counterAccelerator % 2;
@@ -301,7 +301,8 @@ public final class MainActivityTest {
             });
 
         testRenderButton(4);
-        testRenderButton(10);
+        testRenderButton(20);
+        testRenderButton(200);
 
         testPickerNumbers();
         testPreviewCheckBox();

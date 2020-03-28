@@ -289,16 +289,20 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected void onProgressUpdate(@NonNull final Void... values) {
+        LOGGER.info("onProgressUpdate");
         printText();
     }
 
     @Override
     protected void onPostExecute(@NonNull final Void result) {
+        LOGGER.info("onPostExecute");
         printText();
 
         Optional.ofNullable(this.buttonRenderRef.get()).ifPresent(button -> button.setText(R.string.render));
         this.requestRender.run();
         this.finishRender.run();
+
+        LOGGER.info("onPostExecute finished");
     }
 
     @Override

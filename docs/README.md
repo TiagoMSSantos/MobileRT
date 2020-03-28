@@ -117,7 +117,7 @@ better optimized code)
 ### Ray tracing JNI layer
 - [ ] Refactor DrawView translation unit
 - [ ] Improve DrawView code readability
-- [ ] Fix race conditions
+- [x] Fix race conditions
 
 ### Android Interface
 - [x] Fix memory leak in Java UI

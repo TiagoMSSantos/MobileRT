@@ -159,6 +159,9 @@ public final class DrawView extends GLSurfaceView {
         waitLastTask();
         rtStopRender();
         this.renderer.waitLastTask();
+        this.renderer.updateButton(R.string.render);
+
+        LOGGER.info("stopDrawing finished");
     }
 
     /**

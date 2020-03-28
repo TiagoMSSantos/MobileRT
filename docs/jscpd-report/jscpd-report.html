@@ -259,7 +259,7 @@ h3 {
         text-align: center;
 
     }
-}</style></head><body><div class="pure-g" id="layout"><div class="sidebar pure-u-1 pure-u-md-1-4"><div class="header"><img src="https://raw.githubusercontent.com/kucherenko/jscpd/1.0.0-alpha/assets/logo-small-box.svg?sanitize=true" width="190"><nav class="nav"><ul class="nav-list"><li class="nav-item"><a class="pure-button" href="#cpp">cpp</a></li><li class="nav-item"><a class="pure-button" href="#c">c</a></li><li class="nav-item"><a class="pure-button" href="#java">java</a></li></ul></nav></div></div><div class="content pure-u-1 pure-u-md-3-4"><div class="controls"><div class="pure-u"><button class="pure-button" onclick="collapseExpandAll()">Collapse/Expand All</button></div></div><table class="pure-table stats"><thead><tr><th>Total files</th><th>Total lines of code</th><th>Duplicated lines</th><th>% of duplications</th></tr></thead><tbody><tr><td>119</td><td>9781</td><td>227</td><td>2.32%</td></tr></tbody></table><div class="clones collapsed"><a name="cpp"></a><h1 class="content-subhead">cpp</h1><div class="mode-stats"><p><span class="mode-rate">2.65%</span> Total files: 91, total lines of code: 7514, duplicated lines: 199</p></div><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Unit_Testing/TestIntersection.cpp[40:54 - 51:49]<br/>app/Unit_Testing/TestIntersection.cpp[26:53 - 37:49]</div></header><div class="clone-description"><pre data-first-start="40" data-second-start="26" data-length="11">}};
+}</style></head><body><div class="pure-g" id="layout"><div class="sidebar pure-u-1 pure-u-md-1-4"><div class="header"><img src="https://raw.githubusercontent.com/kucherenko/jscpd/1.0.0-alpha/assets/logo-small-box.svg?sanitize=true" width="190"><nav class="nav"><ul class="nav-list"><li class="nav-item"><a class="pure-button" href="#cpp">cpp</a></li><li class="nav-item"><a class="pure-button" href="#c">c</a></li><li class="nav-item"><a class="pure-button" href="#java">java</a></li></ul></nav></div></div><div class="content pure-u-1 pure-u-md-3-4"><div class="controls"><div class="pure-u"><button class="pure-button" onclick="collapseExpandAll()">Collapse/Expand All</button></div></div><table class="pure-table stats"><thead><tr><th>Total files</th><th>Total lines of code</th><th>Duplicated lines</th><th>% of duplications</th></tr></thead><tbody><tr><td>119</td><td>9845</td><td>227</td><td>2.31%</td></tr></tbody></table><div class="clones collapsed"><a name="cpp"></a><h1 class="content-subhead">cpp</h1><div class="mode-stats"><p><span class="mode-rate">2.63%</span> Total files: 91, total lines of code: 7567, duplicated lines: 199</p></div><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Unit_Testing/TestIntersection.cpp[40:54 - 51:49]<br/>app/Unit_Testing/TestIntersection.cpp[26:53 - 37:49]</div></header><div class="clone-description"><pre data-first-start="40" data-second-start="26" data-length="11">}};
     const auto primitive {nullptr};
     const auto materialIndex {0};
     const ::glm::vec2 texCoords {0.4F, 0.6F};
@@ -284,7 +284,7 @@ TEST_F(TestIntersection, TestInvalidConstructor3</pre></div></section><section c
     Plane</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Unit_Testing/TestPlane.cpp[71:43 - 80:7]<br/>app/Unit_Testing/TestPlane.cpp[53:30 - 64:4]</div></header><div class="clone-description"><pre data-first-start="71" data-second-start="53" data-length="9">};
 
     ASSERT_EQ(materialIndex, plane3.getMaterialIndex());
-    for(int i {0}; i &lt; ::MobileRT::NumberOfAxes; ++i) {
+    for (int i {0}; i &lt; ::MobileRT::NumberOfAxes; ++i) {
         ASSERT_FLOAT_EQ(point[i], plane3.getPoint()[i]);
         ASSERT_FLOAT_EQ(normal2[i], plane3.getNormal()[i]);
     }
@@ -377,7 +377,7 @@ TEST_F</pre></div></section><section class="clone"><header><button class="pure-b
             const ::MobileRT::Ray &amp;ray) final;
 
     public:
-        explicit Whitted</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/MobileRT/Accelerators/Naive.hpp[40:43 - 49:5]<br/>app/MobileRT/Accelerators/BVH.hpp[86:37 - 96:1]</div></header><div class="clone-description"><pre data-first-start="40" data-second-start="86" data-length="9">) noexcept = default;
+        explicit Whitted</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/MobileRT/Accelerators/Naive.hpp[40:43 - 49:5]<br/>app/MobileRT/Accelerators/BVH.hpp[84:37 - 94:1]</div></header><div class="clone-description"><pre data-first-start="40" data-second-start="84" data-length="9">) noexcept = default;
 
             Intersection trace(Intersection intersection, const Ray &amp;ray);
 
@@ -429,7 +429,7 @@ TEST_F</pre></div></section><section class="clone"><header><button class="pure-b
                     tmax[2] = (tmax[2] + tdelta[2]);
                 }
             }
-</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/MobileRT/Shapes/Triangle.hpp[47:48 - 55:1]<br/>app/MobileRT/Shapes/Sphere.hpp[32:42 - 39:5]</div></header><div class="clone-description"><pre data-first-start="47" data-second-start="32" data-length="8">) noexcept = default;
+</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/MobileRT/Shapes/Triangle.hpp[47:48 - 55:1]<br/>app/MobileRT/Shapes/Sphere.hpp[35:42 - 42:5]</div></header><div class="clone-description"><pre data-first-start="47" data-second-start="35" data-length="8">) noexcept = default;
 
         Intersection intersect(const Intersection &amp;intersection, const Ray &amp;ray) const;
 
@@ -458,7 +458,7 @@ TEST_F</pre></div></section><section class="clone"><header><button class="pure-b
     connect(m_timer, SIGNAL(timeout()), this, SLOT(update_image()));
     m_timer-&gt;start(1000);
 
-</pre></div></section><a name="c"></a><h1 class="content-subhead">c</h1><div class="mode-stats"><p><span class="mode-rate">0%</span> Total files: 4, total lines of code: 149, duplicated lines: 0</p></div><a name="java"></a><h1 class="content-subhead">java</h1><div class="mode-stats"><p><span class="mode-rate">1.32%</span> Total files: 24, total lines of code: 2118, duplicated lines: 28</p></div><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/main/java/puscas/mobilertapp/utils/Scene.java[1:1 - 15:4]<br/>app/src/main/java/puscas/mobilertapp/utils/Accelerator.java[1:1 - 15:4]</div></header><div class="clone-description"><pre data-first-start="1" data-second-start="1" data-length="14">package puscas.mobilertapp.utils;
+</pre></div></section><a name="c"></a><h1 class="content-subhead">c</h1><div class="mode-stats"><p><span class="mode-rate">0%</span> Total files: 4, total lines of code: 149, duplicated lines: 0</p></div><a name="java"></a><h1 class="content-subhead">java</h1><div class="mode-stats"><p><span class="mode-rate">1.32%</span> Total files: 24, total lines of code: 2129, duplicated lines: 28</p></div><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/main/java/puscas/mobilertapp/utils/Scene.java[1:1 - 15:4]<br/>app/src/main/java/puscas/mobilertapp/utils/Accelerator.java[1:1 - 15:4]</div></header><div class="clone-description"><pre data-first-start="1" data-second-start="1" data-length="14">package puscas.mobilertapp.utils;
 
 import androidx.annotation.NonNull;
 
