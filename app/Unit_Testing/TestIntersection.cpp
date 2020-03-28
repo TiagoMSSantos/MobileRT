@@ -70,7 +70,7 @@ TEST_F(TestIntersection, TestConstructor) {
     ASSERT_EQ(dist, intersection.length_);
     ASSERT_EQ(primitive, intersection.primitive_);
     ASSERT_EQ(materialIndex, intersection.materialIndex_);
-    for(int i {0}; i < ::MobileRT::NumberOfAxes; ++i) {
+    for (int i {0}; i < ::MobileRT::NumberOfAxes; ++i) {
         ASSERT_FLOAT_EQ(intPoint[i], intersection.point_[i]);
         ASSERT_FLOAT_EQ(normal[i], intersection.normal_[i]);
     }

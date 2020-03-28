@@ -441,6 +441,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * {@link MainRenderer#arrayCamera} native arrays.
      */
     private void initArrays() throws LowMemoryException {
+        LOGGER.info("initArrays");
         checksFreeMemory(1, this::freeArrays);
 
         this.arrayVertices = rtInitVerticesArray();
@@ -476,6 +477,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * @throws LowMemoryException If the device has low free memory.
      */
     private void checksFreeMemory(final int memoryNeeded, final Runnable function) throws LowMemoryException {
+        LOGGER.info("checksFreeMemory");
         if (isLowMemory(memoryNeeded)) {
             function.run();
             throw new LowMemoryException();

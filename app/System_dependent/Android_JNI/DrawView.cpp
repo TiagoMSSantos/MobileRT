@@ -121,6 +121,7 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitCameraArray(
                         }
                     }
                 }
+
             }
             env->ExceptionClear();
         }
@@ -168,40 +169,40 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitVerticesArray(
                 const auto &triangles {renderer_->shader_->getTriangles()};
                 const auto arraySize {static_cast<::std::uint32_t> (triangles.size() * 3 * 4)};
                 const auto arrayBytes {arraySize * static_cast<jlong> (sizeof(jfloat))};
-                if (arraySize > 0) {
-                    float *const floatBuffer {new float[arraySize]};
-                    if (floatBuffer != nullptr) {
-                        directBuffer = env->NewDirectByteBuffer(floatBuffer, arrayBytes);
-                        if (directBuffer != nullptr) {
-                            ::std::int32_t i {};
-                            for (const auto &triangle : triangles) {
-                                const ::glm::vec4 &pointA {triangle.getA().x,
-                                                           triangle.getA().y,
-                                                           triangle.getA().z, 1.0F};
-                                const ::glm::vec4 &pointB {pointA.x + triangle.getAB().x,
-                                                           pointA.y + triangle.getAB().y,
-                                                           pointA.z + triangle.getAB().z, 1.0F};
-                                const ::glm::vec4 &pointC {pointA.x + triangle.getAC().x,
-                                                           pointA.y + triangle.getAC().y,
-                                                           pointA.z + triangle.getAC().z, 1.0F};
+                float *const floatBuffer {new float[arraySize]};
+                if (floatBuffer != nullptr) {
+                    directBuffer = env->NewDirectByteBuffer(floatBuffer, arrayBytes);
 
-                                floatBuffer[i++] = pointA.x;
-                                floatBuffer[i++] = pointA.y;
-                                floatBuffer[i++] = -pointA.z;
-                                floatBuffer[i++] = pointA.w;
+                    if (directBuffer != nullptr) {
+                        ::std::int32_t i {};
+                        for (const auto &triangle : triangles) {
+                            const ::glm::vec4 &pointA {triangle.getA().x,
+                                                       triangle.getA().y,
+                                                       triangle.getA().z, 1.0F};
+                            const ::glm::vec4 &pointB {pointA.x + triangle.getAB().x,
+                                                       pointA.y + triangle.getAB().y,
+                                                       pointA.z + triangle.getAB().z, 1.0F};
+                            const ::glm::vec4 &pointC {pointA.x + triangle.getAC().x,
+                                                       pointA.y + triangle.getAC().y,
+                                                       pointA.z + triangle.getAC().z, 1.0F};
 
-                                floatBuffer[i++] = pointB.x;
-                                floatBuffer[i++] = pointB.y;
-                                floatBuffer[i++] = -pointB.z;
-                                floatBuffer[i++] = pointB.w;
+                            floatBuffer[i++] = pointA.x;
+                            floatBuffer[i++] = pointA.y;
+                            floatBuffer[i++] = -pointA.z;
+                            floatBuffer[i++] = pointA.w;
 
-                                floatBuffer[i++] = pointC.x;
-                                floatBuffer[i++] = pointC.y;
-                                floatBuffer[i++] = -pointC.z;
-                                floatBuffer[i++] = pointC.w;
-                            }
+                            floatBuffer[i++] = pointB.x;
+                            floatBuffer[i++] = pointB.y;
+                            floatBuffer[i++] = -pointB.z;
+                            floatBuffer[i++] = pointB.w;
+
+                            floatBuffer[i++] = pointC.x;
+                            floatBuffer[i++] = pointC.y;
+                            floatBuffer[i++] = -pointC.z;
+                            floatBuffer[i++] = pointC.w;
                         }
                     }
+
                 }
             }
             env->ExceptionClear();
@@ -248,48 +249,48 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitColorsArray(
                 const auto &triangles {renderer_->shader_->getTriangles()};
                 const auto arraySize {static_cast<::std::uint32_t> (triangles.size() * 3 * 4)};
                 const auto arrayBytes {arraySize * static_cast<::std::int64_t> (sizeof(jfloat))};
-                if (arraySize > 0) {
-                    float *const floatBuffer {new float[arraySize]};
-                    if (floatBuffer != nullptr) {
-                        directBuffer = env->NewDirectByteBuffer(floatBuffer, arrayBytes);
-                        if (directBuffer != nullptr) {
-                            ::std::int32_t i {};
-                            for (const auto &triangle : triangles) {
-                                const auto materialIndex {triangle.getMaterialIndex()};
-                                auto material {::MobileRT::Material {}};
-                                if (materialIndex >= 0) {
-                                    material = renderer_->shader_->getMaterials()
-                                        [static_cast<::std::uint32_t> (materialIndex)];
-                                }
+                float *const floatBuffer {new float[arraySize]};
 
-                                const auto &kD {material.Kd_};
-                                const auto &kS {material.Ks_};
-                                const auto &kT {material.Kt_};
-                                const auto &lE {material.Le_};
-                                auto color {kD};
-
-                                color = ::glm::all(::glm::greaterThan(kS, color)) ? kS : color;
-                                color = ::glm::all(::glm::greaterThan(kT, color)) ? kT : color;
-                                color = ::glm::all(::glm::greaterThan(lE, color)) ? lE : color;
-
-                                floatBuffer[i++] = color.r;
-                                floatBuffer[i++] = color.g;
-                                floatBuffer[i++] = color.b;
-                                floatBuffer[i++] = 1.0F;
-
-                                floatBuffer[i++] = color.r;
-                                floatBuffer[i++] = color.g;
-                                floatBuffer[i++] = color.b;
-                                floatBuffer[i++] = 1.0F;
-
-                                floatBuffer[i++] = color.r;
-                                floatBuffer[i++] = color.g;
-                                floatBuffer[i++] = color.b;
-                                floatBuffer[i++] = 1.0F;
+                if (floatBuffer != nullptr) {
+                    directBuffer = env->NewDirectByteBuffer(floatBuffer, arrayBytes);
+                    if (directBuffer != nullptr) {
+                        ::std::int32_t i {};
+                        for (const auto &triangle : triangles) {
+                            const auto materialIndex {triangle.getMaterialIndex()};
+                            auto material {::MobileRT::Material {}};
+                            if (materialIndex >= 0) {
+                                material = renderer_->shader_->getMaterials()
+                                    [static_cast<::std::uint32_t> (materialIndex)];
                             }
+
+                            const auto &kD {material.Kd_};
+                            const auto &kS {material.Ks_};
+                            const auto &kT {material.Kt_};
+                            const auto &lE {material.Le_};
+                            auto color {kD};
+
+                            color = ::glm::all(::glm::greaterThan(kS, color)) ? kS : color;
+                            color = ::glm::all(::glm::greaterThan(kT, color)) ? kT : color;
+                            color = ::glm::all(::glm::greaterThan(lE, color)) ? lE : color;
+
+                            floatBuffer[i++] = color.r;
+                            floatBuffer[i++] = color.g;
+                            floatBuffer[i++] = color.b;
+                            floatBuffer[i++] = 1.0F;
+
+                            floatBuffer[i++] = color.r;
+                            floatBuffer[i++] = color.g;
+                            floatBuffer[i++] = color.b;
+                            floatBuffer[i++] = 1.0F;
+
+                            floatBuffer[i++] = color.r;
+                            floatBuffer[i++] = color.g;
+                            floatBuffer[i++] = color.b;
+                            floatBuffer[i++] = 1.0F;
                         }
                     }
                 }
+
             }
             env->ExceptionClear();
         }

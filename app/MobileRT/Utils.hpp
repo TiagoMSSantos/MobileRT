@@ -64,7 +64,7 @@ namespace MobileRT {
     template<::std::int32_t S, typename T>
     bool hasPositiveValue(const ::glm::vec<S, T> &value);
 
-    bool isValid(const float value);
+    bool isValid(float value);
 
     ::glm::vec2 normalize(const ::glm::vec2 &textureCoordinates);
 

@@ -8,7 +8,7 @@ BEGIN {
 	sum += $2;
 	temp = $2;
 	for (i = 0; i < numThreads[index_threads]; i++) {
-		if(temp < array[index_threads][i]) {
+		if (temp < array[index_threads][i]) {
 			aux = array[index_threads][i];
 			array[index_threads][i] = temp;
 			temp = aux;

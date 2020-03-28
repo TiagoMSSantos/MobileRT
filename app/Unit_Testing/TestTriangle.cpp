@@ -126,7 +126,7 @@ TEST_F(TestTriangle, TestConstructor) {
 	const auto normalC2 {::glm::normalize(normalC)};
 
     ASSERT_EQ(materialIndex, triangle4.getMaterialIndex());
-    for(int i {0}; i < ::MobileRT::NumberOfAxes; ++i) {
+    for (int i {0}; i < ::MobileRT::NumberOfAxes; ++i) {
         ASSERT_FLOAT_EQ(A[i], pointA[i]);
         ASSERT_FLOAT_EQ(B[i], pointB[i]);
         ASSERT_FLOAT_EQ(C[i], pointC[i]);
@@ -134,7 +134,7 @@ TEST_F(TestTriangle, TestConstructor) {
         ASSERT_FLOAT_EQ(normalB2[i], triangle4.getNormalB()[i]);
         ASSERT_FLOAT_EQ(normalC2[i], triangle4.getNormalC()[i]);
     }
-	for(int i {0}; i < 2; ++i) {
+	for (int i {0}; i < 2; ++i) {
 		ASSERT_FLOAT_EQ(texCoordsA[i], triangle4.getTexCoordA()[i]);
 		ASSERT_FLOAT_EQ(texCoordsB[i], triangle4.getTexCoordB()[i]);
 		ASSERT_FLOAT_EQ(texCoordsC[i], triangle4.getTexCoordC()[i]);

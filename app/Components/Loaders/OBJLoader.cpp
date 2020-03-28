@@ -193,7 +193,7 @@ bool OBJLoader::fillScene(Scene *const scene,
                         texCoordC = ::glm::vec2 {tx3, ty3};
 
                         const auto itTexture {textures.find(texPath)};
-                        if(itTexture == textures.cend()) {
+                        if (itTexture == textures.cend()) {
                             texture = Texture::createTexture(texturePath.c_str());
                             auto &&pair {::std::make_pair (texPath, ::std::move(texture))};
                             textures.emplace(::std::move(pair));
@@ -228,7 +228,7 @@ bool OBJLoader::fillScene(Scene *const scene,
                                 .withTexCoords(texCoordA, texCoordB, texCoordC)
                         };
 
-                        if(itFoundMat != scene->materials_.cend()) {
+                        if (itFoundMat != scene->materials_.cend()) {
                             const auto materialIndex {static_cast<::std::int32_t> (
                                 itFoundMat - scene->materials_.cbegin()
                             )};
@@ -258,7 +258,7 @@ bool OBJLoader::fillScene(Scene *const scene,
                         Triangle::Builder(vertex1, vertex2, vertex3)
                             .withNormals(normal1, normal2, normal3)
                     };
-                    if(itFoundMat != scene->materials_.cend()) {
+                    if (itFoundMat != scene->materials_.cend()) {
                         const auto materialIndex {static_cast<::std::int32_t> (
                             itFoundMat - scene->materials_.begin()
                         )};

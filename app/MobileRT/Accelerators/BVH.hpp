@@ -20,8 +20,6 @@ namespace MobileRT {
     template<typename T>
     class BVH final {
         private:
-            static const ::std::int32_t maxLeafSize {2};
-
             /**
              * An auxiliary node used for the construction of the BVH.
              * It is used to order all the AABBs by the position of the centroid.
@@ -166,6 +164,9 @@ namespace MobileRT {
             buildNodes.emplace_back(::std::move(node));
         }
 
+        const auto maxLeafSize {2};
+        const auto numBuckets {10};
+
         do {
             const auto &currentBox {this->boxes_.begin() + currentBoxIndex};
             const auto boxPrimitivesSize {endBoxIndex - beginBoxIndex};
@@ -188,7 +189,6 @@ namespace MobileRT {
 //                }
 //            );
 
-            const auto numBuckets {10};
             const auto step {maxDist / static_cast<float> (numBuckets)};
             const auto stepAxis {step[maxAxis]};
             const auto &startBox {surroundingBox.getPointMin()[maxAxis]};
@@ -198,7 +198,7 @@ namespace MobileRT {
                                  return node.centroid_[maxAxis] < bucket1;
                              }
             )};
-            for (::std::int32_t i = 2; i < numBuckets; ++i) {
+            for (::std::int32_t i {2}; i < numBuckets; ++i) {
                 const auto bucket {startBox + stepAxis * i};
                 itBucket = ::std::partition(itBucket, itEnd,
                         [&](const BuildNode &node) {
@@ -210,7 +210,7 @@ namespace MobileRT {
             currentBox->box_ = itBegin->box_;
             ::std::vector<AABB> boxes {currentBox->box_};
             boxes.reserve(static_cast<::std::uint32_t> (boxPrimitivesSize));
-            for (::std::int32_t i = beginBoxIndex + 1; i < endBoxIndex; ++i) {
+            for (::std::int32_t i {beginBoxIndex + 1}; i < endBoxIndex; ++i) {
                 const AABB &newBox {buildNodes[static_cast<::std::uint32_t> (i)].box_};
                 currentBox->box_ = ::MobileRT::surroundingBox(newBox, currentBox->box_);
                 boxes.emplace_back(newBox);
@@ -306,7 +306,7 @@ namespace MobileRT {
      */
     template<typename T>
     Intersection BVH<T>::intersect(Intersection intersection, const Ray &ray, const bool shadowTrace) {
-        if(this->primitives_.empty()) {
+        if (this->primitives_.empty()) {
             return intersection;
         }
         ::std::int32_t boxIndex {};

@@ -41,7 +41,7 @@ TEST_F(TestRay, TestConstructor) {
 
     ASSERT_EQ(depth, ray.depth_);
     ASSERT_EQ(primitive, ray.primitive_);
-    for(int i {0}; i < ::MobileRT::NumberOfAxes; ++i) {
+    for (int i {0}; i < ::MobileRT::NumberOfAxes; ++i) {
         ASSERT_FLOAT_EQ(direction[i], ray.direction_[i]);
         ASSERT_FLOAT_EQ(origin[i], ray.origin_[i]);
     }

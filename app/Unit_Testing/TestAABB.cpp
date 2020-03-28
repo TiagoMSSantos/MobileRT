@@ -35,7 +35,7 @@ TEST_F(TestAABB, TestConstructor) {
     const auto pointMax {::glm::vec3 {4.0F, 5.0F, 6.0F}};
     const AABB box (pointMin, pointMax);
 
-    for(int i {0}; i < ::MobileRT::NumberOfAxes; ++i) {
+    for (int i {0}; i < ::MobileRT::NumberOfAxes; ++i) {
         ASSERT_FLOAT_EQ(box.getPointMin()[i], pointMin[i]);
         ASSERT_FLOAT_EQ(box.getPointMax()[i], pointMax[i]);
     }

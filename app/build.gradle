@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 allprojects {
     tasks.withType(JavaCompile) {
         options.compilerArgs \
-            << '-Xlint:all' \
+            << '-Xlint:all' << '-Xlint:-classfile' \
             << '-AprintErrorStack' << '-AprintAllQualifiers' \
             << '-verbose' << '-Werror'
     }

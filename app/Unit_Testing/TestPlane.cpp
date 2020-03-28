@@ -35,7 +35,7 @@ TEST_F(TestPlane, TestConstructor) {
     const Plane plane2 {point, normal, materialIndex};
 
 	ASSERT_EQ(materialIndex, plane2.getMaterialIndex());
-	for(int i {0}; i < ::MobileRT::NumberOfAxes; ++i) {
+	for (int i {0}; i < ::MobileRT::NumberOfAxes; ++i) {
         ASSERT_FLOAT_EQ(point[i], plane2.getPoint()[i]);
         ASSERT_FLOAT_EQ(normal2[i], plane2.getNormal()[i]);
 	}
@@ -53,7 +53,7 @@ TEST_F(TestPlane, TestCopyConstructor) {
     const auto plane3 {plane2};
 
     ASSERT_EQ(materialIndex, plane3.getMaterialIndex());
-    for(int i {0}; i < ::MobileRT::NumberOfAxes; ++i) {
+    for (int i {0}; i < ::MobileRT::NumberOfAxes; ++i) {
         ASSERT_FLOAT_EQ(point[i], plane3.getPoint()[i]);
         ASSERT_FLOAT_EQ(normal2[i], plane3.getNormal()[i]);
     }
@@ -71,7 +71,7 @@ TEST_F(TestPlane, TestMoveConstructor) {
     const auto plane3 {::std::move(plane2)};
 
     ASSERT_EQ(materialIndex, plane3.getMaterialIndex());
-    for(int i {0}; i < ::MobileRT::NumberOfAxes; ++i) {
+    for (int i {0}; i < ::MobileRT::NumberOfAxes; ++i) {
         ASSERT_FLOAT_EQ(point[i], plane3.getPoint()[i]);
         ASSERT_FLOAT_EQ(normal2[i], plane3.getNormal()[i]);
     }
