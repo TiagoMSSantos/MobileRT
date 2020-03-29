@@ -13,6 +13,7 @@ float HaltonSeq::getSample(const ::std::uint32_t sample) {
         this->sample_.fetch_sub(1, ::std::memory_order_relaxed);
         return 1.0F;
     }
-    const auto res {::MobileRT::haltonSequence(current - (sample * this->domainSize_), 2)};
+    const auto index {current - (sample * this->domainSize_)};
+    const auto res {::MobileRT::haltonSequence(index, 2)};
     return res;
 }

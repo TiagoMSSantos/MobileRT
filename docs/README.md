@@ -27,6 +27,7 @@
 <img src="Example_Android.gif" alt="MobileRT: Android" width="400"/>
 <img src="Example_Linux.gif" alt="MobileRT: Linux" height="400"/>
 
+
 ## Run docker image
 This C++ Ray Tracer is compatible with Android and Linux. <br/>
 
@@ -49,7 +50,7 @@ docker build -t ptpuscas/mobile_rt -f docker_image/Dockerfile --no-cache=false -
 ## Compile Ray tracer
 It is also possible to clone this repository and compile this ray tracer by
 yourself.
-To compile it, it is essential to install cmake and have a C++ compiler.
+To compile it, it is essential to install cmake and have a C++11 compiler.
 It is also needed the [Qt4](https://www.qt.io/) library and the
 [git](https://git-scm.com/) control system to get the code from the repository.
 <br/>
@@ -98,78 +99,42 @@ u 0 1 0 #up vector of the camera x y z
 f 45 45 #field of view of the camera u v
 ```
 
-## TODO
 
-### Ray tracing engine
-- [x] Support load of textures
-- [ ] Support for textures with different materials
-- [x] Support acceleration structures
-- [x] Split Material from Primitive in order to save memory
-- [x] Make all acceleration structures as templates (to let compiler generate
-better optimized code)
-- [ ] Support ray packet intersections
-- [ ] Support acceleration structures with ray packet intersections
-- [ ] Support GPU ray tracing (to compare with CPU)
-- [x] Split naive acceleration structure from Scene
-- [ ] Support KD-Tree
-- [ ] Support acceleration structures compatible with the lights
-- [x] Support triangles with normals per vertex
-- [ ] Parallelize build of Regular Grid
-- [ ] Parallelize build of BVH
+## Code Coverage
+Here are the commands to generate the code coverage report:
+```bash
+find build_Debug_gcc/* -name *.gcda | xargs rm
+cd build_Debug_gcc
+cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=Debug ../app/
+make
+cd ..
+lcov -c -i -d . --no-external -o code_coverage_base.info
+./build_Debug_gcc/bin/UnitTestsd
+lcov -c -d . --no-external -o code_coverage_test.info
+lcov -a code_coverage_base.info -a code_coverage_test.info -o code_coverage.info
+lcov --remove code_coverage.info -o code_coverage.info '*third_party*' '*build*'
+genhtml code_coverage.info -o code_coverage_report --no-branch-coverage -t MobileRT_code_coverage
+bash <(curl -s https://codecov.io/bash)
+./test-reporter-latest-linux-amd64 format-coverage -t lcov code_coverage.info
+./test-reporter-latest-linux-amd64 upload-coverage
+```
 
-### Ray tracing shaders
-- [ ] Fix refractions
-- [ ] Fix Path Tracing algorithm
-- [ ] Improve shaders performance
-- [ ] Add Bidirectional Path Tracing
-- [ ] Add Metropolis light transport
-- [ ] Support shader for debug purposes (wireframe of shapes and boxes)
+## Code Duplication
+Here are the commands to generate the code duplication report:
+```bash
+jscpd -c .jscpd.json .
+```
 
-### Ray tracing JNI layer
-- [ ] Refactor DrawView translation unit
-- [ ] Improve DrawView code readability
-- [x] Fix race conditions
 
-### Android Interface
-- [x] Fix memory leak in Java UI
-- [x] Fix load of obj files in Android 10
-- [ ] Improve Java UI code to more Object Oriented
-- [ ] Change Android icon
-- [x] Remove usage of deprecated methods
-- [x] Add Android instrumented unit tests
-- [ ] Make Android instrumented tests run on debug and release
-- [ ] Make all Android instrumented tests pass without flakiness
-
-### Linux Interface
-- [x] Support Linux's UI with Qt
-- [x] Support options menu in GUI
-- [x] Support about menu in GUI
-- [x] Support for selection of OBJ files in GUI
-- [ ] Support selection of all ray tracer options in GUI
-
-### Building process
-- [x] Support compiler warnings for clang / g++ in CMake
-- [x] Support compiler warnings for Java
-- [x] Support warnings for Gradle
-- [x] Support rules with optimizations for proguard
-- [x] Support C++ compilation with optimization flags
-- [ ] Support CMake jobs to improve building time
-- [x] Support CMake to clone the third party repositories
-- [x] Support CMake to pull new versions of third party repositories
-- [x] Split the Android application in 3 layers:
-    - [x] MobileRT (ray tracing engine)
-    - [x] Rendering components (cameras, lights, loaders, samplers, shaders)
-    - [x] UI (Android through JNI, Linux through Qt)
-
-### Third party frameworks / libraries used
+## Third party frameworks / libraries used
 - [x] C++ [Boost libraries](https://www.boost.org/)
 - [x] C++ [OpenGL Mathematics](https://glm.g-truc.net/0.9.9/index.html)
 library
 - [x] C++ [tinyobjloader](https://github.com/tinyobjloader/tinyobjloader)
 library
-- [x] C [STB libraries](https://github.com/nothings/stb)
 - [x] C++ [Google Test](https://github.com/google/googletest) framework
 for unit tests
+- [x] C [STB libraries](https://github.com/nothings/stb)
 - [x] Java [Google Guava](https://github.com/google/guava) libraries
 - [x] Java [streams](https://github.com/stefan-zobel/streamsupport) to
 reduce complexity
@@ -185,66 +150,8 @@ unit tests
 - [x] Java Android [Espresso](https://developer.android.com/training/testing/espresso)
 library for instrumented tests
 
-### System
-- [x] Support doxygen documentation in the MobileRT
-- [ ] Support doxygen documentation in the Components
-- [ ] Support doxygen documentation in the JNI layer
-- [x] Support javadoc in the Android UI
-- [ ] Support unit tests (code coverage)
-- [x] Support git hooks to check git commit messages
-- [x] Support git hooks to submit Jenkins' jobs after each git push
-- [ ] Support to export rendered image to a file
-- [ ] Support to store rendered image to a database
-- [ ] Support to load image from a database
-- [ ] Support to continue rendering an image loaded from a database
-- [x] Support CI / CD from github (actions) for the unit tests
-- [x] Support for a tool to detect duplicated code (jscpd)
-- [ ] Remove MobileRT duplicated code
-- [ ] Remove Components duplicated code
-- [ ] Remove Android JNI duplicated code
-- [ ] Remove Android UI duplicated code
-- [ ] Remove Qt duplicated code
-- [ ] Remove Java tests duplicated code
-- [ ] Remove C++ tests duplicated code
-- [x] Support compiler exceptions to let the user know gracefully that the
-system does not have enough memory to render the scene
-- [ ] Optimize load of scenes from files
-- [x] Add message reasons to all assertions
-- [x] Load lights and cameras from files
-- [ ] Prepare more scene models
 
-### Docker
-- [x] Make a docker image with MobileRT
-- [x] Add an example model to the docker image
-- [ ] Make the ray tracer distribute the load across different engines
-- [ ] Use docker compose to launch multiple containers and distribute the load
+## Master's dissertation
+This work started as a [Masters' dissertation](Masters_dissertation.pdf) and became a pet project.
 
-### Documentation
-- [x] Support backlog in README
-- [x] Support code documentation
-- [x] Update gif image
-- [ ] Benchmark against popular ray tracers like PBRT
-- [ ] Benchmark against previous version of MobileRT
-
-### Code Coverage
-Here are the commands to generate the code coverage report:
-```bash
-find build_Debug/* -name *.gcda | xargs rm
-cd build_Debug
-cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=Debug ../app/
-make
-cd ..
-lcov -c -i -d . --no-external -o code_coverage_base.info
-./build_Debug/bin/UnitTestsd
-lcov -c -d . --no-external -o code_coverage_test.info
-lcov -a code_coverage_base.info -a code_coverage_test.info -o code_coverage.info
-lcov --remove code_coverage.info -o code_coverage.info '*third_party*' '*build*'
-genhtml code_coverage.info -o code_coverage_report --no-branch-coverage -t MobileRT_code_coverage
-bash <(curl -s https://codecov.io/bash) -t 717e75e2-b149-4997-adb4-a3fa1bde237f
-```
-
-### Code Duplication
-Here are the commands to generate the code duplication report:
-```bash
-jscpd -c .jscpd.json .
-```
+Click [here](TODO.md) to check the TODO list.

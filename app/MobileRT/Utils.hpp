@@ -218,7 +218,7 @@ namespace MobileRT {
              */
             template<typename T, typename... Args>
             ::std::unique_ptr<T> make_unique(Args &&... args) {
-                return ::std::make_unique(args);
+                return ::std::make_unique<T>(::std::forward<Args>(args)...);
             }
         #endif
     }//namespace std
