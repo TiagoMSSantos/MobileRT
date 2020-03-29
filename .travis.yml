@@ -13,7 +13,7 @@ before_install:
 install:
   - mkdir build_native
   - cd build_native
-  - cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_BUILD_TYPE=Debug ../app/
+  - cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=Debug ../app/
   - make
 
 script:

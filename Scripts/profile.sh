@@ -33,7 +33,8 @@ THIRDPARTY_HEADERS="${MOBILERT_PATH}/app/third_party"
 GLM_HEADERS="${THIRDPARTY_HEADERS}/glm"
 STB_HEADERS="${THIRDPARTY_HEADERS}/stb"
 BOOST_HEADERS_ROOT="${THIRDPARTY_HEADERS}/boost/libs/"
-BOOST_HEADERS="${BOOST_HEADERS_ROOT}/assert/include"
+BOOST_HEADERS="-isystem  ${BOOST_HEADERS_ROOT}/assert/include"
+BOOST_HEADERS="${BOOST_HEADERS} -isystem  ${BOOST_HEADERS_ROOT}/assert/include/boost"
 
 if [ -z "${PLOT_GRAPHS}" ]; then
   PLOT_GRAPHS="Plot_Graphs"
@@ -209,7 +210,7 @@ function clangtidy {
   -isystem ${THIRDPARTY_HEADERS} \
   -isystem ${GLM_HEADERS} \
   -isystem ${STB_HEADERS} \
-  -isystem ${BOOST_HEADERS} \
+  ${BOOST_HEADERS} \
   -isystem /usr/include/c++/7 \
   -isystem /usr/include/c++/v1 \
   -isystem /usr/include/x86_64-linux-gnu/c++/7 \

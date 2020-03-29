@@ -1,9 +1,9 @@
+# Set number of CMake jobs as the number of CPU logic cores available
 include( ProcessorCount )
 ProcessorCount( JOBS )
-set( JOBS 1 )
 
 
-# Clone repositories
+# Clone third party repositories
 execute_process( COMMAND git clone https://github.com/g-truc/glm --progress --jobs=${JOBS}
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} ERROR_QUIET )
 
@@ -20,7 +20,7 @@ execute_process( COMMAND git clone https://github.com/boostorg/boost --progress 
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} ERROR_QUIET )
 
 
-# Update repositories
+# Update third party repositories
 execute_process( COMMAND git checkout master --progress
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/glm )
 execute_process( COMMAND git pull --all --rebase --recurse-submodules --progress --jobs=${JOBS}
@@ -51,16 +51,18 @@ execute_process( COMMAND git pull --all --rebase --recurse-submodules --progress
 add_subdirectory( glm )
 add_subdirectory( tinyobjloader )
 add_subdirectory( googletest )
-
 target_include_directories( MobileRT SYSTEM PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/stb" )
 
 
 # Add boost dependencies
 set ( BOOST_PATH "${CMAKE_CURRENT_SOURCE_DIR}/boost/libs" )
 
-# core utility config type_traits algorithm
+# Update and add all C++ Boost modules used
 foreach( submodule assert )
   execute_process( COMMAND git submodule update --init ${BOOST_PATH}/${submodule}
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/boost )
   target_include_directories( MobileRT SYSTEM PUBLIC "${BOOST_PATH}/${submodule}/include" )
 endforeach( submodule )
+
+# Example of C++ Boost modules:
+# core utility config type_traits algorithm

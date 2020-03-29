@@ -1,0 +1,21 @@
+box: ubuntu
+
+build:
+  steps:
+    - script:
+        name: Install dependencies
+        code: |
+          sudo apt-get update && sudo apt-get install -y git cmake g++ libqt4-dev build-essential ca-certificates
+
+    - script:
+        name: Compile
+        code: |
+          mkdir build_native
+          cd build_native
+          cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=Debug ../app/
+          make
+
+    - script:
+        name: Run Unit Tests
+        code: |
+          ./build_native/bin/UnitTestsd

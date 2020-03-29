@@ -1,3 +1,4 @@
+# Add operating system interface source files
 if( DEFINED ANDROID_ABI )
 	file( GLOB_RECURSE MOBILE_DEPENDENT_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/Android_JNI/**.cpp" )
 else()
@@ -5,6 +6,7 @@ else()
 	file( GLOB_RECURSE MOBILE_DEPENDENT_SOURCES_QT "${CMAKE_CURRENT_SOURCE_DIR}/Linux/Qt/MobileRT/**.cpp" )
 endif()
 
+# Append Qt source files
 set( MOBILE_DEPENDENT_SOURCES
 "${MOBILE_DEPENDENT_SOURCES};${MOBILE_DEPENDENT_SOURCES_QT}"
 	 CACHE STRING "CUSTOM" FORCE )

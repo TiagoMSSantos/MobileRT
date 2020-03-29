@@ -1,0 +1,29 @@
+path_classifiers:
+  test:
+    - "**/Unit_Testing/*.cpp"
+  docs:
+    - ls
+
+queries:
+  - exclude:
+
+extraction:
+  cpp:
+    prepare:
+      packages:
+        - g++-7
+        - clang++-6.0
+        - libqt4-dev
+    after_prepare:
+      - ls
+    configure:
+      command:
+        - ls
+    before_index:
+      - ls
+    index:
+      build_command:
+        - mkdir build_native
+        - cd build_native
+        - cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_BUILD_TYPE=Debug ../app/
+        - make

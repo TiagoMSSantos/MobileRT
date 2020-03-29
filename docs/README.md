@@ -2,18 +2,27 @@
 - A portable Ray Tracing (RT) engine for multiple devices <br/>
 - Already available interfaces for Android and Linux <br/>
 
+[comment]: # (Licenses and documentation)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/LICENSE)
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FTiagoMSSantos%2FMobileRT.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FTiagoMSSantos%2FMobileRT?ref=badge_shield)
-[![BCH compliance](https://bettercodehub.com/edge/badge/TiagoMSSantos/MobileRT?branch=master)](https://bettercodehub.com/results/TiagoMSSantos/MobileRT)
+[![Known Vulnerabilities](https://snyk.io/test/github/TiagoMSSantos/MobileRT/badge.svg?targetFile=app/build.gradle)](https://snyk.io/test/github/TiagoMSSantos/MobileRT?targetFile=app/build.gradle)
 [![Documentation](https://codedocs.xyz/TiagoMSSantos/MobileRT.svg)](https://codedocs.xyz/TiagoMSSantos/MobileRT/)
+
+[comment]: # (Continuous Integration & Code coverage)
 ![Unit Tests](https://github.com/TiagoMSSantos/MobileRT/workflows/Unit%20Tests/badge.svg)
 [![Build Status](https://travis-ci.com/TiagoMSSantos/MobileRT.svg?branch=master)](https://travis-ci.com/TiagoMSSantos/MobileRT)
+[![wercker status](https://app.wercker.com/status/994563f62543ea9f808134989b2d49b1/s/master "wercker status")](https://app.wercker.com/project/byKey/994563f62543ea9f808134989b2d49b1)
 [![codecov](https://codecov.io/gh/TiagoMSSantos/MobileRT/branch/master/graph/badge.svg)](https://codecov.io/gh/TiagoMSSantos/MobileRT)
-[![Copy Paste Status](https://tiagomssantos.github.io/MobileRT/jscpd-report/jscpd-badge.svg)](https://tiagomssantos.github.io/MobileRT/jscpd-report/jscpd-report)
-[![Maintainability](https://api.codeclimate.com/v1/badges/6a80c282c888f405d779/maintainability)](https://codeclimate.com/github/TiagoMSSantos/MobileRT/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/6a80c282c888f405d779/test_coverage)](https://codeclimate.com/github/TiagoMSSantos/MobileRT/test_coverage)
+
+[comment]: # (Static analysis)
+[![BCH compliance](https://bettercodehub.com/edge/badge/TiagoMSSantos/MobileRT?branch=master)](https://bettercodehub.com/results/TiagoMSSantos/MobileRT)
+[![Code Inspector](https://www.code-inspector.com/project/5453/score/svg)](https://frontend.code-inspector.com/public/project/5453/MobileRT/dashboard)
+[![Code Inspector](https://www.code-inspector.com/project/5453/status/svg)](https://frontend.code-inspector.com/public/project/5453/MobileRT/dashboard)
+[![Maintainability](https://api.codeclimate.com/v1/badges/6a80c282c888f405d779/maintainability)](https://codeclimate.com/github/TiagoMSSantos/MobileRT/maintainability)
 [![codebeat badge](https://codebeat.co/badges/337fce91-f222-434d-b904-6206ea5e29f0)](https://codebeat.co/projects/github-com-tiagomssantos-mobilert-master)
-[![Known Vulnerabilities](https://snyk.io/test/github/TiagoMSSantos/MobileRT/badge.svg?targetFile=app/build.gradle)](https://snyk.io/test/github/TiagoMSSantos/MobileRT?targetFile=app/build.gradle)
+[![Copy Paste Status](https://tiagomssantos.github.io/MobileRT/jscpd-report/jscpd-badge.svg)](https://tiagomssantos.github.io/MobileRT/jscpd-report/jscpd-report)
+
 
 <img src="Example_Android.gif" alt="MobileRT: Android" width="400"/>
 <img src="Example_Linux.gif" alt="MobileRT: Linux" height="400"/>
