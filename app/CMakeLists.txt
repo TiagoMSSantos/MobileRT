@@ -89,6 +89,7 @@ set( COMMON_FLAGS "${COMMON_FLAGS}"
     -std=c++11 -pedantic-errors -pedantic -Wpedantic -Wall -Wextra -Wfatal-errors -Werror )
 set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-c++98-compat-pedantic -Wno-padded )
 set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-exit-time-destructors )
+set( COMMON_FLAGS "${COMMON_FLAGS}" -fopenmp )
 
 set( COMMON_FLAGS_TEST -ftest-coverage -fprofile-arcs )
 
@@ -154,7 +155,6 @@ target_compile_options( ${PROJECT_NAME} PRIVATE ${COMMON_FLAGS} -Wno-global-cons
 target_compile_options( ${PROJECT_NAME} PRIVATE $<$<CONFIG:DEBUG>:${COMMON_FLAGS_DEBUG}> )
 target_compile_options( ${PROJECT_NAME} PRIVATE $<$<CONFIG:DEBUG>:${COMMON_FLAGS_TEST}> )
 target_compile_options( ${PROJECT_NAME} PRIVATE $<$<CONFIG:RELEASE>:${COMMON_FLAGS_RELEASE}> )
-target_compile_options( ${PROJECT_NAME} PRIVATE $<$<NOT:$<BOOL:ANDROID_ABI MATCHES "^mips(64)?$" >>:-flto=full> )
 
 # Link with subprojects and third party libs
 target_link_libraries( ${PROJECT_NAME}

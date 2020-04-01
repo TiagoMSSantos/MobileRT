@@ -123,9 +123,9 @@ MTL="${OBJS_PATH}/CornellBox/water.mtl"
 CAM="${OBJS_PATH}/CornellBox/water.cam"
 
 
-OBJ="${OBJS_PATH}/conference/conference.obj"
-MTL="${OBJS_PATH}/conference/conference.mtl"
-CAM="${OBJS_PATH}/conference/conference.cam"
+OBJ="${OBJS_PATH}/teapot/teapot.obj"
+MTL="${OBJS_PATH}/teapot/teapot.mtl"
+CAM="${OBJS_PATH}/teapot/teapot.cam"
 
 
 export ASAN_OPTIONS="suppressions=sanitizer_ignore.suppr:verbosity=1:strict_string_checks=1:detect_stack_use_after_return=1:check_initialization_order=1:strict_init_order=1:halt_on_error=0:detect_odr_violation=1"

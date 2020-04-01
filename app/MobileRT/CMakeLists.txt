@@ -22,11 +22,11 @@ target_compile_options( ${PROJECT_NAME} PRIVATE $<$<CONFIG:DEBUG>:${COMMON_FLAGS
 target_compile_options( ${PROJECT_NAME} PRIVATE $<$<CONFIG:RELEASE>:${COMMON_FLAGS_RELEASE}> )
 
 if( DEFINED ANDROID_ABI )
-  # Link with JNI log for Android
-  target_link_libraries( ${PROJECT_NAME} PUBLIC log )
+  # Link with JNI log and static OpenMP for Android
+  target_link_libraries( ${PROJECT_NAME} PUBLIC log libomp.a )
 else()
-  # Link with pthread for Linux
-  target_link_libraries( ${PROJECT_NAME} PUBLIC pthread )
+  # Link with pthread and dynamic OpenMP for Linux
+  target_link_libraries( ${PROJECT_NAME} PUBLIC pthread -fopenmp )
 endif()
 
 # Link with third party libs

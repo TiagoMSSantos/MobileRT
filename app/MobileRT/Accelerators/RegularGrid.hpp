@@ -4,7 +4,8 @@
 #include "MobileRT/Accelerators/AABB.hpp"
 #include "MobileRT/Scene.hpp"
 #include <glm/glm.hpp>
-//#include <mutex>
+#include <mutex>
+#include <omp.h>
 #include <vector>
 
 namespace MobileRT {
@@ -153,12 +154,14 @@ namespace MobileRT {
         const auto dxReci {dx > 0 ? 1.0F / dx : 1.0F};
         const auto dyReci {dy > 0 ? 1.0F / dy : 1.0F};
         const auto dzReci {dz > 0 ? 1.0F / dz : 1.0F};
-        const auto numPrimitives {this->primitives_.size()};
-//        ::std::mutex mutex {};
+        const auto numPrimitives {static_cast<::std::uint32_t> (this->primitives_.size())};
+        ::std::vector<::std::mutex> mutexes (this->grid_.size());
+        const auto num_max_threads {omp_get_max_threads()};
+        LOG("num_max_threads = ", num_max_threads);
 
+        #pragma omp parallel for
         // store primitives in the grid cells
-//        #pragma omp parallel for num_threads(2)
-        for (::std::uint32_t index {0}; index < numPrimitives; ++index) {
+        for (::std::uint32_t index = 0; index < numPrimitives; ++index) {
             auto &primitive {this->primitives_[index]};
             const auto bound {primitive.getAABB()};
             const auto &bv1 {bound.getPointMin()};
@@ -204,7 +207,7 @@ namespace MobileRT {
                         // do an accurate aabb / primitive intersection test
                         const auto intersectedBox {primitive.intersect(cell)};
                         if (intersectedBox) {
-//                            ::std::lock_guard<std::mutex> lock {mutex};
+                            ::std::lock_guard<::std::mutex> lock {mutexes[idx]};
                             this->grid_[idx].emplace_back(&primitive);
 //                            LOG("add idx = ", idx, " index = ", index);
                         }

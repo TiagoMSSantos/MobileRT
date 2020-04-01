@@ -3,8 +3,13 @@
 ## Ray tracing engine
 - [ ] Support for textures with different materials
 - [x] Support acceleration structures
+- [x] Support OpenGL Mathematics for math library
+- [ ] Support Eigen for math library
+- [x] Support Google Test for unit tests
+- [x] Support Boost for assertions
+- [x] Support stb for textures
 - [x] Split Material from Primitive in order to save memory
-- [ ] Support GPU ray tracing (to compare with CPU)
+- [ ] Support GPU ray tracing
 - [x] Split naive acceleration structure from Scene
 - [ ] Support acceleration structures compatible with the lights
 
@@ -23,7 +28,7 @@
 - [x] Support Axis Aligned Bounding Box
 - [x] Support Naive
 - [x] Support Regular Grid
-    - [ ] Parallelize build
+    - [x] Parallelize build
 - [x] Support Bounding Volume Hierarchy
     - [ ] Parallelize build
     - [ ] Support ray packet intersections
@@ -102,6 +107,7 @@
 - [x] Support rules with optimizations for proguard
 - [x] Support C++ compilation with optimization flags (e.g.: -O3 -flto)
 - [x] Support C++ exceptions
+- [x] Support C++ OpenMP
 - [x] Support CMake jobs to improve building time
 - [x] Support CMake to clone the third party repositories
 - [x] Support CMake to pull new versions of third party repositories
