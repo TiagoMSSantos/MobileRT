@@ -1,35 +1,178 @@
 name: Unit Tests
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
-  build:
-
+  Debug_gcc:
+    name: Debug GCC
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v1
+    - name: Checkout
+      uses: actions/checkout@v2
+
     - name: Prepare Environment
       env:
-        CC: gcc
-        CXX: g++
-        QT_ACCESSIBILITY: 1
-      run: mkdir build_native
+        CC: "gcc"
+        CXX: "g++"
+      run: mkdir build_native;
+           chmod +x ./test-reporter-latest-linux-amd64
 
-    - name: Install Ubuntu Dependencies
-      run: sudo apt-get update && sudo apt-get install -y libqt4-dev
+    - name: Update Repository
+      run: sudo apt-get update
+
+    - name: Install Qt4
+      run: sudo apt-get install --no-install-recommends -y libqt4-dev
+
+    - name: Install Code Coverage Analysis
+      run: sudo apt-get install --no-install-recommends -y lcov
 
     - name: Run CMake
       if: success()
       working-directory: build_native
-      run: cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=Debug ../app/
+      run: time cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=Debug ../app/
 
     - name: Run Make
       if: success()
       working-directory: build_native
-      run: make
+      run: time make
+
+    - name: Generate Code Coverage base
+      if: success()
+      working-directory: .
+      run: lcov -c -i -d . --no-external -o code_coverage_base.info
 
     - name: Run Unit Tests
       if: success()
       working-directory: build_native/bin
-      run: ./UnitTestsd
+      run: time ./UnitTestsd
+
+    - name: Generate Code Coverage
+      if: success()
+      working-directory: .
+      run: lcov -c -d . --no-external -o code_coverage_test.info;
+           lcov -a code_coverage_base.info -a code_coverage_test.info -o code_coverage.info;
+           lcov --remove code_coverage.info -o code_coverage.info '*third_party*' '*build*';
+           genhtml code_coverage.info -o code_coverage_report --no-branch-coverage -t MobileRT_code_coverage;
+
+    - name: Send Code Climate report
+      if: success()
+      working-directory: .
+      env:
+        CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+      run: ./test-reporter-latest-linux-amd64 format-coverage -t lcov code_coverage.info;
+           ./test-reporter-latest-linux-amd64 upload-coverage
+
+    - name: Send codecov report
+      if: failure()
+      working-directory: .
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      run: bash <(curl -s https://codecov.io/bash)
+
+  Release_gcc:
+    name: Release GCC
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Prepare Environment
+        env:
+          CC: "gcc"
+          CXX: "g++"
+        run: mkdir build_native
+
+      - name: Update Repository
+        run: sudo apt-get update
+
+      - name: Install Qt4
+        run: sudo apt-get install --no-install-recommends -y libqt4-dev
+
+      - name: Run CMake
+        if: success()
+        working-directory: build_native
+        run: time cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=Release ../app/
+
+      - name: Run Make
+        if: success()
+        working-directory: build_native
+        run: time make
+
+      - name: Run Unit Tests
+        if: success()
+        working-directory: build_native/bin
+        run: time ./UnitTests
+
+
+  Debug_clang:
+    name: Debug Clang
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Prepare Environment
+        env:
+          CC: "clang"
+          CXX: "clang++"
+        run: mkdir build_native
+
+      - name: Update Repository
+        run: sudo apt-get update
+
+      - name: Install Qt4
+        run: sudo apt-get install --no-install-recommends -y libqt4-dev
+
+      - name: Run CMake
+        if: success()
+        working-directory: build_native
+        run: time cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_BUILD_TYPE=Debug ../app/
+
+      - name: Run Make
+        if: success()
+        working-directory: build_native
+        run: time make
+
+      - name: Run Unit Tests
+        if: success()
+        working-directory: build_native/bin
+        run: time ./UnitTestsd
+
+
+  Release_clang:
+    name: Release Clang
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Prepare Environment
+        env:
+          CC: "clang"
+          CXX: "clang++"
+        run: mkdir build_native
+
+      - name: Update Repository
+        run: sudo apt-get update
+
+      - name: Install Qt4
+        run: sudo apt-get install --no-install-recommends -y libqt4-dev
+
+      - name: Run CMake
+        if: success()
+        working-directory: build_native
+        run: time cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_BUILD_TYPE=Release ../app/
+
+      - name: Run Make
+        if: success()
+        working-directory: build_native
+        run: time make
+
+      - name: Run Unit Tests
+        if: success()
+        working-directory: build_native/bin
+        run: time ./UnitTests

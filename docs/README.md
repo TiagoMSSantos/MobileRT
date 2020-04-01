@@ -9,19 +9,16 @@
 [![Documentation](https://codedocs.xyz/TiagoMSSantos/MobileRT.svg)](https://codedocs.xyz/TiagoMSSantos/MobileRT/)
 
 [comment]: # (Continuous Integration & Code coverage)
-![Unit Tests](https://github.com/TiagoMSSantos/MobileRT/workflows/Unit%20Tests/badge.svg)
-[![Build Status](https://travis-ci.com/TiagoMSSantos/MobileRT.svg?branch=master)](https://travis-ci.com/TiagoMSSantos/MobileRT)
-[![wercker status](https://app.wercker.com/status/994563f62543ea9f808134989b2d49b1/s/master "wercker status")](https://app.wercker.com/project/byKey/994563f62543ea9f808134989b2d49b1)
+[![Unit Tests](https://github.com/TiagoMSSantos/MobileRT/workflows/Unit%20Tests/badge.svg)](https://github.com/TiagoMSSantos/MobileRT/actions)
 [![codecov](https://codecov.io/gh/TiagoMSSantos/MobileRT/branch/master/graph/badge.svg)](https://codecov.io/gh/TiagoMSSantos/MobileRT)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/6a80c282c888f405d779/test_coverage)](https://codeclimate.com/github/TiagoMSSantos/MobileRT/test_coverage)
 
 [comment]: # (Static analysis)
 [![BCH compliance](https://bettercodehub.com/edge/badge/TiagoMSSantos/MobileRT?branch=master)](https://bettercodehub.com/results/TiagoMSSantos/MobileRT)
-[![Code Inspector](https://www.code-inspector.com/project/5453/score/svg)](https://frontend.code-inspector.com/public/project/5453/MobileRT/dashboard)
-[![Code Inspector](https://www.code-inspector.com/project/5453/status/svg)](https://frontend.code-inspector.com/public/project/5453/MobileRT/dashboard)
 [![Maintainability](https://api.codeclimate.com/v1/badges/6a80c282c888f405d779/maintainability)](https://codeclimate.com/github/TiagoMSSantos/MobileRT/maintainability)
 [![codebeat badge](https://codebeat.co/badges/337fce91-f222-434d-b904-6206ea5e29f0)](https://codebeat.co/projects/github-com-tiagomssantos-mobilert-master)
 [![Copy Paste Status](https://tiagomssantos.github.io/MobileRT/jscpd-report/jscpd-badge.svg)](https://tiagomssantos.github.io/MobileRT/jscpd-report/jscpd-report)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/f05b1285e19a476d8e6c0da1273f5e18)](https://app.codacy.com/manual/TiagoMSSantos/MobileRT?utm_source=github.com&utm_medium=referral&utm_content=TiagoMSSantos/MobileRT&utm_campaign=Badge_Grade_Settings)
 
 
 <img src="Example_Android.gif" alt="MobileRT: Android" width="400"/>
@@ -100,38 +97,13 @@ f 45 45 #field of view of the camera u v
 ```
 
 
-## Code Coverage
-Here are the commands to generate the code coverage report:
-```bash
-find build_Debug_gcc/* -name *.gcda | xargs rm
-cd build_Debug_gcc
-cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=Debug ../app/
-make
-cd ..
-lcov -c -i -d . --no-external -o code_coverage_base.info
-./build_Debug_gcc/bin/UnitTestsd
-lcov -c -d . --no-external -o code_coverage_test.info
-lcov -a code_coverage_base.info -a code_coverage_test.info -o code_coverage.info
-lcov --remove code_coverage.info -o code_coverage.info '*third_party*' '*build*'
-genhtml code_coverage.info -o code_coverage_report --no-branch-coverage -t MobileRT_code_coverage
-bash <(curl -s https://codecov.io/bash)
-./test-reporter-latest-linux-amd64 format-coverage -t lcov code_coverage.info
-./test-reporter-latest-linux-amd64 upload-coverage
-```
-
-## Code Duplication
-Here are the commands to generate the code duplication report:
-```bash
-jscpd -c .jscpd.json .
-```
-
-
 ## Third party frameworks / libraries used
 - [x] C++ [Boost libraries](https://www.boost.org/)
 - [x] C++ [OpenGL Mathematics](https://glm.g-truc.net/0.9.9/index.html)
 library
 - [x] C++ [tinyobjloader](https://github.com/tinyobjloader/tinyobjloader)
 library
+- [x] C++ [Qt4](https://www.qt.io/) framework for Linux interface
 - [x] C++ [Google Test](https://github.com/google/googletest) framework
 for unit tests
 - [x] C [STB libraries](https://github.com/nothings/stb)
@@ -152,6 +124,7 @@ library for instrumented tests
 
 
 ## Master's dissertation
-This work started as a [Masters' dissertation](Masters_dissertation.pdf) and became a pet project.
+This project started as a [Masters' dissertation](Masters_dissertation.pdf).
 
-Click [here](TODO.md) to check the TODO list.
+Click [here](TODO.md) to check the TODO list. <br/>
+Click [here](TOOLS.md) to check the code coverage and code duplication commands. <br/>

@@ -34,19 +34,32 @@ android {
         setTestFunctionalTest false
         ndk {
             abiFilters 'x86', 'armeabi-v7a', 'x86_64', 'arm64-v8a'
+            setModuleName 'MobileRT'
         }
         externalNativeBuild {
             cmake {
-                arguments ['-DCMAKE_VERBOSE_MAKEFILE=ON']
+                arguments = [
+                        '-DCMAKE_VERBOSE_MAKEFILE=ON',
+                        '-DANDROID_TOOLCHAIN=clang',
+                        '-DANDROID_PLATFORM=android-29',
+                        '-DANDROID_STL=c++_static',
+                        '-DANDROID_ARM_NEON=TRUE',
+                        '-DANDROID_CPP_FEATURES=exceptions rtti'
+                ]
+                cppFlags = [
+                        '-flto=full'
+                ]
             }
         }
     }
     externalNativeBuild {
         cmake {
-            path 'CMakeLists.txt'
+            setPath 'CMakeLists.txt'
+            setVersion '3.6.0'
         }
     }
     compileOptions {
+        setDefaultJavaVersion JavaVersion.VERSION_1_8
         setTargetCompatibility JavaVersion.VERSION_1_8
         setSourceCompatibility JavaVersion.VERSION_1_8
     }
@@ -61,6 +74,9 @@ android {
             setMinifyEnabled false
             setSigningConfig signingConfigs.Puscas
             setShrinkResources false
+            ndk {
+                setcFlags '-O0 -flto=full'
+            }
         }
         release {
             setDebuggable false
@@ -73,6 +89,9 @@ android {
             setSigningConfig signingConfigs.Puscas
             setShrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            ndk {
+                setcFlags '-O3 -flto=full -DNDEBUG -ffunction-sections -fdata-sections'
+            }
         }
     }
     productFlavors {
@@ -86,7 +105,18 @@ android {
         unitTests {
             includeAndroidResources = true
         }
-        animationsDisabled = true
+        setAnimationsDisabled true
+    }
+    dexOptions {
+        setJavaMaxHeapSize '1mb'
+    }
+    lintOptions {
+        setAbortOnError true
+        setCheckAllWarnings true
+        setExplainIssues true
+        setNoLines true
+        setShowAll true
+        setWarningsAsErrors true
     }
 //    setTestBuildType 'release'
 }
@@ -100,14 +130,14 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'com.google.guava:guava:28.2-jre'
-    implementation 'net.sourceforge.streamsupport:streamsupport:1.7.1'
+    implementation 'net.sourceforge.streamsupport:streamsupport:1.7.2'
     implementation 'org.jetbrains:annotations:19.0.0'
-    implementation 'org.apache.commons:commons-lang3:3.9'
+    implementation 'org.apache.commons:commons-lang3:3.10'
     implementation 'org.apache.commons:commons-text:1.8'
 
     // For the tests
     implementation 'junit:junit:4.13'
-    implementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
+    implementation 'org.junit.jupiter:junit-jupiter-api:5.6.1'
     implementation 'org.assertj:assertj-core:3.15.0'
     implementation 'org.mockito:mockito-android:3.3.0'
     implementation 'org.mockito:mockito-core:3.3.0'

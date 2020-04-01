@@ -3,8 +3,15 @@
 ## Ray tracing engine
 - [ ] Support for textures with different materials
 - [x] Support acceleration structures
+- [x] Support OpenGL Mathematics for math library
+- [ ] Support Eigen for math library
+- [x] Support Google Test for unit tests
+- [x] Support Boost for assertions
+- [x] Support stb for textures
+- [ ] Support Google Benchmark
+- [ ] Support Microsoft Guidelines Support Library 
 - [x] Split Material from Primitive in order to save memory
-- [ ] Support GPU ray tracing (to compare with CPU)
+- [ ] Support GPU ray tracing
 - [x] Split naive acceleration structure from Scene
 - [ ] Support acceleration structures compatible with the lights
 
@@ -23,7 +30,7 @@
 - [x] Support Axis Aligned Bounding Box
 - [x] Support Naive
 - [x] Support Regular Grid
-    - [ ] Parallelize build
+    - [x] Parallelize build
 - [x] Support Bounding Volume Hierarchy
     - [ ] Parallelize build
     - [ ] Support ray packet intersections
@@ -96,12 +103,17 @@
 - [ ] Support selection of all ray tracer options in GUI
 
 ## Building process
+- [x] Compatible with C++11 compilers
+- [ ] Compatible with C++03 compilers
+- [x] Compatible with GCC
+- [x] Compatible with Clang
 - [x] Support compiler warnings for clang / g++ in CMake
 - [x] Support compiler warnings for Java
 - [x] Support warnings for Gradle
 - [x] Support rules with optimizations for proguard
-- [x] Support C++ compilation with optimization flags (e.g.: -O3 -flto)
+- [x] Support C++ compilation with optimization flags
 - [x] Support C++ exceptions
+- [x] Support C++ OpenMP
 - [x] Support CMake jobs to improve building time
 - [x] Support CMake to clone the third party repositories
 - [x] Support CMake to pull new versions of third party repositories
@@ -131,6 +143,10 @@
 - [x] Add message reasons to all assertions
 - [x] Load lights and cameras from files
 - [ ] Prepare more scene models
+- [x] Support Android interface
+- [x] Support Linux interface
+- [ ] Support web browser interface
+- [x] Support CI/CD pipeline
 
 ### Docker
 - [x] Make a docker image with MobileRT

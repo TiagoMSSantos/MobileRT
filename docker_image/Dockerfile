@@ -6,6 +6,7 @@ RUN apt-get update -y && \
     apt-get install -y --no-install-recommends \
     vim \
     libatomic1 \
+    libomp-8-dev \
     libqt4-dev
 #    build-essential \
 #    cmake \
@@ -37,6 +38,9 @@ ENV DISPLAY=":1" \
 #      ../app/ && \
 #    make && \
 #    find ./*/* -not -path bin -not -path lib ! -name AppMobileRT ! -name *.so -delete
+
+# Create volume
+VOLUME /tmp/.X11-unix
 
 # Execute
 WORKDIR /MobileRT/build_${build_type}

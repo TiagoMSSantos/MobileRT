@@ -168,41 +168,41 @@ namespace MobileRT {
         const auto numBuckets {10};
 
         do {
-            const auto &currentBox {this->boxes_.begin() + currentBoxIndex};
+            const auto currentBox {this->boxes_.begin() + currentBoxIndex};
             const auto boxPrimitivesSize {endBoxIndex - beginBoxIndex};
             const auto itBegin {buildNodes.begin() + beginBoxIndex};
 
             const auto itEnd {buildNodes.begin() + endBoxIndex};
             const auto surroundingBox {getSurroundingBox(itBegin, itEnd)};
             const auto maxDist {surroundingBox.getPointMax() - surroundingBox.getPointMin()};
-            const auto maxAxis {
-                    maxDist[0] >= maxDist[1] && maxDist[0] >= maxDist[2]
-                    ? 0
-                    : maxDist[1] >= maxDist[0] && maxDist[1] >= maxDist[2]
-                      ? 1
-                      : 2
+            const auto longestAxis {
+                maxDist[0] >= maxDist[1] && maxDist[0] >= maxDist[2]
+                ? 0
+                : maxDist[1] >= maxDist[0] && maxDist[1] >= maxDist[2]
+                  ? 1
+                  : 2
             };
 
 //            ::std::sort(itBegin, itEnd,
 //                [&](const BuildNode &node1, const BuildNode &node2) {
-//                    return node1.centroid_[maxAxis] < node2.centroid_[maxAxis];
+//                    return node1.centroid_[longestAxis] < node2.centroid_[longestAxis];
 //                }
 //            );
 
             const auto step {maxDist / static_cast<float> (numBuckets)};
-            const auto stepAxis {step[maxAxis]};
-            const auto &startBox {surroundingBox.getPointMin()[maxAxis]};
+            const auto stepAxis {step[longestAxis]};
+            const auto startBox {surroundingBox.getPointMin()[longestAxis]};
             const auto bucket1 {startBox + stepAxis};
             auto itBucket {::std::partition(itBegin, itEnd,
                              [&](const BuildNode &node) {
-                                 return node.centroid_[maxAxis] < bucket1;
+                                 return node.centroid_[longestAxis] < bucket1;
                              }
             )};
             for (::std::int32_t i {2}; i < numBuckets; ++i) {
                 const auto bucket {startBox + stepAxis * i};
                 itBucket = ::std::partition(::std::move(itBucket), itEnd,
                         [&](const BuildNode &node) {
-                            return node.centroid_[maxAxis] < bucket;
+                            return node.centroid_[longestAxis] < bucket;
                         }
                 );
             }
@@ -216,7 +216,8 @@ namespace MobileRT {
                 boxes.emplace_back(newBox);
             }
 
-            if (boxPrimitivesSize <= maxLeafSize) {
+            const auto isLeaf {boxPrimitivesSize <= maxLeafSize};
+            if (isLeaf) {
                 currentBox->indexOffset_ = beginBoxIndex;
                 currentBox->numPrimitives_ = boxPrimitivesSize;
 
