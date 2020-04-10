@@ -302,7 +302,7 @@ public final class MainActivityTest {
 
         testRenderButton(4);
         testRenderButton(20);
-        testRenderButton(200);
+//        testRenderButton(200);
 
         testPickerNumbers();
         testPreviewCheckBox();

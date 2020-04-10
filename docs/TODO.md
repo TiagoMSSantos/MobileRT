@@ -82,6 +82,7 @@
 - [x] Fix race conditions
 
 ## Android Interface
+- [x] Compatible with Android 4.1 (API 16)
 - [x] Support preview (rasterization of 1 frame)
 - [x] Support any OpenGL framerate
 - [x] Support reset button

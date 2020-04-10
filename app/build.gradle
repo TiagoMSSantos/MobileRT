@@ -39,15 +39,14 @@ android {
         externalNativeBuild {
             cmake {
                 arguments = [
-                        '-DCMAKE_VERBOSE_MAKEFILE=ON',
-                        '-DANDROID_TOOLCHAIN=clang',
-                        '-DANDROID_PLATFORM=android-29',
-                        '-DANDROID_STL=c++_static',
-                        '-DANDROID_ARM_NEON=TRUE',
-                        '-DANDROID_CPP_FEATURES=exceptions rtti'
+                    '-DCMAKE_VERBOSE_MAKEFILE=ON',
+                    '-DANDROID_TOOLCHAIN=clang',
+                    '-DANDROID_STL=c++_static',
+                    '-DANDROID_ARM_NEON=TRUE',
+                    '-DANDROID_CPP_FEATURES=exceptions rtti'
                 ]
                 cppFlags = [
-                        '-flto=full'
+                    '-flto=full'
                 ]
             }
         }
@@ -111,7 +110,7 @@ android {
         setJavaMaxHeapSize '1mb'
     }
     lintOptions {
-        setAbortOnError true
+        setAbortOnError false
         setCheckAllWarnings true
         setExplainIssues true
         setNoLines true

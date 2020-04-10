@@ -1,0 +1,83 @@
+name: Unit Tests Android
+
+on: [push, pull_request, release]
+
+jobs:
+  Build:
+    name: Debug & Release
+    runs-on: ubuntu-18.04
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Prepare Environment
+      if: success()
+      run: chmod +x ./gradlew
+
+    - name: Set up JDK 1.8
+      if: success()
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.8
+
+    - name: Build with Gradle
+      if: success()
+      run: ./gradlew build -Dorg.gradle.logging.level=quiet -Dorg.gradle.parallel=true
+
+    - name: Build Debug APK
+      if: success()
+      run: ./gradlew assembleDebug -Dorg.gradle.logging.level=info -Dorg.gradle.parallel=true
+
+    - name: Build Release APK
+      if: success()
+      run: ./gradlew assembleRelease -Dorg.gradle.logging.level=info -Dorg.gradle.parallel=true
+
+    - name: Upload Debug APK as artifact
+      if: success()
+      uses: actions/upload-artifact@v1
+      with:
+        name: MobileRT_debug_exp
+        path: ./app/build/outputs/apk/debug
+
+    - name: Upload Release APK as artifact
+      if: success()
+      uses: actions/upload-artifact@v1
+      with:
+        name: MobileRT_release_exp
+        path: ./app/build/outputs/apk/release
+
+    - name: Sign Android debug
+      if: success()
+      uses: r0adkll/sign-android-release@v1.0.1
+      with:
+        releaseDirectory: ./app/build/outputs/apk/debug
+        signingKeyBase64: ${{ secrets.SIGNING_KEY }}
+        alias: ${{ secrets.KEY_ALIAS }}
+        keyStorePassword: ${{ secrets.SIGNING_KEY }}
+        keyPassword: ${{ secrets.SIGNING_KEY }}
+
+    - name: Sign Android release
+      if: success()
+      uses: r0adkll/sign-android-release@v1.0.1
+      with:
+        releaseDirectory: ./app/build/outputs/apk/release
+        signingKeyBase64: ${{ secrets.SIGNING_KEY }}
+        alias: ${{ secrets.KEY_ALIAS }}
+        keyStorePassword: ${{ secrets.SIGNING_KEY }}
+        keyPassword: ${{ secrets.SIGNING_KEY }}
+
+    - name: Run Unit Tests Debug
+      if: success()
+      run: ./gradlew testDebugUnitTest -Dorg.gradle.logging.level=info -Dorg.gradle.parallel=true
+
+    - name: Run Unit Tests Release
+      if: success()
+      run: ./gradlew testReleaseUnitTest -Dorg.gradle.logging.level=info -Dorg.gradle.parallel=true
+
+    - name: Run Instrumented Tests in Emulator
+      if: success()
+      uses: ReactiveCircus/android-emulator-runner@v2
+      with:
+        api-level: 16
+        script: ./gradlew connectedAndroidTest -Dorg.gradle.logging.level=info -Dorg.gradle.parallel=true
