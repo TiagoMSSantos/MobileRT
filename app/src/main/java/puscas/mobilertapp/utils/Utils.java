@@ -42,4 +42,14 @@ public final class Utils {
         } while (running);
         LOGGER.info("waitExecutorToFinish finished");
     }
+
+    /**
+     * Helper method which prints the stack trace.
+     */
+    public static void printStackTrace() {
+        final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+        for (final StackTraceElement ste : stackTrace) {
+            LOGGER.severe(ste.toString());
+        }
+    }
 }

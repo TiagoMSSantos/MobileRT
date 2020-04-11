@@ -136,10 +136,10 @@ dependencies {
 
     // For the tests
     implementation 'junit:junit:4.13'
-    implementation 'org.junit.jupiter:junit-jupiter-api:5.6.1'
+    implementation 'org.junit.jupiter:junit-jupiter-api:5.6.2'
     implementation 'org.assertj:assertj-core:3.15.0'
-    implementation 'org.mockito:mockito-android:3.3.0'
-    implementation 'org.mockito:mockito-core:3.3.0'
+    implementation 'org.mockito:mockito-android:3.3.3'
+    implementation 'org.mockito:mockito-core:3.3.3'
     implementation 'com.google.truth:truth:1.0.1'
 
     implementation 'androidx.test:core:1.2.0'

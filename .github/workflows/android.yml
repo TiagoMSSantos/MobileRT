@@ -80,4 +80,18 @@ jobs:
       uses: ReactiveCircus/android-emulator-runner@v2
       with:
         api-level: 16
-        script: ./gradlew connectedAndroidTest -Dorg.gradle.logging.level=info -Dorg.gradle.parallel=true
+        script: ./gradlew connectedAndroidTest -Dorg.gradle.logging.level=info -Dorg.gradle.parallel=true > ./app/build/reports/log_tests.txt;
+                adb logcat -v threadtime -d *:V > ./app/build/reports/logcat.txt;
+                adb logcat -v threadtime -d *:V | grep `adb shell ps | egrep -i ".*puscas.*" | cut -c10-15` > ./app/build/reports/logcat2.txt;
+                cat ./app/build/reports/logcat.txt | egrep -i "proc.*:puscas" > ./app/build/reports/pids1.txt;
+                cat ./app/build/reports/logcat.txt | egrep -i "proc.*:puscas" | cut -d ":" -f 4 > ./app/build/reports/pids2.txt;
+                cat ./app/build/reports/logcat.txt | egrep -i "proc.*:puscas" | cut -d " " -f 11 | cut -d ":" -f 1 > ./app/build/reports/pids3.txt;
+                cat ./app/build/reports/logcat.txt | egrep -i "proc.*:puscas" | cut -d ":" -f 4 | cut -d " " -f 4 > ./app/build/reports/pids4.txt;
+#                cat ./app/build/reports/logcat.txt | grep -i `cat ./app/build/reports/logcat.txt | egrep -i "proc.*:puscas" | cut -d ":" -f 4 | cut -d " " -f 4` > ./app/build/reports/log_app.txt
+
+    - name: Upload reports
+      if: always()
+      uses: actions/upload-artifact@v1
+      with:
+        name: reports
+        path: ./app/build/reports

@@ -2,6 +2,8 @@ package puscas.mobilertapp.exceptions;
 
 import androidx.annotation.NonNull;
 
+import puscas.mobilertapp.utils.Utils;
+
 /**
  * An {@link Exception} which represents the system with a failure.
  */
@@ -17,6 +19,7 @@ public class FailureException extends RuntimeException {
      */
     public FailureException() {
         super();
+        Utils.printStackTrace();
     }
 
     /**
@@ -26,6 +29,7 @@ public class FailureException extends RuntimeException {
      */
     public FailureException(@NonNull final Throwable cause) {
         super(cause);
+        Utils.printStackTrace();
     }
 
     /**
@@ -35,5 +39,6 @@ public class FailureException extends RuntimeException {
      */
     public FailureException(@NonNull final String message) {
         super(message);
+        Utils.printStackTrace();
     }
 }

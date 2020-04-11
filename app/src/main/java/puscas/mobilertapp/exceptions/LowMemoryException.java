@@ -2,6 +2,8 @@ package puscas.mobilertapp.exceptions;
 
 import androidx.annotation.NonNull;
 
+import puscas.mobilertapp.utils.Utils;
+
 /**
  * An {@link Exception} which represents the system with low memory.
  */
@@ -17,6 +19,7 @@ public class LowMemoryException extends Exception {
      */
     public LowMemoryException() {
         super();
+        Utils.printStackTrace();
     }
 
     /**
@@ -26,6 +29,7 @@ public class LowMemoryException extends Exception {
      */
     public LowMemoryException(@NonNull final Throwable cause) {
         super(cause);
+        Utils.printStackTrace();
     }
 
     /**
@@ -35,5 +39,6 @@ public class LowMemoryException extends Exception {
      */
     public LowMemoryException(@NonNull final String message) {
         super(message);
+        Utils.printStackTrace();
     }
 }

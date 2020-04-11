@@ -68,6 +68,7 @@ void Shader::initializeAccelerators(Scene scene) {
         }
     }
     this->lights_ = ::std::move(scene.lights_);
+    LOG("accelerator = ", this->accelerator_);
     LOG("materials = ", this->materials_.size());
     LOG("lights = ", this->lights_.size());
 }

@@ -93,6 +93,7 @@ namespace MobileRT {
         },
         // precalculate size of a cell (for x, y, and z)
         cellSize_ {(worldBoundaries_.getPointMax() - worldBoundaries_.getPointMin()) * (1.0F / gridSize_)} {
+        LOG(typeid(T).name());
         const auto worldBoundsMin {this->worldBoundaries_.getPointMin()};
         const auto worldBoundsMax {this->worldBoundaries_.getPointMax()};
         LOG("scene min=(",

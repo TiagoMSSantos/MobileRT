@@ -55,7 +55,7 @@ namespace MobileRT {
     template<typename T>
     Naive<T>::Naive(::std::vector<T> &&primitives) :
         primitives_ {::std::move(primitives)} {
-
+        LOG(typeid(T).name());
     }
 
     /**

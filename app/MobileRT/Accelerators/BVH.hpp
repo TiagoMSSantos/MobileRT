@@ -100,6 +100,7 @@ namespace MobileRT {
      */
     template<typename T>
     BVH<T>::BVH(::std::vector<T> &&primitives) {
+        LOG(typeid(T).name());
         if (primitives.empty()) {
             BVHNode bvhNode {};
             this->boxes_.emplace_back(bvhNode);

@@ -427,7 +427,7 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
                 ::std::unique_ptr<::MobileRT::Shader> shader {};
                 ::std::unique_ptr<::MobileRT::Camera> camera {};
                 ::glm::vec3 maxDist {};
-                LOG("LOADING SCENE");
+                LOG("LOADING SCENE: ", sceneIndex);
                 switch (sceneIndex) {
                     case 0:
                         scene = cornellBox_Scene(::std::move(scene));
@@ -481,7 +481,9 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
                 samplerPixel = samplesPixel <= 1
                     ? ::std::unique_ptr<::MobileRT::Sampler> (::MobileRT::std::make_unique<Components::Constant> (0.5F))
                     : ::std::unique_ptr<::MobileRT::Sampler> (::MobileRT::std::make_unique<Components::StaticHaltonSeq> ());
-                LOG("LOADING SHADER");
+                LOG("LOADING SHADER: ", shaderIndex);
+                LOG("LOADING ACCELERATOR: ", ::MobileRT::Shader::Accelerator(acceleratorIndex));
+                LOG("samplesLight: ", samplesLight);
                 const auto start {::std::chrono::system_clock::now()};
                 switch (shaderIndex) {
                     case 1: {
@@ -550,6 +552,7 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
                 LOG("TRIANGLES = ", triangles);
                 LOG("LIGHTS = ", numLights_);
                 LOG("MATERIALS = ", materials);
+                LOG("TOTAL PRIMITIVES = ", nPrimitives);
                 return nPrimitives;
             }()};
 
@@ -619,6 +622,9 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
         jint nThreads,
         jboolean async
 ) {
+    LOG("rtRenderIntoBitmap");
+    LOG("nThreads = ", nThreads);
+    LOG("async = ", async);
     try {
         auto globalBitmap {static_cast<jobject> (env->NewGlobalRef(localBitmap))};
 

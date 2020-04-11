@@ -27,18 +27,19 @@ public final class Constants {
      * The path to the conference OBJ file which should exist.
      */
     public static final String OBJ_FILE_CONFERENCE =
-            OBJ_PATH + FILE_SEPARATOR + "conference" + FILE_SEPARATOR + "conference.obj";
+        OBJ_PATH + FILE_SEPARATOR + "conference" + FILE_SEPARATOR + "conference.obj";
 
     /**
      * The path to the teapot2 OBJ file which should not exist.
      */
     public static final String OBJ_FILE_NOT_EXISTS =
-            OBJ_PATH + FILE_SEPARATOR + "teapot" + FILE_SEPARATOR + "teapot2" +".obj";
+        OBJ_PATH + FILE_SEPARATOR + "teapot" + FILE_SEPARATOR + "teapot2" + ".obj";
 
     /**
      * The path to the teapot OBJ file which should exist.
      */
-    public static final String OBJ_FILE_TEAPOT = OBJ_PATH + FILE_SEPARATOR + "teapot" + FILE_SEPARATOR + "teapot.obj";
+    public static final String OBJ_FILE_TEAPOT =
+        OBJ_PATH + FILE_SEPARATOR + "teapot" + FILE_SEPARATOR + "teapot.obj";
 
     /**
      * An empty path which should not point to a file.
@@ -66,7 +67,8 @@ public final class Constants {
     public static final String PREVIEW = "Preview";
 
     /**
-     * The {@link Assertions} message used when checking the preview {@link android.widget.CheckBox} text message.
+     * The {@link Assertions} message used when checking the preview
+     * {@link android.widget.CheckBox} text message.
      */
     public static final String CHECK_BOX_MESSAGE = "Check box message";
 

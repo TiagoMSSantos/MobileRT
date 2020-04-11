@@ -24,6 +24,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.locks.Lock;
@@ -627,6 +628,9 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
             final @NotNull ByteBuffer bbCamera,
             final int numPrimitives
     ) throws LowMemoryException {
+        if (bbVertices.capacity() <= 0 || bbColors.capacity() <= 0 || bbCamera.capacity() <= 0 || numPrimitives <= 0) {
+            return this.bitmap;
+        }
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_STENCIL_BUFFER_BIT);
         checksGLError();
 
@@ -804,6 +808,8 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         checksGLError();
 
         final int vertexCount = bbVertices.capacity() / (floatSize << 2);
+        final String msg = String.format(Locale.US, "vertexCount: %d", vertexCount);
+        LOGGER.info(msg);
 
         checksFreeMemory(1, () -> { });
 
