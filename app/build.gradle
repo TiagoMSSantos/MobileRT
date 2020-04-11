@@ -5,7 +5,7 @@ allprojects {
         options.compilerArgs \
             << '-Xlint:all' << '-Xlint:-classfile' \
             << '-AprintErrorStack' << '-AprintAllQualifiers' \
-            << '-verbose' << '-Werror'
+            << '-verbose'
     }
 }
 

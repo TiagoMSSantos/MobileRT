@@ -11,6 +11,7 @@ import android.content.res.AssetManager;
 import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -178,7 +179,7 @@ public final class MainActivity extends Activity {
      *
      * @return The number of CPU cores.
      */
-    private int getNumOfCores() {
+    public int getNumOfCores() {
         return (Build.VERSION.SDK_INT < OLD_API_GET_CORES)
                 ? getNumCoresOldPhones()
                 : Runtime.getRuntime().availableProcessors();
@@ -246,12 +247,12 @@ public final class MainActivity extends Activity {
     private void checksStoragePermission() {
         final int permissionStorageCode = 1;
         final int permissionCheckRead = ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.READ_EXTERNAL_STORAGE
+            this,
+            Manifest.permission.READ_EXTERNAL_STORAGE
         );
         if (permissionCheckRead != PackageManager.PERMISSION_GRANTED) {
             final String[] permissions = {
-                    Manifest.permission.READ_EXTERNAL_STORAGE
+                Manifest.permission.READ_EXTERNAL_STORAGE
             };
             ActivityCompat.requestPermissions(this, permissions, permissionStorageCode);
         }
@@ -354,8 +355,10 @@ public final class MainActivity extends Activity {
     public String getSDCardPath() {
         LOGGER.info("Getting SD card path");
         final File[] dirs = ContextCompat.getExternalFilesDirs(getApplicationContext(), null);
-        final File externalStorageDirectory = dirs.length > 1? dirs[1] : dirs[0];
-        String sdCardPath = externalStorageDirectory.getAbsolutePath();
+        final Optional<File> externalStorageDirectory = Optional.ofNullable(dirs.length > 1? dirs[1] : dirs[0]);
+        String sdCardPath = externalStorageDirectory
+            .map(File::getAbsolutePath)
+            .orElse(Environment.getExternalStorageDirectory().getAbsolutePath());
         final int removeIndex = sdCardPath.indexOf("Android");
         if (removeIndex >= 1) {
             sdCardPath = sdCardPath.substring(0, removeIndex - 1);
@@ -535,13 +538,6 @@ public final class MainActivity extends Activity {
 
             this.pickerResolutions.setDisplayedValues(resolutions);
         });
-
-        ActivityCompat.requestPermissions(
-                this,
-                new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE},
-                0
-        );
-
         checksStoragePermission();
     }
 

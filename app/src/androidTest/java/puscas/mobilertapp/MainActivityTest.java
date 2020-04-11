@@ -19,6 +19,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
@@ -116,13 +117,27 @@ public final class MainActivityTest {
      * Helper method which tests the range of the {@link NumberPicker} in the UI.
      */
     private static void testPickerNumbers() {
-        IntStreams.rangeClosed(0, 2).forEach(value -> assertPickerValue(R.id.pickerAccelerator, value));
-        IntStreams.rangeClosed(1, 100).forEach(value -> assertPickerValue(R.id.pickerSamplesLight, value));
-        IntStreams.rangeClosed(0, 6).forEach(value -> assertPickerValue(R.id.pickerScene, value));
-        IntStreams.rangeClosed(0, 4).forEach(value -> assertPickerValue(R.id.pickerShader, value));
-        IntStreams.rangeClosed(1, 4).forEach(value -> assertPickerValue(R.id.pickerThreads, value));
-        IntStreams.rangeClosed(1, 10).forEach(value -> assertPickerValue(R.id.pickerSamplesPixel, value));
-        IntStreams.rangeClosed(1, 8).forEach(value -> assertPickerValue(R.id.pickerSize, value));
+        IntStreams.rangeClosed(0, 2).forEach(value ->
+            assertPickerValue("pickerAccelerator", R.id.pickerAccelerator, value)
+        );
+        IntStreams.rangeClosed(1, 100).forEach(value ->
+            assertPickerValue("pickerSamplesLight", R.id.pickerSamplesLight, value)
+        );
+        IntStreams.rangeClosed(0, 6).forEach(value ->
+            assertPickerValue("pickerScene", R.id.pickerScene, value)
+        );
+        IntStreams.rangeClosed(0, 4).forEach(value ->
+            assertPickerValue("pickerShader", R.id.pickerShader, value)
+        );
+        IntStreams.rangeClosed(1, 4).forEach(value ->
+            assertPickerValue("pickerThreads", R.id.pickerThreads, value)
+        );
+        IntStreams.rangeClosed(1, 10).forEach(value ->
+            assertPickerValue("pickerSamplesPixel", R.id.pickerSamplesPixel, value)
+        );
+        IntStreams.rangeClosed(1, 8).forEach(value ->
+            assertPickerValue("pickerSize", R.id.pickerSize, value)
+        );
     }
 
     /**
@@ -132,17 +147,18 @@ public final class MainActivityTest {
      */
     private void testRenderButton(final int repetitions) {
         if (repetitions <= 4) {
-            assertPickerValue(R.id.pickerSamplesPixel, 1);
-            assertPickerValue(R.id.pickerScene, 5);
+            assertPickerValue("pickerSamplesPixel", R.id.pickerSamplesPixel, 1);
+            assertPickerValue("pickerScene", R.id.pickerScene, 5);
         } else {
-            assertPickerValue(R.id.pickerSamplesPixel, 3);
-            assertPickerValue(R.id.pickerScene, 2);
+            assertPickerValue("pickerSamplesPixel", R.id.pickerSamplesPixel, 3);
+            assertPickerValue("pickerScene", R.id.pickerScene, 2);
         }
-        assertPickerValue(R.id.pickerThreads, 4);
-        assertPickerValue(R.id.pickerSize, 8);
-        assertPickerValue(R.id.pickerSamplesLight, 1);
-        assertPickerValue(R.id.pickerAccelerator, 2);
-        assertPickerValue(R.id.pickerShader, 2);
+        final int numOfCores = this.mainActivityActivityTestRule.getActivity().getNumOfCores();
+        assertPickerValue("pickerThreads", R.id.pickerThreads, numOfCores);
+        assertPickerValue("pickerSize", R.id.pickerSize, 8);
+        assertPickerValue("pickerSamplesLight", R.id.pickerSamplesLight, 1);
+        assertPickerValue("pickerAccelerator", R.id.pickerAccelerator, 2);
+        assertPickerValue("pickerShader", R.id.pickerShader, 2);
 
         final List<String> buttonTextList = ImmutableList.<String>builder().add(STOP, RENDER).build();
         IntStreams.range(0, buttonTextList.size() * repetitions).forEach(currentIndex -> {
@@ -160,13 +176,13 @@ public final class MainActivityTest {
             this.counterResolution++;
             final int finalCounterThreads = this.counterThreads % 4;
             this.counterThreads++;
-            assertPickerValue(R.id.pickerScene, Math.min(finalCounterScene, 3));
-            assertPickerValue(R.id.pickerAccelerator, Math.max(finalCounterAccelerator, 0));
-            assertPickerValue(R.id.pickerShader, Math.max(finalCounterShader, 0));
-            assertPickerValue(R.id.pickerSize, Math.max(finalCounterResolution, 6));
-            assertPickerValue(R.id.pickerSamplesPixel, Math.max(finalCounterSPP, 1));
-            assertPickerValue(R.id.pickerSamplesLight, Math.max(finalCounterSPL, 1));
-            assertPickerValue(R.id.pickerThreads, Math.max(finalCounterThreads, 1));
+            assertPickerValue("pickerScene", R.id.pickerScene, Math.min(finalCounterScene, 3));
+            assertPickerValue("pickerAccelerator", R.id.pickerAccelerator, Math.max(finalCounterAccelerator, 0));
+            assertPickerValue("pickerShader", R.id.pickerShader, Math.max(finalCounterShader, 0));
+            assertPickerValue("pickerSize", R.id.pickerSize, Math.max(finalCounterResolution, 6));
+            assertPickerValue("pickerSamplesPixel", R.id.pickerSamplesPixel, Math.max(finalCounterSPP, 1));
+            assertPickerValue("pickerSamplesLight", R.id.pickerSamplesLight, Math.max(finalCounterSPL, 1));
+            assertPickerValue("pickerThreads", R.id.pickerThreads, Math.max(finalCounterThreads, 1));
 
             final int expectedIndex = currentIndex % buttonTextList.size();
             final String expectedButtonText = buttonTextList.get(expectedIndex);
@@ -220,15 +236,19 @@ public final class MainActivityTest {
     /**
      * Helper method which changes the {@code value} of a {@link NumberPicker}.
      *
+     * @param pickerName    The name of the {@link NumberPicker}.
      * @param pickerId      The identifier of the {@link NumberPicker}.
      * @param expectedValue The new expectedValue for the {@link NumberPicker}.
      */
-    private static void assertPickerValue(final int pickerId, final int expectedValue) {
+    private static void assertPickerValue(final String pickerName,
+                                          final int pickerId,
+                                          final int expectedValue) {
         Espresso.onView(ViewMatchers.withId(pickerId))
             .perform(new MainActivityTest.ViewActionNumberPicker(expectedValue))
             .check((view, exception) -> {
                 final NumberPicker numberPicker = view.findViewById(pickerId);
-                Assertions.assertEquals(expectedValue, numberPicker.getValue(), "Number picker message");
+                Assertions.assertEquals(expectedValue, numberPicker.getValue(),
+                        "Number picker '" + pickerName + "' with wrong value");
             });
     }
 
@@ -251,6 +271,7 @@ public final class MainActivityTest {
     /**
      * Tests that a file in the Android device exists and is readable.
      */
+    @Ignore
     @Test
     public void testFilesExistAndReadable() {
         LOGGER.info("testFilesExist");
