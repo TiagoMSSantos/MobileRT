@@ -1,10 +1,10 @@
 package puscas.mobilertapp.utils;
 
-import androidx.annotation.NonNull;
-
 import org.jetbrains.annotations.Contract;
 
 import java.util.logging.Logger;
+
+import javax.annotation.Nonnull;
 
 import java8.util.J8Arrays;
 
@@ -80,7 +80,7 @@ public enum Scene {
     /**
      * Gets the names of all available scenes.
      */
-    @NonNull
+    @Nonnull
     public static String[] getNames() {
         LOGGER.info(GET_NAMES);
 

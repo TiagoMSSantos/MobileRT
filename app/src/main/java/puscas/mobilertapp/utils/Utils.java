@@ -1,12 +1,12 @@
 package puscas.mobilertapp.utils;
 
-import androidx.annotation.NonNull;
-
 import com.google.common.base.Strings;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
+
+import javax.annotation.Nonnull;
 
 /**
  * Utility class with some helper methods.
@@ -29,7 +29,7 @@ public final class Utils {
      *
      * @param executorService The {@link ExecutorService}.
      */
-    public static void waitExecutorToFinish(@NonNull final ExecutorService executorService) {
+    public static void waitExecutorToFinish(@Nonnull final ExecutorService executorService) {
         LOGGER.info("waitExecutorToFinish");
         boolean running = true;
         do {

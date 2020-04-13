@@ -1,6 +1,6 @@
 package puscas.mobilertapp.exceptions;
 
-import androidx.annotation.NonNull;
+import javax.annotation.Nonnull;
 
 import puscas.mobilertapp.utils.Utils;
 
@@ -27,7 +27,7 @@ public class LowMemoryException extends Exception {
      *
      * @param cause The {@link Throwable} to wrap with this exception.
      */
-    public LowMemoryException(@NonNull final Throwable cause) {
+    public LowMemoryException(@Nonnull final Throwable cause) {
         super(cause);
         Utils.printStackTrace();
     }
@@ -37,7 +37,7 @@ public class LowMemoryException extends Exception {
      *
      * @param message The cause of the exception.
      */
-    public LowMemoryException(@NonNull final String message) {
+    public LowMemoryException(@Nonnull final String message) {
         super(message);
         Utils.printStackTrace();
     }

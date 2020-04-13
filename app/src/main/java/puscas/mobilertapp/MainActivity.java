@@ -21,8 +21,6 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -36,9 +34,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+import java.util.Locale;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
@@ -180,9 +181,11 @@ public final class MainActivity extends Activity {
      * @return The number of CPU cores.
      */
     public int getNumOfCores() {
-        return (Build.VERSION.SDK_INT < OLD_API_GET_CORES)
-                ? getNumCoresOldPhones()
-                : Runtime.getRuntime().availableProcessors();
+        final int cores = (Build.VERSION.SDK_INT < OLD_API_GET_CORES)
+            ? getNumCoresOldPhones()
+            : Runtime.getRuntime().availableProcessors();
+        LOGGER.info(String.format(Locale.US, "Number of cores: %d", cores));
+        return cores;
     }
 
     /**
@@ -190,7 +193,7 @@ public final class MainActivity extends Activity {
      *
      * @param scenePath The path to a directory containing the OBJ and MTL files of a scene to render.
      */
-    private void startRender(@NonNull final String scenePath) {
+    private void startRender(@Nonnull final String scenePath) {
         final int scene = this.pickerScene.getValue();
         final int shader = this.pickerShader.getValue();
         final int accelerator = this.pickerAccelerator.getValue();
@@ -316,7 +319,7 @@ public final class MainActivity extends Activity {
      *
      * @param view The view of the {@link Activity}.
      */
-    public void startRender(@NonNull final View view) {
+    public void startRender(@Nonnull final View view) {
         LOGGER.info(START_RENDER);
 
         this.sceneFilePath = "";
@@ -351,7 +354,7 @@ public final class MainActivity extends Activity {
      *
      * @return The path to the SD card.
      */
-    @NonNull
+    @Nonnull
     public String getSDCardPath() {
         LOGGER.info("Getting SD card path");
         final File[] dirs = ContextCompat.getExternalFilesDirs(getApplicationContext(), null);
@@ -567,7 +570,7 @@ public final class MainActivity extends Activity {
     }
 
     @Override
-    protected void onRestoreInstanceState(@NonNull final Bundle savedInstanceState) {
+    protected void onRestoreInstanceState(@Nonnull final Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         LOGGER.info("onRestoreInstanceState");
 
@@ -591,7 +594,7 @@ public final class MainActivity extends Activity {
     }
 
     @Override
-    protected void onSaveInstanceState(@NonNull final Bundle outState) {
+    protected void onSaveInstanceState(@Nonnull final Bundle outState) {
         super.onSaveInstanceState(outState);
         LOGGER.info("onSaveInstanceState");
 
@@ -620,8 +623,8 @@ public final class MainActivity extends Activity {
 
     @Override
     public void onRequestPermissionsResult(final int requestCode,
-                                           @NonNull final String[] permissions,
-                                           @NonNull final int[] grantResults) {
+                                           @Nonnull final String[] permissions,
+                                           @Nonnull final int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         LOGGER.info("onRequestPermissionsResult");
     }

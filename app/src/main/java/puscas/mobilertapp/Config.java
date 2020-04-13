@@ -1,11 +1,10 @@
 package puscas.mobilertapp;
 
-import androidx.annotation.NonNull;
-
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.logging.Logger;
+
+import javax.annotation.Nonnull;
 
 /**
  * The configurator for the Ray Tracer engine.
@@ -67,17 +66,18 @@ public final class Config {
      *
      * @param builder The {@link Config.Builder} for this class.
      */
-    private Config(final @NotNull Config.Builder builder) {
-        this.scene = builder.scene;
-        this.shader = builder.shader;
-        this.accelerator = builder.accelerator;
-        this.width = builder.width;
-        this.height = builder.height;
-        this.samplesPixel = builder.samplesPixel;
-        this.samplesLight = builder.samplesLight;
-        this.objFilePath = builder.objFilePath;
-        this.matFilePath = builder.matFilePath;
-        this.camFilePath = builder.camFilePath;
+    @Contract(pure = true)
+    private Config(@Nonnull final Config.Builder builder) {
+        this.scene = builder.getScene();
+        this.shader = builder.getShader();
+        this.accelerator = builder.getAccelerator();
+        this.width = builder.getWidth();
+        this.height = builder.getHeight();
+        this.samplesPixel = builder.getSamplesPixel();
+        this.samplesLight = builder.getSamplesLight();
+        this.objFilePath = builder.getObjFilePath();
+        this.matFilePath = builder.getMatFilePath();
+        this.camFilePath = builder.getCamFilePath();
     }
 
 
@@ -142,6 +142,7 @@ public final class Config {
      * Gets the path to the OBJ file containing the geometry of the scene.
      */
     @Contract(pure = true)
+    @Nonnull
     public String getObjFilePath() {
         return this.objFilePath;
     }
@@ -150,6 +151,7 @@ public final class Config {
      * Gets the path to the MTL file containing the materials of the scene.
      */
     @Contract(pure = true)
+    @Nonnull
     public String getMatFilePath() {
         return this.matFilePath;
     }
@@ -158,6 +160,7 @@ public final class Config {
      * Gets the path to the CAM file containing the camera in the scene.
      */
     @Contract(pure = true)
+    @Nonnull
     public String getCamFilePath() {
         return this.camFilePath;
     }
@@ -229,7 +232,7 @@ public final class Config {
          * @return The builder with {@link Config.Builder#scene} already set.
          */
         @Contract("_ -> this")
-        @NonNull
+        @Nonnull
         Config.Builder withScene(final int scene) {
             LOGGER_BUILDER.info("withScene");
 
@@ -244,7 +247,7 @@ public final class Config {
          * @return The builder with {@link Config.Builder#height} already set.
          */
         @Contract("_ -> this")
-        @NonNull
+        @Nonnull
         Config.Builder withShader(final int shader) {
             LOGGER_BUILDER.info("withShader");
 
@@ -259,7 +262,7 @@ public final class Config {
          * @return The builder with {@link Config.Builder#samplesPixel} already set.
          */
         @Contract("_ -> this")
-        @NonNull
+        @Nonnull
         Config.Builder withAccelerator(final int accelerator) {
             LOGGER_BUILDER.info("withAccelerator");
 
@@ -274,7 +277,7 @@ public final class Config {
          * @return The builder with {@link Config.Builder#width} already set.
          */
         @Contract("_ -> this")
-        @NonNull
+        @Nonnull
         Config.Builder withWidth(final int width) {
             LOGGER_BUILDER.info("withWidth");
 
@@ -289,7 +292,7 @@ public final class Config {
          * @return The builder with {@link Config.Builder#height} already set.
          */
         @Contract("_ -> this")
-        @NonNull
+        @Nonnull
         Config.Builder withHeight(final int height) {
             LOGGER_BUILDER.info("withHeight");
 
@@ -304,7 +307,7 @@ public final class Config {
          * @return The builder with {@link Config.Builder#samplesPixel} already set.
          */
         @Contract("_ -> this")
-        @NonNull
+        @Nonnull
         Config.Builder withSamplesPixel(final int samplesPixel) {
             LOGGER_BUILDER.info("withSamplesPixel");
 
@@ -319,7 +322,7 @@ public final class Config {
          * @return The builder with {@link Config.Builder#samplesLight} already set.
          */
         @Contract("_ -> this")
-        @NonNull
+        @Nonnull
         Config.Builder withSamplesLight(final int samplesLight) {
             LOGGER_BUILDER.info("withSamplesLight");
 
@@ -334,8 +337,8 @@ public final class Config {
          * @return The builder with {@link Config.Builder#objFilePath} already set.
          */
         @Contract("_ -> this")
-        @NonNull
-        Config.Builder withOBJ(final String objFilePath) {
+        @Nonnull
+        Config.Builder withOBJ(@Nonnull final String objFilePath) {
             LOGGER_BUILDER.info("withOBJ");
 
             this.objFilePath = objFilePath;
@@ -349,8 +352,8 @@ public final class Config {
          * @return The builder with {@link Config.Builder#matFilePath} already set.
          */
         @Contract("_ -> this")
-        @NonNull
-        Config.Builder withMAT(final String matFilePath) {
+        @Nonnull
+        Config.Builder withMAT(@Nonnull final String matFilePath) {
             LOGGER_BUILDER.info("withMAT");
 
             this.matFilePath = matFilePath;
@@ -364,8 +367,8 @@ public final class Config {
          * @return The builder with {@link Config.Builder#camFilePath} already set.
          */
         @Contract("_ -> this")
-        @NonNull
-        Config.Builder withCAM(final String camFilePath) {
+        @Nonnull
+        Config.Builder withCAM(@Nonnull final String camFilePath) {
             LOGGER_BUILDER.info("withCAM");
 
             this.camFilePath = camFilePath;
@@ -378,11 +381,92 @@ public final class Config {
          * @return A new instance of {@link Config}.
          */
         @Contract(" -> new")
-        @NonNull
+        @Nonnull
         Config build() {
             LOGGER_BUILDER.info("build");
 
             return new Config(this);
+        }
+
+
+        /**
+         * Gets the scene index.
+         */
+        @Contract(pure = true)
+        int getScene() {
+            return this.scene;
+        }
+
+        /**
+         * Gets the shader index.
+         */
+        @Contract(pure = true)
+        int getShader() {
+            return this.shader;
+        }
+
+        /**
+         * Gets the accelerator index.
+         */
+        @Contract(pure = true)
+        int getAccelerator() {
+            return this.accelerator;
+        }
+
+        /**
+         * Gets the width of the {@link android.graphics.Bitmap}.
+         */
+        @Contract(pure = true)
+        int getWidth() {
+            return this.width;
+        }
+
+        /**
+         * Gets the height of the {@link android.graphics.Bitmap}.
+         */
+        @Contract(pure = true)
+        int getHeight() {
+            return this.height;
+        }
+
+        /**
+         * Gets the number of samples per pixel.
+         */
+        @Contract(pure = true)
+        int getSamplesPixel() {
+            return this.samplesPixel;
+        }
+
+        /**
+         * Gets the number of samples per light.
+         */
+        @Contract(pure = true)
+        int getSamplesLight() {
+            return this.samplesLight;
+        }
+
+        /**
+         * Gets the path to the OBJ file.
+         */
+        @Contract(pure = true)
+        String getObjFilePath() {
+            return this.objFilePath;
+        }
+
+        /**
+         * Gets the path to the MTL file.
+         */
+        @Contract(pure = true)
+        String getMatFilePath() {
+            return this.matFilePath;
+        }
+
+        /**
+         * Gets the path to the CAM file.
+         */
+        @Contract(pure = true)
+        String getCamFilePath() {
+            return this.camFilePath;
         }
     }
 }

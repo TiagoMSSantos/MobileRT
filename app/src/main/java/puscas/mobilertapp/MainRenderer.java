@@ -12,13 +12,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -31,6 +28,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
 
+import javax.annotation.Nonnull;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
@@ -603,7 +601,8 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * @param numPrimitives The number of prmitives in the scene.
      * @return The size, in MegaBytes, of the scene.
      */
-    @Contract(pure = true) private static int calculateSceneSize(final int numPrimitives) {
+    @Contract(pure = true)
+    private static int calculateSceneSize(final int numPrimitives) {
         final int floatSize = Float.SIZE / Byte.SIZE;
         final int triangleMembers = floatSize * 9;
         final int triangleMethods = 8 * 11;
@@ -623,9 +622,9 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * @throws LowMemoryException This {@link Exception} is thrown if the Android device has low free memory.
      */
     private Bitmap copyFrame(
-            final @NotNull ByteBuffer bbVertices,
-            final @NotNull ByteBuffer bbColors,
-            final @NotNull ByteBuffer bbCamera,
+            @Nonnull final ByteBuffer bbVertices,
+            @Nonnull final ByteBuffer bbColors,
+            @Nonnull final ByteBuffer bbCamera,
             final int numPrimitives
     ) throws LowMemoryException {
         if (bbVertices.capacity() <= 0 || bbColors.capacity() <= 0 || bbCamera.capacity() <= 0 || numPrimitives <= 0) {
@@ -947,7 +946,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
     }
 
     @Override
-    public void onDrawFrame(@NonNull final GL10 gl) {
+    public void onDrawFrame(@Nonnull final GL10 gl) {
         if (this.firstFrame) {
             this.firstFrame = false;
             LOGGER.info("onDrawFrame");
@@ -976,7 +975,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
     }
 
     @Override
-    public void onSurfaceChanged(@NonNull final GL10 gl, final int width, final int height) {
+    public void onSurfaceChanged(@Nonnull final GL10 gl, final int width, final int height) {
         LOGGER.info("onSurfaceChanged");
 
         GLES20.glViewport(0, 0, width, height);
@@ -987,7 +986,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
     }
 
     @Override
-    public void onSurfaceCreated(@NonNull final GL10 gl, @NonNull final EGLConfig config) {
+    public void onSurfaceCreated(@Nonnull final GL10 gl, @Nonnull final EGLConfig config) {
         LOGGER.info("onSurfaceCreated");
 
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_STENCIL_BUFFER_BIT);

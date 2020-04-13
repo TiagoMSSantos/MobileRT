@@ -1,6 +1,6 @@
 package puscas.mobilertapp.exceptions;
 
-import androidx.annotation.NonNull;
+import javax.annotation.Nonnull;
 
 import puscas.mobilertapp.utils.Utils;
 
@@ -27,7 +27,7 @@ public class FailureException extends RuntimeException {
      *
      * @param cause The {@link Throwable} to wrap with this exception.
      */
-    public FailureException(@NonNull final Throwable cause) {
+    public FailureException(@Nonnull final Throwable cause) {
         super(cause);
         Utils.printStackTrace();
     }
@@ -37,7 +37,7 @@ public class FailureException extends RuntimeException {
      *
      * @param message The cause of the exception.
      */
-    public FailureException(@NonNull final String message) {
+    public FailureException(@Nonnull final String message) {
         super(message);
         Utils.printStackTrace();
     }

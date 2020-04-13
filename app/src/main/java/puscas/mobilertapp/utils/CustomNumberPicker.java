@@ -8,9 +8,9 @@ import android.view.ViewGroup;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-
 import java.util.logging.Logger;
+
+import javax.annotation.Nonnull;
 
 import static puscas.mobilertapp.utils.ConstantsUI.COLOR_NUMBER_PICKER;
 import static puscas.mobilertapp.utils.ConstantsUI.TEXT_SIZE;
@@ -32,12 +32,12 @@ public final class CustomNumberPicker extends NumberPicker {
      * @param context The {@link Context} of the Android system.
      * @param attrs   The {@link AttributeSet} of the Android system.
      */
-    public CustomNumberPicker(@NonNull final Context context, @NonNull final AttributeSet attrs) {
+    public CustomNumberPicker(@Nonnull final Context context, @Nonnull final AttributeSet attrs) {
         super(context, attrs);
     }
 
     @Override
-    public void addView(@NonNull final View child, @NonNull final ViewGroup.LayoutParams params) {
+    public void addView(@Nonnull final View child, @Nonnull final ViewGroup.LayoutParams params) {
         super.addView(child, params);
         LOGGER.info("addView");
 

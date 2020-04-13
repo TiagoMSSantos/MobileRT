@@ -37,6 +37,7 @@ public enum State {
      *
      * @param id The current state of the Ray Tracer engine.
      */
+    @Contract(pure = true)
     State(final int id) {
         this.id = id;
     }
@@ -44,7 +45,8 @@ public enum State {
     /**
      * Gets the current State of the Ray Tracer engine.
      */
-    @Contract(pure = true) public int getId() {
+    @Contract(pure = true)
+    public int getId() {
         return this.id;
     }
 }

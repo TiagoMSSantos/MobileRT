@@ -1,10 +1,10 @@
 package puscas.mobilertapp.utils;
 
-import androidx.annotation.NonNull;
-
 import org.jetbrains.annotations.Contract;
 
 import java.util.logging.Logger;
+
+import javax.annotation.Nonnull;
 
 import java8.util.J8Arrays;
 
@@ -50,6 +50,8 @@ public enum Accelerator {
      *
      * @param name The name of the acceleration structure for the Ray Tracer engine.
      */
+    @Contract(pure = true)
+    @Nonnull
     Accelerator(final String name) {
         this.name = name;
     }
@@ -57,8 +59,8 @@ public enum Accelerator {
     /**
      * Gets the name of the accelerator for the Ray Tracer engine.
      */
-    @NonNull
     @Contract(pure = true)
+    @Nonnull
     public String getName() {
         return this.name;
     }
@@ -66,8 +68,8 @@ public enum Accelerator {
     /**
      * Gets the names of all available accelerators.
      */
-    @NonNull
     @Contract(pure = true)
+    @Nonnull
     public static String[] getNames() {
         LOGGER.info(GET_NAMES);
 

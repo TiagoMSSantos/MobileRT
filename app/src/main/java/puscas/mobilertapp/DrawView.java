@@ -10,12 +10,9 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-
 import com.google.common.base.Strings;
 
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -24,6 +21,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
+
+import javax.annotation.Nonnull;
 
 import java8.util.Optional;
 import puscas.mobilertapp.exceptions.LowMemoryException;
@@ -74,7 +73,7 @@ public final class DrawView extends GLSurfaceView {
      *
      * @param context The context of the Android system.
      */
-    public DrawView(@NonNull final Context context) {
+    public DrawView(@Nonnull final Context context) {
         super(context);
 
         this.renderer.prepareRenderer(this::requestRender);
@@ -87,7 +86,7 @@ public final class DrawView extends GLSurfaceView {
      * @param context The context of the Android system.
      * @param attrs   The attributes of the Android system.
      */
-    public DrawView(@NonNull final Context context, @NonNull final AttributeSet attrs) {
+    public DrawView(@Nonnull final Context context, @Nonnull final AttributeSet attrs) {
         super(context, attrs);
 
         this.renderer.prepareRenderer(this::requestRender);
@@ -172,7 +171,7 @@ public final class DrawView extends GLSurfaceView {
      * @param rasterize  Whether should show a preview (rasterize one frame) or not.
      */
     public void renderScene(
-            final Config config,
+            @Nonnull final  Config config,
             final int numThreads,
             final boolean rasterize) {
         LOGGER.info(RENDER_SCENE);
@@ -249,7 +248,7 @@ public final class DrawView extends GLSurfaceView {
      * @param exception    The exception caught.
      * @param errorMessage The error message.
      */
-    private void warningError(final @NotNull Exception exception, final CharSequence errorMessage) {
+    private void warningError(@Nonnull final Exception exception, final CharSequence errorMessage) {
         this.renderer.resetStats(-1, -1, -1, -1, -1);
         LOGGER.severe(exception.getClass() + ":" + exception.getMessage());
         post(() -> Toast.makeText(getContext(), errorMessage, Toast.LENGTH_LONG).show());

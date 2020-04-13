@@ -10,7 +10,7 @@
 
 [comment]: # (Continuous Integration & Code coverage)
 [![Unit Tests RT](https://github.com/TiagoMSSantos/MobileRT/workflows/Unit%20Tests%20RT/badge.svg)](https://github.com/TiagoMSSantos/MobileRT/actions)
-[![Unit Tests Android](https://github.com/TiagoMSSantos/MobileRT/workflows/Unit%20Tests%20Android/badge.svg)](https://github.com/TiagoMSSantos/MobileRT/actions)
+[![Tests Android](https://github.com/TiagoMSSantos/MobileRT/workflows/Tests%20Android/badge.svg)](https://github.com/TiagoMSSantos/MobileRT/actions)
 [![codecov](https://codecov.io/gh/TiagoMSSantos/MobileRT/branch/master/graph/badge.svg)](https://codecov.io/gh/TiagoMSSantos/MobileRT)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/6a80c282c888f405d779/test_coverage)](https://codeclimate.com/github/TiagoMSSantos/MobileRT/test_coverage)
 
