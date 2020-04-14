@@ -23,7 +23,7 @@ jobs:
 
     - name: Build with Gradle
       if: success()
-      run: ./gradlew build -Dorg.gradle.logging.level=quiet -Dorg.gradle.parallel=true
+      run: ./gradlew build -Dorg.gradle.logging.level=quiet -Dorg.gradle.parallel=true -Dorg.gradle.parallel.threads=4 -Dorg.gradle.daemon=true -Dorg.gradle.configureondemand=true -Dorg.gradle.caching=true -Dandroid.enableBuildCache=true --quiet
 
     - name: Build Debug APK
       if: success()
@@ -75,7 +75,7 @@ jobs:
       if: success()
       run: ./gradlew testReleaseUnitTest -Dorg.gradle.logging.level=info -Dorg.gradle.parallel=true
 
-    - name: Run Instrumented Tests in Emulator
+    - name: Run Instrumented Tests Debug in Emulator
       if: success()
       uses: ReactiveCircus/android-emulator-runner@v2
       with:

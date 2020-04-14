@@ -3,9 +3,20 @@ name: Unit Tests RT
 on: [push, pull_request, release]
 
 jobs:
-  Code_coverage:
-    name: Code Coverage
-    runs-on: ubuntu-18.04
+  Unit_Tests:
+    strategy:
+      matrix:
+        compiler: [g++, clang++]
+        type: [Debug, Release]
+        os: [ubuntu-18.04]
+        include:
+          - type: Debug
+            unit_tests_bin: UnitTestsd
+          - type: Release
+            unit_tests_bin: UnitTests
+
+    name: ${{ matrix.type }} ${{ matrix.compiler }}
+    runs-on: ${{ matrix.os }}
 
     steps:
     - name: Checkout
@@ -25,13 +36,13 @@ jobs:
       run: sudo apt-get install --no-install-recommends -y libqt4-dev
 
     - name: Install Code Coverage Analysis
-      if: success()
+      if: success() && matrix.compiler == 'g++' && matrix.type == 'Debug'
       run: sudo apt-get install --no-install-recommends -y lcov
 
     - name: Run CMake
       if: success()
       working-directory: build_native
-      run: cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=Debug ../app/
+      run: cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_CXX_COMPILER=${{ matrix.compiler }} -DCMAKE_BUILD_TYPE=${{ matrix.type }} ../app/
 
     - name: Run Make
       if: success()
@@ -39,17 +50,17 @@ jobs:
       run: make
 
     - name: Generate Code Coverage base
-      if: success()
+      if: success() && matrix.compiler == 'g++' && matrix.type == 'Debug'
       working-directory: .
       run: lcov -c -i -d . --no-external -o code_coverage_base.info
 
     - name: Run Unit Tests
       if: success()
       working-directory: build_native/bin
-      run: ./UnitTestsd
+      run: ./${{ matrix.unit_tests_bin }}
 
     - name: Generate Code Coverage
-      if: success()
+      if: success() && matrix.compiler == 'g++' && matrix.type == 'Debug'
       working-directory: .
       run: lcov -c -d . --no-external -o code_coverage_test.info;
            lcov -a code_coverage_base.info -a code_coverage_test.info -o code_coverage.info;
@@ -57,7 +68,7 @@ jobs:
            genhtml code_coverage.info -o code_coverage_report --no-branch-coverage -t MobileRT_code_coverage;
 
     - name: Send Code Climate report
-      if: success()
+      if: success() && matrix.compiler == 'g++' && matrix.type == 'Debug'
       working-directory: .
       env:
         CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
@@ -65,55 +76,8 @@ jobs:
            ./test-reporter-latest-linux-amd64 upload-coverage
 
     - name: Send codecov report
-      if: failure()
+      if: failure() && matrix.compiler == 'g++' && matrix.type == 'Debug'
       working-directory: .
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       run: bash <(curl -s https://codecov.io/bash)
-
-
-  Unit_Tests:
-    strategy:
-      matrix:
-        compiler: [g++, clang++]
-        type: [Debug, Release]
-        os: [ubuntu-18.04]
-        include:
-          - type: Debug
-            unit_tests_bin: UnitTestsd
-          - type: Release
-            unit_tests_bin: UnitTests
-
-    name: ${{ matrix.type }} ${{ matrix.compiler }}
-    runs-on: ${{ matrix.os }}
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Prepare Environment
-        if: success()
-        run: mkdir build_native
-
-      - name: Update Repository
-        if: success()
-        run: sudo apt-get update
-
-      - name: Install Qt4
-        if: success()
-        run: sudo apt-get install --no-install-recommends -y libqt4-dev
-
-      - name: Run CMake
-        if: success()
-        working-directory: build_native
-        run: cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_CXX_COMPILER=${{ matrix.compiler }} -DCMAKE_BUILD_TYPE=${{ matrix.type }} ../app/
-
-      - name: Run Make
-        if: success()
-        working-directory: build_native
-        run: make
-
-      - name: Run Unit Tests
-        if: success()
-        working-directory: build_native/bin
-        run: ./${{ matrix.unit_tests_bin }}

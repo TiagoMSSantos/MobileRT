@@ -99,6 +99,7 @@ android {
         exclude 'META-INF/LICENSE.md'
         exclude 'META-INF/LICENSE-notice.md'
         exclude 'META-INF/licenses/ASM'
+        exclude '**/module-info.class'
     }
     testOptions {
         unitTests {
@@ -128,7 +129,7 @@ configurations {
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.multidex:multidex:2.0.1'
-    implementation 'com.google.guava:guava:28.2-jre'
+    implementation 'com.google.guava:guava:29.0-jre'
     implementation 'net.sourceforge.streamsupport:streamsupport:1.7.2'
     implementation 'org.jetbrains:annotations:19.0.0'
     implementation 'org.apache.commons:commons-lang3:3.10'

@@ -174,20 +174,20 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
      *
      * @param builder The builder which contains all the parameters.
      */
-    private RenderTask(final RenderTask.Builder builder) {
+    RenderTask(final RenderTask.Builder builder) {
         super();
         LOGGER.info("RenderTask");
 
-        this.requestRender = builder.requestRender;
-        this.finishRender = builder.finishRender;
-        this.updateInterval = builder.updateInterval;
-        this.primitivesT = ",p=" + builder.numPrimitives + ",l=" + builder.numLights;
-        this.resolutionT = ",r:" + builder.width + 'x' + builder.height;
-        this.threadsT = ",t:" + builder.numThreads;
-        this.samplesPixelT = ",spp:" + builder.samplesPixel;
-        this.samplesLightT = ",spl:" + builder.samplesLight;
-        this.buttonRenderRef = new WeakReference<>(builder.buttonRender);
-        this.textViewRef = new WeakReference<>(builder.textView);
+        this.requestRender = builder.getRequestRender();
+        this.finishRender = builder.getFinishRender();
+        this.updateInterval = builder.getUpdateInterval();
+        this.primitivesT = ",p=" + builder.getNumPrimitives() + ",l=" + builder.getNumLights();
+        this.resolutionT = ",r:" + builder.getWidth() + 'x' + builder.getHeight();
+        this.threadsT = ",t:" + builder.getNumThreads();
+        this.samplesPixelT = ",spp:" + builder.getSamplesPixel();
+        this.samplesLightT = ",spl:" + builder.getSamplesLight();
+        this.buttonRenderRef = new WeakReference<>(builder.getButtonRender());
+        this.textViewRef = new WeakReference<>(builder.getTextView());
 
         this.startTimeStamp = SystemClock.elapsedRealtime();
         this.fpsT = String.format(Locale.US, "fps:%.2f", 0.0F);
@@ -206,7 +206,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
             final long timeRenderer = rtGetTimeRenderer();
             this.timeFrameT = String.format(Locale.US, ",t:%.2fs", (float) timeRenderer / SECOND_IN_MS);
             final long currentTime = SystemClock.elapsedRealtime();
-            this.timeT = String.format(Locale.US, "[%.2fs]",(float) (currentTime - this.startTimeStamp) / SECOND_IN_MS);
+            this.timeT = String.format(Locale.US, "[%.2fs]", (float) (currentTime - this.startTimeStamp) / SECOND_IN_MS);
             this.allocatedT = ",m:" + Debug.getNativeHeapAllocatedSize() / MB_IN_BYTES + "mb";
             this.sampleT = "," + rtGetSample();
 
@@ -395,11 +395,10 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
          * @param textView      The new value for {@link RenderTask#textViewRef} field.
          * @param buttonRender  The new value for {@link RenderTask#buttonRenderRef} field.
          */
-        @Contract(pure = true)
-        Builder(@Nonnull final Runnable requestRender,
-                @Nonnull final Runnable finishRender,
-                @Nonnull final TextView textView,
-                @Nonnull final Button buttonRender) {
+        @Contract(pure = true) Builder(@Nonnull final Runnable requestRender,
+                                       @Nonnull final Runnable finishRender,
+                                       @Nonnull final TextView textView,
+                                       @Nonnull final Button buttonRender) {
             this.requestRender = requestRender;
             this.finishRender = finishRender;
             this.textView = textView;
@@ -537,6 +536,103 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
             LOGGER_BUILDER.info("build");
 
             return new RenderTask(this);
+        }
+
+
+        /**
+         * @see RenderTask#requestRender
+         */
+        @Contract(pure = true)
+        Runnable getRequestRender() {
+            return this.requestRender;
+        }
+
+        /**
+         * @see RenderTask#finishRender
+         */
+        @Contract(pure = true)
+        Runnable getFinishRender() {
+            return this.finishRender;
+        }
+
+        /**
+         * @see RenderTask#textViewRef
+         */
+        @Contract(pure = true)
+        TextView getTextView() {
+            return this.textView;
+        }
+
+        /**
+         * @see RenderTask#buttonRenderRef
+         */
+        @Contract(pure = true)
+        Button getButtonRender() {
+            return this.buttonRender;
+        }
+
+        /**
+         * @see RenderTask.Builder#withUpdateInterval(long)
+         */
+        @Contract(pure = true)
+        long getUpdateInterval() {
+            return this.updateInterval;
+        }
+
+        /**
+         * @see RenderTask.Builder#withWidth(int)
+         */
+        @Contract(pure = true)
+        int getWidth() {
+            return this.width;
+        }
+
+        /**
+         * @see RenderTask.Builder#withHeight(int)
+         */
+        @Contract(pure = true)
+        int getHeight() {
+            return this.height;
+        }
+
+        /**
+         * @see RenderTask.Builder#withNumThreads(int)
+         */
+        @Contract(pure = true)
+        int getNumThreads() {
+            return this.numThreads;
+        }
+
+        /**
+         * @see RenderTask.Builder#withNumPrimitives(int)
+         */
+        @Contract(pure = true)
+        int getNumPrimitives() {
+            return this.numPrimitives;
+        }
+
+        /**
+         * @see RenderTask.Builder#withNumLights(int)
+         */
+        @Contract(pure = true)
+        int getNumLights() {
+            return this.numLights;
+        }
+
+        /**
+         * @see RenderTask.Builder#withSamplesPixel(int)
+         */
+        @Contract(pure = true)
+        int getSamplesPixel() {
+            return this.samplesPixel;
+        }
+
+        /**
+         * @see RenderTask.Builder#withSamplesLight(int)
+         */
+        @Contract(pure = true)
+        int getSamplesLight() {
+            return this.samplesLight;
         }
     }
 }
