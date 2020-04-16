@@ -124,11 +124,6 @@
     - [x] UI (Android through JNI, Linux through Qt)
 
 ### System
-- [x] Support doxygen documentation in the MobileRT
-- [ ] Support doxygen documentation in the Components
-- [ ] Support doxygen documentation in the JNI layer
-- [x] Support javadoc in the Android UI
-- [ ] Support doxygen documentation in the Qt interface
 - [x] Support unit tests (code coverage)
 - [ ] Support to export rendered image to a file
 - [ ] Support to store rendered image to a database
@@ -154,3 +149,12 @@
 - [x] Add an example model to the docker image
 - [ ] Make the ray tracer distribute the load across different engines
 - [ ] Use docker compose to launch multiple containers and distribute the load
+
+### Documentation
+- [x] Support doxygen documentation in the MobileRT
+- [ ] Support doxygen documentation in the Components
+- [ ] Support doxygen documentation in the JNI layer
+- [ ] Support doxygen documentation in the Qt interface
+- [x] Support javadoc in the Android UI
+- [ ] Support comments in the native building files
+- [ ] Support comments in the gradle building files

@@ -2,8 +2,9 @@ apply plugin: 'com.android.application'
 
 allprojects {
     tasks.withType(JavaCompile) {
+        //  Additional arguments to be passed to the compiler.
         options.compilerArgs \
-            << '-Xlint:all' << '-Xlint:-classfile' \
+            << '-Xlint:all' \
             << '-AprintErrorStack' << '-AprintAllQualifiers' \
             << '-verbose'
     }
@@ -33,7 +34,7 @@ android {
         setTestHandleProfiling false
         setTestFunctionalTest false
         ndk {
-            abiFilters 'x86', 'armeabi-v7a', 'x86_64', 'arm64-v8a'
+            abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
             setModuleName 'MobileRT'
         }
         externalNativeBuild {
@@ -111,7 +112,7 @@ android {
         setJavaMaxHeapSize '1mb'
     }
     lintOptions {
-        setAbortOnError false
+        setAbortOnError true
         setCheckAllWarnings true
         setExplainIssues true
         setNoLines true

@@ -324,7 +324,7 @@ public final class MainActivityTest {
             });
 
         testRenderButton(4);
-        testRenderButton(20);
+        testRenderButton(8);
 //        testRenderButton(200);
 
         final int numOfCores = activity.getNumOfCores();
