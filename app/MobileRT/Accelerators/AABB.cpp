@@ -114,7 +114,7 @@ namespace MobileRT {
     AABB surroundingBox(const AABB &box1, const AABB &box2) {
         const auto &min {::glm::min(box1.getPointMin(), box2.getPointMin())};
         const auto &max {::glm::max(box1.getPointMax(), box2.getPointMax())};
-        const AABB &res {min, max};
+        const AABB res {min, max};
 
         return res;
     }

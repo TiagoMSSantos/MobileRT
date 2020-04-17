@@ -98,7 +98,7 @@ AABB Plane::getAABB() const {
     const auto &rightDir {getRightVector()};
     const auto &min {this->point_ + rightDir * -100.0F};
     const auto &max {this->point_ + rightDir * 100.0F};
-    const AABB &res {min, max};
+    const AABB res {min, max};
     return res;
 }
 

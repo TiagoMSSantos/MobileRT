@@ -5,6 +5,7 @@
 #include <android/asset_manager_jni.h>
 #include <android/bitmap.h>
 #include <android/log.h>
+#include <jni.h>
 #include <memory>
 #include <thread>
 
@@ -69,7 +70,8 @@ jint Java_puscas_mobilertapp_RenderTask_rtGetSample(
 
 // MainActivity
 extern "C"
-jint Java_puscas_mobilertapp_MainActivity_rtResize(
+JNIEXPORT
+jint JNICALL Java_puscas_mobilertapp_MainActivity_rtResize(
         JNIEnv *env,
         jobject thiz,
         jint size

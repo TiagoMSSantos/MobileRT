@@ -203,7 +203,7 @@ namespace MobileRT {
                                 worldBoundsMin[1] + y * dy,
                                 worldBoundsMin[2] + z * dz
                         };
-                        const AABB &cell {pos, pos + ::glm::vec3 {dx, dy, dz}};
+                        const AABB cell {pos, pos + ::glm::vec3 {dx, dy, dz}};
                         //LOG("min=(", pos[0], ", ", pos[1], ", ", pos[2], ") max=(", dx, ", ", dy, ",", dz, ")");
                         // do an accurate aabb / primitive intersection test
                         const auto intersectedBox {primitive.intersect(cell)};

@@ -4,91 +4,95 @@ on: [push, pull_request, release]
 
 jobs:
   Build:
-    name: Debug & Release
-    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        type: [Debug, Release]
+        os: [ubuntu-16.04, ubuntu-18.04, macos-10.15]
+        include:
+          - type: Debug
+            variant: debug
+
+          - type: Release
+            variant: release
+
+          - os: ubuntu-16.04
+            ndkVersion: 21.0.6113669
+            cmakeVersion: 3.10.2.4988404
+
+          - os: ubuntu-18.04
+            ndkVersion: 21.0.6113669
+            cmakeVersion: 3.10.2.4988404
+
+          - os: macos-10.15
+            ndkVersion: 18.1.5063045
+            cmakeVersion: 3.6.0
+
+    name: ${{ matrix.type }} (${{ matrix.os }}])
+    runs-on: ${{ matrix.os }}
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v2.1.0
 
     - name: Prepare Environment
       if: success()
-      run: chmod +x ./gradlew
+      run: |
+        chmod +x ./gradlew;
 
-    - name: Set up JDK 1.8
-      if: success()
-      uses: actions/setup-java@v1
+    - name: Setup Java JDK
+      if: always()
+      uses: actions/setup-java@v1.3.0
       with:
         java-version: 1.8
 
-    - name: Build Debug
-      if: success()
-      run: ./gradlew assembleDebug
+    - name: Build ${{ matrix.type }}
+      if: always()
+      run: |
+        mkdir -p ./app/build/reports;
+        ./gradlew assemble${{ matrix.type }} -DndkVersion=${{ matrix.ndkVersion }} -DcmakeVersion=${{ matrix.cmakeVersion }} > ./app/build/reports/log_build_${{ matrix.variant }}.txt;
 
-    - name: Build Release
-      if: success()
-      run: ./gradlew assembleRelease
-
-    - name: Upload Debug APK as artifact
-      if: success()
-      uses: actions/upload-artifact@v1
+    - name: Upload APK as artifact
+      if: always()
+      uses: actions/upload-artifact@v1.0.0
       with:
-        name: MobileRT_debug_exp
-        path: ./app/build/outputs/apk/debug
+        name: MobileRT_${{ matrix.type }}_exp
+        path: ./app/build/outputs/apk/${{ matrix.variant }}
 
-    - name: Upload Release APK as artifact
-      if: success()
-      uses: actions/upload-artifact@v1
-      with:
-        name: MobileRT_release_exp
-        path: ./app/build/outputs/apk/release
-
-    - name: Sign Android debug
-      if: success()
+    - name: Sign APK
+      if: always()
       uses: r0adkll/sign-android-release@v1.0.1
       with:
-        releaseDirectory: ./app/build/outputs/apk/debug
+        releaseDirectory: ./app/build/outputs/apk/${{ matrix.variant }}
         signingKeyBase64: ${{ secrets.SIGNING_KEY }}
         alias: ${{ secrets.KEY_ALIAS }}
         keyStorePassword: ${{ secrets.SIGNING_KEY }}
         keyPassword: ${{ secrets.SIGNING_KEY }}
 
-    - name: Sign Android release
-      if: success()
-      uses: r0adkll/sign-android-release@v1.0.1
-      with:
-        releaseDirectory: ./app/build/outputs/apk/release
-        signingKeyBase64: ${{ secrets.SIGNING_KEY }}
-        alias: ${{ secrets.KEY_ALIAS }}
-        keyStorePassword: ${{ secrets.SIGNING_KEY }}
-        keyPassword: ${{ secrets.SIGNING_KEY }}
+    - name: Run Unit Tests
+      if: always()
+      run: |
+        ./gradlew test${{ matrix.type }}UnitTest -DndkVersion=${{ matrix.ndkVersion }} -DcmakeVersion=${{ matrix.cmakeVersion }};
 
-    - name: Run Unit Tests Debug
-      if: success()
-      run: ./gradlew testDebugUnitTest -Dorg.gradle.logging.level=info
-
-    - name: Run Unit Tests Release
-      if: success()
-      run: ./gradlew testReleaseUnitTest -Dorg.gradle.logging.level=info
-
-    - name: Run Instrumented Tests Debug in Emulator
-      if: success()
-      uses: ReactiveCircus/android-emulator-runner@v2
+    - name: Run Instrumented Tests in Emulator
+      if: always()
+      uses: ReactiveCircus/android-emulator-runner@v2.6.2
       with:
         api-level: 16
-        script: ./gradlew connectedAndroidTest -Dorg.gradle.logging.level=info -Dorg.gradle.parallel=true > ./app/build/reports/log_tests.txt;
-                adb logcat -v threadtime -d *:V > ./app/build/reports/logcat.txt;
-                cat ./app/build/reports/logcat.txt | egrep -i "proc.*:puscas" > ./app/build/reports/pid1.txt;
-                cat ./app/build/reports/logcat.txt | egrep -i "proc.*:puscas" | cut -d ":" -f 4 > ./app/build/reports/pid2.txt;
-
-#                adb logcat -v threadtime -d *:V | grep `adb shell ps | egrep -i ".*puscas.*" | cut -c10-15` > ./app/build/reports/logcat2.txt;
-#                cat ./app/build/reports/logcat.txt | egrep -i "proc.*:puscas" | cut -d " " -f 11 | cut -d ":" -f 1 > ./app/build/reports/pid3.txt;
-#                cat ./app/build/reports/logcat.txt | egrep -i "proc.*:puscas" | cut -d ":" -f 4 | cut -d " " -f 4 > ./app/build/reports/pid4.txt;
-#                cat ./app/build/reports/logcat.txt | grep -i `cat ./app/build/reports/logcat.txt | egrep -i "proc.*:puscas" | cut -d ":" -f 4 | cut -d " " -f 4` > ./app/build/reports/log_app.txt
+        ndk: ${{ matrix.ndkVersion }}
+        cmake: ${{ matrix.cmakeVersion }}
+        script: |
+          ./gradlew connectedAndroidTest -DtestType=${{ matrix.variant }} -DndkVersion=${{ matrix.ndkVersion }} -DcmakeVersion=${{ matrix.cmakeVersion }} > ./app/build/reports/log_tests_${{ matrix.variant }}.txt;
+          adb logcat -v threadtime -d *:V > ./app/build/reports/logcat_${{ matrix.variant }}.txt;
+          cat ./app/build/reports/logcat_${{ matrix.variant }}.txt | egrep -i `cat ./app/build/reports/logcat_${{ matrix.variant }}.txt | egrep -i "proc.*:puscas" | cut -d ":" -f 4 | cut -d ' ' -f 4` > ./app/build/reports/logcat_app_${{ matrix.variant }}.txt;
 
     - name: Upload reports
       if: always()
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v1.0.0
       with:
-        name: reports
+        name: reports_${{ matrix.type }}_${{ matrix.os }}
         path: ./app/build/reports
+
+#target: default
+#arch: x86
+#emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -memory 512 -partition-size 8096 -accel auto -verbose
+#disable-animations: true

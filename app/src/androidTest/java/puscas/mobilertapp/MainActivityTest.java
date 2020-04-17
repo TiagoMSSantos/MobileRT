@@ -116,8 +116,10 @@ public final class MainActivityTest {
 
     /**
      * Helper method which tests the range of the {@link NumberPicker} in the UI.
+     *
+     * @param numCores The number of CPU cores in the system.
      */
-    private static void testPickerNumbers(final int numOfCores) {
+    private static void testPickerNumbers(final int numCores) {
         IntStreams.rangeClosed(0, 2).forEach(value ->
             assertPickerValue("pickerAccelerator", R.id.pickerAccelerator, value)
         );
@@ -130,7 +132,7 @@ public final class MainActivityTest {
         IntStreams.rangeClosed(0, 4).forEach(value ->
             assertPickerValue("pickerShader", R.id.pickerShader, value)
         );
-        IntStreams.rangeClosed(1, numOfCores).forEach(value ->
+        IntStreams.rangeClosed(1, numCores).forEach(value ->
             assertPickerValue("pickerThreads", R.id.pickerThreads, value)
         );
         IntStreams.rangeClosed(1, 10).forEach(value ->
@@ -145,9 +147,10 @@ public final class MainActivityTest {
      * Helper method which tests clicking the render {@link Button}.
      *
      * @param repetitions The number of repetitions.
+     * @param numCores    The number of CPU cores in the system.
      */
-    private void testRenderButton(final int repetitions) {
-        if (repetitions <= 4) {
+    private void testRenderButton(final int repetitions, final int numCores) {
+        if (repetitions <= 3) {
             assertPickerValue("pickerSamplesPixel", R.id.pickerSamplesPixel, 1);
             assertPickerValue("pickerScene", R.id.pickerScene, 5);
         } else {
@@ -160,7 +163,6 @@ public final class MainActivityTest {
         assertPickerValue("pickerAccelerator", R.id.pickerAccelerator, 2);
         assertPickerValue("pickerShader", R.id.pickerShader, 2);
 
-        final int numOfCores = this.mainActivityActivityTestRule.getActivity().getNumOfCores();
         final List<String> buttonTextList = ImmutableList.<String>builder().add(STOP, RENDER).build();
         IntStreams.range(0, buttonTextList.size() * repetitions).forEach(currentIndex -> {
             LOGGER.info("currentIndex = " + currentIndex);
@@ -176,7 +178,7 @@ public final class MainActivityTest {
             this.counterSPL++;
             final int finalCounterResolution = this.counterResolution % 9;
             this.counterResolution++;
-            final int finalCounterThreads = this.counterThreads % numOfCores;
+            final int finalCounterThreads = this.counterThreads % numCores;
             this.counterThreads++;
             assertPickerValue("pickerScene", R.id.pickerScene, Math.min(finalCounterScene, 3));
             assertPickerValue("pickerAccelerator", R.id.pickerAccelerator, Math.max(finalCounterAccelerator, 0));
@@ -323,12 +325,12 @@ public final class MainActivityTest {
                 Assertions.assertEquals(RENDER, button.getText().toString(), "Button message");
             });
 
-        testRenderButton(4);
-        testRenderButton(8);
-//        testRenderButton(200);
+        final int numCores = activity.getNumOfCores();
+        testRenderButton(3, numCores);
+        testRenderButton(6, numCores);
+//        testRenderButton(200, numCores);
 
-        final int numOfCores = activity.getNumOfCores();
-        testPickerNumbers(numOfCores);
+        testPickerNumbers(numCores);
         testPreviewCheckBox();
 
         this.mainActivityActivityTestRule.finishActivity();

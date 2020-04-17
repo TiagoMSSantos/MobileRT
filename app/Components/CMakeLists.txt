@@ -9,6 +9,7 @@ add_library( ${PROJECT_NAME} SHARED ${MOBILE_RC_SOURCES} )
 
 # Add debug postfix
 set_target_properties( ${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "${CMAKE_DEBUG_POSTFIX}" )
+set_target_properties( ${PROJECT_NAME} PROPERTIES BUNDLE TRUE )
 
 # Add MobileRT and third party headers
 target_include_directories( ${PROJECT_NAME} SYSTEM PUBLIC "${THIRD_PARTY_HEADERS}" )

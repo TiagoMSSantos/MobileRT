@@ -9,6 +9,7 @@ add_library( ${PROJECT_NAME} SHARED ${MOBILE_RT_SOURCES} )
 
 # Add debug postfix
 set_target_properties( ${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "${CMAKE_DEBUG_POSTFIX}" )
+set_target_properties( ${PROJECT_NAME} PROPERTIES BUNDLE TRUE )
 
 # Add MobileRT and third party headers
 target_include_directories( ${PROJECT_NAME} PUBLIC "${MOBILE_RT_HEADERS}" )
@@ -27,16 +28,25 @@ if( DEFINED ANDROID_ABI )
 else()
   # Link with pthread and dynamic OpenMP for Linux
   target_link_libraries( ${PROJECT_NAME} PUBLIC pthread )
-  if( CMAKE_CXX_COMPILER MATCHES "clang" )
-    target_link_libraries( ${PROJECT_NAME} PUBLIC -fopenmp=libomp )
+  if( CMAKE_HOST_SYSTEM MATCHES "Linux" )
+    if( CMAKE_CXX_COMPILER MATCHES "clang" )
+      target_link_libraries( ${PROJECT_NAME} PUBLIC -fopenmp=libomp )
+    else()
+      target_link_libraries( ${PROJECT_NAME} PUBLIC -fopenmp )
+    endif()
   else()
-    target_link_libraries( ${PROJECT_NAME} PUBLIC -fopenmp )
+    target_compile_options( ${PROJECT_NAME} PRIVATE -Wno-reserved-id-macro )
+    if( CMAKE_CXX_COMPILER MATCHES "clang" )
+      target_link_libraries( ${PROJECT_NAME} PUBLIC omp )
+    else()
+      target_link_libraries( ${PROJECT_NAME} PUBLIC gomp )
+    endif()
   endif()
 endif()
 
 # Link with third party libs
 target_link_libraries( ${PROJECT_NAME}
-  PRIVATE glm atomic
+  PRIVATE glm
   general "${COMMON_LINKER_FLAGS}"
   debug "${COMMON_LINKER_FLAGS_DEBUG}"
   debug "${COMMON_LINKER_FLAGS_TEST}"

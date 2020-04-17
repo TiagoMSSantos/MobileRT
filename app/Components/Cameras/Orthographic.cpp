@@ -18,7 +18,7 @@ Ray Orthographic::generateRay(const float u, const float v,
     const auto &right {this->right_ * rightFactor + this->right_ * deviationU};
     const auto upFactor {(0.5F - v) * this->sizeV_};
     const auto &up {this->up_ * upFactor + this->up_ * deviationV};
-    const Ray &ray {this->direction_, this->position_ + right + up, 1};
+    const Ray ray {this->direction_, this->position_ + right + up, 1};
     return ray;
 }
 
@@ -33,7 +33,7 @@ AABB Orthographic::getAABB() const {
         this->right_ * (1.0F - 0.5F) * this->sizeH_ + this->right_ * 0.5F +
         this->up_ * (0.5F - 1.0F) * this->sizeV_ + this->up_ * 0.5F
     };
-    const AABB &res {min, max};
+    const AABB res {min, max};
     return res;
 }
 

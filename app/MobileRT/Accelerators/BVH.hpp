@@ -161,8 +161,8 @@ namespace MobileRT {
         for (::std::uint32_t i {}; i < primitivesSize; ++i) {
             const auto &primitive {primitives [i]};
             auto &&box {primitive.getAABB()};
-            BuildNode &&node {::std::move(box), static_cast<::std::int32_t> (i)};
-            buildNodes.emplace_back(::std::move(node));
+            const BuildNode node {::std::move(box), static_cast<::std::int32_t> (i)};
+            buildNodes.emplace_back(node);
         }
 
         const auto maxLeafSize {4};
@@ -212,7 +212,7 @@ namespace MobileRT {
             ::std::vector<AABB> boxes {currentBox->box_};
             boxes.reserve(static_cast<::std::uint32_t> (boxPrimitivesSize));
             for (::std::int32_t i {beginBoxIndex + 1}; i < endBoxIndex; ++i) {
-                const AABB &newBox {buildNodes[static_cast<::std::uint32_t> (i)].box_};
+                const AABB newBox {buildNodes[static_cast<::std::uint32_t> (i)].box_};
                 currentBox->box_ = ::MobileRT::surroundingBox(newBox, currentBox->box_);
                 boxes.emplace_back(newBox);
             }

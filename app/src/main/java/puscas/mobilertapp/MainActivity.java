@@ -357,10 +357,9 @@ public final class MainActivity extends Activity {
     @Nonnull
     public String getSDCardPath() {
         LOGGER.info("Getting SD card path");
-        final File[] dirs = ContextCompat.getExternalFilesDirs(getApplicationContext(), null);
         String sdCardPath = Optional.ofNullable(getExternalFilesDir(null))
             .map(File::getAbsolutePath)
-            .orElse(dirs.length > 1 ? dirs[1].getAbsolutePath() : dirs[0].getAbsolutePath());
+            .orElse(Environment.getExternalStorageDirectory().getAbsolutePath());
         final int removeIndex = sdCardPath.indexOf("Android");
         if (removeIndex >= 1) {
             sdCardPath = sdCardPath.substring(0, removeIndex - 1);

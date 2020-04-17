@@ -52,7 +52,6 @@
 **/git-hooks
 **/*.pro.user
 **/Makefile*
-**/*.ui*
 **/System_dependent/**/*build*/**/MobileRT
 **/System_dependent/**/*.pro*
 *libraries*

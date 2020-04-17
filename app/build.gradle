@@ -1,5 +1,9 @@
 apply plugin: 'com.android.application'
 
+final def systemNDKVersion = System.getProperty('ndkVersion', '21.0.6113669')
+final def systemCMakeVersion = System.getProperty('cmakeVersion', '3.6.0')
+final def systemTestType = System.getProperty('testType', 'debug')
+
 allprojects {
     tasks.withType(JavaCompile) {
         //  Additional arguments to be passed to the compiler.
@@ -21,7 +25,8 @@ android {
     }
     setCompileSdkVersion 29
     setBuildToolsVersion '29.0.3'
-    setNdkVersion '21.0.6113669'
+    setNdkVersion systemNDKVersion
+
     defaultConfig {
         setMinSdkVersion 16
         setTargetSdkVersion 29
@@ -44,7 +49,20 @@ android {
                     '-DANDROID_TOOLCHAIN=clang',
                     '-DANDROID_STL=c++_static',
                     '-DANDROID_ARM_NEON=TRUE',
-                    '-DANDROID_CPP_FEATURES=exceptions rtti'
+                    '-DANDROID_CPP_FEATURES=exceptions rtti',
+                    '-DAPP_STL=c++_static',
+                    '-DANDROID_STL_TYPE=c++_static',
+                    '-DCMAKE_ANDROID_STL_TYPE=c++_static',
+                    '-DCMAKE_ANDROID_NDK_TOOLCHAIN_VERSION=clang',
+                    '-DLIBCXX_FORCE_REBUILD=true',
+                    '-DLOCAL_NDK_VERSION=c++_static',
+                    '-DLOCAL_NDK_STL_VARIANT=c++_static',
+                    '-DNDK_TOOLCHAIN_VERSION=clang',
+                    '-D__COMPILER_GNU=0',
+                    '-DCMAKE_CXX98_EXTENSION_COMPILE_OPTION=-std=c++98',
+                    '-DCMAKE_CXX11_EXTENSION_COMPILE_OPTION=-std=c++11',
+                    '-DCMAKE_CXX14_EXTENSION_COMPILE_OPTION=-std=c++14',
+                    '-DCMAKE_CXX17_EXTENSION_COMPILE_OPTION=-std=c++17',
                 ]
                 cppFlags = [
                     '-flto=full'
@@ -55,7 +73,7 @@ android {
     externalNativeBuild {
         cmake {
             setPath 'CMakeLists.txt'
-            setVersion '3.6.0'
+            setVersion systemCMakeVersion
         }
     }
     compileOptions {
@@ -119,7 +137,7 @@ android {
         setShowAll true
         setWarningsAsErrors true
     }
-//    setTestBuildType 'release'
+    setTestBuildType systemTestType
 }
 
 configurations {

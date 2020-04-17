@@ -111,7 +111,7 @@ AABB Triangle::getAABB() const {
     const auto &pointC {this->pointA_ + this->AC_};
     const auto &min {::glm::min(this->pointA_, ::glm::min(pointB, pointC))};
     const auto &max {::glm::max(this->pointA_, ::glm::max(pointB, pointC))};
-    const AABB &res {min, max};
+    const AABB res {min, max};
     return res;
 }
 
@@ -205,7 +205,7 @@ bool Triangle::intersect(const AABB &box) const {
     const auto &min {box.getPointMin()};
     const auto &max {box.getPointMax()};
     const auto &vec {max - min};
-    const Ray &ray {vec, min, 1};
+    const Ray ray {vec, min, 1};
     const auto intersectedAB {intersectRayAABB(this->pointA_, this->AB_)};
     const auto intersectedAC {intersectRayAABB(this->pointA_, this->AC_)};
     const auto &pointB {this->pointA_ + this->AB_};

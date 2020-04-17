@@ -60,6 +60,6 @@ float Camera::radToDeg(const float rad) const {
 AABB Camera::getAABB() const {
     const auto &min {this->position_};
     const auto &max {this->position_};
-    const AABB &res {min, max};
+    const AABB res {min, max};
     return res;
 }

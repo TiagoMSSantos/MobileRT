@@ -23,7 +23,7 @@ Ray Perspective::generateRay(const float u, const float v,
     const auto &up {this->up_ * upFactor};
     const auto &dest {this->position_ + this->direction_ + right + up};
     const auto &rayDirection {::glm::normalize(dest - position_)};
-    const Ray &ray {rayDirection, this->position_, 1};
+    const Ray ray {rayDirection, this->position_, 1};
     return ray;
 }
 

@@ -9,6 +9,7 @@ add_executable( ${PROJECT_NAME} ${GTEST_SOURCES} )
 
 # Add debug postfix
 set_target_properties( ${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "${CMAKE_DEBUG_POSTFIX}" )
+set_target_properties( ${PROJECT_NAME} PROPERTIES BUNDLE TRUE )
 
 # Add dependencies
 target_include_directories( ${PROJECT_NAME} SYSTEM PUBLIC "${THIRD_PARTY_HEADERS}/googletest/googletest/include" )

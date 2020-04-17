@@ -83,7 +83,7 @@ AABB Sphere::getAABB() const {
     const auto radius {::std::sqrt(this->sqRadius_)};
     const auto &min {this->center_ - radius};
     const auto &max {this->center_ + radius};
-    const AABB &res {min, max};
+    const AABB res {min, max};
     return res;
 }
 
