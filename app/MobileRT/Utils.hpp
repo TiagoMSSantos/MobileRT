@@ -185,7 +185,7 @@ namespace MobileRT {
     template<::std::int32_t S, typename T>
     inline ::std::array<T, S> toArray(const char *const values) {
         ::std::stringstream data {values};
-        ::std::array<float, S> parsedValues {0.0F};
+        ::std::array<float, S> parsedValues {};
         for (auto i {0u}; i < S; ++i) {
             data >> parsedValues[i];
         }

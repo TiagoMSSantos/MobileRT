@@ -22,8 +22,8 @@ target_compile_options( ${PROJECT_NAME} PRIVATE $<$<CONFIG:RELEASE>:${COMMON_FLA
 
 # Link with tested projects
 target_link_libraries( ${PROJECT_NAME}
-    PRIVATE Components gtest
-    general "${COMMON_LINKER_FLAGS}"
-    debug "${COMMON_LINKER_FLAGS_DEBUG}"
-    optimized "${COMMON_LINKER_FLAGS_RELEASE}"
+  PRIVATE Components gtest
+  general "${COMMON_LINKER_FLAGS}"
+  debug "${COMMON_LINKER_FLAGS_DEBUG}"
+  optimized "${COMMON_LINKER_FLAGS_RELEASE}"
 )

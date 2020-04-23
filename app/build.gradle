@@ -1,3 +1,5 @@
+import org.apache.tools.ant.taskdefs.condition.Os
+
 apply plugin: 'com.android.application'
 
 final def systemNDKVersion = System.getProperty('ndkVersion', '21.0.6113669')
@@ -64,9 +66,11 @@ android {
                     '-DCMAKE_CXX14_EXTENSION_COMPILE_OPTION=-std=c++14',
                     '-DCMAKE_CXX17_EXTENSION_COMPILE_OPTION=-std=c++17',
                 ]
-                cppFlags = [
-                    '-flto=full'
-                ]
+                if (!Os.isFamily(Os.FAMILY_WINDOWS)) {
+                    cppFlags = [
+                            '-flto=full'
+                    ]
+                }
             }
         }
     }
@@ -93,7 +97,10 @@ android {
             setSigningConfig signingConfigs.Puscas
             setShrinkResources false
             ndk {
-                setcFlags '-O0 -flto=full'
+                setcFlags '-O0'
+                if (!Os.isFamily(Os.FAMILY_WINDOWS)) {
+                    setcFlags '-flto=full'
+                }
             }
         }
         release {
@@ -108,7 +115,10 @@ android {
             setShrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             ndk {
-                setcFlags '-O3 -flto=full -DNDEBUG -ffunction-sections -fdata-sections'
+                setcFlags '-O3 -DNDEBUG -ffunction-sections -fdata-sections'
+                if (!Os.isFamily(Os.FAMILY_WINDOWS)) {
+                    setcFlags '-flto=full'
+                }
             }
         }
     }

@@ -1,4 +1,4 @@
-name: Unit Tests RT
+name: Unit Tests C++
 
 on: [push, pull_request, release]
 
@@ -10,26 +10,26 @@ jobs:
         type: [Debug, Release]
         os: [ubuntu-16.04, ubuntu-18.04, macos-10.15]
         include:
+          - os: ubuntu-16.04
+            compiler: g++
+            compiler_path: g++
+
+          - os: ubuntu-18.04
+            compiler: g++
+            compiler_path: g++
+
+          - os: macos-10.15
+            compiler: g++
+            compiler_path: /usr/local/bin/g++-9
+
           - type: Debug
             unit_tests_bin: UnitTestsd
 
           - type: Release
             unit_tests_bin: UnitTests
 
-          - os: ubuntu-16.04
-            compiler: g++
-            compilerPath: g++
-
-          - os: ubuntu-18.04
-            compiler: g++
-            compilerPath: g++
-
-          - os: macos-10.15
-            compiler: g++
-            compilerPath: /usr/local/bin/g++-9
-
           - compiler: clang++
-            compilerPath: clang++
+            compiler_path: clang++
 
     name: ${{ matrix.type }} ${{ matrix.compiler }} (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
@@ -38,85 +38,90 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2.1.0
 
-    - name: Prepare Environment
-      if: always()
+    - name: Setup build directory
+      if: success()
       run: |
         mkdir build_native;
+
+    - name: Setup code climate report
+      if: success()
+      run: |
         chmod +x ./test-reporter-latest-linux-amd64;
 
-    - name: Update Repository
-      if: always() && startsWith(matrix.os, 'ubuntu')
+    - name: Update repository Linux
+      if: success() && startsWith(matrix.os, 'ubuntu')
       run: |
         sudo apt-get update;
 
-    - name: Update Repository
-      if: always() && startsWith(matrix.os, 'macos')
+    - name: Update repository MacOS
+      if: success() && startsWith(matrix.os, 'macos')
       run: |
         brew update;
 
-    - name: Install Qt4
-      if: always() && startsWith(matrix.os, 'ubuntu')
+    - name: Install Qt4 Linux
+      if: success() && startsWith(matrix.os, 'ubuntu')
       run: |
         sudo apt-get install --no-install-recommends -y libqt4-dev;
 
-    - name: Install Qt4
-      if: always() && startsWith(matrix.os, 'macos')
+    - name: Install Qt4 MacOS
+      if: success() && startsWith(matrix.os, 'macos')
       run: |
         brew install cartr/qt4/pyqt@4;
 
-    - name: Install Code Coverage Analysis
-      if: always() && matrix.compiler == 'g++' && matrix.type == 'Debug' && matrix.os == 'ubuntu-18.04'
+    - name: Install code coverage analysis Linux
+      if: success() && matrix.compiler == 'g++' && matrix.type == 'Debug' && startsWith(matrix.os, 'ubuntu')
       run: |
         sudo apt-get install --no-install-recommends -y lcov;
 
-    - name: Install Code Coverage Analysis
-      if: always() && matrix.compiler == 'g++' && matrix.type == 'Debug' && startsWith(matrix.os, 'macos')
+    - name: Install code coverage analysis MacOS
+      if: success() && matrix.compiler == 'g++' && matrix.type == 'Debug' && startsWith(matrix.os, 'macos')
       run: |
         brew install lcov;
 
-    - name: Install OpenMP
-      if: always() && startsWith(matrix.os, 'macos')
+    - name: Install OpenMP MacOS
+      if: success() && startsWith(matrix.os, 'macos')
       run: |
         brew install libomp;
 
     - name: Run CMake
-      if: always()
+      if: success()
       working-directory: build_native
       run: |
-        cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_CXX_COMPILER=${{ matrix.compilerPath }} -DCMAKE_BUILD_TYPE=${{ matrix.type }} ../app/;
+        cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_CXX_COMPILER=${{ matrix.compiler_path }} -DCMAKE_BUILD_TYPE=${{ matrix.type }} ../app/;
 
-    - name: Create symlink of headers
-      if: always() && startsWith(matrix.os, 'macos') && matrix.compiler == 'g++'
+    - name: Create symlink of headers MacOS
+      if: success() && startsWith(matrix.os, 'macos') && matrix.compiler == 'g++'
       working-directory: build_native
       run: |
         ln -s /usr/local/Cellar/qt@4/4.8.7_6/lib/QtGui.framework/Versions/4/Headers/* /usr/local/include/QtGui/ 2> /dev/null || true;
 
     - name: Run Make
-      if: always()
+      if: success()
       working-directory: build_native
       run: |
         make;
 
-    - name: Find Libs Paths
-      if: always() && startsWith(matrix.os, 'macos')
+    - name: Check lib path
+      if: success()
       working-directory: build_native
       run: |
         find . -iname "*.so" 2> /dev/null;
+        ls -la ./lib;
 
-    - name: Generate Code Coverage base
-      if: always() && matrix.compiler == 'g++' && matrix.type == 'Debug' && matrix.os == 'ubuntu-18.04'
+    - name: Generate Code Coverage base Linux
+      if: success() && matrix.compiler == 'g++' && matrix.type == 'Debug' && startsWith(matrix.os, 'ubuntu')
       working-directory: .
       run: |
         lcov -c -i -d . --no-external -o code_coverage_base.info;
 
-    - name: Run Unit Tests
-      if: always()
+    - name: Run unit tests
+      if: success()
       working-directory: build_native
       run: |
         DYLD_FALLBACK_LIBRARY_PATH=./lib ./bin/${{ matrix.unit_tests_bin }};
 
-    - name: Generate Code Coverage
-      if: always() && matrix.compiler == 'g++' && matrix.type == 'Debug' && matrix.os == 'ubuntu-18.04'
+    - name: Generate code coverage Linux
+      if: success() && matrix.compiler == 'g++' && matrix.type == 'Debug' && startsWith(matrix.os, 'ubuntu')
       working-directory: .
       run: |
         lcov -c -d . --no-external -o code_coverage_test.info;
@@ -124,8 +129,8 @@ jobs:
         lcov --remove code_coverage.info -o code_coverage.info '*third_party*' '*build*';
         genhtml code_coverage.info -o code_coverage_report --no-branch-coverage -t MobileRT_code_coverage;
 
-    - name: Send Code Climate report
-      if: always() && matrix.compiler == 'g++' && matrix.type == 'Debug' && matrix.os == 'ubuntu-18.04'
+    - name: Send code climate report Linux
+      if: success() && matrix.compiler == 'g++' && matrix.type == 'Debug' && startsWith(matrix.os, 'ubuntu')
       working-directory: .
       env:
         CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
@@ -133,10 +138,10 @@ jobs:
         ./test-reporter-latest-linux-amd64 format-coverage -t lcov code_coverage.info;
         ./test-reporter-latest-linux-amd64 upload-coverage;
 
-#    - name: Send codecov report
-#      if: always() && matrix.compiler == 'g++' && matrix.type == 'Debug' && matrix.os == 'ubuntu-18.04'
-#      working-directory: .
-#      env:
-#        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-#      run: |
-#        bash <(curl -s https://codecov.io/bash);
+    - name: Send codecov report Linux
+      if: failure() && matrix.compiler == 'g++' && matrix.type == 'Debug' && startsWith(matrix.os, 'ubuntu')
+      working-directory: .
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      run: |
+        bash <(curl -s https://codecov.io/bash);

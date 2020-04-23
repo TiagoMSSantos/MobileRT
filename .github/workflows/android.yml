@@ -7,25 +7,29 @@ jobs:
     strategy:
       matrix:
         type: [Debug, Release]
-        os: [ubuntu-16.04, ubuntu-18.04, macos-10.15]
+        os: [ubuntu-16.04, ubuntu-18.04, macos-10.15, windows-2019]
         include:
+          - os: ubuntu-16.04
+            ndk_version: 21.0.6113669
+            cmake_version: 3.6.0
+
+          - os: ubuntu-18.04
+            ndk_version: 21.0.6113669
+            cmake_version: 3.6.0
+
+          - os: macos-10.15
+            ndk_version: 18.1.5063045
+            cmake_version: 3.6.0
+
+          - os: windows-2019
+            ndk_version: 16.1.4479499
+            cmake_version: 3.6.0
+
           - type: Debug
             variant: debug
 
           - type: Release
             variant: release
-
-          - os: ubuntu-16.04
-            ndkVersion: 21.0.6113669
-            cmakeVersion: 3.10.2.4988404
-
-          - os: ubuntu-18.04
-            ndkVersion: 21.0.6113669
-            cmakeVersion: 3.10.2.4988404
-
-          - os: macos-10.15
-            ndkVersion: 18.1.5063045
-            cmakeVersion: 3.6.0
 
     name: ${{ matrix.type }} (${{ matrix.os }}])
     runs-on: ${{ matrix.os }}
@@ -34,32 +38,29 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2.1.0
 
-    - name: Prepare Environment
-      if: success()
-      run: |
-        chmod +x ./gradlew;
-
     - name: Setup Java JDK
-      if: always()
+      if: success()
       uses: actions/setup-java@v1.3.0
       with:
         java-version: 1.8
 
-    - name: Build ${{ matrix.type }}
-      if: always()
+    - name: Setup gradlew
+      if: success()
+      run: |
+        chmod +x ./gradlew;
+
+    - name: Setup reports
+      if: success()
       run: |
         mkdir -p ./app/build/reports;
-        ./gradlew assemble${{ matrix.type }} -DndkVersion=${{ matrix.ndkVersion }} -DcmakeVersion=${{ matrix.cmakeVersion }} > ./app/build/reports/log_build_${{ matrix.variant }}.txt;
 
-    - name: Upload APK as artifact
-      if: always()
-      uses: actions/upload-artifact@v1.0.0
-      with:
-        name: MobileRT_${{ matrix.type }}_exp
-        path: ./app/build/outputs/apk/${{ matrix.variant }}
+    - name: Build ${{ matrix.type }}
+      if: success()
+      run: |
+        ./gradlew assemble${{ matrix.type }} -DndkVersion="${{ matrix.ndk_version }}" -DcmakeVersion="${{ matrix.cmake_version }}" > ./app/build/reports/log_build_${{ matrix.variant }}.txt;
 
     - name: Sign APK
-      if: always()
+      if: success()
       uses: r0adkll/sign-android-release@v1.0.1
       with:
         releaseDirectory: ./app/build/outputs/apk/${{ matrix.variant }}
@@ -68,20 +69,20 @@ jobs:
         keyStorePassword: ${{ secrets.SIGNING_KEY }}
         keyPassword: ${{ secrets.SIGNING_KEY }}
 
-    - name: Run Unit Tests
-      if: always()
+    - name: Run unit tests
+      if: success()
       run: |
-        ./gradlew test${{ matrix.type }}UnitTest -DndkVersion=${{ matrix.ndkVersion }} -DcmakeVersion=${{ matrix.cmakeVersion }};
+        ./gradlew test${{ matrix.type }}UnitTest -DndkVersion="${{ matrix.ndk_version }}" -DcmakeVersion="${{ matrix.cmake_version }}";
 
-    - name: Run Instrumented Tests in Emulator
-      if: always()
+    - name: Run instrumented tests
+      if: success() && !startsWith(matrix.os, 'windows')
       uses: ReactiveCircus/android-emulator-runner@v2.6.2
       with:
         api-level: 16
-        ndk: ${{ matrix.ndkVersion }}
-        cmake: ${{ matrix.cmakeVersion }}
+        ndk: ${{ matrix.ndk_version }}
+        cmake: ${{ matrix.cmake_version }}
         script: |
-          ./gradlew connectedAndroidTest -DtestType=${{ matrix.variant }} -DndkVersion=${{ matrix.ndkVersion }} -DcmakeVersion=${{ matrix.cmakeVersion }} > ./app/build/reports/log_tests_${{ matrix.variant }}.txt;
+          ./gradlew connectedAndroidTest -DtestType="${{ matrix.variant }}" -DndkVersion="${{ matrix.ndk_version }}" -DcmakeVersion="${{ matrix.cmake_version }}" > ./app/build/reports/log_tests_${{ matrix.variant }}.txt;
           adb logcat -v threadtime -d *:V > ./app/build/reports/logcat_${{ matrix.variant }}.txt;
           cat ./app/build/reports/logcat_${{ matrix.variant }}.txt | egrep -i `cat ./app/build/reports/logcat_${{ matrix.variant }}.txt | egrep -i "proc.*:puscas" | cut -d ":" -f 4 | cut -d ' ' -f 4` > ./app/build/reports/logcat_app_${{ matrix.variant }}.txt;
 
@@ -92,7 +93,9 @@ jobs:
         name: reports_${{ matrix.type }}_${{ matrix.os }}
         path: ./app/build/reports
 
-#target: default
-#arch: x86
-#emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -memory 512 -partition-size 8096 -accel auto -verbose
-#disable-animations: true
+    - name: Upload APK
+      if: success()
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: MobileRT_${{ matrix.type }}_exp
+        path: ./app/build/outputs/apk/${{ matrix.variant }}

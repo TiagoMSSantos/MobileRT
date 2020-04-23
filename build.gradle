@@ -8,7 +8,7 @@ buildscript {
         mavenLocal()
     }
     dependencies {
-        final String currentOS = System.getProperty("os.name")
+        final def currentOS = System.getProperty("os.name")
         if (Os.isFamily(Os.FAMILY_MAC)) {
             println("MacOS")
             classpath 'com.android.tools.build:gradle:3.5.3'

@@ -24,9 +24,9 @@ target_compile_options( ${PROJECT_NAME} PRIVATE $<$<CONFIG:RELEASE>:${COMMON_FLA
 
 # Link with MobileRT and third party libs
 target_link_libraries( ${PROJECT_NAME}
-PUBLIC tinyobjloader MobileRT PRIVATE
-    general "${COMMON_LINKER_FLAGS}"
-    debug "${COMMON_LINKER_FLAGS_DEBUG}"
-    debug "${COMMON_LINKER_FLAGS_TEST}"
-    optimized "${COMMON_LINKER_FLAGS_RELEASE}"
+  PUBLIC tinyobjloader MobileRT PRIVATE
+  general "${COMMON_LINKER_FLAGS}"
+  debug "${COMMON_LINKER_FLAGS_DEBUG}"
+  debug "${COMMON_LINKER_FLAGS_TEST}"
+  optimized "${COMMON_LINKER_FLAGS_RELEASE}"
 )
