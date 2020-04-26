@@ -1,14 +1,18 @@
-import org.apache.tools.ant.taskdefs.condition.Os
-
-apply plugin: 'com.android.application'
-
+println("Reading system properties.")
 final def systemNDKVersion = System.getProperty('ndkVersion', '21.0.6113669')
 final def systemCMakeVersion = System.getProperty('cmakeVersion', '3.6.0')
 final def systemTestType = System.getProperty('testType', 'debug')
 
+println("NDK version: " + systemNDKVersion)
+println("CMake version: " + systemCMakeVersion)
+println("Test type: " + systemTestType)
+
+apply plugin: 'com.android.application'
+
 allprojects {
     tasks.withType(JavaCompile) {
-        //  Additional arguments to be passed to the compiler.
+        println("Adding additional flags to the compiler.")
+
         options.compilerArgs \
             << '-Xlint:all' \
             << '-AprintErrorStack' << '-AprintAllQualifiers' \
@@ -17,6 +21,12 @@ allprojects {
 }
 
 android {
+    setNdkVersion systemNDKVersion
+    setTestBuildType systemTestType
+
+    setCompileSdkVersion 29
+    setBuildToolsVersion '29.0.3'
+
     signingConfigs {
         Puscas {
             setStoreFile file('MobileRT.jks')
@@ -25,9 +35,6 @@ android {
             setKeyAlias 'Puscas'
         }
     }
-    setCompileSdkVersion 29
-    setBuildToolsVersion '29.0.3'
-    setNdkVersion systemNDKVersion
 
     defaultConfig {
         setMinSdkVersion 16
@@ -46,31 +53,6 @@ android {
         }
         externalNativeBuild {
             cmake {
-                arguments = [
-                    '-DCMAKE_VERBOSE_MAKEFILE=ON',
-                    '-DANDROID_TOOLCHAIN=clang',
-                    '-DANDROID_STL=c++_static',
-                    '-DANDROID_ARM_NEON=TRUE',
-                    '-DANDROID_CPP_FEATURES=exceptions rtti',
-                    '-DAPP_STL=c++_static',
-                    '-DANDROID_STL_TYPE=c++_static',
-                    '-DCMAKE_ANDROID_STL_TYPE=c++_static',
-                    '-DCMAKE_ANDROID_NDK_TOOLCHAIN_VERSION=clang',
-                    '-DLIBCXX_FORCE_REBUILD=true',
-                    '-DLOCAL_NDK_VERSION=c++_static',
-                    '-DLOCAL_NDK_STL_VARIANT=c++_static',
-                    '-DNDK_TOOLCHAIN_VERSION=clang',
-                    '-D__COMPILER_GNU=0',
-                    '-DCMAKE_CXX98_EXTENSION_COMPILE_OPTION=-std=c++98',
-                    '-DCMAKE_CXX11_EXTENSION_COMPILE_OPTION=-std=c++11',
-                    '-DCMAKE_CXX14_EXTENSION_COMPILE_OPTION=-std=c++14',
-                    '-DCMAKE_CXX17_EXTENSION_COMPILE_OPTION=-std=c++17',
-                ]
-                if (!Os.isFamily(Os.FAMILY_WINDOWS)) {
-                    cppFlags = [
-                            '-flto=full'
-                    ]
-                }
             }
         }
     }
@@ -97,10 +79,6 @@ android {
             setSigningConfig signingConfigs.Puscas
             setShrinkResources false
             ndk {
-                setcFlags '-O0'
-                if (!Os.isFamily(Os.FAMILY_WINDOWS)) {
-                    setcFlags '-flto=full'
-                }
             }
         }
         release {
@@ -115,10 +93,6 @@ android {
             setShrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             ndk {
-                setcFlags '-O3 -DNDEBUG -ffunction-sections -fdata-sections'
-                if (!Os.isFamily(Os.FAMILY_WINDOWS)) {
-                    setcFlags '-flto=full'
-                }
             }
         }
     }
@@ -147,7 +121,6 @@ android {
         setShowAll true
         setWarningsAsErrors true
     }
-    setTestBuildType systemTestType
 }
 
 configurations {
@@ -156,6 +129,8 @@ configurations {
 }
 
 dependencies {
+    println("Adding dependencies for MobileRT.")
+
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'com.google.guava:guava:29.0-jre'
@@ -164,7 +139,9 @@ dependencies {
     implementation 'org.apache.commons:commons-lang3:3.10'
     implementation 'org.apache.commons:commons-text:1.8'
 
-    // For the tests
+
+    println("Adding dependencies for the tests.")
+
     implementation 'junit:junit:4.13'
     implementation 'org.junit.jupiter:junit-jupiter-api:5.6.2'
     implementation 'org.assertj:assertj-core:3.15.0'

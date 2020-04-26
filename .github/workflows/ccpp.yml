@@ -58,6 +58,11 @@ jobs:
       run: |
         brew update;
 
+    - name: Install OpenMP MacOS
+      if: success() && startsWith(matrix.os, 'macos')
+      run: |
+        brew install libomp;
+
     - name: Install Qt4 Linux
       if: success() && startsWith(matrix.os, 'ubuntu')
       run: |
@@ -78,11 +83,6 @@ jobs:
       run: |
         brew install lcov;
 
-    - name: Install OpenMP MacOS
-      if: success() && startsWith(matrix.os, 'macos')
-      run: |
-        brew install libomp;
-
     - name: Run CMake
       if: success()
       working-directory: build_native
@@ -101,14 +101,14 @@ jobs:
       run: |
         make;
 
-    - name: Check lib path
+    - name: Check build path
       if: success()
       working-directory: build_native
       run: |
         find . -iname "*.so" 2> /dev/null;
-        ls -la ./lib;
+        ls -la ./bin ./lib;
 
-    - name: Generate Code Coverage base Linux
+    - name: Generate code coverage base Linux
       if: success() && matrix.compiler == 'g++' && matrix.type == 'Debug' && startsWith(matrix.os, 'ubuntu')
       working-directory: .
       run: |

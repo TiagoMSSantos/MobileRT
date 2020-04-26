@@ -9,11 +9,11 @@ buildscript {
     }
     dependencies {
         final def currentOS = System.getProperty("os.name")
+        println("OS: " + currentOS)
         if (Os.isFamily(Os.FAMILY_MAC)) {
-            println("MacOS")
+            println("Detected MacOS.")
             classpath 'com.android.tools.build:gradle:3.5.3'
         } else {
-            println("OS: " + currentOS)
             classpath 'com.android.tools.build:gradle:3.6.3'
         }
     }

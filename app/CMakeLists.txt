@@ -1,83 +1,51 @@
-# Add helper functions
+###############################################################################
+# Turn on verbose
+###############################################################################
+set( CMAKE_VERBOSE_MAKEFILE ON )
+###############################################################################
+###############################################################################
+
+
+###############################################################################
+# Print environment variables
+###############################################################################
+message( STATUS "Adding helper functions." )
 include( ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists_helper.cmake )
 print_environment()
+###############################################################################
+###############################################################################
 
-# Recommended CMake version: 3.0+
+
+###############################################################################
+# Check CMake version
+###############################################################################
+message( STATUS "Recommended CMake version: 3.0+." )
 cmake_minimum_required( VERSION 3.0...3.0 FATAL_ERROR )
 cmake_policy( VERSION 3.0 )
+###############################################################################
+###############################################################################
 
-# Common flags for all projects
-set( COMMON_FLAGS "" )
-set( COMMON_FLAGS_DEBUG "" )
-set( COMMON_FLAGS_RELEASE "" )
 
-# Whether CMake will handle the Qt moc preprocessor automatically
-set( CMAKE_AUTOMOC ON )
-set( CMAKE_AUTOUIC ON )
-set( CMAKE_AUTORCC ON )
+###############################################################################
+# Setting default flags for all modules (including third party)
+###############################################################################
+message( STATUS "Adding custom default flags for all third party projects." )
 
-set( CMAKE_INCLUDE_CURRENT_DIR ON )
-set( CMAKE_MACOSX_RPATH OFF )
-set( CMAKE_INSTALL_RPATH_USE_LINK_PATH ON )
-
-# Set the name of the operating system and the proper interface layer
-if( DEFINED ANDROID_ABI )
-  message( STATUS "Detected Android OS" )
-
-  set( CMAKE_SYSTEM_NAME "Android" )
-  set( MOBILE_DEPENDENT_HEADERS "${CMAKE_SOURCE_DIR}/System_dependent/Android_JNI" )
-  set( COMMON_FLAGS "${COMMON_FLAGS}" -stdlib=libc++ )
-else()
-  message( STATUS "Detected Native OS" )
-
-  set( CMAKE_SYSTEM_NAME "Linux" )
-  set( MOBILE_DEPENDENT_HEADERS "${CMAKE_SOURCE_DIR}/System_dependent/Linux" )
-  # Tell C++ compiler that it should produce optimized code for the current CPU architecture used
-  set( COMMON_FLAGS "${COMMON_FLAGS}" -march=native )
-
-  # Add postfix when build type is debug
-  string( TOLOWER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_L )
-  if( CMAKE_BUILD_TYPE_L MATCHES debug )
-    message( STATUS "Detected Debug type" )
-
-    set( CMAKE_DEBUG_POSTFIX "d" )
-  endif()
-endif()
-
-# Add warnings and Link Time Optimization when using Clang compiler
-if( CMAKE_CXX_COMPILER MATCHES "clang" OR DEFINED ANDROID_ABI )
-  message( STATUS "Detected Clang compiler or Android ABI" )
-
-  set( COMMON_FLAGS "${COMMON_FLAGS}" -Weverything -ferror-limit=1 )
-  if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
-    message( STATUS "Detected not Windows OS" )
-
-    set( COMMON_FLAGS_RELEASE "${COMMON_FLAGS_RELEASE}" -flto=full )
-  endif()
-endif()
-
-# Remove default flags
 set( ANDROID_COMPILER_FLAGS "" CACHE STRING "CUSTOM" FORCE )
 
-# Add custom default flags for all third party projects
 set( CMAKE_CXX_FLAGS "-std=c++11 -fPIC" CACHE STRING "CUSTOM" FORCE )
 set( CMAKE_CXX_FLAGS_DEBUG "-D_GLIBCXX_DEBUG" CACHE STRING "CUSTOM" FORCE )
 set( CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG -ffunction-sections -fdata-sections"
-        CACHE STRING "CUSTOM" FORCE )
+  CACHE STRING "CUSTOM" FORCE
+)
 set( CMAKE_CXX_FLAGS_RELWITHDEBINFO "" CACHE STRING "CUSTOM" FORCE )
 set( CMAKE_CXX_FLAGS_MINSIZEREL "" CACHE STRING "CUSTOM" FORCE )
 
 set( CMAKE_EXE_LINKER_FLAGS "" CACHE STRING "CUSTOM" FORCE )
 set( CMAKE_EXE_LINKER_FLAGS_DEBUG "" CACHE STRING "CUSTOM" FORCE )
 set( CMAKE_EXE_LINKER_FLAGS_RELEASE "-O3 -discard-all -fno-rtti"
-        CACHE STRING "CUSTOM" FORCE )
-
-if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
-  message( STATUS "Detected not Windows OS" )
-
-  set( CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} -flto=full"
-          CACHE STRING "CUSTOM" FORCE )
-endif()
+  CACHE STRING "CUSTOM" FORCE
+)
 
 set( CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO "" CACHE STRING "CUSTOM" FORCE )
 set( CMAKE_EXE_LINKER_FLAGS_MINSIZEREL "" CACHE STRING "CUSTOM" FORCE )
@@ -85,210 +53,370 @@ set( CMAKE_EXE_LINKER_FLAGS_MINSIZEREL "" CACHE STRING "CUSTOM" FORCE )
 set( CMAKE_SHARED_LINKER_FLAGS "" CACHE STRING "CUSTOM" FORCE )
 set( CMAKE_SHARED_LINKER_FLAGS_DEBUG "" CACHE STRING "CUSTOM" FORCE )
 set( CMAKE_SHARED_LINKER_FLAGS_RELEASE "-O3 -discard-all -fno-rtti"
-        CACHE STRING "CUSTOM" FORCE )
+  CACHE STRING "CUSTOM" FORCE
+)
 
 if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
-  message( STATUS "Detected not Windows OS" )
+  message( STATUS "Detected not Windows OS." )
 
-  set( CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} -flto=full"
-          CACHE STRING "CUSTOM" FORCE )
+  if( CMAKE_CXX_COMPILER MATCHES "clang" OR DEFINED ANDROID_ABI )
+    set( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -flto=full"
+      CACHE STRING "CUSTOM" FORCE
+    )
+  endif()
+
+  set( CMAKE_EXE_LINKER_FLAGS_RELEASE
+    "${CMAKE_EXE_LINKER_FLAGS_RELEASE} -flto=full"
+    CACHE STRING "CUSTOM" FORCE
+  )
+  set( CMAKE_SHARED_LINKER_FLAGS_RELEASE
+    "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} -flto=full"
+    CACHE STRING "CUSTOM" FORCE
+  )
 endif()
 
 set( CMAKE_SHARED_LINKER_FLAGS_RELWITHDEBINFO "" CACHE STRING "CUSTOM" FORCE )
 set( CMAKE_SHARED_LINKER_FLAGS_MINSIZEREL "" CACHE STRING "CUSTOM" FORCE )
 
-message( STATUS "CMAKE_HOST_SYSTEM_NAME = ${CMAKE_HOST_SYSTEM_NAME}" )
-if( NOT DEFINED ANDROID_ABI AND NOT CMAKE_HOST_SYSTEM_NAME MATCHES "Linux" )
-  message( STATUS "Detected Android OS" )
+if( NOT DEFINED ANDROID_ABI )
+  message( STATUS "Detected native OS." )
+  set( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -march=native"
+    CACHE STRING "CUSTOM" FORCE
+  )
+  if( CMAKE_HOST_SYSTEM_NAME MATCHES "Darwin" )
+    message( STATUS "Detected native MacOS." )
 
-  set( CMAKE_SHARED_LIBRARY_SONAME_CXX_FLAG "-Wl,-install_name," CACHE STRING "CUSTOM" FORCE )
-  set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-reserved-id-macro )
-endif()
-
-if( NOT DEFINED ANDROID_ABI AND CMAKE_HOST_SYSTEM_NAME MATCHES "Darwin" )
-  message( STATUS "Detected Mac OS" )
-
-  set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-deprecated )
-  if( CMAKE_CXX_COMPILER MATCHES "clang" )
-    message( STATUS "Detected Clang compiler" )
-
-    set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-signed-enum-bitfield -Wno-sign-conversion )
+    # Add linker flag to link with Qt framework in MacOS
+    set( CMAKE_SHARED_LIBRARY_SONAME_CXX_FLAG "-Wl,-install_name,"
+      CACHE STRING "CUSTOM" FORCE
+    )
   endif()
 endif()
 
-# Turn off glm test
+message( STATUS "Turning off GLM test." )
 set( GLM_TEST_ENABLE "OFF" CACHE STRING "CUSTOM" FORCE )
+###############################################################################
+###############################################################################
 
-# Set default lib and bin folders
+
+###############################################################################
+# Setting default flags
+###############################################################################
+message( STATUS "Setting up default lib and bin directories." )
 set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib )
 set( CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib )
 set( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin )
 
-# Set common headers
+message( STATUS "CMake will handle Qt moc preprocessor automatically." )
+set( CMAKE_AUTOMOC ON )
+
+message( STATUS "Setting up Android Clang with static stdlib." )
+set( ANDROID_TOOLCHAIN clang )
+set( ANDROID_STL c++_static )
+###############################################################################
+###############################################################################
+
+
+###############################################################################
+# Setting common flags for all modules
+###############################################################################
+message( STATUS "Setting up common flags for all modules." )
+set( COMMON_FLAGS "" )
+set( COMMON_FLAGS_DEBUG "" )
+set( COMMON_FLAGS_RELEASE "" )
+set( COMMON_LINKER_FLAGS "" )
+set( COMMON_LINKER_FLAGS_DEBUG "" )
+set( COMMON_LINKER_FLAGS_RELEASE "" )
+###############################################################################
+###############################################################################
+
+message( STATUS "Setting up the name of the OS and the proper interface layer." )
+message( STATUS "Host system: ${CMAKE_HOST_SYSTEM_NAME}." )
+# Use to make MacOS use the right OpenMP headers
+set( CMAKE_SYSTEM_NAME "Linux" )
+if( DEFINED ANDROID_ABI )
+  message( STATUS "Detected Android OS." )
+
+  set( MOBILE_DEPENDENT_HEADERS "${CMAKE_SOURCE_DIR}/System_dependent/Android_JNI" )
+  set( COMMON_FLAGS "${COMMON_FLAGS}" -stdlib=libc++ )
+else()
+  message( STATUS "Detected Native OS." )
+
+  set( MOBILE_DEPENDENT_HEADERS "${CMAKE_SOURCE_DIR}/System_dependent/Linux" )
+
+  message( STATUS "Add flag to generate instructions for the machine type native." )
+  set( COMMON_FLAGS "${COMMON_FLAGS}" -march=native )
+
+  string( TOLOWER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_L )
+  if( CMAKE_BUILD_TYPE_L MATCHES debug )
+    message( STATUS "Adding postfix for debug type." )
+
+    set( CMAKE_DEBUG_POSTFIX "d" )
+  endif()
+endif()
+
+if( CMAKE_CXX_COMPILER MATCHES "clang" OR DEFINED ANDROID_ABI )
+  message( STATUS "Detected Clang compiler or Android ABI." )
+
+  message( STATUS "Adding warning flags." )
+  set( COMMON_FLAGS "${COMMON_FLAGS}" -Weverything -ferror-limit=1 )
+  if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
+    message( STATUS "Detected not Windows OS." )
+    message( STATUS "Adding Link Time Optimization flag." )
+
+    set( COMMON_FLAGS_RELEASE "${COMMON_FLAGS_RELEASE}" -flto=full )
+  endif()
+endif()
+
+message( STATUS "CMAKE_HOST_SYSTEM_NAME = ${CMAKE_HOST_SYSTEM_NAME}" )
+if( NOT DEFINED ANDROID_ABI AND CMAKE_HOST_SYSTEM_NAME MATCHES "Darwin" )
+  message( STATUS "Detected native MacOS." )
+
+  # Turn off the warning flag because of OpenMP in MacOS
+  set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-reserved-id-macro )
+endif()
+
+if( NOT DEFINED ANDROID_ABI AND CMAKE_HOST_SYSTEM_NAME MATCHES "Darwin" )
+  message( STATUS "Detected native MacOS." )
+
+  set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-deprecated )
+  if( CMAKE_CXX_COMPILER MATCHES "clang" )
+    message( STATUS "Detected Clang compiler." )
+
+    set( COMMON_FLAGS "${COMMON_FLAGS}"
+      -Wno-signed-enum-bitfield
+      -Wno-sign-conversion
+    )
+  endif()
+endif()
+
+message( STATUS "Setting up common headers." )
 set( MOBILE_RT_HEADERS "${CMAKE_SOURCE_DIR}" )
 set( MOBILE_RC_HEADERS "${CMAKE_SOURCE_DIR}" )
 set( SCENES_HEADERS "${CMAKE_SOURCE_DIR}/Scenes" )
 set( THIRD_PARTY_HEADERS "${CMAKE_SOURCE_DIR}/third_party" )
 set( GLM_HEADERS "${CMAKE_SOURCE_DIR}/third_party/glm" )
 set( QT_HEADERS_RT "${CMAKE_SOURCE_DIR}/System_dependent/Linux/QT/MobileRT" )
-set( QT_HEADERS "${CMAKE_SOURCE_DIR}/System_dependent/Linux/Qt/build-${CMAKE_BUILD_TYPE}" )
+set( QT_HEADERS
+  "${CMAKE_SOURCE_DIR}/System_dependent/Linux/Qt/build-${CMAKE_BUILD_TYPE}"
+)
 
-# Set common flags
+message( STATUS "Setting up common flags." )
 set( COMMON_FLAGS "${COMMON_FLAGS}"
-        -std=c++11 -pedantic-errors -pedantic -Wpedantic -Wall -Wextra -Wfatal-errors -Werror )
-set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-c++98-compat-pedantic -Wno-padded )
-set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-exit-time-destructors )
+  -std=c++11 -pedantic-errors -pedantic -Wpedantic -Wall -Wextra -Wfatal-errors
+  -Werror
+)
+# Turn off C++98 pedantic warning so it can use C++11 features
+set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-c++98-compat-pedantic )
+# Turn off padded warning because some classes still need padding
+set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-padded )
 
-if( DEFINED ANDROID_ABI OR CMAKE_CXX_COMPILER MATCHES "clang" AND CMAKE_HOST_SYSTEM MATCHES "Linux" )
-  message( STATUS "Detected Android OS or Clang compiler in Linux" )
+if( DEFINED ANDROID_ABI OR CMAKE_CXX_COMPILER MATCHES "clang" )
+  # Turn off exit time destructors warning because of the usage of
+  # static variables in namespaces
+  set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-exit-time-destructors )
+endif()
+
+if( DEFINED ANDROID_ABI
+    OR CMAKE_CXX_COMPILER MATCHES "clang" AND CMAKE_HOST_SYSTEM MATCHES "Linux"
+  )
+  message( STATUS "Detected Android OS or Clang compiler in Linux." )
+  message( STATUS "Adding OpenMP." )
 
   set( COMMON_FLAGS "${COMMON_FLAGS}" -Xpreprocessor -fopenmp=libomp )
 else()
-  message( STATUS "Detected Mac or Windows OS or GCC compiler" )
+  message( STATUS "Detected Mac or Windows OS or GCC compiler." )
+  message( STATUS "Adding OpenMP." )
 
   set( COMMON_FLAGS "${COMMON_FLAGS}" -Xpreprocessor -fopenmp )
 endif()
 
-set( COMMON_FLAGS_DEBUG -O0 -g3 -fno-optimize-sibling-calls -fno-omit-frame-pointer )
+set( COMMON_FLAGS_DEBUG -O0 -g3 -fno-optimize-sibling-calls
+  -fno-omit-frame-pointer
+)
 
-set( COMMON_FLAGS_RELEASE "${COMMON_FLAGS_RELEASE}" -O3 -DNDEBUG -ffunction-sections -fdata-sections )
+set( COMMON_FLAGS_RELEASE "${COMMON_FLAGS_RELEASE}" -O3 -DNDEBUG
+  -ffunction-sections -fdata-sections
+)
 
-set( COMMON_FLAGS_RELEASE "${COMMON_FLAGS_RELEASE}" -Wno-unused-command-line-argument )
+set( COMMON_FLAGS_RELEASE "${COMMON_FLAGS_RELEASE}"
+  -Wno-unused-command-line-argument
+)
 
-# Set common linker flags
-set( COMMON_LINKER_FLAGS ${COMMON_LINKER_FLAGS} -O3 -discard-all -fno-rtti )
+message( STATUS "Setting common linker flags." )
+set( COMMON_LINKER_FLAGS "${COMMON_LINKER_FLAGS}" -O3 -discard-all -fno-rtti )
 
-set( COMMON_LINKER_FLAGS_DEBUG ${COMMON_LINKER_FLAGS_DEBUG}  )
+set( COMMON_LINKER_FLAGS_DEBUG "${COMMON_LINKER_FLAGS_DEBUG}"  )
 
 if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
-  message( STATUS "Add -flto=full flag to linker" )
+  message( STATUS "Detected not Windows OS." )
 
-  set( COMMON_LINKER_FLAGS_RELEASE ${COMMON_LINKER_FLAGS_RELEASE} -flto=full )
+  set( COMMON_LINKER_FLAGS_RELEASE "${COMMON_LINKER_FLAGS_RELEASE}" -flto=full )
 endif()
 
 if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
-  message( STATUS "Detected not Windows OS" )
+  message( STATUS "Detected not Windows OS." )
 
-  # Add flags for code coverage analysis when using GCC compiler
   if( CMAKE_CXX_COMPILER STREQUAL "g++" )
-    message( STATUS "Add code coverage flags for GCC" )
+    message( STATUS "Add code coverage analysis flags for GCC." )
 
     set( COMMON_FLAGS_TEST -ftest-coverage -fprofile-arcs )
     set( COMMON_LINKER_FLAGS_TEST --coverage -lgcov )
   endif()
 endif()
 
-# Project
+###############################################################################
+# Set up project
+###############################################################################
+message( STATUS "Setting up AppMobileRT project." )
 project( AppMobileRT VERSION 1.0.0.0 LANGUAGES CXX )
+###############################################################################
+###############################################################################
 
-# Add Scenes source files
+
+message( STATUS "Adding scenes source files." )
 file( GLOB_RECURSE SCENES_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/Scenes/**.cpp" )
 
-# Add sub directories
+if( NOT DEFINED ANDROID_ABI )
+  message( STATUS "Finding Qt4." )
+  find_package( Qt4 REQUIRED COMPONENTS QtCore QtGui )
+endif()
+
+
+###############################################################################
+# Add dependencies
+###############################################################################
+message( STATUS "Adding sub directories." )
 add_subdirectory( MobileRT )
 add_subdirectory( third_party )
 add_subdirectory( Components )
 add_subdirectory( System_dependent )
 add_subdirectory( Unit_Testing )
+###############################################################################
+###############################################################################
 
-# Add libs for the interface layer
+
+###############################################################################
+# Add interface layer
+###############################################################################
+message( STATUS "Adding libs for the interface layer." )
 if( DEFINED ANDROID_ABI )
-  message( STATUS "Detected Android OS" )
+  message( STATUS "Adding Android JNI layer." )
 
-  # Java Native Interface
-  add_library( ${PROJECT_NAME} SHARED ${SCENES_SOURCES} ${MOBILE_DEPENDENT_SOURCES} )
+  add_library( ${PROJECT_NAME} SHARED
+    ${SCENES_SOURCES} ${MOBILE_DEPENDENT_SOURCES}
+  )
   target_link_libraries( ${PROJECT_NAME} PRIVATE android jnigraphics )
 else()
-  message( STATUS "Detected Native OS" )
-
-  # Linux interface
-  find_package( Qt4 REQUIRED COMPONENTS QtCore QtGui QtXml )
+  message( STATUS "Adding Linux native Qt layer." )
 
   add_executable( ${PROJECT_NAME} ${SCENES_SOURCES} ${MOBILE_DEPENDENT_SOURCES} )
 
   message( STATUS "QT_INCLUDES = ${QT_INCLUDES}" )
   message( STATUS "QT_QTCORE_LIBRARIES = ${QT_QTCORE_LIBRARIES}" )
   message( STATUS "QT_QTGUI_LIBRARIES = ${QT_QTGUI_LIBRARIES}" )
-  message( STATUS "QT_QTXML_LIBRARIES = ${QT_QTXML_LIBRARIES}" )
 
-  target_include_directories( ${PROJECT_NAME} SYSTEM PRIVATE ${QT_HEADERS} ${QT_INCLUDES} PRIVATE ${QT_HEADERS_RT} )
+  target_include_directories( ${PROJECT_NAME}
+    SYSTEM PRIVATE ${QT_HEADERS} ${QT_INCLUDES}
+    PRIVATE ${QT_HEADERS_RT}
+  )
 
   if( CMAKE_HOST_SYSTEM_NAME MATCHES "Darwin" )
-    target_include_directories( ${PROJECT_NAME} SYSTEM PRIVATE /usr/include/qt4 )
-    target_include_directories( ${PROJECT_NAME} SYSTEM PRIVATE /usr/local/include/ )
+    message( STATUS "Linking Qt for MacOS." )
 
-    target_link_libraries( ${PROJECT_NAME} PRIVATE /usr/local/Cellar/qt@4/4.8.7_6/lib/QtGui.framework/Versions/4/Headers/ )
-    target_link_libraries( ${PROJECT_NAME} PRIVATE /usr/local/lib/QtGui.framework/Headers/ )
+    target_include_directories( ${PROJECT_NAME}
+      SYSTEM PRIVATE /usr/local/include/
+    )
+
+    target_link_libraries( ${PROJECT_NAME}
+      PRIVATE /usr/local/lib/QtGui.framework/Headers/
+    )
     target_link_libraries( ${PROJECT_NAME} PRIVATE -F/usr/local/lib )
 
-#    target_link_libraries( ${PROJECT_NAME} PRIVATE -F${QT_QTCORE_LIBRARIES} )
-#    target_link_libraries( ${PROJECT_NAME} PRIVATE -F${QT_QTGUI_LIBRARIES} )
-#    target_link_libraries( ${PROJECT_NAME} PRIVATE -F${QT_QTXML_LIBRARIES} )
     target_link_libraries( ${PROJECT_NAME} PRIVATE "-framework QtCore" )
     target_link_libraries( ${PROJECT_NAME} PRIVATE "-framework QtGui" )
-    target_link_libraries( ${PROJECT_NAME} PRIVATE "-framework QtXml" )
-
-#    target_link_libraries( ${PROJECT_NAME} PRIVATE -framework Qt4::QtCore )
-#    target_link_libraries( ${PROJECT_NAME} PRIVATE -framework Qt4::QtGui )
-#    target_link_libraries( ${PROJECT_NAME} PRIVATE -framework Qt4::QtXml )
-#    target_link_libraries( ${PROJECT_NAME} PRIVATE -framework ${QT_QTCORE_LIBRARIES} )
-#    target_link_libraries( ${PROJECT_NAME} PRIVATE -framework ${QT_QTGUI_LIBRARIES} )
-#    target_link_libraries( ${PROJECT_NAME} PRIVATE -framework ${QT_QTXML_LIBRARIES} )
   else()
-    target_link_libraries( ${PROJECT_NAME} PRIVATE Qt4::QtCore Qt4::QtGui Qt4::QtXml )
-    target_link_libraries( ${PROJECT_NAME} PRIVATE ${QT_QTCORE_LIBRARIES} ${QT_QTGUI_LIBRARIES} ${QT_QTXML_LIBRARIES} )
+    message( STATUS "Linking Qt." )
+
+    target_link_libraries( ${PROJECT_NAME} PRIVATE Qt4::QtCore Qt4::QtGui )
   endif()
 endif()
+###############################################################################
+###############################################################################
 
-# Add debug postfix
-set_target_properties( ${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "${CMAKE_DEBUG_POSTFIX}" )
-set_target_properties( ${PROJECT_NAME} PROPERTIES BUNDLE TRUE )
 
-# Add MobileRT and third party headers
-target_include_directories( ${PROJECT_NAME} PUBLIC "${MOBILE_RC_HEADERS}" )
-target_include_directories( ${PROJECT_NAME} PUBLIC "${SCENES_HEADERS}" )
-target_include_directories( ${PROJECT_NAME} SYSTEM PUBLIC "${GLM_HEADERS}" )
+###############################################################################
+# Set target properties
+###############################################################################
+message( STATUS "Adding debug postfix." )
+set_target_properties( ${PROJECT_NAME} PROPERTIES
+  DEBUG_POSTFIX "${CMAKE_DEBUG_POSTFIX}"
+)
+###############################################################################
+###############################################################################
 
-# Add compiler flags
-target_compile_options( ${PROJECT_NAME} PRIVATE ${COMMON_FLAGS} -Wno-global-constructors )
+
+message( STATUS "Adding MobileRT and third party headers." )
+target_include_directories( ${PROJECT_NAME} PRIVATE "${MOBILE_RC_HEADERS}" )
+target_include_directories( ${PROJECT_NAME} PRIVATE "${SCENES_HEADERS}" )
+target_include_directories( ${PROJECT_NAME} SYSTEM PRIVATE "${GLM_HEADERS}" )
+
+message( STATUS "Adding compiler flags." )
+target_compile_options( ${PROJECT_NAME} PRIVATE ${COMMON_FLAGS} )
+# Turn off global constructors warnings because of scenes
+target_compile_options( ${PROJECT_NAME} PRIVATE -Wno-global-constructors )
 if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
-  message( STATUS "Detected not Windows OS" )
+  message( STATUS "Detected not Windows OS." )
 
-  target_compile_options( ${PROJECT_NAME} PRIVATE -Wno-zero-as-null-pointer-constant )
+  # Turn off zero as null pointer warning because of Qt generated code
+  target_compile_options( ${PROJECT_NAME} PRIVATE
+    -Wno-zero-as-null-pointer-constant
+  )
+  # Turn off redundant parentheses warning because of Qt moc generated code
   target_compile_options( ${PROJECT_NAME} PRIVATE -Wno-redundant-parens )
 endif()
 
-target_compile_options( ${PROJECT_NAME} PRIVATE $<$<CONFIG:DEBUG>:${COMMON_FLAGS_DEBUG}> )
-target_compile_options( ${PROJECT_NAME} PRIVATE $<$<CONFIG:DEBUG>:${COMMON_FLAGS_TEST}> )
-target_compile_options( ${PROJECT_NAME} PRIVATE $<$<CONFIG:RELEASE>:${COMMON_FLAGS_RELEASE}> )
-
-# Flags for Clang to disable some warnings
-if( CMAKE_CXX_COMPILER MATCHES "clang" )
-  message( STATUS "Detected Clang compiler" )
-
-  if( CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 8 )
-    message( STATUS "Detected Clang version > 8" )
-
-    target_compile_options( ${PROJECT_NAME} PRIVATE ${COMMON_FLAGS} -Wno-extra-semi-stmt )
-  endif()
-  if( CMAKE_CXX_COMPILER_VERSION VERSION_LESS 8 )
-    message( STATUS "Detected Clang version < 8" )
-
-    target_compile_options( ${PROJECT_NAME} PRIVATE ${COMMON_FLAGS} -Wno-unused-command-line-argument )
-  endif()
-else()
-  message( STATUS "Detected GCC compiler" )
-
-  target_compile_options( ${PROJECT_NAME} PRIVATE ${COMMON_FLAGS} -Wno-redundant-move )
-endif()
-
-# Link with subprojects and third party libs
-target_link_libraries( ${PROJECT_NAME}
-  PRIVATE glm Components tinyobjloader
-  general "${COMMON_LINKER_FLAGS}"
-  debug "${COMMON_LINKER_FLAGS_DEBUG}"
-  debug "${COMMON_LINKER_FLAGS_TEST}"
-  optimized "${COMMON_LINKER_FLAGS_RELEASE}"
+target_compile_options( ${PROJECT_NAME} PRIVATE
+  $<$<CONFIG:DEBUG>:${COMMON_FLAGS_DEBUG}>
+)
+target_compile_options( ${PROJECT_NAME} PRIVATE
+  $<$<CONFIG:DEBUG>:${COMMON_FLAGS_TEST}>
+)
+target_compile_options( ${PROJECT_NAME} PRIVATE
+  $<$<CONFIG:RELEASE>:${COMMON_FLAGS_RELEASE}>
 )
 
-print_environment()
+if( CMAKE_CXX_COMPILER MATCHES "clang" )
+  message( STATUS "Detected Clang compiler." )
+  message( STATUS "Setting up flags for Clang to disable some warnings." )
+
+  if( CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 8 )
+    message( STATUS "Detected Clang version > 8." )
+
+    target_compile_options( ${PROJECT_NAME} PRIVATE -Wno-extra-semi-stmt )
+  else()
+    message( STATUS "Detected Clang version <= 8." )
+
+    target_compile_options( ${PROJECT_NAME} PRIVATE -Wno-unused-command-line-argument )
+  endif()
+else()
+  message( STATUS "Detected GCC compiler." )
+
+  target_compile_options( ${PROJECT_NAME} PRIVATE -Wno-redundant-move )
+endif()
+
+###############################################################################
+# Link project
+###############################################################################
+message( STATUS "Linking with sub modules and third party libs." )
+target_link_libraries( ${PROJECT_NAME}
+  PRIVATE MobileRT Components
+  general "${COMMON_LINKER_FLAGS}"
+  debug "${COMMON_LINKER_FLAGS_DEBUG}" "${COMMON_LINKER_FLAGS_TEST}"
+  optimized "${COMMON_LINKER_FLAGS_RELEASE}"
+)
+###############################################################################
+###############################################################################
+
+
+#print_environment()

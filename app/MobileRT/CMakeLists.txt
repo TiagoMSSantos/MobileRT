@@ -1,54 +1,87 @@
-# MobileRT Project
+###############################################################################
+# Set up project
+###############################################################################
+message( STATUS "Setting up MobileRT project." )
 project( MobileRT VERSION 1.0.0.0 LANGUAGES CXX )
 
-# Add MobileRT source files
+message( STATUS "Adding MobileRT source files." )
 file( GLOB_RECURSE MOBILE_RT_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/**.cpp" )
 
-# Set as library
+message( STATUS "Setting up as library." )
 add_library( ${PROJECT_NAME} SHARED ${MOBILE_RT_SOURCES} )
+###############################################################################
+###############################################################################
 
-# Add debug postfix
-set_target_properties( ${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "${CMAKE_DEBUG_POSTFIX}" )
-set_target_properties( ${PROJECT_NAME} PROPERTIES BUNDLE TRUE )
 
-# Add MobileRT and third party headers
+###############################################################################
+# Set headers
+###############################################################################
+message( STATUS "Adding MobileRT and third party headers." )
 target_include_directories( ${PROJECT_NAME} PUBLIC "${MOBILE_RT_HEADERS}" )
 target_include_directories( ${PROJECT_NAME} PUBLIC "${MOBILE_DEPENDENT_HEADERS}" )
 target_include_directories( ${PROJECT_NAME} SYSTEM PUBLIC "${GLM_HEADERS}" )
+###############################################################################
+###############################################################################
 
-# Add compiler flags
+
+###############################################################################
+# Set compiler flags
+###############################################################################
+message( STATUS "Adding compiler flags." )
 target_compile_options( ${PROJECT_NAME} PRIVATE ${COMMON_FLAGS} )
-target_compile_options( ${PROJECT_NAME} PRIVATE $<$<CONFIG:DEBUG>:${COMMON_FLAGS_DEBUG}> )
-target_compile_options( ${PROJECT_NAME} PRIVATE $<$<CONFIG:DEBUG>:${COMMON_FLAGS_TEST}> )
-target_compile_options( ${PROJECT_NAME} PRIVATE $<$<CONFIG:RELEASE>:${COMMON_FLAGS_RELEASE}> )
+target_compile_options( ${PROJECT_NAME} PRIVATE
+  $<$<CONFIG:DEBUG>:${COMMON_FLAGS_DEBUG}>
+)
+target_compile_options( ${PROJECT_NAME} PRIVATE
+  $<$<CONFIG:DEBUG>:${COMMON_FLAGS_TEST}>
+)
+target_compile_options( ${PROJECT_NAME} PRIVATE
+  $<$<CONFIG:RELEASE>:${COMMON_FLAGS_RELEASE}>
+)
+###############################################################################
+###############################################################################
 
 if( DEFINED ANDROID_ABI )
-  # Link with JNI log and static OpenMP for Android
-  target_link_libraries( ${PROJECT_NAME} PUBLIC log libomp.a )
+  message( STATUS "Android OS: Linking with JNI log and static OpenMP." )
+
+  target_link_libraries( ${PROJECT_NAME} PRIVATE libomp.a )
+  target_link_libraries( ${PROJECT_NAME} PUBLIC log )
 else()
-  # Link with pthread and dynamic OpenMP for Linux
+  message( STATUS "Native OS: Linking with pthread." )
+
   target_link_libraries( ${PROJECT_NAME} PUBLIC pthread )
   if( CMAKE_HOST_SYSTEM MATCHES "Linux" )
     if( CMAKE_CXX_COMPILER MATCHES "clang" )
-      target_link_libraries( ${PROJECT_NAME} PUBLIC -fopenmp=libomp )
+      message( STATUS "Linux OS: Linking Clang with dynamic OpenMP." )
+
+      target_link_libraries( ${PROJECT_NAME} PRIVATE -fopenmp=libomp )
     else()
-      target_link_libraries( ${PROJECT_NAME} PUBLIC -fopenmp )
+      message( STATUS "Linux OS: Linking GCC with dynamic OpenMP." )
+
+      target_link_libraries( ${PROJECT_NAME} PRIVATE -fopenmp )
     endif()
   else()
-    target_compile_options( ${PROJECT_NAME} PRIVATE -Wno-reserved-id-macro )
     if( CMAKE_CXX_COMPILER MATCHES "clang" )
-      target_link_libraries( ${PROJECT_NAME} PUBLIC omp )
+      message( STATUS "Native OS: Linking Clang with dynamic OpenMP." )
+
+      target_link_libraries( ${PROJECT_NAME} PRIVATE omp )
     else()
-      target_link_libraries( ${PROJECT_NAME} PUBLIC gomp )
+      message( STATUS "Native OS: Linking GCC with dynamic OpenMP." )
+
+      target_link_libraries( ${PROJECT_NAME} PRIVATE gomp )
     endif()
   endif()
 endif()
 
-# Link with third party libs
+###############################################################################
+# Link project
+###############################################################################
+message( STATUS "Linking with third party libs." )
 target_link_libraries( ${PROJECT_NAME}
   PRIVATE glm
   general "${COMMON_LINKER_FLAGS}"
-  debug "${COMMON_LINKER_FLAGS_DEBUG}"
-  debug "${COMMON_LINKER_FLAGS_TEST}"
+  debug "${COMMON_LINKER_FLAGS_DEBUG}" "${COMMON_LINKER_FLAGS_TEST}"
   optimized "${COMMON_LINKER_FLAGS_RELEASE}"
 )
+###############################################################################
+###############################################################################

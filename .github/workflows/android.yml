@@ -94,7 +94,7 @@ jobs:
         path: ./app/build/reports
 
     - name: Upload APK
-      if: success()
+      if: success() && matrix.os == 'ubuntu-16.04'
       uses: actions/upload-artifact@v1.0.0
       with:
         name: MobileRT_${{ matrix.type }}_exp
