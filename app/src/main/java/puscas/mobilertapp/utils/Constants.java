@@ -93,6 +93,11 @@ public final class Constants {
     public static final String TEAR_DOWN = "tearDown";
 
     /**
+     * The name of testGetNames method.
+     */
+    public static final String TEST_GET_NAMES = "testGetNames";
+
+    /**
      * A private constructor in order to prevent instantiating this helper class.
      */
     private Constants() {

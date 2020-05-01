@@ -139,7 +139,7 @@ jobs:
         ./test-reporter-latest-linux-amd64 upload-coverage;
 
     - name: Send codecov report Linux
-      if: failure() && matrix.compiler == 'g++' && matrix.type == 'Debug' && startsWith(matrix.os, 'ubuntu')
+      if: success() && matrix.compiler == 'g++' && matrix.type == 'Debug' && startsWith(matrix.os, 'ubuntu')
       working-directory: .
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

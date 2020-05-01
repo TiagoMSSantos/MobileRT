@@ -65,6 +65,7 @@ public enum Scene {
      *
      * @param name The new scene for the Ray Tracer engine.
      */
+    @Contract(pure = true)
     Scene(final String name) {
         this.name = name;
     }

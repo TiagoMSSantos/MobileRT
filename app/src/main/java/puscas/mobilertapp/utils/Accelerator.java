@@ -60,8 +60,7 @@ public enum Accelerator {
      * Gets the name of the accelerator for the Ray Tracer engine.
      */
     @Contract(pure = true)
-    @Nonnull
-    public String getName() {
+    private String getName() {
         return this.name;
     }
 

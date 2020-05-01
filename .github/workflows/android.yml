@@ -89,7 +89,7 @@ jobs:
           adb shell ls -la /data/RT_Unit_Tests;
           adb shell chmod 777 /data/RT_Unit_Tests/UnitTests;
           adb shell ls -la /data/RT_Unit_Tests;
-          adb shell LD_LIBRARY_PATH=/data/RT_Unit_Tests/ /data/RT_Unit_Tests/UnitTests > ./app/build/reports/log_unit_tests_${{ matrix.variant }}.txt;
+          adb shell LD_LIBRARY_PATH=/data/RT_Unit_Tests/ /data/RT_Unit_Tests/UnitTests 2>&1 | tee ./app/build/reports/log_unit_tests_${{ matrix.variant }}.txt;
 
     - name: Upload reports
       if: always()
