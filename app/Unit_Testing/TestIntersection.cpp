@@ -60,7 +60,7 @@ TEST_F(TestIntersection, TestInvalidConstructor3) {
 TEST_F(TestIntersection, TestConstructor) {
     const auto intPoint {::glm::vec3 {10.0F, 0.0F, 10.0F}};
     const float dist {1.2F};
-    const auto normal {::glm::vec3 {0.0F, 0.0F, 10.0F}};
+    const auto normal {::glm::normalize(::glm::vec3 {0.0F, 0.0F, 10.0F})};
     const auto primitive {nullptr};
     const auto materialIndex {0};
     const ::glm::vec2 texCoords {0.4F, 0.6F};

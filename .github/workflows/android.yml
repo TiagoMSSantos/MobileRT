@@ -69,7 +69,7 @@ jobs:
         keyStorePassword: ${{ secrets.SIGNING_KEY }}
         keyPassword: ${{ secrets.SIGNING_KEY }}
 
-    - name: Run unit tests
+    - name: Run unit tests Java
       if: success()
       run: |
         ./gradlew test${{ matrix.type }}UnitTest -DndkVersion="${{ matrix.ndk_version }}" -DcmakeVersion="${{ matrix.cmake_version }}";
@@ -85,6 +85,11 @@ jobs:
           ./gradlew connectedAndroidTest -DtestType="${{ matrix.variant }}" -DndkVersion="${{ matrix.ndk_version }}" -DcmakeVersion="${{ matrix.cmake_version }}" > ./app/build/reports/log_tests_${{ matrix.variant }}.txt;
           adb logcat -v threadtime -d *:V > ./app/build/reports/logcat_${{ matrix.variant }}.txt;
           cat ./app/build/reports/logcat_${{ matrix.variant }}.txt | egrep -i `cat ./app/build/reports/logcat_${{ matrix.variant }}.txt | egrep -i "proc.*:puscas" | cut -d ":" -f 4 | cut -d ' ' -f 4` > ./app/build/reports/logcat_app_${{ matrix.variant }}.txt;
+          adb push app/build/intermediates/cmake/${{ matrix.variant }}/obj/x86/ /data/RT_Unit_Tests;
+          adb shell ls -la /data/RT_Unit_Tests;
+          adb shell chmod 777 /data/RT_Unit_Tests/UnitTests;
+          adb shell ls -la /data/RT_Unit_Tests;
+          adb shell LD_LIBRARY_PATH=/data/RT_Unit_Tests/ /data/RT_Unit_Tests/UnitTests > ./app/build/reports/log_unit_tests_${{ matrix.variant }}.txt;
 
     - name: Upload reports
       if: always()

@@ -9,8 +9,8 @@ namespace MobileRT {
     /**
      * A texture of a material.
      * <br>
-     * A texture is an image where each cell in the image represents the reflection of light in the object on an
-     * intersection point.
+     * A texture is an image where each cell in the image represents the
+     * reflection of light in the object on an intersection point.
      */
     class Texture {
         private:

@@ -1,8 +1,6 @@
 #include "MobileRT/Accelerators/AABB.hpp"
 #include "MobileRT/Utils.hpp"
 
-#include <boost/assert.hpp>
-
 using ::MobileRT::AABB;
 using ::MobileRT::Ray;
 
@@ -22,9 +20,9 @@ AABB::AABB(const ::glm::vec3 &pointMin, const ::glm::vec3 &pointMax) :
  * Helper method which checks for invalid fields.
  */
 void AABB::checkArguments() const {
-    BOOST_ASSERT_MSG(isValid(this->pointMin_), "pointMin must be valid.");
-    BOOST_ASSERT_MSG(isValid(this->pointMax_), "pointMax must be valid.");
-    BOOST_ASSERT_MSG(!equal(this->pointMax_ - this->pointMin_, ::glm::vec3 {0}), "length can't be zero.");
+    ASSERT(isValid(this->pointMin_), "pointMin must be valid.");
+    ASSERT(isValid(this->pointMax_), "pointMax must be valid.");
+    ASSERT(!equal(this->pointMax_ - this->pointMin_, ::glm::vec3 {0}), "length can't be zero.");
 }
 
 /**

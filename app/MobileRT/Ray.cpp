@@ -1,6 +1,5 @@
 #include "MobileRT/Ray.hpp"
 #include <atomic>
-#include <boost/assert.hpp>
 
 using ::MobileRT::Ray;
 
@@ -39,8 +38,8 @@ Ray::Ray(const ::glm::vec3 &dir, const ::glm::vec3 &origin,
  * Helper method which checks for invalid fields.
  */
 void Ray::checkArguments() const {
-    BOOST_ASSERT_MSG(isValid(this->direction_), "direction must be valid.");
-    BOOST_ASSERT_MSG(!equal(this->direction_, ::glm::vec3 {0}), "direction can't be zero.");
+    ASSERT(isValid(this->direction_), "direction must be valid.");
+    ASSERT(!equal(this->direction_, ::glm::vec3 {0}), "direction can't be zero.");
 
-    BOOST_ASSERT_MSG(isValid(this->origin_), "origin must be valid.");
+    ASSERT(isValid(this->origin_), "origin must be valid.");
 }

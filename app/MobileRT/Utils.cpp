@@ -115,7 +115,7 @@ namespace MobileRT {
      */
     bool equal(const float a, const float b) {
         const auto absValue {::std::fabs(a - b)};
-        const auto res {absValue <= EpsilonLarge};
+        const auto res {absValue < Epsilon};
         return res;
     }
 

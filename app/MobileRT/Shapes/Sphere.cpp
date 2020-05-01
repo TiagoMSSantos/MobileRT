@@ -1,6 +1,5 @@
 #include "MobileRT/Shapes/Sphere.hpp"
 #include <algorithm>
-#include <boost/assert.hpp>
 
 using ::MobileRT::AABB;
 using ::MobileRT::Sphere;
@@ -24,10 +23,10 @@ Sphere::Sphere(const ::glm::vec3 &center, const float radius, const ::std::int32
  * Helper method which checks for invalid fields.
  */
 void Sphere::checkArguments() const {
-    BOOST_ASSERT_MSG(isValid(this->center_), "center must be valid.");
+    ASSERT(isValid(this->center_), "center must be valid.");
 
-    BOOST_ASSERT_MSG(isValid(this->sqRadius_), "sqRadius must be valid.");
-    BOOST_ASSERT_MSG(!equal(this->sqRadius_, 0.0F), "normal can't be zero.");
+    ASSERT(isValid(this->sqRadius_), "sqRadius must be valid.");
+    ASSERT(!equal(this->sqRadius_, 0.0F), "normal can't be zero.");
 }
 
 /**

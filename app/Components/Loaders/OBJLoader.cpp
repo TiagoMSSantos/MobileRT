@@ -1,7 +1,6 @@
 #include "Components/Loaders/OBJLoader.hpp"
 #include "Components/Lights/AreaLight.hpp"
 #include "MobileRT/Texture.hpp"
-#include <boost/assert.hpp>
 #include <cstring>
 #include <fstream>
 #include <map>
@@ -36,7 +35,8 @@ OBJLoader::OBJLoader(::std::string objFilePath, ::std::string matFilePath) :
     LOG("OBJ file path: ", this->objFilePath_);
     LOG("MTL file path: ", this->mtlFilePath_);
     if (errno != 0) {
-        LOG("errno (", errno, "): ", ::std::strerror(errno));
+        perror("Error before LoadObj: ");
+        LOG("errno before LoadObj (", errno, "): ", ::std::strerror(errno));
         errno = 0;
     }
 
@@ -48,7 +48,8 @@ OBJLoader::OBJLoader(::std::string objFilePath, ::std::string matFilePath) :
     };
 
     if (errno != 0) {
-        LOG("errno (", errno, "): ", ::std::strerror(errno));
+        perror("Error after LoadObj: ");
+        LOG("errno after LoadObj (", errno, "): ", ::std::strerror(errno));
     }
     LOG("Called tinyobj::LoadObj");
 

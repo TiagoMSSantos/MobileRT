@@ -1,5 +1,4 @@
 #include "MobileRT/Shapes/Plane.hpp"
-#include <boost/assert.hpp>
 
 using ::MobileRT::AABB;
 using ::MobileRT::Plane;
@@ -23,10 +22,11 @@ Plane::Plane(const ::glm::vec3 &point, const ::glm::vec3 &normal, const ::std::i
  * Helper method which checks for invalid fields.
  */
 void Plane::checkArguments() const {
-    BOOST_ASSERT_MSG(isValid(this->normal_), "normal must be valid.");
-    BOOST_ASSERT_MSG(!equal(this->normal_, ::glm::vec3 {0}), "normal can't be zero.");
+    ASSERT(isValid(this->normal_), "normal must be valid.");
+    ASSERT(!equal(this->normal_, ::glm::vec3 {0}), "normal can't be zero.");
+    ASSERT(equal(::glm::length(this->normal_), 1.0F), "normal length must be 1.");
 
-    BOOST_ASSERT_MSG(isValid(this->point_), "point must be valid.");
+    ASSERT(isValid(this->point_), "point must be valid.");
 }
 
 /**

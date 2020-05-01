@@ -1,5 +1,4 @@
 #include "MobileRT/Shapes/Triangle.hpp"
-#include <boost/assert.hpp>
 #include <cmath>
 
 using ::MobileRT::AABB;
@@ -29,26 +28,29 @@ Triangle::Triangle(const Triangle::Builder &builder) noexcept :
  * Helper method which checks for invalid fields.
  */
 void Triangle::checkArguments() const {
-    BOOST_ASSERT_MSG(isValid(this->normalA_), "normalA must be valid.");
-    BOOST_ASSERT_MSG(!equal(this->normalA_, ::glm::vec3 {0}), "normalA can't be zero.");
+    ASSERT(isValid(this->normalA_), "normalA must be valid.");
+    ASSERT(!equal(this->normalA_, ::glm::vec3 {0}), "normalA can't be zero.");
+    ASSERT(equal(::glm::length(this->normalA_), 1.0F), "normalA length must be 1.");
 
-    BOOST_ASSERT_MSG(isValid(this->normalB_), "normalB must be valid.");
-    BOOST_ASSERT_MSG(!equal(this->normalB_, ::glm::vec3 {0}), "normalB can't be zero.");
+    ASSERT(isValid(this->normalB_), "normalB must be valid.");
+    ASSERT(!equal(this->normalB_, ::glm::vec3 {0}), "normalB can't be zero.");
+    ASSERT(equal(::glm::length(this->normalB_), 1.0F), "normalB length must be 1.");
 
-    BOOST_ASSERT_MSG(isValid(this->normalC_), "normalC must be valid.");
-    BOOST_ASSERT_MSG(!equal(this->normalC_, ::glm::vec3 {0}), "normalC can't be zero.");
+    ASSERT(isValid(this->normalC_), "normalC must be valid.");
+    ASSERT(!equal(this->normalC_, ::glm::vec3 {0}), "normalC can't be zero.");
+    ASSERT(equal(::glm::length(this->normalC_), 1.0F), "normalC length must be 1.");
 
-    BOOST_ASSERT_MSG(isValid(this->pointA_), "pointA must be valid.");
+    ASSERT(isValid(this->pointA_), "pointA must be valid.");
 
-    BOOST_ASSERT_MSG(isValid(this->AB_), "AB must be valid.");
-    BOOST_ASSERT_MSG(!equal(this->AB_, ::glm::vec3 {0}), "AB can't be zero.");
+    ASSERT(isValid(this->AB_), "AB must be valid.");
+    ASSERT(!equal(this->AB_, ::glm::vec3 {0}), "AB can't be zero.");
 
-    BOOST_ASSERT_MSG(isValid(this->AC_), "AC must be valid.");
-    BOOST_ASSERT_MSG(!equal(this->AC_, ::glm::vec3 {0}), "AC can't be zero.");
+    ASSERT(isValid(this->AC_), "AC must be valid.");
+    ASSERT(!equal(this->AC_, ::glm::vec3 {0}), "AC can't be zero.");
 
-    BOOST_ASSERT_MSG(isValid(this->texCoordA_), "texCoordA must be valid.");
-    BOOST_ASSERT_MSG(isValid(this->texCoordB_), "texCoordB must be valid.");
-    BOOST_ASSERT_MSG(isValid(this->texCoordC_), "texCoordC must be valid.");
+    ASSERT(isValid(this->texCoordA_), "texCoordA must be valid.");
+    ASSERT(isValid(this->texCoordB_), "texCoordB must be valid.");
+    ASSERT(isValid(this->texCoordC_), "texCoordC must be valid.");
 }
 
 /**

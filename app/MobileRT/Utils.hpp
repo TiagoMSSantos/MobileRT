@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <array>
+#include <boost/assert.hpp>
 #include <chrono>
 #include <cmath>
 #include <glm/glm.hpp>
@@ -191,6 +192,20 @@ namespace MobileRT {
         }
         return parsedValues;
     }
+
+
+    #ifndef NDEBUG
+        #define ASSERT(condition, message) \
+        do { \
+            if (!(condition)) { \
+                LOG("Assertion '", #condition, "': ",  message); \
+                BOOST_ASSERT_MSG(condition, message); \
+                ::std::terminate(); \
+            } \
+        } while (false)
+    #else
+        #define ASSERT(condition, message) do { } while (false)
+    #endif
 
 
     namespace std {

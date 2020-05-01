@@ -13,7 +13,7 @@ namespace {
  * The constructor.
  *
  * @param shader       The shader to use to render the scene.
- * @param camera       The canera in the scene.
+ * @param camera       The camera in the scene.
  * @param samplerPixel The sampler to use for the pixel jittering.
  * @param width        The width of the image to render.
  * @param height       The height of the image to render.
