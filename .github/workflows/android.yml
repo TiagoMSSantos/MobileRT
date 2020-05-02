@@ -82,6 +82,7 @@ jobs:
         ndk: ${{ matrix.ndk_version }}
         cmake: ${{ matrix.cmake_version }}
         script: |
+          adb logcat -c;
           ./gradlew connectedAndroidTest -DtestType="${{ matrix.variant }}" -DndkVersion="${{ matrix.ndk_version }}" -DcmakeVersion="${{ matrix.cmake_version }}" > ./app/build/reports/log_tests_${{ matrix.variant }}.txt;
           adb logcat -v threadtime -d *:V > ./app/build/reports/logcat_${{ matrix.variant }}.txt;
           cat ./app/build/reports/logcat_${{ matrix.variant }}.txt | egrep -i `cat ./app/build/reports/logcat_${{ matrix.variant }}.txt | egrep -i "proc.*:puscas" | cut -d ":" -f 4 | cut -d ' ' -f 4` > ./app/build/reports/logcat_app_${{ matrix.variant }}.txt;

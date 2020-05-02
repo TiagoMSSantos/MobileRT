@@ -40,11 +40,6 @@ import puscas.mobilertapp.utils.ConstantsRenderer;
 import puscas.mobilertapp.utils.State;
 import puscas.mobilertapp.utils.Utils;
 
-import static puscas.mobilertapp.utils.ConstantsRenderer.NUMBER_THREADS;
-import static puscas.mobilertapp.utils.ConstantsRenderer.VERTEX_COLOR;
-import static puscas.mobilertapp.utils.ConstantsRenderer.VERTEX_POSITION;
-import static puscas.mobilertapp.utils.ConstantsRenderer.VERTEX_TEX_COORD;
-
 /**
  * The OpenGL renderer that shows the Ray Tracer engine rendered image.
  */
@@ -241,7 +236,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * A thread pool containing {@link ConstantsRenderer#NUMBER_THREADS} threads with the purpose of executing the
      * {@link MainRenderer#renderTask}.
      */
-    private ExecutorService executorService = Executors.newFixedThreadPool(NUMBER_THREADS);
+    private ExecutorService executorService = Executors.newFixedThreadPool(ConstantsRenderer.NUMBER_THREADS);
 
     /**
      * Helper method which checks and prints errors in the OpenGL framework.
@@ -361,6 +356,13 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
                     final int samplesLight,
                     final int numPrimitives,
                     final int numLights) {
+        LOGGER.info("resetStats");
+        LOGGER.info(String.format(Locale.US, "numThreads: %d", numThreads));
+        LOGGER.info(String.format(Locale.US, "numPrimitives: %d", numPrimitives));
+        LOGGER.info(String.format(Locale.US, "numLights: %d", numLights));
+        LOGGER.info(String.format(Locale.US, "samplesPixel: %d", samplesPixel));
+        LOGGER.info(String.format(Locale.US, "samplesLight: %d", samplesLight));
+
         this.numThreads = numThreads;
         this.samplesPixel = samplesPixel;
         this.samplesLight = samplesLight;
@@ -587,7 +589,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         try {
             this.executorService.shutdown();
             Utils.waitExecutorToFinish(this.executorService);
-            this.executorService = Executors.newFixedThreadPool(NUMBER_THREADS);
+            this.executorService = Executors.newFixedThreadPool(ConstantsRenderer.NUMBER_THREADS);
         } finally {
             this.lockExecutorService.unlock();
         }
@@ -661,7 +663,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         checksGLError();
 
         final int positionAttrib2 = 0;
-        GLES20.glBindAttribLocation(this.shaderProgramRaster, positionAttrib2, VERTEX_POSITION);
+        GLES20.glBindAttribLocation(this.shaderProgramRaster, positionAttrib2, ConstantsRenderer.VERTEX_POSITION);
         checksGLError();
         GLES20.glVertexAttribPointer(positionAttrib2, 4, GLES20.GL_FLOAT, false, 0, bbVertices);
         checksGLError();
@@ -669,7 +671,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         checksGLError();
 
         final int colorAttrib2 = 1;
-        GLES20.glBindAttribLocation(this.shaderProgramRaster, colorAttrib2, VERTEX_COLOR);
+        GLES20.glBindAttribLocation(this.shaderProgramRaster, colorAttrib2, ConstantsRenderer.VERTEX_COLOR);
         checksGLError();
         GLES20.glVertexAttribPointer(colorAttrib2, 4, GLES20.GL_FLOAT, false, 0, bbColors);
         checksGLError();
@@ -783,7 +785,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
 
         checksFreeMemory(1, () -> { });
 
-        final int positionAttrib = GLES20.glGetAttribLocation(this.shaderProgramRaster, VERTEX_POSITION);
+        final int positionAttrib = GLES20.glGetAttribLocation(this.shaderProgramRaster, ConstantsRenderer.VERTEX_POSITION);
         checksGLError();
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, positionAttrib);
         checksGLError();
@@ -794,7 +796,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
 
         checksFreeMemory(1, () -> { });
 
-        final int colorAttrib = GLES20.glGetAttribLocation(this.shaderProgramRaster, VERTEX_COLOR);
+        final int colorAttrib = GLES20.glGetAttribLocation(this.shaderProgramRaster, ConstantsRenderer.VERTEX_COLOR);
         checksGLError();
         GLES20.glEnableVertexAttribArray(colorAttrib);
         checksGLError();
@@ -909,7 +911,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         GLES20.glUseProgram(this.shaderProgram);
         checksGLError();
 
-        final int positionAttrib = GLES20.glGetAttribLocation(this.shaderProgram, VERTEX_POSITION);
+        final int positionAttrib = GLES20.glGetAttribLocation(this.shaderProgram, ConstantsRenderer.VERTEX_POSITION);
         checksGLError();
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, positionAttrib);
         checksGLError();
@@ -920,7 +922,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         );
         checksGLError();
 
-        final int texCoordAttrib = GLES20.glGetAttribLocation(this.shaderProgram, VERTEX_TEX_COORD);
+        final int texCoordAttrib = GLES20.glGetAttribLocation(this.shaderProgram, ConstantsRenderer.VERTEX_TEX_COORD);
         checksGLError();
         GLES20.glEnableVertexAttribArray(texCoordAttrib);
         checksGLError();
@@ -1070,7 +1072,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
 
         // Bind Attributes
         final int positionAttrib = 0;
-        GLES20.glBindAttribLocation(this.shaderProgram, positionAttrib, VERTEX_POSITION);
+        GLES20.glBindAttribLocation(this.shaderProgram, positionAttrib, ConstantsRenderer.VERTEX_POSITION);
         checksGLError();
         GLES20.glVertexAttribPointer(
             positionAttrib, 4, GLES20.GL_FLOAT, false, 0, this.floatBufferVertices
@@ -1080,7 +1082,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         checksGLError();
 
         final int texCoordAttrib = 1;
-        GLES20.glBindAttribLocation(this.shaderProgram, texCoordAttrib, VERTEX_TEX_COORD);
+        GLES20.glBindAttribLocation(this.shaderProgram, texCoordAttrib, ConstantsRenderer.VERTEX_TEX_COORD);
         checksGLError();
         GLES20.glVertexAttribPointer(
             texCoordAttrib, 2, GLES20.GL_FLOAT, false, 0, this.floatBufferTexture

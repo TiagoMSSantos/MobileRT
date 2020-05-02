@@ -10,15 +10,17 @@ import android.widget.TextView;
 
 import org.assertj.core.api.Assertions;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.logging.Logger;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import puscas.mobilertapp.MainActivity;
+import puscas.mobilertapp.exceptions.FailureException;
 
 /**
  * The test suite for the {@link CustomNumberPicker} util class.
@@ -51,8 +53,9 @@ public final class CustomNumberPickerTest {
      *
      * @return An {@link AttributeSet}.
      */
+    @Nonnull
     @Contract(pure = true)
-    private @NotNull AttributeSet createAttributeSet() {
+    private static AttributeSet createAttributeSet() {
         final AttributeSet attrs = new AttributeSet() {
             @Contract(pure = true)
             @Override
@@ -208,8 +211,8 @@ public final class CustomNumberPickerTest {
         Assertions.assertThatThrownBy(
             () -> customNumberPicker.addView(view, params)
         )
-            .isInstanceOf(java.lang.ClassCastException.class)
-            .hasMessageContaining("android.view.View cannot be cast to android.widget.TextView");
+            .isInstanceOf(FailureException.class)
+            .hasMessageContaining("View cannot be cast to TextView.");
     }
 
     /**

@@ -21,12 +21,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import java8.util.Optional;
+import puscas.mobilertapp.utils.ConstantsMethods;
+import puscas.mobilertapp.utils.ConstantsRenderer;
+import puscas.mobilertapp.utils.ConstantsUI;
 import puscas.mobilertapp.utils.State;
 import puscas.mobilertapp.utils.Utils;
-
-import static puscas.mobilertapp.utils.ConstantsMethods.ON_CANCELLED;
-import static puscas.mobilertapp.utils.ConstantsRenderer.NUMBER_THREADS;
-import static puscas.mobilertapp.utils.ConstantsUI.LINE_SEPARATOR;
 
 /**
  * An asynchronous task to render a frame and update the {@link TextView} text.
@@ -53,7 +52,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
      * An {@link ExecutorService} which schedules every {@link RenderTask#updateInterval}
      * {@code TimeUnit.MILLISECONDS} the {@link RenderTask#timer} {@link Runnable}.
      */
-    private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(NUMBER_THREADS);
+    private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(ConstantsRenderer.NUMBER_THREADS);
 
     /**
      * A {@link Runnable} to the {@link DrawView#requestRender} method which is called in the {@link RenderTask#timer}.
@@ -267,7 +266,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
      */
     private void printText() {
         final String aux = this.fpsT + this.fpsRenderT + this.resolutionT + this.threadsT + this.samplesPixelT +
-                this.samplesLightT + this.sampleT + LINE_SEPARATOR +
+                this.samplesLightT + this.sampleT + ConstantsUI.LINE_SEPARATOR +
                 this.stateT + this.allocatedT + this.timeFrameT + this.timeT + this.primitivesT;
         Optional.ofNullable(this.textViewRef.get()).ifPresent(textView -> textView.setText(aux));
     }
@@ -308,13 +307,13 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
     @Override
     public void onCancelled(@Nonnull final Void result) {
         super.onCancelled(result);
-        LOGGER.info(ON_CANCELLED);
+        LOGGER.info(ConstantsMethods.ON_CANCELLED);
     }
 
     @Override
     public void onCancelled() {
         super.onCancelled();
-        LOGGER.info(ON_CANCELLED);
+        LOGGER.info(ConstantsMethods.ON_CANCELLED);
     }
 
     /**

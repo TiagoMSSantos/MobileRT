@@ -3,6 +3,8 @@ package puscas.mobilertapp;
 import android.app.Activity;
 import android.opengl.GLSurfaceView;
 
+import org.jetbrains.annotations.Contract;
+
 import java.util.logging.Logger;
 
 import javax.annotation.Nonnull;
@@ -13,9 +15,11 @@ import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 
 import java8.util.Objects;
+import puscas.mobilertapp.utils.ConstantsError;
 
-import static puscas.mobilertapp.utils.ConstantsError.EGL_DESTROY_CONTEXT_FAILED;
-
+/**
+ * A customized eglCreateContext and eglDestroyContext calls.
+ */
 public class MyEGLContextFactory implements GLSurfaceView.EGLContextFactory {
 
     /**
@@ -43,6 +47,7 @@ public class MyEGLContextFactory implements GLSurfaceView.EGLContextFactory {
      *
      * @param drawView The {@link GLSurfaceView} to be used.
      */
+    @Contract(pure = true)
     MyEGLContextFactory(final DrawView drawView) {
         this.drawView = drawView;
         this.eglContext = null;
@@ -77,7 +82,7 @@ public class MyEGLContextFactory implements GLSurfaceView.EGLContextFactory {
         if (this.drawView.isChangingConfigs()) {
             this.eglContext = context;
         } else if (!egl.eglDestroyContext(display, context)) {
-            throw new UnsupportedOperationException(EGL_DESTROY_CONTEXT_FAILED + egl.eglGetError());
+            throw new UnsupportedOperationException(ConstantsError.EGL_DESTROY_CONTEXT_FAILED + egl.eglGetError());
         }
     }
 }

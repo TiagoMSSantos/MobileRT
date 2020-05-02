@@ -51,27 +51,13 @@ import java8.util.stream.IntStreams;
 import java8.util.stream.StreamSupport;
 import puscas.mobilertapp.exceptions.FailureException;
 import puscas.mobilertapp.utils.Accelerator;
+import puscas.mobilertapp.utils.ConstantsMethods;
+import puscas.mobilertapp.utils.ConstantsRenderer;
+import puscas.mobilertapp.utils.ConstantsToast;
+import puscas.mobilertapp.utils.ConstantsUI;
 import puscas.mobilertapp.utils.Scene;
 import puscas.mobilertapp.utils.Shader;
 import puscas.mobilertapp.utils.State;
-
-import static puscas.mobilertapp.utils.ConstantsMethods.ON_DESTROY;
-import static puscas.mobilertapp.utils.ConstantsMethods.ON_DETACHED_FROM_WINDOW;
-import static puscas.mobilertapp.utils.ConstantsMethods.START_RENDER;
-import static puscas.mobilertapp.utils.ConstantsRenderer.REQUIRED_OPENGL_VERSION;
-import static puscas.mobilertapp.utils.ConstantsToast.PLEASE_INSTALL_FILE_MANAGER;
-import static puscas.mobilertapp.utils.ConstantsUI.CHECK_BOX_RASTERIZE;
-import static puscas.mobilertapp.utils.ConstantsUI.FILE_SEPARATOR;
-import static puscas.mobilertapp.utils.ConstantsUI.LINE_SEPARATOR;
-import static puscas.mobilertapp.utils.ConstantsUI.PATH_SEPARATOR;
-import static puscas.mobilertapp.utils.ConstantsUI.PATH_SHADERS;
-import static puscas.mobilertapp.utils.ConstantsUI.PICKER_ACCELERATOR;
-import static puscas.mobilertapp.utils.ConstantsUI.PICKER_SAMPLES_LIGHT;
-import static puscas.mobilertapp.utils.ConstantsUI.PICKER_SAMPLES_PIXEL;
-import static puscas.mobilertapp.utils.ConstantsUI.PICKER_SCENE;
-import static puscas.mobilertapp.utils.ConstantsUI.PICKER_SHADER;
-import static puscas.mobilertapp.utils.ConstantsUI.PICKER_SIZES;
-import static puscas.mobilertapp.utils.ConstantsUI.PICKER_THREADS;
 
 /**
  * The main {@link Activity} for the Android User Interface.
@@ -171,7 +157,7 @@ public final class MainActivity extends Activity {
      * @return The number of CPU cores.
      */
     private int getNumCoresOldPhones() {
-        final String cpuInfoPath = readTextAsset("Utils" + FILE_SEPARATOR + "cpuInfoPath.txt");
+        final String cpuInfoPath = readTextAsset("Utils" + ConstantsUI.FILE_SEPARATOR + "cpuInfoPath.txt");
         final File cpuTopologyPath = new File(cpuInfoPath.trim());
         final File[] files = cpuTopologyPath.listFiles(pathname -> Pattern.matches("cpu[0-9]+", pathname.getName()));
         return Optional.ofNullable(files).map(filesInPath -> filesInPath.length).get();
@@ -235,13 +221,13 @@ public final class MainActivity extends Activity {
      */
     private void showFileChooser() {
         final Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("*" + FILE_SEPARATOR + "*");
+        intent.setType("*" + ConstantsUI.FILE_SEPARATOR + "*");
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         try {
             final Intent intentChooseFile = Intent.createChooser(intent, "Select a File to Upload");
             startActivityForResult(intentChooseFile, OPEN_FILE_REQUEST_CODE);
         } catch (final android.content.ActivityNotFoundException ex) {
-            Toast.makeText(this, PLEASE_INSTALL_FILE_MANAGER, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, ConstantsToast.PLEASE_INSTALL_FILE_MANAGER, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -269,6 +255,7 @@ public final class MainActivity extends Activity {
      * @param filePath The path to the file (relative to the asset directory).
      * @return A {@link String} containing the contents of the asset file.
      */
+    @Nonnull
     private String readTextAsset(final String filePath) {
         final AssetManager assetManager = getAssets();
         try (InputStream inputStream = assetManager.open(filePath);
@@ -278,7 +265,7 @@ public final class MainActivity extends Activity {
             final StringBuilder sb = new StringBuilder(1);
             String str = reader.readLine();
             while (Objects.nonNull(str)) {
-                sb.append(str).append(LINE_SEPARATOR);
+                sb.append(str).append(ConstantsUI.LINE_SEPARATOR);
                 str = reader.readLine();
             }
             return sb.toString();
@@ -302,11 +289,11 @@ public final class MainActivity extends Activity {
         egl.eglInitialize(display, version);
 
         final int[] configAttribs = {
-                EGL10.EGL_RED_SIZE, 4,
-                EGL10.EGL_GREEN_SIZE, 4,
-                EGL10.EGL_BLUE_SIZE, 4,
-                EGL10.EGL_RENDERABLE_TYPE, 4,
-                EGL10.EGL_NONE
+            EGL10.EGL_RED_SIZE, 4,
+            EGL10.EGL_GREEN_SIZE, 4,
+            EGL10.EGL_BLUE_SIZE, 4,
+            EGL10.EGL_RENDERABLE_TYPE, 4,
+            EGL10.EGL_NONE
         };
 
         final EGLConfig[] configs = new EGLConfig[10];
@@ -322,7 +309,7 @@ public final class MainActivity extends Activity {
      * @param view The view of the {@link Activity}.
      */
     public void startRender(@Nonnull final View view) {
-        LOGGER.info(START_RENDER);
+        LOGGER.info(ConstantsMethods.START_RENDER);
 
         this.sceneFilePath = "";
         final Scene scene = Scene.values()[this.pickerScene.getValue()];
@@ -337,9 +324,9 @@ public final class MainActivity extends Activity {
                     break;
 
                 case TEST:
-                    final String scenePath = "CornellBox" + FILE_SEPARATOR + "CornellBox-Water";
+                    final String scenePath = "CornellBox" + ConstantsUI.FILE_SEPARATOR + "CornellBox-Water";
                     final String sdCardPath = getSDCardPath();
-                    this.sceneFilePath = sdCardPath + FILE_SEPARATOR + "WavefrontOBJs" + FILE_SEPARATOR + scenePath;
+                    this.sceneFilePath = sdCardPath + ConstantsUI.FILE_SEPARATOR + "WavefrontOBJs" + ConstantsUI.FILE_SEPARATOR + scenePath;
                     startRender(this.sceneFilePath);
                     break;
 
@@ -375,14 +362,14 @@ public final class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         final Optional<Bundle> instance = Optional.ofNullable(savedInstanceState);
-        final int defaultPickerScene = instance.map(x -> x.getInt(PICKER_SCENE)).orElse(0);
-        final int defaultPickerShader = instance.map(x -> x.getInt(PICKER_SHADER)).orElse(0);
-        final int defaultPickerThreads = instance.map(x -> x.getInt(PICKER_THREADS)).orElse(1);
-        final int defaultPickerAccelerator = instance.map(x -> x.getInt(PICKER_ACCELERATOR)).orElse(1);
-        final int defaultPickerSamplesPixel = instance.map(x -> x.getInt(PICKER_SAMPLES_PIXEL)).orElse(1);
-        final int defaultPickerSamplesLight = instance.map(x -> x.getInt(PICKER_SAMPLES_LIGHT)).orElse(1);
-        final int defaultPickerSizes = instance.map(x -> x.getInt(PICKER_SIZES)).orElse(4);
-        final boolean defaultCheckBoxRasterize = instance.map(x -> x.getBoolean(CHECK_BOX_RASTERIZE)).orElse(true);
+        final int defaultPickerScene = instance.map(x -> x.getInt(ConstantsUI.PICKER_SCENE)).orElse(0);
+        final int defaultPickerShader = instance.map(x -> x.getInt(ConstantsUI.PICKER_SHADER)).orElse(0);
+        final int defaultPickerThreads = instance.map(x -> x.getInt(ConstantsUI.PICKER_THREADS)).orElse(1);
+        final int defaultPickerAccelerator = instance.map(x -> x.getInt(ConstantsUI.PICKER_ACCELERATOR)).orElse(1);
+        final int defaultPickerSamplesPixel = instance.map(x -> x.getInt(ConstantsUI.PICKER_SAMPLES_PIXEL)).orElse(1);
+        final int defaultPickerSamplesLight = instance.map(x -> x.getInt(ConstantsUI.PICKER_SAMPLES_LIGHT)).orElse(1);
+        final int defaultPickerSizes = instance.map(x -> x.getInt(ConstantsUI.PICKER_SIZES)).orElse(4);
+        final boolean defaultCheckBoxRasterize = instance.map(x -> x.getBoolean(ConstantsUI.CHECK_BOX_RASTERIZE)).orElse(true);
 
         try {
             setContentView(R.layout.activity_main);
@@ -415,7 +402,7 @@ public final class MainActivity extends Activity {
         Preconditions.checkNotNull(assetManager);
 
         final ConfigurationInfo configurationInfo = assetManager.getDeviceConfigurationInfo();
-        final boolean supportES2 = (configurationInfo.reqGlEsVersion >= REQUIRED_OPENGL_VERSION);
+        final boolean supportES2 = (configurationInfo.reqGlEsVersion >= ConstantsRenderer.REQUIRED_OPENGL_VERSION);
 
         if (supportES2 && MainActivity.checkGL20Support()) {
             this.drawView.setVisibility(View.INVISIBLE);
@@ -424,10 +411,10 @@ public final class MainActivity extends Activity {
 
             final MainRenderer renderer = this.drawView.getRenderer();
             renderer.setBitmap(1, 1, 1, 1, false);
-            final String vertexShader = readTextAsset(PATH_SHADERS + FILE_SEPARATOR + "VertexShader.glsl");
-            final String fragmentShader = readTextAsset(PATH_SHADERS + FILE_SEPARATOR + "FragmentShader.glsl");
-            final String vertexShaderRaster = readTextAsset(PATH_SHADERS + FILE_SEPARATOR + "VertexShaderRaster.glsl");
-            final String fragmentShaderRaster = readTextAsset(PATH_SHADERS + FILE_SEPARATOR + "FragmentShaderRaster.glsl");
+            final String vertexShader = readTextAsset(ConstantsUI.PATH_SHADERS + ConstantsUI.FILE_SEPARATOR + "VertexShader.glsl");
+            final String fragmentShader = readTextAsset(ConstantsUI.PATH_SHADERS + ConstantsUI.FILE_SEPARATOR + "FragmentShader.glsl");
+            final String vertexShaderRaster = readTextAsset(ConstantsUI.PATH_SHADERS + ConstantsUI.FILE_SEPARATOR + "VertexShaderRaster.glsl");
+            final String fragmentShaderRaster = readTextAsset(ConstantsUI.PATH_SHADERS + ConstantsUI.FILE_SEPARATOR + "FragmentShaderRaster.glsl");
             renderer.setVertexShaderCode(vertexShader);
             renderer.setFragmentShaderCode(fragmentShader);
             renderer.setVertexShaderCodeRaster(vertexShaderRaster);
@@ -574,14 +561,14 @@ public final class MainActivity extends Activity {
         super.onRestoreInstanceState(savedInstanceState);
         LOGGER.info("onRestoreInstanceState");
 
-        final int scene = savedInstanceState.getInt(PICKER_SCENE);
-        final int shader = savedInstanceState.getInt(PICKER_SHADER);
-        final int threads = savedInstanceState.getInt(PICKER_THREADS);
-        final int accelerator = savedInstanceState.getInt(PICKER_ACCELERATOR);
-        final int samplesPixel = savedInstanceState.getInt(PICKER_SAMPLES_PIXEL);
-        final int samplesLight = savedInstanceState.getInt(PICKER_SAMPLES_LIGHT);
-        final int sizes = savedInstanceState.getInt(PICKER_SIZES);
-        final boolean rasterize = savedInstanceState.getBoolean(CHECK_BOX_RASTERIZE);
+        final int scene = savedInstanceState.getInt(ConstantsUI.PICKER_SCENE);
+        final int shader = savedInstanceState.getInt(ConstantsUI.PICKER_SHADER);
+        final int threads = savedInstanceState.getInt(ConstantsUI.PICKER_THREADS);
+        final int accelerator = savedInstanceState.getInt(ConstantsUI.PICKER_ACCELERATOR);
+        final int samplesPixel = savedInstanceState.getInt(ConstantsUI.PICKER_SAMPLES_PIXEL);
+        final int samplesLight = savedInstanceState.getInt(ConstantsUI.PICKER_SAMPLES_LIGHT);
+        final int sizes = savedInstanceState.getInt(ConstantsUI.PICKER_SIZES);
+        final boolean rasterize = savedInstanceState.getBoolean(ConstantsUI.CHECK_BOX_RASTERIZE);
 
         this.pickerScene.setValue(scene);
         this.pickerShader.setValue(shader);
@@ -607,14 +594,14 @@ public final class MainActivity extends Activity {
         final int sizes = this.pickerResolutions.getValue();
         final boolean rasterize = this.checkBoxRasterize.isChecked();
 
-        outState.putInt(PICKER_SCENE, scene);
-        outState.putInt(PICKER_SHADER, shader);
-        outState.putInt(PICKER_THREADS, threads);
-        outState.putInt(PICKER_ACCELERATOR, accelerator);
-        outState.putInt(PICKER_SAMPLES_PIXEL, samplesPixel);
-        outState.putInt(PICKER_SAMPLES_LIGHT, samplesLight);
-        outState.putInt(PICKER_SIZES, sizes);
-        outState.putBoolean(CHECK_BOX_RASTERIZE, rasterize);
+        outState.putInt(ConstantsUI.PICKER_SCENE, scene);
+        outState.putInt(ConstantsUI.PICKER_SHADER, shader);
+        outState.putInt(ConstantsUI.PICKER_THREADS, threads);
+        outState.putInt(ConstantsUI.PICKER_ACCELERATOR, accelerator);
+        outState.putInt(ConstantsUI.PICKER_SAMPLES_PIXEL, samplesPixel);
+        outState.putInt(ConstantsUI.PICKER_SAMPLES_LIGHT, samplesLight);
+        outState.putInt(ConstantsUI.PICKER_SIZES, sizes);
+        outState.putBoolean(ConstantsUI.CHECK_BOX_RASTERIZE, rasterize);
 
         final MainRenderer renderer = this.drawView.getRenderer();
         renderer.rtFinishRender();
@@ -632,7 +619,7 @@ public final class MainActivity extends Activity {
     @Override
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        LOGGER.info(ON_DETACHED_FROM_WINDOW);
+        LOGGER.info(ConstantsMethods.ON_DETACHED_FROM_WINDOW);
 
         this.drawView.onDetachedFromWindow();
     }
@@ -640,7 +627,7 @@ public final class MainActivity extends Activity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        LOGGER.info(ON_DESTROY);
+        LOGGER.info(ConstantsMethods.ON_DESTROY);
 
         this.drawView.onDetachedFromWindow();
     }
@@ -656,12 +643,12 @@ public final class MainActivity extends Activity {
                     final String sdCardName = "sdcard";
                     String filePath = StreamSupport.stream(uri.getPathSegments())
                         .skip(1L)
-                        .reduce("", (accumulator, segment) -> accumulator + FILE_SEPARATOR + segment)
-                        .replace(FILE_SEPARATOR + sdCardName + FILE_SEPARATOR, FILE_SEPARATOR);
+                        .reduce("", (accumulator, segment) -> accumulator + ConstantsUI.FILE_SEPARATOR + segment)
+                        .replace(ConstantsUI.FILE_SEPARATOR + sdCardName + ConstantsUI.FILE_SEPARATOR, ConstantsUI.FILE_SEPARATOR);
 
-                    final int removeIndex = filePath.indexOf(PATH_SEPARATOR);
+                    final int removeIndex = filePath.indexOf(ConstantsUI.PATH_SEPARATOR);
                     filePath = removeIndex >= 0 ? filePath.substring(removeIndex) : filePath;
-                    filePath = filePath.replace(PATH_SEPARATOR, FILE_SEPARATOR);
+                    filePath = filePath.replace(ConstantsUI.PATH_SEPARATOR, ConstantsUI.FILE_SEPARATOR);
                     filePath = filePath.substring(0, filePath.lastIndexOf('.'));
 
                     final String sdCardPath = getSDCardPath();

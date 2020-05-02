@@ -2,6 +2,7 @@ package puscas.mobilertapp;
 
 import org.jetbrains.annotations.Contract;
 
+import java.util.Locale;
 import java.util.logging.Logger;
 
 import javax.annotation.Nonnull;
@@ -234,7 +235,7 @@ public final class Config {
         @Contract("_ -> this")
         @Nonnull
         Config.Builder withScene(final int scene) {
-            LOGGER_BUILDER.info("withScene");
+            LOGGER_BUILDER.info(String.format(Locale.US, "withScene: %d", scene));
 
             this.scene = scene;
             return this;
@@ -249,7 +250,7 @@ public final class Config {
         @Contract("_ -> this")
         @Nonnull
         Config.Builder withShader(final int shader) {
-            LOGGER_BUILDER.info("withShader");
+            LOGGER_BUILDER.info(String.format(Locale.US, "withShader: %d", shader));
 
             this.shader = shader;
             return this;
@@ -264,7 +265,7 @@ public final class Config {
         @Contract("_ -> this")
         @Nonnull
         Config.Builder withAccelerator(final int accelerator) {
-            LOGGER_BUILDER.info("withAccelerator");
+            LOGGER_BUILDER.info(String.format(Locale.US, "withAccelerator: %d", accelerator));
 
             this.accelerator = accelerator;
             return this;
@@ -279,7 +280,7 @@ public final class Config {
         @Contract("_ -> this")
         @Nonnull
         Config.Builder withWidth(final int width) {
-            LOGGER_BUILDER.info("withWidth");
+            LOGGER_BUILDER.info(String.format(Locale.US, "withWidth: %d", width));
 
             this.width = width;
             return this;
@@ -294,7 +295,7 @@ public final class Config {
         @Contract("_ -> this")
         @Nonnull
         Config.Builder withHeight(final int height) {
-            LOGGER_BUILDER.info("withHeight");
+            LOGGER_BUILDER.info(String.format(Locale.US, "withHeight: %d", height));
 
             this.height = height;
             return this;
@@ -309,7 +310,7 @@ public final class Config {
         @Contract("_ -> this")
         @Nonnull
         Config.Builder withSamplesPixel(final int samplesPixel) {
-            LOGGER_BUILDER.info("withSamplesPixel");
+            LOGGER_BUILDER.info(String.format(Locale.US, "withSamplesPixel: %d", samplesPixel));
 
             this.samplesPixel = samplesPixel;
             return this;
@@ -324,7 +325,7 @@ public final class Config {
         @Contract("_ -> this")
         @Nonnull
         Config.Builder withSamplesLight(final int samplesLight) {
-            LOGGER_BUILDER.info("withSamplesLight");
+            LOGGER_BUILDER.info(String.format(Locale.US, "withSamplesLight: %d", samplesLight));
 
             this.samplesLight = samplesLight;
             return this;
@@ -339,7 +340,7 @@ public final class Config {
         @Contract("_ -> this")
         @Nonnull
         Config.Builder withOBJ(@Nonnull final String objFilePath) {
-            LOGGER_BUILDER.info("withOBJ");
+            LOGGER_BUILDER.info(String.format(Locale.US, "withOBJ: %s", objFilePath));
 
             this.objFilePath = objFilePath;
             return this;
@@ -354,7 +355,7 @@ public final class Config {
         @Contract("_ -> this")
         @Nonnull
         Config.Builder withMAT(@Nonnull final String matFilePath) {
-            LOGGER_BUILDER.info("withMAT");
+            LOGGER_BUILDER.info(String.format(Locale.US, "withMAT: %s", matFilePath));
 
             this.matFilePath = matFilePath;
             return this;
@@ -369,7 +370,7 @@ public final class Config {
         @Contract("_ -> this")
         @Nonnull
         Config.Builder withCAM(@Nonnull final String camFilePath) {
-            LOGGER_BUILDER.info("withCAM");
+            LOGGER_BUILDER.info(String.format(Locale.US, "withCAM: %s", camFilePath));
 
             this.camFilePath = camFilePath;
             return this;

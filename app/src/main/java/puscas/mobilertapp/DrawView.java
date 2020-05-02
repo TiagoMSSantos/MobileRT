@@ -26,16 +26,11 @@ import javax.annotation.Nonnull;
 
 import java8.util.Optional;
 import puscas.mobilertapp.exceptions.LowMemoryException;
+import puscas.mobilertapp.utils.ConstantsError;
+import puscas.mobilertapp.utils.ConstantsMethods;
 import puscas.mobilertapp.utils.ConstantsRenderer;
+import puscas.mobilertapp.utils.ConstantsToast;
 import puscas.mobilertapp.utils.State;
-
-import static puscas.mobilertapp.MyEGLContextFactory.EGL_CONTEXT_CLIENT_VERSION;
-import static puscas.mobilertapp.utils.ConstantsError.UNABLE_TO_FIND_AN_ACTIVITY;
-import static puscas.mobilertapp.utils.ConstantsMethods.ON_DETACHED_FROM_WINDOW;
-import static puscas.mobilertapp.utils.ConstantsMethods.RENDER_SCENE;
-import static puscas.mobilertapp.utils.ConstantsRenderer.NUMBER_THREADS;
-import static puscas.mobilertapp.utils.ConstantsToast.COULD_NOT_LOAD_THE_SCENE;
-import static puscas.mobilertapp.utils.ConstantsToast.DEVICE_WITHOUT_ENOUGH_MEMORY;
 
 /**
  * The {@link GLSurfaceView} to show the scene being rendered.
@@ -61,7 +56,7 @@ public final class DrawView extends GLSurfaceView {
      * The {@link ExecutorService} which holds {@link ConstantsRenderer#NUMBER_THREADS} number of threads that will
      * create Ray Tracer engine renderer.
      */
-    private final ExecutorService executorService = Executors.newFixedThreadPool(NUMBER_THREADS);
+    private final ExecutorService executorService = Executors.newFixedThreadPool(ConstantsRenderer.NUMBER_THREADS);
 
     /**
      * The last task submitted to {@link ExecutorService}.
@@ -99,7 +94,7 @@ public final class DrawView extends GLSurfaceView {
         this.changingConfigs = false;
 
         final GLSurfaceView.EGLContextFactory eglContextFactory = new MyEGLContextFactory(this);
-        setEGLContextClientVersion(EGL_CONTEXT_CLIENT_VERSION);
+        setEGLContextClientVersion(MyEGLContextFactory.EGL_CONTEXT_CLIENT_VERSION);
         setEGLContextFactory(eglContextFactory);
     }
 
@@ -125,6 +120,7 @@ public final class DrawView extends GLSurfaceView {
      *
      * @return The current {@link Activity}.
      */
+    @Nonnull
     private Activity getActivity() {
         Context context = getContext();
         while (!(context instanceof Activity) && context instanceof ContextWrapper) {
@@ -133,7 +129,7 @@ public final class DrawView extends GLSurfaceView {
         if (context instanceof Activity) {
             return (Activity) context;
         }
-        throw new IllegalStateException(UNABLE_TO_FIND_AN_ACTIVITY + context);
+        throw new IllegalStateException(ConstantsError.UNABLE_TO_FIND_AN_ACTIVITY + context);
     }
 
     /**
@@ -174,13 +170,13 @@ public final class DrawView extends GLSurfaceView {
             @Nonnull final  Config config,
             final int numThreads,
             final boolean rasterize) {
-        LOGGER.info(RENDER_SCENE);
+        LOGGER.info(ConstantsMethods.RENDER_SCENE);
 
         waitLastTask();
         rtStartRender();
 
         this.lastTask = this.executorService.submit(() -> {
-            LOGGER.info(RENDER_SCENE);
+            LOGGER.info(ConstantsMethods.RENDER_SCENE);
 
             this.renderer.waitLastTask();
 
@@ -189,9 +185,9 @@ public final class DrawView extends GLSurfaceView {
                 requestRender();
                 return Boolean.TRUE;
             } catch (final LowMemoryException ex) {
-                warningError(ex, DEVICE_WITHOUT_ENOUGH_MEMORY);
+                warningError(ex, ConstantsToast.DEVICE_WITHOUT_ENOUGH_MEMORY);
             } catch (final RuntimeException ex) {
-                warningError(ex, COULD_NOT_LOAD_THE_SCENE);
+                warningError(ex, ConstantsToast.COULD_NOT_LOAD_THE_SCENE);
             }
             rtStopRender();
             this.renderer.rtFinishRender();
@@ -296,7 +292,7 @@ public final class DrawView extends GLSurfaceView {
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        LOGGER.info(ON_DETACHED_FROM_WINDOW);
+        LOGGER.info(ConstantsMethods.ON_DETACHED_FROM_WINDOW);
     }
 
     @Override

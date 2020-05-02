@@ -8,8 +8,6 @@ import javax.annotation.Nonnull;
 
 import java8.util.J8Arrays;
 
-import static puscas.mobilertapp.utils.ConstantsMethods.GET_NAMES;
-
 /**
  * The available shaders for the Ray Tracer engine.
  */
@@ -73,7 +71,7 @@ public enum Shader {
      */
     @Nonnull
     public static String[] getNames() {
-        LOGGER.info(GET_NAMES);
+        LOGGER.info(ConstantsMethods.GET_NAMES);
 
         return J8Arrays.stream(values())
             .map(Shader::getName)

@@ -6,8 +6,6 @@ import org.junit.jupiter.api.Assertions;
 
 import java.util.logging.Logger;
 
-import static puscas.mobilertapp.utils.ConstantsUI.FILE_SEPARATOR;
-
 /**
  * Some text messages used in the Android tests.
  */
@@ -21,25 +19,25 @@ public final class Constants {
     /**
      * The instrumentation tests constants.
      */
-    private static final String OBJ_PATH = FILE_SEPARATOR + "WavefrontOBJs";
+    private static final String OBJ_PATH = ConstantsUI.FILE_SEPARATOR + "WavefrontOBJs";
 
     /**
      * The path to the conference OBJ file which should exist.
      */
     public static final String OBJ_FILE_CONFERENCE =
-        OBJ_PATH + FILE_SEPARATOR + "conference" + FILE_SEPARATOR + "conference.obj";
+        OBJ_PATH + ConstantsUI.FILE_SEPARATOR + "conference" + ConstantsUI.FILE_SEPARATOR + "conference.obj";
 
     /**
      * The path to the teapot2 OBJ file which should not exist.
      */
     public static final String OBJ_FILE_NOT_EXISTS =
-        OBJ_PATH + FILE_SEPARATOR + "teapot" + FILE_SEPARATOR + "teapot2" + ".obj";
+        OBJ_PATH + ConstantsUI.FILE_SEPARATOR + "teapot" + ConstantsUI.FILE_SEPARATOR + "teapot2" + ".obj";
 
     /**
      * The path to the teapot OBJ file which should exist.
      */
     public static final String OBJ_FILE_TEAPOT =
-        OBJ_PATH + FILE_SEPARATOR + "teapot" + FILE_SEPARATOR + "teapot.obj";
+        OBJ_PATH + ConstantsUI.FILE_SEPARATOR + "teapot" + ConstantsUI.FILE_SEPARATOR + "teapot.obj";
 
     /**
      * An empty path which should not point to a file.

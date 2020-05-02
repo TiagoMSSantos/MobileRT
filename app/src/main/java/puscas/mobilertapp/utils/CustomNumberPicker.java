@@ -12,6 +12,8 @@ import java.util.logging.Logger;
 
 import javax.annotation.Nonnull;
 
+import puscas.mobilertapp.exceptions.FailureException;
+
 /**
  * Custom {@link NumberPicker} for the User Interface with smaller text size
  * and black color for all the number pickers used.
@@ -38,8 +40,13 @@ public final class CustomNumberPicker extends NumberPicker {
         super.addView(child, params);
         LOGGER.info("addView");
 
-        final int color = Color.parseColor(ConstantsUI.COLOR_NUMBER_PICKER);
-        ((TextView) child).setTextSize(ConstantsUI.TEXT_SIZE);
-        ((TextView) child).setTextColor(color);
+        if (child instanceof TextView) {
+            final TextView textView = (TextView) child;
+            final int color = Color.parseColor(ConstantsUI.COLOR_NUMBER_PICKER);
+            textView.setTextSize(ConstantsUI.TEXT_SIZE);
+            textView.setTextColor(color);
+        } else {
+            throw new FailureException("View cannot be cast to TextView.");
+        }
     }
 }

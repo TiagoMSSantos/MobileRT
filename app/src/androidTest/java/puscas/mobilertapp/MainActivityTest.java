@@ -13,42 +13,41 @@ import androidx.test.espresso.core.internal.deps.guava.collect.ImmutableList;
 import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.rule.ActivityTestRule;
 
+import com.google.common.util.concurrent.Uninterruptibles;
+
 import org.hamcrest.Matcher;
+import org.jetbrains.annotations.Contract;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
+import org.junit.runners.MethodSorters;
 
 import java.io.File;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 
 import javax.annotation.Nonnull;
 
 import java8.util.stream.IntStreams;
 import java8.util.stream.StreamSupport;
-
-import static puscas.mobilertapp.utils.Constants.CHECK_BOX_MESSAGE;
-import static puscas.mobilertapp.utils.Constants.EMPTY_FILE;
-import static puscas.mobilertapp.utils.Constants.FILE_SHOULD_EXIST;
-import static puscas.mobilertapp.utils.Constants.OBJ_FILE_CONFERENCE;
-import static puscas.mobilertapp.utils.Constants.OBJ_FILE_NOT_EXISTS;
-import static puscas.mobilertapp.utils.Constants.OBJ_FILE_TEAPOT;
-import static puscas.mobilertapp.utils.Constants.PREVIEW;
-import static puscas.mobilertapp.utils.Constants.RENDER;
-import static puscas.mobilertapp.utils.Constants.SET_UP;
-import static puscas.mobilertapp.utils.Constants.SET_UP_ALL;
-import static puscas.mobilertapp.utils.Constants.STOP;
-import static puscas.mobilertapp.utils.Constants.TEAR_DOWN;
-import static puscas.mobilertapp.utils.Constants.TEAR_DOWN_ALL;
+import puscas.mobilertapp.utils.Accelerator;
+import puscas.mobilertapp.utils.Constants;
+import puscas.mobilertapp.utils.ConstantsUI;
+import puscas.mobilertapp.utils.Scene;
+import puscas.mobilertapp.utils.Shader;
 
 /**
  * The test suite for {@link MainActivity}.
  */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public final class MainActivityTest {
 
     /**
@@ -96,14 +95,14 @@ public final class MainActivityTest {
      */
     @Rule
     public final ActivityTestRule<MainActivity> mainActivityActivityTestRule =
-            new ActivityTestRule<>(MainActivity.class, true, true);
+        new ActivityTestRule<>(MainActivity.class, true, true);
 
     /**
      * A setup method which is called first.
      */
     @BeforeClass
     public static void setUpAll() {
-        LOGGER.info(SET_UP_ALL);
+        LOGGER.info(Constants.SET_UP_ALL);
     }
 
     /**
@@ -111,7 +110,7 @@ public final class MainActivityTest {
      */
     @AfterClass
     public static void tearDownAll() {
-        LOGGER.info(TEAR_DOWN_ALL);
+        LOGGER.info(Constants.TEAR_DOWN_ALL);
     }
 
     /**
@@ -121,25 +120,25 @@ public final class MainActivityTest {
      */
     private static void testPickerNumbers(final int numCores) {
         IntStreams.rangeClosed(0, 2).forEach(value ->
-            assertPickerValue("pickerAccelerator", R.id.pickerAccelerator, value)
+            changePickerValue("pickerAccelerator", R.id.pickerAccelerator, value)
         );
         IntStreams.rangeClosed(1, 100).forEach(value ->
-            assertPickerValue("pickerSamplesLight", R.id.pickerSamplesLight, value)
+            changePickerValue("pickerSamplesLight", R.id.pickerSamplesLight, value)
         );
         IntStreams.rangeClosed(0, 6).forEach(value ->
-            assertPickerValue("pickerScene", R.id.pickerScene, value)
+            changePickerValue("pickerScene", R.id.pickerScene, value)
         );
         IntStreams.rangeClosed(0, 4).forEach(value ->
-            assertPickerValue("pickerShader", R.id.pickerShader, value)
+            changePickerValue("pickerShader", R.id.pickerShader, value)
         );
         IntStreams.rangeClosed(1, numCores).forEach(value ->
-            assertPickerValue("pickerThreads", R.id.pickerThreads, value)
+            changePickerValue("pickerThreads", R.id.pickerThreads, value)
         );
         IntStreams.rangeClosed(1, 10).forEach(value ->
-            assertPickerValue("pickerSamplesPixel", R.id.pickerSamplesPixel, value)
+            changePickerValue("pickerSamplesPixel", R.id.pickerSamplesPixel, value)
         );
         IntStreams.rangeClosed(1, 8).forEach(value ->
-            assertPickerValue("pickerSize", R.id.pickerSize, value)
+            changePickerValue("pickerSize", R.id.pickerSize, value)
         );
     }
 
@@ -150,54 +149,83 @@ public final class MainActivityTest {
      * @param numCores    The number of CPU cores in the system.
      */
     private void testRenderButton(final int repetitions, final int numCores) {
-        if (repetitions <= 3) {
-            assertPickerValue("pickerSamplesPixel", R.id.pickerSamplesPixel, 1);
-            assertPickerValue("pickerScene", R.id.pickerScene, 5);
-        } else {
-            assertPickerValue("pickerSamplesPixel", R.id.pickerSamplesPixel, 3);
-            assertPickerValue("pickerScene", R.id.pickerScene, 2);
-        }
-        assertPickerValue("pickerThreads", R.id.pickerThreads, 1);
-        assertPickerValue("pickerSize", R.id.pickerSize, 8);
-        assertPickerValue("pickerSamplesLight", R.id.pickerSamplesLight, 1);
-        assertPickerValue("pickerAccelerator", R.id.pickerAccelerator, 2);
-        assertPickerValue("pickerShader", R.id.pickerShader, 2);
+        changePickerValue("pickerSamplesPixel", R.id.pickerSamplesPixel, 99);
+        changePickerValue("pickerScene", R.id.pickerScene, 5);
+        changePickerValue("pickerThreads", R.id.pickerThreads, 1);
+        changePickerValue("pickerSize", R.id.pickerSize, 8);
+        changePickerValue("pickerSamplesLight", R.id.pickerSamplesLight, 1);
+        changePickerValue("pickerAccelerator", R.id.pickerAccelerator, 2);
+        changePickerValue("pickerShader", R.id.pickerShader, 2);
 
-        final List<String> buttonTextList = ImmutableList.<String>builder().add(STOP, RENDER).build();
+        final int numScenes = Scene.values().length;
+        final int numAccelerators = Accelerator.values().length;
+        final int numShaders = Shader.values().length;
+        final int numSPP = 99;
+        final int numSPL = 100;
+        final int numRes = 9;
+
+        final List<String> buttonTextList = ImmutableList.<String>builder().add(Constants.STOP, Constants.RENDER).build();
         IntStreams.range(0, buttonTextList.size() * repetitions).forEach(currentIndex -> {
             LOGGER.info("currentIndex = " + currentIndex);
-            final int finalCounterScene = this.counterScene % 6;
+            final int finalCounterScene =  Math.min(this.counterScene % numScenes, 3);
             this.counterScene++;
-            final int finalCounterAccelerator = this.counterAccelerator % 2;
+            final int finalCounterAccelerator =  Math.max(this.counterAccelerator % numAccelerators, 1);
             this.counterAccelerator++;
-            final int finalCounterShader = this.counterShader % 4;
+            final int finalCounterShader = Math.max(this.counterShader % numShaders, 0);
             this.counterShader++;
-            final int finalCounterSPP = this.counterSPP % 10;
+            final int finalCounterSPP = Math.max(this.counterSPP % numSPP, 90);
             this.counterSPP++;
-            final int finalCounterSPL = this.counterSPL % 100;
+            final int finalCounterSPL = Math.max(this.counterSPL % numSPL, 1);
             this.counterSPL++;
-            final int finalCounterResolution = this.counterResolution % 9;
+            final int finalCounterResolution = Math.max(this.counterResolution % numRes, 7);
             this.counterResolution++;
-            final int finalCounterThreads = this.counterThreads % numCores;
+            final int finalCounterThreads = Math.max(this.counterThreads % numCores, 1);
             this.counterThreads++;
-            assertPickerValue("pickerScene", R.id.pickerScene, Math.min(finalCounterScene, 3));
-            assertPickerValue("pickerAccelerator", R.id.pickerAccelerator, Math.max(finalCounterAccelerator, 0));
-            assertPickerValue("pickerShader", R.id.pickerShader, Math.max(finalCounterShader, 0));
-            assertPickerValue("pickerSize", R.id.pickerSize, Math.max(finalCounterResolution, 6));
-            assertPickerValue("pickerSamplesPixel", R.id.pickerSamplesPixel, Math.max(finalCounterSPP, 1));
-            assertPickerValue("pickerSamplesLight", R.id.pickerSamplesLight, Math.max(finalCounterSPL, 1));
-            assertPickerValue("pickerThreads", R.id.pickerThreads, Math.max(finalCounterThreads, 1));
+            changePickerValue("pickerScene", R.id.pickerScene, finalCounterScene);
+            changePickerValue("pickerAccelerator", R.id.pickerAccelerator, finalCounterAccelerator);
+            changePickerValue("pickerShader", R.id.pickerShader, finalCounterShader);
+            changePickerValue("pickerSamplesPixel", R.id.pickerSamplesPixel, finalCounterSPP);
+            changePickerValue("pickerSamplesLight", R.id.pickerSamplesLight, finalCounterSPL);
+            changePickerValue("pickerSize", R.id.pickerSize, finalCounterResolution);
+            changePickerValue("pickerThreads", R.id.pickerThreads, finalCounterThreads);
 
+
+            final int expectedIndexOld = currentIndex > 0?
+                (currentIndex - 1) % buttonTextList.size() : 1;
+            final String expectedButtonTextOld = buttonTextList.get(expectedIndexOld);
+            final ViewInteraction viewInteraction = Espresso.onView(ViewMatchers.withId(R.id.renderButton));
+            viewInteraction.check((view, exception) -> {
+                final Button renderButton = view.findViewById(R.id.renderButton);
+                Assertions.assertEquals(
+                    expectedButtonTextOld,
+                    renderButton.getText().toString(),
+                    "Button message at currentIndex: " + currentIndex
+                );
+            });
             final int expectedIndex = currentIndex % buttonTextList.size();
             final String expectedButtonText = buttonTextList.get(expectedIndex);
-            final ViewInteraction viewInteraction = Espresso.onView(ViewMatchers.withId(R.id.renderButton));
-            viewInteraction.perform(new ViewActionButton());
+            viewInteraction.perform(new MainActivityTest.ViewActionButton());
             viewInteraction.check((view, exception) -> {
                 final Button renderButton = view.findViewById(R.id.renderButton);
                 Assertions.assertEquals(
                     expectedButtonText,
                     renderButton.getText().toString(),
-                    "Button message at currentIndex " + currentIndex
+                    "Button message at currentIndex: " + currentIndex + "(" + expectedIndex + ")"
+                        + ConstantsUI.LINE_SEPARATOR
+                        + "finalCounterScene: " + finalCounterScene
+                        + "  " + ConstantsUI.LINE_SEPARATOR
+                        + "finalCounterAccelerator: " + finalCounterAccelerator
+                        + "  " + ConstantsUI.LINE_SEPARATOR
+                        + "finalCounterShader: " + finalCounterShader
+                        + "  " + ConstantsUI.LINE_SEPARATOR
+                        + "finalCounterSPP: " + finalCounterSPP
+                        + "  " + ConstantsUI.LINE_SEPARATOR
+                        + "finalCounterSPL: " + finalCounterSPL
+                        + "  " + ConstantsUI.LINE_SEPARATOR
+                        + "finalCounterResolution: " + finalCounterResolution
+                        + "  " + ConstantsUI.LINE_SEPARATOR
+                        + "finalCounterThreads: " + finalCounterThreads
+                        + "  " + ConstantsUI.LINE_SEPARATOR
                 );
             });
         });
@@ -209,11 +237,11 @@ public final class MainActivityTest {
     private static void testPreviewCheckBox() {
         final ViewInteraction viewInteraction = Espresso.onView(ViewMatchers.withId(R.id.preview));
         viewInteraction.check((view, exception) ->
-            assertCheckBox(view, R.id.preview, PREVIEW, CHECK_BOX_MESSAGE, true)
+            assertCheckBox(view, R.id.preview, Constants.PREVIEW, Constants.CHECK_BOX_MESSAGE, true)
         );
-        viewInteraction.perform(new ViewActionButton());
+        viewInteraction.perform(new MainActivityTest.ViewActionButton());
         viewInteraction.check((view, exception) ->
-            assertCheckBox(view, R.id.preview, PREVIEW, CHECK_BOX_MESSAGE, false)
+            assertCheckBox(view, R.id.preview, Constants.PREVIEW, Constants.CHECK_BOX_MESSAGE, false)
         );
     }
 
@@ -244,7 +272,7 @@ public final class MainActivityTest {
      * @param pickerId      The identifier of the {@link NumberPicker}.
      * @param expectedValue The new expectedValue for the {@link NumberPicker}.
      */
-    private static void assertPickerValue(final String pickerName,
+    private static void changePickerValue(final String pickerName,
                                           final int pickerId,
                                           final int expectedValue) {
         Espresso.onView(ViewMatchers.withId(pickerId))
@@ -252,7 +280,8 @@ public final class MainActivityTest {
             .check((view, exception) -> {
                 final NumberPicker numberPicker = view.findViewById(pickerId);
                 Assertions.assertEquals(expectedValue, numberPicker.getValue(),
-                        "Number picker '" + pickerName + "' with wrong value");
+                    "Number picker '" + pickerName + "' with wrong value"
+                );
             });
     }
 
@@ -261,7 +290,7 @@ public final class MainActivityTest {
      */
     @Before
     public void setUp() {
-        LOGGER.info(SET_UP);
+        LOGGER.info(Constants.SET_UP);
     }
 
     /**
@@ -269,39 +298,40 @@ public final class MainActivityTest {
      */
     @After
     public void tearDown() {
-        LOGGER.info(TEAR_DOWN);
+        LOGGER.info(Constants.TEAR_DOWN);
     }
 
     /**
      * Tests that a file in the Android device exists and is readable.
      */
     @Ignore("In CI, these files don't exist.")
-    @Test
+    @Test(timeout = 5L * 1000L)
     public void testFilesExistAndReadable() {
         LOGGER.info("testFilesExistAndReadable");
         final MainActivity activity = this.mainActivityActivityTestRule.getActivity();
         final List<String> paths = ImmutableList.<String>builder().add(
-            activity.getSDCardPath() + OBJ_FILE_CONFERENCE,
-            activity.getSDCardPath() + OBJ_FILE_TEAPOT
+            activity.getSDCardPath() + Constants.OBJ_FILE_CONFERENCE,
+            activity.getSDCardPath() + Constants.OBJ_FILE_TEAPOT
         ).build();
         StreamSupport.stream(paths)
             .forEach(path -> {
                 final File file = new File(path);
-                Assertions.assertTrue(file.exists(), FILE_SHOULD_EXIST);
+                Assertions.assertTrue(file.exists(), Constants.FILE_SHOULD_EXIST);
                 Assertions.assertTrue(file.canRead(), "File should be readable!");
             });
+        this.mainActivityActivityTestRule.finishActivity();
     }
 
     /**
      * Tests that a file does not exist in the Android device.
      */
-    @Test
+    @Test(timeout = 5L * 1000L)
     public void testFilesNotExist() {
         LOGGER.info("testFilesNotExist");
         final MainActivity activity = this.mainActivityActivityTestRule.getActivity();
         final List<String> paths = ImmutableList.<String>builder().add(
-            EMPTY_FILE,
-            activity.getSDCardPath() + OBJ_FILE_NOT_EXISTS
+            Constants.EMPTY_FILE,
+            activity.getSDCardPath() + Constants.OBJ_FILE_NOT_EXISTS
         ).build();
         StreamSupport.stream(paths)
             .forEach(path -> {
@@ -309,12 +339,14 @@ public final class MainActivityTest {
                 Assertions.assertFalse(file.exists(), "File should not exist!");
                 Assertions.assertFalse(file.canRead(), "File should not be readable!");
             });
+        this.mainActivityActivityTestRule.finishActivity();
     }
 
     /**
-     * Tests changing all the {@link NumberPicker} and clicking the render {@link Button} many times.
+     * Tests changing all the {@link NumberPicker} and clicking the render
+     * {@link Button} many times.
      */
-    @Test
+    @Test(timeout = 600L * 1000L)
     public void testUI() {
         LOGGER.info("testUI");
         final MainActivity activity = this.mainActivityActivityTestRule.getActivity();
@@ -322,16 +354,68 @@ public final class MainActivityTest {
         Espresso.onView(ViewMatchers.withId(R.id.renderButton))
             .check((view, exception) -> {
                 final Button button = view.findViewById(R.id.renderButton);
-                Assertions.assertEquals(RENDER, button.getText().toString(), "Button message");
+                Assertions.assertEquals(Constants.RENDER, button.getText().toString(), "Button message");
             });
 
         final int numCores = activity.getNumOfCores();
         testRenderButton(3, numCores);
         testRenderButton(6, numCores);
-//        testRenderButton(200, numCores);
 
         testPickerNumbers(numCores);
         testPreviewCheckBox();
+
+        this.mainActivityActivityTestRule.finishActivity();
+    }
+
+    /**
+     * Tests rendering a scene.
+     */
+    @Test(timeout = 300L * 1000L)
+    public void testRenderScene() {
+        LOGGER.info("testRenderScene");
+
+        final MainActivity activity = this.mainActivityActivityTestRule.getActivity();
+        final int numCores = activity.getNumOfCores();
+
+        changePickerValue("pickerScene", R.id.pickerScene, 2);
+        changePickerValue("pickerThreads", R.id.pickerThreads, numCores);
+        changePickerValue("pickerSize", R.id.pickerSize, 8);
+        changePickerValue("pickerSamplesPixel", R.id.pickerSamplesPixel, 1);
+        changePickerValue("pickerSamplesLight", R.id.pickerSamplesLight, 1);
+        changePickerValue("pickerAccelerator", R.id.pickerAccelerator, 3);
+        changePickerValue("pickerShader", R.id.pickerShader, 1);
+
+        final ViewInteraction viewInteraction = Espresso.onView(ViewMatchers.withId(R.id.renderButton));
+        viewInteraction.perform(new MainActivityTest.ViewActionButton());
+        viewInteraction.check((view, exception) -> {
+            final Button renderButton = view.findViewById(R.id.renderButton);
+            Assertions.assertEquals(
+                Constants.STOP,
+                renderButton.getText().toString(),
+                "Button message"
+            );
+        });
+
+        final AtomicBoolean done = new AtomicBoolean(false);
+        for (int i = 0; i < 100 && !done.get(); ++i) {
+            Uninterruptibles.sleepUninterruptibly(3L, TimeUnit.SECONDS);
+
+            viewInteraction.check((view, exception) -> {
+                final Button renderButton = view.findViewById(R.id.renderButton);
+                if (renderButton.getText().toString().equals(Constants.RENDER)) {
+                    done.set(true);
+                }
+            });
+        }
+
+        viewInteraction.check((view, exception) -> {
+            final Button renderButton = view.findViewById(R.id.renderButton);
+            Assertions.assertEquals(
+                Constants.RENDER,
+                renderButton.getText().toString(),
+                "Button message"
+            );
+        });
 
         this.mainActivityActivityTestRule.finishActivity();
     }
@@ -345,14 +429,16 @@ public final class MainActivityTest {
          * The {@link Logger} for this class.
          */
         private static final Logger LOGGER_BUTTON =
-                Logger.getLogger(ViewActionButton.class.getName());
+            Logger.getLogger(MainActivityTest.ViewActionButton.class.getName());
 
         /**
          * The constructor for this class.
          */
+        @Contract(pure = true)
         ViewActionButton() {
         }
 
+        @Nonnull
         @Override
         public final Matcher<View> getConstraints() {
             LOGGER_BUTTON.info("testRenderButton#getConstraints");
@@ -360,6 +446,7 @@ public final class MainActivityTest {
             return ViewMatchers.isAssignableFrom(Button.class);
         }
 
+        @Nonnull
         @Override
         public final String getDescription() {
             LOGGER_BUTTON.info("testRenderButton#getDescription");
@@ -368,7 +455,7 @@ public final class MainActivityTest {
         }
 
         @Override
-        public final void perform(final UiController uiController, final View view) {
+        public final void perform(final UiController uiController, @Nonnull final View view) {
             LOGGER_BUTTON.info("testRenderButton#perform");
 
             view.performClick();
@@ -384,7 +471,7 @@ public final class MainActivityTest {
          * The {@link Logger} for this class.
          */
         private static final Logger LOGGER_PICKER =
-                Logger.getLogger(MainActivityTest.ViewActionNumberPicker.class.getName());
+            Logger.getLogger(MainActivityTest.ViewActionNumberPicker.class.getName());
 
         /**
          * The value to be set in the {@link NumberPicker}.
@@ -396,6 +483,7 @@ public final class MainActivityTest {
          *
          * @param value The value for the {@link NumberPicker}.
          */
+        @Contract(pure = true)
         ViewActionNumberPicker(final int value) {
             this.value = value;
         }
@@ -409,7 +497,8 @@ public final class MainActivityTest {
         }
 
         @Override
-        @Nonnull public final String getDescription() {
+        @Nonnull
+        public final String getDescription() {
             LOGGER_PICKER.info("assertPickerValue#getDescription");
 
             return "Set the value of a NumberPicker";

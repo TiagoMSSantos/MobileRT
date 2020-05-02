@@ -259,7 +259,19 @@ h3 {
         text-align: center;
 
     }
-}</style></head><body><div class="pure-g" id="layout"><div class="sidebar pure-u-1 pure-u-md-1-4"><div class="header"><img src="https://raw.githubusercontent.com/kucherenko/jscpd/1.0.0-alpha/assets/logo-small-box.svg?sanitize=true" width="190"><nav class="nav"><ul class="nav-list"><li class="nav-item"><a class="pure-button" href="#cpp">cpp</a></li><li class="nav-item"><a class="pure-button" href="#c">c</a></li><li class="nav-item"><a class="pure-button" href="#java">java</a></li></ul></nav></div></div><div class="content pure-u-1 pure-u-md-3-4"><div class="controls"><div class="pure-u"><button class="pure-button" onclick="collapseExpandAll()">Collapse/Expand All</button></div></div><table class="pure-table stats"><thead><tr><th>Total files</th><th>Total lines of code</th><th>Duplicated lines</th><th>% of duplications</th></tr></thead><tbody><tr><td>119</td><td>9845</td><td>227</td><td>2.31%</td></tr></tbody></table><div class="clones collapsed"><a name="cpp"></a><h1 class="content-subhead">cpp</h1><div class="mode-stats"><p><span class="mode-rate">2.63%</span> Total files: 91, total lines of code: 7567, duplicated lines: 199</p></div><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Unit_Testing/TestIntersection.cpp[40:54 - 51:49]<br/>app/Unit_Testing/TestIntersection.cpp[26:53 - 37:49]</div></header><div class="clone-description"><pre data-first-start="40" data-second-start="26" data-length="11">}};
+}</style></head><body><div class="pure-g" id="layout"><div class="sidebar pure-u-1 pure-u-md-1-4"><div class="header"><img src="https://raw.githubusercontent.com/kucherenko/jscpd/1.0.0-alpha/assets/logo-small-box.svg?sanitize=true" width="190"><nav class="nav"><ul class="nav-list"><li class="nav-item"><a class="pure-button" href="#cpp">cpp</a></li><li class="nav-item"><a class="pure-button" href="#c">c</a></li><li class="nav-item"><a class="pure-button" href="#java">java</a></li></ul></nav></div></div><div class="content pure-u-1 pure-u-md-3-4"><div class="controls"><div class="pure-u"><button class="pure-button" onclick="collapseExpandAll()">Collapse/Expand All</button></div></div><table class="pure-table stats"><thead><tr><th>Total files</th><th>Total lines of code</th><th>Duplicated lines</th><th>% of duplications</th></tr></thead><tbody><tr><td>126</td><td>10760</td><td>464</td><td>4.31%</td></tr></tbody></table><div class="clones collapsed"><a name="cpp"></a><h1 class="content-subhead">cpp</h1><div class="mode-stats"><p><span class="mode-rate">2.76%</span> Total files: 91, total lines of code: 7745, duplicated lines: 214</p></div><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Scenes/Scenes.cpp[228:34 - 240:20]<br/>app/Scenes/Scenes.cpp[140:33 - 152:24]</div></header><div class="clone-description"><pre data-first-start="228" data-second-start="140" data-length="12">);
+    const auto fovX {45.0F * ratio};
+    const auto fovY {45.0F};
+    auto res {::MobileRT::std::make_unique&lt;Components::Perspective&gt; (
+            ::glm::vec3 {0.0F, 0.0F, -3.4F},
+            ::glm::vec3 {0.0F, 0.0F, 1.0F},
+            ::glm::vec3 {0.0F, 1.0F, 0.0F},
+            fovX, fovY
+    )};
+    return ::std::move(res);
+}
+
+Scene spheres_Scene</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Unit_Testing/TestIntersection.cpp[40:54 - 51:49]<br/>app/Unit_Testing/TestIntersection.cpp[26:53 - 37:49]</div></header><div class="clone-description"><pre data-first-start="40" data-second-start="26" data-length="11">}};
     const auto primitive {nullptr};
     const auto materialIndex {0};
     const ::glm::vec2 texCoords {0.4F, 0.6F};
@@ -270,18 +282,12 @@ h3 {
 /**
  * Tests the Intersection constructor with invalid parameters.
  */
-TEST_F(TestIntersection, TestInvalidConstructor3</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Unit_Testing/TestIntersection.cpp[62:27 - 68:10]<br/>app/Unit_Testing/TestIntersection.cpp[39:27 - 45:23]</div></header><div class="clone-description"><pre data-first-start="62" data-second-start="39" data-length="6">};
-    const auto normal {::glm::vec3 {0.0F, 0.0F, 10.0F}};
-    const auto primitive {nullptr};
-    const auto materialIndex {0};
-    const ::glm::vec2 texCoords {0.4F, 0.6F};
-
-    const</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Unit_Testing/TestPlane.cpp[65:38 - 70:10]<br/>app/Unit_Testing/TestPlane.cpp[47:38 - 52:10]</div></header><div class="clone-description"><pre data-first-start="65" data-second-start="47" data-length="5">) {
+TEST_F(TestIntersection, TestInvalidConstructor3</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Unit_Testing/TestPlane.cpp[68:38 - 73:10]<br/>app/Unit_Testing/TestPlane.cpp[50:38 - 55:10]</div></header><div class="clone-description"><pre data-first-start="68" data-second-start="50" data-length="5">) {
     const auto materialIndex {19};
     const ::glm::vec3 point {1, 2, 3};
     const ::glm::vec3 normal {4, 5, 6};
     const auto normal2 {::glm::normalize(normal)};
-    Plane</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Unit_Testing/TestPlane.cpp[71:43 - 80:7]<br/>app/Unit_Testing/TestPlane.cpp[53:30 - 64:4]</div></header><div class="clone-description"><pre data-first-start="71" data-second-start="53" data-length="9">};
+    Plane</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Unit_Testing/TestPlane.cpp[74:43 - 83:7]<br/>app/Unit_Testing/TestPlane.cpp[56:30 - 67:4]</div></header><div class="clone-description"><pre data-first-start="74" data-second-start="56" data-length="9">};
 
     ASSERT_EQ(materialIndex, plane3.getMaterialIndex());
     for (int i {0}; i &lt; ::MobileRT::NumberOfAxes; ++i) {
@@ -305,12 +311,13 @@ TEST_F</pre></div></section><section class="clone"><header><button class="pure-b
     };
 }//namespace Components
 
-#endif //COMPONENTS_LIGHTS_POINTLIGHT_HPP</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Components/Samplers/Stratified.cpp[10:17 - 16:32]<br/>app/Components/Samplers/HaltonSeq.cpp[10:16 - 16:23]</div></header><div class="clone-description"><pre data-first-start="10" data-second-start="10" data-length="6">::getSample(const ::std::uint32_t sample) {
+#endif //COMPONENTS_LIGHTS_POINTLIGHT_HPP</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Components/Samplers/Stratified.cpp[10:17 - 17:32]<br/>app/Components/Samplers/HaltonSeq.cpp[10:16 - 17:23]</div></header><div class="clone-description"><pre data-first-start="10" data-second-start="10" data-length="7">::getSample(const ::std::uint32_t sample) {
     const auto current {this-&gt;sample_.fetch_add(1, ::std::memory_order_relaxed)};
     if (current &gt;= (this-&gt;domainSize_ * (sample + 1))) {
         this-&gt;sample_.fetch_sub(1, ::std::memory_order_relaxed);
         return 1.0F;
     }
+    const auto index {current - (sample * this-&gt;domainSize_)};
     const auto res {static_cast</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Components/Shaders/NoShadows.hpp[8:20 - 16:27]<br/>app/Components/Shaders/DiffuseMaterial.hpp[8:26 - 16:33]</div></header><div class="clone-description"><pre data-first-start="8" data-second-start="8" data-length="8"> final : public ::MobileRT::Shader {
     private:
         bool shade(
@@ -369,7 +376,17 @@ TEST_F</pre></div></section><section class="clone"><header><button class="pure-b
                 //distance from intersection to the light (and normalize it)
                 const auto distanceToLight {::glm::length(vectorToLight)};
                 vectorToLight = ::glm::normalize(vectorToLight);
-                const</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Components/Shaders/Whitted.hpp[8:18 - 16:25]<br/>app/Components/Shaders/DiffuseMaterial.hpp[8:26 - 16:33]</div></header><div class="clone-description"><pre data-first-start="8" data-second-start="8" data-length="8"> final : public ::MobileRT::Shader {
+                const</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Components/Shaders/Whitted.cpp[52:64 - 57:56]<br/>app/Components/Shaders/PathTracer.cpp[73:63 - 78:91]</div></header><div class="clone-description"><pre data-first-start="52" data-second-start="73" data-length="5">
+                    const Ray shadowRay {vectorToLight, intersection.point_, rayDepth + 1, intersection.primitive_};
+                    //intersection between shadow ray and the closest primitive
+                    //if there are no primitives between intersection and the light
+                    if (!shadowTrace(distanceToLight, shadowRay)) {
+                        //rgb += kD * radLight * cosNl;</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Components/Shaders/Whitted.cpp[73:44 - 78:10]<br/>app/Components/Shaders/PathTracer.cpp[118:25 - 123:12]</div></header><div class="clone-description"><pre data-first-start="73" data-second-start="118" data-length="5">
+        const auto &amp;reflectionDir {::glm::reflect(ray.direction_, shadingNormal)};
+        const Ray specularRay {reflectionDir, intersection.point_, rayDepth + 1, intersection.primitive_};
+        ::glm::vec3 LiS_RGB {};
+        rayTrace(&amp;LiS_RGB, specularRay);
+        *</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Components/Shaders/Whitted.hpp[8:18 - 16:25]<br/>app/Components/Shaders/DiffuseMaterial.hpp[8:26 - 16:33]</div></header><div class="clone-description"><pre data-first-start="8" data-second-start="8" data-length="8"> final : public ::MobileRT::Shader {
     private:
         bool shade(
             ::glm::vec3 *rgb,
@@ -386,7 +403,7 @@ TEST_F</pre></div></section><section class="clone"><header><button class="pure-b
             const ::std::vector&lt;T&gt;&amp; getPrimitives() const;
     };
 
-    </pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/MobileRT/Accelerators/Naive.hpp[108:23 - 124:23]<br/>app/MobileRT/Accelerators/BVH.hpp[272:21 - 288:21]</div></header><div class="clone-description"><pre data-first-start="108" data-second-start="272" data-length="16">&lt;T&gt;::trace(Intersection intersection, const Ray &amp;ray) {
+    </pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/MobileRT/Accelerators/Naive.hpp[108:23 - 124:23]<br/>app/MobileRT/Accelerators/BVH.hpp[274:21 - 290:21]</div></header><div class="clone-description"><pre data-first-start="108" data-second-start="274" data-length="16">&lt;T&gt;::trace(Intersection intersection, const Ray &amp;ray) {
         intersection = intersect(intersection, ray);
         return intersection;
     }
@@ -402,7 +419,7 @@ TEST_F</pre></div></section><section class="clone"><header><button class="pure-b
      * @return The intersection of the ray with the geometry.
      */
     template&lt;typename T&gt;
-    Intersection Naive</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/MobileRT/Accelerators/RegularGrid.hpp[375:50 - 384:1]<br/>app/MobileRT/Accelerators/RegularGrid.hpp[361:50 - 369:15]</div></header><div class="clone-description"><pre data-first-start="375" data-second-start="361" data-length="9">]);
+    Intersection Naive</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/MobileRT/Accelerators/RegularGrid.hpp[379:50 - 388:1]<br/>app/MobileRT/Accelerators/RegularGrid.hpp[365:50 - 373:15]</div></header><div class="clone-description"><pre data-first-start="379" data-second-start="365" data-length="9">]);
                 } else {
                     cellZ += stepZ;
                     if (cellZ == outZ) {
@@ -411,13 +428,13 @@ TEST_F</pre></div></section><section class="clone"><header><button class="pure-b
                     tmax[2] = (tmax[2] + tdelta[2]);
                 }
             }
-</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/MobileRT/Accelerators/RegularGrid.hpp[410:30 - 416:23]<br/>app/MobileRT/Accelerators/RegularGrid.hpp[365:44 - 371:26]</div></header><div class="clone-description"><pre data-first-start="410" data-second-start="365" data-length="6">;
+</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/MobileRT/Accelerators/RegularGrid.hpp[414:30 - 420:23]<br/>app/MobileRT/Accelerators/RegularGrid.hpp[369:44 - 375:26]</div></header><div class="clone-description"><pre data-first-start="414" data-second-start="369" data-length="6">;
                     }
                     tmax[2] = (tmax[2] + tdelta[2]);
                 }
             } else {
                 if (tmax[1] &lt; tmax[2]) {
-                    if</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/MobileRT/Accelerators/RegularGrid.hpp[423:50 - 435:1]<br/>app/MobileRT/Accelerators/RegularGrid.hpp[403:50 - 414:15]</div></header><div class="clone-description"><pre data-first-start="423" data-second-start="403" data-length="12">]);
+                    if</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/MobileRT/Accelerators/RegularGrid.hpp[427:50 - 439:1]<br/>app/MobileRT/Accelerators/RegularGrid.hpp[407:50 - 418:15]</div></header><div class="clone-description"><pre data-first-start="427" data-second-start="407" data-length="12">]);
                 } else {
                     if (intersection.length_ &lt; tmax[2]) {
                         break;
@@ -437,19 +454,13 @@ TEST_F</pre></div></section><section class="clone"><header><button class="pure-b
 
         bool intersect(const AABB &amp;box) const;
 
-</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/System_dependent/Linux/c_wrapper.cpp[90:23 - 96:46]<br/>app/System_dependent/Linux/c_wrapper.cpp[70:23 - 76:45]</div></header><div class="clone-description"><pre data-first-start="90" data-second-start="70" data-length="6">:
-                    camera = ::std::make_unique&lt;::Components::Perspective&gt; (
-                            ::glm::vec3 {0.0F, 0.0F, -3.4F},
-                            ::glm::vec3 {0.0F, 0.0F, 1.0F},
-                            ::glm::vec3 {0.0F, 1.0F, 0.0F},
-                            45.0F * ratio, 45.0F);
-                    scene_ = cornellBoxScene2</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/System_dependent/Linux/c_wrapper.cpp[200:39 - 206:28]<br/>app/System_dependent/Linux/c_wrapper.cpp[49:37 - 55:29]</div></header><div class="clone-description"><pre data-first-start="200" data-second-start="49" data-length="6">);
+</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/System_dependent/Linux/C_wrapper.cpp[186:39 - 192:28]<br/>app/System_dependent/Linux/C_wrapper.cpp[50:37 - 56:29]</div></header><div class="clone-description"><pre data-first-start="186" data-second-start="50" data-length="6">);
             LOG(&quot;threads = &quot;, threads);
             LOG(&quot;shader = &quot;, shader);
-            LOG(&quot;scene = &quot;, scene);
+            LOG(&quot;scene = &quot;, sceneIndex);
             LOG(&quot;samplesPixel = &quot;, samplesPixel);
             LOG(&quot;samplesLight = &quot;, samplesLight);
-            LOG(&quot;width_ = &quot;</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/System_dependent/Linux/QT/MobileRT/mainwindow.cpp[80:24 - 89:1]<br/>app/System_dependent/Linux/QT/MobileRT/mainwindow.cpp[49:53 - 57:2]</div></header><div class="clone-description"><pre data-first-start="80" data-second-start="49" data-length="9">;
+            LOG(&quot;width_ = &quot;</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/System_dependent/Linux/Qt/MobileRT/mainwindow.cpp[96:30 - 109:31]<br/>app/System_dependent/Linux/Qt/MobileRT/mainwindow.cpp[59:52 - 72:26]</div></header><div class="clone-description"><pre data-first-start="96" data-second-start="59" data-length="13">);
 
     RayTrace(m_bitmap.data(), m_width, m_height, m_threads, m_shader, m_scene, m_samplesPixel, m_samplesLight,
              m_repeats, m_accelerator, m_printStdOut, m_async, m_pathObj.c_str(), m_pathMtl.c_str(), m_pathCam.c_str());
@@ -458,32 +469,258 @@ TEST_F</pre></div></section><section class="clone"><header><button class="pure-b
     connect(m_timer, SIGNAL(timeout()), this, SLOT(update_image()));
     m_timer-&gt;start(1000);
 
-</pre></div></section><a name="c"></a><h1 class="content-subhead">c</h1><div class="mode-stats"><p><span class="mode-rate">0%</span> Total files: 4, total lines of code: 149, duplicated lines: 0</p></div><a name="java"></a><h1 class="content-subhead">java</h1><div class="mode-stats"><p><span class="mode-rate">1.32%</span> Total files: 24, total lines of code: 2129, duplicated lines: 28</p></div><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/main/java/puscas/mobilertapp/utils/Scene.java[1:1 - 15:4]<br/>app/src/main/java/puscas/mobilertapp/utils/Accelerator.java[1:1 - 15:4]</div></header><div class="clone-description"><pre data-first-start="1" data-second-start="1" data-length="14">package puscas.mobilertapp.utils;
+    this-&gt;resize(m_width + 2, m_height + 70);
+    m_ui-&gt;graphicsView-&gt;resize(m_width + 2, m_height + 2);
+}
 
-import androidx.annotation.NonNull;
+void MainWindow::keyPressEvent</pre></div></section><a name="c"></a><h1 class="content-subhead">c</h1><div class="mode-stats"><p><span class="mode-rate">0%</span> Total files: 4, total lines of code: 156, duplicated lines: 0</p></div><a name="java"></a><h1 class="content-subhead">java</h1><div class="mode-stats"><p><span class="mode-rate">8.74%</span> Total files: 31, total lines of code: 2859, duplicated lines: 250</p></div><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/ConfigTest.java[20:87 - 40:8]<br/>app/src/androidTest/java/puscas/mobilertapp/MainActivityTest.java[244:6 - 264:8]</div></header><div class="clone-description"><pre data-first-start="20" data-second-start="244" data-length="20">
+
+    /**
+     * Setup method called before each test.
+     */
+    @Before
+    public void setUp() {
+        LOGGER.info(Constants.SET_UP);
+    }
+
+    /**
+     * Tear down method called after each test.
+     */
+    @After
+    public void tearDown() {
+        LOGGER.info(Constants.TEAR_DOWN);
+    }
+
+    /**
+     * Test the building of {@link Config} with default values.
+     */</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/main/java/puscas/mobilertapp/utils/Scene.java[1:1 - 13:4]<br/>app/src/main/java/puscas/mobilertapp/utils/Accelerator.java[1:1 - 13:4]</div></header><div class="clone-description"><pre data-first-start="1" data-second-start="1" data-length="12">package puscas.mobilertapp.utils;
 
 import org.jetbrains.annotations.Contract;
 
 import java.util.logging.Logger;
 
-import java8.util.J8Arrays;
+import javax.annotation.Nonnull;
 
-import static puscas.mobilertapp.utils.ConstantsMethods.GET_NAMES;
+import java8.util.J8Arrays;
 
 /**
  * The available scenes for the Ray Tracer engine.
- */</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/main/java/puscas/mobilertapp/utils/Shader.java[1:1 - 15:4]<br/>app/src/main/java/puscas/mobilertapp/utils/Accelerator.java[1:1 - 15:4]</div></header><div class="clone-description"><pre data-first-start="1" data-second-start="1" data-length="14">package puscas.mobilertapp.utils;
-
-import androidx.annotation.NonNull;
+ */</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/main/java/puscas/mobilertapp/utils/Shader.java[1:1 - 13:4]<br/>app/src/main/java/puscas/mobilertapp/utils/Accelerator.java[1:1 - 13:4]</div></header><div class="clone-description"><pre data-first-start="1" data-second-start="1" data-length="12">package puscas.mobilertapp.utils;
 
 import org.jetbrains.annotations.Contract;
 
 import java.util.logging.Logger;
 
-import java8.util.J8Arrays;
+import javax.annotation.Nonnull;
 
-import static puscas.mobilertapp.utils.ConstantsMethods.GET_NAMES;
+import java8.util.J8Arrays;
 
 /**
  * The available shaders for the Ray Tracer engine.
- */</pre></div></section></div><div class="footer"><p>© 2013-2018 jscpd, copy/paste detector</p></div></div></div></body></html>
+ */</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/exceptions/FailureExceptionTest.java[19:79 - 39:8]<br/>app/src/test/java/puscas/mobilertapp/ConfigTest.java[20:69 - 264:8]</div></header><div class="clone-description"><pre data-first-start="19" data-second-start="20" data-length="20">.class.getName());
+
+    /**
+     * Setup method called before each test.
+     */
+    @Before
+    public void setUp() {
+        LOGGER.info(Constants.SET_UP);
+    }
+
+    /**
+     * Tear down method called after each test.
+     */
+    @After
+    public void tearDown() {
+        LOGGER.info(Constants.TEAR_DOWN);
+    }
+
+    /**
+     * Tests the constructor.
+     */</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/exceptions/LowMemoryExceptionTest.java[1:1 - 13:4]<br/>app/src/test/java/puscas/mobilertapp/exceptions/FailureExceptionTest.java[1:1 - 13:4]</div></header><div class="clone-description"><pre data-first-start="1" data-second-start="1" data-length="12">package puscas.mobilertapp.exceptions;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.logging.Logger;
+
+import puscas.mobilertapp.utils.Constants;
+
+/**
+ * The test suite for {@link LowMemoryException} class.
+ */</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/exceptions/LowMemoryExceptionTest.java[19:81 - 40:40]<br/>app/src/test/java/puscas/mobilertapp/ConfigTest.java[20:69 - 40:38]</div></header><div class="clone-description"><pre data-first-start="19" data-second-start="20" data-length="21">.class.getName());
+
+    /**
+     * Setup method called before each test.
+     */
+    @Before
+    public void setUp() {
+        LOGGER.info(Constants.SET_UP);
+    }
+
+    /**
+     * Tear down method called after each test.
+     */
+    @After
+    public void tearDown() {
+        LOGGER.info(Constants.TEAR_DOWN);
+    }
+
+    /**
+     * Tests the constructor.
+     */
+    @Test(expected = LowMemoryException</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/utils/AcceleratorTest.java[18:74 - 38:8]<br/>app/src/test/java/puscas/mobilertapp/ConfigTest.java[20:69 - 264:8]</div></header><div class="clone-description"><pre data-first-start="18" data-second-start="20" data-length="20">.class.getName());
+
+    /**
+     * Setup method called before each test.
+     */
+    @Before
+    public void setUp() {
+        LOGGER.info(Constants.SET_UP);
+    }
+
+    /**
+     * Tear down method called after each test.
+     */
+    @After
+    public void tearDown() {
+        LOGGER.info(Constants.TEAR_DOWN);
+    }
+
+    /**
+     * Tests that the {@link Accelerator#getNames()} method contains all the expected accelerators.
+     */</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/utils/CustomNumberPickerTest.java[31:81 - 53:8]<br/>app/src/test/java/puscas/mobilertapp/ConfigTest.java[20:69 - 264:8]</div></header><div class="clone-description"><pre data-first-start="31" data-second-start="20" data-length="22">.class.getName());
+
+    /**
+     * Setup method called before each test.
+     */
+    @Before
+    public void setUp() {
+        LOGGER.info(Constants.SET_UP);
+    }
+
+    /**
+     * Tear down method called after each test.
+     */
+    @After
+    public void tearDown() {
+        LOGGER.info(Constants.TEAR_DOWN);
+    }
+
+    /**
+     * Helper method that creates an {@link AttributeSet}.
+     *
+     * @return An {@link AttributeSet}.
+     */</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/utils/CustomNumberPickerTest.java[113:44 - 119:52]<br/>app/src/test/java/puscas/mobilertapp/utils/CustomNumberPickerTest.java[107:49 - 113:44]</div></header><div class="clone-description"><pre data-first-start="113" data-second-start="107" data-length="6">(final String namespace, final String attribute, final int defaultValue) {
+                return 0;
+            }
+
+            @Contract(pure = true)
+            @Override
+            public int getAttributeUnsignedIntValue</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/utils/CustomNumberPickerTest.java[119:52 - 125:25]<br/>app/src/test/java/puscas/mobilertapp/utils/CustomNumberPickerTest.java[107:49 - 113:23]</div></header><div class="clone-description"><pre data-first-start="119" data-second-start="107" data-length="6">(final String namespace, final String attribute, final int defaultValue) {
+                return 0;
+            }
+
+            @Contract(pure = true)
+            @Override
+            public float</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/utils/CustomNumberPickerTest.java[131:61 - 137:62]<br/>app/src/test/java/puscas/mobilertapp/utils/CustomNumberPickerTest.java[95:92 - 101:65]</div></header><div class="clone-description"><pre data-first-start="131" data-second-start="95" data-length="6">, final String[] options, final int defaultValue) {
+                return 0;
+            }
+
+            @Contract(pure = true)
+            @Override
+            public boolean getAttributeBooleanValue(final int</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/utils/SceneTest.java[1:1 - 12:4]<br/>app/src/test/java/puscas/mobilertapp/utils/AcceleratorTest.java[1:1 - 12:4]</div></header><div class="clone-description"><pre data-first-start="1" data-second-start="1" data-length="11">package puscas.mobilertapp.utils;
+
+import org.assertj.core.api.Assertions;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.logging.Logger;
+
+/**
+ * The unit tests for the {@link Scene} util class.
+ */</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/utils/SceneTest.java[18:68 - 38:8]<br/>app/src/test/java/puscas/mobilertapp/ConfigTest.java[20:69 - 264:8]</div></header><div class="clone-description"><pre data-first-start="18" data-second-start="20" data-length="20">.class.getName());
+
+    /**
+     * Setup method called before each test.
+     */
+    @Before
+    public void setUp() {
+        LOGGER.info(Constants.SET_UP);
+    }
+
+    /**
+     * Tear down method called after each test.
+     */
+    @After
+    public void tearDown() {
+        LOGGER.info(Constants.TEAR_DOWN);
+    }
+
+    /**
+     * Tests that the {@link Scene#getNames()} method contains all the expected scenes.
+     */</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/utils/ShaderTest.java[1:1 - 12:4]<br/>app/src/test/java/puscas/mobilertapp/utils/AcceleratorTest.java[1:1 - 12:4]</div></header><div class="clone-description"><pre data-first-start="1" data-second-start="1" data-length="11">package puscas.mobilertapp.utils;
+
+import org.assertj.core.api.Assertions;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.logging.Logger;
+
+/**
+ * The unit tests for the {@link Shader} util class.
+ */</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/utils/ShaderTest.java[18:69 - 38:8]<br/>app/src/test/java/puscas/mobilertapp/ConfigTest.java[20:69 - 264:8]</div></header><div class="clone-description"><pre data-first-start="18" data-second-start="20" data-length="20">.class.getName());
+
+    /**
+     * Setup method called before each test.
+     */
+    @Before
+    public void setUp() {
+        LOGGER.info(Constants.SET_UP);
+    }
+
+    /**
+     * Tear down method called after each test.
+     */
+    @After
+    public void tearDown() {
+        LOGGER.info(Constants.TEAR_DOWN);
+    }
+
+    /**
+     * Tests that the {@link Shader#getNames()} method contains all the expected shaders.
+     */</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/utils/StateTest.java[1:1 - 12:4]<br/>app/src/test/java/puscas/mobilertapp/utils/AcceleratorTest.java[1:1 - 12:4]</div></header><div class="clone-description"><pre data-first-start="1" data-second-start="1" data-length="11">package puscas.mobilertapp.utils;
+
+import org.assertj.core.api.Assertions;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.logging.Logger;
+
+/**
+ * The unit tests for the {@link State} util class.
+ */</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/utils/StateTest.java[18:68 - 38:8]<br/>app/src/test/java/puscas/mobilertapp/ConfigTest.java[20:69 - 264:8]</div></header><div class="clone-description"><pre data-first-start="18" data-second-start="20" data-length="20">.class.getName());
+
+    /**
+     * Setup method called before each test.
+     */
+    @Before
+    public void setUp() {
+        LOGGER.info(Constants.SET_UP);
+    }
+
+    /**
+     * Tear down method called after each test.
+     */
+    @After
+    public void tearDown() {
+        LOGGER.info(Constants.TEAR_DOWN);
+    }
+
+    /**
+     * Tests that the {@link State#getId()} method contains all the expected states.
+     */</pre></div></section></div><div class="footer"><p>© 2013-2018 jscpd, copy/paste detector</p></div></div></div></body></html>
