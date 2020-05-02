@@ -95,6 +95,8 @@ public final class MainActivity extends Activity {
             System.loadLibrary("AppMobileRT");
         } catch (final RuntimeException ex) {
             throw new FailureException(ex);
+        } catch (final UnsatisfiedLinkError ex) {
+            LOGGER.severe(ex.getMessage());
         }
     }
 
