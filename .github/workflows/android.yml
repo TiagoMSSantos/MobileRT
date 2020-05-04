@@ -10,7 +10,7 @@ jobs:
         os: [ubuntu-16.04, ubuntu-18.04, macos-10.15, windows-2019]
         include:
           - os: ubuntu-16.04
-            ndk_version: 21.0.6113669
+            ndk_version: 21.1.6352462
             cmake_version: 3.6.0
 
           - os: ubuntu-18.04
@@ -82,15 +82,7 @@ jobs:
         ndk: ${{ matrix.ndk_version }}
         cmake: ${{ matrix.cmake_version }}
         script: |
-          adb logcat -c;
-          ./gradlew connectedAndroidTest -DtestType="${{ matrix.variant }}" -DndkVersion="${{ matrix.ndk_version }}" -DcmakeVersion="${{ matrix.cmake_version }}" > ./app/build/reports/log_tests_${{ matrix.variant }}.txt;
-          adb logcat -v threadtime -d *:V > ./app/build/reports/logcat_${{ matrix.variant }}.txt;
-          cat ./app/build/reports/logcat_${{ matrix.variant }}.txt | egrep -i `cat ./app/build/reports/logcat_${{ matrix.variant }}.txt | egrep -i "proc.*:puscas" | cut -d ":" -f 4 | cut -d ' ' -f 4` > ./app/build/reports/logcat_app_${{ matrix.variant }}.txt;
-          adb push app/build/intermediates/cmake/${{ matrix.variant }}/obj/x86/ /data/RT_Unit_Tests;
-          adb shell ls -la /data/RT_Unit_Tests;
-          adb shell chmod 777 /data/RT_Unit_Tests/UnitTests;
-          adb shell ls -la /data/RT_Unit_Tests;
-          adb shell LD_LIBRARY_PATH=/data/RT_Unit_Tests/ /data/RT_Unit_Tests/UnitTests 2>&1 | tee ./app/build/reports/log_unit_tests_${{ matrix.variant }}.txt;
+          bash ./Scripts/run_tests.sh ${{ matrix.variant }} ${{ matrix.ndk_version }} ${{ matrix.cmake_version }}
 
     - name: Upload reports
       if: always()

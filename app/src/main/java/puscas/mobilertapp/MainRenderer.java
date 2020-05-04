@@ -338,7 +338,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
     State getState() {
         final State currentState = Optional.ofNullable(this.renderTask)
             .map(task -> State.values()[task.rtGetState()])
-            .orElseGet(() -> State.IDLE);
+            .orElse(State.IDLE);
         return currentState;
     }
 

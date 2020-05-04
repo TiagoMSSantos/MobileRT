@@ -413,7 +413,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
         @Contract("_ -> this")
         @Nonnull
         RenderTask.Builder withUpdateInterval(final long updateInterval) {
-            LOGGER_BUILDER.info("withUpdateInterval");
+            LOGGER_BUILDER.info(String.format(Locale.US, "withUpdateInterval: %d", updateInterval));
 
             this.updateInterval = updateInterval;
             return this;
@@ -428,7 +428,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
         @Contract("_ -> this")
         @Nonnull
         RenderTask.Builder withWidth(final int width) {
-            LOGGER_BUILDER.info("withWidth");
+            LOGGER_BUILDER.info(String.format(Locale.US, "withWidth: %d", width));
 
             this.width = width;
             return this;
@@ -443,7 +443,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
         @Contract("_ -> this")
         @Nonnull
         RenderTask.Builder withHeight(final int height) {
-            LOGGER_BUILDER.info("withHeight");
+            LOGGER_BUILDER.info(String.format(Locale.US, "withHeight: %d", height));
 
             this.height = height;
             return this;
@@ -458,7 +458,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
         @Contract("_ -> this")
         @Nonnull
         RenderTask.Builder withNumThreads(final int numThreads) {
-            LOGGER_BUILDER.info("withNumThreads");
+            LOGGER_BUILDER.info(String.format(Locale.US, "withNumThreads: %d", numThreads));
 
             this.numThreads = numThreads;
             return this;
@@ -473,7 +473,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
         @Contract("_ -> this")
         @Nonnull
         RenderTask.Builder withSamplesPixel(final int samplesPixel) {
-            LOGGER_BUILDER.info("withSamplesPixel");
+            LOGGER_BUILDER.info(String.format(Locale.US, "withSamplesPixel: %d", samplesPixel));
 
             this.samplesPixel = samplesPixel;
             return this;
@@ -488,7 +488,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
         @Contract("_ -> this")
         @Nonnull
         RenderTask.Builder withSamplesLight(final int samplesLight) {
-            LOGGER_BUILDER.info("withSamplesLight");
+            LOGGER_BUILDER.info(String.format(Locale.US, "withSamplesLight: %d", samplesLight));
 
             this.samplesLight = samplesLight;
             return this;
@@ -503,7 +503,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
         @Contract("_ -> this")
         @Nonnull
         RenderTask.Builder withNumPrimitives(final int numPrimitives) {
-            LOGGER_BUILDER.info("withNumPrimitives");
+            LOGGER_BUILDER.info(String.format(Locale.US, "withNumPrimitives: %d", numPrimitives));
 
             this.numPrimitives = numPrimitives;
             return this;
@@ -518,7 +518,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
         @Contract("_ -> this")
         @Nonnull
         RenderTask.Builder withNumLights(final int numLights) {
-            LOGGER_BUILDER.info("withNumLights");
+            LOGGER_BUILDER.info(String.format(Locale.US, "withNumLights: %d", numLights));
 
             this.numLights = numLights;
             return this;

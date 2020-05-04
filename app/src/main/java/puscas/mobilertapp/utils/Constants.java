@@ -2,8 +2,6 @@ package puscas.mobilertapp.utils;
 
 import android.widget.Button;
 
-import org.junit.jupiter.api.Assertions;
-
 import java.util.logging.Logger;
 
 /**
@@ -45,7 +43,7 @@ public final class Constants {
     public static final String EMPTY_FILE = "";
 
     /**
-     * The {@link Assertions} message used when a file should exist.
+     * The assert message used when a file should exist.
      */
     public static final String FILE_SHOULD_EXIST = "File should exist!";
 
@@ -65,7 +63,7 @@ public final class Constants {
     public static final String PREVIEW = "Preview";
 
     /**
-     * The {@link Assertions} message used when checking the preview
+     * The assert message used when checking the preview
      * {@link android.widget.CheckBox} text message.
      */
     public static final String CHECK_BOX_MESSAGE = "Check box message";

@@ -623,7 +623,7 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
 ) {
     LOG("rtRenderIntoBitmap");
     LOG("nThreads = ", nThreads);
-    LOG("async = ", async);
+    LOG("async = ", async? "true" : "false");
     try {
         auto globalBitmap {static_cast<jobject> (env->NewGlobalRef(localBitmap))};
 
