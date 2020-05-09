@@ -36,6 +36,7 @@ import java.util.logging.Logger;
 
 import javax.annotation.Nonnull;
 
+import java8.util.function.Supplier;
 import java8.util.stream.IntStreams;
 import java8.util.stream.StreamSupport;
 import puscas.mobilertapp.utils.Accelerator;
@@ -266,6 +267,19 @@ public final class MainActivityTest {
     }
 
     /**
+     * Waits for a predicate until certain time.
+     *
+     * @param test The test to do.
+     */
+    private static void waitUntil(@Nonnull final Supplier<Boolean> test, final long time, final TimeUnit timeUnit) {
+        final boolean result = test.get();
+        if (result) {
+            return;
+        }
+        Uninterruptibles.sleepUninterruptibly(time, timeUnit);
+    }
+
+    /**
      * Helper method which changes the {@code value} of a {@link NumberPicker}.
      *
      * @param pickerName    The name of the {@link NumberPicker}.
@@ -279,6 +293,7 @@ public final class MainActivityTest {
             .perform(new MainActivityTest.ViewActionNumberPicker(expectedValue))
             .check((view, exception) -> {
                 final NumberPicker numberPicker = view.findViewById(pickerId);
+                waitUntil(() -> numberPicker.getValue() == expectedValue, 5L, TimeUnit.SECONDS);
                 Assertions.assertEquals(expectedValue, numberPicker.getValue(),
                     "Number picker '" + pickerName + "' with wrong value"
                 );
