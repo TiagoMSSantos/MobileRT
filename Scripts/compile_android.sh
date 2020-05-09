@@ -9,11 +9,11 @@ cmake_version="${3:-3.6.0}"
 
 
 ###############################################################################
-# Run unit tests natively
+# Compile for Android
 ###############################################################################
-output="$(./gradlew test${type}UnitTest \
+output="$(./gradlew assemble${type} \
   -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}")";
-resUnitTests=$?
+resCompile=$?
 echo -e "output = ${output}"
 ###############################################################################
 ###############################################################################
@@ -24,11 +24,11 @@ echo -e "output = ${output}"
 ###############################################################################
 echo "########################################################################"
 echo "Results:"
-if [ $resUnitTests -eq 0 ]; then
-  echo "Unit tests: success"
+if [ $resCompile -eq 0 ]; then
+  echo "Compilation: success"
 else
-  echo "Unit tests: failed"
-  exit $resUnitTests
+  echo "Compilation: failed"
+  exit $resCompile
 fi
 ###############################################################################
 ###############################################################################
