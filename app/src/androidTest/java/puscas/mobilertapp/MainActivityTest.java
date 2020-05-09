@@ -11,6 +11,7 @@ import androidx.test.espresso.ViewAction;
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.espresso.core.internal.deps.guava.collect.ImmutableList;
 import androidx.test.espresso.matcher.ViewMatchers;
+import androidx.test.filters.FlakyTest;
 import androidx.test.rule.ActivityTestRule;
 
 import com.google.common.util.concurrent.Uninterruptibles;
@@ -195,19 +196,21 @@ public final class MainActivityTest {
                 (currentIndex - 1) % buttonTextList.size() : 1;
             final String expectedButtonTextOld = buttonTextList.get(expectedIndexOld);
             final ViewInteraction viewInteraction = Espresso.onView(ViewMatchers.withId(R.id.renderButton));
-            viewInteraction.check((view, exception) -> {
-                final Button renderButton = view.findViewById(R.id.renderButton);
-                Assertions.assertEquals(
-                    expectedButtonTextOld,
-                    renderButton.getText().toString(),
-                    "Button message at currentIndex: " + currentIndex
-                );
-            });
             final int expectedIndex = currentIndex % buttonTextList.size();
             final String expectedButtonText = buttonTextList.get(expectedIndex);
-            viewInteraction.perform(new MainActivityTest.ViewActionButton());
             viewInteraction.check((view, exception) -> {
                 final Button renderButton = view.findViewById(R.id.renderButton);
+                waitUntil(() -> renderButton.getText().toString().equals(expectedButtonTextOld), 5L);
+                Assertions.assertEquals(
+                        expectedButtonTextOld,
+                        renderButton.getText().toString(),
+                        "Button message at currentIndex: " + currentIndex
+                );
+            })
+            .perform(new MainActivityTest.ViewActionButton())
+            .check((view, exception) -> {
+                final Button renderButton = view.findViewById(R.id.renderButton);
+                waitUntil(() -> renderButton.getText().toString().equals(expectedButtonText), 5L);
                 Assertions.assertEquals(
                     expectedButtonText,
                     renderButton.getText().toString(),
@@ -269,14 +272,18 @@ public final class MainActivityTest {
     /**
      * Waits for a predicate until certain time.
      *
-     * @param test The test to do.
+     * @param test        The test to do.
+     * @param timeoutSecs The maximum time to wait in seconds.
      */
-    private static void waitUntil(@Nonnull final Supplier<Boolean> test, final long time, final TimeUnit timeUnit) {
-        final boolean result = test.get();
-        if (result) {
-            return;
+    private static void waitUntil(@Nonnull final Supplier<Boolean> test, final long timeoutSecs) {
+        boolean result = !test.get();
+        long waited = 0L;
+
+        while (result && waited < timeoutSecs) {
+            Uninterruptibles.sleepUninterruptibly(1L, TimeUnit.SECONDS);
+            waited += 1L;
+            result = !test.get();
         }
-        Uninterruptibles.sleepUninterruptibly(time, timeUnit);
     }
 
     /**
@@ -293,7 +300,7 @@ public final class MainActivityTest {
             .perform(new MainActivityTest.ViewActionNumberPicker(expectedValue))
             .check((view, exception) -> {
                 final NumberPicker numberPicker = view.findViewById(pickerId);
-                waitUntil(() -> numberPicker.getValue() == expectedValue, 5L, TimeUnit.SECONDS);
+                waitUntil(() -> numberPicker.getValue() == expectedValue, 5L);
                 Assertions.assertEquals(expectedValue, numberPicker.getValue(),
                     "Number picker '" + pickerName + "' with wrong value"
                 );
@@ -359,9 +366,9 @@ public final class MainActivityTest {
 
     /**
      * Tests changing all the {@link NumberPicker} and clicking the render
-     * {@link Button} many times.
+     * {@link Button} few times.
      */
-    @Test(timeout = 600L * 1000L)
+    @Test(timeout = 60L * 1000L)
     public void testUI() {
         LOGGER.info("testUI");
         final MainActivity activity = this.mainActivityActivityTestRule.getActivity();
@@ -373,9 +380,7 @@ public final class MainActivityTest {
             });
 
         final int numCores = activity.getNumOfCores();
-        testRenderButton(3, numCores);
-        testRenderButton(6, numCores);
-
+        testRenderButton(1, numCores);
         testPickerNumbers(numCores);
         testPreviewCheckBox();
 
@@ -383,9 +388,43 @@ public final class MainActivityTest {
     }
 
     /**
+     * Tests clicking the render {@link Button} many times without preview.
+     */
+    @Test(timeout = 10L * 60L * 1000L)
+    public void testRenderManyTimesWithoutPreview() {
+        LOGGER.info("testRender");
+        final MainActivity activity = this.mainActivityActivityTestRule.getActivity();
+        final int numCores = activity.getNumOfCores();
+
+        Espresso.onView(ViewMatchers.withId(R.id.preview))
+        .perform(new MainActivityTest.ViewActionButton())
+        .check((view, exception) ->
+                assertCheckBox(view, R.id.preview, Constants.PREVIEW, Constants.CHECK_BOX_MESSAGE, false)
+        );
+        testRenderButton(10, numCores);
+
+        this.mainActivityActivityTestRule.finishActivity();
+    }
+
+    /**
+     * Tests clicking the render {@link Button} many times with preview.
+     */
+    @FlakyTest(detail = "Race condition in the system.")
+    @Test(timeout = 10L * 60L * 1000L)
+    public void testRenderManyTimesWithPreview() {
+        LOGGER.info("testRender");
+        final MainActivity activity = this.mainActivityActivityTestRule.getActivity();
+        final int numCores = activity.getNumOfCores();
+
+        testRenderButton(10, numCores);
+
+        this.mainActivityActivityTestRule.finishActivity();
+    }
+
+    /**
      * Tests rendering a scene.
      */
-    @Test(timeout = 300L * 1000L)
+    @Test(timeout = 5L * 60L * 1000L)
     public void testRenderScene() {
         LOGGER.info("testRenderScene");
 

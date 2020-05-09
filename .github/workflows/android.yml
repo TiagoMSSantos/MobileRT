@@ -87,14 +87,14 @@ jobs:
 
     - name: Upload reports
       if: always()
-      uses: actions/upload-artifact@v1.0.0
+      uses: actions/upload-artifact@v2
       with:
         name: reports_${{ matrix.type }}_${{ matrix.os }}
         path: ./app/build/reports
 
     - name: Upload APK
       if: success() && matrix.os == 'ubuntu-16.04'
-      uses: actions/upload-artifact@v1.0.0
+      uses: actions/upload-artifact@v2
       with:
         name: MobileRT_${{ matrix.type }}_exp
         path: ./app/build/outputs/apk/${{ matrix.variant }}
