@@ -169,7 +169,7 @@ public final class MainActivityTest {
         final List<String> buttonTextList = ImmutableList.<String>builder().add(Constants.STOP, Constants.RENDER).build();
         IntStreams.range(0, buttonTextList.size() * repetitions).forEach(currentIndex -> {
             LOGGER.info("currentIndex = " + currentIndex);
-            final int finalCounterScene =  Math.min(this.counterScene % numScenes, 3);
+            final int finalCounterScene =  2;
             this.counterScene++;
             final int finalCounterAccelerator =  Math.max(this.counterAccelerator % numAccelerators, 1);
             this.counterAccelerator++;
@@ -202,9 +202,9 @@ public final class MainActivityTest {
                 final Button renderButton = view.findViewById(R.id.renderButton);
                 waitUntil(() -> renderButton.getText().toString().equals(expectedButtonTextOld), 5L);
                 Assertions.assertEquals(
-                        expectedButtonTextOld,
-                        renderButton.getText().toString(),
-                        "Button message at currentIndex: " + currentIndex
+                    expectedButtonTextOld,
+                    renderButton.getText().toString(),
+                    "Button message at currentIndex: " + currentIndex
                 );
             })
             .perform(new MainActivityTest.ViewActionButton())
@@ -401,7 +401,7 @@ public final class MainActivityTest {
         .check((view, exception) ->
                 assertCheckBox(view, R.id.preview, Constants.PREVIEW, Constants.CHECK_BOX_MESSAGE, false)
         );
-        testRenderButton(10, numCores);
+        testRenderButton(20, numCores);
 
         this.mainActivityActivityTestRule.finishActivity();
     }
@@ -416,7 +416,7 @@ public final class MainActivityTest {
         final MainActivity activity = this.mainActivityActivityTestRule.getActivity();
         final int numCores = activity.getNumOfCores();
 
-        testRenderButton(10, numCores);
+        testRenderButton(20, numCores);
 
         this.mainActivityActivityTestRule.finishActivity();
     }

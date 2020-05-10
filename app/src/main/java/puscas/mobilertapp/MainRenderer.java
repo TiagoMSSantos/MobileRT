@@ -957,23 +957,27 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
                 this.rasterize = false;
                 try {
                     initArrays();
-                    this.bitmap = copyFrame(this.arrayVertices, this.arrayColors, this.arrayCamera, this.numPrimitives);
+                    if (this.arrayVertices != null && this.arrayColors != null && this.arrayCamera != null && this.numPrimitives > 0) {
+                        this.bitmap = copyFrame(this.arrayVertices, this.arrayColors, this.arrayCamera, this.numPrimitives);
+                    }
                 } catch (final LowMemoryException ex) {
                     LOGGER.warning(Strings.nullToEmpty(ex.getMessage()));
                     LOGGER.warning("Low memory to rasterize a frame!!!");
                 }
             }
 
-            try {
-                rtRenderIntoBitmap(this.bitmap, this.numThreads, true);
-            } catch (final LowMemoryException ex) {
-                LOGGER.warning(Strings.nullToEmpty(ex.getMessage()));
+            if (this.bitmap != null && this.numThreads > 0) {
+                try {
+                    rtRenderIntoBitmap(this.bitmap, this.numThreads, true);
+                } catch (final LowMemoryException ex) {
+                    LOGGER.warning(Strings.nullToEmpty(ex.getMessage()));
+                }
             }
-
             createAndLaunchRenderTask();
         }
-
-        drawBitmap();
+        if (this.bitmap != null && this.numThreads > 0) {
+            drawBitmap();
+        }
     }
 
     @Override
