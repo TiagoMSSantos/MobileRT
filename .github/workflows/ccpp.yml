@@ -33,6 +33,7 @@ jobs:
 
     name: ${{ matrix.type }} ${{ matrix.compiler }} (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
 
     steps:
     - name: Checkout
