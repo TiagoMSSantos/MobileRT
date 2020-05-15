@@ -2,6 +2,11 @@ name: Tests Android
 
 on: [push, pull_request, release]
 
+defaults:
+  run:
+    shell: bash
+    working-directory: .
+
 jobs:
   Build:
     strategy:

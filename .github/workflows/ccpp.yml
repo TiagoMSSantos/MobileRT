@@ -2,6 +2,11 @@ name: Unit Tests C++
 
 on: [push, pull_request, release]
 
+defaults:
+  run:
+    shell: bash
+    working-directory: .
+
 jobs:
   Unit_Tests:
     strategy:
