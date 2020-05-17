@@ -169,8 +169,8 @@ dependencies {
 
     println("Adding dependencies for the instrumentation tests.")
 
-    implementation 'androidx.test:runner:1.2.0'
-    implementation 'junit:junit:4.13'
+    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation 'junit:junit:4.13'
 
     androidTestImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.2'
     androidTestImplementation 'org.assertj:assertj-core:3.15.0'
@@ -187,11 +187,13 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-intents:3.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-web:3.2.0'
     androidTestImplementation 'androidx.test.espresso.idling:idling-concurrent:3.2.0'
+    androidTestImplementation 'androidx.test:rules:1.2.0'
 
 
 
     println("Adding dependencies for the unit tests.")
 
+    testImplementation 'junit:junit:4.13'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.2'
     testImplementation 'org.assertj:assertj-core:3.15.0'
     testImplementation 'org.khronos:opengl-api:gl1.1-android-2.1_r1'

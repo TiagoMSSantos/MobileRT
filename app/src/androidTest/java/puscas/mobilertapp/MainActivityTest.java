@@ -1,5 +1,6 @@
 package puscas.mobilertapp;
 
+import android.Manifest;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -13,6 +14,7 @@ import androidx.test.espresso.core.internal.deps.guava.collect.ImmutableList;
 import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.filters.FlakyTest;
 import androidx.test.rule.ActivityTestRule;
+import androidx.test.rule.GrantPermissionRule;
 
 import com.google.common.util.concurrent.Uninterruptibles;
 
@@ -98,6 +100,13 @@ public final class MainActivityTest {
     @Rule
     public final ActivityTestRule<MainActivity> mainActivityActivityTestRule =
         new ActivityTestRule<>(MainActivity.class, true, true);
+
+    /**
+     * The rule to access external SD card.
+     */
+    @Rule
+    public final GrantPermissionRule grantPermissionRule =
+        GrantPermissionRule.grant(Manifest.permission.READ_EXTERNAL_STORAGE);
 
     /**
      * A setup method which is called first.
