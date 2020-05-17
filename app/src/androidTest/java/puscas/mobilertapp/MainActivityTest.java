@@ -341,7 +341,6 @@ public final class MainActivityTest {
         LOGGER.info("testFilesExistAndReadable");
         final MainActivity activity = this.mainActivityActivityTestRule.getActivity();
         final List<String> paths = ImmutableList.<String>builder().add(
-            activity.getSDCardPath() + Constants.OBJ_FILE_CONFERENCE,
             activity.getSDCardPath() + Constants.OBJ_FILE_TEAPOT
         ).build();
         StreamSupport.stream(paths)

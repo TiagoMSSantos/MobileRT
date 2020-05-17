@@ -82,7 +82,8 @@ public final class MainActivity extends Activity {
         } catch (final RuntimeException ex) {
             throw new FailureException(ex);
         } catch (final UnsatisfiedLinkError ex) {
-            LOGGER.severe(ex.getMessage());
+            LOGGER.severe("MainActivity exception: " + ex.getClass().getName());
+            LOGGER.severe("MainActivity exception: " + Strings.nullToEmpty(ex.getMessage()));
         }
     }
 
@@ -224,7 +225,7 @@ public final class MainActivity extends Activity {
         intent.setType("*" + ConstantsUI.FILE_SEPARATOR + "*");
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         try {
-            final Intent intentChooseFile = Intent.createChooser(intent, "Select a File to Upload");
+            final Intent intentChooseFile = Intent.createChooser(intent, "Select an OBJ file to load.");
             startActivityForResult(intentChooseFile, OPEN_FILE_REQUEST_CODE);
         } catch (final android.content.ActivityNotFoundException ex) {
             Toast.makeText(this, ConstantsToast.PLEASE_INSTALL_FILE_MANAGER, Toast.LENGTH_LONG).show();
@@ -346,7 +347,8 @@ public final class MainActivity extends Activity {
     @Nonnull
     public String getSDCardPath() {
         LOGGER.info("Getting SD card path");
-        String sdCardPath = Optional.ofNullable(getExternalFilesDir(null))
+        final File[] dirs = ContextCompat.getExternalFilesDirs(getApplicationContext(), null);
+        String sdCardPath = Optional.ofNullable(dirs.length > 1? dirs[1] : dirs[0])
             .map(File::getAbsolutePath)
             .orElse(Environment.getExternalStorageDirectory().getAbsolutePath());
         final int removeIndex = sdCardPath.indexOf("Android");

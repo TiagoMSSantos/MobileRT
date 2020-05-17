@@ -150,10 +150,9 @@ public final class DrawView extends GLSurfaceView {
     void stopDrawing() {
         LOGGER.info("stopDrawing");
 
-        this.lastTask.cancel(false);
+        this.lastTask.cancel(true);
         waitLastTask();
         rtStopRender();
-        this.renderer.waitLastTask();
         this.renderer.updateButton(R.string.render);
 
         LOGGER.info("stopDrawing finished");
@@ -173,16 +172,16 @@ public final class DrawView extends GLSurfaceView {
         LOGGER.info(ConstantsMethods.RENDER_SCENE);
 
         waitLastTask();
+
         rtStartRender();
 
         this.lastTask = this.executorService.submit(() -> {
-            LOGGER.info(ConstantsMethods.RENDER_SCENE);
-
-            this.renderer.waitLastTask();
+            LOGGER.info(ConstantsMethods.RENDER_SCENE + " executor");
 
             try {
                 createScene(config, numThreads, rasterize);
                 requestRender();
+                LOGGER.info(ConstantsMethods.RENDER_SCENE + " executor finished");
                 return Boolean.TRUE;
             } catch (final LowMemoryException ex) {
                 warningError(ex, ConstantsToast.DEVICE_WITHOUT_ENOUGH_MEMORY);
@@ -192,9 +191,11 @@ public final class DrawView extends GLSurfaceView {
             rtStopRender();
             this.renderer.rtFinishRender();
             this.renderer.updateButton(R.string.render);
+            LOGGER.info(ConstantsMethods.RENDER_SCENE + " executor failed");
             return Boolean.FALSE;
         });
         this.renderer.updateButton(R.string.stop);
+        LOGGER.info(ConstantsMethods.RENDER_SCENE + " finished");
     }
 
     /**
@@ -206,9 +207,11 @@ public final class DrawView extends GLSurfaceView {
                 try {
                     task.get(1L, TimeUnit.DAYS);
                 } catch (final ExecutionException | TimeoutException | RuntimeException ex) {
-                    LOGGER.warning(Strings.nullToEmpty(ex.getMessage()));
+                    LOGGER.severe("waitLastTask exception: " + ex.getClass().getName());
+                    LOGGER.severe("waitLastTask exception: " + Strings.nullToEmpty(ex.getMessage()));
                 } catch (final InterruptedException ex) {
-                    LOGGER.warning(Strings.nullToEmpty(ex.getMessage()));
+                    LOGGER.severe("waitLastTask exception: " + ex.getClass().getName());
+                    LOGGER.severe("waitLastTask exception: " + Strings.nullToEmpty(ex.getMessage()));
                     Thread.currentThread().interrupt();
                 }
             });
@@ -226,16 +229,13 @@ public final class DrawView extends GLSurfaceView {
             final int numThreads,
             final boolean rasterize) throws LowMemoryException {
         LOGGER.info("createScene");
-
-        this.renderer.freeArrays();
-
         final int numPrimitives = this.renderer.rtInitialize(config);
         this.renderer.resetStats(
             numThreads, config.getSamplesPixel(), config.getSamplesLight(), numPrimitives, rtGetNumberOfLights()
         );
         final int widthView = getWidth();
         final int heightView = getHeight();
-        this.renderer.setBitmap(config.getWidth(), config.getHeight(), widthView, heightView, rasterize);
+        queueEvent(() -> this.renderer.setBitmap(config.getWidth(), config.getHeight(), widthView, heightView, rasterize));
     }
 
     /**
@@ -277,6 +277,7 @@ public final class DrawView extends GLSurfaceView {
 
         final Activity activity = getActivity();
         this.changingConfigs = activity.isChangingConfigurations();
+        LOGGER.info("onPause finished");
     }
 
     @Override
@@ -287,6 +288,7 @@ public final class DrawView extends GLSurfaceView {
         if (hasWindowFocus && getVisibility() == View.GONE) {
             setVisibility(View.VISIBLE);
         }
+        LOGGER.info("onWindowFocusChanged finished");
     }
 
     @Override

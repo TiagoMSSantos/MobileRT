@@ -22,6 +22,7 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.Locale;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.locks.Lock;
@@ -204,6 +205,11 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * update the texture with the {@link Bitmap}.
      */
     private boolean firstFrame = false;
+
+    /**
+     * Finished.
+     */
+    private boolean renderTaskFinished = false;
 
     /**
      * The {@link TextView} which will output the debug information about the Ray Tracer engine.
@@ -453,6 +459,8 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
 
         this.arrayCamera = rtInitCameraArray();
         checksFreeMemory(1, this::freeArrays);
+
+        validateArrays();
     }
 
     /**
@@ -516,6 +524,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         this.viewHeight = heightView;
         this.firstFrame = true;
         this.rasterize = rasterize;
+        validateBitmap();
     }
 
     /**
@@ -571,10 +580,13 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
             arrayBytesNewBitmap[androidIndex] = convertPixelOpenGLToAndroid(pixel);
         }
 
-        final Bitmap bitmapAux = Bitmap.createBitmap(
+        final Bitmap bitmapView = Bitmap.createBitmap(
             arrayBytesNewBitmap, this.viewWidth, this.viewHeight, Bitmap.Config.ARGB_8888
         );
-        return Bitmap.createScaledBitmap(bitmapAux, this.width, this.height, true);
+        final Bitmap bitmap = Bitmap.createScaledBitmap(bitmapView, this.width, this.height, true);
+        Preconditions.checkArgument(bitmapView.getWidth() == this.viewWidth);
+        Preconditions.checkArgument(bitmapView.getHeight() == this.viewHeight);
+        return bitmap;
     }
 
     /**
@@ -582,8 +594,19 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * In the end, resets {@link MainRenderer#executorService} to a new thread pool with
      * {@link ConstantsRenderer#NUMBER_THREADS} threads.
      */
-    void waitLastTask() {
+    private void waitLastTask() {
         LOGGER.info("WAITING");
+
+        if (this.renderTask != null) {
+            try {
+                this.renderTask.get();
+                this.renderTask.cancel(true);
+            } catch (final ExecutionException | InterruptedException ex) {
+                LOGGER.severe("waitLastTask exception: " + ex.getClass().getName());
+                LOGGER.severe("waitLastTask exception: " + Strings.nullToEmpty(ex.getMessage()));
+                Thread.currentThread().interrupt();
+            }
+        }
 
         this.lockExecutorService.lock();
         try {
@@ -629,6 +652,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
             @Nonnull final ByteBuffer bbCamera,
             final int numPrimitives
     ) throws LowMemoryException {
+        LOGGER.info("copyFrame");
         if (bbVertices.capacity() <= 0 || bbColors.capacity() <= 0 || bbCamera.capacity() <= 0 || numPrimitives <= 0) {
             return this.bitmap;
         }
@@ -829,6 +853,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         checksGLError();
 
         final Bitmap bitmap = copyFrameBuffer();
+        LOGGER.info("copyFrame finished");
         return bitmap;
     }
 
@@ -881,9 +906,12 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * Creates and launches the {@link RenderTask} field.
      */
     private void createAndLaunchRenderTask() {
+        LOGGER.info("createAndLaunchRenderTask");
         final RenderTask.Builder renderTaskBuilder = new RenderTask.Builder(
             this.requestRender, this::rtFinishRender, this.textView, this.buttonRender
         );
+
+        waitLastTask();
 
         this.renderTask = renderTaskBuilder
             .withUpdateInterval(DEFAULT_UPDATE_INTERVAL)
@@ -902,12 +930,14 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         } finally {
             this.lockExecutorService.unlock();
         }
+        LOGGER.info("createAndLaunchRenderTask finished");
     }
 
     /**
      * Draws the {@link Bitmap} field.
      */
     private void drawBitmap() {
+        LOGGER.info("drawBitmap");
         GLES20.glUseProgram(this.shaderProgram);
         checksGLError();
 
@@ -936,8 +966,10 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_FAN, positionAttrib, vertexCount);
         checksGLError();
 
+        validateBitmap();
         GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, this.bitmap, GLES20.GL_UNSIGNED_BYTE, 0);
         checksGLError();
+        validateBitmap();
 
         GLES20.glDisableVertexAttribArray(positionAttrib);
         checksGLError();
@@ -945,39 +977,73 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         checksGLError();
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0);
         checksGLError();
+        LOGGER.info("drawBitmap finished");
     }
 
     @Override
     public void onDrawFrame(@Nonnull final GL10 gl) {
+        validateBitmap();
+
         if (this.firstFrame) {
+            LOGGER.info("onDrawFirstFrame");
             this.firstFrame = false;
-            LOGGER.info("onDrawFrame");
 
             if (this.rasterize) {
                 this.rasterize = false;
                 try {
                     initArrays();
-                    if (this.arrayVertices != null && this.arrayColors != null && this.arrayCamera != null && this.numPrimitives > 0) {
-                        this.bitmap = copyFrame(this.arrayVertices, this.arrayColors, this.arrayCamera, this.numPrimitives);
-                    }
+
+                    validateArrays();
+                    Preconditions.checkArgument(this.numPrimitives > 0);
+                    validateBitmap();
+
+                    this.bitmap = copyFrame(this.arrayVertices, this.arrayColors, this.arrayCamera, this.numPrimitives);
+
+                    validateArrays();
+                    Preconditions.checkArgument(this.numPrimitives > 0);
+                    validateBitmap();
                 } catch (final LowMemoryException ex) {
-                    LOGGER.warning(Strings.nullToEmpty(ex.getMessage()));
-                    LOGGER.warning("Low memory to rasterize a frame!!!");
+                    LOGGER.severe("onDrawFrame exception: " + ex.getClass().getName());
+                    LOGGER.severe("onDrawFrame exception: " + Strings.nullToEmpty(ex.getMessage()));
+                    LOGGER.severe("Low memory to rasterize a frame!!!");
                 }
+                validateArrays();
+                Preconditions.checkArgument(this.numPrimitives > 0);
+                validateBitmap();
             }
 
-            if (this.bitmap != null && this.numThreads > 0) {
-                try {
-                    rtRenderIntoBitmap(this.bitmap, this.numThreads, true);
-                } catch (final LowMemoryException ex) {
-                    LOGGER.warning(Strings.nullToEmpty(ex.getMessage()));
-                }
+            try {
+                LOGGER.info("rtRenderIntoBitmap started");
+                validateBitmap();
+                rtRenderIntoBitmap(this.bitmap, this.numThreads, true);
+                validateBitmap();
+                LOGGER.info("rtRenderIntoBitmap finished");
+            } catch (final LowMemoryException ex) {
+                LOGGER.severe("onDrawFrame exception: " + ex.getClass().getName());
+                LOGGER.severe("onDrawFrame exception: " + Strings.nullToEmpty(ex.getMessage()));
+                LOGGER.severe("rtRenderIntoBitmap finished with error");
             }
+            validateBitmap();
             createAndLaunchRenderTask();
+            validateBitmap();
+            LOGGER.info("onDrawFirstFrame finished");
         }
-        if (this.bitmap != null && this.numThreads > 0) {
-            drawBitmap();
-        }
+        validateBitmap();
+        drawBitmap();
+        validateBitmap();
+    }
+
+    private void validateArrays() {
+        Preconditions.checkArgument(this.arrayVertices != null);
+        Preconditions.checkArgument(this.arrayColors != null);
+        Preconditions.checkArgument(this.arrayCamera != null);
+    }
+
+    private void validateBitmap() {
+        Preconditions.checkArgument(this.bitmap != null);
+        Preconditions.checkArgument(!this.bitmap.isRecycled());
+        Preconditions.checkArgument(this.bitmap.getWidth() == this.width);
+        Preconditions.checkArgument(this.bitmap.getHeight() == this.height);
     }
 
     @Override
@@ -987,8 +1053,9 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         GLES20.glViewport(0, 0, width, height);
         checksGLError();
 
-        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, this.bitmap, 0);
+//        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, this.bitmap, 0);
         checksGLError();
+        LOGGER.info("onSurfaceChanged finished");
     }
 
     @Override
@@ -1125,5 +1192,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
 
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
         checksGLError();
+
+        LOGGER.info("onSurfaceCreated finished");
     }
 }
