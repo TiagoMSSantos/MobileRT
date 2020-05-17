@@ -39,7 +39,6 @@ import java.util.logging.Logger;
 
 import javax.annotation.Nonnull;
 
-import java8.util.function.Supplier;
 import java8.util.stream.IntStreams;
 import java8.util.stream.StreamSupport;
 import puscas.mobilertapp.utils.Accelerator;
@@ -98,15 +97,14 @@ public final class MainActivityTest {
      * The rule to create the MainActivity.
      */
     @Rule
-    public final ActivityTestRule<MainActivity> mainActivityActivityTestRule =
+    public ActivityTestRule<MainActivity> mainActivityActivityTestRule =
         new ActivityTestRule<>(MainActivity.class, true, true);
 
     /**
      * The rule to access external SD card.
      */
     @Rule
-    public final GrantPermissionRule grantPermissionRule =
-        GrantPermissionRule.grant(Manifest.permission.READ_EXTERNAL_STORAGE);
+    public GrantPermissionRule grantPermissionRule = GrantPermissionRule.grant(Manifest.permission.READ_EXTERNAL_STORAGE);
 
     /**
      * A setup method which is called first.
@@ -178,7 +176,7 @@ public final class MainActivityTest {
         final List<String> buttonTextList = ImmutableList.<String>builder().add(Constants.STOP, Constants.RENDER).build();
         IntStreams.range(0, buttonTextList.size() * repetitions).forEach(currentIndex -> {
             LOGGER.info("currentIndex = " + currentIndex);
-            final int finalCounterScene =  2;
+            final int finalCounterScene =  Math.min(this.counterScene % numScenes, 3);
             this.counterScene++;
             final int finalCounterAccelerator =  Math.max(this.counterAccelerator % numAccelerators, 1);
             this.counterAccelerator++;
@@ -209,17 +207,15 @@ public final class MainActivityTest {
             final String expectedButtonText = buttonTextList.get(expectedIndex);
             viewInteraction.check((view, exception) -> {
                 final Button renderButton = view.findViewById(R.id.renderButton);
-                waitUntil(() -> renderButton.getText().toString().equals(expectedButtonTextOld), 5L);
                 Assertions.assertEquals(
                     expectedButtonTextOld,
                     renderButton.getText().toString(),
                     "Button message at currentIndex: " + currentIndex
                 );
             })
-            .perform(new MainActivityTest.ViewActionButton())
+            .perform(new MainActivityTest.ViewActionButton(expectedButtonText))
             .check((view, exception) -> {
                 final Button renderButton = view.findViewById(R.id.renderButton);
-                waitUntil(() -> renderButton.getText().toString().equals(expectedButtonText), 5L);
                 Assertions.assertEquals(
                     expectedButtonText,
                     renderButton.getText().toString(),
@@ -252,7 +248,7 @@ public final class MainActivityTest {
         viewInteraction.check((view, exception) ->
             assertCheckBox(view, R.id.preview, Constants.PREVIEW, Constants.CHECK_BOX_MESSAGE, true)
         );
-        viewInteraction.perform(new MainActivityTest.ViewActionButton());
+        viewInteraction.perform(new MainActivityTest.ViewActionButton(Constants.STOP));
         viewInteraction.check((view, exception) ->
             assertCheckBox(view, R.id.preview, Constants.PREVIEW, Constants.CHECK_BOX_MESSAGE, false)
         );
@@ -279,23 +275,6 @@ public final class MainActivityTest {
     }
 
     /**
-     * Waits for a predicate until certain time.
-     *
-     * @param test        The test to do.
-     * @param timeoutSecs The maximum time to wait in seconds.
-     */
-    private static void waitUntil(@Nonnull final Supplier<Boolean> test, final long timeoutSecs) {
-        boolean result = !test.get();
-        long waited = 0L;
-
-        while (result && waited < timeoutSecs) {
-            Uninterruptibles.sleepUninterruptibly(1L, TimeUnit.SECONDS);
-            waited += 1L;
-            result = !test.get();
-        }
-    }
-
-    /**
      * Helper method which changes the {@code value} of a {@link NumberPicker}.
      *
      * @param pickerName    The name of the {@link NumberPicker}.
@@ -309,7 +288,6 @@ public final class MainActivityTest {
             .perform(new MainActivityTest.ViewActionNumberPicker(expectedValue))
             .check((view, exception) -> {
                 final NumberPicker numberPicker = view.findViewById(pickerId);
-                waitUntil(() -> numberPicker.getValue() == expectedValue, 5L);
                 Assertions.assertEquals(expectedValue, numberPicker.getValue(),
                     "Number picker '" + pickerName + "' with wrong value"
                 );
@@ -339,16 +317,20 @@ public final class MainActivityTest {
     @Test(timeout = 5L * 1000L)
     public void testFilesExistAndReadable() {
         LOGGER.info("testFilesExistAndReadable");
+
         final MainActivity activity = this.mainActivityActivityTestRule.getActivity();
+
         final List<String> paths = ImmutableList.<String>builder().add(
-            activity.getSDCardPath() + Constants.OBJ_FILE_TEAPOT
+            Constants.OBJ_FILE_TEAPOT
         ).build();
         StreamSupport.stream(paths)
             .forEach(path -> {
                 final File file = new File(path);
-                Assertions.assertTrue(file.exists(), Constants.FILE_SHOULD_EXIST);
-                Assertions.assertTrue(file.canRead(), "File should be readable!");
+                final String filePath = file.getAbsolutePath();
+                Assertions.assertTrue(file.exists(), Constants.FILE_SHOULD_EXIST + ": " + filePath);
+                Assertions.assertTrue(file.canRead(), "File should be readable: " + filePath);
             });
+
         this.mainActivityActivityTestRule.finishActivity();
     }
 
@@ -358,7 +340,9 @@ public final class MainActivityTest {
     @Test(timeout = 5L * 1000L)
     public void testFilesNotExist() {
         LOGGER.info("testFilesNotExist");
+
         final MainActivity activity = this.mainActivityActivityTestRule.getActivity();
+
         final List<String> paths = ImmutableList.<String>builder().add(
             Constants.EMPTY_FILE,
             activity.getSDCardPath() + Constants.OBJ_FILE_NOT_EXISTS
@@ -369,6 +353,7 @@ public final class MainActivityTest {
                 Assertions.assertFalse(file.exists(), "File should not exist!");
                 Assertions.assertFalse(file.canRead(), "File should not be readable!");
             });
+
         this.mainActivityActivityTestRule.finishActivity();
     }
 
@@ -379,6 +364,7 @@ public final class MainActivityTest {
     @Test(timeout = 60L * 1000L)
     public void testUI() {
         LOGGER.info("testUI");
+
         final MainActivity activity = this.mainActivityActivityTestRule.getActivity();
 
         Espresso.onView(ViewMatchers.withId(R.id.renderButton))
@@ -400,15 +386,19 @@ public final class MainActivityTest {
      */
     @Test(timeout = 10L * 60L * 1000L)
     public void testRenderManyTimesWithoutPreview() {
-        LOGGER.info("testRender");
+        LOGGER.info("testRenderManyTimesWithoutPreview");
+
         final MainActivity activity = this.mainActivityActivityTestRule.getActivity();
         final int numCores = activity.getNumOfCores();
 
         Espresso.onView(ViewMatchers.withId(R.id.preview))
-        .perform(new MainActivityTest.ViewActionButton())
-        .check((view, exception) ->
+            .check((view, exception) ->
+                assertCheckBox(view, R.id.preview, Constants.PREVIEW, Constants.CHECK_BOX_MESSAGE, true)
+            )
+            .perform(new MainActivityTest.ViewActionButton(Constants.STOP))
+            .check((view, exception) ->
                 assertCheckBox(view, R.id.preview, Constants.PREVIEW, Constants.CHECK_BOX_MESSAGE, false)
-        );
+            );
         testRenderButton(20, numCores);
 
         this.mainActivityActivityTestRule.finishActivity();
@@ -417,14 +407,18 @@ public final class MainActivityTest {
     /**
      * Tests clicking the render {@link Button} many times with preview.
      */
-    @Ignore
     @FlakyTest(detail = "Race condition in the system.")
-    @Test(timeout = 10L * 60L * 1000L)
+    @Test(timeout = 20L * 60L * 1000L)
     public void testRenderManyTimesWithPreview() {
-        LOGGER.info("testRender");
+        LOGGER.info("testRenderManyTimesWithPreview");
+
         final MainActivity activity = this.mainActivityActivityTestRule.getActivity();
         final int numCores = activity.getNumOfCores();
 
+        Espresso.onView(ViewMatchers.withId(R.id.preview))
+            .check((view, exception) ->
+                assertCheckBox(view, R.id.preview, Constants.PREVIEW, Constants.CHECK_BOX_MESSAGE, true)
+            );
         testRenderButton(20, numCores);
 
         this.mainActivityActivityTestRule.finishActivity();
@@ -448,9 +442,17 @@ public final class MainActivityTest {
         changePickerValue("pickerAccelerator", R.id.pickerAccelerator, 3);
         changePickerValue("pickerShader", R.id.pickerShader, 1);
 
-        final ViewInteraction viewInteraction = Espresso.onView(ViewMatchers.withId(R.id.renderButton));
-        viewInteraction.perform(new MainActivityTest.ViewActionButton());
-        viewInteraction.check((view, exception) -> {
+        final ViewInteraction viewInteraction = Espresso.onView(ViewMatchers.withId(R.id.renderButton))
+        .check((view, exception) -> {
+            final Button renderButton = view.findViewById(R.id.renderButton);
+            Assertions.assertEquals(
+                Constants.RENDER,
+                renderButton.getText().toString(),
+                "Button message"
+            );
+        })
+        .perform(new MainActivityTest.ViewActionButton(Constants.STOP))
+        .check((view, exception) -> {
             final Button renderButton = view.findViewById(R.id.renderButton);
             Assertions.assertEquals(
                 Constants.STOP,
@@ -495,10 +497,21 @@ public final class MainActivityTest {
             Logger.getLogger(MainActivityTest.ViewActionButton.class.getName());
 
         /**
+         * The expected text for the {@link Button}.
+         */
+        private final String expectedText;
+
+        /**
+         * The timeout in seconds.
+         */
+        private static final long TIMEOUT_SECS = 120L;
+
+        /**
          * The constructor for this class.
          */
         @Contract(pure = true)
-        ViewActionButton() {
+        ViewActionButton(final String expectedText) {
+            this.expectedText = expectedText;
         }
 
         @Nonnull
@@ -518,10 +531,31 @@ public final class MainActivityTest {
         }
 
         @Override
-        public final void perform(final UiController uiController, @Nonnull final View view) {
+        public final void perform(@Nonnull final UiController uiController, @Nonnull final View view) {
             LOGGER_BUTTON.info("testRenderButton#perform");
 
+            uiController.loopMainThreadUntilIdle();
             view.performClick();
+
+            final Button renderButton = view.findViewById(R.id.renderButton);
+            if (renderButton == null) {
+                uiController.loopMainThreadUntilIdle();
+                return;
+            }
+
+            boolean result = !renderButton.getText().toString().equals(this.expectedText);
+            long waited = 0L;
+
+            while (result && waited < TIMEOUT_SECS) {
+                uiController.loopMainThreadForAtLeast(2000L);
+                waited += 1L;
+                result = !renderButton.getText().toString().equals(this.expectedText);
+            }
+
+            if (waited >= TIMEOUT_SECS) {
+                LOGGER_BUTTON.severe("Timeout reached!!!");
+            }
+
         }
     }
 
