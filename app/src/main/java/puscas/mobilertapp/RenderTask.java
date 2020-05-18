@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import org.jetbrains.annotations.Contract;
 
+import java.lang.ref.WeakReference;
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -93,13 +94,13 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
      * The {@link TextView} which outputs debug information about the Ray Tracer engine like the current rendering
      * time and the fps.
      */
-    private final TextView textView;
+    private final WeakReference<TextView> textView;
 
     /**
      * The {@link Button} which starts and stops the rendering process.
      * This is needed in order to change its text at the end of the rendering process.
      */
-    private final Button buttonRender;
+    private final WeakReference<Button> buttonRender;
 
     /**
      * The number of primitives and lights in the scene.
@@ -183,8 +184,8 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
         this.threadsT = ",t:" + builder.getNumThreads();
         this.samplesPixelT = ",spp:" + builder.getSamplesPixel();
         this.samplesLightT = ",spl:" + builder.getSamplesLight();
-        this.buttonRender = builder.getButtonRender();
-        this.textView = builder.getTextView();
+        this.buttonRender = new WeakReference<>(builder.getButtonRender());
+        this.textView = new WeakReference<>(builder.getTextView());
 
         this.startTimeStamp = SystemClock.elapsedRealtime();
         this.fpsT = String.format(Locale.US, "fps:%.2f", 0.0F);
@@ -269,7 +270,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
         final String aux = this.fpsT + this.fpsRenderT + this.resolutionT + this.threadsT + this.samplesPixelT +
                 this.samplesLightT + this.sampleT + ConstantsUI.LINE_SEPARATOR +
                 this.stateT + this.allocatedT + this.timeFrameT + this.timeT + this.primitivesT;
-        this.textView.setText(aux);
+        this.textView.get().setText(aux);
     }
 
     @Override
@@ -300,7 +301,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
         LOGGER.info("onPostExecute");
         printText();
 
-        this.buttonRender.setText(R.string.render);
+        this.buttonRender.get().setText(R.string.render);
         this.requestRender.run();
         this.finishRender.run();
 

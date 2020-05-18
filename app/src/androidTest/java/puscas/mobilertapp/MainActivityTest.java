@@ -96,6 +96,7 @@ public final class MainActivityTest {
     /**
      * The rule to create the MainActivity.
      */
+    @Nonnull
     @Rule
     public ActivityTestRule<MainActivity> mainActivityActivityTestRule =
         new ActivityTestRule<>(MainActivity.class, true, true);
@@ -103,6 +104,7 @@ public final class MainActivityTest {
     /**
      * The rule to access external SD card.
      */
+    @Nonnull
     @Rule
     public GrantPermissionRule grantPermissionRule = GrantPermissionRule.grant(Manifest.permission.READ_EXTERNAL_STORAGE);
 

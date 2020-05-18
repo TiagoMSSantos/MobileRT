@@ -25,11 +25,12 @@ source Scripts/helper_functions.sh;
 # Set path to reports
 reports_path=./app/build/reports
 callCommand mkdir -p ${reports_path}
+callCommand rm -rf ./app/build/
 
-callCommand ./gradlew assemble${type} \
+callCommand ./gradlew clean assemble${type} --profile --parallel \
   -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
   | tee ${reports_path}/log_build_${type}.log 2>&1;
-resCompile=$?
+resCompile=${PIPESTATUS[0]};
 ###############################################################################
 ###############################################################################
 
@@ -39,11 +40,11 @@ resCompile=$?
 ###############################################################################
 echo "########################################################################"
 echo "Results:"
-if [ $resCompile -eq 0 ]; then
+if [ ${resCompile} -eq 0 ]; then
   echo "Compilation: success"
 else
   echo "Compilation: failed"
-  exit $resCompile
+  exit ${resCompile}
 fi
 ###############################################################################
 ###############################################################################

@@ -91,6 +91,11 @@ jobs:
         script: |
           bash ./Scripts/run_tests_android.sh ${{ matrix.variant }} ${{ matrix.ndk_version }} ${{ matrix.cmake_version }};
 
+    - name: Run linter
+      if: success()
+      run: |
+        bash ./Scripts/check_android.sh ${{ matrix.type }} ${{ matrix.ndk_version }} ${{ matrix.cmake_version }};
+
     - name: Upload reports
       if: always()
       uses: actions/upload-artifact@v2

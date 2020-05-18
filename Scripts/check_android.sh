@@ -19,17 +19,17 @@ source Scripts/helper_functions.sh;
 
 
 ###############################################################################
-# Run unit tests natively
+# Compile for Android
 ###############################################################################
 
 # Set path to reports
 reports_path=./app/build/reports
 callCommand mkdir -p ${reports_path}
 
-callCommand ./gradlew test${type}UnitTest \
+callCommand ./gradlew check --profile --parallel \
   -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
-  | tee ${reports_path}/log_native_tests_${type}.log 2>&1;
-resUnitTests=${PIPESTATUS[0]};
+  | tee ${reports_path}/log_check_${type}.log 2>&1;
+resCheck=${PIPESTATUS[0]};
 ###############################################################################
 ###############################################################################
 
@@ -39,11 +39,11 @@ resUnitTests=${PIPESTATUS[0]};
 ###############################################################################
 echo "########################################################################"
 echo "Results:"
-if [ ${resUnitTests} -eq 0 ]; then
-  echo "Unit tests: success"
+if [ ${resCheck} -eq 0 ]; then
+  echo "Check: success"
 else
-  echo "Unit tests: failed"
-  exit ${resUnitTests}
+  echo "Check: failed"
+  exit ${resCheck}
 fi
 ###############################################################################
 ###############################################################################

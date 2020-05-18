@@ -20,7 +20,7 @@
         android:extractNativeLibs="true">
         <activity
             android:name="puscas.mobilertapp.MainActivity">
-            <intent-filter tools:ignore="GoogleAppIndexingWarning">
+            <intent-filter>
                 <action
                     android:name="android.intent.action.MAIN" />
                 <category
