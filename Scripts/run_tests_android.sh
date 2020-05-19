@@ -30,22 +30,16 @@ function gather_logs_func() {
   callCommand adb logcat -v threadtime -d *:V \
     > ${reports_path}/logcat_${variant}.log 2>&1;
 
-  echo "Gathering logs 1";
-
   # Filter logcat of the app
   callCommand cat ${reports_path}/logcat_${variant}.log \
     | egrep -i `cat ${reports_path}/logcat_${variant}.log \
     | egrep -i "proc.*:puscas" | cut -d ":" -f 4 | cut -d ' ' -f 4` \
     > ${reports_path}/logcat_app_${variant}.log;
 
-  echo "Gathering logs 2";
-
   callCommand cat ${reports_path}/logcat_current_${variant}.log \
     | egrep -i `cat ${reports_path}/logcat_current_${variant}.log \
     | egrep -i "proc.*:puscas" | cut -d ":" -f 4 | cut -d ' ' -f 4` \
     > ${reports_path}/logcat_current_app_${variant}.log;
-
-  echo "Gathering logs 3";
 
   echo "";
   echo "";
@@ -55,7 +49,7 @@ function clear_func() {
   echo "Killing pid of logcat: '${pid_logcat}'";
   kill -s SIGTERM ${pid_logcat} 2> /dev/null;
 
-  pid_app=`adb shell pidof puscas.mobilertapp`;
+  pid_app=`adb shell ps | grep puscas.mobilertapp | cut -d ' ' -f 4`;
   echo "Killing pid of MobileRT: '${pid_app}'";
   adb shell kill -s SIGTERM ${pid_app} 2> /dev/null;
 }
@@ -95,8 +89,9 @@ echo "Set path to instrumentation tests resources";
 mobilert_path="/data/MobileRT";
 
 echo "Copy unit tests";
-callCommand adb shell rm -rf ${mobilert_path};
-callCommand adb push app/build/intermediates/cmake/${variant}/obj/x86/ ${mobilert_path};
+callCommand adb shell mkdir -p ${mobilert_path};
+callCommand adb shell rm -rf ${mobilert_path}/*;
+callCommand adb push app/build/intermediates/cmake/${variant}/obj/x86/* ${mobilert_path}/;
 
 #echo "Copy tests resources";
 #callCommand adb push app/src/androidTest/resources/teapot ${mobilert_path}/WavefrontOBJs/teapot;
@@ -122,15 +117,23 @@ echo "pid of logcat: '${pid_logcat}'";
 echo "Run instrumentation tests";
 callCommand ./gradlew connectedAndroidTest -DtestType="${variant}" \
   -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
-  --profile --parallel \
   | tee ${reports_path}/log_tests_${variant}.log 2>&1;
 resInstrumentationTests=${PIPESTATUS[0]};
 pid_instrumentation_tests="$!";
 echo "pid of instrumentation tests: '${pid_instrumentation_tests}'";
 
 echo "Run unit tests";
-callCommand nohup adb shell LD_LIBRARY_PATH=${mobilert_path} ${mobilert_path}/UnitTests \
-  | tee ${reports_path}/log_unit_tests_${variant}.log 2>&1;
+if [ ${variant} == "debug" ]; then
+  # Ignore unit tests that should crash the system because of a failing assert
+  callCommand nohup adb shell LD_LIBRARY_PATH=${mobilert_path} \
+    ${mobilert_path}/UnitTests \
+    --gtest_filter=-*.TestInvalid* \
+    | tee ${reports_path}/log_unit_tests_${variant}.log 2>&1;
+else
+  callCommand nohup adb shell LD_LIBRARY_PATH=${mobilert_path} \
+    ${mobilert_path}/UnitTests \
+    | tee ${reports_path}/log_unit_tests_${variant}.log 2>&1;
+fi
 resUnitTests=${PIPESTATUS[0]};
 ###############################################################################
 ###############################################################################

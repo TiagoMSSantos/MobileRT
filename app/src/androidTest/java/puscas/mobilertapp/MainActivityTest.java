@@ -409,7 +409,6 @@ public final class MainActivityTest {
     /**
      * Tests clicking the render {@link Button} many times with preview.
      */
-    @Ignore
     @FlakyTest(detail = "Race condition in the system.")
     @Test(timeout = 20L * 60L * 1000L)
     public void testRenderManyTimesWithPreview() {

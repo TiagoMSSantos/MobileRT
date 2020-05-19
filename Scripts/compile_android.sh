@@ -25,6 +25,8 @@ source Scripts/helper_functions.sh;
 # Set path to reports
 reports_path=./app/build/reports
 callCommand mkdir -p ${reports_path}
+callCommand find -name "*.fuse_hidden*" | grep -i ".fuse_hidden" | xargs lsof \
+  | cut -d ' ' -f 5 | xargs kill
 callCommand rm -rf ./app/build/
 
 callCommand ./gradlew clean assemble${type} --profile --parallel \
