@@ -28,29 +28,29 @@ Triangle::Triangle(const Triangle::Builder &builder) noexcept :
  * Helper method which checks for invalid fields.
  */
 void Triangle::checkArguments() const {
-    ASSERT(isValid(this->normalA_), "normalA must be valid.");
-    ASSERT(!equal(this->normalA_, ::glm::vec3 {0}), "normalA can't be zero.");
-    ASSERT(equal(::glm::length(this->normalA_), 1.0F), "normalA length must be 1.");
+    ASSERT(isValid(this->normalA_), "normalA (", ::glm::to_string(this->normalA_), ") must be valid.");
+    ASSERT(!equal(this->normalA_, ::glm::vec3 {0}), "normalA (", this->normalA_,") can't be zero.");
+    ASSERT(equal(::glm::length(this->normalA_), 1.0F), "normalA (", this->normalA_, ") length must be 1.");
 
-    ASSERT(isValid(this->normalB_), "normalB must be valid.");
-    ASSERT(!equal(this->normalB_, ::glm::vec3 {0}), "normalB can't be zero.");
-    ASSERT(equal(::glm::length(this->normalB_), 1.0F), "normalB length must be 1.");
+    ASSERT(isValid(this->normalB_), "normalB (", this->normalB_, ") must be valid.");
+    ASSERT(!equal(this->normalB_, ::glm::vec3 {0}), "normalB (", this->normalB_,") can't be zero.");
+    ASSERT(equal(::glm::length(this->normalB_), 1.0F), "normalB (", this->normalB_, ") length must be 1.");
 
-    ASSERT(isValid(this->normalC_), "normalC must be valid.");
-    ASSERT(!equal(this->normalC_, ::glm::vec3 {0}), "normalC can't be zero.");
-    ASSERT(equal(::glm::length(this->normalC_), 1.0F), "normalC length must be 1.");
+    ASSERT(isValid(this->normalC_), "normalC (", this->normalC_, ") must be valid.");
+    ASSERT(!equal(this->normalC_, ::glm::vec3 {0}), "normalC (", this->normalC_,") can't be zero.");
+    ASSERT(equal(::glm::length(this->normalC_), 1.0F), "normalC (", this->normalC_, ") length must be 1.");
 
-    ASSERT(isValid(this->pointA_), "pointA must be valid.");
+    ASSERT(isValid(this->pointA_), "pointA (", this->pointA_, ") must be valid.");
 
-    ASSERT(isValid(this->AB_), "AB must be valid.");
-    ASSERT(!equal(this->AB_, ::glm::vec3 {0}), "AB can't be zero.");
+    ASSERT(isValid(this->AB_), "AB (", this->AB_, ") must be valid.");
+    ASSERT(!equal(this->AB_, ::glm::vec3 {0}), "AB (", this->AB_,") can't be zero.");
 
-    ASSERT(isValid(this->AC_), "AC must be valid.");
-    ASSERT(!equal(this->AC_, ::glm::vec3 {0}), "AC can't be zero.");
+    ASSERT(isValid(this->AC_), "AC (", this->AC_, ") must be valid.");
+    ASSERT(!equal(this->AC_, ::glm::vec3 {0}), "AC (", this->AC_,") can't be zero.");
 
-    ASSERT(isValid(this->texCoordA_), "texCoordA must be valid.");
-    ASSERT(isValid(this->texCoordB_), "texCoordB must be valid.");
-    ASSERT(isValid(this->texCoordC_), "texCoordC must be valid.");
+    ASSERT(isValid(this->texCoordA_), "texCoordA (", this->texCoordA_, ") must be valid.");
+    ASSERT(isValid(this->texCoordB_), "texCoordB (", this->texCoordB_, ") must be valid.");
+    ASSERT(isValid(this->texCoordC_), "texCoordC (", this->texCoordC_, ") must be valid.");
 }
 
 /**

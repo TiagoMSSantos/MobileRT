@@ -9,6 +9,8 @@
 #include <chrono>
 #include <cmath>
 #include <glm/glm.hpp>
+#include <glm/ext.hpp>
+#include <glm/gtx/string_cast.hpp>
 #include <random>
 #include <sstream>
 #include <thread>
@@ -76,6 +78,78 @@ namespace MobileRT {
 
     float fresnel(const ::glm::vec3 &I, const ::glm::vec3 &N, float ior);
 
+   /**
+    * Helper method which adds a parameter into the ostringstream.
+    *
+    * @tparam S The size of the vec.
+    * @tparam T The type of the vec.
+    * @param oss The ostringstream to add the parameters.
+    * @param parameter The parameter to add in the ostringstream.
+    */
+    template<::std::int32_t S, typename T>
+    void addToStringStream(::std::ostringstream *oss, ::glm::vec<S, T> parameter) {
+        *oss << ::glm::to_string(parameter);
+    }
+
+    /**
+    * Helper method which adds a parameter into the ostringstream.
+    *
+    * @tparam Type The type of the argument.
+    * @param oss The ostringstream to add the parameters.
+    * @param parameter The parameter to add in the ostringstream.
+    */
+    template <typename Type>
+    void addToStringStream(::std::ostringstream *oss, Type parameter) {
+        *oss << parameter;
+    }
+
+    /**
+     * Helper method which adds a parameter into the ostringstream.
+     *
+     * @tparam S The size of the vec.
+     * @tparam T The type of the vec.
+     * @tparam Args The type of the rest of the arguments.
+     * @param oss The ostringstream to add the parameters.
+     * @param parameter The first parameter of the list to add.
+     * @param args The rest of the arguments.
+     */
+    template<::std::int32_t S, typename T, typename... Args>
+    void addToStringStream(::std::ostringstream *oss, ::glm::vec<S, T> parameter, Args &&... args) {
+        *oss << ::glm::to_string(parameter);
+        addToStringStream(oss, args...);
+    }
+
+    /**
+     * Helper method which add a parameter into the ostringstream.
+     *
+     * @tparam First The type of the first argument.
+     * @tparam Args The type of the rest of the arguments.
+     * @param oss The ostringstream to add the parameters.
+     * @param parameter The first parameter of the list to add.
+     * @param args The rest of the arguments.
+     */
+    template <typename First, typename... Args>
+    void addToStringStream(::std::ostringstream *oss, First parameter, Args &&... args) {
+        *oss << parameter;
+        addToStringStream(oss, args...);
+    }
+
+    /**
+     * Helper method which converts all the parameters to a single string.
+     *
+     * @tparam Args The type of the arguments.
+     * @param args The arguments to convert to string.
+     * @return A string containing all the parameters.
+     */
+    template <typename... Args>
+    ::std::string convertToString(Args &&... args) {
+        ::std::ostringstream oss {""};
+        addToStringStream(&oss, args...);
+        oss << '\n';
+        const auto &line {oss.str()};
+        return line;
+    }
+
     /**
      * Helper method which prints all the parameters in the console output.
      *
@@ -84,10 +158,7 @@ namespace MobileRT {
      */
     template<typename ...Args>
     void log(Args &&... args) {
-        ::std::ostringstream oss {""};
-        static_cast<void> (::std::initializer_list<::std::int32_t> {(oss << args, 0)...});
-        oss << '\n';
-        const auto &line {oss.str()};
+        const auto &line {convertToString(args...)};
         ::Dependent::printString(line);
     }
 
@@ -195,16 +266,16 @@ namespace MobileRT {
 
 
     #ifndef NDEBUG
-        #define ASSERT(condition, message) \
+        #define ASSERT(condition, ...) \
         do { \
             if (!(condition)) { \
-                LOG("Assertion '", #condition, "': ",  message); \
-                BOOST_ASSERT_MSG(condition, message); \
+                LOG("Assertion '", #condition, "': ",  __VA_ARGS__); \
+                BOOST_ASSERT_MSG(condition, ::MobileRT::convertToString(__VA_ARGS__).c_str()); \
                 ::std::terminate(); \
             } \
         } while (false)
     #else
-        #define ASSERT(condition, message) do { } while (false)
+        #define ASSERT(condition, ...) do { } while (false)
     #endif
 
 

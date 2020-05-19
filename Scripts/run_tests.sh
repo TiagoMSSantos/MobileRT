@@ -26,7 +26,7 @@ source Scripts/helper_functions.sh;
 reports_path=./app/build/reports
 callCommand mkdir -p ${reports_path}
 
-callCommand ./gradlew test${type}UnitTest \
+callCommand ./gradlew test${type}UnitTest --profile --parallel \
   -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
   | tee ${reports_path}/log_native_tests_${type}.log 2>&1;
 resUnitTests=${PIPESTATUS[0]};
