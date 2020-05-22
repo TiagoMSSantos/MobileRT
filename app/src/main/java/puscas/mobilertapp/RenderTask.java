@@ -215,7 +215,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
             publishProgress();
             LOGGER.info("RenderTask timer finished");
             if (currentState != State.BUSY) {
-                this.executorService.shutdown();
+                this.executorService.shutdownNow();
             }
             LOGGER.info("RenderTask timer finished 2");
         };

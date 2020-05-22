@@ -49,7 +49,7 @@ function clear_func() {
   echo "Killing pid of logcat: '${pid_logcat}'";
   kill -s SIGTERM ${pid_logcat} 2> /dev/null;
 
-  pid_app=`adb shell ps | grep puscas.mobilertapp | cut -d ' ' -f 4`;
+  pid_app=`adb shell ps | grep puscas.mobilertapp | tr -s ' ' | cut -d ' ' -f 2`;
   echo "Killing pid of MobileRT: '${pid_app}'";
   adb shell kill -s SIGTERM ${pid_app} 2> /dev/null;
 }
@@ -77,6 +77,13 @@ set -m;
 
 echo "Prepare traps";
 trap catch_signal EXIT
+
+avd_emulators=`emulator -list-avds`;
+echo "Emulators available: '${avd_emulators}'";
+
+avd_emulator=`echo ${avd_emulators} | head -1`;
+echo "Start '${avd_emulator}'";
+#callCommand emulator -avd ${avd_emulator} &
 
 echo "Set adb as root, to be able to change files permissions";
 callCommand adb root;

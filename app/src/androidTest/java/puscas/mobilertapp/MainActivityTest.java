@@ -250,7 +250,7 @@ public final class MainActivityTest {
         viewInteraction.check((view, exception) ->
             assertCheckBox(view, R.id.preview, Constants.PREVIEW, Constants.CHECK_BOX_MESSAGE, true)
         );
-        viewInteraction.perform(new MainActivityTest.ViewActionButton(Constants.STOP));
+        viewInteraction.perform(new MainActivityTest.ViewActionCheckBox());
         viewInteraction.check((view, exception) ->
             assertCheckBox(view, R.id.preview, Constants.PREVIEW, Constants.CHECK_BOX_MESSAGE, false)
         );
@@ -386,7 +386,8 @@ public final class MainActivityTest {
     /**
      * Tests clicking the render {@link Button} many times without preview.
      */
-    @Test(timeout = 10L * 60L * 1000L)
+    @FlakyTest(detail = "Race condition in the system.")
+    @Test(timeout = 30L * 60L * 1000L)
     public void testRenderManyTimesWithoutPreview() {
         LOGGER.info("testRenderManyTimesWithoutPreview");
 
@@ -397,11 +398,11 @@ public final class MainActivityTest {
             .check((view, exception) ->
                 assertCheckBox(view, R.id.preview, Constants.PREVIEW, Constants.CHECK_BOX_MESSAGE, true)
             )
-            .perform(new MainActivityTest.ViewActionButton(Constants.STOP))
+            .perform(new MainActivityTest.ViewActionCheckBox())
             .check((view, exception) ->
                 assertCheckBox(view, R.id.preview, Constants.PREVIEW, Constants.CHECK_BOX_MESSAGE, false)
             );
-        testRenderButton(20, numCores);
+        testRenderButton(30, numCores);
 
         this.mainActivityActivityTestRule.finishActivity();
     }
@@ -409,6 +410,7 @@ public final class MainActivityTest {
     /**
      * Tests clicking the render {@link Button} many times with preview.
      */
+    @Ignore("Race condition in the system.")
     @FlakyTest(detail = "Race condition in the system.")
     @Test(timeout = 20L * 60L * 1000L)
     public void testRenderManyTimesWithPreview() {
@@ -421,7 +423,7 @@ public final class MainActivityTest {
             .check((view, exception) ->
                 assertCheckBox(view, R.id.preview, Constants.PREVIEW, Constants.CHECK_BOX_MESSAGE, true)
             );
-        testRenderButton(20, numCores);
+        testRenderButton(30, numCores);
 
         this.mainActivityActivityTestRule.finishActivity();
     }
@@ -442,7 +444,7 @@ public final class MainActivityTest {
         changePickerValue("pickerSamplesPixel", R.id.pickerSamplesPixel, 1);
         changePickerValue("pickerSamplesLight", R.id.pickerSamplesLight, 1);
         changePickerValue("pickerAccelerator", R.id.pickerAccelerator, 3);
-        changePickerValue("pickerShader", R.id.pickerShader, 1);
+        changePickerValue("pickerShader", R.id.pickerShader, 2);
 
         final ViewInteraction viewInteraction = Espresso.onView(ViewMatchers.withId(R.id.renderButton))
         .check((view, exception) -> {
@@ -504,11 +506,6 @@ public final class MainActivityTest {
         private final String expectedText;
 
         /**
-         * The timeout in seconds.
-         */
-        private static final long TIMEOUT_SECS = 120L;
-
-        /**
          * The constructor for this class.
          */
         @Contract(pure = true)
@@ -519,7 +516,7 @@ public final class MainActivityTest {
         @Nonnull
         @Override
         public final Matcher<View> getConstraints() {
-            LOGGER_BUTTON.info("testRenderButton#getConstraints");
+            LOGGER_BUTTON.info("ViewActionButton#getConstraints");
 
             return ViewMatchers.isAssignableFrom(Button.class);
         }
@@ -527,37 +524,31 @@ public final class MainActivityTest {
         @Nonnull
         @Override
         public final String getDescription() {
-            LOGGER_BUTTON.info("testRenderButton#getDescription");
+            LOGGER_BUTTON.info("ViewActionButton#getDescription");
 
-            return "Click render button";
+            return "Click button";
         }
 
         @Override
         public final void perform(@Nonnull final UiController uiController, @Nonnull final View view) {
-            LOGGER_BUTTON.info("testRenderButton#perform");
+            LOGGER_BUTTON.info("ViewActionButton#perform (" + this.expectedText + ")");
 
+            final Button button = (Button) view;
+            LOGGER_BUTTON.info("ViewActionButton#perform waiting");
             uiController.loopMainThreadUntilIdle();
-            view.performClick();
+            LOGGER_BUTTON.info("ViewActionButton#perform clicking button");
+            button.performClick();
+            LOGGER_BUTTON.info("ViewActionButton#perform button clicked");
 
-            final Button renderButton = view.findViewById(R.id.renderButton);
-            if (renderButton == null) {
-                uiController.loopMainThreadUntilIdle();
-                return;
+            boolean textEquals = button.getText().toString().equals(this.expectedText);
+            while (!textEquals) {
+                button.performClick();
+                uiController.loopMainThreadForAtLeast(3000L);
+                textEquals = button.getText().toString().equals(this.expectedText);
+                LOGGER_BUTTON.info("ViewActionButton# waiting button to have '" + this.expectedText + "' written!!!");
             }
 
-            boolean result = !renderButton.getText().toString().equals(this.expectedText);
-            long waited = 0L;
-
-            while (result && waited < TIMEOUT_SECS) {
-                uiController.loopMainThreadForAtLeast(2000L);
-                waited += 1L;
-                result = !renderButton.getText().toString().equals(this.expectedText);
-            }
-
-            if (waited >= TIMEOUT_SECS) {
-                LOGGER_BUTTON.severe("Timeout reached!!!");
-            }
-
+            LOGGER_BUTTON.info("ViewActionButton#perform finished");
         }
     }
 
@@ -590,7 +581,7 @@ public final class MainActivityTest {
         @Override
         @Nonnull
         public final Matcher<View> getConstraints() {
-            LOGGER_PICKER.info("assertPickerValue#getConstraints");
+            LOGGER_PICKER.info("ViewActionNumberPicker#getConstraints");
 
             return ViewMatchers.isAssignableFrom(NumberPicker.class);
         }
@@ -598,16 +589,70 @@ public final class MainActivityTest {
         @Override
         @Nonnull
         public final String getDescription() {
-            LOGGER_PICKER.info("assertPickerValue#getDescription");
+            LOGGER_PICKER.info("ViewActionNumberPicker#getDescription");
 
             return "Set the value of a NumberPicker";
         }
 
         @Override
-        public final void perform(final UiController uiController, final View view) {
-            LOGGER_PICKER.info("assertPickerValue#perform");
+        public final void perform(@Nonnull final UiController uiController, final View view) {
+            LOGGER_PICKER.info("ViewActionNumberPicker#perform");
 
-            ((NumberPicker) view).setValue(this.value);
+            final NumberPicker numberPicker = (NumberPicker) view;
+
+            uiController.loopMainThreadUntilIdle();
+            numberPicker.setValue(this.value);
+            uiController.loopMainThreadUntilIdle();
+
+            LOGGER_PICKER.info("ViewActionNumberPicker#perform finished");
+        }
+    }
+
+    /**
+     * Auxiliary class which represents a {@link CheckBox}.
+     */
+    private static class ViewActionCheckBox implements ViewAction {
+
+        /**
+         * The {@link Logger} for this class.
+         */
+        private static final Logger LOGGER_CHECKBOX =
+            Logger.getLogger(MainActivityTest.ViewActionCheckBox.class.getName());
+
+        /**
+         * The constructor for this class.
+         */
+        @Contract(pure = true)
+        ViewActionCheckBox() {
+        }
+
+        @Override
+        @Nonnull
+        public final Matcher<View> getConstraints() {
+            LOGGER_CHECKBOX.info("ViewActionCheckBox#getConstraints");
+
+            return ViewMatchers.isAssignableFrom(CheckBox.class);
+        }
+
+        @Override
+        @Nonnull
+        public final String getDescription() {
+            LOGGER_CHECKBOX.info("ViewActionCheckBox#getDescription");
+
+            return "Click checkbox";
+        }
+
+        @Override
+        public final void perform(@Nonnull final UiController uiController, final View view) {
+            LOGGER_CHECKBOX.info("ViewActionCheckBox#perform");
+
+            final CheckBox checkBox = (CheckBox) view;
+
+            uiController.loopMainThreadUntilIdle();
+            checkBox.performClick();
+            uiController.loopMainThreadUntilIdle();
+
+            LOGGER_CHECKBOX.info("ViewActionCheckBox#perform finished");
         }
     }
 }

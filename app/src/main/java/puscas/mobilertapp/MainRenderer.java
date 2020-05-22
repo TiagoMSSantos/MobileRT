@@ -516,6 +516,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * @param rasterize  The new {@link MainRenderer#rasterize}.
      */
     void setBitmap(final int width, final int height, final int widthView, final int heightView, final boolean rasterize) {
+        LOGGER.info("setBitmap");
         this.bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         this.bitmap.eraseColor(Color.BLACK);
         this.width = width;
@@ -525,6 +526,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         this.firstFrame = true;
         this.rasterize = rasterize;
         validateBitmap();
+        LOGGER.info("setBitmap finished");
     }
 
     /**
@@ -594,8 +596,8 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * In the end, resets {@link MainRenderer#executorService} to a new thread pool with
      * {@link ConstantsRenderer#NUMBER_THREADS} threads.
      */
-    private void waitLastTask() {
-        LOGGER.info("WAITING");
+    void waitLastTask() {
+        LOGGER.info("waitLastTask");
 
         if (this.renderTask != null) {
             try {
@@ -608,16 +610,17 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
             }
         }
 
+        LOGGER.info("waitLastTask renderTask cancelled");
         this.lockExecutorService.lock();
         try {
-            this.executorService.shutdown();
+            this.executorService.shutdownNow();
             Utils.waitExecutorToFinish(this.executorService);
             this.executorService = Executors.newFixedThreadPool(ConstantsRenderer.NUMBER_THREADS);
         } finally {
             this.lockExecutorService.unlock();
         }
 
-        LOGGER.info("WAITED");
+        LOGGER.info("waitLastTask finished");
     }
 
     /**

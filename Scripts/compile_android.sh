@@ -25,8 +25,23 @@ source Scripts/helper_functions.sh;
 # Set path to reports
 reports_path=./app/build/reports
 callCommand mkdir -p ${reports_path}
-callCommand find -name "*.fuse_hidden*" | grep -i ".fuse_hidden" | xargs lsof \
-  | cut -d ' ' -f 5 | xargs kill
+
+rm -rf ./app/build/;
+files_being_used=`find -name "*.fuse_hidden*" | grep -i ".fuse_hidden"`
+echo "files_being_used: '${files_being_used}'";
+
+if [ "${files_being_used}" != "" ]; then
+  processes_using_files=`lsof ${files_being_used} | tail -n +2 | tr -s ' '`;
+  echo "processes_using_files: '${processes_using_files}'";
+  processes_id_using_files=`echo "${processes_using_files}" | cut -d ' ' -f 2`;
+  echo "Going to kill this process: '${processes_id_using_files}'";
+  kill ${processes_id_using_files};
+  while [ -f ${files_being_used} ]; do
+    echo "sleeping 1 sec";
+    sleep 1
+  done
+  sleep 1
+fi
 callCommand rm -rf ./app/build/
 
 callCommand ./gradlew clean assemble${type} --profile --parallel \

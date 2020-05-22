@@ -85,9 +85,6 @@ jobs:
         target: default
         arch: x86
         disable-animations: true
-        working-directory: .
-        ndk: ${{ matrix.ndk_version }}
-        cmake: ${{ matrix.cmake_version }}
         script: |
           bash ./Scripts/run_tests_android.sh ${{ matrix.variant }} ${{ matrix.ndk_version }} ${{ matrix.cmake_version }};
 

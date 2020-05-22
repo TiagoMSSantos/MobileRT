@@ -178,6 +178,8 @@ public final class DrawView extends GLSurfaceView {
         this.lastTask = this.executorService.submit(() -> {
             LOGGER.info(ConstantsMethods.RENDER_SCENE + " executor");
 
+            rtStopRender();
+            this.renderer.waitLastTask();
             try {
                 createScene(config, numThreads, rasterize);
                 requestRender();
