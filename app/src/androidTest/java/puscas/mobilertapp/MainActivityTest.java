@@ -315,7 +315,6 @@ public final class MainActivityTest {
     /**
      * Tests that a file in the Android device exists and is readable.
      */
-    @Ignore("In CI, these files don't exist.")
     @Test(timeout = 5L * 1000L)
     public void testFilesExistAndReadable() {
         LOGGER.info("testFilesExistAndReadable");
@@ -387,7 +386,7 @@ public final class MainActivityTest {
      * Tests clicking the render {@link Button} many times without preview.
      */
     @FlakyTest(detail = "Race condition in the system.")
-    @Test(timeout = 30L * 60L * 1000L)
+    @Test(timeout = 20L * 60L * 1000L)
     public void testRenderManyTimesWithoutPreview() {
         LOGGER.info("testRenderManyTimesWithoutPreview");
 
@@ -402,7 +401,7 @@ public final class MainActivityTest {
             .check((view, exception) ->
                 assertCheckBox(view, R.id.preview, Constants.PREVIEW, Constants.CHECK_BOX_MESSAGE, false)
             );
-        testRenderButton(30, numCores);
+        testRenderButton(40, numCores);
 
         this.mainActivityActivityTestRule.finishActivity();
     }
@@ -410,7 +409,6 @@ public final class MainActivityTest {
     /**
      * Tests clicking the render {@link Button} many times with preview.
      */
-    @Ignore("Race condition in the system.")
     @FlakyTest(detail = "Race condition in the system.")
     @Test(timeout = 20L * 60L * 1000L)
     public void testRenderManyTimesWithPreview() {
@@ -423,7 +421,7 @@ public final class MainActivityTest {
             .check((view, exception) ->
                 assertCheckBox(view, R.id.preview, Constants.PREVIEW, Constants.CHECK_BOX_MESSAGE, true)
             );
-        testRenderButton(30, numCores);
+        testRenderButton(40, numCores);
 
         this.mainActivityActivityTestRule.finishActivity();
     }

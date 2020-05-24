@@ -100,9 +100,9 @@ callCommand adb shell mkdir -p ${mobilert_path};
 callCommand adb shell rm -rf ${mobilert_path}/*;
 callCommand adb push app/build/intermediates/cmake/${variant}/obj/x86/* ${mobilert_path}/;
 
-#echo "Copy tests resources";
-#callCommand adb push app/src/androidTest/resources/teapot ${mobilert_path}/WavefrontOBJs/teapot;
-#callCommand adb shell ls -la ${mobilert_path}/WavefrontOBJs;
+echo "Copy tests resources";
+callCommand adb push app/src/androidTest/resources/teapot ${mobilert_path}/WavefrontOBJs/teapot;
+callCommand adb shell ls -la ${mobilert_path}/WavefrontOBJs;
 
 echo "Change resources permissions";
 callCommand adb shell chmod -R 777 ${mobilert_path};
