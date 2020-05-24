@@ -1018,7 +1018,9 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
             try {
                 LOGGER.info("rtRenderIntoBitmap started");
                 validateBitmap();
-                rtRenderIntoBitmap(this.bitmap, this.numThreads, true);
+                if (this.numThreads > 0) {
+                    rtRenderIntoBitmap(this.bitmap, this.numThreads, true);
+                }
                 validateBitmap();
                 LOGGER.info("rtRenderIntoBitmap finished");
             } catch (final LowMemoryException ex) {
