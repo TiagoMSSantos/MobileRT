@@ -150,10 +150,11 @@ public final class DrawView extends GLSurfaceView {
     void stopDrawing() {
         LOGGER.info("stopDrawing");
 
-        this.lastTask.cancel(true);
+        Optional.ofNullable(this.lastTask)
+            .ifPresent(task -> task.cancel(true));
         waitLastTask();
         rtStopRender();
-        this.renderer.updateButton(R.string.render);
+        getActivity().runOnUiThread(() -> this.renderer.updateButton(R.string.render));
 
         LOGGER.info("stopDrawing finished");
     }
@@ -192,11 +193,11 @@ public final class DrawView extends GLSurfaceView {
             }
             rtStopRender();
             this.renderer.rtFinishRender();
-            this.renderer.updateButton(R.string.render);
+            getActivity().runOnUiThread(() -> this.renderer.updateButton(R.string.render));
             LOGGER.info(ConstantsMethods.RENDER_SCENE + " executor failed");
             return Boolean.FALSE;
         });
-        this.renderer.updateButton(R.string.stop);
+        getActivity().runOnUiThread(() -> this.renderer.updateButton(R.string.stop));
         LOGGER.info(ConstantsMethods.RENDER_SCENE + " finished");
     }
 
@@ -279,6 +280,9 @@ public final class DrawView extends GLSurfaceView {
 
         final Activity activity = getActivity();
         this.changingConfigs = activity.isChangingConfigurations();
+        Optional.ofNullable(this.lastTask)
+            .ifPresent(task -> task.cancel(true));
+        this.renderer.waitLastTask();
         LOGGER.info("onPause finished");
     }
 
