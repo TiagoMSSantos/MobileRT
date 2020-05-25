@@ -340,7 +340,7 @@ void Java_puscas_mobilertapp_DrawView_rtStartRender(
         JNIEnv *env,
         jobject /*thiz*/
 ) {
-    ::std::unique_lock<std::mutex> lock {mutex_};
+    ::std::unique_lock<::std::mutex> lock {mutex_};
     rendered_.wait(lock, [&]{return finishedRendering_ == true;});
     finishedRendering_ = false;
     state_ = State::BUSY;
@@ -351,21 +351,29 @@ void Java_puscas_mobilertapp_DrawView_rtStartRender(
 extern "C"
 void Java_puscas_mobilertapp_DrawView_rtStopRender(
         JNIEnv *env,
-        jobject /*thiz*/
+        jobject /*thiz*/,
+        jboolean wait
 ) {
     {
         LOG("Will get lock");
         state_ = State::STOPPED;
         LOG("STATE = STOPPED");
-        ::std::unique_lock<std::mutex> lock {mutex_};
+        ::std::unique_lock<::std::mutex> lock {mutex_};
         LOG("Got lock, waiting for renderer to finish");
-//        while (!finishedRendering_) {
-            if (renderer_ != nullptr) {
-                LOG("RENDERER STOP");
-                renderer_->stopRender();
+        if (renderer_ != nullptr) {
+            LOG("RENDERER STOP");
+            renderer_->stopRender();
+        }
+        if (wait) {
+            while (!finishedRendering_) {
+                LOG("WILL TRY TO STOP RENDERER");
+                if (renderer_ != nullptr) {
+                    LOG("RENDERER STOP");
+                    renderer_->stopRender();
+                }
+            rendered_.wait_for(lock, ::std::chrono::seconds(3), [&]{return finishedRendering_ == true;});
             }
-//            rendered_.wait(lock, [&]{return finishedRendering_ == true;});
-//        }
+        }
         LOG("Renderer finished");
     }
     env->ExceptionClear();
@@ -629,11 +637,13 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
 
         auto lambda {
             [=]() -> void {
+                LOG("rtRenderIntoBitmap step 1");
                 ASSERT(env != nullptr, "JNIEnv not valid.");
                 const auto jniError {
                         javaVM_->GetEnv(reinterpret_cast<void **> (const_cast<JNIEnv **> (&env)), JNI_VERSION_1_6)
                 };
 
+                LOG("rtRenderIntoBitmap step 2");
                 ASSERT(jniError == JNI_OK || jniError == JNI_EDETACHED, "JNIEnv not valid.");
                 {
                     const auto result {javaVM_->AttachCurrentThread(const_cast<JNIEnv **> (&env), nullptr)};
@@ -641,6 +651,7 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
                     static_cast<void> (result);
                 }
 
+                LOG("rtRenderIntoBitmap step 3");
                 ::std::int32_t *dstPixels {};
                 {
                     const auto ret {
@@ -650,6 +661,7 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
                     LOG("ret = ", ret);
                 }
 
+                LOG("rtRenderIntoBitmap step 4");
                 AndroidBitmapInfo info {};
                 {
                     const auto ret {AndroidBitmap_getInfo(env, globalBitmap, &info)};
@@ -657,7 +669,9 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
                     LOG("ret = ", ret);
                 }
 
+                LOG("rtRenderIntoBitmap step 5");
                 ::std::int32_t rep {1};
+                LOG("WILL START TO RENDER");
                 while (state_ == State::BUSY && rep > 0) {
                     LOG("STARTING RENDERING");
                     LOG("nThreads = ", nThreads);
@@ -671,6 +685,7 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
                     updateFps();
                     rep--;
                 }
+                LOG("RENDER FINISHED");
                 finishedRendering_ = true;
                 rendered_.notify_all();
                 {
@@ -701,6 +716,7 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
                         static_cast<void> (result);
                     }
                 }
+                LOG("rtRenderIntoBitmap finished");
             }
         };
 
@@ -710,6 +726,7 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
         } else {
             lambda();
         }
+        LOG("rtRenderIntoBitmap finished preparing");
         env->ExceptionClear();
     } catch (const ::std::bad_alloc &badAlloc) {
         const auto lowMemClass {env->FindClass("puscas/mobilertapp/exceptions/LowMemoryException")};

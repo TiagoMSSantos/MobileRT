@@ -22,6 +22,7 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.Locale;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -603,9 +604,12 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
             try {
                 this.renderTask.get();
                 this.renderTask.cancel(true);
-            } catch (final ExecutionException | InterruptedException ex) {
-                LOGGER.severe("waitLastTask exception: " + ex.getClass().getName());
-                LOGGER.severe("waitLastTask exception: " + Strings.nullToEmpty(ex.getMessage()));
+            } catch (final ExecutionException | CancellationException ex) {
+                LOGGER.severe("waitLastTask exception 1: " + ex.getClass().getName());
+                LOGGER.severe("waitLastTask exception 2: " + Strings.nullToEmpty(ex.getMessage()));
+            } catch (final InterruptedException ex) {
+                LOGGER.severe("waitLastTask exception 3: " + ex.getClass().getName());
+                LOGGER.severe("waitLastTask exception 4: " + Strings.nullToEmpty(ex.getMessage()));
                 Thread.currentThread().interrupt();
             }
         }
@@ -1015,22 +1019,24 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
                 validateBitmap();
             }
 
-            try {
-                LOGGER.info("rtRenderIntoBitmap started");
-                validateBitmap();
-                if (this.numThreads > 0) {
-                    rtRenderIntoBitmap(this.bitmap, this.numThreads, true);
+//            if (this.numThreads > 0 && this.bitmap != null && this.numPrimitives > 0) {
+                try {
+                    LOGGER.info("rtRenderIntoBitmap started");
+                    validateBitmap();
+                    if (this.numThreads > 0) {
+                        rtRenderIntoBitmap(this.bitmap, this.numThreads, true);
+                    }
+                    validateBitmap();
+                    LOGGER.info("rtRenderIntoBitmap finished");
+                } catch (final LowMemoryException ex) {
+                    LOGGER.severe("onDrawFrame exception: " + ex.getClass().getName());
+                    LOGGER.severe("onDrawFrame exception: " + Strings.nullToEmpty(ex.getMessage()));
+                    LOGGER.severe("rtRenderIntoBitmap finished with error");
                 }
                 validateBitmap();
-                LOGGER.info("rtRenderIntoBitmap finished");
-            } catch (final LowMemoryException ex) {
-                LOGGER.severe("onDrawFrame exception: " + ex.getClass().getName());
-                LOGGER.severe("onDrawFrame exception: " + Strings.nullToEmpty(ex.getMessage()));
-                LOGGER.severe("rtRenderIntoBitmap finished with error");
-            }
-            validateBitmap();
-            createAndLaunchRenderTask();
-            validateBitmap();
+                createAndLaunchRenderTask();
+                validateBitmap();
+//            }
             LOGGER.info("onDrawFirstFrame finished");
         }
         validateBitmap();

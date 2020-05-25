@@ -27,7 +27,7 @@ namespace MobileRT {
         const ::std::int32_t height_ {};
         const ::std::int32_t domainSize_ {};
         const ::std::int32_t resolution_ {};
-        const ::std::int32_t samplesPixel_ {};
+        ::std::int32_t samplesPixel_ {};
         ::std::atomic<::std::int32_t> block_ {};
 
     private:

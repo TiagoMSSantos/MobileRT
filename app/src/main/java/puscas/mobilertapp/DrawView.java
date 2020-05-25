@@ -101,7 +101,7 @@ public final class DrawView extends GLSurfaceView {
     /**
      * Stops the Ray Tracer engine and sets its {@link State} to {@link State#STOP}.
      */
-    private native void rtStopRender();
+    private native void rtStopRender(boolean wait);
 
     /**
      * Sets the Ray Tracer engine {@link State} to {@link State#BUSY}.
@@ -153,7 +153,7 @@ public final class DrawView extends GLSurfaceView {
         Optional.ofNullable(this.lastTask)
             .ifPresent(task -> task.cancel(true));
         waitLastTask();
-        rtStopRender();
+        rtStopRender(false);
         getActivity().runOnUiThread(() -> this.renderer.updateButton(R.string.render));
 
         LOGGER.info("stopDrawing finished");
@@ -179,7 +179,7 @@ public final class DrawView extends GLSurfaceView {
         this.lastTask = this.executorService.submit(() -> {
             LOGGER.info(ConstantsMethods.RENDER_SCENE + " executor");
 
-            rtStopRender();
+            rtStopRender(false);
             this.renderer.waitLastTask();
             try {
                 createScene(config, numThreads, rasterize);
@@ -191,7 +191,7 @@ public final class DrawView extends GLSurfaceView {
             } catch (final RuntimeException ex) {
                 warningError(ex, ConstantsToast.COULD_NOT_LOAD_THE_SCENE);
             }
-            rtStopRender();
+            rtStopRender(false);
             this.renderer.rtFinishRender();
             getActivity().runOnUiThread(() -> this.renderer.updateButton(R.string.render));
             LOGGER.info(ConstantsMethods.RENDER_SCENE + " executor failed");

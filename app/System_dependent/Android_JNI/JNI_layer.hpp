@@ -26,7 +26,8 @@ void JNI_OnUnload(JavaVM *vm, void *reserved);
 extern "C"
 void Java_puscas_mobilertapp_DrawView_rtStopRender(
         JNIEnv *env,
-        jobject thiz
+        jobject thiz,
+        jboolean wait
 );
 
 extern "C"

@@ -224,21 +224,22 @@ public final class MainActivityTest {
                     "Button message at currentIndex: " + currentIndex + "(" + expectedIndex + ")"
                         + ConstantsUI.LINE_SEPARATOR
                         + "finalCounterScene: " + finalCounterScene
-                        + "  " + ConstantsUI.LINE_SEPARATOR
+                        + ConstantsUI.LINE_SEPARATOR
                         + "finalCounterAccelerator: " + finalCounterAccelerator
-                        + "  " + ConstantsUI.LINE_SEPARATOR
+                        + ConstantsUI.LINE_SEPARATOR
                         + "finalCounterShader: " + finalCounterShader
-                        + "  " + ConstantsUI.LINE_SEPARATOR
+                        + ConstantsUI.LINE_SEPARATOR
                         + "finalCounterSPP: " + finalCounterSPP
-                        + "  " + ConstantsUI.LINE_SEPARATOR
+                        + ConstantsUI.LINE_SEPARATOR
                         + "finalCounterSPL: " + finalCounterSPL
-                        + "  " + ConstantsUI.LINE_SEPARATOR
+                        + ConstantsUI.LINE_SEPARATOR
                         + "finalCounterResolution: " + finalCounterResolution
-                        + "  " + ConstantsUI.LINE_SEPARATOR
+                        + ConstantsUI.LINE_SEPARATOR
                         + "finalCounterThreads: " + finalCounterThreads
-                        + "  " + ConstantsUI.LINE_SEPARATOR
+                        + ConstantsUI.LINE_SEPARATOR
                 );
             });
+//            Uninterruptibles.sleepUninterruptibly(3000L, TimeUnit.MILLISECONDS);
         });
     }
 
@@ -545,6 +546,7 @@ public final class MainActivityTest {
                 textEquals = button.getText().toString().equals(this.expectedText);
                 LOGGER_BUTTON.info("ViewActionButton# waiting button to have '" + this.expectedText + "' written!!!");
             }
+//            uiController.loopMainThreadForAtLeast(3000L);
 
             LOGGER_BUTTON.info("ViewActionButton#perform finished");
         }
