@@ -534,18 +534,31 @@ public final class MainActivityTest {
 
             final Button button = (Button) view;
             LOGGER_BUTTON.info("ViewActionButton#perform waiting");
-            uiController.loopMainThreadUntilIdle();
-            LOGGER_BUTTON.info("ViewActionButton#perform clicking button");
-            button.performClick();
-            LOGGER_BUTTON.info("ViewActionButton#perform button clicked");
 
             boolean textEquals = button.getText().toString().equals(this.expectedText);
+            while (textEquals) {
+                uiController.loopMainThreadForAtLeast(3000L);
+                textEquals = button.getText().toString().equals(this.expectedText);
+                LOGGER_BUTTON.info("ViewActionButton# waiting button to NOT have '" + this.expectedText + "' written!!!");
+            }
+
+            uiController.loopMainThreadUntilIdle();
+            LOGGER_BUTTON.info("ViewActionButton#perform clicking button");
+            boolean result = button.performClick();
+            while (!result) {
+                uiController.loopMainThreadForAtLeast(3000L);
+                result = button.performClick();
+                LOGGER_BUTTON.info("ViewActionButton# waiting to click button!!!");
+            }
+            LOGGER_BUTTON.info("ViewActionButton#perform button clicked");
+
+            textEquals = button.getText().toString().equals(this.expectedText);
             while (!textEquals) {
-                button.performClick();
                 uiController.loopMainThreadForAtLeast(3000L);
                 textEquals = button.getText().toString().equals(this.expectedText);
                 LOGGER_BUTTON.info("ViewActionButton# waiting button to have '" + this.expectedText + "' written!!!");
             }
+
 //            uiController.loopMainThreadForAtLeast(3000L);
 
             LOGGER_BUTTON.info("ViewActionButton#perform finished");
