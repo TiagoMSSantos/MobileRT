@@ -475,7 +475,9 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
 
         this.activityManager.getMemoryInfo(this.memoryInfo);
         final long availMem = this.memoryInfo.availMem / 1048576L;
+        final long totalMem = this.memoryInfo.totalMem / 1048576L;
         final boolean insufficientMem = availMem <= (long) (1 + memoryNeeded);
+        LOGGER.info(String.format(Locale.US, "MEMORY AVAILABLE: %dMB (%dMB)", availMem, totalMem));
         return insufficientMem || this.memoryInfo.lowMemory;
     }
 
@@ -989,8 +991,16 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onDrawFrame(@Nonnull final GL10 gl) {
-        validateBitmap();
+        try {
+            checksFreeMemory(2, () -> { });
+        } catch (final LowMemoryException ex) {
+            LOGGER.severe("onDrawFrame exception 1: " + ex.getClass().getName());
+            LOGGER.severe("onDrawFrame exception 2: " + Strings.nullToEmpty(ex.getMessage()));
+            LOGGER.severe("SYSTEM WITH LOW MEMORY!!!");
+            throw new FailureException(ex);
+        }
 
+        validateBitmap();
         if (this.firstFrame) {
             LOGGER.info("onDrawFirstFrame");
             this.firstFrame = false;
