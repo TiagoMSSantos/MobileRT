@@ -603,7 +603,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         if (this.renderTask != null) {
             try {
                 this.renderTask.get();
-                this.renderTask.cancel(true);
+                this.renderTask.cancel(false);
             } catch (final ExecutionException | CancellationException ex) {
                 LOGGER.severe("waitLastTask exception 1: " + ex.getClass().getName());
                 LOGGER.severe("waitLastTask exception 2: " + Strings.nullToEmpty(ex.getMessage()));
@@ -617,7 +617,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         LOGGER.info("waitLastTask renderTask cancelled");
         this.lockExecutorService.lock();
         try {
-            this.executorService.shutdownNow();
+            this.executorService.shutdown();
             Utils.waitExecutorToFinish(this.executorService);
             this.executorService = Executors.newFixedThreadPool(ConstantsRenderer.NUMBER_THREADS);
         } finally {
