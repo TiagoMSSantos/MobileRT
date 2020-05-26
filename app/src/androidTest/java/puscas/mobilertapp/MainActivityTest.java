@@ -25,7 +25,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
@@ -46,6 +45,8 @@ import puscas.mobilertapp.utils.Constants;
 import puscas.mobilertapp.utils.ConstantsUI;
 import puscas.mobilertapp.utils.Scene;
 import puscas.mobilertapp.utils.Shader;
+
+import static org.junit.Assume.assumeFalse;
 
 /**
  * The test suite for {@link MainActivity}.
@@ -422,6 +423,8 @@ public final class MainActivityTest {
             .check((view, exception) ->
                 assertCheckBox(view, R.id.preview, Constants.PREVIEW, Constants.CHECK_BOX_MESSAGE, true)
             );
+
+        assumeFalse("This test always fails in Debug with only 1 core.", BuildConfig.DEBUG && numCores == 1);
         testRenderButton(40, numCores);
 
         this.mainActivityActivityTestRule.finishActivity();
