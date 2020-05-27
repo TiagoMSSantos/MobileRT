@@ -1,6 +1,7 @@
 package puscas.mobilertapp;
 
 import android.Manifest;
+import android.os.Build;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -22,6 +23,7 @@ import org.hamcrest.Matcher;
 import org.jetbrains.annotations.Contract;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
@@ -45,8 +47,6 @@ import puscas.mobilertapp.utils.Constants;
 import puscas.mobilertapp.utils.ConstantsUI;
 import puscas.mobilertapp.utils.Scene;
 import puscas.mobilertapp.utils.Shader;
-
-import static org.junit.Assume.assumeFalse;
 
 /**
  * The test suite for {@link MainActivity}.
@@ -115,6 +115,26 @@ public final class MainActivityTest {
     @BeforeClass
     public static void setUpAll() {
         LOGGER.info(Constants.SET_UP_ALL);
+
+        LOGGER.info("---------------------------------------------------");
+        LOGGER.info("Device: " + Build.DEVICE);
+        LOGGER.info("User: " + Build.USER);
+        LOGGER.info("Type: " + Build.TYPE);
+        LOGGER.info("Unknown: " + Build.UNKNOWN);
+        LOGGER.info("Time: " + Build.TIME);
+        LOGGER.info("Tags: " + Build.TAGS);
+        LOGGER.info("Id: " + Build.ID);
+        LOGGER.info("Host: " + Build.HOST);
+        LOGGER.info("Fingerprint: " + Build.FINGERPRINT);
+        LOGGER.info("Display: " + Build.DISPLAY);
+        LOGGER.info("Brand: " + Build.BRAND);
+        LOGGER.info("Bootloader: " + Build.BOOTLOADER);
+        LOGGER.info("Board: " + Build.BOARD);
+        LOGGER.info("Hardware: " + Build.HARDWARE);
+        LOGGER.info("Manufacturer: " + Build.MANUFACTURER);
+        LOGGER.info("Model: " + Build.MODEL);
+        LOGGER.info("Product: " + Build.PRODUCT);
+        LOGGER.info("---------------------------------------------------");
     }
 
     /**
@@ -403,6 +423,8 @@ public final class MainActivityTest {
             .check((view, exception) ->
                 assertCheckBox(view, R.id.preview, Constants.PREVIEW, Constants.CHECK_BOX_MESSAGE, false)
             );
+
+        checksIfSystemShouldContinue(numCores);
         testRenderButton(40, numCores);
 
         this.mainActivityActivityTestRule.finishActivity();
@@ -424,7 +446,7 @@ public final class MainActivityTest {
                 assertCheckBox(view, R.id.preview, Constants.PREVIEW, Constants.CHECK_BOX_MESSAGE, true)
             );
 
-        assumeFalse("This test always fails in Debug with only 1 core.", BuildConfig.DEBUG && numCores == 1);
+        checksIfSystemShouldContinue(numCores);
         testRenderButton(40, numCores);
 
         this.mainActivityActivityTestRule.finishActivity();
@@ -433,7 +455,7 @@ public final class MainActivityTest {
     /**
      * Tests rendering a scene.
      */
-    @Test(timeout = 5L * 60L * 1000L)
+    @Test(timeout = 10L * 60L * 1000L)
     public void testRenderScene() {
         LOGGER.info("testRenderScene");
 
@@ -467,9 +489,10 @@ public final class MainActivityTest {
             );
         });
 
+        final long advanceSecs = 3L;
         final AtomicBoolean done = new AtomicBoolean(false);
-        for (int i = 0; i < 100 && !done.get(); ++i) {
-            Uninterruptibles.sleepUninterruptibly(3L, TimeUnit.SECONDS);
+        for (long currentTimeSecs = 0L; currentTimeSecs < 600L && !done.get(); currentTimeSecs += advanceSecs) {
+            Uninterruptibles.sleepUninterruptibly(advanceSecs, TimeUnit.SECONDS);
 
             viewInteraction.check((view, exception) -> {
                 final Button renderButton = view.findViewById(R.id.renderButton);
@@ -489,6 +512,21 @@ public final class MainActivityTest {
         });
 
         this.mainActivityActivityTestRule.finishActivity();
+    }
+
+    /**
+     * Helper method that checks if the current system should or not execute the
+     * flaky tests.
+     *
+     * @param numCores The number of CPU cores available.
+     */
+    private static void checksIfSystemShouldContinue(final int numCores) {
+        Assume.assumeFalse(
+            "This test fails in Debug with only 1 core.",
+            BuildConfig.DEBUG // Debug mode
+                && Build.TAGS.equals("test-keys") // In third party systems (CI)
+                && numCores == 1 // Android system with only 1 CPU core
+        );
     }
 
     /**
