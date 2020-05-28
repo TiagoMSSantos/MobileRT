@@ -83,9 +83,25 @@ echo "Emulators available: '${avd_emulators}'";
 
 avd_emulator=`echo ${avd_emulators} | head -1`;
 echo "Start '${avd_emulator}'";
-#callCommand emulator -avd ${avd_emulator} &
+
+adb shell whoami;
+started_emulator=${PIPESTATUS[0]};
+
+echo "Wait for device to be available.";
+emulator -avd ${avd_emulator} 2> /dev/null &
+
+callCommand sleep 1;
+callCommand adb wait-for-device;
+callCommand adb shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 3; done; input keyevent 82';
 
 echo "Set adb as root, to be able to change files permissions";
+adb root;
+
+if [ ${started_emulator} -ne 0 ]; then
+  callCommand sleep 7;
+fi
+
+callCommand adb shell input tap 800 900;
 callCommand adb root;
 
 echo "Set path to reports";
