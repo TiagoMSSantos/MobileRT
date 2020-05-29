@@ -521,12 +521,17 @@ public final class MainActivityTest {
      * @param numCores The number of CPU cores available.
      */
     private static void checksIfSystemShouldContinue(final int numCores) {
+        LOGGER.info("checksIfSystemShouldContinue");
+        LOGGER.info("BuildConfig.DEBUG: " + BuildConfig.DEBUG);
+        LOGGER.info("Build.TAGS: " + Build.TAGS);
+        LOGGER.info("numCores: " + numCores);
         Assume.assumeFalse(
             "This test fails in Debug with only 1 core.",
             BuildConfig.DEBUG // Debug mode
                 && Build.TAGS.equals("test-keys") // In third party systems (CI)
                 && numCores == 1 // Android system with only 1 CPU core
         );
+        LOGGER.info("checksIfSystemShouldContinue finish");
     }
 
     /**
