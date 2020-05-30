@@ -49,9 +49,23 @@ function clear_func() {
   echo "Killing pid of logcat: '${pid_logcat}'";
   kill -s SIGTERM ${pid_logcat} 2> /dev/null;
 
-  pid_app=`adb shell ps | grep puscas.mobilertapp | tr -s ' ' | cut -d ' ' -f 2`;
+  local pid_app=`adb shell ps | grep puscas.mobilertapp | tr -s ' ' | cut -d ' ' -f 2`;
   echo "Killing pid of MobileRT: '${pid_app}'";
   adb shell kill -s SIGTERM ${pid_app} 2> /dev/null;
+
+  echo "pid: ${BASHPID}";
+  echo "script name: $(basename $0)";
+  local pid=${BASHPID};
+  local script_name=$(basename $0);
+
+  callCommand ps aux \
+    | grep -v grep \
+    | grep -v ${BASHPID} \
+    | grep -v ${pid} \
+    | grep -i ${script_name} \
+    | tr -s ' ' \
+    | cut -d ' ' -f 2 \
+    | xargs kill;
 }
 
 function catch_signal() {
@@ -77,6 +91,8 @@ set -m;
 
 echo "Prepare traps";
 trap catch_signal EXIT
+
+clear_func;
 
 avd_emulators=`emulator -list-avds`;
 echo "Emulators available: '${avd_emulators}'";
