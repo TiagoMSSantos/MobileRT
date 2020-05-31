@@ -144,6 +144,13 @@ callCommand adb shell settings put global window_animation_scale 0.0;
 callCommand adb shell settings put global transition_animation_scale 0.0;
 callCommand adb shell settings put global animator_duration_scale 0.0;
 
+echo "Redirect stdout";
+callCommand adb shell setprop log.redirect-stdio true;
+
+echo "Activate JNI extended checking mode";
+callCommand adb shell setprop dalvik.vm.checkjni true;
+callCommand adb shell setprop debug.checkjni 1;
+
 echo "Clear logcat";
 callCommand adb logcat -c;
 
