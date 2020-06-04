@@ -60,7 +60,7 @@ jobs:
     - name: Build ${{ matrix.type }}
       if: success()
       run: |
-        bash ./Scripts/compile_android.sh ${{ matrix.type }} ${{ matrix.ndk_version }} ${{ matrix.cmake_version }};
+        bash ./scripts/compile_android.sh ${{ matrix.type }} ${{ matrix.ndk_version }} ${{ matrix.cmake_version }};
 
     - name: Sign APK
       if: success()
@@ -75,7 +75,7 @@ jobs:
     - name: Run unit tests Java
       if: success()
       run: |
-        bash ./Scripts/run_tests.sh ${{ matrix.type }} ${{ matrix.ndk_version }} ${{ matrix.cmake_version }};
+        bash ./scripts/run_tests.sh ${{ matrix.type }} ${{ matrix.ndk_version }} ${{ matrix.cmake_version }};
 
     - name: Run Android tests
       if: success() && !startsWith(matrix.os, 'windows')
@@ -86,12 +86,12 @@ jobs:
         arch: x86
         disable-animations: true
         script: |
-          bash ./Scripts/run_tests_android.sh ${{ matrix.variant }} ${{ matrix.ndk_version }} ${{ matrix.cmake_version }};
+          bash ./scripts/run_tests_android.sh ${{ matrix.variant }} ${{ matrix.ndk_version }} ${{ matrix.cmake_version }};
 
     - name: Run linter
       if: success()
       run: |
-        bash ./Scripts/check_android.sh ${{ matrix.type }} ${{ matrix.ndk_version }} ${{ matrix.cmake_version }};
+        bash ./scripts/check_android.sh ${{ matrix.type }} ${{ matrix.ndk_version }} ${{ matrix.cmake_version }};
 
     - name: Upload reports
       if: always()

@@ -44,4 +44,4 @@ VOLUME /tmp/.X11-unix
 
 # Execute
 WORKDIR /MobileRT/build_${build_type}
-CMD bash ../Scripts/profile.sh ${BUILD_TYPE}
+CMD bash ../scripts/profile.sh ${BUILD_TYPE}

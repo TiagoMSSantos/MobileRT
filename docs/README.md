@@ -67,12 +67,12 @@ cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=Re
 This ray tracer comes with a script with many functionalities useful to run
 static code analyzers and to benchmark the ray tracer itself.
 To execute the ray tracer just use the profile.sh script available in the
-Scripts directory.
+`scripts` directory.
 For example, inside the build_Release directory (which should be inside the root
 folder of this project) that contains all the object files compiled previously,
 the following command should start the ray tracer: <br/>
 ```bash
-../Scripts/profile.sh Release
+../scripts/profile.sh Release
 ```
 
 ## Android
