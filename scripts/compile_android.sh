@@ -22,6 +22,9 @@ source scripts/helper_functions.sh;
 # Compile for Android
 ###############################################################################
 
+# Capitalize 1st letter
+type=$( sed 's/\b\(.\)/\u\1/g' <<< "${type}" )
+
 # Set path to reports
 reports_path=./app/build/reports
 callCommand mkdir -p ${reports_path}

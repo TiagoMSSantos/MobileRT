@@ -3,7 +3,7 @@
 ###############################################################################
 # Get arguments
 ###############################################################################
-variant="${1:-release}";
+type="${1:-release}";
 ndk_version="${2:-21.0.6113669}";
 cmake_version="${3:-3.6.0}";
 ###############################################################################
@@ -28,18 +28,18 @@ function gather_logs_func() {
 
   # Copy logcat to file
   callCommand adb logcat -v threadtime -d *:V \
-    > ${reports_path}/logcat_${variant}.log 2>&1;
+    > ${reports_path}/logcat_${type}.log 2>&1;
 
   # Filter logcat of the app
-  callCommand cat ${reports_path}/logcat_${variant}.log \
-    | egrep -i `cat ${reports_path}/logcat_${variant}.log \
+  callCommand cat ${reports_path}/logcat_${type}.log \
+    | egrep -i `cat ${reports_path}/logcat_${type}.log \
     | egrep -i "proc.*:puscas" | cut -d ":" -f 4 | cut -d ' ' -f 4` \
-    > ${reports_path}/logcat_app_${variant}.log;
+    > ${reports_path}/logcat_app_${type}.log;
 
-  callCommand cat ${reports_path}/logcat_current_${variant}.log \
-    | egrep -i `cat ${reports_path}/logcat_current_${variant}.log \
+  callCommand cat ${reports_path}/logcat_current_${type}.log \
+    | egrep -i `cat ${reports_path}/logcat_current_${type}.log \
     | egrep -i "proc.*:puscas" | cut -d ":" -f 4 | cut -d ' ' -f 4` \
-    > ${reports_path}/logcat_current_app_${variant}.log;
+    > ${reports_path}/logcat_current_app_${type}.log;
 
   echo "";
   echo "";
@@ -130,7 +130,7 @@ mobilert_path="/data/MobileRT";
 echo "Copy unit tests";
 callCommand adb shell mkdir -p ${mobilert_path};
 callCommand adb shell rm -rf ${mobilert_path}/*;
-callCommand adb push app/build/intermediates/cmake/${variant}/obj/x86/* ${mobilert_path}/;
+callCommand adb push app/build/intermediates/cmake/${type}/obj/x86/* ${mobilert_path}/;
 
 echo "Copy tests resources";
 callCommand adb push app/src/androidTest/resources/teapot ${mobilert_path}/WavefrontOBJs/teapot;
@@ -156,29 +156,29 @@ callCommand adb logcat -c;
 
 echo "Copy logcat to file";
 callCommand nohup adb logcat -v threadtime *:V \
-  | tee ${reports_path}/logcat_current_${variant}.log 2>&1 &
+  | tee ${reports_path}/logcat_current_${type}.log 2>&1 &
 pid_logcat="$!";
 echo "pid of logcat: '${pid_logcat}'";
 
 echo "Run instrumentation tests";
-callCommand ./gradlew connectedAndroidTest -DtestType="${variant}" \
+callCommand ./gradlew connectedAndroidTest -DtestType="${type}" \
   -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
-  | tee ${reports_path}/log_tests_${variant}.log 2>&1;
+  | tee ${reports_path}/log_tests_${type}.log 2>&1;
 resInstrumentationTests=${PIPESTATUS[0]};
 pid_instrumentation_tests="$!";
 echo "pid of instrumentation tests: '${pid_instrumentation_tests}'";
 
 echo "Run unit tests";
-if [ ${variant} == "debug" ]; then
+if [ ${type} == "debug" ]; then
   # Ignore unit tests that should crash the system because of a failing assert
   callCommand nohup adb shell LD_LIBRARY_PATH=${mobilert_path} \
     ${mobilert_path}/UnitTests \
     --gtest_filter=-*.TestInvalid* \
-    | tee ${reports_path}/log_unit_tests_${variant}.log 2>&1;
+    | tee ${reports_path}/log_unit_tests_${type}.log 2>&1;
 else
   callCommand nohup adb shell LD_LIBRARY_PATH=${mobilert_path} \
     ${mobilert_path}/UnitTests \
-    | tee ${reports_path}/log_unit_tests_${variant}.log 2>&1;
+    | tee ${reports_path}/log_unit_tests_${type}.log 2>&1;
 fi
 resUnitTests=${PIPESTATUS[0]};
 ###############################################################################
