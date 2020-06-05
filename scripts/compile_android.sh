@@ -24,6 +24,7 @@ source scripts/helper_functions.sh;
 
 # Capitalize 1st letter
 type=$( sed 's/\b\(.\)/\u\1/g' <<< "${type}" )
+echo "type: '${type}'";
 
 # Set path to reports
 reports_path=./app/build/reports

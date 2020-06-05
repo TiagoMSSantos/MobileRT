@@ -24,7 +24,7 @@ jobs:
             cmake_version: 3.6.0
 
           - os: windows-2019
-            ndk_version: 16.1.4479499
+            ndk_version: 21.2.6472646
             cmake_version: 3.6.0
 
           - type: Debug
