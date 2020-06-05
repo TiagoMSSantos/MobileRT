@@ -1,6 +1,6 @@
 println("Reading system properties.")
-final def systemNDKVersion = System.getProperty('ndkVersion', '21.0.6113669')
-final def systemCMakeVersion = System.getProperty('cmakeVersion', '3.6.0')
+final def systemNDKVersion = System.getProperty('ndkVersion', '21.2.6472646')
+final def systemCMakeVersion = System.getProperty('cmakeVersion', '3.10.2')
 final def systemTestType = System.getProperty('testType', 'debug')
 
 println("NDK version: " + systemNDKVersion)
