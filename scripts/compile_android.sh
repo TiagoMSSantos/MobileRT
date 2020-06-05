@@ -23,7 +23,7 @@ source scripts/helper_functions.sh;
 ###############################################################################
 
 # Capitalize 1st letter
-type=$( sed 's/\b\(.\)/\u\1/g' <<< "${type}" )
+type="$(tr '[:lower:]' '[:upper:]' <<< ${type:0:1})${type:1}";
 echo "type: '${type}'";
 
 # Set path to reports
