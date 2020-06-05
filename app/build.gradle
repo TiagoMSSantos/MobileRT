@@ -103,24 +103,9 @@ android {
     productFlavors {
     }
     packagingOptions {
-        exclude 'META-INF/LICENSE'
         exclude 'META-INF/LICENSE.md'
-        exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/LICENSE-notice.md'
-        exclude 'META-INF/license.txt'
         exclude 'META-INF/licenses/ASM'
-
-        exclude 'META-INF/DEPENDENCIES'
-        exclude 'META-INF/DEPENDENCIES.txt'
-        exclude 'META-INF/dependencies.txt'
-
-        exclude 'META-INF/NOTICE'
-        exclude 'META-INF/NOTICE.txt'
-        exclude 'META-INF/notice.txt'
-
-        exclude 'META-INF/LGPL2.1'
-
-        exclude '**/module-info.class'
     }
     testOptions {
         unitTests {
