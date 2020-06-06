@@ -47,6 +47,7 @@ import puscas.mobilertapp.utils.Constants;
 import puscas.mobilertapp.utils.ConstantsUI;
 import puscas.mobilertapp.utils.Scene;
 import puscas.mobilertapp.utils.Shader;
+import puscas.mobilertapp.utils.State;
 
 /**
  * The test suite for {@link MainActivity}.
@@ -510,6 +511,18 @@ public final class MainActivityTest {
                 "Button message"
             );
         });
+
+        Espresso.onView(ViewMatchers.withId(R.id.drawLayout))
+            .check((view, exception) -> {
+                final DrawView drawView = (DrawView) view;
+                final MainRenderer renderer = drawView.getRenderer();
+
+                Assertions.assertEquals(
+                    State.IDLE,
+                    renderer.getState(),
+                    "State is not the expected"
+                );
+            });
 
         this.mainActivityActivityTestRule.finishActivity();
     }

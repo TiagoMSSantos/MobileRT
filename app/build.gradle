@@ -159,15 +159,11 @@ dependencies {
     // More dependencies
     implementation 'org.apache.commons:commons-lang3:3.10'
 
-    // Give error when added
-//    implementation 'org.apache.commons:commons-text:1.8'
-
 
 
     println("Adding dependencies for the instrumentation tests.")
 
     androidTestImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.2'
-    androidTestImplementation 'org.assertj:assertj-core:3.16.1'
     androidTestImplementation 'org.mockito:mockito-android:3.3.3'
     androidTestImplementation 'org.mockito:mockito-core:3.3.3'
     androidTestImplementation 'com.google.truth:truth:1.0.1'
@@ -188,4 +184,10 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.2'
     testImplementation 'org.assertj:assertj-core:3.16.1'
     testImplementation 'org.khronos:opengl-api:gl1.1-android-2.1_r1'
+
+
+
+    // Give error when added
+//    implementation 'org.apache.commons:commons-text:1.8'
+//    androidTestImplementation 'org.assertj:assertj-core:3.16.1'
 }
