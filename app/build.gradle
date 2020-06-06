@@ -48,7 +48,7 @@ android {
         setTestHandleProfiling false
         setTestFunctionalTest false
         ndk {
-            abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
+            abiFilters 'armeabi-v7a', 'x86', 'arm64-v8a', 'x86_64'
             setModuleName 'MobileRT'
         }
         externalNativeBuild {

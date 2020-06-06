@@ -22,7 +22,7 @@ buildscript {
             println("Detected MacOS.")
             classpath 'com.android.tools.build:gradle:3.5.3'
         } else {
-            classpath 'com.android.tools.build:gradle:4.0.0'
+            classpath 'com.android.tools.build:gradle:3.6.3'
         }
     }
 }

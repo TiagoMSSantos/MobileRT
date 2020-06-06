@@ -1,6 +1,8 @@
 package puscas.mobilertapp;
 
 import android.Manifest;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Build;
 import android.view.View;
 import android.widget.Button;
@@ -33,6 +35,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.runners.MethodSorters;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -516,6 +519,27 @@ public final class MainActivityTest {
             .check((view, exception) -> {
                 final DrawView drawView = (DrawView) view;
                 final MainRenderer renderer = drawView.getRenderer();
+
+                // Get bitmap
+                Field field = null;
+                try {
+                    field = renderer.getClass().getDeclaredField("bitmap");
+                } catch (final NoSuchFieldException ex) {
+                    LOGGER.warning(ex.getMessage());
+                }
+                if (field != null) {
+                    field.setAccessible(true);
+
+                    try {
+                        final Bitmap bitmap = (Bitmap) field.get(renderer);
+                        final int pixel = bitmap.getPixel(0, 0);
+
+                        // Check value of 1st pixel
+                        Assertions.assertNotSame(Color.BLACK, pixel, "Pixel color shouldn't be black.");
+                    } catch (final IllegalAccessException ex) {
+                        LOGGER.warning(ex.getMessage());
+                    }
+                }
 
                 Assertions.assertEquals(
                     State.IDLE,
