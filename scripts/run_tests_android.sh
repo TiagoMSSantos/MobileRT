@@ -4,8 +4,9 @@
 # Get arguments
 ###############################################################################
 type="${1:-release}";
-ndk_version="${2:-21.2.6472646}"
-cmake_version="${3:-3.10.2}"
+ndk_version="${2:-21.2.6472646}";
+cmake_version="${3:-3.10.2}";
+kill_previous="${4:-true}";
 ###############################################################################
 ###############################################################################
 
@@ -52,20 +53,6 @@ function clear_func() {
   local pid_app=`adb shell ps | grep puscas.mobilertapp | tr -s ' ' | cut -d ' ' -f 2`;
   echo "Killing pid of MobileRT: '${pid_app}'";
   adb shell kill -s SIGTERM ${pid_app} 2> /dev/null;
-
-  echo "pid: ${BASHPID}";
-  echo "script name: $(basename $0)";
-  local pid=${BASHPID};
-  local script_name=$(basename $0);
-
-  callCommand ps aux \
-    | grep -v grep \
-    | grep -v ${BASHPID} \
-    | grep -v ${pid} \
-    | grep -i ${script_name} \
-    | tr -s ' ' \
-    | cut -d ' ' -f 2 \
-    | xargs kill;
 }
 
 function catch_signal() {
@@ -91,6 +78,21 @@ set -m;
 
 echo "Prepare traps";
 trap catch_signal EXIT SIGHUP SIGINT SIGQUIT SIGILL SIGTRAP SIGABRT SIGTERM
+
+pid=${BASHPID};
+script_name=$(basename $0);
+echo "pid: ${pid}";
+echo "script name: ${script_name}";
+
+if [ ${kill_previous} == true ]; then
+  callCommand ps aux \
+    | grep -v grep \
+    | grep -v ${pid} \
+    | grep -i ${script_name} \
+    | tr -s ' ' \
+    | cut -d ' ' -f 2 \
+    | xargs kill;
+fi
 
 clear_func;
 

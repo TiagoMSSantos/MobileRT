@@ -79,14 +79,14 @@ jobs:
 
     - name: Run Android tests
       if: success() && !startsWith(matrix.os, 'windows')
-      uses: ReactiveCircus/android-emulator-runner@v2.6.2
+      uses: ReactiveCircus/android-emulator-runner@v2.9.0
       with:
         api-level: 16
         target: default
         arch: x86
         disable-animations: true
         script: |
-          bash ./scripts/run_tests_android.sh ${{ matrix.variant }} ${{ matrix.ndk_version }} ${{ matrix.cmake_version }};
+          bash ./scripts/run_tests_android.sh ${{ matrix.variant }} ${{ matrix.ndk_version }} ${{ matrix.cmake_version }} false;
 
     - name: Run linter
       if: success()

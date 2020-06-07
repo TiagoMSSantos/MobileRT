@@ -484,35 +484,48 @@ public final class MainActivityTest {
         changePickerValue("pickerAccelerator", R.id.pickerAccelerator, 3);
         changePickerValue("pickerShader", R.id.pickerShader, 2);
 
+        checksIfSystemShouldContinue(numCores);
+        LOGGER.info("GOING TO CLICK THE BUTTON.");
         final ViewInteraction viewInteraction = Espresso.onView(ViewMatchers.withId(R.id.renderButton))
             .check((view, exception) -> {
+                LOGGER.info("GOING TO CLICK THE BUTTON 1.");
                 final Button renderButton = view.findViewById(R.id.renderButton);
+                LOGGER.info("GOING TO CLICK THE BUTTON 2.");
                 Assertions.assertEquals(
                     Constants.RENDER,
                     renderButton.getText().toString(),
                     "Button message"
                 );
+                LOGGER.info("GOING TO CLICK THE BUTTON 3.");
             })
             .perform(new MainActivityTest.ViewActionButton(Constants.STOP))
             .check((view, exception) -> {
+                Uninterruptibles.sleepUninterruptibly(1, TimeUnit.SECONDS);
+                LOGGER.info("GOING TO CLICK THE BUTTON 4.");
                 final Button renderButton = view.findViewById(R.id.renderButton);
+                LOGGER.info("GOING TO CLICK THE BUTTON 5.");
                 Assertions.assertEquals(
                     Constants.STOP,
                     renderButton.getText().toString(),
                     "Button message"
                 );
+                LOGGER.info("GOING TO CLICK THE BUTTON 6.");
             })
             .perform(new MainActivityTest.ViewActionButton(Constants.RENDER));
 
+        LOGGER.info("RENDERING STARTED AND STOPPED.");
         final long advanceSecs = 3L;
         final AtomicBoolean done = new AtomicBoolean(false);
-        for (long currentTimeSecs = 0L; currentTimeSecs < 600L && !done.get(); currentTimeSecs += advanceSecs) {
+        for (long currentTimeSecs = 0L; currentTimeSecs < 10L && !done.get(); currentTimeSecs += advanceSecs) {
+            LOGGER.info("WAITING FOR RENDERING TO FINISH.");
             Uninterruptibles.sleepUninterruptibly(advanceSecs, TimeUnit.SECONDS);
 
             viewInteraction.check((view, exception) -> {
                 final Button renderButton = view.findViewById(R.id.renderButton);
+                LOGGER.info("CHECKING IF RENDERING DONE.");
                 if (renderButton.getText().toString().equals(Constants.RENDER)) {
                     done.set(true);
+                    LOGGER.info("RENDERING DONE.");
                 }
             });
         }
@@ -526,6 +539,7 @@ public final class MainActivityTest {
             );
         });
 
+        LOGGER.info("CHECKING RAY TRACING STATE.");
         Espresso.onView(ViewMatchers.withId(R.id.drawLayout))
             .check((view, exception) -> {
                 final DrawView drawView = (DrawView) view;
@@ -540,6 +554,7 @@ public final class MainActivityTest {
                 );
             });
 
+        LOGGER.info(methodName + " finished");
         this.mainActivityActivityTestRule.finishActivity();
     }
 
@@ -719,7 +734,7 @@ public final class MainActivityTest {
         @Override
         public final Matcher<View> getConstraints() {
             final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-            LOGGER.info(methodName);
+            LOGGER_BUTTON.info(methodName);
 
             return ViewMatchers.isAssignableFrom(Button.class);
         }
