@@ -2,7 +2,6 @@ package puscas.mobilertapp;
 
 import android.Manifest;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.os.Build;
 import android.view.View;
 import android.widget.Button;
@@ -43,6 +42,7 @@ import java.util.logging.Logger;
 
 import javax.annotation.Nonnull;
 
+import java8.util.J8Arrays;
 import java8.util.stream.IntStreams;
 import java8.util.stream.StreamSupport;
 import puscas.mobilertapp.utils.Accelerator;
@@ -527,18 +527,15 @@ public final class MainActivityTest {
                 } catch (final NoSuchFieldException ex) {
                     LOGGER.warning(ex.getMessage());
                 }
-                if (field != null) {
-                    field.setAccessible(true);
+                assert field != null;
+                field.setAccessible(true);
 
-                    try {
-                        final Bitmap bitmap = (Bitmap) field.get(renderer);
-                        final int pixel = bitmap.getPixel(0, 0);
-
-                        // Check value of 1st pixel
-                        Assertions.assertNotSame(Color.BLACK, pixel, "Pixel color shouldn't be black.");
-                    } catch (final IllegalAccessException ex) {
-                        LOGGER.warning(ex.getMessage());
-                    }
+                try {
+                    final Bitmap bitmap = (Bitmap) field.get(renderer);
+                    assert bitmap != null;
+                    assertRayTracingResultInBitmap(bitmap);
+                } catch (final IllegalAccessException ex) {
+                    LOGGER.warning(ex.getMessage());
                 }
 
                 Assertions.assertEquals(
@@ -549,6 +546,25 @@ public final class MainActivityTest {
             });
 
         this.mainActivityActivityTestRule.finishActivity();
+    }
+
+    /**
+     * Helper method that checks if a {@link Bitmap} contains valid values from
+     * a rendered image.
+     *
+     * @param bitmap The {@link Bitmap}.
+     */
+    private static void assertRayTracingResultInBitmap(@Nonnull final Bitmap bitmap) {
+        final int firstPixel = bitmap.getPixel(0, 0);
+        final int width = bitmap.getWidth();
+        final int height = bitmap.getHeight();
+        final int[] pixels = new int[width * height];
+        bitmap.getPixels(pixels, 0, width, 0, 0, width, height);
+
+        final boolean bitmapSameColor = J8Arrays.stream(pixels)
+            .allMatch(pixel -> pixel == firstPixel);
+
+        Assertions.assertFalse(bitmapSameColor, "The rendered image should have different values.");
     }
 
     /**

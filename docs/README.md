@@ -103,13 +103,13 @@ f 45 45 #field of view of the camera u v
 - [x] C++ [OpenGL Mathematics](https://glm.g-truc.net/0.9.9/index.html)
 library
 - [x] C++ [tinyobjloader](https://github.com/tinyobjloader/tinyobjloader)
-library
+library to load Wavefront OBJ model files
 - [x] C++ [Qt4](https://www.qt.io/) framework for Linux interface
 - [x] C++ [Google Test](https://github.com/google/googletest) framework
 for unit tests
-- [x] C [STB libraries](https://github.com/nothings/stb)
+- [x] C [STB libraries](https://github.com/nothings/stb) to load the textures
 - [x] Java [Google Guava](https://github.com/google/guava) libraries
-- [x] Java [streams](https://github.com/stefan-zobel/streamsupport) to
+- [x] Java [Streams](https://github.com/stefan-zobel/streamsupport) to
 reduce complexity
 - [x] Java [Apache Commons](https://commons.apache.org/) framework
 - [x] Java [JUnit4](https://junit.org/junit4/) framework for
