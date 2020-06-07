@@ -457,6 +457,83 @@ public final class MainActivityTest {
     }
 
     /**
+     * Tests the preview feature in a scene.
+     */
+    @Test(timeout = 60L * 1000L)
+    public void testPreviewScene() {
+        LOGGER.info("testPreviewScene");
+
+        final MainActivity activity = this.mainActivityActivityTestRule.getActivity();
+        final int numCores = activity.getNumOfCores();
+
+        changePickerValue("pickerScene", R.id.pickerScene, 2);
+        changePickerValue("pickerThreads", R.id.pickerThreads, numCores);
+        changePickerValue("pickerSize", R.id.pickerSize, 8);
+        changePickerValue("pickerSamplesPixel", R.id.pickerSamplesPixel, 1);
+        changePickerValue("pickerSamplesLight", R.id.pickerSamplesLight, 1);
+        changePickerValue("pickerAccelerator", R.id.pickerAccelerator, 3);
+        changePickerValue("pickerShader", R.id.pickerShader, 2);
+
+        final ViewInteraction viewInteraction = Espresso.onView(ViewMatchers.withId(R.id.renderButton))
+            .check((view, exception) -> {
+                final Button renderButton = view.findViewById(R.id.renderButton);
+                Assertions.assertEquals(
+                    Constants.RENDER,
+                    renderButton.getText().toString(),
+                    "Button message"
+                );
+            })
+            .perform(new MainActivityTest.ViewActionButton(Constants.STOP))
+            .check((view, exception) -> {
+                final Button renderButton = view.findViewById(R.id.renderButton);
+                Assertions.assertEquals(
+                    Constants.STOP,
+                    renderButton.getText().toString(),
+                    "Button message"
+                );
+            })
+            .perform(new MainActivityTest.ViewActionButton(Constants.RENDER));
+
+        final long advanceSecs = 3L;
+        final AtomicBoolean done = new AtomicBoolean(false);
+        for (long currentTimeSecs = 0L; currentTimeSecs < 600L && !done.get(); currentTimeSecs += advanceSecs) {
+            Uninterruptibles.sleepUninterruptibly(advanceSecs, TimeUnit.SECONDS);
+
+            viewInteraction.check((view, exception) -> {
+                final Button renderButton = view.findViewById(R.id.renderButton);
+                if (renderButton.getText().toString().equals(Constants.RENDER)) {
+                    done.set(true);
+                }
+            });
+        }
+
+        viewInteraction.check((view, exception) -> {
+            final Button renderButton = view.findViewById(R.id.renderButton);
+            Assertions.assertEquals(
+                Constants.RENDER,
+                renderButton.getText().toString(),
+                "Button message"
+            );
+        });
+
+        Espresso.onView(ViewMatchers.withId(R.id.drawLayout))
+            .check((view, exception) -> {
+                final DrawView drawView = (DrawView) view;
+                final MainRenderer renderer = drawView.getRenderer();
+                final Bitmap bitmap = getBitmap(renderer);
+                assertRayTracingResultInBitmap(bitmap);
+
+                Assertions.assertEquals(
+                    State.IDLE,
+                    renderer.getState(),
+                    "State is not the expected"
+                );
+            });
+
+        this.mainActivityActivityTestRule.finishActivity();
+    }
+
+    /**
      * Tests rendering a scene.
      */
     @Test(timeout = 10L * 60L * 1000L)
@@ -519,24 +596,8 @@ public final class MainActivityTest {
             .check((view, exception) -> {
                 final DrawView drawView = (DrawView) view;
                 final MainRenderer renderer = drawView.getRenderer();
-
-                // Get bitmap
-                Field field = null;
-                try {
-                    field = renderer.getClass().getDeclaredField("bitmap");
-                } catch (final NoSuchFieldException ex) {
-                    LOGGER.warning(ex.getMessage());
-                }
-                assert field != null;
-                field.setAccessible(true);
-
-                try {
-                    final Bitmap bitmap = (Bitmap) field.get(renderer);
-                    assert bitmap != null;
-                    assertRayTracingResultInBitmap(bitmap);
-                } catch (final IllegalAccessException ex) {
-                    LOGGER.warning(ex.getMessage());
-                }
+                final Bitmap bitmap = getBitmap(renderer);
+                assertRayTracingResultInBitmap(bitmap);
 
                 Assertions.assertEquals(
                     State.IDLE,
@@ -546,6 +607,36 @@ public final class MainActivityTest {
             });
 
         this.mainActivityActivityTestRule.finishActivity();
+    }
+
+    /**
+     * Helper method that gets the {@link Bitmap} from the {@link MainRenderer}.
+     *
+     * @param renderer The {@link MainRenderer} to get the {@link Bitmap}.
+     * @return The {@link Bitmap} from the {@link MainRenderer}.
+     *
+     * @implNote This method uses reflection to be able to get the private
+     * {@link Bitmap} from the {@link MainRenderer}.
+     */
+    private static Bitmap getBitmap(@Nonnull final MainRenderer renderer) {
+        Field field = null;
+        try {
+            // Use reflection to access the private field (bitmap).
+            field = renderer.getClass().getDeclaredField("bitmap");
+        } catch (final NoSuchFieldException ex) {
+            LOGGER.warning(ex.getMessage());
+        }
+        assert field != null;
+        field.setAccessible(true); // Make the field public.
+
+        Bitmap bitmap = null;
+        try {
+            bitmap = (Bitmap) field.get(renderer);
+        } catch (final IllegalAccessException ex) {
+            LOGGER.warning(ex.getMessage());
+        }
+        assert bitmap != null;
+        return bitmap;
     }
 
     /**
