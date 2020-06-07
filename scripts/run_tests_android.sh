@@ -90,7 +90,7 @@ function catch_signal() {
 set -m;
 
 echo "Prepare traps";
-trap catch_signal EXIT
+trap catch_signal EXIT SIGHUP SIGINT SIGQUIT SIGILL SIGTRAP SIGABRT SIGTERM
 
 clear_func;
 
