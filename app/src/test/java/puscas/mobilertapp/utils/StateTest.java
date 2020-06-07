@@ -22,7 +22,8 @@ public class StateTest {
      */
     @Before
     public void setUp() {
-        LOGGER.info(Constants.SET_UP);
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
     }
 
     /**
@@ -30,7 +31,8 @@ public class StateTest {
      */
     @After
     public void tearDown() {
-        LOGGER.info(Constants.TEAR_DOWN);
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
     }
 
     /**
@@ -38,7 +40,9 @@ public class StateTest {
      */
     @Test
     public void testGetId() {
-        LOGGER.info("testGetId");
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
+
         Assertions.assertThat(State.IDLE.getId()).isEqualTo(0);
         Assertions.assertThat(State.BUSY.getId()).isEqualTo(1);
         Assertions.assertThat(State.END.getId()).isEqualTo(2);

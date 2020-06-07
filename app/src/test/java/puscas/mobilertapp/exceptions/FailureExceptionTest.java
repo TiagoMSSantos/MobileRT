@@ -23,7 +23,8 @@ public final class FailureExceptionTest {
      */
     @Before
     public void setUp() {
-        LOGGER.info(Constants.SET_UP);
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
     }
 
     /**
@@ -31,7 +32,8 @@ public final class FailureExceptionTest {
      */
     @After
     public void tearDown() {
-        LOGGER.info(Constants.TEAR_DOWN);
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
     }
 
     /**
@@ -39,7 +41,9 @@ public final class FailureExceptionTest {
      */
     @Test(expected = RuntimeException.class)
     public void testConstructorWithoutArguments() {
-        LOGGER.info("testConstructorWithoutArguments");
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
+
         throw new FailureException();
     }
 
@@ -48,7 +52,9 @@ public final class FailureExceptionTest {
      */
     @Test(expected = RuntimeException.class)
     public void testConstructorWithThrowableArgument() {
-        LOGGER.info("testConstructorWithThrowableArgument");
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
+
         final IndexOutOfBoundsException indexOutOfBoundsException = new IndexOutOfBoundsException("Test");
         throw new FailureException(indexOutOfBoundsException);
     }
@@ -58,7 +64,9 @@ public final class FailureExceptionTest {
      */
     @Test(expected = RuntimeException.class)
     public void testConstructorWithStringArgument() {
-        LOGGER.info("testConstructorWithStringArgument");
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
+
         final String message = "Test";
         throw new FailureException(message);
     }

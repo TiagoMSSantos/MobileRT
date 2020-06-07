@@ -24,7 +24,8 @@ public final class ConfigTest {
      */
     @Before
     public void setUp() {
-        LOGGER.info(Constants.SET_UP);
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
     }
 
     /**
@@ -32,7 +33,8 @@ public final class ConfigTest {
      */
     @After
     public void tearDown() {
-        LOGGER.info(Constants.TEAR_DOWN);
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
     }
 
     /**
@@ -40,7 +42,8 @@ public final class ConfigTest {
      */
     @Test
     public void testDefaultBuild() {
-        LOGGER.info("testBuild");
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
 
         final Config config = new Config.Builder().build();
         Assertions.assertEquals(0, config.getWidth(), "Width not the expected value.");
@@ -60,7 +63,8 @@ public final class ConfigTest {
      */
     @Test
     public void testBuild() {
-        LOGGER.info("testBuild");
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
 
         final int width = 1;
         final int height = 2;

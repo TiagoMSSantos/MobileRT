@@ -37,7 +37,8 @@ public final class CustomNumberPickerTest {
      */
     @Before
     public void setUp() {
-        LOGGER.info(Constants.SET_UP);
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
     }
 
     /**
@@ -45,7 +46,8 @@ public final class CustomNumberPickerTest {
      */
     @After
     public void tearDown() {
-        LOGGER.info(Constants.TEAR_DOWN);
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
     }
 
     /**
@@ -198,7 +200,8 @@ public final class CustomNumberPickerTest {
      */
     @Test
     public void testAddViewWithWrongView() {
-        LOGGER.info("testAddViewWithWrongView");
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
 
         final Context context = new MainActivity();
         final AttributeSet attrs = createAttributeSet();
@@ -221,7 +224,8 @@ public final class CustomNumberPickerTest {
      */
     @Test
     public void testAddViewWithTextView() {
-        LOGGER.info("testAddViewWithTextView");
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
 
         final Context context = new MainActivity();
         final AttributeSet attrs = createAttributeSet();

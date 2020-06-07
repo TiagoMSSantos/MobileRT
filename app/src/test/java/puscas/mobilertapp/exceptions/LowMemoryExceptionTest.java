@@ -23,7 +23,8 @@ public final class LowMemoryExceptionTest {
      */
     @Before
     public void setUp() {
-        LOGGER.info(Constants.SET_UP);
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
     }
 
     /**
@@ -31,7 +32,8 @@ public final class LowMemoryExceptionTest {
      */
     @After
     public void tearDown() {
-        LOGGER.info(Constants.TEAR_DOWN);
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
     }
 
     /**
@@ -39,7 +41,9 @@ public final class LowMemoryExceptionTest {
      */
     @Test(expected = LowMemoryException.class)
     public void testConstructorWithoutArguments() throws LowMemoryException {
-        LOGGER.info("testConstructorWithoutArguments");
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
+
         throw new LowMemoryException();
     }
 
@@ -48,7 +52,9 @@ public final class LowMemoryExceptionTest {
      */
     @Test(expected = LowMemoryException.class)
     public void testConstructorWithThrowableArgument() throws LowMemoryException {
-        LOGGER.info("testConstructorWithThrowableArgument");
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
+
         final IndexOutOfBoundsException indexOutOfBoundsException = new IndexOutOfBoundsException("Test");
         throw new LowMemoryException(indexOutOfBoundsException);
     }
@@ -58,7 +64,9 @@ public final class LowMemoryExceptionTest {
      */
     @Test(expected = LowMemoryException.class)
     public void testConstructorWithStringArgument() throws LowMemoryException {
-        LOGGER.info("testConstructorWithStringArgument");
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
+
         final String message = "Test";
         throw new LowMemoryException(message);
     }

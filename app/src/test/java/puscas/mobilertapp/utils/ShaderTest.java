@@ -22,7 +22,8 @@ public class ShaderTest {
      */
     @Before
     public void setUp() {
-        LOGGER.info(Constants.SET_UP);
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
     }
 
     /**
@@ -30,7 +31,8 @@ public class ShaderTest {
      */
     @After
     public void tearDown() {
-        LOGGER.info(Constants.TEAR_DOWN);
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
     }
 
     /**
@@ -38,7 +40,9 @@ public class ShaderTest {
      */
     @Test
     public void testGetNames() {
-        LOGGER.info(Constants.TEST_GET_NAMES);
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
+
         Assertions.assertThat(Shader.getNames()).containsExactly(
             "NoShadows",
             "Whitted",

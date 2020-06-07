@@ -70,31 +70,6 @@ public final class Constants {
     public static final String CHECK_BOX_MESSAGE = "Check box message";
 
     /**
-     * The name of setUpAll method.
-     */
-    public static final String SET_UP_ALL = "setUpAll";
-
-    /**
-     * The name of setUp method.
-     */
-    public static final String SET_UP = "setUp";
-
-    /**
-     * The name of tearDownAll method.
-     */
-    public static final String TEAR_DOWN_ALL = "tearDownAll";
-
-    /**
-     * The name of tearDown method.
-     */
-    public static final String TEAR_DOWN = "tearDown";
-
-    /**
-     * The name of testGetNames method.
-     */
-    public static final String TEST_GET_NAMES = "testGetNames";
-
-    /**
      * A private constructor in order to prevent instantiating this helper class.
      */
     private Constants() {

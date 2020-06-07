@@ -118,7 +118,8 @@ public final class MainActivityTest {
      */
     @BeforeClass
     public static void setUpAll() {
-        LOGGER.info(Constants.SET_UP_ALL);
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
 
         LOGGER.info("---------------------------------------------------");
         LOGGER.info("Device: " + Build.DEVICE);
@@ -146,7 +147,8 @@ public final class MainActivityTest {
      */
     @AfterClass
     public static void tearDownAll() {
-        LOGGER.info(Constants.TEAR_DOWN_ALL);
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
     }
 
     /**
@@ -327,7 +329,8 @@ public final class MainActivityTest {
      */
     @Before
     public void setUp() {
-        LOGGER.info(Constants.SET_UP);
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
     }
 
     /**
@@ -335,7 +338,8 @@ public final class MainActivityTest {
      */
     @After
     public void tearDown() {
-        LOGGER.info(Constants.TEAR_DOWN);
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
     }
 
     /**
@@ -343,7 +347,8 @@ public final class MainActivityTest {
      */
     @Test(timeout = 5L * 1000L)
     public void testFilesExistAndReadable() {
-        LOGGER.info("testFilesExistAndReadable");
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
 
         final MainActivity activity = this.mainActivityActivityTestRule.getActivity();
 
@@ -366,7 +371,8 @@ public final class MainActivityTest {
      */
     @Test(timeout = 5L * 1000L)
     public void testFilesNotExist() {
-        LOGGER.info("testFilesNotExist");
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
 
         final MainActivity activity = this.mainActivityActivityTestRule.getActivity();
 
@@ -390,7 +396,8 @@ public final class MainActivityTest {
      */
     @Test(timeout = 60L * 1000L)
     public void testUI() {
-        LOGGER.info("testUI");
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
 
         final MainActivity activity = this.mainActivityActivityTestRule.getActivity();
 
@@ -414,7 +421,8 @@ public final class MainActivityTest {
     @FlakyTest(detail = "Race condition in the system.")
     @Test(timeout = 20L * 60L * 1000L)
     public void testRenderManyTimesWithoutPreview() {
-        LOGGER.info("testRenderManyTimesWithoutPreview");
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
 
         final MainActivity activity = this.mainActivityActivityTestRule.getActivity();
         final int numCores = activity.getNumOfCores();
@@ -440,7 +448,8 @@ public final class MainActivityTest {
     @FlakyTest(detail = "Race condition in the system.")
     @Test(timeout = 20L * 60L * 1000L)
     public void testRenderManyTimesWithPreview() {
-        LOGGER.info("testRenderManyTimesWithPreview");
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
 
         final MainActivity activity = this.mainActivityActivityTestRule.getActivity();
         final int numCores = activity.getNumOfCores();
@@ -461,7 +470,8 @@ public final class MainActivityTest {
      */
     @Test(timeout = 60L * 1000L)
     public void testPreviewScene() {
-        LOGGER.info("testPreviewScene");
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
 
         final MainActivity activity = this.mainActivityActivityTestRule.getActivity();
         final int numCores = activity.getNumOfCores();
@@ -538,7 +548,8 @@ public final class MainActivityTest {
      */
     @Test(timeout = 10L * 60L * 1000L)
     public void testRenderScene() {
-        LOGGER.info("testRenderScene");
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
 
         final MainActivity activity = this.mainActivityActivityTestRule.getActivity();
         final int numCores = activity.getNumOfCores();
@@ -665,7 +676,9 @@ public final class MainActivityTest {
      * @param numCores The number of CPU cores available.
      */
     private static void checksIfSystemShouldContinue(final int numCores) {
-        LOGGER.info("checksIfSystemShouldContinue");
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
+
         LOGGER.info("BuildConfig.DEBUG: " + BuildConfig.DEBUG);
         LOGGER.info("Build.TAGS: " + Build.TAGS);
         LOGGER.info("numCores: " + numCores);
@@ -705,7 +718,8 @@ public final class MainActivityTest {
         @Nonnull
         @Override
         public final Matcher<View> getConstraints() {
-            LOGGER_BUTTON.info("ViewActionButton#getConstraints");
+            final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+            LOGGER.info(methodName);
 
             return ViewMatchers.isAssignableFrom(Button.class);
         }
@@ -713,7 +727,8 @@ public final class MainActivityTest {
         @Nonnull
         @Override
         public final String getDescription() {
-            LOGGER_BUTTON.info("ViewActionButton#getDescription");
+            final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+            LOGGER_BUTTON.info(methodName);
 
             return "Click button";
         }
