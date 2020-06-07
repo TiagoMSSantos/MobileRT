@@ -152,7 +152,7 @@ echo "Clear logcat";
 callCommand adb logcat -c;
 
 echo "Copy logcat to file";
-callCommand nohup adb logcat -v threadtime *:V \
+callCommand adb logcat -v threadtime *:V \
   | tee ${reports_path}/logcat_current_${type}.log 2>&1 &
 pid_logcat="$!";
 echo "pid of logcat: '${pid_logcat}'";
@@ -168,12 +168,12 @@ echo "pid of instrumentation tests: '${pid_instrumentation_tests}'";
 echo "Run unit tests";
 if [ ${type} == "debug" ]; then
   # Ignore unit tests that should crash the system because of a failing assert
-  callCommand nohup adb shell LD_LIBRARY_PATH=${mobilert_path} \
+  callCommand adb shell LD_LIBRARY_PATH=${mobilert_path} \
     ${mobilert_path}/UnitTests \
     --gtest_filter=-*.TestInvalid* \
     | tee ${reports_path}/log_unit_tests_${type}.log 2>&1;
 else
-  callCommand nohup adb shell LD_LIBRARY_PATH=${mobilert_path} \
+  callCommand adb shell LD_LIBRARY_PATH=${mobilert_path} \
     ${mobilert_path}/UnitTests \
     | tee ${reports_path}/log_unit_tests_${type}.log 2>&1;
 fi
