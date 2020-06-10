@@ -35,6 +35,8 @@ import org.junit.runners.MethodSorters;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -375,10 +377,11 @@ public final class MainActivityTest {
         LOGGER.info(methodName);
 
         final MainActivity activity = this.mainActivityActivityTestRule.getActivity();
+        final String sdCardPath = getPrivateMethod(activity, "getSDCardPath");
 
         final List<String> paths = ImmutableList.<String>builder().add(
             Constants.EMPTY_FILE,
-            activity.getSDCardPath() + Constants.OBJ_FILE_NOT_EXISTS
+            sdCardPath + Constants.OBJ_FILE_NOT_EXISTS
         ).build();
         StreamSupport.stream(paths)
             .forEach(path -> {
@@ -407,7 +410,7 @@ public final class MainActivityTest {
                 Assertions.assertEquals(Constants.RENDER, button.getText().toString(), "Button message");
             });
 
-        final int numCores = activity.getNumOfCores();
+        final int numCores = getPrivateMethod(activity, "getNumOfCores");
         testRenderButton(1, numCores);
         testPickerNumbers(numCores);
         testPreviewCheckBox();
@@ -425,7 +428,7 @@ public final class MainActivityTest {
         LOGGER.info(methodName);
 
         final MainActivity activity = this.mainActivityActivityTestRule.getActivity();
-        final int numCores = activity.getNumOfCores();
+        final int numCores = getPrivateMethod(activity, "getNumOfCores");
 
         Espresso.onView(ViewMatchers.withId(R.id.preview))
             .check((view, exception) ->
@@ -452,7 +455,7 @@ public final class MainActivityTest {
         LOGGER.info(methodName);
 
         final MainActivity activity = this.mainActivityActivityTestRule.getActivity();
-        final int numCores = activity.getNumOfCores();
+        final int numCores = getPrivateMethod(activity, "getNumOfCores");
 
         Espresso.onView(ViewMatchers.withId(R.id.preview))
             .check((view, exception) ->
@@ -474,7 +477,7 @@ public final class MainActivityTest {
         LOGGER.info(methodName);
 
         final MainActivity activity = this.mainActivityActivityTestRule.getActivity();
-        final int numCores = activity.getNumOfCores();
+        final int numCores = getPrivateMethod(activity, "getNumOfCores");
 
         changePickerValue("pickerScene", R.id.pickerScene, 2);
         changePickerValue("pickerThreads", R.id.pickerThreads, numCores);
@@ -544,7 +547,7 @@ public final class MainActivityTest {
             .check((view, exception) -> {
                 final DrawView drawView = (DrawView) view;
                 final MainRenderer renderer = drawView.getRenderer();
-                final Bitmap bitmap = getBitmap(renderer);
+                final Bitmap bitmap = getPrivateField(renderer, "bitmap");
                 assertRayTracingResultInBitmap(bitmap);
 
                 Assertions.assertEquals(
@@ -567,7 +570,7 @@ public final class MainActivityTest {
         LOGGER.info(methodName);
 
         final MainActivity activity = this.mainActivityActivityTestRule.getActivity();
-        final int numCores = activity.getNumOfCores();
+        final int numCores = getPrivateMethod(activity, "getNumOfCores");
 
         changePickerValue("pickerScene", R.id.pickerScene, 2);
         changePickerValue("pickerThreads", R.id.pickerThreads, numCores);
@@ -622,7 +625,7 @@ public final class MainActivityTest {
             .check((view, exception) -> {
                 final DrawView drawView = (DrawView) view;
                 final MainRenderer renderer = drawView.getRenderer();
-                final Bitmap bitmap = getBitmap(renderer);
+                final Bitmap bitmap = getPrivateField(renderer, "bitmap");
                 assertRayTracingResultInBitmap(bitmap);
 
                 Assertions.assertEquals(
@@ -636,33 +639,65 @@ public final class MainActivityTest {
     }
 
     /**
-     * Helper method that gets the {@link Bitmap} from the {@link MainRenderer}.
+     * Helper method that gets a private field from an {@link Object}.
      *
-     * @param renderer The {@link MainRenderer} to get the {@link Bitmap}.
+     * @param clazz The {@link Object} to get the private field.
      * @return The {@link Bitmap} from the {@link MainRenderer}.
      *
      * @implNote This method uses reflection to be able to get the private
-     * {@link Bitmap} from the {@link MainRenderer}.
+     * field from the {@link Object}.
      */
-    private static Bitmap getBitmap(@Nonnull final MainRenderer renderer) {
+    private static <T> T getPrivateField(@Nonnull final Object clazz, final String fieldName) {
         Field field = null;
         try {
-            // Use reflection to access the private field (bitmap).
-            field = renderer.getClass().getDeclaredField("bitmap");
+            // Use reflection to access the private field.
+            field = clazz.getClass().getDeclaredField(fieldName);
         } catch (final NoSuchFieldException ex) {
             LOGGER.warning(ex.getMessage());
         }
         assert field != null;
         field.setAccessible(true); // Make the field public.
 
-        Bitmap bitmap = null;
+        T privateField = null;
         try {
-            bitmap = (Bitmap) field.get(renderer);
+            privateField = (T) field.get(clazz);
         } catch (final IllegalAccessException ex) {
             LOGGER.warning(ex.getMessage());
         }
-        assert bitmap != null;
-        return bitmap;
+        assert privateField != null;
+
+        return privateField;
+    }
+
+    /**
+     * Helper method that invokes a private method from an {@link Object}.
+     *
+     * @param clazz The {@link Object} to invoke the private method.
+     * @return The return value from the private method.
+     *
+     * @implNote This method uses reflection to be able to invoke the private
+     * method from the {@link Object}.
+     */
+    private static <T> T getPrivateMethod(@Nonnull final Object clazz, final String fieldName) {
+        Method method = null;
+        try {
+            // Use reflection to access the private method.
+            method = clazz.getClass().getDeclaredMethod(fieldName);
+        } catch (final NoSuchMethodException ex) {
+            LOGGER.warning(ex.getMessage());
+        }
+        assert method != null;
+        method.setAccessible(true); // Make the method public.
+
+        T privateMethodReturnValue = null;
+        try {
+            privateMethodReturnValue = (T) method.invoke(clazz);
+        } catch (final IllegalAccessException | InvocationTargetException ex) {
+            LOGGER.warning(ex.getMessage());
+        }
+        assert privateMethodReturnValue != null;
+
+        return privateMethodReturnValue;
     }
 
     /**

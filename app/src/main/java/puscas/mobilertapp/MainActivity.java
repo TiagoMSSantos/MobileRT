@@ -169,7 +169,7 @@ public final class MainActivity extends Activity {
      *
      * @return The number of CPU cores.
      */
-    public int getNumOfCores() {
+    private int getNumOfCores() {
         final int cores = (Build.VERSION.SDK_INT < OLD_API_GET_CORES)
             ? getNumCoresOldPhones()
             : Runtime.getRuntime().availableProcessors();
@@ -345,7 +345,7 @@ public final class MainActivity extends Activity {
      * @return The path to the SD card.
      */
     @Nonnull
-    public String getSDCardPath() {
+    private String getSDCardPath() {
         LOGGER.info("Getting SD card path");
         final File[] dirs = ContextCompat.getExternalFilesDirs(getApplicationContext(), null);
         String sdCardPath = Optional.ofNullable(dirs.length > 1? dirs[1] : dirs[0])
