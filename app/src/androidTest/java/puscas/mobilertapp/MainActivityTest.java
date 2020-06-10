@@ -487,6 +487,8 @@ public final class MainActivityTest {
         changePickerValue("pickerAccelerator", R.id.pickerAccelerator, 3);
         changePickerValue("pickerShader", R.id.pickerShader, 2);
 
+        checksIfSystemShouldContinue(numCores);
+
         LOGGER.info("GOING TO CLICK THE BUTTON.");
         final ViewInteraction viewInteraction = Espresso.onView(ViewMatchers.withId(R.id.renderButton))
             .check((view, exception) -> {
@@ -521,15 +523,21 @@ public final class MainActivityTest {
 
         final long advanceSecs = 3L;
         final AtomicBoolean done = new AtomicBoolean(false);
-        for (long currentTimeSecs = 0L; currentTimeSecs < 10L && !done.get(); currentTimeSecs += advanceSecs) {
+        for (long currentTimeSecs = 0L; currentTimeSecs < 20L && !done.get(); currentTimeSecs += advanceSecs) {
             LOGGER.info("WAITING FOR RENDERING TO FINISH.");
             Uninterruptibles.sleepUninterruptibly(advanceSecs, TimeUnit.SECONDS);
             LOGGER.info("WAITING FOR RENDERING TO FINISH 2.");
 
             viewInteraction.check((view, exception) -> {
+                final DrawView drawView = getPrivateField(activity, "drawView");
+                final MainRenderer renderer = drawView.getRenderer();
+
                 final Button renderButton = view.findViewById(R.id.renderButton);
                 LOGGER.info("CHECKING IF RENDERING DONE.");
-                if (renderButton.getText().toString().equals(Constants.RENDER)) {
+                LOGGER.info("Render button: " + renderButton.getText().toString());
+                LOGGER.info("State: " + renderer.getState().name());
+                if (renderButton.getText().toString().equals(Constants.RENDER)
+                    && renderer.getState() == State.IDLE) {
                     done.set(true);
                     LOGGER.info("RENDERING DONE.");
                 }
