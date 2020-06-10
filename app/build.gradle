@@ -113,6 +113,7 @@ android {
             returnDefaultValues = true
         }
         setAnimationsDisabled true
+        setExecution 'ANDROIDX_TEST_ORCHESTRATOR'
     }
     dexOptions {
         setJavaMaxHeapSize '1mb'
@@ -175,6 +176,11 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-intents:3.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-web:3.2.0'
     androidTestImplementation 'androidx.test.espresso.idling:idling-concurrent:3.2.0'
+
+//    androidTestImplementation 'androidx.test:rules:1.2.0'
+//    androidTestImplementation 'androidx.annotation:annotation:1.1.0'
+    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestUtil 'androidx.test:orchestrator:1.2.0'
 
 
 
