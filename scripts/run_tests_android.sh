@@ -160,7 +160,7 @@ pid_logcat="$!";
 echo "pid of logcat: '${pid_logcat}'";
 
 echo "Run instrumentation tests";
-callCommand ./gradlew connectedAndroidTest -DtestType="${type}" \
+callCommand ./gradlew connected${type}AndroidTest -DtestType="${type}" \
   -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
   | tee ${reports_path}/log_tests_${type}.log 2>&1;
 resInstrumentationTests=${PIPESTATUS[0]};

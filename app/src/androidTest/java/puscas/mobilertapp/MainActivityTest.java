@@ -12,6 +12,7 @@ import androidx.test.espresso.Espresso;
 import androidx.test.espresso.UiController;
 import androidx.test.espresso.ViewAction;
 import androidx.test.espresso.ViewInteraction;
+import androidx.test.espresso.action.ViewActions;
 import androidx.test.espresso.core.internal.deps.guava.collect.ImmutableList;
 import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.filters.FlakyTest;
@@ -487,7 +488,6 @@ public final class MainActivityTest {
         changePickerValue("pickerAccelerator", R.id.pickerAccelerator, 3);
         changePickerValue("pickerShader", R.id.pickerShader, 2);
 
-        checksIfSystemShouldContinue(numCores);
         LOGGER.info("GOING TO CLICK THE BUTTON.");
         final ViewInteraction viewInteraction = Espresso.onView(ViewMatchers.withId(R.id.renderButton))
             .check((view, exception) -> {
@@ -503,25 +503,29 @@ public final class MainActivityTest {
             })
             .perform(new MainActivityTest.ViewActionButton(Constants.STOP))
             .check((view, exception) -> {
-                Uninterruptibles.sleepUninterruptibly(1, TimeUnit.SECONDS);
                 LOGGER.info("GOING TO CLICK THE BUTTON 4.");
-                final Button renderButton = view.findViewById(R.id.renderButton);
+                Uninterruptibles.sleepUninterruptibly(2L, TimeUnit.SECONDS);
                 LOGGER.info("GOING TO CLICK THE BUTTON 5.");
+                final Button renderButton = view.findViewById(R.id.renderButton);
+                LOGGER.info("GOING TO CLICK THE BUTTON 6.");
                 Assertions.assertEquals(
                     Constants.STOP,
                     renderButton.getText().toString(),
                     "Button message"
                 );
-                LOGGER.info("GOING TO CLICK THE BUTTON 6.");
+                LOGGER.info("GOING TO CLICK THE BUTTON 7.");
             })
             .perform(new MainActivityTest.ViewActionButton(Constants.RENDER));
+        LOGGER.info("RENDERING STARTED AND STOPPED 1.");
+        Espresso.onIdle();
+        LOGGER.info("RENDERING STARTED AND STOPPED 2.");
 
-        LOGGER.info("RENDERING STARTED AND STOPPED.");
         final long advanceSecs = 3L;
         final AtomicBoolean done = new AtomicBoolean(false);
         for (long currentTimeSecs = 0L; currentTimeSecs < 10L && !done.get(); currentTimeSecs += advanceSecs) {
             LOGGER.info("WAITING FOR RENDERING TO FINISH.");
             Uninterruptibles.sleepUninterruptibly(advanceSecs, TimeUnit.SECONDS);
+            LOGGER.info("WAITING FOR RENDERING TO FINISH 2.");
 
             viewInteraction.check((view, exception) -> {
                 final Button renderButton = view.findViewById(R.id.renderButton);
@@ -535,6 +539,7 @@ public final class MainActivityTest {
 
         viewInteraction.check((view, exception) -> {
             final Button renderButton = view.findViewById(R.id.renderButton);
+            LOGGER.info("CHECKING RENDERING BUTTON.");
             Assertions.assertEquals(
                 Constants.RENDER,
                 renderButton.getText().toString(),
@@ -598,6 +603,7 @@ public final class MainActivityTest {
                 "Button message"
             );
         });
+        Espresso.onIdle();
 
         final long advanceSecs = 3L;
         final AtomicBoolean done = new AtomicBoolean(false);
@@ -678,11 +684,11 @@ public final class MainActivityTest {
      * @implNote This method uses reflection to be able to invoke the private
      * method from the {@link Object}.
      */
-    private static <T> T getPrivateMethod(@Nonnull final Object clazz, final String fieldName) {
+    private static <T> T getPrivateMethod(@Nonnull final Object clazz, final String methodName) {
         Method method = null;
         try {
             // Use reflection to access the private method.
-            method = clazz.getClass().getDeclaredMethod(fieldName);
+            method = clazz.getClass().getDeclaredMethod(methodName);
         } catch (final NoSuchMethodException ex) {
             LOGGER.warning(ex.getMessage());
         }
@@ -716,6 +722,7 @@ public final class MainActivityTest {
         final boolean bitmapSameColor = J8Arrays.stream(pixels)
             .allMatch(pixel -> pixel == firstPixel);
 
+        LOGGER.info("CHECKING BITMAP VALUES.");
         Assertions.assertFalse(bitmapSameColor, "The rendered image should have different values.");
     }
 
@@ -800,12 +807,13 @@ public final class MainActivityTest {
             uiController.loopMainThreadUntilIdle();
             LOGGER_BUTTON.info("ViewActionButton#perform clicking button");
             boolean result = button.performClick();
+            LOGGER_BUTTON.info("ViewActionButton#perform button clicked 1");
             while (!result) {
                 uiController.loopMainThreadForAtLeast(3000L);
                 result = button.performClick();
                 LOGGER_BUTTON.info("ViewActionButton# waiting to click button!!!");
             }
-            LOGGER_BUTTON.info("ViewActionButton#perform button clicked");
+            LOGGER_BUTTON.info("ViewActionButton#perform button clicked 2");
 
             textEquals = button.getText().toString().equals(this.expectedText);
             while (!textEquals) {
@@ -814,7 +822,7 @@ public final class MainActivityTest {
                 LOGGER_BUTTON.info("ViewActionButton# waiting button to have '" + this.expectedText + "' written!!!");
             }
 
-//            uiController.loopMainThreadForAtLeast(3000L);
+            uiController.loopMainThreadForAtLeast(100L);
 
             LOGGER_BUTTON.info("ViewActionButton#perform finished");
         }
