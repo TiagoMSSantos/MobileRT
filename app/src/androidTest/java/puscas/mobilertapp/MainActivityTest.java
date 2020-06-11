@@ -116,6 +116,11 @@ public final class MainActivityTest {
     public GrantPermissionRule grantPermissionRule = GrantPermissionRule.grant(Manifest.permission.READ_EXTERNAL_STORAGE);
 
     /**
+     * The MainActivity to test.
+     */
+    private MainActivity activity = null;
+
+    /**
      * A setup method which is called first.
      */
     @BeforeClass
@@ -151,6 +156,29 @@ public final class MainActivityTest {
     public static void tearDownAll() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
+    }
+
+    /**
+     * Setup method called before each test.
+     */
+    @Before
+    public void setUp() {
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
+
+        this.activity = this.mainActivityActivityTestRule.getActivity();
+    }
+
+    /**
+     * Tear down method called after each test.
+     */
+    @After
+    public void tearDown() {
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
+
+        this.activity.finish();
+        this.mainActivityActivityTestRule.finishActivity();
     }
 
     /**
@@ -327,32 +355,12 @@ public final class MainActivityTest {
     }
 
     /**
-     * Setup method called before each test.
-     */
-    @Before
-    public void setUp() {
-        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
-    }
-
-    /**
-     * Tear down method called after each test.
-     */
-    @After
-    public void tearDown() {
-        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
-    }
-
-    /**
      * Tests that a file in the Android device exists and is readable.
      */
     @Test(timeout = 5L * 1000L)
     public void testFilesExistAndReadable() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
-
-        final MainActivity activity = this.mainActivityActivityTestRule.getActivity();
 
         final List<String> paths = ImmutableList.<String>builder().add(
             Constants.OBJ_FILE_TEAPOT
@@ -364,8 +372,6 @@ public final class MainActivityTest {
                 Assertions.assertTrue(file.exists(), Constants.FILE_SHOULD_EXIST + ": " + filePath);
                 Assertions.assertTrue(file.canRead(), "File should be readable: " + filePath);
             });
-
-        this.mainActivityActivityTestRule.finishActivity();
     }
 
     /**
@@ -376,8 +382,7 @@ public final class MainActivityTest {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
-        final MainActivity activity = this.mainActivityActivityTestRule.getActivity();
-        final String sdCardPath = getPrivateMethod(activity, "getSDCardPath");
+        final String sdCardPath = invokePrivateMethod(this.activity, "getSDCardPath");
 
         final List<String> paths = ImmutableList.<String>builder().add(
             Constants.EMPTY_FILE,
@@ -389,8 +394,6 @@ public final class MainActivityTest {
                 Assertions.assertFalse(file.exists(), "File should not exist!");
                 Assertions.assertFalse(file.canRead(), "File should not be readable!");
             });
-
-        this.mainActivityActivityTestRule.finishActivity();
     }
 
     /**
@@ -402,20 +405,16 @@ public final class MainActivityTest {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
-        final MainActivity activity = this.mainActivityActivityTestRule.getActivity();
-
         Espresso.onView(ViewMatchers.withId(R.id.renderButton))
             .check((view, exception) -> {
                 final Button button = view.findViewById(R.id.renderButton);
                 Assertions.assertEquals(Constants.RENDER, button.getText().toString(), "Button message");
             });
 
-        final int numCores = getPrivateMethod(activity, "getNumOfCores");
+        final int numCores = invokePrivateMethod(this.activity, "getNumOfCores");
         testRenderButton(1, numCores);
         testPickerNumbers(numCores);
         testPreviewCheckBox();
-
-        this.mainActivityActivityTestRule.finishActivity();
     }
 
     /**
@@ -427,8 +426,7 @@ public final class MainActivityTest {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
-        final MainActivity activity = this.mainActivityActivityTestRule.getActivity();
-        final int numCores = getPrivateMethod(activity, "getNumOfCores");
+        final int numCores = invokePrivateMethod(this.activity, "getNumOfCores");
 
         Espresso.onView(ViewMatchers.withId(R.id.preview))
             .check((view, exception) ->
@@ -441,8 +439,6 @@ public final class MainActivityTest {
 
         checksIfSystemShouldContinue(numCores);
         testRenderButton(40, numCores);
-
-        this.mainActivityActivityTestRule.finishActivity();
     }
 
     /**
@@ -454,8 +450,7 @@ public final class MainActivityTest {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
-        final MainActivity activity = this.mainActivityActivityTestRule.getActivity();
-        final int numCores = getPrivateMethod(activity, "getNumOfCores");
+        final int numCores = invokePrivateMethod(this.activity, "getNumOfCores");
 
         Espresso.onView(ViewMatchers.withId(R.id.preview))
             .check((view, exception) ->
@@ -464,8 +459,6 @@ public final class MainActivityTest {
 
         checksIfSystemShouldContinue(numCores);
         testRenderButton(40, numCores);
-
-        this.mainActivityActivityTestRule.finishActivity();
     }
 
     /**
@@ -476,8 +469,7 @@ public final class MainActivityTest {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
-        final MainActivity activity = this.mainActivityActivityTestRule.getActivity();
-        final int numCores = getPrivateMethod(activity, "getNumOfCores");
+        final int numCores = invokePrivateMethod(this.activity, "getNumOfCores");
 
         changePickerValue("pickerScene", R.id.pickerScene, 2);
         changePickerValue("pickerThreads", R.id.pickerThreads, numCores);
@@ -487,7 +479,7 @@ public final class MainActivityTest {
         changePickerValue("pickerAccelerator", R.id.pickerAccelerator, 3);
         changePickerValue("pickerShader", R.id.pickerShader, 2);
 
-        checksIfSystemShouldContinue(numCores);
+//        checksIfSystemShouldContinue(numCores);
 
         LOGGER.info("GOING TO CLICK THE BUTTON.");
         final ViewInteraction viewInteraction = Espresso.onView(ViewMatchers.withId(R.id.renderButton))
@@ -523,13 +515,14 @@ public final class MainActivityTest {
 
         final long advanceSecs = 3L;
         final AtomicBoolean done = new AtomicBoolean(false);
+        LOGGER.info("RENDERING STARTED AND STOPPED 3.");
         for (long currentTimeSecs = 0L; currentTimeSecs < 20L && !done.get(); currentTimeSecs += advanceSecs) {
             LOGGER.info("WAITING FOR RENDERING TO FINISH.");
             Uninterruptibles.sleepUninterruptibly(advanceSecs, TimeUnit.SECONDS);
             LOGGER.info("WAITING FOR RENDERING TO FINISH 2.");
 
             viewInteraction.check((view, exception) -> {
-                final DrawView drawView = getPrivateField(activity, "drawView");
+                final DrawView drawView = getPrivateField(this.activity, "drawView");
                 final MainRenderer renderer = drawView.getRenderer();
 
                 final Button renderButton = view.findViewById(R.id.renderButton);
@@ -570,7 +563,6 @@ public final class MainActivityTest {
             });
 
         LOGGER.info(methodName + " finished");
-        this.mainActivityActivityTestRule.finishActivity();
     }
 
     /**
@@ -581,8 +573,7 @@ public final class MainActivityTest {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
-        final MainActivity activity = this.mainActivityActivityTestRule.getActivity();
-        final int numCores = getPrivateMethod(activity, "getNumOfCores");
+        final int numCores = invokePrivateMethod(this.activity, "getNumOfCores");
 
         changePickerValue("pickerScene", R.id.pickerScene, 2);
         changePickerValue("pickerThreads", R.id.pickerThreads, numCores);
@@ -647,8 +638,6 @@ public final class MainActivityTest {
                     "State is not the expected"
                 );
             });
-
-        this.mainActivityActivityTestRule.finishActivity();
     }
 
     /**
@@ -691,7 +680,7 @@ public final class MainActivityTest {
      * @implNote This method uses reflection to be able to invoke the private
      * method from the {@link Object}.
      */
-    private static <T> T getPrivateMethod(@Nonnull final Object clazz, final String methodName) {
+    private static <T> T invokePrivateMethod(@Nonnull final Object clazz, final String methodName) {
         Method method = null;
         try {
             // Use reflection to access the private method.
@@ -776,6 +765,9 @@ public final class MainActivityTest {
          */
         @Contract(pure = true)
         ViewActionButton(final String expectedText) {
+            final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+            LOGGER_BUTTON.info(methodName);
+
             this.expectedText = expectedText;
         }
 
