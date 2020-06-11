@@ -86,7 +86,7 @@ jobs:
         arch: x86
         disable-animations: true
         script: |
-          bash ./scripts/run_tests_android.sh ${{ matrix.variant }} ${{ matrix.ndk_version }} ${{ matrix.cmake_version }} false;
+          bash ./scripts/run_tests_android.sh ${{ matrix.variant }} all ${{ matrix.ndk_version }} ${{ matrix.cmake_version }} false;
 
     - name: Run linter
       if: success()

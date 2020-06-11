@@ -4,9 +4,10 @@
 # Get arguments
 ###############################################################################
 type="${1:-release}";
-ndk_version="${2:-21.2.6472646}";
-cmake_version="${3:-3.10.2}";
-kill_previous="${4:-true}";
+run_test="${2:-all}";
+ndk_version="${3:-21.2.6472646}";
+cmake_version="${4:-3.10.2}";
+kill_previous="${5:-true}";
 ###############################################################################
 ###############################################################################
 
@@ -160,11 +161,20 @@ pid_logcat="$!";
 echo "pid of logcat: '${pid_logcat}'";
 
 echo "Run instrumentation tests";
-callCommand ./gradlew connected${type}AndroidTest -DtestType="${type}" \
-  -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
-  | tee ${reports_path}/log_tests_${type}.log 2>&1;
-resInstrumentationTests=${PIPESTATUS[0]};
-pid_instrumentation_tests="$!";
+if [ ${run_test} == "all" ]; then
+  callCommand ./gradlew connected${type}AndroidTest -DtestType="${type}" \
+    -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
+    | tee ${reports_path}/log_tests_${type}.log 2>&1;
+  resInstrumentationTests=${PIPESTATUS[0]};
+  pid_instrumentation_tests="$!";
+else
+  callCommand ./gradlew connected${type}AndroidTest -DtestType="${type}" \
+    -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
+    -Pandroid.testInstrumentationRunnerArguments.class=${run_test} \
+    | tee ${reports_path}/log_tests_${type}.log 2>&1;
+  resInstrumentationTests=${PIPESTATUS[0]};
+  pid_instrumentation_tests="$!";
+fi
 echo "pid of instrumentation tests: '${pid_instrumentation_tests}'";
 
 echo "Run unit tests";
