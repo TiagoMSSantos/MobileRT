@@ -187,7 +187,7 @@ public final class MainActivityTest {
      *
      * @param numCores The number of CPU cores in the system.
      */
-    private static void testPickerNumbers(final int numCores) {
+    private static void assertPickerNumbers(final int numCores) {
         IntStreams.rangeClosed(0, 2).forEach(value ->
             changePickerValue("pickerAccelerator", R.id.pickerAccelerator, value)
         );
@@ -217,7 +217,7 @@ public final class MainActivityTest {
      * @param repetitions The number of repetitions.
      * @param numCores    The number of CPU cores in the system.
      */
-    private void testRenderButton(final int repetitions, final int numCores) {
+    private void assertClickRenderButton(final int repetitions, final int numCores) {
         changePickerValue("pickerSamplesPixel", R.id.pickerSamplesPixel, 99);
         changePickerValue("pickerScene", R.id.pickerScene, 5);
         changePickerValue("pickerThreads", R.id.pickerThreads, 1);
@@ -304,7 +304,7 @@ public final class MainActivityTest {
     /**
      * Helper method which tests clicking the preview {@link CheckBox}.
      */
-    private static void testPreviewCheckBox() {
+    private static void assertClickPreviewCheckBox() {
         final ViewInteraction viewInteraction = Espresso.onView(ViewMatchers.withId(R.id.preview));
         viewInteraction.check((view, exception) ->
             assertCheckBox(view, R.id.preview, Constants.PREVIEW, Constants.CHECK_BOX_MESSAGE, true)
@@ -413,9 +413,9 @@ public final class MainActivityTest {
             });
 
         final int numCores = invokePrivateMethod(this.activity, "getNumOfCores");
-        testRenderButton(1, numCores);
-        testPickerNumbers(numCores);
-        testPreviewCheckBox();
+        assertClickRenderButton(1, numCores);
+        assertPickerNumbers(numCores);
+        assertClickPreviewCheckBox();
     }
 
     /**
@@ -438,7 +438,7 @@ public final class MainActivityTest {
                 assertCheckBox(view, R.id.preview, Constants.PREVIEW, Constants.CHECK_BOX_MESSAGE, false)
             );
 
-        testRenderButton(40, numCores);
+        assertClickRenderButton(40, numCores);
     }
 
     /**
@@ -457,7 +457,7 @@ public final class MainActivityTest {
                 assertCheckBox(view, R.id.preview, Constants.PREVIEW, Constants.CHECK_BOX_MESSAGE, true)
             );
 
-        testRenderButton(40, numCores);
+        assertClickRenderButton(40, numCores);
     }
 
     /**
