@@ -279,11 +279,9 @@ public final class DrawView extends GLSurfaceView {
         super.onPause();
         LOGGER.info("onPause");
 
+        stopDrawing();
         final Activity activity = getActivity();
         this.changingConfigs = activity.isChangingConfigurations();
-        Optional.ofNullable(this.lastTask)
-            .ifPresent(task -> task.cancel(false));
-        this.renderer.waitLastTask();
         LOGGER.info("onPause finished");
     }
 

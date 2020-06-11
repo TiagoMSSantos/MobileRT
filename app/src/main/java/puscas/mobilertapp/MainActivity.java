@@ -552,6 +552,7 @@ public final class MainActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
+        LOGGER.info("onPause");
 
         this.drawView.setPreserveEGLContextOnPause(true);
         this.drawView.onPause();
