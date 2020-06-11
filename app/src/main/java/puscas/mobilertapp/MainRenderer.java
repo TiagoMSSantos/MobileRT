@@ -612,7 +612,10 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
             } catch (final InterruptedException ex) {
                 LOGGER.severe("waitLastTask exception 3: " + ex.getClass().getName());
                 LOGGER.severe("waitLastTask exception 4: " + Strings.nullToEmpty(ex.getMessage()));
-                Thread.currentThread().interrupt();
+                // Can't call Thread interrupt because when instrumented tests
+                // fail by timeout, this interrupt makes the Activity not finish
+                // properly.
+//                Thread.currentThread().interrupt();
             }
         }
 

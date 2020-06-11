@@ -547,6 +547,7 @@ public final class MainActivity extends Activity {
         super.onResume();
 
         this.drawView.onResume();
+        this.drawView.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -556,6 +557,7 @@ public final class MainActivity extends Activity {
 
         this.drawView.setPreserveEGLContextOnPause(true);
         this.drawView.onPause();
+        this.drawView.setVisibility(View.INVISIBLE);
         this.sceneFilePath = null;
     }
 
@@ -625,6 +627,7 @@ public final class MainActivity extends Activity {
         LOGGER.info(ConstantsMethods.ON_DETACHED_FROM_WINDOW);
 
         this.drawView.onDetachedFromWindow();
+        LOGGER.info(ConstantsMethods.ON_DETACHED_FROM_WINDOW + " finished");
     }
 
     @Override
@@ -633,6 +636,8 @@ public final class MainActivity extends Activity {
         LOGGER.info(ConstantsMethods.ON_DESTROY);
 
         this.drawView.onDetachedFromWindow();
+        this.drawView.setVisibility(View.INVISIBLE);
+        LOGGER.info(ConstantsMethods.ON_DESTROY + " finished");
     }
 
     @Override

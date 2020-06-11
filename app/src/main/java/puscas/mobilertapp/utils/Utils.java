@@ -36,8 +36,8 @@ public final class Utils {
             try {
                 running = !executorService.awaitTermination(1L, TimeUnit.DAYS);
             } catch (final InterruptedException ex) {
-                LOGGER.severe("waitExecutorToFinish exception: " + ex.getClass().getName());
-                LOGGER.severe("waitExecutorToFinish exception: " + Strings.nullToEmpty(ex.getMessage()));
+                LOGGER.severe("waitExecutorToFinish exception 1: " + ex.getClass().getName());
+                LOGGER.severe("waitExecutorToFinish exception 2: " + Strings.nullToEmpty(ex.getMessage()));
                 Thread.currentThread().interrupt();
             }
         } while (running);

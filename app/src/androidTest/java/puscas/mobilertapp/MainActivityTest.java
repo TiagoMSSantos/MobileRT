@@ -179,6 +179,7 @@ public final class MainActivityTest {
 
         this.activity.finish();
         this.mainActivityActivityTestRule.finishActivity();
+        this.activity = null;
     }
 
     /**
@@ -437,7 +438,6 @@ public final class MainActivityTest {
                 assertCheckBox(view, R.id.preview, Constants.PREVIEW, Constants.CHECK_BOX_MESSAGE, false)
             );
 
-        checksIfSystemShouldContinue(numCores);
         testRenderButton(40, numCores);
     }
 
@@ -457,7 +457,6 @@ public final class MainActivityTest {
                 assertCheckBox(view, R.id.preview, Constants.PREVIEW, Constants.CHECK_BOX_MESSAGE, true)
             );
 
-        checksIfSystemShouldContinue(numCores);
         testRenderButton(40, numCores);
     }
 
@@ -478,8 +477,6 @@ public final class MainActivityTest {
         changePickerValue("pickerSamplesLight", R.id.pickerSamplesLight, 1);
         changePickerValue("pickerAccelerator", R.id.pickerAccelerator, 3);
         changePickerValue("pickerShader", R.id.pickerShader, 2);
-
-//        checksIfSystemShouldContinue(numCores);
 
         LOGGER.info("GOING TO CLICK THE BUTTON.");
         final ViewInteraction viewInteraction = Espresso.onView(ViewMatchers.withId(R.id.renderButton))
@@ -568,7 +565,7 @@ public final class MainActivityTest {
     /**
      * Tests rendering a scene.
      */
-    @Test(timeout = 10L * 60L * 1000L)
+    @Test(timeout = 5L * 60L * 1000L)
     public void testRenderScene() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
@@ -741,7 +738,7 @@ public final class MainActivityTest {
                 && Build.TAGS.equals("test-keys") // In third party systems (CI)
                 && numCores == 1 // Android system with only 1 CPU core
         );
-        LOGGER.info("checksIfSystemShouldContinue finish");
+        LOGGER.info(methodName + " finish");
     }
 
     /**
@@ -821,7 +818,7 @@ public final class MainActivityTest {
                 LOGGER_BUTTON.info("ViewActionButton# waiting button to have '" + this.expectedText + "' written!!!");
             }
 
-            uiController.loopMainThreadForAtLeast(100L);
+//            uiController.loopMainThreadForAtLeast(100L);
 
             LOGGER_BUTTON.info("ViewActionButton#perform finished");
         }

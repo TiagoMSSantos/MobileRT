@@ -211,11 +211,11 @@ public final class DrawView extends GLSurfaceView {
                 try {
                     task.get(1L, TimeUnit.DAYS);
                 } catch (final ExecutionException | TimeoutException | RuntimeException ex) {
-                    LOGGER.severe("waitLastTask exception: " + ex.getClass().getName());
-                    LOGGER.severe("waitLastTask exception: " + Strings.nullToEmpty(ex.getMessage()));
+                    LOGGER.severe("waitLastTask exception 1: " + ex.getClass().getName());
+                    LOGGER.severe("waitLastTask exception 2: " + Strings.nullToEmpty(ex.getMessage()));
                 } catch (final InterruptedException ex) {
-                    LOGGER.severe("waitLastTask exception: " + ex.getClass().getName());
-                    LOGGER.severe("waitLastTask exception: " + Strings.nullToEmpty(ex.getMessage()));
+                    LOGGER.severe("waitLastTask exception 3: " + ex.getClass().getName());
+                    LOGGER.severe("waitLastTask exception 4: " + Strings.nullToEmpty(ex.getMessage()));
                     Thread.currentThread().interrupt();
                 }
             });
@@ -276,12 +276,12 @@ public final class DrawView extends GLSurfaceView {
 
     @Override
     public void onPause() {
-        super.onPause();
         LOGGER.info("onPause");
+        super.onPause();
 
-        stopDrawing();
         final Activity activity = getActivity();
         this.changingConfigs = activity.isChangingConfigurations();
+        stopDrawing();
         LOGGER.info("onPause finished");
     }
 
@@ -298,8 +298,10 @@ public final class DrawView extends GLSurfaceView {
 
     @Override
     protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
         LOGGER.info(ConstantsMethods.ON_DETACHED_FROM_WINDOW);
+        super.onDetachedFromWindow();
+
+        stopDrawing();
     }
 
     @Override
