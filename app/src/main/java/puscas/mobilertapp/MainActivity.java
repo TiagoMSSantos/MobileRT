@@ -555,10 +555,13 @@ public final class MainActivity extends Activity {
         super.onPause();
         LOGGER.info("onPause");
 
+        Thread.interrupted();
         this.drawView.setPreserveEGLContextOnPause(true);
         this.drawView.onPause();
         this.drawView.setVisibility(View.INVISIBLE);
         this.sceneFilePath = null;
+
+        LOGGER.info("onPause finished");
     }
 
     @Override
@@ -637,6 +640,7 @@ public final class MainActivity extends Activity {
 
         this.drawView.onDetachedFromWindow();
         this.drawView.setVisibility(View.INVISIBLE);
+
         LOGGER.info(ConstantsMethods.ON_DESTROY + " finished");
     }
 

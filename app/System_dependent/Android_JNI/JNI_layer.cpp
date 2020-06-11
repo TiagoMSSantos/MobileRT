@@ -370,8 +370,9 @@ void Java_puscas_mobilertapp_DrawView_rtStopRender(
                 if (renderer_ != nullptr) {
                     LOG("RENDERER STOP");
                     renderer_->stopRender();
+                    break;
                 }
-            rendered_.wait_for(lock, ::std::chrono::seconds(3), [&]{return finishedRendering_ == true;});
+                rendered_.wait_for(lock, ::std::chrono::seconds(3), [&]{return finishedRendering_ == true;});
             }
         }
         LOG("Renderer finished");

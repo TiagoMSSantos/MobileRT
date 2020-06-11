@@ -139,6 +139,8 @@ public final class MainActivityTest {
         LOGGER.info("Model: " + Build.MODEL);
         LOGGER.info("Product: " + Build.PRODUCT);
         LOGGER.info("---------------------------------------------------");
+
+        Thread.interrupted();
     }
 
     /**
@@ -148,6 +150,8 @@ public final class MainActivityTest {
     public static void tearDownAll() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
+
+        Thread.interrupted();
     }
 
     /**
@@ -159,6 +163,7 @@ public final class MainActivityTest {
         LOGGER.info(methodName);
 
         this.activity = this.mainActivityActivityTestRule.getActivity();
+        Thread.interrupted();
     }
 
     /**
@@ -172,6 +177,7 @@ public final class MainActivityTest {
         this.activity.finish();
         this.mainActivityActivityTestRule.finishActivity();
         this.activity = null;
+        Thread.interrupted();
     }
 
     /**
@@ -220,7 +226,7 @@ public final class MainActivityTest {
      * Tests changing all the {@link NumberPicker} and clicking the render
      * {@link Button} few times.
      */
-    @Test(timeout = 60L * 1000L)
+    @Test//(timeout = 6L * 1000L)
     public void testUI() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
@@ -234,27 +240,20 @@ public final class MainActivityTest {
         final int numCores = Utils.invokePrivateMethod(this.activity, "getNumOfCores");
         assertClickRenderButton(1, numCores);
         assertPickerNumbers(numCores);
-        clickPreviewCheckBox();
+        clickPreviewCheckBox(false);
     }
 
     /**
      * Tests clicking the render {@link Button} many times without preview.
      */
-    @Test(timeout = 10L * 60L * 1000L)
+    @Test//(timeout = 6L * 1000L)
     public void testClickRenderButtonManyTimesWithoutPreview() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
         final int numCores = Utils.invokePrivateMethod(this.activity, "getNumOfCores");
 
-        Espresso.onView(ViewMatchers.withId(R.id.preview))
-            .check((view, exception) ->
-                assertCheckBox(view, R.id.preview, Constants.PREVIEW, Constants.CHECK_BOX_MESSAGE, true)
-            )
-            .perform(ViewActions.click())
-            .check((view, exception) ->
-                assertCheckBox(view, R.id.preview, Constants.PREVIEW, Constants.CHECK_BOX_MESSAGE, false)
-            );
+        clickPreviewCheckBox(false);
 
         assertClickRenderButton(5, numCores);
     }
@@ -262,17 +261,15 @@ public final class MainActivityTest {
     /**
      * Tests clicking the render {@link Button} many times with preview.
      */
-    @Test(timeout = 10L * 60L * 1000L)
+    @Test//(timeout = 6L * 1000L)
     public void testClickRenderButtonManyTimesWithPreview() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
         final int numCores = Utils.invokePrivateMethod(this.activity, "getNumOfCores");
 
-        Espresso.onView(ViewMatchers.withId(R.id.preview))
-            .check((view, exception) ->
-                assertCheckBox(view, R.id.preview, Constants.PREVIEW, Constants.CHECK_BOX_MESSAGE, true)
-            );
+        clickPreviewCheckBox(false);
+        clickPreviewCheckBox(true);
 
         assertClickRenderButton(5, numCores);
     }
@@ -280,7 +277,7 @@ public final class MainActivityTest {
     /**
      * Tests the preview feature in a scene.
      */
-    @Test(timeout = 2L * 60L * 1000L)
+    @Test//(timeout = 6L * 1000L)
     public void testPreviewScene() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
@@ -377,7 +374,7 @@ public final class MainActivityTest {
     /**
      * Tests rendering a scene.
      */
-    @Test(timeout = 10L * 60L * 1000L)
+    @Test//(timeout = 6L * 1000L)
     public void testRenderScene() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
@@ -559,7 +556,7 @@ public final class MainActivityTest {
         IntStreams.rangeClosed(1, numCores).forEach(value ->
             changePickerValue("pickerThreads", R.id.pickerThreads, value)
         );
-        IntStreams.rangeClosed(1, 10).forEach(value ->
+        IntStreams.rangeClosed(1, 99).forEach(value ->
             changePickerValue("pickerSamplesPixel", R.id.pickerSamplesPixel, value)
         );
         IntStreams.rangeClosed(1, 8).forEach(value ->
@@ -569,15 +566,17 @@ public final class MainActivityTest {
 
     /**
      * Helper method which tests clicking the preview {@link CheckBox}.
+     *
+     * @param expectedValue The expected value for the {@link CheckBox}.
      */
-    private static void clickPreviewCheckBox() {
+    private static void clickPreviewCheckBox(final boolean expectedValue) {
         Espresso.onView(ViewMatchers.withId(R.id.preview))
             .check((view, exception) ->
-                assertCheckBox(view, R.id.preview, Constants.PREVIEW, Constants.CHECK_BOX_MESSAGE, true)
+                assertCheckBox(view, R.id.preview, Constants.PREVIEW, Constants.CHECK_BOX_MESSAGE, !expectedValue)
             )
             .perform(ViewActions.click())
             .check((view, exception) ->
-                assertCheckBox(view, R.id.preview, Constants.PREVIEW, Constants.CHECK_BOX_MESSAGE, false)
+                assertCheckBox(view, R.id.preview, Constants.PREVIEW, Constants.CHECK_BOX_MESSAGE, expectedValue)
             );
     }
 

@@ -38,6 +38,7 @@ final class ViewActionNumberPicker implements ViewAction {
     @Contract(pure = true)
     ViewActionNumberPicker(final int newValue) {
         this.newValue = newValue;
+        Thread.interrupted();
     }
 
     @Override
@@ -45,6 +46,7 @@ final class ViewActionNumberPicker implements ViewAction {
     public final Matcher<View> getConstraints() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
+        Thread.interrupted();
 
         return ViewMatchers.isAssignableFrom(NumberPicker.class);
     }
@@ -54,8 +56,9 @@ final class ViewActionNumberPicker implements ViewAction {
     public final String getDescription() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
+        Thread.interrupted();
 
-        return "Set the value of a NumberPicker";
+        return "Set the value of a NumberPicker: " + this.newValue;
     }
 
     @Override
@@ -63,8 +66,20 @@ final class ViewActionNumberPicker implements ViewAction {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
-        final NumberPicker numberPicker = (NumberPicker) view;
-        numberPicker.setValue(this.newValue);
+        try {
+            final NumberPicker numberPicker = (NumberPicker) view;
+            LOGGER.info(methodName + " 1");
+            uiController.loopMainThreadUntilIdle();
+            LOGGER.info(methodName + " 2");
+            numberPicker.setValue(this.newValue);
+            LOGGER.info(methodName + " 3");
+            numberPicker.computeScroll();
+            LOGGER.info(methodName + " 4");
+            uiController.loopMainThreadUntilIdle();
+        } finally {
+            LOGGER.info("Reset interrupted.");
+            Thread.interrupted();
+        }
 
         LOGGER.info(methodName + " finished");
     }

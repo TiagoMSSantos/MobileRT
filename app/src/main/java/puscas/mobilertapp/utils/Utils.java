@@ -38,7 +38,10 @@ public final class Utils {
             } catch (final InterruptedException ex) {
                 LOGGER.severe("waitExecutorToFinish exception 1: " + ex.getClass().getName());
                 LOGGER.severe("waitExecutorToFinish exception 2: " + Strings.nullToEmpty(ex.getMessage()));
-                Thread.currentThread().interrupt();
+                // Can't call Thread interrupt because when instrumented tests
+                // fail by timeout, this interrupt makes the Activity not finish
+                // properly.
+//                Thread.currentThread().interrupt();
             }
         } while (running);
         LOGGER.info("waitExecutorToFinish finished");

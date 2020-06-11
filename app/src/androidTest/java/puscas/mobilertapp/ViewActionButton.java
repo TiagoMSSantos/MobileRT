@@ -37,6 +37,7 @@ final class ViewActionButton implements ViewAction {
     ViewActionButton(final String expectedText) {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
+        Thread.interrupted();
 
         this.expectedText = expectedText;
     }
@@ -46,6 +47,7 @@ final class ViewActionButton implements ViewAction {
     public final Matcher<View> getConstraints() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
+        Thread.interrupted();
 
         return ViewMatchers.isAssignableFrom(Button.class);
     }
@@ -55,6 +57,7 @@ final class ViewActionButton implements ViewAction {
     public final String getDescription() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
+        Thread.interrupted();
 
         return "Click button";
     }
@@ -63,32 +66,37 @@ final class ViewActionButton implements ViewAction {
     public final void perform(@Nonnull final UiController uiController, @Nonnull final View view) {
         LOGGER.info("ViewActionButton#perform (" + this.expectedText + ")");
 
-        final Button button = (Button) view;
-        LOGGER.info("ViewActionButton#perform waiting");
+        try {
+            final Button button = (Button) view;
+            LOGGER.info("ViewActionButton#perform waiting");
 
-        boolean textEquals = button.getText().toString().equals(this.expectedText);
-        while (textEquals) {
-            uiController.loopMainThreadForAtLeast(3000L);
+            boolean textEquals = button.getText().toString().equals(this.expectedText);
+            while (textEquals) {
+                uiController.loopMainThreadForAtLeast(3000L);
+                textEquals = button.getText().toString().equals(this.expectedText);
+                LOGGER.info("ViewActionButton# waiting button to NOT have '" + this.expectedText + "' written!!!");
+            }
+
+            uiController.loopMainThreadUntilIdle();
+            LOGGER.info("ViewActionButton#perform clicking button");
+            boolean result = button.performClick();
+            LOGGER.info("ViewActionButton#perform button clicked 1");
+            while (!result) {
+                uiController.loopMainThreadForAtLeast(3000L);
+                result = button.performClick();
+                LOGGER.info("ViewActionButton# waiting to click button!!!");
+            }
+            LOGGER.info("ViewActionButton#perform button clicked 2");
+
             textEquals = button.getText().toString().equals(this.expectedText);
-            LOGGER.info("ViewActionButton# waiting button to NOT have '" + this.expectedText + "' written!!!");
-        }
-
-        uiController.loopMainThreadUntilIdle();
-        LOGGER.info("ViewActionButton#perform clicking button");
-        boolean result = button.performClick();
-        LOGGER.info("ViewActionButton#perform button clicked 1");
-        while (!result) {
-            uiController.loopMainThreadForAtLeast(3000L);
-            result = button.performClick();
-            LOGGER.info("ViewActionButton# waiting to click button!!!");
-        }
-        LOGGER.info("ViewActionButton#perform button clicked 2");
-
-        textEquals = button.getText().toString().equals(this.expectedText);
-        while (!textEquals) {
-            uiController.loopMainThreadForAtLeast(3000L);
-            textEquals = button.getText().toString().equals(this.expectedText);
-            LOGGER.info("ViewActionButton# waiting button to have '" + this.expectedText + "' written!!!");
+            while (!textEquals) {
+                uiController.loopMainThreadForAtLeast(3000L);
+                textEquals = button.getText().toString().equals(this.expectedText);
+                LOGGER.info("ViewActionButton# waiting button to have '" + this.expectedText + "' written!!!");
+            }
+        } finally {
+            LOGGER.info("Reset interrupted.");
+            Thread.interrupted();
         }
 
         LOGGER.info("ViewActionButton#perform finished");
