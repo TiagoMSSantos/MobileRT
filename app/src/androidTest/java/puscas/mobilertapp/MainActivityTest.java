@@ -14,7 +14,6 @@ import androidx.test.espresso.ViewAction;
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.espresso.core.internal.deps.guava.collect.ImmutableList;
 import androidx.test.espresso.matcher.ViewMatchers;
-import androidx.test.filters.FlakyTest;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
 
@@ -421,9 +420,8 @@ public final class MainActivityTest {
     /**
      * Tests clicking the render {@link Button} many times without preview.
      */
-    @FlakyTest(detail = "Race condition in the system.")
-    @Test(timeout = 20L * 60L * 1000L)
-    public void testRenderManyTimesWithoutPreview() {
+    @Test(timeout = 10L * 60L * 1000L)
+    public void testClickRenderButtonManyTimesWithoutPreview() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
@@ -438,15 +436,14 @@ public final class MainActivityTest {
                 assertCheckBox(view, R.id.preview, Constants.PREVIEW, Constants.CHECK_BOX_MESSAGE, false)
             );
 
-        assertClickRenderButton(40, numCores);
+        assertClickRenderButton(10, numCores);
     }
 
     /**
      * Tests clicking the render {@link Button} many times with preview.
      */
-    @FlakyTest(detail = "Race condition in the system.")
-    @Test(timeout = 20L * 60L * 1000L)
-    public void testRenderManyTimesWithPreview() {
+    @Test(timeout = 10L * 60L * 1000L)
+    public void testClickRenderButtonManyTimesWithPreview() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
@@ -457,13 +454,13 @@ public final class MainActivityTest {
                 assertCheckBox(view, R.id.preview, Constants.PREVIEW, Constants.CHECK_BOX_MESSAGE, true)
             );
 
-        assertClickRenderButton(40, numCores);
+        assertClickRenderButton(10, numCores);
     }
 
     /**
      * Tests the preview feature in a scene.
      */
-    @Test(timeout = 60L * 1000L)
+    @Test(timeout = 2L * 60L * 1000L)
     public void testPreviewScene() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
@@ -494,7 +491,7 @@ public final class MainActivityTest {
             .perform(new MainActivityTest.ViewActionButton(Constants.STOP))
             .check((view, exception) -> {
                 LOGGER.info("GOING TO CLICK THE BUTTON 4.");
-                Uninterruptibles.sleepUninterruptibly(2L, TimeUnit.SECONDS);
+//                Uninterruptibles.sleepUninterruptibly(2L, TimeUnit.SECONDS);
                 LOGGER.info("GOING TO CLICK THE BUTTON 5.");
                 final Button renderButton = view.findViewById(R.id.renderButton);
                 LOGGER.info("GOING TO CLICK THE BUTTON 6.");
@@ -565,7 +562,7 @@ public final class MainActivityTest {
     /**
      * Tests rendering a scene.
      */
-    @Test(timeout = 5L * 60L * 1000L)
+    @Test(timeout = 10L * 60L * 1000L)
     public void testRenderScene() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
@@ -874,7 +871,7 @@ public final class MainActivityTest {
 
             uiController.loopMainThreadUntilIdle();
             numberPicker.setValue(this.value);
-            uiController.loopMainThreadUntilIdle();
+//            uiController.loopMainThreadUntilIdle();
 
             LOGGER_PICKER.info("ViewActionNumberPicker#perform finished");
         }
@@ -922,7 +919,7 @@ public final class MainActivityTest {
 
             uiController.loopMainThreadUntilIdle();
             checkBox.performClick();
-            uiController.loopMainThreadUntilIdle();
+//            uiController.loopMainThreadUntilIdle();
 
             LOGGER_CHECKBOX.info("ViewActionCheckBox#perform finished");
         }
