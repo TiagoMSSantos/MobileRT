@@ -555,7 +555,8 @@ public final class MainActivity extends Activity {
         super.onPause();
         LOGGER.info("onPause");
 
-        Thread.interrupted();
+        final boolean interrupted = Thread.interrupted();
+        LOGGER.severe(String.format("onPause: %s", interrupted));
         this.drawView.setPreserveEGLContextOnPause(true);
         this.drawView.onPause();
         this.drawView.setVisibility(View.INVISIBLE);

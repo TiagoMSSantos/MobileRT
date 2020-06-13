@@ -31,6 +31,7 @@ import puscas.mobilertapp.utils.ConstantsMethods;
 import puscas.mobilertapp.utils.ConstantsRenderer;
 import puscas.mobilertapp.utils.ConstantsToast;
 import puscas.mobilertapp.utils.State;
+import puscas.mobilertapp.utils.Utils;
 
 /**
  * The {@link GLSurfaceView} to show the scene being rendered.
@@ -214,12 +215,8 @@ public final class DrawView extends GLSurfaceView {
                     LOGGER.severe("waitLastTask exception 1: " + ex.getClass().getName());
                     LOGGER.severe("waitLastTask exception 2: " + Strings.nullToEmpty(ex.getMessage()));
                 } catch (final InterruptedException ex) {
-                    LOGGER.severe("waitLastTask exception 3: " + ex.getClass().getName());
-                    LOGGER.severe("waitLastTask exception 4: " + Strings.nullToEmpty(ex.getMessage()));
-                    // Can't call Thread interrupt because when instrumented tests
-                    // fail by timeout, this interrupt makes the Activity not finish
-                    // properly.
-//                    Thread.currentThread().interrupt();
+                    Thread.currentThread().interrupt();
+                    Utils.handleInterruption(ex, "DrawView#waitLastTask");
                 }
             });
     }

@@ -22,10 +22,13 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.FixMethodOrder;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
+import org.junit.rules.TestRule;
+import org.junit.rules.Timeout;
 import org.junit.runners.MethodSorters;
 
 import java.io.File;
@@ -55,6 +58,7 @@ public final class MainActivityTest {
     /**
      * The {@link Logger} for this class.
      */
+    @Nonnull
     private static final Logger LOGGER = Logger.getLogger(MainActivityTest.class.getName());
 
     /**
@@ -108,6 +112,20 @@ public final class MainActivityTest {
     public GrantPermissionRule grantPermissionRule = GrantPermissionRule.grant(Manifest.permission.READ_EXTERNAL_STORAGE);
 
     /**
+     * The rule for the timeout for each test.
+     */
+    @Nonnull
+    @Rule
+    public final TestRule timeoutRule = new Timeout(20L, TimeUnit.MINUTES);
+
+    /**
+     * The rule for the timeout for all the tests.
+     */
+    @Nonnull
+    @ClassRule
+    public static final TestRule timeoutClassRule = new Timeout(30L, TimeUnit.MINUTES);
+
+    /**
      * The MainActivity to test.
      */
     private MainActivity activity = null;
@@ -139,8 +157,6 @@ public final class MainActivityTest {
         LOGGER.info("Model: " + Build.MODEL);
         LOGGER.info("Product: " + Build.PRODUCT);
         LOGGER.info("---------------------------------------------------");
-
-        Thread.interrupted();
     }
 
     /**
@@ -150,8 +166,6 @@ public final class MainActivityTest {
     public static void tearDownAll() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
-
-        Thread.interrupted();
     }
 
     /**
@@ -163,7 +177,6 @@ public final class MainActivityTest {
         LOGGER.info(methodName);
 
         this.activity = this.mainActivityActivityTestRule.getActivity();
-        Thread.interrupted();
     }
 
     /**
@@ -177,7 +190,6 @@ public final class MainActivityTest {
         this.activity.finish();
         this.mainActivityActivityTestRule.finishActivity();
         this.activity = null;
-        Thread.interrupted();
     }
 
     /**
@@ -226,7 +238,7 @@ public final class MainActivityTest {
      * Tests changing all the {@link NumberPicker} and clicking the render
      * {@link Button} few times.
      */
-    @Test//(timeout = 6L * 1000L)
+    @Test(timeout = 2L * 60L * 1000L)
     public void testUI() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
@@ -246,7 +258,7 @@ public final class MainActivityTest {
     /**
      * Tests clicking the render {@link Button} many times without preview.
      */
-    @Test//(timeout = 6L * 1000L)
+    @Test(timeout = 20L * 60L * 1000L)
     public void testClickRenderButtonManyTimesWithoutPreview() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
@@ -261,7 +273,7 @@ public final class MainActivityTest {
     /**
      * Tests clicking the render {@link Button} many times with preview.
      */
-    @Test//(timeout = 6L * 1000L)
+    @Test(timeout = 20L * 60L * 1000L)
     public void testClickRenderButtonManyTimesWithPreview() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
@@ -277,7 +289,7 @@ public final class MainActivityTest {
     /**
      * Tests the preview feature in a scene.
      */
-    @Test//(timeout = 6L * 1000L)
+    @Test(timeout = 2L * 60L * 1000L)
     public void testPreviewScene() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
@@ -374,7 +386,7 @@ public final class MainActivityTest {
     /**
      * Tests rendering a scene.
      */
-    @Test//(timeout = 6L * 1000L)
+    @Test(timeout = 2L * 60L * 1000L)
     public void testRenderScene() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);

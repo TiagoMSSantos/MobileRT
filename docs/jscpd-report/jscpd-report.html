@@ -259,7 +259,7 @@ h3 {
         text-align: center;
 
     }
-}</style></head><body><div class="pure-g" id="layout"><div class="sidebar pure-u-1 pure-u-md-1-4"><div class="header"><img src="https://raw.githubusercontent.com/kucherenko/jscpd/1.0.0-alpha/assets/logo-small-box.svg?sanitize=true" width="190"><nav class="nav"><ul class="nav-list"><li class="nav-item"><a class="pure-button" href="#cpp">cpp</a></li><li class="nav-item"><a class="pure-button" href="#c">c</a></li><li class="nav-item"><a class="pure-button" href="#java">java</a></li></ul></nav></div></div><div class="content pure-u-1 pure-u-md-3-4"><div class="controls"><div class="pure-u"><button class="pure-button" onclick="collapseExpandAll()">Collapse/Expand All</button></div></div><table class="pure-table stats"><thead><tr><th>Total files</th><th>Total lines of code</th><th>Duplicated lines</th><th>% of duplications</th></tr></thead><tbody><tr><td>126</td><td>10760</td><td>464</td><td>4.31%</td></tr></tbody></table><div class="clones collapsed"><a name="cpp"></a><h1 class="content-subhead">cpp</h1><div class="mode-stats"><p><span class="mode-rate">2.76%</span> Total files: 91, total lines of code: 7745, duplicated lines: 214</p></div><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Scenes/Scenes.cpp[228:34 - 240:20]<br/>app/Scenes/Scenes.cpp[140:33 - 152:24]</div></header><div class="clone-description"><pre data-first-start="228" data-second-start="140" data-length="12">);
+}</style></head><body><div class="pure-g" id="layout"><div class="sidebar pure-u-1 pure-u-md-1-4"><div class="header"><img src="https://raw.githubusercontent.com/kucherenko/jscpd/1.0.0-alpha/assets/logo-small-box.svg?sanitize=true" width="190"><nav class="nav"><ul class="nav-list"><li class="nav-item"><a class="pure-button" href="#cpp">cpp</a></li><li class="nav-item"><a class="pure-button" href="#c">c</a></li><li class="nav-item"><a class="pure-button" href="#java">java</a></li></ul></nav></div></div><div class="content pure-u-1 pure-u-md-3-4"><div class="controls"><div class="pure-u"><button class="pure-button" onclick="collapseExpandAll()">Collapse/Expand All</button></div></div><table class="pure-table stats"><thead><tr><th>Total files</th><th>Total lines of code</th><th>Duplicated lines</th><th>% of duplications</th></tr></thead><tbody><tr><td>129</td><td>11039</td><td>581</td><td>5.26%</td></tr></tbody></table><div class="clones collapsed"><a name="cpp"></a><h1 class="content-subhead">cpp</h1><div class="mode-stats"><p><span class="mode-rate">2.74%</span> Total files: 91, total lines of code: 7823, duplicated lines: 214</p></div><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Scenes/Scenes.cpp[228:34 - 240:20]<br/>app/Scenes/Scenes.cpp[140:33 - 152:24]</div></header><div class="clone-description"><pre data-first-start="228" data-second-start="140" data-length="12">);
     const auto fovX {45.0F * ratio};
     const auto fovY {45.0F};
     auto res {::MobileRT::std::make_unique&lt;Components::Perspective&gt; (
@@ -473,14 +473,62 @@ TEST_F</pre></div></section><section class="clone"><header><button class="pure-b
     m_ui-&gt;graphicsView-&gt;resize(m_width + 2, m_height + 2);
 }
 
-void MainWindow::keyPressEvent</pre></div></section><a name="c"></a><h1 class="content-subhead">c</h1><div class="mode-stats"><p><span class="mode-rate">0%</span> Total files: 4, total lines of code: 156, duplicated lines: 0</p></div><a name="java"></a><h1 class="content-subhead">java</h1><div class="mode-stats"><p><span class="mode-rate">8.74%</span> Total files: 31, total lines of code: 2859, duplicated lines: 250</p></div><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/ConfigTest.java[20:87 - 40:8]<br/>app/src/androidTest/java/puscas/mobilertapp/MainActivityTest.java[244:6 - 264:8]</div></header><div class="clone-description"><pre data-first-start="20" data-second-start="244" data-length="20">
+void MainWindow::keyPressEvent</pre></div></section><a name="c"></a><h1 class="content-subhead">c</h1><div class="mode-stats"><p><span class="mode-rate">0%</span> Total files: 4, total lines of code: 156, duplicated lines: 0</p></div><a name="java"></a><h1 class="content-subhead">java</h1><div class="mode-stats"><p><span class="mode-rate">11.99%</span> Total files: 34, total lines of code: 3060, duplicated lines: 367</p></div><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/androidTest/java/puscas/mobilertapp/ViewActionButton.java[47:47 - 52:15]<br/>app/src/androidTest/java/puscas/mobilertapp/ViewActionButton.java[37:47 - 42:13]</div></header><div class="clone-description"><pre data-first-start="47" data-second-start="37" data-length="5">) {
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
+        Thread.interrupted();
+
+        return</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/androidTest/java/puscas/mobilertapp/ViewActionButton.java[57:39 - 62:30]<br/>app/src/androidTest/java/puscas/mobilertapp/ViewActionButton.java[47:46 - 52:28]</div></header><div class="clone-description"><pre data-first-start="57" data-second-start="47" data-length="5">() {
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
+        Thread.interrupted();
+
+        return &quot;Click button&quot;</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/androidTest/java/puscas/mobilertapp/ViewActionNumberPicker.java[4:35 - 19:4]<br/>app/src/androidTest/java/puscas/mobilertapp/ViewActionButton.java[4:29 - 19:4]</div></header><div class="clone-description"><pre data-first-start="4" data-second-start="4" data-length="15">;
+
+import androidx.test.espresso.UiController;
+import androidx.test.espresso.ViewAction;
+import androidx.test.espresso.matcher.ViewMatchers;
+
+import org.hamcrest.Matcher;
+import org.jetbrains.annotations.Contract;
+
+import java.util.logging.Logger;
+
+import javax.annotation.Nonnull;
+
+/**
+ * Auxiliary class which represents a {@link NumberPicker}.
+ */</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/androidTest/java/puscas/mobilertapp/ViewActionNumberPicker.java[45:13 - 51:58]<br/>app/src/androidTest/java/puscas/mobilertapp/ViewActionButton.java[46:14 - 52:52]</div></header><div class="clone-description"><pre data-first-start="45" data-second-start="46" data-length="6">
+    public final Matcher&lt;View&gt; getConstraints() {
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
+        Thread.interrupted();
+
+        return ViewMatchers.isAssignableFrom(NumberPicker</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/androidTest/java/puscas/mobilertapp/ViewActionNumberPicker.java[55:13 - 61:51]<br/>app/src/androidTest/java/puscas/mobilertapp/ViewActionButton.java[56:14 - 52:28]</div></header><div class="clone-description"><pre data-first-start="55" data-second-start="56" data-length="6">
+    public final String getDescription() {
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
+        Thread.interrupted();
+
+        return &quot;Set the value of a NumberPicker: &quot;</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/MyEGLContextFactoryTest.java[10:22 - 20:7]<br/>app/src/main/java/puscas/mobilertapp/MyEGLContextFactory.java[6:42 - 17:1]</div></header><div class="clone-description"><pre data-first-start="10" data-second-start="6" data-length="10">;
+
+import java.util.logging.Logger;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.microedition.khronos.egl.EGL10;
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.egl.EGLContext;
+import javax.microedition.khronos.egl.EGLDisplay;
+import</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/MyEGLContextFactoryTest.java[32:82 - 56:8]<br/>app/src/test/java/puscas/mobilertapp/ConfigTest.java[20:69 - 42:8]</div></header><div class="clone-description"><pre data-first-start="32" data-second-start="20" data-length="24">.class.getName());
 
     /**
      * Setup method called before each test.
      */
     @Before
     public void setUp() {
-        LOGGER.info(Constants.SET_UP);
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
     }
 
     /**
@@ -488,12 +536,21 @@ void MainWindow::keyPressEvent</pre></div></section><a name="c"></a><h1 class="c
      */
     @After
     public void tearDown() {
-        LOGGER.info(Constants.TEAR_DOWN);
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
     }
 
     /**
-     * Test the building of {@link Config} with default values.
-     */</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/main/java/puscas/mobilertapp/utils/Scene.java[1:1 - 13:4]<br/>app/src/main/java/puscas/mobilertapp/utils/Accelerator.java[1:1 - 13:4]</div></header><div class="clone-description"><pre data-first-start="1" data-second-start="1" data-length="12">package puscas.mobilertapp.utils;
+     * Helper method that creates a {@link EGL10}.
+     *
+     * @return A new {@link EGL10}.
+     */</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/MyEGLContextFactoryTest.java[121:66 - 127:22]<br/>app/src/test/java/puscas/mobilertapp/MyEGLContextFactoryTest.java[63:93 - 69:19]</div></header><div class="clone-description"><pre data-first-start="121" data-second-start="63" data-length="6">, final EGLConfig[] configs, final int config_size, final int[] num_config) {
+                return false;
+            }
+
+            @Contract(pure = true)
+            @Override
+            @Nullable</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/main/java/puscas/mobilertapp/utils/Scene.java[1:1 - 13:4]<br/>app/src/main/java/puscas/mobilertapp/utils/Accelerator.java[1:1 - 13:4]</div></header><div class="clone-description"><pre data-first-start="1" data-second-start="1" data-length="12">package puscas.mobilertapp.utils;
 
 import org.jetbrains.annotations.Contract;
 
@@ -517,14 +574,15 @@ import java8.util.J8Arrays;
 
 /**
  * The available shaders for the Ray Tracer engine.
- */</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/exceptions/FailureExceptionTest.java[19:79 - 39:8]<br/>app/src/test/java/puscas/mobilertapp/ConfigTest.java[20:69 - 264:8]</div></header><div class="clone-description"><pre data-first-start="19" data-second-start="20" data-length="20">.class.getName());
+ */</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/exceptions/FailureExceptionTest.java[19:79 - 41:8]<br/>app/src/test/java/puscas/mobilertapp/ConfigTest.java[20:69 - 42:8]</div></header><div class="clone-description"><pre data-first-start="19" data-second-start="20" data-length="22">.class.getName());
 
     /**
      * Setup method called before each test.
      */
     @Before
     public void setUp() {
-        LOGGER.info(Constants.SET_UP);
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
     }
 
     /**
@@ -532,7 +590,8 @@ import java8.util.J8Arrays;
      */
     @After
     public void tearDown() {
-        LOGGER.info(Constants.TEAR_DOWN);
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
     }
 
     /**
@@ -549,14 +608,15 @@ import puscas.mobilertapp.utils.Constants;
 
 /**
  * The test suite for {@link LowMemoryException} class.
- */</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/exceptions/LowMemoryExceptionTest.java[19:81 - 40:40]<br/>app/src/test/java/puscas/mobilertapp/ConfigTest.java[20:69 - 40:38]</div></header><div class="clone-description"><pre data-first-start="19" data-second-start="20" data-length="21">.class.getName());
+ */</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/exceptions/LowMemoryExceptionTest.java[19:81 - 42:40]<br/>app/src/test/java/puscas/mobilertapp/ConfigTest.java[20:69 - 42:38]</div></header><div class="clone-description"><pre data-first-start="19" data-second-start="20" data-length="23">.class.getName());
 
     /**
      * Setup method called before each test.
      */
     @Before
     public void setUp() {
-        LOGGER.info(Constants.SET_UP);
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
     }
 
     /**
@@ -564,20 +624,32 @@ import puscas.mobilertapp.utils.Constants;
      */
     @After
     public void tearDown() {
-        LOGGER.info(Constants.TEAR_DOWN);
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
     }
 
     /**
      * Tests the constructor.
      */
-    @Test(expected = LowMemoryException</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/utils/AcceleratorTest.java[18:74 - 38:8]<br/>app/src/test/java/puscas/mobilertapp/ConfigTest.java[20:69 - 264:8]</div></header><div class="clone-description"><pre data-first-start="18" data-second-start="20" data-length="20">.class.getName());
+    @Test(expected = LowMemoryException</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/exceptions/LowMemoryExceptionTest.java[54:81 - 59:37]<br/>app/src/test/java/puscas/mobilertapp/exceptions/FailureExceptionTest.java[54:55 - 59:35]</div></header><div class="clone-description"><pre data-first-start="54" data-second-start="54" data-length="5"> {
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
+
+        final IndexOutOfBoundsException indexOutOfBoundsException = new IndexOutOfBoundsException(&quot;Test&quot;);
+        throw new LowMemoryException</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/exceptions/LowMemoryExceptionTest.java[66:78 - 71:37]<br/>app/src/test/java/puscas/mobilertapp/exceptions/FailureExceptionTest.java[66:52 - 71:35]</div></header><div class="clone-description"><pre data-first-start="66" data-second-start="66" data-length="5"> {
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
+
+        final String message = &quot;Test&quot;;
+        throw new LowMemoryException</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/utils/AcceleratorTest.java[18:74 - 40:8]<br/>app/src/test/java/puscas/mobilertapp/ConfigTest.java[20:69 - 42:8]</div></header><div class="clone-description"><pre data-first-start="18" data-second-start="20" data-length="22">.class.getName());
 
     /**
      * Setup method called before each test.
      */
     @Before
     public void setUp() {
-        LOGGER.info(Constants.SET_UP);
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
     }
 
     /**
@@ -585,19 +657,34 @@ import puscas.mobilertapp.utils.Constants;
      */
     @After
     public void tearDown() {
-        LOGGER.info(Constants.TEAR_DOWN);
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
     }
 
     /**
      * Tests that the {@link Accelerator#getNames()} method contains all the expected accelerators.
-     */</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/utils/CustomNumberPickerTest.java[31:81 - 53:8]<br/>app/src/test/java/puscas/mobilertapp/ConfigTest.java[20:69 - 264:8]</div></header><div class="clone-description"><pre data-first-start="31" data-second-start="20" data-length="22">.class.getName());
+     */</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/utils/CustomNumberPickerTest.java[9:31 - 22:1]<br/>app/src/test/java/puscas/mobilertapp/MyEGLContextFactoryTest.java[4:36 - 16:7]</div></header><div class="clone-description"><pre data-first-start="9" data-second-start="4" data-length="13">;
+
+import org.assertj.core.api.Assertions;
+import org.jetbrains.annotations.Contract;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.logging.Logger;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/utils/CustomNumberPickerTest.java[33:81 - 57:8]<br/>app/src/test/java/puscas/mobilertapp/ConfigTest.java[20:69 - 42:8]</div></header><div class="clone-description"><pre data-first-start="33" data-second-start="20" data-length="24">.class.getName());
 
     /**
      * Setup method called before each test.
      */
     @Before
     public void setUp() {
-        LOGGER.info(Constants.SET_UP);
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
     }
 
     /**
@@ -605,32 +692,44 @@ import puscas.mobilertapp.utils.Constants;
      */
     @After
     public void tearDown() {
-        LOGGER.info(Constants.TEAR_DOWN);
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
     }
 
     /**
      * Helper method that creates an {@link AttributeSet}.
      *
      * @return An {@link AttributeSet}.
-     */</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/utils/CustomNumberPickerTest.java[113:44 - 119:52]<br/>app/src/test/java/puscas/mobilertapp/utils/CustomNumberPickerTest.java[107:49 - 113:44]</div></header><div class="clone-description"><pre data-first-start="113" data-second-start="107" data-length="6">(final String namespace, final String attribute, final int defaultValue) {
+     */</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/utils/CustomNumberPickerTest.java[118:44 - 124:52]<br/>app/src/test/java/puscas/mobilertapp/utils/CustomNumberPickerTest.java[112:49 - 118:44]</div></header><div class="clone-description"><pre data-first-start="118" data-second-start="112" data-length="6">(final String namespace, final String attribute, final int defaultValue) {
                 return 0;
             }
 
             @Contract(pure = true)
             @Override
-            public int getAttributeUnsignedIntValue</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/utils/CustomNumberPickerTest.java[119:52 - 125:25]<br/>app/src/test/java/puscas/mobilertapp/utils/CustomNumberPickerTest.java[107:49 - 113:23]</div></header><div class="clone-description"><pre data-first-start="119" data-second-start="107" data-length="6">(final String namespace, final String attribute, final int defaultValue) {
+            public int getAttributeUnsignedIntValue</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/utils/CustomNumberPickerTest.java[124:52 - 130:25]<br/>app/src/test/java/puscas/mobilertapp/utils/CustomNumberPickerTest.java[112:49 - 118:23]</div></header><div class="clone-description"><pre data-first-start="124" data-second-start="112" data-length="6">(final String namespace, final String attribute, final int defaultValue) {
                 return 0;
             }
 
             @Contract(pure = true)
             @Override
-            public float</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/utils/CustomNumberPickerTest.java[131:61 - 137:62]<br/>app/src/test/java/puscas/mobilertapp/utils/CustomNumberPickerTest.java[95:92 - 101:65]</div></header><div class="clone-description"><pre data-first-start="131" data-second-start="95" data-length="6">, final String[] options, final int defaultValue) {
+            public float</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/utils/CustomNumberPickerTest.java[136:61 - 142:62]<br/>app/src/test/java/puscas/mobilertapp/utils/CustomNumberPickerTest.java[100:92 - 106:65]</div></header><div class="clone-description"><pre data-first-start="136" data-second-start="100" data-length="6">, final String[] options, final int defaultValue) {
                 return 0;
             }
 
             @Contract(pure = true)
             @Override
-            public boolean getAttributeBooleanValue(final int</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/utils/SceneTest.java[1:1 - 12:4]<br/>app/src/test/java/puscas/mobilertapp/utils/AcceleratorTest.java[1:1 - 12:4]</div></header><div class="clone-description"><pre data-first-start="1" data-second-start="1" data-length="11">package puscas.mobilertapp.utils;
+            public boolean getAttributeBooleanValue(final int</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/utils/CustomNumberPickerTest.java[202:41 - 207:27]<br/>app/src/test/java/puscas/mobilertapp/MyEGLContextFactoryTest.java[222:41 - 227:23]</div></header><div class="clone-description"><pre data-first-start="202" data-second-start="222" data-length="5">() {
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
+
+        final Context context = new MainActivity();
+        final AttributeSet</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/utils/CustomNumberPickerTest.java[226:40 - 232:23]<br/>app/src/test/java/puscas/mobilertapp/MyEGLContextFactoryTest.java[222:41 - 208:19]</div></header><div class="clone-description"><pre data-first-start="226" data-second-start="222" data-length="6">() {
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
+
+        final Context context = new MainActivity();
+        final AttributeSet attrs = createAttributeSet();
+        final TextView</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/utils/SceneTest.java[1:1 - 12:4]<br/>app/src/test/java/puscas/mobilertapp/utils/AcceleratorTest.java[1:1 - 12:4]</div></header><div class="clone-description"><pre data-first-start="1" data-second-start="1" data-length="11">package puscas.mobilertapp.utils;
 
 import org.assertj.core.api.Assertions;
 import org.junit.After;
@@ -641,14 +740,15 @@ import java.util.logging.Logger;
 
 /**
  * The unit tests for the {@link Scene} util class.
- */</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/utils/SceneTest.java[18:68 - 38:8]<br/>app/src/test/java/puscas/mobilertapp/ConfigTest.java[20:69 - 264:8]</div></header><div class="clone-description"><pre data-first-start="18" data-second-start="20" data-length="20">.class.getName());
+ */</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/utils/SceneTest.java[18:68 - 40:8]<br/>app/src/test/java/puscas/mobilertapp/ConfigTest.java[20:69 - 42:8]</div></header><div class="clone-description"><pre data-first-start="18" data-second-start="20" data-length="22">.class.getName());
 
     /**
      * Setup method called before each test.
      */
     @Before
     public void setUp() {
-        LOGGER.info(Constants.SET_UP);
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
     }
 
     /**
@@ -656,12 +756,19 @@ import java.util.logging.Logger;
      */
     @After
     public void tearDown() {
-        LOGGER.info(Constants.TEAR_DOWN);
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
     }
 
     /**
      * Tests that the {@link Scene#getNames()} method contains all the expected scenes.
-     */</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/utils/ShaderTest.java[1:1 - 12:4]<br/>app/src/test/java/puscas/mobilertapp/utils/AcceleratorTest.java[1:1 - 12:4]</div></header><div class="clone-description"><pre data-first-start="1" data-second-start="1" data-length="11">package puscas.mobilertapp.utils;
+     */</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/utils/SceneTest.java[40:8 - 46:36]<br/>app/src/test/java/puscas/mobilertapp/utils/AcceleratorTest.java[40:8 - 46:42]</div></header><div class="clone-description"><pre data-first-start="40" data-second-start="40" data-length="6">
+    @Test
+    public void testGetNames() {
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
+
+        Assertions.assertThat(Scene</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/utils/ShaderTest.java[1:1 - 12:4]<br/>app/src/test/java/puscas/mobilertapp/utils/AcceleratorTest.java[1:1 - 12:4]</div></header><div class="clone-description"><pre data-first-start="1" data-second-start="1" data-length="11">package puscas.mobilertapp.utils;
 
 import org.assertj.core.api.Assertions;
 import org.junit.After;
@@ -672,14 +779,15 @@ import java.util.logging.Logger;
 
 /**
  * The unit tests for the {@link Shader} util class.
- */</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/utils/ShaderTest.java[18:69 - 38:8]<br/>app/src/test/java/puscas/mobilertapp/ConfigTest.java[20:69 - 264:8]</div></header><div class="clone-description"><pre data-first-start="18" data-second-start="20" data-length="20">.class.getName());
+ */</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/utils/ShaderTest.java[18:69 - 40:8]<br/>app/src/test/java/puscas/mobilertapp/ConfigTest.java[20:69 - 42:8]</div></header><div class="clone-description"><pre data-first-start="18" data-second-start="20" data-length="22">.class.getName());
 
     /**
      * Setup method called before each test.
      */
     @Before
     public void setUp() {
-        LOGGER.info(Constants.SET_UP);
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
     }
 
     /**
@@ -687,12 +795,19 @@ import java.util.logging.Logger;
      */
     @After
     public void tearDown() {
-        LOGGER.info(Constants.TEAR_DOWN);
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
     }
 
     /**
      * Tests that the {@link Shader#getNames()} method contains all the expected shaders.
-     */</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/utils/StateTest.java[1:1 - 12:4]<br/>app/src/test/java/puscas/mobilertapp/utils/AcceleratorTest.java[1:1 - 12:4]</div></header><div class="clone-description"><pre data-first-start="1" data-second-start="1" data-length="11">package puscas.mobilertapp.utils;
+     */</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/utils/ShaderTest.java[40:8 - 46:37]<br/>app/src/test/java/puscas/mobilertapp/utils/AcceleratorTest.java[40:8 - 46:42]</div></header><div class="clone-description"><pre data-first-start="40" data-second-start="40" data-length="6">
+    @Test
+    public void testGetNames() {
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
+
+        Assertions.assertThat(Shader</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/utils/StateTest.java[1:1 - 12:4]<br/>app/src/test/java/puscas/mobilertapp/utils/AcceleratorTest.java[1:1 - 12:4]</div></header><div class="clone-description"><pre data-first-start="1" data-second-start="1" data-length="11">package puscas.mobilertapp.utils;
 
 import org.assertj.core.api.Assertions;
 import org.junit.After;
@@ -703,14 +818,15 @@ import java.util.logging.Logger;
 
 /**
  * The unit tests for the {@link State} util class.
- */</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/utils/StateTest.java[18:68 - 38:8]<br/>app/src/test/java/puscas/mobilertapp/ConfigTest.java[20:69 - 264:8]</div></header><div class="clone-description"><pre data-first-start="18" data-second-start="20" data-length="20">.class.getName());
+ */</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/utils/StateTest.java[18:68 - 40:8]<br/>app/src/test/java/puscas/mobilertapp/ConfigTest.java[20:69 - 42:8]</div></header><div class="clone-description"><pre data-first-start="18" data-second-start="20" data-length="22">.class.getName());
 
     /**
      * Setup method called before each test.
      */
     @Before
     public void setUp() {
-        LOGGER.info(Constants.SET_UP);
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
     }
 
     /**
@@ -718,7 +834,8 @@ import java.util.logging.Logger;
      */
     @After
     public void tearDown() {
-        LOGGER.info(Constants.TEAR_DOWN);
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
     }
 
     /**
