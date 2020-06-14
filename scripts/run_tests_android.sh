@@ -85,6 +85,10 @@ script_name=$(basename $0);
 echo "pid: ${pid}";
 echo "script name: ${script_name}";
 
+if [ ${type} == "debug" ]; then
+  code_coverage="createDebugCoverageReport";
+fi
+
 if [ ${kill_previous} == true ]; then
   callCommand ps aux \
     | grep -v grep \
@@ -164,6 +168,7 @@ echo "Run instrumentation tests";
 if [ ${run_test} == "all" ]; then
   callCommand ./gradlew connected${type}AndroidTest -DtestType="${type}" \
     -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
+    ${code_coverage} \
     | tee ${reports_path}/log_tests_${type}.log 2>&1;
   resInstrumentationTests=${PIPESTATUS[0]};
   pid_instrumentation_tests="$!";

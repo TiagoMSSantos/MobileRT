@@ -91,7 +91,7 @@ jobs:
     - name: Run linter
       if: success()
       run: |
-        bash ./scripts/check_android.sh ${{ matrix.type }} ${{ matrix.ndk_version }} ${{ matrix.cmake_version }};
+        bash ./scripts/check_android.sh ${{ matrix.variant }} ${{ matrix.ndk_version }} ${{ matrix.cmake_version }};
 
     - name: Upload reports
       if: always()
