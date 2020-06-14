@@ -116,14 +116,14 @@ public final class MainActivityTest {
      */
     @Nonnull
     @Rule
-    public final TestRule timeoutRule = new Timeout(20L, TimeUnit.MINUTES);
+    public final TestRule timeoutRule = new Timeout(30L, TimeUnit.MINUTES);
 
     /**
      * The rule for the timeout for all the tests.
      */
     @Nonnull
     @ClassRule
-    public static final TestRule timeoutClassRule = new Timeout(30L, TimeUnit.MINUTES);
+    public static final TestRule timeoutClassRule = new Timeout(40L, TimeUnit.MINUTES);
 
     /**
      * The MainActivity to test.
@@ -273,7 +273,7 @@ public final class MainActivityTest {
     /**
      * Tests clicking the render {@link Button} many times with preview.
      */
-    @Test(timeout = 20L * 60L * 1000L)
+    @Test(timeout = 30L * 60L * 1000L)
     public void testClickRenderButtonManyTimesWithPreview() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);

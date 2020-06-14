@@ -97,7 +97,7 @@ void Renderer::renderScene(::std::int32_t *const bitmap, const ::std::int32_t ti
     for (::std::int32_t sample {}; sample < this->samplesPixel_; ++sample) {
         LOG("renderScene sample: ", sample);
         while (true) {
-            LOG("Will get a tile: bx=", this->blockSizeX_, ", by=", this->blockSizeY_, ", spp=", this->samplesPixel_);
+            LOG("Will get a tile: bx=", this->blockSizeX_, ", by=", this->blockSizeY_, ", spp=", sample, " (", this->samplesPixel_, ")");
             const auto tile {getTile(sample)};
             if (tile >= 1.0F) {
                 break;
