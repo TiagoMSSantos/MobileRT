@@ -1,7 +1,5 @@
 package puscas.mobilertapp.utils;
 
-import com.google.common.base.Strings;
-
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
@@ -37,7 +35,8 @@ public final class Utils {
                 running = !executorService.awaitTermination(1L, TimeUnit.DAYS);
             } catch (final InterruptedException ex) {
                 Thread.currentThread().interrupt();
-                Utils.handleInterruption(ex, "Utils#waitExecutorToFinish");
+            } finally {
+                Utils.handleInterruption("Utils#waitExecutorToFinish");
             }
         } while (running);
         LOGGER.info("waitExecutorToFinish finished");
@@ -56,16 +55,13 @@ public final class Utils {
     /**
      * The {@link InterruptedException} to handle.
      *
-     * @param ex         The {@link InterruptedException}.
      * @param methodName The name of the method to appear in the logs.
      */
-    public static void handleInterruption(@Nonnull final InterruptedException ex, @Nonnull final String methodName) {
-        LOGGER.severe(String.format("%s exception 1: %s", methodName, ex.getClass().getName()));
-        LOGGER.severe(String.format("%s exception 2: %s", methodName, Strings.nullToEmpty(ex.getMessage())));
+    public static void handleInterruption(@Nonnull final String methodName) {
         // Reset the interrupted flag because when instrumented tests
         // fail by timeout, this interrupt makes the Activity not finish
         // properly.
         final boolean interrupted = Thread.interrupted();
-        LOGGER.severe(String.format("%s exception 3: %s", methodName, interrupted));
+        LOGGER.severe(String.format("%s exception: %s", methodName, interrupted));
     }
 }
