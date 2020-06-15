@@ -156,7 +156,6 @@ public final class DrawView extends GLSurfaceView {
             .ifPresent(task -> task.cancel(false));
         this.renderer.waitLastTask();
         waitLastTask();
-//        this.renderer.rtFinishRender();
         this.renderer.updateButton(R.string.render);
 
         LOGGER.info("stopDrawing finished");
@@ -194,8 +193,6 @@ public final class DrawView extends GLSurfaceView {
                 warningError(ex, ConstantsToast.COULD_NOT_LOAD_THE_SCENE);
             }
             rtStopRender(false);
-//            this.renderer.rtFinishRender();
-//            getActivity().runOnUiThread(() -> this.renderer.updateButton(R.string.render));
             LOGGER.info(ConstantsMethods.RENDER_SCENE + " executor failed");
             return Boolean.FALSE;
         });

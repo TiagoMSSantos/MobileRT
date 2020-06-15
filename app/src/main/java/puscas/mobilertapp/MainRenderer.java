@@ -208,11 +208,6 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
     private boolean firstFrame = false;
 
     /**
-     * Finished.
-     */
-    private boolean renderTaskFinished = false;
-
-    /**
      * The {@link TextView} which will output the debug information about the Ray Tracer engine.
      */
     private TextView textView = null;
@@ -1029,24 +1024,22 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
                 validateBitmap();
             }
 
-//            if (this.numThreads > 0 && this.bitmap != null && this.numPrimitives > 0) {
-                try {
-                    LOGGER.info("rtRenderIntoBitmap started");
-                    validateBitmap();
-                    if (this.numThreads > 0) {
-                        rtRenderIntoBitmap(this.bitmap, this.numThreads, true);
-                    }
-                    validateBitmap();
-                    LOGGER.info("rtRenderIntoBitmap finished");
-                } catch (final LowMemoryException ex) {
-                    LOGGER.severe("onDrawFrame exception: " + ex.getClass().getName());
-                    LOGGER.severe("onDrawFrame exception: " + Strings.nullToEmpty(ex.getMessage()));
-                    LOGGER.severe("rtRenderIntoBitmap finished with error");
+            try {
+                LOGGER.info("rtRenderIntoBitmap started");
+                validateBitmap();
+                if (this.numThreads > 0) {
+                    rtRenderIntoBitmap(this.bitmap, this.numThreads, true);
                 }
                 validateBitmap();
-                createAndLaunchRenderTask();
-                validateBitmap();
-//            }
+                LOGGER.info("rtRenderIntoBitmap finished");
+            } catch (final LowMemoryException ex) {
+                LOGGER.severe("onDrawFrame exception: " + ex.getClass().getName());
+                LOGGER.severe("onDrawFrame exception: " + Strings.nullToEmpty(ex.getMessage()));
+                LOGGER.severe("rtRenderIntoBitmap finished with error");
+            }
+            validateBitmap();
+            createAndLaunchRenderTask();
+            validateBitmap();
             LOGGER.info("onDrawFirstFrame finished");
         }
         validateBitmap();
@@ -1054,12 +1047,18 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         validateBitmap();
     }
 
+    /**
+     * Helper method that validates the native arrays.
+     */
     private void validateArrays() {
         Preconditions.checkArgument(this.arrayVertices != null);
         Preconditions.checkArgument(this.arrayColors != null);
         Preconditions.checkArgument(this.arrayCamera != null);
     }
 
+    /**
+     * Helper method that validates the {@link Bitmap}.
+     */
     private void validateBitmap() {
         Preconditions.checkArgument(this.bitmap != null);
         Preconditions.checkArgument(!this.bitmap.isRecycled());
@@ -1074,8 +1073,6 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         GLES20.glViewport(0, 0, width, height);
         checksGLError();
 
-//        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, this.bitmap, 0);
-        checksGLError();
         LOGGER.info("onSurfaceChanged finished");
     }
 
