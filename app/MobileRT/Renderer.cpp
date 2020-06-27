@@ -75,7 +75,7 @@ void Renderer::renderFrame(::std::int32_t *const bitmap, const ::std::int32_t nu
 void Renderer::stopRender() {
     this->blockSizeX_ = 0;
     this->blockSizeY_ = 0;
-    this->block_.store(NumberOfTiles * 10, ::std::memory_order_relaxed);
+    this->block_.store(::std::numeric_limits<::std::int32_t>::max() - NumberOfTiles, ::std::memory_order_relaxed);
     this->samplesPixel_ = 0;
     this->samplerPixel_->stopSampling();
 }

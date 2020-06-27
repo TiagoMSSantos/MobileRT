@@ -10,6 +10,7 @@ import androidx.test.espresso.matcher.ViewMatchers;
 import org.hamcrest.Matcher;
 import org.jetbrains.annotations.Contract;
 
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 
 import javax.annotation.Nonnull;
@@ -89,8 +90,10 @@ final class ViewActionButton implements ViewAction {
             LOGGER.info("ViewActionButton#perform button clicked 2");
 
             textEquals = button.getText().toString().equals(this.expectedText);
-            while (!textEquals) {
-                uiController.loopMainThreadForAtLeast(3000L);
+            final long advanceSecs = 3L;
+            for (long currentTimeSecs = 0L; currentTimeSecs < 60L && !textEquals; currentTimeSecs += advanceSecs) {
+                result = button.performClick();
+                uiController.loopMainThreadForAtLeast(advanceSecs * 1000L);
                 textEquals = button.getText().toString().equals(this.expectedText);
                 LOGGER.info("ViewActionButton# waiting button to have '" + this.expectedText + "' written!!!");
             }
