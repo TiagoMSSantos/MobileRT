@@ -16,7 +16,7 @@ public enum Shader {
     /**
      * The NoShadows shader.
      */
-    NOSHADOWS("NoShadows"),
+    NO_SHADOWS("NoShadows"),
 
     /**
      * The Whitted shader.
@@ -24,14 +24,14 @@ public enum Shader {
     WHITTED("Whitted"),
 
     /**
-     * The PathTracer shader.
+     * The Path Tracing shader.
      */
-    PATHTRACER("PathTracer"),
+    PATH_TRACING("PathTracing"),
 
     /**
      * The DepthMap shader.
      */
-    DEPTHMAP("DepthMap"),
+    DEPTH_MAP("DepthMap"),
 
     /**
      * The Diffuse shader.

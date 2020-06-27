@@ -338,10 +338,9 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * @return The current Ray Tracer engine {@link State}.
      */
     State getState() {
-        final State currentState = Optional.ofNullable(this.renderTask)
+        return Optional.ofNullable(this.renderTask)
             .map(task -> State.values()[task.rtGetState()])
             .orElse(State.IDLE);
-        return currentState;
     }
 
     /**
@@ -536,10 +535,10 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
     @Contract(pure = true)
     private static int convertPixelOpenGLToAndroid(final int pixel) {
         final int red = pixel & 0xFF;
-        final int green = (pixel >> (1 * 8)) & 0xFF;
+        final int green = (pixel >> 8) & 0xFF;
         final int blue = (pixel >> (2 * 8)) & 0xFF;
         final int alpha = (pixel >> (3 * 8)) & 0xFF;
-        final int newPixel = (red << (2 * 8)) | (green << (1 * 8)) | blue;
+        final int newPixel = (red << (2 * 8)) | (green << 8) | blue;
         return alpha << (3 * 8) | newPixel;
     }
 
@@ -583,10 +582,10 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         final Bitmap bitmapView = Bitmap.createBitmap(
             arrayBytesNewBitmap, this.viewWidth, this.viewHeight, Bitmap.Config.ARGB_8888
         );
-        final Bitmap bitmap = Bitmap.createScaledBitmap(bitmapView, this.width, this.height, true);
+        final Bitmap newBitmapWithPreviewScene = Bitmap.createScaledBitmap(bitmapView, this.width, this.height, true);
         Preconditions.checkArgument(bitmapView.getWidth() == this.viewWidth);
         Preconditions.checkArgument(bitmapView.getHeight() == this.viewHeight);
-        return bitmap;
+        return newBitmapWithPreviewScene;
     }
 
     /**
@@ -856,9 +855,9 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0);
         checksGLError();
 
-        final Bitmap bitmap = copyFrameBuffer();
+        final Bitmap newBitmapWithPreviewScene = copyFrameBuffer();
         LOGGER.info("copyFrame finished");
-        return bitmap;
+        return newBitmapWithPreviewScene;
     }
 
     /**

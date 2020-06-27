@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 /**
  * The unit tests for the {@link State} util class.
  */
-public class StateTest {
+public final class StateTest {
 
     /**
      * The {@link Logger} for this class.

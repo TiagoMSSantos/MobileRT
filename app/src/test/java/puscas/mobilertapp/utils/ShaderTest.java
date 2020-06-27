@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 /**
  * The unit tests for the {@link Shader} util class.
  */
-public class ShaderTest {
+public final class ShaderTest {
 
     /**
      * The {@link Logger} for this class.
@@ -46,7 +46,7 @@ public class ShaderTest {
         Assertions.assertThat(Shader.getNames()).containsExactly(
             "NoShadows",
             "Whitted",
-            "PathTracer",
+            "PathTracing",
             "DepthMap",
             "Diffuse"
         );

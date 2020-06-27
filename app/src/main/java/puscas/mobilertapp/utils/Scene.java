@@ -46,7 +46,7 @@ public enum Scene {
     /**
      * A scene of an OBJ file which doesn't exist.
      */
-    WRONGFILE("Wrong file");
+    WRONG_FILE("Wrong file");
 
     /**
      * The {@link Logger} for this class.

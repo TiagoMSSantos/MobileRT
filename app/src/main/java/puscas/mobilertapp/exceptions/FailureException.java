@@ -17,7 +17,7 @@ public class FailureException extends RuntimeException {
     /**
      * The default constructor.
      */
-    public FailureException() {
+    FailureException() {
         super();
         Utils.printStackTrace();
     }

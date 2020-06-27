@@ -13,6 +13,11 @@ import javax.annotation.Nonnull;
 public final class Config {
 
     /**
+     * The {@link Logger} for this class.
+     */
+    private static final Logger LOGGER = Logger.getLogger(Config.class.getName());
+
+    /**
      * @see Config#getScene()
      */
     private final int scene;
@@ -69,6 +74,8 @@ public final class Config {
      */
     @Contract(pure = true)
     Config(@Nonnull final Config.Builder builder) {
+        LOGGER.info("Config");
+
         this.scene = builder.getScene();
         this.shader = builder.getShader();
         this.accelerator = builder.getAccelerator();
@@ -144,7 +151,7 @@ public final class Config {
      */
     @Contract(pure = true)
     @Nonnull
-    public String getObjFilePath() {
+    String getObjFilePath() {
         return this.objFilePath;
     }
 
@@ -153,7 +160,7 @@ public final class Config {
      */
     @Contract(pure = true)
     @Nonnull
-    public String getMatFilePath() {
+    String getMatFilePath() {
         return this.matFilePath;
     }
 
@@ -162,7 +169,7 @@ public final class Config {
      */
     @Contract(pure = true)
     @Nonnull
-    public String getCamFilePath() {
+    String getCamFilePath() {
         return this.camFilePath;
     }
 

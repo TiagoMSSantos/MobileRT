@@ -58,39 +58,43 @@ public final class CustomNumberPickerTest {
     @Nonnull
     @Contract(pure = true)
     private static AttributeSet createAttributeSet() {
-        final AttributeSet attrs = new AttributeSet() {
+        return new AttributeSet() {
             @Contract(pure = true)
             @Override
             public int getAttributeCount() {
                 return 0;
             }
 
-            @Contract(pure = true)
+            @Nullable
             @Override
-            public @Nullable String getAttributeName(final int index) {
+            @Contract(pure = true)
+            public String getAttributeName(final int index) {
                 return null;
             }
 
-            @Contract(pure = true)
+            @Nullable
             @Override
-            public @Nullable String getAttributeValue(final int index) {
+            @Contract(pure = true)
+            public String getAttributeValue(final int index) {
                 return null;
             }
 
-            @Contract(pure = true)
+            @Nullable
             @Override
-            public @Nullable String getAttributeValue(final String namespace, final String name) {
+            @Contract(pure = true)
+            public String getAttributeValue(final String namespace, final String name) {
                 return null;
             }
 
-            @Contract(pure = true)
+            @Nullable
             @Override
-            public @Nullable String getPositionDescription() {
+            @Contract(pure = true)
+            public String getPositionDescription() {
                 return null;
             }
 
-            @Contract(pure = true)
             @Override
+            @Contract(pure = true)
             public int getAttributeNameResource(final int index) {
                 return 0;
             }
@@ -167,31 +171,32 @@ public final class CustomNumberPickerTest {
                 return 0.0F;
             }
 
-            @Contract(pure = true)
+            @Nullable
             @Override
-            public @Nullable String getIdAttribute() {
+            @Contract(pure = true)
+            public String getIdAttribute() {
                 return null;
             }
 
-            @Contract(pure = true)
+            @Nullable
             @Override
-            public @Nullable String getClassAttribute() {
+            @Contract(pure = true)
+            public String getClassAttribute() {
                 return null;
             }
 
-            @Contract(pure = true)
             @Override
+            @Contract(pure = true)
             public int getIdAttributeResourceValue(final int defaultValue) {
                 return 0;
             }
 
-            @Contract(pure = true)
             @Override
+            @Contract(pure = true)
             public int getStyleAttribute() {
                 return 0;
             }
         };
-        return attrs;
     }
 
     /**

@@ -6,8 +6,6 @@ import org.junit.Test;
 
 import java.util.logging.Logger;
 
-import puscas.mobilertapp.utils.Constants;
-
 /**
  * The test suite for {@link FailureException} class.
  */
