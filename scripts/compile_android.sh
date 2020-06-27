@@ -4,7 +4,7 @@
 # Get arguments
 ###############################################################################
 type="${1:-Release}"
-ndk_version="${2:-21.2.6472646}"
+ndk_version="${2:-21.3.6528147}"
 cmake_version="${3:-3.10.2}"
 ###############################################################################
 ###############################################################################
@@ -30,7 +30,6 @@ echo "type: '${type}'";
 reports_path=./app/build/reports
 callCommand mkdir -p ${reports_path}
 
-rm -rf ./app/build/;
 files_being_used=`find -name "*.fuse_hidden*" | grep -i ".fuse_hidden"`
 echo "files_being_used: '${files_being_used}'";
 
@@ -46,7 +45,9 @@ if [ "${files_being_used}" != "" ]; then
   done
   sleep 1
 fi
-callCommand rm -rf ./app/build/
+
+callCommand rm -rf ./app/build/;
+callCommand rm -rf ./app/.cxx/;
 
 callCommand ./gradlew clean assemble${type} --profile --parallel \
   -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \

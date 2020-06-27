@@ -1,5 +1,5 @@
 println("Reading system properties.")
-final def systemNDKVersion = System.getProperty('ndkVersion', '21.2.6472646')
+final def systemNDKVersion = System.getProperty('ndkVersion', '21.3.6528147')
 final def systemCMakeVersion = System.getProperty('cmakeVersion', '3.10.2')
 final def systemTestType = System.getProperty('testType', 'debug')
 
@@ -25,7 +25,7 @@ android {
     setTestBuildType systemTestType
 
     setCompileSdkVersion 29
-    setBuildToolsVersion '29.0.3'
+    setBuildToolsVersion '30.0.0'
 
     signingConfigs {
         Puscas {
