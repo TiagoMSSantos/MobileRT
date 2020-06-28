@@ -26,6 +26,8 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
@@ -338,6 +340,8 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * @return The current Ray Tracer engine {@link State}.
      */
     State getState() {
+        LOGGER.info("getState");
+
         return Optional.ofNullable(this.renderTask)
             .map(task -> State.values()[task.rtGetState()])
             .orElse(State.BUSY);
@@ -358,11 +362,16 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
                     final int numPrimitives,
                     final int numLights) {
         LOGGER.info("resetStats");
-        LOGGER.info(String.format(Locale.US, "numThreads: %d", numThreads));
-        LOGGER.info(String.format(Locale.US, "numPrimitives: %d", numPrimitives));
-        LOGGER.info(String.format(Locale.US, "numLights: %d", numLights));
-        LOGGER.info(String.format(Locale.US, "samplesPixel: %d", samplesPixel));
-        LOGGER.info(String.format(Locale.US, "samplesLight: %d", samplesLight));
+        final String numThreadsStr = String.format(Locale.US, "numThreads: %d", numThreads);
+        final String numPrimitivesStr = String.format(Locale.US, "numPrimitives: %d", numPrimitives);
+        final String numLightsStr = String.format(Locale.US, "numLights: %d", numLights);
+        final String samplesPixelStr = String.format(Locale.US, "samplesPixel: %d", samplesPixel);
+        final String samplesLightStr = String.format(Locale.US, "samplesLight: %d", samplesLight);
+        LOGGER.info(numThreadsStr);
+        LOGGER.info(numPrimitivesStr);
+        LOGGER.info(numLightsStr);
+        LOGGER.info(samplesPixelStr);
+        LOGGER.info(samplesLightStr);
 
         this.numThreads = numThreads;
         this.samplesPixel = samplesPixel;
@@ -471,7 +480,8 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         final long availMem = this.memoryInfo.availMem / 1048576L;
         final long totalMem = this.memoryInfo.totalMem / 1048576L;
         final boolean insufficientMem = availMem <= (long) (1 + memoryNeeded);
-        LOGGER.info(String.format(Locale.US, "MEMORY AVAILABLE: %dMB (%dMB)", availMem, totalMem));
+        final String message = String.format(Locale.US, "MEMORY AVAILABLE: %dMB (%dMB)", availMem, totalMem);
+        LOGGER.info(message);
         return insufficientMem || this.memoryInfo.lowMemory;
     }
 
@@ -598,9 +608,9 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
 
         if (this.renderTask != null) {
             try {
-                this.renderTask.get();
+                this.renderTask.get(1L, TimeUnit.DAYS);
                 this.renderTask.cancel(false);
-            } catch (final ExecutionException | CancellationException ex) {
+            } catch (final ExecutionException | TimeoutException | CancellationException ex) {
                 LOGGER.severe("waitLastTask exception 1: " + ex.getClass().getName());
                 LOGGER.severe("waitLastTask exception 2: " + Strings.nullToEmpty(ex.getMessage()));
             } catch (final InterruptedException ex) {
@@ -626,7 +636,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
     /**
      * Calculates the size, in MegaBytes of the scene with a certain number of primitives.
      *
-     * @param numPrimitives The number of prmitives in the scene.
+     * @param numPrimitives The number of primitives in the scene.
      * @return The size, in MegaBytes, of the scene.
      */
     @Contract(pure = true)
@@ -635,8 +645,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         final int triangleMembers = floatSize * 9;
         final int triangleMethods = 8 * 11;
         final int triangleSize = triangleMembers + triangleMethods;
-        final int neededMemoryMb = 1 + ((numPrimitives * triangleSize) / 1048576);
-        return neededMemoryMb;
+        return 1 + ((numPrimitives * triangleSize) / 1048576);
     }
 
     /**
@@ -988,8 +997,6 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         try {
             checksFreeMemory(2, () -> { });
         } catch (final LowMemoryException ex) {
-            LOGGER.severe("onDrawFrame exception 1: " + ex.getClass().getName());
-            LOGGER.severe("onDrawFrame exception 2: " + Strings.nullToEmpty(ex.getMessage()));
             LOGGER.severe("SYSTEM WITH LOW MEMORY!!!");
             throw new FailureException(ex);
         }
@@ -1014,8 +1021,8 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
                     Preconditions.checkArgument(this.numPrimitives > 0);
                     validateBitmap();
                 } catch (final LowMemoryException ex) {
-                    LOGGER.severe("onDrawFrame exception: " + ex.getClass().getName());
-                    LOGGER.severe("onDrawFrame exception: " + Strings.nullToEmpty(ex.getMessage()));
+                    LOGGER.severe("onDrawFrame exception 1: " + ex.getClass().getName());
+                    LOGGER.severe("onDrawFrame exception 2: " + Strings.nullToEmpty(ex.getMessage()));
                     LOGGER.severe("Low memory to rasterize a frame!!!");
                 }
                 validateArrays();
@@ -1110,7 +1117,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         GLES20.glClearColor(0.0F, 0.0F, 0.0F, 0.0F);
         checksGLError();
 
-        // Create geometry and texCoords buffers
+        // Create geometry and texture coordinates buffers
         final int byteBufferVerticesSize = this.verticesTexture.length * (Float.SIZE / Byte.SIZE);
         final ByteBuffer bbVertices = ByteBuffer.allocateDirect(byteBufferVerticesSize);
         bbVertices.order(ByteOrder.nativeOrder());

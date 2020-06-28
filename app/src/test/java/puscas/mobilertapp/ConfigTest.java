@@ -7,8 +7,6 @@ import org.junit.jupiter.api.Assertions;
 
 import java.util.logging.Logger;
 
-import puscas.mobilertapp.utils.Constants;
-
 /**
  * The test suite for {@link Config} class.
  */

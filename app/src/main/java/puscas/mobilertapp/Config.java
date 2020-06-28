@@ -73,7 +73,7 @@ public final class Config {
      * @param builder The {@link Config.Builder} for this class.
      */
     @Contract(pure = true)
-    Config(@Nonnull final Config.Builder builder) {
+    private Config(@Nonnull final Config.Builder builder) {
         LOGGER.info("Config");
 
         this.scene = builder.getScene();
@@ -242,7 +242,8 @@ public final class Config {
         @Contract("_ -> this")
         @Nonnull
         Config.Builder withScene(final int scene) {
-            LOGGER_BUILDER.info(String.format(Locale.US, "withScene: %d", scene));
+            final String message = String.format(Locale.US, "withScene: %d", scene);
+            LOGGER_BUILDER.info(message);
 
             this.scene = scene;
             return this;
@@ -257,7 +258,8 @@ public final class Config {
         @Contract("_ -> this")
         @Nonnull
         Config.Builder withShader(final int shader) {
-            LOGGER_BUILDER.info(String.format(Locale.US, "withShader: %d", shader));
+            final String message = String.format(Locale.US, "withShader: %d", shader);
+            LOGGER_BUILDER.info(message);
 
             this.shader = shader;
             return this;
@@ -272,7 +274,8 @@ public final class Config {
         @Contract("_ -> this")
         @Nonnull
         Config.Builder withAccelerator(final int accelerator) {
-            LOGGER_BUILDER.info(String.format(Locale.US, "withAccelerator: %d", accelerator));
+            final String message = String.format(Locale.US, "withAccelerator: %d", accelerator);
+            LOGGER_BUILDER.info(message);
 
             this.accelerator = accelerator;
             return this;
@@ -287,7 +290,8 @@ public final class Config {
         @Contract("_ -> this")
         @Nonnull
         Config.Builder withWidth(final int width) {
-            LOGGER_BUILDER.info(String.format(Locale.US, "withWidth: %d", width));
+            final String message = String.format(Locale.US, "withWidth: %d", width);
+            LOGGER_BUILDER.info(message);
 
             this.width = width;
             return this;
@@ -302,7 +306,8 @@ public final class Config {
         @Contract("_ -> this")
         @Nonnull
         Config.Builder withHeight(final int height) {
-            LOGGER_BUILDER.info(String.format(Locale.US, "withHeight: %d", height));
+            final String message = String.format(Locale.US, "withHeight: %d", height);
+            LOGGER_BUILDER.info(message);
 
             this.height = height;
             return this;
@@ -317,7 +322,8 @@ public final class Config {
         @Contract("_ -> this")
         @Nonnull
         Config.Builder withSamplesPixel(final int samplesPixel) {
-            LOGGER_BUILDER.info(String.format(Locale.US, "withSamplesPixel: %d", samplesPixel));
+            final String message = String.format(Locale.US, "withSamplesPixel: %d", samplesPixel);
+            LOGGER_BUILDER.info(message);
 
             this.samplesPixel = samplesPixel;
             return this;
@@ -332,7 +338,8 @@ public final class Config {
         @Contract("_ -> this")
         @Nonnull
         Config.Builder withSamplesLight(final int samplesLight) {
-            LOGGER_BUILDER.info(String.format(Locale.US, "withSamplesLight: %d", samplesLight));
+            final String message = String.format(Locale.US, "withSamplesLight: %d", samplesLight);
+            LOGGER_BUILDER.info(message);
 
             this.samplesLight = samplesLight;
             return this;
@@ -347,7 +354,8 @@ public final class Config {
         @Contract("_ -> this")
         @Nonnull
         Config.Builder withOBJ(@Nonnull final String objFilePath) {
-            LOGGER_BUILDER.info(String.format(Locale.US, "withOBJ: %s", objFilePath));
+            final String message = String.format(Locale.US, "withOBJ: %s", objFilePath);
+            LOGGER_BUILDER.info(message);
 
             this.objFilePath = objFilePath;
             return this;
@@ -362,7 +370,8 @@ public final class Config {
         @Contract("_ -> this")
         @Nonnull
         Config.Builder withMAT(@Nonnull final String matFilePath) {
-            LOGGER_BUILDER.info(String.format(Locale.US, "withMAT: %s", matFilePath));
+            final String message = String.format(Locale.US, "withMAT: %s", matFilePath);
+            LOGGER_BUILDER.info(message);
 
             this.matFilePath = matFilePath;
             return this;
@@ -377,7 +386,8 @@ public final class Config {
         @Contract("_ -> this")
         @Nonnull
         Config.Builder withCAM(@Nonnull final String camFilePath) {
-            LOGGER_BUILDER.info(String.format(Locale.US, "withCAM: %s", camFilePath));
+            final String message = String.format(Locale.US, "withCAM: %s", camFilePath);
+            LOGGER_BUILDER.info(message);
 
             this.camFilePath = camFilePath;
             return this;

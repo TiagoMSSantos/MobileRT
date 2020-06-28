@@ -48,7 +48,8 @@ public final class Utils {
     public static void printStackTrace() {
         final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
         for (final StackTraceElement ste : stackTrace) {
-            LOGGER.severe(ste.toString());
+            final String stackTraceElement = "ste: " + ste.toString();
+            LOGGER.severe(stackTraceElement);
         }
     }
 
@@ -62,6 +63,7 @@ public final class Utils {
         // fail by timeout, this interrupt makes the Activity not finish
         // properly.
         final boolean interrupted = Thread.interrupted();
-        LOGGER.severe(String.format("%s exception: %s", methodName, interrupted));
+        final String message = String.format("%s exception: %s", methodName, interrupted);
+        LOGGER.severe(message);
     }
 }

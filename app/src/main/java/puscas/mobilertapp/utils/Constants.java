@@ -2,6 +2,8 @@ package puscas.mobilertapp.utils;
 
 import android.widget.Button;
 
+import org.jetbrains.annotations.NonNls;
+
 import java.util.logging.Logger;
 
 /**
@@ -51,7 +53,7 @@ public final class Constants {
     /**
      * A render {@link Button} text message.
      */
-    public static final String RENDER = "Render";
+    @NonNls public static final String RENDER = "Render";
 
     /**
      * A render {@link Button} text message.

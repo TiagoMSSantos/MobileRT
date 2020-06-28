@@ -19,8 +19,6 @@ import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.egl.EGLSurface;
 
-import puscas.mobilertapp.utils.Constants;
-
 /**
  * The test suite for the {@link MyEGLContextFactory} class.
  */
@@ -57,7 +55,7 @@ public final class MyEGLContextFactoryTest {
     @Contract(pure = true)
     @Nonnull
     private static EGL10 createEGL() {
-        final EGL10 egl = new EGL10() {
+        return new EGL10() {
             @Contract(pure = true)
             @Override
             public boolean eglChooseConfig(final EGLDisplay display, final int[] attrib_list, final EGLConfig[] configs, final int config_size, final int[] num_config) {
@@ -210,7 +208,6 @@ public final class MyEGLContextFactoryTest {
                 return false;
             }
         };
-        return egl;
     }
 
     /**

@@ -154,7 +154,7 @@ public final class DrawView extends GLSurfaceView {
         rtStopRender(true);
         Optional.ofNullable(this.lastTask)
             .ifPresent(task -> task.cancel(false));
-        this.renderer.waitLastTask();
+
         waitLastTask();
         this.renderer.updateButton(R.string.render);
 
@@ -168,13 +168,12 @@ public final class DrawView extends GLSurfaceView {
      * @param numThreads The number of threads to be used in the Ray Tracer engine.
      * @param rasterize  Whether should show a preview (rasterize one frame) or not.
      */
-    public void renderScene(
+    void renderScene(
             @Nonnull final  Config config,
             final int numThreads,
             final boolean rasterize) {
         LOGGER.info(ConstantsMethods.RENDER_SCENE);
 
-        this.renderer.waitLastTask();
         waitLastTask();
 
         this.lastTask = this.executorService.submit(() -> {
@@ -203,7 +202,10 @@ public final class DrawView extends GLSurfaceView {
     /**
      * Waits for the result of the last task submitted to the {@link ExecutorService}.
      */
-    private void waitLastTask() {
+    void waitLastTask() {
+        LOGGER.info("waitLastTask");
+
+        this.renderer.waitLastTask();
         Optional.ofNullable(this.lastTask)
             .ifPresent(task -> {
                 try {
@@ -217,6 +219,8 @@ public final class DrawView extends GLSurfaceView {
                     Utils.handleInterruption("DrawView#waitLastTask");
                 }
             });
+
+        LOGGER.info("waitLastTask finished");
     }
 
     /**
@@ -259,6 +263,8 @@ public final class DrawView extends GLSurfaceView {
      */
     @Contract(pure = true)
     MainRenderer getRenderer() {
+        LOGGER.info("getRenderer");
+
         return this.renderer;
     }
 

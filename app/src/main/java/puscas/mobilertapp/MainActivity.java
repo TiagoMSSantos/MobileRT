@@ -173,7 +173,9 @@ public final class MainActivity extends Activity {
         final int cores = (Build.VERSION.SDK_INT < OLD_API_GET_CORES)
             ? getNumCoresOldPhones()
             : Runtime.getRuntime().availableProcessors();
-        LOGGER.info(String.format(Locale.US, "Number of cores: %d", cores));
+
+        final String message = String.format(Locale.US, "Number of cores: %d", cores);
+        LOGGER.info(message);
         return cores;
     }
 
@@ -183,6 +185,8 @@ public final class MainActivity extends Activity {
      * @param scenePath The path to a directory containing the OBJ and MTL files of a scene to render.
      */
     private void startRender(@Nonnull final String scenePath) {
+        LOGGER.info(ConstantsMethods.START_RENDER);
+
         final int scene = this.pickerScene.getValue();
         final int shader = this.pickerShader.getValue();
         final int accelerator = this.pickerAccelerator.getValue();
@@ -214,6 +218,8 @@ public final class MainActivity extends Activity {
             .build();
 
         this.drawView.renderScene(config, threads, rasterize);
+
+        LOGGER.info(ConstantsMethods.START_RENDER + " finished");
     }
 
     /**
@@ -221,6 +227,8 @@ public final class MainActivity extends Activity {
      * Tracer engine.
      */
     private void showFileChooser() {
+        LOGGER.info("showFileChooser");
+
         final Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("*" + ConstantsUI.FILE_SEPARATOR + "*");
         intent.addCategory(Intent.CATEGORY_OPENABLE);
@@ -230,6 +238,8 @@ public final class MainActivity extends Activity {
         } catch (final android.content.ActivityNotFoundException ex) {
             Toast.makeText(this, ConstantsToast.PLEASE_INSTALL_FILE_MANAGER, Toast.LENGTH_LONG).show();
         }
+
+        LOGGER.info("showFileChooser finished");
     }
 
     /**
@@ -310,12 +320,14 @@ public final class MainActivity extends Activity {
      * @param view The view of the {@link Activity}.
      */
     public void startRender(@Nonnull final View view) {
-        LOGGER.info(ConstantsMethods.START_RENDER);
+        LOGGER.info(ConstantsMethods.START_RENDER + ": " + view.toString());
 
         this.sceneFilePath = "";
         final Scene scene = Scene.values()[this.pickerScene.getValue()];
         final MainRenderer renderer = this.drawView.getRenderer();
         final State state = renderer.getState();
+
+        LOGGER.info(ConstantsMethods.START_RENDER + ": " + state);
         if (state == State.BUSY) {
             this.drawView.stopDrawing();
         } else {
@@ -556,7 +568,8 @@ public final class MainActivity extends Activity {
         LOGGER.info("onPause");
 
         final boolean interrupted = Thread.interrupted();
-        LOGGER.severe(String.format("onPause: %s", interrupted));
+        final String message = String.format("onPause: %s", interrupted);
+        LOGGER.severe(message);
         this.drawView.setPreserveEGLContextOnPause(true);
         this.drawView.onPause();
         this.drawView.setVisibility(View.INVISIBLE);

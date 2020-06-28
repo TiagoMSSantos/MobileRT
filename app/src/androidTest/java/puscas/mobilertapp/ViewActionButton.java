@@ -9,8 +9,8 @@ import androidx.test.espresso.matcher.ViewMatchers;
 
 import org.hamcrest.Matcher;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NonNls;
 
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 
 import javax.annotation.Nonnull;
@@ -29,7 +29,7 @@ final class ViewActionButton implements ViewAction {
     /**
      * The expected text for the {@link Button}.
      */
-    private final String expectedText;
+    @NonNls private final String expectedText;
 
     /**
      * The constructor for this class.
@@ -38,9 +38,11 @@ final class ViewActionButton implements ViewAction {
     ViewActionButton(final String expectedText) {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
-        Thread.interrupted();
 
         this.expectedText = expectedText;
+
+        final boolean interrupted = Thread.interrupted();
+        LOGGER.warning("Reset interrupted: " + interrupted);
     }
 
     @Nonnull
@@ -48,7 +50,9 @@ final class ViewActionButton implements ViewAction {
     public final Matcher<View> getConstraints() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
-        Thread.interrupted();
+
+        final boolean interrupted = Thread.interrupted();
+        LOGGER.warning("Reset interrupted: " + interrupted);
 
         return ViewMatchers.isAssignableFrom(Button.class);
     }
@@ -58,7 +62,9 @@ final class ViewActionButton implements ViewAction {
     public final String getDescription() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
-        Thread.interrupted();
+
+        final boolean interrupted = Thread.interrupted();
+        LOGGER.warning("Reset interrupted: " + interrupted);
 
         return "Click button";
     }
@@ -71,35 +77,34 @@ final class ViewActionButton implements ViewAction {
             final Button button = (Button) view;
             LOGGER.info("ViewActionButton#perform waiting");
 
-            boolean textEquals = button.getText().toString().equals(this.expectedText);
-            while (textEquals) {
-                uiController.loopMainThreadForAtLeast(3000L);
-                textEquals = button.getText().toString().equals(this.expectedText);
+            boolean textEqualsWrongExpected = button.getText().toString().equals(this.expectedText);
+            while (textEqualsWrongExpected) {
+                uiController.loopMainThreadForAtLeast(5000L);
+                textEqualsWrongExpected = button.getText().toString().equals(this.expectedText);
                 LOGGER.info("ViewActionButton# waiting button to NOT have '" + this.expectedText + "' written!!!");
             }
 
             uiController.loopMainThreadUntilIdle();
             LOGGER.info("ViewActionButton#perform clicking button");
-            boolean result = button.performClick();
+            boolean buttonNotClickedProperly = !button.performClick();
             LOGGER.info("ViewActionButton#perform button clicked 1");
-            while (!result) {
-                uiController.loopMainThreadForAtLeast(3000L);
-                result = button.performClick();
+            while (buttonNotClickedProperly) {
+                uiController.loopMainThreadForAtLeast(5000L);
+                buttonNotClickedProperly = !button.performClick();
                 LOGGER.info("ViewActionButton# waiting to click button!!!");
             }
             LOGGER.info("ViewActionButton#perform button clicked 2");
 
-            textEquals = button.getText().toString().equals(this.expectedText);
-            final long advanceSecs = 3L;
-            for (long currentTimeSecs = 0L; currentTimeSecs < 60L && !textEquals; currentTimeSecs += advanceSecs) {
-                result = button.performClick();
+            boolean textEqualsNotExpected = !button.getText().toString().equals(this.expectedText);
+            final long advanceSecs = 5L;
+            for (long currentTimeSecs = 0L; currentTimeSecs < 60L && textEqualsNotExpected; currentTimeSecs += advanceSecs) {
                 uiController.loopMainThreadForAtLeast(advanceSecs * 1000L);
-                textEquals = button.getText().toString().equals(this.expectedText);
+                textEqualsNotExpected = !button.getText().toString().equals(this.expectedText);
                 LOGGER.info("ViewActionButton# waiting button to have '" + this.expectedText + "' written!!!");
             }
         } finally {
-            LOGGER.info("Reset interrupted.");
-            Thread.interrupted();
+            final boolean interrupted = Thread.interrupted();
+            LOGGER.info("Reset interrupted: " + interrupted);
         }
 
         LOGGER.info("ViewActionButton#perform finished");

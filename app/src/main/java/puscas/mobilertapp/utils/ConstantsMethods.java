@@ -4,8 +4,6 @@ import android.view.View;
 
 import java.util.logging.Logger;
 
-import puscas.mobilertapp.Config;
-import puscas.mobilertapp.DrawView;
 import puscas.mobilertapp.MainActivity;
 import puscas.mobilertapp.RenderTask;
 
@@ -20,7 +18,7 @@ public final class ConstantsMethods {
     private static final Logger LOGGER = Logger.getLogger(ConstantsMethods.class.getName());
 
     /**
-     * The name of the {@link DrawView#renderScene(Config, int, boolean)} method.
+     * The name of the {DrawView#renderScene(Config, int, boolean)} method.
      */
     public static final String RENDER_SCENE = "renderScene";
 
