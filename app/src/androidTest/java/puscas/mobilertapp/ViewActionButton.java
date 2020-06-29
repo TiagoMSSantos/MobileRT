@@ -97,7 +97,7 @@ final class ViewActionButton implements ViewAction {
 
             boolean textEqualsNotExpected = !button.getText().toString().equals(this.expectedText);
             final long advanceSecs = 5L;
-            for (long currentTimeSecs = 0L; currentTimeSecs < 60L && textEqualsNotExpected; currentTimeSecs += advanceSecs) {
+            for (long currentTimeSecs = 0L; currentTimeSecs < 30L && textEqualsNotExpected; currentTimeSecs += advanceSecs) {
                 uiController.loopMainThreadForAtLeast(advanceSecs * 1000L);
                 textEqualsNotExpected = !button.getText().toString().equals(this.expectedText);
                 LOGGER.info("ViewActionButton# waiting button to have '" + this.expectedText + "' written!!!");

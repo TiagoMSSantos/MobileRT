@@ -16,7 +16,7 @@ enum class State {
 
 // JNI
 extern "C"
-jint JNI_OnLoad(JavaVM *pjvm, void *reserved);
+jint JNI_OnLoad(JavaVM *jvm, void *reserved);
 
 extern "C"
 void JNI_OnUnload(JavaVM *vm, void *reserved);

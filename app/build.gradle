@@ -153,7 +153,7 @@ dependencies {
 //    implementation 'androidx.multidex:multidex:2.0.1'
 
     // Java dependencies
-    implementation 'com.google.guava:guava:29.0-jre'
+    implementation 'com.google.guava:guava:29.0-android'
     implementation 'net.sourceforge.streamsupport:streamsupport:1.7.2'
     implementation 'org.jetbrains:annotations:19.0.0'
 

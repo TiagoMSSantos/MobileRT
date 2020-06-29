@@ -20,12 +20,12 @@ public enum State {
     /**
      * The {@link State} for the Ray Tracer engine when it ended rendering.
      */
-    END(2),
+    FINISHED(2),
 
     /**
      * The {@link State} for the Ray Tracer engine when was stopped.
      */
-    STOP(3);
+    STOPPED(3);
 
     /**
      * @see State#getId()

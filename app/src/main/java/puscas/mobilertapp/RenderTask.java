@@ -299,11 +299,11 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
     @Override
     protected void onPostExecute(@Nonnull final Void result) {
         LOGGER.info("onPostExecute");
-        printText();
 
-        this.buttonRender.get().setText(R.string.render);
+        printText();
         this.requestRender.run();
         this.finishRender.run();
+        this.buttonRender.get().setText(R.string.render);
 
         LOGGER.info("onPostExecute finished");
     }
@@ -312,7 +312,12 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
     public void onCancelled() {
         super.onCancelled();
         LOGGER.info(ConstantsMethods.ON_CANCELLED + " 1");
+
+        printText();
+        this.requestRender.run();
         this.finishRender.run();
+        this.buttonRender.get().setText(R.string.render);
+
         LOGGER.info(ConstantsMethods.ON_CANCELLED + " 1 finished");
     }
 
@@ -320,7 +325,12 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
     public void onCancelled(@Nonnull final Void result) {
         super.onCancelled(result);
         LOGGER.info(ConstantsMethods.ON_CANCELLED + " 2");
+
+        printText();
+        this.requestRender.run();
         this.finishRender.run();
+        this.buttonRender.get().setText(R.string.render);
+
         LOGGER.info(ConstantsMethods.ON_CANCELLED + " 2 finished");
     }
 

@@ -43,11 +43,11 @@ if [ "${files_being_used}" != "" ]; then
     echo "sleeping 1 sec";
     sleep 1
   done
-  sleep 1
+  sleep 2
 fi
 
-callCommand rm -rf ./app/build/;
 callCommand rm -rf ./app/.cxx/;
+callCommand rm -rf ./app/build/;
 
 callCommand ./gradlew clean assemble${type} --profile --parallel \
   -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \

@@ -347,6 +347,7 @@ public final class MainActivity extends Activity {
                     startRender(this.sceneFilePath);
             }
         }
+        LOGGER.info(ConstantsMethods.START_RENDER + " finished");
     }
 
     /**

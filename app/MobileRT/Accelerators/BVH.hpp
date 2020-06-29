@@ -368,6 +368,8 @@ namespace MobileRT {
 
     /**
      * Gets the index to where the vector of boxes should be split.
+     * <br>
+     * The algorithm used is the Surface Area Heuristic.
      *
      * @tparam Iterator The type of the iterator of the AABBs.
      * @param itBegin   The iterator of the first box in the vector.
