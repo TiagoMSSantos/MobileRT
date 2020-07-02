@@ -10,6 +10,7 @@ import androidx.test.espresso.matcher.ViewMatchers;
 import org.hamcrest.Matcher;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NonNls;
+import org.junit.jupiter.api.Assertions;
 
 import java.util.logging.Logger;
 
@@ -102,6 +103,7 @@ final class ViewActionButton implements ViewAction {
                 textEqualsNotExpected = !button.getText().toString().equals(this.expectedText);
                 LOGGER.info("ViewActionButton# waiting button to have '" + this.expectedText + "' written!!!");
             }
+            Assertions.assertEquals(this.expectedText, button.getText().toString(), "Button with wrong text!!!!!");
         } finally {
             final boolean interrupted = Thread.interrupted();
             LOGGER.info("Reset interrupted: " + interrupted);

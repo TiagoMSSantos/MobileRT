@@ -305,7 +305,7 @@ public final class DrawView extends GLSurfaceView {
         LOGGER.info(ConstantsMethods.ON_DETACHED_FROM_WINDOW);
         super.onDetachedFromWindow();
 
-        stopDrawing();
+        LOGGER.info(ConstantsMethods.ON_DETACHED_FROM_WINDOW + " finished");
     }
 
     @Override
