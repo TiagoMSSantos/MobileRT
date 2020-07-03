@@ -168,14 +168,26 @@ echo "Run instrumentation tests";
 if [ ${run_test} == "all" ]; then
   callCommand ./gradlew connected${type}AndroidTest -DtestType="${type}" \
     -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
-    ${code_coverage} \
+    ${code_coverage} --console plain \
+    | tee ${reports_path}/log_tests_${type}.log 2>&1;
+  resInstrumentationTests=${PIPESTATUS[0]};
+  pid_instrumentation_tests="$!";
+elif [[  ${run_test} == rep_* ]]; then
+  run_test_without_prefix=${run_test#"rep_"};
+  echo "Repeatable of test: " ${run_test_without_prefix};
+  callCommandUntilError ./gradlew connected${type}AndroidTest -DtestType="${type}" \
+    -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
+    -Pandroid.testInstrumentationRunnerArguments.class=${run_test_without_prefix} \
+    --console plain \
     | tee ${reports_path}/log_tests_${type}.log 2>&1;
   resInstrumentationTests=${PIPESTATUS[0]};
   pid_instrumentation_tests="$!";
 else
+  echo "Test: " + ${run_test};
   callCommand ./gradlew connected${type}AndroidTest -DtestType="${type}" \
     -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
     -Pandroid.testInstrumentationRunnerArguments.class=${run_test} \
+    --console plain \
     | tee ${reports_path}/log_tests_${type}.log 2>&1;
   resInstrumentationTests=${PIPESTATUS[0]};
   pid_instrumentation_tests="$!";

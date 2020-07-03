@@ -3,6 +3,8 @@ package puscas.mobilertapp;
 import android.graphics.Bitmap;
 import android.os.Build;
 
+import androidx.multidex.BuildConfig;
+
 import org.junit.Assume;
 
 import java.lang.reflect.Field;

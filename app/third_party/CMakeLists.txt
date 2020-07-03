@@ -124,6 +124,9 @@ foreach( submodule assert )
     ${BOOST_PATH}/${submodule}
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/boost
   )
+  execute_process( COMMAND git checkout master --progress
+    WORKING_DIRECTORY ${BOOST_PATH}/${submodule}
+  )
   target_include_directories( MobileRT SYSTEM PUBLIC
     "${BOOST_PATH}/${submodule}/include"
   )

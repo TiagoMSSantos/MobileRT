@@ -30,6 +30,9 @@ echo "type: '${type}'";
 reports_path=./app/build/reports
 callCommand mkdir -p ${reports_path}
 
+rm -rf ./app/.cxx/;
+rm -rf ./app/build/;
+
 files_being_used=`find -name "*.fuse_hidden*" | grep -i ".fuse_hidden"`
 echo "files_being_used: '${files_being_used}'";
 
@@ -43,7 +46,6 @@ if [ "${files_being_used}" != "" ]; then
     echo "sleeping 1 sec";
     sleep 1
   done
-  sleep 2
 fi
 
 callCommand rm -rf ./app/.cxx/;
@@ -51,6 +53,7 @@ callCommand rm -rf ./app/build/;
 
 callCommand ./gradlew clean assemble${type} --profile --parallel \
   -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
+  --console plain \
   | tee ${reports_path}/log_build_${type}.log 2>&1;
 resCompile=${PIPESTATUS[0]};
 ###############################################################################

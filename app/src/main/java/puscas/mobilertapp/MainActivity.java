@@ -320,14 +320,16 @@ public final class MainActivity extends Activity {
      * @param view The view of the {@link Activity}.
      */
     public void startRender(@Nonnull final View view) {
-        LOGGER.info(ConstantsMethods.START_RENDER + ": " + view.toString());
+        final String message = String.format(Locale.US, "%s: %s", ConstantsMethods.START_RENDER, view.toString());
+        LOGGER.info(message);
 
         this.sceneFilePath = "";
         final Scene scene = Scene.values()[this.pickerScene.getValue()];
         final MainRenderer renderer = this.drawView.getRenderer();
         final State state = renderer.getState();
 
-        LOGGER.info(ConstantsMethods.START_RENDER + ": " + state);
+        final String message2 = String.format(Locale.US, "%s: %s", ConstantsMethods.START_RENDER, state.toString());
+        LOGGER.info(message2);
         if (state == State.BUSY) {
             this.drawView.stopDrawing();
         } else {

@@ -28,6 +28,7 @@ callCommand mkdir -p ${reports_path}
 
 callCommand ./gradlew check --profile --parallel \
   -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
+  --console plain \
   | tee ${reports_path}/log_check_${type}.log 2>&1;
 resCheck=${PIPESTATUS[0]};
 ###############################################################################
