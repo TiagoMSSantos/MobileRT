@@ -111,7 +111,7 @@ adb shell whoami;
 started_emulator=${PIPESTATUS[0]};
 
 echo "Wait for device to be available.";
-emulator -avd ${avd_emulator} 2> /dev/null &
+emulator -avd ${avd_emulator} -writable-system 2> /dev/null &
 
 callCommand sleep 1;
 callCommand adb wait-for-device;
@@ -136,7 +136,7 @@ mobilert_path="/data/MobileRT";
 
 echo "Copy unit tests";
 callCommand adb shell mkdir -p ${mobilert_path};
-callCommand adb shell rm -rf ${mobilert_path}/*;
+callCommand adb shell rm -r ${mobilert_path}/*;
 callCommand adb push app/build/intermediates/cmake/${type}/obj/x86/* ${mobilert_path}/;
 
 echo "Copy tests resources";
