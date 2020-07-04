@@ -8,15 +8,15 @@
 function callCommand() {
   echo "";
   echo "Calling '$*'";
-  $@;
+  "$@";
   local lastResult=${PIPESTATUS[0]};
   local lastCommand="$*";
-  if [ ${lastResult} -eq 0 ]; then
+  if [ "${lastResult}" -eq 0 ]; then
     echo "${lastCommand}: success - '${lastResult}'";
   else
     echo "${lastCommand}: failed - '${lastResult}'";
     echo "";
-    exit ${lastResult};
+    exit "${lastResult}";
   fi
 }
 
@@ -25,15 +25,15 @@ function callCommandUntilError() {
   echo "";
   echo "Calling until error '$*'";
   local retry=0;
-  $@;
+  "$@";
   local lastResult=${PIPESTATUS[0]};
-  while [ ${lastResult} -eq 0 ]; do
-    echo "Retry: $retry";
-    retry=$(( ${retry} + 1 ));
-    $@;
+  while [ "${lastResult}" -eq 0 ]; do
+    echo "Retry: ${retry}";
+    retry=$(( "${retry}" + 1 ));
+    "$@";
     lastResult=${PIPESTATUS[0]};
   done
-  exit ${lastResult};
+  exit "${lastResult}";
 }
 ###############################################################################
 ###############################################################################

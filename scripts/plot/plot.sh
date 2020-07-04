@@ -2,31 +2,31 @@
 
 SEP=" "
 
-i=1
-for FILE in ${FILES[@]}
+i=1;
+for FILE in "${FILES[@]}"
 do
-  GRAPH[${i}]="file${i}='"${FILE}"'"
-  ((i++))
+  GRAPH[${i}]="file${i}='${FILE}'";
+  ((i++));
 done
 
-i=1
-for f in ${GRAPH[@]}
+i=1;
+for f in "${GRAPH[@]}"
 do
-  GRAPHS+=" -e ${GRAPH[${i}]}"
-  ((i++))
+  GRAPHS+=" -e ${f}";
+  ((i++));
 done
 
-i=0
-for f in ${FILES[@]}
+i=0;
+for f in "${FILES[@]}"
 do
-  FILENAMES+="${FILES[${i}]}${SEP}"
-  ((i++))
+  FILENAMES+="${f}${SEP}";
+  ((i++));
 done
 
-SPEEDUP=${1}
+SPEEDUP=${1};
 gnuplot \
   -e "files='${#FILES[@]}'" \
   -e "filenames='${FILENAMES}'" \
   -e "speedup='${SPEEDUP}'" \
-  -e "separator='${SEP}'" ${GRAPHS} \
-  -c ${PLOT_SCRIPTS}/plot_output.gp
+  -e "separator='${SEP}'" "${GRAPHS}" \
+  -c "${PLOT_SCRIPTS}"/plot_output.gp;

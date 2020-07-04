@@ -41,9 +41,9 @@ if [ -z "${PLOT_GRAPHS}" ]; then
 fi
 mkdir -p ${PLOT_GRAPHS}
 
-for FOLDER in ${PLOT_GRAPHS[@]}
+for FOLDER in "${PLOT_GRAPHS[@]}"
 do
-  FILES+=($(find ${FOLDER} -type f))
+  FILES+=("$(find ${FOLDER} -type f)")
 done
 
 OBJ="${OBJS_PATH}/conference/conference.obj"
@@ -161,31 +161,31 @@ SPL="1"
 
 function execute {
   echo ""
-  echo "THREAD = "${THREAD}
-  echo "SHADER = "${SHADER}
-  echo "SCENE = "${SCENE}
-  echo "ACC = "${ACC}
+  echo "THREAD = ${THREAD}"
+  echo "SHADER = ${SHADER}"
+  echo "SCENE = ${SCENE}"
+  echo "ACC = ${ACC}"
 
   #perf script report callgrind > perf.callgrind
   #kcachegrind perf.callgrind
   #perf stat \
   #perf record -g --call-graph 'fp' -- \
-  ${BIN_RELEASE_PATH}/AppMobileRT \
-            ${THREAD} ${SHADER} ${SCENE} ${SPP} ${SPL} ${WIDTH} ${HEIGHT} ${ACC} ${REP} \
-            ${OBJ} ${MTL} ${CAM} ${PRINT} ${ASYNC} ${SHOWIMAGE}
+  "${BIN_RELEASE_PATH}"/AppMobileRT \
+            "${THREAD}" ${SHADER} ${SCENE} ${SPP} ${SPL} ${WIDTH} ${HEIGHT} ${ACC} ${REP} \
+            "${OBJ}" "${MTL}" "${CAM}" ${PRINT} ${ASYNC} ${SHOWIMAGE}
   #perf report -g '' --show-nr-samples --hierarchy
 }
 
 function debug {
   echo ""
-  echo "THREAD = "${THREAD}
-  echo "SHADER = "${SHADER}
-  echo "SCENE = "${SCENE}
-  echo "ACC = "${ACC}
+  echo "THREAD = ${THREAD}"
+  echo "SHADER = ${SHADER}"
+  echo "SCENE = ${SCENE}"
+  echo "ACC = ${ACC}"
 
-  ${BIN_DEBUG_PATH}/AppMobileRTd \
-            ${THREAD} ${SHADER} ${SCENE} ${SPP} ${SPL} ${WIDTH} ${HEIGHT} ${ACC} ${REP} \
-            ${OBJ} ${MTL} ${CAM} ${PRINT} ${ASYNC} ${SHOWIMAGE}
+  "${BIN_DEBUG_PATH}"/AppMobileRTd \
+            "${THREAD}" ${SHADER} ${SCENE} ${SPP} ${SPL} ${WIDTH} ${HEIGHT} ${ACC} ${REP} \
+            "${OBJ}" "${MTL}" "${CAM}" ${PRINT} ${ASYNC} ${SHOWIMAGE}
 }
 
 
@@ -197,55 +197,55 @@ function clangtidy {
 	-analyze-temporary-dtors \
 	-checks='*,-*llvm-header-guard*,-fuchsia-default-arguments,-fuchsia-overloaded-operator' \
 	-header-filter='.*' \
-  ${MOBILERT_SRCS}/MobileRT/*.*pp \
-  ${MOBILERT_SRCS}/MobileRT/*/*.*pp \
-  ${COMPONENTS_SRCS}/Components/*/*.*pp \
-	${DEPENDENT_SRCS}/Linux/*.*pp \
-  ${SCENES_SRCS}/*.*pp \
+  "${MOBILERT_SRCS}"/MobileRT/*.*pp \
+  "${MOBILERT_SRCS}"/MobileRT/*/*.*pp \
+  "${COMPONENTS_SRCS}"/Components/*/*.*pp \
+	"${DEPENDENT_SRCS}"/Linux/*.*pp \
+  "${SCENES_SRCS}"/*.*pp \
 	-- -std=c++11 -ferror-limit=1 -stdlib=libc++ \
-  -I ${MOBILERT_SRCS} \
-  -I ${COMPONENTS_SRCS} \
-  -I ${DEPENDENT_SRCS}/Linux \
-  -I ${SCENES_SRCS} \
-  -isystem ${THIRDPARTY_HEADERS} \
-  -isystem ${GLM_HEADERS} \
-  -isystem ${STB_HEADERS} \
-  ${BOOST_HEADERS} \
+  -I "${MOBILERT_SRCS}" \
+  -I "${COMPONENTS_SRCS}" \
+  -I "${DEPENDENT_SRCS}"/Linux \
+  -I "${SCENES_SRCS}" \
+  -isystem "${THIRDPARTY_HEADERS}" \
+  -isystem "${GLM_HEADERS}" \
+  -isystem "${STB_HEADERS}" \
+  "${BOOST_HEADERS}" \
   -isystem /usr/include/c++/7 \
   -isystem /usr/include/c++/v1 \
   -isystem /usr/include/x86_64-linux-gnu/c++/7 \
   -isystem /usr/include/glib-2.0/gobject \
   -isystem /usr/include/gtk-2.0/gtk \
-	${GTK_HEADERS} \
-	2>&1 | tee ${SCRIPTS_PATH}/tidy.out
+	"${GTK_HEADERS}" \
+	2>&1 | tee "${SCRIPTS_PATH}"/tidy.out
 }
 
 function profile {
   trap "exit" INT
-  for R in `seq 1 ${REPETITIONS}`;
+  for R in $(seq 1 ${REPETITIONS});
   do
-    for THREAD in ${THREADS[@]}
+    for THREAD in "${THREADS[@]}"
     do
-      for SHADER in ${SHADERS[@]}
+      for SHADER in "${SHADERS[@]}"
       do
-        for SCENE in ${SCENES[@]}
+        for SCENE in "${SCENES[@]}"
         do
-          for ACC in ${ACCELERATORS[@]}
+          for ACC in "${ACCELERATORS[@]}"
           do
             echo ""
             echo "REPETITION = ${R}"
-            echo "THREAD = "${THREAD}
-            echo "SHADER = "${SHADER}
-            echo "SCENE = "${SCENE}
-            echo "ACC = "${ACC}
+            echo "THREAD = ${THREAD}"
+            echo "SHADER = ${SHADER}"
+            echo "SCENE = ${SCENE}"
+            echo "ACC = ${ACC}"
 
             PLOT_FILE="SC${SCENE}${SEP}SH${SHADER}${SEP}A${ACC}${SEP}R${WIDTH}x${HEIGHT}"
 
-            ${BIN_DEBUG_PATH}/AppMobileRTd \
-            ${THREAD} ${SHADER} ${SCENE} ${SPP} ${SPL} ${WIDTH} ${HEIGHT} ${ACC} ${REP} \
-            ${OBJ} ${MTL} ${CAM} ${PRINT} ${ASYNC} ${SHOWIMAGE} \
-            | awk -v threads="${THREAD}" -f ${PLOT_SCRIPTS_PATH}/parser_out.awk 2>&1 \
-            | tee -a ${PLOT_GRAPHS}/${PLOT_FILE}.dat
+            "${BIN_DEBUG_PATH}"/AppMobileRTd \
+            ${THREAD} "${SHADER}" ${SCENE} ${SPP} ${SPL} ${WIDTH} ${HEIGHT} "${ACC}" ${REP} \
+            "${OBJ}" "${MTL}" "${CAM}" ${PRINT} ${ASYNC} ${SHOWIMAGE} \
+            | awk -v threads="${THREAD}" -f "${PLOT_SCRIPTS_PATH}"/parser_out.awk 2>&1 \
+            | tee -a ${PLOT_GRAPHS}/"${PLOT_FILE}".dat
 
           done
         done
@@ -267,16 +267,16 @@ PARAM8="Debug"
 if [ $# -eq 0 ]; then
     execute
 else
-    for P in ${@}
+    for P in "${@}"
     do
       case ${P} in
         ${PARAM1}) profile; sleep 2s ;;
-        ${PARAM2}) . ${PLOT_SCRIPTS_PATH}/plot.sh 0;;
-        ${PARAM3}) . ${PLOT_SCRIPTS_PATH}/plot.sh 1;;
+        ${PARAM2}) . ./scripts/plot/plot.sh 0;;
+        ${PARAM3}) . ./scripts/plot/plot.sh 1;;
         ${PARAM4}) awk -f "${PLOT_SCRIPTS_PATH}/parser_median.awk" "${PLOT_SCRIPTS_PATH}/test.dat"  ;;
         ${PARAM5}) execute ;;
         ${PARAM6}) clangtidy ;;
-        ${PARAM7}) ${BIN_DEBUG_PATH}/UnitTestsd ;;
+        ${PARAM7}) "${BIN_DEBUG_PATH}"/UnitTestsd ;;
         ${PARAM8}) debug ;;
         *) echo ""
            echo "Wrong Parameter: ${P}"
