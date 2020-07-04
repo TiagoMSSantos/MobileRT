@@ -338,11 +338,14 @@ static void updateFps() {
 extern "C"
 void Java_puscas_mobilertapp_DrawView_rtStartRender(
         JNIEnv *env,
-        jobject /*thiz*/
+        jobject /*thiz*/,
+        jboolean wait
 ) {
-    ::std::unique_lock<::std::mutex> lock {mutex_};
-    rendered_.wait(lock, [&]{return finishedRendering_ == true;});
-    finishedRendering_ = false;
+    if (wait) {
+        ::std::unique_lock<::std::mutex> lock{mutex_};
+        rendered_.wait(lock, [&] { return finishedRendering_ == true; });
+        finishedRendering_ = false;
+    }
     state_ = State::BUSY;
     LOG("STATE = BUSY");
     env->ExceptionClear();

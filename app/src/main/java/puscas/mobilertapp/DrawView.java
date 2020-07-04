@@ -107,7 +107,7 @@ public final class DrawView extends GLSurfaceView {
     /**
      * Sets the Ray Tracer engine {@link State} to {@link State#BUSY}.
      */
-    private native void rtStartRender();
+    private native void rtStartRender(boolean wait);
 
     /**
      * Gets the number of lights in the scene.
@@ -175,12 +175,13 @@ public final class DrawView extends GLSurfaceView {
         LOGGER.info(ConstantsMethods.RENDER_SCENE);
 
         waitLastTask();
+        rtStartRender(false);
 
         this.lastTask = this.executorService.submit(() -> {
             LOGGER.info(ConstantsMethods.RENDER_SCENE + " executor");
 
             this.renderer.waitLastTask();
-            rtStartRender();
+            rtStartRender(true);
             try {
                 createScene(config, numThreads, rasterize);
                 requestRender();
@@ -196,6 +197,7 @@ public final class DrawView extends GLSurfaceView {
             return Boolean.FALSE;
         });
         this.renderer.updateButton(R.string.stop);
+
         LOGGER.info(ConstantsMethods.RENDER_SCENE + " finished");
     }
 

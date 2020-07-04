@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.google.common.util.concurrent.Uninterruptibles;
 
 import org.jetbrains.annotations.Contract;
 
@@ -341,6 +342,12 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      */
     State getState() {
         LOGGER.info("getState");
+
+        while (this.firstFrame) {
+            LOGGER.info("Waiting for the onDraw to start the RT engine!!!");
+            Uninterruptibles.sleepUninterruptibly(500L, TimeUnit.MILLISECONDS);
+            LOGGER.info("Waited for the onDraw to start the RT engine!!!");
+        }
 
         return Optional.ofNullable(this.renderTask)
             .map(task -> State.values()[task.rtGetState()])
@@ -1004,7 +1011,6 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         validateBitmap();
         if (this.firstFrame) {
             LOGGER.info("onDrawFirstFrame");
-            this.firstFrame = false;
 
             if (this.rasterize) {
                 this.rasterize = false;
@@ -1051,6 +1057,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         validateBitmap();
         drawBitmap();
         validateBitmap();
+        this.firstFrame = false;
     }
 
     /**

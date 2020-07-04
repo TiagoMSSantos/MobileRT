@@ -70,6 +70,11 @@ public final class MainActivity extends Activity {
     private static final Logger LOGGER = Logger.getLogger(MainActivity.class.getName());
 
     /**
+     * The global counter of how many times the button was clicked.
+     */
+    private static long clickCounter = 0L;
+
+    /**
      * The latest version of Android API which needs the old method of getting the number of CPU cores.
      */
     private static final int OLD_API_GET_CORES = 17;
@@ -330,6 +335,12 @@ public final class MainActivity extends Activity {
 
         final String message2 = String.format(Locale.US, "%s: %s", ConstantsMethods.START_RENDER, state.toString());
         LOGGER.info(message2);
+
+        ++clickCounter;
+        final String counterMessage = String.format(Locale.US,
+            "BUTTON CLICKED: %d (%s)", clickCounter, state.toString());
+        LOGGER.info(counterMessage);
+
         if (state == State.BUSY) {
             this.drawView.stopDrawing();
         } else {

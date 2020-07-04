@@ -7,11 +7,14 @@ import androidx.test.espresso.UiController;
 import androidx.test.espresso.ViewAction;
 import androidx.test.espresso.matcher.ViewMatchers;
 
+import com.google.common.util.concurrent.Uninterruptibles;
+
 import org.hamcrest.Matcher;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NonNls;
 import org.junit.jupiter.api.Assertions;
 
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import javax.annotation.Nonnull;
@@ -26,6 +29,11 @@ final class ViewActionButton implements ViewAction {
      */
     private static final Logger LOGGER =
         Logger.getLogger(ViewActionButton.class.getName());
+
+    /**
+     * The global counter of how many times the button was clicked.
+     */
+    private static long clickCounter = 0L;
 
     /**
      * The expected text for the {@link Button}.
@@ -88,18 +96,21 @@ final class ViewActionButton implements ViewAction {
             uiController.loopMainThreadUntilIdle();
             LOGGER.info("ViewActionButton#perform clicking button");
             boolean buttonNotClickedProperly = !button.performClick();
-            LOGGER.info("ViewActionButton#perform button clicked 1");
+            ++clickCounter;
+            LOGGER.info("ViewActionButton#perform BUTTON CLICKED: " + clickCounter + " (" + this.expectedText + ")");
             while (buttonNotClickedProperly) {
                 uiController.loopMainThreadForAtLeast(5000L);
                 buttonNotClickedProperly = !button.performClick();
+                ++clickCounter;
+                LOGGER.info("ViewActionButton#perform BUTTON CLICKED: " + clickCounter + " (" + this.expectedText + ")");
                 LOGGER.info("ViewActionButton# waiting to click button!!!");
             }
-            LOGGER.info("ViewActionButton#perform button clicked 2");
 
             boolean textEqualsNotExpected = !button.getText().toString().equals(this.expectedText);
             final long advanceSecs = 5L;
-            for (long currentTimeSecs = 0L; currentTimeSecs < 30L && textEqualsNotExpected; currentTimeSecs += advanceSecs) {
+            for (long currentTimeSecs = 0L; currentTimeSecs < 60L && textEqualsNotExpected; currentTimeSecs += advanceSecs) {
                 uiController.loopMainThreadForAtLeast(advanceSecs * 1000L);
+                Uninterruptibles.sleepUninterruptibly(advanceSecs, TimeUnit.SECONDS);
                 textEqualsNotExpected = !button.getText().toString().equals(this.expectedText);
                 LOGGER.info("ViewActionButton# waiting button to have '" + this.expectedText + "' written!!!");
             }

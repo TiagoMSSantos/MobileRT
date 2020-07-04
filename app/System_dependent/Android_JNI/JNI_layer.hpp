@@ -33,7 +33,8 @@ void Java_puscas_mobilertapp_DrawView_rtStopRender(
 extern "C"
 void Java_puscas_mobilertapp_DrawView_rtStartRender(
         JNIEnv *env,
-        jobject thiz
+        jobject thiz,
+        jboolean wait
 );
 
 extern "C"

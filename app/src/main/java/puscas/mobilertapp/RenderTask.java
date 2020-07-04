@@ -315,8 +315,6 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
 
         printText();
         this.requestRender.run();
-        this.finishRender.run();
-        this.buttonRender.get().setText(R.string.render);
 
         LOGGER.info(ConstantsMethods.ON_CANCELLED + " 1 finished");
     }
@@ -328,8 +326,6 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
 
         printText();
         this.requestRender.run();
-        this.finishRender.run();
-        this.buttonRender.get().setText(R.string.render);
 
         LOGGER.info(ConstantsMethods.ON_CANCELLED + " 2 finished");
     }
