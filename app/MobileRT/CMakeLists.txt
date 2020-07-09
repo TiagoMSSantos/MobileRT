@@ -18,7 +18,8 @@ add_library( ${PROJECT_NAME} SHARED ${MOBILE_RT_SOURCES} )
 ###############################################################################
 message( STATUS "Adding MobileRT and third party headers." )
 target_include_directories( ${PROJECT_NAME} PUBLIC "${MOBILE_RT_HEADERS}" )
-target_include_directories( ${PROJECT_NAME} PUBLIC "${MOBILE_DEPENDENT_HEADERS}" )
+target_include_directories( ${PROJECT_NAME} PUBLIC "${MOBILE_DEPENDENT_HEADERS}"
+)
 target_include_directories( ${PROJECT_NAME} SYSTEM PUBLIC "${GLM_HEADERS}" )
 ###############################################################################
 ###############################################################################
@@ -30,14 +31,11 @@ target_include_directories( ${PROJECT_NAME} SYSTEM PUBLIC "${GLM_HEADERS}" )
 message( STATUS "Adding compiler flags." )
 target_compile_options( ${PROJECT_NAME} PRIVATE ${COMMON_FLAGS} )
 target_compile_options( ${PROJECT_NAME} PRIVATE
-  $<$<CONFIG:DEBUG>:${COMMON_FLAGS_DEBUG}>
-)
+  $<$<CONFIG:DEBUG>:${COMMON_FLAGS_DEBUG}> )
 target_compile_options( ${PROJECT_NAME} PRIVATE
-  $<$<CONFIG:DEBUG>:${COMMON_FLAGS_TEST}>
-)
+  $<$<CONFIG:DEBUG>:${COMMON_FLAGS_TEST}> )
 target_compile_options( ${PROJECT_NAME} PRIVATE
-  $<$<CONFIG:RELEASE>:${COMMON_FLAGS_RELEASE}>
-)
+  $<$<CONFIG:RELEASE>:${COMMON_FLAGS_RELEASE}> )
 ###############################################################################
 ###############################################################################
 
@@ -81,7 +79,6 @@ target_link_libraries( ${PROJECT_NAME}
   PRIVATE glm
   general "${COMMON_LINKER_FLAGS}"
   debug "${COMMON_LINKER_FLAGS_DEBUG}" "${COMMON_LINKER_FLAGS_TEST}"
-  optimized "${COMMON_LINKER_FLAGS_RELEASE}"
-)
+  optimized "${COMMON_LINKER_FLAGS_RELEASE}" )
 ###############################################################################
 ###############################################################################

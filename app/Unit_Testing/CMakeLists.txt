@@ -18,8 +18,7 @@ add_executable( ${PROJECT_NAME} ${GTEST_SOURCES} )
 ###############################################################################
 message( STATUS "Adding debug postfix." )
 set_target_properties( ${PROJECT_NAME} PROPERTIES
-  DEBUG_POSTFIX "${CMAKE_DEBUG_POSTFIX}"
-)
+  DEBUG_POSTFIX "${CMAKE_DEBUG_POSTFIX}" )
 ###############################################################################
 ###############################################################################
 
@@ -30,11 +29,9 @@ set_target_properties( ${PROJECT_NAME} PROPERTIES
 message( STATUS "Adding compiler flags." )
 target_compile_options( ${PROJECT_NAME} PRIVATE ${COMMON_FLAGS} )
 target_compile_options( ${PROJECT_NAME} PRIVATE
-  $<$<CONFIG:DEBUG>:${COMMON_FLAGS_DEBUG}>
-)
+  $<$<CONFIG:DEBUG>:${COMMON_FLAGS_DEBUG}> )
 target_compile_options( ${PROJECT_NAME} PRIVATE
-  $<$<CONFIG:RELEASE>:${COMMON_FLAGS_RELEASE}>
-)
+  $<$<CONFIG:RELEASE>:${COMMON_FLAGS_RELEASE}> )
 
 # Turn off warnings because of Google Test
 target_compile_options( ${PROJECT_NAME} PRIVATE -Wno-global-constructors )
@@ -52,7 +49,6 @@ target_link_libraries( ${PROJECT_NAME}
   PRIVATE MobileRT Components gtest
   general "${COMMON_LINKER_FLAGS}"
   debug "${COMMON_LINKER_FLAGS_DEBUG}" "${COMMON_LINKER_FLAGS_TEST}"
-  optimized "${COMMON_LINKER_FLAGS_RELEASE}"
-)
+  optimized "${COMMON_LINKER_FLAGS_RELEASE}" )
 ###############################################################################
 ###############################################################################

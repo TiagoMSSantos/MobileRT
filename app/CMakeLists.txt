@@ -20,7 +20,11 @@ print_environment()
 # Check CMake version
 ###############################################################################
 message( STATUS "Recommended CMake version: 3.0+." )
+
 cmake_minimum_required( VERSION 3.0...3.0 FATAL_ERROR )
+
+message( STATUS
+  "Setting policies for compatibility with CMake v3.0.")
 cmake_policy( VERSION 3.0 )
 ###############################################################################
 ###############################################################################
@@ -31,47 +35,65 @@ cmake_policy( VERSION 3.0 )
 ###############################################################################
 message( STATUS "Adding custom default flags for all third party projects." )
 
+message( STATUS "Setting default compiler flags." )
 set( ANDROID_COMPILER_FLAGS "" CACHE STRING "CUSTOM" FORCE )
 
-set( CMAKE_CXX_FLAGS "-std=c++11 -fPIC -Bsymbolic -Bsymbolic-functions" CACHE STRING "CUSTOM" FORCE )
+# PIC: Position Independent Code
+set( CMAKE_CXX_FLAGS "-std=c++11 -fPIC -Bsymbolic -Bsymbolic-functions"
+  CACHE STRING "CUSTOM" FORCE )
+# _GLIBCXX_DEBUG: activate debug mode and all the assertions
 set( CMAKE_CXX_FLAGS_DEBUG "-D_GLIBCXX_DEBUG" CACHE STRING "CUSTOM" FORCE )
+# NDEBUG: Deactivate all the assertions
+# ffunction-sections: generates a separate ELF section for each function in
+# the source file. The unused section elimination feature of the linker can
+# then remove unused functions at link time.
+# fdata-sections: enables the generation of one ELF section for each variable
+# in the source file.
 set( CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG -ffunction-sections -fdata-sections"
-  CACHE STRING "CUSTOM" FORCE
-)
+  CACHE STRING "CUSTOM" FORCE )
 set( CMAKE_CXX_FLAGS_RELWITHDEBINFO "" CACHE STRING "CUSTOM" FORCE )
 set( CMAKE_CXX_FLAGS_MINSIZEREL "" CACHE STRING "CUSTOM" FORCE )
 
-set( CMAKE_EXE_LINKER_FLAGS "-Bsymbolic -Bsymbolic-functions" CACHE STRING "CUSTOM" FORCE )
+message( STATUS "Setting default linker flags." )
+# -Bsymbolic-functions: this tells the linker to use direct local jumps to
+# symbols within your library instead of trying to resolve them by the usual
+# means. The effect is that every function call within your library will be
+# initially faster since there's no lookup required.
+# This leads to faster load times.
+set( CMAKE_EXE_LINKER_FLAGS "-Bsymbolic -Bsymbolic-functions"
+  CACHE STRING "CUSTOM" FORCE )
 set( CMAKE_EXE_LINKER_FLAGS_DEBUG "" CACHE STRING "CUSTOM" FORCE )
+# discard-all: delete all local symbols.
+# fno-rtti: disable generation of information about every class with virtual
+# functions for use by the C++ runtime type identification features
+# (`dynamic_cast' and `typeid'). If you don't use those parts of the language,
+# you can save some space by using this flag.
 set( CMAKE_EXE_LINKER_FLAGS_RELEASE "-O3 -discard-all -fno-rtti"
-  CACHE STRING "CUSTOM" FORCE
-)
+  CACHE STRING "CUSTOM" FORCE )
 set( CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO "" CACHE STRING "CUSTOM" FORCE )
 set( CMAKE_EXE_LINKER_FLAGS_MINSIZEREL "" CACHE STRING "CUSTOM" FORCE )
 
-set( CMAKE_SHARED_LINKER_FLAGS "-Bsymbolic -Bsymbolic-functions" CACHE STRING "CUSTOM" FORCE )
+set( CMAKE_SHARED_LINKER_FLAGS "-Bsymbolic -Bsymbolic-functions"
+  CACHE STRING "CUSTOM" FORCE )
 set( CMAKE_SHARED_LINKER_FLAGS_DEBUG "" CACHE STRING "CUSTOM" FORCE )
 set( CMAKE_SHARED_LINKER_FLAGS_RELEASE "-O3 -discard-all -fno-rtti"
-  CACHE STRING "CUSTOM" FORCE
-)
+  CACHE STRING "CUSTOM" FORCE )
 
 if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
   message( STATUS "Detected not Windows OS." )
 
   if( CMAKE_CXX_COMPILER MATCHES "clang" OR DEFINED ANDROID_ABI )
+	# flto: Link Time Optimization
     set( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -flto=full"
-      CACHE STRING "CUSTOM" FORCE
-    )
+      CACHE STRING "CUSTOM" FORCE )
   endif()
 
   set( CMAKE_EXE_LINKER_FLAGS_RELEASE
     "${CMAKE_EXE_LINKER_FLAGS_RELEASE} -flto=full"
-    CACHE STRING "CUSTOM" FORCE
-  )
+    CACHE STRING "CUSTOM" FORCE )
   set( CMAKE_SHARED_LINKER_FLAGS_RELEASE
     "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} -flto=full"
-    CACHE STRING "CUSTOM" FORCE
-  )
+    CACHE STRING "CUSTOM" FORCE )
 endif()
 
 set( CMAKE_SHARED_LINKER_FLAGS_RELWITHDEBINFO "" CACHE STRING "CUSTOM" FORCE )
@@ -80,15 +102,13 @@ set( CMAKE_SHARED_LINKER_FLAGS_MINSIZEREL "" CACHE STRING "CUSTOM" FORCE )
 if( NOT DEFINED ANDROID_ABI )
   message( STATUS "Detected native OS." )
   set( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -march=native"
-    CACHE STRING "CUSTOM" FORCE
-  )
+    CACHE STRING "CUSTOM" FORCE )
   if( CMAKE_HOST_SYSTEM_NAME MATCHES "Darwin" )
     message( STATUS "Detected native MacOS." )
 
     # Add linker flag to link with Qt framework in MacOS
     set( CMAKE_SHARED_LIBRARY_SONAME_CXX_FLAG "-Wl,-install_name,"
-      CACHE STRING "CUSTOM" FORCE
-    )
+      CACHE STRING "CUSTOM" FORCE )
   endif()
 endif()
 
@@ -129,21 +149,24 @@ set( COMMON_LINKER_FLAGS_RELEASE "" )
 ###############################################################################
 ###############################################################################
 
-message( STATUS "Setting up the name of the OS and the proper interface layer." )
+message( STATUS
+  "Setting up the name of the OS and the proper interface layer." )
 message( STATUS "Host system: ${CMAKE_HOST_SYSTEM_NAME}." )
 # Use to make MacOS use the right OpenMP headers
 set( CMAKE_SYSTEM_NAME "Linux" )
 if( DEFINED ANDROID_ABI )
   message( STATUS "Detected Android OS." )
 
-  set( MOBILE_DEPENDENT_HEADERS "${CMAKE_SOURCE_DIR}/System_dependent/Android_JNI" )
+  set( MOBILE_DEPENDENT_HEADERS
+	"${CMAKE_SOURCE_DIR}/System_dependent/Android_JNI" )
   set( COMMON_FLAGS "${COMMON_FLAGS}" -stdlib=libc++ )
 else()
   message( STATUS "Detected Native OS." )
 
   set( MOBILE_DEPENDENT_HEADERS "${CMAKE_SOURCE_DIR}/System_dependent/Linux" )
 
-  message( STATUS "Add flag to generate instructions for the machine type native." )
+  message( STATUS
+	"Add flag to generate instructions for the machine type native." )
   set( COMMON_FLAGS "${COMMON_FLAGS}" -march=native )
 
   string( TOLOWER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_L )
@@ -184,8 +207,7 @@ if( NOT DEFINED ANDROID_ABI AND CMAKE_HOST_SYSTEM_NAME MATCHES "Darwin" )
 
     set( COMMON_FLAGS "${COMMON_FLAGS}"
       -Wno-signed-enum-bitfield
-      -Wno-sign-conversion
-    )
+      -Wno-sign-conversion )
   endif()
 endif()
 
@@ -197,14 +219,12 @@ set( THIRD_PARTY_HEADERS "${CMAKE_SOURCE_DIR}/third_party" )
 set( GLM_HEADERS "${CMAKE_SOURCE_DIR}/third_party/glm" )
 set( QT_HEADERS_RT "${CMAKE_SOURCE_DIR}/System_dependent/Linux/QT/MobileRT" )
 set( QT_HEADERS
-  "${CMAKE_SOURCE_DIR}/System_dependent/Linux/Qt/build-${CMAKE_BUILD_TYPE}"
-)
+  "${CMAKE_SOURCE_DIR}/System_dependent/Linux/Qt/build-${CMAKE_BUILD_TYPE}" )
 
 message( STATUS "Setting up common flags." )
 set( COMMON_FLAGS "${COMMON_FLAGS}"
   -std=c++11 -pedantic-errors -pedantic -Wpedantic -Wall -Wextra -Wfatal-errors
-  -Werror
-)
+  -Werror )
 # Turn off C++98 pedantic warning so it can use C++11 features
 set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-c++98-compat-pedantic )
 # Turn off padded warning because some classes still need padding
@@ -222,6 +242,8 @@ if( DEFINED ANDROID_ABI
   message( STATUS "Detected Android OS or Clang compiler in Linux." )
   message( STATUS "Adding OpenMP." )
 
+  # Xpreprocessor: it passes an option to the preprocessor. It is useful to
+  # pass options that GCC doesn't recognize.
   set( COMMON_FLAGS "${COMMON_FLAGS}" -Xpreprocessor -fopenmp=libomp )
 else()
   message( STATUS "Detected Mac or Windows OS or GCC compiler." )
@@ -231,16 +253,13 @@ else()
 endif()
 
 set( COMMON_FLAGS_DEBUG -O0 -g3 -fno-optimize-sibling-calls
-  -fno-omit-frame-pointer -fstack-protector-all
-)
+  -fno-omit-frame-pointer -fstack-protector-all )
 
 set( COMMON_FLAGS_RELEASE "${COMMON_FLAGS_RELEASE}" -O3 -DNDEBUG
-  -ffunction-sections -fdata-sections
-)
+  -ffunction-sections -fdata-sections )
 
 set( COMMON_FLAGS_RELEASE "${COMMON_FLAGS_RELEASE}"
-  -Wno-unused-command-line-argument
-)
+  -Wno-unused-command-line-argument )
 
 message( STATUS "Setting common linker flags." )
 set( COMMON_LINKER_FLAGS "${COMMON_LINKER_FLAGS}" -O3 -discard-all -fno-rtti )
@@ -303,13 +322,13 @@ if( DEFINED ANDROID_ABI )
   message( STATUS "Adding Android JNI layer." )
 
   add_library( ${PROJECT_NAME} SHARED
-    ${SCENES_SOURCES} ${MOBILE_DEPENDENT_SOURCES}
-  )
+    ${SCENES_SOURCES} ${MOBILE_DEPENDENT_SOURCES} )
   target_link_libraries( ${PROJECT_NAME} PRIVATE android jnigraphics )
 else()
   message( STATUS "Adding Linux native Qt layer." )
 
-  add_executable( ${PROJECT_NAME} ${SCENES_SOURCES} ${MOBILE_DEPENDENT_SOURCES} )
+  add_executable( ${PROJECT_NAME} ${SCENES_SOURCES} ${MOBILE_DEPENDENT_SOURCES}
+  )
 
   message( STATUS "QT_INCLUDES = ${QT_INCLUDES}" )
   message( STATUS "QT_QTCORE_LIBRARIES = ${QT_QTCORE_LIBRARIES}" )
@@ -317,19 +336,16 @@ else()
 
   target_include_directories( ${PROJECT_NAME}
     SYSTEM PRIVATE ${QT_HEADERS} ${QT_INCLUDES}
-    PRIVATE ${QT_HEADERS_RT}
-  )
+    PRIVATE ${QT_HEADERS_RT} )
 
   if( CMAKE_HOST_SYSTEM_NAME MATCHES "Darwin" )
     message( STATUS "Linking Qt for MacOS." )
 
     target_include_directories( ${PROJECT_NAME}
-      SYSTEM PRIVATE /usr/local/include/
-    )
+      SYSTEM PRIVATE /usr/local/include/ )
 
     target_link_libraries( ${PROJECT_NAME}
-      PRIVATE /usr/local/lib/QtGui.framework/Headers/
-    )
+      PRIVATE /usr/local/lib/QtGui.framework/Headers/ )
     target_link_libraries( ${PROJECT_NAME} PRIVATE -F/usr/local/lib )
 
     target_link_libraries( ${PROJECT_NAME} PRIVATE "-framework QtCore" )
@@ -349,8 +365,7 @@ endif()
 ###############################################################################
 message( STATUS "Adding debug postfix." )
 set_target_properties( ${PROJECT_NAME} PROPERTIES
-  DEBUG_POSTFIX "${CMAKE_DEBUG_POSTFIX}"
-)
+  DEBUG_POSTFIX "${CMAKE_DEBUG_POSTFIX}" )
 ###############################################################################
 ###############################################################################
 
@@ -369,21 +384,17 @@ if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
 
   # Turn off zero as null pointer warning because of Qt generated code
   target_compile_options( ${PROJECT_NAME} PRIVATE
-    -Wno-zero-as-null-pointer-constant
-  )
+    -Wno-zero-as-null-pointer-constant )
   # Turn off redundant parentheses warning because of Qt moc generated code
   target_compile_options( ${PROJECT_NAME} PRIVATE -Wno-redundant-parens )
 endif()
 
 target_compile_options( ${PROJECT_NAME} PRIVATE
-  $<$<CONFIG:DEBUG>:${COMMON_FLAGS_DEBUG}>
-)
+  $<$<CONFIG:DEBUG>:${COMMON_FLAGS_DEBUG}> )
 target_compile_options( ${PROJECT_NAME} PRIVATE
-  $<$<CONFIG:DEBUG>:${COMMON_FLAGS_TEST}>
-)
+  $<$<CONFIG:DEBUG>:${COMMON_FLAGS_TEST}> )
 target_compile_options( ${PROJECT_NAME} PRIVATE
-  $<$<CONFIG:RELEASE>:${COMMON_FLAGS_RELEASE}>
-)
+  $<$<CONFIG:RELEASE>:${COMMON_FLAGS_RELEASE}> )
 
 if( CMAKE_CXX_COMPILER MATCHES "clang" )
   message( STATUS "Detected Clang compiler." )
@@ -396,7 +407,8 @@ if( CMAKE_CXX_COMPILER MATCHES "clang" )
   else()
     message( STATUS "Detected Clang version <= 8." )
 
-    target_compile_options( ${PROJECT_NAME} PRIVATE -Wno-unused-command-line-argument )
+    target_compile_options( ${PROJECT_NAME} PRIVATE
+	  -Wno-unused-command-line-argument )
   endif()
 else()
   message( STATUS "Detected GCC compiler." )
