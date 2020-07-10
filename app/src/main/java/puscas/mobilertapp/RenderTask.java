@@ -172,7 +172,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
      *
      * @param builder The builder which contains all the parameters.
      */
-    private RenderTask(final RenderTask.Builder builder) {
+    RenderTask(final RenderTask.Builder builder) {
         super();
         LOGGER.info("RenderTask");
 

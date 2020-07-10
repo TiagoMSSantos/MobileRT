@@ -73,7 +73,7 @@ public final class Config {
      * @param builder The {@link Config.Builder} for this class.
      */
     @Contract(pure = true)
-    private Config(@Nonnull final Config.Builder builder) {
+    Config(@Nonnull final Config.Builder builder) {
         LOGGER.info("Config");
 
         this.scene = builder.getScene();
