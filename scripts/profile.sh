@@ -1,5 +1,13 @@
 #!/bin/bash
 
+###############################################################################
+# Change directory to MobileRT root
+###############################################################################
+cd "$( dirname "${BASH_SOURCE[0]}" )/.."
+###############################################################################
+###############################################################################
+
+
 PATH_TO_SEARCH="/mnt/D/Projects"
 FILE_TO_SEARCH="MobileRT.jks"
 
@@ -29,10 +37,10 @@ COMPONENTS_SRCS="${MOBILERT_PATH}/app"
 DEPENDENT_SRCS="${MOBILERT_PATH}/app/System_dependent"
 SCENES_SRCS="${MOBILERT_PATH}/app/Scenes"
 
-THIRDPARTY_HEADERS="${MOBILERT_PATH}/app/third_party"
-GLM_HEADERS="${THIRDPARTY_HEADERS}/glm"
-STB_HEADERS="${THIRDPARTY_HEADERS}/stb"
-BOOST_HEADERS_ROOT="${THIRDPARTY_HEADERS}/boost/libs/"
+THIRDPARTY_HEADERS="-isystem ${MOBILERT_PATH}/app/third_party"
+GLM_HEADERS="-isystem ${THIRDPARTY_HEADERS}/glm"
+STB_HEADERS="-isystem ${THIRDPARTY_HEADERS}/stb"
+BOOST_HEADERS_ROOT="-isystem ${THIRDPARTY_HEADERS}/boost/libs/"
 BOOST_HEADERS="-isystem  ${BOOST_HEADERS_ROOT}/assert/include"
 BOOST_HEADERS="${BOOST_HEADERS} -isystem  ${BOOST_HEADERS_ROOT}/assert/include/boost"
 
@@ -46,87 +54,30 @@ do
   FILES+=("$(find ${FOLDER} -type f)")
 done
 
-OBJ="${OBJS_PATH}/conference/conference.obj"
-MTL="${OBJS_PATH}/conference/conference.mtl"
-CAM="${OBJS_PATH}/conference/conference.cam"
+SCN="${OBJS_PATH}/conference/conference"
+SCN="${OBJS_PATH}/teapot/teapot"
+SCN="${OBJS_PATH}/buddha/buddha"
+SCN="${OBJS_PATH}/dragon/dragon"
+SCN="${OBJS_PATH}/sponza/sponza"
+SCN="${OBJS_PATH}/powerplant/powerplant"
+SCN="${OBJS_PATH}/San_Miguel/san-miguel"
+SCN="${OBJS_PATH}/San_Miguel/san-miguel-low-poly"
+SCN="${OBJS_PATH}/CornellBox/CornellBox-Empty-CO"
+SCN="${OBJS_PATH}/CornellBox/CornellBox-Empty-CO"
+SCN="${OBJS_PATH}/CornellBox/CornellBox-Empty-Squashed"
+SCN="${OBJS_PATH}/CornellBox/CornellBox-Empty-White"
+SCN="${OBJS_PATH}/CornellBox/CornellBox-Glossy-Floor"
+SCN="${OBJS_PATH}/CornellBox/CornellBox-Glossy"
+SCN="${OBJS_PATH}/CornellBox/CornellBox-Mirror"
+SCN="${OBJS_PATH}/CornellBox/CornellBox-Original"
+SCN="${OBJS_PATH}/CornellBox/CornellBox-Sphere"
+SCN="${OBJS_PATH}/CornellBox/CornellBox-Water"
+SCN="${OBJS_PATH}/CornellBox/water"
 
-OBJ="${OBJS_PATH}/teapot/teapot.obj"
-MTL="${OBJS_PATH}/teapot/teapot.mtl"
-CAM="${OBJS_PATH}/teapot/teapot.cam"
-
-OBJ="${OBJS_PATH}/buddha/buddha.obj"
-MTL="${OBJS_PATH}/buddha/buddha.mtl"
-CAM="${OBJS_PATH}/buddha/buddha.cam"
-
-OBJ="${OBJS_PATH}/dragon/dragon.obj"
-MTL="${OBJS_PATH}/dragon/dragon.mtl"
-CAM="${OBJS_PATH}/dragon/dragon.cam"
-
-OBJ="${OBJS_PATH}/sponza/sponza.obj"
-MTL="${OBJS_PATH}/sponza/sponza.mtl"
-CAM="${OBJS_PATH}/sponza/sponza.cam"
-
-OBJ="${OBJS_PATH}/powerplant/powerplant.obj"
-MTL="${OBJS_PATH}/powerplant/powerplant.mtl"
-CAM="${OBJS_PATH}/powerplant/powerplant.cam"
-
-OBJ="${OBJS_PATH}/San_Miguel/san-miguel.obj"
-MTL="${OBJS_PATH}/San_Miguel/san-miguel.mtl"
-CAM="${OBJS_PATH}/San_Miguel/san-miguel.cam"
-
-OBJ="${OBJS_PATH}/San_Miguel/san-miguel-low-poly.obj"
-MTL="${OBJS_PATH}/San_Miguel/san-miguel-low-poly.mtl"
-CAM="${OBJS_PATH}/San_Miguel/san-miguel-low-poly.cam"
-
-OBJ="${OBJS_PATH}/CornellBox/CornellBox-Empty-CO.obj"
-MTL="${OBJS_PATH}/CornellBox/CornellBox-Empty-CO.mtl"
-CAM="${OBJS_PATH}/CornellBox/CornellBox-Empty-CO.cam"
-
-OBJ="${OBJS_PATH}/CornellBox/CornellBox-Empty-RG.obj"
-MTL="${OBJS_PATH}/CornellBox/CornellBox-Empty-RG.mtl"
-CAM="${OBJS_PATH}/CornellBox/CornellBox-Empty-CO.cam"
-
-OBJ="${OBJS_PATH}/CornellBox/CornellBox-Empty-Squashed.obj"
-MTL="${OBJS_PATH}/CornellBox/CornellBox-Empty-Squashed.mtl"
-CAM="${OBJS_PATH}/CornellBox/CornellBox-Empty-Squashed.cam"
-
-OBJ="${OBJS_PATH}/CornellBox/CornellBox-Empty-White.obj"
-MTL="${OBJS_PATH}/CornellBox/CornellBox-Empty-White.mtl"
-CAM="${OBJS_PATH}/CornellBox/CornellBox-Empty-White.cam"
-
-OBJ="${OBJS_PATH}/CornellBox/CornellBox-Glossy-Floor.obj"
-MTL="${OBJS_PATH}/CornellBox/CornellBox-Glossy-Floor.mtl"
-CAM="${OBJS_PATH}/CornellBox/CornellBox-Glossy-Floor.cam"
-
-OBJ="${OBJS_PATH}/CornellBox/CornellBox-Glossy.obj"
-MTL="${OBJS_PATH}/CornellBox/CornellBox-Glossy.mtl"
-CAM="${OBJS_PATH}/CornellBox/CornellBox-Glossy.cam"
-
-OBJ="${OBJS_PATH}/CornellBox/CornellBox-Mirror.obj"
-MTL="${OBJS_PATH}/CornellBox/CornellBox-Mirror.mtl"
-CAM="${OBJS_PATH}/CornellBox/CornellBox-Mirror.cam"
-
-OBJ="${OBJS_PATH}/CornellBox/CornellBox-Original.obj"
-MTL="${OBJS_PATH}/CornellBox/CornellBox-Original.mtl"
-CAM="${OBJS_PATH}/CornellBox/CornellBox-Original.cam"
-
-OBJ="${OBJS_PATH}/CornellBox/CornellBox-Sphere.obj"
-MTL="${OBJS_PATH}/CornellBox/CornellBox-Sphere.mtl"
-CAM="${OBJS_PATH}/CornellBox/CornellBox-Sphere.cam"
-
-OBJ="${OBJS_PATH}/CornellBox/CornellBox-Water.obj"
-MTL="${OBJS_PATH}/CornellBox/CornellBox-Water.mtl"
-CAM="${OBJS_PATH}/CornellBox/CornellBox-Water.cam"
-
-OBJ="${OBJS_PATH}/CornellBox/water.obj"
-MTL="${OBJS_PATH}/CornellBox/water.mtl"
-CAM="${OBJS_PATH}/CornellBox/water.cam"
-
-
-OBJ="${OBJS_PATH}/conference/conference.obj"
-MTL="${OBJS_PATH}/conference/conference.mtl"
-CAM="${OBJS_PATH}/conference/conference.cam"
-
+SCN="${OBJS_PATH}/conference/conference"
+OBJ="${SCN}.obj"
+MTL="${SCN}.mtl"
+CAM="${SCN}.cam"
 
 export ASAN_OPTIONS="suppressions=sanitizer_ignore.suppr:verbosity=1:strict_string_checks=1:detect_stack_use_after_return=1:check_initialization_order=1:strict_init_order=1:halt_on_error=0:detect_odr_violation=1"
 
