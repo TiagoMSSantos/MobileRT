@@ -88,25 +88,25 @@ jobs:
 
     - name: Run CMake
       if: success()
-      working-directory: build_native
+      working-directory: .
       run: |
-        cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_CXX_COMPILER=${{ matrix.compiler_path }} -DCMAKE_BUILD_TYPE=${{ matrix.type }} ../app/;
+        bash scripts/compile_native.sh ${{ matrix.type }} ${{ matrix.compiler_path }};
 
     - name: Create symlink of headers MacOS
       if: success() && startsWith(matrix.os, 'macos') && matrix.compiler == 'g++'
-      working-directory: build_native
+      working-directory: .
       run: |
         ln -s /usr/local/Cellar/qt@4/4.8.7_6/lib/QtGui.framework/Versions/4/Headers/* /usr/local/include/QtGui/ || true;
 
     - name: Run Make
       if: success()
-      working-directory: build_native
+      working-directory: build_${{ matrix.type }}
       run: |
         make;
 
     - name: Check build path
       if: success()
-      working-directory: build_native
+      working-directory: build_${{ matrix.type }}
       run: |
         find . -iname "*.so" 2> /dev/null;
         ls -la ./bin ./lib;
@@ -119,7 +119,7 @@ jobs:
 
     - name: Run unit tests
       if: success()
-      working-directory: build_native
+      working-directory: build_${{ matrix.type }}
       run: |
         DYLD_FALLBACK_LIBRARY_PATH=./lib ./bin/${{ matrix.unit_tests_bin }};
 
