@@ -29,6 +29,8 @@ target_include_directories( ${PROJECT_NAME} SYSTEM PUBLIC "${GLM_HEADERS}" )
 # Set compiler flags
 ###############################################################################
 message( STATUS "Adding compiler flags." )
+# -Wno-date-time because of PCG
+target_compile_options( ${PROJECT_NAME} PUBLIC -Wno-date-time )
 target_compile_options( ${PROJECT_NAME} PRIVATE ${COMMON_FLAGS} )
 target_compile_options( ${PROJECT_NAME} PRIVATE
   $<$<CONFIG:DEBUG>:${COMMON_FLAGS_DEBUG}> )

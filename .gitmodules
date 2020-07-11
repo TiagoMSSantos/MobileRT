@@ -42,3 +42,12 @@
     fetchRecurseSubmodules = false
     ignore = none
     shallow = true
+
+[submodule "third_party/pcg-cpp"]
+    path = app/third_party/pcg-cpp
+    url = https://github.com/imneme/pcg-cpp
+    update = checkout
+    branch = master
+    fetchRecurseSubmodules = false
+    ignore = none
+    shallow = true

@@ -10,8 +10,10 @@
 #include "Components/Samplers/Constant.hpp"
 #include "Components/Samplers/HaltonSeq.hpp"
 #include "Components/Samplers/MersenneTwister.hpp"
+#include "Components/Samplers/PCG.hpp"
 #include "Components/Samplers/StaticHaltonSeq.hpp"
 #include "Components/Samplers/StaticMersenneTwister.hpp"
+#include "Components/Samplers/StaticPCG.hpp"
 #include "Components/Samplers/Stratified.hpp"
 #include "Components/Shaders/DepthMap.hpp"
 #include "Components/Shaders/DiffuseMaterial.hpp"
@@ -478,8 +480,9 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
                         if (!objLoader.isProcessed()) {
                             return -1;
                         }
-                        const auto sceneBuilt {objLoader.fillScene(
-                                &scene, []() {return ::MobileRT::std::make_unique<Components::StaticHaltonSeq> ();}
+                        const auto sceneBuilt {objLoader.fillScene(&scene,
+//                            []() {return ::MobileRT::std::make_unique<Components::StaticHaltonSeq> ();}
+                            []() {return ::MobileRT::std::make_unique<Components::StaticPCG> ();}
                         )};
                         if (!sceneBuilt) {
                             return -1;
@@ -491,7 +494,8 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
                 }
                 samplerPixel = samplesPixel <= 1
                     ? ::std::unique_ptr<::MobileRT::Sampler> (::MobileRT::std::make_unique<Components::Constant> (0.5F))
-                    : ::std::unique_ptr<::MobileRT::Sampler> (::MobileRT::std::make_unique<Components::StaticHaltonSeq> ());
+//                    : ::std::unique_ptr<::MobileRT::Sampler> (::MobileRT::std::make_unique<Components::StaticHaltonSeq> ());
+                    : ::std::unique_ptr<::MobileRT::Sampler> (::MobileRT::std::make_unique<Components::StaticPCG> ());
                 LOG("LOADING SHADER: ", shaderIndex);
                 LOG("LOADING ACCELERATOR: ", ::MobileRT::Shader::Accelerator(acceleratorIndex));
                 LOG("samplesLight: ", samplesLight);
@@ -508,7 +512,8 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
 
                     case 2: {
                         ::std::unique_ptr<MobileRT::Sampler> samplerRussianRoulette {
-                                ::MobileRT::std::make_unique<Components::StaticHaltonSeq> ()
+//                                ::MobileRT::std::make_unique<Components::StaticHaltonSeq> ()
+                                ::MobileRT::std::make_unique<Components::StaticPCG> ()
                         };
 
                         shader = ::MobileRT::std::make_unique<Components::PathTracer> (

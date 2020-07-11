@@ -31,6 +31,10 @@ execute_process( COMMAND git clone https://github.com/nothings/stb
 execute_process( COMMAND git clone https://github.com/boostorg/boost
   --progress --jobs=${JOBS}
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} ERROR_QUIET )
+
+execute_process( COMMAND git clone https://github.com/imneme/pcg-cpp
+  --progress --jobs=${JOBS}
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} ERROR_QUIET )
 ###############################################################################
 ###############################################################################
 
@@ -68,6 +72,12 @@ execute_process( COMMAND git checkout master --progress
 execute_process( COMMAND git pull --all --rebase --recurse-submodules
   --progress --jobs=${JOBS}
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/boost )
+
+execute_process( COMMAND git checkout master --progress
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/pcg-cpp )
+execute_process( COMMAND git pull --all --rebase --recurse-submodules
+  --progress --jobs=${JOBS}
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/pcg-cpp )
 ###############################################################################
 ###############################################################################
 
@@ -93,6 +103,8 @@ set( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}" -flto=full )
 
 target_include_directories( MobileRT SYSTEM PRIVATE
   "${CMAKE_CURRENT_SOURCE_DIR}/stb" )
+target_include_directories( MobileRT SYSTEM PUBLIC
+  "${CMAKE_CURRENT_SOURCE_DIR}/pcg-cpp/include" )
 ###############################################################################
 ###############################################################################
 

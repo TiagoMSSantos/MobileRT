@@ -56,7 +56,7 @@
 - [x] Support stratified
 - [x] Support Halton Sequence
 - [x] Support Mersenne Twister
-- [ ] Support PCG
+- [x] Support PCG
 
 ## Cameras
 - [x] Support orthographic Camera
@@ -93,8 +93,8 @@
 - [ ] Change Android icon
 - [x] Remove usage of deprecated methods
 - [x] Add Android instrumented unit tests
-- [ ] Make Android instrumented tests run on debug and release
-- [ ] Make all Android instrumented tests pass without flakiness
+- [x] Make Android instrumented tests run on debug and release
+- [x] Make all Android instrumented tests pass without flakiness
 
 ## Linux Interface
 - [x] Support Linux's UI with Qt
@@ -156,5 +156,6 @@
 - [ ] Support doxygen documentation in the JNI layer
 - [ ] Support doxygen documentation in the Qt interface
 - [x] Support javadoc in the Android UI
-- [ ] Support comments in the native building files
-- [ ] Support comments in the gradle building files
+- [x] Add comments for readability in the native building files
+- [ ] Add comments for readability in the gradle building files
+- [x] Add comments for readability in the scripts

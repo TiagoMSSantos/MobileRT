@@ -49,6 +49,7 @@ SCENES_SRCS="${MOBILERT_PATH}/app/Scenes"
 THIRDPARTY_HEADERS="${MOBILERT_PATH}/app/third_party"
 GLM_HEADERS="${THIRDPARTY_HEADERS}/glm"
 STB_HEADERS="${THIRDPARTY_HEADERS}/stb"
+PCG_HEADERS="${THIRDPARTY_HEADERS}/pcg-cpp/include"
 BOOST_HEADERS_ROOT="${THIRDPARTY_HEADERS}/boost/libs"
 BOOST_HEADERS_ASSERT="${BOOST_HEADERS_ROOT}/assert/include"
 ###############################################################################
@@ -191,6 +192,7 @@ function clangtidy {
 	-isystem "${THIRDPARTY_HEADERS}" \
 	-isystem "${GLM_HEADERS}" \
 	-isystem "${STB_HEADERS}" \
+	-isystem "${PCG_HEADERS}" \
 	-isystem "${BOOST_HEADERS_ASSERT}" \
 	-isystem /usr/include/c++/7 \
 	-isystem /usr/include/c++/v1 \

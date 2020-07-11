@@ -14,6 +14,7 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/string_cast.hpp>
 
+#include <pcg_random.hpp>
 #include <random>
 #include <sstream>
 #include <thread>
@@ -34,6 +35,9 @@ namespace MobileRT {
 
     template<typename T, ::std::size_t S>
     void fillArrayWithMersenneTwister(::std::array<T, S> *values);
+
+    template<typename T, ::std::size_t S>
+    void fillArrayWithPCG(::std::array<T, S> *values);
 
     inline ::std::string getFileName(const char *filepath);
 
@@ -217,6 +221,23 @@ namespace MobileRT {
         static ::std::uniform_real_distribution<float> uniformDist {0.0F, 1.0F};
         static ::std::random_device randomDevice {};
         static ::std::mt19937 generator {randomDevice()};
+        ::std::generate(values->begin(), values->end(), []() {return uniformDist(generator);});
+    }
+
+    /**
+      * A helper method which prepares an array with random numbers generated.
+      * <p>
+      * This method uses the PCG generator to fill the array.
+      *
+      * @tparam T The type of the elements in the array.
+      * @tparam S The size of the array.
+      * @param values The pointer to an array where the random numbers should be put.
+      */
+    template<typename T, ::std::size_t S>
+    void fillArrayWithPCG(::std::array<T, S> *const values) {
+        static ::pcg_extras::seed_seq_from<::std::random_device> seedSource {};
+        static ::pcg32 generator(seedSource);
+        static ::std::uniform_real_distribution<float> uniformDist {0.0F, 1.0F};
         ::std::generate(values->begin(), values->end(), []() {return uniformDist(generator);});
     }
 

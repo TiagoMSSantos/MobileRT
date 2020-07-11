@@ -138,6 +138,7 @@ if [ "${started_emulator}" -ne 0 ]; then
 fi
 
 callCommand adb shell input tap 800 900;
+callCommand adb shell input keyevent 82;
 callCommand adb root;
 
 echo "Set path to reports";

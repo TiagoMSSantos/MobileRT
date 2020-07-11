@@ -306,8 +306,8 @@ endif()
 ###############################################################################
 message( STATUS "Adding sub directories." )
 add_subdirectory( MobileRT )
-add_subdirectory( third_party )
 add_subdirectory( Components )
+add_subdirectory( third_party )
 add_subdirectory( System_dependent )
 add_subdirectory( Unit_Testing )
 ###############################################################################
