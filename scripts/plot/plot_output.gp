@@ -94,17 +94,17 @@ startSep=0
 endSep = startSep + strstrt(filenames[startSep:], separator)
 filePath = filenames[startSep : endSep - 1]
 if (filePath eq "") {
-	print 'filePath: "' . filePath . '" invalid'
-	exit gnuplot
+  print 'filePath: "' . filePath . '" invalid'
+  exit gnuplot
 }
 eval arrayPush("FILES", filePath)
 endSep = endSep + 1
 
 do for [i=2:files] {
-	startSep = endSep
-	endSep = startSep + strstrt(filenames[startSep:], separator)
-	filePath = filenames[startSep : endSep - 2]
-	eval arrayPush("FILES", filePath)
+  startSep = endSep
+  endSep = startSep + strstrt(filenames[startSep:], separator)
+  filePath = filenames[startSep : endSep - 2]
+  eval arrayPush("FILES", filePath)
 }
 ###############################################################################
 ###############################################################################
@@ -119,15 +119,17 @@ Y_min = 0
 Y_max = 0
 
 do for [i=1:files] {
-	filePath = arrayGet("FILES", i)
-	fileParsed = "< awk -v speedup=" . speedup . " -f plot/parser_median.awk " . filePath
-	stats fileParsed using 1 nooutput name 'Fx_'
-	stats fileParsed using 2 nooutput name 'Fy_'
+  filePath = arrayGet("FILES", i)
+  print "filePath: '".filePath."'"
+  fileParsed = "< awk -v speedup=".speedup." -f ./scripts/plot/parser_median.awk ".filePath
+  print "fileParsed: '".fileParsed."'"
+  stats fileParsed using 1 nooutput name 'Fx_'
+  stats fileParsed using 2 nooutput name 'Fy_'
 
-	X_min = Fx_min < X_min? Fx_min : X_min
-	X_max = Fx_max > X_max? Fx_max : X_max
-	Y_min = Fy_min < Y_min? Fy_min : Y_min
-	Y_max = Fy_max > Y_max? Fy_max : Y_max
+  X_min = Fx_min < X_min? Fx_min : X_min
+  X_max = Fx_max > X_max? Fx_max : X_max
+  Y_min = Fy_min < Y_min? Fy_min : Y_min
+  Y_max = Fy_max > Y_max? Fy_max : Y_max
 }
 
 Y_tick = (Y_max - Y_min) / 30
@@ -143,12 +145,13 @@ set xrange [0 : 0<*]
 set xtics X_min, 1, X_max offset graph 0, graph 0
 
 if (speedup eq "1") {
-	speedup = 1
-	labelY = 'Speed up'
+  speedup = 1
+  labelY = 'Speed up'
 } else {
-	speedup = 0
-	labelY = 'Time (s)'
+  speedup = 0
+  labelY = 'Time (s)'
 }
+
 set ylabel labelY
 set yrange [0 : 0<*]
 set ytics Y_min, Y_tick, Y_max offset graph 0, graph 0
@@ -169,10 +172,10 @@ set linestyle 1 pointtype 7 pointsize 1.0 linetype 3 linewidth 2.5 dashtype 3
 ###############################################################################
 plot \
 for [i = 1 : files] \
-	filePath = arrayGet("FILES", i) \
-	name = filePath[0 : strstrt(filePath[0:], ".dat") - 1] \
-	file = "< awk -v speedup=" . speedup . " -f plot/parser_median.awk " . filePath \
-	file using 1:2 title name \
-	with linespoints linestyle 1 linecolor rgb arrayGet("COLORS", i)
+  filePath = arrayGet("FILES", i) \
+  name = filePath[0 : strstrt(filePath[0:], ".dat") - 1] \
+  file = "< awk -v speedup=" . speedup . " -f ./scripts/plot/parser_median.awk " . filePath \
+  file using 1:2 title name \
+  with linespoints linestyle 1 linecolor rgb arrayGet("COLORS", i)
 ###############################################################################
 ###############################################################################

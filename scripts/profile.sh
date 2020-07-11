@@ -3,7 +3,7 @@
 ###############################################################################
 # Change directory to MobileRT root
 ###############################################################################
-cd "$( dirname "${BASH_SOURCE[0]}" )/.."
+cd "$( dirname "${BASH_SOURCE[0]}" )/.." || exit
 ###############################################################################
 ###############################################################################
 
@@ -57,13 +57,13 @@ BOOST_HEADERS="${BOOST_HEADERS} -isystem  ${BOOST_HEADERS_ROOT}/assert/include/b
 
 
 if [ -z "${PLOT_GRAPHS}" ]; then
-  PLOT_GRAPHS="Plot_Graphs"
+  PLOT_GRAPHS=${SCRIPTS_PATH}/"graphs"
 fi
-mkdir -p ${PLOT_GRAPHS}
+mkdir -p "${PLOT_GRAPHS}"
 
-for FOLDER in "${PLOT_GRAPHS[@]}"
+for FOLDER in ${PLOT_GRAPHS[@]}
 do
-  FILES+=("$(find ${FOLDER} -type f)")
+  FILES+=("$(find "${FOLDER}" -type f)")
 done
 
 
@@ -120,12 +120,12 @@ ASYNC="false"
 SHOWIMAGE="false"
 SEP="-"
 
-THREADS="1"
-REPETITIONS="1"
-
+# Configuration for profiling
+REPETITIONS="2"
+THREADS="1 2"
 SHADERS="1 2"
-SCENES="2"
-ACCELERATORS="2"
+SCENES="1 2"
+ACCELERATORS="1 2"
 
 THREAD=$(nproc --all)
 SHADER="1"
@@ -205,13 +205,13 @@ function profile {
   trap "exit" INT
   for R in $(seq 1 ${REPETITIONS});
   do
-    for THREAD in "${THREADS[@]}"
+    for THREAD in ${THREADS[@]}
     do
-      for SHADER in "${SHADERS[@]}"
+      for SHADER in ${SHADERS[@]}
       do
-        for SCENE in "${SCENES[@]}"
+        for SCENE in ${SCENES[@]}
         do
-          for ACC in "${ACCELERATORS[@]}"
+          for ACC in ${ACCELERATORS[@]}
           do
             echo ""
             echo "REPETITION = ${R}"
@@ -253,7 +253,7 @@ PARAM8="Debug"
 if [ $# -eq 0 ]; then
   execute
 else
-  for P in "${@}"
+  for P in ${@}
   do
     case ${P} in
       ${PARAM1}) profile; sleep 2s ;;
