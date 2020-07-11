@@ -46,12 +46,11 @@ COMPONENTS_SRCS="${MOBILERT_PATH}/app"
 DEPENDENT_SRCS="${MOBILERT_PATH}/app/System_dependent"
 SCENES_SRCS="${MOBILERT_PATH}/app/Scenes"
 
-THIRDPARTY_HEADERS="-isystem ${MOBILERT_PATH}/app/third_party"
-GLM_HEADERS="-isystem ${THIRDPARTY_HEADERS}/glm"
-STB_HEADERS="-isystem ${THIRDPARTY_HEADERS}/stb"
-BOOST_HEADERS_ROOT="-isystem ${THIRDPARTY_HEADERS}/boost/libs/"
-BOOST_HEADERS="-isystem  ${BOOST_HEADERS_ROOT}/assert/include"
-BOOST_HEADERS="${BOOST_HEADERS} -isystem  ${BOOST_HEADERS_ROOT}/assert/include/boost"
+THIRDPARTY_HEADERS="${MOBILERT_PATH}/app/third_party"
+GLM_HEADERS="${THIRDPARTY_HEADERS}/glm"
+STB_HEADERS="${THIRDPARTY_HEADERS}/stb"
+BOOST_HEADERS_ROOT="${THIRDPARTY_HEADERS}/boost/libs"
+BOOST_HEADERS_ASSERT="${BOOST_HEADERS_ROOT}/assert/include"
 ###############################################################################
 ###############################################################################
 
@@ -140,18 +139,20 @@ SPL="1"
 ###############################################################################
 
 function execute {
+  #ASYNC="false"
   echo ""
   echo "THREAD = ${THREAD}"
   echo "SHADER = ${SHADER}"
   echo "SCENE = ${SCENE}"
   echo "ACC = ${ACC}"
+  echo "ASYNC = ${ASYNC}"
 
   #perf script report callgrind > perf.callgrind
   #kcachegrind perf.callgrind
   #perf stat \
   #perf record -g --call-graph 'fp' -- \
   "${BIN_RELEASE_PATH}"/AppMobileRT \
-    "${THREAD}" ${SHADER} ${SCENE} ${SPP} ${SPL} ${WIDTH} ${HEIGHT} ${ACC}
+    "${THREAD}" ${SHADER} ${SCENE} ${SPP} ${SPL} ${WIDTH} ${HEIGHT} ${ACC} \
     ${REP} "${OBJ}" "${MTL}" "${CAM}" ${PRINT} ${ASYNC} ${SHOWIMAGE}
   #perf report -g '' --show-nr-samples --hierarchy
 }
@@ -190,13 +191,13 @@ function clangtidy {
 	-isystem "${THIRDPARTY_HEADERS}" \
 	-isystem "${GLM_HEADERS}" \
 	-isystem "${STB_HEADERS}" \
-	"${BOOST_HEADERS}" \
+	-isystem "${BOOST_HEADERS_ASSERT}" \
 	-isystem /usr/include/c++/7 \
 	-isystem /usr/include/c++/v1 \
 	-isystem /usr/include/x86_64-linux-gnu/c++/7 \
 	-isystem /usr/include/glib-2.0/gobject \
 	-isystem /usr/include/gtk-2.0/gtk \
-	"${GTK_HEADERS}" \
+	${GTK_HEADERS} \
 	2>&1 | tee "${SCRIPTS_PATH}"/tidy.out
 }
 
@@ -224,10 +225,10 @@ function profile {
             PLOT_FILE="SC${SCENE}${SEP}SH${SHADER}${SEP}A${ACC}${SEP}R${WIDTH}x${HEIGHT}"
 
             "${BIN_RELEASE_PATH}"/AppMobileRT \
-            ${THREAD} "${SHADER}" ${SCENE} ${SPP} ${SPL} ${WIDTH} ${HEIGHT} "${ACC}" ${REP} \
-            "${OBJ}" "${MTL}" "${CAM}" ${PRINT} ${ASYNC} ${SHOWIMAGE} \
+            "${THREAD}" "${SHADER}" "${SCENE}" "${SPP}" "${SPL}" "${WIDTH}" "${HEIGHT}" "${ACC}" "${REP}" \
+            "${OBJ}" "${MTL}" "${CAM}" "${PRINT}" "${ASYNC}" "${SHOWIMAGE}" \
             | awk -v threads="${THREAD}" -f "${PLOT_SCRIPTS_PATH}"/parser_out.awk 2>&1 \
-            | tee -a ${PLOT_GRAPHS}/"${PLOT_FILE}".dat
+            | tee -a "${PLOT_GRAPHS}"/"${PLOT_FILE}".dat
 
           done
         done

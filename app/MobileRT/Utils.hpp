@@ -8,8 +8,8 @@
 #include <boost/assert.hpp>
 #include <chrono>
 #include <cmath>
-#include <glm/glm.hpp>
 #include <glm/ext.hpp>
+#include <glm/glm.hpp>
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/string_cast.hpp>
