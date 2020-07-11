@@ -79,7 +79,6 @@ SCN="${OBJS_PATH}/powerplant/powerplant"
 SCN="${OBJS_PATH}/San_Miguel/san-miguel"
 SCN="${OBJS_PATH}/San_Miguel/san-miguel-low-poly"
 SCN="${OBJS_PATH}/CornellBox/CornellBox-Empty-CO"
-SCN="${OBJS_PATH}/CornellBox/CornellBox-Empty-CO"
 SCN="${OBJS_PATH}/CornellBox/CornellBox-Empty-Squashed"
 SCN="${OBJS_PATH}/CornellBox/CornellBox-Empty-White"
 SCN="${OBJS_PATH}/CornellBox/CornellBox-Glossy-Floor"
@@ -122,11 +121,11 @@ SHOWIMAGE="false"
 SEP="-"
 
 THREADS="1"
-REPETITIONS="10"
+REPETITIONS="1"
 
 SHADERS="1 2"
 SCENES="2"
-ACCELERATORS="1 2"
+ACCELERATORS="2"
 
 THREAD=$(nproc --all)
 SHADER="1"
@@ -152,8 +151,8 @@ function execute {
   #perf stat \
   #perf record -g --call-graph 'fp' -- \
   "${BIN_RELEASE_PATH}"/AppMobileRT \
-            "${THREAD}" ${SHADER} ${SCENE} ${SPP} ${SPL} ${WIDTH} ${HEIGHT} ${ACC} ${REP} \
-            "${OBJ}" "${MTL}" "${CAM}" ${PRINT} ${ASYNC} ${SHOWIMAGE}
+    "${THREAD}" ${SHADER} ${SCENE} ${SPP} ${SPL} ${WIDTH} ${HEIGHT} ${ACC}
+    ${REP} "${OBJ}" "${MTL}" "${CAM}" ${PRINT} ${ASYNC} ${SHOWIMAGE}
   #perf report -g '' --show-nr-samples --hierarchy
 }
 
@@ -165,8 +164,8 @@ function debug {
   echo "ACC = ${ACC}"
 
   "${BIN_DEBUG_PATH}"/AppMobileRTd \
-            "${THREAD}" ${SHADER} ${SCENE} ${SPP} ${SPL} ${WIDTH} ${HEIGHT} ${ACC} ${REP} \
-            "${OBJ}" "${MTL}" "${CAM}" ${PRINT} ${ASYNC} ${SHOWIMAGE}
+    "${THREAD}" ${SHADER} ${SCENE} ${SPP} ${SPL} ${WIDTH} ${HEIGHT} ${ACC}
+    ${REP} "${OBJ}" "${MTL}" "${CAM}" ${PRINT} ${ASYNC} ${SHOWIMAGE}
 }
 
 
@@ -202,6 +201,7 @@ function clangtidy {
 }
 
 function profile {
+  ASYNC=false
   trap "exit" INT
   for R in $(seq 1 ${REPETITIONS});
   do
@@ -219,10 +219,11 @@ function profile {
             echo "SHADER = ${SHADER}"
             echo "SCENE = ${SCENE}"
             echo "ACC = ${ACC}"
+			      echo "ASYNC = ${ASYNC}"
 
             PLOT_FILE="SC${SCENE}${SEP}SH${SHADER}${SEP}A${ACC}${SEP}R${WIDTH}x${HEIGHT}"
 
-            "${BIN_DEBUG_PATH}"/AppMobileRTd \
+            "${BIN_RELEASE_PATH}"/AppMobileRT \
             ${THREAD} "${SHADER}" ${SCENE} ${SPP} ${SPL} ${WIDTH} ${HEIGHT} "${ACC}" ${REP} \
             "${OBJ}" "${MTL}" "${CAM}" ${PRINT} ${ASYNC} ${SHOWIMAGE} \
             | awk -v threads="${THREAD}" -f "${PLOT_SCRIPTS_PATH}"/parser_out.awk 2>&1 \
@@ -250,28 +251,28 @@ PARAM7="gtest"
 PARAM8="Debug"
 
 if [ $# -eq 0 ]; then
-    execute
+  execute
 else
-    for P in "${@}"
-    do
-      case ${P} in
-        ${PARAM1}) profile; sleep 2s ;;
-        ${PARAM2}) . ./scripts/plot/plot.sh 0;;
-        ${PARAM3}) . ./scripts/plot/plot.sh 1;;
-        ${PARAM4}) awk -f "${PLOT_SCRIPTS_PATH}/parser_median.awk" "${PLOT_SCRIPTS_PATH}/test.dat"  ;;
-        ${PARAM5}) execute ;;
-        ${PARAM6}) clangtidy ;;
-        ${PARAM7}) "${BIN_DEBUG_PATH}"/UnitTestsd ;;
-        ${PARAM8}) debug ;;
-        *) echo ""
-           echo "Wrong Parameter: ${P}"
-           echo "The valid parameters are:"
-           echo "${PARAM1} - Profile application and log the measured times."
-           echo "${PARAM2} - Draw a graph with GNU Plot."
-           break
-           ;;
-      esac
-    done
+  for P in "${@}"
+  do
+    case ${P} in
+      ${PARAM1}) profile; sleep 2s ;;
+      ${PARAM2}) . ./scripts/plot/plot.sh 0;;
+      ${PARAM3}) . ./scripts/plot/plot.sh 1;;
+      ${PARAM4}) awk -f "${PLOT_SCRIPTS_PATH}/parser_median.awk" "${PLOT_SCRIPTS_PATH}/test.dat"  ;;
+      ${PARAM5}) execute ;;
+      ${PARAM6}) clangtidy ;;
+      ${PARAM7}) "${BIN_DEBUG_PATH}"/UnitTestsd ;;
+      ${PARAM8}) debug ;;
+      *) echo ""
+         echo "Wrong Parameter: ${P}"
+         echo "The valid parameters are:"
+         echo "${PARAM1} - Profile application and log the measured times."
+         echo "${PARAM2} - Draw a graph with GNU Plot."
+         break
+         ;;
+    esac
+  done
 fi
 ###############################################################################
 ###############################################################################

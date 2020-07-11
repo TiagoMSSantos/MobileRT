@@ -67,5 +67,9 @@ int main(int argc, char **argv) {
                         repeats, accelerator, printStdOut, async, pathObj, pathMtl, pathCam);
     mainWindow.show();
 
+    if (!async) {
+        return 0;
+    }
+
     return application.exec();
 }

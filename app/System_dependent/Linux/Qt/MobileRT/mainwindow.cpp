@@ -94,6 +94,7 @@ void MainWindow::setImage(::std::int32_t width, ::std::int32_t height, ::std::in
 
     LOG("width = ", m_width);
     LOG("height = ", m_height);
+    LOG("async = ", m_async);
 
     RayTrace(m_bitmap.data(), m_width, m_height, m_threads, m_shader, m_scene, m_samplesPixel, m_samplesLight,
              m_repeats, m_accelerator, m_printStdOut, m_async, m_pathObj.c_str(), m_pathMtl.c_str(), m_pathCam.c_str());

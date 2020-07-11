@@ -10,7 +10,10 @@
 #include <cmath>
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
+
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/string_cast.hpp>
+
 #include <random>
 #include <sstream>
 #include <thread>
