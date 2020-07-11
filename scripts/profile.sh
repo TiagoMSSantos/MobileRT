@@ -8,6 +8,9 @@ cd "$( dirname "${BASH_SOURCE[0]}" )/.."
 ###############################################################################
 
 
+###############################################################################
+# Set paths for MobileRT
+###############################################################################
 PATH_TO_SEARCH="/mnt/D/Projects"
 FILE_TO_SEARCH="MobileRT.jks"
 
@@ -31,7 +34,13 @@ BIN_RELEASE_PATH="${MOBILERT_PATH}/build_Release/bin"
 SCRIPTS_PATH="${MOBILERT_PATH}/scripts"
 PLOT_SCRIPTS_PATH="${SCRIPTS_PATH}/plot"
 OBJS_PATH="${MOBILERT_PATH}/WavefrontOBJs"
+###############################################################################
+###############################################################################
 
+
+###############################################################################
+# Set paths for MobileRT sources and headers
+###############################################################################
 MOBILERT_SRCS="${MOBILERT_PATH}/app"
 COMPONENTS_SRCS="${MOBILERT_PATH}/app"
 DEPENDENT_SRCS="${MOBILERT_PATH}/app/System_dependent"
@@ -43,6 +52,9 @@ STB_HEADERS="-isystem ${THIRDPARTY_HEADERS}/stb"
 BOOST_HEADERS_ROOT="-isystem ${THIRDPARTY_HEADERS}/boost/libs/"
 BOOST_HEADERS="-isystem  ${BOOST_HEADERS_ROOT}/assert/include"
 BOOST_HEADERS="${BOOST_HEADERS} -isystem  ${BOOST_HEADERS_ROOT}/assert/include/boost"
+###############################################################################
+###############################################################################
+
 
 if [ -z "${PLOT_GRAPHS}" ]; then
   PLOT_GRAPHS="Plot_Graphs"
@@ -54,6 +66,10 @@ do
   FILES+=("$(find ${FOLDER} -type f)")
 done
 
+
+###############################################################################
+# Set paths for the scene
+###############################################################################
 SCN="${OBJS_PATH}/conference/conference"
 SCN="${OBJS_PATH}/teapot/teapot"
 SCN="${OBJS_PATH}/buddha/buddha"
@@ -78,11 +94,23 @@ SCN="${OBJS_PATH}/conference/conference"
 OBJ="${SCN}.obj"
 MTL="${SCN}.mtl"
 CAM="${SCN}.cam"
+###############################################################################
+###############################################################################
 
+
+###############################################################################
+# Set options for the sanitizers
+###############################################################################
 export ASAN_OPTIONS="suppressions=sanitizer_ignore.suppr:verbosity=1:strict_string_checks=1:detect_stack_use_after_return=1:check_initialization_order=1:strict_init_order=1:halt_on_error=0:detect_odr_violation=1"
 
 export LSAN_OPTIONS="suppressions=sanitizer_ignore.suppr:verbosity=1:strict_string_checks=1"
+###############################################################################
+###############################################################################
 
+
+###############################################################################
+# Set arguments for MobileRT
+###############################################################################
 SPP="1"
 SPL="1"
 WIDTH="900"
@@ -109,6 +137,8 @@ SHOWIMAGE="true"
 ASYNC="true"
 SPP="1"
 SPL="1"
+###############################################################################
+###############################################################################
 
 function execute {
   echo ""
@@ -148,25 +178,25 @@ function clangtidy {
 	-analyze-temporary-dtors \
 	-checks='*,-*llvm-header-guard*,-fuchsia-default-arguments,-fuchsia-overloaded-operator' \
 	-header-filter='.*' \
-  "${MOBILERT_SRCS}"/MobileRT/*.*pp \
-  "${MOBILERT_SRCS}"/MobileRT/*/*.*pp \
-  "${COMPONENTS_SRCS}"/Components/*/*.*pp \
+	"${MOBILERT_SRCS}"/MobileRT/*.*pp \
+	"${MOBILERT_SRCS}"/MobileRT/*/*.*pp \
+	"${COMPONENTS_SRCS}"/Components/*/*.*pp \
 	"${DEPENDENT_SRCS}"/Linux/*.*pp \
-  "${SCENES_SRCS}"/*.*pp \
+	"${SCENES_SRCS}"/*.*pp \
 	-- -std=c++11 -ferror-limit=1 -stdlib=libc++ \
-  -I "${MOBILERT_SRCS}" \
-  -I "${COMPONENTS_SRCS}" \
-  -I "${DEPENDENT_SRCS}"/Linux \
-  -I "${SCENES_SRCS}" \
-  -isystem "${THIRDPARTY_HEADERS}" \
-  -isystem "${GLM_HEADERS}" \
-  -isystem "${STB_HEADERS}" \
-  "${BOOST_HEADERS}" \
-  -isystem /usr/include/c++/7 \
-  -isystem /usr/include/c++/v1 \
-  -isystem /usr/include/x86_64-linux-gnu/c++/7 \
-  -isystem /usr/include/glib-2.0/gobject \
-  -isystem /usr/include/gtk-2.0/gtk \
+	-I "${MOBILERT_SRCS}" \
+	-I "${COMPONENTS_SRCS}" \
+	-I "${DEPENDENT_SRCS}"/Linux \
+	-I "${SCENES_SRCS}" \
+	-isystem "${THIRDPARTY_HEADERS}" \
+	-isystem "${GLM_HEADERS}" \
+	-isystem "${STB_HEADERS}" \
+	"${BOOST_HEADERS}" \
+	-isystem /usr/include/c++/7 \
+	-isystem /usr/include/c++/v1 \
+	-isystem /usr/include/x86_64-linux-gnu/c++/7 \
+	-isystem /usr/include/glib-2.0/gobject \
+	-isystem /usr/include/gtk-2.0/gtk \
 	"${GTK_HEADERS}" \
 	2>&1 | tee "${SCRIPTS_PATH}"/tidy.out
 }
@@ -206,6 +236,10 @@ function profile {
   done
 }
 
+
+###############################################################################
+# Parse arguments
+###############################################################################
 PARAM1="time"
 PARAM2="drawt"
 PARAM3="draws"
@@ -239,3 +273,5 @@ else
       esac
     done
 fi
+###############################################################################
+###############################################################################
