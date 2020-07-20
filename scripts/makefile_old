@@ -120,7 +120,7 @@ GARB := $(shell find \
 -regextype gnu-awk -iname "*.d" -printf '%h/%f\n' \
 -o -regextype gnu-awk -iname "*.s" -printf '%h/%f\n' \
 -o -regextype gnu-awk -iname "*.o" -printf '%h/%f\n' \
--o -regextype gnu-awk -iname "*.out" -printf '%h/%f\n' \
+-o -regextype gnu-awk -iname "*.log" -printf '%h/%f\n' \
 -o -regextype gnu-awk -iname "*.gto" -printf '%h/%f\n' \
 -o -regextype gnu-awk -iname "*.dwo" -printf '%h/%f\n' \
 )
@@ -195,7 +195,7 @@ tidy:
 	-isystem/usr/include/pixman-1 -isystem/usr/include/libpng12 -isystem/usr/include/gdk-pixbuf-2.0 \
 	-isystem/usr/include/harfbuzz -isystem/usr/include/pango-1.0 -isystem/usr/include/glib-2.0 \
 	-isystem/usr/lib/x86_64-linux-gnu/glib-2.0/include -isystem/usr/include/freetype2 \
-	2>&1 | tee tidy.out
+	2>&1 | tee tidy.log
 
 #valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --track-origins=yes --show-reachable=yes \
 --suppressions=valgrind.suppr --num-callers=500 --trace-children=yes --error-limit=no ./raytracer 5 3 3 0 1 1

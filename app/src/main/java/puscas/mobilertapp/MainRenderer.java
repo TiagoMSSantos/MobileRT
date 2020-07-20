@@ -284,7 +284,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         final int shader = GLES20.glCreateShader(shaderType);
         checksGLError();
         if (shader == 0) {
-            final String msg = "GLES20.glCreateShader = 0";
+            final String msg = "There was an error while creating the shader object.";
             LOGGER.severe(msg);
             throw new FailureException(msg);
         } else {
@@ -296,13 +296,14 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
             GLES20.glGetShaderiv(shader, GLES20.GL_COMPILE_STATUS, compiled, 0);
             checksGLError();
             if (compiled[0] == 0) {
-                final String msg = "Could not compile shader " + shaderType + ':' + GLES20.glGetShaderInfoLog(shader);
+                final String informationLog = GLES20.glGetShaderInfoLog(shader);
+                final String msg = "Could not compile shader " + shaderType + ": " + informationLog;
                 LOGGER.severe(msg);
                 checksGLError();
                 LOGGER.severe(source);
                 GLES20.glDeleteShader(shader);
                 checksGLError();
-                throw new FailureException(GLES20.glGetShaderInfoLog(shader));
+                throw new FailureException(informationLog);
             }
         }
         return shader;

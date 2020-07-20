@@ -200,7 +200,7 @@ function clangtidy {
 	-isystem /usr/include/glib-2.0/gobject \
 	-isystem /usr/include/gtk-2.0/gtk \
 	${GTK_HEADERS} \
-	2>&1 | tee "${SCRIPTS_PATH}"/tidy.out
+	2>&1 | tee "${SCRIPTS_PATH}"/tidy.log
 }
 
 function profile {

@@ -44,7 +44,7 @@ jobs:
     - name: Setup build directory
       if: success()
       run: |
-        mkdir build_native;
+        mkdir build_${{ matrix.type }};
 
     - name: Setup code climate report
       if: success()

@@ -54,7 +54,7 @@ public final class Utils {
     }
 
     /**
-     * The {@link InterruptedException} to handle.
+     * Helper method that handles an {@link InterruptedException}.
      *
      * @param methodName The name of the method to appear in the logs.
      */

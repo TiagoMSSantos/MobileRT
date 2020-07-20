@@ -2,6 +2,7 @@ package puscas.mobilertapp;
 
 import android.Manifest;
 import android.graphics.Bitmap;
+import android.opengl.GLES20;
 import android.os.Build;
 import android.view.View;
 import android.widget.Button;
@@ -11,11 +12,11 @@ import android.widget.NumberPicker;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.espresso.action.ViewActions;
-import androidx.test.espresso.core.internal.deps.guava.collect.ImmutableList;
 import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.util.concurrent.Uninterruptibles;
 
 import org.junit.After;
@@ -33,8 +34,10 @@ import org.junit.runners.MethodSorters;
 
 import java.io.File;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
 import javax.annotation.Nonnull;
@@ -220,7 +223,8 @@ public final class MainActivityTest {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
-        final String sdCardPath = Utils.invokePrivateMethod(this.activity, "getSDCardPath");
+        final String sdCardPath = Utils.invokePrivateMethod(this.activity, "getSDCardPath",
+            ImmutableList.of(), ImmutableList.of());
 
         final List<String> paths = ImmutableList.<String>builder().add(
             Constants.EMPTY_FILE,
@@ -249,7 +253,8 @@ public final class MainActivityTest {
                 Assertions.assertEquals(Constants.RENDER, button.getText().toString(), "Button message");
             });
 
-        final int numCores = Utils.invokePrivateMethod(this.activity, "getNumOfCores");
+        final int numCores = Utils.invokePrivateMethod(this.activity, "getNumOfCores",
+            ImmutableList.of(), ImmutableList.of());
         assertClickRenderButton(1, numCores);
         assertPickerNumbers(numCores);
         clickPreviewCheckBox(false);
@@ -263,7 +268,8 @@ public final class MainActivityTest {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
-        final int numCores = Utils.invokePrivateMethod(this.activity, "getNumOfCores");
+        final int numCores = Utils.invokePrivateMethod(this.activity, "getNumOfCores",
+            ImmutableList.of(), ImmutableList.of());
 
         clickPreviewCheckBox(false);
 
@@ -278,7 +284,8 @@ public final class MainActivityTest {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
-        final int numCores = Utils.invokePrivateMethod(this.activity, "getNumOfCores");
+        final int numCores = Utils.invokePrivateMethod(this.activity, "getNumOfCores",
+            ImmutableList.of(), ImmutableList.of());
 
         clickPreviewCheckBox(false);
         clickPreviewCheckBox(true);
@@ -294,7 +301,8 @@ public final class MainActivityTest {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
-        final int numCores = Utils.invokePrivateMethod(this.activity, "getNumOfCores");
+        final int numCores = Utils.invokePrivateMethod(this.activity, "getNumOfCores",
+            ImmutableList.of(), ImmutableList.of());
 
         changePickerValue("pickerScene", R.id.pickerScene, 2);
         changePickerValue("pickerThreads", R.id.pickerThreads, numCores);
@@ -391,7 +399,8 @@ public final class MainActivityTest {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
-        final int numCores = Utils.invokePrivateMethod(this.activity, "getNumOfCores");
+        final int numCores = Utils.invokePrivateMethod(this.activity, "getNumOfCores",
+            ImmutableList.of(), ImmutableList.of());
 
         changePickerValue("pickerScene", R.id.pickerScene, 2);
         changePickerValue("pickerThreads", R.id.pickerThreads, numCores);
@@ -456,6 +465,74 @@ public final class MainActivityTest {
                     "State is not the expected"
                 );
             });
+    }
+
+    /**
+     * Tests loading a Vertex GLSL shader.
+     */
+    @Test
+    public void testLoadVertexShader () throws InterruptedException {
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
+
+        final DrawView drawView = Utils.getPrivateField(this.activity, "drawView");
+        final MainRenderer renderer = drawView.getRenderer();
+
+        final String shaderCode = Utils.invokePrivateMethod(this.activity, "readTextAsset",
+            ImmutableList.of(String.class),
+            ImmutableList.of(ConstantsUI.PATH_SHADERS + ConstantsUI.FILE_SEPARATOR + "VertexShader.glsl")
+        );
+
+        final AtomicInteger shaderIndex = new AtomicInteger(-1);
+        final CountDownLatch latch = new CountDownLatch(1);
+        drawView.queueEvent(() -> {
+            final int index = Utils.invokePrivateMethod(renderer, "loadShader",
+                ImmutableList.of(int.class, String.class),
+                ImmutableList.of(GLES20.GL_VERTEX_SHADER, shaderCode)
+            );
+            shaderIndex.set(index);
+            latch.countDown();
+        });
+        latch.await(1L, TimeUnit.MINUTES);
+        Assertions.assertEquals(
+            4,
+            shaderIndex.get(),
+            "Shader index should be 4."
+        );
+    }
+
+    /**
+     * Tests loading a Fragment GLSL shader.
+     */
+    @Test
+    public void testLoadFragmentShader () throws InterruptedException {
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
+
+        final DrawView drawView = Utils.getPrivateField(this.activity, "drawView");
+        final MainRenderer renderer = drawView.getRenderer();
+
+        final String shaderCode = Utils.invokePrivateMethod(this.activity, "readTextAsset",
+            ImmutableList.of(String.class),
+            ImmutableList.of(ConstantsUI.PATH_SHADERS + ConstantsUI.FILE_SEPARATOR + "FragmentShader.glsl")
+        );
+
+        final AtomicInteger shaderIndex = new AtomicInteger(-1);
+        final CountDownLatch latch = new CountDownLatch(1);
+        drawView.queueEvent(() -> {
+            final int index = Utils.invokePrivateMethod(renderer, "loadShader",
+                ImmutableList.of(int.class, String.class),
+                ImmutableList.of(GLES20.GL_FRAGMENT_SHADER, shaderCode)
+            );
+            shaderIndex.set(index);
+            latch.countDown();
+        });
+        latch.await(1L, TimeUnit.MINUTES);
+        Assertions.assertEquals(
+            4,
+            shaderIndex.get(),
+            "Shader index should be 4."
+        );
     }
 
     /**

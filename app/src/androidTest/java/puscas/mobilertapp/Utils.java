@@ -3,6 +3,7 @@ package puscas.mobilertapp;
 import android.graphics.Bitmap;
 import android.os.Build;
 
+import androidx.annotation.NonNull;
 import androidx.multidex.BuildConfig;
 
 import org.junit.Assume;
@@ -10,6 +11,9 @@ import org.junit.Assume;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import javax.annotation.Nonnull;
@@ -33,6 +37,28 @@ final class Utils {
     }
 
     /**
+     * Helper method that checks if the current system should or not execute the
+     * flaky tests.
+     *
+     * @param numCores The number of CPU cores available.
+     */
+    static void checksIfSystemShouldContinue(final int numCores) {
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
+
+        LOGGER.info("BuildConfig.DEBUG: " + BuildConfig.DEBUG);
+        LOGGER.info("Build.TAGS: " + Build.TAGS);
+        LOGGER.info("numCores: " + numCores);
+        Assume.assumeFalse(
+            "This test fails in Debug with only 1 core.",
+            BuildConfig.DEBUG // Debug mode
+                && Build.TAGS.equals("test-keys") // In third party systems (CI)
+                && numCores == 1 // Android system with only 1 CPU core
+        );
+        LOGGER.info(methodName + " finish");
+    }
+
+    /**
      * Helper method that gets a private field from an {@link Object}.
      *
      * @param clazz The {@link Object} to get the private field.
@@ -41,7 +67,8 @@ final class Utils {
      * @implNote This method uses reflection to be able to get the private
      * field from the {@link Object}.
      */
-    static <T> T getPrivateField(@Nonnull final Object clazz, final String fieldName) {
+    @NonNull
+    public static <T> T getPrivateField(@Nonnull final Object clazz, @NonNull final String fieldName) {
         Field field = null;
         try {
             // Use reflection to access the private field.
@@ -72,11 +99,15 @@ final class Utils {
      * @implNote This method uses reflection to be able to invoke the private
      * method from the {@link Object}.
      */
-    static <T> T invokePrivateMethod(@Nonnull final Object clazz, final String methodName) {
+    @NonNull
+    public static <T> T invokePrivateMethod(
+        @Nonnull final Object clazz, @NonNull final String methodName,
+        @NonNull final List<Class<?>> parameterTypes, @NonNull final Collection<Object> args
+    ) {
         Method method = null;
         try {
             // Use reflection to access the private method.
-            method = clazz.getClass().getDeclaredMethod(methodName);
+            method = clazz.getClass().getDeclaredMethod(methodName, parameterTypes.toArray(new Class<?>[0]));
         } catch (final NoSuchMethodException ex) {
             LOGGER.warning(ex.getMessage());
         }
@@ -85,34 +116,14 @@ final class Utils {
 
         T privateMethodReturnValue = null;
         try {
-            privateMethodReturnValue = (T) method.invoke(clazz);
-        } catch (final IllegalAccessException | InvocationTargetException ex) {
+            privateMethodReturnValue = (T) method.invoke(clazz, args.toArray(new Object[0]));
+        } catch (final IllegalAccessException ex) {
             LOGGER.warning(ex.getMessage());
+        } catch (final InvocationTargetException ex) {
+            LOGGER.warning(Objects.requireNonNull(ex.getCause()).getMessage());
         }
         assert privateMethodReturnValue != null;
 
         return privateMethodReturnValue;
-    }
-
-    /**
-     * Helper method that checks if the current system should or not execute the
-     * flaky tests.
-     *
-     * @param numCores The number of CPU cores available.
-     */
-    static void checksIfSystemShouldContinue(final int numCores) {
-        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
-
-        LOGGER.info("BuildConfig.DEBUG: " + BuildConfig.DEBUG);
-        LOGGER.info("Build.TAGS: " + Build.TAGS);
-        LOGGER.info("numCores: " + numCores);
-        Assume.assumeFalse(
-            "This test fails in Debug with only 1 core.",
-            BuildConfig.DEBUG // Debug mode
-                && Build.TAGS.equals("test-keys") // In third party systems (CI)
-                && numCores == 1 // Android system with only 1 CPU core
-        );
-        LOGGER.info(methodName + " finish");
     }
 }
