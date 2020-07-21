@@ -1,0 +1,5 @@
+t perspective #type of the camera
+p -460.0 500.0 -1000.0 #position of the camera x y z
+l 0.0 400.0 0.0 #look at of the camera x y z
+u 0.0 1.0 0.0 #up vector of the camera x y z
+f 45 45 #field of view of the camera u v
