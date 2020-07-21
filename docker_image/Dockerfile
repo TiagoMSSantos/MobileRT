@@ -7,15 +7,14 @@ RUN apt-get update -y && \
     vim \
     libatomic1 \
     libomp-8-dev \
-    libqt4-dev
-#    build-essential \
-#    cmake \
-#    ca-certificates \
-#    git \
-#    g++
+    libqt4-dev \
+    cmake \
+    build-essential \
+    git \
+    ca-certificates
 
-# Copy contents
-COPY . ./MobileRT
+# Get MobileRT contents
+RUN git clone https://github.com/TiagoMSSantos/MobileRT.git
 
 # Variables
 ARG build_type=Release
@@ -27,17 +26,22 @@ ENV DISPLAY=":1" \
     BUILD_TYPE="${build_type}"
 
 # Compile Ray Tracer
-#RUN cd MobileRT && \
-#    mv WavefrontOBJs ../
-#    mkdir -p build_${build_type} && \
-#    cd build_${build_type} && \
-#    cmake \
-#      -DCMAKE_VERBOSE_MAKEFILE=ON \
-#      -DCMAKE_CXX_COMPILER=clang++ \
-#      -DCMAKE_BUILD_TYPE=${build_type} \
-#      ../app/ && \
-#    make && \
-#    find ./*/* -not -path bin -not -path lib ! -name AppMobileRT ! -name *.so -delete
+RUN cd MobileRT && \
+    mkdir -p build_${build_type} && \
+    cd build_${build_type} && \
+    pwd && \
+    cmake \
+      -DCMAKE_VERBOSE_MAKEFILE=ON \
+      -DCMAKE_CXX_COMPILER=g++ \
+      -DCMAKE_BUILD_TYPE=${build_type} \
+      ../app/ && \
+    make && \
+    find ./*/* -not -path bin -not -path lib ! -name AppMobileRT ! -name *.so -delete && \
+    rm -rf ../app/ && \
+    rm -rf ../docs/ && \
+    rm -rf ../documentation/ && \
+    rm -rf ../git-hooks/ && \
+    rm -rf ../gradle/
 
 # Create volume
 VOLUME /tmp/.X11-unix

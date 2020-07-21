@@ -54,7 +54,6 @@
 **/System_dependent/**/*.pro*
 **/.*
 **/*.pro*
-**/app/src*
 **/*gradle*
 **/*.md*
 **/*.gif*
@@ -62,7 +61,6 @@
 **/*makefile*
 **/*.yml*
 **/*Plot_Graphs*
-**/*app
 **/WavefrontOBJs/**
 
 **/documentation
