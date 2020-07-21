@@ -110,9 +110,26 @@ public final class MainRendererTest {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
-        final ClassLoader classLoader = getClass().getClassLoader();
-        assert classLoader != null;
-        final InputStream inputStream = classLoader.getResourceAsStream("Shaders/VertexShader.glsl");
+        final InputStream inputStream = createInputStreamFromResource("Shaders/VertexShader.glsl");
+        final String shaderCode = puscas.mobilertapp.utils.Utils.readTextFromInputStream(inputStream);
+
+        final int shaderIndex = CreateAndGetIndexOfShader(shaderCode, GLES20.GL_VERTEX_SHADER);
+        Assertions.assertEquals(
+            4,
+            shaderIndex,
+            "Shader index should be 4."
+        );
+    }
+
+    /**
+     * Tests loading a Vertex GLSL shader.
+     */
+    @Test
+    public void testLoadVertexShaderRaster () throws InterruptedException {
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
+
+        final InputStream inputStream = createInputStreamFromResource("Shaders/VertexShaderRaster.glsl");
         final String shaderCode = puscas.mobilertapp.utils.Utils.readTextFromInputStream(inputStream);
 
         final int shaderIndex = CreateAndGetIndexOfShader(shaderCode, GLES20.GL_VERTEX_SHADER);
@@ -131,9 +148,7 @@ public final class MainRendererTest {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
-        final ClassLoader classLoader = getClass().getClassLoader();
-        assert classLoader != null;
-        final InputStream inputStream = classLoader.getResourceAsStream("Shaders/FragmentShader.glsl");
+        final InputStream inputStream = createInputStreamFromResource("Shaders/FragmentShader.glsl");
         final String shaderCode = puscas.mobilertapp.utils.Utils.readTextFromInputStream(inputStream);
 
         final int shaderIndex = CreateAndGetIndexOfShader(shaderCode, GLES20.GL_FRAGMENT_SHADER);
@@ -142,6 +157,37 @@ public final class MainRendererTest {
             shaderIndex,
             "Shader index should be 4."
         );
+    }
+
+    /**
+     * Tests loading a Fragment GLSL shader.
+     */
+    @Test
+    public void testLoadFragmentShaderRaster () throws InterruptedException {
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
+
+        final InputStream inputStream = createInputStreamFromResource("Shaders/FragmentShaderRaster.glsl");
+        final String shaderCode = puscas.mobilertapp.utils.Utils.readTextFromInputStream(inputStream);
+
+        final int shaderIndex = CreateAndGetIndexOfShader(shaderCode, GLES20.GL_FRAGMENT_SHADER);
+        Assertions.assertEquals(
+            4,
+            shaderIndex,
+            "Shader index should be 4."
+        );
+    }
+
+    /**
+     * Creates an {@link InputStream} from a file in the resources.
+     *
+     * @param filePath The path to the file to read in the resources.
+     * @return An {@link InputStream} from the file.
+     */
+    private InputStream createInputStreamFromResource(final String filePath) {
+        final ClassLoader classLoader = getClass().getClassLoader();
+        assert classLoader != null;
+        return classLoader.getResourceAsStream(filePath);
     }
 
     /**
