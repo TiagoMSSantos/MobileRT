@@ -17,14 +17,13 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.rules.TestRule;
 import org.junit.rules.Timeout;
 
+import java.io.InputStream;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
 import javax.annotation.Nonnull;
-
-import puscas.mobilertapp.utils.ConstantsUI;
 
 public final class MainRendererTest {
 
@@ -111,9 +110,12 @@ public final class MainRendererTest {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
-        final String shaderPath = ConstantsUI.PATH_SHADERS + ConstantsUI.FILE_SEPARATOR + "VertexShader.glsl";
+        final ClassLoader classLoader = getClass().getClassLoader();
+        assert classLoader != null;
+        final InputStream inputStream = classLoader.getResourceAsStream("Shaders/VertexShader.glsl");
+        final String shaderCode = puscas.mobilertapp.utils.Utils.readTextFromInputStream(inputStream);
 
-        final int shaderIndex = getIndexOfShader(shaderPath, GLES20.GL_VERTEX_SHADER);
+        final int shaderIndex = CreateAndGetIndexOfShader(shaderCode, GLES20.GL_VERTEX_SHADER);
         Assertions.assertEquals(
             4,
             shaderIndex,
@@ -129,9 +131,12 @@ public final class MainRendererTest {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
-        final String shaderPath = ConstantsUI.PATH_SHADERS + ConstantsUI.FILE_SEPARATOR + "FragmentShader.glsl";
+        final ClassLoader classLoader = getClass().getClassLoader();
+        assert classLoader != null;
+        final InputStream inputStream = classLoader.getResourceAsStream("Shaders/FragmentShader.glsl");
+        final String shaderCode = puscas.mobilertapp.utils.Utils.readTextFromInputStream(inputStream);
 
-        final int shaderIndex = getIndexOfShader(shaderPath, GLES20.GL_FRAGMENT_SHADER);
+        final int shaderIndex = CreateAndGetIndexOfShader(shaderCode, GLES20.GL_FRAGMENT_SHADER);
         Assertions.assertEquals(
             4,
             shaderIndex,
@@ -142,22 +147,17 @@ public final class MainRendererTest {
     /**
      * Loads a file with a GLSL shader code and creates a GLSL shader in OpenGL.
      *
-     * @implNote This method uses {@link MainActivity#readTextAsset} to read the
-     * GLSL shader file and {@link MainRenderer#loadShader} to create the shader
-     * in the OpenGL framework.
-     * @param shaderPath The path to the file with GLSL shader code.
+     * @param shaderCode The GLSL shader code.
      * @param shaderType The type of the GLSL shader. It can be vertex or fragment shader.
      * @return The index of the new created GLSL shader.
      * @throws InterruptedException If the thread waiting for the {@link CountDownLatch} was interrupted.
+     *
+     * @implNote This method uses {@link MainRenderer#loadShader} to create
+     * the shader in the OpenGL framework.
      */
-    private int getIndexOfShader(final String shaderPath, final int shaderType) throws InterruptedException {
+    private int CreateAndGetIndexOfShader(final String shaderCode, final int shaderType) throws InterruptedException {
         final DrawView drawView = Utils.getPrivateField(this.activity, "drawView");
         final MainRenderer renderer = drawView.getRenderer();
-
-        final String shaderCode = Utils.invokePrivateMethod(this.activity, "readTextAsset",
-            ImmutableList.of(String.class),
-            ImmutableList.of(shaderPath)
-        );
 
         final AtomicInteger shaderIndex = new AtomicInteger(-1);
         final CountDownLatch latch = new CountDownLatch(1);

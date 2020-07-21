@@ -1,15 +1,26 @@
 package puscas.mobilertapp.utils;
 
+import androidx.annotation.NonNull;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import javax.annotation.Nonnull;
 
+import java8.util.Objects;
+import puscas.mobilertapp.exceptions.FailureException;
+
 /**
  * Utility class with some helper methods.
  */
 public final class Utils {
+
     /**
      * The {@link Logger} for this class.
      */
@@ -65,5 +76,30 @@ public final class Utils {
         final boolean interrupted = Thread.interrupted();
         final String message = String.format("%s exception: %s", methodName, interrupted);
         LOGGER.severe(message);
+    }
+
+    /**
+     * Helper method which reads a {@link String} from an {@link InputStreamReader}.
+     *
+     * @param inputStream The {@link InputStream} to read from.
+     * @return A {@link String} containing the contents of the {@link InputStream}.
+     */
+    @Nonnull
+    public static String readTextFromInputStream(@NonNull final InputStream inputStream) {
+        try (InputStreamReader isReader = new InputStreamReader(inputStream, Charset.defaultCharset());
+             BufferedReader reader = new BufferedReader(isReader)) {
+
+            final StringBuilder stringBuilder = new StringBuilder(1);
+            String str = reader.readLine();
+            while (Objects.nonNull(str)) {
+                stringBuilder.append(str).append(ConstantsUI.LINE_SEPARATOR);
+                str = reader.readLine();
+            }
+            return stringBuilder.toString();
+        } catch (final OutOfMemoryError ex1) {
+            throw new FailureException(ex1);
+        } catch (final IOException ex2) {
+            throw new FailureException(ex2);
+        }
     }
 }

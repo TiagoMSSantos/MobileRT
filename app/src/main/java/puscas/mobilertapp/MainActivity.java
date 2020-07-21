@@ -28,12 +28,9 @@ import androidx.core.content.ContextCompat;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 import java.util.Locale;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -45,7 +42,6 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 
-import java8.util.Objects;
 import java8.util.Optional;
 import java8.util.stream.IntStreams;
 import java8.util.stream.StreamSupport;
@@ -58,6 +54,7 @@ import puscas.mobilertapp.utils.ConstantsUI;
 import puscas.mobilertapp.utils.Scene;
 import puscas.mobilertapp.utils.Shader;
 import puscas.mobilertapp.utils.State;
+import puscas.mobilertapp.utils.Utils;
 
 /**
  * The main {@link Activity} for the Android User Interface.
@@ -274,22 +271,13 @@ public final class MainActivity extends Activity {
     @Nonnull
     private String readTextAsset(final String filePath) {
         final AssetManager assetManager = getAssets();
-        try (InputStream inputStream = assetManager.open(filePath);
-             InputStreamReader isReader = new InputStreamReader(inputStream, Charset.defaultCharset());
-             BufferedReader reader = new BufferedReader(isReader)) {
-
-            final StringBuilder sb = new StringBuilder(1);
-            String str = reader.readLine();
-            while (Objects.nonNull(str)) {
-                sb.append(str).append(ConstantsUI.LINE_SEPARATOR);
-                str = reader.readLine();
-            }
-            return sb.toString();
-        } catch (final OutOfMemoryError ex1) {
-            throw new FailureException(ex1);
-        } catch (final IOException ex2) {
-            throw new FailureException(ex2);
+        final String text;
+        try (InputStream inputStream = assetManager.open(filePath)) {
+            text = Utils.readTextFromInputStream(inputStream);
+        } catch (final IOException ex) {
+            throw new FailureException(ex);
         }
+        return text;
     }
 
     /**

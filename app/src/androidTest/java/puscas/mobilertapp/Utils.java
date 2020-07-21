@@ -68,7 +68,7 @@ final class Utils {
      * field from the {@link Object}.
      */
     @NonNull
-    public static <T> T getPrivateField(@Nonnull final Object clazz, @NonNull final String fieldName) {
+    static <T> T getPrivateField(@Nonnull final Object clazz, @NonNull final String fieldName) {
         Field field = null;
         try {
             // Use reflection to access the private field.
@@ -100,7 +100,7 @@ final class Utils {
      * method from the {@link Object}.
      */
     @NonNull
-    public static <T> T invokePrivateMethod(
+    static <T> T invokePrivateMethod(
         @Nonnull final Object clazz, @NonNull final String methodName,
         @NonNull final List<Class<?>> parameterTypes, @NonNull final Collection<Object> args
     ) {

@@ -148,6 +148,15 @@ android {
         setQuiet false
         enable 'WrongThreadInterprocedural'
     }
+
+    sourceSets {
+        test {
+            resources.srcDirs += ['src/test/resources']
+        }
+        androidTest {
+            resources.srcDirs += ['src/androidTest/resources']
+        }
+    }
 }
 
 configurations {
