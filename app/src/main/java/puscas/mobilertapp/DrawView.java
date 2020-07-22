@@ -100,7 +100,7 @@ public final class DrawView extends GLSurfaceView {
     }
 
     /**
-     * Stops the Ray Tracer engine and sets its {@link State} to {@link State#STOP}.
+     * Stops the Ray Tracer engine and sets its {@link State} to {@link State#STOPPED}.
      */
     private native void rtStopRender(boolean wait);
 

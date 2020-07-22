@@ -1,6 +1,7 @@
 package puscas.mobilertapp;
 
 import android.opengl.GLES20;
+import android.opengl.GLSurfaceView;
 
 import androidx.test.rule.ActivityTestRule;
 
@@ -199,7 +200,9 @@ public final class MainRendererTest {
      * @throws InterruptedException If the thread waiting for the {@link CountDownLatch} was interrupted.
      *
      * @implNote This method uses {@link MainRenderer#loadShader} to create
-     * the shader in the OpenGL framework.
+     * the shader in the OpenGL framework. To do that, it uses a GL thread to
+     * execute the {@link MainRenderer#loadShader} method by placing its call
+     * in the {@link GLSurfaceView#queueEvent(java.lang.Runnable)}.
      */
     private int CreateAndGetIndexOfShader(final String shaderCode, final int shaderType) throws InterruptedException {
         final DrawView drawView = Utils.getPrivateField(this.activity, "drawView");

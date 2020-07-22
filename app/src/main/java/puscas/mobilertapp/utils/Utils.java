@@ -86,6 +86,7 @@ public final class Utils {
      */
     @Nonnull
     public static String readTextFromInputStream(@NonNull final InputStream inputStream) {
+        LOGGER.info("readTextFromInputStream");
         try (InputStreamReader isReader = new InputStreamReader(inputStream, Charset.defaultCharset());
              BufferedReader reader = new BufferedReader(isReader)) {
 
@@ -100,6 +101,8 @@ public final class Utils {
             throw new FailureException(ex1);
         } catch (final IOException ex2) {
             throw new FailureException(ex2);
+        } finally {
+            LOGGER.info("readTextFromInputStream finished");
         }
     }
 }
