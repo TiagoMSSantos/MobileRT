@@ -1,4 +1,8 @@
+///////////////////////////////////////////////////////////////////////////////
+// Get system components versions from properties
+///////////////////////////////////////////////////////////////////////////////
 println("Reading system properties.")
+
 final def systemNDKVersion = System.getProperty('ndkVersion', '21.3.6528147')
 final def systemCMakeVersion = System.getProperty('cmakeVersion', '3.10.2')
 final def systemTestType = System.getProperty('testType', 'debug')
@@ -6,27 +10,53 @@ final def systemTestType = System.getProperty('testType', 'debug')
 println("NDK version: " + systemNDKVersion)
 println("CMake version: " + systemCMakeVersion)
 println("Test type: " + systemTestType)
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
+
+///////////////////////////////////////////////////////////////////////////////
+// Apply plugins
+///////////////////////////////////////////////////////////////////////////////
+
+// The Application plugin facilitates creating an executable JVM application.
 apply plugin: 'com.android.application'
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
+
+///////////////////////////////////////////////////////////////////////////////
+// Add flags to Java compiler
+///////////////////////////////////////////////////////////////////////////////
 allprojects {
     tasks.withType(JavaCompile) {
         println("Adding additional flags to the compiler.")
 
         options.compilerArgs \
             << '-Xlint:all' \
-            << '-AprintErrorStack' << '-AprintAllQualifiers' \
+            << '-AprintErrorStack' \
+            << '-AprintAllQualifiers' \
             << '-verbose'
     }
 }
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
+
+///////////////////////////////////////////////////////////////////////////////
+// Android setup
+///////////////////////////////////////////////////////////////////////////////
 android {
+    // Set NDK version
     setNdkVersion systemNDKVersion
+
+    // Set build type for the tests
     setTestBuildType systemTestType
 
+    // Setup required versions to compile
     setCompileSdkVersion 29
     setBuildToolsVersion '30.0.0'
 
+    // Setup signing configurations
     signingConfigs {
         Puscas {
             setStoreFile file('MobileRT.jks')
@@ -36,6 +66,7 @@ android {
         }
     }
 
+    // Setup default configurations
     defaultConfig {
         setMinSdkVersion 16
         setTargetSdkVersion 29
@@ -61,17 +92,23 @@ android {
             }
         }
     }
+
+    // Setup native configurations
     externalNativeBuild {
         cmake {
             setPath 'CMakeLists.txt'
             setVersion systemCMakeVersion
         }
     }
+
+    // Set Java version
     compileOptions {
         setDefaultJavaVersion JavaVersion.VERSION_1_8
         setTargetCompatibility JavaVersion.VERSION_1_8
         setSourceCompatibility JavaVersion.VERSION_1_8
     }
+
+    // Set build types
     buildTypes {
         debug {
             setDebuggable true
@@ -101,8 +138,12 @@ android {
             }
         }
     }
+
+    // Setup product flavors
     productFlavors {
     }
+
+    // Exclude some files from the package due to conflicts from different dependencies
     packagingOptions {
         exclude 'META-INF/LICENSE.md'
         exclude 'META-INF/LICENSE-notice.md'
@@ -117,6 +158,8 @@ android {
 //        exclude 'org/cyberneko/html/res/ErrorMessages_ja.txt'
 //        exclude 'META-INF/plexus/components.xml'
     }
+
+    // Configure test options
     testOptions {
         unitTests {
             includeAndroidResources = true
@@ -125,9 +168,13 @@ android {
         setAnimationsDisabled true
 //        setExecution 'ANDROIDX_TEST_ORCHESTRATOR'
     }
+
+    // Setup DEX options
     dexOptions {
         setJavaMaxHeapSize '1mb'
     }
+
+    // Setup linter options
     lintOptions {
         setAbortOnError true
         setCheckAllWarnings true
@@ -149,22 +196,38 @@ android {
         enable 'WrongThreadInterprocedural'
     }
 
+    // Add resources directories to tests
     sourceSets {
+        // Unit tests
         test {
             resources.srcDirs += ['src/test/resources']
         }
+        // Instrumentation tests
         androidTest {
             resources.srcDirs += ['src/androidTest/resources']
         }
     }
 }
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
+
+///////////////////////////////////////////////////////////////////////////////
+// Add configurations
+///////////////////////////////////////////////////////////////////////////////
 configurations {
     debug
     release
 }
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
+
+///////////////////////////////////////////////////////////////////////////////
+// Add third party dependencies
+///////////////////////////////////////////////////////////////////////////////
 dependencies {
+    // Dependencies for the Android application
     println("Adding dependencies for MobileRT.")
 
     // Android dependencies
@@ -181,6 +244,7 @@ dependencies {
 
 
 
+    // Dependencies for the Android instrumentation tests
     println("Adding dependencies for the instrumentation tests.")
 
     androidTestImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.2'
@@ -203,6 +267,7 @@ dependencies {
 
 
 
+    // Dependencies for the Android unit tests
     println("Adding dependencies for the unit tests.")
 
     testImplementation 'junit:junit:4.13'
@@ -212,7 +277,9 @@ dependencies {
 
 
 
-    // Give error when added
+    // Dependencies that give errors when added
 //    implementation 'org.apache.commons:commons-text:1.8'
 //    androidTestImplementation 'org.assertj:assertj-core:3.16.1'
 }
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
