@@ -15,7 +15,6 @@
 - [x] Split naive acceleration structure from Scene
 - [ ] Support acceleration structures compatible with the lights
 
-
 ## Shapes
 - [x] Support triangle
     - [x] Support normals per vertex
@@ -36,7 +35,6 @@
     - [ ] Support ray packet intersections
 - [ ] Support KD-Tree
 - [x] Make all acceleration structures as templates
-
 
 ## Shaders
 - [x] Support DepthMap
@@ -123,7 +121,7 @@
     - [x] Rendering components (cameras, lights, loaders, samplers, shaders)
     - [x] UI (Android through JNI, Linux through Qt)
 
-### System
+## System
 - [x] Support unit tests (code coverage)
 - [ ] Support to export rendered image to a file
 - [ ] Support to store rendered image to a database
@@ -144,13 +142,13 @@
 - [ ] Support web browser interface
 - [x] Support CI/CD pipeline
 
-### Docker
+## Docker
 - [x] Make a docker image with MobileRT
 - [x] Add an example model to the docker image
 - [ ] Make the ray tracer distribute the load across different engines
 - [ ] Use docker compose to launch multiple containers and distribute the load
 
-### Documentation
+## Documentation
 - [x] Support doxygen documentation in the MobileRT
 - [ ] Support doxygen documentation in the Components
 - [ ] Support doxygen documentation in the JNI layer
@@ -159,3 +157,13 @@
 - [x] Add comments for readability in the native building files
 - [ ] Add comments for readability in the gradle building files
 - [x] Add comments for readability in the scripts
+
+## Broadcast bitmap to multiple desktop devices
+- [ ] Support Android interface to send updated bitmap regularly to Kafka topic via REST API
+- [ ] Develop small pc application that subscribes to that topic via KAFKA client
+- [ ] Support application to show bitmap in every update
+
+## Broadcast bitmap to multiple Android devices
+- [ ] Support Linux interface to send updated bitmap regularly to Kafka topic via KAFKA client
+- [ ] Support Android interface to subscribe to that that topic via REST API
+- [ ] Support Android interface to show bitmap in every update
