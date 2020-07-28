@@ -125,7 +125,7 @@ echo "Wait for device to be available.";
 emulator -avd "${avd_emulator}" -writable-system 2> /dev/null &
 
 callCommand adb kill-server;
-callCommand sleep 1;
+callCommand sleep 2;
 callCommand adb start-server;
 callCommand adb wait-for-device;
 callCommand adb shell "while [[ -z $(getprop sys.boot_completed) ]]; do sleep 3; done; input keyevent 82";

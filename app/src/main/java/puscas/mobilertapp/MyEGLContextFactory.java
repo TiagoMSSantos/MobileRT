@@ -70,6 +70,7 @@ public class MyEGLContextFactory implements GLSurfaceView.EGLContextFactory {
             };
             this.eglContext = egl.eglCreateContext(display, eglConfig, EGL10.EGL_NO_CONTEXT, attribList);
         }
+
         return this.eglContext;
     }
 

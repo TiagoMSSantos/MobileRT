@@ -393,26 +393,11 @@ public final class MainActivity extends Activity {
             throw new FailureException(ex);
         }
 
-        this.drawView = findViewById(R.id.drawLayout);
-        this.pickerScene = findViewById(R.id.pickerScene);
-        this.pickerShader = findViewById(R.id.pickerShader);
-        this.pickerSamplesPixel = findViewById(R.id.pickerSamplesPixel);
-        this.pickerSamplesLight = findViewById(R.id.pickerSamplesLight);
-        this.pickerAccelerator = findViewById(R.id.pickerAccelerator);
-        this.pickerThreads = findViewById(R.id.pickerThreads);
-        this.pickerResolutions = findViewById(R.id.pickerSize);
+        initializeViews();
         final TextView textView = findViewById(R.id.timeText);
         final Button renderButton = findViewById(R.id.renderButton);
         final ActivityManager assetManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
 
-        Preconditions.checkNotNull(this.pickerResolutions);
-        Preconditions.checkNotNull(this.pickerThreads);
-        Preconditions.checkNotNull(this.pickerAccelerator);
-        Preconditions.checkNotNull(this.pickerSamplesLight);
-        Preconditions.checkNotNull(this.pickerSamplesPixel);
-        Preconditions.checkNotNull(this.pickerShader);
-        Preconditions.checkNotNull(this.pickerScene);
-        Preconditions.checkNotNull(this.drawView);
         Preconditions.checkNotNull(textView);
         Preconditions.checkNotNull(renderButton);
         Preconditions.checkNotNull(assetManager);
@@ -420,113 +405,53 @@ public final class MainActivity extends Activity {
         final ConfigurationInfo configurationInfo = assetManager.getDeviceConfigurationInfo();
         final boolean supportES2 = (configurationInfo.reqGlEsVersion >= ConstantsRenderer.REQUIRED_OPENGL_VERSION);
 
-        if (supportES2 && MainActivity.checkGL20Support()) {
-            this.drawView.setVisibility(View.INVISIBLE);
-            this.drawView.setEGLContextClientVersion(2);
-            this.drawView.setEGLConfigChooser(8, 8, 8, 8, 3 * 8, 0);
-
-            final MainRenderer renderer = this.drawView.getRenderer();
-            renderer.setBitmap(1, 1, 1, 1, false);
-            final String vertexShader = readTextAsset(ConstantsUI.PATH_SHADERS + ConstantsUI.FILE_SEPARATOR + "VertexShader.glsl");
-            final String fragmentShader = readTextAsset(ConstantsUI.PATH_SHADERS + ConstantsUI.FILE_SEPARATOR + "FragmentShader.glsl");
-            final String vertexShaderRaster = readTextAsset(ConstantsUI.PATH_SHADERS + ConstantsUI.FILE_SEPARATOR + "VertexShaderRaster.glsl");
-            final String fragmentShaderRaster = readTextAsset(ConstantsUI.PATH_SHADERS + ConstantsUI.FILE_SEPARATOR + "FragmentShaderRaster.glsl");
-            renderer.setVertexShaderCode(vertexShader);
-            renderer.setFragmentShaderCode(fragmentShader);
-            renderer.setVertexShaderCodeRaster(vertexShaderRaster);
-            renderer.setFragmentShaderCodeRaster(fragmentShaderRaster);
-
-            final ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-            this.drawView.setViewAndActivityManager(textView, activityManager);
-            this.drawView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
-            this.drawView.setVisibility(View.VISIBLE);
-
-            renderButton.setOnLongClickListener((final View view) -> {
-                recreate();
-                return false;
-            });
-            renderer.setButtonRender(renderButton);
-
-            this.drawView.setPreserveEGLContextOnPause(true);
-        } else {
+        if (!supportES2 || !MainActivity.checkGL20Support()) {
             final String msg = "Your device doesn't support ES 2. (" + configurationInfo.reqGlEsVersion + ')';
             LOGGER.severe(msg);
             throw new FailureException(msg);
         }
 
-        final String[] scenes = Scene.getNames();
-        this.pickerScene.setMinValue(0);
-        this.pickerScene.setMaxValue(scenes.length - 1);
-        this.pickerScene.setWrapSelectorWheel(true);
-        this.pickerScene.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-        this.pickerScene.setValue(defaultPickerScene);
-        this.pickerScene.setDisplayedValues(scenes);
+        this.drawView.setVisibility(View.INVISIBLE);
+        this.drawView.setEGLContextClientVersion(2);
+        this.drawView.setEGLConfigChooser(8, 8, 8, 8, 3 * 8, 0);
 
-        final String[] shaders = Shader.getNames();
-        this.pickerShader.setMinValue(0);
-        this.pickerShader.setMaxValue(shaders.length - 1);
-        this.pickerShader.setWrapSelectorWheel(true);
-        this.pickerShader.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-        this.pickerShader.setValue(defaultPickerShader);
-        this.pickerShader.setDisplayedValues(shaders);
+        final MainRenderer renderer = this.drawView.getRenderer();
+        final String vertexShader = readTextAsset(ConstantsUI.PATH_SHADERS + ConstantsUI.FILE_SEPARATOR + "VertexShader.glsl");
+        final String fragmentShader = readTextAsset(ConstantsUI.PATH_SHADERS + ConstantsUI.FILE_SEPARATOR + "FragmentShader.glsl");
+        final String vertexShaderRaster = readTextAsset(ConstantsUI.PATH_SHADERS + ConstantsUI.FILE_SEPARATOR + "VertexShaderRaster.glsl");
+        final String fragmentShaderRaster = readTextAsset(ConstantsUI.PATH_SHADERS + ConstantsUI.FILE_SEPARATOR + "FragmentShaderRaster.glsl");
+        renderer.setBitmap(1, 1, 1, 1, false);
+        renderer.setVertexShaderCode(vertexShader);
+        renderer.setFragmentShaderCode(fragmentShader);
+        renderer.setVertexShaderCodeRaster(vertexShaderRaster);
+        renderer.setFragmentShaderCodeRaster(fragmentShaderRaster);
 
-        final int maxSamplesPixel = 99;
-        final String[] samplesPixel = IntStreams.range(0, maxSamplesPixel)
-            .map(value -> (value + 1) * (value + 1))
-            .mapToObj(String::valueOf)
-            .toArray(String[]::new);
-        this.pickerSamplesPixel.setMinValue(1);
-        this.pickerSamplesPixel.setMaxValue(maxSamplesPixel);
-        this.pickerSamplesPixel.setWrapSelectorWheel(true);
-        this.pickerSamplesPixel.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-        this.pickerSamplesPixel.setValue(defaultPickerSamplesPixel);
-        this.pickerSamplesPixel.setDisplayedValues(samplesPixel);
+        final ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        this.drawView.setViewAndActivityManager(textView, activityManager);
+        this.drawView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+        this.drawView.setVisibility(View.VISIBLE);
 
-        final int maxSamplesLight = 100;
-        final String[] samplesLight = IntStreams.range(0, maxSamplesLight)
-            .map(value -> value + 1)
-            .mapToObj(String::valueOf)
-            .toArray(String[]::new);
-        this.pickerSamplesLight.setMinValue(1);
-        this.pickerSamplesLight.setMaxValue(maxSamplesLight);
-        this.pickerSamplesLight.setWrapSelectorWheel(true);
-        this.pickerSamplesLight.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-        this.pickerSamplesLight.setValue(defaultPickerSamplesLight);
-        this.pickerSamplesLight.setDisplayedValues(samplesLight);
+        renderButton.setOnLongClickListener((final View view) -> {
+            recreate();
+            return false;
+        });
+        renderer.setButtonRender(renderButton);
 
-        final String[] accelerators = Accelerator.getNames();
-        this.pickerAccelerator.setMinValue(0);
-        this.pickerAccelerator.setMaxValue(accelerators.length - 1);
-        this.pickerAccelerator.setWrapSelectorWheel(true);
-        this.pickerAccelerator.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-        this.pickerAccelerator.setValue(defaultPickerAccelerator);
-        this.pickerAccelerator.setDisplayedValues(accelerators);
+        this.drawView.setPreserveEGLContextOnPause(true);
 
-        final int maxCores = getNumOfCores();
-        this.pickerThreads.setMinValue(1);
-        this.pickerThreads.setMaxValue(maxCores);
-        this.pickerThreads.setWrapSelectorWheel(true);
-        this.pickerThreads.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-        this.pickerThreads.setValue(defaultPickerThreads);
+        initializePickerScene(defaultPickerScene);
+        initializePickerShader(defaultPickerShader);
+        initializePickerSamplesPixel(defaultPickerSamplesPixel);
+        initializePickerSamplesLight(defaultPickerSamplesLight);
+        initializePickerAccelerator(defaultPickerAccelerator);
+        initializePickerThreads(defaultPickerThreads);
+        initializeCheckBoxRasterize(defaultCheckBoxRasterize);
 
         final int maxSizes = 9;
-        this.pickerResolutions.setMinValue(1);
-        this.pickerResolutions.setMaxValue(maxSizes - 1);
-        this.pickerResolutions.setWrapSelectorWheel(true);
-        this.pickerResolutions.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-        this.pickerResolutions.setValue(defaultPickerSizes);
-
-        this.checkBoxRasterize = this.findViewById(R.id.preview);
-        this.checkBoxRasterize.setChecked(defaultCheckBoxRasterize);
-        final int scale = Math.round(getResources().getDisplayMetrics().density);
-        this.checkBoxRasterize.setPadding(
-            this.checkBoxRasterize.getPaddingLeft() - (5 * scale),
-            this.checkBoxRasterize.getPaddingTop(),
-            this.checkBoxRasterize.getPaddingRight(),
-            this.checkBoxRasterize.getPaddingBottom()
-        );
+        initializePickerResolutions(defaultPickerSizes, maxSizes);
 
         final ViewTreeObserver vto = this.drawView.getViewTreeObserver();
+        // We can only set the resolutions after the views are shown.
         vto.addOnGlobalLayoutListener(() -> {
             final double widthView = (double) this.drawView.getWidth();
             final double heightView = (double) this.drawView.getHeight();
@@ -545,6 +470,163 @@ public final class MainActivity extends Activity {
             this.pickerResolutions.setDisplayedValues(resolutions);
         });
         checksStoragePermission();
+    }
+
+    /**
+     * Initializes the {@link #checkBoxRasterize} field.
+     *
+     * @param defaultCheckBoxRasterize The default value to put in the {@link #checkBoxRasterize} field.
+     */
+    private void initializeCheckBoxRasterize(final boolean defaultCheckBoxRasterize) {
+        this.checkBoxRasterize.setChecked(defaultCheckBoxRasterize);
+        final int scale = Math.round(getResources().getDisplayMetrics().density);
+        this.checkBoxRasterize.setPadding(
+            this.checkBoxRasterize.getPaddingLeft() - (5 * scale),
+            this.checkBoxRasterize.getPaddingTop(),
+            this.checkBoxRasterize.getPaddingRight(),
+            this.checkBoxRasterize.getPaddingBottom()
+        );
+    }
+
+    /**
+     * Initializes the {@link #pickerResolutions} field.
+     *
+     * @param defaultPickerSizes The default value to put in the {@link #pickerResolutions} field.
+     * @param maxSizes           The maximum size value for the {@link NumberPicker}.
+     */
+    private void initializePickerResolutions(final int defaultPickerSizes, final int maxSizes) {
+        this.pickerResolutions.setMinValue(1);
+        this.pickerResolutions.setMaxValue(maxSizes - 1);
+        this.pickerResolutions.setWrapSelectorWheel(true);
+        this.pickerResolutions.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+        this.pickerResolutions.setValue(defaultPickerSizes);
+    }
+
+    /**
+     * Initializes the {@link #pickerThreads} field.
+     *
+     * @param defaultPickerThreads The default value to put in the {@link #pickerThreads} field.
+     */
+    private void initializePickerThreads(final int defaultPickerThreads) {
+        final int maxCores = getNumOfCores();
+        this.pickerThreads.setMinValue(1);
+        this.pickerThreads.setMaxValue(maxCores);
+        this.pickerThreads.setWrapSelectorWheel(true);
+        this.pickerThreads.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+        this.pickerThreads.setValue(defaultPickerThreads);
+    }
+
+    /**
+     * Initializes the {@link #pickerAccelerator} field.
+     *
+     * @param defaultPickerAccelerator The default value to put in the {@link #pickerAccelerator} field.
+     */
+    private void initializePickerAccelerator(final int defaultPickerAccelerator) {
+        final String[] accelerators = Accelerator.getNames();
+        this.pickerAccelerator.setMinValue(0);
+        this.pickerAccelerator.setMaxValue(accelerators.length - 1);
+        this.pickerAccelerator.setWrapSelectorWheel(true);
+        this.pickerAccelerator.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+        this.pickerAccelerator.setValue(defaultPickerAccelerator);
+        this.pickerAccelerator.setDisplayedValues(accelerators);
+    }
+
+    /**
+     * Initializes the {@link #pickerSamplesLight} field.
+     *
+     * @param defaultPickerSamplesLight The default value to put in the {@link #pickerSamplesLight} field.
+     */
+    private void initializePickerSamplesLight(final int defaultPickerSamplesLight) {
+        final int maxSamplesLight = 100;
+        final String[] samplesLight = IntStreams.range(0, maxSamplesLight)
+            .map(value -> value + 1)
+            .mapToObj(String::valueOf)
+            .toArray(String[]::new);
+        this.pickerSamplesLight.setMinValue(1);
+        this.pickerSamplesLight.setMaxValue(maxSamplesLight);
+        this.pickerSamplesLight.setWrapSelectorWheel(true);
+        this.pickerSamplesLight.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+        this.pickerSamplesLight.setValue(defaultPickerSamplesLight);
+        this.pickerSamplesLight.setDisplayedValues(samplesLight);
+    }
+
+    /**
+     * Initializes the {@link #pickerSamplesPixel} field.
+     *
+     * @param defaultPickerSamplesPixel The default value to put in the {@link #pickerSamplesPixel} field.
+     */
+    private void initializePickerSamplesPixel(final int defaultPickerSamplesPixel) {
+        final int maxSamplesPixel = 99;
+        final String[] samplesPixel = IntStreams.range(0, maxSamplesPixel)
+            .map(value -> (value + 1) * (value + 1))
+            .mapToObj(String::valueOf)
+            .toArray(String[]::new);
+        this.pickerSamplesPixel.setMinValue(1);
+        this.pickerSamplesPixel.setMaxValue(maxSamplesPixel);
+        this.pickerSamplesPixel.setWrapSelectorWheel(true);
+        this.pickerSamplesPixel.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+        this.pickerSamplesPixel.setValue(defaultPickerSamplesPixel);
+        this.pickerSamplesPixel.setDisplayedValues(samplesPixel);
+    }
+
+    /**
+     * Initializes the {@link #pickerShader} field.
+     *
+     * @param defaultPickerShader The default value to put in the {@link #pickerShader} field.
+     */
+    private void initializePickerShader(final int defaultPickerShader) {
+        final String[] shaders = Shader.getNames();
+        this.pickerShader.setMinValue(0);
+        this.pickerShader.setMaxValue(shaders.length - 1);
+        this.pickerShader.setWrapSelectorWheel(true);
+        this.pickerShader.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+        this.pickerShader.setValue(defaultPickerShader);
+        this.pickerShader.setDisplayedValues(shaders);
+    }
+
+    /**
+     * Initializes the {@link #pickerScene} field.
+     *
+     * @param defaultPickerScene The default value to put in the {@link #pickerScene} field.
+     */
+    private void initializePickerScene(final int defaultPickerScene) {
+        final String[] scenes = Scene.getNames();
+        this.pickerScene.setMinValue(0);
+        this.pickerScene.setMaxValue(scenes.length - 1);
+        this.pickerScene.setWrapSelectorWheel(true);
+        this.pickerScene.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+        this.pickerScene.setValue(defaultPickerScene);
+        this.pickerScene.setDisplayedValues(scenes);
+    }
+
+    /**
+     * Helper method that initializes the fields that are {@link View}s.
+     */
+    private void initializeViews() {
+        this.drawView = findViewById(R.id.drawLayout);
+        this.pickerScene = findViewById(R.id.pickerScene);
+        this.pickerShader = findViewById(R.id.pickerShader);
+        this.pickerSamplesPixel = findViewById(R.id.pickerSamplesPixel);
+        this.pickerSamplesLight = findViewById(R.id.pickerSamplesLight);
+        this.pickerAccelerator = findViewById(R.id.pickerAccelerator);
+        this.pickerThreads = findViewById(R.id.pickerThreads);
+        this.pickerResolutions = findViewById(R.id.pickerSize);
+        this.checkBoxRasterize = findViewById(R.id.preview);
+        validateViews();
+    }
+
+    /**
+     * Helper method that validates the fields that are {@link View}s.
+     */
+    private void validateViews() {
+        Preconditions.checkNotNull(this.pickerResolutions);
+        Preconditions.checkNotNull(this.pickerThreads);
+        Preconditions.checkNotNull(this.pickerAccelerator);
+        Preconditions.checkNotNull(this.pickerSamplesLight);
+        Preconditions.checkNotNull(this.pickerSamplesPixel);
+        Preconditions.checkNotNull(this.pickerShader);
+        Preconditions.checkNotNull(this.pickerScene);
+        Preconditions.checkNotNull(this.drawView);
     }
 
     @Override

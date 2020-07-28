@@ -287,25 +287,26 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
             final String msg = "There was an error while creating the shader object.";
             LOGGER.severe(msg);
             throw new FailureException(msg);
-        } else {
-            GLES20.glShaderSource(shader, source);
-            checksGLError();
-            GLES20.glCompileShader(shader);
-            checksGLError();
-            final int[] compiled = new int[1];
-            GLES20.glGetShaderiv(shader, GLES20.GL_COMPILE_STATUS, compiled, 0);
-            checksGLError();
-            if (compiled[0] == 0) {
-                final String informationLog = GLES20.glGetShaderInfoLog(shader);
-                final String msg = "Could not compile shader " + shaderType + ": " + informationLog;
-                LOGGER.severe(msg);
-                checksGLError();
-                LOGGER.severe(source);
-                GLES20.glDeleteShader(shader);
-                checksGLError();
-                throw new FailureException(informationLog);
-            }
         }
+
+        GLES20.glShaderSource(shader, source);
+        checksGLError();
+        GLES20.glCompileShader(shader);
+        checksGLError();
+        final int[] compiled = new int[1];
+        GLES20.glGetShaderiv(shader, GLES20.GL_COMPILE_STATUS, compiled, 0);
+        checksGLError();
+        if (compiled[0] == 0) {
+            final String informationLog = GLES20.glGetShaderInfoLog(shader);
+            final String msg = "Could not compile shader " + shaderType + ": " + informationLog;
+            LOGGER.severe(msg);
+            checksGLError();
+            LOGGER.severe(source);
+            GLES20.glDeleteShader(shader);
+            checksGLError();
+            throw new FailureException(informationLog);
+        }
+
         return shader;
     }
 
@@ -697,14 +698,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
 
         checksFreeMemory(1, () -> { });
 
-        // Create Program
-        if (this.shaderProgramRaster != 0) {
-            GLES20.glDeleteProgram(this.shaderProgramRaster);
-            checksGLError();
-            this.shaderProgramRaster = 0;
-        }
-        this.shaderProgramRaster = GLES20.glCreateProgram();
-        checksGLError();
+        createProgram();
 
         final int positionAttrib2 = 0;
         GLES20.glBindAttribLocation(this.shaderProgramRaster, positionAttrib2, ConstantsRenderer.VERTEX_POSITION);
@@ -875,6 +869,19 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         final Bitmap newBitmapWithPreviewScene = copyFrameBuffer();
         LOGGER.info("copyFrame finished");
         return newBitmapWithPreviewScene;
+    }
+
+    /**
+     * Helper method that initializes a GLSL program.
+     */
+    private void createProgram() {
+        if (this.shaderProgramRaster != 0) {
+            GLES20.glDeleteProgram(this.shaderProgramRaster);
+            checksGLError();
+            this.shaderProgramRaster = 0;
+        }
+        this.shaderProgramRaster = GLES20.glCreateProgram();
+        checksGLError();
     }
 
     /**

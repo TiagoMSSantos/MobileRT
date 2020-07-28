@@ -37,6 +37,8 @@ buildscript {
         } else {
             classpath 'com.android.tools.build:gradle:3.6.3'
         }
+//        classpath 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.5.1'
+//        classpath 'org.pitest:pitest-command-line:0.33'
     }
 }
 ///////////////////////////////////////////////////////////////////////////////

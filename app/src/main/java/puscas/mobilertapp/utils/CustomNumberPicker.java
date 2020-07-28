@@ -40,13 +40,13 @@ public final class CustomNumberPicker extends NumberPicker {
         super.addView(child, params);
         LOGGER.info("addView");
 
-        if (child instanceof TextView) {
-            final TextView textView = (TextView) child;
-            final int color = Color.parseColor(ConstantsUI.COLOR_NUMBER_PICKER);
-            textView.setTextSize(ConstantsUI.TEXT_SIZE);
-            textView.setTextColor(color);
-        } else {
+        if (!(child instanceof TextView)) {
             throw new FailureException("View cannot be cast to TextView.");
         }
+
+        final TextView textView = (TextView) child;
+        final int color = Color.parseColor(ConstantsUI.COLOR_NUMBER_PICKER);
+        textView.setTextSize(ConstantsUI.TEXT_SIZE);
+        textView.setTextColor(color);
     }
 }

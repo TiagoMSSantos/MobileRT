@@ -169,7 +169,7 @@ public final class DrawView extends GLSurfaceView {
      * @param rasterize  Whether should show a preview (rasterize one frame) or not.
      */
     void renderScene(
-            @Nonnull final  Config config,
+            @Nonnull final Config config,
             final int numThreads,
             final boolean rasterize) {
         LOGGER.info(ConstantsMethods.RENDER_SCENE);
