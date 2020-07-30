@@ -2,6 +2,8 @@ package puscas.mobilertapp.utils;
 
 import androidx.annotation.NonNull;
 
+import org.jetbrains.annotations.Contract;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -104,5 +106,21 @@ public final class Utils {
         } finally {
             LOGGER.info("readTextFromInputStream finished");
         }
+    }
+
+    /**
+     * Calculates the size, in MegaBytes of the scene with a certain number of primitives.
+     *
+     * @param numPrimitives The number of primitives in the scene.
+     * @return The size, in MegaBytes, of the scene.
+     */
+    @Contract(pure = true)
+    public static int calculateSceneSize(final int numPrimitives) {
+        LOGGER.info("calculateSceneSize");
+        final int floatSize = Float.SIZE / Byte.SIZE;
+        final int triangleMembers = floatSize * 9;
+        final int triangleMethods = 8 * 11;
+        final int triangleSize = triangleMembers + triangleMethods;
+        return 1 + ((numPrimitives * triangleSize) / 1048576);
     }
 }

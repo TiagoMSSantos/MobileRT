@@ -48,6 +48,11 @@ public final class ConstantsMethods {
     static final String GET_NAMES = "getNames";
 
     /**
+     * The name of the {@link UtilsGL#run} methods.
+     */
+    static final String RUN = "run";
+
+    /**
      * A private constructor in order to prevent instantiating this helper class.
      */
     private ConstantsMethods() {

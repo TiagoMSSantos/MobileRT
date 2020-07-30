@@ -5,8 +5,6 @@ import android.opengl.GLSurfaceView;
 
 import androidx.test.rule.ActivityTestRule;
 
-import com.google.common.collect.ImmutableList;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -25,6 +23,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
 import javax.annotation.Nonnull;
+
+import puscas.mobilertapp.utils.UtilsGL;
 
 public final class MainRendererTest {
 
@@ -212,10 +212,7 @@ public final class MainRendererTest {
         final CountDownLatch latch = new CountDownLatch(1);
         // We need to call `loadShader` method with the GL rendering thread.
         drawView.queueEvent(() -> {
-            final int index = Utils.invokePrivateMethod(renderer, "loadShader",
-                ImmutableList.of(int.class, String.class),
-                ImmutableList.of(shaderType, shaderCode)
-            );
+            final int index = UtilsGL.loadShader(shaderType, shaderCode);
             shaderIndex.set(index);
             latch.countDown();
         });
