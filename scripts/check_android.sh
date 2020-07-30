@@ -27,13 +27,14 @@ source scripts/helper_functions.sh;
 
 
 ###############################################################################
-# Compile for Android
+# Run Gradle linter
 ###############################################################################
 
 # Set path to reports
 reports_path=./app/build/reports
 callCommand mkdir -p ${reports_path}
 
+echo "Calling the Gradle linter";
 callCommand ./gradlew check --profile --parallel \
   -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
   --console plain \

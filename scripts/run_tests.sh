@@ -34,6 +34,7 @@ source scripts/helper_functions.sh;
 reports_path=./app/build/reports
 callCommand mkdir -p ${reports_path}
 
+echo "Calling Gradle test";
 callCommand ./gradlew test"${type}"UnitTest --profile --parallel \
   -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
   --console plain \

@@ -39,12 +39,14 @@ callCommand mkdir -p "${build_path}";
 callCommand rm -rf "${build_path}"/*;
 
 callCommand cd "${build_path}";
+echo "Calling CMake";
 callCommand cmake -DCMAKE_VERBOSE_MAKEFILE=ON \
   -DCMAKE_CXX_COMPILER="${compiler}" -DCMAKE_BUILD_TYPE="${type}" ../app/ \
   | tee "${build_path}"/log_cmake_"${type}".log 2>&1;
 resCompile=${PIPESTATUS[0]};
 
 if [ "${resCompile}" -eq 0 ]; then
+  echo "Calling Make";
   callCommand make;
   resCompile=${PIPESTATUS[0]};
 else

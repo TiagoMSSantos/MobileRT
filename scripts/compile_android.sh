@@ -61,6 +61,7 @@ fi
 callCommand rm -rf ./app/.cxx/;
 callCommand rm -rf ./app/build/;
 
+echo "Calling the Gradle assemble to compile code for Android";
 callCommand ./gradlew clean assemble"${type}" --profile --parallel \
   -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
   --console plain \

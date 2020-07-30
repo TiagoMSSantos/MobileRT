@@ -208,6 +208,10 @@ else
 fi
 echo "pid of instrumentation tests: '${pid_instrumentation_tests}'";
 
+# Wait a bit for the instrumentation tests process to finish
+callCommand sleep 2;
+callCommand adb wait-for-device;
+
 echo "Run unit tests";
 if [ "${type}" == "debug" ]; then
   # Ignore unit tests that should crash the system because of a failing assert
