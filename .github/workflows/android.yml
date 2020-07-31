@@ -72,6 +72,11 @@ jobs:
         keyStorePassword: ${{ secrets.SIGNING_KEY }}
         keyPassword: ${{ secrets.SIGNING_KEY }}
 
+    - name: Run linter
+      if: success()
+      run: |
+        bash ./scripts/check_android.sh ${{ matrix.variant }} ${{ matrix.ndk_version }} ${{ matrix.cmake_version }};
+
     - name: Run unit tests Java
       if: success()
       run: |
@@ -87,11 +92,6 @@ jobs:
         disable-animations: true
         script: |
           bash ./scripts/run_tests_android.sh ${{ matrix.variant }} all ${{ matrix.ndk_version }} ${{ matrix.cmake_version }} false;
-
-    - name: Run linter
-      if: success()
-      run: |
-        bash ./scripts/check_android.sh ${{ matrix.variant }} ${{ matrix.ndk_version }} ${{ matrix.cmake_version }};
 
     - name: Upload reports
       if: always()

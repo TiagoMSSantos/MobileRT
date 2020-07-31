@@ -649,7 +649,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         checksFreeMemory(1, () -> { });
 
         if (linkStatusRaster[0] != GLES20.GL_TRUE) {
-            final String strError = UtilsGL.<String, Integer>run(this.shaderProgramRaster, GLES20::glGetProgramInfoLog);
+            final String strError = UtilsGL.run(this.shaderProgramRaster, GLES20::glGetProgramInfoLog);
             final String msg = "attachedShadersRaster = " + attachedShadersRaster[0];
             final String msg2 = "Could not link program rasterizer: " + strError;
             LOGGER.severe(msg);
@@ -996,7 +996,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         final int fragmentShader = UtilsGL.loadShader(GLES20.GL_FRAGMENT_SHADER, this.fragmentShaderCode);
 
         // Create Program
-        this.shaderProgram = UtilsGL.<Integer>run(GLES20::glCreateProgram);
+        this.shaderProgram = UtilsGL.<Integer>run(() -> GLES20.glCreateProgram());
 
         if (this.shaderProgram == 0) {
             LOGGER.severe("Could not create program: ");

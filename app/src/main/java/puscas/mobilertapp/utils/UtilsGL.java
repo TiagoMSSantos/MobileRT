@@ -79,7 +79,7 @@ public final class UtilsGL {
     @NonNull
     public static <T> T run(@NonNull final Supplier<T> method) {
         LOGGER.info(ConstantsMethods.RUN);
-        final T result = (T) method.get();
+        final T result = method.get();
         checksGLError();
         return result;
     }
@@ -96,7 +96,7 @@ public final class UtilsGL {
     @NonNull
     public static <T, R> T run(@NonNull final R arg, @NonNull final Function<R, T> method) {
         LOGGER.info(ConstantsMethods.RUN);
-        final T result = (T) method.apply(arg);
+        final T result = method.apply(arg);
         checksGLError();
         return result;
     }
@@ -114,7 +114,7 @@ public final class UtilsGL {
     @NonNull
     public static <T, R, S> T run(@NonNull final R arg1, @NonNull final S arg2, @NonNull final BiFunction<R, S, T> method) {
         LOGGER.info(ConstantsMethods.RUN);
-        final T result = (T) method.apply(arg1, arg2);
+        final T result = method.apply(arg1, arg2);
         checksGLError();
         return result;
     }
