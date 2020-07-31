@@ -291,24 +291,32 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
 
     /**
      * Resets some stats about the Ray Tracer engine.
+     */
+    void resetStats() {
+        resetStats(-1, new ConfigSamples.Builder().build(), -1, -1);
+    }
+
+    /**
+     * Resets some stats about the Ray Tracer engine.
      *
      * @param numThreads    The number of threads.
-     * @param samplesPixel  The number of samples per pixel.
-     * @param samplesLight  The number of samples per light.
+     * @param configSamples The number of samples per pixel and light.
      * @param numPrimitives The number of primitives in the scene.
      * @param numLights     The number of lights in the scene.
      */
     void resetStats(final int numThreads,
-                    final int samplesPixel,
-                    final int samplesLight,
+                    final ConfigSamples configSamples,
                     final int numPrimitives,
                     final int numLights) {
         LOGGER.info("resetStats");
+
+        final int lSamplesPixel = configSamples.getSamplesPixel();
+        final int lSamplesLight = configSamples.getSamplesLight();
         final String numThreadsStr = String.format(Locale.US, "numThreads: %d", numThreads);
         final String numPrimitivesStr = String.format(Locale.US, "numPrimitives: %d", numPrimitives);
         final String numLightsStr = String.format(Locale.US, "numLights: %d", numLights);
-        final String samplesPixelStr = String.format(Locale.US, "samplesPixel: %d", samplesPixel);
-        final String samplesLightStr = String.format(Locale.US, "samplesLight: %d", samplesLight);
+        final String samplesPixelStr = String.format(Locale.US, "samplesPixel: %d", lSamplesPixel);
+        final String samplesLightStr = String.format(Locale.US, "samplesLight: %d", lSamplesLight);
         LOGGER.info(numThreadsStr);
         LOGGER.info(numPrimitivesStr);
         LOGGER.info(numLightsStr);
@@ -316,8 +324,8 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         LOGGER.info(samplesLightStr);
 
         this.numThreads = numThreads;
-        this.samplesPixel = samplesPixel;
-        this.samplesLight = samplesLight;
+        this.samplesPixel = lSamplesPixel;
+        this.samplesLight = lSamplesLight;
         this.numPrimitives = numPrimitives;
         this.numLights = numLights;
     }
@@ -641,7 +649,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         checksFreeMemory(1, () -> { });
 
         if (linkStatusRaster[0] != GLES20.GL_TRUE) {
-            final String strError = UtilsGL.run(this.shaderProgramRaster, GLES20::glGetProgramInfoLog);
+            final String strError = UtilsGL.<String, Integer>run(this.shaderProgramRaster, GLES20::glGetProgramInfoLog);
             final String msg = "attachedShadersRaster = " + attachedShadersRaster[0];
             final String msg2 = "Could not link program rasterizer: " + strError;
             LOGGER.severe(msg);

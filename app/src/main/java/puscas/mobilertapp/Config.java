@@ -43,16 +43,6 @@ public final class Config {
     private final int height;
 
     /**
-     * @see Config#getSamplesPixel()
-     */
-    private final int samplesPixel;
-
-    /**
-     * @see Config#getSamplesLight()
-     */
-    private final int samplesLight;
-
-    /**
      * @see Config#getObjFilePath()
      */
     private final String objFilePath;
@@ -68,6 +58,11 @@ public final class Config {
     private final String camFilePath;
 
     /**
+     * @see Config#getConfigSamples
+     */
+    private final ConfigSamples configSamples;
+
+    /**
      * A private constructor to force the usage of the {@link Config.Builder}.
      *
      * @param builder The {@link Config.Builder} for this class.
@@ -81,8 +76,7 @@ public final class Config {
         this.accelerator = builder.getAccelerator();
         this.width = builder.getWidth();
         this.height = builder.getHeight();
-        this.samplesPixel = builder.getSamplesPixel();
-        this.samplesLight = builder.getSamplesLight();
+        this.configSamples = builder.getConfigSamples();
         this.objFilePath = builder.getObjFilePath();
         this.matFilePath = builder.getMatFilePath();
         this.camFilePath = builder.getCamFilePath();
@@ -129,22 +123,6 @@ public final class Config {
         return this.height;
     }
 
-    /**
-     * Gets the number of samples per pixel.
-     */
-    @Contract(pure = true)
-    public int getSamplesPixel() {
-        return this.samplesPixel;
-    }
-
-    /**
-     * Gets the number of samples per light.
-     */
-    @Contract(pure = true)
-    public int getSamplesLight() {
-        return this.samplesLight;
-    }
-
 
     /**
      * Gets the path to the OBJ file containing the geometry of the scene.
@@ -172,6 +150,16 @@ public final class Config {
     String getCamFilePath() {
         return this.camFilePath;
     }
+
+    /**
+     * Gets the configuration for the number of samples.
+     */
+    @Contract(pure = true)
+    @Nonnull
+    ConfigSamples getConfigSamples() {
+        return this.configSamples;
+    }
+
 
     /**
      * The builder for this class.
@@ -209,16 +197,6 @@ public final class Config {
         private int height = 0;
 
         /**
-         * @see Config.Builder#withSamplesPixel(int)
-         */
-        private int samplesPixel = 0;
-
-        /**
-         * @see Config.Builder#withSamplesLight(int)
-         */
-        private int samplesLight = 0;
-
-        /**
          * The path to the OBJ file.
          */
         private String objFilePath = "";
@@ -232,6 +210,14 @@ public final class Config {
          * The path to the CAM file.
          */
         private String camFilePath = "";
+
+        /**
+         * @see Config.Builder#getConfigSamples
+         */
+        private ConfigSamples configSamples = new ConfigSamples.Builder()
+            .withSamplesPixel(0)
+            .withSamplesLight(0)
+            .build();
 
         /**
          * Sets the scene of {@link Config}.
@@ -269,7 +255,7 @@ public final class Config {
          * Sets the {@link Config#accelerator}.
          *
          * @param accelerator The new value for the {@link Config#accelerator} field.
-         * @return The builder with {@link Config.Builder#samplesPixel} already set.
+         * @return The builder with {@link Config.Builder#accelerator} already set.
          */
         @Contract("_ -> this")
         @Nonnull
@@ -310,38 +296,6 @@ public final class Config {
             LOGGER_BUILDER.info(message);
 
             this.height = height;
-            return this;
-        }
-
-        /**
-         * Sets the samples per pixel of {@link Config}.
-         *
-         * @param samplesPixel The new value for the {@link Config#samplesPixel} field.
-         * @return The builder with {@link Config.Builder#samplesPixel} already set.
-         */
-        @Contract("_ -> this")
-        @Nonnull
-        Config.Builder withSamplesPixel(final int samplesPixel) {
-            final String message = String.format(Locale.US, "withSamplesPixel: %d", samplesPixel);
-            LOGGER_BUILDER.info(message);
-
-            this.samplesPixel = samplesPixel;
-            return this;
-        }
-
-        /**
-         * Sets the samples per light of {@link Config}.
-         *
-         * @param samplesLight The new value for the {@link Config#samplesLight} field.
-         * @return The builder with {@link Config.Builder#samplesLight} already set.
-         */
-        @Contract("_ -> this")
-        @Nonnull
-        Config.Builder withSamplesLight(final int samplesLight) {
-            final String message = String.format(Locale.US, "withSamplesLight: %d", samplesLight);
-            LOGGER_BUILDER.info(message);
-
-            this.samplesLight = samplesLight;
             return this;
         }
 
@@ -392,6 +346,23 @@ public final class Config {
             this.camFilePath = camFilePath;
             return this;
         }
+
+        /**
+         * Sets the number of samples to be used in the {@link Config}.
+         *
+         * @param configSamples The new value for the {@link Config#configSamples} field.
+         * @return The builder with {@link Config.Builder#camFilePath} already set.
+         */
+        @Contract("_ -> this")
+        @Nonnull
+        Config.Builder withConfigSamples(@Nonnull final ConfigSamples configSamples) {
+            final String message = String.format(Locale.US, "withConfigSamples: %s", configSamples);
+            LOGGER_BUILDER.info(message);
+
+            this.configSamples = configSamples;
+            return this;
+        }
+
 
         /**
          * Builds a new instance of {@link Config}.
@@ -448,22 +419,6 @@ public final class Config {
         }
 
         /**
-         * Gets the number of samples per pixel.
-         */
-        @Contract(pure = true)
-        int getSamplesPixel() {
-            return this.samplesPixel;
-        }
-
-        /**
-         * Gets the number of samples per light.
-         */
-        @Contract(pure = true)
-        int getSamplesLight() {
-            return this.samplesLight;
-        }
-
-        /**
          * Gets the path to the OBJ file.
          */
         @Contract(pure = true)
@@ -485,6 +440,14 @@ public final class Config {
         @Contract(pure = true)
         String getCamFilePath() {
             return this.camFilePath;
+        }
+
+        /**
+         * Gets the configuration for the number of samples.
+         */
+        @Contract(pure = true)
+        ConfigSamples getConfigSamples() {
+            return this.configSamples;
         }
     }
 }

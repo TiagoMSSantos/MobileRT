@@ -141,6 +141,8 @@
 - [x] Support Linux interface
 - [ ] Support web browser interface
 - [x] Support CI/CD pipeline
+- [x] Support linter in CI pipeline
+- [ ] Support Clang format
 
 ## Docker
 - [x] Make a docker image with MobileRT

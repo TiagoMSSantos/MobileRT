@@ -238,9 +238,7 @@ public final class DrawView extends GLSurfaceView {
             final boolean rasterize) throws LowMemoryException {
         LOGGER.info("createScene");
         final int numPrimitives = this.renderer.rtInitialize(config);
-        this.renderer.resetStats(
-            numThreads, config.getSamplesPixel(), config.getSamplesLight(), numPrimitives, rtGetNumberOfLights()
-        );
+        this.renderer.resetStats(numThreads, config.getConfigSamples(), numPrimitives, rtGetNumberOfLights());
         final int widthView = getWidth();
         final int heightView = getHeight();
         queueEvent(() -> this.renderer.setBitmap(config.getWidth(), config.getHeight(), widthView, heightView, rasterize));
@@ -253,7 +251,7 @@ public final class DrawView extends GLSurfaceView {
      * @param errorMessage The error message.
      */
     private void warningError(@Nonnull final Exception exception, final CharSequence errorMessage) {
-        this.renderer.resetStats(-1, -1, -1, -1, -1);
+        this.renderer.resetStats();
         LOGGER.severe(exception.getClass() + ":" + exception.getMessage());
         post(() -> Toast.makeText(getContext(), errorMessage, Toast.LENGTH_LONG).show());
     }

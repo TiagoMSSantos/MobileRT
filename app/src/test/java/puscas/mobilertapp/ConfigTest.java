@@ -49,8 +49,8 @@ public final class ConfigTest {
         Assertions.assertEquals(0, config.getScene(), "Scene not the expected value.");
         Assertions.assertEquals(0, config.getShader(), "Shader not the expected value.");
         Assertions.assertEquals(0, config.getAccelerator(), "Accelerator not the expected value.");
-        Assertions.assertEquals(0, config.getSamplesPixel(), "Samples per pixel not the expected value.");
-        Assertions.assertEquals(0, config.getSamplesLight(), "Samples per light not the expected value.");
+        Assertions.assertEquals(0, config.getConfigSamples().getSamplesPixel(), "Samples per pixel not the expected value.");
+        Assertions.assertEquals(0, config.getConfigSamples().getSamplesLight(), "Samples per light not the expected value.");
         Assertions.assertEquals("", config.getObjFilePath(), "OBJ file path not the expected value.");
         Assertions.assertEquals("", config.getMatFilePath(), "MAT file path not the expected value.");
         Assertions.assertEquals("", config.getCamFilePath(), "CAM file path not the expected value.");
@@ -81,8 +81,12 @@ public final class ConfigTest {
             .withScene(scene)
             .withShader(shader)
             .withAccelerator(accelerator)
-            .withSamplesPixel(spp)
-            .withSamplesLight(spl)
+            .withConfigSamples(
+                new ConfigSamples.Builder()
+                .withSamplesPixel(spp)
+                .withSamplesLight(spl)
+                .build()
+            )
             .withOBJ(obj)
             .withMAT(mat)
             .withCAM(cam)
@@ -93,8 +97,8 @@ public final class ConfigTest {
         Assertions.assertEquals(scene, config.getScene(), "Scene not the expected value.");
         Assertions.assertEquals(shader, config.getShader(), "Shader not the expected value.");
         Assertions.assertEquals(accelerator, config.getAccelerator(), "Accelerator not the expected value.");
-        Assertions.assertEquals(spp, config.getSamplesPixel(), "Samples per pixel not the expected value.");
-        Assertions.assertEquals(spl, config.getSamplesLight(), "Samples per light not the expected value.");
+        Assertions.assertEquals(spp, config.getConfigSamples().getSamplesPixel(), "Samples per pixel not the expected value.");
+        Assertions.assertEquals(spl, config.getConfigSamples().getSamplesLight(), "Samples per light not the expected value.");
         Assertions.assertEquals(obj, config.getObjFilePath(), "OBJ file path not the expected value.");
         Assertions.assertEquals(mat, config.getMatFilePath(), "MAT file path not the expected value.");
         Assertions.assertEquals(cam, config.getCamFilePath(), "CAM file path not the expected value.");

@@ -34,6 +34,9 @@ source scripts/helper_functions.sh;
 reports_path=./app/build/reports
 callCommand mkdir -p ${reports_path}
 
+echo "Print Gradle version";
+callCommand ./gradlew --version;
+
 echo "Calling the Gradle linter";
 callCommand ./gradlew check --profile --parallel \
   -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \

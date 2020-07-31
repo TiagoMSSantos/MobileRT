@@ -411,11 +411,15 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
         const auto heightMethodId {env->GetMethodID(configClass, "getHeight", "()I")};
         const auto height {env->CallIntMethod(localConfig, heightMethodId)};
 
-        const auto samplesPixelMethodId {env->GetMethodID(configClass, "getSamplesPixel", "()I")};
-        const auto samplesPixel {env->CallIntMethod(localConfig, samplesPixelMethodId)};
+        const auto configSamplesMethodId {env->GetMethodID(configClass, "getConfigSamples", "()Lpuscas/mobilertapp/ConfigSamples;")};
+        const auto samplesConfig {env->CallObjectMethod(localConfig, configSamplesMethodId)};
+        const auto samplesConfigClass {env->GetObjectClass(samplesConfig)};
 
-        const auto samplesLightMethodId {env->GetMethodID(configClass, "getSamplesLight", "()I")};
-        const auto samplesLight {env->CallIntMethod(localConfig, samplesLightMethodId)};
+        const auto samplesPixelMethodId {env->GetMethodID(samplesConfigClass, "getSamplesPixel", "()I")};
+        const auto samplesPixel {env->CallIntMethod(samplesConfig, samplesPixelMethodId)};
+
+        const auto samplesLightMethodId {env->GetMethodID(samplesConfigClass, "getSamplesLight", "()I")};
+        const auto samplesLight {env->CallIntMethod(samplesConfig, samplesLightMethodId)};
 
         jboolean isCopy {JNI_FALSE};
         const auto objMethodId {env->GetMethodID(configClass, "getObjFilePath", "()Ljava/lang/String;")};
