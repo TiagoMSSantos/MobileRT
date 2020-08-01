@@ -45,6 +45,8 @@ import puscas.mobilertapp.utils.State;
 import puscas.mobilertapp.utils.Utils;
 import puscas.mobilertapp.utils.UtilsGL;
 
+import static puscas.mobilertapp.utils.Constants.MB_IN_BYTES;
+
 /**
  * The OpenGL renderer that shows the Ray Tracer engine rendered image.
  */
@@ -427,8 +429,8 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         Preconditions.checkArgument(memoryNeeded > 0, "The requested memory must be a positive value");
 
         this.activityManager.getMemoryInfo(this.memoryInfo);
-        final long availMem = this.memoryInfo.availMem / 1048576L;
-        final long totalMem = this.memoryInfo.totalMem / 1048576L;
+        final long availMem = this.memoryInfo.availMem / (long) MB_IN_BYTES;
+        final long totalMem = this.memoryInfo.totalMem / (long) MB_IN_BYTES;
         final boolean insufficientMem = availMem <= (long) (1 + memoryNeeded);
         final String message = String.format(Locale.US, "MEMORY AVAILABLE: %dMB (%dMB)", availMem, totalMem);
         LOGGER.info(message);
@@ -671,18 +673,18 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         final float zNear = 0.1F;
         final float zFar = 1.0e38F;
 
-        final int floatSize = Float.SIZE / Byte.SIZE;
+        final int floatBytes = Float.SIZE / Byte.SIZE;
         final float eyeX = bbCamera.getFloat(0);
-        final float eyeY = bbCamera.getFloat(floatSize);
-        final float eyeZ = -bbCamera.getFloat(2 * floatSize);
+        final float eyeY = bbCamera.getFloat(floatBytes);
+        final float eyeZ = -bbCamera.getFloat(2 * floatBytes);
 
-        final float dirX = bbCamera.getFloat(4 * floatSize);
-        final float dirY = bbCamera.getFloat(5 * floatSize);
-        final float dirZ = -bbCamera.getFloat(6 * floatSize);
+        final float dirX = bbCamera.getFloat(4 * floatBytes);
+        final float dirY = bbCamera.getFloat(5 * floatBytes);
+        final float dirZ = -bbCamera.getFloat(6 * floatBytes);
 
-        final float upX = bbCamera.getFloat(8 * floatSize);
-        final float upY = bbCamera.getFloat(9 * floatSize);
-        final float upZ = -bbCamera.getFloat(10 * floatSize);
+        final float upX = bbCamera.getFloat(8 * floatBytes);
+        final float upY = bbCamera.getFloat(9 * floatBytes);
+        final float upZ = -bbCamera.getFloat(10 * floatBytes);
 
         final float centerX = eyeX + dirX;
         final float centerY = eyeY + dirY;
@@ -690,11 +692,11 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
 
         final float aspect = (float) this.width / (float) this.height;
         final float fixAspect = 0.955F;
-        final float fovX = bbCamera.getFloat(16 * floatSize) * fixAspect;
-        final float fovY = bbCamera.getFloat(17 * floatSize) * fixAspect;
+        final float fovX = bbCamera.getFloat(16 * floatBytes) * fixAspect;
+        final float fovY = bbCamera.getFloat(17 * floatBytes) * fixAspect;
 
-        final float sizeH = bbCamera.getFloat(18 * floatSize);
-        final float sizeV = bbCamera.getFloat(19 * floatSize);
+        final float sizeH = bbCamera.getFloat(18 * floatBytes);
+        final float sizeV = bbCamera.getFloat(19 * floatBytes);
 
         final float[] projectionMatrix = new float[16];
         final float[] viewMatrix = new float[16];
@@ -742,7 +744,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
 
         UtilsGL.run(() -> GLES20.glEnable(GLES20.GL_DEPTH_TEST));
 
-        final int vertexCount = bbVertices.capacity() / (floatSize << 2);
+        final int vertexCount = bbVertices.capacity() / (floatBytes * 4);
         final String msg = String.format(Locale.US, "vertexCount: %d", vertexCount);
         LOGGER.info(msg);
 

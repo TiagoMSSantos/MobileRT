@@ -20,6 +20,7 @@ import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import puscas.mobilertapp.utils.Constants;
 import puscas.mobilertapp.utils.ConstantsMethods;
 import puscas.mobilertapp.utils.ConstantsRenderer;
 import puscas.mobilertapp.utils.ConstantsUI;
@@ -41,11 +42,6 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
      * The number of milliseconds in a second.
      */
     private static final float SECOND_IN_MS = 1000.0F;
-
-    /**
-     * The number of bytes in a mega byte.
-     */
-    private static final long MB_IN_BYTES = 1048576L;
 
     /**
      * An {@link ExecutorService} which schedules every {@link RenderTask#updateInterval}
@@ -193,7 +189,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
         this.timeFrameT = String.format(Locale.US, ",t:%.2fs", 0.0F);
         this.timeT = String.format(Locale.US, "[%.2fs]", 0.0F);
         this.stateT = " " + State.IDLE.getId();
-        this.allocatedT = ",m:" + Debug.getNativeHeapAllocatedSize() / MB_IN_BYTES + "mb";
+        this.allocatedT = ",m:" + Debug.getNativeHeapAllocatedSize() / (long) Constants.MB_IN_BYTES + "mb";
         this.sampleT = ",0";
 
         this.timer = () -> {
@@ -206,7 +202,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
             this.timeFrameT = String.format(Locale.US, ",t:%.2fs", (float) timeRenderer / SECOND_IN_MS);
             final long currentTime = SystemClock.elapsedRealtime();
             this.timeT = String.format(Locale.US, "[%.2fs]", (float) (currentTime - this.startTimeStamp) / SECOND_IN_MS);
-            this.allocatedT = ",m:" + Debug.getNativeHeapAllocatedSize() / MB_IN_BYTES + "mb";
+            this.allocatedT = ",m:" + Debug.getNativeHeapAllocatedSize() / (long) Constants.MB_IN_BYTES + "mb";
             this.sampleT = "," + rtGetSample();
 
             final State currentState = State.values()[rtGetState()];

@@ -36,7 +36,8 @@ public final class Utils {
     }
 
     /**
-     * Helper method that waits for an {@link ExecutorService} to finish all the tasks.
+     * Helper method that waits for an {@link ExecutorService} to finish all the
+     * tasks.
      *
      * @param executorService The {@link ExecutorService}.
      */
@@ -70,11 +71,11 @@ public final class Utils {
      * Helper method that handles an {@link InterruptedException}.
      *
      * @param methodName The name of the method to appear in the logs.
+     * @implNote It resets the interrupted flag because when instrumented tests
+     * fail by timeout, this interrupt makes the {@link android.app.Activity}
+     * not finish properly.
      */
     public static void handleInterruption(@Nonnull final String methodName) {
-        // Reset the interrupted flag because when instrumented tests
-        // fail by timeout, this interrupt makes the Activity not finish
-        // properly.
         final boolean interrupted = Thread.interrupted();
         final String message = String.format("%s exception: %s", methodName, interrupted);
         LOGGER.severe(message);
@@ -109,7 +110,8 @@ public final class Utils {
     }
 
     /**
-     * Calculates the size, in MegaBytes of the scene with a certain number of primitives.
+     * Calculates the size, in MegaBytes of the scene with a certain number of
+     * primitives.
      *
      * @param numPrimitives The number of primitives in the scene.
      * @return The size, in MegaBytes, of the scene.
@@ -121,6 +123,6 @@ public final class Utils {
         final int triangleMembers = floatSize * 9;
         final int triangleMethods = 8 * 11;
         final int triangleSize = triangleMembers + triangleMethods;
-        return 1 + ((numPrimitives * triangleSize) / 1048576);
+        return 1 + ((numPrimitives * triangleSize) / Constants.MB_IN_BYTES);
     }
 }

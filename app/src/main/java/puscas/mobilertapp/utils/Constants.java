@@ -72,6 +72,11 @@ public final class Constants {
     public static final String CHECK_BOX_MESSAGE = "Check box message";
 
     /**
+     * The number of bytes in a mega byte.
+     */
+    public static final int MB_IN_BYTES = 1048576;
+
+    /**
      * A private constructor in order to prevent instantiating this helper class.
      */
     private Constants() {

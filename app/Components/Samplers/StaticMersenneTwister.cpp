@@ -4,13 +4,13 @@
 using ::Components::StaticMersenneTwister;
 
 namespace {
-    ::std::array<float, ::MobileRT::ArraySize> values {};
+    ::std::array<float, ::MobileRT::ArraySize> randomSequence {};
 }//namespace
 
 StaticMersenneTwister::StaticMersenneTwister() {
-    ::MobileRT::fillArrayWithMersenneTwister(&values);
+    ::MobileRT::fillArrayWithMersenneTwister(&randomSequence);
 }
 
 float StaticMersenneTwister::getSample(const ::std::uint32_t /*sample*/) {
-    return Sampler::getSampleFromArray(values);
+    return Sampler::getSampleFromArray(randomSequence);
 }

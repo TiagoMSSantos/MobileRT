@@ -19,7 +19,7 @@ using ::MobileRT::Light;
 using ::MobileRT::Material;
 
 namespace {
-    ::std::array<float, ::MobileRT::ArraySize> values {};
+    ::std::array<float, ::MobileRT::ArraySize> randomSequence {};
 }//namespace
 
 /**
@@ -33,7 +33,7 @@ Shader::Shader(Scene scene, const ::std::int32_t samplesLight, const Accelerator
     materials_ {::std::move(scene.materials_)},
     accelerator_ {accelerator},
     samplesLight_ {samplesLight} {
-    fillArrayWithHaltonSeq(&values);
+    fillArrayWithHaltonSeq(&randomSequence);
     initializeAccelerators(::std::move(scene));
 }
 
@@ -188,8 +188,8 @@ void Shader::resetSampling() {
     const auto current1 {sampler.fetch_add(1, ::std::memory_order_relaxed)};
     const auto current2 {sampler.fetch_add(1, ::std::memory_order_relaxed)};
 
-    const auto it1 {values.begin() + (current1 & ::MobileRT::ArrayMask)};
-    const auto it2 {values.begin() + (current2 & ::MobileRT::ArrayMask)};
+    const auto it1 {randomSequence.begin() + (current1 & ::MobileRT::ArrayMask)};
+    const auto it2 {randomSequence.begin() + (current2 & ::MobileRT::ArrayMask)};
 
     const auto uniformRandom1 {*it1};
     const auto uniformRandom2 {*it2};
@@ -222,7 +222,7 @@ void Shader::resetSampling() {
     static ::std::atomic<::std::uint32_t> sampler {};
     const auto current {sampler.fetch_add(1, ::std::memory_order_relaxed)};
 
-    const auto it {values.begin() + (current & ::MobileRT::ArrayMask)};
+    const auto it {randomSequence.begin() + (current & ::MobileRT::ArrayMask)};
 
     const auto sizeLights {static_cast<::std::uint32_t> (this->lights_.size())};
     const auto randomNumber {*it};

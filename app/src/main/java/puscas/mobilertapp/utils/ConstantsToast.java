@@ -13,12 +13,14 @@ public final class ConstantsToast {
     private static final Logger LOGGER = Logger.getLogger(ConstantsToast.class.getName());
 
     /**
-     * A warning message for when the Android device doesn't have a File Manager application.
+     * A warning message for when the Android device doesn't have a File Manager
+     * application.
      */
     public static final String PLEASE_INSTALL_FILE_MANAGER = "Please install a File Manager.";
 
     /**
-     * A warning message for when the Android device doesn't have enough memory to render the scene.
+     * A warning message for when the Android device doesn't have enough memory
+     * to render the scene.
      */
     public static final String DEVICE_WITHOUT_ENOUGH_MEMORY = "Device without enough memory to render the scene.";
 

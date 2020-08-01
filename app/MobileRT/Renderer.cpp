@@ -6,7 +6,7 @@ using ::MobileRT::Renderer;
 using ::MobileRT::NumberOfTiles;
 
 namespace {
-    ::std::array<float, NumberOfTiles> values {};
+    ::std::array<float, NumberOfTiles> randomSequence {};
 }//namespace
 
 /**
@@ -35,7 +35,7 @@ Renderer::Renderer(::std::unique_ptr<Shader> shader,
         domainSize_ {(width / blockSizeX_) * (height / blockSizeY_)},
         resolution_ {width * height},
         samplesPixel_ {samplesPixel} {
-    fillArrayWithHaltonSeq(&values);
+    fillArrayWithHaltonSeq(&randomSequence);
 }
 
 /**
@@ -160,6 +160,6 @@ float Renderer::getTile(const ::std::int32_t sample) {
         this->block_.fetch_sub(1, ::std::memory_order_relaxed);
         return 1.0F;
     }
-    const auto it {values.begin() + current};
+    const auto it {randomSequence.begin() + current};
     return *it;
 }

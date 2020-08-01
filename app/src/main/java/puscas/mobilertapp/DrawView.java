@@ -193,7 +193,9 @@ public final class DrawView extends GLSurfaceView {
                 warningError(ex, ConstantsToast.COULD_NOT_LOAD_THE_SCENE);
             }
             rtStopRender(false);
+            this.renderer.rtFinishRender();
             LOGGER.info(ConstantsMethods.RENDER_SCENE + " executor failed");
+            post(() -> this.renderer.updateButton(R.string.render));
             return Boolean.FALSE;
         });
         this.renderer.updateButton(R.string.stop);

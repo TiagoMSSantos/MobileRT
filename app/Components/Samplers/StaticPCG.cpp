@@ -5,13 +5,13 @@
 using ::Components::StaticPCG;
 
 namespace {
-    ::std::array<float, ::MobileRT::ArraySize> values {};
+    ::std::array<float, ::MobileRT::ArraySize> randomSequence {};
 }//namespace
 
 StaticPCG::StaticPCG() {
-    ::MobileRT::fillArrayWithPCG(&values);
+    ::MobileRT::fillArrayWithPCG(&randomSequence);
 }
 
 float StaticPCG::getSample(const ::std::uint32_t /*sample*/) {
-    return Sampler::getSampleFromArray(values);
+    return Sampler::getSampleFromArray(randomSequence);
 }
