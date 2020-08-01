@@ -250,7 +250,7 @@ dependencies {
     implementation 'org.jetbrains:annotations:19.0.0'
 
     // More dependencies
-    implementation 'org.apache.commons:commons-lang3:3.10'
+    implementation 'org.apache.commons:commons-lang3:3.11'
 
 
 
@@ -258,8 +258,8 @@ dependencies {
     println("Adding dependencies for the instrumentation tests.")
 
     androidTestImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.2'
-    androidTestImplementation 'org.mockito:mockito-android:3.3.3'
-    androidTestImplementation 'org.mockito:mockito-core:3.3.3'
+    androidTestImplementation 'org.mockito:mockito-android:3.4.6'
+    androidTestImplementation 'org.mockito:mockito-core:3.4.6'
     androidTestImplementation 'com.google.truth:truth:1.0.1'
 
     androidTestImplementation 'androidx.test.espresso:espresso-accessibility:3.2.0'

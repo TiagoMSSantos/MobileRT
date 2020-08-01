@@ -376,7 +376,83 @@ public final class MainActivityTest {
         Espresso.onView(ViewMatchers.withId(R.id.drawLayout))
             .check((view, exception) -> {
                 final Bitmap bitmap = Utils.getPrivateField(renderer, "bitmap");
-                assertRayTracingResultInBitmap(bitmap);
+                assertRayTracingResultInBitmap(bitmap, false);
+
+                Assertions.assertEquals(
+                    State.IDLE,
+                    renderer.getState(),
+                    "State is not the expected"
+                );
+            });
+
+        LOGGER.info(methodName + " finished");
+    }
+
+    /**
+     * Tests render a scene from an invalid OBJ file.
+     */
+    @Test(timeout = 2L * 60L * 1000L)
+    public void testRenderInvalidScene() {
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
+
+        final int numCores = Utils.invokePrivateMethod(this.activity, "getNumOfCores",
+            ImmutableList.of(), ImmutableList.of());
+
+        changePickerValue("pickerScene", R.id.pickerScene, 6);
+        changePickerValue("pickerThreads", R.id.pickerThreads, numCores);
+        changePickerValue("pickerSize", R.id.pickerSize, 8);
+        changePickerValue("pickerSamplesPixel", R.id.pickerSamplesPixel, 1);
+        changePickerValue("pickerSamplesLight", R.id.pickerSamplesLight, 1);
+        changePickerValue("pickerAccelerator", R.id.pickerAccelerator, 3);
+        changePickerValue("pickerShader", R.id.pickerShader, 2);
+
+        LOGGER.info("GOING TO CLICK THE BUTTON.");
+        final ViewInteraction viewInteraction = Espresso.onView(ViewMatchers.withId(R.id.renderButton))
+            .check((view, exception) -> {
+                LOGGER.info("GOING TO CLICK THE BUTTON 1.");
+                final Button renderButton = view.findViewById(R.id.renderButton);
+                LOGGER.info("GOING TO CLICK THE BUTTON 2.");
+                Assertions.assertEquals(
+                    Constants.RENDER,
+                    renderButton.getText().toString(),
+                    "Button message"
+                );
+                LOGGER.info("GOING TO CLICK THE BUTTON 3.");
+            })
+            .perform(new ViewActionButton(Constants.STOP));
+        LOGGER.info("RENDERING STARTED AND STOPPED 1.");
+        Espresso.onIdle();
+        LOGGER.info("RENDERING STARTED AND STOPPED 2.");
+
+        final long advanceSecs = 3L;
+        final AtomicBoolean done = new AtomicBoolean(false);
+        final DrawView drawView = Utils.getPrivateField(this.activity, "drawView");
+        final MainRenderer renderer = drawView.getRenderer();
+        LOGGER.info("RENDERING STARTED AND STOPPED 3.");
+        for (long currentTimeSecs = 0L; currentTimeSecs < 120L && !done.get(); currentTimeSecs += advanceSecs) {
+            LOGGER.info("WAITING FOR RENDERING TO FINISH.");
+            Uninterruptibles.sleepUninterruptibly(advanceSecs, TimeUnit.SECONDS);
+            LOGGER.info("WAITING FOR RENDERING TO FINISH 2.");
+
+            viewInteraction.check((view, exception) -> {
+                final Button renderButton = view.findViewById(R.id.renderButton);
+                LOGGER.info("CHECKING IF RENDERING DONE.");
+                LOGGER.info("Render button: " + renderButton.getText().toString());
+                LOGGER.info("State: " + renderer.getState().name());
+                if (renderButton.getText().toString().equals(Constants.RENDER)
+                    && renderer.getState() == State.IDLE) {
+                    done.set(true);
+                    LOGGER.info("RENDERING DONE.");
+                }
+            });
+        }
+
+        LOGGER.info("CHECKING RAY TRACING STATE.");
+        Espresso.onView(ViewMatchers.withId(R.id.drawLayout))
+            .check((view, exception) -> {
+                final Bitmap bitmap = Utils.getPrivateField(renderer, "bitmap");
+                assertRayTracingResultInBitmap(bitmap, true);
 
                 Assertions.assertEquals(
                     State.IDLE,
@@ -454,7 +530,7 @@ public final class MainActivityTest {
                 final DrawView drawView = (DrawView) view;
                 final MainRenderer renderer = drawView.getRenderer();
                 final Bitmap bitmap = Utils.getPrivateField(renderer, "bitmap");
-                assertRayTracingResultInBitmap(bitmap);
+                assertRayTracingResultInBitmap(bitmap, false);
 
                 Assertions.assertEquals(
                     State.IDLE,
@@ -642,8 +718,10 @@ public final class MainActivityTest {
      * a rendered image.
      *
      * @param bitmap The {@link Bitmap}.
+     * @param expectedSameValues Whether the {@link Bitmap} should have have only
+     *                           one color.
      */
-    private static void assertRayTracingResultInBitmap(@Nonnull final Bitmap bitmap) {
+    private static void assertRayTracingResultInBitmap(@Nonnull final Bitmap bitmap, final boolean expectedSameValues) {
         final int firstPixel = bitmap.getPixel(0, 0);
         final int width = bitmap.getWidth();
         final int height = bitmap.getHeight();
@@ -654,6 +732,8 @@ public final class MainActivityTest {
             .allMatch(pixel -> pixel == firstPixel);
 
         LOGGER.info("CHECKING BITMAP VALUES.");
-        Assertions.assertFalse(bitmapSameColor, "The rendered image should have different values.");
+        Assertions.assertEquals(expectedSameValues, bitmapSameColor,
+            "The rendered image should have different values."
+        );
     }
 }
