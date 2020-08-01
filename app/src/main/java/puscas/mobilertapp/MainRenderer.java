@@ -439,7 +439,8 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * Helper method which checks if the Android device has low free memory.
      *
      * @param memoryNeeded Number of MegaBytes needed to be allocated.
-     * @param function     The function to execute if the device has low free memory.
+     * @param function     The function to execute if the device has low free
+     *                     memory.
      * @throws LowMemoryException If the device has low free memory.
      */
     private void checksFreeMemory(final int memoryNeeded, final Runnable function) throws LowMemoryException {
@@ -451,8 +452,8 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
     }
 
     /**
-     * Prepares this object by setting up the {@link MainRenderer#requestRender} and
-     * {@link MainRenderer#renderTask} fields.
+     * Prepares this object by setting up the {@link MainRenderer#requestRender}
+     * and {@link MainRenderer#renderTask} fields.
      *
      * @param requestRender A {@link Runnable} of {@link GLSurfaceView#requestRender()} method.
      */
@@ -487,10 +488,11 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
     }
 
     /**
-     * Converts a pixel from OpenGL format to a pixel of Android format.
+     * Converts a pixel from OpenGL format (ABGR) to a pixel of Android format (ARGB).
      *
      * @param pixel A pixel from OpenGL format.
      * @return A pixel from Android format.
+     * @implNote Converts OpenGL pixel, which is ABGR to Android pixel which is ARGB.
      */
     @Contract(pure = true)
     private static int convertPixelOpenGLToAndroid(final int pixel) {
@@ -516,11 +518,13 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
     }
 
     /**
-     * Helper method that reads and copies the pixels in the OpenGL frame buffer to a new {@link Bitmap}.
+     * Helper method that reads and copies the pixels in the OpenGL frame buffer
+     * to a new {@link Bitmap}.
      *
-     * @return A new {@link Bitmap} with the colors of the pixels in the OpenGL frame buffer.
+     * @return A new {@link Bitmap} with the colors of the pixels in the OpenGL
+     * frame buffer.
      */
-    private Bitmap copyFrameBuffer() {
+    private Bitmap copyGLFrameBufferToBitmap() {
         final int sizePixels = this.viewWidth * this.viewHeight;
         final int[] arrayBytesPixels = new int[sizePixels];
         final int[] arrayBytesNewBitmap = new int[sizePixels];
@@ -583,16 +587,19 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
     }
 
     /**
-     * Helper method which rasterizes a frame by using the camera and the primitives received by parameters in the
-     * OpenGL pipeline.
+     * Helper method which rasterizes the scene by using OpenGL rasterizer with
+     * the camera and the primitives received by parameters.
+     * After rendering the scene it reads the OpenGL frame buffer to copy the
+     * rendered scene into an Android {@link Bitmap}.
      *
      * @param bbVertices    The primitives' vertices in the scene.
      * @param bbColors      The primitives' colors in the scene.
      * @param bbCamera      The camera's position and vectors in the scene.
      * @param numPrimitives The number of primitives in the scene.
-     * @throws LowMemoryException This {@link Exception} is thrown if the Android device has low free memory.
+     * @throws LowMemoryException This {@link Exception} is thrown if the
+     * Android device has low free memory.
      */
-    private Bitmap copyFrame(
+    private Bitmap renderSceneToBitmap(
             @Nonnull final ByteBuffer bbVertices,
             @Nonnull final ByteBuffer bbColors,
             @Nonnull final ByteBuffer bbCamera,
@@ -750,7 +757,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         UtilsGL.run(() -> GLES20.glDisableVertexAttribArray(colorAttrib));
         UtilsGL.run(() -> GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0));
 
-        final Bitmap newBitmapWithPreviewScene = copyFrameBuffer();
+        final Bitmap newBitmapWithPreviewScene = copyGLFrameBufferToBitmap();
         LOGGER.info("copyFrame finished");
         return newBitmapWithPreviewScene;
     }
@@ -887,7 +894,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
                     Preconditions.checkArgument(this.numPrimitives > 0);
                     validateBitmap();
 
-                    this.bitmap = copyFrame(this.arrayVertices, this.arrayColors, this.arrayCamera, this.numPrimitives);
+                    this.bitmap = renderSceneToBitmap(this.arrayVertices, this.arrayColors, this.arrayCamera, this.numPrimitives);
 
                     validateArrays();
                     Preconditions.checkArgument(this.numPrimitives > 0);
