@@ -69,29 +69,29 @@ public final class MyEGLContextFactoryTest {
             }
 
             @Contract(pure = true)
-            @Override
             @Nullable
+            @Override
             public EGLContext eglCreateContext(final EGLDisplay display, final EGLConfig config, final EGLContext share_context, final int[] attrib_list) {
                 return null;
             }
 
             @Contract(pure = true)
-            @Override
             @Nullable
+            @Override
             public EGLSurface eglCreatePbufferSurface(final EGLDisplay display, final EGLConfig config, final int[] attrib_list) {
                 return null;
             }
 
             @Contract(pure = true)
-            @Override
             @Nullable
+            @Override
             public EGLSurface eglCreatePixmapSurface(final EGLDisplay display, final EGLConfig config, final Object native_pixmap, final int[] attrib_list) {
                 return null;
             }
 
             @Contract(pure = true)
-            @Override
             @Nullable
+            @Override
             public EGLSurface eglCreateWindowSurface(final EGLDisplay display, final EGLConfig config, final Object native_window, final int[] attrib_list) {
                 return null;
             }
@@ -121,29 +121,29 @@ public final class MyEGLContextFactoryTest {
             }
 
             @Contract(pure = true)
-            @Override
             @Nullable
+            @Override
             public EGLContext eglGetCurrentContext() {
                 return null;
             }
 
             @Contract(pure = true)
-            @Override
             @Nullable
+            @Override
             public EGLDisplay eglGetCurrentDisplay() {
                 return null;
             }
 
             @Contract(pure = true)
-            @Override
             @Nullable
+            @Override
             public EGLSurface eglGetCurrentSurface(final int readdraw) {
                 return null;
             }
 
             @Contract(pure = true)
-            @Override
             @Nullable
+            @Override
             public EGLDisplay eglGetDisplay(final Object native_display) {
                 return null;
             }
@@ -172,8 +172,8 @@ public final class MyEGLContextFactoryTest {
             }
 
             @Contract(pure = true)
-            @Override
             @Nullable
+            @Override
             public String eglQueryString(final EGLDisplay display, final int name) {
                 return null;
             }

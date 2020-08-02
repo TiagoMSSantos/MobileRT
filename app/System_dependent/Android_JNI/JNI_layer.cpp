@@ -405,11 +405,17 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
         const auto acceleratorMethodId {env->GetMethodID(configClass, "getAccelerator", "()I")};
         const auto acceleratorIndex {env->CallIntMethod(localConfig, acceleratorMethodId)};
 
-        const auto widthMethodId {env->GetMethodID(configClass, "getWidth", "()I")};
-        const auto width {env->CallIntMethod(localConfig, widthMethodId)};
 
-        const auto heightMethodId {env->GetMethodID(configClass, "getHeight", "()I")};
-        const auto height {env->CallIntMethod(localConfig, heightMethodId)};
+        const auto configResolutionMethodId {env->GetMethodID(configClass, "getConfigResolution", "()Lpuscas/mobilertapp/ConfigResolution;")};
+        const auto resolutionConfig {env->CallObjectMethod(localConfig, configResolutionMethodId)};
+        const auto resolutionConfigClass {env->GetObjectClass(resolutionConfig)};
+
+        const auto widthMethodId {env->GetMethodID(resolutionConfigClass, "getWidth", "()I")};
+        const auto width {env->CallIntMethod(resolutionConfig, widthMethodId)};
+
+        const auto heightMethodId {env->GetMethodID(resolutionConfigClass, "getHeight", "()I")};
+        const auto height {env->CallIntMethod(resolutionConfig, heightMethodId)};
+
 
         const auto configSamplesMethodId {env->GetMethodID(configClass, "getConfigSamples", "()Lpuscas/mobilertapp/ConfigSamples;")};
         const auto samplesConfig {env->CallObjectMethod(localConfig, configSamplesMethodId)};

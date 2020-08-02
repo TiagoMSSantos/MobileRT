@@ -245,7 +245,7 @@ public final class DrawView extends GLSurfaceView {
         this.renderer.resetStats(numThreads, config.getConfigSamples(), numPrimitives, rtGetNumberOfLights());
         final int widthView = getWidth();
         final int heightView = getHeight();
-        queueEvent(() -> this.renderer.setBitmap(config.getWidth(), config.getHeight(), widthView, heightView, rasterize));
+        queueEvent(() -> this.renderer.setBitmap(config.getConfigResolution(), widthView, heightView, rasterize));
     }
 
     /**

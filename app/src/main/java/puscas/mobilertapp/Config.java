@@ -33,16 +33,6 @@ public final class Config {
     private final int accelerator;
 
     /**
-     * @see Config#getWidth()
-     */
-    private final int width;
-
-    /**
-     * @see Config#getHeight()
-     */
-    private final int height;
-
-    /**
      * @see Config#getObjFilePath()
      */
     private final String objFilePath;
@@ -63,6 +53,11 @@ public final class Config {
     private final ConfigSamples configSamples;
 
     /**
+     * @see Config#getConfigResolution()
+     */
+    private final ConfigResolution configResolution;
+
+    /**
      * A private constructor to force the usage of the {@link Config.Builder}.
      *
      * @param builder The {@link Config.Builder} for this class.
@@ -74,8 +69,7 @@ public final class Config {
         this.scene = builder.getScene();
         this.shader = builder.getShader();
         this.accelerator = builder.getAccelerator();
-        this.width = builder.getWidth();
-        this.height = builder.getHeight();
+        this.configResolution = builder.getConfigResolution();
         this.configSamples = builder.getConfigSamples();
         this.objFilePath = builder.getObjFilePath();
         this.matFilePath = builder.getMatFilePath();
@@ -105,22 +99,6 @@ public final class Config {
     @Contract(pure = true)
     public int getAccelerator() {
         return this.accelerator;
-    }
-
-    /**
-     * Gets the width of the image.
-     */
-    @Contract(pure = true)
-    public int getWidth() {
-        return this.width;
-    }
-
-    /**
-     * Gets the height of the image.
-     */
-    @Contract(pure = true)
-    public int getHeight() {
-        return this.height;
     }
 
 
@@ -160,6 +138,15 @@ public final class Config {
         return this.configSamples;
     }
 
+    /**
+     * Gets the configuration for the resolution of the image plane.
+     */
+    @Contract(pure = true)
+    @Nonnull
+    ConfigResolution getConfigResolution() {
+        return this.configResolution;
+    }
+
 
     /**
      * The builder for this class.
@@ -187,16 +174,6 @@ public final class Config {
         private int accelerator = 0;
 
         /**
-         * @see Config.Builder#withWidth(int)
-         */
-        private int width = 0;
-
-        /**
-         * @see Config.Builder#withHeight(int)
-         */
-        private int height = 0;
-
-        /**
          * The path to the OBJ file.
          */
         private String objFilePath = "";
@@ -220,6 +197,14 @@ public final class Config {
             .build();
 
         /**
+         * @see Config#getConfigResolution()
+         */
+        private ConfigResolution configResolution = new ConfigResolution.Builder()
+            .withWidth(0)
+            .withHeight(0)
+            .build();
+
+        /**
          * Sets the scene of {@link Config}.
          *
          * @param scene The new value for the {@link Config#scene} field.
@@ -239,7 +224,7 @@ public final class Config {
          * Sets the shader of {@link Config}.
          *
          * @param shader The new value for the {@link Config#shader} field.
-         * @return The builder with {@link Config.Builder#height} already set.
+         * @return The builder with {@link Config.Builder#shader} already set.
          */
         @Contract("_ -> this")
         @Nonnull
@@ -268,34 +253,19 @@ public final class Config {
         }
 
         /**
-         * Sets the width of {@link Config}.
+         * Sets the resolution of {@link Config}.
          *
-         * @param width The new value for the {@link Config#width} field.
-         * @return The builder with {@link Config.Builder#width} already set.
+         * @param configResolution The new value for the {@link Config#configResolution} field.
+         * @return The builder with {@link Config.Builder#configResolution} already set.
          */
         @Contract("_ -> this")
         @Nonnull
-        Config.Builder withWidth(final int width) {
-            final String message = String.format(Locale.US, "withWidth: %d", width);
+        Config.Builder withConfigResolution(final ConfigResolution configResolution) {
+            final String message = String.format(Locale.US, "withConfigResolution: %d x %d",
+                configResolution.getWidth(), configResolution.getHeight());
             LOGGER_BUILDER.info(message);
 
-            this.width = width;
-            return this;
-        }
-
-        /**
-         * Sets the height of {@link Config}.
-         *
-         * @param height The new value for the {@link Config#height} field.
-         * @return The builder with {@link Config.Builder#height} already set.
-         */
-        @Contract("_ -> this")
-        @Nonnull
-        Config.Builder withHeight(final int height) {
-            final String message = String.format(Locale.US, "withHeight: %d", height);
-            LOGGER_BUILDER.info(message);
-
-            this.height = height;
+            this.configResolution = configResolution;
             return this;
         }
 
@@ -403,22 +373,6 @@ public final class Config {
         }
 
         /**
-         * Gets the width of the {@link android.graphics.Bitmap}.
-         */
-        @Contract(pure = true)
-        int getWidth() {
-            return this.width;
-        }
-
-        /**
-         * Gets the height of the {@link android.graphics.Bitmap}.
-         */
-        @Contract(pure = true)
-        int getHeight() {
-            return this.height;
-        }
-
-        /**
          * Gets the path to the OBJ file.
          */
         @Contract(pure = true)
@@ -448,6 +402,15 @@ public final class Config {
         @Contract(pure = true)
         ConfigSamples getConfigSamples() {
             return this.configSamples;
+        }
+
+        /**
+         * Gets the configuration for the resolution of the image plane in the
+         * {@link android.graphics.Bitmap}.
+         */
+        @Contract(pure = true)
+        ConfigResolution getConfigResolution() {
+            return this.configResolution;
         }
     }
 }

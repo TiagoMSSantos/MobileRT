@@ -30,11 +30,11 @@ public final class ConfigSamples {
     /**
      * A private constructor to force the usage of the {@link ConfigSamples.Builder}.
      *
-     * @param builder The {@link Config.Builder} for this class.
+     * @param builder The {@link ConfigSamples.Builder} for this class.
      */
     @Contract(pure = true)
     ConfigSamples(@Nonnull final ConfigSamples.Builder builder) {
-        LOGGER.info("Config");
+        LOGGER.info("ConfigSamples");
 
         this.samplesPixel = builder.getSamplesPixel();
         this.samplesLight = builder.getSamplesLight();
@@ -77,7 +77,7 @@ public final class ConfigSamples {
         private int samplesLight = 0;
 
         /**
-         * Sets the samples per pixel of {@link Config}.
+         * Sets the samples per pixel of {@link ConfigSamples}.
          *
          * @param samplesPixel The new value for the {@link ConfigSamples#samplesPixel} field.
          * @return The builder with {@link ConfigSamples.Builder#samplesPixel} already set.
@@ -93,7 +93,7 @@ public final class ConfigSamples {
         }
 
         /**
-         * Sets the samples per light of {@link Config}.
+         * Sets the samples per light of {@link ConfigSamples}.
          *
          * @param samplesLight The new value for the {@link ConfigSamples#samplesLight} field.
          * @return The builder with {@link ConfigSamples.Builder#samplesLight} already set.

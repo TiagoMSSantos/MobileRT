@@ -44,8 +44,8 @@ public final class ConfigTest {
         LOGGER.info(methodName);
 
         final Config config = new Config.Builder().build();
-        Assertions.assertEquals(0, config.getWidth(), "Width not the expected value.");
-        Assertions.assertEquals(0, config.getHeight(), "Height not the expected value.");
+        Assertions.assertEquals(0, config.getConfigResolution().getWidth(), "Width not the expected value.");
+        Assertions.assertEquals(0, config.getConfigResolution().getHeight(), "Height not the expected value.");
         Assertions.assertEquals(0, config.getScene(), "Scene not the expected value.");
         Assertions.assertEquals(0, config.getShader(), "Shader not the expected value.");
         Assertions.assertEquals(0, config.getAccelerator(), "Accelerator not the expected value.");
@@ -76,24 +76,28 @@ public final class ConfigTest {
         final String cam = "ghi";
 
         final Config config = new Config.Builder()
-            .withWidth(width)
-            .withHeight(height)
+            .withConfigResolution(
+                new ConfigResolution.Builder()
+                    .withWidth(width)
+                    .withHeight(height)
+                    .build()
+            )
             .withScene(scene)
             .withShader(shader)
             .withAccelerator(accelerator)
             .withConfigSamples(
                 new ConfigSamples.Builder()
-                .withSamplesPixel(spp)
-                .withSamplesLight(spl)
-                .build()
+                    .withSamplesPixel(spp)
+                    .withSamplesLight(spl)
+                    .build()
             )
             .withOBJ(obj)
             .withMAT(mat)
             .withCAM(cam)
             .build();
 
-        Assertions.assertEquals(width, config.getWidth(), "Width not the expected value.");
-        Assertions.assertEquals(height, config.getHeight(), "Height not the expected value.");
+        Assertions.assertEquals(width, config.getConfigResolution().getWidth(), "Width not the expected value.");
+        Assertions.assertEquals(height, config.getConfigResolution().getHeight(), "Height not the expected value.");
         Assertions.assertEquals(scene, config.getScene(), "Scene not the expected value.");
         Assertions.assertEquals(shader, config.getShader(), "Shader not the expected value.");
         Assertions.assertEquals(accelerator, config.getAccelerator(), "Accelerator not the expected value.");

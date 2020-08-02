@@ -50,6 +50,7 @@ public final class UtilsGL {
      * It deletes the previous GLSL program if it was created.
      *
      * @param shaderProgram The OpenGL shader program index to recreate.
+     * @return A new created OpenGL shader program index.
      */
     public static int reCreateProgram(final int shaderProgram) {
         LOGGER.info("reCreateProgram");

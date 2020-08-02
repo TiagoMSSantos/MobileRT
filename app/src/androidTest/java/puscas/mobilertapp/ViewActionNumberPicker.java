@@ -45,8 +45,8 @@ final class ViewActionNumberPicker implements ViewAction {
         LOGGER.warning("Reset interrupted: " + interrupted);
     }
 
-    @Override
     @Nonnull
+    @Override
     public final Matcher<View> getConstraints() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
@@ -57,8 +57,8 @@ final class ViewActionNumberPicker implements ViewAction {
         return ViewMatchers.isAssignableFrom(NumberPicker.class);
     }
 
-    @Override
     @Nonnull
+    @Override
     public final String getDescription() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);

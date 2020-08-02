@@ -53,8 +53,8 @@ public class MyEGLContextFactory implements GLSurfaceView.EGLContextFactory {
         this.eglContext = null;
     }
 
-    @Override
     @Nullable
+    @Override
     public final EGLContext createContext(
             @Nonnull final EGL10 egl,
             @Nonnull final EGLDisplay display,

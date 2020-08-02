@@ -244,8 +244,12 @@ public final class MainActivity extends Activity {
                     .withSamplesLight(samplesLight)
                     .build()
             )
-            .withWidth(width)
-            .withHeight(height)
+            .withConfigResolution(
+                new ConfigResolution.Builder()
+                    .withWidth(width)
+                    .withHeight(height)
+                    .build()
+            )
             .withOBJ(objFilePath)
             .withMAT(mtlFilePath)
             .withCAM(camFilePath)
@@ -471,7 +475,7 @@ public final class MainActivity extends Activity {
         final String fragmentShader = readTextAsset(ConstantsUI.PATH_SHADERS + ConstantsUI.FILE_SEPARATOR + "FragmentShader.glsl");
         final String vertexShaderRaster = readTextAsset(ConstantsUI.PATH_SHADERS + ConstantsUI.FILE_SEPARATOR + "VertexShaderRaster.glsl");
         final String fragmentShaderRaster = readTextAsset(ConstantsUI.PATH_SHADERS + ConstantsUI.FILE_SEPARATOR + "FragmentShaderRaster.glsl");
-        renderer.setBitmap(1, 1, 1, 1, false);
+        renderer.setBitmap();
         renderer.setVertexShaderCode(vertexShader);
         renderer.setFragmentShaderCode(fragmentShader);
         renderer.setVertexShaderCodeRaster(vertexShaderRaster);

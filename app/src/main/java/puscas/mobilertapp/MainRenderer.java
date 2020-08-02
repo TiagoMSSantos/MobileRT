@@ -496,15 +496,27 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * Creates a new {@link Bitmap} with the size of {@code width} and
      * {@code height} and also sets the {@link MainRenderer#viewWidth} and
      * {@link MainRenderer#viewHeight} fields.
-     *
-     * @param width      The width of the new {@link Bitmap}.
-     * @param height     The height of the new {@link Bitmap}.
-     * @param widthView  The width of the {@link GLSurfaceView}.
-     * @param heightView The height of the {@link GLSurfaceView}.
-     * @param rasterize  The new {@link MainRenderer#rasterize}.
      */
-    void setBitmap(final int width, final int height, final int widthView, final int heightView, final boolean rasterize) {
+    void setBitmap() {
         LOGGER.info("setBitmap");
+        setBitmap(new ConfigResolution.Builder().build(), 1, 1, false);
+        LOGGER.info("setBitmap" + FINISHED);
+    }
+
+    /**
+     * Creates a new {@link Bitmap} with the size of {@code width} and
+     * {@code height} and also sets the {@link MainRenderer#viewWidth} and
+     * {@link MainRenderer#viewHeight} fields.
+     *
+     * @param configResolution The resolution of the new {@link Bitmap}.
+     * @param widthView        The width of the {@link GLSurfaceView}.
+     * @param heightView       The height of the {@link GLSurfaceView}.
+     * @param rasterize        The new {@link MainRenderer#rasterize}.
+     */
+    void setBitmap(final ConfigResolution configResolution, final int widthView, final int heightView, final boolean rasterize) {
+        LOGGER.info("setBitmap");
+        final int width = configResolution.getWidth();
+        final int height = configResolution.getHeight();
         this.bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         this.bitmap.eraseColor(Color.BLACK);
         this.width = width;
@@ -679,27 +691,19 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         UtilsGL.run(() -> GLES20.glUniformMatrix4fv(handleView, 1, false, viewMatrix, 0));
         UtilsGL.run(() -> GLES20.glUniformMatrix4fv(handleProjection, 1, false, projectionMatrix, 0));
 
-        checksFreeMemory(1, () -> { });
-
         final int positionAttrib = 0;
         UtilsGL.run(() -> GLES20.glVertexAttribPointer(positionAttrib, VERTEX_COMPONENTS, GLES20.GL_FLOAT, false, 0, bbVertices));
         UtilsGL.run(() -> GLES20.glEnableVertexAttribArray(positionAttrib));
 
-        checksFreeMemory(1, () -> { });
-
         final int colorAttrib = 1;
         UtilsGL.run(() -> GLES20.glVertexAttribPointer(colorAttrib, VERTEX_COMPONENTS, GLES20.GL_FLOAT, false, 0, bbColors));
         UtilsGL.run(() -> GLES20.glEnableVertexAttribArray(colorAttrib));
-
-        checksFreeMemory(1, () -> { });
 
         UtilsGL.run(() -> GLES20.glEnable(GLES20.GL_DEPTH_TEST));
 
         final int vertexCount = bbVertices.capacity() / (BYTES_IN_FLOAT * VERTEX_COMPONENTS);
         final String msg = String.format(Locale.US, "vertexCount: %d", vertexCount);
         LOGGER.info(msg);
-
-        checksFreeMemory(1, () -> { });
 
         UtilsGL.run(() -> GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, vertexCount));
         LOGGER.info("glDrawArrays Complete");

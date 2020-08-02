@@ -65,36 +65,36 @@ public final class CustomNumberPickerTest {
                 return 0;
             }
 
+            @Contract(pure = true)
             @Nullable
             @Override
-            @Contract(pure = true)
             public String getAttributeName(final int index) {
                 return null;
             }
 
+            @Contract(pure = true)
             @Nullable
             @Override
-            @Contract(pure = true)
             public String getAttributeValue(final int index) {
                 return null;
             }
 
+            @Contract(pure = true)
             @Nullable
             @Override
-            @Contract(pure = true)
             public String getAttributeValue(final String namespace, final String name) {
                 return null;
             }
 
+            @Contract(pure = true)
             @Nullable
             @Override
-            @Contract(pure = true)
             public String getPositionDescription() {
                 return null;
             }
 
-            @Override
             @Contract(pure = true)
+            @Override
             public int getAttributeNameResource(final int index) {
                 return 0;
             }
@@ -171,28 +171,28 @@ public final class CustomNumberPickerTest {
                 return 0.0F;
             }
 
+            @Contract(pure = true)
             @Nullable
             @Override
-            @Contract(pure = true)
             public String getIdAttribute() {
                 return null;
             }
 
+            @Contract(pure = true)
             @Nullable
             @Override
-            @Contract(pure = true)
             public String getClassAttribute() {
                 return null;
             }
 
-            @Override
             @Contract(pure = true)
+            @Override
             public int getIdAttributeResourceValue(final int defaultValue) {
                 return 0;
             }
 
-            @Override
             @Contract(pure = true)
+            @Override
             public int getStyleAttribute() {
                 return 0;
             }
