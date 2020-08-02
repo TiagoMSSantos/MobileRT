@@ -72,6 +72,20 @@ public final class ConstantsRenderer {
     public static final float Z_FAR = 1.0e+30F;
 
     /**
+     * Empirical value that makes the OpenGL perspective camera more similar
+     * to the camera from the Ray Tracing engine.
+     * This value is a multiplier of the FOV values.
+     */
+    public static final float FIX_ASPECT_PERSPECTIVE = 0.955F;
+
+    /**
+     * Empirical value that makes the OpenGL orthographic camera more similar
+     * to the camera from the Ray Tracing engine.
+     * This values is a multiplier of the size values.
+     */
+    public static final float FIX_ASPECT_ORTHOGRAPHIC = 0.5F;
+
+    /**
      * A private constructor in order to prevent instantiating this helper class.
      */
     private ConstantsRenderer() {

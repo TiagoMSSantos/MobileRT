@@ -5,6 +5,8 @@ import android.opengl.GLUtils;
 
 import androidx.annotation.NonNull;
 
+import java.nio.Buffer;
+import java.nio.ByteBuffer;
 import java.util.logging.Logger;
 
 import java8.util.function.BiFunction;
@@ -39,17 +41,24 @@ public final class UtilsGL {
     /**
      * Helper method that initializes a GLSL program.
      * It deletes the previous GLSL program if it was created.
+     *
+     * @param shaderProgram The OpenGL shader program index to recreate.
      */
     public static int reCreateProgram(final int shaderProgram) {
+        LOGGER.info("reCreateProgram");
         if (shaderProgram != 0) {
             final String deleteProgramMessage = "Deleting GL program: " + shaderProgram;
             LOGGER.info(deleteProgramMessage);
             run(() -> GLES20.glDeleteProgram(shaderProgram));
         }
-        final int newShaderProgram = GLES20.glCreateProgram();
-        final String createProgramMessage = "Created GL program: " + newShaderProgram;
-        LOGGER.info(createProgramMessage);
-        checksGLError();
+        final int newShaderProgram = UtilsGL.<Integer>run(() -> GLES20.glCreateProgram());
+
+        if (newShaderProgram == 0) {
+            LOGGER.severe("Could not create program: ");
+            final String programInfo = GLES20.glGetProgramInfoLog(0);
+            throw new FailureException(programInfo);
+        }
+
         return newShaderProgram;
     }
 
@@ -157,8 +166,8 @@ public final class UtilsGL {
      * @return The OpenGL index of the shader.
      */
     public static int loadShader(final int shaderType, @NonNull final String source) {
-        final int shader = glCreateShader(shaderType);
-        checksGLError();
+        LOGGER.info("loadShader");
+        final int shader = run(() -> glCreateShader(shaderType));
         if (shader == 0) {
             final String msg = "There was an error while creating the shader object.";
             LOGGER.severe(msg);
@@ -170,8 +179,7 @@ public final class UtilsGL {
         final int[] compiled = new int[1];
         run(() -> glGetShaderiv(shader, GL_COMPILE_STATUS, compiled, 0));
         if (compiled[0] == 0) {
-            final String informationLog = glGetShaderInfoLog(shader);
-            checksGLError();
+            final String informationLog = run(() -> glGetShaderInfoLog(shader));
             final String msg = "Could not compile shader " + shaderType + ": " + informationLog;
             LOGGER.severe(msg);
             LOGGER.severe(source);
@@ -180,6 +188,71 @@ public final class UtilsGL {
         }
 
         return shader;
+    }
+
+    /**
+     * Helper method that binds and enables an OpenGL attribute.
+     *
+     * @param buffer             The {@link Buffer} with the data to bind.
+     * @param attributeLocation  The desired location of the OpenGL attribute.
+     * @param shaderProgram      The shader program index.
+     * @param componentsInBuffer The number of components in each cell in the
+     *                           {@link ByteBuffer}.
+     * @param attributeName      The name of the OpenGL attribute.
+     */
+    public static void connectOpenGLAttribute(@NonNull final Buffer buffer,
+                                              final int attributeLocation,
+                                              final int shaderProgram,
+                                              final int componentsInBuffer,
+                                              @NonNull final String attributeName) {
+        LOGGER.info("connectOpenGLAttribute");
+        UtilsGL.run(() -> GLES20.glBindAttribLocation(shaderProgram, attributeLocation, attributeName));
+        UtilsGL.run(() -> GLES20.glVertexAttribPointer(attributeLocation, componentsInBuffer, GLES20.GL_FLOAT, false, 0, buffer));
+        UtilsGL.run(() -> GLES20.glEnableVertexAttribArray(attributeLocation));
+    }
+
+    /**
+     * Helper method that attaches some GLSL shaders into an OpenGL program.
+     *
+     * @param shaderProgram      The OpenGL shader program-
+     * @param vertexShaderCode   The code for the Vertex shader.
+     * @param fragmentShaderCode The code for the Fragment shader.
+     */
+    public static void attachShaders(final int shaderProgram,
+                                     @NonNull final String vertexShaderCode,
+                                     @NonNull final String fragmentShaderCode) {
+        LOGGER.info("attachShaders");
+        final int vertexShader = UtilsGL.loadShader(GLES20.GL_VERTEX_SHADER, vertexShaderCode);
+        final int fragmentShader = UtilsGL.loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode);
+
+        // Attach and link shaders to program
+        run(() -> GLES20.glAttachShader(shaderProgram, vertexShader));
+        run(() -> GLES20.glAttachShader(shaderProgram, fragmentShader));
+        run(() -> GLES20.glLinkProgram(shaderProgram));
+
+        final int[] attachedShaders = new int[1];
+        run(() -> GLES20.glGetProgramiv(shaderProgram, GLES20.GL_ATTACHED_SHADERS, attachedShaders, 0));
+
+        checksShaderLinkStatus(shaderProgram);
+    }
+
+    /**
+     * Helper method that checks the OpenGL shader link status in a program.
+     *
+     * @param shaderProgram The OpenGL shader program index.
+     */
+    public static void checksShaderLinkStatus(final int shaderProgram) {
+        LOGGER.info("checksShaderLinkStatus");
+        final int[] linkStatus = new int[1];
+        run(() -> GLES20.glGetProgramiv(shaderProgram, GLES20.GL_LINK_STATUS, linkStatus, 0));
+
+        if (linkStatus[0] != GLES20.GL_TRUE) {
+            final String strError = run(shaderProgram, GLES20::glGetProgramInfoLog);
+            final String msg = "Could not link program rasterizer: " + strError;
+            LOGGER.severe(msg);
+            run(() -> GLES20.glDeleteProgram(shaderProgram));
+            throw new FailureException(strError);
+        }
     }
 
 }

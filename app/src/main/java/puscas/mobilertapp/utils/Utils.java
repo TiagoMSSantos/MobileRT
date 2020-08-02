@@ -8,6 +8,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
 import java.nio.charset.Charset;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -17,6 +20,7 @@ import javax.annotation.Nonnull;
 
 import java8.util.Objects;
 import puscas.mobilertapp.exceptions.FailureException;
+import puscas.mobilertapp.exceptions.LowMemoryException;
 
 import static puscas.mobilertapp.utils.Constants.BYTES_IN_FLOAT;
 import static puscas.mobilertapp.utils.Constants.BYTES_IN_INTEGER;
@@ -139,5 +143,38 @@ public final class Utils {
         final int triangleMethodsSize = BYTES_IN_POINTER * 21;
         final int triangleSize = triangleMembersSize + triangleMethodsSize;
         return 1 + ((numPrimitives * triangleSize) / Constants.BYTES_IN_MB);
+    }
+
+    /**
+     * Helper method that resets the position to read the {@link ByteBuffer}.
+     * It also checks if the system has at least 1 mega byte free in the main
+     * memory.
+     *
+     * @param byteBuffer The {@link ByteBuffer} to reset.
+     */
+    public static void resetByteBuffer(@Nonnull final ByteBuffer byteBuffer) {
+        LOGGER.info("calculateSceneSize");
+        byteBuffer.order(ByteOrder.nativeOrder());
+        byteBuffer.position(0);
+    }
+
+    /**
+     * Helper method that allocates a {@link FloatBuffer} with values from a
+     * float array received via parameters.
+     *
+     * @param arrayValues The array containing the values to put in the new
+     *                    {@link FloatBuffer}.
+     * @return A new {@link FloatBuffer} with the values.
+     */
+    @NonNull
+    public static FloatBuffer allocateBuffer(@NonNull final float[] arrayValues) {
+        LOGGER.info("allocateBuffer");
+        final int byteBufferSize = arrayValues.length * BYTES_IN_FLOAT;
+        final ByteBuffer byteBuffer = ByteBuffer.allocateDirect(byteBufferSize);
+        resetByteBuffer(byteBuffer);
+        final FloatBuffer floatBuffer = byteBuffer.asFloatBuffer();
+        floatBuffer.put(arrayValues);
+        floatBuffer.position(0);
+        return floatBuffer;
     }
 }
