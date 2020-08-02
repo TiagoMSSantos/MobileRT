@@ -2,6 +2,8 @@ package puscas.mobilertapp.utils;
 
 import androidx.annotation.NonNull;
 
+import com.google.common.base.Strings;
+
 import org.jetbrains.annotations.Contract;
 
 import java.io.BufferedReader;
@@ -87,6 +89,16 @@ public final class Utils {
     public static void handleInterruption(@Nonnull final String methodName) {
         final boolean interrupted = Thread.interrupted();
         final String message = String.format("%s exception: %s", methodName, interrupted);
+        LOGGER.severe(message);
+    }
+
+    /**
+     * Helper method that handles a general {@link Throwable}.
+     *
+     * @param methodName The name of the method to appear in the logs.
+     */
+    public static void logThrowable(@Nonnull  final Throwable ex, @Nonnull final String methodName) {
+        final String message = String.format("%s exception: %s", methodName, ex.getMessage());
         LOGGER.severe(message);
     }
 

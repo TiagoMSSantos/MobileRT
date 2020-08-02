@@ -217,8 +217,7 @@ public final class DrawView extends GLSurfaceView {
                 try {
                     task.get(1L, TimeUnit.DAYS);
                 } catch (final ExecutionException | TimeoutException | RuntimeException ex) {
-                    LOGGER.severe("waitLastTask exception 1: " + ex.getClass().getName());
-                    LOGGER.severe("waitLastTask exception 2: " + Strings.nullToEmpty(ex.getMessage()));
+                    Utils.logThrowable(ex, "DrawView#waitLastTask");
                 } catch (final InterruptedException ex) {
                     Thread.currentThread().interrupt();
                 } finally {

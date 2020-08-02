@@ -614,8 +614,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
                 this.renderTask.get(1L, TimeUnit.DAYS);
                 this.renderTask.cancel(false);
             } catch (final ExecutionException | TimeoutException | CancellationException ex) {
-                LOGGER.severe("waitLastTask exception 1: " + ex.getClass().getName());
-                LOGGER.severe("waitLastTask exception 2: " + Strings.nullToEmpty(ex.getMessage()));
+                Utils.logThrowable(ex, "MainRenderer#waitLastTask");
             } catch (final InterruptedException ex) {
                 Thread.currentThread().interrupt();
             } finally {
@@ -842,8 +841,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
                     Preconditions.checkArgument(this.numPrimitives > 0);
                     validateBitmap();
                 } catch (final LowMemoryException ex) {
-                    LOGGER.severe("onDrawFrame exception 1: " + ex.getClass().getName());
-                    LOGGER.severe("onDrawFrame exception 2: " + Strings.nullToEmpty(ex.getMessage()));
+                    Utils.logThrowable(ex, "MainRenderer#onDrawFrame");
                     LOGGER.severe("Low memory to rasterize a frame!!!");
                 }
                 validateArrays();
@@ -860,8 +858,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
                 validateBitmap();
                 LOGGER.info("rtRenderIntoBitmap" + FINISHED);
             } catch (final LowMemoryException ex) {
-                LOGGER.severe("onDrawFrame exception: " + ex.getClass().getName());
-                LOGGER.severe("onDrawFrame exception: " + Strings.nullToEmpty(ex.getMessage()));
+                Utils.logThrowable(ex, "MainRenderer#onDrawFrame");
                 LOGGER.severe("rtRenderIntoBitmap finished with error");
             }
             validateBitmap();

@@ -88,8 +88,7 @@ public final class MainActivity extends Activity {
         } catch (final RuntimeException ex) {
             throw new FailureException(ex);
         } catch (final UnsatisfiedLinkError ex) {
-            LOGGER.severe("MainActivity exception: " + ex.getClass().getName());
-            LOGGER.severe("MainActivity exception: " + Strings.nullToEmpty(ex.getMessage()));
+            Utils.logThrowable(ex, "MainActivity");
         }
     }
 
