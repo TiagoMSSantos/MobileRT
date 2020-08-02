@@ -18,6 +18,11 @@ public final class ConstantsMethods {
     private static final Logger LOGGER = Logger.getLogger(ConstantsMethods.class.getName());
 
     /**
+     * The constant used when a method is about to return.
+     */
+    public static final String FINISHED = " finished";
+
+    /**
      * The name of the {DrawView#renderScene(Config, int, boolean)} method.
      */
     public static final String RENDER_SCENE = "renderScene";

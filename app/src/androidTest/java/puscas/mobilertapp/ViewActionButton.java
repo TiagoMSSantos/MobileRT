@@ -19,6 +19,8 @@ import java.util.logging.Logger;
 
 import javax.annotation.Nonnull;
 
+import static puscas.mobilertapp.utils.ConstantsMethods.FINISHED;
+
 /**
  * Auxiliary class which represents the render {@link Button}.
  */
@@ -120,6 +122,6 @@ final class ViewActionButton implements ViewAction {
             LOGGER.info("Reset interrupted: " + interrupted);
         }
 
-        LOGGER.info("ViewActionButton#perform finished");
+        LOGGER.info("ViewActionButton#perform" + FINISHED);
     }
 }

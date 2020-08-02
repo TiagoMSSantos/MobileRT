@@ -1,1 +1,1 @@
-/sys/devices/system/cpu/
+/proc/cpuinfo

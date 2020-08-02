@@ -49,6 +49,8 @@ import puscas.mobilertapp.utils.Scene;
 import puscas.mobilertapp.utils.Shader;
 import puscas.mobilertapp.utils.State;
 
+import static puscas.mobilertapp.utils.ConstantsMethods.FINISHED;
+
 /**
  * The test suite for {@link MainActivity}.
  */
@@ -385,7 +387,7 @@ public final class MainActivityTest {
                 );
             });
 
-        LOGGER.info(methodName + " finished");
+        LOGGER.info(methodName + FINISHED);
     }
 
     /**
@@ -461,7 +463,7 @@ public final class MainActivityTest {
                 );
             });
 
-        LOGGER.info(methodName + " finished");
+        LOGGER.info(methodName + FINISHED);
     }
 
     /**

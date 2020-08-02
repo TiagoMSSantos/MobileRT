@@ -47,6 +47,31 @@ public final class ConstantsRenderer {
     public static final int REQUIRED_OPENGL_VERSION = 0x20000;
 
     /**
+     * The number of color components in each pixel (RGBA).
+     */
+    public static final int PIXEL_COLORS = 4;
+
+    /**
+     * The number of components in each vertex (X, Y, Z, W).
+     */
+    public static final int VERTEX_COMPONENTS = 4;
+
+    /**
+     * The number of components in each texture coordinate (X, Y).
+     */
+    public static final int TEXTURE_COMPONENTS = 2;
+
+    /**
+     * The minimum clipping bounds of a scene.
+     */
+    public static final float Z_NEAR = 0.1F;
+
+    /**
+     * The maximum clipping bounds of a scene.
+     */
+    public static final float Z_FAR = 1.0e+30F;
+
+    /**
      * A private constructor in order to prevent instantiating this helper class.
      */
     private ConstantsRenderer() {

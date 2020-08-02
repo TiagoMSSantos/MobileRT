@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NonNls;
 import java.util.logging.Logger;
 
 /**
- * Some text messages used in the Android tests.
+ * Utility class with some constants for the Android interface.
  */
 public final class Constants {
 
@@ -74,7 +74,27 @@ public final class Constants {
     /**
      * The number of bytes in a mega byte.
      */
-    public static final int MB_IN_BYTES = 1048576;
+    public static final int BYTES_IN_MB = 1048576;
+
+    /**
+     * The number of bytes in an integer (usually is 4 bytes).
+     */
+    public static final int BYTES_IN_INTEGER =  Integer.SIZE / Byte.SIZE;
+
+    /**
+     * The number of bytes in a float (usually is 4 bytes).
+     */
+    public static final int BYTES_IN_FLOAT =  Float.SIZE / Byte.SIZE;
+
+    /**
+     * The number of bytes of a memory pointer address.
+     *
+     * For a 32bit system is usually 4 bytes.
+     * For a 64bit system is usually 8 bytes.
+     *
+     * For now its assumed the worst case scenario, which is 8 bytes.
+     */
+    static final int BYTES_IN_POINTER =  Double.SIZE / Byte.SIZE;
 
     /**
      * A private constructor in order to prevent instantiating this helper class.

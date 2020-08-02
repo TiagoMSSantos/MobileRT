@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.ConfigurationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
+import android.net.Uri;
 import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,7 +22,6 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -29,6 +29,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
@@ -56,6 +57,8 @@ import puscas.mobilertapp.utils.Shader;
 import puscas.mobilertapp.utils.State;
 import puscas.mobilertapp.utils.Utils;
 
+import static puscas.mobilertapp.utils.ConstantsMethods.FINISHED;
+
 /**
  * The main {@link Activity} for the Android User Interface.
  */
@@ -72,7 +75,8 @@ public final class MainActivity extends Activity {
     private static long clickCounter = 0L;
 
     /**
-     * The latest version of Android API which needs the old method of getting the number of CPU cores.
+     * The latest version of Android API which needs the old method of getting
+     * the number of CPU cores.
      */
     private static final int OLD_API_GET_CORES = 17;
 
@@ -130,12 +134,14 @@ public final class MainActivity extends Activity {
     private NumberPicker pickerSamplesLight = null;
 
     /**
-     * The {@link NumberPicker} to select the desired resolution for the rendered image.
+     * The {@link NumberPicker} to select the desired resolution for the
+     * rendered image.
      */
     private NumberPicker pickerResolutions = null;
 
     /**
-     * The {@link CheckBox} to select whether should render a preview of the scene (rasterize) or not.
+     * The {@link CheckBox} to select whether should render a preview of the
+     * scene (rasterize) or not.
      */
     private CheckBox checkBoxRasterize = null;
 
@@ -145,25 +151,46 @@ public final class MainActivity extends Activity {
     private String sceneFilePath = null;
 
     /**
-     * Auxiliary method to readjust the width and height of the image by rounding down the value to a multiple of the
-     * number of tiles in the Ray Tracer engine.
+     * Auxiliary method to readjust the width and height of the image by
+     * rounding down the value to a multiple of the number of tiles in the
+     * Ray Tracer engine.
      *
-     * @param size The value to be rounded down to a multiple of the number of tiles in the Ray Tracer engine.
-     * @return The highest value that is smaller than the size passed by parameter and is a multiple of the number of tiles.
+     * @param size The value to be rounded down to a multiple of the number of
+     *             tiles in the Ray Tracer engine.
+     * @return The highest value that is smaller than the size passed by
+     *         parameter and is a multiple of the number of tiles.
      */
     private native int rtResize(int size);
 
     /**
-     * Helper method that gets the number of CPU cores in the Android device for devices with the SDK API version <
-     * {@link #OLD_API_GET_CORES}.
+     * Helper method that gets the number of CPU cores in the Android device for
+     * devices with the SDK API version < {@link #OLD_API_GET_CORES}.
      *
      * @return The number of CPU cores.
      */
-    private int getNumCoresOldPhones() {
-        final String cpuInfoPath = readTextAsset("Utils" + ConstantsUI.FILE_SEPARATOR + "cpuInfoPath.txt");
+    private int getNumCoresOldAndroid() {
+        final String cpuInfoPath = readTextAsset("Utils" + ConstantsUI.FILE_SEPARATOR + "cpuInfoDeviceSystemPath.txt");
         final File cpuTopologyPath = new File(cpuInfoPath.trim());
         final File[] files = cpuTopologyPath.listFiles(pathname -> Pattern.matches("cpu[0-9]+", pathname.getName()));
         return Optional.ofNullable(files).map(filesInPath -> filesInPath.length).get();
+    }
+
+    /**
+     * Helper method that checks if the system is a 64 device or not.
+     *
+     * @return Whether the system is 64 bit.
+     */
+    private boolean is64BitDevice() {
+        final String cpuInfoPath = readTextAsset("Utils" + ConstantsUI.FILE_SEPARATOR + "cpuInfoPath.txt");
+        try (InputStream inputStream = new FileInputStream(cpuInfoPath.trim())) {
+            final String text = Utils.readTextFromInputStream(inputStream);
+            if (text.matches("64.*bit")) {
+                return true;
+            }
+        } catch (final IOException ex) {
+            throw new FailureException(ex);
+        }
+        return false;
     }
 
     /**
@@ -173,7 +200,7 @@ public final class MainActivity extends Activity {
      */
     private int getNumOfCores() {
         final int cores = (Build.VERSION.SDK_INT < OLD_API_GET_CORES)
-            ? getNumCoresOldPhones()
+            ? getNumCoresOldAndroid()
             : Runtime.getRuntime().availableProcessors();
 
         final String message = String.format(Locale.US, "Number of cores: %d", cores);
@@ -184,7 +211,8 @@ public final class MainActivity extends Activity {
     /**
      * Helper method which starts or stops the rendering process.
      *
-     * @param scenePath The path to a directory containing the OBJ and MTL files of a scene to render.
+     * @param scenePath The path to a directory containing the OBJ and MTL files
+     *                  of a scene to render.
      */
     private void startRender(@Nonnull final String scenePath) {
         LOGGER.info(ConstantsMethods.START_RENDER);
@@ -225,15 +253,15 @@ public final class MainActivity extends Activity {
 
         this.drawView.renderScene(config, threads, rasterize);
 
-        LOGGER.info(ConstantsMethods.START_RENDER + " finished");
+        LOGGER.info(ConstantsMethods.START_RENDER + FINISHED);
     }
 
     /**
-     * Helper method which calls a new {@link Activity} with a file manager to select the OBJ file for the Ray
-     * Tracer engine.
+     * Helper method which calls a new {@link Activity} with a file manager to
+     * select the OBJ file for the Ray Tracer engine to load.
      */
-    private void showFileChooser() {
-        LOGGER.info("showFileChooser");
+    private void callFileManager() {
+        LOGGER.info("callFileManager");
 
         final Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("*" + ConstantsUI.FILE_SEPARATOR + "*");
@@ -245,13 +273,13 @@ public final class MainActivity extends Activity {
             Toast.makeText(this, ConstantsToast.PLEASE_INSTALL_FILE_MANAGER, Toast.LENGTH_LONG).show();
         }
 
-        LOGGER.info("showFileChooser finished");
+        LOGGER.info("callFileManager" + FINISHED);
     }
 
     /**
-     * Helper method which asks the user for permission to read the external SD card if it doesn't have yet.
+     * Helper method which asks the user for permission to read the external SD
+     * card if it doesn't have yet.
      */
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     private void checksStoragePermission() {
         final int permissionStorageCode = 1;
         final int permissionCheckRead = ContextCompat.checkSelfPermission(
@@ -285,9 +313,11 @@ public final class MainActivity extends Activity {
     }
 
     /**
-     * Helper method which checks if the Android device has support for OpenGL ES 2.0.
+     * Helper method which checks if the Android device has support for
+     * OpenGL ES 2.0.
      *
-     * @return {@code True} if the device has support for OpenGL ES 2.0 or {@code False} otherwise.
+     * @return {@code True} if the device has support for OpenGL ES 2.0 or
+     *         {@code False} otherwise.
      */
     private static boolean checkGL20Support() {
         final EGL10 egl = (EGL10) EGLContext.getEGL();
@@ -312,7 +342,8 @@ public final class MainActivity extends Activity {
     }
 
     /**
-     * Starts the rendering process when the user clicks the render {@link Button}.
+     * Starts the rendering process when the user clicks the render
+     * {@link Button}.
      *
      * @param view The view of the {@link Activity}.
      */
@@ -338,7 +369,7 @@ public final class MainActivity extends Activity {
         } else {
             switch (scene) {
                 case OBJ:
-                    showFileChooser();
+                    callFileManager();
                     break;
 
                 case TEST:
@@ -352,31 +383,47 @@ public final class MainActivity extends Activity {
                     startRender(this.sceneFilePath);
             }
         }
-        LOGGER.info(ConstantsMethods.START_RENDER + " finished");
+        LOGGER.info(ConstantsMethods.START_RENDER + FINISHED);
     }
 
     /**
      * Gets the path to the SD card.
      * <br>
-     * This method should get the correct path independently of the device / emulator used.
+     * This method should get the correct path independently of the
+     * device / emulator used.
      *
      * @return The path to the SD card.
+     * @implNote This method still uses the deprecated method
+     * {@link Environment#getExternalStorageDirectory()} in order to be
+     * compatible with Android 4.1.
      */
     @Nonnull
     private String getSDCardPath() {
         LOGGER.info("Getting SD card path");
         final File[] dirs = ContextCompat.getExternalFilesDirs(getApplicationContext(), null);
-        String sdCardPath = Optional.ofNullable(dirs.length > 1? dirs[1] : dirs[0])
+        final String sdCardPath = Optional.ofNullable(dirs.length > 1? dirs[1] : dirs[0])
             .map(File::getAbsolutePath)
             .orElse(Environment.getExternalStorageDirectory().getAbsolutePath());
+        return cleanSDCardPath(sdCardPath);
+    }
+
+    /**
+     * Helper method that cleans the path to the external SD Card.
+     * This is useful for some devices since the {@link #getSDCardPath()} method
+     * might get the SD Card path with some extra paths at the end.
+     *
+     * @param sdCardPath The path to the external SD Card to clean.
+     * @return A cleaned SD Card path.
+     */
+    @Nonnull
+    private static String cleanSDCardPath(final String sdCardPath) {
         final int removeIndex = sdCardPath.indexOf("Android");
         if (removeIndex >= 1) {
-            sdCardPath = sdCardPath.substring(0, removeIndex - 1);
+            return sdCardPath.substring(0, removeIndex - 1);
         }
         return sdCardPath;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public void onCreate(@Nullable final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -479,10 +526,11 @@ public final class MainActivity extends Activity {
     /**
      * Initializes the {@link #checkBoxRasterize} field.
      *
-     * @param defaultCheckBoxRasterize The default value to put in the {@link #checkBoxRasterize} field.
+     * @param checkBoxRasterize The default value to put in the
+     *                          {@link #checkBoxRasterize} field.
      */
-    private void initializeCheckBoxRasterize(final boolean defaultCheckBoxRasterize) {
-        this.checkBoxRasterize.setChecked(defaultCheckBoxRasterize);
+    private void initializeCheckBoxRasterize(final boolean checkBoxRasterize) {
+        this.checkBoxRasterize.setChecked(checkBoxRasterize);
         final int scale = Math.round(getResources().getDisplayMetrics().density);
         this.checkBoxRasterize.setPadding(
             this.checkBoxRasterize.getPaddingLeft() - (5 * scale),
@@ -495,52 +543,56 @@ public final class MainActivity extends Activity {
     /**
      * Initializes the {@link #pickerResolutions} field.
      *
-     * @param defaultPickerSizes The default value to put in the {@link #pickerResolutions} field.
-     * @param maxSizes           The maximum size value for the {@link NumberPicker}.
+     * @param pickerSizes The default value to put in the
+     *                    {@link #pickerResolutions} field.
+     * @param maxSizes    The maximum size value for the {@link NumberPicker}.
      */
-    private void initializePickerResolutions(final int defaultPickerSizes, final int maxSizes) {
+    private void initializePickerResolutions(final int pickerSizes, final int maxSizes) {
         this.pickerResolutions.setMinValue(1);
         this.pickerResolutions.setMaxValue(maxSizes - 1);
         this.pickerResolutions.setWrapSelectorWheel(true);
         this.pickerResolutions.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-        this.pickerResolutions.setValue(defaultPickerSizes);
+        this.pickerResolutions.setValue(pickerSizes);
     }
 
     /**
      * Initializes the {@link #pickerThreads} field.
      *
-     * @param defaultPickerThreads The default value to put in the {@link #pickerThreads} field.
+     * @param pickerThreads The default value to put in the
+     *                      {@link #pickerThreads} field.
      */
-    private void initializePickerThreads(final int defaultPickerThreads) {
+    private void initializePickerThreads(final int pickerThreads) {
         final int maxCores = getNumOfCores();
         this.pickerThreads.setMinValue(1);
         this.pickerThreads.setMaxValue(maxCores);
         this.pickerThreads.setWrapSelectorWheel(true);
         this.pickerThreads.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-        this.pickerThreads.setValue(defaultPickerThreads);
+        this.pickerThreads.setValue(pickerThreads);
     }
 
     /**
      * Initializes the {@link #pickerAccelerator} field.
      *
-     * @param defaultPickerAccelerator The default value to put in the {@link #pickerAccelerator} field.
+     * @param pickerAccelerator The default value to put in the
+     *                          {@link #pickerAccelerator} field.
      */
-    private void initializePickerAccelerator(final int defaultPickerAccelerator) {
+    private void initializePickerAccelerator(final int pickerAccelerator) {
         final String[] accelerators = Accelerator.getNames();
         this.pickerAccelerator.setMinValue(0);
         this.pickerAccelerator.setMaxValue(accelerators.length - 1);
         this.pickerAccelerator.setWrapSelectorWheel(true);
         this.pickerAccelerator.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-        this.pickerAccelerator.setValue(defaultPickerAccelerator);
+        this.pickerAccelerator.setValue(pickerAccelerator);
         this.pickerAccelerator.setDisplayedValues(accelerators);
     }
 
     /**
      * Initializes the {@link #pickerSamplesLight} field.
      *
-     * @param defaultPickerSamplesLight The default value to put in the {@link #pickerSamplesLight} field.
+     * @param pickerSamplesLight The default value to put in the
+     *                           {@link #pickerSamplesLight} field.
      */
-    private void initializePickerSamplesLight(final int defaultPickerSamplesLight) {
+    private void initializePickerSamplesLight(final int pickerSamplesLight) {
         final int maxSamplesLight = 100;
         final String[] samplesLight = IntStreams.range(0, maxSamplesLight)
             .map(value -> value + 1)
@@ -550,16 +602,17 @@ public final class MainActivity extends Activity {
         this.pickerSamplesLight.setMaxValue(maxSamplesLight);
         this.pickerSamplesLight.setWrapSelectorWheel(true);
         this.pickerSamplesLight.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-        this.pickerSamplesLight.setValue(defaultPickerSamplesLight);
+        this.pickerSamplesLight.setValue(pickerSamplesLight);
         this.pickerSamplesLight.setDisplayedValues(samplesLight);
     }
 
     /**
      * Initializes the {@link #pickerSamplesPixel} field.
      *
-     * @param defaultPickerSamplesPixel The default value to put in the {@link #pickerSamplesPixel} field.
+     * @param pickerSamplesPixel The default value to put in the
+     *                           {@link #pickerSamplesPixel} field.
      */
-    private void initializePickerSamplesPixel(final int defaultPickerSamplesPixel) {
+    private void initializePickerSamplesPixel(final int pickerSamplesPixel) {
         final int maxSamplesPixel = 99;
         final String[] samplesPixel = IntStreams.range(0, maxSamplesPixel)
             .map(value -> (value + 1) * (value + 1))
@@ -569,37 +622,39 @@ public final class MainActivity extends Activity {
         this.pickerSamplesPixel.setMaxValue(maxSamplesPixel);
         this.pickerSamplesPixel.setWrapSelectorWheel(true);
         this.pickerSamplesPixel.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-        this.pickerSamplesPixel.setValue(defaultPickerSamplesPixel);
+        this.pickerSamplesPixel.setValue(pickerSamplesPixel);
         this.pickerSamplesPixel.setDisplayedValues(samplesPixel);
     }
 
     /**
      * Initializes the {@link #pickerShader} field.
      *
-     * @param defaultPickerShader The default value to put in the {@link #pickerShader} field.
+     * @param pickerShader The default value to put in the
+     *                     {@link #pickerShader} field.
      */
-    private void initializePickerShader(final int defaultPickerShader) {
+    private void initializePickerShader(final int pickerShader) {
         final String[] shaders = Shader.getNames();
         this.pickerShader.setMinValue(0);
         this.pickerShader.setMaxValue(shaders.length - 1);
         this.pickerShader.setWrapSelectorWheel(true);
         this.pickerShader.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-        this.pickerShader.setValue(defaultPickerShader);
+        this.pickerShader.setValue(pickerShader);
         this.pickerShader.setDisplayedValues(shaders);
     }
 
     /**
      * Initializes the {@link #pickerScene} field.
      *
-     * @param defaultPickerScene The default value to put in the {@link #pickerScene} field.
+     * @param pickerScene The default value to put in the {@link #pickerScene}
+     *                    field.
      */
-    private void initializePickerScene(final int defaultPickerScene) {
+    private void initializePickerScene(final int pickerScene) {
         final String[] scenes = Scene.getNames();
         this.pickerScene.setMinValue(0);
         this.pickerScene.setMaxValue(scenes.length - 1);
         this.pickerScene.setWrapSelectorWheel(true);
         this.pickerScene.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-        this.pickerScene.setValue(defaultPickerScene);
+        this.pickerScene.setValue(pickerScene);
         this.pickerScene.setDisplayedValues(scenes);
     }
 
@@ -663,7 +718,7 @@ public final class MainActivity extends Activity {
         this.drawView.setVisibility(View.INVISIBLE);
         this.sceneFilePath = null;
 
-        LOGGER.info("onPause finished");
+        LOGGER.info("onPause" + FINISHED);
     }
 
     @Override
@@ -732,7 +787,7 @@ public final class MainActivity extends Activity {
         LOGGER.info(ConstantsMethods.ON_DETACHED_FROM_WINDOW);
 
         this.drawView.onDetachedFromWindow();
-        LOGGER.info(ConstantsMethods.ON_DETACHED_FROM_WINDOW + " finished");
+        LOGGER.info(ConstantsMethods.ON_DETACHED_FROM_WINDOW + FINISHED);
     }
 
     @Override
@@ -743,7 +798,7 @@ public final class MainActivity extends Activity {
         this.drawView.onDetachedFromWindow();
         this.drawView.setVisibility(View.INVISIBLE);
 
-        LOGGER.info(ConstantsMethods.ON_DESTROY + " finished");
+        LOGGER.info(ConstantsMethods.ON_DESTROY + FINISHED);
     }
 
     @Override
@@ -751,24 +806,35 @@ public final class MainActivity extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == Activity.RESULT_OK && requestCode == OPEN_FILE_REQUEST_CODE) {
-            Optional.ofNullable(data)
+            this.sceneFilePath = Optional.ofNullable(data)
                 .map(Intent::getData)
-                .ifPresent(uri -> {
-                    final String sdCardName = "sdcard";
-                    String filePath = StreamSupport.stream(uri.getPathSegments())
-                        .skip(1L)
-                        .reduce("", (accumulator, segment) -> accumulator + ConstantsUI.FILE_SEPARATOR + segment)
-                        .replace(ConstantsUI.FILE_SEPARATOR + sdCardName + ConstantsUI.FILE_SEPARATOR, ConstantsUI.FILE_SEPARATOR);
-
-                    final int removeIndex = filePath.indexOf(ConstantsUI.PATH_SEPARATOR);
-                    filePath = removeIndex >= 0 ? filePath.substring(removeIndex) : filePath;
-                    filePath = filePath.replace(ConstantsUI.PATH_SEPARATOR, ConstantsUI.FILE_SEPARATOR);
-                    filePath = filePath.substring(0, filePath.lastIndexOf('.'));
-
-                    final String sdCardPath = getSDCardPath();
-
-                    this.sceneFilePath = sdCardPath + filePath;
-                });
+                .map(this::getPathFromFile)
+                .orElse("");
         }
+    }
+
+    /**
+     * Gets the path of a file that was loaded with an external file manager.
+     * <br/>
+     * This method basically translates an {@link Uri} path to a {@link String}
+     * but also tries to be compatible with any device / emulator available.
+     *
+     * @param uri The URI reference for the file.
+     * @return The path to the file.
+     */
+    @Nonnull
+    private String getPathFromFile(final Uri uri) {
+        final String filePath = StreamSupport.stream(uri.getPathSegments())
+            .skip(1L)
+            .reduce("", (accumulator, segment) -> accumulator + ConstantsUI.FILE_SEPARATOR + segment)
+            .replace(ConstantsUI.FILE_SEPARATOR + "sdcard" + ConstantsUI.FILE_SEPARATOR, ConstantsUI.FILE_SEPARATOR);
+
+        final int removeIndex = filePath.indexOf(ConstantsUI.PATH_SEPARATOR);
+        final String startFilePath = removeIndex >= 0 ? filePath.substring(removeIndex) : filePath;
+        final String cleanedFilePath = startFilePath.replace(ConstantsUI.PATH_SEPARATOR, ConstantsUI.FILE_SEPARATOR);
+        final String filePathWithoutExtension = cleanedFilePath.substring(0, cleanedFilePath.lastIndexOf('.'));
+
+        final String sdCardPath = getSDCardPath();
+        return sdCardPath + filePathWithoutExtension;
     }
 }

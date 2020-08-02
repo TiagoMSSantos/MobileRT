@@ -18,6 +18,11 @@ import javax.annotation.Nonnull;
 import java8.util.Objects;
 import puscas.mobilertapp.exceptions.FailureException;
 
+import static puscas.mobilertapp.utils.Constants.BYTES_IN_FLOAT;
+import static puscas.mobilertapp.utils.Constants.BYTES_IN_INTEGER;
+import static puscas.mobilertapp.utils.Constants.BYTES_IN_POINTER;
+import static puscas.mobilertapp.utils.ConstantsMethods.FINISHED;
+
 /**
  * Utility class with some helper methods.
  */
@@ -53,7 +58,7 @@ public final class Utils {
                 Utils.handleInterruption("Utils#waitExecutorToFinish");
             }
         } while (running);
-        LOGGER.info("waitExecutorToFinish finished");
+        LOGGER.info("waitExecutorToFinish" + ConstantsMethods.FINISHED);
     }
 
     /**
@@ -105,13 +110,15 @@ public final class Utils {
         } catch (final IOException ex2) {
             throw new FailureException(ex2);
         } finally {
-            LOGGER.info("readTextFromInputStream finished");
+            LOGGER.info("readTextFromInputStream" + FINISHED);
         }
     }
 
     /**
      * Calculates the size, in MegaBytes of the scene with a certain number of
      * primitives.
+     * Note that this method tries to predict the size of the scene in the
+     * Ray Tracer engine context, and not in the OpenGL context.
      *
      * @param numPrimitives The number of primitives in the scene.
      * @return The size, in MegaBytes, of the scene.
@@ -119,10 +126,18 @@ public final class Utils {
     @Contract(pure = true)
     public static int calculateSceneSize(final int numPrimitives) {
         LOGGER.info("calculateSceneSize");
-        final int floatSize = Float.SIZE / Byte.SIZE;
-        final int triangleMembers = floatSize * 9;
-        final int triangleMethods = 8 * 11;
-        final int triangleSize = triangleMembers + triangleMethods;
-        return 1 + ((numPrimitives * triangleSize) / Constants.MB_IN_BYTES);
+        final int triangleVerticesSize = 3 * BYTES_IN_FLOAT * 3;
+        final int triangleNormalsSize = 3 * BYTES_IN_FLOAT * 3;
+        final int triangleTextureCoordinatesSize = 2 * BYTES_IN_FLOAT * 3;
+        final int triangleMaterialIndexSize = BYTES_IN_INTEGER;
+
+        final int triangleMembersSize = triangleVerticesSize +
+            triangleNormalsSize +
+            triangleTextureCoordinatesSize +
+            triangleMaterialIndexSize;
+
+        final int triangleMethodsSize = BYTES_IN_POINTER * 21;
+        final int triangleSize = triangleMembersSize + triangleMethodsSize;
+        return 1 + ((numPrimitives * triangleSize) / Constants.BYTES_IN_MB);
     }
 }

@@ -354,6 +354,11 @@ namespace MobileRT {
 
 
     #ifndef NDEBUG
+        /**
+         * If in debug mode, then the `ASSERT` macro will call the the assert
+         * macro from C++ Boost framework `BOOST_ASSERT_MSG` and then terminate
+         * the application with a printed error.
+         */
         #define ASSERT(condition, ...) \
         do { \
             if (!(condition)) { \
@@ -363,6 +368,11 @@ namespace MobileRT {
             } \
         } while (false)
     #else
+        /**
+         * If in release mode, then the `ASSERT` macro should do nothing, to
+         * eventually make the compiler optimize and remove it from the
+         * generated binary code.
+         */
         #define ASSERT(condition, ...) do { } while (false)
     #endif
 

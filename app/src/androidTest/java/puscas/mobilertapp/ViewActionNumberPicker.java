@@ -14,6 +14,8 @@ import java.util.logging.Logger;
 
 import javax.annotation.Nonnull;
 
+import static puscas.mobilertapp.utils.ConstantsMethods.FINISHED;
+
 /**
  * Auxiliary class which represents a {@link NumberPicker}.
  */
@@ -87,6 +89,6 @@ final class ViewActionNumberPicker implements ViewAction {
             LOGGER.warning("Reset interrupted: " + interrupted);
         }
 
-        LOGGER.info(methodName + " finished");
+        LOGGER.info(methodName + FINISHED);
     }
 }

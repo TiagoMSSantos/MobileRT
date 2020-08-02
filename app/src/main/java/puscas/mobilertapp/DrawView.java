@@ -33,6 +33,8 @@ import puscas.mobilertapp.utils.ConstantsToast;
 import puscas.mobilertapp.utils.State;
 import puscas.mobilertapp.utils.Utils;
 
+import static puscas.mobilertapp.utils.ConstantsMethods.FINISHED;
+
 /**
  * The {@link GLSurfaceView} to show the scene being rendered.
  */
@@ -158,7 +160,7 @@ public final class DrawView extends GLSurfaceView {
         waitLastTask();
         this.renderer.updateButton(R.string.render);
 
-        LOGGER.info("stopDrawing finished");
+        LOGGER.info("stopDrawing" + FINISHED);
     }
 
     /**
@@ -185,7 +187,7 @@ public final class DrawView extends GLSurfaceView {
             try {
                 createScene(config, numThreads, rasterize);
                 requestRender();
-                LOGGER.info(ConstantsMethods.RENDER_SCENE + " executor finished");
+                LOGGER.info(ConstantsMethods.RENDER_SCENE + " executor" + FINISHED);
                 return Boolean.TRUE;
             } catch (final LowMemoryException ex) {
                 warningError(ex, ConstantsToast.DEVICE_WITHOUT_ENOUGH_MEMORY);
@@ -200,7 +202,7 @@ public final class DrawView extends GLSurfaceView {
         });
         this.renderer.updateButton(R.string.stop);
 
-        LOGGER.info(ConstantsMethods.RENDER_SCENE + " finished");
+        LOGGER.info(ConstantsMethods.RENDER_SCENE + FINISHED);
     }
 
     /**
@@ -224,7 +226,7 @@ public final class DrawView extends GLSurfaceView {
                 }
             });
 
-        LOGGER.info("waitLastTask finished");
+        LOGGER.info("waitLastTask" + FINISHED);
     }
 
     /**
@@ -288,7 +290,7 @@ public final class DrawView extends GLSurfaceView {
         final Activity activity = getActivity();
         this.changingConfigs = activity.isChangingConfigurations();
         stopDrawing();
-        LOGGER.info("onPause finished");
+        LOGGER.info("onPause" + FINISHED);
     }
 
     @Override
@@ -299,7 +301,7 @@ public final class DrawView extends GLSurfaceView {
         if (hasWindowFocus && getVisibility() == View.GONE) {
             setVisibility(View.VISIBLE);
         }
-        LOGGER.info("onWindowFocusChanged finished");
+        LOGGER.info("onWindowFocusChanged" + FINISHED);
     }
 
     @Override
@@ -307,7 +309,7 @@ public final class DrawView extends GLSurfaceView {
         LOGGER.info(ConstantsMethods.ON_DETACHED_FROM_WINDOW);
         super.onDetachedFromWindow();
 
-        LOGGER.info(ConstantsMethods.ON_DETACHED_FROM_WINDOW + " finished");
+        LOGGER.info(ConstantsMethods.ON_DETACHED_FROM_WINDOW + FINISHED);
     }
 
     @Override

@@ -45,7 +45,13 @@ import puscas.mobilertapp.utils.State;
 import puscas.mobilertapp.utils.Utils;
 import puscas.mobilertapp.utils.UtilsGL;
 
-import static puscas.mobilertapp.utils.Constants.MB_IN_BYTES;
+import static puscas.mobilertapp.utils.Constants.BYTES_IN_FLOAT;
+import static puscas.mobilertapp.utils.Constants.BYTES_IN_MB;
+import static puscas.mobilertapp.utils.ConstantsMethods.FINISHED;
+import static puscas.mobilertapp.utils.ConstantsRenderer.TEXTURE_COMPONENTS;
+import static puscas.mobilertapp.utils.ConstantsRenderer.VERTEX_COMPONENTS;
+import static puscas.mobilertapp.utils.ConstantsRenderer.Z_FAR;
+import static puscas.mobilertapp.utils.ConstantsRenderer.Z_NEAR;
 
 /**
  * The OpenGL renderer that shows the Ray Tracer engine rendered image.
@@ -429,8 +435,8 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         Preconditions.checkArgument(memoryNeeded > 0, "The requested memory must be a positive value");
 
         this.activityManager.getMemoryInfo(this.memoryInfo);
-        final long availMem = this.memoryInfo.availMem / (long) MB_IN_BYTES;
-        final long totalMem = this.memoryInfo.totalMem / (long) MB_IN_BYTES;
+        final long availMem = this.memoryInfo.availMem / (long) BYTES_IN_MB;
+        final long totalMem = this.memoryInfo.totalMem / (long) BYTES_IN_MB;
         final boolean insufficientMem = availMem <= (long) (1 + memoryNeeded);
         final String message = String.format(Locale.US, "MEMORY AVAILABLE: %dMB (%dMB)", availMem, totalMem);
         LOGGER.info(message);
@@ -486,7 +492,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         this.firstFrame = true;
         this.rasterize = rasterize;
         validateBitmap();
-        LOGGER.info("setBitmap finished");
+        LOGGER.info("setBitmap" + FINISHED);
     }
 
     /**
@@ -585,7 +591,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
             this.lockExecutorService.unlock();
         }
 
-        LOGGER.info("waitLastTask finished");
+        LOGGER.info("waitLastTask" + FINISHED);
     }
 
     /**
@@ -607,7 +613,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
             @Nonnull final ByteBuffer bbCamera,
             final int numPrimitives
     ) throws LowMemoryException {
-        LOGGER.info("copyFrame");
+        LOGGER.info("renderSceneToBitmap");
         if (bbVertices.capacity() <= 0 || bbColors.capacity() <= 0 || bbCamera.capacity() <= 0 || numPrimitives <= 0) {
             return this.bitmap;
         }
@@ -632,12 +638,12 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
 
         final int positionAttrib2 = 0;
         UtilsGL.run(() -> GLES20.glBindAttribLocation(this.shaderProgramRaster, positionAttrib2, ConstantsRenderer.VERTEX_POSITION));
-        UtilsGL.run(() -> GLES20.glVertexAttribPointer(positionAttrib2, 4, GLES20.GL_FLOAT, false, 0, bbVertices));
+        UtilsGL.run(() -> GLES20.glVertexAttribPointer(positionAttrib2, ConstantsRenderer.VERTEX_COMPONENTS, GLES20.GL_FLOAT, false, 0, bbVertices));
         UtilsGL.run(() -> GLES20.glEnableVertexAttribArray(positionAttrib2));
 
         final int colorAttrib2 = 1;
         UtilsGL.run(() -> GLES20.glBindAttribLocation(this.shaderProgramRaster, colorAttrib2, ConstantsRenderer.VERTEX_COLOR));
-        UtilsGL.run(() -> GLES20.glVertexAttribPointer(colorAttrib2, 4, GLES20.GL_FLOAT, false, 0, bbColors));
+        UtilsGL.run(() -> GLES20.glVertexAttribPointer(colorAttrib2, ConstantsRenderer.PIXEL_COLORS, GLES20.GL_FLOAT, false, 0, bbColors));
         UtilsGL.run(() -> GLES20.glEnableVertexAttribArray(colorAttrib2));
 
         // Load shaders
@@ -670,47 +676,51 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
 
         UtilsGL.run(() -> GLES20.glUseProgram(this.shaderProgramRaster));
 
-        final float zNear = 0.1F;
-        final float zFar = 1.0e38F;
-
-        final int floatBytes = Float.SIZE / Byte.SIZE;
         final float eyeX = bbCamera.getFloat(0);
-        final float eyeY = bbCamera.getFloat(floatBytes);
-        final float eyeZ = -bbCamera.getFloat(2 * floatBytes);
+        final float eyeY = bbCamera.getFloat(BYTES_IN_FLOAT);
+        final float eyeZ = -bbCamera.getFloat(2 * BYTES_IN_FLOAT);
 
-        final float dirX = bbCamera.getFloat(4 * floatBytes);
-        final float dirY = bbCamera.getFloat(5 * floatBytes);
-        final float dirZ = -bbCamera.getFloat(6 * floatBytes);
+        final float dirX = bbCamera.getFloat(4 * BYTES_IN_FLOAT);
+        final float dirY = bbCamera.getFloat(5 * BYTES_IN_FLOAT);
+        final float dirZ = -bbCamera.getFloat(6 * BYTES_IN_FLOAT);
 
-        final float upX = bbCamera.getFloat(8 * floatBytes);
-        final float upY = bbCamera.getFloat(9 * floatBytes);
-        final float upZ = -bbCamera.getFloat(10 * floatBytes);
+        final float upX = bbCamera.getFloat(8 * BYTES_IN_FLOAT);
+        final float upY = bbCamera.getFloat(9 * BYTES_IN_FLOAT);
+        final float upZ = -bbCamera.getFloat(10 * BYTES_IN_FLOAT);
 
         final float centerX = eyeX + dirX;
         final float centerY = eyeY + dirY;
         final float centerZ = eyeZ + dirZ;
 
-        final float aspect = (float) this.width / (float) this.height;
-        final float fixAspect = 0.955F;
-        final float fovX = bbCamera.getFloat(16 * floatBytes) * fixAspect;
-        final float fovY = bbCamera.getFloat(17 * floatBytes) * fixAspect;
+        final float aspectPerspective = (float) this.width / (float) this.height;
 
-        final float sizeH = bbCamera.getFloat(18 * floatBytes);
-        final float sizeV = bbCamera.getFloat(19 * floatBytes);
+
+        // Empirical values that makes the OpenGL camera more similar to the
+        // camera from the Ray Tracing engine.
+        final float fixAspectPerspective = 0.955F;
+        final float fixAspectOrthographic = 0.5F;
+
+
+        final float fovX = bbCamera.getFloat(16 * BYTES_IN_FLOAT) * fixAspectPerspective;
+        final float fovY = bbCamera.getFloat(17 * BYTES_IN_FLOAT) * fixAspectPerspective;
+
+        final float sizeH = bbCamera.getFloat(18 * BYTES_IN_FLOAT) * fixAspectOrthographic;
+        final float sizeV = bbCamera.getFloat(19 * BYTES_IN_FLOAT) * fixAspectOrthographic;
 
         final float[] projectionMatrix = new float[16];
         final float[] viewMatrix = new float[16];
         final float[] modelMatrix = new float[16];
         Matrix.setIdentityM(modelMatrix, 0);
 
+        // If the camera is a perspective camera.
         if (fovX > 0.0F && fovY > 0.0F) {
-            Matrix.perspectiveM(projectionMatrix, 0, fovY, aspect, zNear, zFar);
+            Matrix.perspectiveM(projectionMatrix, 0, fovY, aspectPerspective, Z_NEAR, Z_FAR);
         }
 
+        // If the camera is an orthographic camera.
         if (sizeH > 0.0F && sizeV > 0.0F) {
-            final float correction = 2.0F;
-            Matrix.orthoM(projectionMatrix, 0, -sizeH / correction, sizeH / correction,
-            -sizeV / correction, sizeV / correction, zNear, zFar);
+            Matrix.orthoM(projectionMatrix, 0, -sizeH, sizeH,
+            -sizeV, sizeV, Z_NEAR, Z_FAR);
         }
 
         Matrix.setLookAtM(
@@ -732,19 +742,19 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         final int positionAttrib = UtilsGL.<Integer, Integer, String>run(this.shaderProgramRaster, ConstantsRenderer.VERTEX_POSITION, GLES20::glGetAttribLocation);
         UtilsGL.run(() -> GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, positionAttrib));
         UtilsGL.run(() -> GLES20.glEnableVertexAttribArray(positionAttrib));
-        UtilsGL.run(() -> GLES20.glVertexAttribPointer(positionAttrib, 4, GLES20.GL_FLOAT, false, 0, bbVertices));
+        UtilsGL.run(() -> GLES20.glVertexAttribPointer(positionAttrib, VERTEX_COMPONENTS, GLES20.GL_FLOAT, false, 0, bbVertices));
 
         checksFreeMemory(1, () -> { });
 
         final int colorAttrib = UtilsGL.<Integer, Integer, String>run(this.shaderProgramRaster, ConstantsRenderer.VERTEX_COLOR, GLES20::glGetAttribLocation);
         UtilsGL.run(() -> GLES20.glEnableVertexAttribArray(colorAttrib));
-        UtilsGL.run(() -> GLES20.glVertexAttribPointer(colorAttrib, 4, GLES20.GL_FLOAT, false, 0, bbColors));
+        UtilsGL.run(() -> GLES20.glVertexAttribPointer(colorAttrib, VERTEX_COMPONENTS, GLES20.GL_FLOAT, false, 0, bbColors));
 
         checksFreeMemory(1, () -> { });
 
         UtilsGL.run(() -> GLES20.glEnable(GLES20.GL_DEPTH_TEST));
 
-        final int vertexCount = bbVertices.capacity() / (floatBytes * 4);
+        final int vertexCount = bbVertices.capacity() / (BYTES_IN_FLOAT * VERTEX_COMPONENTS);
         final String msg = String.format(Locale.US, "vertexCount: %d", vertexCount);
         LOGGER.info(msg);
 
@@ -760,7 +770,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         UtilsGL.run(() -> GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0));
 
         final Bitmap newBitmapWithPreviewScene = copyGLFrameBufferToBitmap();
-        LOGGER.info("copyFrame finished");
+        LOGGER.info("renderSceneToBitmap" + FINISHED);
         return newBitmapWithPreviewScene;
     }
 
@@ -837,7 +847,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         } finally {
             this.lockExecutorService.unlock();
         }
-        LOGGER.info("createAndLaunchRenderTask finished");
+        LOGGER.info("createAndLaunchRenderTask" + FINISHED);
     }
 
     /**
@@ -851,17 +861,17 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         UtilsGL.run(() -> GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, positionAttrib));
         UtilsGL.run(() -> GLES20.glEnableVertexAttribArray(positionAttrib));
         UtilsGL.run(() -> GLES20.glVertexAttribPointer(
-            positionAttrib, 4, GLES20.GL_FLOAT, false, 0, this.floatBufferVertices
+            positionAttrib, VERTEX_COMPONENTS, GLES20.GL_FLOAT, false, 0, this.floatBufferVertices
         ));
 
         final int texCoordAttrib = UtilsGL.<Integer, Integer, String>run(this.shaderProgram, ConstantsRenderer.VERTEX_TEX_COORD, GLES20::glGetAttribLocation);
         UtilsGL.run(() -> GLES20.glEnableVertexAttribArray(texCoordAttrib));
         UtilsGL.run(() -> GLES20.glVertexAttribPointer(
-            texCoordAttrib, 2, GLES20.GL_FLOAT, false, 0, this.floatBufferTexture
+            texCoordAttrib, TEXTURE_COMPONENTS, GLES20.GL_FLOAT, false, 0, this.floatBufferTexture
         ));
 
 
-        final int vertexCount = this.verticesTexture.length / (Float.SIZE / Byte.SIZE);
+        final int vertexCount = this.verticesTexture.length / BYTES_IN_FLOAT;
         UtilsGL.run(() -> GLES20.glDrawArrays(GLES20.GL_TRIANGLE_FAN, positionAttrib, vertexCount));
 
         validateBitmap();
@@ -871,7 +881,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         UtilsGL.run(() -> GLES20.glDisableVertexAttribArray(positionAttrib));
         UtilsGL.run(() -> GLES20.glDisableVertexAttribArray(texCoordAttrib));
         UtilsGL.run(() -> GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0));
-        LOGGER.info("drawBitmap finished");
+        LOGGER.info("drawBitmap" + FINISHED);
     }
 
     @Override
@@ -918,7 +928,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
                     rtRenderIntoBitmap(this.bitmap, this.numThreads, true);
                 }
                 validateBitmap();
-                LOGGER.info("rtRenderIntoBitmap finished");
+                LOGGER.info("rtRenderIntoBitmap" + FINISHED);
             } catch (final LowMemoryException ex) {
                 LOGGER.severe("onDrawFrame exception: " + ex.getClass().getName());
                 LOGGER.severe("onDrawFrame exception: " + Strings.nullToEmpty(ex.getMessage()));
@@ -927,7 +937,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
             validateBitmap();
             createAndLaunchRenderTask();
             validateBitmap();
-            LOGGER.info("onDrawFirstFrame finished");
+            LOGGER.info("onDrawFirstFrame" + FINISHED);
         }
         validateBitmap();
         drawBitmap();
@@ -960,7 +970,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
 
         UtilsGL.run(() -> GLES20.glViewport(0, 0, width, height));
 
-        LOGGER.info("onSurfaceChanged finished");
+        LOGGER.info("onSurfaceChanged" + FINISHED);
     }
 
     @Override
@@ -985,14 +995,14 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         UtilsGL.run(() -> GLES20.glClearColor(0.0F, 0.0F, 0.0F, 0.0F));
 
         // Create geometry and texture coordinates buffers
-        final int byteBufferVerticesSize = this.verticesTexture.length * (Float.SIZE / Byte.SIZE);
+        final int byteBufferVerticesSize = this.verticesTexture.length * BYTES_IN_FLOAT;
         final ByteBuffer bbVertices = ByteBuffer.allocateDirect(byteBufferVerticesSize);
         bbVertices.order(ByteOrder.nativeOrder());
         this.floatBufferVertices = bbVertices.asFloatBuffer();
         this.floatBufferVertices.put(this.verticesTexture);
         this.floatBufferVertices.position(0);
 
-        final int byteBufferTexCoordsSize = this.texCoords.length * (Float.SIZE / Byte.SIZE);
+        final int byteBufferTexCoordsSize = this.texCoords.length * BYTES_IN_FLOAT;
         final ByteBuffer byteBufferTexCoords = ByteBuffer.allocateDirect(byteBufferTexCoordsSize);
         byteBufferTexCoords.order(ByteOrder.nativeOrder());
         this.floatBufferTexture = byteBufferTexCoords.asFloatBuffer();
@@ -1032,14 +1042,14 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         final int positionAttrib = 0;
         UtilsGL.run(() -> GLES20.glBindAttribLocation(this.shaderProgram, positionAttrib, ConstantsRenderer.VERTEX_POSITION));
         UtilsGL.run(() -> GLES20.glVertexAttribPointer(
-            positionAttrib, 4, GLES20.GL_FLOAT, false, 0, this.floatBufferVertices
+            positionAttrib, VERTEX_COMPONENTS, GLES20.GL_FLOAT, false, 0, this.floatBufferVertices
         ));
         UtilsGL.run(() -> GLES20.glEnableVertexAttribArray(positionAttrib));
 
         final int texCoordAttrib = 1;
         UtilsGL.run(() -> GLES20.glBindAttribLocation(this.shaderProgram, texCoordAttrib, ConstantsRenderer.VERTEX_TEX_COORD));
         UtilsGL.run(() -> GLES20.glVertexAttribPointer(
-            texCoordAttrib, 2, GLES20.GL_FLOAT, false, 0, this.floatBufferTexture
+            texCoordAttrib, TEXTURE_COMPONENTS, GLES20.GL_FLOAT, false, 0, this.floatBufferTexture
         ));
         UtilsGL.run(() -> GLES20.glEnableVertexAttribArray(texCoordAttrib));
 
@@ -1068,6 +1078,6 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
 
         UtilsGL.run(() -> GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR));
 
-        LOGGER.info("onSurfaceCreated finished");
+        LOGGER.info("onSurfaceCreated" + FINISHED);
     }
 }

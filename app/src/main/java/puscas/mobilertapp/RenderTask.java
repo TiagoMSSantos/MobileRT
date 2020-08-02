@@ -27,6 +27,8 @@ import puscas.mobilertapp.utils.ConstantsUI;
 import puscas.mobilertapp.utils.State;
 import puscas.mobilertapp.utils.Utils;
 
+import static puscas.mobilertapp.utils.ConstantsMethods.FINISHED;
+
 /**
  * An asynchronous task to render a frame and update the {@link TextView} text.
  * At the end of the task, it sets the render {@link Button} to "Render".
@@ -189,7 +191,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
         this.timeFrameT = String.format(Locale.US, ",t:%.2fs", 0.0F);
         this.timeT = String.format(Locale.US, "[%.2fs]", 0.0F);
         this.stateT = " " + State.IDLE.getId();
-        this.allocatedT = ",m:" + Debug.getNativeHeapAllocatedSize() / (long) Constants.MB_IN_BYTES + "mb";
+        this.allocatedT = ",m:" + Debug.getNativeHeapAllocatedSize() / (long) Constants.BYTES_IN_MB + "mb";
         this.sampleT = ",0";
 
         this.timer = () -> {
@@ -202,18 +204,18 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
             this.timeFrameT = String.format(Locale.US, ",t:%.2fs", (float) timeRenderer / SECOND_IN_MS);
             final long currentTime = SystemClock.elapsedRealtime();
             this.timeT = String.format(Locale.US, "[%.2fs]", (float) (currentTime - this.startTimeStamp) / SECOND_IN_MS);
-            this.allocatedT = ",m:" + Debug.getNativeHeapAllocatedSize() / (long) Constants.MB_IN_BYTES + "mb";
+            this.allocatedT = ",m:" + Debug.getNativeHeapAllocatedSize() / (long) Constants.BYTES_IN_MB + "mb";
             this.sampleT = "," + rtGetSample();
 
             final State currentState = State.values()[rtGetState()];
             this.stateT = currentState.toString();
             this.requestRender.run();
             publishProgress();
-            LOGGER.info("RenderTask timer finished");
+            LOGGER.info("RenderTask timer" + FINISHED);
             if (currentState != State.BUSY) {
                 this.executorService.shutdown();
             }
-            LOGGER.info("RenderTask timer finished 2");
+            LOGGER.info("RenderTask timer" + FINISHED + " 2");
         };
     }
 
@@ -281,7 +283,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
 
         this.executorService.scheduleAtFixedRate(this.timer, 0L, this.updateInterval, TimeUnit.MILLISECONDS);
         Utils.waitExecutorToFinish(this.executorService);
-        LOGGER.info("doInBackground finished");
+        LOGGER.info("doInBackground" + FINISHED);
         return null;
     }
 
@@ -289,7 +291,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
     protected void onProgressUpdate(@Nonnull final Void... values) {
         LOGGER.info("onProgressUpdate");
         printText();
-        LOGGER.info("onProgressUpdate finished");
+        LOGGER.info("onProgressUpdate" + FINISHED);
     }
 
     @Override
@@ -301,7 +303,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
         this.finishRender.run();
         this.buttonRender.get().setText(R.string.render);
 
-        LOGGER.info("onPostExecute finished");
+        LOGGER.info("onPostExecute" + FINISHED);
     }
 
     @Override
@@ -312,7 +314,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
         printText();
         this.requestRender.run();
 
-        LOGGER.info(ConstantsMethods.ON_CANCELLED + " 1 finished");
+        LOGGER.info(ConstantsMethods.ON_CANCELLED + FINISHED + " 1");
     }
 
     @Override
@@ -323,7 +325,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
         printText();
         this.requestRender.run();
 
-        LOGGER.info(ConstantsMethods.ON_CANCELLED + " 2 finished");
+        LOGGER.info(ConstantsMethods.ON_CANCELLED + FINISHED + " 2");
     }
 
     /**
