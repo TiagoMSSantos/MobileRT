@@ -53,8 +53,6 @@ final class ViewActionButton implements ViewAction {
         LOGGER.info(methodName);
 
         this.expectedText = expectedText;
-
-        Utils.handleInterruption(methodName);
     }
 
     @Nonnull
@@ -63,7 +61,6 @@ final class ViewActionButton implements ViewAction {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
-        Utils.handleInterruption(methodName);
         return ViewMatchers.isAssignableFrom(Button.class);
     }
 
@@ -73,7 +70,6 @@ final class ViewActionButton implements ViewAction {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
-        Utils.handleInterruption(methodName);
         return "Click button";
     }
 
@@ -86,39 +82,45 @@ final class ViewActionButton implements ViewAction {
             final Button button = (Button) view;
             LOGGER.info(methodName + " waiting");
 
-            boolean textEqualsWrongExpected = button.getText().toString().equals(this.expectedText);
-            while (textEqualsWrongExpected) {
+            boolean textBeforeNotExpected = button.getText().toString().equals(this.expectedText);
+            while (textBeforeNotExpected) {
                 uiController.loopMainThreadForAtLeast(5000L);
-                textEqualsWrongExpected = button.getText().toString().equals(this.expectedText);
-                LOGGER.info(methodName + " waiting button to NOT have '" + this.expectedText + "' written!!!");
+                textBeforeNotExpected = button.getText().toString().equals(this.expectedText);
+                LOGGER.info(methodName +
+                    " waiting button to NOT have '" + this.expectedText + "' written!!!");
             }
 
             uiController.loopMainThreadUntilIdle();
             LOGGER.info(methodName + " clicking button");
             boolean buttonNotClickedProperly = !button.performClick();
             ++clickCounter;
-            LOGGER.info(methodName + " BUTTON CLICKED: " + clickCounter + " (" + this.expectedText + ")");
+            LOGGER.info(methodName + " BUTTON CLICKED: " + clickCounter +
+                " (" + this.expectedText + ")");
             while (buttonNotClickedProperly) {
+                LOGGER.info(methodName + " waiting to click button!!!");
                 uiController.loopMainThreadForAtLeast(5000L);
                 buttonNotClickedProperly = !button.performClick();
                 ++clickCounter;
-                LOGGER.info(methodName + " BUTTON CLICKED: " + clickCounter + " (" + this.expectedText + ")");
-                LOGGER.info(methodName + " waiting to click button!!!");
+                LOGGER.info(methodName + " BUTTON CLICKED: " + clickCounter +
+                    " (" + this.expectedText + ")");
             }
 
             boolean textEqualsNotExpected = !button.getText().toString().equals(this.expectedText);
             final long advanceSecs = 5L;
-            for (long currentTimeSecs = 0L; currentTimeSecs < 60L && textEqualsNotExpected; currentTimeSecs += advanceSecs) {
+            for (long currentTimeSecs = 0L; currentTimeSecs < 60L && textEqualsNotExpected;
+                 currentTimeSecs += advanceSecs) {
                 uiController.loopMainThreadForAtLeast(advanceSecs * 1000L);
                 Uninterruptibles.sleepUninterruptibly(advanceSecs, TimeUnit.SECONDS);
                 textEqualsNotExpected = !button.getText().toString().equals(this.expectedText);
-                LOGGER.info(methodName + " waiting button to have '" + this.expectedText + "' written!!!");
+                LOGGER.info(methodName + " waiting button to have '" +
+                    this.expectedText + "' written!!!");
             }
-            Assertions.assertEquals(this.expectedText, button.getText().toString(), "Button with wrong text!!!!!");
+            Assertions.assertEquals(this.expectedText, button.getText().toString(),
+                "Button with wrong text!!!!!");
         } finally {
             Utils.handleInterruption(methodName);
         }
 
-        LOGGER.info("ViewActionButton#perform" + FINISHED);
+        LOGGER.info(methodName + FINISHED);
     }
 }

@@ -36,8 +36,8 @@ public final class ConstantsRenderer {
     public static final String VERTEX_COLOR = "vertexColor";
 
     /**
-     * The number of threads to be used by the {@link DrawView}, {@link MainRenderer} and {@link RenderTask}
-     * {@link ExecutorService}.
+     * The number of threads to be used by the {@link DrawView},
+     * {@link MainRenderer} and {@link RenderTask} {@link ExecutorService}.
      */
     public static final int NUMBER_THREADS = 1;
 

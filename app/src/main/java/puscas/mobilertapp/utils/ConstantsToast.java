@@ -22,7 +22,8 @@ public final class ConstantsToast {
      * A warning message for when the Android device doesn't have enough memory
      * to render the scene.
      */
-    public static final String DEVICE_WITHOUT_ENOUGH_MEMORY = "Device without enough memory to render the scene.";
+    public static final String DEVICE_WITHOUT_ENOUGH_MEMORY =
+        "Device without enough memory to render the scene.";
 
     /**
      * A warning message for when the Android device couldn't load the scene.

@@ -10,8 +10,6 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.common.base.Strings;
-
 import org.jetbrains.annotations.Contract;
 
 import java.util.concurrent.ExecutionException;
@@ -56,10 +54,12 @@ public final class DrawView extends GLSurfaceView {
     private boolean changingConfigs = false;
 
     /**
-     * The {@link ExecutorService} which holds {@link ConstantsRenderer#NUMBER_THREADS} number of threads that will
+     * The {@link ExecutorService} which holds
+     * {@link ConstantsRenderer#NUMBER_THREADS} number of threads that will
      * create Ray Tracer engine renderer.
      */
-    private final ExecutorService executorService = Executors.newFixedThreadPool(ConstantsRenderer.NUMBER_THREADS);
+    private final ExecutorService executorService =
+        Executors.newFixedThreadPool(ConstantsRenderer.NUMBER_THREADS);
 
     /**
      * The last task submitted to {@link ExecutorService}.
@@ -84,7 +84,8 @@ public final class DrawView extends GLSurfaceView {
      * @param context The context of the Android system.
      * @param attrs   The attributes of the Android system.
      */
-    public DrawView(@Nonnull final Context context, @Nonnull final AttributeSet attrs) {
+    public DrawView(@Nonnull final Context context,
+                    @Nonnull final AttributeSet attrs) {
         super(context, attrs);
 
         this.renderer.prepareRenderer(this::requestRender);
@@ -136,12 +137,16 @@ public final class DrawView extends GLSurfaceView {
     }
 
     /**
-     * Sets the {@link DrawView#renderer} as the {@link GLSurfaceView.Renderer} of this object.
+     * Sets the {@link DrawView#renderer} as the {@link GLSurfaceView.Renderer}
+     * of this object.
      *
-     * @param textView        The {@link TextView} to set in the {@link DrawView#renderer}.
-     * @param activityManager The {@link ActivityManager} to set in the {@link DrawView#renderer}.
+     * @param textView        The {@link TextView} to set in the
+     *                        {@link DrawView#renderer}.
+     * @param activityManager The {@link ActivityManager} to set in the
+     *                        {@link DrawView#renderer}.
      */
-    void setViewAndActivityManager(final TextView textView, final ActivityManager activityManager) {
+    void setViewAndActivityManager(final TextView textView,
+                                   final ActivityManager activityManager) {
         this.renderer.setTextView(textView);
         this.renderer.setActivityManager(activityManager);
         setRenderer(this.renderer);
@@ -167,13 +172,14 @@ public final class DrawView extends GLSurfaceView {
      * Asynchronously creates the requested scene and starts rendering it.
      *
      * @param config     The ray tracer configuration.
-     * @param numThreads The number of threads to be used in the Ray Tracer engine.
-     * @param rasterize  Whether should show a preview (rasterize one frame) or not.
+     * @param numThreads The number of threads to be used in the Ray Tracer
+     *                   engine.
+     * @param rasterize  Whether should show a preview (rasterize one frame) or
+     *                   not.
      */
-    void renderScene(
-            @Nonnull final Config config,
-            final int numThreads,
-            final boolean rasterize) {
+    void renderScene(@Nonnull final Config config,
+                     final int numThreads,
+                     final boolean rasterize) {
         LOGGER.info(ConstantsMethods.RENDER_SCENE);
 
         waitLastTask();
@@ -188,16 +194,18 @@ public final class DrawView extends GLSurfaceView {
                 createScene(config, numThreads, rasterize);
                 requestRender();
                 LOGGER.info(ConstantsMethods.RENDER_SCENE + " executor" + FINISHED);
+
                 return Boolean.TRUE;
             } catch (final LowMemoryException ex) {
                 warningError(ex, ConstantsToast.DEVICE_WITHOUT_ENOUGH_MEMORY);
             } catch (final RuntimeException ex) {
                 warningError(ex, ConstantsToast.COULD_NOT_LOAD_THE_SCENE);
             }
-            rtStopRender(false);
+
+            LOGGER.severe(ConstantsMethods.RENDER_SCENE + " executor failed");
             this.renderer.rtFinishRender();
-            LOGGER.info(ConstantsMethods.RENDER_SCENE + " executor failed");
             post(() -> this.renderer.updateButton(R.string.render));
+
             return Boolean.FALSE;
         });
         this.renderer.updateButton(R.string.stop);
@@ -235,16 +243,17 @@ public final class DrawView extends GLSurfaceView {
      * @param numThreads The number of threads to be used in the Ray Tracer engine.
      * @param rasterize  Whether should show a preview (rasterize one frame) or not.
      */
-    private void createScene(
-            final Config config,
-            final int numThreads,
-            final boolean rasterize) throws LowMemoryException {
+    private void createScene(final Config config,
+                             final int numThreads,
+                             final boolean rasterize) throws LowMemoryException {
         LOGGER.info("createScene");
         final int numPrimitives = this.renderer.rtInitialize(config);
-        this.renderer.resetStats(numThreads, config.getConfigSamples(), numPrimitives, rtGetNumberOfLights());
+        this.renderer.resetStats(numThreads, config.getConfigSamples(),
+            numPrimitives, rtGetNumberOfLights());
         final int widthView = getWidth();
         final int heightView = getHeight();
-        queueEvent(() -> this.renderer.setBitmap(config.getConfigResolution(), widthView, heightView, rasterize));
+        queueEvent(() -> this.renderer.setBitmap(
+            config.getConfigResolution(), widthView, heightView, rasterize));
     }
 
     /**
@@ -253,7 +262,8 @@ public final class DrawView extends GLSurfaceView {
      * @param exception    The exception caught.
      * @param errorMessage The error message.
      */
-    private void warningError(@Nonnull final Exception exception, final CharSequence errorMessage) {
+    private void warningError(@Nonnull final Exception exception,
+                              final CharSequence errorMessage) {
         this.renderer.resetStats();
         LOGGER.severe(exception.getClass() + ":" + exception.getMessage());
         post(() -> Toast.makeText(getContext(), errorMessage, Toast.LENGTH_LONG).show());

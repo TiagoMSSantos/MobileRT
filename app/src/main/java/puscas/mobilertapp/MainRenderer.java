@@ -12,7 +12,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
 import com.google.common.util.concurrent.Uninterruptibles;
 
 import org.jetbrains.annotations.Contract;
@@ -46,6 +45,7 @@ import puscas.mobilertapp.utils.UtilsGL;
 import static puscas.mobilertapp.utils.Constants.BYTES_IN_FLOAT;
 import static puscas.mobilertapp.utils.Constants.BYTES_IN_MB;
 import static puscas.mobilertapp.utils.ConstantsMethods.FINISHED;
+import static puscas.mobilertapp.utils.ConstantsMethods.SET_BITMAP;
 import static puscas.mobilertapp.utils.ConstantsRenderer.PIXEL_COLORS;
 import static puscas.mobilertapp.utils.ConstantsRenderer.TEXTURE_COMPONENTS;
 import static puscas.mobilertapp.utils.ConstantsRenderer.VERTEX_COLOR;
@@ -67,6 +67,12 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * The default update interval in milliseconds of {@link RenderTask}.
      */
     private static final long DEFAULT_UPDATE_INTERVAL = 250L;
+
+    /**
+     * All the buffer bits to clear all the buffers in OpenGL.
+     */
+    private static final int ALL_BUFFER_BIT = GLES20.GL_COLOR_BUFFER_BIT
+        | GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_STENCIL_BUFFER_BIT;
 
     /**
      * The vertices coordinates for the texture where the Ray Tracer
@@ -259,7 +265,8 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * A thread pool containing {@link ConstantsRenderer#NUMBER_THREADS} threads
      * with the purpose of executing the {@link MainRenderer#renderTask}.
      */
-    private ExecutorService executorService = Executors.newFixedThreadPool(ConstantsRenderer.NUMBER_THREADS);
+    private ExecutorService executorService =
+        Executors.newFixedThreadPool(ConstantsRenderer.NUMBER_THREADS);
 
     /**
      * Sets the {@link MainRenderer#textView}.
@@ -272,6 +279,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
 
     /**
      * Updates the text in the render {@link Button}.
+     * Note that only the UI thread can change the {@link #buttonRender} value.
      *
      * @param state The resource identifier of the string resource to be displayed.
      */
@@ -332,7 +340,8 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         final int lSamplesPixel = configSamples.getSamplesPixel();
         final int lSamplesLight = configSamples.getSamplesLight();
         final String numThreadsStr = String.format(Locale.US, "numThreads: %d", numThreads);
-        final String numPrimitivesStr = String.format(Locale.US, "numPrimitives: %d", numPrimitives);
+        final String numPrimitivesStr = String.format(Locale.US,
+            "numPrimitives: %d", numPrimitives);
         final String numLightsStr = String.format(Locale.US, "numLights: %d", numLights);
         final String samplesPixelStr = String.format(Locale.US, "samplesPixel: %d", lSamplesPixel);
         final String samplesLightStr = String.format(Locale.US, "samplesLight: %d", lSamplesLight);
@@ -375,7 +384,9 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * @param async      If {@code true} let the Ray Tracer engine render the
      *                   scene asynchronously or otherwise synchronously.
      */
-    private native void rtRenderIntoBitmap(Bitmap image, int numThreads, boolean async) throws LowMemoryException;
+    private native void rtRenderIntoBitmap(Bitmap image,
+                                           int numThreads,
+                                           boolean async) throws LowMemoryException;
 
     /**
      * Creates a native array with all the positions of triangles in the scene.
@@ -452,13 +463,15 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * allocated, otherwise {@code false}.
      */
     private boolean isLowMemory(final int memoryNeeded) {
-        Preconditions.checkArgument(memoryNeeded > 0, "The requested memory must be a positive value");
+        Preconditions.checkArgument(memoryNeeded > 0,
+            "The requested memory must be a positive value");
 
         this.activityManager.getMemoryInfo(this.memoryInfo);
         final long availMem = this.memoryInfo.availMem / (long) BYTES_IN_MB;
         final long totalMem = this.memoryInfo.totalMem / (long) BYTES_IN_MB;
         final boolean insufficientMem = availMem <= (long) (1 + memoryNeeded);
-        final String message = String.format(Locale.US, "MEMORY AVAILABLE: %dMB (%dMB)", availMem, totalMem);
+        final String message = String.format(Locale.US, "MEMORY AVAILABLE: %dMB (%dMB)",
+            availMem, totalMem);
         LOGGER.info(message);
         return insufficientMem || this.memoryInfo.lowMemory;
     }
@@ -471,7 +484,8 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      *                     memory.
      * @throws LowMemoryException If the device has low free memory.
      */
-    private void checksFreeMemory(final int memoryNeeded, final Runnable function) throws LowMemoryException {
+    private void checksFreeMemory(final int memoryNeeded,
+                                  final Runnable function) throws LowMemoryException {
         LOGGER.info("checksFreeMemory");
         if (isLowMemory(memoryNeeded)) {
             function.run();
@@ -498,9 +512,9 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * {@link MainRenderer#viewHeight} fields.
      */
     void setBitmap() {
-        LOGGER.info("setBitmap");
+        LOGGER.info(SET_BITMAP);
         setBitmap(new ConfigResolution.Builder().build(), 1, 1, false);
-        LOGGER.info("setBitmap" + FINISHED);
+        LOGGER.info(SET_BITMAP+ FINISHED);
     }
 
     /**
@@ -513,20 +527,23 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * @param heightView       The height of the {@link GLSurfaceView}.
      * @param rasterize        The new {@link MainRenderer#rasterize}.
      */
-    void setBitmap(final ConfigResolution configResolution, final int widthView, final int heightView, final boolean rasterize) {
-        LOGGER.info("setBitmap");
-        final int width = configResolution.getWidth();
-        final int height = configResolution.getHeight();
-        this.bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+    void setBitmap(final ConfigResolution configResolution,
+                   final int widthView,
+                   final int heightView,
+                   final boolean rasterize) {
+        LOGGER.info(SET_BITMAP);
+        final int lWidth = configResolution.getWidth();
+        final int lHeight = configResolution.getHeight();
+        this.bitmap = Bitmap.createBitmap(lWidth, lHeight, Bitmap.Config.ARGB_8888);
         this.bitmap.eraseColor(Color.BLACK);
-        this.width = width;
-        this.height = height;
+        this.width = lWidth;
+        this.height = lHeight;
         this.viewWidth = widthView;
         this.viewHeight = heightView;
         this.firstFrame = true;
         this.rasterize = rasterize;
         validateBitmap();
-        LOGGER.info("setBitmap" + FINISHED);
+        LOGGER.info(SET_BITMAP + FINISHED);
     }
 
     /**
@@ -573,7 +590,10 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * @return A new {@link Bitmap} with the colors of the pixels in the OpenGL
      * frame buffer.
      */
-    private Bitmap copyGLFrameBufferToBitmap(final int viewWidth, final int viewHeight, final int bitmapWidth, final int bitmapHeight) {
+    private Bitmap copyGLFrameBufferToBitmap(final int viewWidth,
+                                             final int viewHeight,
+                                             final int bitmapWidth,
+                                             final int bitmapHeight) {
         final int sizePixels = viewWidth * viewHeight;
         final int[] arrayBytesPixels = new int[sizePixels];
         final int[] arrayBytesNewBitmap = new int[sizePixels];
@@ -594,7 +614,8 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         final Bitmap bitmapView = Bitmap.createBitmap(
             arrayBytesNewBitmap, viewWidth, viewHeight, Bitmap.Config.ARGB_8888
         );
-        final Bitmap newBitmapWithPreviewScene = Bitmap.createScaledBitmap(bitmapView, bitmapWidth, bitmapHeight, true);
+        final Bitmap newBitmapWithPreviewScene = Bitmap.createScaledBitmap(
+            bitmapView,bitmapWidth, bitmapHeight, true);
         Preconditions.checkArgument(bitmapView.getWidth() == viewWidth);
         Preconditions.checkArgument(bitmapView.getHeight() == viewHeight);
         return newBitmapWithPreviewScene;
@@ -646,22 +667,21 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * @param bbCamera      The camera's position and vectors in the scene.
      * @param numPrimitives The number of primitives in the scene.
      * @throws LowMemoryException This {@link Exception} is thrown if the
-     * Android device has low free memory.
+     *                            Android device has low free memory.
      */
-    private Bitmap renderSceneToBitmap(
-            @Nonnull final ByteBuffer bbVertices,
-            @Nonnull final ByteBuffer bbColors,
-            @Nonnull final ByteBuffer bbCamera,
-            final int numPrimitives
-    ) throws LowMemoryException {
+    private Bitmap renderSceneToBitmap(@Nonnull final ByteBuffer bbVertices,
+                                       @Nonnull final ByteBuffer bbColors,
+                                       @Nonnull final ByteBuffer bbCamera,
+                                       final int numPrimitives) throws LowMemoryException {
         LOGGER.info("renderSceneToBitmap");
-        if (bbVertices.capacity() <= 0 || bbColors.capacity() <= 0 || bbCamera.capacity() <= 0 || numPrimitives <= 0) {
+        if (bbVertices.capacity() <= 0 || bbColors.capacity() <= 0 || bbCamera.capacity() <= 0
+            || numPrimitives <= 0) {
             return this.bitmap;
         }
-        UtilsGL.run(() -> GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_STENCIL_BUFFER_BIT));
+        UtilsGL.run(() -> GLES20.glClear(ALL_BUFFER_BIT));
 
         final int neededMemoryMb = Utils.calculateSceneSize(numPrimitives);
-        checksFreeMemory(neededMemoryMb, () -> { });
+        checksFreeMemory(neededMemoryMb, () -> LOGGER.severe("SYSTEM WITH LOW MEMORY!!!"));
 
         Utils.resetByteBuffer(bbVertices);
         Utils.resetByteBuffer(bbColors);
@@ -669,33 +689,43 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
 
         this.shaderProgramRaster = UtilsGL.reCreateProgram(this.shaderProgramRaster);
 
-        UtilsGL.connectOpenGLAttribute(bbVertices, 0, this.shaderProgramRaster, VERTEX_COMPONENTS, VERTEX_POSITION);
-        UtilsGL.connectOpenGLAttribute(bbColors, 1, this.shaderProgramRaster, PIXEL_COLORS, VERTEX_COLOR);
+        UtilsGL.connectOpenGLAttribute(bbVertices, 0,
+            this.shaderProgramRaster, VERTEX_COMPONENTS, VERTEX_POSITION);
+        UtilsGL.connectOpenGLAttribute(bbColors, 1,
+            this.shaderProgramRaster, PIXEL_COLORS, VERTEX_COLOR);
 
-        UtilsGL.attachShaders(this.shaderProgramRaster, this.vertexShaderCodeRaster, this.fragmentShaderCodeRaster);
+        UtilsGL.attachShaders(this.shaderProgramRaster,
+            this.vertexShaderCodeRaster, this.fragmentShaderCodeRaster);
 
 
         UtilsGL.run(() -> GLES20.glUseProgram(this.shaderProgramRaster));
 
 
-        final float[] projectionMatrix = UtilsGL.createProjectionMatrix(bbCamera, this.width, this.height);
+        final float[] projectionMatrix = UtilsGL.createProjectionMatrix(
+            bbCamera, this.width, this.height);
         final float[] viewMatrix = UtilsGL.createViewMatrix(bbCamera);
         final float[] modelMatrix = UtilsGL.createModelMatrix();
 
-        final int handleModel = UtilsGL.<Integer, Integer, String>run(this.shaderProgramRaster, "uniformModelMatrix", GLES20::glGetUniformLocation);
-        final int handleView = UtilsGL.<Integer, Integer, String>run(this.shaderProgramRaster, "uniformViewMatrix", GLES20::glGetUniformLocation);
-        final int handleProjection = UtilsGL.<Integer, Integer, String>run(this.shaderProgramRaster, "uniformProjectionMatrix", GLES20::glGetUniformLocation);
+        final int handleModel = UtilsGL.<Integer, Integer, String>run(
+            this.shaderProgramRaster, "uniformModelMatrix", GLES20::glGetUniformLocation);
+        final int handleView = UtilsGL.<Integer, Integer, String>run(
+            this.shaderProgramRaster, "uniformViewMatrix", GLES20::glGetUniformLocation);
+        final int handleProjection = UtilsGL.<Integer, Integer, String>run(
+            this.shaderProgramRaster, "uniformProjectionMatrix", GLES20::glGetUniformLocation);
 
         UtilsGL.run(() -> GLES20.glUniformMatrix4fv(handleModel, 1, false, modelMatrix, 0));
         UtilsGL.run(() -> GLES20.glUniformMatrix4fv(handleView, 1, false, viewMatrix, 0));
-        UtilsGL.run(() -> GLES20.glUniformMatrix4fv(handleProjection, 1, false, projectionMatrix, 0));
+        UtilsGL.run(() -> GLES20.glUniformMatrix4fv(handleProjection,
+            1, false, projectionMatrix, 0));
 
         final int positionAttrib = 0;
-        UtilsGL.run(() -> GLES20.glVertexAttribPointer(positionAttrib, VERTEX_COMPONENTS, GLES20.GL_FLOAT, false, 0, bbVertices));
+        UtilsGL.run(() -> GLES20.glVertexAttribPointer(positionAttrib,
+            VERTEX_COMPONENTS, GLES20.GL_FLOAT, false, 0, bbVertices));
         UtilsGL.run(() -> GLES20.glEnableVertexAttribArray(positionAttrib));
 
         final int colorAttrib = 1;
-        UtilsGL.run(() -> GLES20.glVertexAttribPointer(colorAttrib, VERTEX_COMPONENTS, GLES20.GL_FLOAT, false, 0, bbColors));
+        UtilsGL.run(() -> GLES20.glVertexAttribPointer(colorAttrib,
+            VERTEX_COMPONENTS, GLES20.GL_FLOAT, false, 0, bbColors));
         UtilsGL.run(() -> GLES20.glEnableVertexAttribArray(colorAttrib));
 
         UtilsGL.run(() -> GLES20.glEnable(GLES20.GL_DEPTH_TEST));
@@ -712,7 +742,8 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         UtilsGL.run(() -> GLES20.glDisableVertexAttribArray(positionAttrib));
         UtilsGL.run(() -> GLES20.glDisableVertexAttribArray(colorAttrib));
 
-        final Bitmap newBitmapWithPreviewScene = copyGLFrameBufferToBitmap(this.viewWidth, this.viewHeight, this.width, this.height);
+        final Bitmap newBitmapWithPreviewScene = copyGLFrameBufferToBitmap(
+            this.viewWidth, this.viewHeight, this.width, this.height);
         LOGGER.info("renderSceneToBitmap" + FINISHED);
         return newBitmapWithPreviewScene;
     }
@@ -802,13 +833,16 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         LOGGER.info("drawBitmap");
         UtilsGL.run(() -> GLES20.glUseProgram(this.shaderProgram));
 
-        UtilsGL.connectOpenGLAttribute(this.floatBufferVertices, 0, this.shaderProgram, VERTEX_COMPONENTS, VERTEX_POSITION);
-        UtilsGL.connectOpenGLAttribute(this.floatBufferTexture, 1, this.shaderProgram, TEXTURE_COMPONENTS, VERTEX_TEX_COORD);
+        UtilsGL.connectOpenGLAttribute(this.floatBufferVertices, 0,
+            this.shaderProgram, VERTEX_COMPONENTS, VERTEX_POSITION);
+        UtilsGL.connectOpenGLAttribute(this.floatBufferTexture, 1,
+            this.shaderProgram, TEXTURE_COMPONENTS, VERTEX_TEX_COORD);
 
         final int vertexCount = this.verticesTexture.length / BYTES_IN_FLOAT;
         UtilsGL.run(() -> GLES20.glDrawArrays(GLES20.GL_TRIANGLE_FAN, 0, vertexCount));
 
-        UtilsGL.run(() -> GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, this.bitmap, GLES20.GL_UNSIGNED_BYTE, 0));
+        UtilsGL.run(() -> GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0,
+            GLES20.GL_RGBA, this.bitmap, GLES20.GL_UNSIGNED_BYTE, 0));
 
         LOGGER.info("drawBitmap" + FINISHED);
     }
@@ -816,9 +850,8 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
     @Override
     public void onDrawFrame(@Nonnull final GL10 gl) {
         try {
-            checksFreeMemory(2, () -> { });
+            checksFreeMemory(2, () -> LOGGER.severe("SYSTEM WITH LOW MEMORY!!!"));
         } catch (final LowMemoryException ex) {
-            LOGGER.severe("SYSTEM WITH LOW MEMORY!!!");
             throw new FailureException(ex);
         }
 
@@ -835,7 +868,8 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
                     Preconditions.checkArgument(this.numPrimitives > 0);
                     validateBitmap();
 
-                    this.bitmap = renderSceneToBitmap(this.arrayVertices, this.arrayColors, this.arrayCamera, this.numPrimitives);
+                    this.bitmap = renderSceneToBitmap(this.arrayVertices,
+                        this.arrayColors, this.arrayCamera, this.numPrimitives);
 
                     validateArrays();
                     Preconditions.checkArgument(this.numPrimitives > 0);
@@ -904,7 +938,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
     public void onSurfaceCreated(@Nonnull final GL10 gl, @Nonnull final EGLConfig config) {
         LOGGER.info("onSurfaceCreated");
 
-        UtilsGL.run(() -> GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_STENCIL_BUFFER_BIT));
+        UtilsGL.run(() -> GLES20.glClear(ALL_BUFFER_BIT));
 
         // Enable culling
         UtilsGL.run(() -> GLES20.glEnable(GLES20.GL_CULL_FACE));
@@ -926,8 +960,10 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         this.floatBufferTexture = Utils.allocateBuffer(this.texCoords);
 
         // Load shaders
-        final int vertexShader = UtilsGL.loadShader(GLES20.GL_VERTEX_SHADER, this.vertexShaderCode);
-        final int fragmentShader = UtilsGL.loadShader(GLES20.GL_FRAGMENT_SHADER, this.fragmentShaderCode);
+        final int vertexShader = UtilsGL.loadShader(GLES20.GL_VERTEX_SHADER,
+            this.vertexShaderCode);
+        final int fragmentShader = UtilsGL.loadShader(GLES20.GL_FRAGMENT_SHADER,
+            this.fragmentShaderCode);
 
         // Create Program
         this.shaderProgram = UtilsGL.reCreateProgram(this.shaderProgram);
@@ -947,8 +983,10 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
 
 
         // Bind Attributes
-        UtilsGL.connectOpenGLAttribute(this.floatBufferVertices, 0, this.shaderProgram, VERTEX_COMPONENTS, VERTEX_POSITION);
-        UtilsGL.connectOpenGLAttribute(this.floatBufferTexture, 1, this.shaderProgram, TEXTURE_COMPONENTS, VERTEX_TEX_COORD);
+        UtilsGL.connectOpenGLAttribute(this.floatBufferVertices, 0,
+            this.shaderProgram, VERTEX_COMPONENTS, VERTEX_POSITION);
+        UtilsGL.connectOpenGLAttribute(this.floatBufferTexture, 1,
+            this.shaderProgram, TEXTURE_COMPONENTS, VERTEX_TEX_COORD);
         UtilsGL.run(() -> GLES20.glLinkProgram(this.shaderProgram));
         UtilsGL.checksShaderLinkStatus(this.shaderProgram);
 
@@ -958,8 +996,10 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         // Bind to the texture in OpenGL
         UtilsGL.run(() -> GLES20.glActiveTexture(GLES20.GL_TEXTURE0));
         UtilsGL.run(() -> GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle[0]));
-        UtilsGL.run(() -> GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR));
-        UtilsGL.run(() -> GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR));
+        UtilsGL.run(() -> GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,
+            GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR));
+        UtilsGL.run(() -> GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,
+            GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR));
 
         LOGGER.info("onSurfaceCreated" + FINISHED);
     }

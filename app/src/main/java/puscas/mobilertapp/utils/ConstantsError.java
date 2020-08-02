@@ -22,8 +22,9 @@ public final class ConstantsError {
     private static final Logger LOGGER = Logger.getLogger(ConstantsError.class.getName());
 
     /**
-     * A message for when the {@link MyEGLContextFactory#destroyContext(EGL10, EGLDisplay, EGLContext)} method throws an
-     * exception.
+     * A message for when the
+     * {@link MyEGLContextFactory#destroyContext(EGL10, EGLDisplay, EGLContext)}
+     * method throws an exception.
      */
     public static final String EGL_DESTROY_CONTEXT_FAILED = "eglDestroyContext failed: ";
 

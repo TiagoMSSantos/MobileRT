@@ -26,6 +26,8 @@ import static android.opengl.GLES20.glGetShaderInfoLog;
 import static android.opengl.GLES20.glGetShaderiv;
 import static android.opengl.GLES20.glShaderSource;
 import static puscas.mobilertapp.utils.Constants.BYTES_IN_FLOAT;
+import static puscas.mobilertapp.utils.ConstantsRenderer.FIX_ASPECT_ORTHOGRAPHIC;
+import static puscas.mobilertapp.utils.ConstantsRenderer.FIX_ASPECT_PERSPECTIVE;
 import static puscas.mobilertapp.utils.ConstantsRenderer.Z_FAR;
 import static puscas.mobilertapp.utils.ConstantsRenderer.Z_NEAR;
 
@@ -111,7 +113,8 @@ public final class UtilsGL {
      * @param method The method to call.
      */
     @NonNull
-    public static <T, R> T run(@NonNull final R arg, @NonNull final Function<R, T> method) {
+    public static <T, R> T run(@NonNull final R arg,
+                               @NonNull final Function<R, T> method) {
         LOGGER.info(ConstantsMethods.RUN);
         final T result = method.apply(arg);
         checksGLError();
@@ -129,7 +132,9 @@ public final class UtilsGL {
      * @param method The method to call.
      */
     @NonNull
-    public static <T, R, S> T run(@NonNull final R arg1, @NonNull final S arg2, @NonNull final BiFunction<R, S, T> method) {
+    public static <T, R, S> T run(@NonNull final R arg1,
+                                  @NonNull final S arg2,
+                                  @NonNull final BiFunction<R, S, T> method) {
         LOGGER.info(ConstantsMethods.RUN);
         final T result = method.apply(arg1, arg2);
         checksGLError();
@@ -173,7 +178,8 @@ public final class UtilsGL {
      * @param source     The code of the shader.
      * @return The OpenGL index of the shader.
      */
-    public static int loadShader(final int shaderType, @NonNull final String source) {
+    public static int loadShader(final int shaderType,
+                                 @NonNull final String source) {
         LOGGER.info("loadShader");
         final int shader = run(() -> glCreateShader(shaderType));
         if (shader == 0) {
@@ -214,8 +220,10 @@ public final class UtilsGL {
                                               final int componentsInBuffer,
                                               @NonNull final String attributeName) {
         LOGGER.info("connectOpenGLAttribute");
-        UtilsGL.run(() -> GLES20.glBindAttribLocation(shaderProgram, attributeLocation, attributeName));
-        UtilsGL.run(() -> GLES20.glVertexAttribPointer(attributeLocation, componentsInBuffer, GLES20.GL_FLOAT, false, 0, buffer));
+        UtilsGL.run(() -> GLES20.glBindAttribLocation(
+            shaderProgram, attributeLocation, attributeName));
+        UtilsGL.run(() -> GLES20.glVertexAttribPointer(attributeLocation,
+            componentsInBuffer, GLES20.GL_FLOAT, false, 0, buffer));
         UtilsGL.run(() -> GLES20.glEnableVertexAttribArray(attributeLocation));
     }
 
@@ -231,7 +239,8 @@ public final class UtilsGL {
                                      @NonNull final String fragmentShaderCode) {
         LOGGER.info("attachShaders");
         final int vertexShader = UtilsGL.loadShader(GLES20.GL_VERTEX_SHADER, vertexShaderCode);
-        final int fragmentShader = UtilsGL.loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode);
+        final int fragmentShader = UtilsGL.loadShader(GLES20.GL_FRAGMENT_SHADER,
+            fragmentShaderCode);
 
         // Attach and link shaders to program
         run(() -> GLES20.glAttachShader(shaderProgram, vertexShader));
@@ -239,7 +248,8 @@ public final class UtilsGL {
         run(() -> GLES20.glLinkProgram(shaderProgram));
 
         final int[] attachedShaders = new int[1];
-        run(() -> GLES20.glGetProgramiv(shaderProgram, GLES20.GL_ATTACHED_SHADERS, attachedShaders, 0));
+        run(() -> GLES20.glGetProgramiv(shaderProgram, GLES20.GL_ATTACHED_SHADERS,
+            attachedShaders, 0));
 
         checksShaderLinkStatus(shaderProgram);
     }
@@ -287,14 +297,16 @@ public final class UtilsGL {
      * @return A float array with the projection matrix data.
      */
     @NonNull
-    public static float[] createProjectionMatrix(@NonNull final ByteBuffer bbCamera, final int width, final int height) {
+    public static float[] createProjectionMatrix(@NonNull final ByteBuffer bbCamera,
+                                                 final int width,
+                                                 final int height) {
         LOGGER.info("createProjectionMatrix");
 
-        final float fovX = bbCamera.getFloat(16 * BYTES_IN_FLOAT) * ConstantsRenderer.FIX_ASPECT_PERSPECTIVE;
-        final float fovY = bbCamera.getFloat(17 * BYTES_IN_FLOAT) * ConstantsRenderer.FIX_ASPECT_PERSPECTIVE;
+        final float fovX = bbCamera.getFloat(16 * BYTES_IN_FLOAT) * FIX_ASPECT_PERSPECTIVE;
+        final float fovY = bbCamera.getFloat(17 * BYTES_IN_FLOAT) * FIX_ASPECT_PERSPECTIVE;
 
-        final float sizeH = bbCamera.getFloat(18 * BYTES_IN_FLOAT) * ConstantsRenderer.FIX_ASPECT_ORTHOGRAPHIC;
-        final float sizeV = bbCamera.getFloat(19 * BYTES_IN_FLOAT) * ConstantsRenderer.FIX_ASPECT_ORTHOGRAPHIC;
+        final float sizeH = bbCamera.getFloat(18 * BYTES_IN_FLOAT) * FIX_ASPECT_ORTHOGRAPHIC;
+        final float sizeV = bbCamera.getFloat(19 * BYTES_IN_FLOAT) * FIX_ASPECT_ORTHOGRAPHIC;
 
         final float[] projectionMatrix = new float[16];
 

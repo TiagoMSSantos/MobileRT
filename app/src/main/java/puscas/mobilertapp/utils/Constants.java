@@ -31,14 +31,14 @@ public final class Constants {
     /**
      * The path to the teapot OBJ file which should exist.
      */
-    public static final String OBJ_FILE_TEAPOT =
-        OBJ_PATH + ConstantsUI.FILE_SEPARATOR + "teapot" + ConstantsUI.FILE_SEPARATOR + "teapot.obj";
+    public static final String OBJ_FILE_TEAPOT = OBJ_PATH +
+        ConstantsUI.FILE_SEPARATOR + "teapot" + ConstantsUI.FILE_SEPARATOR + "teapot.obj";
 
     /**
      * The path to the teapot2 OBJ file which should not exist.
      */
-    public static final String OBJ_FILE_NOT_EXISTS =
-        OBJ_PATH + ConstantsUI.FILE_SEPARATOR + "teapot" + ConstantsUI.FILE_SEPARATOR + "teapot2" + ".obj";
+    public static final String OBJ_FILE_NOT_EXISTS = OBJ_PATH +
+        ConstantsUI.FILE_SEPARATOR + "teapot" + ConstantsUI.FILE_SEPARATOR + "teapot2" + ".obj";
 
     /**
      * An empty path which should not point to a file.

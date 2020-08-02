@@ -4,7 +4,10 @@ import android.view.View;
 
 import java.util.logging.Logger;
 
+import puscas.mobilertapp.Config;
+import puscas.mobilertapp.DrawView;
 import puscas.mobilertapp.MainActivity;
+import puscas.mobilertapp.MainRenderer;
 import puscas.mobilertapp.RenderTask;
 
 /**
@@ -23,7 +26,12 @@ public final class ConstantsMethods {
     public static final String FINISHED = " finished";
 
     /**
-     * The name of the {DrawView#renderScene(Config, int, boolean)} method.
+     * The name of the {@link MainRenderer#setBitmap()}
+     */
+    public static final String SET_BITMAP = "setBitmap";
+
+    /**
+     * The name of the {@link DrawView#renderScene(Config, int, boolean)} method.
      */
     public static final String RENDER_SCENE = "renderScene";
 
@@ -43,7 +51,8 @@ public final class ConstantsMethods {
     public static final String ON_DETACHED_FROM_WINDOW = "onDetachedFromWindow";
 
     /**
-     * The name of the {@link RenderTask#onCancelled()} and {@link RenderTask#onCancelled(Void)} methods.
+     * The name of the {@link RenderTask#onCancelled()} and
+     * {@link RenderTask#onCancelled(Void)} methods.
      */
     public static final String ON_CANCELLED = "onCancelled";
 

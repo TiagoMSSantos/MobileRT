@@ -46,13 +46,16 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
     private static final float SECOND_IN_MS = 1000.0F;
 
     /**
-     * An {@link ExecutorService} which schedules every {@link RenderTask#updateInterval}
-     * {@code TimeUnit.MILLISECONDS} the {@link RenderTask#timer} {@link Runnable}.
+     * An {@link ExecutorService} which schedules every
+     * {@link RenderTask#updateInterval} {@code TimeUnit.MILLISECONDS} the
+     * {@link RenderTask#timer} {@link Runnable}.
      */
-    private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(ConstantsRenderer.NUMBER_THREADS);
+    private final ScheduledExecutorService executorService =
+        Executors.newScheduledThreadPool(ConstantsRenderer.NUMBER_THREADS);
 
     /**
-     * A {@link Runnable} to the {@link DrawView#requestRender} method which is called in the {@link RenderTask#timer}.
+     * A {@link Runnable} to the {@link DrawView#requestRender} method which is
+     * called in the {@link RenderTask#timer}.
      */
     private final Runnable requestRender;
 
@@ -62,14 +65,15 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
     private final Runnable timer;
 
     /**
-     * A {@link Runnable} to the {@link MainRenderer#rtFinishRender} method which stops the Ray Tracer engine and sets
-     * the {@link RenderTask#stateT} to {@link State#IDLE}.
+     * A {@link Runnable} to the {@link MainRenderer#rtFinishRender} method
+     * which stops the Ray Tracer engine and sets the {@link RenderTask#stateT}
+     * to {@link State#IDLE}.
      */
     private final Runnable finishRender;
 
     /**
-     * The interval in {@code TimeUnit.MILLISECONDS} between each call to the {@link RenderTask#timer}
-     * {@link Runnable}.
+     * The interval in {@code TimeUnit.MILLISECONDS} between each call to the
+     * {@link RenderTask#timer} {@link Runnable}.
      */
     private final long updateInterval;
 
@@ -89,14 +93,15 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
     private final String samplesLightT;
 
     /**
-     * The {@link TextView} which outputs debug information about the Ray Tracer engine like the current rendering
-     * time and the fps.
+     * The {@link TextView} which outputs debug information about the
+     * Ray Tracer engine like the current rendering time and the fps.
      */
     private final WeakReference<TextView> textView;
 
     /**
      * The {@link Button} which starts and stops the rendering process.
-     * This is needed in order to change its text at the end of the rendering process.
+     * This is needed in order to change its text at the end of the rendering
+     * process.
      */
     private final WeakReference<Button> buttonRender;
 
@@ -111,7 +116,8 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
     private final String threadsT;
 
     /**
-     * The width and height of the {@link Bitmap} where the Ray Tracer engine is rendering the scene.
+     * The width and height of the {@link Bitmap} where the Ray Tracer engine is
+     * rendering the scene.
      */
     private final String resolutionT;
 
@@ -126,7 +132,8 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
     private float timebase = 0.0F;
 
     /**
-     * The number of times that the {@link RenderTask#timer} was called in a second.
+     * The number of times that the {@link RenderTask#timer} was called in a
+     * second.
      */
     private float fps = 0.0F;
 
@@ -146,12 +153,14 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
     private String timeFrameT = null;
 
     /**
-     * The current time, in seconds, that the Ray Tracer engine spent rendering a scene.
+     * The current time, in seconds, that the Ray Tracer engine spent rendering
+     * a scene.
      */
     private String timeT = null;
 
     /**
-     * A {@link String} containing the {@link RenderTask#fps} in order to print it in the {@link RenderTask#textView}.
+     * A {@link String} containing the {@link RenderTask#fps} in order to print
+     * it in the {@link RenderTask#textView}.
      */
     private String fpsRenderT = null;
 
@@ -166,7 +175,8 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
     private String sampleT = null;
 
     /**
-     * A private constructor of this class to force using the {@link RenderTask.Builder}.
+     * A private constructor of this class to force using the
+     * {@link RenderTask.Builder}.
      *
      * @param builder The builder which contains all the parameters.
      */
@@ -191,7 +201,8 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
         this.timeFrameT = String.format(Locale.US, ",t:%.2fs", 0.0F);
         this.timeT = String.format(Locale.US, "[%.2fs]", 0.0F);
         this.stateT = " " + State.IDLE.getId();
-        this.allocatedT = ",m:" + Debug.getNativeHeapAllocatedSize() / (long) Constants.BYTES_IN_MB + "mb";
+        this.allocatedT = ",m:" + Debug.getNativeHeapAllocatedSize() /
+            (long) Constants.BYTES_IN_MB + "mb";
         this.sampleT = ",0";
 
         this.timer = () -> {
@@ -201,10 +212,13 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
             this.fpsT = String.format(Locale.US, "fps:%.1f", rtGetFps());
             this.fpsRenderT = String.format(Locale.US, "[%.1f]", this.fps);
             final long timeRenderer = rtGetTimeRenderer();
-            this.timeFrameT = String.format(Locale.US, ",t:%.2fs", (float) timeRenderer / SECOND_IN_MS);
+            this.timeFrameT = String.format(Locale.US, ",t:%.2fs",
+                (float) timeRenderer / SECOND_IN_MS);
             final long currentTime = SystemClock.elapsedRealtime();
-            this.timeT = String.format(Locale.US, "[%.2fs]", (float) (currentTime - this.startTimeStamp) / SECOND_IN_MS);
-            this.allocatedT = ",m:" + Debug.getNativeHeapAllocatedSize() / (long) Constants.BYTES_IN_MB + "mb";
+            this.timeT = String.format(Locale.US, "[%.2fs]",
+                (float) (currentTime - this.startTimeStamp) / SECOND_IN_MS);
+            this.allocatedT = ",m:" + Debug.getNativeHeapAllocatedSize() /
+                (long) Constants.BYTES_IN_MB + "mb";
             this.sampleT = "," + rtGetSample();
 
             final State currentState = State.values()[rtGetState()];
@@ -220,14 +234,16 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
     }
 
     /**
-     * Gets the number of frames per second which the Ray Tracer engine could render the scene.
+     * Gets the number of frames per second which the Ray Tracer engine could
+     * render the scene.
      *
      * @return The number of frames per second.
      */
     native float rtGetFps();
 
     /**
-     * Gets the time, in milliseconds, spent constructing the Ray Tracer renderer.
+     * Gets the time, in milliseconds, spent constructing the Ray Tracer
+     * renderer.
      *
      * @return The time spent constructing the Ray Tracer renderer.
      */
@@ -241,14 +257,16 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
     native int rtGetSample();
 
     /**
-     * Gets an {@code int} which represents the current Ray Tracer engine {@link State}.
+     * Gets an {@code int} which represents the current Ray Tracer engine
+     * {@link State}.
      *
      * @return The current Ray Tracer engine {@link State}.
      */
     native int rtGetState();
 
     /**
-     * Auxiliary method which calculates the number of times {@link RenderTask#timer} was called and in each second.
+     * Auxiliary method which calculates the number of times
+     * {@link RenderTask#timer} was called and in each second.
      */
     private void updateFps() {
         this.frame++;
@@ -262,12 +280,14 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
     }
 
     /**
-     * Auxiliary method which sets the current debug information in the {@link RenderTask#textView}.
+     * Auxiliary method which sets the current debug information in the
+     * {@link RenderTask#textView}.
      */
     private void printText() {
-        final String aux = this.fpsT + this.fpsRenderT + this.resolutionT + this.threadsT + this.samplesPixelT +
-                this.samplesLightT + this.sampleT + ConstantsUI.LINE_SEPARATOR +
-                this.stateT + this.allocatedT + this.timeFrameT + this.timeT + this.primitivesT;
+        final String aux =
+            this.fpsT + this.fpsRenderT + this.resolutionT + this.threadsT + this.samplesPixelT +
+            this.samplesLightT + this.sampleT + ConstantsUI.LINE_SEPARATOR +
+            this.stateT + this.allocatedT + this.timeFrameT + this.timeT + this.primitivesT;
         this.textView.get().setText(aux);
     }
 
@@ -281,7 +301,8 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
     protected Void doInBackground(@Nonnull final Void... params) {
         LOGGER.info("doInBackground");
 
-        this.executorService.scheduleAtFixedRate(this.timer, 0L, this.updateInterval, TimeUnit.MILLISECONDS);
+        this.executorService.scheduleAtFixedRate(this.timer, 0L,
+            this.updateInterval, TimeUnit.MILLISECONDS);
         Utils.waitExecutorToFinish(this.executorService);
         LOGGER.info("doInBackground" + FINISHED);
         return null;
@@ -399,12 +420,17 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
         private int samplesLight = 0;
 
         /**
-         * The constructor of the builder with some mandatory parameters to instantiate a {@link RenderTask}.
+         * The constructor of the builder with some mandatory parameters to
+         * instantiate a {@link RenderTask}.
          *
-         * @param requestRender The new value for {@link RenderTask#requestRender} field.
-         * @param finishRender  The new value for {@link RenderTask#finishRender} field.
-         * @param textView      The new value for {@link RenderTask#textView} field.
-         * @param buttonRender  The new value for {@link RenderTask#buttonRender} field.
+         * @param requestRender The new value for
+         *                      {@link RenderTask#requestRender} field.
+         * @param finishRender  The new value for
+         *                      {@link RenderTask#finishRender} field.
+         * @param textView      The new value for
+         *                      {@link RenderTask#textView} field.
+         * @param buttonRender  The new value for
+         *                      {@link RenderTask#buttonRender} field.
          */
         @Contract(pure = true) Builder(@Nonnull final Runnable requestRender,
                                        @Nonnull final Runnable finishRender,
@@ -419,13 +445,16 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
         /**
          * Sets the {@link RenderTask#updateInterval} field.
          *
-         * @param updateInterval The new value for {@link RenderTask#updateInterval} field.
-         * @return The builder with {@link RenderTask.Builder#updateInterval} already set.
+         * @param updateInterval The new value for
+         *                       {@link RenderTask#updateInterval} field.
+         * @return The builder with {@link RenderTask.Builder#updateInterval}
+         *         already set.
          */
         @Contract("_ -> this")
         @Nonnull
         RenderTask.Builder withUpdateInterval(final long updateInterval) {
-            final String message = String.format(Locale.US, "withUpdateInterval: %d", updateInterval);
+            final String message =
+                String.format(Locale.US, "withUpdateInterval: %d", updateInterval);
             LOGGER_BUILDER.info(message);
 
             this.updateInterval = updateInterval;
@@ -521,7 +550,8 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
         @Contract("_ -> this")
         @Nonnull
         RenderTask.Builder withNumPrimitives(final int numPrimitives) {
-            final String message = String.format(Locale.US, "withNumPrimitives: %d", numPrimitives);
+            final String message =
+                String.format(Locale.US, "withNumPrimitives: %d", numPrimitives);
             LOGGER_BUILDER.info(message);
 
             this.numPrimitives = numPrimitives;
@@ -531,7 +561,8 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
         /**
          * Sets the number of lights in {@link RenderTask#primitivesT}.
          *
-         * @param numLights The new value for number of lights in {@link RenderTask#primitivesT} field.
+         * @param numLights The new value for number of lights in
+         *                  {@link RenderTask#primitivesT} field.
          * @return The builder with {@link RenderTask.Builder#numLights} already set.
          */
         @Contract("_ -> this")

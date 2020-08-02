@@ -156,7 +156,8 @@ public final class Config {
         /**
          * The {@link Logger} for this class.
          */
-        private static final Logger LOGGER_BUILDER = Logger.getLogger(Config.Builder.class.getName());
+        private static final Logger LOGGER_BUILDER = Logger.getLogger(
+            Config.Builder.class.getName());
 
         /**
          * @see Config.Builder#withScene(int)
@@ -326,7 +327,8 @@ public final class Config {
         @Contract("_ -> this")
         @Nonnull
         Config.Builder withConfigSamples(@Nonnull final ConfigSamples configSamples) {
-            final String message = String.format(Locale.US, "withConfigSamples: %s", configSamples);
+            final String message = String.format(Locale.US, "withConfigSamples: %s",
+                configSamples);
             LOGGER_BUILDER.info(message);
 
             this.configSamples = configSamples;

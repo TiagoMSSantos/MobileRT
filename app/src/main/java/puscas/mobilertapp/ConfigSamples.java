@@ -64,7 +64,8 @@ public final class ConfigSamples {
         /**
          * The {@link Logger} for this class.
          */
-        private static final Logger LOGGER_BUILDER = Logger.getLogger(ConfigSamples.Builder.class.getName());
+        private static final Logger LOGGER_BUILDER = Logger.getLogger(
+            ConfigSamples.Builder.class.getName());
 
         /**
          * @see ConfigSamples.Builder#withSamplesPixel(int)
@@ -79,8 +80,10 @@ public final class ConfigSamples {
         /**
          * Sets the samples per pixel of {@link ConfigSamples}.
          *
-         * @param samplesPixel The new value for the {@link ConfigSamples#samplesPixel} field.
-         * @return The builder with {@link ConfigSamples.Builder#samplesPixel} already set.
+         * @param samplesPixel The new value for the
+         *                     {@link ConfigSamples#samplesPixel} field.
+         * @return The builder with {@link ConfigSamples.Builder#samplesPixel}
+         *         already set.
          */
         @Contract("_ -> this")
         @Nonnull
@@ -95,8 +98,10 @@ public final class ConfigSamples {
         /**
          * Sets the samples per light of {@link ConfigSamples}.
          *
-         * @param samplesLight The new value for the {@link ConfigSamples#samplesLight} field.
-         * @return The builder with {@link ConfigSamples.Builder#samplesLight} already set.
+         * @param samplesLight The new value for the
+         *                     {@link ConfigSamples#samplesLight} field.
+         * @return The builder with {@link ConfigSamples.Builder#samplesLight}
+         *         already set.
          */
         @Contract("_ -> this")
         @Nonnull

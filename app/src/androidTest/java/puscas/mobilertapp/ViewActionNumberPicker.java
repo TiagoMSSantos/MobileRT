@@ -14,8 +14,6 @@ import java.util.logging.Logger;
 
 import javax.annotation.Nonnull;
 
-import puscas.mobilertapp.utils.Utils;
-
 import static puscas.mobilertapp.utils.ConstantsMethods.FINISHED;
 
 /**
@@ -45,8 +43,6 @@ final class ViewActionNumberPicker implements ViewAction {
         LOGGER.info(methodName);
 
         this.newValue = newValue;
-
-        Utils.handleInterruption(methodName);
     }
 
     @Nonnull
@@ -55,7 +51,6 @@ final class ViewActionNumberPicker implements ViewAction {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
-        Utils.handleInterruption(methodName);
         return ViewMatchers.isAssignableFrom(NumberPicker.class);
     }
 
@@ -65,7 +60,6 @@ final class ViewActionNumberPicker implements ViewAction {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
-        Utils.handleInterruption(methodName);
         return "Set the value of a NumberPicker: " + this.newValue;
     }
 
@@ -74,15 +68,8 @@ final class ViewActionNumberPicker implements ViewAction {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
-        try {
-            final NumberPicker numberPicker = (NumberPicker) view;
-            uiController.loopMainThreadUntilIdle();
-            numberPicker.setValue(this.newValue);
-            numberPicker.computeScroll();
-            uiController.loopMainThreadUntilIdle();
-        } finally {
-            Utils.handleInterruption(methodName);
-        }
+        final NumberPicker numberPicker = (NumberPicker) view;
+        numberPicker.setValue(this.newValue);
 
         LOGGER.info(methodName + FINISHED);
     }

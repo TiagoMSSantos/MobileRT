@@ -33,7 +33,8 @@ public class MyEGLContextFactory implements GLSurfaceView.EGLContextFactory {
     static final int EGL_CONTEXT_CLIENT_VERSION = 2;
 
     /**
-     * The {@link GLSurfaceView} to be used to get the {@link Activity#isChangingConfigurations()}.
+     * The {@link GLSurfaceView} to be used to get the
+     * {@link Activity#isChangingConfigurations()}.
      */
     private final DrawView drawView;
 
@@ -55,10 +56,9 @@ public class MyEGLContextFactory implements GLSurfaceView.EGLContextFactory {
 
     @Nullable
     @Override
-    public final EGLContext createContext(
-            @Nonnull final EGL10 egl,
-            @Nonnull final EGLDisplay display,
-            @Nonnull final EGLConfig eglConfig) {
+    public final EGLContext createContext(@Nonnull final EGL10 egl,
+                                          @Nonnull final EGLDisplay display,
+                                          @Nonnull final EGLConfig eglConfig) {
         LOGGER.info("createContext");
 
         if (Objects.nonNull(this.eglContext)) {
@@ -68,7 +68,8 @@ public class MyEGLContextFactory implements GLSurfaceView.EGLContextFactory {
                 EGL_CONTEXT_CLIENT_VERSION,
                 EGL10.EGL_NONE
             };
-            this.eglContext = egl.eglCreateContext(display, eglConfig, EGL10.EGL_NO_CONTEXT, attribList);
+            this.eglContext =
+                egl.eglCreateContext(display, eglConfig, EGL10.EGL_NO_CONTEXT, attribList);
         }
 
         return this.eglContext;
@@ -83,7 +84,8 @@ public class MyEGLContextFactory implements GLSurfaceView.EGLContextFactory {
         if (this.drawView.isChangingConfigs()) {
             this.eglContext = context;
         } else if (!egl.eglDestroyContext(display, context)) {
-            throw new UnsupportedOperationException(ConstantsError.EGL_DESTROY_CONTEXT_FAILED + egl.eglGetError());
+            throw new UnsupportedOperationException(
+                ConstantsError.EGL_DESTROY_CONTEXT_FAILED + egl.eglGetError());
         }
     }
 }

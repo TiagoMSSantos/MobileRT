@@ -65,7 +65,8 @@ public final class ConfigResolution {
         /**
          * The {@link Logger} for this class.
          */
-        private static final Logger LOGGER_BUILDER = Logger.getLogger(ConfigResolution.Builder.class.getName());
+        private static final Logger LOGGER_BUILDER = Logger.getLogger(
+            ConfigResolution.Builder.class.getName());
 
         /**
          * @see ConfigResolution.Builder#withWidth(int)

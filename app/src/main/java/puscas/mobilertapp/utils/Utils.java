@@ -2,8 +2,6 @@ package puscas.mobilertapp.utils;
 
 import androidx.annotation.NonNull;
 
-import com.google.common.base.Strings;
-
 import org.jetbrains.annotations.Contract;
 
 import java.io.BufferedReader;
@@ -22,7 +20,6 @@ import javax.annotation.Nonnull;
 
 import java8.util.Objects;
 import puscas.mobilertapp.exceptions.FailureException;
-import puscas.mobilertapp.exceptions.LowMemoryException;
 
 import static puscas.mobilertapp.utils.Constants.BYTES_IN_FLOAT;
 import static puscas.mobilertapp.utils.Constants.BYTES_IN_INTEGER;
@@ -97,7 +94,8 @@ public final class Utils {
      *
      * @param methodName The name of the method to appear in the logs.
      */
-    public static void logThrowable(@Nonnull  final Throwable ex, @Nonnull final String methodName) {
+    public static void logThrowable(@Nonnull final Throwable ex,
+                                    @Nonnull final String methodName) {
         final String message = String.format("%s exception: %s", methodName, ex.getMessage());
         LOGGER.severe(message);
     }
@@ -111,7 +109,8 @@ public final class Utils {
     @Nonnull
     public static String readTextFromInputStream(@NonNull final InputStream inputStream) {
         LOGGER.info("readTextFromInputStream");
-        try (InputStreamReader isReader = new InputStreamReader(inputStream, Charset.defaultCharset());
+        try (InputStreamReader isReader = new InputStreamReader(
+            inputStream, Charset.defaultCharset());
              BufferedReader reader = new BufferedReader(isReader)) {
 
             final StringBuilder stringBuilder = new StringBuilder(1);
