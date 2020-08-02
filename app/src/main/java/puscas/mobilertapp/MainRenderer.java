@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLUtils;
-import android.opengl.Matrix;
 import android.os.AsyncTask;
 import android.view.View;
 import android.widget.Button;
@@ -53,8 +52,6 @@ import static puscas.mobilertapp.utils.ConstantsRenderer.VERTEX_COLOR;
 import static puscas.mobilertapp.utils.ConstantsRenderer.VERTEX_COMPONENTS;
 import static puscas.mobilertapp.utils.ConstantsRenderer.VERTEX_POSITION;
 import static puscas.mobilertapp.utils.ConstantsRenderer.VERTEX_TEX_COORD;
-import static puscas.mobilertapp.utils.ConstantsRenderer.Z_FAR;
-import static puscas.mobilertapp.utils.ConstantsRenderer.Z_NEAR;
 
 /**
  * The OpenGL renderer that shows the Ray Tracer engine rendered image.
@@ -669,53 +666,11 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
 
         UtilsGL.run(() -> GLES20.glUseProgram(this.shaderProgramRaster));
 
-        final float eyeX = bbCamera.getFloat(0);
-        final float eyeY = bbCamera.getFloat(BYTES_IN_FLOAT);
-        final float eyeZ = -bbCamera.getFloat(2 * BYTES_IN_FLOAT);
 
-        final float dirX = bbCamera.getFloat(4 * BYTES_IN_FLOAT);
-        final float dirY = bbCamera.getFloat(5 * BYTES_IN_FLOAT);
-        final float dirZ = -bbCamera.getFloat(6 * BYTES_IN_FLOAT);
+        final float[] projectionMatrix = UtilsGL.createProjectionMatrix(bbCamera, this.width, this.height);
+        final float[] viewMatrix = UtilsGL.createViewMatrix(bbCamera);
+        final float[] modelMatrix = UtilsGL.createModelMatrix();
 
-        final float upX = bbCamera.getFloat(8 * BYTES_IN_FLOAT);
-        final float upY = bbCamera.getFloat(9 * BYTES_IN_FLOAT);
-        final float upZ = -bbCamera.getFloat(10 * BYTES_IN_FLOAT);
-
-        final float centerX = eyeX + dirX;
-        final float centerY = eyeY + dirY;
-        final float centerZ = eyeZ + dirZ;
-
-        final float aspectPerspective = (float) this.width / (float) this.height;
-
-
-        final float fovX = bbCamera.getFloat(16 * BYTES_IN_FLOAT) * ConstantsRenderer.FIX_ASPECT_PERSPECTIVE;
-        final float fovY = bbCamera.getFloat(17 * BYTES_IN_FLOAT) * ConstantsRenderer.FIX_ASPECT_PERSPECTIVE;
-
-        final float sizeH = bbCamera.getFloat(18 * BYTES_IN_FLOAT) * ConstantsRenderer.FIX_ASPECT_ORTHOGRAPHIC;
-        final float sizeV = bbCamera.getFloat(19 * BYTES_IN_FLOAT) * ConstantsRenderer.FIX_ASPECT_ORTHOGRAPHIC;
-
-        final float[] projectionMatrix = new float[16];
-        final float[] viewMatrix = new float[16];
-        final float[] modelMatrix = new float[16];
-        Matrix.setIdentityM(modelMatrix, 0);
-
-        // If the camera is a perspective camera.
-        if (fovX > 0.0F && fovY > 0.0F) {
-            Matrix.perspectiveM(projectionMatrix, 0, fovY, aspectPerspective, Z_NEAR, Z_FAR);
-        }
-
-        // If the camera is an orthographic camera.
-        if (sizeH > 0.0F && sizeV > 0.0F) {
-            Matrix.orthoM(projectionMatrix, 0, -sizeH, sizeH,
-            -sizeV, sizeV, Z_NEAR, Z_FAR);
-        }
-
-        Matrix.setLookAtM(
-            viewMatrix, 0,
-            eyeX, eyeY, eyeZ,
-            centerX, centerY, centerZ,
-            upX, upY, upZ
-        );
         final int handleModel = UtilsGL.<Integer, Integer, String>run(this.shaderProgramRaster, "uniformModelMatrix", GLES20::glGetUniformLocation);
         final int handleView = UtilsGL.<Integer, Integer, String>run(this.shaderProgramRaster, "uniformViewMatrix", GLES20::glGetUniformLocation);
         final int handleProjection = UtilsGL.<Integer, Integer, String>run(this.shaderProgramRaster, "uniformProjectionMatrix", GLES20::glGetUniformLocation);
