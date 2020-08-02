@@ -19,6 +19,8 @@ import java.util.logging.Logger;
 
 import javax.annotation.Nonnull;
 
+import puscas.mobilertapp.utils.Utils;
+
 import static puscas.mobilertapp.utils.ConstantsMethods.FINISHED;
 
 /**
@@ -52,8 +54,7 @@ final class ViewActionButton implements ViewAction {
 
         this.expectedText = expectedText;
 
-        final boolean interrupted = Thread.interrupted();
-        LOGGER.warning("Reset interrupted: " + interrupted);
+        Utils.handleInterruption("ViewActionButton");
     }
 
     @Nonnull
@@ -62,8 +63,7 @@ final class ViewActionButton implements ViewAction {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
-        final boolean interrupted = Thread.interrupted();
-        LOGGER.warning("Reset interrupted: " + interrupted);
+        Utils.handleInterruption("ViewActionButton#getConstraints");
 
         return ViewMatchers.isAssignableFrom(Button.class);
     }
@@ -74,8 +74,7 @@ final class ViewActionButton implements ViewAction {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
-        final boolean interrupted = Thread.interrupted();
-        LOGGER.warning("Reset interrupted: " + interrupted);
+        Utils.handleInterruption("ViewActionButton#getDescription");
 
         return "Click button";
     }
@@ -118,8 +117,7 @@ final class ViewActionButton implements ViewAction {
             }
             Assertions.assertEquals(this.expectedText, button.getText().toString(), "Button with wrong text!!!!!");
         } finally {
-            final boolean interrupted = Thread.interrupted();
-            LOGGER.info("Reset interrupted: " + interrupted);
+            Utils.handleInterruption("ViewActionButton#perform");
         }
 
         LOGGER.info("ViewActionButton#perform" + FINISHED);

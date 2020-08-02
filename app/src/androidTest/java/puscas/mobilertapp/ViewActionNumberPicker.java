@@ -14,6 +14,8 @@ import java.util.logging.Logger;
 
 import javax.annotation.Nonnull;
 
+import puscas.mobilertapp.utils.Utils;
+
 import static puscas.mobilertapp.utils.ConstantsMethods.FINISHED;
 
 /**
@@ -41,8 +43,7 @@ final class ViewActionNumberPicker implements ViewAction {
     ViewActionNumberPicker(final int newValue) {
         this.newValue = newValue;
 
-        final boolean interrupted = Thread.interrupted();
-        LOGGER.warning("Reset interrupted: " + interrupted);
+        Utils.handleInterruption("ViewActionNumberPicker");
     }
 
     @Nonnull
@@ -51,8 +52,7 @@ final class ViewActionNumberPicker implements ViewAction {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
-        final boolean interrupted = Thread.interrupted();
-        LOGGER.warning("Reset interrupted: " + interrupted);
+        Utils.handleInterruption("ViewActionNumberPicker#getConstraints");
 
         return ViewMatchers.isAssignableFrom(NumberPicker.class);
     }
@@ -63,8 +63,7 @@ final class ViewActionNumberPicker implements ViewAction {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
-        final boolean interrupted = Thread.interrupted();
-        LOGGER.warning("Reset interrupted: " + interrupted);
+        Utils.handleInterruption("ViewActionNumberPicker#getDescription");
 
         return "Set the value of a NumberPicker: " + this.newValue;
     }
@@ -85,8 +84,7 @@ final class ViewActionNumberPicker implements ViewAction {
             LOGGER.info(methodName + " 4");
             uiController.loopMainThreadUntilIdle();
         } finally {
-            final boolean interrupted = Thread.interrupted();
-            LOGGER.warning("Reset interrupted: " + interrupted);
+            Utils.handleInterruption("ViewActionNumberPicker#perform");
         }
 
         LOGGER.info(methodName + FINISHED);
