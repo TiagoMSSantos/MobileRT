@@ -746,8 +746,6 @@ public final class MainActivity extends Activity {
         super.onPause();
         LOGGER.info("onPause");
 
-        Utils.handleInterruption("MainActivity#onPause");
-
         this.drawView.setPreserveEGLContextOnPause(true);
         this.drawView.onPause();
         this.drawView.setVisibility(View.INVISIBLE);

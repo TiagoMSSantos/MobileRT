@@ -228,7 +228,6 @@ public final class DrawView extends GLSurfaceView {
                     Utils.logThrowable(ex, "DrawView#waitLastTask");
                 } catch (final InterruptedException ex) {
                     Thread.currentThread().interrupt();
-                } finally {
                     Utils.handleInterruption("DrawView#waitLastTask");
                 }
             });

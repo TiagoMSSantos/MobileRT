@@ -57,7 +57,6 @@ public final class Utils {
                 running = !executorService.awaitTermination(1L, TimeUnit.DAYS);
             } catch (final InterruptedException ex) {
                 Thread.currentThread().interrupt();
-            } finally {
                 Utils.handleInterruption("Utils#waitExecutorToFinish");
             }
         } while (running);

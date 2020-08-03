@@ -638,7 +638,6 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
                 Utils.logThrowable(ex, "MainRenderer#waitLastTask");
             } catch (final InterruptedException ex) {
                 Thread.currentThread().interrupt();
-            } finally {
                 Utils.handleInterruption("MainRenderer#waitLastTask");
             }
         }
