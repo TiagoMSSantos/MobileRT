@@ -3,7 +3,6 @@ package puscas.mobilertapp;
 import android.graphics.Bitmap;
 import android.os.Build;
 
-import androidx.annotation.NonNull;
 import androidx.multidex.BuildConfig;
 
 import org.junit.Assume;
@@ -67,8 +66,9 @@ final class Utils {
      * @implNote This method uses reflection to be able to get the private
      * field from the {@link Object}.
      */
-    @NonNull
-    static <T> T getPrivateField(@Nonnull final Object clazz, @NonNull final String fieldName) {
+    @Nonnull
+    static <T> T getPrivateField(@Nonnull final Object clazz,
+                                 @Nonnull final String fieldName) {
         Field field = null;
         try {
             // Use reflection to access the private field.
@@ -99,11 +99,11 @@ final class Utils {
      * @implNote This method uses reflection to be able to invoke the private
      * method from the {@link Object}.
      */
-    @NonNull
-    static <T> T invokePrivateMethod(
-        @Nonnull final Object clazz, @NonNull final String methodName,
-        @NonNull final List<Class<?>> parameterTypes, @NonNull final Collection<Object> args
-    ) {
+    @Nonnull
+    static <T> T invokePrivateMethod(@Nonnull final Object clazz,
+                                     @Nonnull final String methodName,
+                                     @Nonnull final List<Class<?>> parameterTypes,
+                                     @Nonnull final Collection<Object> args) {
         Method method = null;
         try {
             // Use reflection to access the private method.

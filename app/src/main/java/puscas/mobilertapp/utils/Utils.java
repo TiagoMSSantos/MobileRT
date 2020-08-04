@@ -1,7 +1,5 @@
 package puscas.mobilertapp.utils;
 
-import androidx.annotation.NonNull;
-
 import org.jetbrains.annotations.Contract;
 
 import java.io.BufferedReader;
@@ -106,7 +104,7 @@ public final class Utils {
      * @return A {@link String} containing the contents of the {@link InputStream}.
      */
     @Nonnull
-    public static String readTextFromInputStream(@NonNull final InputStream inputStream) {
+    public static String readTextFromInputStream(@Nonnull final InputStream inputStream) {
         LOGGER.info("readTextFromInputStream");
         try (InputStreamReader isReader = new InputStreamReader(
             inputStream, Charset.defaultCharset());
@@ -176,8 +174,8 @@ public final class Utils {
      *                    {@link FloatBuffer}.
      * @return A new {@link FloatBuffer} with the values.
      */
-    @NonNull
-    public static FloatBuffer allocateBuffer(@NonNull final float[] arrayValues) {
+    @Nonnull
+    public static FloatBuffer allocateBuffer(@Nonnull final float[] arrayValues) {
         LOGGER.info("allocateBuffer");
         final int byteBufferSize = arrayValues.length * BYTES_IN_FLOAT;
         final ByteBuffer byteBuffer = ByteBuffer.allocateDirect(byteBufferSize);
@@ -187,4 +185,5 @@ public final class Utils {
         floatBuffer.position(0);
         return floatBuffer;
     }
+
 }

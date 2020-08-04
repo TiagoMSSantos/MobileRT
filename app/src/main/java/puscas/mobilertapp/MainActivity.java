@@ -7,12 +7,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ConfigurationInfo;
 import android.content.pm.PackageManager;
-import android.content.res.AssetManager;
 import android.net.Uri;
 import android.opengl.GLSurfaceView;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -28,20 +25,14 @@ import androidx.core.content.ContextCompat;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.microedition.khronos.egl.EGL10;
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.egl.EGLContext;
-import javax.microedition.khronos.egl.EGLDisplay;
 
 import java8.util.Optional;
 import java8.util.stream.IntStreams;
@@ -56,6 +47,8 @@ import puscas.mobilertapp.utils.Scene;
 import puscas.mobilertapp.utils.Shader;
 import puscas.mobilertapp.utils.State;
 import puscas.mobilertapp.utils.Utils;
+import puscas.mobilertapp.utils.UtilsContext;
+import puscas.mobilertapp.utils.UtilsGL;
 
 import static puscas.mobilertapp.utils.ConstantsMethods.FINISHED;
 
@@ -73,12 +66,6 @@ public final class MainActivity extends Activity {
      * The global counter of how many times the button was clicked.
      */
     private static long clickCounter = 0L;
-
-    /**
-     * The latest version of Android API which needs the old method of getting
-     * the number of CPU cores.
-     */
-    private static final int OLD_API_GET_CORES = 17;
 
     static {
         try {
@@ -162,28 +149,13 @@ public final class MainActivity extends Activity {
     private native int rtResize(int size);
 
     /**
-     * Helper method that gets the number of CPU cores in the Android device for
-     * devices with the SDK API version < {@link #OLD_API_GET_CORES}.
-     *
-     * @return The number of CPU cores.
-     */
-    private int getNumCoresOldAndroid() {
-        final String cpuInfoPath =
-            readTextAsset("Utils" + ConstantsUI.FILE_SEPARATOR + "cpuInfoDeviceSystemPath.txt");
-        final File cpuTopologyPath = new File(cpuInfoPath.trim());
-        final File[] files = cpuTopologyPath.listFiles(
-            pathname -> Pattern.matches("cpu[0-9]+", pathname.getName()));
-        return Optional.ofNullable(files).map(filesInPath -> filesInPath.length).get();
-    }
-
-    /**
      * Helper method that checks if the system is a 64 device or not.
      *
      * @return Whether the system is 64 bit.
      */
     private boolean is64BitDevice() {
-        final String cpuInfoPath =
-            readTextAsset("Utils" + ConstantsUI.FILE_SEPARATOR + "cpuInfoPath.txt");
+        final String cpuInfoPath = UtilsContext.readTextAsset(this,
+            "Utils" + ConstantsUI.FILE_SEPARATOR + "cpuInfoPath.txt");
         try (InputStream inputStream = new FileInputStream(cpuInfoPath.trim())) {
             final String text = Utils.readTextFromInputStream(inputStream);
             if (text.matches("64.*bit")) {
@@ -193,21 +165,6 @@ public final class MainActivity extends Activity {
             throw new FailureException(ex);
         }
         return false;
-    }
-
-    /**
-     * Helper method which gets the number of CPU cores.
-     *
-     * @return The number of CPU cores.
-     */
-    private int getNumOfCores() {
-        final int cores = (Build.VERSION.SDK_INT < OLD_API_GET_CORES)
-            ? getNumCoresOldAndroid()
-            : Runtime.getRuntime().availableProcessors();
-
-        final String message = String.format(Locale.US, "Number of cores: %d", cores);
-        LOGGER.info(message);
-        return cores;
     }
 
     /**
@@ -305,53 +262,6 @@ public final class MainActivity extends Activity {
     }
 
     /**
-     * Helper method which reads a text based asset file.
-     *
-     * @param filePath The path to the file (relative to the asset directory).
-     * @return A {@link String} containing the contents of the asset file.
-     */
-    @Nonnull
-    private String readTextAsset(final String filePath) {
-        final AssetManager assetManager = getAssets();
-        final String text;
-        try (InputStream inputStream = assetManager.open(filePath)) {
-            text = Utils.readTextFromInputStream(inputStream);
-        } catch (final IOException ex) {
-            throw new FailureException(ex);
-        }
-        return text;
-    }
-
-    /**
-     * Helper method which checks if the Android device has support for
-     * OpenGL ES 2.0.
-     *
-     * @return {@code True} if the device has support for OpenGL ES 2.0 or
-     *         {@code False} otherwise.
-     */
-    private static boolean checkGL20Support() {
-        final EGL10 egl = (EGL10) EGLContext.getEGL();
-        final EGLDisplay display = egl.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY);
-
-        final int[] version = new int[2];
-        egl.eglInitialize(display, version);
-
-        final int[] configAttribs = {
-            EGL10.EGL_RED_SIZE, 4,
-            EGL10.EGL_GREEN_SIZE, 4,
-            EGL10.EGL_BLUE_SIZE, 4,
-            EGL10.EGL_RENDERABLE_TYPE, 4,
-            EGL10.EGL_NONE
-        };
-
-        final EGLConfig[] configs = new EGLConfig[10];
-        final int[] numConfig = new int[1];
-        egl.eglChooseConfig(display, configAttribs, configs, 10, numConfig);
-        egl.eglTerminate(display);
-        return numConfig[0] > 0;
-    }
-
-    /**
      * Starts the rendering process when the user clicks the render
      * {@link Button}.
      *
@@ -387,7 +297,7 @@ public final class MainActivity extends Activity {
                 case TEST:
                     final String scenePath = "CornellBox" +
                         ConstantsUI.FILE_SEPARATOR + "CornellBox-Water";
-                    final String sdCardPath = getSDCardPath();
+                    final String sdCardPath = UtilsContext.getSDCardPath(this);
                     this.sceneFilePath = sdCardPath + ConstantsUI.FILE_SEPARATOR
                         + "WavefrontOBJs" + ConstantsUI.FILE_SEPARATOR + scenePath;
                     startRender(this.sceneFilePath);
@@ -398,44 +308,6 @@ public final class MainActivity extends Activity {
             }
         }
         LOGGER.info(ConstantsMethods.START_RENDER + FINISHED);
-    }
-
-    /**
-     * Gets the path to the SD card.
-     * <br>
-     * This method should get the correct path independently of the
-     * device / emulator used.
-     *
-     * @return The path to the SD card.
-     * @implNote This method still uses the deprecated method
-     * {@link Environment#getExternalStorageDirectory()} in order to be
-     * compatible with Android 4.1.
-     */
-    @Nonnull
-    private String getSDCardPath() {
-        LOGGER.info("Getting SD card path");
-        final File[] dirs = ContextCompat.getExternalFilesDirs(getApplicationContext(), null);
-        final String sdCardPath = Optional.ofNullable(dirs.length > 1? dirs[1] : dirs[0])
-            .map(File::getAbsolutePath)
-            .orElse(Environment.getExternalStorageDirectory().getAbsolutePath());
-        return cleanSDCardPath(sdCardPath);
-    }
-
-    /**
-     * Helper method that cleans the path to the external SD Card.
-     * This is useful for some devices since the {@link #getSDCardPath()} method
-     * might get the SD Card path with some extra paths at the end.
-     *
-     * @param sdCardPath The path to the external SD Card to clean.
-     * @return A cleaned SD Card path.
-     */
-    @Nonnull
-    private static String cleanSDCardPath(final String sdCardPath) {
-        final int removeIndex = sdCardPath.indexOf("Android");
-        if (removeIndex >= 1) {
-            return sdCardPath.substring(0, removeIndex - 1);
-        }
-        return sdCardPath;
     }
 
     @Override
@@ -488,7 +360,7 @@ public final class MainActivity extends Activity {
         final boolean supportES2 = (configurationInfo.reqGlEsVersion >=
             ConstantsRenderer.REQUIRED_OPENGL_VERSION);
 
-        if (!supportES2 || !MainActivity.checkGL20Support()) {
+        if (!supportES2 || !UtilsGL.checkGL20Support()) {
             final String msg = "Your device doesn't support ES 2. ("
                 + configurationInfo.reqGlEsVersion + ')';
             LOGGER.severe(msg);
@@ -500,14 +372,14 @@ public final class MainActivity extends Activity {
         this.drawView.setEGLConfigChooser(8, 8, 8, 8, 3 * 8, 0);
 
         final MainRenderer renderer = this.drawView.getRenderer();
-        final String vertexShader = readTextAsset(ConstantsUI.PATH_SHADERS
-            + ConstantsUI.FILE_SEPARATOR + "VertexShader.glsl");
-        final String fragmentShader = readTextAsset(ConstantsUI.PATH_SHADERS
-            + ConstantsUI.FILE_SEPARATOR + "FragmentShader.glsl");
-        final String vertexShaderRaster = readTextAsset(ConstantsUI.PATH_SHADERS
-            + ConstantsUI.FILE_SEPARATOR + "VertexShaderRaster.glsl");
-        final String fragmentShaderRaster = readTextAsset(ConstantsUI.PATH_SHADERS
-            + ConstantsUI.FILE_SEPARATOR + "FragmentShaderRaster.glsl");
+        final String vertexShader = UtilsContext.readTextAsset(this,
+            ConstantsUI.PATH_SHADERS + ConstantsUI.FILE_SEPARATOR + "VertexShader.glsl");
+        final String fragmentShader = UtilsContext.readTextAsset(this,
+            ConstantsUI.PATH_SHADERS + ConstantsUI.FILE_SEPARATOR + "FragmentShader.glsl");
+        final String vertexShaderRaster = UtilsContext.readTextAsset(this,
+            ConstantsUI.PATH_SHADERS + ConstantsUI.FILE_SEPARATOR + "VertexShaderRaster.glsl");
+        final String fragmentShaderRaster = UtilsContext.readTextAsset(this,
+            ConstantsUI.PATH_SHADERS + ConstantsUI.FILE_SEPARATOR + "FragmentShaderRaster.glsl");
         renderer.setBitmap();
         renderer.setVertexShaderCode(vertexShader);
         renderer.setFragmentShaderCode(fragmentShader);
@@ -598,7 +470,7 @@ public final class MainActivity extends Activity {
      *                      {@link #pickerThreads} field.
      */
     private void initializePickerThreads(final int pickerThreads) {
-        final int maxCores = getNumOfCores();
+        final int maxCores = UtilsContext.getNumOfCores(this);
         this.pickerThreads.setMinValue(1);
         this.pickerThreads.setMaxValue(maxCores);
         this.pickerThreads.setWrapSelectorWheel(true);
@@ -873,7 +745,7 @@ public final class MainActivity extends Activity {
         final String filePathWithoutExtension = cleanedFilePath.substring(0,
             cleanedFilePath.lastIndexOf('.'));
 
-        final String sdCardPath = getSDCardPath();
+        final String sdCardPath = UtilsContext.getSDCardPath(this);
         return sdCardPath + filePathWithoutExtension;
     }
 }

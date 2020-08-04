@@ -5,13 +5,15 @@ import android.opengl.GLES20;
 import android.opengl.GLUtils;
 import android.opengl.Matrix;
 
-import androidx.annotation.NonNull;
-
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.util.logging.Logger;
 
 import javax.annotation.Nonnull;
+import javax.microedition.khronos.egl.EGL10;
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.egl.EGLContext;
+import javax.microedition.khronos.egl.EGLDisplay;
 
 import java8.util.function.BiFunction;
 import java8.util.function.Function;
@@ -81,7 +83,7 @@ public final class UtilsGL {
      *
      * @param method The method to call.
      */
-    public static void run(@NonNull final Runnable method) {
+    public static void run(@Nonnull final Runnable method) {
         LOGGER.info(ConstantsMethods.RUN);
         method.run();
         checksGLError();
@@ -95,8 +97,8 @@ public final class UtilsGL {
      *
      * @param method The method to call.
      */
-    @NonNull
-    public static <T> T run(@NonNull final Supplier<T> method) {
+    @Nonnull
+    public static <T> T run(@Nonnull final Supplier<T> method) {
         LOGGER.info(ConstantsMethods.RUN);
         final T result = method.get();
         checksGLError();
@@ -112,9 +114,9 @@ public final class UtilsGL {
      * @param arg    The argument for the method.
      * @param method The method to call.
      */
-    @NonNull
-    public static <T, R> T run(@NonNull final R arg,
-                               @NonNull final Function<R, T> method) {
+    @Nonnull
+    public static <T, R> T run(@Nonnull final R arg,
+                               @Nonnull final Function<R, T> method) {
         LOGGER.info(ConstantsMethods.RUN);
         final T result = method.apply(arg);
         checksGLError();
@@ -131,44 +133,14 @@ public final class UtilsGL {
      * @param arg2   The 2nd argument for the method.
      * @param method The method to call.
      */
-    @NonNull
-    public static <T, R, S> T run(@NonNull final R arg1,
-                                  @NonNull final S arg2,
-                                  @NonNull final BiFunction<R, S, T> method) {
+    @Nonnull
+    public static <T, R, S> T run(@Nonnull final R arg1,
+                                  @Nonnull final S arg2,
+                                  @Nonnull final BiFunction<R, S, T> method) {
         LOGGER.info(ConstantsMethods.RUN);
         final T result = method.apply(arg1, arg2);
         checksGLError();
         return result;
-    }
-
-    /**
-     * Helper method which checks and prints errors in the OpenGL framework.
-     */
-    private static void checksGLError() {
-        final int glError = GLES20.glGetError();
-        if (glError != GLES20.GL_NO_ERROR) {
-            final Supplier<String> stringError = () -> {
-                switch (glError) {
-                    case GLES20.GL_INVALID_ENUM:
-                        return "GL_INVALID_ENUM";
-
-                    case GLES20.GL_INVALID_VALUE:
-                        return "GL_INVALID_VALUE";
-
-                    case GLES20.GL_INVALID_OPERATION:
-                        return "GL_INVALID_OPERATION";
-
-                    case GLES20.GL_OUT_OF_MEMORY:
-                        return "GL_OUT_OF_MEMORY";
-
-                    default:
-                        return "GL_UNKNOWN_ERROR";
-                }
-            };
-            final String msg = stringError.get() + ": " + GLUtils.getEGLErrorString(glError);
-            LOGGER.severe(msg);
-            throw new FailureException(msg);
-        }
     }
 
     /**
@@ -179,7 +151,7 @@ public final class UtilsGL {
      * @return The OpenGL index of the shader.
      */
     public static int loadShader(final int shaderType,
-                                 @NonNull final String source) {
+                                 @Nonnull final String source) {
         LOGGER.info("loadShader");
         final int shader = run(() -> glCreateShader(shaderType));
         if (shader == 0) {
@@ -214,11 +186,11 @@ public final class UtilsGL {
      *                           {@link ByteBuffer}.
      * @param attributeName      The name of the OpenGL attribute.
      */
-    public static void connectOpenGLAttribute(@NonNull final Buffer buffer,
+    public static void connectOpenGLAttribute(@Nonnull final Buffer buffer,
                                               final int attributeLocation,
                                               final int shaderProgram,
                                               final int componentsInBuffer,
-                                              @NonNull final String attributeName) {
+                                              @Nonnull final String attributeName) {
         LOGGER.info("connectOpenGLAttribute");
         UtilsGL.run(() -> GLES20.glBindAttribLocation(
             shaderProgram, attributeLocation, attributeName));
@@ -235,8 +207,8 @@ public final class UtilsGL {
      * @param fragmentShaderCode The code for the Fragment shader.
      */
     public static void attachShaders(final int shaderProgram,
-                                     @NonNull final String vertexShaderCode,
-                                     @NonNull final String fragmentShaderCode) {
+                                     @Nonnull final String vertexShaderCode,
+                                     @Nonnull final String fragmentShaderCode) {
         LOGGER.info("attachShaders");
         final int vertexShader = UtilsGL.loadShader(GLES20.GL_VERTEX_SHADER, vertexShaderCode);
         final int fragmentShader = UtilsGL.loadShader(GLES20.GL_FRAGMENT_SHADER,
@@ -278,7 +250,7 @@ public final class UtilsGL {
      *
      * @return A float array with the model matrix data.
      */
-    @NonNull
+    @Nonnull
     public static float[] createModelMatrix() {
         LOGGER.info("createModelMatrix");
 
@@ -296,8 +268,8 @@ public final class UtilsGL {
      * @param height   The height of the {@link Bitmap} to render.
      * @return A float array with the projection matrix data.
      */
-    @NonNull
-    public static float[] createProjectionMatrix(@NonNull final ByteBuffer bbCamera,
+    @Nonnull
+    public static float[] createProjectionMatrix(@Nonnull final ByteBuffer bbCamera,
                                                  final int width,
                                                  final int height) {
         LOGGER.info("createProjectionMatrix");
@@ -333,7 +305,7 @@ public final class UtilsGL {
      * @return A float array with the view matrix data.
      */
     @Nonnull
-    public static float[] createViewMatrix(@NonNull final ByteBuffer bbCamera) {
+    public static float[] createViewMatrix(@Nonnull final ByteBuffer bbCamera) {
         LOGGER.info("createViewMatrix");
 
         final float eyeX = bbCamera.getFloat(0);
@@ -362,6 +334,70 @@ public final class UtilsGL {
         );
 
         return viewMatrix;
+    }
+
+    /**
+     * Helper method which checks if the Android device has support for
+     * OpenGL ES 2.0.
+     *
+     * @return {@code True} if the device has support for OpenGL ES 2.0 or
+     *         {@code False} otherwise.
+     */
+    public static boolean checkGL20Support() {
+        LOGGER.info("checkGL20Support");
+
+        final EGL10 egl = (EGL10) EGLContext.getEGL();
+        final EGLDisplay display = egl.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY);
+
+        final int[] version = new int[2];
+        egl.eglInitialize(display, version);
+
+        final int[] configAttribs = {
+            EGL10.EGL_RED_SIZE, 4,
+            EGL10.EGL_GREEN_SIZE, 4,
+            EGL10.EGL_BLUE_SIZE, 4,
+            EGL10.EGL_RENDERABLE_TYPE, 4,
+            EGL10.EGL_NONE
+        };
+
+        final EGLConfig[] configs = new EGLConfig[10];
+        final int[] numConfig = new int[1];
+        egl.eglChooseConfig(display, configAttribs, configs, 10, numConfig);
+        egl.eglTerminate(display);
+        return numConfig[0] > 0;
+    }
+
+
+    // Private methods
+
+    /**
+     * Helper method which checks and prints errors in the OpenGL framework.
+     */
+    private static void checksGLError() {
+        final int glError = GLES20.glGetError();
+        if (glError != GLES20.GL_NO_ERROR) {
+            final Supplier<String> stringError = () -> {
+                switch (glError) {
+                    case GLES20.GL_INVALID_ENUM:
+                        return "GL_INVALID_ENUM";
+
+                    case GLES20.GL_INVALID_VALUE:
+                        return "GL_INVALID_VALUE";
+
+                    case GLES20.GL_INVALID_OPERATION:
+                        return "GL_INVALID_OPERATION";
+
+                    case GLES20.GL_OUT_OF_MEMORY:
+                        return "GL_OUT_OF_MEMORY";
+
+                    default:
+                        return "GL_UNKNOWN_ERROR";
+                }
+            };
+            final String msg = stringError.get() + ": " + GLUtils.getEGLErrorString(glError);
+            LOGGER.severe(msg);
+            throw new FailureException(msg);
+        }
     }
 
 }
