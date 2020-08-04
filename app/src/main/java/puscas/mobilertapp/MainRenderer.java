@@ -43,7 +43,7 @@ import puscas.mobilertapp.utils.Utils;
 import puscas.mobilertapp.utils.UtilsGL;
 
 import static puscas.mobilertapp.utils.Constants.BYTES_IN_FLOAT;
-import static puscas.mobilertapp.utils.Constants.BYTES_IN_MB;
+import static puscas.mobilertapp.utils.Constants.BYTES_IN_MEGABYTE;
 import static puscas.mobilertapp.utils.ConstantsMethods.FINISHED;
 import static puscas.mobilertapp.utils.ConstantsMethods.SET_BITMAP;
 import static puscas.mobilertapp.utils.ConstantsRenderer.PIXEL_COLORS;
@@ -467,8 +467,8 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
             "The requested memory must be a positive value");
 
         this.activityManager.getMemoryInfo(this.memoryInfo);
-        final long availMem = this.memoryInfo.availMem / (long) BYTES_IN_MB;
-        final long totalMem = this.memoryInfo.totalMem / (long) BYTES_IN_MB;
+        final long availMem = this.memoryInfo.availMem / (long) BYTES_IN_MEGABYTE;
+        final long totalMem = this.memoryInfo.totalMem / (long) BYTES_IN_MEGABYTE;
         final boolean insufficientMem = availMem <= (long) (1 + memoryNeeded);
         final String message = String.format(Locale.US, "MEMORY AVAILABLE: %dMB (%dMB)",
             availMem, totalMem);

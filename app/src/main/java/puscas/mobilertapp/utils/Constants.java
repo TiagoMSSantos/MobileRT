@@ -74,12 +74,12 @@ public final class Constants {
     /**
      * The number of bytes in a mega byte.
      */
-    public static final int BYTES_IN_MB = 1048576;
+    public static final int BYTES_IN_MEGABYTE = 1048576;
 
     /**
      * The number of bytes in an integer (usually is 4 bytes).
      */
-    public static final int BYTES_IN_INTEGER =  Integer.SIZE / Byte.SIZE;
+    static final int BYTES_IN_INTEGER =  Integer.SIZE / Byte.SIZE;
 
     /**
      * The number of bytes in a float (usually is 4 bytes).

@@ -43,7 +43,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
     /**
      * The number of milliseconds in a second.
      */
-    private static final float SECOND_IN_MS = 1000.0F;
+    private static final float MILLISECONDS_IN_SECOND = 1000.0F;
 
     /**
      * An {@link ExecutorService} which schedules every
@@ -202,7 +202,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
         this.timeT = String.format(Locale.US, "[%.2fs]", 0.0F);
         this.stateT = " " + State.IDLE.getId();
         this.allocatedT = ",m:" + Debug.getNativeHeapAllocatedSize() /
-            (long) Constants.BYTES_IN_MB + "mb";
+            (long) Constants.BYTES_IN_MEGABYTE + "mb";
         this.sampleT = ",0";
 
         this.timer = () -> {
@@ -213,12 +213,12 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
             this.fpsRenderT = String.format(Locale.US, "[%.1f]", this.fps);
             final long timeRenderer = rtGetTimeRenderer();
             this.timeFrameT = String.format(Locale.US, ",t:%.2fs",
-                (float) timeRenderer / SECOND_IN_MS);
+                (float) timeRenderer / MILLISECONDS_IN_SECOND);
             final long currentTime = SystemClock.elapsedRealtime();
             this.timeT = String.format(Locale.US, "[%.2fs]",
-                (float) (currentTime - this.startTimeStamp) / SECOND_IN_MS);
+                (float) (currentTime - this.startTimeStamp) / MILLISECONDS_IN_SECOND);
             this.allocatedT = ",m:" + Debug.getNativeHeapAllocatedSize() /
-                (long) Constants.BYTES_IN_MB + "mb";
+                (long) Constants.BYTES_IN_MEGABYTE + "mb";
             this.sampleT = "," + rtGetSample();
 
             final State currentState = State.values()[rtGetState()];
@@ -271,7 +271,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
     private void updateFps() {
         this.frame++;
         final float time = (float) SystemClock.elapsedRealtime();
-        final float oneSecond = SECOND_IN_MS;
+        final float oneSecond = MILLISECONDS_IN_SECOND;
         if ((time - this.timebase) > oneSecond) {
             this.fps = ((float) this.frame * oneSecond) / (time - this.timebase);
             this.timebase = time;

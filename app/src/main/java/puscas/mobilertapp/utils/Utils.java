@@ -150,7 +150,7 @@ public final class Utils {
 
         final int triangleMethodsSize = BYTES_IN_POINTER * 21;
         final int triangleSize = triangleMembersSize + triangleMethodsSize;
-        return 1 + ((numPrimitives * triangleSize) / Constants.BYTES_IN_MB);
+        return 1 + ((numPrimitives * triangleSize) / Constants.BYTES_IN_MEGABYTE);
     }
 
     /**
