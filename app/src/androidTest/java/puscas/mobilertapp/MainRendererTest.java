@@ -199,14 +199,13 @@ public final class MainRendererTest {
      * @return The index of the new created GLSL shader.
      * @throws InterruptedException If the thread waiting for the {@link CountDownLatch} was interrupted.
      *
-     * @implNote This method uses {@link MainRenderer#loadShader} to create
+     * @implNote This method uses {@link UtilsGL#loadShader} to create
      * the shader in the OpenGL framework. To do that, it uses a GL thread to
-     * execute the {@link MainRenderer#loadShader} method by placing its call
+     * execute the {@link UtilsGL#loadShader} method by placing its call
      * in the {@link GLSurfaceView#queueEvent(java.lang.Runnable)}.
      */
     private int CreateAndGetIndexOfShader(final String shaderCode, final int shaderType) throws InterruptedException {
         final DrawView drawView = Utils.getPrivateField(this.activity, "drawView");
-        final MainRenderer renderer = drawView.getRenderer();
 
         final AtomicInteger shaderIndex = new AtomicInteger(-1);
         final CountDownLatch latch = new CountDownLatch(1);

@@ -498,7 +498,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * and {@link MainRenderer#renderTask} fields.
      *
      * @param requestRender A {@link Runnable} of
-     *                     {@link GLSurfaceView#requestRender()} method.
+     *                      {@link GLSurfaceView#requestRender()} method.
      */
     void prepareRenderer(final Runnable requestRender) {
         LOGGER.info("prepareRenderer");
@@ -700,22 +700,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         UtilsGL.run(() -> GLES20.glUseProgram(this.shaderProgramRaster));
 
 
-        final float[] projectionMatrix = UtilsGL.createProjectionMatrix(
-            bbCamera, this.width, this.height);
-        final float[] viewMatrix = UtilsGL.createViewMatrix(bbCamera);
-        final float[] modelMatrix = UtilsGL.createModelMatrix();
-
-        final int handleModel = UtilsGL.<Integer, Integer, String>run(
-            this.shaderProgramRaster, "uniformModelMatrix", GLES20::glGetUniformLocation);
-        final int handleView = UtilsGL.<Integer, Integer, String>run(
-            this.shaderProgramRaster, "uniformViewMatrix", GLES20::glGetUniformLocation);
-        final int handleProjection = UtilsGL.<Integer, Integer, String>run(
-            this.shaderProgramRaster, "uniformProjectionMatrix", GLES20::glGetUniformLocation);
-
-        UtilsGL.run(() -> GLES20.glUniformMatrix4fv(handleModel, 1, false, modelMatrix, 0));
-        UtilsGL.run(() -> GLES20.glUniformMatrix4fv(handleView, 1, false, viewMatrix, 0));
-        UtilsGL.run(() -> GLES20.glUniformMatrix4fv(handleProjection,
-            1, false, projectionMatrix, 0));
+        createMVPasUniformVariables(bbCamera, this.width, this.height, this.shaderProgramRaster);
 
         final int positionAttrib = 0;
         UtilsGL.run(() -> GLES20.glVertexAttribPointer(positionAttrib,
@@ -745,6 +730,38 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
             this.viewWidth, this.viewHeight, this.width, this.height);
         LOGGER.info("renderSceneToBitmap" + FINISHED);
         return newBitmapWithPreviewScene;
+    }
+
+    /**
+     * Create MVP matrices and specify them as values for the uniform variables
+     * in the shader program.
+     *
+     * @param bbCamera      The camera's position and vectors in the scene.
+     * @param width         The width of the {@link Bitmap} to render.
+     * @param height        The height of the {@link Bitmap} to render.
+     * @param shaderProgram The OpenGL shader program index to specify the
+     *                      matrices.
+     */
+    private static void createMVPasUniformVariables(@Nonnull final ByteBuffer bbCamera,
+                                                    final int width,
+                                                    final int height,
+                                                    final int shaderProgram) {
+        final float[] projectionMatrix = UtilsGL.createProjectionMatrix(
+            bbCamera, width, height);
+        final float[] viewMatrix = UtilsGL.createViewMatrix(bbCamera);
+        final float[] modelMatrix = UtilsGL.createModelMatrix();
+
+        final int handleModel = UtilsGL.<Integer, Integer, String>run(
+            shaderProgram, "uniformModelMatrix", GLES20::glGetUniformLocation);
+        final int handleView = UtilsGL.<Integer, Integer, String>run(
+            shaderProgram, "uniformViewMatrix", GLES20::glGetUniformLocation);
+        final int handleProjection = UtilsGL.<Integer, Integer, String>run(
+            shaderProgram, "uniformProjectionMatrix", GLES20::glGetUniformLocation);
+
+        UtilsGL.run(() -> GLES20.glUniformMatrix4fv(handleModel, 1, false, modelMatrix, 0));
+        UtilsGL.run(() -> GLES20.glUniformMatrix4fv(handleView, 1, false, viewMatrix, 0));
+        UtilsGL.run(() -> GLES20.glUniformMatrix4fv(handleProjection,
+            1, false, projectionMatrix, 0));
     }
 
     /**

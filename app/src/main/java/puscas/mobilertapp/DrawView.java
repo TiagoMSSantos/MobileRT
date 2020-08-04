@@ -4,14 +4,17 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.jetbrains.annotations.Contract;
 
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -326,5 +329,53 @@ public final class DrawView extends GLSurfaceView {
         LOGGER.info("performClick");
 
         return true;
+    }
+
+    /**
+     * This is an auxiliary method that serves as a middle man to let outside
+     * classes like {@link MainActivity} terminate properly the Ray Tracing
+     * engine without having to not obey the law of Demeter.
+     *
+     * @see <a href="https://en.wikipedia.org/wiki/Law_of_Demeter">Law of Demeter</a>
+     * @implNote This method calls {@link MainRenderer#rtFinishRender()} and
+     * also {@link MainRenderer#freeArrays()}.
+     */
+    void finishRenderer() {
+        LOGGER.info("finishRenderer");
+
+        this.renderer.rtFinishRender();
+        this.renderer.freeArrays();
+    }
+
+    /**
+     * This is an auxiliary method that serves as a middle man to let outside
+     * classes like {@link MainActivity} get the current {@link State} of the
+     * Ray Tracer engine without having to not obey the law of Demeter.
+     *
+     * @return The current Ray Tracer engine {@link State}.
+     */
+    State getRayTracerState() {
+        LOGGER.info("getState");
+
+        return this.renderer.getState();
+    }
+
+    /**
+     * Prepares the {@link MainRenderer} with the OpenGL shaders' code and also
+     * with the render button for the {@link RenderTask}.
+     *
+     * @param shadersCode        The shaders' code for the Ray Tracing engine.
+     * @param shadersPreviewCode The shaders' code for the OpenGL preview feature.
+     * @param button             The render {@link Button}.
+     */
+    void prepareRenderer(final Map<Integer, String> shadersCode,
+                         final Map<Integer, String> shadersPreviewCode,
+                         final Button button) {
+        this.renderer.setBitmap();
+        this.renderer.setVertexShaderCode(shadersCode.get(GLES20.GL_VERTEX_SHADER));
+        this.renderer.setFragmentShaderCode(shadersCode.get(GLES20.GL_FRAGMENT_SHADER));
+        this.renderer.setVertexShaderCodeRaster(shadersPreviewCode.get(GLES20.GL_VERTEX_SHADER));
+        this.renderer.setFragmentShaderCodeRaster(shadersPreviewCode.get(GLES20.GL_FRAGMENT_SHADER));
+        this.renderer.setButtonRender(button);
     }
 }

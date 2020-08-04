@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.ConfigurationInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.view.View;
@@ -24,10 +25,8 @@ import androidx.core.content.ContextCompat;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableMap;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Locale;
 import java.util.logging.Logger;
 
@@ -149,25 +148,6 @@ public final class MainActivity extends Activity {
     private native int rtResize(int size);
 
     /**
-     * Helper method that checks if the system is a 64 device or not.
-     *
-     * @return Whether the system is 64 bit.
-     */
-    private boolean is64BitDevice() {
-        final String cpuInfoPath = UtilsContext.readTextAsset(this,
-            "Utils" + ConstantsUI.FILE_SEPARATOR + "cpuInfoPath.txt");
-        try (InputStream inputStream = new FileInputStream(cpuInfoPath.trim())) {
-            final String text = Utils.readTextFromInputStream(inputStream);
-            if (text.matches("64.*bit")) {
-                return true;
-            }
-        } catch (final IOException ex) {
-            throw new FailureException(ex);
-        }
-        return false;
-    }
-
-    /**
      * Helper method which starts or stops the rendering process.
      *
      * @param scenePath The path to a directory containing the OBJ and MTL files
@@ -176,6 +156,7 @@ public final class MainActivity extends Activity {
     private void startRender(@Nonnull final String scenePath) {
         LOGGER.info(ConstantsMethods.START_RENDER);
 
+        // Get values from number pickers
         final int scene = this.pickerScene.getValue();
         final int shader = this.pickerShader.getValue();
         final int accelerator = this.pickerAccelerator.getValue();
@@ -188,10 +169,6 @@ public final class MainActivity extends Activity {
         final int width = Integer.parseInt(strResolution.substring(0, strResolution.indexOf('x')));
         final int height = Integer.parseInt(
             strResolution.substring(strResolution.indexOf('x') + 1));
-        final String objFilePath = scenePath + ".obj";
-        final String mtlFilePath = scenePath + ".mtl";
-        final String camFilePath = scenePath + ".cam";
-
         final int threads = this.pickerThreads.getValue();
         final boolean rasterize = this.checkBoxRasterize.isChecked();
 
@@ -211,9 +188,9 @@ public final class MainActivity extends Activity {
                     .withHeight(height)
                     .build()
             )
-            .withOBJ(objFilePath)
-            .withMAT(mtlFilePath)
-            .withCAM(camFilePath)
+            .withOBJ(scenePath + ".obj")
+            .withMAT(scenePath + ".mtl")
+            .withCAM(scenePath + ".cam")
             .build();
 
         this.drawView.renderScene(config, threads, rasterize);
@@ -274,8 +251,7 @@ public final class MainActivity extends Activity {
 
         this.sceneFilePath = "";
         final Scene scene = Scene.values()[this.pickerScene.getValue()];
-        final MainRenderer renderer = this.drawView.getRenderer();
-        final State state = renderer.getState();
+        final State state = this.drawView.getRayTracerState();
 
         final String message2 = String.format(Locale.US, "%s: %s",
             ConstantsMethods.START_RENDER, state.toString());
@@ -313,32 +289,7 @@ public final class MainActivity extends Activity {
     @Override
     public void onCreate(@Nullable final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        final Optional<Bundle> instance = Optional.ofNullable(savedInstanceState);
-        final int defaultPickerScene = instance.map(
-                x -> x.getInt(ConstantsUI.PICKER_SCENE)
-            ).orElse(0);
-        final int defaultPickerShader = instance.map(
-                x -> x.getInt(ConstantsUI.PICKER_SHADER)
-            ).orElse(0);
-        final int defaultPickerThreads = instance.map(
-                x -> x.getInt(ConstantsUI.PICKER_THREADS)
-            ).orElse(1);
-        final int defaultPickerAccelerator = instance.map(
-                x -> x.getInt(ConstantsUI.PICKER_ACCELERATOR)
-            ).orElse(1);
-        final int defaultPickerSamplesPixel = instance.map(
-                x -> x.getInt(ConstantsUI.PICKER_SAMPLES_PIXEL)
-            ).orElse(1);
-        final int defaultPickerSamplesLight = instance.map(
-                x -> x.getInt(ConstantsUI.PICKER_SAMPLES_LIGHT)
-            ).orElse(1);
-        final int defaultPickerSizes = instance.map(
-                x -> x.getInt(ConstantsUI.PICKER_SIZES)
-            ).orElse(4);
-        final boolean defaultCheckBoxRasterize = instance.map(
-                x -> x.getBoolean(ConstantsUI.CHECK_BOX_RASTERIZE)
-            ).orElse(true);
+        LOGGER.info("onCreate");
 
         try {
             setContentView(R.layout.activity_main);
@@ -347,31 +298,87 @@ public final class MainActivity extends Activity {
         }
 
         initializeViews();
+
         final TextView textView = findViewById(R.id.timeText);
         final Button renderButton = findViewById(R.id.renderButton);
-        final ActivityManager assetManager = (ActivityManager) getSystemService(
+        final ActivityManager activityManager = (ActivityManager) getSystemService(
             Context.ACTIVITY_SERVICE);
 
-        Preconditions.checkNotNull(textView);
-        Preconditions.checkNotNull(renderButton);
-        Preconditions.checkNotNull(assetManager);
+        checksOpenGLVersion(activityManager);
+        setupRenderer(textView, renderButton);
 
-        final ConfigurationInfo configurationInfo = assetManager.getDeviceConfigurationInfo();
+        final Optional<Bundle> bundle = Optional.ofNullable(savedInstanceState);
+        initializePickers(bundle);
+        checksStoragePermission();
+    }
+
+    /**
+     * Helper method that initializes all the pickers fields of this
+     * {@link Activity}.
+     *
+     * @param bundle The data state of the {@link Activity}.
+     */
+    private void initializePickers(final Optional<Bundle> bundle) {
+        initializePickerScene(bundle.map(x -> x.getInt(ConstantsUI.PICKER_SCENE))
+            .orElse(0));
+        initializePickerShader(bundle.map(x -> x.getInt(ConstantsUI.PICKER_SHADER))
+            .orElse(0));
+        initializePickerSamplesPixel(bundle.map(x -> x.getInt(ConstantsUI.PICKER_SAMPLES_PIXEL))
+            .orElse(1));
+        initializePickerSamplesLight(bundle.map(x -> x.getInt(ConstantsUI.PICKER_SAMPLES_LIGHT))
+            .orElse(1));
+        initializePickerAccelerator(bundle.map(x -> x.getInt(ConstantsUI.PICKER_ACCELERATOR))
+            .orElse(1));
+        initializePickerThreads(bundle.map(x -> x.getInt(ConstantsUI.PICKER_THREADS))
+            .orElse(1));
+        initializeCheckBoxRasterize(bundle.map(x -> x.getBoolean(ConstantsUI.CHECK_BOX_RASTERIZE))
+            .orElse(true));
+
+        final ViewTreeObserver vto = this.drawView.getViewTreeObserver();
+        // We can only set the resolutions after the views are shown.
+        vto.addOnGlobalLayoutListener(() ->
+            initializePickerResolutions(bundle.map(x -> x.getInt(ConstantsUI.PICKER_SIZES))
+            .orElse(4), 9));
+    }
+
+    /**
+     * Helper method that checks if the supported OpenGL ES version is
+     * the version 2 or greater.
+     *
+     * @param activityManager The {@link ActivityManager} which contains the
+     *                        {@link ConfigurationInfo}.
+     */
+    private static void checksOpenGLVersion(final ActivityManager activityManager) {
+        final ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
         final boolean supportES2 = (configurationInfo.reqGlEsVersion >=
             ConstantsRenderer.REQUIRED_OPENGL_VERSION);
 
         if (!supportES2 || !UtilsGL.checkGL20Support()) {
             final String msg = "Your device doesn't support ES 2. ("
                 + configurationInfo.reqGlEsVersion + ')';
-            LOGGER.severe(msg);
             throw new FailureException(msg);
         }
+    }
 
+
+    /**
+     * Helper method that sets up the {@link MainRenderer} in the
+     * {@link DrawView}.
+     * This method loads the GLSL shaders and pass them to the
+     * {@link MainRenderer}.
+     *
+     * @param textView     The {@link TextView} for the {@link MainRenderer} to
+     *                     pass to the {@link RenderTask} when the Ray Tracing
+     *                     process starts.
+     * @param renderButton The {@link TextView} for the {@link MainRenderer} to
+     *                     pass to the {@link RenderTask} when the Ray Tracing
+     *                     process starts.
+     */
+    private void setupRenderer(final TextView textView, final Button renderButton) {
         this.drawView.setVisibility(View.INVISIBLE);
         this.drawView.setEGLContextClientVersion(2);
         this.drawView.setEGLConfigChooser(8, 8, 8, 8, 3 * 8, 0);
 
-        final MainRenderer renderer = this.drawView.getRenderer();
         final String vertexShader = UtilsContext.readTextAsset(this,
             ConstantsUI.PATH_SHADERS + ConstantsUI.FILE_SEPARATOR + "VertexShader.glsl");
         final String fragmentShader = UtilsContext.readTextAsset(this,
@@ -380,39 +387,28 @@ public final class MainActivity extends Activity {
             ConstantsUI.PATH_SHADERS + ConstantsUI.FILE_SEPARATOR + "VertexShaderRaster.glsl");
         final String fragmentShaderRaster = UtilsContext.readTextAsset(this,
             ConstantsUI.PATH_SHADERS + ConstantsUI.FILE_SEPARATOR + "FragmentShaderRaster.glsl");
-        renderer.setBitmap();
-        renderer.setVertexShaderCode(vertexShader);
-        renderer.setFragmentShaderCode(fragmentShader);
-        renderer.setVertexShaderCodeRaster(vertexShaderRaster);
-        renderer.setFragmentShaderCodeRaster(fragmentShaderRaster);
 
         final ActivityManager activityManager = (ActivityManager) getSystemService(
             Context.ACTIVITY_SERVICE);
         this.drawView.setViewAndActivityManager(textView, activityManager);
         this.drawView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
-        this.drawView.setVisibility(View.VISIBLE);
 
         renderButton.setOnLongClickListener((final View view) -> {
             recreate();
             return false;
         });
-        renderer.setButtonRender(renderButton);
 
+        this.drawView.prepareRenderer(
+            ImmutableMap.of(GLES20.GL_VERTEX_SHADER, vertexShader,
+                GLES20.GL_FRAGMENT_SHADER, fragmentShader),
+            ImmutableMap.of(GLES20.GL_VERTEX_SHADER, vertexShaderRaster,
+                GLES20.GL_FRAGMENT_SHADER, fragmentShaderRaster),
+            renderButton
+        );
+        this.drawView.setVisibility(View.VISIBLE);
         this.drawView.setPreserveEGLContextOnPause(true);
-
-        initializePickerScene(defaultPickerScene);
-        initializePickerShader(defaultPickerShader);
-        initializePickerSamplesPixel(defaultPickerSamplesPixel);
-        initializePickerSamplesLight(defaultPickerSamplesLight);
-        initializePickerAccelerator(defaultPickerAccelerator);
-        initializePickerThreads(defaultPickerThreads);
-        initializeCheckBoxRasterize(defaultCheckBoxRasterize);
-
-        final ViewTreeObserver vto = this.drawView.getViewTreeObserver();
-        // We can only set the resolutions after the views are shown.
-        vto.addOnGlobalLayoutListener(() -> initializePickerResolutions(defaultPickerSizes, 9));
-        checksStoragePermission();
     }
+
 
     /**
      * Initializes the {@link #checkBoxRasterize} field.
@@ -655,27 +651,16 @@ public final class MainActivity extends Activity {
         super.onSaveInstanceState(outState);
         LOGGER.info("onSaveInstanceState");
 
-        final int scene = this.pickerScene.getValue();
-        final int shader = this.pickerShader.getValue();
-        final int threads = this.pickerThreads.getValue();
-        final int accelerator = this.pickerAccelerator.getValue();
-        final int samplesPixel = this.pickerSamplesPixel.getValue();
-        final int samplesLight = this.pickerSamplesLight.getValue();
-        final int sizes = this.pickerResolutions.getValue();
-        final boolean rasterize = this.checkBoxRasterize.isChecked();
+        outState.putInt(ConstantsUI.PICKER_SCENE, this.pickerScene.getValue());
+        outState.putInt(ConstantsUI.PICKER_SHADER, this.pickerShader.getValue());
+        outState.putInt(ConstantsUI.PICKER_THREADS, this.pickerThreads.getValue());
+        outState.putInt(ConstantsUI.PICKER_ACCELERATOR, this.pickerAccelerator.getValue());
+        outState.putInt(ConstantsUI.PICKER_SAMPLES_PIXEL, this.pickerSamplesPixel.getValue());
+        outState.putInt(ConstantsUI.PICKER_SAMPLES_LIGHT, this.pickerSamplesLight.getValue());
+        outState.putInt(ConstantsUI.PICKER_SIZES, this.pickerResolutions.getValue());
+        outState.putBoolean(ConstantsUI.CHECK_BOX_RASTERIZE, this.checkBoxRasterize.isChecked());
 
-        outState.putInt(ConstantsUI.PICKER_SCENE, scene);
-        outState.putInt(ConstantsUI.PICKER_SHADER, shader);
-        outState.putInt(ConstantsUI.PICKER_THREADS, threads);
-        outState.putInt(ConstantsUI.PICKER_ACCELERATOR, accelerator);
-        outState.putInt(ConstantsUI.PICKER_SAMPLES_PIXEL, samplesPixel);
-        outState.putInt(ConstantsUI.PICKER_SAMPLES_LIGHT, samplesLight);
-        outState.putInt(ConstantsUI.PICKER_SIZES, sizes);
-        outState.putBoolean(ConstantsUI.CHECK_BOX_RASTERIZE, rasterize);
-
-        final MainRenderer renderer = this.drawView.getRenderer();
-        renderer.rtFinishRender();
-        renderer.freeArrays();
+        this.drawView.finishRenderer();
     }
 
     @Override

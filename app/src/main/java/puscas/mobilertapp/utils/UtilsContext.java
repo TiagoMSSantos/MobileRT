@@ -8,6 +8,7 @@ import android.os.Environment;
 import androidx.core.content.ContextCompat;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
@@ -34,6 +35,13 @@ public final class UtilsContext {
      * the number of CPU cores.
      */
     private static final int OLD_API_GET_CORES = 16;
+
+    /**
+     * A private constructor in order to prevent instantiating this helper class.
+     */
+    private UtilsContext() {
+        LOGGER.info("UtilsContext");
+    }
 
     /**
      * Gets the path to the SD card.
@@ -67,9 +75,9 @@ public final class UtilsContext {
     public static String readTextAsset(@Nonnull final Context context,
                                        @Nonnull final String filePath) {
         LOGGER.info("readTextAsset");
+        final AssetManager assetManager = context.getAssets();
         final String text;
-        try (AssetManager assetManager = context.getAssets();
-             InputStream inputStream = assetManager.open(filePath)) {
+        try (InputStream inputStream = assetManager.open(filePath)) {
             text = Utils.readTextFromInputStream(inputStream);
         } catch (final IOException ex) {
             throw new FailureException(ex);
@@ -105,6 +113,26 @@ public final class UtilsContext {
         final String message = String.format(Locale.US, "Number of cores: %d", cores);
         LOGGER.info(message);
         return cores;
+    }
+
+    /**
+     * Helper method that checks if the system is a 64 device or not.
+     *
+     * @return Whether the system is 64 bit.
+     */
+    public static boolean is64BitDevice(@Nonnull final Context context) {
+        LOGGER.info("is64BitDevice");
+        final String cpuInfoPath = UtilsContext.readTextAsset(context,
+            "Utils" + ConstantsUI.FILE_SEPARATOR + "cpuInfoPath.txt");
+        try (InputStream inputStream = new FileInputStream(cpuInfoPath.trim())) {
+            final String text = Utils.readTextFromInputStream(inputStream);
+            if (text.matches("64.*bit")) {
+                return true;
+            }
+        } catch (final IOException ex) {
+            throw new FailureException(ex);
+        }
+        return false;
     }
 
 

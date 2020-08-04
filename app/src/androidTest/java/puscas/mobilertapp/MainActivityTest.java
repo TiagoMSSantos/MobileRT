@@ -48,6 +48,7 @@ import puscas.mobilertapp.utils.ConstantsUI;
 import puscas.mobilertapp.utils.Scene;
 import puscas.mobilertapp.utils.Shader;
 import puscas.mobilertapp.utils.State;
+import puscas.mobilertapp.utils.UtilsContext;
 
 import static puscas.mobilertapp.utils.ConstantsMethods.FINISHED;
 
@@ -222,8 +223,7 @@ public final class MainActivityTest {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
-        final String sdCardPath = Utils.invokePrivateMethod(this.activity, "getSDCardPath",
-            ImmutableList.of(), ImmutableList.of());
+        final String sdCardPath = UtilsContext.getSDCardPath(this.activity);
 
         final List<String> paths = ImmutableList.<String>builder().add(
             Constants.EMPTY_FILE,
@@ -252,8 +252,7 @@ public final class MainActivityTest {
                 Assertions.assertEquals(Constants.RENDER, button.getText().toString(), "Button message");
             });
 
-        final int numCores = Utils.invokePrivateMethod(this.activity, "getNumOfCores",
-            ImmutableList.of(), ImmutableList.of());
+        final int numCores = UtilsContext.getNumOfCores(this.activity);
         assertClickRenderButton(1, numCores);
         assertPickerNumbers(numCores);
         clickPreviewCheckBox(false);
@@ -267,11 +266,9 @@ public final class MainActivityTest {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
-        final int numCores = Utils.invokePrivateMethod(this.activity, "getNumOfCores",
-            ImmutableList.of(), ImmutableList.of());
-
         clickPreviewCheckBox(false);
 
+        final int numCores = UtilsContext.getNumOfCores(this.activity);
         assertClickRenderButton(5, numCores);
     }
 
@@ -283,12 +280,10 @@ public final class MainActivityTest {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
-        final int numCores = Utils.invokePrivateMethod(this.activity, "getNumOfCores",
-            ImmutableList.of(), ImmutableList.of());
-
         clickPreviewCheckBox(false);
         clickPreviewCheckBox(true);
 
+        final int numCores = UtilsContext.getNumOfCores(this.activity);
         assertClickRenderButton(5, numCores);
     }
 
@@ -300,8 +295,7 @@ public final class MainActivityTest {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
-        final int numCores = Utils.invokePrivateMethod(this.activity, "getNumOfCores",
-            ImmutableList.of(), ImmutableList.of());
+        final int numCores = UtilsContext.getNumOfCores(this.activity);
 
         changePickerValue("pickerScene", R.id.pickerScene, 2);
         changePickerValue("pickerThreads", R.id.pickerThreads, numCores);
@@ -398,8 +392,7 @@ public final class MainActivityTest {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
-        final int numCores = Utils.invokePrivateMethod(this.activity, "getNumOfCores",
-            ImmutableList.of(), ImmutableList.of());
+        final int numCores = UtilsContext.getNumOfCores(this.activity);
 
         changePickerValue("pickerScene", R.id.pickerScene, 6);
         changePickerValue("pickerThreads", R.id.pickerThreads, numCores);
@@ -474,8 +467,7 @@ public final class MainActivityTest {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
-        final int numCores = Utils.invokePrivateMethod(this.activity, "getNumOfCores",
-            ImmutableList.of(), ImmutableList.of());
+        final int numCores = UtilsContext.getNumOfCores(this.activity);
 
         changePickerValue("pickerScene", R.id.pickerScene, 2);
         changePickerValue("pickerThreads", R.id.pickerThreads, numCores);
