@@ -156,7 +156,24 @@ public final class MainActivity extends Activity {
     private void startRender(@Nonnull final String scenePath) {
         LOGGER.info(ConstantsMethods.START_RENDER);
 
-        // Get values from number pickers
+        final Config config = createConfigFromUI(scenePath);
+        final int threads = this.pickerThreads.getValue();
+        final boolean rasterize = this.checkBoxRasterize.isChecked();
+
+        this.drawView.renderScene(config, threads, rasterize);
+
+        LOGGER.info(ConstantsMethods.START_RENDER + FINISHED);
+    }
+
+    /**
+     * Create a Ray Tracer {@link Config} from the selected {@link NumberPicker}s
+     * in the Android UI.
+     *
+     * @param scenePath The path to the OBJ scene file.
+     * @return A {@link Config}.
+     */
+    @Nonnull
+    private Config createConfigFromUI(@Nonnull final String scenePath) {
         final int scene = this.pickerScene.getValue();
         final int shader = this.pickerShader.getValue();
         final int accelerator = this.pickerAccelerator.getValue();
@@ -169,10 +186,8 @@ public final class MainActivity extends Activity {
         final int width = Integer.parseInt(strResolution.substring(0, strResolution.indexOf('x')));
         final int height = Integer.parseInt(
             strResolution.substring(strResolution.indexOf('x') + 1));
-        final int threads = this.pickerThreads.getValue();
-        final boolean rasterize = this.checkBoxRasterize.isChecked();
 
-        final Config config = new Config.Builder()
+        return new Config.Builder()
             .withScene(scene)
             .withShader(shader)
             .withAccelerator(accelerator)
@@ -192,10 +207,6 @@ public final class MainActivity extends Activity {
             .withMAT(scenePath + ".mtl")
             .withCAM(scenePath + ".cam")
             .build();
-
-        this.drawView.renderScene(config, threads, rasterize);
-
-        LOGGER.info(ConstantsMethods.START_RENDER + FINISHED);
     }
 
     /**
