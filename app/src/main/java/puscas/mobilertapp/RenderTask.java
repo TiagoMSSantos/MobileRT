@@ -198,30 +198,12 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
         this.textView = new WeakReference<>(builder.getTextView());
 
         this.startTimeStamp = SystemClock.elapsedRealtime();
-        this.fpsT = String.format(Locale.US, "fps:%.2f", 0.0F);
-        this.fpsRenderT = String.format(Locale.US, "[%.2f]", 0.0F);
-        this.timeFrameT = String.format(Locale.US, ",t:%.2fs", 0.0F);
-        this.timeT = String.format(Locale.US, "[%.2fs]", 0.0F);
-        this.stateT = " " + State.IDLE.getId();
-        this.allocatedT = ",m:" + Debug.getNativeHeapAllocatedSize() /
-            (long) Constants.BYTES_IN_MEGABYTE + "mb";
-        this.sampleT = ",0";
+        resetTextStats();
 
         this.timer = () -> {
             LOGGER.info("RenderTask timer");
             updateFps();
-
-            this.fpsT = String.format(Locale.US, "fps:%.1f", rtGetFps());
-            this.fpsRenderT = String.format(Locale.US, "[%.1f]", this.fps);
-            final long timeRenderer = rtGetTimeRenderer();
-            this.timeFrameT = String.format(Locale.US, ",t:%.2fs",
-                (float) timeRenderer / MILLISECONDS_IN_SECOND);
-            final long currentTime = SystemClock.elapsedRealtime();
-            this.timeT = String.format(Locale.US, "[%.2fs]",
-                (float) (currentTime - this.startTimeStamp) / MILLISECONDS_IN_SECOND);
-            this.allocatedT = ",m:" + Debug.getNativeHeapAllocatedSize() /
-                (long) Constants.BYTES_IN_MEGABYTE + "mb";
-            this.sampleT = "," + rtGetSample();
+            updateTextStats();
 
             final State currentState = State.values()[rtGetState()];
             this.stateT = currentState.toString();
@@ -235,6 +217,39 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
         };
 
         checksArguments();
+    }
+
+    /**
+     * Helper method that updates some statistics in the fields of this class
+     * that will be presented in the {@link TextView}.
+     */
+    private void updateTextStats() {
+        this.fpsT = String.format(Locale.US, "fps:%.1f", rtGetFps());
+        this.fpsRenderT = String.format(Locale.US, "[%.1f]", this.fps);
+        final long timeRenderer = rtGetTimeRenderer();
+        this.timeFrameT = String.format(Locale.US, ",t:%.2fs",
+            (float) timeRenderer / MILLISECONDS_IN_SECOND);
+        final long currentTime = SystemClock.elapsedRealtime();
+        this.timeT = String.format(Locale.US, "[%.2fs]",
+            (float) (currentTime - this.startTimeStamp) / MILLISECONDS_IN_SECOND);
+        this.allocatedT = ",m:" + Debug.getNativeHeapAllocatedSize() /
+            (long) Constants.BYTES_IN_MEGABYTE + "mb";
+        this.sampleT = "," + rtGetSample();
+    }
+
+    /**
+     * Helper method that resets some statistics in the fields of this class
+     * that will be presented in the {@link TextView}.
+     */
+    private void resetTextStats() {
+        this.fpsT = String.format(Locale.US, "fps:%.2f", 0.0F);
+        this.fpsRenderT = String.format(Locale.US, "[%.2f]", 0.0F);
+        this.timeFrameT = String.format(Locale.US, ",t:%.2fs", 0.0F);
+        this.timeT = String.format(Locale.US, "[%.2fs]", 0.0F);
+        this.stateT = " " + State.IDLE.getId();
+        this.allocatedT = ",m:" + Debug.getNativeHeapAllocatedSize() /
+            (long) Constants.BYTES_IN_MEGABYTE + "mb";
+        this.sampleT = ",0";
     }
 
     /**
