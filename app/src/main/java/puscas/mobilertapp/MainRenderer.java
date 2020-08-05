@@ -69,12 +69,6 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
     private static final long DEFAULT_UPDATE_INTERVAL = 250L;
 
     /**
-     * All the buffer bits to clear all the buffers in OpenGL.
-     */
-    private static final int ALL_BUFFER_BIT = GLES20.GL_COLOR_BUFFER_BIT
-        | GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_STENCIL_BUFFER_BIT;
-
-    /**
      * The vertices coordinates for the texture where the Ray Tracer
      * {@link Bitmap} will be applied.
      */
@@ -677,7 +671,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
             || numPrimitives <= 0) {
             return this.bitmap;
         }
-        UtilsGL.run(() -> GLES20.glClear(ALL_BUFFER_BIT));
+        UtilsGL.run(() -> GLES20.glClear(ConstantsRenderer.ALL_BUFFER_BIT));
 
         final int neededMemoryMb = Utils.calculateSceneSize(numPrimitives);
         checksFreeMemory(neededMemoryMb, () -> LOGGER.severe("SYSTEM WITH LOW MEMORY!!!"));
@@ -960,26 +954,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
     public void onSurfaceCreated(@Nonnull final GL10 gl, @Nonnull final EGLConfig config) {
         LOGGER.info("onSurfaceCreated");
 
-        UtilsGL.run(() -> GLES20.glClear(ALL_BUFFER_BIT));
-
-        // Enable culling
-        UtilsGL.run(() -> GLES20.glEnable(GLES20.GL_CULL_FACE));
-        UtilsGL.run(() -> GLES20.glEnable(GLES20.GL_BLEND));
-        UtilsGL.run(() -> GLES20.glEnable(GLES20.GL_DEPTH_TEST));
-
-        UtilsGL.run(() -> GLES20.glCullFace(GLES20.GL_BACK));
-        UtilsGL.run(() -> GLES20.glFrontFace(GLES20.GL_CCW));
-        UtilsGL.run(() -> GLES20.glClearDepthf(1.0F));
-
-        UtilsGL.run(() -> GLES20.glDepthMask(true));
-
-        UtilsGL.run(() -> GLES20.glDepthFunc(GLES20.GL_LEQUAL));
-
-        UtilsGL.run(() -> GLES20.glClearColor(0.0F, 0.0F, 0.0F, 0.0F));
-
-        // Create geometry and texture coordinates buffers
-        this.floatBufferVertices = Utils.allocateBuffer(this.verticesTexture);
-        this.floatBufferTexture = Utils.allocateBuffer(this.texCoords);
+        UtilsGL.resetOpenGLBuffers();
 
         // Load shaders
         final int vertexShader = UtilsGL.loadShader(GLES20.GL_VERTEX_SHADER,
@@ -1015,13 +990,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         // Shader program 1
         UtilsGL.run(() -> GLES20.glUseProgram(this.shaderProgram));
 
-        // Bind to the texture in OpenGL
-        UtilsGL.run(() -> GLES20.glActiveTexture(GLES20.GL_TEXTURE0));
-        UtilsGL.run(() -> GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle[0]));
-        UtilsGL.run(() -> GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,
-            GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR));
-        UtilsGL.run(() -> GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,
-            GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR));
+        UtilsGL.bindTexture();
 
         LOGGER.info("onSurfaceCreated" + FINISHED);
     }

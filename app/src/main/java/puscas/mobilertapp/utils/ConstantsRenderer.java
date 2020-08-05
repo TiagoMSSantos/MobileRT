@@ -86,6 +86,12 @@ public final class ConstantsRenderer {
     public static final float FIX_ASPECT_ORTHOGRAPHIC = 0.5F;
 
     /**
+     * All the buffer bits to clear all the buffers in OpenGL.
+     */
+    public static final int ALL_BUFFER_BIT = GLES20.GL_COLOR_BUFFER_BIT
+        | GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_STENCIL_BUFFER_BIT;
+
+    /**
      * A private constructor in order to prevent instantiating this helper class.
      */
     private ConstantsRenderer() {

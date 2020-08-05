@@ -400,4 +400,48 @@ public final class UtilsGL {
         }
     }
 
+    /**
+     * Helper method that clears the OpenGL buffers and enables some OpenGL
+     * capabilities.
+     */
+    public static void resetOpenGLBuffers() {
+        LOGGER.info("resetOpenGLBuffers");
+
+        UtilsGL.run(() -> GLES20.glClear(ConstantsRenderer.ALL_BUFFER_BIT));
+
+        UtilsGL.run(() -> GLES20.glEnable(GLES20.GL_CULL_FACE));
+        UtilsGL.run(() -> GLES20.glEnable(GLES20.GL_BLEND));
+        UtilsGL.run(() -> GLES20.glEnable(GLES20.GL_DEPTH_TEST));
+
+        UtilsGL.run(() -> GLES20.glCullFace(GLES20.GL_BACK));
+        UtilsGL.run(() -> GLES20.glFrontFace(GLES20.GL_CCW));
+        UtilsGL.run(() -> GLES20.glClearDepthf(1.0F));
+
+        UtilsGL.run(() -> GLES20.glDepthMask(true));
+        UtilsGL.run(() -> GLES20.glDepthFunc(GLES20.GL_LEQUAL));
+        UtilsGL.run(() -> GLES20.glClearColor(0.0F, 0.0F, 0.0F, 0.0F));
+    }
+
+    /**
+     * Helper method that generates and binds a texture name in OpenGL.
+     */
+    public static void bindTexture() {
+        LOGGER.info("bindTexture");
+
+        final int numTextures = 1;
+        final int[] textureHandle = new int[numTextures];
+        UtilsGL.run(() -> GLES20.glGenTextures(numTextures, textureHandle, 0));
+        if (textureHandle[0] == 0) {
+            final String msg = "Error loading texture.";
+            throw new FailureException(msg);
+        }
+
+        UtilsGL.run(() -> GLES20.glActiveTexture(GLES20.GL_TEXTURE0));
+        UtilsGL.run(() -> GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle[0]));
+        UtilsGL.run(() -> GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,
+            GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR));
+        UtilsGL.run(() -> GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,
+            GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR));
+    }
+
 }
