@@ -821,13 +821,14 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      */
     private void createAndLaunchRenderTask() {
         LOGGER.info("createAndLaunchRenderTask");
-        final RenderTask.Builder renderTaskBuilder = new RenderTask.Builder(
-            this.requestRender, this::rtFinishRender, this.textView, this.buttonRender
-        );
 
         waitLastTask();
 
-        this.renderTask = renderTaskBuilder
+        this.renderTask = new RenderTask.Builder()
+            .withRequestRender(this.requestRender)
+            .withFinishRender(this::rtFinishRender)
+            .withTextView(this.textView)
+            .withButtonRender(this.buttonRender)
             .withUpdateInterval(DEFAULT_UPDATE_INTERVAL)
             .withWidth(this.width)
             .withHeight(this.height)

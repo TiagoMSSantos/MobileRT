@@ -7,6 +7,8 @@ import android.os.SystemClock;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.common.base.Preconditions;
+
 import org.jetbrains.annotations.Contract;
 
 import java.lang.ref.WeakReference;
@@ -231,6 +233,18 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
             }
             LOGGER.info("RenderTask timer" + FINISHED + " 2");
         };
+
+        checksArguments();
+    }
+
+    /**
+     * Helper method that validates the fields of this class.
+     */
+    private void checksArguments() {
+        Preconditions.checkNotNull(this.requestRender);
+        Preconditions.checkNotNull(this.finishRender);
+        Preconditions.checkNotNull(this.textView);
+        Preconditions.checkNotNull(this.buttonRender);
     }
 
     /**
@@ -362,22 +376,22 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
         /**
          * @see RenderTask#requestRender
          */
-        private final Runnable requestRender;
+        private Runnable requestRender = null;
 
         /**
          * @see RenderTask#finishRender
          */
-        private final Runnable finishRender;
+        private Runnable finishRender = null;
 
         /**
          * @see RenderTask#textView
          */
-        private final TextView textView;
+        private TextView textView = null;
 
         /**
          * @see RenderTask#buttonRender
          */
-        private final Button buttonRender;
+        private Button buttonRender = null;
 
         /**
          * @see RenderTask.Builder#withUpdateInterval(long)
@@ -419,27 +433,81 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
          */
         private int samplesLight = 0;
 
+
         /**
-         * The constructor of the builder with some mandatory parameters to
-         * instantiate a {@link RenderTask}.
+         * Sets the {@link RenderTask#requestRender} field.
          *
          * @param requestRender The new value for
          *                      {@link RenderTask#requestRender} field.
-         * @param finishRender  The new value for
-         *                      {@link RenderTask#finishRender} field.
-         * @param textView      The new value for
-         *                      {@link RenderTask#textView} field.
-         * @param buttonRender  The new value for
-         *                      {@link RenderTask#buttonRender} field.
+         * @return The builder with {@link RenderTask.Builder#requestRender}
+         *         already set.
          */
-        @Contract(pure = true) Builder(@Nonnull final Runnable requestRender,
-                                       @Nonnull final Runnable finishRender,
-                                       @Nonnull final TextView textView,
-                                       @Nonnull final Button buttonRender) {
+        @Contract("_ -> this")
+        @Nonnull
+        RenderTask.Builder withRequestRender(@Nonnull final Runnable requestRender) {
+            final String message =
+                String.format(Locale.US, "withRequestRender: %s", requestRender);
+            LOGGER_BUILDER.info(message);
+
             this.requestRender = requestRender;
+            return this;
+        }
+
+        /**
+         * Sets the {@link RenderTask#finishRender} field.
+         *
+         * @param finishRender The new value for
+         *                     {@link RenderTask#finishRender} field.
+         * @return The builder with {@link RenderTask.Builder#finishRender}
+         *         already set.
+         */
+        @Contract("_ -> this")
+        @Nonnull
+        RenderTask.Builder withFinishRender(@Nonnull final Runnable finishRender) {
+            final String message =
+                String.format(Locale.US, "withFinishRender: %s", finishRender);
+            LOGGER_BUILDER.info(message);
+
             this.finishRender = finishRender;
+            return this;
+        }
+
+        /**
+         * Sets the {@link RenderTask#textView} field.
+         *
+         * @param textView The new value for
+         *                 {@link RenderTask#textView} field.
+         * @return The builder with {@link RenderTask.Builder#textView}
+         *         already set.
+         */
+        @Contract("_ -> this")
+        @Nonnull
+        RenderTask.Builder withTextView(@Nonnull final TextView textView) {
+            final String message =
+                String.format(Locale.US, "withTextView: %s", textView);
+            LOGGER_BUILDER.info(message);
+
             this.textView = textView;
+            return this;
+        }
+
+        /**
+         * Sets the {@link RenderTask#buttonRender} field.
+         *
+         * @param buttonRender The new value for
+         *                     {@link RenderTask#buttonRender} field.
+         * @return The builder with {@link RenderTask.Builder#buttonRender}
+         *         already set.
+         */
+        @Contract("_ -> this")
+        @Nonnull
+        RenderTask.Builder withButtonRender(@Nonnull final Button buttonRender) {
+            final String message =
+                String.format(Locale.US, "witButtonRender: %s", buttonRender);
+            LOGGER_BUILDER.info(message);
+
             this.buttonRender = buttonRender;
+            return this;
         }
 
         /**
