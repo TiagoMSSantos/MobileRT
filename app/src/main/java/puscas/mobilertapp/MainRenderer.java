@@ -703,23 +703,15 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         createMVPasUniformVariables(bbCamera, this.width, this.height, this.shaderProgramRaster);
 
         final int positionAttrib = 0;
-        UtilsGL.run(() -> GLES20.glVertexAttribPointer(positionAttrib,
-            VERTEX_COMPONENTS, GLES20.GL_FLOAT, false, 0, bbVertices));
-        UtilsGL.run(() -> GLES20.glEnableVertexAttribArray(positionAttrib));
+        defineAttributeData(bbVertices, positionAttrib);
 
         final int colorAttrib = 1;
-        UtilsGL.run(() -> GLES20.glVertexAttribPointer(colorAttrib,
-            VERTEX_COMPONENTS, GLES20.GL_FLOAT, false, 0, bbColors));
-        UtilsGL.run(() -> GLES20.glEnableVertexAttribArray(colorAttrib));
+        defineAttributeData(bbColors, colorAttrib);
 
         UtilsGL.run(() -> GLES20.glEnable(GLES20.GL_DEPTH_TEST));
 
         final int vertexCount = bbVertices.capacity() / (BYTES_IN_FLOAT * VERTEX_COMPONENTS);
-        final String msg = String.format(Locale.US, "vertexCount: %d", vertexCount);
-        LOGGER.info(msg);
-
         UtilsGL.run(() -> GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, vertexCount));
-        LOGGER.info("glDrawArrays Complete");
 
         UtilsGL.run(() -> GLES20.glDisable(GLES20.GL_DEPTH_TEST));
 
@@ -730,6 +722,19 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
             this.viewWidth, this.viewHeight, this.width, this.height);
         LOGGER.info("renderSceneToBitmap" + FINISHED);
         return newBitmapWithPreviewScene;
+    }
+
+    /**
+     * Helper method that defines an array of some vertex attribute data.
+     *
+     * @param byteBuffer The data to pass to OpenGL context.
+     * @param attribute  The index of the generic vertex attribute to be modified.
+     */
+    private static void defineAttributeData(@Nonnull final ByteBuffer byteBuffer,
+                                            final int attribute) {
+        UtilsGL.run(() -> GLES20.glVertexAttribPointer(attribute,
+            VERTEX_COMPONENTS, GLES20.GL_FLOAT, false, 0, byteBuffer));
+        UtilsGL.run(() -> GLES20.glEnableVertexAttribArray(attribute));
     }
 
     /**
