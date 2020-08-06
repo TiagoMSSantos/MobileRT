@@ -51,6 +51,7 @@ final class ViewActionButton implements ViewAction {
     ViewActionButton(final String expectedText) {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
+        Utils.handleInterruption(methodName);
 
         this.expectedText = expectedText;
     }
@@ -60,6 +61,7 @@ final class ViewActionButton implements ViewAction {
     public final Matcher<View> getConstraints() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
+        Utils.handleInterruption(methodName);
 
         return ViewMatchers.isAssignableFrom(Button.class);
     }
@@ -69,6 +71,7 @@ final class ViewActionButton implements ViewAction {
     public final String getDescription() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
+        Utils.handleInterruption(methodName);
 
         return "Click button";
     }

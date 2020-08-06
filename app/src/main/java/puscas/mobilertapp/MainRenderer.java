@@ -632,6 +632,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
                 Utils.logThrowable(ex, "MainRenderer#waitLastTask");
             } catch (final InterruptedException ex) {
                 Thread.currentThread().interrupt();
+            } finally {
                 Utils.handleInterruption("MainRenderer#waitLastTask");
             }
         }
@@ -955,6 +956,10 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         LOGGER.info("onSurfaceCreated");
 
         UtilsGL.resetOpenGLBuffers();
+
+        // Create geometry and texture coordinates buffers
+        this.floatBufferVertices = Utils.allocateBuffer(this.verticesTexture);
+        this.floatBufferTexture = Utils.allocateBuffer(this.texCoords);
 
         // Load shaders
         final int vertexShader = UtilsGL.loadShader(GLES20.GL_VERTEX_SHADER,
