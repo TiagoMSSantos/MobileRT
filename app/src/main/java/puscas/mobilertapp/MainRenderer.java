@@ -350,6 +350,8 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         this.samplesLight = lSamplesLight;
         this.numPrimitives = numPrimitives;
         this.numLights = numLights;
+
+        Preconditions.checkArgument(this.numPrimitives >= -1);
     }
 
     /**
@@ -433,7 +435,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * {@link MainRenderer#arrayColors} and {@link MainRenderer#arrayCamera}
      * native arrays.
      */
-    private void initArrays() throws LowMemoryException {
+    private void initPreviewArrays() throws LowMemoryException {
         LOGGER.info("initArrays");
         checksFreeMemory(1, this::freeArrays);
 
@@ -536,7 +538,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         this.viewHeight = heightView;
         this.firstFrame = true;
         this.rasterize = rasterize;
-        validateBitmap();
+        validateBitmap(this.bitmap);
         LOGGER.info(SET_BITMAP + FINISHED);
     }
 
@@ -845,8 +847,10 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
 
     /**
      * Draws the {@link Bitmap} field.
+     *
+     * @param bitmap The {@link Bitmap} to draw.
      */
-    private void drawBitmap() {
+    private void drawBitmap(final Bitmap bitmap) {
         LOGGER.info("drawBitmap");
         UtilsGL.run(() -> GLES20.glUseProgram(this.shaderProgram));
 
@@ -859,7 +863,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         UtilsGL.run(() -> GLES20.glDrawArrays(GLES20.GL_TRIANGLE_FAN, 0, vertexCount));
 
         UtilsGL.run(() -> GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0,
-            GLES20.GL_RGBA, this.bitmap, GLES20.GL_UNSIGNED_BYTE, 0));
+            GLES20.GL_RGBA, bitmap, GLES20.GL_UNSIGNED_BYTE, 0));
 
         LOGGER.info("drawBitmap" + FINISHED);
     }
@@ -872,54 +876,54 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
             throw new FailureException(ex);
         }
 
-        validateBitmap();
+        validateBitmap(this.bitmap);
         if (this.firstFrame) {
             LOGGER.info("onDrawFirstFrame");
 
             if (this.rasterize) {
                 this.rasterize = false;
                 try {
-                    initArrays();
+                    initPreviewArrays();
 
                     validateArrays();
                     Preconditions.checkArgument(this.numPrimitives > 0);
-                    validateBitmap();
+                    validateBitmap(this.bitmap);
 
                     this.bitmap = renderSceneToBitmap(this.arrayVertices,
                         this.arrayColors, this.arrayCamera, this.numPrimitives);
 
                     validateArrays();
                     Preconditions.checkArgument(this.numPrimitives > 0);
-                    validateBitmap();
+                    validateBitmap(this.bitmap);
                 } catch (final LowMemoryException ex) {
                     Utils.logThrowable(ex, "MainRenderer#onDrawFrame");
                     LOGGER.severe("Low memory to rasterize a frame!!!");
                 }
                 validateArrays();
                 Preconditions.checkArgument(this.numPrimitives > 0);
-                validateBitmap();
+                validateBitmap(this.bitmap);
             }
 
             try {
                 LOGGER.info("rtRenderIntoBitmap started");
-                validateBitmap();
+                validateBitmap(this.bitmap);
                 if (this.numThreads > 0) {
                     rtRenderIntoBitmap(this.bitmap, this.numThreads, true);
                 }
-                validateBitmap();
+                validateBitmap(this.bitmap);
                 LOGGER.info("rtRenderIntoBitmap" + FINISHED);
             } catch (final LowMemoryException ex) {
                 Utils.logThrowable(ex, "MainRenderer#onDrawFrame");
                 LOGGER.severe("rtRenderIntoBitmap finished with error");
             }
-            validateBitmap();
+            validateBitmap(this.bitmap);
             createAndLaunchRenderTask();
-            validateBitmap();
+            validateBitmap(this.bitmap);
             LOGGER.info("onDrawFirstFrame" + FINISHED);
         }
-        validateBitmap();
-        drawBitmap();
-        validateBitmap();
+        validateBitmap(this.bitmap);
+        drawBitmap(this.bitmap);
+        validateBitmap(this.bitmap);
         this.firstFrame = false;
     }
 
@@ -934,12 +938,14 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
 
     /**
      * Helper method that validates the {@link Bitmap}.
+     *
+     * @param bitmap The {@link Bitmap} to validate.
      */
-    private void validateBitmap() {
-        Preconditions.checkArgument(this.bitmap != null);
-        Preconditions.checkArgument(!this.bitmap.isRecycled());
-        Preconditions.checkArgument(this.bitmap.getWidth() == this.width);
-        Preconditions.checkArgument(this.bitmap.getHeight() == this.height);
+    private void validateBitmap(final Bitmap bitmap) {
+        Preconditions.checkArgument(bitmap != null);
+        Preconditions.checkArgument(!bitmap.isRecycled());
+        Preconditions.checkArgument(bitmap.getWidth() == this.width);
+        Preconditions.checkArgument(bitmap.getHeight() == this.height);
     }
 
     @Override
@@ -957,10 +963,6 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
 
         UtilsGL.resetOpenGLBuffers();
 
-        // Create geometry and texture coordinates buffers
-        this.floatBufferVertices = Utils.allocateBuffer(this.verticesTexture);
-        this.floatBufferTexture = Utils.allocateBuffer(this.texCoords);
-
         // Load shaders
         final int vertexShader = UtilsGL.loadShader(GLES20.GL_VERTEX_SHADER,
             this.vertexShaderCode);
@@ -974,15 +976,9 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         UtilsGL.run(() -> GLES20.glAttachShader(this.shaderProgram, vertexShader));
         UtilsGL.run(() -> GLES20.glAttachShader(this.shaderProgram, fragmentShader));
 
-        final int numTextures = 1;
-        final int[] textureHandle = new int[numTextures];
-        UtilsGL.run(() -> GLES20.glGenTextures(numTextures, textureHandle, 0));
-        if (textureHandle[0] == 0) {
-            final String msg = "Error loading texture.";
-            LOGGER.severe(msg);
-            throw new FailureException(msg);
-        }
-
+        // Create geometry and texture coordinates buffers
+        this.floatBufferVertices = Utils.allocateBuffer(this.verticesTexture);
+        this.floatBufferTexture = Utils.allocateBuffer(this.texCoords);
 
         // Bind Attributes
         UtilsGL.connectOpenGLAttribute(this.floatBufferVertices, 0,
