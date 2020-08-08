@@ -870,13 +870,6 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onDrawFrame(@Nonnull final GL10 gl) {
-        try {
-            checksFreeMemory(2, () -> LOGGER.severe("SYSTEM WITH LOW MEMORY!!!"));
-        } catch (final LowMemoryException ex) {
-            throw new FailureException(ex);
-        }
-
-        validateBitmap(this.bitmap);
         if (this.firstFrame) {
             LOGGER.info("onDrawFirstFrame");
 
@@ -885,45 +878,28 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
                 try {
                     initPreviewArrays();
 
-                    validateArrays();
-                    Preconditions.checkArgument(this.numPrimitives > 0);
-                    validateBitmap(this.bitmap);
-
                     this.bitmap = renderSceneToBitmap(this.arrayVertices,
                         this.arrayColors, this.arrayCamera, this.numPrimitives);
-
-                    validateArrays();
-                    Preconditions.checkArgument(this.numPrimitives > 0);
-                    validateBitmap(this.bitmap);
                 } catch (final LowMemoryException ex) {
                     Utils.logThrowable(ex, "MainRenderer#onDrawFrame");
-                    LOGGER.severe("Low memory to rasterize a frame!!!");
                 }
-                validateArrays();
-                Preconditions.checkArgument(this.numPrimitives > 0);
-                validateBitmap(this.bitmap);
             }
 
             try {
                 LOGGER.info("rtRenderIntoBitmap started");
-                validateBitmap(this.bitmap);
                 if (this.numThreads > 0) {
                     rtRenderIntoBitmap(this.bitmap, this.numThreads, true);
                 }
-                validateBitmap(this.bitmap);
                 LOGGER.info("rtRenderIntoBitmap" + FINISHED);
             } catch (final LowMemoryException ex) {
                 Utils.logThrowable(ex, "MainRenderer#onDrawFrame");
-                LOGGER.severe("rtRenderIntoBitmap finished with error");
             }
-            validateBitmap(this.bitmap);
+
             createAndLaunchRenderTask();
-            validateBitmap(this.bitmap);
             LOGGER.info("onDrawFirstFrame" + FINISHED);
         }
-        validateBitmap(this.bitmap);
+
         drawBitmap(this.bitmap);
-        validateBitmap(this.bitmap);
         this.firstFrame = false;
     }
 
