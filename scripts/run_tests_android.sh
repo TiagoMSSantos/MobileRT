@@ -209,6 +209,7 @@ echo "pid of instrumentation tests: '${pid_instrumentation_tests}'";
 
 # Wait a bit for the instrumentation tests process to finish
 callCommand sleep 2;
+# TODO: sometimes adb server fails at this point
 callCommand adb wait-for-device;
 
 echo "Run unit tests";

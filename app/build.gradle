@@ -203,7 +203,8 @@ android {
         setIgnoreTestSources false
         setIgnoreWarnings false
         setQuiet false
-        enable 'WrongThreadInterprocedural'
+        enable 'WrongThreadInterprocedural', 'RtlHardcoded','RtlCompat', 'RtlEnabled'
+        lintConfig file('lint.xml')
     }
 
     // Add resources directories to tests

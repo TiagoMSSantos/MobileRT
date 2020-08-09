@@ -33,8 +33,10 @@ buildscript {
         println("OS: " + currentOS)
         if (Os.isFamily(Os.FAMILY_MAC)) {
             println("Detected MacOS.")
+            // Must be 3.5.3 to be compatible in CI
             classpath 'com.android.tools.build:gradle:3.5.3'
         } else {
+            // Must be 3.6.3 to be compatible in CI
             classpath 'com.android.tools.build:gradle:3.6.3'
         }
 //        classpath 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.5.1'
