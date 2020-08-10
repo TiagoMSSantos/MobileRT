@@ -4,16 +4,12 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.ContextWrapper;
-import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import org.jetbrains.annotations.Contract;
-
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -22,10 +18,9 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
-
-import javax.annotation.Nonnull;
-
 import java8.util.Optional;
+import javax.annotation.Nonnull;
+import org.jetbrains.annotations.Contract;
 import puscas.mobilertapp.exceptions.LowMemoryException;
 import puscas.mobilertapp.utils.ConstantsError;
 import puscas.mobilertapp.utils.ConstantsMethods;
@@ -33,8 +28,7 @@ import puscas.mobilertapp.utils.ConstantsRenderer;
 import puscas.mobilertapp.utils.ConstantsToast;
 import puscas.mobilertapp.utils.State;
 import puscas.mobilertapp.utils.Utils;
-
-import static puscas.mobilertapp.utils.ConstantsMethods.FINISHED;
+import puscas.mobilertapp.utils.UtilsLogging;
 
 /**
  * The {@link GLSurfaceView} to show the scene being rendered.
@@ -50,12 +44,6 @@ public final class DrawView extends GLSurfaceView {
      * The {@link GLSurfaceView.Renderer}.
      */
     private final MainRenderer renderer = new MainRenderer();
-
-    /**
-     * @see Activity#isChangingConfigurations()
-     */
-    private boolean changingConfigs = false;
-
     /**
      * The {@link ExecutorService} which holds
      * {@link ConstantsRenderer#NUMBER_THREADS} number of threads that will
@@ -63,7 +51,10 @@ public final class DrawView extends GLSurfaceView {
      */
     private final ExecutorService executorService =
         Executors.newFixedThreadPool(ConstantsRenderer.NUMBER_THREADS);
-
+    /**
+     * @see Activity#isChangingConfigurations()
+     */
+    private boolean changingConfigs = false;
     /**
      * The last task submitted to {@link ExecutorService}.
      */
@@ -168,7 +159,8 @@ public final class DrawView extends GLSurfaceView {
         waitLastTask();
         this.renderer.updateButton(R.string.render);
 
-        LOGGER.info("stopDrawing" + FINISHED);
+        final String message = "stopDrawing" + ConstantsMethods.FINISHED;
+        LOGGER.info(message);
     }
 
     /**
@@ -189,14 +181,17 @@ public final class DrawView extends GLSurfaceView {
         rtStartRender(false);
 
         this.lastTask = this.executorService.submit(() -> {
-            LOGGER.info(ConstantsMethods.RENDER_SCENE + " executor");
+            final String message = ConstantsMethods.RENDER_SCENE + " executor";
+            LOGGER.info(message);
 
             this.renderer.waitLastTask();
             rtStartRender(true);
             try {
                 createScene(config, numThreads, rasterize);
                 requestRender();
-                LOGGER.info(ConstantsMethods.RENDER_SCENE + " executor" + FINISHED);
+                final String messageFinished = ConstantsMethods.RENDER_SCENE + " executor" +
+                    ConstantsMethods.FINISHED;
+                LOGGER.info(messageFinished);
 
                 return Boolean.TRUE;
             } catch (final LowMemoryException ex) {
@@ -205,7 +200,8 @@ public final class DrawView extends GLSurfaceView {
                 warningError(ex, ConstantsToast.COULD_NOT_LOAD_THE_SCENE);
             }
 
-            LOGGER.severe(ConstantsMethods.RENDER_SCENE + " executor failed");
+            final String messageFailed = ConstantsMethods.RENDER_SCENE + " executor failed";
+            LOGGER.severe(messageFailed);
             this.renderer.rtFinishRender();
             post(() -> this.renderer.updateButton(R.string.render));
 
@@ -213,7 +209,8 @@ public final class DrawView extends GLSurfaceView {
         });
         this.renderer.updateButton(R.string.stop);
 
-        LOGGER.info(ConstantsMethods.RENDER_SCENE + FINISHED);
+        final String messageFinished2 = ConstantsMethods.RENDER_SCENE + ConstantsMethods.FINISHED;
+        LOGGER.info(messageFinished2);
     }
 
     /**
@@ -228,7 +225,7 @@ public final class DrawView extends GLSurfaceView {
                 try {
                     task.get(1L, TimeUnit.DAYS);
                 } catch (final ExecutionException | TimeoutException | RuntimeException ex) {
-                    Utils.logThrowable(ex, "DrawView#waitLastTask");
+                    UtilsLogging.logThrowable(ex, "DrawView#waitLastTask");
                 } catch (final InterruptedException ex) {
                     Thread.currentThread().interrupt();
                 } finally {
@@ -236,7 +233,8 @@ public final class DrawView extends GLSurfaceView {
                 }
             });
 
-        LOGGER.info("waitLastTask" + FINISHED);
+        final String message = "waitLastTask" + ConstantsMethods.FINISHED;
+        LOGGER.info(message);
     }
 
     /**
@@ -268,7 +266,8 @@ public final class DrawView extends GLSurfaceView {
     private void warningError(@Nonnull final Exception exception,
                               final CharSequence errorMessage) {
         this.renderer.resetStats();
-        LOGGER.severe(exception.getClass() + ":" + exception.getMessage());
+        final String message = exception.getClass() + ":" + exception.getMessage();
+        LOGGER.severe(message);
         post(() -> Toast.makeText(getContext(), errorMessage, Toast.LENGTH_LONG).show());
     }
 
@@ -302,7 +301,9 @@ public final class DrawView extends GLSurfaceView {
         final Activity activity = getActivity();
         this.changingConfigs = activity.isChangingConfigurations();
         stopDrawing();
-        LOGGER.info("onPause" + FINISHED);
+
+        final String message = "onPause" + ConstantsMethods.FINISHED;
+        LOGGER.info(message);
     }
 
     @Override
@@ -313,7 +314,9 @@ public final class DrawView extends GLSurfaceView {
         if (hasWindowFocus && getVisibility() == View.GONE) {
             setVisibility(View.VISIBLE);
         }
-        LOGGER.info("onWindowFocusChanged" + FINISHED);
+
+        final String message = "onWindowFocusChanged" + ConstantsMethods.FINISHED;
+        LOGGER.info(message);
     }
 
     @Override
@@ -321,7 +324,8 @@ public final class DrawView extends GLSurfaceView {
         LOGGER.info(ConstantsMethods.ON_DETACHED_FROM_WINDOW);
         super.onDetachedFromWindow();
 
-        LOGGER.info(ConstantsMethods.ON_DETACHED_FROM_WINDOW + FINISHED);
+        final String message = ConstantsMethods.ON_DETACHED_FROM_WINDOW + ConstantsMethods.FINISHED;
+        LOGGER.info(message);
     }
 
     @Override
@@ -337,9 +341,9 @@ public final class DrawView extends GLSurfaceView {
      * classes like {@link MainActivity} terminate properly the Ray Tracing
      * engine without having to not obey the law of Demeter.
      *
-     * @see <a href="https://en.wikipedia.org/wiki/Law_of_Demeter">Law of Demeter</a>
      * @implNote This method calls {@link MainRenderer#rtFinishRender()} and
      * also {@link MainRenderer#freeArrays()}.
+     * @see <a href="https://en.wikipedia.org/wiki/Law_of_Demeter">Law of Demeter</a>
      */
     void finishRenderer() {
         LOGGER.info("finishRenderer");
@@ -372,11 +376,6 @@ public final class DrawView extends GLSurfaceView {
     void prepareRenderer(final Map<Integer, String> shadersCode,
                          final Map<Integer, String> shadersPreviewCode,
                          final Button button) {
-        this.renderer.setBitmap();
-        this.renderer.setVertexShaderCode(shadersCode.get(GLES20.GL_VERTEX_SHADER));
-        this.renderer.setFragmentShaderCode(shadersCode.get(GLES20.GL_FRAGMENT_SHADER));
-        this.renderer.setVertexShaderCodeRaster(shadersPreviewCode.get(GLES20.GL_VERTEX_SHADER));
-        this.renderer.setFragmentShaderCodeRaster(shadersPreviewCode.get(GLES20.GL_FRAGMENT_SHADER));
-        this.renderer.setButtonRender(button);
+        this.renderer.prepareRenderer(shadersCode, shadersPreviewCode, button);
     }
 }

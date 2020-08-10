@@ -7,18 +7,14 @@ import android.view.ViewGroup;
 import android.view.ViewManager;
 import android.widget.NumberPicker;
 import android.widget.TextView;
-
+import java.util.logging.Logger;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.assertj.core.api.Assertions;
 import org.jetbrains.annotations.Contract;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.logging.Logger;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import puscas.mobilertapp.MainActivity;
 import puscas.mobilertapp.exceptions.FailureException;
 
@@ -31,24 +27,6 @@ public final class CustomNumberPickerTest {
      * The {@link Logger} for this class.
      */
     private static final Logger LOGGER = Logger.getLogger(CustomNumberPickerTest.class.getName());
-
-    /**
-     * Setup method called before each test.
-     */
-    @Before
-    public void setUp() {
-        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
-    }
-
-    /**
-     * Tear down method called after each test.
-     */
-    @After
-    public void tearDown() {
-        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
-    }
 
     /**
      * Helper method that creates an {@link AttributeSet}.
@@ -101,43 +79,50 @@ public final class CustomNumberPickerTest {
 
             @Contract(pure = true)
             @Override
-            public int getAttributeListValue(final String namespace, final String attribute, final String[] options, final int defaultValue) {
+            public int getAttributeListValue(final String namespace, final String attribute,
+                                             final String[] options, final int defaultValue) {
                 return 0;
             }
 
             @Contract(pure = true)
             @Override
-            public boolean getAttributeBooleanValue(final String namespace, final String attribute, final boolean defaultValue) {
+            public boolean getAttributeBooleanValue(final String namespace, final String attribute,
+                                                    final boolean defaultValue) {
                 return false;
             }
 
             @Contract(pure = true)
             @Override
-            public int getAttributeResourceValue(final String namespace, final String attribute, final int defaultValue) {
+            public int getAttributeResourceValue(final String namespace, final String attribute,
+                                                 final int defaultValue) {
                 return 0;
             }
 
             @Contract(pure = true)
             @Override
-            public int getAttributeIntValue(final String namespace, final String attribute, final int defaultValue) {
+            public int getAttributeIntValue(final String namespace, final String attribute,
+                                            final int defaultValue) {
                 return 0;
             }
 
             @Contract(pure = true)
             @Override
-            public int getAttributeUnsignedIntValue(final String namespace, final String attribute, final int defaultValue) {
+            public int getAttributeUnsignedIntValue(final String namespace, final String attribute,
+                                                    final int defaultValue) {
                 return 0;
             }
 
             @Contract(pure = true)
             @Override
-            public float getAttributeFloatValue(final String namespace, final String attribute, final float defaultValue) {
+            public float getAttributeFloatValue(final String namespace, final String attribute,
+                                                final float defaultValue) {
                 return 0.0F;
             }
 
             @Contract(pure = true)
             @Override
-            public int getAttributeListValue(final int index, final String[] options, final int defaultValue) {
+            public int getAttributeListValue(final int index, final String[] options,
+                                             final int defaultValue) {
                 return 0;
             }
 
@@ -197,6 +182,24 @@ public final class CustomNumberPickerTest {
                 return 0;
             }
         };
+    }
+
+    /**
+     * Setup method called before each test.
+     */
+    @Before
+    public void setUp() {
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
+    }
+
+    /**
+     * Tear down method called after each test.
+     */
+    @After
+    public void tearDown() {
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
     }
 
     /**

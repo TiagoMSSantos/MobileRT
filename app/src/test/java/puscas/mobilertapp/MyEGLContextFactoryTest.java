@@ -2,15 +2,7 @@ package puscas.mobilertapp;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
-
-import org.assertj.core.api.Assertions;
-import org.jetbrains.annotations.Contract;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import java.util.logging.Logger;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.microedition.khronos.egl.EGL10;
@@ -18,6 +10,11 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.egl.EGLSurface;
+import org.assertj.core.api.Assertions;
+import org.jetbrains.annotations.Contract;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * The test suite for the {@link MyEGLContextFactory} class.
@@ -30,24 +27,6 @@ public final class MyEGLContextFactoryTest {
     private static final Logger LOGGER = Logger.getLogger(MyEGLContextFactoryTest.class.getName());
 
     /**
-     * Setup method called before each test.
-     */
-    @Before
-    public void setUp() {
-        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
-    }
-
-    /**
-     * Tear down method called after each test.
-     */
-    @After
-    public void tearDown() {
-        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
-    }
-
-    /**
      * Helper method that creates a {@link EGL10}.
      *
      * @return A new {@link EGL10}.
@@ -58,41 +37,54 @@ public final class MyEGLContextFactoryTest {
         return new EGL10() {
             @Contract(pure = true)
             @Override
-            public boolean eglChooseConfig(final EGLDisplay display, final int[] attrib_list, final EGLConfig[] configs, final int config_size, final int[] num_config) {
+            public boolean eglChooseConfig(final EGLDisplay display, final int[] attrib_list,
+                                           final EGLConfig[] configs, final int config_size,
+                                           final int[] num_config) {
                 return false;
             }
 
             @Contract(pure = true)
             @Override
-            public boolean eglCopyBuffers(final EGLDisplay display, final EGLSurface surface, final Object native_pixmap) {
+            public boolean eglCopyBuffers(final EGLDisplay display, final EGLSurface surface,
+                                          final Object native_pixmap) {
                 return false;
             }
 
             @Contract(pure = true)
             @Nullable
             @Override
-            public EGLContext eglCreateContext(final EGLDisplay display, final EGLConfig config, final EGLContext share_context, final int[] attrib_list) {
+            public EGLContext eglCreateContext(final EGLDisplay display, final EGLConfig config,
+                                               final EGLContext share_context,
+                                               final int[] attrib_list) {
                 return null;
             }
 
             @Contract(pure = true)
             @Nullable
             @Override
-            public EGLSurface eglCreatePbufferSurface(final EGLDisplay display, final EGLConfig config, final int[] attrib_list) {
+            public EGLSurface eglCreatePbufferSurface(final EGLDisplay display,
+                                                      final EGLConfig config,
+                                                      final int[] attrib_list) {
                 return null;
             }
 
             @Contract(pure = true)
             @Nullable
             @Override
-            public EGLSurface eglCreatePixmapSurface(final EGLDisplay display, final EGLConfig config, final Object native_pixmap, final int[] attrib_list) {
+            public EGLSurface eglCreatePixmapSurface(final EGLDisplay display,
+                                                     final EGLConfig config,
+                                                     final Object native_pixmap,
+                                                     final int[] attrib_list) {
                 return null;
             }
 
             @Contract(pure = true)
             @Nullable
             @Override
-            public EGLSurface eglCreateWindowSurface(final EGLDisplay display, final EGLConfig config, final Object native_window, final int[] attrib_list) {
+            public EGLSurface eglCreateWindowSurface(final EGLDisplay display,
+                                                     final EGLConfig config,
+                                                     final Object native_window,
+                                                     final int[] attrib_list) {
                 return null;
             }
 
@@ -110,13 +102,15 @@ public final class MyEGLContextFactoryTest {
 
             @Contract(pure = true)
             @Override
-            public boolean eglGetConfigAttrib(final EGLDisplay display, final EGLConfig config, final int attribute, final int[] value) {
+            public boolean eglGetConfigAttrib(final EGLDisplay display, final EGLConfig config,
+                                              final int attribute, final int[] value) {
                 return false;
             }
 
             @Contract(pure = true)
             @Override
-            public boolean eglGetConfigs(final EGLDisplay display, final EGLConfig[] configs, final int config_size, final int[] num_config) {
+            public boolean eglGetConfigs(final EGLDisplay display, final EGLConfig[] configs,
+                                         final int config_size, final int[] num_config) {
                 return false;
             }
 
@@ -162,12 +156,15 @@ public final class MyEGLContextFactoryTest {
 
             @Contract(pure = true)
             @Override
-            public boolean eglMakeCurrent(final EGLDisplay display, final EGLSurface draw, final EGLSurface read, EGLContext context) {
+            public boolean eglMakeCurrent(final EGLDisplay display, final EGLSurface draw,
+                                          final EGLSurface read, final EGLContext context) {
                 return false;
             }
 
             @Contract(pure = true)
-            @Override public boolean eglQueryContext(final EGLDisplay display, final EGLContext context, final int attribute, final int[] value) {
+            @Override
+            public boolean eglQueryContext(final EGLDisplay display, final EGLContext context,
+                                           final int attribute, final int[] value) {
                 return false;
             }
 
@@ -180,7 +177,8 @@ public final class MyEGLContextFactoryTest {
 
             @Contract(pure = true)
             @Override
-            public boolean eglQuerySurface(final EGLDisplay display, final EGLSurface surface, int attribute, int[] value) {
+            public boolean eglQuerySurface(final EGLDisplay display, final EGLSurface surface,
+                                           final int attribute, final int[] value) {
                 return false;
             }
 
@@ -211,6 +209,24 @@ public final class MyEGLContextFactoryTest {
     }
 
     /**
+     * Setup method called before each test.
+     */
+    @Before
+    public void setUp() {
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
+    }
+
+    /**
+     * Tear down method called after each test.
+     */
+    @After
+    public void tearDown() {
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
+    }
+
+    /**
      * Tests that without providing {@link EGLDisplay} and {@link EGLConfig},
      * the {@link GLSurfaceView.EGLContextFactory} doesn't create the
      * {@link EGLContext}.
@@ -223,7 +239,8 @@ public final class MyEGLContextFactoryTest {
         final Context context = new MainActivity();
         final DrawView drawView = new DrawView(context);
 
-        final GLSurfaceView.EGLContextFactory myEGLContextFactory = new MyEGLContextFactory(drawView);
+        final GLSurfaceView.EGLContextFactory myEGLContextFactory =
+            new MyEGLContextFactory(drawView);
         final EGL10 egl = createEGL();
 
         final EGLContext eglContext = myEGLContextFactory.createContext(egl, null, null);

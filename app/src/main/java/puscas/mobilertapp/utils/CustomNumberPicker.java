@@ -7,11 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.NumberPicker;
 import android.widget.TextView;
-
 import java.util.logging.Logger;
-
 import javax.annotation.Nonnull;
-
 import puscas.mobilertapp.exceptions.FailureException;
 
 /**

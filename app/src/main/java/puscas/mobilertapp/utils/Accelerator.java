@@ -1,12 +1,9 @@
 package puscas.mobilertapp.utils;
 
-import org.jetbrains.annotations.Contract;
-
 import java.util.logging.Logger;
-
-import javax.annotation.Nonnull;
-
 import java8.util.J8Arrays;
+import javax.annotation.Nonnull;
+import org.jetbrains.annotations.Contract;
 
 /**
  * The available acceleration structures for the Ray Tracer engine.
@@ -49,17 +46,8 @@ public enum Accelerator {
      * @param name The name of the acceleration structure for the Ray Tracer engine.
      */
     @Contract(pure = true)
-    @Nonnull
-    Accelerator(final String name) {
+    @Nonnull Accelerator(final String name) {
         this.name = name;
-    }
-
-    /**
-     * Gets the name of the accelerator for the Ray Tracer engine.
-     */
-    @Contract(pure = true)
-    private String getName() {
-        return this.name;
     }
 
     /**
@@ -73,5 +61,13 @@ public enum Accelerator {
         return J8Arrays.stream(values())
             .map(Accelerator::getName)
             .toArray(String[]::new);
+    }
+
+    /**
+     * Gets the name of the accelerator for the Ray Tracer engine.
+     */
+    @Contract(pure = true)
+    private String getName() {
+        return this.name;
     }
 }

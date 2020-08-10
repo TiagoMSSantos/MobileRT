@@ -18,8 +18,8 @@
 [![BCH compliance](https://bettercodehub.com/edge/badge/TiagoMSSantos/MobileRT?branch=master)](https://bettercodehub.com/results/TiagoMSSantos/MobileRT)
 [![Maintainability](https://api.codeclimate.com/v1/badges/6a80c282c888f405d779/maintainability)](https://codeclimate.com/github/TiagoMSSantos/MobileRT/maintainability)
 [![codebeat badge](https://codebeat.co/badges/337fce91-f222-434d-b904-6206ea5e29f0)](https://codebeat.co/projects/github-com-tiagomssantos-mobilert-master)
-[![Copy Paste Status](https://tiagomssantos.github.io/MobileRT/jscpd-report/jscpd-badge.svg)](https://tiagomssantos.github.io/MobileRT/jscpd-report/jscpd-report)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/f05b1285e19a476d8e6c0da1273f5e18)](https://app.codacy.com/manual/TiagoMSSantos/MobileRT?utm_source=github.com&utm_medium=referral&utm_content=TiagoMSSantos/MobileRT&utm_campaign=Badge_Grade_Settings)
+[![Copy Paste Status](https://tiagomssantos.github.io/MobileRT/jscpd-report/jscpd-badge.svg)](https://tiagomssantos.github.io/MobileRT/jscpd-report/jscpd-report)
 
 
 <img src="Example_Android.gif" alt="MobileRT: Android" width="400"/>

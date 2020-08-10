@@ -1,12 +1,9 @@
 package puscas.mobilertapp.utils;
 
-import org.jetbrains.annotations.Contract;
-
 import java.util.logging.Logger;
-
-import javax.annotation.Nonnull;
-
 import java8.util.J8Arrays;
+import javax.annotation.Nonnull;
+import org.jetbrains.annotations.Contract;
 
 /**
  * The available shaders for the Ray Tracer engine.
@@ -53,17 +50,8 @@ public enum Shader {
      *
      * @param name The new shader for the Ray Tracer engine.
      */
-    @Contract(pure = true)
-    Shader(final String name) {
+    @Contract(pure = true) Shader(final String name) {
         this.name = name;
-    }
-
-    /**
-     * Gets the name of the shader for the Ray Tracer engine.
-     */
-    @Contract(pure = true)
-    private String getName() {
-        return this.name;
     }
 
     /**
@@ -76,5 +64,13 @@ public enum Shader {
         return J8Arrays.stream(values())
             .map(Shader::getName)
             .toArray(String[]::new);
+    }
+
+    /**
+     * Gets the name of the shader for the Ray Tracer engine.
+     */
+    @Contract(pure = true)
+    private String getName() {
+        return this.name;
     }
 }

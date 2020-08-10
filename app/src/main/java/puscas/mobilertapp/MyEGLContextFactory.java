@@ -2,19 +2,15 @@ package puscas.mobilertapp;
 
 import android.app.Activity;
 import android.opengl.GLSurfaceView;
-
-import org.jetbrains.annotations.Contract;
-
 import java.util.logging.Logger;
-
+import java8.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
-
-import java8.util.Objects;
+import org.jetbrains.annotations.Contract;
 import puscas.mobilertapp.utils.ConstantsError;
 
 /**
@@ -23,15 +19,13 @@ import puscas.mobilertapp.utils.ConstantsError;
 public class MyEGLContextFactory implements GLSurfaceView.EGLContextFactory {
 
     /**
-     * The {@link Logger} for this class.
-     */
-    private static final Logger LOGGER = Logger.getLogger(MyEGLContextFactory.class.getName());
-
-    /**
      * The "Embedded-System Graphics Library" version.
      */
     static final int EGL_CONTEXT_CLIENT_VERSION = 2;
-
+    /**
+     * The {@link Logger} for this class.
+     */
+    private static final Logger LOGGER = Logger.getLogger(MyEGLContextFactory.class.getName());
     /**
      * The {@link GLSurfaceView} to be used to get the
      * {@link Activity#isChangingConfigurations()}.
@@ -48,8 +42,7 @@ public class MyEGLContextFactory implements GLSurfaceView.EGLContextFactory {
      *
      * @param drawView The {@link GLSurfaceView} to be used.
      */
-    @Contract(pure = true)
-    MyEGLContextFactory(final DrawView drawView) {
+    @Contract(pure = true) MyEGLContextFactory(final DrawView drawView) {
         this.drawView = drawView;
         this.eglContext = null;
     }

@@ -4,9 +4,7 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.os.Build;
 import android.os.Environment;
-
 import androidx.core.content.ContextCompat;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -14,10 +12,8 @@ import java.io.InputStream;
 import java.util.Locale;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
-
-import javax.annotation.Nonnull;
-
 import java8.util.Optional;
+import javax.annotation.Nonnull;
 import puscas.mobilertapp.exceptions.FailureException;
 
 /**
@@ -58,7 +54,7 @@ public final class UtilsContext {
     public static String getSDCardPath(@Nonnull final Context context) {
         LOGGER.info("Getting SD card path");
         final File[] dirs = ContextCompat.getExternalFilesDirs(context, null);
-        final String sdCardPath = Optional.ofNullable(dirs.length > 1? dirs[1] : dirs[0])
+        final String sdCardPath = Optional.ofNullable(dirs.length > 1 ? dirs[1] : dirs[0])
             .map(File::getAbsolutePath)
             .orElse(Environment.getExternalStorageDirectory().getAbsolutePath());
         return cleanSDCardPath(sdCardPath);
@@ -86,8 +82,8 @@ public final class UtilsContext {
     }
 
     /**
-     * Helper method that gets the number of CPU cores in the Android device for
-     * devices with the SDK API version <= {@link #OLD_API_GET_CORES}.
+     * Helper method that gets the number of available CPU cores in the Android
+     * device for devices with the SDK API version <= {@link #OLD_API_GET_CORES}.
      *
      * @return The number of CPU cores.
      */
@@ -101,7 +97,7 @@ public final class UtilsContext {
     }
 
     /**
-     * Helper method which gets the number of CPU cores.
+     * Helper method which gets the number of available CPU cores.
      *
      * @return The number of CPU cores.
      */

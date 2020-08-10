@@ -2,21 +2,15 @@ package puscas.mobilertapp;
 
 import android.view.View;
 import android.widget.NumberPicker;
-
 import androidx.test.espresso.UiController;
 import androidx.test.espresso.ViewAction;
 import androidx.test.espresso.matcher.ViewMatchers;
-
+import java.util.logging.Logger;
+import javax.annotation.Nonnull;
 import org.hamcrest.Matcher;
 import org.jetbrains.annotations.Contract;
-
-import java.util.logging.Logger;
-
-import javax.annotation.Nonnull;
-
-import puscas.mobilertapp.utils.Utils;
-
-import static puscas.mobilertapp.utils.ConstantsMethods.FINISHED;
+import org.junit.jupiter.api.Assertions;
+import puscas.mobilertapp.utils.ConstantsMethods;
 
 /**
  * Auxiliary class which represents a {@link NumberPicker}.
@@ -39,11 +33,9 @@ final class ViewActionNumberPicker implements ViewAction {
      *
      * @param newValue The value for the {@link NumberPicker}.
      */
-    @Contract(pure = true)
-    ViewActionNumberPicker(final int newValue) {
+    @Contract(pure = true) ViewActionNumberPicker(final int newValue) {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
-        Utils.handleInterruption(methodName);
 
         this.newValue = newValue;
     }
@@ -53,7 +45,6 @@ final class ViewActionNumberPicker implements ViewAction {
     public final Matcher<View> getConstraints() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
-        Utils.handleInterruption(methodName);
 
         return ViewMatchers.isAssignableFrom(NumberPicker.class);
     }
@@ -63,7 +54,6 @@ final class ViewActionNumberPicker implements ViewAction {
     public final String getDescription() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
-        Utils.handleInterruption(methodName);
 
         return "Set the value of a NumberPicker: " + this.newValue;
     }
@@ -73,10 +63,17 @@ final class ViewActionNumberPicker implements ViewAction {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
+        uiController.loopMainThreadUntilIdle();
         final NumberPicker numberPicker = (NumberPicker) view;
         numberPicker.setValue(this.newValue);
-        Utils.handleInterruption(methodName);
+        Assertions.assertEquals(this.newValue, numberPicker.getValue(),
+            "The setted value should be '" + this.newValue + "'");
 
-        LOGGER.info(methodName + FINISHED);
+        uiController.loopMainThreadUntilIdle();
+        Assertions.assertEquals(this.newValue, numberPicker.getValue(),
+            "The setted value should be '" + this.newValue + "'");
+
+        final String message = methodName + ConstantsMethods.FINISHED;
+        LOGGER.info(message);
     }
 }

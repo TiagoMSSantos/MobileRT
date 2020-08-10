@@ -19,27 +19,21 @@ import android.widget.CheckBox;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
-
 import java.util.Locale;
 import java.util.logging.Logger;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import java8.util.Optional;
 import java8.util.stream.IntStreams;
 import java8.util.stream.StreamSupport;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import puscas.mobilertapp.exceptions.FailureException;
 import puscas.mobilertapp.utils.Accelerator;
 import puscas.mobilertapp.utils.ConstantsMethods;
-import puscas.mobilertapp.utils.ConstantsRenderer;
 import puscas.mobilertapp.utils.ConstantsToast;
 import puscas.mobilertapp.utils.ConstantsUI;
 import puscas.mobilertapp.utils.Scene;
@@ -48,8 +42,7 @@ import puscas.mobilertapp.utils.State;
 import puscas.mobilertapp.utils.Utils;
 import puscas.mobilertapp.utils.UtilsContext;
 import puscas.mobilertapp.utils.UtilsGL;
-
-import static puscas.mobilertapp.utils.ConstantsMethods.FINISHED;
+import puscas.mobilertapp.utils.UtilsLogging;
 
 /**
  * The main {@link Activity} for the Android User Interface.
@@ -61,11 +54,30 @@ public final class MainActivity extends Activity {
      */
     private static final Logger LOGGER = Logger.getLogger(MainActivity.class.getName());
 
+
+    /*
+     ***********************************************************************
+     * Private static fields
+     ***********************************************************************
+     */
+    /**
+     * The request code for the new {@link Activity} to open an OBJ file.
+     */
+    private static final int OPEN_FILE_REQUEST_CODE = 1;
+    /**
+     * The OpenGL ES version required to run this application.
+     */
+    private static final int REQUIRED_OPENGL_VERSION = 0x20000;
     /**
      * The global counter of how many times the button was clicked.
      */
     private static long clickCounter = 0L;
 
+    /*
+     ***********************************************************************
+     * Static class initializer
+     ***********************************************************************
+     */
     static {
         try {
             System.loadLibrary("MobileRT");
@@ -74,14 +86,16 @@ public final class MainActivity extends Activity {
         } catch (final RuntimeException ex) {
             throw new FailureException(ex);
         } catch (final UnsatisfiedLinkError ex) {
-            Utils.logThrowable(ex, "MainActivity");
+            UtilsLogging.logThrowable(ex, "MainActivity");
         }
     }
 
-    /**
-     * The request code for the new {@link Activity} to open an OBJ file.
+
+    /*
+     ***********************************************************************
+     * Private instance fields
+     ***********************************************************************
      */
-    private static final int OPEN_FILE_REQUEST_CODE = 1;
 
     /**
      * The custom {@link GLSurfaceView} for displaying OpenGL rendering.
@@ -136,6 +150,259 @@ public final class MainActivity extends Activity {
     private String sceneFilePath = null;
 
     /**
+     * Helper method that checks if the supported OpenGL ES version is
+     * the version 2 or greater.
+     *
+     * @param activityManager The {@link ActivityManager} which contains the
+     *                        {@link ConfigurationInfo}.
+     */
+    private static void checksOpenGlVersion(final ActivityManager activityManager) {
+        final ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
+        final boolean supportES2 = (configurationInfo.reqGlEsVersion
+            >= REQUIRED_OPENGL_VERSION);
+
+        if (!supportES2 || !UtilsGL.checkGL20Support()) {
+            final String msg = "Your device doesn't support ES 2. ("
+                + configurationInfo.reqGlEsVersion + ')';
+            throw new FailureException(msg);
+        }
+    }
+
+    /**
+     * Initializes a {@link NumberPicker}.
+     *
+     * @param numberPicker The {@link NumberPicker} to initialize.
+     * @param defaultValue The default value to put in the {@link NumberPicker}.
+     * @param names        The values to be displayed in the {@link NumberPicker}.
+     */
+    private static void initializePicker(final NumberPicker numberPicker,
+                                         final int defaultValue,
+                                         final String[] names) {
+        numberPicker.setMinValue(0);
+        numberPicker.setMaxValue(names.length - 1);
+        numberPicker.setWrapSelectorWheel(true);
+        numberPicker.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+        numberPicker.setValue(defaultValue);
+        numberPicker.setDisplayedValues(names);
+    }
+
+    /*
+     ***********************************************************************
+     * Overloaded methods
+     ***********************************************************************
+     */
+    @Override
+    public void onCreate(@Nullable final Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        LOGGER.info("onCreate");
+
+        try {
+            setContentView(R.layout.activity_main);
+        } catch (final RuntimeException ex) {
+            throw new FailureException(ex);
+        }
+
+        initializeViews();
+
+        final TextView textView = findViewById(R.id.timeText);
+        final Button renderButton = findViewById(R.id.renderButton);
+        final ActivityManager activityManager = (ActivityManager) getSystemService(
+            Context.ACTIVITY_SERVICE);
+
+        checksOpenGlVersion(activityManager);
+        setupRenderer(textView, renderButton);
+
+        final Optional<Bundle> bundle = Optional.ofNullable(savedInstanceState);
+        initializePickers(bundle);
+        checksStoragePermission();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(final int requestCode,
+                                           @Nonnull final String[] permissions,
+                                           @Nonnull final int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        LOGGER.info("onRequestPermissionsResult");
+    }
+
+    @Override
+    public void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        LOGGER.info(ConstantsMethods.ON_DETACHED_FROM_WINDOW);
+
+        this.drawView.onDetachedFromWindow();
+
+        final String message = ConstantsMethods.ON_DETACHED_FROM_WINDOW + ConstantsMethods.FINISHED;
+        LOGGER.info(message);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        LOGGER.info(ConstantsMethods.ON_DESTROY);
+
+        this.drawView.onDetachedFromWindow();
+        this.drawView.setVisibility(View.INVISIBLE);
+
+        final String message = ConstantsMethods.ON_DESTROY + ConstantsMethods.FINISHED;
+        LOGGER.info(message);
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+
+        if (!Strings.isNullOrEmpty(this.sceneFilePath)) {
+            startRender(this.sceneFilePath);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        this.drawView.onResume();
+        this.drawView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LOGGER.info("onPause");
+
+        Utils.handleInterruption("MainActivity#onPause");
+
+        this.drawView.setPreserveEGLContextOnPause(true);
+        this.drawView.onPause();
+        this.drawView.setVisibility(View.INVISIBLE);
+        this.sceneFilePath = null;
+
+        final String message = "onPause" + ConstantsMethods.FINISHED;
+        LOGGER.info(message);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@Nonnull final Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        LOGGER.info("onRestoreInstanceState");
+
+        final int scene = savedInstanceState.getInt(ConstantsUI.PICKER_SCENE);
+        final int shader = savedInstanceState.getInt(ConstantsUI.PICKER_SHADER);
+        final int threads = savedInstanceState.getInt(ConstantsUI.PICKER_THREADS);
+        final int accelerator = savedInstanceState.getInt(ConstantsUI.PICKER_ACCELERATOR);
+        final int samplesPixel = savedInstanceState.getInt(ConstantsUI.PICKER_SAMPLES_PIXEL);
+        final int samplesLight = savedInstanceState.getInt(ConstantsUI.PICKER_SAMPLES_LIGHT);
+        final int sizes = savedInstanceState.getInt(ConstantsUI.PICKER_SIZES);
+        final boolean rasterize = savedInstanceState.getBoolean(ConstantsUI.CHECK_BOX_RASTERIZE);
+
+        this.pickerScene.setValue(scene);
+        this.pickerShader.setValue(shader);
+        this.pickerThreads.setValue(threads);
+        this.pickerAccelerator.setValue(accelerator);
+        this.pickerSamplesPixel.setValue(samplesPixel);
+        this.pickerSamplesLight.setValue(samplesLight);
+        this.pickerResolutions.setValue(sizes);
+        this.checkBoxRasterize.setChecked(rasterize);
+    }
+
+
+    /*
+     ***********************************************************************
+     * Public methods
+     ***********************************************************************
+     */
+
+    @Override
+    protected void onSaveInstanceState(@Nonnull final Bundle outState) {
+        super.onSaveInstanceState(outState);
+        LOGGER.info("onSaveInstanceState");
+
+        outState.putInt(ConstantsUI.PICKER_SCENE, this.pickerScene.getValue());
+        outState.putInt(ConstantsUI.PICKER_SHADER, this.pickerShader.getValue());
+        outState.putInt(ConstantsUI.PICKER_THREADS, this.pickerThreads.getValue());
+        outState.putInt(ConstantsUI.PICKER_ACCELERATOR, this.pickerAccelerator.getValue());
+        outState.putInt(ConstantsUI.PICKER_SAMPLES_PIXEL, this.pickerSamplesPixel.getValue());
+        outState.putInt(ConstantsUI.PICKER_SAMPLES_LIGHT, this.pickerSamplesLight.getValue());
+        outState.putInt(ConstantsUI.PICKER_SIZES, this.pickerResolutions.getValue());
+        outState.putBoolean(ConstantsUI.CHECK_BOX_RASTERIZE, this.checkBoxRasterize.isChecked());
+
+        this.drawView.finishRenderer();
+    }
+
+
+    /*
+     ***********************************************************************
+     * Private methods
+     ***********************************************************************
+     */
+
+    // Ray Tracing methods
+
+    @Override
+    protected void onActivityResult(final int requestCode,
+                                    final int resultCode,
+                                    @Nullable final Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == Activity.RESULT_OK && requestCode == OPEN_FILE_REQUEST_CODE) {
+            this.sceneFilePath = Optional.ofNullable(data)
+                .map(Intent::getData)
+                .map(this::getPathFromFile)
+                .orElse("");
+        }
+    }
+
+    /**
+     * Starts the rendering process when the user clicks the render
+     * {@link Button}.
+     *
+     * @param view The view of the {@link Activity}.
+     */
+    public void startRender(@Nonnull final View view) {
+        final String message = String.format(Locale.US, "%s: %s",
+            ConstantsMethods.START_RENDER, view.toString());
+        LOGGER.info(message);
+
+        this.sceneFilePath = "";
+        final Scene scene = Scene.values()[this.pickerScene.getValue()];
+        final State state = this.drawView.getRayTracerState();
+
+        final String message2 = String.format(Locale.US, "%s: %s",
+            ConstantsMethods.START_RENDER, state.toString());
+        LOGGER.info(message2);
+
+        ++clickCounter;
+        final String counterMessage = String.format(Locale.US,
+            "BUTTON CLICKED: %d (%s)", clickCounter, state.toString());
+        LOGGER.info(counterMessage);
+
+        if (state == State.BUSY) {
+            this.drawView.stopDrawing();
+        } else {
+            switch (scene) {
+                case OBJ:
+                    callFileManager();
+                    break;
+
+                case TEST:
+                    final String scenePath = "CornellBox"
+                        + ConstantsUI.FILE_SEPARATOR + "CornellBox-Water";
+                    final String sdCardPath = UtilsContext.getSDCardPath(this);
+                    this.sceneFilePath = sdCardPath + ConstantsUI.FILE_SEPARATOR
+                        + "WavefrontOBJs" + ConstantsUI.FILE_SEPARATOR + scenePath;
+                    startRender(this.sceneFilePath);
+                    break;
+
+                default:
+                    startRender(this.sceneFilePath);
+            }
+        }
+
+        final String messageFinished = ConstantsMethods.START_RENDER + ConstantsMethods.FINISHED;
+        LOGGER.info(messageFinished);
+    }
+
+    /**
      * Auxiliary method to readjust the width and height of the image by
      * rounding down the value to a multiple of the number of tiles in the
      * Ray Tracer engine.
@@ -143,9 +410,38 @@ public final class MainActivity extends Activity {
      * @param size The value to be rounded down to a multiple of the number of
      *             tiles in the Ray Tracer engine.
      * @return The highest value that is smaller than the size passed by
-     *         parameter and is a multiple of the number of tiles.
+     * parameter and is a multiple of the number of tiles.
      */
     private native int rtResize(int size);
+
+    /**
+     * Gets the path of a file that was loaded with an external file manager.
+     * <br/>
+     * This method basically translates an {@link Uri} path to a {@link String}
+     * but also tries to be compatible with any device / emulator available.
+     *
+     * @param uri The URI reference for the file.
+     * @return The path to the file.
+     */
+    @Nonnull
+    private String getPathFromFile(final Uri uri) {
+        final String filePath = StreamSupport.stream(uri.getPathSegments())
+            .skip(1L)
+            .reduce("",
+                (accumulator, segment) -> accumulator + ConstantsUI.FILE_SEPARATOR + segment)
+            .replace(ConstantsUI.FILE_SEPARATOR + "sdcard" + ConstantsUI.FILE_SEPARATOR,
+                ConstantsUI.FILE_SEPARATOR);
+
+        final int removeIndex = filePath.indexOf(ConstantsUI.PATH_SEPARATOR);
+        final String startFilePath = removeIndex >= 0 ? filePath.substring(removeIndex) : filePath;
+        final String cleanedFilePath = startFilePath.replace(
+            ConstantsUI.PATH_SEPARATOR, ConstantsUI.FILE_SEPARATOR);
+        final String filePathWithoutExtension = cleanedFilePath.substring(0,
+            cleanedFilePath.lastIndexOf('.'));
+
+        final String sdCardPath = UtilsContext.getSDCardPath(this);
+        return sdCardPath + filePathWithoutExtension;
+    }
 
     /**
      * Helper method which starts or stops the rendering process.
@@ -162,7 +458,8 @@ public final class MainActivity extends Activity {
 
         this.drawView.renderScene(config, threads, rasterize);
 
-        LOGGER.info(ConstantsMethods.START_RENDER + FINISHED);
+        final String message = ConstantsMethods.START_RENDER + ConstantsMethods.FINISHED;
+        LOGGER.info(message);
     }
 
     /**
@@ -178,9 +475,9 @@ public final class MainActivity extends Activity {
         final int shader = this.pickerShader.getValue();
         final int accelerator = this.pickerAccelerator.getValue();
         final int samplesPixel = Integer.parseInt(this.pickerSamplesPixel.getDisplayedValues()
-                [this.pickerSamplesPixel.getValue() - 1]);
+            [this.pickerSamplesPixel.getValue() - 1]);
         final int samplesLight = Integer.parseInt(this.pickerSamplesLight.getDisplayedValues()
-                [this.pickerSamplesLight.getValue() - 1]);
+            [this.pickerSamplesLight.getValue() - 1]);
         final String strResolution =
             this.pickerResolutions.getDisplayedValues()[this.pickerResolutions.getValue() - 1];
         final int width = Integer.parseInt(strResolution.substring(0, strResolution.indexOf('x')));
@@ -228,7 +525,8 @@ public final class MainActivity extends Activity {
                 .show();
         }
 
-        LOGGER.info("callFileManager" + FINISHED);
+        final String message = "callFileManager" + ConstantsMethods.FINISHED;
+        LOGGER.info(message);
     }
 
     /**
@@ -250,95 +548,22 @@ public final class MainActivity extends Activity {
     }
 
     /**
-     * Starts the rendering process when the user clicks the render
-     * {@link Button}.
-     *
-     * @param view The view of the {@link Activity}.
-     */
-    public void startRender(@Nonnull final View view) {
-        final String message = String.format(Locale.US, "%s: %s",
-            ConstantsMethods.START_RENDER, view.toString());
-        LOGGER.info(message);
-
-        this.sceneFilePath = "";
-        final Scene scene = Scene.values()[this.pickerScene.getValue()];
-        final State state = this.drawView.getRayTracerState();
-
-        final String message2 = String.format(Locale.US, "%s: %s",
-            ConstantsMethods.START_RENDER, state.toString());
-        LOGGER.info(message2);
-
-        ++clickCounter;
-        final String counterMessage = String.format(Locale.US,
-            "BUTTON CLICKED: %d (%s)", clickCounter, state.toString());
-        LOGGER.info(counterMessage);
-
-        if (state == State.BUSY) {
-            this.drawView.stopDrawing();
-        } else {
-            switch (scene) {
-                case OBJ:
-                    callFileManager();
-                    break;
-
-                case TEST:
-                    final String scenePath = "CornellBox" +
-                        ConstantsUI.FILE_SEPARATOR + "CornellBox-Water";
-                    final String sdCardPath = UtilsContext.getSDCardPath(this);
-                    this.sceneFilePath = sdCardPath + ConstantsUI.FILE_SEPARATOR
-                        + "WavefrontOBJs" + ConstantsUI.FILE_SEPARATOR + scenePath;
-                    startRender(this.sceneFilePath);
-                    break;
-
-                default:
-                    startRender(this.sceneFilePath);
-            }
-        }
-        LOGGER.info(ConstantsMethods.START_RENDER + FINISHED);
-    }
-
-    @Override
-    public void onCreate(@Nullable final Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        LOGGER.info("onCreate");
-
-        try {
-            setContentView(R.layout.activity_main);
-        } catch (final RuntimeException ex) {
-            throw new FailureException(ex);
-        }
-
-        initializeViews();
-
-        final TextView textView = findViewById(R.id.timeText);
-        final Button renderButton = findViewById(R.id.renderButton);
-        final ActivityManager activityManager = (ActivityManager) getSystemService(
-            Context.ACTIVITY_SERVICE);
-
-        checksOpenGLVersion(activityManager);
-        setupRenderer(textView, renderButton);
-
-        final Optional<Bundle> bundle = Optional.ofNullable(savedInstanceState);
-        initializePickers(bundle);
-        checksStoragePermission();
-    }
-
-    /**
      * Helper method that initializes all the pickers fields of this
      * {@link Activity}.
      *
      * @param bundle The data state of the {@link Activity}.
      */
     private void initializePickers(final Optional<Bundle> bundle) {
-        initializePickerScene(bundle.map(x -> x.getInt(ConstantsUI.PICKER_SCENE))
-            .orElse(0));
-        initializePickerShader(bundle.map(x -> x.getInt(ConstantsUI.PICKER_SHADER))
-            .orElse(0));
+        initializePicker(this.pickerScene, bundle.map(x -> x.getInt(ConstantsUI.PICKER_SCENE))
+            .orElse(0), Scene.getNames());
+        initializePicker(this.pickerShader, bundle.map(x -> x.getInt(ConstantsUI.PICKER_SHADER))
+            .orElse(0), Shader.getNames());
+        initializePicker(this.pickerAccelerator,
+            bundle.map(x -> x.getInt(ConstantsUI.PICKER_ACCELERATOR))
+                .orElse(1), Accelerator.getNames());
         initializePickerSamplesPixel(bundle.map(x -> x.getInt(ConstantsUI.PICKER_SAMPLES_PIXEL))
             .orElse(1));
         initializePickerSamplesLight(bundle.map(x -> x.getInt(ConstantsUI.PICKER_SAMPLES_LIGHT))
-            .orElse(1));
-        initializePickerAccelerator(bundle.map(x -> x.getInt(ConstantsUI.PICKER_ACCELERATOR))
             .orElse(1));
         initializePickerThreads(bundle.map(x -> x.getInt(ConstantsUI.PICKER_THREADS))
             .orElse(1));
@@ -349,28 +574,8 @@ public final class MainActivity extends Activity {
         // We can only set the resolutions after the views are shown.
         vto.addOnGlobalLayoutListener(() ->
             initializePickerResolutions(bundle.map(x -> x.getInt(ConstantsUI.PICKER_SIZES))
-            .orElse(4), 9));
+                .orElse(4), 9));
     }
-
-    /**
-     * Helper method that checks if the supported OpenGL ES version is
-     * the version 2 or greater.
-     *
-     * @param activityManager The {@link ActivityManager} which contains the
-     *                        {@link ConfigurationInfo}.
-     */
-    private static void checksOpenGLVersion(final ActivityManager activityManager) {
-        final ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
-        final boolean supportES2 = (configurationInfo.reqGlEsVersion >=
-            ConstantsRenderer.REQUIRED_OPENGL_VERSION);
-
-        if (!supportES2 || !UtilsGL.checkGL20Support()) {
-            final String msg = "Your device doesn't support ES 2. ("
-                + configurationInfo.reqGlEsVersion + ')';
-            throw new FailureException(msg);
-        }
-    }
-
 
     /**
      * Helper method that sets up the {@link MainRenderer} in the
@@ -420,7 +625,6 @@ public final class MainActivity extends Activity {
         this.drawView.setPreserveEGLContextOnPause(true);
     }
 
-
     /**
      * Initializes the {@link #checkBoxRasterize} field.
      *
@@ -453,8 +657,8 @@ public final class MainActivity extends Activity {
         this.pickerResolutions.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
         this.pickerResolutions.setValue(pickerSizes);
 
-        final double widthView = (double) this.drawView.getWidth();
-        final double heightView = (double) this.drawView.getHeight();
+        final double widthView = this.drawView.getWidth();
+        final double heightView = this.drawView.getHeight();
 
         final String[] resolutions = IntStreams.rangeClosed(2, maxSizes)
             .mapToDouble(value -> (double) value)
@@ -483,22 +687,6 @@ public final class MainActivity extends Activity {
         this.pickerThreads.setWrapSelectorWheel(true);
         this.pickerThreads.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
         this.pickerThreads.setValue(pickerThreads);
-    }
-
-    /**
-     * Initializes the {@link #pickerAccelerator} field.
-     *
-     * @param pickerAccelerator The default value to put in the
-     *                          {@link #pickerAccelerator} field.
-     */
-    private void initializePickerAccelerator(final int pickerAccelerator) {
-        final String[] accelerators = Accelerator.getNames();
-        this.pickerAccelerator.setMinValue(0);
-        this.pickerAccelerator.setMaxValue(accelerators.length - 1);
-        this.pickerAccelerator.setWrapSelectorWheel(true);
-        this.pickerAccelerator.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-        this.pickerAccelerator.setValue(pickerAccelerator);
-        this.pickerAccelerator.setDisplayedValues(accelerators);
     }
 
     /**
@@ -542,38 +730,6 @@ public final class MainActivity extends Activity {
     }
 
     /**
-     * Initializes the {@link #pickerShader} field.
-     *
-     * @param pickerShader The default value to put in the
-     *                     {@link #pickerShader} field.
-     */
-    private void initializePickerShader(final int pickerShader) {
-        final String[] shaders = Shader.getNames();
-        this.pickerShader.setMinValue(0);
-        this.pickerShader.setMaxValue(shaders.length - 1);
-        this.pickerShader.setWrapSelectorWheel(true);
-        this.pickerShader.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-        this.pickerShader.setValue(pickerShader);
-        this.pickerShader.setDisplayedValues(shaders);
-    }
-
-    /**
-     * Initializes the {@link #pickerScene} field.
-     *
-     * @param pickerScene The default value to put in the {@link #pickerScene}
-     *                    field.
-     */
-    private void initializePickerScene(final int pickerScene) {
-        final String[] scenes = Scene.getNames();
-        this.pickerScene.setMinValue(0);
-        this.pickerScene.setMaxValue(scenes.length - 1);
-        this.pickerScene.setWrapSelectorWheel(true);
-        this.pickerScene.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-        this.pickerScene.setValue(pickerScene);
-        this.pickerScene.setDisplayedValues(scenes);
-    }
-
-    /**
      * Helper method that initializes the fields that are {@link View}s.
      */
     private void initializeViews() {
@@ -601,149 +757,5 @@ public final class MainActivity extends Activity {
         Preconditions.checkNotNull(this.pickerShader);
         Preconditions.checkNotNull(this.pickerScene);
         Preconditions.checkNotNull(this.drawView);
-    }
-
-    @Override
-    protected void onPostResume() {
-        super.onPostResume();
-
-        if (!Strings.isNullOrEmpty(this.sceneFilePath)) {
-            startRender(this.sceneFilePath);
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        this.drawView.onResume();
-        this.drawView.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        LOGGER.info("onPause");
-
-        Utils.handleInterruption("MainActivity#onPause");
-
-        this.drawView.setPreserveEGLContextOnPause(true);
-        this.drawView.onPause();
-        this.drawView.setVisibility(View.INVISIBLE);
-        this.sceneFilePath = null;
-
-        LOGGER.info("onPause" + FINISHED);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(@Nonnull final Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        LOGGER.info("onRestoreInstanceState");
-
-        final int scene = savedInstanceState.getInt(ConstantsUI.PICKER_SCENE);
-        final int shader = savedInstanceState.getInt(ConstantsUI.PICKER_SHADER);
-        final int threads = savedInstanceState.getInt(ConstantsUI.PICKER_THREADS);
-        final int accelerator = savedInstanceState.getInt(ConstantsUI.PICKER_ACCELERATOR);
-        final int samplesPixel = savedInstanceState.getInt(ConstantsUI.PICKER_SAMPLES_PIXEL);
-        final int samplesLight = savedInstanceState.getInt(ConstantsUI.PICKER_SAMPLES_LIGHT);
-        final int sizes = savedInstanceState.getInt(ConstantsUI.PICKER_SIZES);
-        final boolean rasterize = savedInstanceState.getBoolean(ConstantsUI.CHECK_BOX_RASTERIZE);
-
-        this.pickerScene.setValue(scene);
-        this.pickerShader.setValue(shader);
-        this.pickerThreads.setValue(threads);
-        this.pickerAccelerator.setValue(accelerator);
-        this.pickerSamplesPixel.setValue(samplesPixel);
-        this.pickerSamplesLight.setValue(samplesLight);
-        this.pickerResolutions.setValue(sizes);
-        this.checkBoxRasterize.setChecked(rasterize);
-    }
-
-    @Override
-    protected void onSaveInstanceState(@Nonnull final Bundle outState) {
-        super.onSaveInstanceState(outState);
-        LOGGER.info("onSaveInstanceState");
-
-        outState.putInt(ConstantsUI.PICKER_SCENE, this.pickerScene.getValue());
-        outState.putInt(ConstantsUI.PICKER_SHADER, this.pickerShader.getValue());
-        outState.putInt(ConstantsUI.PICKER_THREADS, this.pickerThreads.getValue());
-        outState.putInt(ConstantsUI.PICKER_ACCELERATOR, this.pickerAccelerator.getValue());
-        outState.putInt(ConstantsUI.PICKER_SAMPLES_PIXEL, this.pickerSamplesPixel.getValue());
-        outState.putInt(ConstantsUI.PICKER_SAMPLES_LIGHT, this.pickerSamplesLight.getValue());
-        outState.putInt(ConstantsUI.PICKER_SIZES, this.pickerResolutions.getValue());
-        outState.putBoolean(ConstantsUI.CHECK_BOX_RASTERIZE, this.checkBoxRasterize.isChecked());
-
-        this.drawView.finishRenderer();
-    }
-
-    @Override
-    public void onRequestPermissionsResult(final int requestCode,
-                                           @Nonnull final String[] permissions,
-                                           @Nonnull final int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        LOGGER.info("onRequestPermissionsResult");
-    }
-
-    @Override
-    public void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        LOGGER.info(ConstantsMethods.ON_DETACHED_FROM_WINDOW);
-
-        this.drawView.onDetachedFromWindow();
-        LOGGER.info(ConstantsMethods.ON_DETACHED_FROM_WINDOW + FINISHED);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        LOGGER.info(ConstantsMethods.ON_DESTROY);
-
-        this.drawView.onDetachedFromWindow();
-        this.drawView.setVisibility(View.INVISIBLE);
-
-        LOGGER.info(ConstantsMethods.ON_DESTROY + FINISHED);
-    }
-
-    @Override
-    protected void onActivityResult(final int requestCode,
-                                    final int resultCode,
-                                    @Nullable final Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == Activity.RESULT_OK && requestCode == OPEN_FILE_REQUEST_CODE) {
-            this.sceneFilePath = Optional.ofNullable(data)
-                .map(Intent::getData)
-                .map(this::getPathFromFile)
-                .orElse("");
-        }
-    }
-
-    /**
-     * Gets the path of a file that was loaded with an external file manager.
-     * <br/>
-     * This method basically translates an {@link Uri} path to a {@link String}
-     * but also tries to be compatible with any device / emulator available.
-     *
-     * @param uri The URI reference for the file.
-     * @return The path to the file.
-     */
-    @Nonnull
-    private String getPathFromFile(final Uri uri) {
-        final String filePath = StreamSupport.stream(uri.getPathSegments())
-            .skip(1L)
-            .reduce("",
-                (accumulator, segment) -> accumulator + ConstantsUI.FILE_SEPARATOR + segment)
-            .replace(ConstantsUI.FILE_SEPARATOR + "sdcard" + ConstantsUI.FILE_SEPARATOR,
-                ConstantsUI.FILE_SEPARATOR);
-
-        final int removeIndex = filePath.indexOf(ConstantsUI.PATH_SEPARATOR);
-        final String startFilePath = removeIndex >= 0 ? filePath.substring(removeIndex) : filePath;
-        final String cleanedFilePath = startFilePath.replace(
-            ConstantsUI.PATH_SEPARATOR, ConstantsUI.FILE_SEPARATOR);
-        final String filePathWithoutExtension = cleanedFilePath.substring(0,
-            cleanedFilePath.lastIndexOf('.'));
-
-        final String sdCardPath = UtilsContext.getSDCardPath(this);
-        return sdCardPath + filePathWithoutExtension;
     }
 }

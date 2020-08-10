@@ -1,11 +1,9 @@
 package puscas.mobilertapp;
 
-import org.jetbrains.annotations.Contract;
-
 import java.util.Locale;
 import java.util.logging.Logger;
-
 import javax.annotation.Nonnull;
+import org.jetbrains.annotations.Contract;
 
 /**
  * The configurator for the number of samples in the Ray Tracer engine.
@@ -32,8 +30,7 @@ public final class ConfigSamples {
      *
      * @param builder The {@link ConfigSamples.Builder} for this class.
      */
-    @Contract(pure = true)
-    ConfigSamples(@Nonnull final ConfigSamples.Builder builder) {
+    @Contract(pure = true) ConfigSamples(@Nonnull final ConfigSamples.Builder builder) {
         LOGGER.info("ConfigSamples");
 
         this.samplesPixel = builder.getSamplesPixel();
@@ -83,7 +80,7 @@ public final class ConfigSamples {
          * @param samplesPixel The new value for the
          *                     {@link ConfigSamples#samplesPixel} field.
          * @return The builder with {@link ConfigSamples.Builder#samplesPixel}
-         *         already set.
+         * already set.
          */
         @Contract("_ -> this")
         @Nonnull
@@ -101,7 +98,7 @@ public final class ConfigSamples {
          * @param samplesLight The new value for the
          *                     {@link ConfigSamples#samplesLight} field.
          * @return The builder with {@link ConfigSamples.Builder#samplesLight}
-         *         already set.
+         * already set.
          */
         @Contract("_ -> this")
         @Nonnull

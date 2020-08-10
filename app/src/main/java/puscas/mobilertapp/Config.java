@@ -1,11 +1,9 @@
 package puscas.mobilertapp;
 
-import org.jetbrains.annotations.Contract;
-
 import java.util.Locale;
 import java.util.logging.Logger;
-
 import javax.annotation.Nonnull;
+import org.jetbrains.annotations.Contract;
 
 /**
  * The configurator for the Ray Tracer engine.
@@ -18,41 +16,57 @@ public final class Config {
     private static final Logger LOGGER = Logger.getLogger(Config.class.getName());
 
     /**
+     * The scene.
+     *
      * @see Config#getScene()
      */
     private final int scene;
 
     /**
+     * The shader.
+     *
      * @see Config#getShader()
      */
     private final int shader;
 
     /**
+     * The accelerator.
+     *
      * @see Config#getAccelerator()
      */
     private final int accelerator;
 
     /**
+     * The objFilePath.
+     *
      * @see Config#getObjFilePath()
      */
     private final String objFilePath;
 
     /**
+     * The matFilePath.
+     *
      * @see Config#getMatFilePath()
      */
     private final String matFilePath;
 
     /**
+     * The camFilePath.
+     *
      * @see Config#getCamFilePath()
      */
     private final String camFilePath;
 
     /**
+     * The configSamples.
+     *
      * @see Config#getConfigSamples
      */
     private final ConfigSamples configSamples;
 
     /**
+     * The configResolution.
+     *
      * @see Config#getConfigResolution()
      */
     private final ConfigResolution configResolution;
@@ -62,8 +76,7 @@ public final class Config {
      *
      * @param builder The {@link Config.Builder} for this class.
      */
-    @Contract(pure = true)
-    Config(@Nonnull final Config.Builder builder) {
+    @Contract(pure = true) Config(@Nonnull final Config.Builder builder) {
         LOGGER.info("Config");
 
         this.scene = builder.getScene();
@@ -160,16 +173,22 @@ public final class Config {
             Config.Builder.class.getName());
 
         /**
+         * The scene.
+         *
          * @see Config.Builder#withScene(int)
          */
         private int scene = 0;
 
         /**
+         * The shader.
+         *
          * @see Config.Builder#withShader(int)
          */
         private int shader = 0;
 
         /**
+         * The accelerator.
+         *
          * @see Config.Builder#withAccelerator(int)
          */
         private int accelerator = 0;
@@ -190,6 +209,8 @@ public final class Config {
         private String camFilePath = "";
 
         /**
+         * The configSamples.
+         *
          * @see Config.Builder#getConfigSamples
          */
         private ConfigSamples configSamples = new ConfigSamples.Builder()
@@ -198,6 +219,8 @@ public final class Config {
             .build();
 
         /**
+         * The configResolution.
+         *
          * @see Config#getConfigResolution()
          */
         private ConfigResolution configResolution = new ConfigResolution.Builder()

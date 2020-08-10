@@ -1,11 +1,10 @@
 package puscas.mobilertapp.utils;
 
+import java.util.logging.Logger;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.logging.Logger;
 
 /**
  * The unit tests for the {@link Shader} util class.

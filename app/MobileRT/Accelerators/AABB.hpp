@@ -8,6 +8,7 @@
 #include <vector>
 
 namespace MobileRT {
+
     /**
      * A class which represents an Axis Aligned Bounding Box.
      * <br>

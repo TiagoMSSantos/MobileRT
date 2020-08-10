@@ -1,11 +1,9 @@
 package puscas.mobilertapp;
 
-import org.jetbrains.annotations.Contract;
-
 import java.util.Locale;
 import java.util.logging.Logger;
-
 import javax.annotation.Nonnull;
+import org.jetbrains.annotations.Contract;
 
 /**
  * The configurator for the desired resolution in the Ray Tracer engine.
@@ -33,8 +31,7 @@ public final class ConfigResolution {
      *
      * @param builder The {@link ConfigResolution.Builder} for this class.
      */
-    @Contract(pure = true)
-    ConfigResolution(@Nonnull final ConfigResolution.Builder builder) {
+    @Contract(pure = true) ConfigResolution(@Nonnull final ConfigResolution.Builder builder) {
         LOGGER.info("ConfigResolution");
 
         this.width = builder.getWidth();

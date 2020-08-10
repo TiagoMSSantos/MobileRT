@@ -2,52 +2,30 @@ package puscas.mobilertapp;
 
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
-
 import androidx.test.rule.ActivityTestRule;
-
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.jupiter.api.Assertions;
-import org.junit.rules.TestRule;
-import org.junit.rules.Timeout;
-
 import java.io.InputStream;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
-
 import javax.annotation.Nonnull;
-
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
+import org.junit.FixMethodOrder;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.rules.TestRule;
+import org.junit.rules.Timeout;
+import org.junit.runners.MethodSorters;
 import puscas.mobilertapp.utils.UtilsGL;
+import puscas.mobilertapp.utils.UtilsShader;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public final class MainRendererTest {
-
-    /**
-     * The {@link Logger} for this class.
-     */
-    @Nonnull
-    private static final Logger LOGGER = Logger.getLogger(MainRendererTest.class.getName());
-
-    /**
-     * The rule to create the MainActivity.
-     */
-    @Nonnull
-    @Rule
-    public ActivityTestRule<MainActivity> mainActivityActivityTestRule =
-        new ActivityTestRule<>(MainActivity.class, true, true);
-
-    /**
-     * The rule for the timeout for each test.
-     */
-    @Nonnull
-    @Rule
-    public final TestRule timeoutRule = new Timeout(1L, TimeUnit.MINUTES);
 
     /**
      * The rule for the timeout for all the tests.
@@ -55,7 +33,24 @@ public final class MainRendererTest {
     @Nonnull
     @ClassRule
     public static final TestRule timeoutClassRule = new Timeout(1L, TimeUnit.MINUTES);
-
+    /**
+     * The {@link Logger} for this class.
+     */
+    @Nonnull
+    private static final Logger LOGGER = Logger.getLogger(MainRendererTest.class.getName());
+    /**
+     * The rule for the timeout for each test.
+     */
+    @Nonnull
+    @Rule
+    public final TestRule timeoutRule = new Timeout(1L, TimeUnit.MINUTES);
+    /**
+     * The rule to create the MainActivity.
+     */
+    @Nonnull
+    @Rule
+    public ActivityTestRule<MainActivity> mainActivityActivityTestRule =
+        new ActivityTestRule<>(MainActivity.class, true, true);
     /**
      * The MainActivity to test.
      */
@@ -107,12 +102,13 @@ public final class MainRendererTest {
      * Tests loading a Vertex GLSL shader.
      */
     @Test
-    public void testLoadVertexShader () throws InterruptedException {
+    public void testLoadVertexShader() throws InterruptedException {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
         final InputStream inputStream = createInputStreamFromResource("Shaders/VertexShader.glsl");
-        final String shaderCode = puscas.mobilertapp.utils.Utils.readTextFromInputStream(inputStream);
+        final String shaderCode =
+            puscas.mobilertapp.utils.Utils.readTextFromInputStream(inputStream);
 
         final int shaderIndex = CreateAndGetIndexOfShader(shaderCode, GLES20.GL_VERTEX_SHADER);
         Assertions.assertEquals(
@@ -126,12 +122,14 @@ public final class MainRendererTest {
      * Tests loading a Vertex GLSL shader.
      */
     @Test
-    public void testLoadVertexShaderRaster () throws InterruptedException {
+    public void testLoadVertexShaderRaster() throws InterruptedException {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
-        final InputStream inputStream = createInputStreamFromResource("Shaders/VertexShaderRaster.glsl");
-        final String shaderCode = puscas.mobilertapp.utils.Utils.readTextFromInputStream(inputStream);
+        final InputStream inputStream =
+            createInputStreamFromResource("Shaders/VertexShaderRaster.glsl");
+        final String shaderCode =
+            puscas.mobilertapp.utils.Utils.readTextFromInputStream(inputStream);
 
         final int shaderIndex = CreateAndGetIndexOfShader(shaderCode, GLES20.GL_VERTEX_SHADER);
         Assertions.assertEquals(
@@ -145,12 +143,14 @@ public final class MainRendererTest {
      * Tests loading a Fragment GLSL shader.
      */
     @Test
-    public void testLoadFragmentShader () throws InterruptedException {
+    public void testLoadFragmentShader() throws InterruptedException {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
-        final InputStream inputStream = createInputStreamFromResource("Shaders/FragmentShader.glsl");
-        final String shaderCode = puscas.mobilertapp.utils.Utils.readTextFromInputStream(inputStream);
+        final InputStream inputStream =
+            createInputStreamFromResource("Shaders/FragmentShader.glsl");
+        final String shaderCode =
+            puscas.mobilertapp.utils.Utils.readTextFromInputStream(inputStream);
 
         final int shaderIndex = CreateAndGetIndexOfShader(shaderCode, GLES20.GL_FRAGMENT_SHADER);
         Assertions.assertEquals(
@@ -164,12 +164,14 @@ public final class MainRendererTest {
      * Tests loading a Fragment GLSL shader.
      */
     @Test
-    public void testLoadFragmentShaderRaster () throws InterruptedException {
+    public void testLoadFragmentShaderRaster() throws InterruptedException {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
-        final InputStream inputStream = createInputStreamFromResource("Shaders/FragmentShaderRaster.glsl");
-        final String shaderCode = puscas.mobilertapp.utils.Utils.readTextFromInputStream(inputStream);
+        final InputStream inputStream =
+            createInputStreamFromResource("Shaders/FragmentShaderRaster.glsl");
+        final String shaderCode =
+            puscas.mobilertapp.utils.Utils.readTextFromInputStream(inputStream);
 
         final int shaderIndex = CreateAndGetIndexOfShader(shaderCode, GLES20.GL_FRAGMENT_SHADER);
         Assertions.assertEquals(
@@ -198,20 +200,20 @@ public final class MainRendererTest {
      * @param shaderType The type of the GLSL shader. It can be vertex or fragment shader.
      * @return The index of the new created GLSL shader.
      * @throws InterruptedException If the thread waiting for the {@link CountDownLatch} was interrupted.
-     *
      * @implNote This method uses {@link UtilsGL#loadShader} to create
      * the shader in the OpenGL framework. To do that, it uses a GL thread to
      * execute the {@link UtilsGL#loadShader} method by placing its call
      * in the {@link GLSurfaceView#queueEvent(java.lang.Runnable)}.
      */
-    private int CreateAndGetIndexOfShader(final String shaderCode, final int shaderType) throws InterruptedException {
+    private int CreateAndGetIndexOfShader(final String shaderCode, final int shaderType)
+        throws InterruptedException {
         final DrawView drawView = Utils.getPrivateField(this.activity, "drawView");
 
         final AtomicInteger shaderIndex = new AtomicInteger(-1);
         final CountDownLatch latch = new CountDownLatch(1);
         // We need to call `loadShader` method with the GL rendering thread.
         drawView.queueEvent(() -> {
-            final int index = UtilsGL.loadShader(shaderType, shaderCode);
+            final int index = UtilsShader.loadShader(shaderType, shaderCode);
             shaderIndex.set(index);
             latch.countDown();
         });

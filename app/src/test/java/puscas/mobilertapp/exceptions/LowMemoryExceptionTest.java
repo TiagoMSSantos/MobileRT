@@ -1,10 +1,9 @@
 package puscas.mobilertapp.exceptions;
 
+import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.logging.Logger;
 
 /**
  * The test suite for {@link LowMemoryException} class.
@@ -53,7 +52,8 @@ public final class LowMemoryExceptionTest {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
-        final IndexOutOfBoundsException indexOutOfBoundsException = new IndexOutOfBoundsException("Test");
+        final IndexOutOfBoundsException indexOutOfBoundsException =
+            new IndexOutOfBoundsException("Test");
         throw new LowMemoryException(indexOutOfBoundsException);
     }
 
