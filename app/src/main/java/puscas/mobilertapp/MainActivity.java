@@ -68,10 +68,6 @@ public final class MainActivity extends Activity {
      * The OpenGL ES version required to run this application.
      */
     private static final int REQUIRED_OPENGL_VERSION = 0x20000;
-    /**
-     * The global counter of how many times the button was clicked.
-     */
-    private static long clickCounter = 0L;
 
     /*
      ***********************************************************************
@@ -299,7 +295,7 @@ public final class MainActivity extends Activity {
         final int accelerator = savedInstanceState.getInt(ConstantsUI.PICKER_ACCELERATOR);
         final int samplesPixel = savedInstanceState.getInt(ConstantsUI.PICKER_SAMPLES_PIXEL);
         final int samplesLight = savedInstanceState.getInt(ConstantsUI.PICKER_SAMPLES_LIGHT);
-        final int sizes = savedInstanceState.getInt(ConstantsUI.PICKER_SIZES);
+        final int sizes = savedInstanceState.getInt(ConstantsUI.PICKER_SIZE);
         final boolean rasterize = savedInstanceState.getBoolean(ConstantsUI.CHECK_BOX_RASTERIZE);
 
         this.pickerScene.setValue(scene);
@@ -330,7 +326,7 @@ public final class MainActivity extends Activity {
         outState.putInt(ConstantsUI.PICKER_ACCELERATOR, this.pickerAccelerator.getValue());
         outState.putInt(ConstantsUI.PICKER_SAMPLES_PIXEL, this.pickerSamplesPixel.getValue());
         outState.putInt(ConstantsUI.PICKER_SAMPLES_LIGHT, this.pickerSamplesLight.getValue());
-        outState.putInt(ConstantsUI.PICKER_SIZES, this.pickerResolutions.getValue());
+        outState.putInt(ConstantsUI.PICKER_SIZE, this.pickerResolutions.getValue());
         outState.putBoolean(ConstantsUI.CHECK_BOX_RASTERIZE, this.checkBoxRasterize.isChecked());
 
         this.drawView.finishRenderer();
@@ -377,11 +373,6 @@ public final class MainActivity extends Activity {
         final String message2 = String.format(Locale.US, "%s: %s",
             ConstantsMethods.START_RENDER, state.toString());
         LOGGER.info(message2);
-
-        ++clickCounter;
-        final String counterMessage = String.format(Locale.US,
-            "BUTTON CLICKED: %d (%s)", clickCounter, state.toString());
-        LOGGER.info(counterMessage);
 
         if (state == State.BUSY) {
             this.drawView.stopDrawing();
@@ -593,7 +584,7 @@ public final class MainActivity extends Activity {
         final ViewTreeObserver vto = this.drawView.getViewTreeObserver();
         // We can only set the resolutions after the views are shown.
         vto.addOnGlobalLayoutListener(() ->
-            initializePickerResolutions(bundle.map(x -> x.getInt(ConstantsUI.PICKER_SIZES))
+            initializePickerResolutions(bundle.map(x -> x.getInt(ConstantsUI.PICKER_SIZE))
                 .orElse(4), 9));
     }
 

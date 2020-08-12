@@ -41,6 +41,8 @@ public enum Shader {
     private static final Logger LOGGER = Logger.getLogger(Shader.class.getName());
 
     /**
+     * The name.
+     *
      * @see Shader#getName()
      */
     private final String name;

@@ -28,11 +28,6 @@ final class ViewActionButton implements ViewAction {
         Logger.getLogger(ViewActionButton.class.getName());
 
     /**
-     * The global counter of how many times the button was clicked.
-     */
-    private static long clickCounter = 0L;
-
-    /**
      * The expected text for the {@link Button}.
      */
     private final @NonNls String expectedText;
@@ -89,16 +84,14 @@ final class ViewActionButton implements ViewAction {
             final String messageButton = methodName + " clicking button";
             LOGGER.info(messageButton);
             boolean buttonNotClickedProperly = !button.performClick();
-            ++clickCounter;
-            final String messageButtonClicked = methodName + " BUTTON CLICKED: " + clickCounter +
-                " (" + this.expectedText + ")";
+            final String messageButtonClicked =
+                methodName + " BUTTON CLICKED: (" + this.expectedText + ")";
             LOGGER.info(messageButtonClicked);
             while (buttonNotClickedProperly) {
                 final String messageButtonWaiting = methodName + " waiting to click button!!!";
                 LOGGER.info(messageButtonWaiting);
                 uiController.loopMainThreadForAtLeast(5000L);
                 buttonNotClickedProperly = !button.performClick();
-                ++clickCounter;
                 LOGGER.info(messageButtonClicked);
             }
 

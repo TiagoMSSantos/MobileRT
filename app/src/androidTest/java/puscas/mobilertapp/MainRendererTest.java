@@ -75,6 +75,20 @@ public final class MainRendererTest {
     }
 
     /**
+     * Helper method that asserts the index of a GLSL shader with the expected.
+     *
+     * @param shaderIndex   The index of the shader.
+     * @param expectedIndex The expected index.
+     */
+    private static void assertIndexOfShader(final int shaderIndex, final int expectedIndex) {
+        Assertions.assertEquals(
+            expectedIndex,
+            shaderIndex,
+            "Shader index should be " + expectedIndex + "."
+        );
+    }
+
+    /**
      * Setup method called before each test.
      */
     @Before
@@ -111,11 +125,7 @@ public final class MainRendererTest {
             puscas.mobilertapp.utils.Utils.readTextFromInputStream(inputStream);
 
         final int shaderIndex = CreateAndGetIndexOfShader(shaderCode, GLES20.GL_VERTEX_SHADER);
-        Assertions.assertEquals(
-            4,
-            shaderIndex,
-            "Shader index should be 4."
-        );
+        assertIndexOfShader(shaderIndex, 4);
     }
 
     /**
@@ -132,11 +142,7 @@ public final class MainRendererTest {
             puscas.mobilertapp.utils.Utils.readTextFromInputStream(inputStream);
 
         final int shaderIndex = CreateAndGetIndexOfShader(shaderCode, GLES20.GL_VERTEX_SHADER);
-        Assertions.assertEquals(
-            4,
-            shaderIndex,
-            "Shader index should be 4."
-        );
+        assertIndexOfShader(shaderIndex, 4);
     }
 
     /**
@@ -153,11 +159,7 @@ public final class MainRendererTest {
             puscas.mobilertapp.utils.Utils.readTextFromInputStream(inputStream);
 
         final int shaderIndex = CreateAndGetIndexOfShader(shaderCode, GLES20.GL_FRAGMENT_SHADER);
-        Assertions.assertEquals(
-            4,
-            shaderIndex,
-            "Shader index should be 4."
-        );
+        assertIndexOfShader(shaderIndex, 4);
     }
 
     /**
@@ -174,11 +176,7 @@ public final class MainRendererTest {
             puscas.mobilertapp.utils.Utils.readTextFromInputStream(inputStream);
 
         final int shaderIndex = CreateAndGetIndexOfShader(shaderCode, GLES20.GL_FRAGMENT_SHADER);
-        Assertions.assertEquals(
-            4,
-            shaderIndex,
-            "Shader index should be 4."
-        );
+        assertIndexOfShader(shaderIndex, 4);
     }
 
     /**

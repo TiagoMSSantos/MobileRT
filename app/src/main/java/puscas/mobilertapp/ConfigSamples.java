@@ -16,11 +16,15 @@ public final class ConfigSamples {
     private static final Logger LOGGER = Logger.getLogger(ConfigSamples.class.getName());
 
     /**
+     * The samplesPixel.
+     *
      * @see ConfigSamples#getSamplesPixel()
      */
     private final int samplesPixel;
 
     /**
+     * The samplesLight.
+     *
      * @see ConfigSamples#getSamplesLight()
      */
     private final int samplesLight;
@@ -65,11 +69,15 @@ public final class ConfigSamples {
             ConfigSamples.Builder.class.getName());
 
         /**
+         * The samplesPixel.
+         *
          * @see ConfigSamples.Builder#withSamplesPixel(int)
          */
         private int samplesPixel = 0;
 
         /**
+         * The samplesLight.
+         *
          * @see ConfigSamples.Builder#withSamplesLight(int)
          */
         private int samplesLight = 0;

@@ -16,11 +16,15 @@ public final class ConfigResolution {
     private static final Logger LOGGER = Logger.getLogger(ConfigResolution.class.getName());
 
     /**
+     * The width.
+     *
      * @see ConfigResolution#getWidth()
      */
     private final int width;
 
     /**
+     * The height.
+     *
      * @see ConfigResolution#getHeight()
      */
     private final int height;
@@ -66,11 +70,15 @@ public final class ConfigResolution {
             ConfigResolution.Builder.class.getName());
 
         /**
+         * The width.
+         *
          * @see ConfigResolution.Builder#withWidth(int)
          */
         private int width = 1;
 
         /**
+         * The height.
+         *
          * @see ConfigResolution.Builder#withHeight(int)
          */
         private int height = 1;

@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.runners.MethodSorters;
 import puscas.mobilertapp.utils.Constants;
 import puscas.mobilertapp.utils.ConstantsMethods;
+import puscas.mobilertapp.utils.ConstantsUI;
 import puscas.mobilertapp.utils.State;
 import puscas.mobilertapp.utils.UtilsContext;
 
@@ -81,13 +82,13 @@ public final class PreviewTest {
 
         final int numCores = UtilsContext.getNumOfCores(this.activity);
 
-        Utils.changePickerValue("pickerScene", R.id.pickerScene, 2);
-        Utils.changePickerValue("pickerThreads", R.id.pickerThreads, numCores);
-        Utils.changePickerValue("pickerSize", R.id.pickerSize, 8);
-        Utils.changePickerValue("pickerSamplesPixel", R.id.pickerSamplesPixel, 1);
-        Utils.changePickerValue("pickerSamplesLight", R.id.pickerSamplesLight, 1);
-        Utils.changePickerValue("pickerAccelerator", R.id.pickerAccelerator, 3);
-        Utils.changePickerValue("pickerShader", R.id.pickerShader, 2);
+        Utils.changePickerValue(ConstantsUI.PICKER_SCENE, R.id.pickerScene, 2);
+        Utils.changePickerValue(ConstantsUI.PICKER_THREADS, R.id.pickerThreads, numCores);
+        Utils.changePickerValue(ConstantsUI.PICKER_SIZE, R.id.pickerSize, 8);
+        Utils.changePickerValue(ConstantsUI.PICKER_SAMPLES_PIXEL, R.id.pickerSamplesPixel, 1);
+        Utils.changePickerValue(ConstantsUI.PICKER_SAMPLES_LIGHT, R.id.pickerSamplesLight, 1);
+        Utils.changePickerValue(ConstantsUI.PICKER_ACCELERATOR, R.id.pickerAccelerator, 3);
+        Utils.changePickerValue(ConstantsUI.PICKER_SHADER, R.id.pickerShader, 2);
 
         LOGGER.info("GOING TO CLICK THE BUTTON.");
         final ViewInteraction viewInteraction =
@@ -99,7 +100,7 @@ public final class PreviewTest {
                     Assertions.assertEquals(
                         Constants.RENDER,
                         renderButton.getText().toString(),
-                        "Button message"
+                        puscas.mobilertapp.Constants.BUTTON_MESSAGE
                     );
                     LOGGER.info("GOING TO CLICK THE BUTTON 3.");
                 })
@@ -111,7 +112,7 @@ public final class PreviewTest {
                     Assertions.assertEquals(
                         Constants.STOP,
                         renderButton.getText().toString(),
-                        "Button message"
+                        puscas.mobilertapp.Constants.BUTTON_MESSAGE
                     );
                     LOGGER.info("GOING TO CLICK THE BUTTON 6.");
                 })
@@ -152,7 +153,7 @@ public final class PreviewTest {
             Assertions.assertEquals(
                 Constants.RENDER,
                 renderButton.getText().toString(),
-                "Button message"
+                puscas.mobilertapp.Constants.BUTTON_MESSAGE
             );
         });
 

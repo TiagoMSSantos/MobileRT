@@ -51,6 +51,8 @@ public enum Scene {
     private static final Logger LOGGER = Logger.getLogger(Scene.class.getName());
 
     /**
+     * The name.
+     *
      * @see Scene#getName()
      */
     private final String name;

@@ -44,7 +44,7 @@ public final class ConstantsUI {
      * The key for the UI's {@link Bundle} of {@link android.widget.NumberPicker}
      * for selecting the resolution of the image.
      */
-    public static final String PICKER_SIZES = "pickerSizes";
+    public static final String PICKER_SIZE = "pickerSize";
     /**
      * The key for the UI's {@link Bundle} of {@link android.widget.CheckBox}
      * to turn on/off the preview.

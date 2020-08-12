@@ -28,6 +28,8 @@ public enum State {
     STOPPED(3);
 
     /**
+     * The id.
+     *
      * @see State#getId()
      */
     private final int id;

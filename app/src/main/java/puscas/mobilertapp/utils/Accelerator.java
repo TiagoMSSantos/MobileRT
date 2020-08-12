@@ -36,6 +36,8 @@ public enum Accelerator {
     private static final Logger LOGGER = Logger.getLogger(Accelerator.class.getName());
 
     /**
+     * The name.
+     *
      * @see Accelerator#getName()
      */
     private final String name;

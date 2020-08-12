@@ -52,6 +52,8 @@ public final class DrawView extends GLSurfaceView {
     private final ExecutorService executorService =
         Executors.newFixedThreadPool(ConstantsRenderer.NUMBER_THREADS);
     /**
+     * The changingConfigs.
+     *
      * @see Activity#isChangingConfigurations()
      */
     private boolean changingConfigs = false;
