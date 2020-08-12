@@ -35,5 +35,18 @@ function callCommandUntilError() {
   done
   exit "${lastResult}";
 }
+
+# Outputs the exit code received by argument and exits the current process with
+# that exit code
+function printCommandExitCode() {
+  echo "########################################################################"
+  echo "Results:"
+  if [ "${1}" -eq 0 ]; then
+    echo "${2}: success";
+  else
+    echo "${2}: failed";
+    exit "${1}";
+  fi
+}
 ###############################################################################
 ###############################################################################

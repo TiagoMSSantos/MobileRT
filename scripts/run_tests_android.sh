@@ -232,24 +232,7 @@ resUnitTests=${PIPESTATUS[0]};
 ###############################################################################
 # Exit code
 ###############################################################################
-echo "########################################################################"
-echo "Results:"
-res=0
-if [ "${resUnitTests}" -eq 0 ]; then
-  echo "Unit tests: success (${resUnitTests})";
-else
-  echo "Unit tests: failed (${resUnitTests})";
-  res=${resUnitTests}
-fi
-
-if [ "${resInstrumentationTests}" -eq 0 ]; then
-  echo "Instrumentation tests: success (${resInstrumentationTests})";
-else
-  echo "Instrumentation tests: failed (${resInstrumentationTests})";
-  res=${resInstrumentationTests}
-fi
-echo "";
-echo "";
-exit "${res}"
+printCommandExitCode "${resUnitTests}" "Unit tests"
+printCommandExitCode "${resInstrumentationTests}" "Instrumentation tests"
 ###############################################################################
 ###############################################################################
