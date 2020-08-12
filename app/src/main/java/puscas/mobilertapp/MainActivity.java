@@ -178,8 +178,15 @@ public final class MainActivity extends Activity {
     private static void initializePicker(final NumberPicker numberPicker,
                                          final int defaultValue,
                                          final String[] names) {
-        numberPicker.setMinValue(0);
-        numberPicker.setMaxValue(names.length - 1);
+        try {
+            final int minValue = Integer.parseInt(names[0]);
+            numberPicker.setMinValue(minValue);
+            numberPicker.setMaxValue(names.length);
+        } catch (final NumberFormatException ex) {
+            numberPicker.setMinValue(0);
+            numberPicker.setMaxValue(names.length - 1);
+        }
+
         numberPicker.setWrapSelectorWheel(true);
         numberPicker.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
         numberPicker.setValue(defaultValue);
@@ -561,10 +568,23 @@ public final class MainActivity extends Activity {
         initializePicker(this.pickerAccelerator,
             bundle.map(x -> x.getInt(ConstantsUI.PICKER_ACCELERATOR))
                 .orElse(1), Accelerator.getNames());
-        initializePickerSamplesPixel(bundle.map(x -> x.getInt(ConstantsUI.PICKER_SAMPLES_PIXEL))
-            .orElse(1));
-        initializePickerSamplesLight(bundle.map(x -> x.getInt(ConstantsUI.PICKER_SAMPLES_LIGHT))
-            .orElse(1));
+
+        final String[] samplesPixel = IntStreams.range(0, 99)
+            .map(value -> (value + 1) * (value + 1))
+            .mapToObj(String::valueOf)
+            .toArray(String[]::new);
+        initializePicker(this.pickerSamplesPixel,
+            bundle.map(x -> x.getInt(ConstantsUI.PICKER_SAMPLES_PIXEL))
+                .orElse(1), samplesPixel);
+
+        final String[] samplesLight = IntStreams.range(0, 100)
+            .map(value -> value + 1)
+            .mapToObj(String::valueOf)
+            .toArray(String[]::new);
+        initializePicker(this.pickerSamplesLight,
+            bundle.map(x -> x.getInt(ConstantsUI.PICKER_SAMPLES_LIGHT))
+                .orElse(1), samplesLight);
+
         initializePickerThreads(bundle.map(x -> x.getInt(ConstantsUI.PICKER_THREADS))
             .orElse(1));
         initializeCheckBoxRasterize(bundle.map(x -> x.getBoolean(ConstantsUI.CHECK_BOX_RASTERIZE))
@@ -687,46 +707,6 @@ public final class MainActivity extends Activity {
         this.pickerThreads.setWrapSelectorWheel(true);
         this.pickerThreads.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
         this.pickerThreads.setValue(pickerThreads);
-    }
-
-    /**
-     * Initializes the {@link #pickerSamplesLight} field.
-     *
-     * @param pickerSamplesLight The default value to put in the
-     *                           {@link #pickerSamplesLight} field.
-     */
-    private void initializePickerSamplesLight(final int pickerSamplesLight) {
-        final int maxSamplesLight = 100;
-        final String[] samplesLight = IntStreams.range(0, maxSamplesLight)
-            .map(value -> value + 1)
-            .mapToObj(String::valueOf)
-            .toArray(String[]::new);
-        this.pickerSamplesLight.setMinValue(1);
-        this.pickerSamplesLight.setMaxValue(maxSamplesLight);
-        this.pickerSamplesLight.setWrapSelectorWheel(true);
-        this.pickerSamplesLight.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-        this.pickerSamplesLight.setValue(pickerSamplesLight);
-        this.pickerSamplesLight.setDisplayedValues(samplesLight);
-    }
-
-    /**
-     * Initializes the {@link #pickerSamplesPixel} field.
-     *
-     * @param pickerSamplesPixel The default value to put in the
-     *                           {@link #pickerSamplesPixel} field.
-     */
-    private void initializePickerSamplesPixel(final int pickerSamplesPixel) {
-        final int maxSamplesPixel = 99;
-        final String[] samplesPixel = IntStreams.range(0, maxSamplesPixel)
-            .map(value -> (value + 1) * (value + 1))
-            .mapToObj(String::valueOf)
-            .toArray(String[]::new);
-        this.pickerSamplesPixel.setMinValue(1);
-        this.pickerSamplesPixel.setMaxValue(maxSamplesPixel);
-        this.pickerSamplesPixel.setWrapSelectorWheel(true);
-        this.pickerSamplesPixel.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-        this.pickerSamplesPixel.setValue(pickerSamplesPixel);
-        this.pickerSamplesPixel.setDisplayedValues(samplesPixel);
     }
 
     /**
