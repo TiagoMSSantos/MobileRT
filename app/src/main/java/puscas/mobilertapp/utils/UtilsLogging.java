@@ -38,4 +38,5 @@ public final class UtilsLogging {
             LOGGER.severe(stackTraceElement);
         }
     }
+
 }

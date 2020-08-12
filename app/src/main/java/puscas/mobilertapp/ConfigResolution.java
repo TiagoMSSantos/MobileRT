@@ -35,7 +35,7 @@ public final class ConfigResolution {
      *
      * @param builder The {@link ConfigResolution.Builder} for this class.
      */
-    @Contract(pure = true) ConfigResolution(@Nonnull final ConfigResolution.Builder builder) {
+    ConfigResolution(@Nonnull final ConfigResolution.Builder builder) {
         LOGGER.info("ConfigResolution");
 
         this.width = builder.getWidth();
@@ -145,5 +145,7 @@ public final class ConfigResolution {
         int getHeight() {
             return this.height;
         }
+
     }
+
 }

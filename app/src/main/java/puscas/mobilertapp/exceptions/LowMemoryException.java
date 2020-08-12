@@ -40,4 +40,5 @@ public class LowMemoryException extends Exception {
         super(message);
         UtilsLogging.printStackTrace();
     }
+
 }

@@ -22,10 +22,12 @@ public class MyEGLContextFactory implements GLSurfaceView.EGLContextFactory {
      * The "Embedded-System Graphics Library" version.
      */
     static final int EGL_CONTEXT_CLIENT_VERSION = 2;
+
     /**
      * The {@link Logger} for this class.
      */
     private static final Logger LOGGER = Logger.getLogger(MyEGLContextFactory.class.getName());
+
     /**
      * The {@link GLSurfaceView} to be used to get the
      * {@link Activity#isChangingConfigurations()}.
@@ -81,4 +83,5 @@ public class MyEGLContextFactory implements GLSurfaceView.EGLContextFactory {
                 ConstantsError.EGL_DESTROY_CONTEXT_FAILED + egl.eglGetError());
         }
     }
+
 }

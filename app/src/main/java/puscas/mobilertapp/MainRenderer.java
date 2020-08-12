@@ -52,26 +52,32 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * The name for the attribute location of vertex positions in {@link GLES20}.
      */
     public static final String VERTEX_POSITION = "vertexPosition";
+
     /**
      * The name for the attribute location of texture coordinates in {@link GLES20}.
      */
     public static final String VERTEX_TEX_COORD = "vertexTexCoord";
+
     /**
      * The name for the attribute location of texture colors in {@link GLES20}.
      */
     public static final String VERTEX_COLOR = "vertexColor";
+
     /**
      * The number of components in each vertex (X, Y, Z, W).
      */
     public static final int VERTEX_COMPONENTS = 4;
+
     /**
      * The number of components in each texture coordinate (X, Y).
      */
     public static final int TEXTURE_COMPONENTS = 2;
+
     /**
      * The number of color components in each pixel (RGBA).
      */
     public static final int PIXEL_COLORS = 4;
+
     /**
      * The {@link Logger} for this class.
      */
@@ -898,43 +904,6 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         LOGGER.info(message);
     }
 
-    @Override
-    public void onDrawFrame(@Nonnull final GL10 gl) {
-        if (this.firstFrame) {
-            LOGGER.info("onDrawFirstFrame");
-
-            if (this.rasterize) {
-                this.rasterize = false;
-                try {
-                    initPreviewArrays();
-
-                    this.bitmap = renderSceneToBitmap(this.arrayVertices,
-                        this.arrayColors, this.arrayCamera, this.numPrimitives);
-                } catch (final LowMemoryException ex) {
-                    UtilsLogging.logThrowable(ex, "#onDrawFrame");
-                }
-            }
-
-            try {
-                LOGGER.info("rtRenderIntoBitmap started");
-                if (this.numThreads > 0) {
-                    rtRenderIntoBitmap(this.bitmap, this.numThreads, true);
-                }
-                final String message = "rtRenderIntoBitmap" + ConstantsMethods.FINISHED;
-                LOGGER.info(message);
-            } catch (final LowMemoryException ex) {
-                UtilsLogging.logThrowable(ex, "#onDrawFrame");
-            }
-
-            createAndLaunchRenderTask();
-            final String message = "onDrawFirstFrame" + ConstantsMethods.FINISHED;
-            LOGGER.info(message);
-        }
-
-        drawBitmap(this.bitmap);
-        this.firstFrame = false;
-    }
-
     /**
      * Helper method that validates the native arrays.
      */
@@ -954,16 +923,6 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         Preconditions.checkArgument(!bitmap.isRecycled());
         Preconditions.checkArgument(bitmap.getWidth() == this.width);
         Preconditions.checkArgument(bitmap.getHeight() == this.height);
-    }
-
-    @Override
-    public void onSurfaceChanged(@Nonnull final GL10 gl, final int width, final int height) {
-        LOGGER.info("onSurfaceChanged");
-
-        UtilsGL.run(() -> GLES20.glViewport(0, 0, width, height));
-
-        final String message = "onSurfaceChanged" + ConstantsMethods.FINISHED;
-        LOGGER.info(message);
     }
 
     @Override
@@ -1006,6 +965,53 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         LOGGER.info(message);
     }
 
+    @Override
+    public void onSurfaceChanged(@Nonnull final GL10 gl, final int width, final int height) {
+        LOGGER.info("onSurfaceChanged");
+
+        UtilsGL.run(() -> GLES20.glViewport(0, 0, width, height));
+
+        final String message = "onSurfaceChanged" + ConstantsMethods.FINISHED;
+        LOGGER.info(message);
+    }
+
+    @Override
+    public void onDrawFrame(@Nonnull final GL10 gl) {
+        if (this.firstFrame) {
+            LOGGER.info("onDrawFirstFrame");
+
+            if (this.rasterize) {
+                this.rasterize = false;
+                try {
+                    initPreviewArrays();
+
+                    this.bitmap = renderSceneToBitmap(this.arrayVertices,
+                        this.arrayColors, this.arrayCamera, this.numPrimitives);
+                } catch (final LowMemoryException ex) {
+                    UtilsLogging.logThrowable(ex, "#onDrawFrame");
+                }
+            }
+
+            try {
+                LOGGER.info("rtRenderIntoBitmap started");
+                if (this.numThreads > 0) {
+                    rtRenderIntoBitmap(this.bitmap, this.numThreads, true);
+                }
+                final String message = "rtRenderIntoBitmap" + ConstantsMethods.FINISHED;
+                LOGGER.info(message);
+            } catch (final LowMemoryException ex) {
+                UtilsLogging.logThrowable(ex, "#onDrawFrame");
+            }
+
+            createAndLaunchRenderTask();
+            final String message = "onDrawFirstFrame" + ConstantsMethods.FINISHED;
+            LOGGER.info(message);
+        }
+
+        drawBitmap(this.bitmap);
+        this.firstFrame = false;
+    }
+
     /**
      * Prepares the {@link MainRenderer} with the OpenGL shaders' code and also
      * with the render button for the {@link RenderTask}.
@@ -1024,4 +1030,5 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         this.setFragmentShaderCodeRaster(shadersPreviewCode.get(GLES20.GL_FRAGMENT_SHADER));
         this.setButtonRender(button);
     }
+
 }

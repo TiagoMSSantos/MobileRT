@@ -60,10 +60,12 @@ public final class MainActivity extends Activity {
      * Private static fields
      ***********************************************************************
      */
+
     /**
      * The request code for the new {@link Activity} to open an OBJ file.
      */
     private static final int OPEN_FILE_REQUEST_CODE = 1;
+
     /**
      * The OpenGL ES version required to run this application.
      */
@@ -221,70 +223,6 @@ public final class MainActivity extends Activity {
     }
 
     @Override
-    public void onRequestPermissionsResult(final int requestCode,
-                                           @Nonnull final String[] permissions,
-                                           @Nonnull final int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        LOGGER.info("onRequestPermissionsResult");
-    }
-
-    @Override
-    public void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        LOGGER.info(ConstantsMethods.ON_DETACHED_FROM_WINDOW);
-
-        this.drawView.onDetachedFromWindow();
-
-        final String message = ConstantsMethods.ON_DETACHED_FROM_WINDOW + ConstantsMethods.FINISHED;
-        LOGGER.info(message);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        LOGGER.info(ConstantsMethods.ON_DESTROY);
-
-        this.drawView.onDetachedFromWindow();
-        this.drawView.setVisibility(View.INVISIBLE);
-
-        final String message = ConstantsMethods.ON_DESTROY + ConstantsMethods.FINISHED;
-        LOGGER.info(message);
-    }
-
-    @Override
-    protected void onPostResume() {
-        super.onPostResume();
-
-        if (!Strings.isNullOrEmpty(this.sceneFilePath)) {
-            startRender(this.sceneFilePath);
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        this.drawView.onResume();
-        this.drawView.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        LOGGER.info("onPause");
-
-        Utils.handleInterruption("MainActivity#onPause");
-
-        this.drawView.setPreserveEGLContextOnPause(true);
-        this.drawView.onPause();
-        this.drawView.setVisibility(View.INVISIBLE);
-        this.sceneFilePath = null;
-
-        final String message = "onPause" + ConstantsMethods.FINISHED;
-        LOGGER.info(message);
-    }
-
-    @Override
     protected void onRestoreInstanceState(@Nonnull final Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         LOGGER.info("onRestoreInstanceState");
@@ -308,12 +246,22 @@ public final class MainActivity extends Activity {
         this.checkBoxRasterize.setChecked(rasterize);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
 
-    /*
-     ***********************************************************************
-     * Public methods
-     ***********************************************************************
-     */
+        this.drawView.onResume();
+        this.drawView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+
+        if (!Strings.isNullOrEmpty(this.sceneFilePath)) {
+            startRender(this.sceneFilePath);
+        }
+    }
 
     @Override
     protected void onSaveInstanceState(@Nonnull final Bundle outState) {
@@ -330,6 +278,60 @@ public final class MainActivity extends Activity {
         outState.putBoolean(ConstantsUI.CHECK_BOX_RASTERIZE, this.checkBoxRasterize.isChecked());
 
         this.drawView.finishRenderer();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LOGGER.info("onPause");
+
+        Utils.handleInterruption("MainActivity#onPause");
+
+        this.drawView.setPreserveEGLContextOnPause(true);
+        this.drawView.onPause();
+        this.drawView.setVisibility(View.INVISIBLE);
+        this.sceneFilePath = null;
+
+        final String message = "onPause" + ConstantsMethods.FINISHED;
+        LOGGER.info(message);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        LOGGER.info(ConstantsMethods.ON_DESTROY);
+
+        this.drawView.onDetachedFromWindow();
+        this.drawView.setVisibility(View.INVISIBLE);
+
+        final String message = ConstantsMethods.ON_DESTROY + ConstantsMethods.FINISHED;
+        LOGGER.info(message);
+    }
+
+    @Override
+    public void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        LOGGER.info(ConstantsMethods.ON_DETACHED_FROM_WINDOW);
+
+        this.drawView.onDetachedFromWindow();
+
+        final String message = ConstantsMethods.ON_DETACHED_FROM_WINDOW + ConstantsMethods.FINISHED;
+        LOGGER.info(message);
+    }
+
+
+    /*
+     ***********************************************************************
+     * Public methods
+     ***********************************************************************
+     */
+
+    @Override
+    public void onRequestPermissionsResult(final int requestCode,
+                                           @Nonnull final String[] permissions,
+                                           @Nonnull final int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        LOGGER.info("onRequestPermissionsResult");
     }
 
 
@@ -729,4 +731,5 @@ public final class MainActivity extends Activity {
         Preconditions.checkNotNull(this.pickerScene);
         Preconditions.checkNotNull(this.drawView);
     }
+
 }

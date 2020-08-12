@@ -19,10 +19,12 @@ public final class ConstantsError {
      * method throws an exception.
      */
     public static final String EGL_DESTROY_CONTEXT_FAILED = "eglDestroyContext failed: ";
+
     /**
      * A message for when the {@link DrawView#onPause()} method couldn't find a {@link Context}.
      */
     public static final String UNABLE_TO_FIND_AN_ACTIVITY = "Unable to find an activity: ";
+
     /**
      * The {@link Logger} for this class.
      */
@@ -34,4 +36,5 @@ public final class ConstantsError {
     private ConstantsError() {
         LOGGER.info("ConstantsError");
     }
+
 }

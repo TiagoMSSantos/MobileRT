@@ -124,4 +124,5 @@ public final class Utils {
         final int triangleSize = triangleMembersSize + triangleMethodsSize;
         return 1 + ((numPrimitives * triangleSize) / Constants.BYTES_IN_MEGABYTE);
     }
+
 }

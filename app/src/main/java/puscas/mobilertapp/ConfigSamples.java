@@ -34,7 +34,7 @@ public final class ConfigSamples {
      *
      * @param builder The {@link ConfigSamples.Builder} for this class.
      */
-    @Contract(pure = true) ConfigSamples(@Nonnull final ConfigSamples.Builder builder) {
+    ConfigSamples(@Nonnull final ConfigSamples.Builder builder) {
         LOGGER.info("ConfigSamples");
 
         this.samplesPixel = builder.getSamplesPixel();
@@ -148,5 +148,7 @@ public final class ConfigSamples {
         int getSamplesLight() {
             return this.samplesLight;
         }
+
     }
+
 }

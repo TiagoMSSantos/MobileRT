@@ -115,4 +115,5 @@ final class ViewActionButton implements ViewAction {
         final String messageFinished = methodName + ConstantsMethods.FINISHED;
         LOGGER.info(messageFinished);
     }
+
 }

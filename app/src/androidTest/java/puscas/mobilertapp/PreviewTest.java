@@ -173,4 +173,5 @@ public final class PreviewTest {
         final String message = methodName + ConstantsMethods.FINISHED;
         LOGGER.info(message);
     }
+
 }

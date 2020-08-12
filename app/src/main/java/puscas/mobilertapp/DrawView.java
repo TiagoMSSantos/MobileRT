@@ -44,6 +44,7 @@ public final class DrawView extends GLSurfaceView {
      * The {@link GLSurfaceView.Renderer}.
      */
     private final MainRenderer renderer = new MainRenderer();
+
     /**
      * The {@link ExecutorService} which holds
      * {@link ConstantsRenderer#NUMBER_THREADS} number of threads that will
@@ -51,12 +52,14 @@ public final class DrawView extends GLSurfaceView {
      */
     private final ExecutorService executorService =
         Executors.newFixedThreadPool(ConstantsRenderer.NUMBER_THREADS);
+
     /**
      * The changingConfigs.
      *
      * @see Activity#isChangingConfigurations()
      */
     private boolean changingConfigs = false;
+
     /**
      * The last task submitted to {@link ExecutorService}.
      */
@@ -309,19 +312,6 @@ public final class DrawView extends GLSurfaceView {
     }
 
     @Override
-    public void onWindowFocusChanged(final boolean hasWindowFocus) {
-        super.onWindowFocusChanged(hasWindowFocus);
-        LOGGER.info("onWindowFocusChanged");
-
-        if (hasWindowFocus && getVisibility() == View.GONE) {
-            setVisibility(View.VISIBLE);
-        }
-
-        final String message = "onWindowFocusChanged" + ConstantsMethods.FINISHED;
-        LOGGER.info(message);
-    }
-
-    @Override
     protected void onDetachedFromWindow() {
         LOGGER.info(ConstantsMethods.ON_DETACHED_FROM_WINDOW);
         super.onDetachedFromWindow();
@@ -336,6 +326,19 @@ public final class DrawView extends GLSurfaceView {
         LOGGER.info("performClick");
 
         return true;
+    }
+
+    @Override
+    public void onWindowFocusChanged(final boolean hasWindowFocus) {
+        super.onWindowFocusChanged(hasWindowFocus);
+        LOGGER.info("onWindowFocusChanged");
+
+        if (hasWindowFocus && getVisibility() == View.GONE) {
+            setVisibility(View.VISIBLE);
+        }
+
+        final String message = "onWindowFocusChanged" + ConstantsMethods.FINISHED;
+        LOGGER.info(message);
     }
 
     /**
@@ -380,4 +383,5 @@ public final class DrawView extends GLSurfaceView {
                          final Button button) {
         this.renderer.prepareRenderer(shadersCode, shadersPreviewCode, button);
     }
+
 }

@@ -177,4 +177,5 @@ final class Utils {
             "The rendered image should have different values."
         );
     }
+
 }

@@ -55,26 +55,32 @@ public final class UITest {
      * The current index of the scene in the {@link NumberPicker}.
      */
     private int counterScene = 0;
+
     /**
      * The current index of the accelerator in the {@link NumberPicker}.
      */
     private int counterAccelerator = 0;
+
     /**
      * The current index of the shader in the {@link NumberPicker}.
      */
     private int counterShader = 0;
+
     /**
      * The current index of the resolution in the {@link NumberPicker}.
      */
     private int counterResolution = 0;
+
     /**
      * The current index of the number of samples per light in the {@link NumberPicker}.
      */
     private int counterSPL = 0;
+
     /**
      * The current index of the number of samples per pixel in the {@link NumberPicker}.
      */
     private int counterSPP = 0;
+
     /**
      * The current index of the number of threads in the {@link NumberPicker}.
      */

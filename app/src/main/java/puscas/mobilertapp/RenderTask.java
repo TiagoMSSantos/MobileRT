@@ -318,11 +318,6 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
         this.textView.get().setText(aux);
     }
 
-    @Override
-    protected void onPreExecute() {
-        LOGGER.info("onPreExecute");
-    }
-
     @Nullable
     @Override
     protected Void doInBackground(@Nonnull final Void... params) {
@@ -338,12 +333,8 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
     }
 
     @Override
-    protected void onProgressUpdate(@Nonnull final Void... values) {
-        LOGGER.info("onProgressUpdate");
-        printText();
-
-        final String message = "onProgressUpdate" + ConstantsMethods.FINISHED;
-        LOGGER.info(message);
+    protected void onPreExecute() {
+        LOGGER.info("onPreExecute");
     }
 
     @Override
@@ -360,17 +351,12 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
     }
 
     @Override
-    public void onCancelled() {
-        super.onCancelled();
-        final String message = ConstantsMethods.ON_CANCELLED + " 1";
-        LOGGER.info(message);
-
+    protected void onProgressUpdate(@Nonnull final Void... values) {
+        LOGGER.info("onProgressUpdate");
         printText();
-        this.requestRender.run();
 
-        final String messageFinished =
-            ConstantsMethods.ON_CANCELLED + ConstantsMethods.FINISHED + " 1";
-        LOGGER.info(messageFinished);
+        final String message = "onProgressUpdate" + ConstantsMethods.FINISHED;
+        LOGGER.info(message);
     }
 
     @Override
@@ -385,6 +371,20 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
         final String messageFinshed =
             ConstantsMethods.ON_CANCELLED + ConstantsMethods.FINISHED + " 2";
         LOGGER.info(messageFinshed);
+    }
+
+    @Override
+    public void onCancelled() {
+        super.onCancelled();
+        final String message = ConstantsMethods.ON_CANCELLED + " 1";
+        LOGGER.info(message);
+
+        printText();
+        this.requestRender.run();
+
+        final String messageFinished =
+            ConstantsMethods.ON_CANCELLED + ConstantsMethods.FINISHED + " 1";
+        LOGGER.info(messageFinished);
     }
 
     /**
@@ -825,5 +825,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
         int getSamplesLight() {
             return this.samplesLight;
         }
+
     }
+
 }

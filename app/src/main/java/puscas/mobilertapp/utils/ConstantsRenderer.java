@@ -18,11 +18,13 @@ public final class ConstantsRenderer {
      * {@link MainRenderer} and {@link RenderTask} {@link ExecutorService}.
      */
     public static final int NUMBER_THREADS = 1;
+
     /**
      * All the buffer bits to clear all the buffers in OpenGL.
      */
     public static final int ALL_BUFFER_BIT = GLES20.GL_COLOR_BUFFER_BIT
         | GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_STENCIL_BUFFER_BIT;
+
     /**
      * The {@link Logger} for this class.
      */
@@ -34,4 +36,5 @@ public final class ConstantsRenderer {
     private ConstantsRenderer() {
         LOGGER.info("ConstantsRenderer");
     }
+
 }

@@ -46,4 +46,5 @@ public final class CustomNumberPicker extends NumberPicker {
         textView.setTextSize(ConstantsUI.TEXT_SIZE);
         textView.setTextColor(color);
     }
+
 }

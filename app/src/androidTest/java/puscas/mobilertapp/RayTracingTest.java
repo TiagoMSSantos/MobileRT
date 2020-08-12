@@ -44,17 +44,20 @@ public final class RayTracingTest {
     @Nonnull
     @ClassRule
     public static final TestRule timeoutClassRule = new Timeout(40L, TimeUnit.MINUTES);
+
     /**
      * The {@link Logger} for this class.
      */
     @Nonnull
     private static final Logger LOGGER = Logger.getLogger(RayTracingTest.class.getName());
+
     /**
      * The rule for the timeout for each test.
      */
     @Nonnull
     @Rule
     public final TestRule timeoutRule = new Timeout(30L, TimeUnit.MINUTES);
+
     /**
      * The rule to create the MainActivity.
      */
@@ -62,6 +65,7 @@ public final class RayTracingTest {
     @Rule
     public ActivityTestRule<MainActivity> mainActivityActivityTestRule =
         new ActivityTestRule<>(MainActivity.class, true, true);
+
     /**
      * The rule to access external SD card.
      */
@@ -311,4 +315,5 @@ public final class RayTracingTest {
                 );
             });
     }
+
 }

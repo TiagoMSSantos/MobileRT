@@ -40,4 +40,5 @@ public class FailureException extends RuntimeException {
         super(message);
         UtilsLogging.printStackTrace();
     }
+
 }

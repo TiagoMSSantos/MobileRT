@@ -33,17 +33,20 @@ public final class MainRendererTest {
     @Nonnull
     @ClassRule
     public static final TestRule timeoutClassRule = new Timeout(1L, TimeUnit.MINUTES);
+
     /**
      * The {@link Logger} for this class.
      */
     @Nonnull
     private static final Logger LOGGER = Logger.getLogger(MainRendererTest.class.getName());
+
     /**
      * The rule for the timeout for each test.
      */
     @Nonnull
     @Rule
     public final TestRule timeoutRule = new Timeout(1L, TimeUnit.MINUTES);
+
     /**
      * The rule to create the MainActivity.
      */
@@ -51,6 +54,7 @@ public final class MainRendererTest {
     @Rule
     public ActivityTestRule<MainActivity> mainActivityActivityTestRule =
         new ActivityTestRule<>(MainActivity.class, true, true);
+
     /**
      * The MainActivity to test.
      */
@@ -218,4 +222,5 @@ public final class MainRendererTest {
         latch.await(1L, TimeUnit.MINUTES);
         return shaderIndex.get();
     }
+
 }
