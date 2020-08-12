@@ -1,11 +1,7 @@
 package puscas.mobilertapp.utils;
 
-import android.graphics.Bitmap;
 import android.opengl.GLES20;
 import android.opengl.GLUtils;
-import android.opengl.Matrix;
-import java.nio.Buffer;
-import java.nio.ByteBuffer;
 import java.util.logging.Logger;
 import java8.util.function.BiFunction;
 import java8.util.function.Function;

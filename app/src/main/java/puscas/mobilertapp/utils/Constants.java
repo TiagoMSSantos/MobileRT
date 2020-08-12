@@ -20,7 +20,7 @@ public final class Constants {
     /**
      * A render {@link Button} text message.
      */
-    @NonNls public static final String RENDER = "Render";
+    public static final @NonNls String RENDER = "Render";
     /**
      * A render {@link Button} text message.
      */
