@@ -8,7 +8,6 @@ import androidx.test.espresso.Espresso;
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.espresso.action.ViewActions;
 import androidx.test.espresso.matcher.ViewMatchers;
-import androidx.test.rule.ActivityTestRule;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -17,7 +16,6 @@ import javax.annotation.Nonnull;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.runners.MethodSorters;
@@ -29,27 +27,13 @@ import puscas.mobilertapp.utils.Shader;
 import puscas.mobilertapp.utils.UtilsContext;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public final class UITest {
+public final class UITest extends AbstractTest {
 
     /**
      * The {@link Logger} for this class.
      */
     @Nonnull
     private static final Logger LOGGER = Logger.getLogger(UITest.class.getName());
-
-    /**
-     * The rule to create the MainActivity.
-     */
-    @Nonnull
-    @Rule
-    public ActivityTestRule<MainActivity> mainActivityActivityTestRule =
-        new ActivityTestRule<>(MainActivity.class, true, true);
-
-    /**
-     * The MainActivity to test.
-     */
-    private MainActivity activity = null;
-
 
     /**
      * The current index of the scene in the {@link NumberPicker}.
@@ -161,24 +145,24 @@ public final class UITest {
      * Setup method called before each test.
      */
     @Before
+    @Override
     public void setUp() {
+        super.setUp();
+
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
-
-        this.activity = this.mainActivityActivityTestRule.getActivity();
     }
 
     /**
      * Tear down method called after each test.
      */
     @After
+    @Override
     public void tearDown() {
+        super.tearDown();
+
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
-
-        this.activity.finish();
-        this.mainActivityActivityTestRule.finishActivity();
-        this.activity = null;
     }
 
     /**

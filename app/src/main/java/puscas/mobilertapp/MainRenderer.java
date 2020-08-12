@@ -538,7 +538,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      *
      * @param memoryNeeded Number of MegaBytes needed to be allocated.
      * @return {@code True} if the device doesn't have enough memory to be
-     * allocated, otherwise {@code false}.
+     *         allocated, otherwise {@code false}.
      */
     private boolean isLowMemory(final int memoryNeeded) {
         Preconditions.checkArgument(memoryNeeded > 0,
@@ -653,7 +653,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * @param bitmapWidth  The width of the desired {@link Bitmap}.
      * @param bitmapHeight The height of the desired {@link Bitmap}.
      * @return A new {@link Bitmap} with the colors of the pixels in the OpenGL
-     * frame buffer.
+     *         frame buffer.
      */
     private Bitmap copyGLFrameBufferToBitmap(final int viewWidth,
                                              final int viewHeight,

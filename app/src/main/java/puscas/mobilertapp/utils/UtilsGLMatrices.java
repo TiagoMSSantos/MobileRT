@@ -38,6 +38,13 @@ public final class UtilsGLMatrices {
     private static final float Z_FAR = 1.0e+30F;
 
     /**
+     * A private constructor in order to prevent instantiating this helper class.
+     */
+    private UtilsGLMatrices() {
+        LOGGER.info("UtilsGLMatrices");
+    }
+
+    /**
      * Creates the model matrix and sets it as an identity matrix.
      *
      * @return A float array with the model matrix data.

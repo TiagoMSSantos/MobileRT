@@ -1,14 +1,11 @@
 package puscas.mobilertapp;
 
-import android.Manifest;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.widget.Button;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.espresso.matcher.ViewMatchers;
-import androidx.test.rule.ActivityTestRule;
-import androidx.test.rule.GrantPermissionRule;
 import com.google.common.util.concurrent.Uninterruptibles;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -18,13 +15,9 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.FixMethodOrder;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
-import org.junit.rules.TestRule;
-import org.junit.rules.Timeout;
 import org.junit.runners.MethodSorters;
 import puscas.mobilertapp.utils.Constants;
 import puscas.mobilertapp.utils.ConstantsMethods;
@@ -36,48 +29,13 @@ import puscas.mobilertapp.utils.UtilsContext;
  * The test suite for the Ray Tracing engine used in {@link MainActivity}.
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public final class RayTracingTest {
-
-    /**
-     * The rule for the timeout for all the tests.
-     */
-    @Nonnull
-    @ClassRule
-    public static final TestRule timeoutClassRule = new Timeout(40L, TimeUnit.MINUTES);
+public final class RayTracingTest extends AbstractTest {
 
     /**
      * The {@link Logger} for this class.
      */
     @Nonnull
     private static final Logger LOGGER = Logger.getLogger(RayTracingTest.class.getName());
-
-    /**
-     * The rule for the timeout for each test.
-     */
-    @Nonnull
-    @Rule
-    public final TestRule timeoutRule = new Timeout(30L, TimeUnit.MINUTES);
-
-    /**
-     * The rule to create the MainActivity.
-     */
-    @Nonnull
-    @Rule
-    public ActivityTestRule<MainActivity> mainActivityActivityTestRule =
-        new ActivityTestRule<>(MainActivity.class, true, true);
-
-    /**
-     * The rule to access external SD card.
-     */
-    @Nonnull
-    @Rule
-    public GrantPermissionRule grantPermissionRule =
-        GrantPermissionRule.grant(Manifest.permission.READ_EXTERNAL_STORAGE);
-
-    /**
-     * The MainActivity to test.
-     */
-    private MainActivity activity = null;
 
     /**
      * A setup method which is called first.
@@ -139,24 +97,24 @@ public final class RayTracingTest {
      * Setup method called before each test.
      */
     @Before
+    @Override
     public void setUp() {
+        super.setUp();
+
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
-
-        this.activity = this.mainActivityActivityTestRule.getActivity();
     }
 
     /**
      * Tear down method called after each test.
      */
     @After
+    @Override
     public void tearDown() {
+        super.tearDown();
+
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
-
-        this.activity.finish();
-        this.mainActivityActivityTestRule.finishActivity();
-        this.activity = null;
     }
 
     /**

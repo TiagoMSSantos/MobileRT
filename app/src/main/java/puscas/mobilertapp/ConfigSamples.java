@@ -88,7 +88,7 @@ public final class ConfigSamples {
          * @param samplesPixel The new value for the
          *                     {@link ConfigSamples#samplesPixel} field.
          * @return The builder with {@link ConfigSamples.Builder#samplesPixel}
-         * already set.
+         *         already set.
          */
         @Contract("_ -> this")
         @Nonnull
@@ -106,7 +106,7 @@ public final class ConfigSamples {
          * @param samplesLight The new value for the
          *                     {@link ConfigSamples#samplesLight} field.
          * @return The builder with {@link ConfigSamples.Builder#samplesLight}
-         * already set.
+         *         already set.
          */
         @Contract("_ -> this")
         @Nonnull
