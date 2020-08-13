@@ -71,25 +71,24 @@ done
 # Set paths for the scene
 ###############################################################################
 SCN="${OBJS_PATH}/conference/conference"
-SCN="${OBJS_PATH}/teapot/teapot"
-SCN="${OBJS_PATH}/buddha/buddha"
-SCN="${OBJS_PATH}/dragon/dragon"
-SCN="${OBJS_PATH}/sponza/sponza"
-SCN="${OBJS_PATH}/powerplant/powerplant"
-SCN="${OBJS_PATH}/San_Miguel/san-miguel"
-SCN="${OBJS_PATH}/San_Miguel/san-miguel-low-poly"
-SCN="${OBJS_PATH}/CornellBox/CornellBox-Empty-CO"
-SCN="${OBJS_PATH}/CornellBox/CornellBox-Empty-Squashed"
-SCN="${OBJS_PATH}/CornellBox/CornellBox-Empty-White"
-SCN="${OBJS_PATH}/CornellBox/CornellBox-Glossy-Floor"
-SCN="${OBJS_PATH}/CornellBox/CornellBox-Glossy"
-SCN="${OBJS_PATH}/CornellBox/CornellBox-Mirror"
-SCN="${OBJS_PATH}/CornellBox/CornellBox-Original"
-SCN="${OBJS_PATH}/CornellBox/CornellBox-Sphere"
-SCN="${OBJS_PATH}/CornellBox/CornellBox-Water"
-SCN="${OBJS_PATH}/CornellBox/water"
+#SCN="${OBJS_PATH}/teapot/teapot"
+#SCN="${OBJS_PATH}/buddha/buddha"
+#SCN="${OBJS_PATH}/dragon/dragon"
+#SCN="${OBJS_PATH}/sponza/sponza"
+#SCN="${OBJS_PATH}/powerplant/powerplant"
+#SCN="${OBJS_PATH}/San_Miguel/san-miguel"
+#SCN="${OBJS_PATH}/San_Miguel/san-miguel-low-poly"
+#SCN="${OBJS_PATH}/CornellBox/CornellBox-Empty-CO"
+#SCN="${OBJS_PATH}/CornellBox/CornellBox-Empty-Squashed"
+#SCN="${OBJS_PATH}/CornellBox/CornellBox-Empty-White"
+#SCN="${OBJS_PATH}/CornellBox/CornellBox-Glossy-Floor"
+#SCN="${OBJS_PATH}/CornellBox/CornellBox-Glossy"
+#SCN="${OBJS_PATH}/CornellBox/CornellBox-Mirror"
+#SCN="${OBJS_PATH}/CornellBox/CornellBox-Original"
+#SCN="${OBJS_PATH}/CornellBox/CornellBox-Sphere"
+#SCN="${OBJS_PATH}/CornellBox/CornellBox-Water"
+#SCN="${OBJS_PATH}/CornellBox/water"
 
-SCN="${OBJS_PATH}/conference/conference"
 OBJ="${SCN}.obj"
 MTL="${SCN}.mtl"
 CAM="${SCN}.cam"
@@ -166,7 +165,7 @@ function debug {
   echo "ACC = ${ACC}"
 
   "${BIN_DEBUG_PATH}"/AppMobileRTd \
-    "${THREAD}" ${SHADER} ${SCENE} ${SPP} ${SPL} ${WIDTH} ${HEIGHT} ${ACC}
+    "${THREAD}" ${SHADER} ${SCENE} ${SPP} ${SPL} ${WIDTH} ${HEIGHT} ${ACC} \
     ${REP} "${OBJ}" "${MTL}" "${CAM}" ${PRINT} ${ASYNC} ${SHOWIMAGE}
 }
 
@@ -244,38 +243,42 @@ function profile {
 ###############################################################################
 # Parse arguments
 ###############################################################################
-PARAM1="time"
-PARAM2="drawt"
-PARAM3="draws"
-PARAM4="test"
-PARAM5="Release"
-PARAM6="tidy"
-PARAM7="gtest"
-PARAM8="Debug"
+function parseArguments() {
+  PARAM1="time"
+  PARAM2="drawt"
+  PARAM3="draws"
+  PARAM4="test"
+  PARAM5="Release"
+  PARAM6="tidy"
+  PARAM7="gtest"
+  PARAM8="Debug"
 
-if [ $# -eq 0 ]; then
-  execute
-else
-  for P in ${@}
-  do
-    case ${P} in
-      ${PARAM1}) profile; sleep 2s ;;
-      ${PARAM2}) . ./scripts/plot/plot.sh 0;;
-      ${PARAM3}) . ./scripts/plot/plot.sh 1;;
-      ${PARAM4}) awk -f "${PLOT_SCRIPTS_PATH}/parser_median.awk" "${PLOT_SCRIPTS_PATH}/test.dat"  ;;
-      ${PARAM5}) execute ;;
-      ${PARAM6}) clangtidy ;;
-      ${PARAM7}) "${BIN_DEBUG_PATH}"/UnitTestsd ;;
-      ${PARAM8}) debug ;;
-      *) echo ""
-         echo "Wrong Parameter: ${P}"
-         echo "The valid parameters are:"
-         echo "${PARAM1} - Profile application and log the measured times."
-         echo "${PARAM2} - Draw a graph with GNU Plot."
-         break
-         ;;
-    esac
-  done
-fi
+  if [ $# -eq 0 ]; then
+    execute
+  else
+    for P in ${@}
+    do
+      case ${P} in
+        ${PARAM1}) profile; sleep 2s ;;
+        ${PARAM2}) . ./scripts/plot/plot.sh 0;;
+        ${PARAM3}) . ./scripts/plot/plot.sh 1;;
+        ${PARAM4}) awk -f "${PLOT_SCRIPTS_PATH}/parser_median.awk" "${PLOT_SCRIPTS_PATH}/test.dat"  ;;
+        ${PARAM5}) execute ;;
+        ${PARAM6}) clangtidy ;;
+        ${PARAM7}) "${BIN_DEBUG_PATH}"/UnitTestsd ;;
+        ${PARAM8}) debug ;;
+        *) echo ""
+           echo "Wrong Parameter: ${P}"
+           echo "The valid parameters are:"
+           echo "${PARAM1} - Profile application and log the measured times."
+           echo "${PARAM2} - Draw a graph with GNU Plot."
+           break
+           ;;
+      esac
+    done
+  fi
+}
+
+parseArguments "${@}"
 ###############################################################################
 ###############################################################################
