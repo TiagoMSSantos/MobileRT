@@ -757,10 +757,21 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
 
         this.shaderProgramRaster = UtilsShader.reCreateProgram(this.shaderProgramRaster);
 
-        UtilsShader.connectOpenGlAttribute(bbVertices, 0,
-            this.shaderProgramRaster, VERTEX_COMPONENTS, VERTEX_POSITION);
-        UtilsShader.connectOpenGlAttribute(bbColors, 1,
-            this.shaderProgramRaster, PIXEL_COLORS, VERTEX_COLOR);
+        final ConfigGLAttribute verticesAttribute = new ConfigGLAttribute.Builder()
+            .withName(VERTEX_POSITION)
+            .withBuffer(bbVertices)
+            .withLocation(0)
+            .withComponents(VERTEX_COMPONENTS)
+            .build();
+        UtilsShader.connectOpenGlAttribute(this.shaderProgramRaster, verticesAttribute);
+
+        final ConfigGLAttribute colorsAttribute = new ConfigGLAttribute.Builder()
+            .withName(VERTEX_COLOR)
+            .withBuffer(bbColors)
+            .withLocation(1)
+            .withComponents(PIXEL_COLORS)
+            .build();
+        UtilsShader.connectOpenGlAttribute(this.shaderProgramRaster, colorsAttribute);
 
         UtilsShader.attachShaders(this.shaderProgramRaster,
             this.vertexShaderCodeRaster, this.fragmentShaderCodeRaster);
@@ -890,10 +901,21 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
 
         UtilsGL.run(() -> GLES20.glUseProgram(this.shaderProgram));
 
-        UtilsShader.connectOpenGlAttribute(this.floatBufferVertices, 0,
-            this.shaderProgram, VERTEX_COMPONENTS, VERTEX_POSITION);
-        UtilsShader.connectOpenGlAttribute(this.floatBufferTexture, 1,
-            this.shaderProgram, TEXTURE_COMPONENTS, VERTEX_TEX_COORD);
+        final ConfigGLAttribute verticesAttribute = new ConfigGLAttribute.Builder()
+            .withName(VERTEX_POSITION)
+            .withBuffer(this.floatBufferVertices)
+            .withLocation(0)
+            .withComponents(VERTEX_COMPONENTS)
+            .build();
+        UtilsShader.connectOpenGlAttribute(this.shaderProgram, verticesAttribute);
+
+        final ConfigGLAttribute textureAttribute = new ConfigGLAttribute.Builder()
+            .withName(VERTEX_TEX_COORD)
+            .withBuffer(this.floatBufferTexture)
+            .withLocation(1)
+            .withComponents(TEXTURE_COMPONENTS)
+            .build();
+        UtilsShader.connectOpenGlAttribute(this.shaderProgram, textureAttribute);
 
         final int vertexCount = this.verticesTexture.length / Constants.BYTES_IN_FLOAT;
         UtilsGL.run(() -> GLES20.glDrawArrays(GLES20.GL_TRIANGLE_FAN, 0, vertexCount));
@@ -950,10 +972,22 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         this.floatBufferTexture = UtilsBuffer.allocateBuffer(this.texCoords);
 
         // Bind Attributes
-        UtilsShader.connectOpenGlAttribute(this.floatBufferVertices, 0,
-            this.shaderProgram, VERTEX_COMPONENTS, VERTEX_POSITION);
-        UtilsShader.connectOpenGlAttribute(this.floatBufferTexture, 1,
-            this.shaderProgram, TEXTURE_COMPONENTS, VERTEX_TEX_COORD);
+        final ConfigGLAttribute verticesAttribute = new ConfigGLAttribute.Builder()
+            .withName(VERTEX_POSITION)
+            .withBuffer(this.floatBufferVertices)
+            .withLocation(0)
+            .withComponents(VERTEX_COMPONENTS)
+            .build();
+        UtilsShader.connectOpenGlAttribute(this.shaderProgram, verticesAttribute);
+
+        final ConfigGLAttribute textureAttribute = new ConfigGLAttribute.Builder()
+            .withName(VERTEX_TEX_COORD)
+            .withBuffer(this.floatBufferTexture)
+            .withLocation(1)
+            .withComponents(TEXTURE_COMPONENTS)
+            .build();
+        UtilsShader.connectOpenGlAttribute(this.shaderProgram, textureAttribute);
+
         UtilsGL.run(() -> GLES20.glLinkProgram(this.shaderProgram));
         UtilsShader.checksShaderLinkStatus(this.shaderProgram);
 

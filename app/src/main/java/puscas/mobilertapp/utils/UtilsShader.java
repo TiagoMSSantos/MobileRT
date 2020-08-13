@@ -1,10 +1,10 @@
 package puscas.mobilertapp.utils;
 
 import android.opengl.GLES20;
-import java.nio.Buffer;
-import java.nio.ByteBuffer;
+import androidx.annotation.NonNull;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
+import puscas.mobilertapp.ConfigGLAttribute;
 import puscas.mobilertapp.exceptions.FailureException;
 import static android.opengl.GLES20.GL_COMPILE_STATUS;
 import static android.opengl.GLES20.glCompileShader;
@@ -133,24 +133,17 @@ public final class UtilsShader {
     /**
      * Helper method that binds and enables an OpenGL attribute.
      *
-     * @param buffer             The {@link Buffer} with the data to bind.
-     * @param attributeLocation  The desired location of the OpenGL attribute.
-     * @param shaderProgram      The shader program index.
-     * @param componentsInBuffer The number of components in each cell in the
-     *                           {@link ByteBuffer}.
-     * @param attributeName      The name of the OpenGL attribute.
+     * @param shaderProgram The shader program index.
+     * @param config        The {@link ConfigGLAttribute} configurator.
      */
-    public static void connectOpenGlAttribute(@Nonnull final Buffer buffer,
-                                              final int attributeLocation,
-                                              final int shaderProgram,
-                                              final int componentsInBuffer,
-                                              @Nonnull final String attributeName) {
+    public static void connectOpenGlAttribute(final int shaderProgram,
+                                              @NonNull final ConfigGLAttribute config) {
         LOGGER.info("connectOpenGlAttribute");
         UtilsGL.run(() -> GLES20.glBindAttribLocation(
-            shaderProgram, attributeLocation, attributeName));
-        UtilsGL.run(() -> GLES20.glVertexAttribPointer(attributeLocation,
-            componentsInBuffer, GLES20.GL_FLOAT, false, 0, buffer));
-        UtilsGL.run(() -> GLES20.glEnableVertexAttribArray(attributeLocation));
+            shaderProgram, config.getAttributeLocation(), config.getAttributeName()));
+        UtilsGL.run(() -> GLES20.glVertexAttribPointer(config.getAttributeLocation(),
+            config.getComponentsInBuffer(), GLES20.GL_FLOAT, false, 0, config.getBuffer()));
+        UtilsGL.run(() -> GLES20.glEnableVertexAttribArray(config.getAttributeLocation()));
     }
 
 }
