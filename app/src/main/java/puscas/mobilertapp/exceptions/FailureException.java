@@ -1,7 +1,6 @@
 package puscas.mobilertapp.exceptions;
 
 import javax.annotation.Nonnull;
-import puscas.mobilertapp.utils.UtilsLogging;
 
 /**
  * An {@link Exception} which represents the system with a failure.
@@ -18,7 +17,6 @@ public class FailureException extends RuntimeException {
      */
     FailureException() {
         super();
-        UtilsLogging.printStackTrace();
     }
 
     /**
@@ -28,7 +26,6 @@ public class FailureException extends RuntimeException {
      */
     public FailureException(@Nonnull final Throwable cause) {
         super(cause);
-        UtilsLogging.printStackTrace();
     }
 
     /**
@@ -38,7 +35,6 @@ public class FailureException extends RuntimeException {
      */
     public FailureException(@Nonnull final String message) {
         super(message);
-        UtilsLogging.printStackTrace();
     }
 
 }

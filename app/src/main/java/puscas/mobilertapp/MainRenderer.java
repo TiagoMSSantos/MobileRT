@@ -700,11 +700,11 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
                 this.renderTask.get(1L, TimeUnit.DAYS);
                 this.renderTask.cancel(false);
             } catch (final ExecutionException | TimeoutException | CancellationException ex) {
-                UtilsLogging.logThrowable(ex, "#waitLastTask");
+                UtilsLogging.logThrowable(ex, "MainRenderer#waitLastTask");
             } catch (final InterruptedException ex) {
                 Thread.currentThread().interrupt();
             } finally {
-                Utils.handleInterruption("#waitLastTask");
+                Utils.handleInterruption("MainRenderer#waitLastTask");
             }
         }
 
@@ -988,7 +988,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
                     this.bitmap = renderSceneToBitmap(this.arrayVertices,
                         this.arrayColors, this.arrayCamera, this.numPrimitives);
                 } catch (final LowMemoryException ex) {
-                    UtilsLogging.logThrowable(ex, "#onDrawFrame");
+                    UtilsLogging.logThrowable(ex, "MainRenderer#onDrawFrame");
                 }
             }
 
@@ -1000,7 +1000,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
                 final String message = "rtRenderIntoBitmap" + ConstantsMethods.FINISHED;
                 LOGGER.info(message);
             } catch (final LowMemoryException ex) {
-                UtilsLogging.logThrowable(ex, "#onDrawFrame");
+                UtilsLogging.logThrowable(ex, "MainRenderer#onDrawFrame");
             }
 
             createAndLaunchRenderTask();

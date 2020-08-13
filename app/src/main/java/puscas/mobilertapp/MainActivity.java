@@ -84,7 +84,7 @@ public final class MainActivity extends Activity {
         } catch (final RuntimeException ex) {
             throw new FailureException(ex);
         } catch (final UnsatisfiedLinkError ex) {
-            UtilsLogging.logThrowable(ex, "MainActivity");
+            UtilsLogging.logThrowable(ex, "MainActivity#static");
         }
     }
 

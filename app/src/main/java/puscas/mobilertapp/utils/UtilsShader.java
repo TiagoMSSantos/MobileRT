@@ -30,7 +30,7 @@ public final class UtilsShader {
     /**
      * Helper method that attaches some GLSL shaders into an OpenGL program.
      *
-     * @param shaderProgram      The OpenGL shader program-
+     * @param shaderProgram      The index of OpenGL shader program.
      * @param vertexShaderCode   The code for the Vertex shader.
      * @param fragmentShaderCode The code for the Fragment shader.
      */

@@ -1,7 +1,6 @@
 package puscas.mobilertapp;
 
 import android.os.Build;
-import android.widget.Button;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.ViewInteraction;
 import java.util.concurrent.TimeoutException;
@@ -13,7 +12,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
-import org.junit.jupiter.api.Assertions;
 import org.junit.runners.MethodSorters;
 import puscas.mobilertapp.utils.Constants;
 import puscas.mobilertapp.utils.ConstantsMethods;

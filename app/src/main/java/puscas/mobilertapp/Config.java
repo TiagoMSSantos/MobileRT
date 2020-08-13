@@ -285,9 +285,7 @@ public final class Config {
         @Contract("_ -> this")
         @Nonnull
         Config.Builder withConfigResolution(final ConfigResolution configResolution) {
-            final String message = String.format(Locale.US, "withConfigResolution: %d x %d",
-                configResolution.getWidth(), configResolution.getHeight());
-            LOGGER_BUILDER.info(message);
+            LOGGER_BUILDER.info("withConfigResolution");
 
             this.configResolution = configResolution;
             return this;

@@ -207,7 +207,7 @@ public final class UtilsTest {
     /**
      * Helper method that checks the text from the Render {@link Button}.
      *
-     * @param expectedText    The expected text shown in the {@link Button}.
+     * @param expectedText The expected text shown in the {@link Button}.
      */
     public static void assertRenderButtonText(final String expectedText) {
         LOGGER.info("assertRenderButtonText");
@@ -219,7 +219,7 @@ public final class UtilsTest {
                     renderButton.getText().toString(),
                     puscas.mobilertapp.Constants.BUTTON_MESSAGE
                 );
-        });
+            });
     }
 
 }
