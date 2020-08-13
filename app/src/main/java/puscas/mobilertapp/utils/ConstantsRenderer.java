@@ -4,9 +4,6 @@ import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import java.util.concurrent.ExecutorService;
 import java.util.logging.Logger;
-import puscas.mobilertapp.DrawView;
-import puscas.mobilertapp.MainRenderer;
-import puscas.mobilertapp.RenderTask;
 
 /**
  * Utility class with the constants for the {@link GLSurfaceView.Renderer}.
@@ -14,8 +11,8 @@ import puscas.mobilertapp.RenderTask;
 public final class ConstantsRenderer {
 
     /**
-     * The number of threads to be used by the {@link DrawView},
-     * {@link MainRenderer} and {@link RenderTask} {@link ExecutorService}.
+     * The number of threads to be used by the DrawView,
+     * MainRenderer and  RenderTask {@link ExecutorService}s.
      */
     public static final int NUMBER_THREADS = 1;
 

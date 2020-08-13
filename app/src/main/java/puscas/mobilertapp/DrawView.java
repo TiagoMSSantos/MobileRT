@@ -298,9 +298,9 @@ public final class DrawView extends GLSurfaceView {
     }
 
     /**
-     * Gets the {@link MainRenderer}.
+     * Gets the {@link #renderer}.
      *
-     * @return The {@link MainRenderer} of this object.
+     * @return The {@link #renderer} of this object.
      */
     @Contract(pure = true)
     @Nonnull
@@ -394,7 +394,7 @@ public final class DrawView extends GLSurfaceView {
 
     /**
      * Prepares the {@link MainRenderer} with the OpenGL shaders' code and also
-     * with the render button for the {@link RenderTask}.
+     * with the render button for the {@link android.os.AsyncTask}.
      *
      * @param shadersCode        The shaders' code for the Ray Tracing engine.
      * @param shadersPreviewCode The shaders' code for the OpenGL preview feature.

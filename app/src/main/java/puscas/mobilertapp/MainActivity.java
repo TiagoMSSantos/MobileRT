@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -599,16 +600,15 @@ public final class MainActivity extends Activity {
     }
 
     /**
-     * Helper method that sets up the {@link MainRenderer} in the
+     * Helper method that sets up the {@link GLSurfaceView.Renderer} in the
      * {@link DrawView}.
      * This method loads the GLSL shaders and pass them to the
-     * {@link MainRenderer}.
+     * {@link GLSurfaceView.Renderer}.
      *
-     * @param textView     The {@link TextView} for the {@link MainRenderer} to
-     *                     pass to the {@link RenderTask} when the Ray Tracing
-     *                     process starts.
-     * @param renderButton The {@link TextView} for the {@link MainRenderer} to
-     *                     pass to the {@link RenderTask} when the Ray Tracing
+     * @param textView     The {@link TextView} for the {@link GLSurfaceView.Renderer} to pass to
+     *                     the {@link AsyncTask} when the Ray Tracing process starts.
+     * @param renderButton The {@link TextView} for the {@link GLSurfaceView.Renderer} to
+     *                     pass to the {@link AsyncTask} when the Ray Tracing
      *                     process starts.
      */
     private void setupRenderer(final TextView textView, final Button renderButton) {

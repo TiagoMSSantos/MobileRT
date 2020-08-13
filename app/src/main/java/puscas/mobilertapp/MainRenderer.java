@@ -1013,7 +1013,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
     }
 
     /**
-     * Prepares the {@link MainRenderer} with the OpenGL shaders' code and also
+     * Prepares this class with the OpenGL shaders' code and also
      * with the render button for the {@link RenderTask}.
      *
      * @param shadersCode        The shaders' code for the Ray Tracing engine.

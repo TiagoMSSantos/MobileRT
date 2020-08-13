@@ -60,9 +60,8 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
     private final Runnable timer;
 
     /**
-     * A {@link Runnable} to the {@link MainRenderer#rtFinishRender} method
-     * which stops the Ray Tracer engine and sets the {@link RenderTask#stateT}
-     * to {@link State#IDLE}.
+     * A {@link Runnable} method which stops the Ray Tracer engine and sets the
+     * {@link RenderTask#stateT} to {@link State#IDLE}.
      */
     private final Runnable finishRender;
 

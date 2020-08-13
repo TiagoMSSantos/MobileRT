@@ -1,12 +1,6 @@
 package puscas.mobilertapp.utils;
 
-import android.view.View;
 import java.util.logging.Logger;
-import puscas.mobilertapp.Config;
-import puscas.mobilertapp.DrawView;
-import puscas.mobilertapp.MainActivity;
-import puscas.mobilertapp.MainRenderer;
-import puscas.mobilertapp.RenderTask;
 
 /**
  * Utility class with the text constants for the names of methods.
@@ -19,38 +13,37 @@ public final class ConstantsMethods {
     public static final String FINISHED = " finished";
 
     /**
-     * The name of the {@link MainRenderer#setBitmap()}
+     * The name of the setBitmap() method.
      */
     public static final String SET_BITMAP = "setBitmap";
 
     /**
-     * The name of the {@link DrawView#renderScene(Config, int, boolean)} method.
+     * The name of the renderScene(Config, int, boolean) method.
      */
     public static final String RENDER_SCENE = "renderScene";
 
     /**
-     * The name of the {@link MainActivity#startRender(View)} method.
+     * The name of the startRender(View) method.
      */
     public static final String START_RENDER = "startRender";
 
     /**
-     * The name of the {@link MainActivity#onDestroy()} method.
+     * The name of the onDestroy() method.
      */
     public static final String ON_DESTROY = "onDestroy";
 
     /**
-     * The name of the {@link MainActivity#onDetachedFromWindow()} method.
+     * The name of the onDetachedFromWindow() method.
      */
     public static final String ON_DETACHED_FROM_WINDOW = "onDetachedFromWindow";
 
     /**
-     * The name of the {@link RenderTask#onCancelled()} and
-     * {@link RenderTask#onCancelled(Void)} methods.
+     * The name of the onCancelled() method.
      */
     public static final String ON_CANCELLED = "onCancelled";
 
     /**
-     * The name of the {@link RenderTask#timer} {@link Runnable} field.
+     * The name of the timer field.
      */
     public static final String TIMER = "RenderTask timer";
 
