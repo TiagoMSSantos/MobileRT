@@ -208,10 +208,14 @@ public final class DrawView extends GLSurfaceView {
             final String messageFailed = ConstantsMethods.RENDER_SCENE + " executor failed";
             LOGGER.severe(messageFailed);
             this.renderer.rtFinishRender();
+
+            // Only the UI thread can update the text in the Render button.
             post(() -> this.renderer.updateButton(R.string.render));
 
             return Boolean.FALSE;
         });
+
+        // This should be executed by the UI thread, so it's good to go.
         this.renderer.updateButton(R.string.stop);
 
         final String messageFinished2 = ConstantsMethods.RENDER_SCENE + ConstantsMethods.FINISHED;

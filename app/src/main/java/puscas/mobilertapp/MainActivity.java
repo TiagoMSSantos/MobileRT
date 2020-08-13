@@ -258,6 +258,10 @@ public final class MainActivity extends Activity {
     protected void onPostResume() {
         super.onPostResume();
 
+        // Start rendering if its resuming from selecting a scene via an
+        // external file manager and it was selected a file with a scene to
+        // render.
+        // This method should be automatically called after `onActivityResult`.
         if (!Strings.isNullOrEmpty(this.sceneFilePath)) {
             startRender(this.sceneFilePath);
         }
@@ -368,38 +372,38 @@ public final class MainActivity extends Activity {
             ConstantsMethods.START_RENDER, view.toString());
         LOGGER.info(message);
 
-        this.sceneFilePath = "";
-        final Scene scene = Scene.values()[this.pickerScene.getValue()];
         final State state = this.drawView.getRayTracerState();
-
-        final String message2 = String.format(Locale.US, "%s: %s",
-            ConstantsMethods.START_RENDER, state.toString());
-        LOGGER.info(message2);
-
         if (state == State.BUSY) {
             this.drawView.stopDrawing();
         } else {
-            switch (scene) {
-                case OBJ:
-                    callFileManager();
-                    break;
-
-                case TEST:
-                    final String scenePath = "CornellBox"
-                        + ConstantsUI.FILE_SEPARATOR + "CornellBox-Water";
-                    final String sdCardPath = UtilsContext.getSDCardPath(this);
-                    this.sceneFilePath = sdCardPath + ConstantsUI.FILE_SEPARATOR
-                        + "WavefrontOBJs" + ConstantsUI.FILE_SEPARATOR + scenePath;
-                    startRender(this.sceneFilePath);
-                    break;
-
-                default:
-                    startRender(this.sceneFilePath);
-            }
+            startRenderScene();
         }
 
         final String messageFinished = ConstantsMethods.START_RENDER + ConstantsMethods.FINISHED;
         LOGGER.info(messageFinished);
+    }
+
+    /**
+     * Helper method which starts the rendering process.
+     */
+    private void startRenderScene() {
+        switch (Scene.values()[this.pickerScene.getValue()]) {
+            case OBJ:
+                callFileManager();
+                break;
+
+            case TEST:
+                final String scenePath = "CornellBox"
+                    + ConstantsUI.FILE_SEPARATOR + "CornellBox-Water";
+                final String sdCardPath = UtilsContext.getSDCardPath(this);
+                final String lSceneFilePath = sdCardPath + ConstantsUI.FILE_SEPARATOR
+                    + "WavefrontOBJs" + ConstantsUI.FILE_SEPARATOR + scenePath;
+                startRender(lSceneFilePath);
+                break;
+
+            default:
+                startRender("");
+        }
     }
 
     /**

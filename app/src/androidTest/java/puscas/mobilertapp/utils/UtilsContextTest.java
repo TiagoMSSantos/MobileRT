@@ -55,10 +55,6 @@ public final class UtilsContextTest {
             renderButtonView.check((view, exception) -> {
                 final Button renderButton = view.findViewById(R.id.renderButton);
                 LOGGER.info("Checking if rendering done.");
-                final String message = "Render button: " + renderButton.getText().toString();
-                LOGGER.info(message);
-                final String messageState = "State: " + renderer.getState().name();
-                LOGGER.info(messageState);
                 if (renderButton.getText().toString().equals(Constants.RENDER)
                     && renderer.getState() == State.IDLE) {
                     done.set(true);

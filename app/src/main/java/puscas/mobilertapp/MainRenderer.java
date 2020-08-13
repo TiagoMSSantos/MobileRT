@@ -378,6 +378,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      *
      * @return The current Ray Tracer engine {@link State}.
      */
+    @Nonnull
     public State getState() {
         LOGGER.info("getState");
 
@@ -993,12 +994,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
             }
 
             try {
-                LOGGER.info("rtRenderIntoBitmap started");
-                if (this.numThreads > 0) {
-                    rtRenderIntoBitmap(this.bitmap, this.numThreads, true);
-                }
-                final String message = "rtRenderIntoBitmap" + ConstantsMethods.FINISHED;
-                LOGGER.info(message);
+                rtRenderIntoBitmap(this.bitmap, this.numThreads, true);
             } catch (final LowMemoryException ex) {
                 UtilsLogging.logThrowable(ex, "MainRenderer#onDrawFrame");
             }

@@ -80,33 +80,25 @@ public final class UITest extends AbstractTest {
     private static void clickPreviewCheckBox(final boolean expectedValue) {
         Espresso.onView(ViewMatchers.withId(R.id.preview))
             .check((view, exception) ->
-                assertCheckBox(view, R.id.preview, Constants.PREVIEW, Constants.CHECK_BOX_MESSAGE,
-                    !expectedValue)
+                assertPreviewCheckBox(view, !expectedValue)
             )
             .perform(ViewActions.click())
             .check((view, exception) ->
-                assertCheckBox(view, R.id.preview, Constants.PREVIEW, Constants.CHECK_BOX_MESSAGE,
-                    expectedValue)
+                assertPreviewCheckBox(view, expectedValue)
             );
     }
 
     /**
      * Asserts the {@link CheckBox} expected value.
      *
-     * @param view                The {@link View}.
-     * @param id                  The id of the {@link CheckBox}.
-     * @param expectedDescription The expected description of the {@link CheckBox}.
-     * @param checkBoxMessage     The message.
-     * @param expectedValue       The expected value for the {@link CheckBox}.
+     * @param view          The {@link View}.
+     * @param expectedValue The expected value for the {@link CheckBox}.
      */
-    private static void assertCheckBox(@Nonnull final View view,
-                                       final int id,
-                                       final String expectedDescription,
-                                       final String checkBoxMessage,
-                                       final boolean expectedValue) {
-        final CheckBox checkbox = view.findViewById(id);
-        Assertions
-            .assertEquals(expectedDescription, checkbox.getText().toString(), checkBoxMessage);
+    private static void assertPreviewCheckBox(@Nonnull final View view,
+                                              final boolean expectedValue) {
+        final CheckBox checkbox = view.findViewById(R.id.preview);
+        Assertions.assertEquals(Constants.PREVIEW, checkbox.getText().toString(),
+            Constants.CHECK_BOX_MESSAGE);
         Assertions.assertEquals(expectedValue, checkbox.isChecked(),
             "Check box has not the expected value");
     }
