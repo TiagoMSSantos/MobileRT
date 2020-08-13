@@ -33,8 +33,7 @@ public final class ViewActionNumberPicker implements ViewAction {
      * @param newValue The value for the {@link NumberPicker}.
      */
     public ViewActionNumberPicker(final int newValue) {
-        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        LOGGER.info("ViewActionNumberPicker");
 
         this.newValue = newValue;
     }
@@ -42,8 +41,7 @@ public final class ViewActionNumberPicker implements ViewAction {
     @Nonnull
     @Override
     public final Matcher<View> getConstraints() {
-        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        LOGGER.info("ViewActionNumberPicker#getConstraints");
 
         return ViewMatchers.isAssignableFrom(NumberPicker.class);
     }
@@ -51,8 +49,7 @@ public final class ViewActionNumberPicker implements ViewAction {
     @Nonnull
     @Override
     public final String getDescription() {
-        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        LOGGER.info("ViewActionNumberPicker#getDescription");
 
         return "Set the value of a NumberPicker: " + this.newValue;
     }
@@ -62,7 +59,6 @@ public final class ViewActionNumberPicker implements ViewAction {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
-        uiController.loopMainThreadUntilIdle();
         final NumberPicker numberPicker = (NumberPicker) view;
         numberPicker.setValue(this.newValue);
         uiController.loopMainThreadUntilIdle();

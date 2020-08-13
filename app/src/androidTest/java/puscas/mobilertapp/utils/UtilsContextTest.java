@@ -80,6 +80,8 @@ public final class UtilsContextTest {
      * @param scene   The id of the scene to set.
      */
     public static void resetPickerValues(final Context context, final int scene) {
+        LOGGER.info("resetPickerValues");
+
         final int numCores = puscas.mobilertapp.utils.UtilsContext.getNumOfCores(context);
 
         UtilsPickerTest.changePickerValue(ConstantsUI.PICKER_SCENE, R.id.pickerScene, scene);

@@ -1,15 +1,10 @@
 package puscas.mobilertapp;
 
-import android.graphics.Bitmap;
 import android.os.Build;
 import android.widget.Button;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.ViewInteraction;
-import androidx.test.espresso.matcher.ViewMatchers;
-import com.google.common.util.concurrent.Uninterruptibles;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import org.junit.After;
@@ -23,7 +18,6 @@ import org.junit.runners.MethodSorters;
 import puscas.mobilertapp.utils.Constants;
 import puscas.mobilertapp.utils.ConstantsMethods;
 import puscas.mobilertapp.utils.ConstantsUI;
-import puscas.mobilertapp.utils.State;
 import puscas.mobilertapp.utils.UtilsContext;
 import puscas.mobilertapp.utils.UtilsContextTest;
 import puscas.mobilertapp.utils.UtilsPickerTest;
@@ -131,41 +125,12 @@ public final class RayTracingTest extends AbstractTest {
 
         UtilsContextTest.resetPickerValues(this.activity, 6);
 
-        LOGGER.info("GOING TO CLICK THE BUTTON.");
-        final ViewInteraction viewInteraction =
-            Espresso.onView(ViewMatchers.withId(R.id.renderButton))
-                .check((view, exception) -> {
-                    LOGGER.info("GOING TO CLICK THE BUTTON 1.");
-                    final Button renderButton = view.findViewById(R.id.renderButton);
-                    LOGGER.info("GOING TO CLICK THE BUTTON 2.");
-                    Assertions.assertEquals(
-                        Constants.RENDER,
-                        renderButton.getText().toString(),
-                        puscas.mobilertapp.Constants.BUTTON_MESSAGE
-                    );
-                    LOGGER.info("GOING TO CLICK THE BUTTON 3.");
-                })
-                .perform(new ViewActionButton(Constants.STOP));
-        LOGGER.info("RENDERING STARTED AND STOPPED 1.");
+        final ViewInteraction viewInteraction = UtilsTest.startRendering();
         Espresso.onIdle();
-        LOGGER.info("RENDERING STARTED AND STOPPED 2.");
 
         UtilsContextTest.waitUntilRenderingDone(this.activity);
 
-        final DrawView drawView = UtilsTest.getPrivateField(this.activity, "drawView");
-        final MainRenderer renderer = drawView.getRenderer();
-        LOGGER.info("CHECKING RAY TRACING STATE.");
-        Espresso.onView(ViewMatchers.withId(R.id.drawLayout))
-            .check((view, exception) -> {
-                final Bitmap bitmap = UtilsTest.getPrivateField(renderer, "bitmap");
-                UtilsTest.assertRayTracingResultInBitmap(bitmap, true);
-
-                Assertions.assertEquals(
-                    State.IDLE,
-                    renderer.getState(),
-                    "State is not the expected"
-                );
-            });
+        UtilsTest.testStateAndBitmap(true);
 
         final String message = methodName + ConstantsMethods.FINISHED;
         LOGGER.info(message);
@@ -175,7 +140,7 @@ public final class RayTracingTest extends AbstractTest {
      * Tests rendering a scene.
      */
     @Test(timeout = 2L * 60L * 1000L)
-    public void testRenderScene() {
+    public void testRenderScene() throws TimeoutException {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
@@ -192,63 +157,14 @@ public final class RayTracingTest extends AbstractTest {
             .changePickerValue(ConstantsUI.PICKER_ACCELERATOR, R.id.pickerAccelerator, 3);
         UtilsPickerTest.changePickerValue(ConstantsUI.PICKER_SHADER, R.id.pickerShader, 1);
 
-        final ViewInteraction viewInteraction =
-            Espresso.onView(ViewMatchers.withId(R.id.renderButton))
-                .check((view, exception) -> {
-                    final Button renderButton = view.findViewById(R.id.renderButton);
-                    Assertions.assertEquals(
-                        Constants.RENDER,
-                        renderButton.getText().toString(),
-                        puscas.mobilertapp.Constants.BUTTON_MESSAGE
-                    );
-                })
-                .perform(new ViewActionButton(Constants.STOP))
-                .check((view, exception) -> {
-                    final Button renderButton = view.findViewById(R.id.renderButton);
-                    Assertions.assertEquals(
-                        Constants.STOP,
-                        renderButton.getText().toString(),
-                        puscas.mobilertapp.Constants.BUTTON_MESSAGE
-                    );
-                });
+        final ViewInteraction viewInteraction = UtilsTest.startRendering();
+        UtilsTest.assertRenderButtonText(Constants.STOP);
         Espresso.onIdle();
 
-        final long advanceSecs = 3L;
-        final AtomicBoolean done = new AtomicBoolean(false);
-        for (long currentTimeSecs = 0L; currentTimeSecs < 600L && !done.get();
-             currentTimeSecs += advanceSecs) {
-            Uninterruptibles.sleepUninterruptibly(advanceSecs, TimeUnit.SECONDS);
+        UtilsContextTest.waitUntilRenderingDone(this.activity);
+        UtilsTest.assertRenderButtonText(Constants.RENDER);
 
-            viewInteraction.check((view, exception) -> {
-                final Button renderButton = view.findViewById(R.id.renderButton);
-                if (renderButton.getText().toString().equals(Constants.RENDER)) {
-                    done.set(true);
-                }
-            });
-        }
-
-        viewInteraction.check((view, exception) -> {
-            final Button renderButton = view.findViewById(R.id.renderButton);
-            Assertions.assertEquals(
-                Constants.RENDER,
-                renderButton.getText().toString(),
-                puscas.mobilertapp.Constants.BUTTON_MESSAGE
-            );
-        });
-
-        Espresso.onView(ViewMatchers.withId(R.id.drawLayout))
-            .check((view, exception) -> {
-                final DrawView drawView = (DrawView) view;
-                final MainRenderer renderer = drawView.getRenderer();
-                final Bitmap bitmap = UtilsTest.getPrivateField(renderer, "bitmap");
-                UtilsTest.assertRayTracingResultInBitmap(bitmap, false);
-
-                Assertions.assertEquals(
-                    State.IDLE,
-                    renderer.getState(),
-                    "State is not the expected"
-                );
-            });
+        UtilsTest.testStateAndBitmap(false);
     }
 
 }

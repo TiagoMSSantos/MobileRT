@@ -2,7 +2,11 @@ package puscas.mobilertapp.utils;
 
 import android.graphics.Bitmap;
 import android.os.Build;
+import android.widget.Button;
 import androidx.multidex.BuildConfig;
+import androidx.test.espresso.Espresso;
+import androidx.test.espresso.ViewInteraction;
+import androidx.test.espresso.matcher.ViewMatchers;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -14,7 +18,10 @@ import java8.util.J8Arrays;
 import javax.annotation.Nonnull;
 import org.junit.Assume;
 import org.junit.jupiter.api.Assertions;
+import puscas.mobilertapp.DrawView;
 import puscas.mobilertapp.MainRenderer;
+import puscas.mobilertapp.R;
+import puscas.mobilertapp.ViewActionButton;
 
 /**
  * Helper class which contains helper methods for the tests.
@@ -142,8 +149,8 @@ public final class UtilsTest {
      * @param expectedSameValues Whether the {@link Bitmap} should have have only
      *                           one color.
      */
-    public static void assertRayTracingResultInBitmap(@Nonnull final Bitmap bitmap,
-                                                      final boolean expectedSameValues) {
+    private static void assertRayTracingResultInBitmap(@Nonnull final Bitmap bitmap,
+                                                       final boolean expectedSameValues) {
         final int firstPixel = bitmap.getPixel(0, 0);
         final int width = bitmap.getWidth();
         final int height = bitmap.getHeight();
@@ -153,10 +160,66 @@ public final class UtilsTest {
         final boolean bitmapSameColor = J8Arrays.stream(pixels)
             .allMatch(pixel -> pixel == firstPixel);
 
-        LOGGER.info("CHECKING BITMAP VALUES.");
+        LOGGER.info("Checking bitmap values.");
         Assertions.assertEquals(expectedSameValues, bitmapSameColor,
             "The rendered image should have different values."
         );
+    }
+
+    /**
+     * Helper method that clicks the Render {@link Button} 1 time,
+     * so it starts the Ray Tracing engine.
+     *
+     * @return The {@link ViewInteraction} for the Render {@link Button}.
+     */
+    public static ViewInteraction startRendering() {
+        LOGGER.info("startRendering");
+        UtilsTest.assertRenderButtonText(Constants.RENDER);
+        return Espresso.onView(ViewMatchers.withId(R.id.renderButton))
+            .perform(new ViewActionButton(Constants.STOP));
+    }
+
+    /**
+     * Helper method that checks if the {@link State} of the Ray Tracing engine
+     * is {@link State#IDLE} and if the {@link Bitmap} in the {@link MainRenderer}
+     * is a valid one as expected.
+     *
+     * @param expectedSameValues Whether the {@link Bitmap} should have have only
+     *                           one color.
+     */
+    public static void testStateAndBitmap(final boolean expectedSameValues) {
+        LOGGER.info("testBitmap");
+        Espresso.onView(ViewMatchers.withId(R.id.drawLayout))
+            .check((view, exception) -> {
+                final DrawView drawView = (DrawView) view;
+                final MainRenderer renderer = drawView.getRenderer();
+                final Bitmap bitmap = UtilsTest.getPrivateField(renderer, "bitmap");
+                UtilsTest.assertRayTracingResultInBitmap(bitmap, expectedSameValues);
+
+                Assertions.assertEquals(
+                    State.IDLE,
+                    renderer.getState(),
+                    "State is not the expected"
+                );
+            });
+    }
+
+    /**
+     * Helper method that checks the text from the Render {@link Button}.
+     *
+     * @param expectedText    The expected text shown in the {@link Button}.
+     */
+    public static void assertRenderButtonText(final String expectedText) {
+        LOGGER.info("assertRenderButtonText");
+        Espresso.onView(ViewMatchers.withId(R.id.renderButton))
+            .check((view, exception) -> {
+                final Button renderButton = view.findViewById(R.id.renderButton);
+                Assertions.assertEquals(
+                    expectedText,
+                    renderButton.getText().toString(),
+                    puscas.mobilertapp.Constants.BUTTON_MESSAGE
+                );
+        });
     }
 
 }

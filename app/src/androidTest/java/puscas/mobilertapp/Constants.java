@@ -8,7 +8,7 @@ public final class Constants {
     /**
      * The message for the assertions about the message for the rendering button.
      */
-    static final String BUTTON_MESSAGE = "Button message";
+    public static final String BUTTON_MESSAGE = "Button message is not the expected.";
 
     private Constants() {
 

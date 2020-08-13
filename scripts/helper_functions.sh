@@ -36,6 +36,21 @@ function callCommandUntilError() {
   exit "${lastResult}";
 }
 
+# Call function multiple times until it doesn't fail and then return
+function callCommandUntilSuccess() {
+  echo "";
+  echo "Calling until success '$*'";
+  local retry=0;
+  "$@";
+  local lastResult=${PIPESTATUS[0]};
+  while [ "${lastResult}" -ne 0 ]; do
+    echo "Retry: ${retry}";
+    retry=$(( "${retry}" + 1 ));
+    "$@";
+    lastResult=${PIPESTATUS[0]};
+  done
+}
+
 # Outputs the exit code received by argument and exits the current process with
 # that exit code
 function printCommandExitCode() {

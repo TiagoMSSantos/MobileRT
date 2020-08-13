@@ -10,7 +10,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import org.hamcrest.Matcher;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NonNls;
 import org.junit.jupiter.api.Assertions;
 import puscas.mobilertapp.utils.ConstantsMethods;
@@ -19,7 +18,7 @@ import puscas.mobilertapp.utils.Utils;
 /**
  * Auxiliary class which represents the render {@link Button}.
  */
-final class ViewActionButton implements ViewAction {
+public final class ViewActionButton implements ViewAction {
 
     /**
      * The {@link Logger} for this class.
@@ -35,9 +34,8 @@ final class ViewActionButton implements ViewAction {
     /**
      * The constructor for this class.
      */
-    @Contract(pure = true) ViewActionButton(final String expectedText) {
-        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+    public ViewActionButton(final String expectedText) {
+        LOGGER.info("ViewActionButton");
 
         this.expectedText = expectedText;
     }
@@ -45,8 +43,7 @@ final class ViewActionButton implements ViewAction {
     @Nonnull
     @Override
     public final Matcher<View> getConstraints() {
-        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        LOGGER.info("ViewActionButton#getConstraints");
 
         return ViewMatchers.isAssignableFrom(Button.class);
     }
@@ -54,8 +51,7 @@ final class ViewActionButton implements ViewAction {
     @Nonnull
     @Override
     public final String getDescription() {
-        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        LOGGER.info("ViewActionButton#getDescription");
 
         return "Click button";
     }

@@ -26,6 +26,7 @@ import puscas.mobilertapp.utils.Scene;
 import puscas.mobilertapp.utils.Shader;
 import puscas.mobilertapp.utils.UtilsContext;
 import puscas.mobilertapp.utils.UtilsPickerTest;
+import puscas.mobilertapp.utils.UtilsTest;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public final class UITest extends AbstractTest {
@@ -176,13 +177,7 @@ public final class UITest extends AbstractTest {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
-        Espresso.onView(ViewMatchers.withId(R.id.renderButton))
-            .check((view, exception) -> {
-                final Button button = view.findViewById(R.id.renderButton);
-                Assertions
-                    .assertEquals(Constants.RENDER, button.getText().toString(),
-                        puscas.mobilertapp.Constants.BUTTON_MESSAGE);
-            });
+        UtilsTest.assertRenderButtonText(Constants.RENDER);
 
         final int numCores = UtilsContext.getNumOfCores(this.activity);
         assertClickRenderButton(1, numCores);
@@ -290,14 +285,10 @@ public final class UITest extends AbstractTest {
                 Espresso.onView(ViewMatchers.withId(R.id.renderButton));
             final int expectedIndex = currentIndex % buttonTextList.size();
             final String expectedButtonText = buttonTextList.get(expectedIndex);
-            viewInteraction.check((view, exception) -> {
-                final Button renderButton = view.findViewById(R.id.renderButton);
-                Assertions.assertEquals(
-                    expectedButtonTextOld,
-                    renderButton.getText().toString(),
-                    "Button message at currentIndex: " + currentIndex
-                );
-            })
+
+            UtilsTest.assertRenderButtonText(expectedButtonTextOld);
+
+            viewInteraction
                 .perform(new ViewActionButton(expectedButtonText))
                 .check((view, exception) -> {
                     final Button renderButton = view.findViewById(R.id.renderButton);

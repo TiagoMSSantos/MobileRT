@@ -35,6 +35,7 @@ public final class UtilsPickerTest {
     public static void changePickerValue(final String pickerName,
                                          final int pickerId,
                                          final int expectedValue) {
+        LOGGER.info("changePickerValue");
         Espresso.onView(ViewMatchers.withId(pickerId))
             .perform(new ViewActionNumberPicker(expectedValue))
             .check((view, exception) -> {

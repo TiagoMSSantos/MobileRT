@@ -125,7 +125,8 @@ echo "Wait for device to be available.";
 emulator -avd "${avd_emulator}" -writable-system 2> /dev/null &
 
 callCommand adb kill-server;
-callCommand adb start-server;
+# TODO: sometimes adb server fails at this point
+callCommandUntilSuccess adb start-server;
 callCommand adb wait-for-device;
 callCommand adb shell "while [[ -z $(getprop sys.boot_completed) ]]; do sleep 3; done; input keyevent 82";
 
@@ -210,7 +211,7 @@ echo "pid of instrumentation tests: '${pid_instrumentation_tests}'";
 # Wait a bit for the instrumentation tests process to finish
 callCommand sleep 2;
 # TODO: sometimes adb server fails at this point
-callCommand adb wait-for-device;
+callCommandUntilSuccess adb wait-for-device;
 
 echo "Run unit tests";
 if [ "${type}" == "debug" ]; then
