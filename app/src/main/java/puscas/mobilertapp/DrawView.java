@@ -186,18 +186,10 @@ public final class DrawView extends GLSurfaceView {
         rtStartRender(false);
 
         this.lastTask = this.executorService.submit(() -> {
-            final String message = ConstantsMethods.RENDER_SCENE + " executor";
-            LOGGER.info(message);
-
             this.renderer.waitLastTask();
             rtStartRender(true);
             try {
-                createScene(config, numThreads, rasterize);
-                requestRender();
-                final String messageFinished = ConstantsMethods.RENDER_SCENE + " executor" +
-                    ConstantsMethods.FINISHED;
-                LOGGER.info(messageFinished);
-
+                startRayTracing(config, numThreads, rasterize);
                 return Boolean.TRUE;
             } catch (final LowMemoryException ex) {
                 warningError(ex, ConstantsToast.DEVICE_WITHOUT_ENOUGH_MEMORY);
@@ -218,8 +210,33 @@ public final class DrawView extends GLSurfaceView {
         // This should be executed by the UI thread, so it's good to go.
         this.renderer.updateButton(R.string.stop);
 
-        final String messageFinished2 = ConstantsMethods.RENDER_SCENE + ConstantsMethods.FINISHED;
-        LOGGER.info(messageFinished2);
+        final String messageFinished = ConstantsMethods.RENDER_SCENE + ConstantsMethods.FINISHED;
+        LOGGER.info(messageFinished);
+    }
+
+    /**
+     * Helper method that prepares the scene and starts the Ray Tracing engine
+     * to render it.
+     *
+     * @param config     The ray tracer configuration.
+     * @param numThreads The number of threads to be used in the Ray Tracer
+     *                   engine.
+     * @param rasterize  Whether should show a preview (rasterize one frame) or
+     *                   not.
+     * @throws LowMemoryException If the device has low free memory.
+     */
+    private void startRayTracing(@Nonnull final Config config,
+                                 final int numThreads,
+                                 final boolean rasterize) throws LowMemoryException {
+        final String message = ConstantsMethods.RENDER_SCENE + " executor";
+        LOGGER.info(message);
+
+        createScene(config, numThreads, rasterize);
+        requestRender();
+
+        final String messageFinished = ConstantsMethods.RENDER_SCENE + " executor" +
+            ConstantsMethods.FINISHED;
+        LOGGER.info(messageFinished);
     }
 
     /**

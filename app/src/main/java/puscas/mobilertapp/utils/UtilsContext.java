@@ -2,14 +2,19 @@ package puscas.mobilertapp.utils;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.opengl.GLES20;
 import android.os.Build;
 import android.os.Environment;
+import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import com.google.common.collect.ImmutableMap;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java8.util.Optional;
@@ -68,8 +73,8 @@ public final class UtilsContext {
      * @return A {@link String} containing the contents of the asset file.
      */
     @Nonnull
-    public static String readTextAsset(@Nonnull final Context context,
-                                       @Nonnull final String filePath) {
+    private static String readTextAsset(@Nonnull final Context context,
+                                        @Nonnull final String filePath) {
         LOGGER.info("readTextAsset");
         final AssetManager assetManager = context.getAssets();
         final String text;
@@ -149,6 +154,29 @@ public final class UtilsContext {
             return sdCardPath.substring(0, removeIndex - 1);
         }
         return sdCardPath;
+    }
+
+    /**
+     * Load the GLSL shaders from files where the paths are given via argument.
+     *
+     * @return A {@link Map} with the loaded shaders.
+     */
+    @NonNull
+    public static Map<Integer, String> readShaders(
+        @Nonnull final Context context,
+        @NonNull final Map<Integer, String> shadersPaths) {
+        LOGGER.info("readShaders");
+
+        final String vertexShader = UtilsContext.readTextAsset(context,
+            Objects.requireNonNull(shadersPaths.get(GLES20.GL_VERTEX_SHADER)));
+
+        final String fragmentShader = UtilsContext.readTextAsset(context,
+            Objects.requireNonNull(shadersPaths.get(GLES20.GL_FRAGMENT_SHADER)));
+
+        return ImmutableMap.of(
+            GLES20.GL_VERTEX_SHADER, vertexShader,
+            GLES20.GL_FRAGMENT_SHADER, fragmentShader
+        );
     }
 
 }

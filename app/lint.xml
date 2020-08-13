@@ -3,8 +3,10 @@
     <!-- list of issues to configure -->
 
     <!-- Ignore the DuplicateStrings issue in the specified files -->
-    <!-- E.g.: ~/.gradle/caches/transforms-2/files-2.1/a8ad6db1aa576d586aae69df6afae8c3/appcompat-1.2.0/res/values-ar/values-ar.xml -->
+    <!-- E.g.: ~/.gradle/caches/transforms-2/files-2.1/a8ad6db1aa576d586aae69df6afae8c3/ -->
+    <!-- appcompat-1.2.0/res/values-ar/values-ar.xml -->
     <issue id="DuplicateStrings">
-        <ignore path="**/.gradle/caches/transforms-2/files-2.1/*/appcompat-1.2.0/res/values*/values*.xml" />
+        <ignore
+            path="**/.gradle/caches/transforms-2/files-2.1/*/appcompat-1.2.0/res/values*/values*.xml" />
     </issue>
 </lint>

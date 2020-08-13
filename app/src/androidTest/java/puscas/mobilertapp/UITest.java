@@ -25,6 +25,7 @@ import puscas.mobilertapp.utils.ConstantsUI;
 import puscas.mobilertapp.utils.Scene;
 import puscas.mobilertapp.utils.Shader;
 import puscas.mobilertapp.utils.UtilsContext;
+import puscas.mobilertapp.utils.UtilsContextTest;
 import puscas.mobilertapp.utils.UtilsPickerTest;
 import puscas.mobilertapp.utils.UtilsTest;
 
@@ -213,62 +214,15 @@ public final class UITest extends AbstractTest {
      * @param numCores    The number of CPU cores in the system.
      */
     private void assertClickRenderButton(final int repetitions, final int numCores) {
-        UtilsPickerTest
-            .changePickerValue(ConstantsUI.PICKER_SAMPLES_PIXEL, R.id.pickerSamplesPixel, 99);
-        UtilsPickerTest.changePickerValue(ConstantsUI.PICKER_SCENE, R.id.pickerScene, 5);
-        UtilsPickerTest.changePickerValue(ConstantsUI.PICKER_THREADS, R.id.pickerThreads, 1);
-        UtilsPickerTest.changePickerValue(ConstantsUI.PICKER_SIZE, R.id.pickerSize, 8);
-        UtilsPickerTest
-            .changePickerValue(ConstantsUI.PICKER_SAMPLES_LIGHT, R.id.pickerSamplesLight, 1);
-        UtilsPickerTest
-            .changePickerValue(ConstantsUI.PICKER_ACCELERATOR, R.id.pickerAccelerator, 2);
-        UtilsPickerTest.changePickerValue(ConstantsUI.PICKER_SHADER, R.id.pickerShader, 2);
+        UtilsContextTest.resetPickerValues(this.activity, 5);
 
-        final int numScenes = Scene.values().length;
-        final int numAccelerators = Accelerator.values().length;
-        final int numShaders = Shader.values().length;
-        final int numSPP = 99;
-        final int numSPL = 100;
-        final int numRes = 9;
-
-        final List<String> buttonTextList =
-            ImmutableList.<String>builder().add(Constants.STOP, Constants.RENDER).build();
+        final List<String> buttonTextList = ImmutableList.of(Constants.STOP, Constants.RENDER);
         IntStreams.range(0, buttonTextList.size() * repetitions).forEach(currentIndex -> {
+
             final String message = "currentIndex = " + currentIndex;
             LOGGER.info(message);
-            final int finalCounterScene = Math.min(this.counterScene % numScenes, 3);
-            this.counterScene++;
-            final int finalCounterAccelerator =
-                Math.max(this.counterAccelerator % numAccelerators, 1);
-            this.counterAccelerator++;
-            final int finalCounterShader = Math.max(this.counterShader % numShaders, 0);
-            this.counterShader++;
-            final int finalCounterSPP = Math.max(this.counterSPP % numSPP, 90);
-            this.counterSPP++;
-            final int finalCounterSPL = Math.max(this.counterSPL % numSPL, 1);
-            this.counterSPL++;
-            final int finalCounterResolution = Math.max(this.counterResolution % numRes, 7);
-            this.counterResolution++;
-            final int finalCounterThreads = Math.max(this.counterThreads % numCores, 1);
-            this.counterThreads++;
-            UtilsPickerTest
-                .changePickerValue(ConstantsUI.PICKER_SCENE, R.id.pickerScene, finalCounterScene);
-            UtilsPickerTest
-                .changePickerValue(ConstantsUI.PICKER_ACCELERATOR, R.id.pickerAccelerator,
-                    finalCounterAccelerator);
-            UtilsPickerTest.changePickerValue(ConstantsUI.PICKER_SHADER, R.id.pickerShader,
-                finalCounterShader);
-            UtilsPickerTest
-                .changePickerValue(ConstantsUI.PICKER_SAMPLES_PIXEL, R.id.pickerSamplesPixel,
-                    finalCounterSPP);
-            UtilsPickerTest
-                .changePickerValue(ConstantsUI.PICKER_SAMPLES_LIGHT, R.id.pickerSamplesLight,
-                    finalCounterSPL);
-            UtilsPickerTest.changePickerValue(ConstantsUI.PICKER_THREADS, R.id.pickerThreads,
-                finalCounterThreads);
-            // TODO: the picker for the resolution always resets its value to the default one
-            UtilsPickerTest.changePickerValue(ConstantsUI.PICKER_SIZE, R.id.pickerSize, 4);
 
+            incrementCountersAndUpdatePickers(numCores);
 
             final int expectedIndexOld = currentIndex > 0 ?
                 (currentIndex - 1) % buttonTextList.size() : 1;
@@ -280,33 +234,58 @@ public final class UITest extends AbstractTest {
 
             UtilsTest.assertRenderButtonText(expectedButtonTextOld);
 
-            viewInteraction
-                .perform(new ViewActionButton(expectedButtonText))
-                .check((view, exception) -> {
-                    final Button renderButton = view.findViewById(R.id.renderButton);
-                    Assertions.assertEquals(
-                        expectedButtonText,
-                        renderButton.getText().toString(),
-                        "Button message at currentIndex: " + currentIndex
-                            + "(" + expectedIndex + ")"
-                            + ConstantsUI.LINE_SEPARATOR
-                            + "finalCounterScene: " + finalCounterScene
-                            + ConstantsUI.LINE_SEPARATOR
-                            + "finalCounterAccelerator: " + finalCounterAccelerator
-                            + ConstantsUI.LINE_SEPARATOR
-                            + "finalCounterShader: " + finalCounterShader
-                            + ConstantsUI.LINE_SEPARATOR
-                            + "finalCounterSPP: " + finalCounterSPP
-                            + ConstantsUI.LINE_SEPARATOR
-                            + "finalCounterSPL: " + finalCounterSPL
-                            + ConstantsUI.LINE_SEPARATOR
-                            + "finalCounterResolution: " + finalCounterResolution
-                            + ConstantsUI.LINE_SEPARATOR
-                            + "finalCounterThreads: " + finalCounterThreads
-                            + ConstantsUI.LINE_SEPARATOR
-                    );
-                });
+            viewInteraction.perform(new ViewActionButton(expectedButtonText));
+
+            UtilsTest.assertRenderButtonText(expectedButtonText);
         });
+    }
+
+    /**
+     * Helper method that increments all the fields' counters and updates all
+     * the {@link NumberPicker}s in the UI with the current values.
+     *
+     * @param numCores The number of CPU cores in the system.
+     */
+    private void incrementCountersAndUpdatePickers(final int numCores) {
+        final int finalCounterScene = Math.min(this.counterScene % Scene.values().length, 3);
+        final int finalCounterAccelerator =
+            Math.max(this.counterAccelerator % Accelerator.values().length, 1);
+        final int finalCounterShader = Math.max(this.counterShader % Shader.values().length, 0);
+        final int finalCounterSPP = Math.max(this.counterSPP % 99, 90);
+        final int finalCounterSPL = Math.max(this.counterSPL % 100, 1);
+        final int finalCounterResolution = Math.max(this.counterResolution % 9, 7);
+        final int finalCounterThreads = Math.max(this.counterThreads % numCores, 1);
+
+        incrementCounters();
+
+        UtilsPickerTest
+            .changePickerValue(ConstantsUI.PICKER_SCENE, R.id.pickerScene, finalCounterScene);
+        UtilsPickerTest.changePickerValue(ConstantsUI.PICKER_ACCELERATOR, R.id.pickerAccelerator,
+            finalCounterAccelerator);
+        UtilsPickerTest.changePickerValue(ConstantsUI.PICKER_SHADER, R.id.pickerShader,
+            finalCounterShader);
+        UtilsPickerTest.changePickerValue(ConstantsUI.PICKER_SAMPLES_PIXEL, R.id.pickerSamplesPixel,
+            finalCounterSPP);
+        UtilsPickerTest.changePickerValue(ConstantsUI.PICKER_SAMPLES_LIGHT, R.id.pickerSamplesLight,
+            finalCounterSPL);
+        UtilsPickerTest
+            .changePickerValue(ConstantsUI.PICKER_THREADS, R.id.pickerThreads, finalCounterThreads);
+
+        // TODO: the picker for the resolution always resets its value to the default one
+        UtilsPickerTest.changePickerValue(ConstantsUI.PICKER_SIZE, R.id.pickerSize, 4);
+    }
+
+    /**
+     * Helper method that increments all the fields' counters.
+     */
+    private void incrementCounters() {
+        this.counterScene++;
+        this.counterAccelerator++;
+        this.counterShader++;
+        this.counterSPP++;
+        this.counterSPL++;
+        this.counterResolution++;
+        this.counterThreads++;
     }
 
 }

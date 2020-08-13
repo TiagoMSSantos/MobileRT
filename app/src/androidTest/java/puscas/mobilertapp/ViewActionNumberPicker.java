@@ -55,7 +55,7 @@ public final class ViewActionNumberPicker implements ViewAction {
     }
 
     @Override
-    public final void perform(@Nonnull final UiController uiController, final View view) {
+    public final void perform(@Nonnull final UiController uiController, @Nonnull final View view) {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 

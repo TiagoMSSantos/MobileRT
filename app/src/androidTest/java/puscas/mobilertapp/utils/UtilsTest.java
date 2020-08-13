@@ -172,6 +172,7 @@ public final class UtilsTest {
      *
      * @return The {@link ViewInteraction} for the Render {@link Button}.
      */
+    @Nonnull
     public static ViewInteraction startRendering() {
         LOGGER.info("startRendering");
         UtilsTest.assertRenderButtonText(Constants.RENDER);
@@ -209,7 +210,7 @@ public final class UtilsTest {
      *
      * @param expectedText The expected text shown in the {@link Button}.
      */
-    public static void assertRenderButtonText(final String expectedText) {
+    public static void assertRenderButtonText(@Nonnull final String expectedText) {
         LOGGER.info("assertRenderButtonText");
         Espresso.onView(ViewMatchers.withId(R.id.renderButton))
             .check((view, exception) -> {

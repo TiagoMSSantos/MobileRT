@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
+import javax.annotation.Nonnull;
 import puscas.mobilertapp.DrawView;
 import puscas.mobilertapp.MainActivity;
 import puscas.mobilertapp.MainRenderer;
@@ -39,7 +40,8 @@ public final class UtilsContextTest {
      *
      * @param activity The {@link MainActivity} of MobileRT.
      */
-    public static void waitUntilRenderingDone(final MainActivity activity) throws TimeoutException {
+    public static void waitUntilRenderingDone(@Nonnull final MainActivity activity)
+        throws TimeoutException {
         final AtomicBoolean done = new AtomicBoolean(false);
         final long advanceSecs = 3L;
 
@@ -75,7 +77,7 @@ public final class UtilsContextTest {
      * @param context The {@link Context} of the application.
      * @param scene   The id of the scene to set.
      */
-    public static void resetPickerValues(final Context context, final int scene) {
+    public static void resetPickerValues(@Nonnull final Context context, final int scene) {
         LOGGER.info("resetPickerValues");
 
         final int numCores = puscas.mobilertapp.utils.UtilsContext.getNumOfCores(context);

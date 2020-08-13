@@ -345,6 +345,45 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
     }
 
     /**
+     * Helper method that connects the vertices and colors in the GLSL attributes.
+     *
+     * @param shaderProgram The index of the shader program to connect the attributes.
+     * @param bbVertices    The vertices' buffer.
+     * @param bbColors      The colors' buffer.
+     */
+    private static void connectAttributes(final int shaderProgram,
+                                          @Nonnull final ByteBuffer bbVertices,
+                                          @Nonnull final ByteBuffer bbColors) {
+        final ConfigGLAttribute verticesAttribute = new ConfigGLAttribute.Builder()
+            .withName(VERTEX_POSITION)
+            .withBuffer(bbVertices)
+            .withLocation(0)
+            .withComponents(VERTEX_COMPONENTS)
+            .build();
+        UtilsShader.connectOpenGlAttribute(shaderProgram, verticesAttribute);
+
+        final ConfigGLAttribute colorsAttribute = new ConfigGLAttribute.Builder()
+            .withName(VERTEX_COLOR)
+            .withBuffer(bbColors)
+            .withLocation(1)
+            .withComponents(PIXEL_COLORS)
+            .build();
+        UtilsShader.connectOpenGlAttribute(shaderProgram, colorsAttribute);
+    }
+
+    /**
+     * Helper method that calculates the number of vertices in a {@link ByteBuffer}.
+     *
+     * @param bbVertices The vertices' buffer.
+     * @return The number of vertices in the {@link ByteBuffer}.
+     */
+    private static int getVertexCount(@Nonnull final ByteBuffer bbVertices) {
+        LOGGER.info("getVertexCount");
+
+        return bbVertices.capacity() / (Constants.BYTES_IN_FLOAT * VERTEX_COMPONENTS);
+    }
+
+    /**
      * Sets the {@link #textView}.
      *
      * @param textView The new {@link TextView} to set.
@@ -733,8 +772,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * @param bbColors      The primitives' colors in the scene.
      * @param bbCamera      The camera's position and vectors in the scene.
      * @param numPrimitives The number of primitives in the scene.
-     * @throws LowMemoryException This {@link Exception} is thrown if the
-     *                            Android device has low free memory.
+     * @throws LowMemoryException If the device has low free memory.
      */
     private Bitmap renderSceneToBitmap(@Nonnull final ByteBuffer bbVertices,
                                        @Nonnull final ByteBuffer bbColors,
@@ -742,7 +780,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
                                        final int numPrimitives) throws LowMemoryException {
         LOGGER.info("renderSceneToBitmap");
 
-        if (bbVertices.capacity() <= 0 || bbColors.capacity() <= 0 || bbCamera.capacity() <= 0
+        if (UtilsBuffer.isAnyByteBufferEmpty(bbVertices, bbColors, bbCamera)
             || numPrimitives <= 0) {
             return this.bitmap;
         }
@@ -751,27 +789,11 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         final int neededMemoryMb = Utils.calculateSceneSize(numPrimitives);
         checksFreeMemory(neededMemoryMb, () -> LOGGER.severe("SYSTEM WITH LOW MEMORY!!!"));
 
-        UtilsBuffer.resetByteBuffer(bbVertices);
-        UtilsBuffer.resetByteBuffer(bbColors);
-        UtilsBuffer.resetByteBuffer(bbCamera);
+        UtilsBuffer.resetByteBuffers(bbVertices, bbColors, bbCamera);
 
         this.shaderProgramRaster = UtilsShader.reCreateProgram(this.shaderProgramRaster);
 
-        final ConfigGLAttribute verticesAttribute = new ConfigGLAttribute.Builder()
-            .withName(VERTEX_POSITION)
-            .withBuffer(bbVertices)
-            .withLocation(0)
-            .withComponents(VERTEX_COMPONENTS)
-            .build();
-        UtilsShader.connectOpenGlAttribute(this.shaderProgramRaster, verticesAttribute);
-
-        final ConfigGLAttribute colorsAttribute = new ConfigGLAttribute.Builder()
-            .withName(VERTEX_COLOR)
-            .withBuffer(bbColors)
-            .withLocation(1)
-            .withComponents(PIXEL_COLORS)
-            .build();
-        UtilsShader.connectOpenGlAttribute(this.shaderProgramRaster, colorsAttribute);
+        connectAttributes(this.shaderProgramRaster, bbVertices, bbColors);
 
         UtilsShader.attachShaders(this.shaderProgramRaster,
             this.vertexShaderCodeRaster, this.fragmentShaderCodeRaster);
@@ -786,67 +808,16 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
             .build();
         createMVPasUniformVariables(bbCamera, this.shaderProgramRaster, configResolution);
 
-        final int positionAttrib = 0;
-        defineAttributeData(bbVertices, positionAttrib);
+        defineAttributeData(bbVertices, 0);
 
-        final int colorAttrib = 1;
-        defineAttributeData(bbColors, colorAttrib);
+        defineAttributeData(bbColors, 1);
 
-        UtilsGL.run(() -> GLES20.glEnable(GLES20.GL_DEPTH_TEST));
-
-        final int vertexCount =
-            bbVertices.capacity() / (Constants.BYTES_IN_FLOAT * VERTEX_COMPONENTS);
+        final int vertexCount = getVertexCount(bbVertices);
         UtilsGL.run(() -> GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, vertexCount));
 
-        UtilsGL.run(() -> GLES20.glDisable(GLES20.GL_DEPTH_TEST));
+        UtilsGL.disableAttributeData(0, 1);
 
-        UtilsGL.run(() -> GLES20.glDisableVertexAttribArray(positionAttrib));
-        UtilsGL.run(() -> GLES20.glDisableVertexAttribArray(colorAttrib));
-
-        final Bitmap newBitmapWithPreviewScene = copyGLFrameBufferToBitmap(
-            this.viewWidth, this.viewHeight, this.width, this.height);
-
-        final String message = "renderSceneToBitmap" + ConstantsMethods.FINISHED;
-        LOGGER.info(message);
-        return newBitmapWithPreviewScene;
-    }
-
-    /**
-     * Sets {@link #vertexShaderCode}.
-     *
-     * @param vertexShaderCode The new {@link #vertexShaderCode}.
-     */
-    void setVertexShaderCode(final String vertexShaderCode) {
-        this.vertexShaderCode = vertexShaderCode;
-    }
-
-    /**
-     * Sets {@link #fragmentShaderCode}.
-     *
-     * @param fragmentShaderCode The new {@link #fragmentShaderCode}.
-     */
-    void setFragmentShaderCode(final String fragmentShaderCode) {
-        this.fragmentShaderCode = fragmentShaderCode;
-    }
-
-    /**
-     * Sets {@link #vertexShaderCodeRaster}.
-     *
-     * @param vertexShaderCode The new
-     *                         {@link #vertexShaderCodeRaster}.
-     */
-    void setVertexShaderCodeRaster(final String vertexShaderCode) {
-        this.vertexShaderCodeRaster = vertexShaderCode;
-    }
-
-    /**
-     * Sets {@link #fragmentShaderCodeRaster}.
-     *
-     * @param fragmentShaderCode The new
-     *                           {@link #fragmentShaderCodeRaster}.
-     */
-    void setFragmentShaderCodeRaster(final String fragmentShaderCode) {
-        this.fragmentShaderCodeRaster = fragmentShaderCode;
+        return copyGLFrameBufferToBitmap(this.viewWidth, this.viewHeight, this.width, this.height);
     }
 
     /**
@@ -954,18 +925,10 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
 
         UtilsGL.resetOpenGlBuffers();
 
-        // Load shaders
-        final int vertexShader = UtilsShader.loadShader(GLES20.GL_VERTEX_SHADER,
-            this.vertexShaderCode);
-        final int fragmentShader = UtilsShader.loadShader(GLES20.GL_FRAGMENT_SHADER,
-            this.fragmentShaderCode);
-
-        // Create Program
         this.shaderProgram = UtilsShader.reCreateProgram(this.shaderProgram);
 
-        // Attach and link shaders to program
-        UtilsGL.run(() -> GLES20.glAttachShader(this.shaderProgram, vertexShader));
-        UtilsGL.run(() -> GLES20.glAttachShader(this.shaderProgram, fragmentShader));
+        UtilsShader.loadAndAttachShaders(this.shaderProgram, this.vertexShaderCode,
+            this.fragmentShaderCode);
 
         // Create geometry and texture coordinates buffers
         this.floatBufferVertices = UtilsBuffer.allocateBuffer(this.verticesTexture);
@@ -995,9 +958,6 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         UtilsGL.run(() -> GLES20.glUseProgram(this.shaderProgram));
 
         UtilsGL.bindTexture();
-
-        final String message = "onSurfaceCreated" + ConstantsMethods.FINISHED;
-        LOGGER.info(message);
     }
 
     @Override
@@ -1017,14 +977,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
 
             if (this.rasterize) {
                 this.rasterize = false;
-                try {
-                    initPreviewArrays();
-
-                    this.bitmap = renderSceneToBitmap(this.arrayVertices,
-                        this.arrayColors, this.arrayCamera, this.numPrimitives);
-                } catch (final LowMemoryException ex) {
-                    UtilsLogging.logThrowable(ex, "MainRenderer#onDrawFrame");
-                }
+                this.bitmap = renderSceneIntoBitmap();
             }
 
             try {
@@ -1043,6 +996,23 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
     }
 
     /**
+     * Helper method that renders the scene with OpenGL to a {@link Bitmap}.
+     *
+     * @return A {@link Bitmap} with the scene rendered.
+     */
+    private Bitmap renderSceneIntoBitmap() {
+        try {
+            initPreviewArrays();
+
+            return renderSceneToBitmap(this.arrayVertices,
+                this.arrayColors, this.arrayCamera, this.numPrimitives);
+        } catch (final LowMemoryException ex) {
+            UtilsLogging.logThrowable(ex, "MainRenderer#renderSceneIntoBitmap");
+        }
+        return this.bitmap;
+    }
+
+    /**
      * Prepares the {@link MainRenderer} with the OpenGL shaders' code and also
      * with the render button for the {@link RenderTask}.
      *
@@ -1054,11 +1024,11 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
                          final Map<Integer, String> shadersPreviewCode,
                          final Button button) {
         this.setBitmap();
-        this.setVertexShaderCode(shadersCode.get(GLES20.GL_VERTEX_SHADER));
-        this.setFragmentShaderCode(shadersCode.get(GLES20.GL_FRAGMENT_SHADER));
-        this.setVertexShaderCodeRaster(shadersPreviewCode.get(GLES20.GL_VERTEX_SHADER));
-        this.setFragmentShaderCodeRaster(shadersPreviewCode.get(GLES20.GL_FRAGMENT_SHADER));
-        this.setButtonRender(button);
+        this.vertexShaderCode = shadersCode.get(GLES20.GL_VERTEX_SHADER);
+        this.fragmentShaderCode = shadersCode.get(GLES20.GL_FRAGMENT_SHADER);
+        this.vertexShaderCodeRaster = shadersPreviewCode.get(GLES20.GL_VERTEX_SHADER);
+        this.fragmentShaderCodeRaster = shadersPreviewCode.get(GLES20.GL_FRAGMENT_SHADER);
+        this.buttonRender = button;
     }
 
 }

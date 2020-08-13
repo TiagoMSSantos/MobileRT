@@ -2,6 +2,7 @@ package puscas.mobilertapp.utils;
 
 import android.opengl.GLES20;
 import android.opengl.GLUtils;
+import androidx.annotation.NonNull;
 import java.util.logging.Logger;
 import java8.util.function.BiFunction;
 import java8.util.function.Function;
@@ -203,6 +204,20 @@ public final class UtilsGL {
             GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR));
         UtilsGL.run(() -> GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,
             GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR));
+    }
+
+    /**
+     * Helper method that disables the attributes data from indexes received via
+     * argument.
+     *
+     * @param attributes The indexes of the attributes data.
+     */
+    public static void disableAttributeData(@NonNull final int... attributes) {
+        LOGGER.info("disableAttributeData");
+
+        for (final int attribute : attributes) {
+            run(() -> GLES20.glDisableVertexAttribArray(attribute));
+        }
     }
 
 }

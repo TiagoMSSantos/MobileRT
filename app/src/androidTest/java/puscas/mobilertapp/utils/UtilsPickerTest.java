@@ -4,6 +4,7 @@ import android.widget.NumberPicker;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.matcher.ViewMatchers;
 import java.util.logging.Logger;
+import javax.annotation.Nonnull;
 import org.junit.jupiter.api.Assertions;
 import puscas.mobilertapp.ViewActionNumberPicker;
 
@@ -32,7 +33,7 @@ public final class UtilsPickerTest {
      * @param pickerId      The identifier of the {@link NumberPicker}.
      * @param expectedValue The new expectedValue for the {@link NumberPicker}.
      */
-    public static void changePickerValue(final String pickerName,
+    public static void changePickerValue(@Nonnull final String pickerName,
                                          final int pickerId,
                                          final int expectedValue) {
         LOGGER.info("changePickerValue");

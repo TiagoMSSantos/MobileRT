@@ -146,4 +146,27 @@ public final class UtilsShader {
         UtilsGL.run(() -> GLES20.glEnableVertexAttribArray(config.getAttributeLocation()));
     }
 
+    /**
+     * Helper method that loads a vertex and a fragment shaders and attach those
+     * to a GLSL program.
+     *
+     * @param shaderProgram      The index of OpenGL shader program.
+     * @param vertexShaderCode   The code for the Vertex shader.
+     * @param fragmentShaderCode The code for the Fragment shader.
+     */
+    public static void loadAndAttachShaders(final int shaderProgram,
+                                            @NonNull final String vertexShaderCode,
+                                            @NonNull final String fragmentShaderCode) {
+        LOGGER.info("loadAndAttachShaders");
+
+        final int vertexShader = UtilsShader.loadShader(GLES20.GL_VERTEX_SHADER,
+            vertexShaderCode);
+        final int fragmentShader = UtilsShader.loadShader(GLES20.GL_FRAGMENT_SHADER,
+            fragmentShaderCode);
+
+        // Attach and link shaders to program
+        UtilsGL.run(() -> GLES20.glAttachShader(shaderProgram, vertexShader));
+        UtilsGL.run(() -> GLES20.glAttachShader(shaderProgram, fragmentShader));
+    }
+
 }

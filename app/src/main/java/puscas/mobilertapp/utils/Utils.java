@@ -1,5 +1,7 @@
 package puscas.mobilertapp.utils;
 
+import android.widget.NumberPicker;
+import androidx.annotation.NonNull;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 import java8.util.Objects;
 import javax.annotation.Nonnull;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Contract;
 import puscas.mobilertapp.exceptions.FailureException;
 
@@ -123,6 +126,40 @@ public final class Utils {
         final int triangleMethodsSize = Constants.BYTES_IN_POINTER * 21;
         final int triangleSize = triangleMembersSize + triangleMethodsSize;
         return 1 + ((numPrimitives * triangleSize) / Constants.BYTES_IN_MEGABYTE);
+    }
+
+    /**
+     * Helper method that parses the displayed value from a {@link NumberPicker}
+     * to an actual {@link Integer}.
+     *
+     * @param picker The {@link NumberPicker} to parse the displayed value.
+     * @return The current displayed value in the {@link NumberPicker}.
+     */
+    public static int getValueFromPicker(@NonNull final NumberPicker picker) {
+        LOGGER.info("getValueFromPicker");
+
+        return Integer.parseInt(picker.getDisplayedValues()
+            [picker.getValue() - 1]);
+    }
+
+    /**
+     * Helper method that parses the displayed value from the resolution
+     * {@link NumberPicker} to a {@link Pair} with the actual {@link Integer}s
+     * (width, height).
+     *
+     * @param picker The {@link NumberPicker} to parse the displayed resolution.
+     * @return The current displayed resolution in the {@link NumberPicker}.
+     */
+    @NonNull
+    public static Pair<Integer, Integer> getResolutionFromPicker(
+        @NonNull final NumberPicker picker) {
+        LOGGER.info("getResolutionFromPicker");
+
+        final String strResolution = picker.getDisplayedValues()[picker.getValue() - 1];
+        final int width = Integer.parseInt(strResolution.substring(0, strResolution.indexOf('x')));
+        final int height = Integer.parseInt(
+            strResolution.substring(strResolution.indexOf('x') + 1));
+        return Pair.of(width, height);
     }
 
 }

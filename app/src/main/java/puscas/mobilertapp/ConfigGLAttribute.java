@@ -1,5 +1,6 @@
 package puscas.mobilertapp;
 
+import androidx.annotation.Nullable;
 import java.nio.Buffer;
 import java.util.Locale;
 import java.util.logging.Logger;
@@ -43,7 +44,7 @@ public final class ConfigGLAttribute {
      * @param builder The {@link Config.Builder} for this class.
      */
     ConfigGLAttribute(@Nonnull final ConfigGLAttribute.Builder builder) {
-        LOGGER.info("Config");
+        LOGGER.info("ConfigGLAttribute");
 
         this.attributeName = builder.getAttributeName();
         this.buffer = builder.getBuffer();
@@ -56,6 +57,7 @@ public final class ConfigGLAttribute {
      *
      * @return The name of the attribute.
      */
+    @Nullable
     public String getAttributeName() {
         return this.attributeName;
     }
@@ -65,6 +67,7 @@ public final class ConfigGLAttribute {
      *
      * @return The {@link Buffer}.
      */
+    @Nullable
     public Buffer getBuffer() {
         return this.buffer;
     }

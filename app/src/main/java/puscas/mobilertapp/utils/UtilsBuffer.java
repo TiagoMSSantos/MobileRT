@@ -21,16 +21,33 @@ public final class UtilsBuffer {
     }
 
     /**
-     * Helper method that resets the position to read the {@link ByteBuffer}.
-     * It also checks if the system has at least 1 mega byte free in the main
-     * memory.
+     * Helper method that checks if any of the {@link ByteBuffer}s is empty.
      *
-     * @param byteBuffer The {@link ByteBuffer} to reset.
+     * @param byteBuffers The {@link ByteBuffer}s to reset.
      */
-    public static void resetByteBuffer(@Nonnull final ByteBuffer byteBuffer) {
-        LOGGER.info("calculateSceneSize");
-        byteBuffer.order(ByteOrder.nativeOrder());
-        byteBuffer.position(0);
+    public static boolean isAnyByteBufferEmpty(@Nonnull final ByteBuffer... byteBuffers) {
+        LOGGER.info("isAnyByteBufferEmpty");
+
+        for (final ByteBuffer byteBuffer : byteBuffers) {
+            if (byteBuffer.capacity() <= 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Helper method that resets the position to read the {@link ByteBuffer}s.
+     *
+     * @param byteBuffers The {@link ByteBuffer}s to reset.
+     */
+    public static void resetByteBuffers(@Nonnull final ByteBuffer... byteBuffers) {
+        LOGGER.info("resetByteBuffers");
+
+        for (final ByteBuffer byteBuffer : byteBuffers) {
+            byteBuffer.order(ByteOrder.nativeOrder());
+            byteBuffer.position(0);
+        }
     }
 
     /**
@@ -46,7 +63,7 @@ public final class UtilsBuffer {
         LOGGER.info("allocateBuffer");
         final int byteBufferSize = arrayValues.length * Constants.BYTES_IN_FLOAT;
         final ByteBuffer byteBuffer = ByteBuffer.allocateDirect(byteBufferSize);
-        resetByteBuffer(byteBuffer);
+        resetByteBuffers(byteBuffer);
         final FloatBuffer floatBuffer = byteBuffer.asFloatBuffer();
         floatBuffer.put(arrayValues);
         floatBuffer.position(0);

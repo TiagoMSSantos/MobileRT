@@ -25,12 +25,14 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.logging.Logger;
 import java8.util.Optional;
 import java8.util.stream.IntStreams;
 import java8.util.stream.StreamSupport;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.apache.commons.lang3.tuple.Pair;
 import puscas.mobilertapp.exceptions.FailureException;
 import puscas.mobilertapp.utils.Accelerator;
 import puscas.mobilertapp.utils.ConstantsMethods;
@@ -219,6 +221,9 @@ public final class MainActivity extends Activity {
 
         final Optional<Bundle> bundle = Optional.ofNullable(savedInstanceState);
         initializePickers(bundle);
+        initializeCheckBoxRasterize(bundle.map(x -> x.getBoolean(ConstantsUI.CHECK_BOX_RASTERIZE))
+            .orElse(true));
+
         checksStoragePermission();
     }
 
@@ -403,6 +408,7 @@ public final class MainActivity extends Activity {
 
             default:
                 startRender("");
+                break;
         }
     }
 
@@ -475,33 +481,23 @@ public final class MainActivity extends Activity {
      */
     @Nonnull
     private Config createConfigFromUI(@Nonnull final String scenePath) {
-        final int scene = this.pickerScene.getValue();
-        final int shader = this.pickerShader.getValue();
-        final int accelerator = this.pickerAccelerator.getValue();
-        final int samplesPixel = Integer.parseInt(this.pickerSamplesPixel.getDisplayedValues()
-            [this.pickerSamplesPixel.getValue() - 1]);
-        final int samplesLight = Integer.parseInt(this.pickerSamplesLight.getDisplayedValues()
-            [this.pickerSamplesLight.getValue() - 1]);
-        final String strResolution =
-            this.pickerResolutions.getDisplayedValues()[this.pickerResolutions.getValue() - 1];
-        final int width = Integer.parseInt(strResolution.substring(0, strResolution.indexOf('x')));
-        final int height = Integer.parseInt(
-            strResolution.substring(strResolution.indexOf('x') + 1));
+        final Pair<Integer, Integer> resolution =
+            Utils.getResolutionFromPicker(this.pickerResolutions);
 
         return new Config.Builder()
-            .withScene(scene)
-            .withShader(shader)
-            .withAccelerator(accelerator)
+            .withScene(this.pickerScene.getValue())
+            .withShader(this.pickerShader.getValue())
+            .withAccelerator(this.pickerAccelerator.getValue())
             .withConfigSamples(
                 new ConfigSamples.Builder()
-                    .withSamplesPixel(samplesPixel)
-                    .withSamplesLight(samplesLight)
+                    .withSamplesPixel(Utils.getValueFromPicker(this.pickerSamplesPixel))
+                    .withSamplesLight(Utils.getValueFromPicker(this.pickerSamplesLight))
                     .build()
             )
             .withConfigResolution(
                 new ConfigResolution.Builder()
-                    .withWidth(width)
-                    .withHeight(height)
+                    .withWidth(resolution.getLeft())
+                    .withHeight(resolution.getRight())
                     .build()
             )
             .withOBJ(scenePath + ".obj")
@@ -584,11 +580,19 @@ public final class MainActivity extends Activity {
 
         initializePickerThreads(bundle.map(x -> x.getInt(ConstantsUI.PICKER_THREADS))
             .orElse(1));
-        initializeCheckBoxRasterize(bundle.map(x -> x.getBoolean(ConstantsUI.CHECK_BOX_RASTERIZE))
-            .orElse(true));
 
+        initializeListenersPickers(bundle);
+    }
+
+    /**
+     * Helper method that sets up some listeners in the {@link View} to initialize
+     * some {@link NumberPicker}s, like the resolution picker.
+     *
+     * @param bundle The data state of the {@link Activity}.
+     * @implNote We can only set the resolutions after the views are shown.
+     */
+    private void initializeListenersPickers(final Optional<Bundle> bundle) {
         final ViewTreeObserver vto = this.drawView.getViewTreeObserver();
-        // We can only set the resolutions after the views are shown.
         vto.addOnGlobalLayoutListener(() ->
             initializePickerResolutions(bundle.map(x -> x.getInt(ConstantsUI.PICKER_SIZE))
                 .orElse(4), 9));
@@ -612,15 +616,6 @@ public final class MainActivity extends Activity {
         this.drawView.setEGLContextClientVersion(2);
         this.drawView.setEGLConfigChooser(8, 8, 8, 8, 3 * 8, 0);
 
-        final String vertexShader = UtilsContext.readTextAsset(this,
-            ConstantsUI.PATH_SHADERS + ConstantsUI.FILE_SEPARATOR + "VertexShader.glsl");
-        final String fragmentShader = UtilsContext.readTextAsset(this,
-            ConstantsUI.PATH_SHADERS + ConstantsUI.FILE_SEPARATOR + "FragmentShader.glsl");
-        final String vertexShaderRaster = UtilsContext.readTextAsset(this,
-            ConstantsUI.PATH_SHADERS + ConstantsUI.FILE_SEPARATOR + "VertexShaderRaster.glsl");
-        final String fragmentShaderRaster = UtilsContext.readTextAsset(this,
-            ConstantsUI.PATH_SHADERS + ConstantsUI.FILE_SEPARATOR + "FragmentShaderRaster.glsl");
-
         final ActivityManager activityManager = (ActivityManager) getSystemService(
             Context.ACTIVITY_SERVICE);
         this.drawView.setViewAndActivityManager(textView, activityManager);
@@ -631,13 +626,20 @@ public final class MainActivity extends Activity {
             return false;
         });
 
-        this.drawView.prepareRenderer(
-            ImmutableMap.of(GLES20.GL_VERTEX_SHADER, vertexShader,
-                GLES20.GL_FRAGMENT_SHADER, fragmentShader),
-            ImmutableMap.of(GLES20.GL_VERTEX_SHADER, vertexShaderRaster,
-                GLES20.GL_FRAGMENT_SHADER, fragmentShaderRaster),
-            renderButton
-        );
+        final String shadersPath = ConstantsUI.PATH_SHADERS + ConstantsUI.FILE_SEPARATOR;
+        final ImmutableMap<Integer, String> shadersPaths = ImmutableMap.of(
+            GLES20.GL_VERTEX_SHADER, shadersPath + "VertexShader.glsl",
+            GLES20.GL_FRAGMENT_SHADER, shadersPath + "FragmentShader.glsl");
+        final Map<Integer, String> shadersRayTracing =
+            UtilsContext.readShaders(this, shadersPaths);
+
+        final ImmutableMap<Integer, String> shadersPreviewPaths = ImmutableMap.of(
+            GLES20.GL_VERTEX_SHADER, shadersPath + "VertexShaderRaster.glsl",
+            GLES20.GL_FRAGMENT_SHADER, shadersPath + "FragmentShaderRaster.glsl");
+        final Map<Integer, String> shadersPreview =
+            UtilsContext.readShaders(this, shadersPreviewPaths);
+
+        this.drawView.prepareRenderer(shadersRayTracing, shadersPreview, renderButton);
         this.drawView.setVisibility(View.VISIBLE);
         this.drawView.setPreserveEGLContextOnPause(true);
     }
