@@ -52,7 +52,7 @@ public enum Shader {
      *
      * @param name The new shader for the Ray Tracer engine.
      */
-    @Contract(pure = true) Shader(final String name) {
+    Shader(final String name) {
         this.name = name;
     }
 

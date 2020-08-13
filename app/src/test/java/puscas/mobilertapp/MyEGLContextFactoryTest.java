@@ -246,4 +246,5 @@ public final class MyEGLContextFactoryTest {
         final EGLContext eglContext = myEGLContextFactory.createContext(egl, null, null);
         Assertions.assertThat(eglContext).isNull();
     }
+
 }

@@ -489,7 +489,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
          * @param requestRender The new value for
          *                      {@link RenderTask#requestRender} field.
          * @return The builder with {@link RenderTask.Builder#requestRender}
-         *         already set.
+         * already set.
          */
         @Contract("_ -> this")
         @Nonnull
@@ -508,7 +508,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
          * @param finishRender The new value for
          *                     {@link RenderTask#finishRender} field.
          * @return The builder with {@link RenderTask.Builder#finishRender}
-         *         already set.
+         * already set.
          */
         @Contract("_ -> this")
         @Nonnull
@@ -527,7 +527,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
          * @param textView The new value for
          *                 {@link RenderTask#textView} field.
          * @return The builder with {@link RenderTask.Builder#textView}
-         *         already set.
+         * already set.
          */
         @Contract("_ -> this")
         @Nonnull
@@ -546,7 +546,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
          * @param buttonRender The new value for
          *                     {@link RenderTask#buttonRender} field.
          * @return The builder with {@link RenderTask.Builder#buttonRender}
-         *         already set.
+         * already set.
          */
         @Contract("_ -> this")
         @Nonnull
@@ -565,7 +565,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
          * @param updateInterval The new value for
          *                       {@link RenderTask#updateInterval} field.
          * @return The builder with {@link RenderTask.Builder#updateInterval}
-         *         already set.
+         * already set.
          */
         @Contract("_ -> this")
         @Nonnull

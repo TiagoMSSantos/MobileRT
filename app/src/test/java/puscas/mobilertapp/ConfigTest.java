@@ -121,4 +121,5 @@ public final class ConfigTest {
         Assertions
             .assertEquals(cam, config.getCamFilePath(), "CAM file path not the expected value.");
     }
+
 }

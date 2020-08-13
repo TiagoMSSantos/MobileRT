@@ -47,4 +47,5 @@ public final class StateTest {
         Assertions.assertThat(State.FINISHED.getId()).isEqualTo(2);
         Assertions.assertThat(State.STOPPED.getId()).isEqualTo(3);
     }
+
 }

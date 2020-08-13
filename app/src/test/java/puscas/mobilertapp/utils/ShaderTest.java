@@ -50,4 +50,5 @@ public final class ShaderTest {
             "Diffuse"
         );
     }
+
 }

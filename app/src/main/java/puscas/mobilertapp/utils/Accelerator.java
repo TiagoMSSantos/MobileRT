@@ -47,8 +47,7 @@ public enum Accelerator {
      *
      * @param name The name of the acceleration structure for the Ray Tracer engine.
      */
-    @Contract(pure = true)
-    @Nonnull Accelerator(final String name) {
+    Accelerator(final String name) {
         this.name = name;
     }
 

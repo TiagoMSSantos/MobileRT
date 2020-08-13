@@ -25,6 +25,7 @@ import puscas.mobilertapp.utils.ConstantsUI;
 import puscas.mobilertapp.utils.Scene;
 import puscas.mobilertapp.utils.Shader;
 import puscas.mobilertapp.utils.UtilsContext;
+import puscas.mobilertapp.utils.UtilsPickerTest;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public final class UITest extends AbstractTest {
@@ -116,27 +117,28 @@ public final class UITest extends AbstractTest {
      */
     private static void assertPickerNumbers(final int numCores) {
         IntStreams.rangeClosed(0, 2).forEach(value ->
-            Utils.changePickerValue(ConstantsUI.PICKER_ACCELERATOR, R.id.pickerAccelerator, value)
+            UtilsPickerTest
+                .changePickerValue(ConstantsUI.PICKER_ACCELERATOR, R.id.pickerAccelerator, value)
         );
         IntStreams.rangeClosed(1, 100).forEach(value ->
-            Utils
+            UtilsPickerTest
                 .changePickerValue(ConstantsUI.PICKER_SAMPLES_LIGHT, R.id.pickerSamplesLight, value)
         );
         IntStreams.rangeClosed(0, 6).forEach(value ->
-            Utils.changePickerValue(ConstantsUI.PICKER_SCENE, R.id.pickerScene, value)
+            UtilsPickerTest.changePickerValue(ConstantsUI.PICKER_SCENE, R.id.pickerScene, value)
         );
         IntStreams.rangeClosed(0, 4).forEach(value ->
-            Utils.changePickerValue(ConstantsUI.PICKER_SHADER, R.id.pickerShader, value)
+            UtilsPickerTest.changePickerValue(ConstantsUI.PICKER_SHADER, R.id.pickerShader, value)
         );
         IntStreams.rangeClosed(1, numCores).forEach(value ->
-            Utils.changePickerValue(ConstantsUI.PICKER_THREADS, R.id.pickerThreads, value)
+            UtilsPickerTest.changePickerValue(ConstantsUI.PICKER_THREADS, R.id.pickerThreads, value)
         );
         IntStreams.rangeClosed(1, 99).forEach(value ->
-            Utils
+            UtilsPickerTest
                 .changePickerValue(ConstantsUI.PICKER_SAMPLES_PIXEL, R.id.pickerSamplesPixel, value)
         );
         IntStreams.rangeClosed(1, 8).forEach(value ->
-            Utils
+            UtilsPickerTest
                 .changePickerValue(ConstantsUI.PICKER_SIZE, R.id.pickerSize, value)
         );
     }
@@ -224,13 +226,16 @@ public final class UITest extends AbstractTest {
      * @param numCores    The number of CPU cores in the system.
      */
     private void assertClickRenderButton(final int repetitions, final int numCores) {
-        Utils.changePickerValue(ConstantsUI.PICKER_SAMPLES_PIXEL, R.id.pickerSamplesPixel, 99);
-        Utils.changePickerValue(ConstantsUI.PICKER_SCENE, R.id.pickerScene, 5);
-        Utils.changePickerValue(ConstantsUI.PICKER_THREADS, R.id.pickerThreads, 1);
-        Utils.changePickerValue(ConstantsUI.PICKER_SIZE, R.id.pickerSize, 8);
-        Utils.changePickerValue(ConstantsUI.PICKER_SAMPLES_LIGHT, R.id.pickerSamplesLight, 1);
-        Utils.changePickerValue(ConstantsUI.PICKER_ACCELERATOR, R.id.pickerAccelerator, 2);
-        Utils.changePickerValue(ConstantsUI.PICKER_SHADER, R.id.pickerShader, 2);
+        UtilsPickerTest
+            .changePickerValue(ConstantsUI.PICKER_SAMPLES_PIXEL, R.id.pickerSamplesPixel, 99);
+        UtilsPickerTest.changePickerValue(ConstantsUI.PICKER_SCENE, R.id.pickerScene, 5);
+        UtilsPickerTest.changePickerValue(ConstantsUI.PICKER_THREADS, R.id.pickerThreads, 1);
+        UtilsPickerTest.changePickerValue(ConstantsUI.PICKER_SIZE, R.id.pickerSize, 8);
+        UtilsPickerTest
+            .changePickerValue(ConstantsUI.PICKER_SAMPLES_LIGHT, R.id.pickerSamplesLight, 1);
+        UtilsPickerTest
+            .changePickerValue(ConstantsUI.PICKER_ACCELERATOR, R.id.pickerAccelerator, 2);
+        UtilsPickerTest.changePickerValue(ConstantsUI.PICKER_SHADER, R.id.pickerShader, 2);
 
         final int numScenes = Scene.values().length;
         final int numAccelerators = Accelerator.values().length;
@@ -259,19 +264,23 @@ public final class UITest extends AbstractTest {
             this.counterResolution++;
             final int finalCounterThreads = Math.max(this.counterThreads % numCores, 1);
             this.counterThreads++;
-            Utils.changePickerValue(ConstantsUI.PICKER_SCENE, R.id.pickerScene, finalCounterScene);
-            Utils.changePickerValue(ConstantsUI.PICKER_ACCELERATOR, R.id.pickerAccelerator,
-                finalCounterAccelerator);
-            Utils.changePickerValue(ConstantsUI.PICKER_SHADER, R.id.pickerShader,
+            UtilsPickerTest
+                .changePickerValue(ConstantsUI.PICKER_SCENE, R.id.pickerScene, finalCounterScene);
+            UtilsPickerTest
+                .changePickerValue(ConstantsUI.PICKER_ACCELERATOR, R.id.pickerAccelerator,
+                    finalCounterAccelerator);
+            UtilsPickerTest.changePickerValue(ConstantsUI.PICKER_SHADER, R.id.pickerShader,
                 finalCounterShader);
-            Utils.changePickerValue(ConstantsUI.PICKER_SAMPLES_PIXEL, R.id.pickerSamplesPixel,
-                finalCounterSPP);
-            Utils.changePickerValue(ConstantsUI.PICKER_SAMPLES_LIGHT, R.id.pickerSamplesLight,
-                finalCounterSPL);
-            Utils.changePickerValue(ConstantsUI.PICKER_THREADS, R.id.pickerThreads,
+            UtilsPickerTest
+                .changePickerValue(ConstantsUI.PICKER_SAMPLES_PIXEL, R.id.pickerSamplesPixel,
+                    finalCounterSPP);
+            UtilsPickerTest
+                .changePickerValue(ConstantsUI.PICKER_SAMPLES_LIGHT, R.id.pickerSamplesLight,
+                    finalCounterSPL);
+            UtilsPickerTest.changePickerValue(ConstantsUI.PICKER_THREADS, R.id.pickerThreads,
                 finalCounterThreads);
             // TODO: the picker for the resolution always resets its value to the default one
-            Utils.changePickerValue(ConstantsUI.PICKER_SIZE, R.id.pickerSize, 4);
+            UtilsPickerTest.changePickerValue(ConstantsUI.PICKER_SIZE, R.id.pickerSize, 4);
 
 
             final int expectedIndexOld = currentIndex > 0 ?

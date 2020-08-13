@@ -15,14 +15,14 @@ varying vec2 fragmentTexCoord;
 
 // Function for the tonemap
 float toneMap (const float value) {
-	return value;
+    return value;
 }
 
 // Main to calculate the color for each pixel in gl_FragColor
 void main () {
-	// Get the color for this pixel (interpolated from the nearest vertices)
-	vec4 color = texture2D(uniformTexture, fragmentTexCoord);
+    // Get the color for this pixel (interpolated from the nearest vertices)
+    vec4 color = texture2D(uniformTexture, fragmentTexCoord);
 
-	// Output the color for this pixel
-	gl_FragColor = vec4(toneMap(color[0]), toneMap(color[1]), toneMap(color[2]), 1.0);
+    // Output the color for this pixel
+    gl_FragColor = vec4(toneMap(color[0]), toneMap(color[1]), toneMap(color[2]), 1.0);
 }

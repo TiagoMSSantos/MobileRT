@@ -244,4 +244,5 @@ public final class CustomNumberPickerTest {
         Assertions.assertThatCode(() -> customNumberPicker.addView(view, params))
             .doesNotThrowAnyException();
     }
+
 }

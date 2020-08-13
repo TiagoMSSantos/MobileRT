@@ -1,11 +1,8 @@
-package puscas.mobilertapp;
+package puscas.mobilertapp.utils;
 
 import android.graphics.Bitmap;
 import android.os.Build;
-import android.widget.NumberPicker;
 import androidx.multidex.BuildConfig;
-import androidx.test.espresso.Espresso;
-import androidx.test.espresso.matcher.ViewMatchers;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -17,22 +14,22 @@ import java8.util.J8Arrays;
 import javax.annotation.Nonnull;
 import org.junit.Assume;
 import org.junit.jupiter.api.Assertions;
-import puscas.mobilertapp.utils.ConstantsMethods;
+import puscas.mobilertapp.MainRenderer;
 
 /**
  * Helper class which contains helper methods for the tests.
  */
-final class Utils {
+public final class UtilsTest {
 
     /**
      * The {@link Logger} for this class.
      */
-    private static final Logger LOGGER = Logger.getLogger(Utils.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(UtilsTest.class.getName());
 
     /**
      * Private method to avoid instantiating this helper class.
      */
-    private Utils() {
+    private UtilsTest() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
     }
@@ -67,14 +64,15 @@ final class Utils {
     /**
      * Helper method that gets a private field from an {@link Object}.
      *
-     * @param clazz The {@link Object} to get the private field.
+     * @param clazz     The {@link Object} to get the private field.
+     * @param fieldName The name of the field to get.
      * @return The {@link Bitmap} from the {@link MainRenderer}.
      * @implNote This method uses reflection to be able to get the private
      * field from the {@link Object}.
      */
     @Nonnull
-    static <T> T getPrivateField(@Nonnull final Object clazz,
-                                 @Nonnull final String fieldName) {
+    public static <T> T getPrivateField(@Nonnull final Object clazz,
+                                        @Nonnull final String fieldName) {
         Field field = null;
         try {
             // Use reflection to access the private field.
@@ -99,7 +97,10 @@ final class Utils {
     /**
      * Helper method that invokes a private method from an {@link Object}.
      *
-     * @param clazz The {@link Object} to invoke the private method.
+     * @param clazz          The {@link Object} to invoke the private method.
+     * @param methodName     The name of the method to invoke.
+     * @param parameterTypes The types of the parameters of the method.
+     * @param args           The arguments to pass to the method.
      * @return The return value from the private method.
      * @implNote This method uses reflection to be able to invoke the private
      * method from the {@link Object}.
@@ -134,26 +135,6 @@ final class Utils {
     }
 
     /**
-     * Helper method which changes the {@code value} of a {@link NumberPicker}.
-     *
-     * @param pickerName    The name of the {@link NumberPicker}.
-     * @param pickerId      The identifier of the {@link NumberPicker}.
-     * @param expectedValue The new expectedValue for the {@link NumberPicker}.
-     */
-    static void changePickerValue(final String pickerName,
-                                  final int pickerId,
-                                  final int expectedValue) {
-        Espresso.onView(ViewMatchers.withId(pickerId))
-            .perform(new ViewActionNumberPicker(expectedValue))
-            .check((view, exception) -> {
-                final NumberPicker numberPicker = view.findViewById(pickerId);
-                Assertions.assertEquals(expectedValue, numberPicker.getValue(),
-                    "Number picker '" + pickerName + "' with wrong value"
-                );
-            });
-    }
-
-    /**
      * Helper method that checks if a {@link Bitmap} contains valid values from
      * a rendered image.
      *
@@ -161,8 +142,8 @@ final class Utils {
      * @param expectedSameValues Whether the {@link Bitmap} should have have only
      *                           one color.
      */
-    static void assertRayTracingResultInBitmap(@Nonnull final Bitmap bitmap,
-                                               final boolean expectedSameValues) {
+    public static void assertRayTracingResultInBitmap(@Nonnull final Bitmap bitmap,
+                                                      final boolean expectedSameValues) {
         final int firstPixel = bitmap.getPixel(0, 0);
         final int width = bitmap.getWidth();
         final int height = bitmap.getHeight();

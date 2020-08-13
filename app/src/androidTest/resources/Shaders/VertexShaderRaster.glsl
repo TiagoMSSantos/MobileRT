@@ -28,7 +28,7 @@ varying vec4 fragmentColor;
 // fragmentColor
 void main () {
     // Output the position for this vertex
-	gl_Position = uniformProjectionMatrix * uniformViewMatrix * uniformModelMatrix * vertexPosition;
+    gl_Position = uniformProjectionMatrix * uniformViewMatrix * uniformModelMatrix * vertexPosition;
     // Output the color for this vertex
     fragmentColor = vertexColor;
 }

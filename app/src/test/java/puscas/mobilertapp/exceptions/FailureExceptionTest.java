@@ -68,4 +68,5 @@ public final class FailureExceptionTest {
         final String message = "Test";
         throw new FailureException(message);
     }
+
 }

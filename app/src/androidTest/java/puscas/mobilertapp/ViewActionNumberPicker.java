@@ -8,14 +8,13 @@ import androidx.test.espresso.matcher.ViewMatchers;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import org.hamcrest.Matcher;
-import org.jetbrains.annotations.Contract;
 import org.junit.jupiter.api.Assertions;
 import puscas.mobilertapp.utils.ConstantsMethods;
 
 /**
  * Auxiliary class which represents a {@link NumberPicker}.
  */
-final class ViewActionNumberPicker implements ViewAction {
+public final class ViewActionNumberPicker implements ViewAction {
 
     /**
      * The {@link Logger} for this class.
@@ -33,7 +32,7 @@ final class ViewActionNumberPicker implements ViewAction {
      *
      * @param newValue The value for the {@link NumberPicker}.
      */
-    @Contract(pure = true) ViewActionNumberPicker(final int newValue) {
+    public ViewActionNumberPicker(final int newValue) {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 

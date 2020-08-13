@@ -281,8 +281,7 @@ public final class DrawView extends GLSurfaceView {
      *
      * @return The {@link MainRenderer} of this object.
      */
-    @Contract(pure = true)
-    MainRenderer getRenderer() {
+    @Contract(pure = true) public MainRenderer getRenderer() {
         LOGGER.info("getRenderer");
 
         return this.renderer;

@@ -10,7 +10,6 @@ import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
-import org.jetbrains.annotations.Contract;
 import puscas.mobilertapp.utils.ConstantsError;
 
 /**
@@ -44,7 +43,7 @@ public class MyEGLContextFactory implements GLSurfaceView.EGLContextFactory {
      *
      * @param drawView The {@link GLSurfaceView} to be used.
      */
-    @Contract(pure = true) MyEGLContextFactory(final DrawView drawView) {
+    MyEGLContextFactory(final DrawView drawView) {
         this.drawView = drawView;
         this.eglContext = null;
     }

@@ -68,4 +68,5 @@ public final class LowMemoryExceptionTest {
         final String message = "Test";
         throw new LowMemoryException(message);
     }
+
 }
