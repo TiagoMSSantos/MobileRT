@@ -139,25 +139,7 @@ public final class UtilsGL {
     private static void checksGLError() {
         final int glError = GLES20.glGetError();
         if (glError != GLES20.GL_NO_ERROR) {
-            final Supplier<String> stringError = () -> {
-                switch (glError) {
-                    case GLES20.GL_INVALID_ENUM:
-                        return "GL_INVALID_ENUM";
-
-                    case GLES20.GL_INVALID_VALUE:
-                        return "GL_INVALID_VALUE";
-
-                    case GLES20.GL_INVALID_OPERATION:
-                        return "GL_INVALID_OPERATION";
-
-                    case GLES20.GL_OUT_OF_MEMORY:
-                        return "GL_OUT_OF_MEMORY";
-
-                    default:
-                        return "GL_UNKNOWN_ERROR";
-                }
-            };
-            final String msg = stringError.get() + ": " + GLUtils.getEGLErrorString(glError);
+            final String msg = GLUtils.getEGLErrorString(glError);
             throw new FailureException(msg);
         }
     }
