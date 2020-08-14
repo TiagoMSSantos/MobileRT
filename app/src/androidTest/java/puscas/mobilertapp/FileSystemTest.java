@@ -80,7 +80,7 @@ public final class FileSystemTest extends AbstractTest {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
-        final String sdCardPath = UtilsContext.getSDCardPath(this.activity);
+        final String sdCardPath = UtilsContext.getSdCardPath(this.activity);
 
         final List<String> paths = ImmutableList.<String>builder().add(
             Constants.EMPTY_FILE,

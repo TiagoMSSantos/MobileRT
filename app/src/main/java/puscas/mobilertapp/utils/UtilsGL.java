@@ -42,7 +42,7 @@ public final class UtilsGL {
     public static void run(@Nonnull final Runnable method) {
         LOGGER.info(ConstantsMethods.RUN);
         method.run();
-        checksGLError();
+        checksGlError();
     }
 
     /**
@@ -57,7 +57,7 @@ public final class UtilsGL {
     public static <T> T run(@Nonnull final Supplier<T> method) {
         LOGGER.info(ConstantsMethods.RUN);
         final T result = method.get();
-        checksGLError();
+        checksGlError();
         return result;
     }
 
@@ -75,7 +75,7 @@ public final class UtilsGL {
                                @Nonnull final Function<R, T> method) {
         LOGGER.info(ConstantsMethods.RUN);
         final T result = method.apply(arg);
-        checksGLError();
+        checksGlError();
         return result;
     }
 
@@ -95,7 +95,7 @@ public final class UtilsGL {
                                   @Nonnull final BiFunction<R, S, T> method) {
         LOGGER.info(ConstantsMethods.RUN);
         final T result = method.apply(arg1, arg2);
-        checksGLError();
+        checksGlError();
         return result;
     }
 
@@ -104,7 +104,7 @@ public final class UtilsGL {
      * OpenGL ES 2.0.
      *
      * @return {@code True} if the device has support for OpenGL ES 2.0 or
-     * {@code False} otherwise.
+     *     {@code False} otherwise.
      */
     public static boolean checkGL20Support() {
         LOGGER.info("checkGL20Support");
@@ -136,7 +136,7 @@ public final class UtilsGL {
     /**
      * Helper method which checks and prints errors in the OpenGL framework.
      */
-    private static void checksGLError() {
+    private static void checksGlError() {
         final int glError = GLES20.glGetError();
         if (glError != GLES20.GL_NO_ERROR) {
             final String msg = GLUtils.getEGLErrorString(glError);

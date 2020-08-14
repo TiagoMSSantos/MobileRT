@@ -4,7 +4,7 @@ import android.opengl.GLES20;
 import androidx.annotation.NonNull;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
-import puscas.mobilertapp.ConfigGLAttribute;
+import puscas.mobilertapp.ConfigGlAttribute;
 import puscas.mobilertapp.exceptions.FailureException;
 import static android.opengl.GLES20.GL_COMPILE_STATUS;
 import static android.opengl.GLES20.glCompileShader;
@@ -134,10 +134,10 @@ public final class UtilsShader {
      * Helper method that binds and enables an OpenGL attribute.
      *
      * @param shaderProgram The shader program index.
-     * @param config        The {@link ConfigGLAttribute} configurator.
+     * @param config        The {@link ConfigGlAttribute} configurator.
      */
     public static void connectOpenGlAttribute(final int shaderProgram,
-                                              @NonNull final ConfigGLAttribute config) {
+                                              @NonNull final ConfigGlAttribute config) {
         LOGGER.info("connectOpenGlAttribute");
         UtilsGL.run(() -> GLES20.glBindAttribLocation(
             shaderProgram, config.getAttributeLocation(), config.getAttributeName()));

@@ -52,17 +52,17 @@ public final class UtilsContext {
      *
      * @return The path to the SD card.
      * @implNote This method still uses the deprecated method
-     * {@link Environment#getExternalStorageDirectory()} in order to be
-     * compatible with Android 4.1.
+     *     {@link Environment#getExternalStorageDirectory()} in order to be
+     *     compatible with Android 4.1.
      */
     @Nonnull
-    public static String getSDCardPath(@Nonnull final Context context) {
+    public static String getSdCardPath(@Nonnull final Context context) {
         LOGGER.info("Getting SD card path");
         final File[] dirs = ContextCompat.getExternalFilesDirs(context, null);
         final String sdCardPath = Optional.ofNullable(dirs.length > 1 ? dirs[1] : dirs[0])
             .map(File::getAbsolutePath)
             .orElse(Environment.getExternalStorageDirectory().getAbsolutePath());
-        return cleanSDCardPath(sdCardPath);
+        return cleanSdCardPath(sdCardPath);
     }
 
     /**
@@ -141,14 +141,14 @@ public final class UtilsContext {
 
     /**
      * Helper method that cleans the path to the external SD Card.
-     * This is useful for some devices since the {@link #getSDCardPath(Context)}
+     * This is useful for some devices since the {@link #getSdCardPath(Context)}
      * method might get the SD Card path with some extra paths at the end.
      *
      * @param sdCardPath The path to the external SD Card to clean.
      * @return A cleaned SD Card path.
      */
     @Nonnull
-    private static String cleanSDCardPath(final String sdCardPath) {
+    private static String cleanSdCardPath(final String sdCardPath) {
         final int removeIndex = sdCardPath.indexOf("Android");
         if (removeIndex >= 1) {
             return sdCardPath.substring(0, removeIndex - 1);

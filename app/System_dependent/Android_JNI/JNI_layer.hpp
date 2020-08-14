@@ -91,7 +91,7 @@ extern "C"
 void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
         JNIEnv *env,
         jobject thiz,
-        jobject dstBitmap,
+        jobject localBitmap,
         jint nThreads,
         jboolean async
 );

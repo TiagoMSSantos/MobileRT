@@ -109,7 +109,7 @@ public final class RayTracingTest extends AbstractTest {
 
         UtilsContextTest.resetPickerValues(this.activity, 6);
 
-        final ViewInteraction viewInteraction = UtilsTest.startRendering();
+        UtilsTest.startRendering();
         Espresso.onIdle();
 
         UtilsContextTest.waitUntilRenderingDone(this.activity);
@@ -141,7 +141,7 @@ public final class RayTracingTest extends AbstractTest {
             .changePickerValue(ConstantsUI.PICKER_ACCELERATOR, R.id.pickerAccelerator, 3);
         UtilsPickerTest.changePickerValue(ConstantsUI.PICKER_SHADER, R.id.pickerShader, 1);
 
-        final ViewInteraction viewInteraction = UtilsTest.startRendering();
+        UtilsTest.startRendering();
         UtilsTest.assertRenderButtonText(Constants.STOP);
         Espresso.onIdle();
 

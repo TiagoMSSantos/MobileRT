@@ -15,7 +15,7 @@ import puscas.mobilertapp.utils.ConstantsError;
 /**
  * A customized eglCreateContext and eglDestroyContext calls.
  */
-public class MyEGLContextFactory implements GLSurfaceView.EGLContextFactory {
+public class MyEglContextFactory implements GLSurfaceView.EGLContextFactory {
 
     /**
      * The "Embedded-System Graphics Library" version.
@@ -25,7 +25,7 @@ public class MyEGLContextFactory implements GLSurfaceView.EGLContextFactory {
     /**
      * The {@link Logger} for this class.
      */
-    private static final Logger LOGGER = Logger.getLogger(MyEGLContextFactory.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(MyEglContextFactory.class.getName());
 
     /**
      * The {@link GLSurfaceView} to be used to get the
@@ -43,7 +43,7 @@ public class MyEGLContextFactory implements GLSurfaceView.EGLContextFactory {
      *
      * @param drawView The {@link GLSurfaceView} to be used.
      */
-    MyEGLContextFactory(final DrawView drawView) {
+    MyEglContextFactory(final DrawView drawView) {
         this.drawView = drawView;
         this.eglContext = null;
     }

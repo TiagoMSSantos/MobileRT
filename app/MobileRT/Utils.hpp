@@ -253,7 +253,7 @@ namespace MobileRT {
 
      /**
       * A helper method which prepares an array with random numbers generated.
-      * <p>
+      * <br/>
       * This method uses the Halton sequence to fill the array and then shuffles the sequence.
       *
       * @tparam T The type of the elements in the array.
@@ -273,7 +273,7 @@ namespace MobileRT {
 
     /**
       * A helper method which prepares an array with random numbers generated.
-      * <p>
+      * <br/>
       * This method uses the Mersenne Twister generator to fill the array.
       *
       * @tparam T The type of the elements in the array.
@@ -290,7 +290,7 @@ namespace MobileRT {
 
     /**
       * A helper method which prepares an array with random numbers generated.
-      * <p>
+      * <br/>
       * This method uses the PCG generator to fill the array.
       *
       * @tparam T The type of the elements in the array.

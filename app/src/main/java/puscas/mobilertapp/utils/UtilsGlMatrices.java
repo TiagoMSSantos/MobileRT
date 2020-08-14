@@ -6,12 +6,12 @@ import java.nio.ByteBuffer;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 
-public final class UtilsGLMatrices {
+public final class UtilsGlMatrices {
 
     /**
      * The {@link Logger} for this class.
      */
-    private static final Logger LOGGER = Logger.getLogger(UtilsGLMatrices.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(UtilsGlMatrices.class.getName());
 
     /**
      * Empirical value that makes the OpenGL perspective camera more similar
@@ -40,7 +40,7 @@ public final class UtilsGLMatrices {
     /**
      * A private constructor in order to prevent instantiating this helper class.
      */
-    private UtilsGLMatrices() {
+    private UtilsGlMatrices() {
         LOGGER.info("UtilsGLMatrices");
     }
 

@@ -6,7 +6,7 @@ import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 import puscas.mobilertapp.DrawView;
-import puscas.mobilertapp.MyEGLContextFactory;
+import puscas.mobilertapp.MyEglContextFactory;
 
 /**
  * Utility class with the text constants for the errors.
@@ -15,7 +15,7 @@ public final class ConstantsError {
 
     /**
      * A message for when the
-     * {@link MyEGLContextFactory#destroyContext(EGL10, EGLDisplay, EGLContext)}
+     * {@link MyEglContextFactory#destroyContext(EGL10, EGLDisplay, EGLContext)}
      * method throws an exception.
      */
     public static final String EGL_DESTROY_CONTEXT_FAILED = "eglDestroyContext failed: ";

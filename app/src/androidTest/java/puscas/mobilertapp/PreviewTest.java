@@ -28,15 +28,11 @@ public final class PreviewTest extends AbstractTest {
     /**
      * Helper method that clicks the Render {@link Button} 2 times in a row,
      * so it starts and stops the Ray Tracing engine.
-     *
-     * @return The {@link ViewInteraction} for the Render {@link Button}.
      */
-    private static ViewInteraction startAndStopRendering() {
+    private static void startAndStopRendering() {
         final ViewInteraction viewInteraction = UtilsTest.startRendering();
         UtilsTest.assertRenderButtonText(Constants.STOP);
         viewInteraction.perform(new ViewActionButton(Constants.RENDER));
-
-        return viewInteraction;
     }
 
     /**
@@ -73,7 +69,7 @@ public final class PreviewTest extends AbstractTest {
 
         UtilsContextTest.resetPickerValues(this.activity, 2);
 
-        final ViewInteraction viewInteraction = startAndStopRendering();
+        startAndStopRendering();
         Espresso.onIdle();
 
         UtilsContextTest.waitUntilRenderingDone(this.activity);

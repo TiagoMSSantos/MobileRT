@@ -147,9 +147,9 @@ public final class MainRendererTest extends AbstractTest {
      * @throws InterruptedException If the thread waiting for the {@link CountDownLatch}
      *                              was interrupted.
      * @implNote This method uses {@link UtilsGL#loadShader} to create
-     * the shader in the OpenGL framework. To do that, it uses a GL thread to
-     * execute the {@link UtilsGL#loadShader} method by placing its call
-     * in the {@link GLSurfaceView#queueEvent(java.lang.Runnable)}.
+     *           the shader in the OpenGL framework. To do that, it uses a GL thread to
+     *           execute the {@link UtilsGL#loadShader} method by placing its call
+     *           in the {@link GLSurfaceView#queueEvent(java.lang.Runnable)}.
      */
     private int createAndGetIndexOfShader(final String shaderCode, final int shaderType)
         throws InterruptedException {

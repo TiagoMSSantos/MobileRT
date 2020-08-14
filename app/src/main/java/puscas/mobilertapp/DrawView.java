@@ -74,7 +74,7 @@ public final class DrawView extends GLSurfaceView {
         super(context);
 
         this.renderer.prepareRenderer(this::requestRender);
-        initEGLContextFactory();
+        initEglContextFactory();
     }
 
     /**
@@ -93,11 +93,11 @@ public final class DrawView extends GLSurfaceView {
     /**
      * Helper method which initiates the {@link GLSurfaceView.EGLContextFactory}.
      */
-    private void initEGLContextFactory() {
+    private void initEglContextFactory() {
         this.changingConfigs = false;
 
-        final GLSurfaceView.EGLContextFactory eglContextFactory = new MyEGLContextFactory(this);
-        setEGLContextClientVersion(MyEGLContextFactory.EGL_CONTEXT_CLIENT_VERSION);
+        final GLSurfaceView.EGLContextFactory eglContextFactory = new MyEglContextFactory(this);
+        setEGLContextClientVersion(MyEglContextFactory.EGL_CONTEXT_CLIENT_VERSION);
         setEGLContextFactory(eglContextFactory);
     }
 
@@ -234,8 +234,8 @@ public final class DrawView extends GLSurfaceView {
         createScene(config, numThreads, rasterize);
         requestRender();
 
-        final String messageFinished = ConstantsMethods.RENDER_SCENE + " executor" +
-            ConstantsMethods.FINISHED;
+        final String messageFinished = ConstantsMethods.RENDER_SCENE + " executor"
+            + ConstantsMethods.FINISHED;
         LOGGER.info(messageFinished);
     }
 
@@ -369,7 +369,7 @@ public final class DrawView extends GLSurfaceView {
      * engine without having to not obey the law of Demeter.
      *
      * @implNote This method calls {@link MainRenderer#rtFinishRender()} and
-     * also {@link MainRenderer#freeArrays()}.
+     *     also {@link MainRenderer#freeArrays()}.
      * @see <a href="https://en.wikipedia.org/wiki/Law_of_Demeter">Law of Demeter</a>
      */
     void finishRenderer() {

@@ -39,7 +39,7 @@ import puscas.mobilertapp.utils.State;
 import puscas.mobilertapp.utils.Utils;
 import puscas.mobilertapp.utils.UtilsBuffer;
 import puscas.mobilertapp.utils.UtilsGL;
-import puscas.mobilertapp.utils.UtilsGLMatrices;
+import puscas.mobilertapp.utils.UtilsGlMatrices;
 import puscas.mobilertapp.utils.UtilsLogging;
 import puscas.mobilertapp.utils.UtilsShader;
 
@@ -289,7 +289,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * @param pixel A pixel from OpenGL format.
      * @return A pixel from Android format.
      * @implNote Converts OpenGL pixel, which is ABGR to Android pixel which is
-     * ARGB.
+     *     ARGB.
      */
     @Contract(pure = true)
     private static int convertPixelOpenGlToAndroid(final int pixel) {
@@ -315,21 +315,21 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
     }
 
     /**
-     * Create MVP matrices and specify them as values for the uniform variables
-     * in the shader program.
+     * Create the Model View Projection matrices and specify them as values for the uniform
+     * variables in the shader program.
      *
      * @param bbCamera         The camera's position and vectors in the scene.
      * @param configResolution The resolution of the {@link Bitmap} to render.
      * @param shaderProgram    The OpenGL shader program index to specify the
      *                         matrices.
      */
-    private static void createMVPasUniformVariables(@Nonnull final ByteBuffer bbCamera,
-                                                    final int shaderProgram,
-                                                    final ConfigResolution configResolution) {
-        final float[] projectionMatrix = UtilsGLMatrices.createProjectionMatrix(
+    private static void createMatricesAsUniformVariables(@Nonnull final ByteBuffer bbCamera,
+                                                         final int shaderProgram,
+                                                         final ConfigResolution configResolution) {
+        final float[] projectionMatrix = UtilsGlMatrices.createProjectionMatrix(
             bbCamera, configResolution.getWidth(), configResolution.getHeight());
-        final float[] viewMatrix = UtilsGLMatrices.createViewMatrix(bbCamera);
-        final float[] modelMatrix = UtilsGLMatrices.createModelMatrix();
+        final float[] viewMatrix = UtilsGlMatrices.createViewMatrix(bbCamera);
+        final float[] modelMatrix = UtilsGlMatrices.createModelMatrix();
 
         final int handleModel = UtilsGL.<Integer, Integer, String>run(
             shaderProgram, "uniformModelMatrix", GLES20::glGetUniformLocation);
@@ -354,7 +354,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
     private static void connectAttributes(final int shaderProgram,
                                           @Nonnull final ByteBuffer bbVertices,
                                           @Nonnull final ByteBuffer bbColors) {
-        final ConfigGLAttribute verticesAttribute = new ConfigGLAttribute.Builder()
+        final ConfigGlAttribute verticesAttribute = new ConfigGlAttribute.Builder()
             .withName(VERTEX_POSITION)
             .withBuffer(bbVertices)
             .withLocation(0)
@@ -362,7 +362,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
             .build();
         UtilsShader.connectOpenGlAttribute(shaderProgram, verticesAttribute);
 
-        final ConfigGLAttribute colorsAttribute = new ConfigGLAttribute.Builder()
+        final ConfigGlAttribute colorsAttribute = new ConfigGlAttribute.Builder()
             .withName(VERTEX_COLOR)
             .withBuffer(bbColors)
             .withLocation(1)
@@ -578,7 +578,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      *
      * @param memoryNeeded Number of MegaBytes needed to be allocated.
      * @return {@code True} if the device doesn't have enough memory to be
-     * allocated, otherwise {@code false}.
+     *     allocated, otherwise {@code false}.
      */
     private boolean isLowMemory(final int memoryNeeded) {
         Preconditions.checkArgument(memoryNeeded > 0,
@@ -622,6 +622,25 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         LOGGER.info("prepareRenderer");
 
         this.requestRender = requestRender;
+    }
+
+    /**
+     * Prepares this class with the OpenGL shaders' code and also
+     * with the render button for the {@link RenderTask}.
+     *
+     * @param shadersCode        The shaders' code for the Ray Tracing engine.
+     * @param shadersPreviewCode The shaders' code for the OpenGL preview feature.
+     * @param button             The render {@link Button}.
+     */
+    void prepareRenderer(final Map<Integer, String> shadersCode,
+                         final Map<Integer, String> shadersPreviewCode,
+                         final Button button) {
+        this.setBitmap();
+        this.vertexShaderCode = shadersCode.get(GLES20.GL_VERTEX_SHADER);
+        this.fragmentShaderCode = shadersCode.get(GLES20.GL_FRAGMENT_SHADER);
+        this.vertexShaderCodeRaster = shadersPreviewCode.get(GLES20.GL_VERTEX_SHADER);
+        this.fragmentShaderCodeRaster = shadersPreviewCode.get(GLES20.GL_FRAGMENT_SHADER);
+        this.buttonRender = button;
     }
 
     /**
@@ -693,9 +712,9 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * @param bitmapWidth  The width of the desired {@link Bitmap}.
      * @param bitmapHeight The height of the desired {@link Bitmap}.
      * @return A new {@link Bitmap} with the colors of the pixels in the OpenGL
-     * frame buffer.
+     *     frame buffer.
      */
-    private Bitmap copyGLFrameBufferToBitmap(final int viewWidth,
+    private Bitmap copyGlFrameBufferToBitmap(final int viewWidth,
                                              final int viewHeight,
                                              final int bitmapWidth,
                                              final int bitmapHeight) {
@@ -709,10 +728,10 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
             0, 0, viewWidth, viewHeight, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, intBuffer
         ));
 
-        int openGLIndex = 0;
+        int openGlIndex = 0;
         for (final int pixel : arrayBytesPixels) {
-            final int androidIndex = convertIndexOpenGlToAndroid(openGLIndex);
-            ++openGLIndex;
+            final int androidIndex = convertIndexOpenGlToAndroid(openGlIndex);
+            ++openGlIndex;
             arrayBytesNewBitmap[androidIndex] = convertPixelOpenGlToAndroid(pixel);
         }
 
@@ -806,7 +825,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
             .withWidth(this.width)
             .withHeight(this.height)
             .build();
-        createMVPasUniformVariables(bbCamera, this.shaderProgramRaster, configResolution);
+        createMatricesAsUniformVariables(bbCamera, this.shaderProgramRaster, configResolution);
 
         defineAttributeData(bbVertices, 0);
 
@@ -817,7 +836,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
 
         UtilsGL.disableAttributeData(0, 1);
 
-        return copyGLFrameBufferToBitmap(this.viewWidth, this.viewHeight, this.width, this.height);
+        return copyGlFrameBufferToBitmap(this.viewWidth, this.viewHeight, this.width, this.height);
     }
 
     /**
@@ -872,7 +891,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
 
         UtilsGL.run(() -> GLES20.glUseProgram(this.shaderProgram));
 
-        final ConfigGLAttribute verticesAttribute = new ConfigGLAttribute.Builder()
+        final ConfigGlAttribute verticesAttribute = new ConfigGlAttribute.Builder()
             .withName(VERTEX_POSITION)
             .withBuffer(this.floatBufferVertices)
             .withLocation(0)
@@ -880,7 +899,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
             .build();
         UtilsShader.connectOpenGlAttribute(this.shaderProgram, verticesAttribute);
 
-        final ConfigGLAttribute textureAttribute = new ConfigGLAttribute.Builder()
+        final ConfigGlAttribute textureAttribute = new ConfigGlAttribute.Builder()
             .withName(VERTEX_TEX_COORD)
             .withBuffer(this.floatBufferTexture)
             .withLocation(1)
@@ -935,7 +954,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         this.floatBufferTexture = UtilsBuffer.allocateBuffer(this.texCoords);
 
         // Bind Attributes
-        final ConfigGLAttribute verticesAttribute = new ConfigGLAttribute.Builder()
+        final ConfigGlAttribute verticesAttribute = new ConfigGlAttribute.Builder()
             .withName(VERTEX_POSITION)
             .withBuffer(this.floatBufferVertices)
             .withLocation(0)
@@ -943,7 +962,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
             .build();
         UtilsShader.connectOpenGlAttribute(this.shaderProgram, verticesAttribute);
 
-        final ConfigGLAttribute textureAttribute = new ConfigGLAttribute.Builder()
+        final ConfigGlAttribute textureAttribute = new ConfigGlAttribute.Builder()
             .withName(VERTEX_TEX_COORD)
             .withBuffer(this.floatBufferTexture)
             .withLocation(1)
@@ -1010,25 +1029,6 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
             UtilsLogging.logThrowable(ex, "MainRenderer#renderSceneIntoBitmap");
         }
         return this.bitmap;
-    }
-
-    /**
-     * Prepares this class with the OpenGL shaders' code and also
-     * with the render button for the {@link RenderTask}.
-     *
-     * @param shadersCode        The shaders' code for the Ray Tracing engine.
-     * @param shadersPreviewCode The shaders' code for the OpenGL preview feature.
-     * @param button             The render {@link Button}.
-     */
-    void prepareRenderer(final Map<Integer, String> shadersCode,
-                         final Map<Integer, String> shadersPreviewCode,
-                         final Button button) {
-        this.setBitmap();
-        this.vertexShaderCode = shadersCode.get(GLES20.GL_VERTEX_SHADER);
-        this.fragmentShaderCode = shadersCode.get(GLES20.GL_FRAGMENT_SHADER);
-        this.vertexShaderCodeRaster = shadersPreviewCode.get(GLES20.GL_VERTEX_SHADER);
-        this.fragmentShaderCodeRaster = shadersPreviewCode.get(GLES20.GL_FRAGMENT_SHADER);
-        this.buttonRender = button;
     }
 
 }

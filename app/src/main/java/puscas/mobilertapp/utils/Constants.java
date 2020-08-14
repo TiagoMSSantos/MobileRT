@@ -57,10 +57,10 @@ public final class Constants {
 
     /**
      * The number of bytes of a memory pointer address.
-     * <p>
+     * <br>
      * For a 32bit system is usually 4 bytes.
      * For a 64bit system is usually 8 bytes.
-     * <p>
+     * <br>
      * For now its assumed the worst case scenario, which is 8 bytes.
      */
     static final int BYTES_IN_POINTER = Double.SIZE / Byte.SIZE;
@@ -85,14 +85,14 @@ public final class Constants {
     /**
      * The path to the teapot OBJ file which should exist.
      */
-    public static final String OBJ_FILE_TEAPOT = OBJ_PATH +
-        ConstantsUI.FILE_SEPARATOR + "teapot" + ConstantsUI.FILE_SEPARATOR + "teapot.obj";
+    public static final String OBJ_FILE_TEAPOT = OBJ_PATH
+        + ConstantsUI.FILE_SEPARATOR + "teapot" + ConstantsUI.FILE_SEPARATOR + "teapot.obj";
 
     /**
      * The path to the teapot2 OBJ file which should not exist.
      */
-    public static final String OBJ_FILE_NOT_EXISTS = OBJ_PATH +
-        ConstantsUI.FILE_SEPARATOR + "teapot" + ConstantsUI.FILE_SEPARATOR + "teapot2" + ".obj";
+    public static final String OBJ_FILE_NOT_EXISTS = OBJ_PATH
+        + ConstantsUI.FILE_SEPARATOR + "teapot" + ConstantsUI.FILE_SEPARATOR + "teapot2" + ".obj";
 
     /**
      * A private constructor in order to prevent instantiating this helper class.

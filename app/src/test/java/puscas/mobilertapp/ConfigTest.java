@@ -97,9 +97,9 @@ public final class ConfigTest {
                     .withSamplesLight(spl)
                     .build()
             )
-            .withOBJ(obj)
-            .withMAT(mat)
-            .withCAM(cam)
+            .withObj(obj)
+            .withMaterial(mat)
+            .withCamera(cam)
             .build();
 
         Assertions.assertEquals(width, config.getConfigResolution().getWidth(),

@@ -30,13 +30,13 @@ import puscas.mobilertapp.utils.UtilsPickerTest;
 import puscas.mobilertapp.utils.UtilsTest;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public final class UITest extends AbstractTest {
+public final class UiTest extends AbstractTest {
 
     /**
      * The {@link Logger} for this class.
      */
     @Nonnull
-    private static final Logger LOGGER = Logger.getLogger(UITest.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(UiTest.class.getName());
 
     /**
      * The current index of the scene in the {@link NumberPicker}.
@@ -61,12 +61,12 @@ public final class UITest extends AbstractTest {
     /**
      * The current index of the number of samples per light in the {@link NumberPicker}.
      */
-    private int counterSPL = 0;
+    private int counterSpl = 0;
 
     /**
      * The current index of the number of samples per pixel in the {@link NumberPicker}.
      */
-    private int counterSPP = 0;
+    private int counterSpp = 0;
 
     /**
      * The current index of the number of threads in the {@link NumberPicker}.
@@ -224,8 +224,8 @@ public final class UITest extends AbstractTest {
 
             incrementCountersAndUpdatePickers(numCores);
 
-            final int expectedIndexOld = currentIndex > 0 ?
-                (currentIndex - 1) % buttonTextList.size() : 1;
+            final int expectedIndexOld = currentIndex > 0
+                ? (currentIndex - 1) % buttonTextList.size() : 1;
             final String expectedButtonTextOld = buttonTextList.get(expectedIndexOld);
             final ViewInteraction viewInteraction =
                 Espresso.onView(ViewMatchers.withId(R.id.renderButton));
@@ -251,9 +251,8 @@ public final class UITest extends AbstractTest {
         final int finalCounterAccelerator =
             Math.max(this.counterAccelerator % Accelerator.values().length, 1);
         final int finalCounterShader = Math.max(this.counterShader % Shader.values().length, 0);
-        final int finalCounterSPP = Math.max(this.counterSPP % 99, 90);
-        final int finalCounterSPL = Math.max(this.counterSPL % 100, 1);
-        final int finalCounterResolution = Math.max(this.counterResolution % 9, 7);
+        final int finalCounterSpp = Math.max(this.counterSpp % 99, 90);
+        final int finalCounterSpl = Math.max(this.counterSpl % 100, 1);
         final int finalCounterThreads = Math.max(this.counterThreads % numCores, 1);
 
         incrementCounters();
@@ -265,9 +264,9 @@ public final class UITest extends AbstractTest {
         UtilsPickerTest.changePickerValue(ConstantsUI.PICKER_SHADER, R.id.pickerShader,
             finalCounterShader);
         UtilsPickerTest.changePickerValue(ConstantsUI.PICKER_SAMPLES_PIXEL, R.id.pickerSamplesPixel,
-            finalCounterSPP);
+            finalCounterSpp);
         UtilsPickerTest.changePickerValue(ConstantsUI.PICKER_SAMPLES_LIGHT, R.id.pickerSamplesLight,
-            finalCounterSPL);
+            finalCounterSpl);
         UtilsPickerTest
             .changePickerValue(ConstantsUI.PICKER_THREADS, R.id.pickerThreads, finalCounterThreads);
 
@@ -282,8 +281,8 @@ public final class UITest extends AbstractTest {
         this.counterScene++;
         this.counterAccelerator++;
         this.counterShader++;
-        this.counterSPP++;
-        this.counterSPL++;
+        this.counterSpp++;
+        this.counterSpl++;
         this.counterResolution++;
         this.counterThreads++;
     }

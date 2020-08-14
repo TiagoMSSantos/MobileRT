@@ -10,12 +10,12 @@ import org.jetbrains.annotations.Contract;
 /**
  * The configurator for the OpenGL attribute.
  */
-public final class ConfigGLAttribute {
+public final class ConfigGlAttribute {
 
     /**
      * The {@link Logger} for this class.
      */
-    private static final Logger LOGGER = Logger.getLogger(ConfigGLAttribute.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ConfigGlAttribute.class.getName());
 
     /**
      * The attributeName.
@@ -39,11 +39,11 @@ public final class ConfigGLAttribute {
 
 
     /**
-     * A private constructor to force the usage of the {@link ConfigGLAttribute.Builder}.
+     * A private constructor to force the usage of the {@link ConfigGlAttribute.Builder}.
      *
      * @param builder The {@link Config.Builder} for this class.
      */
-    ConfigGLAttribute(@Nonnull final ConfigGLAttribute.Builder builder) {
+    ConfigGlAttribute(@Nonnull final ConfigGlAttribute.Builder builder) {
         LOGGER.info("ConfigGLAttribute");
 
         this.attributeName = builder.getAttributeName();
@@ -100,7 +100,7 @@ public final class ConfigGLAttribute {
          * The {@link Logger} for this class.
          */
         private static final Logger LOGGER_BUILDER = Logger.getLogger(
-            ConfigGLAttribute.Builder.class.getName());
+            ConfigGlAttribute.Builder.class.getName());
 
         /**
          * The attributeName.
@@ -126,11 +126,11 @@ public final class ConfigGLAttribute {
          * Sets the scene of {@link Config}.
          *
          * @param name The name of the attribute..
-         * @return The builder with {@link ConfigGLAttribute.Builder#attributeName} already set.
+         * @return The builder with {@link ConfigGlAttribute.Builder#attributeName} already set.
          */
         @Contract("_ -> this")
         @Nonnull
-        ConfigGLAttribute.Builder withName(final String name) {
+        ConfigGlAttribute.Builder withName(final String name) {
             final String message = String.format(Locale.US, "withName: %s", name);
             LOGGER_BUILDER.info(message);
 
@@ -142,11 +142,11 @@ public final class ConfigGLAttribute {
          * Sets the scene of {@link Config}.
          *
          * @param buffer The {@link Buffer} with the data for the attribute.
-         * @return The builder with {@link ConfigGLAttribute.Builder#buffer} already set.
+         * @return The builder with {@link ConfigGlAttribute.Builder#buffer} already set.
          */
         @Contract("_ -> this")
         @Nonnull
-        ConfigGLAttribute.Builder withBuffer(final Buffer buffer) {
+        ConfigGlAttribute.Builder withBuffer(final Buffer buffer) {
             final String message = String.format(Locale.US, "withBuffer: %s", buffer.toString());
             LOGGER_BUILDER.info(message);
 
@@ -158,11 +158,11 @@ public final class ConfigGLAttribute {
          * Sets the scene of {@link Config}.
          *
          * @param location The GLSL location for the attribute.
-         * @return The builder with {@link ConfigGLAttribute.Builder#attributeLocation} already set.
+         * @return The builder with {@link ConfigGlAttribute.Builder#attributeLocation} already set.
          */
         @Contract("_ -> this")
         @Nonnull
-        ConfigGLAttribute.Builder withLocation(final int location) {
+        ConfigGlAttribute.Builder withLocation(final int location) {
             final String message = String.format(Locale.US, "withLocation: %d", location);
             LOGGER_BUILDER.info(message);
 
@@ -174,11 +174,11 @@ public final class ConfigGLAttribute {
          * Sets the scene of {@link Config}.
          *
          * @param components The number of components in the attribute.
-         * @return The builder with {@link ConfigGLAttribute.Builder#attributeLocation} already set.
+         * @return The builder with {@link ConfigGlAttribute.Builder#attributeLocation} already set.
          */
         @Contract("_ -> this")
         @Nonnull
-        ConfigGLAttribute.Builder withComponents(final int components) {
+        ConfigGlAttribute.Builder withComponents(final int components) {
             final String message = String.format(Locale.US, "withComponents: %d", components);
             LOGGER_BUILDER.info(message);
 
@@ -187,16 +187,16 @@ public final class ConfigGLAttribute {
         }
 
         /**
-         * Builds a new instance of {@link ConfigGLAttribute}.
+         * Builds a new instance of {@link ConfigGlAttribute}.
          *
-         * @return A new instance of {@link ConfigGLAttribute}.
+         * @return A new instance of {@link ConfigGlAttribute}.
          */
         @Contract(" -> new")
         @Nonnull
-        ConfigGLAttribute build() {
+        ConfigGlAttribute build() {
             LOGGER_BUILDER.info("build");
 
-            return new ConfigGLAttribute(this);
+            return new ConfigGlAttribute(this);
         }
 
 

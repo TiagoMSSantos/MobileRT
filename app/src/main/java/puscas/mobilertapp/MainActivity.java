@@ -390,6 +390,25 @@ public final class MainActivity extends Activity {
     }
 
     /**
+     * Helper method which starts or stops the rendering process.
+     *
+     * @param scenePath The path to a directory containing the OBJ and MTL files
+     *                  of a scene to render.
+     */
+    private void startRender(@Nonnull final String scenePath) {
+        LOGGER.info(ConstantsMethods.START_RENDER);
+
+        final Config config = createConfigFromUI(scenePath);
+        final int threads = this.pickerThreads.getValue();
+        final boolean rasterize = this.checkBoxRasterize.isChecked();
+
+        this.drawView.renderScene(config, threads, rasterize);
+
+        final String message = ConstantsMethods.START_RENDER + ConstantsMethods.FINISHED;
+        LOGGER.info(message);
+    }
+
+    /**
      * Helper method which starts the rendering process.
      */
     private void startRenderScene() {
@@ -401,7 +420,7 @@ public final class MainActivity extends Activity {
             case TEST:
                 final String scenePath = "CornellBox"
                     + ConstantsUI.FILE_SEPARATOR + "CornellBox-Water";
-                final String sdCardPath = UtilsContext.getSDCardPath(this);
+                final String sdCardPath = UtilsContext.getSdCardPath(this);
                 final String lSceneFilePath = sdCardPath + ConstantsUI.FILE_SEPARATOR
                     + "WavefrontOBJs" + ConstantsUI.FILE_SEPARATOR + scenePath;
                 startRender(lSceneFilePath);
@@ -421,7 +440,7 @@ public final class MainActivity extends Activity {
      * @param size The value to be rounded down to a multiple of the number of
      *             tiles in the Ray Tracer engine.
      * @return The highest value that is smaller than the size passed by
-     * parameter and is a multiple of the number of tiles.
+     *     parameter and is a multiple of the number of tiles.
      */
     private native int rtResize(int size);
 
@@ -450,27 +469,8 @@ public final class MainActivity extends Activity {
         final String filePathWithoutExtension = cleanedFilePath.substring(0,
             cleanedFilePath.lastIndexOf('.'));
 
-        final String sdCardPath = UtilsContext.getSDCardPath(this);
+        final String sdCardPath = UtilsContext.getSdCardPath(this);
         return sdCardPath + filePathWithoutExtension;
-    }
-
-    /**
-     * Helper method which starts or stops the rendering process.
-     *
-     * @param scenePath The path to a directory containing the OBJ and MTL files
-     *                  of a scene to render.
-     */
-    private void startRender(@Nonnull final String scenePath) {
-        LOGGER.info(ConstantsMethods.START_RENDER);
-
-        final Config config = createConfigFromUI(scenePath);
-        final int threads = this.pickerThreads.getValue();
-        final boolean rasterize = this.checkBoxRasterize.isChecked();
-
-        this.drawView.renderScene(config, threads, rasterize);
-
-        final String message = ConstantsMethods.START_RENDER + ConstantsMethods.FINISHED;
-        LOGGER.info(message);
     }
 
     /**
@@ -501,9 +501,9 @@ public final class MainActivity extends Activity {
                     .withHeight(resolution.getRight())
                     .build()
             )
-            .withOBJ(scenePath + ".obj")
-            .withMAT(scenePath + ".mtl")
-            .withCAM(scenePath + ".cam")
+            .withObj(scenePath + ".obj")
+            .withMaterial(scenePath + ".mtl")
+            .withCamera(scenePath + ".cam")
             .build();
     }
 

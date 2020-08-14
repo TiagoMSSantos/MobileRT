@@ -17,14 +17,14 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * The test suite for the {@link MyEGLContextFactory} class.
+ * The test suite for the {@link MyEglContextFactory} class.
  */
-public final class MyEGLContextFactoryTest {
+public final class MyEglContextFactoryTest {
 
     /**
      * The {@link Logger} for this class.
      */
-    private static final Logger LOGGER = Logger.getLogger(MyEGLContextFactoryTest.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(MyEglContextFactoryTest.class.getName());
 
     /**
      * Helper method that creates a {@link EGL10}.
@@ -240,7 +240,7 @@ public final class MyEGLContextFactoryTest {
         final DrawView drawView = new DrawView(context);
 
         final GLSurfaceView.EGLContextFactory myEGLContextFactory =
-            new MyEGLContextFactory(drawView);
+            new MyEglContextFactory(drawView);
         final EGL10 egl = createEGL();
 
         final EGLContext eglContext = myEGLContextFactory.createContext(egl, null, null);

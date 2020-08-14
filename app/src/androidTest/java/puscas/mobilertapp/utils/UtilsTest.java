@@ -75,7 +75,7 @@ public final class UtilsTest {
      * @param fieldName The name of the field to get.
      * @return The {@link Bitmap} from the {@link MainRenderer}.
      * @implNote This method uses reflection to be able to get the private
-     * field from the {@link Object}.
+     *           field from the {@link Object}.
      */
     @Nonnull
     public static <T> T getPrivateField(@Nonnull final Object clazz,
@@ -110,7 +110,7 @@ public final class UtilsTest {
      * @param args           The arguments to pass to the method.
      * @return The return value from the private method.
      * @implNote This method uses reflection to be able to invoke the private
-     * method from the {@link Object}.
+     *           method from the {@link Object}.
      */
     @Nonnull
     static <T> T invokePrivateMethod(@Nonnull final Object clazz,

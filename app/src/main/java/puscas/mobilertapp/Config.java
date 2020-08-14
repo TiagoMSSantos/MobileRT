@@ -299,7 +299,7 @@ public final class Config {
          */
         @Contract("_ -> this")
         @Nonnull
-        Config.Builder withOBJ(@Nonnull final String objFilePath) {
+        Config.Builder withObj(@Nonnull final String objFilePath) {
             final String message = String.format(Locale.US, "withOBJ: %s", objFilePath);
             LOGGER_BUILDER.info(message);
 
@@ -315,7 +315,7 @@ public final class Config {
          */
         @Contract("_ -> this")
         @Nonnull
-        Config.Builder withMAT(@Nonnull final String matFilePath) {
+        Config.Builder withMaterial(@Nonnull final String matFilePath) {
             final String message = String.format(Locale.US, "withMAT: %s", matFilePath);
             LOGGER_BUILDER.info(message);
 
@@ -331,7 +331,7 @@ public final class Config {
          */
         @Contract("_ -> this")
         @Nonnull
-        Config.Builder withCAM(@Nonnull final String camFilePath) {
+        Config.Builder withCamera(@Nonnull final String camFilePath) {
             final String message = String.format(Locale.US, "withCAM: %s", camFilePath);
             LOGGER_BUILDER.info(message);
 

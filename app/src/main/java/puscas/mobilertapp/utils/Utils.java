@@ -51,7 +51,8 @@ public final class Utils {
             } finally {
                 Utils.handleInterruption("Utils#waitExecutorToFinish");
             }
-        } while (running);
+        }
+        while (running);
 
         final String message = "waitExecutorToFinish" + ConstantsMethods.FINISHED;
         LOGGER.info(message);
@@ -62,8 +63,8 @@ public final class Utils {
      *
      * @param methodName The name of the method to appear in the logs.
      * @implNote It resets the interrupted flag because when instrumented tests
-     * fail by timeout, this interrupt makes the {@link android.app.Activity}
-     * not finish properly.
+     *     fail by timeout, this interrupt makes the {@link android.app.Activity}
+     *     not finish properly.
      */
     public static void handleInterruption(@Nonnull final String methodName) {
         final boolean interrupted = Thread.interrupted();
@@ -118,10 +119,10 @@ public final class Utils {
         final int triangleTextureCoordinatesSize = 2 * Constants.BYTES_IN_FLOAT * 3;
         final int triangleMaterialIndexSize = Constants.BYTES_IN_INTEGER;
 
-        final int triangleMembersSize = triangleVerticesSize +
-            triangleNormalsSize +
-            triangleTextureCoordinatesSize +
-            triangleMaterialIndexSize;
+        final int triangleMembersSize = triangleVerticesSize
+            + triangleNormalsSize
+            + triangleTextureCoordinatesSize
+            + triangleMaterialIndexSize;
 
         final int triangleMethodsSize = Constants.BYTES_IN_POINTER * 21;
         final int triangleSize = triangleMembersSize + triangleMethodsSize;

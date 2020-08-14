@@ -229,8 +229,8 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
         final long currentTime = SystemClock.elapsedRealtime();
         this.timeT = String.format(Locale.US, "[%.2fs]",
             (float) (currentTime - this.startTimeStamp) / MILLISECONDS_IN_SECOND);
-        this.allocatedT = ",m:" + Debug.getNativeHeapAllocatedSize() /
-            (long) Constants.BYTES_IN_MEGABYTE + "mb";
+        this.allocatedT = ",m:" + Debug.getNativeHeapAllocatedSize()
+            / (long) Constants.BYTES_IN_MEGABYTE + "mb";
         this.sampleT = "," + rtGetSample();
     }
 
@@ -244,8 +244,8 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
         this.timeFrameT = String.format(Locale.US, ",t:%.2fs", 0.0F);
         this.timeT = String.format(Locale.US, "[%.2fs]", 0.0F);
         this.stateT = " " + State.IDLE.getId();
-        this.allocatedT = ",m:" + Debug.getNativeHeapAllocatedSize() /
-            (long) Constants.BYTES_IN_MEGABYTE + "mb";
+        this.allocatedT = ",m:" + Debug.getNativeHeapAllocatedSize()
+            / (long) Constants.BYTES_IN_MEGABYTE + "mb";
         this.sampleT = ",0";
     }
 
@@ -311,9 +311,9 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
      */
     private void printText() {
         final String aux =
-            this.fpsT + this.fpsRenderT + this.resolutionT + this.threadsT + this.samplesPixelT +
-                this.samplesLightT + this.sampleT + ConstantsUI.LINE_SEPARATOR +
-                this.stateT + this.allocatedT + this.timeFrameT + this.timeT + this.primitivesT;
+            this.fpsT + this.fpsRenderT + this.resolutionT + this.threadsT + this.samplesPixelT
+                + this.samplesLightT + this.sampleT + ConstantsUI.LINE_SEPARATOR
+                + this.stateT + this.allocatedT + this.timeFrameT + this.timeT + this.primitivesT;
         this.textView.get().setText(aux);
     }
 
@@ -488,7 +488,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
          * @param requestRender The new value for
          *                      {@link RenderTask#requestRender} field.
          * @return The builder with {@link RenderTask.Builder#requestRender}
-         * already set.
+         *     already set.
          */
         @Contract("_ -> this")
         @Nonnull
@@ -507,7 +507,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
          * @param finishRender The new value for
          *                     {@link RenderTask#finishRender} field.
          * @return The builder with {@link RenderTask.Builder#finishRender}
-         * already set.
+         *     already set.
          */
         @Contract("_ -> this")
         @Nonnull
@@ -526,7 +526,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
          * @param textView The new value for
          *                 {@link RenderTask#textView} field.
          * @return The builder with {@link RenderTask.Builder#textView}
-         * already set.
+         *     already set.
          */
         @Contract("_ -> this")
         @Nonnull
@@ -545,7 +545,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
          * @param buttonRender The new value for
          *                     {@link RenderTask#buttonRender} field.
          * @return The builder with {@link RenderTask.Builder#buttonRender}
-         * already set.
+         *     already set.
          */
         @Contract("_ -> this")
         @Nonnull
@@ -564,7 +564,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
          * @param updateInterval The new value for
          *                       {@link RenderTask#updateInterval} field.
          * @return The builder with {@link RenderTask.Builder#updateInterval}
-         * already set.
+         *     already set.
          */
         @Contract("_ -> this")
         @Nonnull

@@ -51,8 +51,9 @@ namespace MobileRT {
     protected:
         /**
          * Calculates the color of an intersection in the scene.
-         * <p>
-         * This method should be implemented with the desired algorithm, like Path Tracing, Whitted, etc.
+         * <br/>
+         * This method should be implemented with the desired algorithm, like Path Tracing, Whitted,
+         * etc.
          *
          * @param rgb          A pointer to store the color of the intersection.
          * @param intersection The intersection data, like point, normal, material, etc.
