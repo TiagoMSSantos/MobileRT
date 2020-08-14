@@ -364,7 +364,6 @@ namespace MobileRT {
             if (!(condition)) { \
                 LOG("Assertion '", #condition, "': ",  __VA_ARGS__); \
                 BOOST_ASSERT_MSG(condition, ::MobileRT::convertToString(__VA_ARGS__).c_str()); \
-                ::std::terminate(); \
             } \
         } while (false)
     #else

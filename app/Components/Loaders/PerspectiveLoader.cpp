@@ -48,6 +48,7 @@ namespace {
                 break;
         }
     }
+    // Invert X axis.
     position[0] = -position[0];
 
     ::std::unique_ptr<::MobileRT::Camera> camera {

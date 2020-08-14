@@ -1,9 +1,9 @@
 #include <gtest/gtest.h>
 
-::std::int32_t main(::std::int32_t argc, char **argv) {
-    ::testing::InitGoogleTest (&argc, argv);
+::std::int32_t main (::std::int32_t argc, char **argv) {
+    ::testing::InitGoogleTest(&argc, argv);
     const ::std::int32_t res {RUN_ALL_TESTS()};
-	return res;
+    return res;
 }
 
 /*

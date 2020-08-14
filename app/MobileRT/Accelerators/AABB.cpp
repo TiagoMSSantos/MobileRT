@@ -73,7 +73,8 @@ float AABB::getSurfaceArea() const {
 /**
  * Calculates the centroid of this AABB.
  * <br>
- * The centroid or geometric center of a plane figure is the arithmetic mean position of all the points in the figure.
+ * The centroid or geometric center of a plane figure is the arithmetic mean position of all the
+ * points in the figure.
  *
  * @return The centroid.
  */

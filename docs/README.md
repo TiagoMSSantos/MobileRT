@@ -45,6 +45,9 @@ For the most curious, this is the command used to build the docker image:
 docker build -t ptpuscas/mobile_rt -f docker_image/Dockerfile --no-cache=false --build-arg build_type=Release .
 ```
 
+The docker image is in docker hub:
+[https://hub.docker.com/r/ptpuscas/mobile_rt](https://hub.docker.com/r/ptpuscas/mobile_rt).
+
 ## Compile Ray tracer
 It is also possible to clone this repository and compile this ray tracer by
 yourself.
