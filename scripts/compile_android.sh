@@ -14,6 +14,7 @@ cd "$( dirname "${BASH_SOURCE[0]}" )/.." || exit
 type="${1:-Release}";
 ndk_version="${2:-21.3.6528147}";
 cmake_version="${3:-3.10.2}";
+recompile="${4:-no}";
 ###############################################################################
 ###############################################################################
 
@@ -38,8 +39,11 @@ echo "type: '${type}'";
 reports_path=./app/build/reports;
 callCommand mkdir -p ${reports_path};
 
-rm -rf ./app/.cxx/;
 rm -rf ./app/build/;
+
+if [ "${recompile}" == "yes" ]; then
+  rm -rf ./app/.cxx/;
+fi
 
 files_being_used=$(find . -name "*.fuse_hidden*" | grep -i ".fuse_hidden");
 echo "files_being_used: '${files_being_used}'";
@@ -58,8 +62,11 @@ if [ "${files_being_used}" != "" ]; then
   done <<< "${files_being_used}";
 fi
 
-callCommand rm -rf ./app/.cxx/;
 callCommand rm -rf ./app/build/;
+
+if [ "${recompile}" == "yes" ]; then
+  callCommand rm -rf ./app/.cxx/;
+fi
 
 echo "Calling the Gradle assemble to compile code for Android";
 callCommand ./gradlew clean assemble"${type}" --profile --parallel \

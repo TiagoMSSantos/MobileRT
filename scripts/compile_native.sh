@@ -13,6 +13,7 @@ cd "$( dirname "${BASH_SOURCE[0]}" )/.." || exit;
 ###############################################################################
 type="${1:-Release}";
 compiler="${2:-g++}";
+recompile="${3:-no}";
 ###############################################################################
 ###############################################################################
 
@@ -36,7 +37,10 @@ echo "type: '${type}'";
 # Set path to build
 build_path=./build_${type};
 callCommand mkdir -p "${build_path}";
-callCommand rm -rf "${build_path}"/*;
+
+if [ "${recompile}" == "yes" ]; then
+  callCommand rm -rf "${build_path}"/*;
+fi
 
 callCommand cd "${build_path}";
 echo "Calling CMake";
