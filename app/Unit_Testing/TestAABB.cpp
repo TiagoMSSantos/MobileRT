@@ -104,3 +104,27 @@ TEST_F(TestAABB, TestSurroundingBox) {
     ASSERT_EQ(surroundingBox.getPointMin(), expectedMin);
     ASSERT_EQ(surroundingBox.getPointMax(), expectedMax);
 }
+
+/**
+ * Tests the intersection of a Ray with an AABB.
+ */
+TEST_F(TestAABB, TestRayIntersectionOk) {
+    const ::glm::vec3 orig {2, 0, 0};
+    const ::glm::vec3 dir {::glm::vec3 {-1, 0, 0}};
+    const ::MobileRT::Ray ray {dir, orig, 1, nullptr};
+    const auto intersected {box1.intersect(ray)};
+
+    ASSERT_EQ(true, intersected);
+}
+
+/**
+ * Tests the intersection of a Ray with an AABB which should fail.
+ */
+TEST_F(TestAABB, TestRayIntersectionFail) {
+    const ::glm::vec3 orig {2, 0, 0};
+    const ::glm::vec3 dir {::glm::vec3 {1, 0, 0}};
+    const ::MobileRT::Ray ray {dir, orig, 1, nullptr};
+    const auto intersected {box1.intersect(ray)};
+
+    ASSERT_EQ(false, intersected);
+}
