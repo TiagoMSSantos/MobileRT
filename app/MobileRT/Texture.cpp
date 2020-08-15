@@ -1,5 +1,5 @@
 #include "MobileRT/Texture.hpp"
-#include "Utils.hpp"
+#include "MobileRT/Utils/Utils.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>

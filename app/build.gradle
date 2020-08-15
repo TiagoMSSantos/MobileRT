@@ -24,6 +24,24 @@ jacoco {
     setToolVersion "0.8.5"
     setReportsDir file("$buildDir/customJacocoReportDir")
 }
+
+task codeCoverageReport(type: JacocoReport) {
+    executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
+
+    subprojects.each {
+        sourceSets it.sourceSets.main
+    }
+
+    reports {
+        xml.enabled true
+        html.enabled true
+        csv.enabled true
+    }
+}
+
+codeCoverageReport.dependsOn {
+    subprojects*.test
+}
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -208,8 +226,8 @@ android {
         setCheckReleaseBuilds true
         setCheckTestSources true
         setHtmlReport true
-        setXmlReport false
-        setTextReport false
+        setXmlReport true
+        setTextReport true
         setIgnoreTestSources false
         setIgnoreWarnings false
         setQuiet false

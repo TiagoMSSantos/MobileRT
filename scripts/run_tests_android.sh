@@ -65,6 +65,9 @@ function clear_func() {
   pid_app=$(adb shell ps | grep puscas.mobilertapp | tr -s ' ' | cut -d ' ' -f 2);
   echo "Killing pid of MobileRT: '${pid_app}'";
   adb shell kill -s SIGTERM "${pid_app}" 2> /dev/null;
+
+  # Kill all processes in the whole process group, thus killing also descendants.
+  kill -9 -- -$$;
 }
 
 function catch_signal() {
@@ -86,10 +89,8 @@ function catch_signal() {
 # Run Android tests in emulator
 ###############################################################################
 
-set -m;
-
 echo "Prepare traps";
-trap catch_signal EXIT SIGHUP SIGINT SIGQUIT SIGILL SIGTRAP SIGABRT SIGTERM
+trap 'catch_signal ${?} ${LINENO}' EXIT SIGHUP SIGINT SIGQUIT SIGILL SIGTRAP SIGABRT SIGTERM
 
 pid=${BASHPID};
 script_name=$(basename "${0}");
@@ -110,36 +111,41 @@ if [ "${kill_previous}" == true ]; then
     | xargs kill;
 fi
 
-clear_func;
-
 avd_emulators=$(emulator -list-avds);
 echo "Emulators available: '${avd_emulators}'";
 
 avd_emulator=$(echo "${avd_emulators}" | head -1);
 echo "Start '${avd_emulator}'";
-
-adb shell whoami;
 started_emulator=${PIPESTATUS[0]};
 
 echo "Wait for device to be available.";
-emulator -avd "${avd_emulator}" -writable-system 2> /dev/null &
+# Don't make the Android emulator belong in the process group, so it will not be killed at the end.
+callCommand set -m;
+callCommand emulator -avd "${avd_emulator}" -writable-system 2> /dev/null &
+callCommand set +m;
 
 callCommand adb kill-server;
 # TODO: sometimes adb server fails at this point
 callCommandUntilSuccess adb start-server;
 callCommand adb wait-for-device;
 callCommand adb shell "while [[ -z $(getprop sys.boot_completed) ]]; do sleep 3; done; input keyevent 82";
+callCommandUntilSuccess adb shell whoami;
 
 echo "Set adb as root, to be able to change files permissions";
-adb root;
+callCommandUntilSuccess adb root;
 
-if [ "${started_emulator}" -ne 0 ]; then
-  callCommand sleep 7;
-fi
+# Wait for device to be ready to unlock
+#if [ "${started_emulator}" -ne 0 ]; then
+#  callCommand sleep 7;
+#fi
 
-callCommand adb shell input tap 800 900;
-callCommand adb shell input keyevent 82;
-callCommand adb root;
+callCommandUntilSuccess adb shell dumpsys power;
+callCommandUntilSuccess adb shell dumpsys window;
+
+# Unlock device
+callCommandUntilSuccess adb shell input tap 800 900;
+callCommandUntilSuccess adb shell input keyevent 82;
+callCommandUntilSuccess adb root;
 
 echo "Set path to reports";
 reports_path="./app/build/reports";
@@ -208,8 +214,7 @@ else
 fi
 echo "pid of instrumentation tests: '${pid_instrumentation_tests}'";
 
-# Wait a bit for the instrumentation tests process to finish
-callCommand sleep 2;
+# We may need to wait a bit for the instrumentation tests process to finish
 # TODO: sometimes adb server fails at this point
 callCommandUntilSuccess adb wait-for-device;
 

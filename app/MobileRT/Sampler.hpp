@@ -1,7 +1,8 @@
 #ifndef MOBILERT_SAMPLER_HPP
 #define MOBILERT_SAMPLER_HPP
 
-#include "MobileRT/Utils.hpp"
+#include "MobileRT/Utils/Constants.hpp"
+#include "MobileRT/Utils/Utils.hpp"
 #include <atomic>
 #include <limits>
 

@@ -1,5 +1,5 @@
 #include "MobileRT/Texture.hpp"
-#include "MobileRT/Utils.hpp"
+#include "MobileRT/Utils/Utils.hpp"
 #include <gtest/gtest.h>
 
 using ::MobileRT::Texture;

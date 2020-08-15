@@ -1,15 +1,19 @@
-#include "MobileRT/Utils.hpp"
+#include "Utils.hpp"
+#include "Constants.hpp"
 
 namespace MobileRT {
 
     /**
-     * Calculates the highest value that is smaller than the first parameter and is a multiple of the second parameter.
+     * Calculates the highest value that is smaller than the first parameter and is a multiple of
+     * the second parameter.
      *
      * @param value    The maximum value that can be multiple of the second parameter.
      * @param multiple The desired value needs to be multiple of this value.
-     * @return The highest value that is smaller than the first parameter and is a multiple of the second parameter.
+     * @return The highest value that is smaller than the first parameter and is a multiple of the
+     * second parameter.
      */
-    ::std::int32_t roundDownToMultipleOf(const ::std::int32_t value, const ::std::int32_t multiple) {
+    ::std::int32_t roundDownToMultipleOf(const ::std::int32_t value,
+                                         const ::std::int32_t multiple) {
         const auto rest {value % multiple};
         const auto res {rest > 1 ? value - rest : value};
         return res;
@@ -17,9 +21,9 @@ namespace MobileRT {
 
     /**
      * Calculates the Nth value of the Halton Sequence.
-     * In statistics, Halton sequences are sequences used to generate points in space for numerical methods such as
-     * Monte Carlo simulations.
-     * @see <a href="https://en.wikipedia.org/wiki/Halton_sequence">https://en.wikipedia.org/wiki/Halton_sequence</a>
+     * In statistics, Halton sequences are sequences used to generate points in space for numerical
+     * methods such as Monte Carlo simulations.
+     * @see <a href="https://en.wikipedia.org/wiki/Halton_sequence">Wikipedia: Halton sequence</a>
      *
      * @param index The index of the Halton Sequence.
      * @param base  The numerical base of the sequence.
@@ -37,7 +41,8 @@ namespace MobileRT {
     }
 
     /**
-     * Calculates the new average as an integer with the new sample and the number of samples already done.
+     * Calculates the new average as an integer with the new sample and the number of samples
+     * already done.
      * <br>
      * The average is calculated as: newAvg = ((size - 1) * oldAvg + newNum) / size;
      *
@@ -47,7 +52,7 @@ namespace MobileRT {
      * @return The current average.
      */
     ::std::int32_t incrementalAvg(
-            const ::glm::vec3 &sample, const ::std::int32_t avg, const ::std::int32_t numSample) {
+        const ::glm::vec3 &sample, const ::std::int32_t avg, const ::std::int32_t numSample) {
         const auto avgUnsigned {static_cast<::std::uint32_t> (avg)};
         const auto numSampleUnsigned {static_cast<::std::uint32_t> (numSample)};
 
@@ -59,9 +64,12 @@ namespace MobileRT {
         const auto samplerGreen {static_cast<::std::uint32_t> (sample[1] * 255U)};
         const auto samplerBlue {static_cast<::std::uint32_t> (sample[2] * 255U)};
 
-        const auto currentRed {((numSampleUnsigned - 1U) * lastRed + samplerRed) / numSampleUnsigned};
-        const auto currentGreen {((numSampleUnsigned - 1U) * lastGreen + samplerGreen) / numSampleUnsigned};
-        const auto currentBlue {((numSampleUnsigned - 1U) * lastBlue + samplerBlue) / numSampleUnsigned};
+        const auto currentRed {((numSampleUnsigned - 1U) * lastRed + samplerRed)
+                               / numSampleUnsigned};
+        const auto currentGreen {((numSampleUnsigned - 1U) * lastGreen + samplerGreen)
+                                 / numSampleUnsigned};
+        const auto currentBlue {((numSampleUnsigned - 1U) * lastBlue + samplerBlue)
+                                / numSampleUnsigned};
 
         const auto retR {::std::min(currentRed, 255U)};
         const auto retG {::std::min(currentGreen, 255U)};
@@ -122,16 +130,17 @@ namespace MobileRT {
     /**
      * Determines whether two ::glm::vec3 are equal.
      * <br>
-     * This method assumes two ::glm::vec3 are equal if the difference between them is less than Epsilon.
+     * This method assumes two ::glm::vec3 are equal if the difference between them is less than
+     * Epsilon.
      *
-     * @param a A vec3 floating point values.
-     * @param b A vec3 floating point values.
+     * @param vec1 A vec3 floating point values.
+     * @param vec2 A vec3 floating point values.
      * @return Whether the two vec3 are equal or not.
      */
-    bool equal(const ::glm::vec3 &a, const ::glm::vec3 &b) {
-        bool res {equal(a[0], b[0])};
+    bool equal(const ::glm::vec3 &vec1, const ::glm::vec3 &vec2) {
+        bool res {equal(vec1[0], vec2[0])};
         for (auto i {1}; i < NumberOfAxes; ++i) {
-            res = res && equal(a[i], b[i]);
+            res = res && equal(vec1[i], vec2[i]);
         }
         return res;
     }

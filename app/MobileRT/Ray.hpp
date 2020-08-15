@@ -1,7 +1,7 @@
 #ifndef MOBILERT_RAY_HPP
 #define MOBILERT_RAY_HPP
 
-#include "MobileRT/Utils.hpp"
+#include "MobileRT/Utils/Utils.hpp"
 #include <glm/glm.hpp>
 
 namespace MobileRT {

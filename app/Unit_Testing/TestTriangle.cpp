@@ -1,7 +1,7 @@
 #include "MobileRT/Intersection.hpp"
 #include "MobileRT/Ray.hpp"
 #include "MobileRT/Shapes/Triangle.hpp"
-#include "MobileRT/Utils.hpp"
+#include "MobileRT/Utils/Utils.hpp"
 #include <gtest/gtest.h>
 
 using ::MobileRT::AABB;
@@ -62,8 +62,8 @@ namespace {
  * @param max	   The maximum point of the AABB.
  * @param triangle The triangle to check the intersection.
  */
-inline void assertBoxIntersectsTriangle (const glm::vec3 &min,
-                                         const glm::vec3 &max,
+inline void assertBoxIntersectsTriangle (const ::glm::vec3 &min,
+                                         const ::glm::vec3 &max,
                                          const Triangle &triangle) {
     const AABB box {min, max};
     const bool intersected {triangle.intersect(box)};
@@ -79,8 +79,8 @@ inline void assertBoxIntersectsTriangle (const glm::vec3 &min,
  * @param expectedInt Whether its expected to intersect or not.
  * @param primitive   The primitive where the ray was casted from (default is null).
  */
-inline void assertRayTriangle (const glm::vec3 &orig,
-                               const glm::vec3 &dir,
+inline void assertRayTriangle (const ::glm::vec3 &orig,
+                               const ::glm::vec3 &dir,
                                const Triangle &triangle,
                                const bool expectedInt,
                                const void *const primitive = nullptr) {
@@ -305,7 +305,7 @@ TEST_F(TestTriangle, intersectBoxInside10) {
 }
 
 /**
- * Tests the copy constructor of a glm::vector.
+ * Tests the copy constructor of a ::glm::vector.
  */
 TEST_F(TestTriangle, ConstructorCOPY) {
     const ::glm::vec3 point1 {1.0F, 2.0F, 3.0F};
@@ -316,7 +316,7 @@ TEST_F(TestTriangle, ConstructorCOPY) {
 }
 
 /**
- * Tests the operator less of a glm::vector.
+ * Tests the operator less of a ::glm::vector.
  */
 TEST_F(TestTriangle, OperatorLESS) {
     const ::glm::vec3 point1 {3.0F, 2.0F, 1.0F};
@@ -329,7 +329,7 @@ TEST_F(TestTriangle, OperatorLESS) {
 }
 
 /**
- * Tests the operator plus of a glm::vector.
+ * Tests the operator plus of a ::glm::vector.
  */
 TEST_F(TestTriangle, OperatorMORE) {
     const ::glm::vec3 vector {3.0F, 2.0F, 1.0F};

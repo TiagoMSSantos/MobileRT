@@ -1,5 +1,5 @@
 #include "MobileRT/Shader.hpp"
-#include "MobileRT/Utils.hpp"
+#include "MobileRT/Utils/Utils.hpp"
 #include <array>
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>

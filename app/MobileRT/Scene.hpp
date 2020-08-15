@@ -9,7 +9,7 @@
 #include "MobileRT/Shapes/Plane.hpp"
 #include "MobileRT/Shapes/Sphere.hpp"
 #include "MobileRT/Shapes/Triangle.hpp"
-#include "MobileRT/Utils.hpp"
+#include "MobileRT/Utils/Utils.hpp"
 #include <glm/glm.hpp>
 #include <vector>
 

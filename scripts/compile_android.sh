@@ -55,7 +55,7 @@ if [ "${files_being_used}" != "" ]; then
     processes_id_using_file=$(echo "${processes_using_file}" | cut -d ' ' -f 2 | head -1);
     echo "Going to kill this process: '${processes_id_using_file}'";
     kill "${processes_id_using_file}";
-    while [ -f "${file}" ]; do
+    while [[ -f "${file}" ]]; do
       echo "sleeping 1 sec";
       sleep 1;
     done

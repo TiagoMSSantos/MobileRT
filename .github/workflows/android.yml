@@ -106,3 +106,28 @@ jobs:
       with:
         name: MobileRT_${{ matrix.type }}_exp
         path: ./app/build/outputs/apk/${{ matrix.variant }}
+
+    - name: Send code climate report Linux
+      if: success() && matrix.os == 'ubuntu-16.04'
+      working-directory: .
+      env:
+        CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+      run: |
+        ./test-reporter-latest-linux-amd64 format-coverage -t jacoco app/build/reports/coverage/debug/report.xml;
+        ./test-reporter-latest-linux-amd64 upload-coverage;
+
+    - name: Validate codecov report Linux
+      if: success() && matrix.os == 'ubuntu-16.04'
+      working-directory: .github
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      run: |
+        curl --data-binary @codecov.yml https://codecov.io/validate;
+
+    - name: Send codecov report Linux
+      if: success() && matrix.os == 'ubuntu-16.04'
+      working-directory: .
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      run: |
+        curl -s https://codecov.io/bash | bash -s -- -c -F aFlag -f app/build/reports/coverage/debug/report.xml;

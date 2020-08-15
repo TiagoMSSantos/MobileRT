@@ -1,6 +1,6 @@
 <code_scheme name="Default" version="173">
   <option name="LINE_SEPARATOR" value="&#xA;" />
-  <option name="SOFT_MARGINS" value="80,100" />
+  <option name="SOFT_MARGINS" value="100" />
   <CMakeCodeStyleSettings>
     <option name="FORCE_COMMANDS_CASE" value="0" />
   </CMakeCodeStyleSettings>
@@ -17,8 +17,8 @@
         <package name="" withSubpackages="true" static="true" />
       </value>
     </option>
-    <option name="JD_KEEP_INVALID_TAGS" value="false" />
     <option name="JD_PRESERVE_LINE_FEEDS" value="true" />
+    <option name="JD_INDENT_ON_CONTINUATION" value="true" />
   </JavaCodeStyleSettings>
   <Objective-C>
     <option name="LAMBDA_CAPTURE_LIST_WRAP" value="1" />
@@ -29,6 +29,7 @@
     <option name="CLASS_CONSTRUCTOR_INIT_LIST_NEW_LINE_BEFORE_COLON" value="0" />
     <option name="SUPERCLASS_LIST_WRAP" value="1" />
     <option name="SUPERCLASS_LIST_BEFORE_COLON" value="0" />
+    <option name="SPACE_BEFORE_INIT_LIST" value="true" />
     <option name="INTRODUCE_CONST_VARS" value="true" />
     <option name="INTRODUCE_AUTO_VARS" value="true" />
   </Objective-C>
@@ -128,7 +129,7 @@
         </group>
         <group>
           <type>OVERRIDDEN_METHODS</type>
-          <order>KEEP</order>
+          <order>BY_NAME</order>
         </group>
       </groups>
     </arrangement>

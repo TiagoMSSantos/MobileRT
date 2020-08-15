@@ -2,8 +2,6 @@ codecov:
   require_ci_to_pass: false
   token: "token"
   bot: "codecov-bot"
-  ci:
-    - "travis.org"
   strict_yaml_branch: "master"
   max_report_age: 1h
   disable_default_path_fixes: no

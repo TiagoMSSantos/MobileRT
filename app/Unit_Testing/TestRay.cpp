@@ -1,4 +1,5 @@
 #include "MobileRT/Ray.hpp"
+#include "MobileRT/Utils/Constants.hpp"
 #include <gtest/gtest.h>
 
 using ::MobileRT::Ray;

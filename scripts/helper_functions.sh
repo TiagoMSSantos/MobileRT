@@ -27,7 +27,7 @@ function callCommandUntilError() {
   local retry=0;
   "$@";
   local lastResult=${PIPESTATUS[0]};
-  while [ "${lastResult}" -eq 0 ]; do
+  while [[ "${lastResult}" -eq 0 ]]; do
     echo "Retry: ${retry}";
     retry=$(( "${retry}" + 1 ));
     "$@";
@@ -41,13 +41,16 @@ function callCommandUntilSuccess() {
   echo "";
   echo "Calling until success '$*'";
   local retry=0;
-  "$@";
+  local lastOutput=$("$@");
   local lastResult=${PIPESTATUS[0]};
-  while [ "${lastResult}" -ne 0 ]; do
+  echo "result: '${lastResult}'";
+  while [[ "${lastResult}" -ne 0 || ${lastOutput} == *"Can't find"* ]]; do
     echo "Retry: ${retry}";
     retry=$(( "${retry}" + 1 ));
-    "$@";
+    lastOutput=$("$@");
     lastResult=${PIPESTATUS[0]};
+    echo "result: '${lastResult}'";
+    sleep 1;
   done
 }
 

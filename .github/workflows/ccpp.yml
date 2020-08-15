@@ -141,10 +141,18 @@ jobs:
         ./test-reporter-latest-linux-amd64 format-coverage -t lcov code_coverage.info;
         ./test-reporter-latest-linux-amd64 upload-coverage;
 
+    - name: Validate codecov report Linux
+      if: success() && matrix.compiler == 'g++' && matrix.type == 'Debug' && startsWith(matrix.os, 'ubuntu')
+      working-directory: .github
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      run: |
+        curl --data-binary @codecov.yml https://codecov.io/validate;
+
     - name: Send codecov report Linux
       if: success() && matrix.compiler == 'g++' && matrix.type == 'Debug' && startsWith(matrix.os, 'ubuntu')
       working-directory: .
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       run: |
-        bash <(curl -s https://codecov.io/bash);
+        curl -s https://codecov.io/bash | bash -s -- -c -F aFlag ./build_${{ matrix.type }};

@@ -1,5 +1,6 @@
 #include "mainwindow.h"
-#include "MobileRT/Utils.hpp"
+#include "MobileRT/Utils/Constants.hpp"
+#include "MobileRT/Utils/Utils.hpp"
 
 #include <QApplication>
 #include <cmath>
