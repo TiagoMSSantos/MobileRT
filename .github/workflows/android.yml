@@ -57,6 +57,11 @@ jobs:
       run: |
         mkdir -p ./app/build/reports;
 
+    - name: Setup code climate report
+      if: success()
+      run: |
+        chmod +x ./test-reporter-latest-linux-amd64;
+
     - name: Build ${{ matrix.type }}
       if: success()
       run: |
@@ -101,23 +106,23 @@ jobs:
         path: ./app/build/reports
 
     - name: Upload APK
-      if: success() && matrix.os == 'ubuntu-16.04'
+      if: success() && matrix.os == 'ubuntu-16.04' && matrix.type == 'Debug'
       uses: actions/upload-artifact@v2
       with:
         name: MobileRT_${{ matrix.type }}_exp
         path: ./app/build/outputs/apk/${{ matrix.variant }}
 
     - name: Send code climate report Linux
-      if: success() && matrix.os == 'ubuntu-16.04'
-      working-directory: .
+      if: success() && matrix.os == 'ubuntu-16.04' && matrix.type == 'Debug'
+      working-directory: app/src/main/java
       env:
         CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
       run: |
-        ./test-reporter-latest-linux-amd64 format-coverage -t jacoco app/build/reports/coverage/debug/report.xml;
-        ./test-reporter-latest-linux-amd64 upload-coverage;
+        ../../../../test-reporter-latest-linux-amd64 format-coverage -t jacoco ../../../build/reports/coverage/debug/report.xml;
+        ../../../../test-reporter-latest-linux-amd64 upload-coverage;
 
     - name: Validate codecov report Linux
-      if: success() && matrix.os == 'ubuntu-16.04'
+      if: success() && matrix.os == 'ubuntu-16.04' && matrix.type == 'Debug'
       working-directory: .github
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
@@ -125,7 +130,7 @@ jobs:
         curl --data-binary @codecov.yml https://codecov.io/validate;
 
     - name: Send codecov report Linux
-      if: success() && matrix.os == 'ubuntu-16.04'
+      if: success() && matrix.os == 'ubuntu-16.04' && matrix.type == 'Debug'
       working-directory: .
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

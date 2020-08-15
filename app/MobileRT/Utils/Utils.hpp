@@ -323,7 +323,7 @@ namespace MobileRT {
         #else
             /**
              * The make_unique method to be used when the version of the C++ language is C++14 or
-             * newer..
+             * newer.
              *
              * @tparam T    The type of the object to construct.
              * @tparam Args The type of the arguments.
