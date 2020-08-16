@@ -1,11 +1,13 @@
 package puscas.mobilertapp;
 
 import android.Manifest;
+import androidx.annotation.CallSuper;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
+import javax.annotation.OverridingMethodsMustInvokeSuper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -64,6 +66,8 @@ public class AbstractTest {
      * Setup method called before each test.
      */
     @Before
+    @CallSuper
+    @OverridingMethodsMustInvokeSuper
     public void setUp() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
@@ -75,6 +79,8 @@ public class AbstractTest {
      * Tear down method called after each test.
      */
     @After
+    @CallSuper
+    @OverridingMethodsMustInvokeSuper
     public void tearDown() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);

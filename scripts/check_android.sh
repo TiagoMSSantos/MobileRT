@@ -41,7 +41,7 @@ echo "Calling the Gradle linter";
 callCommand ./gradlew check --profile --parallel \
   -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
   --console plain \
-  | tee ${reports_path}/log_check_"${type}".log 2>&1;
+  2>&1 | tee ${reports_path}/log_check_"${type}".log;
 resCheck=${PIPESTATUS[0]};
 ###############################################################################
 ###############################################################################

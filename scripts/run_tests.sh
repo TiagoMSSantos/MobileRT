@@ -38,7 +38,7 @@ echo "Calling Gradle test";
 callCommand ./gradlew test"${type}"UnitTest --profile --parallel \
   -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
   --console plain \
-  | tee ${reports_path}/log_native_tests_"${type}".log 2>&1;
+  2>&1 | tee ${reports_path}/log_native_tests_"${type}".log;
 resUnitTests=${PIPESTATUS[0]};
 ###############################################################################
 ###############################################################################

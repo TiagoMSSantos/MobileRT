@@ -71,16 +71,26 @@ public final class Constants {
     private static final Logger LOGGER = Logger.getLogger(Constants.class.getName());
 
     /**
+     * The name of the folder which contains the data for MobileRT.
+     */
+    public static final String MOBILERT_FOLDER_NAME = "MobileRT";
+
+    /**
      * The path to the MobileRT instrumentation tests data.
      */
     private static final String RESOURCES_PATH =
-        ConstantsUI.FILE_SEPARATOR + "data" + ConstantsUI.FILE_SEPARATOR + "MobileRT";
+        ConstantsUI.FILE_SEPARATOR + "data" + ConstantsUI.FILE_SEPARATOR + MOBILERT_FOLDER_NAME;
+
+    /**
+     * The name of the folder which contains the OBJ files.
+     */
+    public static final String OBJ_FOLDER_NAME = "WavefrontOBJs";
 
     /**
      * The relative path to the WavefrontOBJs path for the instrumentation tests.
      */
     private static final String OBJ_PATH =
-        RESOURCES_PATH + ConstantsUI.FILE_SEPARATOR + "WavefrontOBJs";
+        RESOURCES_PATH + ConstantsUI.FILE_SEPARATOR + OBJ_FOLDER_NAME;
 
     /**
      * The path to the teapot OBJ file which should exist.
@@ -89,9 +99,17 @@ public final class Constants {
         + ConstantsUI.FILE_SEPARATOR + "teapot" + ConstantsUI.FILE_SEPARATOR + "teapot.obj";
 
     /**
-     * The path to the teapot2 OBJ file which should not exist.
+     * The path to the Cornell Box OBJ file which should exist in the SD card.
      */
-    public static final String OBJ_FILE_NOT_EXISTS = OBJ_PATH
+    public static final String OBJ_FILE_CORNELL_BOX = MOBILERT_FOLDER_NAME
+        + ConstantsUI.FILE_SEPARATOR + OBJ_FOLDER_NAME
+        + ConstantsUI.FILE_SEPARATOR + "CornellBox" + ConstantsUI.FILE_SEPARATOR
+        + "CornellBox-Water.obj";
+
+    /**
+     * The path to the teapot2 OBJ file which should not exist in the SD card.
+     */
+    public static final String OBJ_FILE_NOT_EXISTS_SD_CARD = OBJ_FOLDER_NAME
         + ConstantsUI.FILE_SEPARATOR + "teapot" + ConstantsUI.FILE_SEPARATOR + "teapot2" + ".obj";
 
     /**

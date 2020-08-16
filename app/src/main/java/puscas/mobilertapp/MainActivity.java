@@ -36,6 +36,7 @@ import javax.annotation.Nullable;
 import org.apache.commons.lang3.tuple.Pair;
 import puscas.mobilertapp.exceptions.FailureException;
 import puscas.mobilertapp.utils.Accelerator;
+import puscas.mobilertapp.utils.Constants;
 import puscas.mobilertapp.utils.ConstantsMethods;
 import puscas.mobilertapp.utils.ConstantsToast;
 import puscas.mobilertapp.utils.ConstantsUI;
@@ -84,8 +85,6 @@ public final class MainActivity extends Activity {
             System.loadLibrary("MobileRT");
             System.loadLibrary("Components");
             System.loadLibrary("AppMobileRT");
-        } catch (final RuntimeException ex) {
-            throw new FailureException(ex);
         } catch (final UnsatisfiedLinkError ex) {
             UtilsLogging.logThrowable(ex, "MainActivity#static");
         }
@@ -204,12 +203,7 @@ public final class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         LOGGER.info("onCreate");
 
-        try {
-            setContentView(R.layout.activity_main);
-        } catch (final RuntimeException ex) {
-            throw new FailureException(ex);
-        }
-
+        setContentView(R.layout.activity_main);
         initializeViews();
 
         final TextView textView = findViewById(R.id.timeText);
@@ -422,7 +416,8 @@ public final class MainActivity extends Activity {
                     + ConstantsUI.FILE_SEPARATOR + "CornellBox-Water";
                 final String sdCardPath = UtilsContext.getSdCardPath(this);
                 final String lSceneFilePath = sdCardPath + ConstantsUI.FILE_SEPARATOR
-                    + "WavefrontOBJs" + ConstantsUI.FILE_SEPARATOR + scenePath;
+                    + Constants.MOBILERT_FOLDER_NAME + ConstantsUI.FILE_SEPARATOR
+                    + Constants.OBJ_FOLDER_NAME + ConstantsUI.FILE_SEPARATOR + scenePath;
                 startRender(lSceneFilePath);
                 break;
 

@@ -16,6 +16,7 @@ import javax.annotation.Nonnull;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.runners.MethodSorters;
@@ -223,6 +224,7 @@ public final class UiTest extends AbstractTest {
                 Assertions.assertEquals(Constants.RENDER, button.getText().toString(),
                     puscas.mobilertapp.Constants.BUTTON_MESSAGE);
             });
+        UtilsTest.testStateAndBitmap(true);
     }
 
     /**

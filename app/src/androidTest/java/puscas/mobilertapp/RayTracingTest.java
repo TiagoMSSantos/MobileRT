@@ -1,5 +1,6 @@
 package puscas.mobilertapp;
 
+import android.graphics.Bitmap;
 import android.os.Build;
 import androidx.test.espresso.Espresso;
 import java.util.concurrent.TimeoutException;
@@ -10,6 +11,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import puscas.mobilertapp.utils.Constants;
@@ -128,8 +130,37 @@ public final class RayTracingTest extends AbstractTest {
         LOGGER.info(methodName);
 
         final int numCores = UtilsContext.getNumOfCores(this.activity);
+        final int scene = 2;
 
-        UtilsPickerTest.changePickerValue(ConstantsUI.PICKER_SCENE, R.id.pickerScene, 2);
+        assertRenderScene(numCores, scene);
+    }
+
+    /**
+     * Tests rendering an OBJ scene in the SD card.
+     */
+    @Test(timeout = 2L * 60L * 1000L)
+    @Ignore("It provokes failures in CI.")
+    public void testRenderSceneOBJ() throws TimeoutException {
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
+
+        final int numCores = UtilsContext.getNumOfCores(this.activity);
+        final int scene = 5;
+
+        assertRenderScene(numCores, scene);
+    }
+
+    /**
+     * Helper method that clicks the Render {@link android.widget.Button} and waits for the
+     * Ray Tracing engine to render the whole scene and then checks if the resulted image in the
+     * {@link Bitmap} has different values.
+     *
+     * @param numCores The number of CPU cores to use in the Ray Tracing process.
+     * @param scene    The desired scene to render.
+     * @throws TimeoutException If it couldn't render the whole scene in less than 2 minutes.
+     */
+    private void assertRenderScene(final int numCores, final int scene) throws TimeoutException {
+        UtilsPickerTest.changePickerValue(ConstantsUI.PICKER_SCENE, R.id.pickerScene, scene);
         UtilsPickerTest.changePickerValue(ConstantsUI.PICKER_THREADS, R.id.pickerThreads, numCores);
         UtilsPickerTest.changePickerValue(ConstantsUI.PICKER_SIZE, R.id.pickerSize, 1);
         UtilsPickerTest

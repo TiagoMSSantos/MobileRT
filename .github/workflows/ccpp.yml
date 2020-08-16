@@ -39,7 +39,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2.2.0
+      uses: actions/checkout@v2.3.2
 
     - name: Setup build directory
       if: success()
@@ -109,7 +109,7 @@ jobs:
       working-directory: build_${{ matrix.type }}
       run: |
         find . -iname "*.so" 2> /dev/null;
-        ls -la ./bin ./lib;
+        ls -Rla ./bin ./lib;
 
     - name: Generate code coverage base Linux
       if: success() && matrix.compiler == 'g++' && matrix.type == 'Debug' && startsWith(matrix.os, 'ubuntu')
@@ -143,7 +143,7 @@ jobs:
 
     - name: Validate codecov report Linux
       if: success() && matrix.compiler == 'g++' && matrix.type == 'Debug' && startsWith(matrix.os, 'ubuntu')
-      working-directory: .github
+      working-directory: .
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       run: |

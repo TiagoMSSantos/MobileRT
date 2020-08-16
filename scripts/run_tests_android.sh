@@ -127,8 +127,10 @@ callCommand set +m;
 callCommand adb kill-server;
 # TODO: sometimes adb server fails at this point
 callCommandUntilSuccess adb start-server;
-callCommand adb wait-for-device;
-callCommand adb shell "while [[ -z $(getprop sys.boot_completed) ]]; do sleep 3; done; input keyevent 82";
+# TODO: sometimes adb server fails at this point
+callCommandUntilSuccess adb wait-for-device;
+# TODO: sometimes adb server fails at this point
+callCommandUntilSuccess adb shell "while [[ -z $(getprop sys.boot_completed) ]]; do sleep 3; done; input keyevent 82";
 callCommandUntilSuccess adb shell whoami;
 
 echo "Set adb as root, to be able to change files permissions";
@@ -149,18 +151,24 @@ callCommand mkdir -p ${reports_path};
 
 echo "Set path to instrumentation tests resources";
 mobilert_path="/data/MobileRT";
+sdcard_path="/mnt/sdcard/MobileRT";
 
 echo "Copy unit tests";
 callCommand adb shell mkdir -p ${mobilert_path};
+callCommand adb shell mkdir -p ${sdcard_path};
 callCommand adb shell rm -r ${mobilert_path}/*;
+callCommand adb shell rm -r ${sdcard_path}/*;
 callCommand adb push app/build/intermediates/cmake/"${type}"/obj/x86/* ${mobilert_path}/;
 
 echo "Copy tests resources";
 callCommand adb push app/src/androidTest/resources/teapot ${mobilert_path}/WavefrontOBJs/teapot;
-callCommand adb shell ls -la ${mobilert_path}/WavefrontOBJs;
+callCommand adb push app/src/androidTest/resources/CornellBox ${sdcard_path}/WavefrontOBJs/CornellBox;
+callCommand adb shell ls -Rla ${mobilert_path}/WavefrontOBJs;
+callCommand adb shell ls -Rla ${sdcard_path}/WavefrontOBJs;
 
 echo "Change resources permissions";
 callCommand adb shell chmod -R 777 ${mobilert_path};
+callCommand adb shell chmod -R 777 ${sdcard_path};
 
 echo "Disable animations";
 callCommand adb shell settings put global window_animation_scale 0.0;
@@ -176,7 +184,7 @@ callCommand adb logcat -c;
 
 echo "Copy logcat to file";
 callCommand adb logcat -v threadtime "*":V \
-  | tee ${reports_path}/logcat_current_"${type}".log 2>&1 &
+  2>&1 | tee ${reports_path}/logcat_current_"${type}".log &
 pid_logcat="$!";
 echo "pid of logcat: '${pid_logcat}'";
 
@@ -186,11 +194,11 @@ if [ "${type}" == "debug" ]; then
   callCommand adb shell LD_LIBRARY_PATH=${mobilert_path} \
     ${mobilert_path}/UnitTests \
     --gtest_filter=-*.TestInvalid* \
-    | tee ${reports_path}/log_unit_tests_"${type}".log 2>&1;
+    2>&1 | tee ${reports_path}/log_unit_tests_"${type}".log;
 else
   callCommand adb shell LD_LIBRARY_PATH=${mobilert_path} \
     ${mobilert_path}/UnitTests \
-    | tee ${reports_path}/log_unit_tests_"${type}".log 2>&1;
+    2>&1 | tee ${reports_path}/log_unit_tests_"${type}".log;
 fi
 resUnitTests=${PIPESTATUS[0]};
 
@@ -200,7 +208,7 @@ if [ "${run_test}" == "all" ]; then
   callCommand ./gradlew connected"${type}"AndroidTest -DtestType="${type}" \
     -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
     ${code_coverage} --console plain \
-    | tee ${reports_path}/log_tests_"${type}".log 2>&1;
+    2>&1 | tee ${reports_path}/log_tests_"${type}".log;
 elif [[  ${run_test} == rep_* ]]; then
   run_test_without_prefix=${run_test#"rep_"};
   echo "Repeatable of test: ${run_test_without_prefix}";
@@ -208,14 +216,14 @@ elif [[  ${run_test} == rep_* ]]; then
     -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
     -Pandroid.testInstrumentationRunnerArguments.class="${run_test_without_prefix}" \
     --console plain \
-    | tee ${reports_path}/log_tests_"${type}".log 2>&1;
+    2>&1 | tee ${reports_path}/log_tests_"${type}".log;
 else
   echo "Running test: ${run_test}";
   callCommand ./gradlew connected"${type}"AndroidTest -DtestType="${type}" \
     -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
     -Pandroid.testInstrumentationRunnerArguments.class="${run_test}" \
     --console plain \
-    | tee ${reports_path}/log_tests_"${type}".log 2>&1;
+    2>&1 | tee ${reports_path}/log_tests_"${type}".log;
 fi
 resInstrumentationTests=${PIPESTATUS[0]};
 pid_instrumentation_tests="$!";

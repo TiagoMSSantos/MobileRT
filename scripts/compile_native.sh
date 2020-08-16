@@ -46,7 +46,7 @@ callCommand cd "${build_path}";
 echo "Calling CMake";
 callCommand cmake -DCMAKE_VERBOSE_MAKEFILE=ON \
   -DCMAKE_CXX_COMPILER="${compiler}" -DCMAKE_BUILD_TYPE="${type}" ../app/ \
-  | tee "${build_path}"/log_cmake_"${type}".log 2>&1;
+  2>&1 | tee "${build_path}"/log_cmake_"${type}".log;
 resCompile=${PIPESTATUS[0]};
 
 if [ "${resCompile}" -eq 0 ]; then
