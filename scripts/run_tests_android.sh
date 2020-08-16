@@ -67,6 +67,7 @@ function clear_func() {
   adb shell kill -s SIGTERM "${pid_app}" 2> /dev/null;
 
   # Kill all processes in the whole process group, thus killing also descendants.
+  echo "All processes will be killed!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
   kill -9 -- -$$;
 }
 
@@ -116,7 +117,6 @@ echo "Emulators available: '${avd_emulators}'";
 
 avd_emulator=$(echo "${avd_emulators}" | head -1);
 echo "Start '${avd_emulator}'";
-started_emulator=${PIPESTATUS[0]};
 
 echo "Wait for device to be available.";
 # Don't make the Android emulator belong in the process group, so it will not be killed at the end.
@@ -135,10 +135,6 @@ echo "Set adb as root, to be able to change files permissions";
 callCommandUntilSuccess adb root;
 
 # Wait for device to be ready to unlock
-#if [ "${started_emulator}" -ne 0 ]; then
-#  callCommand sleep 7;
-#fi
-
 callCommandUntilSuccess adb shell dumpsys power;
 callCommandUntilSuccess adb shell dumpsys window;
 
@@ -184,40 +180,6 @@ callCommand adb logcat -v threadtime "*":V \
 pid_logcat="$!";
 echo "pid of logcat: '${pid_logcat}'";
 
-echo "Run instrumentation tests";
-if [ "${run_test}" == "all" ]; then
-  callCommand ./gradlew connected"${type}"AndroidTest -DtestType="${type}" \
-    -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
-    ${code_coverage} --console plain \
-    | tee ${reports_path}/log_tests_"${type}".log 2>&1;
-  resInstrumentationTests=${PIPESTATUS[0]};
-  pid_instrumentation_tests="$!";
-elif [[  ${run_test} == rep_* ]]; then
-  run_test_without_prefix=${run_test#"rep_"};
-  echo "Repeatable of test: ${run_test_without_prefix}";
-  callCommandUntilError ./gradlew connected"${type}"AndroidTest -DtestType="${type}" \
-    -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
-    -Pandroid.testInstrumentationRunnerArguments.class="${run_test_without_prefix}" \
-    --console plain \
-    | tee ${reports_path}/log_tests_"${type}".log 2>&1;
-  resInstrumentationTests=${PIPESTATUS[0]};
-  pid_instrumentation_tests="$!";
-else
-  echo "Test: ${run_test}";
-  callCommand ./gradlew connected"${type}"AndroidTest -DtestType="${type}" \
-    -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
-    -Pandroid.testInstrumentationRunnerArguments.class="${run_test}" \
-    --console plain \
-    | tee ${reports_path}/log_tests_"${type}".log 2>&1;
-  resInstrumentationTests=${PIPESTATUS[0]};
-  pid_instrumentation_tests="$!";
-fi
-echo "pid of instrumentation tests: '${pid_instrumentation_tests}'";
-
-# We may need to wait a bit for the instrumentation tests process to finish
-# TODO: sometimes adb server fails at this point
-callCommandUntilSuccess adb wait-for-device;
-
 echo "Run unit tests";
 if [ "${type}" == "debug" ]; then
   # Ignore unit tests that should crash the system because of a failing assert
@@ -231,6 +193,33 @@ else
     | tee ${reports_path}/log_unit_tests_"${type}".log 2>&1;
 fi
 resUnitTests=${PIPESTATUS[0]};
+
+echo "Run instrumentation tests";
+if [ "${run_test}" == "all" ]; then
+  echo "Running all tests";
+  callCommand ./gradlew connected"${type}"AndroidTest -DtestType="${type}" \
+    -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
+    ${code_coverage} --console plain \
+    | tee ${reports_path}/log_tests_"${type}".log 2>&1;
+elif [[  ${run_test} == rep_* ]]; then
+  run_test_without_prefix=${run_test#"rep_"};
+  echo "Repeatable of test: ${run_test_without_prefix}";
+  callCommandUntilError ./gradlew connected"${type}"AndroidTest -DtestType="${type}" \
+    -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
+    -Pandroid.testInstrumentationRunnerArguments.class="${run_test_without_prefix}" \
+    --console plain \
+    | tee ${reports_path}/log_tests_"${type}".log 2>&1;
+else
+  echo "Running test: ${run_test}";
+  callCommand ./gradlew connected"${type}"AndroidTest -DtestType="${type}" \
+    -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
+    -Pandroid.testInstrumentationRunnerArguments.class="${run_test}" \
+    --console plain \
+    | tee ${reports_path}/log_tests_"${type}".log 2>&1;
+fi
+resInstrumentationTests=${PIPESTATUS[0]};
+pid_instrumentation_tests="$!";
+echo "pid of instrumentation tests: '${pid_instrumentation_tests}'";
 ###############################################################################
 ###############################################################################
 

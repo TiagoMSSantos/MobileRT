@@ -31,12 +31,33 @@ public final class ViewActionButton implements ViewAction {
     private final @NonNls String expectedText;
 
     /**
+     * Whether to do a long click or not.
+     */
+    private final boolean pressLongClick;
+
+    /**
      * The constructor for this class.
+     *
+     * @param expectedText The expected text to show on the {@link Button} after the click.
      */
     public ViewActionButton(@Nonnull final String expectedText) {
         LOGGER.info("ViewActionButton");
 
         this.expectedText = expectedText;
+        this.pressLongClick = false;
+    }
+
+    /**
+     * The constructor for this class.
+     *
+     * @param expectedText   The expected text to show on the {@link Button} after the click.
+     * @param pressLongClick Whether the click should be a long click or not.
+     */
+    ViewActionButton(@Nonnull final String expectedText, final boolean pressLongClick) {
+        LOGGER.info("ViewActionButton");
+
+        this.expectedText = expectedText;
+        this.pressLongClick = pressLongClick;
     }
 
     /**
@@ -81,13 +102,16 @@ public final class ViewActionButton implements ViewAction {
         try {
             final Button button = (Button) view;
 
-            waitUntilTextIsShown(uiController, button, this.expectedText);
+//            waitUntilTextIsShown(uiController, button, this.expectedText);
 
             // Click the button.
-            boolean buttonNotClickedProperly = !button.performClick();
+            boolean buttonNotClickedProperly = this.pressLongClick
+                ? button.performLongClick() : !button.performClick();
+
             while (buttonNotClickedProperly) {
                 uiController.loopMainThreadForAtLeast(5000L);
-                buttonNotClickedProperly = !button.performClick();
+                buttonNotClickedProperly = this.pressLongClick
+                    ? button.performLongClick() : !button.performClick();
             }
 
             boolean textEqualsNotExpected = !button.getText().toString().equals(this.expectedText);

@@ -208,6 +208,24 @@ public final class UiTest extends AbstractTest {
     }
 
     /**
+     * Tests clicking the render {@link Button} with a long press.
+     * It is expected for the {@link android.app.Activity} to restart.
+     */
+    @Test(timeout = 60L * 1000L)
+    public void testClickRenderButtonLongPress() {
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
+
+        Espresso.onView(ViewMatchers.withId(R.id.renderButton))
+            .perform(new ViewActionButton(Constants.RENDER, true))
+            .check((view, exception) -> {
+                final Button button = (Button) view;
+                Assertions.assertEquals(Constants.RENDER, button.getText().toString(),
+                    puscas.mobilertapp.Constants.BUTTON_MESSAGE);
+            });
+    }
+
+    /**
      * Helper method which tests clicking the render {@link Button}.
      *
      * @param repetitions The number of repetitions.

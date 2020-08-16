@@ -109,7 +109,6 @@ android {
         setMinSdkVersion 16
         setTargetSdkVersion 29
         setTestInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
-//        setTestInstrumentationRunner 'androidx.test.runner.MockitoJUnitRunner'
         setTestInstrumentationRunnerArguments clearPackageData: 'true'
         setApplicationId 'puscas.mobilertapp'
         setVersionName '1.0'
@@ -186,15 +185,6 @@ android {
         exclude 'META-INF/LICENSE.md'
         exclude 'META-INF/LICENSE-notice.md'
         exclude 'META-INF/licenses/ASM'
-        // Necessary for Robolectric
-//        exclude 'licenses/javolution.license.TXT'
-//        exclude 'org/apache/maven/project/pom-4.0.0.xml'
-//        exclude 'org/cyberneko/html/res/HTMLlat1.properties'
-//        exclude 'licenses/extreme.indiana.edu.license.TXT'
-//        exclude 'org/cyberneko/html/res/ErrorMessages_ja.properties'
-//        exclude 'licenses/thoughtworks.TXT'
-//        exclude 'org/cyberneko/html/res/ErrorMessages_ja.txt'
-//        exclude 'META-INF/plexus/components.xml'
     }
 
     // Configure test options

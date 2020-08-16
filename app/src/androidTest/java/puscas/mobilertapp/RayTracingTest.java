@@ -2,7 +2,6 @@ package puscas.mobilertapp;
 
 import android.os.Build;
 import androidx.test.espresso.Espresso;
-import androidx.test.espresso.ViewInteraction;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;

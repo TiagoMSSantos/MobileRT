@@ -12,9 +12,9 @@ cd "$( dirname "${BASH_SOURCE[0]}" )/.." || exit
 # Get arguments
 ###############################################################################
 type="${1:-Release}";
-ndk_version="${2:-21.3.6528147}";
-cmake_version="${3:-3.10.2}";
-recompile="${4:-no}";
+recompile="${2:-no}";
+ndk_version="${3:-21.3.6528147}";
+cmake_version="${4:-3.10.2}";
 ###############################################################################
 ###############################################################################
 
@@ -43,6 +43,7 @@ rm -rf ./app/build/;
 
 if [ "${recompile}" == "yes" ]; then
   rm -rf ./app/.cxx/;
+  rm -rf ./build/;
 fi
 
 files_being_used=$(find . -name "*.fuse_hidden*" | grep -i ".fuse_hidden");

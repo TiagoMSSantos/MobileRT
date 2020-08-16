@@ -65,7 +65,7 @@ jobs:
     - name: Build ${{ matrix.type }}
       if: success()
       run: |
-        bash ./scripts/compile_android.sh ${{ matrix.type }} ${{ matrix.ndk_version }} ${{ matrix.cmake_version }};
+        bash ./scripts/compile_android.sh ${{ matrix.type }} no ${{ matrix.ndk_version }} ${{ matrix.cmake_version }};
 
     - name: Sign APK
       if: success()
