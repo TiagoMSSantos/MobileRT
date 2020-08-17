@@ -18,35 +18,6 @@ plugins {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// Jacoco
-///////////////////////////////////////////////////////////////////////////////
-jacoco {
-    setToolVersion "0.8.5"
-    setReportsDir file("$buildDir/customJacocoReportDir")
-}
-
-task codeCoverageReport(type: JacocoReport) {
-    executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
-
-    subprojects.each {
-        sourceSets it.sourceSets.main
-    }
-
-    reports {
-        xml.enabled true
-        html.enabled true
-        csv.enabled true
-    }
-}
-
-codeCoverageReport.dependsOn {
-    subprojects*.test
-}
-///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
-
-
-///////////////////////////////////////////////////////////////////////////////
 // Get system components versions from properties
 ///////////////////////////////////////////////////////////////////////////////
 println("Reading system properties.")
@@ -233,6 +204,7 @@ android {
         }
         // Instrumentation tests
         androidTest {
+            manifest.srcFile 'src/androidTest/AndroidManifest.xml'
             resources.srcDirs += ['src/androidTest/resources']
         }
     }

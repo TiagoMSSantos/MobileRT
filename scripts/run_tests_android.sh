@@ -154,17 +154,16 @@ mobilert_path="/data/MobileRT";
 sdcard_path="/mnt/sdcard/MobileRT";
 
 echo "Copy unit tests";
+adb shell mount -o remount,rw /mnt/sdcard;
 callCommand adb shell mkdir -p ${mobilert_path};
 callCommand adb shell mkdir -p ${sdcard_path};
-callCommand adb shell rm -r ${mobilert_path}/*;
-callCommand adb shell rm -r ${sdcard_path}/*;
+adb shell rm -r ${mobilert_path}/*;
+adb shell rm -r ${sdcard_path}/*;
 callCommand adb push app/build/intermediates/cmake/"${type}"/obj/x86/* ${mobilert_path}/;
 
 echo "Copy tests resources";
 callCommand adb push app/src/androidTest/resources/teapot ${mobilert_path}/WavefrontOBJs/teapot;
 callCommand adb push app/src/androidTest/resources/CornellBox ${sdcard_path}/WavefrontOBJs/CornellBox;
-callCommand adb shell ls -Rla ${mobilert_path}/WavefrontOBJs;
-callCommand adb shell ls -Rla ${sdcard_path}/WavefrontOBJs;
 
 echo "Change resources permissions";
 callCommand adb shell chmod -R 777 ${mobilert_path};
@@ -180,7 +179,7 @@ callCommand adb shell setprop dalvik.vm.checkjni true;
 callCommand adb shell setprop debug.checkjni 1;
 
 echo "Clear logcat";
-callCommand adb logcat -c;
+adb logcat -b all -b main -b system -b radio -c;
 
 echo "Copy logcat to file";
 callCommand adb logcat -v threadtime "*":V \
@@ -201,6 +200,13 @@ else
     2>&1 | tee ${reports_path}/log_unit_tests_"${type}".log;
 fi
 resUnitTests=${PIPESTATUS[0]};
+
+echo "Verify resources in SD Card"
+callCommand adb shell ls -Rla ${mobilert_path}/WavefrontOBJs;
+callCommand adb shell ls -Rla ${sdcard_path}/WavefrontOBJs;
+callCommand adb shell cat ${sdcard_path}/WavefrontOBJs/CornellBox/CornellBox-Water.obj;
+callCommand adb shell cat ${sdcard_path}/WavefrontOBJs/CornellBox/CornellBox-Water.mtl;
+callCommand adb shell cat ${sdcard_path}/WavefrontOBJs/CornellBox/CornellBox-Water.cam;
 
 echo "Run instrumentation tests";
 if [ "${run_test}" == "all" ]; then

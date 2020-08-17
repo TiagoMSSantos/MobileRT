@@ -1,11 +1,15 @@
 package puscas.mobilertapp.utils;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.opengl.GLES20;
 import android.os.Build;
 import android.os.Environment;
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import com.google.common.collect.ImmutableMap;
 import java.io.File;
@@ -19,6 +23,7 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java8.util.Optional;
 import javax.annotation.Nonnull;
+import puscas.mobilertapp.MainActivity;
 import puscas.mobilertapp.exceptions.FailureException;
 
 /**
@@ -50,6 +55,7 @@ public final class UtilsContext {
      * This method should get the correct path independently of the
      * device / emulator used.
      *
+     * @param context The {@link Context} of the Android system.
      * @return The path to the SD card.
      * @implNote This method still uses the deprecated method
      *     {@link Environment#getExternalStorageDirectory()} in order to be
@@ -177,6 +183,27 @@ public final class UtilsContext {
             GLES20.GL_VERTEX_SHADER, vertexShader,
             GLES20.GL_FRAGMENT_SHADER, fragmentShader
         );
+    }
+
+    /**
+     * Helper method which asks the user for permission to read the external SD
+     * card if it doesn't have yet.
+     *
+     * @param activity The {@link MainActivity} of MobileRT.
+     */
+    public static void checksStoragePermission(@Nonnull final Activity activity) {
+        LOGGER.info("checksStoragePermission");
+        final int permissionStorageCode = 1;
+        final int permissionCheckRead = ContextCompat.checkSelfPermission(
+            activity,
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        );
+        if (permissionCheckRead != PackageManager.PERMISSION_GRANTED) {
+            final String[] permissions = {
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            };
+            ActivityCompat.requestPermissions(activity, permissions, permissionStorageCode);
+        }
     }
 
 }

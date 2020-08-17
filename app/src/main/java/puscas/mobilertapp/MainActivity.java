@@ -219,7 +219,7 @@ public final class MainActivity extends Activity {
         initializeCheckBoxRasterize(bundle.map(x -> x.getBoolean(ConstantsUI.CHECK_BOX_RASTERIZE))
             .orElse(true));
 
-        checksStoragePermission();
+        UtilsContext.checksStoragePermission(this);
     }
 
     @Override
@@ -523,24 +523,6 @@ public final class MainActivity extends Activity {
 
         final String message = "callFileManager" + ConstantsMethods.FINISHED;
         LOGGER.info(message);
-    }
-
-    /**
-     * Helper method which asks the user for permission to read the external SD
-     * card if it doesn't have yet.
-     */
-    private void checksStoragePermission() {
-        final int permissionStorageCode = 1;
-        final int permissionCheckRead = ContextCompat.checkSelfPermission(
-            this,
-            Manifest.permission.READ_EXTERNAL_STORAGE
-        );
-        if (permissionCheckRead != PackageManager.PERMISSION_GRANTED) {
-            final String[] permissions = {
-                Manifest.permission.READ_EXTERNAL_STORAGE
-            };
-            ActivityCompat.requestPermissions(this, permissions, permissionStorageCode);
-        }
     }
 
     /**

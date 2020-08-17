@@ -90,12 +90,13 @@ jobs:
 
     - name: Run Android tests
       if: success() && !startsWith(matrix.os, 'windows')
-      uses: ReactiveCircus/android-emulator-runner@v2.11.0
+      uses: ReactiveCircus/android-emulator-runner@v2
       with:
         api-level: 16
         target: default
         arch: x86
         disable-animations: true
+        emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none
         script: |
           mkdir -p ./app/build/reports;
           bash ./scripts/run_tests_android.sh ${{ matrix.variant }} all ${{ matrix.ndk_version }} ${{ matrix.cmake_version }} false;

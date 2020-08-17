@@ -1,7 +1,11 @@
 package puscas.mobilertapp;
 
 import android.Manifest;
+import android.content.Intent;
+import android.os.Build;
 import androidx.annotation.CallSuper;
+import androidx.test.InstrumentationRegistry;
+import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
 import java.util.concurrent.TimeUnit;
@@ -72,7 +76,18 @@ public class AbstractTest {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
-        this.activity = this.mainActivityActivityTestRule.getActivity();
+        final Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        this.activity = this.mainActivityActivityTestRule.launchActivity(intent);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            InstrumentationRegistry.getInstrumentation()
+                .getUiAutomation().executeShellCommand(
+                "pm grant " + InstrumentationRegistry.getTargetContext().getPackageName()
+                    + " android.permission.READ_EXTERNAL_STORAGE"
+            );
+        }
     }
 
     /**
