@@ -3,62 +3,62 @@
 ###############################################################################
 # Change directory to MobileRT root
 ###############################################################################
-cd "$( dirname "${BASH_SOURCE[0]}" )/.." || exit;
+cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit
 ###############################################################################
 ###############################################################################
-
 
 ###############################################################################
 # Get arguments
 ###############################################################################
-type="${1:-Release}";
-compiler="${2:-g++}";
-recompile="${3:-no}";
+type="${1:-Release}"
+compiler="${2:-g++}"
+recompile="${3:-no}"
 ###############################################################################
 ###############################################################################
-
 
 ###############################################################################
 # Get helper functions
 ###############################################################################
-source scripts/helper_functions.sh;
+source scripts/helper_functions.sh
 ###############################################################################
 ###############################################################################
-
 
 ###############################################################################
 # Compile for native
 ###############################################################################
 
 # Capitalize 1st letter
-type="$(tr '[:lower:]' '[:upper:]' <<< "${type:0:1}")${type:1}";
-echo "type: '${type}'";
+type="$(tr '[:lower:]' '[:upper:]' <<<"${type:0:1}")${type:1}"
+echo "type: '${type}'"
 
 # Set path to build
-build_path=./build_${type};
-callCommand mkdir -p "${build_path}";
+build_path=./build_${type}
+callCommand mkdir -p "${build_path}"
 
 if [ "${recompile}" == "yes" ]; then
-  callCommand rm -rf "${build_path}"/*;
+  callCommand rm -rf "${build_path}"/*
 fi
 
-callCommand cd "${build_path}";
-echo "Calling CMake";
-callCommand cmake -DCMAKE_VERBOSE_MAKEFILE=ON \
-  -DCMAKE_CXX_COMPILER="${compiler}" -DCMAKE_BUILD_TYPE="${type}" ../app/ \
-  2>&1 | tee "${build_path}"/log_cmake_"${type}".log;
-resCompile=${PIPESTATUS[0]};
+function build() {
+  callCommand cd "${build_path}"
+  echo "Calling CMake"
+  callCommand cmake -DCMAKE_VERBOSE_MAKEFILE=ON \
+    -DCMAKE_CXX_COMPILER="${compiler}" -DCMAKE_BUILD_TYPE="${type}" ../app/ \
+    2>&1 | tee "${build_path}"/log_cmake_"${type}".log
+  resCompile=${PIPESTATUS[0]}
 
-if [ "${resCompile}" -eq 0 ]; then
-  echo "Calling Make";
-  callCommand make;
-  resCompile=${PIPESTATUS[0]};
-else
-  echo "Compilation: cmake failed";
-fi
+  if [ "${resCompile}" -eq 0 ]; then
+    echo "Calling Make"
+    callCommand make
+    resCompile=${PIPESTATUS[0]}
+  else
+    echo "Compilation: cmake failed"
+  fi
+}
 ###############################################################################
 ###############################################################################
 
+build
 
 ###############################################################################
 # Exit code

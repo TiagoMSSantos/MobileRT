@@ -3,10 +3,9 @@
 ###############################################################################
 # Change directory to MobileRT root
 ###############################################################################
-cd "$( dirname "${BASH_SOURCE[0]}" )/.." || exit
+cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit
 ###############################################################################
 ###############################################################################
-
 
 ###############################################################################
 # Get arguments
@@ -17,14 +16,12 @@ cmake_version="${3:-3.10.2}"
 ###############################################################################
 ###############################################################################
 
-
 ###############################################################################
 # Get helper functions
 ###############################################################################
-source scripts/helper_functions.sh;
+source scripts/helper_functions.sh
 ###############################################################################
 ###############################################################################
-
 
 ###############################################################################
 # Run unit tests natively
@@ -34,15 +31,18 @@ source scripts/helper_functions.sh;
 reports_path=./app/build/reports
 callCommand mkdir -p ${reports_path}
 
-echo "Calling Gradle test";
-callCommand ./gradlew test"${type}"UnitTest --profile --parallel \
-  -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
-  --console plain \
-  2>&1 | tee ${reports_path}/log_native_tests_"${type}".log;
-resUnitTests=${PIPESTATUS[0]};
+function runUnitTests() {
+  echo "Calling Gradle test"
+  callCommand ./gradlew test"${type}"UnitTest --profile --parallel \
+    -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
+    --console plain \
+    2>&1 | tee ${reports_path}/log_native_tests_"${type}".log
+  resUnitTests=${PIPESTATUS[0]}
+}
 ###############################################################################
 ###############################################################################
 
+runUnitTests
 
 ###############################################################################
 # Exit code
