@@ -138,4 +138,7 @@ jobs:
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       run: |
-        curl -s https://codecov.io/bash | bash -s -- -c -F aFlag -f app/build/reports/coverage/debug/report.xml;
+        curl -s https://codecov.io/bash | bash -s -- -c -F aFlag -f app/build/reports/coverage/debug/report.xml 2>&1 | tee ./app/build/reports/codecov.log;
+        export res="${PIPESTATUS[0]}";
+        echo "Result: '${res}'";
+        exit 0;
