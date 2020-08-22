@@ -130,8 +130,8 @@ bool OBJLoader::fillScene(Scene *const scene,
                 const ::glm::vec3 &vertex2 {-vx2, vy2, vz2};
                 const ::glm::vec3 &vertex3 {-vx3, vy3, vz3};
 
-                triple<::glm::vec3, ::glm::vec3, ::glm::vec3>
-                    normal {::std::make_tuple(-1, -1, -1)};
+                triple<::glm::vec3, ::glm::vec3, ::glm::vec3> normal
+                    {::std::make_tuple(::glm::vec3 {-1}, ::glm::vec3 {-1}, ::glm::vec3 {-1})};
 
                 // If it has normals.
                 if (!this->attrib_.normals.empty()) {
@@ -177,8 +177,8 @@ bool OBJLoader::fillScene(Scene *const scene,
                     const auto hasTexture {!mat.diffuse_texname.empty()};
                     const auto hasCoordTex {!this->attrib_.texcoords.empty()};
                     Texture texture {};
-                    triple<::glm::vec2, ::glm::vec2, ::glm::vec2>
-                        texCoord {::std::make_tuple(-1, -1, -1)};
+                    triple<::glm::vec2, ::glm::vec2, ::glm::vec2> texCoord
+                        {::std::make_tuple(::glm::vec3 {-1}, ::glm::vec3 {-1}, ::glm::vec3 {-1})};
 
                     if (hasTexture && hasCoordTex) {
                         const auto itTexCoords1 {
@@ -221,7 +221,9 @@ bool OBJLoader::fillScene(Scene *const scene,
 
                     // If the texture is not valid.
                     if (!texture.isValid()) {
-                        texCoord = triple<::glm::vec2, ::glm::vec2, ::glm::vec2> {-1, -1, -1};
+                        texCoord = triple<::glm::vec2, ::glm::vec2, ::glm::vec2> {
+                            ::glm::vec2 {-1}, ::glm::vec2 {-1}, ::glm::vec2 {-1}
+                        };
                     } else {
                         texCoord = triple<::glm::vec2, ::glm::vec2, ::glm::vec2> {
                             ::MobileRT::normalize(::std::get<0>(texCoord)),
