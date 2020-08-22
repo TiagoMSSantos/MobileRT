@@ -993,6 +993,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
     public void onDrawFrame(@Nonnull final GL10 gl) {
         if (this.firstFrame) {
             LOGGER.info("onDrawFirstFrame");
+            UtilsGL.resetOpenGlBuffers();
 
             if (this.rasterize) {
                 this.rasterize = false;

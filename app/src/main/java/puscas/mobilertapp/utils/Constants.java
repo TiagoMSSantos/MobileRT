@@ -51,6 +51,30 @@ public final class Constants {
     public static final int BYTES_IN_FLOAT = Float.SIZE / Byte.SIZE;
 
     /**
+     * The name of the folder which contains the data for MobileRT.
+     */
+    public static final String MOBILERT_FOLDER_NAME = "MobileRT";
+
+    /**
+     * The name of the folder which contains the OBJ files.
+     */
+    public static final String OBJ_FOLDER_NAME = "WavefrontOBJs";
+
+    /**
+     * The path to the Cornell Box OBJ file which should exist in the SD card.
+     */
+    public static final String OBJ_FILE_CORNELL_BOX = MOBILERT_FOLDER_NAME
+        + ConstantsUI.FILE_SEPARATOR + OBJ_FOLDER_NAME
+        + ConstantsUI.FILE_SEPARATOR + "CornellBox" + ConstantsUI.FILE_SEPARATOR
+        + "CornellBox-Water.obj";
+
+    /**
+     * The path to the teapot2 OBJ file which should not exist in the SD card.
+     */
+    public static final String OBJ_FILE_NOT_EXISTS_SD_CARD = OBJ_FOLDER_NAME
+        + ConstantsUI.FILE_SEPARATOR + "teapot" + ConstantsUI.FILE_SEPARATOR + "teapot2" + ".obj";
+
+    /**
      * The number of bytes in an integer (usually is 4 bytes).
      */
     static final int BYTES_IN_INTEGER = Integer.SIZE / Byte.SIZE;
@@ -71,20 +95,10 @@ public final class Constants {
     private static final Logger LOGGER = Logger.getLogger(Constants.class.getName());
 
     /**
-     * The name of the folder which contains the data for MobileRT.
-     */
-    public static final String MOBILERT_FOLDER_NAME = "MobileRT";
-
-    /**
      * The path to the MobileRT instrumentation tests data.
      */
     private static final String RESOURCES_PATH =
         ConstantsUI.FILE_SEPARATOR + "data" + ConstantsUI.FILE_SEPARATOR + MOBILERT_FOLDER_NAME;
-
-    /**
-     * The name of the folder which contains the OBJ files.
-     */
-    public static final String OBJ_FOLDER_NAME = "WavefrontOBJs";
 
     /**
      * The relative path to the WavefrontOBJs path for the instrumentation tests.
@@ -97,20 +111,6 @@ public final class Constants {
      */
     public static final String OBJ_FILE_TEAPOT = OBJ_PATH
         + ConstantsUI.FILE_SEPARATOR + "teapot" + ConstantsUI.FILE_SEPARATOR + "teapot.obj";
-
-    /**
-     * The path to the Cornell Box OBJ file which should exist in the SD card.
-     */
-    public static final String OBJ_FILE_CORNELL_BOX = MOBILERT_FOLDER_NAME
-        + ConstantsUI.FILE_SEPARATOR + OBJ_FOLDER_NAME
-        + ConstantsUI.FILE_SEPARATOR + "CornellBox" + ConstantsUI.FILE_SEPARATOR
-        + "CornellBox-Water.obj";
-
-    /**
-     * The path to the teapot2 OBJ file which should not exist in the SD card.
-     */
-    public static final String OBJ_FILE_NOT_EXISTS_SD_CARD = OBJ_FOLDER_NAME
-        + ConstantsUI.FILE_SEPARATOR + "teapot" + ConstantsUI.FILE_SEPARATOR + "teapot2" + ".obj";
 
     /**
      * A private constructor in order to prevent instantiating this helper class.
