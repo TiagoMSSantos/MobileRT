@@ -274,6 +274,7 @@ public final class UiTest extends AbstractTest {
         final int finalCounterSpp = Math.max(this.counterSpp % 99, 90);
         final int finalCounterSpl = Math.max(this.counterSpl % 100, 1);
         final int finalCounterThreads = Math.max(this.counterThreads % numCores, 1);
+        final int finalCounterSize = Math.max(this.counterResolution % 9, 1);
 
         incrementCounters();
 
@@ -289,9 +290,8 @@ public final class UiTest extends AbstractTest {
             finalCounterSpl);
         UtilsPickerTest
             .changePickerValue(ConstantsUI.PICKER_THREADS, R.id.pickerThreads, finalCounterThreads);
-
-        // TODO: the picker for the resolution always resets its value to the default one
-        UtilsPickerTest.changePickerValue(ConstantsUI.PICKER_SIZE, R.id.pickerSize, 4);
+        UtilsPickerTest
+            .changePickerValue(ConstantsUI.PICKER_SIZE, R.id.pickerSize, finalCounterSize);
     }
 
     /**

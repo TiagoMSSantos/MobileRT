@@ -559,21 +559,8 @@ public final class MainActivity extends Activity {
         initializePickerThreads(bundle.map(x -> x.getInt(ConstantsUI.PICKER_THREADS))
             .orElse(1));
 
-        initializeListenersPickers(bundle);
-    }
-
-    /**
-     * Helper method that sets up some listeners in the {@link View} to initialize
-     * some {@link NumberPicker}s, like the resolution picker.
-     *
-     * @param bundle The data state of the {@link Activity}.
-     * @implNote We can only set the resolutions after the views are shown.
-     */
-    private void initializeListenersPickers(final Optional<Bundle> bundle) {
-        final ViewTreeObserver vto = this.drawView.getViewTreeObserver();
-        vto.addOnGlobalLayoutListener(() ->
-            initializePickerResolutions(bundle.map(x -> x.getInt(ConstantsUI.PICKER_SIZE))
-                .orElse(4), 9));
+        initializePickerResolutions(bundle.map(x -> x.getInt(ConstantsUI.PICKER_SIZE))
+            .orElse(4), 9);
     }
 
     /**
@@ -653,21 +640,24 @@ public final class MainActivity extends Activity {
         this.pickerResolutions.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
         this.pickerResolutions.setValue(pickerSizes);
 
-        final double widthView = this.drawView.getWidth();
-        final double heightView = this.drawView.getHeight();
+        final ViewTreeObserver vto = this.drawView.getViewTreeObserver();
+        vto.addOnGlobalLayoutListener(() -> {
+            final double widthView = this.drawView.getWidth();
+            final double heightView = this.drawView.getHeight();
 
-        final String[] resolutions = IntStreams.rangeClosed(2, maxSizes)
-            .mapToDouble(value -> (double) value)
-            .map(value -> (value + 1.0) * 0.1)
-            .map(value -> value * value)
-            .mapToObj(value -> {
-                final int width = rtResize((int) Math.round(widthView * value));
-                final int height = rtResize((int) Math.round(heightView * value));
-                return String.valueOf(width) + 'x' + height;
-            })
-            .toArray(String[]::new);
+            final String[] resolutions = IntStreams.rangeClosed(2, maxSizes)
+                .mapToDouble(value -> (double) value)
+                .map(value -> (value + 1.0) * 0.1)
+                .map(value -> value * value)
+                .mapToObj(value -> {
+                    final int width = rtResize((int) Math.round(widthView * value));
+                    final int height = rtResize((int) Math.round(heightView * value));
+                    return String.valueOf(width) + 'x' + height;
+                })
+                .toArray(String[]::new);
 
-        this.pickerResolutions.setDisplayedValues(resolutions);
+            this.pickerResolutions.setDisplayedValues(resolutions);
+        });
     }
 
     /**

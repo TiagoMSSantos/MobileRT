@@ -3,20 +3,21 @@
 
 #include "MobileRT/ObjectLoader.hpp"
 #include "MobileRT/Sampler.hpp"
+
 #define TINYOBJLOADER_IMPLEMENTATION
+
 #include <tinyobjloader/tiny_obj_loader.h>
 
 namespace Components {
     class OBJLoader final : public ::MobileRT::ObjectLoader {
     private:
         ::std::string objFilePath_ {};
-        ::std::string mtlFilePath_ {};
         ::tinyobj::attrib_t attrib_ {};
         ::std::vector<::tinyobj::shape_t> shapes_ {};
         ::std::vector<::tinyobj::material_t> materials_ {};
 
     public:
-        explicit OBJLoader () = delete;
+        explicit OBJLoader() = delete;
 
         explicit OBJLoader(::std::string objFilePath, ::std::string matFilePath);
 

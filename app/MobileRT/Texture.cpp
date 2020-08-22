@@ -2,6 +2,7 @@
 #include "MobileRT/Utils/Utils.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
+
 #include <stb_image.h>
 
 using ::MobileRT::Texture;
@@ -15,16 +16,16 @@ using ::MobileRT::Texture;
  * @param channels The number of channels in the texture.
  */
 Texture::Texture(
-        ::std::shared_ptr<::std::uint8_t> pointer,
-        ::std::int32_t width,
-        ::std::int32_t height,
-        ::std::int32_t channels
+    ::std::shared_ptr<::std::uint8_t> pointer,
+    ::std::int32_t width,
+    ::std::int32_t height,
+    ::std::int32_t channels
 ) :
-        pointer_ {::std::move(pointer)},
-        image_ {pointer_.get()},
-        width_ {width},
-        height_ {height},
-        channels_ {channels} {
+    pointer_ {::std::move(pointer)},
+    image_ {pointer_.get()},
+    width_ {width},
+    height_ {height},
+    channels_ {channels} {
 }
 
 /**
@@ -36,7 +37,8 @@ Texture::Texture(
 ::glm::vec3 Texture::loadColor(const ::glm::vec2 &texCoords) const {
     const auto u {static_cast<::std::int32_t> (texCoords[0] * this->width_)};
     const auto v {static_cast<::std::int32_t> (texCoords[1] * this->height_)};
-    const auto index {static_cast<::std::uint32_t> (v * this->width_* this->channels_ + u * this->channels_)};
+    const auto index
+        {static_cast<::std::uint32_t> (v * this->width_ * this->channels_ + u * this->channels_)};
 
     const ::glm::vec3 vec {
         this->image_[index + 0] / 255.0F,
@@ -58,12 +60,13 @@ Texture Texture::createTexture(const char *const textureFilePath) {
     ::std::int32_t channels {};
     const auto info {stbi_info(textureFilePath, &width, &height, &channels)};
     ::std::uint8_t *data {stbi_load(textureFilePath, &width, &height, &channels, 0)};
-    LOG("new Texture: ", width, "x", height, ", c: ", channels, ", info: ", info , ", file:", textureFilePath);
+    LOG("new Texture: ", width, "x", height, ", c: ", channels, ", info: ", info, ", file:",
+        textureFilePath);
     if (data == nullptr) {
         const auto &error {stbi_failure_reason()};
         LOG("Error reading texture: ", error);
     }
-    ::std::shared_ptr<::std::uint8_t> pointer {data, [] (::std::uint8_t *const internalData) {
+    ::std::shared_ptr<::std::uint8_t> pointer {data, [](::std::uint8_t *const internalData) {
         stbi_image_free(internalData);
         LOG("Deleted texture");
     }};
@@ -92,5 +95,5 @@ bool Texture::operator==(const Texture &texture) const {
  * @return Whether the texture is a valid one or not.
  */
 bool Texture::isValid() const {
-    return this->width_ > 0 && this->height_> 0 && this->channels_ > 0 && this->image_ != nullptr;
+    return this->width_ > 0 && this->height_ > 0 && this->channels_ > 0 && this->image_ != nullptr;
 }
