@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Setup necessary imports
 ///////////////////////////////////////////////////////////////////////////////
-import org.apache.tools.ant.taskdefs.condition.Os
+
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -27,18 +27,10 @@ buildscript {
         maven { url 'https://jitpack.io' }
     }
 
-    // Setup different Gradle version for MacOS to be compatible in CI
     dependencies {
         final def currentOS = System.getProperty("os.name")
         println("OS: " + currentOS)
-        if (Os.isFamily(Os.FAMILY_MAC)) {
-            println("Detected MacOS.")
-            // Must be 3.5.4 to be compatible in CI.
-            classpath 'com.android.tools.build:gradle:3.5.4'
-        } else {
-            // Must be 3.6.4 to be compatible in CI.
-            classpath 'com.android.tools.build:gradle:3.6.4'
-        }
+        classpath 'com.android.tools.build:gradle:3.6.4'
 //        classpath 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.5.1'
 //        classpath 'org.pitest:pitest-command-line:0.33'
     }
