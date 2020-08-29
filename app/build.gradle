@@ -252,7 +252,7 @@ dependencies {
     androidTestImplementation 'com.google.truth:truth:1.0.1'
 
     androidTestImplementation 'androidx.test.espresso:espresso-accessibility:3.3.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.3.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     androidTestImplementation 'androidx.test.espresso:espresso-idling-resource:3.3.0'
     androidTestImplementation 'androidx.test.espresso:espresso-intents:3.3.0'
