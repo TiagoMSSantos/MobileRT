@@ -20,7 +20,7 @@ jobs:
             cmake_version: 3.6.0
 
           - os: macos-10.15
-            ndk_version: 18.1.5063045
+            ndk_version: 21.3.6528147
             cmake_version: 3.6.0
 
           - os: windows-2019
