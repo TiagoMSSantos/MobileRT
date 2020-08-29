@@ -54,12 +54,8 @@ function clearOldBuildFiles() {
 
   if [ "${files_being_used}" != "" ]; then
     while IFS= read -r file; do
-      processes_using_file=$(lsof "${file}" | tail -n +2 | tr -s ' ')
-      echo "processes_using_file: '${processes_using_file}'"
-      process_id_using_file=$(echo "${processes_using_file}" | cut -d ' ' -f 2 | head -1)
-      echo "Going to kill this process: '${process_id_using_file}'"
-      kill "${process_id_using_file}"
       while [[ -f "${file}" ]]; do
+        killProcessUsingFile "${file}"
         echo "sleeping 1 sec"
         sleep 1
       done

@@ -66,5 +66,14 @@ function printCommandExitCode() {
     exit "${1}"
   fi
 }
+
+# Kill a process that is using a file
+function killProcessUsingFile() {
+  local processes_using_file=$(lsof "${1}" | tail -n +2 | tr -s ' ')
+  echo "processes_using_file: '${processes_using_file}'"
+  local process_id_using_file=$(echo "${processes_using_file}" | cut -d ' ' -f 2 | head -1)
+  echo "Going to kill this process: '${process_id_using_file}'"
+  kill -9 "${process_id_using_file}"
+}
 ###############################################################################
 ###############################################################################
