@@ -238,7 +238,7 @@ dependencies {
     // Java dependencies
     implementation 'com.google.guava:guava:29.0-android'
     implementation 'net.sourceforge.streamsupport:streamsupport:1.7.2'
-    implementation 'org.jetbrains:annotations:20.0.0'
+    implementation 'org.jetbrains:annotations:20.1.0'
 
     // More dependencies
     implementation 'org.apache.commons:commons-lang3:3.11'
