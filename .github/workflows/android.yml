@@ -55,7 +55,8 @@ jobs:
       if: success()
       run: |
         mkdir -p ./app/build/reports;
-        bash ./scripts/compile_android.sh ${{ matrix.type }} no ${{ matrix.ndk_version }} ${{ matrix.cmake_version }} 2>&1 | tee ./app/build/reports/compile_android.log;
+        mkdir -p ./reports;
+        bash ./scripts/compile_android.sh ${{ matrix.type }} no ${{ matrix.ndk_version }} ${{ matrix.cmake_version }} 2>&1 | tee ./reports/compile_android.log;
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
         exit ${res};
@@ -74,7 +75,8 @@ jobs:
       if: success()
       run: |
         mkdir -p ./app/build/reports;
-        bash ./scripts/check_android.sh ${{ matrix.variant }} ${{ matrix.ndk_version }} ${{ matrix.cmake_version }} 2>&1 | tee ./app/build/reports/check_android.log;
+        mkdir -p ./reports;
+        bash ./scripts/check_android.sh ${{ matrix.variant }} ${{ matrix.ndk_version }} ${{ matrix.cmake_version }} 2>&1 | tee ./reports/check_android.log;
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
         exit ${res};
@@ -83,7 +85,8 @@ jobs:
       if: success()
       run: |
         mkdir -p ./app/build/reports;
-        bash ./scripts/run_tests.sh ${{ matrix.type }} ${{ matrix.ndk_version }} ${{ matrix.cmake_version }} 2>&1 | tee ./app/build/reports/run_tests.log;
+        mkdir -p ./reports;
+        bash ./scripts/run_tests.sh ${{ matrix.type }} ${{ matrix.ndk_version }} ${{ matrix.cmake_version }} 2>&1 | tee ./reports/run_tests.log;
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
         exit ${res};
@@ -106,7 +109,9 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: reports_${{ matrix.type }}_${{ matrix.os }}
-        path: ./app/build/reports
+        path: |
+          ./app/build/reports
+          ./reports
 
     - name: Upload APK
       if: success() && matrix.os == 'ubuntu-16.04' && matrix.type == 'Debug'
@@ -138,7 +143,7 @@ jobs:
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       run: |
-        curl -s https://codecov.io/bash | bash -s -- -c -F aFlag -f app/build/reports/coverage/debug/report.xml 2>&1 | tee ./app/build/reports/codecov.log;
+        curl -s https://codecov.io/bash | bash -s -- -c -F aFlag -f app/build/reports/coverage/debug/report.xml 2>&1 | tee ./reports/codecov.log;
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
         exit 0;
