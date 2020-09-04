@@ -30,7 +30,7 @@ buildscript {
     dependencies {
         final def currentOS = System.getProperty("os.name")
         println("OS: " + currentOS)
-        classpath 'com.android.tools.build:gradle:3.6.4'
+        classpath 'com.android.tools.build:gradle:4.0.1'
 //        classpath 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.5.1'
 //        classpath 'org.pitest:pitest-command-line:0.33'
     }
