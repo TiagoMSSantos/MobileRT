@@ -1,13 +1,108 @@
-# Basic dependabot.yml file with
-# minimum configuration for two package managers
-
 version: 2
 updates:
-  # Enable version updates for Gradle
-- package-ecosystem: gradle
+# Enable version updates for Gradle
+- package-ecosystem: "gradle"
   # Look for a `build.gradle` in the `root` directory
   directory: "/"
   # Check for updates every day (weekdays)
   schedule:
-    interval: daily
+    interval: "daily"
+    # Check for Gradle updates at 6am UTC
+    time: "06:00"
+    timezone: "Europe/Lisbon"
   open-pull-requests-limit: 10
+  # Raise all gradle pull requests with reviewers
+  reviewers:
+    - "TiagoMSSantos"
+  # Raise all gradle pull requests with an assignee
+  assignees:
+    - "TiagoMSSantos"
+  # Raise pull requests for Gradle version updates against the "master" branch
+  target-branch: "master"
+  # Raise all gradle pull requests with custom labels
+  labels:
+    - "dependencies"
+  rebase-strategy: "auto"
+  allow:
+    # Allow both direct and indirect updates for all packages
+    - dependency-type: "all"
+
+# Configuration for Dockerfile
+- package-ecosystem: "docker"
+  # Look for a `Dockerfile` in the `root` directory
+  directory: "docker_image"
+  # Check for updates every day (weekdays)
+  schedule:
+    interval: "daily"
+    # Check for docker updates at 6am UTC
+    time: "06:00"
+    timezone: "Europe/Lisbon"
+  open-pull-requests-limit: 10
+  # Raise all docker pull requests with reviewers
+  reviewers:
+    - "TiagoMSSantos"
+  # Raise all docker pull requests with an assignee
+  assignees:
+    - "TiagoMSSantos"
+  # Raise pull requests for Docker version updates against the "master" branch
+  target-branch: "master"
+  # Raise all docker pull requests with custom labels
+  labels:
+    - "dependencies"
+  rebase-strategy: "auto"
+  allow:
+    # Allow both direct and indirect updates for all packages
+    - dependency-type: "all"
+
+# Set update schedule for GitHub Actions
+- package-ecosystem: "github-actions"
+  directory: "/"
+  # Check for updates every day (weekdays)
+  schedule:
+    interval: "daily"
+    # Check for GitHub Actions updates at 6am UTC
+    time: "06:00"
+    timezone: "Europe/Lisbon"
+  open-pull-requests-limit: 10
+  # Raise all GitHub Actions pull requests with reviewers
+  reviewers:
+    - "TiagoMSSantos"
+  # Raise all GitHub Actions pull requests with an assignee
+  assignees:
+    - "TiagoMSSantos"
+  # Raise pull requests for GitHub Actions version updates against the "master" branch
+  target-branch: "master"
+  # Raise all GitHub Actions pull requests with custom labels
+  labels:
+    - "dependencies"
+  rebase-strategy: "auto"
+  allow:
+    # Allow both direct and indirect updates for all packages
+    - dependency-type: "all"
+
+# Enable version updates for git submodule
+- package-ecosystem: "gitsubmodule"
+  # Look for a `.gitmodules` in the `root` directory
+  directory: "/"
+  # Check for updates every day (weekdays)
+  schedule:
+    interval: "daily"
+    # Check for git submodule updates at 6am UTC
+    time: "06:00"
+    timezone: "Europe/Lisbon"
+  open-pull-requests-limit: 10
+  # Raise all git submodule pull requests with reviewers
+  reviewers:
+    - "TiagoMSSantos"
+  # Raise all git submodule pull requests with an assignee
+  assignees:
+    - "TiagoMSSantos"
+  # Raise pull requests for git submodule version updates against the "master" branch
+  target-branch: "master"
+  # Raise all git submodule pull requests with custom labels
+  labels:
+    - "dependencies"
+  rebase-strategy: "auto"
+  allow:
+    # Allow both direct and indirect updates for all packages
+    - dependency-type: "all"
