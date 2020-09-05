@@ -138,6 +138,8 @@ function waitForEmulator() {
   # Wait for device to be ready to unlock
   callCommandUntilSuccess adb shell dumpsys power
   callCommandUntilSuccess adb shell dumpsys window
+  callCommandUntilSuccess adb wait-for-device
+  callCommandUntilSuccess adb shell sleep 1
 
   # Unlock device
   callCommandUntilSuccess adb shell input tap 800 900
