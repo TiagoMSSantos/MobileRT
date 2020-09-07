@@ -7,8 +7,8 @@ updates:
   # Check for updates every day (weekdays)
   schedule:
     interval: "daily"
-    # Check for Gradle updates at 6am UTC
-    time: "06:00"
+    # Check for Gradle updates at 4am UTC
+    time: "04:00"
     timezone: "Europe/Lisbon"
   open-pull-requests-limit: 10
   # Raise all gradle pull requests with reviewers
@@ -34,8 +34,8 @@ updates:
   # Check for updates every day (weekdays)
   schedule:
     interval: "daily"
-    # Check for docker updates at 6am UTC
-    time: "06:00"
+    # Check for docker updates at 4am UTC
+    time: "04:00"
     timezone: "Europe/Lisbon"
   open-pull-requests-limit: 10
   # Raise all docker pull requests with reviewers
@@ -60,8 +60,8 @@ updates:
   # Check for updates every day (weekdays)
   schedule:
     interval: "daily"
-    # Check for GitHub Actions updates at 6am UTC
-    time: "06:00"
+    # Check for GitHub Actions updates at 4am UTC
+    time: "04:00"
     timezone: "Europe/Lisbon"
   open-pull-requests-limit: 10
   # Raise all GitHub Actions pull requests with reviewers
@@ -87,8 +87,8 @@ updates:
   # Check for updates every day (weekdays)
   schedule:
     interval: "daily"
-    # Check for git submodule updates at 6am UTC
-    time: "06:00"
+    # Check for git submodule updates at 4am UTC
+    time: "04:00"
     timezone: "Europe/Lisbon"
   open-pull-requests-limit: 10
   # Raise all git submodule pull requests with reviewers
