@@ -132,7 +132,7 @@ library for instrumented tests
 
 
 ## Master's dissertation
-This project started as a [Masters' dissertation](Masters_dissertation.pdf).
+This project started as a [Masters' dissertation](https://repositorium.sdum.uminho.pt/handle/1822/66577).
 
 Click [here](TODO.md) to check the TODO list. <br/>
 Click [here](TOOLS.md) to check the code coverage and code duplication commands. <br/>
