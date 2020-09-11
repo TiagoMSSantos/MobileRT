@@ -197,9 +197,8 @@ public final class UtilsTest {
                 final Bitmap bitmap = UtilsTest.getPrivateField(renderer, "bitmap");
                 UtilsTest.assertRayTracingResultInBitmap(bitmap, expectedSameValues);
 
-                Assertions.assertEquals(
-                    State.IDLE,
-                    renderer.getState(),
+                Assertions.assertTrue(
+                    renderer.getState() == State.IDLE || renderer.getState() == State.FINISHED,
                     "State is not the expected"
                 );
             });
