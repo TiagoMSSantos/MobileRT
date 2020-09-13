@@ -44,12 +44,20 @@ jobs:
     - name: Setup gradlew
       if: success()
       run: |
-        chmod +x ./gradlew;
+        mkdir -p ./reports;
+        chmod +x ./gradlew 2>&1 | tee ./reports/setup_gradlew.log;
+        export res="${PIPESTATUS[0]}";
+        echo "Result: '${res}'";
+        exit ${res};
 
     - name: Setup code climate report
       if: success()
       run: |
-        chmod +x ./test-reporter-latest-linux-amd64;
+        mkdir -p ./reports;
+        chmod +x ./test-reporter-latest-linux-amd64 2>&1 | tee ./reports/setup_code_climate.log;
+        export res="${PIPESTATUS[0]}";
+        echo "Result: '${res}'";
+        exit ${res};
 
     - name: Build ${{ matrix.type }}
       if: success()
@@ -102,16 +110,8 @@ jobs:
         emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none
         script: |
           mkdir -p ./app/build/reports;
+          mkdir -p ./reports;
           bash ./scripts/run_tests_android.sh ${{ matrix.variant }} all ${{ matrix.ndk_version }} ${{ matrix.cmake_version }} false;
-
-    - name: Upload reports
-      if: always()
-      uses: actions/upload-artifact@v2
-      with:
-        name: reports_${{ matrix.type }}_${{ matrix.os }}
-        path: |
-          ./app/build/reports
-          ./reports
 
     - name: Upload APK
       if: success() && matrix.os == 'ubuntu-16.04' && matrix.type == 'Debug'
@@ -126,8 +126,12 @@ jobs:
       env:
         CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
       run: |
-        ../../../../test-reporter-latest-linux-amd64 format-coverage -t jacoco ../../../build/reports/coverage/debug/report.xml;
-        ../../../../test-reporter-latest-linux-amd64 upload-coverage;
+        mkdir -p ./reports;
+        ../../../../test-reporter-latest-linux-amd64 format-coverage -t jacoco ../../../build/reports/coverage/debug/report.xml 2>&1 | tee ../../../../reports/format_coverage.log;
+        ../../../../test-reporter-latest-linux-amd64 upload-coverage 2>&1 | tee ../../../../reports/upload_coverage.log;
+        export res="${PIPESTATUS[0]}";
+        echo "Result: '${res}'";
+        exit ${res};
 
     - name: Validate codecov report Linux
       if: success() && matrix.os == 'ubuntu-16.04' && matrix.type == 'Debug'
@@ -135,7 +139,11 @@ jobs:
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       run: |
-        curl --data-binary @codecov.yml https://codecov.io/validate;
+        mkdir -p ./reports;
+        curl --data-binary @codecov.yml https://codecov.io/validate 2>&1 | tee ./reports/validate_codecov.log;
+        export res="${PIPESTATUS[0]}";
+        echo "Result: '${res}'";
+        exit ${res};
 
     - name: Send codecov report Linux
       if: success() && matrix.os == 'ubuntu-16.04' && matrix.type == 'Debug'
@@ -143,7 +151,17 @@ jobs:
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       run: |
+        mkdir -p ./reports;
         curl -s https://codecov.io/bash | bash -s -- -c -F aFlag -f app/build/reports/coverage/debug/report.xml 2>&1 | tee ./reports/codecov.log;
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
-        exit 0;
+        exit ${res};
+
+    - name: Upload reports
+      if: always()
+      uses: actions/upload-artifact@v2
+      with:
+        name: reports_${{ matrix.type }}_${{ matrix.os }}
+        path: |
+          ./app/build/reports
+          ./reports

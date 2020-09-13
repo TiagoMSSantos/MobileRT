@@ -44,65 +44,109 @@ jobs:
     - name: Setup build directory
       if: success()
       run: |
-        mkdir build_${{ matrix.type }};
+        mkdir -p build_${{ matrix.type }};
 
     - name: Setup code climate report
       if: success()
       run: |
-        chmod +x ./test-reporter-latest-linux-amd64;
+        mkdir -p ./reports;
+        chmod +x ./test-reporter-latest-linux-amd64 2>&1 | tee ./reports/setup_code_climate.log;
+        export res="${PIPESTATUS[0]}";
+        echo "Result: '${res}'";
+        exit ${res};
 
     - name: Update repository Linux
       if: success() && startsWith(matrix.os, 'ubuntu')
       run: |
-        sudo apt-get update;
+        mkdir -p ./reports;
+        sudo apt-get update 2>&1 | tee ./reports/update_repository.log;
+        export res="${PIPESTATUS[0]}";
+        echo "Result: '${res}'";
+        exit ${res};
 
     - name: Update repository MacOS
       if: success() && startsWith(matrix.os, 'macos')
       run: |
-        brew update;
+        mkdir -p ./reports;
+        brew update 2>&1 | tee ./reports/update_repository.log;
+        export res="${PIPESTATUS[0]}";
+        echo "Result: '${res}'";
+        exit ${res};
 
     - name: Install OpenMP MacOS
       if: success() && startsWith(matrix.os, 'macos')
       run: |
-        brew install libomp;
+        mkdir -p ./reports;
+        brew install libomp 2>&1 | tee ./reports/install_openmp.log;
+        export res="${PIPESTATUS[0]}";
+        echo "Result: '${res}'";
+        exit ${res};
 
     - name: Install Qt4 Linux
       if: success() && startsWith(matrix.os, 'ubuntu')
       run: |
-        sudo apt-get install --no-install-recommends -y libqt4-dev;
+        mkdir -p ./reports;
+        sudo apt-get install --no-install-recommends -y libqt4-dev 2>&1 | tee ./reports/install_qt4.log;
+        export res="${PIPESTATUS[0]}";
+        echo "Result: '${res}'";
+        exit ${res};
 
     - name: Install Qt4 MacOS
       if: success() && startsWith(matrix.os, 'macos')
       run: |
-        brew install cartr/qt4/pyqt@4;
+        mkdir -p ./reports;
+        brew install cartr/qt4/pyqt@4 2>&1 | tee ./reports/install_qt4.log;
+        export res="${PIPESTATUS[0]}";
+        echo "Result: '${res}'";
+        exit ${res};
 
     - name: Install code coverage analysis Linux
       if: success() && matrix.compiler == 'g++' && matrix.type == 'Debug' && startsWith(matrix.os, 'ubuntu')
       run: |
-        sudo apt-get install --no-install-recommends -y lcov;
+        mkdir -p ./reports;
+        sudo apt-get install --no-install-recommends -y lcov 2>&1 | tee ./reports/install_lcov.log;
+        export res="${PIPESTATUS[0]}";
+        echo "Result: '${res}'";
+        exit ${res};
 
     - name: Install code coverage analysis MacOS
       if: success() && matrix.compiler == 'g++' && matrix.type == 'Debug' && startsWith(matrix.os, 'macos')
       run: |
-        brew install lcov;
+        mkdir -p ./reports;
+        brew install lcov 2>&1 | tee ./reports/install_lcov.log;
+        export res="${PIPESTATUS[0]}";
+        echo "Result: '${res}'";
+        exit ${res};
 
     - name: Run CMake
       if: success()
       working-directory: .
       run: |
-        bash scripts/compile_native.sh ${{ matrix.type }} ${{ matrix.compiler_path }};
+        mkdir -p ./reports;
+        bash scripts/compile_native.sh ${{ matrix.type }} ${{ matrix.compiler_path }} 2>&1 | tee ./reports/run_cmake.log;
+        export res="${PIPESTATUS[0]}";
+        echo "Result: '${res}'";
+        exit ${res};
 
     - name: Create symlink of headers MacOS
       if: success() && startsWith(matrix.os, 'macos') && matrix.compiler == 'g++'
       working-directory: .
       run: |
-        ln -s /usr/local/Cellar/qt@4/4.8.7_6/lib/QtGui.framework/Versions/4/Headers/* /usr/local/include/QtGui/ || true;
+        mkdir -p ./reports;
+        ln -s /usr/local/Cellar/qt@4/4.8.7_6/lib/QtGui.framework/Versions/4/Headers/* /usr/local/include/QtGui/ || true 2>&1 | tee ./reports/create_symlinks_headers.log;
+        export res="${PIPESTATUS[0]}";
+        echo "Result: '${res}'";
+        exit ${res};
 
     - name: Run Make
       if: success()
       working-directory: build_${{ matrix.type }}
       run: |
-        make;
+        mkdir -p ./reports;
+        make 2>&1 | tee ./reports/make.log;
+        export res="${PIPESTATUS[0]}";
+        echo "Result: '${res}'";
+        exit ${res};
 
     - name: Check build path
       if: success()
@@ -115,22 +159,34 @@ jobs:
       if: success() && matrix.compiler == 'g++' && matrix.type == 'Debug' && startsWith(matrix.os, 'ubuntu')
       working-directory: .
       run: |
-        lcov -c -i -d . --no-external -o code_coverage_base.info;
+        mkdir -p ./reports;
+        lcov -c -i -d . --no-external -o code_coverage_base.info 2>&1 | tee ./reports/generate_code_coverage_base.log;
+        export res="${PIPESTATUS[0]}";
+        echo "Result: '${res}'";
+        exit ${res};
 
     - name: Run unit tests
       if: success()
       working-directory: build_${{ matrix.type }}
       run: |
-        DYLD_FALLBACK_LIBRARY_PATH=./lib ./bin/${{ matrix.unit_tests_bin }};
+        mkdir -p ./reports;
+        DYLD_FALLBACK_LIBRARY_PATH=./lib ./bin/${{ matrix.unit_tests_bin }} 2>&1 | tee ./reports/unit_tests.log;
+        export res="${PIPESTATUS[0]}";
+        echo "Result: '${res}'";
+        exit ${res};
 
     - name: Generate code coverage Linux
       if: success() && matrix.compiler == 'g++' && matrix.type == 'Debug' && startsWith(matrix.os, 'ubuntu')
       working-directory: .
       run: |
-        lcov -c -d . --no-external -o code_coverage_test.info;
-        lcov -a code_coverage_base.info -a code_coverage_test.info -o code_coverage.info;
-        lcov --remove code_coverage.info -o code_coverage.info '*third_party*' '*build*';
-        genhtml code_coverage.info -o code_coverage_report --no-branch-coverage -t MobileRT_code_coverage;
+        mkdir -p ./reports;
+        lcov -c -d . --no-external -o code_coverage_test.info 2>&1 | tee ./reports/code_coverage_1.log;
+        lcov -a code_coverage_base.info -a code_coverage_test.info -o code_coverage.info 2>&1 | tee ./reports/code_coverage_2.log;
+        lcov --remove code_coverage.info -o code_coverage.info '*third_party*' '*build*' 2>&1 | tee ./reports/code_coverage_3.log;
+        genhtml code_coverage.info -o code_coverage_report --no-branch-coverage -t MobileRT_code_coverage  2>&1 | tee ./reports/code_coverage_4.log;
+        export res="${PIPESTATUS[0]}";
+        echo "Result: '${res}'";
+        exit ${res};
 
     - name: Send code climate report Linux
       if: success() && matrix.compiler == 'g++' && matrix.type == 'Debug' && startsWith(matrix.os, 'ubuntu')
@@ -138,8 +194,12 @@ jobs:
       env:
         CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
       run: |
-        ./test-reporter-latest-linux-amd64 format-coverage -t lcov code_coverage.info;
-        ./test-reporter-latest-linux-amd64 upload-coverage;
+        mkdir -p ./reports;
+        ./test-reporter-latest-linux-amd64 format-coverage -t lcov code_coverage.info 2>&1 | tee ./reports/format_coverage.log;
+        ./test-reporter-latest-linux-amd64 upload-coverage 2>&1 | tee ./reports/upload_coverage.log;
+        export res="${PIPESTATUS[0]}";
+        echo "Result: '${res}'";
+        exit ${res};
 
     - name: Validate codecov report Linux
       if: success() && matrix.compiler == 'g++' && matrix.type == 'Debug' && startsWith(matrix.os, 'ubuntu')
@@ -147,7 +207,11 @@ jobs:
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       run: |
-        curl --data-binary @codecov.yml https://codecov.io/validate;
+        mkdir -p ./reports;
+        curl --data-binary @codecov.yml https://codecov.io/validate 2>&1 | tee ./reports/validate_codecov.log;
+        export res="${PIPESTATUS[0]}";
+        echo "Result: '${res}'";
+        exit ${res};
 
     - name: Send codecov report Linux
       if: success() && matrix.compiler == 'g++' && matrix.type == 'Debug' && startsWith(matrix.os, 'ubuntu')
@@ -155,4 +219,17 @@ jobs:
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       run: |
-        curl -s https://codecov.io/bash | bash -s -- -c -F aFlag ./build_${{ matrix.type }};
+        mkdir -p ./reports;
+        curl -s https://codecov.io/bash | bash -s -- -c -F aFlag ./build_${{ matrix.type }} 2>&1 | tee ./reports/send_codecov_report.log;
+        export res="${PIPESTATUS[0]}";
+        echo "Result: '${res}'";
+        exit ${res};
+
+    - name: Upload reports
+      if: always()
+      uses: actions/upload-artifact@v2
+      with:
+        name: reports_${{ matrix.type }}_${{ matrix.os }}
+        path: |
+          ./app/build/reports
+          ./reports
