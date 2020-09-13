@@ -41,15 +41,18 @@ function callCommandUntilSuccess() {
   echo ""
   echo "Calling until success '$*'"
   local retry=0
-  local lastOutput=$("$@")
+  local lastOutput
+  lastOutput=$("$@")
   local lastResult=${PIPESTATUS[0]}
   echo "result: '${lastResult}'"
+  echo "output: '${lastOutput}'"
   while [[ "${lastResult}" -ne 0 || ${lastOutput} == *"Can't find"* ]]; do
     echo "Retry: ${retry}"
     retry=$(("${retry}" + 1))
     lastOutput=$("$@")
     lastResult=${PIPESTATUS[0]}
     echo "result: '${lastResult}'"
+    echo "output: '${lastOutput}'"
     sleep 1
   done
 }
@@ -69,9 +72,11 @@ function printCommandExitCode() {
 
 # Kill a process that is using a file
 function killProcessUsingFile() {
-  local processes_using_file=$(lsof "${1}" | tail -n +2 | tr -s ' ')
+  local processes_using_file
+  processes_using_file=$(lsof "${1}" | tail -n +2 | tr -s ' ')
   echo "processes_using_file: '${processes_using_file}'"
-  local process_id_using_file=$(echo "${processes_using_file}" | cut -d ' ' -f 2 | head -1)
+  local process_id_using_file
+  process_id_using_file=$(echo "${processes_using_file}" | cut -d ' ' -f 2 | head -1)
   echo "Going to kill this process: '${process_id_using_file}'"
   kill -9 "${process_id_using_file}"
 }

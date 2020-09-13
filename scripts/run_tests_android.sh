@@ -35,20 +35,20 @@ function gather_logs_func() {
 
   # Copy logcat to file
   callCommand adb logcat -v threadtime -d "*":V \
-    >"${reports_path}"/logcat_"${type}".log 2>&1
+    > "${reports_path}"/logcat_"${type}".log 2>&1
 
   # Filter logcat of the app
   callCommand cat "${reports_path}"/logcat_"${type}".log |
     grep -E -i "$(grep -E -i \
       "proc.*:puscas" "${reports_path}/logcat_${type}".log |
       cut -d ":" -f 4 | cut -d ' ' -f 4)" \
-      >"${reports_path}"/logcat_app_"${type}".log
+      > "${reports_path}"/logcat_app_"${type}".log
 
   callCommand cat "${reports_path}"/logcat_current_"${type}".log |
     grep -E -i "$(grep -E -i "proc.*:puscas" \
       "${reports_path}"/logcat_current_"${type}".log |
       cut -d ":" -f 4 | cut -d ' ' -f 4)" \
-      >"${reports_path}"/logcat_current_app_"${type}".log
+      > "${reports_path}"/logcat_current_app_"${type}".log
 
   echo ""
   echo ""
@@ -56,12 +56,12 @@ function gather_logs_func() {
 
 function clear_func() {
   echo "Killing pid of logcat: '${pid_logcat}'"
-  kill -s SIGTERM "${pid_logcat}" 2>/dev/null
+  kill -s SIGTERM "${pid_logcat}" 2> /dev/null
 
   local pid_app
   pid_app=$(adb shell ps | grep puscas.mobilertapp | tr -s ' ' | cut -d ' ' -f 2)
   echo "Killing pid of MobileRT: '${pid_app}'"
-  adb shell kill -s SIGTERM "${pid_app}" 2>/dev/null
+  adb shell kill -s SIGTERM "${pid_app}" 2> /dev/null
 
   # Kill all processes in the whole process group, thus killing also descendants.
   echo "All processes will be killed!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
@@ -120,15 +120,20 @@ function waitForEmulator() {
   echo "Wait for device to be available."
   # Don't make the Android emulator belong in the process group, so it will not be killed at the end.
   callCommand set -m
-  callCommand emulator -avd "${avd_emulator}" -writable-system 2>/dev/null &
+
+  local adb_devices_running
+  adb_devices_running=$(adb devices | tail -n +2)
+  echo "Devices running: ${adb_devices_running}"
+  if [ -z "${adb_devices_running}" ]; then
+    callCommand emulator -avd "${avd_emulator}" -writable-system 2> /dev/null &
+  fi
+
+  # Make the all other processes belong in the process group, so thet will be killed at the end.
   callCommand set +m
 
   callCommand adb kill-server
-  # TODO: sometimes adb server fails at this point
   callCommandUntilSuccess adb start-server
-  # TODO: sometimes adb server fails at this point
   callCommandUntilSuccess adb wait-for-device
-  # TODO: sometimes adb server fails at this point
   callCommandUntilSuccess adb shell "while [[ -z $(getprop sys.boot_completed) ]]; do sleep 3; done; input keyevent 82"
   callCommandUntilSuccess adb shell whoami
 
@@ -139,12 +144,20 @@ function waitForEmulator() {
   callCommandUntilSuccess adb shell dumpsys power
   callCommandUntilSuccess adb shell dumpsys window
   callCommandUntilSuccess adb wait-for-device
-  callCommandUntilSuccess adb shell sleep 1
+  callCommandUntilSuccess adb shell sleep 2
 
   # Unlock device
   callCommandUntilSuccess adb shell input tap 800 900
   callCommandUntilSuccess adb shell input keyevent 82
   callCommandUntilSuccess adb root
+
+  # Abort if emulator didn't start
+  local adb_devices_running
+  adb_devices_running=$(adb devices | tail -n +2)
+  echo "Devices running: ${adb_devices_running}"
+  if [ -z "${adb_devices_running}" ]; then
+    callCommand exit 1
+  fi
 }
 
 function copyResources() {
