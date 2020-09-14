@@ -143,7 +143,7 @@ jobs:
         curl --data-binary @codecov.yml https://codecov.io/validate 2>&1 | tee ./reports/validate_codecov.log;
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
-        exit ${res};
+        exit 0;
 
     - name: Send codecov report Linux
       if: success() && matrix.os == 'ubuntu-16.04' && matrix.type == 'Debug'
@@ -155,7 +155,7 @@ jobs:
         curl -s https://codecov.io/bash | bash -s -- -c -F aFlag -f app/build/reports/coverage/debug/report.xml 2>&1 | tee ./reports/codecov.log;
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
-        exit ${res};
+        exit 0;
 
     - name: Upload reports
       if: always()
