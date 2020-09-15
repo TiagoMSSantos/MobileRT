@@ -15,8 +15,8 @@ updates:
   reviewers:
     - "TiagoMSSantos"
   # Raise all gradle pull requests with an assignee
-  assignees:
-    - "TiagoMSSantos"
+#  assignees:
+#    - "TiagoMSSantos"
   # Raise pull requests for Gradle version updates against the "master" branch
   target-branch: "master"
   # Raise all gradle pull requests with custom labels
@@ -42,8 +42,8 @@ updates:
   reviewers:
     - "TiagoMSSantos"
   # Raise all docker pull requests with an assignee
-  assignees:
-    - "TiagoMSSantos"
+#  assignees:
+#    - "TiagoMSSantos"
   # Raise pull requests for Docker version updates against the "master" branch
   target-branch: "master"
   # Raise all docker pull requests with custom labels
@@ -68,8 +68,8 @@ updates:
   reviewers:
     - "TiagoMSSantos"
   # Raise all GitHub Actions pull requests with an assignee
-  assignees:
-    - "TiagoMSSantos"
+#  assignees:
+#    - "TiagoMSSantos"
   # Raise pull requests for GitHub Actions version updates against the "master" branch
   target-branch: "master"
   # Raise all GitHub Actions pull requests with custom labels
@@ -95,8 +95,8 @@ updates:
   reviewers:
     - "TiagoMSSantos"
   # Raise all git submodule pull requests with an assignee
-  assignees:
-    - "TiagoMSSantos"
+#  assignees:
+#    - "TiagoMSSantos"
   # Raise pull requests for git submodule version updates against the "master" branch
   target-branch: "master"
   # Raise all git submodule pull requests with custom labels
