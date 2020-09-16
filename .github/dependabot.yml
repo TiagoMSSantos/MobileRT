@@ -12,8 +12,8 @@ updates:
     timezone: "Europe/Lisbon"
   open-pull-requests-limit: 10
   # Raise all gradle pull requests with reviewers
-  reviewers:
-    - "TiagoMSSantos"
+#  reviewers:
+#    - "TiagoMSSantos"
   # Raise all gradle pull requests with an assignee
 #  assignees:
 #    - "TiagoMSSantos"
@@ -39,8 +39,8 @@ updates:
     timezone: "Europe/Lisbon"
   open-pull-requests-limit: 10
   # Raise all docker pull requests with reviewers
-  reviewers:
-    - "TiagoMSSantos"
+#  reviewers:
+#    - "TiagoMSSantos"
   # Raise all docker pull requests with an assignee
 #  assignees:
 #    - "TiagoMSSantos"
@@ -65,8 +65,8 @@ updates:
     timezone: "Europe/Lisbon"
   open-pull-requests-limit: 10
   # Raise all GitHub Actions pull requests with reviewers
-  reviewers:
-    - "TiagoMSSantos"
+#  reviewers:
+#    - "TiagoMSSantos"
   # Raise all GitHub Actions pull requests with an assignee
 #  assignees:
 #    - "TiagoMSSantos"
@@ -92,8 +92,8 @@ updates:
     timezone: "Europe/Lisbon"
   open-pull-requests-limit: 10
   # Raise all git submodule pull requests with reviewers
-  reviewers:
-    - "TiagoMSSantos"
+#  reviewers:
+#    - "TiagoMSSantos"
   # Raise all git submodule pull requests with an assignee
 #  assignees:
 #    - "TiagoMSSantos"

@@ -71,7 +71,7 @@ jobs:
         brew update 2>&1 | tee ./reports/update_repository.log;
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
-        exit ${res};
+        exit 0;
 
     - name: Install OpenMP MacOS
       if: success() && startsWith(matrix.os, 'macos')
