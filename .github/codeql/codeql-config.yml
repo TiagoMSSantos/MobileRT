@@ -1,0 +1,10 @@
+paths:
+  - app/MobileRT
+  - app/Components
+  - app/System_dependent
+  - app/Scenes
+  - app/Unit_Testing
+  - app/src
+
+paths-ignore:
+  - app/third_party

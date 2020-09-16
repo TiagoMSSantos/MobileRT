@@ -38,8 +38,8 @@ jobs:
       uses: github/codeql-action/init@v1
       with:
         languages: ${{ matrix.language }}
+        config-file: ./.github/codeql/codeql-config.yml
 #        queries: +security-and-quality,octo-org/python-qlpack/show_ifs.ql@main,octo-org/javascript-qlpack@main
-#        config-file: ./.github/codeql/codeql-config.yml
 
     # Autobuild attempts to build any compiled languages  (C/C++, C#, or Java).
     # If this step fails, then you should remove it and run the build manually (see below)
