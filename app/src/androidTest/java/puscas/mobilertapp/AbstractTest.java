@@ -41,7 +41,7 @@ public class AbstractTest {
      */
     @Nonnull
     @Rule
-    public final TestRule timeoutRule = new Timeout(30L, TimeUnit.MINUTES);
+    public final TestRule timeoutRule = new Timeout(40L, TimeUnit.MINUTES);
 
     /**
      * The rule to create the MainActivity.
