@@ -220,7 +220,7 @@ jobs:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       run: |
         mkdir -p ./reports;
-        curl -s https://codecov.io/bash | bash -s -- -c -F aFlag ./build_${{ matrix.type }} 2>&1 | tee ./reports/send_codecov_report.log;
+        curl -s https://codecov.io/bash | bash -s -- -c -F aFlag ./build_${{ matrix.type }} -v 2>&1 | tee ./reports/send_codecov_report.log;
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
         exit 0;

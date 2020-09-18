@@ -152,7 +152,7 @@ jobs:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       run: |
         mkdir -p ./reports;
-        curl -s https://codecov.io/bash | bash -s -- -c -F aFlag -f app/build/reports/coverage/debug/report.xml 2>&1 | tee ./reports/codecov.log;
+        curl -s https://codecov.io/bash | bash -s -- -c -F aFlag -f app/build/reports/coverage/debug/report.xml -v 2>&1 | tee ./reports/codecov.log;
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
         exit 0;
