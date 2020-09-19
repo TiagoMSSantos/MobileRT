@@ -8,6 +8,11 @@ import java.util.logging.Logger;
 public final class ConstantsToast {
 
     /**
+     * The {@link Logger} for this class.
+     */
+    private static final Logger LOGGER = Logger.getLogger(ConstantsToast.class.getName());
+
+    /**
      * A warning message for when the Android device doesn't have a File Manager
      * application.
      */
@@ -24,11 +29,6 @@ public final class ConstantsToast {
      * A warning message for when the Android device couldn't load the scene.
      */
     public static final String COULD_NOT_LOAD_THE_SCENE = "Could not load the scene.";
-
-    /**
-     * The {@link Logger} for this class.
-     */
-    private static final Logger LOGGER = Logger.getLogger(ConstantsToast.class.getName());
 
     /**
      * A private constructor in order to prevent instantiating this helper class.

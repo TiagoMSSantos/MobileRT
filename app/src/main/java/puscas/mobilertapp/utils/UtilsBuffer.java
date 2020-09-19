@@ -1,11 +1,15 @@
 package puscas.mobilertapp.utils;
 
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 
+/**
+ * Utility class with some helper methods to use with {@link Buffer}s.
+ */
 public final class UtilsBuffer {
 
     /**

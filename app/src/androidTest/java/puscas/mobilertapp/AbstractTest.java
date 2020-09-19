@@ -24,27 +24,27 @@ import org.junit.rules.Timeout;
 public class AbstractTest {
 
     /**
-     * The rule for the timeout for all the tests.
-     */
-    @Nonnull
-    @ClassRule
-    public static final TestRule timeoutClassRule = new Timeout(40L, TimeUnit.MINUTES);
-
-    /**
      * The {@link Logger} for this class.
      */
     @Nonnull
     private static final Logger LOGGER = Logger.getLogger(AbstractTest.class.getName());
 
     /**
-     * The rule for the timeout for each test.
+     * The {@link Rule} for the {@link Timeout} for all the tests.
+     */
+    @Nonnull
+    @ClassRule
+    public static final TestRule timeoutClassRule = new Timeout(40L, TimeUnit.MINUTES);
+
+    /**
+     * The {@link Rule} for the {@link Timeout} for each test.
      */
     @Nonnull
     @Rule
     public final TestRule timeoutRule = new Timeout(40L, TimeUnit.MINUTES);
 
     /**
-     * The rule to create the MainActivity.
+     * The {@link Rule} to create the {@link MainActivity}.
      */
     @Nonnull
     @Rule
@@ -52,7 +52,7 @@ public class AbstractTest {
         new ActivityTestRule<>(MainActivity.class, true, true);
 
     /**
-     * The rule to access external SD card.
+     * The {@link Rule} to access the external SD card.
      */
     @Nonnull
     @Rule
@@ -60,9 +60,9 @@ public class AbstractTest {
         GrantPermissionRule.grant(Manifest.permission.READ_EXTERNAL_STORAGE);
 
     /**
-     * The MainActivity to test.
+     * The {@link MainActivity} to test.
      */
-    MainActivity activity = null;
+    protected MainActivity activity = null;
 
 
     /**

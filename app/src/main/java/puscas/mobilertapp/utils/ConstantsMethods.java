@@ -8,6 +8,11 @@ import java.util.logging.Logger;
 public final class ConstantsMethods {
 
     /**
+     * The {@link Logger} for this class.
+     */
+    private static final Logger LOGGER = Logger.getLogger(ConstantsMethods.class.getName());
+
+    /**
      * The constant used when a method is about to return.
      */
     public static final String FINISHED = " finished";
@@ -56,11 +61,6 @@ public final class ConstantsMethods {
      * The name of the {@link UtilsGL#run} methods.
      */
     static final String RUN = "run";
-
-    /**
-     * The {@link Logger} for this class.
-     */
-    private static final Logger LOGGER = Logger.getLogger(ConstantsMethods.class.getName());
 
     /**
      * A private constructor in order to prevent instantiating this helper class.

@@ -73,7 +73,7 @@ public final class UtilsTest {
      *
      * @param clazz     The {@link Object} to get the private field.
      * @param fieldName The name of the field to get.
-     * @return The {@link Bitmap} from the {@link MainRenderer}.
+     * @return The private field.
      * @implNote This method uses reflection to be able to get the private
      *           field from the {@link Object}.
      */

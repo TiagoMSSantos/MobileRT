@@ -10,6 +10,11 @@ import org.jetbrains.annotations.NonNls;
 public final class Constants {
 
     /**
+     * The {@link Logger} for this class.
+     */
+    private static final Logger LOGGER = Logger.getLogger(Constants.class.getName());
+
+    /**
      * An empty path which should not point to a file.
      */
     public static final String EMPTY_FILE = "";
@@ -90,11 +95,6 @@ public final class Constants {
     static final int BYTES_IN_POINTER = Double.SIZE / Byte.SIZE;
 
     /**
-     * The {@link Logger} for this class.
-     */
-    private static final Logger LOGGER = Logger.getLogger(Constants.class.getName());
-
-    /**
      * The path to the MobileRT instrumentation tests data.
      */
     private static final String RESOURCES_PATH =
@@ -111,6 +111,12 @@ public final class Constants {
      */
     public static final String OBJ_FILE_TEAPOT = OBJ_PATH
         + ConstantsUI.FILE_SEPARATOR + "teapot" + ConstantsUI.FILE_SEPARATOR + "teapot.obj";
+
+    /**
+     * The path to the teapot2 OBJ file which should not exist in the Android device.
+     */
+    public static final String OBJ_FILE_NOT_EXISTS = OBJ_PATH
+        + ConstantsUI.FILE_SEPARATOR + "teapot" + ConstantsUI.FILE_SEPARATOR + "teapot2.obj";
 
     /**
      * A private constructor in order to prevent instantiating this helper class.

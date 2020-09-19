@@ -11,6 +11,11 @@ import java8.util.Optional;
 public final class ConstantsUI {
 
     /**
+     * The {@link Logger} for this class.
+     */
+    private static final Logger LOGGER = Logger.getLogger(ConstantsUI.class.getName());
+
+    /**
      * The key for the UI's {@link Bundle} of {@link android.widget.NumberPicker}
      * for selecting the scene.
      */
@@ -93,11 +98,6 @@ public final class ConstantsUI {
      * The text size for the UI's {@link android.widget.NumberPicker}.
      */
     static final float TEXT_SIZE = 15.0F;
-
-    /**
-     * The {@link Logger} for this class.
-     */
-    private static final Logger LOGGER = Logger.getLogger(ConstantsUI.class.getName());
 
     /**
      * A private constructor in order to prevent instantiating this helper class.

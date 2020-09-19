@@ -104,7 +104,7 @@ public final class FileSystemTest extends AbstractTest {
                 LOGGER.info("List finished.");
                 Assertions.assertTrue(file.exists(), Constants.FILE_SHOULD_EXIST + ": " + filePath);
                 Assertions
-                    .assertTrue(file.isDirectory(), "File should be a directory: : " + filePath);
+                    .assertTrue(file.isDirectory(), "File should be a directory: " + filePath);
             });
     }
 
@@ -140,10 +140,29 @@ public final class FileSystemTest extends AbstractTest {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
+        final List<String> paths = ImmutableList.<String>builder().add(
+            Constants.EMPTY_FILE,
+            Constants.OBJ_FILE_NOT_EXISTS
+        ).build();
+        StreamSupport.stream(paths)
+            .forEach(path -> {
+                final File file = new File(path);
+                Assertions.assertFalse(file.exists(), "File should not exist!");
+                Assertions.assertFalse(file.canRead(), "File should not be readable!");
+            });
+    }
+
+    /**
+     * Tests that a file does not exist in the SD card device.
+     */
+    @Test(timeout = 5L * 1000L)
+    public void testFilesNotExistSdCard() {
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
+
         final String sdCardPath = UtilsContext.getSdCardPath(this.activity);
 
         final List<String> paths = ImmutableList.<String>builder().add(
-            Constants.EMPTY_FILE,
             sdCardPath + ConstantsUI.FILE_SEPARATOR + Constants.OBJ_FILE_NOT_EXISTS_SD_CARD
         ).build();
         StreamSupport.stream(paths)

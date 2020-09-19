@@ -125,7 +125,7 @@ public final class ConfigGlAttribute {
         /**
          * Sets the scene of {@link Config}.
          *
-         * @param name The name of the attribute..
+         * @param name The name of the attribute.
          * @return The builder with {@link ConfigGlAttribute.Builder#attributeName} already set.
          */
         @Contract("_ -> this")

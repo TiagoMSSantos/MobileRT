@@ -14,6 +14,9 @@ import static android.opengl.GLES20.glGetShaderInfoLog;
 import static android.opengl.GLES20.glGetShaderiv;
 import static android.opengl.GLES20.glShaderSource;
 
+/**
+ * Utility class with some helper methods to create GLSL programs and load GLSL shaders.
+ */
 public final class UtilsShader {
 
     /**

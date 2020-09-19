@@ -49,6 +49,11 @@ import puscas.mobilertapp.utils.UtilsShader;
 public final class MainRenderer implements GLSurfaceView.Renderer {
 
     /**
+     * The {@link Logger} for this class.
+     */
+    private static final Logger LOGGER = Logger.getLogger(MainRenderer.class.getName());
+
+    /**
      * The name for the attribute location of vertex positions in {@link GLES20}.
      */
     public static final String VERTEX_POSITION = "vertexPosition";
@@ -77,11 +82,6 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * The number of color components in each pixel (RGBA).
      */
     public static final int PIXEL_COLORS = 4;
-
-    /**
-     * The {@link Logger} for this class.
-     */
-    private static final Logger LOGGER = Logger.getLogger(MainRenderer.class.getName());
 
     /**
      * The default update interval in milliseconds of {@link RenderTask}.

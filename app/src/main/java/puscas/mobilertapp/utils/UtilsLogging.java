@@ -3,6 +3,9 @@ package puscas.mobilertapp.utils;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 
+/**
+ * Utility class with some helper methods for the logging.
+ */
 public final class UtilsLogging {
 
     /**

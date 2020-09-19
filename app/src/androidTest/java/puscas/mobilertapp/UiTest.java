@@ -29,6 +29,9 @@ import puscas.mobilertapp.utils.UtilsContextTest;
 import puscas.mobilertapp.utils.UtilsPickerTest;
 import puscas.mobilertapp.utils.UtilsTest;
 
+/**
+ * The test suite for the User Interface.
+ */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public final class UiTest extends AbstractTest {
 

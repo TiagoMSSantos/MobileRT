@@ -6,6 +6,9 @@ import java.nio.ByteBuffer;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 
+/**
+ * Utility class with some helper methods for the matrices in OpenGL framework.
+ */
 public final class UtilsGlMatrices {
 
     /**

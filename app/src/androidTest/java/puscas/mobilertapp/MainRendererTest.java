@@ -18,6 +18,9 @@ import puscas.mobilertapp.utils.UtilsGL;
 import puscas.mobilertapp.utils.UtilsShader;
 import puscas.mobilertapp.utils.UtilsTest;
 
+/**
+ * The test suite for the {@link MainRenderer}.
+ */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public final class MainRendererTest extends AbstractTest {
 
@@ -26,20 +29,6 @@ public final class MainRendererTest extends AbstractTest {
      */
     @Nonnull
     private static final Logger LOGGER = Logger.getLogger(MainRendererTest.class.getName());
-
-    /**
-     * Helper method that asserts the index of a GLSL shader with the expected.
-     *
-     * @param shaderIndex   The index of the shader.
-     * @param expectedIndex The expected index.
-     */
-    private static void assertIndexOfShader(final int shaderIndex, final int expectedIndex) {
-        Assertions.assertEquals(
-            expectedIndex,
-            shaderIndex,
-            "Shader index should be " + expectedIndex + "."
-        );
-    }
 
     /**
      * Setup method called before each test.
@@ -66,7 +55,7 @@ public final class MainRendererTest extends AbstractTest {
     }
 
     /**
-     * Tests loading a Vertex GLSL shader.
+     * Tests loading a Vertex GLSL shader for the Ray Tracing engine to output the rendered scene.
      */
     @Test
     public void testLoadVertexShader() throws InterruptedException {
@@ -77,7 +66,7 @@ public final class MainRendererTest extends AbstractTest {
     }
 
     /**
-     * Tests loading a Vertex GLSL shader.
+     * Tests loading a Vertex GLSL shader for the preview (rasterization) feature.
      */
     @Test
     public void testLoadVertexShaderRaster() throws InterruptedException {
@@ -88,7 +77,7 @@ public final class MainRendererTest extends AbstractTest {
     }
 
     /**
-     * Tests loading a Fragment GLSL shader.
+     * Tests loading a Fragment GLSL shader for the Ray Tracing engine to output the rendered scene.
      */
     @Test
     public void testLoadFragmentShader() throws InterruptedException {
@@ -99,7 +88,7 @@ public final class MainRendererTest extends AbstractTest {
     }
 
     /**
-     * Tests loading a Fragment GLSL shader.
+     * Tests loading a Fragment GLSL shader for the preview (rasterization) feature.
      */
     @Test
     public void testLoadFragmentShaderRaster() throws InterruptedException {
@@ -107,6 +96,20 @@ public final class MainRendererTest extends AbstractTest {
         LOGGER.info(methodName);
 
         testLoadShader("Shaders/FragmentShaderRaster.glsl", GLES20.GL_FRAGMENT_SHADER);
+    }
+
+    /**
+     * Helper method that asserts the index of a GLSL shader with the expected.
+     *
+     * @param shaderIndex   The index of the shader.
+     * @param expectedIndex The expected index.
+     */
+    private static void assertIndexOfShader(final int shaderIndex, final int expectedIndex) {
+        Assertions.assertEquals(
+            expectedIndex,
+            shaderIndex,
+            "Shader index should be " + expectedIndex + "."
+        );
     }
 
     /**
@@ -118,6 +121,7 @@ public final class MainRendererTest extends AbstractTest {
      */
     private void testLoadShader(final String shaderPath, final int shaderType)
         throws InterruptedException {
+
         final InputStream inputStream = createInputStreamFromResource(shaderPath);
         final String shaderCode =
             puscas.mobilertapp.utils.Utils.readTextFromInputStream(inputStream);
@@ -153,6 +157,7 @@ public final class MainRendererTest extends AbstractTest {
      */
     private int createAndGetIndexOfShader(final String shaderCode, final int shaderType)
         throws InterruptedException {
+
         final DrawView drawView = UtilsTest.getPrivateField(this.activity, "drawView");
 
         final AtomicInteger shaderIndex = new AtomicInteger(-1);

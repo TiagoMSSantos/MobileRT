@@ -14,6 +14,11 @@ import puscas.mobilertapp.MyEglContextFactory;
 public final class ConstantsError {
 
     /**
+     * The {@link Logger} for this class.
+     */
+    private static final Logger LOGGER = Logger.getLogger(ConstantsError.class.getName());
+
+    /**
      * A message for when the
      * {@link MyEglContextFactory#destroyContext(EGL10, EGLDisplay, EGLContext)}
      * method throws an exception.
@@ -24,11 +29,6 @@ public final class ConstantsError {
      * A message for when the {@link DrawView#onPause()} method couldn't find a {@link Context}.
      */
     public static final String UNABLE_TO_FIND_AN_ACTIVITY = "Unable to find an activity: ";
-
-    /**
-     * The {@link Logger} for this class.
-     */
-    private static final Logger LOGGER = Logger.getLogger(ConstantsError.class.getName());
 
     /**
      * A private constructor in order to prevent instantiating this helper class.

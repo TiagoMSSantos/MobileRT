@@ -11,6 +11,11 @@ import java.util.logging.Logger;
 public final class ConstantsRenderer {
 
     /**
+     * The {@link Logger} for this class.
+     */
+    private static final Logger LOGGER = Logger.getLogger(ConstantsRenderer.class.getName());
+
+    /**
      * The number of threads to be used by the DrawView,
      * MainRenderer and  RenderTask {@link ExecutorService}s.
      */
@@ -21,11 +26,6 @@ public final class ConstantsRenderer {
      */
     public static final int ALL_BUFFER_BIT = GLES20.GL_COLOR_BUFFER_BIT
         | GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_STENCIL_BUFFER_BIT;
-
-    /**
-     * The {@link Logger} for this class.
-     */
-    private static final Logger LOGGER = Logger.getLogger(ConstantsRenderer.class.getName());
 
     /**
      * A private constructor in order to prevent instantiating this helper class.

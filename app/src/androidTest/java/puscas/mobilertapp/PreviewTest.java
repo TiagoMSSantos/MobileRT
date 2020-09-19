@@ -16,6 +16,9 @@ import puscas.mobilertapp.utils.ConstantsMethods;
 import puscas.mobilertapp.utils.UtilsContextTest;
 import puscas.mobilertapp.utils.UtilsTest;
 
+/**
+ * The test suite for the preview feature (rasterize one frame of the scene).
+ */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public final class PreviewTest extends AbstractTest {
 
