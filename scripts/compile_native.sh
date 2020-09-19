@@ -44,12 +44,13 @@ function build() {
   echo "Calling CMake"
   callCommand cmake -DCMAKE_VERBOSE_MAKEFILE=ON \
     -DCMAKE_CXX_COMPILER="${compiler}" -DCMAKE_BUILD_TYPE="${type}" ../app/ \
-    2>&1 | tee "${build_path}"/log_cmake_"${type}".log
+    2>&1 | tee ./log_cmake_"${type}".log
   resCompile=${PIPESTATUS[0]}
 
   if [ "${resCompile}" -eq 0 ]; then
+    callCommand ls -laR ..
     echo "Calling Make"
-    callCommand make
+    callCommand cmake --build . 2>&1 | tee ./log_make_"${type}".log
     resCompile=${PIPESTATUS[0]}
   else
     echo "Compilation: cmake failed"

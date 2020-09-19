@@ -10,17 +10,17 @@
 #define UI_MAINWINDOW_H
 
 #include <QtCore/QVariant>
-#include <QtGui/QAction>
-#include <QtGui/QApplication>
-#include <QtGui/QButtonGroup>
-#include <QtGui/QGraphicsView>
-#include <QtGui/QHeaderView>
-#include <QtGui/QMainWindow>
-#include <QtGui/QMenu>
-#include <QtGui/QMenuBar>
-#include <QtGui/QStatusBar>
-#include <QtGui/QToolBar>
-#include <QtGui/QWidget>
+#include <QAction>
+#include <QApplication>
+#include <QButtonGroup>
+#include <QGraphicsView>
+#include <QHeaderView>
+#include <QMainWindow>
+#include <QMenu>
+#include <QMenuBar>
+#include <QStatusBar>
+#include <QToolBar>
+#include <QWidget>
 
 QT_BEGIN_NAMESPACE
 
@@ -107,16 +107,16 @@ public:
 
     void retranslateUi(QMainWindow *MainWindow)
     {
-        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MobileRT", 0, QApplication::UnicodeUTF8));
-        actionOpen->setText(QApplication::translate("MainWindow", "Open", 0, QApplication::UnicodeUTF8));
-        actionExit->setText(QApplication::translate("MainWindow", "Exit", 0, QApplication::UnicodeUTF8));
-        actionRender->setText(QApplication::translate("MainWindow", "Render", 0, QApplication::UnicodeUTF8));
-        actionConfig->setText(QApplication::translate("MainWindow", "Config", 0, QApplication::UnicodeUTF8));
-        actionAbout->setText(QApplication::translate("MainWindow", "About", 0, QApplication::UnicodeUTF8));
-        actionStop->setText(QApplication::translate("MainWindow", "Stop", 0, QApplication::UnicodeUTF8));
-        menuFile->setTitle(QApplication::translate("MainWindow", "File", 0, QApplication::UnicodeUTF8));
-        menuEdit->setTitle(QApplication::translate("MainWindow", "Edit", 0, QApplication::UnicodeUTF8));
-        menuHelp->setTitle(QApplication::translate("MainWindow", "Help", 0, QApplication::UnicodeUTF8));
+        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MobileRT", 0));
+        actionOpen->setText(QApplication::translate("MainWindow", "Open", 0));
+        actionExit->setText(QApplication::translate("MainWindow", "Exit", 0));
+        actionRender->setText(QApplication::translate("MainWindow", "Render", 0));
+        actionConfig->setText(QApplication::translate("MainWindow", "Config", 0));
+        actionAbout->setText(QApplication::translate("MainWindow", "About", 0));
+        actionStop->setText(QApplication::translate("MainWindow", "Stop", 0));
+        menuFile->setTitle(QApplication::translate("MainWindow", "File", 0));
+        menuEdit->setTitle(QApplication::translate("MainWindow", "Edit", 0));
+        menuHelp->setTitle(QApplication::translate("MainWindow", "Help", 0));
     } // retranslateUi
 
 };

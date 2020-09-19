@@ -1,6 +1,8 @@
-name: Tests Android
+name: Build Android
 
 on: [push, pull_request, release]
+#branches-ignore:
+#  - '**'
 
 defaults:
   run:

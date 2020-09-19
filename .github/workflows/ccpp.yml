@@ -1,6 +1,8 @@
-name: Unit Tests C++
+name: Build Qt
 
 on: [push, pull_request, release]
+#branches-ignore:
+#  - '**'
 
 defaults:
   run:
@@ -78,6 +80,7 @@ jobs:
       run: |
         mkdir -p ./reports;
         brew install libomp 2>&1 | tee ./reports/install_openmp.log;
+        brew info libomp 2>&1 | tee ./reports/info_openmp.log;
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
         exit ${res};
@@ -118,16 +121,6 @@ jobs:
         echo "Result: '${res}'";
         exit ${res};
 
-    - name: Run CMake
-      if: success()
-      working-directory: .
-      run: |
-        mkdir -p ./reports;
-        bash scripts/compile_native.sh ${{ matrix.type }} ${{ matrix.compiler_path }} 2>&1 | tee ./reports/run_cmake.log;
-        export res="${PIPESTATUS[0]}";
-        echo "Result: '${res}'";
-        exit ${res};
-
     - name: Create symlink of headers MacOS
       if: success() && startsWith(matrix.os, 'macos') && matrix.compiler == 'g++'
       working-directory: .
@@ -138,12 +131,12 @@ jobs:
         echo "Result: '${res}'";
         exit ${res};
 
-    - name: Run Make
+    - name: Build
       if: success()
-      working-directory: build_${{ matrix.type }}
+      working-directory: .
       run: |
         mkdir -p ./reports;
-        make 2>&1 | tee ./reports/make.log;
+        bash scripts/compile_native.sh ${{ matrix.type }} ${{ matrix.compiler_path }} 2>&1 | tee ./reports/run_cmake.log;
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
         exit ${res};

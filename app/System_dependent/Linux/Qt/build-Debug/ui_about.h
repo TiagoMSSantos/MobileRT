@@ -10,13 +10,13 @@
 #define UI_ABOUT_H
 
 #include <QtCore/QVariant>
-#include <QtGui/QAction>
-#include <QtGui/QApplication>
-#include <QtGui/QButtonGroup>
-#include <QtGui/QDialog>
-#include <QtGui/QDialogButtonBox>
-#include <QtGui/QHeaderView>
-#include <QtGui/QLabel>
+#include <QAction>
+#include <QApplication>
+#include <QButtonGroup>
+#include <QDialog>
+#include <QDialogButtonBox>
+#include <QHeaderView>
+#include <QLabel>
 
 QT_BEGIN_NAMESPACE
 
@@ -54,8 +54,8 @@ public:
 
     void retranslateUi(QDialog *About)
     {
-        About->setWindowTitle(QApplication::translate("About", "About", 0, QApplication::UnicodeUTF8));
-        label->setText(QApplication::translate("About", "<html><head/><body><p>Made by: Tiago <br/><a href=\"https://tiagomssantos.github.io/\"><span style=\" font-weight:600; text-decoration: underline; color:#0000ff;\">https://tiagomssantos.github.io/</span></a></p></body></html>", 0, QApplication::UnicodeUTF8));
+        About->setWindowTitle(QApplication::translate("About", "About", 0));
+        label->setText(QApplication::translate("About", "<html><head/><body><p>Made by: Tiago <br/><a href=\"https://tiagomssantos.github.io/\"><span style=\" font-weight:600; text-decoration: underline; color:#0000ff;\">https://tiagomssantos.github.io/</span></a></p></body></html>", 0));
     } // retranslateUi
 
 };

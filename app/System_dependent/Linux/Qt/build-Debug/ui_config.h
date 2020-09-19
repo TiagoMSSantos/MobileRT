@@ -10,15 +10,15 @@
 #define UI_CONFIG_H
 
 #include <QtCore/QVariant>
-#include <QtGui/QAction>
-#include <QtGui/QApplication>
-#include <QtGui/QButtonGroup>
-#include <QtGui/QDialog>
-#include <QtGui/QDialogButtonBox>
-#include <QtGui/QHeaderView>
-#include <QtGui/QLabel>
-#include <QtGui/QSpinBox>
-#include <QtGui/QToolButton>
+#include <QAction>
+#include <QApplication>
+#include <QButtonGroup>
+#include <QDialog>
+#include <QDialogButtonBox>
+#include <QHeaderView>
+#include <QLabel>
+#include <QSpinBox>
+#include <QToolButton>
 
 QT_BEGIN_NAMESPACE
 
@@ -98,15 +98,15 @@ public:
 
     void retranslateUi(QDialog *Config)
     {
-        Config->setWindowTitle(QApplication::translate("Config", "Dialog", 0, QApplication::UnicodeUTF8));
-        shaderButton->setText(QApplication::translate("Config", "Shader", 0, QApplication::UnicodeUTF8));
-        shaderLabel->setText(QApplication::translate("Config", "Shader", 0, QApplication::UnicodeUTF8));
-        acceleratorLabel->setText(QApplication::translate("Config", "Acceleration Structure", 0, QApplication::UnicodeUTF8));
-        acceleratorButton->setText(QApplication::translate("Config", "Accelerator", 0, QApplication::UnicodeUTF8));
-        sceneLabel->setText(QApplication::translate("Config", "Scene", 0, QApplication::UnicodeUTF8));
-        sceneButton->setText(QApplication::translate("Config", "Scene", 0, QApplication::UnicodeUTF8));
-        sppLabel->setText(QApplication::translate("Config", "Samples per pixel", 0, QApplication::UnicodeUTF8));
-        splLabel->setText(QApplication::translate("Config", "Samples per light", 0, QApplication::UnicodeUTF8));
+        Config->setWindowTitle(QApplication::translate("Config", "Dialog", 0));
+        shaderButton->setText(QApplication::translate("Config", "Shader", 0));
+        shaderLabel->setText(QApplication::translate("Config", "Shader", 0));
+        acceleratorLabel->setText(QApplication::translate("Config", "Acceleration Structure", 0));
+        acceleratorButton->setText(QApplication::translate("Config", "Accelerator", 0));
+        sceneLabel->setText(QApplication::translate("Config", "Scene", 0));
+        sceneButton->setText(QApplication::translate("Config", "Scene", 0));
+        sppLabel->setText(QApplication::translate("Config", "Samples per pixel", 0));
+        splLabel->setText(QApplication::translate("Config", "Samples per light", 0));
     } // retranslateUi
 
 };

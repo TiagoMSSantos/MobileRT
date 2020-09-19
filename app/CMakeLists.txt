@@ -38,9 +38,13 @@ message( STATUS "Adding custom default flags for all third party projects." )
 message( STATUS "Setting default compiler flags." )
 set( ANDROID_COMPILER_FLAGS "" CACHE STRING "CUSTOM" FORCE )
 
-# PIC: Position Independent Code
-set( CMAKE_CXX_FLAGS "-std=c++11 -fPIC -Bsymbolic -Bsymbolic-functions"
-  CACHE STRING "CUSTOM" FORCE )
+if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
+  if( DEFINED ANDROID_ABI OR CMAKE_CXX_COMPILER MATCHES "clang" OR CMAKE_CXX_COMPILER STREQUAL "g++" )
+    # PIC: Position Independent Code
+    set( CMAKE_CXX_FLAGS "-std=c++11 -fPIC -Bsymbolic -Bsymbolic-functions"
+      CACHE STRING "CUSTOM" FORCE )
+  endif()
+endif()
 # _GLIBCXX_DEBUG: activate debug mode and all the assertions
 set( CMAKE_CXX_FLAGS_DEBUG "-D_GLIBCXX_DEBUG" CACHE STRING "CUSTOM" FORCE )
 # NDEBUG: Deactivate all the assertions
@@ -49,8 +53,11 @@ set( CMAKE_CXX_FLAGS_DEBUG "-D_GLIBCXX_DEBUG" CACHE STRING "CUSTOM" FORCE )
 # then remove unused functions at link time.
 # fdata-sections: enables the generation of one ELF section for each variable
 # in the source file.
-set( CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG -ffunction-sections -fdata-sections"
+set( CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG -ffunction-sections -fdata-sections"
   CACHE STRING "CUSTOM" FORCE )
+if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
+  set( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3" CACHE STRING "CUSTOM" FORCE )
+endif()
 set( CMAKE_CXX_FLAGS_RELWITHDEBINFO "" CACHE STRING "CUSTOM" FORCE )
 set( CMAKE_CXX_FLAGS_MINSIZEREL "" CACHE STRING "CUSTOM" FORCE )
 
@@ -60,29 +67,38 @@ message( STATUS "Setting default linker flags." )
 # means. The effect is that every function call within your library will be
 # initially faster since there's no lookup required.
 # This leads to faster load times.
-set( CMAKE_EXE_LINKER_FLAGS "-Bsymbolic -Bsymbolic-functions"
-  CACHE STRING "CUSTOM" FORCE )
+if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
+  set( CMAKE_EXE_LINKER_FLAGS "-Bsymbolic -Bsymbolic-functions"
+    CACHE STRING "CUSTOM" FORCE )
+endif()
+if( CMAKE_HOST_WIN32 MATCHES "1" )
+  set( CMAKE_EXE_LINKER_FLAGS  "-FORCE" CACHE STRING "CUSTOM" FORCE )
+endif()
 set( CMAKE_EXE_LINKER_FLAGS_DEBUG "" CACHE STRING "CUSTOM" FORCE )
 # discard-all: delete all local symbols.
 # fno-rtti: disable generation of information about every class with virtual
 # functions for use by the C++ runtime type identification features
 # (`dynamic_cast' and `typeid'). If you don't use those parts of the language,
 # you can save some space by using this flag.
-set( CMAKE_EXE_LINKER_FLAGS_RELEASE "-O3 -discard-all -fno-rtti"
-  CACHE STRING "CUSTOM" FORCE )
+if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
+  set( CMAKE_EXE_LINKER_FLAGS_RELEASE "-O3 -discard-all -fno-rtti"
+    CACHE STRING "CUSTOM" FORCE )
+  set( CMAKE_SHARED_LINKER_FLAGS "-Bsymbolic -Bsymbolic-functions"
+    CACHE STRING "CUSTOM" FORCE )
+endif()
 set( CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO "" CACHE STRING "CUSTOM" FORCE )
 set( CMAKE_EXE_LINKER_FLAGS_MINSIZEREL "" CACHE STRING "CUSTOM" FORCE )
 
-set( CMAKE_SHARED_LINKER_FLAGS "-Bsymbolic -Bsymbolic-functions"
-  CACHE STRING "CUSTOM" FORCE )
 set( CMAKE_SHARED_LINKER_FLAGS_DEBUG "" CACHE STRING "CUSTOM" FORCE )
-set( CMAKE_SHARED_LINKER_FLAGS_RELEASE "-O3 -discard-all -fno-rtti"
-  CACHE STRING "CUSTOM" FORCE )
+if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
+  set( CMAKE_SHARED_LINKER_FLAGS_RELEASE "-O3 -discard-all -fno-rtti"
+    CACHE STRING "CUSTOM" FORCE )
+endif()
 
 if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
   message( STATUS "Detected not Windows OS." )
 
-  if( CMAKE_CXX_COMPILER MATCHES "clang" OR DEFINED ANDROID_ABI )
+  if( DEFINED ANDROID_ABI AND NOT CMAKE_HOST_WIN32 MATCHES "1" )
 	# flto: Link Time Optimization
     set( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -flto=full"
       CACHE STRING "CUSTOM" FORCE )
@@ -101,8 +117,10 @@ set( CMAKE_SHARED_LINKER_FLAGS_MINSIZEREL "" CACHE STRING "CUSTOM" FORCE )
 
 if( NOT DEFINED ANDROID_ABI )
   message( STATUS "Detected native OS." )
-  set( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -march=native"
-    CACHE STRING "CUSTOM" FORCE )
+  if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
+    set( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -march=native"
+      CACHE STRING "CUSTOM" FORCE )
+  endif()
   if( CMAKE_HOST_SYSTEM_NAME MATCHES "Darwin" )
     message( STATUS "Detected native MacOS." )
 
@@ -111,6 +129,8 @@ if( NOT DEFINED ANDROID_ABI )
       CACHE STRING "CUSTOM" FORCE )
   endif()
 endif()
+
+set( CMAKE_BUILD_TYPE_INIT "${CMAKE_BUILD_TYPE}" CACHE STRING "CUSTOM" FORCE )
 
 message( STATUS "Turning off GLM test." )
 set( GLM_TEST_ENABLE "OFF" CACHE STRING "CUSTOM" FORCE )
@@ -153,7 +173,7 @@ message( STATUS
   "Setting up the name of the OS and the proper interface layer." )
 message( STATUS "Host system: ${CMAKE_HOST_SYSTEM_NAME}." )
 # Use to make MacOS use the right OpenMP headers
-set( CMAKE_SYSTEM_NAME "Linux" )
+#set( CMAKE_SYSTEM_NAME "Linux" )
 if( DEFINED ANDROID_ABI )
   message( STATUS "Detected Android OS." )
 
@@ -165,9 +185,16 @@ else()
 
   set( MOBILE_DEPENDENT_HEADERS "${CMAKE_SOURCE_DIR}/System_dependent/Linux" )
 
-  message( STATUS
-	"Add flag to generate instructions for the machine type native." )
-  set( COMMON_FLAGS "${COMMON_FLAGS}" -march=native )
+  if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
+    message( STATUS
+    "Add flag to generate instructions for the machine type native." )
+    set( COMMON_FLAGS "${COMMON_FLAGS}" -march=native )
+  endif()
+
+  if( CMAKE_HOST_SYSTEM_NAME MATCHES "Darwin" )
+    # Force to use the default MacOS platform SDK
+    set( CMAKE_OSX_SYSROOT "" CACHE STRING "CUSTOM" FORCE )
+  endif()
 
   string( TOLOWER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_L )
   if( CMAKE_BUILD_TYPE_L MATCHES debug )
@@ -182,12 +209,11 @@ if( CMAKE_CXX_COMPILER MATCHES "clang" OR DEFINED ANDROID_ABI )
 
   message( STATUS "Adding warning flags." )
   set( COMMON_FLAGS "${COMMON_FLAGS}" -Weverything -ferror-limit=1 )
-  if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
-    message( STATUS "Detected not Windows OS." )
-    message( STATUS "Adding Link Time Optimization flag." )
+endif()
 
-    set( COMMON_FLAGS_RELEASE "${COMMON_FLAGS_RELEASE}" -flto=full )
-  endif()
+if( DEFINED ANDROID_ABI AND NOT CMAKE_HOST_WIN32 MATCHES "1" )
+  message( STATUS "Adding Link Time Optimization flag." )
+  set( COMMON_FLAGS_RELEASE "${COMMON_FLAGS_RELEASE}" -flto=full )
 endif()
 
 message( STATUS "CMAKE_HOST_SYSTEM_NAME = ${CMAKE_HOST_SYSTEM_NAME}" )
@@ -222,13 +248,24 @@ set( QT_HEADERS
   "${CMAKE_SOURCE_DIR}/System_dependent/Linux/Qt/build-${CMAKE_BUILD_TYPE}" )
 
 message( STATUS "Setting up common flags." )
-set( COMMON_FLAGS "${COMMON_FLAGS}"
-  -std=c++11 -pedantic-errors -pedantic -Wpedantic -Wall -Wextra -Wfatal-errors
-  -Werror )
-# Turn off C++98 pedantic warning so it can use C++11 features
-set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-c++98-compat-pedantic )
-# Turn off padded warning because some classes still need padding
-set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-padded )
+set( COMMON_FLAGS "${COMMON_FLAGS}" -Wall )
+if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
+  set( COMMON_FLAGS "${COMMON_FLAGS}" -pedantic-errors -pedantic )
+endif()
+
+#if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
+#  set( COMMON_FLAGS "${COMMON_FLAGS}" -Wpedantic -Wextra -Wfatal-errors -Werror )
+#endif()
+
+if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
+  if( DEFINED ANDROID_ABI OR CMAKE_CXX_COMPILER MATCHES "clang" OR CMAKE_CXX_COMPILER STREQUAL "g++" )
+    set( COMMON_FLAGS "${COMMON_FLAGS}" -std=c++11 )
+  endif()
+  # Turn off C++98 pedantic warning so it can use C++11 features
+#  set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-c++98-compat-pedantic )
+  # Turn off padded warning because some classes still need padding
+#  set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-padded )
+endif()
 
 if( DEFINED ANDROID_ABI OR CMAKE_CXX_COMPILER MATCHES "clang" )
   # Turn off exit time destructors warning because of the usage of
@@ -247,22 +284,30 @@ if( DEFINED ANDROID_ABI
   set( COMMON_FLAGS "${COMMON_FLAGS}" -Xpreprocessor -fopenmp=libomp )
 else()
   message( STATUS "Detected Mac or Windows OS or GCC compiler." )
-  message( STATUS "Adding OpenMP." )
 
-  set( COMMON_FLAGS "${COMMON_FLAGS}" -Xpreprocessor -fopenmp )
+  if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
+    message( STATUS "Adding OpenMP." )
+    set( COMMON_FLAGS "${COMMON_FLAGS}" -Xpreprocessor -fopenmp )
+  endif()
 endif()
 
-set( COMMON_FLAGS_DEBUG -O0 -g3 -fno-optimize-sibling-calls
-  -fno-omit-frame-pointer -fstack-protector-all )
+if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
+  set( COMMON_FLAGS_DEBUG -O0 -g3 -fno-optimize-sibling-calls
+    -fno-omit-frame-pointer -fstack-protector-all )
+endif()
 
-set( COMMON_FLAGS_RELEASE "${COMMON_FLAGS_RELEASE}" -O3 -DNDEBUG
-  -ffunction-sections -fdata-sections )
+set( COMMON_FLAGS_RELEASE "${COMMON_FLAGS_RELEASE}" -DNDEBUG -ffunction-sections -fdata-sections )
+if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
+  set( COMMON_FLAGS_RELEASE "${COMMON_FLAGS_RELEASE}" -O3 )
+endif()
 
 set( COMMON_FLAGS_RELEASE "${COMMON_FLAGS_RELEASE}"
   -Wno-unused-command-line-argument )
 
 message( STATUS "Setting common linker flags." )
-set( COMMON_LINKER_FLAGS "${COMMON_LINKER_FLAGS}" -O3 -discard-all -fno-rtti )
+if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
+  set( COMMON_LINKER_FLAGS "${COMMON_LINKER_FLAGS}" -O3 -discard-all -fno-rtti )
+endif()
 
 set( COMMON_LINKER_FLAGS_DEBUG "${COMMON_LINKER_FLAGS_DEBUG}"  )
 
@@ -287,7 +332,9 @@ endif()
 # Set up project
 ###############################################################################
 message( STATUS "Setting up AppMobileRT project." )
+print_environment()
 project( AppMobileRT VERSION 1.0.0.0 LANGUAGES CXX )
+print_environment()
 ###############################################################################
 ###############################################################################
 
@@ -297,7 +344,8 @@ file( GLOB_RECURSE SCENES_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/Scenes/**.cpp" )
 
 if( NOT DEFINED ANDROID_ABI )
   message( STATUS "Finding Qt4." )
-  find_package( Qt4 REQUIRED COMPONENTS QtCore QtGui )
+  find_package( Qt4 OPTIONAL_COMPONENTS QtCore QtGui )
+  find_package( Qt5 OPTIONAL_COMPONENTS Core Gui Widgets )
 endif()
 
 
@@ -327,8 +375,7 @@ if( DEFINED ANDROID_ABI )
 else()
   message( STATUS "Adding Linux native Qt layer." )
 
-  add_executable( ${PROJECT_NAME} ${SCENES_SOURCES} ${MOBILE_DEPENDENT_SOURCES}
-  )
+  add_executable( ${PROJECT_NAME} ${SCENES_SOURCES} ${MOBILE_DEPENDENT_SOURCES} )
 
   message( STATUS "QT_INCLUDES = ${QT_INCLUDES}" )
   message( STATUS "QT_QTCORE_LIBRARIES = ${QT_QTCORE_LIBRARIES}" )
@@ -353,7 +400,12 @@ else()
   else()
     message( STATUS "Linking Qt." )
 
-    target_link_libraries( ${PROJECT_NAME} PRIVATE Qt4::QtCore Qt4::QtGui )
+    if( Qt4_FOUND )
+      target_link_libraries( ${PROJECT_NAME} PRIVATE Qt4::QtCore Qt4::QtGui )
+    endif()
+    if( Qt5_FOUND )
+      target_link_libraries( ${PROJECT_NAME} PRIVATE Qt5::Core Qt5::Gui Qt5::Widgets )
+    endif()
   endif()
 endif()
 ###############################################################################
@@ -378,7 +430,9 @@ target_include_directories( ${PROJECT_NAME} SYSTEM PRIVATE "${GLM_HEADERS}" )
 message( STATUS "Adding compiler flags." )
 target_compile_options( ${PROJECT_NAME} PRIVATE ${COMMON_FLAGS} )
 # Turn off global constructors warnings because of scenes
-target_compile_options( ${PROJECT_NAME} PRIVATE -Wno-global-constructors )
+if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
+  target_compile_options( ${PROJECT_NAME} PRIVATE -Wno-global-constructors )
+endif()
 if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
   message( STATUS "Detected not Windows OS." )
 
@@ -413,7 +467,9 @@ if( CMAKE_CXX_COMPILER MATCHES "clang" )
 else()
   message( STATUS "Detected GCC compiler." )
 
-  target_compile_options( ${PROJECT_NAME} PRIVATE -Wno-redundant-move )
+  if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
+    target_compile_options( ${PROJECT_NAME} PRIVATE -Wno-redundant-move )
+  endif()
 endif()
 
 ###############################################################################
@@ -430,4 +486,4 @@ target_link_libraries( ${PROJECT_NAME}
 ###############################################################################
 
 
-#print_environment()
+print_environment()

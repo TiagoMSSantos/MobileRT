@@ -1,6 +1,8 @@
 # MobileRT: Mobile Ray Tracing engine <br/>
-- A portable Ray Tracing (RT) engine for multiple devices <br/>
-- Already available interfaces for Android and Linux <br/>
+- A portable Ray Tracing (RT) engine for multiple devices. <br/>
+- Already available interfaces for:  <br/>
+  - Android (through Java + JNI)
+  - Linux, MacOS X, Windows (through Qt 4 or 5)
 
 [comment]: # (Licenses and documentation)
 [![GitHub](https://img.shields.io/github/license/TiagoMSSantos/MobileRT)](https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/LICENSE)
@@ -56,7 +58,7 @@ The docker image is in docker hub:
 It is also possible to clone this repository and compile this ray tracer by
 yourself.
 To compile it, it is essential to install cmake and have a C++11 compiler.
-It is also needed the [Qt4](https://www.qt.io/) library and the
+It is also needed the [Qt4 or Qt5](https://www.qt.io/) library and the
 [git](https://git-scm.com/) control system to get the code from the repository.
 <br/>
 ```bash
@@ -111,7 +113,7 @@ f 45 45 #field of view of the camera u v
 library
 - [x] C++ [tinyobjloader](https://github.com/tinyobjloader/tinyobjloader)
 library to load Wavefront OBJ model files
-- [x] C++ [Qt4](https://www.qt.io/) framework for Linux interface
+- [x] C++ [Qt4 or Qt5](https://www.qt.io/) framework for Linux interface
 - [x] C++ [Google Test](https://github.com/google/googletest) framework
 for unit tests
 - [x] C [STB libraries](https://github.com/nothings/stb) to load the textures

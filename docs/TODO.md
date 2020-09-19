@@ -95,7 +95,8 @@
 - [x] Make all Android instrumented tests pass without flakiness
 
 ## Linux Interface
-- [x] Support Linux's UI with Qt
+- [x] Support Linux's UI with Qt 4
+- [x] Support Linux's UI with Qt 5
 - [x] Support options menu in GUI
 - [x] Support about menu in GUI
 - [x] Support for selection of OBJ files in GUI
@@ -139,6 +140,8 @@
 - [ ] Prepare more scene models
 - [x] Support Android interface
 - [x] Support Linux interface
+- [x] Support MacOS X interface
+- [x] Support Windows interface
 - [ ] Support web browser interface
 - [x] Support CI/CD pipeline
 - [x] Support linter in CI pipeline

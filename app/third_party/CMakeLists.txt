@@ -87,8 +87,10 @@ execute_process( COMMAND git pull --all --rebase --recurse-submodules
 ###############################################################################
 message( STATUS "Adding third party dependencies." )
 add_subdirectory( glm )
-add_subdirectory( tinyobjloader )
 
+if( TARGET Components )
+  add_subdirectory( tinyobjloader )
+endif( TARGET Components )
 
 # Remove Link Time Optimization for Google Test
 string( REPLACE "-flto=full" "" CMAKE_CXX_FLAGS_RELEASE

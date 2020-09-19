@@ -34,9 +34,11 @@ target_compile_options( ${PROJECT_NAME} PRIVATE
   $<$<CONFIG:RELEASE>:${COMMON_FLAGS_RELEASE}> )
 
 # Turn off warnings because of Google Test
-target_compile_options( ${PROJECT_NAME} PRIVATE -Wno-global-constructors )
-target_compile_options( ${PROJECT_NAME} PRIVATE -Wno-used-but-marked-unused )
-target_compile_options( ${PROJECT_NAME} PRIVATE -Wno-covered-switch-default )
+if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
+  target_compile_options( ${PROJECT_NAME} PRIVATE -Wno-global-constructors )
+  target_compile_options( ${PROJECT_NAME} PRIVATE -Wno-used-but-marked-unused )
+  target_compile_options( ${PROJECT_NAME} PRIVATE -Wno-covered-switch-default )
+endif()
 ###############################################################################
 ###############################################################################
 

@@ -8,7 +8,12 @@ message( STATUS "Adding Components source files." )
 file( GLOB_RECURSE MOBILE_RC_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/**.cpp" )
 
 message( STATUS "Setting up as library." )
-add_library( ${PROJECT_NAME} SHARED ${MOBILE_RC_SOURCES} )
+if( DEFINED ANDROID_ABI )
+  add_library( ${PROJECT_NAME} SHARED ${MOBILE_RC_SOURCES} )
+else()
+  add_library( ${PROJECT_NAME} STATIC ${MOBILE_RC_SOURCES} )
+endif()
+
 ###############################################################################
 ###############################################################################
 
@@ -46,6 +51,7 @@ target_compile_options( ${PROJECT_NAME} PRIVATE
 message( STATUS "Linking with MobileRT and third party libs." )
 target_link_libraries( ${PROJECT_NAME}
   PRIVATE MobileRT
+  PUBLIC tinyobjloader
   general "${COMMON_LINKER_FLAGS}"
   debug "${COMMON_LINKER_FLAGS_DEBUG}" "${COMMON_LINKER_FLAGS_TEST}"
   optimized "${COMMON_LINKER_FLAGS_RELEASE}" )

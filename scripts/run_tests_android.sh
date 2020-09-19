@@ -134,7 +134,7 @@ function waitForEmulator() {
   callCommand adb kill-server
   callCommandUntilSuccess adb start-server
   callCommandUntilSuccess adb wait-for-device
-  callCommandUntilSuccess adb shell "while [[ -z $(getprop sys.boot_completed) ]]; do sleep 3; done; input keyevent 82"
+#  callCommandUntilSuccess adb shell "while [[ -z $(getprop sys.boot_completed) ]]; do sleep 3; done; input keyevent 82"
   callCommandUntilSuccess adb shell whoami
 
   echo "Set adb as root, to be able to change files permissions"
