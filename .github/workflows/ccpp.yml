@@ -1,6 +1,8 @@
 name: Unit Tests C++
 
 on: [push, pull_request, release]
+branches-ignore:
+  - '**'
 
 defaults:
   run:

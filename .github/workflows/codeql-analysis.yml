@@ -5,6 +5,8 @@ on:
   pull_request:
   schedule:
     - cron: '0 15 * * 6'
+  branches-ignore:
+    - '**'
 
 jobs:
   analyze:

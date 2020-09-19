@@ -29,8 +29,10 @@ target_include_directories( ${PROJECT_NAME} SYSTEM PUBLIC "${GLM_HEADERS}" )
 # Set compiler flags
 ###############################################################################
 message( STATUS "Adding compiler flags." )
-# -Wno-date-time because of PCG
-target_compile_options( ${PROJECT_NAME} PUBLIC -Wno-date-time )
+if( NOT CMAKE_SYSTEM_NAME MATCHES "Windows" )
+  # -Wno-date-time because of PCG
+  target_compile_options( ${PROJECT_NAME} PUBLIC -Wno-date-time )
+endif()
 target_compile_options( ${PROJECT_NAME} PRIVATE ${COMMON_FLAGS} )
 target_compile_options( ${PROJECT_NAME} PRIVATE
   $<$<CONFIG:DEBUG>:${COMMON_FLAGS_DEBUG}> )
@@ -47,9 +49,6 @@ if( DEFINED ANDROID_ABI )
   target_link_libraries( ${PROJECT_NAME} PRIVATE libomp.a )
   target_link_libraries( ${PROJECT_NAME} PUBLIC log )
 else()
-  message( STATUS "Native OS: Linking with pthread." )
-
-  target_link_libraries( ${PROJECT_NAME} PUBLIC pthread )
   if( CMAKE_HOST_SYSTEM MATCHES "Linux" )
     if( CMAKE_CXX_COMPILER MATCHES "clang" )
       message( STATUS "Linux OS: Linking Clang with dynamic OpenMP." )
@@ -68,8 +67,19 @@ else()
     else()
       message( STATUS "Native OS: Linking GCC with dynamic OpenMP." )
 
-      target_link_libraries( ${PROJECT_NAME} PRIVATE gomp )
+      if( NOT CMAKE_SYSTEM_NAME MATCHES "Windows" )
+        target_link_libraries( ${PROJECT_NAME} PRIVATE gomp )
+      endif()
     endif()
+  endif()
+  message( STATUS "Native OS: Linking with pthread." )
+  if( CMAKE_SYSTEM_NAME MATCHES "Windows" )
+    find_package( Threads REQUIRED )
+    find_package( OpenMP REQUIRED )
+#    target_link_libraries( ${PROJECT_NAME} PRIVATE Threads::Threads )
+    target_link_libraries( ${PROJECT_NAME} PRIVATE OpenMP::OpenMP_CXX )
+  else()
+    target_link_libraries( ${PROJECT_NAME} PUBLIC pthread )
   endif()
 endif()
 

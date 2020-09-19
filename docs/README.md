@@ -1,6 +1,6 @@
 # MobileRT: Mobile Ray Tracing engine <br/>
 - A portable Ray Tracing (RT) engine for multiple devices <br/>
-- Already available interfaces for Android and Linux <br/>
+- Already available interfaces for Android, Linux and MacOS <br/>
 
 [comment]: # (Licenses and documentation)
 [![GitHub](https://img.shields.io/github/license/TiagoMSSantos/MobileRT)](https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/LICENSE)
