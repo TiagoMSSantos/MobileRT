@@ -123,7 +123,7 @@ public final class ConfigGlAttribute {
         private int componentsInBuffer = 0;
 
         /**
-         * Sets the scene of {@link Config}.
+         * Sets the attribute name of {@link ConfigGlAttribute}.
          *
          * @param name The name of the attribute.
          * @return The builder with {@link ConfigGlAttribute.Builder#attributeName} already set.
@@ -139,7 +139,7 @@ public final class ConfigGlAttribute {
         }
 
         /**
-         * Sets the scene of {@link Config}.
+         * Sets the buffer of {@link ConfigGlAttribute}.
          *
          * @param buffer The {@link Buffer} with the data for the attribute.
          * @return The builder with {@link ConfigGlAttribute.Builder#buffer} already set.
@@ -155,7 +155,7 @@ public final class ConfigGlAttribute {
         }
 
         /**
-         * Sets the scene of {@link Config}.
+         * Sets the location of {@link ConfigGlAttribute}.
          *
          * @param location The GLSL location for the attribute.
          * @return The builder with {@link ConfigGlAttribute.Builder#attributeLocation} already set.
@@ -171,7 +171,7 @@ public final class ConfigGlAttribute {
         }
 
         /**
-         * Sets the scene of {@link Config}.
+         * Sets the number of components of {@link ConfigGlAttribute}.
          *
          * @param components The number of components in the attribute.
          * @return The builder with {@link ConfigGlAttribute.Builder#attributeLocation} already set.
