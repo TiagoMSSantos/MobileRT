@@ -127,6 +127,8 @@ if( NOT DEFINED ANDROID_ABI )
   endif()
 endif()
 
+set( CMAKE_BUILD_TYPE_INIT "${CMAKE_BUILD_TYPE}" CACHE STRING "CUSTOM" FORCE )
+
 message( STATUS "Turning off GLM test." )
 set( GLM_TEST_ENABLE "OFF" CACHE STRING "CUSTOM" FORCE )
 ###############################################################################
