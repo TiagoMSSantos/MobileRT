@@ -10,7 +10,7 @@ defaults:
     working-directory: .
 
 jobs:
-  Unit_Tests:
+  Build:
     strategy:
       fail-fast: false
       matrix:
@@ -131,7 +131,7 @@ jobs:
         echo "Result: '${res}'";
         exit ${res};
 
-    - name: Build
+    - name: Build ${{ matrix.type }}
       if: success()
       working-directory: .
       run: |

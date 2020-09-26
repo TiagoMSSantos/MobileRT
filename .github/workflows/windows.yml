@@ -7,31 +7,33 @@ on: [push, pull_request, release]
 env:
   CMAKE_VERSION: 3.16.2
   NINJA_VERSION: 1.9.0
-  BUILD_TYPE: Debug
   CCACHE_VERSION: 3.7.7
 
 jobs:
-  build:
-    name: ${{ matrix.config.name }}
+  Build:
+    name: ${{ matrix.config.name }} ${{ matrix.type }}
     runs-on: ${{ matrix.config.os }}
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
+        type: [Debug, Release]
         config:
         - {
-            name: "Windows Latest MSVC", artifact: "Windows-MSVC.tar.xz",
-            os: windows-latest,
+            name: "Windows MSVC", artifact: "Windows-MSVC.tar.xz",
+            os: windows-2019,
             cc: "cl", cxx: "cl",
             environment_script: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
           }
         - {
-            name: "Windows Latest MinGW", artifact: "Windows-MinGW.tar.xz",
-            os: windows-latest,
+            name: "Windows MinGW", artifact: "Windows-MinGW.tar.xz",
+            os: windows-2019,
             cc: "gcc", cxx: "g++"
           }
 
     steps:
-    - uses: actions/checkout@v2.3.3
+    - name: Checkout
+      uses: actions/checkout@v2.3.3
 
     - name: Download Ninja and CMake
       id: cmake_and_ninja
@@ -118,20 +120,21 @@ jobs:
         py7zrversion: '==0.9.1'
         extra: '--external 7z'
 
-    - name: Build
+    - name: Build ${{ matrix.type }}
       working-directory: .
       shell: bash
       run: |
         mkdir -p ./reports;
-        bash scripts/compile_native.sh debug g++ 2>&1 | tee ./reports/build.log;
+        bash scripts/compile_native.sh ${{ matrix.type }} g++ 2>&1 | tee ./reports/build.log;
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
         exit ${res};
 
     - name: Run tests
+      working-directory: .
       shell: bash
       run: |
-        bash ./scripts/run_tests.sh debug 2>&1 | tee ./reports/tests.log;
+        bash ./scripts/run_tests.sh ${{ matrix.type }} 2>&1 | tee ./reports/tests.log;
 
     - name: Upload reports
       uses: actions/upload-artifact@v1
