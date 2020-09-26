@@ -105,8 +105,10 @@
 ## Building process
 - [x] Compatible with C++11 compilers
 - [ ] Compatible with C++03 compilers
-- [x] Compatible with GCC
-- [x] Compatible with Clang
+- [x] Compatible with GNU C++ Compiler (g++)
+- [x] Compatible with Clang++
+- [x] Compatible with MinGW (g++)
+- [x] Compatible with Microsoft Visual C++ (MSVC)
 - [x] Support compiler warnings for clang / g++ in CMake
 - [x] Support compiler warnings for Java
 - [x] Support warnings for Gradle

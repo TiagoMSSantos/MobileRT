@@ -3,6 +3,11 @@
 - Already available interfaces for:  <br/>
   - Android (through Java + JNI)
   - Linux, MacOS X, Windows (through Qt 4 or 5)
+- Compatible with C++ compilers:  <br/>
+  - GNU C++ Compiler (g++)
+  - Clang++
+  - MinGW (g++)
+  - Microsoft Visual C++ (MSVC)
 
 [comment]: # (Licenses and documentation)
 [![GitHub](https://img.shields.io/github/license/TiagoMSSantos/MobileRT)](https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/LICENSE)
