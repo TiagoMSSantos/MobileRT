@@ -1,10 +1,16 @@
-paths:
-  - app/MobileRT
-  - app/Components
-  - app/System_dependent
-  - app/Scenes
-  - app/Unit_Testing
-  - app/src
+name: "My CodeQL config"
 
-paths-ignore:
-  - app/third_party
+disable-default-queries: false
+
+# The "paths"/"paths-ignore" fields of the config only have effect for Javascript and Python
+
+#paths:
+#  - app/MobileRT
+#  - app/Components
+#  - app/System_dependent
+#  - app/Scenes
+#  - app/Unit_Testing
+#  - app/src
+#
+#paths-ignore:
+#  - app/third_party
