@@ -1,0 +1,41 @@
+name: Deploy Jekyll site to GitHub Pages
+
+on:
+  push:
+  pull_request:
+  release:
+    branches:
+      - master
+  schedule:
+    - cron:  '*/5 * * * *'
+
+jobs:
+  github-pages:
+    runs-on: ubuntu-16.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.3.3
+
+      - name: Install missing dependencies
+        run: |
+          sudo gem install bundler:1.16.1;
+          gem update bundler --conservative;
+#          bundle update --bundler;
+
+#      - name: Deploy Jekyll site to GitHub Pages
+#        uses: helaili/jekyll-action@2.0.4
+#        env:
+#          JEKYLL_PAT: ${{ secrets.REPOSITORY_TOKEN }}
+#        with:
+#          target_branch: 'master'
+#          gem_src: '${{ github.workspace }}'
+
+      - name: Trigger GitHub pages rebuild
+        run: |
+          curl --fail --request POST \
+            --url https://api.github.com/repos/${{ github.repository }}/pages/builds \
+            --header "Authorization: Bearer $USER_TOKEN"
+        env:
+          # You must create a personal token with repo access as GitHub does
+          # not yet support server-to-server page builds.
+          USER_TOKEN: ${{ secrets.REPOSITORY_TOKEN }}

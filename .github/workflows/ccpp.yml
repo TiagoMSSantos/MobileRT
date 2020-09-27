@@ -1,6 +1,17 @@
 name: Build Qt
 
-on: [push, pull_request, release]
+on:
+  pull_request:
+  release:
+  push:
+    paths-ignore:
+    - 'docs/**'
+    - 'docker_image/**'
+    - 'scripts/Downloads/**'
+    - 'scripts/plot/**'
+    - 'WavefrontOBJs/**'
+    - '.github/**'
+    - '*'
 #branches-ignore:
 #  - '**'
 
@@ -98,7 +109,7 @@ jobs:
       if: success() && startsWith(matrix.os, 'macos')
       run: |
         mkdir -p ./reports;
-        brew install cartr/qt4/pyqt@4 2>&1 | tee ./reports/install_qt4.log;
+        brew install qt 2>&1 | tee ./reports/install_qt.log;
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
         exit ${res};
