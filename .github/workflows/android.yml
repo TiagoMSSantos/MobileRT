@@ -1,6 +1,17 @@
 name: Build Android
 
-on: [push, pull_request, release]
+on:
+  pull_request:
+  release:
+  push:
+    paths-ignore:
+    - 'docs/**'
+    - 'docker_image/**'
+    - 'scripts/Downloads/**'
+    - 'scripts/plot/**'
+    - 'WavefrontOBJs/**'
+    - '.github/**'
+    - '*'
 #branches-ignore:
 #  - '**'
 
