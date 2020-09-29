@@ -11,6 +11,7 @@ on:
     - 'scripts/plot/**'
     - 'WavefrontOBJs/**'
     - '.github/**'
+    - '!.github/workflows/windows.yml'
     - '*'
 #branches-ignore:
 #  - '**'
