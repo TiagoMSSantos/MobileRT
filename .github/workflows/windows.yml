@@ -149,7 +149,8 @@ jobs:
         bash ./scripts/run_tests.sh ${{ matrix.type }} 2>&1 | tee ./reports/tests.log;
 
     - name: Upload reports
-      uses: actions/upload-artifact@v1
+      if: always()
+      uses: actions/upload-artifact@v2
       with:
-        path: ./reports
         name: Reports
+        path: ./reports

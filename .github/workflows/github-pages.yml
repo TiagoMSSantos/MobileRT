@@ -6,8 +6,8 @@ on:
   release:
     branches:
       - master
-  schedule:
-    - cron:  '*/5 * * * *'
+#  schedule:
+#    - cron:  '*/5 * * * *'
 
 jobs:
   github-pages:

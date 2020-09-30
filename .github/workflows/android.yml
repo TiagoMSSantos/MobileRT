@@ -154,7 +154,7 @@ jobs:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       run: |
         mkdir -p ./reports;
-        curl --data-binary @codecov.yml https://codecov.io/validate 2>&1 | tee ./reports/validate_codecov.log;
+        curl --retry 5 --retry-delay 2 --connect-timeout 2 --data-binary @codecov.yml https://codecov.io/validate 2>&1 | tee ./reports/validate_codecov.log;
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
         exit 0;
@@ -166,7 +166,7 @@ jobs:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       run: |
         mkdir -p ./reports;
-        curl -s https://codecov.io/bash | bash -s -- -c -F aFlag -f app/build/reports/coverage/debug/report.xml -v 2>&1 | tee ./reports/codecov.log;
+        curl --retry 5 --retry-delay 2 --connect-timeout 2 -s https://codecov.io/bash | bash -s -- -c -F aFlag -f app/build/reports/coverage/debug/report.xml -v 2>&1 | tee ./reports/codecov.log;
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
         exit 0;

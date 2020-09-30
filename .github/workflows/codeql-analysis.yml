@@ -4,7 +4,7 @@ name: Build CodeQL
 # a: minute (0 - 59)
 # b: hour (0 - 23)
 # c: day of the month (1 - 31)
-# d: onth (1 - 12 or JAN-DEC)
+# d: month (1 - 12 or JAN-DEC)
 # e: day of the week (0 - 6 or SUN-SAT)
 
 on: [push, pull_request, release]

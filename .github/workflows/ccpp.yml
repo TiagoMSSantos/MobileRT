@@ -82,7 +82,7 @@ jobs:
       if: success() && startsWith(matrix.os, 'macos')
       run: |
         mkdir -p ./reports;
-        brew update 2>&1 | tee ./reports/update_repository.log;
+        brew update 2>&1 | tee ./reports/update_repository.log || true;
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
         exit 0;
@@ -110,6 +110,10 @@ jobs:
       if: success() && startsWith(matrix.os, 'macos')
       run: |
         mkdir -p ./reports;
+        brew tap cartr/qt4 2>&1 | tee ./reports/tap_qt4.log;
+        brew uninstall --force openssl@1.0 2>&1 | tee ./reports/uninstall_openssl.log;
+        brew install openssl@1.0 2>&1 | tee ./reports/install_openssl.log;
+        brew install qt@4 2>&1 | tee ./reports/install_qt4.log;
         brew install qt 2>&1 | tee ./reports/install_qt.log;
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
@@ -213,7 +217,7 @@ jobs:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       run: |
         mkdir -p ./reports;
-        curl --data-binary @codecov.yml https://codecov.io/validate 2>&1 | tee ./reports/validate_codecov.log;
+        curl --retry 5 --retry-delay 2 --connect-timeout 2 --data-binary @codecov.yml https://codecov.io/validate 2>&1 | tee ./reports/validate_codecov.log;
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
         exit 0;
@@ -225,7 +229,7 @@ jobs:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       run: |
         mkdir -p ./reports;
-        curl -s https://codecov.io/bash | bash -s -- -c -F aFlag ./build_${{ matrix.type }} -v 2>&1 | tee ./reports/send_codecov_report.log;
+        curl --retry 5 --retry-delay 2 --connect-timeout 2 -s https://codecov.io/bash | bash -s -- -c -F aFlag ./build_${{ matrix.type }} -v 2>&1 | tee ./reports/send_codecov_report.log;
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
         exit 0;
