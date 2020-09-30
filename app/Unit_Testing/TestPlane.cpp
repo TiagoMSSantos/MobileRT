@@ -13,13 +13,13 @@ protected:
     }
 
     virtual void TearDown () {
-        delete plane;
     }
 
     ~TestPlane ();
 };
 
 TestPlane::~TestPlane () {
+    delete plane;
 }
 
 namespace {

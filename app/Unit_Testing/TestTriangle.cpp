@@ -25,13 +25,13 @@ protected:
     }
 
     virtual void TearDown () {
-        delete triangle;
     }
 
     ~TestTriangle ();
 };
 
 TestTriangle::~TestTriangle () {
+    delete triangle;
 }
 
 namespace {
