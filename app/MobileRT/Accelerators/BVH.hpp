@@ -184,11 +184,11 @@ namespace MobileRT {
                   : 2
             };
 
-//            ::std::sort(itBegin, itEnd,
-//                [&](const BuildNode &node1, const BuildNode &node2) {
-//                    return node1.centroid_[longestAxis] < node2.centroid_[longestAxis];
-//                }
-//            );
+            /*"::std::sort(itBegin, itEnd,
+                [&](const BuildNode &node1, const BuildNode &node2) {
+                    return node1.centroid_[longestAxis] < node2.centroid_[longestAxis];
+                }
+            );"*/
 
             const auto step {maxDist / static_cast<float> (numBuckets)};
             const auto stepAxis {step[longestAxis]};

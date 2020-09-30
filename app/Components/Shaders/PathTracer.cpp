@@ -81,7 +81,7 @@ bool PathTracer::shade(::glm::vec3 *const rgb, const Intersection &intersection,
                 }
             }
             Ld *= kD;
-            //Ld *= sizeLights;
+            // "Ld *= sizeLights;"
             Ld /= samplesLight;
         }
 

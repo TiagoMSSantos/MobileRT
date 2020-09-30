@@ -34,7 +34,7 @@ bool NoShadows::shade(::glm::vec3 *const rgb, const Intersection &intersection, 
                 const auto &vectorToLightNormalized {::glm::normalize(lightPosition - intersection.point_)};
                 const auto cosNl {::glm::dot(shadingNormal, vectorToLightNormalized)};
                 if (cosNl > 0.0F) {
-                    //rgb += kD * radLight * cosNl;
+                    // "rgb += kD * radLight * cosNl;"
                     *rgb += light.radiance_.Le_ * cosNl;
                 }
             }

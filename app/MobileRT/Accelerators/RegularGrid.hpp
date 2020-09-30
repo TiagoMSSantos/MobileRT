@@ -210,7 +210,7 @@ namespace MobileRT {
                         if (intersectedBox) {
                             ::std::lock_guard<::std::mutex> lock {mutexes[idx]};
                             this->grid_[idx].emplace_back(&primitive);
-//                            LOG("add idx = ", idx, " index = ", index);
+                            // "LOG("add idx = ", idx, " index = ", index);"
                         }
                     }
                 }
