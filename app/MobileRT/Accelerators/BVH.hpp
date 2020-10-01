@@ -184,12 +184,14 @@ namespace MobileRT {
                   : 2
             };
 
-            /*"::std::sort(itBegin, itEnd,
-                [&](const BuildNode &node1, const BuildNode &node2) {
-                    return node1.centroid_[longestAxis] < node2.centroid_[longestAxis];
-                }
-            );"*/
+            // Use C++ standard sort
+//            "::std::sort(itBegin, itEnd,"
+//                "[&](const BuildNode &node1, const BuildNode &node2) {"
+//                    "return node1.centroid_[longestAxis] < node2.centroid_[longestAxis];"
+//                "}"
+//            ");"
 
+            // Use C++ partition to sort primitives by buckets (it is faster than standard sort)
             const auto step {maxDist / static_cast<float> (numBuckets)};
             const auto stepAxis {step[longestAxis]};
             const auto startBox {surroundingBox.getPointMin()[longestAxis]};

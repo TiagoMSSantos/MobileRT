@@ -7,7 +7,12 @@ name: Build CodeQL
 # d: month (1 - 12 or JAN-DEC)
 # e: day of the week (0 - 6 or SUN-SAT)
 
-on: [push, pull_request, release]
+on:
+  push:
+  pull_request:
+  release:
+    branches:
+      - master
 #branches-ignore:
 #  - '**'
 

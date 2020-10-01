@@ -1,5 +1,6 @@
 package puscas.mobilertapp;
 
+import com.google.common.base.MoreObjects;
 import java.util.Locale;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
@@ -55,6 +56,15 @@ public final class ConfigSamples {
     @Contract(pure = true)
     public int getSamplesLight() {
         return this.samplesLight;
+    }
+
+    @Override
+    public String toString() {
+        LOGGER.info("ConfigSamples#toString");
+        return MoreObjects.toStringHelper(this)
+            .add("samplesLight", this.samplesLight)
+            .add("samplesPixel", this.samplesPixel)
+            .toString();
     }
 
     /**

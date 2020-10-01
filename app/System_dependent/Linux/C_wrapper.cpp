@@ -26,6 +26,24 @@
 
 static ::std::unique_ptr<::MobileRT::Renderer> renderer_ {};
 
+/**
+ * Helper method that starts the Ray Tracer engine.
+ *
+ * @param bitmap       The bitmap to where the rendered image should be put.
+ * @param width        The width of the image to render.
+ * @param height       The height of the image to render.
+ * @param threads      The number of threads to be used by the Ray Tracer engine.
+ * @param shader       The shader to be used.
+ * @param sceneIndex   The scene index to render.
+ * @param samplesPixel The number of samples per pixel to use.
+ * @param samplesLight The number of samples per light to use.
+ * @param repeats      The number of times to render the scene.
+ * @param accelerator  The acceleration structure to use.
+ * @param printStdOut  Whether or not the logs should be redirected to the standard output.
+ * @param objFilePath  The path to the OBJ file of the scene.
+ * @param mtlFilePath  The path to the MTL file of the scene.
+ * @param camFilePath  The path to the CAM file of the scene.
+ */
 static void
 work_thread(
     ::std::int32_t *const bitmap, const ::std::int32_t width,
@@ -42,10 +60,12 @@ work_thread(
         ::std::chrono::duration<double> timeLoading {};
         ::std::chrono::duration<double> timeFilling {};
         if (!printStdOut) {
+            // Turn off redirection of logs to standard output
             old_buf_stdout = ::std::cout.rdbuf(ss.rdbuf());
             old_buf_stderr = ::std::cerr.rdbuf(ss.rdbuf());
         }
         {
+            // Print debug information
             LOG("width_ = ", width);
             LOG("height_ = ", height);
             LOG("threads = ", threads);
@@ -67,6 +87,7 @@ work_thread(
             ::std::unique_ptr<::MobileRT::Camera> camera {};
             ::glm::vec3 maxDist {};
 
+            // Setup scene and camera
             switch (sceneIndex) {
                 case 0:
                     scene = cornellBox_Scene(::std::move(scene));
@@ -116,12 +137,16 @@ work_thread(
                 }
                     break;
             }
+            // Setup sampler
             if (samplesPixel > 1) {
                 samplerPixel = ::MobileRT::std::make_unique<::Components::StaticHaltonSeq> ();
             } else {
                 samplerPixel = ::MobileRT::std::make_unique<::Components::Constant> (0.5F);
             }
+            // Start timer to measure latency of creating shader (including the build of
+            // acceleration structure)
             const auto startCreating {::std::chrono::system_clock::now()};
+            // Setup shader
             switch (shader) {
                 case 1: {
                     shader_ = ::MobileRT::std::make_unique<::Components::Whitted> (
@@ -163,6 +188,7 @@ work_thread(
                 break;
                 }
             }
+            // Stop timer
             const auto endCreating {::std::chrono::system_clock::now()};
             timeCreating = endCreating - startCreating;
             LOG("Shader created = ", timeCreating.count());
@@ -179,6 +205,7 @@ work_thread(
                     width, height, samplesPixel
             );
 
+            // Print debug information
             LOG("TRIANGLES = ", triangles);
             LOG("SPHERES = ", spheres);
             LOG("PLANES = ", planes);
@@ -195,6 +222,7 @@ work_thread(
             LOG("Started rendering scene");
             const auto startRendering {::std::chrono::system_clock::now()};
             do {
+                // Render a frame
                 renderer_->renderFrame(bitmap, threads);
                 repeats--;
             } while (repeats > 0);
@@ -204,10 +232,12 @@ work_thread(
             LOG("Finished rendering scene");
         }
         if (!printStdOut) {
+            // Turn on redirection of logs to standard output
             ::std::cout.rdbuf(old_buf_stdout);
             ::std::cerr.rdbuf(old_buf_stderr);
         }
 
+        // Print some latencies
         LOG("Loading Time in secs = ", timeLoading.count());
         LOG("Filling Time in secs = ", timeFilling.count());
         LOG("Creating Time in secs = ", timeCreating.count());
@@ -221,12 +251,34 @@ work_thread(
     }
 }
 
+/**
+ * Helper method that stops the Ray Tracing process.
+ */
 void stopRender() {
     if (renderer_ != nullptr) {
         renderer_->stopRender();
     }
 }
 
+/**
+ * Helper method that starts the Ray Tracer engine.
+ *
+ * @param bitmap       The bitmap to where the rendered image should be put.
+ * @param width        The width of the image to render.
+ * @param height       The height of the image to render.
+ * @param threads      The number of threads to be used by the Ray Tracer engine.
+ * @param shader       The shader to be used.
+ * @param scene        The scene index to render.
+ * @param samplesPixel The number of samples per pixel to use.
+ * @param samplesLight The number of samples per light to use.
+ * @param repeats      The number of times to render the scene.
+ * @param accelerator  The acceleration structure to use.
+ * @param printStdOut  Whether or not the logs should be redirected to the standard output.
+ * @param async        Whether or not the Ray Tracer should render the image asynchronously or synchronously.
+ * @param pathObj      The path to the OBJ file of the scene.
+ * @param pathMtl      The path to the MTL file of the scene.
+ * @param pathCam      The path to the CAM file of the scene.
+ */
 void RayTrace(::std::int32_t *const bitmap, const ::std::int32_t width, const ::std::int32_t height, const ::std::int32_t threads,
               const ::std::int32_t shader, const ::std::int32_t scene, const ::std::int32_t samplesPixel, const ::std::int32_t samplesLight,
               const ::std::int32_t repeats, const ::std::int32_t accelerator, const bool printStdOut, const bool async,

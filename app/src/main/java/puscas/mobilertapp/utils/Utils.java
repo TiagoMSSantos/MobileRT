@@ -139,8 +139,12 @@ public final class Utils {
     public static int getValueFromPicker(@NonNull final NumberPicker picker) {
         LOGGER.info("getValueFromPicker");
 
-        return Integer.parseInt(picker.getDisplayedValues()
-            [picker.getValue() - 1]);
+        try {
+            return Integer.parseInt(picker.getDisplayedValues()
+                [picker.getValue() - 1]);
+        } catch (final NumberFormatException ex) {
+            throw new FailureException(ex);
+        }
     }
 
     /**
@@ -157,10 +161,15 @@ public final class Utils {
         LOGGER.info("getResolutionFromPicker");
 
         final String strResolution = picker.getDisplayedValues()[picker.getValue() - 1];
-        final int width = Integer.parseInt(strResolution.substring(0, strResolution.indexOf('x')));
-        final int height = Integer.parseInt(
-            strResolution.substring(strResolution.indexOf('x') + 1));
-        return Pair.of(width, height);
+
+        try {
+            final int width = Integer.parseInt(strResolution.substring(0, strResolution.indexOf('x')));
+            final int height = Integer.parseInt(
+                strResolution.substring(strResolution.indexOf('x') + 1));
+            return Pair.of(width, height);
+        } catch (final NumberFormatException ex) {
+            throw new FailureException(ex);
+        }
     }
 
 }
