@@ -24,12 +24,40 @@ namespace MobileRT {
     template<typename T>
     class RegularGrid final {
     private:
+
+        /**
+         * The grid structure.
+         */
         ::std::vector<::std::vector<T*>> grid_;
+
+        /**
+         * The primitives.
+         */
         ::std::vector<T> primitives_;
+
+        /**
+         * The size of the cells in all the axes.
+         */
         ::std::int32_t gridSize_ {};
+
+        /**
+         * The number of bits in the grid size value (minus 1).
+         */
         ::std::uint32_t gridShift_ {};
+
+        /**
+         * The World boundaries.
+         */
         AABB worldBoundaries_ {};
+
+        /**
+         * The inverted cell size (gridSize / worldBoundaries).
+         */
         ::glm::vec3 cellSizeInverted_ {};
+
+        /**
+         * The size of a cell (worldBoundaries / gridSize).
+         */
         ::glm::vec3 cellSize_ {};
 
     private:
@@ -342,9 +370,13 @@ namespace MobileRT {
         // start stepping
         // trace primary ray
         while (true) {
+
+            // Get the primitives inside the cell.
             const auto index {getCellIndex(cellX, cellY, cellZ)};
             const auto itPrimitive {this->grid_.begin() + index};
             auto primitivesList {*itPrimitive};
+
+            // Check if the ray intersects any primitive in the cell.
             for (auto *const primitive : primitivesList) {
                 const auto lastDist {intersection.length_};
                 intersection = primitive->intersect(intersection, ray);
@@ -389,9 +421,13 @@ namespace MobileRT {
         }
         testloop:
         while (true) {
+
+            // Get the primitives in the cell.
             const auto index {getCellIndex(cellX, cellY, cellZ)};
             const auto itPrimitives {this->grid_.begin() + index};
             auto primitivesList {*itPrimitives};
+
+            // Check if the ray intersects any primitive in the cell.
             for (auto *const primitive : primitivesList) {
                 intersection = primitive->intersect(intersection, ray);
             }

@@ -12,10 +12,31 @@ namespace MobileRT {
      */
     class Ray final {
     public:
+
+        /**
+         * The origin of the ray.
+         */
         const ::glm::vec3 origin_ {0};
+
+        /**
+         * The direction of the ray.
+         */
         const ::glm::vec3 direction_  {0};
+
+        /**
+         * The number of bounces of the ray.
+         */
         const ::std::int32_t depth_{-1};
+
+        /**
+         * The identifier of the ray.
+         */
         const ::std::int32_t id_ {-1};
+
+        /**
+         * The pointer to the primitive from where the ray was casted from.
+         * This is useful to avoid a plane casting a ray that intersects itself.
+         */
         const void *const primitive_ {nullptr};
 
     private:
