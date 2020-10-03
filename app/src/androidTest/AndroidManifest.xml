@@ -9,6 +9,7 @@
 
     <application
         android:requestLegacyExternalStorage="true">
+        <!-- ↑ Need old method to be compatible with all Androids -->
         <activity android:name="puscas.mobilertapp.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

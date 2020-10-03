@@ -64,7 +64,15 @@ public final class UtilsContext {
     @Nonnull
     public static String getSdCardPath(@Nonnull final Context context) {
         LOGGER.info("Getting SD card path");
+
+        // The new method to get the SD card path.
+        // This method returns an array of File with null (so is not working properly yet).
+        // This is why it is still needed to use the old (deprecated) approach to guarantee
+        // compatibility with most Androids.
+        // TODO: Still need to do some discovery how to properly use this new method to find the
+        //  SD card path.
         final File[] dirs = ContextCompat.getExternalFilesDirs(context, null);
+
         final String sdCardPath = Optional.ofNullable(dirs.length > 1 ? dirs[1] : dirs[0])
             .map(File::getAbsolutePath)
             .orElse(Environment.getExternalStorageDirectory().getAbsolutePath());
