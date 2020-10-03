@@ -10,6 +10,7 @@ import androidx.test.rule.GrantPermissionRule;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 import org.junit.After;
 import org.junit.Before;
@@ -62,6 +63,7 @@ public class AbstractTest {
     /**
      * The {@link MainActivity} to test.
      */
+    @Nullable
     protected MainActivity activity = null;
 
 

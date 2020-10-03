@@ -57,11 +57,13 @@ jobs:
 
     - name: Setup build directory
       if: success()
+      working-directory: .
       run: |
         mkdir -p build_${{ matrix.type }};
 
     - name: Setup code climate report
       if: success()
+      working-directory: .
       run: |
         mkdir -p ./reports;
         chmod +x ./test-reporter-latest-linux-amd64 2>&1 | tee ./reports/setup_code_climate.log;
@@ -71,6 +73,7 @@ jobs:
 
     - name: Update repository Linux
       if: success() && startsWith(matrix.os, 'ubuntu')
+      working-directory: .
       run: |
         mkdir -p ./reports;
         sudo apt-get update 2>&1 | tee ./reports/update_repository.log;
@@ -80,6 +83,7 @@ jobs:
 
     - name: Update repository MacOS
       if: success() && startsWith(matrix.os, 'macos')
+      working-directory: .
       run: |
         mkdir -p ./reports;
         brew update 2>&1 | tee ./reports/update_repository.log || true;
@@ -89,6 +93,7 @@ jobs:
 
     - name: Install OpenMP MacOS
       if: success() && startsWith(matrix.os, 'macos')
+      working-directory: .
       run: |
         mkdir -p ./reports;
         brew install libomp 2>&1 | tee ./reports/install_openmp.log;
@@ -99,6 +104,7 @@ jobs:
 
     - name: Install Qt4 Linux
       if: success() && startsWith(matrix.os, 'ubuntu')
+      working-directory: .
       run: |
         mkdir -p ./reports;
         sudo apt-get install --no-install-recommends -y libqt4-dev 2>&1 | tee ./reports/install_qt4.log;
@@ -108,6 +114,7 @@ jobs:
 
     - name: Install Qt4 MacOS
       if: success() && startsWith(matrix.os, 'macos')
+      working-directory: .
       run: |
         mkdir -p ./reports;
         brew tap cartr/qt4 2>&1 | tee ./reports/tap_qt4.log;
@@ -121,6 +128,7 @@ jobs:
 
     - name: Install code coverage analysis Linux
       if: success() && matrix.compiler == 'g++' && matrix.type == 'Debug' && startsWith(matrix.os, 'ubuntu')
+      working-directory: .
       run: |
         mkdir -p ./reports;
         sudo apt-get install --no-install-recommends -y lcov 2>&1 | tee ./reports/install_lcov.log;
@@ -130,6 +138,7 @@ jobs:
 
     - name: Install code coverage analysis MacOS
       if: success() && matrix.compiler == 'g++' && matrix.type == 'Debug' && startsWith(matrix.os, 'macos')
+      working-directory: .
       run: |
         mkdir -p ./reports;
         brew install lcov 2>&1 | tee ./reports/install_lcov.log;

@@ -74,10 +74,15 @@ public final class Constants {
         + "CornellBox-Water.obj";
 
     /**
+     * The name of the teapot model.
+     */
+    private static final String TEAPOT = "teapot";
+
+    /**
      * The path to the teapot2 OBJ file which should not exist in the SD card.
      */
     public static final String OBJ_FILE_NOT_EXISTS_SD_CARD = OBJ_FOLDER_NAME
-        + ConstantsUI.FILE_SEPARATOR + "teapot" + ConstantsUI.FILE_SEPARATOR + "teapot2" + ".obj";
+        + ConstantsUI.FILE_SEPARATOR + TEAPOT + ConstantsUI.FILE_SEPARATOR + "teapot2" + ".obj";
 
     /**
      * The number of bytes in an integer (usually is 4 bytes).
@@ -110,13 +115,13 @@ public final class Constants {
      * The path to the teapot OBJ file which should exist.
      */
     public static final String OBJ_FILE_TEAPOT = OBJ_PATH
-        + ConstantsUI.FILE_SEPARATOR + "teapot" + ConstantsUI.FILE_SEPARATOR + "teapot.obj";
+        + ConstantsUI.FILE_SEPARATOR + TEAPOT + ConstantsUI.FILE_SEPARATOR + "teapot.obj";
 
     /**
      * The path to the teapot2 OBJ file which should not exist in the Android device.
      */
     public static final String OBJ_FILE_NOT_EXISTS = OBJ_PATH
-        + ConstantsUI.FILE_SEPARATOR + "teapot" + ConstantsUI.FILE_SEPARATOR + "teapot2.obj";
+        + ConstantsUI.FILE_SEPARATOR + TEAPOT + ConstantsUI.FILE_SEPARATOR + "teapot2.obj";
 
     /**
      * A private constructor in order to prevent instantiating this helper class.

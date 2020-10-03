@@ -42,7 +42,7 @@ public final class StateTest {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
-        Assertions.assertThat(State.IDLE.getId()).isEqualTo(0);
+        Assertions.assertThat(State.IDLE.getId()).isZero();
         Assertions.assertThat(State.BUSY.getId()).isEqualTo(1);
         Assertions.assertThat(State.FINISHED.getId()).isEqualTo(2);
         Assertions.assertThat(State.STOPPED.getId()).isEqualTo(3);

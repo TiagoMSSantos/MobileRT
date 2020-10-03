@@ -31,7 +31,7 @@ jobs:
         # https://docs.github.com/en/github/finding-security-vulnerabilities-and-errors-in-your-code/configuring-code-scanning#overriding-automatic-language-detection
 
     steps:
-    - name: Checkout repository
+    - name: Checkout
       uses: actions/checkout@v2.3.3
       with:
         # We must fetch at least the immediate parents so that if this is
@@ -42,6 +42,7 @@ jobs:
     # Valid inputs are ['tools', 'languages', 'token', 'matrix', 'config-file', 'queries']
     # Queries: must be a built-in suite (security-extended or security-and-quality), a relative path, or be of the form "owner/repo[/path]@ref"
     - name: Initialize CodeQL
+      if: success()
       uses: github/codeql-action/init@v1
       with:
         languages: ${{ matrix.language }}
@@ -52,21 +53,25 @@ jobs:
 
     - name: Update repository Linux
       if: success() && matrix.language == 'cpp'
+      working-directory: .
       run: |
        sudo apt-get update;
 
     - name: Install Qt4 Linux
       if: success() && matrix.language == 'cpp'
+      working-directory: .
       run: |
        sudo apt-get install --no-install-recommends -y libqt4-dev;
 
     - name: Setup gradlew
       if: success() && matrix.language == 'java'
+      working-directory: .
       run: |
         chmod +x ./gradlew;
 
     - name: Build Gradle
       if: success() && matrix.language == 'java'
+      working-directory: .
       run: |
         mkdir -p ./app/build/reports;
         mkdir -p ./reports;
@@ -77,6 +82,7 @@ jobs:
 
     - name: Build C++
       if: success() && matrix.language == 'cpp'
+      working-directory: .
       run: |
         mkdir -p ./reports;
         bash scripts/compile_native.sh Debug g++ yes 2>&1 | tee ./reports/compile_native.log;
@@ -86,11 +92,13 @@ jobs:
 
     - name: Remove unnecessary code
       if: success() && matrix.language == 'cpp'
+      working-directory: .
       run: |
         rm -rf ./app/third_party/*;
 
     # Warning: Valid inputs are ['check_name', 'output', 'upload', 'ram', 'add-snippets', 'threads', 'checkout_path', 'token', 'matrix']
     - name: Perform CodeQL Analysis
+      if: success()
       uses: github/codeql-action/analyze@v1
       with:
         output: ../results

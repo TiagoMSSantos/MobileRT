@@ -1,0 +1,94 @@
+name: Build Sonar
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2.3.3
+      with:
+        fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+
+    - name: Set up JDK
+      if: success()
+      uses: actions/setup-java@v1.4.3
+      with:
+        java-version: 11
+
+    - name: Cache SonarCloud packages
+      if: success()
+      uses: actions/cache@v2.1.1
+      with:
+        path: ~/.sonar/cache
+        key: ${{ runner.os }}-sonar
+        restore-keys: ${{ runner.os }}-sonar
+
+    - name: Cache Gradle packages
+      if: success()
+      uses: actions/cache@v2.1.1
+      with:
+        path: ~/.gradle/caches
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+        restore-keys: ${{ runner.os }}-gradle
+
+    - name: Setup gradlew
+      if: success()
+      working-directory: .
+      run: |
+        mkdir -p ./reports;
+        chmod +x ./gradlew 2>&1 | tee ./reports/setup_gradlew.log;
+        export res="${PIPESTATUS[0]}";
+        echo "Result: '${res}'";
+        exit ${res};
+
+    - name: Run linter
+      if: success()
+      working-directory: .
+      run: |
+        mkdir -p ./app/build/reports;
+        mkdir -p ./reports;
+        bash ./scripts/check_android.sh debug 21.3.6528147 3.6.0 2>&1 | tee ./reports/check_android.log;
+        export res="${PIPESTATUS[0]}";
+        echo "Result: '${res}'";
+        exit ${res};
+
+    - name: Run unit tests Java
+      if: success()
+      working-directory: .
+      run: |
+        mkdir -p ./app/build/reports;
+        mkdir -p ./reports;
+        bash ./scripts/run_tests.sh debug 21.3.6528147 3.6.0 2>&1 | tee ./reports/run_tests.log;
+        export res="${PIPESTATUS[0]}";
+        echo "Result: '${res}'";
+        exit ${res};
+
+    - name: Run Android tests
+      if: success() && !startsWith(matrix.os, 'windows')
+      uses: ReactiveCircus/android-emulator-runner@v2.11.0
+      with:
+        api-level: 16
+        target: default
+        arch: x86
+        disable-animations: true
+        emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none
+        script: |
+          mkdir -p ./app/build/reports;
+          mkdir -p ./reports;
+          bash ./scripts/run_tests_android.sh debug all 21.3.6528147 3.6.0 false;
+
+    - name: Build and analyze
+      if: success()
+      working-directory: .
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      run: ./gradlew --parallel sonarqube --info

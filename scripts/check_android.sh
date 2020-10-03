@@ -11,7 +11,7 @@ cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit
 # Get arguments
 ###############################################################################
 type="${1:-release}"
-ndk_version="${2:-21.2.6472646}"
+ndk_version="${2:-21.3.6528147}"
 cmake_version="${3:-3.10.2}"
 ###############################################################################
 ###############################################################################
@@ -30,7 +30,9 @@ source scripts/helper_functions.sh
 function runLinter() {
   # Set path to reports
   reports_path=./app/build/reports
+  profile_path=./reports/profile
   callCommand mkdir -p ${reports_path}
+  callCommand mkdir -p ${profile_path}
 
   echo "Print Gradle version"
   callCommand ./gradlew --version
