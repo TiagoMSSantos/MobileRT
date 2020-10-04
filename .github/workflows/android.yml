@@ -204,7 +204,9 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      run: ./gradlew --parallel sonarqube --info
+      run: |
+        mkdir -p ./reports;
+        ./gradlew --parallel sonarqube --info 2>&1 | tee ./reports/sonarqube.log;
 
     - name: Upload reports
       if: always()
