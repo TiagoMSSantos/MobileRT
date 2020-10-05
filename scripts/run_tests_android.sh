@@ -241,7 +241,7 @@ function runInstrumentationTests() {
     echo "Running all tests"
     callCommand ./gradlew connected"${type}"AndroidTest -DtestType="${type}" \
       -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
-      ${code_coverage} --console plain \
+      ${code_coverage} --console plain --parallel \
       2>&1 | tee ${reports_path}/log_tests_"${type}".log
   elif [[ ${run_test} == rep_* ]]; then
     run_test_without_prefix=${run_test#"rep_"}
@@ -249,14 +249,14 @@ function runInstrumentationTests() {
     callCommandUntilError ./gradlew connected"${type}"AndroidTest -DtestType="${type}" \
       -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
       -Pandroid.testInstrumentationRunnerArguments.class="${run_test_without_prefix}" \
-      --console plain \
+      --console plain --parallel \
       2>&1 | tee ${reports_path}/log_tests_"${type}".log
   else
     echo "Running test: ${run_test}"
     callCommand ./gradlew connected"${type}"AndroidTest -DtestType="${type}" \
       -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
       -Pandroid.testInstrumentationRunnerArguments.class="${run_test}" \
-      --console plain \
+      --console plain --parallel \
       2>&1 | tee ${reports_path}/log_tests_"${type}".log
   fi
   resInstrumentationTests=${PIPESTATUS[0]}

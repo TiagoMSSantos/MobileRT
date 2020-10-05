@@ -61,6 +61,26 @@ jobs:
       with:
         java-version: 11
 
+    - name: Install Tree Linux
+      if: success() && matrix.os == 'ubuntu-16.04' && matrix.type == 'Debug'
+      working-directory: .
+      run: |
+        mkdir -p ./reports;
+        sudo apt-get install --no-install-recommends -y tree 2>&1 | tee ./reports/tree.log;
+        export res="${PIPESTATUS[0]}";
+        echo "Result: '${res}'";
+        exit ${res};
+
+    - name: Install Tree MacOS
+      if: success() && matrix.os == 'macos-10.15' && matrix.type == 'Debug'
+      working-directory: .
+      run: |
+        mkdir -p ./reports;
+        brew install tree 2>&1 | tee ./reports/tree.log;
+        export res="${PIPESTATUS[0]}";
+        echo "Result: '${res}'";
+        exit ${res};
+
     - name: Cache SonarCloud packages
       if: success()
       uses: actions/cache@v2.1.1
@@ -206,6 +226,7 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
         mkdir -p ./reports;
+        tree -a -f | grep -i app/build/reports | grep -i xml 2>&1 | tee tree.log;
         ./gradlew --parallel sonarqube --info 2>&1 | tee ./reports/sonarqube.log;
 
     - name: Upload reports

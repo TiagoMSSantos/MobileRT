@@ -61,7 +61,8 @@ jobs:
       if: success() && matrix.language == 'cpp'
       working-directory: .
       run: |
-       sudo apt-get install --no-install-recommends -y libqt4-dev;
+        mkdir -p ./reports;
+        sudo apt-get install --no-install-recommends -y libqt4-dev 2>&1 | tee ./reports/install_qt.log;
 
     - name: Setup gradlew
       if: success() && matrix.language == 'java'
