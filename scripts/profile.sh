@@ -33,6 +33,15 @@ function setPaths() {
   SCRIPTS_PATH="${MOBILERT_PATH}/scripts"
   PLOT_SCRIPTS_PATH="${SCRIPTS_PATH}/plot"
   OBJS_PATH="${MOBILERT_PATH}/WavefrontOBJs"
+
+  if [ -z "${PLOT_GRAPHS}" ]; then
+    PLOT_GRAPHS=${SCRIPTS_PATH}/"graphs"
+  fi
+  mkdir -p "${PLOT_GRAPHS}"
+
+  for FOLDER in ${PLOT_GRAPHS[@]}; do
+    FILES+=("$(find "${FOLDER}" -type f)")
+  done
 }
 ###############################################################################
 ###############################################################################
@@ -55,15 +64,6 @@ function setHeaders() {
 }
 ###############################################################################
 ###############################################################################
-
-if [ -z "${PLOT_GRAPHS}" ]; then
-  PLOT_GRAPHS=${SCRIPTS_PATH}/"graphs"
-fi
-mkdir -p "${PLOT_GRAPHS}"
-
-for FOLDER in ${PLOT_GRAPHS[@]}; do
-  FILES+=("$(find "${FOLDER}" -type f)")
-done
 
 ###############################################################################
 # Set paths for the scene

@@ -55,7 +55,8 @@ jobs:
       if: success() && matrix.language == 'cpp'
       working-directory: .
       run: |
-       sudo apt-get update;
+        mkdir -p ./reports;
+        sudo apt-get update 2>&1 | tee ./reports/apt_update.log;
 
     - name: Install Qt4 Linux
       if: success() && matrix.language == 'cpp'

@@ -4,15 +4,36 @@
 using ::MobileRT::Ray;
 
 namespace {
+
     /**
-     * A helper counter.
+     * An atomic counter to generate Ray ids.
+     */
+    ::std::atomic<::std::uint64_t> counter {};
+
+    /**
+     * A helper method that resets the Ray id generator counter.
+     */
+    void resetIdCounter() {
+        counter.store(0L, ::std::memory_order_relaxed);
+    }
+
+    /**
+     * A helper method that generates an id by using a counter.
      *
      * @return The new value of the counter.
      */
-    ::std::int32_t getId() {
-        static ::std::atomic<::std::int32_t> counter {};
-        const auto currentId {counter.fetch_add(1, ::std::memory_order_relaxed)};
+    ::std::uint64_t generateId() {
+        const auto currentId {counter.fetch_add(1L, ::std::memory_order_relaxed)};
         return currentId;
+    }
+
+    /**
+     * Helper method that gets the current id generated.
+     *
+     * @return The current value of the counter.
+     */
+    ::std::uint64_t getCurrentId() {
+        return counter.load(::std::memory_order_relaxed);
     }
 }//namespace
 
@@ -29,7 +50,7 @@ Ray::Ray(const ::glm::vec3 &dir, const ::glm::vec3 &origin,
     origin_ {origin},
     direction_ {dir},
     depth_ {depth},
-    id_ {getId()},
+    id_ {generateId()},
     primitive_ {primitive} {
     checkArguments();
 }
@@ -42,4 +63,20 @@ void Ray::checkArguments() const {
     ASSERT(!equal(this->direction_, ::glm::vec3 {0}), "direction can't be zero.");
 
     ASSERT(isValid(this->origin_), "origin must be valid.");
+}
+
+/**
+ * Helper method that gets the number of casted rays in the scene.
+ *
+ * @return The number of casted rays.
+ */
+::std::uint64_t Ray::getNumberOfCastedRays() noexcept {
+    return getCurrentId();
+}
+
+/**
+ * A helper method that resets the Ray id generator counter.
+ */
+void Ray::resetIdGenerator() noexcept {
+    resetIdCounter();
 }

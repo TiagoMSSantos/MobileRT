@@ -36,6 +36,7 @@ Renderer::Renderer(::std::unique_ptr<Shader> shader,
         resolution_ {width * height},
         samplesPixel_ {samplesPixel} {
     fillArrayWithHaltonSeq(&randomSequence);
+    Ray::resetIdGenerator();
 }
 
 /**
@@ -162,4 +163,14 @@ float Renderer::getTile(const ::std::int32_t sample) {
     }
     const auto it {randomSequence.begin() + current};
     return *it;
+}
+
+/**
+ * Helper method that calculates the total number of casted rays in the scene.
+ *
+ * @return The total number of casted rays.
+ */
+::std::uint64_t Renderer::getTotalCastedRays() const {
+    const auto castedRays {Ray::getNumberOfCastedRays()};
+    return castedRays;
 }

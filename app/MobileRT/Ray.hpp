@@ -31,7 +31,7 @@ namespace MobileRT {
         /**
          * The identifier of the ray.
          */
-        const ::std::int32_t id_ {-1};
+        const ::std::uint64_t id_ {0L};
 
         /**
          * The pointer to the primitive from where the ray was casted from.
@@ -57,6 +57,10 @@ namespace MobileRT {
         Ray &operator=(const Ray &ray) = delete;
 
         Ray &operator=(Ray &&ray) noexcept = delete;
+
+        static ::std::uint64_t getNumberOfCastedRays() noexcept;
+
+        static void resetIdGenerator() noexcept;
     };
 }//namespace MobileRT
 

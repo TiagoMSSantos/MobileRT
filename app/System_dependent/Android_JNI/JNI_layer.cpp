@@ -617,6 +617,8 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
 
         auto lambda{
             [=]() -> void {
+                ::std::chrono::duration<double> timeRendering {};
+
                 LOG("rtRenderIntoBitmap step 1");
                 ASSERT(env != nullptr, "JNIEnv not valid.");
                 const auto jniError{
@@ -655,6 +657,7 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
                 LOG("rtRenderIntoBitmap step 5");
                 ::std::int32_t rep{1};
                 LOG("WILL START TO RENDER");
+                const auto startRendering {::std::chrono::system_clock::now()};
                 while (state_ == State::BUSY && rep > 0) {
                     LOG("STARTING RENDERING");
                     LOG("nThreads = ", nThreads);
@@ -668,6 +671,8 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
                     updateFps();
                     rep--;
                 }
+                const auto endRendering {::std::chrono::system_clock::now()};
+                timeRendering = endRendering - startRendering;
                 LOG("RENDER FINISHED");
                 finishedRendering_ = true;
                 rendered_.notify_all();
@@ -700,6 +705,13 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
                         static_cast<void> (result);
                     }
                 }
+                // Print some latencies
+                const auto renderingTime {timeRendering.count()};
+                const auto castedRays {renderer_->getTotalCastedRays()};
+                LOG("Rendering Time in secs = ", renderingTime);
+                LOG("Casted rays = ", castedRays);
+                LOG("Total Millions rays per second = ", (castedRays / renderingTime) / 1000000L);
+
                 LOG("rtRenderIntoBitmap finished");
             }
         };

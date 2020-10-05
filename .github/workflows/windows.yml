@@ -1,4 +1,4 @@
-name: Build Qt Windows
+name: Build Native Windows (Qt)
 
 on:
   pull_request:
@@ -134,7 +134,29 @@ jobs:
         dir: '${{ github.workspace }}/example'
         install-deps: 'true'
         modules: 'qtcharts qtwebengine'
-        mirror: 'http://mirrors.ocf.berkeley.edu/qt/'
+        # The mirror must provide the following file:
+        # <mirror>/online/qtsdkrepository/windows_x86/desktop/qt5_5129
+        # /qt.qt5.5129.qtwebengine.win64_msvc2017_64
+        # /5.12.9-0-202006121743qtwebengine-Windows-Windows_10-MSVC2017-Windows-Windows_10-X86_64.7z
+        mirror: 'https://download.qt.io'
+#        mirror: 'http://mirrors.ocf.berkeley.edu/qt'
+#        mirror: 'http://mirrors.ukfast.co.uk/sites/qt.io'
+#        mirror: 'http://ftp1.nluug.nl/languages/qt'
+#        mirror: 'http://ftp2.nluug.nl/languages/qt'
+#        mirror: 'http://qtproject.mirror.liteserver.nl'
+#        mirror: 'http://ftp.fau.de/qtproject'
+#        mirror: 'http://qt-mirror.dannhauer.de'
+#        mirror: 'https://mirrors.dotsrc.org/qtproject'
+#        mirror: 'https://ftp.acc.umu.se/mirror/qt.io/qtproject'
+#        mirror: 'http://www.nic.funet.fi/pub/mirrors/download.qt-project.org'
+#        mirror: 'http://master.qt.io'
+#        mirror: 'http://qtproject.mirror.liquidtelecom.com'
+#        mirror: 'http://qt.mirror.constant.com'
+#        mirror: 'http://qt.mirrors.tds.net/qt'
+#        mirror: 'http://mirror.csclub.uwaterloo.ca/qtproject'
+#        mirror: 'http://linorg.usp.br/Qt'
+#        mirror: 'http://ftp.jaist.ac.jp/pub/qtproject'
+#        mirror: 'http://ftp.yz.yamagata-u.ac.jp/pub/qtproject'
         cached: 'false'
         aqtversion: '==0.9.4'
         py7zrversion: '==0.9.1'

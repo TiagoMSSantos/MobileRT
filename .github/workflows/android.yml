@@ -173,6 +173,7 @@ jobs:
           mkdir -p ./app/build/reports;
           mkdir -p ./reports;
           bash ./scripts/run_tests_android.sh ${{ matrix.variant }} all ${{ matrix.ndk_version }} ${{ matrix.cmake_version }} false;
+          tree -a -f | grep -i app/build/reports | grep -i xml 2>&1 | tee ./reports/tree_report.log;
 
     - name: Upload APK
       if: success() && matrix.os == 'ubuntu-16.04' && matrix.type == 'Debug'
@@ -206,6 +207,17 @@ jobs:
         echo "Result: '${res}'";
         exit 0;
 
+    - name: Analyze Sonar
+      if: success() && matrix.os == 'ubuntu-16.04' && matrix.type == 'Debug'
+      working-directory: .
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      run: |
+        mkdir -p ./reports;
+        tree -a -f | grep -i app/build/reports | grep -i xml 2>&1 | tee ./reports/tree.log;
+        ./gradlew --parallel sonarqube --info 2>&1 | tee ./reports/sonarqube.log;
+
     - name: Send codecov report Linux
       if: success() && matrix.os == 'ubuntu-16.04' && matrix.type == 'Debug'
       working-directory: .
@@ -217,17 +229,6 @@ jobs:
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
         exit 0;
-
-    - name: Analyze Sonar
-      if: success() && matrix.os == 'ubuntu-16.04' && matrix.type == 'Debug'
-      working-directory: .
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      run: |
-        mkdir -p ./reports;
-        tree -a -f | grep -i app/build/reports | grep -i xml 2>&1 | tee tree.log;
-        ./gradlew --parallel sonarqube --info 2>&1 | tee ./reports/sonarqube.log;
 
     - name: Upload reports
       if: always()

@@ -238,10 +238,17 @@ work_thread(
         }
 
         // Print some latencies
+        const auto renderingTime {timeRendering.count()};
+        const auto castedRays {renderer_->getTotalCastedRays()};
         LOG("Loading Time in secs = ", timeLoading.count());
         LOG("Filling Time in secs = ", timeFilling.count());
         LOG("Creating Time in secs = ", timeCreating.count());
-        LOG("Rendering Time in secs = ", timeRendering.count());
+        LOG("Rendering Time in secs = ", renderingTime);
+        LOG("Casted rays = ", castedRays);
+        LOG("width_ = ", width);
+        LOG("height_ = ", height);
+
+        LOG("Total Millions rays per second = ", (castedRays / renderingTime) / 1000000L);
     } catch (const ::std::bad_alloc &badAlloc) {
         LOG("badAlloc: ", badAlloc.what());
     } catch (const ::std::exception &exception) {

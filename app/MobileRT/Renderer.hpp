@@ -11,7 +11,8 @@
 namespace MobileRT {
     /**
      * The main class of the Ray Tracer engine.
-     * After setup this object, it provides methods to start and stop the rendering process of a scene.
+     * After setup this object, it provides methods to start and stop the rendering process of a
+     * scene.
      */
     class Renderer final {
     public:
@@ -58,6 +59,8 @@ namespace MobileRT {
         void stopRender();
 
         ::std::int32_t getSample() const;
+
+        ::std::uint64_t getTotalCastedRays() const;
     };
 }//namespace MobileRT
 
