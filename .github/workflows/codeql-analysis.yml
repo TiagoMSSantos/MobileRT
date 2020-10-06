@@ -40,7 +40,10 @@ jobs:
 
     # Initializes the CodeQL tools for scanning.
     # Valid inputs are ['tools', 'languages', 'token', 'matrix', 'config-file', 'queries']
-    # Queries: must be a built-in suite (security-extended or security-and-quality), a relative path, or be of the form "owner/repo[/path]@ref"
+    # Queries: must be a built-in suite (security-extended or security-and-quality),
+    # a relative path, or be of the form "owner/repo[/path]@ref"
+    # Unable to download and extract the tools needed for installing the python dependecies.
+    # You can call this action with 'setup-python-dependencies: false' to disable this process.
     - name: Initialize CodeQL
       if: success()
       uses: github/codeql-action/init@v1
