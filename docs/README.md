@@ -54,7 +54,7 @@ the image above :) <br/>
 ## Build docker image
 For the most curious, this is the command used to build the docker image:
 ```bash
-docker build -t ptpuscas/mobile_rt -f docker_image/Dockerfile --no-cache=false --build-arg build_type=Release .
+docker build -t ptpuscas/mobile_rt -f docker_image/Dockerfile --no-cache=false --build-arg build_type=Release --build-arg BASE_IMAGE=ubuntu:20.04 .
 ```
 
 The docker image is in docker hub:
