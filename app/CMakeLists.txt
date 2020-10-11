@@ -343,7 +343,7 @@ message( STATUS "Adding scenes source files." )
 file( GLOB_RECURSE SCENES_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/Scenes/**.cpp" )
 
 if( NOT DEFINED ANDROID_ABI )
-  message( STATUS "Finding Qt4." )
+  message( STATUS "Finding Qt." )
   find_package( Qt4 OPTIONAL_COMPONENTS QtCore QtGui )
   find_package( Qt5 OPTIONAL_COMPONENTS Core Gui Widgets )
 endif()

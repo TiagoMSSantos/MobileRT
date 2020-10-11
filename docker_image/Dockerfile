@@ -27,30 +27,64 @@ ENV DEBIAN_FRONTEND=noninteractive
 # Install dependencies
 ###############################################################################
 RUN \
-# if linux is Debian based \
-if [ -x "$(which apt-get)" ]; then \
+# if Linux distribution is Debian based \
+if [ -x "$(command -v apt-get)" ]; then \
   apt-get update -y; \
   apt-get install --no-install-recommends -y \
     vim \
+    findutils \
+    cmake \
+    make \
+    bash \
+    ca-certificates \
+    git \
     libatomic1 \
     libomp-8-dev \
     qt5-default \
-    cmake \
-    build-essential \
-    git \
-    ca-certificates; \
-else \
-# if linux is Red Hat based \
+    build-essential; \
+# if Linux distribution is Red Hat based \
+elif [ -x "$(command -v yum)" ]; then \
   yum update -y; \
   yum install -y \
-    qt5-qtbase-devel \
     vim \
-    cmake \
-    git \
-    gcc-c++ \
+    findutils \
     cmake \
     make \
-    ca-certificates; \
+    bash \
+    ca-certificates \
+    git \
+    which \
+    qt5-qtbase-devel \
+    gcc-c++; \
+# if Linux distribution is Arch Linux based \
+elif [ -x "$(command -v pacman)" ]; then \
+  pacman -Sy --noconfirm; \
+  pacman -S --noconfirm \
+    vim \
+    findutils \
+    cmake \
+    make \
+    bash \
+    ca-certificates \
+    git \
+    which \
+    qt5-base \
+    gcc; \
+# if Linux distribution is Alpine based \
+elif [ -x "$(command -v apk)" ]; then \
+  apk update; \
+  apk add \
+    vim \
+    findutils \
+    cmake \
+    make \
+    bash \
+    ca-certificates \
+    git \
+    qt5-qtbase-dev \
+    which \
+    g++ \
+    gcc; \
 fi
 ###############################################################################
 ###############################################################################
