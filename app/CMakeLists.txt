@@ -344,8 +344,10 @@ file( GLOB_RECURSE SCENES_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/Scenes/**.cpp" )
 
 if( NOT DEFINED ANDROID_ABI )
   message( STATUS "Finding Qt." )
-  find_package( Qt4 OPTIONAL_COMPONENTS QtCore QtGui )
   find_package( Qt5 OPTIONAL_COMPONENTS Core Gui Widgets )
+  if ( NOT QT5_FOUND )
+    find_package( Qt4 OPTIONAL_COMPONENTS QtCore QtGui )
+  endif()
 endif()
 
 
@@ -381,9 +383,24 @@ else()
   message( STATUS "QT_QTCORE_LIBRARIES = ${QT_QTCORE_LIBRARIES}" )
   message( STATUS "QT_QTGUI_LIBRARIES = ${QT_QTGUI_LIBRARIES}" )
 
+  message( STATUS "Qt5Core_INCLUDE_DIRS = " ${Qt5Core_INCLUDE_DIRS} )
+  message( STATUS "Qt5Gui_INCLUDE_DIRS = " ${Qt5Gui_INCLUDE_DIRS} )
+  message( STATUS "Qt5Widgets_INCLUDE_DIRS = " ${Qt5Widgets_INCLUDE_DIRS} )
+
+  # Include Qt headers
   target_include_directories( ${PROJECT_NAME}
-    SYSTEM PRIVATE ${QT_HEADERS} ${QT_INCLUDES}
+    SYSTEM PRIVATE ${QT_HEADERS}
     PRIVATE ${QT_HEADERS_RT} )
+
+  if( Qt5_FOUND )
+    # Include Qt5 headers
+    target_include_directories( ${PROJECT_NAME}
+      SYSTEM PRIVATE ${Qt5Core_INCLUDE_DIRS} ${Qt5Gui_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} )
+  elseif ( Qt4_FOUND )
+    # Include Qt4 headers
+    target_include_directories( ${PROJECT_NAME}
+      SYSTEM PRIVATE ${QT_INCLUDES} )
+  endif()
 
   if( CMAKE_HOST_SYSTEM_NAME MATCHES "Darwin" )
     message( STATUS "Linking Qt for MacOS." )
@@ -400,12 +417,12 @@ else()
   else()
     message( STATUS "Linking Qt." )
 
-    if( Qt4_FOUND )
-      target_link_libraries( ${PROJECT_NAME} PRIVATE Qt4::QtCore Qt4::QtGui )
-    endif()
     if( Qt5_FOUND )
       target_link_libraries( ${PROJECT_NAME} PRIVATE Qt5::Core Qt5::Gui Qt5::Widgets )
+    elseif ( Qt4_FOUND )
+      target_link_libraries( ${PROJECT_NAME} PRIVATE Qt4::QtCore Qt4::QtGui )
     endif()
+
   endif()
 endif()
 ###############################################################################
