@@ -81,14 +81,6 @@ public class AbstractTest {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         this.activity = this.mainActivityActivityTestRule.launchActivity(intent);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            InstrumentationRegistry.getInstrumentation()
-                .getUiAutomation().executeShellCommand(
-                "pm grant " + InstrumentationRegistry.getTargetContext().getPackageName()
-                    + " android.permission.READ_EXTERNAL_STORAGE"
-            );
-        }
     }
 
     /**
