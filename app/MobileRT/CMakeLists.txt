@@ -11,7 +11,11 @@ message( STATUS "Setting up as library." )
 if( DEFINED ANDROID_ABI )
   add_library( ${PROJECT_NAME} SHARED ${MOBILE_RT_SOURCES} )
 else()
-  add_library( ${PROJECT_NAME} STATIC ${MOBILE_RT_SOURCES} )
+  if( CMAKE_HOST_SYSTEM MATCHES "Linux" )
+    add_library( ${PROJECT_NAME} SHARED ${MOBILE_RT_SOURCES} )
+  else()
+    add_library( ${PROJECT_NAME} STATIC ${MOBILE_RT_SOURCES} )
+  endif()
 endif()
 ###############################################################################
 ###############################################################################
