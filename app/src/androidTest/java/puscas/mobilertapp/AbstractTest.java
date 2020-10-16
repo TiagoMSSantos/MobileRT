@@ -2,9 +2,7 @@ package puscas.mobilertapp;
 
 import android.Manifest;
 import android.content.Intent;
-import android.os.Build;
 import androidx.annotation.CallSuper;
-import androidx.test.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
 import java.util.concurrent.TimeUnit;
