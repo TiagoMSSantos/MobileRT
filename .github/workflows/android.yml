@@ -188,7 +188,7 @@ jobs:
       env:
         CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
       run: |
-        mkdir -p ./reports;
+        mkdir -p ../../../../reports;
         ../../../../test-reporter-latest-linux-amd64 format-coverage -t jacoco ../../../build/reports/coverage/debug/report.xml 2>&1 | tee ../../../../reports/format_coverage.log;
         ../../../../test-reporter-latest-linux-amd64 upload-coverage 2>&1 | tee ../../../../reports/upload_coverage.log;
         export res="${PIPESTATUS[0]}";
@@ -197,7 +197,7 @@ jobs:
 
     - name: Validate codecov report Linux
       if: success() && matrix.os == 'ubuntu-16.04' && matrix.type == 'Debug'
-      working-directory: .github
+      working-directory: .
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       run: |
