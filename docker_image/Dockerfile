@@ -114,6 +114,34 @@ elif [ -x "$(command -v apk)" ]; then \
     which \
     g++ \
     gcc; \
+# if Linux distribution is Gentoo based (didn't test it) \
+elif [ -x "$(command -v emerge)" ]; then \
+  emerge --sync; \
+  emerge --deep --update --pretend @world; \
+  emerge --update --deep @world; \
+  eselect profile list; \
+  eselect profile set 1; \
+  emerge app-portage/layman; \
+#  echo "source /var/lib/layman/make.conf" >> /etc/portage/make.conf; \
+  emerge layman; \
+  layman -S; \
+  layman -a qt; \
+  layman -a gentoo; \
+  emerge @qt5-essentials @qt5-addons; \
+  emerge \
+    vim \
+    findutils \
+    cmake \
+    make \
+    bash \
+    ca-certificates \
+    dev-vcs/git \
+    which \
+    sys-devel/gcc \
+    sys-devel/libtool; \
+  emerge \
+    qt5-addons \
+    qt5-essentials; \
 fi
 ###############################################################################
 ###############################################################################
