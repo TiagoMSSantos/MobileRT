@@ -8,11 +8,18 @@ name: Build CodeQL
 # e: day of the week (0 - 6 or SUN-SAT)
 
 on:
-  push:
   pull_request:
   release:
-    branches:
-      - master
+  push:
+    paths-ignore:
+    - 'docs/**'
+    - 'docker_image/**'
+    - 'scripts/Downloads/**'
+    - 'scripts/plot/**'
+    - 'WavefrontOBJs/**'
+    - '.github/**'
+    - '!.github/workflows/codeql-analysis.yml'
+    - '*'
 #branches-ignore:
 #  - '**'
 
