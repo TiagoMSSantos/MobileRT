@@ -48,6 +48,10 @@ image and execute the container: <br/>
 docker pull ptpuscas/mobile_rt
 xhost +; docker run -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=${DISPLAY} -it ptpuscas/mobile_rt
 ```
+or
+```bash
+xhost +; docker-compose -f docker_image/docker-compose.yml up MobileRT
+```
 And a docker container should start and render the conference room model like
 the image above :) <br/>
 
