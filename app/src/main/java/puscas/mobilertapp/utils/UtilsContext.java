@@ -9,6 +9,7 @@ import android.opengl.GLES20;
 import android.os.Build;
 import android.os.Environment;
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import com.google.common.collect.ImmutableMap;
@@ -23,7 +24,6 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java8.util.Optional;
 import javax.annotation.Nonnull;
-import puscas.mobilertapp.MainActivity;
 import puscas.mobilertapp.exceptions.FailureException;
 
 /**
@@ -202,20 +202,46 @@ public final class UtilsContext {
      * Helper method which asks the user for permission to read the external SD
      * card if it doesn't have yet.
      *
-     * @param activity The {@link MainActivity} of MobileRT.
+     * @param activity The {@link Activity} of MobileRT.
      */
     public static void checksStoragePermission(@Nonnull final Activity activity) {
         LOGGER.info("checksStoragePermission");
-        final int permissionStorageCode = 1;
-        final int permissionCheckRead = ContextCompat.checkSelfPermission(
+        checksAccessPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    /**
+     * Helper method which asks the user for permission to access the internet
+     * if it doesn't have it yet.
+     *
+     * @param activity The {@link Activity} of MobileRT.
+     */
+    public static void checksInternetPermission(@Nonnull final Activity activity) {
+        LOGGER.info("checksInternetPermission");
+        checksAccessPermission(activity, Manifest.permission.INTERNET);
+    }
+
+    /**
+     * Helper method which asks the user for permission to access some external
+     * component if it doesn't have it yet.
+     * An external component can be access to the Internet, access the external
+     * SD card, bluetooth, etc.
+     *
+     * @param activity   The {@link Activity} of MobileRT.
+     * @param permission The permission to ask access to.
+     */
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    private static void checksAccessPermission(@Nonnull final Activity activity,
+                                               @Nonnull final String permission) {
+        final int permissionCode = 1;
+        final int permissionAccess = ContextCompat.checkSelfPermission(
             activity,
-            Manifest.permission.READ_EXTERNAL_STORAGE
+            permission
         );
-        if (permissionCheckRead != PackageManager.PERMISSION_GRANTED) {
+        if (permissionAccess != PackageManager.PERMISSION_GRANTED) {
             final String[] permissions = {
-                Manifest.permission.READ_EXTERNAL_STORAGE
+                permission
             };
-            ActivityCompat.requestPermissions(activity, permissions, permissionStorageCode);
+            ActivityCompat.requestPermissions(activity, permissions, permissionCode);
         }
     }
 

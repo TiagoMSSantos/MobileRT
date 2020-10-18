@@ -216,6 +216,7 @@ public final class MainActivity extends Activity {
             .orElse(true));
 
         UtilsContext.checksStoragePermission(this);
+        UtilsContext.checksInternetPermission(this);
     }
 
     @Override
