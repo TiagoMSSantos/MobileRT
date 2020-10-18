@@ -42,6 +42,7 @@ import puscas.mobilertapp.utils.Utils;
 import puscas.mobilertapp.utils.UtilsContext;
 import puscas.mobilertapp.utils.UtilsGL;
 import puscas.mobilertapp.utils.UtilsLogging;
+import puscas.mobilertapp.web.RequestProvider;
 
 /**
  * The main {@link Activity} for the Android User Interface.
@@ -366,6 +367,11 @@ public final class MainActivity extends Activity {
         final String message = String.format(Locale.US, "%s: %s",
             ConstantsMethods.START_RENDER, view.toString());
         LOGGER.info(message);
+
+        RequestProvider.listTopics(this);
+        RequestProvider.createConsumerInConsumerGroup(this);
+        RequestProvider.subscribeConsumerToTopic(this);
+        RequestProvider.produceMessageToTopic(this);
 
         final State state = this.drawView.getRayTracerState();
         if (state == State.BUSY) {
