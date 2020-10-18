@@ -103,11 +103,15 @@ public final class DrawView extends GLSurfaceView {
 
     /**
      * Stops the Ray Tracer engine and sets its {@link State} to {@link State#STOPPED}.
+     *
+     * @param wait Whether it should wait for the Ray Tracer engine to stop.
      */
     private native void rtStopRender(boolean wait);
 
     /**
      * Sets the Ray Tracer engine {@link State} to {@link State#BUSY}.
+     *
+     * @param wait Whether it should wait for the Ray Tracer engine to stop at the beggining.
      */
     private native void rtStartRender(boolean wait);
 
@@ -269,6 +273,7 @@ public final class DrawView extends GLSurfaceView {
      * @param config     The ray tracer configuration.
      * @param numThreads The number of threads to be used in the Ray Tracer engine.
      * @param rasterize  Whether should show a preview (rasterize one frame) or not.
+     * @throws LowMemoryException If the device has low free memory.
      */
     private void createScene(final Config config,
                              final int numThreads,

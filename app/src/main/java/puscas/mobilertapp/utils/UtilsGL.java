@@ -51,7 +51,8 @@ public final class UtilsGL {
      * It is recommended to use this method when the OpenGL method called
      * returns a value but doesn't need any arguments.
      *
-     * @param method The method to call.
+     * @param method The {@link Supplier} to call.
+     * @return The result of calling the provided {@link Supplier}.
      */
     @Nonnull
     public static <T> T run(@Nonnull final Supplier<T> method) {
@@ -67,8 +68,9 @@ public final class UtilsGL {
      * It is recommended to use this method when the OpenGL method called
      * receives only 1 parameter.
      *
-     * @param arg    The argument for the method.
-     * @param method The method to call.
+     * @param arg    The argument for {@link Function} method.
+     * @param method The {@link Function} to call.
+     * @return The result of calling the provided {@link Function}.
      */
     @Nonnull
     public static <T, R> T run(@Nonnull final R arg,
@@ -85,9 +87,10 @@ public final class UtilsGL {
      * It is recommended to use this method when the OpenGL method called
      * receives 2 parameters.
      *
-     * @param arg1   The 1st argument for the method.
-     * @param arg2   The 2nd argument for the method.
-     * @param method The method to call.
+     * @param arg1   The 1st argument for the {@link BiFunction}.
+     * @param arg2   The 2nd argument for the {@link BiFunction}.
+     * @param method The {@link BiFunction} to call.
+     * @return The result of calling the provided {@link BiFunction}.
      */
     @Nonnull
     public static <T, R, S> T run(@Nonnull final R arg1,

@@ -10,6 +10,9 @@ public final class Constants {
      */
     public static final String BUTTON_MESSAGE = "Button message is not the expected.";
 
+    /**
+     * A private constructor in order to prevent instantiating this helper class.
+     */
     private Constants() {
 
     }

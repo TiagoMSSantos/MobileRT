@@ -373,6 +373,8 @@ public final class Config {
 
         /**
          * Gets the scene index.
+         *
+         * @return The scene index.
          */
         @Contract(pure = true)
         int getScene() {
@@ -381,6 +383,8 @@ public final class Config {
 
         /**
          * Gets the shader index.
+         *
+         * @return The shader index.
          */
         @Contract(pure = true)
         int getShader() {
@@ -389,6 +393,8 @@ public final class Config {
 
         /**
          * Gets the accelerator index.
+         *
+         * @return The accelerator index.
          */
         @Contract(pure = true)
         int getAccelerator() {
@@ -397,6 +403,8 @@ public final class Config {
 
         /**
          * Gets the path to the OBJ file.
+         *
+         * @return The path to the OBJ file.
          */
         @Contract(pure = true)
         String getObjFilePath() {
@@ -405,6 +413,8 @@ public final class Config {
 
         /**
          * Gets the path to the MTL file.
+         *
+         * @return The path to the MTL file.
          */
         @Contract(pure = true)
         String getMatFilePath() {
@@ -413,6 +423,8 @@ public final class Config {
 
         /**
          * Gets the path to the CAM file.
+         *
+         * @return The path to the CAM file.
          */
         @Contract(pure = true)
         String getCamFilePath() {
@@ -421,6 +433,8 @@ public final class Config {
 
         /**
          * Gets the configuration for the number of samples.
+         *
+         * @return The configuration for the number of samples.
          */
         @Contract(pure = true)
         ConfigSamples getConfigSamples() {
@@ -429,6 +443,9 @@ public final class Config {
 
         /**
          * Gets the configuration for the resolution of the image plane in the
+         * {@link android.graphics.Bitmap}.
+         *
+         * @return The configuration for the resolution of the image plane in the
          * {@link android.graphics.Bitmap}.
          */
         @Contract(pure = true)

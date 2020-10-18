@@ -64,6 +64,8 @@ public final class PreviewTest extends AbstractTest {
 
     /**
      * Tests the preview feature in a scene.
+     *
+     * @throws TimeoutException If the Ray Tracing engine didn't stop rendering the scene.
      */
     @Test(timeout = 2L * 60L * 1000L)
     public void testPreviewScene() throws TimeoutException {

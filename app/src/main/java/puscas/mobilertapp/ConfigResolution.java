@@ -44,6 +44,8 @@ public final class ConfigResolution {
 
     /**
      * Gets the width of the image plane.
+     *
+     * @return The width of the image plane.
      */
     @Contract(pure = true)
     public int getWidth() {
@@ -52,6 +54,8 @@ public final class ConfigResolution {
 
     /**
      * Gets the height of the image plane.
+     *
+     * @return The height of the image plane.
      */
     @Contract(pure = true)
     public int getHeight() {
@@ -132,6 +136,8 @@ public final class ConfigResolution {
 
         /**
          * Gets the width of the image plane.
+         *
+         * @return The width of the image plane.
          */
         @Contract(pure = true)
         int getWidth() {
@@ -140,6 +146,8 @@ public final class ConfigResolution {
 
         /**
          * Gets the height of the image plane.
+         *
+         * @return The height of the image plane.
          */
         @Contract(pure = true)
         int getHeight() {

@@ -39,6 +39,7 @@ public final class UtilsContextTest {
      * the scene.
      *
      * @param activity The {@link MainActivity} of MobileRT.
+     * @throws TimeoutException If the Ray Tracing engine didn't stop rendering the scene.
      */
     public static void waitUntilRenderingDone(@Nonnull final MainActivity activity)
         throws TimeoutException {

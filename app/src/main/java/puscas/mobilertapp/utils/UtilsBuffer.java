@@ -27,7 +27,8 @@ public final class UtilsBuffer {
     /**
      * Helper method that checks if any of the {@link ByteBuffer}s is empty.
      *
-     * @param byteBuffers The {@link ByteBuffer}s to reset.
+     * @param byteBuffers The {@link ByteBuffer}s to check.
+     * @return Whether any of {@link ByteBuffer}s is empty or not.
      */
     public static boolean isAnyByteBufferEmpty(@Nonnull final ByteBuffer... byteBuffers) {
         LOGGER.info("isAnyByteBufferEmpty");

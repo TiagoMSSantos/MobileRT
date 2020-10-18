@@ -487,6 +487,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      *
      * @param config The ray tracer configuration.
      * @return The number of primitives or a negative value if an error occurs.
+     * @throws LowMemoryException If the device has low free memory.
      */
     native int rtInitialize(Config config) throws LowMemoryException;
 
@@ -501,6 +502,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      *                   engine.
      * @param async      If {@code true} let the Ray Tracer engine render the
      *                   scene asynchronously or otherwise synchronously.
+     * @throws LowMemoryException If the device has low free memory.
      */
     private native void rtRenderIntoBitmap(Bitmap image,
                                            int numThreads,
@@ -510,6 +512,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * Creates a native array with all the positions of triangles in the scene.
      *
      * @return A new array with all the primitives' vertices.
+     * @throws LowMemoryException If the device has low free memory.
      */
     private native ByteBuffer rtInitVerticesArray() throws LowMemoryException;
 
@@ -517,6 +520,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * Creates a native array with all the colors of triangles in the scene.
      *
      * @return A new array with all the primitives' colors.
+     * @throws LowMemoryException If the device has low free memory.
      */
     private native ByteBuffer rtInitColorsArray() throws LowMemoryException;
 
@@ -525,6 +529,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * right vectors in the scene.
      *
      * @return A new array with the camera's position and vectors.
+     * @throws LowMemoryException If the device has low free memory.
      */
     private native ByteBuffer rtInitCameraArray() throws LowMemoryException;
 
@@ -556,6 +561,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * Helper method which initializes the {@link #arrayVertices},
      * {@link #arrayColors} and {@link #arrayCamera}
      * native arrays.
+     * @throws LowMemoryException If the device has low free memory.
      */
     private void initPreviewArrays() throws LowMemoryException {
         LOGGER.info("initArrays");

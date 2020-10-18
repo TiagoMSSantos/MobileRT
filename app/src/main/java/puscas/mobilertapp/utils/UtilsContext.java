@@ -104,6 +104,7 @@ public final class UtilsContext {
      * Helper method that gets the number of available CPU cores in the Android
      * device for devices with the SDK API version <= {@link #OLD_API_GET_CORES}.
      *
+     * @param context The {@link Context} of the Android system.
      * @return The number of CPU cores.
      */
     private static int getNumCoresOldAndroid(final Context context) {
@@ -118,6 +119,7 @@ public final class UtilsContext {
     /**
      * Helper method which gets the number of available CPU cores.
      *
+     * @param context The {@link Context} of the Android system.
      * @return The number of CPU cores.
      */
     public static int getNumOfCores(@Nonnull final Context context) {
@@ -133,6 +135,7 @@ public final class UtilsContext {
     /**
      * Helper method that checks if the system is a 64 device or not.
      *
+     * @param context The {@link Context} of the Android system.
      * @return Whether the system is 64 bit.
      */
     public static boolean is64BitDevice(@Nonnull final Context context) {
@@ -173,6 +176,8 @@ public final class UtilsContext {
     /**
      * Load the GLSL shaders from files where the paths are given via argument.
      *
+     * @param context      The {@link Context} of the Android system.
+     * @param shadersPaths The paths to the GLSL shaders.
      * @return A {@link Map} with the loaded shaders.
      */
     @NonNull

@@ -21,8 +21,9 @@ public final class UtilsLogging {
     }
 
     /**
-     * Helper method that handles a general {@link Throwable}.
+     * Helper method that prints the message of a {@link Throwable}.
      *
+     * @param ex         The {@link Throwable} to print.
      * @param methodName The name of the method to appear in the logs.
      */
     public static void logThrowable(@Nonnull final Throwable ex,

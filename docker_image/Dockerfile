@@ -117,6 +117,7 @@ elif [ -x "$(command -v apk)" ]; then \
 # if Linux distribution is Gentoo based (didn't test it) \
 elif [ -x "$(command -v emerge)" ]; then \
   emerge --sync; \
+  emerge sys-apps/portage; \
   emerge --deep --update --pretend @world; \
   emerge --update --deep @world; \
   eselect profile list; \

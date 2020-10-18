@@ -102,6 +102,8 @@ public final class RayTracingTest extends AbstractTest {
 
     /**
      * Tests render a scene from an invalid OBJ file.
+     *
+     * @throws TimeoutException If the Ray Tracing engine didn't stop rendering the scene.
      */
     @Test(timeout = 2L * 60L * 1000L)
     public void testRenderInvalidScene() throws TimeoutException {

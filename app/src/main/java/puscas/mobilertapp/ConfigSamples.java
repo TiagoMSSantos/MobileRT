@@ -44,6 +44,8 @@ public final class ConfigSamples {
 
     /**
      * Gets the number of samples per pixel.
+     *
+     * @return The number of samples per pixel.
      */
     @Contract(pure = true)
     public int getSamplesPixel() {
@@ -52,6 +54,8 @@ public final class ConfigSamples {
 
     /**
      * Gets the number of samples per light.
+     *
+     * @return The number of samples per light.
      */
     @Contract(pure = true)
     public int getSamplesLight() {
@@ -145,6 +149,8 @@ public final class ConfigSamples {
 
         /**
          * Gets the number of samples per pixel.
+         *
+         * @return The number of samples per pixel.
          */
         @Contract(pure = true)
         int getSamplesPixel() {
@@ -153,6 +159,8 @@ public final class ConfigSamples {
 
         /**
          * Gets the number of samples per light.
+         *
+         * @return The number of samples per light.
          */
         @Contract(pure = true)
         int getSamplesLight() {

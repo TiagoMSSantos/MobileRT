@@ -706,8 +706,9 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
 
 
         /**
-         * The requestRender.
+         * Gets the requestRender.
          *
+         * @return The requestRender.
          * @see RenderTask#requestRender
          */
         @Contract(pure = true)
@@ -716,8 +717,9 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
         }
 
         /**
-         * The finishRender.
+         * Gets the finishRender.
          *
+         * @return The finishRender.
          * @see RenderTask#finishRender
          */
         @Contract(pure = true)
@@ -726,8 +728,9 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
         }
 
         /**
-         * The textView.
+         * Gets the textView.
          *
+         * @return The textView.
          * @see RenderTask#textView
          */
         @Contract(pure = true)
@@ -736,8 +739,9 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
         }
 
         /**
-         * The buttonRender.
+         * Gets the buttonRender.
          *
+         * @return The buttonRender.
          * @see RenderTask#buttonRender
          */
         @Contract(pure = true)
@@ -746,8 +750,9 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
         }
 
         /**
-         * The updateInterval.
+         * Gets the updateInterval.
          *
+         * @return The updateInterval.
          * @see RenderTask.Builder#withUpdateInterval(long)
          */
         @Contract(pure = true)
@@ -756,8 +761,9 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
         }
 
         /**
-         * The width.
+         * Gets the width.
          *
+         * @return The width.
          * @see RenderTask.Builder#withWidth(int)
          */
         @Contract(pure = true)
@@ -766,8 +772,9 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
         }
 
         /**
-         * The height.
+         * Gets the height.
          *
+         * @return The height.
          * @see RenderTask.Builder#withHeight(int)
          */
         @Contract(pure = true)
@@ -776,8 +783,9 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
         }
 
         /**
-         * The numThreads.
+         * Gets the number of threads.
          *
+         * @return The number of threads.
          * @see RenderTask.Builder#withNumThreads(int)
          */
         @Contract(pure = true)
@@ -786,8 +794,9 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
         }
 
         /**
-         * The numPrimitives.
+         * Gets the number of primitives.
          *
+         * @return The number of primitives.
          * @see RenderTask.Builder#withNumPrimitives(int)
          */
         @Contract(pure = true)
@@ -796,8 +805,9 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
         }
 
         /**
-         * The numLights.
+         * Gets the number of lights.
          *
+         * @return The number of lights.
          * @see RenderTask.Builder#withNumLights(int)
          */
         @Contract(pure = true)
@@ -806,8 +816,9 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
         }
 
         /**
-         * The samplesPixel.
+         * Gets the number of samples per pixel.
          *
+         * @return The number of samples per pixel.
          * @see RenderTask.Builder#withSamplesPixel(int)
          */
         @Contract(pure = true)
@@ -816,8 +827,9 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
         }
 
         /**
-         * The samplesLight.
+         * Gets the number of samples per light.
          *
+         * @return The number of samples per light.
          * @see RenderTask.Builder#withSamplesLight(int)
          */
         @Contract(pure = true)

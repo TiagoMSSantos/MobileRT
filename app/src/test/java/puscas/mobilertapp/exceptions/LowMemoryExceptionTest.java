@@ -34,7 +34,7 @@ public final class LowMemoryExceptionTest {
     }
 
     /**
-     * Tests the constructor.
+     * Tests the constructor without arguments.
      */
     @Test(expected = LowMemoryException.class)
     public void testConstructorWithoutArguments() throws LowMemoryException {
@@ -45,7 +45,7 @@ public final class LowMemoryExceptionTest {
     }
 
     /**
-     * Tests the constructor.
+     * Tests the constructor that receives a {@link Throwable}.
      */
     @Test(expected = LowMemoryException.class)
     public void testConstructorWithThrowableArgument() throws LowMemoryException {
@@ -58,7 +58,7 @@ public final class LowMemoryExceptionTest {
     }
 
     /**
-     * Tests the constructor.
+     * Tests the constructor that receives a {@link String} with the message of the cause.
      */
     @Test(expected = LowMemoryException.class)
     public void testConstructorWithStringArgument() throws LowMemoryException {

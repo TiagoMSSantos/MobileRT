@@ -34,7 +34,7 @@ public final class FailureExceptionTest {
     }
 
     /**
-     * Tests the constructor.
+     * Tests the constructor without arguments.
      */
     @Test(expected = RuntimeException.class)
     public void testConstructorWithoutArguments() {
@@ -45,7 +45,7 @@ public final class FailureExceptionTest {
     }
 
     /**
-     * Tests the constructor.
+     * Tests the constructor that receives a {@link Throwable}.
      */
     @Test(expected = RuntimeException.class)
     public void testConstructorWithThrowableArgument() {
@@ -58,7 +58,7 @@ public final class FailureExceptionTest {
     }
 
     /**
-     * Tests the constructor.
+     * Tests the constructor that receives a {@link String} with the message of the cause.
      */
     @Test(expected = RuntimeException.class)
     public void testConstructorWithStringArgument() {

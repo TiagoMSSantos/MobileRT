@@ -56,6 +56,8 @@ public final class MainRendererTest extends AbstractTest {
 
     /**
      * Tests loading a Vertex GLSL shader for the Ray Tracing engine to output the rendered scene.
+     *
+     * @throws InterruptedException If any error occurs.
      */
     @Test
     public void testLoadVertexShader() throws InterruptedException {
@@ -67,6 +69,8 @@ public final class MainRendererTest extends AbstractTest {
 
     /**
      * Tests loading a Vertex GLSL shader for the preview (rasterization) feature.
+     *
+     * @throws InterruptedException If any error occurs.
      */
     @Test
     public void testLoadVertexShaderRaster() throws InterruptedException {
@@ -78,6 +82,8 @@ public final class MainRendererTest extends AbstractTest {
 
     /**
      * Tests loading a Fragment GLSL shader for the Ray Tracing engine to output the rendered scene.
+     *
+     * @throws InterruptedException If any error occurs.
      */
     @Test
     public void testLoadFragmentShader() throws InterruptedException {
@@ -89,6 +95,8 @@ public final class MainRendererTest extends AbstractTest {
 
     /**
      * Tests loading a Fragment GLSL shader for the preview (rasterization) feature.
+     *
+     * @throws InterruptedException If any error occurs.
      */
     @Test
     public void testLoadFragmentShaderRaster() throws InterruptedException {
