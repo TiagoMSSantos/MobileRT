@@ -183,7 +183,7 @@ if( DEFINED ANDROID_ABI )
 else()
   message( STATUS "Detected Native OS." )
 
-  set( MOBILE_DEPENDENT_HEADERS "${CMAKE_SOURCE_DIR}/System_dependent/Linux" )
+  set( MOBILE_DEPENDENT_HEADERS "${CMAKE_SOURCE_DIR}/System_dependent/Native" )
 
   if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
     message( STATUS
@@ -243,9 +243,9 @@ set( MOBILE_RC_HEADERS "${CMAKE_SOURCE_DIR}" )
 set( SCENES_HEADERS "${CMAKE_SOURCE_DIR}/Scenes" )
 set( THIRD_PARTY_HEADERS "${CMAKE_SOURCE_DIR}/third_party" )
 set( GLM_HEADERS "${CMAKE_SOURCE_DIR}/third_party/glm" )
-set( QT_HEADERS_RT "${CMAKE_SOURCE_DIR}/System_dependent/Linux/QT/MobileRT" )
+set( QT_HEADERS_RT "${CMAKE_SOURCE_DIR}/System_dependent/Native/QT/MobileRT" )
 set( QT_HEADERS
-  "${CMAKE_SOURCE_DIR}/System_dependent/Linux/Qt/build-${CMAKE_BUILD_TYPE}" )
+  "${CMAKE_SOURCE_DIR}/System_dependent/Native/Qt/build-${CMAKE_BUILD_TYPE}" )
 
 message( STATUS "Setting up common flags." )
 set( COMMON_FLAGS "${COMMON_FLAGS}" -Wall )

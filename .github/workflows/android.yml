@@ -5,14 +5,19 @@ on:
   release:
   push:
     paths-ignore:
-    - 'docs/**'
-    - 'docker_image/**'
-    - 'scripts/Downloads/**'
-    - 'scripts/plot/**'
-    - 'WavefrontOBJs/**'
-    - '.github/**'
-    - '!.github/workflows/android.yml'
     - '*'
+    - '.github/**'
+    - 'app/debug/**'
+    - 'app/release/**'
+    - 'app/System_dependent/**'
+    - 'docker_image/**'
+    - 'docs/**'
+    - 'scripts/**'
+    - 'WavefrontOBJs/**'
+    - '!.github/workflows/android.yml'
+    - '!app/System_dependent/CMakeLists.txt'
+    - '!app/System_dependent/Android_JNI/**'
+    - '!scripts/compile_android.sh'
 #branches-ignore:
 #  - '**'
 

@@ -2,7 +2,7 @@
 #include "mainwindow.h"
 #include "MobileRT/Utils/Constants.hpp"
 #include "MobileRT/Utils/Utils.hpp"
-#include "System_dependent/Linux/C_wrapper.h"
+#include "System_dependent/Native/C_wrapper.h"
 #include "ui_mainwindow.h"
 
 #include <chrono>

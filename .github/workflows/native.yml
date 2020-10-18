@@ -5,14 +5,21 @@ on:
   release:
   push:
     paths-ignore:
-    - 'docs/**'
-    - 'docker_image/**'
-    - 'scripts/Downloads/**'
-    - 'scripts/plot/**'
-    - 'WavefrontOBJs/**'
-    - '.github/**'
-    - '!.github/workflows/native.yml'
     - '*'
+    - '.github/**'
+    - 'app/debug/**'
+    - 'app/release/**'
+    - 'app/System_dependent/**'
+    - 'app/src/**'
+    - 'docker_image/**'
+    - 'docs/**'
+    - 'gradle/**'
+    - 'scripts/**'
+    - 'WavefrontOBJs/**'
+    - '!.github/workflows/native.yml'
+    - '!app/System_dependent/CMakeLists.txt'
+    - '!app/System_dependent/Native/**'
+    - '!scripts/compile_native.sh'
 #branches-ignore:
 #  - '**'
 

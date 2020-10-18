@@ -15,7 +15,7 @@ languages:
         - /app/.*\.cpp
       exclude:
         - /app/Unit_Testing/.*
-        - /app/System_dependent/Linux/Qt/build.*/.*
+        - /app/System_dependent/Native/Qt/build.*/.*
         - /build.*/.*
         - /app/third_party/.*
     test:

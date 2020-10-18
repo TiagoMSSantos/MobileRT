@@ -184,12 +184,12 @@ function clangtidy() {
     "${MOBILERT_SRCS}"/MobileRT/*.*pp \
     "${MOBILERT_SRCS}"/MobileRT/*/*.*pp \
     "${COMPONENTS_SRCS}"/Components/*/*.*pp \
-    "${DEPENDENT_SRCS}"/Linux/*.*pp \
+    "${DEPENDENT_SRCS}"/Native/*.*pp \
     "${SCENES_SRCS}"/*.*pp \
     -- -std=c++11 -ferror-limit=1 -stdlib=libc++ \
     -I "${MOBILERT_SRCS}" \
     -I "${COMPONENTS_SRCS}" \
-    -I "${DEPENDENT_SRCS}"/Linux \
+    -I "${DEPENDENT_SRCS}"/Native \
     -I "${SCENES_SRCS}" \
     -isystem "${THIRDPARTY_HEADERS}" \
     -isystem "${GLM_HEADERS}" \

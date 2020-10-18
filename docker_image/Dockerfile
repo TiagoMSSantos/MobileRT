@@ -56,7 +56,7 @@ RUN echo "DISPLAY = ${DISPLAY}"; \
 # Install dependencies
 ###############################################################################
 RUN \
-# if Linux distribution is Debian based \
+# if Linux distribution is Debian based
 if [ -x "$(command -v apt-get)" ]; then \
   apt-get update -y; \
   apt-get install --no-install-recommends -y \
@@ -72,7 +72,7 @@ if [ -x "$(command -v apt-get)" ]; then \
     qt5-default \
     g++ \
     build-essential; \
-# if Linux distribution is Red Hat based \
+# if Linux distribution is Red Hat based
 elif [ -x "$(command -v yum)" ]; then \
   yum update -y; \
   yum install -y \
@@ -86,7 +86,7 @@ elif [ -x "$(command -v yum)" ]; then \
     which \
     qt5-qtbase-devel \
     gcc-c++; \
-# if Linux distribution is Arch Linux based \
+# if Linux distribution is Arch Linux based
 elif [ -x "$(command -v pacman)" ]; then \
   pacman -Sy --noconfirm; \
   pacman -S --noconfirm \
@@ -100,7 +100,7 @@ elif [ -x "$(command -v pacman)" ]; then \
     which \
     qt5-base \
     gcc; \
-# if Linux distribution is Alpine based \
+# if Linux distribution is Alpine based
 elif [ -x "$(command -v apk)" ]; then \
   apk update; \
   apk add \
@@ -115,7 +115,7 @@ elif [ -x "$(command -v apk)" ]; then \
     which \
     g++ \
     gcc; \
-# if Linux distribution is Gentoo based (didn't test it) \
+# if Linux distribution is Gentoo based (didn't test Qt)
 elif [ -x "$(command -v emerge)" ]; then \
   emerge --sync; \
   emerge sys-apps/portage; \

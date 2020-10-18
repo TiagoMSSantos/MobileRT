@@ -7,9 +7,9 @@ if( DEFINED ANDROID_ABI )
     "${CMAKE_CURRENT_SOURCE_DIR}/Android_JNI/**.cpp" )
 else()
   file( GLOB MOBILE_DEPENDENT_SOURCES
-    "${CMAKE_CURRENT_SOURCE_DIR}/Linux/**.cpp" )
+    "${CMAKE_CURRENT_SOURCE_DIR}/Native/**.cpp" )
   file( GLOB_RECURSE MOBILE_DEPENDENT_SOURCES_QT
-    "${CMAKE_CURRENT_SOURCE_DIR}/Linux/Qt/MobileRT/**.cpp" )
+    "${CMAKE_CURRENT_SOURCE_DIR}/Native/Qt/MobileRT/**.cpp" )
 endif()
 ###############################################################################
 ###############################################################################

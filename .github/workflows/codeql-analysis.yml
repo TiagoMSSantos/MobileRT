@@ -12,14 +12,16 @@ on:
   release:
   push:
     paths-ignore:
-    - 'docs/**'
-    - 'docker_image/**'
-    - 'scripts/Downloads/**'
-    - 'scripts/plot/**'
-    - 'WavefrontOBJs/**'
-    - '.github/**'
-    - '!.github/workflows/codeql-analysis.yml'
     - '*'
+    - '.github/**'
+    - 'app/debug/**'
+    - 'app/release/**'
+    - 'docker_image/**'
+    - 'docs/**'
+    - 'gradle/**'
+    - 'scripts/**'
+    - 'WavefrontOBJs/**'
+    - '!.github/workflows/codeql-analysis.yml'
 #branches-ignore:
 #  - '**'
 
