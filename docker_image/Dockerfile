@@ -70,6 +70,7 @@ if [ -x "$(command -v apt-get)" ]; then \
     libatomic1 \
     libomp-8-dev \
     qt5-default \
+    g++ \
     build-essential; \
 # if Linux distribution is Red Hat based \
 elif [ -x "$(command -v yum)" ]; then \
@@ -118,17 +119,14 @@ elif [ -x "$(command -v apk)" ]; then \
 elif [ -x "$(command -v emerge)" ]; then \
   emerge --sync; \
   emerge sys-apps/portage; \
-  emerge --deep --update --pretend @world; \
   emerge --update --deep @world; \
   eselect profile list; \
   eselect profile set 1; \
   emerge app-portage/layman; \
-#  echo "source /var/lib/layman/make.conf" >> /etc/portage/make.conf; \
   emerge layman; \
   layman -S; \
   layman -a qt; \
   layman -a gentoo; \
-  emerge @qt5-essentials @qt5-addons; \
   emerge \
     vim \
     findutils \
@@ -139,10 +137,9 @@ elif [ -x "$(command -v emerge)" ]; then \
     dev-vcs/git \
     which \
     sys-devel/gcc \
-    sys-devel/libtool; \
-  emerge \
-    qt5-addons \
-    qt5-essentials; \
+    dev-qt/qtcore \
+    dev-qt/qtgui \
+    dev-qt/qtwidgets; \
 fi
 ###############################################################################
 ###############################################################################
