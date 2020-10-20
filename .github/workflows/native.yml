@@ -37,9 +37,9 @@ jobs:
       matrix:
         compiler: [g++, clang++]
         type: [Debug, Release]
-        os: [ubuntu-16.04, macos-10.15]
+        os: [ubuntu-18.04, macos-10.15]
         include:
-          - os: ubuntu-16.04
+          - os: ubuntu-18.04
             compiler: g++
             compiler_path: g++
 
@@ -182,7 +182,7 @@ jobs:
         find . -iname "*.so" 2> /dev/null;
         ls -Rla ./bin ./lib;
 
-    - name: Generate code coverage base Linux
+    - name: Generate code coverage base
       if: success() && matrix.compiler == 'g++' && matrix.type == 'Debug' && startsWith(matrix.os, 'ubuntu')
       working-directory: .
       run: |
@@ -202,7 +202,7 @@ jobs:
         echo "Result: '${res}'";
         exit ${res};
 
-    - name: Generate code coverage Linux
+    - name: Generate code coverage
       if: success() && matrix.compiler == 'g++' && matrix.type == 'Debug' && startsWith(matrix.os, 'ubuntu')
       working-directory: .
       run: |
@@ -215,7 +215,7 @@ jobs:
         echo "Result: '${res}'";
         exit ${res};
 
-    - name: Send code climate report Linux
+    - name: Send code climate report
       if: success() && matrix.compiler == 'g++' && matrix.type == 'Debug' && startsWith(matrix.os, 'ubuntu')
       working-directory: .
       env:
@@ -228,7 +228,7 @@ jobs:
         echo "Result: '${res}'";
         exit ${res};
 
-    - name: Validate codecov report Linux
+    - name: Validate codecov report
       if: success() && matrix.compiler == 'g++' && matrix.type == 'Debug' && startsWith(matrix.os, 'ubuntu')
       working-directory: .
       env:
@@ -240,7 +240,7 @@ jobs:
         echo "Result: '${res}'";
         exit 0;
 
-    - name: Send codecov report Linux
+    - name: Send codecov report
       if: success() && matrix.compiler == 'g++' && matrix.type == 'Debug' && startsWith(matrix.os, 'ubuntu')
       working-directory: .
       env:
@@ -258,5 +258,4 @@ jobs:
       with:
         name: reports_${{ matrix.type }}_${{ matrix.os }}
         path: |
-          ./app/build/reports
           ./reports
