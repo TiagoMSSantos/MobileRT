@@ -22,13 +22,16 @@ on:
     - 'scripts/**'
     - 'WavefrontOBJs/**'
     - '!.github/workflows/codeql-analysis.yml'
+    branches:
+    - master
+
 #branches-ignore:
 #  - '**'
 
 jobs:
   Build:
     name: Analyze
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-18.04
 
     strategy:
       fail-fast: false
