@@ -122,15 +122,15 @@ jobs:
 
     - name: Create build directory
       if: success()
+      shell: bash
       working-directory: .
       run: |
-        md -Force build_native
-        md -Force example
-        md -Force example/Qt
-        vcpkg install pthread:x86-windows
-        vcpkg install pthread:x64-windows
-        dir
-        g++ -v
+        mkdir -p build_native;
+        mkdir -p example/Qt;
+        vcpkg install pthread:x86-windows;
+        vcpkg install pthread:x64-windows;
+        ls -la;
+        g++ -v;
 
     - name: Install Qt
       if: success()
@@ -176,7 +176,7 @@ jobs:
       working-directory: .
       shell: bash
       run: |
-        mkdir -p ./reports;
+        mkdir -p reports;
         bash scripts/compile_native.sh ${{ matrix.type }} g++ 2>&1 | tee ./reports/build.log;
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
@@ -187,7 +187,11 @@ jobs:
       working-directory: .
       shell: bash
       run: |
-        bash ./scripts/run_tests.sh ${{ matrix.type }} 2>&1 | tee ./reports/tests.log;
+        mkdir -p reports;
+        bash scripts/run_tests.sh ${{ matrix.type }} 2>&1 | tee ./reports/tests.log;
+        export res="${PIPESTATUS[0]}";
+        echo "Result: '${res}'";
+        exit ${res};
 
     - name: Upload reports
       if: always()
@@ -195,3 +199,4 @@ jobs:
       with:
         name: Reports
         path: ./reports
+        if-no-files-found: warn

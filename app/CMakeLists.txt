@@ -99,7 +99,7 @@ if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
   message( STATUS "Detected not Windows OS." )
 
   if( DEFINED ANDROID_ABI AND NOT CMAKE_HOST_WIN32 MATCHES "1" )
-	# flto: Link Time Optimization
+    # flto: Link Time Optimization
     set( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -flto=full"
       CACHE STRING "CUSTOM" FORCE )
   endif()
@@ -178,7 +178,7 @@ if( DEFINED ANDROID_ABI )
   message( STATUS "Detected Android OS." )
 
   set( MOBILE_DEPENDENT_HEADERS
-	"${CMAKE_SOURCE_DIR}/System_dependent/Android_JNI" )
+    "${CMAKE_SOURCE_DIR}/System_dependent/Android_JNI" )
   set( COMMON_FLAGS "${COMMON_FLAGS}" -stdlib=libc++ )
 else()
   message( STATUS "Detected Native OS." )
@@ -253,18 +253,18 @@ if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
   set( COMMON_FLAGS "${COMMON_FLAGS}" -pedantic-errors -pedantic )
 endif()
 
-#if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
-#  set( COMMON_FLAGS "${COMMON_FLAGS}" -Wpedantic -Wextra -Wfatal-errors -Werror )
-#endif()
+if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
+  set( COMMON_FLAGS "${COMMON_FLAGS}" -Wpedantic -Wextra -Wfatal-errors -Werror )
+endif()
 
 if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
   if( DEFINED ANDROID_ABI OR CMAKE_CXX_COMPILER MATCHES "clang" OR CMAKE_CXX_COMPILER STREQUAL "g++" )
     set( COMMON_FLAGS "${COMMON_FLAGS}" -std=c++11 )
   endif()
   # Turn off C++98 pedantic warning so it can use C++11 features
-#  set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-c++98-compat-pedantic )
+  set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-c++98-compat-pedantic )
   # Turn off padded warning because some classes still need padding
-#  set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-padded )
+  set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-padded )
 endif()
 
 if( DEFINED ANDROID_ABI OR CMAKE_CXX_COMPILER MATCHES "clang" )
@@ -275,7 +275,7 @@ endif()
 
 if( DEFINED ANDROID_ABI
     OR CMAKE_CXX_COMPILER MATCHES "clang" AND CMAKE_HOST_SYSTEM MATCHES "Linux"
-  )
+)
   message( STATUS "Detected Android OS or Clang compiler in Linux." )
   message( STATUS "Adding OpenMP." )
 

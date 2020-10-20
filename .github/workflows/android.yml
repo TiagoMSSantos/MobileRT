@@ -32,9 +32,9 @@ jobs:
       fail-fast: false
       matrix:
         type: [Debug, Release]
-        os: [ubuntu-16.04, macos-10.15, windows-2019]
+        os: [ubuntu-18.04, macos-10.15, windows-2019]
         include:
-          - os: ubuntu-16.04
+          - os: ubuntu-18.04
             ndk_version: 21.3.6528147
             cmake_version: 3.6.0
 
@@ -67,7 +67,7 @@ jobs:
         java-version: 11
 
     - name: Install Tree Linux
-      if: success() && matrix.os == 'ubuntu-16.04' && matrix.type == 'Debug'
+      if: success() && startsWith(matrix.os, 'ubuntu')
       working-directory: .
       run: |
         mkdir -p ./reports;
@@ -77,7 +77,7 @@ jobs:
         exit ${res};
 
     - name: Install Tree MacOS
-      if: success() && matrix.os == 'macos-10.15' && matrix.type == 'Debug'
+      if: success() && startsWith(matrix.os, 'macos')
       working-directory: .
       run: |
         mkdir -p ./reports;
@@ -181,14 +181,14 @@ jobs:
           tree -a -f | grep -i app/build/reports | grep -i xml 2>&1 | tee ./reports/tree_report.log;
 
     - name: Upload APK
-      if: success() && matrix.os == 'ubuntu-16.04' && matrix.type == 'Debug'
+      if: success() && startsWith(matrix.os, 'macos')
       uses: actions/upload-artifact@v2
       with:
         name: MobileRT_${{ matrix.type }}_exp
         path: ./app/build/outputs/apk/${{ matrix.variant }}
 
-    - name: Send code climate report Linux
-      if: success() && matrix.os == 'ubuntu-16.04' && matrix.type == 'Debug'
+    - name: Send code climate report
+      if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'Debug'
       working-directory: app/src/main/java
       env:
         CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
@@ -200,8 +200,8 @@ jobs:
         echo "Result: '${res}'";
         exit ${res};
 
-    - name: Validate codecov report Linux
-      if: success() && matrix.os == 'ubuntu-16.04' && matrix.type == 'Debug'
+    - name: Validate codecov report
+      if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'Debug'
       working-directory: .
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
@@ -213,7 +213,7 @@ jobs:
         exit 0;
 
     - name: Analyze Sonar
-      if: success() && matrix.os == 'ubuntu-16.04' && matrix.type == 'Debug'
+      if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'Debug'
       working-directory: .
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
@@ -223,8 +223,8 @@ jobs:
         tree -a -f | grep -i app/build/reports | grep -i xml 2>&1 | tee ./reports/tree.log;
         ./gradlew --parallel sonarqube --info 2>&1 | tee ./reports/sonarqube.log;
 
-    - name: Send codecov report Linux
-      if: success() && matrix.os == 'ubuntu-16.04' && matrix.type == 'Debug'
+    - name: Send codecov report
+      if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'Debug'
       working-directory: .
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
