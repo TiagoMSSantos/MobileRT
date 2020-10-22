@@ -122,7 +122,7 @@ public final class UtilsShader {
             LOGGER.info(deleteProgramMessage);
             UtilsGL.run(() -> GLES20.glDeleteProgram(shaderProgram));
         }
-        final int newShaderProgram = UtilsGL.<Integer>run(() -> GLES20.glCreateProgram());
+        final int newShaderProgram = UtilsGL.<Integer>run(GLES20::glCreateProgram);
 
         if (newShaderProgram == 0) {
             LOGGER.severe("Could not create GL program.");
