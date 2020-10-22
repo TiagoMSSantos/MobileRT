@@ -15,6 +15,13 @@ plugins {
     // Pitest provides an ability to perform a mutation testing and calculate a
     // mutation coverage of a Gradle-based projects with PIT.
 //    id 'info.solidsoft.pitest'
+
+    // Generates an HTML dependency report. This report combines the features
+    // of the ASCII dependency report and those of the ASCII dependency insight
+    // report. For a given project, it generates a tree of the dependencies of
+    // every configuration, and each dependency can be clicked to show the
+    // insight of this dependency.
+    id 'project-report'
 }
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////

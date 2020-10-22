@@ -112,6 +112,16 @@ jobs:
         echo "Result: '${res}'";
         exit ${res};
 
+    - name: Print dependencies
+      if: success()
+      working-directory: .
+      run: |
+        mkdir -p ./reports;
+        ./gradlew :app:dependencies 2>&1 | tee dependencies.log;
+        export res=${PIPESTATUS[0]};
+        echo "Result: '${res}'";
+        exit ${res};
+
     - name: Setup code climate report
       if: success()
       working-directory: .
