@@ -1,24 +1,184 @@
-language: cpp
-os: linux
-dist: bionic
-compiler:
-  - gcc
+# Opt in using the repository setting "Build config validation"
+version: ~> 1.0
 
+# language: android, c, clojure, cpp, crystal, csharp, d, dart, elixir, elm,objective-c, ruby
+language: cpp
+
+# Git
 git:
   submodules: false
 
-before_install:
-  - sudo apt-get update
-  - sudo apt-get install -y libgtk2.0-dev libqt4-dev
+# arch: amd64, arm64, arm64-graviton2, ppc64le, s390x
+# os: linux, osx, windows
 
-install:
-  - mkdir -p build_native
-  - cd build_native
-  - cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_BUILD_TYPE=Debug ../app/
-  - make
+# dist: 20.04: focal | 18.04: bionic | 16.04: xenial | 14.04: trusty | 12.04: precise | server-2016
 
-script:
-  - ./bin/GoogleTestd
+# compiler: gcc, clang
 
-after_success:
-  - ls
+_shared_job_linux: &shared_job_linux
+  before_install:
+  - sudo apt-get update;
+  - sudo apt-cache search libomp-dev;
+  - sudo apt-cache search openmp;
+  - sudo apt-cache search omp;
+  - sudo apt-get install --no-install-recommends -y clang-8 || true;
+  - sudo apt-get install --no-install-recommends -y libomp-8-dev || true;
+  - sudo apt-get install --no-install-recommends -y libomp5-8 || true;
+  - sudo apt-get install --no-install-recommends -y libomp-dev || true;
+  - sudo apt-get install --no-install-recommends -y libiomp-dev || true;
+  - sudo apt-get install --no-install-recommends -y qt5-default;
+  - sudo find / -name "omp.h" || true;
+  - sudo find / -name "*omp.*" || true;
+  - export CPLUS_INCLUDE_PATH=/usr/lib/gcc/s390x-linux-gnu/7/include:${CPLUS_INCLUDE_PATH};
+  - export LIBRARY_PATH=/usr/local/Cellar/gcc/9.2.0_2/lib/gcc/9:${LIBRARY_PATH};
+  - export LIBRARY_PATH=/usr/local/Cellar/libomp/11.0.0/lib:${LIBRARY_PATH};
+  - export LIBRARY_PATH=/usr/lib/gcc/s390x-linux-gnu/7:${LIBRARY_PATH};
+  - export LD_LIBRARY_PATH=/usr/local/clang/lib:${LD_LIBRARY_PATH};
+  - g++ -v || true;
+  - clang++ -v || true;
+  install:
+  - mkdir -p build_native;
+  - cd build_native;
+  - cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_BUILD_TYPE=Debug ../app/;
+  - cmake --build .;
+  before_script:
+  - ls -laR;
+  script:
+  - ./bin/UnitTestsd;
+  after_script:
+  - ls -laR;
+  after_success:
+  - ls -laR;
+  after_failure:
+  - ls -laR;
+
+_shared_job_mac: &shared_job_mac
+  before_install:
+  - brew update > update.log;
+  - brew install libomp > install_libomp.log;
+  - brew tap cartr/qt4 > install_qt4.log;
+  - brew uninstall --force openssl@1.0 > uninstall_openssl.log;
+  - brew install openssl@1.0 > install_openssl.log;
+  - brew install qt@4 > install_qt4.log;
+  - brew install qt > install_qt.log;
+  - sudo find / -name "omp.h" || true;
+  - sudo find / -name "*omp.*" || true;
+  - sudo find / -name "wchar.h" || true;
+  - sudo xcode-select --install || true;
+#  - sudo xcode-select --switch /System/Volumes/Data/Applications/Xcode-12.2.beta.3.app/Contents/Developer;
+  - sudo xcode-select --switch /Library/Developer/CommandLineTools;
+#  - export CPLUS_INCLUDE_PATH=/System/Volumes/Data/Library/Developer/CommandLineTools/usr/include/c++/v1:${CPLUS_INCLUDE_PATH};
+  - export LIBRARY_PATH=/usr/local/Cellar/libomp/11.0.0/lib:${LIBRARY_PATH};
+  - export LD_LIBRARY_PATH=/usr/local/clang/lib:${LD_LIBRARY_PATH};
+  - g++ -v || true;
+  - clang++ -v || true;
+  install:
+  - mkdir -p build_native;
+  - cd build_native;
+  - cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_BUILD_TYPE=Debug ../app/;
+  - cmake --build .;
+  before_script:
+  - ls -laR;
+  script:
+  - ./bin/UnitTestsd;
+  after_script:
+  - ls -laR;
+  after_success:
+  - ls -laR;
+  after_failure:
+  - ls -laR;
+
+jobs:
+  include:
+
+  - stage: Build
+    os: linux
+    dist: bionic
+    arch: amd64
+    compiler: gcc
+    <<: *shared_job_linux
+
+  - stage: Build
+    os: linux
+    dist: bionic
+    arch: amd64
+    compiler: clang
+    <<: *shared_job_linux
+
+  - stage: Build
+    os: linux
+    dist: bionic
+    arch: arm64
+    compiler: gcc
+    <<: *shared_job_linux
+
+  - stage: Build
+    os: linux
+    dist: bionic
+    arch: arm64
+    compiler: clang
+    env:
+    - CXX=clang++-8
+    <<: *shared_job_linux
+
+  - stage: Build
+    os: linux
+    dist: bionic
+    arch: arm64-graviton2
+    compiler: gcc
+    <<: *shared_job_linux
+
+  - stage: Build
+    os: linux
+    dist: bionic
+    arch: arm64-graviton2
+    compiler: clang
+    <<: *shared_job_linux
+
+  - stage: Build
+    os: linux
+    dist: bionic
+    arch: ppc64le
+    compiler: gcc
+    <<: *shared_job_linux
+
+  - stage: Build
+    os: linux
+    dist: bionic
+    arch: ppc64le
+    compiler: clang
+    env:
+    - CXX=clang++-8
+    <<: *shared_job_linux
+
+  - stage: Build
+    os: linux
+    dist: bionic
+    arch: s390x
+    compiler: gcc
+    <<: *shared_job_linux
+
+# OpenMP binaries not included in the package managers: apt, conan
+#  - stage: Build
+#    os: linux
+#    dist: bionic
+#    arch: s390x
+#    compiler: clang
+#    env:
+#    - CXX=clang++-8
+#    <<: *shared_job_linux
+
+
+  - stage: Build
+    os: osx
+    osx_image: xcode12.2
+    arch: amd64
+    compiler: gcc
+    <<: *shared_job_mac
+
+  - stage: Build
+    os: osx
+    osx_image: xcode12.2
+    arch: amd64
+    compiler: clang
+    <<: *shared_job_mac
