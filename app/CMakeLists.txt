@@ -39,11 +39,9 @@ message( STATUS "Setting default compiler flags." )
 set( ANDROID_COMPILER_FLAGS "" CACHE STRING "CUSTOM" FORCE )
 
 if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
-  if( DEFINED ANDROID_ABI OR CMAKE_CXX_COMPILER MATCHES "clang" OR CMAKE_CXX_COMPILER STREQUAL "g++" )
     # PIC: Position Independent Code
     set( CMAKE_CXX_FLAGS "-std=c++11 -fPIC -Bsymbolic -Bsymbolic-functions"
       CACHE STRING "CUSTOM" FORCE )
-  endif()
 endif()
 # _GLIBCXX_DEBUG: activate debug mode and all the assertions
 set( CMAKE_CXX_FLAGS_DEBUG "-D_GLIBCXX_DEBUG" CACHE STRING "CUSTOM" FORCE )
