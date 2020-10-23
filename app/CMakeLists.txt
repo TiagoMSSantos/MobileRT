@@ -7,11 +7,10 @@ set( CMAKE_VERBOSE_MAKEFILE ON )
 
 
 ###############################################################################
-# Print environment variables
+# Include print environment variables
 ###############################################################################
 message( STATUS "Adding helper functions." )
 include( ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists_helper.cmake )
-print_environment()
 ###############################################################################
 ###############################################################################
 
@@ -26,6 +25,16 @@ cmake_minimum_required( VERSION 3.0...3.0 FATAL_ERROR )
 message( STATUS
   "Setting policies for compatibility with CMake v3.0.")
 cmake_policy( VERSION 3.0 )
+###############################################################################
+###############################################################################
+
+
+###############################################################################
+# set up project
+###############################################################################
+message( status "setting up appmobilert project." )
+project( appmobilert VERSION 1.0.0.0 LANGUAGES CXX )
+print_environment()
 ###############################################################################
 ###############################################################################
 
@@ -115,7 +124,10 @@ set( CMAKE_SHARED_LINKER_FLAGS_MINSIZEREL "" CACHE STRING "CUSTOM" FORCE )
 
 if( NOT DEFINED ANDROID_ABI )
   message( STATUS "Detected native OS." )
-  if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
+  if( NOT CMAKE_HOST_WIN32 MATCHES "1"
+    AND NOT CMAKE_CXX_LIBRARY_ARCHITECTURE MATCHES "powerpc"
+    AND NOT CMAKE_CXX_LIBRARY_ARCHITECTURE MATCHES "aarch64"
+    AND NOT CMAKE_CXX_LIBRARY_ARCHITECTURE MATCHES "s390x" )
     set( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -march=native"
       CACHE STRING "CUSTOM" FORCE )
   endif()
@@ -183,7 +195,10 @@ else()
 
   set( MOBILE_DEPENDENT_HEADERS "${CMAKE_SOURCE_DIR}/System_dependent/Native" )
 
-  if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
+  if( NOT CMAKE_HOST_WIN32 MATCHES "1"
+    AND NOT CMAKE_CXX_LIBRARY_ARCHITECTURE MATCHES "powerpc"
+    AND NOT CMAKE_CXX_LIBRARY_ARCHITECTURE MATCHES "aarch64"
+    AND NOT CMAKE_CXX_LIBRARY_ARCHITECTURE MATCHES "s390x" )
     message( STATUS
     "Add flag to generate instructions for the machine type native." )
     set( COMMON_FLAGS "${COMMON_FLAGS}" -march=native )
@@ -256,7 +271,9 @@ if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
 endif()
 
 if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
-  if( DEFINED ANDROID_ABI OR CMAKE_CXX_COMPILER MATCHES "clang" OR CMAKE_CXX_COMPILER STREQUAL "g++" )
+  if( DEFINED ANDROID_ABI OR CMAKE_CXX_COMPILER MATCHES "clang"
+    OR (CMAKE_CXX_COMPILER MATCHES "g[++]" AND NOT CMAKE_CXX_COMPILER MATCHES "clang")
+  )
     set( COMMON_FLAGS "${COMMON_FLAGS}" -std=c++11 )
   endif()
   # Turn off C++98 pedantic warning so it can use C++11 features
@@ -279,7 +296,10 @@ if( DEFINED ANDROID_ABI
 
   # Xpreprocessor: it passes an option to the preprocessor. It is useful to
   # pass options that GCC doesn't recognize.
-  set( COMMON_FLAGS "${COMMON_FLAGS}" -Xpreprocessor -fopenmp=libomp )
+  set( COMMON_FLAGS "${COMMON_FLAGS}" -Xpreprocessor -fopenmp )
+  if( NOT DEFINED ANDROID_ABI )
+    set( COMMON_FLAGS "${COMMON_FLAGS}" -openmp )
+  endif()
 else()
   message( STATUS "Detected Mac or Windows OS or GCC compiler." )
 
@@ -315,26 +335,18 @@ if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
   set( COMMON_LINKER_FLAGS_RELEASE "${COMMON_LINKER_FLAGS_RELEASE}" -flto=full )
 endif()
 
-if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
+if( NOT CMAKE_HOST_WIN32 MATCHES "1" AND NOT CMAKE_HOST_SYSTEM_NAME MATCHES "Darwin" )
   message( STATUS "Detected not Windows OS." )
 
-  if( CMAKE_CXX_COMPILER STREQUAL "g++" )
+  if( CMAKE_CXX_COMPILER MATCHES "g[++]"
+    AND NOT CMAKE_CXX_COMPILER MATCHES "clang"
+  )
     message( STATUS "Add code coverage analysis flags for GCC." )
 
     set( COMMON_FLAGS_TEST -ftest-coverage -fprofile-arcs )
     set( COMMON_LINKER_FLAGS_TEST --coverage -lgcov )
   endif()
 endif()
-
-###############################################################################
-# Set up project
-###############################################################################
-message( STATUS "Setting up AppMobileRT project." )
-print_environment()
-project( AppMobileRT VERSION 1.0.0.0 LANGUAGES CXX )
-print_environment()
-###############################################################################
-###############################################################################
 
 
 message( STATUS "Adding scenes source files." )
@@ -454,8 +466,10 @@ if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
   # Turn off zero as null pointer warning because of Qt generated code
   target_compile_options( ${PROJECT_NAME} PRIVATE
     -Wno-zero-as-null-pointer-constant )
-  # Turn off redundant parentheses warning because of Qt moc generated code
-  target_compile_options( ${PROJECT_NAME} PRIVATE -Wno-redundant-parens )
+  if( NOT CMAKE_HOST_SYSTEM_NAME MATCHES "Darwin" )
+    # Turn off redundant parentheses warning because of Qt moc generated code
+    target_compile_options( ${PROJECT_NAME} PRIVATE -Wno-redundant-parens )
+  endif()
 endif()
 
 target_compile_options( ${PROJECT_NAME} PRIVATE
@@ -501,4 +515,4 @@ target_link_libraries( ${PROJECT_NAME}
 ###############################################################################
 
 
-print_environment()
+#print_environment()
