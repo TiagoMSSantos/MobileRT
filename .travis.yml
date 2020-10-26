@@ -27,8 +27,6 @@ _shared_job_linux: &shared_job_linux
   - sudo apt-get install --no-install-recommends -y libomp-dev || true;
   - sudo apt-get install --no-install-recommends -y libiomp-dev || true;
   - sudo apt-get install --no-install-recommends -y qt5-default;
-  - sudo find / -name "omp.h" || true;
-  - sudo find / -name "*omp.*" || true;
   - export CPLUS_INCLUDE_PATH=/usr/lib/gcc/s390x-linux-gnu/7/include:${CPLUS_INCLUDE_PATH};
   - export LIBRARY_PATH=/usr/local/Cellar/gcc/9.2.0_2/lib/gcc/9:${LIBRARY_PATH};
   - export LIBRARY_PATH=/usr/local/Cellar/libomp/11.0.0/lib:${LIBRARY_PATH};
@@ -55,19 +53,23 @@ _shared_job_linux: &shared_job_linux
 _shared_job_mac: &shared_job_mac
   before_install:
   - brew update > update.log;
-  - brew install libomp > install_libomp.log;
   - brew tap cartr/qt4 > install_qt4.log;
   - brew uninstall --force openssl@1.0 > uninstall_openssl.log;
+  - brew install libomp > install_libomp.log;
   - brew install openssl@1.0 > install_openssl.log;
   - brew install qt@4 > install_qt4.log;
   - brew install qt > install_qt.log;
-  - sudo find / -name "omp.h" || true;
-  - sudo find / -name "*omp.*" || true;
-  - sudo find / -name "wchar.h" || true;
+  - brew install llvm > install_llvm.log;
+#  - sudo find / -name "omp.h" || true;
+#  - sudo find / -name "*omp.*" || true;
+#  - sudo find / -name "wchar.h" || true;
+  - sudo xcode-select -p;
   - sudo xcode-select --install || true;
 #  - sudo xcode-select --switch /System/Volumes/Data/Applications/Xcode-12.2.beta.3.app/Contents/Developer;
-  - sudo xcode-select --switch /Library/Developer/CommandLineTools;
+#  - sudo xcode-select --switch /Library/Developer/CommandLineTools;
 #  - export CPLUS_INCLUDE_PATH=/System/Volumes/Data/Library/Developer/CommandLineTools/usr/include/c++/v1:${CPLUS_INCLUDE_PATH};
+  - export CPLUS_INCLUDE_PATH=/System/Volumes/Data/Applications/Xcode-12.2.beta.3.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include:${CPLUS_INCLUDE_PATH};
+#  - export CPLUS_INCLUDE_PATH=/System/Volumes/Data/Applications/Xcode-12.2.beta.3.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1:${CPLUS_INCLUDE_PATH};
   - export LIBRARY_PATH=/usr/local/Cellar/libomp/11.0.0/lib:${LIBRARY_PATH};
   - export LD_LIBRARY_PATH=/usr/local/clang/lib:${LD_LIBRARY_PATH};
   - g++ -v || true;
