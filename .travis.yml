@@ -15,80 +15,78 @@ git:
 
 # compiler: gcc, clang
 
+
+# Jobs
 _shared_job_linux: &shared_job_linux
   before_install:
-  - sudo apt-get update;
-  - sudo apt-cache search libomp-dev;
-  - sudo apt-cache search openmp;
-  - sudo apt-cache search omp;
-  - sudo apt-get install --no-install-recommends -y clang-8 || true;
-  - sudo apt-get install --no-install-recommends -y libomp-8-dev || true;
-  - sudo apt-get install --no-install-recommends -y libomp5-8 || true;
-  - sudo apt-get install --no-install-recommends -y libomp-dev || true;
-  - sudo apt-get install --no-install-recommends -y libiomp-dev || true;
-  - sudo apt-get install --no-install-recommends -y qt5-default;
+  - bash scripts/install_dependencies.sh;
   - export CPLUS_INCLUDE_PATH=/usr/lib/gcc/s390x-linux-gnu/7/include:${CPLUS_INCLUDE_PATH};
   - export LIBRARY_PATH=/usr/local/Cellar/gcc/9.2.0_2/lib/gcc/9:${LIBRARY_PATH};
   - export LIBRARY_PATH=/usr/local/Cellar/libomp/11.0.0/lib:${LIBRARY_PATH};
   - export LIBRARY_PATH=/usr/lib/gcc/s390x-linux-gnu/7:${LIBRARY_PATH};
   - export LD_LIBRARY_PATH=/usr/local/clang/lib:${LD_LIBRARY_PATH};
-  - g++ -v || true;
-  - clang++ -v || true;
   install:
-  - mkdir -p build_native;
-  - cd build_native;
-  - cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_BUILD_TYPE=Debug ../app/;
-  - cmake --build .;
+  - mkdir -p reports;
+  - mkdir -p build_Debug;
+  - bash scripts/compile_native.sh debug g++ >&1 | tee ./reports/build.log;
   before_script:
-  - ls -laR;
+  - ls -laR build_Debug/;
   script:
-  - ./bin/UnitTestsd;
+  - ./build_Debug/bin/UnitTestsd;
   after_script:
-  - ls -laR;
+  - ls -laR build_Debug/;
   after_success:
-  - ls -laR;
+  - ls -laR build_Debug/;
   after_failure:
-  - ls -laR;
+  - ls -laR build_Debug/;
 
 _shared_job_mac: &shared_job_mac
   before_install:
-  - brew update > update.log;
-  - brew tap cartr/qt4 > install_qt4.log;
-  - brew uninstall --force openssl@1.0 > uninstall_openssl.log;
-  - brew install libomp > install_libomp.log;
-  - brew install openssl@1.0 > install_openssl.log;
-  - brew install qt@4 > install_qt4.log;
-  - brew install qt > install_qt.log;
-  - brew install llvm > install_llvm.log;
-#  - sudo find / -name "omp.h" || true;
-#  - sudo find / -name "*omp.*" || true;
-#  - sudo find / -name "wchar.h" || true;
+  - bash scripts/install_dependencies.sh;
   - sudo xcode-select -p;
   - sudo xcode-select --install || true;
 #  - sudo xcode-select --switch /System/Volumes/Data/Applications/Xcode-12.2.beta.3.app/Contents/Developer;
 #  - sudo xcode-select --switch /Library/Developer/CommandLineTools;
 #  - export CPLUS_INCLUDE_PATH=/System/Volumes/Data/Library/Developer/CommandLineTools/usr/include/c++/v1:${CPLUS_INCLUDE_PATH};
-  - export CPLUS_INCLUDE_PATH=/System/Volumes/Data/Applications/Xcode-12.2.beta.3.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include:${CPLUS_INCLUDE_PATH};
+#  - export CPLUS_INCLUDE_PATH=/System/Volumes/Data/Applications/Xcode-12.2.beta.3.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include:${CPLUS_INCLUDE_PATH};
 #  - export CPLUS_INCLUDE_PATH=/System/Volumes/Data/Applications/Xcode-12.2.beta.3.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1:${CPLUS_INCLUDE_PATH};
   - export LIBRARY_PATH=/usr/local/Cellar/libomp/11.0.0/lib:${LIBRARY_PATH};
   - export LD_LIBRARY_PATH=/usr/local/clang/lib:${LD_LIBRARY_PATH};
-  - g++ -v || true;
-  - clang++ -v || true;
   install:
-  - mkdir -p build_native;
-  - cd build_native;
-  - cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_BUILD_TYPE=Debug ../app/;
-  - cmake --build .;
+  - mkdir -p reports;
+  - bash scripts/compile_native.sh debug g++ 2>&1 | tee ./reports/build.log;
   before_script:
-  - ls -laR;
+  - ls -laR build_Debug/;
   script:
-  - ./bin/UnitTestsd;
+  - ./build_Debug/bin/UnitTestsd;
   after_script:
-  - ls -laR;
+  - ls -laR build_Debug/;
   after_success:
-  - ls -laR;
+  - ls -laR build_Debug/;
   after_failure:
-  - ls -laR;
+  - ls -laR build_Debug/;
+
+_shared_job_windows: &shared_job_windows
+  language: bash
+  before_install:
+  - choco install python --version 3.8.0
+  - python -m pip install --upgrade pip
+  - pip install conan
+  env: PATH=/c/Python38:/c/Python38/Scripts:$PATH
+  install:
+  - mkdir -p reports;
+  - mkdir -p build_Debug;
+  - bash scripts/compile_native.sh debug g++ 2>&1 | tee ./reports/build.log;
+  before_script:
+  - ls -laR build_Debug/;
+  script:
+  - ./build_Debug/bin/UnitTestsd;
+  after_script:
+  - ls -laR build_Debug/;
+  after_success:
+  - ls -laR build_Debug/;
+  after_failure:
+  - ls -laR build_Debug/;
 
 jobs:
   include:
@@ -119,8 +117,8 @@ jobs:
     dist: bionic
     arch: arm64
     compiler: clang
-    env:
-    - CXX=clang++-8
+#    env:
+#    - CXX=clang++-8
     <<: *shared_job_linux
 
   - stage: Build
@@ -149,8 +147,8 @@ jobs:
     dist: bionic
     arch: ppc64le
     compiler: clang
-    env:
-    - CXX=clang++-8
+#    env:
+#    - CXX=clang++-8
     <<: *shared_job_linux
 
   - stage: Build
@@ -184,3 +182,10 @@ jobs:
     arch: amd64
     compiler: clang
     <<: *shared_job_mac
+
+
+  - stage: Build
+    os: windows
+    arch: amd64
+    compiler: gcc
+    <<: *shared_job_windows

@@ -7,10 +7,14 @@
 # Call function and exit the process if it fails
 function callCommand() {
   echo ""
-  echo "Calling '$*'"
-  "$@"
+  commandToExecute=$*
+  if [ "${1}" == "sudo" ] && [ ! -x "$(command -v ${1})" ]; then
+    commandToExecute=${commandToExecute//"sudo "/}
+  fi
+  echo "Calling '${commandToExecute}'"
+  ${commandToExecute}
   local lastResult=${PIPESTATUS[0]}
-  local lastCommand="$*"
+  local lastCommand="${commandToExecute}"
   if [ "${lastResult}" -eq 0 ]; then
     echo "${lastCommand}: success - '${lastResult}'"
   else
@@ -79,6 +83,16 @@ function killProcessUsingFile() {
   process_id_using_file=$(echo "${processes_using_file}" | cut -d ' ' -f 2 | head -1)
   echo "Going to kill this process: '${process_id_using_file}'"
   kill -9 "${process_id_using_file}"
+}
+
+# Check command is available
+function checkCommand() {
+  if [ -x "$(command -v ${@})" ]; then
+    echo "Command '$*' installed!"
+  else
+    echo "Command '$*' is NOT installed."
+    exit 1
+  fi
 }
 ###############################################################################
 ###############################################################################

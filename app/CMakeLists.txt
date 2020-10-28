@@ -145,6 +145,10 @@ set( GLM_TEST_ENABLE "OFF" CACHE STRING "CUSTOM" FORCE )
 message( status "Setting up AppMobileRT project." )
 project( AppMobileRT VERSION 1.0.0.0 LANGUAGES CXX )
 print_environment()
+if( NOT DEFINED ANDROID_ABI )
+  include( ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake )
+  conan_basic_setup()
+endif()
 ###############################################################################
 ###############################################################################
 
