@@ -12,6 +12,7 @@ set( CMAKE_VERBOSE_MAKEFILE ON )
 message( STATUS "Adding helper functions." )
 include( ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists_helper.cmake )
 include( CheckCXXCompilerFlag )
+include( ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake )
 ###############################################################################
 ###############################################################################
 
@@ -145,6 +146,7 @@ set( GLM_TEST_ENABLE "OFF" CACHE STRING "CUSTOM" FORCE )
 message( status "Setting up AppMobileRT project." )
 project( AppMobileRT VERSION 1.0.0.0 LANGUAGES CXX )
 print_environment()
+conan_basic_setup()
 ###############################################################################
 ###############################################################################
 

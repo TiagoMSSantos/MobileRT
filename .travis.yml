@@ -15,6 +15,8 @@ git:
 
 # compiler: gcc, clang
 
+
+# Jobs
 _shared_job_linux: &shared_job_linux
   before_install:
   - sudo apt-get update;
@@ -68,12 +70,34 @@ _shared_job_mac: &shared_job_mac
 #  - sudo xcode-select --switch /System/Volumes/Data/Applications/Xcode-12.2.beta.3.app/Contents/Developer;
 #  - sudo xcode-select --switch /Library/Developer/CommandLineTools;
 #  - export CPLUS_INCLUDE_PATH=/System/Volumes/Data/Library/Developer/CommandLineTools/usr/include/c++/v1:${CPLUS_INCLUDE_PATH};
-  - export CPLUS_INCLUDE_PATH=/System/Volumes/Data/Applications/Xcode-12.2.beta.3.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include:${CPLUS_INCLUDE_PATH};
+#  - export CPLUS_INCLUDE_PATH=/System/Volumes/Data/Applications/Xcode-12.2.beta.3.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include:${CPLUS_INCLUDE_PATH};
 #  - export CPLUS_INCLUDE_PATH=/System/Volumes/Data/Applications/Xcode-12.2.beta.3.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1:${CPLUS_INCLUDE_PATH};
   - export LIBRARY_PATH=/usr/local/Cellar/libomp/11.0.0/lib:${LIBRARY_PATH};
   - export LD_LIBRARY_PATH=/usr/local/clang/lib:${LD_LIBRARY_PATH};
   - g++ -v || true;
   - clang++ -v || true;
+  install:
+  - mkdir -p build_native;
+  - cd build_native;
+  - cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_BUILD_TYPE=Debug ../app/;
+  - cmake --build .;
+  before_script:
+  - ls -laR;
+  script:
+  - ./bin/UnitTestsd;
+  after_script:
+  - ls -laR;
+  after_success:
+  - ls -laR;
+  after_failure:
+  - ls -laR;
+
+_shared_job_windows: &shared_job_windows
+  language: bash
+  before_install:
+  - choco install python --version 3.8.0
+  - python -m pip install --upgrade pip
+  env: PATH=/c/Python38:/c/Python38/Scripts:$PATH
   install:
   - mkdir -p build_native;
   - cd build_native;
@@ -184,3 +208,10 @@ jobs:
     arch: amd64
     compiler: clang
     <<: *shared_job_mac
+
+
+  - stage: Build
+    os: windows
+    arch: amd64
+    compiler: gcc
+    <<: *shared_job_windows

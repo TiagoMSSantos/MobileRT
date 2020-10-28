@@ -41,6 +41,7 @@ fi
 
 function build() {
   callCommand cd "${build_path}"
+  callCommand conan install ../app/
   echo "Calling CMake"
   callCommand cmake -DCMAKE_VERBOSE_MAKEFILE=ON \
     -DCMAKE_CXX_COMPILER="${compiler}" -DCMAKE_BUILD_TYPE="${type}" ../app/ \
