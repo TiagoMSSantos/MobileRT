@@ -154,20 +154,20 @@ RUN git clone https://github.com/TiagoMSSantos/MobileRT.git
 
 
 ###############################################################################
+# Install Conan dependencies
+###############################################################################
+WORKDIR /MobileRT
+RUN bash scripts/install_dependencies.sh;
+###############################################################################
+###############################################################################
+
+
+###############################################################################
 # Compile MobileRT
 ###############################################################################
-RUN cd MobileRT && \
-    mkdir -p build_${BUILD_TYPE} && \
-    cd build_${BUILD_TYPE} && \
-    pwd && \
-    cmake \
-      -DCMAKE_VERBOSE_MAKEFILE=ON \
-      -DCMAKE_CXX_COMPILER=g++ \
-      -DCMAKE_BUILD_TYPE=${BUILD_TYPE} \
-      ../app/ && \
-    cmake --build . && \
-    ls -laR bin && \
-    ls -laR lib && \
+RUN bash scripts/compile_native.sh ${BUILD_TYPE} g++ yes && \
+    ls -laR build_${BUILD_TYPE}/bin && \
+    ls -laR build_${BUILD_TYPE}/lib && \
     rm -rf ../app/ && \
     rm -rf ../docs/ && \
     rm -rf ../documentation/ && \
