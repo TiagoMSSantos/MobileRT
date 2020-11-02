@@ -60,7 +60,9 @@ fi
 CONAN_PATH=$(find ~/ -name "conan" || true);
 echo "Conan binary: ${CONAN_PATH}"
 echo "Conan location: ${CONAN_PATH%/conan}"
-PATH=${CONAN_PATH%/conan}:${PATH}
+if [ -n "${CONAN_PATH}" ]; then
+  PATH=${CONAN_PATH%/conan}:${PATH}
+fi
 echo "PATH: ${PATH}"
 ###############################################################################
 ###############################################################################
