@@ -285,6 +285,12 @@ if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
   set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-c++98-compat-pedantic )
   # Turn off padded warning because some classes still need padding
   set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-padded )
+
+#  # Allow '/usr/local/include' in PATH unsafe for cross-compilation
+#  if( NOT DEFINED ANDROID_ABI AND CMAKE_CXX_COMPILER MATCHES "clang"
+#    AND CMAKE_HOST_SYSTEM_NAME MATCHES "Darwin" )
+#    set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-poison-system-directories)
+#  endif()
 endif()
 
 if( DEFINED ANDROID_ABI OR CMAKE_CXX_COMPILER MATCHES "clang" )
@@ -420,8 +426,10 @@ else()
   if( CMAKE_HOST_SYSTEM_NAME MATCHES "Darwin" )
     message( STATUS "Linking Qt for MacOS." )
 
-    target_include_directories( ${PROJECT_NAME}
-      SYSTEM PRIVATE /usr/local/include/ )
+    if( NOT CMAKE_CXX_COMPILER MATCHES "clang" )
+      target_include_directories( ${PROJECT_NAME}
+        SYSTEM PRIVATE /usr/local/include/ )
+    endif()
 
     target_link_libraries( ${PROJECT_NAME}
       PRIVATE /usr/local/lib/QtGui.framework/Headers/ )
