@@ -66,19 +66,11 @@ jobs:
         matrix: ${{ toJson(matrix) }}
         config-file: ./.github/codeql/codeql-config.yml
 
-    - name: Update repository Linux
-      if: success() && matrix.language == 'cpp'
+    - name: Install dependencies
+      if: success()
       working-directory: .
       run: |
-        mkdir -p ./reports;
-        sudo apt-get update 2>&1 | tee ./reports/apt_update.log;
-
-    - name: Install Qt4 Linux
-      if: success() && matrix.language == 'cpp'
-      working-directory: .
-      run: |
-        mkdir -p ./reports;
-        sudo apt-get install --no-install-recommends -y libqt4-dev 2>&1 | tee ./reports/install_qt.log;
+        bash scripts/install_dependencies.sh;
 
     - name: Setup gradlew
       if: success() && matrix.language == 'java'
@@ -113,7 +105,8 @@ jobs:
       run: |
         rm -rf ./app/third_party/*;
 
-    # Warning: Valid inputs are ['check_name', 'output', 'upload', 'ram', 'add-snippets', 'threads', 'checkout_path', 'token', 'matrix']
+    # Warning: Valid inputs are ['check_name', 'output', 'upload', 'ram',
+    # 'add-snippets', 'threads', 'checkout_path', 'token', 'matrix']
     - name: Perform CodeQL Analysis
       if: success()
       uses: github/codeql-action/analyze@v1
