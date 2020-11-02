@@ -145,6 +145,10 @@ set( GLM_TEST_ENABLE "OFF" CACHE STRING "CUSTOM" FORCE )
 message( status "Setting up AppMobileRT project." )
 project( AppMobileRT VERSION 1.0.0.0 LANGUAGES CXX )
 print_environment()
+if( NOT DEFINED ANDROID_ABI AND CONAN MATCHES "TRUE" )
+  include( ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake )
+  conan_basic_setup()
+endif()
 ###############################################################################
 ###############################################################################
 
@@ -356,7 +360,7 @@ file( GLOB_RECURSE SCENES_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/Scenes/**.cpp" )
 if( NOT DEFINED ANDROID_ABI )
   message( STATUS "Finding Qt." )
   find_package( Qt5 OPTIONAL_COMPONENTS Core Gui Widgets )
-  if ( NOT QT5_FOUND )
+  if( NOT QT5_FOUND )
     find_package( Qt4 OPTIONAL_COMPONENTS QtCore QtGui )
   endif()
 endif()
@@ -407,7 +411,7 @@ else()
     # Include Qt5 headers
     target_include_directories( ${PROJECT_NAME}
       SYSTEM PRIVATE ${Qt5Core_INCLUDE_DIRS} ${Qt5Gui_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} )
-  elseif ( Qt4_FOUND )
+  elseif( Qt4_FOUND )
     # Include Qt4 headers
     target_include_directories( ${PROJECT_NAME}
       SYSTEM PRIVATE ${QT_INCLUDES} )
@@ -430,7 +434,7 @@ else()
 
     if( Qt5_FOUND )
       target_link_libraries( ${PROJECT_NAME} PRIVATE Qt5::Core Qt5::Gui Qt5::Widgets )
-    elseif ( Qt4_FOUND )
+    elseif( Qt4_FOUND )
       target_link_libraries( ${PROJECT_NAME} PRIVATE Qt4::QtCore Qt4::QtGui )
     endif()
 
