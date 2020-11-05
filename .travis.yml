@@ -68,7 +68,7 @@ _shared_job_mac: &shared_job_mac
 #  - sudo xcode-select --switch /System/Volumes/Data/Applications/Xcode-12.2.beta.3.app/Contents/Developer;
 #  - sudo xcode-select --switch /Library/Developer/CommandLineTools;
 #  - export CPLUS_INCLUDE_PATH=/System/Volumes/Data/Library/Developer/CommandLineTools/usr/include/c++/v1:${CPLUS_INCLUDE_PATH};
-  - export CPLUS_INCLUDE_PATH=/System/Volumes/Data/Applications/Xcode-12.2.beta.3.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include:${CPLUS_INCLUDE_PATH};
+#  - export CPLUS_INCLUDE_PATH=/System/Volumes/Data/Applications/Xcode-12.2.beta.3.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include:${CPLUS_INCLUDE_PATH};
 #  - export CPLUS_INCLUDE_PATH=/System/Volumes/Data/Applications/Xcode-12.2.beta.3.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1:${CPLUS_INCLUDE_PATH};
   - export LIBRARY_PATH=/usr/local/Cellar/libomp/11.0.0/lib:${LIBRARY_PATH};
   - export LD_LIBRARY_PATH=/usr/local/clang/lib:${LD_LIBRARY_PATH};
@@ -173,14 +173,14 @@ jobs:
 
   - stage: Build
     os: osx
-    osx_image: xcode12.2
+    osx_image: xcode9.4
     arch: amd64
     compiler: gcc
     <<: *shared_job_mac
 
   - stage: Build
     os: osx
-    osx_image: xcode12.2
+    osx_image: xcode9.4
     arch: amd64
     compiler: clang
     <<: *shared_job_mac

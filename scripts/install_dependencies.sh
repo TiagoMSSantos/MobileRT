@@ -79,9 +79,9 @@ fi
 callCommand python3 -m pip install --upgrade pip;
 callCommand pip3 install --upgrade setuptools pip;
 callCommand pip3 install scikit-build;
-#callCommand pip3 install cmake --upgrade;
+callCommand pip3 install cmake --upgrade;
 callCommand pip3 install conan;
-#callCommand pip3 install clang;
+callCommand pip3 install clang;
 export PATH
 PATH=$(pip3 list -v | grep -i cmake | tr -s ' ' | cut -d ' ' -f 3):${PATH}
 PATH=$(pip3 list -v | grep -i conan | tr -s ' ' | cut -d ' ' -f 3):${PATH}
@@ -93,13 +93,12 @@ PATH=${CONAN_PATH%/conan}:${PATH}
 callCommand conan -v
 checkCommand conan
 
-#CLANG_PATH=$(find / -name "clang");
-#echo "Clang binary: ${CLANG_PATH}"
-#echo "Clang location: ${CLANG_PATH%/clang}"
-#PATH=${CLANG_PATH%/clang}:${PATH}
+CLANG_PATH=$(find / -name "clang");
+echo "Clang binary: ${CLANG_PATH}"
+echo "Clang location: ${CLANG_PATH%/clang}"
+PATH=${CLANG_PATH%/clang}:${PATH}
 
 echo "PATH: ${PATH}"
-#/home/runner/.local/bin/conan
 ###############################################################################
 ###############################################################################
 
@@ -112,6 +111,7 @@ checkCommand make
 checkCommand bash
 checkCommand git
 checkCommand g++
+# Can't install clang++ in docker container
 #checkCommand clang++
 checkCommand python3
 checkCommand pip

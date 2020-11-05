@@ -290,7 +290,10 @@ if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
   if( NOT DEFINED ANDROID_ABI AND CMAKE_CXX_COMPILER MATCHES "clang"
     AND CMAKE_HOST_SYSTEM_NAME MATCHES "Darwin"
   )
-    set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-poison-system-directories )
+    CHECK_CXX_COMPILER_FLAG( "-Wno-poison-system-directories" COMPILER_SUPPORTS_FLAG )
+    if( COMPILER_SUPPORTS_FLAG )
+      set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-poison-system-directories )
+    endif()
   endif()
 endif()
 
@@ -427,9 +430,6 @@ else()
   if( CMAKE_HOST_SYSTEM_NAME MATCHES "Darwin" )
     message( STATUS "Linking Qt for MacOS." )
 
-    target_include_directories( ${PROJECT_NAME}
-      SYSTEM PRIVATE /usr/local/include/ )
-
     target_link_libraries( ${PROJECT_NAME}
       PRIVATE /usr/local/lib/QtGui.framework/Headers/ )
     target_link_libraries( ${PROJECT_NAME} PRIVATE -F/usr/local/lib )
@@ -504,7 +504,10 @@ if( CMAKE_CXX_COMPILER MATCHES "clang" )
   else()
     message( STATUS "Detected Clang version >= 8." )
 
-    target_compile_options( ${PROJECT_NAME} PRIVATE -Wno-extra-semi-stmt )
+    CHECK_CXX_COMPILER_FLAG( "-Wno-extra-semi-stmt" COMPILER_SUPPORTS_FLAG )
+    if( COMPILER_SUPPORTS_FLAG )
+      target_compile_options( ${PROJECT_NAME} PRIVATE -Wno-extra-semi-stmt )
+    endif()
   endif()
 else()
   message( STATUS "Detected GCC compiler." )
