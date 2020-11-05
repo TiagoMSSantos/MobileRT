@@ -427,8 +427,9 @@ else()
   if( CMAKE_HOST_SYSTEM_NAME MATCHES "Darwin" )
     message( STATUS "Linking Qt for MacOS." )
 
-    target_include_directories( ${PROJECT_NAME}
-      SYSTEM PRIVATE /usr/local/include/ )
+#    if( NOT CMAKE_CXX_COMPILER MATCHES "clang" )
+#      target_include_directories( ${PROJECT_NAME} SYSTEM PRIVATE /usr/local/include/ )
+#    endif()
 
     target_link_libraries( ${PROJECT_NAME}
       PRIVATE /usr/local/lib/QtGui.framework/Headers/ )

@@ -62,7 +62,7 @@ elif [ -x "$(command -v brew)" ]; then
   callCommand brew install openssl@1.0;
   callCommand brew install qt@4;
   callCommand brew install qt;
-  callCommand brew install llvm;
+#  callCommand brew install llvm;
   callCommand brew install python3;
   callCommand brew install lcov;
   callCommand brew install pyenv;
@@ -73,25 +73,25 @@ fi
 ###############################################################################
 # Install Conan package manager
 ###############################################################################
-if [ -x "$(command -v choco)" ]; then
-  callCommand choco install python --version 3.8.0;
-fi
-callCommand python3 -m pip install --upgrade pip;
-callCommand pip3 install --upgrade setuptools pip;
-callCommand pip3 install scikit-build;
-#callCommand pip3 install cmake --upgrade;
-callCommand pip3 install conan;
-#callCommand pip3 install clang;
-export PATH
-PATH=$(pip3 list -v | grep -i cmake | tr -s ' ' | cut -d ' ' -f 3):${PATH}
-PATH=$(pip3 list -v | grep -i conan | tr -s ' ' | cut -d ' ' -f 3):${PATH}
-
-CONAN_PATH=$(find ~/ -name "conan");
-echo "Conan binary: ${CONAN_PATH}"
-echo "Conan location: ${CONAN_PATH%/conan}"
-PATH=${CONAN_PATH%/conan}:${PATH}
-callCommand conan -v
-checkCommand conan
+#if [ -x "$(command -v choco)" ]; then
+#  callCommand choco install python --version 3.8.0;
+#fi
+#callCommand python3 -m pip install --upgrade pip;
+#callCommand pip3 install --upgrade setuptools pip;
+#callCommand pip3 install scikit-build;
+##callCommand pip3 install cmake --upgrade;
+#callCommand pip3 install conan;
+##callCommand pip3 install clang;
+#export PATH
+#PATH=$(pip3 list -v | grep -i cmake | tr -s ' ' | cut -d ' ' -f 3):${PATH}
+#PATH=$(pip3 list -v | grep -i conan | tr -s ' ' | cut -d ' ' -f 3):${PATH}
+#
+#CONAN_PATH=$(find ~/ -name "conan");
+#echo "Conan binary: ${CONAN_PATH}"
+#echo "Conan location: ${CONAN_PATH%/conan}"
+#PATH=${CONAN_PATH%/conan}:${PATH}
+#callCommand conan -v
+#checkCommand conan
 
 #CLANG_PATH=$(find / -name "clang");
 #echo "Clang binary: ${CLANG_PATH}"
@@ -106,15 +106,15 @@ echo "PATH: ${PATH}"
 ###############################################################################
 # Test dependencies
 ###############################################################################
-checkCommand vim
-checkCommand cmake
-checkCommand make
-checkCommand bash
-checkCommand git
-checkCommand g++
-#checkCommand clang++
-checkCommand python3
-checkCommand pip
-checkCommand pip3
+#checkCommand vim
+#checkCommand cmake
+#checkCommand make
+#checkCommand bash
+#checkCommand git
+#checkCommand g++
+##checkCommand clang++
+#checkCommand python3
+#checkCommand pip
+#checkCommand pip3
 ###############################################################################
 ###############################################################################
