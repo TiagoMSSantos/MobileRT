@@ -80,80 +80,11 @@ jobs:
         echo "Result: '${res}'";
         exit ${res};
 
-    - name: Update repository Linux
-      if: success() && startsWith(matrix.os, 'ubuntu')
+    - name: Install Dependencies
+      if: success()
       working-directory: .
       run: |
-        mkdir -p ./reports;
-        sudo apt-get update 2>&1 | tee ./reports/update_repository.log;
-        export res="${PIPESTATUS[0]}";
-        echo "Result: '${res}'";
-        exit ${res};
-
-    - name: Update repository MacOS
-      if: success() && startsWith(matrix.os, 'macos')
-      working-directory: .
-      run: |
-        mkdir -p ./reports;
-        brew update 2>&1 | tee ./reports/update_repository.log || true;
-        export res="${PIPESTATUS[0]}";
-        echo "Result: '${res}'";
-        exit 0;
-
-    - name: Install OpenMP MacOS
-      if: success() && startsWith(matrix.os, 'macos')
-      working-directory: .
-      run: |
-        mkdir -p ./reports;
-        brew install libomp 2>&1 | tee ./reports/install_openmp.log;
-        brew info libomp 2>&1 | tee ./reports/info_openmp.log;
-        export res="${PIPESTATUS[0]}";
-        echo "Result: '${res}'";
-        exit ${res};
-
-    - name: Install Qt4 Linux
-      if: success() && startsWith(matrix.os, 'ubuntu')
-      working-directory: .
-      run: |
-        mkdir -p ./reports;
-        sudo apt-get install --no-install-recommends -y libqt4-dev 2>&1 | tee ./reports/install_qt4.log;
-        export res="${PIPESTATUS[0]}";
-        echo "Result: '${res}'";
-        exit ${res};
-
-    - name: Install Qt4 MacOS
-      if: success() && startsWith(matrix.os, 'macos')
-      working-directory: .
-      run: |
-        mkdir -p ./reports;
-        brew tap cartr/qt4 2>&1 | tee ./reports/tap_qt4.log;
-        brew uninstall --force openssl@1.0 2>&1 | tee ./reports/uninstall_openssl.log;
-        brew install openssl@1.0 2>&1 | tee ./reports/install_openssl.log;
-        brew install qt@4 2>&1 | tee ./reports/install_qt4.log;
-        brew install qt 2>&1 | tee ./reports/install_qt.log;
-        export res="${PIPESTATUS[0]}";
-        echo "Result: '${res}'";
-        exit ${res};
-
-    - name: Install code coverage analysis Linux
-      if: success() && matrix.compiler == 'g++' && matrix.type == 'Debug' && startsWith(matrix.os, 'ubuntu')
-      working-directory: .
-      run: |
-        mkdir -p ./reports;
-        sudo apt-get install --no-install-recommends -y lcov 2>&1 | tee ./reports/install_lcov.log;
-        export res="${PIPESTATUS[0]}";
-        echo "Result: '${res}'";
-        exit ${res};
-
-    - name: Install code coverage analysis MacOS
-      if: success() && matrix.compiler == 'g++' && matrix.type == 'Debug' && startsWith(matrix.os, 'macos')
-      working-directory: .
-      run: |
-        mkdir -p ./reports;
-        brew install lcov 2>&1 | tee ./reports/install_lcov.log;
-        export res="${PIPESTATUS[0]}";
-        echo "Result: '${res}'";
-        exit ${res};
+        bash scripts/install_dependencies.sh;
 
     - name: Create symlink of headers MacOS
       if: success() && startsWith(matrix.os, 'macos') && matrix.compiler == 'g++'
