@@ -12,6 +12,7 @@ set( CMAKE_VERBOSE_MAKEFILE ON )
 message( STATUS "Adding helper functions." )
 include( ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists_helper.cmake )
 include( CheckCXXCompilerFlag )
+print_environment()
 ###############################################################################
 ###############################################################################
 
@@ -145,9 +146,13 @@ set( GLM_TEST_ENABLE "OFF" CACHE STRING "CUSTOM" FORCE )
 message( status "Setting up AppMobileRT project." )
 project( AppMobileRT VERSION 1.0.0.0 LANGUAGES CXX )
 print_environment()
-if( NOT DEFINED ANDROID_ABI AND CONAN MATCHES "TRUE" )
-  include( ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake )
-  conan_basic_setup()
+if( DEFINED CONAN )
+  if( DEFINED ANDROID_ABI )
+    include( ${CMAKE_CURRENT_SOURCE_DIR}/../conanbuildinfo.cmake )
+  else()
+    include( ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake )
+  endif()
+  conan_basic_setup( TARGETS )
 endif()
 ###############################################################################
 ###############################################################################
@@ -374,6 +379,19 @@ if( NOT DEFINED ANDROID_ABI )
     find_package( Qt4 OPTIONAL_COMPONENTS QtCore QtGui )
   endif()
 endif()
+
+
+###############################################################################
+#find_package( glm )
+
+include_directories( SYSTEM ${CONAN_INCLUDE_DIRS_GLM} )
+include_directories( SYSTEM ${CONAN_INCLUDE_DIRS_STB} )
+include_directories( SYSTEM ${CONAN_INCLUDE_DIRS_TINYOBJLOADER} )
+include_directories( SYSTEM ${CONAN_INCLUDE_DIRS_QT} )
+#link_libraries( ${CONAN_LIB_DIRS_GLM} )
+#link_libraries( ${CONAN_LIB_DIRS_STB} )
+#link_libraries( ${CONAN_LIB_DIRS_QT} )
+###############################################################################
 
 
 ###############################################################################

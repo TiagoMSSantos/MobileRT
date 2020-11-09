@@ -55,17 +55,17 @@ if [ -x "$(command -v apt-get)" ]; then
     || true;
 # if MacOS
 elif [ -x "$(command -v brew)" ]; then
-  callCommand brew update;
-  callCommand brew tap cartr/qt4;
-  callCommand brew uninstall --force openssl@1.0;
-  callCommand brew install libomp;
-  callCommand brew install openssl@1.0;
-  callCommand brew install qt@4;
-  callCommand brew install qt;
-  callCommand brew install llvm;
-  callCommand brew install python3;
-  callCommand brew install lcov;
-  callCommand brew install pyenv;
+  callCommand brew update || true;
+  callCommand brew tap cartr/qt4 || true;
+  callCommand brew uninstall --force openssl@1.0 || true;
+  callCommand brew install libomp || true;
+  callCommand brew install openssl@1.0 || true;
+  callCommand brew install qt@4 || true;
+  callCommand brew install qt || true;
+  callCommand brew install llvm || true;
+  callCommand brew install python3 || true;
+  callCommand brew install lcov || true;
+  brew install pyenv;
 fi
 ###############################################################################
 ###############################################################################
@@ -73,32 +73,37 @@ fi
 ###############################################################################
 # Install Conan package manager
 ###############################################################################
-if [ -x "$(command -v choco)" ]; then
-  callCommand choco install python --version 3.8.0;
-fi
-callCommand python3 -m pip install --upgrade pip;
-callCommand pip3 install --upgrade setuptools pip;
-callCommand pip3 install scikit-build;
-callCommand pip3 install cmake --upgrade;
-callCommand pip3 install conan;
-callCommand pip3 install clang;
-export PATH
-PATH=$(pip3 list -v | grep -i cmake | tr -s ' ' | cut -d ' ' -f 3):${PATH}
-PATH=$(pip3 list -v | grep -i conan | tr -s ' ' | cut -d ' ' -f 3):${PATH}
+function install_conan() {
+  if [ -x "$(command -v choco)" ]; then
+    callCommand choco install python --version 3.8.0;
+  fi
+  callCommand python3 -m pip install --upgrade pip;
+  callCommand pip3 install --upgrade setuptools pip;
+  callCommand pip3 install scikit-build;
+  callCommand pip3 install cmake --upgrade;
+  callCommand pip3 install conan;
+  callCommand pip3 install clang;
 
-CONAN_PATH=$(find ~/ -name "conan");
-echo "Conan binary: ${CONAN_PATH}"
-echo "Conan location: ${CONAN_PATH%/conan}"
-PATH=${CONAN_PATH%/conan}:${PATH}
-callCommand conan -v
-checkCommand conan
+  PATH=$(pip3 list -v | grep -i cmake | tr -s ' ' | cut -d ' ' -f 3):${PATH}
+  PATH=$(pip3 list -v | grep -i conan | tr -s ' ' | cut -d ' ' -f 3):${PATH}
 
-CLANG_PATH=$(find / -name "clang");
-echo "Clang binary: ${CLANG_PATH}"
-echo "Clang location: ${CLANG_PATH%/clang}"
-PATH=${CLANG_PATH%/clang}:${PATH}
+  CONAN_PATH=$(find ~/ -name "conan" -not -path "*/MobileRT/**/conan*");
+  echo "Conan binary: ${CONAN_PATH}"
+  echo "Conan location: ${CONAN_PATH%/conan}"
+  export PATH=${CONAN_PATH%/conan}:${PATH}
 
-echo "PATH: ${PATH}"
+  callCommand conan -v
+  checkCommand conan
+
+  CLANG_PATH=$(find / -name "clang");
+  echo "Clang binary: ${CLANG_PATH}"
+  echo "Clang location: ${CLANG_PATH%/clang}"
+  PATH=${CLANG_PATH%/clang}:${PATH}
+
+  echo "PATH: ${PATH}"
+}
+
+#install_conan
 ###############################################################################
 ###############################################################################
 

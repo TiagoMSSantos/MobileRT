@@ -76,7 +76,23 @@ function build() {
 ###############################################################################
 ###############################################################################
 
+# Install C++ Conan dependencies
+function install_conan_dependencies() {
+  callCommand conan install \
+  -s compiler=clang \
+  -s compiler.version="9" \
+  -s compiler.libcxx=libstdc++11 \
+  -s os="Android" \
+  -s build_type=Release \
+  --build missing \
+  --profile default \
+  ./app/third_party/conan/Android
+
+  export CONAN="TRUE"
+}
+
 clearOldBuildFiles
+#install_conan_dependencies
 build
 
 ###############################################################################

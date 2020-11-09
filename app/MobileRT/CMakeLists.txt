@@ -97,7 +97,7 @@ endif()
 ###############################################################################
 message( STATUS "Linking with third party libs." )
 target_link_libraries( ${PROJECT_NAME}
-  PRIVATE glm
+  PRIVATE 
   general "${COMMON_LINKER_FLAGS}"
   debug "${COMMON_LINKER_FLAGS_DEBUG}" "${COMMON_LINKER_FLAGS_TEST}"
   optimized "${COMMON_LINKER_FLAGS_RELEASE}" )

@@ -60,3 +60,12 @@
 **/code_coverage_report/**
 **/*coverage*.info
 **/reports/**
+
+# Conan temporary files
+conanbuildinfo.cmake
+conanbuildinfo.txt
+conan.lock
+conaninfo.txt
+
+# Vim temporary files
+**/*.swp

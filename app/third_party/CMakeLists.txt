@@ -12,19 +12,22 @@ ProcessorCount( JOBS )
 # Clone third party repositories
 ###############################################################################
 message( STATUS "Cloning third party repositories." )
+
+# These work via conan but not for all environments
 execute_process( COMMAND git clone https://github.com/g-truc/glm
   --progress --jobs=${JOBS}
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} ERROR_QUIET )
+
+execute_process( COMMAND git clone https://github.com/nothings/stb
+  --progress --jobs=${JOBS}
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} ERROR_QUIET )
+
 
 execute_process( COMMAND git clone https://github.com/syoyo/tinyobjloader
   --progress --jobs=${JOBS}
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} ERROR_QUIET )
 
 execute_process( COMMAND git clone https://github.com/google/googletest
-  --progress --jobs=${JOBS}
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} ERROR_QUIET )
-
-execute_process( COMMAND git clone https://github.com/nothings/stb
   --progress --jobs=${JOBS}
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} ERROR_QUIET )
 
@@ -43,11 +46,20 @@ execute_process( COMMAND git clone https://github.com/imneme/pcg-cpp
 # Update third party repositories
 ###############################################################################
 message( STATUS "Updating third party repositories." )
+
+# These work via conan but not for all environments
 execute_process( COMMAND git checkout master --progress
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/glm )
 execute_process( COMMAND git pull --all --rebase --recurse-submodules
   --progress --jobs=${JOBS}
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/glm )
+
+execute_process( COMMAND git checkout master --progress
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/stb )
+execute_process( COMMAND git pull --all --rebase --recurse-submodules
+  --progress --jobs=${JOBS}
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/stb )
+
 
 execute_process( COMMAND git checkout master --progress
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tinyobjloader )
@@ -60,12 +72,6 @@ execute_process( COMMAND git checkout master --progress
 execute_process( COMMAND git pull --all --rebase --recurse-submodules
   --progress --jobs=${JOBS}
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/googletest )
-
-execute_process( COMMAND git checkout master --progress
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/stb )
-execute_process( COMMAND git pull --all --rebase --recurse-submodules
-  --progress --jobs=${JOBS}
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/stb )
 
 execute_process( COMMAND git checkout master --progress
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/boost )
@@ -86,7 +92,8 @@ execute_process( COMMAND git pull --all --rebase --recurse-submodules
 # Add third party dependencies
 ###############################################################################
 message( STATUS "Adding third party dependencies." )
-add_subdirectory( glm )
+
+#add_subdirectory( glm )
 
 if( TARGET Components )
   add_subdirectory( tinyobjloader )
@@ -103,8 +110,11 @@ add_subdirectory( googletest )
 set( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}" -flto=full )
 
 
+# This work via conan but not for all environments
 target_include_directories( MobileRT SYSTEM PRIVATE
   "${CMAKE_CURRENT_SOURCE_DIR}/stb" )
+
+
 target_include_directories( MobileRT SYSTEM PUBLIC
   "${CMAKE_CURRENT_SOURCE_DIR}/pcg-cpp/include" )
 ###############################################################################
