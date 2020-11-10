@@ -70,7 +70,7 @@ function build() {
   callCommand ./gradlew clean assemble"${type}" --profile --parallel \
     -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
     --console plain \
-    2>&1 | tee ${reports_path}/log_build_"${type}".log
+    2>&1 | tee log_build_android_"${type}".log
   resCompile=${PIPESTATUS[0]}
 }
 ###############################################################################

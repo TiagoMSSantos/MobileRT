@@ -150,11 +150,11 @@ echo "type: '${type}'"
 
 # Set path to build
 build_path=./build_${type}
-callCommand mkdir -p "${build_path}"
 
 if [ "${recompile}" == "yes" ]; then
   callCommand rm -rf "${build_path}"/*
 fi
+callCommand mkdir -p "${build_path}"
 
 function build() {
   callCommand cd "${build_path}"

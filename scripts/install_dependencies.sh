@@ -67,6 +67,14 @@ elif [ -x "$(command -v brew)" ]; then
   callCommand brew install lcov || true;
   brew install pyenv;
 fi
+
+# Install Python
+if [ -x "$(command -v choco)" ]; then
+  callCommand choco install python --version 3.8.0;
+fi
+callCommand python3 -m pip install --upgrade pip;
+callCommand pip3 install --upgrade setuptools pip;
+callCommand pip3 install scikit-build;
 ###############################################################################
 ###############################################################################
 
@@ -74,12 +82,6 @@ fi
 # Install Conan package manager
 ###############################################################################
 function install_conan() {
-  if [ -x "$(command -v choco)" ]; then
-    callCommand choco install python --version 3.8.0;
-  fi
-  callCommand python3 -m pip install --upgrade pip;
-  callCommand pip3 install --upgrade setuptools pip;
-  callCommand pip3 install scikit-build;
   callCommand pip3 install cmake --upgrade;
   callCommand pip3 install conan;
   callCommand pip3 install clang;
