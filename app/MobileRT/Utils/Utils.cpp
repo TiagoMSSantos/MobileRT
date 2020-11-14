@@ -32,9 +32,10 @@ namespace MobileRT {
     float haltonSequence(::std::uint32_t index, const ::std::uint32_t base) {
         auto fraction {1.0F};
         auto nextValue {0.0F};
+        const auto baseInFloat {static_cast<float> (base)};
         while (index > 0) {
-            fraction /= base;
-            nextValue += fraction * (index % base);
+            fraction /= baseInFloat;
+            nextValue += fraction * static_cast<float> (index % base);
             index = static_cast<::std::uint32_t> (::std::floor(index / base));
         }
         return nextValue;

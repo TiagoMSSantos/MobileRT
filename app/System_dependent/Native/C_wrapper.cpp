@@ -248,7 +248,7 @@ work_thread(
         LOG("width_ = ", width);
         LOG("height_ = ", height);
 
-        LOG("Total Millions rays per second = ", (castedRays / renderingTime) / 1000000L);
+        LOG("Total Millions rays per second = ", (static_cast<double> (castedRays) / renderingTime) / 1000000L);
     } catch (const ::std::bad_alloc &badAlloc) {
         LOG("badAlloc: ", badAlloc.what());
     } catch (const ::std::exception &exception) {

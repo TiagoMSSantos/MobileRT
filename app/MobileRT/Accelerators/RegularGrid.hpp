@@ -115,12 +115,12 @@ namespace MobileRT {
         worldBoundaries_ {Scene::getBounds<T> (primitives_)},
         // precalculate 1 / size of a cell (for x, y and z)
         cellSizeInverted_ {
-            gridSize_ / (worldBoundaries_.getPointMax() - worldBoundaries_.getPointMin())[0],
-            gridSize_ / (worldBoundaries_.getPointMax() - worldBoundaries_.getPointMin())[1],
-            gridSize_ / (worldBoundaries_.getPointMax() - worldBoundaries_.getPointMin())[2]
+            static_cast<float> (gridSize_) / (worldBoundaries_.getPointMax() - worldBoundaries_.getPointMin())[0],
+            static_cast<float> (gridSize_) / (worldBoundaries_.getPointMax() - worldBoundaries_.getPointMin())[1],
+            static_cast<float> (gridSize_) / (worldBoundaries_.getPointMax() - worldBoundaries_.getPointMin())[2]
         },
         // precalculate size of a cell (for x, y, and z)
-        cellSize_ {(worldBoundaries_.getPointMax() - worldBoundaries_.getPointMin()) * (1.0F / gridSize_)} {
+        cellSize_ {(worldBoundaries_.getPointMax() - worldBoundaries_.getPointMin()) * (1.0F / static_cast<float> (gridSize_))} {
         LOG(typeid(T).name());
         const auto worldBoundsMin {this->worldBoundaries_.getPointMin()};
         const auto worldBoundsMax {this->worldBoundaries_.getPointMax()};
@@ -227,9 +227,9 @@ namespace MobileRT {
                             z * this->gridSize_ * this->gridSize_
                         )};
                         const ::glm::vec3 &pos {
-                                worldBoundsMin[0] + x * dx,
-                                worldBoundsMin[1] + y * dy,
-                                worldBoundsMin[2] + z * dz
+                                worldBoundsMin[0] + static_cast<float>(x) * dx,
+                                worldBoundsMin[1] + static_cast<float>(y) * dy,
+                                worldBoundsMin[2] + static_cast<float>(z) * dz
                         };
                         const AABB cell {pos, pos + ::glm::vec3 {dx, dy, dz}};
                         //LOG("min=(", pos[0], ", ", pos[1], ", ", pos[2], ") max=(", dx, ", ", dy, ",", dz, ")");
@@ -315,38 +315,38 @@ namespace MobileRT {
         if (ray.direction_[0] > 0) {
             stepX = 1;
             outX = this->gridSize_;
-            cb[0] = (worldBoundsMin[0] + (cellX + 1) * this->cellSize_[0]);
+            cb[0] = (worldBoundsMin[0] + (static_cast<float> (cellX) + 1.0F) * this->cellSize_[0]);
         } else {
             stepX = -1;
             outX = -1;
-            cb[0] = (worldBoundsMin[0] + cellX * this->cellSize_[0]);
+            cb[0] = (worldBoundsMin[0] + static_cast<float> (cellX) * this->cellSize_[0]);
         }
 
         if (ray.direction_[1] > 0) {
             stepY = 1;
             outY = this->gridSize_;
-            cb[1] = (worldBoundsMin[1] + (cellY + 1) * this->cellSize_[1]);
+            cb[1] = (worldBoundsMin[1] + (static_cast<float> (cellY) + 1.0F) * this->cellSize_[1]);
         } else {
             stepY = -1;
             outY = -1;
-            cb[1] = (worldBoundsMin[1] + cellY * this->cellSize_[1]);
+            cb[1] = (worldBoundsMin[1] + static_cast<float> (cellY) * this->cellSize_[1]);
         }
 
         if (ray.direction_[2] > 0) {
             stepZ = 1;
             outZ = this->gridSize_;
-            cb[2] = (worldBoundsMin[2] + (cellZ + 1) * this->cellSize_[2]);
+            cb[2] = (worldBoundsMin[2] + (static_cast<float> (cellZ) + 1.0F) * this->cellSize_[2]);
         } else {
             stepZ = -1;
             outZ = -1;
-            cb[2] = (worldBoundsMin[2] + cellZ * this->cellSize_[2]);
+            cb[2] = (worldBoundsMin[2] + static_cast<float> (cellZ) * this->cellSize_[2]);
         }
 
         ::glm::vec3 tmax {}, tdelta {};
         if (::std::fabs(ray.direction_[0]) > ::std::numeric_limits<float>::epsilon()) {
             const auto rxr {1.0F / ray.direction_[0]};
             tmax[0] = ((cb[0] - ray.origin_[0]) * rxr);
-            tdelta[0] = (this->cellSize_[0] * stepX * rxr);
+            tdelta[0] = (this->cellSize_[0] * static_cast<float> (stepX) * rxr);
         } else {
             tmax[0] = RayLengthMax;
         }
@@ -354,7 +354,7 @@ namespace MobileRT {
         if (::std::fabs(ray.direction_[1]) > ::std::numeric_limits<float>::epsilon()) {
             const auto ryr {1.0F / ray.direction_[1]};
             tmax[1] = ((cb[1] - ray.origin_[1]) * ryr);
-            tdelta[1] = (this->cellSize_[1] * stepY * ryr);
+            tdelta[1] = (this->cellSize_[1] * static_cast<float> (stepY) * ryr);
         } else {
             tmax[1] = RayLengthMax;
         }
@@ -362,7 +362,7 @@ namespace MobileRT {
         if (::std::fabs(ray.direction_[2]) > ::std::numeric_limits<float>::epsilon()) {
             const auto rzr {1.0F / ray.direction_[2]};
             tmax[2] = ((cb[2] - ray.origin_[2]) * rzr);
-            tdelta[2] = (this->cellSize_[2] * stepZ * rzr);
+            tdelta[2] = (this->cellSize_[2] * static_cast<float> (stepZ) * rzr);
         } else {
             tmax[2] = RayLengthMax;
         }
