@@ -22,6 +22,9 @@ plugins {
     // every configuration, and each dependency can be clicked to show the
     // insight of this dependency.
     id 'project-report'
+
+    // Add support for the language Kotlin.
+    id 'kotlin-android'
 }
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -290,6 +293,11 @@ dependencies {
     // JSON serialization
     implementation 'com.fasterxml.jackson.core:jackson-core:2.11.3'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.3'
+
+    // Add support for Kotlin
+    implementation 'androidx.core:core-ktx:1.3.2'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.10'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9'
 
 
 
