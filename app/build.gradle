@@ -103,8 +103,8 @@ android {
     setTestBuildType systemTestType
 
     // Setup required versions to compile
-    setCompileSdkVersion 29
-    setBuildToolsVersion '30.0.0'
+    setCompileSdkVersion 30
+    setBuildToolsVersion '30.0.2'
 
     // Setup signing configurations
     signingConfigs {
