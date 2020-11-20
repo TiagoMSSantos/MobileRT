@@ -72,6 +72,7 @@ _shared_job_mac: &shared_job_mac
 #  - export CPLUS_INCLUDE_PATH=/System/Volumes/Data/Applications/Xcode-12.2.beta.3.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1:${CPLUS_INCLUDE_PATH};
   - export LIBRARY_PATH=/usr/local/Cellar/libomp/11.0.0/lib:${LIBRARY_PATH};
   - export LD_LIBRARY_PATH=/usr/local/clang/lib:${LD_LIBRARY_PATH};
+  - softwareupdate --all --install --force;
   - g++ -v || true;
   - clang++ -v || true;
   install:
@@ -170,17 +171,18 @@ jobs:
 #    - CXX=clang++-8
 #    <<: *shared_job_linux
 
-
-  - stage: Build
-    os: osx
-    osx_image: xcode9.4
-    arch: amd64
-    compiler: gcc
-    <<: *shared_job_mac
-
-  - stage: Build
-    os: osx
-    osx_image: xcode9.4
-    arch: amd64
-    compiler: clang
-    <<: *shared_job_mac
+# MacOS is now paid and it uses credits
+# $15 will buy you 25 000 credits (1 minute of mac build time costs 50 credits)
+#  - stage: Build
+#    os: osx
+#    osx_image: xcode9.4
+#    arch: amd64
+#    compiler: gcc
+#    <<: *shared_job_mac
+#
+#  - stage: Build
+#    os: osx
+#    osx_image: xcode9.4
+#    arch: amd64
+#    compiler: clang
+#    <<: *shared_job_mac
