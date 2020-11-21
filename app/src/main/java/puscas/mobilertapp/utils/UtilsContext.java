@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
+import android.content.res.Resources;
 import android.opengl.GLES20;
 import android.os.Build;
 import android.os.Environment;
@@ -63,13 +64,20 @@ public final class UtilsContext {
         // This method returns an array of File with null (so is not working properly yet).
         // This is why it is still needed to use the old (deprecated) approach to guarantee
         // compatibility with most Androids.
-        // TODO: Still need to do some discovery how to properly use this new method to find the
-        //  SD card path.
         final File[] dirs = ContextCompat.getExternalFilesDirs(context, null);
 
         final String sdCardPath = Optional.ofNullable(dirs.length > 1 ? dirs[1] : dirs[0])
             .map(File::getAbsolutePath)
-            .orElse(Environment.getExternalStorageDirectory().getAbsolutePath());
+            .orElseGet(() -> {
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+                    // The old (deprecated) approach to retrieve the SD Card path.
+                    return Environment.getExternalStorageDirectory().getAbsolutePath();
+                } else {
+                    // In case using a SDK 19+, then we just give up and throw an exception.
+                    throw new Resources.NotFoundException("External SD Card path not found!");
+                }
+            });
+
         return cleanSdCardPath(sdCardPath);
     }
 
@@ -159,7 +167,7 @@ public final class UtilsContext {
      * @return A cleaned SD Card path.
      */
     @Nonnull
-    private static String cleanSdCardPath(final String sdCardPath) {
+    private static String cleanSdCardPath(@Nonnull final String sdCardPath) {
         final int removeIndex = sdCardPath.indexOf("Android");
         if (removeIndex >= 1) {
             return sdCardPath.substring(0, removeIndex - 1);

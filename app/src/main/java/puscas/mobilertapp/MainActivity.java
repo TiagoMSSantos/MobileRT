@@ -462,6 +462,12 @@ public final class MainActivity extends Activity {
             cleanedFilePath.lastIndexOf('.'));
 
         final String sdCardPath = UtilsContext.getSdCardPath(this);
+
+        // SDK API 30 looks like to get the path to the file properly without having to get the
+        // SD card path and prefix with it.
+        if (filePathWithoutExtension.startsWith(sdCardPath)) {
+            return filePathWithoutExtension;
+        }
         return sdCardPath + filePathWithoutExtension;
     }
 
