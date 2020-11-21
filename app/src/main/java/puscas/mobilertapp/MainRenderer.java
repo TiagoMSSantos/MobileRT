@@ -17,12 +17,9 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
@@ -760,20 +757,6 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
     void waitLastTask() {
         LOGGER.info("waitLastTask");
 
-        if (this.renderTask != null) {
-            try {
-                this.renderTask.get(1L, TimeUnit.DAYS);
-                this.renderTask.cancel(false);
-            } catch (final ExecutionException | TimeoutException | CancellationException ex) {
-                UtilsLogging.logThrowable(ex, "MainRenderer#waitLastTask");
-            } catch (final InterruptedException ex) {
-                Thread.currentThread().interrupt();
-            } finally {
-                Utils.handleInterruption("MainRenderer#waitLastTask");
-            }
-        }
-
-        LOGGER.info("waitLastTask renderTask cancelled");
         this.lockExecutorService.lock();
         try {
             this.executorService.shutdown();
@@ -879,7 +862,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
 
         this.lockExecutorService.lock();
         try {
-            this.renderTask.executeOnExecutor(this.executorService);
+            this.executorService.execute(() -> this.renderTask.execute());
         } finally {
             this.lockExecutorService.unlock();
         }

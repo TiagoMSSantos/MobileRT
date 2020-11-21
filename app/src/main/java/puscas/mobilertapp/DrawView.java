@@ -111,7 +111,7 @@ public final class DrawView extends GLSurfaceView {
     /**
      * Sets the Ray Tracer engine {@link State} to {@link State#BUSY}.
      *
-     * @param wait Whether it should wait for the Ray Tracer engine to stop at the beggining.
+     * @param wait Whether it should wait for the Ray Tracer engine to stop at the beginning.
      */
     private native void rtStartRender(boolean wait);
 

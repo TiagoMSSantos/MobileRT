@@ -1,7 +1,6 @@
 package puscas.mobilertapp;
 
 import android.graphics.Bitmap;
-import android.os.AsyncTask;
 import android.os.Debug;
 import android.os.SystemClock;
 import android.widget.Button;
@@ -17,6 +16,7 @@ import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.jetbrains.annotations.Contract;
+import puscas.mobilertapp.utils.AsyncTaskCoroutine;
 import puscas.mobilertapp.utils.Constants;
 import puscas.mobilertapp.utils.ConstantsMethods;
 import puscas.mobilertapp.utils.ConstantsRenderer;
@@ -28,7 +28,7 @@ import puscas.mobilertapp.utils.Utils;
  * An asynchronous task to render a frame and update the {@link TextView} text.
  * At the end of the task, it sets the render {@link Button} to "Render".
  */
-public final class RenderTask extends AsyncTask<Void, Void, Void> {
+public final class RenderTask extends AsyncTaskCoroutine {
 
     /**
      * The {@link Logger} for this class.
@@ -319,7 +319,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
 
     @Nullable
     @Override
-    protected Void doInBackground(@Nonnull final Void... params) {
+    protected void doInBackground() {
         LOGGER.info("doInBackground");
 
         this.executorService.scheduleAtFixedRate(this.timer, 0L,
@@ -328,7 +328,6 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
 
         final String message = "doInBackground" + ConstantsMethods.FINISHED;
         LOGGER.info(message);
-        return null;
     }
 
     @Override
@@ -337,7 +336,7 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
     }
 
     @Override
-    protected void onPostExecute(@Nonnull final Void result) {
+    protected void onPostExecute() {
         LOGGER.info("onPostExecute");
 
         printText();
@@ -350,40 +349,12 @@ public final class RenderTask extends AsyncTask<Void, Void, Void> {
     }
 
     @Override
-    protected void onProgressUpdate(@Nonnull final Void... values) {
+    protected void onProgressUpdate() {
         LOGGER.info("onProgressUpdate");
         printText();
 
         final String message = "onProgressUpdate" + ConstantsMethods.FINISHED;
         LOGGER.info(message);
-    }
-
-    @Override
-    public void onCancelled(@Nonnull final Void result) {
-        super.onCancelled(result);
-        final String message = ConstantsMethods.ON_CANCELLED + " 2";
-        LOGGER.info(message);
-
-        printText();
-        this.requestRender.run();
-
-        final String messageFinshed =
-            ConstantsMethods.ON_CANCELLED + ConstantsMethods.FINISHED + " 2";
-        LOGGER.info(messageFinshed);
-    }
-
-    @Override
-    public void onCancelled() {
-        super.onCancelled();
-        final String message = ConstantsMethods.ON_CANCELLED + " 1";
-        LOGGER.info(message);
-
-        printText();
-        this.requestRender.run();
-
-        final String messageFinished =
-            ConstantsMethods.ON_CANCELLED + ConstantsMethods.FINISHED + " 1";
-        LOGGER.info(messageFinished);
     }
 
     /**
