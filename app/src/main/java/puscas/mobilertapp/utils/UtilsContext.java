@@ -37,12 +37,6 @@ public final class UtilsContext {
     private static final Logger LOGGER = Logger.getLogger(UtilsContext.class.getName());
 
     /**
-     * The latest version of Android API which needs the old method of getting
-     * the number of CPU cores.
-     */
-    private static final int OLD_API_GET_CORES = 16;
-
-    /**
      * A private constructor in order to prevent instantiating this helper class.
      */
     private UtilsContext() {
@@ -102,7 +96,7 @@ public final class UtilsContext {
 
     /**
      * Helper method that gets the number of available CPU cores in the Android
-     * device for devices with the SDK API version <= {@link #OLD_API_GET_CORES}.
+     * device for devices with the SDK API version <= {@link Build.VERSION_CODES#JELLY_BEAN}.
      *
      * @param context The {@link Context} of the Android system.
      * @return The number of CPU cores.
@@ -123,7 +117,7 @@ public final class UtilsContext {
      * @return The number of CPU cores.
      */
     public static int getNumOfCores(@Nonnull final Context context) {
-        final int cores = (Build.VERSION.SDK_INT <= OLD_API_GET_CORES)
+        final int cores = (Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN)
             ? getNumCoresOldAndroid(context)
             : Runtime.getRuntime().availableProcessors();
 
