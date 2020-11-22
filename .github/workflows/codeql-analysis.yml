@@ -23,7 +23,7 @@ on:
     - 'WavefrontOBJs/**'
     - '!.github/workflows/codeql-analysis.yml'
     branches:
-    - master
+    - '*'
 
 #branches-ignore:
 #  - '**'
