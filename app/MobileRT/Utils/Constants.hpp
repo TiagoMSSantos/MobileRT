@@ -59,7 +59,7 @@ namespace MobileRT {
      * The size of a stack.
      * This is currently being used for the stacks in BVH.
      */
-    const ::std::int32_t StackSize {512};
+    constexpr ::std::int32_t StackSize {512};
 
     /**
      * A mask that is used to get an index in an array more efficiently.
@@ -76,7 +76,7 @@ namespace MobileRT {
      * This is currently being used for the arrays of static samplers which
      * contain the random values.
      */
-    const ::std::uint32_t ArraySize {ArrayMask + 1};
+    constexpr ::std::uint32_t ArraySize {ArrayMask + 1};
 }//namespace MobileRT
 
 
