@@ -14,7 +14,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.jetbrains.annotations.Contract;
 import puscas.mobilertapp.utils.AsyncTaskCoroutine;
 import puscas.mobilertapp.utils.Constants;
@@ -317,7 +316,11 @@ public final class RenderTask extends AsyncTaskCoroutine {
         this.textView.get().setText(aux);
     }
 
-    @Nullable
+    @Override
+    protected void onPreExecute() {
+        LOGGER.info("onPreExecute");
+    }
+
     @Override
     protected void doInBackground() {
         LOGGER.info("doInBackground");
@@ -331,8 +334,12 @@ public final class RenderTask extends AsyncTaskCoroutine {
     }
 
     @Override
-    protected void onPreExecute() {
-        LOGGER.info("onPreExecute");
+    protected void onProgressUpdate() {
+        LOGGER.info("onProgressUpdate");
+        printText();
+
+        final String message = "onProgressUpdate" + ConstantsMethods.FINISHED;
+        LOGGER.info(message);
     }
 
     @Override
@@ -345,15 +352,6 @@ public final class RenderTask extends AsyncTaskCoroutine {
         this.buttonRender.get().setText(R.string.render);
 
         final String message = "onPostExecute" + ConstantsMethods.FINISHED;
-        LOGGER.info(message);
-    }
-
-    @Override
-    protected void onProgressUpdate() {
-        LOGGER.info("onProgressUpdate");
-        printText();
-
-        final String message = "onProgressUpdate" + ConstantsMethods.FINISHED;
         LOGGER.info(message);
     }
 
