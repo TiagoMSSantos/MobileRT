@@ -63,8 +63,8 @@ elif [ -x "$(command -v brew)" ]; then
   callCommand brew install qt@4 || true;
   callCommand brew install qt || true;
   callCommand brew install llvm || true;
-  callCommand brew install python3 || true;
   callCommand brew install lcov || true;
+  brew install python3;
   brew install pyenv;
 fi
 
