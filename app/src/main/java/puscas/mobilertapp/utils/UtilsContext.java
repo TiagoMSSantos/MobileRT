@@ -45,7 +45,7 @@ public final class UtilsContext {
     }
 
     /**
-     * Gets the path to the SD card.
+     * Gets the path to the external SD card.
      * <br>
      * This method should get the correct path independently of the
      * device / emulator used.
@@ -58,15 +58,16 @@ public final class UtilsContext {
      */
     @Nonnull
     public static String getSdCardPath(@Nonnull final Context context) {
-        LOGGER.info("Getting SD card path");
+        LOGGER.info("Getting SD card path.");
 
         // The new method to get the SD card path.
         // This method returns an array of File with null (so is not working properly yet).
         // This is why it is still needed to use the old (deprecated) approach to guarantee
         // compatibility with most Androids.
-        final File[] dirs = ContextCompat.getExternalFilesDirs(context, null);
+        final File[] externalFilesDirs = ContextCompat.getExternalFilesDirs(context, null);
 
-        final String sdCardPath = Optional.ofNullable(dirs.length > 1 ? dirs[1] : dirs[0])
+        final String sdCardPath = Optional.of(externalFilesDirs)
+            .map(dirs -> dirs.length > 1 ? dirs[1] : dirs[0])
             .map(File::getAbsolutePath)
             .orElseGet(() -> {
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
@@ -78,7 +79,32 @@ public final class UtilsContext {
                 }
             });
 
-        return cleanSdCardPath(sdCardPath);
+        final String cleanedSdCardPath = cleanStoragePath(sdCardPath);
+        return cleanedSdCardPath;
+    }
+
+    /**
+     * Gets the path to the internal storage.
+     * <br>
+     * This method should get the correct path independently of the
+     * device / emulator used.
+     *
+     * @param context The {@link Context} of the Android system.
+     * @return The path to the internal storage.
+     */
+    @Nonnull
+    public static String getInternalStoragePath(@Nonnull final Context context) {
+        LOGGER.info("Getting internal storage path.");
+
+        final File[] externalFilesDirs = ContextCompat.getExternalFilesDirs(context, null);
+
+        final String sdCardPath = Optional.of(externalFilesDirs)
+            .map(dirs -> dirs[0])
+            .map(File::getAbsolutePath)
+            .orElse(Environment.getStorageDirectory().getAbsolutePath());
+
+        final String cleanedStoragePath = cleanStoragePath(sdCardPath);
+        return cleanedStoragePath;
     }
 
     /**
@@ -159,20 +185,20 @@ public final class UtilsContext {
     // Private methods
 
     /**
-     * Helper method that cleans the path to the external SD Card.
+     * Helper method that cleans the path to the external SD Card or to the internal storage.
      * This is useful for some devices since the {@link #getSdCardPath(Context)}
      * method might get the SD Card path with some extra paths at the end.
      *
-     * @param sdCardPath The path to the external SD Card to clean.
-     * @return A cleaned SD Card path.
+     * @param storagePath The path to the storage to clean.
+     * @return A cleaned storage path.
      */
     @Nonnull
-    private static String cleanSdCardPath(@Nonnull final String sdCardPath) {
-        final int removeIndex = sdCardPath.indexOf("Android");
+    private static String cleanStoragePath(@Nonnull final String storagePath) {
+        final int removeIndex = storagePath.indexOf("Android");
         if (removeIndex >= 1) {
-            return sdCardPath.substring(0, removeIndex - 1);
+            return storagePath.substring(0, removeIndex - 1);
         }
-        return sdCardPath;
+        return storagePath;
     }
 
     /**

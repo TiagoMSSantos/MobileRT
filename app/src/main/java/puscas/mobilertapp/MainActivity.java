@@ -411,8 +411,8 @@ public final class MainActivity extends Activity {
             case TEST:
                 final String scenePath = "CornellBox"
                     + ConstantsUI.FILE_SEPARATOR + "CornellBox-Water";
-                final String sdCardPath = UtilsContext.getSdCardPath(this);
-                final String lSceneFilePath = sdCardPath + ConstantsUI.FILE_SEPARATOR
+                final String internalStorage = UtilsContext.getInternalStoragePath(this);
+                final String lSceneFilePath = internalStorage + ConstantsUI.FILE_SEPARATOR
                     + Constants.MOBILERT_FOLDER_NAME + ConstantsUI.FILE_SEPARATOR
                     + Constants.OBJ_FOLDER_NAME + ConstantsUI.FILE_SEPARATOR + scenePath;
                 startRender(lSceneFilePath);
