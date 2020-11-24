@@ -17,11 +17,7 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
 import java8.util.Optional;
 import javax.annotation.Nonnull;
@@ -111,13 +107,6 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * Some information about the memory like the available memory on the system.
      */
     private final ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
-
-    /**
-     * A {@link Lock} for the {@link ExecutorService} containing
-     * {@link ConstantsRenderer#NUMBER_THREADS} thread where the
-     * {@link RenderTask} will be executed.
-     */
-    private final Lock lockExecutorService = new ReentrantLock();
 
     /**
      * The vertex shader code.
@@ -271,13 +260,6 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * updated {@link Bitmap} and debug information.
      */
     private RenderTask renderTask = null;
-
-    /**
-     * A thread pool containing {@link ConstantsRenderer#NUMBER_THREADS} threads
-     * with the purpose of executing the {@link #renderTask}.
-     */
-    private ExecutorService executorService =
-        Executors.newFixedThreadPool(ConstantsRenderer.NUMBER_THREADS);
 
     /**
      * Converts a pixel from OpenGL format (ABGR) to a pixel of Android format
@@ -749,22 +731,13 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
     }
 
     /**
-     * Shuts down and waits for the {@link #executorService} to
-     * terminate.
-     * In the end, resets {@link #executorService} to a new thread
-     * pool with {@link ConstantsRenderer#NUMBER_THREADS} threads.
+     * Waits for the last {@link RenderTask} to finish.
      */
     void waitLastTask() {
         LOGGER.info("waitLastTask");
 
-        this.lockExecutorService.lock();
-        try {
-            this.executorService.shutdown();
-            Utils.waitExecutorToFinish(this.executorService);
-            this.executorService = Executors.newFixedThreadPool(ConstantsRenderer.NUMBER_THREADS);
-        } finally {
-            this.lockExecutorService.unlock();
-        }
+        Optional.ofNullable(this.renderTask)
+            .ifPresent(RenderTask::waitToFinish);
 
         final String messageFinished = "waitLastTask" + ConstantsMethods.FINISHED;
         LOGGER.info(messageFinished);
@@ -860,12 +833,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
             .withNumLights(this.numLights)
             .build();
 
-        this.lockExecutorService.lock();
-        try {
-            this.executorService.execute(() -> this.renderTask.execute());
-        } finally {
-            this.lockExecutorService.unlock();
-        }
+        this.renderTask.execute();
         final String message = "createAndLaunchRenderTask" + ConstantsMethods.FINISHED;
         LOGGER.info(message);
     }

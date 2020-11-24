@@ -4,6 +4,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import java.util.concurrent.Executors
 
 /**
  * An abstract class which simulates the deprecated [android.os.AsyncTask] from Java.
@@ -11,6 +12,13 @@ import kotlinx.coroutines.launch
  * This implementation uses Kotlin coroutines for the asynchronous tasks.
  */
 abstract class AsyncTaskCoroutine {
+
+    /**
+     * A thread pool containing [ConstantsRenderer.NUMBER_THREADS] threads
+     * with the purpose of executing this [AsyncTaskCoroutine].
+     */
+    private var executorService = Executors.newFixedThreadPool(ConstantsRenderer.NUMBER_THREADS)
+
     /**
      * Runs on the UI thread before [doInBackground].
      * Invoked directly by [execute].
@@ -73,8 +81,7 @@ abstract class AsyncTaskCoroutine {
     }
 
     /**
-     * Executes the task. The task returns
-     * itself (this) so that the caller can keep a reference to it.
+     * Executes the task in a secondary thread.
      *
      * Note: this function schedules the task that will execute the [onPreExecute]
      * method on a Kotlin coroutine which runs on the UI thread.
@@ -83,12 +90,28 @@ abstract class AsyncTaskCoroutine {
      * intensive that when it finishes, it will then call the [onPostExecute]
      * method on the UI thread.
      */
-    fun <T> execute() {
-        GlobalScope.launch(Dispatchers.Main) {
-            onPreExecute()
-            callAsync()
-            onPostExecute()
+    fun execute() {
+        this.executorService.execute {
+            GlobalScope.launch(Dispatchers.Main) {
+                onPreExecute()
+                callAsync()
+                onPostExecute()
+            }
         }
+    }
+
+    /**
+     * Waits for the task to finish.
+     *
+     * Shuts down and waits for the [executorService] to
+     * terminate.
+     * In the end, resets [executorService] to a new thread
+     * pool with [ConstantsRenderer.NUMBER_THREADS] threads.
+     */
+    @Synchronized fun waitToFinish() {
+        this.executorService.shutdown();
+        Utils.waitExecutorToFinish(this.executorService);
+        this.executorService = Executors.newFixedThreadPool(ConstantsRenderer.NUMBER_THREADS);
     }
 
     /**
