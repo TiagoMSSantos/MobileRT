@@ -74,7 +74,7 @@ public final class UtilsContext {
                     // The old (deprecated) approach to retrieve the SD Card path.
                     return Environment.getExternalStorageDirectory().getAbsolutePath();
                 } else {
-                    // In case using a SDK 19+, then we just give up and throw an exception.
+                    // In case using a SDK API 19+, then we just give up and throw an exception.
                     throw new Resources.NotFoundException("External SD Card path not found!");
                 }
             });
@@ -106,8 +106,8 @@ public final class UtilsContext {
                     // The new method to retrieve the internal storage path.
                     return Environment.getStorageDirectory().getAbsolutePath();
                 } else {
-                    // The old (deprecated) method to retrieve the internal storage path.
-                    return Environment.getExternalStorageDirectory().getAbsolutePath();
+                    // In case using a SDK API < 30, then we just give up and throw an exception.
+                    throw new Resources.NotFoundException("Internal storage path not found!");
                 }
             });
 
