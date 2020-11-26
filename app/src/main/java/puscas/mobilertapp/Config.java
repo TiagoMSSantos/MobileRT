@@ -76,7 +76,7 @@ public final class Config {
      *
      * @param builder The {@link Config.Builder} for this class.
      */
-    Config(@Nonnull final Config.Builder builder) {
+    private Config(@Nonnull final Config.Builder builder) {
         LOGGER.info("Config");
 
         this.scene = builder.getScene();

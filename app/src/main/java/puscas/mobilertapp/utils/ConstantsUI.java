@@ -1,7 +1,6 @@
 package puscas.mobilertapp.utils;
 
 import android.os.Bundle;
-import java.util.logging.Logger;
 import java8.util.Optional;
 
 /**
@@ -9,11 +8,6 @@ import java8.util.Optional;
  * {@link android.widget.NumberPicker} used).
  */
 public final class ConstantsUI {
-
-    /**
-     * The {@link Logger} for this class.
-     */
-    private static final Logger LOGGER = Logger.getLogger(ConstantsUI.class.getName());
 
     /**
      * The key for the UI's {@link Bundle} of {@link android.widget.NumberPicker}
@@ -103,7 +97,6 @@ public final class ConstantsUI {
      * A private constructor in order to prevent instantiating this helper class.
      */
     private ConstantsUI() {
-        LOGGER.info("ConstantsUI");
     }
 
 }

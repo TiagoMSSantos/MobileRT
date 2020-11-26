@@ -3,17 +3,11 @@ package puscas.mobilertapp.utils;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import java.util.concurrent.ExecutorService;
-import java.util.logging.Logger;
 
 /**
  * Utility class with the constants for the {@link GLSurfaceView.Renderer}.
  */
 public final class ConstantsRenderer {
-
-    /**
-     * The {@link Logger} for this class.
-     */
-    private static final Logger LOGGER = Logger.getLogger(ConstantsRenderer.class.getName());
 
     /**
      * The number of threads to be used by the DrawView,
@@ -31,7 +25,6 @@ public final class ConstantsRenderer {
      * A private constructor in order to prevent instantiating this helper class.
      */
     private ConstantsRenderer() {
-        LOGGER.info("ConstantsRenderer");
     }
 
 }

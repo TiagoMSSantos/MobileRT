@@ -41,7 +41,6 @@ public final class UtilsContext {
      * A private constructor in order to prevent instantiating this helper class.
      */
     private UtilsContext() {
-        LOGGER.info("UtilsContext");
     }
 
     /**

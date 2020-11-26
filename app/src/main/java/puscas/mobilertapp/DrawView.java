@@ -399,7 +399,7 @@ public final class DrawView extends GLSurfaceView {
 
     /**
      * Prepares the {@link MainRenderer} with the OpenGL shaders' code and also
-     * with the render button for the {@link android.os.AsyncTask}.
+     * with the render button for the {@link RenderTask}.
      *
      * @param shadersCode        The shaders' code for the Ray Tracing engine.
      * @param shadersPreviewCode The shaders' code for the OpenGL preview feature.

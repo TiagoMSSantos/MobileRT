@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLUtils;
-import android.os.AsyncTask;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -25,6 +24,7 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 import org.jetbrains.annotations.Contract;
 import puscas.mobilertapp.exceptions.LowMemoryException;
+import puscas.mobilertapp.utils.AsyncTaskCoroutine;
 import puscas.mobilertapp.utils.Constants;
 import puscas.mobilertapp.utils.ConstantsMethods;
 import puscas.mobilertapp.utils.ConstantsRenderer;
@@ -256,7 +256,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
     private int samplesLight = 0;
 
     /**
-     * A custom {@link AsyncTask} which will update the {@link View} with the
+     * A custom {@link AsyncTaskCoroutine} which will update the {@link View} with the
      * updated {@link Bitmap} and debug information.
      */
     private RenderTask renderTask = null;

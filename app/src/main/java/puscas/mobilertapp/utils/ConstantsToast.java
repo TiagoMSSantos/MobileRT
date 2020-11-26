@@ -1,16 +1,9 @@
 package puscas.mobilertapp.utils;
 
-import java.util.logging.Logger;
-
 /**
  * Utility class with the text constants for the {@link android.widget.Toast}.
  */
 public final class ConstantsToast {
-
-    /**
-     * The {@link Logger} for this class.
-     */
-    private static final Logger LOGGER = Logger.getLogger(ConstantsToast.class.getName());
 
     /**
      * A warning message for when the Android device doesn't have a File Manager
@@ -34,7 +27,6 @@ public final class ConstantsToast {
      * A private constructor in order to prevent instantiating this helper class.
      */
     private ConstantsToast() {
-        LOGGER.info("ConstantsToast");
     }
 
 }

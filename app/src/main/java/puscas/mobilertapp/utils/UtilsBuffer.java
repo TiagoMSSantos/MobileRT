@@ -21,7 +21,6 @@ public final class UtilsBuffer {
      * A private constructor in order to prevent instantiating this helper class.
      */
     private UtilsBuffer() {
-        LOGGER.info("UtilsBuffer");
     }
 
     /**

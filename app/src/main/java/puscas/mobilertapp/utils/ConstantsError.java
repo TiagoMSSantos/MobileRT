@@ -1,7 +1,6 @@
 package puscas.mobilertapp.utils;
 
 import android.content.Context;
-import java.util.logging.Logger;
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
@@ -12,11 +11,6 @@ import puscas.mobilertapp.MyEglContextFactory;
  * Utility class with the text constants for the errors.
  */
 public final class ConstantsError {
-
-    /**
-     * The {@link Logger} for this class.
-     */
-    private static final Logger LOGGER = Logger.getLogger(ConstantsError.class.getName());
 
     /**
      * A message for when the
@@ -34,7 +28,6 @@ public final class ConstantsError {
      * A private constructor in order to prevent instantiating this helper class.
      */
     private ConstantsError() {
-        LOGGER.info("ConstantsError");
     }
 
 }

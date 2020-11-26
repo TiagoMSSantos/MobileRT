@@ -1,18 +1,12 @@
 package puscas.mobilertapp.utils;
 
 import android.widget.Button;
-import java.util.logging.Logger;
 import org.jetbrains.annotations.NonNls;
 
 /**
  * Utility class with some constants for the Android interface.
  */
 public final class Constants {
-
-    /**
-     * The {@link Logger} for this class.
-     */
-    private static final Logger LOGGER = Logger.getLogger(Constants.class.getName());
 
     /**
      * An empty path which should not point to a file.
@@ -127,7 +121,6 @@ public final class Constants {
      * A private constructor in order to prevent instantiating this helper class.
      */
     private Constants() {
-        LOGGER.info("Constants");
     }
 
 }

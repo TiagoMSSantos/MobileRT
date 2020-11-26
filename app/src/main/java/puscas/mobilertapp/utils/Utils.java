@@ -30,7 +30,6 @@ public final class Utils {
      * A private constructor in order to prevent instantiating this helper class.
      */
     private Utils() {
-        LOGGER.info("Utils");
     }
 
     /**

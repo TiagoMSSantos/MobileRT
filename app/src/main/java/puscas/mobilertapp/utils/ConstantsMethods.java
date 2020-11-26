@@ -1,16 +1,9 @@
 package puscas.mobilertapp.utils;
 
-import java.util.logging.Logger;
-
 /**
  * Utility class with the text constants for the names of methods.
  */
 public final class ConstantsMethods {
-
-    /**
-     * The {@link Logger} for this class.
-     */
-    private static final Logger LOGGER = Logger.getLogger(ConstantsMethods.class.getName());
 
     /**
      * The constant used when a method is about to return.
@@ -66,7 +59,6 @@ public final class ConstantsMethods {
      * A private constructor in order to prevent instantiating this helper class.
      */
     private ConstantsMethods() {
-        LOGGER.info("ConstantsMethods");
     }
 
 }

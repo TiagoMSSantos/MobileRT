@@ -35,7 +35,7 @@ public final class ConfigSamples {
      *
      * @param builder The {@link ConfigSamples.Builder} for this class.
      */
-    ConfigSamples(@Nonnull final ConfigSamples.Builder builder) {
+    private ConfigSamples(@Nonnull final ConfigSamples.Builder builder) {
         LOGGER.info("ConfigSamples");
 
         this.samplesPixel = builder.getSamplesPixel();

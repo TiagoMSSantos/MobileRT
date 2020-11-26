@@ -43,7 +43,7 @@ public final class ConfigGlAttribute {
      *
      * @param builder The {@link Config.Builder} for this class.
      */
-    ConfigGlAttribute(@Nonnull final ConfigGlAttribute.Builder builder) {
+    private ConfigGlAttribute(@Nonnull final ConfigGlAttribute.Builder builder) {
         LOGGER.info("ConfigGLAttribute");
 
         this.attributeName = builder.getAttributeName();

@@ -44,7 +44,6 @@ public final class UtilsGlMatrices {
      * A private constructor in order to prevent instantiating this helper class.
      */
     private UtilsGlMatrices() {
-        LOGGER.info("UtilsGLMatrices");
     }
 
     /**

@@ -173,7 +173,7 @@ public final class RenderTask extends AsyncTaskCoroutine {
      *
      * @param builder The builder which contains all the parameters.
      */
-    RenderTask(final RenderTask.Builder builder) {
+    private RenderTask(final RenderTask.Builder builder) {
         super();
         LOGGER.info("RenderTask");
 
