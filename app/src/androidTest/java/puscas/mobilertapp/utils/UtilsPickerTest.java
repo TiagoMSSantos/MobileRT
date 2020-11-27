@@ -19,11 +19,9 @@ public final class UtilsPickerTest {
     private static final Logger LOGGER = Logger.getLogger(UtilsPickerTest.class.getName());
 
     /**
-     * Private method to avoid instantiating this helper class.
+     * Private constructor to avoid instantiating this helper class.
      */
     private UtilsPickerTest() {
-        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
     }
 
     /**

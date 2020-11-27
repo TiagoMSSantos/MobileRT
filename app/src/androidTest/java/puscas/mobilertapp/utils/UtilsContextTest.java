@@ -27,11 +27,9 @@ public final class UtilsContextTest {
     private static final Logger LOGGER = Logger.getLogger(UtilsContextTest.class.getName());
 
     /**
-     * Private method to avoid instantiating this helper class.
+     * Private constructor to avoid instantiating this helper class.
      */
     private UtilsContextTest() {
-        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
     }
 
     /**

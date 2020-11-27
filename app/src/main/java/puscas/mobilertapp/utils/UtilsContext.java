@@ -78,8 +78,7 @@ public final class UtilsContext {
                 }
             });
 
-        final String cleanedSdCardPath = cleanStoragePath(sdCardPath);
-        return cleanedSdCardPath;
+        return cleanStoragePath(sdCardPath);
     }
 
     /**
@@ -110,8 +109,7 @@ public final class UtilsContext {
                 }
             });
 
-        final String cleanedStoragePath = cleanStoragePath(sdCardPath);
-        return cleanedStoragePath;
+        return cleanStoragePath(sdCardPath);
     }
 
     /**
