@@ -128,7 +128,7 @@ function waitForEmulator() {
     callCommand emulator -avd "${avd_emulator}" -writable-system 2> /dev/null &
   fi
 
-  # Make the all other processes belong in the process group, so thet will be killed at the end.
+  # Make the all other processes belong in the process group, so that will be killed at the end.
   callCommand set +m
 
   callCommand adb kill-server

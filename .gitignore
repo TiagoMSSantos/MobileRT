@@ -1,38 +1,53 @@
+# IDE temporary files
 **/*.iml
 **/local.properties
-**/build
-**/build_*
-**/.externalNativeBuild
 **/.idea
 **/.vscode
 **/.fuse*
 **/.gradle
 **/.settings
+
+# Qt temporary files
+**/System_dependent/**/*build*/**/MobileRT
+**/System_dependent/**/*.pro*
+**/*.pro.user
+
+# Build temporary files
+**/build
+**/build_*
+**/.externalNativeBuild
 **/raytracer
 **/gtest
-**/*.d
-**/*.o
-**/*.s
-**/*.out
-**/*.gto
-**/*.llvmIR
-**/*.dwo
-**/*.data*
-**/*.py
-**/*.callgrind
-**/*.so
-**/*.dat
-**/node_modules/**
 **/WavefrontOBJs/**
-**/*.aux
-**/*.lof
-**/*.log
-**/*.lot
-**/*.toc
-**/*.bbl
-**/*.blg
-**/*.synctex.gz
+*libraries*
+**/*.so
+**/Makefile*
+**/*.o
+**/*.llvmIR
+
+# Gradle reports
+**/reports/**
+
+# Code coverage temporary files
+**/code_coverage_report/**
+**/*coverage*.info
+**/.jscpd*
 **/*.json
+
+# Conan temporary files
+conanbuildinfo.cmake
+conanbuildinfo.txt
+conan.lock
+conaninfo.txt
+
+# Vim temporary files
+**/*.swp
+
+# Android Emulator SD card temporary files
+**/*.img.qcow2
+
+# Documentation temporary files
+**/documentation
 **/*.upa
 **/*.upb
 **/*.abo
@@ -49,23 +64,24 @@
 **/*.loa
 **/*.lol
 **/*.cxx
+**/*.aux
+**/*.lof
+**/*.log
+**/*.lot
+**/*.toc
+**/*.bbl
+**/*.blg
+**/*.synctex.gz
+
+# Others temporary files
+**/*.d
+**/*.s
+**/*.out
+**/*.gto
+**/*.dwo
+**/*.data*
+**/*.py
+**/*.callgrind
+**/*.dat
+**/node_modules/**
 **/git-hooks
-**/*.pro.user
-**/Makefile*
-**/System_dependent/**/*build*/**/MobileRT
-**/System_dependent/**/*.pro*
-*libraries*
-**/documentation
-**/.jscpd*
-**/code_coverage_report/**
-**/*coverage*.info
-**/reports/**
-
-# Conan temporary files
-conanbuildinfo.cmake
-conanbuildinfo.txt
-conan.lock
-conaninfo.txt
-
-# Vim temporary files
-**/*.swp
