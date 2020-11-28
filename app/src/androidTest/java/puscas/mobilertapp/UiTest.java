@@ -236,7 +236,7 @@ public final class UiTest extends AbstractTest {
      * @param numCores    The number of CPU cores in the system.
      */
     private void assertClickRenderButton(final int repetitions, final int numCores) {
-        UtilsContextTest.resetPickerValues(this.activity, Scene.TEST.ordinal());
+        UtilsContextTest.resetPickerValues(this.activity, Scene.TEST_INTERNAL_STORAGE.ordinal());
 
         final List<String> buttonTextList = ImmutableList.of(Constants.STOP, Constants.RENDER);
         IntStreams.range(0, buttonTextList.size() * repetitions).forEach(currentIndex -> {

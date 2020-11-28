@@ -48,7 +48,8 @@ public final class SceneTest {
             "Cornell2",
             "Spheres2",
             "OBJ",
-            "Test",
+            "Test internal",
+            "Test SD card",
             "Wrong file"
         );
     }

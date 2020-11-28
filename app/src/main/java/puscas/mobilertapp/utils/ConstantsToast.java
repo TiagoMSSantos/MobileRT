@@ -16,12 +16,12 @@ public final class ConstantsToast {
      * to render the scene.
      */
     public static final String DEVICE_WITHOUT_ENOUGH_MEMORY =
-        "Device without enough memory to render the scene.";
+        "Device without enough memory to render the scene!\n";
 
     /**
      * A warning message for when the Android device couldn't load the scene.
      */
-    public static final String COULD_NOT_LOAD_THE_SCENE = "Could not load the scene.";
+    public static final String COULD_NOT_LOAD_THE_SCENE = "Could not load the scene!\n";
 
     /**
      * A private constructor in order to prevent instantiating this helper class.

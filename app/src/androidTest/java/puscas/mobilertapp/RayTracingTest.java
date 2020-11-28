@@ -139,16 +139,30 @@ public final class RayTracingTest extends AbstractTest {
     }
 
     /**
-     * Tests rendering an OBJ scene in the SD card.
+     * Tests rendering an OBJ scene in the internal storage.
      */
     @Test(timeout = 2L * 60L * 1000L)
-    @Ignore("It provokes failures in CI.")
-    public void testRenderSceneOBJ() throws TimeoutException {
+    public void testRenderSceneFromInternalStorageOBJ() throws TimeoutException {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
         final int numCores = UtilsContext.getNumOfCores(this.activity);
-        final int scene = Scene.TEST.ordinal();
+        final int scene = Scene.TEST_INTERNAL_STORAGE.ordinal();
+
+        assertRenderScene(numCores, scene);
+    }
+
+    /**
+     * Tests rendering an OBJ scene in the SD card.
+     */
+    @Test(timeout = 2L * 60L * 1000L)
+    @Ignore("In CI, the emulator can't access the SD card, even though it works via adb shell.")
+    public void testRenderSceneFromSDCardOBJ() throws TimeoutException {
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        LOGGER.info(methodName);
+
+        final int numCores = UtilsContext.getNumOfCores(this.activity);
+        final int scene = Scene.TEST_SD_CARD.ordinal();
 
         assertRenderScene(numCores, scene);
     }
@@ -175,6 +189,7 @@ public final class RayTracingTest extends AbstractTest {
         UtilsPickerTest.changePickerValue(ConstantsUI.PICKER_SHADER, R.id.pickerShader, 1);
 
         UtilsTest.startRendering();
+        Espresso.onIdle();
         UtilsTest.assertRenderButtonText(Constants.STOP);
         Espresso.onIdle();
 

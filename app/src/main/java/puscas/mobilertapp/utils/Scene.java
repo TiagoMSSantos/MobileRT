@@ -36,9 +36,14 @@ public enum Scene {
     OBJ("OBJ"),
 
     /**
-     * A test scene.
+     * A test scene from the internal storage.
      */
-    TEST("Test"),
+    TEST_INTERNAL_STORAGE("Test internal"),
+
+    /**
+     * A test scene from the external SD card.
+     */
+    TEST_SD_CARD("Test SD card"),
 
     /**
      * A scene of an OBJ file which doesn't exist.

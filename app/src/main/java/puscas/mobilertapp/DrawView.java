@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -196,9 +197,9 @@ public final class DrawView extends GLSurfaceView {
                 startRayTracing(config, numThreads, rasterize);
                 return Boolean.TRUE;
             } catch (final LowMemoryException ex) {
-                warningError(ex, ConstantsToast.DEVICE_WITHOUT_ENOUGH_MEMORY);
+                warningError(ex, ConstantsToast.DEVICE_WITHOUT_ENOUGH_MEMORY + ex.getMessage());
             } catch (final RuntimeException ex) {
-                warningError(ex, ConstantsToast.COULD_NOT_LOAD_THE_SCENE);
+                warningError(ex, ConstantsToast.COULD_NOT_LOAD_THE_SCENE + ex.getMessage());
             }
 
             final String messageFailed = ConstantsMethods.RENDER_SCENE + " executor failed";
@@ -297,7 +298,7 @@ public final class DrawView extends GLSurfaceView {
     private void warningError(@Nonnull final Exception exception,
                               final CharSequence errorMessage) {
         this.renderer.resetStats();
-        final String message = exception.getClass() + ":" + exception.getMessage();
+        final String message = exception.getClass() + ": " + exception.getMessage();
         LOGGER.severe(message);
         post(() -> Toast.makeText(getContext(), errorMessage, Toast.LENGTH_LONG).show());
     }
