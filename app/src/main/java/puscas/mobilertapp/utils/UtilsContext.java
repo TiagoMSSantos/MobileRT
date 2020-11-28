@@ -78,7 +78,9 @@ public final class UtilsContext {
                 }
             });
 
-        return cleanStoragePath(sdCardPath);
+        final String sdCardPathCleaned = cleanStoragePath(sdCardPath);
+        LOGGER.info("SD Card path: " + sdCardPathCleaned);
+        return sdCardPathCleaned;
     }
 
     /**
@@ -96,7 +98,7 @@ public final class UtilsContext {
 
         final File[] externalFilesDirs = ContextCompat.getExternalFilesDirs(context, null);
 
-        final String sdCardPath = Optional.of(externalFilesDirs)
+        final String internalStoragePath = Optional.of(externalFilesDirs)
             .map(dirs -> dirs[0])
             .map(File::getAbsolutePath)
             .orElseGet(() -> {
@@ -109,7 +111,9 @@ public final class UtilsContext {
                 }
             });
 
-        return cleanStoragePath(sdCardPath);
+        final String internalStoragePathCleaned = cleanStoragePath(internalStoragePath);
+        LOGGER.info("Internal storage path: " + internalStoragePathCleaned);
+        return internalStoragePathCleaned;
     }
 
     /**
