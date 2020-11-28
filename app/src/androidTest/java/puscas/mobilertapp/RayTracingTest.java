@@ -111,8 +111,7 @@ public final class RayTracingTest extends AbstractTest {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
-        final int scene = Scene.WRONG_FILE.ordinal();
-        UtilsContextTest.resetPickerValues(this.activity, scene);
+        UtilsContextTest.resetPickerValues(this.activity, Scene.WRONG_FILE.ordinal());
 
         UtilsTest.startRendering();
         Espresso.onIdle();

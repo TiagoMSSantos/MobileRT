@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import puscas.mobilertapp.utils.Constants;
 import puscas.mobilertapp.utils.ConstantsMethods;
+import puscas.mobilertapp.utils.Scene;
 import puscas.mobilertapp.utils.UtilsContextTest;
 import puscas.mobilertapp.utils.UtilsTest;
 
@@ -72,7 +73,7 @@ public final class PreviewTest extends AbstractTest {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
-        UtilsContextTest.resetPickerValues(this.activity, 2);
+        UtilsContextTest.resetPickerValues(this.activity, Scene.CORNELL2.ordinal());
 
         startAndStopRendering();
         Espresso.onIdle();

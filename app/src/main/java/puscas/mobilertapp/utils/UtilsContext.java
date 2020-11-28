@@ -236,7 +236,7 @@ public final class UtilsContext {
     }
 
     /**
-     * Helper method which asks the user for permission to read the external SD
+     * Helper method which asks the user for permission to read and write to the external SD
      * card if it doesn't have yet.
      *
      * @param activity The {@link Activity} of MobileRT.
@@ -244,6 +244,7 @@ public final class UtilsContext {
     public static void checksStoragePermission(@Nonnull final Activity activity) {
         LOGGER.info("checksStoragePermission");
         checksAccessPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE);
+        checksAccessPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
     }
 
     /**

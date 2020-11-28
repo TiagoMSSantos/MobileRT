@@ -79,7 +79,7 @@ public final class UtilsContextTest {
     public static void resetPickerValues(@Nonnull final Context context, final int scene) {
         LOGGER.info("resetPickerValues");
 
-        final int numCores = puscas.mobilertapp.utils.UtilsContext.getNumOfCores(context);
+        final int numCores = UtilsContext.getNumOfCores(context);
 
         UtilsPickerTest.changePickerValue(ConstantsUI.PICKER_SCENE, R.id.pickerScene, scene);
         UtilsPickerTest.changePickerValue(ConstantsUI.PICKER_THREADS, R.id.pickerThreads, numCores);
