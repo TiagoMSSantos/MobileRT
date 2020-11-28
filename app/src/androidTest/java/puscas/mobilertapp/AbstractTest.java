@@ -14,6 +14,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
+import org.junit.jupiter.api.Assertions;
 import org.junit.rules.TestRule;
 import org.junit.rules.Timeout;
 
@@ -47,7 +48,7 @@ public class AbstractTest {
      */
     @Nonnull
     @Rule
-    public ActivityTestRule<MainActivity> mainActivityActivityTestRule =
+    public final ActivityTestRule<MainActivity> mainActivityActivityTestRule =
         new ActivityTestRule<>(MainActivity.class, true, true);
 
     /**
@@ -55,8 +56,12 @@ public class AbstractTest {
      */
     @Nonnull
     @Rule
-    public GrantPermissionRule grantPermissionRule =
-        GrantPermissionRule.grant(Manifest.permission.READ_EXTERNAL_STORAGE);
+    public final GrantPermissionRule grantPermissionRule =
+        GrantPermissionRule.grant(
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.INTERNET
+        );
 
     /**
      * The {@link MainActivity} to test.
@@ -79,6 +84,8 @@ public class AbstractTest {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         this.activity = this.mainActivityActivityTestRule.launchActivity(intent);
+
+        Assertions.assertNotNull(this.activity, "The Activity didn't start as expected!");
     }
 
     /**
@@ -90,6 +97,8 @@ public class AbstractTest {
     public void tearDown() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
+
+        Assertions.assertNotNull(this.activity, "The Activity didn't finish as expected!");
 
         this.activity.finish();
         this.mainActivityActivityTestRule.finishActivity();
