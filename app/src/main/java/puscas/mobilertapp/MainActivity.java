@@ -407,14 +407,22 @@ public final class MainActivity extends Activity {
                 callFileManager();
                 break;
 
-            case TEST:
-                final String scenePath = "CornellBox"
-                    + ConstantsUI.FILE_SEPARATOR + "CornellBox-Water";
+            case TEST_INTERNAL_STORAGE:
+                final String sceneTeapot = "teapot" + ConstantsUI.FILE_SEPARATOR + "teapot";
                 final String internalStorage = UtilsContext.getInternalStoragePath(this);
-                final String lSceneFilePath = internalStorage + ConstantsUI.FILE_SEPARATOR
+                final String sceneTeapotPath = internalStorage + ConstantsUI.FILE_SEPARATOR
+                    + Constants.MOBILERT_FOLDER_NAME + ConstantsUI.FILE_SEPARATOR
+                    + Constants.OBJ_FOLDER_NAME + ConstantsUI.FILE_SEPARATOR + sceneTeapot;
+                startRender(sceneTeapotPath);
+                break;
+
+            case TEST_SD_CARD:
+                final String scenePath = "CornellBox" + ConstantsUI.FILE_SEPARATOR + "CornellBox-Water";
+                final String sdCardPath = UtilsContext.getSdCardPath(this);
+                final String sceneCornellPath = sdCardPath + ConstantsUI.FILE_SEPARATOR
                     + Constants.MOBILERT_FOLDER_NAME + ConstantsUI.FILE_SEPARATOR
                     + Constants.OBJ_FOLDER_NAME + ConstantsUI.FILE_SEPARATOR + scenePath;
-                startRender(lSceneFilePath);
+                startRender(sceneCornellPath);
                 break;
 
             default:

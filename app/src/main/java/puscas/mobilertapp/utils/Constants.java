@@ -94,16 +94,11 @@ public final class Constants {
     static final int BYTES_IN_POINTER = Double.SIZE / Byte.SIZE;
 
     /**
-     * The path to the MobileRT instrumentation tests data.
-     */
-    private static final String RESOURCES_PATH =
-        ConstantsUI.FILE_SEPARATOR + "data" + ConstantsUI.FILE_SEPARATOR + MOBILERT_FOLDER_NAME;
-
-    /**
      * The relative path to the WavefrontOBJs path for the instrumentation tests.
      */
     private static final String OBJ_PATH =
-        RESOURCES_PATH + ConstantsUI.FILE_SEPARATOR + OBJ_FOLDER_NAME;
+        ConstantsUI.FILE_SEPARATOR + MOBILERT_FOLDER_NAME +
+        ConstantsUI.FILE_SEPARATOR + OBJ_FOLDER_NAME;
 
     /**
      * The path to the teapot OBJ file which should exist.

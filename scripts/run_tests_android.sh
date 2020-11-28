@@ -186,8 +186,8 @@ function copyResources() {
   callCommand adb shell pm install -t -r "${mobilert_path}/APKs/com.asus.filemanager.apk"
 
   echo "Change resources permissions"
-  callCommand adb shell chmod -R 777 ${mobilert_path}
-  callCommand adb shell chmod -R 777 ${sdcard_path}
+  callCommand adb shell chmod 777 -R ${mobilert_path}
+  callCommand adb shell chmod 777 -R ${sdcard_path}
 }
 
 function startCopyingLogcatToFile() {

@@ -21,12 +21,33 @@ using triple = ::std::tuple<T1, T2, T3>;
 OBJLoader::OBJLoader(::std::string objFilePath, ::std::string matFilePath) :
     objFilePath_ {::std::move(objFilePath)} {
 
-    ::std::ifstream objStream {this->objFilePath_};
+    if (errno != 0) {
+        ::std::perror("Error before read OBJ: ");
+        LOG("errno before read OBJ (", errno, "): ", ::std::strerror(errno));
+        errno = 0;
+    }
+    LOG("Will read OBJ path: ", this->objFilePath_);
+    ::std::ifstream objStream {this->objFilePath_, ::std::ios::binary};
+    if (!objStream.is_open() || objStream.fail() || errno != 0) {
+        const auto errorMessage {::std::string("Error after read OBJ `" + this->objFilePath_ + "`.\n") +
+                                 ::std::string("errno (") + ::std::to_string(errno) + "): " +
+                                 ::std::strerror(errno)
+                                };
+        throw ::std::runtime_error {errorMessage};
+    }
     objStream.exceptions(
         objStream.exceptions() | ::std::ifstream::goodbit | ::std::ifstream::badbit |
         ::std::ifstream::failbit
     );
-    ::std::ifstream matStream {matFilePath};
+    LOG("Will read MAT path: ", matFilePath);
+    ::std::ifstream matStream {matFilePath, ::std::ios::binary};
+    if (!matStream.is_open() || matStream.fail() || errno != 0) {
+        const auto errorMessage {::std::string("Error after read MAT `" + matFilePath + "`.\n") +
+                                 ::std::string("errno (") + ::std::to_string(errno) + "): " +
+                                 ::std::strerror(errno)
+                                };
+        throw ::std::runtime_error {errorMessage};
+    }
     matStream.exceptions(
         matStream.exceptions() | ::std::ifstream::goodbit | ::std::ifstream::badbit |
         ::std::ifstream::failbit

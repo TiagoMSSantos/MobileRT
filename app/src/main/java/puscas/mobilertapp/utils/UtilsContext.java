@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
-import android.content.res.Resources;
 import android.opengl.GLES20;
 import android.os.Build;
 import android.os.Environment;
@@ -73,13 +72,14 @@ public final class UtilsContext {
                     // The old (deprecated) approach to retrieve the SD Card path.
                     return Environment.getExternalStorageDirectory().getAbsolutePath();
                 } else {
-                    // In case using a SDK API 19+, then we just give up and throw an exception.
-                    throw new Resources.NotFoundException("External SD Card path not found!");
+                    // In case using a SDK API 19+, then just give up and hope this path is right.
+                    return "/mnt/sdcard";
                 }
             });
 
         final String sdCardPathCleaned = cleanStoragePath(sdCardPath);
-        LOGGER.info("SD Card path: " + sdCardPathCleaned);
+        final String message = String.format(Locale.US, "SD card path: %s", sdCardPathCleaned);
+        LOGGER.info(message);
         return sdCardPathCleaned;
     }
 
@@ -96,23 +96,24 @@ public final class UtilsContext {
     public static String getInternalStoragePath(@Nonnull final Context context) {
         LOGGER.info("Getting internal storage path.");
 
-        final File[] externalFilesDirs = ContextCompat.getExternalFilesDirs(context, null);
+        final File dataDir = ContextCompat.getDataDir(context);
 
-        final String internalStoragePath = Optional.of(externalFilesDirs)
-            .map(dirs -> dirs[0])
+        final String internalStoragePath = Optional.ofNullable(dataDir)
             .map(File::getAbsolutePath)
             .orElseGet(() -> {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                     // The new method to retrieve the internal storage path.
                     return Environment.getStorageDirectory().getAbsolutePath();
                 } else {
-                    // In case using a SDK API < 30, then we just give up and throw an exception.
-                    throw new Resources.NotFoundException("Internal storage path not found!");
+                    // In case using a SDK API < 30, then just give up and hope this path is right.
+                    return context.getFilesDir().getPath();
                 }
             });
 
         final String internalStoragePathCleaned = cleanStoragePath(internalStoragePath);
-        LOGGER.info("Internal storage path: " + internalStoragePathCleaned);
+        final String message = String.format(Locale.US, "Internal storage path: %s",
+            internalStoragePathCleaned);
+        LOGGER.info(message);
         return internalStoragePathCleaned;
     }
 
@@ -203,9 +204,15 @@ public final class UtilsContext {
      */
     @Nonnull
     private static String cleanStoragePath(@Nonnull final String storagePath) {
-        final int removeIndex = storagePath.indexOf("Android");
-        if (removeIndex >= 1) {
-            return storagePath.substring(0, removeIndex - 1);
+        // Remove Android path
+        final int removeIndexAndroid = storagePath.indexOf("Android");
+        if (removeIndexAndroid >= 1) {
+            return storagePath.substring(0, removeIndexAndroid - 1);
+        }
+        // Remove data path
+        final int removeIndexData = storagePath.indexOf("data/puscas.mobilertapp");
+        if (removeIndexData >= 1) {
+            return storagePath.substring(0, removeIndexData - 1);
         }
         return storagePath;
     }

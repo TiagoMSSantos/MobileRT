@@ -55,15 +55,17 @@ public final class FileSystemTest extends AbstractTest {
 
 
     /**
-     * Tests that a file in the Android device exists and is readable.
+     * Tests that a file in the internal storage from the Android device exists and is readable.
      */
     @Test(timeout = 5L * 1000L)
-    public void testFilesExistAndReadable() {
+    public void testFilesExistAndReadableFromInternalStorage() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
+        final String internalStorage = UtilsContext.getInternalStoragePath(this.activity);
+
         final List<String> paths = ImmutableList.<String>builder().add(
-            Constants.OBJ_FILE_TEAPOT
+            internalStorage + Constants.OBJ_FILE_TEAPOT
         ).build();
         StreamSupport.stream(paths)
             .forEach(path -> {
@@ -140,9 +142,11 @@ public final class FileSystemTest extends AbstractTest {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
+        final String internalStorage = UtilsContext.getInternalStoragePath(this.activity);
+
         final List<String> paths = ImmutableList.<String>builder().add(
             Constants.EMPTY_FILE,
-            Constants.OBJ_FILE_NOT_EXISTS
+            internalStorage + Constants.OBJ_FILE_NOT_EXISTS
         ).build();
         StreamSupport.stream(paths)
             .forEach(path -> {
