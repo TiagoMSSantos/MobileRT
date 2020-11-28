@@ -5,6 +5,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
+import puscas.mobilertapp.utils.Accelerator;
+import puscas.mobilertapp.utils.Scene;
+import puscas.mobilertapp.utils.Shader;
 
 /**
  * The test suite for {@link Config} class.
@@ -72,9 +75,9 @@ public final class ConfigTest {
 
         final int width = 1;
         final int height = 2;
-        final int scene = 3;
-        final int shader = 4;
-        final int accelerator = 5;
+        final int scene = Scene.CORNELL.ordinal();
+        final int shader = Shader.WHITTED.ordinal();
+        final int accelerator = Accelerator.BVH.ordinal();
         final int spp = 6;
         final int spl = 7;
         final String obj = "abc";
