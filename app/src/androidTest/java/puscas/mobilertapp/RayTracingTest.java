@@ -17,6 +17,7 @@ import org.junit.runners.MethodSorters;
 import puscas.mobilertapp.utils.Constants;
 import puscas.mobilertapp.utils.ConstantsMethods;
 import puscas.mobilertapp.utils.ConstantsUI;
+import puscas.mobilertapp.utils.Scene;
 import puscas.mobilertapp.utils.UtilsContext;
 import puscas.mobilertapp.utils.UtilsContextTest;
 import puscas.mobilertapp.utils.UtilsPickerTest;
@@ -110,7 +111,8 @@ public final class RayTracingTest extends AbstractTest {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
-        UtilsContextTest.resetPickerValues(this.activity, 6);
+        final int scene = Scene.WRONG_FILE.ordinal();
+        UtilsContextTest.resetPickerValues(this.activity, scene);
 
         UtilsTest.startRendering();
         Espresso.onIdle();
@@ -132,7 +134,7 @@ public final class RayTracingTest extends AbstractTest {
         LOGGER.info(methodName);
 
         final int numCores = UtilsContext.getNumOfCores(this.activity);
-        final int scene = 2;
+        final int scene = Scene.CORNELL2.ordinal();
 
         assertRenderScene(numCores, scene);
     }
@@ -147,7 +149,7 @@ public final class RayTracingTest extends AbstractTest {
         LOGGER.info(methodName);
 
         final int numCores = UtilsContext.getNumOfCores(this.activity);
-        final int scene = 5;
+        final int scene = Scene.TEST.ordinal();
 
         assertRenderScene(numCores, scene);
     }
