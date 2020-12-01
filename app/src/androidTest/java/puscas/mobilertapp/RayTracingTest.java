@@ -18,6 +18,7 @@ import puscas.mobilertapp.utils.Constants;
 import puscas.mobilertapp.utils.ConstantsMethods;
 import puscas.mobilertapp.utils.ConstantsUI;
 import puscas.mobilertapp.utils.Scene;
+import puscas.mobilertapp.utils.Utils;
 import puscas.mobilertapp.utils.UtilsContext;
 import puscas.mobilertapp.utils.UtilsContextTest;
 import puscas.mobilertapp.utils.UtilsPickerTest;
@@ -114,7 +115,7 @@ public final class RayTracingTest extends AbstractTest {
         UtilsContextTest.resetPickerValues(this.activity, Scene.WRONG_FILE.ordinal());
 
         UtilsTest.startRendering();
-        Espresso.onIdle();
+        Utils.executeWithCatching(Espresso::onIdle);
 
         UtilsContextTest.waitUntilRenderingDone(this.activity);
 
@@ -189,9 +190,9 @@ public final class RayTracingTest extends AbstractTest {
         UtilsPickerTest.changePickerValue(ConstantsUI.PICKER_SHADER, R.id.pickerShader, 1);
 
         UtilsTest.startRendering();
-        Espresso.onIdle();
+        Utils.executeWithCatching(Espresso::onIdle);
         UtilsTest.assertRenderButtonText(Constants.STOP);
-        Espresso.onIdle();
+        Utils.executeWithCatching(Espresso::onIdle);
 
         UtilsContextTest.waitUntilRenderingDone(this.activity);
         UtilsTest.assertRenderButtonText(Constants.RENDER);

@@ -14,6 +14,7 @@ import org.junit.runners.MethodSorters;
 import puscas.mobilertapp.utils.Constants;
 import puscas.mobilertapp.utils.ConstantsMethods;
 import puscas.mobilertapp.utils.Scene;
+import puscas.mobilertapp.utils.Utils;
 import puscas.mobilertapp.utils.UtilsContextTest;
 import puscas.mobilertapp.utils.UtilsTest;
 
@@ -68,7 +69,7 @@ public final class PreviewTest extends AbstractTest {
      *
      * @throws TimeoutException If the Ray Tracing engine didn't stop rendering the scene.
      */
-    @Test(timeout = 2L * 60L * 1000L)
+    @Test(timeout = 3L * 60L * 1000L)
     public void testPreviewScene() throws TimeoutException {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
@@ -76,7 +77,7 @@ public final class PreviewTest extends AbstractTest {
         UtilsContextTest.resetPickerValues(this.activity, Scene.CORNELL2.ordinal());
 
         startAndStopRendering();
-        Espresso.onIdle();
+        Utils.executeWithCatching(Espresso::onIdle);
 
         UtilsContextTest.waitUntilRenderingDone(this.activity);
 

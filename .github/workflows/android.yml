@@ -18,6 +18,7 @@ on:
     - '!app/System_dependent/CMakeLists.txt'
     - '!app/System_dependent/Android_JNI/**'
     - '!scripts/compile_android.sh'
+    - '!codecov.yml'
 #branches-ignore:
 #  - '**'
 

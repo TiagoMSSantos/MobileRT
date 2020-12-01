@@ -22,6 +22,7 @@ on:
     - '!app/System_dependent/CMakeLists.txt'
     - '!app/System_dependent/Native/**'
     - '!scripts/compile_native.sh'
+    - '!codecov.yml'
 #branches-ignore:
 #  - '**'
 
