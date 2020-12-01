@@ -48,38 +48,44 @@ execute_process( COMMAND git clone https://github.com/imneme/pcg-cpp
 message( STATUS "Updating third party repositories." )
 
 # These work via conan but not for all environments
-execute_process( COMMAND git checkout master --progress
+message( STATUS "Updating glm." )
+execute_process( COMMAND git remote update
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/glm )
 execute_process( COMMAND git pull --all --rebase --recurse-submodules
   --progress --jobs=${JOBS}
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/glm )
 
-execute_process( COMMAND git checkout master --progress
+message( STATUS "Updating stb." )
+execute_process( COMMAND git remote update
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/stb )
 execute_process( COMMAND git pull --all --rebase --recurse-submodules
   --progress --jobs=${JOBS}
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/stb )
 
 
-execute_process( COMMAND git checkout master --progress
+message( STATUS "Updating tinyobjloader." )
+execute_process( COMMAND git remote update
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tinyobjloader )
 execute_process( COMMAND git pull --all --rebase --recurse-submodules
   --progress --jobs=${JOBS}
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tinyobjloader )
 
-execute_process( COMMAND git checkout master --progress
+message( STATUS "Updating googletest." )
+execute_process( COMMAND git remote update
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/googletest )
 execute_process( COMMAND git pull --all --rebase --recurse-submodules
   --progress --jobs=${JOBS}
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/googletest )
 
-execute_process( COMMAND git checkout master --progress
+message( STATUS "Updating boost." )
+execute_process( COMMAND git remote update
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/boost )
 execute_process( COMMAND git pull --all --rebase --recurse-submodules
   --progress --jobs=${JOBS}
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/boost )
 
-execute_process( COMMAND git checkout master --progress
+message( STATUS "Updating pcg-cpp." )
+execute_process( COMMAND git remote update
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/pcg-cpp )
 execute_process( COMMAND git pull --all --rebase --recurse-submodules
   --progress --jobs=${JOBS}
@@ -93,6 +99,16 @@ execute_process( COMMAND git pull --all --rebase --recurse-submodules
 ###############################################################################
 execute_process( COMMAND git checkout 0.9.9.8 --progress
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/glm )
+execute_process( COMMAND git checkout master --progress
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/stb )
+execute_process( COMMAND git checkout master --progress
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tinyobjloader )
+execute_process( COMMAND git checkout master --progress
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/googletest )
+execute_process( COMMAND git checkout master --progress
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/boost )
+execute_process( COMMAND git checkout master --progress
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/pcg-cpp )
 ###############################################################################
 ###############################################################################
 
