@@ -37,7 +37,7 @@ public final class UtilsLogging {
     public static void printStackTrace() {
         final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
         for (final StackTraceElement ste : stackTrace) {
-            final String stackTraceElement = "ste: " + ste.toString();
+            final String stackTraceElement = String.format("ste: %s", ste.toString());
             LOGGER.severe(stackTraceElement);
         }
     }

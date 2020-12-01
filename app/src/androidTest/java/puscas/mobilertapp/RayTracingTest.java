@@ -114,7 +114,11 @@ public final class RayTracingTest extends AbstractTest {
         UtilsContextTest.resetPickerValues(this.activity, Scene.WRONG_FILE.ordinal());
 
         UtilsTest.startRendering();
-        Espresso.onIdle();
+        try {
+            Espresso.onIdle();
+        } catch (final Exception ex) {
+            LOGGER.warning(ex.getMessage());
+        }
 
         UtilsContextTest.waitUntilRenderingDone(this.activity);
 

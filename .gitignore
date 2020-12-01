@@ -35,10 +35,10 @@
 **/*.json
 
 # Conan temporary files
-conanbuildinfo.cmake
-conanbuildinfo.txt
-conan.lock
-conaninfo.txt
+**/conanbuildinfo.cmake
+**/conanbuildinfo.txt
+**/conan.lock
+**/conaninfo.txt
 
 # Vim temporary files
 **/*.swp
@@ -48,6 +48,7 @@ conaninfo.txt
 
 # Documentation temporary files
 **/documentation
+**/*.log
 **/*.upa
 **/*.upb
 **/*.abo
@@ -66,7 +67,6 @@ conaninfo.txt
 **/*.cxx
 **/*.aux
 **/*.lof
-**/*.log
 **/*.lot
 **/*.toc
 **/*.bbl
