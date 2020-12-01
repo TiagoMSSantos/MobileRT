@@ -100,6 +100,8 @@ sonarqube {
         property 'sonar.organization', 'tiagomssantos'
         property 'sonar.coverage.jacoco.xmlReportPaths', 'build/reports/coverage/debug/report.xml'
         property 'sonar.junit.reportPaths', 'build/test-results/testDebugUnitTest'
+        property 'sonar.exclusions', '**/*.kt'
+        property 'sonar.verbose', 'true'
     }
 }
 ///////////////////////////////////////////////////////////////////////////////
