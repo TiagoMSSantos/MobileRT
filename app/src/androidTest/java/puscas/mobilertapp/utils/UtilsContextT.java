@@ -19,17 +19,17 @@ import puscas.mobilertapp.R;
 /**
  * Helper class which contains helper methods that need the {@link Context} for the tests.
  */
-public final class UtilsContextTest {
+public final class UtilsContextT {
 
     /**
      * The {@link Logger} for this class.
      */
-    private static final Logger LOGGER = Logger.getLogger(UtilsContextTest.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(UtilsContextT.class.getName());
 
     /**
      * Private constructor to avoid instantiating this helper class.
      */
-    private UtilsContextTest() {
+    private UtilsContextT() {
     }
 
     /**
@@ -44,7 +44,7 @@ public final class UtilsContextTest {
         final AtomicBoolean done = new AtomicBoolean(false);
         final long advanceSecs = 3L;
 
-        final DrawView drawView = UtilsTest.getPrivateField(activity, "drawView");
+        final DrawView drawView = UtilsT.getPrivateField(activity, "drawView");
         final MainRenderer renderer = drawView.getRenderer();
         final ViewInteraction renderButtonView =
             Espresso.onView(ViewMatchers.withId(R.id.renderButton));
@@ -81,16 +81,16 @@ public final class UtilsContextTest {
 
         final int numCores = UtilsContext.getNumOfCores(context);
 
-        UtilsPickerTest.changePickerValue(ConstantsUI.PICKER_SCENE, R.id.pickerScene, scene);
-        UtilsPickerTest.changePickerValue(ConstantsUI.PICKER_THREADS, R.id.pickerThreads, numCores);
-        UtilsPickerTest.changePickerValue(ConstantsUI.PICKER_SIZE, R.id.pickerSize, 8);
-        UtilsPickerTest
+        UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SCENE, R.id.pickerScene, scene);
+        UtilsPickerT.changePickerValue(ConstantsUI.PICKER_THREADS, R.id.pickerThreads, numCores);
+        UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SIZE, R.id.pickerSize, 8);
+        UtilsPickerT
             .changePickerValue(ConstantsUI.PICKER_SAMPLES_PIXEL, R.id.pickerSamplesPixel, 1);
-        UtilsPickerTest
+        UtilsPickerT
             .changePickerValue(ConstantsUI.PICKER_SAMPLES_LIGHT, R.id.pickerSamplesLight, 1);
-        UtilsPickerTest
+        UtilsPickerT
             .changePickerValue(ConstantsUI.PICKER_ACCELERATOR, R.id.pickerAccelerator, 3);
-        UtilsPickerTest.changePickerValue(ConstantsUI.PICKER_SHADER, R.id.pickerShader, 2);
+        UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SHADER, R.id.pickerShader, 2);
     }
 
 }

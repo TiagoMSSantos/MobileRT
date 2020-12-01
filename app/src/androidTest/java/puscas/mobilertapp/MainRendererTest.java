@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.runners.MethodSorters;
 import puscas.mobilertapp.utils.UtilsGL;
 import puscas.mobilertapp.utils.UtilsShader;
-import puscas.mobilertapp.utils.UtilsTest;
+import puscas.mobilertapp.utils.UtilsT;
 
 /**
  * The test suite for the {@link MainRenderer}.
@@ -166,7 +166,7 @@ public final class MainRendererTest extends AbstractTest {
     private int createAndGetIndexOfShader(final String shaderCode, final int shaderType)
         throws InterruptedException {
 
-        final DrawView drawView = UtilsTest.getPrivateField(this.activity, "drawView");
+        final DrawView drawView = UtilsT.getPrivateField(this.activity, "drawView");
 
         final AtomicInteger shaderIndex = new AtomicInteger(-1);
         final CountDownLatch latch = new CountDownLatch(1);

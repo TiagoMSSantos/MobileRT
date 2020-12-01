@@ -20,9 +20,9 @@ import puscas.mobilertapp.utils.ConstantsUI;
 import puscas.mobilertapp.utils.Scene;
 import puscas.mobilertapp.utils.Utils;
 import puscas.mobilertapp.utils.UtilsContext;
-import puscas.mobilertapp.utils.UtilsContextTest;
-import puscas.mobilertapp.utils.UtilsPickerTest;
-import puscas.mobilertapp.utils.UtilsTest;
+import puscas.mobilertapp.utils.UtilsContextT;
+import puscas.mobilertapp.utils.UtilsPickerT;
+import puscas.mobilertapp.utils.UtilsT;
 
 /**
  * The test suite for the Ray Tracing engine used in {@link MainActivity}.
@@ -112,14 +112,14 @@ public final class RayTracingTest extends AbstractTest {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
-        UtilsContextTest.resetPickerValues(this.activity, Scene.WRONG_FILE.ordinal());
+        UtilsContextT.resetPickerValues(this.activity, Scene.WRONG_FILE.ordinal());
 
-        UtilsTest.startRendering();
+        UtilsT.startRendering();
         Utils.executeWithCatching(Espresso::onIdle);
 
-        UtilsContextTest.waitUntilRenderingDone(this.activity);
+        UtilsContextT.waitUntilRenderingDone(this.activity);
 
-        UtilsTest.testStateAndBitmap(true);
+        UtilsT.testStateAndBitmap(true);
 
         final String message = methodName + ConstantsMethods.FINISHED;
         LOGGER.info(message);
@@ -178,26 +178,26 @@ public final class RayTracingTest extends AbstractTest {
      * @throws TimeoutException If it couldn't render the whole scene in less than 2 minutes.
      */
     private void assertRenderScene(final int numCores, final int scene) throws TimeoutException {
-        UtilsPickerTest.changePickerValue(ConstantsUI.PICKER_SCENE, R.id.pickerScene, scene);
-        UtilsPickerTest.changePickerValue(ConstantsUI.PICKER_THREADS, R.id.pickerThreads, numCores);
-        UtilsPickerTest.changePickerValue(ConstantsUI.PICKER_SIZE, R.id.pickerSize, 1);
-        UtilsPickerTest
+        UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SCENE, R.id.pickerScene, scene);
+        UtilsPickerT.changePickerValue(ConstantsUI.PICKER_THREADS, R.id.pickerThreads, numCores);
+        UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SIZE, R.id.pickerSize, 1);
+        UtilsPickerT
             .changePickerValue(ConstantsUI.PICKER_SAMPLES_PIXEL, R.id.pickerSamplesPixel, 1);
-        UtilsPickerTest
+        UtilsPickerT
             .changePickerValue(ConstantsUI.PICKER_SAMPLES_LIGHT, R.id.pickerSamplesLight, 1);
-        UtilsPickerTest
+        UtilsPickerT
             .changePickerValue(ConstantsUI.PICKER_ACCELERATOR, R.id.pickerAccelerator, 3);
-        UtilsPickerTest.changePickerValue(ConstantsUI.PICKER_SHADER, R.id.pickerShader, 1);
+        UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SHADER, R.id.pickerShader, 1);
 
-        UtilsTest.startRendering();
+        UtilsT.startRendering();
         Utils.executeWithCatching(Espresso::onIdle);
-        UtilsTest.assertRenderButtonText(Constants.STOP);
+        UtilsT.assertRenderButtonText(Constants.STOP);
         Utils.executeWithCatching(Espresso::onIdle);
 
-        UtilsContextTest.waitUntilRenderingDone(this.activity);
-        UtilsTest.assertRenderButtonText(Constants.RENDER);
+        UtilsContextT.waitUntilRenderingDone(this.activity);
+        UtilsT.assertRenderButtonText(Constants.RENDER);
 
-        UtilsTest.testStateAndBitmap(false);
+        UtilsT.testStateAndBitmap(false);
     }
 
 }

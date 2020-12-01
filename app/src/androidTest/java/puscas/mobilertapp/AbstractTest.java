@@ -21,7 +21,7 @@ import org.junit.rules.Timeout;
 /**
  * The abstract class for the Android Instrumentation Tests.
  */
-public class AbstractTest {
+public abstract class AbstractTest {
 
     /**
      * The {@link Logger} for this class.

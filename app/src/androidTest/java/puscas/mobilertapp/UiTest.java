@@ -25,9 +25,9 @@ import puscas.mobilertapp.utils.ConstantsUI;
 import puscas.mobilertapp.utils.Scene;
 import puscas.mobilertapp.utils.Shader;
 import puscas.mobilertapp.utils.UtilsContext;
-import puscas.mobilertapp.utils.UtilsContextTest;
-import puscas.mobilertapp.utils.UtilsPickerTest;
-import puscas.mobilertapp.utils.UtilsTest;
+import puscas.mobilertapp.utils.UtilsContextT;
+import puscas.mobilertapp.utils.UtilsPickerT;
+import puscas.mobilertapp.utils.UtilsT;
 
 /**
  * The test suite for the User Interface.
@@ -114,28 +114,28 @@ public final class UiTest extends AbstractTest {
      */
     private static void assertPickerNumbers(final int numCores) {
         IntStreams.rangeClosed(0, 2).forEach(value ->
-            UtilsPickerTest
+            UtilsPickerT
                 .changePickerValue(ConstantsUI.PICKER_ACCELERATOR, R.id.pickerAccelerator, value)
         );
         IntStreams.rangeClosed(1, 100).forEach(value ->
-            UtilsPickerTest
+            UtilsPickerT
                 .changePickerValue(ConstantsUI.PICKER_SAMPLES_LIGHT, R.id.pickerSamplesLight, value)
         );
         IntStreams.rangeClosed(0, 6).forEach(value ->
-            UtilsPickerTest.changePickerValue(ConstantsUI.PICKER_SCENE, R.id.pickerScene, value)
+            UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SCENE, R.id.pickerScene, value)
         );
         IntStreams.rangeClosed(0, 4).forEach(value ->
-            UtilsPickerTest.changePickerValue(ConstantsUI.PICKER_SHADER, R.id.pickerShader, value)
+            UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SHADER, R.id.pickerShader, value)
         );
         IntStreams.rangeClosed(1, numCores).forEach(value ->
-            UtilsPickerTest.changePickerValue(ConstantsUI.PICKER_THREADS, R.id.pickerThreads, value)
+            UtilsPickerT.changePickerValue(ConstantsUI.PICKER_THREADS, R.id.pickerThreads, value)
         );
         IntStreams.rangeClosed(1, 99).forEach(value ->
-            UtilsPickerTest
+            UtilsPickerT
                 .changePickerValue(ConstantsUI.PICKER_SAMPLES_PIXEL, R.id.pickerSamplesPixel, value)
         );
         IntStreams.rangeClosed(1, 8).forEach(value ->
-            UtilsPickerTest
+            UtilsPickerT
                 .changePickerValue(ConstantsUI.PICKER_SIZE, R.id.pickerSize, value)
         );
     }
@@ -173,7 +173,7 @@ public final class UiTest extends AbstractTest {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
-        UtilsTest.assertRenderButtonText(Constants.RENDER);
+        UtilsT.assertRenderButtonText(Constants.RENDER);
 
         final int numCores = UtilsContext.getNumOfCores(this.activity);
         assertClickRenderButton(1, numCores);
@@ -226,7 +226,7 @@ public final class UiTest extends AbstractTest {
                 Assertions.assertEquals(Constants.RENDER, button.getText().toString(),
                     puscas.mobilertapp.Constants.BUTTON_MESSAGE);
             });
-        UtilsTest.testStateAndBitmap(true);
+        UtilsT.testStateAndBitmap(true);
     }
 
     /**
@@ -236,7 +236,7 @@ public final class UiTest extends AbstractTest {
      * @param numCores    The number of CPU cores in the system.
      */
     private void assertClickRenderButton(final int repetitions, final int numCores) {
-        UtilsContextTest.resetPickerValues(this.activity, Scene.TEST_INTERNAL_STORAGE.ordinal());
+        UtilsContextT.resetPickerValues(this.activity, Scene.TEST_INTERNAL_STORAGE.ordinal());
 
         final List<String> buttonTextList = ImmutableList.of(Constants.STOP, Constants.RENDER);
         IntStreams.range(0, buttonTextList.size() * repetitions).forEach(currentIndex -> {
@@ -254,11 +254,11 @@ public final class UiTest extends AbstractTest {
             final int expectedIndex = currentIndex % buttonTextList.size();
             final String expectedButtonText = buttonTextList.get(expectedIndex);
 
-            UtilsTest.assertRenderButtonText(expectedButtonTextOld);
+            UtilsT.assertRenderButtonText(expectedButtonTextOld);
 
             viewInteraction.perform(new ViewActionButton(expectedButtonText));
 
-            UtilsTest.assertRenderButtonText(expectedButtonText);
+            UtilsT.assertRenderButtonText(expectedButtonText);
         });
     }
 
@@ -280,19 +280,19 @@ public final class UiTest extends AbstractTest {
 
         incrementCounters();
 
-        UtilsPickerTest
+        UtilsPickerT
             .changePickerValue(ConstantsUI.PICKER_SCENE, R.id.pickerScene, finalCounterScene);
-        UtilsPickerTest.changePickerValue(ConstantsUI.PICKER_ACCELERATOR, R.id.pickerAccelerator,
+        UtilsPickerT.changePickerValue(ConstantsUI.PICKER_ACCELERATOR, R.id.pickerAccelerator,
             finalCounterAccelerator);
-        UtilsPickerTest.changePickerValue(ConstantsUI.PICKER_SHADER, R.id.pickerShader,
+        UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SHADER, R.id.pickerShader,
             finalCounterShader);
-        UtilsPickerTest.changePickerValue(ConstantsUI.PICKER_SAMPLES_PIXEL, R.id.pickerSamplesPixel,
+        UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SAMPLES_PIXEL, R.id.pickerSamplesPixel,
             finalCounterSpp);
-        UtilsPickerTest.changePickerValue(ConstantsUI.PICKER_SAMPLES_LIGHT, R.id.pickerSamplesLight,
+        UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SAMPLES_LIGHT, R.id.pickerSamplesLight,
             finalCounterSpl);
-        UtilsPickerTest
+        UtilsPickerT
             .changePickerValue(ConstantsUI.PICKER_THREADS, R.id.pickerThreads, finalCounterThreads);
-        UtilsPickerTest
+        UtilsPickerT
             .changePickerValue(ConstantsUI.PICKER_SIZE, R.id.pickerSize, finalCounterSize);
     }
 

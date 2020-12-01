@@ -15,8 +15,8 @@ import puscas.mobilertapp.utils.Constants;
 import puscas.mobilertapp.utils.ConstantsMethods;
 import puscas.mobilertapp.utils.Scene;
 import puscas.mobilertapp.utils.Utils;
-import puscas.mobilertapp.utils.UtilsContextTest;
-import puscas.mobilertapp.utils.UtilsTest;
+import puscas.mobilertapp.utils.UtilsContextT;
+import puscas.mobilertapp.utils.UtilsT;
 
 /**
  * The test suite for the preview feature (rasterize one frame of the scene).
@@ -35,8 +35,8 @@ public final class PreviewTest extends AbstractTest {
      * so it starts and stops the Ray Tracing engine.
      */
     private static void startAndStopRendering() {
-        final ViewInteraction viewInteraction = UtilsTest.startRendering();
-        UtilsTest.assertRenderButtonText(Constants.STOP);
+        final ViewInteraction viewInteraction = UtilsT.startRendering();
+        UtilsT.assertRenderButtonText(Constants.STOP);
         viewInteraction.perform(new ViewActionButton(Constants.RENDER));
     }
 
@@ -74,16 +74,16 @@ public final class PreviewTest extends AbstractTest {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
-        UtilsContextTest.resetPickerValues(this.activity, Scene.CORNELL2.ordinal());
+        UtilsContextT.resetPickerValues(this.activity, Scene.CORNELL2.ordinal());
 
         startAndStopRendering();
         Utils.executeWithCatching(Espresso::onIdle);
 
-        UtilsContextTest.waitUntilRenderingDone(this.activity);
+        UtilsContextT.waitUntilRenderingDone(this.activity);
 
-        UtilsTest.assertRenderButtonText(Constants.RENDER);
+        UtilsT.assertRenderButtonText(Constants.RENDER);
 
-        UtilsTest.testStateAndBitmap(false);
+        UtilsT.testStateAndBitmap(false);
 
         final String message = methodName + ConstantsMethods.FINISHED;
         LOGGER.info(message);

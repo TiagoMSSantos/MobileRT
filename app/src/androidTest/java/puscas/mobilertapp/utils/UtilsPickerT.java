@@ -11,17 +11,17 @@ import puscas.mobilertapp.ViewActionNumberPicker;
 /**
  * Helper class which contains helper methods about the {@link NumberPicker}s for the tests.
  */
-public final class UtilsPickerTest {
+public final class UtilsPickerT {
 
     /**
      * The {@link Logger} for this class.
      */
-    private static final Logger LOGGER = Logger.getLogger(UtilsPickerTest.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(UtilsPickerT.class.getName());
 
     /**
      * Private constructor to avoid instantiating this helper class.
      */
-    private UtilsPickerTest() {
+    private UtilsPickerT() {
     }
 
     /**

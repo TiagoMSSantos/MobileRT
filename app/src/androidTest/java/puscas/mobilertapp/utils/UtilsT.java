@@ -26,17 +26,17 @@ import puscas.mobilertapp.ViewActionButton;
 /**
  * Helper class which contains helper methods for the tests.
  */
-public final class UtilsTest {
+public final class UtilsT {
 
     /**
      * The {@link Logger} for this class.
      */
-    private static final Logger LOGGER = Logger.getLogger(UtilsTest.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(UtilsT.class.getName());
 
     /**
      * Private constructor to avoid instantiating this helper class.
      */
-    private UtilsTest() {
+    private UtilsT() {
     }
 
     /**
@@ -173,7 +173,7 @@ public final class UtilsTest {
     @Nonnull
     public static ViewInteraction startRendering() {
         LOGGER.info("startRendering");
-        UtilsTest.assertRenderButtonText(Constants.RENDER);
+        assertRenderButtonText(Constants.RENDER);
         return Espresso.onView(ViewMatchers.withId(R.id.renderButton))
             .perform(new ViewActionButton(Constants.STOP));
     }
@@ -192,8 +192,8 @@ public final class UtilsTest {
             .check((view, exception) -> {
                 final DrawView drawView = (DrawView) view;
                 final MainRenderer renderer = drawView.getRenderer();
-                final Bitmap bitmap = UtilsTest.getPrivateField(renderer, "bitmap");
-                UtilsTest.assertRayTracingResultInBitmap(bitmap, expectedSameValues);
+                final Bitmap bitmap = getPrivateField(renderer, "bitmap");
+                assertRayTracingResultInBitmap(bitmap, expectedSameValues);
 
                 Assertions.assertTrue(
                     renderer.getState() == State.IDLE || renderer.getState() == State.FINISHED,
