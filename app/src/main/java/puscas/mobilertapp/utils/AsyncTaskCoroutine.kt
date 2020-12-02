@@ -2,8 +2,8 @@ package puscas.mobilertapp.utils
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.concurrent.Executors
 
 /**
@@ -108,18 +108,19 @@ abstract class AsyncTaskCoroutine {
      * In the end, resets [executorService] to a new thread
      * pool with [ConstantsRenderer.NUMBER_THREADS] threads.
      */
-    @Synchronized fun waitToFinish() {
-        this.executorService.shutdown();
-        Utils.waitExecutorToFinish(this.executorService);
-        this.executorService = Executors.newFixedThreadPool(ConstantsRenderer.NUMBER_THREADS);
+    @Synchronized
+    fun waitToFinish() {
+        this.executorService.shutdown()
+        Utils.waitExecutorToFinish(this.executorService)
+        this.executorService = Executors.newFixedThreadPool(ConstantsRenderer.NUMBER_THREADS)
     }
 
     /**
      * Helper method which calls the [doInBackground] method in a new Kotlin coroutine.
      */
     private suspend fun callAsync() {
-        GlobalScope.async(Dispatchers.IO) {
+        withContext(Dispatchers.IO) {
             doInBackground()
-        }.await()
+        }
     }
 }

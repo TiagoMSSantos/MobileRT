@@ -153,8 +153,7 @@ public final class MainActivity extends Activity {
      */
     private static void checksOpenGlVersion(final ActivityManager activityManager) {
         final ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
-        final boolean supportES2 = (configurationInfo.reqGlEsVersion
-            >= REQUIRED_OPENGL_VERSION);
+        final boolean supportES2 = (configurationInfo.reqGlEsVersion >= REQUIRED_OPENGL_VERSION);
 
         if (!supportES2 || !UtilsGL.checkGL20Support()) {
             final String msg = "Your device doesn't support ES 2. ("
@@ -652,8 +651,8 @@ public final class MainActivity extends Activity {
 
         final ViewTreeObserver vto = this.drawView.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(() -> {
-            final double widthView = this.drawView.getWidth();
-            final double heightView = this.drawView.getHeight();
+            final double widthView = (double) this.drawView.getWidth();
+            final double heightView = (double) this.drawView.getHeight();
 
             final String[] resolutions = IntStreams.rangeClosed(2, maxSizes)
                 .mapToDouble(value -> (double) value)
