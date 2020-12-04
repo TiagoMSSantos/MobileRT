@@ -49,7 +49,7 @@ public final class UtilsContextT {
         final ViewInteraction renderButtonView =
             Espresso.onView(ViewMatchers.withId(R.id.renderButton));
 
-        for (long currentTimeSecs = 0L; currentTimeSecs < 120L && !done.get();
+        for (long currentTimeSecs = 0L; currentTimeSecs < 180L && !done.get();
              currentTimeSecs += advanceSecs) {
             Uninterruptibles.sleepUninterruptibly(advanceSecs, TimeUnit.SECONDS);
 
