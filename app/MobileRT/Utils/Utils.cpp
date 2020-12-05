@@ -1,5 +1,6 @@
 #include "Utils.hpp"
 #include "Constants.hpp"
+#include <clocale>
 
 namespace MobileRT {
 
@@ -204,7 +205,7 @@ namespace MobileRT {
         }
         // Compute sini using Snell's law
         const float sint {etai / etat * ::std::sqrt(::std::max(0.0F, 1.0F - cosi * cosi))};
-        float kr {0.0F};
+        float kr;
         // Total internal reflection
         if (sint >= 1.0F) {
             kr = 1.0F;
@@ -218,6 +219,171 @@ namespace MobileRT {
         // As a consequence of the conservation of energy, transmittance is given by:
         // kt = 1 - kr;
         return kr;
+    }
+
+    /**
+     * Checks if there is an error in the system by checking the `errno`,
+     * which is a preprocessor macro used for error indication.
+     *
+     * @param message The message to be logged in the `std::runtime_error` that might be thrown.
+     */
+    void checkSystemError(const char *const message) {
+        ::std::string errorCode {};
+
+        // Get error code so its easy to find information on the internet.
+        switch (errno) {
+            case 0:
+                errorCode = "SUCCESS";
+                break;
+
+            case EPERM:
+                errorCode = "EPERM";
+                break;
+
+            case ENOENT:
+                errorCode = "ENOENT";
+                break;
+
+            case ESRCH:
+                errorCode = "ESRCH";
+                break;
+
+            case EINTR:
+                errorCode = "EINTR";
+                break;
+
+            case EIO:
+                errorCode = "EIO";
+                break;
+
+            case ENXIO:
+                errorCode = "ENXIO";
+                break;
+
+            case E2BIG:
+                errorCode = "E2BIG";
+                break;
+
+            case ENOEXEC:
+                errorCode = "ENOEXEC";
+                break;
+
+            case EBADF:
+                errorCode = "EBADF";
+                break;
+
+            case ECHILD:
+                errorCode = "ECHILD";
+                break;
+
+            case EAGAIN:
+                errorCode = "EAGAIN";
+                break;
+
+            case ENOMEM:
+                errorCode = "ENOMEM";
+                break;
+
+            case EACCES:
+                errorCode = "EACCES";
+                break;
+
+            case EFAULT:
+                errorCode = "EFAULT";
+                break;
+
+            case EBUSY:
+                errorCode = "EBUSY";
+                break;
+
+            case EEXIST:
+                errorCode = "EEXIST";
+                break;
+
+            case EXDEV:
+                errorCode = "EXDEV";
+                break;
+
+            case ENODEV:
+                errorCode = "ENODEV";
+                break;
+
+            case ENOTDIR:
+                errorCode = "ENOTDIR";
+                break;
+
+            case EISDIR:
+                errorCode = "EISDIR";
+                break;
+
+            case EINVAL:
+                errorCode = "EINVAL";
+                break;
+
+            case ENFILE:
+                errorCode = "ENFILE";
+                break;
+
+            case EMFILE:
+                errorCode = "EMFILE";
+                break;
+
+            case ENOTTY:
+                errorCode = "ENOTTY";
+                break;
+
+            case ETXTBSY:
+                errorCode = "ETXTBSY";
+                break;
+
+            case EFBIG:
+                errorCode = "EFBIG";
+                break;
+
+            case ENOSPC:
+                errorCode = "ENOSPC";
+                break;
+
+            case ESPIPE:
+                errorCode = "ESPIPE";
+                break;
+
+            case EROFS:
+                errorCode = "EROFS";
+                break;
+
+            case EMLINK:
+                errorCode = "EMLINK";
+                break;
+
+            case EPIPE:
+                errorCode = "EPIPE";
+                break;
+
+            case EDOM:
+                errorCode = "EDOM";
+                break;
+
+            case ERANGE:
+                errorCode = "ERANGE";
+                break;
+
+            // ENOTBLK: not compatible with Windows.
+
+            default:// If the error is not identified.
+                errorCode = "UNKNOWN";
+                break;
+        }
+
+        if (errno != 0) {// if there is an error
+            ::std::setlocale(LC_ALL, "en_US.UTF-8");
+            const auto errorMessage {::std::string(message) + '\n' + errorCode + '\n' +
+                                     ::std::string("errno (") + ::std::to_string(errno) + "): " +
+                                     ::std::strerror(errno)
+            };
+            errno = 0;// reset the error code
+            throw ::std::runtime_error {errorMessage};
+        }
     }
 
 }//namespace MobileRT

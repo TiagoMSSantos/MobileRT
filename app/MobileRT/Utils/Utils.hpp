@@ -78,6 +78,8 @@ namespace MobileRT {
 
     float fresnel(const ::glm::vec3 &I, const ::glm::vec3 &N, float ior);
 
+    void checkSystemError(const char *message);
+
    /**
     * Helper method which adds a parameter into the ostringstream.
     *

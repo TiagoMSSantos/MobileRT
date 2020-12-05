@@ -6,19 +6,9 @@ using ::Components::CameraFactory;
 ::std::unique_ptr<::MobileRT::Camera> CameraFactory::loadFromFile (
         const ::std::string &filePath, const float aspectRatio) const {
 
-    if (errno != 0) {
-        ::std::perror("Error before read CAM: ");
-        LOG("errno before read CAM (", errno, "): ", ::std::strerror(errno));
-        errno = 0;
-    }
+    MobileRT::checkSystemError("Error before read CAM.");
     ::std::ifstream infile {filePath, ::std::ios::binary};
-    if (!infile.is_open() || infile.fail() || errno != 0) {
-        const auto errorMessage {::std::string("Error after read CAM `" + filePath + "`.\n") +
-                                 ::std::string("errno (") + ::std::to_string(errno) + "): " +
-                                 ::std::strerror(errno)
-        };
-        throw ::std::runtime_error {errorMessage};
-    }
+    MobileRT::checkSystemError(::std::string("Error after read CAM `" + filePath + "`.").c_str());
 
     ::std::unique_ptr<::MobileRT::Camera> camera {};
     ::std::string line {};

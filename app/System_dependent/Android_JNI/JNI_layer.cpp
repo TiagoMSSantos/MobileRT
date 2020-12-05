@@ -56,6 +56,10 @@ static void handleException(JNIEnv *const env,
 
 extern "C"
 ::std::int32_t JNI_OnLoad(JavaVM *const jvm, void * /*reserved*/) {
+    // Necessary reset of `errno` because there is an error in Android of:
+    // EINVAL (Invalid argument) - errno (22): Invalid argument
+    errno = 0;
+
     LOG("JNI_OnLoad");
     javaVM_.reset(jvm);
 
@@ -89,7 +93,11 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitCameraArray(
                 ::MobileRT::Camera *const camera{renderer_->camera_.get()};
                 const ::std::int64_t arraySize{20};
                 const auto arrayBytes{arraySize * sizeof(jfloat)};
+
                 float *const floatBuffer{new float[arraySize]};
+                // Necessary reset of `errno` because there is an error in Android of:
+                // EINVAL (Invalid argument) - errno (22): Invalid argument
+                errno = 0;
 
                 if (floatBuffer != nullptr) {
                     directBuffer = env->NewDirectByteBuffer(floatBuffer, arrayBytes);
@@ -166,7 +174,12 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitVerticesArray(
                 const auto &triangles{renderer_->shader_->getTriangles()};
                 const auto arraySize{static_cast<::std::uint32_t> (triangles.size() * 3 * 4)};
                 const auto arrayBytes{arraySize * static_cast<jlong> (sizeof(jfloat))};
+
                 float *const floatBuffer{new float[arraySize]};
+                // Necessary reset of `errno` because there is an error in Android of:
+                // EINVAL (Invalid argument) - errno (22): Invalid argument
+                errno = 0;
+
                 if (floatBuffer != nullptr) {
                     directBuffer = env->NewDirectByteBuffer(floatBuffer, arrayBytes);
 
@@ -228,7 +241,11 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitColorsArray(
                 const auto &triangles{renderer_->shader_->getTriangles()};
                 const auto arraySize{static_cast<::std::uint32_t> (triangles.size() * 3 * 4)};
                 const auto arrayBytes{arraySize * static_cast<::std::int64_t> (sizeof(jfloat))};
+
                 float *const floatBuffer{new float[arraySize]};
+                // Necessary reset of `errno` because there is an error in Android of:
+                // EINVAL (Invalid argument) - errno (22): Invalid argument
+                errno = 0;
 
                 if (floatBuffer != nullptr) {
                     directBuffer = env->NewDirectByteBuffer(floatBuffer, arrayBytes);
@@ -581,6 +598,10 @@ void Java_puscas_mobilertapp_MainRenderer_rtFinishRender(
     JNIEnv *env,
     jobject /*thiz*/
 ) {
+    // Necessary reset of `errno` because there is an error in Android of:
+    // EAGAIN (Resource unavailable, try again) - errno (11): Try again
+    errno = 0;
+
     {
         const ::std::lock_guard<::std::mutex> lock{mutex_};
         state_ = State::FINISHED;
@@ -738,6 +759,10 @@ extern "C"
     JNIEnv *env,
     jobject /*thiz*/
 ) {
+    // Necessary reset of `errno` because there is an error in Android of:
+    // EAGAIN (Resource unavailable, try again) - errno (11): Try again
+    errno = 0;
+
     const auto res{static_cast<::std::int32_t> (state_.load())};
     env->ExceptionClear();
     return res;
@@ -783,6 +808,10 @@ extern "C"
     jobject /*thiz*/,
     jint size
 ) {
+    // Necessary reset of `errno` because there is an error in Android of:
+    // EAGAIN (Resource unavailable, try again) - errno (11): Try again
+    errno = 0;
+
     const auto res{
         ::MobileRT::roundDownToMultipleOf(
             size, static_cast<::std::int32_t> (::std::sqrt(::MobileRT::NumberOfTiles))
@@ -797,6 +826,10 @@ extern "C"
     JNIEnv *env,
     jobject /*thiz*/
 ) {
+    // Necessary reset of `errno` because there is an error in Android of:
+    // EINVAL (Invalid argument) - errno (22): Invalid argument
+    errno = 0;
+
     env->ExceptionClear();
     return numLights_;
 }
