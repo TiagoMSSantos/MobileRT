@@ -69,7 +69,7 @@ public final class PreviewTest extends AbstractTest {
      *
      * @throws TimeoutException If the Ray Tracing engine didn't stop rendering the scene.
      */
-    @Test(timeout = 3L * 60L * 1000L)
+    @Test(timeout = 4L * 60L * 1000L)
     public void testPreviewScene() throws TimeoutException {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);

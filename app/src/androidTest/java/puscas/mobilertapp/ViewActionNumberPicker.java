@@ -10,6 +10,7 @@ import javax.annotation.Nonnull;
 import org.hamcrest.Matcher;
 import org.junit.jupiter.api.Assertions;
 import puscas.mobilertapp.utils.ConstantsMethods;
+import puscas.mobilertapp.utils.Utils;
 
 /**
  * Auxiliary class which represents a {@link NumberPicker}.
@@ -61,7 +62,7 @@ public final class ViewActionNumberPicker implements ViewAction {
 
         final NumberPicker numberPicker = (NumberPicker) view;
         numberPicker.setValue(this.newValue);
-        uiController.loopMainThreadForAtLeast(100L);
+        Utils.executeWithCatching(() -> uiController.loopMainThreadForAtLeast(100L));
         Assertions.assertEquals(this.newValue, numberPicker.getValue(),
             "The setted value should be '" + this.newValue + "'");
 
