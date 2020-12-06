@@ -45,6 +45,7 @@ static ::std::atomic<bool> finishedRendering_{true};
 static void handleException(JNIEnv *const env,
                      const ::std::exception &exception,
                      const char *const exceptionName) {
+    MobileRT::checkSystemError("handleException start");
     const auto lowMemClass{env->FindClass(exceptionName)};
     const auto res{env->ThrowNew(lowMemClass, exception.what())};
     if (res != 0) {
@@ -52,14 +53,12 @@ static void handleException(JNIEnv *const env,
     } else {
         LOG(exceptionName, " thrown");
     }
+    MobileRT::checkSystemError("handleException finish");
 }
 
 extern "C"
 ::std::int32_t JNI_OnLoad(JavaVM *const jvm, void * /*reserved*/) {
-    // Necessary reset of `errno` because there is an error in Android of:
-    // EINVAL (Invalid argument) - errno (22): Invalid argument
-    errno = 0;
-
+    MobileRT::checkSystemError("JNI_OnLoad start");
     LOG("JNI_OnLoad");
     javaVM_.reset(jvm);
 
@@ -72,6 +71,7 @@ extern "C"
     }
     ASSERT(jniEnv != nullptr, "JNIEnv was not loaded properly.");
     jniEnv->ExceptionClear();
+    MobileRT::checkSystemError("JNI_OnLoad finish");
     return JNI_VERSION_1_6;
 }
 
@@ -85,6 +85,7 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitCameraArray(
     JNIEnv *env,
     jobject /*thiz*/
 ) {
+    MobileRT::checkSystemError("rtInitCameraArray start");
     try {
         jobject directBuffer{};
         {
@@ -95,9 +96,6 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitCameraArray(
                 const auto arrayBytes{arraySize * sizeof(jfloat)};
 
                 float *const floatBuffer{new float[arraySize]};
-                // Necessary reset of `errno` because there is an error in Android of:
-                // EINVAL (Invalid argument) - errno (22): Invalid argument
-                errno = 0;
 
                 if (floatBuffer != nullptr) {
                     directBuffer = env->NewDirectByteBuffer(floatBuffer, arrayBytes);
@@ -150,6 +148,7 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitCameraArray(
             }
             env->ExceptionClear();
         }
+        MobileRT::checkSystemError("rtInitCameraArray finish");
         return directBuffer;
     } catch (const ::std::bad_alloc &badAlloc) {
         handleException(env, badAlloc, "puscas/mobilertapp/exceptions/LowMemoryException");
@@ -158,6 +157,7 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitCameraArray(
     } catch (...) {
         handleException(env, ::std::exception{}, "java/lang/RuntimeException");
     }
+    MobileRT::checkSystemError("rtInitCameraArray finish");
     return nullptr;
 }
 
@@ -166,6 +166,7 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitVerticesArray(
     JNIEnv *env,
     jobject /*thiz*/
 ) {
+    MobileRT::checkSystemError("rtInitVerticesArray start");
     try {
         jobject directBuffer{};
         {
@@ -176,9 +177,6 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitVerticesArray(
                 const auto arrayBytes{arraySize * static_cast<jlong> (sizeof(jfloat))};
 
                 float *const floatBuffer{new float[arraySize]};
-                // Necessary reset of `errno` because there is an error in Android of:
-                // EINVAL (Invalid argument) - errno (22): Invalid argument
-                errno = 0;
 
                 if (floatBuffer != nullptr) {
                     directBuffer = env->NewDirectByteBuffer(floatBuffer, arrayBytes);
@@ -217,6 +215,7 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitVerticesArray(
             }
             env->ExceptionClear();
         }
+        MobileRT::checkSystemError("rtInitVerticesArray finish");
         return directBuffer;
     } catch (const ::std::bad_alloc &badAlloc) {
         handleException(env, badAlloc, "puscas/mobilertapp/exceptions/LowMemoryException");
@@ -225,6 +224,7 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitVerticesArray(
     } catch (...) {
         handleException(env, ::std::exception{}, "java/lang/RuntimeException");
     }
+    MobileRT::checkSystemError("rtInitVerticesArray finish");
     return nullptr;
 }
 
@@ -233,6 +233,7 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitColorsArray(
     JNIEnv *env,
     jobject /*thiz*/
 ) {
+    MobileRT::checkSystemError("rtInitColorsArray start");
     try {
         jobject directBuffer{};
         {
@@ -243,9 +244,6 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitColorsArray(
                 const auto arrayBytes{arraySize * static_cast<::std::int64_t> (sizeof(jfloat))};
 
                 float *const floatBuffer{new float[arraySize]};
-                // Necessary reset of `errno` because there is an error in Android of:
-                // EINVAL (Invalid argument) - errno (22): Invalid argument
-                errno = 0;
 
                 if (floatBuffer != nullptr) {
                     directBuffer = env->NewDirectByteBuffer(floatBuffer, arrayBytes);
@@ -290,6 +288,7 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitColorsArray(
             }
             env->ExceptionClear();
         }
+        MobileRT::checkSystemError("rtInitColorsArray finish");
         return directBuffer;
     } catch (const ::std::bad_alloc &badAlloc) {
         handleException(env, badAlloc, "puscas/mobilertapp/exceptions/LowMemoryException");
@@ -298,10 +297,12 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitColorsArray(
     } catch (...) {
         handleException(env, ::std::exception{}, "java/lang/RuntimeException");
     }
+    MobileRT::checkSystemError("rtInitColorsArray finish");
     return nullptr;
 }
 
 static void updateFps() {
+    MobileRT::checkSystemError("updateFps start");
     static ::std::int32_t frame{};
     static ::std::chrono::steady_clock::time_point timebase{};
     ++frame;
@@ -313,6 +314,7 @@ static void updateFps() {
         timebase = timeNow;
         frame = 0;
     }
+    MobileRT::checkSystemError("updateFps finish");
 }
 
 extern "C"
@@ -321,6 +323,7 @@ void Java_puscas_mobilertapp_DrawView_rtStartRender(
     jobject /*thiz*/,
     jboolean wait
 ) {
+    MobileRT::checkSystemError("rtStartRender start");
     if (wait) {
         ::std::unique_lock<::std::mutex> lock{mutex_};
         rendered_.wait(lock, [&] { return finishedRendering_ == true; });
@@ -329,6 +332,7 @@ void Java_puscas_mobilertapp_DrawView_rtStartRender(
     state_ = State::BUSY;
     LOG("STATE = BUSY");
     env->ExceptionClear();
+    MobileRT::checkSystemError("rtStartRender finish");
 }
 
 extern "C"
@@ -337,6 +341,7 @@ void Java_puscas_mobilertapp_DrawView_rtStopRender(
     jobject /*thiz*/,
     jboolean wait
 ) {
+    MobileRT::checkSystemError("rtStopRender start");
     {
         LOG("Will get lock");
         state_ = State::STOPPED;
@@ -363,6 +368,7 @@ void Java_puscas_mobilertapp_DrawView_rtStopRender(
     }
     env->ExceptionClear();
     LOG("stopRender finished");
+    MobileRT::checkSystemError("rtStopRender finish");
 }
 
 extern "C"
@@ -371,6 +377,7 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
     jobject /*thiz*/,
     jobject localConfig
 ) {
+    MobileRT::checkSystemError("rtInitialize start");
     LOG("INITIALIZE");
     try {
         const auto configClass{env->GetObjectClass(localConfig)};
@@ -580,6 +587,7 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
 
         env->ExceptionClear();
         LOG("PRIMITIVES = ", res);
+        MobileRT::checkSystemError("rtInitialize finish");
         return res;
     } catch (const ::std::bad_alloc &badAlloc) {
         handleException(env, badAlloc, "puscas/mobilertapp/exceptions/LowMemoryException");
@@ -598,9 +606,7 @@ void Java_puscas_mobilertapp_MainRenderer_rtFinishRender(
     JNIEnv *env,
     jobject /*thiz*/
 ) {
-    // Necessary reset of `errno` because there is an error in Android of:
-    // EAGAIN (Resource unavailable, try again) - errno (11): Try again
-    errno = 0;
+    MobileRT::checkSystemError("rtFinishRender start");
 
     {
         const ::std::lock_guard<::std::mutex> lock{mutex_};
@@ -620,6 +626,7 @@ void Java_puscas_mobilertapp_MainRenderer_rtFinishRender(
         finishedRendering_ = true;
         env->ExceptionClear();
     }
+    MobileRT::checkSystemError("rtFinishRender finish");
 }
 
 extern "C"
@@ -630,6 +637,7 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
     jint nThreads,
     jboolean async
 ) {
+    MobileRT::checkSystemError("rtRenderIntoBitmap start");
     LOG("rtRenderIntoBitmap");
     LOG("nThreads = ", nThreads);
     LOG("async = ", async ? "true" : "false");
@@ -739,11 +747,13 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
 
         if (async) {
             thread_ = ::MobileRT::std::make_unique<::std::thread>(lambda);
+
             thread_->detach();
         } else {
             lambda();
         }
         LOG("rtRenderIntoBitmap finished preparing");
+        MobileRT::checkSystemError("rtRenderIntoBitmap finish");
         env->ExceptionClear();
     } catch (const ::std::bad_alloc &badAlloc) {
         handleException(env, badAlloc, "puscas/mobilertapp/exceptions/LowMemoryException");
@@ -759,12 +769,11 @@ extern "C"
     JNIEnv *env,
     jobject /*thiz*/
 ) {
-    // Necessary reset of `errno` because there is an error in Android of:
-    // EAGAIN (Resource unavailable, try again) - errno (11): Try again
-    errno = 0;
+    MobileRT::checkSystemError("rtGetState start");
 
     const auto res{static_cast<::std::int32_t> (state_.load())};
     env->ExceptionClear();
+    MobileRT::checkSystemError("rtGetState finish");
     return res;
 }
 
@@ -773,7 +782,9 @@ float Java_puscas_mobilertapp_RenderTask_rtGetFps(
     JNIEnv *env,
     jobject /*thiz*/
 ) {
+    MobileRT::checkSystemError("rtGetFps start");
     env->ExceptionClear();
+    MobileRT::checkSystemError("rtGetFps finish");
     return fps_;
 }
 
@@ -782,7 +793,9 @@ jlong Java_puscas_mobilertapp_RenderTask_rtGetTimeRenderer(
     JNIEnv *env,
     jobject /*thiz*/
 ) {
+    MobileRT::checkSystemError("rtGetTimeRenderer start");
     env->ExceptionClear();
+    MobileRT::checkSystemError("rtGetTimeRenderer finish");
     return timeRenderer_;
 }
 
@@ -791,6 +804,7 @@ extern "C"
     JNIEnv *env,
     jobject /*thiz*/
 ) {
+    MobileRT::checkSystemError("rtGetSample start");
     ::std::int32_t sample{};
     {
         const ::std::lock_guard<::std::mutex> lock{mutex_};
@@ -799,6 +813,7 @@ extern "C"
         }
     }
     env->ExceptionClear();
+    MobileRT::checkSystemError("rtGetSample finish");
     return sample;
 }
 
@@ -808,9 +823,7 @@ extern "C"
     jobject /*thiz*/,
     jint size
 ) {
-    // Necessary reset of `errno` because there is an error in Android of:
-    // EAGAIN (Resource unavailable, try again) - errno (11): Try again
-    errno = 0;
+    MobileRT::checkSystemError("rtResize start");
 
     const auto res{
         ::MobileRT::roundDownToMultipleOf(
@@ -818,6 +831,7 @@ extern "C"
         )
     };
     env->ExceptionClear();
+    MobileRT::checkSystemError("rtResize finish");
     return res;
 }
 
@@ -826,11 +840,9 @@ extern "C"
     JNIEnv *env,
     jobject /*thiz*/
 ) {
-    // Necessary reset of `errno` because there is an error in Android of:
-    // EINVAL (Invalid argument) - errno (22): Invalid argument
-    errno = 0;
-
+    MobileRT::checkSystemError("rtGetNumberOfLights start");
     env->ExceptionClear();
+    MobileRT::checkSystemError("rtGetNumberOfLights finish");
     return numLights_;
 }
 
@@ -840,10 +852,12 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtFreeNativeBuffer(
     jobject /*thiz*/,
     jobject bufferRef
 ) {
+    MobileRT::checkSystemError("rtFreeNativeBuffer start");
     if (bufferRef != nullptr) {
         auto *buffer{env->GetDirectBufferAddress(bufferRef)};
         float *const floatBuffer{static_cast<float *> (buffer)};
         delete[] floatBuffer;
     }
+    MobileRT::checkSystemError("rtFreeNativeBuffer finish");
     return nullptr;
 }

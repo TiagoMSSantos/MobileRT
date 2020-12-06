@@ -57,7 +57,11 @@ OBJLoader::OBJLoader(::std::string objFilePath, ::std::string matFilePath) :
     if (errno != 0) {
         ::std::perror("Error after LoadObj: ");
         LOG("errno after LoadObj (", errno, "): ", ::std::strerror(errno));
-        errno = 0;
+
+        // Necessary reset of `errno` because there is an error in Android when
+        // allocating more than 20k bytes of memory (random values):
+        // EINVAL (Invalid argument) - errno (22): Invalid argument
+        errno = 0;// reset the error code
     }
     LOG("Called tinyobj::LoadObj");
 

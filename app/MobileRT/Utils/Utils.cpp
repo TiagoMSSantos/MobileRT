@@ -375,7 +375,19 @@ namespace MobileRT {
                 break;
         }
 
-        if (errno != 0) {// if there is an error
+        // There is an error in Android when allocating more than 20k bytes of memory (random values):
+        // EINVAL (Invalid argument) - errno (22): Invalid argument
+        // It already happened when calling `float *const floatBuffer{new float[arraySize]};`
+        // in the `rtInitVerticesArray` method.
+
+        // There is also an error in Android of:
+        // EAGAIN (Resource unavailable, try again) - errno (11): Try again
+        // It already happened in the beginning of `rtResize` method.
+        // It already happened in the beginning of `rtFinishRender` method.
+        // It already happened in the beginning of `rtGetState` method.
+
+        // So we ignore those errors for now.
+        if (errno != 0 && errno != EINVAL && errno != EAGAIN) {// if there is an error
             ::std::setlocale(LC_ALL, "en_US.UTF-8");
             const auto errorMessage {::std::string(message) + '\n' + errorCode + '\n' +
                                      ::std::string("errno (") + ::std::to_string(errno) + "): " +
