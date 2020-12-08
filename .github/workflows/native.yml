@@ -1,8 +1,6 @@
 name: Build Native (Qt)
 
 on:
-  pull_request:
-  release:
   push:
     paths-ignore:
     - '*'

@@ -1,8 +1,6 @@
 name: Build Android
 
 on:
-  pull_request:
-  release:
   push:
     paths-ignore:
     - '*'

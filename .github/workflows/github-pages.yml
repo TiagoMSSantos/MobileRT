@@ -1,8 +1,6 @@
 name: Deploy Jekyll GitHub Page
 
 on:
-  pull_request:
-  release:
   push:
     branches:
     - master
