@@ -21,15 +21,42 @@
 #include <vector>
 
 namespace MobileRT {
-#define LOG(...) \
-    ::MobileRT::log(::MobileRT::getFileName(__FILE__), ":", __LINE__, ": ", __VA_ARGS__)
+#define LOG_DEBUG(...) \
+    ::Dependent::printDebug( \
+        ::MobileRT::convertToString(::MobileRT::getFileName(__FILE__), ":", __LINE__, ": ", __VA_ARGS__) \
+    )
 
-#ifndef LOG
-#define LOG(...)
+#define LOG_INFO(...) \
+    ::Dependent::printInfo( \
+        ::MobileRT::convertToString(::MobileRT::getFileName(__FILE__), ":", __LINE__, ": ", __VA_ARGS__) \
+    )
+
+#define LOG_WARN(...) \
+    ::Dependent::printWarn( \
+        ::MobileRT::convertToString(::MobileRT::getFileName(__FILE__), ":", __LINE__, ": ", __VA_ARGS__) \
+    )
+
+#define LOG_ERROR(...) \
+    ::Dependent::printError( \
+        ::MobileRT::convertToString(::MobileRT::getFileName(__FILE__), ":", __LINE__, ": ", __VA_ARGS__) \
+    )
+
+
+#ifndef LOG_DEBUG
+#define LOG_DEBUG(...)
 #endif
 
-    template<typename ...Args>
-    void log(Args &&... args);
+#ifndef LOG_INFO
+#define LOG_INFO(...)
+#endif
+
+#ifndef LOG_WARN
+#define LOG_WARN(...)
+#endif
+
+#ifndef LOG_ERROR
+#define LOG_ERROR(...)
+#endif
 
     template<typename T, ::std::size_t S>
     void fillArrayWithHaltonSeq(::std::array<T, S> *values);
@@ -150,18 +177,6 @@ namespace MobileRT {
         oss << '\n';
         const auto &line {oss.str()};
         return line;
-    }
-
-    /**
-     * Helper method which prints all the parameters in the console output.
-     *
-     * @tparam Args The type of the arguments.
-     * @param args The arguments to print.
-     */
-    template<typename ...Args>
-    void log(Args &&... args) {
-        const auto &line {convertToString(args...)};
-        ::Dependent::printString(line);
     }
 
     /**
@@ -293,7 +308,7 @@ namespace MobileRT {
         #define ASSERT(condition, ...) \
         do { \
             if (!(condition)) { \
-                LOG("Assertion '", #condition, "': ",  __VA_ARGS__); \
+                LOG_DEBUG("Assertion '", #condition, "': ",  __VA_ARGS__); \
                 BOOST_ASSERT_MSG(condition, ::MobileRT::convertToString(__VA_ARGS__).c_str()); \
             } \
         } while (false)

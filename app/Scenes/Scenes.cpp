@@ -107,7 +107,7 @@ inline Scene cornellBox(Scene scene) {
 }
 
 Scene cornellBox_Scene(Scene scene) {
-    LOG("SCENE: cornellBox_Scene");
+    LOG_DEBUG("SCENE: cornellBox_Scene");
     scene.lights_.emplace_back(::MobileRT::std::make_unique<PointLight> (
             lightMat,
             ::glm::vec3 {0.0F, 0.99F, 0.0F}
@@ -137,7 +137,7 @@ Scene cornellBox_Scene(Scene scene) {
 }
 
 ::std::unique_ptr<::MobileRT::Camera> cornellBox_Cam(const float ratio) {
-    LOG("CAMERA: cornellBox_Cam");
+    LOG_DEBUG("CAMERA: cornellBox_Cam");
     const auto fovX {45.0F * ratio};
     const auto fovY {45.0F};
     auto res {::MobileRT::std::make_unique<Components::Perspective> (
@@ -150,7 +150,7 @@ Scene cornellBox_Scene(Scene scene) {
 }
 
 Scene cornellBox2_Scene(Scene scene) {
-    LOG("SCENE: cornellBox2_Scene");
+    LOG_DEBUG("SCENE: cornellBox2_Scene");
     ::std::unique_ptr<Sampler> samplerPoint1 {::MobileRT::std::make_unique<StaticHaltonSeq> ()};
     ::std::unique_ptr<Sampler> samplerPoint2 {::MobileRT::std::make_unique<StaticHaltonSeq> ()};
 
@@ -225,7 +225,7 @@ Scene cornellBox2_Scene(Scene scene) {
 }
 
 ::std::unique_ptr<::MobileRT::Camera> cornellBox2_Cam(const float ratio) {
-    LOG("CAMERA: cornellBox2_Cam");
+    LOG_DEBUG("CAMERA: cornellBox2_Cam");
     const auto fovX {45.0F * ratio};
     const auto fovY {45.0F};
     auto res {::MobileRT::std::make_unique<Components::Perspective> (
@@ -238,7 +238,7 @@ Scene cornellBox2_Scene(Scene scene) {
 }
 
 Scene spheres_Scene(Scene scene) {
-    LOG("SCENE: spheres_Scene");
+    LOG_DEBUG("SCENE: spheres_Scene");
     // create one sphere
     scene.spheres_.emplace_back(Sphere {
         ::glm::vec3 {4.0F, 4.0F, 4.0F}, 4.0F,
@@ -262,7 +262,7 @@ Scene spheres_Scene(Scene scene) {
 }
 
 ::std::unique_ptr<::MobileRT::Camera> spheres_Cam(float ratio) {
-    LOG("CAMERA: spheres_Cam");
+    LOG_DEBUG("CAMERA: spheres_Cam");
     const auto sizeH {10.0F * ratio};
     const auto sizeV {10.0F};
     auto res {::MobileRT::std::make_unique<Components::Orthographic> (
@@ -275,7 +275,7 @@ Scene spheres_Scene(Scene scene) {
 }
 
 Scene spheres2_Scene(Scene scene) {
-    LOG("SCENE: spheres2_Scene");
+    LOG_DEBUG("SCENE: spheres2_Scene");
     scene.lights_.emplace_back(::MobileRT::std::make_unique<PointLight> (lightMat, ::glm::vec3 {0.0F, 15.0F, 4.0F}));
 
     // create one sphere
@@ -302,7 +302,7 @@ Scene spheres2_Scene(Scene scene) {
 }
 
 ::std::unique_ptr<::MobileRT::Camera> spheres2_Cam(float ratio) {
-    LOG("CAMERA: spheres2_Cam");
+    LOG_DEBUG("CAMERA: spheres2_Cam");
     const auto fovX {60.0F * ratio};
     const auto fovY {60.0F};
     auto  res {::MobileRT::std::make_unique<Components::Perspective> (

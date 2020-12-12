@@ -121,19 +121,19 @@ namespace MobileRT {
         },
         // precalculate size of a cell (for x, y, and z)
         cellSize_ {(worldBoundaries_.getPointMax() - worldBoundaries_.getPointMin()) * (1.0F / static_cast<float> (gridSize_))} {
-        LOG(typeid(T).name());
+        LOG_DEBUG(typeid(T).name());
         const auto worldBoundsMin {this->worldBoundaries_.getPointMin()};
         const auto worldBoundsMax {this->worldBoundaries_.getPointMax()};
-        LOG("scene min=(",
-            worldBoundsMin[0], ", ",
-            worldBoundsMin[1], ", ",
-            worldBoundsMin[2], ") max=(",
-            worldBoundsMax[0], ", ",
-            worldBoundsMax[1], ", ",
-            worldBoundsMax[2], ")"
+        LOG_DEBUG("scene min=(",
+                  worldBoundsMin[0], ", ",
+                  worldBoundsMin[1], ", ",
+                  worldBoundsMin[2], ") max=(",
+                  worldBoundsMax[0], ", ",
+                  worldBoundsMax[1], ", ",
+                  worldBoundsMax[2], ")"
         );
 
-        LOG("PRIMITIVES = ", this->primitives_.size());
+        LOG_DEBUG("PRIMITIVES = ", this->primitives_.size());
         addPrimitives();
     }
 
@@ -186,7 +186,7 @@ namespace MobileRT {
         const auto numPrimitives {static_cast<::std::uint32_t> (this->primitives_.size())};
         ::std::vector<::std::mutex> mutexes (this->grid_.size());
         const auto num_max_threads {omp_get_max_threads()};
-        LOG("num_max_threads = ", num_max_threads);
+        LOG_DEBUG("num_max_threads = ", num_max_threads);
 
         #pragma omp parallel for
         // store primitives in the grid cells
@@ -232,13 +232,13 @@ namespace MobileRT {
                                 worldBoundsMin[2] + static_cast<float>(z) * dz
                         };
                         const AABB cell {pos, pos + ::glm::vec3 {dx, dy, dz}};
-                        //LOG("min=(", pos[0], ", ", pos[1], ", ", pos[2], ") max=(", dx, ", ", dy, ",", dz, ")");
+                        //LOG_DEBUG("min=(", pos[0], ", ", pos[1], ", ", pos[2], ") max=(", dx, ", ", dy, ",", dz, ")");
                         // do an accurate aabb / primitive intersection test
                         const auto intersectedBox {primitive.intersect(cell)};
                         if (intersectedBox) {
                             ::std::lock_guard<::std::mutex> lock {mutexes[idx]};
                             this->grid_[idx].emplace_back(&primitive);
-                            // "LOG("add idx = ", idx, " index = ", index);"
+                            // "LOG_DEBUG("add idx = ", idx, " index = ", index);"
                         }
                     }
                 }

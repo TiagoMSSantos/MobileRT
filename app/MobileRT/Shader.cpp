@@ -43,7 +43,7 @@ Shader::Shader(Scene scene, const ::std::int32_t samplesLight, const Accelerator
  * @param scene The scene geometry.
  */
 void Shader::initializeAccelerators(Scene scene) {
-    LOG("initializeAccelerators");
+    LOG_DEBUG("initializeAccelerators");
     switch (this->accelerator_) {
         case Accelerator::ACC_NAIVE: {
             this->naivePlanes_ = Naive<Plane> {::std::move(scene.planes_)};
@@ -68,9 +68,9 @@ void Shader::initializeAccelerators(Scene scene) {
         }
     }
     this->lights_ = ::std::move(scene.lights_);
-    LOG("accelerator = ", this->accelerator_);
-    LOG("materials = ", this->materials_.size());
-    LOG("lights = ", this->lights_.size());
+    LOG_DEBUG("accelerator = ", this->accelerator_);
+    LOG_DEBUG("materials = ", this->materials_.size());
+    LOG_DEBUG("lights = ", this->lights_.size());
 }
 
 /**

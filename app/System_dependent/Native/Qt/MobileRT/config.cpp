@@ -12,7 +12,7 @@ Config::Config(::std::int32_t shader,
         QDialog(nullptr),
         ui(new Ui::Config) {
     ui->setupUi(this);
-    LOG("Config");
+    LOG_DEBUG("Config");
 
     m_shader = shader;
     m_accelerator = accelerator;

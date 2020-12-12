@@ -23,7 +23,7 @@ Scene::~Scene() {
     ::std::vector<Triangle> {}.swap(this->triangles_);
     ::std::vector<::std::unique_ptr<Light>> {}.swap(this->lights_);
 
-    LOG("SCENE DELETED");
+    LOG_DEBUG("SCENE DELETED");
 }
 
 /**

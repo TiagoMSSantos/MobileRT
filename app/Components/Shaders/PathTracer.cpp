@@ -15,7 +15,7 @@ PathTracer::PathTracer(Scene scene,
                        const Accelerator accelerator) :
     Shader {::std::move(scene), samplesLight, accelerator},
     samplerRussianRoulette_ {::std::move(samplerRussianRoulette)} {
-    LOG("samplesLight = ", this->samplesLight_);
+    LOG_DEBUG("samplesLight = ", this->samplesLight_);
 }
 
 //pag 28 slides Monte Carlo

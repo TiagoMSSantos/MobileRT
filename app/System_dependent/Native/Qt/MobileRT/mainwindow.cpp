@@ -53,8 +53,8 @@ void MainWindow::restart() {
                                                       ::MobileRT::NumberOfTiles)));
 
     const ::std::uint32_t size {static_cast<::std::uint32_t> (m_width) * static_cast<::std::uint32_t> (m_height)};
-    LOG("width = ", m_width);
-    LOG("height = ", m_height);
+    LOG_DEBUG("width = ", m_width);
+    LOG_DEBUG("height = ", m_height);
     m_bitmap = ::std::vector<::std::int32_t> (size);
 
     ::std::fill(m_bitmap.begin(), m_bitmap.end(), 0);
@@ -93,9 +93,9 @@ void MainWindow::setImage(::std::int32_t width, ::std::int32_t height, ::std::in
     m_pathMtl = pathMtl;
     m_pathCam = pathCam;
 
-    LOG("width = ", m_width);
-    LOG("height = ", m_height);
-    LOG("async = ", m_async);
+    LOG_DEBUG("width = ", m_width);
+    LOG_DEBUG("height = ", m_height);
+    LOG_DEBUG("async = ", m_async);
 
     RayTrace(m_bitmap.data(), m_width, m_height, m_threads, m_shader, m_scene, m_samplesPixel, m_samplesLight,
              m_repeats, m_accelerator, m_printStdOut, m_async, m_pathObj.c_str(), m_pathMtl.c_str(), m_pathCam.c_str());
@@ -109,7 +109,7 @@ void MainWindow::setImage(::std::int32_t width, ::std::int32_t height, ::std::in
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *keyEvent) {
-    LOG("KEY PRESSED");
+    LOG_DEBUG("KEY PRESSED");
     if (keyEvent->key() == ::Qt::Key_Escape) {
         ::QApplication::exit();
     }

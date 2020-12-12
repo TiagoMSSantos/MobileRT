@@ -17,7 +17,7 @@ namespace Components {
     public:
         explicit OBJLoader() = delete;
 
-        explicit OBJLoader(::std::string objFilePath, ::std::string matFilePath);
+        explicit OBJLoader(::std::string objFilePath, const ::std::string &matFilePath);
 
         OBJLoader(const OBJLoader &objLoader) = delete;
 

@@ -46,8 +46,8 @@ Renderer::Renderer(::std::unique_ptr<Shader> shader,
  * @param numThreads The number of threads to use during the rendering process.
  */
 void Renderer::renderFrame(::std::int32_t *const bitmap, const ::std::int32_t numThreads) {
-    LOG("numThreads = ", numThreads);
-    LOG("Resolution = ", this->width_, "x", this->height_);
+    LOG_DEBUG("numThreads = ", numThreads);
+    LOG_DEBUG("Resolution = ", this->width_, "x", this->height_);
 
     this->sample_ = 0;
     this->samplerPixel_->resetSampling();
@@ -67,7 +67,7 @@ void Renderer::renderFrame(::std::int32_t *const bitmap, const ::std::int32_t nu
     }
     threads.clear();
 
-    LOG("FINISH");
+    LOG_DEBUG("FINISH");
 }
 
 /**
@@ -93,12 +93,12 @@ void Renderer::renderScene(::std::int32_t *const bitmap, const ::std::int32_t ti
     const auto pixelWidth {0.5F / this->width_};
     const auto pixelHeight {0.5F / this->height_};
     ::glm::vec3 pixelRgb {};
-    LOG("renderScene");
+    LOG_DEBUG("renderScene");
 
     for (::std::int32_t sample {}; sample < this->samplesPixel_; ++sample) {
-        LOG("renderScene sample: ", sample);
+        LOG_DEBUG("renderScene sample: ", sample);
         while (true) {
-            LOG("Will get a tile: bx=", this->blockSizeX_, ", by=", this->blockSizeY_, ", spp=", sample, " (", this->samplesPixel_, ")");
+            LOG_DEBUG("Will get a tile: bx=", this->blockSizeX_, ", by=", this->blockSizeY_, ", spp=", sample, " (", this->samplesPixel_, ")");
             const auto tile {getTile(sample)};
             if (tile >= 1.0F) {
                 break;
@@ -107,7 +107,7 @@ void Renderer::renderScene(::std::int32_t *const bitmap, const ::std::int32_t ti
             const auto pixel {roundBlock * this->blockSizeX_ % this->resolution_};
             const auto startY {((pixel / this->width_) * this->blockSizeY_) % this->height_};
             const auto endY {startY + this->blockSizeY_};
-            LOG("Will render a tile");
+            LOG_DEBUG("Will render a tile");
             for (auto y {startY}; y < endY; ++y) {
                 const auto v {y * invImgHeight};
                 const auto yWidth {y * this->width_};
@@ -128,13 +128,13 @@ void Renderer::renderScene(::std::int32_t *const bitmap, const ::std::int32_t ti
                     *bitmapPixel = pixelColor;
                 }
             }
-            LOG("Tile rendered");
+            LOG_DEBUG("Tile rendered");
         }
         if (tid == 0) {
             this->sample_ = sample + 1;
-            LOG("Sample = ", this->sample_);
+            LOG_DEBUG("Sample = ", this->sample_);
         }
-        LOG("renderScene sample: ", sample, " finished");
+        LOG_DEBUG("renderScene sample: ", sample, " finished");
     }
 }
 

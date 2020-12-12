@@ -18,8 +18,10 @@ jobs:
       if: success()
       working-directory: .
       run: |
+        sudo apt update;
+        sudo apt install -y ruby-dev;
         sudo gem install bundler:1.16.1;
-        gem update bundler --conservative;
+        sudo gem update bundler --conservative;
 #          bundle update --bundler;
 
 #      - name: Deploy Jekyll site to GitHub Pages

@@ -18,18 +18,18 @@ using ::MobileRT::Sampler;
 template<typename T1, typename T2, typename T3>
 using triple = ::std::tuple<T1, T2, T3>;
 
-OBJLoader::OBJLoader(::std::string objFilePath, ::std::string matFilePath) :
+OBJLoader::OBJLoader(::std::string objFilePath, const ::std::string &matFilePath) :
     objFilePath_ {::std::move(objFilePath)} {
 
     MobileRT::checkSystemError("Error before read OBJ.");
-    LOG("Will read OBJ path: ", this->objFilePath_);
+    LOG_DEBUG("Will read OBJ path: ", this->objFilePath_);
     ::std::ifstream objStream {this->objFilePath_, ::std::ios::binary};
     MobileRT::checkSystemError(::std::string("Error after read OBJ `" + this->objFilePath_ + "`.\n").c_str());
     objStream.exceptions(
         objStream.exceptions() | ::std::ifstream::goodbit | ::std::ifstream::badbit |
         ::std::ifstream::failbit
     );
-    LOG("Will read MAT path: ", matFilePath);
+    LOG_DEBUG("Will read MAT path: ", matFilePath);
     ::std::ifstream matStream {matFilePath, ::std::ios::binary};
     MobileRT::checkSystemError(::std::string("Error after read MAT `" + matFilePath + "`.").c_str());
     matStream.exceptions(
@@ -42,9 +42,9 @@ OBJLoader::OBJLoader(::std::string objFilePath, ::std::string matFilePath) :
     ::std::string errors {};
     ::std::string warnings {};
 
-    LOG("Going to call tinyobj::LoadObj");
-    LOG("OBJ file path: ", this->objFilePath_);
-    LOG("MTL file path: ", matFilePath);
+    LOG_DEBUG("Going to call tinyobj::LoadObj");
+    LOG_DEBUG("OBJ file path: ", this->objFilePath_);
+    LOG_DEBUG("MTL file path: ", matFilePath);
 
     MobileRT::checkSystemError("Error before LoadObj.");
     const auto ret {
@@ -56,21 +56,21 @@ OBJLoader::OBJLoader(::std::string objFilePath, ::std::string matFilePath) :
 
     if (errno != 0) {
         ::std::perror("Error after LoadObj: ");
-        LOG("errno after LoadObj (", errno, "): ", ::std::strerror(errno));
+        LOG_ERROR("errno after LoadObj (", errno, "): ", ::std::strerror(errno));
 
         // Necessary reset of `errno` because there is an error in Android when
         // allocating more than 20k bytes of memory (random values):
         // EINVAL (Invalid argument) - errno (22): Invalid argument
         errno = 0;// reset the error code
     }
-    LOG("Called tinyobj::LoadObj");
+    LOG_DEBUG("Called tinyobj::LoadObj");
 
     if (!errors.empty()) {
-        LOG("Error: ", errors);
+        LOG_ERROR("Error: ", errors);
     }
 
     if (!warnings.empty()) {
-        LOG("Warning: ", warnings);
+        LOG_WARN("Warning: ", warnings);
     }
 
     if (ret) {
@@ -87,7 +87,7 @@ OBJLoader::OBJLoader(::std::string objFilePath, ::std::string matFilePath) :
 
 bool OBJLoader::fillScene(Scene *const scene,
                           ::std::function<::std::unique_ptr<Sampler>()> lambda) {
-    LOG("FILLING SCENE");
+    LOG_DEBUG("FILLING SCENE");
     scene->triangles_.reserve(static_cast<::std::uint32_t> (this->numberTriangles_));
     const ::std::string delimiter {"/"};
     const ::std::string
@@ -105,7 +105,7 @@ bool OBJLoader::fillScene(Scene *const scene,
             const ::std::uint32_t faceVertices {*it};
 
             if (faceVertices % 3 != 0) {
-                LOG("num_face_vertices [", face, "] = ", faceVertices);
+                LOG_DEBUG("num_face_vertices [", face, "] = ", faceVertices);
                 continue;
             }
 
@@ -258,8 +258,8 @@ bool OBJLoader::fillScene(Scene *const scene,
                         scene->lights_.emplace_back(
                             ::MobileRT::std::make_unique<AreaLight>(material, lambda(), triangle));
                         const auto lightPos {scene->lights_.back()->getPosition()};
-                        LOG("Light position at: x:", lightPos[0], ", y:", lightPos[1], ", z:",
-                            lightPos[2]);
+                        LOG_DEBUG("Light position at: x:", lightPos[0], ", y:", lightPos[1], ", z:",
+                                  lightPos[2]);
                     } else {
                         // If it is a primitive.
 
@@ -365,5 +365,5 @@ OBJLoader::~OBJLoader() {
     ::std::vector<::tinyobj::real_t> {}.swap(this->attrib_.texcoords);
     ::std::vector<::tinyobj::real_t> {}.swap(this->attrib_.vertices);
 
-    LOG("OBJLOADER DELETED");
+    LOG_DEBUG("OBJLOADER DELETED");
 }

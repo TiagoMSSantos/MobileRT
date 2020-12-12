@@ -19,7 +19,7 @@ int main(int argc, char **argv) {
 //    argc = 16;
 
     if (argc != 16) {
-        LOG("Wrong number of arguments: ", argc, ", must be 16");
+        LOG_ERROR("Wrong number of arguments: ", argc, ", must be 16");
         ::std::exit(1);
     }
 

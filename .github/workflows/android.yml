@@ -89,7 +89,12 @@ jobs:
       if: success()
       uses: actions/cache@v2.1.3
       with:
-        path: ~/.sonar/cache
+        path: |
+          ~/.sonar
+          ./gradle
+          ./app/.cxx
+          ./app/build
+          ./build
         key: ${{ runner.os }}-sonar
         restore-keys: ${{ runner.os }}-sonar
 
@@ -97,7 +102,7 @@ jobs:
       if: success()
       uses: actions/cache@v2.1.3
       with:
-        path: ~/.gradle/caches
+        path: ~/.gradle
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
         restore-keys: ${{ runner.os }}-gradle
 

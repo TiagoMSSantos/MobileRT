@@ -66,19 +66,19 @@ work_thread(
         }
         {
             // Print debug information
-            LOG("width_ = ", width);
-            LOG("height_ = ", height);
-            LOG("threads = ", threads);
-            LOG("shader = ", shader);
-            LOG("scene = ", sceneIndex);
-            LOG("samplesPixel = ", samplesPixel);
-            LOG("samplesLight = ", samplesLight);
-            LOG("repeats = ", repeats);
-            LOG("accelerator = ", accelerator);
-            LOG("printStdOut = ", printStdOut);
-            LOG("objFilePath = ", objFilePath);
-            LOG("mtlFilePath = ", mtlFilePath);
-            LOG("camFilePath = ", camFilePath);
+            LOG_DEBUG("width_ = ", width);
+            LOG_DEBUG("height_ = ", height);
+            LOG_DEBUG("threads = ", threads);
+            LOG_DEBUG("shader = ", shader);
+            LOG_DEBUG("scene = ", sceneIndex);
+            LOG_DEBUG("samplesPixel = ", samplesPixel);
+            LOG_DEBUG("samplesLight = ", samplesLight);
+            LOG_DEBUG("repeats = ", repeats);
+            LOG_DEBUG("accelerator = ", accelerator);
+            LOG_DEBUG("printStdOut = ", printStdOut);
+            LOG_DEBUG("objFilePath = ", objFilePath);
+            LOG_DEBUG("mtlFilePath = ", mtlFilePath);
+            LOG_DEBUG("camFilePath = ", camFilePath);
 
             const auto ratio {static_cast<float> (width) / height};
             ::MobileRT::Scene scene {};
@@ -121,7 +121,7 @@ work_thread(
                     }
                     const auto endLoading {::std::chrono::system_clock::now()};
                     timeLoading = endLoading - startLoading;
-                    LOG("OBJLoader loaded = ", timeLoading.count());
+                    LOG_DEBUG("OBJLoader loaded = ", timeLoading.count());
                     const auto startFilling {::std::chrono::system_clock::now()};
                     // "objLoader.fillScene(&scene, []() {return ::MobileRT::std::make_unique<::Components::HaltonSeq> ();});"
                     // "objLoader.fillScene(&scene, []() {return ::MobileRT::std::make_unique<::Components::MersenneTwister> ();});"
@@ -129,7 +129,7 @@ work_thread(
                     // "objLoader.fillScene(&scene, []() {return ::MobileRT::std::make_unique<Components::StaticMersenneTwister> ();});"
                     const auto endFilling {::std::chrono::system_clock::now()};
                     timeFilling = endFilling - startFilling;
-                    LOG("Scene filled = ", timeFilling.count());
+                    LOG_DEBUG("Scene filled = ", timeFilling.count());
 
                     const auto cameraFactory {::Components::CameraFactory()};
                     camera = cameraFactory.loadFromFile(camFilePath, ratio);
@@ -191,7 +191,7 @@ work_thread(
             // Stop timer
             const auto endCreating {::std::chrono::system_clock::now()};
             timeCreating = endCreating - startCreating;
-            LOG("Shader created = ", timeCreating.count());
+            LOG_DEBUG("Shader created = ", timeCreating.count());
 
             const auto planes {static_cast<::std::int32_t> (shader_->getPlanes().size())};
             const auto spheres {static_cast<::std::int32_t> (shader_->getSpheres().size())};
@@ -199,27 +199,27 @@ work_thread(
             const auto numLights {static_cast<::std::int32_t> (shader_->getLights().size())};
             const auto nPrimitives {triangles + spheres + planes};
 
-            LOG("Started creating Renderer");
+            LOG_INFO("Started creating Renderer");
             renderer_ = ::MobileRT::std::make_unique<::MobileRT::Renderer> (
                     ::std::move(shader_), ::std::move(camera), ::std::move(samplerPixel),
                     width, height, samplesPixel
             );
 
             // Print debug information
-            LOG("TRIANGLES = ", triangles);
-            LOG("SPHERES = ", spheres);
-            LOG("PLANES = ", planes);
-            LOG("PRIMITIVES = ", nPrimitives);
-            LOG("LIGHTS = ", numLights);
-            LOG("threads = ", threads);
-            LOG("shader = ", shader);
-            LOG("scene = ", sceneIndex);
-            LOG("samplesPixel = ", samplesPixel);
-            LOG("samplesLight = ", samplesLight);
-            LOG("width_ = ", width);
-            LOG("height_ = ", height);
+            LOG_DEBUG("TRIANGLES = ", triangles);
+            LOG_DEBUG("SPHERES = ", spheres);
+            LOG_DEBUG("PLANES = ", planes);
+            LOG_DEBUG("PRIMITIVES = ", nPrimitives);
+            LOG_DEBUG("LIGHTS = ", numLights);
+            LOG_DEBUG("threads = ", threads);
+            LOG_DEBUG("shader = ", shader);
+            LOG_DEBUG("scene = ", sceneIndex);
+            LOG_DEBUG("samplesPixel = ", samplesPixel);
+            LOG_DEBUG("samplesLight = ", samplesLight);
+            LOG_DEBUG("width_ = ", width);
+            LOG_DEBUG("height_ = ", height);
 
-            LOG("Started rendering scene");
+            LOG_INFO("Started rendering scene");
             const auto startRendering {::std::chrono::system_clock::now()};
             do {
                 // Render a frame
@@ -229,7 +229,7 @@ work_thread(
             const auto endRendering {::std::chrono::system_clock::now()};
 
             timeRendering = endRendering - startRendering;
-            LOG("Finished rendering scene");
+            LOG_INFO("Finished rendering scene");
         }
         if (!printStdOut) {
             // Turn on redirection of logs to standard output
@@ -240,21 +240,21 @@ work_thread(
         // Print some latencies
         const auto renderingTime {timeRendering.count()};
         const auto castedRays {renderer_->getTotalCastedRays()};
-        LOG("Loading Time in secs = ", timeLoading.count());
-        LOG("Filling Time in secs = ", timeFilling.count());
-        LOG("Creating Time in secs = ", timeCreating.count());
-        LOG("Rendering Time in secs = ", renderingTime);
-        LOG("Casted rays = ", castedRays);
-        LOG("width_ = ", width);
-        LOG("height_ = ", height);
+        LOG_DEBUG("Loading Time in secs = ", timeLoading.count());
+        LOG_DEBUG("Filling Time in secs = ", timeFilling.count());
+        LOG_DEBUG("Creating Time in secs = ", timeCreating.count());
+        LOG_DEBUG("Rendering Time in secs = ", renderingTime);
+        LOG_DEBUG("Casted rays = ", castedRays);
+        LOG_DEBUG("width_ = ", width);
+        LOG_DEBUG("height_ = ", height);
 
-        LOG("Total Millions rays per second = ", (static_cast<double> (castedRays) / renderingTime) / 1000000L);
+        LOG_INFO("Total Millions rays per second = ", (static_cast<double> (castedRays) / renderingTime) / 1000000L);
     } catch (const ::std::bad_alloc &badAlloc) {
-        LOG("badAlloc: ", badAlloc.what());
+        LOG_ERROR("badAlloc: ", badAlloc.what());
     } catch (const ::std::exception &exception) {
-        LOG("exception: ", exception.what());
+        LOG_ERROR("exception: ", exception.what());
     } catch (...) {
-        LOG("Unknown error");
+        LOG_ERROR("Unknown error");
     }
 }
 

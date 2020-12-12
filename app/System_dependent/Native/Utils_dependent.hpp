@@ -4,11 +4,36 @@
 #include <iostream>
 
 namespace Dependent {
-    inline void printString(const ::std::string &log);
+    inline void printDebug(const ::std::string &log);
+
+    inline void printInfo(const ::std::string &log);
+
+    inline void printWarn(const ::std::string &log);
+
+    inline void printError(const ::std::string &log);
 }//namespace Dependent
 
-void ::Dependent::printString(const ::std::string &log) {
-    ::std::cout << log;
+namespace {
+    void print(const ::std::string &log) {
+        ::std::cout << log;
+    }
+
+}
+
+void ::Dependent::printDebug(const ::std::string &log) {
+    print(log);
+}
+
+void ::Dependent::printInfo(const ::std::string &log) {
+    print(log);
+}
+
+void ::Dependent::printWarn(const ::std::string &log) {
+    print(log);
+}
+
+void ::Dependent::printError(const ::std::string &log) {
+    ::std::cerr << log;
 }
 
 #endif //UTILS_DEPENDENT_HPP

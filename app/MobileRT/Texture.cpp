@@ -41,9 +41,9 @@ Texture::Texture(
         {static_cast<::std::uint32_t> (v * this->width_ * this->channels_ + u * this->channels_)};
 
     const ::glm::vec3 vec {
-        this->image_[index + 0] / 255.0F,
-        this->image_[index + 1] / 255.0F,
-        this->image_[index + 2] / 255.0F
+        static_cast<float> (this->image_[index + 0]) / 255.0F,
+        static_cast<float> (this->image_[index + 1]) / 255.0F,
+        static_cast<float> (this->image_[index + 2]) / 255.0F
     };
     return vec;
 }
@@ -60,15 +60,15 @@ Texture Texture::createTexture(const char *const textureFilePath) {
     ::std::int32_t channels {};
     const auto info {stbi_info(textureFilePath, &width, &height, &channels)};
     ::std::uint8_t *data {stbi_load(textureFilePath, &width, &height, &channels, 0)};
-    LOG("new Texture: ", width, "x", height, ", c: ", channels, ", info: ", info, ", file:",
-        textureFilePath);
+    LOG_DEBUG("new Texture: ", width, "x", height, ", c: ", channels, ", info: ", info, ", file:",
+              textureFilePath);
     if (data == nullptr) {
         const auto &error {stbi_failure_reason()};
-        LOG("Error reading texture: ", error);
+        LOG_ERROR("Error reading texture: ", error);
     }
     ::std::shared_ptr<::std::uint8_t> pointer {data, [](::std::uint8_t *const internalData) {
         stbi_image_free(internalData);
-        LOG("Deleted texture");
+        LOG_DEBUG("Deleted texture");
     }};
     Texture texture {pointer, width, height, channels};
     return texture;

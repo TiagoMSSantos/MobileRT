@@ -100,13 +100,13 @@ namespace MobileRT {
      */
     template<typename T>
     BVH<T>::BVH(::std::vector<T> &&primitives) {
-        LOG(typeid(T).name());
+        LOG_DEBUG(typeid(T).name());
         if (primitives.empty()) {
             BVHNode bvhNode {};
             this->boxes_.emplace_back(bvhNode);
             return;
         }
-        LOG("Building BVH");
+        LOG_INFO("Building BVH");
         const auto numPrimitives {(primitives.size())};
         const auto maxNodes {numPrimitives * 2 - 1};
         this->boxes_.resize(maxNodes);
@@ -250,7 +250,7 @@ namespace MobileRT {
             }
         } while(itStackBoxIndex > itStackBoxIndexBegin);
 
-        LOG("maxNodeId = ", maxNodeIndex);
+        LOG_DEBUG("maxNodeId = ", maxNodeIndex);
         this->boxes_.erase (this->boxes_.begin() + maxNodeIndex + 1, this->boxes_.end());
         this->boxes_.shrink_to_fit();
         ::std::vector<BVHNode> {this->boxes_}.swap(this->boxes_);
