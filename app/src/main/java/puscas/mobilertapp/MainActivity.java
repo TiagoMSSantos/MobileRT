@@ -655,7 +655,8 @@ public final class MainActivity extends Activity {
             final double heightView = (double) this.drawView.getHeight();
 
             final String[] resolutions = IntStreams.rangeClosed(2, maxSizes)
-                .mapToDouble(value -> (double) value)
+                // double.class::cast method throws `ClassCastException: Integer cannot be cast to double`
+                .mapToDouble(Double::valueOf)
                 .map(value -> (value + 1.0) * 0.1)
                 .map(value -> value * value)
                 .mapToObj(value -> {
