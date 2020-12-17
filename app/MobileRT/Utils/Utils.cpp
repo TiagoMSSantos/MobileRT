@@ -4,6 +4,165 @@
 
 namespace MobileRT {
 
+    // Private methods
+    /**
+     * Helper method that gets the error code, in string format, so its easy to find information on the internet.
+     *
+     * @return The error code in string format.
+     */
+    static ::std::string getErrorCode() {
+        ::std::string errorCode {};
+
+        // Convert error code in integer format to string format.
+        // Note: the descriptions in the comments were taken from: https://en.cppreference.com/w/cpp/error/errno_macros
+        switch (errno) {
+            case 0:
+                errorCode = "SUCCESS";
+                break;
+
+            case EPERM:// Operation not permitted
+                errorCode = "EPERM";
+                break;
+
+            case ENOENT:// No such file or directory
+                errorCode = "ENOENT";
+                break;
+
+            case ESRCH:// No such process
+                errorCode = "ESRCH";
+                break;
+
+            case EINTR:// Interrupted function
+                errorCode = "EINTR";
+                break;
+
+            case EIO:// I/O error
+                errorCode = "EIO";
+                break;
+
+            case ENXIO:// No such device or address
+                errorCode = "ENXIO";
+                break;
+
+            case E2BIG:// Argument list too long
+                errorCode = "E2BIG";
+                break;
+
+            case ENOEXEC:// Executable file format error
+                errorCode = "ENOEXEC";
+                break;
+
+            case EBADF:// Bad file descriptor
+                errorCode = "EBADF";
+                break;
+
+            case ECHILD:// No child processes
+                errorCode = "ECHILD";
+                break;
+
+            case EAGAIN:// Resource unavailable, try again
+                errorCode = "EAGAIN";
+                break;
+
+            case ENOMEM:// Not enough space
+                errorCode = "ENOMEM";
+                break;
+
+            case EACCES:// Permission denied
+                errorCode = "EACCES";
+                break;
+
+            case EFAULT:// Bad address
+                errorCode = "EFAULT";
+                break;
+
+            case EBUSY:// Device or resource busy
+                errorCode = "EBUSY";
+                break;
+
+            case EEXIST:// File exists
+                errorCode = "EEXIST";
+                break;
+
+            case EXDEV:// Cross-device link
+                errorCode = "EXDEV";
+                break;
+
+            case ENODEV:// No such device
+                errorCode = "ENODEV";
+                break;
+
+            case ENOTDIR:// Not a directory
+                errorCode = "ENOTDIR";
+                break;
+
+            case EISDIR:// Is a directory
+                errorCode = "EISDIR";
+                break;
+
+            case EINVAL:// Invalid argument
+                errorCode = "EINVAL";
+                break;
+
+            case ENFILE:// Too many files open in system
+                errorCode = "ENFILE";
+                break;
+
+            case EMFILE:// File descriptor value too large
+                errorCode = "EMFILE";
+                break;
+
+            case ENOTTY:// Inappropriate I/O control operation
+                errorCode = "ENOTTY";
+                break;
+
+            case ETXTBSY:// Text file busy
+                errorCode = "ETXTBSY";
+                break;
+
+            case EFBIG:// File too large
+                errorCode = "EFBIG";
+                break;
+
+            case ENOSPC:// No space left on device
+                errorCode = "ENOSPC";
+                break;
+
+            case ESPIPE:// Invalid seek
+                errorCode = "ESPIPE";
+                break;
+
+            case EROFS:// Read-only file system
+                errorCode = "EROFS";
+                break;
+
+            case EMLINK:// Too many links
+                errorCode = "EMLINK";
+                break;
+
+            case EPIPE:// Broken pipe
+                errorCode = "EPIPE";
+                break;
+
+            case EDOM:// Mathematics argument out of domain of function
+                errorCode = "EDOM";
+                break;
+
+            case ERANGE:// Result too large
+                errorCode = "ERANGE";
+                break;
+
+                // ENOTBLK: not compatible with Windows.
+
+            default:// If the error is not identified.
+                errorCode = "UNKNOWN";
+                break;
+        }
+        return errorCode;
+    }
+
+
+    // Public methods
     /**
      * Calculates the highest value that is smaller than the first parameter and is a multiple of
      * the second parameter.
@@ -228,153 +387,6 @@ namespace MobileRT {
      * @param message The message to be logged in the `std::runtime_error` that might be thrown.
      */
     void checkSystemError(const char *const message) {
-        ::std::string errorCode {};
-
-        // Get error code so its easy to find information on the internet.
-        switch (errno) {
-            case 0:
-                errorCode = "SUCCESS";
-                break;
-
-            case EPERM:
-                errorCode = "EPERM";
-                break;
-
-            case ENOENT:
-                errorCode = "ENOENT";
-                break;
-
-            case ESRCH:
-                errorCode = "ESRCH";
-                break;
-
-            case EINTR:
-                errorCode = "EINTR";
-                break;
-
-            case EIO:
-                errorCode = "EIO";
-                break;
-
-            case ENXIO:
-                errorCode = "ENXIO";
-                break;
-
-            case E2BIG:
-                errorCode = "E2BIG";
-                break;
-
-            case ENOEXEC:
-                errorCode = "ENOEXEC";
-                break;
-
-            case EBADF:
-                errorCode = "EBADF";
-                break;
-
-            case ECHILD:
-                errorCode = "ECHILD";
-                break;
-
-            case EAGAIN:
-                errorCode = "EAGAIN";
-                break;
-
-            case ENOMEM:
-                errorCode = "ENOMEM";
-                break;
-
-            case EACCES:
-                errorCode = "EACCES";
-                break;
-
-            case EFAULT:
-                errorCode = "EFAULT";
-                break;
-
-            case EBUSY:
-                errorCode = "EBUSY";
-                break;
-
-            case EEXIST:
-                errorCode = "EEXIST";
-                break;
-
-            case EXDEV:
-                errorCode = "EXDEV";
-                break;
-
-            case ENODEV:
-                errorCode = "ENODEV";
-                break;
-
-            case ENOTDIR:
-                errorCode = "ENOTDIR";
-                break;
-
-            case EISDIR:
-                errorCode = "EISDIR";
-                break;
-
-            case EINVAL:
-                errorCode = "EINVAL";
-                break;
-
-            case ENFILE:
-                errorCode = "ENFILE";
-                break;
-
-            case EMFILE:
-                errorCode = "EMFILE";
-                break;
-
-            case ENOTTY:
-                errorCode = "ENOTTY";
-                break;
-
-            case ETXTBSY:
-                errorCode = "ETXTBSY";
-                break;
-
-            case EFBIG:
-                errorCode = "EFBIG";
-                break;
-
-            case ENOSPC:
-                errorCode = "ENOSPC";
-                break;
-
-            case ESPIPE:
-                errorCode = "ESPIPE";
-                break;
-
-            case EROFS:
-                errorCode = "EROFS";
-                break;
-
-            case EMLINK:
-                errorCode = "EMLINK";
-                break;
-
-            case EPIPE:
-                errorCode = "EPIPE";
-                break;
-
-            case EDOM:
-                errorCode = "EDOM";
-                break;
-
-            case ERANGE:
-                errorCode = "ERANGE";
-                break;
-
-            // ENOTBLK: not compatible with Windows.
-
-            default:// If the error is not identified.
-                errorCode = "UNKNOWN";
-                break;
-        }
-
         // There is an error in Android when allocating more than 20k bytes of memory (random values):
         // EINVAL (Invalid argument) - errno (22): Invalid argument
         // It already happened when calling `float *const floatBuffer{new float[arraySize]};`
@@ -389,6 +401,8 @@ namespace MobileRT {
         // So we ignore those errors for now.
         if (errno != 0 && errno != EINVAL && errno != EAGAIN) {// if there is an error
             ::std::setlocale(LC_ALL, "en_US.UTF-8");
+            const ::std::string errorCode {getErrorCode()};
+
             const auto errorMessage {::std::string(message) + '\n' + errorCode + '\n' +
                                      ::std::string("errno (") + ::std::to_string(errno) + "): " +
                                      ::std::strerror(errno)
