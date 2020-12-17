@@ -1,6 +1,5 @@
 #include "Components/Loaders/OBJLoader.hpp"
 #include "Components/Lights/AreaLight.hpp"
-#include "MobileRT/Texture.hpp"
 #include <cstring>
 #include <fstream>
 #include <map>
@@ -89,9 +88,7 @@ bool OBJLoader::fillScene(Scene *const scene,
                           ::std::function<::std::unique_ptr<Sampler>()> lambda) {
     LOG_DEBUG("FILLING SCENE");
     scene->triangles_.reserve(static_cast<::std::uint32_t> (this->numberTriangles_));
-    const ::std::string delimiter {"/"};
-    const ::std::string
-        filePath {this->objFilePath_.substr(0, this->objFilePath_.find_last_of(delimiter)) + "/"};
+    const ::std::string filePath {this->objFilePath_.substr(0, this->objFilePath_.find_last_of("/")) + "/"};
     ::std::map<::std::string, Texture> texturesCache {};
 
     // Loop over shapes.
@@ -100,11 +97,11 @@ bool OBJLoader::fillScene(Scene *const scene,
         ::std::uint32_t indexOffset {};
         // The number of vertices per face.
         for (::std::uint32_t face {}; face < shape.mesh.num_face_vertices.size(); ++face) {
-            const auto
-                it {shape.mesh.num_face_vertices.cbegin() + static_cast<::std::int32_t> (face)};
+            const auto it {shape.mesh.num_face_vertices.cbegin() + static_cast<::std::int32_t> (face)};
             const ::std::uint32_t faceVertices {*it};
 
-            if (faceVertices % 3 != 0) {
+            if (faceVertices % 3 != 0) {// If the number of vertices in the face is not multiple of 3,
+                                        // then it does not make a triangle.
                 LOG_DEBUG("num_face_vertices [", face, "] = ", faceVertices);
                 continue;
             }
@@ -213,16 +210,7 @@ bool OBJLoader::fillScene(Scene *const scene,
                         };
 
                         const auto texPath {mat.diffuse_texname};
-                        const auto itTexture {texturesCache.find(texPath)};
-
-                        // If the texture is not in the cache.
-                        if (itTexture == texturesCache.cend()) {
-                            const auto texturePath {filePath + texPath};
-                            texture = Texture::createTexture(texturePath.c_str());
-                            auto &&pair {::std::make_pair(texPath, ::std::move(texture))};
-                            texturesCache.emplace(::std::move(pair));
-                        }
-                        texture = texturesCache.find(texPath)->second;
+                        texture = getTextureFromCache(&texturesCache, filePath, texPath);
                     }
 
                     // If the texture is not valid.
@@ -238,8 +226,7 @@ bool OBJLoader::fillScene(Scene *const scene,
                         };
                     }
 
-                    Material material
-                        {diffuse, specular, transmittance, indexRefraction, emission, texture};
+                    Material material {diffuse, specular, transmittance, indexRefraction, emission, texture};
 
                     // If the primitive is a light source.
                     if (::MobileRT::hasPositiveValue(emission)) {
@@ -340,6 +327,34 @@ bool OBJLoader::fillScene(Scene *const scene,
     }// Loop over shapes.
 
     return true;
+}
+
+/**
+ * Helper method that gets a Texture from a cache passed by a parameter.
+ * If the cache, does not have the texture, then it will create one and add it in it.
+ *
+ * @param texturesCache The cache for the textures.
+ * @param filePath      The path to the directory of the texture file.
+ * @param texPath       The texture file name.
+ * @return The texture loaded.
+ */
+Texture OBJLoader::getTextureFromCache(
+    ::std::map<::std::string, Texture> *const texturesCache,
+    const ::std::string &filePath,
+    const ::std::string &texPath
+) {
+    Texture texture {};
+    const auto itTexture {texturesCache->find(texPath)};
+
+    if (itTexture == texturesCache->cend()) {// If the texture is not in the cache.
+        const auto texturePath {filePath + texPath};
+        texture = Texture::createTexture(texturePath.c_str());
+        auto &&pair {::std::make_pair(texPath, ::std::move(texture))};
+        texturesCache->emplace(::std::move(pair));// Add it to the cache.
+    }
+
+    texture = texturesCache->find(texPath)->second;// Get texture from cache.
+    return texture;
 }
 
 OBJLoader::~OBJLoader() {

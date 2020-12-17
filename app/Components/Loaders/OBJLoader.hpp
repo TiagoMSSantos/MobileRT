@@ -3,7 +3,9 @@
 
 #include "MobileRT/ObjectLoader.hpp"
 #include "MobileRT/Sampler.hpp"
+#include "MobileRT/Texture.hpp"
 
+#include <map>
 #include <tinyobjloader/tiny_obj_loader.h>
 
 namespace Components {
@@ -31,6 +33,12 @@ namespace Components {
 
         bool fillScene(::MobileRT::Scene *scene,
                        ::std::function<::std::unique_ptr<::MobileRT::Sampler>()> lambda) final;
+
+    private:
+        static ::MobileRT::Texture getTextureFromCache(
+            ::std::map<::std::string, ::MobileRT::Texture> *const texturesCache,
+            const ::std::string &filePath,
+            const ::std::string &texPath);
     };
 }//namespace Components
 
