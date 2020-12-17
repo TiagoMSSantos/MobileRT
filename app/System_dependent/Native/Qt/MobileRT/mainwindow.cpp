@@ -32,7 +32,7 @@ void MainWindow::exit_app() {
 }
 
 void MainWindow::update_image() {
-    draw(m_bitmap, m_width, m_height);
+    draw(m_config.bitmap, m_config.width, m_config.height);
 }
 
 void MainWindow::on_actionRender_triggered() {
@@ -44,68 +44,52 @@ void MainWindow::restart() {
     m_timer->stop();
     disconnect(m_timer, SIGNAL(timeout()));
 
-    m_width = ::MobileRT::roundDownToMultipleOf(this->width() - 2,
+    m_config.width = ::MobileRT::roundDownToMultipleOf(this->width() - 2,
                                               static_cast<::std::int32_t> (::std::sqrt(
                                                       ::MobileRT::NumberOfTiles)));
 
-    m_height = ::MobileRT::roundDownToMultipleOf(this->height() - 70,
+    m_config.height = ::MobileRT::roundDownToMultipleOf(this->height() - 70,
                                               static_cast<::std::int32_t> (::std::sqrt(
                                                       ::MobileRT::NumberOfTiles)));
 
-    const ::std::uint32_t size {static_cast<::std::uint32_t> (m_width) * static_cast<::std::uint32_t> (m_height)};
-    LOG_DEBUG("width = ", m_width);
-    LOG_DEBUG("height = ", m_height);
-    m_bitmap = ::std::vector<::std::int32_t> (size);
+    const ::std::uint32_t size {static_cast<::std::uint32_t> (m_config.width) * static_cast<::std::uint32_t> (m_config.height)};
+    LOG_DEBUG("width = ", m_config.width);
+    LOG_DEBUG("height = ", m_config.height);
+    m_config.bitmap = ::std::vector<::std::int32_t> (size);
 
-    ::std::fill(m_bitmap.begin(), m_bitmap.end(), 0);
+    ::std::fill(m_config.bitmap.begin(), m_config.bitmap.end(), 0);
 
-    RayTrace(m_bitmap.data(), m_width, m_height, m_threads, m_shader, m_scene, m_samplesPixel, m_samplesLight,
-             m_repeats, m_accelerator, m_printStdOut, m_async, m_pathObj.c_str(), m_pathMtl.c_str(), m_pathCam.c_str());
+    RayTrace(m_config, m_async);
 
     m_timer = new QTimer(this);
     connect(m_timer, SIGNAL(timeout()), this, SLOT(update_image()));
     m_timer->start(1000);
 
-    this->resize(m_width + 2, m_height + 70);
-    m_ui->graphicsView->resize(m_width + 2, m_height + 2);
+    this->resize(m_config.width + 2, m_config.height + 70);
+    m_ui->graphicsView->resize(m_config.width + 2, m_config.height + 2);
 }
 
-void MainWindow::setImage(::std::int32_t width, ::std::int32_t height, ::std::int32_t threads,
-                          ::std::int32_t shader, ::std::int32_t scene,
-                          ::std::int32_t samplesPixel, ::std::int32_t samplesLight,
-                          ::std::int32_t repeats, ::std::int32_t accelerator, bool printStdOut,
-                          bool async, const char *pathObj, const char *pathMtl, const char *pathCam) {
-
-    const ::std::uint32_t size {static_cast<::std::uint32_t> (width) * static_cast<::std::uint32_t> (height)};
-    m_bitmap = ::std::vector<::std::int32_t> (size);
-    m_width = width;
-    m_height = height;
-    m_threads = threads;
-    m_shader = shader;
-    m_scene = scene;
-    m_samplesPixel = samplesPixel;
-    m_samplesLight = samplesLight;
-    m_repeats = repeats;
-    m_accelerator = accelerator;
-    m_printStdOut = printStdOut;
+void MainWindow::setImage(const ::MobileRT::Config &config, const bool async) {
     m_async = async;
-    m_pathObj = pathObj;
-    m_pathMtl = pathMtl;
-    m_pathCam = pathCam;
+    m_config = config;
 
-    LOG_DEBUG("width = ", m_width);
-    LOG_DEBUG("height = ", m_height);
+    LOG_DEBUG("width = ", m_config.width);
+    LOG_DEBUG("height = ", m_config.height);
     LOG_DEBUG("async = ", m_async);
 
-    RayTrace(m_bitmap.data(), m_width, m_height, m_threads, m_shader, m_scene, m_samplesPixel, m_samplesLight,
-             m_repeats, m_accelerator, m_printStdOut, m_async, m_pathObj.c_str(), m_pathMtl.c_str(), m_pathCam.c_str());
+    const ::std::uint32_t size {static_cast<::std::uint32_t> (m_config.width) * static_cast<::std::uint32_t> (m_config.height)};
+    LOG_DEBUG("width = ", m_config.width);
+    LOG_DEBUG("height = ", m_config.height);
+    m_config.bitmap = ::std::vector<::std::int32_t> (size);
+
+    RayTrace(m_config, m_async);
 
     m_timer = new QTimer(this);
     connect(m_timer, SIGNAL(timeout()), this, SLOT(update_image()));
     m_timer->start(1000);
 
-    this->resize(m_width + 2, m_height + 70);
-    m_ui->graphicsView->resize(m_width + 2, m_height + 2);
+    this->resize(m_config.width + 2, m_config.height + 70);
+    m_ui->graphicsView->resize(m_config.width + 2, m_config.height + 2);
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *keyEvent) {
@@ -137,21 +121,21 @@ void MainWindow::select_obj() {
 
     if (dialog.exec()) {
         const auto fileName {dialog.selectedFiles().at(0).section(".", 0, 0).toStdString()};
-        m_pathObj = fileName + ".obj";
-        m_pathMtl = fileName + ".mtl";
-        m_pathCam = fileName + ".cam";
+        m_config.objFilePath = (fileName + ".obj").c_str();
+        m_config.mtlFilePath = (fileName + ".mtl").c_str();
+        m_config.camFilePath = (fileName + ".cam").c_str();
     }
-    ::std::cout << "m_pathObj: " << m_pathObj << ::std::endl;
+    ::std::cout << "m_pathObj: " << m_config.objFilePath << ::std::endl;
 }
 
 void MainWindow::select_config() {
-    Config config {m_shader, m_accelerator, m_scene, m_samplesPixel, m_samplesLight};
+    Config config {m_config.shader, m_config.accelerator, m_config.sceneIndex, m_config.samplesPixel, m_config.samplesLight};
     if (config.exec()) {
-        m_shader = config.getShader();
-        m_accelerator = config.getAccelerator();
-        m_scene = config.getScene();
-        m_samplesPixel = config.getSPP();
-        m_samplesLight = config.getSPL();
+        m_config.shader = config.getShader();
+        m_config.accelerator = config.getAccelerator();
+        m_config.sceneIndex = config.getScene();
+        m_config.samplesPixel = config.getSPP();
+        m_config.samplesLight = config.getSPL();
     }
 }
 

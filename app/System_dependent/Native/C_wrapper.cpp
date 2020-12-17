@@ -16,12 +16,14 @@
 #include "Components/Shaders/NoShadows.hpp"
 #include "Components/Shaders/PathTracer.hpp"
 #include "Components/Shaders/Whitted.hpp"
+#include "MobileRT/Config.hpp"
 #include "MobileRT/Renderer.hpp"
 #include "MobileRT/Scene.hpp"
 #include "Scenes/Scenes.hpp"
 
 #include <chrono>
 #include <cstring>
+#include <functional>
 #include <fstream>
 
 static ::std::unique_ptr<::MobileRT::Renderer> renderer_ {};
@@ -29,28 +31,9 @@ static ::std::unique_ptr<::MobileRT::Renderer> renderer_ {};
 /**
  * Helper method that starts the Ray Tracer engine.
  *
- * @param bitmap       The bitmap to where the rendered image should be put.
- * @param width        The width of the image to render.
- * @param height       The height of the image to render.
- * @param threads      The number of threads to be used by the Ray Tracer engine.
- * @param shader       The shader to be used.
- * @param sceneIndex   The scene index to render.
- * @param samplesPixel The number of samples per pixel to use.
- * @param samplesLight The number of samples per light to use.
- * @param repeats      The number of times to render the scene.
- * @param accelerator  The acceleration structure to use.
- * @param printStdOut  Whether or not the logs should be redirected to the standard output.
- * @param objFilePath  The path to the OBJ file of the scene.
- * @param mtlFilePath  The path to the MTL file of the scene.
- * @param camFilePath  The path to the CAM file of the scene.
+ * @param config The MobileRT configurator.
  */
-static void
-work_thread(
-    ::std::int32_t *const bitmap, const ::std::int32_t width,
-    const ::std::int32_t height, const ::std::int32_t threads,
-    const ::std::int32_t shader, const ::std::int32_t sceneIndex, const ::std::int32_t samplesPixel, const ::std::int32_t samplesLight,
-    ::std::int32_t repeats, const ::std::int32_t accelerator, const bool printStdOut,
-    const char *const objFilePath, const char *const mtlFilePath, const char *const camFilePath) {
+static void work_thread(::MobileRT::Config &config) {
     try {
         ::std::ostringstream ss {""};
         ::std::streambuf *old_buf_stdout {};
@@ -59,28 +42,28 @@ work_thread(
         ::std::chrono::duration<double> timeRendering {};
         ::std::chrono::duration<double> timeLoading {};
         ::std::chrono::duration<double> timeFilling {};
-        if (!printStdOut) {
+        if (!config.printStdOut) {
             // Turn off redirection of logs to standard output
             old_buf_stdout = ::std::cout.rdbuf(ss.rdbuf());
             old_buf_stderr = ::std::cerr.rdbuf(ss.rdbuf());
         }
         {
             // Print debug information
-            LOG_DEBUG("width_ = ", width);
-            LOG_DEBUG("height_ = ", height);
-            LOG_DEBUG("threads = ", threads);
-            LOG_DEBUG("shader = ", shader);
-            LOG_DEBUG("scene = ", sceneIndex);
-            LOG_DEBUG("samplesPixel = ", samplesPixel);
-            LOG_DEBUG("samplesLight = ", samplesLight);
-            LOG_DEBUG("repeats = ", repeats);
-            LOG_DEBUG("accelerator = ", accelerator);
-            LOG_DEBUG("printStdOut = ", printStdOut);
-            LOG_DEBUG("objFilePath = ", objFilePath);
-            LOG_DEBUG("mtlFilePath = ", mtlFilePath);
-            LOG_DEBUG("camFilePath = ", camFilePath);
+            LOG_DEBUG("width_ = ", config.width);
+            LOG_DEBUG("height_ = ", config.height);
+            LOG_DEBUG("threads = ", config.threads);
+            LOG_DEBUG("shader = ", config.shader);
+            LOG_DEBUG("scene = ", config.sceneIndex);
+            LOG_DEBUG("samplesPixel = ", config.samplesPixel);
+            LOG_DEBUG("samplesLight = ", config.samplesLight);
+            LOG_DEBUG("repeats = ", config.repeats);
+            LOG_DEBUG("accelerator = ", config.accelerator);
+            LOG_DEBUG("printStdOut = ", config.printStdOut);
+            LOG_DEBUG("objFilePath = ", config.objFilePath);
+            LOG_DEBUG("mtlFilePath = ", config.mtlFilePath);
+            LOG_DEBUG("camFilePath = ", config.camFilePath);
 
-            const auto ratio {static_cast<float> (width) / height};
+            const auto ratio {static_cast<float> (config.width) / config.height};
             ::MobileRT::Scene scene {};
             ::std::unique_ptr<::MobileRT::Sampler> samplerPixel {};
             ::std::unique_ptr<::MobileRT::Shader> shader_ {};
@@ -88,7 +71,7 @@ work_thread(
             ::glm::vec3 maxDist {};
 
             // Setup scene and camera
-            switch (sceneIndex) {
+            switch (config.sceneIndex) {
                 case 0:
                     scene = cornellBox_Scene(::std::move(scene));
                     camera = cornellBox_Cam(ratio);
@@ -115,7 +98,7 @@ work_thread(
 
                 default: {
                     const auto startLoading {::std::chrono::system_clock::now()};
-                    ::Components::OBJLoader objLoader {objFilePath, mtlFilePath};
+                    ::Components::OBJLoader objLoader {config.objFilePath, config.mtlFilePath};
                     if (!objLoader.isProcessed()) {
                         exit(0);
                     }
@@ -132,13 +115,13 @@ work_thread(
                     LOG_DEBUG("Scene filled = ", timeFilling.count());
 
                     const auto cameraFactory {::Components::CameraFactory()};
-                    camera = cameraFactory.loadFromFile(camFilePath, ratio);
+                    camera = cameraFactory.loadFromFile(config.camFilePath, ratio);
                     maxDist = ::glm::vec3 {1, 1, 1};
                 }
                     break;
             }
             // Setup sampler
-            if (samplesPixel > 1) {
+            if (config.samplesPixel > 1) {
                 samplerPixel = ::MobileRT::std::make_unique<::Components::StaticHaltonSeq> ();
             } else {
                 samplerPixel = ::MobileRT::std::make_unique<::Components::Constant> (0.5F);
@@ -147,10 +130,10 @@ work_thread(
             // acceleration structure)
             const auto startCreating {::std::chrono::system_clock::now()};
             // Setup shader
-            switch (shader) {
+            switch (config.shader) {
                 case 1: {
                     shader_ = ::MobileRT::std::make_unique<::Components::Whitted> (
-                    ::std::move(scene), samplesLight, ::MobileRT::Shader::Accelerator(accelerator)
+                    ::std::move(scene), config.samplesLight, ::MobileRT::Shader::Accelerator(config.accelerator)
                     );
                     break;
                 }
@@ -161,29 +144,29 @@ work_thread(
                     };
 
                     shader_ = ::MobileRT::std::make_unique<::Components::PathTracer> (
-                    ::std::move(scene), ::std::move(samplerRussianRoulette), samplesLight,
-                    ::MobileRT::Shader::Accelerator(accelerator)
+                    ::std::move(scene), ::std::move(samplerRussianRoulette), config.samplesLight,
+                    ::MobileRT::Shader::Accelerator(config.accelerator)
                     );
                     break;
                 }
 
                 case 3: {
                 shader_ = ::MobileRT::std::make_unique<::Components::DepthMap> (
-                    ::std::move(scene), maxDist, ::MobileRT::Shader::Accelerator(accelerator)
+                    ::std::move(scene), maxDist, ::MobileRT::Shader::Accelerator(config.accelerator)
                 );
                     break;
                 }
 
                 case 4: {
                 shader_ = ::MobileRT::std::make_unique<::Components::DiffuseMaterial> (
-                    ::std::move(scene), ::MobileRT::Shader::Accelerator(accelerator)
+                    ::std::move(scene), ::MobileRT::Shader::Accelerator(config.accelerator)
                 );
                 break;
                 }
 
                 default: {
                 shader_ = ::MobileRT::std::make_unique<::Components::NoShadows> (
-                    ::std::move(scene), samplesLight, ::MobileRT::Shader::Accelerator(accelerator)
+                    ::std::move(scene), config.samplesLight, ::MobileRT::Shader::Accelerator(config.accelerator)
                 );
                 break;
                 }
@@ -202,7 +185,7 @@ work_thread(
             LOG_INFO("Started creating Renderer");
             renderer_ = ::MobileRT::std::make_unique<::MobileRT::Renderer> (
                     ::std::move(shader_), ::std::move(camera), ::std::move(samplerPixel),
-                    width, height, samplesPixel
+                    config.width, config.height, config.samplesPixel
             );
 
             // Print debug information
@@ -211,19 +194,20 @@ work_thread(
             LOG_DEBUG("PLANES = ", planes);
             LOG_DEBUG("PRIMITIVES = ", nPrimitives);
             LOG_DEBUG("LIGHTS = ", numLights);
-            LOG_DEBUG("threads = ", threads);
-            LOG_DEBUG("shader = ", shader);
-            LOG_DEBUG("scene = ", sceneIndex);
-            LOG_DEBUG("samplesPixel = ", samplesPixel);
-            LOG_DEBUG("samplesLight = ", samplesLight);
-            LOG_DEBUG("width_ = ", width);
-            LOG_DEBUG("height_ = ", height);
+            LOG_DEBUG("threads = ", config.threads);
+            LOG_DEBUG("shader = ", config.shader);
+            LOG_DEBUG("scene = ", config.sceneIndex);
+            LOG_DEBUG("samplesPixel = ", config.samplesPixel);
+            LOG_DEBUG("samplesLight = ", config.samplesLight);
+            LOG_DEBUG("width_ = ", config.width);
+            LOG_DEBUG("height_ = ", config.height);
 
+            auto repeats {config.repeats};
             LOG_INFO("Started rendering scene");
             const auto startRendering {::std::chrono::system_clock::now()};
             do {
                 // Render a frame
-                renderer_->renderFrame(bitmap, threads);
+                renderer_->renderFrame(config.bitmap.data(), config.threads);
                 repeats--;
             } while (repeats > 0);
             const auto endRendering {::std::chrono::system_clock::now()};
@@ -231,7 +215,7 @@ work_thread(
             timeRendering = endRendering - startRendering;
             LOG_INFO("Finished rendering scene");
         }
-        if (!printStdOut) {
+        if (!config.printStdOut) {
             // Turn on redirection of logs to standard output
             ::std::cout.rdbuf(old_buf_stdout);
             ::std::cerr.rdbuf(old_buf_stderr);
@@ -245,8 +229,8 @@ work_thread(
         LOG_DEBUG("Creating Time in secs = ", timeCreating.count());
         LOG_DEBUG("Rendering Time in secs = ", renderingTime);
         LOG_DEBUG("Casted rays = ", castedRays);
-        LOG_DEBUG("width_ = ", width);
-        LOG_DEBUG("height_ = ", height);
+        LOG_DEBUG("width_ = ", config.width);
+        LOG_DEBUG("height_ = ", config.height);
 
         LOG_INFO("Total Millions rays per second = ", (static_cast<double> (castedRays) / renderingTime) / 1000000L);
     } catch (const ::std::bad_alloc &badAlloc) {
@@ -270,33 +254,14 @@ void stopRender() {
 /**
  * Helper method that starts the Ray Tracer engine.
  *
- * @param bitmap       The bitmap to where the rendered image should be put.
- * @param width        The width of the image to render.
- * @param height       The height of the image to render.
- * @param threads      The number of threads to be used by the Ray Tracer engine.
- * @param shader       The shader to be used.
- * @param scene        The scene index to render.
- * @param samplesPixel The number of samples per pixel to use.
- * @param samplesLight The number of samples per light to use.
- * @param repeats      The number of times to render the scene.
- * @param accelerator  The acceleration structure to use.
- * @param printStdOut  Whether or not the logs should be redirected to the standard output.
- * @param async        Whether or not the Ray Tracer should render the image asynchronously or synchronously.
- * @param pathObj      The path to the OBJ file of the scene.
- * @param pathMtl      The path to the MTL file of the scene.
- * @param pathCam      The path to the CAM file of the scene.
+ * @param config The MobileRT configurator.
+ * @param async  Whether the Ray Tracer should render the image asynchronously or synchronously.
  */
-void RayTrace(::std::int32_t *const bitmap, const ::std::int32_t width, const ::std::int32_t height, const ::std::int32_t threads,
-              const ::std::int32_t shader, const ::std::int32_t scene, const ::std::int32_t samplesPixel, const ::std::int32_t samplesLight,
-              const ::std::int32_t repeats, const ::std::int32_t accelerator, const bool printStdOut, const bool async,
-              const char *const pathObj, const char *const pathMtl, const char *const pathCam) {
+void RayTrace(::MobileRT::Config &config, const bool async) {
     if (async) {
-        ::std::thread thread {work_thread, bitmap, width, height, threads, shader, scene,
-                             samplesPixel, samplesLight, repeats, accelerator, printStdOut, pathObj,
-                             pathMtl, pathCam};
+        ::std::thread thread {work_thread, ::std::ref(config)};
         thread.detach();
     } else {
-        work_thread(bitmap, width, height, threads, shader, scene, samplesPixel, samplesLight,
-                    repeats, accelerator, printStdOut, pathObj, pathMtl, pathCam);
+        work_thread(config);
     }
 }

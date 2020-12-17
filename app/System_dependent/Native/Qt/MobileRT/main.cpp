@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include "MobileRT/Config.hpp"
 #include "MobileRT/Utils/Constants.hpp"
 #include "MobileRT/Utils/Utils.hpp"
 
@@ -64,8 +65,22 @@ int main(int argc, char **argv) {
 
     QApplication application {argc, const_cast<char**> (argv)};
     MainWindow mainWindow {};
-    mainWindow.setImage(width, height, threads, shader, scene, samplesPixel, samplesLight,
-                        repeats, accelerator, printStdOut, async, pathObj, pathMtl, pathCam);
+    ::MobileRT::Config config {};
+    config.width = width;
+    config.height = height;
+    config.threads = threads;
+    config.shader = shader;
+    config.sceneIndex = scene;
+    config.samplesPixel = samplesPixel;
+    config.samplesLight = samplesLight;
+    config.repeats = repeats;
+    config.accelerator = accelerator;
+    config.printStdOut = printStdOut;
+    config.objFilePath = pathObj;
+    config.mtlFilePath = pathMtl;
+    config.camFilePath = pathCam;
+
+    mainWindow.setImage(config, async);
     mainWindow.show();
 
     if (!async) {
