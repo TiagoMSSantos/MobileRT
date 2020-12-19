@@ -472,20 +472,16 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
 
     /**
      * Let Ray Tracer engine start to render the scene.
-     * It can render synchronously or asynchronously controlled by the
-     * {@code async} argument.
+     * It will render the scene asynchronously.
      *
      * @param image      The {@link Bitmap} where the Ray Tracer will render
      *                   the scene into.
      * @param numThreads The number of threads to be used by the Ray Tracer
      *                   engine.
-     * @param async      If {@code true} let the Ray Tracer engine render the
-     *                   scene asynchronously or otherwise synchronously.
      * @throws LowMemoryException If the device has low free memory.
      */
     private native void rtRenderIntoBitmap(Bitmap image,
-                                           int numThreads,
-                                           boolean async) throws LowMemoryException;
+                                           int numThreads) throws LowMemoryException;
 
     /**
      * Creates a native array with all the positions of triangles in the scene.
@@ -958,7 +954,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
             }
 
             try {
-                rtRenderIntoBitmap(this.bitmap, this.numThreads, true);
+                rtRenderIntoBitmap(this.bitmap, this.numThreads);
             } catch (final LowMemoryException ex) {
                 UtilsLogging.logThrowable(ex, "MainRenderer#onDrawFrame");
             }

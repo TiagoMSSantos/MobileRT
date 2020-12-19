@@ -634,13 +634,11 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
     JNIEnv *env,
     jobject /*thiz*/,
     jobject localBitmap,
-    jint nThreads,
-    jboolean async
+    jint nThreads
 ) {
     MobileRT::checkSystemError("rtRenderIntoBitmap start");
     LOG_DEBUG("rtRenderIntoBitmap");
     LOG_DEBUG("nThreads = ", nThreads);
-    LOG_DEBUG("async = ", async ? "true" : "false");
     try {
         auto globalBitmap{static_cast<jobject> (env->NewGlobalRef(localBitmap))};
 
@@ -745,13 +743,9 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
             }
         };
 
-        if (async) {
-            thread_ = ::MobileRT::std::make_unique<::std::thread>(lambda);
+        thread_ = ::MobileRT::std::make_unique<::std::thread>(lambda);
+        thread_->detach();
 
-            thread_->detach();
-        } else {
-            lambda();
-        }
         LOG_DEBUG("rtRenderIntoBitmap finished preparing");
         MobileRT::checkSystemError("rtRenderIntoBitmap finish");
         env->ExceptionClear();
