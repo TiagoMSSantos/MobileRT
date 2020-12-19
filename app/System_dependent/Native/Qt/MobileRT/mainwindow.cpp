@@ -129,7 +129,15 @@ void MainWindow::select_obj() {
 }
 
 void MainWindow::select_config() {
-    Config config {m_config.shader, m_config.accelerator, m_config.sceneIndex, m_config.samplesPixel, m_config.samplesLight};
+    Config::Builder builder {};
+    builder.withShader(m_config.shader);
+    builder.withAccelerator(m_config.accelerator);
+    builder.withScene(m_config.sceneIndex);
+    builder.withSpp(m_config.samplesPixel);
+    builder.withSpl(m_config.samplesLight);
+
+    auto config {builder.build()};
+
     if (config.exec()) {
         m_config.shader = config.getShader();
         m_config.accelerator = config.getAccelerator();
