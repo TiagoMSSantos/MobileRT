@@ -207,7 +207,7 @@ bool Triangle::intersect(const AABB &box) const {
     const auto &min {box.getPointMin()};
     const auto &max {box.getPointMax()};
     const auto &vec {max - min};
-    const Ray ray {vec, min, 1};
+    const Ray ray {vec, min, 1, false};
     const auto intersectedAB {intersectRayAABB(this->pointA_, this->AB_)};
     const auto intersectedAC {intersectRayAABB(this->pointA_, this->AC_)};
     const auto &pointB {this->pointA_ + this->AB_};

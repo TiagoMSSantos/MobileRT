@@ -39,14 +39,22 @@ namespace MobileRT {
          */
         const void *const primitive_ {nullptr};
 
+        /**
+         * Whether it shouldn't find the nearest intersection point.
+         */
+        const bool shadowTrace_ {false};
+
     private:
         void checkArguments() const;
 
     public:
         explicit Ray () = delete;
 
-        explicit Ray(const ::glm::vec3 &dir, const ::glm::vec3 &origin,
-                     ::std::int32_t depth, const void *primitive = nullptr);
+        explicit Ray(const ::glm::vec3 &dir,
+                     const ::glm::vec3 &origin,
+                     ::std::int32_t depth,
+                     bool shadowTrace,
+                     const void *primitive = nullptr);
 
         Ray(const Ray &ray) = default;
 

@@ -11,7 +11,7 @@ namespace Components {
         float vFov_ {};
 
     private:
-        float fastArcTan(float value) const;
+        static float fastArcTan(float value);
 
     public:
         explicit Perspective() = delete;

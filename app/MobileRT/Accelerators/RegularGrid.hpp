@@ -63,7 +63,7 @@ namespace MobileRT {
     private:
         void addPrimitives();
 
-        Intersection intersect(Intersection intersection, const Ray &ray, bool shadowTrace = false);
+        Intersection intersect(Intersection intersection, const Ray &ray);
 
         ::std::uint32_t bitCounter(::std::uint32_t value) const;
 
@@ -273,7 +273,7 @@ namespace MobileRT {
      */
     template<typename T>
     Intersection RegularGrid<T>::shadowTrace(Intersection intersection, const Ray &ray) {
-        intersection = intersect (intersection, ray, true);
+        intersection = intersect (intersection, ray);
         return intersection;
     }
 
@@ -288,11 +288,10 @@ namespace MobileRT {
      * @param intersection The previous intersection point of the ray (used to update its data in case it is found a
      * nearest intersection point.
      * @param ray          The casted ray.
-     * @param shadowTrace  Whether it shouldn't find the nearest intersection point.
      * @return The intersection point of the ray in the scene.
      */
     template<typename T>
-    Intersection RegularGrid<T>::intersect(Intersection intersection, const Ray &ray, const bool shadowTrace) {
+    Intersection RegularGrid<T>::intersect(Intersection intersection, const Ray &ray) {
         const auto worldBoundsMin {this->worldBoundaries_.getPointMin()};
 
         // setup 3DDDA (double check reusability of primary ray data)
@@ -381,7 +380,7 @@ namespace MobileRT {
                 const auto lastDist {intersection.length_};
                 intersection = primitive->intersect(intersection, ray);
                 if (intersection.length_ < lastDist) {
-                    if (shadowTrace) {
+                    if (ray.shadowTrace_) {
                         return intersection;
                     }
                     goto testloop;

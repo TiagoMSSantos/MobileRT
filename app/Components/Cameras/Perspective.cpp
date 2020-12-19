@@ -23,12 +23,12 @@ Ray Perspective::generateRay(const float u, const float v,
     const auto &up {this->up_ * upFactor};
     const auto &dest {this->position_ + this->direction_ + right + up};
     const auto &rayDirection {::glm::normalize(dest - position_)};
-    const Ray ray {rayDirection, this->position_, 1};
+    const Ray ray {rayDirection, this->position_, 1, false};
     return ray;
 }
 
 //http://nghiaho.com/?p=997
-float Perspective::fastArcTan(const float value) const {
+float Perspective::fastArcTan(const float value) {
     const auto absValue {::std::abs(value)};
     const auto res {
         ::glm::quarter_pi<float>() * value - (value * (absValue - 1.0F)) * (0.2447F + (0.0663F * absValue))

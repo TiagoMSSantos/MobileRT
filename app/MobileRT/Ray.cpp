@@ -40,18 +40,23 @@ namespace {
 /**
  * The constructor.
  *
- * @param dir       The direction of the ray.
- * @param origin    The origin point of the ray.
- * @param depth     The number of bounces that the previous ray made.
- * @param primitive The pointer to the primitive where this ray is casted from.
+ * @param dir         The direction of the ray.
+ * @param origin      The origin point of the ray.
+ * @param depth       The number of bounces that the previous ray made.
+ * @param shadowTrace Whether it shouldn't find the nearest intersection point.
+ * @param primitive   The pointer to the primitive where this ray is casted from.
  */
-Ray::Ray(const ::glm::vec3 &dir, const ::glm::vec3 &origin,
-         const ::std::int32_t depth, const void *const primitive) :
+Ray::Ray(const ::glm::vec3 &dir,
+         const ::glm::vec3 &origin,
+         const ::std::int32_t depth,
+         const bool shadowTrace,
+         const void *const primitive) :
     origin_ {origin},
     direction_ {dir},
     depth_ {depth},
     id_ {generateId()},
-    primitive_ {primitive} {
+    primitive_ {primitive},
+    shadowTrace_ {shadowTrace} {
     checkArguments();
 }
 

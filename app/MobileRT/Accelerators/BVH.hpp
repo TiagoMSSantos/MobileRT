@@ -60,7 +60,7 @@ namespace MobileRT {
         private:
             void build(::std::vector<T> &&primitives);
 
-            Intersection intersect(Intersection intersection, const Ray &ray, bool shadowTrace = false);
+            Intersection intersect(Intersection intersection, const Ray &ray);
 
             template<typename Iterator>
             ::std::int32_t getSplitIndexSah(Iterator itBegin, Iterator itEnd);
@@ -290,7 +290,7 @@ namespace MobileRT {
      */
     template<typename T>
     Intersection BVH<T>::shadowTrace(Intersection intersection, const Ray &ray) {
-        intersection = intersect(intersection, ray, true);
+        intersection = intersect(intersection, ray);
         return intersection;
     }
 
@@ -305,11 +305,10 @@ namespace MobileRT {
      * @param intersection The previous intersection point of the ray (used to update its data in case it is found a
      * nearest intersection point.
      * @param ray          The casted ray.
-     * @param shadowTrace  Whether it shouldn't find the nearest intersection point.
      * @return The intersection point of the ray in the scene.
      */
     template<typename T>
-    Intersection BVH<T>::intersect(Intersection intersection, const Ray &ray, const bool shadowTrace) {
+    Intersection BVH<T>::intersect(Intersection intersection, const Ray &ray) {
         if (this->primitives_.empty()) {
             return intersection;
         }
@@ -332,7 +331,7 @@ namespace MobileRT {
                         auto &primitive {*(itPrimitives + node.indexOffset_ + i)};
                         const auto lastDist {intersection.length_};
                         intersection = primitive.intersect(intersection, ray);
-                        if (shadowTrace && intersection.length_ < lastDist) {
+                        if (ray.shadowTrace_ && intersection.length_ < lastDist) {
                             return intersection;
                         }
                     }

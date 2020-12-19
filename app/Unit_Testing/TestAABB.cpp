@@ -111,7 +111,7 @@ TEST_F(TestAABB, TestSurroundingBox) {
 TEST_F(TestAABB, TestRayIntersectionOk) {
     const ::glm::vec3 orig {2, 0, 0};
     const ::glm::vec3 dir {::glm::vec3 {-1, 0, 0}};
-    const ::MobileRT::Ray ray {dir, orig, 1, nullptr};
+    const ::MobileRT::Ray ray {dir, orig, 1, false, nullptr};
     const auto intersected {box1.intersect(ray)};
 
     ASSERT_EQ(true, intersected);
@@ -123,7 +123,7 @@ TEST_F(TestAABB, TestRayIntersectionOk) {
 TEST_F(TestAABB, TestRayIntersectionFail) {
     const ::glm::vec3 orig {2, 0, 0};
     const ::glm::vec3 dir {::glm::vec3 {1, 0, 0}};
-    const ::MobileRT::Ray ray {dir, orig, 1, nullptr};
+    const ::MobileRT::Ray ray {dir, orig, 1, false, nullptr};
     const auto intersected {box1.intersect(ray)};
 
     ASSERT_EQ(false, intersected);

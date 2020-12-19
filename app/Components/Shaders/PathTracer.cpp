@@ -71,7 +71,7 @@ bool PathTracer::shade(::glm::vec3 *const rgb, const Intersection &intersection,
                 const auto cosNormalLight {::glm::dot(shadingNormal, vectorToLight)};
                 if (cosNormalLight > 0.0F) {
                     //shadow ray->orig=intersection, dir=light
-                    const Ray shadowRay {vectorToLight, intersection.point_, rayDepth + 1, intersection.primitive_};
+                    const Ray shadowRay {vectorToLight, intersection.point_, rayDepth + 1, true, intersection.primitive_};
                     //intersection between shadow ray and the closest primitive
                     //if there are no primitives between intersection and the light
                     if (!shadowTrace(distanceToLight, shadowRay)) {
@@ -88,7 +88,7 @@ bool PathTracer::shade(::glm::vec3 *const rgb, const Intersection &intersection,
         //indirect light
         if (rayDepth <= RayDepthMin || this->samplerRussianRoulette_->getSample() > finishProbability) {
             const auto &newDirection {getCosineSampleHemisphere(shadingNormal)};
-            const Ray normalizedSecundaryRay {newDirection, intersection.point_, rayDepth + 1, intersection.primitive_};
+            const Ray normalizedSecundaryRay {newDirection, intersection.point_, rayDepth + 1, false, intersection.primitive_};
 
             //Li = Pi/N * SOMATORIO i=1->i=N [fr (p,Wi <-> Wr) L(p <- Wi)]
             //estimator = <F^N>=1/N * ∑(i=0)(N−1) f(Xi) / pdf(Xi)
@@ -117,7 +117,7 @@ bool PathTracer::shade(::glm::vec3 *const rgb, const Intersection &intersection,
     if (::MobileRT::hasPositiveValue(kS)) {
         //PDF = 1 / 2 Pi
         const auto &reflectionDir {::glm::reflect(ray.direction_, shadingNormal)};
-        const Ray specularRay {reflectionDir, intersection.point_, rayDepth + 1, intersection.primitive_};
+        const Ray specularRay {reflectionDir, intersection.point_, rayDepth + 1, false, intersection.primitive_};
         ::glm::vec3 LiS_RGB {};
         rayTrace(&LiS_RGB, specularRay);
         LiS += kS * LiS_RGB;
@@ -128,7 +128,7 @@ bool PathTracer::shade(::glm::vec3 *const rgb, const Intersection &intersection,
         //PDF = 1 / 2 Pi
         const auto refractiveIndice {1.0F / intersection.material_->refractiveIndice_};
         const auto &refractDir {::glm::refract(ray.direction_, shadingNormal, refractiveIndice)};
-        const Ray transmissionRay {refractDir, intersection.point_, rayDepth + 1, intersection.primitive_};
+        const Ray transmissionRay {refractDir, intersection.point_, rayDepth + 1, false, intersection.primitive_};
         ::glm::vec3 LiT_RGB {};
         rayTrace(&LiT_RGB, transmissionRay);
         LiT += kT * LiT_RGB;

@@ -27,7 +27,7 @@ TEST_F(TestRay, TestInvalidConstructor) {
     const auto depth {19};
     const auto primitive {nullptr};
 
-    ASSERT_DEBUG_DEATH(const Ray ray (direction, origin, depth, primitive);, "");
+    ASSERT_DEBUG_DEATH(const Ray ray (direction, origin, depth, false, primitive);, "");
 }
 
 /**
@@ -38,7 +38,7 @@ TEST_F(TestRay, TestConstructor) {
     const auto origin {::glm::vec3 {0.0F, 0.0F, 10.0F}};
     const auto depth {19};
     const auto primitive {nullptr};
-    const Ray ray {direction, origin, depth, primitive};
+    const Ray ray {direction, origin, depth, false, primitive};
 
     ASSERT_EQ(depth, ray.depth_);
     ASSERT_EQ(primitive, ray.primitive_);
@@ -56,8 +56,8 @@ TEST_F(TestRay, TestId) {
     const auto origin {::glm::vec3 {0.0F, 0.0F, 10.0F}};
     const auto depth {19};
     const auto primitive {nullptr};
-    const Ray ray1 {direction, origin, depth, primitive};
-    const Ray ray2 {direction, origin, depth, primitive};
+    const Ray ray1 {direction, origin, depth, false, primitive};
+    const Ray ray2 {direction, origin, depth, false, primitive};
 
     ASSERT_EQ(ray2.id_, ray1.id_ + 1);
 }

@@ -50,7 +50,7 @@ bool Whitted::shade(::glm::vec3 *const rgb, const Intersection &intersection, co
                 const auto cosNl {::glm::dot(shadingNormal, vectorToLight)};
                 if (cosNl > 0.0F) {
                     //shadow ray - orig=intersection, dir=light
-                    const Ray shadowRay {vectorToLight, intersection.point_, rayDepth + 1, intersection.primitive_};
+                    const Ray shadowRay {vectorToLight, intersection.point_, rayDepth + 1, true, intersection.primitive_};
                     //intersection between shadow ray and the closest primitive
                     //if there are no primitives between intersection and the light
                     if (!shadowTrace(distanceToLight, shadowRay)) {
@@ -72,7 +72,7 @@ bool Whitted::shade(::glm::vec3 *const rgb, const Intersection &intersection, co
     // specular reflection
     if (::MobileRT::hasPositiveValue(kS)) {
         const auto &reflectionDir {::glm::reflect(ray.direction_, shadingNormal)};
-        const Ray specularRay {reflectionDir, intersection.point_, rayDepth + 1, intersection.primitive_};
+        const Ray specularRay {reflectionDir, intersection.point_, rayDepth + 1, false, intersection.primitive_};
         ::glm::vec3 LiS_RGB {};
         rayTrace(&LiS_RGB, specularRay);
         *rgb += kS * LiS_RGB;
@@ -82,7 +82,7 @@ bool Whitted::shade(::glm::vec3 *const rgb, const Intersection &intersection, co
     if (::MobileRT::hasPositiveValue(kT)) {
         const auto kt {1.0F - kr};
         const auto &refractDir {::glm::refract(ray.direction_, shadingNormal, ior)};
-        const Ray transmissionRay {refractDir, intersection.point_, rayDepth + 1, intersection.primitive_};
+        const Ray transmissionRay {refractDir, intersection.point_, rayDepth + 1, false, intersection.primitive_};
         ::glm::vec3 LiT_RGB {};
         rayTrace(&LiT_RGB, transmissionRay);
         static_cast<void>(kt);

@@ -18,7 +18,7 @@ Ray Orthographic::generateRay(const float u, const float v,
     const auto &right {this->right_ * rightFactor + this->right_ * deviationU};
     const auto upFactor {(0.5F - v) * this->sizeV_};
     const auto &up {this->up_ * upFactor + this->up_ * deviationV};
-    const Ray ray {this->direction_, this->position_ + right + up, 1};
+    const Ray ray {this->direction_, this->position_ + right + up, 1, false};
     return ray;
 }
 

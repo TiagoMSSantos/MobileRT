@@ -258,7 +258,7 @@ TEST_F(TestPlane, IntersectionRayOutsideX) {
     const auto direction {::glm::vec3 {10.0F, 0.0F, 10.0F}};
     const auto origin {::glm::vec3 {0.0F, 0.0F, 10.0F}};
     const auto depth {19};
-    const ::MobileRT::Ray ray {direction, origin, depth, nullptr};
+    const ::MobileRT::Ray ray {direction, origin, depth, false, nullptr};
 
     const float lastDist {intersection.length_};
     intersection = plane->intersect(intersection, ray);
@@ -276,7 +276,7 @@ TEST_F(TestPlane, IntersectionRayInsideX) {
     const auto direction {::glm::vec3 {-10.0F, 0.0F, 10.0F}};
     const auto origin {::glm::vec3 {0.0F, 0.0F, 10.0F}};
     const auto depth {19};
-    const ::MobileRT::Ray ray {direction, origin, depth, nullptr};
+    const ::MobileRT::Ray ray {direction, origin, depth, false, nullptr};
 
     const float lastDist {intersection.length_};
     intersection = plane->intersect(intersection, ray);
