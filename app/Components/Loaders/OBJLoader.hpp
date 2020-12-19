@@ -11,6 +11,10 @@
 namespace Components {
     class OBJLoader final : public ::MobileRT::ObjectLoader {
     private:
+        template<typename T1, typename T2, typename T3>
+        using triple = ::std::tuple<T1, T2, T3>;
+
+    private:
         ::std::string objFilePath_ {};
         ::tinyobj::attrib_t attrib_ {};
         ::std::vector<::tinyobj::shape_t> shapes_ {};
@@ -35,10 +39,24 @@ namespace Components {
                        ::std::function<::std::unique_ptr<::MobileRT::Sampler>()> lambda) final;
 
     private:
-        static ::MobileRT::Texture getTextureFromCache(
+        triple<::glm::vec3, ::glm::vec3, ::glm::vec3> loadNormal(
+            const ::tinyobj::shape_t &index,
+            const ::std::int32_t indexOffset,
+            const triple<::glm::vec3, ::glm::vec3, ::glm::vec3> &vertex) const;
+
+        triple<::glm::vec3, ::glm::vec3, ::glm::vec3> loadVertices(
+            const ::tinyobj::shape_t &shape,
+            const ::std::int32_t indexOffset) const;
+
+    private:
+        static const ::MobileRT::Texture& getTextureFromCache(
             ::std::map<::std::string, ::MobileRT::Texture> *const texturesCache,
             const ::std::string &filePath,
             const ::std::string &texPath);
+
+        static triple<::glm::vec2, ::glm::vec2, ::glm::vec2> normalizeTexCoord(
+            const MobileRT::Texture &texture,
+            const ::std::tuple<::glm::vec2, ::glm::vec2, ::glm::vec2> &texCoord);
     };
 }//namespace Components
 

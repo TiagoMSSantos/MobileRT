@@ -14,9 +14,6 @@ using ::MobileRT::Texture;
 using ::MobileRT::Triangle;
 using ::MobileRT::Sampler;
 
-template<typename T1, typename T2, typename T3>
-using triple = ::std::tuple<T1, T2, T3>;
-
 OBJLoader::OBJLoader(::std::string objFilePath, const ::std::string &matFilePath) :
     objFilePath_ {::std::move(objFilePath)} {
 
@@ -88,7 +85,7 @@ bool OBJLoader::fillScene(Scene *const scene,
                           ::std::function<::std::unique_ptr<Sampler>()> lambda) {
     LOG_DEBUG("FILLING SCENE");
     scene->triangles_.reserve(static_cast<::std::uint32_t> (this->numberTriangles_));
-    const ::std::string filePath {this->objFilePath_.substr(0, this->objFilePath_.find_last_of("/")) + "/"};
+    const ::std::string filePath {this->objFilePath_.substr(0, this->objFilePath_.find_last_of('/')) + '/'};
     ::std::map<::std::string, Texture> texturesCache {};
 
     // Loop over shapes.
@@ -108,80 +105,33 @@ bool OBJLoader::fillScene(Scene *const scene,
 
             // Loop over vertices in the face.
             for (::std::uint32_t vertex {}; vertex < faceVertices; vertex += 3) {
-                const auto itIdx {shape.mesh.indices.cbegin() +
-                                  static_cast<::std::int32_t> (indexOffset + vertex)};
-
-                const auto idx1 {*(itIdx + 0)};
-                const auto itVertex1 {this->attrib_.vertices.cbegin() + 3 * idx1.vertex_index};
-                const auto vx1 {*(itVertex1 + 0)};
-                const auto vy1 {*(itVertex1 + 1)};
-                const auto vz1 {*(itVertex1 + 2)};
-
-                const auto idx2 {*(itIdx + 1)};
-                const auto itVertex2 {this->attrib_.vertices.cbegin() + 3 * idx2.vertex_index};
-                const auto vx2 {*(itVertex2 + 0)};
-                const auto vy2 {*(itVertex2 + 1)};
-                const auto vz2 {*(itVertex2 + 2)};
-
-                const auto idx3 {*(itIdx + 2)};
-                const auto itVertex3 {this->attrib_.vertices.cbegin() + 3 * idx3.vertex_index};
-                const auto vx3 {*(itVertex3 + 0)};
-                const auto vy3 {*(itVertex3 + 1)};
-                const auto vz3 {*(itVertex3 + 2)};
-
-                const ::glm::vec3 &vertex1 {-vx1, vy1, vz1};
-                const ::glm::vec3 &vertex2 {-vx2, vy2, vz2};
-                const ::glm::vec3 &vertex3 {-vx3, vy3, vz3};
-
-                triple<::glm::vec3, ::glm::vec3, ::glm::vec3> normal
-                    {::std::make_tuple(::glm::vec3 {-1}, ::glm::vec3 {-1}, ::glm::vec3 {-1})};
-
-                // If it has normals.
-                if (!this->attrib_.normals.empty()) {
-                    const auto itNormal1 {this->attrib_.normals.cbegin() + 3 * idx1.normal_index};
-                    const auto itNormal2 {this->attrib_.normals.cbegin() + 3 * idx2.normal_index};
-                    const auto itNormal3 {this->attrib_.normals.cbegin() + 3 * idx3.normal_index};
-
-                    normal = triple<::glm::vec3, ::glm::vec3, ::glm::vec3> {
-                        ::glm::vec3 {-*(itNormal1 + 0), *(itNormal1 + 1), *(itNormal1 + 2)},
-                        ::glm::vec3 {-*(itNormal2 + 0), *(itNormal2 + 1), *(itNormal2 + 2)},
-                        ::glm::vec3 {-*(itNormal3 + 0), *(itNormal3 + 1), *(itNormal3 + 2)}
-                    };
-                } else {
-                    // If it doesn't have normals.
-
-                    const auto AB {vertex2 - vertex1};
-                    const auto AC {vertex3 - vertex1};
-
-                    const auto normalDir {::glm::normalize(::glm::cross(AC, AB))};
-                    normal = triple<::glm::vec3, ::glm::vec3, ::glm::vec3> {
-                        normalDir, normalDir, normalDir
-                    };
-                }
+                const auto vertices {loadVertices(shape, static_cast<::std::int32_t> (indexOffset + vertex))};
+                const auto normal {loadNormal(shape, static_cast<::std::int32_t> (indexOffset + vertex), vertices)};
 
                 // per-face material.
-                const auto itMaterialShape
-                    {shape.mesh.material_ids.cbegin() + static_cast<::std::int32_t> (face)};
+                const auto itMaterialShape {shape.mesh.material_ids.cbegin() + static_cast<::std::int32_t> (face)};
                 const auto materialId {*itMaterialShape};
+
+                const auto itIdx {shape.mesh.indices.cbegin() + static_cast<::std::int32_t> (indexOffset + vertex)};
+                const auto idx1 {*(itIdx + 0)};
+                const auto idx2 {*(itIdx + 1)};
+                const auto idx3 {*(itIdx + 2)};
 
                 // If it contains material.
                 if (materialId >= 0) {
-                    const auto itMaterial
-                        {this->materials_.cbegin() + static_cast<::std::int32_t> (materialId)};
+                    const auto itMaterial {this->materials_.cbegin() + static_cast<::std::int32_t> (materialId)};
                     const auto &mat {*itMaterial};
                     const ::glm::vec3 &diffuse {::MobileRT::toVec3(mat.diffuse)};
                     const ::glm::vec3 &specular {::MobileRT::toVec3(mat.specular)};
-                    const ::glm::vec3 &transmittance
-                        {::MobileRT::toVec3(mat.transmittance) * (1.0F - mat.dissolve)};
-                    const ::glm::vec3
-                        &emission {::MobileRT::normalize(::MobileRT::toVec3(mat.emission))};
+                    const ::glm::vec3 &transmittance {::MobileRT::toVec3(mat.transmittance) * (1.0F - mat.dissolve)};
+                    const ::glm::vec3 &emission {::MobileRT::normalize(::MobileRT::toVec3(mat.emission))};
                     const auto indexRefraction {mat.ior};
 
                     const auto hasTexture {!mat.diffuse_texname.empty()};
                     const auto hasCoordTex {!this->attrib_.texcoords.empty()};
                     Texture texture {};
-                    triple<::glm::vec2, ::glm::vec2, ::glm::vec2> texCoord
-                        {::std::make_tuple(::glm::vec3 {-1}, ::glm::vec3 {-1}, ::glm::vec3 {-1})};
+                    auto texCoord
+                        {::std::make_tuple(::glm::vec2 {-1}, ::glm::vec2 {-1}, ::glm::vec2 {-1})};
 
                     if (hasTexture && hasCoordTex) {
                         const auto itTexCoords1 {
@@ -209,21 +159,8 @@ bool OBJLoader::fillScene(Scene *const scene,
                             ::glm::vec2 {tx1, ty1}, ::glm::vec2 {tx2, ty2}, ::glm::vec2 {tx3, ty3}
                         };
 
-                        const auto texPath {mat.diffuse_texname};
-                        texture = getTextureFromCache(&texturesCache, filePath, texPath);
-                    }
-
-                    // If the texture is not valid.
-                    if (!texture.isValid()) {
-                        texCoord = triple<::glm::vec2, ::glm::vec2, ::glm::vec2> {
-                            ::glm::vec2 {-1}, ::glm::vec2 {-1}, ::glm::vec2 {-1}
-                        };
-                    } else {
-                        texCoord = triple<::glm::vec2, ::glm::vec2, ::glm::vec2> {
-                            ::MobileRT::normalize(::std::get<0>(texCoord)),
-                            ::MobileRT::normalize(::std::get<1>(texCoord)),
-                            ::MobileRT::normalize(::std::get<2>(texCoord))
-                        };
+                        texture = getTextureFromCache(&texturesCache, filePath, mat.diffuse_texname);
+                        texCoord = normalizeTexCoord(texture, texCoord);
                     }
 
                     Material material {diffuse, specular, transmittance, indexRefraction, emission, texture};
@@ -231,27 +168,30 @@ bool OBJLoader::fillScene(Scene *const scene,
                     // If the primitive is a light source.
                     if (::MobileRT::hasPositiveValue(emission)) {
                         const auto &triangle {
-                            Triangle::Builder(vertex1, vertex2, vertex3)
-                                .withNormals(
-                                    ::std::get<0>(normal),
-                                    ::std::get<1>(normal),
-                                    ::std::get<2>(normal))
-                                .withTexCoords(
-                                    ::std::get<0>(texCoord),
-                                    ::std::get<1>(texCoord),
-                                    ::std::get<2>(texCoord))
-                                .build()
+                        Triangle::Builder(
+                                ::std::get<0> (vertices), ::std::get<1> (vertices), ::std::get<2> (vertices)
+                            )
+                            .withNormals(
+                                ::std::get<0>(normal),
+                                ::std::get<1>(normal),
+                                ::std::get<2>(normal))
+                            .withTexCoords(
+                                ::std::get<0>(texCoord),
+                                ::std::get<1>(texCoord),
+                                ::std::get<2>(texCoord))
+                            .build()
                         };
                         scene->lights_.emplace_back(
                             ::MobileRT::std::make_unique<AreaLight>(material, lambda(), triangle));
                         const auto lightPos {scene->lights_.back()->getPosition()};
-                        LOG_DEBUG("Light position at: x:", lightPos[0], ", y:", lightPos[1], ", z:",
-                                  lightPos[2]);
+                        LOG_DEBUG("Light position at: x:", lightPos[0], ", y:", lightPos[1], ", z:", lightPos[2]);
                     } else {
                         // If it is a primitive.
 
                         Triangle::Builder builder {
-                            Triangle::Builder(vertex1, vertex2, vertex3)
+                            Triangle::Builder(
+                                ::std::get<0> (vertices), ::std::get<1> (vertices), ::std::get<2> (vertices)
+                            )
                                 .withNormals(
                                     ::std::get<0>(normal),
                                     ::std::get<1>(normal),
@@ -263,8 +203,7 @@ bool OBJLoader::fillScene(Scene *const scene,
                         };
 
                         const auto itFoundMat
-                            {::std::find(scene->materials_.begin(), scene->materials_.end(),
-                                         material)};
+                            {::std::find(scene->materials_.begin(), scene->materials_.end(), material)};
 
                         // If the material is already in the scene.
                         if (itFoundMat != scene->materials_.cend()) {
@@ -275,8 +214,7 @@ bool OBJLoader::fillScene(Scene *const scene,
                             scene->triangles_.emplace_back(triangle);
                         } else {
                             // If the scene doesn't have the material yet.
-                            const auto materialIndex
-                                {static_cast<::std::int32_t> (scene->materials_.size())};
+                            const auto materialIndex {static_cast<::std::int32_t> (scene->materials_.size())};
                             const auto &triangle {builder.withMaterialIndex(materialIndex).build()};
                             scene->triangles_.emplace_back(triangle);
                             scene->materials_.emplace_back(::std::move(material));
@@ -296,10 +234,11 @@ bool OBJLoader::fillScene(Scene *const scene,
                     const auto indexRefraction {1.0F};
                     const ::glm::vec3 &emission {0.0F, 0.0F, 0.0F};
                     Material material {diffuse, specular, transmittance, indexRefraction, emission};
-                    const auto itFoundMat
-                        {::std::find(scene->materials_.begin(), scene->materials_.end(), material)};
+                    const auto itFoundMat {::std::find(scene->materials_.begin(), scene->materials_.end(), material)};
                     Triangle::Builder builder {
-                        Triangle::Builder(vertex1, vertex2, vertex3)
+                        Triangle::Builder(
+                            ::std::get<0> (vertices), ::std::get<1> (vertices), ::std::get<2> (vertices)
+                        )
                             .withNormals(
                                 ::std::get<0>(normal),
                                 ::std::get<1>(normal),
@@ -314,8 +253,7 @@ bool OBJLoader::fillScene(Scene *const scene,
                         scene->triangles_.emplace_back(triangle);
                     } else {
                         // If the scene doesn't have material yet.
-                        const auto
-                            materialIndex {static_cast<::std::int32_t> (scene->materials_.size())};
+                        const auto materialIndex {static_cast<::std::int32_t> (scene->materials_.size())};
                         const auto &triangle {builder.withMaterialIndex(materialIndex).build()};
                         scene->triangles_.emplace_back(triangle);
                         scene->materials_.emplace_back(::std::move(material));
@@ -330,6 +268,109 @@ bool OBJLoader::fillScene(Scene *const scene,
 }
 
 /**
+ * Helper method that loads the vertices' values.
+ *
+ * @param shape       The shape structure from the tinyobj library.
+ * @param indexOffset The indices of the normals in the tinyobjloader structure.
+ * @return The loaded vertices.
+ */
+OBJLoader::triple<::glm::vec3, ::glm::vec3, ::glm::vec3> OBJLoader::loadVertices(
+    const ::tinyobj::shape_t &shape,
+    const ::std::int32_t indexOffset
+) const {
+    const auto itIdx {shape.mesh.indices.cbegin() + indexOffset};
+
+    const auto idx1 {*(itIdx + 0)};
+    const auto idx2 {*(itIdx + 1)};
+    const auto idx3 {*(itIdx + 2)};
+
+    const auto itVertex1 {this->attrib_.vertices.cbegin() + 3 * idx1.vertex_index};
+    const auto vx1 {*(itVertex1 + 0)};
+    const auto vy1 {*(itVertex1 + 1)};
+    const auto vz1 {*(itVertex1 + 2)};
+    const auto itVertex2 {this->attrib_.vertices.cbegin() + 3 * idx2.vertex_index};
+    const auto vx2 {*(itVertex2 + 0)};
+    const auto vy2 {*(itVertex2 + 1)};
+    const auto vz2 {*(itVertex2 + 2)};
+    const auto itVertex3 {this->attrib_.vertices.cbegin() + 3 * idx3.vertex_index};
+    const auto vx3 {*(itVertex3 + 0)};
+    const auto vy3 {*(itVertex3 + 1)};
+    const auto vz3 {*(itVertex3 + 2)};
+
+    const ::glm::vec3 &vertex1 {-vx1, vy1, vz1};
+    const ::glm::vec3 &vertex2 {-vx2, vy2, vz2};
+    const ::glm::vec3 &vertex3 {-vx3, vy3, vz3};
+
+    return triple<::glm::vec3, ::glm::vec3, ::glm::vec3> {vertex1, vertex2, vertex3};
+}
+
+/**
+ * Helper method that loads a normal from the tinyobjloader library structure.
+ *
+ * @param shape       The shape structure from the tinyobj library.
+ * @param indexOffset The indices of the normals in the tinyobjloader structure.
+ * @param vertex      The vertices' values of the triangle.
+ * @return The loaded normal.
+ */
+OBJLoader::triple<::glm::vec3, ::glm::vec3, ::glm::vec3> OBJLoader::loadNormal(
+    const ::tinyobj::shape_t &shape,
+    const ::std::int32_t indexOffset,
+    const triple<::glm::vec3, ::glm::vec3, ::glm::vec3> &vertex
+) const {
+    const auto itIdx {shape.mesh.indices.cbegin() + indexOffset};
+    const auto idx1 {*(itIdx + 0)};
+    const auto idx2 {*(itIdx + 1)};
+    const auto idx3 {*(itIdx + 2)};
+
+    if (!this->attrib_.normals.empty()) {// If it has normals.
+        const auto itNormal1 {this->attrib_.normals.cbegin() + 3 * idx1.normal_index};
+        const auto itNormal2 {this->attrib_.normals.cbegin() + 3 * idx2.normal_index};
+        const auto itNormal3 {this->attrib_.normals.cbegin() + 3 * idx3.normal_index};
+
+        return triple<::glm::vec3, ::glm::vec3, ::glm::vec3> {
+            glm::vec3 {-*(itNormal1 + 0), *(itNormal1 + 1), *(itNormal1 + 2)},
+            glm::vec3 {-*(itNormal2 + 0), *(itNormal2 + 1), *(itNormal2 + 2)},
+            glm::vec3 {-*(itNormal3 + 0), *(itNormal3 + 1), *(itNormal3 + 2)}
+        };
+    } else {
+        // If it doesn't have normals, we have to calculate a normal.
+        const auto AB {::std::get<1>(vertex) - ::std::get<0>(vertex)};
+        const auto AC {::std::get<2>(vertex) - ::std::get<0>(vertex)};
+
+        const auto normalDir {::glm::normalize(::glm::cross(AC, AB))};
+        return triple<::glm::vec3, ::glm::vec3, ::glm::vec3> {
+            normalDir, normalDir, normalDir
+        };
+    }
+}
+
+/**
+ * Helper method that normalizes the texture coordinates.
+ *
+ * @param texture  The texture of the texture coordinates.
+ * @param texCoord The texture coordinates to normalize.
+ * @return The normalized texture coordinates.
+ */
+OBJLoader::triple<::glm::vec2, ::glm::vec2, ::glm::vec2> OBJLoader::normalizeTexCoord(
+    const Texture &texture,
+    const triple<::glm::vec2, ::glm::vec2, ::glm::vec2> &texCoord
+) {
+    if (!texture.isValid()) {// If the texture is not valid.
+        // Reset texture coordinates to -1.
+        return triple<::glm::vec2, ::glm::vec2, ::glm::vec2> {
+            ::glm::vec2 {-1}, ::glm::vec2 {-1}, ::glm::vec2 {-1}
+        };
+    } else {
+        // Normalize the texture coordinates to be between [0, 1]
+        return triple<::glm::vec2, ::glm::vec2, ::glm::vec2> {
+            ::MobileRT::normalize(::std::get<0>(texCoord)),
+            ::MobileRT::normalize(::std::get<1>(texCoord)),
+            ::MobileRT::normalize(::std::get<2>(texCoord))
+        };
+    }
+}
+
+/**
  * Helper method that gets a Texture from a cache passed by a parameter.
  * If the cache, does not have the texture, then it will create one and add it in it.
  *
@@ -338,23 +379,22 @@ bool OBJLoader::fillScene(Scene *const scene,
  * @param texPath       The texture file name.
  * @return The texture loaded.
  */
-Texture OBJLoader::getTextureFromCache(
+const Texture& OBJLoader::getTextureFromCache(
     ::std::map<::std::string, Texture> *const texturesCache,
     const ::std::string &filePath,
     const ::std::string &texPath
 ) {
-    Texture texture {};
     const auto itTexture {texturesCache->find(texPath)};
 
     if (itTexture == texturesCache->cend()) {// If the texture is not in the cache.
         const auto texturePath {filePath + texPath};
-        texture = Texture::createTexture(texturePath.c_str());
+        auto &&texture {Texture::createTexture(texturePath.c_str())};
         auto &&pair {::std::make_pair(texPath, ::std::move(texture))};
-        texturesCache->emplace(::std::move(pair));// Add it to the cache.
+        const auto res {::std::get<0> (texturesCache->emplace(::std::move(pair)))};// Add it to the cache.
+        return res->second;
     }
 
-    texture = texturesCache->find(texPath)->second;// Get texture from cache.
-    return texture;
+    return texturesCache->find(texPath)->second;// Get texture from cache.
 }
 
 OBJLoader::~OBJLoader() {
