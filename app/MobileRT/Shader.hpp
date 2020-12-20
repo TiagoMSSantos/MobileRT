@@ -46,7 +46,7 @@ namespace MobileRT {
         ::std::vector<::std::unique_ptr<Light>> lights_ {};
 
     private:
-        Intersection traceLights(Intersection intersection, const Ray &ray) const;
+        Intersection traceLights(Intersection intersection) const;
 
     protected:
         /**
@@ -57,10 +57,9 @@ namespace MobileRT {
          *
          * @param rgb          A pointer to store the color of the intersection.
          * @param intersection The intersection data, like point, normal, material, etc.
-         * @param ray          The casted ray into the scene.
          * @return             Whether the ray intersected a light or not.
          */
-        virtual bool shade(::glm::vec3 *rgb, const Intersection &intersection, const Ray &ray) = 0;
+        virtual bool shade(::glm::vec3 *rgb, const Intersection &intersection) = 0;
 
         ::glm::vec3 getCosineSampleHemisphere(const ::glm::vec3 &normal) const;
 

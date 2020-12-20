@@ -85,3 +85,13 @@ void Ray::checkArguments() const {
 void Ray::resetIdGenerator() noexcept {
     resetIdCounter();
 }
+
+Ray& Ray::operator=(Ray &&ray) noexcept {
+    this->origin_ = ray.origin_;
+    this->direction_ = ray.direction_;
+    this->depth_ = ray.depth_;
+    this->id_ = ray.id_;
+    this->primitive_ = ray.primitive_;
+    this->shadowTrace_ = ray.shadowTrace_;
+    return *this;
+}

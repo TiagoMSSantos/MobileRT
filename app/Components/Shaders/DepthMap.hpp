@@ -10,9 +10,7 @@ namespace Components {
         ::glm::vec3 maxPoint_ {};
 
     private:
-        bool shade(
-            ::glm::vec3 *rgb, const ::MobileRT::Intersection &intersection, const ::MobileRT::Ray &ray
-        ) final;
+        bool shade(::glm::vec3 *rgb, const ::MobileRT::Intersection &intersection) final;
 
     public:
         explicit DepthMap() = delete;

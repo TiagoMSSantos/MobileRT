@@ -22,7 +22,7 @@ namespace MobileRT {
             ::std::vector<T> primitives_ {};
 
         private:
-            Intersection intersect(Intersection intersection, const Ray &ray);
+            Intersection intersect(Intersection intersection);
 
         public:
             explicit Naive() = default;
@@ -39,9 +39,9 @@ namespace MobileRT {
 
             Naive &operator=(Naive &&naive) noexcept = default;
 
-            Intersection trace(Intersection intersection, const Ray &ray);
+            Intersection trace(Intersection intersection);
 
-            Intersection shadowTrace(Intersection intersection, const Ray &ray);
+            Intersection shadowTrace(Intersection intersection);
 
             const ::std::vector<T>& getPrimitives() const;
     };
@@ -79,15 +79,14 @@ namespace MobileRT {
      * @tparam T The type of the primitives.
      * @param intersection The previous intersection point of the ray (used to update its data in case it is found a
      * nearest intersection point.
-     * @param ray          The casted ray.
      * @return The intersection point of the ray in the scene.
      */
     template<typename T>
-    Intersection Naive<T>::intersect(Intersection intersection, const Ray &ray) {
+    Intersection Naive<T>::intersect(Intersection intersection) {
         const auto lastDist {intersection.length_};
         for (auto &primitive : this->primitives_) {
-            intersection = primitive.intersect(intersection, ray);
-            if (ray.shadowTrace_ && intersection.length_ < lastDist) {
+            intersection = primitive.intersect(intersection);
+            if (intersection.ray_.shadowTrace_ && intersection.length_ < lastDist) {
                 return intersection;
             }
         }
@@ -100,12 +99,11 @@ namespace MobileRT {
      *
      * @tparam T The type of the primitives.
      * @param intersection The current intersection of the ray with previous primitives.
-     * @param ray          The ray to be casted.
      * @return The intersection of the ray with the geometry.
      */
     template<typename T>
-    Intersection Naive<T>::trace(Intersection intersection, const Ray &ray) {
-        intersection = intersect(intersection, ray);
+    Intersection Naive<T>::trace(Intersection intersection) {
+        intersection = intersect(intersection);
         return intersection;
     }
 
@@ -116,12 +114,11 @@ namespace MobileRT {
      *
      * @tparam T The type of the primitives.
      * @param intersection The current intersection of the ray with previous primitives.
-     * @param ray          The ray to be casted.
      * @return The intersection of the ray with the geometry.
      */
     template<typename T>
-    Intersection Naive<T>::shadowTrace(Intersection intersection, const Ray &ray) {
-        intersection = intersect(intersection, ray);
+    Intersection Naive<T>::shadowTrace(Intersection intersection) {
+        intersection = intersect(intersection);
         return intersection;
     }
 

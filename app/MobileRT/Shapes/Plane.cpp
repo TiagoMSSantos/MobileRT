@@ -33,23 +33,22 @@ void Plane::checkArguments() const {
  * Determines if a ray intersects this plane or not and calculates the intersection point.
  *
  * @param intersection The previous intersection of the ray in the scene.
- * @param ray          The casted ray into the scene.
  * @return The intersection point.
  */
-Intersection Plane::intersect(const Intersection &intersection, const Ray &ray) const {
-    if (ray.primitive_ == this) {
+Intersection Plane::intersect(const Intersection &intersection) const {
+    if (intersection.ray_.primitive_ == this) {
         return intersection;
     }
 
     // is ray parallel or contained in the Plane ??
     // planes have two sides!!!
-    const auto normalizedProjection {::glm::dot(this->normal_, ray.direction_)};
+    const auto normalizedProjection {::glm::dot(this->normal_, intersection.ray_.direction_)};
     if (::std::abs(normalizedProjection) < Epsilon) {
         return intersection;
     }
 
     //https://en.wikipedia.org/wiki/Line%E2%80%93plane_intersection
-    const auto vecToPlane {this->point_ - ray.origin_};
+    const auto vecToPlane {this->point_ - intersection.ray_.origin_};
     const auto scalarProjectionVecToPlaneOnNormal {::glm::dot(this->normal_, vecToPlane)};
     const auto distanceToIntersection {scalarProjectionVecToPlaneOnNormal / normalizedProjection};
 
@@ -60,8 +59,8 @@ Intersection Plane::intersect(const Intersection &intersection, const Ray &ray) 
     }
 
     // if so, then we have an intersection
-    const auto intersectionPoint {ray.origin_ + ray.direction_ * distanceToIntersection};
-    const Intersection res {intersectionPoint, distanceToIntersection, this->normal_, this, this->materialIndex_};
+    const auto intersectionPoint {intersection.ray_.origin_ + intersection.ray_.direction_ * distanceToIntersection};
+    const Intersection res {intersection.ray_, intersectionPoint, distanceToIntersection, this->normal_, this, this->materialIndex_};
     return res;
 }
 

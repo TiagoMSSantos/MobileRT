@@ -5,16 +5,19 @@ using ::MobileRT::Intersection;
 /**
  * The constructor.
  *
+ * @param ray  The casted ray into the scene.
  * @param dist The distance between the intersection point and the origin of the ray.
  */
-Intersection::Intersection(const float dist) :
-    length_ {dist} {
+Intersection::Intersection(const Ray &ray, const float dist) :
+    length_ {dist},
+    ray_ {ray} {
     checkArguments();
 }
 
 /**
  * The constructor.
  *
+ * @param ray           The casted ray into the scene.
  * @param intPoint      The intersection point.
  * @param dist          The distance between the intersection point and the origin of the ray.
  * @param normal        The normal of the intersected point.
@@ -23,6 +26,7 @@ Intersection::Intersection(const float dist) :
  * @param texCoords     The texture coordinates of the intersected point.
  */
 Intersection::Intersection(
+    const Ray &ray,
     const ::glm::vec3 &intPoint,
     const float dist,
     const ::glm::vec3 &normal,
@@ -34,7 +38,8 @@ Intersection::Intersection(
     length_ {dist},
     primitive_ {primitive},
     materialIndex_ {materialIndex},
-    texCoords_ {texCoords} {
+    texCoords_ {texCoords},
+    ray_ {ray} {
     checkArguments();
 }
 

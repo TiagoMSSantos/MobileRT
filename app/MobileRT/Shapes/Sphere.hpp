@@ -34,7 +34,7 @@ namespace MobileRT {
 
         Sphere &operator=(Sphere &&sphere) noexcept = default;
 
-        Intersection intersect(const Intersection &intersection, const Ray &ray) const;
+        Intersection intersect(const Intersection &intersection) const;
 
         AABB getAABB() const;
 

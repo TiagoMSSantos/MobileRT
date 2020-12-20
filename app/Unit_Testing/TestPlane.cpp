@@ -253,15 +253,14 @@ TEST_F(TestPlane, Box) {
  * the direction is positive of that axis, but the plane is placed in the other side.
  */
 TEST_F(TestPlane, IntersectionRayOutsideX) {
-    ::MobileRT::Intersection intersection {};
-
     const auto direction {::glm::vec3 {10.0F, 0.0F, 10.0F}};
     const auto origin {::glm::vec3 {0.0F, 0.0F, 10.0F}};
     const auto depth {19};
     const ::MobileRT::Ray ray {direction, origin, depth, false, nullptr};
+    ::MobileRT::Intersection intersection {ray};
 
     const float lastDist {intersection.length_};
-    intersection = plane->intersect(intersection, ray);
+    intersection = plane->intersect(intersection);
     ASSERT_EQ(false, intersection.length_ < lastDist);
 }
 
@@ -271,14 +270,13 @@ TEST_F(TestPlane, IntersectionRayOutsideX) {
  * the direction is negative of that axis.
  */
 TEST_F(TestPlane, IntersectionRayInsideX) {
-    ::MobileRT::Intersection intersection {};
-
     const auto direction {::glm::vec3 {-10.0F, 0.0F, 10.0F}};
     const auto origin {::glm::vec3 {0.0F, 0.0F, 10.0F}};
     const auto depth {19};
     const ::MobileRT::Ray ray {direction, origin, depth, false, nullptr};
+    ::MobileRT::Intersection intersection {ray};
 
     const float lastDist {intersection.length_};
-    intersection = plane->intersect(intersection, ray);
+    intersection = plane->intersect(intersection);
     ASSERT_EQ(true, intersection.length_ < lastDist);
 }

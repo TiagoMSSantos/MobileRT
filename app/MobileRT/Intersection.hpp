@@ -2,6 +2,7 @@
 #define MOBILERT_INTERSECTION_HPP
 
 #include "MobileRT/Material.hpp"
+#include "MobileRT/Ray.hpp"
 #include "MobileRT/Utils/Constants.hpp"
 #include "MobileRT/Utils/Utils.hpp"
 #include <glm/glm.hpp>
@@ -20,15 +21,21 @@ namespace MobileRT {
         ::std::int32_t materialIndex_ {-1};
         ::glm::vec2 texCoords_ {-1.0F, -1.0F};
 
+        /**
+         * The casted ray into the scene.
+         */
+        Ray ray_ {::glm::vec3 {}, ::glm::vec3 {}, 0, false};
+
     private:
         void checkArguments() const;
 
     public:
-        explicit Intersection() = default;
+        explicit Intersection() = delete;
 
-        explicit Intersection(float dist);
+        explicit Intersection(const Ray &ray, float dist = RayLengthMax);
 
         explicit Intersection(
+            const Ray &ray,
             const ::glm::vec3 &intPoint,
             float dist,
             const ::glm::vec3 &normal,

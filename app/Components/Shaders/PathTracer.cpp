@@ -19,8 +19,8 @@ PathTracer::PathTracer(Scene scene,
 }
 
 //pag 28 slides Monte Carlo
-bool PathTracer::shade(::glm::vec3 *const rgb, const Intersection &intersection, const Ray &ray) {
-    const auto rayDepth {ray.depth_};
+bool PathTracer::shade(::glm::vec3 *const rgb, const Intersection &intersection) {
+    const auto rayDepth {intersection.ray_.depth_};
     if (rayDepth > RayDepthMax) {
         return false;
     }
@@ -116,7 +116,7 @@ bool PathTracer::shade(::glm::vec3 *const rgb, const Intersection &intersection,
     // specular reflection
     if (::MobileRT::hasPositiveValue(kS)) {
         //PDF = 1 / 2 Pi
-        const auto &reflectionDir {::glm::reflect(ray.direction_, shadingNormal)};
+        const auto &reflectionDir {::glm::reflect(intersection.ray_.direction_, shadingNormal)};
         const Ray specularRay {reflectionDir, intersection.point_, rayDepth + 1, false, intersection.primitive_};
         ::glm::vec3 LiS_RGB {};
         rayTrace(&LiS_RGB, specularRay);
@@ -127,7 +127,7 @@ bool PathTracer::shade(::glm::vec3 *const rgb, const Intersection &intersection,
     if (::MobileRT::hasPositiveValue(kT)) {
         //PDF = 1 / 2 Pi
         const auto refractiveIndice {1.0F / intersection.material_->refractiveIndice_};
-        const auto &refractDir {::glm::refract(ray.direction_, shadingNormal, refractiveIndice)};
+        const auto &refractDir {::glm::refract(intersection.ray_.direction_, shadingNormal, refractiveIndice)};
         const Ray transmissionRay {refractDir, intersection.point_, rayDepth + 1, false, intersection.primitive_};
         ::glm::vec3 LiT_RGB {};
         rayTrace(&LiT_RGB, transmissionRay);

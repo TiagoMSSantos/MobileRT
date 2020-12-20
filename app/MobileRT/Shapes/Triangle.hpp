@@ -46,7 +46,7 @@ namespace MobileRT {
 
         Triangle &operator=(Triangle &&triangle) noexcept = default;
 
-        Intersection intersect(const Intersection &intersection, const Ray &ray) const;
+        Intersection intersect(const Intersection &intersection) const;
 
         AABB getAABB() const;
 

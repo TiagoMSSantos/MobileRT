@@ -60,7 +60,7 @@ namespace MobileRT {
         private:
             void build(::std::vector<T> &&primitives);
 
-            Intersection intersect(Intersection intersection, const Ray &ray);
+            Intersection intersect(Intersection intersection);
 
             template<typename Iterator>
             ::std::int32_t getSplitIndexSah(Iterator itBegin, Iterator itEnd);
@@ -83,9 +83,9 @@ namespace MobileRT {
 
             BVH &operator=(BVH &&bvh) noexcept = default;
 
-            Intersection trace(Intersection intersection, const Ray &ray);
+            Intersection trace(Intersection intersection);
 
-            Intersection shadowTrace(Intersection intersection, const Ray &ray);
+            Intersection shadowTrace(Intersection intersection);
 
             const ::std::vector<T>& getPrimitives() const;
     };
@@ -269,12 +269,11 @@ namespace MobileRT {
      *
      * @tparam T The type of the primitives.
      * @param intersection The current intersection of the ray with previous primitives.
-     * @param ray          The ray to be casted.
      * @return The intersection of the ray with the geometry.
      */
     template<typename T>
-    Intersection BVH<T>::trace(Intersection intersection, const Ray &ray) {
-        intersection = intersect(intersection, ray);
+    Intersection BVH<T>::trace(Intersection intersection) {
+        intersection = intersect(intersection);
         return intersection;
     }
 
@@ -285,12 +284,11 @@ namespace MobileRT {
      *
      * @tparam T The type of the primitives.
      * @param intersection The current intersection of the ray with previous primitives.
-     * @param ray          The ray to be casted.
      * @return The intersection of the ray with the geometry.
      */
     template<typename T>
-    Intersection BVH<T>::shadowTrace(Intersection intersection, const Ray &ray) {
-        intersection = intersect(intersection, ray);
+    Intersection BVH<T>::shadowTrace(Intersection intersection) {
+        intersection = intersect(intersection);
         return intersection;
     }
 
@@ -304,11 +302,10 @@ namespace MobileRT {
      * @tparam T The type of the primitives.
      * @param intersection The previous intersection point of the ray (used to update its data in case it is found a
      * nearest intersection point.
-     * @param ray          The casted ray.
      * @return The intersection point of the ray in the scene.
      */
     template<typename T>
-    Intersection BVH<T>::intersect(Intersection intersection, const Ray &ray) {
+    Intersection BVH<T>::intersect(Intersection intersection) {
         if (this->primitives_.empty()) {
             return intersection;
         }
@@ -323,15 +320,15 @@ namespace MobileRT {
         const auto itPrimitives {this->primitives_.begin()};
         do {
             const auto &node {*(itBoxes + boxIndex)};
-            if (node.box_.intersect(ray)) {
+            if (node.box_.intersect(intersection.ray_)) {
 
                 const auto numberPrimitives {node.numPrimitives_};
                 if (numberPrimitives > 0) {
                     for (::std::int32_t i {}; i < numberPrimitives; ++i) {
                         auto &primitive {*(itPrimitives + node.indexOffset_ + i)};
                         const auto lastDist {intersection.length_};
-                        intersection = primitive.intersect(intersection, ray);
-                        if (ray.shadowTrace_ && intersection.length_ < lastDist) {
+                        intersection = primitive.intersect(intersection);
+                        if (intersection.ray_.shadowTrace_ && intersection.length_ < lastDist) {
                             return intersection;
                         }
                     }
@@ -343,8 +340,8 @@ namespace MobileRT {
                     const auto &childLeft {*(itBoxes + left)};
                     const auto &childRight {*(itBoxes + right)};
 
-                    const auto traverseLeft {childLeft.box_.intersect(ray)};
-                    const auto traverseRight {childRight.box_.intersect(ray)};
+                    const auto traverseLeft {childLeft.box_.intersect(intersection.ray_)};
+                    const auto traverseRight {childRight.box_.intersect(intersection.ray_)};
 
                     if (!traverseLeft && !traverseRight) {
                         ::std::advance(itStackBoxIndex, -1); // pop

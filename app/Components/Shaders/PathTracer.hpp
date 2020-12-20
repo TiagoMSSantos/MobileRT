@@ -15,8 +15,7 @@ namespace Components {
     private:
         bool shade(
             ::glm::vec3 *rgb,
-            const ::MobileRT::Intersection &intersection,
-            const ::MobileRT::Ray &ray) final;
+            const ::MobileRT::Intersection &intersection) final;
 
     public:
         explicit PathTracer() = delete;

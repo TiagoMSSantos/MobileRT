@@ -46,10 +46,9 @@ namespace MobileRT {
          * Determines if a ray intersects this light or not and calculates the intersection point.
          *
          * @param intersection The previous intersection of the ray in the scene.
-         * @param ray          The casted ray into the scene.
          * @return The intersection point.
          */
-        virtual Intersection intersect(Intersection intersection, const Ray &ray) = 0;
+        virtual Intersection intersect(Intersection intersection) = 0;
     };
 }//namespace MobileRT
 

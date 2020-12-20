@@ -10,8 +10,8 @@ Whitted::Whitted(Scene scene, const ::std::int32_t samplesLight, Accelerator acc
     Shader {::std::move(scene), samplesLight, accelerator} {
 }
 
-bool Whitted::shade(::glm::vec3 *const rgb, const Intersection &intersection, const Ray &ray) {
-    const auto rayDepth {ray.depth_};
+bool Whitted::shade(::glm::vec3 *const rgb, const Intersection &intersection) {
+    const auto rayDepth {intersection.ray_.depth_};
     if (rayDepth > RayDepthMax) {
         return false;
     }
@@ -67,11 +67,11 @@ bool Whitted::shade(::glm::vec3 *const rgb, const Intersection &intersection, co
     const auto destIor {intersection.material_->refractiveIndice_};
     const auto sourceIor {1.0F};
     const auto ior {sourceIor / destIor};
-    const auto kr {::MobileRT::fresnel(ray.direction_, shadingNormal, destIor)};
+    const auto kr {::MobileRT::fresnel(intersection.ray_.direction_, shadingNormal, destIor)};
 
     // specular reflection
     if (::MobileRT::hasPositiveValue(kS)) {
-        const auto &reflectionDir {::glm::reflect(ray.direction_, shadingNormal)};
+        const auto &reflectionDir {::glm::reflect(intersection.ray_.direction_, shadingNormal)};
         const Ray specularRay {reflectionDir, intersection.point_, rayDepth + 1, false, intersection.primitive_};
         ::glm::vec3 LiS_RGB {};
         rayTrace(&LiS_RGB, specularRay);
@@ -81,7 +81,7 @@ bool Whitted::shade(::glm::vec3 *const rgb, const Intersection &intersection, co
     // specular transmission
     if (::MobileRT::hasPositiveValue(kT)) {
         const auto kt {1.0F - kr};
-        const auto &refractDir {::glm::refract(ray.direction_, shadingNormal, ior)};
+        const auto &refractDir {::glm::refract(intersection.ray_.direction_, shadingNormal, ior)};
         const Ray transmissionRay {refractDir, intersection.point_, rayDepth + 1, false, intersection.primitive_};
         ::glm::vec3 LiT_RGB {};
         rayTrace(&LiT_RGB, transmissionRay);

@@ -3,14 +3,13 @@
 
 using ::Components::NoShadows;
 using ::MobileRT::Intersection;
-using ::MobileRT::Ray;
 using ::MobileRT::Scene;
 
 NoShadows::NoShadows(Scene scene, const ::std::int32_t samplesLight, const Accelerator accelerator) :
     Shader {::std::move(scene), samplesLight, accelerator} {
 }
 
-bool NoShadows::shade(::glm::vec3 *const rgb, const Intersection &intersection, const Ray &/*ray*/) {
+bool NoShadows::shade(::glm::vec3 *const rgb, const Intersection &intersection) {
     const auto &lE {intersection.material_->Le_};
     //stop if it intersects a light source
     if (::MobileRT::hasPositiveValue(lE)) {

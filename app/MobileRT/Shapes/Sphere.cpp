@@ -33,17 +33,16 @@ void Sphere::checkArguments() const {
  * Determines if a ray intersects this sphere or not and calculates the intersection point.
  *
  * @param intersection The previous intersection of the ray in the scene.
- * @param ray          The casted ray into the scene.
  * @return The intersection point.
  */
-Intersection Sphere::intersect(const Intersection &intersection, const Ray &ray) const {
+Intersection Sphere::intersect(const Intersection &intersection) const {
     //stackoverflow.com/questions/1986378/how-to-set-up-quadratic-equation-for-a-ray-sphere-intersection
-    const auto &originToCenter {this->center_ - ray.origin_};
-    const auto projectionOnDirection {::glm::dot(originToCenter, ray.direction_)};
+    const auto &originToCenter {this->center_ - intersection.ray_.origin_};
+    const auto projectionOnDirection {::glm::dot(originToCenter, intersection.ray_.direction_)};
 
     const auto originToCenterMagnitude {::glm::length(originToCenter)};
     //a = 1.0 - normalized vectors
-    const auto a {::glm::dot(ray.direction_, ray.direction_)};
+    const auto a {::glm::dot(intersection.ray_.direction_, intersection.ray_.direction_)};
     const auto b {2.0F * -projectionOnDirection};
     const auto c {originToCenterMagnitude * originToCenterMagnitude - this->sqRadius_};
     const auto discriminant {b * b - 4.0F * a * c};
@@ -65,10 +64,15 @@ Intersection Sphere::intersect(const Intersection &intersection, const Ray &ray)
     }
 
     // if so, then we have an intersection
-    const auto &intersectionPoint {ray.origin_ + ray.direction_ * distanceToIntersection};
+    const auto &intersectionPoint {intersection.ray_.origin_ + intersection.ray_.direction_ * distanceToIntersection};
     const auto &intersectionNormal {::glm::normalize(intersectionPoint - this->center_)};
     const Intersection res {
-        intersectionPoint, distanceToIntersection, intersectionNormal, nullptr, this->materialIndex_
+        intersection.ray_,
+        intersectionPoint,
+        distanceToIntersection,
+        intersectionNormal,
+        nullptr,
+        this->materialIndex_
     };
     return res;
 }

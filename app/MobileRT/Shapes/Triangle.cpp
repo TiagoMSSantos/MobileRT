@@ -57,15 +57,14 @@ void Triangle::checkArguments() const {
  * Determines if a ray intersects this triangle or not and calculates the intersection point.
  *
  * @param intersection The previous intersection of the ray in the scene.
- * @param ray          The casted ray into the scene.
  * @return The intersection point.
  */
-Intersection Triangle::intersect(const Intersection &intersection, const Ray &ray) const {
-    if (ray.primitive_ == this) {
+Intersection Triangle::intersect(const Intersection &intersection) const {
+    if (intersection.ray_.primitive_ == this) {
         return intersection;
     }
 
-    const auto &perpendicularVector {::glm::cross(ray.direction_, this->AC_)};
+    const auto &perpendicularVector {::glm::cross(intersection.ray_.direction_, this->AC_)};
     const auto normalizedProjection {::glm::dot(this->AB_, perpendicularVector)};
     if (::std::abs(normalizedProjection) < Epsilon) {
         return intersection;
@@ -73,14 +72,14 @@ Intersection Triangle::intersect(const Intersection &intersection, const Ray &ra
 
     //u v = barycentric coordinates (uv-space are inside a unit triangle)
     const auto normalizedProjectionInv {1.0F / normalizedProjection};
-    const auto &vectorToCamera {ray.origin_ - this->pointA_};
+    const auto &vectorToCamera {intersection.ray_.origin_ - this->pointA_};
     const auto u {normalizedProjectionInv * ::glm::dot(vectorToCamera, perpendicularVector)};
     if (u < 0.0F || u > 1.0F) {
         return intersection;
     }
 
     const auto &upPerpendicularVector {::glm::cross(vectorToCamera, this->AB_)};
-    const auto v {normalizedProjectionInv * ::glm::dot (ray.direction_, upPerpendicularVector)};
+    const auto v {normalizedProjectionInv * ::glm::dot (intersection.ray_.direction_, upPerpendicularVector)};
     if (v < 0.0F || (u + v) > 1.0F) {
         return intersection;
     }
@@ -96,8 +95,8 @@ Intersection Triangle::intersect(const Intersection &intersection, const Ray &ra
     const auto w {1.0F - u - v};
     const auto &intersectionNormal {::glm::normalize(this->normalA_ * w + this->normalB_ * u + this->normalC_ * v)};
     const auto &texCoords {this->texCoordA_ * w + this->texCoordB_ * u + this->texCoordC_ * v};
-    const auto &intersectionPoint {ray.origin_ + ray.direction_ * distanceToIntersection};
-    const Intersection res {intersectionPoint, distanceToIntersection, intersectionNormal, this,
+    const auto &intersectionPoint {intersection.ray_.origin_ + intersection.ray_.direction_ * distanceToIntersection};
+    const Intersection res {intersection.ray_, intersectionPoint, distanceToIntersection, intersectionNormal, this,
                             this->materialIndex_, texCoords};
 
     return res;
@@ -213,9 +212,9 @@ bool Triangle::intersect(const AABB &box) const {
     const auto &pointB {this->pointA_ + this->AB_};
     const auto &pointC {this->pointA_ + this->AC_};
     const auto intersectedBC {intersectRayAABB(pointB, pointC - pointB)};
-    Intersection intersection {};
+    Intersection intersection {ray};
     const auto lastDist {intersection.length_};
-    intersection = intersect(intersection, ray);
+    intersection = intersect(intersection);
     const auto intersectedRay {intersection.length_ < lastDist};
     const auto insideTriangle {isOverTriangle(vec)};
     const auto res {intersectedAB || intersectedAC || intersectedBC || intersectedRay || insideTriangle};

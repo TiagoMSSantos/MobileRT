@@ -85,9 +85,9 @@ inline void assertRayTriangle (const ::glm::vec3 &orig,
                                const bool expectedInt,
                                const void *const primitive = nullptr) {
     const Ray ray {dir, orig, 1, true, primitive};
-    Intersection intersection {};
+    Intersection intersection {ray};
     const float lastDist {intersection.length_};
-    intersection = triangle.intersect(intersection, ray);
+    intersection = triangle.intersect(intersection);
     ASSERT_EQ(expectedInt, intersection.length_ < lastDist);
 }
 

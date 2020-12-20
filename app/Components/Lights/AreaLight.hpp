@@ -36,7 +36,7 @@ namespace Components {
 
         void resetSampling() final;
 
-        ::MobileRT::Intersection intersect(::MobileRT::Intersection intersection, const ::MobileRT::Ray &ray) final;
+        ::MobileRT::Intersection intersect(::MobileRT::Intersection intersection) final;
     };
 }//namespace Components
 

@@ -63,7 +63,7 @@ namespace MobileRT {
     private:
         void addPrimitives();
 
-        Intersection intersect(Intersection intersection, const Ray &ray);
+        Intersection intersect(Intersection intersection);
 
         ::std::uint32_t bitCounter(::std::uint32_t value) const;
 
@@ -84,9 +84,9 @@ namespace MobileRT {
 
         RegularGrid &operator=(RegularGrid &&regularGrid) noexcept = default;
 
-        Intersection trace(Intersection intersection, const Ray &ray);
+        Intersection trace(Intersection intersection);
 
-        Intersection shadowTrace(Intersection intersection, const Ray &ray);
+        Intersection shadowTrace(Intersection intersection);
 
         const ::std::vector<T>& getPrimitives() const;
     };
@@ -252,12 +252,11 @@ namespace MobileRT {
      *
      * @tparam T The type of the primitives.
      * @param intersection The current intersection of the ray with previous primitives.
-     * @param ray          The ray to be casted.
      * @return The intersection of the ray with the geometry.
      */
     template<typename T>
-    Intersection RegularGrid<T>::trace(Intersection intersection, const Ray &ray) {
-        intersection = intersect (intersection, ray);
+    Intersection RegularGrid<T>::trace(Intersection intersection) {
+        intersection = intersect (intersection);
         return intersection;
     }
 
@@ -268,12 +267,11 @@ namespace MobileRT {
      *
      * @tparam T The type of the primitives.
      * @param intersection The current intersection of the ray with previous primitives.
-     * @param ray          The ray to be casted.
      * @return The intersection of the ray with the geometry.
      */
     template<typename T>
-    Intersection RegularGrid<T>::shadowTrace(Intersection intersection, const Ray &ray) {
-        intersection = intersect (intersection, ray);
+    Intersection RegularGrid<T>::shadowTrace(Intersection intersection) {
+        intersection = intersect (intersection);
         return intersection;
     }
 
@@ -287,15 +285,14 @@ namespace MobileRT {
      * @tparam T The type of the primitives.
      * @param intersection The previous intersection point of the ray (used to update its data in case it is found a
      * nearest intersection point.
-     * @param ray          The casted ray.
      * @return The intersection point of the ray in the scene.
      */
     template<typename T>
-    Intersection RegularGrid<T>::intersect(Intersection intersection, const Ray &ray) {
+    Intersection RegularGrid<T>::intersect(Intersection intersection) {
         const auto worldBoundsMin {this->worldBoundaries_.getPointMin()};
 
         // setup 3DDDA (double check reusability of primary ray data)
-        const auto &cell {(ray.origin_ - worldBoundsMin) * this->cellSizeInverted_};
+        const auto &cell {(intersection.ray_.origin_ - worldBoundsMin) * this->cellSizeInverted_};
         auto cellX {static_cast<::std::int32_t> (cell[0])};
         auto cellY {static_cast<::std::int32_t> (cell[1])};
         auto cellZ {static_cast<::std::int32_t> (cell[2])};
@@ -311,7 +308,7 @@ namespace MobileRT {
         ::std::int32_t stepY {}, outY {};
         ::std::int32_t stepZ {}, outZ {};
         ::glm::vec3 cb {};
-        if (ray.direction_[0] > 0) {
+        if (intersection.ray_.direction_[0] > 0) {
             stepX = 1;
             outX = this->gridSize_;
             cb[0] = (worldBoundsMin[0] + (static_cast<float> (cellX) + 1.0F) * this->cellSize_[0]);
@@ -321,7 +318,7 @@ namespace MobileRT {
             cb[0] = (worldBoundsMin[0] + static_cast<float> (cellX) * this->cellSize_[0]);
         }
 
-        if (ray.direction_[1] > 0) {
+        if (intersection.ray_.direction_[1] > 0) {
             stepY = 1;
             outY = this->gridSize_;
             cb[1] = (worldBoundsMin[1] + (static_cast<float> (cellY) + 1.0F) * this->cellSize_[1]);
@@ -331,7 +328,7 @@ namespace MobileRT {
             cb[1] = (worldBoundsMin[1] + static_cast<float> (cellY) * this->cellSize_[1]);
         }
 
-        if (ray.direction_[2] > 0) {
+        if (intersection.ray_.direction_[2] > 0) {
             stepZ = 1;
             outZ = this->gridSize_;
             cb[2] = (worldBoundsMin[2] + (static_cast<float> (cellZ) + 1.0F) * this->cellSize_[2]);
@@ -342,25 +339,25 @@ namespace MobileRT {
         }
 
         ::glm::vec3 tmax {}, tdelta {};
-        if (::std::fabs(ray.direction_[0]) > ::std::numeric_limits<float>::epsilon()) {
-            const auto rxr {1.0F / ray.direction_[0]};
-            tmax[0] = ((cb[0] - ray.origin_[0]) * rxr);
+        if (::std::fabs(intersection.ray_.direction_[0]) > ::std::numeric_limits<float>::epsilon()) {
+            const auto rxr {1.0F / intersection.ray_.direction_[0]};
+            tmax[0] = ((cb[0] - intersection.ray_.origin_[0]) * rxr);
             tdelta[0] = (this->cellSize_[0] * static_cast<float> (stepX) * rxr);
         } else {
             tmax[0] = RayLengthMax;
         }
 
-        if (::std::fabs(ray.direction_[1]) > ::std::numeric_limits<float>::epsilon()) {
-            const auto ryr {1.0F / ray.direction_[1]};
-            tmax[1] = ((cb[1] - ray.origin_[1]) * ryr);
+        if (::std::fabs(intersection.ray_.direction_[1]) > ::std::numeric_limits<float>::epsilon()) {
+            const auto ryr {1.0F / intersection.ray_.direction_[1]};
+            tmax[1] = ((cb[1] - intersection.ray_.origin_[1]) * ryr);
             tdelta[1] = (this->cellSize_[1] * static_cast<float> (stepY) * ryr);
         } else {
             tmax[1] = RayLengthMax;
         }
 
-        if (::std::fabs(ray.direction_[2]) > ::std::numeric_limits<float>::epsilon()) {
-            const auto rzr {1.0F / ray.direction_[2]};
-            tmax[2] = ((cb[2] - ray.origin_[2]) * rzr);
+        if (::std::fabs(intersection.ray_.direction_[2]) > ::std::numeric_limits<float>::epsilon()) {
+            const auto rzr {1.0F / intersection.ray_.direction_[2]};
+            tmax[2] = ((cb[2] - intersection.ray_.origin_[2]) * rzr);
             tdelta[2] = (this->cellSize_[2] * static_cast<float> (stepZ) * rzr);
         } else {
             tmax[2] = RayLengthMax;
@@ -378,9 +375,9 @@ namespace MobileRT {
             // Check if the ray intersects any primitive in the cell.
             for (auto *const primitive : primitivesList) {
                 const auto lastDist {intersection.length_};
-                intersection = primitive->intersect(intersection, ray);
+                intersection = primitive->intersect(intersection);
                 if (intersection.length_ < lastDist) {
-                    if (ray.shadowTrace_) {
+                    if (intersection.ray_.shadowTrace_) {
                         return intersection;
                     }
                     goto testloop;
@@ -428,7 +425,7 @@ namespace MobileRT {
 
             // Check if the ray intersects any primitive in the cell.
             for (auto *const primitive : primitivesList) {
-                intersection = primitive->intersect(intersection, ray);
+                intersection = primitive->intersect(intersection);
             }
             if (tmax[0] < tmax[1]) {
                 if (tmax[0] < tmax[2]) {

@@ -2,6 +2,7 @@
 #include <gtest/gtest.h>
 
 using ::MobileRT::Intersection;
+using ::MobileRT::Ray;
 
 class TestIntersection : public testing::Test {
 protected:
@@ -30,9 +31,10 @@ TEST_F(TestIntersection, TestInvalidConstructor) {
     const auto primitive {nullptr};
     const auto materialIndex {0};
     const ::glm::vec2 texCoords {0.4F, 0.6F};
+    const Ray ray {::glm::vec3 {1.0F}, ::glm::vec3 {}, 0, false};
 
     ASSERT_DEBUG_DEATH(const Intersection intersection
-        (intPoint, dist, normal, primitive, materialIndex, texCoords);, "");
+        (ray, intPoint, dist, normal, primitive, materialIndex, texCoords);, "");
 }
 
 /**
@@ -46,9 +48,10 @@ TEST_F(TestIntersection, TestInvalidConstructor2) {
     const auto primitive {nullptr};
     const auto materialIndex {0};
     const ::glm::vec2 texCoords {0.4F, 0.6F};
+    const Ray ray {::glm::vec3 {1.0F}, ::glm::vec3 {}, 0, false};
 
     ASSERT_DEBUG_DEATH(const Intersection intersection
-        (intPoint, dist, normal, primitive, materialIndex, texCoords);, "");
+        (ray, intPoint, dist, normal, primitive, materialIndex, texCoords);, "");
 }
 
 /**
@@ -57,8 +60,9 @@ TEST_F(TestIntersection, TestInvalidConstructor2) {
  */
 TEST_F(TestIntersection, TestInvalidConstructor3) {
     const float dist {0.0F};
+    const Ray ray {::glm::vec3 {1.0F}, ::glm::vec3 {}, 0, false};
 
-    ASSERT_DEBUG_DEATH(const Intersection intersection(dist);, "");
+    ASSERT_DEBUG_DEATH(const Intersection intersection(ray, dist);, "");
 }
 
 /**
@@ -71,8 +75,9 @@ TEST_F(TestIntersection, TestConstructor) {
     const auto primitive {nullptr};
     const auto materialIndex {0};
     const ::glm::vec2 texCoords {0.4F, 0.6F};
+    const Ray ray {::glm::vec3 {1.0F}, ::glm::vec3 {}, 0, false};
 
-    const Intersection intersection {intPoint, dist, normal, primitive, materialIndex, texCoords};
+    const Intersection intersection {ray, intPoint, dist, normal, primitive, materialIndex, texCoords};
 
     ASSERT_EQ(dist, intersection.length_);
     ASSERT_EQ(primitive, intersection.primitive_);
@@ -88,8 +93,9 @@ TEST_F(TestIntersection, TestConstructor) {
  */
 TEST_F(TestIntersection, TestConstructor2) {
     const float dist {0.1F};
+    const Ray ray {::glm::vec3 {1.0F}, ::glm::vec3 {}, 0, false};
 
-    const Intersection intersection {dist};
+    const Intersection intersection {ray, dist};
 
     ASSERT_EQ(dist, intersection.length_);
 }

@@ -81,31 +81,31 @@ void Shader::initializeAccelerators(Scene scene) {
  * @return Whether the casted ray intersects a light source in the scene or not.
  */
 bool Shader::rayTrace(::glm::vec3 *rgb, const Ray &ray) {
-    Intersection intersection {};
+    Intersection intersection {ray};
     const auto lastDist {intersection.length_};
     switch (this->accelerator_) {
         case Accelerator::ACC_NAIVE: {
-            intersection = this->naivePlanes_.trace(intersection, ray);
-            intersection = this->naiveSpheres_.trace(intersection, ray);
-            intersection = this->naiveTriangles_.trace(intersection, ray);
+            intersection = this->naivePlanes_.trace(intersection);
+            intersection = this->naiveSpheres_.trace(intersection);
+            intersection = this->naiveTriangles_.trace(intersection);
             break;
         }
 
         case Accelerator::ACC_REGULAR_GRID: {
-            intersection = this->gridPlanes_.trace(intersection, ray);
-            intersection = this->gridSpheres_.trace(intersection, ray);
-            intersection = this->gridTriangles_.trace(intersection, ray);
+            intersection = this->gridPlanes_.trace(intersection);
+            intersection = this->gridSpheres_.trace(intersection);
+            intersection = this->gridTriangles_.trace(intersection);
             break;
         }
 
         case Accelerator::ACC_BVH: {
-            intersection = this->bvhPlanes_.trace(intersection, ray);
-            intersection = this->bvhSpheres_.trace(intersection, ray);
-            intersection = this->bvhTriangles_.trace(intersection, ray);
+            intersection = this->bvhPlanes_.trace(intersection);
+            intersection = this->bvhSpheres_.trace(intersection);
+            intersection = this->bvhTriangles_.trace(intersection);
             break;
         }
     }
-    intersection = traceLights(intersection, ray);
+    intersection = traceLights(intersection);
     const auto matIndex {intersection.materialIndex_};
     if (matIndex >= 0) {
         auto &material {this->materials_[static_cast<::std::uint32_t> (matIndex)]};
@@ -116,7 +116,7 @@ bool Shader::rayTrace(::glm::vec3 *rgb, const Ray &ray) {
             intersection.material_->Kd_ = texture.loadColor(texCoords);
         }
     }
-    return intersection.length_ < lastDist && shade(rgb, intersection, ray);
+    return intersection.length_ < lastDist && shade(rgb, intersection);
 }
 
 /**
@@ -127,26 +127,26 @@ bool Shader::rayTrace(::glm::vec3 *rgb, const Ray &ray) {
  * @return Whether the casted ray intersects a primitive in the scene or not.
  */
 bool Shader::shadowTrace(const float distance, const Ray &ray) {
-    Intersection intersection {distance};
+    Intersection intersection {ray, distance};
     switch (this->accelerator_) {
         case Accelerator::ACC_NAIVE: {
-            intersection = this->naivePlanes_.shadowTrace(intersection, ray);
-            intersection = this->naiveSpheres_.shadowTrace(intersection, ray);
-            intersection = this->naiveTriangles_.shadowTrace(intersection, ray);
+            intersection = this->naivePlanes_.shadowTrace(intersection);
+            intersection = this->naiveSpheres_.shadowTrace(intersection);
+            intersection = this->naiveTriangles_.shadowTrace(intersection);
             break;
         }
 
         case Accelerator::ACC_REGULAR_GRID: {
-            intersection = this->gridPlanes_.shadowTrace(intersection, ray);
-            intersection = this->gridSpheres_.shadowTrace(intersection, ray);
-            intersection = this->gridTriangles_.shadowTrace(intersection, ray);
+            intersection = this->gridPlanes_.shadowTrace(intersection);
+            intersection = this->gridSpheres_.shadowTrace(intersection);
+            intersection = this->gridTriangles_.shadowTrace(intersection);
             break;
         }
 
         case Accelerator::ACC_BVH: {
-            intersection = this->bvhPlanes_.shadowTrace(intersection, ray);
-            intersection = this->bvhSpheres_.shadowTrace(intersection, ray);
-            intersection = this->bvhTriangles_.shadowTrace(intersection, ray);
+            intersection = this->bvhPlanes_.shadowTrace(intersection);
+            intersection = this->bvhSpheres_.shadowTrace(intersection);
+            intersection = this->bvhTriangles_.shadowTrace(intersection);
             break;
         }
     }
@@ -158,12 +158,11 @@ bool Shader::shadowTrace(const float distance, const Ray &ray) {
  * Helper method which calculates the nearest intersection point of a casted ray and the light sources.
  *
  * @param intersection The current intersection of the ray with previous primitives.
- * @param ray          The casted ray.
  * @return The intersection of the casted ray and the light sources.
  */
-Intersection Shader::traceLights(Intersection intersection, const Ray &ray) const {
+Intersection Shader::traceLights(Intersection intersection) const {
     for (const auto &light : this->lights_) {
-        intersection = light->intersect(intersection, ray);
+        intersection = light->intersect(intersection);
     }
     return intersection;
 }
