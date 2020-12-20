@@ -8,7 +8,7 @@ message( STATUS "Adding unit tests source files." )
 file( GLOB_RECURSE GTEST_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/**.cpp" )
 
 message( STATUS "Creating executable." )
-add_executable( ${PROJECT_NAME} ${GTEST_SOURCES} )
+add_executable( ${PROJECT_NAME} ${GTEST_SOURCES} ${MOBILE_DEPENDENT_SOURCES} ${SCENES_SOURCES} )
 ###############################################################################
 ###############################################################################
 
@@ -38,6 +38,8 @@ if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
   target_compile_options( ${PROJECT_NAME} PRIVATE -Wno-global-constructors )
   target_compile_options( ${PROJECT_NAME} PRIVATE -Wno-used-but-marked-unused )
   target_compile_options( ${PROJECT_NAME} PRIVATE -Wno-covered-switch-default )
+  # Necessary because in MacOS it gives: error: redundant move in return statement
+  target_compile_options( ${PROJECT_NAME} PRIVATE -Wno-redundant-move )
 endif()
 ###############################################################################
 ###############################################################################

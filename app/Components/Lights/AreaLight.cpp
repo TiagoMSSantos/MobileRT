@@ -3,7 +3,6 @@
 using ::Components::AreaLight;
 using ::MobileRT::Material;
 using ::MobileRT::Sampler;
-using ::MobileRT::Ray;
 using ::MobileRT::Intersection;
 
 AreaLight::AreaLight(

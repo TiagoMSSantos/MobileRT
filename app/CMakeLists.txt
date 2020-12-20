@@ -371,6 +371,7 @@ endif()
 
 message( STATUS "Adding scenes source files." )
 file( GLOB_RECURSE SCENES_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/Scenes/**.cpp" )
+set( SCENES_SOURCES "${SCENES_SOURCES}" CACHE STRING "CUSTOM" FORCE )
 
 if( NOT DEFINED ANDROID_ABI )
   message( STATUS "Finding Qt." )
@@ -420,7 +421,7 @@ if( DEFINED ANDROID_ABI )
 else()
   message( STATUS "Adding Linux native Qt layer." )
 
-  add_executable( ${PROJECT_NAME} ${SCENES_SOURCES} ${MOBILE_DEPENDENT_SOURCES} )
+  add_executable( ${PROJECT_NAME} ${SCENES_SOURCES} ${MOBILE_DEPENDENT_SOURCES} ${MOBILE_DEPENDENT_SOURCES_QT} )
 
   message( STATUS "QT_INCLUDES = ${QT_INCLUDES}" )
   message( STATUS "QT_QTCORE_LIBRARIES = ${QT_QTCORE_LIBRARIES}" )

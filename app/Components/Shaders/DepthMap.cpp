@@ -2,7 +2,6 @@
 
 using ::Components::DepthMap;
 using ::MobileRT::Intersection;
-using ::MobileRT::Ray;
 using ::MobileRT::Scene;
 
 DepthMap::DepthMap(Scene scene, const ::glm::vec3 &maxPoint, const Accelerator accelerator) :

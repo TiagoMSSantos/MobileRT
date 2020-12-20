@@ -19,9 +19,9 @@ endif()
 # Make source files visible to root CMake
 ###############################################################################
 message( STATUS "Appending Qt source files." )
-set( MOBILE_DEPENDENT_SOURCES
-  "${MOBILE_DEPENDENT_SOURCES}" "${MOBILE_DEPENDENT_SOURCES_QT}"
-  CACHE STRING "CUSTOM" FORCE )
+set( MOBILE_DEPENDENT_SOURCES "${MOBILE_DEPENDENT_SOURCES}" CACHE STRING "CUSTOM" FORCE )
+set( MOBILE_DEPENDENT_SOURCES_QT "${MOBILE_DEPENDENT_SOURCES_QT}" CACHE STRING "CUSTOM" FORCE )
 message( STATUS "MOBILE_DEPENDENT_SOURCES = ${MOBILE_DEPENDENT_SOURCES}" )
+message( STATUS "MOBILE_DEPENDENT_SOURCES_QT = ${MOBILE_DEPENDENT_SOURCES_QT}" )
 ###############################################################################
 ###############################################################################

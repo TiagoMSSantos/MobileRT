@@ -3,7 +3,6 @@
 using ::Components::PointLight;
 using ::MobileRT::Material;
 using ::MobileRT::Intersection;
-using ::MobileRT::Ray;
 
 PointLight::PointLight(const Material &radiance, const ::glm::vec3 &position) :
         Light {radiance},

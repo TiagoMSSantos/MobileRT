@@ -2,7 +2,6 @@
 
 using ::Components::DiffuseMaterial;
 using ::MobileRT::Intersection;
-using ::MobileRT::Ray;
 using ::MobileRT::Scene;
 
 DiffuseMaterial::DiffuseMaterial(Scene scene, const Accelerator accelerator) :
