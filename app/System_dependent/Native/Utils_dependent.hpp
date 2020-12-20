@@ -14,11 +14,10 @@ namespace Dependent {
 }//namespace Dependent
 
 namespace {
-    void print(const ::std::string &log) {
+    inline void print(const ::std::string &log) {
         ::std::cout << log;
     }
-
-}
+}// namespace
 
 void ::Dependent::printDebug(const ::std::string &log) {
     print(log);

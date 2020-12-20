@@ -175,15 +175,9 @@ public final class DrawView extends GLSurfaceView {
     /**
      * Asynchronously creates the requested scene and starts rendering it.
      *
-     * @param config     The ray tracer configuration.
-     * @param numThreads The number of threads to be used in the Ray Tracer
-     *                   engine.
-     * @param rasterize  Whether should show a preview (rasterize one frame) or
-     *                   not.
+     * @param config The ray tracer configuration.
      */
-    void renderScene(@Nonnull final Config config,
-                     final int numThreads,
-                     final boolean rasterize) {
+    void renderScene(@Nonnull final Config config) {
         LOGGER.info(ConstantsMethods.RENDER_SCENE);
 
         waitLastTask();
@@ -193,7 +187,7 @@ public final class DrawView extends GLSurfaceView {
             this.renderer.waitLastTask();
             rtStartRender(true);
             try {
-                startRayTracing(config, numThreads, rasterize);
+                startRayTracing(config);
                 return Boolean.TRUE;
             } catch (final LowMemoryException ex) {
                 warningError(ex, ConstantsToast.DEVICE_WITHOUT_ENOUGH_MEMORY + ex.getMessage());
@@ -222,20 +216,14 @@ public final class DrawView extends GLSurfaceView {
      * Helper method that prepares the scene and starts the Ray Tracing engine
      * to render it.
      *
-     * @param config     The ray tracer configuration.
-     * @param numThreads The number of threads to be used in the Ray Tracer
-     *                   engine.
-     * @param rasterize  Whether should show a preview (rasterize one frame) or
-     *                   not.
+     * @param config The ray tracer configuration.
      * @throws LowMemoryException If the device has low free memory.
      */
-    private void startRayTracing(@Nonnull final Config config,
-                                 final int numThreads,
-                                 final boolean rasterize) throws LowMemoryException {
+    private void startRayTracing(@Nonnull final Config config) throws LowMemoryException {
         final String message = ConstantsMethods.RENDER_SCENE + " executor";
         LOGGER.info(message);
 
-        createScene(config, numThreads, rasterize);
+        createScene(config);
         requestRender();
 
         final String messageFinished = ConstantsMethods.RENDER_SCENE + " executor"
@@ -270,22 +258,18 @@ public final class DrawView extends GLSurfaceView {
     /**
      * Loads the scene and creates the Ray Tracer renderer.
      *
-     * @param config     The ray tracer configuration.
-     * @param numThreads The number of threads to be used in the Ray Tracer engine.
-     * @param rasterize  Whether should show a preview (rasterize one frame) or not.
+     * @param config The ray tracer configuration.
      * @throws LowMemoryException If the device has low free memory.
      */
-    private void createScene(final Config config,
-                             final int numThreads,
-                             final boolean rasterize) throws LowMemoryException {
+    private void createScene(final Config config) throws LowMemoryException {
         LOGGER.info("createScene");
         final int numPrimitives = this.renderer.rtInitialize(config);
-        this.renderer.resetStats(numThreads, config.getConfigSamples(),
+        this.renderer.resetStats(config.getThreads(), config.getConfigSamples(),
             numPrimitives, rtGetNumberOfLights());
         final int widthView = getWidth();
         final int heightView = getHeight();
         queueEvent(() -> this.renderer.setBitmap(
-            config.getConfigResolution(), widthView, heightView, rasterize));
+            config.getConfigResolution(), widthView, heightView, config.shouldRasterize()));
     }
 
     /**

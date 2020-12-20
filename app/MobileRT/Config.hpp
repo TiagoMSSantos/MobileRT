@@ -80,7 +80,7 @@ namespace MobileRT {
          */
         bool printStdOut;
     };
-}
+}//namespace MobileRT
 
 
 #endif //MOBILERT_CONFIG_HPP

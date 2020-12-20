@@ -388,10 +388,8 @@ public final class MainActivity extends Activity {
         LOGGER.info(ConstantsMethods.START_RENDER);
 
         final Config config = createConfigFromUI(scenePath);
-        final int threads = this.pickerThreads.getValue();
-        final boolean rasterize = this.checkBoxRasterize.isChecked();
 
-        this.drawView.renderScene(config, threads, rasterize);
+        this.drawView.renderScene(config);
 
         final String message = ConstantsMethods.START_RENDER + ConstantsMethods.FINISHED;
         LOGGER.info(message);
@@ -508,6 +506,8 @@ public final class MainActivity extends Activity {
             .withObj(scenePath + ".obj")
             .withMaterial(scenePath + ".mtl")
             .withCamera(scenePath + ".cam")
+            .withThreads(this.pickerThreads.getValue())
+            .withRasterize(this.checkBoxRasterize.isChecked())
             .build();
     }
 

@@ -72,6 +72,20 @@ public final class Config {
     private final ConfigResolution configResolution;
 
     /**
+     * The number of threads.
+     *
+     * @see Config#getThreads()
+     */
+    private final int threads;
+
+    /**
+     * Whether the Ray Tracing engine should render a preview frame.
+     *
+     * @see Config#shouldRasterize()
+     */
+    private final boolean rasterize;
+
+    /**
      * A private constructor to force the usage of the {@link Config.Builder}.
      *
      * @param builder The {@link Config.Builder} for this class.
@@ -87,6 +101,8 @@ public final class Config {
         this.objFilePath = builder.getObjFilePath();
         this.matFilePath = builder.getMatFilePath();
         this.camFilePath = builder.getCamFilePath();
+        this.threads = builder.getThreads();
+        this.rasterize = builder.shouldRasterize();
     }
 
 
@@ -160,6 +176,26 @@ public final class Config {
         return this.configResolution;
     }
 
+    /**
+     * Gets the number of threads to be used in the Ray Tracer.
+     *
+     * @return The number of threads to be used in the Ray Tracer.
+     */
+    @Contract(pure = true)
+    int getThreads() {
+        return this.threads;
+    }
+
+    /**
+     * Gets whether the Ray Tracing engine should render a preview frame.
+     *
+     * @return Whether the Ray Tracing engine should render a preview frame.
+     */
+    @Contract(pure = true)
+    boolean shouldRasterize() {
+        return this.rasterize;
+    }
+
 
     /**
      * The builder for this class.
@@ -227,6 +263,20 @@ public final class Config {
             .withWidth(0)
             .withHeight(0)
             .build();
+
+        /**
+         * The number of threads.
+         *
+         * @see Config#getThreads()
+         */
+        private int threads = 1;
+
+        /**
+         * Whether the Ray Tracing engine should render a preview frame.
+         *
+         * @see Config#shouldRasterize()
+         */
+        private boolean rasterize = false;
 
         /**
          * Sets the scene of {@link Config}.
@@ -356,6 +406,36 @@ public final class Config {
             return this;
         }
 
+        /**
+         * Sets the number of threads of {@link Config}.
+         *
+         * @param threads The new value for the {@link Config#threads} field.
+         * @return The builder with {@link Config.Builder#threads} already set.
+         */
+        @Contract("_ -> this")
+        @Nonnull
+        Config.Builder withThreads(final int threads) {
+            LOGGER_BUILDER.info("withThreads");
+
+            this.threads = threads;
+            return this;
+        }
+
+        /**
+         * Sets whether the Ray Tracing engine should render a preview frame.
+         *
+         * @param rasterize The new value for the {@link Config#rasterize} field.
+         * @return The builder with {@link Config.Builder#rasterize} already set.
+         */
+        @Contract("_ -> this")
+        @Nonnull
+        Config.Builder withRasterize(final boolean rasterize) {
+            LOGGER_BUILDER.info("withRasterize");
+
+            this.rasterize = rasterize;
+            return this;
+        }
+
 
         /**
          * Builds a new instance of {@link Config}.
@@ -451,6 +531,26 @@ public final class Config {
         @Contract(pure = true)
         ConfigResolution getConfigResolution() {
             return this.configResolution;
+        }
+
+        /**
+         * Gets the number of threads to be used in the Ray Tracer.
+         *
+         * @return The number of threads to be used in the Ray Tracer.
+         */
+        @Contract(pure = true)
+        int getThreads() {
+            return this.threads;
+        }
+
+        /**
+         * Gets whether the Ray Tracing engine should render a preview frame.
+         *
+         * @return Whether the Ray Tracing engine should render a preview frame.
+         */
+        @Contract(pure = true)
+        boolean shouldRasterize() {
+            return this.rasterize;
         }
 
     }
