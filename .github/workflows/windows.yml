@@ -193,8 +193,8 @@ jobs:
 
     - name: Upload reports
       if: always()
-      continue-on-error: true
       uses: actions/upload-artifact@v2
+      continue-on-error: true
       with:
         name: Reports
         path: ./reports
