@@ -67,7 +67,7 @@ function clearOldBuildFiles() {
 
 function build() {
   echo "Calling the Gradle assemble to compile code for Android"
-  callCommand ./gradlew clean assemble"${type}" --profile --parallel \
+  callCommandUntilSuccess ./gradlew clean assemble"${type}" --profile --parallel \
     -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
     --console plain \
     2>&1 | tee log_build_android_"${type}".log
