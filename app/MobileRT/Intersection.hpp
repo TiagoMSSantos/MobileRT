@@ -32,10 +32,10 @@ namespace MobileRT {
     public:
         explicit Intersection() = delete;
 
-        explicit Intersection(const Ray &ray, float dist = RayLengthMax);
+        explicit Intersection(Ray &&ray, float dist = RayLengthMax);
 
         explicit Intersection(
-            const Ray &ray,
+            Ray &&ray,
             const ::glm::vec3 &intPoint,
             float dist,
             const ::glm::vec3 &normal,

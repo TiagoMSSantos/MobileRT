@@ -119,9 +119,9 @@ void Renderer::renderScene(::std::int32_t *const bitmap, const ::std::int32_t ti
                     const auto r2 {this->samplerPixel_->getSample()};
                     const auto deviationU {(r1 - 0.5F) * 2.0F * pixelWidth};
                     const auto deviationV {(r2 - 0.5F) * 2.0F * pixelHeight};
-                    const auto &ray {this->camera_->generateRay(u, v, deviationU, deviationV)};
+                    auto &&ray {this->camera_->generateRay(u, v, deviationU, deviationV)};
                     pixelRgb = {};
-                    this->shader_->rayTrace(&pixelRgb, ray);
+                    this->shader_->rayTrace(&pixelRgb, ::std::move(ray));
                     const auto pixelIndex {yWidth + x};
                     ::std::int32_t *bitmapPixel {&bitmap[pixelIndex]};
                     const auto pixelColor {::MobileRT::incrementalAvg(pixelRgb, *bitmapPixel, sample + 1)};

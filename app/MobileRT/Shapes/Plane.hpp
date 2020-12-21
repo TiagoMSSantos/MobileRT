@@ -36,7 +36,7 @@ namespace MobileRT {
 
         Plane &operator=(Plane &&plane) noexcept = default;
 
-        Intersection intersect(const Intersection &intersection) const;
+        Intersection intersect(Intersection intersection) const;
 
         AABB getAABB() const;
 

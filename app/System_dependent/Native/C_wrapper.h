@@ -12,7 +12,7 @@
 #ifdef __cplusplus
 extern "C"
 #endif
-void RayTrace(::MobileRT::Config &config, const bool async);
+void RayTrace(::MobileRT::Config &config, bool async);
 
 #ifdef __cplusplus
 extern "C"

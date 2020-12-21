@@ -59,7 +59,7 @@ void Triangle::checkArguments() const {
  * @param intersection The previous intersection of the ray in the scene.
  * @return The intersection point.
  */
-Intersection Triangle::intersect(const Intersection &intersection) const {
+Intersection Triangle::intersect(Intersection intersection) const {
     if (intersection.ray_.primitive_ == this) {
         return intersection;
     }
@@ -96,8 +96,13 @@ Intersection Triangle::intersect(const Intersection &intersection) const {
     const auto &intersectionNormal {::glm::normalize(this->normalA_ * w + this->normalB_ * u + this->normalC_ * v)};
     const auto &texCoords {this->texCoordA_ * w + this->texCoordB_ * u + this->texCoordC_ * v};
     const auto &intersectionPoint {intersection.ray_.origin_ + intersection.ray_.direction_ * distanceToIntersection};
-    const Intersection res {intersection.ray_, intersectionPoint, distanceToIntersection, intersectionNormal, this,
-                            this->materialIndex_, texCoords};
+    const Intersection res {::std::move(intersection.ray_),
+                            intersectionPoint, distanceToIntersection,
+                            intersectionNormal,
+                            this,
+                            this->materialIndex_,
+                            texCoords
+    };
 
     return res;
 }
@@ -206,13 +211,13 @@ bool Triangle::intersect(const AABB &box) const {
     const auto &min {box.getPointMin()};
     const auto &max {box.getPointMax()};
     const auto &vec {max - min};
-    const Ray ray {vec, min, 1, false};
+    Ray ray {vec, min, 1, false};
     const auto intersectedAB {intersectRayAABB(this->pointA_, this->AB_)};
     const auto intersectedAC {intersectRayAABB(this->pointA_, this->AC_)};
     const auto &pointB {this->pointA_ + this->AB_};
     const auto &pointC {this->pointA_ + this->AC_};
     const auto intersectedBC {intersectRayAABB(pointB, pointC - pointB)};
-    Intersection intersection {ray};
+    Intersection intersection {::std::move(ray)};
     const auto lastDist {intersection.length_};
     intersection = intersect(intersection);
     const auto intersectedRay {intersection.length_ < lastDist};

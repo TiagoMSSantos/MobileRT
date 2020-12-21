@@ -89,7 +89,7 @@ namespace MobileRT {
 
     bool equal(float a, float b);
 
-    bool equal(const ::glm::vec3 &a, const ::glm::vec3 &vec2);
+    bool equal(const ::glm::vec3 &vec1, const ::glm::vec3 &vec2);
 
     template<::std::int32_t S, typename T>
     bool isValid(const ::glm::vec<S, T> &value);

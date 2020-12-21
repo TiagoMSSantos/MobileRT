@@ -35,7 +35,7 @@ void Sphere::checkArguments() const {
  * @param intersection The previous intersection of the ray in the scene.
  * @return The intersection point.
  */
-Intersection Sphere::intersect(const Intersection &intersection) const {
+Intersection Sphere::intersect(Intersection intersection) const {
     //stackoverflow.com/questions/1986378/how-to-set-up-quadratic-equation-for-a-ray-sphere-intersection
     const auto &originToCenter {this->center_ - intersection.ray_.origin_};
     const auto projectionOnDirection {::glm::dot(originToCenter, intersection.ray_.direction_)};
@@ -67,7 +67,7 @@ Intersection Sphere::intersect(const Intersection &intersection) const {
     const auto &intersectionPoint {intersection.ray_.origin_ + intersection.ray_.direction_ * distanceToIntersection};
     const auto &intersectionNormal {::glm::normalize(intersectionPoint - this->center_)};
     const Intersection res {
-        intersection.ray_,
+        ::std::move(intersection.ray_),
         intersectionPoint,
         distanceToIntersection,
         intersectionNormal,

@@ -83,9 +83,9 @@ namespace MobileRT {
 
         Shader &operator=(Shader &&shader) noexcept = delete;
 
-        bool rayTrace(::glm::vec3 *rgb, const Ray &ray);
+        bool rayTrace(::glm::vec3 *rgb, Ray &&ray);
 
-        bool shadowTrace(float distance, const Ray &ray);
+        bool shadowTrace(float distance, Ray &&ray);
 
         virtual void resetSampling();
 

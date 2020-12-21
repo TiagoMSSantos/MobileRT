@@ -191,7 +191,7 @@ namespace MobileRT {
         #pragma omp parallel for
         // store primitives in the grid cells
         for (::std::int32_t index = 0; index < static_cast<::std::int32_t> (numPrimitives); ++index) {
-            auto &primitive {this->primitives_[static_cast<unsigned long> (index)]};
+            auto &primitive {this->primitives_[static_cast<::std::uint32_t> (index)]};
             const auto bound {primitive.getAABB()};
             const auto &bv1 {bound.getPointMin()};
             const auto &bv2 {bound.getPointMax()};

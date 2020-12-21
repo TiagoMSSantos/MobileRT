@@ -35,7 +35,7 @@ void Plane::checkArguments() const {
  * @param intersection The previous intersection of the ray in the scene.
  * @return The intersection point.
  */
-Intersection Plane::intersect(const Intersection &intersection) const {
+Intersection Plane::intersect(Intersection intersection) const {
     if (intersection.ray_.primitive_ == this) {
         return intersection;
     }
@@ -60,7 +60,14 @@ Intersection Plane::intersect(const Intersection &intersection) const {
 
     // if so, then we have an intersection
     const auto intersectionPoint {intersection.ray_.origin_ + intersection.ray_.direction_ * distanceToIntersection};
-    const Intersection res {intersection.ray_, intersectionPoint, distanceToIntersection, this->normal_, this, this->materialIndex_};
+    const Intersection res {::std::move(intersection.ray_),
+                            intersectionPoint,
+                            distanceToIntersection,
+                            this->normal_,
+                            this,
+                            this->materialIndex_
+    };
+
     return res;
 }
 

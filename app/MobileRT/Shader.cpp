@@ -80,8 +80,8 @@ void Shader::initializeAccelerators(Scene scene) {
  * @param ray The casted ray into the scene.
  * @return Whether the casted ray intersects a light source in the scene or not.
  */
-bool Shader::rayTrace(::glm::vec3 *rgb, const Ray &ray) {
-    Intersection intersection {ray};
+bool Shader::rayTrace(::glm::vec3 *rgb, Ray &&ray) {
+    Intersection intersection {::std::move(ray)};
     const auto lastDist {intersection.length_};
     switch (this->accelerator_) {
         case Accelerator::ACC_NAIVE: {
@@ -126,8 +126,8 @@ bool Shader::rayTrace(::glm::vec3 *rgb, const Ray &ray) {
  * @param ray      The casted ray.
  * @return Whether the casted ray intersects a primitive in the scene or not.
  */
-bool Shader::shadowTrace(const float distance, const Ray &ray) {
-    Intersection intersection {ray, distance};
+bool Shader::shadowTrace(const float distance, Ray &&ray) {
+    Intersection intersection {::std::move(ray), distance};
     switch (this->accelerator_) {
         case Accelerator::ACC_NAIVE: {
             intersection = this->naivePlanes_.shadowTrace(intersection);

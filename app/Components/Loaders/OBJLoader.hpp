@@ -41,12 +41,12 @@ namespace Components {
     private:
         triple<::glm::vec3, ::glm::vec3, ::glm::vec3> loadNormal(
             const ::tinyobj::shape_t &index,
-            const ::std::int32_t indexOffset,
+            ::std::int32_t indexOffset,
             const triple<::glm::vec3, ::glm::vec3, ::glm::vec3> &vertex) const;
 
         triple<::glm::vec3, ::glm::vec3, ::glm::vec3> loadVertices(
             const ::tinyobj::shape_t &shape,
-            const ::std::int32_t indexOffset) const;
+            ::std::int32_t indexOffset) const;
 
     private:
         static const ::MobileRT::Texture& getTextureFromCache(

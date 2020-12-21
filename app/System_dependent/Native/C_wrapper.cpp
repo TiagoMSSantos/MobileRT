@@ -23,8 +23,8 @@
 
 #include <chrono>
 #include <cstring>
-#include <functional>
 #include <fstream>
+#include <functional>
 
 static ::std::unique_ptr<::MobileRT::Renderer> renderer_ {};
 
