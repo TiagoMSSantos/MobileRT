@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.annotation.VisibleForTesting;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -293,6 +294,7 @@ public final class DrawView extends GLSurfaceView {
      */
     @Contract(pure = true)
     @Nonnull
+    @VisibleForTesting
     public MainRenderer getRenderer() {
         LOGGER.info("getRenderer");
 

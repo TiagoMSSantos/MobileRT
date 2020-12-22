@@ -1,8 +1,5 @@
 package puscas.mobilertapp;
 
-import android.widget.Button;
-import androidx.test.espresso.Espresso;
-import androidx.test.espresso.ViewInteraction;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
@@ -14,7 +11,6 @@ import org.junit.runners.MethodSorters;
 import puscas.mobilertapp.utils.Constants;
 import puscas.mobilertapp.utils.ConstantsMethods;
 import puscas.mobilertapp.utils.Scene;
-import puscas.mobilertapp.utils.Utils;
 import puscas.mobilertapp.utils.UtilsContextT;
 import puscas.mobilertapp.utils.UtilsT;
 
@@ -29,16 +25,6 @@ public final class PreviewTest extends AbstractTest {
      */
     @Nonnull
     private static final Logger LOGGER = Logger.getLogger(PreviewTest.class.getName());
-
-    /**
-     * Helper method that clicks the Render {@link Button} 2 times in a row,
-     * so it starts and stops the Ray Tracing engine.
-     */
-    private static void startAndStopRendering() {
-        final ViewInteraction viewInteraction = UtilsT.startRendering();
-        UtilsT.assertRenderButtonText(Constants.STOP);
-        viewInteraction.perform(new ViewActionButton(Constants.RENDER));
-    }
 
     /**
      * Setup method called before each test.
@@ -76,8 +62,8 @@ public final class PreviewTest extends AbstractTest {
 
         UtilsContextT.resetPickerValues(this.activity, Scene.CORNELL2.ordinal());
 
-        startAndStopRendering();
-        Utils.executeWithCatching(Espresso::onIdle);
+        UtilsT.startRendering();
+        UtilsT.stopRendering();
 
         UtilsContextT.waitUntilRenderingDone(this.activity);
 

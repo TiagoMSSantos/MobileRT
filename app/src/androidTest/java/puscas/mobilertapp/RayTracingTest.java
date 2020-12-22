@@ -2,7 +2,6 @@ package puscas.mobilertapp;
 
 import android.graphics.Bitmap;
 import android.os.Build;
-import androidx.test.espresso.Espresso;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
@@ -18,7 +17,6 @@ import puscas.mobilertapp.utils.Constants;
 import puscas.mobilertapp.utils.ConstantsMethods;
 import puscas.mobilertapp.utils.ConstantsUI;
 import puscas.mobilertapp.utils.Scene;
-import puscas.mobilertapp.utils.Utils;
 import puscas.mobilertapp.utils.UtilsContext;
 import puscas.mobilertapp.utils.UtilsContextT;
 import puscas.mobilertapp.utils.UtilsPickerT;
@@ -186,11 +184,9 @@ public final class RayTracingTest extends AbstractTest {
         UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SHADER, R.id.pickerShader, 1);
 
         UtilsT.startRendering();
-        Utils.executeWithCatching(Espresso::onIdle);
         if (!expectedSameValues) {
             UtilsT.assertRenderButtonText(Constants.STOP);
         }
-        Utils.executeWithCatching(Espresso::onIdle);
         UtilsContextT.waitUntilRenderingDone(this.activity);
 
         UtilsT.assertRenderButtonText(Constants.RENDER);

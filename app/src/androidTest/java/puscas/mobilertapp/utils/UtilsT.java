@@ -4,7 +4,6 @@ import android.graphics.Bitmap;
 import android.os.Build;
 import android.widget.Button;
 import androidx.test.espresso.Espresso;
-import androidx.test.espresso.ViewInteraction;
 import androidx.test.espresso.matcher.ViewMatchers;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -167,15 +166,25 @@ public final class UtilsT {
     /**
      * Helper method that clicks the Render {@link Button} 1 time,
      * so it starts the Ray Tracing engine.
-     *
-     * @return The {@link ViewInteraction} for the Render {@link Button}.
      */
-    @Nonnull
-    public static ViewInteraction startRendering() {
+    public static void startRendering() {
         LOGGER.info("startRendering");
         assertRenderButtonText(Constants.RENDER);
-        return Espresso.onView(ViewMatchers.withId(R.id.renderButton))
+        Espresso.onView(ViewMatchers.withId(R.id.renderButton))
             .perform(new ViewActionButton(Constants.STOP));
+        Utils.executeWithCatching(Espresso::onIdle);
+    }
+
+    /**
+     * Helper method that clicks the Render {@link Button} 1 time,
+     * so it stops the Ray Tracing engine.
+     */
+    public static void stopRendering() {
+        LOGGER.info("startRendering");
+        assertRenderButtonText(Constants.STOP);
+        Espresso.onView(ViewMatchers.withId(R.id.renderButton))
+            .perform(new ViewActionButton(Constants.RENDER));
+        Utils.executeWithCatching(Espresso::onIdle);
     }
 
     /**
