@@ -252,6 +252,7 @@ jobs:
     - name: Upload reports
       if: always()
       uses: actions/upload-artifact@v2
+      continue-on-error: true
       with:
         name: reports_${{ matrix.type }}_${{ matrix.os }}
         path: |
