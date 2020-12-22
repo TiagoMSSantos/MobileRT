@@ -114,12 +114,10 @@ public final class UiTest extends AbstractTest {
      */
     private static void assertPickerNumbers(final int numCores) {
         IntStreams.rangeClosed(0, 2).forEach(value ->
-            UtilsPickerT
-                .changePickerValue(ConstantsUI.PICKER_ACCELERATOR, R.id.pickerAccelerator, value)
+            UtilsPickerT.changePickerValue(ConstantsUI.PICKER_ACCELERATOR, R.id.pickerAccelerator, value)
         );
         IntStreams.rangeClosed(1, 100).forEach(value ->
-            UtilsPickerT
-                .changePickerValue(ConstantsUI.PICKER_SAMPLES_LIGHT, R.id.pickerSamplesLight, value)
+            UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SAMPLES_LIGHT, R.id.pickerSamplesLight, value)
         );
         IntStreams.rangeClosed(0, 6).forEach(value ->
             UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SCENE, R.id.pickerScene, value)
@@ -131,12 +129,10 @@ public final class UiTest extends AbstractTest {
             UtilsPickerT.changePickerValue(ConstantsUI.PICKER_THREADS, R.id.pickerThreads, value)
         );
         IntStreams.rangeClosed(1, 99).forEach(value ->
-            UtilsPickerT
-                .changePickerValue(ConstantsUI.PICKER_SAMPLES_PIXEL, R.id.pickerSamplesPixel, value)
+            UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SAMPLES_PIXEL, R.id.pickerSamplesPixel, value)
         );
         IntStreams.rangeClosed(1, 8).forEach(value ->
-            UtilsPickerT
-                .changePickerValue(ConstantsUI.PICKER_SIZE, R.id.pickerSize, value)
+            UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SIZE, R.id.pickerSize, value)
         );
     }
 
@@ -246,11 +242,9 @@ public final class UiTest extends AbstractTest {
 
             incrementCountersAndUpdatePickers(numCores);
 
-            final int expectedIndexOld = currentIndex > 0
-                ? (currentIndex - 1) % buttonTextList.size() : 1;
+            final int expectedIndexOld = currentIndex > 0? (currentIndex - 1) % buttonTextList.size() : 1;
             final String expectedButtonTextOld = buttonTextList.get(expectedIndexOld);
-            final ViewInteraction viewInteraction =
-                Espresso.onView(ViewMatchers.withId(R.id.renderButton));
+            final ViewInteraction viewInteraction = Espresso.onView(ViewMatchers.withId(R.id.renderButton));
             final int expectedIndex = currentIndex % buttonTextList.size();
             final String expectedButtonText = buttonTextList.get(expectedIndex);
 
@@ -270,8 +264,7 @@ public final class UiTest extends AbstractTest {
      */
     private void incrementCountersAndUpdatePickers(final int numCores) {
         final int finalCounterScene = Math.min(this.counterScene % Scene.values().length, 3);
-        final int finalCounterAccelerator =
-            Math.max(this.counterAccelerator % Accelerator.values().length, 1);
+        final int finalCounterAccelerator = Math.max(this.counterAccelerator % Accelerator.values().length, 1);
         final int finalCounterShader = Math.max(this.counterShader % Shader.values().length, 0);
         final int finalCounterSpp = Math.max(this.counterSpp % 99, 90);
         final int finalCounterSpl = Math.max(this.counterSpl % 100, 1);
@@ -280,20 +273,13 @@ public final class UiTest extends AbstractTest {
 
         incrementCounters();
 
-        UtilsPickerT
-            .changePickerValue(ConstantsUI.PICKER_SCENE, R.id.pickerScene, finalCounterScene);
-        UtilsPickerT.changePickerValue(ConstantsUI.PICKER_ACCELERATOR, R.id.pickerAccelerator,
-            finalCounterAccelerator);
-        UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SHADER, R.id.pickerShader,
-            finalCounterShader);
-        UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SAMPLES_PIXEL, R.id.pickerSamplesPixel,
-            finalCounterSpp);
-        UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SAMPLES_LIGHT, R.id.pickerSamplesLight,
-            finalCounterSpl);
-        UtilsPickerT
-            .changePickerValue(ConstantsUI.PICKER_THREADS, R.id.pickerThreads, finalCounterThreads);
-        UtilsPickerT
-            .changePickerValue(ConstantsUI.PICKER_SIZE, R.id.pickerSize, finalCounterSize);
+        UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SCENE, R.id.pickerScene, finalCounterScene);
+        UtilsPickerT.changePickerValue(ConstantsUI.PICKER_ACCELERATOR, R.id.pickerAccelerator, finalCounterAccelerator);
+        UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SHADER, R.id.pickerShader, finalCounterShader);
+        UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SAMPLES_PIXEL, R.id.pickerSamplesPixel, finalCounterSpp);
+        UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SAMPLES_LIGHT, R.id.pickerSamplesLight, finalCounterSpl);
+        UtilsPickerT.changePickerValue(ConstantsUI.PICKER_THREADS, R.id.pickerThreads, finalCounterThreads);
+        UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SIZE, R.id.pickerSize, finalCounterSize);
     }
 
     /**

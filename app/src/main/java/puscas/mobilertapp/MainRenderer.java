@@ -960,12 +960,13 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
             }
 
             createAndLaunchRenderTask();
+            this.firstFrame = false;
+
             final String message = "onDrawFirstFrame" + ConstantsMethods.FINISHED;
             LOGGER.info(message);
         }
 
         drawBitmap(this.bitmap);
-        this.firstFrame = false;
     }
 
     /**
