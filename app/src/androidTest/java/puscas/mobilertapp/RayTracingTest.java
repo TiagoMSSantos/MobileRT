@@ -112,14 +112,10 @@ public final class RayTracingTest extends AbstractTest {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
-        UtilsContextT.resetPickerValues(this.activity, Scene.WRONG_FILE.ordinal());
+        final int numCores = UtilsContext.getNumOfCores(this.activity);
+        final int scene = Scene.WRONG_FILE.ordinal();
 
-        UtilsT.startRendering();
-        Utils.executeWithCatching(Espresso::onIdle);
-
-        UtilsContextT.waitUntilRenderingDone(this.activity);
-
-        UtilsT.testStateAndBitmap(true);
+        assertRenderScene(numCores, scene, true);
 
         final String message = methodName + ConstantsMethods.FINISHED;
         LOGGER.info(message);
@@ -136,7 +132,7 @@ public final class RayTracingTest extends AbstractTest {
         final int numCores = UtilsContext.getNumOfCores(this.activity);
         final int scene = Scene.CORNELL2.ordinal();
 
-        assertRenderScene(numCores, scene);
+        assertRenderScene(numCores, scene, false);
     }
 
     /**
@@ -150,7 +146,7 @@ public final class RayTracingTest extends AbstractTest {
         final int numCores = UtilsContext.getNumOfCores(this.activity);
         final int scene = Scene.TEST_INTERNAL_STORAGE.ordinal();
 
-        assertRenderScene(numCores, scene);
+        assertRenderScene(numCores, scene, false);
     }
 
     /**
@@ -165,7 +161,7 @@ public final class RayTracingTest extends AbstractTest {
         final int numCores = UtilsContext.getNumOfCores(this.activity);
         final int scene = Scene.TEST_SD_CARD.ordinal();
 
-        assertRenderScene(numCores, scene);
+        assertRenderScene(numCores, scene, false);
     }
 
     /**
@@ -173,11 +169,14 @@ public final class RayTracingTest extends AbstractTest {
      * Ray Tracing engine to render the whole scene and then checks if the resulted image in the
      * {@link Bitmap} has different values.
      *
-     * @param numCores The number of CPU cores to use in the Ray Tracing process.
-     * @param scene    The desired scene to render.
+     * @param numCores           The number of CPU cores to use in the Ray Tracing process.
+     * @param scene              The desired scene to render.
+     * @param expectedSameValues Whether the {@link Bitmap} should have have only one color.
      * @throws TimeoutException If it couldn't render the whole scene in less than 2 minutes.
      */
-    private void assertRenderScene(final int numCores, final int scene) throws TimeoutException {
+    private void assertRenderScene(final int numCores, final int scene, final boolean expectedSameValues)
+        throws TimeoutException {
+
         UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SCENE, R.id.pickerScene, scene);
         UtilsPickerT.changePickerValue(ConstantsUI.PICKER_THREADS, R.id.pickerThreads, numCores);
         UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SIZE, R.id.pickerSize, 1);
@@ -188,12 +187,14 @@ public final class RayTracingTest extends AbstractTest {
 
         UtilsT.startRendering();
         Utils.executeWithCatching(Espresso::onIdle);
-        UtilsT.assertRenderButtonText(Constants.STOP);
+        if (!expectedSameValues) {
+            UtilsT.assertRenderButtonText(Constants.STOP);
+        }
         Utils.executeWithCatching(Espresso::onIdle);
         UtilsContextT.waitUntilRenderingDone(this.activity);
 
         UtilsT.assertRenderButtonText(Constants.RENDER);
-        UtilsT.testStateAndBitmap(false);
+        UtilsT.testStateAndBitmap(expectedSameValues);
     }
 
 }
