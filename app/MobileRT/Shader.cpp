@@ -162,7 +162,7 @@ bool Shader::shadowTrace(const float distance, Ray &&ray) {
  */
 Intersection Shader::traceLights(Intersection intersection) const {
     for (const auto &light : this->lights_) {
-        intersection = light->intersect(intersection);
+        intersection = light->intersect(::std::move(intersection));
     }
     return intersection;
 }
@@ -182,7 +182,7 @@ void Shader::resetSampling() {
  * @param normal The normal of the hemisphere.
  * @return A random direction in a hemisphere.
  */
-::glm::vec3 Shader::getCosineSampleHemisphere(const ::glm::vec3 &normal) const {
+::glm::vec3 Shader::getCosineSampleHemisphere(const ::glm::vec3 &normal) {
     static ::std::atomic<::std::uint32_t> sampler {};
     const auto current1 {sampler.fetch_add(1, ::std::memory_order_relaxed)};
     const auto current2 {sampler.fetch_add(1, ::std::memory_order_relaxed)};

@@ -61,7 +61,7 @@ namespace MobileRT {
          */
         virtual bool shade(::glm::vec3 *rgb, const Intersection &intersection) = 0;
 
-        ::glm::vec3 getCosineSampleHemisphere(const ::glm::vec3 &normal) const;
+        static ::glm::vec3 getCosineSampleHemisphere(const ::glm::vec3 &normal);
 
         ::std::uint32_t getLightIndex ();
 

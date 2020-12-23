@@ -28,7 +28,7 @@ namespace Components {
 
         void resetSampling() final;
 
-        ::MobileRT::Intersection intersect(::MobileRT::Intersection intersection) final;
+        ::MobileRT::Intersection intersect(::MobileRT::Intersection &&intersection) final;
     };
 }//namespace Components
 

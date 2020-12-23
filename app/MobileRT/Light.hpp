@@ -48,7 +48,7 @@ namespace MobileRT {
          * @param intersection The previous intersection of the ray in the scene.
          * @return The intersection point.
          */
-        virtual Intersection intersect(Intersection intersection) = 0;
+        virtual Intersection intersect(Intersection &&intersection) = 0;
     };
 }//namespace MobileRT
 

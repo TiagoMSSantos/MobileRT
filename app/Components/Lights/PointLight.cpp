@@ -16,6 +16,6 @@ PointLight::PointLight(const Material &radiance, const ::glm::vec3 &position) :
 void PointLight::resetSampling() {
 }
 
-Intersection PointLight::intersect(Intersection intersection) {
-    return intersection;
+Intersection PointLight::intersect(Intersection &&intersection) {
+    return ::std::move(intersection);
 }

@@ -29,7 +29,7 @@ void AreaLight::resetSampling() {
     this->samplerPointLight_->resetSampling();
 }
 
-Intersection AreaLight::intersect(Intersection intersection) {
+Intersection AreaLight::intersect(Intersection &&intersection) {
     const auto lastDist {intersection.length_};
     intersection = this->triangle_.intersect(intersection);
     const auto intersected {intersection.length_ < lastDist};
@@ -37,5 +37,5 @@ Intersection AreaLight::intersect(Intersection intersection) {
         intersection.material_ = &this->radiance_;
         intersection.materialIndex_ = -1;
     }
-    return intersection;
+    return ::std::move(intersection);
 }
