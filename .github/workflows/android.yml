@@ -136,16 +136,20 @@ jobs:
         echo "Result: '${res}'";
         exit ${res};
 
-    - name: Build ${{ matrix.type }}
-      if: success()
-      working-directory: .
-      run: |
-        mkdir -p ./app/build/reports;
-        mkdir -p ./reports;
-        bash ./scripts/compile_android.sh ${{ matrix.type }} no ${{ matrix.ndk_version }} ${{ matrix.cmake_version }} 2>&1 | tee ./reports/compile_android.log;
-        export res="${PIPESTATUS[0]}";
-        echo "Result: '${res}'";
-        exit ${res};
+    - name: Run Android tests
+      if: success() && !startsWith(matrix.os, 'windows')
+      uses: ReactiveCircus/android-emulator-runner@v2.13.0
+      with:
+        api-level: 16
+        target: default
+        arch: x86
+        disable-animations: true
+        emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none
+        script: |
+          mkdir -p ./app/build/reports;
+          mkdir -p ./reports;
+          bash ./scripts/run_tests_android.sh ${{ matrix.variant }} all ${{ matrix.ndk_version }} ${{ matrix.cmake_version }} false;
+          tree -a -f | grep -i app/build/reports | grep -i xml 2>&1 | tee ./reports/tree_report.log;
 
     - name: Sign APK
       if: success()
@@ -178,21 +182,6 @@ jobs:
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
         exit ${res};
-
-    - name: Run Android tests
-      if: success() && !startsWith(matrix.os, 'windows')
-      uses: ReactiveCircus/android-emulator-runner@v2.13.0
-      with:
-        api-level: 16
-        target: default
-        arch: x86
-        disable-animations: true
-        emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none
-        script: |
-          mkdir -p ./app/build/reports;
-          mkdir -p ./reports;
-          bash ./scripts/run_tests_android.sh ${{ matrix.variant }} all ${{ matrix.ndk_version }} ${{ matrix.cmake_version }} false;
-          tree -a -f | grep -i app/build/reports | grep -i xml 2>&1 | tee ./reports/tree_report.log;
 
     - name: Upload APK
       if: success() && startsWith(matrix.os, 'macos')

@@ -169,13 +169,12 @@ function copyResources() {
   mobilert_path="/data/MobileRT"
   sdcard_path="/mnt/sdcard/MobileRT"
 
-  echo "Copy unit tests"
+  echo "Prepare copy unit tests"
   adb shell mount -o remount,rw /mnt/sdcard
   callCommand adb shell mkdir -p ${mobilert_path}
   callCommand adb shell mkdir -p ${sdcard_path}
   adb shell rm -r ${mobilert_path}/*
   adb shell rm -r ${sdcard_path}/*
-  callCommand adb push app/build/intermediates/cmake/"${type}"/obj/x86/* ${mobilert_path}/
 
   echo "Copy tests resources"
   callCommand adb push app/src/androidTest/resources/teapot ${mobilert_path}/WavefrontOBJs/teapot
@@ -211,6 +210,9 @@ function startCopyingLogcatToFile() {
 }
 
 function runUnitTests() {
+  echo "Copy unit tests"
+  callCommand adb push app/build/intermediates/cmake/"${type}"/obj/x86/* ${mobilert_path}/
+
   echo "Run unit tests"
   if [ "${type}" == "debug" ]; then
     # Ignore unit tests that should crash the system because of a failing assert
@@ -270,9 +272,9 @@ runEmulator
 waitForEmulator
 copyResources
 startCopyingLogcatToFile
-runUnitTests
 verifyResources
 runInstrumentationTests
+runUnitTests
 
 ###############################################################################
 # Exit code
