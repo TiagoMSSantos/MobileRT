@@ -303,14 +303,13 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitColorsArray(
 
 static void updateFps() {
     MobileRT::checkSystemError("updateFps start");
-    static ::std::int32_t frame{};
-    static ::std::chrono::steady_clock::time_point timebase{};
+    static ::std::int32_t frame {};
+    static ::std::chrono::steady_clock::time_point timebase {};
     ++frame;
-    const auto timeNow{::std::chrono::steady_clock::now()};
-    const auto timeElapsed
-        {::std::chrono::duration_cast<std::chrono::milliseconds>(timeNow - timebase).count()};
+    const auto timeNow {::std::chrono::steady_clock::now()};
+    const auto timeElapsed {::std::chrono::duration_cast<::std::chrono::milliseconds>(timeNow - timebase).count()};
     if (timeElapsed > 1000) {
-        fps_ = (frame * 1000.0F) / timeElapsed;
+        fps_ = (static_cast<float>(frame) * 1000.0F) / static_cast<float>(timeElapsed);
         timebase = timeNow;
         frame = 0;
     }
@@ -573,8 +572,7 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
                     ::std::move(shader), ::std::move(camera), ::std::move(samplerPixel),
                     width, height, samplesPixel
                 );
-                timeRenderer_ =
-                    ::std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+                timeRenderer_ = ::std::chrono::duration_cast<::std::chrono::milliseconds>(end - start).count();
                 LOG_INFO("TIME CONSTRUCTION RENDERER = ", timeRenderer_, "ms");
                 LOG_DEBUG("PLANES = ", planes);
                 LOG_DEBUG("SPHERES = ", spheres);
@@ -737,7 +735,7 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
                 const auto castedRays {renderer_->getTotalCastedRays()};
                 LOG_DEBUG("Rendering Time in secs = ", renderingTime);
                 LOG_DEBUG("Casted rays = ", castedRays);
-                LOG_DEBUG("Total Millions rays per second = ", (castedRays / renderingTime) / 1000000L);
+                LOG_DEBUG("Total Millions rays per second = ", (static_cast<double> (castedRays) / renderingTime) / 1000000L);
 
                 LOG_DEBUG("rtRenderIntoBitmap finished");
             }
