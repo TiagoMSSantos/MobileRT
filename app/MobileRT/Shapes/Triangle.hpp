@@ -31,7 +31,7 @@ namespace MobileRT {
 
         void checkArguments() const;
 
-        bool isNearFarInvalid(float near, float far) const;
+        static bool isNearFarInvalid(float near, float far);
 
     public:
         explicit Triangle() = delete;

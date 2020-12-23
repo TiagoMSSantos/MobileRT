@@ -124,11 +124,11 @@ AABB Triangle::getAABB() const {
 /**
  * Checks if near and far are valid.
  *
- * @param near The distance of near..
+ * @param near The distance of near.
  * @param far  The distance of far.
  * @return Whether they are invalid or not.
  */
-bool Triangle::isNearFarInvalid(const float near, const float far) const {
+bool Triangle::isNearFarInvalid(const float near, const float far) {
     return (near > far) || (far < 0);
 }
 
