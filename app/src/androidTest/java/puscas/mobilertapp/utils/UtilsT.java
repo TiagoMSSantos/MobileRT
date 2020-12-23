@@ -173,6 +173,7 @@ public final class UtilsT {
         Espresso.onView(ViewMatchers.withId(R.id.renderButton))
             .perform(new ViewActionButton(Constants.STOP));
         Utils.executeWithCatching(Espresso::onIdle);
+        LOGGER.info("startRendering" + ConstantsMethods.FINISHED);
     }
 
     /**
@@ -180,11 +181,12 @@ public final class UtilsT {
      * so it stops the Ray Tracing engine.
      */
     public static void stopRendering() {
-        LOGGER.info("startRendering");
+        LOGGER.info("stopRendering");
         assertRenderButtonText(Constants.STOP);
         Espresso.onView(ViewMatchers.withId(R.id.renderButton))
             .perform(new ViewActionButton(Constants.RENDER));
         Utils.executeWithCatching(Espresso::onIdle);
+        LOGGER.info("stopRendering" + ConstantsMethods.FINISHED);
     }
 
     /**
