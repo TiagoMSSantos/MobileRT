@@ -33,17 +33,18 @@ function gather_logs_func() {
   echo ""
   echo "Gathering logs"
 
-  # Copy logcat to file
+  echo "Copy logcat to file"
   callCommand adb logcat -v threadtime -d "*":V \
     > "${reports_path}"/logcat_"${type}".log 2>&1
 
-  # Filter logcat of the app
+  echo "Filter logcat of the app"
   callCommand cat "${reports_path}"/logcat_"${type}".log |
     grep -E -i "$(grep -E -i \
       "proc.*:puscas" "${reports_path}/logcat_${type}".log |
       cut -d ":" -f 4 | cut -d ' ' -f 4)" \
       > "${reports_path}"/logcat_app_"${type}".log
 
+  echo "Filter realtime logcat of the app"
   callCommand cat "${reports_path}"/logcat_current_"${type}".log |
     grep -E -i "$(grep -E -i "proc.*:puscas" \
       "${reports_path}"/logcat_current_"${type}".log |
@@ -202,7 +203,7 @@ function startCopyingLogcatToFile() {
   echo "Clear logcat"
   adb logcat -b all -b main -b system -b radio -c
 
-  echo "Copy logcat to file"
+  echo "Copy realtime logcat to file"
   callCommand adb logcat -v threadtime "*":V \
     2>&1 | tee ${reports_path}/logcat_current_"${type}".log &
   pid_logcat="$!"
