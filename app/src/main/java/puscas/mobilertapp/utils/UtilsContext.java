@@ -13,14 +13,20 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import com.google.common.collect.ImmutableMap;
+import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
 import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
+import java.util.logging.StreamHandler;
 import java.util.regex.Pattern;
 import java8.util.Optional;
 import javax.annotation.Nonnull;
@@ -170,27 +176,6 @@ public final class UtilsContext {
         return cores;
     }
 
-    /**
-     * Helper method that checks if the system is a 64 device or not.
-     *
-     * @param context The {@link Context} of the Android system.
-     * @return Whether the system is 64 bit.
-     */
-    public static boolean is64BitDevice(@Nonnull final Context context) {
-        LOGGER.info("is64BitDevice");
-        final String cpuInfoPath = UtilsContext.readTextAsset(context,
-            "Utils" + ConstantsUI.FILE_SEPARATOR + "cpuInfoPath.txt");
-        try (InputStream inputStream = new FileInputStream(cpuInfoPath.trim())) {
-            final String text = Utils.readTextFromInputStream(inputStream);
-            if (text.matches("64.*bit")) {
-                return true;
-            }
-        } catch (final IOException ex) {
-            throw new FailureException(ex);
-        }
-        return false;
-    }
-
 
     // Private methods
 
@@ -263,6 +248,39 @@ public final class UtilsContext {
     public static void checksInternetPermission(@Nonnull final Activity activity) {
         LOGGER.info("checksInternetPermission");
         checksAccessPermission(activity, Manifest.permission.INTERNET);
+    }
+
+    /**
+     * Helper method that reads the configuration Java {@link Logger} file and sets it up.
+     *
+     * @param context The {@link Context} of the Android system.
+     */
+    public static void setupLoggerConfig(@Nonnull final Context context) {
+        LOGGER.finest("setupLoggerConfig");
+
+        final File logDirectory = new File("/data/MobileRT/Logs");
+        logDirectory.mkdirs();
+
+        final String configLogger = UtilsContext.readTextAsset(context,
+            "Logging" + ConstantsUI.FILE_SEPARATOR + "mylogging.properties");
+        try (InputStream inputStream = new ByteArrayInputStream(configLogger.getBytes())) {
+            LogManager.getLogManager().checkAccess();
+            LogManager.getLogManager().reset();
+            LogManager.getLogManager().readConfiguration(inputStream);
+
+            final SimpleFormatter fmt = new SimpleFormatter();
+            final StreamHandler sh = new StreamHandler(System.out, fmt);
+
+            final Logger rootLogger = LogManager.getLogManager().getLogger("");
+            rootLogger.setUseParentHandlers(false);
+            rootLogger.addHandler(sh);
+        } catch (final FileNotFoundException ex1) {
+            throw new FailureException(ex1);
+        } catch (final IOException ex2) {
+            throw new FailureException(ex2);
+        }
+
+        LOGGER.finest("setupLoggerConfig" + ConstantsMethods.FINISHED);
     }
 
     /**
