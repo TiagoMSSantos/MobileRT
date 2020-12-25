@@ -195,6 +195,7 @@ public final class MainActivity extends Activity {
     @Override
     public void onCreate(@Nullable final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        UtilsContext.setupLoggerConfig(this);
         log.info("onCreate");
 
         setContentView(R.layout.activity_main);
