@@ -132,25 +132,20 @@ function waitForEmulator() {
   # Make the all other processes belong in the process group, so that will be killed at the end.
   callCommand set +m
 
+  echo "Wait for device to be ready to unlock."
   callCommand adb kill-server
   callCommandUntilSuccess adb start-server
   callCommandUntilSuccess adb wait-for-device
-#  callCommandUntilSuccess adb shell "while [[ -z $(getprop sys.boot_completed) ]]; do sleep 3; done; input keyevent 82"
+  # adb shell needs ' instead of ", so `getprop` works properly
+  callCommandUntilSuccess adb shell 'while [[ $(getprop service.bootanim.exit) -ne 1 ]]; do sleep 1; done;'
   callCommandUntilSuccess adb shell whoami
 
   echo "Set adb as root, to be able to change files permissions"
   callCommandUntilSuccess adb root
 
-  # Wait for device to be ready to unlock
-  callCommandUntilSuccess adb shell dumpsys power
-  callCommandUntilSuccess adb shell dumpsys window
-  callCommandUntilSuccess adb wait-for-device
-  callCommandUntilSuccess adb shell sleep 3
-
-  # Unlock device
+  echo "Unlock device"
   callCommandUntilSuccess adb shell input tap 800 900
   callCommandUntilSuccess adb shell input keyevent 82
-  callCommandUntilSuccess adb root
 
   # Abort if emulator didn't start
   local adb_devices_running

@@ -15,7 +15,10 @@ on:
     - '!.github/workflows/android.yml'
     - '!app/System_dependent/CMakeLists.txt'
     - '!app/System_dependent/Android_JNI/**'
+    - '!scripts/check_android.sh'
     - '!scripts/compile_android.sh'
+    - '!scripts/run_tests.sh'
+    - '!scripts/run_tests_android.sh'
     - '!codecov.yml'
 #branches-ignore:
 #  - '**'
