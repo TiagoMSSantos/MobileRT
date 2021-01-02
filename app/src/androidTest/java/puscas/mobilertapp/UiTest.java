@@ -164,7 +164,7 @@ public final class UiTest extends AbstractTest {
      * Tests changing all the {@link NumberPicker} and clicking the render
      * {@link Button} few times.
      */
-    @Test(timeout = 2L * 60L * 1000L)
+    @Test(timeout = 20L * 60L * 1000L)
     public void testUI() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);

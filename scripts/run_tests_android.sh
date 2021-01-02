@@ -126,7 +126,7 @@ function waitForEmulator() {
   adb_devices_running=$(adb devices | tail -n +2)
   echo "Devices running: ${adb_devices_running}"
   if [ -z "${adb_devices_running}" ]; then
-    callCommand emulator -avd "${avd_emulator}" -writable-system 2> /dev/null &
+    callCommand cpulimit -- emulator -avd "${avd_emulator}" -writable-system 2> /dev/null &
   fi
 
   # Make the all other processes belong in the process group, so that will be killed at the end.

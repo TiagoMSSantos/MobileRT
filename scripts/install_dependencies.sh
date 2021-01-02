@@ -51,6 +51,7 @@ if [ -x "$(command -v apt-get)" ]; then
     python3-pip \
     python3-dev \
     python3-setuptools \
+    cpulimit \
     sudo \
     || true;
 # if MacOS
@@ -64,6 +65,7 @@ elif [ -x "$(command -v brew)" ]; then
   callCommand brew install qt || true;
   callCommand brew install llvm || true;
   callCommand brew install lcov || true;
+  callCommand brew install cpulimit || true;
   brew install python3;
   brew install pyenv;
 fi
@@ -123,5 +125,6 @@ checkCommand g++
 checkCommand python3
 checkCommand pip
 checkCommand pip3
+checkCommand cpulimit
 ###############################################################################
 ###############################################################################
