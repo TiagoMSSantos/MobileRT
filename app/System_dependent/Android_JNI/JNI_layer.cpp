@@ -30,24 +30,70 @@
 #include <mutex>
 #include <string>
 
-static float fps_{};
-static ::std::atomic<::State> state_{State::IDLE};
-static ::std::unique_ptr<::MobileRT::Renderer> renderer_{};
-static ::std::unique_ptr<::JavaVM> javaVM_{};
-static ::std::unique_ptr<::std::thread> thread_{};
-static ::std::mutex mutex_{};
-static ::std::int32_t numLights_{};
-static ::std::int64_t timeRenderer_{};
-static ::std::condition_variable rendered_{};
-static ::std::atomic<bool> finishedRendering_{true};
+/**
+ * The number of frames per second.
+ */
+static float fps_ {};
+
+/**
+ * The current state of the MobileRT engine.
+ */
+static ::std::atomic<::State> state_ {State::IDLE};
+
+/**
+ * The MobileRT Renderer.
+ */
+static ::std::unique_ptr<::MobileRT::Renderer> renderer_ {};
+
+/**
+ * A Java Virtual Machine.
+ */
+static ::std::unique_ptr<::JavaVM> javaVM_ {};
+
+/**
+ * The auxiliary thread to execute the MobileRT render.
+ */
+static ::std::unique_ptr<::std::thread> thread_ {};
+
+/**
+ * The mutex for the MobileRT to only 1 thread execute it.
+ */
+static ::std::mutex mutex_ {};
+
+/**
+ * The number of lights in the current scene.
+ */
+static ::std::int32_t numLights_ {};
+
+/**
+ * The elapsed time in milliseconds to create the Shader and thus the Acceleration Structure.
+ */
+static ::std::int64_t timeRenderer_ {};
+
+/**
+ * The condition variable to wait for the MobileRT Renderer to finish the rendering process.
+ */
+static ::std::condition_variable rendered_ {};
+
+/**
+ * Wether or not the rendering process was finished.
+ */
+static ::std::atomic<bool> finishedRendering_ {true};
 
 
+/**
+ * Helper method that throws a Java exception.
+ *
+ * @param env           The JNI environment.
+ * @param exception     The exception which contains the message to add.
+ * @param exceptionName The name of the exception class to throw.
+ */
 static void handleException(JNIEnv *const env,
                      const ::std::exception &exception,
                      const char *const exceptionName) {
     MobileRT::checkSystemError("handleException start");
-    const auto lowMemClass{env->FindClass(exceptionName)};
-    const auto res{env->ThrowNew(lowMemClass, exception.what())};
+    const auto clazz {env->FindClass(exceptionName)};
+    const auto res {env->ThrowNew(clazz, exception.what())};
     if (res != 0) {
         LOG_ERROR("ERROR: ", res);
     } else {
@@ -62,10 +108,9 @@ extern "C"
     LOG_DEBUG("JNI_OnLoad");
     javaVM_.reset(jvm);
 
-    JNIEnv *jniEnv{};
+    JNIEnv *jniEnv {};
     {
-        const ::std::int32_t
-            result{javaVM_->GetEnv(reinterpret_cast<void **> (&jniEnv), JNI_VERSION_1_6)};
+        const ::std::int32_t result {javaVM_->GetEnv(reinterpret_cast<void **> (&jniEnv), JNI_VERSION_1_6)};
         ASSERT(result == JNI_OK, "JNI was not loaded properly.");
         static_cast<void> (result);
     }
@@ -87,9 +132,9 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitCameraArray(
 ) {
     MobileRT::checkSystemError("rtInitCameraArray start");
     try {
-        jobject directBuffer{};
+        jobject directBuffer {};
         {
-            const ::std::lock_guard<::std::mutex> lock{mutex_};
+            const ::std::lock_guard<::std::mutex> lock {mutex_};
             if (renderer_ != nullptr) {
                 ::MobileRT::Camera *const camera{renderer_->camera_.get()};
                 const ::std::int64_t arraySize{20};
@@ -170,7 +215,7 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitVerticesArray(
     try {
         jobject directBuffer{};
         {
-            const ::std::lock_guard<::std::mutex> lock{mutex_};
+            const ::std::lock_guard<::std::mutex> lock {mutex_};
             if (renderer_ != nullptr) {
                 const auto &triangles{renderer_->shader_->getTriangles()};
                 const auto arraySize{static_cast<::std::uint32_t> (triangles.size() * 3 * 4)};
@@ -237,7 +282,7 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitColorsArray(
     try {
         jobject directBuffer{};
         {
-            const ::std::lock_guard<::std::mutex> lock{mutex_};
+            const ::std::lock_guard<::std::mutex> lock {mutex_};
             if (renderer_ != nullptr) {
                 const auto &triangles{renderer_->shader_->getTriangles()};
                 const auto arraySize{static_cast<::std::uint32_t> (triangles.size() * 3 * 4)};
@@ -324,7 +369,7 @@ void Java_puscas_mobilertapp_DrawView_rtStartRender(
 ) {
     MobileRT::checkSystemError("rtStartRender start");
     if (wait) {
-        ::std::unique_lock<::std::mutex> lock{mutex_};
+        ::std::unique_lock<::std::mutex> lock {mutex_};
         rendered_.wait(lock, [&] { return finishedRendering_ == true; });
         finishedRendering_ = false;
     }
@@ -345,7 +390,7 @@ void Java_puscas_mobilertapp_DrawView_rtStopRender(
         LOG_DEBUG("Will get lock");
         state_ = State::STOPPED;
         LOG_DEBUG("STATE = STOPPED");
-        ::std::unique_lock<::std::mutex> lock{mutex_};
+        ::std::unique_lock<::std::mutex> lock {mutex_};
         LOG_DEBUG("Got lock, waiting for renderer to finish");
         if (renderer_ != nullptr) {
             LOG_DEBUG("RENDERER STOP");
@@ -381,63 +426,55 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
     try {
         const auto configClass{env->GetObjectClass(localConfig)};
 
-        const auto sceneMethodId{env->GetMethodID(configClass, "getScene", "()I")};
-        const auto sceneIndex{env->CallIntMethod(localConfig, sceneMethodId)};
+        const auto sceneMethodId {env->GetMethodID(configClass, "getScene", "()I")};
+        const auto sceneIndex {env->CallIntMethod(localConfig, sceneMethodId)};
 
-        const auto shaderMethodId{env->GetMethodID(configClass, "getShader", "()I")};
-        const auto shaderIndex{env->CallIntMethod(localConfig, shaderMethodId)};
+        const auto shaderMethodId {env->GetMethodID(configClass, "getShader", "()I")};
+        const auto shaderIndex {env->CallIntMethod(localConfig, shaderMethodId)};
 
-        const auto acceleratorMethodId{env->GetMethodID(configClass, "getAccelerator", "()I")};
-        const auto acceleratorIndex{env->CallIntMethod(localConfig, acceleratorMethodId)};
+        const auto acceleratorMethodId {env->GetMethodID(configClass, "getAccelerator", "()I")};
+        const auto acceleratorIndex {env->CallIntMethod(localConfig, acceleratorMethodId)};
 
 
-        const auto configResolutionMethodId{env->GetMethodID(configClass, "getConfigResolution",
+        const auto configResolutionMethodId {env->GetMethodID(configClass, "getConfigResolution",
                                                              "()Lpuscas/mobilertapp/ConfigResolution;")};
-        const auto resolutionConfig{env->CallObjectMethod(localConfig, configResolutionMethodId)};
-        const auto resolutionConfigClass{env->GetObjectClass(resolutionConfig)};
+        const auto resolutionConfig {env->CallObjectMethod(localConfig, configResolutionMethodId)};
+        const auto resolutionConfigClass {env->GetObjectClass(resolutionConfig)};
 
-        const auto widthMethodId{env->GetMethodID(resolutionConfigClass, "getWidth", "()I")};
-        const auto width{env->CallIntMethod(resolutionConfig, widthMethodId)};
+        const auto widthMethodId {env->GetMethodID(resolutionConfigClass, "getWidth", "()I")};
+        const auto width {env->CallIntMethod(resolutionConfig, widthMethodId)};
 
-        const auto heightMethodId{env->GetMethodID(resolutionConfigClass, "getHeight", "()I")};
-        const auto height{env->CallIntMethod(resolutionConfig, heightMethodId)};
+        const auto heightMethodId {env->GetMethodID(resolutionConfigClass, "getHeight", "()I")};
+        const auto height {env->CallIntMethod(resolutionConfig, heightMethodId)};
 
 
-        const auto configSamplesMethodId{env->GetMethodID(configClass, "getConfigSamples",
+        const auto configSamplesMethodId {env->GetMethodID(configClass, "getConfigSamples",
                                                           "()Lpuscas/mobilertapp/ConfigSamples;")};
-        const auto samplesConfig{env->CallObjectMethod(localConfig, configSamplesMethodId)};
-        const auto samplesConfigClass{env->GetObjectClass(samplesConfig)};
+        const auto samplesConfig {env->CallObjectMethod(localConfig, configSamplesMethodId)};
+        const auto samplesConfigClass {env->GetObjectClass(samplesConfig)};
 
-        const auto
-            samplesPixelMethodId{env->GetMethodID(samplesConfigClass, "getSamplesPixel", "()I")};
-        const auto samplesPixel{env->CallIntMethod(samplesConfig, samplesPixelMethodId)};
+        const auto samplesPixelMethodId {env->GetMethodID(samplesConfigClass, "getSamplesPixel", "()I")};
+        const auto samplesPixel {env->CallIntMethod(samplesConfig, samplesPixelMethodId)};
 
-        const auto
-            samplesLightMethodId{env->GetMethodID(samplesConfigClass, "getSamplesLight", "()I")};
-        const auto samplesLight{env->CallIntMethod(samplesConfig, samplesLightMethodId)};
+        const auto samplesLightMethodId {env->GetMethodID(samplesConfigClass, "getSamplesLight", "()I")};
+        const auto samplesLight {env->CallIntMethod(samplesConfig, samplesLightMethodId)};
 
-        jboolean isCopy{JNI_FALSE};
-        const auto
-            objMethodId{env->GetMethodID(configClass, "getObjFilePath", "()Ljava/lang/String;")};
-        const auto localObjFilePath
-            {static_cast<jstring> (env->CallObjectMethod(localConfig, objMethodId))};
-        const auto *const objFilePath{env->GetStringUTFChars(localObjFilePath, &isCopy)};
+        jboolean isCopy {JNI_FALSE};
+        const auto objMethodId {env->GetMethodID(configClass, "getObjFilePath", "()Ljava/lang/String;")};
+        const auto localObjFilePath {static_cast<jstring> (env->CallObjectMethod(localConfig, objMethodId))};
+        const auto *const objFilePath {env->GetStringUTFChars(localObjFilePath, &isCopy)};
 
-        const auto
-            mtlMethodId{env->GetMethodID(configClass, "getMatFilePath", "()Ljava/lang/String;")};
-        const auto localMatFilePath
-            {static_cast<jstring> (env->CallObjectMethod(localConfig, mtlMethodId))};
-        const auto *const matFilePath{env->GetStringUTFChars(localMatFilePath, &isCopy)};
+        const auto mtlMethodId {env->GetMethodID(configClass, "getMatFilePath", "()Ljava/lang/String;")};
+        const auto localMatFilePath {static_cast<jstring> (env->CallObjectMethod(localConfig, mtlMethodId))};
+        const auto *const matFilePath {env->GetStringUTFChars(localMatFilePath, &isCopy)};
 
-        const auto
-            camMethodId{env->GetMethodID(configClass, "getCamFilePath", "()Ljava/lang/String;")};
-        const auto localCamFilePath
-            {static_cast<jstring> (env->CallObjectMethod(localConfig, camMethodId))};
-        const auto *const camFilePath{env->GetStringUTFChars(localCamFilePath, &isCopy)};
+        const auto camMethodId {env->GetMethodID(configClass, "getCamFilePath", "()Ljava/lang/String;")};
+        const auto localCamFilePath {static_cast<jstring> (env->CallObjectMethod(localConfig, camMethodId))};
+        const auto *const camFilePath {env->GetStringUTFChars(localCamFilePath, &isCopy)};
 
-        const auto res{
+        const auto res {
             [&]() -> ::std::int32_t {
-                const ::std::lock_guard<::std::mutex> lock{mutex_};
+                const ::std::lock_guard<::std::mutex> lock {mutex_};
                 renderer_ = nullptr;
                 const auto ratio{static_cast<float> (width) / height};
                 ::MobileRT::Scene scene{};
@@ -509,7 +546,7 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
                 LOG_DEBUG("LOADING SHADER: ", shaderIndex);
                 LOG_DEBUG("LOADING ACCELERATOR: ", ::MobileRT::Shader::Accelerator(acceleratorIndex));
                 LOG_DEBUG("samplesLight: ", samplesLight);
-                const auto start{::std::chrono::system_clock::now()};
+                const auto start {::std::chrono::system_clock::now()};
                 switch (shaderIndex) {
                     case 1: {
                         shader = ::MobileRT::std::make_unique<Components::Whitted>(
@@ -559,7 +596,7 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
                         break;
                     }
                 }
-                const auto end{::std::chrono::system_clock::now()};
+                const auto end {::std::chrono::system_clock::now()};
 
                 LOG_DEBUG("LOADING RENDERER");
                 const auto planes{static_cast<::std::int32_t> (shader->getPlanes().size())};
@@ -607,7 +644,7 @@ void Java_puscas_mobilertapp_MainRenderer_rtFinishRender(
     MobileRT::checkSystemError("rtFinishRender start");
 
     {
-        const ::std::lock_guard<::std::mutex> lock{mutex_};
+        const ::std::lock_guard<::std::mutex> lock {mutex_};
         state_ = State::FINISHED;
         LOG_DEBUG("STATE = FINISHED");
         if (renderer_ != nullptr) {
@@ -638,15 +675,15 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
     LOG_DEBUG("rtRenderIntoBitmap");
     LOG_DEBUG("nThreads = ", nThreads);
     try {
-        auto globalBitmap{static_cast<jobject> (env->NewGlobalRef(localBitmap))};
+        auto globalBitmap {static_cast<jobject> (env->NewGlobalRef(localBitmap))};
 
-        auto lambda{
+        auto lambda {
             [=]() -> void {
                 ::std::chrono::duration<double> timeRendering {};
 
                 LOG_DEBUG("rtRenderIntoBitmap step 1");
                 ASSERT(env != nullptr, "JNIEnv not valid.");
-                const auto jniError{
+                const auto jniError {
                     javaVM_->GetEnv(reinterpret_cast<void **> (const_cast<JNIEnv **> (&env)),
                                     JNI_VERSION_1_6)
                 };
@@ -654,8 +691,7 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
                 LOG_DEBUG("rtRenderIntoBitmap step 2");
                 ASSERT(jniError == JNI_OK || jniError == JNI_EDETACHED, "JNIEnv not valid.");
                 {
-                    const auto
-                        result{javaVM_->AttachCurrentThread(const_cast<JNIEnv **> (&env), nullptr)};
+                    const auto result {javaVM_->AttachCurrentThread(const_cast<JNIEnv **> (&env), nullptr)};
                     ASSERT(result == JNI_OK, "Couldn't attach current thread to JVM.");
                     static_cast<void> (result);
                 }
@@ -702,7 +738,7 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
                 finishedRendering_ = true;
                 rendered_.notify_all();
                 {
-                    const ::std::lock_guard<::std::mutex> lock{mutex_};
+                    const ::std::lock_guard<::std::mutex> lock {mutex_};
                     if (state_ != State::STOPPED) {
                         state_ = State::FINISHED;
                         LOG_DEBUG("STATE = FINISHED");
@@ -715,17 +751,15 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
 
                     env->DeleteGlobalRef(globalBitmap);
                     {
-                        const auto result{
-                            javaVM_
-                                ->GetEnv(reinterpret_cast<void **> (const_cast<JNIEnv **> (&env)),
-                                         JNI_VERSION_1_6)
+                        const auto result {
+                            javaVM_->GetEnv(reinterpret_cast<void **> (const_cast<JNIEnv **> (&env)), JNI_VERSION_1_6)
                         };
                         ASSERT(result == JNI_OK || jniError == JNI_EDETACHED, "JNIEnv not valid.");
                         static_cast<void> (result);
                     }
                     env->ExceptionClear();
                     if (jniError == JNI_EDETACHED) {
-                        const auto result{javaVM_->DetachCurrentThread()};
+                        const auto result {javaVM_->DetachCurrentThread()};
                         ASSERT(result == JNI_OK, "Couldn't detach the current thread from JVM.");
                         static_cast<void> (result);
                     }
@@ -799,7 +833,7 @@ extern "C"
     MobileRT::checkSystemError("rtGetSample start");
     ::std::int32_t sample{};
     {
-        const ::std::lock_guard<::std::mutex> lock{mutex_};
+        const ::std::lock_guard<::std::mutex> lock {mutex_};
         if (renderer_ != nullptr) {
             sample = renderer_->getSample();
         }
