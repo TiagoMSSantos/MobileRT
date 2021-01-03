@@ -17,10 +17,11 @@ using ::MobileRT::Sampler;
 OBJLoader::OBJLoader(::std::string objFilePath, const ::std::string &matFilePath) :
     objFilePath_ {::std::move(objFilePath)} {
 
+    LOG_INFO("Going to load OBJ and MTL files to create OBJLoader.");
     MobileRT::checkSystemError("Error before read OBJ.");
     LOG_DEBUG("Will read OBJ path: ", this->objFilePath_);
     ::std::ifstream objStream {this->objFilePath_, ::std::ios::binary};
-    MobileRT::checkSystemError(::std::string("Error after read OBJ `" + this->objFilePath_ + "`.\n").c_str());
+    MobileRT::checkSystemError(::std::string("Error after read OBJ `" + this->objFilePath_ + "`.").c_str());
     objStream.exceptions(
         objStream.exceptions() | ::std::ifstream::goodbit | ::std::ifstream::badbit |
         ::std::ifstream::failbit
@@ -33,8 +34,7 @@ OBJLoader::OBJLoader(::std::string objFilePath, const ::std::string &matFilePath
         ::std::ifstream::failbit
     );
     ::tinyobj::MaterialStreamReader matStreamReader {matStream};
-    ::tinyobj::MaterialStreamReader
-        *const matStreamReaderPtr {!matFilePath.empty() ? &matStreamReader : nullptr};
+    ::tinyobj::MaterialStreamReader *const matStreamReaderPtr {!matFilePath.empty() ? &matStreamReader : nullptr};
     ::std::string errors {};
     ::std::string warnings {};
 
@@ -49,16 +49,8 @@ OBJLoader::OBJLoader(::std::string objFilePath, const ::std::string &matFilePath
             &warnings, &errors, &objStream, matStreamReaderPtr, true, true
         )
     };
+    MobileRT::checkSystemError("Error after LoadObj.");
 
-    if (errno != 0) {
-        ::std::perror("Error after LoadObj: ");
-        LOG_ERROR("errno after LoadObj (", errno, "): ", ::std::strerror(errno));
-
-        // Necessary reset of `errno` because there is an error in Android when
-        // allocating more than 20k bytes of memory (random values):
-        // EINVAL (Invalid argument) - errno (22): Invalid argument
-        errno = 0;// reset the error code
-    }
     LOG_DEBUG("Called tinyobj::LoadObj");
 
     if (!errors.empty()) {
