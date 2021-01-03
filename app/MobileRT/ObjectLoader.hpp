@@ -14,7 +14,14 @@ namespace MobileRT {
      */
     class ObjectLoader {
     protected:
+        /**
+         * Whether the object loader already loaded the scene geometry from the file.
+         */
         bool isProcessed_ {false};
+
+        /**
+         * The number of triangles loaded in the scene.
+         */
         ::std::int32_t numberTriangles_ {-1};
 
     public:
