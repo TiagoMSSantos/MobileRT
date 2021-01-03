@@ -12,11 +12,34 @@ namespace MobileRT {
      */
     class Material final {
     public:
-        ::glm::vec3 Le_ {};   // emission light
-        ::glm::vec3 Kd_ {};   // diffuse reflection
-        ::glm::vec3 Ks_ {};   // specular reflection
-        ::glm::vec3 Kt_ {};   // specular transmission
+        /**
+         * The emission light.
+         */
+        ::glm::vec3 Le_ {};
+
+        /**
+         * The diffuse reflection.
+         */
+        ::glm::vec3 Kd_ {};
+
+        /**
+         * The specular reflection.
+         */
+        ::glm::vec3 Ks_ {};
+
+        /**
+         * The specular transmission.
+         */
+        ::glm::vec3 Kt_ {};
+
+        /**
+         * The refractive indice.
+         */
         float refractiveIndice_ {};
+
+        /**
+         * The texture of the material.
+         */
         Texture texture_ {};
 
     public:
@@ -40,7 +63,7 @@ namespace MobileRT {
 
         Material &operator=(Material &&material) noexcept = default;
 
-        bool operator==(const Material &material);
+        bool operator==(const Material &material) const;
     };
 }//namespace MobileRT
 

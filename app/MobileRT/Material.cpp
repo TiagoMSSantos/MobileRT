@@ -32,7 +32,7 @@ Material::Material(
  * @param material A material.
  * @return Whether the material is equal to this one.
  */
-bool Material::operator==(const Material &material) {
+bool Material::operator==(const Material &material) const {
     const auto sameKd {::MobileRT::equal(this->Kd_, material.Kd_)};
     const auto sameKs {::MobileRT::equal(this->Ks_, material.Ks_)};
     const auto sameKt {::MobileRT::equal(this->Kt_, material.Kt_)};
