@@ -31,12 +31,15 @@ void Sphere::checkArguments() const {
 
 /**
  * Determines if a ray intersects this sphere or not and calculates the intersection point.
+ * The algorithm is based on
+ * <a href="https://stackoverflow.com/questions/1986378/how-to-set-up-quadratic-equation-for-a-ray-sphere-intersection">
+ * this source
+ * </a>.
  *
  * @param intersection The previous intersection of the ray in the scene.
  * @return The intersection point.
  */
 Intersection Sphere::intersect(Intersection intersection) const {
-    //stackoverflow.com/questions/1986378/how-to-set-up-quadratic-equation-for-a-ray-sphere-intersection
     const auto &originToCenter {this->center_ - intersection.ray_.origin_};
     const auto projectionOnDirection {::glm::dot(originToCenter, intersection.ray_.direction_)};
 

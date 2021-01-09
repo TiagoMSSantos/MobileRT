@@ -27,7 +27,16 @@ Ray Perspective::generateRay(const float u, const float v,
     return ray;
 }
 
-//http://nghiaho.com/?p=997
+/**
+ * Helper method that calculates the inverse tangent function.
+ * This is an approximate algorithm from
+ * <a href="http://nghiaho.com/?p=997">
+ * this source
+ * </a>.
+ *
+ * @param value The value to calculate the arc tangent.
+ * @return The principal arc tangent of a value, in the interval [-pi/2,+pi/2] radians.
+ */
 float Perspective::fastArcTan(const float value) {
     const auto absValue {::std::abs(value)};
     const auto res {
@@ -36,11 +45,21 @@ float Perspective::fastArcTan(const float value) {
     return res;
 }
 
+/**
+ * Gets the horizontal field of view, in degrees.
+ *
+ * @return The horizontal field of view, in degrees.
+ */
 float Perspective::getHFov() const {
     const auto degrees {radToDeg(this->hFov_)};
     return degrees;
 }
 
+/**
+ * Gets the vertical field of view, in degrees.
+ *
+ * @return The vertical field of view, in degrees.
+ */
 float Perspective::getVFov() const {
     const auto degrees {radToDeg(this->vFov_)};
     return degrees;
