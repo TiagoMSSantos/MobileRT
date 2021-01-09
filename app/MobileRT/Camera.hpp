@@ -15,14 +15,29 @@ namespace MobileRT {
      */
     class Camera {
     protected:
-        float degToRad(float deg) const;
+        static float degToRad(float deg);
 
-        float radToDeg(float rad) const;
+        static float radToDeg(float rad);
 
     public:
+        /**
+         * The position of the camera (in axis X, Y, Z).
+         */
         ::glm::vec3 position_ {};
+
+        /**
+         * The direction of the camera (in axis X, Y, Z).
+         */
         ::glm::vec3 direction_ {};
+
+        /**
+         * The right vector of the camera (in axis X, Y, Z).
+         */
         ::glm::vec3 right_ {};
+
+        /**
+         * The up vector of the camera (in axis X, Y, Z).
+         */
         ::glm::vec3 up_ {};
 
     public:
