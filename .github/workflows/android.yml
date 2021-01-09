@@ -56,7 +56,7 @@ jobs:
 
     name: ${{ matrix.type }} (${{ matrix.os }}])
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 70
+    timeout-minutes: 50
 
     steps:
     - name: Checkout
@@ -193,13 +193,48 @@ jobs:
         name: MobileRT_${{ matrix.type }}_exp
         path: ./app/build/outputs/apk/${{ matrix.variant }}
 
+    - name: Upload reports
+      if: always()
+      uses: actions/upload-artifact@v2
+      continue-on-error: true
+      with:
+        name: reports_${{ matrix.type }}_${{ matrix.os }}
+        path: |
+          ./app/build/reports
+          ./reports
+          ./app/build/reports/coverage/debug
+          ./
+
+  Sonar:
+    needs: Build
+
+    name: Sonar
+    runs-on: ubuntu-18.04
+    timeout-minutes: 40
+
+    if: github.event_name == 'push'
+    steps:
+    - name: Download reports
+      if: success()
+      uses: actions/download-artifact@v2
+      with:
+        name: reports_Debug_ubuntu-18.04
+        path: ./
+
+    - name: Check files from cache
+      if: success()
+      working-directory: .
+      run: |
+        mkdir -p ./reports;
+        chmod +x ./gradlew 2>&1 | tee ./reports/setup_gradlew.log;
+        chmod +x ./test-reporter-latest-linux-amd64 2>&1 | tee ./reports/setup_code_climate.log;
+
     - name: Send code climate report
-      if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'Debug'
+      if: success()
       working-directory: app/src/main/java
       env:
         CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
       run: |
-        mkdir -p ../../../../reports;
         ../../../../test-reporter-latest-linux-amd64 format-coverage -t jacoco ../../../build/reports/coverage/debug/report.xml 2>&1 | tee ../../../../reports/format_coverage.log;
         ../../../../test-reporter-latest-linux-amd64 upload-coverage 2>&1 | tee ../../../../reports/upload_coverage.log;
         export res="${PIPESTATUS[0]}";
@@ -207,7 +242,7 @@ jobs:
         exit ${res};
 
     - name: Validate codecov report
-      if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'Debug'
+      if: success()
       working-directory: .
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
@@ -219,18 +254,17 @@ jobs:
         exit 0;
 
     - name: Analyze Sonar
-      if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'Debug'
+      if: success()
       working-directory: .
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
         mkdir -p ./reports;
-        tree -a -f | grep -i app/build/reports | grep -i xml 2>&1 | tee ./reports/tree.log;
         ./gradlew --parallel sonarqube --info 2>&1 | tee ./reports/sonarqube.log;
 
     - name: Send codecov report
-      if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'Debug'
+      if: success()
       working-directory: .
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
@@ -240,13 +274,3 @@ jobs:
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
         exit 0;
-
-    - name: Upload reports
-      if: always()
-      uses: actions/upload-artifact@v2
-      continue-on-error: true
-      with:
-        name: reports_${{ matrix.type }}_${{ matrix.os }}
-        path: |
-          ./app/build/reports
-          ./reports
