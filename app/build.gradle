@@ -317,7 +317,7 @@ dependencies {
     println("Adding dependencies for the instrumentation tests.")
 
     androidTestImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-    androidTestImplementation 'com.google.truth:truth:1.1'
+    androidTestImplementation 'com.google.truth:truth:1.1.1'
 
     androidTestImplementation 'androidx.test.espresso:espresso-accessibility:3.3.0'
     androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.3.0'
