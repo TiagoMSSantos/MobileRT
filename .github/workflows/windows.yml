@@ -132,7 +132,7 @@ jobs:
 
     - name: Install Qt
       if: success()
-      uses: jurplel/install-qt-action@v2.11.1
+      uses: jurplel/install-qt-action@v2.12.1
       with:
         version: '5.12.9'
         host: 'windows'
