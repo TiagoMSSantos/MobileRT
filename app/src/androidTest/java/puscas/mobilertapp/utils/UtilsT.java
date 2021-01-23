@@ -173,6 +173,7 @@ public final class UtilsT {
         Espresso.onView(ViewMatchers.withId(R.id.renderButton))
             .perform(new ViewActionButton(Constants.STOP));
         Utils.executeWithCatching(Espresso::onIdle);
+        assertRenderButtonText(Constants.STOP);
         LOGGER.info("startRendering" + ConstantsMethods.FINISHED);
     }
 
@@ -186,6 +187,7 @@ public final class UtilsT {
         Espresso.onView(ViewMatchers.withId(R.id.renderButton))
             .perform(new ViewActionButton(Constants.RENDER));
         Utils.executeWithCatching(Espresso::onIdle);
+        assertRenderButtonText(Constants.RENDER);
         LOGGER.info("stopRendering" + ConstantsMethods.FINISHED);
     }
 
