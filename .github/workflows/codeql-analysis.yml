@@ -9,9 +9,15 @@ name: Build CodeQL
 
 on:
   pull_request:
+    paths-ignore:
+    - '.github/workflows/**'
+    - '!.github/workflows/codeql-analysis.yml'
     branches:
     - '*'
   push:
+    paths-ignore:
+    - '.github/workflows/**'
+    - '!.github/workflows/codeql-analysis.yml'
     branches:
     - '*'
 
