@@ -4,15 +4,18 @@
 # Helper functions
 ###############################################################################
 
-# Call function and exit the process if it fails
+# Call function and exit the process if it fails.
 function callCommand() {
   echo ""
   commandToExecute=$*
+  # Remove `sudo` from command if system doesn't have it available.
   if [ "${1}" == "sudo" ] && [ ! -x "$(command -v ${1})" ]; then
     commandToExecute=${commandToExecute//"sudo "/}
   fi
   echo "Calling '${commandToExecute}'"
+  # Execute command.
   ${commandToExecute}
+  # Retrieve process return code.
   local lastResult=${PIPESTATUS[0]}
   local lastCommand="${commandToExecute}"
   if [ "${lastResult}" -eq 0 ]; then
@@ -24,23 +27,24 @@ function callCommand() {
   fi
 }
 
-# Call function multiple times until it fails and exit the process
+# Call function multiple times until it fails and exit the process.
 function callCommandUntilError() {
   echo ""
   echo "Calling until error '$*'"
   local retry=0
   "$@"
   local lastResult=${PIPESTATUS[0]}
-  while [[ "${lastResult}" -eq 0 ]]; do
-    echo "Retry: ${retry}"
+  while [[ "${lastResult}" -eq 0 && retry -lt 10 ]]; do
     retry=$(("${retry}" + 1))
     "$@"
     lastResult=${PIPESTATUS[0]}
+    echo "Retry: ${retry} of command '$*'; result: '${lastResult}'"
+    sleep 1
   done
   exit "${lastResult}"
 }
 
-# Call function multiple times until it doesn't fail and then return
+# Call function multiple times until it doesn't fail and then return.
 function callCommandUntilSuccess() {
   echo ""
   echo "Calling until success '$*'"
@@ -48,14 +52,19 @@ function callCommandUntilSuccess() {
   "$@"
   local lastResult=${PIPESTATUS[0]}
   echo "result: '${lastResult}'"
-  while [[ "${lastResult}" -ne 0 ]]; do
-    echo "Retry: ${retry}"
+  while [[ "${lastResult}" -ne 0 && retry -lt 10 ]]; do
     retry=$(("${retry}" + 1))
     "$@"
     lastResult=${PIPESTATUS[0]}
-    echo "result: '${lastResult}'"
-    sleep 1
+    echo "Retry: ${retry} of command '$*'; result: '${lastResult}'"
+    sleep 2
   done
+  if [ "${lastResult}" -eq 0 ]; then
+    echo "'$*': success"
+  else
+    echo "'$*': failed"
+    exit "${lastResult}"
+  fi
 }
 
 # Outputs the exit code received by argument and exits the current process with
