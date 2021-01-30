@@ -34,14 +34,20 @@ function callCommandUntilError() {
   local retry=0
   "$@"
   local lastResult=${PIPESTATUS[0]}
-  while [[ "${lastResult}" -eq 0 && retry -lt 10 ]]; do
+  while [[ "${lastResult}" -eq 0 && retry -lt 2 ]]; do
     retry=$(("${retry}" + 1))
     "$@"
     lastResult=${PIPESTATUS[0]}
     echo "Retry: ${retry} of command '$*'; result: '${lastResult}'"
     sleep 1
   done
-  exit "${lastResult}"
+  if [ "${lastResult}" -eq 0 ]; then
+    echo "$*: success - '${lastResult}'"
+  else
+    echo "$*: failed - '${lastResult}'"
+    echo ""
+    exit "${lastResult}"
+  fi
 }
 
 # Call function multiple times until it doesn't fail and then return.

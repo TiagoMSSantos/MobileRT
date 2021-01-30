@@ -1,4 +1,4 @@
-name: Build Android repeatable
+name: R
 
 on:
   push:
@@ -19,7 +19,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - test: puscas.mobilertapp.PreviewTest#testPreviewScene
+        - test: PreviewTest#testPreviewScene
           type: debug
           os: macos-10.15
           ndk_version: 21.3.6528147
@@ -32,12 +32,6 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2.3.4
-
-#    - name: Set up JDK
-#      if: success()
-#      uses: actions/setup-java@v1.4.3
-#      with:
-#        java-version: 11
 
     - name: Setup gradlew
       if: success()
@@ -56,8 +50,7 @@ jobs:
         disable-animations: true
         emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none
         script: |
-          mkdir -p ./app/build/reports;
-          bash ./scripts/run_tests_android.sh ${{ matrix.type }} rep_${{ matrix.test }} ${{ matrix.ndk_version }} ${{ matrix.cmake_version }} false;
+          bash ./scripts/run_tests_android.sh ${{ matrix.type }} rep_puscas.mobilertapp.${{ matrix.test }} ${{ matrix.ndk_version }} ${{ matrix.cmake_version }} false;
 
     - name: Upload reports
       if: always()
@@ -67,4 +60,3 @@ jobs:
         name: reports_${{ matrix.type }}_${{ matrix.os }}
         path: |
           ./app/build/reports
-          ./reports
