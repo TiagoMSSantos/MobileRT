@@ -254,8 +254,10 @@ jobs:
         echo "Result: '${res}'";
         exit 0;
 
+      # Disable Sonar step since it requires Java 11, but Java 11 seems to have
+      # conflicts with Jacoco.
     - name: Analyze Sonar
-      if: success()
+      if: success() && false
       working-directory: .
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any

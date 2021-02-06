@@ -20,7 +20,13 @@
 [![Unit Tests C++](https://github.com/TiagoMSSantos/MobileRT/workflows/Unit%20Tests%20C++/badge.svg)](https://github.com/TiagoMSSantos/MobileRT/actions)
 [![Tests Android](https://github.com/TiagoMSSantos/MobileRT/workflows/Tests%20Android/badge.svg)](https://github.com/TiagoMSSantos/MobileRT/actions)
 [![codecov](https://codecov.io/gh/TiagoMSSantos/MobileRT/branch/master/graph/badge.svg)](https://codecov.io/gh/TiagoMSSantos/MobileRT)
+<!--
+Need to upgrade Java to version 11, but Java 11 seems to have conflicts with
+Jacoco. But even removing Jacoco from build.gradle, it still fails compiling,
+giving an error about some generated class from Jacoco.
+
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=TiagoMSSantos_MobileRT&metric=alert_status)](https://sonarcloud.io/dashboard?id=TiagoMSSantos_MobileRT)
+-->
 
 <!-- 
 [![Test Coverage](https://api.codeclimate.com/v1/badges/6a80c282c888f405d779/test_coverage)](https://codeclimate.com/github/TiagoMSSantos/MobileRT/test_coverage)
