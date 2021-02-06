@@ -353,7 +353,7 @@ dependencies {
     println("Adding dependencies for the unit tests.")
 
     testImplementation 'junit:junit:4.13.1'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.1'
     testImplementation 'org.assertj:assertj-core:3.19.0'
     testImplementation 'org.khronos:opengl-api:gl1.1-android-2.1_r1'
 
