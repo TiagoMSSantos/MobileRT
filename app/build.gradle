@@ -227,11 +227,6 @@ android {
 //        setExecution 'ANDROIDX_TEST_ORCHESTRATOR'
     }
 
-    // Setup DEX options
-    dexOptions {
-        setJavaMaxHeapSize '1mb'
-    }
-
     // Setup linter options
     lintOptions {
         setAbortOnError true
