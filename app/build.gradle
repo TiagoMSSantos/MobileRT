@@ -171,6 +171,9 @@ android {
         setTargetCompatibility JavaVersion.VERSION_1_8
         setSourceCompatibility JavaVersion.VERSION_1_8
     }
+    kotlinOptions {
+        setJvmTarget JavaVersion.VERSION_1_8.toString()
+    }
 
     // Set build types
     buildTypes {
