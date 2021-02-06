@@ -68,6 +68,9 @@ elif [ -x "$(command -v brew)" ]; then
   callCommand brew install cpulimit || true;
   brew install python3;
   brew install pyenv;
+
+  # This command needs sudo.
+  callCommand sudo xcode-select --switch /System/Volumes/Data/Applications/Xcode_12.3.app/Contents/Developer;
 fi
 
 # Install Python

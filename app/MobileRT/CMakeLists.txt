@@ -26,8 +26,7 @@ endif()
 ###############################################################################
 message( STATUS "Adding MobileRT and third party headers." )
 target_include_directories( ${PROJECT_NAME} PUBLIC "${MOBILE_RT_HEADERS}" )
-target_include_directories( ${PROJECT_NAME} PUBLIC "${MOBILE_DEPENDENT_HEADERS}"
-)
+target_include_directories( ${PROJECT_NAME} PUBLIC "${MOBILE_DEPENDENT_HEADERS}" )
 target_include_directories( ${PROJECT_NAME} SYSTEM PUBLIC "${GLM_HEADERS}" )
 ###############################################################################
 ###############################################################################
@@ -71,6 +70,7 @@ else()
     if( CMAKE_CXX_COMPILER_ID MATCHES "[Cc]lang" )
       message( STATUS "Native OS: Linking Clang with dynamic OpenMP." )
 
+      target_link_directories( ${PROJECT_NAME} PRIVATE /usr/local/Cellar/llvm/11.0.1/lib )
       target_link_libraries( ${PROJECT_NAME} PRIVATE omp )
     else()
       message( STATUS "Native OS: Linking GCC with dynamic OpenMP." )

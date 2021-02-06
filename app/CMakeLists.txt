@@ -214,11 +214,6 @@ else()
     set( COMMON_FLAGS "${COMMON_FLAGS}" -march=native )
   endif()
 
-  if( CMAKE_HOST_SYSTEM_NAME MATCHES "Darwin" )
-    # Force to use the default MacOS platform SDK
-    set( CMAKE_OSX_SYSROOT "" CACHE STRING "CUSTOM" FORCE )
-  endif()
-
   string( TOLOWER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_L )
   if( CMAKE_BUILD_TYPE_L MATCHES debug )
     message( STATUS "Adding postfix for debug type." )
@@ -448,10 +443,8 @@ else()
 
   if( CMAKE_HOST_SYSTEM_NAME MATCHES "Darwin" )
     message( STATUS "Linking Qt for MacOS." )
-
-    target_link_libraries( ${PROJECT_NAME}
-      PRIVATE /usr/local/lib/QtGui.framework/Headers/ )
     target_link_libraries( ${PROJECT_NAME} PRIVATE -F/usr/local/lib )
+    target_link_libraries( ${PROJECT_NAME} PRIVATE -L/usr/local/lib )
 
     target_link_libraries( ${PROJECT_NAME} PRIVATE "-framework QtCore" )
     target_link_libraries( ${PROJECT_NAME} PRIVATE "-framework QtGui" )

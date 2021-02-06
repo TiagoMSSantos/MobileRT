@@ -49,6 +49,7 @@ endif()
 # Link project
 ###############################################################################
 message( STATUS "Linking with MobileRT and Google Test." )
+target_link_libraries( ${PROJECT_NAME} PRIVATE -L/usr/local/lib )
 target_link_libraries( ${PROJECT_NAME}
   PRIVATE MobileRT Components gtest
   general "${COMMON_LINKER_FLAGS}"

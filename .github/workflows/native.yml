@@ -36,7 +36,7 @@ jobs:
       matrix:
         compiler: [g++, clang++]
         type: [Debug, Release]
-        os: [ubuntu-18.04, macos-10.15]
+        os: [ubuntu-18.04, macos-10.15, macos-11.0]
         include:
           - os: ubuntu-18.04
             compiler: g++
