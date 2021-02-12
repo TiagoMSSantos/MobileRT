@@ -134,6 +134,8 @@ jobs:
       if: success()
       uses: jurplel/install-qt-action@v2.12.2
       with:
+        # ['dir', 'version', 'host', 'target', 'arch', 'install-deps', 'modules', 'cached',
+        # 'setup-python', 'tools', 'set-env', 'tools-only', 'aqtversion', 'py7zrversion', 'extra']
         version: '5.12.9'
         host: 'windows'
         target: 'desktop'
@@ -145,7 +147,7 @@ jobs:
         # <mirror>/online/qtsdkrepository/windows_x86/desktop/qt5_5129
         # /qt.qt5.5129.qtwebengine.win64_msvc2017_64
         # /5.12.9-0-202006121743qtwebengine-Windows-Windows_10-MSVC2017-Windows-Windows_10-X86_64.7z
-        mirror: 'https://download.qt.io'
+#        mirror: 'https://download.qt.io'
 #        mirror: 'http://mirrors.ocf.berkeley.edu/qt'
 #        mirror: 'http://mirrors.ukfast.co.uk/sites/qt.io'
 #        mirror: 'http://ftp1.nluug.nl/languages/qt'
