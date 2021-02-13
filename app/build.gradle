@@ -53,11 +53,21 @@ allprojects {
     tasks.withType(JavaCompile) {
         println("Adding additional flags to the compiler.")
 
-        options.compilerArgs \
-            << '-Xlint:all' \
-            << '-AprintErrorStack' \
-            << '-AprintAllQualifiers' \
-            << '-verbose'
+        options.setCompilerArgs([
+            '-Xlint:all',
+            '-AprintErrorStack',
+            '-AprintAllQualifiers',
+            '-verbose'
+        ])
+
+        options.setFork(true)
+        options.setIncremental(true)
+        options.setFailOnError(true)
+        options.setVerbose(true)
+        options.setWarnings(true)
+        options.setListFiles(true)
+        options.setDeprecation(true)
+        options.setDebug(true)
     }
 }
 ///////////////////////////////////////////////////////////////////////////////
