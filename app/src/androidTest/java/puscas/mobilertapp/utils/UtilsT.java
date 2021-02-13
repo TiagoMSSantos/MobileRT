@@ -20,7 +20,6 @@ import puscas.mobilertapp.BuildConfig;
 import puscas.mobilertapp.DrawView;
 import puscas.mobilertapp.MainRenderer;
 import puscas.mobilertapp.R;
-import puscas.mobilertapp.ViewActionButton;
 
 /**
  * Helper class which contains helper methods for the tests.

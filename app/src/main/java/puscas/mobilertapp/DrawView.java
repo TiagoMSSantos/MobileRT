@@ -74,7 +74,7 @@ public final class DrawView extends GLSurfaceView {
     public DrawView(@Nonnull final Context context) {
         super(context);
 
-        this.renderer.prepareRenderer(this::requestRender);
+        this.renderer.prepareRenderer(this::requestRender, this::queueEvent);
         initEglContextFactory();
     }
 
@@ -88,7 +88,7 @@ public final class DrawView extends GLSurfaceView {
                     @Nonnull final AttributeSet attrs) {
         super(context, attrs);
 
-        this.renderer.prepareRenderer(this::requestRender);
+        this.renderer.prepareRenderer(this::requestRender, this::queueEvent);
     }
 
     /**

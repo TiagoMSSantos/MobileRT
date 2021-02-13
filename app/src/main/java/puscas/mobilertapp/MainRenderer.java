@@ -9,6 +9,7 @@ import android.opengl.GLUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.Uninterruptibles;
 import java.nio.ByteBuffer;
@@ -19,7 +20,9 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 import java8.util.Optional;
+import java8.util.function.Consumer;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 import org.jetbrains.annotations.Contract;
@@ -139,6 +142,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
     /**
      * The {@link Bitmap} where the Ray Tracer engine will render the scene.
      */
+    @Nullable
     private Bitmap bitmap = null;
 
     /**
@@ -190,6 +194,11 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * A reference to the {@link DrawView#requestRender()} method.
      */
     private Runnable requestRender = null;
+
+    /**
+     * A reference to the {@link DrawView#queueEvent(Runnable)} method.
+     */
+    private Consumer<Runnable> queueEvent = null;
 
     /**
      * The width of the {@link Bitmap} where the Ray Tracer engine will render
@@ -565,14 +574,24 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         Preconditions.checkArgument(memoryNeeded > 0,
             "The requested memory must be a positive value");
 
-        this.activityManager.getMemoryInfo(this.memoryInfo);
-        final long availMem = this.memoryInfo.availMem / (long) Constants.BYTES_IN_MEGABYTE;
+        final long availMem = getAvailMem() / (long) Constants.BYTES_IN_MEGABYTE;
         final long totalMem = this.memoryInfo.totalMem / (long) Constants.BYTES_IN_MEGABYTE;
         final boolean insufficientMem = availMem <= (long) (1 + memoryNeeded);
         final String message = String.format(Locale.US, "MEMORY AVAILABLE: %dMB (%dMB)",
             availMem, totalMem);
         LOGGER.info(message);
         return insufficientMem || this.memoryInfo.lowMemory;
+    }
+
+    /**
+     * Helper method that returns the number of bytes available in the main memory of the system.
+     *
+     * @return The memory available.
+     */
+    @VisibleForTesting
+    long getAvailMem() {
+        this.activityManager.getMemoryInfo(this.memoryInfo);
+        return this.memoryInfo.availMem;
     }
 
     /**
@@ -599,10 +618,11 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * @param requestRender A {@link Runnable} of
      *                      {@link GLSurfaceView#requestRender()} method.
      */
-    void prepareRenderer(final Runnable requestRender) {
+    <T> void prepareRenderer(final Runnable requestRender, final Consumer<Runnable> queueEvent) {
         LOGGER.info("prepareRenderer");
 
         this.requestRender = requestRender;
+        this.queueEvent = queueEvent;
     }
 
     /**
@@ -839,7 +859,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      *
      * @param bitmap The {@link Bitmap} to draw.
      */
-    private void drawBitmap(final Bitmap bitmap) {
+    private void drawBitmap(@Nonnull final Bitmap bitmap) {
         LOGGER.info("drawBitmap");
 
         UtilsGL.run(() -> GLES20.glUseProgram(this.shaderProgram));
@@ -945,22 +965,37 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
     @Override
     public void onDrawFrame(@Nonnull final GL10 gl) {
         if (this.firstFrame) {
+            this.firstFrame = false;
+
             LOGGER.info("onDrawFirstFrame");
             UtilsGL.resetOpenGlBuffers();
 
             if (this.rasterize) {
                 this.rasterize = false;
-                this.bitmap = renderSceneIntoBitmap();
+                try {
+                    this.bitmap = renderSceneIntoBitmap();
+                } catch (final LowMemoryException | OutOfMemoryError ex) {
+                    freeArrays();
+                    this.bitmap = null;
+                    UtilsLogging.logThrowable(ex, "MainRenderer#onDrawFrame");
+
+                    rtFinishRender();
+                    this.queueEvent.accept(() -> updateButton(R.string.render));
+                    return;
+                }
             }
 
             try {
                 rtRenderIntoBitmap(this.bitmap, this.numThreads);
-            } catch (final LowMemoryException ex) {
+            } catch (final LowMemoryException | OutOfMemoryError ex) {
                 UtilsLogging.logThrowable(ex, "MainRenderer#onDrawFrame");
+
+                rtFinishRender();
+                this.queueEvent.accept(() -> updateButton(R.string.render));
+                return;
             }
 
             createAndLaunchRenderTask();
-            this.firstFrame = false;
 
             final String message = "onDrawFirstFrame" + ConstantsMethods.FINISHED;
             LOGGER.info(message);
@@ -974,16 +1009,14 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      *
      * @return A {@link Bitmap} with the scene rendered.
      */
-    private Bitmap renderSceneIntoBitmap() {
-        try {
-            initPreviewArrays();
-
-            return renderSceneToBitmap(this.arrayVertices,
-                this.arrayColors, this.arrayCamera, this.numPrimitives);
-        } catch (final LowMemoryException ex) {
-            UtilsLogging.logThrowable(ex, "MainRenderer#renderSceneIntoBitmap");
-        }
-        return this.bitmap;
+    private Bitmap renderSceneIntoBitmap() throws LowMemoryException {
+        initPreviewArrays();
+        return renderSceneToBitmap(
+            this.arrayVertices,
+            this.arrayColors,
+            this.arrayCamera,
+            this.numPrimitives
+        );
     }
 
 }

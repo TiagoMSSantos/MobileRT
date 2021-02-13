@@ -1,4 +1,4 @@
-package puscas.mobilertapp;
+package puscas.mobilertapp.utils;
 
 import android.view.View;
 import android.widget.NumberPicker;
@@ -9,8 +9,6 @@ import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import org.hamcrest.Matcher;
 import org.junit.jupiter.api.Assertions;
-import puscas.mobilertapp.utils.ConstantsMethods;
-import puscas.mobilertapp.utils.Utils;
 
 /**
  * Auxiliary class which represents a {@link NumberPicker}.

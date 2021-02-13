@@ -6,7 +6,6 @@ import androidx.test.espresso.matcher.ViewMatchers;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import org.junit.jupiter.api.Assertions;
-import puscas.mobilertapp.ViewActionNumberPicker;
 
 /**
  * Helper class which contains helper methods about the {@link NumberPicker}s for the tests.

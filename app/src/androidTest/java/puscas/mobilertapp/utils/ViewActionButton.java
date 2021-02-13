@@ -1,4 +1,4 @@
-package puscas.mobilertapp;
+package puscas.mobilertapp.utils;
 
 import android.view.View;
 import android.widget.Button;
@@ -12,7 +12,6 @@ import javax.annotation.Nonnull;
 import org.hamcrest.Matcher;
 import org.jetbrains.annotations.NonNls;
 import org.junit.jupiter.api.Assertions;
-import puscas.mobilertapp.utils.Utils;
 
 /**
  * Auxiliary class which represents the render {@link Button}.
@@ -53,7 +52,7 @@ public final class ViewActionButton implements ViewAction {
      * @param expectedText   The expected text to show on the {@link Button} after the click.
      * @param pressLongClick Whether the click should be a long click or not.
      */
-    ViewActionButton(@Nonnull final String expectedText, final boolean pressLongClick) {
+    public ViewActionButton(@Nonnull final String expectedText, final boolean pressLongClick) {
         LOGGER.info("ViewActionButton");
 
         this.expectedText = expectedText;
