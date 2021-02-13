@@ -15,9 +15,8 @@ on:
     branches:
     - '*'
   push:
-    paths-ignore:
-    - '.github/workflows/**'
-    - '!.github/workflows/codeql-analysis.yml'
+    # Using on.push.paths-ignore can prevent Code Scanning annotating new
+    # alerts in the pull requests.
     branches:
     - '*'
 
