@@ -2,6 +2,7 @@
 #include "MobileRT/Utils/Utils.hpp"
 
 using ::MobileRT::Material;
+using ::MobileRT::Texture;
 
 /**
  * The constructor.

@@ -28,7 +28,7 @@ source scripts/helper_functions.sh
 # Fix llvm clang OpenMP library
 ###############################################################################
 OPENMP_INCLUDE_PATH="/usr/local/Cellar/libomp/11.0.1/include";
-OPENMP_LIB_PATH=$(sudo find /usr -name "libomp.so" -path "*llvm*" | head -1 2> /dev/null);
+OPENMP_LIB_PATH=$(find /usr -name "libomp.so" -path "*llvm*" | head -1 2> /dev/null);
 echo "OPENMP_INCLUDE_PATH = ${OPENMP_INCLUDE_PATH}";
 echo "OPENMP_LIB_PATH = ${OPENMP_LIB_PATH}";
 export CPLUS_INCLUDE_PATH=${OPENMP_INCLUDE_PATH%/omp.h}:${CPLUS_INCLUDE_PATH};
@@ -167,7 +167,6 @@ function build() {
   resCompile=${PIPESTATUS[0]}
 
   if [ "${resCompile}" -eq 0 ]; then
-    callCommand ls -laR ..
     echo "Calling Make"
     callCommand cmake --build . 2>&1 | tee ./log_make_"${type}".log
     resCompile=${PIPESTATUS[0]}

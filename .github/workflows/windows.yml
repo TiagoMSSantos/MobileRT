@@ -30,25 +30,40 @@ env:
 
 jobs:
   Build:
-    name: ${{ matrix.config.name }} ${{ matrix.type }}
-    runs-on: ${{ matrix.config.os }}
+    name: ${{ matrix.name }} ${{ matrix.type }} (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
         type: [Debug, Release]
-        config:
-        - {
-            name: "Windows MSVC", artifact: "Windows-MSVC.tar.xz",
-            os: windows-2019,
-            cc: "cl", cxx: "cl",
-            environment_script: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
-          }
-        - {
-            name: "Windows MinGW", artifact: "Windows-MinGW.tar.xz",
-            os: windows-2019,
-            cc: "gcc", cxx: "g++"
-          }
+        os: [windows-2019]
+        name: ["MSVC", "MinGW"]
+        include:
+        - name: "MSVC"
+          os: windows-2016
+          config:
+          - {
+              artifact: "Windows-MSVC.tar.xz",
+              cc: "cl", cxx: "cl",
+              environment_script: "C:/Program Files (x86)/Microsoft Visual Studio/2017/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
+            }
+
+        - name: "MSVC"
+          os: windows-2019
+          config:
+          - {
+              artifact: "Windows-MSVC.tar.xz",
+              cc: "cl", cxx: "cl",
+              environment_script: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
+            }
+
+        - name: "MinGW"
+          config:
+          - {
+              artifact: "Windows-MinGW.tar.xz",
+              cc: "gcc", cxx: "g++"
+            }
 
     steps:
     - name: Checkout

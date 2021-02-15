@@ -2,7 +2,7 @@
 
 namespace {
     inline void print(const ::std::string &log) {
-        ::std::cout << log;
+        ::std::cout << log.c_str();
     }
 }// namespace
 
@@ -19,5 +19,5 @@ void ::Dependent::printWarn(const ::std::string &log) {
 }
 
 void ::Dependent::printError(const ::std::string &log) {
-    ::std::cerr << log;
+    ::std::cerr << log.c_str();
 }

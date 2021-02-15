@@ -4,6 +4,9 @@
 
 using ::MobileRT::Renderer;
 using ::MobileRT::NumberOfTiles;
+using ::MobileRT::Shader;
+using ::MobileRT::Camera;
+using ::MobileRT::Sampler;
 
 namespace {
     ::std::array<float, NumberOfTiles> randomSequence {};

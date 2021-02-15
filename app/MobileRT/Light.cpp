@@ -1,6 +1,7 @@
 #include "MobileRT/Light.hpp"
 
 using ::MobileRT::Light;
+using ::MobileRT::Material;
 
 /**
  * The constructor.

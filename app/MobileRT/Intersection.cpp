@@ -1,6 +1,7 @@
 #include "MobileRT/Intersection.hpp"
 
 using ::MobileRT::Intersection;
+using ::MobileRT::Ray;
 
 /**
  * The constructor.

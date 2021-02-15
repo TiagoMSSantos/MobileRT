@@ -17,6 +17,7 @@ using ::MobileRT::Sphere;
 using ::MobileRT::Triangle;
 using ::MobileRT::Light;
 using ::MobileRT::Material;
+using ::MobileRT::Scene;
 
 namespace {
     ::std::array<float, ::MobileRT::ArraySize> randomSequence {};
