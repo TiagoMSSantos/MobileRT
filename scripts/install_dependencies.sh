@@ -78,8 +78,6 @@ if [ -x "$(command -v choco)" ]; then
   callCommand choco install python --version 3.8.0;
 fi
 callCommand python3 -m pip install --upgrade pip;
-callCommand pip3 install --upgrade setuptools pip;
-callCommand pip3 install scikit-build;
 ###############################################################################
 ###############################################################################
 

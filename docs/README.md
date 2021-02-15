@@ -148,6 +148,17 @@ unit tests
 - [x] Java Android [Espresso](https://developer.android.com/training/testing/espresso)
 library for instrumented tests
 
+## Supported Operating Systems
+
+| OS \ Version | | | |
+| :---: |:----:| :----:| :---: |
+| MacOS | 10.15 <br> :heavy_check_mark: | 11.0 <br> :white_check_mark: | |
+| Ubuntu | 16.04 <br> :white_check_mark: | 18.04 <br> :heavy_check_mark: | 20.04 <br> :white_check_mark: |
+| Windows | Server 2016 <br> :white_check_mark: | Server 2019 <br> :heavy_check_mark: | |
+| Android | 4.1 (API 16) <br> :heavy_check_mark: | ... <br> :white_check_mark: | 10 (API 29) <br> :white_check_mark: |
+
+Table: :heavy_check_mark: -> actively tested, :white_check_mark: -> tested
+
 
 ## Master's dissertation
 This project started as a [Masters' dissertation](https://repositorium.sdum.uminho.pt/handle/1822/66577).
