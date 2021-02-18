@@ -10,7 +10,7 @@ cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit
 ###############################################################################
 # Get arguments
 ###############################################################################
-type="${1:-Release}"
+type="${1:-release}"
 compiler="${2:-g++}"
 recompile="${3:-no}"
 ###############################################################################
@@ -142,12 +142,12 @@ function install_conan_dependencies() {
 # Compile for native
 ###############################################################################
 
+# Set path to build
+build_path=./build_${type}
+
 # Capitalize 1st letter
 type="$(tr '[:lower:]' '[:upper:]' <<<"${type:0:1}")${type:1}"
 echo "type: '${type}'"
-
-# Set path to build
-build_path=./build_${type}
 
 if [ "${recompile}" == "yes" ]; then
   callCommand rm -rf "${build_path}"/*

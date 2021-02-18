@@ -34,26 +34,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        os: [macos-10.15, ubuntu-18.04]
+        type: [release]
         compiler: [g++, clang++]
-        type: [Debug, Release]
-        os: [ubuntu-18.04, macos-10.15]
-        include:
-          - os: ubuntu-18.04
-            compiler: g++
-            compiler_path: g++
-
-          - os: macos-10.15
-            compiler: g++
-            compiler_path: /usr/local/bin/g++-9
-
-          - type: Debug
-            unit_tests_bin: UnitTestsd
-
-          - type: Release
-            unit_tests_bin: UnitTests
-
-          - compiler: clang++
-            compiler_path: clang++
 
     name: ${{ matrix.type }} ${{ matrix.compiler }} (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
@@ -89,7 +72,6 @@ jobs:
       if: success() && startsWith(matrix.os, 'macos') && matrix.compiler == 'g++'
       working-directory: .
       run: |
-        mkdir -p ./reports;
         ln -s /usr/local/Cellar/qt@4/4.8.7_6/lib/QtGui.framework/Versions/4/Headers/* /usr/local/include/QtGui/ || true 2>&1 | tee ./reports/create_symlinks_headers.log;
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
@@ -99,8 +81,7 @@ jobs:
       if: success()
       working-directory: .
       run: |
-        mkdir -p ./reports;
-        bash scripts/compile_native.sh ${{ matrix.type }} ${{ matrix.compiler_path }} 2>&1 | tee ./reports/run_cmake.log;
+        bash scripts/compile_native.sh ${{ matrix.type }} ${{ matrix.compiler }} 2>&1 | tee ./reports/run_cmake.log;
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
         exit ${res};
@@ -116,18 +97,27 @@ jobs:
       if: success() && matrix.compiler == 'g++' && matrix.type == 'Debug' && startsWith(matrix.os, 'ubuntu')
       working-directory: .
       run: |
-        mkdir -p ./reports;
         lcov -c -i -d . --no-external -o code_coverage_base.info 2>&1 | tee ./reports/generate_code_coverage_base.log;
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
         exit ${res};
 
-    - name: Run unit tests
-      if: success()
+    - name: Run unit tests Debug
+      if: success() && matrix.type == 'Debug'
       working-directory: build_${{ matrix.type }}
       run: |
         mkdir -p ./reports;
-        DYLD_FALLBACK_LIBRARY_PATH=./lib ./bin/${{ matrix.unit_tests_bin }} 2>&1 | tee ./reports/unit_tests.log;
+        DYLD_FALLBACK_LIBRARY_PATH=./lib ./bin/UnitTestsd 2>&1 | tee ./reports/unit_tests.log;
+        export res="${PIPESTATUS[0]}";
+        echo "Result: '${res}'";
+        exit ${res};
+
+    - name: Run unit tests Release
+      if: success() && matrix.type == 'Release'
+      working-directory: build_${{ matrix.type }}
+      run: |
+        mkdir -p ./reports;
+        DYLD_FALLBACK_LIBRARY_PATH=./lib ./bin/UnitTests 2>&1 | tee ./reports/unit_tests.log;
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
         exit ${res};
@@ -136,7 +126,6 @@ jobs:
       if: success() && matrix.compiler == 'g++' && matrix.type == 'Debug' && startsWith(matrix.os, 'ubuntu')
       working-directory: .
       run: |
-        mkdir -p ./reports;
         lcov -c -d . --no-external -o code_coverage_test.info 2>&1 | tee ./reports/code_coverage_1.log;
         lcov -a code_coverage_base.info -a code_coverage_test.info -o code_coverage.info 2>&1 | tee ./reports/code_coverage_2.log;
         lcov --remove code_coverage.info -o code_coverage.info '*third_party*' '*build*' 2>&1 | tee ./reports/code_coverage_3.log;
@@ -151,7 +140,6 @@ jobs:
       env:
         CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
       run: |
-        mkdir -p ./reports;
         ./test-reporter-latest-linux-amd64 format-coverage -t lcov code_coverage.info 2>&1 | tee ./reports/format_coverage.log;
         ./test-reporter-latest-linux-amd64 upload-coverage 2>&1 | tee ./reports/upload_coverage.log;
         export res="${PIPESTATUS[0]}";
@@ -164,7 +152,6 @@ jobs:
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       run: |
-        mkdir -p ./reports;
         curl --retry 5 --retry-delay 2 --connect-timeout 2 --data-binary @codecov.yml https://codecov.io/validate 2>&1 | tee ./reports/validate_codecov.log;
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
@@ -176,7 +163,6 @@ jobs:
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       run: |
-        mkdir -p ./reports;
         curl --retry 5 --retry-delay 2 --connect-timeout 2 -s https://codecov.io/bash | bash -s -- -c -F aFlag ./build_${{ matrix.type }} -v 2>&1 | tee ./reports/send_codecov_report.log;
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";

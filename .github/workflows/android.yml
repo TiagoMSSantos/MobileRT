@@ -34,28 +34,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        type: [Debug, Release]
-        os: [ubuntu-18.04, macos-10.15, windows-2019]
-        include:
-          - os: ubuntu-18.04
-            ndk_version: 21.3.6528147
-            cmake_version: 3.6.0
+        os: [macos-10.15, ubuntu-18.04]
+        type: [debug, release]
+        ndk_version: [21.3.6528147]
+        cmake_version: [3.6.0]
 
-          - os: macos-10.15
-            ndk_version: 21.3.6528147
-            cmake_version: 3.6.0
-
-          - os: windows-2019
-            ndk_version: 21.3.6528147
-            cmake_version: 3.6.0
-
-          - type: Debug
-            variant: debug
-
-          - type: Release
-            variant: release
-
-    name: ${{ matrix.type }} (${{ matrix.os }}])
+    name: ${{ matrix.type }} (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     timeout-minutes: 50
 
@@ -152,14 +136,14 @@ jobs:
         script: |
           mkdir -p ./app/build/reports;
           mkdir -p ./reports;
-          bash ./scripts/run_tests_android.sh ${{ matrix.variant }} all ${{ matrix.ndk_version }} ${{ matrix.cmake_version }} false;
+          bash ./scripts/run_tests_android.sh ${{ matrix.type }} all ${{ matrix.ndk_version }} ${{ matrix.cmake_version }} false;
           tree -a -f | grep -i app/build/reports | grep -i xml 2>&1 | tee ./reports/tree_report.log;
 
     - name: Sign APK
       if: success()
       uses: r0adkll/sign-android-release@v1.0.1
       with:
-        releaseDirectory: ./app/build/outputs/apk/${{ matrix.variant }}
+        releaseDirectory: ./app/build/outputs/apk/${{ matrix.type }}
         signingKeyBase64: ${{ secrets.SIGNING_KEY }}
         alias: ${{ secrets.KEY_ALIAS }}
         keyStorePassword: ${{ secrets.SIGNING_KEY }}
@@ -171,7 +155,7 @@ jobs:
       run: |
         mkdir -p ./app/build/reports;
         mkdir -p ./reports;
-        bash ./scripts/check_android.sh ${{ matrix.variant }} ${{ matrix.ndk_version }} ${{ matrix.cmake_version }} 2>&1 | tee ./reports/check_android.log;
+        bash ./scripts/check_android.sh ${{ matrix.ndk_version }} ${{ matrix.cmake_version }} 2>&1 | tee ./reports/check_android.log;
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
         exit ${res};
@@ -192,14 +176,14 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: MobileRT_${{ matrix.type }}_exp
-        path: ./app/build/outputs/apk/${{ matrix.variant }}
+        path: ./app/build/outputs/apk/${{ matrix.type }}
 
     - name: Upload reports
       if: always()
       uses: actions/upload-artifact@v2
       continue-on-error: true
       with:
-        name: reports_${{ matrix.type }}_${{ matrix.os }}
+        name: reports_${{ matrix.type }}
         path: |
           ./app/build/reports
           ./reports
@@ -219,7 +203,7 @@ jobs:
       if: success()
       uses: actions/download-artifact@v2
       with:
-        name: reports_Debug_ubuntu-18.04
+        name: reports_debug
         path: ./
 
     - name: Check files from cache

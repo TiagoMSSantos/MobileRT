@@ -10,9 +10,8 @@ cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit
 ###############################################################################
 # Get arguments
 ###############################################################################
-type="${1:-release}"
-ndk_version="${2:-21.3.6528147}"
-cmake_version="${3:-3.10.2}"
+ndk_version="${1:-21.3.6528147}"
+cmake_version="${2:-3.10.2}"
 ###############################################################################
 ###############################################################################
 
@@ -41,7 +40,7 @@ function runLinter() {
   callCommand ./gradlew check --profile --parallel \
     -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
     --console plain \
-    2>&1 | tee ${reports_path}/log_check_"${type}".log
+    2>&1 | tee ${reports_path}/log_check.log
   resCheck=${PIPESTATUS[0]}
 }
 

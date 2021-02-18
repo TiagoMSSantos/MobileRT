@@ -10,7 +10,7 @@ cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit
 ###############################################################################
 # Get arguments
 ###############################################################################
-type="${1:-Release}"
+type="${1:-release}"
 ndk_version="${2:-21.3.6528147}"
 cmake_version="${3:-3.10.2}"
 ###############################################################################
@@ -30,6 +30,10 @@ source scripts/helper_functions.sh
 # Set path to reports
 reports_path=./app/build/reports
 callCommand mkdir -p ${reports_path}
+
+# Capitalize 1st letter
+type="$(tr '[:lower:]' '[:upper:]' <<<"${type:0:1}")${type:1}"
+echo "type: '${type}'"
 
 function runUnitTests() {
   echo "Calling Gradle test"

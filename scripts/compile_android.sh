@@ -10,7 +10,7 @@ cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit
 ###############################################################################
 # Get arguments
 ###############################################################################
-type="${1:-Release}"
+type="${1:-release}"
 recompile="${2:-no}"
 ndk_version="${3:-21.3.6528147}"
 cmake_version="${4:-3.10.2}"
@@ -28,13 +28,13 @@ source scripts/helper_functions.sh
 # Compile for Android
 ###############################################################################
 
-# Capitalize 1st letter
-type="$(tr '[:lower:]' '[:upper:]' <<<"${type:0:1}")${type:1}"
-echo "type: '${type}'"
-
 # Set path to reports
 reports_path=./app/build/reports
 callCommand mkdir -p ${reports_path}
+
+# Capitalize 1st letter
+type="$(tr '[:lower:]' '[:upper:]' <<<"${type:0:1}")${type:1}"
+echo "type: '${type}'"
 
 function clearAllBuildFiles() {
   rm -rf ./app/build/
