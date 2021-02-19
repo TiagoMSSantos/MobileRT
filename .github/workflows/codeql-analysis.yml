@@ -8,15 +8,10 @@ name: Build CodeQL
 # e: day of the week (0 - 6 or SUN-SAT)
 
 on:
-  pull_request:
+  push:
     paths-ignore:
     - '.github/workflows/**'
     - '!.github/workflows/codeql-analysis.yml'
-    branches:
-    - '*'
-  push:
-    # Using on.push.paths-ignore can prevent Code Scanning annotating new
-    # alerts in the pull requests.
     branches:
     - '*'
 
