@@ -154,7 +154,7 @@ library for instrumented tests
 | :---: |:----:| :----:| :---: |
 | MacOS | 10.15 <br> :heavy_check_mark: | 11.0 <br> :white_check_mark: | |
 | Ubuntu | 16.04 <br> :white_check_mark: | 18.04 <br> :heavy_check_mark: | 20.04 <br> :white_check_mark: |
-| Windows | Server 2016 <br> :white_check_mark: | Server 2019 <br> :heavy_check_mark: | |
+| Windows | Server 2016 <br> :heavy_check_mark: | Server 2019 <br> :heavy_check_mark: | |
 | Android | 4.1 (API 16) <br> :heavy_check_mark: | ... <br> :white_check_mark: | 10 (API 29) <br> :white_check_mark: |
 
 Table: :heavy_check_mark: -> actively tested, :white_check_mark: -> tested

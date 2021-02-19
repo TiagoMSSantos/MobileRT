@@ -42,28 +42,47 @@ jobs:
         include:
         - name: "MSVC"
           os: windows-2016
-          config:
-          - {
-            artifact: "Windows-MSVC.tar.xz",
-            cc: "cl", cxx: "cl",
-            environment_script: "C:/Program Files (x86)/Microsoft Visual Studio/2017/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
-          }
+          cxx: "C:/PROGRA~2/MICROS~1/2017/Enterprise/VC/Tools/MSVC/14.16.27023/bin/Hostx64/x86/cl.exe"
+          cc: "C:/PROGRA~2/MICROS~1/2017/Enterprise/VC/Tools/MSVC/14.16.27023/bin/Hostx64/x86/cl.exe"
+          #C:/Program Files (x86)/Microsoft Visual Studio/2017/Enterprise/SDK/ScopeCppSDK/VC/bin/cl.exe
+          #C:/Program Files (x86)/Microsoft Visual Studio/2017/Enterprise/VC/Tools/MSVC/14.16.27023/bin/Hostx64/arm/cl.exe
+          #C:/Program Files (x86)/Microsoft Visual Studio/2017/Enterprise/VC/Tools/MSVC/14.16.27023/bin/Hostx64/arm64/cl.exe
+          #C:/Program Files (x86)/Microsoft Visual Studio/2017/Enterprise/VC/Tools/MSVC/14.16.27023/bin/Hostx64/x64/cl.exe
+          #C:/Program Files (x86)/Microsoft Visual Studio/2017/Enterprise/VC/Tools/MSVC/14.16.27023/bin/Hostx64/x86/cl.exe
+          #C:/Program Files (x86)/Microsoft Visual Studio/2017/Enterprise/VC/Tools/MSVC/14.16.27023/bin/Hostx86/arm/cl.exe
+          #C:/Program Files (x86)/Microsoft Visual Studio/2017/Enterprise/VC/Tools/MSVC/14.16.27023/bin/Hostx86/arm64/cl.exe
+          #C:/Program Files (x86)/Microsoft Visual Studio/2017/Enterprise/VC/Tools/MSVC/14.16.27023/bin/Hostx86/x64/cl.exe
+          #C:/Program Files (x86)/Microsoft Visual Studio/2017/Enterprise/VC/Tools/MSVC/14.16.27023/bin/Hostx86/x86/cl.exe
 
         - name: "MSVC"
           os: windows-2019
-          config:
-          - {
-            artifact: "Windows-MSVC.tar.xz",
-            cc: "cl", cxx: "cl",
-            environment_script: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
-          }
+          cxx: "C:/PROGRA~2/MICROS~1/2019/Enterprise/VC/Tools/MSVC/14.16.27023/bin/HostX64/x86/cl.exe"
+          cc: "C:/PROGRA~2/MICROS~1/2019/Enterprise/VC/Tools/MSVC/14.16.27023/bin/HostX64/x86/cl.exe"
+          #C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/SDK/ScopeCppSDK/vc15/VC/bin/cl.exe
+          #C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Tools/MSVC/14.16.27023/bin/HostX64/arm/cl.exe
+          #C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Tools/MSVC/14.16.27023/bin/HostX64/arm64/cl.exe
+          #C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Tools/MSVC/14.16.27023/bin/HostX64/x64/cl.exe
+          #C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Tools/MSVC/14.16.27023/bin/HostX64/x86/cl.exe
+          #C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Tools/MSVC/14.16.27023/bin/HostX86/arm/cl.exe
+          #C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Tools/MSVC/14.16.27023/bin/HostX86/arm64/cl.exe
+          #C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Tools/MSVC/14.16.27023/bin/HostX86/x64/cl.exe
+          #C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Tools/MSVC/14.16.27023/bin/HostX86/x86/cl.exe
+          #C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Tools/MSVC/14.25.28610/bin/HostX64/x64/cl.exe
+          #C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Tools/MSVC/14.25.28610/bin/HostX64/x86/cl.exe
+          #C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Tools/MSVC/14.25.28610/bin/HostX86/x64/cl.exe
+          #C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Tools/MSVC/14.25.28610/bin/HostX86/x86/cl.exe
+          #C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Tools/MSVC/14.28.29333/bin/Hostx64/arm/cl.exe
+          #C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Tools/MSVC/14.28.29333/bin/Hostx64/arm64/cl.exe
+          #C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Tools/MSVC/14.28.29333/bin/Hostx64/x64/cl.exe
+          #C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Tools/MSVC/14.28.29333/bin/Hostx64/x86/cl.exe
+          #C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Tools/MSVC/14.28.29333/bin/Hostx86/arm/cl.exe
+          #C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Tools/MSVC/14.28.29333/bin/Hostx86/arm64/cl.exe
+          #C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Tools/MSVC/14.28.29333/bin/Hostx86/x64/cl.exe
+          #C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Tools/MSVC/14.28.29333/bin/Hostx86/x86/cl.exe
 
         - name: "MinGW"
-          config:
-          - {
-              artifact: "Windows-MinGW.tar.xz",
-              cc: "gcc", cxx: "g++"
-          }
+          cxx: "gcc"
+          cc: "g++"
 
     steps:
     - name: Checkout
@@ -129,9 +148,9 @@ jobs:
       uses: actions/cache@v2.1.4
       with:
         path: .ccache
-        key: ${{ matrix.config.name }}-ccache-${{ steps.ccache_cache_timestamp.outputs.timestamp }}
+        key: ${{ matrix.name }}-ccache-${{ steps.ccache_cache_timestamp.outputs.timestamp }}
         restore-keys: |
-          ${{ matrix.config.name }}-ccache-
+          ${{ matrix.name }}-ccache
 
     - name: Create build directory
       if: success()
@@ -142,8 +161,7 @@ jobs:
         mkdir -p example/Qt;
         vcpkg install pthread:x86-windows;
         vcpkg install pthread:x64-windows;
-        ls -la;
-        g++ -v;
+      # find "C:/Program Files (x86)/Microsoft Visual Studio/" -iname cl.exe;
 
     - name: Install Qt
       if: success()
@@ -158,41 +176,18 @@ jobs:
         dir: '${{ github.workspace }}/example'
         install-deps: 'true'
         modules: 'qtcharts qtwebengine'
-        # The mirror must provide the following file:
-        # <mirror>/online/qtsdkrepository/windows_x86/desktop/qt5_5129
-        # /qt.qt5.5129.qtwebengine.win64_msvc2017_64
-        # /5.12.9-0-202006121743qtwebengine-Windows-Windows_10-MSVC2017-Windows-Windows_10-X86_64.7z
-#        mirror: 'https://download.qt.io'
-#        mirror: 'http://mirrors.ocf.berkeley.edu/qt'
-#        mirror: 'http://mirrors.ukfast.co.uk/sites/qt.io'
-#        mirror: 'http://ftp1.nluug.nl/languages/qt'
-#        mirror: 'http://ftp2.nluug.nl/languages/qt'
-#        mirror: 'http://qtproject.mirror.liteserver.nl'
-#        mirror: 'http://ftp.fau.de/qtproject'
-#        mirror: 'http://qt-mirror.dannhauer.de'
-#        mirror: 'https://mirrors.dotsrc.org/qtproject'
-#        mirror: 'https://ftp.acc.umu.se/mirror/qt.io/qtproject'
-#        mirror: 'http://www.nic.funet.fi/pub/mirrors/download.qt-project.org'
-#        mirror: 'http://master.qt.io'
-#        mirror: 'http://qtproject.mirror.liquidtelecom.com'
-#        mirror: 'http://qt.mirror.constant.com'
-#        mirror: 'http://qt.mirrors.tds.net/qt'
-#        mirror: 'http://mirror.csclub.uwaterloo.ca/qtproject'
-#        mirror: 'http://linorg.usp.br/Qt'
-#        mirror: 'http://ftp.jaist.ac.jp/pub/qtproject'
-#        mirror: 'http://ftp.yz.yamagata-u.ac.jp/pub/qtproject'
         cached: 'false'
         aqtversion: '==0.9.4'
         py7zrversion: '==0.9.1'
         extra: '--external 7z'
 
-    - name: Build ${{ matrix.type }}
+    - name: Build ${{ matrix.type }} (${{ matrix.cxx }})
       if: success()
       working-directory: .
       shell: bash
       run: |
         mkdir -p reports;
-        bash scripts/compile_native.sh ${{ matrix.type }} g++ 2>&1 | tee ./reports/build.log;
+        bash scripts/compile_native.sh ${{ matrix.type }} "${{ matrix.cxx }}" 2>&1 | tee ./reports/build.log;
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
         exit ${res};

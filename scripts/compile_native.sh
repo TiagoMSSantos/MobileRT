@@ -56,7 +56,8 @@ elif [[ "${compiler}" == *"g++"* ]]; then
   export CC=gcc;
 fi
 
-callCommand ${compiler} -v;
+# Flag `-v` not compatible with MSVC.
+#callCommand ${compiler} -v;
 echo "Detected '${conan_compiler}' '${conan_compiler_version}' compiler.";
 export CXX="${compiler}";
 
