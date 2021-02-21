@@ -1,4 +1,4 @@
-package puscas.mobilertapp;
+package puscas.mobilertapp.system;
 
 import com.google.common.collect.ImmutableList;
 import java.io.File;
@@ -13,6 +13,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.runners.MethodSorters;
+import puscas.mobilertapp.AbstractTest;
+import puscas.mobilertapp.MainActivity;
 import puscas.mobilertapp.utils.Constants;
 import puscas.mobilertapp.utils.ConstantsUI;
 import puscas.mobilertapp.utils.UtilsContext;

@@ -230,6 +230,15 @@ android {
     // Configure test options
     testOptions {
         unitTests {
+            all {
+                minHeapSize = "128m"
+                maxHeapSize = "512m"
+                // set JVM arguments for the test JVM(s)
+                jvmArgs
+//                jacoco {
+//                    includeNoLocationClasses = true
+//                }
+            }
             includeAndroidResources = true
             returnDefaultValues = true
         }

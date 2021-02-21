@@ -11,13 +11,14 @@ import org.junit.Test;
 import puscas.mobilertapp.utils.Constants;
 
 /**
- * The unit tests for memory behaviour in the system.
+ * The unit tests for Java memory behaviour in the system.
  */
-public class MemoryTest {
+public class JavaMemoryTest {
+
     /**
      * The {@link Logger} for this class.
      */
-    private static final Logger LOGGER = Logger.getLogger(MemoryTest.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(JavaMemoryTest.class.getName());
 
     /**
      * Setup method called before each test.
@@ -48,16 +49,10 @@ public class MemoryTest {
         // Dummy array to hold the allocated memory.
         final Collection<ByteBuffer> dummyArrays = new ArrayList<>();
 
-        final long firstAvailableMemoryMB = getAvailableJavaMemoryInMB();
-        Assertions.assertThat(firstAvailableMemoryMB)
-            .as("Not enough available memory.")
-            .isGreaterThan(300L);
-        dummyArrays.add(ByteBuffer.allocate(Constants.BYTES_IN_MEGABYTE));
-
         final long startAvailableMemory = getAvailableJavaMemoryInMB();
         Assertions.assertThat(startAvailableMemory)
-            .as("Available memory didn't decrease as expected.")
-            .isLessThan(firstAvailableMemoryMB);
+            .as("Not enough available memory.")
+            .isGreaterThan(300L);
 
         final long megaBytesToAllocate = 100L;
         for(long l = 0L; getAvailableJavaMemoryInMB() >= startAvailableMemory - 200L; l += megaBytesToAllocate) {
@@ -66,7 +61,7 @@ public class MemoryTest {
             System.gc();
 
             final long beforeAvailableMemoryMB = getAvailableJavaMemoryInMB();
-            Assertions.assertThat(firstAvailableMemoryMB)
+            Assertions.assertThat(beforeAvailableMemoryMB)
                 .as("Not enough available memory.")
                 .isGreaterThan(megaBytesToAllocate);
             dummyArrays.add(ByteBuffer.allocate(((int) megaBytesToAllocate * Constants.BYTES_IN_MEGABYTE)));
