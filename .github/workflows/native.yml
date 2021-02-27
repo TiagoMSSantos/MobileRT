@@ -21,6 +21,7 @@ on:
     - '!app/System_dependent/Native/**'
     - '!scripts/compile_native.sh'
     - '!codecov.yml'
+    - '!scripts/install_dependencies.sh'
 #branches-ignore:
 #  - '**'
 

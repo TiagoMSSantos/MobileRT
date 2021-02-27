@@ -27,8 +27,8 @@ source scripts/helper_functions.sh
 ###############################################################################
 # Fix llvm clang OpenMP library
 ###############################################################################
-OPENMP_INCLUDE_PATH="/usr/local/Cellar/libomp/11.0.1/include";
-OPENMP_LIB_PATH=$(find /usr -name "libomp.so" -path "*llvm*" | head -1 2> /dev/null);
+OPENMP_INCLUDE_PATH=$(find /usr/local/Cellar/libomp -name "omp.h" | head -1 2> /dev/null);
+OPENMP_LIB_PATH=$(find /usr/local/Cellar/libomp -name "libomp.so" | head -1 2> /dev/null);
 echo "OPENMP_INCLUDE_PATH = ${OPENMP_INCLUDE_PATH}";
 echo "OPENMP_LIB_PATH = ${OPENMP_LIB_PATH}";
 export CPLUS_INCLUDE_PATH=${OPENMP_INCLUDE_PATH%/omp.h}:${CPLUS_INCLUDE_PATH};

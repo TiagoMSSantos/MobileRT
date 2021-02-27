@@ -69,8 +69,13 @@ elif [ -x "$(command -v brew)" ]; then
   brew install python3;
   brew install pyenv;
 
-  # This command needs sudo.
-  callCommand sudo xcode-select --switch /System/Volumes/Data/Applications/Xcode_12.3.app/Contents/Developer;
+  MAJOR_MAC_VERSION=$(sw_vers | grep ProductVersion | cut -d ':' -f2 | cut -d '.' -f1 | tr -d '[:space:]')
+  if [ "${MAJOR_MAC_VERSION}" == "11" ]; then
+    # This command needs sudo.
+    callCommand sudo xcode-select --switch /System/Volumes/Data/Applications/Xcode_12.3.app/Contents/Developer;
+  fi
+  callCommand echo "MacOS '${MAJOR_MAC_VERSION}' detected"
+
 fi
 
 # Install Python
