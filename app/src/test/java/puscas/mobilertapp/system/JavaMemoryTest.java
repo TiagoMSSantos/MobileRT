@@ -55,7 +55,7 @@ public class JavaMemoryTest {
             .isGreaterThan(300L);
 
         final long megaBytesToAllocate = 100L;
-        for(long l = 0L; getAvailableJavaMemoryInMB() >= startAvailableMemory - 200L; l += megaBytesToAllocate) {
+        for(long l = 0L; getAvailableJavaMemoryInMB() >= startAvailableMemory - 2L * megaBytesToAllocate; l += megaBytesToAllocate) {
             // Force garbage collection now, before retrieving available memory
             // of the before and after allocating memory.
             System.gc();
