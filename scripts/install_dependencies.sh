@@ -52,37 +52,50 @@ if [ -x "$(command -v apt-get)" ]; then
     python3-dev \
     python3-setuptools \
     cpulimit \
-    sudo \
-    || true;
+    sudo;
 # if MacOS
 elif [ -x "$(command -v brew)" ]; then
-  callCommand brew update || true;
-  callCommand brew tap cartr/qt4 || true;
-  callCommand brew uninstall --force openssl@1.0 || true;
-  callCommand brew install libomp || true;
-  callCommand brew install openssl@1.0 || true;
-  callCommand brew install qt@4 || true;
-  callCommand brew install qt || true;
-  callCommand brew install llvm || true;
-  callCommand brew install lcov || true;
-  callCommand brew install cpulimit || true;
+  callCommand brew update;
+  callCommand brew tap cartr/qt4;
+  callCommand brew uninstall --force openssl@1.0;
+  callCommand brew install openssl@1.0;
+  callCommand brew install qt@4;
+  callCommand brew install llvm;
+
+  # Install OpenMP
+  brew install libomp;
+  callCommand wget https://homebrew.bintray.com/bottles/libomp-11.1.0.catalina.bottle.tar.gz;
+  # Fallback to manually extract lib
+  callCommand tar -xzvf libomp-11.1.0.catalina.bottle.tar.gz;
+  callCommand sudo mv libomp /usr/local/Cellar/libomp;
+
+  # The following might give this error:
+  # curl: (35) error:1400410B:SSL routines:CONNECT_CR_SRVR_HELLO:wrong version number
+  # Error: Failed to download resource "cpulimit"
+  # Download failed: https://homebrew.bintray.com/bottles/cpulimit-0.2.catalina.bottle.tar.gz
+  brew install cpulimit;
+  brew install lcov;
   brew install python3;
   brew install pyenv;
 
   MAJOR_MAC_VERSION=$(sw_vers | grep ProductVersion | cut -d ':' -f2 | cut -d '.' -f1 | tr -d '[:space:]')
-  if [ "${MAJOR_MAC_VERSION}" == "11" ]; then
-    # This command needs sudo.
-    callCommand sudo xcode-select --switch /System/Volumes/Data/Applications/Xcode_12.3.app/Contents/Developer;
-  fi
   callCommand echo "MacOS '${MAJOR_MAC_VERSION}' detected"
-
+  # This command needs sudo.
+  callCommand sudo xcode-select --switch /System/Volumes/Data/Applications/Xcode_12.4.app/Contents/Developer;
 fi
 
 # Install Python
 if [ -x "$(command -v choco)" ]; then
   callCommand choco install python --version 3.8.0;
 fi
-callCommand python3 -m pip install --upgrade pip;
+
+# if not Debian based Linux
+if [ ! -x "$(command -v apt-get)" ]; then
+  # Ensure pip is used by default
+  callCommand python3 -m ensurepip --default-pip;
+fi
+
+python3 -m pip install --upgrade pip;
 ###############################################################################
 ###############################################################################
 
@@ -126,11 +139,12 @@ checkCommand make
 checkCommand bash
 checkCommand git
 checkCommand g++
-# Can't install clang++ in docker container
-#checkCommand clang++
 checkCommand python3
 checkCommand pip
 checkCommand pip3
-checkCommand cpulimit
+
+# Can't install in docker container:
+#checkCommand clang++
+#checkCommand cpulimit
 ###############################################################################
 ###############################################################################

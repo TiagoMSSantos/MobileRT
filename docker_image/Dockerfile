@@ -56,8 +56,8 @@ RUN echo "DISPLAY = ${DISPLAY}"; \
 # Install dependencies
 ###############################################################################
 RUN \
-# if Linux distribution is Debian based
 if [ -x "$(command -v apt-get)" ]; then \
+  echo "Detected Debian based Linux"; \
   apt-get update -y; \
   apt-get install --no-install-recommends -y \
     vim \
@@ -72,8 +72,8 @@ if [ -x "$(command -v apt-get)" ]; then \
     qt5-default \
     g++ \
     build-essential; \
-# if Linux distribution is Red Hat based
 elif [ -x "$(command -v yum)" ]; then \
+  echo "Detected Red Hat based Linux"; \
   yum update -y; \
   yum install -y \
     vim \
@@ -85,11 +85,20 @@ elif [ -x "$(command -v yum)" ]; then \
     git \
     which \
     qt5-qtbase-devel \
+    python36 \
     gcc-c++; \
-# if Linux distribution is Arch Linux based
-elif [ -x "$(command -v pacman)" ]; then \
-  pacman -Sy --noconfirm; \
-  pacman -S --noconfirm \
+elif [ -e "$(command -v pacman)" ]; then \
+  echo "Detected Arch based Linux"; \
+  \
+  # Fix the following error:
+  # error: failed to initialize alpm library
+  # (could not find or read directory: /var/lib/pacman/)
+  patched_glibc=glibc-linux4-2.33-4-x86_64.pkg.tar.zst && \
+  curl -LO "https://repo.archlinuxcn.org/x86_64/${patched_glibc}" && \
+  bsdtar -C / -xvf "${patched_glibc}"; \
+  \
+  pacman -Sy --noconfirm --needed; \
+  pacman -Sy --noconfirm --needed \
     vim \
     findutils \
     cmake \
@@ -99,9 +108,10 @@ elif [ -x "$(command -v pacman)" ]; then \
     git \
     which \
     qt5-base \
+    python3 \
     gcc; \
-# if Linux distribution is Alpine based
 elif [ -x "$(command -v apk)" ]; then \
+  echo "Detected Alpine based Linux"; \
   apk update; \
   apk add \
     vim \
@@ -114,16 +124,39 @@ elif [ -x "$(command -v apk)" ]; then \
     qt5-qtbase-dev \
     which \
     g++ \
+    py3-pip \
     gcc; \
-# if Linux distribution is Gentoo based (didn't test Qt)
 elif [ -x "$(command -v emerge)" ]; then \
+  echo "Detected Gentoo based Linux (error installing Qt)"; \
+  # Error when installing Qt:
+  #
+  # The following USE changes are necessary to proceed:
+  # (see "package.use" in the portage(5) man page for more details)
+  # required by dev-qt/qtgui-5.15.2-r1::gentoo[X]
+  # required by dev-qt/qtwidgets-5.15.2::gentoo
+  # required by dev-qt/qtwidgets (argument)
+  # >=x11-libs/libxkbcommon-1.0.3 X
+  # required by dev-qt/qtcore-5.15.2-r2::gentoo
+  # required by dev-qt/qtgui-5.15.2-r1::gentoo
+  # required by dev-qt/qtwidgets-5.15.2::gentoo
+  # required by dev-qt/qtwidgets (argument)
+  # >=dev-libs/libpcre2-10.35 pcre16
+  # required by media-libs/mesa-20.2.6::gentoo
+  # required by virtual/opengl-7.0-r2::gentoo
+  # required by dev-qt/qtgui-5.15.2-r1::gentoo[-gles2-only]
+  # required by dev-qt/qtwidgets-5.15.2::gentoo
+  # required by dev-qt/qtwidgets (argument)
+  # >=media-libs/libglvnd-1.3.2-r2 X
   emerge --sync; \
   emerge sys-apps/portage; \
   emerge --update --deep @world; \
-  eselect profile list; \
-  eselect profile set 1; \
   emerge app-portage/layman; \
   emerge layman; \
+  emerge x11-libs/libxkbcommon; \
+  emerge dev-libs/libpcre2; \
+  emerge media-libs/libglvnd; \
+  eselect profile list; \
+  eselect profile set 1; \
   layman -S; \
   layman -a qt; \
   layman -a gentoo; \
@@ -140,6 +173,8 @@ elif [ -x "$(command -v emerge)" ]; then \
     dev-qt/qtcore \
     dev-qt/qtgui \
     dev-qt/qtwidgets; \
+else \
+  echo "Detected unknown based Linux"; \
 fi
 ###############################################################################
 ###############################################################################
@@ -148,7 +183,7 @@ fi
 ###############################################################################
 # Get MobileRT contents (required to create docker image in CI)
 ###############################################################################
-RUN git clone https://github.com/TiagoMSSantos/MobileRT.git
+RUN git clone https://github.com/TiagoMSSantos/MobileRT.git --branch master
 ###############################################################################
 ###############################################################################
 
