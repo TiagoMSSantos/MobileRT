@@ -181,14 +181,12 @@ jobs:
     - name: Upload reports
       if: always()
       uses: actions/upload-artifact@v2
-      continue-on-error: true
+      continue-on-error: false
       with:
         name: reports_${{ matrix.type }}
         path: |
-          ./app/build/reports
-          ./reports
           ./app/build/reports/coverage/debug
-          ./
+          ./reports
 
   Sonar:
     needs: Build
@@ -199,6 +197,10 @@ jobs:
 
     if: github.event_name == 'push'
     steps:
+    - name: Checkout
+      if: success()
+      uses: actions/checkout@v2.3.4
+
     - name: Download reports
       if: success()
       uses: actions/download-artifact@v2
