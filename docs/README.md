@@ -1,8 +1,8 @@
 # MobileRT: Mobile Ray Tracing engine <br/>
 - A portable Ray Tracing (RT) engine for multiple devices. <br/>
 - Already available interfaces for:  <br/>
-  - Android (through Java + JNI)
-  - Linux, MacOS X, Windows (through Qt 4 or 5)
+  - Android (through **Java** + **JNI** and **C**)
+  - Linux, MacOS X, Windows (through **Qt** 4 or 5)
 - Compatible with C++ compilers:  <br/>
   - GNU C++ Compiler (g++)
   - Clang++

@@ -34,8 +34,8 @@ function callCommandUntilError() {
   local retry=0
   "$@"
   local lastResult=${PIPESTATUS[0]}
-  while [[ "${lastResult}" -eq 0 && retry -lt 2 ]]; do
-    retry=$(("${retry}" + 1))
+  while [[ "${lastResult}" -eq 0 && retry -lt 20 ]]; do
+    retry=$((${retry} + 1))
     "$@"
     lastResult=${PIPESTATUS[0]}
     echo "Retry: ${retry} of command '$*'; result: '${lastResult}'"
