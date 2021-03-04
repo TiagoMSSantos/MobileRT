@@ -149,13 +149,58 @@ unit tests
 library for instrumented tests
 
 ## Supported Operating Systems
-
-| OS \ Version | | | |
-| :---: |:----:| :----:| :---: |
-| MacOS | 10.15 <br> :heavy_check_mark: | 11.0 <br> :white_check_mark: | |
-| Ubuntu | 16.04 <br> :white_check_mark: | 18.04 <br> :heavy_check_mark: | 20.04 <br> :white_check_mark: |
-| Windows | Server 2016 <br> :heavy_check_mark: | Server 2019 <br> :heavy_check_mark: | |
-| Android | 4.1 (API 16) <br> :heavy_check_mark: | ... <br> :white_check_mark: | 10 (API 29) <br> :white_check_mark: |
+<table class="tg">
+<thead>
+  <tr>
+    <th colspan="1" style="text-align:center">OS</th>
+    <th colspan="3" style="text-align:center">Versions</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td style="text-align:center"><b>Android</td>
+    <td style="text-align:center">4.1 (API 16) <br> :heavy_check_mark:</td>
+    <td style="text-align:center">... <br> :white_check_mark:</td>
+    <td style="text-align:center">10 (API 29) <br> :white_check_mark:</td>
+  </tr>
+  <tr>
+    <td style="text-align:center"><b>Ubuntu</td>
+    <td style="text-align:center">16.04 <br> :white_check_mark:</td>
+    <td style="text-align:center">18.04 <br> :heavy_check_mark:</td>
+    <td style="text-align:center">20.04 <br> :white_check_mark:</td>
+  </tr>
+  <tr>
+    <td style="text-align:center"><b>CentOS</td>
+    <td style="text-align:center">8 <br> :heavy_check_mark:</td>
+    <td style="text-align:center"></td>
+    <td style="text-align:center"></td>
+  </tr>
+  <tr>
+    <td style="text-align:center"><b>Arch Linux</td>
+    <td style="text-align:center">base-devel <br> :heavy_check_mark:</td>
+    <td style="text-align:center"></td>
+    <td style="text-align:center"></td>
+  </tr>
+  <tr>
+    <td style="text-align:center"><b>Alpine</td>
+    <td style="text-align:center">3.12 <br> :heavy_check_mark:</td>
+    <td style="text-align:center"></td>
+    <td style="text-align:center"></td>
+  </tr>
+  <tr>
+    <td style="text-align:center"><b>MacOS</td>
+    <td style="text-align:center">10.15 <br> :heavy_check_mark:</td>
+    <td style="text-align:center">11.0 <br> :white_check_mark:</td>
+    <td style="text-align:center"></td>
+  </tr>
+  <tr>
+    <td style="text-align:center"><b>Windows</td>
+    <td style="text-align:center">Server 2016 <br> :heavy_check_mark:</td>
+    <td style="text-align:center">Server 2019 <br> :heavy_check_mark:</td>
+    <td style="text-align:center"></td>
+  </tr>
+</tbody>
+</table>
 
 Table: :heavy_check_mark: -> actively tested, :white_check_mark: -> tested
 
