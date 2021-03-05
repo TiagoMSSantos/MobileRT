@@ -162,54 +162,54 @@ library for instrumented tests
 <tbody>
   <tr>
     <td style="text-align:center"><b>Android</td>
-    <td style="text-align:center">4.1 (API 16) <br> :heavy_check_mark:</td>
-    <td style="text-align:center">... <br> :white_check_mark:</td>
-    <td style="text-align:center">10 (API 29) <br> :white_check_mark:</td>
+    <td style="text-align:center">4.1 (API 16) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
+    <td style="text-align:center">... <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25"></td>
+    <td style="text-align:center">10 (API 29) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25"></td>
   </tr>
   <tr>
     <td style="text-align:center"><b>Ubuntu</td>
-    <td style="text-align:center">16.04 <br> :white_check_mark:</td>
-    <td style="text-align:center">18.04 <br> :heavy_check_mark:</td>
-    <td style="text-align:center">20.04 <br> :white_check_mark:</td>
+    <td style="text-align:center">16.04 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25"></td>
+    <td style="text-align:center">18.04 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
+    <td style="text-align:center">20.04 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25"></td>
   </tr>
   <tr>
     <td style="text-align:center"><b>CentOS</td>
-    <td style="text-align:center">8 <br> :heavy_check_mark:</td>
+    <td style="text-align:center">8 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
     <td style="text-align:center"></td>
     <td style="text-align:center"></td>
   </tr>
   <tr>
     <td style="text-align:center"><b>Arch Linux</td>
-    <td style="text-align:center">base-devel <br> :heavy_check_mark:</td>
+    <td style="text-align:center">base-devel <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
     <td style="text-align:center"></td>
     <td style="text-align:center"></td>
   </tr>
   <tr>
     <td style="text-align:center"><b>Alpine</td>
-    <td style="text-align:center">3.12 <br> :heavy_check_mark:</td>
+    <td style="text-align:center">3.12 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
     <td style="text-align:center"></td>
     <td style="text-align:center"></td>
   </tr>
   <tr>
     <td style="text-align:center"><b>MacOS</td>
-    <td style="text-align:center">10.15 <br> :heavy_check_mark:</td>
-    <td style="text-align:center">11.0 <br> :white_check_mark:</td>
+    <td style="text-align:center">10.15 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
+    <td style="text-align:center">11.0 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25"></td>
     <td style="text-align:center"></td>
   </tr>
   <tr>
     <td style="text-align:center"><b>Windows</td>
-    <td style="text-align:center">Server 2016 <br> :heavy_check_mark:</td>
-    <td style="text-align:center">Server 2019 <br> :heavy_check_mark:</td>
+    <td style="text-align:center">Server 2016 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
+    <td style="text-align:center">Server 2019 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
     <td style="text-align:center"></td>
   </tr>
 </tbody>
 </table>
 
-Table: :heavy_check_mark: -> actively tested, :white_check_mark: -> tested
+Table: <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"> -> actively tested, <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25"> -> tested
 
 
 ## Master's dissertation
 This project started as a [Masters' dissertation](https://repositorium.sdum.uminho.pt/handle/1822/66577).
 
-Click [here](TODO.md) to check the TODO list. <br/>
-Click [here](TOOLS.md) to check the code coverage and code duplication commands. <br/>
+Click [here](https://github.com/TiagoMSSantos/MobileRT/blob/master/docs/TODO.md) to check the TODO list. <br/>
+Click [here](https://github.com/TiagoMSSantos/MobileRT/blob/master/docs/TOOLS.md) to check the code coverage and code duplication commands. <br/>
