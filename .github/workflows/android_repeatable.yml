@@ -42,7 +42,7 @@ jobs:
 
     - name: Run Android tests
       if: success() && !startsWith(matrix.os, 'windows')
-      uses: ReactiveCircus/android-emulator-runner@v2.14.3
+      uses: ReactiveCircus/android-emulator-runner@v2.15.0
       with:
         api-level: 16
         target: default
