@@ -46,3 +46,12 @@ jobs:
         # You must create a personal token with repo access as GitHub does
         # not yet support server-to-server page builds.
         USER_TOKEN: ${{ secrets.REPOSITORY_TOKEN }}
+
+    - name: Sync README with docker hub
+      if: success()
+      uses: ms-jpq/sync-dockerhub-readme@v1
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+        repository: ptpuscas/mobile_rt
+        readme: "docs/README.md"
