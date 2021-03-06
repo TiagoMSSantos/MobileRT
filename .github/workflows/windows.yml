@@ -36,12 +36,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-2016, windows-2019]
+        os: [windows-2019]
         type: [release]
         name: ["MSVC", "MinGW"]
         include:
         - name: "MSVC"
-          os: windows-2016
+#          os: windows-2016
           cxx: "C:/PROGRA~2/MICROS~1/2017/Enterprise/VC/Tools/MSVC/14.16.27023/bin/Hostx64/x86/cl.exe"
           cc: "C:/PROGRA~2/MICROS~1/2017/Enterprise/VC/Tools/MSVC/14.16.27023/bin/Hostx64/x86/cl.exe"
           #C:/Program Files (x86)/Microsoft Visual Studio/2017/Enterprise/SDK/ScopeCppSDK/VC/bin/cl.exe
@@ -56,8 +56,8 @@ jobs:
 
         - name: "MSVC"
           os: windows-2019
-          cxx: "C:/PROGRA~2/MICROS~1/2019/Enterprise/VC/Tools/MSVC/14.16.27023/bin/HostX64/x86/cl.exe"
-          cc: "C:/PROGRA~2/MICROS~1/2019/Enterprise/VC/Tools/MSVC/14.16.27023/bin/HostX64/x86/cl.exe"
+          cxx: "C:/PROGRA~2/MICROS~1/2019/Enterprise/VC/Tools/MSVC/14.28.29333/bin/HostX64/x86/cl.exe"
+          cc: "C:/PROGRA~2/MICROS~1/2019/Enterprise/VC/Tools/MSVC/14.28.29333/bin/HostX64/x86/cl.exe"
           #C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/SDK/ScopeCppSDK/vc15/VC/bin/cl.exe
           #C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Tools/MSVC/14.16.27023/bin/HostX64/arm/cl.exe
           #C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Tools/MSVC/14.16.27023/bin/HostX64/arm64/cl.exe

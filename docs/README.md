@@ -43,8 +43,8 @@ giving an error about some generated class from Jacoco.
 -->
 
 
-<img src="Example_Android.gif" alt="MobileRT: Android" width="400"/>
-<img src="Example_Linux.gif" alt="MobileRT: Linux" height="400"/>
+<img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/Example_Android.gif" alt="MobileRT: Android" width="400"/>
+<img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/Example_Linux.gif" alt="MobileRT: Linux" height="400"/>
 
 
 ## Run docker image
@@ -198,7 +198,7 @@ library for instrumented tests
   </tr>
   <tr>
     <td style="text-align:center"><b>Windows</td>
-    <td style="text-align:center">Server 2016 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
+    <td style="text-align:center">Server 2016 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25"></td>
     <td style="text-align:center">Server 2019 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
     <td style="text-align:center"></td>
   </tr>
