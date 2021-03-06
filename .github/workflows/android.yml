@@ -179,14 +179,26 @@ jobs:
         name: MobileRT_${{ matrix.type }}_exp
         path: ./app/build/outputs/apk/${{ matrix.type }}
 
+    - name: Upload reports to cache
+      if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug'
+      uses: actions/cache@v2
+      env:
+        cache-name: cache-reports
+      with:
+        path: |
+          ./app/build/reports/coverage/debug
+          ./reports
+        key: reports_${{ matrix.type }}
+        restore-keys: |
+          reports_${{ matrix.type }}
+
     - name: Upload reports
       if: always()
       uses: actions/upload-artifact@v2
-      continue-on-error: false
+      continue-on-error: true
       with:
-        name: reports_${{ matrix.type }}
+        name: reports_${{ matrix.type }}_${{ matrix.os }}
         path: |
-          ./app/build/reports/coverage/debug
           ./reports
 
   Sonar:
@@ -202,12 +214,17 @@ jobs:
       if: success()
       uses: actions/checkout@v2.3.4
 
-    - name: Download reports
+    - name: Download reports from cache
       if: success()
-      uses: actions/download-artifact@v2
+      uses: actions/cache@v2
+      env:
+        cache-name: cache-reports
       with:
-        name: reports_debug
-        path: ./
+        path: |
+          ./app/build/reports/coverage/debug
+          ./reports
+        key: reports_debug
+        restore-keys: reports_debug
 
     - name: Check files from cache
       if: success()
