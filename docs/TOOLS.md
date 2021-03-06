@@ -3,13 +3,13 @@
 ## Code Coverage
 Here are the commands to generate the code coverage report:
 ```bash
-find build_Debug_gcc/* -name *.gcda | xargs rm
-cd build_Debug_gcc
+find build_debug/* -name *.gcda | xargs rm
+cd build_debug
 cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=Debug ../app/
 make
 cd ..
 lcov -c -i -d . --no-external -o code_coverage_base.info
-./build_Debug_gcc/bin/UnitTestsd
+./build_debug/bin/UnitTestsd
 lcov -c -d . --no-external -o code_coverage_test.info
 lcov -a code_coverage_base.info -a code_coverage_test.info -o code_coverage.info
 lcov --remove code_coverage.info -o code_coverage.info '*third_party*' '*build*'

@@ -16,6 +16,7 @@ on:
     - 'scripts/**'
     - 'WavefrontOBJs/**'
     - '!.github/workflows/native.yml'
+    - '!.github/workflows/android.yml'
     - '!app/CMakeLists.txt'
     - '!app/System_dependent/CMakeLists.txt'
     - '!app/System_dependent/Native/**'
@@ -36,7 +37,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [macos-10.15, ubuntu-18.04]
-        type: [release]
+        type: [debug, release]
         compiler: [g++, clang++]
 
     name: ${{ matrix.type }} ${{ matrix.compiler }} (${{ matrix.os }})
@@ -95,7 +96,7 @@ jobs:
         ls -Rla ./bin ./lib;
 
     - name: Generate code coverage base
-      if: success() && matrix.compiler == 'g++' && matrix.type == 'Debug' && startsWith(matrix.os, 'ubuntu')
+      if: success() && matrix.compiler == 'g++' && matrix.type == 'debug' && startsWith(matrix.os, 'ubuntu')
       working-directory: .
       run: |
         lcov -c -i -d . --no-external -o code_coverage_base.info 2>&1 | tee ./reports/generate_code_coverage_base.log;
@@ -104,7 +105,7 @@ jobs:
         exit ${res};
 
     - name: Run unit tests Debug
-      if: success() && matrix.type == 'Debug'
+      if: success() && matrix.type == 'debug'
       working-directory: build_${{ matrix.type }}
       run: |
         mkdir -p ./reports;
@@ -114,7 +115,7 @@ jobs:
         exit ${res};
 
     - name: Run unit tests Release
-      if: success() && matrix.type == 'Release'
+      if: success() && matrix.type == 'release'
       working-directory: build_${{ matrix.type }}
       run: |
         mkdir -p ./reports;
@@ -124,7 +125,7 @@ jobs:
         exit ${res};
 
     - name: Generate code coverage
-      if: success() && matrix.compiler == 'g++' && matrix.type == 'Debug' && startsWith(matrix.os, 'ubuntu')
+      if: success() && matrix.compiler == 'g++' && matrix.type == 'debug' && startsWith(matrix.os, 'ubuntu')
       working-directory: .
       run: |
         lcov -c -d . --no-external -o code_coverage_test.info 2>&1 | tee ./reports/code_coverage_1.log;
@@ -136,7 +137,7 @@ jobs:
         exit ${res};
 
     - name: Send code climate report
-      if: success() && matrix.compiler == 'g++' && matrix.type == 'Debug' && startsWith(matrix.os, 'ubuntu')
+      if: success() && matrix.compiler == 'g++' && matrix.type == 'debug' && startsWith(matrix.os, 'ubuntu')
       working-directory: .
       env:
         CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
@@ -148,7 +149,7 @@ jobs:
         exit ${res};
 
     - name: Validate codecov report
-      if: success() && matrix.compiler == 'g++' && matrix.type == 'Debug' && startsWith(matrix.os, 'ubuntu')
+      if: success() && matrix.compiler == 'g++' && matrix.type == 'debug' && startsWith(matrix.os, 'ubuntu')
       working-directory: .
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
@@ -159,7 +160,7 @@ jobs:
         exit 0;
 
     - name: Send codecov report
-      if: success() && matrix.compiler == 'g++' && matrix.type == 'Debug' && startsWith(matrix.os, 'ubuntu')
+      if: success() && matrix.compiler == 'g++' && matrix.type == 'debug' && startsWith(matrix.os, 'ubuntu')
       working-directory: .
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
