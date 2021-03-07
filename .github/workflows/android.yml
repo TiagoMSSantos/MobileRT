@@ -106,7 +106,7 @@ jobs:
         exit ${res};
 
     - name: Print dependencies
-      if: success()
+      if: success() && false
       working-directory: .
       run: |
         mkdir -p ./reports;
@@ -189,8 +189,7 @@ jobs:
           ./app/build/reports/coverage/debug
           ./reports
         key: reports_${{ matrix.type }}
-        restore-keys: |
-          reports_${{ matrix.type }}
+        restore-keys: reports_${{ matrix.type }}
 
     - name: Upload reports
       if: always()
@@ -206,7 +205,7 @@ jobs:
 
     name: Sonar
     runs-on: ubuntu-18.04
-    timeout-minutes: 40
+    timeout-minutes: 1
 
     if: github.event_name == 'push'
     steps:

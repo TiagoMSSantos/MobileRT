@@ -136,12 +136,64 @@ jobs:
         echo "Result: '${res}'";
         exit ${res};
 
-    - name: Send code climate report
+    - name: Upload coverage to cache
       if: success() && matrix.compiler == 'g++' && matrix.type == 'debug' && startsWith(matrix.os, 'ubuntu')
+      uses: actions/cache@v2
+      env:
+        cache-name: cache-reports
+      with:
+        path: |
+          ./app/build/reports/coverage/debug
+          ./reports
+          ./code_coverage_base.info
+          ./code_coverage.info
+          ./code_coverage_test.info
+        key: reports_${{ matrix.type }}
+        restore-keys: reports_${{ matrix.type }}
+
+    - name: Upload reports
+      if: always()
+      uses: actions/upload-artifact@v2
+      continue-on-error: true
+      with:
+        name: reports_${{ matrix.type }}_${{ matrix.os }}
+        path: |
+          ./reports
+
+  Sonar:
+    needs: Build
+
+    name: Sonar
+    runs-on: ubuntu-18.04
+    timeout-minutes: 1
+    steps:
+    - name: Checkout
+      if: success()
+      uses: actions/checkout@v2.3.4
+
+    - name: Download reports from cache
+      if: success()
+      uses: actions/cache@v2
+      env:
+        cache-name: cache-reports
+      with:
+        path: |
+          ./app/build/reports/coverage/debug
+          ./reports
+          ./code_coverage_base.info
+          ./code_coverage.info
+          ./code_coverage_test.info
+        key: reports_debug
+        restore-keys: reports_debug
+
+    - name: Send code climate report
+      if: success()
       working-directory: .
       env:
         CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
       run: |
+        mkdir -p reports;
+        chmod +x ./test-reporter-latest-linux-amd64 2>&1 | tee ./reports/setup_code_climate.log;
         ./test-reporter-latest-linux-amd64 format-coverage -t lcov code_coverage.info 2>&1 | tee ./reports/format_coverage.log;
         ./test-reporter-latest-linux-amd64 upload-coverage 2>&1 | tee ./reports/upload_coverage.log;
         export res="${PIPESTATUS[0]}";
@@ -149,7 +201,7 @@ jobs:
         exit ${res};
 
     - name: Validate codecov report
-      if: success() && matrix.compiler == 'g++' && matrix.type == 'debug' && startsWith(matrix.os, 'ubuntu')
+      if: success()
       working-directory: .
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
@@ -160,7 +212,7 @@ jobs:
         exit 0;
 
     - name: Send codecov report
-      if: success() && matrix.compiler == 'g++' && matrix.type == 'debug' && startsWith(matrix.os, 'ubuntu')
+      if: success()
       working-directory: .
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
@@ -169,12 +221,3 @@ jobs:
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
         exit 0;
-
-    - name: Upload reports
-      if: always()
-      uses: actions/upload-artifact@v2
-      continue-on-error: true
-      with:
-        name: reports_${{ matrix.type }}_${{ matrix.os }}
-        path: |
-          ./reports

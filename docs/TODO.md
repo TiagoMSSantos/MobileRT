@@ -145,8 +145,6 @@
 - [x] Support MacOS X interface
 - [x] Support Windows interface
 - [ ] Support web browser interface
-- [x] Support CI/CD pipeline
-- [x] Support linter in CI pipeline
 - [ ] Support Clang format
 
 ## Docker
@@ -174,3 +172,17 @@
 - [ ] Support Linux interface to send updated bitmap regularly to Kafka topic via KAFKA client
 - [ ] Support Android interface to subscribe to that that topic via REST API
 - [ ] Support Android interface to show bitmap in every update
+
+## Tests
+- [x] C++ unit tests
+- [x] Android instrumentation tests
+- [ ] C++ end to end tests (selenium)
+- [ ] Android performance tests
+- [ ] C++ performance tests
+- [x] Support CI/CD pipeline
+  - [x] Support linter
+  - [x] Support Android
+  - [x] Support Linux
+  - [x] Support MacOS
+  - [x] Support Windows
+  - [x] Support Docker with multiple Linux distributions
