@@ -1,7 +1,6 @@
 name: Build Native (Qt)
 
 on:
-  pull_request:
   push:
     paths-ignore:
     - '*'
@@ -167,6 +166,9 @@ jobs:
     name: Sonar
     runs-on: ubuntu-18.04
     timeout-minutes: 1
+    env:
+      CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
     steps:
     - name: Checkout
       if: success()
@@ -191,7 +193,7 @@ jobs:
       if: success()
       working-directory: .
       env:
-        CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+        CC_TEST_REPORTER_ID: ${{ env.CC_TEST_REPORTER_ID }}
       run: |
         mkdir -p reports;
         chmod +x ./test-reporter-latest-linux-amd64 2>&1 | tee ./reports/setup_code_climate.log;
@@ -205,7 +207,7 @@ jobs:
       if: success()
       working-directory: .
       env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        CODECOV_TOKEN: ${{ env.CODECOV_TOKEN }}
       run: |
         curl --retry 5 --retry-delay 2 --connect-timeout 2 --data-binary @codecov.yml https://codecov.io/validate 2>&1 | tee ./reports/validate_codecov.log;
         export res="${PIPESTATUS[0]}";
@@ -216,7 +218,7 @@ jobs:
       if: success()
       working-directory: .
       env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        CODECOV_TOKEN: ${{ env.CODECOV_TOKEN }}
       run: |
         curl --retry 5 --retry-delay 2 --connect-timeout 2 -s https://codecov.io/bash | bash -s -- -c -F aFlag ./build_${{ matrix.type }} -v 2>&1 | tee ./reports/send_codecov_report.log;
         export res="${PIPESTATUS[0]}";
