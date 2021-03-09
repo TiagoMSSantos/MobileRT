@@ -1,7 +1,6 @@
 name: Build Android
 
 on:
-  pull_request:
   push:
     paths-ignore:
     - '*'
@@ -40,10 +39,13 @@ jobs:
         type: [debug, release]
         ndk_version: [21.3.6528147]
         cmake_version: [3.6.0]
+    env:
+      SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+      KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
 
     name: ${{ matrix.type }} (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 50
+    timeout-minutes: 60
 
     steps:
     - name: Checkout
@@ -146,10 +148,10 @@ jobs:
       uses: r0adkll/sign-android-release@v1.0.1
       with:
         releaseDirectory: ./app/build/outputs/apk/${{ matrix.type }}
-        signingKeyBase64: ${{ secrets.SIGNING_KEY }}
-        alias: ${{ secrets.KEY_ALIAS }}
-        keyStorePassword: ${{ secrets.SIGNING_KEY }}
-        keyPassword: ${{ secrets.SIGNING_KEY }}
+        signingKeyBase64: ${{ env.SIGNING_KEY }}
+        alias: ${{ env.KEY_ALIAS }}
+        keyStorePassword: ${{ env.SIGNING_KEY }}
+        keyPassword: ${{ env.SIGNING_KEY }}
 
     - name: Run linter
       if: success()
@@ -207,6 +209,11 @@ jobs:
     name: Sonar
     runs-on: ubuntu-18.04
     timeout-minutes: 1
+    env:
+      CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
     if: github.event_name == 'push'
     steps:
@@ -238,7 +245,7 @@ jobs:
       if: success()
       working-directory: app/src/main/java
       env:
-        CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+        CC_TEST_REPORTER_ID: ${{ env.CC_TEST_REPORTER_ID }}
       run: |
         ../../../../test-reporter-latest-linux-amd64 format-coverage -t jacoco ../../../build/reports/coverage/debug/report.xml 2>&1 | tee ../../../../reports/format_coverage.log;
         ../../../../test-reporter-latest-linux-amd64 upload-coverage 2>&1 | tee ../../../../reports/upload_coverage.log;
@@ -250,7 +257,7 @@ jobs:
       if: success()
       working-directory: .
       env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        CODECOV_TOKEN: ${{ env.CODECOV_TOKEN }}
       run: |
         mkdir -p ./reports;
         curl --retry 5 --retry-delay 2 --connect-timeout 2 --data-binary @codecov.yml https://codecov.io/validate 2>&1 | tee ./reports/validate_codecov.log;
@@ -264,8 +271,8 @@ jobs:
       if: success() && false
       working-directory: .
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}  # Needed to get PR information, if any
+        SONAR_TOKEN: ${{ env.SONAR_TOKEN }}
       run: |
         mkdir -p ./reports;
         ./gradlew --parallel sonarqube --info 2>&1 | tee ./reports/sonarqube.log;
@@ -274,7 +281,7 @@ jobs:
       if: success()
       working-directory: .
       env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        CODECOV_TOKEN: ${{ env.CODECOV_TOKEN }}
       run: |
         mkdir -p ./reports;
         curl --retry 5 --retry-delay 2 --connect-timeout 2 -s https://codecov.io/bash | bash -s -- -c -F aFlag -f app/build/reports/coverage/debug/report.xml -v 2>&1 | tee ./reports/codecov.log;

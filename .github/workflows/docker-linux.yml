@@ -1,7 +1,6 @@
 name: Build Docker Linux
 
 on:
-  pull_request:
   push:
     paths-ignore:
     - '*'
@@ -35,6 +34,9 @@ jobs:
       fail-fast: false
       matrix:
         BASE_IMAGE: ["ubuntu:18.04", "centos:8", "archlinux/archlinux:base-devel", "alpine:3.12"]
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
 
     steps:
     - name: Checkout
@@ -42,7 +44,7 @@ jobs:
 
     - name: Login to DockerHub Registry
       if: success()
-      run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+      run: echo ${{ env.DOCKERHUB_PASSWORD }} | docker login -u ${{ env.DOCKERHUB_USERNAME }} --password-stdin
 
     - name: Build the tagged Docker image
       if: success()
