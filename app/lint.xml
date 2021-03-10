@@ -7,6 +7,13 @@
     <!-- appcompat-1.2.0/res/values-ar/values-ar.xml -->
     <issue id="DuplicateStrings">
         <ignore
-            path="**/.gradle/caches/transforms-2/files-2.1/*/appcompat-1.2.0/res/values*/values*.xml" />
+            path="**/.gradle/caches/**/appcompat-*/res/values*/values*.xml" />
+    </issue>
+
+    <!-- Ignore InvalidPackage issue in lombok project -->
+    <!-- Invalid package reference in org.projectlombok:lombok; not included in Android: java.lang.instrument. -->
+    <!-- Referenced from lombok.launch.Agent. -->
+    <issue id="InvalidPackage">
+        <ignore path="**/org.projectlombok/lombok/**.jar"/>
     </issue>
 </lint>

@@ -1,6 +1,5 @@
 package puscas.mobilertapp;
 
-import java.util.logging.Logger;
 import lombok.Builder;
 import lombok.Getter;
 
