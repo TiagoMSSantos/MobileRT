@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-import androidx.annotation.VisibleForTesting;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -21,7 +20,8 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 import java8.util.Optional;
 import javax.annotation.Nonnull;
-import org.jetbrains.annotations.Contract;
+import lombok.AccessLevel;
+import lombok.Getter;
 import puscas.mobilertapp.exceptions.LowMemoryException;
 import puscas.mobilertapp.utils.ConstantsError;
 import puscas.mobilertapp.utils.ConstantsMethods;
@@ -44,6 +44,7 @@ public final class DrawView extends GLSurfaceView {
     /**
      * The {@link GLSurfaceView.Renderer}.
      */
+    @Getter(AccessLevel.PUBLIC)
     private final MainRenderer renderer = new MainRenderer();
 
     /**
@@ -59,6 +60,7 @@ public final class DrawView extends GLSurfaceView {
      *
      * @see Activity#isChangingConfigurations()
      */
+    @Getter(AccessLevel.PACKAGE)
     private boolean changingConfigs = false;
 
     /**
@@ -270,7 +272,7 @@ public final class DrawView extends GLSurfaceView {
         final int widthView = getWidth();
         final int heightView = getHeight();
         queueEvent(() -> this.renderer.setBitmap(
-            config.getConfigResolution(), widthView, heightView, config.shouldRasterize()));
+            config.getConfigResolution(), widthView, heightView, config.isRasterize()));
     }
 
     /**
@@ -285,30 +287,6 @@ public final class DrawView extends GLSurfaceView {
         final String message = exception.getClass() + ": " + exception.getMessage();
         LOGGER.severe(message);
         post(() -> Toast.makeText(getContext(), errorMessage, Toast.LENGTH_LONG).show());
-    }
-
-    /**
-     * Gets the {@link #renderer}.
-     *
-     * @return The {@link #renderer} of this object.
-     */
-    @Contract(pure = true)
-    @Nonnull
-    @VisibleForTesting
-    public MainRenderer getRenderer() {
-        LOGGER.info("getRenderer");
-
-        return this.renderer;
-    }
-
-    /**
-     * Gets the {@link Activity#isChangingConfigurations()}.
-     *
-     * @return The {@link DrawView#changingConfigs}.
-     */
-    @Contract(pure = true)
-    boolean isChangingConfigs() {
-        return this.changingConfigs;
     }
 
     @Override

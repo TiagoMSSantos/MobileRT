@@ -487,27 +487,27 @@ public final class MainActivity extends Activity {
         final Pair<Integer, Integer> resolution =
             Utils.getResolutionFromPicker(this.pickerResolutions);
 
-        return new Config.Builder()
-            .withScene(this.pickerScene.getValue())
-            .withShader(this.pickerShader.getValue())
-            .withAccelerator(this.pickerAccelerator.getValue())
-            .withConfigSamples(
-                new ConfigSamples.Builder()
-                    .withSamplesPixel(Utils.getValueFromPicker(this.pickerSamplesPixel))
-                    .withSamplesLight(Utils.getValueFromPicker(this.pickerSamplesLight))
+        return Config.builder()
+            .scene(this.pickerScene.getValue())
+            .shader(this.pickerShader.getValue())
+            .accelerator(this.pickerAccelerator.getValue())
+            .configSamples(
+                ConfigSamples.builder()
+                    .samplesPixel(Utils.getValueFromPicker(this.pickerSamplesPixel))
+                    .samplesLight(Utils.getValueFromPicker(this.pickerSamplesLight))
                     .build()
             )
-            .withConfigResolution(
-                new ConfigResolution.Builder()
-                    .withWidth(resolution.getLeft())
-                    .withHeight(resolution.getRight())
+            .configResolution(
+                ConfigResolution.builder()
+                    .width(resolution.getLeft())
+                    .height(resolution.getRight())
                     .build()
             )
-            .withObj(scenePath + ".obj")
-            .withMaterial(scenePath + ".mtl")
-            .withCamera(scenePath + ".cam")
-            .withThreads(this.pickerThreads.getValue())
-            .withRasterize(this.checkBoxRasterize.isChecked())
+            .objFilePath(scenePath + ".obj")
+            .matFilePath(scenePath + ".mtl")
+            .camFilePath(scenePath + ".cam")
+            .threads(this.pickerThreads.getValue())
+            .rasterize(this.checkBoxRasterize.isChecked())
             .build();
     }
 

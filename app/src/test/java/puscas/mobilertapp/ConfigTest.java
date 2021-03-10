@@ -45,10 +45,10 @@ public final class ConfigTest {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 
-        final Config config = new Config.Builder().build();
-        Assertions.assertEquals(0, config.getConfigResolution().getWidth(),
+        final Config config = Config.builder().build();
+        Assertions.assertEquals(1, config.getConfigResolution().getWidth(),
             "Width not the expected value.");
-        Assertions.assertEquals(0, config.getConfigResolution().getHeight(),
+        Assertions.assertEquals(1, config.getConfigResolution().getHeight(),
             "Height not the expected value.");
         Assertions.assertEquals(0, config.getScene(), "Scene not the expected value.");
         Assertions.assertEquals(0, config.getShader(), "Shader not the expected value.");
@@ -84,25 +84,25 @@ public final class ConfigTest {
         final String mat = "def";
         final String cam = "ghi";
 
-        final Config config = new Config.Builder()
-            .withConfigResolution(
-                new ConfigResolution.Builder()
-                    .withWidth(width)
-                    .withHeight(height)
+        final Config config = Config.builder()
+            .configResolution(
+                ConfigResolution.builder()
+                    .width(width)
+                    .height(height)
                     .build()
             )
-            .withScene(scene)
-            .withShader(shader)
-            .withAccelerator(accelerator)
-            .withConfigSamples(
-                new ConfigSamples.Builder()
-                    .withSamplesPixel(spp)
-                    .withSamplesLight(spl)
+            .scene(scene)
+            .shader(shader)
+            .accelerator(accelerator)
+            .configSamples(
+                ConfigSamples.builder()
+                    .samplesPixel(spp)
+                    .samplesLight(spl)
                     .build()
             )
-            .withObj(obj)
-            .withMaterial(mat)
-            .withCamera(cam)
+            .objFilePath(obj)
+            .matFilePath(mat)
+            .camFilePath(cam)
             .build();
 
         Assertions.assertEquals(width, config.getConfigResolution().getWidth(),

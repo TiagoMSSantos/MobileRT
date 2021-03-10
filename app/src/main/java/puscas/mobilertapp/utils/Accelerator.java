@@ -3,6 +3,7 @@ package puscas.mobilertapp.utils;
 import java.util.logging.Logger;
 import java8.util.J8Arrays;
 import javax.annotation.Nonnull;
+import lombok.Getter;
 import org.jetbrains.annotations.Contract;
 
 /**
@@ -40,6 +41,7 @@ public enum Accelerator {
      *
      * @see Accelerator#getName()
      */
+    @Getter
     private final String name;
 
     /**
@@ -62,13 +64,5 @@ public enum Accelerator {
         return J8Arrays.stream(values())
             .map(Accelerator::getName)
             .toArray(String[]::new);
-    }
-
-    /**
-     * Gets the name of the accelerator for the Ray Tracer engine.
-     */
-    @Contract(pure = true)
-    private String getName() {
-        return this.name;
     }
 }

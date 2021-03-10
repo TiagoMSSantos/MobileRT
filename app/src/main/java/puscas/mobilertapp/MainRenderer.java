@@ -22,6 +22,8 @@ import java8.util.Optional;
 import javax.annotation.Nonnull;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
+import lombok.AccessLevel;
+import lombok.Setter;
 import org.jetbrains.annotations.Contract;
 import puscas.mobilertapp.exceptions.LowMemoryException;
 import puscas.mobilertapp.utils.AsyncTaskCoroutine;
@@ -134,6 +136,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      *
      * @see ActivityManager#getMemoryInfo(ActivityManager.MemoryInfo)
      */
+    @Setter(AccessLevel.PACKAGE)
     private ActivityManager activityManager = null;
 
     /**
@@ -236,6 +239,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * The {@link TextView} which will output the debug information about the
      * Ray Tracer engine.
      */
+    @Setter(AccessLevel.PACKAGE)
     private TextView textView = null;
 
     /**
@@ -243,6 +247,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * It is important to let the {@link RenderTask} update its state after the
      * rendering process.
      */
+    @Setter(AccessLevel.PACKAGE)
     private Button buttonRender = null;
 
     /**
@@ -333,19 +338,19 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
     private static void connectAttributes(final int shaderProgram,
                                           @Nonnull final ByteBuffer bbVertices,
                                           @Nonnull final ByteBuffer bbColors) {
-        final ConfigGlAttribute verticesAttribute = new ConfigGlAttribute.Builder()
-            .withName(VERTEX_POSITION)
-            .withBuffer(bbVertices)
-            .withLocation(0)
-            .withComponents(VERTEX_COMPONENTS)
+        final ConfigGlAttribute verticesAttribute = ConfigGlAttribute.builder()
+            .attributeName(VERTEX_POSITION)
+            .buffer(bbVertices)
+            .attributeLocation(0)
+            .componentsInBuffer(VERTEX_COMPONENTS)
             .build();
         UtilsShader.connectOpenGlAttribute(shaderProgram, verticesAttribute);
 
-        final ConfigGlAttribute colorsAttribute = new ConfigGlAttribute.Builder()
-            .withName(VERTEX_COLOR)
-            .withBuffer(bbColors)
-            .withLocation(1)
-            .withComponents(PIXEL_COLORS)
+        final ConfigGlAttribute colorsAttribute = ConfigGlAttribute.builder()
+            .attributeName(VERTEX_COLOR)
+            .buffer(bbColors)
+            .attributeLocation(1)
+            .componentsInBuffer(PIXEL_COLORS)
             .build();
         UtilsShader.connectOpenGlAttribute(shaderProgram, colorsAttribute);
     }
@@ -363,15 +368,6 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
     }
 
     /**
-     * Sets the {@link #textView}.
-     *
-     * @param textView The new {@link TextView} to set.
-     */
-    void setTextView(final TextView textView) {
-        this.textView = textView;
-    }
-
-    /**
      * Updates the text in the render {@link Button}.
      * Note that only the UI thread can change the {@link #buttonRender} value.
      *
@@ -379,15 +375,6 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      */
     void updateButton(final int state) {
         this.buttonRender.setText(state);
-    }
-
-    /**
-     * Sets the {@link #buttonRender}.
-     *
-     * @param buttonRender The new {@link Button} to set.
-     */
-    void setButtonRender(final Button buttonRender) {
-        this.buttonRender = buttonRender;
     }
 
     /**
@@ -415,7 +402,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * Resets some stats about the Ray Tracer engine.
      */
     void resetStats() {
-        resetStats(-1, new ConfigSamples.Builder().build(), -1, -1);
+        resetStats(-1, ConfigSamples.builder().build(), -1, -1);
     }
 
     /**
@@ -632,7 +619,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
     void setBitmap() {
         LOGGER.info(ConstantsMethods.SET_BITMAP);
 
-        setBitmap(new ConfigResolution.Builder().build(), 1, 1, false);
+        setBitmap(ConfigResolution.builder().build(), 1, 1, false);
 
         final String message = ConstantsMethods.SET_BITMAP + ConstantsMethods.FINISHED;
         LOGGER.info(message);
@@ -779,9 +766,9 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         UtilsGL.run(() -> GLES20.glUseProgram(this.shaderProgramRaster));
 
 
-        final ConfigResolution configResolution = new ConfigResolution.Builder()
-            .withWidth(this.width)
-            .withHeight(this.height)
+        final ConfigResolution configResolution = ConfigResolution.builder()
+            .width(this.width)
+            .height(this.height)
             .build();
         createMatricesAsUniformVariables(bbCamera, this.shaderProgramRaster, configResolution);
 
@@ -795,15 +782,6 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         UtilsGL.disableAttributeData(0, 1);
 
         return copyGlFrameBufferToBitmap(this.viewWidth, this.viewHeight, this.width, this.height);
-    }
-
-    /**
-     * Sets {@link #activityManager}.
-     *
-     * @param activityManager The new {@link #activityManager}.
-     */
-    void setActivityManager(final ActivityManager activityManager) {
-        this.activityManager = activityManager;
     }
 
     /**
@@ -844,19 +822,19 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
 
         UtilsGL.run(() -> GLES20.glUseProgram(this.shaderProgram));
 
-        final ConfigGlAttribute verticesAttribute = new ConfigGlAttribute.Builder()
-            .withName(VERTEX_POSITION)
-            .withBuffer(this.floatBufferVertices)
-            .withLocation(0)
-            .withComponents(VERTEX_COMPONENTS)
+        final ConfigGlAttribute verticesAttribute = ConfigGlAttribute.builder()
+            .attributeName(VERTEX_POSITION)
+            .buffer(this.floatBufferVertices)
+            .attributeLocation(0)
+            .componentsInBuffer(VERTEX_COMPONENTS)
             .build();
         UtilsShader.connectOpenGlAttribute(this.shaderProgram, verticesAttribute);
 
-        final ConfigGlAttribute textureAttribute = new ConfigGlAttribute.Builder()
-            .withName(VERTEX_TEX_COORD)
-            .withBuffer(this.floatBufferTexture)
-            .withLocation(1)
-            .withComponents(TEXTURE_COMPONENTS)
+        final ConfigGlAttribute textureAttribute = ConfigGlAttribute.builder()
+            .attributeName(VERTEX_TEX_COORD)
+            .buffer(this.floatBufferTexture)
+            .attributeLocation(1)
+            .componentsInBuffer(TEXTURE_COMPONENTS)
             .build();
         UtilsShader.connectOpenGlAttribute(this.shaderProgram, textureAttribute);
 
@@ -907,19 +885,19 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         this.floatBufferTexture = UtilsBuffer.allocateBuffer(this.texCoords);
 
         // Bind Attributes
-        final ConfigGlAttribute verticesAttribute = new ConfigGlAttribute.Builder()
-            .withName(VERTEX_POSITION)
-            .withBuffer(this.floatBufferVertices)
-            .withLocation(0)
-            .withComponents(VERTEX_COMPONENTS)
+        final ConfigGlAttribute verticesAttribute = ConfigGlAttribute.builder()
+            .attributeName(VERTEX_POSITION)
+            .buffer(this.floatBufferVertices)
+            .attributeLocation(0)
+            .componentsInBuffer(VERTEX_COMPONENTS)
             .build();
         UtilsShader.connectOpenGlAttribute(this.shaderProgram, verticesAttribute);
 
-        final ConfigGlAttribute textureAttribute = new ConfigGlAttribute.Builder()
-            .withName(VERTEX_TEX_COORD)
-            .withBuffer(this.floatBufferTexture)
-            .withLocation(1)
-            .withComponents(TEXTURE_COMPONENTS)
+        final ConfigGlAttribute textureAttribute = ConfigGlAttribute.builder()
+            .attributeName(VERTEX_TEX_COORD)
+            .buffer(this.floatBufferTexture)
+            .attributeLocation(1)
+            .componentsInBuffer(TEXTURE_COMPONENTS)
             .build();
         UtilsShader.connectOpenGlAttribute(this.shaderProgram, textureAttribute);
 

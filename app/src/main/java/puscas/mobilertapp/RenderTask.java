@@ -14,6 +14,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
+import lombok.AccessLevel;
+import lombok.Getter;
 import org.jetbrains.annotations.Contract;
 import puscas.mobilertapp.utils.AsyncTaskCoroutine;
 import puscas.mobilertapp.utils.Constants;
@@ -371,6 +373,7 @@ public final class RenderTask extends AsyncTaskCoroutine {
          *
          * @see RenderTask#requestRender
          */
+        @Getter(AccessLevel.PRIVATE)
         private Runnable requestRender = null;
 
         /**
@@ -378,6 +381,7 @@ public final class RenderTask extends AsyncTaskCoroutine {
          *
          * @see RenderTask#finishRender
          */
+        @Getter(AccessLevel.PRIVATE)
         private Runnable finishRender = null;
 
         /**
@@ -385,6 +389,7 @@ public final class RenderTask extends AsyncTaskCoroutine {
          *
          * @see RenderTask#textView
          */
+        @Getter(AccessLevel.PRIVATE)
         private TextView textView = null;
 
         /**
@@ -392,6 +397,7 @@ public final class RenderTask extends AsyncTaskCoroutine {
          *
          * @see RenderTask#buttonRender
          */
+        @Getter(AccessLevel.PRIVATE)
         private Button buttonRender = null;
 
         /**
@@ -399,6 +405,7 @@ public final class RenderTask extends AsyncTaskCoroutine {
          *
          * @see RenderTask.Builder#withUpdateInterval(long)
          */
+        @Getter(AccessLevel.PRIVATE)
         private long updateInterval = 0L;
 
         /**
@@ -406,6 +413,7 @@ public final class RenderTask extends AsyncTaskCoroutine {
          *
          * @see RenderTask.Builder#withWidth(int)
          */
+        @Getter(AccessLevel.PRIVATE)
         private int width = 0;
 
         /**
@@ -413,6 +421,7 @@ public final class RenderTask extends AsyncTaskCoroutine {
          *
          * @see RenderTask.Builder#withHeight(int)
          */
+        @Getter(AccessLevel.PRIVATE)
         private int height = 0;
 
         /**
@@ -420,6 +429,7 @@ public final class RenderTask extends AsyncTaskCoroutine {
          *
          * @see RenderTask.Builder#withNumThreads(int)
          */
+        @Getter(AccessLevel.PRIVATE)
         private int numThreads = 0;
 
         /**
@@ -427,6 +437,7 @@ public final class RenderTask extends AsyncTaskCoroutine {
          *
          * @see RenderTask.Builder#withNumPrimitives(int)
          */
+        @Getter(AccessLevel.PRIVATE)
         private int numPrimitives = 0;
 
         /**
@@ -434,6 +445,7 @@ public final class RenderTask extends AsyncTaskCoroutine {
          *
          * @see RenderTask.Builder#withNumLights(int)
          */
+        @Getter(AccessLevel.PRIVATE)
         private int numLights = 0;
 
         /**
@@ -441,6 +453,7 @@ public final class RenderTask extends AsyncTaskCoroutine {
          *
          * @see RenderTask.Builder#withSamplesPixel(int)
          */
+        @Getter(AccessLevel.PRIVATE)
         private int samplesPixel = 0;
 
         /**
@@ -448,6 +461,7 @@ public final class RenderTask extends AsyncTaskCoroutine {
          *
          * @see RenderTask.Builder#withSamplesLight(int)
          */
+        @Getter(AccessLevel.PRIVATE)
         private int samplesLight = 0;
 
 
@@ -672,140 +686,6 @@ public final class RenderTask extends AsyncTaskCoroutine {
 
             return new RenderTask(this);
         }
-
-
-        /**
-         * Gets the requestRender.
-         *
-         * @return The requestRender.
-         * @see RenderTask#requestRender
-         */
-        @Contract(pure = true)
-        Runnable getRequestRender() {
-            return this.requestRender;
-        }
-
-        /**
-         * Gets the finishRender.
-         *
-         * @return The finishRender.
-         * @see RenderTask#finishRender
-         */
-        @Contract(pure = true)
-        Runnable getFinishRender() {
-            return this.finishRender;
-        }
-
-        /**
-         * Gets the textView.
-         *
-         * @return The textView.
-         * @see RenderTask#textView
-         */
-        @Contract(pure = true)
-        TextView getTextView() {
-            return this.textView;
-        }
-
-        /**
-         * Gets the buttonRender.
-         *
-         * @return The buttonRender.
-         * @see RenderTask#buttonRender
-         */
-        @Contract(pure = true)
-        Button getButtonRender() {
-            return this.buttonRender;
-        }
-
-        /**
-         * Gets the updateInterval.
-         *
-         * @return The updateInterval.
-         * @see RenderTask.Builder#withUpdateInterval(long)
-         */
-        @Contract(pure = true)
-        long getUpdateInterval() {
-            return this.updateInterval;
-        }
-
-        /**
-         * Gets the width.
-         *
-         * @return The width.
-         * @see RenderTask.Builder#withWidth(int)
-         */
-        @Contract(pure = true)
-        int getWidth() {
-            return this.width;
-        }
-
-        /**
-         * Gets the height.
-         *
-         * @return The height.
-         * @see RenderTask.Builder#withHeight(int)
-         */
-        @Contract(pure = true)
-        int getHeight() {
-            return this.height;
-        }
-
-        /**
-         * Gets the number of threads.
-         *
-         * @return The number of threads.
-         * @see RenderTask.Builder#withNumThreads(int)
-         */
-        @Contract(pure = true)
-        int getNumThreads() {
-            return this.numThreads;
-        }
-
-        /**
-         * Gets the number of primitives.
-         *
-         * @return The number of primitives.
-         * @see RenderTask.Builder#withNumPrimitives(int)
-         */
-        @Contract(pure = true)
-        int getNumPrimitives() {
-            return this.numPrimitives;
-        }
-
-        /**
-         * Gets the number of lights.
-         *
-         * @return The number of lights.
-         * @see RenderTask.Builder#withNumLights(int)
-         */
-        @Contract(pure = true)
-        int getNumLights() {
-            return this.numLights;
-        }
-
-        /**
-         * Gets the number of samples per pixel.
-         *
-         * @return The number of samples per pixel.
-         * @see RenderTask.Builder#withSamplesPixel(int)
-         */
-        @Contract(pure = true)
-        int getSamplesPixel() {
-            return this.samplesPixel;
-        }
-
-        /**
-         * Gets the number of samples per light.
-         *
-         * @return The number of samples per light.
-         * @see RenderTask.Builder#withSamplesLight(int)
-         */
-        @Contract(pure = true)
-        int getSamplesLight() {
-            return this.samplesLight;
-        }
-
     }
 
 }
