@@ -13,10 +13,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
-import lombok.AccessLevel;
-import lombok.Getter;
-import org.jetbrains.annotations.Contract;
+import lombok.Builder;
 import puscas.mobilertapp.utils.AsyncTaskCoroutine;
 import puscas.mobilertapp.utils.Constants;
 import puscas.mobilertapp.utils.ConstantsMethods;
@@ -171,24 +168,31 @@ public final class RenderTask extends AsyncTaskCoroutine {
 
     /**
      * A private constructor of this class to force using the
-     * {@link RenderTask.Builder}.
+     * RenderTask builder.
      *
-     * @param builder The builder which contains all the parameters.
+     * @param config        The configurator which contains most of the parameters.
+     * @param buttonRender  The render {@link Button}.
+     * @param numThreads    The number of threads.
+     * @param numPrimitives The number of primitives in the scene.
      */
-    private RenderTask(final RenderTask.Builder builder) {
+    @Builder
+    private RenderTask(final ConfigRenderTask config,
+                       final Button buttonRender,
+                       final int numThreads,
+                       final int numPrimitives) {
         super();
         LOGGER.info("RenderTask");
 
-        this.requestRender = builder.getRequestRender();
-        this.finishRender = builder.getFinishRender();
-        this.updateInterval = builder.getUpdateInterval();
-        this.primitivesT = ",p=" + builder.getNumPrimitives() + ",l=" + builder.getNumLights();
-        this.resolutionT = ",r:" + builder.getWidth() + 'x' + builder.getHeight();
-        this.threadsT = ",t:" + builder.getNumThreads();
-        this.samplesPixelT = ",spp:" + builder.getSamplesPixel();
-        this.samplesLightT = ",spl:" + builder.getSamplesLight();
-        this.buttonRender = new WeakReference<>(builder.getButtonRender());
-        this.textView = new WeakReference<>(builder.getTextView());
+        this.requestRender = config.getRequestRender();
+        this.finishRender = config.getFinishRender();
+        this.updateInterval = config.getUpdateInterval();
+        this.primitivesT = ",p=" + numPrimitives + ",l=" + config.getNumLights();
+        this.resolutionT = ",r:" + config.getWidth() + 'x' + config.getHeight();
+        this.threadsT = ",t:" + numThreads;
+        this.samplesPixelT = ",spp:" + config.getSamplesPixel();
+        this.samplesLightT = ",spl:" + config.getSamplesLight();
+        this.buttonRender = new WeakReference<>(buttonRender);
+        this.textView = new WeakReference<>(config.getTextView());
 
         this.startTimeStamp = SystemClock.elapsedRealtime();
         resetTextStats();
@@ -254,10 +258,10 @@ public final class RenderTask extends AsyncTaskCoroutine {
      * Helper method that validates the fields of this class.
      */
     private void checksArguments() {
-        Preconditions.checkNotNull(this.requestRender);
-        Preconditions.checkNotNull(this.finishRender);
-        Preconditions.checkNotNull(this.textView);
-        Preconditions.checkNotNull(this.buttonRender);
+        Preconditions.checkNotNull(this.requestRender, "requestRender shouldn't be null");
+        Preconditions.checkNotNull(this.finishRender, "finishRender shouldn't be null");
+        Preconditions.checkNotNull(this.textView, "textView shouldn't be null");
+        Preconditions.checkNotNull(this.buttonRender, "buttonRender shouldn't be null");
     }
 
     /**
@@ -355,337 +359,6 @@ public final class RenderTask extends AsyncTaskCoroutine {
 
         final String message = "onPostExecute" + ConstantsMethods.FINISHED;
         LOGGER.info(message);
-    }
-
-    /**
-     * The builder for this class.
-     */
-    static final class Builder {
-
-        /**
-         * The {@link Logger} for this class.
-         */
-        private static final Logger LOGGER_BUILDER =
-            Logger.getLogger(RenderTask.Builder.class.getName());
-
-        /**
-         * The requestRender.
-         *
-         * @see RenderTask#requestRender
-         */
-        @Getter(AccessLevel.PRIVATE)
-        private Runnable requestRender = null;
-
-        /**
-         * The finishRender.
-         *
-         * @see RenderTask#finishRender
-         */
-        @Getter(AccessLevel.PRIVATE)
-        private Runnable finishRender = null;
-
-        /**
-         * The textView.
-         *
-         * @see RenderTask#textView
-         */
-        @Getter(AccessLevel.PRIVATE)
-        private TextView textView = null;
-
-        /**
-         * The buttonRender.
-         *
-         * @see RenderTask#buttonRender
-         */
-        @Getter(AccessLevel.PRIVATE)
-        private Button buttonRender = null;
-
-        /**
-         * The updateInterval.
-         *
-         * @see RenderTask.Builder#withUpdateInterval(long)
-         */
-        @Getter(AccessLevel.PRIVATE)
-        private long updateInterval = 0L;
-
-        /**
-         * The width.
-         *
-         * @see RenderTask.Builder#withWidth(int)
-         */
-        @Getter(AccessLevel.PRIVATE)
-        private int width = 0;
-
-        /**
-         * The height.
-         *
-         * @see RenderTask.Builder#withHeight(int)
-         */
-        @Getter(AccessLevel.PRIVATE)
-        private int height = 0;
-
-        /**
-         * The numThreads.
-         *
-         * @see RenderTask.Builder#withNumThreads(int)
-         */
-        @Getter(AccessLevel.PRIVATE)
-        private int numThreads = 0;
-
-        /**
-         * The numPrimitives.
-         *
-         * @see RenderTask.Builder#withNumPrimitives(int)
-         */
-        @Getter(AccessLevel.PRIVATE)
-        private int numPrimitives = 0;
-
-        /**
-         * The numLights.
-         *
-         * @see RenderTask.Builder#withNumLights(int)
-         */
-        @Getter(AccessLevel.PRIVATE)
-        private int numLights = 0;
-
-        /**
-         * The samplesPixel.
-         *
-         * @see RenderTask.Builder#withSamplesPixel(int)
-         */
-        @Getter(AccessLevel.PRIVATE)
-        private int samplesPixel = 0;
-
-        /**
-         * The samplesLight.
-         *
-         * @see RenderTask.Builder#withSamplesLight(int)
-         */
-        @Getter(AccessLevel.PRIVATE)
-        private int samplesLight = 0;
-
-
-        /**
-         * Sets the {@link RenderTask#requestRender} field.
-         *
-         * @param requestRender The new value for
-         *                      {@link RenderTask#requestRender} field.
-         * @return The builder with {@link RenderTask.Builder#requestRender}
-         *     already set.
-         */
-        @Contract("_ -> this")
-        @Nonnull
-        RenderTask.Builder withRequestRender(@Nonnull final Runnable requestRender) {
-            final String message =
-                String.format(Locale.US, "withRequestRender: %s", requestRender);
-            LOGGER_BUILDER.info(message);
-
-            this.requestRender = requestRender;
-            return this;
-        }
-
-        /**
-         * Sets the {@link RenderTask#finishRender} field.
-         *
-         * @param finishRender The new value for
-         *                     {@link RenderTask#finishRender} field.
-         * @return The builder with {@link RenderTask.Builder#finishRender}
-         *     already set.
-         */
-        @Contract("_ -> this")
-        @Nonnull
-        RenderTask.Builder withFinishRender(@Nonnull final Runnable finishRender) {
-            final String message =
-                String.format(Locale.US, "withFinishRender: %s", finishRender);
-            LOGGER_BUILDER.info(message);
-
-            this.finishRender = finishRender;
-            return this;
-        }
-
-        /**
-         * Sets the {@link RenderTask#textView} field.
-         *
-         * @param textView The new value for
-         *                 {@link RenderTask#textView} field.
-         * @return The builder with {@link RenderTask.Builder#textView}
-         *     already set.
-         */
-        @Contract("_ -> this")
-        @Nonnull
-        RenderTask.Builder withTextView(@Nonnull final TextView textView) {
-            final String message =
-                String.format(Locale.US, "withTextView: %s", textView);
-            LOGGER_BUILDER.info(message);
-
-            this.textView = textView;
-            return this;
-        }
-
-        /**
-         * Sets the {@link RenderTask#buttonRender} field.
-         *
-         * @param buttonRender The new value for
-         *                     {@link RenderTask#buttonRender} field.
-         * @return The builder with {@link RenderTask.Builder#buttonRender}
-         *     already set.
-         */
-        @Contract("_ -> this")
-        @Nonnull
-        RenderTask.Builder withButtonRender(@Nonnull final Button buttonRender) {
-            final String message =
-                String.format(Locale.US, "witButtonRender: %s", buttonRender);
-            LOGGER_BUILDER.info(message);
-
-            this.buttonRender = buttonRender;
-            return this;
-        }
-
-        /**
-         * Sets the {@link RenderTask#updateInterval} field.
-         *
-         * @param updateInterval The new value for
-         *                       {@link RenderTask#updateInterval} field.
-         * @return The builder with {@link RenderTask.Builder#updateInterval}
-         *     already set.
-         */
-        @Contract("_ -> this")
-        @Nonnull
-        RenderTask.Builder withUpdateInterval(final long updateInterval) {
-            final String message =
-                String.format(Locale.US, "withUpdateInterval: %d", updateInterval);
-            LOGGER_BUILDER.info(message);
-
-            this.updateInterval = updateInterval;
-            return this;
-        }
-
-        /**
-         * Sets width of {@link RenderTask#resolutionT}.
-         *
-         * @param width The new value for width in {@link RenderTask#resolutionT} field.
-         * @return The builder with {@link RenderTask.Builder#width} already set.
-         */
-        @Contract("_ -> this")
-        @Nonnull
-        RenderTask.Builder withWidth(final int width) {
-            final String message = String.format(Locale.US, "withWidth: %d", width);
-            LOGGER_BUILDER.info(message);
-
-            this.width = width;
-            return this;
-        }
-
-        /**
-         * Sets height of {@link RenderTask#resolutionT}.
-         *
-         * @param height The new value for height in {@link RenderTask#resolutionT} field.
-         * @return The builder with {@link RenderTask.Builder#height} already set.
-         */
-        @Contract("_ -> this")
-        @Nonnull
-        RenderTask.Builder withHeight(final int height) {
-            final String message = String.format(Locale.US, "withHeight: %d", height);
-            LOGGER_BUILDER.info(message);
-
-            this.height = height;
-            return this;
-        }
-
-        /**
-         * Sets {@link RenderTask#threadsT}.
-         *
-         * @param numThreads The new value for {@link RenderTask#threadsT} field.
-         * @return The builder with {@link RenderTask.Builder#numThreads} already set.
-         */
-        @Contract("_ -> this")
-        @Nonnull
-        RenderTask.Builder withNumThreads(final int numThreads) {
-            final String message = String.format(Locale.US, "withNumThreads: %d", numThreads);
-            LOGGER_BUILDER.info(message);
-
-            this.numThreads = numThreads;
-            return this;
-        }
-
-        /**
-         * Sets {@link RenderTask#samplesPixelT}.
-         *
-         * @param samplesPixel The new value for {@link RenderTask#samplesPixelT} field.
-         * @return The builder with {@link RenderTask.Builder#samplesPixel} already set.
-         */
-        @Contract("_ -> this")
-        @Nonnull
-        RenderTask.Builder withSamplesPixel(final int samplesPixel) {
-            final String message = String.format(Locale.US, "withSamplesPixel: %d", samplesPixel);
-            LOGGER_BUILDER.info(message);
-
-            this.samplesPixel = samplesPixel;
-            return this;
-        }
-
-        /**
-         * Sets {@link RenderTask#samplesLightT}.
-         *
-         * @param samplesLight The new value for {@link RenderTask#samplesLightT} field.
-         * @return The builder with {@link RenderTask.Builder#samplesLight} already set.
-         */
-        @Contract("_ -> this")
-        @Nonnull
-        RenderTask.Builder withSamplesLight(final int samplesLight) {
-            final String message = String.format(Locale.US, "withSamplesLight: %d", samplesLight);
-            LOGGER_BUILDER.info(message);
-
-            this.samplesLight = samplesLight;
-            return this;
-        }
-
-        /**
-         * Sets the number of primitives in {@link RenderTask#primitivesT}.
-         *
-         * @param numPrimitives The new value for {@link RenderTask#primitivesT} field.
-         * @return The builder with {@link RenderTask.Builder#numPrimitives} already set.
-         */
-        @Contract("_ -> this")
-        @Nonnull
-        RenderTask.Builder withNumPrimitives(final int numPrimitives) {
-            final String message =
-                String.format(Locale.US, "withNumPrimitives: %d", numPrimitives);
-            LOGGER_BUILDER.info(message);
-
-            this.numPrimitives = numPrimitives;
-            return this;
-        }
-
-        /**
-         * Sets the number of lights in {@link RenderTask#primitivesT}.
-         *
-         * @param numLights The new value for number of lights in
-         *                  {@link RenderTask#primitivesT} field.
-         * @return The builder with {@link RenderTask.Builder#numLights} already set.
-         */
-        @Contract("_ -> this")
-        @Nonnull
-        RenderTask.Builder withNumLights(final int numLights) {
-            final String message = String.format(Locale.US, "withNumLights: %d", numLights);
-            LOGGER_BUILDER.info(message);
-
-            this.numLights = numLights;
-            return this;
-        }
-
-        /**
-         * Builds a new instance of {@link RenderTask}.
-         *
-         * @return A new instance of {@link RenderTask}.
-         */
-        @Contract(" -> new")
-        @Nonnull
-        RenderTask build() {
-            LOGGER_BUILDER.info("build");
-
-            return new RenderTask(this);
-        }
     }
 
 }

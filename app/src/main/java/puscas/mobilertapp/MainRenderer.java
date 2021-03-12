@@ -155,11 +155,6 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
     private int numPrimitives = 0;
 
     /**
-     * The number of lights in the scene.
-     */
-    private int numLights = 0;
-
-    /**
      * Whether should rasterize (render preview) or not.
      */
     private boolean rasterize = false;
@@ -190,9 +185,11 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
     private ByteBuffer arrayCamera = null;
 
     /**
-     * A reference to the {@link DrawView#requestRender()} method.
+     * Configurator for the {@link RenderTask}.
      */
-    private Runnable requestRender = null;
+    private final ConfigRenderTask.ConfigRenderTaskBuilder configRenderTask = ConfigRenderTask.builder()
+        .updateInterval(DEFAULT_UPDATE_INTERVAL)
+        .finishRender(this::rtFinishRender);
 
     /**
      * The width of the {@link Bitmap} where the Ray Tracer engine will render
@@ -249,16 +246,6 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      */
     @Setter(AccessLevel.PACKAGE)
     private Button buttonRender = null;
-
-    /**
-     * The number of samples per pixel.
-     */
-    private int samplesPixel = 0;
-
-    /**
-     * The number of samples per light.
-     */
-    private int samplesLight = 0;
 
     /**
      * A custom {@link AsyncTaskCoroutine} which will update the {@link View} with the
@@ -419,6 +406,8 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
                     final int numLights) {
         LOGGER.info("resetStats");
 
+        Preconditions.checkArgument(numPrimitives >= -1, "numPrimitives shouldn't be negative");
+
         final int lSamplesPixel = configSamples.getSamplesPixel();
         final int lSamplesLight = configSamples.getSamplesLight();
         final String numThreadsStr = String.format(Locale.US, "numThreads: %d", numThreads);
@@ -434,12 +423,12 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         LOGGER.info(samplesLightStr);
 
         this.numThreads = numThreads;
-        this.samplesPixel = lSamplesPixel;
-        this.samplesLight = lSamplesLight;
         this.numPrimitives = numPrimitives;
-        this.numLights = numLights;
 
-        Preconditions.checkArgument(this.numPrimitives >= -1);
+        this.configRenderTask
+            .samplesPixel(lSamplesPixel)
+            .samplesLight(lSamplesLight)
+            .numLights(numLights);
     }
 
     /**
@@ -580,7 +569,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
     }
 
     /**
-     * Prepares this object by setting up the {@link #requestRender}
+     * Prepares this object by setting up the {@link ConfigRenderTask#getRequestRender()}
      * and {@link #renderTask} fields.
      *
      * @param requestRender A {@link Runnable} of
@@ -589,7 +578,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
     void prepareRenderer(final Runnable requestRender) {
         LOGGER.info("prepareRenderer");
 
-        this.requestRender = requestRender;
+        this.configRenderTask.requestRender(requestRender);
     }
 
     /**
@@ -708,8 +697,8 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         );
         final Bitmap newBitmapWithPreviewScene = Bitmap.createScaledBitmap(
             bitmapView, bitmapWidth, bitmapHeight, true);
-        Preconditions.checkArgument(bitmapView.getWidth() == viewWidth);
-        Preconditions.checkArgument(bitmapView.getHeight() == viewHeight);
+        Preconditions.checkArgument(bitmapView.getWidth() == viewWidth, "viewWidth is not the expected one");
+        Preconditions.checkArgument(bitmapView.getHeight() == viewHeight, "viewHeight is not the expected one");
         return newBitmapWithPreviewScene;
     }
 
@@ -792,19 +781,11 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
 
         waitLastTask();
 
-        this.renderTask = new RenderTask.Builder()
-            .withRequestRender(this.requestRender)
-            .withFinishRender(this::rtFinishRender)
-            .withTextView(this.textView)
-            .withButtonRender(this.buttonRender)
-            .withUpdateInterval(DEFAULT_UPDATE_INTERVAL)
-            .withWidth(this.width)
-            .withHeight(this.height)
-            .withNumThreads(this.numThreads)
-            .withSamplesPixel(this.samplesPixel)
-            .withSamplesLight(this.samplesLight)
-            .withNumPrimitives(this.numPrimitives)
-            .withNumLights(this.numLights)
+        this.renderTask = RenderTask.builder()
+            .config(this.configRenderTask.textView(this.textView).build())
+            .buttonRender(this.buttonRender)
+            .numPrimitives(this.numPrimitives)
+            .numThreads(this.numThreads)
             .build();
 
         this.renderTask.execute();
@@ -852,9 +833,9 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * Helper method that validates the native arrays.
      */
     private void validateArrays() {
-        Preconditions.checkArgument(this.arrayVertices != null);
-        Preconditions.checkArgument(this.arrayColors != null);
-        Preconditions.checkArgument(this.arrayCamera != null);
+        Preconditions.checkNotNull(this.arrayVertices, "arrayVertices shouldn't be null");
+        Preconditions.checkNotNull(this.arrayColors, "arrayColors shouldn't be null");
+        Preconditions.checkNotNull(this.arrayCamera, "arrayCamera shouldn't be null");
     }
 
     /**
@@ -863,10 +844,10 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * @param bitmap The {@link Bitmap} to validate.
      */
     private void validateBitmap(final Bitmap bitmap) {
-        Preconditions.checkArgument(bitmap != null);
-        Preconditions.checkArgument(!bitmap.isRecycled());
-        Preconditions.checkArgument(bitmap.getWidth() == this.width);
-        Preconditions.checkArgument(bitmap.getHeight() == this.height);
+        Preconditions.checkNotNull(bitmap, "arrayVertices shouldn't be null");
+        Preconditions.checkArgument(!bitmap.isRecycled(), "bitmap shouldn't been recycled");
+        Preconditions.checkArgument(bitmap.getWidth() == this.width, "bitmap width is not the expected");
+        Preconditions.checkArgument(bitmap.getHeight() == this.height, "bitmap height is not the expected");
     }
 
     @Override

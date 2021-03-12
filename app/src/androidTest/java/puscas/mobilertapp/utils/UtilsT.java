@@ -5,6 +5,7 @@ import android.os.Build;
 import android.widget.Button;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.matcher.ViewMatchers;
+import com.google.common.base.Preconditions;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -84,7 +85,7 @@ public final class UtilsT {
         } catch (final NoSuchFieldException ex) {
             LOGGER.warning(ex.getMessage());
         }
-        assert field != null;
+        Preconditions.checkNotNull(field, "field shouldn't be null");
         field.setAccessible(true); // Make the field public.
 
         T privateField = null;
@@ -93,7 +94,7 @@ public final class UtilsT {
         } catch (final IllegalAccessException ex) {
             LOGGER.warning(ex.getMessage());
         }
-        assert privateField != null;
+        Preconditions.checkNotNull(privateField, "privateField shouldn't be null");
 
         return privateField;
     }
@@ -122,7 +123,7 @@ public final class UtilsT {
         } catch (final NoSuchMethodException ex) {
             LOGGER.warning(ex.getMessage());
         }
-        assert method != null;
+        Preconditions.checkNotNull(method, "method shouldn't be null");
         method.setAccessible(true); // Make the method public.
 
         T privateMethodReturnValue = null;
@@ -133,7 +134,7 @@ public final class UtilsT {
         } catch (final InvocationTargetException ex) {
             LOGGER.warning(Objects.requireNonNull(ex.getCause()).getMessage());
         }
-        assert privateMethodReturnValue != null;
+        Preconditions.checkNotNull(privateMethodReturnValue, "privateMethodReturnValue shouldn't be null");
 
         return privateMethodReturnValue;
     }

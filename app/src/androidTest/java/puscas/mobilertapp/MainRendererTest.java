@@ -2,6 +2,7 @@ package puscas.mobilertapp;
 
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
+import com.google.common.base.Preconditions;
 import java.io.InputStream;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -14,7 +15,6 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.runners.MethodSorters;
-import puscas.mobilertapp.utils.UtilsGL;
 import puscas.mobilertapp.utils.UtilsShader;
 import puscas.mobilertapp.utils.UtilsT;
 
@@ -146,7 +146,7 @@ public final class MainRendererTest extends AbstractTest {
      */
     private InputStream createInputStreamFromResource(final String filePath) {
         final ClassLoader classLoader = getClass().getClassLoader();
-        assert classLoader != null;
+        Preconditions.checkNotNull(classLoader, "classLoader shouldn't be null");
         return classLoader.getResourceAsStream(filePath);
     }
 
@@ -158,15 +158,16 @@ public final class MainRendererTest extends AbstractTest {
      * @return The index of the new created GLSL shader.
      * @throws InterruptedException If the thread waiting for the {@link CountDownLatch}
      *                              was interrupted.
-     * @implNote This method uses {@link UtilsGL#loadShader} to create
+     * @implNote This method uses {@link UtilsShader#loadShader} to create
      *           the shader in the OpenGL framework. To do that, it uses a GL thread to
-     *           execute the {@link UtilsGL#loadShader} method by placing its call
+     *           execute the {@link UtilsShader#loadShader} method by placing its call
      *           in the {@link GLSurfaceView#queueEvent(java.lang.Runnable)}.
      */
     private int createAndGetIndexOfShader(final String shaderCode, final int shaderType)
         throws InterruptedException {
 
         final DrawView drawView = UtilsT.getPrivateField(this.activity, "drawView");
+        Preconditions.checkNotNull(drawView, "drawView shouldn't be null");
 
         final AtomicInteger shaderIndex = new AtomicInteger(-1);
         final CountDownLatch latch = new CountDownLatch(1);

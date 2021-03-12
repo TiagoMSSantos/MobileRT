@@ -705,14 +705,14 @@ public final class MainActivity extends Activity {
      * Helper method that validates the fields that are {@link View}s.
      */
     private void validateViews() {
-        Preconditions.checkNotNull(this.pickerResolutions);
-        Preconditions.checkNotNull(this.pickerThreads);
-        Preconditions.checkNotNull(this.pickerAccelerator);
-        Preconditions.checkNotNull(this.pickerSamplesLight);
-        Preconditions.checkNotNull(this.pickerSamplesPixel);
-        Preconditions.checkNotNull(this.pickerShader);
-        Preconditions.checkNotNull(this.pickerScene);
-        Preconditions.checkNotNull(this.drawView);
+        Preconditions.checkNotNull(this.pickerResolutions, "pickerResolutions shouldn't be null");
+        Preconditions.checkNotNull(this.pickerThreads, "pickerThreads shouldn't be null");
+        Preconditions.checkNotNull(this.pickerAccelerator, "pickerAccelerator shouldn't be null");
+        Preconditions.checkNotNull(this.pickerSamplesLight, "pickerSamplesLight shouldn't be null");
+        Preconditions.checkNotNull(this.pickerSamplesPixel, "pickerSamplesPixel shouldn't be null");
+        Preconditions.checkNotNull(this.pickerShader, "pickerShader shouldn't be null");
+        Preconditions.checkNotNull(this.pickerScene, "pickerScene shouldn't be null");
+        Preconditions.checkNotNull(this.drawView, "drawView shouldn't be null");
     }
 
 }
