@@ -14,7 +14,6 @@ buildscript {
     // Setup necessary repositories to get third party dependencies
     repositories {
         google()
-        jcenter()
         mavenCentral()
         mavenLocal()
         gradlePluginPortal()
@@ -30,7 +29,7 @@ buildscript {
     dependencies {
         final def currentOS = System.getProperty("os.name")
         println("OS: " + currentOS)
-        classpath 'com.android.tools.build:gradle:4.1.2'
+        classpath 'com.android.tools.build:gradle:7.0.0-alpha09'
         classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:3.1.1'
         classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.31'
 //        classpath 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.5.1'
@@ -47,7 +46,6 @@ buildscript {
 allprojects {
     repositories {
         google()
-        jcenter()
         mavenCentral()
         mavenLocal()
         gradlePluginPortal()
@@ -65,7 +63,6 @@ allprojects {
 
 repositories {
     google()
-    jcenter()
     mavenCentral()
     mavenLocal()
     gradlePluginPortal()

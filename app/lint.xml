@@ -9,10 +9,17 @@
         <ignore path="**/.gradle/caches/**/appcompat-*/res/values*/values*.xml"/>
     </issue>
 
-    <!-- Ignore InvalidPackage issue in lombok project -->
+    <!-- Ignore InvalidPackage issue in lombok dependency -->
     <!-- Invalid package reference in org.projectlombok:lombok; not included in Android: java.lang.instrument. -->
     <!-- Referenced from lombok.launch.Agent. -->
     <issue id="InvalidPackage">
         <ignore path="**/org.projectlombok/lombok/**.jar"/>
+    </issue>
+
+    <!-- Ignore InvalidPackage issue in jacoco dependency when using Java 11  -->
+    <!-- Error: Invalid package reference in library; not included in Android: java.lang.management. -->
+    <!-- Referenced from org.jacoco.agent.rt.internal_1f1cc91.JmxRegistration. [InvalidPackage] -->
+    <issue id="InvalidPackage">
+        <ignore path="**/.gradle/caches/**/org.jacoco/org.jacoco.agent/**/org.jacoco.agent-*-runtime.jar"/>
     </issue>
 </lint>

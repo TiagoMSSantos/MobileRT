@@ -40,6 +40,12 @@ jobs:
         # a pull request then we can checkout the head.
         fetch-depth: 0
 
+    - name: Set up JDK
+      if: success()
+      uses: actions/setup-java@v1.4.3
+      with:
+        java-version: 11
+
     # Initializes the CodeQL tools for scanning.
     # Valid inputs are ['tools', 'languages', 'token', 'matrix', 'config-file', 'queries']
     # Queries: must be a built-in suite (security-extended or security-and-quality),

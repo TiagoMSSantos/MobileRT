@@ -79,6 +79,8 @@ allprojects {
 ///////////////////////////////////////////////////////////////////////////////
 jacoco {
     setToolVersion '0.8.6'
+    setTargetCompatibility JavaVersion.VERSION_11
+    setSourceCompatibility JavaVersion.VERSION_11
 }
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -177,12 +179,12 @@ android {
 
     // Set Java version
     compileOptions {
-        setDefaultJavaVersion JavaVersion.VERSION_1_8
-        setTargetCompatibility JavaVersion.VERSION_1_8
-        setSourceCompatibility JavaVersion.VERSION_1_8
+        setDefaultJavaVersion JavaVersion.VERSION_11
+        setTargetCompatibility JavaVersion.VERSION_11
+        setSourceCompatibility JavaVersion.VERSION_11
     }
     kotlinOptions {
-        setJvmTarget JavaVersion.VERSION_1_8.toString()
+        setJvmTarget JavaVersion.VERSION_11.toString()
     }
 
     // Set build types
@@ -390,7 +392,6 @@ dependencies {
 ///////////////////////////////////////////////////////////////////////////////
 repositories {
     google()
-    jcenter()
     mavenCentral()
     mavenLocal()
     gradlePluginPortal()
