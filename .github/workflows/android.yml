@@ -206,9 +206,9 @@ jobs:
   Sonar:
     needs: Build
 
-    name: Sonar
+    name: Code Coverage and Sonar
     runs-on: ubuntu-18.04
-    timeout-minutes: 1
+    timeout-minutes: 40
     env:
       CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
@@ -220,6 +220,12 @@ jobs:
     - name: Checkout
       if: success()
       uses: actions/checkout@v2.3.4
+
+    - name: Set up JDK
+      if: success()
+      uses: actions/setup-java@v1.4.3
+      with:
+        java-version: 11
 
     - name: Download reports from cache
       if: success()
@@ -265,10 +271,8 @@ jobs:
         echo "Result: '${res}'";
         exit 0;
 
-      # Disable Sonar step since it requires Java 11, but Java 11 seems to have
-      # conflicts with Jacoco.
     - name: Analyze Sonar
-      if: success() && false
+      if: success()
       working-directory: .
       env:
         GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}  # Needed to get PR information, if any

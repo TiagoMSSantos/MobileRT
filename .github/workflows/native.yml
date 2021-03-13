@@ -161,7 +161,7 @@ jobs:
   Sonar:
     needs: Build
 
-    name: Sonar
+    name: Code Coverage
     runs-on: ubuntu-18.04
     timeout-minutes: 1
     env:

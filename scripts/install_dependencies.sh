@@ -19,7 +19,11 @@ source scripts/helper_functions.sh
 ###############################################################################
 # if Debian based Linux
 if [ -x "$(command -v apt-get)" ]; then
-  callCommand sudo apt-get update -y;
+  # Can't use `callCommand` because of the error:
+  # Err:40 https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_18.04  Release
+  # Certificate verification failed: The certificate is NOT trusted. The received OCSP status
+  # response is invalid.  Could not handshake: Error in the certificate verification.
+  sudo apt-get update -y;
   callCommand sudo apt-get install --no-install-recommends -y \
     xorg-dev \
     libxcb-render-util0-dev \
