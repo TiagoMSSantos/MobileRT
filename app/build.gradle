@@ -179,12 +179,11 @@ android {
 
     // Set Java version
     compileOptions {
-        setDefaultJavaVersion JavaVersion.VERSION_11
-        setTargetCompatibility JavaVersion.VERSION_11
-        setSourceCompatibility JavaVersion.VERSION_11
+        setTargetCompatibility JavaVersion.VERSION_1_8
+        setSourceCompatibility JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        setJvmTarget JavaVersion.VERSION_11.toString()
+        setJvmTarget JavaVersion.VERSION_1_8.toString()
     }
 
     // Set build types
@@ -330,7 +329,7 @@ dependencies {
     implementation 'org.apache.commons:commons-lang3:3.12.0'
 
     // Annotations
-    implementation 'org.projectlombok:lombok:1.18.18'
+    implementation 'org.projectlombok:lombok:1.18.16'
     annotationProcessor 'org.projectlombok:lombok:1.18.18'
 
     // Web

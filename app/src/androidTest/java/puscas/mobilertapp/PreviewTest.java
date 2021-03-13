@@ -1,5 +1,7 @@
 package puscas.mobilertapp;
 
+import androidx.test.filters.FlakyTest;
+import com.google.common.base.Preconditions;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
@@ -56,9 +58,12 @@ public final class PreviewTest extends AbstractTest {
      * @throws TimeoutException If the Ray Tracing engine didn't stop rendering the scene.
      */
     @Test(timeout = 5L * 60L * 1000L)
+    @FlakyTest(detail = "Flaky test that fails with:" +
+        "org.junit.runners.model.TestTimedOutException: test timed out after 300000 milliseconds")
     public void testPreviewScene() throws TimeoutException {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
+        Preconditions.checkNotNull(this.activity, "Activity can't be null");
 
         UtilsContextT.resetPickerValues(this.activity, Scene.CORNELL2.ordinal());
 
