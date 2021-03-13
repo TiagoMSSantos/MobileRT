@@ -781,11 +781,15 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
 
         waitLastTask();
 
-        this.renderTask = RenderTask.builder()
-            .config(this.configRenderTask.textView(this.textView).build())
+        final ConfigRenderTask config = this.configRenderTask
+            .textView(this.textView)
             .buttonRender(this.buttonRender)
             .numPrimitives(this.numPrimitives)
             .numThreads(this.numThreads)
+            .build();
+
+        this.renderTask = RenderTask.builder()
+            .config(config)
             .build();
 
         this.renderTask.execute();

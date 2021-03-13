@@ -1,6 +1,7 @@
 package puscas.mobilertapp;
 
 import android.graphics.Bitmap;
+import android.widget.Button;
 import android.widget.TextView;
 import lombok.Builder;
 import lombok.Getter;
@@ -63,4 +64,21 @@ public final class ConfigRenderTask {
      * Ray Tracer engine.
      */
     private final TextView textView ;
+
+    /**
+     * The number of threads to be used by the Ray Tracer engine.
+     */
+    private final int numThreads;
+
+    /**
+     * The number of primitives in the scene.
+     */
+    private final int numPrimitives;
+
+    /**
+     * The {@link Button} which can start and stop the Ray Tracer engine.
+     * It is important to let the {@link RenderTask} update its state after the
+     * rendering process.
+     */
+    private final Button buttonRender;
 }

@@ -13,6 +13,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
+import javax.annotation.Nonnull;
 import lombok.Builder;
 import puscas.mobilertapp.utils.AsyncTaskCoroutine;
 import puscas.mobilertapp.utils.Constants;
@@ -170,28 +171,22 @@ public final class RenderTask extends AsyncTaskCoroutine {
      * A private constructor of this class to force using the
      * RenderTask builder.
      *
-     * @param config        The configurator which contains most of the parameters.
-     * @param buttonRender  The render {@link Button}.
-     * @param numThreads    The number of threads.
-     * @param numPrimitives The number of primitives in the scene.
+     * @param config        The configurator which contains all of the parameters.
      */
     @Builder
-    private RenderTask(final ConfigRenderTask config,
-                       final Button buttonRender,
-                       final int numThreads,
-                       final int numPrimitives) {
+    private RenderTask(@Nonnull final ConfigRenderTask config) {
         super();
         LOGGER.info("RenderTask");
 
         this.requestRender = config.getRequestRender();
         this.finishRender = config.getFinishRender();
         this.updateInterval = config.getUpdateInterval();
-        this.primitivesT = ",p=" + numPrimitives + ",l=" + config.getNumLights();
+        this.primitivesT = ",p=" + config.getNumPrimitives() + ",l=" + config.getNumLights();
         this.resolutionT = ",r:" + config.getWidth() + 'x' + config.getHeight();
-        this.threadsT = ",t:" + numThreads;
+        this.threadsT = ",t:" + config.getNumThreads();
         this.samplesPixelT = ",spp:" + config.getSamplesPixel();
         this.samplesLightT = ",spl:" + config.getSamplesLight();
-        this.buttonRender = new WeakReference<>(buttonRender);
+        this.buttonRender = new WeakReference<>(config.getButtonRender());
         this.textView = new WeakReference<>(config.getTextView());
 
         this.startTimeStamp = SystemClock.elapsedRealtime();
