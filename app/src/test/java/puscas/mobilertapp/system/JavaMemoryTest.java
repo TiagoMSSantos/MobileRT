@@ -13,7 +13,7 @@ import puscas.mobilertapp.utils.Constants;
 /**
  * The unit tests for Java memory behaviour in the system.
  */
-public class JavaMemoryTest {
+public final class JavaMemoryTest {
 
     /**
      * The {@link Logger} for this class.
@@ -47,7 +47,7 @@ public class JavaMemoryTest {
         LOGGER.info(methodName);
 
         // Dummy array to hold the allocated memory.
-        final Collection<ByteBuffer> dummyArrays = new ArrayList<>();
+        final Collection<ByteBuffer> dummyArrays = new ArrayList<>(1);
 
         final long startAvailableMemory = getAvailableJavaMemoryInMB();
         Assertions.assertThat(startAvailableMemory)
@@ -55,7 +55,10 @@ public class JavaMemoryTest {
             .isGreaterThan(300L);
 
         final long megaBytesToAllocate = 100L;
-        for(long l = 0L; getAvailableJavaMemoryInMB() >= startAvailableMemory - 2L * megaBytesToAllocate; l += megaBytesToAllocate) {
+        int numAllocatedByteBuffers = 0;
+        for(long l = 0L; getAvailableJavaMemoryInMB() >= startAvailableMemory - 2L * megaBytesToAllocate;
+            l += megaBytesToAllocate) {
+
             // Force garbage collection now, before retrieving available memory
             // of the before and after allocating memory.
             System.gc();
@@ -70,7 +73,13 @@ public class JavaMemoryTest {
             Assertions.assertThat(afterAvailableMemory)
                 .as("Available memory didn't decrease as expected.")
                 .isLessThanOrEqualTo(beforeAvailableMemoryMB - megaBytesToAllocate);
+
+            ++numAllocatedByteBuffers;
         }
+
+        Assertions.assertThat(dummyArrays)
+            .as("The number of allocated `ByteBuffer` is not the expected.")
+            .hasSize(numAllocatedByteBuffers);
     }
 
     /**

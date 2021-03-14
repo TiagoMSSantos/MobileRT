@@ -7,11 +7,11 @@ import java.util.Collection;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import org.junit.Ignore;
-import org.junit.jupiter.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
 import org.junit.runners.MethodSorters;
 import puscas.mobilertapp.utils.Constants;
 
@@ -24,7 +24,7 @@ import puscas.mobilertapp.utils.Constants;
  */
 @Ignore("Ignore because JVM only has 2MB of native heap by default for the tests.")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class NativeMemoryTest {
+public final class NativeMemoryTest {
 
     /**
      * The {@link Logger} for this class.
@@ -60,7 +60,7 @@ public class NativeMemoryTest {
         LOGGER.info(methodName);
 
         // Dummy array to hold the allocated memory.
-        final Collection<ByteBuffer> dummyArrays = new ArrayList<>();
+        final Collection<ByteBuffer> dummyArrays = new ArrayList<>(1);
 
         final long firstAvailableMemoryMB = getAvailableNativeMemoryInMB();
         Assertions.assertTrue(firstAvailableMemoryMB > 300L, "Not enough available memory.");
@@ -71,6 +71,7 @@ public class NativeMemoryTest {
             "Available memory didn't decrease as expected.");
 
         final long megaBytesToAllocate = 100L;
+        int numAllocatedByteBuffers = 0;
         for(long l = 0L; getAvailableNativeMemoryInMB() >= startAvailableMemory - 2L * megaBytesToAllocate; l += megaBytesToAllocate) {
             // Force garbage collection now, before retrieving available memory
             // of the before and after allocating memory.
@@ -83,7 +84,12 @@ public class NativeMemoryTest {
             final long afterAvailableMemory = getAvailableNativeMemoryInMB();
             Assertions.assertTrue(afterAvailableMemory <= (beforeAvailableMemoryMB - megaBytesToAllocate),
                 "Not enough available memory.");
+
+            ++numAllocatedByteBuffers;
         }
+
+        Assertions.assertEquals(numAllocatedByteBuffers, dummyArrays.size(),
+                "The number of allocated `ByteBuffer` is not the expected.");
     }
 
     /**

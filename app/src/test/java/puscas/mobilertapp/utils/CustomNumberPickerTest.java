@@ -218,10 +218,14 @@ public final class CustomNumberPickerTest {
 
         final NumberPicker customNumberPicker = new CustomNumberPicker(context, attrs);
 
-        Assertions.assertThat(customNumberPicker).isNotNull();
+        Assertions.assertThat(customNumberPicker)
+            .as("CustomNumberPicker shouldn't be null.")
+            .isNotNull();
+
         Assertions.assertThatThrownBy(
             () -> customNumberPicker.addView(view, params)
         )
+            .as("Assertions#assertThatThrownBy should throw an exception.")
             .isInstanceOf(FailureException.class)
             .hasMessageContaining("View cannot be cast to TextView.");
     }
@@ -241,7 +245,13 @@ public final class CustomNumberPickerTest {
         final ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(context, attrs);
 
         final ViewManager customNumberPicker = new CustomNumberPicker(context, attrs);
+
+        Assertions.assertThat(customNumberPicker)
+            .as("ViewManager shouldn't be null.")
+            .isNotNull();
+
         Assertions.assertThatCode(() -> customNumberPicker.addView(view, params))
+            .as("ViewManager#addView shouldn't throw any exception.")
             .doesNotThrowAnyException();
     }
 
