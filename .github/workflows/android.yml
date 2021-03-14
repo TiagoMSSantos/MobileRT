@@ -79,7 +79,7 @@ jobs:
 
     - name: Cache SonarCloud packages
       if: success()
-      uses: actions/cache@v2.1.4
+      uses: actions/cache@v2
       with:
         path: |
           ~/.sonar
@@ -92,7 +92,7 @@ jobs:
 
     - name: Cache Gradle packages
       if: success()
-      uses: actions/cache@v2.1.4
+      uses: actions/cache@v2
       with:
         path: ~/.gradle
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
@@ -191,7 +191,7 @@ jobs:
         path: |
           ./app/build/reports/coverage/debug
           ./reports
-        key: reports_${{ matrix.type }}
+        key: reports_${{ matrix.type }}-${{ hashFiles('./**/reports') }}
         restore-keys: reports_${{ matrix.type }}
 
     - name: Upload reports
@@ -236,7 +236,7 @@ jobs:
         path: |
           ./app/build/reports/coverage/debug
           ./reports
-        key: reports_debug
+        key: reports_debug-${{ hashFiles('./**/reports') }}
         restore-keys: reports_debug
 
     - name: Check files from cache

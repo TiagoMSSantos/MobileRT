@@ -145,7 +145,7 @@ jobs:
 
     - name: ccache cache files
       if: success()
-      uses: actions/cache@v2.1.4
+      uses: actions/cache@v2
       with:
         path: .ccache
         key: ${{ matrix.name }}-ccache-${{ steps.ccache_cache_timestamp.outputs.timestamp }}
