@@ -122,28 +122,38 @@ f 45 45 #field of view of the camera u v
 
 ## Third party frameworks / libraries used
 - [x] C++ [Boost libraries](https://www.boost.org/)
+for the assertions
 - [x] C++ [OpenGL Mathematics](https://glm.g-truc.net/0.9.9/index.html)
-library
+library to help in the vector math
 - [x] C++ [tinyobjloader](https://github.com/tinyobjloader/tinyobjloader)
 library to load Wavefront OBJ model files
-- [x] C++ [Qt4 or Qt5](https://www.qt.io/) framework for Linux interface
-- [x] C++ [Google Test](https://github.com/google/googletest) framework
-for unit tests
-- [x] C [STB libraries](https://github.com/nothings/stb) to load the textures
-- [x] Java [Google Guava](https://github.com/google/guava) libraries
-- [x] Java [Streams](https://github.com/stefan-zobel/streamsupport) to
-reduce complexity
-- [x] Java [Apache Commons](https://commons.apache.org/) framework
-- [x] Java [JUnit4](https://junit.org/junit4/) framework for
-unit tests
-- [x] Java [AssertJ](https://assertj.github.io/doc/) library for
-unit tests assertions
-- [x] Java [Mockito](https://site.mockito.org/) framework for
-mocking in unit tests
-- [x] Java Google [Truth](https://truth.dev/) library for
-unit tests 
-- [x] Java Android [Espresso](https://developer.android.com/training/testing/espresso)
+- [x] C++ [Qt4 or Qt5](https://www.qt.io/)
+framework for Linux interface
+- [x] C++ [Google Test](https://github.com/google/googletest)
+framework for unit tests
+- [x] C [STB libraries](https://github.com/nothings/stb)
+librart to load the textures
+- [x] Java [Streams](https://github.com/stefan-zobel/streamsupport)
+to reduce complexity
+- [x] Java [Google Guava](https://github.com/google/guava)
+libraries to reduce complexity
+- [x] Java [Apache Commons](https://commons.apache.org/)
+framework to reduce complexity
+- [x] Java [Project Lombok](https://projectlombok.org/)
+library to use annotations
+- [x] Java [JUnit4](https://junit.org/junit4/)
+framework for unit tests
+- [x] Java [AssertJ](https://assertj.github.io/doc/)
+library for unit tests assertions
+- [x] Java [Android Espresso](https://developer.android.com/training/testing/espresso)
 library for instrumented tests
+
+<!--
+- [x] Java [Mockito](https://site.mockito.org/)
+framework for mocking in unit tests
+- [x] Java [Google Truth](https://truth.dev/)
+library for assertions unit tests
+-->
 
 ## Supported Operating Systems
 <table class="tg">
