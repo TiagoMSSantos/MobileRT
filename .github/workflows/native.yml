@@ -1,4 +1,4 @@
-name: Build Native (Qt)
+name: Native (Qt)
 
 on:
   push:
@@ -147,7 +147,6 @@ jobs:
           ./code_coverage.info
           ./code_coverage_test.info
         key: reports_${{ matrix.type }}
-        restore-keys: reports_${{ matrix.type }}
 
     - name: Upload reports
       if: always()

@@ -1,4 +1,4 @@
-name: Build CodeQL
+name: CodeQL
 
 # cron:  'a b c d e'
 # a: minute (0 - 59)

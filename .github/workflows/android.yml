@@ -1,4 +1,4 @@
-name: Build Android
+name: Android
 
 on:
   push:
@@ -128,31 +128,6 @@ jobs:
         echo "Result: '${res}'";
         exit ${res};
 
-    - name: Run Android tests
-      if: success() && !startsWith(matrix.os, 'windows')
-      uses: ReactiveCircus/android-emulator-runner@v2.15.0
-      with:
-        api-level: 16
-        target: default
-        arch: x86
-        disable-animations: true
-        emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none
-        script: |
-          mkdir -p ./app/build/reports;
-          mkdir -p ./reports;
-          bash ./scripts/run_tests_android.sh ${{ matrix.type }} all ${{ matrix.ndk_version }} ${{ matrix.cmake_version }} false;
-          tree -a -f | grep -i app/build/reports | grep -i xml 2>&1 | tee ./reports/tree_report.log;
-
-    - name: Sign APK
-      if: success()
-      uses: r0adkll/sign-android-release@v1.0.1
-      with:
-        releaseDirectory: ./app/build/outputs/apk/${{ matrix.type }}
-        signingKeyBase64: ${{ env.SIGNING_KEY }}
-        alias: ${{ env.KEY_ALIAS }}
-        keyStorePassword: ${{ env.SIGNING_KEY }}
-        keyPassword: ${{ env.SIGNING_KEY }}
-
     - name: Run linter
       if: success()
       working-directory: .
@@ -175,12 +150,27 @@ jobs:
         echo "Result: '${res}'";
         exit ${res};
 
-    - name: Upload APK
-      if: success() && startsWith(matrix.os, 'macos')
-      uses: actions/upload-artifact@v2
+    - name: Run Android tests
+      if: success() && !startsWith(matrix.os, 'windows')
+      uses: ReactiveCircus/android-emulator-runner@v2.15.0
       with:
-        name: MobileRT_${{ matrix.type }}_exp
-        path: ./app/build/outputs/apk/${{ matrix.type }}
+        api-level: 16
+        target: default
+        arch: x86
+        disable-animations: true
+        emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none
+        script: |
+          mkdir -p ./app/build/reports;
+          mkdir -p ./reports;
+          bash ./scripts/run_tests_android.sh ${{ matrix.type }} all ${{ matrix.ndk_version }} ${{ matrix.cmake_version }} false;
+          ls -la ./app 2>&1 | tee ./reports/ls_coverage_reports_1.log;
+          ls -la ./app/build 2>&1 | tee ./reports/ls_coverage_reports_2.log;
+          ls -la ./app/build/reports 2>&1 | tee ./reports/ls_coverage_reports_3.log;
+          ls -la ./app/build/reports/coverage 2>&1 | tee ./reports/ls_coverage_reports_4.log;
+          ls -la ./app/build/reports/coverage/debug 2>&1 | tee ./reports/ls_coverage_reports.log;
+          ls -la ./reports 2>&1 | tee ./reports/ls_reports.log;
+          tree -a -f | grep -i app/build/reports | grep -i xml 2>&1 | tee ./reports/tree_report.log;
+          dd if=/dev/urandom of=./urandom_hash count=1 bs=1024;
 
     - name: Upload reports to cache
       if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug'
@@ -191,8 +181,24 @@ jobs:
         path: |
           ./app/build/reports/coverage/debug
           ./reports
-        key: reports_${{ matrix.type }}-${{ hashFiles('./**/reports') }}
-        restore-keys: reports_${{ matrix.type }}
+        key: reports_${{ matrix.type }}-${{ github.sha }}
+
+    - name: Sign APK
+      if: success()
+      uses: r0adkll/sign-android-release@v1.0.1
+      with:
+        releaseDirectory: ./app/build/outputs/apk/${{ matrix.type }}
+        signingKeyBase64: ${{ env.SIGNING_KEY }}
+        alias: ${{ env.KEY_ALIAS }}
+        keyStorePassword: ${{ env.SIGNING_KEY }}
+        keyPassword: ${{ env.SIGNING_KEY }}
+
+    - name: Upload APK
+      if: success() && startsWith(matrix.os, 'macos')
+      uses: actions/upload-artifact@v2
+      with:
+        name: MobileRT_${{ matrix.type }}_exp
+        path: ./app/build/outputs/apk/${{ matrix.type }}
 
     - name: Upload reports
       if: always()
@@ -236,8 +242,7 @@ jobs:
         path: |
           ./app/build/reports/coverage/debug
           ./reports
-        key: reports_debug-${{ hashFiles('./**/reports') }}
-        restore-keys: reports_debug
+        key: reports_debug-${{ github.sha }}
 
     - name: Check files from cache
       if: success()
@@ -246,6 +251,12 @@ jobs:
         mkdir -p ./reports;
         chmod +x ./gradlew 2>&1 | tee ./reports/setup_gradlew.log;
         chmod +x ./test-reporter-latest-linux-amd64 2>&1 | tee ./reports/setup_code_climate.log;
+        ls -la ./app 2>&1 | tee ./reports/ls_coverage_reports_1.log;
+        ls -la ./app/build 2>&1 | tee ./reports/ls_coverage_reports_2.log;
+        ls -la ./app/build/reports 2>&1 | tee ./reports/ls_coverage_reports_3.log;
+        ls -la ./app/build/reports/coverage 2>&1 | tee ./reports/ls_coverage_reports_4.log;
+        ls -la ./app/build/reports/coverage/debug 2>&1 | tee ./reports/ls_coverage_reports.log;
+        ls -la ./reports 2>&1 | tee ./reports/ls_reports.log;
 
     - name: Send code climate report
       if: success()

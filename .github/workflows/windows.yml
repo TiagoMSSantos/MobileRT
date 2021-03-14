@@ -1,4 +1,4 @@
-name: Build Native Windows (Qt)
+name: Native Windows (Qt)
 
 on:
   push:
