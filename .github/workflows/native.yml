@@ -16,9 +16,11 @@ on:
     - '!.github/workflows/native.yml'
     - '!.github/workflows/android.yml'
     - '!app/CMakeLists.txt'
+    - '!app/build.gradle'
     - '!app/System_dependent/CMakeLists.txt'
     - '!app/System_dependent/Native/**'
     - '!scripts/compile_native.sh'
+    - '!build.gradle'
     - '!codecov.yml'
     - '!scripts/install_dependencies.sh'
 #branches-ignore:
@@ -40,7 +42,7 @@ jobs:
 
     name: ${{ matrix.type }} ${{ matrix.compiler }} (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 30
+    timeout-minutes: 40
 
     steps:
     - name: Checkout
@@ -146,7 +148,7 @@ jobs:
           ./code_coverage_base.info
           ./code_coverage.info
           ./code_coverage_test.info
-        key: reports_${{ matrix.type }}
+        key: reports_${{ matrix.type }}-${{ github.sha }}
 
     - name: Upload reports
       if: always()
@@ -183,7 +185,7 @@ jobs:
           ./code_coverage_base.info
           ./code_coverage.info
           ./code_coverage_test.info
-        key: reports_debug
+        key: reports_debug-${{ github.sha }}
         restore-keys: reports_debug
 
     - name: Send code climate report
