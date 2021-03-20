@@ -127,39 +127,32 @@ elif [ -x "$(command -v apk)" ]; then \
     py3-pip \
     gcc; \
 elif [ -x "$(command -v emerge)" ]; then \
-  echo "Detected Gentoo based Linux (error installing Qt)"; \
-  # Error when installing Qt:
+  echo "Detected Gentoo based Linux"; \
+  emerge --sync; \
+  emerge sys-apps/portage; \
+  emerge app-portage/layman; \
+  emerge dev-libs/icu; \
+  layman -a qt; \
+  \
+  # Fix the error when installing Qt:
   #
   # The following USE changes are necessary to proceed:
   # (see "package.use" in the portage(5) man page for more details)
   # required by dev-qt/qtgui-5.15.2-r1::gentoo[X]
   # required by dev-qt/qtwidgets-5.15.2::gentoo
-  # required by dev-qt/qtwidgets (argument)
   # >=x11-libs/libxkbcommon-1.0.3 X
   # required by dev-qt/qtcore-5.15.2-r2::gentoo
   # required by dev-qt/qtgui-5.15.2-r1::gentoo
   # required by dev-qt/qtwidgets-5.15.2::gentoo
-  # required by dev-qt/qtwidgets (argument)
   # >=dev-libs/libpcre2-10.35 pcre16
   # required by media-libs/mesa-20.2.6::gentoo
   # required by virtual/opengl-7.0-r2::gentoo
   # required by dev-qt/qtgui-5.15.2-r1::gentoo[-gles2-only]
   # required by dev-qt/qtwidgets-5.15.2::gentoo
-  # required by dev-qt/qtwidgets (argument)
   # >=media-libs/libglvnd-1.3.2-r2 X
-  emerge --sync; \
-  emerge sys-apps/portage; \
-  emerge --update --deep @world; \
-  emerge app-portage/layman; \
-  emerge layman; \
-  emerge x11-libs/libxkbcommon; \
-  emerge dev-libs/libpcre2; \
-  emerge media-libs/libglvnd; \
-  eselect profile list; \
-  eselect profile set 1; \
-  layman -S; \
-  layman -a qt; \
-  layman -a gentoo; \
+  echo 'FEATURES="-sandbox -usersandbox"' >> /etc/portage/make.conf; \
+  echo 'USE="dev-libs/libpcre2-10.35 pcre16 x11-libs/libxkbcommon-1.0.3 media-libs/libglvnd-1.3.2-r2 X"' >> /etc/portage/make.conf; \
+  \
   emerge \
     vim \
     findutils \

@@ -19,14 +19,14 @@ OBJLoader::OBJLoader(::std::string objFilePath, const ::std::string &matFilePath
 
     LOG_INFO("Going to load OBJ and MTL files to create OBJLoader.");
     MobileRT::checkSystemError("Error before read OBJ.");
-    LOG_DEBUG("Will read OBJ path: ", this->objFilePath_);
+    LOG_DEBUG("Will read OBJ path: '", this->objFilePath_, "' (size: '", this->objFilePath_.size(), "')");
     ::std::ifstream objStream {this->objFilePath_, ::std::ios::binary};
     MobileRT::checkSystemError(::std::string("Error after read OBJ `" + this->objFilePath_ + "`.").c_str());
     objStream.exceptions(
         objStream.exceptions() | ::std::ifstream::goodbit | ::std::ifstream::badbit |
         ::std::ifstream::failbit
     );
-    LOG_DEBUG("Will read MAT path: ", matFilePath);
+    LOG_DEBUG("Will read MAT path: '", matFilePath, "' (size: '", matFilePath.size(), "')");
     ::std::ifstream matStream {matFilePath, ::std::ios::binary};
     MobileRT::checkSystemError(::std::string("Error after read MAT `" + matFilePath + "`.").c_str());
     matStream.exceptions(
@@ -39,8 +39,8 @@ OBJLoader::OBJLoader(::std::string objFilePath, const ::std::string &matFilePath
     ::std::string warnings {};
 
     LOG_DEBUG("Going to call tinyobj::LoadObj");
-    LOG_DEBUG("OBJ file path: ", this->objFilePath_);
-    LOG_DEBUG("MTL file path: ", matFilePath);
+    LOG_DEBUG("OBJ file path: '", this->objFilePath_, "'");
+    LOG_DEBUG("MTL file path: '", matFilePath, "'");
 
     MobileRT::checkSystemError("Error before LoadObj.");
     const auto ret {
@@ -49,16 +49,19 @@ OBJLoader::OBJLoader(::std::string objFilePath, const ::std::string &matFilePath
             &warnings, &errors, &objStream, matStreamReaderPtr, true, true
         )
     };
+    // For some reason in Gentoo Linux, the `LoadObj` method fails
+    // in release with error code ENOENT: No such file or directory.
+    errno = 0;
     MobileRT::checkSystemError("Error after LoadObj.");
 
     LOG_DEBUG("Called tinyobj::LoadObj");
 
     if (!errors.empty()) {
-        LOG_ERROR("Error: ", errors);
+        LOG_ERROR("Error: '", errors, "'");
     }
 
     if (!warnings.empty()) {
-        LOG_WARN("Warning: ", warnings);
+        LOG_WARN("Warning: '", warnings, "'");
     }
 
     if (ret) {
@@ -91,7 +94,7 @@ bool OBJLoader::fillScene(Scene *const scene,
 
             if (faceVertices % 3 != 0) {// If the number of vertices in the face is not multiple of 3,
                                         // then it does not make a triangle.
-                LOG_DEBUG("num_face_vertices [", face, "] = ", faceVertices);
+                LOG_DEBUG("num_face_vertices [", face, "] = '", faceVertices, "'");
                 continue;
             }
 
@@ -176,7 +179,7 @@ bool OBJLoader::fillScene(Scene *const scene,
                         scene->lights_.emplace_back(
                             ::MobileRT::std::make_unique<AreaLight>(material, lambda(), triangle));
                         const auto lightPos {scene->lights_.back()->getPosition()};
-                        LOG_DEBUG("Light position at: x:", lightPos[0], ", y:", lightPos[1], ", z:", lightPos[2]);
+                        LOG_DEBUG("Light position at: x:'", lightPos[0], "', y:'", lightPos[1], "', z:'", lightPos[2], "'");
                     } else {
                         // If it is a primitive.
 
