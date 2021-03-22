@@ -8,7 +8,6 @@ on:
     - 'app/debug/**'
     - 'app/release/**'
     - 'app/System_dependent/**'
-    - 'docker_image/**'
     - 'docs/**'
     - 'scripts/**'
     - 'WavefrontOBJs/**'
