@@ -43,7 +43,7 @@ ENV \
 ###############################################################################
 # Print environment
 ###############################################################################
-RUN echo "DISPLAY = ${DISPLAY}"; \
+RUN echo "DISPLAY test = ${DISPLAY}"; \
     echo "QT_GRAPHICSSYSTEM = ${QT_GRAPHICSSYSTEM}"; \
     echo "LD_LIBRARY_PATH = ${LD_LIBRARY_PATH}"; \
     echo "DEBIAN_FRONTEND = ${DEBIAN_FRONTEND}"; \
