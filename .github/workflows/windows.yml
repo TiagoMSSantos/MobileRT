@@ -20,8 +20,6 @@ on:
     - '!app/System_dependent/CMakeLists.txt'
     - '!app/System_dependent/Native/**'
     - '!scripts/compile_native.sh'
-#branches-ignore:
-#  - '**'
 
 env:
   CMAKE_VERSION: 3.16.2

@@ -7,8 +7,6 @@ on:
     paths-ignore:
     - '.github/**'
     - '!.github/workflows/github-pages.yml'
-#  schedule:
-#    - cron:  '*/5 * * * *'
 
 jobs:
   github-pages:
@@ -29,15 +27,6 @@ jobs:
         sudo apt install -y ruby-dev;
         sudo gem install bundler:1.16.1;
         sudo gem update bundler --conservative;
-#          bundle update --bundler;
-
-#      - name: Deploy Jekyll site to GitHub Pages
-#        uses: helaili/jekyll-action@2.0.4
-#        env:
-#          JEKYLL_PAT: ${{ env.REPOSITORY_TOKEN }}
-#        with:
-#          target_branch: 'master'
-#          gem_src: '${{ github.workspace }}'
 
     - name: Trigger GitHub pages rebuild
       if: success()

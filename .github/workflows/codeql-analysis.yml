@@ -15,9 +15,6 @@ on:
     branches:
     - '*'
 
-#branches-ignore:
-#  - '**'
-
 jobs:
   Build:
     name: Analyze

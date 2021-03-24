@@ -22,8 +22,6 @@ on:
     - '!scripts/run_tests_android.sh'
     - '!codecov.yml'
     - '!*gradle*'
-#branches-ignore:
-#  - '**'
 
 defaults:
   run:

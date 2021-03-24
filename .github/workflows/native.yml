@@ -23,8 +23,6 @@ on:
     - '!build.gradle'
     - '!codecov.yml'
     - '!scripts/install_dependencies.sh'
-#branches-ignore:
-#  - '**'
 
 defaults:
   run:
