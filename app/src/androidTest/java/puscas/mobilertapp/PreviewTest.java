@@ -55,7 +55,7 @@ public final class PreviewTest extends AbstractTest {
     /**
      * Tests the preview feature in a scene.
      *
-     * @throws TimeoutException If the Ray Tracing engine didn't stop rendering the scene.
+     * @throws TimeoutException If it couldn't render the whole scene in time.
      */
     @Test(timeout = 5L * 60L * 1000L)
     @FlakyTest(detail = "Flaky test that fails with:" +

@@ -2,6 +2,9 @@ package puscas.mobilertapp;
 
 import android.graphics.Bitmap;
 import android.os.Build;
+
+import androidx.test.filters.FlakyTest;
+
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
@@ -10,7 +13,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import puscas.mobilertapp.utils.Constants;
@@ -103,7 +105,7 @@ public final class RayTracingTest extends AbstractTest {
     /**
      * Tests render a scene from an invalid OBJ file.
      *
-     * @throws TimeoutException If the Ray Tracing engine didn't stop rendering the scene.
+     * @throws TimeoutException If it couldn't render the whole scene in time.
      */
     @Test(timeout = 2L * 60L * 1000L)
     public void testRenderInvalidScene() throws TimeoutException {
@@ -151,7 +153,7 @@ public final class RayTracingTest extends AbstractTest {
      * Tests rendering an OBJ scene in the SD card.
      */
     @Test(timeout = 2L * 60L * 1000L)
-    @Ignore("In CI, the emulator can't access the SD card, even though it works via adb shell.")
+    @FlakyTest(detail = "In CI, this test fails with: Fatal signal 11 (SIGSEGV) at 0xdeadbaad (code=1), thread 2235 (cas.mobilertapp)")
     public void testRenderSceneFromSDCardOBJ() throws TimeoutException {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
@@ -170,7 +172,7 @@ public final class RayTracingTest extends AbstractTest {
      * @param numCores           The number of CPU cores to use in the Ray Tracing process.
      * @param scene              The desired scene to render.
      * @param expectedSameValues Whether the {@link Bitmap} should have have only one color.
-     * @throws TimeoutException If it couldn't render the whole scene in less than 2 minutes.
+     * @throws TimeoutException If it couldn't render the whole scene in time.
      */
     private void assertRenderScene(final int numCores, final int scene, final boolean expectedSameValues)
         throws TimeoutException {

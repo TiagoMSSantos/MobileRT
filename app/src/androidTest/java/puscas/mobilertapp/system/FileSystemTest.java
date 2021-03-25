@@ -9,7 +9,6 @@ import javax.annotation.Nonnull;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.runners.MethodSorters;
@@ -82,7 +81,6 @@ public final class FileSystemTest extends AbstractTest {
      * Tests that the SD card device exists and is readable.
      */
     @Test(timeout = 5L * 1000L)
-    @Ignore("In CI, the emulator can't access the SD card, even though it works via adb shell.")
     public void testReadableSdCard() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
@@ -90,6 +88,7 @@ public final class FileSystemTest extends AbstractTest {
         final String sdCardPath = UtilsContext.getSdCardPath(this.activity);
 
         final List<String> paths = ImmutableList.<String>builder().add(
+            "/mnt",
             sdCardPath,
             sdCardPath + "/MobileRT"
         ).build();
@@ -116,7 +115,6 @@ public final class FileSystemTest extends AbstractTest {
      * Tests that a file in the SD card device exists and is readable.
      */
     @Test(timeout = 5L * 1000L)
-    @Ignore("In CI, the emulator can't access the SD card, even though it works via adb shell.")
     public void testFilesExistAndReadableSdCard() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);

@@ -69,10 +69,10 @@ public final class UtilsContext {
             .map(File::getAbsolutePath)
             .orElseGet(() -> {
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-                    // The old (deprecated) approach to retrieve the SD Card path.
+                    LOGGER.info("Using the old (deprecated) approach to retrieve the SD Card path.");
                     return Environment.getExternalStorageDirectory().getAbsolutePath();
                 } else {
-                    // In case using a SDK API 19+, then just give up and hope this path is right.
+                    LOGGER.info("Using fallback path since using a SDK API 19+, and hoping this path is right.");
                     return "/mnt/sdcard";
                 }
             });

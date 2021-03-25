@@ -387,6 +387,8 @@ namespace MobileRT {
      * @param message The message to be logged in the `std::runtime_error` that might be thrown.
      */
     void checkSystemError(const char *const message) {
+        LOG_DEBUG("checkSystemError: ", message);
+
         // There is an error in Android when allocating more than 20k bytes of memory (random values):
         // EINVAL (Invalid argument) - errno (22): Invalid argument
         // It already happened when calling `float *const floatBuffer{new float[arraySize]};`
@@ -402,11 +404,14 @@ namespace MobileRT {
         if (errno != 0 && errno != EINVAL && errno != EAGAIN) {// if there is an error
             ::std::setlocale(LC_ALL, "en_US.UTF-8");
             const ::std::string errorCode {getErrorCode()};
+            LOG_DEBUG("errorCode: ", errorCode);
 
             const auto errorMessage {::std::string(message) + '\n' + errorCode + '\n' +
                                      ::std::string("errno (") + ::std::to_string(errno) + "): " +
                                      ::std::strerror(errno)
             };
+            LOG_DEBUG("errorMessage: ", errorMessage);
+
             errno = 0;// reset the error code
             throw ::std::runtime_error {errorMessage};
         }
