@@ -199,7 +199,9 @@ function startCopyingLogcatToFile() {
   callCommand adb shell setprop debug.checkjni 1
 
   echo "Clear logcat"
-  adb logcat -b all -b main -b system -b radio -c
+  callCommandUntilSuccess adb root
+  callCommand adb shell logcat -b all -b main -b system -b radio -b events -b crash -c
+  callCommand adb shell ls -Rla /dev/log
 
   echo "Copy realtime logcat to file"
   callCommand adb logcat -v threadtime "*":V \
@@ -231,9 +233,9 @@ function verifyResources() {
   echo "Verify resources in SD Card"
   callCommand adb shell ls -Rla ${mobilert_path}/WavefrontOBJs
   callCommand adb shell ls -Rla ${sdcard_path}/WavefrontOBJs
-  callCommand adb shell cat ${sdcard_path}/WavefrontOBJs/CornellBox/CornellBox-Water.obj
-  callCommand adb shell cat ${sdcard_path}/WavefrontOBJs/CornellBox/CornellBox-Water.mtl
-  callCommand adb shell cat ${sdcard_path}/WavefrontOBJs/CornellBox/CornellBox-Water.cam
+#  callCommand adb shell cat ${sdcard_path}/WavefrontOBJs/CornellBox/CornellBox-Water.obj
+#  callCommand adb shell cat ${sdcard_path}/WavefrontOBJs/CornellBox/CornellBox-Water.mtl
+#  callCommand adb shell cat ${sdcard_path}/WavefrontOBJs/CornellBox/CornellBox-Water.cam
 }
 
 function runInstrumentationTests() {

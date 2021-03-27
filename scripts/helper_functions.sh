@@ -39,7 +39,7 @@ function callCommandUntilError() {
     "$@"
     lastResult=${PIPESTATUS[0]}
     echo "Retry: ${retry} of command '$*'; result: '${lastResult}'"
-    sleep 3
+    sleep 5
   done
   if [ "${lastResult}" -eq 0 ]; then
     echo "$*: success - '${lastResult}'"

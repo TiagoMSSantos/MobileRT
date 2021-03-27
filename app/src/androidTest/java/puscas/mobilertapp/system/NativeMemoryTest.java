@@ -99,7 +99,20 @@ public final class NativeMemoryTest {
      * @return The available memory in the native Heap, in mega bytes.
      */
     private static long getAvailableNativeMemoryInMB() {
-        return Debug.getNativeHeapFreeSize() / (long) Constants.BYTES_IN_MEGABYTE;
+        final long nativeHeapSize = Debug.getNativeHeapSize();
+        LOGGER.info("The size of the native heap: " + nativeHeapSize + "B"
+            + "(" + nativeHeapSize / 1024L + "KB or " + nativeHeapSize / (long) Constants.BYTES_IN_MEGABYTE + "MB)");
+
+        final long nativeHeapAllocatedSize = Debug.getNativeHeapAllocatedSize();
+        LOGGER.info("Allocated memory in the native heap: " + nativeHeapAllocatedSize + "B"
+            + "(" + nativeHeapAllocatedSize / 1024L + "KB or " + nativeHeapAllocatedSize / (long) Constants.BYTES_IN_MEGABYTE + "MB)");
+
+        final long nativeHeapFreeSize = Debug.getNativeHeapFreeSize();
+        final long availableMemoryKb = nativeHeapFreeSize / 1024L;
+        final long availableMemoryMb = nativeHeapFreeSize / (long) Constants.BYTES_IN_MEGABYTE;
+        LOGGER.info("Available native heap memory: " + nativeHeapFreeSize + "B"
+                + "(" + availableMemoryKb + "KB or " + availableMemoryMb + "MB)");
+        return availableMemoryMb;
     }
 
 }
