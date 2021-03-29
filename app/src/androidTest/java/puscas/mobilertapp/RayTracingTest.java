@@ -153,7 +153,6 @@ public final class RayTracingTest extends AbstractTest {
      * Tests rendering an OBJ scene in the SD card.
      */
     @Test(timeout = 2L * 60L * 1000L)
-    @FlakyTest(detail = "In CI, this test fails with: Fatal signal 11 (SIGSEGV) at 0xdeadbaad (code=1), thread 2235 (cas.mobilertapp)")
     public void testRenderSceneFromSDCardOBJ() throws TimeoutException {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);

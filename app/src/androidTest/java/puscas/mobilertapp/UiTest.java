@@ -167,7 +167,6 @@ public final class UiTest extends AbstractTest {
      * {@link Button} few times.
      */
     @Test(timeout = 20L * 60L * 1000L)
-    @FlakyTest(detail = "assertRenderButtonText: Button message is not the expected. ==> expected: <Stop> but was: <Render>")
     public void testUI() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
@@ -184,7 +183,6 @@ public final class UiTest extends AbstractTest {
      * Tests clicking the render {@link Button} many times without preview.
      */
     @Test(timeout = 20L * 60L * 1000L)
-    @FlakyTest(detail = "assertRenderButtonText: Button message is not the expected. ==> expected: <Stop> but was: <Render>")
     public void testClickRenderButtonManyTimesWithoutPreview() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);

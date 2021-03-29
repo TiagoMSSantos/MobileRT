@@ -58,8 +58,6 @@ public final class PreviewTest extends AbstractTest {
      * @throws TimeoutException If it couldn't render the whole scene in time.
      */
     @Test(timeout = 5L * 60L * 1000L)
-    @FlakyTest(detail = "Flaky test that fails with:" +
-        "org.junit.runners.model.TestTimedOutException: test timed out after 300000 milliseconds")
     public void testPreviewScene() throws TimeoutException {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
