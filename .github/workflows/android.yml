@@ -151,17 +151,20 @@ jobs:
     - name: Run Android tests
       if: success() && !startsWith(matrix.os, 'windows')
       uses: ReactiveCircus/android-emulator-runner@v2.15.0
+      env:
+        NCPU_CORES: $(nproc --all)
       with:
         api-level: 16
         target: default
         arch: x86
         disable-animations: true
         emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none
-        cores: 1
+        cores: ${NCPU_CORES}
         sdcard-path-or-size: 100M
         script: |
           mkdir -p ./app/build/reports;
           mkdir -p ./reports;
+          echo "Number cores: ${NCPU_CORES}"
           bash ./scripts/run_tests_android.sh ${{ matrix.type }} all ${{ matrix.ndk_version }} ${{ matrix.cmake_version }} false;
           ls -la ./app 2>&1 | tee ./reports/ls_coverage_reports_1.log;
           ls -la ./app/build 2>&1 | tee ./reports/ls_coverage_reports_2.log;
@@ -170,7 +173,6 @@ jobs:
           ls -la ./app/build/reports/coverage/debug 2>&1 | tee ./reports/ls_coverage_reports.log;
           ls -la ./reports 2>&1 | tee ./reports/ls_reports.log;
           tree -a -f | grep -i app/build/reports | grep -i xml 2>&1 | tee ./reports/tree_report.log;
-          dd if=/dev/urandom of=./urandom_hash count=1 bs=1024;
 
     - name: Upload reports to cache
       if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug'
