@@ -342,7 +342,7 @@ dependencies {
 
     // Annotations
     implementation 'androidx.annotation:annotation:1.2.0'
-    implementation 'org.projectlombok:lombok:1.18.18'
+    implementation 'org.projectlombok:lombok:1.18.20'
     annotationProcessor 'org.projectlombok:lombok:1.18.18'
 
     // Web

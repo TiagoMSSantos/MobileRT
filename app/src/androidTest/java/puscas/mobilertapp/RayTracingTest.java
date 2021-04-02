@@ -3,8 +3,6 @@ package puscas.mobilertapp;
 import android.graphics.Bitmap;
 import android.os.Build;
 
-import androidx.test.filters.FlakyTest;
-
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;

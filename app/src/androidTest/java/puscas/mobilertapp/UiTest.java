@@ -8,7 +8,6 @@ import androidx.test.espresso.Espresso;
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.espresso.action.ViewActions;
 import androidx.test.espresso.matcher.ViewMatchers;
-import androidx.test.filters.FlakyTest;
 
 import com.google.common.collect.ImmutableList;
 import java.util.List;

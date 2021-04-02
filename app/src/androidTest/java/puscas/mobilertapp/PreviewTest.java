@@ -1,6 +1,5 @@
 package puscas.mobilertapp;
 
-import androidx.test.filters.FlakyTest;
 import com.google.common.base.Preconditions;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
