@@ -2,6 +2,7 @@
 #define MOBILERT_CONFIG_HPP
 
 #include <cstdint>
+#include <string>
 #include <vector>
 
 namespace MobileRT {
@@ -18,17 +19,17 @@ namespace MobileRT {
         /**
          * The path to the OBJ file of the scene.
          */
-        const char *objFilePath;
+        ::std::string objFilePath;
 
         /**
          * The path to the MTL file of the scene.
          */
-        const char *mtlFilePath;
+        ::std::string mtlFilePath;
 
         /**
          * The path to the CAM file of the scene.
          */
-        const char *camFilePath;
+        ::std::string camFilePath;
 
         /**
          * The width of the image to render.

@@ -82,6 +82,10 @@ void MainWindow::setImage(const ::MobileRT::Config &config, const bool async) {
     LOG_DEBUG("height = ", m_config.height);
     m_config.bitmap = ::std::vector<::std::int32_t> (size);
 
+    LOG_DEBUG("obj = ", m_config.objFilePath);
+    LOG_DEBUG("mtl = ", m_config.mtlFilePath);
+    LOG_DEBUG("cam = ", m_config.camFilePath);
+
     RayTrace(m_config, m_async);
 
     m_timer = new QTimer(this);
@@ -121,11 +125,13 @@ void MainWindow::select_obj() {
 
     if (dialog.exec()) {
         const auto fileName {dialog.selectedFiles().at(0).section(".", 0, 0).toStdString()};
-        m_config.objFilePath = (fileName + ".obj").c_str();
-        m_config.mtlFilePath = (fileName + ".mtl").c_str();
-        m_config.camFilePath = (fileName + ".cam").c_str();
+        m_config.objFilePath = fileName + ".obj";
+        m_config.mtlFilePath = fileName + ".mtl";
+        m_config.camFilePath = fileName + ".cam";
     }
-    ::std::cout << "m_pathObj: " << m_config.objFilePath << ::std::endl;
+    ::std::cout << "pathObj: " << m_config.objFilePath << ::std::endl;
+    ::std::cout << "pathMtl: " << m_config.mtlFilePath << ::std::endl;
+    ::std::cout << "pathCam: " << m_config.camFilePath << ::std::endl;
 }
 
 void MainWindow::select_config() {

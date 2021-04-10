@@ -54,7 +54,7 @@ jobs:
         VERSION=${VERSION%/*};
         echo "Version: ${VERSION}";
         docker build -t ptpuscas/mobile_rt:${VERSION} -f docker_image/Dockerfile \
-          --no-cache=false --build-arg BUILD_TYPE=Release --build-arg BASE_IMAGE=${{ matrix.BASE_IMAGE }} .;
+          --no-cache=false --build-arg BUILD_TYPE=release --build-arg BASE_IMAGE=${{ matrix.BASE_IMAGE }} .;
       env:
         BASE_IMAGE: ${{ matrix.BASE_IMAGE }}
 

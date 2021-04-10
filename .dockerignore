@@ -74,17 +74,17 @@
 **/*coverage*
 **/test-reporter-latest-linux-amd64
 
-!build_Release
+!build_*
 !WavefrontOBJs/conference*
 
-build_Release/AppMobileRT_autogen
-build_Release/CMakeCache.txt
-build_Release/CMakeFiles
-build_Release/Components
-build_Release/Makefile
-build_Release/MobileRT
-build_Release/System_dependent
-build_Release/Unit_Testing
-build_Release/Plot_Graphs
-build_Release/cmake_install.cmake
-build_Release/third_party
+build_*/AppMobileRT_autogen
+build_*/CMakeCache.txt
+build_*/CMakeFiles
+build_*/Components
+build_*/Makefile
+build_*/MobileRT
+build_*/System_dependent
+build_*/Unit_Testing
+build_*/Plot_Graphs
+build_*/cmake_install.cmake
+build_*/third_party

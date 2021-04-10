@@ -28,8 +28,8 @@ function setPaths() {
   echo "FIND_MOBILERT = ${FIND_MOBILERT}"
   echo "MOBILERT_PATH = ${MOBILERT_PATH}"
 
-  BIN_DEBUG_PATH="${MOBILERT_PATH}/build_Debug/bin"
-  BIN_RELEASE_PATH="${MOBILERT_PATH}/build_Release/bin"
+  BIN_DEBUG_PATH="${MOBILERT_PATH}/build_debug/bin"
+  BIN_RELEASE_PATH="${MOBILERT_PATH}/build_release/bin"
   SCRIPTS_PATH="${MOBILERT_PATH}/scripts"
   PLOT_SCRIPTS_PATH="${SCRIPTS_PATH}/plot"
   OBJS_PATH="${MOBILERT_PATH}/WavefrontOBJs"
@@ -253,10 +253,10 @@ function parseArguments() {
       "drawt") . ./scripts/plot/plot.sh 0 ;;
       "draws") . ./scripts/plot/plot.sh 1 ;;
       "test") awk -f "${PLOT_SCRIPTS_PATH}/parser_median.awk" "${PLOT_SCRIPTS_PATH}/test.dat" ;;
-      "Release") execute ;;
+      "release") execute ;;
+      "debug") debug ;;
       "tidy") clangtidy ;;
       "gtest") "${BIN_DEBUG_PATH}"/UnitTestsd ;;
-      "Debug") debug ;;
       *)
         echo ""
         echo "Wrong Parameter: ${P}"

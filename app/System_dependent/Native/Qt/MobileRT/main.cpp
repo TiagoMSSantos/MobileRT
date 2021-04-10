@@ -76,9 +76,9 @@ int main(int argc, char **argv) {
     config.repeats = repeats;
     config.accelerator = accelerator;
     config.printStdOut = printStdOut;
-    config.objFilePath = pathObj;
-    config.mtlFilePath = pathMtl;
-    config.camFilePath = pathCam;
+    config.objFilePath = ::std::string {pathObj};
+    config.mtlFilePath = ::std::string {pathMtl};
+    config.camFilePath = ::std::string {pathCam};
 
     mainWindow.setImage(config, async);
     mainWindow.show();
