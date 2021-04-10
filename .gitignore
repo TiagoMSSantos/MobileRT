@@ -13,6 +13,7 @@
 **/*.pro.user
 
 # Build temporary files
+**/target
 **/build
 **/build_*
 **/.externalNativeBuild

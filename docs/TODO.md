@@ -149,6 +149,11 @@
 
 ## Docker
 - [x] Make a docker image with MobileRT
+  - [x] Create image based on ubuntu
+  - [x] Create image based on alpine
+  - [x] Create image based on centos
+  - [x] Create image based on archlinux
+  - [x] Create image based on gentoo
 - [x] Add an example model to the docker image
 - [ ] Make the ray tracer distribute the load across different engines
 - [ ] Use docker compose to launch multiple containers and distribute the load

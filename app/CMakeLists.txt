@@ -121,8 +121,10 @@ if( NOT DEFINED ANDROID_ABI )
     AND NOT CMAKE_CXX_LIBRARY_ARCHITECTURE MATCHES "powerpc"
     AND NOT CMAKE_CXX_LIBRARY_ARCHITECTURE MATCHES "aarch64"
     AND NOT CMAKE_CXX_LIBRARY_ARCHITECTURE MATCHES "s390x" )
-    set( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -march=native"
-      CACHE STRING "CUSTOM" FORCE )
+    # We can't enable `-march=native` flag in CI since the docker image will only work in CPUs of the same
+    # architecture as it was used during compilation.
+#    set( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -march=native"
+#      CACHE STRING "CUSTOM" FORCE )
   endif()
   if( CMAKE_HOST_SYSTEM_NAME MATCHES "Darwin" )
     message( STATUS "Detected native MacOS." )
@@ -210,9 +212,11 @@ else()
     AND NOT CMAKE_CXX_LIBRARY_ARCHITECTURE MATCHES "powerpc"
     AND NOT CMAKE_CXX_LIBRARY_ARCHITECTURE MATCHES "aarch64"
     AND NOT CMAKE_CXX_LIBRARY_ARCHITECTURE MATCHES "s390x" )
-    message( STATUS
-    "Add flag to generate instructions for the machine type native." )
-    set( COMMON_FLAGS "${COMMON_FLAGS}" -march=native )
+    # We can't enable `-march=native` flag in CI since the docker image will only work in CPUs of the same
+    # architecture as it was used during compilation.
+#    message( STATUS
+#    "Add flag to generate instructions for the machine type native." )
+#    set( COMMON_FLAGS "${COMMON_FLAGS}" -march=native )
   endif()
 
   string( TOLOWER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_L )
