@@ -786,6 +786,8 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
             .buttonRender(this.buttonRender)
             .numPrimitives(this.numPrimitives)
             .numThreads(this.numThreads)
+            .width(this.width)
+            .height(this.height)
             .build();
 
         this.renderTask = RenderTask.builder()

@@ -1,10 +1,11 @@
 package puscas.mobilertapp.utils
 
+import kotlinx.coroutines.async
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.util.concurrent.Executors
+import kotlinx.coroutines.runBlocking
+import java.util.logging.Logger
 
 /**
  * An abstract class which simulates the deprecated [android.os.AsyncTask] from Java.
@@ -14,10 +15,14 @@ import java.util.concurrent.Executors
 abstract class AsyncTaskCoroutine {
 
     /**
-     * A thread pool containing [ConstantsRenderer.NUMBER_THREADS] threads
-     * with the purpose of executing this [AsyncTaskCoroutine].
+     * The [Logger] for this class.
      */
-    private var executorService = Executors.newFixedThreadPool(ConstantsRenderer.NUMBER_THREADS)
+    private val LOGGER = Logger.getLogger(AsyncTaskCoroutine::class.java.name)
+
+    /**
+     * The last [Job] that was triggered to be calculated by the Kotlin coroutines.
+     */
+    private var lastJob : Deferred<Unit>? = null;
 
     /**
      * Runs on the UI thread before [doInBackground].
@@ -75,7 +80,7 @@ abstract class AsyncTaskCoroutine {
      * @see [doInBackground]
      */
     protected fun publishProgress() {
-        GlobalScope.launch(Dispatchers.Main) {
+        GlobalScope.async(Dispatchers.Main) {
             onProgressUpdate()
         }
     }
@@ -91,12 +96,13 @@ abstract class AsyncTaskCoroutine {
      * method on the UI thread.
      */
     fun execute() {
-        this.executorService.execute {
-            GlobalScope.launch(Dispatchers.Main) {
-                onPreExecute()
-                callAsync()
-                onPostExecute()
+        GlobalScope.async<Unit>(Dispatchers.Main) {
+            onPreExecute()
+            lastJob = GlobalScope.async<Unit>(Dispatchers.IO) {
+                doInBackground()
             }
+            lastJob!!.await()
+            onPostExecute()
         }
     }
 
@@ -108,19 +114,12 @@ abstract class AsyncTaskCoroutine {
      * In the end, resets [executorService] to a new thread
      * pool with [ConstantsRenderer.NUMBER_THREADS] threads.
      */
-    @Synchronized
     fun waitToFinish() {
-        this.executorService.shutdown()
-        Utils.waitExecutorToFinish(this.executorService)
-        this.executorService = Executors.newFixedThreadPool(ConstantsRenderer.NUMBER_THREADS)
-    }
-
-    /**
-     * Helper method which calls the [doInBackground] method in a new Kotlin coroutine.
-     */
-    private suspend fun callAsync() {
-        withContext(Dispatchers.IO) {
-            doInBackground()
+        runBlocking {
+            LOGGER.info("waitToFinish")
+            lastJob?.await()
+            LOGGER.info("waitToFinish finished")
         }
     }
+
 }

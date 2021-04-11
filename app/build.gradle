@@ -27,6 +27,10 @@ plugins {
 
     // Add support for the language Kotlin.
     id 'kotlin-android'
+
+    // Add support for IDE plugin.
+    // Useful to add custom sources and tests directories.
+    id 'idea'
 }
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -53,6 +57,50 @@ println("Test type: " + systemTestType)
 ///////////////////////////////////////////////////////////////////////////////
 println "setting global timeout for apk installation to 10 minutes"
 DdmPreferences.setTimeOut(600000)
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////////////////////////////////////
+// Set source directories for the IDE
+///////////////////////////////////////////////////////////////////////////////
+ext {
+    javaDir = file("$projectDir/src/main/java")
+    kotlinDir = file("$projectDir/src/main/kotlin")
+
+    mobileRtDir = file("$projectDir/MobileRT")
+    componentsDir = file("$projectDir/Components")
+    scenesDir = file("$projectDir/Scenes")
+    systemDependentDir = file("$projectDir/System_dependent")
+
+    resourcesAssetsDir = file("$projectDir/src/main/assets")
+    resourcesProdDir = file("$projectDir/src/main/res")
+
+    unitTestsDir = file("$projectDir/Unit_Testing")
+    unitTestsJavaDir = file("$projectDir/src/test/java")
+    androidTestsJavaDir = file("$projectDir/src/androidTest/java")
+
+    resourcesTestsDir = file("$projectDir/src/test/resources")
+    resourcesAndroidTestsDir = file("$projectDir/src/androidTest/resources")
+}
+idea.module {
+    sourceDirs += javaDir
+    sourceDirs += kotlinDir
+    sourceDirs += mobileRtDir
+    sourceDirs += componentsDir
+    sourceDirs += scenesDir
+    sourceDirs += systemDependentDir
+
+    resourceDirs += resourcesAssetsDir
+    resourceDirs += resourcesProdDir
+
+    testSourceDirs += unitTestsDir
+    testSourceDirs += unitTestsJavaDir
+    testSourceDirs += androidTestsJavaDir
+
+    testResourceDirs += resourcesTestsDir
+    testResourceDirs += resourcesAndroidTestsDir
+}
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
