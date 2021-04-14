@@ -108,11 +108,6 @@ abstract class AsyncTaskCoroutine {
 
     /**
      * Waits for the task to finish.
-     *
-     * Shuts down and waits for the [executorService] to
-     * terminate.
-     * In the end, resets [executorService] to a new thread
-     * pool with [ConstantsRenderer.NUMBER_THREADS] threads.
      */
     fun waitToFinish() {
         runBlocking {
