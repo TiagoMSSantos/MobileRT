@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -19,7 +20,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 import java8.util.Optional;
-import javax.annotation.Nonnull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import puscas.mobilertapp.exceptions.LowMemoryException;
@@ -73,7 +73,7 @@ public final class DrawView extends GLSurfaceView {
      *
      * @param context The context of the Android system.
      */
-    public DrawView(@Nonnull final Context context) {
+    public DrawView(@NonNull final Context context) {
         super(context);
 
         this.renderer.prepareRenderer(this::requestRender);
@@ -86,8 +86,8 @@ public final class DrawView extends GLSurfaceView {
      * @param context The context of the Android system.
      * @param attrs   The attributes of the Android system.
      */
-    public DrawView(@Nonnull final Context context,
-                    @Nonnull final AttributeSet attrs) {
+    public DrawView(@NonNull final Context context,
+                    @NonNull final AttributeSet attrs) {
         super(context, attrs);
 
         this.renderer.prepareRenderer(this::requestRender);
@@ -130,7 +130,7 @@ public final class DrawView extends GLSurfaceView {
      *
      * @return The current {@link Activity}.
      */
-    @Nonnull
+    @NonNull
     private Activity getActivity() {
         Context context = getContext();
         while (!(context instanceof Activity) && context instanceof ContextWrapper) {
@@ -180,7 +180,7 @@ public final class DrawView extends GLSurfaceView {
      *
      * @param config The ray tracer configuration.
      */
-    void renderScene(@Nonnull final Config config) {
+    void renderScene(@NonNull final Config config) {
         LOGGER.info(ConstantsMethods.RENDER_SCENE);
 
         waitLastTask();
@@ -222,7 +222,7 @@ public final class DrawView extends GLSurfaceView {
      * @param config The ray tracer configuration.
      * @throws LowMemoryException If the device has low free memory.
      */
-    private void startRayTracing(@Nonnull final Config config) throws LowMemoryException {
+    private void startRayTracing(@NonNull final Config config) throws LowMemoryException {
         final String message = ConstantsMethods.RENDER_SCENE + " executor";
         LOGGER.info(message);
 
@@ -281,7 +281,7 @@ public final class DrawView extends GLSurfaceView {
      * @param exception    The exception caught.
      * @param errorMessage The error message.
      */
-    private void warningError(@Nonnull final Exception exception,
+    private void warningError(@NonNull final Exception exception,
                               final CharSequence errorMessage) {
         this.renderer.resetStats();
         final String message = exception.getClass() + ": " + exception.getMessage();

@@ -1,11 +1,11 @@
 package puscas.mobilertapp.utils;
 
 import android.opengl.GLES20;
-import androidx.annotation.NonNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
 import puscas.mobilertapp.ConfigGlAttribute;
 import puscas.mobilertapp.exceptions.FailureException;
+
 import static android.opengl.GLES20.GL_COMPILE_STATUS;
 import static android.opengl.GLES20.glCompileShader;
 import static android.opengl.GLES20.glCreateShader;
@@ -38,8 +38,8 @@ public final class UtilsShader {
      * @param fragmentShaderCode The code for the Fragment shader.
      */
     public static void attachShaders(final int shaderProgram,
-                                     @Nonnull final String vertexShaderCode,
-                                     @Nonnull final String fragmentShaderCode) {
+                                     @NonNull final String vertexShaderCode,
+                                     @NonNull final String fragmentShaderCode) {
         LOGGER.info("attachShaders");
         final int vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, vertexShaderCode);
         final int fragmentShader = loadShader(GLES20.GL_FRAGMENT_SHADER,
@@ -84,7 +84,7 @@ public final class UtilsShader {
      * @return The OpenGL index of the shader.
      */
     public static int loadShader(final int shaderType,
-                                 @Nonnull final String source) {
+                                 @NonNull final String source) {
         LOGGER.info("loadShader");
         final int shader = UtilsGL.run(() -> glCreateShader(shaderType));
         if (shader == 0) {

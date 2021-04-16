@@ -1,7 +1,7 @@
 package puscas.mobilertapp.utils;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
 
 /**
  * Utility class with some helper methods for the logging.
@@ -25,8 +25,8 @@ public final class UtilsLogging {
      * @param ex         The {@link Throwable} to print.
      * @param methodName The name of the method to appear in the logs.
      */
-    public static void logThrowable(@Nonnull final Throwable ex,
-                                    @Nonnull final String methodName) {
+    public static void logThrowable(@NonNull final Throwable ex,
+                                    @NonNull final String methodName) {
         final String message = String.format("%s exception: %s", methodName, ex.getMessage());
         LOGGER.severe(message);
     }

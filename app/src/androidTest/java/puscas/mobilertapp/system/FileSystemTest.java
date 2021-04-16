@@ -1,11 +1,11 @@
 package puscas.mobilertapp.system;
 
 import com.google.common.collect.ImmutableList;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.io.File;
 import java.util.List;
 import java.util.logging.Logger;
 import java8.util.stream.StreamSupport;
-import javax.annotation.Nonnull;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -27,7 +27,7 @@ public final class FileSystemTest extends AbstractTest {
     /**
      * The {@link Logger} for this class.
      */
-    @Nonnull
+    @NonNull
     private static final Logger LOGGER = Logger.getLogger(FileSystemTest.class.getName());
 
     /**

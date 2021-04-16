@@ -3,12 +3,12 @@ package puscas.mobilertapp;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import com.google.common.base.Preconditions;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.io.InputStream;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -27,7 +27,7 @@ public final class MainRendererTest extends AbstractTest {
     /**
      * The {@link Logger} for this class.
      */
-    @Nonnull
+    @NonNull
     private static final Logger LOGGER = Logger.getLogger(MainRendererTest.class.getName());
 
     /**

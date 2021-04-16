@@ -7,9 +7,9 @@ import android.view.ViewGroup;
 import android.view.ViewManager;
 import android.widget.NumberPicker;
 import android.widget.TextView;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.assertj.core.api.Assertions;
 import org.jetbrains.annotations.Contract;
 import org.junit.After;
@@ -33,7 +33,7 @@ public final class CustomNumberPickerTest {
      *
      * @return An {@link AttributeSet}.
      */
-    @Nonnull
+    @NonNull
     @Contract(pure = true)
     private static AttributeSet createAttributeSet() {
         return new AttributeSet() {

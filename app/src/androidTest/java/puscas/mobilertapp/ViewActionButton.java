@@ -6,9 +6,9 @@ import androidx.test.espresso.UiController;
 import androidx.test.espresso.ViewAction;
 import androidx.test.espresso.matcher.ViewMatchers;
 import com.google.common.util.concurrent.Uninterruptibles;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
 import org.hamcrest.Matcher;
 import org.jetbrains.annotations.NonNls;
 import org.junit.jupiter.api.Assertions;
@@ -40,7 +40,7 @@ public final class ViewActionButton implements ViewAction {
      *
      * @param expectedText The expected text to show on the {@link Button} after the click.
      */
-    public ViewActionButton(@Nonnull final String expectedText) {
+    public ViewActionButton(@NonNull final String expectedText) {
         LOGGER.info("ViewActionButton");
 
         this.expectedText = expectedText;
@@ -53,7 +53,7 @@ public final class ViewActionButton implements ViewAction {
      * @param expectedText   The expected text to show on the {@link Button} after the click.
      * @param pressLongClick Whether the click should be a long click or not.
      */
-    ViewActionButton(@Nonnull final String expectedText, final boolean pressLongClick) {
+    ViewActionButton(@NonNull final String expectedText, final boolean pressLongClick) {
         LOGGER.info("ViewActionButton");
 
         this.expectedText = expectedText;
@@ -67,9 +67,9 @@ public final class ViewActionButton implements ViewAction {
      * @param button       The {@link Button} to act upon. never null.
      * @param expectedText The expected text shown in the {@link Button}.
      */
-    private static void waitUntilTextIsShown(@Nonnull final UiController uiController,
-                                             @Nonnull final Button button,
-                                             @Nonnull final @NonNls String expectedText) {
+    private static void waitUntilTextIsShown(@NonNull final UiController uiController,
+                                             @NonNull final Button button,
+                                             @NonNull final @NonNls String expectedText) {
         boolean textBeforeNotExpected = button.getText().toString().equals(expectedText);
         while (textBeforeNotExpected) {
             uiController.loopMainThreadForAtLeast(5000L);
@@ -78,7 +78,7 @@ public final class ViewActionButton implements ViewAction {
         uiController.loopMainThreadUntilIdle();
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public final Matcher<View> getConstraints() {
         LOGGER.info("ViewActionButton#getConstraints");
@@ -86,7 +86,7 @@ public final class ViewActionButton implements ViewAction {
         return ViewMatchers.isAssignableFrom(Button.class);
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public final String getDescription() {
         LOGGER.info("ViewActionButton#getDescription");
@@ -95,7 +95,7 @@ public final class ViewActionButton implements ViewAction {
     }
 
     @Override
-    public final void perform(@Nonnull final UiController uiController, @Nonnull final View view) {
+    public final void perform(@NonNull final UiController uiController, @NonNull final View view) {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 

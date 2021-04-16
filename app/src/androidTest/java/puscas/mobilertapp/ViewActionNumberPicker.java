@@ -5,8 +5,8 @@ import android.widget.NumberPicker;
 import androidx.test.espresso.UiController;
 import androidx.test.espresso.ViewAction;
 import androidx.test.espresso.matcher.ViewMatchers;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
 import org.hamcrest.Matcher;
 import org.junit.jupiter.api.Assertions;
 import puscas.mobilertapp.utils.ConstantsMethods;
@@ -39,7 +39,7 @@ public final class ViewActionNumberPicker implements ViewAction {
         this.newValue = newValue;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public final Matcher<View> getConstraints() {
         LOGGER.info("ViewActionNumberPicker#getConstraints");
@@ -47,7 +47,7 @@ public final class ViewActionNumberPicker implements ViewAction {
         return ViewMatchers.isAssignableFrom(NumberPicker.class);
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public final String getDescription() {
         LOGGER.info("ViewActionNumberPicker#getDescription");
@@ -56,7 +56,7 @@ public final class ViewActionNumberPicker implements ViewAction {
     }
 
     @Override
-    public final void perform(@Nonnull final UiController uiController, @Nonnull final View view) {
+    public final void perform(@NonNull final UiController uiController, @NonNull final View view) {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LOGGER.info(methodName);
 

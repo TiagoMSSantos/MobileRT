@@ -2,9 +2,9 @@ package puscas.mobilertapp;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
@@ -32,7 +32,7 @@ public final class MyEglContextFactoryTest {
      * @return A new {@link EGL10}.
      */
     @Contract(pure = true)
-    @Nonnull
+    @NonNull
     private static EGL10 createEGL() {
         return new EGL10() {
             @Contract(pure = true)

@@ -1,15 +1,15 @@
 package puscas.mobilertapp.system;
 
 import android.os.Debug;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
-import org.junit.Ignore;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.runners.MethodSorters;
@@ -29,7 +29,7 @@ public final class NativeMemoryTest {
     /**
      * The {@link Logger} for this class.
      */
-    @Nonnull
+    @NonNull
     private static final Logger LOGGER = Logger.getLogger(NativeMemoryTest.class.getName());
 
     /**

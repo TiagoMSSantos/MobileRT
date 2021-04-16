@@ -6,6 +6,7 @@ import android.widget.Button;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.matcher.ViewMatchers;
 import com.google.common.base.Preconditions;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -14,7 +15,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
 import java8.util.J8Arrays;
-import javax.annotation.Nonnull;
 import org.junit.Assume;
 import org.junit.jupiter.api.Assertions;
 import puscas.mobilertapp.BuildConfig;
@@ -75,9 +75,9 @@ public final class UtilsT {
      * @implNote This method uses reflection to be able to get the private
      *           field from the {@link Object}.
      */
-    @Nonnull
-    public static <T> T getPrivateField(@Nonnull final Object clazz,
-                                        @Nonnull final String fieldName) {
+    @NonNull
+    public static <T> T getPrivateField(@NonNull final Object clazz,
+                                        @NonNull final String fieldName) {
         Field field = null;
         try {
             // Use reflection to access the private field.
@@ -110,11 +110,11 @@ public final class UtilsT {
      * @implNote This method uses reflection to be able to invoke the private
      *           method from the {@link Object}.
      */
-    @Nonnull
-    static <T> T invokePrivateMethod(@Nonnull final Object clazz,
-                                     @Nonnull final String methodName,
-                                     @Nonnull final List<Class<?>> parameterTypes,
-                                     @Nonnull final Collection<Object> args) {
+    @NonNull
+    static <T> T invokePrivateMethod(@NonNull final Object clazz,
+                                     @NonNull final String methodName,
+                                     @NonNull final List<Class<?>> parameterTypes,
+                                     @NonNull final Collection<Object> args) {
         Method method = null;
         try {
             // Use reflection to access the private method.
@@ -147,7 +147,7 @@ public final class UtilsT {
      * @param expectedSameValues Whether the {@link Bitmap} should have have only
      *                           one color.
      */
-    private static void assertRayTracingResultInBitmap(@Nonnull final Bitmap bitmap,
+    private static void assertRayTracingResultInBitmap(@NonNull final Bitmap bitmap,
                                                        final boolean expectedSameValues) {
         final int firstPixel = bitmap.getPixel(0, 0);
         final int width = bitmap.getWidth();
@@ -220,7 +220,7 @@ public final class UtilsT {
      *
      * @param expectedText The expected text shown in the {@link Button}.
      */
-    public static void assertRenderButtonText(@Nonnull final String expectedText) {
+    public static void assertRenderButtonText(@NonNull final String expectedText) {
         LOGGER.info("assertRenderButtonText");
         Espresso.onView(ViewMatchers.withId(R.id.renderButton))
             .check((view, exception) -> {

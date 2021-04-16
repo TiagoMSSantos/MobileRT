@@ -8,11 +8,11 @@ import android.content.res.AssetManager;
 import android.opengl.GLES20;
 import android.os.Build;
 import android.os.Environment;
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import com.google.common.collect.ImmutableMap;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -23,7 +23,6 @@ import java.util.Objects;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java8.util.Optional;
-import javax.annotation.Nonnull;
 import puscas.mobilertapp.exceptions.FailureException;
 
 /**
@@ -54,8 +53,8 @@ public final class UtilsContext {
      *     {@link Environment#getExternalStorageDirectory()} in order to be
      *     compatible with Android 4.1.
      */
-    @Nonnull
-    public static String getSdCardPath(@Nonnull final Context context) {
+    @NonNull
+    public static String getSdCardPath(@NonNull final Context context) {
         LOGGER.info("Getting SD card path.");
 
         // The new method to get the SD card path.
@@ -92,8 +91,8 @@ public final class UtilsContext {
      * @param context The {@link Context} of the Android system.
      * @return The path to the internal storage.
      */
-    @Nonnull
-    public static String getInternalStoragePath(@Nonnull final Context context) {
+    @NonNull
+    public static String getInternalStoragePath(@NonNull final Context context) {
         LOGGER.info("Getting internal storage path.");
 
         final File dataDir = ContextCompat.getDataDir(context);
@@ -124,9 +123,9 @@ public final class UtilsContext {
      * @param filePath The path to the file (relative to the asset directory).
      * @return A {@link String} containing the contents of the asset file.
      */
-    @Nonnull
-    private static String readTextAsset(@Nonnull final Context context,
-                                        @Nonnull final String filePath) {
+    @NonNull
+    private static String readTextAsset(@NonNull final Context context,
+                                        @NonNull final String filePath) {
         LOGGER.info("readTextAsset");
         final AssetManager assetManager = context.getAssets();
         final String text;
@@ -160,7 +159,7 @@ public final class UtilsContext {
      * @param context The {@link Context} of the Android system.
      * @return The number of CPU cores.
      */
-    public static int getNumOfCores(@Nonnull final Context context) {
+    public static int getNumOfCores(@NonNull final Context context) {
         final int cores = (Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN)
             ? getNumCoresOldAndroid(context)
             : Runtime.getRuntime().availableProcessors();
@@ -176,7 +175,7 @@ public final class UtilsContext {
      * @param context The {@link Context} of the Android system.
      * @return Whether the system is 64 bit.
      */
-    public static boolean is64BitDevice(@Nonnull final Context context) {
+    public static boolean is64BitDevice(@NonNull final Context context) {
         LOGGER.info("is64BitDevice");
         final String cpuInfoPath = UtilsContext.readTextAsset(context,
             "Utils" + ConstantsUI.FILE_SEPARATOR + "cpuInfoPath.txt");
@@ -202,8 +201,8 @@ public final class UtilsContext {
      * @param storagePath The path to the storage to clean.
      * @return A cleaned storage path.
      */
-    @Nonnull
-    private static String cleanStoragePath(@Nonnull final String storagePath) {
+    @NonNull
+    private static String cleanStoragePath(@NonNull final String storagePath) {
         // Remove Android path
         final int removeIndexAndroid = storagePath.indexOf("Android");
         if (removeIndexAndroid >= 1) {
@@ -226,7 +225,7 @@ public final class UtilsContext {
      */
     @NonNull
     public static Map<Integer, String> readShaders(
-        @Nonnull final Context context,
+        @NonNull final Context context,
         @NonNull final Map<Integer, String> shadersPaths) {
         LOGGER.info("readShaders");
 
@@ -248,7 +247,7 @@ public final class UtilsContext {
      *
      * @param activity The {@link Activity} of MobileRT.
      */
-    public static void checksStoragePermission(@Nonnull final Activity activity) {
+    public static void checksStoragePermission(@NonNull final Activity activity) {
         LOGGER.info("checksStoragePermission");
         checksAccessPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE);
         checksAccessPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
@@ -260,7 +259,7 @@ public final class UtilsContext {
      *
      * @param activity The {@link Activity} of MobileRT.
      */
-    public static void checksInternetPermission(@Nonnull final Activity activity) {
+    public static void checksInternetPermission(@NonNull final Activity activity) {
         LOGGER.info("checksInternetPermission");
         checksAccessPermission(activity, Manifest.permission.INTERNET);
     }
@@ -275,8 +274,8 @@ public final class UtilsContext {
      * @param permission The permission to ask access to.
      */
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-    private static void checksAccessPermission(@Nonnull final Activity activity,
-                                               @Nonnull final String permission) {
+    private static void checksAccessPermission(@NonNull final Activity activity,
+                                               @NonNull final String permission) {
         final int permissionCode = 1;
         final int permissionAccess = ContextCompat.checkSelfPermission(
             activity,

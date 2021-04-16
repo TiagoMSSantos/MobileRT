@@ -1,11 +1,11 @@
 package puscas.mobilertapp.utils;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
 
 /**
  * Utility class with some helper methods to use with {@link Buffer}s.
@@ -29,7 +29,7 @@ public final class UtilsBuffer {
      * @param byteBuffers The {@link ByteBuffer}s to check.
      * @return Whether any of {@link ByteBuffer}s is empty or not.
      */
-    public static boolean isAnyByteBufferEmpty(@Nonnull final ByteBuffer... byteBuffers) {
+    public static boolean isAnyByteBufferEmpty(@NonNull final ByteBuffer... byteBuffers) {
         LOGGER.info("isAnyByteBufferEmpty");
 
         for (final ByteBuffer byteBuffer : byteBuffers) {
@@ -45,7 +45,7 @@ public final class UtilsBuffer {
      *
      * @param byteBuffers The {@link ByteBuffer}s to reset.
      */
-    public static void resetByteBuffers(@Nonnull final ByteBuffer... byteBuffers) {
+    public static void resetByteBuffers(@NonNull final ByteBuffer... byteBuffers) {
         LOGGER.info("resetByteBuffers");
 
         for (final ByteBuffer byteBuffer : byteBuffers) {
@@ -62,8 +62,8 @@ public final class UtilsBuffer {
      *                    {@link FloatBuffer}.
      * @return A new {@link FloatBuffer} with the values.
      */
-    @Nonnull
-    public static FloatBuffer allocateBuffer(@Nonnull final float[] arrayValues) {
+    @NonNull
+    public static FloatBuffer allocateBuffer(@NonNull final float[] arrayValues) {
         LOGGER.info("allocateBuffer");
         final int byteBufferSize = arrayValues.length * Constants.BYTES_IN_FLOAT;
         final ByteBuffer byteBuffer = ByteBuffer.allocateDirect(byteBufferSize);

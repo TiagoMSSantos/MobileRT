@@ -1,8 +1,8 @@
 package puscas.mobilertapp.utils;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.logging.Logger;
 import java8.util.J8Arrays;
-import javax.annotation.Nonnull;
 import lombok.Getter;
 import org.jetbrains.annotations.Contract;
 
@@ -57,7 +57,7 @@ public enum Accelerator {
      * Gets the names of all available accelerators.
      */
     @Contract(pure = true)
-    @Nonnull
+    @NonNull
     public static String[] getNames() {
         LOGGER.info(ConstantsMethods.GET_NAMES);
 

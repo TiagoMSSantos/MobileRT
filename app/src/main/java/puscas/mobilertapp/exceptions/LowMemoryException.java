@@ -1,6 +1,6 @@
 package puscas.mobilertapp.exceptions;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 /**
  * An {@link Exception} which represents the system with low memory.
@@ -24,7 +24,7 @@ public class LowMemoryException extends Exception {
      *
      * @param cause The {@link Throwable} to wrap with this exception.
      */
-    public LowMemoryException(@Nonnull final Throwable cause) {
+    public LowMemoryException(@NonNull final Throwable cause) {
         super(cause);
     }
 
@@ -33,7 +33,7 @@ public class LowMemoryException extends Exception {
      *
      * @param message The cause of the exception.
      */
-    public LowMemoryException(@Nonnull final String message) {
+    public LowMemoryException(@NonNull final String message) {
         super(message);
     }
 

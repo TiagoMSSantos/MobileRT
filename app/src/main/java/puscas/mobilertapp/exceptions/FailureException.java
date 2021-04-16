@@ -1,6 +1,6 @@
 package puscas.mobilertapp.exceptions;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 /**
  * An {@link Exception} which represents the system with a failure.
@@ -24,7 +24,7 @@ public class FailureException extends RuntimeException {
      *
      * @param cause The {@link Throwable} to wrap with this exception.
      */
-    public FailureException(@Nonnull final Throwable cause) {
+    public FailureException(@NonNull final Throwable cause) {
         super(cause);
     }
 
@@ -33,7 +33,7 @@ public class FailureException extends RuntimeException {
      *
      * @param message The cause of the exception.
      */
-    public FailureException(@Nonnull final String message) {
+    public FailureException(@NonNull final String message) {
         super(message);
     }
 

@@ -5,10 +5,10 @@ import android.content.Intent;
 import androidx.annotation.CallSuper;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 import org.junit.After;
 import org.junit.Before;
@@ -26,27 +26,27 @@ public abstract class AbstractTest {
     /**
      * The {@link Logger} for this class.
      */
-    @Nonnull
+    @NonNull
     private static final Logger LOGGER = Logger.getLogger(AbstractTest.class.getName());
 
     /**
      * The {@link Rule} for the {@link Timeout} for all the tests.
      */
-    @Nonnull
+    @NonNull
     @ClassRule
     public static final TestRule timeoutClassRule = new Timeout(40L, TimeUnit.MINUTES);
 
     /**
      * The {@link Rule} for the {@link Timeout} for each test.
      */
-    @Nonnull
+    @NonNull
     @Rule
     public final TestRule timeoutRule = new Timeout(40L, TimeUnit.MINUTES);
 
     /**
      * The {@link Rule} to create the {@link MainActivity}.
      */
-    @Nonnull
+    @NonNull
     @Rule
     public final ActivityTestRule<MainActivity> mainActivityActivityTestRule =
         new ActivityTestRule<>(MainActivity.class, true, true);
@@ -54,7 +54,7 @@ public abstract class AbstractTest {
     /**
      * The {@link Rule} to access the external SD card.
      */
-    @Nonnull
+    @NonNull
     @Rule
     public final GrantPermissionRule grantPermissionRule =
         GrantPermissionRule.grant(

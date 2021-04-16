@@ -6,6 +6,7 @@ import android.os.SystemClock;
 import android.widget.Button;
 import android.widget.TextView;
 import com.google.common.base.Preconditions;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.lang.ref.WeakReference;
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
@@ -13,7 +14,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
 import lombok.Builder;
 import puscas.mobilertapp.utils.AsyncTaskCoroutine;
 import puscas.mobilertapp.utils.Constants;
@@ -174,7 +174,7 @@ public final class RenderTask extends AsyncTaskCoroutine {
      * @param config        The configurator which contains all of the parameters.
      */
     @Builder
-    private RenderTask(@Nonnull final ConfigRenderTask config) {
+    private RenderTask(@NonNull final ConfigRenderTask config) {
         super();
         LOGGER.info("RenderTask");
 

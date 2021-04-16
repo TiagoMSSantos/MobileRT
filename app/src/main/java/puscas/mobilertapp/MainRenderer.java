@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.Uninterruptibles;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -19,7 +20,6 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 import java8.util.Optional;
-import javax.annotation.Nonnull;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 import lombok.AccessLevel;
@@ -278,7 +278,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * @param byteBuffer The data to pass to OpenGL context.
      * @param attribute  The index of the generic vertex attribute to be modified.
      */
-    private static void defineAttributeData(@Nonnull final ByteBuffer byteBuffer,
+    private static void defineAttributeData(@NonNull final ByteBuffer byteBuffer,
                                             final int attribute) {
         UtilsGL.run(() -> GLES20.glVertexAttribPointer(attribute,
             VERTEX_COMPONENTS, GLES20.GL_FLOAT, false, 0, byteBuffer));
@@ -294,7 +294,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * @param shaderProgram    The OpenGL shader program index to specify the
      *                         matrices.
      */
-    private static void createMatricesAsUniformVariables(@Nonnull final ByteBuffer bbCamera,
+    private static void createMatricesAsUniformVariables(@NonNull final ByteBuffer bbCamera,
                                                          final int shaderProgram,
                                                          final ConfigResolution configResolution) {
         final float[] projectionMatrix = UtilsGlMatrices.createProjectionMatrix(
@@ -323,8 +323,8 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * @param bbColors      The colors' buffer.
      */
     private static void connectAttributes(final int shaderProgram,
-                                          @Nonnull final ByteBuffer bbVertices,
-                                          @Nonnull final ByteBuffer bbColors) {
+                                          @NonNull final ByteBuffer bbVertices,
+                                          @NonNull final ByteBuffer bbColors) {
         final ConfigGlAttribute verticesAttribute = ConfigGlAttribute.builder()
             .attributeName(VERTEX_POSITION)
             .buffer(bbVertices)
@@ -348,7 +348,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * @param bbVertices The vertices' buffer.
      * @return The number of vertices in the {@link ByteBuffer}.
      */
-    private static int getVertexCount(@Nonnull final ByteBuffer bbVertices) {
+    private static int getVertexCount(@NonNull final ByteBuffer bbVertices) {
         LOGGER.info("getVertexCount");
 
         return bbVertices.capacity() / (Constants.BYTES_IN_FLOAT * VERTEX_COMPONENTS);
@@ -370,7 +370,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      *
      * @return The current Ray Tracer engine {@link State}.
      */
-    @Nonnull
+    @NonNull
     public State getState() {
         LOGGER.info("getState");
 
@@ -727,9 +727,9 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * @param numPrimitives The number of primitives in the scene.
      * @throws LowMemoryException If the device has low free memory.
      */
-    private Bitmap renderSceneToBitmap(@Nonnull final ByteBuffer bbVertices,
-                                       @Nonnull final ByteBuffer bbColors,
-                                       @Nonnull final ByteBuffer bbCamera,
+    private Bitmap renderSceneToBitmap(@NonNull final ByteBuffer bbVertices,
+                                       @NonNull final ByteBuffer bbColors,
+                                       @NonNull final ByteBuffer bbCamera,
                                        final int numPrimitives) throws LowMemoryException {
         LOGGER.info("renderSceneToBitmap");
 
@@ -857,7 +857,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
     }
 
     @Override
-    public void onSurfaceCreated(@Nonnull final GL10 gl, @Nonnull final EGLConfig config) {
+    public void onSurfaceCreated(@NonNull final GL10 gl, @NonNull final EGLConfig config) {
         LOGGER.info("onSurfaceCreated");
 
         UtilsGL.resetOpenGlBuffers();
@@ -898,7 +898,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
     }
 
     @Override
-    public void onSurfaceChanged(@Nonnull final GL10 gl, final int width, final int height) {
+    public void onSurfaceChanged(@NonNull final GL10 gl, final int width, final int height) {
         LOGGER.info("onSurfaceChanged");
 
         UtilsGL.run(() -> GLES20.glViewport(0, 0, width, height));
@@ -908,7 +908,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
     }
 
     @Override
-    public void onDrawFrame(@Nonnull final GL10 gl) {
+    public void onDrawFrame(@NonNull final GL10 gl) {
         if (this.firstFrame) {
             LOGGER.info("onDrawFirstFrame");
             UtilsGL.resetOpenGlBuffers();

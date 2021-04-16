@@ -1,8 +1,8 @@
 package puscas.mobilertapp.utils;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.logging.Logger;
 import java8.util.J8Arrays;
-import javax.annotation.Nonnull;
 import org.jetbrains.annotations.Contract;
 
 /**
@@ -59,7 +59,7 @@ public enum Shader {
     /**
      * Gets the names of all available shaders.
      */
-    @Nonnull
+    @NonNull
     public static String[] getNames() {
         LOGGER.info(ConstantsMethods.GET_NAMES);
 

@@ -8,12 +8,11 @@ import androidx.test.espresso.Espresso;
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.espresso.action.ViewActions;
 import androidx.test.espresso.matcher.ViewMatchers;
-
 import com.google.common.collect.ImmutableList;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.List;
 import java.util.logging.Logger;
 import java8.util.stream.IntStreams;
-import javax.annotation.Nonnull;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -39,7 +38,7 @@ public final class UiTest extends AbstractTest {
     /**
      * The {@link Logger} for this class.
      */
-    @Nonnull
+    @NonNull
     private static final Logger LOGGER = Logger.getLogger(UiTest.class.getName());
 
     /**
@@ -99,7 +98,7 @@ public final class UiTest extends AbstractTest {
      * @param view          The {@link View}.
      * @param expectedValue The expected value for the {@link CheckBox}.
      */
-    private static void assertPreviewCheckBox(@Nonnull final View view,
+    private static void assertPreviewCheckBox(@NonNull final View view,
                                               final boolean expectedValue) {
         final CheckBox checkbox = view.findViewById(R.id.preview);
         Assertions.assertEquals(Constants.PREVIEW, checkbox.getText().toString(),

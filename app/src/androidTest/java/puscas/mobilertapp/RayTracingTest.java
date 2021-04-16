@@ -2,10 +2,9 @@ package puscas.mobilertapp;
 
 import android.graphics.Bitmap;
 import android.os.Build;
-
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -31,7 +30,7 @@ public final class RayTracingTest extends AbstractTest {
     /**
      * The {@link Logger} for this class.
      */
-    @Nonnull
+    @NonNull
     private static final Logger LOGGER = Logger.getLogger(RayTracingTest.class.getName());
 
     /**

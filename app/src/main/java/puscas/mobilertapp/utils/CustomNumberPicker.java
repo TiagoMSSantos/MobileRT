@@ -7,8 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.NumberPicker;
 import android.widget.TextView;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
 import puscas.mobilertapp.exceptions.FailureException;
 
 /**
@@ -28,12 +28,12 @@ public final class CustomNumberPicker extends NumberPicker {
      * @param context The {@link Context} of the Android system.
      * @param attrs   The {@link AttributeSet} of the Android system.
      */
-    public CustomNumberPicker(@Nonnull final Context context, @Nonnull final AttributeSet attrs) {
+    public CustomNumberPicker(@NonNull final Context context, @NonNull final AttributeSet attrs) {
         super(context, attrs);
     }
 
     @Override
-    public void addView(@Nonnull final View child, @Nonnull final ViewGroup.LayoutParams params) {
+    public void addView(@NonNull final View child, @NonNull final ViewGroup.LayoutParams params) {
         super.addView(child, params);
         LOGGER.info("addView");
 

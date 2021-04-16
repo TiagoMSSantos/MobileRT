@@ -2,12 +2,11 @@ package puscas.mobilertapp.utils;
 
 import android.opengl.GLES20;
 import android.opengl.GLUtils;
-import androidx.annotation.NonNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.logging.Logger;
 import java8.util.function.BiFunction;
 import java8.util.function.Function;
 import java8.util.function.Supplier;
-import javax.annotation.Nonnull;
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
@@ -39,7 +38,7 @@ public final class UtilsGL {
      *
      * @param method The method to call.
      */
-    public static void run(@Nonnull final Runnable method) {
+    public static void run(@NonNull final Runnable method) {
         LOGGER.info(ConstantsMethods.RUN);
         method.run();
         checksGlError();
@@ -54,8 +53,8 @@ public final class UtilsGL {
      * @param method The {@link Supplier} to call.
      * @return The result of calling the provided {@link Supplier}.
      */
-    @Nonnull
-    public static <T> T run(@Nonnull final Supplier<T> method) {
+    @NonNull
+    public static <T> T run(@NonNull final Supplier<T> method) {
         LOGGER.info(ConstantsMethods.RUN);
         final T result = method.get();
         checksGlError();
@@ -72,9 +71,9 @@ public final class UtilsGL {
      * @param method The {@link Function} to call.
      * @return The result of calling the provided {@link Function}.
      */
-    @Nonnull
-    public static <T, R> T run(@Nonnull final R arg,
-                               @Nonnull final Function<R, T> method) {
+    @NonNull
+    public static <T, R> T run(@NonNull final R arg,
+                               @NonNull final Function<R, T> method) {
         LOGGER.info(ConstantsMethods.RUN);
         final T result = method.apply(arg);
         checksGlError();
@@ -92,10 +91,10 @@ public final class UtilsGL {
      * @param method The {@link BiFunction} to call.
      * @return The result of calling the provided {@link BiFunction}.
      */
-    @Nonnull
-    public static <T, R, S> T run(@Nonnull final R arg1,
-                                  @Nonnull final S arg2,
-                                  @Nonnull final BiFunction<R, S, T> method) {
+    @NonNull
+    public static <T, R, S> T run(@NonNull final R arg1,
+                                  @NonNull final S arg2,
+                                  @NonNull final BiFunction<R, S, T> method) {
         LOGGER.info(ConstantsMethods.RUN);
         final T result = method.apply(arg1, arg2);
         checksGlError();

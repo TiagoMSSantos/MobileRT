@@ -6,11 +6,11 @@ import androidx.test.espresso.Espresso;
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.espresso.matcher.ViewMatchers;
 import com.google.common.util.concurrent.Uninterruptibles;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
 import puscas.mobilertapp.DrawView;
 import puscas.mobilertapp.MainActivity;
 import puscas.mobilertapp.MainRenderer;
@@ -39,7 +39,7 @@ public final class UtilsContextT {
      * @param activity The {@link MainActivity} of MobileRT.
      * @throws TimeoutException If the Ray Tracing engine didn't stop rendering the scene.
      */
-    public static void waitUntilRenderingDone(@Nonnull final MainActivity activity)
+    public static void waitUntilRenderingDone(@NonNull final MainActivity activity)
         throws TimeoutException {
         final AtomicBoolean done = new AtomicBoolean(false);
         final long advanceSecs = 3L;
@@ -76,7 +76,7 @@ public final class UtilsContextT {
      * @param context The {@link Context} of the application.
      * @param scene   The id of the scene to set.
      */
-    public static void resetPickerValues(@Nonnull final Context context, final int scene) {
+    public static void resetPickerValues(@NonNull final Context context, final int scene) {
         LOGGER.info("resetPickerValues");
 
         final int numCores = UtilsContext.getNumOfCores(context);

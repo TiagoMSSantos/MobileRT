@@ -2,10 +2,10 @@ package puscas.mobilertapp;
 
 import android.app.Activity;
 import android.opengl.GLSurfaceView;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import java.util.logging.Logger;
 import java8.util.Objects;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
@@ -50,9 +50,9 @@ public class MyEglContextFactory implements GLSurfaceView.EGLContextFactory {
 
     @Nullable
     @Override
-    public final EGLContext createContext(@Nonnull final EGL10 egl,
-                                          @Nonnull final EGLDisplay display,
-                                          @Nonnull final EGLConfig eglConfig) {
+    public final EGLContext createContext(@NonNull final EGL10 egl,
+                                          @NonNull final EGLDisplay display,
+                                          @NonNull final EGLConfig eglConfig) {
         LOGGER.info("createContext");
 
         if (Objects.nonNull(this.eglContext)) {
@@ -70,9 +70,9 @@ public class MyEglContextFactory implements GLSurfaceView.EGLContextFactory {
     }
 
     @Override
-    public final void destroyContext(@Nonnull final EGL10 egl,
-                                     @Nonnull final EGLDisplay display,
-                                     @Nonnull final EGLContext context) {
+    public final void destroyContext(@NonNull final EGL10 egl,
+                                     @NonNull final EGLDisplay display,
+                                     @NonNull final EGLContext context) {
         LOGGER.info("destroyContext");
 
         if (this.drawView.isChangingConfigs()) {

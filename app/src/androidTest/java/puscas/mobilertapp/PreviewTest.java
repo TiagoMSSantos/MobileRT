@@ -1,9 +1,9 @@
 package puscas.mobilertapp;
 
 import com.google.common.base.Preconditions;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -24,7 +24,7 @@ public final class PreviewTest extends AbstractTest {
     /**
      * The {@link Logger} for this class.
      */
-    @Nonnull
+    @NonNull
     private static final Logger LOGGER = Logger.getLogger(PreviewTest.class.getName());
 
     /**

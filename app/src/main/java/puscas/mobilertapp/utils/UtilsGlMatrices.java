@@ -2,9 +2,9 @@ package puscas.mobilertapp.utils;
 
 import android.graphics.Bitmap;
 import android.opengl.Matrix;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.nio.ByteBuffer;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
 
 /**
  * Utility class with some helper methods for the matrices in OpenGL framework.
@@ -51,7 +51,7 @@ public final class UtilsGlMatrices {
      *
      * @return A float array with the model matrix data.
      */
-    @Nonnull
+    @NonNull
     public static float[] createModelMatrix() {
         LOGGER.info("createModelMatrix");
 
@@ -69,8 +69,8 @@ public final class UtilsGlMatrices {
      * @param height   The height of the {@link Bitmap} to render.
      * @return A float array with the projection matrix data.
      */
-    @Nonnull
-    public static float[] createProjectionMatrix(@Nonnull final ByteBuffer bbCamera,
+    @NonNull
+    public static float[] createProjectionMatrix(@NonNull final ByteBuffer bbCamera,
                                                  final int width,
                                                  final int height) {
         LOGGER.info("createProjectionMatrix");
@@ -109,8 +109,8 @@ public final class UtilsGlMatrices {
      * @param bbCamera The camera's data (like eye, direction and up vector).
      * @return A float array with the view matrix data.
      */
-    @Nonnull
-    public static float[] createViewMatrix(@Nonnull final ByteBuffer bbCamera) {
+    @NonNull
+    public static float[] createViewMatrix(@NonNull final ByteBuffer bbCamera) {
         LOGGER.info("createViewMatrix");
 
         final float eyeX = bbCamera.getFloat(0);

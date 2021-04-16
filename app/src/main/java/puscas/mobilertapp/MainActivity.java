@@ -20,14 +20,14 @@ import android.widget.Toast;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Logger;
 import java8.util.Optional;
 import java8.util.stream.IntStreams;
 import java8.util.stream.StreamSupport;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.apache.commons.lang3.tuple.Pair;
 import puscas.mobilertapp.exceptions.FailureException;
 import puscas.mobilertapp.utils.Accelerator;
@@ -218,7 +218,7 @@ public final class MainActivity extends Activity {
     }
 
     @Override
-    protected void onRestoreInstanceState(@Nonnull final Bundle savedInstanceState) {
+    protected void onRestoreInstanceState(@NonNull final Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         LOGGER.info("onRestoreInstanceState");
 
@@ -263,7 +263,7 @@ public final class MainActivity extends Activity {
     }
 
     @Override
-    protected void onSaveInstanceState(@Nonnull final Bundle outState) {
+    protected void onSaveInstanceState(@NonNull final Bundle outState) {
         super.onSaveInstanceState(outState);
         LOGGER.info("onSaveInstanceState");
 
@@ -327,8 +327,8 @@ public final class MainActivity extends Activity {
 
     @Override
     public void onRequestPermissionsResult(final int requestCode,
-                                           @Nonnull final String[] permissions,
-                                           @Nonnull final int[] grantResults) {
+                                           @NonNull final String[] permissions,
+                                           @NonNull final int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         LOGGER.info("onRequestPermissionsResult");
     }
@@ -362,7 +362,7 @@ public final class MainActivity extends Activity {
      *
      * @param view The view of the {@link Activity}.
      */
-    public void startRender(@Nonnull final View view) {
+    public void startRender(@NonNull final View view) {
         final String message = String.format(Locale.US, "%s: %s",
             ConstantsMethods.START_RENDER, view.toString());
         LOGGER.info(message);
@@ -384,7 +384,7 @@ public final class MainActivity extends Activity {
      * @param scenePath The path to a directory containing the OBJ and MTL files
      *                  of a scene to render.
      */
-    private void startRender(@Nonnull final String scenePath) {
+    private void startRender(@NonNull final String scenePath) {
         LOGGER.info(ConstantsMethods.START_RENDER);
 
         final Config config = createConfigFromUI(scenePath);
@@ -449,7 +449,7 @@ public final class MainActivity extends Activity {
      * @param uri The URI reference for the file.
      * @return The path to the file.
      */
-    @Nonnull
+    @NonNull
     private String getPathFromFile(final Uri uri) {
         final String filePath = StreamSupport.stream(uri.getPathSegments())
             .skip(1L)
@@ -482,8 +482,8 @@ public final class MainActivity extends Activity {
      * @param scenePath The path to the OBJ scene file.
      * @return A {@link Config}.
      */
-    @Nonnull
-    private Config createConfigFromUI(@Nonnull final String scenePath) {
+    @NonNull
+    private Config createConfigFromUI(@NonNull final String scenePath) {
         final Pair<Integer, Integer> resolution =
             Utils.getResolutionFromPicker(this.pickerResolutions);
 

@@ -27,4 +27,18 @@
     <issue id="InvalidPackage">
         <ignore path="**/.gradle/caches/**/org.jacoco/org.jacoco.agent/**/org.jacoco.agent-*-runtime.jar"/>
     </issue>
+
+    <!-- Ignore InvalidPackage issue in com.android.tools:common dependency. -->
+    <!-- Invalid package reference in com.android.tools:common; not included in Android: java.lang.management. -->
+    <!-- Referenced from com.android.utils.JvmWideVariable. -->
+    <issue id="InvalidPackage">
+        <ignore path="**/com.android.tools/common/**.jar"/>
+    </issue>
+
+    <!-- Ignore InvalidPackage issue in com.android.tools:common dependency. -->
+    <!-- Invalid package reference in com.android.tools.ddms:ddmlib; not included in Android: java.awt.image. -->
+    <!-- Referenced from com.android.ddmlib.BitmapDecoder. -->
+    <issue id="InvalidPackage">
+        <ignore path="**/com.android.tools.ddms/ddmlib/**.jar"/>
+    </issue>
 </lint>

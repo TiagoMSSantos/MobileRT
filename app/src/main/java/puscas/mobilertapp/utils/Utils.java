@@ -1,7 +1,7 @@
 package puscas.mobilertapp.utils;
 
 import android.widget.NumberPicker;
-import androidx.annotation.NonNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,7 +11,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 import java8.util.Objects;
-import javax.annotation.Nonnull;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Contract;
 import puscas.mobilertapp.exceptions.FailureException;
@@ -38,7 +37,7 @@ public final class Utils {
      *
      * @param executorService The {@link ExecutorService}.
      */
-    public static void waitExecutorToFinish(@Nonnull final ExecutorService executorService) {
+    public static void waitExecutorToFinish(@NonNull final ExecutorService executorService) {
         LOGGER.info("waitExecutorToFinish");
 
         boolean running = true;
@@ -65,7 +64,7 @@ public final class Utils {
      *     fail by timeout, this interrupt makes the {@link android.app.Activity}
      *     not finish properly.
      */
-    public static void handleInterruption(@Nonnull final String methodName) {
+    public static void handleInterruption(@NonNull final String methodName) {
         final boolean interrupted = Thread.interrupted();
         final String message = String.format("%s exception: %s", methodName, interrupted);
         LOGGER.severe(message);
@@ -77,8 +76,8 @@ public final class Utils {
      * @param inputStream The {@link InputStream} to read from.
      * @return A {@link String} containing the contents of the {@link InputStream}.
      */
-    @Nonnull
-    public static String readTextFromInputStream(@Nonnull final InputStream inputStream) {
+    @NonNull
+    public static String readTextFromInputStream(@NonNull final InputStream inputStream) {
         LOGGER.info("readTextFromInputStream");
         try (InputStreamReader isReader = new InputStreamReader(
             inputStream, Charset.defaultCharset());
@@ -179,7 +178,7 @@ public final class Utils {
      *
      * @param method The {@link Runnable} to call.
      */
-    public static void executeWithCatching(@Nonnull final Runnable method) {
+    public static void executeWithCatching(@NonNull final Runnable method) {
         LOGGER.info(ConstantsMethods.RUN);
         try {
             method.run();
