@@ -4,11 +4,13 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.logging.Logger;
 import java8.util.J8Arrays;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Contract;
 
 /**
  * The available acceleration structures for the Ray Tracer engine.
  */
+@RequiredArgsConstructor
 public enum Accelerator {
 
     /**
@@ -37,21 +39,10 @@ public enum Accelerator {
     private static final Logger LOGGER = Logger.getLogger(Accelerator.class.getName());
 
     /**
-     * The name.
-     *
-     * @see Accelerator#getName()
+     * The name of the acceleration structure.
      */
     @Getter
     private final String name;
-
-    /**
-     * The constructor for this {@link Enum}.
-     *
-     * @param name The name of the acceleration structure for the Ray Tracer engine.
-     */
-    Accelerator(final String name) {
-        this.name = name;
-    }
 
     /**
      * Gets the names of all available accelerators.

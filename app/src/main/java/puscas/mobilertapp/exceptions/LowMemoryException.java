@@ -1,23 +1,18 @@
 package puscas.mobilertapp.exceptions;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import lombok.NoArgsConstructor;
 
 /**
  * An {@link Exception} which represents the system with low memory.
  */
+@NoArgsConstructor
 public class LowMemoryException extends Exception {
 
     /**
      * The Serial UUID.
      */
     private static final long serialVersionUID = -7934346360661057805L;
-
-    /**
-     * The default constructor.
-     */
-    public LowMemoryException() {
-        super();
-    }
 
     /**
      * The constructor for rethrows.

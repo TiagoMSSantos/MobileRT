@@ -1,23 +1,18 @@
 package puscas.mobilertapp.exceptions;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import lombok.NoArgsConstructor;
 
 /**
  * An {@link Exception} which represents the system with a failure.
  */
+@NoArgsConstructor
 public class FailureException extends RuntimeException {
 
     /**
      * The Serial UUID.
      */
     private static final long serialVersionUID = -7934346360661057805L;
-
-    /**
-     * The default constructor.
-     */
-    FailureException() {
-        super();
-    }
 
     /**
      * The constructor for rethrows.

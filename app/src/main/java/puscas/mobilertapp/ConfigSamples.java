@@ -13,16 +13,12 @@ import lombok.ToString;
 public final class ConfigSamples {
 
     /**
-     * The samplesPixel.
-     *
-     * @see ConfigSamples#getSamplesPixel()
+     * The number of samples per pixel.
      */
     private final int samplesPixel;
 
     /**
-     * The samplesLight.
-     *
-     * @see ConfigSamples#getSamplesLight()
+     * The number of samples per light.
      */
     private final int samplesLight;
 

@@ -5,10 +5,13 @@ import android.opengl.Matrix;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import java.nio.ByteBuffer;
 import java.util.logging.Logger;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 /**
  * Utility class with some helper methods for the matrices in OpenGL framework.
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class UtilsGlMatrices {
 
     /**
@@ -39,12 +42,6 @@ public final class UtilsGlMatrices {
      * The maximum clipping bounds of a scene.
      */
     private static final float Z_FAR = 1.0e+30F;
-
-    /**
-     * A private constructor in order to prevent instantiating this helper class.
-     */
-    private UtilsGlMatrices() {
-    }
 
     /**
      * Creates the model matrix and sets it as an identity matrix.

@@ -3,11 +3,13 @@ package puscas.mobilertapp.utils;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.logging.Logger;
 import java8.util.J8Arrays;
-import org.jetbrains.annotations.Contract;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 /**
  * The available shaders for the Ray Tracer engine.
  */
+@RequiredArgsConstructor
 public enum Shader {
 
     /**
@@ -41,20 +43,10 @@ public enum Shader {
     private static final Logger LOGGER = Logger.getLogger(Shader.class.getName());
 
     /**
-     * The name.
-     *
-     * @see Shader#getName()
+     * The name of the shader for the Ray Tracer engine.
      */
+    @Getter
     private final String name;
-
-    /**
-     * The constructor for this {@link Enum}.
-     *
-     * @param name The new shader for the Ray Tracer engine.
-     */
-    Shader(final String name) {
-        this.name = name;
-    }
 
     /**
      * Gets the names of all available shaders.
@@ -66,13 +58,5 @@ public enum Shader {
         return J8Arrays.stream(values())
             .map(Shader::getName)
             .toArray(String[]::new);
-    }
-
-    /**
-     * Gets the name of the shader for the Ray Tracer engine.
-     */
-    @Contract(pure = true)
-    private String getName() {
-        return this.name;
     }
 }

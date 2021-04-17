@@ -1,10 +1,12 @@
 package puscas.mobilertapp.utils;
 
-import org.jetbrains.annotations.Contract;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 /**
  * The states which the Ray Tracer engine can have.
  */
+@RequiredArgsConstructor
 public enum State {
 
     /**
@@ -28,26 +30,8 @@ public enum State {
     STOPPED(3);
 
     /**
-     * The id.
-     *
-     * @see State#getId()
+     * The current State of the Ray Tracer engine.
      */
+    @Getter
     private final int id;
-
-    /**
-     * The constructor for this {@link Enum}.
-     *
-     * @param id The current state of the Ray Tracer engine.
-     */
-    State(final int id) {
-        this.id = id;
-    }
-
-    /**
-     * Gets the current State of the Ray Tracer engine.
-     */
-    @Contract(pure = true)
-    public int getId() {
-        return this.id;
-    }
 }

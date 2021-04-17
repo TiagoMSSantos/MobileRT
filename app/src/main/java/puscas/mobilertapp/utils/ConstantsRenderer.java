@@ -3,10 +3,13 @@ package puscas.mobilertapp.utils;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import java.util.concurrent.ExecutorService;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 /**
  * Utility class with the constants for the {@link GLSurfaceView.Renderer}.
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ConstantsRenderer {
 
     /**
@@ -20,11 +23,5 @@ public final class ConstantsRenderer {
      */
     public static final int ALL_BUFFER_BIT = GLES20.GL_COLOR_BUFFER_BIT
         | GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_STENCIL_BUFFER_BIT;
-
-    /**
-     * A private constructor in order to prevent instantiating this helper class.
-     */
-    private ConstantsRenderer() {
-    }
 
 }

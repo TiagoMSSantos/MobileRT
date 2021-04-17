@@ -1,11 +1,14 @@
 package puscas.mobilertapp.utils;
 
 import android.widget.Button;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NonNls;
 
 /**
  * Utility class with some constants for the Android interface.
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Constants {
 
     /**
@@ -111,11 +114,5 @@ public final class Constants {
      */
     public static final String OBJ_FILE_NOT_EXISTS = OBJ_PATH
         + ConstantsUI.FILE_SEPARATOR + TEAPOT + ConstantsUI.FILE_SEPARATOR + "teapot2.obj";
-
-    /**
-     * A private constructor in order to prevent instantiating this helper class.
-     */
-    private Constants() {
-    }
 
 }

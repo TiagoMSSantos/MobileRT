@@ -11,6 +11,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 import java8.util.Objects;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Contract;
 import puscas.mobilertapp.exceptions.FailureException;
@@ -18,18 +20,13 @@ import puscas.mobilertapp.exceptions.FailureException;
 /**
  * Utility class with some helper methods.
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Utils {
 
     /**
      * The {@link Logger} for this class.
      */
     private static final Logger LOGGER = Logger.getLogger(Utils.class.getName());
-
-    /**
-     * A private constructor in order to prevent instantiating this helper class.
-     */
-    private Utils() {
-    }
 
     /**
      * Helper method that waits for an {@link ExecutorService} to finish all the

@@ -23,23 +23,20 @@ import java.util.Objects;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java8.util.Optional;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import puscas.mobilertapp.exceptions.FailureException;
 
 /**
  * Utility class with some helper methods that need the Android {@link Context}.
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class UtilsContext {
 
     /**
      * The {@link Logger} for this class.
      */
     private static final Logger LOGGER = Logger.getLogger(UtilsContext.class.getName());
-
-    /**
-     * A private constructor in order to prevent instantiating this helper class.
-     */
-    private UtilsContext() {
-    }
 
     /**
      * Gets the path to the external SD card.

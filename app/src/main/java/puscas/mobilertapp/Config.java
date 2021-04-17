@@ -12,76 +12,56 @@ public final class Config {
 
     /**
      * The scene.
-     *
-     * @see Config#getScene()
      */
     private final int scene;
 
     /**
      * The shader.
-     *
-     * @see Config#getShader()
      */
     private final int shader;
 
     /**
      * The accelerator.
-     *
-     * @see Config#getAccelerator()
      */
     private final int accelerator;
 
     /**
-     * The objFilePath.
-     *
-     * @see Config#getObjFilePath()
+     * The path to the OBJ file.
      */
     @Builder.Default
     private final String objFilePath = "";
 
     /**
-     * The matFilePath.
-     *
-     * @see Config#getMatFilePath()
+     * The path to the MAT file.
      */
     @Builder.Default
     private final String matFilePath = "";
 
     /**
-     * The camFilePath.
-     *
-     * @see Config#getCamFilePath()
+     * The path to the CAM file.
      */
     @Builder.Default
     private final String camFilePath = "";
 
     /**
-     * The configSamples.
-     *
-     * @see Config#getConfigSamples
+     * The configurator for the number of samples.
      */
     @Builder.Default
     private final ConfigSamples configSamples = ConfigSamples.builder().build();
 
     /**
-     * The configResolution.
-     *
-     * @see Config#getConfigResolution()
+     * The configurator for the desired resolution.
      */
     @Builder.Default
     private final ConfigResolution configResolution = ConfigResolution.builder().build();
 
     /**
      * The number of threads.
-     *
-     * @see Config#getThreads()
      */
     private final int threads;
 
     /**
      * Whether the Ray Tracing engine should render a preview frame.
-     *
-     * @see Config#isRasterize()
      */
     private final boolean rasterize;
 

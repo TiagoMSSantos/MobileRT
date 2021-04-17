@@ -12,16 +12,12 @@ public final class ConfigResolution {
 
     /**
      * The width.
-     *
-     * @see ConfigResolution#getWidth()
      */
     @Builder.Default
     private final int width = 1;
 
     /**
      * The height.
-     *
-     * @see ConfigResolution#getHeight()
      */
     @Builder.Default
     private final int height = 1;

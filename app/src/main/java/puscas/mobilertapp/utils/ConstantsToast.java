@@ -1,8 +1,12 @@
 package puscas.mobilertapp.utils;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 /**
  * Utility class with the text constants for the {@link android.widget.Toast}.
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ConstantsToast {
 
     /**
@@ -22,11 +26,5 @@ public final class ConstantsToast {
      * A warning message for when the Android device couldn't load the scene.
      */
     public static final String COULD_NOT_LOAD_THE_SCENE = "Could not load the scene!\n";
-
-    /**
-     * A private constructor in order to prevent instantiating this helper class.
-     */
-    private ConstantsToast() {
-    }
 
 }

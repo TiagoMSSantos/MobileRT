@@ -56,7 +56,7 @@ public final class DrawView extends GLSurfaceView {
         Executors.newFixedThreadPool(ConstantsRenderer.NUMBER_THREADS);
 
     /**
-     * The changingConfigs.
+     * The changing configs.
      *
      * @see Activity#isChangingConfigurations()
      */
@@ -64,7 +64,7 @@ public final class DrawView extends GLSurfaceView {
     private boolean changingConfigs = false;
 
     /**
-     * The last task submitted to {@link ExecutorService}.
+     * The last task submitted to {@link #executorService}.
      */
     private Future<Boolean> lastTask = null;
 

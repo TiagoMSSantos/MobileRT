@@ -2,11 +2,14 @@ package puscas.mobilertapp.utils;
 
 import android.os.Bundle;
 import java8.util.Optional;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 /**
  * Utility class with constants for the User Interface (including
  * {@link android.widget.NumberPicker} used).
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ConstantsUI {
 
     /**
@@ -92,11 +95,5 @@ public final class ConstantsUI {
      * The text size for the UI's {@link android.widget.NumberPicker}.
      */
     static final float TEXT_SIZE = 15.0F;
-
-    /**
-     * A private constructor in order to prevent instantiating this helper class.
-     */
-    private ConstantsUI() {
-    }
 
 }

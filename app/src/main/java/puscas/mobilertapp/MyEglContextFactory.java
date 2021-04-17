@@ -10,11 +10,16 @@ import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import puscas.mobilertapp.utils.ConstantsError;
 
 /**
  * A customized eglCreateContext and eglDestroyContext calls.
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
+@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 public class MyEglContextFactory implements GLSurfaceView.EGLContextFactory {
 
     /**
@@ -37,16 +42,6 @@ public class MyEglContextFactory implements GLSurfaceView.EGLContextFactory {
      * The {@link EGLContext} in order to prevent its destruction.
      */
     private EGLContext eglContext;
-
-    /**
-     * The constructor for this class.
-     *
-     * @param drawView The {@link GLSurfaceView} to be used.
-     */
-    MyEglContextFactory(final DrawView drawView) {
-        this.drawView = drawView;
-        this.eglContext = null;
-    }
 
     @Nullable
     @Override

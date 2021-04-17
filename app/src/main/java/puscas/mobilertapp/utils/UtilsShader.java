@@ -3,6 +3,8 @@ package puscas.mobilertapp.utils;
 import android.opengl.GLES20;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.logging.Logger;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import puscas.mobilertapp.ConfigGlAttribute;
 import puscas.mobilertapp.exceptions.FailureException;
 
@@ -17,18 +19,13 @@ import static android.opengl.GLES20.glShaderSource;
 /**
  * Utility class with some helper methods to create GLSL programs and load GLSL shaders.
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class UtilsShader {
 
     /**
      * The {@link Logger} for this class.
      */
     private static final Logger LOGGER = Logger.getLogger(UtilsShader.class.getName());
-
-    /**
-     * A private constructor in order to prevent instantiating this helper class.
-     */
-    private UtilsShader() {
-    }
 
     /**
      * Helper method that attaches some GLSL shaders into an OpenGL program.

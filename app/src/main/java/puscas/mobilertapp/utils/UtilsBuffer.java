@@ -6,22 +6,19 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.util.logging.Logger;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 /**
  * Utility class with some helper methods to use with {@link Buffer}s.
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class UtilsBuffer {
 
     /**
      * The {@link Logger} for this class.
      */
     private static final Logger LOGGER = Logger.getLogger(UtilsBuffer.class.getName());
-
-    /**
-     * A private constructor in order to prevent instantiating this helper class.
-     */
-    private UtilsBuffer() {
-    }
 
     /**
      * Helper method that checks if any of the {@link ByteBuffer}s is empty.

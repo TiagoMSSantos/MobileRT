@@ -2,22 +2,19 @@ package puscas.mobilertapp.utils;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.logging.Logger;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 /**
  * Utility class with some helper methods for the logging.
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class UtilsLogging {
 
     /**
      * The {@link Logger} for this class.
      */
     private static final Logger LOGGER = Logger.getLogger(UtilsLogging.class.getName());
-
-    /**
-     * A private constructor in order to prevent instantiating this helper class.
-     */
-    private UtilsLogging() {
-    }
 
     /**
      * Helper method that prints the message of a {@link Throwable}.

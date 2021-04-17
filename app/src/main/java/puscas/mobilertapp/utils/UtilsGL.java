@@ -11,23 +11,20 @@ import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import puscas.mobilertapp.exceptions.FailureException;
 
 /**
  * Utility class with some helper methods for OpenGL framework.
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class UtilsGL {
 
     /**
      * The {@link Logger} for this class.
      */
     private static final Logger LOGGER = Logger.getLogger(UtilsGL.class.getName());
-
-    /**
-     * A private constructor in order to prevent instantiating this helper class.
-     */
-    private UtilsGL() {
-    }
 
     /**
      * Helper method that will execute a GL method and then will check for

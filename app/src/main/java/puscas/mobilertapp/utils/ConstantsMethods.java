@@ -1,8 +1,12 @@
 package puscas.mobilertapp.utils;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 /**
  * Utility class with the text constants for the names of methods.
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ConstantsMethods {
 
     /**
@@ -54,11 +58,5 @@ public final class ConstantsMethods {
      * The name of the {@link UtilsGL#run} methods.
      */
     static final String RUN = "run";
-
-    /**
-     * A private constructor in order to prevent instantiating this helper class.
-     */
-    private ConstantsMethods() {
-    }
 
 }
