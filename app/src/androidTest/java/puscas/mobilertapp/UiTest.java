@@ -11,8 +11,8 @@ import androidx.test.espresso.matcher.ViewMatchers;
 import com.google.common.collect.ImmutableList;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.List;
-import java.util.logging.Logger;
 import java8.util.stream.IntStreams;
+import lombok.extern.java.Log;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -33,13 +33,8 @@ import puscas.mobilertapp.utils.UtilsT;
  * The test suite for the User Interface.
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@Log
 public final class UiTest extends AbstractTest {
-
-    /**
-     * The {@link Logger} for this class.
-     */
-    @NonNull
-    private static final Logger LOGGER = Logger.getLogger(UiTest.class.getName());
 
     /**
      * The current index of the scene in the {@link NumberPicker}.
@@ -145,7 +140,7 @@ public final class UiTest extends AbstractTest {
         super.setUp();
 
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
     }
 
     /**
@@ -157,7 +152,7 @@ public final class UiTest extends AbstractTest {
         super.tearDown();
 
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
     }
 
     /**
@@ -167,7 +162,7 @@ public final class UiTest extends AbstractTest {
     @Test(timeout = 20L * 60L * 1000L)
     public void testUI() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
 
         UtilsT.assertRenderButtonText(Constants.RENDER);
 
@@ -183,7 +178,7 @@ public final class UiTest extends AbstractTest {
     @Test(timeout = 20L * 60L * 1000L)
     public void testClickRenderButtonManyTimesWithoutPreview() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
 
         clickPreviewCheckBox(false);
 
@@ -197,7 +192,7 @@ public final class UiTest extends AbstractTest {
     @Test(timeout = 30L * 60L * 1000L)
     public void testClickRenderButtonManyTimesWithPreview() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
 
         clickPreviewCheckBox(false);
         clickPreviewCheckBox(true);
@@ -213,7 +208,7 @@ public final class UiTest extends AbstractTest {
     @Test(timeout = 60L * 1000L)
     public void testClickRenderButtonLongPress() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
 
         Espresso.onView(ViewMatchers.withId(R.id.renderButton))
             .perform(new ViewActionButton(Constants.RENDER, true))
@@ -238,7 +233,7 @@ public final class UiTest extends AbstractTest {
         IntStreams.range(0, buttonTextList.size() * repetitions).forEach(currentIndex -> {
 
             final String message = "currentIndex = " + currentIndex;
-            LOGGER.info(message);
+            log.info(message);
 
             incrementCountersAndUpdatePickers(numCores);
 
@@ -250,7 +245,7 @@ public final class UiTest extends AbstractTest {
 
             UtilsT.assertRenderButtonText(expectedButtonTextOld);
 
-            viewInteraction.perform(new ViewActionButton(expectedButtonText));
+            viewInteraction.perform(new ViewActionButton(expectedButtonText, false));
 
             UtilsT.assertRenderButtonText(expectedButtonText);
         });

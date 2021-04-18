@@ -1,20 +1,15 @@
 package puscas.mobilertapp.utils;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
-import java.util.logging.Logger;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
+import lombok.extern.java.Log;
 
 /**
  * Utility class with some helper methods for the logging.
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@UtilityClass
+@Log
 public final class UtilsLogging {
-
-    /**
-     * The {@link Logger} for this class.
-     */
-    private static final Logger LOGGER = Logger.getLogger(UtilsLogging.class.getName());
 
     /**
      * Helper method that prints the message of a {@link Throwable}.
@@ -25,7 +20,7 @@ public final class UtilsLogging {
     public static void logThrowable(@NonNull final Throwable ex,
                                     @NonNull final String methodName) {
         final String message = String.format("%s exception: %s", methodName, ex.getMessage());
-        LOGGER.severe(message);
+        log.severe(message);
     }
 
     /**
@@ -35,7 +30,7 @@ public final class UtilsLogging {
         final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
         for (final StackTraceElement ste : stackTrace) {
             final String stackTraceElement = String.format("ste: %s", ste.toString());
-            LOGGER.severe(stackTraceElement);
+            log.severe(stackTraceElement);
         }
     }
 

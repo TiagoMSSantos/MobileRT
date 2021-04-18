@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.opengl.GLSurfaceView;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
-import java.util.logging.Logger;
 import java8.util.Objects;
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
@@ -13,6 +12,7 @@ import javax.microedition.khronos.egl.EGLDisplay;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import puscas.mobilertapp.utils.ConstantsError;
 
 /**
@@ -20,12 +20,8 @@ import puscas.mobilertapp.utils.ConstantsError;
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
+@Log
 public class MyEglContextFactory implements GLSurfaceView.EGLContextFactory {
-
-    /**
-     * The {@link Logger} for this class.
-     */
-    private static final Logger LOGGER = Logger.getLogger(MyEglContextFactory.class.getName());
 
     /**
      * The "Embedded-System Graphics Library" version.
@@ -48,7 +44,7 @@ public class MyEglContextFactory implements GLSurfaceView.EGLContextFactory {
     public final EGLContext createContext(@NonNull final EGL10 egl,
                                           @NonNull final EGLDisplay display,
                                           @NonNull final EGLConfig eglConfig) {
-        LOGGER.info("createContext");
+        log.info("createContext");
 
         if (Objects.nonNull(this.eglContext)) {
             this.eglContext = null;
@@ -68,7 +64,7 @@ public class MyEglContextFactory implements GLSurfaceView.EGLContextFactory {
     public final void destroyContext(@NonNull final EGL10 egl,
                                      @NonNull final EGLDisplay display,
                                      @NonNull final EGLContext context) {
-        LOGGER.info("destroyContext");
+        log.info("destroyContext");
 
         if (this.drawView.isChangingConfigs()) {
             this.eglContext = context;

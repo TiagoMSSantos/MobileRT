@@ -4,25 +4,17 @@ import android.widget.NumberPicker;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.matcher.ViewMatchers;
 import edu.umd.cs.findbugs.annotations.NonNull;
-import java.util.logging.Logger;
+import lombok.experimental.UtilityClass;
+import lombok.extern.java.Log;
 import org.junit.jupiter.api.Assertions;
 import puscas.mobilertapp.ViewActionNumberPicker;
 
 /**
  * Helper class which contains helper methods about the {@link NumberPicker}s for the tests.
  */
+@UtilityClass
+@Log
 public final class UtilsPickerT {
-
-    /**
-     * The {@link Logger} for this class.
-     */
-    private static final Logger LOGGER = Logger.getLogger(UtilsPickerT.class.getName());
-
-    /**
-     * Private constructor to avoid instantiating this helper class.
-     */
-    private UtilsPickerT() {
-    }
 
     /**
      * Helper method which changes the {@code value} of a {@link NumberPicker}.
@@ -34,7 +26,7 @@ public final class UtilsPickerT {
     public static void changePickerValue(@NonNull final String pickerName,
                                          final int pickerId,
                                          final int expectedValue) {
-        LOGGER.info("changePickerValue");
+        log.info("changePickerValue");
         Espresso.onView(ViewMatchers.withId(pickerId))
             .perform(new ViewActionNumberPicker(expectedValue))
             .check((view, exception) -> {

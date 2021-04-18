@@ -18,12 +18,12 @@ import java.nio.IntBuffer;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 import java8.util.Optional;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 import lombok.AccessLevel;
 import lombok.Setter;
+import lombok.extern.java.Log;
 import org.jetbrains.annotations.Contract;
 import puscas.mobilertapp.exceptions.LowMemoryException;
 import puscas.mobilertapp.utils.AsyncTaskCoroutine;
@@ -41,12 +41,8 @@ import puscas.mobilertapp.utils.UtilsShader;
 /**
  * The OpenGL renderer that shows the Ray Tracer engine rendered image.
  */
+@Log
 public final class MainRenderer implements GLSurfaceView.Renderer {
-
-    /**
-     * The {@link Logger} for this class.
-     */
-    private static final Logger LOGGER = Logger.getLogger(MainRenderer.class.getName());
 
     /**
      * The name for the attribute location of vertex positions in {@link GLES20}.
@@ -349,7 +345,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * @return The number of vertices in the {@link ByteBuffer}.
      */
     private static int getVertexCount(@NonNull final ByteBuffer bbVertices) {
-        LOGGER.info("getVertexCount");
+        log.info("getVertexCount");
 
         return bbVertices.capacity() / (Constants.BYTES_IN_FLOAT * VERTEX_COMPONENTS);
     }
@@ -372,12 +368,12 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      */
     @NonNull
     public State getState() {
-        LOGGER.info("getState");
+        log.info("getState");
 
         while (this.firstFrame) {
-            LOGGER.info("Waiting for the onDraw to start the RT engine!!!");
+            log.info("Waiting for the onDraw to start the RT engine!!!");
             Uninterruptibles.sleepUninterruptibly(500L, TimeUnit.MILLISECONDS);
-            LOGGER.info("Waited for the onDraw to start the RT engine!!!");
+            log.info("Waited for the onDraw to start the RT engine!!!");
         }
 
         return Optional.ofNullable(this.renderTask)
@@ -404,7 +400,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
                     final ConfigSamples configSamples,
                     final int numPrimitives,
                     final int numLights) {
-        LOGGER.info("resetStats");
+        log.info("resetStats");
 
         Preconditions.checkArgument(numPrimitives >= -1, "numPrimitives shouldn't be negative");
 
@@ -416,11 +412,11 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         final String numLightsStr = String.format(Locale.US, "numLights: %d", numLights);
         final String samplesPixelStr = String.format(Locale.US, "samplesPixel: %d", lSamplesPixel);
         final String samplesLightStr = String.format(Locale.US, "samplesLight: %d", lSamplesLight);
-        LOGGER.info(numThreadsStr);
-        LOGGER.info(numPrimitivesStr);
-        LOGGER.info(numLightsStr);
-        LOGGER.info(samplesPixelStr);
-        LOGGER.info(samplesLightStr);
+        log.info(numThreadsStr);
+        log.info(numPrimitivesStr);
+        log.info(numLightsStr);
+        log.info(samplesPixelStr);
+        log.info(samplesLightStr);
 
         this.numThreads = numThreads;
         this.numPrimitives = numPrimitives;
@@ -502,7 +498,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * native arrays.
      */
     void freeArrays() {
-        LOGGER.info("freeArrays");
+        log.info("freeArrays");
         this.arrayVertices = rtFreeNativeBuffer(this.arrayVertices);
         this.arrayColors = rtFreeNativeBuffer(this.arrayColors);
         this.arrayCamera = rtFreeNativeBuffer(this.arrayCamera);
@@ -515,7 +511,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * @throws LowMemoryException If the device has low free memory.
      */
     private void initPreviewArrays() throws LowMemoryException {
-        LOGGER.info("initArrays");
+        log.info("initArrays");
         checksFreeMemory(1, this::freeArrays);
 
         this.arrayVertices = rtInitVerticesArray();
@@ -547,7 +543,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         final boolean insufficientMem = availMem <= (long) (1 + memoryNeeded);
         final String message = String.format(Locale.US, "MEMORY AVAILABLE: %dMB (%dMB)",
             availMem, totalMem);
-        LOGGER.info(message);
+        log.info(message);
         return insufficientMem || this.memoryInfo.lowMemory;
     }
 
@@ -561,7 +557,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      */
     private void checksFreeMemory(final int memoryNeeded,
                                   final Runnable function) throws LowMemoryException {
-        LOGGER.info("checksFreeMemory");
+        log.info("checksFreeMemory");
         if (isLowMemory(memoryNeeded)) {
             function.run();
             throw new LowMemoryException();
@@ -576,7 +572,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      *                      {@link GLSurfaceView#requestRender()} method.
      */
     void prepareRenderer(final Runnable requestRender) {
-        LOGGER.info("prepareRenderer");
+        log.info("prepareRenderer");
 
         this.configRenderTask.requestRender(requestRender);
     }
@@ -606,12 +602,12 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * {@link #viewHeight} fields.
      */
     void setBitmap() {
-        LOGGER.info(ConstantsMethods.SET_BITMAP);
+        log.info(ConstantsMethods.SET_BITMAP);
 
         setBitmap(ConfigResolution.builder().build(), 1, 1, false);
 
         final String message = ConstantsMethods.SET_BITMAP + ConstantsMethods.FINISHED;
-        LOGGER.info(message);
+        log.info(message);
     }
 
     /**
@@ -628,7 +624,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
                    final int widthView,
                    final int heightView,
                    final boolean rasterize) {
-        LOGGER.info(ConstantsMethods.SET_BITMAP);
+        log.info(ConstantsMethods.SET_BITMAP);
 
         final int lWidth = configResolution.getWidth();
         final int lHeight = configResolution.getHeight();
@@ -643,7 +639,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         validateBitmap(this.bitmap);
 
         final String messageFinished = ConstantsMethods.SET_BITMAP + ConstantsMethods.FINISHED;
-        LOGGER.info(messageFinished);
+        log.info(messageFinished);
     }
 
     /**
@@ -706,13 +702,13 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * Waits for the last {@link RenderTask} to finish.
      */
     void waitLastTask() {
-        LOGGER.info("waitLastTask");
+        log.info("waitLastTask");
 
         Optional.ofNullable(this.renderTask)
             .ifPresent(RenderTask::waitToFinish);
 
         final String messageFinished = "waitLastTask" + ConstantsMethods.FINISHED;
-        LOGGER.info(messageFinished);
+        log.info(messageFinished);
     }
 
     /**
@@ -731,7 +727,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
                                        @NonNull final ByteBuffer bbColors,
                                        @NonNull final ByteBuffer bbCamera,
                                        final int numPrimitives) throws LowMemoryException {
-        LOGGER.info("renderSceneToBitmap");
+        log.info("renderSceneToBitmap");
 
         if (UtilsBuffer.isAnyByteBufferEmpty(bbVertices, bbColors, bbCamera)
             || numPrimitives <= 0) {
@@ -740,7 +736,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         UtilsGL.run(() -> GLES20.glClear(ConstantsRenderer.ALL_BUFFER_BIT));
 
         final int neededMemoryMb = Utils.calculateSceneSize(numPrimitives);
-        checksFreeMemory(neededMemoryMb, () -> LOGGER.severe("SYSTEM WITH LOW MEMORY!!!"));
+        checksFreeMemory(neededMemoryMb, () -> log.severe("SYSTEM WITH LOW MEMORY!!!"));
 
         UtilsBuffer.resetByteBuffers(bbVertices, bbColors, bbCamera);
 
@@ -777,7 +773,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * Creates and launches the {@link RenderTask} field.
      */
     private void createAndLaunchRenderTask() {
-        LOGGER.info("createAndLaunchRenderTask");
+        log.info("createAndLaunchRenderTask");
 
         waitLastTask();
 
@@ -796,7 +792,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
 
         this.renderTask.execute();
         final String message = "createAndLaunchRenderTask" + ConstantsMethods.FINISHED;
-        LOGGER.info(message);
+        log.info(message);
     }
 
     /**
@@ -805,7 +801,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * @param bitmap The {@link Bitmap} to draw.
      */
     private void drawBitmap(final Bitmap bitmap) {
-        LOGGER.info("drawBitmap");
+        log.info("drawBitmap");
 
         UtilsGL.run(() -> GLES20.glUseProgram(this.shaderProgram));
 
@@ -832,7 +828,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
             GLES20.GL_RGBA, bitmap, GLES20.GL_UNSIGNED_BYTE, 0));
 
         final String message = "drawBitmap" + ConstantsMethods.FINISHED;
-        LOGGER.info(message);
+        log.info(message);
     }
 
     /**
@@ -858,7 +854,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onSurfaceCreated(@NonNull final GL10 gl, @NonNull final EGLConfig config) {
-        LOGGER.info("onSurfaceCreated");
+        log.info("onSurfaceCreated");
 
         UtilsGL.resetOpenGlBuffers();
 
@@ -899,18 +895,18 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onSurfaceChanged(@NonNull final GL10 gl, final int width, final int height) {
-        LOGGER.info("onSurfaceChanged");
+        log.info("onSurfaceChanged");
 
         UtilsGL.run(() -> GLES20.glViewport(0, 0, width, height));
 
         final String message = "onSurfaceChanged" + ConstantsMethods.FINISHED;
-        LOGGER.info(message);
+        log.info(message);
     }
 
     @Override
     public void onDrawFrame(@NonNull final GL10 gl) {
         if (this.firstFrame) {
-            LOGGER.info("onDrawFirstFrame");
+            log.info("onDrawFirstFrame");
             UtilsGL.resetOpenGlBuffers();
 
             if (this.rasterize) {
@@ -928,7 +924,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
             this.firstFrame = false;
 
             final String message = "onDrawFirstFrame" + ConstantsMethods.FINISHED;
-            LOGGER.info(message);
+            log.info(message);
         }
 
         drawBitmap(this.bitmap);

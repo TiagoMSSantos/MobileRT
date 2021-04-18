@@ -4,12 +4,12 @@ import android.content.Context;
 import android.opengl.GLSurfaceView;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
-import java.util.logging.Logger;
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.egl.EGLSurface;
+import lombok.extern.java.Log;
 import org.assertj.core.api.Assertions;
 import org.jetbrains.annotations.Contract;
 import org.junit.After;
@@ -19,12 +19,8 @@ import org.junit.Test;
 /**
  * The test suite for the {@link MyEglContextFactory} class.
  */
+@Log
 public final class MyEglContextFactoryTest {
-
-    /**
-     * The {@link Logger} for this class.
-     */
-    private static final Logger LOGGER = Logger.getLogger(MyEglContextFactoryTest.class.getName());
 
     /**
      * Helper method that creates a {@link EGL10}.
@@ -214,7 +210,7 @@ public final class MyEglContextFactoryTest {
     @Before
     public void setUp() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
     }
 
     /**
@@ -223,7 +219,7 @@ public final class MyEglContextFactoryTest {
     @After
     public void tearDown() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
     }
 
     /**
@@ -234,7 +230,7 @@ public final class MyEglContextFactoryTest {
     @Test
     public void testInvalidCreateContext() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
 
         final Context context = new MainActivity();
         final DrawView drawView = new DrawView(context);

@@ -3,13 +3,12 @@ package puscas.mobilertapp.utils;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import java.util.concurrent.ExecutorService;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 
 /**
  * Utility class with the constants for the {@link GLSurfaceView.Renderer}.
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@UtilityClass
 public final class ConstantsRenderer {
 
     /**

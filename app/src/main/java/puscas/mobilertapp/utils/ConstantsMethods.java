@@ -1,12 +1,11 @@
 package puscas.mobilertapp.utils;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 
 /**
  * Utility class with the text constants for the names of methods.
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@UtilityClass
 public final class ConstantsMethods {
 
     /**

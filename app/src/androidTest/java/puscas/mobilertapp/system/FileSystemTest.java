@@ -1,11 +1,10 @@
 package puscas.mobilertapp.system;
 
 import com.google.common.collect.ImmutableList;
-import edu.umd.cs.findbugs.annotations.NonNull;
 import java.io.File;
 import java.util.List;
-import java.util.logging.Logger;
 import java8.util.stream.StreamSupport;
+import lombok.extern.java.Log;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -22,13 +21,8 @@ import puscas.mobilertapp.utils.UtilsContext;
  * The test suite for the File system operations used in {@link MainActivity}.
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@Log
 public final class FileSystemTest extends AbstractTest {
-
-    /**
-     * The {@link Logger} for this class.
-     */
-    @NonNull
-    private static final Logger LOGGER = Logger.getLogger(FileSystemTest.class.getName());
 
     /**
      * Setup method called before each test.
@@ -39,7 +33,7 @@ public final class FileSystemTest extends AbstractTest {
         super.setUp();
 
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
     }
 
     /**
@@ -51,7 +45,7 @@ public final class FileSystemTest extends AbstractTest {
         super.tearDown();
 
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
     }
 
 
@@ -61,7 +55,7 @@ public final class FileSystemTest extends AbstractTest {
     @Test(timeout = 5L * 1000L)
     public void testFilesExistAndReadableFromInternalStorage() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
 
         final String internalStorage = UtilsContext.getInternalStoragePath(this.activity);
 
@@ -83,7 +77,7 @@ public final class FileSystemTest extends AbstractTest {
     @Test(timeout = 5L * 1000L)
     public void testReadableSdCard() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
 
         final String sdCardPath = UtilsContext.getSdCardPath(this.activity);
 
@@ -97,14 +91,14 @@ public final class FileSystemTest extends AbstractTest {
                 final File file = new File(path);
                 final String filePath = file.getAbsolutePath();
                 final String[] list = file.list();
-                LOGGER.info("Files in directory: " + filePath);
+                log.info("Files in directory: " + filePath);
                 if (list != null) {
                     for (final String content : list) {
                         final File contentFile = new File(content);
-                        LOGGER.info(contentFile.getAbsolutePath());
+                        log.info(contentFile.getAbsolutePath());
                     }
                 }
-                LOGGER.info("List finished.");
+                log.info("List finished.");
                 Assertions.assertTrue(file.exists(), Constants.FILE_SHOULD_EXIST + ": " + filePath);
                 Assertions
                     .assertTrue(file.isDirectory(), "File should be a directory: " + filePath);
@@ -117,7 +111,7 @@ public final class FileSystemTest extends AbstractTest {
     @Test(timeout = 5L * 1000L)
     public void testFilesExistAndReadableSdCard() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
 
         final String sdCardPath = UtilsContext.getSdCardPath(this.activity);
 
@@ -140,7 +134,7 @@ public final class FileSystemTest extends AbstractTest {
     @Test(timeout = 5L * 1000L)
     public void testFilesNotExist() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
 
         final String internalStorage = UtilsContext.getInternalStoragePath(this.activity);
 
@@ -162,7 +156,7 @@ public final class FileSystemTest extends AbstractTest {
     @Test(timeout = 5L * 1000L)
     public void testFilesNotExistSdCard() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
 
         final String sdCardPath = UtilsContext.getSdCardPath(this.activity);
 

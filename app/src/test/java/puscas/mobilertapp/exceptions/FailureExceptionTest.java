@@ -1,6 +1,6 @@
 package puscas.mobilertapp.exceptions;
 
-import java.util.logging.Logger;
+import lombok.extern.java.Log;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -8,12 +8,8 @@ import org.junit.Test;
 /**
  * The test suite for {@link FailureException} class.
  */
+@Log
 public final class FailureExceptionTest {
-
-    /**
-     * The {@link Logger} for this class.
-     */
-    private static final Logger LOGGER = Logger.getLogger(FailureExceptionTest.class.getName());
 
     /**
      * Setup method called before each test.
@@ -21,7 +17,7 @@ public final class FailureExceptionTest {
     @Before
     public void setUp() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
     }
 
     /**
@@ -30,7 +26,7 @@ public final class FailureExceptionTest {
     @After
     public void tearDown() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
     }
 
     /**
@@ -39,7 +35,7 @@ public final class FailureExceptionTest {
     @Test(expected = RuntimeException.class)
     public void testConstructorWithoutArguments() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
 
         throw new FailureException();
     }
@@ -50,7 +46,7 @@ public final class FailureExceptionTest {
     @Test(expected = RuntimeException.class)
     public void testConstructorWithThrowableArgument() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
 
         final IndexOutOfBoundsException indexOutOfBoundsException =
             new IndexOutOfBoundsException("Test");
@@ -63,7 +59,7 @@ public final class FailureExceptionTest {
     @Test(expected = RuntimeException.class)
     public void testConstructorWithStringArgument() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
 
         final String message = "Test";
         throw new FailureException(message);

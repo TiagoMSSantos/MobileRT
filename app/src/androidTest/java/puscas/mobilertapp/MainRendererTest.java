@@ -3,12 +3,11 @@ package puscas.mobilertapp;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import com.google.common.base.Preconditions;
-import edu.umd.cs.findbugs.annotations.NonNull;
 import java.io.InputStream;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Logger;
+import lombok.extern.java.Log;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -22,13 +21,8 @@ import puscas.mobilertapp.utils.UtilsT;
  * The test suite for the {@link MainRenderer}.
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@Log
 public final class MainRendererTest extends AbstractTest {
-
-    /**
-     * The {@link Logger} for this class.
-     */
-    @NonNull
-    private static final Logger LOGGER = Logger.getLogger(MainRendererTest.class.getName());
 
     /**
      * Setup method called before each test.
@@ -39,7 +33,7 @@ public final class MainRendererTest extends AbstractTest {
         super.setUp();
 
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
     }
 
     /**
@@ -51,7 +45,7 @@ public final class MainRendererTest extends AbstractTest {
         super.tearDown();
 
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
     }
 
     /**
@@ -62,7 +56,7 @@ public final class MainRendererTest extends AbstractTest {
     @Test
     public void testLoadVertexShader() throws InterruptedException {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
 
         testLoadShader("Shaders/VertexShader.glsl", GLES20.GL_VERTEX_SHADER);
     }
@@ -75,7 +69,7 @@ public final class MainRendererTest extends AbstractTest {
     @Test
     public void testLoadVertexShaderRaster() throws InterruptedException {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
 
         testLoadShader("Shaders/VertexShaderRaster.glsl", GLES20.GL_VERTEX_SHADER);
     }
@@ -88,7 +82,7 @@ public final class MainRendererTest extends AbstractTest {
     @Test
     public void testLoadFragmentShader() throws InterruptedException {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
 
         testLoadShader("Shaders/FragmentShader.glsl", GLES20.GL_FRAGMENT_SHADER);
     }
@@ -101,7 +95,7 @@ public final class MainRendererTest extends AbstractTest {
     @Test
     public void testLoadFragmentShaderRaster() throws InterruptedException {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
 
         testLoadShader("Shaders/FragmentShaderRaster.glsl", GLES20.GL_FRAGMENT_SHADER);
     }

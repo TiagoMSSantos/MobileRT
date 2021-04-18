@@ -13,8 +13,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 import lombok.Builder;
+import lombok.extern.java.Log;
 import puscas.mobilertapp.utils.AsyncTaskCoroutine;
 import puscas.mobilertapp.utils.Constants;
 import puscas.mobilertapp.utils.ConstantsMethods;
@@ -27,12 +27,8 @@ import puscas.mobilertapp.utils.Utils;
  * An asynchronous task to render a frame and update the {@link TextView} text.
  * At the end of the task, it sets the render {@link Button} to "Render".
  */
+@Log
 public final class RenderTask extends AsyncTaskCoroutine {
-
-    /**
-     * The {@link Logger} for this class.
-     */
-    private static final Logger LOGGER = Logger.getLogger(RenderTask.class.getName());
 
     /**
      * The number of milliseconds in a second.
@@ -176,7 +172,7 @@ public final class RenderTask extends AsyncTaskCoroutine {
     @Builder
     private RenderTask(@NonNull final ConfigRenderTask config) {
         super();
-        LOGGER.info("RenderTask");
+        log.info("RenderTask");
 
         this.requestRender = config.getRequestRender();
         this.finishRender = config.getFinishRender();
@@ -193,7 +189,7 @@ public final class RenderTask extends AsyncTaskCoroutine {
         resetTextStats();
 
         this.timer = () -> {
-            LOGGER.info(ConstantsMethods.TIMER);
+            log.info(ConstantsMethods.TIMER);
             updateFps();
             updateTextStats();
 
@@ -203,14 +199,14 @@ public final class RenderTask extends AsyncTaskCoroutine {
             publishProgress();
 
             final String messageFinished = ConstantsMethods.TIMER + ConstantsMethods.FINISHED;
-            LOGGER.info(messageFinished);
+            log.info(messageFinished);
             if (currentState != State.BUSY) {
                 this.executorService.shutdown();
             }
 
             final String messageFinished2 =
                 ConstantsMethods.TIMER + ConstantsMethods.FINISHED + " 2";
-            LOGGER.info(messageFinished2);
+            log.info(messageFinished2);
         };
 
         checksArguments();
@@ -319,33 +315,33 @@ public final class RenderTask extends AsyncTaskCoroutine {
 
     @Override
     protected void onPreExecute() {
-        LOGGER.info("onPreExecute");
+        log.info("onPreExecute");
     }
 
     @Override
     protected void doInBackground() {
-        LOGGER.info("doInBackground");
+        log.info("doInBackground");
 
         this.executorService.scheduleAtFixedRate(this.timer, 0L,
             this.updateInterval, TimeUnit.MILLISECONDS);
         Utils.waitExecutorToFinish(this.executorService);
 
         final String message = "doInBackground" + ConstantsMethods.FINISHED;
-        LOGGER.info(message);
+        log.info(message);
     }
 
     @Override
     protected void onProgressUpdate() {
-        LOGGER.info("onProgressUpdate");
+        log.info("onProgressUpdate");
         printText();
 
         final String message = "onProgressUpdate" + ConstantsMethods.FINISHED;
-        LOGGER.info(message);
+        log.info(message);
     }
 
     @Override
     protected void onPostExecute() {
-        LOGGER.info("onPostExecute");
+        log.info("onPostExecute");
 
         printText();
         this.requestRender.run();
@@ -353,7 +349,7 @@ public final class RenderTask extends AsyncTaskCoroutine {
         this.buttonRender.get().setText(R.string.render);
 
         final String message = "onPostExecute" + ConstantsMethods.FINISHED;
-        LOGGER.info(message);
+        log.info(message);
     }
 
 }

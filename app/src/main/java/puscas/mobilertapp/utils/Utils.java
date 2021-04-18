@@ -9,10 +9,9 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 import java8.util.Objects;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
+import lombok.extern.java.Log;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Contract;
 import puscas.mobilertapp.exceptions.FailureException;
@@ -20,13 +19,9 @@ import puscas.mobilertapp.exceptions.FailureException;
 /**
  * Utility class with some helper methods.
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@UtilityClass
+@Log
 public final class Utils {
-
-    /**
-     * The {@link Logger} for this class.
-     */
-    private static final Logger LOGGER = Logger.getLogger(Utils.class.getName());
 
     /**
      * Helper method that waits for an {@link ExecutorService} to finish all the
@@ -35,7 +30,7 @@ public final class Utils {
      * @param executorService The {@link ExecutorService}.
      */
     public static void waitExecutorToFinish(@NonNull final ExecutorService executorService) {
-        LOGGER.info("waitExecutorToFinish");
+        log.info("waitExecutorToFinish");
 
         boolean running = true;
         do {
@@ -50,7 +45,7 @@ public final class Utils {
         while (running);
 
         final String message = "waitExecutorToFinish" + ConstantsMethods.FINISHED;
-        LOGGER.info(message);
+        log.info(message);
     }
 
     /**
@@ -64,7 +59,7 @@ public final class Utils {
     public static void handleInterruption(@NonNull final String methodName) {
         final boolean interrupted = Thread.interrupted();
         final String message = String.format("%s exception: %s", methodName, interrupted);
-        LOGGER.severe(message);
+        log.severe(message);
     }
 
     /**
@@ -75,7 +70,7 @@ public final class Utils {
      */
     @NonNull
     public static String readTextFromInputStream(@NonNull final InputStream inputStream) {
-        LOGGER.info("readTextFromInputStream");
+        log.info("readTextFromInputStream");
         try (InputStreamReader isReader = new InputStreamReader(
             inputStream, Charset.defaultCharset());
              BufferedReader reader = new BufferedReader(isReader)) {
@@ -93,7 +88,7 @@ public final class Utils {
             throw new FailureException(ex2);
         } finally {
             final String message = "readTextFromInputStream" + ConstantsMethods.FINISHED;
-            LOGGER.info(message);
+            log.info(message);
         }
     }
 
@@ -108,7 +103,7 @@ public final class Utils {
      */
     @Contract(pure = true)
     public static int calculateSceneSize(final int numPrimitives) {
-        LOGGER.info("calculateSceneSize");
+        log.info("calculateSceneSize");
         final int triangleVerticesSize = 3 * Constants.BYTES_IN_FLOAT * 3;
         final int triangleNormalsSize = 3 * Constants.BYTES_IN_FLOAT * 3;
         final int triangleTextureCoordinatesSize = 2 * Constants.BYTES_IN_FLOAT * 3;
@@ -132,7 +127,7 @@ public final class Utils {
      * @return The current displayed value in the {@link NumberPicker}.
      */
     public static int getValueFromPicker(@NonNull final NumberPicker picker) {
-        LOGGER.info("getValueFromPicker");
+        log.info("getValueFromPicker");
 
         try {
             return Integer.parseInt(picker.getDisplayedValues()
@@ -153,7 +148,7 @@ public final class Utils {
     @NonNull
     public static Pair<Integer, Integer> getResolutionFromPicker(
         @NonNull final NumberPicker picker) {
-        LOGGER.info("getResolutionFromPicker");
+        log.info("getResolutionFromPicker");
 
         final String strResolution = picker.getDisplayedValues()[picker.getValue() - 1];
 
@@ -176,11 +171,11 @@ public final class Utils {
      * @param method The {@link Runnable} to call.
      */
     public static void executeWithCatching(@NonNull final Runnable method) {
-        LOGGER.info(ConstantsMethods.RUN);
+        log.info(ConstantsMethods.RUN);
         try {
             method.run();
         } catch (final RuntimeException ex) {
-            LOGGER.warning(ex.getMessage());
+            log.warning(ex.getMessage());
         }
     }
 

@@ -1,15 +1,16 @@
 package puscas.mobilertapp.utils;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
-import java.util.logging.Logger;
 import java8.util.J8Arrays;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 
 /**
  * The available scenes for the Ray Tracer engine.
  */
 @RequiredArgsConstructor
+@Log
 public enum Scene {
 
     /**
@@ -53,11 +54,6 @@ public enum Scene {
     WRONG_FILE("Wrong file");
 
     /**
-     * The {@link Logger} for this class.
-     */
-    private static final Logger LOGGER = Logger.getLogger(Scene.class.getName());
-
-    /**
      * The name of the scene.
      */
     @Getter
@@ -68,7 +64,7 @@ public enum Scene {
      */
     @NonNull
     public static String[] getNames() {
-        LOGGER.info(ConstantsMethods.GET_NAMES);
+        log.info(ConstantsMethods.GET_NAMES);
 
         return J8Arrays.stream(values())
             .map(Scene::getName)

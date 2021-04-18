@@ -4,15 +4,14 @@ import android.content.Context;
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 import puscas.mobilertapp.DrawView;
 import puscas.mobilertapp.MyEglContextFactory;
 
 /**
  * Utility class with the text constants for the errors.
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@UtilityClass
 public final class ConstantsError {
 
     /**

@@ -1,9 +1,8 @@
 package puscas.mobilertapp;
 
 import com.google.common.base.Preconditions;
-import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.concurrent.TimeoutException;
-import java.util.logging.Logger;
+import lombok.extern.java.Log;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -19,13 +18,8 @@ import puscas.mobilertapp.utils.UtilsT;
  * The test suite for the preview feature (rasterize one frame of the scene).
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@Log
 public final class PreviewTest extends AbstractTest {
-
-    /**
-     * The {@link Logger} for this class.
-     */
-    @NonNull
-    private static final Logger LOGGER = Logger.getLogger(PreviewTest.class.getName());
 
     /**
      * Setup method called before each test.
@@ -36,7 +30,7 @@ public final class PreviewTest extends AbstractTest {
         super.setUp();
 
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
     }
 
     /**
@@ -48,7 +42,7 @@ public final class PreviewTest extends AbstractTest {
         super.tearDown();
 
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
     }
 
     /**
@@ -59,7 +53,7 @@ public final class PreviewTest extends AbstractTest {
     @Test(timeout = 5L * 60L * 1000L)
     public void testPreviewScene() throws TimeoutException {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
         Preconditions.checkNotNull(this.activity, "Activity can't be null");
 
         UtilsContextT.resetPickerValues(this.activity, Scene.CORNELL2.ordinal());
@@ -74,7 +68,7 @@ public final class PreviewTest extends AbstractTest {
         UtilsT.testStateAndBitmap(false);
 
         final String message = methodName + ConstantsMethods.FINISHED;
-        LOGGER.info(message);
+        log.info(message);
     }
 
 }

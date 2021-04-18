@@ -10,7 +10,8 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.logging.Logger;
+import lombok.experimental.UtilityClass;
+import lombok.extern.java.Log;
 import puscas.mobilertapp.DrawView;
 import puscas.mobilertapp.MainActivity;
 import puscas.mobilertapp.MainRenderer;
@@ -19,18 +20,9 @@ import puscas.mobilertapp.R;
 /**
  * Helper class which contains helper methods that need the {@link Context} for the tests.
  */
+@UtilityClass
+@Log
 public final class UtilsContextT {
-
-    /**
-     * The {@link Logger} for this class.
-     */
-    private static final Logger LOGGER = Logger.getLogger(UtilsContextT.class.getName());
-
-    /**
-     * Private constructor to avoid instantiating this helper class.
-     */
-    private UtilsContextT() {
-    }
 
     /**
      * Helper method that waits until the Ray Tracing engine stops rendering
@@ -55,11 +47,11 @@ public final class UtilsContextT {
 
             renderButtonView.check((view, exception) -> {
                 final Button renderButton = view.findViewById(R.id.renderButton);
-                LOGGER.info("Checking if rendering done.");
+                log.info("Checking if rendering done.");
                 if (renderButton.getText().toString().equals(Constants.RENDER)
                     && renderer.getState() == State.IDLE) {
                     done.set(true);
-                    LOGGER.info("Rendering done.");
+                    log.info("Rendering done.");
                 }
             });
         }
@@ -77,7 +69,7 @@ public final class UtilsContextT {
      * @param scene   The id of the scene to set.
      */
     public static void resetPickerValues(@NonNull final Context context, final int scene) {
-        LOGGER.info("resetPickerValues");
+        log.info("resetPickerValues");
 
         final int numCores = UtilsContext.getNumOfCores(context);
 

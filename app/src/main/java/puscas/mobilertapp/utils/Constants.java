@@ -1,14 +1,13 @@
 package puscas.mobilertapp.utils;
 
 import android.widget.Button;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.NonNls;
 
 /**
  * Utility class with some constants for the Android interface.
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@UtilityClass
 public final class Constants {
 
     /**

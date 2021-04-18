@@ -20,23 +20,18 @@ import java.io.InputStream;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java8.util.Optional;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
+import lombok.extern.java.Log;
 import puscas.mobilertapp.exceptions.FailureException;
 
 /**
  * Utility class with some helper methods that need the Android {@link Context}.
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@UtilityClass
+@Log
 public final class UtilsContext {
-
-    /**
-     * The {@link Logger} for this class.
-     */
-    private static final Logger LOGGER = Logger.getLogger(UtilsContext.class.getName());
 
     /**
      * Gets the path to the external SD card.
@@ -52,7 +47,7 @@ public final class UtilsContext {
      */
     @NonNull
     public static String getSdCardPath(@NonNull final Context context) {
-        LOGGER.info("Getting SD card path.");
+        log.info("Getting SD card path.");
 
         // The new method to get the SD card path.
         // This method returns an array of File with null (so is not working properly yet).
@@ -65,17 +60,17 @@ public final class UtilsContext {
             .map(File::getAbsolutePath)
             .orElseGet(() -> {
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-                    LOGGER.info("Using the old (deprecated) approach to retrieve the SD Card path.");
+                    log.info("Using the old (deprecated) approach to retrieve the SD Card path.");
                     return Environment.getExternalStorageDirectory().getAbsolutePath();
                 } else {
-                    LOGGER.info("Using fallback path since using a SDK API 19+, and hoping this path is right.");
+                    log.info("Using fallback path since using a SDK API 19+, and hoping this path is right.");
                     return "/mnt/sdcard";
                 }
             });
 
         final String sdCardPathCleaned = cleanStoragePath(sdCardPath);
         final String message = String.format(Locale.US, "SD card path: %s", sdCardPathCleaned);
-        LOGGER.info(message);
+        log.info(message);
         return sdCardPathCleaned;
     }
 
@@ -90,7 +85,7 @@ public final class UtilsContext {
      */
     @NonNull
     public static String getInternalStoragePath(@NonNull final Context context) {
-        LOGGER.info("Getting internal storage path.");
+        log.info("Getting internal storage path.");
 
         final File dataDir = ContextCompat.getDataDir(context);
 
@@ -109,7 +104,7 @@ public final class UtilsContext {
         final String internalStoragePathCleaned = cleanStoragePath(internalStoragePath);
         final String message = String.format(Locale.US, "Internal storage path: %s",
             internalStoragePathCleaned);
-        LOGGER.info(message);
+        log.info(message);
         return internalStoragePathCleaned;
     }
 
@@ -123,7 +118,7 @@ public final class UtilsContext {
     @NonNull
     private static String readTextAsset(@NonNull final Context context,
                                         @NonNull final String filePath) {
-        LOGGER.info("readTextAsset");
+        log.info("readTextAsset");
         final AssetManager assetManager = context.getAssets();
         final String text;
         try (InputStream inputStream = assetManager.open(filePath)) {
@@ -162,7 +157,7 @@ public final class UtilsContext {
             : Runtime.getRuntime().availableProcessors();
 
         final String message = String.format(Locale.US, "Number of cores: %d", cores);
-        LOGGER.info(message);
+        log.info(message);
         return cores;
     }
 
@@ -173,7 +168,7 @@ public final class UtilsContext {
      * @return Whether the system is 64 bit.
      */
     public static boolean is64BitDevice(@NonNull final Context context) {
-        LOGGER.info("is64BitDevice");
+        log.info("is64BitDevice");
         final String cpuInfoPath = UtilsContext.readTextAsset(context,
             "Utils" + ConstantsUI.FILE_SEPARATOR + "cpuInfoPath.txt");
         try (InputStream inputStream = new FileInputStream(cpuInfoPath.trim())) {
@@ -224,7 +219,7 @@ public final class UtilsContext {
     public static Map<Integer, String> readShaders(
         @NonNull final Context context,
         @NonNull final Map<Integer, String> shadersPaths) {
-        LOGGER.info("readShaders");
+        log.info("readShaders");
 
         final String vertexShader = UtilsContext.readTextAsset(context,
             Objects.requireNonNull(shadersPaths.get(GLES20.GL_VERTEX_SHADER)));
@@ -245,7 +240,7 @@ public final class UtilsContext {
      * @param activity The {@link Activity} of MobileRT.
      */
     public static void checksStoragePermission(@NonNull final Activity activity) {
-        LOGGER.info("checksStoragePermission");
+        log.info("checksStoragePermission");
         checksAccessPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE);
         checksAccessPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
     }
@@ -257,7 +252,7 @@ public final class UtilsContext {
      * @param activity The {@link Activity} of MobileRT.
      */
     public static void checksInternetPermission(@NonNull final Activity activity) {
-        LOGGER.info("checksInternetPermission");
+        log.info("checksInternetPermission");
         checksAccessPermission(activity, Manifest.permission.INTERNET);
     }
 

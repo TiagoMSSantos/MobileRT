@@ -8,19 +8,15 @@ import android.view.ViewGroup;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import edu.umd.cs.findbugs.annotations.NonNull;
-import java.util.logging.Logger;
+import lombok.extern.java.Log;
 import puscas.mobilertapp.exceptions.FailureException;
 
 /**
  * Custom {@link NumberPicker} for the User Interface with smaller text size
  * and black color for all the number pickers used.
  */
+@Log
 public final class CustomNumberPicker extends NumberPicker {
-
-    /**
-     * The {@link Logger} for this class.
-     */
-    private static final Logger LOGGER = Logger.getLogger(CustomNumberPicker.class.getName());
 
     /**
      * The constructor for this class.
@@ -35,7 +31,7 @@ public final class CustomNumberPicker extends NumberPicker {
     @Override
     public void addView(@NonNull final View child, @NonNull final ViewGroup.LayoutParams params) {
         super.addView(child, params);
-        LOGGER.info("addView");
+        log.info("addView");
 
         if (!(child instanceof TextView)) {
             throw new FailureException("View cannot be cast to TextView.");

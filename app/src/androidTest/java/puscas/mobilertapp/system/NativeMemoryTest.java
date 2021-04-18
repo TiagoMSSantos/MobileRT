@@ -1,11 +1,10 @@
 package puscas.mobilertapp.system;
 
 import android.os.Debug;
-import edu.umd.cs.findbugs.annotations.NonNull;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.logging.Logger;
+import lombok.extern.java.Log;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -24,13 +23,8 @@ import puscas.mobilertapp.utils.Constants;
  */
 @Ignore("Ignore because JVM only has 2MB of native heap by default for the tests.")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@Log
 public final class NativeMemoryTest {
-
-    /**
-     * The {@link Logger} for this class.
-     */
-    @NonNull
-    private static final Logger LOGGER = Logger.getLogger(NativeMemoryTest.class.getName());
 
     /**
      * Setup method called before each test.
@@ -38,7 +32,7 @@ public final class NativeMemoryTest {
     @Before
     public void setUp() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
     }
 
     /**
@@ -47,7 +41,7 @@ public final class NativeMemoryTest {
     @After
     public void tearDown() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
     }
 
 
@@ -57,7 +51,7 @@ public final class NativeMemoryTest {
     @Test
     public void testAllocatingHeapMemoryNative() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
 
         // Dummy array to hold the allocated memory.
         final Collection<ByteBuffer> dummyArrays = new ArrayList<>(1);
@@ -100,17 +94,17 @@ public final class NativeMemoryTest {
      */
     private static long getAvailableNativeMemoryInMB() {
         final long nativeHeapSize = Debug.getNativeHeapSize();
-        LOGGER.info("The size of the native heap: " + nativeHeapSize + "B"
+        log.info("The size of the native heap: " + nativeHeapSize + "B"
             + "(" + nativeHeapSize / 1024L + "KB or " + nativeHeapSize / (long) Constants.BYTES_IN_MEGABYTE + "MB)");
 
         final long nativeHeapAllocatedSize = Debug.getNativeHeapAllocatedSize();
-        LOGGER.info("Allocated memory in the native heap: " + nativeHeapAllocatedSize + "B"
+        log.info("Allocated memory in the native heap: " + nativeHeapAllocatedSize + "B"
             + "(" + nativeHeapAllocatedSize / 1024L + "KB or " + nativeHeapAllocatedSize / (long) Constants.BYTES_IN_MEGABYTE + "MB)");
 
         final long nativeHeapFreeSize = Debug.getNativeHeapFreeSize();
         final long availableMemoryKb = nativeHeapFreeSize / 1024L;
         final long availableMemoryMb = nativeHeapFreeSize / (long) Constants.BYTES_IN_MEGABYTE;
-        LOGGER.info("Available native heap memory: " + nativeHeapFreeSize + "B"
+        log.info("Available native heap memory: " + nativeHeapFreeSize + "B"
                 + "(" + availableMemoryKb + "KB or " + availableMemoryMb + "MB)");
         return availableMemoryMb;
     }

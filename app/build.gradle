@@ -428,7 +428,11 @@ dependencies {
 //    androidTestImplementation 'org.mockito:mockito-android:3.4.6'
 //    androidTestImplementation 'org.mockito:mockito-core:3.4.6'
 
-    // Dependencies for the Android unit tests
+    // Annotations for the Android instrumentation tests
+    androidTestAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
+
+
+    // Dependencies for the unit tests
     println("Adding dependencies for the unit tests.")
 
     testImplementation 'junit:junit:4.13.2'
@@ -437,6 +441,8 @@ dependencies {
     testImplementation 'org.khronos:opengl-api:gl1.1-android-2.1_r1'
     testImplementation 'org.jmockit:jmockit:1.49'
 
+    // Annotations for the unit tests
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
 
 
     // Dependencies that give errors when added:

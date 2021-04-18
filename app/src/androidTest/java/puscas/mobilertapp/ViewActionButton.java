@@ -8,7 +8,8 @@ import androidx.test.espresso.matcher.ViewMatchers;
 import com.google.common.util.concurrent.Uninterruptibles;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import org.hamcrest.Matcher;
 import org.jetbrains.annotations.NonNls;
 import org.junit.jupiter.api.Assertions;
@@ -17,13 +18,9 @@ import puscas.mobilertapp.utils.Utils;
 /**
  * Auxiliary class which represents the render {@link Button}.
  */
+@Log
+@RequiredArgsConstructor
 public final class ViewActionButton implements ViewAction {
-
-    /**
-     * The {@link Logger} for this class.
-     */
-    private static final Logger LOGGER =
-        Logger.getLogger(ViewActionButton.class.getName());
 
     /**
      * The expected text for the {@link Button}.
@@ -34,31 +31,6 @@ public final class ViewActionButton implements ViewAction {
      * Whether to do a long click or not.
      */
     private final boolean pressLongClick;
-
-    /**
-     * The constructor for this class.
-     *
-     * @param expectedText The expected text to show on the {@link Button} after the click.
-     */
-    public ViewActionButton(@NonNull final String expectedText) {
-        LOGGER.info("ViewActionButton");
-
-        this.expectedText = expectedText;
-        this.pressLongClick = false;
-    }
-
-    /**
-     * The constructor for this class.
-     *
-     * @param expectedText   The expected text to show on the {@link Button} after the click.
-     * @param pressLongClick Whether the click should be a long click or not.
-     */
-    ViewActionButton(@NonNull final String expectedText, final boolean pressLongClick) {
-        LOGGER.info("ViewActionButton");
-
-        this.expectedText = expectedText;
-        this.pressLongClick = pressLongClick;
-    }
 
     /**
      * Helper method that waits until the {@link Button} shows the expected text.
@@ -81,7 +53,7 @@ public final class ViewActionButton implements ViewAction {
     @NonNull
     @Override
     public final Matcher<View> getConstraints() {
-        LOGGER.info("ViewActionButton#getConstraints");
+        log.info("ViewActionButton#getConstraints");
 
         return ViewMatchers.isAssignableFrom(Button.class);
     }
@@ -89,7 +61,7 @@ public final class ViewActionButton implements ViewAction {
     @NonNull
     @Override
     public final String getDescription() {
-        LOGGER.info("ViewActionButton#getDescription");
+        log.info("ViewActionButton#getDescription");
 
         return "Click button";
     }
@@ -97,7 +69,7 @@ public final class ViewActionButton implements ViewAction {
     @Override
     public final void perform(@NonNull final UiController uiController, @NonNull final View view) {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
 
         try {
             final Button button = (Button) view;

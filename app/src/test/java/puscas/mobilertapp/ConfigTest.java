@@ -1,6 +1,6 @@
 package puscas.mobilertapp;
 
-import java.util.logging.Logger;
+import lombok.extern.java.Log;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,12 +12,8 @@ import puscas.mobilertapp.utils.Shader;
 /**
  * The test suite for {@link Config} class.
  */
+@Log
 public final class ConfigTest {
-
-    /**
-     * The {@link Logger} for this class.
-     */
-    private static final Logger LOGGER = Logger.getLogger(ConfigTest.class.getName());
 
     /**
      * Setup method called before each test.
@@ -25,7 +21,7 @@ public final class ConfigTest {
     @Before
     public void setUp() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
     }
 
     /**
@@ -34,7 +30,7 @@ public final class ConfigTest {
     @After
     public void tearDown() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
     }
 
     /**
@@ -43,7 +39,7 @@ public final class ConfigTest {
     @Test
     public void testDefaultBuild() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
 
         final Config config = Config.builder().build();
         Assertions.assertEquals(1, config.getConfigResolution().getWidth(),
@@ -71,7 +67,7 @@ public final class ConfigTest {
     @Test
     public void testBuild() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
 
         final int width = 1;
         final int height = 2;

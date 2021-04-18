@@ -24,10 +24,10 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import java.util.Locale;
 import java.util.Map;
-import java.util.logging.Logger;
 import java8.util.Optional;
 import java8.util.stream.IntStreams;
 import java8.util.stream.StreamSupport;
+import lombok.extern.java.Log;
 import org.apache.commons.lang3.tuple.Pair;
 import puscas.mobilertapp.exceptions.FailureException;
 import puscas.mobilertapp.utils.Accelerator;
@@ -46,13 +46,8 @@ import puscas.mobilertapp.utils.UtilsLogging;
 /**
  * The main {@link Activity} for the Android User Interface.
  */
+@Log
 public final class MainActivity extends Activity {
-
-    /**
-     * The {@link Logger} for this class.
-     */
-    private static final Logger LOGGER = Logger.getLogger(MainActivity.class.getName());
-
 
     /*
      ***********************************************************************
@@ -195,7 +190,7 @@ public final class MainActivity extends Activity {
     @Override
     public void onCreate(@Nullable final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        LOGGER.info("onCreate");
+        log.info("onCreate");
 
         setContentView(R.layout.activity_main);
         initializeViews();
@@ -220,7 +215,7 @@ public final class MainActivity extends Activity {
     @Override
     protected void onRestoreInstanceState(@NonNull final Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        LOGGER.info("onRestoreInstanceState");
+        log.info("onRestoreInstanceState");
 
         final int scene = savedInstanceState.getInt(ConstantsUI.PICKER_SCENE);
         final int shader = savedInstanceState.getInt(ConstantsUI.PICKER_SHADER);
@@ -265,7 +260,7 @@ public final class MainActivity extends Activity {
     @Override
     protected void onSaveInstanceState(@NonNull final Bundle outState) {
         super.onSaveInstanceState(outState);
-        LOGGER.info("onSaveInstanceState");
+        log.info("onSaveInstanceState");
 
         outState.putInt(ConstantsUI.PICKER_SCENE, this.pickerScene.getValue());
         outState.putInt(ConstantsUI.PICKER_SHADER, this.pickerShader.getValue());
@@ -282,7 +277,7 @@ public final class MainActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
-        LOGGER.info("onPause");
+        log.info("onPause");
 
         Utils.handleInterruption("MainActivity#onPause");
 
@@ -292,30 +287,30 @@ public final class MainActivity extends Activity {
         this.sceneFilePath = null;
 
         final String message = "onPause" + ConstantsMethods.FINISHED;
-        LOGGER.info(message);
+        log.info(message);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        LOGGER.info(ConstantsMethods.ON_DESTROY);
+        log.info(ConstantsMethods.ON_DESTROY);
 
         this.drawView.onDetachedFromWindow();
         this.drawView.setVisibility(View.INVISIBLE);
 
         final String message = ConstantsMethods.ON_DESTROY + ConstantsMethods.FINISHED;
-        LOGGER.info(message);
+        log.info(message);
     }
 
     @Override
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        LOGGER.info(ConstantsMethods.ON_DETACHED_FROM_WINDOW);
+        log.info(ConstantsMethods.ON_DETACHED_FROM_WINDOW);
 
         this.drawView.onDetachedFromWindow();
 
         final String message = ConstantsMethods.ON_DETACHED_FROM_WINDOW + ConstantsMethods.FINISHED;
-        LOGGER.info(message);
+        log.info(message);
     }
 
 
@@ -330,7 +325,7 @@ public final class MainActivity extends Activity {
                                            @NonNull final String[] permissions,
                                            @NonNull final int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        LOGGER.info("onRequestPermissionsResult");
+        log.info("onRequestPermissionsResult");
     }
 
 
@@ -365,7 +360,7 @@ public final class MainActivity extends Activity {
     public void startRender(@NonNull final View view) {
         final String message = String.format(Locale.US, "%s: %s",
             ConstantsMethods.START_RENDER, view.toString());
-        LOGGER.info(message);
+        log.info(message);
 
         final State state = this.drawView.getRayTracerState();
         if (state == State.BUSY) {
@@ -375,7 +370,7 @@ public final class MainActivity extends Activity {
         }
 
         final String messageFinished = ConstantsMethods.START_RENDER + ConstantsMethods.FINISHED;
-        LOGGER.info(messageFinished);
+        log.info(messageFinished);
     }
 
     /**
@@ -385,14 +380,14 @@ public final class MainActivity extends Activity {
      *                  of a scene to render.
      */
     private void startRender(@NonNull final String scenePath) {
-        LOGGER.info(ConstantsMethods.START_RENDER);
+        log.info(ConstantsMethods.START_RENDER);
 
         final Config config = createConfigFromUI(scenePath);
 
         this.drawView.renderScene(config);
 
         final String message = ConstantsMethods.START_RENDER + ConstantsMethods.FINISHED;
-        LOGGER.info(message);
+        log.info(message);
     }
 
     /**
@@ -516,7 +511,7 @@ public final class MainActivity extends Activity {
      * select the OBJ file for the Ray Tracer engine to load.
      */
     private void callFileManager() {
-        LOGGER.info("callFileManager");
+        log.info("callFileManager");
 
         final Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("*" + ConstantsUI.FILE_SEPARATOR + "*");
@@ -531,7 +526,7 @@ public final class MainActivity extends Activity {
         }
 
         final String message = "callFileManager" + ConstantsMethods.FINISHED;
-        LOGGER.info(message);
+        log.info(message);
     }
 
     /**

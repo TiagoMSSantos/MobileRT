@@ -3,7 +3,6 @@ package puscas.mobilertapp.utils;
 import android.opengl.GLES20;
 import android.opengl.GLUtils;
 import edu.umd.cs.findbugs.annotations.NonNull;
-import java.util.logging.Logger;
 import java8.util.function.BiFunction;
 import java8.util.function.Function;
 import java8.util.function.Supplier;
@@ -11,20 +10,16 @@ import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
+import lombok.extern.java.Log;
 import puscas.mobilertapp.exceptions.FailureException;
 
 /**
  * Utility class with some helper methods for OpenGL framework.
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@UtilityClass
+@Log
 public final class UtilsGL {
-
-    /**
-     * The {@link Logger} for this class.
-     */
-    private static final Logger LOGGER = Logger.getLogger(UtilsGL.class.getName());
 
     /**
      * Helper method that will execute a GL method and then will check for
@@ -36,7 +31,7 @@ public final class UtilsGL {
      * @param method The method to call.
      */
     public static void run(@NonNull final Runnable method) {
-        LOGGER.info(ConstantsMethods.RUN);
+        log.info(ConstantsMethods.RUN);
         method.run();
         checksGlError();
     }
@@ -52,7 +47,7 @@ public final class UtilsGL {
      */
     @NonNull
     public static <T> T run(@NonNull final Supplier<T> method) {
-        LOGGER.info(ConstantsMethods.RUN);
+        log.info(ConstantsMethods.RUN);
         final T result = method.get();
         checksGlError();
         return result;
@@ -71,7 +66,7 @@ public final class UtilsGL {
     @NonNull
     public static <T, R> T run(@NonNull final R arg,
                                @NonNull final Function<R, T> method) {
-        LOGGER.info(ConstantsMethods.RUN);
+        log.info(ConstantsMethods.RUN);
         final T result = method.apply(arg);
         checksGlError();
         return result;
@@ -92,7 +87,7 @@ public final class UtilsGL {
     public static <T, R, S> T run(@NonNull final R arg1,
                                   @NonNull final S arg2,
                                   @NonNull final BiFunction<R, S, T> method) {
-        LOGGER.info(ConstantsMethods.RUN);
+        log.info(ConstantsMethods.RUN);
         final T result = method.apply(arg1, arg2);
         checksGlError();
         return result;
@@ -106,7 +101,7 @@ public final class UtilsGL {
      *     {@code False} otherwise.
      */
     public static boolean checkGL20Support() {
-        LOGGER.info("checkGL20Support");
+        log.info("checkGL20Support");
 
         final EGL10 egl = (EGL10) EGLContext.getEGL();
         final EGLDisplay display = egl.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY);
@@ -148,7 +143,7 @@ public final class UtilsGL {
      * capabilities.
      */
     public static void resetOpenGlBuffers() {
-        LOGGER.info("resetOpenGlBuffers");
+        log.info("resetOpenGlBuffers");
 
         UtilsGL.run(() -> GLES20.glClear(ConstantsRenderer.ALL_BUFFER_BIT));
 
@@ -169,7 +164,7 @@ public final class UtilsGL {
      * Helper method that generates and binds a texture name in OpenGL.
      */
     public static void bindTexture() {
-        LOGGER.info("bindTexture");
+        log.info("bindTexture");
 
         final int numTextures = 1;
         final int[] textureHandle = new int[numTextures];
@@ -194,7 +189,7 @@ public final class UtilsGL {
      * @param attributes The indexes of the attributes data.
      */
     public static void disableAttributeData(@NonNull final int... attributes) {
-        LOGGER.info("disableAttributeData");
+        log.info("disableAttributeData");
 
         for (final int attribute : attributes) {
             run(() -> GLES20.glDisableVertexAttribArray(attribute));

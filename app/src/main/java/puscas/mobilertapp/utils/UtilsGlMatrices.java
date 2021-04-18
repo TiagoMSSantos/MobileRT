@@ -4,20 +4,15 @@ import android.graphics.Bitmap;
 import android.opengl.Matrix;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import java.nio.ByteBuffer;
-import java.util.logging.Logger;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
+import lombok.extern.java.Log;
 
 /**
  * Utility class with some helper methods for the matrices in OpenGL framework.
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@UtilityClass
+@Log
 public final class UtilsGlMatrices {
-
-    /**
-     * The {@link Logger} for this class.
-     */
-    private static final Logger LOGGER = Logger.getLogger(UtilsGlMatrices.class.getName());
 
     /**
      * Empirical value that makes the OpenGL perspective camera more similar
@@ -50,7 +45,7 @@ public final class UtilsGlMatrices {
      */
     @NonNull
     public static float[] createModelMatrix() {
-        LOGGER.info("createModelMatrix");
+        log.info("createModelMatrix");
 
         final float[] modelMatrix = new float[16];
         Matrix.setIdentityM(modelMatrix, 0);
@@ -70,7 +65,7 @@ public final class UtilsGlMatrices {
     public static float[] createProjectionMatrix(@NonNull final ByteBuffer bbCamera,
                                                  final int width,
                                                  final int height) {
-        LOGGER.info("createProjectionMatrix");
+        log.info("createProjectionMatrix");
 
         final float fovX =
             bbCamera.getFloat(16 * Constants.BYTES_IN_FLOAT) * FIX_ASPECT_PERSPECTIVE;
@@ -108,7 +103,7 @@ public final class UtilsGlMatrices {
      */
     @NonNull
     public static float[] createViewMatrix(@NonNull final ByteBuffer bbCamera) {
-        LOGGER.info("createViewMatrix");
+        log.info("createViewMatrix");
 
         final float eyeX = bbCamera.getFloat(0);
         final float eyeY = bbCamera.getFloat(Constants.BYTES_IN_FLOAT);

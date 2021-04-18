@@ -9,7 +9,7 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
-import java.util.logging.Logger;
+import lombok.extern.java.Log;
 import org.assertj.core.api.Assertions;
 import org.jetbrains.annotations.Contract;
 import org.junit.After;
@@ -21,12 +21,8 @@ import puscas.mobilertapp.exceptions.FailureException;
 /**
  * The test suite for the {@link CustomNumberPicker} util class.
  */
+@Log
 public final class CustomNumberPickerTest {
-
-    /**
-     * The {@link Logger} for this class.
-     */
-    private static final Logger LOGGER = Logger.getLogger(CustomNumberPickerTest.class.getName());
 
     /**
      * Helper method that creates an {@link AttributeSet}.
@@ -190,7 +186,7 @@ public final class CustomNumberPickerTest {
     @Before
     public void setUp() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
     }
 
     /**
@@ -199,7 +195,7 @@ public final class CustomNumberPickerTest {
     @After
     public void tearDown() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
     }
 
     /**
@@ -209,7 +205,7 @@ public final class CustomNumberPickerTest {
     @Test
     public void testAddViewWithWrongView() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
 
         final Context context = new MainActivity();
         final AttributeSet attrs = createAttributeSet();
@@ -237,7 +233,7 @@ public final class CustomNumberPickerTest {
     @Test
     public void testAddViewWithTextView() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
 
         final Context context = new MainActivity();
         final AttributeSet attrs = createAttributeSet();

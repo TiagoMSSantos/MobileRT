@@ -13,8 +13,9 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.logging.Logger;
 import java8.util.J8Arrays;
+import lombok.experimental.UtilityClass;
+import lombok.extern.java.Log;
 import org.junit.Assume;
 import org.junit.jupiter.api.Assertions;
 import puscas.mobilertapp.BuildConfig;
@@ -26,18 +27,9 @@ import puscas.mobilertapp.ViewActionButton;
 /**
  * Helper class which contains helper methods for the tests.
  */
+@UtilityClass
+@Log
 public final class UtilsT {
-
-    /**
-     * The {@link Logger} for this class.
-     */
-    private static final Logger LOGGER = Logger.getLogger(UtilsT.class.getName());
-
-    /**
-     * Private constructor to avoid instantiating this helper class.
-     */
-    private UtilsT() {
-    }
 
     /**
      * Helper method that checks if the current system should or not execute the
@@ -47,14 +39,14 @@ public final class UtilsT {
      */
     static void checksIfSystemShouldContinue(final int numCores) {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
 
         final String messageDebug = "BuildConfig.DEBUG: " + BuildConfig.DEBUG;
-        LOGGER.info(messageDebug);
+        log.info(messageDebug);
         final String messageTags = "Build.TAGS: " + Build.TAGS;
-        LOGGER.info(messageTags);
+        log.info(messageTags);
         final String messageNumCores = "numCores: " + numCores;
-        LOGGER.info(messageNumCores);
+        log.info(messageNumCores);
         Assume.assumeFalse(
             "This test fails in Debug with only 1 core.",
             BuildConfig.DEBUG // Debug mode
@@ -63,7 +55,7 @@ public final class UtilsT {
         );
 
         final String message = methodName + ConstantsMethods.FINISHED;
-        LOGGER.info(message);
+        log.info(message);
     }
 
     /**
@@ -83,7 +75,7 @@ public final class UtilsT {
             // Use reflection to access the private field.
             field = clazz.getClass().getDeclaredField(fieldName);
         } catch (final NoSuchFieldException ex) {
-            LOGGER.warning(ex.getMessage());
+            log.warning(ex.getMessage());
         }
         Preconditions.checkNotNull(field, "field shouldn't be null");
         field.setAccessible(true); // Make the field public.
@@ -92,7 +84,7 @@ public final class UtilsT {
         try {
             privateField = (T) field.get(clazz);
         } catch (final IllegalAccessException ex) {
-            LOGGER.warning(ex.getMessage());
+            log.warning(ex.getMessage());
         }
         Preconditions.checkNotNull(privateField, "privateField shouldn't be null");
 
@@ -121,7 +113,7 @@ public final class UtilsT {
             method = clazz.getClass()
                 .getDeclaredMethod(methodName, parameterTypes.toArray(new Class<?>[0]));
         } catch (final NoSuchMethodException ex) {
-            LOGGER.warning(ex.getMessage());
+            log.warning(ex.getMessage());
         }
         Preconditions.checkNotNull(method, "method shouldn't be null");
         method.setAccessible(true); // Make the method public.
@@ -130,9 +122,9 @@ public final class UtilsT {
         try {
             privateMethodReturnValue = (T) method.invoke(clazz, args.toArray(new Object[0]));
         } catch (final IllegalAccessException ex) {
-            LOGGER.warning(ex.getMessage());
+            log.warning(ex.getMessage());
         } catch (final InvocationTargetException ex) {
-            LOGGER.warning(Objects.requireNonNull(ex.getCause()).getMessage());
+            log.warning(Objects.requireNonNull(ex.getCause()).getMessage());
         }
         Preconditions.checkNotNull(privateMethodReturnValue, "privateMethodReturnValue shouldn't be null");
 
@@ -158,7 +150,7 @@ public final class UtilsT {
         final boolean bitmapSameColor = J8Arrays.stream(pixels)
             .allMatch(pixel -> pixel == firstPixel);
 
-        LOGGER.info("Checking bitmap values.");
+        log.info("Checking bitmap values.");
         Assertions.assertEquals(expectedSameValues, bitmapSameColor,
             "The rendered image should have different values."
         );
@@ -169,12 +161,12 @@ public final class UtilsT {
      * so it starts the Ray Tracing engine.
      */
     public static void startRendering() {
-        LOGGER.info("startRendering");
+        log.info("startRendering");
         assertRenderButtonText(Constants.RENDER);
         Espresso.onView(ViewMatchers.withId(R.id.renderButton))
-            .perform(new ViewActionButton(Constants.STOP));
+            .perform(new ViewActionButton(Constants.STOP, false));
         Utils.executeWithCatching(Espresso::onIdle);
-        LOGGER.info("startRendering" + ConstantsMethods.FINISHED);
+        log.info("startRendering" + ConstantsMethods.FINISHED);
     }
 
     /**
@@ -182,13 +174,13 @@ public final class UtilsT {
      * so it stops the Ray Tracing engine.
      */
     public static void stopRendering() {
-        LOGGER.info("stopRendering");
+        log.info("stopRendering");
         assertRenderButtonText(Constants.STOP);
         Espresso.onView(ViewMatchers.withId(R.id.renderButton))
-            .perform(new ViewActionButton(Constants.RENDER));
+            .perform(new ViewActionButton(Constants.RENDER, false));
         Utils.executeWithCatching(Espresso::onIdle);
         assertRenderButtonText(Constants.RENDER);
-        LOGGER.info("stopRendering" + ConstantsMethods.FINISHED);
+        log.info("stopRendering" + ConstantsMethods.FINISHED);
     }
 
     /**
@@ -200,7 +192,7 @@ public final class UtilsT {
      *                           one color.
      */
     public static void testStateAndBitmap(final boolean expectedSameValues) {
-        LOGGER.info("testBitmap");
+        log.info("testBitmap");
         Espresso.onView(ViewMatchers.withId(R.id.drawLayout))
             .check((view, exception) -> {
                 final DrawView drawView = (DrawView) view;
@@ -221,7 +213,7 @@ public final class UtilsT {
      * @param expectedText The expected text shown in the {@link Button}.
      */
     public static void assertRenderButtonText(@NonNull final String expectedText) {
-        LOGGER.info("assertRenderButtonText");
+        log.info("assertRenderButtonText");
         Espresso.onView(ViewMatchers.withId(R.id.renderButton))
             .check((view, exception) -> {
                 final Button renderButton = view.findViewById(R.id.renderButton);

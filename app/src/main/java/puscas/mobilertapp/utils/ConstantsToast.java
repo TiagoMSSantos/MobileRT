@@ -1,12 +1,11 @@
 package puscas.mobilertapp.utils;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 
 /**
  * Utility class with the text constants for the {@link android.widget.Toast}.
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@UtilityClass
 public final class ConstantsToast {
 
     /**

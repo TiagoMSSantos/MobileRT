@@ -1,6 +1,6 @@
 package puscas.mobilertapp.exceptions;
 
-import java.util.logging.Logger;
+import lombok.extern.java.Log;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -8,12 +8,8 @@ import org.junit.Test;
 /**
  * The test suite for {@link LowMemoryException} class.
  */
+@Log
 public final class LowMemoryExceptionTest {
-
-    /**
-     * The {@link Logger} for this class.
-     */
-    private static final Logger LOGGER = Logger.getLogger(LowMemoryExceptionTest.class.getName());
 
     /**
      * Setup method called before each test.
@@ -21,7 +17,7 @@ public final class LowMemoryExceptionTest {
     @Before
     public void setUp() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
     }
 
     /**
@@ -30,7 +26,7 @@ public final class LowMemoryExceptionTest {
     @After
     public void tearDown() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
     }
 
     /**
@@ -39,7 +35,7 @@ public final class LowMemoryExceptionTest {
     @Test(expected = LowMemoryException.class)
     public void testConstructorWithoutArguments() throws LowMemoryException {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
 
         throw new LowMemoryException();
     }
@@ -50,7 +46,7 @@ public final class LowMemoryExceptionTest {
     @Test(expected = LowMemoryException.class)
     public void testConstructorWithThrowableArgument() throws LowMemoryException {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
 
         final IndexOutOfBoundsException indexOutOfBoundsException =
             new IndexOutOfBoundsException("Test");
@@ -63,7 +59,7 @@ public final class LowMemoryExceptionTest {
     @Test(expected = LowMemoryException.class)
     public void testConstructorWithStringArgument() throws LowMemoryException {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
 
         final String message = "Test";
         throw new LowMemoryException(message);

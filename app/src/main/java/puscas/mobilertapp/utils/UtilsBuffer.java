@@ -5,20 +5,15 @@ import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
-import java.util.logging.Logger;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
+import lombok.extern.java.Log;
 
 /**
  * Utility class with some helper methods to use with {@link Buffer}s.
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@UtilityClass
+@Log
 public final class UtilsBuffer {
-
-    /**
-     * The {@link Logger} for this class.
-     */
-    private static final Logger LOGGER = Logger.getLogger(UtilsBuffer.class.getName());
 
     /**
      * Helper method that checks if any of the {@link ByteBuffer}s is empty.
@@ -27,7 +22,7 @@ public final class UtilsBuffer {
      * @return Whether any of {@link ByteBuffer}s is empty or not.
      */
     public static boolean isAnyByteBufferEmpty(@NonNull final ByteBuffer... byteBuffers) {
-        LOGGER.info("isAnyByteBufferEmpty");
+        log.info("isAnyByteBufferEmpty");
 
         for (final ByteBuffer byteBuffer : byteBuffers) {
             if (byteBuffer.capacity() <= 0) {
@@ -43,7 +38,7 @@ public final class UtilsBuffer {
      * @param byteBuffers The {@link ByteBuffer}s to reset.
      */
     public static void resetByteBuffers(@NonNull final ByteBuffer... byteBuffers) {
-        LOGGER.info("resetByteBuffers");
+        log.info("resetByteBuffers");
 
         for (final ByteBuffer byteBuffer : byteBuffers) {
             byteBuffer.order(ByteOrder.nativeOrder());
@@ -61,7 +56,7 @@ public final class UtilsBuffer {
      */
     @NonNull
     public static FloatBuffer allocateBuffer(@NonNull final float[] arrayValues) {
-        LOGGER.info("allocateBuffer");
+        log.info("allocateBuffer");
         final int byteBufferSize = arrayValues.length * Constants.BYTES_IN_FLOAT;
         final ByteBuffer byteBuffer = ByteBuffer.allocateDirect(byteBufferSize);
         resetByteBuffers(byteBuffer);

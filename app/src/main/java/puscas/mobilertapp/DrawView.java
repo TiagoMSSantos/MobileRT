@@ -18,10 +18,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.logging.Logger;
 import java8.util.Optional;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.extern.java.Log;
 import puscas.mobilertapp.exceptions.LowMemoryException;
 import puscas.mobilertapp.utils.ConstantsError;
 import puscas.mobilertapp.utils.ConstantsMethods;
@@ -34,12 +34,8 @@ import puscas.mobilertapp.utils.UtilsLogging;
 /**
  * The {@link GLSurfaceView} to show the scene being rendered.
  */
+@Log
 public final class DrawView extends GLSurfaceView {
-
-    /**
-     * The {@link Logger} for this class.
-     */
-    private static final Logger LOGGER = Logger.getLogger(DrawView.class.getName());
 
     /**
      * The {@link GLSurfaceView.Renderer}.
@@ -162,7 +158,7 @@ public final class DrawView extends GLSurfaceView {
      * Stops the Ray Tracer engine and waits for it to stop rendering.
      */
     void stopDrawing() {
-        LOGGER.info("stopDrawing");
+        log.info("stopDrawing");
 
         rtStopRender(true);
         Optional.ofNullable(this.lastTask)
@@ -172,7 +168,7 @@ public final class DrawView extends GLSurfaceView {
         this.renderer.updateButton(R.string.render);
 
         final String message = "stopDrawing" + ConstantsMethods.FINISHED;
-        LOGGER.info(message);
+        log.info(message);
     }
 
     /**
@@ -181,7 +177,7 @@ public final class DrawView extends GLSurfaceView {
      * @param config The ray tracer configuration.
      */
     void renderScene(@NonNull final Config config) {
-        LOGGER.info(ConstantsMethods.RENDER_SCENE);
+        log.info(ConstantsMethods.RENDER_SCENE);
 
         waitLastTask();
         rtStartRender(false);
@@ -199,7 +195,7 @@ public final class DrawView extends GLSurfaceView {
             }
 
             final String messageFailed = ConstantsMethods.RENDER_SCENE + " executor failed";
-            LOGGER.severe(messageFailed);
+            log.severe(messageFailed);
             this.renderer.rtFinishRender();
 
             // Only the UI thread can update the text in the Render button.
@@ -212,7 +208,7 @@ public final class DrawView extends GLSurfaceView {
         this.renderer.updateButton(R.string.stop);
 
         final String messageFinished = ConstantsMethods.RENDER_SCENE + ConstantsMethods.FINISHED;
-        LOGGER.info(messageFinished);
+        log.info(messageFinished);
     }
 
     /**
@@ -224,21 +220,21 @@ public final class DrawView extends GLSurfaceView {
      */
     private void startRayTracing(@NonNull final Config config) throws LowMemoryException {
         final String message = ConstantsMethods.RENDER_SCENE + " executor";
-        LOGGER.info(message);
+        log.info(message);
 
         createScene(config);
         requestRender();
 
         final String messageFinished = ConstantsMethods.RENDER_SCENE + " executor"
             + ConstantsMethods.FINISHED;
-        LOGGER.info(messageFinished);
+        log.info(messageFinished);
     }
 
     /**
      * Waits for the result of the last task submitted to the {@link ExecutorService}.
      */
     void waitLastTask() {
-        LOGGER.info("waitLastTask");
+        log.info("waitLastTask");
 
         this.renderer.waitLastTask();
         Optional.ofNullable(this.lastTask)
@@ -255,7 +251,7 @@ public final class DrawView extends GLSurfaceView {
             });
 
         final String message = "waitLastTask" + ConstantsMethods.FINISHED;
-        LOGGER.info(message);
+        log.info(message);
     }
 
     /**
@@ -265,7 +261,7 @@ public final class DrawView extends GLSurfaceView {
      * @throws LowMemoryException If the device has low free memory.
      */
     private void createScene(final Config config) throws LowMemoryException {
-        LOGGER.info("createScene");
+        log.info("createScene");
         final int numPrimitives = this.renderer.rtInitialize(config);
         this.renderer.resetStats(config.getThreads(), config.getConfigSamples(),
             numPrimitives, rtGetNumberOfLights());
@@ -285,13 +281,13 @@ public final class DrawView extends GLSurfaceView {
                               final CharSequence errorMessage) {
         this.renderer.resetStats();
         final String message = exception.getClass() + ": " + exception.getMessage();
-        LOGGER.severe(message);
+        log.severe(message);
         post(() -> Toast.makeText(getContext(), errorMessage, Toast.LENGTH_LONG).show());
     }
 
     @Override
     public void onPause() {
-        LOGGER.info("onPause");
+        log.info("onPause");
         super.onPause();
 
         final Activity activity = getActivity();
@@ -299,22 +295,22 @@ public final class DrawView extends GLSurfaceView {
         stopDrawing();
 
         final String message = "onPause" + ConstantsMethods.FINISHED;
-        LOGGER.info(message);
+        log.info(message);
     }
 
     @Override
     protected void onDetachedFromWindow() {
-        LOGGER.info(ConstantsMethods.ON_DETACHED_FROM_WINDOW);
+        log.info(ConstantsMethods.ON_DETACHED_FROM_WINDOW);
         super.onDetachedFromWindow();
 
         final String message = ConstantsMethods.ON_DETACHED_FROM_WINDOW + ConstantsMethods.FINISHED;
-        LOGGER.info(message);
+        log.info(message);
     }
 
     @Override
     public boolean performClick() {
         super.performClick();
-        LOGGER.info("performClick");
+        log.info("performClick");
 
         return true;
     }
@@ -322,14 +318,14 @@ public final class DrawView extends GLSurfaceView {
     @Override
     public void onWindowFocusChanged(final boolean hasWindowFocus) {
         super.onWindowFocusChanged(hasWindowFocus);
-        LOGGER.info("onWindowFocusChanged");
+        log.info("onWindowFocusChanged");
 
         if (hasWindowFocus && getVisibility() == View.GONE) {
             setVisibility(View.VISIBLE);
         }
 
         final String message = "onWindowFocusChanged" + ConstantsMethods.FINISHED;
-        LOGGER.info(message);
+        log.info(message);
     }
 
     /**
@@ -342,7 +338,7 @@ public final class DrawView extends GLSurfaceView {
      * @see <a href="https://en.wikipedia.org/wiki/Law_of_Demeter">Law of Demeter</a>
      */
     void finishRenderer() {
-        LOGGER.info("finishRenderer");
+        log.info("finishRenderer");
 
         this.renderer.rtFinishRender();
         this.renderer.freeArrays();
@@ -356,7 +352,7 @@ public final class DrawView extends GLSurfaceView {
      * @return The current Ray Tracer engine {@link State}.
      */
     State getRayTracerState() {
-        LOGGER.info("getState");
+        log.info("getState");
 
         return this.renderer.getState();
     }

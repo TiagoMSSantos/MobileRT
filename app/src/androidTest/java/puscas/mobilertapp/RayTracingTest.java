@@ -2,9 +2,8 @@ package puscas.mobilertapp;
 
 import android.graphics.Bitmap;
 import android.os.Build;
-import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.concurrent.TimeoutException;
-import java.util.logging.Logger;
+import lombok.extern.java.Log;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -25,13 +24,8 @@ import puscas.mobilertapp.utils.UtilsT;
  * The test suite for the Ray Tracing engine used in {@link MainActivity}.
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@Log
 public final class RayTracingTest extends AbstractTest {
-
-    /**
-     * The {@link Logger} for this class.
-     */
-    @NonNull
-    private static final Logger LOGGER = Logger.getLogger(RayTracingTest.class.getName());
 
     /**
      * A setup method which is called first.
@@ -39,30 +33,30 @@ public final class RayTracingTest extends AbstractTest {
     @BeforeClass
     public static void setUpAll() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
 
-        LOGGER.info("---------------------------------------------------");
+        log.info("---------------------------------------------------");
         final String messageDevice = "Device: " + Build.DEVICE;
-        LOGGER.info(messageDevice);
+        log.info(messageDevice);
         final String messageUser = "User: " + Build.USER;
-        LOGGER.info(messageUser);
+        log.info(messageUser);
         final String messageType = "Type: " + Build.TYPE;
-        LOGGER.info(messageType);
+        log.info(messageType);
         final String messageTags = "Tags: " + Build.TAGS;
-        LOGGER.info(messageTags);
+        log.info(messageTags);
         final String messageHost = "Host: " + Build.HOST;
-        LOGGER.info(messageHost);
+        log.info(messageHost);
         final String messageFingerPrint = "Fingerprint: " + Build.FINGERPRINT;
-        LOGGER.info(messageFingerPrint);
+        log.info(messageFingerPrint);
         final String messageDisplay = "Display: " + Build.DISPLAY;
-        LOGGER.info(messageDisplay);
+        log.info(messageDisplay);
         final String messageBrand = "Brand: " + Build.BRAND;
-        LOGGER.info(messageBrand);
+        log.info(messageBrand);
         final String messageModel = "Model: " + Build.MODEL;
-        LOGGER.info(messageModel);
+        log.info(messageModel);
         final String messageProduct = "Product: " + Build.PRODUCT;
-        LOGGER.info(messageProduct);
-        LOGGER.info("---------------------------------------------------");
+        log.info(messageProduct);
+        log.info("---------------------------------------------------");
     }
 
     /**
@@ -71,7 +65,7 @@ public final class RayTracingTest extends AbstractTest {
     @AfterClass
     public static void tearDownAll() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
     }
 
 
@@ -84,7 +78,7 @@ public final class RayTracingTest extends AbstractTest {
         super.setUp();
 
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
     }
 
     /**
@@ -96,7 +90,7 @@ public final class RayTracingTest extends AbstractTest {
         super.tearDown();
 
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
     }
 
     /**
@@ -107,7 +101,7 @@ public final class RayTracingTest extends AbstractTest {
     @Test(timeout = 2L * 60L * 1000L)
     public void testRenderInvalidScene() throws TimeoutException {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
 
         final int numCores = UtilsContext.getNumOfCores(this.activity);
         final int scene = Scene.WRONG_FILE.ordinal();
@@ -115,7 +109,7 @@ public final class RayTracingTest extends AbstractTest {
         assertRenderScene(numCores, scene, true);
 
         final String message = methodName + ConstantsMethods.FINISHED;
-        LOGGER.info(message);
+        log.info(message);
     }
 
     /**
@@ -124,7 +118,7 @@ public final class RayTracingTest extends AbstractTest {
     @Test(timeout = 2L * 60L * 1000L)
     public void testRenderScene() throws TimeoutException {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
 
         final int numCores = UtilsContext.getNumOfCores(this.activity);
         final int scene = Scene.CORNELL2.ordinal();
@@ -138,7 +132,7 @@ public final class RayTracingTest extends AbstractTest {
     @Test(timeout = 2L * 60L * 1000L)
     public void testRenderSceneFromInternalStorageOBJ() throws TimeoutException {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
 
         final int numCores = UtilsContext.getNumOfCores(this.activity);
         final int scene = Scene.TEST_INTERNAL_STORAGE.ordinal();
@@ -152,7 +146,7 @@ public final class RayTracingTest extends AbstractTest {
     @Test(timeout = 2L * 60L * 1000L)
     public void testRenderSceneFromSDCardOBJ() throws TimeoutException {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
 
         final int numCores = UtilsContext.getNumOfCores(this.activity);
         final int scene = Scene.TEST_SD_CARD.ordinal();

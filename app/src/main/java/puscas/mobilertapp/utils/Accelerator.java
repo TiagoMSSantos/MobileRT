@@ -1,16 +1,17 @@
 package puscas.mobilertapp.utils;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
-import java.util.logging.Logger;
 import java8.util.J8Arrays;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import org.jetbrains.annotations.Contract;
 
 /**
  * The available acceleration structures for the Ray Tracer engine.
  */
 @RequiredArgsConstructor
+@Log
 public enum Accelerator {
 
     /**
@@ -34,11 +35,6 @@ public enum Accelerator {
     BVH("BVH");
 
     /**
-     * The {@link Logger} for this class.
-     */
-    private static final Logger LOGGER = Logger.getLogger(Accelerator.class.getName());
-
-    /**
      * The name of the acceleration structure.
      */
     @Getter
@@ -50,7 +46,7 @@ public enum Accelerator {
     @Contract(pure = true)
     @NonNull
     public static String[] getNames() {
-        LOGGER.info(ConstantsMethods.GET_NAMES);
+        log.info(ConstantsMethods.GET_NAMES);
 
         return J8Arrays.stream(values())
             .map(Accelerator::getName)

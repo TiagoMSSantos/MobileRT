@@ -3,7 +3,7 @@ package puscas.mobilertapp.system;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.logging.Logger;
+import lombok.extern.java.Log;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
@@ -13,12 +13,8 @@ import puscas.mobilertapp.utils.Constants;
 /**
  * The unit tests for Java memory behaviour in the system.
  */
+@Log
 public final class JavaMemoryTest {
-
-    /**
-     * The {@link Logger} for this class.
-     */
-    private static final Logger LOGGER = Logger.getLogger(JavaMemoryTest.class.getName());
 
     /**
      * Setup method called before each test.
@@ -26,7 +22,7 @@ public final class JavaMemoryTest {
     @Before
     public void setUp() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
     }
 
     /**
@@ -35,7 +31,7 @@ public final class JavaMemoryTest {
     @After
     public void tearDown() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
     }
 
     /**
@@ -44,7 +40,7 @@ public final class JavaMemoryTest {
     @Test
     public void testAllocatingHeapMemoryJava() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        LOGGER.info(methodName);
+        log.info(methodName);
 
         // Dummy array to hold the allocated memory.
         final Collection<ByteBuffer> dummyArrays = new ArrayList<>(1);

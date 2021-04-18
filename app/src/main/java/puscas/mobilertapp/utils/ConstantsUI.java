@@ -2,14 +2,13 @@ package puscas.mobilertapp.utils;
 
 import android.os.Bundle;
 import java8.util.Optional;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 
 /**
  * Utility class with constants for the User Interface (including
  * {@link android.widget.NumberPicker} used).
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@UtilityClass
 public final class ConstantsUI {
 
     /**

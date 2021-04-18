@@ -2,9 +2,8 @@ package puscas.mobilertapp.utils;
 
 import android.opengl.GLES20;
 import edu.umd.cs.findbugs.annotations.NonNull;
-import java.util.logging.Logger;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
+import lombok.extern.java.Log;
 import puscas.mobilertapp.ConfigGlAttribute;
 import puscas.mobilertapp.exceptions.FailureException;
 
@@ -19,13 +18,9 @@ import static android.opengl.GLES20.glShaderSource;
 /**
  * Utility class with some helper methods to create GLSL programs and load GLSL shaders.
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@UtilityClass
+@Log
 public final class UtilsShader {
-
-    /**
-     * The {@link Logger} for this class.
-     */
-    private static final Logger LOGGER = Logger.getLogger(UtilsShader.class.getName());
 
     /**
      * Helper method that attaches some GLSL shaders into an OpenGL program.
@@ -37,7 +32,7 @@ public final class UtilsShader {
     public static void attachShaders(final int shaderProgram,
                                      @NonNull final String vertexShaderCode,
                                      @NonNull final String fragmentShaderCode) {
-        LOGGER.info("attachShaders");
+        log.info("attachShaders");
         final int vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, vertexShaderCode);
         final int fragmentShader = loadShader(GLES20.GL_FRAGMENT_SHADER,
             fragmentShaderCode);
@@ -60,7 +55,7 @@ public final class UtilsShader {
      * @param shaderProgram The OpenGL shader program index.
      */
     public static void checksShaderLinkStatus(final int shaderProgram) {
-        LOGGER.info("checksShaderLinkStatus");
+        log.info("checksShaderLinkStatus");
         final int[] linkStatus = new int[1];
         UtilsGL
             .run(() -> GLES20.glGetProgramiv(shaderProgram, GLES20.GL_LINK_STATUS, linkStatus, 0));
@@ -82,7 +77,7 @@ public final class UtilsShader {
      */
     public static int loadShader(final int shaderType,
                                  @NonNull final String source) {
-        LOGGER.info("loadShader");
+        log.info("loadShader");
         final int shader = UtilsGL.run(() -> glCreateShader(shaderType));
         if (shader == 0) {
             final String msg = "There was an error while creating the shader object.";
@@ -96,8 +91,8 @@ public final class UtilsShader {
         if (compiled[0] == 0) {
             final String informationLog = UtilsGL.run(() -> glGetShaderInfoLog(shader));
             final String msg = "Could not compile shader " + shaderType + ": " + informationLog;
-            LOGGER.severe(msg);
-            LOGGER.severe(source);
+            log.severe(msg);
+            log.severe(source);
             UtilsGL.run(() -> glDeleteShader(shader));
             throw new FailureException(informationLog);
         }
@@ -113,16 +108,16 @@ public final class UtilsShader {
      * @return A new created OpenGL shader program index.
      */
     public static int reCreateProgram(final int shaderProgram) {
-        LOGGER.info("reCreateProgram");
+        log.info("reCreateProgram");
         if (shaderProgram != 0) {
             final String deleteProgramMessage = "Deleting GL program: " + shaderProgram;
-            LOGGER.info(deleteProgramMessage);
+            log.info(deleteProgramMessage);
             UtilsGL.run(() -> GLES20.glDeleteProgram(shaderProgram));
         }
         final int newShaderProgram = UtilsGL.<Integer>run(GLES20::glCreateProgram);
 
         if (newShaderProgram == 0) {
-            LOGGER.severe("Could not create GL program.");
+            log.severe("Could not create GL program.");
             final String programInfo = GLES20.glGetProgramInfoLog(0);
             throw new FailureException(programInfo);
         }
@@ -138,7 +133,7 @@ public final class UtilsShader {
      */
     public static void connectOpenGlAttribute(final int shaderProgram,
                                               @NonNull final ConfigGlAttribute config) {
-        LOGGER.info("connectOpenGlAttribute");
+        log.info("connectOpenGlAttribute");
         UtilsGL.run(() -> GLES20.glBindAttribLocation(
             shaderProgram, config.getAttributeLocation(), config.getAttributeName()));
         UtilsGL.run(() -> GLES20.glVertexAttribPointer(config.getAttributeLocation(),
@@ -157,7 +152,7 @@ public final class UtilsShader {
     public static void loadAndAttachShaders(final int shaderProgram,
                                             @NonNull final String vertexShaderCode,
                                             @NonNull final String fragmentShaderCode) {
-        LOGGER.info("loadAndAttachShaders");
+        log.info("loadAndAttachShaders");
 
         final int vertexShader = UtilsShader.loadShader(GLES20.GL_VERTEX_SHADER,
             vertexShaderCode);
