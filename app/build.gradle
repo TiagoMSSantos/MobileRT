@@ -114,8 +114,6 @@ allprojects {
 
         options.setCompilerArgs([
             '-Xlint:all',
-            '-AprintErrorStack',
-            '-AprintAllQualifiers',
             '-verbose'
         ])
 
@@ -220,6 +218,7 @@ android {
         }
         externalNativeBuild {
             cmake {
+                arguments '-DANDROID_STL=c++_shared', '-DANDROID_TOOLCHAIN=clang'
             }
         }
         javaCompileOptions {
@@ -342,6 +341,10 @@ android {
             resources.srcDirs += ['src/androidTest/resources']
         }
     }
+
+    buildFeatures {
+        prefab true
+    }
 }
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -404,6 +407,9 @@ dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.32'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.3-native-mt'
 
+    // JNI helpers
+    implementation 'com.facebook.fbjni:fbjni:0.2.2'
+    androidTestImplementation 'com.facebook.fbjni:fbjni:0.2.2'
 
 
     // Dependencies for the Android instrumentation tests

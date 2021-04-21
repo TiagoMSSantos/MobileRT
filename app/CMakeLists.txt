@@ -38,10 +38,11 @@ message( STATUS "Adding custom default flags for all third party projects." )
 
 message( STATUS "Setting default compiler flags." )
 set( ANDROID_COMPILER_FLAGS "" CACHE STRING "CUSTOM" FORCE )
+set( CMAKE_CXX11_EXTENSION_COMPILE_OPTION "" CACHE STRING "CUSTOM" FORCE )
 
 if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
     # PIC: Position Independent Code
-    set( CMAKE_CXX_FLAGS "-std=c++11 -fPIC -Bsymbolic -Bsymbolic-functions"
+    set( CMAKE_CXX_FLAGS "-std=c++14 -fPIC -Bsymbolic -Bsymbolic-functions"
       CACHE STRING "CUSTOM" FORCE )
 endif()
 # _GLIBCXX_DEBUG: activate debug mode and all the assertions
@@ -171,10 +172,6 @@ set( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin )
 
 message( STATUS "CMake will handle Qt moc preprocessor automatically." )
 set( CMAKE_AUTOMOC ON )
-
-message( STATUS "Setting up Android Clang with static stdlib." )
-set( ANDROID_TOOLCHAIN clang )
-set( ANDROID_STL c++_static )
 ###############################################################################
 ###############################################################################
 
@@ -284,7 +281,7 @@ if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
   if( DEFINED ANDROID_ABI OR CMAKE_CXX_COMPILER MATCHES "clang"
     OR (CMAKE_CXX_COMPILER MATCHES "g[++]" AND NOT CMAKE_CXX_COMPILER MATCHES "clang")
   )
-    set( COMMON_FLAGS "${COMMON_FLAGS}" -std=c++11 )
+    set( COMMON_FLAGS "${COMMON_FLAGS}" -std=c++14 )
   endif()
   # Turn off C++98 pedantic warning so it can use C++11 features
   set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-c++98-compat-pedantic )
@@ -379,6 +376,10 @@ if( NOT DEFINED ANDROID_ABI )
   if( NOT QT5_FOUND )
     find_package( Qt4 OPTIONAL_COMPONENTS QtCore QtGui )
   endif()
+else()
+  set( build_DIR ${CMAKE_SOURCE_DIR}/build )
+  set( PACKAGE_NAME "AppMobileRT" )
+  find_package( fbjni REQUIRED CONFIG )
 endif()
 
 
@@ -418,6 +419,7 @@ if( DEFINED ANDROID_ABI )
   add_library( ${PROJECT_NAME} SHARED
     ${SCENES_SOURCES} ${MOBILE_DEPENDENT_SOURCES} )
   target_link_libraries( ${PROJECT_NAME} PRIVATE android jnigraphics )
+  target_link_libraries( ${PROJECT_NAME} PRIVATE fbjni::fbjni )
 else()
   message( STATUS "Adding Linux native Qt layer." )
 

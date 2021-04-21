@@ -13,6 +13,11 @@ add_executable( ${PROJECT_NAME} ${GTEST_SOURCES} ${MOBILE_DEPENDENT_SOURCES} ${S
 ###############################################################################
 
 
+message( STATUS "Setting default compiler flags." )
+set( ANDROID_COMPILER_FLAGS "" CACHE STRING "CUSTOM" FORCE )
+set( CMAKE_CXX11_EXTENSION_COMPILE_OPTION "" CACHE STRING "CUSTOM" FORCE )
+
+
 ###############################################################################
 # Set target properties
 ###############################################################################
@@ -57,3 +62,8 @@ target_link_libraries( ${PROJECT_NAME}
   optimized "${COMMON_LINKER_FLAGS_RELEASE}" )
 ###############################################################################
 ###############################################################################
+
+if( DEFINED ANDROID_ABI )
+  message( STATUS "Linking with fbjni." )
+  target_link_libraries( ${PROJECT_NAME} PRIVATE android fbjni::fbjni )
+endif()
