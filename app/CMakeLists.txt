@@ -38,6 +38,7 @@ message( STATUS "Adding custom default flags for all third party projects." )
 
 message( STATUS "Setting default compiler flags." )
 set( ANDROID_COMPILER_FLAGS "" CACHE STRING "CUSTOM" FORCE )
+set( CMAKE_CXX11_EXTENSION_COMPILE_OPTION "" CACHE STRING "CUSTOM" FORCE )
 
 if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
     # PIC: Position Independent Code
@@ -171,10 +172,6 @@ set( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin )
 
 message( STATUS "CMake will handle Qt moc preprocessor automatically." )
 set( CMAKE_AUTOMOC ON )
-
-message( STATUS "Setting up Android Clang with static stdlib." )
-set( ANDROID_TOOLCHAIN clang )
-set( ANDROID_STL c++_static )
 ###############################################################################
 ###############################################################################
 
@@ -387,6 +384,10 @@ if( NOT DEFINED ANDROID_ABI )
   if( NOT QT5_FOUND )
     find_package( Qt4 OPTIONAL_COMPONENTS QtCore QtGui )
   endif()
+else()
+  set( build_DIR ${CMAKE_SOURCE_DIR}/build )
+  set( PACKAGE_NAME "AppMobileRT" )
+  find_package( fbjni REQUIRED CONFIG )
 endif()
 
 
@@ -426,6 +427,7 @@ if( DEFINED ANDROID_ABI )
   add_library( ${PROJECT_NAME} SHARED
     ${SCENES_SOURCES} ${MOBILE_DEPENDENT_SOURCES} )
   target_link_libraries( ${PROJECT_NAME} PRIVATE android jnigraphics )
+  target_link_libraries( ${PROJECT_NAME} PRIVATE fbjni::fbjni )
 else()
   message( STATUS "Adding Linux native Qt layer." )
 

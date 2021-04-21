@@ -27,6 +27,7 @@
 #include <android/bitmap.h>
 #include <condition_variable>
 #include <glm/glm.hpp>
+#include <fbjni/fbjni.h>
 #include <fstream>
 #include <mutex>
 #include <string>
@@ -434,17 +435,12 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
     MobileRT::checkSystemError("rtInitialize start");
     LOG_DEBUG("INITIALIZE");
     try {
-        const auto configClass{env->GetObjectClass(localConfig)};
+        const auto configClass {env->GetObjectClass(localConfig)};
+        const auto configClass2 {facebook::jni::findClassLocal("puscas/mobilertapp/Config")};
 
-        const auto sceneMethodId {env->GetMethodID(configClass, "getScene", "()I")};
-        const auto sceneIndex {env->CallIntMethod(localConfig, sceneMethodId)};
-
-        const auto shaderMethodId {env->GetMethodID(configClass, "getShader", "()I")};
-        const auto shaderIndex {env->CallIntMethod(localConfig, shaderMethodId)};
-
-        const auto acceleratorMethodId {env->GetMethodID(configClass, "getAccelerator", "()I")};
-        const auto acceleratorIndex {env->CallIntMethod(localConfig, acceleratorMethodId)};
-
+        const auto sceneIndex {configClass2->getMethod<jint()>("getScene")(localConfig)};
+        const auto shaderIndex {configClass2->getMethod<jint()>("getShader")(localConfig)};
+        const auto acceleratorIndex {configClass2->getMethod<jint()>("getAccelerator")(localConfig)};
 
         const auto configResolutionMethodId {env->GetMethodID(configClass, "getConfigResolution",
                                                          "()Lpuscas/mobilertapp/configs/ConfigResolution;")};

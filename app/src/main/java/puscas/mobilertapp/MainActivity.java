@@ -76,6 +76,11 @@ public final class MainActivity extends Activity {
      */
     static {
         try {
+            // Lib c++ shared needs to be the 1st library to link.
+            System.loadLibrary("c++_shared");
+            System.loadLibrary("fbjni");
+
+            // MobileRT
             System.loadLibrary("MobileRT");
             System.loadLibrary("Components");
             System.loadLibrary("AppMobileRT");

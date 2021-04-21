@@ -229,6 +229,7 @@ android {
         }
         externalNativeBuild {
             cmake {
+                arguments '-DANDROID_STL=c++_shared', '-DANDROID_TOOLCHAIN=clang'
             }
         }
         javaCompileOptions {
@@ -351,6 +352,10 @@ android {
             resources.srcDirs += ['src/androidTest/resources']
         }
     }
+
+    buildFeatures {
+        prefab true
+    }
 }
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -413,6 +418,9 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlin_stdlib_jdk8_version}"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:${kotlinx_coroutines_android_version}"
 
+    // JNI helpers
+    implementation 'com.facebook.fbjni:fbjni:0.2.2'
+    androidTestImplementation 'com.facebook.fbjni:fbjni:0.2.2'
 
 
     // Dependencies for the Android instrumentation tests
