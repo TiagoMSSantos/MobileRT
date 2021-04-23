@@ -51,9 +51,10 @@ jobs:
 
     - name: Set up JDK
       if: success()
-      uses: actions/setup-java@v1.4.3
+      uses: actions/setup-java@v2
       with:
         java-version: 11
+        distribution: 'zulu'
 
     - name: Install Tree Linux
       if: success() && startsWith(matrix.os, 'ubuntu')
@@ -132,6 +133,8 @@ jobs:
       run: |
         mkdir -p ./app/build/reports;
         mkdir -p ./reports;
+        sudo mkdir -p ${AGENT_TOOLSDIRECTORY}/jdk/11.0.10;
+        sudo ln -s ${JAVA_HOME} ${AGENT_TOOLSDIRECTORY}/jdk/11.0.10/x64 || true 2>&1 | tee ./reports/create_symlink_java.log;
         bash ./scripts/check_android.sh ${{ matrix.ndk_version }} ${{ matrix.cmake_version }} 2>&1 | tee ./reports/check_android.log;
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
@@ -231,9 +234,10 @@ jobs:
 
     - name: Set up JDK
       if: success()
-      uses: actions/setup-java@v1.4.3
+      uses: actions/setup-java@v2
       with:
         java-version: 11
+        distribution: 'zulu'
 
     - name: Download reports from cache
       if: success()
