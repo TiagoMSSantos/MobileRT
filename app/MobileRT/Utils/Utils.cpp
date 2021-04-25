@@ -4,6 +4,56 @@
 
 namespace MobileRT {
 
+    /**
+     * Struct to help convert error code in integer format to string format.
+     */
+    typedef struct {
+        int errorCode;
+        const char* errorString;
+    } ErrorType;
+
+    /**
+     * Convert error code in integer format to string format.
+     * Note: the descriptions in the comments were taken from: https://en.cppreference.com/w/cpp/error/errno_macros
+     */
+    const ErrorType errorType[] = {
+        {0, "SUCCESS" },// Success
+        {EPERM, "EPERM" },// Operation not permitted
+        {ENOENT, "ENOENT" },// No such file or directory
+        {ESRCH, "ESRCH" },// No such process
+        {EINTR, "EINTR" },// Interrupted function
+        {EIO, "EIO" },// I/O error
+        {ENXIO, "ENXIO" },// No such device or address
+        {E2BIG, "E2BIG" },// Argument list too long
+        {ENOEXEC, "ENOEXEC" },// Executable file format error
+        {EBADF, "EBADF" },// Bad file descriptor
+        {ECHILD, "ECHILD" },// No child processes
+        {EAGAIN, "EAGAIN" },// Resource unavailable, try again
+        {ENOMEM, "ENOMEM" },// Not enough space
+        {EACCES, "EACCES" },// Permission denied
+        {EFAULT, "EFAULT" },// Bad address
+        {EBUSY, "EBUSY" },// Device or resource busy
+        {EEXIST, "EEXIST" },// File exists
+        {EXDEV, "EXDEV" },// Cross-device link
+        {ENODEV, "ENODEV" },// No such device
+        {ENOTDIR, "ENOTDIR" },// Not a directory
+        {EISDIR, "EISDIR" },// Is a directory
+        {EINVAL, "EINVAL" },// Invalid argument
+        {ENFILE, "ENFILE" },// Too many files open in system
+        {EMFILE, "EMFILE" },// File descriptor value too large
+        {ENOTTY, "ENOTTY" },// Inappropriate I/O control operation
+        {ETXTBSY, "ETXTBSY" },// Text file busy
+        {EFBIG, "EFBIG" },// File too large
+        {ENOSPC, "ENOSPC" },// No space left on device
+        {ESPIPE, "ESPIPE" },// Invalid seek
+        {EROFS, "EROFS" },// Read-only file system
+        {EMLINK, "EMLINK" },// Too many links
+        {EPIPE, "EPIPE" },// Broken pipe
+        {EDOM, "EDOM" },// Mathematics argument out of domain of function
+        {ERANGE, "ERANGE" },// Result too large
+                            // ENOTBLK: not compatible with Windows
+    };
+
     // Private methods
     /**
      * Helper method that gets the error code, in string format, so its easy to find information on the internet.
@@ -12,152 +62,19 @@ namespace MobileRT {
      */
     static ::std::string getErrorCode() {
         ::std::string errorCode {};
+        auto arrSize {static_cast<int> (sizeof(errorType) / sizeof(errorType[0]))};
 
-        // Convert error code in integer format to string format.
-        // Note: the descriptions in the comments were taken from: https://en.cppreference.com/w/cpp/error/errno_macros
-        switch (errno) {
-            case 0:
-                errorCode = "SUCCESS";
-                break;
-
-            case EPERM:// Operation not permitted
-                errorCode = "EPERM";
-                break;
-
-            case ENOENT:// No such file or directory
-                errorCode = "ENOENT";
-                break;
-
-            case ESRCH:// No such process
-                errorCode = "ESRCH";
-                break;
-
-            case EINTR:// Interrupted function
-                errorCode = "EINTR";
-                break;
-
-            case EIO:// I/O error
-                errorCode = "EIO";
-                break;
-
-            case ENXIO:// No such device or address
-                errorCode = "ENXIO";
-                break;
-
-            case E2BIG:// Argument list too long
-                errorCode = "E2BIG";
-                break;
-
-            case ENOEXEC:// Executable file format error
-                errorCode = "ENOEXEC";
-                break;
-
-            case EBADF:// Bad file descriptor
-                errorCode = "EBADF";
-                break;
-
-            case ECHILD:// No child processes
-                errorCode = "ECHILD";
-                break;
-
-            case EAGAIN:// Resource unavailable, try again
-                errorCode = "EAGAIN";
-                break;
-
-            case ENOMEM:// Not enough space
-                errorCode = "ENOMEM";
-                break;
-
-            case EACCES:// Permission denied
-                errorCode = "EACCES";
-                break;
-
-            case EFAULT:// Bad address
-                errorCode = "EFAULT";
-                break;
-
-            case EBUSY:// Device or resource busy
-                errorCode = "EBUSY";
-                break;
-
-            case EEXIST:// File exists
-                errorCode = "EEXIST";
-                break;
-
-            case EXDEV:// Cross-device link
-                errorCode = "EXDEV";
-                break;
-
-            case ENODEV:// No such device
-                errorCode = "ENODEV";
-                break;
-
-            case ENOTDIR:// Not a directory
-                errorCode = "ENOTDIR";
-                break;
-
-            case EISDIR:// Is a directory
-                errorCode = "EISDIR";
-                break;
-
-            case EINVAL:// Invalid argument
-                errorCode = "EINVAL";
-                break;
-
-            case ENFILE:// Too many files open in system
-                errorCode = "ENFILE";
-                break;
-
-            case EMFILE:// File descriptor value too large
-                errorCode = "EMFILE";
-                break;
-
-            case ENOTTY:// Inappropriate I/O control operation
-                errorCode = "ENOTTY";
-                break;
-
-            case ETXTBSY:// Text file busy
-                errorCode = "ETXTBSY";
-                break;
-
-            case EFBIG:// File too large
-                errorCode = "EFBIG";
-                break;
-
-            case ENOSPC:// No space left on device
-                errorCode = "ENOSPC";
-                break;
-
-            case ESPIPE:// Invalid seek
-                errorCode = "ESPIPE";
-                break;
-
-            case EROFS:// Read-only file system
-                errorCode = "EROFS";
-                break;
-
-            case EMLINK:// Too many links
-                errorCode = "EMLINK";
-                break;
-
-            case EPIPE:// Broken pipe
-                errorCode = "EPIPE";
-                break;
-
-            case EDOM:// Mathematics argument out of domain of function
-                errorCode = "EDOM";
-                break;
-
-            case ERANGE:// Result too large
-                errorCode = "ERANGE";
-                break;
-
-                // ENOTBLK: not compatible with Windows.
-
-            default:// If the error is not identified.
-                errorCode = "UNKNOWN";
-                break;
+        if (errno < arrSize) {
+            for(auto i {0}; i < arrSize; i++) {
+                if(errorType[i].errorCode == errno) {
+                    errorCode = errorType[i].errorString;
+                }
+            }
+        } else {
+            // If the error is not identified.
+            errorCode = "UNKNOWN";
         }
+
         return errorCode;
     }
 
