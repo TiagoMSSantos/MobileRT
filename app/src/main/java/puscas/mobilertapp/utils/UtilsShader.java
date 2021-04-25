@@ -1,7 +1,9 @@
 package puscas.mobilertapp.utils;
 
 import android.opengl.GLES20;
+import androidx.annotation.VisibleForTesting;
 import edu.umd.cs.findbugs.annotations.NonNull;
+import java.util.Map;
 import lombok.experimental.UtilityClass;
 import lombok.extern.java.Log;
 import puscas.mobilertapp.ConfigGlAttribute;
@@ -25,17 +27,17 @@ public final class UtilsShader {
     /**
      * Helper method that attaches some GLSL shaders into an OpenGL program.
      *
-     * @param shaderProgram      The index of OpenGL shader program.
-     * @param vertexShaderCode   The code for the Vertex shader.
-     * @param fragmentShaderCode The code for the Fragment shader.
+     * @param shaderProgram The index of OpenGL shader program.
+     * @param shadersCode   The shaders' code.
      */
     public static void attachShaders(final int shaderProgram,
-                                     @NonNull final String vertexShaderCode,
-                                     @NonNull final String fragmentShaderCode) {
+                                     @NonNull final Map<Integer, String> shadersCode) {
         log.info("attachShaders");
+        final String vertexShaderCode = shadersCode.get(GLES20.GL_VERTEX_SHADER);
+        final String fragmentShaderCode = shadersCode.get(GLES20.GL_FRAGMENT_SHADER);
+
         final int vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, vertexShaderCode);
-        final int fragmentShader = loadShader(GLES20.GL_FRAGMENT_SHADER,
-            fragmentShaderCode);
+        final int fragmentShader = loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode);
 
         // Attach and link shaders to program
         UtilsGL.run(() -> GLES20.glAttachShader(shaderProgram, vertexShader));
@@ -43,8 +45,7 @@ public final class UtilsShader {
         UtilsGL.run(() -> GLES20.glLinkProgram(shaderProgram));
 
         final int[] attachedShaders = new int[1];
-        UtilsGL.run(() -> GLES20.glGetProgramiv(shaderProgram, GLES20.GL_ATTACHED_SHADERS,
-            attachedShaders, 0));
+        UtilsGL.run(() -> GLES20.glGetProgramiv(shaderProgram, GLES20.GL_ATTACHED_SHADERS, attachedShaders, 0));
 
         checksShaderLinkStatus(shaderProgram);
     }
@@ -75,6 +76,7 @@ public final class UtilsShader {
      * @param source     The code of the shader.
      * @return The OpenGL index of the shader.
      */
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     public static int loadShader(final int shaderType,
                                  @NonNull final String source) {
         log.info("loadShader");
@@ -145,19 +147,17 @@ public final class UtilsShader {
      * Helper method that loads a vertex and a fragment shaders and attach those
      * to a GLSL program.
      *
-     * @param shaderProgram      The index of OpenGL shader program.
-     * @param vertexShaderCode   The code for the Vertex shader.
-     * @param fragmentShaderCode The code for the Fragment shader.
+     * @param shaderProgram The index of OpenGL shader program.
+     * @param shadersCode   The shaders' code.
      */
     public static void loadAndAttachShaders(final int shaderProgram,
-                                            @NonNull final String vertexShaderCode,
-                                            @NonNull final String fragmentShaderCode) {
+                                            @NonNull final Map<Integer, String> shadersCode) {
         log.info("loadAndAttachShaders");
+        final String vertexShaderCode = shadersCode.get(GLES20.GL_VERTEX_SHADER);
+        final String fragmentShaderCode = shadersCode.get(GLES20.GL_FRAGMENT_SHADER);
 
-        final int vertexShader = UtilsShader.loadShader(GLES20.GL_VERTEX_SHADER,
-            vertexShaderCode);
-        final int fragmentShader = UtilsShader.loadShader(GLES20.GL_FRAGMENT_SHADER,
-            fragmentShaderCode);
+        final int vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, vertexShaderCode);
+        final int fragmentShader = loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode);
 
         // Attach and link shaders to program
         UtilsGL.run(() -> GLES20.glAttachShader(shaderProgram, vertexShader));

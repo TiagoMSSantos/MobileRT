@@ -268,7 +268,10 @@ public final class DrawView extends GLSurfaceView {
         final int widthView = getWidth();
         final int heightView = getHeight();
         queueEvent(() -> this.renderer.setBitmap(
-            config.getConfigResolution(), widthView, heightView, config.isRasterize()));
+            config.getConfigResolution(),
+            ConfigResolutionView.builder().width(widthView).height(heightView).build(),
+            config.isRasterize()
+        ));
     }
 
     /**
@@ -358,17 +361,23 @@ public final class DrawView extends GLSurfaceView {
     }
 
     /**
-     * Prepares the {@link MainRenderer} with the OpenGL shaders' code and also
-     * with the render button for the {@link RenderTask}.
+     * Prepares the {@link MainRenderer} with the OpenGL shaders' code.
      *
      * @param shadersCode        The shaders' code for the Ray Tracing engine.
      * @param shadersPreviewCode The shaders' code for the OpenGL preview feature.
-     * @param button             The render {@link Button}.
      */
-    void prepareRenderer(final Map<Integer, String> shadersCode,
-                         final Map<Integer, String> shadersPreviewCode,
-                         final Button button) {
-        this.renderer.prepareRenderer(shadersCode, shadersPreviewCode, button);
+    void setUpShadersCode(final Map<Integer, String> shadersCode,
+                          final Map<Integer, String> shadersPreviewCode) {
+        this.renderer.setUpShadersCode(shadersCode, shadersPreviewCode);
+    }
+
+    /**
+     * Prepares the {@link MainRenderer} with the render button for the {@link RenderTask}.
+     *
+     * @param button The render {@link Button}.
+     */
+    void setUpButtonRender(final Button button) {
+        this.renderer.setButtonRender(button);
     }
 
 }

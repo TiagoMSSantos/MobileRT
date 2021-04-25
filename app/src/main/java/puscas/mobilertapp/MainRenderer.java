@@ -107,24 +107,14 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
     private final ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
 
     /**
-     * The vertex shader code.
+     * The shaders' code for the Ray Tracing engine.
      */
-    private String vertexShaderCode = null;
+    private Map<Integer, String> shadersCode;
 
     /**
-     * The fragment shader code.
+     * The shaders' code for the OpenGL preview feature.
      */
-    private String fragmentShaderCode = null;
-
-    /**
-     * The vertex shader code for the rasterizer.
-     */
-    private String vertexShaderCodeRaster = null;
-
-    /**
-     * The fragment shader code for the rasterizer.
-     */
-    private String fragmentShaderCodeRaster = null;
+    private Map<Integer, String> shadersPreviewCode;
 
     /**
      * The {@link ActivityManager} used to get information about the memory
@@ -188,26 +178,16 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         .finishRender(this::rtFinishRender);
 
     /**
-     * The width of the {@link Bitmap} where the Ray Tracer engine will render
+     * The {@link ConfigResolution} of the {@link Bitmap} where the Ray Tracer engine will render
      * the scene.
      */
-    private int width = 1;
+    private ConfigResolution configResolution = ConfigResolution.builder().build();
 
     /**
-     * The height of the {@link Bitmap} where the Ray Tracer engine will render
+     * The {@link ConfigResolutionView} of the {@link DrawView} where the Ray Tracer engine will render
      * the scene.
      */
-    private int height = 1;
-
-    /**
-     * The width of the {@link DrawView}.
-     */
-    private int viewWidth = 1;
-
-    /**
-     * The height of the {@link DrawView}.
-     */
-    private int viewHeight = 1;
+    private ConfigResolutionView configResolutionView = ConfigResolutionView.builder().build();
 
     /**
      * The OpenGL program shader for the 2 triangles containing a texture with
@@ -250,6 +230,13 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
     private RenderTask renderTask = null;
 
     /**
+     * The constructor for this class.
+     */
+    MainRenderer() {
+        setBitmap();
+    }
+
+    /**
      * Converts a pixel from OpenGL format (ABGR) to a pixel of Android format
      * (ARGB).
      *
@@ -286,9 +273,9 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * variables in the shader program.
      *
      * @param bbCamera         The camera's position and vectors in the scene.
-     * @param configResolution The resolution of the {@link Bitmap} to render.
      * @param shaderProgram    The OpenGL shader program index to specify the
      *                         matrices.
+     * @param configResolution The resolution of the {@link Bitmap} to render.
      */
     private static void createMatricesAsUniformVariables(@NonNull final ByteBuffer bbCamera,
                                                          final int shaderProgram,
@@ -578,22 +565,15 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
     }
 
     /**
-     * Prepares this class with the OpenGL shaders' code and also
-     * with the render button for the {@link RenderTask}.
+     * Prepares this class with the OpenGL shaders' code.
      *
      * @param shadersCode        The shaders' code for the Ray Tracing engine.
      * @param shadersPreviewCode The shaders' code for the OpenGL preview feature.
-     * @param button             The render {@link Button}.
      */
-    void prepareRenderer(final Map<Integer, String> shadersCode,
-                         final Map<Integer, String> shadersPreviewCode,
-                         final Button button) {
-        this.setBitmap();
-        this.vertexShaderCode = shadersCode.get(GLES20.GL_VERTEX_SHADER);
-        this.fragmentShaderCode = shadersCode.get(GLES20.GL_FRAGMENT_SHADER);
-        this.vertexShaderCodeRaster = shadersPreviewCode.get(GLES20.GL_VERTEX_SHADER);
-        this.fragmentShaderCodeRaster = shadersPreviewCode.get(GLES20.GL_FRAGMENT_SHADER);
-        this.buttonRender = button;
+    void setUpShadersCode(final Map<Integer, String> shadersCode,
+                          final Map<Integer, String> shadersPreviewCode) {
+        this.shadersCode = shadersCode;
+        this.shadersPreviewCode = shadersPreviewCode;
     }
 
     /**
@@ -601,10 +581,10 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * {@code height} and also sets the {@link #viewWidth} and
      * {@link #viewHeight} fields.
      */
-    void setBitmap() {
+    private void setBitmap() {
         log.info(ConstantsMethods.SET_BITMAP);
 
-        setBitmap(ConfigResolution.builder().build(), 1, 1, false);
+        setBitmap(ConfigResolution.builder().build(), ConfigResolutionView.builder().build(), false);
 
         final String message = ConstantsMethods.SET_BITMAP + ConstantsMethods.FINISHED;
         log.info(message);
@@ -615,28 +595,28 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * {@code height} and also sets the {@link #viewWidth} and
      * {@link #viewHeight} fields.
      *
-     * @param configResolution The resolution of the new {@link Bitmap}.
-     * @param widthView        The width of the {@link GLSurfaceView}.
-     * @param heightView       The height of the {@link GLSurfaceView}.
-     * @param rasterize        The new {@link #rasterize}.
+     * @param configResolution     The resolution of the new {@link Bitmap}.
+     * @param configResolutionView The resolution of the {@link android.view.SurfaceView}.
+     * @param rasterize            The new {@link #rasterize}.
      */
     void setBitmap(final ConfigResolution configResolution,
-                   final int widthView,
-                   final int heightView,
+                   final ConfigResolutionView configResolutionView,
                    final boolean rasterize) {
         log.info(ConstantsMethods.SET_BITMAP);
+        this.configResolution = configResolution;
+        this.configResolutionView = configResolutionView;
 
-        final int lWidth = configResolution.getWidth();
-        final int lHeight = configResolution.getHeight();
-        this.bitmap = Bitmap.createBitmap(lWidth, lHeight, Bitmap.Config.ARGB_8888);
-        this.bitmap.eraseColor(Color.BLACK);
-        this.width = lWidth;
-        this.height = lHeight;
-        this.viewWidth = widthView;
-        this.viewHeight = heightView;
+        this.bitmap = Bitmap.createBitmap(configResolution.getWidth(), configResolution.getHeight(), Bitmap.Config.ARGB_8888);
+        try {
+            this.bitmap.eraseColor(Color.BLACK);
+            validateBitmap(this.bitmap);
+        } catch (final NullPointerException ex) {
+            // This `NullPointerException` should only be thrown in a Unit Test.
+            log.severe(ex.getMessage());
+        }
+
         this.firstFrame = true;
         this.rasterize = rasterize;
-        validateBitmap(this.bitmap);
 
         final String messageFinished = ConstantsMethods.SET_BITMAP + ConstantsMethods.FINISHED;
         log.info(messageFinished);
@@ -651,34 +631,30 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      */
     @Contract(pure = true)
     private int convertIndexOpenGlToAndroid(final int index) {
-        final int column = index % this.viewWidth;
-        final int line = index / this.viewWidth;
-        return (this.viewHeight - line - 1) * this.viewWidth + column;
+        final int column = index % this.configResolutionView.getWidth();
+        final int line = index / this.configResolutionView.getWidth();
+        return (this.configResolutionView.getHeight() - line - 1) * this.configResolutionView.getWidth() + column;
     }
 
     /**
      * Helper method that reads and copies the pixels in the OpenGL frame buffer
      * to a new {@link Bitmap}.
      *
-     * @param viewWidth    The width of the {@link View} in the OpenGL context.
-     * @param viewHeight   The height of the {@link View} in the OpenGL context.
-     * @param bitmapWidth  The width of the desired {@link Bitmap}.
-     * @param bitmapHeight The height of the desired {@link Bitmap}.
+     * @param configResolution     The resolution of the desired {@link Bitmap}.
+     * @param configResolutionView The resolution the {@link View} in the OpenGL context.
      * @return A new {@link Bitmap} with the colors of the pixels in the OpenGL
      *     frame buffer.
      */
-    private Bitmap copyGlFrameBufferToBitmap(final int viewWidth,
-                                             final int viewHeight,
-                                             final int bitmapWidth,
-                                             final int bitmapHeight) {
-        final int sizePixels = viewWidth * viewHeight;
+    private Bitmap copyGlFrameBufferToBitmap(final ConfigResolution configResolution,
+                                             final ConfigResolutionView configResolutionView) {
+        final int sizePixels = configResolutionView.getWidth() * configResolutionView.getHeight();
         final int[] arrayBytesPixels = new int[sizePixels];
         final int[] arrayBytesNewBitmap = new int[sizePixels];
         final IntBuffer intBuffer = IntBuffer.wrap(arrayBytesPixels);
         intBuffer.position(0);
 
         UtilsGL.run(() -> GLES20.glReadPixels(
-            0, 0, viewWidth, viewHeight, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, intBuffer
+            0, 0, configResolutionView.getWidth(), configResolutionView.getHeight(), GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, intBuffer
         ));
 
         int openGlIndex = 0;
@@ -689,12 +665,14 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         }
 
         final Bitmap bitmapView = Bitmap.createBitmap(
-            arrayBytesNewBitmap, viewWidth, viewHeight, Bitmap.Config.ARGB_8888
+            arrayBytesNewBitmap, configResolutionView.getWidth(), configResolutionView.getHeight(), Bitmap.Config.ARGB_8888
         );
         final Bitmap newBitmapWithPreviewScene = Bitmap.createScaledBitmap(
-            bitmapView, bitmapWidth, bitmapHeight, true);
-        Preconditions.checkArgument(bitmapView.getWidth() == viewWidth, "viewWidth is not the expected one");
-        Preconditions.checkArgument(bitmapView.getHeight() == viewHeight, "viewHeight is not the expected one");
+            bitmapView, configResolution.getWidth(), configResolution.getHeight(), true);
+        Preconditions.checkArgument(bitmapView.getWidth() == configResolutionView.getWidth(),
+                "viewWidth is not the expected one");
+        Preconditions.checkArgument(bitmapView.getHeight() == configResolutionView.getHeight(),
+                "viewHeight is not the expected one");
         return newBitmapWithPreviewScene;
     }
 
@@ -744,18 +722,12 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
 
         connectAttributes(this.shaderProgramRaster, bbVertices, bbColors);
 
-        UtilsShader.attachShaders(this.shaderProgramRaster,
-            this.vertexShaderCodeRaster, this.fragmentShaderCodeRaster);
+        UtilsShader.attachShaders(this.shaderProgramRaster, this.shadersPreviewCode);
 
 
         UtilsGL.run(() -> GLES20.glUseProgram(this.shaderProgramRaster));
 
-
-        final ConfigResolution configResolution = ConfigResolution.builder()
-            .width(this.width)
-            .height(this.height)
-            .build();
-        createMatricesAsUniformVariables(bbCamera, this.shaderProgramRaster, configResolution);
+        createMatricesAsUniformVariables(bbCamera, this.shaderProgramRaster, this.configResolution);
 
         defineAttributeData(bbVertices, 0);
 
@@ -766,7 +738,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
 
         UtilsGL.disableAttributeData(0, 1);
 
-        return copyGlFrameBufferToBitmap(this.viewWidth, this.viewHeight, this.width, this.height);
+        return copyGlFrameBufferToBitmap(this.configResolution, this.configResolutionView);
     }
 
     /**
@@ -782,8 +754,8 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
             .buttonRender(this.buttonRender)
             .numPrimitives(this.numPrimitives)
             .numThreads(this.numThreads)
-            .width(this.width)
-            .height(this.height)
+            .width(this.configResolution.getWidth())
+            .height(this.configResolution.getHeight())
             .build();
 
         this.renderTask = RenderTask.builder()
@@ -848,8 +820,10 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
     private void validateBitmap(final Bitmap bitmap) {
         Preconditions.checkNotNull(bitmap, "arrayVertices shouldn't be null");
         Preconditions.checkArgument(!bitmap.isRecycled(), "bitmap shouldn't been recycled");
-        Preconditions.checkArgument(bitmap.getWidth() == this.width, "bitmap width is not the expected");
-        Preconditions.checkArgument(bitmap.getHeight() == this.height, "bitmap height is not the expected");
+        Preconditions.checkArgument(bitmap.getWidth() == this.configResolution.getWidth(),
+                "bitmap width is not the expected");
+        Preconditions.checkArgument(bitmap.getHeight() == this.configResolution.getHeight(),
+                "bitmap height is not the expected");
     }
 
     @Override
@@ -860,8 +834,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
 
         this.shaderProgram = UtilsShader.reCreateProgram(this.shaderProgram);
 
-        UtilsShader.loadAndAttachShaders(this.shaderProgram, this.vertexShaderCode,
-            this.fragmentShaderCode);
+        UtilsShader.loadAndAttachShaders(this.shaderProgram, this.shadersCode);
 
         // Create geometry and texture coordinates buffers
         this.floatBufferVertices = UtilsBuffer.allocateBuffer(this.verticesTexture);

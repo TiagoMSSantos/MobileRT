@@ -39,7 +39,7 @@ public final class Utils {
             } catch (final InterruptedException ex) {
                 Thread.currentThread().interrupt();
             } finally {
-                Utils.handleInterruption("Utils#waitExecutorToFinish");
+                handleInterruption("Utils#waitExecutorToFinish");
             }
         }
         while (running);

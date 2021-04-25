@@ -4,11 +4,11 @@ import lombok.Builder;
 import lombok.Getter;
 
 /**
- * The configurator for the desired resolution in the Ray Tracer engine.
+ * The configurator for the desired resolution in the {@link android.view.SurfaceView}.
  */
 @Builder
 @Getter
-public final class ConfigResolution {
+class ConfigResolutionView {
 
     /**
      * The width.

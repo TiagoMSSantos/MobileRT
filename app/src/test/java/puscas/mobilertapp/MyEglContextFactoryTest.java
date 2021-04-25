@@ -235,8 +235,7 @@ public final class MyEglContextFactoryTest {
         final Context context = new MainActivity();
         final DrawView drawView = new DrawView(context);
 
-        final GLSurfaceView.EGLContextFactory myEGLContextFactory =
-            new MyEglContextFactory(drawView);
+        final GLSurfaceView.EGLContextFactory myEGLContextFactory = new MyEglContextFactory(drawView);
         final EGL10 egl = createEGL();
 
         final EGLContext eglContext = myEGLContextFactory.createContext(egl, null, null);

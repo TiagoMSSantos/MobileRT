@@ -607,7 +607,8 @@ public final class MainActivity extends Activity {
         final Map<Integer, String> shadersPreview =
             UtilsContext.readShaders(this, shadersPreviewPaths);
 
-        this.drawView.prepareRenderer(shadersRayTracing, shadersPreview, renderButton);
+        this.drawView.setUpShadersCode(shadersRayTracing, shadersPreview);
+        this.drawView.setUpButtonRender(renderButton);
         this.drawView.setVisibility(View.VISIBLE);
         this.drawView.setPreserveEGLContextOnPause(true);
     }

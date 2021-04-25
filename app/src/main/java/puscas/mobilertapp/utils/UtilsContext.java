@@ -169,7 +169,7 @@ public final class UtilsContext {
      */
     public static boolean is64BitDevice(@NonNull final Context context) {
         log.info("is64BitDevice");
-        final String cpuInfoPath = UtilsContext.readTextAsset(context,
+        final String cpuInfoPath = readTextAsset(context,
             "Utils" + ConstantsUI.FILE_SEPARATOR + "cpuInfoPath.txt");
         try (InputStream inputStream = new FileInputStream(cpuInfoPath.trim())) {
             final String text = Utils.readTextFromInputStream(inputStream);
@@ -221,10 +221,10 @@ public final class UtilsContext {
         @NonNull final Map<Integer, String> shadersPaths) {
         log.info("readShaders");
 
-        final String vertexShader = UtilsContext.readTextAsset(context,
+        final String vertexShader = readTextAsset(context,
             Objects.requireNonNull(shadersPaths.get(GLES20.GL_VERTEX_SHADER)));
 
-        final String fragmentShader = UtilsContext.readTextAsset(context,
+        final String fragmentShader = readTextAsset(context,
             Objects.requireNonNull(shadersPaths.get(GLES20.GL_FRAGMENT_SHADER)));
 
         return ImmutableMap.of(
