@@ -163,7 +163,7 @@ jobs:
 
     - name: Install Qt
       if: success()
-      uses: jurplel/install-qt-action@v2.13.0
+      uses: jurplel/install-qt-action@v2.13.2
       with:
         # ['dir', 'version', 'host', 'target', 'arch', 'install-deps', 'modules', 'cached',
         # 'setup-python', 'tools', 'set-env', 'tools-only', 'aqtversion', 'py7zrversion', 'extra']
