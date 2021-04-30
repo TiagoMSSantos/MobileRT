@@ -31,8 +31,7 @@ source scripts/helper_functions.sh
 reports_path=./app/build/reports
 callCommand mkdir -p ${reports_path}
 
-# Capitalize 1st letter
-type="$(tr '[:lower:]' '[:upper:]' <<<"${type:0:1}")${type:1}"
+type=$(capitalizeFirstletter "${type}")
 echo "type: '${type}'"
 
 function runUnitTests() {

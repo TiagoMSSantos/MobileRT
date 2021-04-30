@@ -106,5 +106,12 @@ function checkCommand() {
     exit 1
   fi
 }
+
+# Capitalize 1st letter
+function capitalizeFirstletter() {
+  local res
+  res="$(tr '[:lower:]' '[:upper:]' <<<"${1:0:1}")${1:1}"
+  echo "${res}"
+}
 ###############################################################################
 ###############################################################################

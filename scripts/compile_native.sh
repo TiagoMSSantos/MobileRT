@@ -146,8 +146,7 @@ function install_conan_dependencies() {
 # Set path to build
 build_path=./build_${type}
 
-# Capitalize 1st letter
-type="$(tr '[:lower:]' '[:upper:]' <<<"${type:0:1}")${type:1}"
+type=$(capitalizeFirstletter "${type}")
 echo "type: '${type}'"
 
 if [ "${recompile}" == "yes" ]; then
