@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import lombok.extern.java.Log;
 import org.assertj.core.api.Assertions;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import puscas.mobilertapp.utils.Constants;
 
@@ -17,31 +15,10 @@ import puscas.mobilertapp.utils.Constants;
 public final class JavaMemoryTest {
 
     /**
-     * Setup method called before each test.
-     */
-    @Before
-    public void setUp() {
-        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        log.info(methodName);
-    }
-
-    /**
-     * Tear down method called after each test.
-     */
-    @After
-    public void tearDown() {
-        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        log.info(methodName);
-    }
-
-    /**
      * Tests that allocating heap memory from Java, makes the available memory decrease as expected.
      */
     @Test
     public void testAllocatingHeapMemoryJava() {
-        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        log.info(methodName);
-
         // Dummy array to hold the allocated memory.
         final Collection<ByteBuffer> dummyArrays = new ArrayList<>(1);
 

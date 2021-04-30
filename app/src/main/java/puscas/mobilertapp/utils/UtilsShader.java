@@ -33,15 +33,8 @@ public final class UtilsShader {
     public static void attachShaders(final int shaderProgram,
                                      @NonNull final Map<Integer, String> shadersCode) {
         log.info("attachShaders");
-        final String vertexShaderCode = shadersCode.get(GLES20.GL_VERTEX_SHADER);
-        final String fragmentShaderCode = shadersCode.get(GLES20.GL_FRAGMENT_SHADER);
 
-        final int vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, vertexShaderCode);
-        final int fragmentShader = loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode);
-
-        // Attach and link shaders to program
-        UtilsGL.run(() -> GLES20.glAttachShader(shaderProgram, vertexShader));
-        UtilsGL.run(() -> GLES20.glAttachShader(shaderProgram, fragmentShader));
+        loadAndAttachShaders(shaderProgram, shadersCode);
         UtilsGL.run(() -> GLES20.glLinkProgram(shaderProgram));
 
         final int[] attachedShaders = new int[1];
@@ -153,15 +146,24 @@ public final class UtilsShader {
     public static void loadAndAttachShaders(final int shaderProgram,
                                             @NonNull final Map<Integer, String> shadersCode) {
         log.info("loadAndAttachShaders");
-        final String vertexShaderCode = shadersCode.get(GLES20.GL_VERTEX_SHADER);
-        final String fragmentShaderCode = shadersCode.get(GLES20.GL_FRAGMENT_SHADER);
-
-        final int vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, vertexShaderCode);
-        final int fragmentShader = loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode);
+        final int vertexShader = getShaderIndex(shadersCode, GLES20.GL_VERTEX_SHADER);
+        final int fragmentShader =  getShaderIndex(shadersCode, GLES20.GL_FRAGMENT_SHADER);
 
         // Attach and link shaders to program
         UtilsGL.run(() -> GLES20.glAttachShader(shaderProgram, vertexShader));
         UtilsGL.run(() -> GLES20.glAttachShader(shaderProgram, fragmentShader));
+    }
+
+    /**
+     * Helper method which loads an OpenGL shader and returns the OpenGL index of the shader.
+     *
+     * @param shadersCode The shaders' code.
+     * @param shaderType  The type of the shader (vertex or fragment shader).
+     * @return The OpenGL index of the shader.
+     */
+    private static int getShaderIndex(@NonNull final Map<Integer, String> shadersCode, final int shaderType) {
+        final String shaderCode = shadersCode.get(shaderType);
+        return loadShader(shaderType, shaderCode);
     }
 
 }

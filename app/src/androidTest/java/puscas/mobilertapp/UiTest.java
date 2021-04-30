@@ -13,8 +13,6 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.List;
 import java8.util.stream.IntStreams;
 import lombok.extern.java.Log;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
@@ -132,38 +130,11 @@ public final class UiTest extends AbstractTest {
     }
 
     /**
-     * Setup method called before each test.
-     */
-    @Before
-    @Override
-    public void setUp() {
-        super.setUp();
-
-        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        log.info(methodName);
-    }
-
-    /**
-     * Tear down method called after each test.
-     */
-    @After
-    @Override
-    public void tearDown() {
-        super.tearDown();
-
-        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        log.info(methodName);
-    }
-
-    /**
      * Tests changing all the {@link NumberPicker} and clicking the render
      * {@link Button} few times.
      */
     @Test(timeout = 20L * 60L * 1000L)
     public void testUI() {
-        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        log.info(methodName);
-
         UtilsT.assertRenderButtonText(Constants.RENDER);
 
         final int numCores = UtilsContext.getNumOfCores(this.activity);
@@ -177,9 +148,6 @@ public final class UiTest extends AbstractTest {
      */
     @Test(timeout = 20L * 60L * 1000L)
     public void testClickRenderButtonManyTimesWithoutPreview() {
-        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        log.info(methodName);
-
         clickPreviewCheckBox(false);
 
         final int numCores = UtilsContext.getNumOfCores(this.activity);
@@ -191,9 +159,6 @@ public final class UiTest extends AbstractTest {
      */
     @Test(timeout = 30L * 60L * 1000L)
     public void testClickRenderButtonManyTimesWithPreview() {
-        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        log.info(methodName);
-
         clickPreviewCheckBox(false);
         clickPreviewCheckBox(true);
 
@@ -207,9 +172,6 @@ public final class UiTest extends AbstractTest {
      */
     @Test(timeout = 60L * 1000L)
     public void testClickRenderButtonLongPress() {
-        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        log.info(methodName);
-
         Espresso.onView(ViewMatchers.withId(R.id.renderButton))
             .perform(new ViewActionButton(Constants.RENDER, true))
             .check((view, exception) -> {

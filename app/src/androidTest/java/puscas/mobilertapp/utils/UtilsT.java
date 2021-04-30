@@ -38,9 +38,6 @@ public final class UtilsT {
      * @param numCores The number of CPU cores available.
      */
     static void checksIfSystemShouldContinue(final int numCores) {
-        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        log.info(methodName);
-
         final String messageDebug = "BuildConfig.DEBUG: " + BuildConfig.DEBUG;
         log.info(messageDebug);
         final String messageTags = "Build.TAGS: " + Build.TAGS;
@@ -53,9 +50,6 @@ public final class UtilsT {
                 && Build.TAGS.equals("test-keys") // In third party systems (CI)
                 && numCores == 1 // Android system with only 1 CPU core
         );
-
-        final String message = methodName + ConstantsMethods.FINISHED;
-        log.info(message);
     }
 
     /**

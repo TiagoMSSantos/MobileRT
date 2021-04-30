@@ -187,7 +187,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * The {@link ConfigResolutionView} of the {@link DrawView} where the Ray Tracer engine will render
      * the scene.
      */
-    private ConfigResolutionView configResolutionView = ConfigResolutionView.builder().build();
+    private ConfigResolution configResolutionView = ConfigResolution.builder().build();
 
     /**
      * The OpenGL program shader for the 2 triangles containing a texture with
@@ -584,7 +584,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
     private void setBitmap() {
         log.info(ConstantsMethods.SET_BITMAP);
 
-        setBitmap(ConfigResolution.builder().build(), ConfigResolutionView.builder().build(), false);
+        setBitmap(ConfigResolution.builder().build(), ConfigResolution.builder().build(), false);
 
         final String message = ConstantsMethods.SET_BITMAP + ConstantsMethods.FINISHED;
         log.info(message);
@@ -600,7 +600,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * @param rasterize            The new {@link #rasterize}.
      */
     void setBitmap(final ConfigResolution configResolution,
-                   final ConfigResolutionView configResolutionView,
+                   final ConfigResolution configResolutionView,
                    final boolean rasterize) {
         log.info(ConstantsMethods.SET_BITMAP);
         this.configResolution = configResolution;
@@ -646,7 +646,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      *     frame buffer.
      */
     private Bitmap copyGlFrameBufferToBitmap(final ConfigResolution configResolution,
-                                             final ConfigResolutionView configResolutionView) {
+                                             final ConfigResolution configResolutionView) {
         final int sizePixels = configResolutionView.getWidth() * configResolutionView.getHeight();
         final int[] arrayBytesPixels = new int[sizePixels];
         final int[] arrayBytesNewBitmap = new int[sizePixels];

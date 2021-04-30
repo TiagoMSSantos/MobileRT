@@ -5,8 +5,6 @@ import java.io.File;
 import java.util.List;
 import java8.util.stream.StreamSupport;
 import lombok.extern.java.Log;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
@@ -25,50 +23,16 @@ import puscas.mobilertapp.utils.UtilsContext;
 public final class FileSystemTest extends AbstractTest {
 
     /**
-     * Setup method called before each test.
-     */
-    @Before
-    @Override
-    public void setUp() {
-        super.setUp();
-
-        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        log.info(methodName);
-    }
-
-    /**
-     * Tear down method called after each test.
-     */
-    @After
-    @Override
-    public void tearDown() {
-        super.tearDown();
-
-        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        log.info(methodName);
-    }
-
-
-    /**
      * Tests that a file in the internal storage from the Android device exists and is readable.
      */
     @Test(timeout = 5L * 1000L)
     public void testFilesExistAndReadableFromInternalStorage() {
-        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        log.info(methodName);
-
         final String internalStorage = UtilsContext.getInternalStoragePath(this.activity);
 
         final List<String> paths = ImmutableList.<String>builder().add(
             internalStorage + Constants.OBJ_FILE_TEAPOT
         ).build();
-        StreamSupport.stream(paths)
-            .forEach(path -> {
-                final File file = new File(path);
-                final String filePath = file.getAbsolutePath();
-                Assertions.assertTrue(file.exists(), Constants.FILE_SHOULD_EXIST + ": " + filePath);
-                Assertions.assertTrue(file.canRead(), "File should be readable: " + filePath);
-            });
+        validatePathsExist(paths);
     }
 
     /**
@@ -76,9 +40,6 @@ public final class FileSystemTest extends AbstractTest {
      */
     @Test(timeout = 5L * 1000L)
     public void testReadableSdCard() {
-        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        log.info(methodName);
-
         final String sdCardPath = UtilsContext.getSdCardPath(this.activity);
 
         final List<String> paths = ImmutableList.<String>builder().add(
@@ -89,19 +50,17 @@ public final class FileSystemTest extends AbstractTest {
         StreamSupport.stream(paths)
             .forEach(path -> {
                 final File file = new File(path);
-                final String filePath = file.getAbsolutePath();
-                final String[] list = file.list();
+                final String filePath = getAbsolutePath(path);
                 log.info("Files in directory: " + filePath);
+                final String[] list = file.list();
                 if (list != null) {
                     for (final String content : list) {
-                        final File contentFile = new File(content);
-                        log.info(contentFile.getAbsolutePath());
+                        log.info(getAbsolutePath(content));
                     }
                 }
                 log.info("List finished.");
                 Assertions.assertTrue(file.exists(), Constants.FILE_SHOULD_EXIST + ": " + filePath);
-                Assertions
-                    .assertTrue(file.isDirectory(), "File should be a directory: " + filePath);
+                Assertions.assertTrue(file.isDirectory(), "File should be a directory: " + filePath);
             });
     }
 
@@ -110,14 +69,62 @@ public final class FileSystemTest extends AbstractTest {
      */
     @Test(timeout = 5L * 1000L)
     public void testFilesExistAndReadableSdCard() {
-        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        log.info(methodName);
-
         final String sdCardPath = UtilsContext.getSdCardPath(this.activity);
 
         final List<String> paths = ImmutableList.<String>builder().add(
             sdCardPath + ConstantsUI.FILE_SEPARATOR + Constants.OBJ_FILE_CORNELL_BOX
         ).build();
+        validatePathsExist(paths);
+    }
+
+    /**
+     * Tests that a file does not exist in the Android device.
+     */
+    @Test(timeout = 5L * 1000L)
+    public void testFilesNotExist() {
+        final String internalStorage = UtilsContext.getInternalStoragePath(this.activity);
+
+        final List<String> paths = ImmutableList.<String>builder().add(
+            Constants.EMPTY_FILE,
+            internalStorage + Constants.OBJ_FILE_NOT_EXISTS
+        ).build();
+        validatePathsNotExist(paths);
+    }
+
+    /**
+     * Tests that a file does not exist in the SD card device.
+     */
+    @Test(timeout = 5L * 1000L)
+    public void testFilesNotExistSdCard() {
+        final String sdCardPath = UtilsContext.getSdCardPath(this.activity);
+
+        final List<String> paths = ImmutableList.<String>builder().add(
+            sdCardPath + ConstantsUI.FILE_SEPARATOR + Constants.OBJ_FILE_NOT_EXISTS_SD_CARD
+        ).build();
+        validatePathsNotExist(paths);
+    }
+
+    /**
+     * Helper method that validates that a {@link List} of paths are for {@link File}s that do NOT exist and can't be
+     * read.
+     *
+     * @param paths The paths to validate.
+     */
+    private static void validatePathsNotExist(final List<String> paths) {
+        StreamSupport.stream(paths)
+            .forEach(path -> {
+                final File file = new File(path);
+                Assertions.assertFalse(file.exists(), "File should not exist!");
+                Assertions.assertFalse(file.canRead(), "File should not be readable!");
+            });
+    }
+
+    /**
+     * Helper method that validates that a {@link List} of paths are for {@link File}s that exist and can be read.
+     *
+     * @param paths The paths to validate.
+     */
+    private static void validatePathsExist(final List<String> paths) {
         StreamSupport.stream(paths)
             .forEach(path -> {
                 final File file = new File(path);
@@ -129,46 +136,14 @@ public final class FileSystemTest extends AbstractTest {
     }
 
     /**
-     * Tests that a file does not exist in the Android device.
+     * Helper method that gets the absolute path for a file.
+     *
+     * @param path The path to the file.
      */
-    @Test(timeout = 5L * 1000L)
-    public void testFilesNotExist() {
-        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        log.info(methodName);
-
-        final String internalStorage = UtilsContext.getInternalStoragePath(this.activity);
-
-        final List<String> paths = ImmutableList.<String>builder().add(
-            Constants.EMPTY_FILE,
-            internalStorage + Constants.OBJ_FILE_NOT_EXISTS
-        ).build();
-        StreamSupport.stream(paths)
-            .forEach(path -> {
-                final File file = new File(path);
-                Assertions.assertFalse(file.exists(), "File should not exist!");
-                Assertions.assertFalse(file.canRead(), "File should not be readable!");
-            });
-    }
-
-    /**
-     * Tests that a file does not exist in the SD card device.
-     */
-    @Test(timeout = 5L * 1000L)
-    public void testFilesNotExistSdCard() {
-        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        log.info(methodName);
-
-        final String sdCardPath = UtilsContext.getSdCardPath(this.activity);
-
-        final List<String> paths = ImmutableList.<String>builder().add(
-            sdCardPath + ConstantsUI.FILE_SEPARATOR + Constants.OBJ_FILE_NOT_EXISTS_SD_CARD
-        ).build();
-        StreamSupport.stream(paths)
-            .forEach(path -> {
-                final File file = new File(path);
-                Assertions.assertFalse(file.exists(), "File should not exist!");
-                Assertions.assertFalse(file.canRead(), "File should not be readable!");
-            });
+    private static String getAbsolutePath(final String path) {
+        final File file = new File(path);
+        final String filePath = file.getAbsolutePath();
+        return filePath;
     }
 
 }

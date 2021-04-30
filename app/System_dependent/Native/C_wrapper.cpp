@@ -86,7 +86,7 @@ static void work_thread(::MobileRT::Config &config) {
 
                 case 2:
                     scene = cornellBox2_Scene(::std::move(scene));
-                    camera = cornellBox2_Cam(ratio);
+                    camera = cornellBox_Cam(ratio);
                     maxDist = ::glm::vec3{1, 1, 1};
                     break;
 

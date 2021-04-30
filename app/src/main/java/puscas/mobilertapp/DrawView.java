@@ -269,7 +269,7 @@ public final class DrawView extends GLSurfaceView {
         final int heightView = getHeight();
         queueEvent(() -> this.renderer.setBitmap(
             config.getConfigResolution(),
-            ConfigResolutionView.builder().width(widthView).height(heightView).build(),
+            ConfigResolution.builder().width(widthView).height(heightView).build(),
             config.isRasterize()
         ));
     }

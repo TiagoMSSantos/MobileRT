@@ -50,9 +50,6 @@ public final class NativeMemoryTest {
      */
     @Test
     public void testAllocatingHeapMemoryNative() {
-        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        log.info(methodName);
-
         // Dummy array to hold the allocated memory.
         final Collection<ByteBuffer> dummyArrays = new ArrayList<>(1);
 

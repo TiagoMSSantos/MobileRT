@@ -1,8 +1,6 @@
 package puscas.mobilertapp;
 
 import lombok.extern.java.Log;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import puscas.mobilertapp.utils.Accelerator;
@@ -16,31 +14,10 @@ import puscas.mobilertapp.utils.Shader;
 public final class ConfigTest {
 
     /**
-     * Setup method called before each test.
-     */
-    @Before
-    public void setUp() {
-        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        log.info(methodName);
-    }
-
-    /**
-     * Tear down method called after each test.
-     */
-    @After
-    public void tearDown() {
-        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        log.info(methodName);
-    }
-
-    /**
      * Test the building of {@link Config} with default values.
      */
     @Test
     public void testDefaultBuild() {
-        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        log.info(methodName);
-
         final Config config = Config.builder().build();
         Assertions.assertEquals(1, config.getConfigResolution().getWidth(),
             "Width not the expected value.");
@@ -66,9 +43,6 @@ public final class ConfigTest {
      */
     @Test
     public void testBuild() {
-        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        log.info(methodName);
-
         final int width = 1;
         final int height = 2;
         final int scene = Scene.CORNELL.ordinal();

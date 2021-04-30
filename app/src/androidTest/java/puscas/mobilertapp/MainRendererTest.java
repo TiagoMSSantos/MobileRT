@@ -8,8 +8,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import lombok.extern.java.Log;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
@@ -25,39 +23,12 @@ import puscas.mobilertapp.utils.UtilsT;
 public final class MainRendererTest extends AbstractTest {
 
     /**
-     * Setup method called before each test.
-     */
-    @Before
-    @Override
-    public void setUp() {
-        super.setUp();
-
-        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        log.info(methodName);
-    }
-
-    /**
-     * Tear down method called after each test.
-     */
-    @After
-    @Override
-    public void tearDown() {
-        super.tearDown();
-
-        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        log.info(methodName);
-    }
-
-    /**
      * Tests loading a Vertex GLSL shader for the Ray Tracing engine to output the rendered scene.
      *
      * @throws InterruptedException If any error occurs.
      */
     @Test
     public void testLoadVertexShader() throws InterruptedException {
-        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        log.info(methodName);
-
         testLoadShader("Shaders/VertexShader.glsl", GLES20.GL_VERTEX_SHADER);
     }
 
@@ -68,9 +39,6 @@ public final class MainRendererTest extends AbstractTest {
      */
     @Test
     public void testLoadVertexShaderRaster() throws InterruptedException {
-        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        log.info(methodName);
-
         testLoadShader("Shaders/VertexShaderRaster.glsl", GLES20.GL_VERTEX_SHADER);
     }
 
@@ -81,9 +49,6 @@ public final class MainRendererTest extends AbstractTest {
      */
     @Test
     public void testLoadFragmentShader() throws InterruptedException {
-        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        log.info(methodName);
-
         testLoadShader("Shaders/FragmentShader.glsl", GLES20.GL_FRAGMENT_SHADER);
     }
 
@@ -94,9 +59,6 @@ public final class MainRendererTest extends AbstractTest {
      */
     @Test
     public void testLoadFragmentShaderRaster() throws InterruptedException {
-        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        log.info(methodName);
-
         testLoadShader("Shaders/FragmentShaderRaster.glsl", GLES20.GL_FRAGMENT_SHADER);
     }
 

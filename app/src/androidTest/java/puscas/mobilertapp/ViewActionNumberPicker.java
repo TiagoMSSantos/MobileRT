@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.hamcrest.Matcher;
 import org.junit.jupiter.api.Assertions;
-import puscas.mobilertapp.utils.ConstantsMethods;
 import puscas.mobilertapp.utils.Utils;
 
 /**
@@ -43,17 +42,11 @@ public final class ViewActionNumberPicker implements ViewAction {
 
     @Override
     public final void perform(@NonNull final UiController uiController, @NonNull final View view) {
-        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        log.info(methodName);
-
         final NumberPicker numberPicker = (NumberPicker) view;
         numberPicker.setValue(this.newValue);
         Utils.executeWithCatching(() -> uiController.loopMainThreadForAtLeast(100L));
         Assertions.assertEquals(this.newValue, numberPicker.getValue(),
             "The setted value should be '" + this.newValue + "'");
-
-        final String message = methodName + ConstantsMethods.FINISHED;
-        log.info(message);
     }
 
 }

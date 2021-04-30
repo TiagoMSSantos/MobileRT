@@ -224,19 +224,6 @@ Scene cornellBox2_Scene(Scene scene) {
     return scene;
 }
 
-::std::unique_ptr<::MobileRT::Camera> cornellBox2_Cam(const float ratio) {
-    LOG_DEBUG("CAMERA: cornellBox2_Cam");
-    const auto fovX {45.0F * ratio};
-    const auto fovY {45.0F};
-    auto res {::MobileRT::std::make_unique<Components::Perspective> (
-            ::glm::vec3 {0.0F, 0.0F, -3.4F},
-            ::glm::vec3 {0.0F, 0.0F, 1.0F},
-            ::glm::vec3 {0.0F, 1.0F, 0.0F},
-            fovX, fovY
-    )};
-    return ::std::move(res);
-}
-
 Scene spheres_Scene(Scene scene) {
     LOG_DEBUG("SCENE: spheres_Scene");
     // create one sphere

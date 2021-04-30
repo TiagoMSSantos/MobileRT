@@ -12,8 +12,6 @@ import javax.microedition.khronos.egl.EGLSurface;
 import lombok.extern.java.Log;
 import org.assertj.core.api.Assertions;
 import org.jetbrains.annotations.Contract;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -205,33 +203,12 @@ public final class MyEglContextFactoryTest {
     }
 
     /**
-     * Setup method called before each test.
-     */
-    @Before
-    public void setUp() {
-        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        log.info(methodName);
-    }
-
-    /**
-     * Tear down method called after each test.
-     */
-    @After
-    public void tearDown() {
-        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        log.info(methodName);
-    }
-
-    /**
      * Tests that without providing {@link EGLDisplay} and {@link EGLConfig},
      * the {@link GLSurfaceView.EGLContextFactory} doesn't create the
      * {@link EGLContext}.
      */
     @Test
     public void testInvalidCreateContext() {
-        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        log.info(methodName);
-
         final Context context = new MainActivity();
         final DrawView drawView = new DrawView(context);
 
