@@ -178,10 +178,10 @@ public final class RenderTask extends AsyncTaskCoroutine {
         this.finishRender = config.getFinishRender();
         this.updateInterval = config.getUpdateInterval();
         this.primitivesT = ",p=" + config.getNumPrimitives() + ",l=" + config.getNumLights();
-        this.resolutionT = ",r:" + config.getWidth() + 'x' + config.getHeight();
+        this.resolutionT = ",r:" + config.getResolution().getWidth() + 'x' + config.getResolution().getHeight();
         this.threadsT = ",t:" + config.getNumThreads();
-        this.samplesPixelT = ",spp:" + config.getSamplesPixel();
-        this.samplesLightT = ",spl:" + config.getSamplesLight();
+        this.samplesPixelT = ",spp:" + config.getSamples().getSamplesPixel();
+        this.samplesLightT = ",spl:" + config.getSamples().getSamplesLight();
         this.buttonRender = new WeakReference<>(config.getButtonRender());
         this.textView = new WeakReference<>(config.getTextView());
 

@@ -38,26 +38,17 @@ public final class ConfigRenderTask {
     private final int numLights;
 
     /**
-     * The width of the {@link Bitmap} where the Ray Tracer engine will render
+     * The resolution of the {@link Bitmap} where the Ray Tracer engine will render
      * the scene.
      */
-    private final int width;
+    @Builder.Default
+    private final ConfigResolution resolution = ConfigResolution.builder().build();
 
     /**
-     * The height of the {@link Bitmap} where the Ray Tracer engine will render
-     * the scene.
+     * The number of samples to be used by the Ray Tracing engine.
      */
-    private final int height;
-
-    /**
-     * The number of samples per pixel.
-     */
-    private final int samplesPixel;
-
-    /**
-     * The number of samples per light.
-     */
-    private final int samplesLight;
+    @Builder.Default
+    private final ConfigSamples samples = ConfigSamples.builder().build();
 
     /**
      * The {@link TextView} which will output the debug information about the

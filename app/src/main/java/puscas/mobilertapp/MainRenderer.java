@@ -409,8 +409,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         this.numPrimitives = numPrimitives;
 
         this.configRenderTask
-            .samplesPixel(lSamplesPixel)
-            .samplesLight(lSamplesLight)
+            .samples(configSamples)
             .numLights(numLights);
     }
 
@@ -754,8 +753,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
             .buttonRender(this.buttonRender)
             .numPrimitives(this.numPrimitives)
             .numThreads(this.numThreads)
-            .width(this.configResolution.getWidth())
-            .height(this.configResolution.getHeight())
+            .resolution(this.configResolution)
             .build();
 
         this.renderTask = RenderTask.builder()
