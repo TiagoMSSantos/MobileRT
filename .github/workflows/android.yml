@@ -219,7 +219,7 @@ jobs:
 
     name: Code Coverage and Sonar
     runs-on: ubuntu-18.04
-    timeout-minutes: 40
+    timeout-minutes: 60
     env:
       CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
