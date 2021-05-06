@@ -63,7 +63,7 @@ elif [ -x "$(command -v brew)" ]; then
   callCommand brew tap cartr/qt4;
   callCommand brew uninstall --force openssl@1.0;
   callCommand brew install openssl@1.0;
-  callCommand brew install qt@4;
+  brew install qt@4;
   callCommand brew install llvm;
 
   # Install OpenMP
