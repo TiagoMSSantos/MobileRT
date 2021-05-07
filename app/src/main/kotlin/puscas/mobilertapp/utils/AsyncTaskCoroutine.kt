@@ -23,7 +23,7 @@ abstract class AsyncTaskCoroutine {
     /**
      * The last [Job] that was triggered to be calculated by the Kotlin coroutines.
      */
-    private var lastJob : Deferred<Unit>? = null;
+    private var lastJob: Deferred<Unit>? = null
 
     /**
      * Runs on the UI thread before [doInBackground].
@@ -102,7 +102,7 @@ abstract class AsyncTaskCoroutine {
             lastJob = GlobalScope.async(Dispatchers.IO) {
                 doInBackground()
             }
-            lastJob!!.await()
+            (lastJob ?: return@async).await()
             onPostExecute()
         }
     }

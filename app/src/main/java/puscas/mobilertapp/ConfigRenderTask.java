@@ -8,7 +8,7 @@ import lombok.Getter;
 import puscas.mobilertapp.utils.State;
 
 /**
- * The configurator for the Ray Tracer engine.
+ * The configurator for the {@link RenderTask}.
  */
 @Builder
 @Getter

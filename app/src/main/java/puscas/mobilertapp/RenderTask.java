@@ -8,6 +8,8 @@ import android.widget.TextView;
 import com.google.common.base.Preconditions;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import java.lang.ref.WeakReference;
+import java.math.RoundingMode;
+import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -164,15 +166,24 @@ public final class RenderTask extends AsyncTaskCoroutine {
     private String sampleT = null;
 
     /**
+     * The {@link NumberFormat} to use when printing the {@link Float} values in the {@link TextView}.
+     */
+    private final NumberFormat formatter = NumberFormat.getInstance(Locale.US);
+
+    /**
      * A private constructor of this class to force using the
      * RenderTask builder.
      *
-     * @param config        The configurator which contains all of the parameters.
+     * @param config The configurator which contains all of the parameters.
      */
     @Builder
     private RenderTask(@NonNull final ConfigRenderTask config) {
         super();
         log.info("RenderTask");
+
+        this.formatter.setMaximumFractionDigits(2);
+        this.formatter.setMinimumFractionDigits(2);
+        this.formatter.setRoundingMode(RoundingMode.HALF_UP);
 
         this.requestRender = config.getRequestRender();
         this.finishRender = config.getFinishRender();
@@ -198,15 +209,11 @@ public final class RenderTask extends AsyncTaskCoroutine {
             this.requestRender.run();
             publishProgress();
 
-            final String messageFinished = ConstantsMethods.TIMER + ConstantsMethods.FINISHED;
-            log.info(messageFinished);
             if (currentState != State.BUSY) {
                 this.executorService.shutdown();
             }
 
-            final String messageFinished2 =
-                ConstantsMethods.TIMER + ConstantsMethods.FINISHED + " 2";
-            log.info(messageFinished2);
+            log.info(ConstantsMethods.TIMER + ConstantsMethods.FINISHED);
         };
 
         checksArguments();
@@ -217,16 +224,13 @@ public final class RenderTask extends AsyncTaskCoroutine {
      * that will be presented in the {@link TextView}.
      */
     private void updateTextStats() {
-        this.fpsT = String.format(Locale.US, "fps:%.1f", rtGetFps());
-        this.fpsRenderT = String.format(Locale.US, "[%.1f]", this.fps);
-        final long timeRenderer = rtGetTimeRenderer();
-        this.timeFrameT = String.format(Locale.US, ",t:%.2fs",
-            (float) timeRenderer / MILLISECONDS_IN_SECOND);
+        this.fpsT = "fps:" + this.formatter.format((double) rtGetFps());
+        this.fpsRenderT = "[" + this.formatter.format((double) this.fps) + "]";
+        this.timeFrameT = ",t:" + this.formatter.format((double) rtGetTimeRenderer() / (double) MILLISECONDS_IN_SECOND);
         final long currentTime = SystemClock.elapsedRealtime();
-        this.timeT = String.format(Locale.US, "[%.2fs]",
-            (float) (currentTime - this.startTimeStamp) / MILLISECONDS_IN_SECOND);
-        this.allocatedT = ",m:" + Debug.getNativeHeapAllocatedSize()
-            / (long) Constants.BYTES_IN_MEGABYTE + "mb";
+        this.timeT = "[" + this.formatter.format(
+                (double) (currentTime - this.startTimeStamp) / (double) MILLISECONDS_IN_SECOND) + "]";
+        this.allocatedT = ",m:" + Debug.getNativeHeapAllocatedSize() / (long) Constants.BYTES_IN_MEGABYTE + "mb";
         this.sampleT = "," + rtGetSample();
     }
 
@@ -235,13 +239,12 @@ public final class RenderTask extends AsyncTaskCoroutine {
      * that will be presented in the {@link TextView}.
      */
     private void resetTextStats() {
-        this.fpsT = String.format(Locale.US, "fps:%.2f", 0.0F);
-        this.fpsRenderT = String.format(Locale.US, "[%.2f]", 0.0F);
-        this.timeFrameT = String.format(Locale.US, ",t:%.2fs", 0.0F);
-        this.timeT = String.format(Locale.US, "[%.2fs]", 0.0F);
+        this.fpsT = "fps:" + this.formatter.format(0.0);
+        this.fpsRenderT = "[" + this.formatter.format(0.0) + "]";
+        this.timeFrameT = ",t:" + this.formatter.format(0.0);
+        this.timeT = "[" + this.formatter.format(0.0) + "]";
         this.stateT = " " + State.IDLE.getId();
-        this.allocatedT = ",m:" + Debug.getNativeHeapAllocatedSize()
-            / (long) Constants.BYTES_IN_MEGABYTE + "mb";
+        this.allocatedT = ",m:" + Debug.getNativeHeapAllocatedSize() / (long) Constants.BYTES_IN_MEGABYTE + "mb";
         this.sampleT = ",0";
     }
 
@@ -293,9 +296,8 @@ public final class RenderTask extends AsyncTaskCoroutine {
     private void updateFps() {
         this.frame++;
         final float time = (float) SystemClock.elapsedRealtime();
-        final float oneSecond = MILLISECONDS_IN_SECOND;
-        if ((time - this.timebase) > oneSecond) {
-            this.fps = ((float) this.frame * oneSecond) / (time - this.timebase);
+        this.fps = ((float) this.frame * MILLISECONDS_IN_SECOND) / (time - this.timebase);
+        if ((time - this.timebase) > MILLISECONDS_IN_SECOND) {
             this.timebase = time;
             this.frame = 0;
         }

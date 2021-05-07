@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.google.common.annotations.VisibleForTesting;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -40,6 +41,7 @@ public final class DrawView extends GLSurfaceView {
     /**
      * The {@link GLSurfaceView.Renderer}.
      */
+    @VisibleForTesting
     @Getter(AccessLevel.PUBLIC)
     private final MainRenderer renderer = new MainRenderer();
 
@@ -48,8 +50,7 @@ public final class DrawView extends GLSurfaceView {
      * {@link ConstantsRenderer#NUMBER_THREADS} number of threads that will
      * create Ray Tracer engine renderer.
      */
-    private final ExecutorService executorService =
-        Executors.newFixedThreadPool(ConstantsRenderer.NUMBER_THREADS);
+    private final ExecutorService executorService = Executors.newFixedThreadPool(ConstantsRenderer.NUMBER_THREADS);
 
     /**
      * The changing configs.
