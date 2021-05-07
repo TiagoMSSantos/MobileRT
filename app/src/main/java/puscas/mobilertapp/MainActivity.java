@@ -22,7 +22,6 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
-import java.util.Locale;
 import java.util.Map;
 import java8.util.Optional;
 import java8.util.stream.IntStreams;
@@ -358,8 +357,7 @@ public final class MainActivity extends Activity {
      * @param view The view of the {@link Activity}.
      */
     public void startRender(@NonNull final View view) {
-        final String message = String.format(Locale.US, "%s: %s",
-            ConstantsMethods.START_RENDER, view.toString());
+        final String message = ConstantsMethods.START_RENDER + ": " + view.toString();
         log.info(message);
 
         final State state = this.drawView.getRayTracerState();

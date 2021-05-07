@@ -15,7 +15,6 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java8.util.Optional;
@@ -391,14 +390,11 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
 
         Preconditions.checkArgument(numPrimitives >= -1, "numPrimitives shouldn't be negative");
 
-        final int lSamplesPixel = configSamples.getSamplesPixel();
-        final int lSamplesLight = configSamples.getSamplesLight();
-        final String numThreadsStr = String.format(Locale.US, "numThreads: %d", numThreads);
-        final String numPrimitivesStr = String.format(Locale.US,
-            "numPrimitives: %d", numPrimitives);
-        final String numLightsStr = String.format(Locale.US, "numLights: %d", numLights);
-        final String samplesPixelStr = String.format(Locale.US, "samplesPixel: %d", lSamplesPixel);
-        final String samplesLightStr = String.format(Locale.US, "samplesLight: %d", lSamplesLight);
+        final String numThreadsStr = "numThreads: " + numThreads;
+        final String numPrimitivesStr = "numPrimitives: " + numPrimitives;
+        final String numLightsStr = "numLights: " + numLights;
+        final String samplesPixelStr = "samplesPixel: " + configSamples.getSamplesPixel();
+        final String samplesLightStr = "samplesLight: " + configSamples.getSamplesLight();
         log.info(numThreadsStr);
         log.info(numPrimitivesStr);
         log.info(numLightsStr);
@@ -527,8 +523,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         final long availMem = this.memoryInfo.availMem / (long) Constants.BYTES_IN_MEGABYTE;
         final long totalMem = this.memoryInfo.totalMem / (long) Constants.BYTES_IN_MEGABYTE;
         final boolean insufficientMem = availMem <= (long) (1 + memoryNeeded);
-        final String message = String.format(Locale.US, "MEMORY AVAILABLE: %dMB (%dMB)",
-            availMem, totalMem);
+        final String message = "MEMORY AVAILABLE: " + availMem + "MB (" + totalMem + "MB)";
         log.info(message);
         return insufficientMem || this.memoryInfo.lowMemory;
     }

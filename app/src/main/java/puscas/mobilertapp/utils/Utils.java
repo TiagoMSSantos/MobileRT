@@ -58,7 +58,7 @@ public final class Utils {
      */
     public static void handleInterruption(@NonNull final String methodName) {
         final boolean interrupted = Thread.interrupted();
-        final String message = String.format("%s exception: %s", methodName, interrupted);
+        final String message = methodName + " exception: " + interrupted;
         log.severe(message);
     }
 

@@ -19,7 +19,7 @@ public final class UtilsLogging {
      */
     public static void logThrowable(@NonNull final Throwable ex,
                                     @NonNull final String methodName) {
-        final String message = String.format("%s exception: %s", methodName, ex.getMessage());
+        final String message = methodName + " exception: " + ex.getMessage();
         log.severe(message);
     }
 
@@ -28,9 +28,12 @@ public final class UtilsLogging {
      */
     public static void printStackTrace() {
         final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+        final StringBuilder stringBuilder = new StringBuilder("");
         for (final StackTraceElement ste : stackTrace) {
-            final String stackTraceElement = String.format("ste: %s", ste.toString());
-            log.severe(stackTraceElement);
+            stringBuilder.append( "ste: ");
+            stringBuilder.append(ste.toString());
+            log.severe(stringBuilder.toString());
+            stringBuilder.setLength(0);
         }
     }
 

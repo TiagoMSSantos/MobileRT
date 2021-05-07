@@ -18,7 +18,7 @@ abstract class AsyncTaskCoroutine {
     /**
      * The [Logger] for this class.
      */
-    private val LOGGER = Logger.getLogger(AsyncTaskCoroutine::class.java.name)
+    private val logger = Logger.getLogger(AsyncTaskCoroutine::class.java.name)
 
     /**
      * The last [Job] that was triggered to be calculated by the Kotlin coroutines.
@@ -97,9 +97,9 @@ abstract class AsyncTaskCoroutine {
      * method on the UI thread.
      */
     fun execute() {
-        GlobalScope.async<Unit>(Dispatchers.Main) {
+        GlobalScope.async(Dispatchers.Main) {
             onPreExecute()
-            lastJob = GlobalScope.async<Unit>(Dispatchers.IO) {
+            lastJob = GlobalScope.async(Dispatchers.IO) {
                 doInBackground()
             }
             lastJob!!.await()
@@ -112,9 +112,9 @@ abstract class AsyncTaskCoroutine {
      */
     fun waitToFinish() {
         runBlocking {
-            LOGGER.info("waitToFinish")
+            logger.info("waitToFinish")
             lastJob?.await()
-            LOGGER.info("waitToFinish finished")
+            logger.info("waitToFinish finished")
         }
     }
 

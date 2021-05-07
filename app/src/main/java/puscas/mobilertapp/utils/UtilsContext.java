@@ -17,7 +17,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Pattern;
@@ -69,7 +68,7 @@ public final class UtilsContext {
             });
 
         final String sdCardPathCleaned = cleanStoragePath(sdCardPath);
-        final String message = String.format(Locale.US, "SD card path: %s", sdCardPathCleaned);
+        final String message = "SD card path: " + sdCardPathCleaned;
         log.info(message);
         return sdCardPathCleaned;
     }
@@ -102,8 +101,7 @@ public final class UtilsContext {
             });
 
         final String internalStoragePathCleaned = cleanStoragePath(internalStoragePath);
-        final String message = String.format(Locale.US, "Internal storage path: %s",
-            internalStoragePathCleaned);
+        final String message = "Internal storage path: " + internalStoragePathCleaned;
         log.info(message);
         return internalStoragePathCleaned;
     }
@@ -156,7 +154,7 @@ public final class UtilsContext {
             ? getNumCoresOldAndroid(context)
             : Runtime.getRuntime().availableProcessors();
 
-        final String message = String.format(Locale.US, "Number of cores: %d", cores);
+        final String message = "Number of cores: " + cores;
         log.info(message);
         return cores;
     }
