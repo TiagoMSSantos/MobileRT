@@ -238,11 +238,11 @@ android {
 
     // Set Java version
     compileOptions {
-        setTargetCompatibility JavaVersion.VERSION_1_8
-        setSourceCompatibility JavaVersion.VERSION_1_8
+        setTargetCompatibility JavaVersion.VERSION_11
+        setSourceCompatibility JavaVersion.VERSION_11
     }
     kotlinOptions {
-        setJvmTarget JavaVersion.VERSION_1_8.toString()
+        setJvmTarget JavaVersion.VERSION_11.toString()
     }
 
     // Set build types
