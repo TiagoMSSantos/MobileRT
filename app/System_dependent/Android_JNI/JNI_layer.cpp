@@ -1,5 +1,6 @@
 #include "JNI_layer.hpp"
 
+#include "Config.hpp"
 #include "Components/Cameras/Orthographic.hpp"
 #include "Components/Cameras/Perspective.hpp"
 #include "Components/Lights/AreaLight.hpp"
@@ -425,6 +426,65 @@ void Java_puscas_mobilertapp_DrawView_rtStopRender(
     MobileRT::checkSystemError("rtStopRender finish");
 }
 
+static int callGetScene(const ::Dependent::Config &config) {
+    const auto sceneMethodId {config.env->GetMethodID(config.clazz, "getScene", "()I")};
+    const auto sceneIndex {config.env->CallIntMethod(config.object, sceneMethodId)};
+    return sceneIndex;
+}
+
+static int callGetShader(const ::Dependent::Config &config) {
+    const auto shaderMethodId {config.env->GetMethodID(config.clazz, "getShader", "()I")};
+    const auto shaderIndex {config.env->CallIntMethod(config.object, shaderMethodId)};
+    return shaderIndex;
+}
+
+static int callGetAccelerator(const ::Dependent::Config &config) {
+    const auto acceleratorMethodId {config.env->GetMethodID(config.clazz, "getAccelerator", "()I")};
+    const auto acceleratorIndex {config.env->CallIntMethod(config.object, acceleratorMethodId)};
+    return acceleratorIndex;
+}
+
+static jobject callGetResolution(const ::Dependent::Config &config) {
+    const auto configResolutionMethodId {config.env->GetMethodID(config.clazz, "getConfigResolution",
+                                                                 "()Lpuscas/mobilertapp/ConfigResolution;")};
+    const auto resolutionConfig {config.env->CallObjectMethod(config.object, configResolutionMethodId)};
+    return resolutionConfig;
+}
+
+static jobject callGetSamples(const ::Dependent::Config &config) {
+    const auto configSamplesMethodId {config.env->GetMethodID(config.clazz, "getConfigSamples",
+                                                                 "()Lpuscas/mobilertapp/ConfigSamples;")};
+    const auto samplesConfig {config.env->CallObjectMethod(config.object, configSamplesMethodId)};
+    return samplesConfig;
+}
+
+static const char* callGetObj(const ::Dependent::Config &config) {
+    jboolean isCopy {JNI_FALSE};
+    const auto objMethodId {config.env->GetMethodID(config.clazz, "getObjFilePath",
+                                                              "()Ljava/lang/String;")};
+    const auto localObjFilePath {reinterpret_cast<jstring> (config.env->CallObjectMethod(config.object, objMethodId))};
+    const auto *const objFilePath {config.env->GetStringUTFChars(localObjFilePath, &isCopy)};
+    return objFilePath;
+}
+
+static const char* callGetMtl(const ::Dependent::Config &config) {
+    jboolean isCopy {JNI_FALSE};
+    const auto mtlMethodId {config.env->GetMethodID(config.clazz, "getMatFilePath",
+                                                    "()Ljava/lang/String;")};
+    const auto localMtlFilePath {reinterpret_cast<jstring> (config.env->CallObjectMethod(config.object, mtlMethodId))};
+    const auto *const mtlFilePath {config.env->GetStringUTFChars(localMtlFilePath, &isCopy)};
+    return mtlFilePath;
+}
+
+static const char* callGetCam(const ::Dependent::Config &config) {
+    jboolean isCopy {JNI_FALSE};
+    const auto camMethodId {config.env->GetMethodID(config.clazz, "getCamFilePath",
+                                                    "()Ljava/lang/String;")};
+    const auto localCamFilePath {reinterpret_cast<jstring> (config.env->CallObjectMethod(config.object, camMethodId))};
+    const auto *const camFilePath {config.env->GetStringUTFChars(localCamFilePath, &isCopy)};
+    return camFilePath;
+}
+
 extern "C"
 jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
     JNIEnv *env,
@@ -434,53 +494,33 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
     MobileRT::checkSystemError("rtInitialize start");
     LOG_DEBUG("INITIALIZE");
     try {
-        const auto configClass{env->GetObjectClass(localConfig)};
+        const auto configClass {env->GetObjectClass(localConfig)};
+        ::Dependent::Config config {};
+        config.env = env;
+        config.clazz = configClass;
+        config.object = localConfig;
 
-        const auto sceneMethodId {env->GetMethodID(configClass, "getScene", "()I")};
-        const auto sceneIndex {env->CallIntMethod(localConfig, sceneMethodId)};
+        const auto sceneIndex {callGetScene(config)};
+        const auto shaderIndex {callGetShader(config)};
+        const auto acceleratorIndex {callGetAccelerator(config)};
 
-        const auto shaderMethodId {env->GetMethodID(configClass, "getShader", "()I")};
-        const auto shaderIndex {env->CallIntMethod(localConfig, shaderMethodId)};
-
-        const auto acceleratorMethodId {env->GetMethodID(configClass, "getAccelerator", "()I")};
-        const auto acceleratorIndex {env->CallIntMethod(localConfig, acceleratorMethodId)};
-
-
-        const auto configResolutionMethodId {env->GetMethodID(configClass, "getConfigResolution",
-                                                         "()Lpuscas/mobilertapp/configs/ConfigResolution;")};
-        const auto resolutionConfig {env->CallObjectMethod(localConfig, configResolutionMethodId)};
+        const auto resolutionConfig {callGetResolution(config)};
         const auto resolutionConfigClass {env->GetObjectClass(resolutionConfig)};
-
         const auto widthMethodId {env->GetMethodID(resolutionConfigClass, "getWidth", "()I")};
         const auto width {env->CallIntMethod(resolutionConfig, widthMethodId)};
-
         const auto heightMethodId {env->GetMethodID(resolutionConfigClass, "getHeight", "()I")};
         const auto height {env->CallIntMethod(resolutionConfig, heightMethodId)};
 
-
-        const auto configSamplesMethodId {env->GetMethodID(configClass, "getConfigSamples",
-                                                      "()Lpuscas/mobilertapp/configs/ConfigSamples;")};
-        const auto samplesConfig {env->CallObjectMethod(localConfig, configSamplesMethodId)};
+        const auto samplesConfig {callGetSamples(config)};
         const auto samplesConfigClass {env->GetObjectClass(samplesConfig)};
-
         const auto samplesPixelMethodId {env->GetMethodID(samplesConfigClass, "getSamplesPixel", "()I")};
         const auto samplesPixel {env->CallIntMethod(samplesConfig, samplesPixelMethodId)};
-
         const auto samplesLightMethodId {env->GetMethodID(samplesConfigClass, "getSamplesLight", "()I")};
         const auto samplesLight {env->CallIntMethod(samplesConfig, samplesLightMethodId)};
 
-        jboolean isCopy {JNI_FALSE};
-        const auto objMethodId {env->GetMethodID(configClass, "getObjFilePath", "()Ljava/lang/String;")};
-        const auto localObjFilePath {reinterpret_cast<jstring> (env->CallObjectMethod(localConfig, objMethodId))};
-        const auto *const objFilePath {env->GetStringUTFChars(localObjFilePath, &isCopy)};
-
-        const auto mtlMethodId {env->GetMethodID(configClass, "getMatFilePath", "()Ljava/lang/String;")};
-        const auto localMatFilePath {reinterpret_cast<jstring> (env->CallObjectMethod(localConfig, mtlMethodId))};
-        const auto *const matFilePath {env->GetStringUTFChars(localMatFilePath, &isCopy)};
-
-        const auto camMethodId {env->GetMethodID(configClass, "getCamFilePath", "()Ljava/lang/String;")};
-        const auto localCamFilePath {reinterpret_cast<jstring> (env->CallObjectMethod(localConfig, camMethodId))};
-        const auto *const camFilePath {env->GetStringUTFChars(localCamFilePath, &isCopy)};
+        const auto objFilePath {callGetObj(config)};
+        const auto matFilePath {callGetMtl(config)};
+        const auto camFilePath {callGetCam(config)};
 
         const auto res {
             [&]() -> ::std::int32_t {
