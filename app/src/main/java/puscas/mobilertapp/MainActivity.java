@@ -435,7 +435,7 @@ public final class MainActivity extends Activity {
 
     /**
      * Gets the path of a file that was loaded with an external file manager.
-     * <br/>
+     * <br>
      * This method basically translates an {@link Uri} path to a {@link String}
      * but also tries to be compatible with any device / emulator available.
      *
@@ -446,8 +446,7 @@ public final class MainActivity extends Activity {
     private String getPathFromFile(final Uri uri) {
         final String filePath = StreamSupport.stream(uri.getPathSegments())
             .skip(1L)
-            .reduce("",
-                (accumulator, segment) -> accumulator + ConstantsUI.FILE_SEPARATOR + segment)
+            .reduce("", (accumulator, segment) -> accumulator + ConstantsUI.FILE_SEPARATOR + segment)
             .replace(ConstantsUI.FILE_SEPARATOR + "sdcard" + ConstantsUI.FILE_SEPARATOR,
                 ConstantsUI.FILE_SEPARATOR);
 

@@ -76,7 +76,7 @@ static ::std::int64_t timeRenderer_ {};
 static ::std::condition_variable rendered_ {};
 
 /**
- * Wether or not the rendering process was finished.
+ * Whether or not the rendering process was finished.
  */
 static ::std::atomic<bool> finishedRendering_ {true};
 
@@ -353,8 +353,8 @@ static void updateFps() {
     ++frame;
     const auto timeNow {::std::chrono::steady_clock::now()};
     const auto timeElapsed {::std::chrono::duration_cast<::std::chrono::milliseconds>(timeNow - timebase).count()};
+    fps_ = (static_cast<float>(frame) * 1000.0F) / static_cast<float>(timeElapsed);
     if (timeElapsed > 1000) {
-        fps_ = (static_cast<float>(frame) * 1000.0F) / static_cast<float>(timeElapsed);
         timebase = timeNow;
         frame = 0;
     }
@@ -373,7 +373,7 @@ void Java_puscas_mobilertapp_DrawView_rtStartRender(
     MobileRT::checkSystemError("rtStartRender start");
     if (wait) {
         ::std::unique_lock<::std::mutex> lock {mutex_};
-        rendered_.wait(lock, [&] { return finishedRendering_ == true; });
+        rendered_.wait(lock, [&] { return finishedRendering_.load(); });
         finishedRendering_ = false;
     }
     state_ = State::BUSY;
@@ -408,7 +408,7 @@ void Java_puscas_mobilertapp_DrawView_rtStopRender(
                     break;
                 }
                 rendered_.wait_for(lock, ::std::chrono::seconds(3),
-                                   [&] { return finishedRendering_ == true; });
+                                   [&] { return finishedRendering_.load(); });
             }
         }
         LOG_DEBUG("Renderer finished");
@@ -464,15 +464,15 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
 
         jboolean isCopy {JNI_FALSE};
         const auto objMethodId {env->GetMethodID(configClass, "getObjFilePath", "()Ljava/lang/String;")};
-        const auto localObjFilePath {static_cast<jstring> (env->CallObjectMethod(localConfig, objMethodId))};
+        const auto localObjFilePath {reinterpret_cast<jstring> (env->CallObjectMethod(localConfig, objMethodId))};
         const auto *const objFilePath {env->GetStringUTFChars(localObjFilePath, &isCopy)};
 
         const auto mtlMethodId {env->GetMethodID(configClass, "getMatFilePath", "()Ljava/lang/String;")};
-        const auto localMatFilePath {static_cast<jstring> (env->CallObjectMethod(localConfig, mtlMethodId))};
+        const auto localMatFilePath {reinterpret_cast<jstring> (env->CallObjectMethod(localConfig, mtlMethodId))};
         const auto *const matFilePath {env->GetStringUTFChars(localMatFilePath, &isCopy)};
 
         const auto camMethodId {env->GetMethodID(configClass, "getCamFilePath", "()Ljava/lang/String;")};
-        const auto localCamFilePath {static_cast<jstring> (env->CallObjectMethod(localConfig, camMethodId))};
+        const auto localCamFilePath {reinterpret_cast<jstring> (env->CallObjectMethod(localConfig, camMethodId))};
         const auto *const camFilePath {env->GetStringUTFChars(localCamFilePath, &isCopy)};
 
         const auto res {
@@ -526,11 +526,7 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
                             return -1;
                         }
                         const auto sceneBuilt{objLoader.fillScene(&scene,
-//                            []() {return ::MobileRT::std::make_unique<Components::StaticHaltonSeq> ();}
-                                                                  []() {
-                                                                      return ::MobileRT::std::make_unique<
-                                                                          Components::StaticPCG>();
-                                                                  }
+                            []() {return ::MobileRT::std::make_unique<Components::StaticPCG>();}
                         )};
                         if (!sceneBuilt) {
                             return -1;
@@ -541,11 +537,8 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
                         break;
                 }
                 samplerPixel = samplesPixel <= 1
-                               ? ::std::unique_ptr<::MobileRT::Sampler>(
-                        ::MobileRT::std::make_unique<Components::Constant>(0.5F))
-                               //                    : ::std::unique_ptr<::MobileRT::Sampler> (::MobileRT::std::make_unique<Components::StaticHaltonSeq> ());
-                               : ::std::unique_ptr<::MobileRT::Sampler>(
-                        ::MobileRT::std::make_unique<Components::StaticPCG>());
+                   ? ::std::unique_ptr<::MobileRT::Sampler>(::MobileRT::std::make_unique<Components::Constant>(0.5F))
+                   : ::std::unique_ptr<::MobileRT::Sampler>(::MobileRT::std::make_unique<Components::StaticPCG>());
                 LOG_DEBUG("LOADING SHADER: ", shaderIndex);
                 LOG_DEBUG("LOADING ACCELERATOR: ", ::MobileRT::Shader::Accelerator(acceleratorIndex));
                 LOG_DEBUG("samplesLight: ", samplesLight);
@@ -562,7 +555,6 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
 
                     case 2: {
                         ::std::unique_ptr<MobileRT::Sampler> samplerRussianRoulette{
-//                                ::MobileRT::std::make_unique<Components::StaticHaltonSeq> ()
                             ::MobileRT::std::make_unique<Components::StaticPCG>()
                         };
 
@@ -726,7 +718,6 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
                     LOG_DEBUG("STARTING RENDERING");
                     LOG_DEBUG("nThreads = ", nThreads);
                     {
-//                        const ::std::lock_guard<::std::mutex> lock {mutex_};
                         if (renderer_ != nullptr) {
                             renderer_->renderFrame(dstPixels, nThreads);
                         }
@@ -767,12 +758,12 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
                         static_cast<void> (result);
                     }
                 }
-                // Print some latencies
                 const auto renderingTime {timeRendering.count()};
                 const auto castedRays {renderer_->getTotalCastedRays()};
                 LOG_DEBUG("Rendering Time in secs = ", renderingTime);
                 LOG_DEBUG("Casted rays = ", castedRays);
-                LOG_DEBUG("Total Millions rays per second = ", (static_cast<double> (castedRays) / renderingTime) / 1000000L);
+                LOG_DEBUG("Total Millions rays per second = ", (static_cast<double> (castedRays) / renderingTime)
+                    / 1000000L);
 
                 LOG_DEBUG("rtRenderIntoBitmap finished");
             }
