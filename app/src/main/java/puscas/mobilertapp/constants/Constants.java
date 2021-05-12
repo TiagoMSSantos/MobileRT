@@ -1,4 +1,4 @@
-package puscas.mobilertapp.utils;
+package puscas.mobilertapp.constants;
 
 import android.widget.Button;
 import lombok.experimental.UtilityClass;
@@ -23,7 +23,8 @@ public final class Constants {
     /**
      * A render {@link Button} text message.
      */
-    public static final @NonNls String RENDER = "Render";
+    @NonNls
+    public static final String RENDER = "Render";
 
     /**
      * A render {@link Button} text message.
@@ -83,7 +84,7 @@ public final class Constants {
     /**
      * The number of bytes in an integer (usually is 4 bytes).
      */
-    static final int BYTES_IN_INTEGER = Integer.SIZE / Byte.SIZE;
+    public static final int BYTES_IN_INTEGER = Integer.SIZE / Byte.SIZE;
 
     /**
      * The number of bytes of a memory pointer address.
@@ -93,7 +94,7 @@ public final class Constants {
      * <br>
      * For now its assumed the worst case scenario, which is 8 bytes.
      */
-    static final int BYTES_IN_POINTER = Double.SIZE / Byte.SIZE;
+    public static final int BYTES_IN_POINTER = Double.SIZE / Byte.SIZE;
 
     /**
      * The relative path to the WavefrontOBJs path for the instrumentation tests.

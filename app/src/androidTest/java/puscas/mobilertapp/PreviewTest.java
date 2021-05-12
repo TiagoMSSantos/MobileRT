@@ -6,8 +6,8 @@ import lombok.extern.java.Log;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
-import puscas.mobilertapp.utils.Constants;
-import puscas.mobilertapp.utils.Scene;
+import puscas.mobilertapp.constants.Constants;
+import puscas.mobilertapp.constants.Scene;
 import puscas.mobilertapp.utils.UtilsContextT;
 import puscas.mobilertapp.utils.UtilsT;
 

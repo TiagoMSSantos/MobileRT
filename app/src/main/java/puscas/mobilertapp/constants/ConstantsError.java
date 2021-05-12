@@ -1,4 +1,4 @@
-package puscas.mobilertapp.utils;
+package puscas.mobilertapp.constants;
 
 import android.content.Context;
 import javax.microedition.khronos.egl.EGL10;

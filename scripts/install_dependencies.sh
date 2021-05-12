@@ -68,7 +68,7 @@ elif [ -x "$(command -v brew)" ]; then
 
   # Install OpenMP
   brew install libomp;
-  callCommand wget https://homebrew.bintray.com/bottles/libomp-11.1.0.catalina.bottle.tar.gz;
+  wget https://homebrew.bintray.com/bottles/libomp-11.1.0.catalina.bottle.tar.gz;
   # Fallback to manually extract lib
   callCommand tar -xzvf libomp-11.1.0.catalina.bottle.tar.gz;
   callCommand sudo mv libomp /usr/local/Cellar/libomp;

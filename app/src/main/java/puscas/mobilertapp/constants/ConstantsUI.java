@@ -1,4 +1,4 @@
-package puscas.mobilertapp.utils;
+package puscas.mobilertapp.constants;
 
 import android.os.Bundle;
 import java8.util.Optional;

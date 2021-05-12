@@ -1,4 +1,4 @@
-package puscas.mobilertapp.utils;
+package puscas.mobilertapp.constants;
 
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;

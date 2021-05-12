@@ -23,6 +23,9 @@ import puscas.mobilertapp.DrawView;
 import puscas.mobilertapp.MainRenderer;
 import puscas.mobilertapp.R;
 import puscas.mobilertapp.ViewActionButton;
+import puscas.mobilertapp.constants.Constants;
+import puscas.mobilertapp.constants.ConstantsMethods;
+import puscas.mobilertapp.constants.State;
 
 /**
  * Helper class which contains helper methods for the tests.

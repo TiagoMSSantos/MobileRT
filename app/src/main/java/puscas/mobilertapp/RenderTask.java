@@ -17,12 +17,13 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import lombok.Builder;
 import lombok.extern.java.Log;
+import puscas.mobilertapp.configs.ConfigRenderTask;
+import puscas.mobilertapp.constants.Constants;
+import puscas.mobilertapp.constants.ConstantsMethods;
+import puscas.mobilertapp.constants.ConstantsRenderer;
+import puscas.mobilertapp.constants.ConstantsUI;
+import puscas.mobilertapp.constants.State;
 import puscas.mobilertapp.utils.AsyncTaskCoroutine;
-import puscas.mobilertapp.utils.Constants;
-import puscas.mobilertapp.utils.ConstantsMethods;
-import puscas.mobilertapp.utils.ConstantsRenderer;
-import puscas.mobilertapp.utils.ConstantsUI;
-import puscas.mobilertapp.utils.State;
 import puscas.mobilertapp.utils.Utils;
 
 /**

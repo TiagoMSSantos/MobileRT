@@ -13,7 +13,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
-import puscas.mobilertapp.utils.ConstantsError;
+import puscas.mobilertapp.constants.ConstantsError;
 
 /**
  * A customized eglCreateContext and eglDestroyContext calls.

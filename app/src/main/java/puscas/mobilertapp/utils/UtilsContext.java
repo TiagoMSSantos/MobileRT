@@ -23,6 +23,7 @@ import java.util.regex.Pattern;
 import java8.util.Optional;
 import lombok.experimental.UtilityClass;
 import lombok.extern.java.Log;
+import puscas.mobilertapp.constants.ConstantsUI;
 import puscas.mobilertapp.exceptions.FailureException;
 
 /**

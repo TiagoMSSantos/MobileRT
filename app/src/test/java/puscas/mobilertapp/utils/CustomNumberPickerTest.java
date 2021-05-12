@@ -14,6 +14,7 @@ import org.assertj.core.api.Assertions;
 import org.jetbrains.annotations.Contract;
 import org.junit.Test;
 import puscas.mobilertapp.MainActivity;
+import puscas.mobilertapp.constants.CustomNumberPicker;
 import puscas.mobilertapp.exceptions.FailureException;
 
 /**

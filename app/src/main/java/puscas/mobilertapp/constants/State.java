@@ -1,4 +1,4 @@
-package puscas.mobilertapp.utils;
+package puscas.mobilertapp.constants;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

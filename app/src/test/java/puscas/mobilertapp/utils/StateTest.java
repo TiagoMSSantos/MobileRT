@@ -3,6 +3,7 @@ package puscas.mobilertapp.utils;
 import lombok.extern.java.Log;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
+import puscas.mobilertapp.constants.State;
 
 /**
  * The unit tests for the {@link State} util class.

@@ -6,7 +6,7 @@ import java.util.Collection;
 import lombok.extern.java.Log;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
-import puscas.mobilertapp.utils.Constants;
+import puscas.mobilertapp.constants.Constants;
 
 /**
  * The unit tests for Java memory behaviour in the system.

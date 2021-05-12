@@ -12,7 +12,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.runners.MethodSorters;
-import puscas.mobilertapp.utils.Constants;
+import puscas.mobilertapp.constants.Constants;
 
 /**
  * The Android tests for memory behaviour in the system.

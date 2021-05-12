@@ -12,6 +12,8 @@ import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 import lombok.experimental.UtilityClass;
 import lombok.extern.java.Log;
+import puscas.mobilertapp.constants.ConstantsMethods;
+import puscas.mobilertapp.constants.ConstantsRenderer;
 import puscas.mobilertapp.exceptions.FailureException;
 
 /**

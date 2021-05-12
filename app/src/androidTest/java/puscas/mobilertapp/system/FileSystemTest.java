@@ -11,8 +11,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.runners.MethodSorters;
 import puscas.mobilertapp.AbstractTest;
 import puscas.mobilertapp.MainActivity;
-import puscas.mobilertapp.utils.Constants;
-import puscas.mobilertapp.utils.ConstantsUI;
+import puscas.mobilertapp.constants.Constants;
+import puscas.mobilertapp.constants.ConstantsUI;
 import puscas.mobilertapp.utils.UtilsContext;
 
 /**

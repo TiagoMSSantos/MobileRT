@@ -1,4 +1,4 @@
-package puscas.mobilertapp;
+package puscas.mobilertapp.configs;
 
 import java.nio.Buffer;
 import lombok.Builder;

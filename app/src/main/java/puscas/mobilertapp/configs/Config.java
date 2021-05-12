@@ -1,4 +1,4 @@
-package puscas.mobilertapp;
+package puscas.mobilertapp.configs;
 
 import java.lang.annotation.Native;
 import lombok.Builder;

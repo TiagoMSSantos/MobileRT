@@ -16,6 +16,9 @@ import puscas.mobilertapp.DrawView;
 import puscas.mobilertapp.MainActivity;
 import puscas.mobilertapp.MainRenderer;
 import puscas.mobilertapp.R;
+import puscas.mobilertapp.constants.Constants;
+import puscas.mobilertapp.constants.ConstantsUI;
+import puscas.mobilertapp.constants.State;
 
 /**
  * Helper class which contains helper methods that need the {@link Context} for the tests.

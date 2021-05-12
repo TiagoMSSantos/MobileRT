@@ -114,8 +114,6 @@ allprojects {
 
         options.setCompilerArgs([
             '-Xlint:all',
-            '-AprintErrorStack',
-            '-AprintAllQualifiers',
             '-verbose'
         ])
 

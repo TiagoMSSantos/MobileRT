@@ -6,7 +6,7 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.Map;
 import lombok.experimental.UtilityClass;
 import lombok.extern.java.Log;
-import puscas.mobilertapp.ConfigGlAttribute;
+import puscas.mobilertapp.configs.ConfigGlAttribute;
 import puscas.mobilertapp.exceptions.FailureException;
 
 import static android.opengl.GLES20.GL_COMPILE_STATUS;

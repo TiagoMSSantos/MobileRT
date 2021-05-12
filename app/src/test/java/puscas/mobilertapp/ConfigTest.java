@@ -3,9 +3,12 @@ package puscas.mobilertapp;
 import lombok.extern.java.Log;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
-import puscas.mobilertapp.utils.Accelerator;
-import puscas.mobilertapp.utils.Scene;
-import puscas.mobilertapp.utils.Shader;
+import puscas.mobilertapp.configs.Config;
+import puscas.mobilertapp.configs.ConfigResolution;
+import puscas.mobilertapp.configs.ConfigSamples;
+import puscas.mobilertapp.constants.Accelerator;
+import puscas.mobilertapp.constants.Scene;
+import puscas.mobilertapp.constants.Shader;
 
 /**
  * The test suite for {@link Config} class.

@@ -1,4 +1,4 @@
-package puscas.mobilertapp.utils;
+package puscas.mobilertapp.constants;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import java8.util.J8Arrays;

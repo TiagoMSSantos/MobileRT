@@ -1,6 +1,7 @@
-package puscas.mobilertapp.utils;
+package puscas.mobilertapp.constants;
 
 import lombok.experimental.UtilityClass;
+import puscas.mobilertapp.utils.UtilsGL;
 
 /**
  * Utility class with the text constants for the names of methods.
@@ -51,11 +52,11 @@ public final class ConstantsMethods {
     /**
      * The name of the "getNames" in the {@link Enum} methods.
      */
-    static final String GET_NAMES = "getNames";
+    public static final String GET_NAMES = "getNames";
 
     /**
      * The name of the {@link UtilsGL#run} methods.
      */
-    static final String RUN = "run";
+    public static final String RUN = "run";
 
 }

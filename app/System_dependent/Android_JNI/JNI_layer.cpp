@@ -440,7 +440,7 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
 
 
         const auto configResolutionMethodId {env->GetMethodID(configClass, "getConfigResolution",
-                                                             "()Lpuscas/mobilertapp/ConfigResolution;")};
+                                                         "()Lpuscas/mobilertapp/configs/ConfigResolution;")};
         const auto resolutionConfig {env->CallObjectMethod(localConfig, configResolutionMethodId)};
         const auto resolutionConfigClass {env->GetObjectClass(resolutionConfig)};
 
@@ -452,7 +452,7 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
 
 
         const auto configSamplesMethodId {env->GetMethodID(configClass, "getConfigSamples",
-                                                          "()Lpuscas/mobilertapp/ConfigSamples;")};
+                                                      "()Lpuscas/mobilertapp/configs/ConfigSamples;")};
         const auto samplesConfig {env->CallObjectMethod(localConfig, configSamplesMethodId)};
         const auto samplesConfigClass {env->GetObjectClass(samplesConfig)};
 

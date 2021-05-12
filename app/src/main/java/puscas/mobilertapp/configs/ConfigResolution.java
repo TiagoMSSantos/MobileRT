@@ -1,4 +1,4 @@
-package puscas.mobilertapp;
+package puscas.mobilertapp.configs;
 
 import lombok.Builder;
 import lombok.Getter;
