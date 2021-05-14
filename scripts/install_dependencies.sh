@@ -100,6 +100,7 @@ if [ ! -x "$(command -v apt-get)" ]; then
 fi
 
 python3 -m pip install --upgrade pip;
+callCommand pip3 install cmake --upgrade;
 ###############################################################################
 ###############################################################################
 
@@ -107,7 +108,6 @@ python3 -m pip install --upgrade pip;
 # Install Conan package manager
 ###############################################################################
 function install_conan() {
-  callCommand pip3 install cmake --upgrade;
   callCommand pip3 install conan;
   callCommand pip3 install clang;
 
