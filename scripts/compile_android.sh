@@ -55,7 +55,7 @@ function clearOldBuildFiles() {
 
   clearAllBuildFiles
 
-  files_being_used=$(find . -name "*.fuse_hidden*" | grep -i ".fuse_hidden")
+  files_being_used=$(find . -name "*.fuse_hidden*" | grep -i ".fuse_hidden" || true)
   echo "files_being_used: '${files_being_used}'"
 
   if [ "${files_being_used}" != "" ]; then
