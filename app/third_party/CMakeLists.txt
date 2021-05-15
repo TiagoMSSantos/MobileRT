@@ -47,49 +47,14 @@ execute_process( COMMAND git clone https://github.com/imneme/pcg-cpp
 ###############################################################################
 message( STATUS "Updating third party repositories." )
 
-# These work via conan but not for all environments
-message( STATUS "Updating glm." )
-execute_process( COMMAND git remote update
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/glm )
-execute_process( COMMAND git pull --all --rebase --recurse-submodules
-  --progress --jobs=${JOBS}
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/glm )
+execute_process(COMMAND git submodule foreach git remote update;
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
 
-message( STATUS "Updating stb." )
-execute_process( COMMAND git remote update
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/stb )
-execute_process( COMMAND git pull --all --rebase --recurse-submodules
-  --progress --jobs=${JOBS}
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/stb )
+execute_process(COMMAND git submodule foreach git clean -dfX;
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
 
-
-message( STATUS "Updating tinyobjloader." )
-execute_process( COMMAND git remote update
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tinyobjloader )
-execute_process( COMMAND git pull --all --rebase --recurse-submodules
-  --progress --jobs=${JOBS}
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tinyobjloader )
-
-message( STATUS "Updating googletest." )
-execute_process( COMMAND git remote update
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/googletest )
-execute_process( COMMAND git pull --all --rebase --recurse-submodules
-  --progress --jobs=${JOBS}
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/googletest )
-
-message( STATUS "Updating boost." )
-execute_process( COMMAND git remote update
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/boost )
-execute_process( COMMAND git pull --all --rebase --recurse-submodules
-  --progress --jobs=${JOBS}
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/boost )
-
-message( STATUS "Updating pcg-cpp." )
-execute_process( COMMAND git remote update
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/pcg-cpp )
-execute_process( COMMAND git pull --all --rebase --recurse-submodules
-  --progress --jobs=${JOBS}
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/pcg-cpp )
+execute_process(COMMAND git submodule foreach "git pull --all --rebase --recurse-submodules || true"
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
 ###############################################################################
 ###############################################################################
 
@@ -97,18 +62,21 @@ execute_process( COMMAND git pull --all --rebase --recurse-submodules
 ###############################################################################
 # Change to stable versions
 ###############################################################################
-execute_process( COMMAND git checkout 0.9.9.8 --progress
+execute_process( COMMAND git checkout 0.9.9.8 --progress;
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/glm )
-execute_process( COMMAND git checkout master --progress
+execute_process( COMMAND git checkout master --progress;
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/stb )
-execute_process( COMMAND git checkout master --progress
+execute_process( COMMAND git checkout master --progress;
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tinyobjloader )
-execute_process( COMMAND git checkout master --progress
+execute_process( COMMAND git checkout master --progress;
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/googletest )
-execute_process( COMMAND git checkout master --progress
+execute_process( COMMAND git checkout master --progress;
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/boost )
-execute_process( COMMAND git checkout master --progress
+execute_process( COMMAND git checkout master --progress;
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/pcg-cpp )
+
+execute_process( COMMAND git submodule foreach git branch;
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
 ###############################################################################
 ###############################################################################
 
@@ -162,8 +130,5 @@ foreach( submodule assert )
   target_include_directories( MobileRT SYSTEM PUBLIC
     "${BOOST_PATH}/${submodule}/include" )
 endforeach( submodule )
-
-# Example of C++ Boost modules:
-# core utility config type_traits algorithm
 ###############################################################################
 ###############################################################################
