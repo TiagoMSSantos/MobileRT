@@ -75,7 +75,18 @@ execute_process( COMMAND git checkout master --progress;
 execute_process( COMMAND git checkout master --progress;
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/pcg-cpp )
 
-execute_process( COMMAND git submodule foreach git branch;
+execute_process( COMMAND git submodule foreach "
+    dependency=$(git remote -v | head -n1 | awk '{print $2}');
+    last_stable_release=$(git tag -l --sort=-version:refname | grep -i [0-9] | grep -v beta | grep -v rc | grep -v preview | grep -v bug | head -1);
+    if [ -z \${last_stable_release} ]; then
+      last_stable_release='master';
+    fi;
+    used_version=$(git name-rev --name-only HEAD);
+    echo Dependency: \${dependency};
+    echo Last stable version detected: \${last_stable_release};
+    echo Using version: \${used_version};
+    echo;
+  "
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
 ###############################################################################
 ###############################################################################
