@@ -1,8 +1,8 @@
 package puscas.mobilertapp;
 
 import lombok.extern.java.Log;
-import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import puscas.mobilertapp.configs.Config;
 import puscas.mobilertapp.configs.ConfigResolution;
 import puscas.mobilertapp.configs.ConfigSamples;
@@ -14,13 +14,13 @@ import puscas.mobilertapp.constants.Shader;
  * The test suite for {@link Config} class.
  */
 @Log
-public final class ConfigTest {
+final class ConfigTest {
 
     /**
      * Test the building of {@link Config} with default values.
      */
     @Test
-    public void testDefaultBuild() {
+    void testDefaultBuild() {
         final Config config = Config.builder().build();
         Assertions.assertEquals(1, config.getConfigResolution().getWidth(),
             "Width not the expected value.");
@@ -45,7 +45,7 @@ public final class ConfigTest {
      * Test the building of {@link Config} with valid values.
      */
     @Test
-    public void testBuild() {
+    void testBuild() {
         final int width = 1;
         final int height = 2;
         final int scene = Scene.CORNELL.ordinal();

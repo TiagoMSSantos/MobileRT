@@ -1,7 +1,8 @@
 package puscas.mobilertapp.exceptions;
 
 import lombok.extern.java.Log;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * The test suite for {@link FailureException} class.
@@ -12,28 +13,34 @@ public final class FailureExceptionTest {
     /**
      * Tests the constructor without arguments.
      */
-    @Test(expected = RuntimeException.class)
+    @Test
     public void testConstructorWithoutArguments() {
-        throw new FailureException();
+        Assertions.assertThrows(FailureException.class, () -> {
+            throw new FailureException();
+        }, "Expected an exception.");
     }
 
     /**
      * Tests the constructor that receives a {@link Throwable}.
      */
-    @Test(expected = RuntimeException.class)
+    @Test
     public void testConstructorWithThrowableArgument() {
         final IndexOutOfBoundsException indexOutOfBoundsException =
             new IndexOutOfBoundsException("Test");
-        throw new FailureException(indexOutOfBoundsException);
+        Assertions.assertThrows(FailureException.class, () -> {
+            throw new FailureException(indexOutOfBoundsException);
+        }, "Expected an exception.");
     }
 
     /**
      * Tests the constructor that receives a {@link String} with the message of the cause.
      */
-    @Test(expected = RuntimeException.class)
+    @Test
     public void testConstructorWithStringArgument() {
         final String message = "Test";
-        throw new FailureException(message);
+        Assertions.assertThrows(FailureException.class, () -> {
+            throw new FailureException(message);
+        }, "Expected an exception.");
     }
 
 }

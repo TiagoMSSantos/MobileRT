@@ -1,7 +1,8 @@
 package puscas.mobilertapp.exceptions;
 
 import lombok.extern.java.Log;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * The test suite for {@link LowMemoryException} class.
@@ -12,28 +13,34 @@ public final class LowMemoryExceptionTest {
     /**
      * Tests the constructor without arguments.
      */
-    @Test(expected = LowMemoryException.class)
-    public void testConstructorWithoutArguments() throws LowMemoryException {
-        throw new LowMemoryException();
+    @Test
+    public void testConstructorWithoutArguments() {
+        Assertions.assertThrows(LowMemoryException.class, () -> {
+            throw new LowMemoryException();
+        }, "Expected an exception.");
     }
 
     /**
      * Tests the constructor that receives a {@link Throwable}.
      */
-    @Test(expected = LowMemoryException.class)
-    public void testConstructorWithThrowableArgument() throws LowMemoryException {
+    @Test
+    public void testConstructorWithThrowableArgument() {
         final IndexOutOfBoundsException indexOutOfBoundsException =
             new IndexOutOfBoundsException("Test");
-        throw new LowMemoryException(indexOutOfBoundsException);
+        Assertions.assertThrows(LowMemoryException.class, () -> {
+            throw new LowMemoryException(indexOutOfBoundsException);
+        }, "Expected an exception.");
     }
 
     /**
      * Tests the constructor that receives a {@link String} with the message of the cause.
      */
-    @Test(expected = LowMemoryException.class)
-    public void testConstructorWithStringArgument() throws LowMemoryException {
+    @Test
+    public void testConstructorWithStringArgument() {
         final String message = "Test";
-        throw new LowMemoryException(message);
+        Assertions.assertThrows(LowMemoryException.class, () -> {
+            throw new LowMemoryException(message);
+        }, "Expected an exception.");
     }
 
 }

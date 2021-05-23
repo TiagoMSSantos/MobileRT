@@ -8,19 +8,19 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import lombok.extern.java.Log;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import puscas.mobilertapp.utils.UtilsShader;
 import puscas.mobilertapp.utils.UtilsT;
 
 /**
  * The test suite for the {@link MainRenderer}.
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestMethodOrder(MethodOrderer.Random.class)
 @Log
-public final class MainRendererTest extends AbstractTest {
+final class MainRendererTest extends AbstractTest {
 
     /**
      * Tests loading a Vertex GLSL shader for the Ray Tracing engine to output the rendered scene.
@@ -28,7 +28,7 @@ public final class MainRendererTest extends AbstractTest {
      * @throws InterruptedException If any error occurs.
      */
     @Test
-    public void testLoadVertexShader() throws InterruptedException {
+    void testLoadVertexShader() throws InterruptedException {
         testLoadShader("Shaders/VertexShader.glsl", GLES20.GL_VERTEX_SHADER);
     }
 
@@ -38,7 +38,7 @@ public final class MainRendererTest extends AbstractTest {
      * @throws InterruptedException If any error occurs.
      */
     @Test
-    public void testLoadVertexShaderRaster() throws InterruptedException {
+    void testLoadVertexShaderRaster() throws InterruptedException {
         testLoadShader("Shaders/VertexShaderRaster.glsl", GLES20.GL_VERTEX_SHADER);
     }
 
@@ -48,7 +48,7 @@ public final class MainRendererTest extends AbstractTest {
      * @throws InterruptedException If any error occurs.
      */
     @Test
-    public void testLoadFragmentShader() throws InterruptedException {
+    void testLoadFragmentShader() throws InterruptedException {
         testLoadShader("Shaders/FragmentShader.glsl", GLES20.GL_FRAGMENT_SHADER);
     }
 
@@ -58,7 +58,7 @@ public final class MainRendererTest extends AbstractTest {
      * @throws InterruptedException If any error occurs.
      */
     @Test
-    public void testLoadFragmentShaderRaster() throws InterruptedException {
+    void testLoadFragmentShaderRaster() throws InterruptedException {
         testLoadShader("Shaders/FragmentShaderRaster.glsl", GLES20.GL_FRAGMENT_SHADER);
     }
 

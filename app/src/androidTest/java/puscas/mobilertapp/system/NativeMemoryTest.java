@@ -5,13 +5,13 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
 import lombok.extern.java.Log;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.FixMethodOrder;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import puscas.mobilertapp.constants.Constants;
 
 /**
@@ -21,15 +21,15 @@ import puscas.mobilertapp.constants.Constants;
  * native heap memory, as the Android unit tests only have Java heap and not a
  * native heap memory available.
  */
-@Ignore("Ignore because JVM only has 2MB of native heap by default for the tests.")
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@Disabled("Ignore because JVM only has 2MB of native heap by default for the tests.")
+@TestMethodOrder(MethodOrderer.Random.class)
 @Log
-public final class NativeMemoryTest {
+final class NativeMemoryTest {
 
     /**
      * Setup method called before each test.
      */
-    @Before
+    @BeforeEach
     public void setUp() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         log.info(methodName);
@@ -38,7 +38,7 @@ public final class NativeMemoryTest {
     /**
      * Tear down method called after each test.
      */
-    @After
+    @AfterEach
     public void tearDown() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         log.info(methodName);

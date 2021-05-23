@@ -4,11 +4,11 @@ import android.graphics.Bitmap;
 import android.os.Build;
 import java.util.concurrent.TimeoutException;
 import lombok.extern.java.Log;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import puscas.mobilertapp.constants.Constants;
 import puscas.mobilertapp.constants.ConstantsUI;
 import puscas.mobilertapp.constants.Scene;
@@ -20,14 +20,14 @@ import puscas.mobilertapp.utils.UtilsT;
 /**
  * The test suite for the Ray Tracing engine used in {@link MainActivity}.
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestMethodOrder(MethodOrderer.Random.class)
 @Log
-public final class RayTracingTest extends AbstractTest {
+final class RayTracingTest extends AbstractTest {
 
     /**
      * A setup method which is called first.
      */
-    @BeforeClass
+    @BeforeAll
     public static void setUpAll() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         log.info(methodName);
@@ -59,7 +59,7 @@ public final class RayTracingTest extends AbstractTest {
     /**
      * A tear down method which is called last.
      */
-    @AfterClass
+    @AfterAll
     public static void tearDownAll() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         log.info(methodName);
@@ -70,8 +70,8 @@ public final class RayTracingTest extends AbstractTest {
      *
      * @throws TimeoutException If it couldn't render the whole scene in time.
      */
-    @Test(timeout = 2L * 60L * 1000L)
-    public void testRenderInvalidScene() throws TimeoutException {
+    @Test
+    void testRenderInvalidScene() throws TimeoutException {
         final int numCores = UtilsContext.getNumOfCores(this.activity);
         final int scene = Scene.WRONG_FILE.ordinal();
 
@@ -81,8 +81,8 @@ public final class RayTracingTest extends AbstractTest {
     /**
      * Tests rendering a scene.
      */
-    @Test(timeout = 2L * 60L * 1000L)
-    public void testRenderScene() throws TimeoutException {
+    @Test
+    void testRenderScene() throws TimeoutException {
         final int numCores = UtilsContext.getNumOfCores(this.activity);
         final int scene = Scene.CORNELL2.ordinal();
 
@@ -92,8 +92,8 @@ public final class RayTracingTest extends AbstractTest {
     /**
      * Tests rendering an OBJ scene in the internal storage.
      */
-    @Test(timeout = 2L * 60L * 1000L)
-    public void testRenderSceneFromInternalStorageOBJ() throws TimeoutException {
+    @Test
+    void testRenderSceneFromInternalStorageOBJ() throws TimeoutException {
         final int numCores = UtilsContext.getNumOfCores(this.activity);
         final int scene = Scene.TEST_INTERNAL_STORAGE.ordinal();
 
@@ -103,8 +103,8 @@ public final class RayTracingTest extends AbstractTest {
     /**
      * Tests rendering an OBJ scene in the SD card.
      */
-    @Test(timeout = 2L * 60L * 1000L)
-    public void testRenderSceneFromSDCardOBJ() throws TimeoutException {
+    @Test
+    void testRenderSceneFromSDCardOBJ() throws TimeoutException {
         final int numCores = UtilsContext.getNumOfCores(this.activity);
         final int scene = Scene.TEST_SD_CARD.ordinal();
 

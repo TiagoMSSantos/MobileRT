@@ -12,13 +12,13 @@ import javax.microedition.khronos.egl.EGLSurface;
 import lombok.extern.java.Log;
 import org.assertj.core.api.Assertions;
 import org.jetbrains.annotations.Contract;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * The test suite for the {@link MyEglContextFactory} class.
  */
 @Log
-public final class MyEglContextFactoryTest {
+final class MyEglContextFactoryTest {
 
     /**
      * Helper method that creates a {@link EGL10}.
@@ -208,7 +208,7 @@ public final class MyEglContextFactoryTest {
      * {@link EGLContext}.
      */
     @Test
-    public void testInvalidCreateContext() {
+    void testInvalidCreateContext() {
         final Context context = new MainActivity();
         final DrawView drawView = new DrawView(context);
 
@@ -216,7 +216,9 @@ public final class MyEglContextFactoryTest {
         final EGL10 egl = createEGL();
 
         final EGLContext eglContext = myEGLContextFactory.createContext(egl, null, null);
-        Assertions.assertThat(eglContext).isNull();
+        Assertions.assertThat(eglContext)
+            .as("Check EGLContext.")
+            .isNull();
     }
 
 }

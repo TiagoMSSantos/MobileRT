@@ -2,20 +2,20 @@ package puscas.mobilertapp.utils;
 
 import lombok.extern.java.Log;
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import puscas.mobilertapp.constants.State;
 
 /**
  * The unit tests for the {@link State} util class.
  */
 @Log
-public final class StateTest {
+final class StateTest {
 
     /**
      * Tests that the {@link State#getId()} method contains all the expected states.
      */
     @Test
-    public void testGetId() {
+    void testGetId() {
         Assertions.assertThat(State.IDLE.getId())
             .as("State id is not the expected.")
             .isZero();

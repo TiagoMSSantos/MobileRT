@@ -13,10 +13,10 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.List;
 import java8.util.stream.IntStreams;
 import lombok.extern.java.Log;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import puscas.mobilertapp.constants.Accelerator;
 import puscas.mobilertapp.constants.Constants;
 import puscas.mobilertapp.constants.ConstantsUI;
@@ -30,9 +30,9 @@ import puscas.mobilertapp.utils.UtilsT;
 /**
  * The test suite for the User Interface.
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestMethodOrder(MethodOrderer.Random.class)
 @Log
-public final class UiTest extends AbstractTest {
+final class UiTest extends AbstractTest {
 
     /**
      * The current index of the scene in the {@link NumberPicker}.
@@ -133,8 +133,8 @@ public final class UiTest extends AbstractTest {
      * Tests changing all the {@link NumberPicker} and clicking the render
      * {@link Button} few times.
      */
-    @Test(timeout = 20L * 60L * 1000L)
-    public void testUI() {
+    @Test
+    void testUI() {
         UtilsT.assertRenderButtonText(Constants.RENDER);
 
         final int numCores = UtilsContext.getNumOfCores(this.activity);
@@ -146,32 +146,32 @@ public final class UiTest extends AbstractTest {
     /**
      * Tests clicking the render {@link Button} many times without preview.
      */
-    @Test(timeout = 20L * 60L * 1000L)
-    public void testClickRenderButtonManyTimesWithoutPreview() {
+    @Test
+    void testClickRenderButtonManyTimesWithoutPreview() {
         clickPreviewCheckBox(false);
 
         final int numCores = UtilsContext.getNumOfCores(this.activity);
-        assertClickRenderButton(5, numCores);
+        assertClickRenderButton(100, numCores);
     }
 
     /**
      * Tests clicking the render {@link Button} many times with preview.
      */
-    @Test(timeout = 30L * 60L * 1000L)
-    public void testClickRenderButtonManyTimesWithPreview() {
+    @Test
+    void testClickRenderButtonManyTimesWithPreview() {
         clickPreviewCheckBox(false);
         clickPreviewCheckBox(true);
 
         final int numCores = UtilsContext.getNumOfCores(this.activity);
-        assertClickRenderButton(5, numCores);
+        assertClickRenderButton(100, numCores);
     }
 
     /**
      * Tests clicking the render {@link Button} with a long press.
      * It is expected for the {@link android.app.Activity} to restart.
      */
-    @Test(timeout = 60L * 1000L)
-    public void testClickRenderButtonLongPress() {
+    @Test
+    void testClickRenderButtonLongPress() {
         Espresso.onView(ViewMatchers.withId(R.id.renderButton))
             .perform(new ViewActionButton(Constants.RENDER, true))
             .check((view, exception) -> {

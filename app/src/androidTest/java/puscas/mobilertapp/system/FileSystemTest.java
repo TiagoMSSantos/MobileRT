@@ -5,10 +5,10 @@ import java.io.File;
 import java.util.List;
 import java8.util.stream.StreamSupport;
 import lombok.extern.java.Log;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import puscas.mobilertapp.AbstractTest;
 import puscas.mobilertapp.MainActivity;
 import puscas.mobilertapp.constants.Constants;
@@ -18,14 +18,14 @@ import puscas.mobilertapp.utils.UtilsContext;
 /**
  * The test suite for the File system operations used in {@link MainActivity}.
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestMethodOrder(MethodOrderer.Random.class)
 @Log
 public final class FileSystemTest extends AbstractTest {
 
     /**
      * Tests that a file in the internal storage from the Android device exists and is readable.
      */
-    @Test(timeout = 5L * 1000L)
+    @Test
     public void testFilesExistAndReadableFromInternalStorage() {
         final String internalStorage = UtilsContext.getInternalStoragePath(this.activity);
 
@@ -38,7 +38,7 @@ public final class FileSystemTest extends AbstractTest {
     /**
      * Tests that the SD card device exists and is readable.
      */
-    @Test(timeout = 5L * 1000L)
+    @Test
     public void testReadableSdCard() {
         final String sdCardPath = UtilsContext.getSdCardPath(this.activity);
 
@@ -67,7 +67,7 @@ public final class FileSystemTest extends AbstractTest {
     /**
      * Tests that a file in the SD card device exists and is readable.
      */
-    @Test(timeout = 5L * 1000L)
+    @Test
     public void testFilesExistAndReadableSdCard() {
         final String sdCardPath = UtilsContext.getSdCardPath(this.activity);
 
@@ -80,7 +80,7 @@ public final class FileSystemTest extends AbstractTest {
     /**
      * Tests that a file does not exist in the Android device.
      */
-    @Test(timeout = 5L * 1000L)
+    @Test
     public void testFilesNotExist() {
         final String internalStorage = UtilsContext.getInternalStoragePath(this.activity);
 
@@ -94,7 +94,7 @@ public final class FileSystemTest extends AbstractTest {
     /**
      * Tests that a file does not exist in the SD card device.
      */
-    @Test(timeout = 5L * 1000L)
+    @Test
     public void testFilesNotExistSdCard() {
         final String sdCardPath = UtilsContext.getSdCardPath(this.activity);
 
