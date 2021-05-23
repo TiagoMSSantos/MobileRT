@@ -1,0 +1,34 @@
+{
+  "threshold": 100,
+  "output": "./docs/jscpd-report/",
+  "reporters": ["html", "console", "badge"],
+  "mode": "mild",
+  "ignore": [
+    "**/third_party/**",
+    "**/build*/**",
+    "**/*.xml",
+    "**/*.yml",
+    "**/*.md",
+    "**/*.svg",
+    "**/*.html"
+  ],
+  "pattern": "**/app/**",
+  "absolute": false,
+  "gitignore": true,
+  "min-lines": 0,
+  "max-lines": 1000000000,
+  "max-size": 1000000000,
+  "version": true,
+  "min-tokens": 0,
+  "blame": false,
+  "list": false,
+  "format": ["cpp", "c", "java", "kotlin", "bash", "git", "glsl"],
+  "formats-exts": [
+    "cpp:cpp,hpp,h",
+    "c:c,h",
+    "java:java",
+    "kotlin:kt",
+    "bash:sh",
+    "glsl:glsl"
+  ]
+}
