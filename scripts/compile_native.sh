@@ -170,7 +170,7 @@ function install_conan_dependencies() {
     conan profile update settings.compiler="${conan_compiler}" default;
     conan profile update settings.compiler.version="${conan_compiler_version}" default;
     # Possible values for compiler.libcxx are ['libstdc++', 'libstdc++11'].
-    conan profile update settings.compiler.libcxx="libstdc++11" default;
+    conan profile update settings.compiler.libcxx="libstdc++17" default;
     conan profile update settings.arch="${CPU_ARCHITECTURE}" default;
     conan profile update settings.os="Linux" default;
     conan profile update settings.build_type="Release" default;
@@ -180,7 +180,7 @@ function install_conan_dependencies() {
   conan install \
   -s compiler=${conan_compiler} \
   -s compiler.version="${conan_compiler_version}" \
-  -s compiler.libcxx=libstdc++11 \
+  -s compiler.libcxx=libstdc++17 \
   -s arch="${CPU_ARCHITECTURE}" \
   -s os="Linux" \
   -s build_type=Release \

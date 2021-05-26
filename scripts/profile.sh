@@ -218,7 +218,7 @@ function clangtidy() {
     "${COMPONENTS_SRCS}"/Components/*/*.*pp \
     "${DEPENDENT_SRCS}"/Native/*.*pp \
     "${SCENES_SRCS}"/*.*pp \
-    -- -std=c++11 -ferror-limit=1 -stdlib=libc++ \
+    -- -std=c++17 -ferror-limit=1 -stdlib=libc++ \
     -I "${MOBILERT_SRCS}" \
     -I "${COMPONENTS_SRCS}" \
     -I "${DEPENDENT_SRCS}"/Native \

@@ -41,7 +41,7 @@ set( ANDROID_COMPILER_FLAGS "" CACHE STRING "CUSTOM" FORCE )
 
 if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
     # PIC: Position Independent Code
-    set( CMAKE_CXX_FLAGS "-std=c++11 -fPIC -Bsymbolic -Bsymbolic-functions"
+    set( CMAKE_CXX_FLAGS "-std=c++17 -fPIC -Bsymbolic -Bsymbolic-functions"
       CACHE STRING "CUSTOM" FORCE )
 endif()
 # _GLIBCXX_DEBUG: activate debug mode and all the assertions
@@ -292,7 +292,7 @@ if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
   if( DEFINED ANDROID_ABI OR CMAKE_CXX_COMPILER MATCHES "clang"
     OR (CMAKE_CXX_COMPILER MATCHES "g[++]" AND NOT CMAKE_CXX_COMPILER MATCHES "clang")
   )
-    set( COMMON_FLAGS "${COMMON_FLAGS}" -std=c++11 )
+    set( COMMON_FLAGS "${COMMON_FLAGS}" -std=c++17 )
   endif()
   # Turn off C++98 pedantic warning so it can use C++11 features
   set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-c++98-compat-pedantic )
