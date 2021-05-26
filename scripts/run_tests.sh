@@ -43,6 +43,7 @@ echo "type: '${type}'"
 
 function runUnitTests() {
   echo "Calling Gradle test"
+  callCommand ./gradlew --stop
   callCommand ./gradlew test"${type}"UnitTest --profile --parallel \
     -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
     --console plain \

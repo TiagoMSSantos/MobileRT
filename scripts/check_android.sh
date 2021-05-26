@@ -41,6 +41,7 @@ function runLinter() {
   callCommand mkdir -p ${profile_path}
 
   echo "Print Gradle version"
+  callCommand ./gradlew --stop
   callCommand ./gradlew --version
 
   echo "Calling the Gradle linter"

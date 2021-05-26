@@ -240,6 +240,7 @@ function verifyResources() {
 
 function runInstrumentationTests() {
   echo "Run instrumentation tests"
+  callCommand ./gradlew --stop
   if [ "${run_test}" == "all" ]; then
     echo "Running all tests"
     callCommand ./gradlew connected"${type}"AndroidTest -DtestType="${type}" \

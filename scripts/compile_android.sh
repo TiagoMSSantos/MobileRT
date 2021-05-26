@@ -43,19 +43,17 @@ type=$(capitalizeFirstletter "${type}")
 echo "type: '${type}'"
 
 function clearAllBuildFiles() {
-  rm -rf ./app/build/
+  callCommand rm -rf ./app/build/
 
   if [ "${recompile}" == "yes" ]; then
-    rm -rf ./app/.cxx/
-    rm -rf ./build/
+    callCommand rm -rf ./app/.cxx/
+    callCommand rm -rf ./build/
   fi
 }
 
 function clearOldBuildFiles() {
 
-  clearAllBuildFiles
-
-  files_being_used=$(find . -name "*.fuse_hidden*" | grep -i ".fuse_hidden" || true)
+  files_being_used=$(find . -iname "*.fuse_hidden*" | grep -i ".fuse_hidden" || true)
   echo "files_being_used: '${files_being_used}'"
 
   if [ "${files_being_used}" != "" ]; then
@@ -73,6 +71,7 @@ function clearOldBuildFiles() {
 
 function build() {
   echo "Calling the Gradle assemble to compile code for Android"
+  callCommand ./gradlew --stop
   callCommandUntilSuccess ./gradlew clean assemble"${type}" --profile --parallel \
     -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
     --console plain \
