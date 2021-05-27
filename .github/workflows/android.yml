@@ -78,7 +78,7 @@ jobs:
 
     - name: Cache SonarCloud packages
       if: success()
-      uses: actions/cache@v2.1.5
+      uses: actions/cache@v2.1.6
       with:
         path: |
           ~/.sonar
@@ -91,7 +91,7 @@ jobs:
 
     - name: Cache Gradle packages
       if: success()
-      uses: actions/cache@v2.1.5
+      uses: actions/cache@v2.1.6
       with:
         path: ~/.gradle
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
@@ -179,7 +179,7 @@ jobs:
 
     - name: Upload reports to cache
       if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug'
-      uses: actions/cache@v2.1.5
+      uses: actions/cache@v2.1.6
       env:
         cache-name: cache-reports
       with:
@@ -241,7 +241,7 @@ jobs:
 
     - name: Download reports from cache
       if: success()
-      uses: actions/cache@v2.1.5
+      uses: actions/cache@v2.1.6
       env:
         cache-name: cache-reports
       with:
