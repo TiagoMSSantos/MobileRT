@@ -51,6 +51,8 @@ function gather_logs_func() {
       cut -d ":" -f 4 | cut -d ' ' -f 4)" \
       > "${reports_path}"/logcat_current_app_"${type}".log
 
+  echo -e '\e]8;;file:///'${PWD}'/'${reports_path}'/androidTests/connected/index.html\aClick here to check the test report.\e]8;;\a'
+  echo -e '\e]8;;file:///'${PWD}'/'${reports_path}'/logcat_app_'${type}'.log\aClick here to check the app log.\e]8;;\a'
   echo ""
   echo ""
 }
