@@ -358,7 +358,7 @@ public final class DrawView extends GLSurfaceView {
      * @return The current Ray Tracer engine {@link State}.
      */
     State getRayTracerState() {
-        log.info("getState");
+        log.info("getRayTracerState");
 
         return this.renderer.getState();
     }

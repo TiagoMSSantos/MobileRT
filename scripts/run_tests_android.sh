@@ -37,11 +37,11 @@ function gather_logs_func() {
   callCommand adb logcat -v threadtime -d "*":V \
     > "${reports_path}"/logcat_"${type}".log 2>&1
 
-  echo "Filter logcat of the app"
-  callCommand cat "${reports_path}"/logcat_"${type}".log |
-    grep -E -i "$(grep -E -i \
-      "proc.*:puscas" "${reports_path}/logcat_${type}".log |
-      cut -d ":" -f 4 | cut -d ' ' -f 4)" \
+  local pid_app
+  pid_app=$(grep -E -i "proc.puscas:*" "${reports_path}"/logcat_"${type}".log |
+    grep -i "pid=" | cut -d "=" -f 2 | cut -d "u" -f 1 | tr -d ' ' | tail -1)
+  echo "Filter logcat of the app: ${pid_app}"
+  callCommand cat "${reports_path}"/logcat_"${type}".log | grep -e "${pid_app}" -e "I DEBUG" \
       > "${reports_path}"/logcat_app_"${type}".log
 
   echo "Filter realtime logcat of the app"
@@ -51,8 +51,9 @@ function gather_logs_func() {
       cut -d ":" -f 4 | cut -d ' ' -f 4)" \
       > "${reports_path}"/logcat_current_app_"${type}".log
 
-  echo -e '\e]8;;file:///'${PWD}'/'${reports_path}'/androidTests/connected/index.html\aClick here to check the test report.\e]8;;\a'
-  echo -e '\e]8;;file:///'${PWD}'/'${reports_path}'/logcat_app_'${type}'.log\aClick here to check the app log.\e]8;;\a'
+  echo -e '\e]8;;file:///'"${PWD}"'/'"${reports_path}"'/androidTests/connected/index.html\aClick here to check the Android tests report.\e]8;;\a'
+  echo -e '\e]8;;file:///'"${PWD}"'/'"${reports_path}"'/coverage/'"${type}"'/index.html\aClick here to check the Code coverage report.\e]8;;\a'
+  echo -e '\e]8;;file:///'"${PWD}"'/'"${reports_path}"'/logcat_app_'"${type}"'.log\aClick here to check the app log.\e]8;;\a'
   echo ""
   echo ""
 }
@@ -62,7 +63,7 @@ function clear_func() {
   kill -s SIGTERM "${pid_logcat}" 2> /dev/null
 
   local pid_app
-  pid_app=$(adb shell ps | grep puscas.mobilertapp | tr -s ' ' | cut -d ' ' -f 2)
+  pid_app=$(adb shell ps | grep -i puscas.mobilertapp | tr -s ' ' | cut -d ' ' -f 2)
   echo "Killing pid of MobileRT: '${pid_app}'"
   adb shell kill -s SIGTERM "${pid_app}" 2> /dev/null
 

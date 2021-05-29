@@ -54,6 +54,10 @@ function runUnitTests() {
 ###############################################################################
 
 runUnitTests
+echo ""
+echo -e '\e]8;;file:///'"${PWD}"'/'${reports_path}'/tests/test'"${type}"'UnitTest/index.html\aClick here to check the Unit tests report.\e]8;;\a'
+echo ""
+echo ""
 
 ###############################################################################
 # Exit code

@@ -315,6 +315,7 @@ namespace MobileRT {
         // EAGAIN (Resource unavailable, try again) - errno (11): Try again
         // It already happened in the beginning of `rtResize` method.
         // It already happened in the beginning of `rtFinishRender` method.
+        // It already happened in the beginning of `rtStopRender` method.
         // It already happened in the beginning of `rtGetState` method.
 
         // So we ignore those errors for now.
