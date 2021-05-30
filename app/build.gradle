@@ -205,7 +205,7 @@ android {
         setMinSdkVersion 16
         setTargetSdkVersion 29
         setTestInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
-        setTestInstrumentationRunnerArguments clearPackageData: 'true'
+        testInstrumentationRunnerArguments = ['clearPackageData': 'true', 'disableAnalytics': 'true']
         setApplicationId 'puscas.mobilertapp'
         setVersionName '1.0'
         setVersionCode 1
@@ -434,7 +434,7 @@ dependencies {
     println("Adding dependencies for the unit tests.")
 
     testImplementation 'junit:junit:4.13.2'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
     testImplementation 'org.assertj:assertj-core:3.19.0'
     testImplementation 'org.khronos:opengl-api:gl1.1-android-2.1_r1'
     testImplementation 'org.jmockit:jmockit:1.49'

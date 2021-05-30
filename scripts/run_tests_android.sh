@@ -193,6 +193,7 @@ function copyResources() {
 
 function startCopyingLogcatToFile() {
   echo "Disable animations"
+  callCommand adb shell pm grant puscas.mobilertapp android.permission.SET_ANIMATION_SCALE
   callCommand adb shell settings put global window_animation_scale 0.0
   callCommand adb shell settings put global transition_animation_scale 0.0
   callCommand adb shell settings put global animator_duration_scale 0.0
