@@ -79,6 +79,13 @@ jint JNICALL Java_puscas_mobilertapp_MainActivity_rtResize(
         jint size
 );
 
+extern "C"
+JNIEXPORT
+void JNICALL Java_puscas_mobilertapp_MainActivity_resetErrno(
+    JNIEnv *env,
+    jclass /*thiz*/
+);
+
 
 // MainRenderer
 extern "C"

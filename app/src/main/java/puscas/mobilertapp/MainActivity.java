@@ -241,14 +241,17 @@ public final class MainActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+        log.info("onResume start");
 
         this.drawView.onResume();
         this.drawView.setVisibility(View.VISIBLE);
+        log.info("onResume end");
     }
 
     @Override
     protected void onPostResume() {
         super.onPostResume();
+        log.info("onPostResume start");
 
         // Start rendering if its resuming from selecting a scene via an
         // external file manager and it was selected a file with a scene to
@@ -257,6 +260,7 @@ public final class MainActivity extends Activity {
         if (!Strings.isNullOrEmpty(this.sceneFilePath)) {
             startRender(this.sceneFilePath);
         }
+        log.info("onPostResume end");
     }
 
     @Override
@@ -435,6 +439,11 @@ public final class MainActivity extends Activity {
      *     parameter and is a multiple of the number of tiles.
      */
     private native int rtResize(int size);
+
+    /**
+     * Resets the C `errno` error code to 0.
+     */
+    public static native void resetErrno();
 
     /**
      * Gets the path of a file that was loaded with an external file manager.
@@ -647,6 +656,8 @@ public final class MainActivity extends Activity {
 
         final ViewTreeObserver vto = this.drawView.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(() -> {
+            log.info("initializePickerResolutions");
+            resetErrno();
             final double widthView = (double) this.drawView.getWidth();
             final double heightView = (double) this.drawView.getHeight();
 

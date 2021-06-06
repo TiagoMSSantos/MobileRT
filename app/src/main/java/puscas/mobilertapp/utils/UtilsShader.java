@@ -8,7 +8,6 @@ import lombok.experimental.UtilityClass;
 import lombok.extern.java.Log;
 import puscas.mobilertapp.configs.ConfigGlAttribute;
 import puscas.mobilertapp.exceptions.FailureException;
-
 import static android.opengl.GLES20.GL_COMPILE_STATUS;
 import static android.opengl.GLES20.glCompileShader;
 import static android.opengl.GLES20.glCreateShader;

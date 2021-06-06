@@ -367,6 +367,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
             log.info("Waited for the onDraw to start the RT engine!!!");
         }
 
+        MainActivity.resetErrno();
         return Optional.ofNullable(this.renderTask)
             .map(task -> State.values()[task.rtGetState()])
             .orElse(State.BUSY);
@@ -886,6 +887,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
             }
 
             try {
+                MainActivity.resetErrno();
                 rtRenderIntoBitmap(this.bitmap, this.numThreads);
             } catch (final LowMemoryException ex) {
                 UtilsLogging.logThrowable(ex, "MainRenderer#onDrawFrame");

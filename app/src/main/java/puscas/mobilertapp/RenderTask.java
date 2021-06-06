@@ -348,7 +348,10 @@ public final class RenderTask extends AsyncTaskCoroutine {
 
         printText();
         this.requestRender.run();
+
+        MainActivity.resetErrno();
         this.finishRender.run();
+
         this.buttonRender.get().setText(R.string.render);
 
         final String message = "onPostExecute" + ConstantsMethods.FINISHED;
