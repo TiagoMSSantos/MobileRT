@@ -60,9 +60,9 @@ _shared_job_mac: &shared_job_mac
   - brew install qt@4 > install_qt4.log;
   - brew install qt > install_qt.log;
   - brew install llvm > install_llvm.log;
-#  - sudo find / -name "omp.h" || true;
-#  - sudo find / -name "*omp.*" || true;
-#  - sudo find / -name "wchar.h" || true;
+#  - sudo find / -iname "omp.h" || true;
+#  - sudo find / -iname "*omp.*" || true;
+#  - sudo find / -iname "wchar.h" || true;
   - sudo xcode-select -p;
   - sudo xcode-select --install || true;
 #  - sudo xcode-select --switch /System/Volumes/Data/Applications/Xcode-12.2.beta.3.app/Contents/Developer;

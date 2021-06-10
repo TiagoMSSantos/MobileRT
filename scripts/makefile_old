@@ -77,7 +77,7 @@ endif
 
 SOURCES_APP := $(shell find \
 ./RayTracerMain.cpp \
-! -name "DrawView.cpp" \
+! -iname "DrawView.cpp" \
 -regextype gnu-awk -iname "*.cpp" -printf '%h/%f\n' | sort -nr)
 OBJS_APP := $(addsuffix .o,$(basename $(SOURCES_APP)))
 DEPS_APP := $(addsuffix .d,$(basename $(SOURCES_APP)))
@@ -87,7 +87,7 @@ LLVM_APP := $(addsuffix .llvmIR,$(basename $(SOURCES_APP)))
 SOURCES_WRAPPER := $(shell find \
 ./Scenes.cpp \
 ./c_wrapper.cpp \
-! -name "DrawView.cpp" \
+! -iname "DrawView.cpp" \
 -regextype gnu-awk -iname "*.cpp" -printf '%h/%f\n' | sort -nr)
 OBJS_WRAPPER := $(addsuffix .o,$(basename $(SOURCES_WRAPPER)))
 DEPS_WRAPPER := $(addsuffix .d,$(basename $(SOURCES_WRAPPER)))

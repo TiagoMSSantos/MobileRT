@@ -121,7 +121,7 @@ function install_conan() {
   PATH=$(pip3 list -v | grep -i cmake | tr -s ' ' | cut -d ' ' -f 3):${PATH}
   PATH=$(pip3 list -v | grep -i conan | tr -s ' ' | cut -d ' ' -f 3):${PATH}
 
-  CONAN_PATH=$(find ~/ -name "conan" -not -path "*/MobileRT/**/conan*");
+  CONAN_PATH=$(find ~/ -iname "conan" -not -path "*/MobileRT/**/conan*");
   echo "Conan binary: ${CONAN_PATH}"
   echo "Conan location: ${CONAN_PATH%/conan}"
   export PATH=${CONAN_PATH%/conan}:${PATH}
@@ -129,7 +129,7 @@ function install_conan() {
   callCommand conan -v
   checkCommand conan
 
-  CLANG_PATH=$(find / -name "clang");
+  CLANG_PATH=$(find / -iname "clang");
   echo "Clang binary: ${CLANG_PATH}"
   echo "Clang location: ${CLANG_PATH%/clang}"
   PATH=${CLANG_PATH%/clang}:${PATH}
