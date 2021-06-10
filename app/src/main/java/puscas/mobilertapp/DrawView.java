@@ -183,6 +183,7 @@ public final class DrawView extends GLSurfaceView {
         log.info(ConstantsMethods.RENDER_SCENE);
 
         waitLastTask();
+        MainActivity.resetErrno();
         rtStartRender(false);
 
         this.lastTask = this.executorService.submit(() -> {
