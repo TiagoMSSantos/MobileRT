@@ -478,3 +478,30 @@ repositories {
 }
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////////////////////////////////////
+// Ignore beta versions of dependencies in the discover of dependency updates
+///////////////////////////////////////////////////////////////////////////////
+def isNonStable = { String version ->
+    def betaKeyword = ['RC', 'CANDIDATE', 'ALPHA', 'BETA', 'M1'].any { it -> version.toUpperCase().contains(it) }
+    return betaKeyword
+}
+
+// https://github.com/ben-manes/gradle-versions-plugin
+tasks.named("dependencyUpdates").configure {
+    resolutionStrategy {
+        componentSelection {
+            all {
+                if (isNonStable(it.candidate.version) && !isNonStable(it.currentVersion)) {
+                    reject('Release candidate')
+                }
+                if (it.currentVersion.contains("native-mt") && !it.candidate.version.contains("native-mt")) {
+                    reject('kotlinx.coroutines not the same type of version')
+                }
+            }
+        }
+    }
+}
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////

@@ -24,3 +24,13 @@ Here are the commands to generate the code duplication report:
 ```bash
 jscpd -c .jscpd.json .
 ```
+
+## Check dependency updates
+Here are the commands to generate the dependency updates report in `app/report.html`:
+```bash
+./gradlew dependencyUpdates -Drevision=release -DoutputFormatter=html -DoutputDir=.
+```
+And the commands to generate the dependency report in `app/build/reports/project/dependencies/root.app.html`:
+```bash
+./gradlew htmlDependencyReport
+```
