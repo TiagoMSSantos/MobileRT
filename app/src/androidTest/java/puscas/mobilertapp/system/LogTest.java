@@ -39,8 +39,8 @@ public final class LogTest {
      */
     @Before
     public void setUp() {
-        Log.d("Test", "Android_log_test_tearDownAll");
-        log.info("Lombok_log_test_tearDownAll");
+        Log.d("Test", "Android_log_test_setUp");
+        log.info("Lombok_log_test_setUp");
     }
 
     /**

@@ -28,6 +28,7 @@
 
 # Gradle reports
 **/reports/**
+**/report.html
 
 # Code coverage temporary files
 **/code_coverage_report/**
