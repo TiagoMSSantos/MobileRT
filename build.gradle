@@ -95,7 +95,7 @@ ext {
     espresso_version = "3.3.0"
     kotlin_stdlib_jdk8_version = "1.5.20"
     multidex_version = "2.0.1"
-    androidX_test_library_version = "1.3.0"
+    androidX_test_library_version = "1.4.0"
     guava_version = "30.1.1-jre"
     stream_support_version = "1.7.3"
     commons_lang3_version = "3.12.0"
