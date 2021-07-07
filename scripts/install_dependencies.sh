@@ -66,24 +66,18 @@ if [ -x "$(command -v apt-get)" ]; then
     sudo;
 # if MacOS
 elif [ -x "$(command -v brew)" ]; then
+  # Update homebrew
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall.sh)"
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
   callCommand brew update;
+  callCommand brew cleanup;
   callCommand brew tap cartr/qt4;
   callCommand brew uninstall --force openssl@1.0;
   brew install openssl@1.0;
   brew install qt@4;
-  callCommand brew install llvm;
-
-  # Install OpenMP
+  brew install llvm;
   brew install libomp;
-  wget https://homebrew.bintray.com/bottles/libomp-11.1.0.catalina.bottle.tar.gz;
-  # Fallback to manually extract lib
-  callCommand tar -xzvf libomp-11.1.0.catalina.bottle.tar.gz;
-  callCommand sudo mv libomp /usr/local/Cellar/libomp;
-
-  # The following might give this error:
-  # curl: (35) error:1400410B:SSL routines:CONNECT_CR_SRVR_HELLO:wrong version number
-  # Error: Failed to download resource "cpulimit"
-  # Download failed: https://homebrew.bintray.com/bottles/cpulimit-0.2.catalina.bottle.tar.gz
   brew install cpulimit;
   brew install lcov;
   brew install python3;
