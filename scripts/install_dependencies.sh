@@ -24,13 +24,11 @@ source scripts/helper_functions.sh
 ###############################################################################
 # Install dependencies
 ###############################################################################
-# if Debian based Linux
 if [ -x "$(command -v apt-get)" ]; then
-  # Can't use `callCommand` because of the error:
-  # Err:40 https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_18.04  Release
-  # Certificate verification failed: The certificate is NOT trusted. The received OCSP status
-  # response is invalid.  Could not handshake: Error in the certificate verification.
-  sudo apt-get update -y || true;
+  echo "Detected Debian based Linux";
+
+  sudo apt-get update -y;
+  sudo apt-get install --no-install-recommends -y;
   callCommand sudo apt-get install --no-install-recommends -y \
     xorg-dev \
     libxcb-render-util0-dev \
@@ -63,10 +61,87 @@ if [ -x "$(command -v apt-get)" ]; then
     python3-dev \
     python3-setuptools \
     cpulimit \
+    cmake \
     sudo;
-# if MacOS
+elif [ -x "$(command -v yum)" ]; then
+  echo "Detected Red Hat based Linux";
+
+  yum update -y;
+  yum install -y \
+    vim \
+    findutils \
+    cmake \
+    make \
+    bash \
+    ca-certificates \
+    git \
+    which \
+    qt5-qtbase-devel \
+    python36 \
+    gcc-c++;
+elif [ -e "$(command -v pacman)" ]; then
+  echo "Detected Arch based Linux";
+
+  patched_glibc=glibc-linux4-2.33-4-x86_64.pkg.tar.zst && \
+  curl -LO "https://repo.archlinuxcn.org/x86_64/${patched_glibc}" && \
+  bsdtar -C / -xvf "${patched_glibc}";
+
+  pacman -Sy --noconfirm --needed;
+  pacman -Sy --noconfirm --needed \
+    vim \
+    findutils \
+    cmake \
+    make \
+    bash \
+    ca-certificates \
+    git \
+    which \
+    qt5-base \
+    python3 \
+    gcc;
+elif [ -x "$(command -v apk)" ]; then
+  echo "Detected Alpine based Linux";
+
+  apk update;
+  apk add \
+    vim \
+    findutils \
+    cmake \
+    make \
+    bash \
+    ca-certificates \
+    git \
+    qt5-qtbase-dev \
+    which \
+    g++ \
+    py3-pip \
+    gcc;
+elif [ -x "$(command -v emerge)" ]; then
+  echo "Detected Gentoo based Linux";
+
+  emerge --sync;
+  emerge sys-apps/portage;
+  emerge app-portage/layman;
+  emerge dev-libs/icu;
+  echo 'FEATURES="-sandbox -usersandbox"' >> /etc/portage/make.conf;
+  echo 'USE="dev-libs/libpcre2-10.35 pcre16 x11-libs/libxkbcommon-1.0.3 media-libs/libglvnd-1.3.2-r2 X"' >> /etc/portage/make.conf;
+  emerge \
+    vim \
+    findutils \
+    cmake \
+    make \
+    bash \
+    ca-certificates \
+    dev-vcs/git \
+    which \
+    sys-devel/gcc \
+    dev-qt/qtcore \
+    dev-qt/qtgui \
+    dev-qt/qtwidgets;
 elif [ -x "$(command -v brew)" ]; then
-  # Update homebrew
+  echo "Detected MacOS";
+
+  # Update homebrew (to use the new repository)
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall.sh)"
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
@@ -87,6 +162,8 @@ elif [ -x "$(command -v brew)" ]; then
   callCommand echo "MacOS '${MAJOR_MAC_VERSION}' detected"
   # This command needs sudo.
   callCommand sudo xcode-select --switch /System/Volumes/Data/Applications/Xcode_12.4.app/Contents/Developer;
+else
+  echo "Detected unknown Operating System";
 fi
 
 # Install Python
