@@ -15,28 +15,28 @@ message( STATUS "Cloning third party repositories." )
 
 # These work via conan but not for all environments
 execute_process( COMMAND git clone https://github.com/g-truc/glm
-  --progress --jobs=${JOBS}
+  --shallow-submodules --progress --jobs=${JOBS}
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} ERROR_QUIET )
 
 execute_process( COMMAND git clone https://github.com/nothings/stb
-  --progress --jobs=${JOBS}
+  --shallow-submodules --progress --jobs=${JOBS}
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} ERROR_QUIET )
 
 
 execute_process( COMMAND git clone https://github.com/syoyo/tinyobjloader
-  --progress --jobs=${JOBS}
+  --shallow-submodules --progress --jobs=${JOBS}
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} ERROR_QUIET )
 
 execute_process( COMMAND git clone https://github.com/google/googletest
-  --progress --jobs=${JOBS}
+  --shallow-submodules --progress --jobs=${JOBS}
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} ERROR_QUIET )
 
 execute_process( COMMAND git clone https://github.com/boostorg/boost
-  --progress --jobs=${JOBS}
+  --shallow-submodules --progress --jobs=${JOBS}
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} ERROR_QUIET )
 
 execute_process( COMMAND git clone https://github.com/imneme/pcg-cpp
-  --progress --jobs=${JOBS}
+  --shallow-submodules --progress --jobs=${JOBS}
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} ERROR_QUIET )
 ###############################################################################
 ###############################################################################
