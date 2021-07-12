@@ -95,7 +95,10 @@ RUN git config --global http.postBuffer 524288000; \
 ###############################################################################
 # Get MobileRT contents (required to create docker image in CI)
 ###############################################################################
-RUN git clone https://github.com/TiagoMSSantos/MobileRT.git --branch master;
+RUN git clone https://github.com/TiagoMSSantos/MobileRT.git \
+  --shallow-submodules \
+  --progress \
+  --branch master;
 ###############################################################################
 ###############################################################################
 
