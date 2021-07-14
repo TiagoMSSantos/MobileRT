@@ -1,6 +1,7 @@
 package puscas.mobilertapp.utils
 
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
@@ -27,7 +28,7 @@ abstract class AsyncTaskCoroutine {
 
     /**
      * Runs on the UI thread before [doInBackground].
-     * Invoked directly by [execute].
+     * Invoked directly by [executeAsync].
      *
      * @see [onPostExecute]
      * @see [doInBackground]
@@ -36,27 +37,27 @@ abstract class AsyncTaskCoroutine {
 
     /**
      * Override this method to perform a computation on a background thread. The
-     * specified parameters are the parameters passed to [execute]
+     * specified parameters are the parameters passed to [executeAsync]
      * by the caller of this task.
      *
      * This will normally run on a background thread. But to better
      * support testing frameworks, it is recommended that this also tolerates
-     * direct execution on the foreground thread, as part of the [execute] call.
+     * direct execution on the foreground thread, as part of the [executeAsync] call.
      *
-     * This method can call [publishProgress] to publish updates
+     * This method can call [publishProgressAsync] to publish updates
      * on the UI thread.
      *
      * @see [onPreExecute]
      * @see [onPostExecute]
-     * @see [publishProgress]
+     * @see [publishProgressAsync]
      */
     protected abstract fun doInBackground()
 
     /**
-     * Runs on the UI thread after [publishProgress] is invoked.
-     * The specified values are the values passed to [publishProgress].
+     * Runs on the UI thread after [publishProgressAsync] is invoked.
+     * The specified values are the values passed to [publishProgressAsync].
      *
-     * @see [publishProgress]
+     * @see [publishProgressAsync]
      * @see [doInBackground]
      */
     protected abstract fun onProgressUpdate()
@@ -80,8 +81,9 @@ abstract class AsyncTaskCoroutine {
      * @see [onProgressUpdate]
      * @see [doInBackground]
      */
-    protected fun publishProgress() {
-        GlobalScope.async(Dispatchers.Main) {
+    @DelicateCoroutinesApi
+    protected fun publishProgressAsync(): Deferred<Unit> {
+        return GlobalScope.async(Dispatchers.Main) {
             onProgressUpdate()
         }
     }
@@ -96,8 +98,9 @@ abstract class AsyncTaskCoroutine {
      * intensive that when it finishes, it will then call the [onPostExecute]
      * method on the UI thread.
      */
-    fun execute() {
-        GlobalScope.async(Dispatchers.Main) {
+    @DelicateCoroutinesApi
+    fun executeAsync(): Deferred<Unit> {
+        return GlobalScope.async(Dispatchers.Main) {
             onPreExecute()
             lastJob = GlobalScope.async(Dispatchers.IO) {
                 doInBackground()

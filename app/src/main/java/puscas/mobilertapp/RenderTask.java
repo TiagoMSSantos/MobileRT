@@ -208,7 +208,7 @@ public final class RenderTask extends AsyncTaskCoroutine {
             final State currentState = State.values()[rtGetState()];
             this.stateT = currentState.toString();
             this.requestRender.run();
-            publishProgress();
+            publishProgressAsync();
 
             if (currentState != State.BUSY) {
                 this.executorService.shutdown();

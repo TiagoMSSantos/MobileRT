@@ -761,7 +761,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
             .config(config)
             .build();
 
-        this.renderTask.execute();
+        this.renderTask.executeAsync();
         final String message = "createAndLaunchRenderTask" + ConstantsMethods.FINISHED;
         log.info(message);
     }
