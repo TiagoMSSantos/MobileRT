@@ -35,7 +35,7 @@ ENV \
     # Set lib path
     LD_LIBRARY_PATH="/MobileRT/libraries:/MobileRT/build_${BUILD_TYPE}/lib" \
     # Set apt-get as non interactive mode
-    DEBIAN_FRONTEND=noninteractive
+    DEBIAN_FRONTEND="noninteractive"
 ###############################################################################
 ###############################################################################
 
@@ -59,7 +59,7 @@ RUN \
 if [ -x "$(command -v apt-get)" ]; then \
   echo "Detected Debian based Linux"; \
   apt-get update -y; \
-  apt-get install --no-install-recommends -y bash sudo git; \
+  apt-get install --no-install-recommends -y bash sudo git tzdata; \
 elif [ -x "$(command -v yum)" ]; then \
   echo "Detected Red Hat based Linux"; \
   yum update -y; \
