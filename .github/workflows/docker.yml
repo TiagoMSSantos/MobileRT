@@ -1,0 +1,158 @@
+name: Docker
+
+on:
+  push:
+    paths-ignore:
+    - '*'
+    - '.github/**'
+    - 'app/debug/**'
+    - 'app/release/**'
+    - 'app/System_dependent/**'
+    - 'docs/**'
+    - 'scripts/**'
+    - 'WavefrontOBJs/**'
+    - '!.github/workflows/docker.yml'
+    - '!app/System_dependent/CMakeLists.txt'
+    - '!app/System_dependent/Android_JNI/**'
+    - '!docker_image/**'
+    - '!scripts/install_dependencies.sh'
+    - '!scripts/check_android.sh'
+    - '!scripts/compile_android.sh'
+    - '!scripts/run_tests.sh'
+    - '!scripts/run_tests_android.sh'
+    - '!codecov.yml'
+    - '!*gradle*'
+
+defaults:
+  run:
+    shell: bash
+    working-directory: .
+
+jobs:
+  Build:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 240
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [""]
+        BASE_IMAGE: [""]
+        include:
+        - os: "ubuntu-18.04"
+          BASE_IMAGE: "ubuntu:18.04"
+
+        - os: "ubuntu-18.04"
+          BASE_IMAGE: "centos:8"
+
+        - os: "ubuntu-18.04"
+          BASE_IMAGE: "archlinux/archlinux:base-devel"
+
+        - os: "ubuntu-18.04"
+          BASE_IMAGE: "alpine:3.12"
+
+        - os: "macos-10.15"
+          BASE_IMAGE: "sickcodes/docker-osx:latest"
+
+        exclude:
+        - BASE_IMAGE: ""
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2.3.4
+
+    - name: Setup Docker Image version Linux
+      if: success() && startsWith(matrix.os, 'ubuntu')
+      run: |
+        # Add VERSION environment variable to all workflow steps
+        export VERSION="${BASE_IMAGE%:*}";
+        export VERSION="${VERSION#*/}";
+        echo "VERSION=${VERSION}" >> ${GITHUB_ENV};
+      env:
+        BASE_IMAGE: ${{ matrix.BASE_IMAGE }}
+
+    - name: Install docker MacOS
+      if: success() && startsWith(matrix.os, 'macos')
+      run: |
+        echo "Select XCode";
+        sudo xcode-select --switch /System/Volumes/Data/Applications/Xcode_12.4.app/Contents/Developer;
+        echo "Update Homebrew";
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)";
+        echo "Install docker and virtualbox";
+        brew install --cask docker virtualbox;
+        brew install docker;
+        echo "Install docker-machine";
+        mkdir -p ~/.docker/machine/cache/;
+        curl -Lo ~/.docker/machine/cache/boot2docker.iso https://github.com/boot2docker/boot2docker/releases/download/v19.03.12/boot2docker.iso;
+        brew install docker-machine;
+        echo "Create docker-machine";
+        docker-machine create --driver virtualbox --virtualbox-boot2docker-url ~/.docker/machine/cache/boot2docker.iso default;
+        echo "Start service docker-machine";
+        brew services start docker-machine;
+        eval "$(docker-machine env default)";
+        echo "Restart service docker-machine";
+        docker-machine restart;
+        docker-machine env;
+
+        # Add VERSION environment variable to all workflow steps
+        export VERSION="${BASE_IMAGE%:*}";
+        export VERSION="${VERSION#*/}";
+        echo "VERSION=${VERSION}" >> ${GITHUB_ENV};
+
+        ls ${PATH//:/ } 2> /dev/null | grep -i docker 2> /dev/null || true;
+
+        # Add docker path to PATH environment variable to all workflow steps
+        export PATH=${PATH}:"/usr/local/etc/bash_completion.d/";
+        export PATH=${PATH}:"/Applications/Docker.app/";
+        echo "${PATH}" >> ${GITHUB_PATH};
+
+        # ls -la /usr/local/bin/;
+        export PATH=${PATH}:"/usr/local/bin/";
+
+        echo "Start Docker";
+        git clone https://github.com/docker/docker.github.io.git;
+        cd docker.github.io;
+        ls registry/recipes/osx;
+        plutil -lint registry/recipes/osx/com.docker.registry.plist;
+        cp registry/recipes/osx/com.docker.registry.plist ~/Library/LaunchAgents/;
+        chmod 644 ~/Library/LaunchAgents/com.docker.registry.plist;
+        launchctl load ~/Library/LaunchAgents/com.docker.registry.plist;
+        echo "Restart Docker registry";
+        launchctl stop com.docker.registry;
+        launchctl start com.docker.registry;
+        launchctl unload ~/Library/LaunchAgents/com.docker.registry.plist;
+
+        open /Applications/Docker.app;
+      env:
+        BASE_IMAGE: ${{ matrix.BASE_IMAGE }}
+
+    - name: Login to DockerHub Registry
+      if: success()
+      run: |
+        ls ${PATH//:/ } 2> /dev/null | grep -i docker 2> /dev/null || true;
+        docker --version;
+        echo ${{ env.DOCKERHUB_PASSWORD }} | docker login -u ${{ env.DOCKERHUB_USERNAME }} --password-stdin;
+
+    - name: Build the tagged Docker image
+      if: success()
+      run: |
+        export VERSION=${{ env.VERSION }};
+        echo "Version: ${VERSION}";
+        docker build -t ptpuscas/mobile_rt:${VERSION} -f docker_image/Dockerfile \
+          --no-cache=false --build-arg BUILD_TYPE=release --build-arg BASE_IMAGE=${{ matrix.BASE_IMAGE }} .;
+
+    - name: Run the unit tests
+      if: success()
+      run: |
+        export VERSION=${{ env.VERSION }};
+        echo "Version: ${VERSION}";
+        docker run -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=${DISPLAY} ptpuscas/mobile_rt:${VERSION} ./bin/UnitTests;
+
+    - name: Push the tagged Docker image
+      if: success()
+      run: |
+        export VERSION=${{ env.VERSION }};
+        echo "Version: ${VERSION}";
+        docker push ptpuscas/mobile_rt:${VERSION}
