@@ -153,7 +153,7 @@ jobs:
 
     - name: Run Android tests
       if: success() && !startsWith(matrix.os, 'windows')
-      uses: ReactiveCircus/android-emulator-runner@v2.19.0
+      uses: ReactiveCircus/android-emulator-runner@v2.19.1
       env:
         NCPU_CORES: 4
       with:
