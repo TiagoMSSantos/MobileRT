@@ -74,7 +74,7 @@ elif [ -x "$(command -v apk)" ]; then \
   apk add bash sudo git; \
 elif [ -x "$(command -v emerge)" ]; then \
   echo "Detected Gentoo based Linux"; \
-  emerge --sync; \
+  emerge --sync || true; \
   emerge bash sudo dev-vcs/git; \
 else \
   echo "Detected unknown based Linux"; \
@@ -106,7 +106,7 @@ RUN git clone https://github.com/TiagoMSSantos/MobileRT.git \
 ###############################################################################
 # Install dependencies
 ###############################################################################
-WORKDIR /MobileRT
+WORKDIR ./MobileRT
 RUN bash scripts/install_dependencies.sh;
 ###############################################################################
 ###############################################################################
@@ -138,7 +138,7 @@ VOLUME /tmp/.X11-unix
 ###############################################################################
 # Execute MobileRT by default
 ###############################################################################
-WORKDIR /MobileRT/build_${BUILD_TYPE}
+WORKDIR ./build_${BUILD_TYPE}
 CMD bash ../scripts/profile.sh ${ENV_BUILD_TYPE}
 ###############################################################################
 ###############################################################################

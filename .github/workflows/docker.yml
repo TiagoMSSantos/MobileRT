@@ -31,7 +31,7 @@ defaults:
 jobs:
   Build:
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 240
+    timeout-minutes: 300
     strategy:
       fail-fast: false
       matrix:
@@ -50,7 +50,10 @@ jobs:
         - os: "ubuntu-18.04"
           BASE_IMAGE: "alpine:3.12"
 
-        - os: "macos-10.15"
+        - os: "ubuntu-18.04"
+          BASE_IMAGE: "gentoo/stage3"
+
+        - os: "ubuntu-18.04"
           BASE_IMAGE: "sickcodes/docker-osx:latest"
 
         exclude:
@@ -76,6 +79,11 @@ jobs:
     - name: Install docker MacOS
       if: success() && startsWith(matrix.os, 'macos')
       run: |
+        # This code installs Docker on MacOS but the command `docker` doesn't do anything.
+        # Its necessary to install Docker Desktop on Mac:
+        # https://docs.docker.com/docker-for-mac/install/
+        # So, for now, we just use MacOS docker image that uses KVM (Kernel-based Virtual Machine)
+        # in a Linux environment.
         echo "Select XCode";
         sudo xcode-select --switch /System/Volumes/Data/Applications/Xcode_12.4.app/Contents/Developer;
         echo "Update Homebrew";
@@ -95,6 +103,8 @@ jobs:
         echo "Restart service docker-machine";
         docker-machine restart;
         docker-machine env;
+        docker ps;
+        docker --version;
 
         # Add VERSION environment variable to all workflow steps
         export VERSION="${BASE_IMAGE%:*}";
@@ -148,7 +158,7 @@ jobs:
       run: |
         export VERSION=${{ env.VERSION }};
         echo "Version: ${VERSION}";
-        docker run -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=${DISPLAY} ptpuscas/mobile_rt:${VERSION} ./bin/UnitTests;
+        docker run -t -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=${DISPLAY} ptpuscas/mobile_rt:${VERSION} ./bin/UnitTests;
 
     - name: Push the tagged Docker image
       if: success()

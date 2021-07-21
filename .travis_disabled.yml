@@ -37,7 +37,7 @@ _shared_job_linux: &shared_job_linux
   install:
   - mkdir -p build_native;
   - cd build_native;
-  - cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_BUILD_TYPE=Debug ../app/;
+  - cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_BUILD_TYPE=debug ../app/;
   - cmake --build .;
   before_script:
   - ls -laR;
@@ -78,7 +78,7 @@ _shared_job_mac: &shared_job_mac
   install:
   - mkdir -p build_native;
   - cd build_native;
-  - cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_BUILD_TYPE=Debug ../app/;
+  - cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_BUILD_TYPE=debug ../app/;
   - cmake --build .;
   before_script:
   - ls -laR;

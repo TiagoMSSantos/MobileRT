@@ -49,7 +49,7 @@ try this ray tracer with ease by using the following commands to get the docker
 image and execute the container: <br/>
 ```bash
 docker pull ptpuscas/mobile_rt
-xhost +; docker run -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=${DISPLAY} -it ptpuscas/mobile_rt
+xhost +; docker run -it -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=${DISPLAY} ptpuscas/mobile_rt
 ```
 or
 ```bash
@@ -61,7 +61,7 @@ the image above :) <br/>
 ## Build docker image
 For the most curious, this is the command used to build the docker image:
 ```bash
-docker build -t ptpuscas/mobile_rt -f docker_image/Dockerfile --no-cache=false --build-arg BUILD_TYPE=Release --build-arg BASE_IMAGE=ubuntu:18.04 .
+docker build -t ptpuscas/mobile_rt -f docker_image/Dockerfile --no-cache=false --build-arg BUILD_TYPE=release --build-arg BASE_IMAGE=ubuntu:18.04 .
 ```
 
 The docker image is in docker hub:
@@ -82,7 +82,7 @@ Then, to finally compile this code, just create a build directory and compile
 in it, like for example:
 ```bash
 mkdir build_Release
-cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=Release ../app/
+cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=release ../app/
 ```
 
 ## Run Ray tracer
