@@ -1,4 +1,27 @@
 ###############################################################################
+# README
+###############################################################################
+# This Dockerfile prepares a docker image with MobileRT.
+#
+# It setups MobileRT by fetching it from git and compiling it using the
+# `install_dependencies.sh` and `compile_native.sh` scripts inside the docker
+# image.
+# The script `install_dependencies.sh` installs all the Linux necessary
+# dependencies in order to compile MobileRT.
+# And the script `compile_native.sh` compiles the MobileRT.
+#
+# At the moment, this Dockerfile allows to setup MobileRT inside a docker image
+# in multiple Linux distributions:
+# * Debian
+# * Red Hat
+# * Arch
+# * Alpine
+# * Gentoo
+###############################################################################
+###############################################################################
+
+
+###############################################################################
 # Set base docker image
 ###############################################################################
 ARG BASE_IMAGE=ubuntu:20.04
