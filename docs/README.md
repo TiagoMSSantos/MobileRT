@@ -190,7 +190,7 @@ library for assertions unit tests
   </tr>
   <tr>
     <td style="text-align:center"><b>Alpine</td>
-    <td style="text-align:center">3.12 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
+    <td style="text-align:center">3.12 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25"></td>
     <td style="text-align:center"></td>
     <td style="text-align:center"></td>
   </tr>

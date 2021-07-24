@@ -47,11 +47,11 @@ jobs:
         - os: "ubuntu-18.04"
           BASE_IMAGE: "archlinux/archlinux:base-devel"
 
-        - os: "ubuntu-18.04"
-          BASE_IMAGE: "alpine:3.12"
+        # - os: "ubuntu-18.04"
+        #   BASE_IMAGE: "alpine:3.12"
 
-        - os: "ubuntu-18.04"
-          BASE_IMAGE: "gentoo/stage3"
+        # - os: "ubuntu-18.04"
+        #   BASE_IMAGE: "gentoo/stage3:latest"
 
         - os: "ubuntu-18.04"
           BASE_IMAGE: "sickcodes/docker-osx:latest"
@@ -70,8 +70,8 @@ jobs:
       if: success() && startsWith(matrix.os, 'ubuntu')
       run: |
         # Add VERSION environment variable to all workflow steps
-        export VERSION="${BASE_IMAGE%:*}";
-        export VERSION="${VERSION#*/}";
+        export VERSION="${BASE_IMAGE/\//-}";
+        export VERSION="${VERSION/:/-}";
         echo "VERSION=${VERSION}" >> ${GITHUB_ENV};
       env:
         BASE_IMAGE: ${{ matrix.BASE_IMAGE }}
@@ -107,8 +107,8 @@ jobs:
         docker --version;
 
         # Add VERSION environment variable to all workflow steps
-        export VERSION="${BASE_IMAGE%:*}";
-        export VERSION="${VERSION#*/}";
+        export VERSION="${BASE_IMAGE/\//-}";
+        export VERSION="${VERSION/:/-}";
         echo "VERSION=${VERSION}" >> ${GITHUB_ENV};
 
         ls ${PATH//:/ } 2> /dev/null | grep -i docker 2> /dev/null || true;
