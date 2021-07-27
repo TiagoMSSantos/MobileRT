@@ -5,6 +5,12 @@
 
 namespace Components {
 
+    /**
+     * A class which represents a Perspective camera in the scene.
+     *
+     * This type of camera is designed to mimic the way the human eye sees.
+     * It is the most common projection mode used for rendering a 3D scene.
+     */
     class Perspective final : public ::MobileRT::Camera {
     private:
         float hFov_ {};

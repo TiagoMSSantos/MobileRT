@@ -5,6 +5,9 @@
 
 namespace Components {
 
+    /**
+     *  A light that gets emitted from a single point in all directions.
+     */
     class PointLight final : public ::MobileRT::Light {
     private:
         ::glm::vec3 position_ {};

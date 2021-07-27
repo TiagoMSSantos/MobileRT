@@ -8,6 +8,10 @@
 #include <string>
 
 namespace Components {
+
+    /**
+     * A class which loads a perspective camera from a file stream.
+     */
     class PerspectiveLoader final : public ::MobileRT::CameraLoader {
         public:
             ::std::unique_ptr<::MobileRT::Camera> loadFromStream(

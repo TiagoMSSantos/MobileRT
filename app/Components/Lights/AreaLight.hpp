@@ -9,6 +9,12 @@
 
 namespace Components {
 
+    /**
+     *  An area light is a light that casts directional light rays from within a set boundary,
+     *  in this case, in the format of a triangle.
+     *  All other light types emit light from a single point, where an area light emits light from
+     *  an entire area which is generally more realistic.
+     */
     class AreaLight final : public ::MobileRT::Light {
     private:
         ::MobileRT::Triangle triangle_;

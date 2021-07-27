@@ -4,6 +4,10 @@
 #include "MobileRT/Sampler.hpp"
 
 namespace Components {
+
+    /**
+     * This sampler always returns the same value.
+     */
     class Constant final : public ::MobileRT::Sampler {
     private:
         const float value_ {};

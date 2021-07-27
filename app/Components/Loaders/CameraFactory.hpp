@@ -4,6 +4,10 @@
 #include "MobileRT/Camera.hpp"
 
 namespace Components {
+
+    /**
+     * A factory to create cameras.
+     */
     class CameraFactory {
         public:
             ::std::unique_ptr<::MobileRT::Camera> loadFromFile(const ::std::string &filePath, float aspectRatio) const;

@@ -4,6 +4,12 @@
 #include "MobileRT/Sampler.hpp"
 
 namespace Components {
+
+    /**
+     * This sampler returns an arbitrary sequence that picks the middle of the sequence first.
+     *
+     * This is useful to choose the pixels to render first.
+     */
     class Stratified final : public ::MobileRT::Sampler {
     public:
         explicit Stratified() = default;

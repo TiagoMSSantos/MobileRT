@@ -5,6 +5,10 @@
 #include <random>
 
 namespace Components {
+
+    /**
+     * This sampler returns the Mersenne Twister.
+     */
     class MersenneTwister final : public ::MobileRT::Sampler {
     public:
         explicit MersenneTwister() = default;

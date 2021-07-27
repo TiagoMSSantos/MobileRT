@@ -9,6 +9,10 @@
 #include <tinyobjloader/tiny_obj_loader.h>
 
 namespace Components {
+
+    /**
+     * A class which loads a scene from an OBJ file and fills the scene with the loaded geometry.
+     */
     class OBJLoader final : public ::MobileRT::ObjectLoader {
     private:
         template<typename T1, typename T2, typename T3>

@@ -6,6 +6,10 @@
 #include <random>
 
 namespace Components {
+
+    /**
+     * This sampler returns the Halton sequence that was pre-calculated.
+     */
     class StaticHaltonSeq final : public ::MobileRT::Sampler {
     public:
         explicit StaticHaltonSeq();

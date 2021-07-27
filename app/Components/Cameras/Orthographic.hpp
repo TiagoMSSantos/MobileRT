@@ -5,6 +5,15 @@
 
 namespace Components {
 
+    /**
+     * A class which represents an Orthographic camera in the scene.
+     *
+     * This type of camera is similar to the isometric view of some games.
+     * Different from normal perspective cameras, an object's apparent scale isn't affected by its
+     * distance from the camera.
+     * So, with this camera, an object's size in the rendered image stays constant regardless of
+     * its distance from the camera.
+     */
     class Orthographic final : public ::MobileRT::Camera {
     private:
         float sizeH_ {};

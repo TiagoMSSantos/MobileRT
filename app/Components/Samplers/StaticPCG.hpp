@@ -4,6 +4,10 @@
 #include "MobileRT/Sampler.hpp"
 
 namespace Components {
+
+    /**
+     * This sampler returns the PCG sequence that was pre-calculated.
+     */
     class StaticPCG final : public ::MobileRT::Sampler {
     public:
         explicit StaticPCG();

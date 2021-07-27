@@ -6,6 +6,10 @@
 #include <utility>
 
 namespace Components {
+
+    /**
+     * This sampler returns the Halton sequence.
+     */
     class HaltonSeq final : public ::MobileRT::Sampler {
     public:
         explicit HaltonSeq() = default;
