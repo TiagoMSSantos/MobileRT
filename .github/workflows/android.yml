@@ -169,13 +169,17 @@ jobs:
           mkdir -p ./reports;
           echo "Number cores: ${NCPU_CORES}"
           bash ./scripts/run_tests_android.sh ${{ matrix.type }} all ${{ matrix.ndk_version }} ${{ matrix.cmake_version }} false;
-          ls -la ./app 2>&1 | tee ./reports/ls_coverage_reports_1.log;
-          ls -la ./app/build 2>&1 | tee ./reports/ls_coverage_reports_2.log;
-          ls -la ./app/build/reports 2>&1 | tee ./reports/ls_coverage_reports_3.log;
-          ls -la ./app/build/reports/coverage 2>&1 | tee ./reports/ls_coverage_reports_4.log;
-          ls -la ./app/build/reports/coverage/debug 2>&1 | tee ./reports/ls_coverage_reports.log;
-          ls -la ./reports 2>&1 | tee ./reports/ls_reports.log;
-          tree -a -f | grep -i app/build/reports | grep -i xml 2>&1 | tee ./reports/tree_report.log;
+
+    - name: Check report's paths
+      if: success() && !startsWith(matrix.os, 'windows')
+      run: |
+        ls -la ./app 2>&1 | tee ./reports/ls_coverage_reports_1.log;
+        ls -la ./app/build 2>&1 | tee ./reports/ls_coverage_reports_2.log;
+        ls -la ./app/build/reports 2>&1 | tee ./reports/ls_coverage_reports_3.log;
+        ls -la ./app/build/reports/coverage 2>&1 | tee ./reports/ls_coverage_reports_4.log;
+        ls -la ./app/build/reports/coverage/debug 2>&1 | tee ./reports/ls_coverage_reports.log;
+        ls -la ./reports 2>&1 | tee ./reports/ls_reports.log;
+        tree -a -f | grep -i app/build/reports | grep -i xml 2>&1 | tee ./reports/tree_report.log;
 
     - name: Upload reports to cache
       if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug'
