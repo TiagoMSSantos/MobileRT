@@ -23,6 +23,7 @@ jobs:
       if: success()
       working-directory: .
       run: |
+        set -euo pipefail;
         sudo apt update;
         sudo apt install -y ruby-dev;
         sudo gem install bundler:1.16.1;

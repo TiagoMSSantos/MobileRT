@@ -141,6 +141,7 @@ jobs:
     - name: Login to DockerHub Registry
       if: success()
       run: |
+        set -euo pipefail;
         ls ${PATH//:/ } 2> /dev/null | grep -i docker 2> /dev/null || true;
         docker --version;
         echo ${{ env.DOCKERHUB_PASSWORD }} | docker login -u ${{ env.DOCKERHUB_USERNAME }} --password-stdin;

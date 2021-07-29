@@ -64,6 +64,7 @@ jobs:
       if: success()
       working-directory: .
       run: |
+        set -euo pipefail;
         bash scripts/install_dependencies.sh;
 
     - name: Setup gradlew

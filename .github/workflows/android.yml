@@ -101,6 +101,7 @@ jobs:
       if: success()
       working-directory: .
       run: |
+        set -euo pipefail;
         mkdir -p ./reports;
         chmod +x ./gradlew 2>&1 | tee ./reports/setup_gradlew.log;
         export res="${PIPESTATUS[0]}";
@@ -171,7 +172,7 @@ jobs:
           bash ./scripts/run_tests_android.sh ${{ matrix.type }} all ${{ matrix.ndk_version }} ${{ matrix.cmake_version }} false;
 
     - name: Check report's paths
-      if: success() && !startsWith(matrix.os, 'windows')
+      if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug'
       run: |
         ls -la ./app 2>&1 | tee ./reports/ls_coverage_reports_1.log;
         ls -la ./app/build 2>&1 | tee ./reports/ls_coverage_reports_2.log;

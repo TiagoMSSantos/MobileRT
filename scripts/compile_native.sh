@@ -16,7 +16,7 @@
 ###############################################################################
 # Exit immediately if a command exits with a non-zero status
 ###############################################################################
-set -e
+set -euo pipefail;
 ###############################################################################
 ###############################################################################
 
@@ -50,12 +50,16 @@ source scripts/helper_functions.sh
 ###############################################################################
 # Fix llvm clang OpenMP library
 ###############################################################################
+set +e;
 OPENMP_INCLUDE_PATH=$(find /usr/local/Cellar/libomp -iname "omp.h" | head -1 2> /dev/null);
 OPENMP_LIB_PATH=$(find /usr/local/Cellar/libomp -iname "libomp.dylib" | head -1 2> /dev/null);
+set -e;
 echo "OPENMP_INCLUDE_PATH = ${OPENMP_INCLUDE_PATH}";
 echo "OPENMP_LIB_PATH = ${OPENMP_LIB_PATH}";
+set +u
 export CPLUS_INCLUDE_PATH=${OPENMP_INCLUDE_PATH%/omp.h}:${CPLUS_INCLUDE_PATH};
 export LIBRARY_PATH=${OPENMP_LIB_PATH%/libomp.dylib}:${LIBRARY_PATH};
+set -u
 ###############################################################################
 ###############################################################################
 
@@ -81,7 +85,10 @@ fi
 
 # Flag `-v` not compatible with MSVC.
 #callCommand ${compiler} -v;
+set +u; # Because of Windows OS doesn't have clang++ nor g++
 echo "Detected '${conan_compiler}' '${conan_compiler_version}' compiler.";
+set -u;
+
 export CXX="${compiler}";
 
 # Fix compiler version used
@@ -104,11 +111,15 @@ export CXX="${compiler}";
 if [ ! -x "$(command -v conan)" ]; then
   CONAN_PATH=$(find ~/ -iname "conan" || true);
 fi
+
+set +u;
 echo "Conan binary: ${CONAN_PATH}"
 echo "Conan location: ${CONAN_PATH%/conan}"
 if [ -n "${CONAN_PATH}" ]; then
   PATH=${CONAN_PATH%/conan}:${PATH}
 fi
+set -u;
+
 echo "PATH: ${PATH}"
 ###############################################################################
 ###############################################################################

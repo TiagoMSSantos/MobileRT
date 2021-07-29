@@ -18,6 +18,14 @@ cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit
 
 
 ###############################################################################
+# Exit immediately if a command exits with a non-zero status
+###############################################################################
+set -euo pipefail;
+###############################################################################
+###############################################################################
+
+
+###############################################################################
 # Get arguments
 ###############################################################################
 type="${1:-release}"
@@ -25,6 +33,19 @@ run_test="${2:-all}"
 ndk_version="${3:-21.3.6528147}"
 cmake_version="${4:-3.10.2}"
 kill_previous="${5:-true}"
+###############################################################################
+###############################################################################
+
+
+###############################################################################
+# Set paths
+###############################################################################
+echo "Set path to reports"
+reports_path="./app/build/reports"
+
+echo "Set path to instrumentation tests resources"
+mobilert_path="/data/MobileRT"
+sdcard_path="/mnt/sdcard/MobileRT"
 ###############################################################################
 ###############################################################################
 
@@ -75,6 +96,7 @@ function clear_func() {
   kill -s SIGTERM "${pid_logcat}" 2> /dev/null
 
   local pid_app
+  echo "Will kill MobileRT process"
   pid_app=$(adb shell ps | grep -i puscas.mobilertapp | tr -s ' ' | cut -d ' ' -f 2)
   echo "Killing pid of MobileRT: '${pid_app}'"
   adb shell kill -s SIGTERM "${pid_app}" 2> /dev/null
@@ -90,7 +112,7 @@ function catch_signal() {
   echo "Caught signal"
 
   gather_logs_func
-  clear_func
+  # clear_func
 
   echo ""
   echo ""
@@ -107,7 +129,10 @@ function runEmulator() {
   echo "Prepare traps"
   trap 'catch_signal ${?} ${LINENO}' EXIT SIGHUP SIGINT SIGQUIT SIGILL SIGTRAP SIGABRT SIGTERM
 
+  set +u;
   pid=${BASHPID}
+  set -u;
+
   script_name=$(basename "${0}")
   echo "pid: ${pid}"
   echo "script name: ${script_name}"
@@ -117,6 +142,8 @@ function runEmulator() {
   fi
 
   if [ "${kill_previous}" == true ]; then
+    echo "Killing previous process"
+    set +e
     callCommand ps aux |
       grep -v grep |
       grep -v "${pid}" |
@@ -124,13 +151,17 @@ function runEmulator() {
       tr -s ' ' |
       cut -d ' ' -f 2 |
       xargs kill
+    set -e
   fi
 
-  avd_emulators=$(emulator -list-avds)
-  echo "Emulators available: '${avd_emulators}'"
-
-  avd_emulator=$(echo "${avd_emulators}" | head -1)
-  echo "Start '${avd_emulator}'"
+  if [ -x "$(command -v emulator)" ]; then
+    avd_emulators=$(emulator -list-avds)
+    echo "Emulators available: '${avd_emulators}'"
+    avd_emulator=$(echo "${avd_emulators}" | head -1)
+    echo "Start '${avd_emulator}'"
+  else
+    echo "Command emulator is NOT installed."
+  fi
 }
 
 function waitForEmulator() {
@@ -176,13 +207,7 @@ function waitForEmulator() {
 }
 
 function copyResources() {
-  echo "Set path to reports"
-  reports_path="./app/build/reports"
   callCommand mkdir -p ${reports_path}
-
-  echo "Set path to instrumentation tests resources"
-  mobilert_path="/data/MobileRT"
-  sdcard_path="/mnt/sdcard/MobileRT"
 
   echo "Prepare copy unit tests"
   adb shell mount -o remount,rw /mnt/sdcard
@@ -205,11 +230,14 @@ function copyResources() {
 }
 
 function startCopyingLogcatToFile() {
-  echo "Disable animations"
+  # echo "Disable animations"
+  # puscas.mobilertapp not found
   # callCommand adb shell pm grant puscas.mobilertapp android.permission.SET_ANIMATION_SCALE
-  callCommand adb shell settings put global window_animation_scale 0.0
-  callCommand adb shell settings put global transition_animation_scale 0.0
-  callCommand adb shell settings put global animator_duration_scale 0.0
+
+  # /system/bin/sh: settings: not found
+  # callCommand adb shell settings put global window_animation_scale 0.0
+  # callCommand adb shell settings put global transition_animation_scale 0.0
+  # callCommand adb shell settings put global animator_duration_scale 0.0
 
   echo "Activate JNI extended checking mode"
   callCommand adb shell setprop dalvik.vm.checkjni true
@@ -260,10 +288,12 @@ function runInstrumentationTests() {
   callCommand ./gradlew --stop
   if [ "${run_test}" == "all" ]; then
     echo "Running all tests"
+    set +u; # Because `code_coverage` is only set when debug
     callCommand ./gradlew connected"${type}"AndroidTest -DtestType="${type}" \
       -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
       ${code_coverage} --console plain --parallel \
       2>&1 | tee ${reports_path}/log_tests_"${type}".log
+    set -u;
   elif [[ ${run_test} == rep_* ]]; then
     run_test_without_prefix=${run_test#"rep_"}
     echo "Repeatable of test: ${run_test_without_prefix}"

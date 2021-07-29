@@ -50,6 +50,7 @@ jobs:
       if: success()
       working-directory: .
       run: |
+        set -euo pipefail;
         mkdir -p build_${{ matrix.type }};
 
     - name: Setup code climate report

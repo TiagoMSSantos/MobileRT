@@ -16,6 +16,14 @@
 
 
 ###############################################################################
+# Exit immediately if a command exits with a non-zero status
+###############################################################################
+set -euo pipefail;
+###############################################################################
+###############################################################################
+
+
+###############################################################################
 # Change directory to MobileRT root
 ###############################################################################
 cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit
@@ -50,9 +58,12 @@ function setPaths() {
   PLOT_SCRIPTS_PATH="${SCRIPTS_PATH}/plot"
   OBJS_PATH="${MOBILERT_PATH}/WavefrontOBJs"
 
+  set +u;
   if [ -z "${PLOT_GRAPHS}" ]; then
     PLOT_GRAPHS=${SCRIPTS_PATH}/"graphs"
   fi
+  set -u;
+
   mkdir -p "${PLOT_GRAPHS}"
 
   for FOLDER in ${PLOT_GRAPHS[@]}; do

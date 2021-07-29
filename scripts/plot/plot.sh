@@ -46,6 +46,7 @@ function prepareFilenames() {
     FILENAMES+="${FILEPATH}${SEP}"
     ((i++))
   done
+
   FILENAMES="${FILENAMES%% }"
 }
 

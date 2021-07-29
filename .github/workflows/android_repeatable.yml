@@ -37,6 +37,7 @@ jobs:
       if: success()
       working-directory: .
       run: |
+        set -euo pipefail;
         mkdir -p ./reports;
         chmod +x ./gradlew 2>&1 | tee ./reports/setup_gradlew.log;
 

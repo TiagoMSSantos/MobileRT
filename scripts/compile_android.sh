@@ -12,7 +12,7 @@
 ###############################################################################
 # Exit immediately if a command exits with a non-zero status
 ###############################################################################
-set -e
+set -euo pipefail;
 ###############################################################################
 ###############################################################################
 
@@ -56,7 +56,9 @@ type=$(capitalizeFirstletter "${type}")
 echo "type: '${type}'"
 
 function clearAllBuildFiles() {
+  set +e;
   callCommand rm -rf ./app/build/
+  set -e;
 
   if [ "${recompile}" == "yes" ]; then
     callCommand rm -rf ./app/.cxx/
