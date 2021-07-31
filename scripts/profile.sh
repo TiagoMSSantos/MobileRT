@@ -38,8 +38,10 @@ function setPaths() {
   PATH_TO_SEARCH="/mnt/D/Projects"
   FILE_TO_SEARCH="MobileRT.jks"
 
+  set +e;
   FIND_MOBILERT=$(find ${PATH_TO_SEARCH} -iname "${FILE_TO_SEARCH}" 2> /dev/null | head -n 1)
   MOBILERT_PATH="${FIND_MOBILERT//\/app\/"${FILE_TO_SEARCH}"/}"
+  set -e;
 
   if [ -z "${MOBILERT_PATH}" ]; then
     PATH_TO_SEARCH="/"

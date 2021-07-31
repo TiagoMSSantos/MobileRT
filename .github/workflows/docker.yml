@@ -47,11 +47,11 @@ jobs:
         - os: "ubuntu-18.04"
           BASE_IMAGE: "archlinux/archlinux:base-devel"
 
-        # - os: "ubuntu-18.04"
-        #   BASE_IMAGE: "alpine:3.12"
+        - os: "ubuntu-18.04"
+          BASE_IMAGE: "alpine:3.12"
 
-        # - os: "ubuntu-18.04"
-        #   BASE_IMAGE: "gentoo/stage3:latest"
+        - os: "ubuntu-18.04"
+          BASE_IMAGE: "gentoo/stage3:latest"
 
         - os: "ubuntu-18.04"
           BASE_IMAGE: "sickcodes/docker-osx:latest"
@@ -65,6 +65,13 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2.3.4
+
+    - name: Extract branch name to an environment variable
+      if: success()
+      run: |
+        export BRANCH=${GITHUB_REF#refs/heads/};
+        echo "Branch: ${BRANCH}";
+        echo "BRANCH=${BRANCH}" >> ${GITHUB_ENV};
 
     - name: Setup Docker Image version Linux
       if: success() && startsWith(matrix.os, 'ubuntu')
@@ -144,26 +151,86 @@ jobs:
         set -euo pipefail;
         ls ${PATH//:/ } 2> /dev/null | grep -i docker 2> /dev/null || true;
         docker --version;
-        echo ${{ env.DOCKERHUB_PASSWORD }} | docker login -u ${{ env.DOCKERHUB_USERNAME }} --password-stdin;
+        echo ${{ env.DOCKERHUB_PASSWORD }} | \
+          docker login -u ${{ env.DOCKERHUB_USERNAME }} --password-stdin;
 
-    - name: Build the tagged Docker image
+    - name: Delete Docker Images
+      if: success() && env.BRANCH == 'master' && (!startsWith(matrix.BASE_IMAGE, 'alpine') && !startsWith(matrix.BASE_IMAGE, 'gentoo'))
+      run: |
+        export REPOSITORY="mobile_rt";
+        export ACCOUNT="ptpuscas";
+        export VERSION=${{ env.VERSION }};
+        export TAG="ptpuscas/mobile_rt:${VERSION}";
+        echo "Version: ${VERSION}";
+        HUB_TOKEN=$(curl -s -H "Content-Type: application/json" -X POST \
+          -d '{"username": "'${{ env.DOCKERHUB_USERNAME }}'", "password": "'${{ env.DOCKERHUB_PASSWORD }}'"}' \
+          https://hub.docker.com/v2/users/login/ | jq -r .token)
+        curl -i -X DELETE -H "Accept: application/json" -H "Authorization: JWT ${HUB_TOKEN}" \
+          https://hub.docker.com/v2/repositories/${ACCOUNT}/${REPOSITORY}/tags/${VERSION}/
+
+    - name: Pull the tagged Docker image
       if: success()
       run: |
         export VERSION=${{ env.VERSION }};
         echo "Version: ${VERSION}";
-        docker build -t ptpuscas/mobile_rt:${VERSION} -f docker_image/Dockerfile \
-          --no-cache=false --build-arg BUILD_TYPE=release --build-arg BASE_IMAGE=${{ matrix.BASE_IMAGE }} .;
+        output=$(docker pull ptpuscas/mobile_rt:${VERSION} || true);
+        echo "Docker: ${output}";
+        if [[ ${output} != *"up to date"* && ${output} != *"Downloaded newer image for"* ]]; then
+          echo "Did not find the Docker image. Will have to build the image."
+          echo "BUILT_IMAGE=yes" >> ${GITHUB_ENV};
+        fi
+
+    - name: Build the tagged Docker image
+      if: success() && env.BUILT_IMAGE == 'yes'
+      run: |
+        export VERSION=${{ env.VERSION }};
+        echo "Version: ${VERSION}";
+        out=$(docker pull ptpuscas/mobile_rt:${VERSION} || true);
+        docker build \
+          -t ptpuscas/mobile_rt:${VERSION} \
+          -f docker_image/Dockerfile \
+          --no-cache=false \
+          --build-arg BUILD_TYPE=release \
+          --build-arg BASE_IMAGE=${{ matrix.BASE_IMAGE }} .;
+
+    - name: Pull and build MobileRT
+      if: success() && env.BUILT_IMAGE != 'yes'
+      run: |
+        export VERSION=${{ env.VERSION }};
+        export BRANCH=${{ env.BRANCH }};
+        echo "Version: ${VERSION}";
+        echo "Branch: ${BRANCH}";
+        docker run -t \
+          --entrypoint bash \
+          --name="mobile_rt_${VERSION}" \
+          ptpuscas/mobile_rt:${VERSION} \
+          -c "git fetch origin && git reset --hard origin/${BRANCH} && git checkout ${BRANCH} && bash ../scripts/compile_native.sh release g++ yes";
+
+    - name: Update and commit MobileRT Docker Image
+      if: success() && env.BUILT_IMAGE != 'yes'
+      run: |
+        docker commit mobile_rt_${VERSION} ptpuscas/mobile_rt:${VERSION};
+        docker rm mobile_rt_${VERSION};
 
     - name: Run the unit tests
       if: success()
       run: |
         export VERSION=${{ env.VERSION }};
+        export BRANCH=${{ env.BRANCH }};
         echo "Version: ${VERSION}";
-        docker run -t -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=${DISPLAY} ptpuscas/mobile_rt:${VERSION} ./bin/UnitTests;
+        echo "Branch: ${BRANCH}";
+        docker run -t \
+          --entrypoint bash \
+          -v /tmp/.X11-unix:/tmp/.X11-unix \
+          -e DISPLAY=${DISPLAY} \
+          --name="mobile_rt_${VERSION}" \
+          ptpuscas/mobile_rt:${VERSION} -c "./bin/UnitTests";
 
     - name: Push the tagged Docker image
-      if: success()
+      if: success() && env.BRANCH == 'master'
       run: |
         export VERSION=${{ env.VERSION }};
+        export BRANCH=${{ env.BRANCH }};
         echo "Version: ${VERSION}";
-        docker push ptpuscas/mobile_rt:${VERSION}
+        echo "Branch: ${BRANCH}";
+        docker push ptpuscas/mobile_rt:${VERSION};
