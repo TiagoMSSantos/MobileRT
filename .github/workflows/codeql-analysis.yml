@@ -79,7 +79,7 @@ jobs:
       run: |
         mkdir -p ./app/build/reports;
         mkdir -p ./reports;
-        bash ./scripts/compile_android.sh Debug yes 21.3.6528147 3.6.0 2>&1 | tee ./reports/compile_android.log;
+        bash ./scripts/compile_android.sh debug yes 21.3.6528147 3.6.0 2>&1 | tee ./reports/compile_android.log;
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
         exit ${res};
@@ -89,7 +89,7 @@ jobs:
       working-directory: .
       run: |
         mkdir -p ./reports;
-        bash scripts/compile_native.sh Debug g++ yes 2>&1 | tee ./reports/compile_native.log;
+        bash scripts/compile_native.sh debug g++ yes 2>&1 | tee ./reports/compile_native.log;
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
         exit ${res};
@@ -109,7 +109,8 @@ jobs:
         output: ../results
         upload: true
         add-snippets: true
-        threads: 4
+        threads: 2
         checkout_path: ${{ github.workspace }}
         token: ${{ github.token }}
         matrix: ${{ toJson(matrix) }}
+        upload-database: true
