@@ -208,7 +208,7 @@ jobs:
           --entrypoint bash \
           --name="mobile_rt_${VERSION}" \
           ptpuscas/mobile_rt:${VERSION} \
-          -c "git fetch origin && git reset --hard origin/${BRANCH} && git checkout ${BRANCH} && bash ../scripts/compile_native.sh release g++ yes";
+          -c "git fetch origin && git reset --hard origin/${BRANCH} && git checkout ${BRANCH} && bash ../scripts/compile_native.sh -t release -c g++ -r yes";
 
     - name: Update and commit MobileRT Docker Image
       if: success() && env.BUILT_IMAGE != 'yes'

@@ -83,7 +83,7 @@ jobs:
       run: |
         mkdir -p ./app/build/reports;
         mkdir -p ./reports;
-        bash ./scripts/compile_android.sh debug yes 21.3.6528147 3.6.0 2>&1 | tee ./reports/compile_android.log;
+        bash ./scripts/compile_android.sh -t debug -r yes -n 21.3.6528147 -m 3.6.0 2>&1 | tee ./reports/compile_android.log;
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
         exit ${res};
@@ -93,7 +93,7 @@ jobs:
       working-directory: .
       run: |
         mkdir -p ./reports;
-        bash scripts/compile_native.sh debug g++ yes 2>&1 | tee ./reports/compile_native.log;
+        bash scripts/compile_native.sh -t debug -c g++ -r yes 2>&1 | tee ./reports/compile_native.log;
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
         exit ${res};

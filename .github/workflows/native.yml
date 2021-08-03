@@ -86,7 +86,7 @@ jobs:
       if: success()
       working-directory: .
       run: |
-        bash scripts/compile_native.sh ${{ matrix.type }} ${{ matrix.compiler }} 2>&1 | tee ./reports/run_cmake.log;
+        bash scripts/compile_native.sh -t ${{ matrix.type }} -c ${{ matrix.compiler }} 2>&1 | tee ./reports/run_cmake.log;
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
         exit ${res};

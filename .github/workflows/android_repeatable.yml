@@ -55,7 +55,7 @@ jobs:
         disable-animations: true
         emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none
         script: |
-          bash ./scripts/run_tests_android.sh ${{ matrix.type }} rep_puscas.mobilertapp.${{ matrix.test }} ${{ matrix.ndk_version }} ${{ matrix.cmake_version }} false;
+          bash ./scripts/run_tests_android.sh -t ${{ matrix.type }} -r rep_puscas.mobilertapp.${{ matrix.test }} -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -k false;
 
     - name: Upload reports
       if: always()

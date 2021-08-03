@@ -140,7 +140,7 @@ jobs:
         mkdir -p ./reports;
         sudo mkdir -p ${AGENT_TOOLSDIRECTORY}/jdk/11.0.10;
         sudo ln -s ${JAVA_HOME} ${AGENT_TOOLSDIRECTORY}/jdk/11.0.10/x64 || true 2>&1 | tee ./reports/create_symlink_java.log;
-        bash ./scripts/check_android.sh ${{ matrix.ndk_version }} ${{ matrix.cmake_version }} 2>&1 | tee ./reports/check_android.log;
+        bash ./scripts/check_android.sh -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} 2>&1 | tee ./reports/check_android.log;
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
         exit ${res};
@@ -151,7 +151,7 @@ jobs:
       run: |
         mkdir -p ./app/build/reports;
         mkdir -p ./reports;
-        bash ./scripts/run_tests.sh ${{ matrix.type }} ${{ matrix.ndk_version }} ${{ matrix.cmake_version }} 2>&1 | tee ./reports/run_tests.log;
+        bash ./scripts/run_tests.sh -t ${{ matrix.type }} -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} 2>&1 | tee ./reports/run_tests.log;
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
         exit ${res};
@@ -173,7 +173,7 @@ jobs:
           mkdir -p ./app/build/reports;
           mkdir -p ./reports;
           echo "Number cores: ${NCPU_CORES}"
-          bash ./scripts/run_tests_android.sh ${{ matrix.type }} all ${{ matrix.ndk_version }} ${{ matrix.cmake_version }} false;
+          bash ./scripts/run_tests_android.sh -t ${{ matrix.type }} -r all -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -k false;
 
     - name: Check report's paths
       if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug'

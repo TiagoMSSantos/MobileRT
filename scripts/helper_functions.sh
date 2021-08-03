@@ -7,6 +7,133 @@
 ###############################################################################
 ###############################################################################
 
+# Helper command for compilation scripts
+function helpCompile() {
+  echo "Usage: cmd [-h] [-t type] [-c compiler] [-r recompile]";
+  exit 0;
+}
+
+# Helper command for Android compilation scripts
+function helpCompileAndroid() {
+  echo "Usage: cmd [-h] [-t type] [-c compiler] [-r recompile] [-n ndk_version] [-m cmake_version]";
+  exit 0;
+}
+
+# Helper command for Android run tests scripts
+function helpTestAndroid() {
+  echo "Usage: cmd [-h] [-t type] [-r run_test] [-n ndk_version] [-m cmake_version] [-k kill_previous]";
+  exit 0;
+}
+
+# Helper command for compilation scripts
+function helpCheck() {
+  echo "Usage: cmd [-h] [-n ndk_version] [-m cmake_version]";
+  exit 0;
+}
+
+# Argument parser for compilation scripts
+function parseArgumentsToCompile() {
+  while getopts ":ht:c:r:" opt; do
+    case ${opt} in
+      t )
+        export type=${OPTARG};
+        ;;
+      c )
+        export compiler=${OPTARG};
+        checkCommand "${compiler}";
+        ;;
+      r )
+        export recompile=${OPTARG};
+        ;;
+      h )
+        helpCompile;
+        ;;
+      \? )
+        helpCompile;
+        ;;
+    esac
+  done
+}
+
+# Argument parser for Android compilation scripts
+function parseArgumentsToCompileAndroid() {
+  while getopts ":ht:c:r:n:m:" opt; do
+    case ${opt} in
+      n )
+        export ndk_version=${OPTARG};
+        ;;
+      m )
+        export cmake_version=${OPTARG};
+        ;;
+      t )
+        export type=${OPTARG};
+        ;;
+      c )
+        export compiler=${OPTARG};
+        checkCommand "${compiler}";
+        ;;
+      r )
+        export recompile=${OPTARG};
+        ;;
+      h )
+        helpCompileAndroid;
+        ;;
+      \? )
+        helpCompileAndroid;
+        ;;
+    esac
+  done
+}
+
+# Argument parser for Android run tests scripts
+function parseArgumentsToTestAndroid() {
+  while getopts ":ht:r:k:n:m:" opt; do
+    case ${opt} in
+      n )
+        export ndk_version=${OPTARG};
+        ;;
+      m )
+        export cmake_version=${OPTARG};
+        ;;
+      t )
+        export type=${OPTARG};
+        ;;
+      r )
+        export run_test=${OPTARG};
+        ;;
+      k )
+        export kill_previous=${OPTARG};
+        ;;
+      h )
+        helpTestAndroid;
+        ;;
+      \? )
+        helpTestAndroid;
+        ;;
+    esac
+  done
+}
+
+# Argument parser for linter scripts
+function parseArgumentsToCheck() {
+  while getopts ":hm:n:" opt; do
+    case ${opt} in
+      n )
+        export ndk_version=${OPTARG};
+        ;;
+      m )
+        export cmake_version=${OPTARG};
+        ;;
+      h )
+        helpCheck;
+        ;;
+      \? )
+        helpCheck;
+        ;;
+    esac
+  done
+}
+
 # Call function and exit the process if it fails.
 function callCommand() {
   echo ""
@@ -103,10 +230,14 @@ function killProcessUsingFile() {
 # Check command is available
 function checkCommand() {
   if [ -x "$(command -v ${@})" ]; then
-    echo "Command '$*' installed!"
+    echo "Command '$*' installed!";
   else
-    echo "Command '$*' is NOT installed."
-    exit 1
+    echo "Command '$*' is NOT installed.";
+    if [[ $(uname -a) == *"MINGW"* ]]; then
+      echo "Detected Windows OS, so ignoring this error ...";
+      exit 0;
+    fi
+    exit 1;
   fi
 }
 
