@@ -26,6 +26,10 @@ env:
   NINJA_VERSION: 1.9.0
   CCACHE_VERSION: 3.7.7
 
+concurrency:
+  group: ${{ github.workflow }} ${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   Build:
     name: ${{ matrix.name }} ${{ matrix.type }} (${{ matrix.os }})

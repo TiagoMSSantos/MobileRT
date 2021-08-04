@@ -8,6 +8,10 @@ on:
     - '.github/**'
     - '!.github/workflows/github-pages.yml'
 
+concurrency:
+  group: ${{ github.workflow }} ${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   github-pages:
     runs-on: ubuntu-18.04
