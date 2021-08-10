@@ -218,5 +218,7 @@ jobs:
       continue-on-error: true
       with:
         name: Reports
-        path: ./reports
-        if-no-files-found: warn
+        retention-days: 90
+        if-no-files-found: error
+        path: |
+          ./reports

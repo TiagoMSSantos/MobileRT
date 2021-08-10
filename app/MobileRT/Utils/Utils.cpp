@@ -1,83 +1,9 @@
 #include "Utils.hpp"
 #include "Constants.hpp"
+#include "ErrorCode.hpp"
 #include <clocale>
 
 namespace MobileRT {
-
-    /**
-     * Struct to help convert error code in integer format to string format.
-     */
-    typedef struct {
-        int errorCode;
-        const char* errorString;
-    } ErrorType;
-
-    /**
-     * Convert error code in integer format to string format.
-     * Note: the descriptions in the comments were taken from: https://en.cppreference.com/w/cpp/error/errno_macros
-     */
-    const ErrorType errorType[] = {
-        {0, "SUCCESS" },// Success
-        {EPERM, "EPERM" },// Operation not permitted
-        {ENOENT, "ENOENT" },// No such file or directory
-        {ESRCH, "ESRCH" },// No such process
-        {EINTR, "EINTR" },// Interrupted function
-        {EIO, "EIO" },// I/O error
-        {ENXIO, "ENXIO" },// No such device or address
-        {E2BIG, "E2BIG" },// Argument list too long
-        {ENOEXEC, "ENOEXEC" },// Executable file format error
-        {EBADF, "EBADF" },// Bad file descriptor
-        {ECHILD, "ECHILD" },// No child processes
-        {EAGAIN, "EAGAIN" },// Resource unavailable, try again
-        {ENOMEM, "ENOMEM" },// Not enough space
-        {EACCES, "EACCES" },// Permission denied
-        {EFAULT, "EFAULT" },// Bad address
-        {EBUSY, "EBUSY" },// Device or resource busy
-        {EEXIST, "EEXIST" },// File exists
-        {EXDEV, "EXDEV" },// Cross-device link
-        {ENODEV, "ENODEV" },// No such device
-        {ENOTDIR, "ENOTDIR" },// Not a directory
-        {EISDIR, "EISDIR" },// Is a directory
-        {EINVAL, "EINVAL" },// Invalid argument
-        {ENFILE, "ENFILE" },// Too many files open in system
-        {EMFILE, "EMFILE" },// File descriptor value too large
-        {ENOTTY, "ENOTTY" },// Inappropriate I/O control operation
-        {ETXTBSY, "ETXTBSY" },// Text file busy
-        {EFBIG, "EFBIG" },// File too large
-        {ENOSPC, "ENOSPC" },// No space left on device
-        {ESPIPE, "ESPIPE" },// Invalid seek
-        {EROFS, "EROFS" },// Read-only file system
-        {EMLINK, "EMLINK" },// Too many links
-        {EPIPE, "EPIPE" },// Broken pipe
-        {EDOM, "EDOM" },// Mathematics argument out of domain of function
-        {ERANGE, "ERANGE" },// Result too large
-                            // ENOTBLK: not compatible with Windows
-    };
-
-    // Private methods
-    /**
-     * Helper method that gets the error code, in string format, so its easy to find information on the internet.
-     *
-     * @return The error code in string format.
-     */
-    static ::std::string getErrorCode() {
-        ::std::string errorCode {};
-        auto arrSize {static_cast<int> (sizeof(errorType) / sizeof(errorType[0]))};
-
-        if (errno < arrSize) {
-            for(auto i {0}; i < arrSize; i++) {
-                if(errorType[i].errorCode == errno) {
-                    errorCode = errorType[i].errorString;
-                }
-            }
-        } else {
-            // If the error is not identified.
-            errorCode = "UNKNOWN";
-        }
-
-        return errorCode;
-    }
-
 
     // Public methods
     /**
@@ -308,10 +234,11 @@ namespace MobileRT {
 
         if (errno != 0) {// if there is an error
             ::std::setlocale(LC_ALL, "en_US.UTF-8");
-            const ::std::string errorCode {getErrorCode()};
-            LOG_DEBUG("errorCode: ", errorCode);
+            const ErrorType currentError {getErrorCode()};
+            LOG_DEBUG("errorCode: ", currentError.codeText);
 
-            const auto errorMessage {::std::string(message) + '\n' + errorCode + '\n' +
+            const auto errorMessage {::std::string(message) + '\n' + currentError.codeText + '\n' +
+                                     currentError.description + '\n' +
                                      ::std::string("errno (") + ::std::to_string(errno) + "): " +
                                      ::std::strerror(errno)
             };

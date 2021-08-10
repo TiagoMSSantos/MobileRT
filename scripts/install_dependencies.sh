@@ -190,17 +190,18 @@ else
   echo "Detected unknown Operating System";
 fi
 
-# Install Python
 if [ -x "$(command -v choco)" ]; then
+  echo "Install Python with choco";
   callCommand choco install python --version 3.8.0;
 fi
 
-# if not Debian based Linux
 if [ ! -x "$(command -v apt-get)" ]; then
-  # Ensure pip is used by default
+  echo "Not Debian based Linux detected";
+  echo "Ensure pip is used by default";
   callCommand python3 -m ensurepip --default-pip;
 fi
 
+echo "Upgrade pip";
 python3 -m pip install --upgrade pip;
 callCommand pip3 install cmake --upgrade;
 ###############################################################################

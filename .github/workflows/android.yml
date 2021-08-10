@@ -212,7 +212,10 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: MobileRT_${{ matrix.type }}_exp
-        path: ./app/build/outputs/apk/${{ matrix.type }}
+        retention-days: 90
+        if-no-files-found: error
+        path: |
+          ./app/build/outputs/apk/${{ matrix.type }}
 
     - name: Upload reports
       if: always()
@@ -220,6 +223,8 @@ jobs:
       continue-on-error: true
       with:
         name: reports_${{ matrix.type }}_${{ matrix.os }}
+        retention-days: 90
+        if-no-files-found: error
         path: |
           ./reports
 
