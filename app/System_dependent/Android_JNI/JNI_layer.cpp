@@ -25,6 +25,7 @@
 #include "Scenes/Scenes.hpp"
 
 #include <android/bitmap.h>
+#include <condition_variable>
 #include <glm/glm.hpp>
 #include <fstream>
 #include <mutex>

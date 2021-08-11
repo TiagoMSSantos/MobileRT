@@ -106,7 +106,7 @@ void Renderer::renderScene(::std::int32_t *const bitmap, const ::std::int32_t ti
             if (tile >= 1.0F) {
                 break;
             }
-            const auto roundBlock {static_cast<::std::int32_t> (::std::roundf(tile * this->domainSize_))};
+            const auto roundBlock {static_cast<::std::int32_t> (::roundf(tile * this->domainSize_))};
             const auto pixel {roundBlock * this->blockSizeX_ % this->resolution_};
             const auto startY {((pixel / this->width_) * this->blockSizeY_) % this->height_};
             const auto endY {startY + this->blockSizeY_};

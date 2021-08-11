@@ -6,13 +6,13 @@ using ::MobileRT::Ray;
 
 class TestIntersection : public testing::Test {
 protected:
-    virtual void SetUp () {
+    void SetUp () final {
     }
 
-    virtual void TearDown () {
+    void TearDown () final {
     }
 
-    ~TestIntersection ();
+    ~TestIntersection () override;
 };
 
 TestIntersection::~TestIntersection () {

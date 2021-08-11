@@ -229,11 +229,18 @@ function copyResources() {
   callCommand mkdir -p ${reports_path}
 
   echo "Prepare copy unit tests"
+  adb shell mount -o remount,ro /
+  adb shell mount -o remount,ro /mnt
+  set +e;
   adb shell mount -o remount,rw /mnt/sdcard
+  adb shell mount -o remount,rw /mnt/media_rw/1CE6-261B
+  set -e;
   callCommand adb shell mkdir -p ${mobilert_path}
   callCommand adb shell mkdir -p ${sdcard_path}
-  adb shell rm -r ${mobilert_path}/*
-  adb shell rm -r ${sdcard_path}/*
+  adb shell rm -r ${mobilert_path}
+  adb shell rm -r ${sdcard_path}
+  callCommand adb shell mkdir -p ${mobilert_path}
+  callCommand adb shell mkdir -p ${sdcard_path}
 
   echo "Copy tests resources"
   callCommand adb push app/src/androidTest/resources/teapot ${mobilert_path}/WavefrontOBJs/teapot
@@ -265,7 +272,6 @@ function startCopyingLogcatToFile() {
   echo "Clear logcat"
   callCommandUntilSuccess adb root
   callCommand adb shell logcat -b all -b main -b system -b radio -b events -b crash -c
-  callCommand adb shell ls -Rla /dev/log
 
   echo "Copy realtime logcat to file"
   callCommand adb logcat -v threadtime "*":V \

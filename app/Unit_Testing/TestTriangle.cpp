@@ -13,7 +13,7 @@ class TestTriangle : public testing::Test {
 protected:
     Triangle *triangle {};
 
-    virtual void SetUp () {
+    void SetUp () final {
         triangle = new Triangle(
             Triangle::Builder(
                 ::glm::vec3 {0, 0, 0},
@@ -24,10 +24,10 @@ protected:
         );
     }
 
-    virtual void TearDown () {
+    void TearDown () final {
     }
 
-    ~TestTriangle ();
+    ~TestTriangle () override;
 };
 
 TestTriangle::~TestTriangle () {

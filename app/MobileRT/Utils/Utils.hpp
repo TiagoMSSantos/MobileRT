@@ -16,6 +16,7 @@
 
 #include <pcg_random.hpp>
 #include <random>
+#include <string>
 #include <sstream>
 #include <thread>
 #include <vector>
@@ -323,7 +324,15 @@ namespace MobileRT {
 
 
     namespace std {
-        #if __cplusplus <= 201103L
+        /**
+         * C++ versions:
+         * 199711L <=> C++98 or C++03
+         * 201103L <=> C++11
+         * 201402L <=> C++14
+         * 201703L <=> C++17
+         * 202002L <=> C++20
+         */
+        #if __cplusplus < 201402L
             /**
              * The make_unique method to be used when the version of the C++ language is older than
              * C++14.
@@ -350,6 +359,38 @@ namespace MobileRT {
             template<typename T, typename... Args>
             ::std::unique_ptr<T> make_unique(Args &&... args) {
                 return ::std::make_unique<T>(::std::forward<Args>(args)...);
+            }
+        #endif
+
+        /*
+         * Its necessary to force a C++ version that is not set in the CMakeLists
+         * because with older NDKs, it supports C++11 but this std::to_string is
+         * not implemented there.
+         */
+        #if __cplusplus < 201703L
+            /**
+             * Helper method that converts any type to std::string for older
+             * compilers that are not C++11 compliant.
+             *
+             * @tparam T  The type of the object to be converted to std::string.
+             * @param str The object to be converted to std::string.
+             * @return The object in std::string format.
+             */
+            template <typename T> ::std::string to_string(const T& str) {
+                ::std::ostringstream stm {""};
+                stm << str ;
+                return stm.str() ;
+            }
+        #else
+            /**
+             * Helper method that converts any type to std::string.
+             *
+             * @tparam T  The type of the object to be converted to std::string.
+             * @param str The object to be converted to std::string.
+             * @return The object in std::string format.
+             */
+            template <typename T> ::std::string to_string(const T& str) {
+                return ::std::to_string(str);
             }
         #endif
     }//namespace std

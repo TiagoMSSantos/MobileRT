@@ -75,7 +75,7 @@ echo "type: '${type}'"
 
 function clearAllBuildFiles() {
   set +e;
-  callCommand rm -rf ./app/build/
+  rm -rf ./app/build/
   set -e;
 
   if [ "${recompile}" == "yes" ]; then

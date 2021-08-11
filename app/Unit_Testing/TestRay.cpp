@@ -6,13 +6,13 @@ using ::MobileRT::Ray;
 
 class TestRay : public testing::Test {
 protected:
-    virtual void SetUp() {
+    void SetUp() final {
     }
 
-    virtual void TearDown() {
+    void TearDown() final {
     }
 
-    ~TestRay();
+    ~TestRay() override;
 };
 
 TestRay::~TestRay() {

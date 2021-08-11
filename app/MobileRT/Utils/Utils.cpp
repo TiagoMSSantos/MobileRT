@@ -239,7 +239,7 @@ namespace MobileRT {
 
             const auto errorMessage {::std::string(message) + '\n' + currentError.codeText + '\n' +
                                      currentError.description + '\n' +
-                                     ::std::string("errno (") + ::std::to_string(errno) + "): " +
+                                     ::std::string("errno (") + ::MobileRT::std::to_string(errno) + "): " +
                                      ::std::strerror(errno)
             };
             LOG_DEBUG("errorMessage: ", errorMessage);

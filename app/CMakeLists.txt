@@ -492,9 +492,13 @@ endif()
 if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
   message( STATUS "Detected not Windows OS." )
 
-  # Turn off zero as null pointer warning because of Qt generated code
-  target_compile_options( ${PROJECT_NAME} PRIVATE
-    -Wno-zero-as-null-pointer-constant )
+  unset( COMPILER_SUPPORTS_FLAG )
+  CHECK_CXX_COMPILER_FLAG( "-Wno-zero-as-null-pointer-constant" COMPILER_SUPPORTS_FLAG )
+  if( COMPILER_SUPPORTS_FLAG )
+    # Turn off zero as null pointer warning because of Qt generated code
+    target_compile_options( ${PROJECT_NAME} PRIVATE -Wno-zero-as-null-pointer-constant )
+  endif()
+  unset( COMPILER_SUPPORTS_FLAG )
   CHECK_CXX_COMPILER_FLAG( "-Wno-redundant-parens" COMPILER_SUPPORTS_FLAG )
   if( COMPILER_SUPPORTS_FLAG )
     # Turn off redundant parentheses warning because of Qt moc generated code

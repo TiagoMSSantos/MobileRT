@@ -7,13 +7,13 @@ using ::MobileRT::Texture;
 class TestTextureLoader : public testing::Test {
 protected:
 
-    virtual void SetUp() {
+    void SetUp() final {
     }
 
-    virtual void TearDown() {
+    void TearDown() final {
     }
 
-    ~TestTextureLoader();
+    ~TestTextureLoader() override;
 };
 
 TestTextureLoader::~TestTextureLoader() {

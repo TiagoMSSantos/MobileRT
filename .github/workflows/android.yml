@@ -39,8 +39,17 @@ jobs:
       matrix:
         os: [macos-10.15, ubuntu-18.04]
         type: [debug, release]
-        ndk_version: [21.3.6528147]
-        cmake_version: [3.6.0]
+        include:
+        - os: "ubuntu-18.04"
+          android_api: 16
+          ndk_version: 22.1.7171670
+          cmake_version: 3.10.2
+
+        - os: "macos-10.15"
+          android_api: 16
+          ndk_version: 18.1.5063045
+          cmake_version: 3.6.0
+
     env:
       SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
       KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
@@ -156,13 +165,26 @@ jobs:
         echo "Result: '${res}'";
         exit ${res};
 
+    - name: Build ${{ matrix.type }}
+      if: success()
+      working-directory: .
+      run: |
+        mkdir -p ./app/build/reports;
+        mkdir -p ./reports;
+        tree -f | grep -i "mobilert.so";
+        bash ./scripts/compile_android.sh -t ${{ matrix.type }} -r yes -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }};
+        tree -f | grep -i "mobilert.so";
+        export res="${PIPESTATUS[0]}";
+        echo "Result: '${res}'";
+        exit ${res};
+
     - name: Run Android tests
       if: success() && !startsWith(matrix.os, 'windows')
       uses: ReactiveCircus/android-emulator-runner@v2.19.1
       env:
         NCPU_CORES: 4
       with:
-        api-level: 16
+        api-level: ${{ matrix.android_api }}
         target: default
         arch: x86
         disable-animations: true

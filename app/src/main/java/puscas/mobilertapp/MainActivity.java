@@ -79,6 +79,7 @@ public final class MainActivity extends Activity {
             System.loadLibrary("AppMobileRT");
         } catch (final UnsatisfiedLinkError ex) {
             UtilsLogging.logThrowable(ex, "MainActivity#static");
+            throw ex;
         }
     }
 

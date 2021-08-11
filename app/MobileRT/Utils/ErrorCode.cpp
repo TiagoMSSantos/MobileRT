@@ -1,6 +1,7 @@
 #include "ErrorCode.hpp"
 
 #include <cerrno>
+#include <limits>
 #include <vector>
 
 namespace MobileRT {
@@ -88,7 +89,7 @@ namespace MobileRT {
             }
         } else {
             // If the error is not identified.
-            currentError = {0, "UNKNOWN" , "Unknown"};
+            currentError = {::std::numeric_limits<int>::max(), "UNKNOWN" , "Unknown error occurred."};
         }
 
         return currentError;

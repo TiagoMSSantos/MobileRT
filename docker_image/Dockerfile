@@ -109,8 +109,9 @@ fi
 ###############################################################################
 # Configure git
 ###############################################################################
-RUN git config --global http.postBuffer 524288000; \
-    git config --global https.postBuffer 524288000; \
+RUN git config --global http.postBuffer 1048576000; \
+    git config --global https.postBuffer 1048576000; \
+    git config --global core.compression -1; \
     git config --global http.sslVerify "false";
 ###############################################################################
 ###############################################################################

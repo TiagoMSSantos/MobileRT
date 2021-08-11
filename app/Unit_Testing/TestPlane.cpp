@@ -8,14 +8,14 @@ class TestPlane : public testing::Test {
 protected:
     Plane *plane {};
 
-    virtual void SetUp () {
+    void SetUp () final {
         plane = new Plane {::glm::vec3 {-1, 0, 0}, ::glm::vec3 {1, 0, 0}, -1};
     }
 
-    virtual void TearDown () {
+    void TearDown () final {
     }
 
-    ~TestPlane ();
+    ~TestPlane () override;
 };
 
 TestPlane::~TestPlane () {
