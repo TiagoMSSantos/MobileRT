@@ -31,7 +31,7 @@ namespace MobileRT {
             NewError(EACCES, "Permission denied"),
             NewError(EFAULT, "Bad address"),
 #ifndef _WIN32
-            NewError(ENOTBLK, ""),// not compatible with Windows
+            NewError(ENOTBLK, "Block device required"),// not compatible with Windows
 #endif
             NewError(EBUSY, "Device or resource busy"),
             NewError(EEXIST, "File exists"),
@@ -62,17 +62,18 @@ namespace MobileRT {
             NewError(EWOULDBLOCK, "Operation would block"),
             NewError(ENOMSG, "No message of the desired type"),
             NewError(EIDRM, "Identifier removed"),
-//            NewError(ECHRNG, "" ),
-//            NewError(EL2NSYNC, "" ),
-//            NewError(EL3HLT, "" ),
-//            NewError(EL3RST, "" ),
-//            NewError(ELNRNG, "" ),
-//            NewError(EUNATCH, "" ),
-//            NewError(ENOCSI, "" ),
-//            NewError(EL2HLT, "" ),
-//            NewError(EBADE, "" ),
-//            NewError(EBADR, "" ),
-//            NewError(EXFULL, "" )
+            // Errors that are not available in MacOS.
+//            NewError(ECHRNG, "Channel number out of range"),
+//            NewError(EL2NSYNC, "Level 2 not synchronized"),
+//            NewError(EL3HLT, "Level 3 halted"),
+//            NewError(EL3RST, "Level 3 reset"),
+//            NewError(ELNRNG, "Link number out of range"),
+//            NewError(EUNATCH, "Protocol driver not attached"),
+//            NewError(ENOCSI, "No CSI structure available"),
+//            NewError(EL2HLT, "Level 2 halted"),
+//            NewError(EBADE, "Invalid exchange"),
+//            NewError(EBADR, "Invalid request descriptor"),
+//            NewError(EXFULL, "Exchange full")
         };
         return errorType;
     }

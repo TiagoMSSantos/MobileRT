@@ -244,7 +244,12 @@ namespace MobileRT {
             };
             LOG_DEBUG("errorMessage: ", errorMessage);
 
-            errno = 0;// reset the error code
+            // Necessary to reset the error code so the Android Instrumentation
+            // Tests that test failures, like trying to read an OBJ that
+            // doesn't exist, can proceed to the next tests.
+            // Otherwise, those tests can throw:
+            // signal 11 (SIGSEGV), code 1 (SEGV_MAPERR), fault addr deadbaad
+            errno = 0;
             throw ::std::runtime_error {errorMessage};
         }
     }

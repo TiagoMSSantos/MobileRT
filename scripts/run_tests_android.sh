@@ -300,12 +300,15 @@ function runUnitTests() {
 }
 
 function verifyResources() {
-  echo "Verify resources in SD Card"
-  callCommand adb shell ls -Rla ${mobilert_path}/WavefrontOBJs
-  callCommand adb shell ls -Rla ${sdcard_path}/WavefrontOBJs
-#  callCommand adb shell cat ${sdcard_path}/WavefrontOBJs/CornellBox/CornellBox-Water.obj
-#  callCommand adb shell cat ${sdcard_path}/WavefrontOBJs/CornellBox/CornellBox-Water.mtl
-#  callCommand adb shell cat ${sdcard_path}/WavefrontOBJs/CornellBox/CornellBox-Water.cam
+  echo "Verify resources in SD Card";
+  callCommand adb shell ls -Rla ${mobilert_path}/WavefrontOBJs;
+  callCommand adb shell ls -Rla ${sdcard_path}/WavefrontOBJs;
+#  callCommand adb shell cat ${sdcard_path}/WavefrontOBJs/CornellBox/CornellBox-Water.obj;
+#  callCommand adb shell cat ${sdcard_path}/WavefrontOBJs/CornellBox/CornellBox-Water.mtl;
+#  callCommand adb shell cat ${sdcard_path}/WavefrontOBJs/CornellBox/CornellBox-Water.cam;
+  echo "Verify memory available";
+  callCommand adb shell free -h;
+  callCommand adb shell cat /proc/meminfo;
 }
 
 function runInstrumentationTests() {
