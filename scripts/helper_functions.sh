@@ -185,6 +185,7 @@ function callCommandUntilSuccess() {
   echo ""
   echo "Calling until success '$*'"
   local retry=0
+  set +e;
   "$@"
   local lastResult=${PIPESTATUS[0]}
   echo "result: '${lastResult}'"
@@ -201,6 +202,7 @@ function callCommandUntilSuccess() {
     echo "'$*': failed"
     exit "${lastResult}"
   fi
+  set -e;
 }
 
 # Outputs the exit code received by argument and exits the current process with

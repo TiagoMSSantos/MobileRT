@@ -459,25 +459,27 @@ public final class MainActivity extends Activity {
     private String getPathFromFile(final Uri uri) {
         final String filePath = StreamSupport.stream(uri.getPathSegments())
             .skip(1L)
-            .reduce("", (accumulator, segment) -> accumulator + ConstantsUI.FILE_SEPARATOR + segment)
-            .replace(ConstantsUI.FILE_SEPARATOR + "sdcard" + ConstantsUI.FILE_SEPARATOR,
-                ConstantsUI.FILE_SEPARATOR);
+            .reduce("", (accumulator, segment) -> accumulator + ConstantsUI.FILE_SEPARATOR + segment);
+        final boolean externalSDCardPath = uri.getPathSegments().get(2).matches("^([A-Za-z0-9]){4}-([A-Za-z0-9]){4}$");
 
         final int removeIndex = filePath.indexOf(ConstantsUI.PATH_SEPARATOR);
         final String startFilePath = removeIndex >= 0 ? filePath.substring(removeIndex) : filePath;
-        final String cleanedFilePath = startFilePath.replace(
-            ConstantsUI.PATH_SEPARATOR, ConstantsUI.FILE_SEPARATOR);
-        final String filePathWithoutExtension = cleanedFilePath.substring(0,
-            cleanedFilePath.lastIndexOf('.'));
+        final String cleanedFilePath = startFilePath.replace(ConstantsUI.PATH_SEPARATOR, ConstantsUI.FILE_SEPARATOR);
+        final String filePathWithoutExtension = cleanedFilePath.substring(0, cleanedFilePath.lastIndexOf('.'));
 
-        final String sdCardPath = UtilsContext.getSdCardPath(this);
+        final String devicePath;
+        if (externalSDCardPath) {
+            devicePath = UtilsContext.getSdCardPath(this);
+        } else {
+            devicePath = UtilsContext.getInternalStoragePath(this);
+        }
 
         // SDK API 30 looks like to get the path to the file properly without having to get the
         // SD card path and prefix with it.
-        if (filePathWithoutExtension.startsWith(sdCardPath)) {
+        if (filePathWithoutExtension.startsWith(devicePath)) {
             return filePathWithoutExtension;
         }
-        return sdCardPath + filePathWithoutExtension;
+        return devicePath + filePathWithoutExtension;
     }
 
     /**

@@ -71,6 +71,17 @@ public final class UtilsContext {
         final String sdCardPathCleaned = cleanStoragePath(sdCardPath);
         final String message = "SD card path: " + sdCardPathCleaned;
         log.info(message);
+
+        final File file = new File(sdCardPathCleaned);
+        final boolean readable = file.setReadable(true);
+        if (!file.canRead() && !readable) {
+            throw new FailureException("External storage path is not readable: " + file.getAbsolutePath());
+        }
+        final boolean writable = file.setWritable(true);
+        if (!file.canWrite() && !writable) {
+            throw new FailureException("External storage path is not writable: " + file.getAbsolutePath());
+        }
+
         return sdCardPathCleaned;
     }
 
@@ -104,6 +115,33 @@ public final class UtilsContext {
         final String internalStoragePathCleaned = cleanStoragePath(internalStoragePath);
         final String message = "Internal storage path: " + internalStoragePathCleaned;
         log.info(message);
+
+        final File file = new File(internalStoragePathCleaned);
+        final boolean readable = file.setReadable(true);
+        if (!file.canRead() && !readable) {
+            final String fallbackPath = "/data";
+            log.warning("Internal storage path is not readable: " + file.getAbsolutePath() + "\n");
+            log.warning("Will try " + fallbackPath + " instead.");
+            final File fileSdCard = new File(fallbackPath);
+            final boolean readableSdCard = fileSdCard.setReadable(true);
+            if (!fileSdCard.canRead() && !readableSdCard) {
+                final String messageError = "Internal storage path is not readable: " + fileSdCard.getAbsolutePath();
+//                throw new FailureException(messageError);
+                log.warning(messageError);
+            }
+            final boolean writableSdCard = fileSdCard.setWritable(true);
+            if (!fileSdCard.canWrite() && !writableSdCard) {
+                final String messageError = "Internal storage path is not writable: " + fileSdCard.getAbsolutePath();
+//                throw new FailureException(messageError);
+                log.warning(messageError);
+            }
+            return fileSdCard.getAbsolutePath();
+        }
+        final boolean writable = file.setWritable(true);
+        if (!file.canWrite() && !writable) {
+            throw new FailureException("Internal storage path is not writable: " + file.getAbsolutePath());
+        }
+
         return internalStoragePathCleaned;
     }
 
@@ -194,17 +232,27 @@ public final class UtilsContext {
      */
     @NonNull
     private static String cleanStoragePath(@NonNull final String storagePath) {
+        String storagePathCleaned = storagePath;
+
         // Remove Android path
-        final int removeIndexAndroid = storagePath.indexOf("Android");
+        final int removeIndexAndroid = storagePathCleaned.indexOf("Android");
         if (removeIndexAndroid >= 1) {
-            return storagePath.substring(0, removeIndexAndroid - 1);
+            storagePathCleaned = storagePathCleaned.substring(0, removeIndexAndroid - 1);
         }
+
         // Remove data path
-        final int removeIndexData = storagePath.indexOf("data/puscas.mobilertapp");
+        final int removeIndexData = storagePathCleaned.indexOf("data/puscas.mobilertapp");
         if (removeIndexData >= 1) {
-            return storagePath.substring(0, removeIndexData - 1);
+            storagePathCleaned = storagePathCleaned.substring(0, removeIndexData - 1);
         }
-        return storagePath;
+
+        // Remove user path
+        final int removeIndexUser = storagePathCleaned.indexOf("user/0/puscas.mobilertapp");
+        if (removeIndexUser >= 1) {
+            storagePathCleaned = storagePathCleaned.substring(0, removeIndexUser - 1);
+        }
+
+        return storagePathCleaned;
     }
 
     /**
