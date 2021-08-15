@@ -526,9 +526,9 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
             "The requested memory must be a positive value");
 
         this.activityManager.getMemoryInfo(this.memoryInfo);
-        final long availMem = this.memoryInfo.availMem / (long) Constants.BYTES_IN_MEGABYTE;
-        final long totalMem = this.memoryInfo.totalMem / (long) Constants.BYTES_IN_MEGABYTE;
-        final boolean insufficientMem = availMem <= (long) (1 + memoryNeeded);
+        final long availMem = this.memoryInfo.availMem / Constants.BYTES_IN_MEGABYTE;
+        final long totalMem = this.memoryInfo.totalMem / Constants.BYTES_IN_MEGABYTE;
+        final boolean insufficientMem = availMem <= (1 + memoryNeeded);
         final String message = "MEMORY AVAILABLE: " + availMem + "MB (" + totalMem + "MB) [Needed " + memoryNeeded + "MB]";
         log.info(message);
         return insufficientMem || this.memoryInfo.lowMemory;

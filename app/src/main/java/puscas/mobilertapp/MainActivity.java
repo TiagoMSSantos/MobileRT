@@ -661,8 +661,8 @@ public final class MainActivity extends Activity {
         vto.addOnGlobalLayoutListener(() -> {
             log.info("initializePickerResolutions");
             resetErrno();
-            final double widthView = (double) this.drawView.getWidth();
-            final double heightView = (double) this.drawView.getHeight();
+            final double widthView = this.drawView.getWidth();
+            final double heightView = this.drawView.getHeight();
 
             final String[] resolutions = IntStreams.rangeClosed(2, maxSizes)
                 // double.class::cast method throws `ClassCastException: Integer cannot be cast to double`

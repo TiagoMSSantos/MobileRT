@@ -225,13 +225,13 @@ public final class RenderTask extends AsyncTaskCoroutine {
      * that will be presented in the {@link TextView}.
      */
     private void updateTextStats() {
-        this.fpsT = "fps:" + this.formatter.format((double) rtGetFps());
-        this.fpsRenderT = "[" + this.formatter.format((double) this.fps) + "]";
+        this.fpsT = "fps:" + this.formatter.format(rtGetFps());
+        this.fpsRenderT = "[" + this.formatter.format(this.fps) + "]";
         this.timeFrameT = ",t:" + this.formatter.format((double) rtGetTimeRenderer() / (double) MILLISECONDS_IN_SECOND);
         final long currentTime = SystemClock.elapsedRealtime();
         this.timeT = "[" + this.formatter.format(
                 (double) (currentTime - this.startTimeStamp) / (double) MILLISECONDS_IN_SECOND) + "]";
-        this.allocatedT = ",m:" + Debug.getNativeHeapAllocatedSize() / (long) Constants.BYTES_IN_MEGABYTE + "mb";
+        this.allocatedT = ",m:" + Debug.getNativeHeapAllocatedSize() / Constants.BYTES_IN_MEGABYTE + "mb";
         this.sampleT = "," + rtGetSample();
     }
 
@@ -245,7 +245,7 @@ public final class RenderTask extends AsyncTaskCoroutine {
         this.timeFrameT = ",t:" + this.formatter.format(0.0);
         this.timeT = "[" + this.formatter.format(0.0) + "]";
         this.stateT = " " + State.IDLE.getId();
-        this.allocatedT = ",m:" + Debug.getNativeHeapAllocatedSize() / (long) Constants.BYTES_IN_MEGABYTE + "mb";
+        this.allocatedT = ",m:" + Debug.getNativeHeapAllocatedSize() / Constants.BYTES_IN_MEGABYTE + "mb";
         this.sampleT = ",0";
     }
 
@@ -296,8 +296,8 @@ public final class RenderTask extends AsyncTaskCoroutine {
      */
     private void updateFps() {
         this.frame++;
-        final float time = (float) SystemClock.elapsedRealtime();
-        this.fps = ((float) this.frame * MILLISECONDS_IN_SECOND) / (time - this.timebase);
+        final float time = SystemClock.elapsedRealtime();
+        this.fps = (this.frame * MILLISECONDS_IN_SECOND) / (time - this.timebase);
         if ((time - this.timebase) > MILLISECONDS_IN_SECOND) {
             this.timebase = time;
             this.frame = 0;

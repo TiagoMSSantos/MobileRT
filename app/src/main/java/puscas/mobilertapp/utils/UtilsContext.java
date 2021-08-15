@@ -14,7 +14,6 @@ import androidx.core.content.ContextCompat;
 import com.google.common.collect.ImmutableMap;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
@@ -126,13 +125,11 @@ public final class UtilsContext {
             final boolean readableSdCard = fileSdCard.setReadable(true);
             if (!fileSdCard.canRead() && !readableSdCard) {
                 final String messageError = "Internal storage path is not readable: " + fileSdCard.getAbsolutePath();
-//                throw new FailureException(messageError);
                 log.warning(messageError);
             }
             final boolean writableSdCard = fileSdCard.setWritable(true);
             if (!fileSdCard.canWrite() && !writableSdCard) {
                 final String messageError = "Internal storage path is not writable: " + fileSdCard.getAbsolutePath();
-//                throw new FailureException(messageError);
                 log.warning(messageError);
             }
             return fileSdCard.getAbsolutePath();
@@ -206,17 +203,8 @@ public final class UtilsContext {
      */
     public static boolean is64BitDevice(@NonNull final Context context) {
         log.info("is64BitDevice");
-        final String cpuInfoPath = readTextAsset(context,
-            "Utils" + ConstantsUI.FILE_SEPARATOR + "cpuInfoPath.txt");
-        try (InputStream inputStream = new FileInputStream(cpuInfoPath.trim())) {
-            final String text = Utils.readTextFromInputStream(inputStream);
-            if (text.matches("64.*bit")) {
-                return true;
-            }
-        } catch (final IOException ex) {
-            throw new FailureException(ex);
-        }
-        return false;
+        final String text = readTextAsset(context, "Utils" + ConstantsUI.FILE_SEPARATOR +  "cpuInfoPath.txt");
+        return text.matches("64.*bit");
     }
 
 

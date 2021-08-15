@@ -212,6 +212,10 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitVerticesArray(
     JNIEnv *env,
     jobject /*thiz*/
 ) {
+    if (errno == EWOULDBLOCK) {
+        // Ignore operation would block
+        errno = 0;
+    }
     MobileRT::checkSystemError("rtInitVerticesArray start");
     try {
         jobject directBuffer {};
@@ -813,6 +817,10 @@ float Java_puscas_mobilertapp_RenderTask_rtGetFps(
     JNIEnv *env,
     jobject /*thiz*/
 ) {
+    if (errno == ETIMEDOUT) {
+        // Ignore connection timed out
+        errno = 0;
+    }
     MobileRT::checkSystemError("rtGetFps start");
     env->ExceptionClear();
     MobileRT::checkSystemError("rtGetFps finish");
