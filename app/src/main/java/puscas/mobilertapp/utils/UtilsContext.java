@@ -118,7 +118,7 @@ public final class UtilsContext {
         final File file = new File(internalStoragePathCleaned);
         final boolean readable = file.setReadable(true);
         if (!file.canRead() && !readable) {
-            final String fallbackPath = "/data";
+            final String fallbackPath = "/data/local/tmp";
             log.warning("Internal storage path is not readable: " + file.getAbsolutePath() + "\n");
             log.warning("Will try " + fallbackPath + " instead.");
             final File fileSdCard = new File(fallbackPath);

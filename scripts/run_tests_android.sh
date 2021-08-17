@@ -54,7 +54,7 @@ echo "Set path to reports"
 reports_path="./app/build/reports"
 
 echo "Set path to instrumentation tests resources"
-mobilert_path="/data/MobileRT"
+mobilert_path="/data/local/tmp/MobileRT"
 sdcard_path="/mnt/sdcard/MobileRT"
 ###############################################################################
 ###############################################################################
@@ -86,8 +86,10 @@ function gather_logs_func() {
   echo "Gathering logs"
 
   echo "Copy logcat to file"
-  callCommand adb logcat -v threadtime -d "*":V \
+  set +e;
+  adb logcat -v threadtime -d "*":V \
     > "${reports_path}"/logcat_"${type}".log 2>&1
+  echo "Copied logcat to logcat_${type}.log"
 
   local pid_app
   pid_app=$(grep -E -i "proc.puscas:*" "${reports_path}"/logcat_"${type}".log |
@@ -102,6 +104,7 @@ function gather_logs_func() {
       "${reports_path}"/logcat_current_"${type}".log |
       cut -d ":" -f 4 | cut -d ' ' -f 4)" \
       > "${reports_path}"/logcat_current_app_"${type}".log
+  set -e;
 
   echo -e '\e]8;;file:///'"${PWD}"'/'"${reports_path}"'/androidTests/connected/index.html\aClick here to check the Android tests report.\e]8;;\a'
   echo -e '\e]8;;file:///'"${PWD}"'/'"${reports_path}"'/coverage/'"${type}"'/index.html\aClick here to check the Code coverage report.\e]8;;\a'
@@ -112,17 +115,23 @@ function gather_logs_func() {
 
 function clear_func() {
   echo "Killing pid of logcat: '${pid_logcat}'"
+  set +e;
   kill -s SIGTERM "${pid_logcat}" 2> /dev/null
+  set -e;
 
   local pid_app
   echo "Will kill MobileRT process"
   pid_app=$(adb shell ps | grep -i puscas.mobilertapp | tr -s ' ' | cut -d ' ' -f 2)
   echo "Killing pid of MobileRT: '${pid_app}'"
+  set +e;
   adb shell kill -s SIGTERM "${pid_app}" 2> /dev/null
+  set -e;
 
   # Kill all processes in the whole process group, thus killing also descendants.
   echo "All processes will be killed!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+  set +e;
   kill -9 -- -$$
+  set -e;
 }
 
 function catch_signal() {
@@ -162,7 +171,7 @@ function runEmulator() {
 
   if [ "${kill_previous}" == true ]; then
     echo "Killing previous process"
-    set +e
+    set +e;
     callCommand ps aux |
       grep -v grep |
       grep -v "${pid}" |
@@ -170,7 +179,7 @@ function runEmulator() {
       tr -s ' ' |
       cut -d ' ' -f 2 |
       xargs kill
-    set -e
+    set -e;
   fi
 
   if [ -x "$(command -v emulator)" ]; then
@@ -246,13 +255,15 @@ function copyResources() {
   callCommand adb push app/src/androidTest/resources/teapot ${mobilert_path}/WavefrontOBJs/teapot
   callCommand adb push app/src/androidTest/resources/CornellBox ${sdcard_path}/WavefrontOBJs/CornellBox
 
-  echo "Copy and install File Manager"
+  echo "Copy File Manager"
   callCommand adb push app/src/androidTest/resources/APKs ${mobilert_path}/
-  callCommand adb shell pm install -t -r "${mobilert_path}/APKs/com.asus.filemanager.apk"
 
   echo "Change resources permissions"
   callCommand adb shell chmod -R 777 ${mobilert_path}
   callCommand adb shell chmod -R 777 ${sdcard_path}
+
+  echo "Install File Manager"
+  callCommand adb shell pm install -t -r "${mobilert_path}/APKs/com.asus.filemanager.apk"
 }
 
 function startCopyingLogcatToFile() {
@@ -313,6 +324,9 @@ function verifyResources() {
 
 function runInstrumentationTests() {
   echo "Run instrumentation tests"
+  set +e;
+  jps | grep -i gradle | tr -s ' ' | cut -d ' ' -f 1 | head -1 | xargs kill -9;
+  set -e;
   callCommand ./gradlew --stop
   if [ "${run_test}" == "all" ]; then
     echo "Running all tests"
