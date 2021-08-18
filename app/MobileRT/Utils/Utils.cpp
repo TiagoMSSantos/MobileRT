@@ -242,7 +242,7 @@ namespace MobileRT {
                                      ::std::string("errno (") + ::MobileRT::std::to_string(errno) + "): " +
                                      ::std::strerror(errno)
             };
-            LOG_DEBUG("errorMessage: ", errorMessage);
+            LOG_ERROR("errorMessage: ", errorMessage);
 
             // Necessary to reset the error code so the Android Instrumentation
             // Tests that test failures, like trying to read an OBJ that

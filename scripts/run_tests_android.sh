@@ -198,7 +198,7 @@ function waitForEmulator() {
   callCommand set -m
 
   local adb_devices_running
-  adb_devices_running=$(adb devices | tail -n +2)
+  adb_devices_running=$(callCommandUntilSuccess adb devices | tail -n +2)
   echo "Devices running: ${adb_devices_running}"
   if [ -z "${adb_devices_running}" ]; then
     callCommand cpulimit -- emulator -avd "${avd_emulator}" -writable-system 2> /dev/null &

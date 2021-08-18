@@ -25,7 +25,7 @@ public final class ViewActionButton implements ViewAction {
     /**
      * The expected text for the {@link Button}.
      */
-    private final @NonNls String expectedText;
+    @NonNls private final String expectedText;
 
     /**
      * Whether to do a long click or not.
@@ -41,7 +41,7 @@ public final class ViewActionButton implements ViewAction {
      */
     private static void waitUntilTextIsShown(@NonNull final UiController uiController,
                                              @NonNull final Button button,
-                                             @NonNull final @NonNls String expectedText) {
+                                             @NonNull @NonNls final String expectedText) {
         boolean textBeforeNotExpected = button.getText().toString().equals(expectedText);
         while (textBeforeNotExpected) {
             uiController.loopMainThreadForAtLeast(5000L);

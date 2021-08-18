@@ -862,6 +862,10 @@ extern "C"
     jobject /*thiz*/,
     jint size
 ) {
+    if (errno == EWOULDBLOCK) {
+        // Ignore operation would block
+        errno = 0;
+    }
     MobileRT::checkSystemError("rtResize start");
 
     const auto res{
