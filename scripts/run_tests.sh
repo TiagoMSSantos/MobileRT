@@ -65,15 +65,15 @@ printEnvironment;
 
 # Set path to reports
 reports_path=./app/build/reports
-callCommand mkdir -p ${reports_path}
+mkdir -p ${reports_path}
 
 type=$(capitalizeFirstletter "${type}")
 echo "type: '${type}'"
 
 function runUnitTests() {
   echo "Calling Gradle test"
-  callCommand ./gradlew --stop
-  callCommand ./gradlew test"${type}"UnitTest --profile --parallel \
+  ./gradlew --stop
+  ./gradlew test"${type}"UnitTest --profile --parallel \
     -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
     --console plain \
     2>&1 | tee ${reports_path}/log_native_tests_"${type}".log

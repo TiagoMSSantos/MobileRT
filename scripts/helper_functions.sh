@@ -134,29 +134,6 @@ function parseArgumentsToCheck() {
   done
 }
 
-# Call function and exit the process if it fails.
-function callCommand() {
-  echo ""
-  commandToExecute=$*
-  # Remove `sudo` from command if system doesn't have it available.
-  if [ "${1}" == "sudo" ] && [ ! -x "$(command -v ${1})" ]; then
-    commandToExecute=${commandToExecute//"sudo "/}
-  fi
-  echo "Calling '${commandToExecute}'"
-  # Execute command.
-  ${commandToExecute}
-  # Retrieve process return code.
-  local lastResult=${PIPESTATUS[0]}
-  local lastCommand="${commandToExecute}"
-  if [ "${lastResult}" -eq 0 ]; then
-    echo "${lastCommand}: success - '${lastResult}'"
-  else
-    echo "${lastCommand}: failed - '${lastResult}'"
-    echo ""
-    exit "${lastResult}"
-  fi
-}
-
 # Call function multiple times until it fails and exit the process.
 function callCommandUntilError() {
   echo ""

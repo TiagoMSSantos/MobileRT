@@ -64,15 +64,15 @@ function runLinter() {
   # Set path to reports
   reports_path=./app/build/reports
   profile_path=./reports/profile
-  callCommand mkdir -p ${reports_path}
-  callCommand mkdir -p ${profile_path}
+  mkdir -p ${reports_path}
+  mkdir -p ${profile_path}
 
   echo "Print Gradle version"
-  callCommand ./gradlew --stop
-  callCommand ./gradlew --version
+  ./gradlew --stop
+  ./gradlew --version
 
   echo "Calling the Gradle linter"
-  callCommand ./gradlew check --profile --parallel \
+  ./gradlew check --profile --parallel \
     -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
     --console plain \
     2>&1 | tee ${reports_path}/log_check.log

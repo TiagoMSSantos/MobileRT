@@ -101,7 +101,7 @@ elif [[ "${compiler}" == *"g++"* ]]; then
 fi
 
 # Flag `-v` not compatible with MSVC.
-#callCommand ${compiler} -v;
+#${compiler} -v;
 set +u; # Because of Windows OS doesn't have clang++ nor g++
 echo "Detected '${conan_compiler}' '${conan_compiler_version}' compiler.";
 set -u;
@@ -166,17 +166,17 @@ function install_conan_dependencies() {
 
   if [ -x "$(command -v conan)" ]; then
     conan profile new default;
-    callCommand conan profile update settings.compiler="${conan_compiler}" default;
-    callCommand conan profile update settings.compiler.version="${conan_compiler_version}" default;
+    conan profile update settings.compiler="${conan_compiler}" default;
+    conan profile update settings.compiler.version="${conan_compiler_version}" default;
     # Possible values for compiler.libcxx are ['libstdc++', 'libstdc++11']
-    callCommand conan profile update settings.compiler.libcxx="libstdc++11" default;
-    callCommand conan profile update settings.arch="${CPU_ARCHITECTURE}" default;
-    callCommand conan profile update settings.os="Linux" default;
-    callCommand conan profile update settings.build_type="Release" default;
+    conan profile update settings.compiler.libcxx="libstdc++11" default;
+    conan profile update settings.arch="${CPU_ARCHITECTURE}" default;
+    conan profile update settings.os="Linux" default;
+    conan profile update settings.build_type="Release" default;
     conan remote add bintray https://api.bintray.com/conan/bincrafters/public-conan;
   fi
 
-  callCommand conan install \
+  conan install \
   -s compiler=${conan_compiler} \
   -s compiler.version="${conan_compiler_version}" \
   -s compiler.libcxx=libstdc++11 \
@@ -205,16 +205,16 @@ type=$(capitalizeFirstletter "${type}")
 echo "type: '${type}'"
 
 if [ "${recompile}" == "yes" ]; then
-  callCommand rm -rf "${build_path}"/*
+  rm -rf "${build_path}"/*
 fi
-callCommand mkdir -p "${build_path}"
+mkdir -p "${build_path}"
 
 function build() {
-  callCommand cd "${build_path}"
+  cd "${build_path}"
 #  install_conan_dependencies
 
   echo "Calling CMake"
-  callCommand cmake -DCMAKE_VERBOSE_MAKEFILE=ON \
+  cmake -DCMAKE_VERBOSE_MAKEFILE=ON \
     -DCMAKE_CXX_COMPILER="${compiler}" \
     -DCMAKE_BUILD_TYPE="${type}" \
     ../app/ \
@@ -223,7 +223,7 @@ function build() {
 
   if [ "${resCompile}" -eq 0 ]; then
     echo "Calling Make"
-    callCommand cmake --build . 2>&1 | tee ./log_make_"${type}".log
+    cmake --build . 2>&1 | tee ./log_make_"${type}".log
     resCompile=${PIPESTATUS[0]}
   else
     echo "Compilation: cmake failed"

@@ -57,7 +57,7 @@ function drawPlot() {
   echo "SEP = '${SEP}'"
   echo "SCRIPT = '${PLOT_SCRIPTS_PATH}/plot_output.gp'"
 
-  callCommand gnuplot \
+  gnuplot \
     -e "files='${#FILES[@]}'" \
     -e "filenames='${FILENAMES}'" \
     -e "speedup='${SPEEDUP}'" \

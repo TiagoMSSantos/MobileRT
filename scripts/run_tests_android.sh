@@ -95,11 +95,11 @@ function gather_logs_func() {
   pid_app=$(grep -E -i "proc.puscas:*" "${reports_path}"/logcat_"${type}".log |
     grep -i "pid=" | cut -d "=" -f 2 | cut -d "u" -f 1 | tr -d ' ' | tail -1)
   echo "Filter logcat of the app: ${pid_app}"
-  callCommand cat "${reports_path}"/logcat_"${type}".log | grep -e "${pid_app}" -e "I DEBUG" \
+  cat "${reports_path}"/logcat_"${type}".log | grep -e "${pid_app}" -e "I DEBUG" \
       > "${reports_path}"/logcat_app_"${type}".log
 
   echo "Filter realtime logcat of the app"
-  callCommand cat "${reports_path}"/logcat_current_"${type}".log |
+  cat "${reports_path}"/logcat_current_"${type}".log |
     grep -E -i "$(grep -E -i "proc.*:puscas" \
       "${reports_path}"/logcat_current_"${type}".log |
       cut -d ":" -f 4 | cut -d ' ' -f 4)" \
@@ -172,7 +172,7 @@ function runEmulator() {
   if [ "${kill_previous}" == true ]; then
     echo "Killing previous process"
     set +e;
-    callCommand ps aux |
+    ps aux |
       grep -v grep |
       grep -v "${pid}" |
       grep -i "${script_name}" |
@@ -195,7 +195,7 @@ function runEmulator() {
 function waitForEmulator() {
   echo "Wait for device to be available.";
   # Don't make the Android emulator belong in the process group, so it will not be killed at the end.
-  callCommand set -m;
+  set -m;
 
   local adb_devices_running;
   adb_devices_running=$(adb devices | tail -n +2);
@@ -211,10 +211,10 @@ function waitForEmulator() {
   callCommandUntilSuccess test -n "adb devices | tail -n +2 | head -1";
 
   # Make the all other processes belong in the process group, so that will be killed at the end.
-  callCommand set +m;
+  set +m;
 
   echo "Wait for device to be ready to unlock.";
-  callCommand adb kill-server;
+  adb kill-server;
   callCommandUntilSuccess adb start-server;
   callCommandUntilSuccess adb wait-for-device;
   # adb shell needs ' instead of ", so `getprop` works properly
@@ -234,12 +234,12 @@ function waitForEmulator() {
   echo "Devices running: ${adb_devices_running}";
   if [ -z "${adb_devices_running}" ]; then
     echo "Android emulator didn't start ... will exit.";
-    callCommand exit 1;
+    exit 1;
   fi
 }
 
 function copyResources() {
-  callCommand mkdir -p ${reports_path}
+  mkdir -p ${reports_path}
 
   echo "Prepare copy unit tests"
   adb shell mount -o remount,ro /
@@ -248,48 +248,48 @@ function copyResources() {
   adb shell mount -o remount,rw /mnt/sdcard
   adb shell mount -o remount,rw /mnt/media_rw/1CE6-261B
   set -e;
-  callCommand adb shell mkdir -p ${mobilert_path}
-  callCommand adb shell mkdir -p ${sdcard_path}
+  adb shell mkdir -p ${mobilert_path}
+  adb shell mkdir -p ${sdcard_path}
   adb shell rm -r ${mobilert_path}
   adb shell rm -r ${sdcard_path}
-  callCommand adb shell mkdir -p ${mobilert_path}
-  callCommand adb shell mkdir -p ${sdcard_path}
+  adb shell mkdir -p ${mobilert_path}
+  adb shell mkdir -p ${sdcard_path}
 
   echo "Copy tests resources"
-  callCommand adb push app/src/androidTest/resources/teapot ${mobilert_path}/WavefrontOBJs/teapot
-  callCommand adb push app/src/androidTest/resources/CornellBox ${sdcard_path}/WavefrontOBJs/CornellBox
+  adb push app/src/androidTest/resources/teapot ${mobilert_path}/WavefrontOBJs/teapot
+  adb push app/src/androidTest/resources/CornellBox ${sdcard_path}/WavefrontOBJs/CornellBox
 
   echo "Copy File Manager"
-  callCommand adb push app/src/androidTest/resources/APKs ${mobilert_path}/
+  adb push app/src/androidTest/resources/APKs ${mobilert_path}/
 
   echo "Change resources permissions"
-  callCommand adb shell chmod -R 777 ${mobilert_path}
-  callCommand adb shell chmod -R 777 ${sdcard_path}
+  adb shell chmod -R 777 ${mobilert_path}
+  adb shell chmod -R 777 ${sdcard_path}
 
   echo "Install File Manager"
-  callCommand adb shell pm install -t -r "${mobilert_path}/APKs/com.asus.filemanager.apk"
+  adb shell pm install -t -r "${mobilert_path}/APKs/com.asus.filemanager.apk"
 }
 
 function startCopyingLogcatToFile() {
   # echo "Disable animations"
   # puscas.mobilertapp not found
-  # callCommand adb shell pm grant puscas.mobilertapp android.permission.SET_ANIMATION_SCALE
+  # adb shell pm grant puscas.mobilertapp android.permission.SET_ANIMATION_SCALE
 
   # /system/bin/sh: settings: not found
-  # callCommand adb shell settings put global window_animation_scale 0.0
-  # callCommand adb shell settings put global transition_animation_scale 0.0
-  # callCommand adb shell settings put global animator_duration_scale 0.0
+  # adb shell settings put global window_animation_scale 0.0
+  # adb shell settings put global transition_animation_scale 0.0
+  # adb shell settings put global animator_duration_scale 0.0
 
   echo "Activate JNI extended checking mode"
-  callCommand adb shell setprop dalvik.vm.checkjni true
-  callCommand adb shell setprop debug.checkjni 1
+  adb shell setprop dalvik.vm.checkjni true
+  adb shell setprop debug.checkjni 1
 
   echo "Clear logcat"
   callCommandUntilSuccess adb root
-  callCommand adb shell logcat -b all -b main -b system -b radio -b events -b crash -c
+  adb shell logcat -b all -b main -b system -b radio -b events -b crash -c
 
   echo "Copy realtime logcat to file"
-  callCommand adb logcat -v threadtime "*":V \
+  adb logcat -v threadtime "*":V \
     2>&1 | tee ${reports_path}/logcat_current_"${type}".log &
   pid_logcat="$!"
   echo "pid of logcat: '${pid_logcat}'"
@@ -297,17 +297,17 @@ function startCopyingLogcatToFile() {
 
 function runUnitTests() {
   echo "Copy unit tests"
-  callCommand adb push app/build/intermediates/cmake/"${type}"/obj/x86/* ${mobilert_path}/
+  adb push app/build/intermediates/cmake/"${type}"/obj/x86/* ${mobilert_path}/
 
   echo "Run unit tests"
   if [ "${type}" == "debug" ]; then
     # Ignore unit tests that should crash the system because of a failing assert
-    callCommand adb shell LD_LIBRARY_PATH=${mobilert_path} \
+    adb shell LD_LIBRARY_PATH=${mobilert_path} \
       ${mobilert_path}/UnitTests \
       --gtest_filter=-*.TestInvalid* \
       2>&1 | tee ${reports_path}/log_unit_tests_"${type}".log
   else
-    callCommand adb shell LD_LIBRARY_PATH=${mobilert_path} \
+    adb shell LD_LIBRARY_PATH=${mobilert_path} \
       ${mobilert_path}/UnitTests \
       2>&1 | tee ${reports_path}/log_unit_tests_"${type}".log
   fi
@@ -316,14 +316,14 @@ function runUnitTests() {
 
 function verifyResources() {
   echo "Verify resources in SD Card";
-  callCommand adb shell ls -Rla ${mobilert_path}/WavefrontOBJs;
-  callCommand adb shell ls -Rla ${sdcard_path}/WavefrontOBJs;
-#  callCommand adb shell cat ${sdcard_path}/WavefrontOBJs/CornellBox/CornellBox-Water.obj;
-#  callCommand adb shell cat ${sdcard_path}/WavefrontOBJs/CornellBox/CornellBox-Water.mtl;
-#  callCommand adb shell cat ${sdcard_path}/WavefrontOBJs/CornellBox/CornellBox-Water.cam;
+  adb shell ls -Rla ${mobilert_path}/WavefrontOBJs;
+  adb shell ls -Rla ${sdcard_path}/WavefrontOBJs;
+#  adb shell cat ${sdcard_path}/WavefrontOBJs/CornellBox/CornellBox-Water.obj;
+#  adb shell cat ${sdcard_path}/WavefrontOBJs/CornellBox/CornellBox-Water.mtl;
+#  adb shell cat ${sdcard_path}/WavefrontOBJs/CornellBox/CornellBox-Water.cam;
   echo "Verify memory available";
-  callCommand adb shell free -h;
-  callCommand adb shell cat /proc/meminfo;
+  adb shell free -h;
+  adb shell cat /proc/meminfo;
 }
 
 function runInstrumentationTests() {
@@ -331,11 +331,11 @@ function runInstrumentationTests() {
   set +e;
   jps | grep -i gradle | tr -s ' ' | cut -d ' ' -f 1 | head -1 | xargs kill -9;
   set -e;
-  callCommand ./gradlew --stop
+  ./gradlew --stop
   if [ "${run_test}" == "all" ]; then
     echo "Running all tests"
     set +u; # Because `code_coverage` is only set when debug
-    callCommand ./gradlew connected"${type}"AndroidTest -DtestType="${type}" \
+    ./gradlew connected"${type}"AndroidTest -DtestType="${type}" \
       -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
       ${code_coverage} --console plain --parallel \
       2>&1 | tee ${reports_path}/log_tests_"${type}".log
@@ -350,7 +350,7 @@ function runInstrumentationTests() {
       2>&1 | tee ${reports_path}/log_tests_"${type}".log
   else
     echo "Running test: ${run_test}"
-    callCommand ./gradlew connected"${type}"AndroidTest -DtestType="${type}" \
+    ./gradlew connected"${type}"AndroidTest -DtestType="${type}" \
       -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
       -Pandroid.testInstrumentationRunnerArguments.class="${run_test}" \
       --console plain --parallel \

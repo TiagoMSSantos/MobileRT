@@ -54,7 +54,7 @@ if [ -x "$(command -v apt-get)" ]; then
 
   sudo apt-get update -y;
   sudo apt-get install --no-install-recommends -y;
-  callCommand sudo apt-get install --no-install-recommends -y \
+  sudo apt-get install --no-install-recommends -y \
     xorg-dev \
     libxcb-render-util0-dev \
     libxcb-xkb-dev \
@@ -170,10 +170,10 @@ elif [ -x "$(command -v brew)" ]; then
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall.sh)"
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-  callCommand brew update;
-  callCommand brew cleanup;
-  callCommand brew tap cartr/qt4;
-  callCommand brew uninstall --force openssl@1.0;
+  brew update;
+  brew cleanup;
+  brew tap cartr/qt4;
+  brew uninstall --force openssl@1.0;
   brew install openssl@1.0;
   brew install qt@4;
   brew install llvm;
@@ -184,27 +184,30 @@ elif [ -x "$(command -v brew)" ]; then
   brew install pyenv;
 
   MAJOR_MAC_VERSION=$(sw_vers | grep ProductVersion | cut -d ':' -f2 | cut -d '.' -f1 | tr -d '[:space:]')
-  callCommand echo "MacOS '${MAJOR_MAC_VERSION}' detected"
+  echo "MacOS '${MAJOR_MAC_VERSION}' detected"
   # This command needs sudo.
-  callCommand sudo xcode-select --switch /System/Volumes/Data/Applications/Xcode_12.4.app/Contents/Developer;
+  sudo xcode-select --switch /System/Volumes/Data/Applications/Xcode_12.4.app/Contents/Developer;
 else
   echo "Detected unknown Operating System";
 fi
+set -e;
 
 if [ -x "$(command -v choco)" ]; then
   echo "Install Python with choco";
-  callCommand choco install python --version 3.8.0;
+  choco install python --version 3.8.0;
 fi
 
 if [ ! -x "$(command -v apt-get)" ]; then
   echo "Not Debian based Linux detected";
   echo "Ensure pip is used by default";
-  callCommand python3 -m ensurepip --default-pip;
+  python3 -m ensurepip --default-pip;
 fi
 
 echo "Upgrade pip";
+set +e;
 python3 -m pip install --upgrade pip;
-callCommand pip3 install cmake --upgrade;
+set -e;
+pip3 install cmake --upgrade;
 ###############################################################################
 ###############################################################################
 
@@ -213,8 +216,8 @@ callCommand pip3 install cmake --upgrade;
 # Install Conan package manager
 ###############################################################################
 function install_conan() {
-  callCommand pip3 install conan;
-  callCommand pip3 install clang;
+  pip3 install conan;
+  pip3 install clang;
 
   PATH=$(pip3 list -v | grep -i cmake | tr -s ' ' | cut -d ' ' -f 3):${PATH}
   PATH=$(pip3 list -v | grep -i conan | tr -s ' ' | cut -d ' ' -f 3):${PATH}
@@ -224,7 +227,7 @@ function install_conan() {
   echo "Conan location: ${CONAN_PATH%/conan}"
   export PATH=${CONAN_PATH%/conan}:${PATH}
 
-  callCommand conan -v
+  conan -v
   checkCommand conan
 
   CLANG_PATH=$(find / -iname "clang");
@@ -237,7 +240,6 @@ function install_conan() {
 
 
 #install_conan
-set -e;
 ###############################################################################
 ###############################################################################
 

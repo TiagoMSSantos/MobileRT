@@ -73,6 +73,7 @@ jobs:
     - name: Extract branch name to an environment variable
       if: success()
       run: |
+        set -euo pipefail;
         export BRANCH=${GITHUB_REF#refs/heads/};
         echo "Branch: ${BRANCH}";
         echo "BRANCH=${BRANCH}" >> ${GITHUB_ENV};
@@ -152,7 +153,6 @@ jobs:
     - name: Login to DockerHub Registry
       if: success()
       run: |
-        set -euo pipefail;
         ls ${PATH//:/ } 2> /dev/null | grep -i docker 2> /dev/null || true;
         docker --version;
         echo ${{ env.DOCKERHUB_PASSWORD }} | \
