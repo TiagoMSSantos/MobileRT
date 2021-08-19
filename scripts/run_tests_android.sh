@@ -193,44 +193,48 @@ function runEmulator() {
 }
 
 function waitForEmulator() {
-  echo "Wait for device to be available."
+  echo "Wait for device to be available.";
   # Don't make the Android emulator belong in the process group, so it will not be killed at the end.
-  callCommand set -m
+  callCommand set -m;
 
-  local adb_devices_running
-  adb_devices_running=$(callCommandUntilSuccess adb devices | tail -n +2)
-  echo "Devices running: ${adb_devices_running}"
+  local adb_devices_running;
+  adb_devices_running=$(adb devices | tail -n +2);
+  echo "Devices running: '${adb_devices_running}'";
   if [ -z "${adb_devices_running}" ]; then
-    callCommand cpulimit -- emulator -avd "${avd_emulator}" -writable-system 2> /dev/null &
+    echo "Booting a new Android emulator";
+    callCommandUntilSuccess cpulimit -- emulator -avd "${avd_emulator}" -writable-system 2> /dev/null &
+  else
+    echo "Android emulator '${adb_devices_running}' already running.";
   fi
 
   # Find at least 1 Android device on.
-  callCommandUntilSuccess test -n "adb devices | tail -n +2 | head -1"
+  callCommandUntilSuccess test -n "adb devices | tail -n +2 | head -1";
 
   # Make the all other processes belong in the process group, so that will be killed at the end.
-  callCommand set +m
+  callCommand set +m;
 
-  echo "Wait for device to be ready to unlock."
-  callCommand adb kill-server
-  callCommandUntilSuccess adb start-server
-  callCommandUntilSuccess adb wait-for-device
+  echo "Wait for device to be ready to unlock.";
+  callCommand adb kill-server;
+  callCommandUntilSuccess adb start-server;
+  callCommandUntilSuccess adb wait-for-device;
   # adb shell needs ' instead of ", so `getprop` works properly
-  callCommandUntilSuccess adb shell 'while [[ $(getprop service.bootanim.exit) -ne 1 ]]; do sleep 1; done;'
-  callCommandUntilSuccess adb shell whoami
+  callCommandUntilSuccess adb shell 'while [[ $(getprop service.bootanim.exit) -ne 1 ]]; do sleep 1; done;';
+  callCommandUntilSuccess adb shell whoami;
 
-  echo "Set adb as root, to be able to change files permissions"
-  callCommandUntilSuccess adb root
+  echo "Set adb as root, to be able to change files permissions";
+  callCommandUntilSuccess adb root;
 
-  echo "Unlock device"
-  callCommandUntilSuccess adb shell input tap 800 900
-  callCommandUntilSuccess adb shell input keyevent 82
+  echo "Unlock device";
+  callCommandUntilSuccess adb shell input tap 800 900;
+  callCommandUntilSuccess adb shell input keyevent 82;
 
   # Abort if emulator didn't start
-  local adb_devices_running
-  adb_devices_running=$(adb devices | tail -n +2)
-  echo "Devices running: ${adb_devices_running}"
+  local adb_devices_running;
+  adb_devices_running=$(adb devices | tail -n +2);
+  echo "Devices running: ${adb_devices_running}";
   if [ -z "${adb_devices_running}" ]; then
-    callCommand exit 1
+    echo "Android emulator didn't start ... will exit.";
+    callCommand exit 1;
   fi
 }
 

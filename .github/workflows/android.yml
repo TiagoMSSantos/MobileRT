@@ -169,10 +169,15 @@ jobs:
       if: success()
       working-directory: .
       run: |
+        echo "Will build the Android application.";
         mkdir -p ./app/build/reports;
         mkdir -p ./reports;
+        echo "Created reports folders.";
+        set +e;
         tree -f | grep -i "mobilert.so";
+        set -e;
         bash ./scripts/compile_android.sh -t ${{ matrix.type }} -r yes -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }};
+        echo "Android application compiled.";
         tree -f | grep -i "mobilert.so";
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
