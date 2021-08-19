@@ -249,6 +249,7 @@ jobs:
         retention-days: 90
         if-no-files-found: error
         path: |
+          ./app/build/reports
           ./reports
 
   Sonar:
