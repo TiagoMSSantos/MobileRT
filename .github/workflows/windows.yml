@@ -156,10 +156,11 @@ jobs:
       if: success()
       uses: actions/cache@v2.1.6
       with:
-        path: .ccache
         key: ${{ matrix.name }}-ccache-${{ steps.ccache_cache_timestamp.outputs.timestamp }}
         restore-keys: |
           ${{ matrix.name }}-ccache
+        path: |
+          .ccache
 
     - name: Create build directory
       if: success()

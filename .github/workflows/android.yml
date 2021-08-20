@@ -93,22 +93,23 @@ jobs:
       if: success()
       uses: actions/cache@v2.1.6
       with:
+        key: ${{ runner.os }}-sonar
+        restore-keys: ${{ runner.os }}-sonar
         path: |
           ~/.sonar
           ./gradle
           ./app/.cxx
           ./app/build
           ./build
-        key: ${{ runner.os }}-sonar
-        restore-keys: ${{ runner.os }}-sonar
 
     - name: Cache Gradle packages
       if: success()
       uses: actions/cache@v2.1.6
       with:
-        path: ~/.gradle
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+        key: ${{ runner.os }}-gradle-${{ matrix.type }}-${{ hashFiles('**/*.gradle') }}
         restore-keys: ${{ runner.os }}-gradle
+        path: |
+          ~/.gradle
 
     - name: Setup gradlew
       if: success()
@@ -214,16 +215,25 @@ jobs:
         ls -la ./reports 2>&1 | tee ./reports/ls_reports.log;
         tree -a -f | grep -i app/build/reports | grep -i xml 2>&1 | tee ./reports/tree_report.log;
 
+    - name: Upload Gradle cached packages
+      if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug'
+      uses: actions/cache@v2.1.6
+      with:
+        key: ${{ runner.os }}-gradle-${{ matrix.type }}-${{ hashFiles('**/*.gradle') }}
+        restore-keys: ${{ runner.os }}-gradle
+        path: |
+          ~/.gradle
+
     - name: Upload reports to cache
       if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug'
       uses: actions/cache@v2.1.6
       env:
         cache-name: cache-reports
       with:
+        key: reports_${{ matrix.type }}-${{ github.sha }}
         path: |
           ./app/build/reports/coverage/debug
           ./reports
-        key: reports_${{ matrix.type }}-${{ github.sha }}
 
     - name: Sign APK
       if: success()
@@ -330,6 +340,17 @@ jobs:
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
         exit 0;
+
+    - name: Download Gradle cached packages
+      if: success()
+      uses: actions/cache@v2.1.6
+      env:
+        cache-name: cache-reports
+      with:
+        key: ${{ runner.os }}-gradle-${{ matrix.type }}-${{ hashFiles('**/*.gradle') }}
+        restore-keys: ${{ runner.os }}-gradle
+        path: |
+          ~/.gradle
 
     - name: Analyze Sonar
       if: success()
