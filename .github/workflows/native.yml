@@ -167,8 +167,14 @@ jobs:
   Sonar:
     needs: Build
 
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-18.04 ]
+        type: [ debug ]
+
     name: Code Coverage
-    runs-on: ubuntu-18.04
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 1
     env:
       CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
