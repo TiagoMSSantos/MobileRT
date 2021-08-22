@@ -147,6 +147,7 @@ jobs:
       working-directory: .
       run: |
         mkdir -p ./app/build/reports;
+        mkdir -p ./build/reports;
         mkdir -p ./reports;
         sudo mkdir -p ${AGENT_TOOLSDIRECTORY}/jdk/11.0.10;
         sudo ln -s ${JAVA_HOME} ${AGENT_TOOLSDIRECTORY}/jdk/11.0.10/x64 || true 2>&1 | tee ./reports/create_symlink_java.log;
@@ -160,6 +161,7 @@ jobs:
       working-directory: .
       run: |
         mkdir -p ./app/build/reports;
+        mkdir -p ./build/reports;
         mkdir -p ./reports;
         bash ./scripts/run_tests.sh -t ${{ matrix.type }} -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} 2>&1 | tee ./reports/run_tests.log;
         export res="${PIPESTATUS[0]}";
@@ -172,6 +174,7 @@ jobs:
       run: |
         echo "Will build the Android application.";
         mkdir -p ./app/build/reports;
+        mkdir -p ./build/reports;
         mkdir -p ./reports;
         echo "Created reports folders.";
         set +e;
@@ -200,6 +203,7 @@ jobs:
         ram-size: 1024M
         script: |
           mkdir -p ./app/build/reports;
+          mkdir -p ./build/reports;
           mkdir -p ./reports;
           echo "Number cores: ${NCPU_CORES}"
           bash ./scripts/run_tests_android.sh -t ${{ matrix.type }} -r all -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -k false;
@@ -212,6 +216,7 @@ jobs:
         ls -la ./app/build/reports 2>&1 | tee ./reports/ls_coverage_reports_3.log;
         ls -la ./app/build/reports/coverage 2>&1 | tee ./reports/ls_coverage_reports_4.log;
         ls -la ./app/build/reports/coverage/debug 2>&1 | tee ./reports/ls_coverage_reports.log;
+        ls -la ./build/reports 2>&1 | tee ./reports/ls_coverage_reports_5.log;
         ls -la ./reports 2>&1 | tee ./reports/ls_reports.log;
         tree -a -f | grep -i app/build/reports | grep -i xml 2>&1 | tee ./reports/tree_report.log;
 
@@ -232,7 +237,8 @@ jobs:
       with:
         key: reports_${{ matrix.type }}-${{ github.sha }}
         path: |
-          ./app/build/reports/coverage/debug
+          ./app/build/reports
+          ./build/reports
           ./reports
 
     - name: Sign APK
@@ -265,13 +271,20 @@ jobs:
         if-no-files-found: error
         path: |
           ./app/build/reports
+          ./build/reports
           ./reports
 
   Sonar:
     needs: Build
 
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-18.04 ]
+        type: [ debug ]
+
     name: Code Coverage and Sonar
-    runs-on: ubuntu-18.04
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 60
     env:
       CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
@@ -299,9 +312,10 @@ jobs:
         cache-name: cache-reports
       with:
         path: |
-          ./app/build/reports/coverage/debug
+          ./app/build/reports
+          ./build/reports
           ./reports
-        key: reports_debug-${{ github.sha }}
+        key: reports_${{ matrix.type }}-${{ github.sha }}
 
     - name: Check files from cache
       if: success()
@@ -360,7 +374,20 @@ jobs:
         SONAR_TOKEN: ${{ env.SONAR_TOKEN }}
       run: |
         mkdir -p ./reports;
-        ./gradlew --parallel sonarqube --info 2>&1 | tee ./reports/sonarqube.log;
+        ./gradlew --profile --parallel sonarqube --info 2>&1 | tee ./reports/sonarqube.log;
+
+    - name: Upload gradle reports
+      if: always()
+      uses: actions/upload-artifact@v2
+      continue-on-error: true
+      with:
+        name: reports_sonar
+        retention-days: 90
+        if-no-files-found: error
+        path: |
+          ./app/build/reports
+          ./build/reports
+          ./reports
 
     - name: Send codecov report
       if: success()
