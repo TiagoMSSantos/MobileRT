@@ -93,7 +93,7 @@ jobs:
       if: success()
       uses: actions/cache@v2.1.6
       with:
-        key: ${{ runner.os }}-sonar
+        key: ${{ runner.os }}-sonar-${{ matrix.type }}
         restore-keys: ${{ runner.os }}-sonar
         path: |
           ~/.sonar
@@ -366,6 +366,17 @@ jobs:
         path: |
           ~/.gradle
 
+    - name: Download Sonar cached packages
+      if: success()
+      uses: actions/cache@v2.1.6
+      env:
+        cache-name: cache-sonar
+      with:
+        key: ${{ runner.os }}-sonar-${{ matrix.type }}
+        restore-keys: ${{ runner.os }}-sonar
+        path: |
+          ~/.sonar
+
     - name: Analyze Sonar
       if: success()
       working-directory: .
@@ -375,6 +386,17 @@ jobs:
       run: |
         mkdir -p ./reports;
         ./gradlew --profile --parallel sonarqube --info 2>&1 | tee ./reports/sonarqube.log;
+
+    - name: Upload Sonar cached packages
+      if: success()
+      uses: actions/cache@v2.1.6
+      env:
+        cache-name: cache-sonar
+      with:
+        key: ${{ runner.os }}-sonar-${{ matrix.type }}
+        restore-keys: ${{ runner.os }}-sonar
+        path: |
+          ~/.sonar
 
     - name: Upload gradle reports
       if: always()
