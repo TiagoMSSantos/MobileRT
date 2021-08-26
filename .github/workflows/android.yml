@@ -366,6 +366,7 @@ jobs:
         path: |
           ~/.gradle
 
+    # Useful steps to avoid gradle having to download Sonar plugins that can take more than 40 min
     - name: Download Sonar cached packages
       if: success()
       uses: actions/cache@v2.1.6
@@ -374,6 +375,15 @@ jobs:
       with:
         key: ${{ runner.os }}-sonar-${{ matrix.type }}
         restore-keys: ${{ runner.os }}-sonar
+        path: |
+          ~/.sonar
+
+    - name: Download Sonar packages Artifact
+      if: failure()
+      uses: actions/download-artifact@v2
+      continue-on-error: true
+      with:
+        name: sonar-packages
         path: |
           ~/.sonar
 
@@ -386,6 +396,14 @@ jobs:
       run: |
         mkdir -p ./reports;
         ./gradlew --profile --parallel sonarqube --info 2>&1 | tee ./reports/sonarqube.log;
+
+    - name: Upload Sonar packages as Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: sonar-packages
+        retention-days: 90
+        path: |
+          ~/.sonar
 
     - name: Upload Sonar cached packages
       if: success()
