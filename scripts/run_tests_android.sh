@@ -241,9 +241,11 @@ function waitForEmulator() {
 function copyResources() {
   mkdir -p ${reports_path}
 
-  echo "Prepare copy unit tests"
-  adb shell mount -o remount,ro /
-  adb shell mount -o remount,ro /mnt
+  echo "Checking files in root";
+  adb shell ls -la /
+  echo "Checking files in /mnt";
+  adb shell ls -la /mnt
+  echo "Prepare copy unit tests";
   set +e;
   adb shell mount -o remount,rw /mnt/sdcard
   adb shell mount -o remount,rw /mnt/media_rw/1CE6-261B
