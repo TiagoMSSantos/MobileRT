@@ -72,6 +72,8 @@ echo "type: '${type}'"
 
 function runUnitTests() {
   echo "Calling Gradle test"
+  echo "Increasing ADB timeout to 10 minutes";
+  export ADB_INSTALL_TIMEOUT=60000;
   ./gradlew --stop
   ./gradlew test"${type}"UnitTest --profile --parallel \
     -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \

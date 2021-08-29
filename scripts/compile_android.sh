@@ -104,6 +104,8 @@ function clearOldBuildFiles() {
 
 function build() {
   echo "Calling the Gradle assemble to compile code for Android"
+  echo "Increasing ADB timeout to 10 minutes";
+  export ADB_INSTALL_TIMEOUT=60000;
   ./gradlew --stop
   ./gradlew clean assemble"${type}" --profile --parallel \
     -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \

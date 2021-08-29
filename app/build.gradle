@@ -183,6 +183,14 @@ sonarqube {
 // Android setup
 ///////////////////////////////////////////////////////////////////////////////
 android {
+    println "setting global timeout for apk installation to 10 minutes"
+    DdmPreferences.setTimeOut(600000)
+
+    adbOptions {
+        timeOutInMs 10 * 60 * 1000  // Set the timeout to 10 minutes
+        installOptions "-t"
+    }
+
     // Set NDK version
     setNdkVersion systemNDKVersion
 

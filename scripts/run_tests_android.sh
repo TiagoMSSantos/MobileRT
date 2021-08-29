@@ -333,6 +333,8 @@ function runInstrumentationTests() {
   set +e;
   jps | grep -i gradle | tr -s ' ' | cut -d ' ' -f 1 | head -1 | xargs kill -9;
   set -e;
+  echo "Increasing ADB timeout to 10 minutes";
+  export ADB_INSTALL_TIMEOUT=60000;
   ./gradlew --stop
   if [ "${run_test}" == "all" ]; then
     echo "Running all tests"
