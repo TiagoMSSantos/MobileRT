@@ -197,6 +197,8 @@ jobs:
         target: default
         arch: x86
         disable-animations: true
+        disable-spellchecker: true
+        channel: stable
         emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none
         cores: ${NCPU_CORES}
         sdcard-path-or-size: 100M
@@ -379,7 +381,7 @@ jobs:
           ~/.sonar
 
     - name: Download Sonar packages Artifact
-      if: failure()
+      if: always()
       uses: actions/download-artifact@v2
       continue-on-error: true
       with:

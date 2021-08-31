@@ -54,6 +54,8 @@ jobs:
         target: default
         arch: x86
         disable-animations: true
+        disable-spellchecker: true
+        channel: stable
         emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none
         cores: ${NCPU_CORES}
         sdcard-path-or-size: 100M
