@@ -226,5 +226,16 @@ function capitalizeFirstletter() {
   res="$(tr '[:lower:]' '[:upper:]' <<<"${1:0:1}")${1:1}"
   echo "${res}"
 }
+
+# Parallelize building of MobileRT
+function parallelizeBuild() {
+  if [ -x "$(command -v nproc)" ]; then
+    MAKEFLAGS=-j$(nproc --all);
+  else
+    # Assuming MacOS
+    MAKEFLAGS=-j$(sysctl -n hw.logicalcpu);
+  fi
+  export MAKEFLAGS;
+}
 ###############################################################################
 ###############################################################################
