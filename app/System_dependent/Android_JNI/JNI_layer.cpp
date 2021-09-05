@@ -680,6 +680,10 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
     jobject localBitmap,
     jint nThreads
 ) {
+    if (errno == EAGAIN) {
+        // Ignore resource unavailable, try again
+        errno = 0;
+    }
     MobileRT::checkSystemError("rtRenderIntoBitmap start");
     LOG_DEBUG("rtRenderIntoBitmap");
     LOG_DEBUG("nThreads = ", nThreads);
@@ -834,6 +838,10 @@ jlong Java_puscas_mobilertapp_RenderTask_rtGetTimeRenderer(
     JNIEnv *env,
     jobject /*thiz*/
 ) {
+    if (errno == EAGAIN) {
+        // Ignore resource unavailable, try again
+        errno = 0;
+    }
     MobileRT::checkSystemError("rtGetTimeRenderer start");
     env->ExceptionClear();
     MobileRT::checkSystemError("rtGetTimeRenderer finish");
@@ -845,6 +853,10 @@ extern "C"
     JNIEnv *env,
     jobject /*thiz*/
 ) {
+    if (errno == EAGAIN) {
+        // Ignore resource unavailable, try again
+        errno = 0;
+    }
     MobileRT::checkSystemError("rtGetSample start");
     ::std::int32_t sample{};
     {
@@ -876,6 +888,10 @@ extern "C"
         )
     };
     env->ExceptionClear();
+    if (errno == EAGAIN) {
+        // Ignore resource unavailable, try again
+        errno = 0;
+    }
     MobileRT::checkSystemError("rtResize finish");
     return res;
 }

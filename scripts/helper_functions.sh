@@ -159,27 +159,27 @@ function callCommandUntilError() {
 
 # Call function multiple times until it doesn't fail and then return.
 function callCommandUntilSuccess() {
-  echo ""
-  echo "Calling until success '$*'"
-  local retry=0
+  echo "";
+  echo "Calling until success '$*'";
+  local retry=0;
   set +e;
-  "$@"
-  local lastResult=${PIPESTATUS[0]}
-  echo "result: '${lastResult}'"
+  "$@";
+  local lastResult=${PIPESTATUS[0]};
+  echo "result: '${lastResult}'";
   while [[ "${lastResult}" -ne 0 && retry -lt 10 ]]; do
-    retry=$(("${retry}" + 1))
-    "$@"
-    lastResult=${PIPESTATUS[0]}
-    echo "Retry: ${retry} of command '$*'; result: '${lastResult}'"
-    sleep 2
+    retry=$(("${retry}" + 1));
+    "$@";
+    lastResult=${PIPESTATUS[0]};
+    echo "Retry: ${retry} of command '$*'; result: '${lastResult}'";
+    sleep 2;
   done
-  if [ "${lastResult}" -eq 0 ]; then
-    echo "'$*': success"
-  else
-    echo "'$*': failed"
-    exit "${lastResult}"
-  fi
   set -e;
+  if [ "${lastResult}" -eq 0 ]; then
+    echo "'$*': success";
+  else
+    echo "'$*': failed";
+    exit "${lastResult}";
+  fi
 }
 
 # Outputs the exit code received by argument and exits the current process with

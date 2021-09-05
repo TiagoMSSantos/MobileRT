@@ -82,16 +82,19 @@ printEnvironment;
 # Helper functions
 ###############################################################################
 function gather_logs_func() {
-  echo ""
-  echo ""
-  echo "Gathering logs"
+  echo "";
+  echo "";
+  echo "Gathering logs";
+
+  echo "Finding at least 1 Android device on. (2)";
+  callCommandUntilSuccess adb shell ps > /dev/null;
 
   echo "Copy logcat to file"
-  set +e;
   adb logcat -v threadtime -d "*":V \
     > "${reports_path}"/logcat_"${type}".log 2>&1
   echo "Copied logcat to logcat_${type}.log"
 
+  set +e;
   local pid_app
   pid_app=$(grep -E -i "proc.puscas:*" "${reports_path}"/logcat_"${type}".log |
     grep -i "pid=" | cut -d "=" -f 2 | cut -d "u" -f 1 | tr -d ' ' | tail -1)
@@ -155,9 +158,6 @@ function catch_signal() {
 ###############################################################################
 
 function runEmulator() {
-  echo "Prepare traps"
-  trap 'catch_signal ${?} ${LINENO}' EXIT SIGHUP SIGINT SIGQUIT SIGILL SIGTRAP SIGABRT SIGTERM
-
   set +u;
   pid=${BASHPID}
   set -u;
@@ -198,6 +198,13 @@ function waitForEmulator() {
   # Don't make the Android emulator belong in the process group, so it will not be killed at the end.
   set -m;
 
+  echo "Killing previous ADB process, just in case it was stuck.";
+  local ADB_PROCESS;
+  set +e;
+  ADB_PROCESS=$(ps aux | grep -i "adb" | grep -v "grep" | tr -s ' ' | cut -d ' ' -f 2 | head -1);
+  echo "Will kill process: '${ADB_PROCESS}'";
+  kill -9 "${ADB_PROCESS}";
+  set -e;
   local adb_devices_running;
   adb_devices_running=$(adb devices | tail -n +2);
   echo "Devices running: '${adb_devices_running}'";
@@ -208,8 +215,11 @@ function waitForEmulator() {
     echo "Android emulator '${adb_devices_running}' already running.";
   fi
 
-  # Find at least 1 Android device on.
-  callCommandUntilSuccess test -n "adb devices | tail -n +2 | head -1";
+  echo "Finding at least 1 Android device on. (1)";
+  callCommandUntilSuccess adb shell ps > /dev/null;
+
+  echo "Prepare traps";
+  trap 'catch_signal ${?} ${LINENO}' EXIT SIGHUP SIGINT SIGQUIT SIGILL SIGTRAP SIGABRT SIGTERM;
 
   # Make the all other processes belong in the process group, so that will be killed at the end.
   set +m;
@@ -229,51 +239,60 @@ function waitForEmulator() {
   callCommandUntilSuccess adb shell input tap 800 900;
   callCommandUntilSuccess adb shell input keyevent 82;
 
-  # Abort if emulator didn't start
   local adb_devices_running;
-  adb_devices_running=$(adb devices | tail -n +2);
+  set +e;
+  adb_devices_running=$(callCommandUntilSuccess adb devices | grep -v "List of devices attached");
+  set -e;
   echo "Devices running: ${adb_devices_running}";
   if [ -z "${adb_devices_running}" ]; then
+    # Abort if emulator didn't start
     echo "Android emulator didn't start ... will exit.";
     exit 1;
   fi
+  # Make sure ADB daemon started properly.
+  callCommandUntilSuccess adb start-server;
+  callCommandUntilSuccess adb wait-for-device;
 }
 
 function copyResources() {
   mkdir -p ${reports_path}
 
   echo "Checking files in root";
-  adb shell ls -la /
+  callCommandUntilSuccess adb shell ls -la /
   echo "Checking files in /mnt";
-  adb shell ls -la /mnt
+  callCommandUntilSuccess adb shell ls -la /mnt
   echo "Prepare copy unit tests";
   set +e;
   adb shell mount -o remount,rw /mnt/sdcard
   adb shell mount -o remount,rw /mnt/media_rw/1CE6-261B
   set -e;
-  adb shell mkdir -p ${mobilert_path}
-  adb shell mkdir -p ${sdcard_path}
-  adb shell rm -r ${mobilert_path}
-  adb shell rm -r ${sdcard_path}
-  adb shell mkdir -p ${mobilert_path}
-  adb shell mkdir -p ${sdcard_path}
+  callCommandUntilSuccess adb shell mkdir -p ${mobilert_path}
+  callCommandUntilSuccess adb shell mkdir -p ${sdcard_path}
+  callCommandUntilSuccess adb shell rm -r ${mobilert_path}
+  callCommandUntilSuccess adb shell rm -r ${sdcard_path}
+  callCommandUntilSuccess adb shell mkdir -p ${mobilert_path}
+  callCommandUntilSuccess adb shell mkdir -p ${sdcard_path}
 
   echo "Copy tests resources"
-  adb push app/src/androidTest/resources/teapot ${mobilert_path}/WavefrontOBJs/teapot
-  adb push app/src/androidTest/resources/CornellBox ${sdcard_path}/WavefrontOBJs/CornellBox
+  callCommandUntilSuccess adb push app/src/androidTest/resources/teapot ${mobilert_path}/WavefrontOBJs/teapot
+  callCommandUntilSuccess adb push app/src/androidTest/resources/CornellBox ${sdcard_path}/WavefrontOBJs/CornellBox
 
   echo "Copy File Manager"
-  adb push app/src/androidTest/resources/APKs ${mobilert_path}/
+  callCommandUntilSuccess adb push app/src/androidTest/resources/APKs ${mobilert_path}/
 
   echo "Change resources permissions"
-  adb shell chmod -R 777 ${mobilert_path}
-  adb shell chmod -R 777 ${sdcard_path}
+  callCommandUntilSuccess adb shell chmod -R 777 ${mobilert_path}
+  callCommandUntilSuccess adb shell chmod -R 777 ${sdcard_path}
 
-  echo "Install File Manager"
-  adb shell pm install -t -r "${mobilert_path}/APKs/com.asus.filemanager.apk"
+  echo "Install File Manager";
+  callCommandUntilSuccess adb shell pm install -t -r "${mobilert_path}/APKs/com.asus.filemanager.apk"
 }
 
 function startCopyingLogcatToFile() {
+  # Make sure ADB daemon started properly.
+  callCommandUntilSuccess adb start-server;
+  callCommandUntilSuccess adb wait-for-device;
+
   # echo "Disable animations"
   # puscas.mobilertapp not found
   # adb shell pm grant puscas.mobilertapp android.permission.SET_ANIMATION_SCALE
@@ -284,15 +303,15 @@ function startCopyingLogcatToFile() {
   # adb shell settings put global animator_duration_scale 0.0
 
   echo "Activate JNI extended checking mode"
-  adb shell setprop dalvik.vm.checkjni true
-  adb shell setprop debug.checkjni 1
+  callCommandUntilSuccess adb shell setprop dalvik.vm.checkjni true
+  callCommandUntilSuccess adb shell setprop debug.checkjni 1
 
   echo "Clear logcat"
   callCommandUntilSuccess adb root
-  adb shell logcat -b all -b main -b system -b radio -b events -b crash -c
+  callCommandUntilSuccess adb shell logcat -b all -b main -b system -b radio -b events -b crash -c
 
   echo "Copy realtime logcat to file"
-  adb logcat -v threadtime "*":V \
+  callCommandUntilSuccess adb logcat -v threadtime "*":V \
     2>&1 | tee ${reports_path}/logcat_current_"${type}".log &
   pid_logcat="$!"
   echo "pid of logcat: '${pid_logcat}'"
