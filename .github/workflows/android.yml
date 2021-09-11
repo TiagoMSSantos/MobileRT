@@ -116,6 +116,7 @@ jobs:
       working-directory: .
       run: |
         set -euo pipefail;
+        echo "BASE64_KEY=$(openssl base64 < app/MobileRT.jks | tr -d '\n')" >> ${GITHUB_ENV};
         mkdir -p ./reports;
         chmod +x ./gradlew 2>&1 | tee ./reports/setup_gradlew.log;
         export res="${PIPESTATUS[0]}";
@@ -245,10 +246,10 @@ jobs:
 
     - name: Sign APK
       if: success() && env.SIGNING_KEY != null && env.KEY_ALIAS != null
-      uses: r0adkll/sign-android-release@v1.0.1
+      uses: r0adkll/sign-android-release@v1.0.4
       with:
         releaseDirectory: ./app/build/outputs/apk/${{ matrix.type }}
-        signingKeyBase64: ${{ env.SIGNING_KEY }}
+        signingKeyBase64: ${{ env.BASE64_KEY }}
         alias: ${{ env.KEY_ALIAS }}
         keyStorePassword: ${{ env.SIGNING_KEY }}
         keyPassword: ${{ env.SIGNING_KEY }}
