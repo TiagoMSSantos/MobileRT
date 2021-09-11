@@ -245,7 +245,7 @@ jobs:
 
     - name: Sign APK
       if: success() && env.SIGNING_KEY != null && env.KEY_ALIAS != null
-      uses: r0adkll/sign-android-release@v1.0.1
+      uses: r0adkll/sign-android-release@v1.0.4
       with:
         releaseDirectory: ./app/build/outputs/apk/${{ matrix.type }}
         signingKeyBase64: ${{ env.SIGNING_KEY }}
