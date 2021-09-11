@@ -171,7 +171,7 @@ function callCommandUntilSuccess() {
     "$@";
     lastResult=${PIPESTATUS[0]};
     echo "Retry: ${retry} of command '$*'; result: '${lastResult}'";
-    sleep 2;
+    sleep 3;
   done
   set -e;
   if [ "${lastResult}" -eq 0 ]; then
