@@ -151,7 +151,7 @@ jobs:
         BASE_IMAGE: ${{ matrix.BASE_IMAGE }}
 
     - name: Login to DockerHub Registry
-      if: success()
+      if: success() && env.DOCKERHUB_USERNAME != null && env.DOCKERHUB_PASSWORD != null
       run: |
         ls ${PATH//:/ } 2> /dev/null | grep -i docker 2> /dev/null || true;
         docker --version;
@@ -231,7 +231,7 @@ jobs:
           ptpuscas/mobile_rt:${VERSION} -c "./bin/UnitTests";
 
     - name: Push the tagged Docker image
-      if: success() && env.BRANCH == 'master'
+      if: success() && env.BRANCH == 'master' && env.DOCKERHUB_USERNAME != null && env.DOCKERHUB_PASSWORD != null
       run: |
         export VERSION=${{ env.VERSION }};
         export BRANCH=${{ env.BRANCH }};

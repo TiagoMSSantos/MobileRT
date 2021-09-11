@@ -244,7 +244,7 @@ jobs:
           ./reports
 
     - name: Sign APK
-      if: success()
+      if: success() && env.SIGNING_KEY != null && env.KEY_ALIAS != null
       uses: r0adkll/sign-android-release@v1.0.1
       with:
         releaseDirectory: ./app/build/outputs/apk/${{ matrix.type }}
@@ -334,7 +334,7 @@ jobs:
         ls -la ./reports 2>&1 | tee ./reports/ls_reports.log;
 
     - name: Send code climate report
-      if: success()
+      if: success() && env.CC_TEST_REPORTER_ID != null
       working-directory: app/src/main/java
       env:
         CC_TEST_REPORTER_ID: ${{ env.CC_TEST_REPORTER_ID }}
@@ -346,7 +346,7 @@ jobs:
         exit ${res};
 
     - name: Validate codecov report
-      if: success()
+      if: success() && env.CODECOV_TOKEN != null
       working-directory: .
       env:
         CODECOV_TOKEN: ${{ env.CODECOV_TOKEN }}
@@ -432,7 +432,7 @@ jobs:
         ls -la ~/.sonar;
 
     - name: Analyze Sonar
-      if: success()
+      if: success() && env.GITHUB_TOKEN != null && env.SONAR_TOKEN != null
       working-directory: .
       env:
         GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}  # Needed to get PR information, if any
@@ -474,7 +474,7 @@ jobs:
           ./reports
 
     - name: Send codecov report
-      if: success()
+      if: success() && env.CODECOV_TOKEN != null
       working-directory: .
       env:
         CODECOV_TOKEN: ${{ env.CODECOV_TOKEN }}

@@ -200,7 +200,7 @@ jobs:
         restore-keys: reports_debug
 
     - name: Send code climate report
-      if: success()
+      if: success() && env.CC_TEST_REPORTER_ID != null
       working-directory: .
       env:
         CC_TEST_REPORTER_ID: ${{ env.CC_TEST_REPORTER_ID }}
@@ -214,7 +214,7 @@ jobs:
         exit ${res};
 
     - name: Validate codecov report
-      if: success()
+      if: success() && env.CODECOV_TOKEN != null
       working-directory: .
       env:
         CODECOV_TOKEN: ${{ env.CODECOV_TOKEN }}
@@ -225,7 +225,7 @@ jobs:
         exit 0;
 
     - name: Send codecov report
-      if: success()
+      if: success() && env.CODECOV_TOKEN != null
       working-directory: .
       env:
         CODECOV_TOKEN: ${{ env.CODECOV_TOKEN }}
