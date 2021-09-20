@@ -99,7 +99,7 @@ ext {
     multidex_version = "2.0.1"
     androidX_test_library_version = "1.4.0"
     guava_version = "30.1.1-jre"
-    stream_support_version = "1.7.3"
+    stream_support_version = "1.7.4"
     commons_lang3_version = "3.12.0"
     lombok_version = "1.18.20"
     spotbugs_annotations_version = "4.4.1"
