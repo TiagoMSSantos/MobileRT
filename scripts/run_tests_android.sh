@@ -65,6 +65,7 @@ reports_path="./app/build/reports"
 echo "Set path to instrumentation tests resources"
 mobilert_path="/data/local/tmp/MobileRT"
 sdcard_path="/mnt/sdcard/MobileRT"
+sdcard_path_android_11_emulator="/storage/1CE6-261B/MobileRT"
 ###############################################################################
 ###############################################################################
 
@@ -268,14 +269,20 @@ function copyResources() {
   set -e;
   callCommandUntilSuccess adb shell mkdir -p ${mobilert_path}
   callCommandUntilSuccess adb shell mkdir -p ${sdcard_path}
+  callCommandUntilSuccess adb shell mkdir -p ${sdcard_path_android_11_emulator}
   callCommandUntilSuccess adb shell rm -r ${mobilert_path}
   callCommandUntilSuccess adb shell rm -r ${sdcard_path}
+  callCommandUntilSuccess adb shell rm -r ${sdcard_path_android_11_emulator}
   callCommandUntilSuccess adb shell mkdir -p ${mobilert_path}
   callCommandUntilSuccess adb shell mkdir -p ${sdcard_path}
+  callCommandUntilSuccess adb shell mkdir -p ${sdcard_path_android_11_emulator}
 
   echo "Copy tests resources"
   callCommandUntilSuccess adb push app/src/androidTest/resources/teapot ${mobilert_path}/WavefrontOBJs/teapot
   callCommandUntilSuccess adb push app/src/androidTest/resources/CornellBox ${sdcard_path}/WavefrontOBJs/CornellBox
+  set +e;
+  adb push app/src/androidTest/resources/CornellBox ${sdcard_path_android_11_emulator}/WavefrontOBJs/CornellBox
+  set -e;
 
   echo "Copy File Manager"
   callCommandUntilSuccess adb push app/src/androidTest/resources/APKs ${mobilert_path}/
@@ -283,6 +290,7 @@ function copyResources() {
   echo "Change resources permissions"
   callCommandUntilSuccess adb shell chmod -R 777 ${mobilert_path}
   callCommandUntilSuccess adb shell chmod -R 777 ${sdcard_path}
+  callCommandUntilSuccess adb shell chmod -R 777 ${sdcard_path_android_11_emulator}
 
   echo "Install File Manager";
   callCommandUntilSuccess adb shell pm install -t -r "${mobilert_path}/APKs/com.asus.filemanager.apk"
@@ -340,6 +348,7 @@ function verifyResources() {
   echo "Verify resources in SD Card";
   adb shell ls -Rla ${mobilert_path}/WavefrontOBJs;
   adb shell ls -Rla ${sdcard_path}/WavefrontOBJs;
+  adb shell ls -Rla ${sdcard_path_android_11_emulator}/WavefrontOBJs;
 #  adb shell cat ${sdcard_path}/WavefrontOBJs/CornellBox/CornellBox-Water.obj;
 #  adb shell cat ${sdcard_path}/WavefrontOBJs/CornellBox/CornellBox-Water.mtl;
 #  adb shell cat ${sdcard_path}/WavefrontOBJs/CornellBox/CornellBox-Water.cam;

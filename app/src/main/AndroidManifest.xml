@@ -5,9 +5,9 @@
     android:installLocation="preferExternal"
     android:sharedUserId="puscas.mobilertapp.uid">
 
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" tools:node="replace"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" tools:node="replace"/>
-    <uses-permission android:name="android.permission.INTERNET" tools:node="replace"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <uses-feature android:glEsVersion="0x00020000" />
 
@@ -23,8 +23,7 @@
         tools:targetApi="q">
         <activity
             android:name="puscas.mobilertapp.MainActivity"
-            android:exported="true"
-            android:permission="android.permission.READ_EXTERNAL_STORAGE">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

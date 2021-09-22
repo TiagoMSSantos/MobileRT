@@ -47,16 +47,28 @@ public abstract class AbstractTest {
         new ActivityTestRule<>(MainActivity.class, true, true);
 
     /**
-     * The {@link Rule} to access the external SD card.
+     * The {@link Rule} to access (read) the external SD card.
      */
     @NonNull
     @Rule
-    public final GrantPermissionRule grantPermissionRule =
-        GrantPermissionRule.grant(
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.INTERNET
-        );
+    public final GrantPermissionRule grantPermissionReadExternalStorageRule =
+        GrantPermissionRule.grant(Manifest.permission.READ_EXTERNAL_STORAGE);
+
+    /**
+     * The {@link Rule} to access (write) the external SD card.
+     */
+    @NonNull
+    @Rule
+    public final GrantPermissionRule grantPermissionWriteExternalStorageRule =
+        GrantPermissionRule.grant(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+    /**
+     * The {@link Rule} to access the Internet.
+     */
+    @NonNull
+    @Rule
+    public final GrantPermissionRule grantPermissionInternetRule =
+        GrantPermissionRule.grant(Manifest.permission.INTERNET);
 
     /**
      * The {@link MainActivity} to test.
