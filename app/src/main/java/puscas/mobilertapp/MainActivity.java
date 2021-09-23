@@ -5,6 +5,7 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ConfigurationInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
@@ -22,6 +23,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
+import java.util.Arrays;
 import java.util.Map;
 import java8.util.Optional;
 import java8.util.stream.IntStreams;
@@ -333,8 +335,28 @@ public final class MainActivity extends Activity {
                                            @NonNull final int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         log.info("onRequestPermissionsResult");
-    }
 
+        if (permissions.length > 0) {
+            log.info("Requested permissions: " + Arrays.toString(permissions));
+
+            // If request is cancelled, the result arrays are empty.
+            if (grantResults.length > 0 &&
+                grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission is granted. Continue the action or workflow
+                // in your app.
+                log.info("Permission granted!");
+            }  else {
+                // Explain to the user that the feature is unavailable because
+                // the features requires a permission that the user has denied.
+                // At the same time, respect the user's decision. Don't link to
+                // system settings in an effort to convince the user to change
+                // their decision.
+                log.severe("Permission NOT granted");
+            }
+            // Other 'case' lines to check for other
+            // permissions this app might request.
+        }
+}
 
     /*
      ***********************************************************************
