@@ -219,6 +219,14 @@ else()
 #    set( COMMON_FLAGS "${COMMON_FLAGS}" -march=native )
   endif()
 
+  if( CMAKE_CXX_COMPILER MATCHES "clang" )
+    # Necessary to disable this warning flag to avoid this error in clang:
+    # fatal error: disabled expansion of recursive macro [-Wdisabled-macro-expansion]
+    # /usr/include/x86_64-linux-gnu/bits/confname.h:255:26: note: expanded from macro '_SC_PHYS_PAGES'
+    # #define _SC_PHYS_PAGES                  _SC_PHYS_PAGES
+    set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-disabled-macro-expansion )
+  endif()
+
   string( TOLOWER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_L )
   if( CMAKE_BUILD_TYPE_L MATCHES debug )
     message( STATUS "Adding postfix for debug type." )

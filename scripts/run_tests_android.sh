@@ -352,9 +352,18 @@ function verifyResources() {
 #  adb shell cat ${sdcard_path}/WavefrontOBJs/CornellBox/CornellBox-Water.obj;
 #  adb shell cat ${sdcard_path}/WavefrontOBJs/CornellBox/CornellBox-Water.mtl;
 #  adb shell cat ${sdcard_path}/WavefrontOBJs/CornellBox/CornellBox-Water.cam;
-  echo "Verify memory available";
+
+  echo "Verify memory available on host:";
+  if [ -x "$(command -v free)" ]; then
+    free -h;
+  else
+    vm_stat;
+  fi
+
+  echo "Verify memory available on Android emulator:";
   adb shell free -h;
   adb shell cat /proc/meminfo;
+  echo "Verified memory available on Android emulator.";
 }
 
 function runInstrumentationTests() {
