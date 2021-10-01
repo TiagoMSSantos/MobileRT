@@ -22,7 +22,7 @@
 
 
 ###############################################################################
-# Exit immediately if a command exits with a non-zero status
+# Exit immediately if a command exits with a non-zero status.
 ###############################################################################
 set -euo pipefail;
 ###############################################################################
@@ -30,23 +30,23 @@ set -euo pipefail;
 
 
 ###############################################################################
-# Change directory to MobileRT root
+# Change directory to MobileRT root.
 ###############################################################################
-cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit
-###############################################################################
-###############################################################################
-
-
-###############################################################################
-# Get helper functions
-###############################################################################
-source scripts/helper_functions.sh
+cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit;
 ###############################################################################
 ###############################################################################
 
 
 ###############################################################################
-# Install dependencies
+# Get helper functions.
+###############################################################################
+source scripts/helper_functions.sh;
+###############################################################################
+###############################################################################
+
+
+###############################################################################
+# Install dependencies.
 ###############################################################################
 set +e;
 if [ -x "$(command -v apt-get)" ]; then
@@ -166,9 +166,9 @@ elif [ -x "$(command -v emerge)" ]; then
 elif [ -x "$(command -v brew)" ]; then
   echo "Detected MacOS";
 
-  # Update homebrew (to use the new repository)
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall.sh)"
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  # Update homebrew (to use the new repository).
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall.sh)";
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)";
 
   brew update;
   brew cleanup;
@@ -183,8 +183,8 @@ elif [ -x "$(command -v brew)" ]; then
   brew install python3;
   brew install pyenv;
 
-  MAJOR_MAC_VERSION=$(sw_vers | grep ProductVersion | cut -d ':' -f2 | cut -d '.' -f1 | tr -d '[:space:]')
-  echo "MacOS '${MAJOR_MAC_VERSION}' detected"
+  MAJOR_MAC_VERSION=$(sw_vers | grep ProductVersion | cut -d ':' -f2 | cut -d '.' -f1 | tr -d '[:space:]');
+  echo "MacOS '${MAJOR_MAC_VERSION}' detected";
   # This command needs sudo.
   sudo xcode-select --switch /System/Volumes/Data/Applications/Xcode_12.4.app/Contents/Developer;
 else
@@ -213,52 +213,52 @@ pip3 install cmake --upgrade;
 
 
 ###############################################################################
-# Install Conan package manager
+# Install Conan package manager.
 ###############################################################################
 function install_conan() {
   pip3 install conan;
   pip3 install clang;
 
-  PATH=$(pip3 list -v | grep -i cmake | tr -s ' ' | cut -d ' ' -f 3):${PATH}
-  PATH=$(pip3 list -v | grep -i conan | tr -s ' ' | cut -d ' ' -f 3):${PATH}
+  PATH=$(pip3 list -v | grep -i cmake | tr -s ' ' | cut -d ' ' -f 3):${PATH};
+  PATH=$(pip3 list -v | grep -i conan | tr -s ' ' | cut -d ' ' -f 3):${PATH};
 
   CONAN_PATH=$(find ~/ -iname "conan" -not -path "*/MobileRT/**/conan*");
-  echo "Conan binary: ${CONAN_PATH}"
-  echo "Conan location: ${CONAN_PATH%/conan}"
-  export PATH=${CONAN_PATH%/conan}:${PATH}
+  echo "Conan binary: ${CONAN_PATH}";
+  echo "Conan location: ${CONAN_PATH%/conan}";
+  export PATH=${CONAN_PATH%/conan}:${PATH};
 
-  conan -v
-  checkCommand conan
+  conan -v;
+  checkCommand conan;
 
   CLANG_PATH=$(find / -iname "clang");
-  echo "Clang binary: ${CLANG_PATH}"
-  echo "Clang location: ${CLANG_PATH%/clang}"
-  PATH=${CLANG_PATH%/clang}:${PATH}
+  echo "Clang binary: ${CLANG_PATH}";
+  echo "Clang location: ${CLANG_PATH%/clang}";
+  PATH=${CLANG_PATH%/clang}:${PATH};
 
-  echo "PATH: ${PATH}"
+  echo "PATH: ${PATH}";
 }
 
 
-#install_conan
+#install_conan;
 ###############################################################################
 ###############################################################################
 
 
 ###############################################################################
-# Test dependencies
+# Test dependencies.
 ###############################################################################
-checkCommand vim
-checkCommand cmake
-checkCommand make
-checkCommand bash
-checkCommand git
-checkCommand g++
-checkCommand python3
-checkCommand pip
-checkCommand pip3
+checkCommand vim;
+checkCommand cmake;
+checkCommand make;
+checkCommand bash;
+checkCommand git;
+checkCommand g++;
+checkCommand python3;
+checkCommand pip;
+checkCommand pip3;
 
 # Can't install in docker container:
-#checkCommand clang++
-#checkCommand cpulimit
+#checkCommand clang++;
+#checkCommand cpulimit;
 ###############################################################################
 ###############################################################################

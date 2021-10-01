@@ -10,15 +10,15 @@
 
 
 ###############################################################################
-# Change directory to MobileRT root
+# Change directory to MobileRT root.
 ###############################################################################
-cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit
+cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit;
 ###############################################################################
 ###############################################################################
 
 
 ###############################################################################
-# Exit immediately if a command exits with a non-zero status
+# Exit immediately if a command exits with a non-zero status.
 ###############################################################################
 set -euo pipefail;
 ###############################################################################
@@ -26,15 +26,15 @@ set -euo pipefail;
 
 
 ###############################################################################
-# Get helper functions
+# Get helper functions.
 ###############################################################################
-source scripts/helper_functions.sh
+source scripts/helper_functions.sh;
 ###############################################################################
 ###############################################################################
 
 
 ###############################################################################
-# Set default arguments
+# Set default arguments.
 ###############################################################################
 type="release";
 run_test="all";
@@ -57,21 +57,21 @@ function printEnvironment() {
 
 
 ###############################################################################
-# Set paths
+# Set paths.
 ###############################################################################
-echo "Set path to reports"
-reports_path="./app/build/reports"
+echo "Set path to reports";
+reports_path="./app/build/reports";
 
-echo "Set path to instrumentation tests resources"
-mobilert_path="/data/local/tmp/MobileRT"
-sdcard_path="/mnt/sdcard/MobileRT"
-sdcard_path_android_11_emulator="/storage/1CE6-261B/MobileRT"
+echo "Set path to instrumentation tests resources";
+mobilert_path="/data/local/tmp/MobileRT";
+sdcard_path="/mnt/sdcard/MobileRT";
+sdcard_path_android_11_emulator="/storage/1CE6-261B/MobileRT";
 ###############################################################################
 ###############################################################################
 
 
 ###############################################################################
-# Parse arguments
+# Parse arguments.
 ###############################################################################
 parseArgumentsToTestAndroid "$@";
 printEnvironment;
@@ -80,7 +80,7 @@ printEnvironment;
 
 
 ###############################################################################
-# Helper functions
+# Helper functions.
 ###############################################################################
 function gather_logs_func() {
   echo "";
@@ -92,87 +92,88 @@ function gather_logs_func() {
 
   echo "Copy logcat to file"
   adb logcat -v threadtime -d "*":V \
-    > "${reports_path}"/logcat_"${type}".log 2>&1
-  echo "Copied logcat to logcat_${type}.log"
+    > "${reports_path}"/logcat_"${type}".log 2>&1;
+  echo "Copied logcat to logcat_${type}.log";
 
   set +e;
-  local pid_app
+  local pid_app;
   pid_app=$(grep -E -i "proc.puscas:*" "${reports_path}"/logcat_"${type}".log |
-    grep -i "pid=" | cut -d "=" -f 2 | cut -d "u" -f 1 | tr -d ' ' | tail -1)
-  echo "Filter logcat of the app: ${pid_app}"
+    grep -i "pid=" | cut -d "=" -f 2 | cut -d "u" -f 1 | tr -d ' ' | tail -1);
+  echo "Filter logcat of the app: ${pid_app}";
   cat "${reports_path}"/logcat_"${type}".log | grep -e "${pid_app}" -e "I DEBUG" \
-      > "${reports_path}"/logcat_app_"${type}".log
+      > "${reports_path}"/logcat_app_"${type}".log;
 
-  echo "Filter realtime logcat of the app"
+  echo "Filter realtime logcat of the app";
   cat "${reports_path}"/logcat_current_"${type}".log |
     grep -E -i "$(grep -E -i "proc.*:puscas" \
       "${reports_path}"/logcat_current_"${type}".log |
       cut -d ":" -f 4 | cut -d ' ' -f 4)" \
-      > "${reports_path}"/logcat_current_app_"${type}".log
+      > "${reports_path}"/logcat_current_app_"${type}".log;
+  echo "Filtered realtime logcat of the app";
   set -e;
 
-  echo -e '\e]8;;file:///'"${PWD}"'/'"${reports_path}"'/androidTests/connected/index.html\aClick here to check the Android tests report.\e]8;;\a'
-  echo -e '\e]8;;file:///'"${PWD}"'/'"${reports_path}"'/coverage/'"${type}"'/index.html\aClick here to check the Code coverage report.\e]8;;\a'
-  echo -e '\e]8;;file:///'"${PWD}"'/'"${reports_path}"'/logcat_app_'"${type}"'.log\aClick here to check the app log.\e]8;;\a'
-  echo ""
-  echo ""
+  echo -e '\e]8;;file:///'"${PWD}"'/'"${reports_path}"'/androidTests/connected/index.html\aClick here to check the Android tests report.\e]8;;\a';
+  echo -e '\e]8;;file:///'"${PWD}"'/'"${reports_path}"'/coverage/'"${type}"'/index.html\aClick here to check the Code coverage report.\e]8;;\a';
+  echo -e '\e]8;;file:///'"${PWD}"'/'"${reports_path}"'/logcat_app_'"${type}"'.log\aClick here to check the app log.\e]8;;\a';
+  echo "";
+  echo "";
 }
 
 function clear_func() {
-  echo "Killing pid of logcat: '${pid_logcat}'"
+  echo "Killing pid of logcat: '${pid_logcat}'";
   set +e;
-  kill -s SIGTERM "${pid_logcat}" 2> /dev/null
+  kill -SIGTERM "${pid_logcat}" 2> /dev/null;
   set -e;
 
-  local pid_app
-  echo "Will kill MobileRT process"
-  pid_app=$(adb shell ps | grep -i puscas.mobilertapp | tr -s ' ' | cut -d ' ' -f 2)
-  echo "Killing pid of MobileRT: '${pid_app}'"
+  local pid_app;
+  echo "Will kill MobileRT process";
+  pid_app=$(adb shell ps | grep -i puscas.mobilertapp | tr -s ' ' | cut -d ' ' -f 2);
+  echo "Killing pid of MobileRT: '${pid_app}'";
   set +e;
-  adb shell kill -s SIGTERM "${pid_app}" 2> /dev/null
+  adb shell kill -SIGTERM "${pid_app}" 2> /dev/null;
   set -e;
 
   # Kill all processes in the whole process group, thus killing also descendants.
-  echo "All processes will be killed!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+  echo "All processes will be killed!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
   set +e;
-  kill -9 -- -$$
+  kill -SIGKILL -- -$$;
   set -e;
 }
 
 function catch_signal() {
-  echo ""
-  echo ""
-  echo "Caught signal"
+  echo "";
+  echo "";
+  echo "Caught signal";
 
-  gather_logs_func
-  # clear_func
+  gather_logs_func;
+  # clear_func;
 
-  echo ""
-  echo ""
+  echo "";
+  echo "";
 }
 ###############################################################################
 ###############################################################################
 
 
 ###############################################################################
-# Run Android tests in emulator
+# Run Android tests in emulator.
 ###############################################################################
 
 function runEmulator() {
   set +u;
-  pid=${BASHPID}
+  pid=${BASHPID};
   set -u;
 
-  script_name=$(basename "${0}")
-  echo "pid: ${pid}"
-  echo "script name: ${script_name}"
+  script_name=$(basename "${0}");
+  echo "pid: ${pid}";
+  echo "script name: ${script_name}";
 
   if [ "${type}" == "debug" ]; then
-    code_coverage="createDebugCoverageReport"
+    code_coverage="createDebugCoverageReport";
   fi
 
   if [ "${kill_previous}" == true ]; then
-    echo "Killing previous process"
+    echo "Killing previous process";
     set +e;
     ps aux |
       grep -v grep |
@@ -180,17 +181,17 @@ function runEmulator() {
       grep -i "${script_name}" |
       tr -s ' ' |
       cut -d ' ' -f 2 |
-      xargs kill
+      xargs kill;
     set -e;
   fi
 
   if [ -x "$(command -v emulator)" ]; then
-    avd_emulators=$(emulator -list-avds)
-    echo "Emulators available: '${avd_emulators}'"
-    avd_emulator=$(echo "${avd_emulators}" | head -1)
-    echo "Start '${avd_emulator}'"
+    avd_emulators=$(emulator -list-avds);
+    echo "Emulators available: '${avd_emulators}'";
+    avd_emulator=$(echo "${avd_emulators}" | head -1);
+    echo "Start '${avd_emulator}'";
   else
-    echo "Command emulator is NOT installed."
+    echo "Command emulator is NOT installed.";
   fi
 }
 
@@ -204,7 +205,7 @@ function waitForEmulator() {
   set +e;
   ADB_PROCESS=$(ps aux | grep -i "adb" | grep -v "grep" | tr -s ' ' | cut -d ' ' -f 2 | head -1);
   echo "Will kill process: '${ADB_PROCESS}'";
-  kill -9 "${ADB_PROCESS}";
+  kill -SIGKILL "${ADB_PROCESS}";
   set -e;
   local adb_devices_running;
   adb_devices_running=$(adb devices | tail -n +2);
@@ -246,7 +247,7 @@ function waitForEmulator() {
   set -e;
   echo "Devices running: ${adb_devices_running}";
   if [ -z "${adb_devices_running}" ]; then
-    # Abort if emulator didn't start
+    # Abort if emulator didn't start.
     echo "Android emulator didn't start ... will exit.";
     exit 1;
   fi
@@ -256,44 +257,44 @@ function waitForEmulator() {
 }
 
 function copyResources() {
-  mkdir -p ${reports_path}
+  mkdir -p ${reports_path};
 
   echo "Checking files in root";
-  callCommandUntilSuccess adb shell ls -la /
+  callCommandUntilSuccess adb shell ls -la /;
   echo "Checking files in /mnt";
-  callCommandUntilSuccess adb shell ls -la /mnt
+  callCommandUntilSuccess adb shell ls -la /mnt;
   echo "Prepare copy unit tests";
   set +e;
-  adb shell mount -o remount,rw /mnt/sdcard
-  adb shell mount -o remount,rw /mnt/media_rw/1CE6-261B
+  adb shell mount -o remount,rw /mnt/sdcard;
+  adb shell mount -o remount,rw /mnt/media_rw/1CE6-261B;
   set -e;
-  callCommandUntilSuccess adb shell mkdir -p ${mobilert_path}
-  callCommandUntilSuccess adb shell mkdir -p ${sdcard_path}
-  callCommandUntilSuccess adb shell mkdir -p ${sdcard_path_android_11_emulator}
-  callCommandUntilSuccess adb shell rm -r ${mobilert_path}
-  callCommandUntilSuccess adb shell rm -r ${sdcard_path}
-  callCommandUntilSuccess adb shell rm -r ${sdcard_path_android_11_emulator}
-  callCommandUntilSuccess adb shell mkdir -p ${mobilert_path}
-  callCommandUntilSuccess adb shell mkdir -p ${sdcard_path}
-  callCommandUntilSuccess adb shell mkdir -p ${sdcard_path_android_11_emulator}
+  callCommandUntilSuccess adb shell mkdir -p ${mobilert_path};
+  callCommandUntilSuccess adb shell mkdir -p ${sdcard_path};
+  callCommandUntilSuccess adb shell mkdir -p ${sdcard_path_android_11_emulator};
+  callCommandUntilSuccess adb shell rm -r ${mobilert_path};
+  callCommandUntilSuccess adb shell rm -r ${sdcard_path};
+  callCommandUntilSuccess adb shell rm -r ${sdcard_path_android_11_emulator};
+  callCommandUntilSuccess adb shell mkdir -p ${mobilert_path};
+  callCommandUntilSuccess adb shell mkdir -p ${sdcard_path};
+  callCommandUntilSuccess adb shell mkdir -p ${sdcard_path_android_11_emulator};
 
-  echo "Copy tests resources"
-  callCommandUntilSuccess adb push app/src/androidTest/resources/teapot ${mobilert_path}/WavefrontOBJs/teapot
-  callCommandUntilSuccess adb push app/src/androidTest/resources/CornellBox ${sdcard_path}/WavefrontOBJs/CornellBox
+  echo "Copy tests resources";
+  callCommandUntilSuccess adb push app/src/androidTest/resources/teapot ${mobilert_path}/WavefrontOBJs/teapot;
+  callCommandUntilSuccess adb push app/src/androidTest/resources/CornellBox ${sdcard_path}/WavefrontOBJs/CornellBox;
   set +e;
-  adb push app/src/androidTest/resources/CornellBox ${sdcard_path_android_11_emulator}/WavefrontOBJs/CornellBox
+  adb push app/src/androidTest/resources/CornellBox ${sdcard_path_android_11_emulator}/WavefrontOBJs/CornellBox;
   set -e;
 
-  echo "Copy File Manager"
-  callCommandUntilSuccess adb push app/src/androidTest/resources/APKs ${mobilert_path}/
+  echo "Copy File Manager";
+  callCommandUntilSuccess adb push app/src/androidTest/resources/APKs ${mobilert_path}/;
 
-  echo "Change resources permissions"
-  callCommandUntilSuccess adb shell chmod -R 777 ${mobilert_path}
-  callCommandUntilSuccess adb shell chmod -R 777 ${sdcard_path}
-  callCommandUntilSuccess adb shell chmod -R 777 ${sdcard_path_android_11_emulator}
+  echo "Change resources permissions";
+  callCommandUntilSuccess adb shell chmod -R 777 ${mobilert_path};
+  callCommandUntilSuccess adb shell chmod -R 777 ${sdcard_path};
+  callCommandUntilSuccess adb shell chmod -R 777 ${sdcard_path_android_11_emulator};
 
   echo "Install File Manager";
-  callCommandUntilSuccess adb shell pm install -t -r "${mobilert_path}/APKs/com.asus.filemanager.apk"
+  callCommandUntilSuccess adb shell pm install -t -r "${mobilert_path}/APKs/com.asus.filemanager.apk";
 }
 
 function startCopyingLogcatToFile() {
@@ -301,47 +302,47 @@ function startCopyingLogcatToFile() {
   callCommandUntilSuccess adb start-server;
   callCommandUntilSuccess adb wait-for-device;
 
-  # echo "Disable animations"
+  # echo "Disable animations";
   # puscas.mobilertapp not found
-  # adb shell pm grant puscas.mobilertapp android.permission.SET_ANIMATION_SCALE
+  # adb shell pm grant puscas.mobilertapp android.permission.SET_ANIMATION_SCALE;
 
   # /system/bin/sh: settings: not found
-  # adb shell settings put global window_animation_scale 0.0
-  # adb shell settings put global transition_animation_scale 0.0
-  # adb shell settings put global animator_duration_scale 0.0
+  # adb shell settings put global window_animation_scale 0.0;
+  # adb shell settings put global transition_animation_scale 0.0;
+  # adb shell settings put global animator_duration_scale 0.0;
 
-  echo "Activate JNI extended checking mode"
-  callCommandUntilSuccess adb shell setprop dalvik.vm.checkjni true
-  callCommandUntilSuccess adb shell setprop debug.checkjni 1
+  echo "Activate JNI extended checking mode";
+  callCommandUntilSuccess adb shell setprop dalvik.vm.checkjni true;
+  callCommandUntilSuccess adb shell setprop debug.checkjni 1;
 
-  echo "Clear logcat"
-  callCommandUntilSuccess adb root
-  callCommandUntilSuccess adb shell logcat -b all -b main -b system -b radio -b events -b crash -c
+  echo "Clear logcat";
+  callCommandUntilSuccess adb root;
+  callCommandUntilSuccess adb shell logcat -b all -b main -b system -b radio -b events -b crash -c;
 
-  echo "Copy realtime logcat to file"
+  echo "Copy realtime logcat to file";
   callCommandUntilSuccess adb logcat -v threadtime "*":V \
     2>&1 | tee ${reports_path}/logcat_current_"${type}".log &
-  pid_logcat="$!"
-  echo "pid of logcat: '${pid_logcat}'"
+  pid_logcat="$!";
+  echo "pid of logcat: '${pid_logcat}'";
 }
 
 function runUnitTests() {
-  echo "Copy unit tests"
-  adb push app/build/intermediates/cmake/"${type}"/obj/x86/* ${mobilert_path}/
+  echo "Copy unit tests";
+  adb push app/build/intermediates/cmake/"${type}"/obj/x86/* ${mobilert_path}/;
 
-  echo "Run unit tests"
+  echo "Run unit tests";
   if [ "${type}" == "debug" ]; then
-    # Ignore unit tests that should crash the system because of a failing assert
+    # Ignore unit tests that should crash the system because of a failing assert.
     adb shell LD_LIBRARY_PATH=${mobilert_path} \
       ${mobilert_path}/UnitTests \
       --gtest_filter=-*.TestInvalid* \
-      2>&1 | tee ${reports_path}/log_unit_tests_"${type}".log
+      2>&1 | tee ${reports_path}/log_unit_tests_"${type}".log;
   else
     adb shell LD_LIBRARY_PATH=${mobilert_path} \
       ${mobilert_path}/UnitTests \
-      2>&1 | tee ${reports_path}/log_unit_tests_"${type}".log
+      2>&1 | tee ${reports_path}/log_unit_tests_"${type}".log;
   fi
-  resUnitTests=${PIPESTATUS[0]}
+  resUnitTests=${PIPESTATUS[0]};
 }
 
 function verifyResources() {
@@ -367,56 +368,56 @@ function verifyResources() {
 }
 
 function runInstrumentationTests() {
-  echo "Run instrumentation tests"
+  echo "Run instrumentation tests";
   set +e;
-  jps | grep -i gradle | tr -s ' ' | cut -d ' ' -f 1 | head -1 | xargs kill -9;
+  jps | grep -i gradle | tr -s ' ' | cut -d ' ' -f 1 | head -1 | xargs kill -SIGKILL;
   set -e;
   echo "Increasing ADB timeout to 10 minutes";
   export ADB_INSTALL_TIMEOUT=60000;
-  ./gradlew --stop
+  ./gradlew --stop;
   if [ "${run_test}" == "all" ]; then
-    echo "Running all tests"
+    echo "Running all tests";
     set +u; # Because `code_coverage` is only set when debug
     ./gradlew connected"${type}"AndroidTest -DtestType="${type}" \
       -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
       ${code_coverage} --console plain --parallel \
-      2>&1 | tee ${reports_path}/log_tests_"${type}".log
+      2>&1 | tee ${reports_path}/log_tests_"${type}".log;
     set -u;
   elif [[ ${run_test} == rep_* ]]; then
-    run_test_without_prefix=${run_test#"rep_"}
-    echo "Repeatable of test: ${run_test_without_prefix}"
+    run_test_without_prefix=${run_test#"rep_"};
+    echo "Repeatable of test: ${run_test_without_prefix}";
     callCommandUntilError ./gradlew connected"${type}"AndroidTest -DtestType="${type}" \
       -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
       -Pandroid.testInstrumentationRunnerArguments.class="${run_test_without_prefix}" \
       --console plain --parallel \
-      2>&1 | tee ${reports_path}/log_tests_"${type}".log
+      2>&1 | tee ${reports_path}/log_tests_"${type}".log;
   else
-    echo "Running test: ${run_test}"
+    echo "Running test: ${run_test}";
     ./gradlew connected"${type}"AndroidTest -DtestType="${type}" \
       -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
       -Pandroid.testInstrumentationRunnerArguments.class="${run_test}" \
       --console plain --parallel \
-      2>&1 | tee ${reports_path}/log_tests_"${type}".log
+      2>&1 | tee ${reports_path}/log_tests_"${type}".log;
   fi
-  resInstrumentationTests=${PIPESTATUS[0]}
-  pid_instrumentation_tests="$!"
-  echo "pid of instrumentation tests: '${pid_instrumentation_tests}'"
+  resInstrumentationTests=${PIPESTATUS[0]};
+  pid_instrumentation_tests="$!";
+  echo "pid of instrumentation tests: '${pid_instrumentation_tests}'";
 }
 ###############################################################################
 ###############################################################################
 
-runEmulator
-waitForEmulator
-copyResources
-startCopyingLogcatToFile
-verifyResources
-runInstrumentationTests
-runUnitTests
+runEmulator;
+waitForEmulator;
+copyResources;
+startCopyingLogcatToFile;
+verifyResources;
+runInstrumentationTests;
+runUnitTests;
 
 ###############################################################################
 # Exit code
 ###############################################################################
-printCommandExitCode "${resUnitTests}" "Unit tests"
-printCommandExitCode "${resInstrumentationTests}" "Instrumentation tests"
+printCommandExitCode "${resUnitTests}" "Unit tests";
+printCommandExitCode "${resInstrumentationTests}" "Instrumentation tests";
 ###############################################################################
 ###############################################################################

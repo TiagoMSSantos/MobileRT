@@ -9,7 +9,7 @@
 
 
 ###############################################################################
-# Exit immediately if a command exits with a non-zero status
+# Exit immediately if a command exits with a non-zero status.
 ###############################################################################
 set -euo pipefail;
 ###############################################################################
@@ -17,23 +17,23 @@ set -euo pipefail;
 
 
 ###############################################################################
-# Change directory to MobileRT root
+# Change directory to MobileRT root.
 ###############################################################################
-cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit
-###############################################################################
-###############################################################################
-
-
-###############################################################################
-# Get helper functions
-###############################################################################
-source scripts/helper_functions.sh
+cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit;
 ###############################################################################
 ###############################################################################
 
 
 ###############################################################################
-# Set default arguments
+# Get helper functions.
+###############################################################################
+source scripts/helper_functions.sh;
+###############################################################################
+###############################################################################
+
+
+###############################################################################
+# Set default arguments.
 ###############################################################################
 type="release";
 ndk_version="21.3.6528147";
@@ -52,7 +52,7 @@ function printEnvironment() {
 
 
 ###############################################################################
-# Parse arguments
+# Parse arguments.
 ###############################################################################
 parseArgumentsToCompileAndroid "$@";
 printEnvironment;
@@ -61,39 +61,39 @@ printEnvironment;
 
 
 ###############################################################################
-# Run unit tests natively
+# Run unit tests natively.
 ###############################################################################
 
-# Set path to reports
-reports_path=./app/build/reports
-mkdir -p ${reports_path}
+# Set path to reports.
+reports_path=./app/build/reports;
+mkdir -p ${reports_path};
 
-type=$(capitalizeFirstletter "${type}")
-echo "type: '${type}'"
+type=$(capitalizeFirstletter "${type}");
+echo "type: '${type}'";
 
 function runUnitTests() {
-  echo "Calling Gradle test"
+  echo "Calling Gradle test";
   echo "Increasing ADB timeout to 10 minutes";
   export ADB_INSTALL_TIMEOUT=60000;
-  ./gradlew --stop
+  ./gradlew --stop;
   ./gradlew test"${type}"UnitTest --profile --parallel \
     -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
     --console plain \
-    2>&1 | tee ${reports_path}/log_native_tests_"${type}".log
-  resUnitTests=${PIPESTATUS[0]}
+    2>&1 | tee ${reports_path}/log_native_tests_"${type}".log;
+  resUnitTests=${PIPESTATUS[0]};
 }
 ###############################################################################
 ###############################################################################
 
-runUnitTests
-echo ""
-echo -e '\e]8;;file:///'"${PWD}"'/'${reports_path}'/tests/test'"${type}"'UnitTest/index.html\aClick here to check the Unit tests report.\e]8;;\a'
-echo ""
-echo ""
+runUnitTests;
+echo "";
+echo -e '\e]8;;file:///'"${PWD}"'/'${reports_path}'/tests/test'"${type}"'UnitTest/index.html\aClick here to check the Unit tests report.\e]8;;\a';
+echo "";
+echo "";
 
 ###############################################################################
-# Exit code
+# Exit code.
 ###############################################################################
-printCommandExitCode "${resUnitTests}" "Unit tests"
+printCommandExitCode "${resUnitTests}" "Unit tests";
 ###############################################################################
 ###############################################################################

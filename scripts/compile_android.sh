@@ -10,7 +10,7 @@
 
 
 ###############################################################################
-# Exit immediately if a command exits with a non-zero status
+# Exit immediately if a command exits with a non-zero status.
 ###############################################################################
 set -euo pipefail;
 ###############################################################################
@@ -18,23 +18,23 @@ set -euo pipefail;
 
 
 ###############################################################################
-# Change directory to MobileRT root
+# Change directory to MobileRT root.
 ###############################################################################
-cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit
-###############################################################################
-###############################################################################
-
-
-###############################################################################
-# Get helper functions
-###############################################################################
-source scripts/helper_functions.sh
+cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit;
 ###############################################################################
 ###############################################################################
 
 
 ###############################################################################
-# Set default arguments
+# Get helper functions.
+###############################################################################
+source scripts/helper_functions.sh;
+###############################################################################
+###############################################################################
+
+
+###############################################################################
+# Set default arguments.
 ###############################################################################
 type="release";
 recompile="no";
@@ -55,7 +55,7 @@ function printEnvironment() {
 
 
 ###############################################################################
-# Parse arguments
+# Parse arguments.
 ###############################################################################
 parseArgumentsToCompileAndroid "$@";
 printEnvironment;
@@ -64,60 +64,60 @@ printEnvironment;
 
 
 ###############################################################################
-# Compile for Android
+# Compile for Android.
 ###############################################################################
 
-# Set path to reports
-reports_path=./app/build/reports
-mkdir -p ${reports_path}
+# Set path to reports.
+reports_path=./app/build/reports;
+mkdir -p ${reports_path};
 
-type=$(capitalizeFirstletter "${type}")
-echo "type: '${type}'"
+type=$(capitalizeFirstletter "${type}");
+echo "type: '${type}'";
 
 function clearAllBuildFiles() {
   set +e;
-  rm -rf ./app/build/
+  rm -rf ./app/build/;
   set -e;
 
   if [ "${recompile}" == "yes" ]; then
-    rm -rf ./app/.cxx/
-    rm -rf ./build/
+    rm -rf ./app/.cxx/;
+    rm -rf ./build/;
   fi
 }
 
 function clearOldBuildFiles() {
 
-  files_being_used=$(find . -iname "*.fuse_hidden*" | grep -i ".fuse_hidden" || true)
-  echo "files_being_used: '${files_being_used}'"
+  files_being_used=$(find . -iname "*.fuse_hidden*" | grep -i ".fuse_hidden" || true);
+  echo "files_being_used: '${files_being_used}'";
 
   if [ "${files_being_used}" != "" ]; then
     while IFS= read -r file; do
       while [[ -f "${file}" ]]; do
-        killProcessUsingFile "${file}"
-        echo "sleeping 1 sec"
-        sleep 1
+        killProcessUsingFile "${file}";
+        echo "sleeping 1 sec";
+        sleep 1;
       done
-    done <<<"${files_being_used}"
+    done <<<"${files_being_used}";
   fi
 
-  clearAllBuildFiles
+  clearAllBuildFiles;
 }
 
 function build() {
-  echo "Calling the Gradle assemble to compile code for Android"
-  echo "Increasing ADB timeout to 10 minutes";
+  echo "Calling the Gradle assemble to compile code for Android.";
+  echo "Increasing ADB timeout to 10 minutes.";
   export ADB_INSTALL_TIMEOUT=60000;
-  ./gradlew --stop
+  ./gradlew --stop;
   ./gradlew clean assemble"${type}" --profile --parallel \
     -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
     --console plain \
-    2>&1 | tee log_build_android_"${type}".log
-  resCompile=${PIPESTATUS[0]}
+    2>&1 | tee log_build_android_"${type}".log;
+  resCompile=${PIPESTATUS[0]};
 }
 ###############################################################################
 ###############################################################################
 
-# Install C++ Conan dependencies
+# Install C++ Conan dependencies.
 function install_conan_dependencies() {
   conan install \
   -s compiler=clang \
@@ -127,18 +127,18 @@ function install_conan_dependencies() {
   -s build_type=Release \
   --build missing \
   --profile default \
-  ./app/third_party/conan/Android
+  ./app/third_party/conan/Android;
 
-  export CONAN="TRUE"
+  export CONAN="TRUE";
 }
 
-clearOldBuildFiles
-#install_conan_dependencies
-build
+clearOldBuildFiles;
+#install_conan_dependencies;
+build;
 
 ###############################################################################
 # Exit code
 ###############################################################################
-printCommandExitCode "${resCompile}" "Compilation"
+printCommandExitCode "${resCompile}" "Compilation";
 ###############################################################################
 ###############################################################################

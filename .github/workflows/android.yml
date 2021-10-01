@@ -203,12 +203,12 @@ jobs:
         emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none
         cores: ${NCPU_CORES}
         sdcard-path-or-size: 100M
-        ram-size: 1024M
+        ram-size: 1280M
         script: |
           mkdir -p ./app/build/reports;
           mkdir -p ./build/reports;
           mkdir -p ./reports;
-          echo "Number cores: ${NCPU_CORES}"
+          echo "Number cores: ${NCPU_CORES}";
           bash ./scripts/run_tests_android.sh -t ${{ matrix.type }} -r all -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -k false;
 
     - name: Check report's paths

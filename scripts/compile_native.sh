@@ -14,7 +14,7 @@
 
 
 ###############################################################################
-# Exit immediately if a command exits with a non-zero status
+# Exit immediately if a command exits with a non-zero status.
 ###############################################################################
 set -euo pipefail;
 ###############################################################################
@@ -22,23 +22,23 @@ set -euo pipefail;
 
 
 ###############################################################################
-# Change directory to MobileRT root
+# Change directory to MobileRT root.
 ###############################################################################
-cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit
-###############################################################################
-###############################################################################
-
-
-###############################################################################
-# Get helper functions
-###############################################################################
-source scripts/helper_functions.sh
+cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit;
 ###############################################################################
 ###############################################################################
 
 
 ###############################################################################
-# Set default arguments
+# Get helper functions.
+###############################################################################
+source scripts/helper_functions.sh;
+###############################################################################
+###############################################################################
+
+
+###############################################################################
+# Set default arguments.
 ###############################################################################
 type="release";
 compiler="g++";
@@ -57,7 +57,7 @@ function printEnvironment() {
 
 
 ###############################################################################
-# Parse arguments
+# Parse arguments.
 ###############################################################################
 parseArgumentsToCompile "$@";
 printEnvironment;
@@ -66,7 +66,7 @@ printEnvironment;
 
 
 ###############################################################################
-# Fix llvm clang OpenMP library
+# Fix llvm clang OpenMP library.
 ###############################################################################
 set +e;
 OPENMP_INCLUDE_PATH=$(find /usr/local/Cellar/libomp -iname "omp.h" | head -1 2> /dev/null);
@@ -83,7 +83,7 @@ set -u
 
 
 ###############################################################################
-# Get the proper C compiler for conan
+# Get the proper C compiler for conan.
 # Possible values for clang are ['3.3', '3.4', '3.5', '3.6', '3.7', '3.8', '3.9', '4.0',
 # '5.0', '6.0', '7.0', '7.1', '8', '9', '10', '11']
 # Possible values for gcc (Apple clang) are ['4.1', '4.4', '4.5', '4.6', '4.7', '4.8',
@@ -103,54 +103,54 @@ fi
 
 # Flag `-v` not compatible with MSVC.
 #${compiler} -v;
-set +u; # Because of Windows OS doesn't have clang++ nor g++
+set +u; # Because of Windows OS doesn't have clang++ nor g++.
 echo "Detected '${conan_compiler}' '${conan_compiler_version}' compiler.";
 set -u;
 
 export CXX="${compiler}";
 
-# Fix compiler version used
+# Fix compiler version used.
 #if [ "${conan_compiler_version}" == "9.0" ]; then
-#  conan_compiler_version=9
+#  conan_compiler_version=9;
 #fi
 #if [ "${conan_compiler_version}" == "12.0" ]; then
-#  conan_compiler_version=12
+#  conan_compiler_version=12;
 #fi
 #if [ "${conan_compiler_version}" == "4.2" ]; then
-#  conan_compiler_version=4.0
+#  conan_compiler_version=4.0;
 #fi
 ###############################################################################
 ###############################################################################
 
 
 ###############################################################################
-# Get Conan path
+# Get Conan path.
 ###############################################################################
 if [ ! -x "$(command -v conan)" ]; then
   CONAN_PATH=$(find ~/ -iname "conan" || true);
 fi
 
 set +u;
-echo "Conan binary: ${CONAN_PATH}"
-echo "Conan location: ${CONAN_PATH%/conan}"
+echo "Conan binary: ${CONAN_PATH}";
+echo "Conan location: ${CONAN_PATH%/conan}";
 if [ -n "${CONAN_PATH}" ]; then
-  PATH=${CONAN_PATH%/conan}:${PATH}
+  PATH=${CONAN_PATH%/conan}:${PATH};
 fi
 set -u;
 
-echo "PATH: ${PATH}"
+echo "PATH: ${PATH}";
 ###############################################################################
 ###############################################################################
 
 
 ###############################################################################
-# Get CPU Architecture
+# Get CPU Architecture.
 ###############################################################################
-CPU_ARCHITECTURE=x86_64
+CPU_ARCHITECTURE=x86_64;
 if [ -x "$(command -v uname)" ]; then
-  CPU_ARCHITECTURE=$(uname -m)
+  CPU_ARCHITECTURE=$(uname -m);
   if [ "${CPU_ARCHITECTURE}" == "aarch64" ]; then
-    CPU_ARCHITECTURE=armv8
+    CPU_ARCHITECTURE=armv8;
   fi
 fi
 ###############################################################################
@@ -158,18 +158,18 @@ fi
 
 
 ###############################################################################
-# Add Conan remote dependencies
+# Add Conan remote dependencies.
 ###############################################################################
-# Install C++ Conan dependencies
+# Install C++ Conan dependencies.
 function install_conan_dependencies() {
-#  ln -s configure/config.guess /home/travis/.conan/data/libuuid/1.0.3/_/_/build/b818fa1fc0d3879f99937e93c6227da2690810fe/configure/config.guess
-#  ln -s configure/config.sub /home/travis/.conan/data/libuuid/1.0.3/_/_/build/b818fa1fc0d3879f99937e93c6227da2690810fe/configure/config.sub
+#  ln -s configure/config.guess /home/travis/.conan/data/libuuid/1.0.3/_/_/build/b818fa1fc0d3879f99937e93c6227da2690810fe/configure/config.guess;
+#  ln -s configure/config.sub /home/travis/.conan/data/libuuid/1.0.3/_/_/build/b818fa1fc0d3879f99937e93c6227da2690810fe/configure/config.sub;
 
   if [ -x "$(command -v conan)" ]; then
     conan profile new default;
     conan profile update settings.compiler="${conan_compiler}" default;
     conan profile update settings.compiler.version="${conan_compiler_version}" default;
-    # Possible values for compiler.libcxx are ['libstdc++', 'libstdc++11']
+    # Possible values for compiler.libcxx are ['libstdc++', 'libstdc++11'].
     conan profile update settings.compiler.libcxx="libstdc++11" default;
     conan profile update settings.arch="${CPU_ARCHITECTURE}" default;
     conan profile update settings.os="Linux" default;
@@ -187,47 +187,54 @@ function install_conan_dependencies() {
   -o bzip2:shared=True \
   --build missing \
   --profile default \
-  ../app/third_party/conan/Native
+  ../app/third_party/conan/Native;
 
-  export CONAN="TRUE"
+  export CONAN="TRUE";
 }
 ###############################################################################
 ###############################################################################
 
 
 ###############################################################################
-# Compile for native
+# Compile for native.
 ###############################################################################
 
-# Set path to build
-build_path=./build_${type}
+# Set path to build.
+build_path=./build_${type};
 
-type=$(capitalizeFirstletter "${type}")
-echo "type: '${type}'"
+type=$(capitalizeFirstletter "${type}");
+echo "type: '${type}'";
 
 if [ "${recompile}" == "yes" ]; then
-  rm -rf "${build_path}"/*
+  rm -rf "${build_path:?Missing build path}"/*;
 fi
-mkdir -p "${build_path}"
+mkdir -p "${build_path}";
 
 function build() {
-  cd "${build_path}"
-#  install_conan_dependencies
+  cd "${build_path}";
+#  install_conan_dependencies;
 
   echo "Calling CMake";
   cmake -DCMAKE_VERBOSE_MAKEFILE=ON \
     -DCMAKE_CXX_COMPILER="${compiler}" \
     -DCMAKE_BUILD_TYPE="${type}" \
     ../app/ \
-    2>&1 | tee ./log_cmake_"${type}".log
-  resCompile=${PIPESTATUS[0]}
+    2>&1 | tee ./log_cmake_"${type}".log;
+  resCompile=${PIPESTATUS[0]};
+
+  COMPILER=$(cat log_cmake_"${type}".log  | grep -i "CMAKE_CXX_COMPILER_ID=" | cut -d '=' -f 2);
+  if [ "${COMPILER}" != "MSVC" ]; then
+    JOBS_FLAG=${MAKEFLAGS};
+  fi
 
   if [ "${resCompile}" -eq 0 ]; then
-    echo "Calling Make"
-    cmake --build . 2>&1 | tee ./log_make_"${type}".log
-    resCompile=${PIPESTATUS[0]}
+    set +u;
+    echo "Calling Make with parameters: ${JOBS_FLAG}";
+    cmake --build . -- "${JOBS_FLAG}" 2>&1 | tee ./log_make_"${type}".log;
+    set -u;
+    resCompile=${PIPESTATUS[0]};
   else
-    echo "Compilation: cmake failed"
+    echo "Compilation: cmake failed";
   fi
 }
 ###############################################################################
@@ -237,7 +244,7 @@ build;
 printEnvironment;
 
 ###############################################################################
-# Exit code
+# Exit code.
 ###############################################################################
 printCommandExitCode "${resCompile}" "Compilation";
 ###############################################################################

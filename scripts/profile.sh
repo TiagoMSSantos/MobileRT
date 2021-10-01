@@ -16,7 +16,7 @@
 
 
 ###############################################################################
-# Exit immediately if a command exits with a non-zero status
+# Exit immediately if a command exits with a non-zero status.
 ###############################################################################
 set -euo pipefail;
 ###############################################################################
@@ -24,52 +24,52 @@ set -euo pipefail;
 
 
 ###############################################################################
-# Change directory to MobileRT root
+# Change directory to MobileRT root.
 ###############################################################################
-cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit
+cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit;
 ###############################################################################
 ###############################################################################
 
 
 ###############################################################################
-# Set paths for MobileRT
+# Set paths for MobileRT.
 ###############################################################################
 function setPaths() {
-  PATH_TO_SEARCH="/mnt/D/Projects"
-  FILE_TO_SEARCH="MobileRT.jks"
+  PATH_TO_SEARCH="/mnt/D/Projects";
+  FILE_TO_SEARCH="MobileRT.jks";
 
   set +e;
-  FIND_MOBILERT=$(find ${PATH_TO_SEARCH} -iname "${FILE_TO_SEARCH}" 2> /dev/null | head -n 1)
-  MOBILERT_PATH="${FIND_MOBILERT//\/app\/"${FILE_TO_SEARCH}"/}"
+  FIND_MOBILERT=$(find ${PATH_TO_SEARCH} -iname "${FILE_TO_SEARCH}" 2> /dev/null | head -n 1);
+  MOBILERT_PATH="${FIND_MOBILERT//\/app\/"${FILE_TO_SEARCH}"/}";
   set -e;
 
   if [ -z "${MOBILERT_PATH}" ]; then
-    PATH_TO_SEARCH="/"
-    FIND_MOBILERT=$(find ${PATH_TO_SEARCH} -iname "MobileRT" 2> /dev/null | head -n 1)
-    MOBILERT_PATH="${FIND_MOBILERT//\/app\/"${FILE_TO_SEARCH}"/}"
+    PATH_TO_SEARCH="/";
+    FIND_MOBILERT=$(find ${PATH_TO_SEARCH} -iname "MobileRT" 2> /dev/null | head -n 1);
+    MOBILERT_PATH="${FIND_MOBILERT//\/app\/"${FILE_TO_SEARCH}"/}";
   fi
 
-  echo "FILE_TO_SEARCH = ${FILE_TO_SEARCH}"
-  echo "PATH_TO_SEARCH = ${PATH_TO_SEARCH}"
-  echo "FIND_MOBILERT = ${FIND_MOBILERT}"
-  echo "MOBILERT_PATH = ${MOBILERT_PATH}"
+  echo "FILE_TO_SEARCH = ${FILE_TO_SEARCH}";
+  echo "PATH_TO_SEARCH = ${PATH_TO_SEARCH}";
+  echo "FIND_MOBILERT = ${FIND_MOBILERT}";
+  echo "MOBILERT_PATH = ${MOBILERT_PATH}";
 
-  BIN_DEBUG_PATH="${MOBILERT_PATH}/build_debug/bin"
-  BIN_RELEASE_PATH="${MOBILERT_PATH}/build_release/bin"
-  SCRIPTS_PATH="${MOBILERT_PATH}/scripts"
-  PLOT_SCRIPTS_PATH="${SCRIPTS_PATH}/plot"
-  OBJS_PATH="${MOBILERT_PATH}/WavefrontOBJs"
+  BIN_DEBUG_PATH="${MOBILERT_PATH}/build_debug/bin";
+  BIN_RELEASE_PATH="${MOBILERT_PATH}/build_release/bin";
+  SCRIPTS_PATH="${MOBILERT_PATH}/scripts";
+  PLOT_SCRIPTS_PATH="${SCRIPTS_PATH}/plot";
+  OBJS_PATH="${MOBILERT_PATH}/WavefrontOBJs";
 
   set +u;
   if [ -z "${PLOT_GRAPHS}" ]; then
-    PLOT_GRAPHS=${SCRIPTS_PATH}/"graphs"
+    PLOT_GRAPHS=${SCRIPTS_PATH}/"graphs";
   fi
   set -u;
 
-  mkdir -p "${PLOT_GRAPHS}"
+  mkdir -p "${PLOT_GRAPHS}";
 
-  for FOLDER in ${PLOT_GRAPHS[@]}; do
-    FILES+=("$(find "${FOLDER}" -type f)")
+  for FOLDER in "${PLOT_GRAPHS[@]}"; do
+    FILES+=("$(find "${FOLDER}" -type f)");
   done
 }
 ###############################################################################
@@ -77,112 +77,111 @@ function setPaths() {
 
 
 ###############################################################################
-# Set paths for MobileRT sources and headers
+# Set paths for MobileRT sources and headers.
 ###############################################################################
 function setHeaders() {
-  MOBILERT_SRCS="${MOBILERT_PATH}/app"
-  COMPONENTS_SRCS="${MOBILERT_PATH}/app"
-  DEPENDENT_SRCS="${MOBILERT_PATH}/app/System_dependent"
-  SCENES_SRCS="${MOBILERT_PATH}/app/Scenes"
+  MOBILERT_SRCS="${MOBILERT_PATH}/app";
+  COMPONENTS_SRCS="${MOBILERT_PATH}/app";
+  DEPENDENT_SRCS="${MOBILERT_PATH}/app/System_dependent";
+  SCENES_SRCS="${MOBILERT_PATH}/app/Scenes";
 
-  THIRDPARTY_HEADERS="${MOBILERT_PATH}/app/third_party"
-  GLM_HEADERS="${THIRDPARTY_HEADERS}/glm"
-  STB_HEADERS="${THIRDPARTY_HEADERS}/stb"
-  PCG_HEADERS="${THIRDPARTY_HEADERS}/pcg-cpp/include"
-  BOOST_HEADERS_ROOT="${THIRDPARTY_HEADERS}/boost/libs"
-  BOOST_HEADERS_ASSERT="${BOOST_HEADERS_ROOT}/assert/include"
+  THIRDPARTY_HEADERS="${MOBILERT_PATH}/app/third_party";
+  GLM_HEADERS="${THIRDPARTY_HEADERS}/glm";
+  STB_HEADERS="${THIRDPARTY_HEADERS}/stb";
+  PCG_HEADERS="${THIRDPARTY_HEADERS}/pcg-cpp/include";
+  BOOST_HEADERS_ROOT="${THIRDPARTY_HEADERS}/boost/libs";
+  BOOST_HEADERS_ASSERT="${BOOST_HEADERS_ROOT}/assert/include";
 }
 ###############################################################################
 ###############################################################################
 
 
 ###############################################################################
-# Set paths for the scene
+# Set paths for the scene.
 ###############################################################################
 function setScene() {
-  SCN="${OBJS_PATH}/conference/conference"
-  #SCN="${OBJS_PATH}/teapot/teapot"
-  #SCN="${OBJS_PATH}/buddha/buddha"
-  #SCN="${OBJS_PATH}/dragon/dragon"
-  #SCN="${OBJS_PATH}/sponza/sponza"
-  #SCN="${OBJS_PATH}/powerplant/powerplant"
-  #SCN="${OBJS_PATH}/San_Miguel/san-miguel"
-  #SCN="${OBJS_PATH}/San_Miguel/san-miguel-low-poly"
-  #SCN="${OBJS_PATH}/CornellBox/CornellBox-Empty-CO"
-  #SCN="${OBJS_PATH}/CornellBox/CornellBox-Empty-Squashed"
-  #SCN="${OBJS_PATH}/CornellBox/CornellBox-Empty-White"
-  #SCN="${OBJS_PATH}/CornellBox/CornellBox-Glossy-Floor"
-  #SCN="${OBJS_PATH}/CornellBox/CornellBox-Glossy"
-  #SCN="${OBJS_PATH}/CornellBox/CornellBox-Mirror"
-  #SCN="${OBJS_PATH}/CornellBox/CornellBox-Original"
-  #SCN="${OBJS_PATH}/CornellBox/CornellBox-Sphere"
-  #SCN="${OBJS_PATH}/CornellBox/CornellBox-Water"
-  #SCN="${OBJS_PATH}/CornellBox/water"
+  SCN="${OBJS_PATH}/conference/conference";
+  #SCN="${OBJS_PATH}/teapot/teapot";
+  #SCN="${OBJS_PATH}/buddha/buddha";
+  #SCN="${OBJS_PATH}/dragon/dragon";
+  #SCN="${OBJS_PATH}/sponza/sponza";
+  #SCN="${OBJS_PATH}/powerplant/powerplant";
+  #SCN="${OBJS_PATH}/San_Miguel/san-miguel";
+  #SCN="${OBJS_PATH}/San_Miguel/san-miguel-low-poly";
+  #SCN="${OBJS_PATH}/CornellBox/CornellBox-Empty-CO";
+  #SCN="${OBJS_PATH}/CornellBox/CornellBox-Empty-Squashed";
+  #SCN="${OBJS_PATH}/CornellBox/CornellBox-Empty-White";
+  #SCN="${OBJS_PATH}/CornellBox/CornellBox-Glossy-Floor";
+  #SCN="${OBJS_PATH}/CornellBox/CornellBox-Glossy";
+  #SCN="${OBJS_PATH}/CornellBox/CornellBox-Mirror";
+  #SCN="${OBJS_PATH}/CornellBox/CornellBox-Original";
+  #SCN="${OBJS_PATH}/CornellBox/CornellBox-Sphere";
+  #SCN="${OBJS_PATH}/CornellBox/CornellBox-Water";
+  #SCN="${OBJS_PATH}/CornellBox/water";
 
-  OBJ="${SCN}.obj"
-  MTL="${SCN}.mtl"
-  CAM="${SCN}.cam"
+  OBJ="${SCN}.obj";
+  MTL="${SCN}.mtl";
+  CAM="${SCN}.cam";
 }
 ###############################################################################
 ###############################################################################
 
 
 ###############################################################################
-# Set options for the sanitizers
+# Set options for the sanitizers.
 ###############################################################################
 function setOptionsSanitizers() {
-  export ASAN_OPTIONS="suppressions=sanitizer_ignore.suppr:verbosity=1:strict_string_checks=1:detect_stack_use_after_return=1:check_initialization_order=1:strict_init_order=1:halt_on_error=0:detect_odr_violation=1"
-
-  export LSAN_OPTIONS="suppressions=sanitizer_ignore.suppr:verbosity=1:strict_string_checks=1"
+  export ASAN_OPTIONS="suppressions=sanitizer_ignore.suppr:verbosity=1:strict_string_checks=1:detect_stack_use_after_return=1:check_initialization_order=1:strict_init_order=1:halt_on_error=0:detect_odr_violation=1";
+  export LSAN_OPTIONS="suppressions=sanitizer_ignore.suppr:verbosity=1:strict_string_checks=1";
 }
 ###############################################################################
 ###############################################################################
 
 
 ###############################################################################
-# Set arguments for MobileRT
+# Set arguments for MobileRT.
 ###############################################################################
 function setArguments() {
-  SPP="1"
-  SPL="1"
-  WIDTH="900"
-  HEIGHT="900"
-  REP="1"
-  PRINT="false"
-  ASYNC="false"
-  SHOWIMAGE="false"
-  SEP="-"
+  SPP="1";
+  SPL="1";
+  WIDTH="900";
+  HEIGHT="900";
+  REP="1";
+  PRINT="false";
+  ASYNC="false";
+  SHOWIMAGE="false";
+  SEP="-";
 
-  # Configuration for profiling
-  REPETITIONS="2"
-  THREADS="1 2"
-  SHADERS="1 2"
-  SCENES="1 2"
-  ACCELERATORS="1 2"
+  # Configuration for profiling.
+  REPETITIONS="2";
+  THREADS="1 2";
+  SHADERS="1 2";
+  SCENES="1 2";
+  ACCELERATORS="1 2";
 
-  THREAD=$(nproc --all)
-  SHADER="1"
-  SCENE="4"
-  ACC="3"
-  PRINT="true"
-  SHOWIMAGE="true"
-  ASYNC="true"
-  SPP="1"
-  SPL="1"
+  THREAD=$(nproc --all);
+  SHADER="1";
+  SCENE="4";
+  ACC="3";
+  PRINT="true";
+  SHOWIMAGE="true";
+  ASYNC="true";
+  SPP="1";
+  SPL="1";
 
-  trap "exit" INT
+  trap "exit" INT;
 }
 ###############################################################################
 ###############################################################################
 
 function execute() {
-  #ASYNC="false"
-  echo ""
-  echo "THREAD = ${THREAD}"
-  echo "SHADER = ${SHADER}"
-  echo "SCENE = ${SCENE}"
-  echo "ACC = ${ACC}"
-  echo "ASYNC = ${ASYNC}"
+  #ASYNC="false";
+  echo "";
+  echo "THREAD = ${THREAD}";
+  echo "SHADER = ${SHADER}";
+  echo "SCENE = ${SCENE}";
+  echo "ACC = ${ACC}";
+  echo "ASYNC = ${ASYNC}";
 
   #perf script report callgrind > perf.callgrind
   #kcachegrind perf.callgrind
@@ -190,25 +189,25 @@ function execute() {
   #perf record -g --call-graph 'fp' -- \
   "${BIN_RELEASE_PATH}"/AppMobileRT \
     "${THREAD}" ${SHADER} ${SCENE} ${SPP} ${SPL} ${WIDTH} ${HEIGHT} ${ACC} \
-    ${REP} "${OBJ}" "${MTL}" "${CAM}" ${PRINT} ${ASYNC} ${SHOWIMAGE}
-  #perf report -g '' --show-nr-samples --hierarchy
+    ${REP} "${OBJ}" "${MTL}" "${CAM}" ${PRINT} ${ASYNC} ${SHOWIMAGE};
+  #perf report -g '' --show-nr-samples --hierarchy;
 }
 
 function debug() {
-  echo ""
-  echo "THREAD = ${THREAD}"
-  echo "SHADER = ${SHADER}"
-  echo "SCENE = ${SCENE}"
-  echo "ACC = ${ACC}"
+  echo "";
+  echo "THREAD = ${THREAD}";
+  echo "SHADER = ${SHADER}";
+  echo "SCENE = ${SCENE}";
+  echo "ACC = ${ACC}";
 
   "${BIN_DEBUG_PATH}"/AppMobileRTd \
     "${THREAD}" ${SHADER} ${SCENE} ${SPP} ${SPL} ${WIDTH} ${HEIGHT} ${ACC} \
-    ${REP} "${OBJ}" "${MTL}" "${CAM}" ${PRINT} ${ASYNC} ${SHOWIMAGE}
+    ${REP} "${OBJ}" "${MTL}" "${CAM}" ${PRINT} ${ASYNC} ${SHOWIMAGE};
 }
 
 function clangtidy() {
-  GTK_HEADERS="$(pkg-config --cflags gtk+-2.0)"
-  GTK_HEADERS="${GTK_HEADERS//-I/-isystem}"
+  GTK_HEADERS="$(pkg-config --cflags gtk+-2.0)";
+  GTK_HEADERS="${GTK_HEADERS//-I/-isystem}";
 
   clang-tidy \
     -analyze-temporary-dtors \
@@ -235,53 +234,53 @@ function clangtidy() {
     -isystem /usr/include/glib-2.0/gobject \
     -isystem /usr/include/gtk-2.0/gtk \
     -isystem /usr/lib/llvm-8/include/openmp \
-    ${GTK_HEADERS} \
-    2>&1 | tee "${SCRIPTS_PATH}"/tidy.log
+    "${GTK_HEADERS}" \
+    2>&1 | tee "${SCRIPTS_PATH}"/tidy.log;
 }
 
 function profile() {
-  ASYNC=false
+  ASYNC=false;
   for R in $(seq 1 ${REPETITIONS}); do
-    for THREAD in ${THREADS[@]}; do
-      for SHADER in ${SHADERS[@]}; do
-        for SCENE in ${SCENES[@]}; do
-          for ACC in ${ACCELERATORS[@]}; do
-            echo ""
-            echo "REPETITION = ${R}"
-            echo "THREAD = ${THREAD}"
-            echo "SHADER = ${SHADER}"
-            echo "SCENE = ${SCENE}"
-            echo "ACC = ${ACC}"
-            echo "ASYNC = ${ASYNC}"
+    for THREAD in "${THREADS[@]}"; do
+      for SHADER in "${SHADERS[@]}"; do
+        for SCENE in "${SCENES[@]}"; do
+          for ACC in "${ACCELERATORS[@]}"; do
+            echo "";
+            echo "REPETITION = ${R}";
+            echo "THREAD = ${THREAD}";
+            echo "SHADER = ${SHADER}";
+            echo "SCENE = ${SCENE}";
+            echo "ACC = ${ACC}";
+            echo "ASYNC = ${ASYNC}";
 
-            PLOT_FILE="SC${SCENE}${SEP}SH${SHADER}${SEP}A${ACC}${SEP}R${WIDTH}x${HEIGHT}"
+            PLOT_FILE="SC${SCENE}${SEP}SH${SHADER}${SEP}A${ACC}${SEP}R${WIDTH}x${HEIGHT}";
 
             "${BIN_RELEASE_PATH}"/AppMobileRT \
               "${THREAD}" "${SHADER}" "${SCENE}" "${SPP}" "${SPL}" "${WIDTH}" "${HEIGHT}" "${ACC}" "${REP}" \
               "${OBJ}" "${MTL}" "${CAM}" "${PRINT}" "${ASYNC}" "${SHOWIMAGE}" |
               awk -v threads="${THREAD}" -f "${PLOT_SCRIPTS_PATH}"/parser_out.awk 2>&1 |
-              tee -a "${PLOT_GRAPHS}"/"${PLOT_FILE}".dat
+              tee -a "${PLOT_GRAPHS}"/"${PLOT_FILE}".dat;
 
           done
         done
       done
     done
-    ((R++))
+    ((R++));
   done
 }
 
 ###############################################################################
-# Parse arguments
+# Parse arguments.
 ###############################################################################
 function parseArguments() {
   if [ $# -eq 0 ]; then
-    execute
+    execute;
   else
-    for P in ${@}; do
+    for P in "${@}"; do
       case ${P} in
       "time")
-        profile
-        sleep 2s
+        profile;
+        sleep 2s;
         ;;
       "drawt") . ./scripts/plot/plot.sh 0 ;;
       "draws") . ./scripts/plot/plot.sh 1 ;;
@@ -291,17 +290,17 @@ function parseArguments() {
       "tidy") clangtidy ;;
       "gtest") "${BIN_DEBUG_PATH}"/UnitTestsd ;;
       *)
-        echo ""
-        echo "Wrong Parameter: ${P}"
-        echo "The valid parameters are:"
-        echo "time - Profile application and log the measured times."
-        echo "drawt - Draw a graph of latencies with GNU Plot."
-        echo "draws - Draw a graph of speedups with GNU Plot."
-        echo "release - Execute MobileRT in release mode."
-        echo "debug - Execute MobileRT in debug mode."
-        echo "tidy - Execute C++ linter (clang-tidy) in MobileRT."
-        echo "gtest - Execute MobileRT's unit tests."
-        break
+        echo "";
+        echo "Wrong Parameter: ${P}";
+        echo "The valid parameters are:";
+        echo "time - Profile application and log the measured times.";
+        echo "drawt - Draw a graph of latencies with GNU Plot.";
+        echo "draws - Draw a graph of speedups with GNU Plot.";
+        echo "release - Execute MobileRT in release mode.";
+        echo "debug - Execute MobileRT in debug mode.";
+        echo "tidy - Execute C++ linter (clang-tidy) in MobileRT.";
+        echo "gtest - Execute MobileRT's unit tests.";
+        break;
         ;;
       esac
     done
@@ -310,9 +309,9 @@ function parseArguments() {
 ###############################################################################
 ###############################################################################
 
-setPaths
-setHeaders
-setScene
-setOptionsSanitizers
-setArguments
-parseArguments "${@}"
+setPaths;
+setHeaders;
+setScene;
+setOptionsSanitizers;
+setArguments;
+parseArguments "${@}";
