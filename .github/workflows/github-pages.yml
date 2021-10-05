@@ -1,12 +1,18 @@
 name: Deploy Jekyll GitHub Page
 
 on:
+  workflow_dispatch:
   push:
     branches:
     - master
     paths-ignore:
     - '.github/**'
     - '!.github/workflows/github-pages.yml'
+
+defaults:
+  run:
+    shell: bash
+    working-directory: .
 
 concurrency:
   group: ${{ github.workflow }} ${{ github.ref }}

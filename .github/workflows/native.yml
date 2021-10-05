@@ -1,6 +1,7 @@
 name: Native (Qt)
 
 on:
+  workflow_dispatch:
   push:
     paths-ignore:
     - '*'
