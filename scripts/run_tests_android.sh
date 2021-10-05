@@ -327,7 +327,9 @@ function startCopyingLogcatToFile() {
 }
 
 function runUnitTests() {
-  echo "Copy unit tests";
+  local files;
+  files=$(ls app/build/intermediates/cmake/"${type}"/obj/x86);
+  echo "Copy unit tests: ${files}";
   adb push app/build/intermediates/cmake/"${type}"/obj/x86/* ${mobilert_path}/;
 
   echo "Run unit tests";
@@ -365,6 +367,10 @@ function verifyResources() {
   adb shell free -h;
   adb shell cat /proc/meminfo;
   echo "Verified memory available on Android emulator.";
+
+  set +e;
+  grep -r "hw.ramSize" ~/.android 2> /dev/null;
+  set -e;
 }
 
 function runInstrumentationTests() {
@@ -413,6 +419,7 @@ startCopyingLogcatToFile;
 verifyResources;
 runInstrumentationTests;
 runUnitTests;
+checkLastModifiedFiles;
 
 ###############################################################################
 # Exit code

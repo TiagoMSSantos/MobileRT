@@ -135,6 +135,7 @@ function install_conan_dependencies() {
 clearOldBuildFiles;
 #install_conan_dependencies;
 build;
+checkLastModifiedFiles;
 
 ###############################################################################
 # Exit code
