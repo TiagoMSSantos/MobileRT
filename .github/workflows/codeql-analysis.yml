@@ -8,12 +8,18 @@ name: CodeQL
 # e: day of the week (0 - 6 or SUN-SAT)
 
 on:
+  workflow_dispatch:
   push:
     paths-ignore:
     - '.github/workflows/**'
     - '!.github/workflows/codeql-analysis.yml'
     branches:
     - '*'
+
+defaults:
+  run:
+    shell: bash
+    working-directory: .
 
 concurrency:
   group: ${{ github.workflow }} ${{ github.ref }}
