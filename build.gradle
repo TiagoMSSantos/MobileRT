@@ -101,7 +101,7 @@ ext {
     guava_version = "31.0.1-jre"
     stream_support_version = "1.7.4"
     commons_lang3_version = "3.12.0"
-    lombok_version = "1.18.20"
+    lombok_version = "1.18.22"
     spotbugs_annotations_version = "4.4.1"
     volley_version = "1.2.1"
     jackson_version = "2.13.0"
