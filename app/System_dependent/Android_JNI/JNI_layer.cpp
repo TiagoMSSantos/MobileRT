@@ -838,8 +838,9 @@ jlong Java_puscas_mobilertapp_RenderTask_rtGetTimeRenderer(
     JNIEnv *env,
     jobject /*thiz*/
 ) {
-    if (errno == EAGAIN) {
+    if (errno == EAGAIN || errno == EWOULDBLOCK) {
         // Ignore resource unavailable, try again
+        // Ignore operation would block
         errno = 0;
     }
     MobileRT::checkSystemError("rtGetTimeRenderer start");
