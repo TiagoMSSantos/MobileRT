@@ -375,6 +375,10 @@ void Java_puscas_mobilertapp_DrawView_rtStartRender(
     jobject /*thiz*/,
     jboolean wait
 ) {
+    if (errno == EWOULDBLOCK) {
+        // Ignore operation would block
+        errno = 0;
+    }
     // For some reason in CI, the `testRenderSceneFromSDCardOBJ` test fails
     // every time with a big stack frame from this check system error.
     MobileRT::checkSystemError("rtStartRender start");
