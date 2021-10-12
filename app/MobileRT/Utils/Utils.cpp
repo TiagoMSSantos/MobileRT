@@ -263,7 +263,7 @@ namespace MobileRT {
                 // NaCL                              __native_client__
                 // AsmJS                             __asmjs__
                 // Fuschia                           __Fuchsia__
-                const int bytesInMegabyte = 1048576;
+                const auto bytesInMegabyte {1048576};
                 LOG_INFO("Available memory: ",  (sysconf(_SC_PHYS_PAGES) * sysconf(_SC_PAGESIZE)) / bytesInMegabyte, " MB");
                 LOG_INFO("Free memory: ",  (sysconf(_SC_AVPHYS_PAGES) * sysconf(_SC_PAGESIZE)) / bytesInMegabyte, " MB");
             #endif

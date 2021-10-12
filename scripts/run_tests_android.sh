@@ -381,6 +381,9 @@ function runInstrumentationTests() {
   echo "Increasing ADB timeout to 10 minutes";
   export ADB_INSTALL_TIMEOUT=60000;
   ./gradlew --stop;
+  # Make sure ADB daemon started properly.
+  callCommandUntilSuccess adb start-server;
+  callCommandUntilSuccess adb wait-for-device;
   if [ "${run_test}" == "all" ]; then
     echo "Running all tests";
     set +u; # Because `code_coverage` is only set when debug

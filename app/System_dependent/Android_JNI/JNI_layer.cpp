@@ -909,6 +909,10 @@ void Java_puscas_mobilertapp_MainActivity_resetErrno(
     errno = 0;
     MobileRT::checkSystemError("resetErrno start");
     env->ExceptionClear();
+    if (errno == EWOULDBLOCK) {
+        // Ignore operation would block
+        errno = 0;
+    }
     MobileRT::checkSystemError("resetErrno finish");
 }
 
