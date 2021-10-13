@@ -871,6 +871,10 @@ extern "C"
         }
     }
     env->ExceptionClear();
+    if (errno == EWOULDBLOCK) {
+        // Ignore operation would block
+        errno = 0;
+    }
     MobileRT::checkSystemError("rtGetSample finish");
     return sample;
 }
