@@ -79,7 +79,7 @@ jobs:
         echo "Branch: ${BRANCH}";
         echo "BRANCH=${BRANCH}" >> ${GITHUB_ENV};
 
-    - name: Setup Docker Image version Linux
+    - name: Setup Docker image version Linux
       if: success() && startsWith(matrix.os, 'ubuntu')
       run: |
         # Add VERSION environment variable to all workflow steps
@@ -159,8 +159,8 @@ jobs:
         echo ${{ env.DOCKERHUB_PASSWORD }} | \
           docker login -u ${{ env.DOCKERHUB_USERNAME }} --password-stdin;
 
-    - name: Delete Docker Images
-      if: success() && env.BRANCH == 'master' && (!startsWith(matrix.BASE_IMAGE, 'alpine') && !startsWith(matrix.BASE_IMAGE, 'gentoo'))
+    - name: Delete Docker images
+      if: success() && env.BRANCH == 'master' && !startsWith(matrix.BASE_IMAGE, 'gentoo')
       run: |
         export REPOSITORY="mobile_rt";
         export ACCOUNT="ptpuscas";
@@ -211,11 +211,38 @@ jobs:
           ptpuscas/mobile_rt:${VERSION} \
           -c "git fetch origin && git reset --hard origin/${BRANCH} && git checkout ${BRANCH} && bash ../scripts/compile_native.sh -t release -c g++ -r yes";
 
-    - name: Update and commit MobileRT Docker Image
+    - name: Update and commit MobileRT Docker image
       if: success() && env.BUILT_IMAGE != 'yes'
       run: |
         docker commit mobile_rt_${VERSION} ptpuscas/mobile_rt:${VERSION};
         docker rm mobile_rt_${VERSION};
+
+    - name: Squash Docker image
+      if: success() && (startsWith(matrix.BASE_IMAGE, 'gentoo'))
+      run: |
+        pip install docker-squash;
+        export VERSION=${{ env.VERSION }};
+        export BRANCH=${{ env.BRANCH }};
+        echo "Branch: ${BRANCH}";
+        echo "Version: ${VERSION}";
+        ! docker history ptpuscas/mobile_rt:${VERSION} | grep -i "git reset" | grep -v "<missing>" | head -3;
+        ! docker history ptpuscas/mobile_rt:${VERSION} | grep -i "git reset" | grep -v "<missing>" | head -3 | tail -1;
+        ! BEFORE_LAST_ID=$(docker history ptpuscas/mobile_rt:${VERSION} | grep -i "git reset" | grep -v "<missing>" | head -3 | tail -1 | cut -d ' ' -f 1);
+        echo "BEFORE_LAST_ID=${BEFORE_LAST_ID}";
+        set +e;
+        docker-squash --tag ptpuscas/mobile_rt:${VERSION} ptpuscas/mobile_rt:${VERSION};
+        set -e;
+
+    - name: Push the squashed Docker image
+      if: success() && env.BRANCH == 'master' && startsWith(matrix.BASE_IMAGE, 'gentoo') && env.DOCKERHUB_USERNAME != null && env.DOCKERHUB_PASSWORD != null
+      run: |
+        export VERSION=${{ env.VERSION }};
+        export BRANCH=${{ env.BRANCH }};
+        echo "Version: ${VERSION}";
+        echo "Branch: ${BRANCH}";
+        set +e;
+        docker push ptpuscas/mobile_rt:${VERSION}-squashed;
+        set -e;
 
     - name: Run the unit tests
       if: success()
