@@ -27,7 +27,7 @@ jobs:
       REPOSITORY_TOKEN: ${{ secrets.REPOSITORY_TOKEN }}
     steps:
     - name: Checkout
-      uses: actions/checkout@v2.3.4
+      uses: actions/checkout@v2.3.5
 
     - name: Install missing dependencies
       if: success()
