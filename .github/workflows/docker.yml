@@ -158,23 +158,10 @@ jobs:
         docker --version;
         echo ${{ env.DOCKERHUB_PASSWORD }} | \
           docker login -u ${{ env.DOCKERHUB_USERNAME }} --password-stdin;
-
-    - name: Delete Docker images
-      if: success() && env.BRANCH == 'master' && !startsWith(matrix.BASE_IMAGE, 'gentoo')
-      run: |
-        export REPOSITORY="mobile_rt";
-        export ACCOUNT="ptpuscas";
-        export VERSION=${{ env.VERSION }};
-        export TAG="ptpuscas/mobile_rt:${VERSION}";
-        echo "Version: ${VERSION}";
-        HUB_TOKEN=$(curl -s -H "Content-Type: application/json" -X POST \
-          -d '{"username": "'${{ env.DOCKERHUB_USERNAME }}'", "password": "'${{ env.DOCKERHUB_PASSWORD }}'"}' \
-          https://hub.docker.com/v2/users/login/ | jq -r .token);
-        curl -i -X DELETE -H "Accept: application/json" -H "Authorization: JWT ${HUB_TOKEN}" \
-          https://hub.docker.com/v2/repositories/${ACCOUNT}/${REPOSITORY}/tags/${VERSION}/;
+        echo "BUILT_IMAGE=yes" >> ${GITHUB_ENV};
 
     - name: Pull the tagged Docker image
-      if: success()
+      if: success() && startsWith(matrix.BASE_IMAGE, 'gentoo')
       run: |
         export VERSION=${{ env.VERSION }};
         echo "Version: ${VERSION}";
@@ -183,6 +170,8 @@ jobs:
         if [[ ${output} != *"up to date"* && ${output} != *"Downloaded newer image for"* ]]; then
           echo "Did not find the Docker image. Will have to build the image."
           echo "BUILT_IMAGE=yes" >> ${GITHUB_ENV};
+        else
+          echo "BUILT_IMAGE=no" >> ${GITHUB_ENV};
         fi
 
     - name: Build the tagged Docker image
@@ -229,20 +218,7 @@ jobs:
         ! docker history ptpuscas/mobile_rt:${VERSION} | grep -i "git reset" | grep -v "<missing>" | head -3 | tail -1;
         ! BEFORE_LAST_ID=$(docker history ptpuscas/mobile_rt:${VERSION} | grep -i "git reset" | grep -v "<missing>" | head -3 | tail -1 | cut -d ' ' -f 1);
         echo "BEFORE_LAST_ID=${BEFORE_LAST_ID}";
-        set +e;
         docker-squash --tag ptpuscas/mobile_rt:${VERSION} ptpuscas/mobile_rt:${VERSION};
-        set -e;
-
-    - name: Push the squashed Docker image
-      if: success() && env.BRANCH == 'master' && startsWith(matrix.BASE_IMAGE, 'gentoo') && env.DOCKERHUB_USERNAME != null && env.DOCKERHUB_PASSWORD != null
-      run: |
-        export VERSION=${{ env.VERSION }};
-        export BRANCH=${{ env.BRANCH }};
-        echo "Version: ${VERSION}";
-        echo "Branch: ${BRANCH}";
-        set +e;
-        docker push ptpuscas/mobile_rt:${VERSION}-squashed;
-        set -e;
 
     - name: Run the unit tests
       if: success()
@@ -266,3 +242,4 @@ jobs:
         echo "Version: ${VERSION}";
         echo "Branch: ${BRANCH}";
         docker push ptpuscas/mobile_rt:${VERSION};
+
