@@ -36,6 +36,7 @@ public final class UtilsContextT {
      */
     public static void waitUntilRenderingDone(@NonNull final MainActivity activity)
         throws TimeoutException {
+        log.info("waitUntilRenderingDone start");
         final AtomicBoolean done = new AtomicBoolean(false);
         final long advanceSecs = 3L;
 
@@ -59,6 +60,7 @@ public final class UtilsContextT {
             });
         }
 
+        log.info("waitUntilRenderingDone finished");
         if (!done.get()) {
             throw new TimeoutException("The Ray Tracing engine didn't stop rendering the scene.");
         }

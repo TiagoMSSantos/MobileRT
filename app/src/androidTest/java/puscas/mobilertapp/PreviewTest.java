@@ -25,6 +25,7 @@ public final class PreviewTest extends AbstractTest {
      */
     @Test(timeout = 5L * 60L * 1000L)
     public void testPreviewScene() throws TimeoutException {
+        log.info("testPreviewScene start");
         Preconditions.checkNotNull(this.activity, "Activity can't be null");
 
         UtilsContextT.resetPickerValues(this.activity, Scene.CORNELL2.ordinal());
@@ -37,6 +38,7 @@ public final class PreviewTest extends AbstractTest {
         UtilsT.assertRenderButtonText(Constants.RENDER);
 
         UtilsT.testStateAndBitmap(false);
+        log.info("testPreviewScene finished");
     }
 
 }
