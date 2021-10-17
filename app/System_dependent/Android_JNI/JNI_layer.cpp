@@ -399,6 +399,10 @@ void Java_puscas_mobilertapp_DrawView_rtStopRender(
     jobject /*thiz*/,
     jboolean wait
 ) {
+    if (errno == EWOULDBLOCK) {
+        // Ignore operation would block
+        errno = 0;
+    }
     MobileRT::checkSystemError("rtStopRender start");
     {
         LOG_DEBUG("Will get lock");
@@ -654,6 +658,10 @@ void Java_puscas_mobilertapp_MainRenderer_rtFinishRender(
     JNIEnv *env,
     jobject /*thiz*/
 ) {
+    if (errno == EWOULDBLOCK) {
+        // Ignore operation would block
+        errno = 0;
+    }
     MobileRT::checkSystemError("rtFinishRender start");
 
     {
@@ -813,6 +821,10 @@ extern "C"
     JNIEnv *env,
     jobject /*thiz*/
 ) {
+    if (errno == EWOULDBLOCK) {
+        // Ignore operation would block
+        errno = 0;
+    }
     MobileRT::checkSystemError("rtGetState start");
 
     const auto res{static_cast<::std::int32_t> (state_.load())};

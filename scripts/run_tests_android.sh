@@ -206,9 +206,9 @@ function waitForEmulator() {
   ADB_PROCESS=$(ps aux | grep -i "adb" | grep -v "grep" | tr -s ' ' | cut -d ' ' -f 2 | head -1);
   echo "Will kill process: '${ADB_PROCESS}'";
   kill -SIGKILL "${ADB_PROCESS}";
-  set -e;
   local adb_devices_running;
   adb_devices_running=$(adb devices | tail -n +2);
+  set -e;
   echo "Devices running: '${adb_devices_running}'";
   if [ -z "${adb_devices_running}" ]; then
     echo "Booting a new Android emulator";
@@ -245,7 +245,7 @@ function waitForEmulator() {
   set +e;
   adb_devices_running=$(callCommandUntilSuccess adb devices | grep -v "List of devices attached");
   set -e;
-  echo "Devices running: ${adb_devices_running}";
+  echo "Devices running: '${adb_devices_running}'";
   if [ -z "${adb_devices_running}" ]; then
     # Abort if emulator didn't start.
     echo "Android emulator didn't start ... will exit.";
@@ -365,10 +365,10 @@ function verifyResources() {
 
   echo "Verify memory available on Android emulator:";
   adb shell free -h;
+  set +e;
   adb shell cat /proc/meminfo;
   echo "Verified memory available on Android emulator.";
 
-  set +e;
   grep -r "hw.ramSize" ~/.android 2> /dev/null;
   set -e;
 }
@@ -381,9 +381,17 @@ function runInstrumentationTests() {
   echo "Increasing ADB timeout to 10 minutes";
   export ADB_INSTALL_TIMEOUT=60000;
   ./gradlew --stop;
+
+  echo "Wait for device to be ready to unlock.";
+  adb kill-server;
   # Make sure ADB daemon started properly.
   callCommandUntilSuccess adb start-server;
   callCommandUntilSuccess adb wait-for-device;
+  # adb shell needs ' instead of ", so `getprop` works properly.
+  callCommandUntilSuccess adb shell 'while [[ $(getprop service.bootanim.exit) -ne 1 ]]; do sleep 1; done;';
+  callCommandUntilSuccess adb shell whoami;
+  callCommandUntilSuccess ./gradlew;
+
   if [ "${run_test}" == "all" ]; then
     echo "Running all tests";
     set +u; # Because `code_coverage` is only set when debug
@@ -410,6 +418,8 @@ function runInstrumentationTests() {
   fi
   resInstrumentationTests=${PIPESTATUS[0]};
   pid_instrumentation_tests="$!";
+
+  adb logcat -v threadtime -d "*":V > "${reports_path}"/logcat_tests_"${type}".log 2>&1;
   echo "pid of instrumentation tests: '${pid_instrumentation_tests}'";
 }
 ###############################################################################
