@@ -195,7 +195,7 @@ public final class MainActivity extends Activity {
     @Override
     public void onCreate(@Nullable final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        log.info("onCreate");
+        log.info("onCreate start");
 
         setContentView(R.layout.activity_main);
         initializeViews();
@@ -215,6 +215,8 @@ public final class MainActivity extends Activity {
 
         UtilsContext.checksStoragePermission(this);
         UtilsContext.checksInternetPermission(this);
+
+        log.info("onCreate finish");
     }
 
     @Override
@@ -614,8 +616,10 @@ public final class MainActivity extends Activity {
      *                     process starts.
      */
     private void setupRenderer(final TextView textView, final Button renderButton) {
+        log.info("setupRenderer start");
+
         this.drawView.setVisibility(View.INVISIBLE);
-        this.drawView.setEGLContextClientVersion(2);
+        this.drawView.setEGLContextClientVersion(MyEglContextFactory.EGL_CONTEXT_CLIENT_VERSION);
         this.drawView.setEGLConfigChooser(8, 8, 8, 8, 3 * 8, 0);
 
         final ActivityManager activityManager = (ActivityManager) getSystemService(
@@ -645,6 +649,8 @@ public final class MainActivity extends Activity {
         this.drawView.setUpButtonRender(renderButton);
         this.drawView.setVisibility(View.VISIBLE);
         this.drawView.setPreserveEGLContextOnPause(true);
+
+        log.info("setupRenderer finish");
     }
 
     /**

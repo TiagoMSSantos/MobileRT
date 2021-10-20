@@ -238,6 +238,8 @@ function waitForEmulator() {
   callCommandUntilSuccess adb root;
 
   echo "Unlock device";
+  callCommandUntilSuccess adb shell input tap 800 800;
+  callCommandUntilSuccess adb shell input keyevent 82;
   callCommandUntilSuccess adb shell input tap 800 900;
   callCommandUntilSuccess adb shell input keyevent 82;
 
@@ -390,7 +392,7 @@ function runInstrumentationTests() {
   # adb shell needs ' instead of ", so `getprop` works properly.
   callCommandUntilSuccess adb shell 'while [[ $(getprop service.bootanim.exit) -ne 1 ]]; do sleep 1; done;';
   callCommandUntilSuccess adb shell whoami;
-  callCommandUntilSuccess ./gradlew;
+  callCommandUntilSuccess ./gradlew --daemon;
 
   if [ "${run_test}" == "all" ]; then
     echo "Running all tests";

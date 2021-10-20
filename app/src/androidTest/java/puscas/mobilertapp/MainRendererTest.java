@@ -12,8 +12,12 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.runners.MethodSorters;
+
+import puscas.mobilertapp.utils.UtilsGL;
 import puscas.mobilertapp.utils.UtilsShader;
 import puscas.mobilertapp.utils.UtilsT;
+
+import static android.opengl.GLES20.glDeleteShader;
 
 /**
  * The test suite for the {@link MainRenderer}.
@@ -131,6 +135,7 @@ public final class MainRendererTest extends AbstractTest {
         drawView.queueEvent(() -> {
             final int index = UtilsShader.loadShader(shaderType, shaderCode);
             shaderIndex.set(index);
+            UtilsGL.run(() -> glDeleteShader(index));
             latch.countDown();
         });
         latch.await(1L, TimeUnit.MINUTES);
