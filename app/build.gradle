@@ -198,7 +198,7 @@ android {
     setTestBuildType systemTestType
 
     // Setup required versions to compile
-    setCompileSdkVersion 30
+    setCompileSdkVersion 31
     setBuildToolsVersion "${build_tools_version}"
 
     // Setup signing configurations
