@@ -42,6 +42,7 @@ import puscas.mobilertapp.constants.Scene;
 import puscas.mobilertapp.constants.Shader;
 import puscas.mobilertapp.constants.State;
 import puscas.mobilertapp.exceptions.FailureException;
+import puscas.mobilertapp.exceptions.LowMemoryException;
 import puscas.mobilertapp.utils.Utils;
 import puscas.mobilertapp.utils.UtilsContext;
 import puscas.mobilertapp.utils.UtilsGL;
@@ -679,6 +680,7 @@ public final class MainActivity extends Activity {
      */
     private void initializePickerResolutions(final int pickerSizes,
                                              final int maxSizes) {
+        log.info("initializePickerResolutions start");
         this.pickerResolutions.setMinValue(1);
         this.pickerResolutions.setMaxValue(maxSizes - 1);
         this.pickerResolutions.setWrapSelectorWheel(true);
@@ -687,7 +689,7 @@ public final class MainActivity extends Activity {
 
         final ViewTreeObserver vto = this.drawView.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(() -> {
-            log.info("initializePickerResolutions");
+            log.info("initializePickerResolutions 1");
             resetErrno();
             final double widthView = this.drawView.getWidth();
             final double heightView = this.drawView.getHeight();
@@ -705,7 +707,9 @@ public final class MainActivity extends Activity {
                 .toArray(String[]::new);
 
             this.pickerResolutions.setDisplayedValues(resolutions);
+            log.info("initializePickerResolutions 2");
         });
+        log.info("initializePickerResolutions finish");
     }
 
     /**

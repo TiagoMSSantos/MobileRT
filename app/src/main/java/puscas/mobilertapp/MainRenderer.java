@@ -542,8 +542,8 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      *                     memory.
      * @throws LowMemoryException If the device has low free memory.
      */
-    private void checksFreeMemory(final int memoryNeeded,
-                                  final Runnable function) throws LowMemoryException {
+    void checksFreeMemory(final int memoryNeeded,
+                          final Runnable function) throws LowMemoryException {
         log.info("checksFreeMemory");
         if (isLowMemory(memoryNeeded)) {
             function.run();

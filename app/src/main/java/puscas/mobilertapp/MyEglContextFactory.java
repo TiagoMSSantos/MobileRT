@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import puscas.mobilertapp.constants.ConstantsError;
+import puscas.mobilertapp.exceptions.FailureException;
 
 /**
  * A customized eglCreateContext and eglDestroyContext calls.
@@ -46,6 +47,11 @@ public class MyEglContextFactory implements GLSurfaceView.EGLContextFactory {
                                           @NonNull final EGLConfig eglConfig) {
         log.info("createContext");
 
+        final int eglError = egl.eglGetError();
+        if (eglError != EGL10.EGL_SUCCESS) {
+            throw new FailureException("eglError: " + eglError);
+        }
+
         if (Objects.nonNull(this.eglContext)) {
             this.eglContext = null;
         } else {
@@ -57,6 +63,7 @@ public class MyEglContextFactory implements GLSurfaceView.EGLContextFactory {
                 egl.eglCreateContext(display, eglConfig, EGL10.EGL_NO_CONTEXT, attribList);
         }
 
+        log.info("createContext finished");
         return this.eglContext;
     }
 

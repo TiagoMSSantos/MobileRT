@@ -322,7 +322,7 @@ function startCopyingLogcatToFile() {
   callCommandUntilSuccess adb shell logcat -b all -b main -b system -b radio -b events -b crash -c;
 
   echo "Copy realtime logcat to file";
-  callCommandUntilSuccess adb logcat -v threadtime "*":V \
+  adb logcat -v threadtime "*":V \
     2>&1 | tee ${reports_path}/logcat_current_"${type}".log &
   pid_logcat="$!";
   echo "pid of logcat: '${pid_logcat}'";
@@ -421,7 +421,10 @@ function runInstrumentationTests() {
   resInstrumentationTests=${PIPESTATUS[0]};
   pid_instrumentation_tests="$!";
 
+  mkdir -p ${reports_path};
+  set +e;
   adb logcat -v threadtime -d "*":V > "${reports_path}"/logcat_tests_"${type}".log 2>&1;
+  set -e;
   echo "pid of instrumentation tests: '${pid_instrumentation_tests}'";
 }
 ###############################################################################

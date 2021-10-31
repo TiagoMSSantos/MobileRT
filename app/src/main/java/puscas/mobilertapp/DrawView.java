@@ -30,6 +30,7 @@ import puscas.mobilertapp.constants.ConstantsMethods;
 import puscas.mobilertapp.constants.ConstantsRenderer;
 import puscas.mobilertapp.constants.ConstantsToast;
 import puscas.mobilertapp.constants.State;
+import puscas.mobilertapp.exceptions.FailureException;
 import puscas.mobilertapp.exceptions.LowMemoryException;
 import puscas.mobilertapp.utils.Utils;
 import puscas.mobilertapp.utils.UtilsLogging;
@@ -74,9 +75,12 @@ public final class DrawView extends GLSurfaceView {
      */
     public DrawView(@NonNull final Context context) {
         super(context);
+        log.info("DrawView start 1");
 
         this.renderer.prepareRenderer(this::requestRender);
         initEglContextFactory();
+
+        log.info("DrawView finished 1");
     }
 
     /**
@@ -88,19 +92,25 @@ public final class DrawView extends GLSurfaceView {
     public DrawView(@NonNull final Context context,
                     @NonNull final AttributeSet attrs) {
         super(context, attrs);
+        log.info("DrawView start 2");
 
         this.renderer.prepareRenderer(this::requestRender);
+
+        log.info("DrawView finished 2");
     }
 
     /**
      * Helper method which initiates the {@link GLSurfaceView.EGLContextFactory}.
      */
     private void initEglContextFactory() {
+        log.info("initEglContextFactory start");
         this.changingConfigs = false;
 
         final GLSurfaceView.EGLContextFactory eglContextFactory = new MyEglContextFactory(this);
         setEGLContextClientVersion(MyEglContextFactory.EGL_CONTEXT_CLIENT_VERSION);
         setEGLContextFactory(eglContextFactory);
+
+        log.info("initEglContextFactory finished");
     }
 
     /**
@@ -154,6 +164,12 @@ public final class DrawView extends GLSurfaceView {
                                    final ActivityManager activityManager) {
         this.renderer.setTextView(textView);
         this.renderer.setActivityManager(activityManager);
+        try {
+            this.renderer.checksFreeMemory(1, () -> {});
+        } catch (final Exception ex) {
+            throw new FailureException(ex);
+        }
+
         setRenderer(this.renderer);
     }
 
@@ -305,6 +321,7 @@ public final class DrawView extends GLSurfaceView {
 
         MainActivity.resetErrno();
         stopDrawing();
+        setVisibility(View.GONE);
 
         final String message = "onPause" + ConstantsMethods.FINISHED;
         log.info(message);
@@ -314,6 +331,8 @@ public final class DrawView extends GLSurfaceView {
     protected void onDetachedFromWindow() {
         log.info(ConstantsMethods.ON_DETACHED_FROM_WINDOW);
         super.onDetachedFromWindow();
+        this.finishRenderer();
+        setVisibility(View.GONE);
 
         final String message = ConstantsMethods.ON_DETACHED_FROM_WINDOW + ConstantsMethods.FINISHED;
         log.info(message);
