@@ -1,15 +1,15 @@
 [submodule "third_party/glm"]
-	path = app/third_party/glm
-	url = https://github.com/g-truc/glm
+  path = app/third_party/glm
+  url = https://github.com/g-truc/glm
   update = checkout
-	branch = master
+  branch = master
   fetchRecurseSubmodules = false
   ignore = none
   shallow = true
 
 [submodule "third_party/tinyobjloader"]
-	path = app/third_party/tinyobjloader
-	url = https://github.com/syoyo/tinyobjloader
+  path = app/third_party/tinyobjloader
+  url = https://github.com/syoyo/tinyobjloader
   update = checkout
   branch = master
   fetchRecurseSubmodules = false
@@ -17,10 +17,10 @@
   shallow = true
 
 [submodule "third_party/googletest"]
-	path = app/third_party/googletest
-	url = https://github.com/google/googletest
+  path = app/third_party/googletest
+  url = https://github.com/google/googletest
   update = checkout
-	branch = master
+  branch = master
   fetchRecurseSubmodules = false
   ignore = none
   shallow = true
