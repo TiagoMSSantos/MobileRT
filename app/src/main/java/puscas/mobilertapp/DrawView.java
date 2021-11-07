@@ -333,6 +333,7 @@ public final class DrawView extends GLSurfaceView {
         super.onDetachedFromWindow();
         this.finishRenderer();
         setVisibility(View.GONE);
+        this.renderer.closeRenderer();
 
         final String message = ConstantsMethods.ON_DETACHED_FROM_WINDOW + ConstantsMethods.FINISHED;
         log.info(message);

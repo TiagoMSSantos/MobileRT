@@ -234,6 +234,12 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
     private RenderTask renderTask = null;
 
     /**
+     * The OpenGL texture handle.
+     * Useful in order to delete the allocated texture when the ray tracing engine is closed.
+     */
+    private int[] textureHandle = null;
+
+    /**
      * The constructor for this class.
      */
     MainRenderer() {
@@ -690,6 +696,22 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
     }
 
     /**
+     * Closes the Renderer.
+     */
+    void closeRenderer() {
+        log.info("closeRenderer");
+
+        if (this.textureHandle != null) {
+            UtilsGL.run(() -> GLES20.glDeleteTextures(1, this.textureHandle, 0));
+        }
+        GLES20.glDeleteProgram(this.shaderProgram);
+        GLES20.glDeleteProgram(this.shaderProgramRaster);
+
+        final String messageFinished = "closeRenderer" + ConstantsMethods.FINISHED;
+        log.info(messageFinished);
+    }
+
+    /**
      * Helper method which rasterizes the scene by using OpenGL rasterizer with
      * the camera and the primitives received by parameters.
      * After rendering the scene it reads the OpenGL frame buffer to copy the
@@ -862,7 +884,10 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         // Shader program 1
         UtilsGL.run(() -> GLES20.glUseProgram(this.shaderProgram));
 
-        UtilsGL.bindTexture();
+        this.textureHandle = UtilsGL.bindTexture();
+
+        final String message = "onSurfaceCreated" + ConstantsMethods.FINISHED;
+        log.info(message);
     }
 
     @Override

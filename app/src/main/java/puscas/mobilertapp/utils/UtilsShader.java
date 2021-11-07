@@ -88,6 +88,7 @@ public final class UtilsShader {
             log.severe(source);
             log.severe("Error: " + msgError);
             UtilsGL.run(() -> GLES20.glDeleteShader(shader));
+            UtilsGL.run(GLES20::glReleaseShaderCompiler);
             throw new FailureException(informationLog);
         }
 
@@ -150,7 +151,7 @@ public final class UtilsShader {
                                             @NonNull final Map<Integer, String> shadersCode) {
         log.info("loadAndAttachShaders");
         final int vertexShader = getShaderIndex(shadersCode, GLES20.GL_VERTEX_SHADER);
-        final int fragmentShader =  getShaderIndex(shadersCode, GLES20.GL_FRAGMENT_SHADER);
+        final int fragmentShader = getShaderIndex(shadersCode, GLES20.GL_FRAGMENT_SHADER);
 
         // Attach and link shaders to program
         UtilsGL.run(() -> GLES20.glAttachShader(shaderProgram, vertexShader));

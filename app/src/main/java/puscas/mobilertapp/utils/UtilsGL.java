@@ -165,7 +165,7 @@ public final class UtilsGL {
     /**
      * Helper method that generates and binds a texture name in OpenGL.
      */
-    public static void bindTexture() {
+    public static int[] bindTexture() {
         log.info("bindTexture");
 
         final int numTextures = 1;
@@ -182,6 +182,8 @@ public final class UtilsGL {
             GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR));
         run(() -> GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,
             GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR));
+
+        return textureHandle;
     }
 
     /**
