@@ -212,8 +212,7 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitVerticesArray(
     JNIEnv *env,
     jobject /*thiz*/
 ) {
-    if (errno == EWOULDBLOCK || errno == ENOTTY) {
-        // Ignore operation would block
+    if (errno == ENOTTY) {
         // Ignore inappropriate I/O control operation
         errno = 0;
     }
@@ -375,12 +374,6 @@ void Java_puscas_mobilertapp_DrawView_rtStartRender(
     jobject /*thiz*/,
     jboolean wait
 ) {
-    if (errno == EWOULDBLOCK) {
-        // Ignore operation would block
-        errno = 0;
-    }
-    // For some reason in CI, the `testRenderSceneFromSDCardOBJ` test fails
-    // every time with a big stack frame from this check system error.
     MobileRT::checkSystemError("rtStartRender start");
     if (wait) {
         ::std::unique_lock<::std::mutex> lock {mutex_};
@@ -399,10 +392,6 @@ void Java_puscas_mobilertapp_DrawView_rtStopRender(
     jobject /*thiz*/,
     jboolean wait
 ) {
-    if (errno == EWOULDBLOCK) {
-        // Ignore operation would block
-        errno = 0;
-    }
     MobileRT::checkSystemError("rtStopRender start");
     {
         LOG_DEBUG("Will get lock");
@@ -658,10 +647,6 @@ void Java_puscas_mobilertapp_MainRenderer_rtFinishRender(
     JNIEnv *env,
     jobject /*thiz*/
 ) {
-    if (errno == EWOULDBLOCK) {
-        // Ignore operation would block
-        errno = 0;
-    }
     MobileRT::checkSystemError("rtFinishRender start");
 
     {
@@ -692,10 +677,6 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
     jobject localBitmap,
     jint nThreads
 ) {
-    if (errno == EAGAIN) {
-        // Ignore resource unavailable, try again
-        errno = 0;
-    }
     MobileRT::checkSystemError("rtRenderIntoBitmap start");
     LOG_DEBUG("rtRenderIntoBitmap");
     LOG_DEBUG("nThreads = ", nThreads);
@@ -821,10 +802,6 @@ extern "C"
     JNIEnv *env,
     jobject /*thiz*/
 ) {
-    if (errno == EWOULDBLOCK) {
-        // Ignore operation would block
-        errno = 0;
-    }
     MobileRT::checkSystemError("rtGetState start");
 
     const auto res{static_cast<::std::int32_t> (state_.load())};
@@ -838,9 +815,8 @@ float Java_puscas_mobilertapp_RenderTask_rtGetFps(
     JNIEnv *env,
     jobject /*thiz*/
 ) {
-    if (errno == ETIMEDOUT || errno == EWOULDBLOCK) {
+    if (errno == ETIMEDOUT) {
         // Ignore connection timed out
-        // Ignore operation would block
         errno = 0;
     }
     MobileRT::checkSystemError("rtGetFps start");
@@ -854,11 +830,6 @@ jlong Java_puscas_mobilertapp_RenderTask_rtGetTimeRenderer(
     JNIEnv *env,
     jobject /*thiz*/
 ) {
-    if (errno == EAGAIN || errno == EWOULDBLOCK) {
-        // Ignore resource unavailable, try again
-        // Ignore operation would block
-        errno = 0;
-    }
     MobileRT::checkSystemError("rtGetTimeRenderer start");
     env->ExceptionClear();
     MobileRT::checkSystemError("rtGetTimeRenderer finish");
@@ -870,10 +841,6 @@ extern "C"
     JNIEnv *env,
     jobject /*thiz*/
 ) {
-    if (errno == EAGAIN) {
-        // Ignore resource unavailable, try again
-        errno = 0;
-    }
     MobileRT::checkSystemError("rtGetSample start");
     ::std::int32_t sample{};
     {
@@ -883,10 +850,6 @@ extern "C"
         }
     }
     env->ExceptionClear();
-    if (errno == EWOULDBLOCK) {
-        // Ignore operation would block
-        errno = 0;
-    }
     MobileRT::checkSystemError("rtGetSample finish");
     return sample;
 }
@@ -897,10 +860,6 @@ extern "C"
     jobject /*thiz*/,
     jint size
 ) {
-    if (errno == EWOULDBLOCK) {
-        // Ignore operation would block
-        errno = 0;
-    }
     MobileRT::checkSystemError("rtResize start");
 
     const auto res{
@@ -909,10 +868,6 @@ extern "C"
         )
     };
     env->ExceptionClear();
-    if (errno == EAGAIN) {
-        // Ignore resource unavailable, try again
-        errno = 0;
-    }
     MobileRT::checkSystemError("rtResize finish");
     return res;
 }
@@ -925,10 +880,6 @@ void Java_puscas_mobilertapp_MainActivity_resetErrno(
     errno = 0;
     MobileRT::checkSystemError("resetErrno start");
     env->ExceptionClear();
-    if (errno == EWOULDBLOCK) {
-        // Ignore operation would block
-        errno = 0;
-    }
     MobileRT::checkSystemError("resetErrno finish");
 }
 

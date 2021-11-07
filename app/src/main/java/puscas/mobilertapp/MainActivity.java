@@ -42,7 +42,6 @@ import puscas.mobilertapp.constants.Scene;
 import puscas.mobilertapp.constants.Shader;
 import puscas.mobilertapp.constants.State;
 import puscas.mobilertapp.exceptions.FailureException;
-import puscas.mobilertapp.exceptions.LowMemoryException;
 import puscas.mobilertapp.utils.Utils;
 import puscas.mobilertapp.utils.UtilsContext;
 import puscas.mobilertapp.utils.UtilsGL;

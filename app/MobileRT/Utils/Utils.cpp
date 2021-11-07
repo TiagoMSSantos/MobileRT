@@ -238,7 +238,7 @@ namespace MobileRT {
     void checkSystemError(const char *const message) {
         LOG_DEBUG("checkSystemError: ", message);
 
-        if (errno != 0) {// if there is an error
+        if (errno != 0 && errno != EAGAIN && errno != EWOULDBLOCK) {// if there is an error
             ::std::setlocale(LC_ALL, "en_US.UTF-8");
             const ErrorType currentError {getErrorCode()};
             LOG_DEBUG("errorCode: ", currentError.codeText);
