@@ -111,7 +111,7 @@ elif [ -e "$(command -v pacman)" ]; then
   curl -LO "https://repo.archlinuxcn.org/x86_64/${patched_glibc}" && \
   bsdtar -C / -xvf "${patched_glibc}";
 
-  pacman -Sy --noconfirm --needed;
+  pacman -Syu --noconfirm --needed;
   pacman -Sy --noconfirm --needed \
     vim \
     findutils \

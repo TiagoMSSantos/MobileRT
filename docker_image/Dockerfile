@@ -89,7 +89,7 @@ elif [ -x "$(command -v yum)" ]; then \
   yum install -y bash sudo git; \
 elif [ -e "$(command -v pacman)" ]; then \
   echo "Detected Arch based Linux"; \
-  pacman -Sy --noconfirm --needed; \
+  pacman -Syu --noconfirm --needed; \
   pacman -Sy --noconfirm --needed bash sudo git; \
 elif [ -x "$(command -v apk)" ]; then \
   echo "Detected Alpine based Linux"; \
