@@ -212,7 +212,7 @@ function waitForEmulator() {
   echo "Devices running: '${adb_devices_running}'";
   if [ -z "${adb_devices_running}" ]; then
     echo "Booting a new Android emulator";
-    callCommandUntilSuccess cpulimit -- emulator -avd "${avd_emulator}" -writable-system 2> /dev/null &
+    callCommandUntilSuccess cpulimit -- emulator -avd "${avd_emulator}" -writable-system &
   else
     echo "Android emulator '${adb_devices_running}' already running.";
   fi
