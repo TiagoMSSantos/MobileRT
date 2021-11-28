@@ -42,25 +42,31 @@ public class MyEglContextFactory implements GLSurfaceView.EGLContextFactory {
 
     @Nullable
     @Override
-    public final EGLContext createContext(@NonNull final EGL10 egl,
+    public final EGLContext createContext(@NonNull final EGL10 egl10,
                                           @NonNull final EGLDisplay display,
                                           @NonNull final EGLConfig eglConfig) {
         log.info("createContext");
 
-        final int eglError = egl.eglGetError();
+        final int eglError = egl10.eglGetError();
         if (eglError != EGL10.EGL_SUCCESS) {
             throw new FailureException("eglError: " + eglError);
         }
 
         if (Objects.nonNull(this.eglContext)) {
+            log.info("createContext delete older context");
+            final EGLContext egl14Context = egl10.eglGetCurrentContext(); //get an EGL10 context representation of our EGL14 context
+            destroyContext(egl10, display, egl14Context);
+            destroyContext(egl10, display, this.eglContext);
             this.eglContext = null;
         } else {
+            log.info("createContext create new context");
             final int[] attribList = {
+                0x3098, // the same value as EGL14.EGL_CONTEXT_CLIENT_VERSION
                 EGL_CONTEXT_CLIENT_VERSION,
                 EGL10.EGL_NONE
             };
-            this.eglContext =
-                egl.eglCreateContext(display, eglConfig, EGL10.EGL_NO_CONTEXT, attribList);
+            final EGLContext egl14Context = egl10.eglGetCurrentContext(); //get an EGL10 context representation of our EGL14 context
+            this.eglContext = egl10.eglCreateContext(display, eglConfig, egl14Context, attribList);
         }
 
         log.info("createContext finished");
@@ -68,17 +74,19 @@ public class MyEglContextFactory implements GLSurfaceView.EGLContextFactory {
     }
 
     @Override
-    public final void destroyContext(@NonNull final EGL10 egl,
+    public final void destroyContext(@NonNull final EGL10 egl10,
                                      @NonNull final EGLDisplay display,
                                      @NonNull final EGLContext context) {
         log.info("destroyContext");
 
         if (this.drawView.isChangingConfigs()) {
             this.eglContext = context;
-        } else if (!egl.eglDestroyContext(display, context)) {
+        } else if (!egl10.eglDestroyContext(display, context)) {
             throw new UnsupportedOperationException(
-                ConstantsError.EGL_DESTROY_CONTEXT_FAILED + egl.eglGetError());
+                ConstantsError.EGL_DESTROY_CONTEXT_FAILED + egl10.eglGetError());
         }
+
+        log.info("destroyContext finished");
     }
 
 }
