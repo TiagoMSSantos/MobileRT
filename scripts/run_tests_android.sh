@@ -380,8 +380,6 @@ function runInstrumentationTests() {
   set +e;
   jps | grep -i gradle | tr -s ' ' | cut -d ' ' -f 1 | head -1 | xargs kill -SIGKILL;
   set -e;
-  echo "Increasing ADB timeout to 10 minutes";
-  export ADB_INSTALL_TIMEOUT=60000;
   ./gradlew --stop;
 
   echo "Wait for device to be ready to unlock.";
@@ -392,7 +390,15 @@ function runInstrumentationTests() {
   # adb shell needs ' instead of ", so `getprop` works properly.
   callCommandUntilSuccess adb shell 'while [[ $(getprop service.bootanim.exit) -ne 1 ]]; do sleep 1; done;';
   callCommandUntilSuccess adb shell whoami;
+  # Kill `graphics.allocator` process since it has a bug where it accumulates a memory leak by
+  # continuously using more and more files of '/dev/goldfish_pipe' and never freeing them.
+  set +e;
+  adb shell ps | grep -i graphics.allocator | tr -s ' ' | cut -d ' ' -f 2 | xargs adb shell kill;
+  set -e;
   callCommandUntilSuccess ./gradlew --daemon;
+  echo "Unlock device if blocked";
+  callCommandUntilSuccess adb shell input tap 800 800;
+  callCommandUntilSuccess adb shell input keyevent 82;
 
   if [ "${run_test}" == "all" ]; then
     echo "Running all tests";
