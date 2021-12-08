@@ -161,9 +161,11 @@ function catch_signal() {
 
 function unlockDevice() {
   echo "Unlock device";
-  callCommandUntilSuccess adb shell input tap 800 800;
+  callCommandUntilSuccess adb shell input tap 800 400;
   callCommandUntilSuccess adb shell input keyevent 82;
-  callCommandUntilSuccess adb shell input tap 800 900;
+  callCommandUntilSuccess adb shell input tap 800 600;
+  callCommandUntilSuccess adb shell input keyevent 82;
+  callCommandUntilSuccess adb shell input tap 800 200;
   callCommandUntilSuccess adb shell input keyevent 82;
 }
 
@@ -184,7 +186,7 @@ function runEmulator() {
     echo "Killing previous process";
     set +e;
     ps aux |
-      grep -v grep |
+      grep -v "grep" |
       grep -v "${pid}" |
       grep -i "${script_name}" |
       tr -s ' ' |
@@ -238,7 +240,7 @@ function waitForEmulator() {
   adb kill-server;
   callCommandUntilSuccess adb start-server;
   callCommandUntilSuccess adb wait-for-device;
-  # adb shell needs ' instead of ", so `getprop` works properly
+  # adb shell needs ' instead of ", so 'getprop' works properly
   callCommandUntilSuccess adb shell 'while [[ $(getprop service.bootanim.exit) -ne 1 ]]; do sleep 1; done;';
   callCommandUntilSuccess adb shell whoami;
 
@@ -391,21 +393,29 @@ function runInstrumentationTests() {
   # Make sure ADB daemon started properly.
   callCommandUntilSuccess adb start-server;
   callCommandUntilSuccess adb wait-for-device;
-  # adb shell needs ' instead of ", so `getprop` works properly.
+  # adb shell needs ' instead of ", so 'getprop' works properly.
   callCommandUntilSuccess adb shell 'while [[ $(getprop service.bootanim.exit) -ne 1 ]]; do sleep 1; done;';
   callCommandUntilSuccess adb shell whoami;
-  # Kill `graphics.allocator` process since it has a bug where it accumulates a memory leak by
-  # continuously using more and more files of '/dev/goldfish_pipe' and never freeing them.
-  set +e;
-  adb shell ps | grep -i graphics.allocator | tr -s ' ' | cut -d ' ' -f 2 | xargs adb shell kill;
-  set -e;
+
+  local numberOfFilesOpened;
+  numberOfFilesOpened=$(adb shell lsof /dev/goldfish_pipe | wc -l);
+  if [ "${numberOfFilesOpened}" -gt "32000" ]; then
+    echo "Kill 'graphics.allocator' process since it has a bug where it
+      accumulates a memory leak by continuously using more and more
+      files of '/dev/goldfish_pipe' and never freeing them.";
+    echo "This might make the device restart!";
+    set +e;
+    adb shell ps | grep -ine "graphics.allocator" | tr -s ' ' | cut -d ' ' -f 2 | xargs adb shell kill;
+    set -e;
+  fi
+
   callCommandUntilSuccess ./gradlew --daemon;
 
   unlockDevice;
 
   if [ "${run_test}" == "all" ]; then
     echo "Running all tests";
-    set +u; # Because `code_coverage` is only set when debug
+    set +u; # Because 'code_coverage' is only set when debug
     ./gradlew connected"${type}"AndroidTest -DtestType="${type}" \
       -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
       ${code_coverage} --console plain --parallel \
