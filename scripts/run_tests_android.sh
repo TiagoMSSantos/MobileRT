@@ -161,9 +161,9 @@ function catch_signal() {
 
 function unlockDevice() {
   echo "Unlock device";
-  callCommandUntilSuccess adb shell input tap 800 800;
+  callCommandUntilSuccess adb shell input tap 800 400;
   callCommandUntilSuccess adb shell input keyevent 82;
-  callCommandUntilSuccess adb shell input tap 800 900;
+  callCommandUntilSuccess adb shell input tap 800 500;
   callCommandUntilSuccess adb shell input keyevent 82;
 }
 
