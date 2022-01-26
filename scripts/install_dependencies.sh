@@ -92,6 +92,7 @@ elif [ -x "$(command -v yum)" ]; then
   echo "Detected Red Hat based Linux";
 
   yum update -y;
+  dnf install -y python3-pip;
   yum install -y \
     vim \
     findutils \
@@ -102,7 +103,6 @@ elif [ -x "$(command -v yum)" ]; then
     git \
     which \
     qt5-qtbase-devel \
-    python36 \
     gcc-c++;
 elif [ -e "$(command -v pacman)" ]; then
   echo "Detected Arch based Linux";
