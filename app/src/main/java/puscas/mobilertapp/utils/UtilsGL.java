@@ -6,6 +6,7 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import java8.util.function.BiFunction;
 import java8.util.function.Function;
 import java8.util.function.Supplier;
+import javax.annotation.Nonnull;
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
@@ -165,6 +166,7 @@ public final class UtilsGL {
     /**
      * Helper method that generates and binds a texture name in OpenGL.
      */
+    @Nonnull
     public static int[] bindTexture() {
         log.info("bindTexture");
 

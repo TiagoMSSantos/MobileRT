@@ -238,6 +238,10 @@ android {
     }
     kotlinOptions {
         setJvmTarget JavaVersion.VERSION_1_8.toString()
+        freeCompilerArgs += [
+            '-Xopt-in=kotlin.RequiresOptIn',
+            '-Xopt-in=kotlinx.coroutines.DelicateCoroutinesApi',
+        ]
     }
 
     // Set build types
@@ -290,7 +294,7 @@ android {
                 maxHeapSize = "512m"
                 // set JVM arguments for the test JVM(s)
                 // Enable JMockit for the unit tests
-                jvmArgs "-javaagent:${classpath.find { it.name.contains("jmockit") }.absolutePath}"
+//                jvmArgs "-javaagent:${classpath.find { it.name.contains("jmockit") }.absolutePath}"
 //                jacoco {
 //                    includeNoLocationClasses = true
 //                }
