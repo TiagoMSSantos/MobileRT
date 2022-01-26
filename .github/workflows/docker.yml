@@ -47,7 +47,7 @@ jobs:
           BASE_IMAGE: "ubuntu:18.04"
 
         - os: "ubuntu-18.04"
-          BASE_IMAGE: "centos:8"
+          BASE_IMAGE: "tgagor/centos:stream"
 
         - os: "ubuntu-18.04"
           BASE_IMAGE: "archlinux/archlinux:base-devel"
@@ -182,14 +182,18 @@ jobs:
       if: success() && env.BUILT_IMAGE == 'yes'
       run: |
         export VERSION=${{ env.VERSION }};
+        export BRANCH=${{ env.BRANCH }};
         echo "Version: ${VERSION}";
+        echo "Branch: ${BRANCH}";
         out=$(docker pull ptpuscas/mobile_rt:${VERSION} || true);
         docker build \
           -t ptpuscas/mobile_rt:${VERSION} \
           -f docker_image/Dockerfile \
           --no-cache=false \
           --build-arg BUILD_TYPE=release \
-          --build-arg BASE_IMAGE=${{ matrix.BASE_IMAGE }} .;
+          --build-arg BASE_IMAGE=${{ matrix.BASE_IMAGE }} \
+          --build-arg BRANCH=${BRANCH} \
+          .;
 
     - name: Pull and build MobileRT
       if: success() && env.BUILT_IMAGE != 'yes'
