@@ -12,7 +12,7 @@ class About : public QDialog {
 
 public:
     explicit About(QWidget *parent = 0);
-    ~About();
+    ~About() final;
 
 private:
     Ui::About *ui;

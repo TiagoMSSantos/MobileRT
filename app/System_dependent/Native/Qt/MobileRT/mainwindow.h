@@ -18,7 +18,7 @@ class MainWindow : public QMainWindow {
 
 public:
     explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow();
+    ~MainWindow() final;
     void draw(const ::std::vector<::std::int32_t> &bitmap, ::std::int32_t width, ::std::int32_t height);
     void setImage(const ::MobileRT::Config &config, const bool async);
 
