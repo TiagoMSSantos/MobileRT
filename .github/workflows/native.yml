@@ -75,10 +75,23 @@ jobs:
         bash scripts/install_dependencies.sh;
 
     - name: Create symlink of headers MacOS
-      if: success() && startsWith(matrix.os, 'macos') && matrix.compiler == 'g++'
+      if: success() && startsWith(matrix.os, 'macos')
       working-directory: .
       run: |
-        ln -s /usr/local/Cellar/qt@4/4.8.7_6/lib/QtGui.framework/Versions/4/Headers/* /usr/local/include/QtGui/ || true 2>&1 | tee ./reports/create_symlinks_headers.log;
+        ls -la /usr/local/Cellar/;
+        rsync -av --keep-dirlinks /usr/local/Cellar/qt@4/4.8.7_6/lib/QtGui.framework/Versions/4/Headers/ /usr/local/include/QtGui/;
+        mkdir -p /usr/local/include/Qt/Qt/;
+        mkdir -p /usr/local/include/Qt/QtWidgets/;
+        mkdir -p /usr/local/include/Qt/QtGui/;
+        mkdir -p /usr/local/include/Qt/QtCore/;
+        rsync -av --keep-dirlinks /usr/local/Cellar/qt@5/5.15.2_2/lib/QtWidgets.framework/Versions/5/Headers/ /usr/local/include/Qt/QtWidgets;
+        rsync -av --keep-dirlinks /usr/local/Cellar/qt@5/5.15.2_2/lib/QtGui.framework/Versions/5/Headers/ /usr/local/include/Qt/QtGui;
+        rsync -av --keep-dirlinks /usr/local/Cellar/qt@5/5.15.2_2/lib/QtCore.framework/Versions/5/Headers/ /usr/local/include/Qt/QtCore;
+        rsync -av --keep-dirlinks /usr/local/include/Qt/QtWidgets/ /usr/local/include/Qt/Qt;
+        rsync -av --keep-dirlinks /usr/local/include/Qt/QtGui/ /usr/local/include/Qt/Qt;
+        rsync -av --keep-dirlinks /usr/local/include/Qt/QtCore/ /usr/local/include/Qt/Qt;
+        ls -lRa /usr/local/Cellar/qt@5/ | grep -ine "\.a" -ine "\.so" -ine "\.dylib";
+        # lipo -info /usr/local/Cellar/qt@5/5.15.2_2/Frameworks/QtCore.framework;
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
         exit ${res};

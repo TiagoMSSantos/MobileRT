@@ -170,12 +170,25 @@ elif [ -x "$(command -v brew)" ]; then
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall.sh)";
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)";
 
+  brew --version;
   brew update;
   brew cleanup;
+  # Change Homebrew to a specific version since the latest one might break some packages URLs.
+  # E.g.: version 3.3.15 breaks the Qt4 package.
+  cd /usr/local/Homebrew;
+  git fetch --tags --all;
+  git checkout 3.3.14;
+  # Avoid homebrew from auto-update itself every time its installed something.
+  export HOMEBREW_NO_AUTO_UPDATE=1;
+  brew --version;
+
   brew tap cartr/qt4;
+  brew tap cartr/qt5;
   brew uninstall --force openssl@1.0;
   brew install openssl@1.0;
+  brew install openssl@1.1;
   brew install qt@4;
+  brew install qt@5;
   brew install llvm;
   brew install libomp;
   brew install cpulimit;
@@ -247,6 +260,21 @@ function install_conan() {
 ###############################################################################
 # Test dependencies.
 ###############################################################################
+function check_qt() {
+  QT_PATH=$(find /usr/local -name "QDialog" -not -path "*/MobileRT" 2> /dev/null);
+  echo "QT path Qt 1: ${QT_PATH}";
+  QT_PATH=$(find /usr/local -name "qtwidgetsglobal.h" -not -path "*/MobileRT" 2> /dev/null);
+  echo "QT path QtWidget 2: ${QT_PATH}";
+  QT_PATH=$(find /usr/local -name "qtguiglobal.h" -not -path "*/MobileRT" 2> /dev/null);
+  echo "QT path QtGui 3: ${QT_PATH}";
+  QT_PATH=$(find /usr/local -name "qglobal.h" -not -path "*/MobileRT" 2> /dev/null);
+  echo "QT path QtCore 4: ${QT_PATH}";
+  QT_PATH=$(find /usr/local -name "QDesktopServices" -not -path "*/MobileRT" 2> /dev/null);
+  echo "QT path Qt 5: ${QT_PATH}";
+}
+
+check_qt;
+
 checkCommand vim;
 checkCommand cmake;
 checkCommand make;

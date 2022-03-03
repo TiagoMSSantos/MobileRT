@@ -74,10 +74,27 @@ OPENMP_LIB_PATH=$(find /usr/local/Cellar/libomp -iname "libomp.dylib" | head -1 
 set -e;
 echo "OPENMP_INCLUDE_PATH = ${OPENMP_INCLUDE_PATH}";
 echo "OPENMP_LIB_PATH = ${OPENMP_LIB_PATH}";
-set +u
+set +u;
 export CPLUS_INCLUDE_PATH=${OPENMP_INCLUDE_PATH%/omp.h}:${CPLUS_INCLUDE_PATH};
 export LIBRARY_PATH=${OPENMP_LIB_PATH%/libomp.dylib}:${LIBRARY_PATH};
-set -u
+set -u;
+###############################################################################
+###############################################################################
+
+
+###############################################################################
+# Fix Qt library.
+###############################################################################
+set +e;
+QT_INCLUDE_PATH="/usr/local/include/Qt/";
+set -e;
+echo "QT_INCLUDE_PATH = ${QT_INCLUDE_PATH}";
+set +u;
+export CPLUS_INCLUDE_PATH=${QT_INCLUDE_PATH}:${CPLUS_INCLUDE_PATH};
+export CPLUS_INCLUDE_PATH=${QT_INCLUDE_PATH}/Qt/:${CPLUS_INCLUDE_PATH};
+set -u;
+export LDFLAGS="-L/usr/local/opt/qt@5/lib";
+export CPPFLAGS="-I/usr/local/opt/qt@5/include";
 ###############################################################################
 ###############################################################################
 

@@ -4,6 +4,7 @@
 
 #include <functional>
 #include <iostream>
+#include <QAction>
 
 Config::Config(const Config::Builder &builder) :
         QDialog(nullptr),

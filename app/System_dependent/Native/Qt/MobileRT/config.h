@@ -23,7 +23,7 @@ public:
     Config &operator=(const Config &config) = delete;
     Config &operator=(Config &&config) noexcept = delete;
 
-    ~Config();
+    ~Config() final;
 
     ::std::int32_t getShader();
     ::std::int32_t getAccelerator();

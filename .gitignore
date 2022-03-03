@@ -9,8 +9,6 @@
 
 # Qt temporary files
 **/System_dependent/**/*build*/**/MobileRT
-**/System_dependent/**/*.pro*
-**/*.pro.user
 
 # Build temporary files
 **/target
