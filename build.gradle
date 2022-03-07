@@ -104,7 +104,7 @@ ext {
     lombok_version = "1.18.22"
     spotbugs_annotations_version = "4.5.3"
     volley_version = "1.2.1"
-    jackson_version = "2.13.1"
+    jackson_version = "2.13.2"
     mockito_version = "3.4.6"
     jmockit_version = "1.49"
     junit_version = "4.13.2"
