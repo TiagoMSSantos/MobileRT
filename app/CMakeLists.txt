@@ -171,8 +171,6 @@ set( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin )
 
 message( STATUS "CMake will handle Qt moc preprocessor automatically." )
 set( CMAKE_AUTOMOC ON )
-set( CMAKE_AUTORCC ON )
-set( CMAKE_AUTOUIC ON )
 
 message( STATUS "Setting up Android Clang with static stdlib." )
 set( ANDROID_TOOLCHAIN clang )
@@ -385,7 +383,7 @@ set( SCENES_SOURCES "${SCENES_SOURCES}" CACHE STRING "CUSTOM" FORCE )
 
 if( NOT DEFINED ANDROID_ABI )
   message( STATUS "Finding Qt." )
-  find_package( Qt5 OPTIONAL_COMPONENTS Core Gui Widgets Qt5Core Qt5Gui Qt5Widgets )
+  find_package( Qt5 OPTIONAL_COMPONENTS Core Gui Widgets )
   if( NOT QT5_FOUND )
     find_package( Qt4 OPTIONAL_COMPONENTS QtCore QtGui )
   endif()

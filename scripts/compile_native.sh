@@ -32,6 +32,7 @@ cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit;
 ###############################################################################
 # Get helper functions.
 ###############################################################################
+# shellcheck source=scripts/helper_functions.sh
 source scripts/helper_functions.sh;
 ###############################################################################
 ###############################################################################
@@ -93,8 +94,6 @@ set +u;
 export CPLUS_INCLUDE_PATH=${QT_INCLUDE_PATH}:${CPLUS_INCLUDE_PATH};
 export CPLUS_INCLUDE_PATH=${QT_INCLUDE_PATH}/Qt/:${CPLUS_INCLUDE_PATH};
 set -u;
-export LDFLAGS="-L/usr/local/opt/qt@5/lib";
-export CPPFLAGS="-I/usr/local/opt/qt@5/include";
 ###############################################################################
 ###############################################################################
 
@@ -239,7 +238,7 @@ function build() {
     2>&1 | tee ./log_cmake_"${type}".log;
   resCompile=${PIPESTATUS[0]};
 
-  COMPILER=$(cat log_cmake_"${type}".log  | grep -i "CMAKE_CXX_COMPILER_ID=" | cut -d '=' -f 2);
+  COMPILER=$(grep -i "CMAKE_CXX_COMPILER_ID=" log_cmake_"${type}".log | cut -d '=' -f 2);
   if [ "${COMPILER}" != "MSVC" ]; then
     JOBS_FLAG=${MAKEFLAGS};
   fi
