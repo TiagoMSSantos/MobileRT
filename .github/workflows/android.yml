@@ -92,7 +92,7 @@ jobs:
 
     - name: Cache SonarCloud packages
       if: success()
-      uses: actions/cache@v2.1.7
+      uses: actions/cache@v3
       with:
         key: ${{ runner.os }}-sonar-${{ matrix.type }}
         restore-keys: ${{ runner.os }}-sonar
@@ -105,7 +105,7 @@ jobs:
 
     - name: Cache Gradle packages
       if: success()
-      uses: actions/cache@v2.1.7
+      uses: actions/cache@v3
       with:
         key: ${{ runner.os }}-gradle-${{ matrix.type }}-${{ hashFiles('**/*.gradle') }}
         restore-keys: ${{ runner.os }}-gradle
@@ -226,7 +226,7 @@ jobs:
 
     - name: Upload Gradle cached packages
       if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug'
-      uses: actions/cache@v2.1.7
+      uses: actions/cache@v3
       with:
         key: ${{ runner.os }}-gradle-${{ matrix.type }}-${{ hashFiles('**/*.gradle') }}
         restore-keys: ${{ runner.os }}-gradle
@@ -235,7 +235,7 @@ jobs:
 
     - name: Upload reports to cache
       if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug'
-      uses: actions/cache@v2.1.7
+      uses: actions/cache@v3
       env:
         cache-name: cache-reports
       with:
@@ -311,7 +311,7 @@ jobs:
 
     - name: Download reports from cache
       if: success()
-      uses: actions/cache@v2.1.7
+      uses: actions/cache@v3
       env:
         cache-name: cache-reports
       with:
@@ -361,7 +361,7 @@ jobs:
 
     - name: Download Gradle cached packages
       if: success()
-      uses: actions/cache@v2.1.7
+      uses: actions/cache@v3
       env:
         cache-name: cache-reports
       with:
