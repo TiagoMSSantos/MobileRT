@@ -160,7 +160,7 @@ jobs:
 
     - name: ccache cache files
       if: success()
-      uses: actions/cache@v2.1.7
+      uses: actions/cache@v3
       with:
         key: ${{ matrix.name }}-ccache-${{ steps.ccache_cache_timestamp.outputs.timestamp }}
         restore-keys: |

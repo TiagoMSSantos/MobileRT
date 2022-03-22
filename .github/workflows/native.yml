@@ -155,7 +155,7 @@ jobs:
 
     - name: Upload coverage to cache
       if: success() && matrix.compiler == 'g++' && matrix.type == 'debug' && startsWith(matrix.os, 'ubuntu')
-      uses: actions/cache@v2.1.7
+      uses: actions/cache@v3
       env:
         cache-name: cache-reports
       with:
@@ -200,7 +200,7 @@ jobs:
 
     - name: Download reports from cache
       if: success()
-      uses: actions/cache@v2.1.7
+      uses: actions/cache@v3
       env:
         cache-name: cache-reports
       with:
