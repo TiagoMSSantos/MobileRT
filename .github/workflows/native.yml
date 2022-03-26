@@ -89,8 +89,10 @@ jobs:
         mkdir -p /usr/local/include/Qt/QtCore/;
 
         # Define Qt versions.
-        export QT_4_VERSION=4.8.7_6;
-        export QT_5_VERSION=5.15.3;
+        export QT_4_VERSION="4.8.7_6";
+        export QT_5_VERSION="5.15.3";
+        echo "QT_4_VERSION=${QT_4_VERSION}" >> ${GITHUB_ENV};
+        echo "QT_5_VERSION=${QT_5_VERSION}" >> ${GITHUB_ENV};
 
         # Create symbolic links for Qt 4.
         rsync -av --keep-dirlinks /usr/local/Cellar/qt@4/${QT_4_VERSION}/lib/QtGui.framework/Versions/4/Headers/ /usr/local/include/QtGui/;
@@ -119,6 +121,8 @@ jobs:
       if: success()
       working-directory: .
       run: |
+        export QT_5_VERSION=${{ env.QT_5_VERSION }};
+        echo "QT_5_VERSION: '${QT_5_VERSION}'";
         bash scripts/compile_native.sh -t ${{ matrix.type }} -c ${{ matrix.compiler }} 2>&1 | tee ./reports/run_cmake.log;
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
