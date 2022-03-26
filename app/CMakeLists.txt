@@ -7,6 +7,14 @@ set( CMAKE_VERBOSE_MAKEFILE ON )
 
 
 ###############################################################################
+# Set Qt5 version for MacOS
+###############################################################################
+set( QT_5_VERSION "5.15.3" CACHE STRING "CUSTOM" FORCE )
+###############################################################################
+###############################################################################
+
+
+###############################################################################
 # Include auxiliary functions
 ###############################################################################
 message( STATUS "Adding helper functions." )
@@ -460,8 +468,8 @@ else()
     target_link_libraries( ${PROJECT_NAME} PRIVATE -F/usr/local/lib )
     target_link_libraries( ${PROJECT_NAME} PRIVATE -L/usr/local/lib )
 
-    target_link_libraries( ${PROJECT_NAME} PRIVATE -F/usr/local/Cellar/qt@5/5.15.2_2/Frameworks )
-    target_link_libraries( ${PROJECT_NAME} PRIVATE -L/usr/local/Cellar/qt@5/5.15.2_2/Frameworks )
+    target_link_libraries( ${PROJECT_NAME} PRIVATE -F/usr/local/Cellar/qt@5/${QT_5_VERSION}/Frameworks )
+    target_link_libraries( ${PROJECT_NAME} PRIVATE -L/usr/local/Cellar/qt@5/${QT_5_VERSION}/Frameworks )
 
     target_link_libraries( ${PROJECT_NAME} PRIVATE "-framework QtCore" )
     target_link_libraries( ${PROJECT_NAME} PRIVATE "-framework QtGui" )

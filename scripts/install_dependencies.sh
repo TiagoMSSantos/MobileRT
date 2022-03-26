@@ -174,6 +174,14 @@ elif [ -x "$(command -v brew)" ]; then
   brew --version;
   brew update;
   brew cleanup;
+
+  # Install and configure git.
+  brew install git;
+  git config --global http.postBuffer 1048576000;
+  git config --global https.postBuffer 1048576000;
+  git config --global core.compression -1;
+  git config --global http.sslVerify "false";
+
   # Change Homebrew to a specific version since the latest one might break some packages URLs.
   # E.g.: version 3.3.15 breaks the Qt4 package.
   cd /usr/local/Homebrew;
