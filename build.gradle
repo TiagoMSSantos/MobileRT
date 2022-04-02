@@ -36,7 +36,7 @@ buildscript {
         println("OS: " + currentOS)
         classpath 'com.android.tools.build:gradle:4.2.2'
         classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:3.3'
-        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.10'
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.20'
         classpath 'gradle.plugin.com.github.spotbugs.snom:spotbugs-gradle-plugin:4.7.5'
         classpath 'com.github.ben-manes:gradle-versions-plugin:0.42.0'
 
