@@ -257,7 +257,7 @@ jobs:
 
     - name: Upload APK
       if: success() && startsWith(matrix.os, 'macos')
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: MobileRT_${{ matrix.type }}_exp
         retention-days: 90
@@ -267,7 +267,7 @@ jobs:
 
     - name: Upload reports
       if: always()
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       continue-on-error: true
       with:
         name: reports_${{ matrix.type }}_${{ matrix.os }}
@@ -435,7 +435,7 @@ jobs:
         ./gradlew --profile --parallel sonarqube --info 2>&1 | tee ./reports/sonarqube.log;
 
     - name: Upload Sonar packages as Artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: sonar-packages
         retention-days: 90
@@ -444,7 +444,7 @@ jobs:
 
     - name: Upload gradle reports
       if: always()
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       continue-on-error: true
       with:
         name: reports_sonar
