@@ -66,7 +66,7 @@ jobs:
 
     - name: Upload reports
       if: always()
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       continue-on-error: true
       with:
         name: reports_${{ matrix.type }}_${{ matrix.os }}
