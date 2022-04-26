@@ -62,7 +62,7 @@ jobs:
     # You can call this action with 'setup-python-dependencies: false' to disable this process.
     - name: Initialize CodeQL
       if: success()
-      uses: github/codeql-action/init@v1
+      uses: github/codeql-action/init@v2
       with:
         languages: ${{ matrix.language }}
         queries: +security-and-quality
@@ -114,7 +114,7 @@ jobs:
     # 'add-snippets', 'threads', 'checkout_path', 'token', 'matrix']
     - name: Perform CodeQL Analysis
       if: success()
-      uses: github/codeql-action/analyze@v1
+      uses: github/codeql-action/analyze@v2
       with:
         output: ../results
         upload: true
