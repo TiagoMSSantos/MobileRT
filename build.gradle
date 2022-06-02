@@ -92,7 +92,7 @@ repositories {
 ext {
     build_tools_version = "30.0.2"
 
-    appcompat_version = "1.4.1"
+    appcompat_version = "1.4.2"
     androidX_core_kotlin_version = "1.8.0"
     espresso_version = "3.4.0"
     kotlin_stdlib_jdk8_version = "1.6.21"
