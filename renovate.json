@@ -2,7 +2,15 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "enabled": true,
   "extends": [
-    "config:base"
+    "config:base",
+    "github>whitesource/merge-confidence:beta",
+    ":dependencyDashboard",
+    ":separateMultipleMajorReleases",
+    ":separatePatchReleases",
+    ":rebaseStalePrs",
+    ":automergePatch",
+    ":automergeBranch",
+    ":semanticCommits"
   ],
   "timezone": "UTC",
   "branchPrefix": "up-renovate-",
@@ -22,6 +30,12 @@
     "enabled": true,
     "automerge": true
   },
+  "commitMessagePrefix": "renovate: ",
+  "commitMessageSuffix": "",
   "prConcurrentLimit": 0,
-  "rebaseWhen": "auto"
+  "rebaseWhen": "auto",
+  "docker-compose": {
+    "enabled": true
+  },
+  "reviewersFromCodeOwners": false
 }
