@@ -268,21 +268,27 @@ function waitForEmulator() {
 function copyResources() {
   mkdir -p ${reports_path};
 
+  echo "Set adb as root, to be able to change files permissions";
+  callCommandUntilSuccess adb root;
   echo "Checking files in root";
-  callCommandUntilSuccess adb shell ls -la /;
+  callCommandUntilSuccess adb shell ls -lah /;
   echo "Checking files in /mnt";
-  callCommandUntilSuccess adb shell ls -la /mnt;
+  callCommandUntilSuccess adb shell ls -lah /mnt;
   echo "Prepare copy unit tests";
   set +e;
   adb shell mount -o remount,rw /mnt/sdcard;
+  adb shell mount -o remount,rw /data/local/tmp;
   adb shell mount -o remount,rw /mnt/media_rw/1CE6-261B;
+  adb shell mount -o remount,rw /storage/1CE6-261B;
   set -e;
   callCommandUntilSuccess adb shell mkdir -p ${mobilert_path};
   callCommandUntilSuccess adb shell mkdir -p ${sdcard_path};
   callCommandUntilSuccess adb shell mkdir -p ${sdcard_path_android_11_emulator};
   callCommandUntilSuccess adb shell rm -r ${mobilert_path};
   callCommandUntilSuccess adb shell rm -r ${sdcard_path};
-  callCommandUntilSuccess adb shell rm -r ${sdcard_path_android_11_emulator};
+  # TODO: There is an issue removing previous resources with gradle v7:
+  # rm: CornellBox-Water.cam: Read-only file system
+  # callCommandUntilSuccess adb shell rm -r ${sdcard_path_android_11_emulator};
   callCommandUntilSuccess adb shell mkdir -p ${mobilert_path};
   callCommandUntilSuccess adb shell mkdir -p ${sdcard_path};
   callCommandUntilSuccess adb shell mkdir -p ${sdcard_path_android_11_emulator};
@@ -336,10 +342,12 @@ function startCopyingLogcatToFile() {
 }
 
 function runUnitTests() {
+  local dirUnitTests;
+  dirUnitTests="app/build/intermediates/cmake/${type}/obj/x86";
   local files;
-  files=$(ls app/build/intermediates/cmake/"${type}"/obj/x86);
+  files=$(ls "${dirUnitTests}");
   echo "Copy unit tests: ${files}";
-  adb push app/build/intermediates/cmake/"${type}"/obj/x86/* ${mobilert_path}/;
+  adb push "${dirUnitTests}"/* ${mobilert_path}/;
 
   echo "Run unit tests";
   if [ "${type}" == "debug" ]; then

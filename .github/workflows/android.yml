@@ -215,13 +215,13 @@ jobs:
     - name: Check report's paths
       if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug'
       run: |
-        ls -la ./app 2>&1 | tee ./reports/ls_coverage_reports_1.log;
-        ls -la ./app/build 2>&1 | tee ./reports/ls_coverage_reports_2.log;
-        ls -la ./app/build/reports 2>&1 | tee ./reports/ls_coverage_reports_3.log;
-        ls -la ./app/build/reports/coverage 2>&1 | tee ./reports/ls_coverage_reports_4.log;
-        ls -la ./app/build/reports/coverage/debug 2>&1 | tee ./reports/ls_coverage_reports.log;
-        ls -la ./build/reports 2>&1 | tee ./reports/ls_coverage_reports_5.log;
-        ls -la ./reports 2>&1 | tee ./reports/ls_reports.log;
+        ls -lah ./app 2>&1 | tee ./reports/ls_coverage_reports_1.log;
+        ls -lah ./app/build 2>&1 | tee ./reports/ls_coverage_reports_2.log;
+        ls -lah ./app/build/reports 2>&1 | tee ./reports/ls_coverage_reports_3.log;
+        ls -lah ./app/build/reports/coverage 2>&1 | tee ./reports/ls_coverage_reports_4.log;
+        ls -lah ./app/build/reports/coverage/debug 2>&1 | tee ./reports/ls_coverage_reports_jacoco.log;
+        ls -lah ./build/reports 2>&1 | tee ./reports/ls_coverage_reports_5.log;
+        ls -lah ./reports 2>&1 | tee ./reports/ls_reports.log;
         tree -a -f | grep -i app/build/reports | grep -i xml 2>&1 | tee ./reports/tree_report.log;
 
     - name: Upload Gradle cached packages
@@ -328,12 +328,11 @@ jobs:
         mkdir -p ./reports;
         chmod +x ./gradlew 2>&1 | tee ./reports/setup_gradlew.log;
         chmod +x ./test-reporter-latest-linux-amd64 2>&1 | tee ./reports/setup_code_climate.log;
-        ls -la ./app 2>&1 | tee ./reports/ls_coverage_reports_1.log;
-        ls -la ./app/build 2>&1 | tee ./reports/ls_coverage_reports_2.log;
-        ls -la ./app/build/reports 2>&1 | tee ./reports/ls_coverage_reports_3.log;
-        ls -la ./app/build/reports/coverage 2>&1 | tee ./reports/ls_coverage_reports_4.log;
-        ls -la ./app/build/reports/coverage/debug 2>&1 | tee ./reports/ls_coverage_reports.log;
-        ls -la ./reports 2>&1 | tee ./reports/ls_reports.log;
+        ls -lah ./app 2>&1 | tee ./reports/ls_coverage_reports_1.log;
+        ls -lah ./app/build 2>&1 | tee ./reports/ls_coverage_reports_2.log;
+        ls -lah ./app/build/reports 2>&1 | tee ./reports/ls_coverage_reports_3.log;
+        ls -lah ./app/build/reports/coverage 2>&1 | tee ./reports/ls_coverage_reports_4.log;
+        ls -lah ./reports 2>&1 | tee ./reports/ls_reports.log;
 
     - name: Send code climate report
       if: success() && env.CC_TEST_REPORTER_ID != null

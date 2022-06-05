@@ -131,7 +131,7 @@ jobs:
         export PATH=${PATH}:"/Applications/Docker.app/";
         echo "${PATH}" >> ${GITHUB_PATH};
 
-        # ls -la /usr/local/bin/;
+        # ls -lah /usr/local/bin/;
         export PATH=${PATH}:"/usr/local/bin/";
 
         echo "Start Docker";

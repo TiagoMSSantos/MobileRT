@@ -142,8 +142,8 @@ RUN bash scripts/install_dependencies.sh;
 # Compile MobileRT
 ###############################################################################
 RUN bash scripts/compile_native.sh ${BUILD_TYPE} g++ yes && \
-    ls -laR build_${BUILD_TYPE}/bin && \
-    ls -laR build_${BUILD_TYPE}/lib && \
+    ls -lahR build_${BUILD_TYPE}/bin && \
+    ls -lahR build_${BUILD_TYPE}/lib && \
     rm -rf ../app/ && \
     rm -rf ../docs/ && \
     rm -rf ../documentation/ && \

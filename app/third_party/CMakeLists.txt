@@ -50,10 +50,10 @@ message( STATUS "Updating third party repositories." )
 execute_process(COMMAND git submodule foreach git remote update --prune;
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
 
-execute_process(COMMAND git submodule foreach git clean -dfx;
+execute_process(COMMAND git submodule foreach git fetch --tags --all;
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
 
-execute_process(COMMAND git submodule foreach "git pull --all --rebase --progress --tags || true"
+execute_process(COMMAND git submodule foreach git clean -dfx;
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
 ###############################################################################
 ###############################################################################
@@ -62,6 +62,8 @@ execute_process(COMMAND git submodule foreach "git pull --all --rebase --progres
 ###############################################################################
 # Change to stable versions
 ###############################################################################
+message( STATUS "Changing to stable versions." )
+
 execute_process( COMMAND git checkout 0.9.9.8 --progress;
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/glm )
 execute_process( COMMAND git checkout master --progress;
@@ -87,6 +89,9 @@ execute_process( COMMAND git submodule foreach "
     echo Using version: \${used_version};
     echo;
   "
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
+
+execute_process(COMMAND git submodule foreach "git pull --rebase --progress"
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
 ###############################################################################
 ###############################################################################

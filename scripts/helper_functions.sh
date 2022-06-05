@@ -243,9 +243,6 @@ function checkLastModifiedFiles() {
   MINUTES=50;
   set +e;
   echo "#####################################################################";
-  echo "Files modified in MobileRT:";
-  find . -type f -mmin -${MINUTES} -print 2> /dev/null;
-  echo "#####################################################################";
   echo "Files modified in home:";
   find ~/ -type f -mmin -${MINUTES} -print 2> /dev/null | grep -v "mozilla" | grep -v "thunderbird" | grep -v "java";
   echo "#####################################################################";

@@ -40,15 +40,15 @@ _shared_job_linux: &shared_job_linux
   - cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_BUILD_TYPE=debug ../app/;
   - cmake --build .;
   before_script:
-  - ls -laR;
+  - ls -lahR;
   script:
   - ./bin/UnitTestsd;
   after_script:
-  - ls -laR;
+  - ls -lahR;
   after_success:
-  - ls -laR;
+  - ls -lahR;
   after_failure:
-  - ls -laR;
+  - ls -lahR;
 
 _shared_job_mac: &shared_job_mac
   before_install:
@@ -81,15 +81,15 @@ _shared_job_mac: &shared_job_mac
   - cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_BUILD_TYPE=debug ../app/;
   - cmake --build .;
   before_script:
-  - ls -laR;
+  - ls -lahR;
   script:
   - ./bin/UnitTestsd;
   after_script:
-  - ls -laR;
+  - ls -lahR;
   after_success:
-  - ls -laR;
+  - ls -lahR;
   after_failure:
-  - ls -laR;
+  - ls -lahR;
 
 jobs:
   include:
