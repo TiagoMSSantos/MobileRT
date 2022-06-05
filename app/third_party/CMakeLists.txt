@@ -47,13 +47,13 @@ execute_process( COMMAND git clone https://github.com/imneme/pcg-cpp
 ###############################################################################
 message( STATUS "Updating third party repositories." )
 
-execute_process(COMMAND git submodule foreach git remote update;
+execute_process(COMMAND git submodule foreach git remote update --prune;
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
 
-execute_process(COMMAND git submodule foreach git clean -dfX;
+execute_process(COMMAND git submodule foreach git clean -dfx;
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
 
-execute_process(COMMAND git submodule foreach "git pull --all --rebase --recurse-submodules || true"
+execute_process(COMMAND git submodule foreach "git pull --all --rebase --progress --tags || true"
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
 ###############################################################################
 ###############################################################################
@@ -133,7 +133,7 @@ set( BOOST_PATH "${CMAKE_CURRENT_SOURCE_DIR}/boost/libs" )
 
 message( STATUS "Updating and adding all C++ Boost modules used." )
 foreach( submodule assert )
-  execute_process( COMMAND git submodule update --init
+  execute_process( COMMAND git submodule update --init --rebase
     ${BOOST_PATH}/${submodule}
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/boost )
   execute_process( COMMAND git checkout master --progress
