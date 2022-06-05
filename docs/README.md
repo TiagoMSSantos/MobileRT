@@ -17,8 +17,8 @@
 [![Docker Pulls](https://img.shields.io/docker/pulls/ptpuscas/mobile_rt)](https://hub.docker.com/r/ptpuscas/mobile_rt)
 
 [comment]: # (Continuous Integration & Code coverage)
-[![Unit Tests C++](https://github.com/TiagoMSSantos/MobileRT/workflows/Unit%20Tests%20C++/badge.svg)](https://github.com/TiagoMSSantos/MobileRT/actions)
-[![Tests Android](https://github.com/TiagoMSSantos/MobileRT/workflows/Tests%20Android/badge.svg)](https://github.com/TiagoMSSantos/MobileRT/actions)
+[![Unit Tests C++](https://github.com/TiagoMSSantos/MobileRT/workflows/Native%20(Qt)/badge.svg)](https://github.com/TiagoMSSantos/MobileRT/actions)
+[![Tests Android](https://github.com/TiagoMSSantos/MobileRT/workflows/Android/badge.svg)](https://github.com/TiagoMSSantos/MobileRT/actions)
 [![codecov](https://codecov.io/gh/TiagoMSSantos/MobileRT/branch/master/graph/badge.svg)](https://codecov.io/gh/TiagoMSSantos/MobileRT)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=TiagoMSSantos_MobileRT&metric=alert_status)](https://sonarcloud.io/dashboard?id=TiagoMSSantos_MobileRT)
 
@@ -228,6 +228,30 @@ Table: <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master
 
 ## Master's dissertation
 This project started as a [Masters' dissertation](https://repositorium.sdum.uminho.pt/handle/1822/66577).
+
+## Requirements
+It's necessary the following SDKs in order to compile this project for Android:
+- [Android SDK](https://developer.android.com/studio) which should also bring the [Android NDK](https://developer.android.com/ndk) in order to compile the native code.
+
+For native Linux and Mac support, the `install_dependencies.sh` script should download and install the necessary dependencies, by just calling:
+```bash
+  bash scripts/install_dependencies.sh
+```
+Note that the script already supports multiple Linux distributions like:
+- Debian
+- Red Hat
+- Arch
+- Alpine
+- Gentoo
+
+If the distribution you use is not supported, you can always open an issue or even a pull request :)
+
+For native Windows support:
+- [Microsoft Visual C++ (MSVC)](https://visualstudio.microsoft.com/)
+- [Qt4 or Qt5](https://www.qt.io/)
+
+For Linux in a [Docker](https://www.docker.com/) container:
+  - [Docker Engine](https://docs.docker.com/engine/install/)
 
 Click [here](https://github.com/TiagoMSSantos/MobileRT/blob/master/docs/TODO.md) to check the TODO list. <br/>
 Click [here](https://github.com/TiagoMSSantos/MobileRT/blob/master/docs/TOOLS.md) to check the code coverage and code duplication commands. <br/>
