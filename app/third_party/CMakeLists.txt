@@ -66,14 +66,19 @@ message( STATUS "Changing to stable versions." )
 
 execute_process( COMMAND git checkout 0.9.9.8 --progress;
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/glm )
+
 execute_process( COMMAND git checkout master --progress;
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/stb )
+
 execute_process( COMMAND git checkout master --progress;
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tinyobjloader )
-execute_process( COMMAND git checkout master --progress;
+
+execute_process( COMMAND git checkout main --progress;
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/googletest )
+
 execute_process( COMMAND git checkout master --progress;
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/boost )
+
 execute_process( COMMAND git checkout master --progress;
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/pcg-cpp )
 
