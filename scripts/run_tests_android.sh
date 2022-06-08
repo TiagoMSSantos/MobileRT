@@ -76,6 +76,7 @@ sdcard_path_android_11_emulator="/storage/1CE6-261B/MobileRT";
 ###############################################################################
 parseArgumentsToTestAndroid "$@";
 printEnvironment;
+typeWithCapitalLetter=$(capitalizeFirstletter "${type}");
 ###############################################################################
 ###############################################################################
 
@@ -114,7 +115,7 @@ function gather_logs_func() {
   set -e;
 
   echo -e '\e]8;;file:///'"${PWD}"'/'"${reports_path}"'/androidTests/connected/index.html\aClick here to check the Android tests report.\e]8;;\a';
-  echo -e '\e]8;;file:///'"${PWD}"'/'"${reports_path}"'/coverage/'"${type}"'/index.html\aClick here to check the Code coverage report.\e]8;;\a';
+  echo -e '\e]8;;file:///'"${PWD}"'/'"${reports_path}"'/coverage/androidTest/'"${type}"'/index.html\aClick here to check the Code coverage report.\e]8;;\a';
   echo -e '\e]8;;file:///'"${PWD}"'/'"${reports_path}"'/logcat_app_'"${type}"'.log\aClick here to check the app log.\e]8;;\a';
   echo "";
   echo "";
@@ -343,11 +344,21 @@ function startCopyingLogcatToFile() {
 
 function runUnitTests() {
   local dirUnitTests;
-  dirUnitTests="app/build/intermediates/cmake/${type}/obj/x86";
+  ls app/.cxx;
+  if [ "${type}" == "release" ]; then
+    typeWithCapitalLetter="RelWithDebInfo"
+  fi
+  dirUnitTests="app/.cxx/${typeWithCapitalLetter}";
+  local generatedId;
+  generatedId=$(ls "${dirUnitTests}");
+  dirUnitTests="${dirUnitTests}/${generatedId}/x86";
   local files;
+  find . -iname "*unittests*" -exec readlink -f {} \;
   files=$(ls "${dirUnitTests}");
-  echo "Copy unit tests: ${files}";
-  adb push "${dirUnitTests}"/* ${mobilert_path}/;
+  echo "Copy unit tests bin: ${files}/bin";
+  echo "Copy unit tests libs: ${files}/lib";
+  adb push "${dirUnitTests}"/bin/* ${mobilert_path}/;
+  adb push "${dirUnitTests}"/lib/* ${mobilert_path}/;
 
   echo "Run unit tests";
   if [ "${type}" == "debug" ]; then

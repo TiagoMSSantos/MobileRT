@@ -183,7 +183,7 @@ jobs:
         cache-name: cache-reports
       with:
         path: |
-          ./app/build/reports/coverage/debug
+          ./app/build/reports/coverage/androidTest/debug
           ./reports
           ./code_coverage_base.info
           ./code_coverage.info
@@ -228,7 +228,7 @@ jobs:
         cache-name: cache-reports
       with:
         path: |
-          ./app/build/reports/coverage/debug
+          ./app/build/reports/coverage/androidTest/debug
           ./reports
           ./code_coverage_base.info
           ./code_coverage.info

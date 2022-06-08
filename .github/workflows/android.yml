@@ -219,7 +219,7 @@ jobs:
         ls -lah ./app/build 2>&1 | tee ./reports/ls_coverage_reports_2.log;
         ls -lah ./app/build/reports 2>&1 | tee ./reports/ls_coverage_reports_3.log;
         ls -lah ./app/build/reports/coverage 2>&1 | tee ./reports/ls_coverage_reports_4.log;
-        ls -lah ./app/build/reports/coverage/debug 2>&1 | tee ./reports/ls_coverage_reports_jacoco.log;
+        ls -lah ./app/build/reports/coverage/androidTest/debug/report.xml 2>&1 | tee ./reports/ls_coverage_reports_jacoco.log;
         ls -lah ./build/reports 2>&1 | tee ./reports/ls_coverage_reports_5.log;
         ls -lah ./reports 2>&1 | tee ./reports/ls_reports.log;
         tree -a -f | grep -i app/build/reports | grep -i xml 2>&1 | tee ./reports/tree_report.log;
@@ -340,7 +340,7 @@ jobs:
       env:
         CC_TEST_REPORTER_ID: ${{ env.CC_TEST_REPORTER_ID }}
       run: |
-        ../../../../test-reporter-latest-linux-amd64 format-coverage -t jacoco ../../../build/reports/coverage/debug/report.xml 2>&1 | tee ../../../../reports/format_coverage.log;
+        ../../../../test-reporter-latest-linux-amd64 format-coverage -t jacoco ../../../build/reports/coverage/androidTest/debug/report.xml 2>&1 | tee ../../../../reports/format_coverage.log;
         ../../../../test-reporter-latest-linux-amd64 upload-coverage 2>&1 | tee ../../../../reports/upload_coverage.log;
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
@@ -461,7 +461,7 @@ jobs:
         CODECOV_TOKEN: ${{ env.CODECOV_TOKEN }}
       run: |
         mkdir -p ./reports;
-        curl --retry 5 --retry-delay 2 --connect-timeout 2 -s https://codecov.io/bash | bash -s -- -c -F aFlag -f app/build/reports/coverage/debug/report.xml -v 2>&1 | tee ./reports/codecov.log;
+        curl --retry 5 --retry-delay 2 --connect-timeout 2 -s https://codecov.io/bash | bash -s -- -c -F aFlag -f app/build/reports/coverage/androidTest/debug/report.xml -v 2>&1 | tee ./reports/codecov.log;
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
         exit 0;
