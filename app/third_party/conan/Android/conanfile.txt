@@ -1,6 +1,6 @@
 [requires]
 glm/0.9.9.8
-stb/cci.20200203
+stb/cci.20210713
 
 [generators]
 cmake
