@@ -23,6 +23,7 @@
   "separateMajorMinor": true,
   "separateMultipleMajor": true,
   "ignoreTests": false,
+  "prConcurrentLimit": 0,
   "prHourlyLimit": 0,
   "major": {
     "enabled": true,
@@ -38,10 +39,16 @@
   },
   "commitMessagePrefix": "renovate: ",
   "commitMessageSuffix": "",
-  "prConcurrentLimit": 0,
   "rebaseWhen": "auto",
-  "docker-compose": {
+  "reviewersFromCodeOwners": true,
+  "ignoreDeps": [],
+  "git-submodules": {
     "enabled": true
   },
-  "reviewersFromCodeOwners": false
+  "conan": {
+    "enabled": true
+  },
+  "pre-commit": {
+    "enabled": true
+  }
 }
