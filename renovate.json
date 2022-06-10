@@ -43,7 +43,7 @@
   "reviewersFromCodeOwners": true,
   "ignoreDeps": [],
   "git-submodules": {
-    "enabled": true
+    "enabled": false
   },
   "conan": {
     "enabled": true
