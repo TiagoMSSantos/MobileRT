@@ -105,7 +105,7 @@ elif [ -x "$(command -v yum)" ]; then
     which \
     qt5-qtbase-devel \
     gcc-c++;
-elif [ -e "$(command -v pacman)" ]; then
+elif [ -x "$(command -v pacman)" ]; then
   echo "Detected Arch based Linux";
 
   patched_glibc=glibc-linux4-2.33-4-x86_64.pkg.tar.zst && \

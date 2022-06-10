@@ -88,7 +88,7 @@ elif [ -x "$(command -v yum)" ]; then \
   echo "Detected Red Hat based Linux"; \
   yum update -y; \
   yum install -y bash sudo git; \
-elif [ -e "$(command -v pacman)" ]; then \
+elif [ -x "$(command -v pacman)" ]; then \
   echo "Detected Arch based Linux"; \
   pacman -Syu --noconfirm --needed; \
   pacman -Sy --noconfirm --needed bash sudo git; \
