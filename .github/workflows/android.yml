@@ -419,9 +419,9 @@ jobs:
       working-directory: .
       continue-on-error: true
       run: |
-        ls -la ~/;
-        ls -la ~/.sonar;
-        ls -la ~/.gradle;
+        ls -lah ~/;
+        ls -lah ~/.sonar;
+        ls -lah ~/.gradle;
 
     - name: Analyze Sonar
       if: always() && env.GITHUB_TOKEN != null && env.SONAR_TOKEN != null
