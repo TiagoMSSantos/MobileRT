@@ -47,13 +47,13 @@ execute_process( COMMAND git clone https://github.com/imneme/pcg-cpp
 ###############################################################################
 message( STATUS "Updating third party repositories." )
 
-execute_process(COMMAND git submodule foreach git remote update --prune;
+execute_process(COMMAND git submodule foreach "git remote update --prune;"
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
 
-execute_process(COMMAND git submodule foreach git fetch --tags --all;
+execute_process(COMMAND git submodule foreach "git fetch --tags --all;"
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
 
-execute_process(COMMAND git submodule foreach git clean -dfx;
+execute_process(COMMAND git submodule foreach "git clean -dfx;"
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
 ###############################################################################
 ###############################################################################
@@ -96,7 +96,7 @@ execute_process( COMMAND git submodule foreach "
   "
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
 
-execute_process(COMMAND git submodule foreach "git pull --rebase --progress"
+execute_process(COMMAND git submodule foreach "git pull --rebase --progress || true;"
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
 ###############################################################################
 ###############################################################################
