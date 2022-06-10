@@ -50,6 +50,9 @@ message( STATUS "Updating third party repositories." )
 execute_process(COMMAND git submodule foreach "git remote update --prune;"
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
 
+execute_process(COMMAND git submodule foreach "git submodule update;"
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
+
 execute_process(COMMAND git submodule foreach "git fetch --tags --all;"
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
 
@@ -60,41 +63,72 @@ execute_process(COMMAND git submodule foreach "git clean -dfx;"
 
 
 ###############################################################################
+# Set stable versions to be used
+###############################################################################
+set( BOOST_VERSION "boost-1.79.0" )
+set( GLM_VERSION "0.9.9.8" )
+set( STB_VERSION "master" )
+set( TINYOBJLOADER_VERSION "v1.0.7" )
+set( GOOGLETEST_VERSION "release-1.11.0" )
+set( PCG_CPP_VERSION "v0.98.1" )
+###############################################################################
+###############################################################################
+
+
+###############################################################################
 # Change to stable versions
 ###############################################################################
 message( STATUS "Changing to stable versions." )
 
-execute_process( COMMAND git checkout 0.9.9.8 --progress;
+execute_process( COMMAND git checkout --progress -f ${GLM_VERSION};
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/glm )
 
-execute_process( COMMAND git checkout master --progress;
+execute_process( COMMAND git checkout --progress -f ${STB_VERSION};
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/stb )
 
-execute_process( COMMAND git checkout master --progress;
+execute_process( COMMAND git checkout --progress -f ${TINYOBJLOADER_VERSION};
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tinyobjloader )
 
-execute_process( COMMAND git checkout main --progress;
+execute_process( COMMAND git checkout --progress -f ${GOOGLETEST_VERSION};
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/googletest )
 
-execute_process( COMMAND git checkout master --progress;
+execute_process( COMMAND git checkout --progress -f ${BOOST_VERSION};
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/boost )
 
-execute_process( COMMAND git checkout master --progress;
+execute_process( COMMAND git checkout --progress -f ${PCG_CPP_VERSION};
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/pcg-cpp )
 
 execute_process( COMMAND git submodule foreach "
     dependency=$(git remote -v | head -n1 | awk '{print $2}');
-    last_stable_release=$(git tag -l --sort=-version:refname | grep -i [0-9] | grep -v beta | grep -v rc | grep -v preview | grep -v bug | head -1);
+    last_stable_release=$(git tag -l --sort=-committerdate | grep -i [0-9] | grep -v beta | grep -v rc | grep -v preview | grep -v bug | head -1 || true);
     if [ -z \${last_stable_release} ]; then
       last_stable_release='master';
     fi;
-    used_version=$(git name-rev --name-only HEAD);
-    echo Dependency: \${dependency};
-    echo Last stable version detected: \${last_stable_release};
-    echo Using version: \${used_version};
-    echo;
+    used_version=$(git name-rev --name-only HEAD | cut -d '/' -f2 | cut -d '^' -f1);
+
+    if [ ! -z \$(git status -s) ]; then
+      git status;
+      echo \"\\033[0;31m      Dependency \${dependency} has some unexpected unstaged diff! Please fix this! \\e[0m\";
+      exit 1;
+    fi;
+
+    echo \"\";
+    echo \"###############################################################\";
+    if [ \${used_version} = \${last_stable_release} ]; then
+      echo \"Dependency: \${dependency}\";
+      echo \"Using version: \${used_version}\";
+    else
+      echo \"\\033[0;33m      Dependency: \${dependency} \\e[0m\";
+      echo \"\\033[0;31m      Last stable version detected: \${last_stable_release} \\e[0m\";
+      echo \"\\033[0;31m      Using version: \${used_version} \\e[0m\";
+    fi;
+    echo \"###############################################################\";
+    echo \"\";
   "
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} RESULT_VARIABLE ret )
+if( NOT ret EQUAL "0" )
+  message( FATAL_ERROR "Bad exit status" )
+endif()
 
 execute_process(COMMAND git submodule foreach "git pull --rebase --progress || true;"
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
@@ -146,7 +180,7 @@ foreach( submodule assert )
   execute_process( COMMAND git submodule update --init --rebase
     ${BOOST_PATH}/${submodule}
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/boost )
-  execute_process( COMMAND git checkout master --progress
+  execute_process( COMMAND git checkout --progress -f ${BOOST_VERSION}
     WORKING_DIRECTORY ${BOOST_PATH}/${submodule} )
   target_include_directories( MobileRT SYSTEM PUBLIC
     "${BOOST_PATH}/${submodule}/include" )
