@@ -53,7 +53,7 @@ jobs:
           BASE_IMAGE: "archlinux/archlinux:base-devel"
 
         - os: "ubuntu-18.04"
-          BASE_IMAGE: "alpine:3.12"
+          BASE_IMAGE: "alpine:17.12"
 
         - os: "ubuntu-18.04"
           BASE_IMAGE: "gentoo/stage3:latest"
