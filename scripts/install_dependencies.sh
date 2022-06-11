@@ -78,7 +78,10 @@ if [ -x "$(command -v apt-get)" ]; then
     ca-certificates \
     git \
     libatomic1 \
-    qt5-default \
+    qtbase5-dev \
+    qtchooser \
+    qt5-qmake \
+    qtbase5-dev-tools \
     g++ \
     build-essential \
     lcov \

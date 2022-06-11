@@ -76,6 +76,7 @@
 
 !build_*
 !WavefrontOBJs/conference*
+!.git/*
 
 build_*/AppMobileRT_autogen
 build_*/CMakeCache.txt

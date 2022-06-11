@@ -130,6 +130,14 @@ RUN git clone https://github.com/TiagoMSSantos/MobileRT.git \
 
 
 ###############################################################################
+# Alernative: Copy MobileRT contents locally (not possible in CI)
+###############################################################################
+# COPY ./ ./MobileRT
+###############################################################################
+###############################################################################
+
+
+###############################################################################
 # Install dependencies
 ###############################################################################
 WORKDIR ./MobileRT
@@ -144,11 +152,12 @@ RUN bash scripts/install_dependencies.sh;
 RUN bash scripts/compile_native.sh ${BUILD_TYPE} g++ yes && \
     ls -lahR build_${BUILD_TYPE}/bin && \
     ls -lahR build_${BUILD_TYPE}/lib && \
-    rm -rf ../app/ && \
-    rm -rf ../docs/ && \
-    rm -rf ../documentation/ && \
-    rm -rf ../git-hooks/ && \
-    rm -rf ../gradle/
+    rm -rf ./app && \
+    rm -rf ./docs && \
+    rm -rf ./documentation && \
+    rm -rf ./git-hooks && \
+    rm -rf ./gradle && \
+    rm -rf ./.git
 ###############################################################################
 ###############################################################################
 
