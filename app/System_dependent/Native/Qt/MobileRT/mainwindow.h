@@ -18,7 +18,7 @@ class MainWindow : public QMainWindow {
 
 public:
     explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow() final;
+    ~MainWindow() override;
     void draw(const ::std::vector<::std::int32_t> &bitmap, ::std::int32_t width, ::std::int32_t height);
     void setImage(const ::MobileRT::Config &config, const bool async);
 
@@ -26,7 +26,7 @@ private:
     void restart();
 
 private:
-    void keyPressEvent(QKeyEvent *keyEvent);
+    void keyPressEvent(QKeyEvent *keyEvent) override;
 
 private:
     Ui::MainWindow *m_ui;

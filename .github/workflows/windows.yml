@@ -203,7 +203,7 @@ jobs:
       shell: bash
       run: |
         mkdir -p reports;
-        bash scripts/compile_native.sh -t ${{ matrix.type }} -c "${{ matrix.cxx }}" 2>&1 | tee ./reports/build.log;
+        bash scripts/compile_native.sh -t "${{ matrix.type }}" -c "${{ matrix.cxx }}" 2>&1 | tee ./reports/build.log;
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
         exit ${res};
@@ -214,7 +214,7 @@ jobs:
       shell: bash
       run: |
         mkdir -p reports;
-        bash scripts/run_tests.sh -t ${{ matrix.type }} 2>&1 | tee ./reports/tests.log;
+        bash scripts/run_tests.sh -t "${{ matrix.type }}" -m "3.10.2" 2>&1 | tee ./reports/tests.log;
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
         exit ${res};
