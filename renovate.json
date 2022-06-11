@@ -50,5 +50,16 @@
   },
   "pre-commit": {
     "enabled": true
-  }
+  },
+  "regexManagers": [
+    {
+      "description": "Update base docker image references",
+      "fileMatch": ["Dockerfile", "\\.github\\/workflows\\/.+\\.ya?ml"],
+      "matchStrings": [
+        "BASE_IMAGE=(?<depName>.*?):(?<currentValue>.*)",
+        "BASE_IMAGE: \"(?<depName>.*?):(?<currentValue>.*?)\""
+      ],
+      "datasourceTemplate": "docker"
+    }
+  ]
 }
