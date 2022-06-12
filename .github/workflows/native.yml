@@ -39,7 +39,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-10.15, ubuntu-18.04]
+        os: [macos-11, ubuntu-20.04]
         type: [debug, release]
         compiler: [g++, clang++]
 
@@ -207,7 +207,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ ubuntu-18.04 ]
+        os: [ ubuntu-20.04 ]
         type: [ debug ]
 
     name: Code Coverage

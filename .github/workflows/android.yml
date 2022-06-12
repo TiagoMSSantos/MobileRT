@@ -38,15 +38,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-10.15, ubuntu-18.04]
+        os: [macos-11, ubuntu-20.04]
         type: [debug, release]
         include:
-        - os: "ubuntu-18.04"
+        - os: "ubuntu-20.04"
           android_api: 16
           ndk_version: 22.1.7171670
           cmake_version: 3.10.2
 
-        - os: "macos-10.15"
+        - os: "macos-11"
           android_api: 16
           ndk_version: 18.1.5063045
           cmake_version: 3.6.0
@@ -284,7 +284,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ ubuntu-18.04 ]
+        os: [ ubuntu-20.04 ]
         type: [ debug ]
 
     name: Code Coverage and Sonar
