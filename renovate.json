@@ -38,7 +38,7 @@
   },
   "commitMessagePrefix": "renovate: ",
   "commitMessageSuffix": "",
-  "rebaseWhen": "auto",
+  "rebaseWhen": "behind-base-branch",
   "reviewersFromCodeOwners": true,
   "ignoreDeps": [],
   "git-submodules": {
