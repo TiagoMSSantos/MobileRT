@@ -1,22 +1,29 @@
 package puscas.mobilertapp;
 
+import static puscas.mobilertapp.ConstantsAndroidTests.BUTTON_MESSAGE;
+
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.NumberPicker;
+
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.espresso.action.ViewActions;
 import androidx.test.espresso.matcher.ViewMatchers;
+
 import com.google.common.collect.ImmutableList;
-import edu.umd.cs.findbugs.annotations.NonNull;
-import java.util.List;
-import java8.util.stream.IntStreams;
-import lombok.extern.java.Log;
+
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.runners.MethodSorters;
+
+import java.util.List;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
+import java8.util.stream.IntStreams;
+import lombok.extern.java.Log;
 import puscas.mobilertapp.constants.Accelerator;
 import puscas.mobilertapp.constants.Constants;
 import puscas.mobilertapp.constants.ConstantsUI;
@@ -176,8 +183,7 @@ public final class UiTest extends AbstractTest {
             .perform(new ViewActionButton(Constants.RENDER, true))
             .check((view, exception) -> {
                 final Button button = (Button) view;
-                Assertions.assertEquals(Constants.RENDER, button.getText().toString(),
-                    puscas.mobilertapp.Constants.BUTTON_MESSAGE);
+                Assertions.assertEquals(Constants.RENDER, button.getText().toString(), BUTTON_MESSAGE);
             });
         UtilsT.testStateAndBitmap(true);
     }

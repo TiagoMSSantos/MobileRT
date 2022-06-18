@@ -19,6 +19,7 @@ import lombok.extern.java.Log;
 import org.junit.Assume;
 import org.junit.jupiter.api.Assertions;
 import puscas.mobilertapp.BuildConfig;
+import puscas.mobilertapp.ConstantsAndroidTests;
 import puscas.mobilertapp.DrawView;
 import puscas.mobilertapp.MainRenderer;
 import puscas.mobilertapp.R;
@@ -217,7 +218,7 @@ public final class UtilsT {
                 Assertions.assertEquals(
                     expectedText,
                     renderButton.getText().toString(),
-                    puscas.mobilertapp.Constants.BUTTON_MESSAGE
+                    ConstantsAndroidTests.BUTTON_MESSAGE
                 );
             });
     }

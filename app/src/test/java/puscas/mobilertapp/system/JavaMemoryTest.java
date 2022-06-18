@@ -1,11 +1,15 @@
 package puscas.mobilertapp.system;
 
+import static puscas.mobilertapp.ConstantsTests.NOT_ENOUGH_MEMORY_MESSAGE;
+
+import org.assertj.core.api.Assertions;
+import org.junit.Test;
+
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
+
 import lombok.extern.java.Log;
-import org.assertj.core.api.Assertions;
-import org.junit.Test;
 import puscas.mobilertapp.constants.Constants;
 
 /**
@@ -24,7 +28,7 @@ public final class JavaMemoryTest {
 
         final long startAvailableMemory = getAvailableJavaMemoryInMB();
         Assertions.assertThat(startAvailableMemory)
-            .as("Not enough available memory.")
+            .as(NOT_ENOUGH_MEMORY_MESSAGE)
             .isGreaterThan(300L);
 
         final long megaBytesToAllocate = 100L;
@@ -38,7 +42,7 @@ public final class JavaMemoryTest {
 
             final long beforeAvailableMemoryMB = getAvailableJavaMemoryInMB();
             Assertions.assertThat(beforeAvailableMemoryMB)
-                .as("Not enough available memory.")
+                .as(NOT_ENOUGH_MEMORY_MESSAGE)
                 .isGreaterThan(megaBytesToAllocate);
             dummyArrays.add(ByteBuffer.allocate(((int) megaBytesToAllocate * Constants.BYTES_IN_MEGABYTE)));
 

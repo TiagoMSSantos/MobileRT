@@ -1,10 +1,9 @@
 package puscas.mobilertapp.system;
 
+import static puscas.mobilertapp.ConstantsAndroidTests.NOT_ENOUGH_MEMORY_MESSAGE;
+
 import android.os.Debug;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.Collection;
-import lombok.extern.java.Log;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -12,6 +11,13 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.runners.MethodSorters;
+
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Locale;
+
+import lombok.extern.java.Log;
 import puscas.mobilertapp.constants.Constants;
 
 /**
@@ -54,7 +60,7 @@ public final class NativeMemoryTest {
         final Collection<ByteBuffer> dummyArrays = new ArrayList<>(1);
 
         final long firstAvailableMemoryMB = getAvailableNativeMemoryInMB();
-        Assertions.assertTrue(firstAvailableMemoryMB > 300L, "Not enough available memory.");
+        Assertions.assertTrue(firstAvailableMemoryMB > 300L, NOT_ENOUGH_MEMORY_MESSAGE);
         dummyArrays.add(ByteBuffer.allocateDirect(Constants.BYTES_IN_MEGABYTE));
 
         final long startAvailableMemory = getAvailableNativeMemoryInMB();
@@ -69,12 +75,12 @@ public final class NativeMemoryTest {
             System.gc();
 
             final long beforeAvailableMemoryMB = getAvailableNativeMemoryInMB();
-            Assertions.assertTrue(beforeAvailableMemoryMB > megaBytesToAllocate, "Not enough available memory.");
+            Assertions.assertTrue(beforeAvailableMemoryMB > megaBytesToAllocate, NOT_ENOUGH_MEMORY_MESSAGE);
             dummyArrays.add(ByteBuffer.allocateDirect(((int) megaBytesToAllocate * Constants.BYTES_IN_MEGABYTE)));
 
             final long afterAvailableMemory = getAvailableNativeMemoryInMB();
             Assertions.assertTrue(afterAvailableMemory <= (beforeAvailableMemoryMB - megaBytesToAllocate),
-                "Not enough available memory.");
+                    NOT_ENOUGH_MEMORY_MESSAGE);
 
             ++numAllocatedByteBuffers;
         }
@@ -90,20 +96,55 @@ public final class NativeMemoryTest {
      * @return The available memory in the native Heap, in mega bytes.
      */
     private static long getAvailableNativeMemoryInMB() {
-        final long nativeHeapSize = Debug.getNativeHeapSize();
-        log.info("The size of the native heap: " + nativeHeapSize + "B"
-            + "(" + nativeHeapSize / 1024L + "KB or " + nativeHeapSize / (long) Constants.BYTES_IN_MEGABYTE + "MB)");
+        final String template = "%s: %dKB (%dMB)";
+        final long nativeHeapSizeBytes = Debug.getNativeHeapSize();
+        final String sizeNativeHeap = String.format(Locale.US, template,
+                "The size of the native heap",
+                convertBytesToKiloBytes(nativeHeapSizeBytes),
+                convertBytesToMegaBytes(nativeHeapSizeBytes)
+        );
+        log.info(sizeNativeHeap);
 
-        final long nativeHeapAllocatedSize = Debug.getNativeHeapAllocatedSize();
-        log.info("Allocated memory in the native heap: " + nativeHeapAllocatedSize + "B"
-            + "(" + nativeHeapAllocatedSize / 1024L + "KB or " + nativeHeapAllocatedSize / (long) Constants.BYTES_IN_MEGABYTE + "MB)");
 
-        final long nativeHeapFreeSize = Debug.getNativeHeapFreeSize();
-        final long availableMemoryKb = nativeHeapFreeSize / 1024L;
-        final long availableMemoryMb = nativeHeapFreeSize / (long) Constants.BYTES_IN_MEGABYTE;
-        log.info("Available native heap memory: " + nativeHeapFreeSize + "B"
-                + "(" + availableMemoryKb + "KB or " + availableMemoryMb + "MB)");
+        final long nativeHeapAllocatedSizeBytes = Debug.getNativeHeapAllocatedSize();
+        final String sizeNativeAllocatedHeap = String.format(Locale.US, template,
+                "Allocated memory in the native heap",
+                convertBytesToKiloBytes(nativeHeapAllocatedSizeBytes),
+                convertBytesToMegaBytes(nativeHeapAllocatedSizeBytes)
+        );
+        log.info(sizeNativeAllocatedHeap);
+
+
+        final long nativeHeapFreeSizeBytes = Debug.getNativeHeapFreeSize();
+        final long availableMemoryMb = convertBytesToMegaBytes(nativeHeapFreeSizeBytes);
+        final String sizeNativeHeapFree = String.format(Locale.US, template,
+                "Available native heap memory",
+                convertBytesToKiloBytes(nativeHeapFreeSizeBytes),
+                availableMemoryMb
+        );
+        log.info(sizeNativeHeapFree);
+
         return availableMemoryMb;
+    }
+
+    /**
+     * Helper method that converts a number of bytes into kilobytes.
+     *
+     * @param bytes The number of bytes.
+     * @return The number of kilobytes.
+     */
+    private static long convertBytesToKiloBytes(final long bytes) {
+        return bytes / 1024L;
+    }
+
+    /**
+     * Helper method that converts a number of bytes into megabytes.
+     *
+     * @param bytes The number of bytes.
+     * @return The number of megabytes.
+     */
+    private static long convertBytesToMegaBytes(final long bytes) {
+        return bytes / (long) Constants.BYTES_IN_MEGABYTE;
     }
 
 }
