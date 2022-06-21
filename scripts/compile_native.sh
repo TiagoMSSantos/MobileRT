@@ -30,9 +30,19 @@ cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit;
 
 
 ###############################################################################
+# Execute Shellcheck on this script.
+###############################################################################
+if [ -x "$(command -v shellcheck)" ]; then
+  shellcheck "${0}" || exit
+fi
+###############################################################################
+###############################################################################
+
+
+###############################################################################
 # Get helper functions.
 ###############################################################################
-# shellcheck source=scripts/helper_functions.sh
+# shellcheck disable=SC1091
 source scripts/helper_functions.sh;
 ###############################################################################
 ###############################################################################
@@ -69,31 +79,44 @@ printEnvironment;
 ###############################################################################
 # Fix llvm clang OpenMP library.
 ###############################################################################
-set +e;
-OPENMP_INCLUDE_PATH=$(find /usr/local/Cellar/libomp -iname "omp.h" | head -1 2> /dev/null);
-OPENMP_LIB_PATH=$(find /usr/local/Cellar/libomp -iname "libomp.dylib" | head -1 2> /dev/null);
-set -e;
-echo "OPENMP_INCLUDE_PATH = ${OPENMP_INCLUDE_PATH}";
-echo "OPENMP_LIB_PATH = ${OPENMP_LIB_PATH}";
-set +u;
-export CPLUS_INCLUDE_PATH=${OPENMP_INCLUDE_PATH%/omp.h}:${CPLUS_INCLUDE_PATH};
-export LIBRARY_PATH=${OPENMP_LIB_PATH%/libomp.dylib}:${LIBRARY_PATH};
-set -u;
+function addOpenMpPath() {
+  set +e;
+  OPENMP_INCLUDE_PATH="$(find /usr/local/Cellar/libomp -iname "omp.h" | head -1 2> /dev/null)";
+  OPENMP_LIB_PATH="$(find /usr/local/Cellar/libomp -iname "libomp.dylib" | head -1 2> /dev/null)";
+  set -e;
+  echo "OPENMP_INCLUDE_PATH = ${OPENMP_INCLUDE_PATH}";
+  echo "OPENMP_LIB_PATH = ${OPENMP_LIB_PATH}";
+  set +u;
+  export CPLUS_INCLUDE_PATH="${OPENMP_INCLUDE_PATH%/omp.h}:${CPLUS_INCLUDE_PATH}";
+  export LIBRARY_PATH="${OPENMP_LIB_PATH%/libomp.dylib}:${LIBRARY_PATH}";
+  set -u;
+}
+addOpenMpPath;
 ###############################################################################
 ###############################################################################
 
 
 ###############################################################################
-# Fix Qt library.
+# Fix Qt library for MacOs.
 ###############################################################################
-set +e;
-QT_INCLUDE_PATH="/usr/local/include/Qt/";
-set -e;
-echo "QT_INCLUDE_PATH = ${QT_INCLUDE_PATH}";
-set +u;
-export CPLUS_INCLUDE_PATH=${QT_INCLUDE_PATH}:${CPLUS_INCLUDE_PATH};
-export CPLUS_INCLUDE_PATH=${QT_INCLUDE_PATH}/Qt/:${CPLUS_INCLUDE_PATH};
-set -u;
+function addQtPath() {
+  set +e;
+  QT5_INCLUDE_PATHS="$(find /usr/local -name "QDialog" -not -path "*/MobileRT" 2> /dev/null)";
+  QT5_INCLUDE_PATH=$(echo "${QT5_INCLUDE_PATHS}" | tail -1);
+  QT5_LIB_PATH=${QT5_INCLUDE_PATH%/*/*/*/*/*};
+  QT_INCLUDE_PATH="/usr/local/include/Qt/";
+  set -e;
+  echo "QT_INCLUDE_PATHS = ${QT5_INCLUDE_PATHS}";
+  echo "QT_INCLUDE_PATH = ${QT5_INCLUDE_PATH}";
+  echo "QT_LIB_PATH = ${QT5_LIB_PATH}";
+  set +u;
+  export CPLUS_INCLUDE_PATH="${QT_INCLUDE_PATH}:${CPLUS_INCLUDE_PATH}";
+  export CPLUS_INCLUDE_PATH="${QT5_INCLUDE_PATH%/*}:${CPLUS_INCLUDE_PATH}";
+  export CPLUS_INCLUDE_PATH="${QT5_INCLUDE_PATH%/*/*}:${CPLUS_INCLUDE_PATH}";
+  export LIBRARY_PATH="${QT5_LIB_PATH}:${LIBRARY_PATH}";
+  set -u;
+}
+addQtPath;
 ###############################################################################
 ###############################################################################
 
@@ -107,34 +130,38 @@ set -u;
 # '6.5', '7', '7.1', '7.2', '7.3', '7.4', '7.5', '8', '8.1', '8.2', '8.3', '8.4',
 # '9', '9.1', '9.2', '9.3', '10', '10.1']
 ###############################################################################
-if [[ "${compiler}" == *"clang++"* ]]; then
-  conan_compiler="clang";
-  conan_compiler_version=$(${compiler} --version | grep -i version | tr -s ' ' | cut -d ' ' -f 3 | cut -d '-' -f 1 | cut -d '.' -f1,2);
-  export CC=clang;
-elif [[ "${compiler}" == *"g++"* ]]; then
-  conan_compiler="gcc";
-  conan_compiler_version=$(${compiler} -dumpversion | cut -d '.' -f 1,2);
-  export CC=gcc;
-fi
+function addCompilerPath() {
+  if [[ "${compiler}" == *"clang++"* ]]; then
+    conan_compiler="clang";
+    conan_compiler_version=$(${compiler} --version | grep -i version | tr -s ' ' | cut -d ' ' -f 3 | cut -d '-' -f 1 | cut -d '.' -f1,2);
+    export CC=clang;
+  elif [[ "${compiler}" == *"g++"* ]]; then
+    conan_compiler="gcc";
+    conan_compiler_version=$(${compiler} -dumpversion | cut -d '.' -f 1,2);
+    export CC=gcc;
+  fi
 
-# Flag `-v` not compatible with MSVC.
-#${compiler} -v;
-set +u; # Because of Windows OS doesn't have clang++ nor g++.
-echo "Detected '${conan_compiler}' '${conan_compiler_version}' compiler.";
-set -u;
+  # Flag `-v` not compatible with MSVC.
+  #${compiler} -v;
+  set +u; # Because of Windows OS doesn't have clang++ nor g++.
+  echo "Detected '${conan_compiler}' '${conan_compiler_version}' compiler.";
+  set -u;
 
-export CXX="${compiler}";
+  export CXX="${compiler}";
 
-# Fix compiler version used.
-#if [ "${conan_compiler_version}" == "9.0" ]; then
-#  conan_compiler_version=9;
-#fi
-#if [ "${conan_compiler_version}" == "12.0" ]; then
-#  conan_compiler_version=12;
-#fi
-#if [ "${conan_compiler_version}" == "4.2" ]; then
-#  conan_compiler_version=4.0;
-#fi
+  # Fix compiler version used.
+  #if [ "${conan_compiler_version}" == "9.0" ]; then
+  #  conan_compiler_version=9;
+  #fi
+  #if [ "${conan_compiler_version}" == "12.0" ]; then
+  #  conan_compiler_version=12;
+  #fi
+  #if [ "${conan_compiler_version}" == "4.2" ]; then
+  #  conan_compiler_version=4.0;
+  #fi
+}
+
+addCompilerPath;
 ###############################################################################
 ###############################################################################
 
@@ -142,19 +169,23 @@ export CXX="${compiler}";
 ###############################################################################
 # Get Conan path.
 ###############################################################################
-if [ ! -x "$(command -v conan)" ]; then
-  CONAN_PATH=$(find ~/ -iname "conan" || true);
-fi
+function addConanPath() {
+  if [ ! -x "$(command -v conan)" ]; then
+    CONAN_PATH=$(find ~/ -iname "conan" || true);
+  fi
 
-set +u;
-echo "Conan binary: ${CONAN_PATH}";
-echo "Conan location: ${CONAN_PATH%/conan}";
-if [ -n "${CONAN_PATH}" ]; then
-  PATH=${CONAN_PATH%/conan}:${PATH};
-fi
-set -u;
+  set +u;
+  echo "Conan binary: ${CONAN_PATH}";
+  echo "Conan location: ${CONAN_PATH%/conan}";
+  if [ -n "${CONAN_PATH}" ]; then
+    PATH=${CONAN_PATH%/conan}:${PATH};
+  fi
+  set -u;
 
-echo "PATH: ${PATH}";
+  echo "PATH: ${PATH}";
+}
+
+addConanPath;
 ###############################################################################
 ###############################################################################
 
@@ -162,13 +193,17 @@ echo "PATH: ${PATH}";
 ###############################################################################
 # Get CPU Architecture.
 ###############################################################################
-CPU_ARCHITECTURE=x86_64;
-if [ -x "$(command -v uname)" ]; then
-  CPU_ARCHITECTURE=$(uname -m);
-  if [ "${CPU_ARCHITECTURE}" == "aarch64" ]; then
-    CPU_ARCHITECTURE=armv8;
+function setCpuArchitecture() {
+  CPU_ARCHITECTURE=x86_64;
+  if [ -x "$(command -v uname)" ]; then
+    CPU_ARCHITECTURE=$(uname -m);
+    if [ "${CPU_ARCHITECTURE}" == "aarch64" ]; then
+      CPU_ARCHITECTURE=armv8;
+    fi
   fi
-fi
+}
+
+setCpuArchitecture;
 ###############################################################################
 ###############################################################################
 
@@ -214,19 +249,21 @@ function install_conan_dependencies() {
 ###############################################################################
 # Compile for native.
 ###############################################################################
+function create_build_folder() {
+  # Set path to build.
+  build_path=./build_${type};
 
-# Set path to build.
-build_path=./build_${type};
+  type=$(capitalizeFirstletter "${type}");
+  echo "type: '${type}'";
 
-type=$(capitalizeFirstletter "${type}");
-echo "type: '${type}'";
-
-if [ "${recompile}" == "yes" ]; then
-  rm -rf "${build_path:?Missing build path}"/*;
-fi
-mkdir -p "${build_path}";
+  if [ "${recompile}" == "yes" ]; then
+    rm -rf "${build_path:?Missing build path}"/*;
+  fi
+  mkdir -p "${build_path}";
+}
 
 function build() {
+  create_build_folder;
   cd "${build_path}";
 #  install_conan_dependencies;
 

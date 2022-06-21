@@ -251,5 +251,13 @@ function checkLastModifiedFiles() {
   echo "#####################################################################";
   set -e;
 }
+
+# Helper command to execute a command / function without exiting the script (without the set -e).
+function executeWithoutExiting () {
+  set +e;
+  "$@";
+  set -e;
+}
+
 ###############################################################################
 ###############################################################################
