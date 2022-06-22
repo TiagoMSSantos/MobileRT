@@ -100,11 +100,15 @@ execute_process( COMMAND git checkout --progress -f ${PCG_CPP_VERSION};
 
 execute_process( COMMAND git submodule foreach "
     dependency=$(git remote -v | head -n1 | awk '{print $2}');
-    last_stable_release=$(git tag -l --sort=-committerdate | grep -i [0-9] | grep -v beta | grep -v rc | grep -v preview | grep -v bug | head -1 || true);
+    releases=$(git -c 'versionsort.suffix=-' tag --list --sort=-version:refname);
+    stable_releases=$(echo \"\${releases}\" | grep -i [0-9] | grep -i [.] | grep -v beta | grep -v rc | grep -v preview | grep -v bug | grep -v .x);
+    echo \"Detected stable versions: \${stable_releases}\";
+    last_stable_release=$(echo \"\${stable_releases}\" | head -1 || true);
     if [ -z \${last_stable_release} ]; then
       last_stable_release='master';
     fi;
-    used_version=$(git name-rev --name-only HEAD | cut -d '/' -f2 | cut -d '^' -f1);
+    used_version_raw=$(git name-rev --name-only HEAD);
+    used_version=$(echo \"\${used_version_raw}\" | cut -d '/' -f2 | cut -d '^' -f1);
 
     if [ ! -z \$(git status -s) ]; then
       git status;
@@ -114,13 +118,14 @@ execute_process( COMMAND git submodule foreach "
 
     echo \"\";
     echo \"###############################################################\";
-    if [ \${used_version} = \${last_stable_release} ]; then
+    if [ \"\${used_version}\" = \"\${last_stable_release}\" ]; then
       echo \"Dependency: \${dependency}\";
       echo \"Using version: \${used_version}\";
     else
       echo \"\\033[0;33m      Dependency: \${dependency} \\e[0m\";
       echo \"\\033[0;31m      Last stable version detected: \${last_stable_release} \\e[0m\";
       echo \"\\033[0;31m      Using version: \${used_version} \\e[0m\";
+      echo \"\\033[0;31m      Using version raw: \${used_version_raw} \\e[0m\";
     fi;
     echo \"###############################################################\";
     echo \"\";

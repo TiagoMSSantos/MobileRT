@@ -385,7 +385,7 @@ if( NOT DEFINED ANDROID_ABI )
   message( STATUS "Finding Qt." )
   find_package( Qt5 OPTIONAL_COMPONENTS Core Gui Widgets )
   if( NOT QT5_FOUND )
-    find_package( Qt4 OPTIONAL_COMPONENTS QtCore QtGui )
+    find_package( Qt4 OPTIONAL_COMPONENTS QtCore QtGui QtWidgets )
   endif()
 endif()
 
@@ -457,11 +457,18 @@ else()
   if( CMAKE_HOST_SYSTEM_NAME MATCHES "Darwin" )
     message( STATUS "Linking Qt for MacOS." )
 
+    set( CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" /usr/local/lib/python3.9/site-packages/cmake/data/CMake.app/Contents/share/cmake-3.22/Modules/ CACHE STRING "CUSTOM" FORCE )
+    message( STATUS "CMAKE_MODULE_PATH = ${CMAKE_MODULE_PATH}" )
+
+    find_package( Qt4 OPTIONAL_COMPONENTS Core Gui Widgets )
+
     target_link_libraries( ${PROJECT_NAME} PRIVATE -F/usr/local/lib )
     target_link_libraries( ${PROJECT_NAME} PRIVATE -L/usr/local/lib )
 
     target_link_libraries( ${PROJECT_NAME} PRIVATE -F/usr/local/Cellar/qt@5/$ENV{QT_5_VERSION}/Frameworks )
     target_link_libraries( ${PROJECT_NAME} PRIVATE -L/usr/local/Cellar/qt@5/$ENV{QT_5_VERSION}/Frameworks )
+    target_link_libraries( ${PROJECT_NAME} PRIVATE -F/usr/local/Cellar/qt@4/$ENV{QT_4_VERSION}/Frameworks )
+    target_link_libraries( ${PROJECT_NAME} PRIVATE -L/usr/local/Cellar/qt@4/$ENV{QT_4_VERSION}/Frameworks )
 
     target_link_libraries( ${PROJECT_NAME} PRIVATE "-framework QtCore" )
     target_link_libraries( ${PROJECT_NAME} PRIVATE "-framework QtGui" )
@@ -472,7 +479,7 @@ else()
     if( Qt5_FOUND )
       target_link_libraries( ${PROJECT_NAME} PRIVATE Qt5::Core Qt5::Gui Qt5::Widgets )
     elseif( Qt4_FOUND )
-      target_link_libraries( ${PROJECT_NAME} PRIVATE Qt4::QtCore Qt4::QtGui )
+      target_link_libraries( ${PROJECT_NAME} PRIVATE Qt4::QtCore Qt4::QtGui Qt4::Widgets )
     endif()
 
   endif()

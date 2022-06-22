@@ -290,21 +290,24 @@ function parseArguments() {
       "tidy") clangtidy ;;
       "gtest") "${BIN_DEBUG_PATH}"/UnitTestsd ;;
       *)
-        echo "";
-        echo "Wrong Parameter: ${P}";
-        echo "The valid parameters are:";
-        echo "time - Profile application and log the measured times.";
-        echo "drawt - Draw a graph of latencies with GNU Plot.";
-        echo "draws - Draw a graph of speedups with GNU Plot.";
-        echo "release - Execute MobileRT in release mode.";
-        echo "debug - Execute MobileRT in debug mode.";
-        echo "tidy - Execute C++ linter (clang-tidy) in MobileRT.";
-        echo "gtest - Execute MobileRT's unit tests.";
+        echo -e "\nWrong Parameter: ${P}";
+        printArguments;
         break;
         ;;
       esac
     done
   fi
+}
+
+function printArguments() {
+  echo "The valid parameters are:";
+  echo "time - Profile application and log the measured times.";
+  echo "drawt - Draw a graph of latencies with GNU Plot.";
+  echo "draws - Draw a graph of speedups with GNU Plot.";
+  echo "release - Execute MobileRT in release mode.";
+  echo "debug - Execute MobileRT in debug mode.";
+  echo "tidy - Execute C++ linter (clang-tidy) in MobileRT.";
+  echo "gtest - Execute MobileRT's unit tests.";
 }
 ###############################################################################
 ###############################################################################

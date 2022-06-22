@@ -377,9 +377,9 @@ function runUnitTests() {
 
 function verifyResources() {
   echo "Verify resources in SD Card";
-  adb shell ls -Rla ${mobilert_path}/WavefrontOBJs;
-  adb shell ls -Rla ${sdcard_path}/WavefrontOBJs;
-  adb shell ls -Rla ${sdcard_path_android_11_emulator}/WavefrontOBJs;
+  adb shell ls -lahR ${mobilert_path}/WavefrontOBJs;
+  adb shell ls -lahR ${sdcard_path}/WavefrontOBJs;
+  adb shell ls -lahR ${sdcard_path_android_11_emulator}/WavefrontOBJs;
 #  adb shell cat ${sdcard_path}/WavefrontOBJs/CornellBox/CornellBox-Water.obj;
 #  adb shell cat ${sdcard_path}/WavefrontOBJs/CornellBox/CornellBox-Water.mtl;
 #  adb shell cat ${sdcard_path}/WavefrontOBJs/CornellBox/CornellBox-Water.cam;

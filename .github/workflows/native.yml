@@ -78,40 +78,67 @@ jobs:
       if: success() && startsWith(matrix.os, 'macos')
       working-directory: .
       run: |
-        ls /usr/local/Cellar/;
-        ls /usr/local/Cellar/qt@4/;
-        ls /usr/local/Cellar/qt@5/;
+        find /usr/local -iname "Find*Qt*.cmake" 2> /dev/null;
+        ls -lah /System/Volumes/Data/Applications;
 
-        # Create paths for Qt.
+        echo "Define Qt versions.";
+        export QT_4_VERSION="4.8.7_6.reinstall";
+        export QT_5_VERSION="5.15.5";
+        echo "QT_4_VERSION=${QT_4_VERSION}" >> ${GITHUB_ENV};
+        echo "QT_5_VERSION=${QT_5_VERSION}" >> ${GITHUB_ENV};
+
+        echo "Check Qt 5 paths exist.";
+        ls -lah /usr/local/Cellar/;
+        ls -lah /usr/local/Cellar/qt@5/;
+        ls -lah /usr/local/Cellar/qt@5/${QT_5_VERSION}/lib/;
+        ls -lah /usr/local/Cellar/qt@5/${QT_5_VERSION}/lib/QtWidgets.framework/Versions/5/Headers/
+        ls -lah /usr/local/Cellar/qt@5/${QT_5_VERSION}/lib/QtGui.framework/Versions/5/Headers/;
+        ls -lah /usr/local/Cellar/qt@5/${QT_5_VERSION}/lib/QtCore.framework/Versions/5/Headers/;
+
+        echo "Check Qt 4 paths exist.";
+        ls -lah /usr/local/Cellar/;
+        ls -lah /usr/local/Cellar/qt@4/;
+        ls -lah /usr/local/Cellar/qt@4/${QT_4_VERSION}/lib/;
+        ls -lah /usr/local/Cellar/qt@4/${QT_4_VERSION}/lib/QtGui.framework/Versions/4/Headers/;
+
+        echo "Create paths for Qt.";
         mkdir -p /usr/local/include/Qt/Qt/;
         mkdir -p /usr/local/include/Qt/QtWidgets/;
         mkdir -p /usr/local/include/Qt/QtGui/;
         mkdir -p /usr/local/include/Qt/QtCore/;
 
-        # Define Qt versions.
-        export QT_4_VERSION="4.8.7_6";
-        export QT_5_VERSION="5.15.3";
-        echo "QT_4_VERSION=${QT_4_VERSION}" >> ${GITHUB_ENV};
-        echo "QT_5_VERSION=${QT_5_VERSION}" >> ${GITHUB_ENV};
-
-        # Create symbolic links for Qt 4.
-        rsync -av --keep-dirlinks /usr/local/Cellar/qt@4/${QT_4_VERSION}/lib/QtGui.framework/Versions/4/Headers/ /usr/local/include/QtGui/;
-
-         # Create paths for Qt 5.
-        mkdir -p /usr/local/Cellar/qt@5/${QT_5_VERSION}/lib/QtWidgets.framework/Versions/5/Headers/;
-        mkdir -p /usr/local/Cellar/qt@5/${QT_5_VERSION}/lib/QtGui.framework/Versions/5/Headers/;
-        mkdir -p /usr/local/Cellar/qt@5/${QT_5_VERSION}/lib/QtCore.framework/Versions/5/Headers/;
-
-        # Create symbolic links for Qt 5.
+        echo "Create symbolic links for Qt 5 headers.";
         rsync -av --keep-dirlinks /usr/local/Cellar/qt@5/${QT_5_VERSION}/lib/QtWidgets.framework/Versions/5/Headers/ /usr/local/include/Qt/QtWidgets;
         rsync -av --keep-dirlinks /usr/local/Cellar/qt@5/${QT_5_VERSION}/lib/QtGui.framework/Versions/5/Headers/ /usr/local/include/Qt/QtGui;
         rsync -av --keep-dirlinks /usr/local/Cellar/qt@5/${QT_5_VERSION}/lib/QtCore.framework/Versions/5/Headers/ /usr/local/include/Qt/QtCore;
+
+        echo "Create symbolic links for Qt 4 headers.";
+        rsync -av --keep-dirlinks /usr/local/Cellar/qt@4/${QT_4_VERSION}/lib/QtGui.framework/Versions/4/Headers/ /usr/local/include/QtGui/;
+
+        echo "Create symbolic links to mix all Qt headers."
         rsync -av --keep-dirlinks /usr/local/include/Qt/QtWidgets/ /usr/local/include/Qt/Qt;
         rsync -av --keep-dirlinks /usr/local/include/Qt/QtGui/ /usr/local/include/Qt/Qt;
         rsync -av --keep-dirlinks /usr/local/include/Qt/QtCore/ /usr/local/include/Qt/Qt;
 
-        # Check files.
-        ls -lRa /usr/local/Cellar/qt@5/ | grep -ine "\.a" -ine "\.so" -ine "\.dylib";
+        echo "Update include and library paths.";
+        export CPLUS_INCLUDE_PATH="/usr/local/include/Qt/:${CPLUS_INCLUDE_PATH}";
+        export CPLUS_INCLUDE_PATH="/usr/local/include/Qt/QtWidgets/:${CPLUS_INCLUDE_PATH}";
+        export CPLUS_INCLUDE_PATH="/usr/local/include/Qt/QtGui/:${CPLUS_INCLUDE_PATH}";
+        export CPLUS_INCLUDE_PATH="/usr/local/include/Qt/QtCore/:${CPLUS_INCLUDE_PATH}";
+        export LIBRARY_PATH="/usr/local/Cellar/qt@5/${QT_5_VERSION}/lib/:${LIBRARY_PATH}";
+        echo "CPLUS_INCLUDE_PATH=${CPLUS_INCLUDE_PATH}" >> ${GITHUB_ENV};
+        echo "LIBRARY_PATH=${LIBRARY_PATH}" >> ${GITHUB_ENV};
+
+        export LDFLAGS="-L/usr/local/opt/qt@5/lib";
+        export CPPFLAGS="-I/usr/local/opt/qt@5/include";
+        export PKG_CONFIG_PATH="/usr/local/opt/qt@5/lib/pkgconfig";
+        echo "LDFLAGS=${LDFLAGS}" >> ${GITHUB_ENV};
+        echo "CPPFLAGS=${CPPFLAGS}" >> ${GITHUB_ENV};
+        echo "PKG_CONFIG_PATH=${PKG_CONFIG_PATH}" >> ${GITHUB_ENV};
+
+        echo "Check Qt files.";
+        ls -lah /usr/local/include/Qt/QtWidgets/;
+        # ls -lahR /usr/local/Cellar/qt@5/ | grep -ine "\.a" -ine "\.so" -ine "\.dylib";
         # lipo -info /usr/local/Cellar/qt@5/${QT_5_VERSION}/Frameworks/QtCore.framework;
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
@@ -123,6 +150,15 @@ jobs:
       run: |
         export QT_5_VERSION=${{ env.QT_5_VERSION }};
         echo "QT_5_VERSION: '${QT_5_VERSION}'";
+        export QT_4_VERSION=${{ env.QT_4_VERSION }};
+        echo "QT_4_VERSION: '${QT_4_VERSION}'";
+        export LDFLAGS=${{ env.LDFLAGS }};
+        echo "LDFLAGS: '${LDFLAGS}'";
+        export CPPFLAGS=${{ env.CPPFLAGS }};
+        echo "CPPFLAGS: '${CPPFLAGS}'";
+        export PKG_CONFIG_PATH=${{ env.PKG_CONFIG_PATH }};
+        echo "PKG_CONFIG_PATH: '${PKG_CONFIG_PATH}'";
+
         bash scripts/compile_native.sh -t ${{ matrix.type }} -c ${{ matrix.compiler }} 2>&1 | tee ./reports/run_cmake.log;
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
@@ -133,7 +169,7 @@ jobs:
       working-directory: build_${{ matrix.type }}
       run: |
         find . -iname "*.so" 2> /dev/null;
-        ls -Rla ./bin ./lib;
+        ls -lahR ./bin ./lib;
 
     - name: Generate code coverage base
       if: success() && matrix.compiler == 'g++' && matrix.type == 'debug' && startsWith(matrix.os, 'ubuntu')
