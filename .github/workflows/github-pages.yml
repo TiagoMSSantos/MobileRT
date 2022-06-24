@@ -1,4 +1,4 @@
-name: Deploy Jekyll GitHub Page
+name: Sync GitHub Page
 
 on:
   workflow_dispatch:
@@ -30,7 +30,7 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Install missing dependencies
-      if: success()
+      if: success() && false
       working-directory: .
       run: |
         set -euo pipefail;
@@ -40,7 +40,7 @@ jobs:
         sudo gem update bundler --conservative;
 
     - name: Trigger GitHub pages rebuild
-      if: success()
+      if: success() && github.event_name == 'workflow_dispatch'
       working-directory: .
       run: |
         curl --fail --request POST \

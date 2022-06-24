@@ -1,3 +1,34 @@
+# Jekyll configuration
+
+encoding: UTF-8
+domain: tiagomssantos.github.io # if you want to force HTTPS, specify the domain without the http at the start, e.g. example.com
+url: https://tiagomssantos.github.io  # the base hostname and protocol for your site, e.g. http://example.com
+baseurl: /MobileRT # the subpath of your site, e.g. /blog
+
+title: MobileRT
+email: tiago_s@outlook.pt
+description: >- # this means to ignore newlines until next config
+  MobileRT - A multi platform C++ CPU progressive Ray Tracer. 
+github_username:  TiagoMSSantos
+
+# Build settings
+markdown: GFM
 theme: jekyll-theme-midnight
+nomarkdown: true
+highlighter: rouge
+plugins:
+  - jekyll-feed
 include:
   - README.md
+
+# Kramdown settings
+# Check: https://jekyllrb.com/docs/configuration/markdown/ and https://github.com/kramdown/parser-gfm
+kramdown:
+  input: Kramdown
+  gfm_quirks: [paragraph_end]
+  hard_wrap: false # Interprets line breaks literally (default: true)
+  syntax_highlighter: rouge
+  syntax_highlighter_opts:
+    disable : false
+    line_numbers: table
+    css_class: 'highlight'
