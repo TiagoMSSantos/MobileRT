@@ -38,24 +38,36 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-11, ubuntu-20.04]
-        type: [debug, release]
         include:
-        - os: "ubuntu-20.04"
+        - os: ubuntu-20.04
           android_api: 16
           ndk_version: 22.1.7171670
           cmake_version: 3.10.2
+          type: release
 
-        - os: "macos-11"
+        - os: ubuntu-18.04
+          android_api: 16
+          ndk_version: 22.1.7171670
+          cmake_version: 3.10.2
+          type: debug
+
+        - os: macos-11
           android_api: 16
           ndk_version: 18.1.5063045
           cmake_version: 3.6.0
+          type: release
+
+        - os: macos-10.15
+          android_api: 16
+          ndk_version: 18.1.5063045
+          cmake_version: 3.6.0
+          type: debug
 
     env:
       SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
       KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
 
-    name: ${{ matrix.type }} (${{ matrix.os }})
+    name: API ${{ matrix.android_api }} ${{ matrix.type }} (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     timeout-minutes: 60
 

@@ -40,29 +40,25 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [""]
-        BASE_IMAGE: [""]
         include:
-        - os: "ubuntu-20.04"
-          BASE_IMAGE: "ubuntu:22.04"
+        - os: ubuntu-20.04
+          BASE_IMAGE: ubuntu:22.04
 
-        - os: "ubuntu-20.04"
-          BASE_IMAGE: "tgagor/centos:stream"
+        - os: ubuntu-20.04
+          BASE_IMAGE: tgagor/centos:stream
 
-        - os: "ubuntu-20.04"
-          BASE_IMAGE: "archlinux/archlinux:base-devel"
+        - os: ubuntu-20.04
+          BASE_IMAGE: archlinux/archlinux:base-devel
 
-        - os: "ubuntu-20.04"
-          BASE_IMAGE: "alpine:3.16"
+        - os: ubuntu-20.04
+          BASE_IMAGE: alpine:3.16
 
-        - os: "ubuntu-20.04"
-          BASE_IMAGE: "gentoo/stage3:latest"
+        - os: ubuntu-20.04
+          BASE_IMAGE: gentoo/stage3:latest
 
-        - os: "ubuntu-20.04"
-          BASE_IMAGE: "sickcodes/docker-osx:latest"
+        - os: ubuntu-20.04
+          BASE_IMAGE: sickcodes/docker-osx:latest
 
-        exclude:
-        - BASE_IMAGE: ""
     env:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}

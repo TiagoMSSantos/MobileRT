@@ -39,9 +39,38 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-11, ubuntu-20.04]
-        type: [debug, release]
-        compiler: [g++, clang++]
+        include:
+        - os: ubuntu-22.04
+          type: release
+          compiler: g++
+
+        - os: ubuntu-20.04
+          type: release
+          compiler: clang++
+
+        - os: ubuntu-20.04
+          type: debug
+          compiler: g++
+
+        - os: ubuntu-18.04
+          type: debug
+          compiler: clang++
+
+        - os: macos-12
+          type: release
+          compiler: g++
+
+        - os: macos-11
+          type: release
+          compiler: clang++
+
+        - os: macos-11
+          type: debug
+          compiler: g++
+
+        - os: macos-10.15
+          type: debug
+          compiler: clang++
 
     name: ${{ matrix.type }} ${{ matrix.compiler }} (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
