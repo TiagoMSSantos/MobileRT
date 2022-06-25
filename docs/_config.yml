@@ -12,6 +12,7 @@ description: >- # this means to ignore newlines until next config
 github_username:  TiagoMSSantos
 
 # Build settings
+# Use GitHub Flavored Markdown since it can parse HTML inside Markdown without any extra extension in the file
 markdown: GFM
 theme: jekyll-theme-midnight
 nomarkdown: true
