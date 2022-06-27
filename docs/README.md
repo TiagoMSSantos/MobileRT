@@ -1,9 +1,9 @@
-# MobileRT: Mobile Ray Tracing engine <br/>
-- A portable Ray Tracing (RT) engine for multiple devices. <br/>
-- Already available interfaces for:  <br/>
+# MobileRT: Mobile Ray Tracing engine
+- A portable Ray Tracing (RT) engine for multiple devices.
+- Already available interfaces for:
   - Android (through **Java** + **JNI** and **C**)
   - Linux, MacOS X, Windows (through **Qt** 4 or 5)
-- Compatible with C++ compilers:  <br/>
+- Compatible with C++ compilers:
   - GNU C++ Compiler (g++)
   - Clang++
   - MinGW (g++)
@@ -16,7 +16,6 @@
 [![Documentation](https://codedocs.xyz/TiagoMSSantos/MobileRT.svg)](https://codedocs.xyz/TiagoMSSantos/MobileRT/)
 [![Docker Pulls](https://img.shields.io/docker/pulls/ptpuscas/mobile_rt)](https://hub.docker.com/r/ptpuscas/mobile_rt)
 [![Gitbook documentation](https://badges.aleen42.com/src/gitbook_2.svg)](https://tiago-s.gitbook.io/mobilert/docs)
-
 
 [comment]: # (Continuous Integration & Code coverage)
 [![Unit Tests C++](https://github.com/TiagoMSSantos/MobileRT/workflows/Native%20(Qt)/badge.svg)](https://github.com/TiagoMSSantos/MobileRT/actions)
@@ -37,7 +36,6 @@
 <!-- Code beat server fails sometimes analysing the pull requests.
 [![codebeat badge](https://codebeat.co/assets/svg/badges/B-66bd63-dcc2e015f60fd0645631f8e7891440fb04fff8acc238aa755faf7de8c0ff7e2b.svg)](https://codebeat.co/projects/github-com-tiagomssantos-mobilert-master)
 -->
-
 
 <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/Example_Android.gif" alt="MobileRT: Android" width="400"/>
 <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/Example_Linux.gif" alt="MobileRT: Linux" height="400"/>
@@ -159,77 +157,68 @@ library for assertions unit tests
 
 ## Supported Operating Systems
 <div ><!-- The extra space before closing the tag is necessary for the GitHub Flavored Markdown parser to detect HTML -->
-  <table class="tg">
-    <thead>
-      <tr>
-        <th colspan="1" style="text-align:center">OS</th>
-        <th colspan="4" style="text-align:center">Versions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td style="text-align:center"><b>Android</td>
-        <td style="text-align:center">4.1 (API 16) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
-        <td style="text-align:center">4.2 (API 17) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
-        <td style="text-align:center">9 (API 28) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25"></td>
-        <td style="text-align:center">10 (API 29) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25"></td>
-      </tr>
-      <tr>
-        <td style="text-align:center"><b>MacOS</td>
-        <td style="text-align:center">10.14 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
-        <td style="text-align:center">10.15 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
-        <td style="text-align:center">11.0 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
-        <td style="text-align:center">12 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
-      </tr>
-      <tr>
-        <td style="text-align:center"><b>Windows</td>
-        <td style="text-align:center">Server 2019 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
-        <td style="text-align:center">Server 2022 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
-        <td style="text-align:center">10<br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
-        <td style="text-align:center">11<br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
-      </tr>
-      <tr>
-        <td style="text-align:center"><b>Ubuntu</td>
-        <td style="text-align:center">16.04 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25"></td>
-        <td style="text-align:center">18.04 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
-        <td style="text-align:center">20.04 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
-        <td style="text-align:center">22.04 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
-      </tr>
-      <tr>
-        <td style="text-align:center"><b>CentOS</td>
-        <td style="text-align:center">6 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
-        <td style="text-align:center">7 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
-        <td style="text-align:center">8 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25"></td>
-        <td style="text-align:center">stream <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
-      </tr>
-      <tr>
-        <td style="text-align:center"><b>Alpine</td>
-        <td style="text-align:center">3.13 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
-        <td style="text-align:center">3.14 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
-        <td style="text-align:center">3.15 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
-        <td style="text-align:center">3.16 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
-      </tr>
-      <tr>
-        <td style="text-align:center"><b>Arch Linux</td>
-        <td style="text-align:center">base-devel <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
-        <td style="text-align:center"></td>
-        <td style="text-align:center"></td>
-        <td style="text-align:center"></td>
-      </tr>
-      <tr>
-        <td style="text-align:center"><b>Gentoo</td>
-        <td style="text-align:center">stage3:x86 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
-        <td style="text-align:center"></td>
-        <td style="text-align:center"></td>
-        <td style="text-align:center"></td>
-      </tr>
-    </tbody>
+  <table><!-- Note: Doxygen does not support class="tg" -->
+    <!-- Note: Doxygen does not support thead nor tbody tags! -->
+    <tr>
+      <th colspan="1" style="text-align:center">OS</th>
+      <th colspan="4" style="text-align:center">Versions</th>
+    </tr>
+    <tr>
+      <td style="text-align:center"><b>Android</b></td>
+      <td style="text-align:center">4.1 (API 16) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
+      <td style="text-align:center">4.2 (API 17) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
+      <td style="text-align:center">9 (API 28) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25"></td>
+      <td style="text-align:center">10 (API 29) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25"></td>
+    </tr>
+    <tr>
+      <td style="text-align:center"><b>MacOS</b></td>
+      <td style="text-align:center">10.14 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
+      <td style="text-align:center">10.15 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
+      <td style="text-align:center">11.0 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
+      <td style="text-align:center">12 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
+    </tr>
+    <tr>
+      <td style="text-align:center"><b>Windows</b></td>
+      <td style="text-align:center">Server 2019 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
+      <td style="text-align:center">Server 2022 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
+      <td style="text-align:center">10<br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
+      <td style="text-align:center">11<br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
+    </tr>
+    <tr>
+      <td style="text-align:center"><b>Ubuntu</b></td>
+      <td style="text-align:center">16.04 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25"></td>
+      <td style="text-align:center">18.04 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
+      <td style="text-align:center">20.04 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
+      <td style="text-align:center">22.04 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
+    </tr>
+    <tr>
+      <td style="text-align:center"><b>CentOS</b></td>
+      <td style="text-align:center">6 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
+      <td style="text-align:center">7 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
+      <td style="text-align:center">8 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25"></td>
+      <td style="text-align:center">stream <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
+    </tr>
+    <tr>
+      <td style="text-align:center"><b>Alpine</b></td>
+      <td style="text-align:center">3.13 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
+      <td style="text-align:center">3.14 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
+      <td style="text-align:center">3.15 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
+      <td style="text-align:center">3.16 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
+    </tr>
+    <tr>
+      <td style="text-align:center"><b>Arch Linux</b></td>
+      <td style="text-align:center" colspan="4" align="center">base-devel <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
+    </tr>
+    <tr>
+      <td style="text-align:center"><b>Gentoo</b></td>
+      <td style="text-align:center" colspan="4" align="center">stage3:x86 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
+    </tr>
   </table>
-  Table: <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"> -> actively tested, <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25"> -> tested, <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"> -> not tested yet
+  Table: <br/>
+  <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="15" height="15" style="text-align:center" align="left"> -> actively tested <br/>
+  <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="15" height="15" align="left"> -> tested <br/>
+  <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="15" height="15" align="left"> -> not tested yet <br/>
 </div>
-
-## Master's dissertation
-This project started as a [Masters' dissertation](https://repositorium.sdum.uminho.pt/handle/1822/66577).
 
 ## Requirements
 It's necessary the following SDKs in order to compile this project for Android:
@@ -255,5 +244,8 @@ For native Windows support:
 For Linux in a [Docker](https://www.docker.com/) container:
   - [Docker Engine](https://docs.docker.com/engine/install/)
 
-Click [here](https://github.com/TiagoMSSantos/MobileRT/blob/master/docs/TODO.md) to check the TODO list. <br/>
-Click [here](https://github.com/TiagoMSSantos/MobileRT/blob/master/docs/TOOLS.md) to check the code coverage and code duplication commands. <br/>
+## Documentation
+This project started as a [Masters' dissertation](https://repositorium.sdum.uminho.pt/handle/1822/66577). <br/>
+Click [here](https://github.com/TiagoMSSantos/MobileRT/blob/master/docs/TODO.md?) to check the TODO list. <br/>
+Click [here](https://github.com/TiagoMSSantos/MobileRT/blob/master/docs/TOOLS.md?) to check the code coverage and code duplication commands. <br/>
+Click [here](https://codedocs.xyz/TiagoMSSantos/MobileRT/) to check the Doxygen codebase documentation. <br/>
