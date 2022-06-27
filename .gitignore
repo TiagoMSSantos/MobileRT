@@ -74,6 +74,9 @@
 **/*.blg
 **/*.synctex.gz
 
+# Doxygen output
+**/*doxygen*
+
 # Others temporary files
 **/*.d
 **/*.s

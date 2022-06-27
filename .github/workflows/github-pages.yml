@@ -52,6 +52,23 @@ jobs:
         # not yet support server-to-server page builds.
         USER_TOKEN: ${{ env.REPOSITORY_TOKEN }}
 
+    - name: Doxygen build
+      uses: mattnotmitt/doxygen-action@1.9.4
+      if: success()
+      with:
+        doxyfile-path: ".codedocs" # Path to Doxyfile (default is ./Doxyfile)
+        working-directory: "." # Working directory (default is .)
+        enable-latex: false # Flag to enable make-ing of the LaTeX part of the doxygen output (default is false)
+
+    - name: Doxygen deploy
+      uses: peaceiris/actions-gh-pages@v3
+      # Disabled since we use code docs for now: https://codedocs.xyz/TiagoMSSantos/MobileRT/
+      if: success() && false
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./docs/doxygen_html
+        publish_branch: gh-pages  # Branch name to use as GitHub Pages branch (default is gh-pages)
+
     - name: Sync README with docker hub
       if: success()
       uses: ms-jpq/sync-dockerhub-readme@v1
