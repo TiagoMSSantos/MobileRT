@@ -19,8 +19,10 @@
   ],
   "timezone": "UTC",
   "branchPrefix": "up-renovate-",
+  "fetchReleaseNotes": true,
   "separateMajorMinor": true,
   "separateMultipleMajor": true,
+  "separateMinorPatch": true,
   "ignoreTests": false,
   "prConcurrentLimit": 0,
   "prHourlyLimit": 0,
@@ -34,7 +36,8 @@
   },
   "patch": {
     "enabled": true,
-    "automerge": true
+    "automerge": true,
+    "groupName": "all patch updates"
   },
   "commitMessagePrefix": "renovate: ",
   "commitMessageSuffix": "",
