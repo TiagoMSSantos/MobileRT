@@ -32,6 +32,7 @@ import puscas.mobilertapp.configs.ConfigSamples;
 import puscas.mobilertapp.constants.Constants;
 import puscas.mobilertapp.constants.ConstantsMethods;
 import puscas.mobilertapp.constants.ConstantsRenderer;
+import puscas.mobilertapp.constants.ConstantsToast;
 import puscas.mobilertapp.constants.State;
 import puscas.mobilertapp.exceptions.LowMemoryException;
 import puscas.mobilertapp.utils.AsyncTaskCoroutine;
@@ -376,7 +377,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         MainActivity.resetErrno();
         return Optional.ofNullable(this.renderTask)
             .map(task -> State.values()[task.rtGetState()])
-            .orElse(State.BUSY);
+            .orElse(State.IDLE);
     }
 
     /**
@@ -613,6 +614,10 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         this.configResolutionView = configResolutionView;
 
         this.bitmap = Bitmap.createBitmap(configResolution.getWidth(), configResolution.getHeight(), Bitmap.Config.ARGB_8888);
+        // For some reason, only from Android 4.2+, the method `Bitmap.createBitmap` sets the
+        // `errno` to `ENOMEM` which means that the system didn't have enough memory to do some
+        // operation, so we set the `errno` back to 0 here.
+        MainActivity.resetErrno();
         try {
             this.bitmap.eraseColor(Color.BLACK);
             validateBitmap(this.bitmap);
@@ -906,20 +911,23 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
             log.info("onDrawFirstFrame");
             UtilsGL.resetOpenGlBuffers();
 
-            if (this.rasterize) {
-                this.rasterize = false;
-                this.bitmap = renderSceneIntoBitmap();
-            }
-
             try {
+                if (this.rasterize) {
+                    this.rasterize = false;
+                    this.bitmap = renderSceneIntoBitmap();
+                }
+
                 MainActivity.resetErrno();
                 rtRenderIntoBitmap(this.bitmap, this.numThreads);
-            } catch (final LowMemoryException ex) {
-                UtilsLogging.logThrowable(ex, "MainRenderer#onDrawFrame");
+            } catch (final Throwable ex) {
+                MainActivity.showUiMessage(ConstantsToast.COULD_NOT_RENDER_THE_SCENE + ex.getMessage());
+                MainActivity.resetRenderButton();
+                return;
+            } finally {
+                this.firstFrame = false;
             }
 
             createAndLaunchRenderTask();
-            this.firstFrame = false;
 
             final String message = "onDrawFirstFrame" + ConstantsMethods.FINISHED;
             log.info(message);
@@ -932,17 +940,11 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * Helper method that renders the scene with OpenGL to a {@link Bitmap}.
      *
      * @return A {@link Bitmap} with the scene rendered.
+     * @throws LowMemoryException If the device has low free memory.
      */
-    private Bitmap renderSceneIntoBitmap() {
-        try {
-            initPreviewArrays();
-
-            return renderSceneToBitmap(this.arrayVertices,
-                this.arrayColors, this.arrayCamera, this.numPrimitives);
-        } catch (final LowMemoryException ex) {
-            UtilsLogging.logThrowable(ex, "MainRenderer#renderSceneIntoBitmap");
-        }
-        return this.bitmap;
+    private Bitmap renderSceneIntoBitmap() throws LowMemoryException {
+        initPreviewArrays();
+        return renderSceneToBitmap(this.arrayVertices, this.arrayColors, this.arrayCamera, this.numPrimitives);
     }
 
 }

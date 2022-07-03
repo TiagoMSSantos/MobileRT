@@ -72,13 +72,13 @@ public final class UtilsContext {
         log.info(message);
 
         final File file = new File(sdCardPathCleaned);
-        final boolean readable = file.setReadable(true);
+        final boolean readable = file.setReadable(true, true);
         if (!file.canRead() && !readable) {
             throw new FailureException("External storage path is not readable: " + file.getAbsolutePath());
         }
-        final boolean writable = file.setWritable(true);
+        final boolean writable = file.setWritable(true, true);
         if (!file.canWrite() && !writable) {
-            throw new FailureException("External storage path is not writable: " + file.getAbsolutePath());
+            log.warning("External storage path is not writable: " + file.getAbsolutePath());
         }
 
         return sdCardPathCleaned;

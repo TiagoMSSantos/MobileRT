@@ -26,4 +26,9 @@ public final class ConstantsToast {
      */
     public static final String COULD_NOT_LOAD_THE_SCENE = "Could not load the scene!\n";
 
+    /**
+     * A warning message for when the Android device couldn't render the scene.
+     */
+    public static final String COULD_NOT_RENDER_THE_SCENE = "Could not render the scene!\n";
+
 }

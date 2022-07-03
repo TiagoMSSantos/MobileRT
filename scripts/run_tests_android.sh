@@ -307,7 +307,7 @@ function copyResources() {
   echo "Change resources permissions";
   callCommandUntilSuccess adb shell chmod -R 777 ${mobilert_path};
   callCommandUntilSuccess adb shell chmod -R 777 ${sdcard_path};
-  callCommandUntilSuccess adb shell chmod -R 777 ${sdcard_path_android_11_emulator};
+  callCommandUntilSuccess adb shell chmod -R 777 "/storage";
 
   echo "Install File Manager";
   callCommandUntilSuccess adb shell pm install -t -r "${mobilert_path}/APKs/com.asus.filemanager.apk";

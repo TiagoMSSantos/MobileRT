@@ -204,14 +204,15 @@ public final class DrawView extends GLSurfaceView {
 
         this.lastTask = this.executorService.submit(() -> {
             this.renderer.waitLastTask();
-            rtStartRender(true);
             try {
+                rtStartRender(true);
                 startRayTracing(config);
                 return Boolean.TRUE;
             } catch (final LowMemoryException ex) {
-                warningError(ex, ConstantsToast.DEVICE_WITHOUT_ENOUGH_MEMORY + ex.getMessage());
+                MainActivity.showUiMessage(ConstantsToast.DEVICE_WITHOUT_ENOUGH_MEMORY + ex.getMessage());
             } catch (final RuntimeException ex) {
-                warningError(ex, ConstantsToast.COULD_NOT_LOAD_THE_SCENE + ex.getMessage());
+                renderer.resetStats();
+                MainActivity.showUiMessage(ConstantsToast.COULD_NOT_LOAD_THE_SCENE + ex.getMessage());
             }
 
             final String messageFailed = ConstantsMethods.RENDER_SCENE + " executor failed";
@@ -243,7 +244,7 @@ public final class DrawView extends GLSurfaceView {
         log.info(message);
 
         createScene(config);
-        requestRender();
+        requestRender(); // This will make the `MainRenderer#onDrawFrame` method to be called.
 
         final String messageFinished = ConstantsMethods.RENDER_SCENE + " executor"
             + ConstantsMethods.FINISHED;
@@ -295,20 +296,6 @@ public final class DrawView extends GLSurfaceView {
             ConfigResolution.builder().width(widthView).height(heightView).build(),
             config.isRasterize()
         ));
-    }
-
-    /**
-     * A helper method that warnings the user about a system error.
-     *
-     * @param exception    The exception caught.
-     * @param errorMessage The error message.
-     */
-    private void warningError(@NonNull final Exception exception,
-                              final CharSequence errorMessage) {
-        this.renderer.resetStats();
-        final String message = exception.getClass() + ": " + exception.getMessage();
-        log.severe(message);
-        post(() -> Toast.makeText(getContext(), errorMessage, Toast.LENGTH_LONG).show());
     }
 
     @Override

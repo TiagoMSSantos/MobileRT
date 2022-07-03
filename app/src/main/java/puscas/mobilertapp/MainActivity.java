@@ -69,6 +69,18 @@ public final class MainActivity extends Activity {
      */
     private static final int REQUIRED_OPENGL_VERSION = 0x20000;
 
+    /**
+     * The current active instance of {@link MainActivity}.
+     * <p>
+     * This is probably a very bad idea but got not better solution to simplify the showing of
+     * custom messages on the UI so the user can understand better when the system crashes.
+     *
+     * @implNote This is necessary for the {@link MainActivity#showUiMessage(String)} method to
+     * have the application {@link Context} and so the method can be static and used anywhere in the
+     * codebase.
+     */
+    private static Activity currentInstance = null;
+
     /*
      ***********************************************************************
      * Static class initializer
@@ -145,6 +157,32 @@ public final class MainActivity extends Activity {
     private String sceneFilePath = null;
 
     /**
+     * Helper method that calls the UI thread to update the UI with a custom message.
+     *
+     * @param message The message to show on the UI.
+     * @implNote Only the UI thread can update the UI with messages by using {@link Toast}.
+     */
+    public static void showUiMessage(final String message) {
+        currentInstance.runOnUiThread(() -> {
+            log.info("showUiMessage");
+            Toast.makeText(currentInstance.getApplicationContext(), message, Toast.LENGTH_LONG).show();
+        });
+    }
+
+    /**
+     * Helper method that calls the UI thread to update the render button on the UI.
+     *
+     * @implNote Only the UI thread can update the state of the render button.
+     */
+    public static void resetRenderButton() {
+        currentInstance.runOnUiThread(() -> {
+            log.info("updateRenderButton");
+            final Button renderButton = currentInstance.findViewById(R.id.renderButton);
+            renderButton.setText(R.string.render);
+        });
+    }
+
+    /**
      * Helper method that checks if the supported OpenGL ES version is
      * the version 2 or greater.
      *
@@ -194,6 +232,7 @@ public final class MainActivity extends Activity {
      */
     @Override
     public void onCreate(@Nullable final Bundle savedInstanceState) {
+        currentInstance = this;
         super.onCreate(savedInstanceState);
         log.info("onCreate start");
 
@@ -389,18 +428,22 @@ public final class MainActivity extends Activity {
      * @param view The view of the {@link Activity}.
      */
     public void startRender(@NonNull final View view) {
-        final String message = ConstantsMethods.START_RENDER + ": " + view.toString();
-        log.info(message);
+        try {
+            final String message = ConstantsMethods.START_RENDER + ": " + view.toString();
+            log.info(message);
 
-        final State state = this.drawView.getRayTracerState();
-        if (state == State.BUSY) {
-            this.drawView.stopDrawing();
-        } else {
-            startRenderScene();
+            final State state = this.drawView.getRayTracerState();
+            if (state == State.BUSY) {
+                this.drawView.stopDrawing();
+            } else {
+                startRenderScene();
+            }
+
+            final String messageFinished = ConstantsMethods.START_RENDER + ConstantsMethods.FINISHED;
+            log.info(messageFinished);
+        } catch(final Throwable ex) {
+            MainActivity.showUiMessage(ConstantsToast.COULD_NOT_RENDER_THE_SCENE + ex.getMessage());
         }
-
-        final String messageFinished = ConstantsMethods.START_RENDER + ConstantsMethods.FINISHED;
-        log.info(messageFinished);
     }
 
     /**

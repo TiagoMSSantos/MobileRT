@@ -90,9 +90,8 @@ static ::std::atomic<bool> finishedRendering_ {true};
  * @param exceptionName The name of the exception class to throw.
  */
 static void handleException(JNIEnv *const env,
-                     const ::std::exception &exception,
-                     const char *const exceptionName) {
-    MobileRT::checkSystemError("handleException start");
+                            const ::std::exception &exception,
+                            const char *const exceptionName) {
     const auto clazz {env->FindClass(exceptionName)};
     const auto res {env->ThrowNew(clazz, exception.what())};
     if (res != 0) {
@@ -100,7 +99,8 @@ static void handleException(JNIEnv *const env,
     } else {
         LOG_ERROR(exceptionName, " thrown");
     }
-    MobileRT::checkSystemError("handleException finish");
+    state_ = State::IDLE;
+    finishedRendering_ = true;
 }
 
 extern "C"
@@ -216,8 +216,8 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitVerticesArray(
         // Ignore inappropriate I/O control operation
         errno = 0;
     }
-    MobileRT::checkSystemError("rtInitVerticesArray start");
     try {
+        MobileRT::checkSystemError("rtInitVerticesArray start");
         jobject directBuffer {};
         {
             const ::std::lock_guard<::std::mutex> lock {mutex_};
@@ -374,16 +374,20 @@ void Java_puscas_mobilertapp_DrawView_rtStartRender(
     jobject /*thiz*/,
     jboolean wait
 ) {
-    MobileRT::checkSystemError("rtStartRender start");
-    if (wait) {
-        ::std::unique_lock<::std::mutex> lock {mutex_};
-        rendered_.wait(lock, [&] { return finishedRendering_.load(); });
-        finishedRendering_ = false;
+    try {
+        MobileRT::checkSystemError("rtStartRender start");
+        if (wait) {
+            ::std::unique_lock<::std::mutex> lock {mutex_};
+            rendered_.wait(lock, [&] { return finishedRendering_.load(); });
+            finishedRendering_ = false;
+        }
+        state_ = State::BUSY;
+        LOG_DEBUG("STATE = BUSY");
+        env->ExceptionClear();
+        MobileRT::checkSystemError("rtStartRender finish");
+    } catch (const ::std::exception &exception) {
+        handleException(env, exception, "java/lang/RuntimeException");
     }
-    state_ = State::BUSY;
-    LOG_DEBUG("STATE = BUSY");
-    env->ExceptionClear();
-    MobileRT::checkSystemError("rtStartRender finish");
 }
 
 extern "C"
@@ -815,8 +819,9 @@ float Java_puscas_mobilertapp_RenderTask_rtGetFps(
     JNIEnv *env,
     jobject /*thiz*/
 ) {
-    if (errno == ETIMEDOUT) {
+    if (errno == ETIMEDOUT || errno == EBADF) {
         // Ignore connection timed out
+        // Ignore bad file descriptor
         errno = 0;
     }
     MobileRT::checkSystemError("rtGetFps start");
@@ -841,6 +846,10 @@ extern "C"
     JNIEnv *env,
     jobject /*thiz*/
 ) {
+    if (errno == EBADF) {
+        // Ignore bad file descriptor
+        errno = 0;
+    }
     MobileRT::checkSystemError("rtGetSample start");
     ::std::int32_t sample{};
     {

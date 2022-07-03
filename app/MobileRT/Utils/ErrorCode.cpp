@@ -14,32 +14,32 @@ namespace MobileRT {
 
     static ::std::vector<ErrorType> getErrorType() {
         static ::std::vector<ErrorType> errorType = {
-            {0, "SUCCESS" , "Success"},
+            {0, "SUCCESS" , "Success"},            // 0
             // Errors from errno-base.h
-            NewError(EPERM, "Operation not permitted"),
-            NewError(ENOENT, "No such file or directory"),
-            NewError(ESRCH, "No such process"),
-            NewError(EINTR, "Interrupted function"),
-            NewError(EIO, "I/O error"),
-            NewError(ENXIO, "No such device or address"),
-            NewError(E2BIG, "Argument list too long"),
-            NewError(ENOEXEC, "Executable file format error"),
-            NewError(EBADF, "Bad file descriptor"),
-            NewError(ECHILD, "No child processes"),
-            NewError(EAGAIN, "Resource unavailable, try again"),
-            NewError(ENOMEM, "Not enough space"),
-            NewError(EACCES, "Permission denied"),
-            NewError(EFAULT, "Bad address"),
+            NewError(EPERM, "Operation not permitted"),          // 1
+            NewError(ENOENT, "No such file or directory"),       // 2
+            NewError(ESRCH, "No such process"),                  // 3
+            NewError(EINTR, "Interrupted function"),             // 4
+            NewError(EIO, "I/O error"),                          // 5
+            NewError(ENXIO, "No such device or address"),        // 6
+            NewError(E2BIG, "Argument list too long"),           // 7
+            NewError(ENOEXEC, "Executable file format error"),   // 8
+            NewError(EBADF, "Bad file descriptor"),              // 9
+            NewError(ECHILD, "No child processes"),              // 10
+            NewError(EAGAIN, "Resource unavailable, try again"), // 11
+            NewError(ENOMEM, "Not enough space"),                // 12
+            NewError(EACCES, "Permission denied"),               // 13
+            NewError(EFAULT, "Bad address"),                     // 14
 #ifndef _WIN32
-            NewError(ENOTBLK, "Block device required"),// not compatible with Windows
+            NewError(ENOTBLK, "Block device required"), // not compatible with Windows (15)
 #endif
-            NewError(EBUSY, "Device or resource busy"),
-            NewError(EEXIST, "File exists"),
-            NewError(EXDEV, "Cross-device link"),
-            NewError(ENODEV, "No such device"),
-            NewError(ENOTDIR, "Not a directory"),
-            NewError(EISDIR, "Is a directory"),
-            NewError(EINVAL, "Invalid argument"),
+            NewError(EBUSY, "Device or resource busy"),          // 16
+            NewError(EEXIST, "File exists"),                     // 17
+            NewError(EXDEV, "Cross-device link"),                // 18
+            NewError(ENODEV, "No such device"),                  // 19
+            NewError(ENOTDIR, "Not a directory"),                // 20
+            NewError(EISDIR, "Is a directory"),                  // 21
+            NewError(EINVAL, "Invalid argument"),                // 22
             NewError(ENFILE, "Too many files open in system"),
             NewError(EMFILE, "File descriptor value too large"),
             NewError(ENOTTY, "Inappropriate I/O control operation"),

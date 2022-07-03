@@ -46,19 +46,19 @@ jobs:
           type: release
 
         - os: ubuntu-18.04
-          android_api: 16
+          android_api: 17
           ndk_version: 22.1.7171670
           cmake_version: 3.10.2
           type: debug
 
         - os: macos-11
-          android_api: 16
+          android_api: 19
           ndk_version: 18.1.5063045
           cmake_version: 3.6.0
           type: release
 
         - os: macos-10.15
-          android_api: 16
+          android_api: 18
           ndk_version: 18.1.5063045
           cmake_version: 3.6.0
           type: debug
@@ -69,7 +69,7 @@ jobs:
 
     name: API ${{ matrix.android_api }} ${{ matrix.type }} (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 60
+    timeout-minutes: 90
 
     steps:
     - name: Checkout
@@ -301,7 +301,7 @@ jobs:
 
     name: Code Coverage and Sonar
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 90
+    timeout-minutes: 120
     env:
       CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
