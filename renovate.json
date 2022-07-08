@@ -43,7 +43,7 @@
   "commitMessageSuffix": "",
   "rebaseWhen": "behind-base-branch",
   "reviewersFromCodeOwners": true,
-  "ignoreDeps": [],
+  "ignoreDeps": ["stb"],
   "git-submodules": {
     "enabled": false
   },
