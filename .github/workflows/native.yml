@@ -111,8 +111,8 @@ jobs:
         ls -lah /System/Volumes/Data/Applications;
 
         echo "Define Qt versions.";
-        export QT_4_VERSION="4.8.7_6.reinstall";
-        export QT_5_VERSION="5.15.5";
+        export QT_4_VERSION="$(ls /usr/local/Cellar/qt@4/ | head -1)";
+        export QT_5_VERSION="$(ls /usr/local/Cellar/qt@5/ | head -1)";
         echo "QT_4_VERSION=${QT_4_VERSION}" >> ${GITHUB_ENV};
         echo "QT_5_VERSION=${QT_5_VERSION}" >> ${GITHUB_ENV};
 
