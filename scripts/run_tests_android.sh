@@ -66,7 +66,6 @@ reports_path="./app/build/reports";
 echo "Set path to instrumentation tests resources";
 mobilert_path="/data/local/tmp/MobileRT";
 sdcard_path="/mnt/sdcard/MobileRT";
-sdcard_path_android_11_emulator="/storage/1CE6-261B/MobileRT";
 ###############################################################################
 ###############################################################################
 
@@ -162,13 +161,46 @@ function catch_signal() {
 ###############################################################################
 
 function unlockDevice() {
+  callCommandUntilSuccess ./gradlew --daemon;
+
+  echo "Set adb as root, to be able to change files permissions";
+  callCommandUntilSuccess adb root;
+
+  echo "Wait for device to be ready to unlock.";
+  callCommandUntilSuccess adb kill-server;
+  callCommandUntilSuccess adb kill-server;
+  callCommandUntilSuccess adb disconnect;
+  callCommandUntilSuccess adb disconnect;
+  echo "Killing previous Gradle Daemon process, just in case it was stuck.";
+  local GRADLE_DAEMON_PROCESS;
+  set +e;
+  GRADLE_DAEMON_PROCESS=$(ps aux | grep -i "grep -i GradleDaemon" | grep -v "grep" | tr -s ' ' | cut -d ' ' -f 2 | head -1);
+  echo "Will kill Gradle Daemon process: '${GRADLE_DAEMON_PROCESS}'";
+  kill -SIGKILL "${GRADLE_DAEMON_PROCESS}";
+  set -e;
+
+  # Make sure ADB daemon started properly.
+  callCommandUntilSuccess adb start-server;
+  callCommandUntilSuccess adb start-server;
+  callCommandUntilSuccess adb wait-for-device;
+  callCommandUntilSuccess adb wait-for-device;
+  # adb shell needs ' instead of ", so 'getprop' works properly.
+  callCommandUntilSuccess adb shell 'while [[ $(getprop service.bootanim.exit) -ne 1 ]]; do sleep 1; done;';
+  callCommandUntilSuccess adb shell 'while [[ $(getprop sys.boot_completed) -ne 1 ]]; do sleep 1; done;';
+
   echo "Unlock device";
-  callCommandUntilSuccess adb shell input tap 800 400;
   callCommandUntilSuccess adb shell input keyevent 82;
-  callCommandUntilSuccess adb shell input tap 800 600;
+  callCommandUntilSuccess adb shell input tap 800 800;
   callCommandUntilSuccess adb shell input keyevent 82;
-  callCommandUntilSuccess adb shell input tap 800 200;
+  callCommandUntilSuccess adb shell input tap 800 800;
   callCommandUntilSuccess adb shell input keyevent 82;
+  callCommandUntilSuccess adb shell input tap 800 800;
+
+  callCommandUntilSuccess adb start-server;
+  callCommandUntilSuccess adb start-server;
+  callCommandUntilSuccess adb get-state;
+  callCommandUntilSuccess adb devices -l;
+  callCommandUntilSuccess adb version;
 }
 
 function runEmulator() {
@@ -238,17 +270,6 @@ function waitForEmulator() {
   # Make the all other processes belong in the process group, so that will be killed at the end.
   set +m;
 
-  echo "Wait for device to be ready to unlock.";
-  adb kill-server;
-  callCommandUntilSuccess adb start-server;
-  callCommandUntilSuccess adb wait-for-device;
-  # adb shell needs ' instead of ", so 'getprop' works properly
-  callCommandUntilSuccess adb shell 'while [[ $(getprop service.bootanim.exit) -ne 1 ]]; do sleep 1; done;';
-  callCommandUntilSuccess adb shell whoami;
-
-  echo "Set adb as root, to be able to change files permissions";
-  callCommandUntilSuccess adb root;
-
   unlockDevice;
 
   local adb_devices_running;
@@ -261,62 +282,53 @@ function waitForEmulator() {
     echo "Android emulator didn't start ... will exit.";
     exit 1;
   fi
-  # Make sure ADB daemon started properly.
-  callCommandUntilSuccess adb start-server;
-  callCommandUntilSuccess adb wait-for-device;
+  unlockDevice;
 }
 
 function copyResources() {
   mkdir -p ${reports_path};
 
-  echo "Set adb as root, to be able to change files permissions";
-  callCommandUntilSuccess adb root;
-  echo "Checking files in root";
-  callCommandUntilSuccess adb shell ls -lah /;
-  echo "Checking files in /mnt";
-  callCommandUntilSuccess adb shell ls -lah /mnt;
+  unlockDevice;
+  sdcard_path_android="$(adb shell ls -d '/storage/*' | grep -v 'emulated' | grep -v 'self' | tail -1)";
+  # Delete all special character that might be invisible!
+  sdcard_path_android="$(echo "${sdcard_path_android}" | tr -dc '[:alnum:]-/')"
+  echo "sdcard_path_android: '${sdcard_path_android}'";
+  echo "Checking files in sd card:";
+  callCommandUntilSuccess adb shell ls -la "${sdcard_path_android}";
   echo "Prepare copy unit tests";
-  set +e;
-  adb shell mount -o remount,rw /mnt/sdcard;
-  adb shell mount -o remount,rw /data/local/tmp;
-  adb shell mount -o remount,rw /mnt/media_rw/1CE6-261B;
-  adb shell mount -o remount,rw /storage/1CE6-261B;
-  set -e;
   callCommandUntilSuccess adb shell mkdir -p ${mobilert_path};
   callCommandUntilSuccess adb shell mkdir -p ${sdcard_path};
-  callCommandUntilSuccess adb shell mkdir -p ${sdcard_path_android_11_emulator};
   callCommandUntilSuccess adb shell rm -r ${mobilert_path};
   callCommandUntilSuccess adb shell rm -r ${sdcard_path};
   # TODO: There is an issue removing previous resources with gradle v7:
   # rm: CornellBox-Water.cam: Read-only file system
-  # callCommandUntilSuccess adb shell rm -r ${sdcard_path_android_11_emulator};
-  callCommandUntilSuccess adb shell mkdir -p ${mobilert_path};
-  callCommandUntilSuccess adb shell mkdir -p ${sdcard_path};
-  callCommandUntilSuccess adb shell mkdir -p ${sdcard_path_android_11_emulator};
+  # callCommandUntilSuccess adb shell rm -r ${sdcard_path_android};
+  callCommandUntilSuccess adb shell mkdir -p ${mobilert_path}/WavefrontOBJs/teapot;
+  callCommandUntilSuccess adb shell mkdir -p ${sdcard_path}/WavefrontOBJs/CornellBox;
+  callCommandUntilSuccess adb shell mkdir -p ${sdcard_path_android}/MobileRT/WavefrontOBJs/CornellBox;
 
   echo "Copy tests resources";
-  callCommandUntilSuccess adb push app/src/androidTest/resources/teapot ${mobilert_path}/WavefrontOBJs/teapot;
-  callCommandUntilSuccess adb push app/src/androidTest/resources/CornellBox ${sdcard_path}/WavefrontOBJs/CornellBox;
+  callCommandUntilSuccess adb push -p app/src/androidTest/resources/teapot ${mobilert_path}/WavefrontOBJs;
+  callCommandUntilSuccess adb push -p app/src/androidTest/resources/CornellBox ${sdcard_path}/WavefrontOBJs;
   set +e;
-  adb push app/src/androidTest/resources/CornellBox ${sdcard_path_android_11_emulator}/WavefrontOBJs/CornellBox;
+  # Push to SD Card in `/storage/` if possible (necessary for Android 5+).
+  adb push -p app/src/androidTest/resources/CornellBox ${sdcard_path_android}/MobileRT/WavefrontOBJs;
   set -e;
 
   echo "Copy File Manager";
-  callCommandUntilSuccess adb push app/src/androidTest/resources/APKs ${mobilert_path}/;
+  callCommandUntilSuccess adb push -p app/src/androidTest/resources/APKs ${mobilert_path};
 
   echo "Change resources permissions";
   callCommandUntilSuccess adb shell chmod -R 777 ${mobilert_path};
   callCommandUntilSuccess adb shell chmod -R 777 ${sdcard_path};
-  callCommandUntilSuccess adb shell chmod -R 777 "/storage";
+  callCommandUntilSuccess adb shell chmod -R 777 ${sdcard_path_android}/MobileRT;
 
   echo "Install File Manager";
   callCommandUntilSuccess adb shell pm install -t -r "${mobilert_path}/APKs/com.asus.filemanager.apk";
 }
 
 function startCopyingLogcatToFile() {
-  # Make sure ADB daemon started properly.
-  callCommandUntilSuccess adb start-server;
-  callCommandUntilSuccess adb wait-for-device;
+  unlockDevice;
 
   # echo "Disable animations";
   # puscas.mobilertapp not found
@@ -332,7 +344,6 @@ function startCopyingLogcatToFile() {
   callCommandUntilSuccess adb shell setprop debug.checkjni 1;
 
   echo "Clear logcat";
-  callCommandUntilSuccess adb root;
   callCommandUntilSuccess adb shell logcat -b all -b main -b system -b radio -b events -b crash -c;
 
   echo "Copy realtime logcat to file";
@@ -357,8 +368,8 @@ function runUnitTests() {
   files=$(ls "${dirUnitTests}");
   echo "Copy unit tests bin: ${files}/bin";
   echo "Copy unit tests libs: ${files}/lib";
-  adb push "${dirUnitTests}"/bin/* ${mobilert_path}/;
-  adb push "${dirUnitTests}"/lib/* ${mobilert_path}/;
+  adb push -p "${dirUnitTests}"/bin/* ${mobilert_path}/;
+  adb push -p "${dirUnitTests}"/lib/* ${mobilert_path}/;
 
   echo "Run unit tests";
   if [ "${type}" == "debug" ]; then
@@ -377,9 +388,9 @@ function runUnitTests() {
 
 function verifyResources() {
   echo "Verify resources in SD Card";
-  adb shell ls -lahR ${mobilert_path}/WavefrontOBJs;
-  adb shell ls -lahR ${sdcard_path}/WavefrontOBJs;
-  adb shell ls -lahR ${sdcard_path_android_11_emulator}/WavefrontOBJs;
+  adb shell ls -laR ${mobilert_path}/WavefrontOBJs;
+  adb shell ls -laR ${sdcard_path}/WavefrontOBJs;
+  adb shell ls -laR ${sdcard_path_android}/MobileRT/WavefrontOBJs;
 #  adb shell cat ${sdcard_path}/WavefrontOBJs/CornellBox/CornellBox-Water.obj;
 #  adb shell cat ${sdcard_path}/WavefrontOBJs/CornellBox/CornellBox-Water.mtl;
 #  adb shell cat ${sdcard_path}/WavefrontOBJs/CornellBox/CornellBox-Water.cam;
@@ -407,15 +418,7 @@ function runInstrumentationTests() {
   jps | grep -i gradle | tr -s ' ' | cut -d ' ' -f 1 | head -1 | xargs kill -SIGKILL;
   set -e;
   ./gradlew --stop;
-
-  echo "Wait for device to be ready to unlock.";
-  adb kill-server;
-  # Make sure ADB daemon started properly.
-  callCommandUntilSuccess adb start-server;
-  callCommandUntilSuccess adb wait-for-device;
-  # adb shell needs ' instead of ", so 'getprop' works properly.
-  callCommandUntilSuccess adb shell 'while [[ $(getprop service.bootanim.exit) -ne 1 ]]; do sleep 1; done;';
-  callCommandUntilSuccess adb shell whoami;
+  unlockDevice;
 
   local numberOfFilesOpened;
   numberOfFilesOpened=$(adb shell lsof /dev/goldfish_pipe | wc -l);
@@ -429,10 +432,9 @@ function runInstrumentationTests() {
     set -e;
   fi
 
-  callCommandUntilSuccess ./gradlew --daemon;
-
   unlockDevice;
 
+  callCommandUntilSuccess adb start-server;
   if [ "${run_test}" == "all" ]; then
     echo "Running all tests";
     set +u; # Because 'code_coverage' is only set when debug
