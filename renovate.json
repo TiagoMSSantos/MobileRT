@@ -39,8 +39,6 @@
     "automerge": true,
     "groupName": "all patch updates"
   },
-  "commitMessagePrefix": "renovate: ",
-  "commitMessageSuffix": "",
   "rebaseWhen": "behind-base-branch",
   "reviewersFromCodeOwners": true,
   "ignoreDeps": ["stb"],
