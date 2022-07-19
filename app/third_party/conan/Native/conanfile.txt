@@ -1,6 +1,6 @@
 [requires]
 qt/5.14.2@bincrafters/stable
-glm/0.9.9.8
+glm/cci.20220420
 stb/cci.20210910
 
 [generators]
