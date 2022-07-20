@@ -281,6 +281,7 @@ function install_conan() {
 # Test dependencies.
 ###############################################################################
 function check_qt() {
+  echo "Checking Qt installation.";
   QT_PATH=$(find /usr/local -name "QDialog" -not -path "*/MobileRT" 2> /dev/null);
   echo "QT path Qt 1: ${QT_PATH}";
   QT_PATH=$(find /usr/local -name "qtwidgetsglobal.h" -not -path "*/MobileRT" 2> /dev/null);
@@ -294,7 +295,8 @@ function check_qt() {
 }
 
 function test_commands() {
-  check_qt;
+  echo "Checking required bash commands.";
+  # check_qt;
 
   checkCommand vim;
   checkCommand cmake;
