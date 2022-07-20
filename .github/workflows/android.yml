@@ -46,19 +46,19 @@ jobs:
           type: release
 
         - os: ubuntu-18.04
-          android_api: 17
+          android_api: 19
           ndk_version: 22.1.7171670
           cmake_version: 3.10.2
           type: debug
 
         - os: macos-11
-          android_api: 19
+          android_api: 29
           ndk_version: 18.1.5063045
           cmake_version: 3.6.0
           type: release
 
         - os: macos-10.15
-          android_api: 18
+          android_api: 24
           ndk_version: 18.1.5063045
           cmake_version: 3.6.0
           type: debug
@@ -69,7 +69,7 @@ jobs:
 
     name: API ${{ matrix.android_api }} ${{ matrix.type }} (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 90
+    timeout-minutes: 120
 
     steps:
     - name: Checkout
@@ -196,7 +196,9 @@ jobs:
         set -e;
         bash ./scripts/compile_android.sh -t ${{ matrix.type }} -r yes -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }};
         echo "Android application compiled.";
+        set +e;
         tree -f | grep -i "mobilert.so";
+        set -e;
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
         exit ${res};
@@ -205,7 +207,8 @@ jobs:
       if: success() && !startsWith(matrix.os, 'windows')
       uses: ReactiveCircus/android-emulator-runner@v2.25.0
       env:
-        NCPU_CORES: 4
+        NCPU_CORES: 3
+        MEM_MB: 2048
       with:
         api-level: ${{ matrix.android_api }}
         target: default
@@ -213,15 +216,21 @@ jobs:
         disable-animations: true
         disable-spellchecker: true
         channel: stable
-        emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none
-        cores: ${NCPU_CORES}
-        sdcard-path-or-size: 100M
-        ram-size: 1280M
+        emulator-options: -no-window -accel on -cores ${{ env.NCPU_CORES }} -memory ${{ env.MEM_MB }} -cache-size ${{ env.MEM_MB }} -partition-size ${{ env.MEM_MB }} -writable-system -ranchu -fixed-scale -skip-adb-auth -gpu swiftshader_indirect -no-audio -no-snapshot -no-snapstorage -no-snapshot-update-time -no-snapshot-save -no-snapshot-load -no-boot-anim -camera-back none -camera-front none -netfast -wipe-data -no-sim -no-passive-gps -read-only -no-direct-adb -no-location-ui -no-hidpi-scaling -no-mouse-reposition -no-nested-warnings -verbose
+        cores: ${{ env.NCPU_CORES }}
+        heap-size: ${{ env.MEM_MB }}M
+        sdcard-path-or-size: ${{ env.MEM_MB }}M
+        ram-size: ${{ env.MEM_MB }}M
+        disk-size: ${{ env.MEM_MB }}M
+        avd-name: Android_Emulator_API_${{ matrix.android_api }}
+        force-avd-creation: true
+        disable-linux-hw-accel: auto
+        enable-hw-keyboard: false
         script: |
           mkdir -p ./app/build/reports;
           mkdir -p ./build/reports;
           mkdir -p ./reports;
-          echo "Number cores: ${NCPU_CORES}";
+          echo "Number cores: ${{ env.NCPU_CORES }}";
           bash ./scripts/run_tests_android.sh -t ${{ matrix.type }} -r all -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -k false;
 
     - name: Check report's paths
@@ -371,6 +380,7 @@ jobs:
         exit 0;
 
     - name: Download Gradle cached packages
+      timeout-minutes: 3
       if: success()
       uses: actions/cache@v3
       env:

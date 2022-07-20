@@ -1,6 +1,5 @@
 -optimizations *
 -optimizationpasses 999999
 -keep class puscas.mobilertapp.exceptions.LowMemoryException {*;}
--target 11
 -android
 -verbose

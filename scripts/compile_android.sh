@@ -28,8 +28,18 @@ cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit;
 ###############################################################################
 # Get helper functions.
 ###############################################################################
-# shellcheck source=scripts/helper_functions.sh
+# shellcheck disable=SC1091
 source scripts/helper_functions.sh;
+###############################################################################
+###############################################################################
+
+
+###############################################################################
+# Execute Shellcheck on this script.
+###############################################################################
+if [ -x "$(command -v shellcheck)" ]; then
+  shellcheck "${0}" || exit
+fi
 ###############################################################################
 ###############################################################################
 
@@ -60,6 +70,7 @@ function printEnvironment() {
 ###############################################################################
 parseArgumentsToCompileAndroid "$@";
 printEnvironment;
+typeWithCapitalLetter=$(capitalizeFirstletter "${type}");
 ###############################################################################
 ###############################################################################
 
@@ -70,38 +81,17 @@ printEnvironment;
 
 # Set path to reports.
 reports_path=./app/build/reports;
-mkdir -p ${reports_path};
+callCommandUntilSuccess mkdir -p ${reports_path};
 
-type=$(capitalizeFirstletter "${type}");
 echo "type: '${type}'";
 
 function clearAllBuildFiles() {
-  set +e;
-  rm -rf ./app/build/;
-  set -e;
+  callCommandUntilSuccess rm -rf ./app/build/;
 
   if [ "${recompile}" == "yes" ]; then
-    rm -rf ./app/.cxx/;
-    rm -rf ./build/;
+    callCommandUntilSuccess rm -rf ./app/.cxx/;
+    callCommandUntilSuccess rm -rf ./build/;
   fi
-}
-
-function clearOldBuildFiles() {
-
-  files_being_used=$(find . -iname "*.fuse_hidden*" | grep -i ".fuse_hidden" || true);
-  echo "files_being_used: '${files_being_used}'";
-
-  if [ "${files_being_used}" != "" ]; then
-    while IFS= read -r file; do
-      while [[ -f "${file}" ]]; do
-        killProcessUsingFile "${file}";
-        echo "sleeping 1 sec";
-        sleep 1;
-      done
-    done <<<"${files_being_used}";
-  fi
-
-  clearAllBuildFiles;
 }
 
 function build() {
@@ -109,7 +99,9 @@ function build() {
   echo "Increasing ADB timeout to 10 minutes.";
   export ADB_INSTALL_TIMEOUT=60000;
   ./gradlew --stop;
-  ./gradlew clean assemble"${type}" --profile --parallel \
+  ./gradlew clean assembleAndroidTest bundle"${typeWithCapitalLetter}" \
+    -DtestType="${type}" \
+    --profile --parallel \
     -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
     --console plain \
     2>&1 | tee log_build_android_"${type}".log;
@@ -133,7 +125,11 @@ function install_conan_dependencies() {
   export CONAN="TRUE";
 }
 
+set +e;
+rm -rf ./app/build/;
+set -e;
 clearOldBuildFiles;
+clearAllBuildFiles;
 #install_conan_dependencies;
 build;
 checkLastModifiedFiles;

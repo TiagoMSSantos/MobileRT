@@ -1,6 +1,15 @@
 #!/bin/bash
 
 ###############################################################################
+# Execute Shellcheck on this script.
+###############################################################################
+if [ -x "$(command -v shellcheck)" ]; then
+  shellcheck "${0}" || exit
+fi
+###############################################################################
+###############################################################################
+
+###############################################################################
 # README
 ###############################################################################
 # This script contains a bunch of helper functions for the bash scripts.
@@ -166,7 +175,7 @@ function callCommandUntilSuccess() {
   "$@";
   local lastResult=${PIPESTATUS[0]};
   echo "result: '${lastResult}'";
-  while [[ "${lastResult}" -ne 0 && retry -lt 10 ]]; do
+  while [[ "${lastResult}" -ne 0 && retry -lt 20 ]]; do
     retry=$(("${retry}" + 1));
     "$@";
     lastResult=${PIPESTATUS[0]};
@@ -174,6 +183,33 @@ function callCommandUntilSuccess() {
     sleep 3;
   done
   set -e;
+  if [ "${lastResult}" -eq 0 ]; then
+    echo "'$*': success";
+  else
+    echo "'$*': failed";
+    exit "${lastResult}";
+  fi
+}
+
+# Call an ADB shell function multiple times until it doesn't fail and then return.
+function callAdbShellCommandUntilSuccess() {
+  echo "";
+  echo "Calling ADB shell command until success '$*'";
+  local retry=0;
+  local output;
+  output=$($@);
+  # echo "Output of command: '${output}'";
+  local lastResult;
+  lastResult=$(echo "${output}" | grep '::.*::' | sed 's/:://g'| tr -d '[:space:]');
+  echo "result: '${lastResult}'";
+  while [[ "${lastResult}" -ne 0 && retry -lt 10 ]]; do
+    retry=$(("${retry}" + 1));
+    output=$($@);
+    echo "Output of command: '${output}'";
+    lastResult=$(echo "${output}" | grep '::.*::' | sed 's/:://g' | tr -d '[:space:]');
+    echo "Retry: ${retry} of command '$*'; result: '${lastResult}'";
+    sleep 3;
+  done
   if [ "${lastResult}" -eq 0 ]; then
     echo "'$*': success";
   else
@@ -193,17 +229,6 @@ function printCommandExitCode() {
     echo "${2}: failed";
     exit "${1}";
   fi
-}
-
-# Kill a process that is using a file.
-function killProcessUsingFile() {
-  local processes_using_file;
-  processes_using_file=$(lsof "${1}" | tail -n +2 | tr -s ' ');
-  echo "processes_using_file: '${processes_using_file}'";
-  local process_id_using_file;
-  process_id_using_file=$(echo "${processes_using_file}" | cut -d ' ' -f 2 | head -1);
-  echo "Going to kill this process: '${process_id_using_file}'";
-  kill -SIGKILL "${process_id_using_file}";
 }
 
 # Check command is available.
@@ -257,6 +282,47 @@ function executeWithoutExiting () {
   set +e;
   "$@";
   set -e;
+}
+
+# Private method which kills a process that is using a file.
+function _killProcessUsingFile() {
+  local processes_using_file;
+  processes_using_file=$(lsof "${1}" | tail -n +2 | tr -s ' ');
+  local retry=0;
+  while [[ "${processes_using_file}" != "" && retry -lt 5 ]]; do
+    retry=$((retry + 1));
+    echo "processes_using_file: '${processes_using_file}'";
+    local process_id_using_file;
+    process_id_using_file=$(echo "${processes_using_file}" | cut -d ' ' -f 2 | head -1);
+    echo "Going to kill this process: '${process_id_using_file}'";
+    callCommandUntilSuccess kill -SIGKILL "${process_id_using_file}";
+    set +e;
+    processes_using_file=$(lsof "${1}" | tail -n +2 | tr -s ' ');
+    set -e;
+  done
+}
+
+# Delete all old build files (commonly called ".fuse_hidden<id>") that might not be able to be
+# deleted due to some process still using it. So this method detects which process uses them and
+# kills it first.
+function clearOldBuildFiles() {
+  files_being_used=$(find . -iname "*.fuse_hidden*" || true);
+  local retry=0;
+  while [[ "${files_being_used}" != "" && retry -lt 5 ]]; do
+    retry=$((retry + 1));
+    echo "files_being_used: '${files_being_used}'";
+    while IFS= read -r file; do
+      while [[ -f "${file}" ]]; do
+        _killProcessUsingFile "${file}";
+        echo "sleeping 2 secs";
+        sleep 2;
+        set +e;
+        rm "${file}";
+        set -e;
+      done
+    done <<<"${files_being_used}";
+    files_being_used=$(find . -iname "*.fuse_hidden*" | grep -i ".fuse_hidden" || true);
+  done
 }
 
 ###############################################################################

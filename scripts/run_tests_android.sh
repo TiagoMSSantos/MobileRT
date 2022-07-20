@@ -28,8 +28,18 @@ set -euo pipefail;
 ###############################################################################
 # Get helper functions.
 ###############################################################################
-# shellcheck source=scripts/helper_functions.sh
+# shellcheck disable=SC1091
 source scripts/helper_functions.sh;
+###############################################################################
+###############################################################################
+
+
+###############################################################################
+# Execute Shellcheck on this script.
+###############################################################################
+if [ -x "$(command -v shellcheck)" ]; then
+  shellcheck "${0}" || exit
+fi
 ###############################################################################
 ###############################################################################
 
@@ -89,7 +99,7 @@ function gather_logs_func() {
   echo "Gathering logs";
 
   echo "Finding at least 1 Android device on. (2)";
-  callCommandUntilSuccess adb shell ps > /dev/null;
+  callCommandUntilSuccess adb shell 'ps > /dev/null;';
 
   echo "Copy logcat to file"
   adb logcat -v threadtime -d "*":V \
@@ -101,10 +111,12 @@ function gather_logs_func() {
   pid_app=$(grep -E -i "proc.puscas:*" "${reports_path}"/logcat_"${type}".log |
     grep -i "pid=" | cut -d "=" -f 2 | cut -d "u" -f 1 | tr -d ' ' | tail -1);
   echo "Filter logcat of the app: ${pid_app}";
+  # shellcheck disable=SC2002
   cat "${reports_path}"/logcat_"${type}".log | grep -e "${pid_app}" -e "I DEBUG" \
       > "${reports_path}"/logcat_app_"${type}".log;
 
   echo "Filter realtime logcat of the app";
+  # shellcheck disable=SC2002
   cat "${reports_path}"/logcat_current_"${type}".log |
     grep -E -i "$(grep -E -i "proc.*:puscas" \
       "${reports_path}"/logcat_current_"${type}".log |
@@ -116,8 +128,6 @@ function gather_logs_func() {
   echo -e '\e]8;;file:///'"${PWD}"'/'"${reports_path}"'/androidTests/connected/index.html\aClick here to check the Android tests report.\e]8;;\a';
   echo -e '\e]8;;file:///'"${PWD}"'/'"${reports_path}"'/coverage/androidTest/'"${type}"'/index.html\aClick here to check the Code coverage report.\e]8;;\a';
   echo -e '\e]8;;file:///'"${PWD}"'/'"${reports_path}"'/logcat_app_'"${type}"'.log\aClick here to check the app log.\e]8;;\a';
-  echo "";
-  echo "";
 }
 
 function clear_func() {
@@ -131,7 +141,7 @@ function clear_func() {
   pid_app=$(adb shell ps | grep -i puscas.mobilertapp | tr -s ' ' | cut -d ' ' -f 2);
   echo "Killing pid of MobileRT: '${pid_app}'";
   set +e;
-  adb shell kill -SIGTERM "${pid_app}" 2> /dev/null;
+  callAdbShellCommandUntilSuccess adb shell 'kill -SIGTERM '"${pid_app}"'; echo ::$?::';
   set -e;
 
   # Kill all processes in the whole process group, thus killing also descendants.
@@ -149,7 +159,6 @@ function catch_signal() {
   gather_logs_func;
   # clear_func;
 
-  echo "";
   echo "";
 }
 ###############################################################################
@@ -169,33 +178,43 @@ function unlockDevice() {
   echo "Wait for device to be ready to unlock.";
   callCommandUntilSuccess adb kill-server;
   callCommandUntilSuccess adb kill-server;
+  callCommandUntilSuccess adb kill-server;
   callCommandUntilSuccess adb disconnect;
   callCommandUntilSuccess adb disconnect;
-  echo "Killing previous Gradle Daemon process, just in case it was stuck.";
+  callCommandUntilSuccess adb disconnect;
   local GRADLE_DAEMON_PROCESS;
   set +e;
+  # shellcheck disable=SC2009
   GRADLE_DAEMON_PROCESS=$(ps aux | grep -i "grep -i GradleDaemon" | grep -v "grep" | tr -s ' ' | cut -d ' ' -f 2 | head -1);
-  echo "Will kill Gradle Daemon process: '${GRADLE_DAEMON_PROCESS}'";
-  kill -SIGKILL "${GRADLE_DAEMON_PROCESS}";
+  echo "Detected Gradle Daemon process: '${GRADLE_DAEMON_PROCESS}'";
+  set +u;
+  if [ -z "${CI}" ]; then
+    echo "Killing previous Gradle Daemon process, just in case it was stuck: '${GRADLE_DAEMON_PROCESS}'";
+    kill -SIGKILL "${GRADLE_DAEMON_PROCESS}";
+  fi
+  set -u;
   set -e;
 
   # Make sure ADB daemon started properly.
   callCommandUntilSuccess adb start-server;
   callCommandUntilSuccess adb start-server;
+  callCommandUntilSuccess adb start-server;
+  callCommandUntilSuccess adb wait-for-device;
   callCommandUntilSuccess adb wait-for-device;
   callCommandUntilSuccess adb wait-for-device;
   # adb shell needs ' instead of ", so 'getprop' works properly.
-  callCommandUntilSuccess adb shell 'while [[ $(getprop service.bootanim.exit) -ne 1 ]]; do sleep 1; done;';
-  callCommandUntilSuccess adb shell 'while [[ $(getprop sys.boot_completed) -ne 1 ]]; do sleep 1; done;';
+  # shellcheck disable=SC2016
+  callCommandUntilSuccess adb shell 'while [[ $(getprop service.bootanim.exit) != 1 ]]; do sleep 1; done;';
+  # shellcheck disable=SC2016
+  callCommandUntilSuccess adb shell 'while [[ $(getprop sys.boot_completed) != 1 ]]; do sleep 1; done;';
+  # callCommandUntilSuccess adb shell 'while [[ $(dumpsys connectivity | grep -ine "NetworkAgentInfo.*CONNECTED") == "" ]]; do sleep 1; done;';
 
   echo "Unlock device";
-  callCommandUntilSuccess adb shell input keyevent 82;
-  callCommandUntilSuccess adb shell input tap 800 800;
-  callCommandUntilSuccess adb shell input keyevent 82;
-  callCommandUntilSuccess adb shell input tap 800 800;
-  callCommandUntilSuccess adb shell input keyevent 82;
-  callCommandUntilSuccess adb shell input tap 800 800;
+  callAdbShellCommandUntilSuccess adb shell 'input keyevent 82; echo ::$?::';
+  callAdbShellCommandUntilSuccess adb shell 'input tap 800 400; echo ::$?::';
+  callAdbShellCommandUntilSuccess adb shell 'input tap 1000 500; echo ::$?::';
 
+  callCommandUntilSuccess adb start-server;
   callCommandUntilSuccess adb start-server;
   callCommandUntilSuccess adb start-server;
   callCommandUntilSuccess adb get-state;
@@ -219,6 +238,7 @@ function runEmulator() {
   if [ "${kill_previous}" == true ]; then
     echo "Killing previous process";
     set +e;
+    # shellcheck disable=SC2009
     ps aux |
       grep -v "grep" |
       grep -v "${pid}" |
@@ -244,25 +264,45 @@ function waitForEmulator() {
   # Don't make the Android emulator belong in the process group, so it will not be killed at the end.
   set -m;
 
-  echo "Killing previous ADB process, just in case it was stuck.";
   local ADB_PROCESS;
   set +e;
+  # shellcheck disable=SC2009
   ADB_PROCESS=$(ps aux | grep -i "adb" | grep -v "grep" | tr -s ' ' | cut -d ' ' -f 2 | head -1);
-  echo "Will kill process: '${ADB_PROCESS}'";
-  kill -SIGKILL "${ADB_PROCESS}";
+  echo "Detected ADB process: '${ADB_PROCESS}'";
+  set +u;
+  if [ -z "${CI}" ]; then
+    echo "Killing previous ADB process, just in case it was stuck: '${ADB_PROCESS}'";
+    kill -SIGKILL "${ADB_PROCESS}";
+    sleep 3;
+  fi
+  set -u;
   local adb_devices_running;
   adb_devices_running=$(adb devices | tail -n +2);
+  local retry=0;
+  while [[ "${adb_devices_running}" == "" && retry -lt 3 ]]; do
+    retry=$((retry + 1));
+    echo "Booting a new Android emulator.";
+    # Possible CPU accelerators locally (Intel CPU + Linux OS based) [qemu-system-i386 -accel ?]:
+    # kvm, tcg
+    # Possible CPU accelerators:
+    # hvf is the MacOS Hypervisor.framework accelerator;
+    # hax is the cross-platform Intel HAXM accelerator;
+    # whp is the Windows Hypervisor Platform accelerator;
+    # xen is a type-1 hypervisor, providing services that allow multiple computer operating systems to execute on the same computer hardware concurrently;
+    # kvm is the Linux Kernel-based Virtual Machine accelerator;
+    # tcg is a JIT compiler that dynamically translates target instruction set architecture (ISA) to host ISA;
+    # Possible machines locally:
+    # q35
+    # pc
+    callCommandUntilSuccess cpulimit --cpu 8 --limit 800 -- emulator -avd "${avd_emulator}" -cores 8 -memory 2048 -cache-size 2048 -partition-size 2048 -writable-system -ranchu -fixed-scale -skip-adb-auth -gpu swiftshader_indirect -no-audio -no-snapshot -no-snapstorage -no-snapshot-update-time -no-snapshot-save -no-snapshot-load -no-boot-anim -camera-back none -camera-front none -netfast -wipe-data -no-sim -no-passive-gps -read-only -no-direct-adb -no-location-ui -no-hidpi-scaling -no-mouse-reposition -no-nested-warnings -verbose -qemu -vga std -m 2048M -machine type=pc,accel=kvm -accel kvm,thread=multi:tcg,thread=multi -smp 8 &
+    sleep 20;
+    adb_devices_running=$(adb devices | tail -n +2);
+  done
   set -e;
   echo "Devices running: '${adb_devices_running}'";
-  if [ -z "${adb_devices_running}" ]; then
-    echo "Booting a new Android emulator";
-    callCommandUntilSuccess cpulimit -- emulator -avd "${avd_emulator}" -writable-system &
-  else
-    echo "Android emulator '${adb_devices_running}' already running.";
-  fi
 
   echo "Finding at least 1 Android device on. (1)";
-  callCommandUntilSuccess adb shell ps > /dev/null;
+  callCommandUntilSuccess adb shell 'ps > /dev/null;';
 
   echo "Prepare traps";
   trap 'catch_signal ${?} ${LINENO}' EXIT SIGHUP SIGINT SIGQUIT SIGILL SIGTRAP SIGABRT SIGTERM;
@@ -273,10 +313,11 @@ function waitForEmulator() {
   unlockDevice;
 
   local adb_devices_running;
+  callCommandUntilSuccess adb devices;
   set +e;
-  adb_devices_running=$(callCommandUntilSuccess adb devices | grep -v "List of devices attached");
+  adb_devices_running=$(adb devices | grep -v 'List of devices attached');
   set -e;
-  echo "Devices running: '${adb_devices_running}'";
+  echo "Devices running after triggering boot: '${adb_devices_running}'";
   if [ -z "${adb_devices_running}" ]; then
     # Abort if emulator didn't start.
     echo "Android emulator didn't start ... will exit.";
@@ -291,40 +332,47 @@ function copyResources() {
   unlockDevice;
   sdcard_path_android="$(adb shell ls -d '/storage/*' | grep -v 'emulated' | grep -v 'self' | tail -1)";
   # Delete all special character that might be invisible!
-  sdcard_path_android="$(echo "${sdcard_path_android}" | tr -dc '[:alnum:]-/')"
+  sdcard_path_android="$(echo "${sdcard_path_android}" | tr -d '[:space:]')";
+  if [[ "${sdcard_path_android}" == *"Nosuchfileordirectory"* ]]; then
+    # If there is no SD card volume mounted on /storage/ path, then use the legacy path.
+    sdcard_path_android=${sdcard_path};
+  else
+    sdcard_path_android="${sdcard_path_android}/MobileRT";
+  fi
   echo "sdcard_path_android: '${sdcard_path_android}'";
-  echo "Checking files in sd card:";
-  callCommandUntilSuccess adb shell ls -la "${sdcard_path_android}";
+
   echo "Prepare copy unit tests";
-  callCommandUntilSuccess adb shell mkdir -p ${mobilert_path};
-  callCommandUntilSuccess adb shell mkdir -p ${sdcard_path};
-  callCommandUntilSuccess adb shell rm -r ${mobilert_path};
-  callCommandUntilSuccess adb shell rm -r ${sdcard_path};
-  # TODO: There is an issue removing previous resources with gradle v7:
-  # rm: CornellBox-Water.cam: Read-only file system
-  # callCommandUntilSuccess adb shell rm -r ${sdcard_path_android};
-  callCommandUntilSuccess adb shell mkdir -p ${mobilert_path}/WavefrontOBJs/teapot;
-  callCommandUntilSuccess adb shell mkdir -p ${sdcard_path}/WavefrontOBJs/CornellBox;
-  callCommandUntilSuccess adb shell mkdir -p ${sdcard_path_android}/MobileRT/WavefrontOBJs/CornellBox;
+  callAdbShellCommandUntilSuccess adb shell 'mkdir -p '${mobilert_path}'; echo ::$?::';
+  callAdbShellCommandUntilSuccess adb shell 'mkdir -p '${sdcard_path}'; echo ::$?::';
+  callAdbShellCommandUntilSuccess adb shell 'mkdir -p '${sdcard_path_android}'; echo ::$?::';
+
+  callAdbShellCommandUntilSuccess adb shell 'rm -r '${mobilert_path}'; echo ::$?::';
+  callAdbShellCommandUntilSuccess adb shell 'rm -r '${sdcard_path}'; echo ::$?::';
+  # TODO: Deleting recently created path in SD card fails on CI pipeline,
+  # callAdbShellCommandUntilSuccess adb shell 'rm -r '${sdcard_path_android}'; echo ::$?::';
+
+  callAdbShellCommandUntilSuccess adb shell 'mkdir -p '${mobilert_path}'/WavefrontOBJs/teapot; echo ::$?::';
+  callAdbShellCommandUntilSuccess adb shell 'mkdir -p '${sdcard_path}'/WavefrontOBJs/CornellBox; echo ::$?::';
+  callAdbShellCommandUntilSuccess adb shell 'mkdir -p '${sdcard_path_android}'/WavefrontOBJs/CornellBox; echo ::$?::';
 
   echo "Copy tests resources";
   callCommandUntilSuccess adb push -p app/src/androidTest/resources/teapot ${mobilert_path}/WavefrontOBJs;
   callCommandUntilSuccess adb push -p app/src/androidTest/resources/CornellBox ${sdcard_path}/WavefrontOBJs;
   set +e;
   # Push to SD Card in `/storage/` if possible (necessary for Android 5+).
-  adb push -p app/src/androidTest/resources/CornellBox ${sdcard_path_android}/MobileRT/WavefrontOBJs;
+  adb push -p app/src/androidTest/resources/CornellBox ${sdcard_path_android}/WavefrontOBJs;
   set -e;
 
   echo "Copy File Manager";
   callCommandUntilSuccess adb push -p app/src/androidTest/resources/APKs ${mobilert_path};
 
   echo "Change resources permissions";
-  callCommandUntilSuccess adb shell chmod -R 777 ${mobilert_path};
-  callCommandUntilSuccess adb shell chmod -R 777 ${sdcard_path};
-  callCommandUntilSuccess adb shell chmod -R 777 ${sdcard_path_android}/MobileRT;
+  callAdbShellCommandUntilSuccess adb shell 'chmod -R 777 '${mobilert_path}'; echo ::$?::';
+  callAdbShellCommandUntilSuccess adb shell 'chmod -R 777 '${sdcard_path}'; echo ::$?::';
+  callAdbShellCommandUntilSuccess adb shell 'chmod -R 777 '${sdcard_path_android}'; echo ::$?::';
 
   echo "Install File Manager";
-  callCommandUntilSuccess adb shell pm install -t -r "${mobilert_path}/APKs/com.asus.filemanager.apk";
+  callAdbShellCommandUntilSuccess adb shell 'pm install -t -r '${mobilert_path}'/APKs/com.asus.filemanager.apk; echo ::$?::';
 }
 
 function startCopyingLogcatToFile() {
@@ -340,11 +388,13 @@ function startCopyingLogcatToFile() {
   # adb shell settings put global animator_duration_scale 0.0;
 
   echo "Activate JNI extended checking mode";
-  callCommandUntilSuccess adb shell setprop dalvik.vm.checkjni true;
-  callCommandUntilSuccess adb shell setprop debug.checkjni 1;
+  callAdbShellCommandUntilSuccess adb shell 'setprop dalvik.vm.checkjni true; echo ::$?::';
+  callAdbShellCommandUntilSuccess adb shell 'setprop debug.checkjni 1; echo ::$?::';
 
   echo "Clear logcat";
-  callCommandUntilSuccess adb shell logcat -b all -b main -b system -b radio -b events -b crash -c;
+  # -b all -> Unable to open log device '/dev/log/all': No such file or directory
+  # -b crash -> Unable to open log device '/dev/log/crash': No such file or directory
+  callAdbShellCommandUntilSuccess adb shell 'logcat -b main -b system -b radio -b events -c; echo ::$?::';
 
   echo "Copy realtime logcat to file";
   adb logcat -v threadtime "*":V \
@@ -355,6 +405,7 @@ function startCopyingLogcatToFile() {
 
 function runUnitTests() {
   local dirUnitTests;
+  echo "Copy unit tests to Android emulator.";
   ls app/.cxx;
   if [ "${type}" == "release" ]; then
     typeWithCapitalLetter="RelWithDebInfo"
@@ -368,8 +419,11 @@ function runUnitTests() {
   files=$(ls "${dirUnitTests}");
   echo "Copy unit tests bin: ${files}/bin";
   echo "Copy unit tests libs: ${files}/lib";
-  adb push -p "${dirUnitTests}"/bin/* ${mobilert_path}/;
-  adb push -p "${dirUnitTests}"/lib/* ${mobilert_path}/;
+
+  unlockDevice;
+
+  callCommandUntilSuccess adb push -p "${dirUnitTests}"/bin/* ${mobilert_path}/;
+  callCommandUntilSuccess adb push -p "${dirUnitTests}"/lib/* ${mobilert_path}/;
 
   echo "Run unit tests";
   if [ "${type}" == "debug" ]; then
@@ -388,9 +442,9 @@ function runUnitTests() {
 
 function verifyResources() {
   echo "Verify resources in SD Card";
-  adb shell ls -laR ${mobilert_path}/WavefrontOBJs;
-  adb shell ls -laR ${sdcard_path}/WavefrontOBJs;
-  adb shell ls -laR ${sdcard_path_android}/MobileRT/WavefrontOBJs;
+  callCommandUntilSuccess adb shell 'ls -laR '${mobilert_path}/WavefrontOBJs;
+  callCommandUntilSuccess adb shell 'ls -laR '${sdcard_path}/WavefrontOBJs;
+  callCommandUntilSuccess adb shell 'ls -laR '${sdcard_path_android}/WavefrontOBJs;
 #  adb shell cat ${sdcard_path}/WavefrontOBJs/CornellBox/CornellBox-Water.obj;
 #  adb shell cat ${sdcard_path}/WavefrontOBJs/CornellBox/CornellBox-Water.mtl;
 #  adb shell cat ${sdcard_path}/WavefrontOBJs/CornellBox/CornellBox-Water.cam;
@@ -403,9 +457,10 @@ function verifyResources() {
   fi
 
   echo "Verify memory available on Android emulator:";
-  adb shell free -h;
+  # TODO: There is no `free` in CI.
+  # callAdbShellCommandUntilSuccess adb shell 'free -m; echo ::$?::';
   set +e;
-  adb shell cat /proc/meminfo;
+  callAdbShellCommandUntilSuccess adb shell 'cat /proc/meminfo; echo ::$?::';
   echo "Verified memory available on Android emulator.";
 
   grep -r "hw.ramSize" ~/.android 2> /dev/null;
@@ -413,47 +468,81 @@ function verifyResources() {
 }
 
 function runInstrumentationTests() {
+
   echo "Run instrumentation tests";
   set +e;
-  jps | grep -i gradle | tr -s ' ' | cut -d ' ' -f 1 | head -1 | xargs kill -SIGKILL;
-  set -e;
-  ./gradlew --stop;
-  unlockDevice;
+  set +u;
+  if [ -z "${CI}" ]; then
+    jps | grep -i "gradle" | tr -s ' ' | cut -d ' ' -f 1 | head -1 | xargs kill -SIGKILL;
+    ./gradlew --stop;
 
-  local numberOfFilesOpened;
-  numberOfFilesOpened=$(adb shell lsof /dev/goldfish_pipe | wc -l);
-  if [ "${numberOfFilesOpened}" -gt "32000" ]; then
-    echo "Kill 'graphics.allocator' process since it has a bug where it
-      accumulates a memory leak by continuously using more and more
-      files of '/dev/goldfish_pipe' and never freeing them.";
-    echo "This might make the device restart!";
-    set +e;
-    adb shell ps | grep -ine "graphics.allocator" | tr -s ' ' | cut -d ' ' -f 2 | xargs adb shell kill;
-    set -e;
+    local numberOfFilesOpened;
+    numberOfFilesOpened=$(adb shell lsof /dev/goldfish_pipe | wc -l);
+    if [ "${numberOfFilesOpened}" -gt "32000" ]; then
+      echo "Kill 'graphics.allocator' process since it has a bug where it
+        accumulates a memory leak by continuously using more and more
+        files of '/dev/goldfish_pipe' and never freeing them.";
+      echo "This might make the device restart!";
+      set +e;
+      adb shell ps | grep -ine "graphics.allocator" | tr -s ' ' | cut -d ' ' -f 2 | xargs adb shell kill;
+      set -e;
+    fi
   fi
+  set -u;
+  set -e;
 
+  local apkPath;
+  echo "Searching for APK to install in Android emulator.";
+  find . -iname "*.apk" | grep -i "output";
+  apkPath=$(find . -iname "*.apk" | grep -i "output" | grep -i "${type}" | grep -i "test");
+  echo "Will install APK: ${apkPath}";
+  callCommandUntilSuccess adb push -p "${apkPath}" "${mobilert_path}";
+  callCommandUntilSuccess adb shell 'ls -la '${mobilert_path};
+  ./gradlew createDebugAndroidTestApkListingFileRedirect;
+  callAdbShellCommandUntilSuccess adb shell 'pm install -t -r '${mobilert_path}'/app-'${type}'-androidTest.apk; echo ::$?::';
+  echo "List of instrumented APKs:";
+  adb shell 'pm list instrumentation;';
   unlockDevice;
 
-  callCommandUntilSuccess adb start-server;
   if [ "${run_test}" == "all" ]; then
     echo "Running all tests";
-    set +u; # Because 'code_coverage' is only set when debug
+    mkdir -p ./app/build/reports/coverage/androidTest/debug/;
+    set +u; # Because 'code_coverage' is only set when debug.
     ./gradlew connected"${type}"AndroidTest -DtestType="${type}" \
       -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
       ${code_coverage} --console plain --parallel \
       2>&1 | tee ${reports_path}/log_tests_"${type}".log;
     set -u;
+    # if [ "${type}" == "debug" ]; then
+    #   adb shell am instrument \
+    #     -e coverage true \
+    #     -w puscas.mobilertapp.test/androidx.test.runner.AndroidJUnitRunner \
+    #     2>&1 | tee ${reports_path}/log_tests_"${type}".log;
+    #   coverageFile=$(adb shell 'find / -iname "*.ec" 2> /dev/null' | grep -i mobilert | head -1 | tr -d '[:space:]');
+    #   adb pull "${coverageFile}";
+    #   java -jar jacococli.jar report coverage.ec --classfiles ./app/build/intermediates/javac/debug/classes/puscas/mobilertapp/ --xml ./app/build/reports/coverage/androidTest/debug/report.xml;
+    # else
+    #   adb shell am instrument \
+    #     -e coverage true \
+    #     -w puscas.mobilertapp.test/androidx.test.runner.AndroidJUnitRunner \
+    #     2>&1 | tee ${reports_path}/log_tests_"${type}".log;
+    #   coverageFile=$(adb shell 'find / -iname "*.ec" 2> /dev/null' | grep -i mobilert | head -1 | tr -d '[:space:]');
+    #   adb pull "${coverageFile}";
+    #   java -jar jacococli.jar report coverage.ec --classfiles ./app/build/intermediates/javac/debug/classes/puscas/mobilertapp/ --xml ./app/build/reports/coverage/androidTest/debug/report.xml;
+    # fi
   elif [[ ${run_test} == rep_* ]]; then
     run_test_without_prefix=${run_test#"rep_"};
     echo "Repeatable of test: ${run_test_without_prefix}";
-    callCommandUntilError ./gradlew connected"${type}"AndroidTest -DtestType="${type}" \
+    callCommandUntilError ./gradlew connectedAndroidTest \
+      -DtestType="${type}" \
       -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
       -Pandroid.testInstrumentationRunnerArguments.class="${run_test_without_prefix}" \
       --console plain --parallel \
       2>&1 | tee ${reports_path}/log_tests_"${type}".log;
   else
     echo "Running test: ${run_test}";
-    ./gradlew connected"${type}"AndroidTest -DtestType="${type}" \
+    ./gradlew connectedAndroidTest \
+      -DtestType="${type}" \
       -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
       -Pandroid.testInstrumentationRunnerArguments.class="${run_test}" \
       --console plain --parallel \
@@ -471,6 +560,7 @@ function runInstrumentationTests() {
 ###############################################################################
 ###############################################################################
 
+clearOldBuildFiles;
 runEmulator;
 waitForEmulator;
 copyResources;
