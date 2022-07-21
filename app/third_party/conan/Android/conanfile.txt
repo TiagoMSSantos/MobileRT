@@ -1,5 +1,5 @@
 [requires]
-glm/cci.20220420
+glm/0.9.9.8
 stb/cci.20210910
 
 [generators]
