@@ -41,7 +41,7 @@
   },
   "rebaseWhen": "behind-base-branch",
   "reviewersFromCodeOwners": true,
-  "ignoreDeps": ["stb"],
+  "ignoreDeps": ["stb", "glm"],
   "git-submodules": {
     "enabled": false
   },
