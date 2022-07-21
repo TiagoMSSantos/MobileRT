@@ -51,6 +51,10 @@
   "pre-commit": {
     "enabled": true
   },
+  "dockerfile": {
+    "enabled": true,
+    "ignoreDeps": ["ubuntu"]
+  },
   "regexManagers": [
     {
       "description": "Update base docker image references",
