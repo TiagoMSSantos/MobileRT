@@ -41,6 +41,18 @@
   },
   "rebaseWhen": "behind-base-branch",
   "reviewersFromCodeOwners": true,
+  "regexManagers": [
+    {
+      "description": "Update base docker image references",
+      "fileMatch": ["Dockerfile", ".github\\/workflows\\/.+\\.ya?ml"],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
+        "BASE_IMAGE=(?<depName>.*?):(?<currentValue>.*)",
+        "BASE_IMAGE: (?<depName>.*?):(?<currentValue>.*?)"
+      ],
+      "datasourceTemplate": "docker"
+    }
+  ],
   "git-submodules": {
     "enabled": false
   },
@@ -51,15 +63,13 @@
   "pre-commit": {
     "enabled": true
   },
-  "regexManagers": [
-    {
-      "description": "Update base docker image references",
-      "fileMatch": ["Dockerfile", "\\.github\\/workflows\\/.+\\.ya?ml"],
-      "matchStrings": [
-        "BASE_IMAGE=(?<depName>.*?):(?<currentValue>.*)",
-        "BASE_IMAGE: \"(?<depName>.*?):(?<currentValue>.*?)\""
-      ],
-      "datasourceTemplate": "docker"
-    }
-  ]
+  "docker": {
+    "enabled": true,
+    "fileMatch": ["Dockerfile", ".github\\/workflows\\/.+\\.ya?ml"],
+    "ignoreDeps": ["ubuntu"]
+  },
+  "dockerfile": {
+    "enabled": true,
+    "ignoreDeps": ["ubuntu"]
+  }
 }
