@@ -41,12 +41,12 @@
   },
   "rebaseWhen": "behind-base-branch",
   "reviewersFromCodeOwners": true,
-  "ignoreDeps": ["stb", "glm"],
   "git-submodules": {
     "enabled": false
   },
   "conan": {
-    "enabled": true
+    "enabled": true,
+    "ignoreDeps": ["stb", "glm"]
   },
   "pre-commit": {
     "enabled": true
