@@ -171,75 +171,92 @@ function install_dependencies_gentoo() {
 }
 
 function install_dependencies_macos() {
-  # Update homebrew (to use the new repository).
-  arch -x86_64 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall.sh)";
-  arch -x86_64 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)";
+  echo "Update homebrew (to use the new repository).";
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall.sh)";
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)";
 
-  arch -x86_64 brew --version;
-  arch -x86_64 brew update;
-  arch -x86_64 brew cleanup;
+  brew --version;
+  brew update;
+  brew cleanup;
 
-  # Install and configure git.
-  arch -x86_64 brew install git;
+  echo "Install and configure git.";
+  brew install git;
   git config --global http.postBuffer 1048576000;
   git config --global https.postBuffer 1048576000;
   git config --global core.compression -1;
   git config --global http.sslVerify "false";
   if [[ -z "$(git config credential.https://github.com)" ]]; then
+    echo "Configuring github credentials.";
     git config --global credential.https://github.com "ci-user";
-    git config --remove-section credential;
-    git config --global credential.helper sourcetree;
   fi
   if [[ -z "$(git config user.name)" ]]; then
+    echo "Configuring git user.";
     git config --global user.name "CI User";
   fi
   if [[ -z "$(git config user.email)" ]]; then
+    echo "Configuring git email.";
     git config --global user.email "user@ci.com";
   fi
 
-  # Change Homebrew to a specific version since the latest one might break some packages URLs.
+  echo "Change Homebrew to a specific version since the latest one might break some packages URLs.";
   # E.g.: version 3.3.15 breaks the Qt4 package.
   cd /usr/local/Homebrew;
   git fetch --tags --all;
   git checkout 3.3.14;
-  # Avoid homebrew from auto-update itself every time its installed something.
+  echo "Avoid homebrew from auto-update itself every time its installed something.";
   export HOMEBREW_NO_AUTO_UPDATE=1;
   brew --version;
 
+  echo "Add more repositories with Qt to the list of formulae that brew tracks.";
+  brew tap cartr/qt4;
+  # brew tap cartr/qt5;
 
-  arch -x86_64 brew tap cartr/qt4;
-  arch -x86_64 brew tap cartr/qt5;
-  arch -x86_64 brew install \
-    openssl@1.0 openssl@1.1 \
-    qt@4 qt@5 \
-    shellcheck \
-    llvm libomp \
-    cpulimit \
-    lcov \
-    python3 pyenv;
+  echo "Install packages separately, so it continues regardless if some error occurs in one.";
+  brew install openssl@1.0;
+  brew install openssl@1.1;
+  brew install shellcheck;
+  brew install llvm;
+  brew install libomp;
+  brew install cpulimit;
+  brew install lcov;
+  brew install python3;
+  brew install pyenv;
+  # brew install qt;
+  brew install qt@4;
+  # brew install qt@5;
+  # brew install qt --build-from-source --HEAD;
 
   MAJOR_MAC_VERSION=$(sw_vers | grep ProductVersion | cut -d ':' -f2 | cut -d '.' -f1 | tr -d '[:space:]');
   echo "MacOS '${MAJOR_MAC_VERSION}' detected";
   # This command needs sudo.
-  sudo xcode-select --switch /System/Volumes/Data/Applications/Xcode_13.2.1.app/Contents/Developer;
+  sudo xcode-select --switch /System/Volumes/Data/Applications/Xcode.app/Contents/Developer;
 }
 
 # Update Python, PIP and CMake versions if necessary.
 function update_python() {
- if [ -x "$(command -v choco)" ]; then
-   echo "Install Python with choco";
-   choco install python --version 3.8.0;
- fi
+  if [ -x "$(command -v choco)" ]; then
+    echo "Install Python with choco";
+    choco install python --version 3.8.0;
+  fi
 
- if [ ! -x "$(command -v apt-get)" ]; then
-   echo "Not Debian based Linux detected";
-   echo "Ensure pip is used by default";
-   python3 -m ensurepip --default-pip;
- fi
+  if [ ! -x "$(command -v apt-get)" ]; then
+    echo "Not Debian based Linux detected";
+    echo "Ensure pip is used by default";
+    python3 -m ensurepip --default-pip;
+  fi
 
- echo "Upgrade pip";
- executeWithoutExiting python3 -m pip install --upgrade pip;
- pip3 install cmake --upgrade;
+  echo "Upgrade pip";
+  pip install --upgrade pip --user;
+  pip3 install --upgrade pip --user;
+  executeWithoutExiting python3 -m pip install --upgrade pip --user;
+  pip3 install cmake --upgrade --user;
+
+  echo "Adding cmake to PATH.";
+  set +e;
+  CMAKE_PATH=$(find ~/ -iname "cmake" 2> /dev/null | head -1);
+  set -e;
+  echo "CMAKE_PATH: ${CMAKE_PATH}";
+  export PATH=${CMAKE_PATH%/cmake}:${PATH};
 }
 ###############################################################################
 ###############################################################################

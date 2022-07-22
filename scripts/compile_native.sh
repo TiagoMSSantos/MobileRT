@@ -278,8 +278,15 @@ function build() {
 #  install_conan_dependencies;
   ADD_QT_MACOS="";
   if [ -x "$(command -v brew)" ]; then
-    ADD_QT_MACOS="-DQt5_DIR=$(brew --prefix qt5)/lib/cmake/Qt5";
+    ADD_QT_MACOS="-DQt_DIR=$(brew --prefix qt)/lib/cmake/Qt4";
   fi
+
+  echo "Adding cmake to PATH.";
+  set +e;
+  CMAKE_PATH=$(find ~/ -iname "cmake" 2> /dev/null | head -1);
+  set -e;
+  echo "CMAKE_PATH: ${CMAKE_PATH}";
+  export PATH=${CMAKE_PATH%/cmake}:${PATH};
 
   echo "Calling CMake";
   cmake -DCMAKE_VERBOSE_MAKEFILE=ON \

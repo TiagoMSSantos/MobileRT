@@ -385,7 +385,7 @@ if( NOT DEFINED ANDROID_ABI )
   message( STATUS "Finding Qt." )
   find_package( Qt5 OPTIONAL_COMPONENTS Core Gui Widgets )
   if( NOT QT5_FOUND )
-    find_package( Qt4 OPTIONAL_COMPONENTS QtCore QtGui QtWidgets )
+    find_package( Qt4 OPTIONAL_COMPONENTS QtCore QtGui )
   endif()
 endif()
 
@@ -460,7 +460,9 @@ else()
     set( CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" /usr/local/lib/python3.9/site-packages/cmake/data/CMake.app/Contents/share/cmake-3.22/Modules/ CACHE STRING "CUSTOM" FORCE )
     message( STATUS "CMAKE_MODULE_PATH = ${CMAKE_MODULE_PATH}" )
 
-    find_package( Qt4 OPTIONAL_COMPONENTS Core Gui Widgets )
+    if( NOT QT5_FOUND )
+      find_package( Qt4 OPTIONAL_COMPONENTS QtCore QtGui )
+    endif()
 
     target_link_libraries( ${PROJECT_NAME} PRIVATE -F/usr/local/lib )
     target_link_libraries( ${PROJECT_NAME} PRIVATE -L/usr/local/lib )
@@ -472,7 +474,10 @@ else()
 
     target_link_libraries( ${PROJECT_NAME} PRIVATE "-framework QtCore" )
     target_link_libraries( ${PROJECT_NAME} PRIVATE "-framework QtGui" )
-    target_link_libraries( ${PROJECT_NAME} PRIVATE "-framework QtWidgets" )
+    if( QT5_FOUND )
+      # Qt4 doesn't have QtWidgets module.
+      target_link_libraries( ${PROJECT_NAME} PRIVATE "-framework QtWidgets" )
+    endif()
   else()
     message( STATUS "Linking Qt." )
 

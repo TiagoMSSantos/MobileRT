@@ -93,8 +93,8 @@ jobs:
         # https://docs.docker.com/docker-for-mac/install/
         # So, for now, we just use MacOS docker image that uses KVM (Kernel-based Virtual Machine)
         # in a Linux environment.
-        echo "Select XCode";
-        sudo xcode-select --switch /System/Volumes/Data/Applications/Xcode_13.2.1.app/Contents/Developer;
+        echo "Select XCode.";
+        sudo xcode-select --switch /System/Volumes/Data/Applications/Xcode.app/Contents/Developer;
         echo "Update Homebrew";
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)";
         echo "Install docker and virtualbox";

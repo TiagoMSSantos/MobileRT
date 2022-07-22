@@ -108,59 +108,67 @@ jobs:
       working-directory: .
       run: |
         find /usr/local -iname "Find*Qt*.cmake" 2> /dev/null;
+        echo "Checking available versions of Xcode.";
         ls -lah /System/Volumes/Data/Applications;
 
         echo "Define Qt versions.";
+        ls -lah /usr/local/Cellar/;
         export QT_4_VERSION="$(ls /usr/local/Cellar/qt@4/ | head -1)";
-        export QT_5_VERSION="$(ls /usr/local/Cellar/qt@5/ | head -1)";
+        # export QT_5_VERSION="$(ls /usr/local/Cellar/qt@5/ | head -1)";
         echo "QT_4_VERSION=${QT_4_VERSION}" >> ${GITHUB_ENV};
         echo "QT_5_VERSION=${QT_5_VERSION}" >> ${GITHUB_ENV};
 
         echo "Check Qt 5 paths exist.";
-        ls -lah /usr/local/Cellar/;
-        ls -lah /usr/local/Cellar/qt@5/;
-        ls -lah /usr/local/Cellar/qt@5/${QT_5_VERSION}/lib/;
-        ls -lah /usr/local/Cellar/qt@5/${QT_5_VERSION}/lib/QtWidgets.framework/Versions/5/Headers/
-        ls -lah /usr/local/Cellar/qt@5/${QT_5_VERSION}/lib/QtGui.framework/Versions/5/Headers/;
-        ls -lah /usr/local/Cellar/qt@5/${QT_5_VERSION}/lib/QtCore.framework/Versions/5/Headers/;
+        # Qt5 might fail while installing via homebrew.
+        # ls -lah /usr/local/Cellar/qt@5/;
+        # ls -lah /usr/local/Cellar/qt@5/${QT_5_VERSION}/lib/;
+        # ls -lah /usr/local/Cellar/qt@5/${QT_5_VERSION}/lib/QtCore.framework/Versions/5/Headers/;
+        # ls -lah /usr/local/Cellar/qt@5/${QT_5_VERSION}/lib/QtGui.framework/Versions/5/Headers/;
+        # ls -lah /usr/local/Cellar/qt@5/${QT_5_VERSION}/lib/QtWidgets.framework/Versions/5/Headers/
 
         echo "Check Qt 4 paths exist.";
-        ls -lah /usr/local/Cellar/;
         ls -lah /usr/local/Cellar/qt@4/;
         ls -lah /usr/local/Cellar/qt@4/${QT_4_VERSION}/lib/;
+        ls -lah /usr/local/Cellar/qt@4/${QT_4_VERSION}/lib/QtCore.framework/Versions/4/Headers/;
         ls -lah /usr/local/Cellar/qt@4/${QT_4_VERSION}/lib/QtGui.framework/Versions/4/Headers/;
+        # For Qt4, QtWidgets headers are inside QtGui folder.
 
         echo "Create paths for Qt.";
         mkdir -p /usr/local/include/Qt/Qt/;
-        mkdir -p /usr/local/include/Qt/QtWidgets/;
-        mkdir -p /usr/local/include/Qt/QtGui/;
         mkdir -p /usr/local/include/Qt/QtCore/;
+        mkdir -p /usr/local/include/Qt/QtGui/;
+        mkdir -p /usr/local/include/Qt/QtWidgets/;
 
         echo "Create symbolic links for Qt 5 headers.";
-        rsync -av --keep-dirlinks /usr/local/Cellar/qt@5/${QT_5_VERSION}/lib/QtWidgets.framework/Versions/5/Headers/ /usr/local/include/Qt/QtWidgets;
-        rsync -av --keep-dirlinks /usr/local/Cellar/qt@5/${QT_5_VERSION}/lib/QtGui.framework/Versions/5/Headers/ /usr/local/include/Qt/QtGui;
-        rsync -av --keep-dirlinks /usr/local/Cellar/qt@5/${QT_5_VERSION}/lib/QtCore.framework/Versions/5/Headers/ /usr/local/include/Qt/QtCore;
+        # rsync -av --keep-dirlinks /usr/local/Cellar/qt@5/${QT_5_VERSION}/lib/QtCore.framework/Versions/5/Headers/ /usr/local/include/Qt/QtCore;
+        # rsync -av --keep-dirlinks /usr/local/Cellar/qt@5/${QT_5_VERSION}/lib/QtGui.framework/Versions/5/Headers/ /usr/local/include/Qt/QtGui;
+        # rsync -av --keep-dirlinks /usr/local/Cellar/qt@5/${QT_5_VERSION}/lib/QtWidgets.framework/Versions/5/Headers/ /usr/local/include/Qt/QtWidgets;
 
         echo "Create symbolic links for Qt 4 headers.";
-        rsync -av --keep-dirlinks /usr/local/Cellar/qt@4/${QT_4_VERSION}/lib/QtGui.framework/Versions/4/Headers/ /usr/local/include/QtGui/;
+        rsync -av --keep-dirlinks /usr/local/Cellar/qt@4/${QT_4_VERSION}/lib/QtCore.framework/Versions/4/Headers/ /usr/local/include/Qt/QtCore;
+        rsync -av --keep-dirlinks /usr/local/Cellar/qt@4/${QT_4_VERSION}/lib/QtGui.framework/Versions/4/Headers/ /usr/local/include/Qt/QtGui;
+        rsync -av --keep-dirlinks /usr/local/Cellar/qt@4/${QT_4_VERSION}/lib/QtGui.framework/Versions/4/Headers/ /usr/local/include/Qt/QtWidgets;
+
+        echo "Searching for some Qt widgets headers.";
+        find ~/ -iname "qtwidgetsglobal.h" 2> /dev/null;
 
         echo "Create symbolic links to mix all Qt headers."
-        rsync -av --keep-dirlinks /usr/local/include/Qt/QtWidgets/ /usr/local/include/Qt/Qt;
-        rsync -av --keep-dirlinks /usr/local/include/Qt/QtGui/ /usr/local/include/Qt/Qt;
         rsync -av --keep-dirlinks /usr/local/include/Qt/QtCore/ /usr/local/include/Qt/Qt;
+        rsync -av --keep-dirlinks /usr/local/include/Qt/QtGui/ /usr/local/include/Qt/Qt;
+        rsync -av --keep-dirlinks /usr/local/include/Qt/QtWidgets/ /usr/local/include/Qt/Qt;
 
         echo "Update include and library paths.";
         export CPLUS_INCLUDE_PATH="/usr/local/include/Qt/:${CPLUS_INCLUDE_PATH}";
-        export CPLUS_INCLUDE_PATH="/usr/local/include/Qt/QtWidgets/:${CPLUS_INCLUDE_PATH}";
-        export CPLUS_INCLUDE_PATH="/usr/local/include/Qt/QtGui/:${CPLUS_INCLUDE_PATH}";
         export CPLUS_INCLUDE_PATH="/usr/local/include/Qt/QtCore/:${CPLUS_INCLUDE_PATH}";
-        export LIBRARY_PATH="/usr/local/Cellar/qt@5/${QT_5_VERSION}/lib/:${LIBRARY_PATH}";
+        export CPLUS_INCLUDE_PATH="/usr/local/include/Qt/QtGui/:${CPLUS_INCLUDE_PATH}";
+        export CPLUS_INCLUDE_PATH="/usr/local/include/Qt/QtWidgets/:${CPLUS_INCLUDE_PATH}";
+        # export LIBRARY_PATH="/usr/local/Cellar/qt@5/${QT_5_VERSION}/lib/:${LIBRARY_PATH}";
         echo "CPLUS_INCLUDE_PATH=${CPLUS_INCLUDE_PATH}" >> ${GITHUB_ENV};
         echo "LIBRARY_PATH=${LIBRARY_PATH}" >> ${GITHUB_ENV};
 
-        export LDFLAGS="-L/usr/local/opt/qt@5/lib";
-        export CPPFLAGS="-I/usr/local/opt/qt@5/include";
-        export PKG_CONFIG_PATH="/usr/local/opt/qt@5/lib/pkgconfig";
+        # export LDFLAGS="-L/usr/local/opt/qt@5/lib";
+        # export CPPFLAGS="-I/usr/local/opt/qt@5/include";
+        # export PKG_CONFIG_PATH="/usr/local/opt/qt@5/lib/pkgconfig";
         echo "LDFLAGS=${LDFLAGS}" >> ${GITHUB_ENV};
         echo "CPPFLAGS=${CPPFLAGS}" >> ${GITHUB_ENV};
         echo "PKG_CONFIG_PATH=${PKG_CONFIG_PATH}" >> ${GITHUB_ENV};
