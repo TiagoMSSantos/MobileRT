@@ -12,8 +12,9 @@ on:
   push:
     paths-ignore:
     - '.github/workflows/**'
-    - '!.github/workflows/codeql-analysis.yml'
     - 'docs/**'
+    - '**/renovate.json'
+    - '!.github/workflows/codeql-analysis.yml'
     branches:
     - '*'
 

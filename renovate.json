@@ -26,9 +26,13 @@
   "ignoreTests": false,
   "prConcurrentLimit": 0,
   "prHourlyLimit": 0,
+  "rebaseWhen": "behind-base-branch",
+  "reviewersFromCodeOwners": true,
+  "recreateClosed": true,
   "major": {
     "enabled": true,
-    "automerge": false
+    "automerge": false,
+    "dependencyDashboardApproval": true
   },
   "minor": {
     "enabled": true,
@@ -39,20 +43,22 @@
     "automerge": true,
     "groupName": "all patch updates"
   },
-  "rebaseWhen": "behind-base-branch",
-  "reviewersFromCodeOwners": true,
   "regexManagers": [
     {
       "description": "Update base docker image references",
-      "fileMatch": ["Dockerfile", ".github\\/workflows\\/.+\\.ya?ml"],
+      "fileMatch": ["Dockerfile", "\\.github\\/workflows\\/.+\\.ya?ml"],
       "matchStringsStrategy": "any",
       "matchStrings": [
         "BASE_IMAGE=(?<depName>.*?):(?<currentValue>.*)",
-        "BASE_IMAGE: (?<depName>.*?):(?<currentValue>.*?)"
+        "BASE_IMAGE: (?<depName>.*?):(?<currentValue>.*)"
       ],
       "datasourceTemplate": "docker"
     }
   ],
+  "regex": {
+    "enabled": true,
+    "ignoreDeps": ["ubuntu"]
+  },
   "git-submodules": {
     "enabled": false
   },
@@ -64,9 +70,7 @@
     "enabled": true
   },
   "docker": {
-    "enabled": true,
-    "fileMatch": ["Dockerfile", ".github\\/workflows\\/.+\\.ya?ml"],
-    "ignoreDeps": ["ubuntu"]
+    "enabled": true
   },
   "dockerfile": {
     "enabled": true,
