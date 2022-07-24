@@ -21,9 +21,10 @@ on:
     - '!app/System_dependent/CMakeLists.txt'
     - '!app/System_dependent/Native/**'
     - '!scripts/compile_native.sh'
+    - '!scripts/helper_functions.sh'
+    - '!scripts/install_dependencies.sh'
     - '!build.gradle'
     - '!codecov.yml'
-    - '!scripts/install_dependencies.sh'
 
 defaults:
   run:

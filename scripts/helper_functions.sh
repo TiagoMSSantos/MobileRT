@@ -197,14 +197,14 @@ function callAdbShellCommandUntilSuccess() {
   echo "Calling ADB shell command until success '$*'";
   local retry=0;
   local output;
-  output=$($@);
+  output=$("$@");
   # echo "Output of command: '${output}'";
   local lastResult;
   lastResult=$(echo "${output}" | grep '::.*::' | sed 's/:://g'| tr -d '[:space:]');
   echo "result: '${lastResult}'";
   while [[ "${lastResult}" -ne 0 && retry -lt 10 ]]; do
     retry=$(("${retry}" + 1));
-    output=$($@);
+    output=$("$@");
     echo "Output of command: '${output}'";
     lastResult=$(echo "${output}" | grep '::.*::' | sed 's/:://g' | tr -d '[:space:]');
     echo "Retry: ${retry} of command '$*'; result: '${lastResult}'";

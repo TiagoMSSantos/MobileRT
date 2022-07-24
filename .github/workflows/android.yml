@@ -21,6 +21,7 @@ on:
     - '!scripts/compile_android.sh'
     - '!scripts/run_tests.sh'
     - '!scripts/run_tests_android.sh'
+    - '!scripts/helper_functions.sh'
     - '!codecov.yml'
     - '!*gradle*'
 
@@ -204,6 +205,7 @@ jobs:
         exit ${res};
 
     - name: Run Android tests
+      timeout-minutes: 30
       if: success() && !startsWith(matrix.os, 'windows')
       uses: ReactiveCircus/android-emulator-runner@v2.25.0
       env:
