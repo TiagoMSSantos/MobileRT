@@ -42,7 +42,7 @@ jobs:
   Build:
     name: ${{ matrix.name }} ${{ matrix.type }} (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 60
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:

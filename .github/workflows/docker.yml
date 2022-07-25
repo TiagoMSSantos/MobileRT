@@ -34,6 +34,8 @@ concurrency:
 jobs:
   Build:
     runs-on: ${{ matrix.os }}
+    # Necessary timeout of +/- 300 min to be able to build MobileRT with gentoo,
+    # That's why we try to pull a previously available version and update it with a new layer instead.
     timeout-minutes: 300
     strategy:
       fail-fast: false
@@ -173,6 +175,7 @@ jobs:
         fi
 
     - name: Build the tagged Docker image
+      timeout-minutes: 15
       if: success() && env.BUILT_IMAGE == 'yes'
       run: |
         export VERSION=${{ env.VERSION }};
@@ -209,6 +212,7 @@ jobs:
         docker rm mobile_rt_${VERSION};
 
     - name: Squash Docker image
+      timeout-minutes: 20
       if: success() && (startsWith(matrix.BASE_IMAGE, 'gentoo'))
       run: |
         pip install docker-squash;
@@ -237,6 +241,7 @@ jobs:
           ptpuscas/mobile_rt:${VERSION} -c "./bin/UnitTests";
 
     - name: Push the tagged Docker image
+      timeout-minutes: 10
       if: success() && env.BRANCH == 'master' && env.DOCKERHUB_USERNAME != null && env.DOCKERHUB_PASSWORD != null
       run: |
         export VERSION=${{ env.VERSION }};
@@ -244,4 +249,3 @@ jobs:
         echo "Version: ${VERSION}";
         echo "Branch: ${BRANCH}";
         docker push ptpuscas/mobile_rt:${VERSION};
-

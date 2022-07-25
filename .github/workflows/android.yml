@@ -70,7 +70,7 @@ jobs:
 
     name: API ${{ matrix.android_api }} ${{ matrix.type }} (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 120
+    timeout-minutes: 40
 
     steps:
     - name: Checkout
@@ -448,6 +448,7 @@ jobs:
         ls -lah ~/.gradle;
 
     - name: Analyze Sonar
+      timeout-minutes: 100
       if: always() && env.GITHUB_TOKEN != null && env.SONAR_TOKEN != null
       working-directory: .
       env:
@@ -458,6 +459,7 @@ jobs:
         ./gradlew --profile --parallel sonarqube --info 2>&1 | tee ./reports/sonarqube.log;
 
     - name: Upload Sonar packages as Artifact
+      timeout-minutes: 4
       uses: actions/upload-artifact@v3
       with:
         name: sonar-packages

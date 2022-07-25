@@ -31,7 +31,7 @@ jobs:
 
     name: ${{ matrix.test }} [${{ matrix.type }} (${{ matrix.os }})]
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 50
+    timeout-minutes: 40
 
     steps:
     - name: Checkout
@@ -51,6 +51,21 @@ jobs:
         set -euo pipefail;
         mkdir -p ./reports;
         chmod +x ./gradlew 2>&1 | tee ./reports/setup_gradlew.log;
+
+    - name: Build ${{ matrix.type }}
+      if: success()
+      working-directory: .
+      run: |
+        echo "Will build the Android application.";
+        mkdir -p ./app/build/reports;
+        mkdir -p ./build/reports;
+        mkdir -p ./reports;
+        echo "Created reports folders.";
+        bash ./scripts/compile_android.sh -t ${{ matrix.type }} -r yes -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }};
+        echo "Android application compiled.";
+        export res="${PIPESTATUS[0]}";
+        echo "Result: '${res}'";
+        exit ${res};
 
     - name: Run Android tests
       if: success() && !startsWith(matrix.os, 'windows')
