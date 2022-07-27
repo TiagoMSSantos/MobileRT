@@ -151,7 +151,7 @@ function callCommandUntilError() {
   "$@";
   local lastResult=${PIPESTATUS[0]};
   while [[ "${lastResult}" -eq 0 && retry -lt 5 ]]; do
-    retry=$((retry + 1));
+    retry=$(( retry + 1 ));
     "$@";
     lastResult=${PIPESTATUS[0]};
     echo "Retry: ${retry} of command '$*'; result: '${lastResult}'";
@@ -176,7 +176,7 @@ function callCommandUntilSuccess() {
   local lastResult=${PIPESTATUS[0]};
   echo "result: '${lastResult}'";
   while [[ "${lastResult}" -ne 0 && retry -lt 20 ]]; do
-    retry=$(("${retry}" + 1));
+    retry=$(( retry + 1 ));
     "$@";
     lastResult=${PIPESTATUS[0]};
     echo "Retry: ${retry} of command '$*'; result: '${lastResult}'";
@@ -203,7 +203,7 @@ function callAdbShellCommandUntilSuccess() {
   lastResult=$(echo "${output}" | grep '::.*::' | sed 's/:://g'| tr -d '[:space:]');
   echo "result: '${lastResult}'";
   while [[ "${lastResult}" -ne 0 && retry -lt 10 ]]; do
-    retry=$(("${retry}" + 1));
+    retry=$(( retry + 1 ));
     output=$("$@");
     echo "Output of command: '${output}'";
     lastResult=$(echo "${output}" | grep '::.*::' | sed 's/:://g' | tr -d '[:space:]');
@@ -290,7 +290,7 @@ function _killProcessUsingFile() {
   processes_using_file=$(lsof "${1}" | tail -n +2 | tr -s ' ');
   local retry=0;
   while [[ "${processes_using_file}" != "" && retry -lt 5 ]]; do
-    retry=$((retry + 1));
+    retry=$(( retry + 1 ));
     echo "processes_using_file: '${processes_using_file}'";
     local process_id_using_file;
     process_id_using_file=$(echo "${processes_using_file}" | cut -d ' ' -f 2 | head -1);
@@ -309,7 +309,7 @@ function clearOldBuildFiles() {
   files_being_used=$(find . -iname "*.fuse_hidden*" || true);
   local retry=0;
   while [[ "${files_being_used}" != "" && retry -lt 5 ]]; do
-    retry=$((retry + 1));
+    retry=$(( retry + 1 ));
     echo "files_being_used: '${files_being_used}'";
     while IFS= read -r file; do
       while [[ -f "${file}" ]]; do

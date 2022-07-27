@@ -170,7 +170,8 @@ function catch_signal() {
 ###############################################################################
 
 function unlockDevice() {
-  callCommandUntilSuccess ./gradlew --daemon;
+  callCommandUntilSuccess ./gradlew --daemon \
+    -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}";
 
   echo "Set adb as root, to be able to change files permissions";
   callCommandUntilSuccess adb root;
@@ -411,11 +412,15 @@ function runUnitTests() {
     typeWithCapitalLetter="RelWithDebInfo"
   fi
   dirUnitTests="app/.cxx/${typeWithCapitalLetter}";
+  echo "Checking generated id.";
   local generatedId;
-  generatedId=$(ls "${dirUnitTests}");
+  # Note: flag `-t` of `ls` is to sort by date (newest first).
+  # shellcheck disable=SC2012
+  generatedId=$(ls -t "${dirUnitTests}" | head -1);
   dirUnitTests="${dirUnitTests}/${generatedId}/x86";
   local files;
   find . -iname "*unittests*" -exec readlink -f {} \;
+  echo "Checking generated unit tests binaries.";
   files=$(ls "${dirUnitTests}");
   echo "Copy unit tests bin: ${files}/bin";
   echo "Copy unit tests libs: ${files}/lib";
@@ -474,7 +479,8 @@ function runInstrumentationTests() {
   set +u;
   if [ -z "${CI}" ]; then
     jps | grep -i "gradle" | tr -s ' ' | cut -d ' ' -f 1 | head -1 | xargs kill -SIGKILL;
-    ./gradlew --stop;
+    ./gradlew --stop \
+      -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}";
 
     local numberOfFilesOpened;
     numberOfFilesOpened=$(adb shell lsof /dev/goldfish_pipe | wc -l);
@@ -498,7 +504,8 @@ function runInstrumentationTests() {
   echo "Will install APK: ${apkPath}";
   callCommandUntilSuccess adb push -p "${apkPath}" "${mobilert_path}";
   callCommandUntilSuccess adb shell 'ls -la '${mobilert_path};
-  ./gradlew createDebugAndroidTestApkListingFileRedirect;
+  ./gradlew createDebugAndroidTestApkListingFileRedirect \
+    -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}";
   callAdbShellCommandUntilSuccess adb shell 'pm install -t -r '${mobilert_path}'/app-'${type}'-androidTest.apk; echo ::$?::';
   echo "List of instrumented APKs:";
   adb shell 'pm list instrumentation;';
@@ -533,16 +540,14 @@ function runInstrumentationTests() {
   elif [[ ${run_test} == rep_* ]]; then
     run_test_without_prefix=${run_test#"rep_"};
     echo "Repeatable of test: ${run_test_without_prefix}";
-    callCommandUntilError ./gradlew connectedAndroidTest \
-      -DtestType="${type}" \
+    callCommandUntilError ./gradlew connectedAndroidTest -DtestType="${type}" \
       -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
       -Pandroid.testInstrumentationRunnerArguments.class="${run_test_without_prefix}" \
       --console plain --parallel \
       2>&1 | tee ${reports_path}/log_tests_"${type}".log;
   else
     echo "Running test: ${run_test}";
-    ./gradlew connectedAndroidTest \
-      -DtestType="${type}" \
+    ./gradlew connectedAndroidTest -DtestType="${type}" \
       -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
       -Pandroid.testInstrumentationRunnerArguments.class="${run_test}" \
       --console plain --parallel \

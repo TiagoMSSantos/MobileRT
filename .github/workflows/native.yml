@@ -69,7 +69,7 @@ jobs:
           type: debug
           compiler: g++
 
-        - os: macos-10.15
+        - os: macos-12
           type: debug
           compiler: clang++
 

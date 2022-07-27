@@ -43,25 +43,25 @@ jobs:
         - os: ubuntu-20.04
           android_api: 16
           ndk_version: 22.1.7171670
-          cmake_version: 3.10.2
+          cmake_version: 3.18.1
           type: release
 
         - os: ubuntu-18.04
           android_api: 19
           ndk_version: 22.1.7171670
-          cmake_version: 3.10.2
+          cmake_version: 3.18.1
           type: debug
 
         - os: macos-11
           android_api: 29
           ndk_version: 18.1.5063045
-          cmake_version: 3.6.0
+          cmake_version: 3.18.1
           type: release
 
-        - os: macos-10.15
+        - os: macos-12
           android_api: 24
           ndk_version: 18.1.5063045
-          cmake_version: 3.6.0
+          cmake_version: 3.18.1
           type: debug
 
     env:
@@ -213,6 +213,7 @@ jobs:
         MEM_MB: 2048
       with:
         api-level: ${{ matrix.android_api }}
+        cmake: ${{ matrix.cmake_version }}
         target: default
         arch: x86
         disable-animations: true

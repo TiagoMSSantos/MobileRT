@@ -212,7 +212,7 @@ jobs:
         docker rm mobile_rt_${VERSION};
 
     - name: Squash Docker image
-      timeout-minutes: 20
+      timeout-minutes: 25
       if: success() && (startsWith(matrix.BASE_IMAGE, 'gentoo'))
       run: |
         pip install docker-squash;
