@@ -21,6 +21,10 @@ concurrency:
   group: ${{ github.workflow }} ${{ github.ref }}
   cancel-in-progress: true
 
+# Default environment variables.
+env:
+  GITHUB_STEP_TIMEOUT_SMALL: 2
+
 jobs:
   github-pages:
     runs-on: ubuntu-20.04
@@ -31,9 +35,11 @@ jobs:
       REPOSITORY_TOKEN: ${{ secrets.REPOSITORY_TOKEN }}
     steps:
     - name: Checkout
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       uses: actions/checkout@v3
 
     - name: Install missing dependencies
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && false
       working-directory: .
       run: |
@@ -44,6 +50,7 @@ jobs:
         sudo gem update bundler --conservative;
 
     - name: Trigger GitHub pages rebuild
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && github.event_name == 'workflow_dispatch'
       working-directory: .
       run: |
@@ -56,6 +63,7 @@ jobs:
         USER_TOKEN: ${{ env.REPOSITORY_TOKEN }}
 
     - name: Doxygen build
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       uses: mattnotmitt/doxygen-action@1.9.4
       if: success()
       with:
@@ -64,6 +72,7 @@ jobs:
         enable-latex: false # Flag to enable make-ing of the LaTeX part of the doxygen output (default is false)
 
     - name: Doxygen deploy
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       uses: peaceiris/actions-gh-pages@v3
       # Disabled since we use code docs for now: https://codedocs.xyz/TiagoMSSantos/MobileRT/
       if: success() && false
@@ -73,6 +82,7 @@ jobs:
         publish_branch: gh-pages  # Branch name to use as GitHub Pages branch (default is gh-pages)
 
     - name: Sync README with docker hub
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       uses: ms-jpq/sync-dockerhub-readme@v1
       with:

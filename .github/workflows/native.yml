@@ -15,7 +15,6 @@ on:
     - 'scripts/**'
     - 'WavefrontOBJs/**'
     - '!.github/workflows/native.yml'
-    - '!.github/workflows/android.yml'
     - '!app/CMakeLists.txt'
     - '!app/build.gradle'
     - '!app/System_dependent/CMakeLists.txt'
@@ -34,6 +33,12 @@ defaults:
 concurrency:
   group: ${{ github.workflow }} ${{ github.ref }}
   cancel-in-progress: true
+
+# Default environment variables.
+env:
+  GITHUB_STEP_TIMEOUT_SMALL: 2
+  GITHUB_STEP_TIMEOUT_MEDIUM: 6
+  GITHUB_STEP_TIMEOUT_LONG: 20
 
 jobs:
   Build:
@@ -79,9 +84,11 @@ jobs:
 
     steps:
     - name: Checkout
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       uses: actions/checkout@v3
 
     - name: Setup build directory
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       working-directory: .
       run: |
@@ -89,6 +96,7 @@ jobs:
         mkdir -p build_${{ matrix.type }};
 
     - name: Setup code climate report
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       working-directory: .
       run: |
@@ -99,12 +107,14 @@ jobs:
         exit ${res};
 
     - name: Install Dependencies
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
       if: success()
       working-directory: .
       run: |
         bash scripts/install_dependencies.sh;
 
     - name: Create symlink of headers MacOS
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && startsWith(matrix.os, 'macos')
       working-directory: .
       run: |
@@ -183,6 +193,7 @@ jobs:
         exit ${res};
 
     - name: Build ${{ matrix.type }}
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
       working-directory: .
       run: |
@@ -203,6 +214,7 @@ jobs:
         exit ${res};
 
     - name: Check build path
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       working-directory: build_${{ matrix.type }}
       run: |
@@ -210,6 +222,7 @@ jobs:
         ls -lahR ./bin ./lib;
 
     - name: Generate code coverage base
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && matrix.compiler == 'g++' && matrix.type == 'debug' && startsWith(matrix.os, 'ubuntu')
       working-directory: .
       run: |
@@ -219,6 +232,7 @@ jobs:
         exit ${res};
 
     - name: Run unit tests Debug
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && matrix.type == 'debug'
       working-directory: build_${{ matrix.type }}
       run: |
@@ -229,6 +243,7 @@ jobs:
         exit ${res};
 
     - name: Run unit tests Release
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && matrix.type == 'release'
       working-directory: build_${{ matrix.type }}
       run: |
@@ -239,6 +254,7 @@ jobs:
         exit ${res};
 
     - name: Generate code coverage
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && matrix.compiler == 'g++' && matrix.type == 'debug' && startsWith(matrix.os, 'ubuntu')
       working-directory: .
       run: |
@@ -251,6 +267,7 @@ jobs:
         exit ${res};
 
     - name: Upload coverage to cache
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && matrix.compiler == 'g++' && matrix.type == 'debug' && startsWith(matrix.os, 'ubuntu')
       uses: actions/cache@v3
       env:
@@ -265,6 +282,7 @@ jobs:
         key: reports_${{ matrix.type }}-${{ github.sha }}
 
     - name: Upload reports
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: always()
       uses: actions/upload-artifact@v3
       continue-on-error: true
@@ -286,16 +304,19 @@ jobs:
 
     name: Code Coverage
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 1
+    timeout-minutes: 3
     env:
       CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
     steps:
     - name: Checkout
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
       uses: actions/checkout@v3
 
     - name: Download reports from cache
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       uses: actions/cache@v3
       env:
@@ -311,6 +332,7 @@ jobs:
         restore-keys: reports_debug
 
     - name: Send code climate report
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && env.CC_TEST_REPORTER_ID != null
       working-directory: .
       env:
@@ -325,6 +347,7 @@ jobs:
         exit ${res};
 
     - name: Validate codecov report
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && env.CODECOV_TOKEN != null
       working-directory: .
       env:
@@ -336,6 +359,7 @@ jobs:
         exit 0;
 
     - name: Send codecov report
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && env.CODECOV_TOKEN != null
       working-directory: .
       env:

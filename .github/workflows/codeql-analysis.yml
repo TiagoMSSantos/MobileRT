@@ -28,6 +28,12 @@ concurrency:
   group: ${{ github.workflow }} ${{ github.ref }}
   cancel-in-progress: true
 
+# Default environment variables.
+env:
+  GITHUB_STEP_TIMEOUT_SMALL: 2
+  GITHUB_STEP_TIMEOUT_MEDIUM: 6
+  GITHUB_STEP_TIMEOUT_LONG: 20
+
 jobs:
   Build:
     name: Analyze
@@ -45,13 +51,11 @@ jobs:
 
     steps:
     - name: Checkout
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       uses: actions/checkout@v3
-      with:
-        # We must fetch at least the immediate parents so that if this is
-        # a pull request then we can checkout the head.
-        fetch-depth: 0
 
     - name: Set up JDK
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       uses: actions/setup-java@v3
       with:
@@ -65,6 +69,7 @@ jobs:
     # Unable to download and extract the tools needed for installing the python dependecies.
     # You can call this action with 'setup-python-dependencies: false' to disable this process.
     - name: Initialize CodeQL
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       uses: github/codeql-action/init@v2
       with:
@@ -75,6 +80,7 @@ jobs:
         config-file: ./.github/codeql/codeql-config.yml
 
     - name: Install dependencies
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       working-directory: .
       run: |
@@ -82,12 +88,14 @@ jobs:
         bash scripts/install_dependencies.sh;
 
     - name: Setup gradlew
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && matrix.language == 'java'
       working-directory: .
       run: |
         chmod +x ./gradlew;
 
     - name: Build Gradle
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
       if: success() && matrix.language == 'java'
       working-directory: .
       run: |
@@ -99,6 +107,7 @@ jobs:
         exit ${res};
 
     - name: Build C++
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success() && matrix.language == 'cpp'
       working-directory: .
       run: |
@@ -109,6 +118,7 @@ jobs:
         exit ${res};
 
     - name: Remove unnecessary code
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && matrix.language == 'cpp'
       working-directory: .
       run: |
@@ -117,6 +127,7 @@ jobs:
     # Warning: Valid inputs are ['check_name', 'output', 'upload', 'ram',
     # 'add-snippets', 'threads', 'checkout_path', 'token', 'matrix']
     - name: Perform CodeQL Analysis
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
       uses: github/codeql-action/analyze@v2
       with:

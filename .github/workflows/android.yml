@@ -14,7 +14,6 @@ on:
     - 'scripts/**'
     - 'WavefrontOBJs/**'
     - '!.github/workflows/android.yml'
-    - '!.github/workflows/native.yml'
     - '!app/System_dependent/CMakeLists.txt'
     - '!app/System_dependent/Android_JNI/**'
     - '!scripts/check_android.sh'
@@ -33,6 +32,13 @@ defaults:
 concurrency:
   group: ${{ github.workflow }} ${{ github.ref }}
   cancel-in-progress: true
+
+# Default environment variables.
+env:
+  GITHUB_STEP_TIMEOUT_SMALL: 2
+  GITHUB_STEP_TIMEOUT_MEDIUM: 6
+  GITHUB_STEP_TIMEOUT_LONG: 20
+  GITHUB_STEP_TIMEOUT_VERY_LONG: 30
 
 jobs:
   Build:
@@ -74,9 +80,11 @@ jobs:
 
     steps:
     - name: Checkout
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       uses: actions/checkout@v3
 
     - name: Set up JDK
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       uses: actions/setup-java@v3
       with:
@@ -84,6 +92,7 @@ jobs:
         distribution: 'zulu'
 
     - name: Install Tree Linux
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && startsWith(matrix.os, 'ubuntu')
       working-directory: .
       run: |
@@ -94,6 +103,7 @@ jobs:
         exit ${res};
 
     - name: Install Tree MacOS
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && startsWith(matrix.os, 'macos')
       working-directory: .
       run: |
@@ -104,6 +114,7 @@ jobs:
         exit ${res};
 
     - name: Cache SonarCloud packages
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       uses: actions/cache@v3
       with:
@@ -117,6 +128,7 @@ jobs:
           ./build
 
     - name: Cache Gradle packages
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       uses: actions/cache@v3
       with:
@@ -126,6 +138,7 @@ jobs:
           ~/.gradle
 
     - name: Setup gradlew
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       working-directory: .
       run: |
@@ -138,6 +151,7 @@ jobs:
         exit ${res};
 
     - name: Print dependencies
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && false
       working-directory: .
       run: |
@@ -148,6 +162,7 @@ jobs:
         exit ${res};
 
     - name: Setup code climate report
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       working-directory: .
       run: |
@@ -158,6 +173,7 @@ jobs:
         exit ${res};
 
     - name: Run linter
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
       working-directory: .
       run: |
@@ -172,6 +188,7 @@ jobs:
         exit ${res};
 
     - name: Run unit tests Java
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       working-directory: .
       run: |
@@ -184,6 +201,7 @@ jobs:
         exit ${res};
 
     - name: Build ${{ matrix.type }}
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
       if: success()
       working-directory: .
       run: |
@@ -205,7 +223,7 @@ jobs:
         exit ${res};
 
     - name: Run Android tests
-      timeout-minutes: 30
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_VERY_LONG) }}
       if: success() && !startsWith(matrix.os, 'windows')
       uses: ReactiveCircus/android-emulator-runner@v2.25.0
       env:
@@ -237,6 +255,7 @@ jobs:
           bash ./scripts/run_tests_android.sh -t ${{ matrix.type }} -r all -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -k false;
 
     - name: Check report's paths
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug'
       run: |
         ls -lah ./app 2>&1 | tee ./reports/ls_coverage_reports_1.log;
@@ -249,6 +268,7 @@ jobs:
         tree -a -f | grep -i app/build/reports | grep -i xml 2>&1 | tee ./reports/tree_report.log;
 
     - name: Upload Gradle cached packages
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug'
       uses: actions/cache@v3
       with:
@@ -258,6 +278,7 @@ jobs:
           ~/.gradle
 
     - name: Upload reports to cache
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug'
       uses: actions/cache@v3
       env:
@@ -270,6 +291,7 @@ jobs:
           ./reports
 
     - name: Sign APK
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && env.SIGNING_KEY != null && env.KEY_ALIAS != null
       uses: r0adkll/sign-android-release@v1.0.4
       with:
@@ -280,6 +302,7 @@ jobs:
         keyPassword: ${{ env.SIGNING_KEY }}
 
     - name: Upload APK
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && startsWith(matrix.os, 'macos')
       uses: actions/upload-artifact@v3
       with:
@@ -290,6 +313,7 @@ jobs:
           ./app/build/outputs/apk/${{ matrix.type }}
 
     - name: Upload reports
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: always()
       uses: actions/upload-artifact@v3
       continue-on-error: true
@@ -323,10 +347,12 @@ jobs:
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     steps:
     - name: Checkout
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
       uses: actions/checkout@v3
 
     - name: Set up JDK
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       uses: actions/setup-java@v3
       with:
@@ -334,6 +360,7 @@ jobs:
         distribution: 'zulu'
 
     - name: Download reports from cache
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       uses: actions/cache@v3
       env:
@@ -346,6 +373,7 @@ jobs:
         key: reports_${{ matrix.type }}-${{ github.sha }}
 
     - name: Check files from cache
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       working-directory: .
       run: |
@@ -359,6 +387,7 @@ jobs:
         ls -lah ./reports 2>&1 | tee ./reports/ls_reports.log;
 
     - name: Send code climate report
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && env.CC_TEST_REPORTER_ID != null
       working-directory: app/src/main/java
       env:
@@ -371,6 +400,7 @@ jobs:
         exit ${res};
 
     - name: Validate codecov report
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && env.CODECOV_TOKEN != null
       working-directory: .
       env:
@@ -383,7 +413,7 @@ jobs:
         exit 0;
 
     - name: Download Gradle cached packages
-      timeout-minutes: 3
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
       uses: actions/cache@v3
       env:
@@ -396,6 +426,7 @@ jobs:
 
     # Useful step to avoid gradle having to download Sonar plugins that can take more than 40 min
     - name: Download Sonar packages Artifact
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: always()
       uses: dawidd6/action-download-artifact@v2
       continue-on-error: true
@@ -440,6 +471,7 @@ jobs:
         # check_artifacts: workflow
 
     - name: Check files from downloaded artifact
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: always()
       working-directory: .
       continue-on-error: true
@@ -460,7 +492,7 @@ jobs:
         ./gradlew --profile --parallel sonarqube --info 2>&1 | tee ./reports/sonarqube.log;
 
     - name: Upload Sonar packages as Artifact
-      timeout-minutes: 4
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       uses: actions/upload-artifact@v3
       with:
         name: sonar-packages
@@ -469,6 +501,7 @@ jobs:
           ~/.sonar
 
     - name: Upload gradle reports
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: always()
       uses: actions/upload-artifact@v3
       continue-on-error: true
@@ -482,6 +515,7 @@ jobs:
           ./reports
 
     - name: Send codecov report
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: always() && env.CODECOV_TOKEN != null
       working-directory: .
       env:

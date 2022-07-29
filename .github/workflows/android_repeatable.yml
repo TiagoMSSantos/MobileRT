@@ -16,6 +16,12 @@ concurrency:
   group: ${{ github.workflow }} ${{ github.ref }}
   cancel-in-progress: true
 
+# Default environment variables.
+env:
+  GITHUB_STEP_TIMEOUT_SMALL: 2
+  GITHUB_STEP_TIMEOUT_MEDIUM: 6
+  GITHUB_STEP_TIMEOUT_LONG: 20
+
 jobs:
   Build:
     strategy:
@@ -35,9 +41,11 @@ jobs:
 
     steps:
     - name: Checkout
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       uses: actions/checkout@v3
 
     - name: Set up JDK
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       uses: actions/setup-java@v3
       with:
@@ -45,6 +53,7 @@ jobs:
         distribution: 'zulu'
 
     - name: Setup gradlew
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       working-directory: .
       run: |
@@ -53,6 +62,7 @@ jobs:
         chmod +x ./gradlew 2>&1 | tee ./reports/setup_gradlew.log;
 
     - name: Build ${{ matrix.type }}
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
       if: success()
       working-directory: .
       run: |
@@ -68,6 +78,7 @@ jobs:
         exit ${res};
 
     - name: Run Android tests
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
       if: success() && !startsWith(matrix.os, 'windows')
       uses: ReactiveCircus/android-emulator-runner@v2.25.0
       env:
@@ -87,6 +98,7 @@ jobs:
           bash ./scripts/run_tests_android.sh -t ${{ matrix.type }} -r rep_puscas.mobilertapp.${{ matrix.test }} -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -k false;
 
     - name: Upload reports
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: always()
       uses: actions/upload-artifact@v3
       continue-on-error: true

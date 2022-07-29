@@ -31,6 +31,13 @@ concurrency:
   group: ${{ github.workflow }} ${{ github.ref }}
   cancel-in-progress: true
 
+# Default environment variables.
+env:
+  GITHUB_STEP_TIMEOUT_SMALL: 2
+  GITHUB_STEP_TIMEOUT_MEDIUM: 6
+  GITHUB_STEP_TIMEOUT_LONG: 20
+  GITHUB_STEP_TIMEOUT_VERY_LONG: 30
+
 jobs:
   Build:
     runs-on: ${{ matrix.os }}
@@ -65,9 +72,11 @@ jobs:
 
     steps:
     - name: Checkout
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       uses: actions/checkout@v3
 
     - name: Extract branch name to an environment variable
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       run: |
         set -euo pipefail;
@@ -76,6 +85,7 @@ jobs:
         echo "BRANCH=${BRANCH}" >> ${GITHUB_ENV};
 
     - name: Setup Docker image version Linux
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && startsWith(matrix.os, 'ubuntu')
       run: |
         # Add VERSION environment variable to all workflow steps
@@ -86,6 +96,7 @@ jobs:
         BASE_IMAGE: ${{ matrix.BASE_IMAGE }}
 
     - name: Install docker MacOS
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && startsWith(matrix.os, 'macos')
       run: |
         # This code installs Docker on MacOS but the command `docker` doesn't do anything.
@@ -148,6 +159,7 @@ jobs:
         BASE_IMAGE: ${{ matrix.BASE_IMAGE }}
 
     - name: Login to DockerHub Registry
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
         && env.DOCKERHUB_USERNAME != null
         && env.DOCKERHUB_USERNAME != ''
@@ -161,6 +173,7 @@ jobs:
         echo "BUILT_IMAGE=yes" >> ${GITHUB_ENV};
 
     - name: Pull the tagged Docker image
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && startsWith(matrix.BASE_IMAGE, 'gentoo')
       run: |
         export VERSION=${{ env.VERSION }};
@@ -175,7 +188,7 @@ jobs:
         fi
 
     - name: Build the tagged Docker image
-      timeout-minutes: 15
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
       if: success() && env.BUILT_IMAGE == 'yes'
       run: |
         export VERSION=${{ env.VERSION }};
@@ -193,6 +206,7 @@ jobs:
           .;
 
     - name: Pull and build MobileRT
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && env.BUILT_IMAGE != 'yes'
       run: |
         export VERSION=${{ env.VERSION }};
@@ -206,13 +220,14 @@ jobs:
           -c "git fetch origin && git reset --hard origin/${BRANCH} && git checkout ${BRANCH} && bash ../scripts/compile_native.sh -t release -c g++ -r yes";
 
     - name: Update and commit MobileRT Docker image
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && env.BUILT_IMAGE != 'yes'
       run: |
         docker commit mobile_rt_${VERSION} ptpuscas/mobile_rt:${VERSION};
         docker rm mobile_rt_${VERSION};
 
     - name: Squash Docker image
-      timeout-minutes: 25
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_VERY_LONG) }}
       if: success() && (startsWith(matrix.BASE_IMAGE, 'gentoo'))
       run: |
         pip install docker-squash;
@@ -227,6 +242,7 @@ jobs:
         docker-squash --tag ptpuscas/mobile_rt:${VERSION} ptpuscas/mobile_rt:${VERSION};
 
     - name: Run the unit tests
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       run: |
         export VERSION=${{ env.VERSION }};
@@ -241,7 +257,7 @@ jobs:
           ptpuscas/mobile_rt:${VERSION} -c "./bin/UnitTests";
 
     - name: Push the tagged Docker image
-      timeout-minutes: 10
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
       if: success() && env.BRANCH == 'master' && env.DOCKERHUB_USERNAME != null && env.DOCKERHUB_PASSWORD != null
       run: |
         export VERSION=${{ env.VERSION }};
