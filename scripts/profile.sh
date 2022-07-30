@@ -45,7 +45,7 @@ fi
 # Set paths for MobileRT.
 ###############################################################################
 function setPaths() {
-  PATH_TO_SEARCH="/mnt/D/Projects";
+  PATH_TO_SEARCH="../";
   FILE_TO_SEARCH="MobileRT.jks";
 
   set +e;

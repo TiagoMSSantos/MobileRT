@@ -20,30 +20,32 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-INCLUDEPATH += /mnt/D/Projects/MobileRT/app
-INCLUDEPATH += /mnt/D/Projects/MobileRT/app/System_dependent/Native
-INCLUDEPATH += /mnt/D/Projects/MobileRT/app/third_party
-INCLUDEPATH += /mnt/D/Projects/MobileRT/app/third_party/boost/libs/assert/include
-INCLUDEPATH += /mnt/D/Projects/MobileRT/app/third_party/pcg-cpp/include
-INCLUDEPATH += /mnt/D/Projects/MobileRT/app/Scenes
+INCLUDEPATH += ../../../../
+INCLUDEPATH += ../../../../System_dependent/Native
+INCLUDEPATH += ../../../../third_party
+INCLUDEPATH += ../../../../third_party/boost/libs/assert/include
+INCLUDEPATH += ../../../../third_party/pcg-cpp/include
+INCLUDEPATH += ../../../../Scenes
 
-#LIBS += -L/mnt/D/Projects/MobileRT/build_debug/lib -lMobileRTd -lComponentsd
-LIBS += -L/mnt/D/Projects/MobileRT/build_release/lib
-LIBS += -lMobileRT -lComponents
+# Use release version by default! Only use debug version to debug some bug.
+INCLUDEPATH += ../../../../System_dependent/Native/Qt/build-Release
+LIBS += -L../../../../../build_release/lib -lMobileRT -lComponents
+#INCLUDEPATH += ../../../../System_dependent/Native/Qt/build-Debug
+#LIBS += -L../../../../../build_debug/lib -lMobileRTd -lComponentsd
 
 SOURCES += \
-        /mnt/D/Projects/MobileRT/app/Scenes/Scenes.cpp \
-        /mnt/D/Projects/MobileRT/app/System_dependent/Native/C_wrapper.cpp \
-        /mnt/D/Projects/MobileRT/app/System_dependent/Native/Utils_dependent.cpp \
-        /mnt/D/Projects/MobileRT/app/System_dependent/Native/Qt/MobileRT/main.cpp \
-        /mnt/D/Projects/MobileRT/app/System_dependent/Native/Qt/MobileRT/about.cpp \
-        /mnt/D/Projects/MobileRT/app/System_dependent/Native/Qt/MobileRT/config.cpp \
-        /mnt/D/Projects/MobileRT/app/System_dependent/Native/Qt/MobileRT/mainwindow.cpp
+        ../../../../Scenes/Scenes.cpp \
+        ../../../../System_dependent/Native/C_wrapper.cpp \
+        ../../../../System_dependent/Native/Utils_dependent.cpp \
+        ../../../../System_dependent/Native/Qt/MobileRT/main.cpp \
+        ../../../../System_dependent/Native/Qt/MobileRT/about.cpp \
+        ../../../../System_dependent/Native/Qt/MobileRT/config.cpp \
+        ../../../../System_dependent/Native/Qt/MobileRT/mainwindow.cpp
 
 HEADERS += \
-        /mnt/D/Projects/MobileRT/app/System_dependent/Native/Qt/MobileRT/mainwindow.h \
-        /mnt/D/Projects/MobileRT/app/System_dependent/Native/Qt/MobileRT/about.h \
-        /mnt/D/Projects/MobileRT/app/System_dependent/Native/Qt/MobileRT/config.h
+        ../../../../System_dependent/Native/Qt/MobileRT/mainwindow.h \
+        ../../../../System_dependent/Native/Qt/MobileRT/about.h \
+        ../../../../System_dependent/Native/Qt/MobileRT/config.h
 
 FORMS += \
         mainwindow.ui

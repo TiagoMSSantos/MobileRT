@@ -13,9 +13,9 @@ int main(int argc, char **argv) {
      */
 //    const char* argv[] {"appName",
 //        "2", "2", "4", "1", "1", "800", "800", "3", "1",
-//        "/mnt/D/Projects/MobileRT/WavefrontOBJs/conference/conference.obj",
-//        "/mnt/D/Projects/MobileRT/WavefrontOBJs/conference/conference.mtl",
-//        "/mnt/D/Projects/MobileRT/WavefrontOBJs/conference/conference.cam",
+//        "./WavefrontOBJs/conference/conference.obj",
+//        "./WavefrontOBJs/conference/conference.mtl",
+//        "./WavefrontOBJs/conference/conference.cam",
 //        "true", "true", "true"};
 //    argc = 16;
 
