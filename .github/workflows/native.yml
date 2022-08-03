@@ -114,7 +114,7 @@ jobs:
         bash scripts/install_dependencies.sh;
 
     - name: Create symlink of headers MacOS
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success() && startsWith(matrix.os, 'macos')
       working-directory: .
       run: |
