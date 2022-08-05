@@ -116,10 +116,10 @@ function addQtPath() {
   QT5_LIB_PATH=${QT5_INCLUDE_PATH%/*/*/*/*/*};
   QT_INCLUDE_PATH="/usr/local/include/Qt/";
   set -e;
+  set +u;
   echo "QT_INCLUDE_PATHS = ${QT5_INCLUDE_PATHS}";
   echo "QT_INCLUDE_PATH = ${QT5_INCLUDE_PATH}";
   echo "QT_LIB_PATH = ${QT5_LIB_PATH}";
-  set +u;
   export CPLUS_INCLUDE_PATH="${QT_INCLUDE_PATH}:${CPLUS_INCLUDE_PATH}";
   export CPLUS_INCLUDE_PATH="${QT5_INCLUDE_PATH%/*}:${CPLUS_INCLUDE_PATH}";
   export CPLUS_INCLUDE_PATH="${QT5_INCLUDE_PATH%/*/*}:${CPLUS_INCLUDE_PATH}";
@@ -293,19 +293,23 @@ function build() {
     "${ADD_QT_MACOS}" \
     -DCMAKE_CXX_COMPILER="${compiler}" \
     -DCMAKE_BUILD_TYPE="${type}" \
-    ../app/ \
-    2>&1 | tee ./log_cmake_"${type}".log;
+    ../app/;
   resCompile=${PIPESTATUS[0]};
 
-  COMPILER=$(grep -i "CMAKE_CXX_COMPILER_ID=" log_cmake_"${type}".log | cut -d '=' -f 2);
-  if [ "${COMPILER}" != "MSVC" ]; then
+  local compiler_version;
+  # The compiler might redirect the output to stderr, so we also have to redirect it to the variable.
+  compiler_version=$(${compiler} -v 2>&1);
+  if [[ "${compiler_version}" != *".exe"* ]]; then
+    echo "Didn't detect C++ compiler for Windows!";
     JOBS_FLAG=${MAKEFLAGS};
+  else
+    echo "Detected C++ compiler for Windows!";
   fi
 
   if [ "${resCompile}" -eq 0 ]; then
     set +u;
     echo "Calling Make with parameters: ${JOBS_FLAG}";
-    cmake --build . -- "${JOBS_FLAG}" 2>&1 | tee ./log_make_"${type}".log;
+    cmake --build . -- "${JOBS_FLAG}";
     set -u;
     resCompile=${PIPESTATUS[0]};
   else
@@ -315,7 +319,9 @@ function build() {
 ###############################################################################
 ###############################################################################
 
+createReportsFolders;
 build;
+validateNativeLibCompiled;
 
 ###############################################################################
 # Exit code.

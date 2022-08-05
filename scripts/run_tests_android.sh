@@ -170,7 +170,7 @@ function catch_signal() {
 ###############################################################################
 
 function unlockDevice() {
-  callCommandUntilSuccess ./gradlew --daemon \
+  callCommandUntilSuccess bash gradlew --daemon \
     -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}";
 
   echo "Set adb as root, to be able to change files permissions";
@@ -398,8 +398,7 @@ function startCopyingLogcatToFile() {
   callAdbShellCommandUntilSuccess adb shell 'logcat -b main -b system -b radio -b events -c; echo ::$?::';
 
   echo "Copy realtime logcat to file";
-  adb logcat -v threadtime "*":V \
-    2>&1 | tee ${reports_path}/logcat_current_"${type}".log &
+  adb logcat -v threadtime "*":V &
   pid_logcat="$!";
   echo "pid of logcat: '${pid_logcat}'";
 }
@@ -435,12 +434,10 @@ function runUnitTests() {
     # Ignore unit tests that should crash the system because of a failing assert.
     adb shell LD_LIBRARY_PATH=${mobilert_path} \
       ${mobilert_path}/UnitTests \
-      --gtest_filter=-*.TestInvalid* \
-      2>&1 | tee ${reports_path}/log_unit_tests_"${type}".log;
+      --gtest_filter=-*.TestInvalid*;
   else
     adb shell LD_LIBRARY_PATH=${mobilert_path} \
-      ${mobilert_path}/UnitTests \
-      2>&1 | tee ${reports_path}/log_unit_tests_"${type}".log;
+      ${mobilert_path}/UnitTests;
   fi
   resUnitTests=${PIPESTATUS[0]};
 }
@@ -479,7 +476,7 @@ function runInstrumentationTests() {
   set +u;
   if [ -z "${CI}" ]; then
     jps | grep -i "gradle" | tr -s ' ' | cut -d ' ' -f 1 | head -1 | xargs kill -SIGKILL;
-    ./gradlew --stop \
+    bash gradlew --stop \
       -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}";
 
     local numberOfFilesOpened;
@@ -504,7 +501,7 @@ function runInstrumentationTests() {
   echo "Will install APK: ${apkPath}";
   callCommandUntilSuccess adb push -p "${apkPath}" "${mobilert_path}";
   callCommandUntilSuccess adb shell 'ls -la '${mobilert_path};
-  ./gradlew createDebugAndroidTestApkListingFileRedirect \
+  bash gradlew createDebugAndroidTestApkListingFileRedirect \
     -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}";
   callAdbShellCommandUntilSuccess adb shell 'pm install -t -r '${mobilert_path}'/app-'${type}'-androidTest.apk; echo ::$?::';
   echo "List of instrumented APKs:";
@@ -515,43 +512,23 @@ function runInstrumentationTests() {
     echo "Running all tests";
     mkdir -p ./app/build/reports/coverage/androidTest/debug/;
     set +u; # Because 'code_coverage' is only set when debug.
-    ./gradlew connected"${type}"AndroidTest -DtestType="${type}" \
+    bash gradlew connected"${type}"AndroidTest -DtestType="${type}" \
       -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
-      ${code_coverage} --console plain --parallel \
-      2>&1 | tee ${reports_path}/log_tests_"${type}".log;
+      ${code_coverage} --console plain --parallel;
     set -u;
-    # if [ "${type}" == "debug" ]; then
-    #   adb shell am instrument \
-    #     -e coverage true \
-    #     -w puscas.mobilertapp.test/androidx.test.runner.AndroidJUnitRunner \
-    #     2>&1 | tee ${reports_path}/log_tests_"${type}".log;
-    #   coverageFile=$(adb shell 'find / -iname "*.ec" 2> /dev/null' | grep -i mobilert | head -1 | tr -d '[:space:]');
-    #   adb pull "${coverageFile}";
-    #   java -jar jacococli.jar report coverage.ec --classfiles ./app/build/intermediates/javac/debug/classes/puscas/mobilertapp/ --xml ./app/build/reports/coverage/androidTest/debug/report.xml;
-    # else
-    #   adb shell am instrument \
-    #     -e coverage true \
-    #     -w puscas.mobilertapp.test/androidx.test.runner.AndroidJUnitRunner \
-    #     2>&1 | tee ${reports_path}/log_tests_"${type}".log;
-    #   coverageFile=$(adb shell 'find / -iname "*.ec" 2> /dev/null' | grep -i mobilert | head -1 | tr -d '[:space:]');
-    #   adb pull "${coverageFile}";
-    #   java -jar jacococli.jar report coverage.ec --classfiles ./app/build/intermediates/javac/debug/classes/puscas/mobilertapp/ --xml ./app/build/reports/coverage/androidTest/debug/report.xml;
-    # fi
   elif [[ ${run_test} == rep_* ]]; then
     run_test_without_prefix=${run_test#"rep_"};
     echo "Repeatable of test: ${run_test_without_prefix}";
-    callCommandUntilError ./gradlew connectedAndroidTest -DtestType="${type}" \
+    callCommandUntilError bash gradlew connectedAndroidTest -DtestType="${type}" \
       -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
       -Pandroid.testInstrumentationRunnerArguments.class="${run_test_without_prefix}" \
-      --console plain --parallel \
-      2>&1 | tee ${reports_path}/log_tests_"${type}".log;
+      --console plain --parallel;
   else
     echo "Running test: ${run_test}";
-    ./gradlew connectedAndroidTest -DtestType="${type}" \
+    bash gradlew connectedAndroidTest -DtestType="${type}" \
       -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
       -Pandroid.testInstrumentationRunnerArguments.class="${run_test}" \
-      --console plain --parallel \
-      2>&1 | tee ${reports_path}/log_tests_"${type}".log;
+      --console plain --parallel;
   fi
   resInstrumentationTests=${PIPESTATUS[0]};
   pid_instrumentation_tests="$!";
@@ -566,6 +543,7 @@ function runInstrumentationTests() {
 ###############################################################################
 
 clearOldBuildFiles;
+createReportsFolders;
 runEmulator;
 waitForEmulator;
 copyResources;

@@ -24,6 +24,7 @@ concurrency:
 # Default environment variables.
 env:
   GITHUB_STEP_TIMEOUT_SMALL: 2
+  GITHUB_STEP_TIMEOUT_MEDIUM: 6
 
 jobs:
   github-pages:
@@ -33,21 +34,11 @@ jobs:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
       REPOSITORY_TOKEN: ${{ secrets.REPOSITORY_TOKEN }}
+
     steps:
     - name: Checkout
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       uses: actions/checkout@v3
-
-    - name: Install missing dependencies
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && false
-      working-directory: .
-      run: |
-        set -euo pipefail;
-        sudo apt update;
-        sudo apt install -y ruby-dev;
-        sudo gem install bundler:1.16.1;
-        sudo gem update bundler --conservative;
 
     - name: Trigger GitHub pages rebuild
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -70,16 +61,6 @@ jobs:
         doxyfile-path: ".codedocs" # Path to Doxyfile (default is ./Doxyfile)
         working-directory: "." # Working directory (default is .)
         enable-latex: false # Flag to enable make-ing of the LaTeX part of the doxygen output (default is false)
-
-    - name: Doxygen deploy
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      uses: peaceiris/actions-gh-pages@v3
-      # Disabled since we use code docs for now: https://codedocs.xyz/TiagoMSSantos/MobileRT/
-      if: success() && false
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./docs/doxygen_html
-        publish_branch: gh-pages  # Branch name to use as GitHub Pages branch (default is gh-pages)
 
     - name: Sync README with docker hub
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}

@@ -325,5 +325,23 @@ function clearOldBuildFiles() {
   done
 }
 
+# Create the reports folders.
+function createReportsFolders() {
+  echo "Creating reports folders.";
+  mkdir -p ./build/reports;
+  mkdir -p ./app/build/reports;
+  echo "Created reports folders.";
+}
+
+# Validate MobileRT native lib was compiled.
+function validateNativeLibCompiled() {
+  local nativeLib;
+  nativeLib=$(find . -iname "*mobilert*.so");
+  echo "nativeLib: ${nativeLib}";
+  if [ "$(echo "${nativeLib}" | wc -l)" -eq 0 ]; then
+    exit 1;
+  fi
+}
+
 ###############################################################################
 ###############################################################################

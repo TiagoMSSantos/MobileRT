@@ -92,7 +92,6 @@ jobs:
       if: success()
       working-directory: .
       run: |
-        set -euo pipefail;
         mkdir -p build_${{ matrix.type }};
 
     - name: Setup code climate report
@@ -100,11 +99,7 @@ jobs:
       if: success()
       working-directory: .
       run: |
-        mkdir -p ./reports;
-        chmod +x ./test-reporter-latest-linux-amd64 2>&1 | tee ./reports/setup_code_climate.log;
-        export res="${PIPESTATUS[0]}";
-        echo "Result: '${res}'";
-        exit ${res};
+        chmod +x ./test-reporter-latest-linux-amd64;
 
     - name: Install Dependencies
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
@@ -208,7 +203,7 @@ jobs:
         export PKG_CONFIG_PATH=${{ env.PKG_CONFIG_PATH }};
         echo "PKG_CONFIG_PATH: '${PKG_CONFIG_PATH}'";
 
-        bash scripts/compile_native.sh -t ${{ matrix.type }} -c ${{ matrix.compiler }} 2>&1 | tee ./reports/run_cmake.log;
+        bash scripts/compile_native.sh -t ${{ matrix.type }} -c ${{ matrix.compiler }};
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
         exit ${res};
@@ -226,45 +221,31 @@ jobs:
       if: success() && matrix.compiler == 'g++' && matrix.type == 'debug' && startsWith(matrix.os, 'ubuntu')
       working-directory: .
       run: |
-        lcov -c -i -d . --no-external -o code_coverage_base.info 2>&1 | tee ./reports/generate_code_coverage_base.log;
-        export res="${PIPESTATUS[0]}";
-        echo "Result: '${res}'";
-        exit ${res};
+        lcov -c -i -d . --no-external -o code_coverage_base.info;
 
     - name: Run unit tests Debug
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && matrix.type == 'debug'
       working-directory: build_${{ matrix.type }}
       run: |
-        mkdir -p ./reports;
-        DYLD_FALLBACK_LIBRARY_PATH=./lib ./bin/UnitTestsd 2>&1 | tee ./reports/unit_tests.log;
-        export res="${PIPESTATUS[0]}";
-        echo "Result: '${res}'";
-        exit ${res};
+        DYLD_FALLBACK_LIBRARY_PATH=./lib ./bin/UnitTestsd;
 
     - name: Run unit tests Release
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && matrix.type == 'release'
       working-directory: build_${{ matrix.type }}
       run: |
-        mkdir -p ./reports;
-        DYLD_FALLBACK_LIBRARY_PATH=./lib ./bin/UnitTests 2>&1 | tee ./reports/unit_tests.log;
-        export res="${PIPESTATUS[0]}";
-        echo "Result: '${res}'";
-        exit ${res};
+        DYLD_FALLBACK_LIBRARY_PATH=./lib ./bin/UnitTests;
 
     - name: Generate code coverage
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && matrix.compiler == 'g++' && matrix.type == 'debug' && startsWith(matrix.os, 'ubuntu')
       working-directory: .
       run: |
-        lcov -c -d . --no-external -o code_coverage_test.info 2>&1 | tee ./reports/code_coverage_1.log;
-        lcov -a code_coverage_base.info -a code_coverage_test.info -o code_coverage.info 2>&1 | tee ./reports/code_coverage_2.log;
-        lcov --remove code_coverage.info -o code_coverage.info '*third_party*' '*build*' 2>&1 | tee ./reports/code_coverage_3.log;
-        genhtml code_coverage.info -o code_coverage_report --no-branch-coverage -t MobileRT_code_coverage  2>&1 | tee ./reports/code_coverage_4.log;
-        export res="${PIPESTATUS[0]}";
-        echo "Result: '${res}'";
-        exit ${res};
+        lcov -c -d . --no-external -o code_coverage_test.info;
+        lcov -a code_coverage_base.info -a code_coverage_test.info -o code_coverage.info;
+        lcov --remove code_coverage.info -o code_coverage.info '*third_party*' '*build*';
+        genhtml code_coverage.info -o code_coverage_report --no-branch-coverage -t MobileRT_code_coverage;
 
     - name: Upload coverage to cache
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -275,23 +256,11 @@ jobs:
       with:
         path: |
           ./app/build/reports/coverage/androidTest/debug
-          ./reports
           ./code_coverage_base.info
           ./code_coverage.info
           ./code_coverage_test.info
         key: reports_${{ matrix.type }}-${{ github.sha }}
 
-    - name: Upload reports
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: always()
-      uses: actions/upload-artifact@v3
-      continue-on-error: true
-      with:
-        name: reports_${{ matrix.type }}_${{ matrix.os }}
-        retention-days: 90
-        if-no-files-found: error
-        path: |
-          ./reports
 
   Sonar:
     needs: Build
@@ -324,7 +293,6 @@ jobs:
       with:
         path: |
           ./app/build/reports/coverage/androidTest/debug
-          ./reports
           ./code_coverage_base.info
           ./code_coverage.info
           ./code_coverage_test.info
@@ -338,10 +306,9 @@ jobs:
       env:
         CC_TEST_REPORTER_ID: ${{ env.CC_TEST_REPORTER_ID }}
       run: |
-        mkdir -p reports;
-        chmod +x ./test-reporter-latest-linux-amd64 2>&1 | tee ./reports/setup_code_climate.log;
-        ./test-reporter-latest-linux-amd64 format-coverage -t lcov code_coverage.info 2>&1 | tee ./reports/format_coverage.log;
-        ./test-reporter-latest-linux-amd64 upload-coverage 2>&1 | tee ./reports/upload_coverage.log;
+        chmod +x ./test-reporter-latest-linux-amd64;
+        ./test-reporter-latest-linux-amd64 format-coverage -t lcov code_coverage.info;
+        ./test-reporter-latest-linux-amd64 upload-coverage;
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
         exit ${res};
@@ -353,10 +320,7 @@ jobs:
       env:
         CODECOV_TOKEN: ${{ env.CODECOV_TOKEN }}
       run: |
-        curl --retry 5 --retry-delay 2 --connect-timeout 2 --data-binary @codecov.yml https://codecov.io/validate 2>&1 | tee ./reports/validate_codecov.log;
-        export res="${PIPESTATUS[0]}";
-        echo "Result: '${res}'";
-        exit 0;
+        curl --retry 5 --retry-delay 2 --connect-timeout 2 --data-binary @codecov.yml https://codecov.io/validate;
 
     - name: Send codecov report
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -365,7 +329,4 @@ jobs:
       env:
         CODECOV_TOKEN: ${{ env.CODECOV_TOKEN }}
       run: |
-        curl --retry 5 --retry-delay 2 --connect-timeout 2 -s https://codecov.io/bash | bash -s -- -c -F aFlag ./build_${{ matrix.type }} -v 2>&1 | tee ./reports/send_codecov_report.log;
-        export res="${PIPESTATUS[0]}";
-        echo "Result: '${res}'";
-        exit 0;
+        curl --retry 5 --retry-delay 2 --connect-timeout 2 -s https://codecov.io/bash | bash -s -- -c -F aFlag ./build_${{ matrix.type }} -v;

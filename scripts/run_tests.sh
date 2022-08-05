@@ -86,17 +86,18 @@ function runUnitTests() {
   echo "Calling Gradle test";
   echo "Increasing ADB timeout to 10 minutes";
   export ADB_INSTALL_TIMEOUT=60000;
-  ./gradlew --stop;
-  ./gradlew test"${type}"UnitTest --profile --parallel \
+  bash gradlew --stop;
+  bash gradlew test"${type}"UnitTest --profile --parallel \
     -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
-    --console plain \
-    2>&1 | tee ${reports_path}/log_native_tests_"${type}".log;
+    --console plain;
   resUnitTests=${PIPESTATUS[0]};
 }
 ###############################################################################
 ###############################################################################
 
+createReportsFolders;
 runUnitTests;
+
 echo "";
 echo -e '\e]8;;file:///'"${PWD}"'/'${reports_path}'/tests/test'"${type}"'UnitTest/index.html\aClick here to check the Unit tests report.\e]8;;\a';
 echo "";

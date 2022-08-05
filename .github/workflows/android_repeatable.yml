@@ -52,30 +52,12 @@ jobs:
         java-version: 11
         distribution: 'zulu'
 
-    - name: Setup gradlew
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success()
-      working-directory: .
-      run: |
-        set -euo pipefail;
-        mkdir -p ./reports;
-        chmod +x ./gradlew 2>&1 | tee ./reports/setup_gradlew.log;
-
     - name: Build ${{ matrix.type }}
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
       if: success()
       working-directory: .
       run: |
-        echo "Will build the Android application.";
-        mkdir -p ./app/build/reports;
-        mkdir -p ./build/reports;
-        mkdir -p ./reports;
-        echo "Created reports folders.";
-        bash ./scripts/compile_android.sh -t ${{ matrix.type }} -r yes -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }};
-        echo "Android application compiled.";
-        export res="${PIPESTATUS[0]}";
-        echo "Result: '${res}'";
-        exit ${res};
+        bash scripts/compile_android.sh -t ${{ matrix.type }} -r yes -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }};
 
     - name: Run Android tests
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
@@ -95,7 +77,7 @@ jobs:
         sdcard-path-or-size: 100M
         ram-size: 1024M
         script: |
-          bash ./scripts/run_tests_android.sh -t ${{ matrix.type }} -r rep_puscas.mobilertapp.${{ matrix.test }} -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -k false;
+          bash scripts/run_tests_android.sh -t ${{ matrix.type }} -r rep_puscas.mobilertapp.${{ matrix.test }} -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -k false;
 
     - name: Upload reports
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}

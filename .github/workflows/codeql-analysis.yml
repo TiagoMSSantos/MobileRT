@@ -80,42 +80,25 @@ jobs:
         config-file: ./.github/codeql/codeql-config.yml
 
     - name: Install dependencies
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
       if: success()
       working-directory: .
       run: |
-        set -euo pipefail;
         bash scripts/install_dependencies.sh;
-
-    - name: Setup gradlew
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && matrix.language == 'java'
-      working-directory: .
-      run: |
-        chmod +x ./gradlew;
 
     - name: Build Gradle
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
       if: success() && matrix.language == 'java'
       working-directory: .
       run: |
-        mkdir -p ./app/build/reports;
-        mkdir -p ./reports;
-        bash ./scripts/compile_android.sh -t debug -r yes -n 21.3.6528147 -m 3.6.0 2>&1 | tee ./reports/compile_android.log;
-        export res="${PIPESTATUS[0]}";
-        echo "Result: '${res}'";
-        exit ${res};
+        bash scripts/compile_android.sh -t debug -r yes -n 21.3.6528147 -m 3.6.0;
 
     - name: Build C++
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success() && matrix.language == 'cpp'
       working-directory: .
       run: |
-        mkdir -p ./reports;
-        bash scripts/compile_native.sh -t debug -c g++ -r yes 2>&1 | tee ./reports/compile_native.log;
-        export res="${PIPESTATUS[0]}";
-        echo "Result: '${res}'";
-        exit ${res};
+        bash scripts/compile_native.sh -t debug -c g++ -r yes;
 
     - name: Remove unnecessary code
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}

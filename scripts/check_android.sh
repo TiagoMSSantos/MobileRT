@@ -74,25 +74,20 @@ printEnvironment;
 ###############################################################################
 function runLinter() {
   # Set path to reports.
-  reports_path=./app/build/reports;
-  profile_path=./reports/profile;
-  mkdir -p ${reports_path};
-  mkdir -p ${profile_path};
-
   echo "Print Gradle version";
-  ./gradlew --stop;
-  ./gradlew --version;
+  bash gradlew --stop;
+  bash gradlew --version;
 
   echo "Calling the Gradle linter";
-  ./gradlew check --profile --parallel \
+  bash gradlew check --profile --parallel \
     -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
-    --console plain \
-    2>&1 | tee ${reports_path}/log_check.log;
+    --console plain;
   resCheck=${PIPESTATUS[0]};
 }
 ###############################################################################
 ###############################################################################
 
+createReportsFolders;
 runLinter;
 
 ###############################################################################

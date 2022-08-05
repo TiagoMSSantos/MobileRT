@@ -80,9 +80,6 @@ typeWithCapitalLetter=$(capitalizeFirstletter "${type}");
 ###############################################################################
 
 # Set path to reports.
-reports_path=./app/build/reports;
-callCommandUntilSuccess mkdir -p ${reports_path};
-
 echo "type: '${type}'";
 
 function clearAllBuildFiles() {
@@ -98,14 +95,14 @@ function build() {
   echo "Calling the Gradle assemble to compile code for Android.";
   echo "Increasing ADB timeout to 10 minutes.";
   export ADB_INSTALL_TIMEOUT=60000;
-  ./gradlew --stop;
-  ./gradlew clean assembleAndroidTest bundle"${typeWithCapitalLetter}" \
+  bash gradlew --stop;
+  bash gradlew clean assembleAndroidTest bundle"${typeWithCapitalLetter}" \
     -DtestType="${type}" \
     --profile --parallel \
     -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
-    --console plain \
-    2>&1 | tee log_build_android_"${type}".log;
+    --console plain;
   resCompile=${PIPESTATUS[0]};
+  echo "Android application compiled.";
 }
 ###############################################################################
 ###############################################################################
@@ -131,8 +128,10 @@ set -e;
 clearOldBuildFiles;
 clearAllBuildFiles;
 #install_conan_dependencies;
+createReportsFolders;
 build;
 checkLastModifiedFiles;
+validateNativeLibCompiled;
 
 ###############################################################################
 # Exit code

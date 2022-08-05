@@ -244,8 +244,7 @@ function clangtidy() {
     -isystem /usr/include/glib-2.0/gobject \
     -isystem /usr/include/gtk-2.0/gtk \
     -isystem /usr/lib/llvm-8/include/openmp \
-    "${GTK_HEADERS}" \
-    2>&1 | tee "${SCRIPTS_PATH}"/tidy.log;
+    "${GTK_HEADERS}";
 }
 
 function profile() {

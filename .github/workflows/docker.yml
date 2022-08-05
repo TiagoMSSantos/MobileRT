@@ -79,7 +79,6 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       run: |
-        set -euo pipefail;
         export BRANCH=${GITHUB_REF#refs/heads/};
         echo "Branch: ${BRANCH}";
         echo "BRANCH=${BRANCH}" >> ${GITHUB_ENV};
@@ -160,11 +159,11 @@ jobs:
 
     - name: Login to DockerHub Registry
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success()
-        && env.DOCKERHUB_USERNAME != null
-        && env.DOCKERHUB_USERNAME != ''
-        && env.DOCKERHUB_PASSWORD != null
-        && env.DOCKERHUB_PASSWORD != ''
+      if: success() &&
+        env.DOCKERHUB_USERNAME != null &&
+        env.DOCKERHUB_USERNAME != '' &&
+        env.DOCKERHUB_PASSWORD != null &&
+        env.DOCKERHUB_PASSWORD != ''
       run: |
         ls ${PATH//:/ } 2> /dev/null | grep -i docker 2> /dev/null || true;
         docker --version;

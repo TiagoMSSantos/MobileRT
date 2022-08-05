@@ -226,11 +226,7 @@ jobs:
       working-directory: .
       shell: bash
       run: |
-        mkdir -p reports;
-        bash scripts/compile_native.sh -t "${{ matrix.type }}" -c "${{ matrix.cxx }}" 2>&1 | tee ./reports/build.log;
-        export res="${PIPESTATUS[0]}";
-        echo "Result: '${res}'";
-        exit ${res};
+        bash scripts/compile_native.sh -t "${{ matrix.type }}" -c "${{ matrix.cxx }}";
 
     - name: Run tests
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
@@ -238,20 +234,4 @@ jobs:
       working-directory: .
       shell: bash
       run: |
-        mkdir -p reports;
-        bash scripts/run_tests.sh -t "${{ matrix.type }}" -m "3.18.1" 2>&1 | tee ./reports/tests.log;
-        export res="${PIPESTATUS[0]}";
-        echo "Result: '${res}'";
-        exit ${res};
-
-    - name: Upload reports
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: always()
-      uses: actions/upload-artifact@v3
-      continue-on-error: true
-      with:
-        name: Reports
-        retention-days: 90
-        if-no-files-found: error
-        path: |
-          ./reports
+        bash scripts/run_tests.sh -t "${{ matrix.type }}" -m "3.18.1";

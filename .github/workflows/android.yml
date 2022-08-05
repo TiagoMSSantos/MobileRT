@@ -91,28 +91,6 @@ jobs:
         java-version: 11
         distribution: 'zulu'
 
-    - name: Install Tree Linux
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && startsWith(matrix.os, 'ubuntu')
-      working-directory: .
-      run: |
-        mkdir -p ./reports;
-        sudo apt-get install --no-install-recommends -y tree 2>&1 | tee ./reports/tree.log;
-        export res="${PIPESTATUS[0]}";
-        echo "Result: '${res}'";
-        exit ${res};
-
-    - name: Install Tree MacOS
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && startsWith(matrix.os, 'macos')
-      working-directory: .
-      run: |
-        mkdir -p ./reports;
-        brew install tree 2>&1 | tee ./reports/tree.log;
-        export res="${PIPESTATUS[0]}";
-        echo "Result: '${res}'";
-        exit ${res};
-
     - name: Cache SonarCloud packages
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
@@ -121,7 +99,6 @@ jobs:
         key: ${{ runner.os }}-sonar-${{ matrix.type }}
         restore-keys: ${{ runner.os }}-sonar
         path: |
-          ~/.sonar
           ./gradle
           ./app/.cxx
           ./app/build
@@ -142,85 +119,35 @@ jobs:
       if: success()
       working-directory: .
       run: |
-        set -euo pipefail;
         echo "BASE64_KEY=$(openssl base64 < app/MobileRT.jks | tr -d '\n')" >> ${GITHUB_ENV};
-        mkdir -p ./reports;
-        chmod +x ./gradlew 2>&1 | tee ./reports/setup_gradlew.log;
-        export res="${PIPESTATUS[0]}";
-        echo "Result: '${res}'";
-        exit ${res};
-
-    - name: Print dependencies
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && false
-      working-directory: .
-      run: |
-        mkdir -p ./reports;
-        ./gradlew :app:dependencies 2>&1 | tee dependencies.log;
-        export res=${PIPESTATUS[0]};
-        echo "Result: '${res}'";
-        exit ${res};
 
     - name: Setup code climate report
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       working-directory: .
       run: |
-        mkdir -p ./reports;
-        chmod +x ./test-reporter-latest-linux-amd64 2>&1 | tee ./reports/setup_code_climate.log;
-        export res="${PIPESTATUS[0]}";
-        echo "Result: '${res}'";
-        exit ${res};
+        chmod +x ./test-reporter-latest-linux-amd64;
 
     - name: Run linter
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
       working-directory: .
       run: |
-        mkdir -p ./app/build/reports;
-        mkdir -p ./build/reports;
-        mkdir -p ./reports;
-        sudo mkdir -p ${AGENT_TOOLSDIRECTORY}/jdk/11.0.10;
-        sudo ln -s ${JAVA_HOME} ${AGENT_TOOLSDIRECTORY}/jdk/11.0.10/x64 || true 2>&1 | tee ./reports/create_symlink_java.log;
-        bash ./scripts/check_android.sh -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} 2>&1 | tee ./reports/check_android.log;
-        export res="${PIPESTATUS[0]}";
-        echo "Result: '${res}'";
-        exit ${res};
+        bash scripts/check_android.sh -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }};
 
     - name: Run unit tests Java
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       working-directory: .
       run: |
-        mkdir -p ./app/build/reports;
-        mkdir -p ./build/reports;
-        mkdir -p ./reports;
-        bash ./scripts/run_tests.sh -t ${{ matrix.type }} -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} 2>&1 | tee ./reports/run_tests.log;
-        export res="${PIPESTATUS[0]}";
-        echo "Result: '${res}'";
-        exit ${res};
+        bash scripts/run_tests.sh -t ${{ matrix.type }} -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }};
 
     - name: Build ${{ matrix.type }}
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
       if: success()
       working-directory: .
       run: |
-        echo "Will build the Android application.";
-        mkdir -p ./app/build/reports;
-        mkdir -p ./build/reports;
-        mkdir -p ./reports;
-        echo "Created reports folders.";
-        set +e;
-        tree -f | grep -i "mobilert.so";
-        set -e;
-        bash ./scripts/compile_android.sh -t ${{ matrix.type }} -r yes -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }};
-        echo "Android application compiled.";
-        set +e;
-        tree -f | grep -i "mobilert.so";
-        set -e;
-        export res="${PIPESTATUS[0]}";
-        echo "Result: '${res}'";
-        exit ${res};
+        bash scripts/compile_android.sh -t ${{ matrix.type }} -r yes -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }};
 
     - name: Run Android tests
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_VERY_LONG) }}
@@ -248,24 +175,19 @@ jobs:
         disable-linux-hw-accel: auto
         enable-hw-keyboard: false
         script: |
-          mkdir -p ./app/build/reports;
-          mkdir -p ./build/reports;
-          mkdir -p ./reports;
-          echo "Number cores: ${{ env.NCPU_CORES }}";
-          bash ./scripts/run_tests_android.sh -t ${{ matrix.type }} -r all -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -k false;
+          bash scripts/run_tests_android.sh -t ${{ matrix.type }} -r all -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -k false;
 
     - name: Check report's paths
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug'
       run: |
-        ls -lah ./app 2>&1 | tee ./reports/ls_coverage_reports_1.log;
-        ls -lah ./app/build 2>&1 | tee ./reports/ls_coverage_reports_2.log;
-        ls -lah ./app/build/reports 2>&1 | tee ./reports/ls_coverage_reports_3.log;
-        ls -lah ./app/build/reports/coverage 2>&1 | tee ./reports/ls_coverage_reports_4.log;
-        ls -lah ./app/build/reports/coverage/androidTest/debug/report.xml 2>&1 | tee ./reports/ls_coverage_reports_jacoco.log;
-        ls -lah ./build/reports 2>&1 | tee ./reports/ls_coverage_reports_5.log;
-        ls -lah ./reports 2>&1 | tee ./reports/ls_reports.log;
-        tree -a -f | grep -i app/build/reports | grep -i xml 2>&1 | tee ./reports/tree_report.log;
+        ls -lah ./app;
+        ls -lah ./app/build;
+        ls -lah ./app/build/reports;
+        ls -lah ./app/build/reports/coverage;
+        ls -lah ./app/build/reports/coverage/androidTest/debug/report.xml;
+        ls -lah ./build/reports;
+        find app/build/reports -iname "*xml*";
 
     - name: Upload Gradle cached packages
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -288,7 +210,6 @@ jobs:
         path: |
           ./app/build/reports
           ./build/reports
-          ./reports
 
     - name: Sign APK
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -324,7 +245,6 @@ jobs:
         path: |
           ./app/build/reports
           ./build/reports
-          ./reports
 
   Sonar:
     needs: Build
@@ -369,7 +289,6 @@ jobs:
         path: |
           ./app/build/reports
           ./build/reports
-          ./reports
         key: reports_${{ matrix.type }}-${{ github.sha }}
 
     - name: Check files from cache
@@ -377,14 +296,11 @@ jobs:
       if: success()
       working-directory: .
       run: |
-        mkdir -p ./reports;
-        chmod +x ./gradlew 2>&1 | tee ./reports/setup_gradlew.log;
-        chmod +x ./test-reporter-latest-linux-amd64 2>&1 | tee ./reports/setup_code_climate.log;
-        ls -lah ./app 2>&1 | tee ./reports/ls_coverage_reports_1.log;
-        ls -lah ./app/build 2>&1 | tee ./reports/ls_coverage_reports_2.log;
-        ls -lah ./app/build/reports 2>&1 | tee ./reports/ls_coverage_reports_3.log;
-        ls -lah ./app/build/reports/coverage 2>&1 | tee ./reports/ls_coverage_reports_4.log;
-        ls -lah ./reports 2>&1 | tee ./reports/ls_reports.log;
+        chmod +x ./test-reporter-latest-linux-amd64;
+        ls -lah ./app;
+        ls -lah ./app/build;
+        ls -lah ./app/build/reports;
+        ls -lah ./app/build/reports/coverage;
 
     - name: Send code climate report
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -393,8 +309,8 @@ jobs:
       env:
         CC_TEST_REPORTER_ID: ${{ env.CC_TEST_REPORTER_ID }}
       run: |
-        ../../../../test-reporter-latest-linux-amd64 format-coverage -t jacoco ../../../build/reports/coverage/androidTest/debug/report.xml 2>&1 | tee ../../../../reports/format_coverage.log;
-        ../../../../test-reporter-latest-linux-amd64 upload-coverage 2>&1 | tee ../../../../reports/upload_coverage.log;
+        ../../../../test-reporter-latest-linux-amd64 format-coverage -t jacoco ../../../build/reports/coverage/androidTest/debug/report.xml;
+        ../../../../test-reporter-latest-linux-amd64 upload-coverage;
         export res="${PIPESTATUS[0]}";
         echo "Result: '${res}'";
         exit ${res};
@@ -406,11 +322,7 @@ jobs:
       env:
         CODECOV_TOKEN: ${{ env.CODECOV_TOKEN }}
       run: |
-        mkdir -p ./reports;
-        curl --retry 5 --retry-delay 2 --connect-timeout 2 --data-binary @codecov.yml https://codecov.io/validate 2>&1 | tee ./reports/validate_codecov.log;
-        export res="${PIPESTATUS[0]}";
-        echo "Result: '${res}'";
-        exit 0;
+        curl --retry 5 --retry-delay 2 --connect-timeout 2 --data-binary @codecov.yml https://codecov.io/validate;
 
     - name: Download Gradle cached packages
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
@@ -424,51 +336,60 @@ jobs:
         path: |
           ~/.gradle
 
-    # Useful step to avoid gradle having to download Sonar plugins that can take more than 40 min
+    # Useful step to avoid gradle having to download Sonar plugins that can take more than 50 min
+    # Taken from: https://github.com/marketplace/actions/download-workflow-artifact
     - name: Download Sonar packages Artifact
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: always()
       uses: dawidd6/action-download-artifact@v2
       continue-on-error: true
       with:
+        # Check default values here:
+        # https://github.com/dawidd6/action-download-artifact/blob/master/action.yml
         # Optional, GitHub token, a Personal Access Token with `public_repo` scope if needed
-        # Required, if artifact is from a different repo
+        # Required, if the artifact is from a different repo
+        # Required, if the repo is private a Personal Access Token with `repo` scope is needed
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        # Required, workflow file name or ID
+        # Optional, workflow file name or ID
+        # If not specified, will be inferred from run_id (if run_id is specified), or will be the current workflow
         workflow: android.yml
         # Optional, the status or conclusion of a completed workflow to search for
         # Can be one of a workflow conclusion:
         #   "failure", "success", "neutral", "cancelled", "skipped", "timed_out", "action_required"
         # Or a workflow status:
         #   "completed", "in_progress", "queued"
-        workflow_conclusion: success
+        workflow_conclusion: ''
         # Optional, will get head commit SHA
         pr: ${{ github.event.pull_request.number }}
         # Optional, no need to specify if PR is
         commit: ${{ github.event.pull_request.head.sha }}
         # Optional, will use the branch
-        branch: master
+        # branch: master
         # Optional, defaults to all types
-        event: push
+        # event: push
         # Optional, will use specified workflow run
         # run_id: 1122334455
         # Optional, run number from the workflow
         # run_number: 34
         # Optional, uploaded artifact name,
         # will download all artifacts if not specified
-        # and extract them in respective subdirectories
+        # and extract them into respective subdirectories
         # https://github.com/actions/download-artifact#download-all-artifacts
         name: sonar-packages
-        # Optional, directory where to extract artifact. Defaults to the artifact name (see `name` input)
+        # Optional, a directory where to extract artifact(s), defaults to the current directory
         path: /home/runner/.sonar
         # Optional, defaults to current repo
         repo: ${{ github.repository }}
-        # Optional, check the workflow run whether it has an artifact
-        # then will get the last available artifact from previous workflow
+        # Optional, check the workflow run to whether it has an artifact
+        # then will get the last available artifact from the previous workflow
         # default false, just try to download from the last one
-        # Warning: Unexpected input(s) 'check_artifacts', valid inputs are
-        # ['github_token', 'workflow', 'workflow_conclusion', 'repo', 'pr', 'commit', 'branch', 'event', 'run_id', 'run_number', 'name', 'path']
-        # check_artifacts: workflow
+        check_artifacts:  true
+        # Optional, search for the last workflow run whose stored an artifact named as in `name` input
+        # default false
+        search_artifacts: true
+        # Optional, choose to skip unpacking the downloaded artifact(s)
+        # default false
+        skip_unpack: false
 
     - name: Check files from downloaded artifact
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -488,10 +409,10 @@ jobs:
         GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}  # Needed to get PR information, if any
         SONAR_TOKEN: ${{ env.SONAR_TOKEN }}
       run: |
-        mkdir -p ./reports;
-        ./gradlew --profile --parallel sonarqube --info 2>&1 | tee ./reports/sonarqube.log;
+        bash gradlew --profile --parallel sonarqube --info;
 
     - name: Upload Sonar packages as Artifact
+      if: always()
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       uses: actions/upload-artifact@v3
       with:
@@ -512,7 +433,6 @@ jobs:
         path: |
           ./app/build/reports
           ./build/reports
-          ./reports
 
     - name: Send codecov report
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -521,8 +441,4 @@ jobs:
       env:
         CODECOV_TOKEN: ${{ env.CODECOV_TOKEN }}
       run: |
-        mkdir -p ./reports;
-        curl --retry 5 --retry-delay 2 --connect-timeout 2 -s https://codecov.io/bash | bash -s -- -c -F aFlag -f app/build/reports/coverage/androidTest/debug/report.xml -v 2>&1 | tee ./reports/codecov.log;
-        export res="${PIPESTATUS[0]}";
-        echo "Result: '${res}'";
-        exit 0;
+        curl --retry 5 --retry-delay 2 --connect-timeout 2 -s https://codecov.io/bash | bash -s -- -c -F aFlag -f app/build/reports/coverage/androidTest/debug/report.xml -v;
