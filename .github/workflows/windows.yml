@@ -202,7 +202,7 @@ jobs:
       # find "C:/Program Files (x86)/Microsoft Visual Studio/" -iname cl.exe;
 
     - name: Install Qt
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
       uses: jurplel/install-qt-action@v2.14.0
       with:

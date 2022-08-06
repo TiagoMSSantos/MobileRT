@@ -225,6 +225,12 @@ else()
     # /usr/include/x86_64-linux-gnu/bits/confname.h:255:26: note: expanded from macro '_SC_PHYS_PAGES'
     # #define _SC_PHYS_PAGES                  _SC_PHYS_PAGES
     set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-disabled-macro-expansion )
+
+    # Necessary to avoid the following error:
+    # build_release/MobileRT/MobileRT_autogen/mocs_compilation.cpp:3:8: fatal error:
+    # 'cmake_automoc_silence_linker_warning' has no out-of-line virtual method definitions;
+    # its vtable will be emitted in every translation unit [-Wweak-vtables]
+    set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-weak-vtables )
   endif()
 
   string( TOLOWER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_L )
