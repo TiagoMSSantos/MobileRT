@@ -400,20 +400,21 @@ jobs:
         ls -lah ~/;
         ls -lah ~/.sonar;
         ls -lah ~/.gradle;
+        du -h --time --max-depth=1 ~/;
 
     - name: Analyze Sonar
       timeout-minutes: 100
       if: always() && env.GITHUB_TOKEN != null && env.SONAR_TOKEN != null
       working-directory: .
       env:
-        GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}  # Needed to get PR information, if any
+        GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }} # Needed to get PR information, if any
         SONAR_TOKEN: ${{ env.SONAR_TOKEN }}
       run: |
         bash gradlew --profile --parallel sonarqube --info;
 
     - name: Upload Sonar packages as Artifact
       if: always()
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
       uses: actions/upload-artifact@v3
       with:
         name: sonar-packages
