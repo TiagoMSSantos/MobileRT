@@ -119,14 +119,14 @@ jobs:
       if: success()
       working-directory: .
       run: |
-        echo "BASE64_KEY=$(openssl base64 < app/MobileRT.jks | tr -d '\n')" >> ${GITHUB_ENV};
+        echo "BASE64_KEY=$(openssl base64 < app/MobileRT.jks | tr -d '\n')" >> "${GITHUB_ENV}";
 
     - name: Setup code climate report
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       working-directory: .
       run: |
-        chmod +x ./test-reporter-latest-linux-amd64;
+        source scripts/helper_functions.sh && prepareBinaries;
 
     - name: Run linter
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
@@ -181,13 +181,7 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug'
       run: |
-        ls -lah ./app;
-        ls -lah ./app/build;
-        ls -lah ./app/build/reports;
-        ls -lah ./app/build/reports/coverage;
-        ls -lah ./app/build/reports/coverage/androidTest/debug/report.xml;
-        ls -lah ./build/reports;
-        find app/build/reports -iname "*xml*";
+        source scripts/helper_functions.sh && checkReportsPaths;
 
     - name: Upload Gradle cached packages
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -296,11 +290,7 @@ jobs:
       if: success()
       working-directory: .
       run: |
-        chmod +x ./test-reporter-latest-linux-amd64;
-        ls -lah ./app;
-        ls -lah ./app/build;
-        ls -lah ./app/build/reports;
-        ls -lah ./app/build/reports/coverage;
+        source scripts/helper_functions.sh && prepareBinaries && checkReportsPaths;
 
     - name: Send code climate report
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -311,9 +301,6 @@ jobs:
       run: |
         ../../../../test-reporter-latest-linux-amd64 format-coverage -t jacoco ../../../build/reports/coverage/androidTest/debug/report.xml;
         ../../../../test-reporter-latest-linux-amd64 upload-coverage;
-        export res="${PIPESTATUS[0]}";
-        echo "Result: '${res}'";
-        exit ${res};
 
     - name: Validate codecov report
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -397,13 +384,7 @@ jobs:
       working-directory: .
       continue-on-error: true
       run: |
-        ls -lah ~/;
-        ls -lah ~/.sonar;
-        unzip -o ~/.sonar/sonar-packages.zip -d ~/.sonar/;
-        rm ~/.sonar/sonar-packages.zip;
-        ls -lah ~/.sonar;
-        ls -lah ~/.gradle;
-        du -h --time --max-depth=1 ~/;
+        source scripts/helper_functions.sh && extractFilesFromSonarArtifact;
 
     - name: Analyze Sonar
       timeout-minutes: 100
@@ -416,8 +397,8 @@ jobs:
         bash gradlew --profile --parallel sonarqube --info;
 
     - name: Upload Sonar packages as Artifact
-      if: always()
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
+      if: always()
       uses: actions/upload-artifact@v3
       with:
         name: sonar-packages

@@ -263,8 +263,8 @@ function create_build_folder() {
   # Set path to build.
   build_path=./build_${type};
 
-  type=$(capitalizeFirstletter "${type}");
-  echo "type: '${type}'";
+  typeWithCapitalLetter=$(capitalizeFirstletter "${type}");
+  echo "type: '${typeWithCapitalLetter}'";
 
   if [ "${recompile}" == "yes" ]; then
     rm -rf "${build_path:?Missing build path}"/*;
@@ -292,7 +292,7 @@ function build() {
   cmake -DCMAKE_VERBOSE_MAKEFILE=ON \
     "${ADD_QT_MACOS}" \
     -DCMAKE_CXX_COMPILER="${compiler}" \
-    -DCMAKE_BUILD_TYPE="${type}" \
+    -DCMAKE_BUILD_TYPE="${typeWithCapitalLetter}" \
     ../app/;
   resCompile=${PIPESTATUS[0]};
 
@@ -315,6 +315,7 @@ function build() {
   else
     echo "Compilation: cmake failed";
   fi
+  cd ../;
 }
 ###############################################################################
 ###############################################################################
@@ -322,6 +323,7 @@ function build() {
 createReportsFolders;
 build;
 validateNativeLibCompiled;
+ls -lahR ./build_"${type}"/bin ./build_"${type}"/lib;
 
 ###############################################################################
 # Exit code.

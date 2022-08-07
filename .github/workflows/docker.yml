@@ -80,187 +80,113 @@ jobs:
       if: success()
       run: |
         export BRANCH=${GITHUB_REF#refs/heads/};
-        echo "Branch: ${BRANCH}";
-        echo "BRANCH=${BRANCH}" >> ${GITHUB_ENV};
+        echo "BRANCH: ${BRANCH}";
+        echo "BRANCH=${BRANCH}" >> "${GITHUB_ENV}";
 
     - name: Setup Docker image version Linux
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && startsWith(matrix.os, 'ubuntu')
-      run: |
-        # Add VERSION environment variable to all workflow steps
-        export VERSION="${BASE_IMAGE/\//-}";
-        export VERSION="${VERSION/:/-}";
-        echo "VERSION=${VERSION}" >> ${GITHUB_ENV};
       env:
         BASE_IMAGE: ${{ matrix.BASE_IMAGE }}
+      run: |
+        # Add VERSION environment variable to all workflow steps.
+        export VERSION="${BASE_IMAGE/\//-}";
+        export VERSION="${VERSION/:/-}";
+        echo "VERSION=${VERSION}" >> "${GITHUB_ENV}";
 
     - name: Install docker MacOS
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && startsWith(matrix.os, 'macos')
-      run: |
-        # This code installs Docker on MacOS but the command `docker` doesn't do anything.
-        # Its necessary to install Docker Desktop on Mac:
-        # https://docs.docker.com/docker-for-mac/install/
-        # So, for now, we just use MacOS docker image that uses KVM (Kernel-based Virtual Machine)
-        # in a Linux environment.
-        echo "Select XCode.";
-        sudo xcode-select --switch /System/Volumes/Data/Applications/Xcode.app/Contents/Developer;
-        echo "Update Homebrew";
-        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)";
-        echo "Install docker and virtualbox";
-        brew install --cask docker virtualbox;
-        brew install docker;
-        echo "Install docker-machine";
-        mkdir -p ~/.docker/machine/cache/;
-        curl -Lo ~/.docker/machine/cache/boot2docker.iso https://github.com/boot2docker/boot2docker/releases/download/v19.03.12/boot2docker.iso;
-        brew install docker-machine;
-        echo "Create docker-machine";
-        docker-machine create --driver virtualbox --virtualbox-boot2docker-url ~/.docker/machine/cache/boot2docker.iso default;
-        echo "Start service docker-machine";
-        brew services start docker-machine;
-        eval "$(docker-machine env default)";
-        echo "Restart service docker-machine";
-        docker-machine restart;
-        docker-machine env;
-        docker ps;
-        docker --version;
-
-        # Add VERSION environment variable to all workflow steps
-        export VERSION="${BASE_IMAGE/\//-}";
-        export VERSION="${VERSION/:/-}";
-        echo "VERSION=${VERSION}" >> ${GITHUB_ENV};
-
-        ls ${PATH//:/ } 2> /dev/null | grep -i docker 2> /dev/null || true;
-
-        # Add docker path to PATH environment variable to all workflow steps
-        export PATH=${PATH}:"/usr/local/etc/bash_completion.d/";
-        export PATH=${PATH}:"/Applications/Docker.app/";
-        echo "${PATH}" >> ${GITHUB_PATH};
-
-        # ls -lah /usr/local/bin/;
-        export PATH=${PATH}:"/usr/local/bin/";
-
-        echo "Start Docker";
-        git clone https://github.com/docker/docker.github.io.git;
-        cd docker.github.io;
-        ls registry/recipes/osx;
-        plutil -lint registry/recipes/osx/com.docker.registry.plist;
-        cp registry/recipes/osx/com.docker.registry.plist ~/Library/LaunchAgents/;
-        chmod 644 ~/Library/LaunchAgents/com.docker.registry.plist;
-        launchctl load ~/Library/LaunchAgents/com.docker.registry.plist;
-        echo "Restart Docker registry";
-        launchctl stop com.docker.registry;
-        launchctl start com.docker.registry;
-        launchctl unload ~/Library/LaunchAgents/com.docker.registry.plist;
-
-        open /Applications/Docker.app;
       env:
         BASE_IMAGE: ${{ matrix.BASE_IMAGE }}
+      run: |
+          # shellcheck shell=bash
+          # shellcheck disable=SC1091
+          source scripts/docker.sh && installDockerCommandForMacOS;
+          # Add VERSION environment variable to all workflow steps.
+          export VERSION="${BASE_IMAGE/\//-}";
+          export VERSION="${VERSION/:/-}";
+          echo "VERSION=${VERSION}" >> "${GITHUB_ENV}";
+          # Add docker path to PATH environment variable to all workflow steps.
+          export PATH=${PATH}:"/usr/local/etc/bash_completion.d/";
+          export PATH=${PATH}:"/Applications/Docker.app/";
+          echo "${PATH}" >> "${GITHUB_PATH}";
 
     - name: Login to DockerHub Registry
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() &&
-        env.DOCKERHUB_USERNAME != null &&
-        env.DOCKERHUB_USERNAME != '' &&
-        env.DOCKERHUB_PASSWORD != null &&
-        env.DOCKERHUB_PASSWORD != ''
+      if: success() && env.DOCKERHUB_USERNAME != null && env.DOCKERHUB_PASSWORD != null
       run: |
-        ls ${PATH//:/ } 2> /dev/null | grep -i docker 2> /dev/null || true;
-        docker --version;
-        echo ${{ env.DOCKERHUB_PASSWORD }} | \
-          docker login -u ${{ env.DOCKERHUB_USERNAME }} --password-stdin;
-        echo "BUILT_IMAGE=yes" >> ${GITHUB_ENV};
+        # shellcheck shell=bash
+        # shellcheck disable=SC1091
+        source scripts/docker.sh && \
+          checkAvailableVersion && \
+          loginDockerHub ${{ env.DOCKERHUB_USERNAME }} ${{ env.DOCKERHUB_PASSWORD }};
+        echo "BUILT_IMAGE=yes" >> "${GITHUB_ENV}";
 
     - name: Pull the tagged Docker image
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && startsWith(matrix.BASE_IMAGE, 'gentoo')
       run: |
-        export VERSION=${{ env.VERSION }};
-        echo "Version: ${VERSION}";
-        output=$(docker pull ptpuscas/mobile_rt:${VERSION} || true);
-        echo "Docker: ${output}";
-        if [[ ${output} != *"up to date"* && ${output} != *"Downloaded newer image for"* ]]; then
-          echo "Did not find the Docker image. Will have to build the image."
-          echo "BUILT_IMAGE=yes" >> ${GITHUB_ENV};
-        else
-          echo "BUILT_IMAGE=no" >> ${GITHUB_ENV};
-        fi
+        # shellcheck shell=bash
+        echo "VERSION: ${{ env.VERSION }}";
+        # shellcheck disable=SC1091
+        source scripts/docker.sh && pullDockerImage ${{ env.VERSION }};
+        echo "BUILT_IMAGE=${BUILT_IMAGE}" >> "${GITHUB_ENV}";
 
     - name: Build the tagged Docker image
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
       if: success() && env.BUILT_IMAGE == 'yes'
       run: |
-        export VERSION=${{ env.VERSION }};
-        export BRANCH=${{ env.BRANCH }};
-        echo "Version: ${VERSION}";
-        echo "Branch: ${BRANCH}";
-        out=$(docker pull ptpuscas/mobile_rt:${VERSION} || true);
-        docker build \
-          -t ptpuscas/mobile_rt:${VERSION} \
-          -f docker_image/Dockerfile \
-          --no-cache=false \
-          --build-arg BUILD_TYPE=release \
-          --build-arg BASE_IMAGE=${{ matrix.BASE_IMAGE }} \
-          --build-arg BRANCH=${BRANCH} \
-          .;
+        # shellcheck shell=bash
+        echo "BASE_IMAGE: ${{ matrix.BASE_IMAGE }}";
+        echo "BRANCH: ${{ env.BRANCH }}";
+        echo "VERSION: ${{ env.VERSION }}";
+        # shellcheck disable=SC1091
+        source scripts/docker.sh && \
+          buildDockerImage ${{ matrix.BASE_IMAGE }} ${{ env.BRANCH }} ${{ env.VERSION }};
 
     - name: Pull and build MobileRT
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && env.BUILT_IMAGE != 'yes'
       run: |
-        export VERSION=${{ env.VERSION }};
-        export BRANCH=${{ env.BRANCH }};
-        echo "Version: ${VERSION}";
-        echo "Branch: ${BRANCH}";
-        docker run -t \
-          --entrypoint bash \
-          --name="mobile_rt_${VERSION}" \
-          ptpuscas/mobile_rt:${VERSION} \
-          -c "git fetch origin && git reset --hard origin/${BRANCH} && git checkout ${BRANCH} && bash ../scripts/compile_native.sh -t release -c g++ -r yes";
+        # shellcheck shell=bash
+        echo "VERSION: ${{ env.VERSION }}";
+        # shellcheck disable=SC1091
+        source scripts/docker.sh && \
+          compileMobileRTInDockerContainer ${{ env.VERSION }};
 
     - name: Update and commit MobileRT Docker image
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && env.BUILT_IMAGE != 'yes'
       run: |
-        docker commit mobile_rt_${VERSION} ptpuscas/mobile_rt:${VERSION};
-        docker rm mobile_rt_${VERSION};
+        # shellcheck shell=bash
+        echo "VERSION: ${{ env.VERSION }}";
+        # shellcheck disable=SC1091
+        source scripts/docker.sh && commitMobileRTDockerImage ${{ env.VERSION }};
 
     - name: Squash Docker image
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_VERY_LONG) }}
       if: success() && (startsWith(matrix.BASE_IMAGE, 'gentoo'))
       run: |
-        pip install docker-squash;
-        export VERSION=${{ env.VERSION }};
-        export BRANCH=${{ env.BRANCH }};
-        echo "Branch: ${BRANCH}";
-        echo "Version: ${VERSION}";
-        ! docker history ptpuscas/mobile_rt:${VERSION} | grep -i "git reset" | grep -v "<missing>" | head -3;
-        ! docker history ptpuscas/mobile_rt:${VERSION} | grep -i "git reset" | grep -v "<missing>" | head -3 | tail -1;
-        ! BEFORE_LAST_ID=$(docker history ptpuscas/mobile_rt:${VERSION} | grep -i "git reset" | grep -v "<missing>" | head -3 | tail -1 | cut -d ' ' -f 1);
-        echo "BEFORE_LAST_ID=${BEFORE_LAST_ID}";
-        docker-squash --tag ptpuscas/mobile_rt:${VERSION} ptpuscas/mobile_rt:${VERSION};
+        # shellcheck shell=bash
+        echo "VERSION: ${{ env.VERSION }}";
+        # shellcheck disable=SC1091
+        source scripts/docker.sh && squashMobileRTDockerImage ${{ env.VERSION }};
 
     - name: Run the unit tests
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       run: |
-        export VERSION=${{ env.VERSION }};
-        export BRANCH=${{ env.BRANCH }};
-        echo "Version: ${VERSION}";
-        echo "Branch: ${BRANCH}";
-        docker run -t \
-          --entrypoint bash \
-          -v /tmp/.X11-unix:/tmp/.X11-unix \
-          -e DISPLAY=${DISPLAY} \
-          --name="mobile_rt_${VERSION}" \
-          ptpuscas/mobile_rt:${VERSION} -c "./bin/UnitTests";
+        # shellcheck shell=bash
+        echo "VERSION: ${{ env.VERSION }}";
+        # shellcheck disable=SC1091
+        source scripts/docker.sh && executeUnitTestsInDockerContainer ${{ env.VERSION }};
 
     - name: Push the tagged Docker image
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
       if: success() && env.BRANCH == 'master' && env.DOCKERHUB_USERNAME != null && env.DOCKERHUB_PASSWORD != null
       run: |
-        export VERSION=${{ env.VERSION }};
-        export BRANCH=${{ env.BRANCH }};
-        echo "Version: ${VERSION}";
-        echo "Branch: ${BRANCH}";
-        docker push ptpuscas/mobile_rt:${VERSION};
+        # shellcheck shell=bash
+        echo "VERSION: ${{ env.VERSION }}";
+        # shellcheck disable=SC1091
+        source scripts/docker.sh && pushMobileRTDockerImage ${{ env.VERSION }};

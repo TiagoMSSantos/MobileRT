@@ -4,7 +4,7 @@
 # Execute Shellcheck on this script.
 ###############################################################################
 if [ -x "$(command -v shellcheck)" ]; then
-  shellcheck "${0}" || exit
+  shellcheck "${0}";
 fi
 ###############################################################################
 ###############################################################################
@@ -265,6 +265,7 @@ function parallelizeBuild() {
 
 # Check the files that were modified in the last few minutes.
 function checkLastModifiedFiles() {
+  local MINUTES;
   MINUTES=50;
   set +e;
   echo "#####################################################################";
@@ -275,6 +276,24 @@ function checkLastModifiedFiles() {
   find /home/runner -type f -mmin -${MINUTES} -print 2> /dev/null;
   echo "#####################################################################";
   set -e;
+}
+
+# Check the report's paths.
+function checkReportsPaths() {
+  ls -lah ./app;
+  ls -lah ./app/build;
+  ls -lah ./app/build/reports;
+  ls -lah ./app/build/reports/coverage;
+  ls -lah ./app/build/reports/coverage/androidTest/debug/report.xml;
+  ls -lah ./build/reports;
+  find app/build/reports -iname "*xml*";
+}
+
+# Change the mode of all binaries/scripts to be able to be executed.
+function prepareBinaries() {
+  chmod -R +x scripts/;
+  chmod +x ./test-reporter-latest-linux-amd64;
+  chmod +x ./test-reporter-latest-darwin-amd64;
 }
 
 # Helper command to execute a command / function without exiting the script (without the set -e).
@@ -325,7 +344,7 @@ function clearOldBuildFiles() {
   done
 }
 
-# Create the reports folders.
+# Create the reports' folders.
 function createReportsFolders() {
   echo "Creating reports folders.";
   mkdir -p ./build/reports;
@@ -337,10 +356,100 @@ function createReportsFolders() {
 function validateNativeLibCompiled() {
   local nativeLib;
   nativeLib=$(find . -iname "*mobilert*.so");
+  find . -iname "*.so" 2> /dev/null;
   echo "nativeLib: ${nativeLib}";
   if [ "$(echo "${nativeLib}" | wc -l)" -eq 0 ]; then
     exit 1;
   fi
+}
+
+# Extract and check files from downloaded artifact.
+function extractFilesFromSonarArtifact() {
+  ls -lah ~/;
+  ls -lah ~/.sonar;
+  unzip -o ~/.sonar/sonar-packages.zip -d ~/.sonar/;
+  rm ~/.sonar/sonar-packages.zip;
+  ls -lah ~/.sonar;
+  ls -lah ~/.gradle;
+  du -h --time --max-depth=1 ~/;
+}
+
+# Create symlinks of headers for MacOS.
+function createSymlinksOfQtForMacOS() {
+  find /usr/local -iname "Find*Qt*.cmake" 2> /dev/null;
+  echo "Checking available versions of Xcode.";
+  ls -lah /System/Volumes/Data/Applications;
+
+  echo "Define Qt versions.";
+  ls -lah /usr/local/Cellar/;
+  export QT_4_VERSION;
+  QT_4_VERSION="$(ls /usr/local/Cellar/qt@4/ | head -1)";
+  # export QT_5_VERSION="$(ls /usr/local/Cellar/qt@5/ | head -1)";
+
+  echo "Check Qt 5 paths exist.";
+  # Qt5 might fail while installing via homebrew.
+  # ls -lah /usr/local/Cellar/qt@5/;
+  # ls -lah /usr/local/Cellar/qt@5/${QT_5_VERSION}/lib/;
+  # ls -lah /usr/local/Cellar/qt@5/${QT_5_VERSION}/lib/QtCore.framework/Versions/5/Headers/;
+  # ls -lah /usr/local/Cellar/qt@5/${QT_5_VERSION}/lib/QtGui.framework/Versions/5/Headers/;
+  # ls -lah /usr/local/Cellar/qt@5/${QT_5_VERSION}/lib/QtWidgets.framework/Versions/5/Headers/
+
+  echo "Check Qt 4 paths exist.";
+  ls -lah /usr/local/Cellar/qt@4/;
+  ls -lah /usr/local/Cellar/qt@4/"${QT_4_VERSION}"/lib/;
+  ls -lah /usr/local/Cellar/qt@4/"${QT_4_VERSION}"/lib/QtCore.framework/Versions/4/Headers/;
+  ls -lah /usr/local/Cellar/qt@4/"${QT_4_VERSION}"/lib/QtGui.framework/Versions/4/Headers/;
+  # For Qt4, QtWidgets headers are inside QtGui folder.
+
+  echo "Create paths for Qt.";
+  mkdir -p /usr/local/include/Qt/Qt/;
+  mkdir -p /usr/local/include/Qt/QtCore/;
+  mkdir -p /usr/local/include/Qt/QtGui/;
+  mkdir -p /usr/local/include/Qt/QtWidgets/;
+
+  echo "Create symbolic links for Qt 5 headers.";
+  # rsync -av --keep-dirlinks /usr/local/Cellar/qt@5/"${QT_5_VERSION}"/lib/QtCore.framework/Versions/5/Headers/ /usr/local/include/Qt/QtCore;
+  # rsync -av --keep-dirlinks /usr/local/Cellar/qt@5/"${QT_5_VERSION}"/lib/QtGui.framework/Versions/5/Headers/ /usr/local/include/Qt/QtGui;
+  # rsync -av --keep-dirlinks /usr/local/Cellar/qt@5/"${QT_5_VERSION}"/lib/QtWidgets.framework/Versions/5/Headers/ /usr/local/include/Qt/QtWidgets;
+
+  echo "Create symbolic links for Qt 4 headers.";
+  rsync -av --keep-dirlinks /usr/local/Cellar/qt@4/"${QT_4_VERSION}"/lib/QtCore.framework/Versions/4/Headers/ /usr/local/include/Qt/QtCore;
+  rsync -av --keep-dirlinks /usr/local/Cellar/qt@4/"${QT_4_VERSION}"/lib/QtGui.framework/Versions/4/Headers/ /usr/local/include/Qt/QtGui;
+  rsync -av --keep-dirlinks /usr/local/Cellar/qt@4/"${QT_4_VERSION}"/lib/QtGui.framework/Versions/4/Headers/ /usr/local/include/Qt/QtWidgets;
+
+  echo "Searching for some Qt widgets headers.";
+  find ~/ -iname "qtwidgetsglobal.h" 2> /dev/null;
+
+  echo "Create symbolic links to mix all Qt headers."
+  rsync -av --keep-dirlinks /usr/local/include/Qt/QtCore/ /usr/local/include/Qt/Qt;
+  rsync -av --keep-dirlinks /usr/local/include/Qt/QtGui/ /usr/local/include/Qt/Qt;
+  rsync -av --keep-dirlinks /usr/local/include/Qt/QtWidgets/ /usr/local/include/Qt/Qt;
+
+  echo "Update include and library paths.";
+  export CPLUS_INCLUDE_PATH="/usr/local/include/Qt/:${CPLUS_INCLUDE_PATH}";
+  export CPLUS_INCLUDE_PATH="/usr/local/include/Qt/QtCore/:${CPLUS_INCLUDE_PATH}";
+  export CPLUS_INCLUDE_PATH="/usr/local/include/Qt/QtGui/:${CPLUS_INCLUDE_PATH}";
+  export CPLUS_INCLUDE_PATH="/usr/local/include/Qt/QtWidgets/:${CPLUS_INCLUDE_PATH}";
+  # export LIBRARY_PATH="/usr/local/Cellar/qt@5/"${QT_5_VERSION}"/lib/:${LIBRARY_PATH}";
+
+
+
+  # export LDFLAGS="-L/usr/local/opt/qt@5/lib";
+  # export CPPFLAGS="-I/usr/local/opt/qt@5/include";
+  # export PKG_CONFIG_PATH="/usr/local/opt/qt@5/lib/pkgconfig";
+
+  echo "Check Qt files.";
+  ls -lah /usr/local/include/Qt/QtWidgets/;
+  # ls -lahR /usr/local/Cellar/qt@5/ | grep -ine "\.a" -ine "\.so" -ine "\.dylib";
+  # lipo -info /usr/local/Cellar/qt@5/"${QT_5_VERSION}"/Frameworks/QtCore.framework;
+}
+
+# Generate code coverage.
+function generateCodeCoverage() {
+  lcov -c -d . --no-external -o code_coverage_test.info;
+  lcov -a code_coverage_base.info -a code_coverage_test.info -o code_coverage.info;
+  lcov --remove code_coverage.info -o code_coverage.info '*third_party*' '*build*';
+  genhtml code_coverage.info -o code_coverage_report --no-branch-coverage -t MobileRT_code_coverage;
 }
 
 ###############################################################################

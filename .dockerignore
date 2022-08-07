@@ -73,6 +73,7 @@
 **/*.Doxyfile*
 **/*coverage*
 **/test-reporter-latest-linux-amd64
+**/test-reporter-latest-darwin-amd64
 
 !build_*
 !WavefrontOBJs/conference*
