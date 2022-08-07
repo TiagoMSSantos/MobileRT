@@ -62,7 +62,7 @@ jobs:
     - name: Run Android tests
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
       if: success() && !startsWith(matrix.os, 'windows')
-      uses: ReactiveCircus/android-emulator-runner@v2.25.0
+      uses: ReactiveCircus/android-emulator-runner@v2
       env:
         NCPU_CORES: 4
       with:

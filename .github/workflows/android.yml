@@ -152,7 +152,7 @@ jobs:
     - name: Run Android tests
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_VERY_LONG) }}
       if: success() && !startsWith(matrix.os, 'windows')
-      uses: ReactiveCircus/android-emulator-runner@v2.25.0
+      uses: ReactiveCircus/android-emulator-runner@v2
       env:
         NCPU_CORES: 3
         MEM_MB: 2048
@@ -214,7 +214,7 @@ jobs:
     - name: Sign APK
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && env.SIGNING_KEY != null && env.KEY_ALIAS != null
-      uses: r0adkll/sign-android-release@v1.0.4
+      uses: r0adkll/sign-android-release@v1
       with:
         releaseDirectory: ./app/build/outputs/apk/${{ matrix.type }}
         signingKeyBase64: ${{ env.BASE64_KEY }}
@@ -339,7 +339,7 @@ jobs:
     # Useful step to avoid gradle having to download Sonar plugins that can take more than 50 min
     # Taken from: https://github.com/marketplace/actions/download-workflow-artifact
     - name: Download Sonar packages Artifact
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: always()
       uses: dawidd6/action-download-artifact@v2
       continue-on-error: true
@@ -391,13 +391,16 @@ jobs:
         # default false
         skip_unpack: false
 
-    - name: Check files from downloaded artifact
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+    - name: Extract and check files from downloaded artifact
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: always()
       working-directory: .
       continue-on-error: true
       run: |
         ls -lah ~/;
+        ls -lah ~/.sonar;
+        unzip -o ~/.sonar/sonar-packages.zip -d ~/.sonar/;
+        rm ~/.sonar/sonar-packages.zip;
         ls -lah ~/.sonar;
         ls -lah ~/.gradle;
         du -h --time --max-depth=1 ~/;

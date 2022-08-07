@@ -55,7 +55,7 @@ jobs:
 
     - name: Doxygen build
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      uses: mattnotmitt/doxygen-action@1.9.4
+      uses: mattnotmitt/doxygen-action@v1.9
       if: success()
       with:
         doxyfile-path: ".codedocs" # Path to Doxyfile (default is ./Doxyfile)
