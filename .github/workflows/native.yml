@@ -58,7 +58,7 @@ jobs:
           type: debug
           compiler: g++
 
-        - os: ubuntu-18.04
+        - os: ubuntu-22.04
           type: debug
           compiler: clang++
 

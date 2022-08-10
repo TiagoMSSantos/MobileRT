@@ -52,7 +52,7 @@ jobs:
           cmake_version: 3.18.1
           type: release
 
-        - os: ubuntu-18.04
+        - os: ubuntu-22.04
           android_api: 19
           ndk_version: 22.1.7171670
           cmake_version: 3.18.1

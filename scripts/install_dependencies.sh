@@ -98,6 +98,7 @@ function install_dependencies_debian() {
     vim \
     findutils \
     sudo git bash ca-certificates shellcheck \
+    libomp-dev \
     libatomic1 \
     qtbase5-dev qtbase5-dev-tools qtchooser qt5-qmake \
     g++ build-essential cmake make \

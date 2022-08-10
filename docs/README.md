@@ -61,7 +61,7 @@ the image above :) <br/>
 ## Build docker image
 For the most curious, this is the command used to build the docker image:
 ```bash
-docker build -t ptpuscas/mobile_rt -f docker_image/Dockerfile --no-cache=false --build-arg BUILD_TYPE=release --build-arg BASE_IMAGE=ubuntu:18.04 .
+docker build -t ptpuscas/mobile_rt -f docker_image/Dockerfile --no-cache=false --build-arg BUILD_TYPE=release --build-arg BASE_IMAGE=ubuntu:20.04 .
 ```
 
 The docker image is in docker hub:
@@ -173,7 +173,7 @@ library for assertions unit tests
     <tr>
       <td style="text-align:center"><b>MacOS</b></td>
       <td style="text-align:center">10.14 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
-      <td style="text-align:center">10.15 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
+      <td style="text-align:center">10.15 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25"></td>
       <td style="text-align:center">11.0 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
       <td style="text-align:center">12 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
     </tr>
@@ -187,7 +187,7 @@ library for assertions unit tests
     <tr>
       <td style="text-align:center"><b>Ubuntu</b></td>
       <td style="text-align:center">16.04 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25"></td>
-      <td style="text-align:center">18.04 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
+      <td style="text-align:center">18.04 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25"></td>
       <td style="text-align:center">20.04 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
       <td style="text-align:center">22.04 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
     </tr>
