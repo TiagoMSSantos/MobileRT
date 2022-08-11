@@ -388,9 +388,10 @@ file( GLOB_RECURSE SCENES_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/Scenes/**.cpp" )
 set( SCENES_SOURCES "${SCENES_SOURCES}" CACHE STRING "CUSTOM" FORCE )
 
 if( NOT DEFINED ANDROID_ABI )
-  message( STATUS "Finding Qt." )
+  message( STATUS "Finding Qt5." )
   find_package( Qt5 OPTIONAL_COMPONENTS Core Gui Widgets )
-  if( NOT QT5_FOUND )
+  if( NOT Qt5_FOUND )
+    message( STATUS "Did not find Qt5. Finding Qt4." )
     find_package( Qt4 OPTIONAL_COMPONENTS QtCore QtGui )
   endif()
 endif()
@@ -451,11 +452,11 @@ else()
     PRIVATE ${QT_HEADERS_RT} )
 
   if( Qt5_FOUND )
-    # Include Qt5 headers
+    message( STATUS "Including headers from Qt5." )
     target_include_directories( ${PROJECT_NAME}
       SYSTEM PRIVATE ${Qt5Core_INCLUDE_DIRS} ${Qt5Gui_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} )
   elseif( Qt4_FOUND )
-    # Include Qt4 headers
+    message( STATUS "Including headers from Qt4." )
     target_include_directories( ${PROJECT_NAME}
       SYSTEM PRIVATE ${QT_INCLUDES} )
   endif()
@@ -466,30 +467,29 @@ else()
     set( CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" /usr/local/lib/python3.9/site-packages/cmake/data/CMake.app/Contents/share/cmake-3.22/Modules/ CACHE STRING "CUSTOM" FORCE )
     message( STATUS "CMAKE_MODULE_PATH = ${CMAKE_MODULE_PATH}" )
 
-    if( NOT QT5_FOUND )
+    if( NOT Qt5_FOUND )
+      message( STATUS "Did not find Qt5. Finding Qt4." )
       find_package( Qt4 OPTIONAL_COMPONENTS QtCore QtGui )
     endif()
 
     target_link_libraries( ${PROJECT_NAME} PRIVATE -F/usr/local/lib )
-    target_link_libraries( ${PROJECT_NAME} PRIVATE -L/usr/local/lib )
-
-    target_link_libraries( ${PROJECT_NAME} PRIVATE -F/usr/local/Cellar/qt@5/$ENV{QT_5_VERSION}/Frameworks )
-    target_link_libraries( ${PROJECT_NAME} PRIVATE -L/usr/local/Cellar/qt@5/$ENV{QT_5_VERSION}/Frameworks )
-    target_link_libraries( ${PROJECT_NAME} PRIVATE -F/usr/local/Cellar/qt@4/$ENV{QT_4_VERSION}/Frameworks )
-    target_link_libraries( ${PROJECT_NAME} PRIVATE -L/usr/local/Cellar/qt@4/$ENV{QT_4_VERSION}/Frameworks )
+    # If github action jurplel/install-qt-action was used, then Qt should be at root of project.
+    target_link_libraries( ${PROJECT_NAME} PRIVATE -F${CMAKE_SOURCE_DIR}/../Qt/5.12.9/clang_64/lib )
 
     target_link_libraries( ${PROJECT_NAME} PRIVATE "-framework QtCore" )
     target_link_libraries( ${PROJECT_NAME} PRIVATE "-framework QtGui" )
-    if( QT5_FOUND )
-      # Qt4 doesn't have QtWidgets module.
+    if( Qt5_FOUND )
+      message( STATUS "Linking with QtWidgets from Qt5 (which Qt4 doesn't have)." )
       target_link_libraries( ${PROJECT_NAME} PRIVATE "-framework QtWidgets" )
     endif()
   else()
     message( STATUS "Linking Qt." )
 
     if( Qt5_FOUND )
+      message( STATUS "Linking with Qt5." )
       target_link_libraries( ${PROJECT_NAME} PRIVATE Qt5::Core Qt5::Gui Qt5::Widgets )
     elseif( Qt4_FOUND )
+      message( STATUS "Linking with Qt4." )
       target_link_libraries( ${PROJECT_NAME} PRIVATE Qt4::QtCore Qt4::QtGui Qt4::Widgets )
     endif()
 

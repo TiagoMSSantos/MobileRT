@@ -197,10 +197,9 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug'
       uses: actions/cache@v3
-      env:
-        cache-name: cache-reports
       with:
-        key: reports_${{ matrix.type }}-${{ github.sha }}
+        key: reports_${{ matrix.type }}_${{ matrix.os }}
+        restore-keys: reports_${{ matrix.type }}
         path: |
           ./app/build/reports
           ./build/reports
@@ -277,13 +276,12 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       uses: actions/cache@v3
-      env:
-        cache-name: cache-reports
       with:
+        key: reports_${{ matrix.type }}_${{ matrix.os }}
+        restore-keys: reports_${{ matrix.type }}
         path: |
           ./app/build/reports
           ./build/reports
-        key: reports_${{ matrix.type }}-${{ github.sha }}
 
     - name: Check files from cache
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -315,8 +313,6 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
       uses: actions/cache@v3
-      env:
-        cache-name: cache-reports
       with:
         key: ${{ runner.os }}-gradle-${{ matrix.type }}-${{ hashFiles('**/*.gradle') }}
         restore-keys: ${{ runner.os }}-gradle

@@ -184,19 +184,16 @@ jobs:
       uses: actions/cache@v3
       with:
         key: ${{ matrix.name }}-ccache-${{ steps.ccache_cache_timestamp.outputs.timestamp }}
-        restore-keys: |
-          ${{ matrix.name }}-ccache
+        restore-keys: ${{ matrix.name }}-ccache
         path: |
           .ccache
 
-    - name: Create build directory
+    - name: Install pthread
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
       shell: bash
       working-directory: .
       run: |
-        mkdir -p build_native;
-        mkdir -p example/Qt;
         vcpkg install pthread:x86-windows;
         vcpkg install pthread:x64-windows;
       # find "C:/Program Files (x86)/Microsoft Visual Studio/" -iname cl.exe;
@@ -205,6 +202,7 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
       uses: jurplel/install-qt-action@v2.14.0
+      # Download Qt from: https://download.qt.io/online/qtsdkrepository/
       with:
         # ['dir', 'version', 'host', 'target', 'arch', 'install-deps', 'modules', 'cached',
         # 'setup-python', 'tools', 'set-env', 'tools-only', 'aqtversion', 'py7zrversion', 'extra']
@@ -212,13 +210,21 @@ jobs:
         host: 'windows'
         target: 'desktop'
         arch: 'win64_msvc2017_64'
-        dir: '${{ github.workspace }}/example'
+        dir: '${{ github.workspace }}'
         install-deps: 'true'
-        modules: 'qtcharts qtwebengine'
+        modules: ''
         cached: 'false'
         aqtversion: '==0.9.4'
         py7zrversion: '==0.9.1'
         extra: '--external 7z'
+
+    - name: Check Qt path installation.
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success()
+      working-directory: .
+      run: |
+        env | grep -i qt;
+        ls -lahR Qt/;
 
     - name: Build ${{ matrix.type }} (${{ matrix.cxx }})
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}

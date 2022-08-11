@@ -205,10 +205,6 @@ function install_dependencies_macos() {
   export HOMEBREW_NO_AUTO_UPDATE=1;
   brew --version;
 
-  echo "Add more repositories with Qt to the list of formulae that brew tracks.";
-  brew tap cartr/qt4;
-  # brew tap cartr/qt5;
-
   echo "Install packages separately, so it continues regardless if some error occurs in one.";
   brew install openssl@1.0;
   brew install openssl@1.1;
@@ -219,10 +215,6 @@ function install_dependencies_macos() {
   brew install lcov;
   brew install python3;
   brew install pyenv;
-  # brew install qt;
-  brew install qt@4;
-  # brew install qt@5;
-  # brew install qt --build-from-source --HEAD;
 
   MAJOR_MAC_VERSION=$(sw_vers | grep ProductVersion | cut -d ':' -f2 | cut -d '.' -f1 | tr -d '[:space:]');
   echo "MacOS '${MAJOR_MAC_VERSION}' detected";
@@ -278,11 +270,6 @@ function install_conan() {
   conan -v;
   checkCommand conan;
 
-  CLANG_PATH=$(find / -iname "clang");
-  echo "Clang binary: ${CLANG_PATH}";
-  echo "Clang location: ${CLANG_PATH%/clang}";
-  PATH=${CLANG_PATH%/clang}:${PATH};
-
   echo "PATH: ${PATH}";
 }
 
@@ -295,23 +282,8 @@ function install_conan() {
 ###############################################################################
 # Test dependencies.
 ###############################################################################
-function check_qt() {
-  echo "Checking Qt installation.";
-  QT_PATH=$(find /usr/local -name "QDialog" -not -path "*/MobileRT" 2> /dev/null);
-  echo "QT path Qt 1: ${QT_PATH}";
-  QT_PATH=$(find /usr/local -name "qtwidgetsglobal.h" -not -path "*/MobileRT" 2> /dev/null);
-  echo "QT path QtWidget 2: ${QT_PATH}";
-  QT_PATH=$(find /usr/local -name "qtguiglobal.h" -not -path "*/MobileRT" 2> /dev/null);
-  echo "QT path QtGui 3: ${QT_PATH}";
-  QT_PATH=$(find /usr/local -name "qglobal.h" -not -path "*/MobileRT" 2> /dev/null);
-  echo "QT path QtCore 4: ${QT_PATH}";
-  QT_PATH=$(find /usr/local -name "QDesktopServices" -not -path "*/MobileRT" 2> /dev/null);
-  echo "QT path Qt 5: ${QT_PATH}";
-}
-
 function test_commands() {
   echo "Checking required bash commands.";
-  # check_qt;
 
   checkCommand vim;
   checkCommand cmake;

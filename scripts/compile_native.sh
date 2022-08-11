@@ -107,31 +107,6 @@ addOpenMpPath;
 
 
 ###############################################################################
-# Fix Qt library for MacOs.
-###############################################################################
-function addQtPath() {
-  set +e;
-  QT5_INCLUDE_PATHS="$(find /usr/local -name "QDialog" -not -path "*/MobileRT" 2> /dev/null)";
-  QT5_INCLUDE_PATH=$(echo "${QT5_INCLUDE_PATHS}" | tail -1);
-  QT5_LIB_PATH=${QT5_INCLUDE_PATH%/*/*/*/*/*};
-  QT_INCLUDE_PATH="/usr/local/include/Qt/";
-  set -e;
-  set +u;
-  echo "QT_INCLUDE_PATHS = ${QT5_INCLUDE_PATHS}";
-  echo "QT_INCLUDE_PATH = ${QT5_INCLUDE_PATH}";
-  echo "QT_LIB_PATH = ${QT5_LIB_PATH}";
-  export CPLUS_INCLUDE_PATH="${QT_INCLUDE_PATH}:${CPLUS_INCLUDE_PATH}";
-  export CPLUS_INCLUDE_PATH="${QT5_INCLUDE_PATH%/*}:${CPLUS_INCLUDE_PATH}";
-  export CPLUS_INCLUDE_PATH="${QT5_INCLUDE_PATH%/*/*}:${CPLUS_INCLUDE_PATH}";
-  export LIBRARY_PATH="${QT5_LIB_PATH}:${LIBRARY_PATH}";
-  set -u;
-}
-addQtPath;
-###############################################################################
-###############################################################################
-
-
-###############################################################################
 # Get the proper C compiler for conan.
 # Possible values for clang are ['3.3', '3.4', '3.5', '3.6', '3.7', '3.8', '3.9', '4.0',
 # '5.0', '6.0', '7.0', '7.1', '8', '9', '10', '11']
@@ -276,10 +251,6 @@ function build() {
   create_build_folder;
   cd "${build_path}";
 #  install_conan_dependencies;
-  ADD_QT_MACOS="";
-  if [ -x "$(command -v brew)" ]; then
-    ADD_QT_MACOS="-DQt_DIR=$(brew --prefix qt)/lib/cmake/Qt4";
-  fi
 
   echo "Adding cmake to PATH.";
   set +e;
@@ -290,7 +261,6 @@ function build() {
 
   echo "Calling CMake";
   cmake -DCMAKE_VERBOSE_MAKEFILE=ON \
-    "${ADD_QT_MACOS}" \
     -DCMAKE_CXX_COMPILER="${compiler}" \
     -DCMAKE_BUILD_TYPE="${typeWithCapitalLetter}" \
     ../app/;

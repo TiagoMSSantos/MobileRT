@@ -108,29 +108,39 @@ jobs:
       run: |
         bash scripts/install_dependencies.sh;
 
-    - name: Create symlinks of headers for MacOS
+    - name: Install Qt MacOS
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+      if: success() && startsWith(matrix.os, 'macos')
+      uses: jurplel/install-qt-action@v2.14.0
+      # Download Qt from: https://download.qt.io/online/qtsdkrepository/
+      with:
+        # ['dir', 'version', 'host', 'target', 'arch', 'install-deps', 'modules', 'cached',
+        # 'setup-python', 'tools', 'set-env', 'tools-only', 'aqtversion', 'py7zrversion', 'extra']
+        version: '5.12.9'
+        host: 'mac'
+        target: 'desktop'
+        arch: 'clang_64'
+        dir: '${{ github.workspace }}'
+        install-deps: 'true'
+        modules: ''
+        cached: 'false'
+        aqtversion: '==0.9.4'
+        py7zrversion: '==0.9.1'
+        extra: '--external 7z'
+
+    - name: Check Qt path installation.
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && startsWith(matrix.os, 'macos')
       working-directory: .
       run: |
-        source scripts/helper_functions.sh && createSymlinksOfQtForMacOS;
-        echo "QT_4_VERSION=${QT_4_VERSION}" >> "${GITHUB_ENV}";
-        echo "QT_5_VERSION=${QT_5_VERSION}" >> "${GITHUB_ENV}";
-        echo "CPLUS_INCLUDE_PATH=${CPLUS_INCLUDE_PATH}" >> "${GITHUB_ENV}";
-        echo "LIBRARY_PATH=${LIBRARY_PATH}" >> "${GITHUB_ENV}";
-        echo "LDFLAGS=${LDFLAGS}" >> "${GITHUB_ENV}";
-        echo "CPPFLAGS=${CPPFLAGS}" >> "${GITHUB_ENV}";
-        echo "PKG_CONFIG_PATH=${PKG_CONFIG_PATH}" >> "${GITHUB_ENV}";
+        env | grep -i qt;
+        ls -lahR Qt/;
 
     - name: Build ${{ matrix.type }}
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
       working-directory: .
       run: |
-        export QT_5_VERSION=${{ env.QT_5_VERSION }};
-        echo "QT_5_VERSION: '${QT_5_VERSION}'";
-        export QT_4_VERSION=${{ env.QT_4_VERSION }};
-        echo "QT_4_VERSION: '${QT_4_VERSION}'";
         export LDFLAGS=${{ env.LDFLAGS }};
         echo "LDFLAGS: '${LDFLAGS}'";
         export CPPFLAGS=${{ env.CPPFLAGS }};
@@ -172,15 +182,14 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && matrix.compiler == 'g++' && matrix.type == 'debug' && startsWith(matrix.os, 'ubuntu')
       uses: actions/cache@v3
-      env:
-        cache-name: cache-reports
       with:
+        key: reports_${{ matrix.type }}_${{ matrix.os }}
+        restore-keys: reports_${{ matrix.type }}
         path: |
           ./app/build/reports/coverage/androidTest/debug
           ./code_coverage_base.info
           ./code_coverage.info
           ./code_coverage_test.info
-        key: reports_${{ matrix.type }}-${{ github.sha }}
 
 
   Sonar:
@@ -209,16 +218,14 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       uses: actions/cache@v3
-      env:
-        cache-name: cache-reports
       with:
+        key: reports_${{ matrix.type }}_${{ matrix.os }}
+        restore-keys: reports_${{ matrix.type }}
         path: |
           ./app/build/reports/coverage/androidTest/debug
           ./code_coverage_base.info
           ./code_coverage.info
           ./code_coverage_test.info
-        key: reports_debug-${{ github.sha }}
-        restore-keys: reports_debug
 
     - name: Send code climate report
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
