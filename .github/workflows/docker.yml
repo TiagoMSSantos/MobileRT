@@ -19,6 +19,7 @@ on:
     - '!scripts/install_dependencies.sh'
     - '!scripts/run_tests.sh'
     - '!scripts/helper_functions.sh'
+    - '!scripts/docker.sh'
     - '!codecov.yml'
     - '!*gradle*'
 

@@ -128,13 +128,22 @@ function commitMobileRTDockerImage() {
 # * VERSION
 function squashMobileRTDockerImage() {
   _installDockerSquashCommand;
-  docker history ptpuscas/mobile_rt:"${1}" | grep -i "git reset" | grep -v "<missing>" || true;
-  docker history ptpuscas/mobile_rt:"${1}" | grep -i "git reset" | grep -v "<missing>" | head -3 || true;
-  docker history ptpuscas/mobile_rt:"${1}" | grep -i "git reset" | grep -v "<missing>" | head -3 | tail -1 || true;
+  echo "docker history 1";
+  docker history ptpuscas/mobile_rt:"${1}" || true;
+  echo "docker history 2";
+  docker history ptpuscas/mobile_rt:"${1}" | grep -v "<missing>" || true;
+  echo "docker history 3";
+  docker history ptpuscas/mobile_rt:"${1}" | grep -v "<missing>" | grep -i "scripts" || true;
+  echo "docker history 4";
+  docker history ptpuscas/mobile_rt:"${1}" | grep -v "<missing>" | grep -i "scripts" | head -3 || true;
+  echo "docker history 5";
+  docker history ptpuscas/mobile_rt:"${1}" | grep -v "<missing>" | grep -i "scripts" | head -3 | tail -1 || true;
   local BEFORE_LAST_ID;
-  BEFORE_LAST_ID=$(docker history ptpuscas/mobile_rt:"${1}" | grep -i "git reset" | grep -v "<missing>" | head -3 | tail -1 | cut -d ' ' -f 1 || true);
+  BEFORE_LAST_ID=$(docker history ptpuscas/mobile_rt:"${1}" | grep -v "<missing>" | grep -i "scripts" | head -3 | tail -1 | cut -d ' ' -f 1 || true);
   echo "BEFORE_LAST_ID=${BEFORE_LAST_ID}";
   docker-squash --tag ptpuscas/mobile_rt:"${1}" ptpuscas/mobile_rt:"${1}";
+  echo "docker history finished";
+  docker history ptpuscas/mobile_rt:"${1}" || true;
 }
 
 # Helper command to install the docker-squash command.
