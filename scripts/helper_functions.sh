@@ -283,6 +283,7 @@ function checkLastModifiedFiles() {
 # * path that should exist
 # * file that should also exist in the provided path
 function checkPathExists() {
+  ls -lah "${1}";
   ls -lah "${1}"/"${2}";
 }
 

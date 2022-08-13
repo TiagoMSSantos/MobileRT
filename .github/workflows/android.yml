@@ -161,8 +161,8 @@ jobs:
       if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug'
       uses: actions/cache@v3
       with:
-        key: reports_${{ matrix.type }}_${{ matrix.os }}_${{ hashFiles('**/*.info', '**/app/build/reports') }}
-        restore-keys: reports_${{ matrix.type }}
+        key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_attempt }}
+        restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_attempt }}
         path: |
           app/build/reports
 
@@ -191,6 +191,7 @@ jobs:
 
   Sonar:
     needs: Build
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
 
     strategy:
       fail-fast: false
@@ -207,7 +208,6 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     steps:
     - name: Checkout
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
@@ -236,8 +236,8 @@ jobs:
       if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug'
       uses: actions/cache@v3
       with:
-        key: reports_${{ matrix.type }}_${{ matrix.os }}_${{ hashFiles('**/*.info', '**/app/build/reports') }}
-        restore-keys: reports_${{ matrix.type }}
+        key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_attempt }}
+        restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_attempt }}
         path: |
           app/build/reports
 

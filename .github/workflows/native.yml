@@ -177,8 +177,8 @@ jobs:
       if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug' && matrix.compiler == 'g++'
       uses: actions/cache@v3
       with:
-        key: reports_${{ matrix.type }}_${{ matrix.os }}_${{ hashFiles('**/*.info', '**/app/build/reports/coverage/androidTest/debug') }}
-        restore-keys: reports_${{ matrix.type }}
+        key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_attempt }}
+        restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_attempt }}
         path: |
           ./app/build/reports/coverage/androidTest/debug
           ./code_coverage_base.info
@@ -213,8 +213,8 @@ jobs:
       if: success()
       uses: actions/cache@v3
       with:
-        key: reports_${{ matrix.type }}_${{ matrix.os }}_${{ hashFiles('**/*.info', '**/app/build/reports/coverage/androidTest/debug') }}
-        restore-keys: reports_${{ matrix.type }}
+        key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_attempt }}
+        restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_attempt }}
         path: |
           ./app/build/reports/coverage/androidTest/debug
           ./code_coverage_base.info
