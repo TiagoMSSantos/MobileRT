@@ -278,22 +278,20 @@ function checkLastModifiedFiles() {
   set -e;
 }
 
-# Check the report's paths.
-function checkReportsPaths() {
-  ls -lah ./app;
-  ls -lah ./app/build;
-  ls -lah ./app/build/reports;
-  ls -lah ./app/build/reports/coverage;
-  ls -lah ./app/build/reports/coverage/androidTest/debug/report.xml;
-  ls -lah ./build/reports;
-  find app/build/reports -iname "*xml*";
+# Check if a path exists.
+# Parameters:
+# * path that should exist
+# * file that should also exist in the provided path
+function checkPathExists() {
+  ls -lah "${1}"/"${2}";
 }
 
 # Change the mode of all binaries/scripts to be able to be executed.
 function prepareBinaries() {
-  chmod -R +x scripts/;
-  chmod +x ./test-reporter-latest-linux-amd64;
-  chmod +x ./test-reporter-latest-darwin-amd64;
+  local rootDir;
+  rootDir=$(dirname "${BASH_SOURCE[0]}")/..;
+  chmod +x "${rootDir}"/test-reporter-latest-linux-amd64;
+  chmod +x "${rootDir}"/test-reporter-latest-darwin-amd64;
 }
 
 # Helper command to execute a command / function without exiting the script (without the set -e).
@@ -364,14 +362,17 @@ function validateNativeLibCompiled() {
 }
 
 # Extract and check files from downloaded artifact.
-function extractFilesFromSonarArtifact() {
-  ls -lah ~/;
-  ls -lah ~/.sonar;
-  unzip -o ~/.sonar/sonar-packages.zip -d ~/.sonar/;
-  rm ~/.sonar/sonar-packages.zip;
-  ls -lah ~/.sonar;
-  ls -lah ~/.gradle;
-  du -h --time --max-depth=1 ~/;
+# Parameters:
+# * path of zip file (of the artifact) to be extracted
+# * name of zip file to be extracted
+function extractFilesFromArtifact() {
+  ls -lah "${1}"/..;
+  ls -lah "${1}";
+  unzip -o "${1}"/"${2}" -d "${1}";
+  rm "${1}"/"${2}";
+  ls -lah "${1}";
+  du -h --time --max-depth=1 "${1}"/..;
+  du -h --time --max-depth=1 "${1}";
 }
 
 # Generate code coverage.

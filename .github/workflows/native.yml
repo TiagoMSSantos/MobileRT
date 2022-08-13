@@ -36,7 +36,7 @@ concurrency:
 
 # Default environment variables.
 env:
-  GITHUB_STEP_TIMEOUT_SMALL: 2
+  GITHUB_STEP_TIMEOUT_SMALL: 3
   GITHUB_STEP_TIMEOUT_MEDIUM: 6
   GITHUB_STEP_TIMEOUT_LONG: 20
 
@@ -85,6 +85,7 @@ jobs:
     steps:
     - name: Checkout
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+      if: success()
       uses: actions/checkout@v3
 
     - name: Setup build directory
@@ -93,13 +94,6 @@ jobs:
       working-directory: .
       run: |
         mkdir -p build_${{ matrix.type }};
-
-    - name: Setup code climate report
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success()
-      working-directory: .
-      run: |
-        source scripts/helper_functions.sh && prepareBinaries;
 
     - name: Install Dependencies
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
@@ -152,7 +146,7 @@ jobs:
 
     - name: Generate code coverage base
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && matrix.compiler == 'g++' && matrix.type == 'debug' && startsWith(matrix.os, 'ubuntu')
+      if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug' && matrix.compiler == 'g++'
       working-directory: .
       run: |
         lcov -c -i -d . --no-external -o code_coverage_base.info;
@@ -173,17 +167,17 @@ jobs:
 
     - name: Generate code coverage
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && matrix.compiler == 'g++' && matrix.type == 'debug' && startsWith(matrix.os, 'ubuntu')
+      if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug' && matrix.compiler == 'g++'
       working-directory: .
       run: |
         source scripts/helper_functions.sh && generateCodeCoverage;
 
     - name: Upload coverage to cache
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && matrix.compiler == 'g++' && matrix.type == 'debug' && startsWith(matrix.os, 'ubuntu')
+      if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug' && matrix.compiler == 'g++'
       uses: actions/cache@v3
       with:
-        key: reports_${{ matrix.type }}_${{ matrix.os }}
+        key: reports_${{ matrix.type }}_${{ matrix.os }}_${{ hashFiles('**/*.info', '**/app/build/reports/coverage/androidTest/debug') }}
         restore-keys: reports_${{ matrix.type }}
         path: |
           ./app/build/reports/coverage/androidTest/debug
@@ -219,7 +213,7 @@ jobs:
       if: success()
       uses: actions/cache@v3
       with:
-        key: reports_${{ matrix.type }}_${{ matrix.os }}
+        key: reports_${{ matrix.type }}_${{ matrix.os }}_${{ hashFiles('**/*.info', '**/app/build/reports/coverage/androidTest/debug') }}
         restore-keys: reports_${{ matrix.type }}
         path: |
           ./app/build/reports/coverage/androidTest/debug

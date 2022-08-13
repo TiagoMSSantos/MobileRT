@@ -23,7 +23,7 @@ concurrency:
 
 # Default environment variables.
 env:
-  GITHUB_STEP_TIMEOUT_SMALL: 2
+  GITHUB_STEP_TIMEOUT_SMALL: 3
   GITHUB_STEP_TIMEOUT_MEDIUM: 6
 
 jobs:
@@ -38,6 +38,7 @@ jobs:
     steps:
     - name: Checkout
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+      if: success()
       uses: actions/checkout@v3
 
     - name: Trigger GitHub pages rebuild
@@ -55,8 +56,8 @@ jobs:
 
     - name: Doxygen build
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      uses: mattnotmitt/doxygen-action@v1.9
       if: success()
+      uses: mattnotmitt/doxygen-action@v1.9
       with:
         doxyfile-path: ".codedocs" # Path to Doxyfile (default is ./Doxyfile)
         working-directory: "." # Working directory (default is .)

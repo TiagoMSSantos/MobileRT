@@ -29,7 +29,7 @@ env:
   CMAKE_VERSION: 3.16.2
   NINJA_VERSION: 1.9.0
   CCACHE_VERSION: 3.7.7
-  GITHUB_STEP_TIMEOUT_SMALL: 2
+  GITHUB_STEP_TIMEOUT_SMALL: 3
   GITHUB_STEP_TIMEOUT_MEDIUM: 6
   GITHUB_STEP_TIMEOUT_LONG: 20
 
@@ -110,6 +110,7 @@ jobs:
     steps:
     - name: Checkout
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+      if: success()
       uses: actions/checkout@v3
 
     - name: Set up JDK
@@ -119,6 +120,8 @@ jobs:
       with:
         java-version: 11
         distribution: 'zulu'
+        check-latest: false
+        cache: 'gradle'
 
     - name: Download Ninja and CMake
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -177,16 +180,6 @@ jobs:
       run: |
         string(TIMESTAMP current_date "%Y-%m-%d-%H;%M;%S" UTC)
         message("::set-output name=timestamp::${current_date}")
-
-    - name: ccache cache files
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success()
-      uses: actions/cache@v3
-      with:
-        key: ${{ matrix.name }}-ccache-${{ steps.ccache_cache_timestamp.outputs.timestamp }}
-        restore-keys: ${{ matrix.name }}-ccache
-        path: |
-          .ccache
 
     - name: Install pthread
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}

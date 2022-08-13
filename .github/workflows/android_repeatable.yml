@@ -18,7 +18,7 @@ concurrency:
 
 # Default environment variables.
 env:
-  GITHUB_STEP_TIMEOUT_SMALL: 2
+  GITHUB_STEP_TIMEOUT_SMALL: 3
   GITHUB_STEP_TIMEOUT_MEDIUM: 6
   GITHUB_STEP_TIMEOUT_LONG: 20
 
@@ -42,6 +42,7 @@ jobs:
     steps:
     - name: Checkout
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+      if: success()
       uses: actions/checkout@v3
 
     - name: Set up JDK
@@ -51,6 +52,8 @@ jobs:
       with:
         java-version: 11
         distribution: 'zulu'
+        check-latest: false
+        cache: 'gradle'
 
     - name: Build ${{ matrix.type }}
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
@@ -79,13 +82,12 @@ jobs:
         script: |
           bash scripts/run_tests_android.sh -t ${{ matrix.type }} -r rep_puscas.mobilertapp.${{ matrix.test }} -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -k false;
 
-    - name: Upload reports
+    - name: Upload reports as artifact
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: always()
+      if: success()
       uses: actions/upload-artifact@v3
-      continue-on-error: true
       with:
-        name: reports_${{ matrix.type }}_${{ matrix.os }}
+        name: reports_${{ matrix.type }}_${{ matrix.os }}-artifacts
         retention-days: 90
         if-no-files-found: error
         path: |
