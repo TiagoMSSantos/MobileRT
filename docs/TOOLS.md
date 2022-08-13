@@ -38,5 +38,6 @@ bash gradlew htmlDependencyReport
 ## Delete Workflow runs
 Here are the commands to delete the workflow runs from all branches except the master.
 ```bash
-user=TiagoMSSantos repo=MobileRT; gh api repos/$user/$repo/actions/runs --paginate -q '.workflow_runs[] | select(.head_branch != "master") | "\(.id)"' | xargs -n1 -I % gh api repos/$user/$repo/actions/runs/% -X DELETE
+user=TiagoMSSantos repo=MobileRT;
+gh api repos/${user}/${repo}/actions/runs --paginate -q '.workflow_runs[] | select(.head_branch != "master") | "\(.id)"' | xargs -n1 -I % gh api repos/${user}/${repo}/actions/runs/% -X DELETE
 ```

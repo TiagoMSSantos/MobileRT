@@ -269,6 +269,15 @@ jobs:
       run: |
         curl --retry 5 --retry-delay 2 --connect-timeout 2 --data-binary @codecov.yml https://codecov.io/validate;
 
+    - name: Set home directory
+      id: set-home-directory
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success()
+      working-directory: .
+      run: |
+        echo "HOME: ${HOME}";
+        echo "::set-output name=HOME::${HOME}";
+
     # Useful step to avoid gradle having to download Sonar plugins that can take more than 50 min
     # Taken from: https://github.com/marketplace/actions/download-workflow-artifact
     - name: Download Sonar packages artifact
@@ -309,7 +318,7 @@ jobs:
         # https://github.com/actions/download-artifact#download-all-artifacts
         name: sonar-packages
         # Optional, a directory where to extract artifact(s), defaults to the current directory
-        path: /home/runner/.sonar
+        path: ${{ steps.set-home-directory.outputs.HOME }}/.sonar
         # Optional, defaults to current repo
         repo: ${{ github.repository }}
         # Optional, check the workflow run to whether it has an artifact
