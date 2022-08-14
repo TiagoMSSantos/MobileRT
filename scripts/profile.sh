@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 ###############################################################################
 # README
@@ -292,8 +292,8 @@ function parseArguments() {
         profile;
         sleep 2s;
         ;;
-      "drawt") . ./scripts/plot/plot.sh 0 ;;
-      "draws") . ./scripts/plot/plot.sh 1 ;;
+      "drawt") . scripts/plot/plot.sh 0 ;;
+      "draws") . scripts/plot/plot.sh 1 ;;
       "test") awk -f "${PLOT_SCRIPTS_PATH}/parser_median.awk" "${PLOT_SCRIPTS_PATH}/test.dat" ;;
       "release") execute ;;
       "debug") debug ;;

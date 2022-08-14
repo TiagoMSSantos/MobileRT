@@ -1,4 +1,12 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+###############################################################################
+# README
+###############################################################################
+# This script contains a bunch of helper functions for the bash scripts.
+###############################################################################
+###############################################################################
+
 
 ###############################################################################
 # Execute Shellcheck on this script.
@@ -6,13 +14,6 @@
 if [ -x "$(command -v shellcheck)" ]; then
   shellcheck "${0}";
 fi
-###############################################################################
-###############################################################################
-
-###############################################################################
-# README
-###############################################################################
-# This script contains a bunch of helper functions for the bash scripts.
 ###############################################################################
 ###############################################################################
 
@@ -382,6 +383,14 @@ function generateCodeCoverage() {
   lcov -a code_coverage_base.info -a code_coverage_test.info -o code_coverage.info;
   lcov --remove code_coverage.info -o code_coverage.info '*third_party*' '*build*';
   genhtml code_coverage.info -o code_coverage_report --no-branch-coverage -t MobileRT_code_coverage;
+  _validateCodeCoverage;
+}
+
+# Validate generated files for code coverage.
+function _validateCodeCoverage() {
+  ls -lah ./code_coverage_base.info;
+  ls -lah ./code_coverage_test.info;
+  ls -lah ./code_coverage.info;
 }
 
 ###############################################################################

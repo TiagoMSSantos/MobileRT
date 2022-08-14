@@ -170,7 +170,9 @@ jobs:
       if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug' && matrix.compiler == 'g++'
       working-directory: .
       run: |
-        source scripts/helper_functions.sh && generateCodeCoverage;
+        # shellcheck shell=bash
+        # shellcheck disable=SC1091
+        . scripts/helper_functions.sh && generateCodeCoverage;
 
     - name: Upload coverage to cache
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -228,7 +230,9 @@ jobs:
       env:
         CC_TEST_REPORTER_ID: ${{ env.CC_TEST_REPORTER_ID }}
       run: |
-        source scripts/helper_functions.sh && prepareBinaries;
+        # shellcheck shell=bash
+        # shellcheck disable=SC1091
+        . scripts/helper_functions.sh && prepareBinaries;
         ./test-reporter-latest-linux-amd64 format-coverage -t lcov code_coverage.info;
         ./test-reporter-latest-linux-amd64 upload-coverage;
 

@@ -154,7 +154,9 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug'
       run: |
-        source scripts/helper_functions.sh && checkPathExists app/build/reports/coverage/androidTest/debug report.xml;
+        # shellcheck shell=bash
+        # shellcheck disable=SC1091
+        . scripts/helper_functions.sh && checkPathExists app/build/reports/coverage/androidTest/debug report.xml;
 
     - name: Upload reports to cache
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -246,7 +248,9 @@ jobs:
       if: success()
       working-directory: .
       run: |
-        source scripts/helper_functions.sh && checkPathExists app/build/reports/coverage/androidTest/debug report.xml;
+        # shellcheck shell=bash
+        # shellcheck disable=SC1091
+        . scripts/helper_functions.sh && checkPathExists app/build/reports/coverage/androidTest/debug report.xml;
         env | grep -i runner;
 
     - name: Send code climate report
@@ -256,7 +260,9 @@ jobs:
       env:
         CC_TEST_REPORTER_ID: ${{ env.CC_TEST_REPORTER_ID }}
       run: |
-        source ${{ github.workspace }}/scripts/helper_functions.sh && prepareBinaries;
+        # shellcheck shell=bash
+        # shellcheck disable=SC1091
+        . ${{ github.workspace }}/scripts/helper_functions.sh && prepareBinaries;
         ../../../../test-reporter-latest-linux-amd64 format-coverage -t jacoco ../../../build/reports/coverage/androidTest/debug/report.xml;
         ../../../../test-reporter-latest-linux-amd64 upload-coverage;
 
@@ -281,9 +287,11 @@ jobs:
     # Useful step to avoid gradle having to download Sonar plugins that can take more than 50 min
     # Taken from: https://github.com/marketplace/actions/download-workflow-artifact
     - name: Download Sonar packages artifact
+      id: download-sonar-artifact
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
       uses: dawidd6/action-download-artifact@v2
+      continue-on-error: true
       with:
         # Check default values here:
         # https://github.com/dawidd6/action-download-artifact/blob/master/action.yml
@@ -334,14 +342,16 @@ jobs:
 
     - name: Extract and check files from sonar artifact
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-      if: success()
+      if: success() && steps.download-sonar-artifact.outcome == 'success'
       working-directory: .
       run: |
-        source scripts/helper_functions.sh && extractFilesFromArtifact ~/.sonar sonar-packages.zip;
+        # shellcheck shell=bash
+        # shellcheck disable=SC1091
+        . scripts/helper_functions.sh && extractFilesFromArtifact ~/.sonar sonar-packages.zip;
 
     - name: Analyze Sonar
       timeout-minutes: 100
-      if: success() && env.GITHUB_TOKEN != null && env.SONAR_TOKEN != null
+      if: cancelled() != true && env.GITHUB_TOKEN != null && env.SONAR_TOKEN != null
       working-directory: .
       env:
         GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }} # Needed to get PR information, if any
@@ -351,7 +361,7 @@ jobs:
 
     - name: Upload Sonar packages as artifact
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
-      if: success()
+      if: cancelled() != true
       uses: actions/upload-artifact@v3
       with:
         name: sonar-packages
@@ -361,7 +371,7 @@ jobs:
 
     - name: Send codecov report
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && env.CODECOV_TOKEN != null
+      if: cancelled() != true && env.CODECOV_TOKEN != null
       working-directory: .
       env:
         CODECOV_TOKEN: ${{ env.CODECOV_TOKEN }}
