@@ -121,7 +121,7 @@ Y_max = 0
 do for [i=1:files] {
   filePath = arrayGet("FILES", i)
   print "filePath: '".filePath."'"
-  fileParsed = "< awk -v speedup=".speedup." -f ./scripts/plot/parser_median.awk ".filePath
+  fileParsed = "< awk -v speedup=".speedup." -f scripts/plot/parser_median.awk ".filePath
   print "fileParsed: '".fileParsed."'"
   stats fileParsed using 1 nooutput name 'Fx_'
   stats fileParsed using 2 nooutput name 'Fy_'
@@ -174,7 +174,7 @@ plot \
 for [i = 1 : files] \
   filePath = arrayGet("FILES", i) \
   name = filePath[0 : strstrt(filePath[0:], ".dat") - 1] \
-  file = "< awk -v speedup=" . speedup . " -f ./scripts/plot/parser_median.awk " . filePath \
+  file = "< awk -v speedup=" . speedup . " -f scripts/plot/parser_median.awk " . filePath \
   file using 1:2 title name \
   with linespoints linestyle 1 linecolor rgb arrayGet("COLORS", i)
 ###############################################################################

@@ -70,10 +70,6 @@ jobs:
           cmake_version: 3.18.1
           type: debug
 
-    env:
-      SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
-      KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-
     name: API ${{ matrix.android_api }} ${{ matrix.type }} (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     timeout-minutes: 40
@@ -89,17 +85,20 @@ jobs:
       if: success()
       uses: actions/setup-java@v3
       with:
+        # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml
         java-version: 11
-        distribution: 'zulu'
+        distribution: zulu
+        java-package: jdk
+        architecture: x64
         check-latest: false
-        cache: 'gradle'
-
-    - name: Setup gradlew
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success()
-      working-directory: .
-      run: |
-        echo "BASE64_KEY=$(openssl base64 < app/MobileRT.jks | tr -d '\n')" >> "${GITHUB_ENV}";
+        server-id: github
+        server-username: GITHUB_ACTOR
+        server-password: GITHUB_TOKEN
+        settings-path: ~/.m2
+        overwrite-settings: true
+        gpg-private-key: ''
+        gpg-passphrase: GPG_PASSPHRASE
+        cache: gradle
 
     - name: Run linter
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
@@ -130,6 +129,7 @@ jobs:
         NCPU_CORES: 3
         MEM_MB: 2048
       with:
+        # Check available parameters in: https://github.com/ReactiveCircus/android-emulator-runner/blob/main/action.yml
         api-level: ${{ matrix.android_api }}
         cmake: ${{ matrix.cmake_version }}
         target: default
@@ -163,32 +163,47 @@ jobs:
       if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug'
       uses: actions/cache@v3
       with:
+        # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
         key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_attempt }}
         restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_attempt }}
         path: |
           app/build/reports
 
+    - name: Add base64 key to environment variable in order to sign APK
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success() && env.SIGNING_KEY != null && env.KEY_ALIAS != null
+      working-directory: .
+      env:
+        SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+        KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+      run: |
+        echo "BASE64_KEY=$(openssl base64 < app/MobileRT.jks | tr -d '[:space:]')" >> "${GITHUB_ENV}";
+
     - name: Sign APK
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && env.SIGNING_KEY != null && env.KEY_ALIAS != null
       uses: r0adkll/sign-android-release@v1
+      env:
+        SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+        KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
       with:
-        releaseDirectory: ./app/build/outputs/apk/${{ matrix.type }}
+        # Check available parameters in: https://github.com/r0adkll/sign-android-release/blob/master/action.yml
+        releaseDirectory: app/build/outputs/apk/${{ matrix.type }}
         signingKeyBase64: ${{ env.BASE64_KEY }}
-        alias: ${{ env.KEY_ALIAS }}
-        keyStorePassword: ${{ env.SIGNING_KEY }}
-        keyPassword: ${{ env.SIGNING_KEY }}
+        alias: ${{ secrets.KEY_ALIAS }}
+        keyStorePassword: ${{ secrets.SIGNING_KEY }}
+        keyPassword: ${{ secrets.SIGNING_KEY }}
 
     - name: Upload APK as artifact
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && startsWith(matrix.os, 'macos')
       uses: actions/upload-artifact@v3
       with:
+        # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
         name: MobileRT_${{ matrix.type }}_exp-artifacts
-        retention-days: 90
+        path: app/build/outputs/apk/${{ matrix.type }}
         if-no-files-found: error
-        path: |
-          ./app/build/outputs/apk/${{ matrix.type }}
+        retention-days: 90
 
 
   Sonar:
@@ -204,11 +219,6 @@ jobs:
     name: Code Coverage and Sonar
     runs-on: ${{ matrix.os }}
     timeout-minutes: 120
-    env:
-      CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
     steps:
     - name: Checkout
@@ -221,10 +231,20 @@ jobs:
       if: success()
       uses: actions/setup-java@v3
       with:
+        # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml
         java-version: 11
-        distribution: 'zulu'
+        distribution: zulu
+        java-package: jdk
+        architecture: x64
         check-latest: false
-        cache: 'gradle'
+        server-id: github
+        server-username: GITHUB_ACTOR
+        server-password: GITHUB_TOKEN
+        settings-path: ~/.m2
+        overwrite-settings: true
+        gpg-private-key: ''
+        gpg-passphrase: GPG_PASSPHRASE
+        cache: gradle
 
     - name: Create report's folders
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -238,6 +258,7 @@ jobs:
       if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug'
       uses: actions/cache@v3
       with:
+        # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
         key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_attempt }}
         restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_attempt }}
         path: |
@@ -258,7 +279,7 @@ jobs:
       if: success() && env.CC_TEST_REPORTER_ID != null
       working-directory: app/src/main/java
       env:
-        CC_TEST_REPORTER_ID: ${{ env.CC_TEST_REPORTER_ID }}
+        CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
       run: |
         # shellcheck shell=bash
         # shellcheck disable=SC1091
@@ -271,7 +292,7 @@ jobs:
       if: success() && env.CODECOV_TOKEN != null
       working-directory: .
       env:
-        CODECOV_TOKEN: ${{ env.CODECOV_TOKEN }}
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       run: |
         curl --retry 5 --retry-delay 2 --connect-timeout 2 --data-binary @codecov.yml https://codecov.io/validate;
 
@@ -293,8 +314,7 @@ jobs:
       uses: dawidd6/action-download-artifact@v2
       continue-on-error: true
       with:
-        # Check default values here:
-        # https://github.com/dawidd6/action-download-artifact/blob/master/action.yml
+        # Check available parameters in: https://github.com/dawidd6/action-download-artifact/blob/master/action.yml
         # Optional, GitHub token, a Personal Access Token with `public_repo` scope if needed
         # Required, if the artifact is from a different repo
         # Required, if the repo is private a Personal Access Token with `repo` scope is needed
@@ -354,8 +374,8 @@ jobs:
       if: cancelled() != true && env.GITHUB_TOKEN != null && env.SONAR_TOKEN != null
       working-directory: .
       env:
-        GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }} # Needed to get PR information, if any
-        SONAR_TOKEN: ${{ env.SONAR_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
         bash gradlew --profile --parallel sonarqube --info;
 
@@ -364,16 +384,17 @@ jobs:
       if: cancelled() != true
       uses: actions/upload-artifact@v3
       with:
+        # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
         name: sonar-packages
+        path: ~/.sonar
+        if-no-files-found: error
         retention-days: 90
-        path: |
-          ~/.sonar
 
     - name: Send codecov report
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: cancelled() != true && env.CODECOV_TOKEN != null
       working-directory: .
       env:
-        CODECOV_TOKEN: ${{ env.CODECOV_TOKEN }}
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       run: |
         curl --retry 5 --retry-delay 2 --connect-timeout 2 -s https://codecov.io/bash | bash -s -- -c -F aFlag -f app/build/reports/coverage/androidTest/debug/report.xml -v;

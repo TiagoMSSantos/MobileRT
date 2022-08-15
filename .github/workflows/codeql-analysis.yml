@@ -60,9 +60,20 @@ jobs:
       if: success()
       uses: actions/setup-java@v3
       with:
+        # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml
         java-version: 11
-        distribution: 'zulu'
+        distribution: zulu
+        java-package: jdk
+        architecture: x64
         check-latest: false
+        server-id: github
+        server-username: GITHUB_ACTOR
+        server-password: GITHUB_TOKEN
+        settings-path: ~/.m2
+        overwrite-settings: true
+        gpg-private-key: ''
+        gpg-passphrase: GPG_PASSPHRASE
+        cache: gradle
 
     # Initializes the CodeQL tools for scanning.
     # Valid inputs are ['tools', 'languages', 'token', 'matrix', 'config-file', 'queries']
@@ -79,7 +90,7 @@ jobs:
         languages: ${{ matrix.language }}
         token: ${{ github.token }}
         matrix: ${{ toJson(matrix) }}
-        config-file: ./.github/codeql/codeql-config.yml
+        config-file: .github/codeql/codeql-config.yml
         queries: +security-and-quality
         setup-python-dependencies: true
         source-root: .
@@ -94,16 +105,28 @@ jobs:
       run: |
         bash scripts/install_dependencies.sh;
 
+    - name: Autobuild
+      id: autobuild
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
+      if: success()
+      uses: github/codeql-action/autobuild@v2
+      continue-on-error: true
+      with:
+        # Check available parameters in: https://github.com/github/codeql-action/blob/main/autobuild/action.yml
+        token: ${{ github.token }}
+        matrix: ${{ toJson(matrix) }}
+        working-directory: ${{ github.workspace }}
+
     - name: Build Gradle
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
-      if: success() && matrix.language == 'java'
+      if: success() && matrix.language == 'java' && steps.autobuild.outcome == 'failure'
       working-directory: .
       run: |
         bash scripts/compile_android.sh -t debug -r yes -n 21.3.6528147 -m 3.6.0;
 
     - name: Build C++
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-      if: success() && matrix.language == 'cpp'
+      if: success() && matrix.language == 'cpp' && steps.autobuild.outcome == 'failure'
       working-directory: .
       run: |
         bash scripts/compile_native.sh -t debug -c g++ -r yes;
@@ -113,7 +136,7 @@ jobs:
       if: success() && matrix.language == 'cpp'
       working-directory: .
       run: |
-        rm -rf ./app/third_party/*;
+        rm -rf app/third_party/*;
         env | grep -i git;
 
     # Warning: Valid inputs are ['check_name', 'output', 'upload', 'ram',

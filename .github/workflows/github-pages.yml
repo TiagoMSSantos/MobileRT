@@ -30,10 +30,6 @@ jobs:
   github-pages:
     runs-on: ubuntu-20.04
     timeout-minutes: 3
-    env:
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
-      REPOSITORY_TOKEN: ${{ secrets.REPOSITORY_TOKEN }}
 
     steps:
     - name: Checkout
@@ -45,30 +41,35 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && github.event_name == 'workflow_dispatch'
       working-directory: .
+      env:
+        # You must create a personal token with repo access as GitHub does
+        # not yet support server-to-server page builds.
+        USER_TOKEN: ${{ secrets.REPOSITORY_TOKEN }}
       run: |
         curl --fail --request POST \
           --url https://api.github.com/repos/${{ github.repository }}/pages/builds \
           --header "Authorization: Bearer ${USER_TOKEN}";
-      env:
-        # You must create a personal token with repo access as GitHub does
-        # not yet support server-to-server page builds.
-        USER_TOKEN: ${{ env.REPOSITORY_TOKEN }}
 
     - name: Doxygen build
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       uses: mattnotmitt/doxygen-action@v1.9
       with:
+        # Check available parameters in: https://github.com/mattnotmitt/doxygen-action/blob/master/action.yml
         doxyfile-path: ".codedocs" # Path to Doxyfile (default is ./Doxyfile)
         working-directory: "." # Working directory (default is .)
         enable-latex: false # Flag to enable make-ing of the LaTeX part of the doxygen output (default is false)
 
     - name: Sync README with docker hub
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success()
+      if: success() && env.DOCKERHUB_USERNAME != null && env.DOCKERHUB_PASSWORD != null
       uses: ms-jpq/sync-dockerhub-readme@v1
+      env:
+        DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+        DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
       with:
-        username: ${{ env.DOCKERHUB_USERNAME }}
-        password: ${{ env.DOCKERHUB_PASSWORD }}
+        # Check available parameters in: https://github.com/ms-jpq/sync-dockerhub-readme/blob/whale/action.yml
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
         repository: ptpuscas/mobile_rt
         readme: "docs/README.md"

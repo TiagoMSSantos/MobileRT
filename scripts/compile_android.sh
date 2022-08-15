@@ -83,11 +83,11 @@ typeWithCapitalLetter=$(capitalizeFirstletter "${type}");
 echo "type: '${type}'";
 
 function clearAllBuildFiles() {
-  callCommandUntilSuccess rm -rf ./app/build/;
+  callCommandUntilSuccess rm -rf app/build/;
 
   if [ "${recompile}" == "yes" ]; then
-    callCommandUntilSuccess rm -rf ./app/.cxx/;
-    callCommandUntilSuccess rm -rf ./build/;
+    callCommandUntilSuccess rm -rf app/.cxx/;
+    callCommandUntilSuccess rm -rf build/;
   fi
 }
 
@@ -117,13 +117,13 @@ function install_conan_dependencies() {
   -s build_type=Release \
   --build missing \
   --profile default \
-  ./app/third_party/conan/Android;
+  app/third_party/conan/Android;
 
   export CONAN="TRUE";
 }
 
 set +e;
-rm -rf ./app/build/;
+rm -rf app/build/;
 set -e;
 clearOldBuildFiles;
 clearAllBuildFiles;

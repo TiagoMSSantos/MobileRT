@@ -347,8 +347,8 @@ function clearOldBuildFiles() {
 # Create the reports' folders.
 function createReportsFolders() {
   echo "Creating reports folders.";
-  mkdir -p ./build/reports;
-  mkdir -p ./app/build/reports;
+  mkdir -p build/reports;
+  mkdir -p app/build/reports;
   echo "Created reports folders.";
 }
 
@@ -388,9 +388,9 @@ function generateCodeCoverage() {
 
 # Validate generated files for code coverage.
 function _validateCodeCoverage() {
-  ls -lah ./code_coverage_base.info;
-  ls -lah ./code_coverage_test.info;
-  ls -lah ./code_coverage.info;
+  ls -lah code_coverage_base.info;
+  ls -lah code_coverage_test.info;
+  ls -lah code_coverage.info;
 }
 
 ###############################################################################

@@ -50,10 +50,20 @@ jobs:
       if: success()
       uses: actions/setup-java@v3
       with:
+        # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml
         java-version: 11
-        distribution: 'zulu'
+        distribution: zulu
+        java-package: jdk
+        architecture: x64
         check-latest: false
-        cache: 'gradle'
+        server-id: github
+        server-username: GITHUB_ACTOR
+        server-password: GITHUB_TOKEN
+        settings-path: ~/.m2
+        overwrite-settings: true
+        gpg-private-key: ''
+        gpg-passphrase: GPG_PASSPHRASE
+        cache: gradle
 
     - name: Build ${{ matrix.type }}
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
@@ -69,6 +79,7 @@ jobs:
       env:
         NCPU_CORES: 4
       with:
+        # Check available parameters in: https://github.com/ReactiveCircus/android-emulator-runner/blob/main/action.yml
         api-level: ${{ matrix.android_api }}
         target: default
         arch: x86
@@ -76,7 +87,7 @@ jobs:
         disable-spellchecker: true
         channel: stable
         emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none
-        cores: ${NCPU_CORES}
+        cores: ${{ env.NCPU_CORES }}
         sdcard-path-or-size: 100M
         ram-size: 1024M
         script: |
@@ -87,8 +98,8 @@ jobs:
       if: success()
       uses: actions/upload-artifact@v3
       with:
+        # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
         name: reports_${{ matrix.type }}_${{ matrix.os }}-artifacts
-        retention-days: 90
+        path: app/build/reports
         if-no-files-found: error
-        path: |
-          ./app/build/reports
+        retention-days: 90

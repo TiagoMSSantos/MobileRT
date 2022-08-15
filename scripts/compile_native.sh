@@ -236,7 +236,7 @@ function install_conan_dependencies() {
 ###############################################################################
 function create_build_folder() {
   # Set path to build.
-  build_path=./build_${type};
+  build_path=build_${type};
 
   typeWithCapitalLetter=$(capitalizeFirstletter "${type}");
   echo "type: '${typeWithCapitalLetter}'";
@@ -293,7 +293,7 @@ function build() {
 createReportsFolders;
 build;
 validateNativeLibCompiled;
-ls -lahR ./build_"${type}"/bin ./build_"${type}"/lib;
+ls -lahR build_"${type}"/bin build_"${type}"/lib;
 
 ###############################################################################
 # Exit code.

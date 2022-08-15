@@ -108,6 +108,7 @@ jobs:
       uses: jurplel/install-qt-action@v2.14.0
       # Download Qt from: https://download.qt.io/online/qtsdkrepository/
       with:
+        # Check available parameters in: https://github.com/jurplel/install-qt-action/blob/master/action.yml
         # ['dir', 'version', 'host', 'target', 'arch', 'install-deps', 'modules', 'cached',
         # 'setup-python', 'tools', 'set-env', 'tools-only', 'aqtversion', 'py7zrversion', 'extra']
         version: '5.12.9'
@@ -135,13 +136,6 @@ jobs:
       if: success()
       working-directory: .
       run: |
-        export LDFLAGS=${{ env.LDFLAGS }};
-        echo "LDFLAGS: '${LDFLAGS}'";
-        export CPPFLAGS=${{ env.CPPFLAGS }};
-        echo "CPPFLAGS: '${CPPFLAGS}'";
-        export PKG_CONFIG_PATH=${{ env.PKG_CONFIG_PATH }};
-        echo "PKG_CONFIG_PATH: '${PKG_CONFIG_PATH}'";
-
         bash scripts/compile_native.sh -t ${{ matrix.type }} -c ${{ matrix.compiler }};
 
     - name: Generate code coverage base
@@ -156,14 +150,14 @@ jobs:
       if: success() && matrix.type == 'debug'
       working-directory: build_${{ matrix.type }}
       run: |
-        DYLD_FALLBACK_LIBRARY_PATH=./lib ./bin/UnitTestsd;
+        DYLD_FALLBACK_LIBRARY_PATH=lib ./bin/UnitTestsd;
 
     - name: Run unit tests Release
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && matrix.type == 'release'
       working-directory: build_${{ matrix.type }}
       run: |
-        DYLD_FALLBACK_LIBRARY_PATH=./lib ./bin/UnitTests;
+        DYLD_FALLBACK_LIBRARY_PATH=lib ./bin/UnitTests;
 
     - name: Generate code coverage
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -179,13 +173,14 @@ jobs:
       if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug' && matrix.compiler == 'g++'
       uses: actions/cache@v3
       with:
+        # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
         key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_attempt }}
         restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_attempt }}
         path: |
-          ./app/build/reports/coverage/androidTest/debug
-          ./code_coverage_base.info
-          ./code_coverage.info
-          ./code_coverage_test.info
+          app/build/reports/coverage/androidTest/debug
+          code_coverage_base.info
+          code_coverage.info
+          code_coverage_test.info
 
 
   Sonar:
@@ -200,9 +195,6 @@ jobs:
     name: Code Coverage
     runs-on: ${{ matrix.os }}
     timeout-minutes: 3
-    env:
-      CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
     steps:
     - name: Checkout
@@ -215,20 +207,21 @@ jobs:
       if: success()
       uses: actions/cache@v3
       with:
+        # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
         key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_attempt }}
         restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_attempt }}
         path: |
-          ./app/build/reports/coverage/androidTest/debug
-          ./code_coverage_base.info
-          ./code_coverage.info
-          ./code_coverage_test.info
+          app/build/reports/coverage/androidTest/debug
+          code_coverage_base.info
+          code_coverage.info
+          code_coverage_test.info
 
     - name: Send code climate report
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && env.CC_TEST_REPORTER_ID != null
       working-directory: .
       env:
-        CC_TEST_REPORTER_ID: ${{ env.CC_TEST_REPORTER_ID }}
+        CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
       run: |
         # shellcheck shell=bash
         # shellcheck disable=SC1091
@@ -241,7 +234,7 @@ jobs:
       if: success() && env.CODECOV_TOKEN != null
       working-directory: .
       env:
-        CODECOV_TOKEN: ${{ env.CODECOV_TOKEN }}
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       run: |
         curl --retry 5 --retry-delay 2 --connect-timeout 2 --data-binary @codecov.yml https://codecov.io/validate;
 
@@ -250,6 +243,6 @@ jobs:
       if: success() && env.CODECOV_TOKEN != null
       working-directory: .
       env:
-        CODECOV_TOKEN: ${{ env.CODECOV_TOKEN }}
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       run: |
-        curl --retry 5 --retry-delay 2 --connect-timeout 2 -s https://codecov.io/bash | bash -s -- -c -F aFlag ./build_${{ matrix.type }} -v;
+        curl --retry 5 --retry-delay 2 --connect-timeout 2 -s https://codecov.io/bash | bash -s -- -c -F aFlag build_${{ matrix.type }} -v;

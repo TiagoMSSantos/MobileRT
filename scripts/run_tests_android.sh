@@ -71,7 +71,7 @@ function printEnvironment() {
 # Set paths.
 ###############################################################################
 echo "Set path to reports";
-reports_path="./app/build/reports";
+reports_path="app/build/reports";
 
 echo "Set path to instrumentation tests resources";
 mobilert_path="/data/local/tmp/MobileRT";
@@ -510,7 +510,7 @@ function runInstrumentationTests() {
 
   if [ "${run_test}" == "all" ]; then
     echo "Running all tests";
-    mkdir -p ./app/build/reports/coverage/androidTest/debug/;
+    mkdir -p app/build/reports/coverage/androidTest/debug/;
     set +u; # Because 'code_coverage' is only set when debug.
     bash gradlew connected"${type}"AndroidTest -DtestType="${type}" \
       -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \

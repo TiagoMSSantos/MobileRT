@@ -76,7 +76,7 @@ printEnvironment;
 ###############################################################################
 
 # Set path to reports.
-reports_path=./app/build/reports;
+reports_path=app/build/reports;
 mkdir -p ${reports_path};
 
 type=$(capitalizeFirstletter "${type}");

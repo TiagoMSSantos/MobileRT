@@ -67,31 +67,21 @@ jobs:
         - os: ubuntu-20.04
           BASE_IMAGE: sickcodes/docker-osx:latest
 
-    env:
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
-
     steps:
     - name: Checkout
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
       uses: actions/checkout@v3
 
-    - name: Extract branch name to an environment variable
+    - name: Add branch name and version to environment variables
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
+      env:
+        BASE_IMAGE: ${{ matrix.BASE_IMAGE }}
       run: |
         export BRANCH=${GITHUB_REF#refs/heads/};
         echo "BRANCH: ${BRANCH}";
         echo "BRANCH=${BRANCH}" >> "${GITHUB_ENV}";
-
-    - name: Setup Docker image version Linux
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && startsWith(matrix.os, 'ubuntu')
-      env:
-        BASE_IMAGE: ${{ matrix.BASE_IMAGE }}
-      run: |
-        # Add VERSION environment variable to all workflow steps.
         export VERSION="${BASE_IMAGE/\//-}";
         export VERSION="${VERSION/:/-}";
         echo "VERSION=${VERSION}" >> "${GITHUB_ENV}";
@@ -105,10 +95,6 @@ jobs:
         # shellcheck shell=bash
         # shellcheck disable=SC1091
         . scripts/docker.sh && installDockerCommandForMacOS;
-        # Add VERSION environment variable to all workflow steps.
-        export VERSION="${BASE_IMAGE/\//-}";
-        export VERSION="${VERSION/:/-}";
-        echo "VERSION=${VERSION}" >> "${GITHUB_ENV}";
         # Add docker path to PATH environment variable to all workflow steps.
         export PATH=${PATH}:"/usr/local/etc/bash_completion.d/";
         export PATH=${PATH}:"/Applications/Docker.app/";
@@ -117,12 +103,15 @@ jobs:
     - name: Login to DockerHub Registry
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && env.DOCKERHUB_USERNAME != null && env.DOCKERHUB_PASSWORD != null
+      env:
+        DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+        DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
       run: |
         # shellcheck shell=bash
         # shellcheck disable=SC1091
         . scripts/docker.sh && \
           checkAvailableVersion && \
-          loginDockerHub ${{ env.DOCKERHUB_USERNAME }} ${{ env.DOCKERHUB_PASSWORD }};
+          loginDockerHub ${{ secrets.DOCKERHUB_USERNAME }} ${{ secrets.DOCKERHUB_PASSWORD }};
         echo "BUILT_IMAGE=yes" >> "${GITHUB_ENV}";
 
     - name: Pull the tagged Docker image
@@ -187,6 +176,9 @@ jobs:
     - name: Push the tagged Docker image
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
       if: success() && env.BRANCH == 'master' && env.DOCKERHUB_USERNAME != null && env.DOCKERHUB_PASSWORD != null
+      env:
+        DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+        DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
       run: |
         # shellcheck shell=bash
         # shellcheck disable=SC1091
