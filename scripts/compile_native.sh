@@ -265,10 +265,11 @@ function build() {
     -DCMAKE_BUILD_TYPE="${typeWithCapitalLetter}" \
     ../app/;
   resCompile=${PIPESTATUS[0]};
+  echo "Called CMake";
 
   local compiler_version;
   # The compiler might redirect the output to stderr, so we also have to redirect it to the variable.
-  compiler_version=$(${compiler} -v 2>&1);
+  compiler_version=$(${compiler} -v 2>&1 || true);
   if [[ "${compiler_version}" != *".exe"* ]]; then
     echo "Didn't detect C++ compiler for Windows!";
     JOBS_FLAG=${MAKEFLAGS};
@@ -293,7 +294,7 @@ function build() {
 createReportsFolders;
 build;
 validateNativeLibCompiled;
-ls -lahR build_"${type}"/bin build_"${type}"/lib;
+du -h -d 1 build_"${type}"/bin build_"${type}"/lib;
 
 ###############################################################################
 # Exit code.

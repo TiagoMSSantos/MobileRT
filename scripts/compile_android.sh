@@ -95,13 +95,27 @@ function build() {
   echo "Calling the Gradle assemble to compile code for Android.";
   echo "Increasing ADB timeout to 10 minutes.";
   export ADB_INSTALL_TIMEOUT=60000;
-  bash gradlew --stop;
-  bash gradlew clean assembleAndroidTest bundle"${typeWithCapitalLetter}" \
+  bash gradlew --offline --no-rebuild --stop;
+  bash gradlew clean \
+    build \
+    assemble"${typeWithCapitalLetter}" assemble"${typeWithCapitalLetter}"AndroidTest \
+    bundle"${typeWithCapitalLetter}" \
+    bundle"${typeWithCapitalLetter}"ClassesToCompileJar \
+    bundle"${typeWithCapitalLetter}"ClassesToRuntimeJar \
+    bundle"${typeWithCapitalLetter}"AndroidTestClassesToCompileJar \
+    bundle"${typeWithCapitalLetter}"AndroidTestClassesToRuntimeJar \
+    package"${typeWithCapitalLetter}"Bundle \
     -DtestType="${type}" \
     --profile --parallel \
     -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
+    -DabiFilters="[\"x86\"]" \
     --console plain;
   resCompile=${PIPESTATUS[0]};
+  echo "Compiling APK to execute Android instrumentation tests.";
+  bash gradlew createDebugAndroidTestApkListingFileRedirect \
+    -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
+    -DabiFilters="[\"x86\"]" \
+    --profile --parallel --console plain;
   echo "Android application compiled.";
 }
 ###############################################################################
@@ -132,6 +146,11 @@ createReportsFolders;
 build;
 checkLastModifiedFiles;
 validateNativeLibCompiled;
+
+echo "Searching for generated APK";
+find . -iname "*.apk" | grep -i "output";
+apkPath=$(find . -iname "*.apk" | grep -i "output" | grep -i "${type}" | grep -i "test");
+echo "Generated APK: ${apkPath}";
 
 ###############################################################################
 # Exit code

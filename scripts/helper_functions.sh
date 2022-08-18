@@ -240,7 +240,7 @@ function checkCommand() {
     echo "Command '$*' is NOT installed.";
     if [[ $(uname -a) == *"MINGW"* ]]; then
       echo "Detected Windows OS, so ignoring this error ...";
-      exit 0;
+      return 0;
     fi
     exit 1;
   fi
@@ -267,14 +267,14 @@ function parallelizeBuild() {
 # Check the files that were modified in the last few minutes.
 function checkLastModifiedFiles() {
   local MINUTES;
-  MINUTES=50;
+  MINUTES=15;
   set +e;
   echo "#####################################################################";
   echo "Files modified in home:";
   find ~/ -type f -mmin -${MINUTES} -print 2> /dev/null | grep -v "mozilla" | grep -v "thunderbird" | grep -v "java";
   echo "#####################################################################";
-  echo "Files modified in CI runner:";
-  find /home/runner -type f -mmin -${MINUTES} -print 2> /dev/null;
+  echo "Files modified in workspace:";
+  find . -type f -mmin -${MINUTES} -print 2> /dev/null;
   echo "#####################################################################";
   set -e;
 }
@@ -284,7 +284,10 @@ function checkLastModifiedFiles() {
 # * path that should exist
 # * file that should also exist in the provided path
 function checkPathExists() {
-  ls -lah "${1}";
+  du -h -d 1 "${1}";
+  if [[ $# -eq 1 ]] ; then
+    return 0;
+  fi
   ls -lah "${1}"/"${2}";
 }
 
@@ -314,8 +317,8 @@ function _killProcessUsingFile() {
     local process_id_using_file;
     process_id_using_file=$(echo "${processes_using_file}" | cut -d ' ' -f 2 | head -1);
     echo "Going to kill this process: '${process_id_using_file}'";
-    callCommandUntilSuccess kill -SIGKILL "${process_id_using_file}";
     set +e;
+    kill -SIGKILL "${process_id_using_file}";
     processes_using_file=$(lsof "${1}" | tail -n +2 | tr -s ' ');
     set -e;
   done
@@ -368,13 +371,12 @@ function validateNativeLibCompiled() {
 # * path of zip file (of the artifact) to be extracted
 # * name of zip file to be extracted
 function extractFilesFromArtifact() {
-  ls -lah "${1}"/..;
-  ls -lah "${1}";
+  du -h -d 1 "${1}"/..;
+  du -h -d 1 "${1}";
   unzip -o "${1}"/"${2}" -d "${1}";
   rm "${1}"/"${2}";
-  ls -lah "${1}";
-  du -h --time --max-depth=1 "${1}"/..;
-  du -h --time --max-depth=1 "${1}";
+  du -h -d 1 "${1}"/..;
+  du -h -d 1 "${1}";
 }
 
 # Generate code coverage.

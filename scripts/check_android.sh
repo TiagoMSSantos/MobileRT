@@ -75,12 +75,14 @@ printEnvironment;
 function runLinter() {
   # Set path to reports.
   echo "Print Gradle version";
-  bash gradlew --stop;
-  bash gradlew --version;
+  bash gradlew --offline --no-rebuild --stop;
+  bash gradlew --offline --no-rebuild --version;
 
   echo "Calling the Gradle linter";
-  bash gradlew check --profile --parallel \
+  bash gradlew lint --profile --parallel \
     -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
+    -DabiFilters="[\"x86\"]" \
+    --offline --no-rebuild \
     --console plain;
   resCheck=${PIPESTATUS[0]};
 }

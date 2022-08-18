@@ -49,7 +49,7 @@ function loginDockerHub() {
 # * VERSION
 function buildDockerImage() {
   prepareBinaries;
-  ls -lah scripts/;
+  du -h -d 1 scripts;
   docker build \
     -t ptpuscas/mobile_rt:"${3}" \
     -f docker_image/Dockerfile \
@@ -174,8 +174,6 @@ function installDockerCommandForMacOS() {
 
   # shellcheck disable=SC2086,SC2010
   ls ${PATH//:/ } 2> /dev/null | grep -i docker 2> /dev/null || true;
-
-  # ls -lah /usr/local/bin/;
   export PATH=${PATH}:"/usr/local/bin/";
 
   echo "Start Docker";

@@ -129,7 +129,7 @@ jobs:
       working-directory: .
       run: |
         env | grep -i qt;
-        ls -lahR Qt/;
+        du -h -d 1 Qt;
 
     - name: Build ${{ matrix.type }}
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
@@ -174,8 +174,8 @@ jobs:
       uses: actions/cache@v3
       with:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
-        key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_attempt }}
-        restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_attempt }}
+        key: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
+        restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
         path: |
           app/build/reports/coverage/androidTest/debug
           code_coverage_base.info
@@ -208,8 +208,8 @@ jobs:
       uses: actions/cache@v3
       with:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
-        key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_attempt }}
-        restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_attempt }}
+        key: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
+        restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
         path: |
           app/build/reports/coverage/androidTest/debug
           code_coverage_base.info

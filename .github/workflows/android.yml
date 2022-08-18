@@ -48,29 +48,136 @@ jobs:
         include:
         - os: ubuntu-20.04
           android_api: 16
-          ndk_version: 22.1.7171670
+          ndk_version: 23.2.8568313
           cmake_version: 3.18.1
           type: release
 
         - os: ubuntu-22.04
           android_api: 19
-          ndk_version: 22.1.7171670
+          ndk_version: 23.2.8568313
           cmake_version: 3.18.1
           type: debug
 
         - os: macos-11
           android_api: 29
-          ndk_version: 18.1.5063045
+          ndk_version: 23.2.8568313
           cmake_version: 3.18.1
           type: release
 
         - os: macos-12
           android_api: 24
-          ndk_version: 18.1.5063045
+          ndk_version: 23.2.8568313
           cmake_version: 3.18.1
           type: debug
 
-    name: API ${{ matrix.android_api }} ${{ matrix.type }} (${{ matrix.os }})
+    name: Build ${{ matrix.android_api }} ${{ matrix.type }} (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+
+    steps:
+    - name: Checkout
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+      if: success()
+      uses: actions/checkout@v3
+
+    - name: Set up JDK
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success()
+      uses: actions/setup-java@v3
+      with:
+        # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml
+        java-version: 11
+        distribution: zulu
+        java-package: jdk
+        architecture: x64
+        check-latest: false
+        server-id: github
+        server-username: GITHUB_ACTOR
+        server-password: GITHUB_TOKEN
+        settings-path: ~/.m2
+        overwrite-settings: true
+        gpg-private-key: ''
+        gpg-passphrase: GPG_PASSPHRASE
+        cache: gradle
+
+    - name: Build ${{ matrix.type }}
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
+      if: success()
+      working-directory: .
+      run: |
+        bash scripts/compile_android.sh -t ${{ matrix.type }} -r yes -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }};
+
+    - name: Add Android NDK path to environment variable
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success()
+      working-directory: .
+      run: |
+        echo "Available NDK versions:";
+        du -h -d 1 ${ANDROID_HOME}/ndk;
+        echo "ANDROID_NDK_PATH=${ANDROID_HOME}/ndk/${{ matrix.ndk_version }}" >> "${GITHUB_ENV}";
+
+    - name: Check binaries' paths
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success()
+      run: |
+        # shellcheck shell=bash
+        # shellcheck disable=SC1091
+        . scripts/helper_functions.sh && checkPathExists ~/.gradle;
+        . scripts/helper_functions.sh && checkPathExists ${{ env.ANDROID_NDK_PATH }};
+        . scripts/helper_functions.sh && checkPathExists .gradle;
+        . scripts/helper_functions.sh && checkPathExists app/build;
+        . scripts/helper_functions.sh && checkPathExists app/.cxx;
+        . scripts/helper_functions.sh && checkPathExists app/third_party;
+
+    - name: Upload generated binaries to cache
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success()
+      uses: actions/cache@v3
+      with:
+        # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
+        key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
+        restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
+        path: |
+          ~/.gradle
+          .gradle
+          app/build
+          app/.cxx
+          app/third_party
+
+
+  AndroidTests:
+    needs: Build
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - os: ubuntu-20.04
+          android_api: 16
+          ndk_version: 23.2.8568313
+          cmake_version: 3.18.1
+          type: release
+
+        - os: ubuntu-22.04
+          android_api: 19
+          ndk_version: 23.2.8568313
+          cmake_version: 3.18.1
+          type: debug
+
+        - os: macos-11
+          android_api: 29
+          ndk_version: 23.2.8568313
+          cmake_version: 3.18.1
+          type: release
+
+        - os: macos-12
+          android_api: 24
+          ndk_version: 23.2.8568313
+          cmake_version: 3.18.1
+          type: debug
+
+    name: Android tests ${{ matrix.android_api }} ${{ matrix.type }} (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     timeout-minutes: 40
 
@@ -100,26 +207,42 @@ jobs:
         gpg-passphrase: GPG_PASSPHRASE
         cache: gradle
 
-    - name: Run linter
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-      if: success()
-      working-directory: .
-      run: |
-        bash scripts/check_android.sh -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }};
-
-    - name: Run unit tests Java
+    - name: Add Android NDK path to environment variable
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       working-directory: .
       run: |
-        bash scripts/run_tests.sh -t ${{ matrix.type }} -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }};
+        echo "Available NDK versions:";
+        du -h -d 1 ${ANDROID_HOME}/ndk;
+        echo "ANDROID_NDK_PATH=${ANDROID_HOME}/ndk/${{ matrix.ndk_version }}" >> "${GITHUB_ENV}";
 
-    - name: Build ${{ matrix.type }}
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
+    - name: Download generated binaries from cache
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
-      working-directory: .
+      uses: actions/cache@v3
+      with:
+        # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
+        key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
+        restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
+        path: |
+          ~/.gradle
+          .gradle
+          app/build
+          app/.cxx
+          app/third_party
+
+    - name: Check binaries' paths
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success()
       run: |
-        bash scripts/compile_android.sh -t ${{ matrix.type }} -r yes -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }};
+        # shellcheck shell=bash
+        # shellcheck disable=SC1091
+        . scripts/helper_functions.sh && checkPathExists ~/.gradle;
+        . scripts/helper_functions.sh && checkPathExists ${{ env.ANDROID_NDK_PATH }};
+        . scripts/helper_functions.sh && checkPathExists .gradle;
+        . scripts/helper_functions.sh && checkPathExists app/build;
+        . scripts/helper_functions.sh && checkPathExists app/.cxx;
+        . scripts/helper_functions.sh && checkPathExists app/third_party;
 
     - name: Run Android tests
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_VERY_LONG) }}
@@ -164,8 +287,8 @@ jobs:
       uses: actions/cache@v3
       with:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
-        key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_attempt }}
-        restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_attempt }}
+        key: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
+        restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
         path: |
           app/build/reports
 
@@ -206,17 +329,132 @@ jobs:
         retention-days: 90
 
 
-  Sonar:
+  UnitTests:
     needs: Build
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
 
     strategy:
       fail-fast: false
       matrix:
-        os: [ ubuntu-20.04 ]
-        type: [ debug ]
+        include:
+        - os: ubuntu-20.04
+          android_api: 16
+          ndk_version: 23.2.8568313
+          cmake_version: 3.18.1
+          type: release
 
-    name: Code Coverage and Sonar
+        - os: ubuntu-22.04
+          android_api: 19
+          ndk_version: 23.2.8568313
+          cmake_version: 3.18.1
+          type: debug
+
+        - os: macos-11
+          android_api: 29
+          ndk_version: 23.2.8568313
+          cmake_version: 3.18.1
+          type: release
+
+        - os: macos-12
+          android_api: 24
+          ndk_version: 23.2.8568313
+          cmake_version: 3.18.1
+          type: debug
+
+    name: Unit tests ${{ matrix.android_api }} ${{ matrix.type }} (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+
+    steps:
+    - name: Checkout
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+      if: success()
+      uses: actions/checkout@v3
+
+    - name: Set up JDK
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success()
+      uses: actions/setup-java@v3
+      with:
+        # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml
+        java-version: 11
+        distribution: zulu
+        java-package: jdk
+        architecture: x64
+        check-latest: false
+        server-id: github
+        server-username: GITHUB_ACTOR
+        server-password: GITHUB_TOKEN
+        settings-path: ~/.m2
+        overwrite-settings: true
+        gpg-private-key: ''
+        gpg-passphrase: GPG_PASSPHRASE
+        cache: gradle
+
+    - name: Add Android NDK path to environment variable
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success()
+      working-directory: .
+      run: |
+        echo "Available NDK versions:";
+        du -h -d 1 ${ANDROID_HOME}/ndk;
+        echo "ANDROID_NDK_PATH=${ANDROID_HOME}/ndk/${{ matrix.ndk_version }}" >> "${GITHUB_ENV}";
+
+    - name: Download generated binaries from cache
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success()
+      uses: actions/cache@v3
+      with:
+        # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
+        key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
+        restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
+        path: |
+          ~/.gradle
+          .gradle
+          app/build
+          app/.cxx
+          app/third_party
+
+    - name: Check binaries' paths
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success()
+      run: |
+        # shellcheck shell=bash
+        # shellcheck disable=SC1091
+        . scripts/helper_functions.sh && checkPathExists ~/.gradle;
+        . scripts/helper_functions.sh && checkPathExists ${{ env.ANDROID_NDK_PATH }};
+        . scripts/helper_functions.sh && checkPathExists .gradle;
+        . scripts/helper_functions.sh && checkPathExists app/build;
+        . scripts/helper_functions.sh && checkPathExists app/.cxx;
+        . scripts/helper_functions.sh && checkPathExists app/third_party;
+
+    - name: Run unit tests Java
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success()
+      working-directory: .
+      run: |
+        bash scripts/run_tests.sh -t ${{ matrix.type }} -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }};
+
+    - name: Run linter
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+      if: success()
+      working-directory: .
+      run: |
+        bash scripts/check_android.sh -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }};
+
+
+  Sonar:
+    needs: AndroidTests
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-22.04 ]
+        type: [ debug ]
+        ndk_version: [ 23.2.8568313 ]
+
+    name: Code Coverage & Sonar ${{ matrix.type }} (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     timeout-minutes: 120
 
@@ -259,8 +497,8 @@ jobs:
       uses: actions/cache@v3
       with:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
-        key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_attempt }}
-        restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_attempt }}
+        key: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
+        restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
         path: |
           app/build/reports
 
@@ -369,6 +607,43 @@ jobs:
         # shellcheck disable=SC1091
         . scripts/helper_functions.sh && extractFilesFromArtifact ~/.sonar sonar-packages.zip;
 
+    - name: Add Android NDK path to environment variable
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success()
+      working-directory: .
+      run: |
+        echo "Available NDK versions:";
+        du -h -d 1 ${ANDROID_HOME}/ndk;
+        echo "ANDROID_NDK_PATH=${ANDROID_HOME}/ndk/${{ matrix.ndk_version }}" >> "${GITHUB_ENV}";
+
+    - name: Download generated binaries from cache
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success()
+      uses: actions/cache@v3
+      with:
+        # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
+        key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
+        restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
+        path: |
+          ~/.gradle
+          .gradle
+          app/build
+          app/.cxx
+          app/third_party
+
+    - name: Check binaries' paths
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success()
+      run: |
+        # shellcheck shell=bash
+        # shellcheck disable=SC1091
+        . scripts/helper_functions.sh && checkPathExists ~/.gradle;
+        . scripts/helper_functions.sh && checkPathExists ${{ env.ANDROID_NDK_PATH }};
+        . scripts/helper_functions.sh && checkPathExists .gradle;
+        . scripts/helper_functions.sh && checkPathExists app/build;
+        . scripts/helper_functions.sh && checkPathExists app/.cxx;
+        . scripts/helper_functions.sh && checkPathExists app/third_party;
+
     - name: Analyze Sonar
       timeout-minutes: 100
       if: cancelled() != true && env.GITHUB_TOKEN != null && env.SONAR_TOKEN != null
@@ -377,7 +652,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
-        bash gradlew --profile --parallel sonarqube --info;
+        bash gradlew --offline --profile --parallel -DndkVersion=${{ matrix.ndk_version }} sonarqube --info;
 
     - name: Upload Sonar packages as artifact
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}

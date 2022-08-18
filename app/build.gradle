@@ -1,3 +1,5 @@
+import groovy.json.JsonSlurper;
+
 ///////////////////////////////////////////////////////////////////////////////
 // Apply plugins
 ///////////////////////////////////////////////////////////////////////////////
@@ -45,10 +47,13 @@ println("Reading system properties.")
 final def systemNDKVersion = System.getProperty('ndkVersion', '21.3.6528147')
 final def systemCMakeVersion = System.getProperty('cmakeVersion', '3.10.2')
 final def systemTestType = System.getProperty('testType', 'debug')
+final def customAbiFilters = System.getProperty('abiFilters', "[\"armeabi-v7a\", \"x86\", \"arm64-v8a\", \"x86_64\"]")
+final def systemAbiFilters = new JsonSlurper().parseText(customAbiFilters) as String[]
 
 println("NDK version: " + systemNDKVersion)
 println("CMake version: " + systemCMakeVersion)
 println("Test type: " + systemTestType)
+println("ABI Filters: " + systemAbiFilters)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -210,7 +215,7 @@ android {
         testHandleProfiling false
         testFunctionalTest false
         ndk {
-            abiFilters 'armeabi-v7a', 'x86', 'arm64-v8a', 'x86_64'
+            abiFilters systemAbiFilters
             setModuleName 'MobileRT'
         }
         externalNativeBuild {

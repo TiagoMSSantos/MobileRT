@@ -228,7 +228,7 @@ jobs:
       working-directory: .
       run: |
         env | grep -i qt;
-        ls -lahR Qt/;
+        du -h -d 1 Qt;
 
     - name: Build ${{ matrix.type }} (${{ matrix.cxx }})
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
@@ -236,12 +236,18 @@ jobs:
       working-directory: .
       shell: bash
       run: |
-        bash scripts/compile_native.sh -t "${{ matrix.type }}" -c "${{ matrix.cxx }}";
+        bash scripts/compile_native.sh -t ${{ matrix.type }} -c ${{ matrix.cxx }};
 
-    - name: Run tests
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
-      if: success()
-      working-directory: .
-      shell: bash
+    - name: Run unit tests Debug
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success() && matrix.type == 'debug'
+      working-directory: build_${{ matrix.type }}
       run: |
-        bash scripts/run_tests.sh -t "${{ matrix.type }}" -m "3.18.1";
+        DYLD_FALLBACK_LIBRARY_PATH=lib ./bin/Debug/UnitTestsd.exe;
+
+    - name: Run unit tests Release
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success() && matrix.type == 'release'
+      working-directory: build_${{ matrix.type }}
+      run: |
+        DYLD_FALLBACK_LIBRARY_PATH=lib ./bin/Debug/UnitTests.exe;

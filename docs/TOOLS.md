@@ -40,3 +40,9 @@ Here are the commands to delete the workflow runs from all branches except the m
 ```bash
 user=TiagoMSSantos repo=MobileRT; gh api repos/${user}/${repo}/actions/runs --paginate -q '.workflow_runs[] | select(.head_branch != "master") | "\(.id)"' | xargs -n1 -I % gh api repos/${user}/${repo}/actions/runs/% -X DELETE;
 ```
+
+## Delete local branches which are not in remote
+Here are the commands to delete the git local branches that are not on the remote server.
+```
+git branch -vv | grep ': gone]' | awk '{print $1}' | xargs git branch -D
+```

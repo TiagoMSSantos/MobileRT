@@ -171,6 +171,7 @@ function catch_signal() {
 
 function unlockDevice() {
   callCommandUntilSuccess bash gradlew --daemon \
+    --offline --no-rebuild \
     -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}";
 
   echo "Set adb as root, to be able to change files permissions";
@@ -200,9 +201,6 @@ function unlockDevice() {
   callCommandUntilSuccess adb start-server;
   callCommandUntilSuccess adb start-server;
   callCommandUntilSuccess adb start-server;
-  callCommandUntilSuccess adb wait-for-device;
-  callCommandUntilSuccess adb wait-for-device;
-  callCommandUntilSuccess adb wait-for-device;
   # adb shell needs ' instead of ", so 'getprop' works properly.
   # shellcheck disable=SC2016
   callCommandUntilSuccess adb shell 'while [[ $(getprop service.bootanim.exit) != 1 ]]; do sleep 1; done;';
@@ -477,6 +475,7 @@ function runInstrumentationTests() {
   if [ -z "${CI}" ]; then
     jps | grep -i "gradle" | tr -s ' ' | cut -d ' ' -f 1 | head -1 | xargs kill -SIGKILL;
     bash gradlew --stop \
+      --offline --no-rebuild \
       -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}";
 
     local numberOfFilesOpened;
@@ -501,8 +500,6 @@ function runInstrumentationTests() {
   echo "Will install APK: ${apkPath}";
   callCommandUntilSuccess adb push -p "${apkPath}" "${mobilert_path}";
   callCommandUntilSuccess adb shell 'ls -la '${mobilert_path};
-  bash gradlew createDebugAndroidTestApkListingFileRedirect \
-    -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}";
   callAdbShellCommandUntilSuccess adb shell 'pm install -t -r '${mobilert_path}'/app-'${type}'-androidTest.apk; echo ::$?::';
   echo "List of instrumented APKs:";
   adb shell 'pm list instrumentation;';
@@ -514,6 +511,7 @@ function runInstrumentationTests() {
     set +u; # Because 'code_coverage' is only set when debug.
     bash gradlew connected"${type}"AndroidTest -DtestType="${type}" \
       -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
+      -DabiFilters="[\"x86\"]" \
       ${code_coverage} --console plain --parallel;
     set -u;
   elif [[ ${run_test} == rep_* ]]; then
@@ -522,12 +520,14 @@ function runInstrumentationTests() {
     callCommandUntilError bash gradlew connectedAndroidTest -DtestType="${type}" \
       -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
       -Pandroid.testInstrumentationRunnerArguments.class="${run_test_without_prefix}" \
+      -DabiFilters="[\"x86\"]" \
       --console plain --parallel;
   else
     echo "Running test: ${run_test}";
     bash gradlew connectedAndroidTest -DtestType="${type}" \
       -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
       -Pandroid.testInstrumentationRunnerArguments.class="${run_test}" \
+      -DabiFilters="[\"x86\"]" \
       --console plain --parallel;
   fi
   resInstrumentationTests=${PIPESTATUS[0]};
