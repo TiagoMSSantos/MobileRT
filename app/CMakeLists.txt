@@ -231,6 +231,12 @@ else()
     # 'cmake_automoc_silence_linker_warning' has no out-of-line virtual method definitions;
     # its vtable will be emitted in every translation unit [-Wweak-vtables]
     set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-weak-vtables )
+
+    # Necessary to avoid the following error:
+    # build_release/MobileRT/MobileRT_autogen/mocs_compilation.cpp:3:6: fatal error:
+    # no previous prototype for function 'cmake_automoc_silence_linker_warning588b7c9ac6b8d237cd75c53c7a2339f15629b09ee2655a8f9b16255d443cea18' [-Wmissing-prototypes]
+    # due to the usage of `CMAKE_AUTOMOC`.
+    set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-missing-prototypes )
   endif()
 
   string( TOLOWER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_L )
