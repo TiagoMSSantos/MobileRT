@@ -95,7 +95,7 @@ function build() {
   echo "Calling the Gradle assemble to compile code for Android.";
   echo "Increasing ADB timeout to 10 minutes.";
   export ADB_INSTALL_TIMEOUT=60000;
-  bash gradlew --offline --no-rebuild --stop;
+  bash gradlew --no-rebuild --stop;
   bash gradlew clean \
     build \
     assemble"${typeWithCapitalLetter}" assemble"${typeWithCapitalLetter}"AndroidTest \

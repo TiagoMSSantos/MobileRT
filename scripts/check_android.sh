@@ -75,8 +75,8 @@ printEnvironment;
 function runLinter() {
   # Set path to reports.
   echo "Print Gradle version";
-  bash gradlew --offline --no-rebuild --stop;
-  bash gradlew --offline --no-rebuild --version;
+  bash gradlew --no-rebuild --stop;
+  bash gradlew --no-rebuild --version;
 
   echo "Calling the Gradle linter";
   bash gradlew lint --profile --parallel \

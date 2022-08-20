@@ -465,7 +465,7 @@ function runInstrumentationTests() {
   if [ -z "${CI}" ]; then
     jps | grep -i "gradle" | tr -s ' ' | cut -d ' ' -f 1 | head -1 | xargs kill -SIGKILL;
     bash gradlew --stop \
-      --offline --no-rebuild \
+      --no-rebuild \
       -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}";
 
     local numberOfFilesOpened;
