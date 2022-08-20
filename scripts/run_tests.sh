@@ -91,7 +91,6 @@ function runUnitTests() {
     -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
     -DabiFilters="[\"x86\"]" \
     --no-rebuild \
-    --offline \
     --console plain;
   resUnitTests=${PIPESTATUS[0]};
 }

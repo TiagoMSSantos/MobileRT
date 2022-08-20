@@ -95,13 +95,10 @@ typeWithCapitalLetter=$(capitalizeFirstletter "${type}");
 ###############################################################################
 function gather_logs_func() {
   echo "";
-  echo "";
-  echo "Gathering logs";
 
-  echo "Finding at least 1 Android device on. (2)";
   callCommandUntilSuccess adb shell 'ps > /dev/null;';
 
-  echo "Copy logcat to file"
+  echo "Gathering logs";
   adb logcat -v threadtime -d "*":V \
     > "${reports_path}"/logcat_"${type}".log 2>&1;
   echo "Copied logcat to logcat_${type}.log";
@@ -113,16 +110,7 @@ function gather_logs_func() {
   echo "Filter logcat of the app: ${pid_app}";
   # shellcheck disable=SC2002
   cat "${reports_path}"/logcat_"${type}".log | grep -e "${pid_app}" -e "I DEBUG" \
-      > "${reports_path}"/logcat_app_"${type}".log;
-
-  echo "Filter realtime logcat of the app";
-  # shellcheck disable=SC2002
-  cat "${reports_path}"/logcat_current_"${type}".log |
-    grep -E -i "$(grep -E -i "proc.*:puscas" \
-      "${reports_path}"/logcat_current_"${type}".log |
-      cut -d ":" -f 4 | cut -d ' ' -f 4)" \
-      > "${reports_path}"/logcat_current_app_"${type}".log;
-  echo "Filtered realtime logcat of the app";
+    > "${reports_path}"/logcat_app_"${type}".log;
   set -e;
 
   echo -e '\e]8;;file:///'"${PWD}"'/'"${reports_path}"'/androidTests/connected/index.html\aClick here to check the Android tests report.\e]8;;\a';
@@ -153,7 +141,6 @@ function clear_func() {
 
 function catch_signal() {
   echo "";
-  echo "";
   echo "Caught signal";
 
   gather_logs_func;
@@ -171,7 +158,7 @@ function catch_signal() {
 
 function unlockDevice() {
   callCommandUntilSuccess bash gradlew --daemon \
-    --offline --no-rebuild \
+    --no-rebuild \
     -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}";
 
   echo "Set adb as root, to be able to change files permissions";
@@ -201,11 +188,14 @@ function unlockDevice() {
   callCommandUntilSuccess adb start-server;
   callCommandUntilSuccess adb start-server;
   callCommandUntilSuccess adb start-server;
+  callCommandUntilSuccess adb shell 'ps > /dev/null;';
   # adb shell needs ' instead of ", so 'getprop' works properly.
   # shellcheck disable=SC2016
-  callCommandUntilSuccess adb shell 'while [[ $(getprop service.bootanim.exit) != 1 ]]; do sleep 1; done;';
+  callAdbShellCommandUntilSuccess adb shell 'echo -n ::$(($(getprop service.bootanim.exit)-1))::';
   # shellcheck disable=SC2016
-  callCommandUntilSuccess adb shell 'while [[ $(getprop sys.boot_completed) != 1 ]]; do sleep 1; done;';
+  callAdbShellCommandUntilSuccess adb shell 'echo -n ::$(($(getprop sys.boot_completed)-1))::';
+  # shellcheck disable=SC2016
+  callAdbShellCommandUntilSuccess adb shell 'echo -n ::$(($(getprop dev.bootcomplete)-1))::';
   # callCommandUntilSuccess adb shell 'while [[ $(dumpsys connectivity | grep -ine "NetworkAgentInfo.*CONNECTED") == "" ]]; do sleep 1; done;';
 
   echo "Unlock device";
@@ -300,7 +290,7 @@ function waitForEmulator() {
   set -e;
   echo "Devices running: '${adb_devices_running}'";
 
-  echo "Finding at least 1 Android device on. (1)";
+  echo "Finding at least 1 Android device on.";
   callCommandUntilSuccess adb shell 'ps > /dev/null;';
 
   echo "Prepare traps";

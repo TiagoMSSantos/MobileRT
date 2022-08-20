@@ -288,7 +288,7 @@ function checkPathExists() {
   if [[ $# -eq 1 ]] ; then
     return 0;
   fi
-  ls -lah "${1}"/"${2}";
+  ls -lahp "${1}"/"${2}";
 }
 
 # Change the mode of all binaries/scripts to be able to be executed.
@@ -367,16 +367,52 @@ function validateNativeLibCompiled() {
 }
 
 # Extract and check files from downloaded artifact.
+# This functions expects to receive a path where a zip file is stored, in order
+# to extract it there.
 # Parameters:
-# * path of zip file (of the artifact) to be extracted
-# * name of zip file to be extracted
+# * path where a zip file is stored (from the artifact) to be extracted
 function extractFilesFromArtifact() {
-  du -h -d 1 "${1}"/..;
   du -h -d 1 "${1}";
-  unzip -o "${1}"/"${2}" -d "${1}";
-  rm "${1}"/"${2}";
-  du -h -d 1 "${1}"/..;
+  ls -lahp "${1}";
+
+  # Unzip every zip file found.
+  find "${1}" -maxdepth 1 -iname "*.zip" | while read -r filename; do
+    echo "Unzipping file: ${filename}";
+    unzip -o -d "${1}" "${filename}";
+    find "${1}" -maxdepth 1 -iname "*.zip" | while read -r filenameInside; do
+      echo "Unzipping file that was inside the previous zip: ${filenameInside}";
+      unzip -o -d "${1}" "${filenameInside}";
+      rm -v -- "${filenameInside}" || true;
+    done;
+    rm -v -- "${filename}" || true;
+  done;
+  # Delete every zip file found.
+  find "${1}" -maxdepth 1 -iname "*.zip" | while read -r filename; do
+    rm -v -- "${filename}" || true;
+  done;
+
   du -h -d 1 "${1}";
+  ls -lahp "${1}";
+}
+
+# Compact files for an artifact to be uploaded.
+# Parameters:
+# * path of a folder to be compacted
+# * name for the new zip file
+function zipFilesForArtifact() {
+  local pathName;
+  pathName=$(basename "${1}");
+  du -h -d 1 "${1}";
+  ls -lahp "${1}";
+
+  pushd "${1}" || exit;
+  echo "Zipping path: ${pathName}";
+  zip -9 -v -r "${2}" ./*;
+  popd;
+
+  du -h -d 1 "${1}";
+  # shellcheck disable=SC2010
+  ls -lahp "${1}";
 }
 
 # Generate code coverage.
@@ -390,9 +426,9 @@ function generateCodeCoverage() {
 
 # Validate generated files for code coverage.
 function _validateCodeCoverage() {
-  ls -lah code_coverage_base.info;
-  ls -lah code_coverage_test.info;
-  ls -lah code_coverage.info;
+  ls -lahp code_coverage_base.info;
+  ls -lahp code_coverage_test.info;
+  ls -lahp code_coverage.info;
 }
 
 ###############################################################################

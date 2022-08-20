@@ -85,7 +85,7 @@ function compileMobileRTInDockerContainer() {
     --entrypoint bash \
     --name="mobile_rt_${1}" \
     ptpuscas/mobile_rt:"${1}" \
-    -c "chmod -R +x ../scripts/ && ls -lah ../scripts/ && bash ../scripts/compile_native.sh -t release -c g++ -r yes";
+    -c "chmod -R +x ../scripts/ && ls -lahp ../scripts/ && bash ../scripts/compile_native.sh -t release -c g++ -r yes";
 }
 
 # Helper command to execute the MobileRT unit tests in the docker container.

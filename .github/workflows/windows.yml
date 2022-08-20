@@ -114,7 +114,7 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Set up JDK
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
       uses: actions/setup-java@v3
       with:
@@ -227,7 +227,7 @@ jobs:
       if: success()
       working-directory: .
       run: |
-        env | grep -i qt;
+        printenv | grep -i qt;
         du -h -d 1 Qt;
 
     - name: Build ${{ matrix.type }} (${{ matrix.cxx }})

@@ -82,7 +82,7 @@ function runLinter() {
   bash gradlew lint --profile --parallel \
     -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
     -DabiFilters="[\"x86\"]" \
-    --offline --no-rebuild \
+    --no-rebuild \
     --console plain;
   resCheck=${PIPESTATUS[0]};
 }
