@@ -31,8 +31,8 @@ jobs:
         - test: UiTest#testClickRenderButtonManyTimesWithPreview
           type: debug
           os: macos-11
-          ndk_version: 21.3.6528147
-          cmake_version: 3.6.0
+          ndk_version: 23.2.8568313
+          cmake_version: 3.18.1
           android_api: 16
 
     name: ${{ matrix.test }} [${{ matrix.type }} (${{ matrix.os }})]

@@ -44,8 +44,8 @@ plugins {
 ///////////////////////////////////////////////////////////////////////////////
 println("Reading system properties.")
 
-final def systemNDKVersion = System.getProperty('ndkVersion', '21.3.6528147')
-final def systemCMakeVersion = System.getProperty('cmakeVersion', '3.10.2')
+final def systemNDKVersion = System.getProperty('ndkVersion', '23.2.8568313')
+final def systemCMakeVersion = System.getProperty('cmakeVersion', '3.18.1')
 final def systemTestType = System.getProperty('testType', 'debug')
 final def customAbiFilters = System.getProperty('abiFilters', "[\"armeabi-v7a\", \"x86\", \"arm64-v8a\", \"x86_64\"]")
 final def systemAbiFilters = new JsonSlurper().parseText(customAbiFilters) as String[]

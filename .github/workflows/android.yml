@@ -104,8 +104,11 @@ jobs:
       if: success()
       working-directory: .
       run: |
-        echo "Available NDK versions:";
+        echo "Available Android versions:";
         du -h -d 1 ${ANDROID_HOME}/ndk;
+        du -h -d 1 ${ANDROID_HOME}/cmake;
+        du -h -d 1 ${ANDROID_HOME}/build-tools;
+        du -h -d 1 ${ANDROID_HOME}/platforms;
         du -h -d 1 ${HOME};
         echo "ANDROID_NDK_PATH=${ANDROID_HOME}/ndk/${{ matrix.ndk_version }}" >> "${GITHUB_ENV}";
         echo "GRADLE_PATH=${HOME}/.gradle" >> "${GITHUB_ENV}";
@@ -295,8 +298,11 @@ jobs:
       if: success()
       working-directory: .
       run: |
-        echo "Available NDK versions:";
+        echo "Available Android versions:";
         du -h -d 1 ${ANDROID_HOME}/ndk;
+        du -h -d 1 ${ANDROID_HOME}/cmake;
+        du -h -d 1 ${ANDROID_HOME}/build-tools;
+        du -h -d 1 ${ANDROID_HOME}/platforms;
         du -h -d 1 ${HOME};
         echo "ANDROID_NDK_PATH=${ANDROID_HOME}/ndk/${{ matrix.ndk_version }}" >> "${GITHUB_ENV}";
         echo "GRADLE_PATH=${HOME}/.gradle" >> "${GITHUB_ENV}";
@@ -543,8 +549,11 @@ jobs:
       if: success()
       working-directory: .
       run: |
-        echo "Available NDK versions:";
+        echo "Available Android versions:";
         du -h -d 1 ${ANDROID_HOME}/ndk;
+        du -h -d 1 ${ANDROID_HOME}/cmake;
+        du -h -d 1 ${ANDROID_HOME}/build-tools;
+        du -h -d 1 ${ANDROID_HOME}/platforms;
         du -h -d 1 ${HOME};
         echo "ANDROID_NDK_PATH=${ANDROID_HOME}/ndk/${{ matrix.ndk_version }}" >> "${GITHUB_ENV}";
         echo "GRADLE_PATH=${HOME}/.gradle" >> "${GITHUB_ENV}";
@@ -700,8 +709,11 @@ jobs:
       if: success()
       working-directory: .
       run: |
-        echo "Available NDK versions:";
+        echo "Available Android versions:";
         du -h -d 1 ${ANDROID_HOME}/ndk;
+        du -h -d 1 ${ANDROID_HOME}/cmake;
+        du -h -d 1 ${ANDROID_HOME}/build-tools;
+        du -h -d 1 ${ANDROID_HOME}/platforms;
         du -h -d 1 ${HOME};
         echo "ANDROID_NDK_PATH=${ANDROID_HOME}/ndk/${{ matrix.ndk_version }}" >> "${GITHUB_ENV}";
         echo "GRADLE_PATH=${HOME}/.gradle" >> "${GITHUB_ENV}";

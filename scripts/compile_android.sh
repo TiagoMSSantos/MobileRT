@@ -49,8 +49,8 @@ fi
 ###############################################################################
 type="release";
 recompile="no";
-ndk_version="21.3.6528147";
-cmake_version="3.10.2";
+ndk_version="23.2.8568313";
+cmake_version="3.18.1";
 parallelizeBuild;
 
 function printEnvironment() {
