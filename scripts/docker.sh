@@ -125,14 +125,14 @@ function squashMobileRTDockerImage() {
   echo "docker history 2";
   docker history ptpuscas/mobile_rt:"${1}" | grep -v "<missing>" || true;
   echo "docker history 3";
-  docker history ptpuscas/mobile_rt:"${1}" | grep -v "<missing>" | grep -i "scripts" || true;
+  docker history ptpuscas/mobile_rt:"${1}" | grep -v "<missing>" || true;
   echo "docker history 4";
-  docker history ptpuscas/mobile_rt:"${1}" | grep -v "<missing>" | grep -i "scripts" | head -3 || true;
+  docker history ptpuscas/mobile_rt:"${1}" | grep -v "<missing>" | head -2 || true;
   echo "docker history 5";
-  docker history ptpuscas/mobile_rt:"${1}" | grep -v "<missing>" | grep -i "scripts" | head -3 | tail -1 || true;
-  local BEFORE_LAST_ID;
-  BEFORE_LAST_ID=$(docker history ptpuscas/mobile_rt:"${1}" | grep -v "<missing>" | grep -i "scripts" | head -3 | tail -1 | cut -d ' ' -f 1 || true);
-  echo "BEFORE_LAST_ID=${BEFORE_LAST_ID}";
+  docker history ptpuscas/mobile_rt:"${1}" | grep -v "<missing>" | head -2 | tail -1 || true;
+  local LAST_LAYER_ID;
+  LAST_LAYER_ID=$(docker history ptpuscas/mobile_rt:"${1}" | grep -v "<missing>" | head -2 | tail -1 | cut -d ' ' -f 1 || true);
+  echo "LAST_LAYER_ID=${LAST_LAYER_ID}";
   docker-squash -v --tag ptpuscas/mobile_rt:"${1}" ptpuscas/mobile_rt:"${1}";
   echo "docker squash finished";
   docker history ptpuscas/mobile_rt:"${1}" || true;
@@ -140,7 +140,18 @@ function squashMobileRTDockerImage() {
 
 # Helper command to install the docker-squash command.
 function _installDockerSquashCommand() {
-  pip install docker-squash;
+  pip install --upgrade pip --user;
+  pip3 install --upgrade pip --user;
+  executeWithoutExiting python -m pip install --upgrade pip --user;
+  executeWithoutExiting python3 -m pip install --upgrade pip --user;
+
+  pip install -v docker==5.0.3;
+  pip install -v docker-squash;
+
+  pip list -v | grep -i docker;
+  pip list -v --outdated | grep -i docker;
+  pip show -v docker docker-squash;
+  pip freeze -v | grep -i docker;
 }
 
 # Helper command to install the docker command for MacOS.
