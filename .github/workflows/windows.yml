@@ -44,9 +44,12 @@ concurrency:
 
 jobs:
   Build:
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+
     name: ${{ matrix.name }} ${{ matrix.type }} (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     timeout-minutes: 30
+
     strategy:
       fail-fast: false
       matrix:

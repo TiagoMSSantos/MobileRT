@@ -41,34 +41,42 @@ env:
   GITHUB_STEP_TIMEOUT_VERY_LONG: 30
 
 jobs:
+  Matrix:
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+
+    strategy:
+      fail-fast: true
+
+    name: Set Matrix
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+
+    steps:
+    - name: Checkout
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success()
+      uses: actions/checkout@v3
+
+    - name: Set Matrix
+      id: set-matrix
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success()
+      run: |
+        MATRIX=$(echo $(cat .github/workflows/android_matrix.json) | sed 's/ //g' );
+        echo "::set-output name=matrix::${MATRIX}";
+        echo "Matrix: ${MATRIX}";
+
+
   Build:
+    needs: [Matrix]
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+
     strategy:
       fail-fast: false
-      matrix:
-        include:
-        - os: ubuntu-20.04
-          android_api: 16
-          ndk_version: 23.2.8568313
-          cmake_version: 3.18.1
-          type: release
-
-        - os: ubuntu-22.04
-          android_api: 19
-          ndk_version: 23.2.8568313
-          cmake_version: 3.18.1
-          type: debug
-
-        - os: macos-11
-          android_api: 29
-          ndk_version: 23.2.8568313
-          cmake_version: 3.18.1
-          type: release
-
-        - os: macos-12
-          android_api: 24
-          ndk_version: 23.2.8568313
-          cmake_version: 3.18.1
-          type: debug
+      matrix: ${{ fromJSON(needs.Matrix.outputs.matrix) }}
 
     name: Build ${{ matrix.android_api }} ${{ matrix.type }} (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
@@ -233,36 +241,12 @@ jobs:
 
 
   AndroidTests:
-    needs: Build
+    needs: [Matrix, Build]
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
 
     strategy:
       fail-fast: false
-      matrix:
-        include:
-        - os: ubuntu-20.04
-          android_api: 16
-          ndk_version: 23.2.8568313
-          cmake_version: 3.18.1
-          type: release
-
-        - os: ubuntu-22.04
-          android_api: 19
-          ndk_version: 23.2.8568313
-          cmake_version: 3.18.1
-          type: debug
-
-        - os: macos-11
-          android_api: 29
-          ndk_version: 23.2.8568313
-          cmake_version: 3.18.1
-          type: release
-
-        - os: macos-12
-          android_api: 24
-          ndk_version: 23.2.8568313
-          cmake_version: 3.18.1
-          type: debug
+      matrix: ${{ fromJSON(needs.Matrix.outputs.matrix) }}
 
     name: Android tests ${{ matrix.android_api }} ${{ matrix.type }} (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
@@ -484,36 +468,12 @@ jobs:
 
 
   UnitTests:
-    needs: Build
+    needs: [Matrix, Build]
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
 
     strategy:
       fail-fast: false
-      matrix:
-        include:
-        - os: ubuntu-20.04
-          android_api: 16
-          ndk_version: 23.2.8568313
-          cmake_version: 3.18.1
-          type: release
-
-        - os: ubuntu-22.04
-          android_api: 19
-          ndk_version: 23.2.8568313
-          cmake_version: 3.18.1
-          type: debug
-
-        - os: macos-11
-          android_api: 29
-          ndk_version: 23.2.8568313
-          cmake_version: 3.18.1
-          type: release
-
-        - os: macos-12
-          android_api: 24
-          ndk_version: 23.2.8568313
-          cmake_version: 3.18.1
-          type: debug
+      matrix: ${{ fromJSON(needs.Matrix.outputs.matrix) }}
 
     name: Unit tests ${{ matrix.android_api }} ${{ matrix.type }} (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
@@ -665,7 +625,7 @@ jobs:
 
 
   Sonar:
-    needs: AndroidTests
+    needs: [AndroidTests]
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
 
     strategy:

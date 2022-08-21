@@ -36,9 +36,7 @@ env:
 
 jobs:
   Build:
-    name: Analyze
-    runs-on: ubuntu-20.04
-    timeout-minutes: 20
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
 
     strategy:
       fail-fast: false
@@ -48,6 +46,10 @@ jobs:
         language: ['cpp', 'java']
         # Learn more...
         # https://docs.github.com/en/github/finding-security-vulnerabilities-and-errors-in-your-code/configuring-code-scanning#overriding-automatic-language-detection
+
+    name: Analyze ${{ matrix.language }}
+    runs-on: ubuntu-20.04
+    timeout-minutes: 20
 
     steps:
     - name: Checkout

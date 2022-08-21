@@ -133,8 +133,8 @@ function squashMobileRTDockerImage() {
   local BEFORE_LAST_ID;
   BEFORE_LAST_ID=$(docker history ptpuscas/mobile_rt:"${1}" | grep -v "<missing>" | grep -i "scripts" | head -3 | tail -1 | cut -d ' ' -f 1 || true);
   echo "BEFORE_LAST_ID=${BEFORE_LAST_ID}";
-  docker-squash --tag ptpuscas/mobile_rt:"${1}" ptpuscas/mobile_rt:"${1}";
-  echo "docker history finished";
+  docker-squash -v --tag ptpuscas/mobile_rt:"${1}" ptpuscas/mobile_rt:"${1}";
+  echo "docker squash finished";
   docker history ptpuscas/mobile_rt:"${1}" || true;
 }
 
