@@ -136,7 +136,7 @@ jobs:
       if: success() && matrix.language == 'java' && steps.autobuild.outcome == 'failure'
       working-directory: .
       run: |
-        bash scripts/compile_android.sh -t debug -r yes -n 23.2.8568313 -m 3.18.1;
+        bash scripts/compile_android.sh -t debug -r yes -n 23.2.8568313 -m 3.18.1 -f "\"x86\"";
 
     - name: Build C++
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}

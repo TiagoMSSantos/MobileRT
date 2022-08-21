@@ -25,19 +25,19 @@ function helpCompile() {
 
 # Helper command for Android compilation scripts.
 function helpCompileAndroid() {
-  echo "Usage: cmd [-h] [-t type] [-c compiler] [-r recompile] [-n ndk_version] [-m cmake_version]";
+  echo "Usage: cmd [-h] [-t type] [-f cpu_architecture] [-c compiler] [-r recompile] [-n ndk_version] [-m cmake_version]";
   exit 0;
 }
 
 # Helper command for Android run tests scripts.
 function helpTestAndroid() {
-  echo "Usage: cmd [-h] [-t type] [-r run_test] [-n ndk_version] [-m cmake_version] [-k kill_previous]";
+  echo "Usage: cmd [-h] [-t type] [-f cpu_architecture] [-r run_test] [-n ndk_version] [-m cmake_version] [-k kill_previous]";
   exit 0;
 }
 
 # Helper command for compilation scripts.
 function helpCheck() {
-  echo "Usage: cmd [-h] [-n ndk_version] [-m cmake_version]";
+  echo "Usage: cmd [-h] [-f cpu_architecture] [-n ndk_version] [-m cmake_version]";
   exit 0;
 }
 
@@ -67,7 +67,7 @@ function parseArgumentsToCompile() {
 
 # Argument parser for Android compilation scripts.
 function parseArgumentsToCompileAndroid() {
-  while getopts ":ht:c:r:n:m:" opt; do
+  while getopts ":ht:c:r:n:m:f:" opt; do
     case ${opt} in
       n )
         export ndk_version=${OPTARG};
@@ -85,6 +85,9 @@ function parseArgumentsToCompileAndroid() {
       r )
         export recompile=${OPTARG};
         ;;
+      f )
+        export cpu_architecture=${OPTARG};
+        ;;
       h )
         helpCompileAndroid;
         ;;
@@ -97,7 +100,7 @@ function parseArgumentsToCompileAndroid() {
 
 # Argument parser for Android run tests scripts.
 function parseArgumentsToTestAndroid() {
-  while getopts ":ht:r:k:n:m:" opt; do
+  while getopts ":ht:r:k:n:m:f:" opt; do
     case ${opt} in
       n )
         export ndk_version=${OPTARG};
@@ -114,6 +117,9 @@ function parseArgumentsToTestAndroid() {
       k )
         export kill_previous=${OPTARG};
         ;;
+      f )
+        export cpu_architecture=${OPTARG};
+        ;;
       h )
         helpTestAndroid;
         ;;
@@ -126,13 +132,16 @@ function parseArgumentsToTestAndroid() {
 
 # Argument parser for linter scripts.
 function parseArgumentsToCheck() {
-  while getopts ":hm:n:" opt; do
+  while getopts ":hm:n:f:" opt; do
     case ${opt} in
       n )
         export ndk_version=${OPTARG};
         ;;
       m )
         export cmake_version=${OPTARG};
+        ;;
+      f )
+        export cpu_architecture=${OPTARG};
         ;;
       h )
         helpCheck;

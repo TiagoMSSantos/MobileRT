@@ -51,6 +51,7 @@ type="release";
 recompile="no";
 ndk_version="23.2.8568313";
 cmake_version="3.18.1";
+cpu_architecture="x86";
 parallelizeBuild;
 
 function printEnvironment() {
@@ -60,6 +61,7 @@ function printEnvironment() {
   echo "recompile: ${recompile}";
   echo "ndk_version: ${ndk_version}";
   echo "cmake_version: ${cmake_version}";
+  echo "cpu_architecture: ${cpu_architecture}";
 }
 ###############################################################################
 ###############################################################################
@@ -97,8 +99,9 @@ function build() {
   export ADB_INSTALL_TIMEOUT=60000;
   bash gradlew --no-rebuild --stop;
   bash gradlew clean \
-    build \
-    assemble"${typeWithCapitalLetter}" assemble"${typeWithCapitalLetter}"AndroidTest \
+    build"${typeWithCapitalLetter}" \
+    assemble"${typeWithCapitalLetter}" \
+    assemble"${typeWithCapitalLetter}"AndroidTest \
     bundle"${typeWithCapitalLetter}" \
     bundle"${typeWithCapitalLetter}"ClassesToCompileJar \
     bundle"${typeWithCapitalLetter}"ClassesToRuntimeJar \
@@ -108,13 +111,13 @@ function build() {
     -DtestType="${type}" \
     --profile --parallel \
     -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
-    -DabiFilters="[\"x86\"]" \
+    -DabiFilters="[${cpu_architecture}]" \
     --console plain;
   resCompile=${PIPESTATUS[0]};
   echo "Compiling APK to execute Android instrumentation tests.";
   bash gradlew createDebugAndroidTestApkListingFileRedirect \
     -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
-    -DabiFilters="[\"x86\"]" \
+    -DabiFilters="[${cpu_architecture}]" \
     --profile --parallel --console plain;
   echo "Android application compiled.";
 }

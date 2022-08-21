@@ -192,7 +192,7 @@ jobs:
       if: success()
       working-directory: .
       run: |
-        bash scripts/compile_android.sh -t ${{ matrix.type }} -r yes -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }};
+        bash scripts/compile_android.sh -t ${{ matrix.type }} -r yes -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -f "\"x86\"";
 
     - name: Check binaries' paths
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -409,7 +409,7 @@ jobs:
         disable-linux-hw-accel: auto
         enable-hw-keyboard: false
         script: |
-          bash scripts/run_tests_android.sh -t ${{ matrix.type }} -r all -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -k false;
+          bash scripts/run_tests_android.sh -t ${{ matrix.type }} -r all -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -k false -f "\"x86\"";
 
     - name: Check report's paths
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -614,14 +614,14 @@ jobs:
       if: success()
       working-directory: .
       run: |
-        bash scripts/run_tests.sh -t ${{ matrix.type }} -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }};
+        bash scripts/run_tests.sh -t ${{ matrix.type }} -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -f "\"x86\"";
 
     - name: Run linter
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
       working-directory: .
       run: |
-        bash scripts/check_android.sh -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }};
+        bash scripts/check_android.sh -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -f "\"x86\"";
 
 
   Sonar:

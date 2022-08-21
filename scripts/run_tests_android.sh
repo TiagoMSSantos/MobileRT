@@ -52,6 +52,7 @@ run_test="all";
 ndk_version="23.2.8568313";
 cmake_version="3.18.1";
 kill_previous="true";
+cpu_architecture="x86";
 parallelizeBuild;
 
 function printEnvironment() {
@@ -62,6 +63,7 @@ function printEnvironment() {
   echo "ndk_version: ${ndk_version}";
   echo "cmake_version: ${cmake_version}";
   echo "kill_previous: ${kill_previous}";
+  echo "cpu_architecture: ${cpu_architecture}";
 }
 ###############################################################################
 ###############################################################################
@@ -501,7 +503,7 @@ function runInstrumentationTests() {
     set +u; # Because 'code_coverage' is only set when debug.
     bash gradlew connected"${type}"AndroidTest -DtestType="${type}" \
       -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
-      -DabiFilters="[\"x86\"]" \
+      -DabiFilters="[${cpu_architecture}]" \
       ${code_coverage} --console plain --parallel;
     set -u;
   elif [[ ${run_test} == rep_* ]]; then
@@ -510,14 +512,14 @@ function runInstrumentationTests() {
     callCommandUntilError bash gradlew connectedAndroidTest -DtestType="${type}" \
       -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
       -Pandroid.testInstrumentationRunnerArguments.class="${run_test_without_prefix}" \
-      -DabiFilters="[\"x86\"]" \
+      -DabiFilters="[${cpu_architecture}]" \
       --console plain --parallel;
   else
     echo "Running test: ${run_test}";
     bash gradlew connectedAndroidTest -DtestType="${type}" \
       -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
       -Pandroid.testInstrumentationRunnerArguments.class="${run_test}" \
-      -DabiFilters="[\"x86\"]" \
+      -DabiFilters="[${cpu_architecture}]" \
       --console plain --parallel;
   fi
   resInstrumentationTests=${PIPESTATUS[0]};

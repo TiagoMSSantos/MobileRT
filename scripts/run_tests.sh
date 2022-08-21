@@ -49,6 +49,7 @@ fi
 type="release";
 ndk_version="23.2.8568313";
 cmake_version="3.18.1";
+cpu_architecture="x86";
 parallelizeBuild;
 
 function printEnvironment() {
@@ -57,6 +58,7 @@ function printEnvironment() {
   echo "type: ${type}";
   echo "ndk_version: ${ndk_version}";
   echo "cmake_version: ${cmake_version}";
+  echo "cpu_architecture: ${cpu_architecture}";
 }
 ###############################################################################
 ###############################################################################
@@ -89,7 +91,7 @@ function runUnitTests() {
   bash gradlew --no-rebuild --stop;
   bash gradlew test"${type}"UnitTest --profile --parallel \
     -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
-    -DabiFilters="[\"x86\"]" \
+    -DabiFilters="[${cpu_architecture}]" \
     --no-rebuild \
     --console plain;
   resUnitTests=${PIPESTATUS[0]};
