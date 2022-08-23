@@ -50,7 +50,7 @@ fi
 type="release";
 run_test="all";
 ndk_version="23.2.8568313";
-cmake_version="3.18.1";
+cmake_version="3.22.1";
 kill_previous="true";
 cpu_architecture="x86";
 parallelizeBuild;
@@ -488,7 +488,7 @@ function runInstrumentationTests() {
   local apkPath;
   echo "Searching for APK to install in Android emulator.";
   find . -iname "*.apk" | grep -i "output";
-  apkPath=$(find . -iname "*.apk" | grep -i "output" | grep -i "${type}" | grep -i "test");
+  apkPath=$(find . -iname "*.apk" | grep -i "output" | grep -i "test" | grep -i "${type}");
   echo "Will install APK: ${apkPath}";
   callCommandUntilSuccess adb push -p "${apkPath}" "${mobilert_path}";
   callCommandUntilSuccess adb shell 'ls -la '${mobilert_path};

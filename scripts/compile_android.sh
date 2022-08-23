@@ -50,7 +50,7 @@ fi
 type="release";
 recompile="no";
 ndk_version="23.2.8568313";
-cmake_version="3.18.1";
+cmake_version="3.22.1";
 cpu_architecture="x86";
 parallelizeBuild;
 
@@ -152,7 +152,7 @@ validateNativeLibCompiled;
 
 echo "Searching for generated APK";
 find . -iname "*.apk" | grep -i "output";
-apkPath=$(find . -iname "*.apk" | grep -i "output" | grep -i "${type}" | grep -i "test");
+apkPath=$(find . -iname "*.apk" | grep -i "output" | grep -i "test" | grep -i "${type}");
 echo "Generated APK: ${apkPath}";
 
 ###############################################################################

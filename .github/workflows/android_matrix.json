@@ -1,9 +1,9 @@
 {
   "include":
   [
-    { "os": "ubuntu-20.04", "android_api": "16", "ndk_version": "23.2.8568313", "cmake_version": "3.18.1", "type": "release" },
-    { "os": "ubuntu-22.04", "android_api": "19", "ndk_version": "23.2.8568313", "cmake_version": "3.18.1", "type": "debug" },
-    { "os": "macos-11", "android_api": "29", "ndk_version": "23.2.8568313", "cmake_version": "3.18.1", "type": "release" },
-    { "os": "macos-12", "android_api": "24", "ndk_version": "23.2.8568313", "cmake_version": "3.18.1", "type": "debug" }
+    { "os": "ubuntu-20.04", "android_api": "16", "ndk_version": "23.2.8568313", "cmake_version": "3.22.1", "type": "release" },
+    { "os": "ubuntu-22.04", "android_api": "19", "ndk_version": "23.2.8568313", "cmake_version": "3.22.1", "type": "debug" },
+    { "os": "macos-11", "android_api": "29", "ndk_version": "25.0.8775105", "cmake_version": "3.22.1", "type": "release" },
+    { "os": "macos-12", "android_api": "24", "ndk_version": "25.0.8775105", "cmake_version": "3.22.1", "type": "debug" }
   ]
 }

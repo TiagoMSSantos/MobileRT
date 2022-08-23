@@ -116,8 +116,8 @@ jobs:
         du -h -d 1 ${ANDROID_HOME}/ndk;
         du -h -d 1 ${ANDROID_HOME}/cmake;
         du -h -d 1 ${ANDROID_HOME}/build-tools;
-        du -h -d 1 ${ANDROID_HOME}/platforms;
-        du -h -d 1 ${HOME};
+        ls -lahp ${ANDROID_HOME}/platforms;
+        ls -lahp ${HOME};
         echo "ANDROID_NDK_PATH=${ANDROID_HOME}/ndk/${{ matrix.ndk_version }}" >> "${GITHUB_ENV}";
         echo "GRADLE_PATH=${HOME}/.gradle" >> "${GITHUB_ENV}";
         echo "RUNNER_OS=${RUNNER_OS}" >> "${GITHUB_ENV}";
@@ -286,8 +286,8 @@ jobs:
         du -h -d 1 ${ANDROID_HOME}/ndk;
         du -h -d 1 ${ANDROID_HOME}/cmake;
         du -h -d 1 ${ANDROID_HOME}/build-tools;
-        du -h -d 1 ${ANDROID_HOME}/platforms;
-        du -h -d 1 ${HOME};
+        ls -lahp ${ANDROID_HOME}/platforms;
+        ls -lahp ${HOME};
         echo "ANDROID_NDK_PATH=${ANDROID_HOME}/ndk/${{ matrix.ndk_version }}" >> "${GITHUB_ENV}";
         echo "GRADLE_PATH=${HOME}/.gradle" >> "${GITHUB_ENV}";
         echo "RUNNER_OS=${RUNNER_OS}" >> "${GITHUB_ENV}";
@@ -383,12 +383,14 @@ jobs:
         . scripts/helper_functions.sh && checkPathExists app/third_party;
 
     - name: Run Android tests
+      id: android-tests
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_VERY_LONG) }}
       if: success() && !startsWith(matrix.os, 'windows')
       uses: ReactiveCircus/android-emulator-runner@v2
       env:
         NCPU_CORES: 3
         MEM_MB: 2048
+      continue-on-error: false
       with:
         # Check available parameters in: https://github.com/ReactiveCircus/android-emulator-runner/blob/main/action.yml
         api-level: ${{ matrix.android_api }}
@@ -513,8 +515,8 @@ jobs:
         du -h -d 1 ${ANDROID_HOME}/ndk;
         du -h -d 1 ${ANDROID_HOME}/cmake;
         du -h -d 1 ${ANDROID_HOME}/build-tools;
-        du -h -d 1 ${ANDROID_HOME}/platforms;
-        du -h -d 1 ${HOME};
+        ls -lahp ${ANDROID_HOME}/platforms;
+        ls -lahp ${HOME};
         echo "ANDROID_NDK_PATH=${ANDROID_HOME}/ndk/${{ matrix.ndk_version }}" >> "${GITHUB_ENV}";
         echo "GRADLE_PATH=${HOME}/.gradle" >> "${GITHUB_ENV}";
         echo "RUNNER_OS=${RUNNER_OS}" >> "${GITHUB_ENV}";
@@ -633,7 +635,7 @@ jobs:
       matrix:
         os: [ ubuntu-22.04 ]
         type: [ debug ]
-        ndk_version: [ 23.2.8568313 ]
+        ndk_version: [ 25.0.8775105 ]
 
     name: Code Coverage & Sonar ${{ matrix.type }} (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
@@ -673,8 +675,8 @@ jobs:
         du -h -d 1 ${ANDROID_HOME}/ndk;
         du -h -d 1 ${ANDROID_HOME}/cmake;
         du -h -d 1 ${ANDROID_HOME}/build-tools;
-        du -h -d 1 ${ANDROID_HOME}/platforms;
-        du -h -d 1 ${HOME};
+        ls -lahp ${ANDROID_HOME}/platforms;
+        ls -lahp ${HOME};
         echo "ANDROID_NDK_PATH=${ANDROID_HOME}/ndk/${{ matrix.ndk_version }}" >> "${GITHUB_ENV}";
         echo "GRADLE_PATH=${HOME}/.gradle" >> "${GITHUB_ENV}";
         echo "RUNNER_OS=${RUNNER_OS}" >> "${GITHUB_ENV}";
