@@ -44,6 +44,9 @@ jobs:
   Build:
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
 
+    outputs:
+      matrix-sonar: ${{ steps.set-matrix-sonar.outputs.matrix-sonar }}
+
     strategy:
       fail-fast: false
       matrix:
@@ -170,6 +173,15 @@ jobs:
         # shellcheck disable=SC1091
         . scripts/helper_functions.sh && generateCodeCoverage;
 
+    - name: Set Matrix for Sonar
+      id: set-matrix-sonar
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug' && matrix.compiler == 'g++'
+      run: |
+        MATRIX_SONAR=$(echo '${{ toJSON(matrix) }}' | jq -c -s '{"include":[.[]]}');
+        echo "Matrix Sonar: ${MATRIX_SONAR}";
+        echo "::set-output name=matrix-sonar::${MATRIX_SONAR}";
+
     - name: Upload coverage to cache
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug' && matrix.compiler == 'g++'
@@ -191,9 +203,7 @@ jobs:
 
     strategy:
       fail-fast: false
-      matrix:
-        os: [ ubuntu-20.04 ]
-        type: [ debug ]
+      matrix: ${{ fromJSON(needs.Build.outputs.matrix-sonar) }}
 
     name: Code Coverage
     runs-on: ${{ matrix.os }}
