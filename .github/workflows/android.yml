@@ -635,7 +635,8 @@ jobs:
       matrix:
         os: [ ubuntu-22.04 ]
         type: [ debug ]
-        ndk_version: [ 25.0.8775105 ]
+        ndk_version: [ 23.2.8568313 ]
+        cmake_version: [ 3.22.1 ]
 
     name: Code Coverage & Sonar ${{ matrix.type }} (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
@@ -927,7 +928,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
-        bash gradlew --profile --parallel -DndkVersion=${{ matrix.ndk_version }} sonarqube --info;
+        bash gradlew --profile --parallel -DndkVersion=${{ matrix.ndk_version }} -DcmakeVersion=${{ matrix.cmake_version }} sonarqube --info;
 
     - name: Check sonar path
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}

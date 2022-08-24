@@ -30,7 +30,7 @@ jobs:
   github-pages:
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
 
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     timeout-minutes: 3
 
     steps:

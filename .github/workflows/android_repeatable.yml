@@ -32,7 +32,7 @@ jobs:
         include:
         - test: UiTest#testClickRenderButtonManyTimesWithPreview
           type: debug
-          os: macos-11
+          os: macos-latest
           android_api: 16
 
     name: ${{ matrix.test }} [${{ matrix.type }} (${{ matrix.os }})]
