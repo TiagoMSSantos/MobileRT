@@ -66,8 +66,8 @@ jobs:
       if: success()
       run: |
         MATRIX=$(echo $(cat .github/workflows/android_matrix.json) | sed 's/ //g' );
-        echo "::set-output name=matrix::${MATRIX}";
         echo "Matrix: ${MATRIX}";
+        echo "::set-output name=matrix::${MATRIX}";
 
 
   Build:
@@ -243,6 +243,9 @@ jobs:
   AndroidTests:
     needs: [Matrix, Build]
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+
+    outputs:
+      matrix-sonar: ${{ steps.set-matrix-sonar.outputs.matrix-sonar }}
 
     strategy:
       fail-fast: false
@@ -431,6 +434,15 @@ jobs:
         restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
         path: |
           app/build/reports
+
+    - name: Set Matrix for Sonar
+      id: set-matrix-sonar
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug'
+      run: |
+        MATRIX_SONAR=$(echo '${{ toJSON(matrix) }}' | jq -c -s '{"include":[.[]]}');
+        echo "Matrix Sonar: ${MATRIX_SONAR}";
+        echo "::set-output name=matrix-sonar::${MATRIX_SONAR}";
 
     - name: Add base64 key to environment variable in order to sign APK
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -632,11 +644,7 @@ jobs:
 
     strategy:
       fail-fast: false
-      matrix:
-        os: [ ubuntu-22.04 ]
-        type: [ debug ]
-        ndk_version: [ 23.2.8568313 ]
-        cmake_version: [ 3.22.1 ]
+      matrix: ${{ fromJSON(needs.AndroidTests.outputs.matrix-sonar) }}
 
     name: Code Coverage & Sonar ${{ matrix.type }} (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
