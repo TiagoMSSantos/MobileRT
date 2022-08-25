@@ -96,10 +96,7 @@ jobs:
 
     - name: Login to DockerHub Registry
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && env.DOCKERHUB_USERNAME != null && env.DOCKERHUB_PASSWORD != null
-      env:
-        DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-        DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+      if: success()
       run: |
         # shellcheck shell=bash
         # shellcheck disable=SC1091
@@ -169,10 +166,7 @@ jobs:
 
     - name: Push the tagged Docker image
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
-      if: success() && env.BRANCH == 'master' && env.DOCKERHUB_USERNAME != null && env.DOCKERHUB_PASSWORD != null
-      env:
-        DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-        DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+      if: success() && env.BRANCH == 'master'
       run: |
         # shellcheck shell=bash
         # shellcheck disable=SC1091

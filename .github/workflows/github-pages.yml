@@ -43,14 +43,10 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && github.event_name == 'workflow_dispatch'
       working-directory: .
-      env:
-        # You must create a personal token with repo access as GitHub does
-        # not yet support server-to-server page builds.
-        USER_TOKEN: ${{ secrets.REPOSITORY_TOKEN }}
       run: |
         curl --fail --request POST \
           --url https://api.github.com/repos/${{ github.repository }}/pages/builds \
-          --header "Authorization: Bearer ${USER_TOKEN}";
+          --header "Authorization: Bearer ${{ secrets.REPOSITORY_TOKEN }}";
 
     - name: Doxygen build
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -64,11 +60,8 @@ jobs:
 
     - name: Sync README with docker hub
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && env.DOCKERHUB_USERNAME != null && env.DOCKERHUB_PASSWORD != null
+      if: success()
       uses: ms-jpq/sync-dockerhub-readme@v1
-      env:
-        DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-        DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
       with:
         # Check available parameters in: https://github.com/ms-jpq/sync-dockerhub-readme/blob/whale/action.yml
         username: ${{ secrets.DOCKERHUB_USERNAME }}

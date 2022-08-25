@@ -231,7 +231,7 @@ jobs:
 
     - name: Send code climate report
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && env.CC_TEST_REPORTER_ID != null
+      if: success()
       working-directory: .
       env:
         CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
@@ -244,16 +244,14 @@ jobs:
 
     - name: Validate codecov report
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && env.CODECOV_TOKEN != null
+      if: success()
       working-directory: .
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       run: |
         curl --retry 5 --retry-delay 2 --connect-timeout 2 --data-binary @codecov.yml https://codecov.io/validate;
 
     - name: Send codecov report
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && env.CODECOV_TOKEN != null
+      if: success()
       working-directory: .
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

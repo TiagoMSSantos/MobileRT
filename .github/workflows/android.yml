@@ -446,21 +446,15 @@ jobs:
 
     - name: Add base64 key to environment variable in order to sign APK
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && env.SIGNING_KEY != null && env.KEY_ALIAS != null
+      if: success()
       working-directory: .
-      env:
-        SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
-        KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
       run: |
         echo "BASE64_KEY=$(openssl base64 < app/MobileRT.jks | tr -d '[:space:]')" >> "${GITHUB_ENV}";
 
     - name: Sign APK
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && env.SIGNING_KEY != null && env.KEY_ALIAS != null
+      if: success()
       uses: r0adkll/sign-android-release@v1
-      env:
-        SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
-        KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
       with:
         # Check available parameters in: https://github.com/r0adkll/sign-android-release/blob/master/action.yml
         releaseDirectory: app/build/outputs/apk/${{ matrix.type }}
@@ -809,7 +803,7 @@ jobs:
 
     - name: Send code climate report
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && env.CC_TEST_REPORTER_ID != null
+      if: success()
       working-directory: app/src/main/java
       env:
         CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
@@ -822,10 +816,8 @@ jobs:
 
     - name: Validate codecov report
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && env.CODECOV_TOKEN != null
+      if: success()
       working-directory: .
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       run: |
         curl --retry 5 --retry-delay 2 --connect-timeout 2 --data-binary @codecov.yml https://codecov.io/validate;
 
@@ -930,10 +922,9 @@ jobs:
 
     - name: Analyze Sonar
       timeout-minutes: 100
-      if: success() && env.GITHUB_TOKEN != null && env.SONAR_TOKEN != null
+      if: success()
       working-directory: .
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
         bash gradlew --profile --parallel -DndkVersion=${{ matrix.ndk_version }} -DcmakeVersion=${{ matrix.cmake_version }} sonarqube --info;
@@ -959,7 +950,7 @@ jobs:
 
     - name: Send codecov report
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && env.CODECOV_TOKEN != null
+      if: success()
       working-directory: .
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
