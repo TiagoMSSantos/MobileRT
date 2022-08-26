@@ -65,7 +65,7 @@ execute_process(COMMAND git submodule foreach "git clean -dfx;"
 ###############################################################################
 # Set stable versions to be used
 ###############################################################################
-set( BOOST_VERSION "boost-1.79.0" )
+set( BOOST_VERSION "boost-1.80.0" )
 set( GLM_VERSION "0.9.9.8" )
 set( STB_VERSION "master" )
 set( TINYOBJLOADER_VERSION "v1.0.7" )
@@ -100,8 +100,8 @@ execute_process( COMMAND git checkout --progress -f ${PCG_CPP_VERSION};
 
 execute_process( COMMAND git submodule foreach "
     dependency=$(git remote -v | head -n1 | awk '{print $2}');
-    releases=$(git -c 'versionsort.suffix=-' tag --list --sort=-version:refname);
-    stable_releases=$(echo \"\${releases}\" | grep -i [0-9] | grep -i [.] | grep -v beta | grep -v rc | grep -v preview | grep -v bug | grep -v .x);
+    releases=$(git for-each-ref --sort=-creatordate refs/tags | awk '{ print $3 }' | cut -d '/' -f 3);
+    stable_releases=$(echo \"\${releases}\" | grep -i [0-9] | grep -i [.] | grep -v alpha | grep -v \"\\-a\" | grep -v beta | grep -v \"\\-b\" | grep -v rc | grep -v preview | grep -v \"\\-pre\" | grep -v bug | grep -v .x);
     echo \"Detected stable versions: \${stable_releases}\";
     last_stable_release=$(echo \"\${stable_releases}\" | head -1 || true);
     if [ -z \${last_stable_release} ]; then
