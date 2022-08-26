@@ -1,5 +1,5 @@
 [requires]
-qt/5.14.2@bincrafters/stable
+qt/5.15.5
 glm/cci.20220420
 stb/cci.20210910
 
@@ -7,4 +7,4 @@ stb/cci.20210910
 cmake
 
 [options]
-qt/5.14.2@bincrafters:shared=True
+qt/5.15.5:shared=True
