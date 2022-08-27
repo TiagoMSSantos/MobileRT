@@ -52,7 +52,7 @@ run_test="all";
 ndk_version="23.2.8568313";
 cmake_version="3.22.1";
 kill_previous="true";
-cpu_architecture="x86";
+cpu_architecture="\"x86\"";
 parallelizeBuild;
 
 function printEnvironment() {
@@ -161,6 +161,7 @@ function catch_signal() {
 function unlockDevice() {
   callCommandUntilSuccess bash gradlew --daemon \
     --no-rebuild \
+    -DabiFilters="[${cpu_architecture}]" \
     -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}";
 
   echo "Set adb as root, to be able to change files permissions";
@@ -468,6 +469,7 @@ function runInstrumentationTests() {
     jps | grep -i "gradle" | tr -s ' ' | cut -d ' ' -f 1 | head -1 | xargs kill -SIGKILL;
     bash gradlew --stop \
       --no-rebuild \
+      -DabiFilters="[${cpu_architecture}]" \
       -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}";
 
     local numberOfFilesOpened;

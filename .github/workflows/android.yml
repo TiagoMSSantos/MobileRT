@@ -123,7 +123,6 @@ jobs:
         ls -lahp ${HOME};
         echo "ANDROID_NDK_PATH=${ANDROID_HOME}/ndk/${{ matrix.ndk_version }}" >> "${GITHUB_ENV}";
         echo "GRADLE_PATH=${HOME}/.gradle" >> "${GITHUB_ENV}";
-        echo "RUNNER_OS=${RUNNER_OS}" >> "${GITHUB_ENV}";
         printenv;
 
     # Useful step to avoid gradle having to download Gradle dependencies
@@ -165,7 +164,7 @@ jobs:
         # will download all artifacts if not specified
         # and extract them into respective subdirectories
         # https://github.com/actions/download-artifact#download-all-artifacts
-        name: gradle-packages-${{ env.RUNNER_OS }}
+        name: gradle-packages
         # Optional, a directory where to extract artifact(s), defaults to the current directory
         path: ${{ env.GRADLE_PATH }}
         # Optional, defaults to current repo
@@ -225,19 +224,64 @@ jobs:
 
     - name: Zip Gradle packages
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && matrix.type == 'release'
+      if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug'
       run: |
+        set +e;
+        du -h -d 1 ${{ env.GRADLE_PATH }};
+        du -h -d 1 ${{ env.GRADLE_PATH }}/caches;
+        du -h -d 1 ${{ env.GRADLE_PATH }}/wrapper/dists;
+        du -h -d 1 ${{ env.GRADLE_PATH }}/daemon;
+        du -h -d 1 ${{ env.GRADLE_PATH }}/notifications;
+        du -h -d 1 ${{ env.GRADLE_PATH }}/jdks;
+        du -h -d 1 ${{ env.GRADLE_PATH }}/kotlin-profile;
+        du -h -d 1 ${{ env.GRADLE_PATH }}/workers;
+        du -h -d 1 ${{ env.GRADLE_PATH }}/native;
+
+        echo "Deleting unnecessary cache.";
+        rm -rf ${{ env.GRADLE_PATH }}/caches/build-cache-*;
+        rm -rf ${{ env.GRADLE_PATH }}/caches/journal-*;
+        rm -rf ${{ env.GRADLE_PATH }}/daemon;
+        rm -rf ${{ env.GRADLE_PATH }}/jdks;
+        rm -rf ${{ env.GRADLE_PATH }}/kotlin-profile;
+        rm -rf ${{ env.GRADLE_PATH }}/workers;
+        rm -rf ${{ env.GRADLE_PATH }}/native;
+        rm -rf ${{ env.GRADLE_PATH }}/.tmp;
+        rm -rf ${{ env.GRADLE_PATH }}/notifications;
+
+        find ${{ env.GRADLE_PATH }}/wrapper/dists -not -iname '*gradle*.zip' -delete;
+        find ${{ env.GRADLE_PATH }} -iname "docs" -exec rm -rf {} \;
+        find ${{ env.GRADLE_PATH }} -iname "*.log*" -exec rm {} \;
+        find ${{ env.GRADLE_PATH }} -iname "*.txt*" -exec rm {} \;
+        find ${{ env.GRADLE_PATH }} -iname "*.md*" -exec rm {} \;
+        find ${{ env.GRADLE_PATH }} -iname "*.doc*" -exec rm {} \;
+        find ${{ env.GRADLE_PATH }} -iname "*.xls*" -exec rm {} \;
+        find ${{ env.GRADLE_PATH }} -iname "*.htm*" -exec rm {} \;
+        find ${{ env.GRADLE_PATH }} -iname "*.lock*" -exec rm {} \;
+        find ${{ env.GRADLE_PATH }} -iname "*.lck*" -exec rm {} \;
+        find ${{ env.GRADLE_PATH }} -iname "*.ok*" -exec rm {} \;
+        find ${{ env.GRADLE_PATH }} -iname "*.png*" -exec rm {} \;
+        find ${{ env.GRADLE_PATH }} -iname "*.jpg*" -exec rm {} \;
+        find ${{ env.GRADLE_PATH }} -iname "*.jpeg*" -exec rm {} \;
+        find ${{ env.GRADLE_PATH }} -iname "*.gif*" -exec rm {} \;
+        find ${{ env.GRADLE_PATH }} -name "*README*" -exec rm {} \;
+        find ${{ env.GRADLE_PATH }} -name "*NOTICE*" -exec rm {} \;
+        find ${{ env.GRADLE_PATH }} -name "*LICENSE*" -exec rm {} \;
+
+        find ${{ env.GRADLE_PATH }} -empty -exec rm -rf {} \;
+        find ${{ env.GRADLE_PATH }} -size 0 -exec rm {} \;
+        set -e;
+
         # shellcheck shell=bash
         # shellcheck disable=SC1091
         . scripts/helper_functions.sh && zipFilesForArtifact ${{ env.GRADLE_PATH }} gradle-packages.zip;
 
     - name: Upload Gradle packages as artifact
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_VERY_LONG) }}
-      if: success() && matrix.type == 'release'
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+      if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug'
       uses: actions/upload-artifact@v3
       with:
         # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
-        name: gradle-packages-${{ env.RUNNER_OS }}
+        name: gradle-packages
         path: ${{ env.GRADLE_PATH }}/gradle-packages.zip
         if-no-files-found: error
         retention-days: 90
@@ -296,7 +340,6 @@ jobs:
         ls -lahp ${HOME};
         echo "ANDROID_NDK_PATH=${ANDROID_HOME}/ndk/${{ matrix.ndk_version }}" >> "${GITHUB_ENV}";
         echo "GRADLE_PATH=${HOME}/.gradle" >> "${GITHUB_ENV}";
-        echo "RUNNER_OS=${RUNNER_OS}" >> "${GITHUB_ENV}";
 
     - name: Download generated binaries from cache
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -351,7 +394,7 @@ jobs:
         # will download all artifacts if not specified
         # and extract them into respective subdirectories
         # https://github.com/actions/download-artifact#download-all-artifacts
-        name: gradle-packages-${{ env.RUNNER_OS }}
+        name: gradle-packages
         # Optional, a directory where to extract artifact(s), defaults to the current directory
         path: ${{ env.GRADLE_PATH }}
         # Optional, defaults to current repo
@@ -528,7 +571,6 @@ jobs:
         ls -lahp ${HOME};
         echo "ANDROID_NDK_PATH=${ANDROID_HOME}/ndk/${{ matrix.ndk_version }}" >> "${GITHUB_ENV}";
         echo "GRADLE_PATH=${HOME}/.gradle" >> "${GITHUB_ENV}";
-        echo "RUNNER_OS=${RUNNER_OS}" >> "${GITHUB_ENV}";
 
     # Useful step to avoid gradle having to download Gradle dependencies
     # Taken from: https://github.com/marketplace/actions/download-workflow-artifact
@@ -569,7 +611,7 @@ jobs:
         # will download all artifacts if not specified
         # and extract them into respective subdirectories
         # https://github.com/actions/download-artifact#download-all-artifacts
-        name: gradle-packages-${{ env.RUNNER_OS }}
+        name: gradle-packages
         # Optional, a directory where to extract artifact(s), defaults to the current directory
         path: ${{ env.GRADLE_PATH }}
         # Optional, defaults to current repo
@@ -685,7 +727,6 @@ jobs:
         ls -lahp ${HOME};
         echo "ANDROID_NDK_PATH=${ANDROID_HOME}/ndk/${{ matrix.ndk_version }}" >> "${GITHUB_ENV}";
         echo "GRADLE_PATH=${HOME}/.gradle" >> "${GITHUB_ENV}";
-        echo "RUNNER_OS=${RUNNER_OS}" >> "${GITHUB_ENV}";
 
     # Useful step to avoid gradle having to download Gradle dependencies
     # Taken from: https://github.com/marketplace/actions/download-workflow-artifact
@@ -726,7 +767,7 @@ jobs:
         # will download all artifacts if not specified
         # and extract them into respective subdirectories
         # https://github.com/actions/download-artifact#download-all-artifacts
-        name: gradle-packages-${{ env.RUNNER_OS }}
+        name: gradle-packages
         # Optional, a directory where to extract artifact(s), defaults to the current directory
         path: ${{ env.GRADLE_PATH }}
         # Optional, defaults to current repo
@@ -786,7 +827,7 @@ jobs:
 
     - name: Download reports from cache
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug'
+      if: success() && startsWith(matrix.os, 'ubuntu')
       uses: actions/cache@v3
       with:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
@@ -824,79 +865,6 @@ jobs:
       run: |
         curl --retry 5 --retry-delay 2 --connect-timeout 2 --data-binary @codecov.yml https://codecov.io/validate;
 
-    - name: Set home directory
-      id: set-home-directory
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success()
-      working-directory: .
-      run: |
-        echo "HOME: ${HOME}";
-        echo "::set-output name=HOME::${HOME}";
-
-    # Useful step to avoid gradle having to download Sonar plugins that can take more than 50 min
-    # Taken from: https://github.com/marketplace/actions/download-workflow-artifact
-    - name: Download Sonar packages artifact
-      id: download-sonar-artifact
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-      if: success()
-      uses: dawidd6/action-download-artifact@v2
-      continue-on-error: true
-      with:
-        # Check available parameters in: https://github.com/dawidd6/action-download-artifact/blob/master/action.yml
-        # Optional, GitHub token, a Personal Access Token with `public_repo` scope if needed
-        # Required, if the artifact is from a different repo
-        # Required, if the repo is private a Personal Access Token with `repo` scope is needed
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        # Optional, workflow file name or ID
-        # If not specified, will be inferred from run_id (if run_id is specified), or will be the current workflow
-        workflow: android.yml
-        # Optional, the status or conclusion of a completed workflow to search for
-        # Can be one of a workflow conclusion:
-        #   "failure", "success", "neutral", "cancelled", "skipped", "timed_out", "action_required"
-        # Or a workflow status:
-        #   "completed", "in_progress", "queued"
-        workflow_conclusion: null
-        # Optional, will get head commit SHA
-        pr: ${{ github.event.pull_request.number }}
-        # Optional, no need to specify if PR is
-        commit: ${{ github.event.pull_request.head.sha }}
-        # Optional, will use the branch
-        # branch: master
-        # Optional, defaults to all types
-        # event: push
-        # Optional, will use specified workflow run
-        # run_id: 1122334455
-        # Optional, run number from the workflow
-        # run_number: 34
-        # Optional, uploaded artifact name,
-        # will download all artifacts if not specified
-        # and extract them into respective subdirectories
-        # https://github.com/actions/download-artifact#download-all-artifacts
-        name: sonar-packages
-        # Optional, a directory where to extract artifact(s), defaults to the current directory
-        path: ${{ steps.set-home-directory.outputs.HOME }}/.sonar
-        # Optional, defaults to current repo
-        repo: ${{ github.repository }}
-        # Optional, check the workflow run to whether it has an artifact
-        # then will get the last available artifact from the previous workflow
-        # default false, just try to download from the last one
-        check_artifacts:  true
-        # Optional, search for the last workflow run whose stored an artifact named as in `name` input
-        # default false
-        search_artifacts: true
-        # Optional, choose to skip unpacking the downloaded artifact(s)
-        # default false
-        skip_unpack: false
-
-    - name: Extract and check files from sonar artifact
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-      if: success() && steps.download-sonar-artifact.outcome == 'success'
-      working-directory: .
-      run: |
-        # shellcheck shell=bash
-        # shellcheck disable=SC1091
-        . scripts/helper_functions.sh && extractFilesFromArtifact ~/.sonar;
-
     - name: Download generated binaries from cache
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
@@ -930,7 +898,7 @@ jobs:
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
-        bash gradlew --profile --parallel -DndkVersion=${{ matrix.ndk_version }} -DcmakeVersion=${{ matrix.cmake_version }} sonarqube --info;
+        bash gradlew --profile --parallel -DabiFilters="[\"x86\"]" -DndkVersion=${{ matrix.ndk_version }} -DcmakeVersion=${{ matrix.cmake_version }} sonarqube --info;
 
     - name: Check sonar path
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -939,17 +907,6 @@ jobs:
         # shellcheck shell=bash
         # shellcheck disable=SC1091
         . scripts/helper_functions.sh && checkPathExists ~/.sonar;
-
-    - name: Upload Sonar packages as artifact
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
-      if: success()
-      uses: actions/upload-artifact@v3
-      with:
-        # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
-        name: sonar-packages
-        path: ~/.sonar
-        if-no-files-found: error
-        retention-days: 90
 
     - name: Send codecov report
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}

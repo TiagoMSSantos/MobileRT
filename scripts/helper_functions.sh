@@ -165,7 +165,7 @@ function callCommandUntilError() {
     "$@";
     lastResult=${PIPESTATUS[0]};
     echo "Retry: ${retry} of command '$*'; result: '${lastResult}'";
-    sleep 5;
+    sleep 3;
   done
   if [ "${lastResult}" -eq 0 ]; then
     echo "$*: success - '${lastResult}'";
@@ -185,7 +185,7 @@ function callCommandUntilSuccess() {
   "$@";
   local lastResult=${PIPESTATUS[0]};
   echo "result: '${lastResult}'";
-  while [[ "${lastResult}" -ne 0 && retry -lt 20 ]]; do
+  while [[ "${lastResult}" -ne 0 && retry -lt 5 ]]; do
     retry=$(( retry + 1 ));
     "$@";
     lastResult=${PIPESTATUS[0]};
@@ -212,7 +212,7 @@ function callAdbShellCommandUntilSuccess() {
   local lastResult;
   lastResult=$(echo "${output}" | grep '::.*::' | sed 's/:://g'| tr -d '[:space:]');
   echo "result: '${lastResult}'";
-  while [[ "${lastResult}" -ne 0 && retry -lt 10 ]]; do
+  while [[ "${lastResult}" -ne 0 && retry -lt 5 ]]; do
     retry=$(( retry + 1 ));
     output=$("$@");
     echo "Output of command: '${output}'";

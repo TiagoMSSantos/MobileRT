@@ -49,7 +49,7 @@ fi
 type="release";
 ndk_version="23.2.8568313";
 cmake_version="3.22.1";
-cpu_architecture="x86";
+cpu_architecture="\"x86\"";
 parallelizeBuild;
 
 function printEnvironment() {
