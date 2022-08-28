@@ -125,6 +125,7 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
       if: success() && env.BUILT_IMAGE == 'yes'
       run: |
+        export CI=true;
         # shellcheck shell=bash
         # shellcheck disable=SC1091
         echo "BASE_IMAGE: ${{ matrix.BASE_IMAGE }}";

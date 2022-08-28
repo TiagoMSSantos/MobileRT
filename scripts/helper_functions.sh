@@ -7,6 +7,24 @@
 ###############################################################################
 ###############################################################################
 
+
+###############################################################################
+# Execute Shellcheck on this script.
+###############################################################################
+if [ -x "$(command -v shellcheck)" ]; then
+  shellcheck "${0}";
+fi
+###############################################################################
+###############################################################################
+
+if [ -v "${CI}" ]; then
+  retries="3";
+  timeout="3";
+else
+  retries="40";
+  timeout="5";
+fi
+
 # Helper command for compilation scripts.
 function helpCompile() {
   echo "Usage: cmd [-h] [-t type] [-c compiler] [-r recompile]";
@@ -150,12 +168,12 @@ function callCommandUntilError() {
   local retry=0;
   "$@";
   local lastResult=${PIPESTATUS[0]};
-  while [[ "${lastResult}" -eq 0 && retry -lt 5 ]]; do
+  while [[ "${lastResult}" -eq 0 && retry -lt "${retries}" ]]; do
     retry=$(( retry + 1 ));
     "$@";
     lastResult=${PIPESTATUS[0]};
     echo "Retry: ${retry} of command '$*'; result: '${lastResult}'";
-    sleep 3;
+    sleep "${timeout}";
   done
   if [ "${lastResult}" -eq 0 ]; then
     echo "$*: success - '${lastResult}'";
@@ -175,12 +193,12 @@ function callCommandUntilSuccess() {
   "$@";
   local lastResult=${PIPESTATUS[0]};
   echo "result: '${lastResult}'";
-  while [[ "${lastResult}" -ne 0 && retry -lt 5 ]]; do
+  while [[ "${lastResult}" -ne 0 && retry -lt "${retries}" ]]; do
     retry=$(( retry + 1 ));
     "$@";
     lastResult=${PIPESTATUS[0]};
     echo "Retry: ${retry} of command '$*'; result: '${lastResult}'";
-    sleep 3;
+    sleep "${timeout}";
   done
   set -e;
   if [ "${lastResult}" -eq 0 ]; then
@@ -202,13 +220,13 @@ function callAdbShellCommandUntilSuccess() {
   local lastResult;
   lastResult=$(echo "${output}" | grep '::.*::' | sed 's/:://g'| tr -d '[:space:]');
   echo "result: '${lastResult}'";
-  while [[ "${lastResult}" -ne 0 && retry -lt 5 ]]; do
+  while [[ "${lastResult}" -ne 0 && retry -lt "${retries}" ]]; do
     retry=$(( retry + 1 ));
     output=$("$@");
     echo "Output of command: '${output}'";
     lastResult=$(echo "${output}" | grep '::.*::' | sed 's/:://g' | tr -d '[:space:]');
     echo "Retry: ${retry} of command '$*'; result: '${lastResult}'";
-    sleep 3;
+    sleep "${timeout}";
   done
   if [ "${lastResult}" -eq 0 ]; then
     echo "'$*': success";
@@ -310,7 +328,7 @@ function _killProcessUsingFile() {
   local processes_using_file;
   processes_using_file=$(lsof "${1}" | tail -n +2 | tr -s ' ');
   local retry=0;
-  while [[ "${processes_using_file}" != "" && retry -lt 5 ]]; do
+  while [[ "${processes_using_file}" != "" && retry -lt "${retries}" ]]; do
     retry=$(( retry + 1 ));
     echo "processes_using_file: '${processes_using_file}'";
     local process_id_using_file;
@@ -329,14 +347,13 @@ function _killProcessUsingFile() {
 function clearOldBuildFiles() {
   files_being_used=$(find . -iname "*.fuse_hidden*" || true);
   local retry=0;
-  while [[ "${files_being_used}" != "" && retry -lt 5 ]]; do
+  while [[ "${files_being_used}" != "" && retry -lt "${retries}" ]]; do
     retry=$(( retry + 1 ));
     echo "files_being_used: '${files_being_used}'";
     while IFS= read -r file; do
       while [[ -f "${file}" ]]; do
         _killProcessUsingFile "${file}";
-        echo "sleeping 2 secs";
-        sleep 2;
+        sleep 1;
         set +e;
         rm "${file}";
         set -e;

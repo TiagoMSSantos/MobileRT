@@ -83,12 +83,14 @@ function compileMobileRTInDockerContainer() {
 # The parameters are:
 # * VERSION
 function executeUnitTestsInDockerContainer() {
+  set +u;
   docker run -t \
     --entrypoint bash \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
     -e DISPLAY="${DISPLAY}" \
     --name="mobile_rt_${1}" \
     ptpuscas/mobile_rt:"${1}" -c "./bin/UnitTests";
+  set -u;
 }
 
 # Helper command to push the MobileRT docker image into the docker registry.

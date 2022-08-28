@@ -290,7 +290,7 @@ function parseArguments() {
       case ${P} in
       "time")
         profile;
-        sleep 2s;
+        sleep 2;
         ;;
       "drawt") . scripts/plot/plot.sh 0 ;;
       "draws") . scripts/plot/plot.sh 1 ;;

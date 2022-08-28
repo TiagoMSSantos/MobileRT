@@ -395,6 +395,7 @@ jobs:
       env:
         NCPU_CORES: 3
         MEM_MB: 2048
+        CI: true
       with:
         # Check available parameters in: https://github.com/ReactiveCircus/android-emulator-runner/blob/main/action.yml
         api-level: ${{ matrix.android_api }}

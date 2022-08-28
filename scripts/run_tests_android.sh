@@ -199,7 +199,6 @@ function unlockDevice() {
   callAdbShellCommandUntilSuccess adb shell 'echo -n ::$(($(getprop sys.boot_completed)-1))::';
   # shellcheck disable=SC2016
   callAdbShellCommandUntilSuccess adb shell 'echo -n ::$(($(getprop dev.bootcomplete)-1))::';
-  # callCommandUntilSuccess adb shell 'while [[ $(dumpsys connectivity | grep -ine "NetworkAgentInfo.*CONNECTED") == "" ]]; do sleep 1; done;';
 
   echo "Unlock device";
   callAdbShellCommandUntilSuccess adb shell 'input keyevent 82; echo ::$?::';
@@ -265,7 +264,7 @@ function waitForEmulator() {
   if [ -z "${CI}" ]; then
     echo "Killing previous ADB process, just in case it was stuck: '${ADB_PROCESS}'";
     kill -SIGKILL "${ADB_PROCESS}";
-    sleep 3;
+    sleep 2;
   fi
   set -u;
   local adb_devices_running;
