@@ -75,13 +75,12 @@ It is also needed the [Qt4 or Qt5](https://www.qt.io/) library and the
 [git](https://git-scm.com/) control system to get the code from the repository.
 <br/>
 ```bash
-sudo apt-get update
-sudo apt-get install cmake libqt4-dev build-essential ca-certificates git g++
+bash scripts/install_dependencies.sh
 ```
 Then, to finally compile this code, just create a build directory and compile
 in it, like for example:
 ```bash
-mkdir build_Release
+mkdir -p build_Release
 cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=release ../app/
 ```
 

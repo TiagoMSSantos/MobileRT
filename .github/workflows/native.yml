@@ -112,22 +112,24 @@ jobs:
     - name: Install Qt MacOS
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success() && startsWith(matrix.os, 'macos')
-      uses: jurplel/install-qt-action@v2.14.0
+      uses: jurplel/install-qt-action@v3.0.0
       # Download Qt from: https://download.qt.io/online/qtsdkrepository/
       with:
         # Check available parameters in: https://github.com/jurplel/install-qt-action/blob/master/action.yml
-        # ['dir', 'version', 'host', 'target', 'arch', 'install-deps', 'modules', 'cached',
-        # 'setup-python', 'tools', 'set-env', 'tools-only', 'aqtversion', 'py7zrversion', 'extra']
-        version: '5.12.9'
+        version: '5.15.2' # Also update: app/CMakeLists.txt
         host: 'mac'
         target: 'desktop'
         arch: 'clang_64'
         dir: '${{ github.workspace }}'
         install-deps: 'true'
         modules: ''
-        cached: 'false'
-        aqtversion: '==0.9.4'
-        py7zrversion: '==0.9.1'
+        cache: 'true'
+        cache-key-prefix: '${{ runner.os }}'
+        setup-python: 'false'
+        set-env: 'true'
+        tools-only: 'false'
+        aqtversion: '==2.1.*'
+        py7zrversion: '==0.19.*'
         extra: '--external 7z'
 
     - name: Check Qt path installation.

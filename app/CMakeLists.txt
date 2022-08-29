@@ -480,7 +480,7 @@ else()
 
     target_link_libraries( ${PROJECT_NAME} PRIVATE -F/usr/local/lib )
     # If github action jurplel/install-qt-action was used, then Qt should be at root of project.
-    target_link_libraries( ${PROJECT_NAME} PRIVATE -F${CMAKE_SOURCE_DIR}/../Qt/5.12.9/clang_64/lib )
+    target_link_libraries( ${PROJECT_NAME} PRIVATE -F${CMAKE_SOURCE_DIR}/../Qt/5.15.2/clang_64/lib )
 
     target_link_libraries( ${PROJECT_NAME} PRIVATE "-framework QtCore" )
     target_link_libraries( ${PROJECT_NAME} PRIVATE "-framework QtGui" )
