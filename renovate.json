@@ -31,8 +31,7 @@
   "recreateClosed": true,
   "major": {
     "enabled": true,
-    "automerge": false,
-    "dependencyDashboardApproval": true
+    "automerge": false
   },
   "minor": {
     "enabled": true,
