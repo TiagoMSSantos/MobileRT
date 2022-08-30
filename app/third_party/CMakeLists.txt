@@ -112,7 +112,7 @@ execute_process( COMMAND git submodule foreach "
 
     if [ ! -z \$(git status -s) ]; then
       git status;
-      echo \"\\033[0;31m      Dependency \${dependency} has some unexpected unstaged diff! Please fix this! \\e[0m\";
+      echo \"$(tput -T xterm setaf 1)      Dependency \${dependency} has some unexpected unstaged diff! Please fix this! $(tput -T xterm sgr0)\";
       exit 1;
     fi;
 
@@ -122,10 +122,10 @@ execute_process( COMMAND git submodule foreach "
       echo \"Dependency: \${dependency}\";
       echo \"Using version: \${used_version}\";
     else
-      echo \"\\033[0;33m      Dependency: \${dependency} \\e[0m\";
-      echo \"\\033[0;31m      Last stable version detected: \${last_stable_release} \\e[0m\";
-      echo \"\\033[0;31m      Using version: \${used_version} \\e[0m\";
-      echo \"\\033[0;31m      Using version raw: \${used_version_raw} \\e[0m\";
+      echo \"$(tput -T xterm setaf 3)      Dependency: \${dependency} $(tput -T xterm sgr0)\";
+      echo \"$(tput -T xterm setaf 1)      Last stable version detected: \${last_stable_release} $(tput -T xterm sgr0)\";
+      echo \"$(tput -T xterm setaf 1)      Using version: \${used_version} $(tput -T xterm sgr0)\";
+      echo \"$(tput -T xterm setaf 1)      Using version raw: \${used_version_raw} $(tput -T xterm sgr0)\";
     fi;
     echo \"###############################################################\";
     echo \"\";
