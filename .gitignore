@@ -40,6 +40,7 @@
 **/conanbuildinfo.txt
 **/conan.lock
 **/conaninfo.txt
+**/graph_info.json
 
 # Vim temporary files
 **/*.swp

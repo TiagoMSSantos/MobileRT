@@ -16,16 +16,6 @@
 ###############################################################################
 ###############################################################################
 
-
-###############################################################################
-# Execute Shellcheck on this script.
-###############################################################################
-if [ -x "$(command -v shellcheck)" ]; then
-  shellcheck "${0}";
-fi
-###############################################################################
-###############################################################################
-
 # Helper command to check the available version of the docker command.
 function checkAvailableVersion() {
   # shellcheck disable=SC2086,SC2010
@@ -65,7 +55,8 @@ function buildDockerImage() {
 # * VERSION
 function pullDockerImage() {
   local output;
-  output=$(docker pull ptpuscas/mobile_rt:"${1}" || true);
+  exec 5>&1;
+  output=$(docker pull ptpuscas/mobile_rt:"${1}" | tee /dev/fd/5 || true);
   echo "Docker: ${output}";
   if [[ ${output} != *"up to date"* && ${output} != *"Downloaded newer image for"* ]]; then
     echo "Did not find the Docker image. Will have to build the image.";
@@ -189,7 +180,7 @@ function installDockerCommandForMacOS() {
 
   echo "Start Docker";
   git clone https://github.com/docker/docker.github.io.git;
-  cd docker.github.io || exit;
+  pushd docker.github.io || exit;
   ls registry/recipes/osx;
   plutil -lint registry/recipes/osx/com.docker.registry.plist;
   cp registry/recipes/osx/com.docker.registry.plist ~/Library/LaunchAgents/;
@@ -201,4 +192,5 @@ function installDockerCommandForMacOS() {
   launchctl unload ~/Library/LaunchAgents/com.docker.registry.plist;
 
   open /Applications/Docker.app;
+  popd || exit;
 }

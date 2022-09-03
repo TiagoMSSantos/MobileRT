@@ -123,6 +123,14 @@ function install_dependencies_red_hat() {
 }
 
 function install_dependencies_arch() {
+  # https://wiki.archlinux.org/title/Pacman/Package_signing#Upgrade_system_regularly
+  echo "Removing packages from cache";
+  rm -rf /var/cache/pacman/pkg/;
+  pacman -Sy archlinux-keyring --noconfirm --needed;
+  echo "Resetting all the keys";
+  pacman-key --init;
+  pacman-key --populate;
+  echo "Upgrade system";
   pacman -Syu --noconfirm --needed;
   pacman -Sy --noconfirm --needed \
     glibc lib32-glibc \
@@ -149,6 +157,10 @@ function install_dependencies_alpine() {
     which \
     g++ gcc \
     py3-pip;
+  echo "Installing dependencies that conan might use.";
+  apk add libfontenc-dev libxaw-dev libxcomposite-dev libxcursor-dev libxi-dev \
+  libxinerama-dev libxkbfile-dev libxrandr-dev libxres-dev libxscrnsaver-dev \
+  libxtst-dev libxv-dev libxvmc-dev xcb-util-wm-dev;
 }
 
 function install_dependencies_gentoo() {
@@ -198,7 +210,7 @@ function install_dependencies_macos() {
 
   echo "Change Homebrew to a specific version since the latest one might break some packages URLs.";
   # E.g.: version 3.3.15 breaks the Qt4 package.
-  cd /usr/local/Homebrew;
+  pushd /usr/local/Homebrew;
   git fetch --tags --all;
   git checkout 3.3.14;
   echo "Avoid homebrew from auto-update itself every time its installed something.";
@@ -215,7 +227,9 @@ function install_dependencies_macos() {
   brew install lcov;
   brew install python3;
   brew install pyenv;
+  popd;
 
+  local MAJOR_MAC_VERSION;
   MAJOR_MAC_VERSION=$(sw_vers | grep ProductVersion | cut -d ':' -f2 | cut -d '.' -f1 | tr -d '[:space:]');
   echo "MacOS '${MAJOR_MAC_VERSION}' detected";
   # This command needs sudo.
@@ -256,7 +270,10 @@ function update_python() {
 # Install Conan package manager.
 ###############################################################################
 function install_conan() {
-  pip3 install conan;
+  # Necessary to install python 3.9 which uses six version 1.15!
+  echo "Installing conan";
+  pip3 install six==1.15.0 conan==1.51.3 conan-package-tools;
+  echo "Installed conan!";
   pip3 install clang;
 
   PATH=$(pip3 list -v | grep -i cmake | tr -s ' ' | cut -d ' ' -f 3):${PATH};
@@ -272,9 +289,6 @@ function install_conan() {
 
   echo "PATH: ${PATH}";
 }
-
-
-#install_conan;
 ###############################################################################
 ###############################################################################
 
@@ -307,6 +321,7 @@ function test_commands() {
 # Execute script.
 ###############################################################################
 executeWithoutExiting install_dependencies;
+#install_conan;
 test_commands;
 ###############################################################################
 ###############################################################################

@@ -108,21 +108,32 @@ addOpenMpPath;
 
 ###############################################################################
 # Get the proper C compiler for conan.
-# Possible values for clang are ['3.3', '3.4', '3.5', '3.6', '3.7', '3.8', '3.9', '4.0',
-# '5.0', '6.0', '7.0', '7.1', '8', '9', '10', '11']
-# Possible values for gcc (Apple clang) are ['4.1', '4.4', '4.5', '4.6', '4.7', '4.8',
-# '4.9', '5', '5.1', '5.2', '5.3', '5.4', '5.5', '6', '6.1', '6.2', '6.3', '6.4',
-# '6.5', '7', '7.1', '7.2', '7.3', '7.4', '7.5', '8', '8.1', '8.2', '8.3', '8.4',
-# '9', '9.1', '9.2', '9.3', '10', '10.1']
+# Possible values for clang are ['3.3', '3.4', '3.5', '3.6', '3.7', '3.8', '3.9',
+# '4.0', '5.0', '6.0', '7.0', '7.1', '8', '9', '10', '11', '12', '13', '14', '15']
+# Possible values for gcc (Apple clang) are ['4.1', '4.4', '4.5', '4.6', '4.7',
+# '4.8', '4.9', '5', '5.1', '5.2', '5.3', '5.4', '5.5', '6', '6.1', '6.2', '6.3',
+# '6.4', '6.5', '7', '7.1', '7.2', '7.3', '7.4', '7.5', '8', '8.1', '8.2', '8.3',
+# '8.4', '9', '9.1', '9.2', '9.3', '9.4', '10', '10.1', '10.2', '10.3', '11',
+# '11.1', '11.2', '12']
 ###############################################################################
 function addCompilerPath() {
   if [[ "${compiler}" == *"clang++"* ]]; then
     conan_compiler="clang";
-    conan_compiler_version=$(${compiler} --version | grep -i version | tr -s ' ' | cut -d ' ' -f 3 | cut -d '-' -f 1 | cut -d '.' -f1,2);
+    echo "Compiler version:";
+    ${compiler} --version;
+    echo "Compiler version 2:";
+    ${compiler} --version | grep -i version;
+    echo "Compiler version 3:";
+    ${compiler} --version | grep -i version | sed 's/[ A-Za-z]//g' | awk -F '[^0-9]*' '{print $1}';
+    conan_compiler_version=$(${compiler} --version | grep -i version | sed 's/[ A-Za-z]//g' | awk -F '[^0-9]*' '{print $1}' | head -1);
     export CC=clang;
   elif [[ "${compiler}" == *"g++"* ]]; then
     conan_compiler="gcc";
-    conan_compiler_version=$(${compiler} -dumpversion | cut -d '.' -f 1,2);
+    echo "Compiler version:";
+    ${compiler} -dumpversion;
+    echo "Compiler version 2:";
+    ${compiler} -dumpversion | sed 's/[ A-Za-z]//g' | awk -F '[^0-9]*' '{print $1}';
+    conan_compiler_version=$(${compiler} -dumpversion | sed 's/[ A-Za-z]//g' | awk -F '[^0-9]*' '{print $1}' | head -1);
     export CC=gcc;
   fi
 
@@ -201,31 +212,41 @@ function install_conan_dependencies() {
 #  ln -s configure/config.guess /home/travis/.conan/data/libuuid/1.0.3/_/_/build/b818fa1fc0d3879f99937e93c6227da2690810fe/configure/config.guess;
 #  ln -s configure/config.sub /home/travis/.conan/data/libuuid/1.0.3/_/_/build/b818fa1fc0d3879f99937e93c6227da2690810fe/configure/config.sub;
 
+  echo "Checking if conan is available.";
   if [ -x "$(command -v conan)" ]; then
-    conan profile new default;
-    conan profile update settings.compiler="${conan_compiler}" default;
-    conan profile update settings.compiler.version="${conan_compiler_version}" default;
+    echo "Setting up conan.";
+    set +e;
+    conan profile new mobilert;
+    set -e;
+    conan profile update settings.compiler="${conan_compiler}" mobilert;
+    conan profile update settings.compiler.version="${conan_compiler_version}" mobilert;
     # Possible values for compiler.libcxx are ['libstdc++', 'libstdc++11'].
-    conan profile update settings.compiler.libcxx="libstdc++11" default;
-    conan profile update settings.arch="${CPU_ARCHITECTURE}" default;
-    conan profile update settings.os="Linux" default;
-    conan profile update settings.build_type="Release" default;
-    conan remote add bintray https://api.bintray.com/conan/bincrafters/public-conan;
+    conan profile update settings.arch="${CPU_ARCHITECTURE}" mobilert;
+    conan profile update settings.os="Linux" mobilert;
+    conan profile update settings.build_type="Release" mobilert;
+    conan profile update settings.compiler.libcxx=libstdc++11 mobilert;
+    set +e;
+    conan remote add conancenter http://conan.io/center/;
+    set -e;
+
+    echo "Installing dependencies with conan.";
+    conan install \
+    -s compiler=${conan_compiler} \
+    -s compiler.version="${conan_compiler_version}" \
+    -s compiler.libcxx=libstdc++11 \
+    -s arch="${CPU_ARCHITECTURE}" \
+    -s os="Linux" \
+    -s build_type=Release \
+    -o bzip2:shared=True \
+    -c tools.system.package_manager:mode=install \
+    -c tools.system.package_manager:sudo=True \
+    --build missing \
+    --profile mobilert \
+    ./app/third_party/conan/Native;
+
+    export CONAN="TRUE";
+    echo "Done!";
   fi
-
-  conan install \
-  -s compiler=${conan_compiler} \
-  -s compiler.version="${conan_compiler_version}" \
-  -s compiler.libcxx=libstdc++11 \
-  -s arch="${CPU_ARCHITECTURE}" \
-  -s os="Linux" \
-  -s build_type=Release \
-  -o bzip2:shared=True \
-  --build missing \
-  --profile default \
-  ../app/third_party/conan/Native;
-
-  export CONAN="TRUE";
 }
 ###############################################################################
 ###############################################################################
@@ -249,8 +270,7 @@ function create_build_folder() {
 
 function build() {
   create_build_folder;
-  cd "${build_path}";
-#  install_conan_dependencies;
+  pushd "${build_path}";
 
   echo "Adding cmake to PATH.";
   set +e;
@@ -286,11 +306,12 @@ function build() {
   else
     echo "Compilation: cmake failed";
   fi
-  cd ../;
+  popd;
 }
 ###############################################################################
 ###############################################################################
 
+#install_conan_dependencies;
 createReportsFolders;
 build;
 validateNativeLibCompiled;

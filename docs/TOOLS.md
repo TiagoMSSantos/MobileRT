@@ -4,10 +4,10 @@
 Here are the commands to generate the code coverage report:
 ```bash
 find build_debug/* -name *.gcda | xargs rm;
-cd build_debug;
+pushd build_debug;
 cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=debug ../app/;
-make;
-cd ..;
+cmake --build .;
+popd;
 lcov -c -i -d . --no-external -o code_coverage_base.info;
 ./build_debug/bin/UnitTestsd;
 lcov -c -d . --no-external -o code_coverage_test.info;
@@ -45,4 +45,17 @@ user=TiagoMSSantos repo=MobileRT; gh api repos/${user}/${repo}/actions/runs --pa
 Here are the commands to delete the git local branches that are not on the remote server.
 ```
 git branch -vv | grep ': gone]' | awk '{print $1}' | xargs git branch -D
+```
+
+## Remove all docker containers and volumes
+Here are the commands to remove all docker containers and mounted volumes.
+```
+docker system df;
+docker rm -f $(docker ps -a | grep -v "portainer" | awk 'NR>1 {print $1}');
+docker system prune --volumes --force;
+docker builder prune --all --force;
+docker buildx prune --all --force --verbose;
+docker network prune --force;
+docker volume prune --force;
+docker system df;
 ```

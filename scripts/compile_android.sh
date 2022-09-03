@@ -134,7 +134,7 @@ function install_conan_dependencies() {
   -s build_type=Release \
   --build missing \
   --profile default \
-  app/third_party/conan/Android;
+  ./app/third_party/conan/Android;
 
   export CONAN="TRUE";
 }
