@@ -71,7 +71,7 @@ jobs:
 
         - os: macos-12
           type: release
-          compiler: g++
+          compiler: g++-12
 
         - os: macos-11
           type: release
@@ -79,7 +79,7 @@ jobs:
 
         - os: macos-11
           type: debug
-          compiler: g++
+          compiler: g++-12
 
         - os: macos-12
           type: debug
@@ -149,7 +149,7 @@ jobs:
 
     - name: Generate code coverage base
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug' && matrix.compiler == 'g++'
+      if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug' && startsWith(matrix.compiler, 'g++')
       working-directory: .
       run: |
         lcov -c -i -d . --no-external -o code_coverage_base.info;
@@ -170,7 +170,7 @@ jobs:
 
     - name: Generate code coverage
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug' && matrix.compiler == 'g++'
+      if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug' && startsWith(matrix.compiler, 'g++')
       working-directory: .
       run: |
         # shellcheck shell=bash
@@ -180,7 +180,7 @@ jobs:
     - name: Set Matrix for Sonar
       id: set-matrix-sonar
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug' && matrix.compiler == 'g++'
+      if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug' && startsWith(matrix.compiler, 'g++')
       run: |
         MATRIX_SONAR=$(echo '${{ toJSON(matrix) }}' | jq -c -s '{"include":[.[]]}');
         echo "Matrix Sonar: ${MATRIX_SONAR}";
@@ -188,7 +188,7 @@ jobs:
 
     - name: Upload coverage to cache
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug' && matrix.compiler == 'g++'
+      if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug' && startsWith(matrix.compiler, 'g++')
       uses: actions/cache@v3
       with:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml

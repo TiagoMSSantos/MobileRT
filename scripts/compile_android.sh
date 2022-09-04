@@ -129,7 +129,8 @@ function install_conan_dependencies() {
   conan install \
   -s compiler=clang \
   -s compiler.version="9" \
-  -s compiler.libcxx=libstdc++11 \
+  -s compiler.libcxx=libstdc++ \
+  -s compiler.cppstd=17 \
   -s os="Android" \
   -s build_type=Release \
   --build missing \

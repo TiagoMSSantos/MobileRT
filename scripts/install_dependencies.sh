@@ -120,6 +120,16 @@ function install_dependencies_red_hat() {
     git ca-certificates \
     which \
     qt5-qtbase-devel;
+  echo "Installing dependencies that conan might use.";
+  yum install -y mesa-libGL-devel;
+  yum install -y libXaw-devel libXcomposite-devel libXcursor-devel \
+  libXtst-devel libXinerama-devel \
+  libXrandr-devel libXScrnSaver-devel libXdamage-devel \
+  libXv-devel libuuid-devel xkeyboard-config-devel;
+  yum install -y libfontenc libXdmcp libxkbfile libXres \
+  xcb-util-wm xcb-util-image \
+  xcb-util-keysyms xcb-util-renderutil libXxf86vm xcb-util;
+  yum install -y libXvMC xorg-x11-xtrans;
 }
 
 function install_dependencies_arch() {
@@ -218,6 +228,8 @@ function install_dependencies_macos() {
   brew --version;
 
   echo "Install packages separately, so it continues regardless if some error occurs in one.";
+  brew install cmake;
+  brew install gcc@12; # GCC v12 is the latest version compatible with conan.
   brew install openssl@1.0;
   brew install openssl@1.1;
   brew install shellcheck;

@@ -220,11 +220,12 @@ function install_conan_dependencies() {
     set -e;
     conan profile update settings.compiler="${conan_compiler}" mobilert;
     conan profile update settings.compiler.version="${conan_compiler_version}" mobilert;
+    conan profile update settings.compiler.libcxx=libstdc++ mobilert;
+    conan profile update settings.compiler.cppstd=17 mobilert;
     # Possible values for compiler.libcxx are ['libstdc++', 'libstdc++11'].
     conan profile update settings.arch="${CPU_ARCHITECTURE}" mobilert;
     conan profile update settings.os="Linux" mobilert;
     conan profile update settings.build_type="Release" mobilert;
-    conan profile update settings.compiler.libcxx=libstdc++11 mobilert;
     set +e;
     conan remote add conancenter http://conan.io/center/;
     set -e;
@@ -233,7 +234,8 @@ function install_conan_dependencies() {
     conan install \
     -s compiler=${conan_compiler} \
     -s compiler.version="${conan_compiler_version}" \
-    -s compiler.libcxx=libstdc++11 \
+    -s compiler.libcxx=libstdc++ \
+    -s compiler.cppstd=17 \
     -s arch="${CPU_ARCHITECTURE}" \
     -s os="Linux" \
     -s build_type=Release \
