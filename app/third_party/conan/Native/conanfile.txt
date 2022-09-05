@@ -2,7 +2,7 @@
 qt/5.15.5
 boost/1.79.0
 tinyobjloader/1.0.6
-gtest/1.12.1
+gtest/cci.20210126
 glm/cci.20220420
 stb/cci.20210910
 pcg-cpp/cci.20210406
