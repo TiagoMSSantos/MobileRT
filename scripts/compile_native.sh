@@ -254,6 +254,7 @@ function install_conan_dependencies() {
     -c tools.system.package_manager:sudo=True \
     --build missing \
     --profile mobilert \
+    --install-folder build_conan-native \
     ./app/third_party/conan/Native;
 
     export CONAN="TRUE";
@@ -290,11 +291,18 @@ function build() {
   set -e;
   echo "CMAKE_PATH: ${CMAKE_PATH}";
   export PATH=${CMAKE_PATH%/cmake}:${PATH};
+  local conanToolchainFile;
+  conanToolchainFile="../build_conan-native/conan_toolchain.cmake";
+  local addConanToolchain="";
+  if [[ -f "${conanToolchainFile}" ]]; then
+    addConanToolchain="-DCMAKE_TOOLCHAIN_FILE=${conanToolchainFile}";
+  fi
 
   echo "Calling CMake";
   cmake -DCMAKE_VERBOSE_MAKEFILE=ON \
     -DCMAKE_CXX_COMPILER="${compiler}" \
     -DCMAKE_BUILD_TYPE="${typeWithCapitalLetter}" \
+     ${addConanToolchain} \
     ../app/;
   resCompile=${PIPESTATUS[0]};
   echo "Called CMake";
@@ -304,7 +312,7 @@ function build() {
   compiler_version=$(${compiler} -v 2>&1 || true);
   if [[ "${compiler_version}" != *".exe"* ]]; then
     echo "Didn't detect C++ compiler for Windows!";
-    JOBS_FLAG=${MAKEFLAGS};
+    JOBS_FLAG="${MAKEFLAGS}";
   else
     echo "Detected C++ compiler for Windows!";
   fi

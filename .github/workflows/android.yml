@@ -181,7 +181,7 @@ jobs:
         skip_unpack: false
 
     - name: Extract and check files from gradle artifact
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success() && steps.download-gradle-artifact.outcome == 'success'
       working-directory: .
       run: |
@@ -367,7 +367,7 @@ jobs:
         path: ${{ env.GRADLE_PATH }}
 
     - name: Extract and check files from gradle artifact
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
       working-directory: .
       run: |
@@ -539,7 +539,7 @@ jobs:
         path: ${{ env.GRADLE_PATH }}
 
     - name: Extract and check files from gradle artifact
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
       working-directory: .
       run: |
@@ -651,7 +651,7 @@ jobs:
         path: ${{ env.GRADLE_PATH }}
 
     - name: Extract and check files from gradle artifact
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
       working-directory: .
       run: |

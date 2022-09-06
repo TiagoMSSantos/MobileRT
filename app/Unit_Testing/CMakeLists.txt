@@ -1,4 +1,15 @@
 ###############################################################################
+# Include auxiliary functions
+###############################################################################
+message( STATUS "Adding helper functions." )
+include( ${CMAKE_SOURCE_DIR}/CMakeLists_helper.cmake )
+include( CheckCXXCompilerFlag )
+print_environment()
+###############################################################################
+###############################################################################
+
+
+###############################################################################
 # Set up project
 ###############################################################################
 message( STATUS "Setting up Unit Tests project." )
@@ -9,6 +20,15 @@ file( GLOB_RECURSE GTEST_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/**.cpp" )
 
 message( STATUS "Creating executable." )
 add_executable( ${PROJECT_NAME} ${GTEST_SOURCES} ${MOBILE_DEPENDENT_SOURCES} ${SCENES_SOURCES} )
+
+if( DEFINED CONAN )
+  if( DEFINED ANDROID_ABI )
+    include( ${CMAKE_CURRENT_SOURCE_DIR}/../conanbuildinfo.cmake )
+  else()
+    include( ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake )
+  endif()
+  conan_basic_setup( TARGETS )
+endif()
 ###############################################################################
 ###############################################################################
 
@@ -26,6 +46,10 @@ set_target_properties( ${PROJECT_NAME} PROPERTIES
 ###############################################################################
 # Set compiler flags
 ###############################################################################
+# Add dependencies headers installed from conan package manager.
+target_include_directories( ${PROJECT_NAME} SYSTEM PUBLIC ${CMAKE_INCLUDE_PATH} )
+target_link_libraries( ${PROJECT_NAME} PRIVATE ${gtest_LIBRARIES_TARGETS} )
+
 message( STATUS "Adding compiler flags." )
 target_compile_options( ${PROJECT_NAME} PRIVATE ${COMMON_FLAGS} )
 target_compile_options( ${PROJECT_NAME} PRIVATE

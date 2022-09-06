@@ -255,10 +255,10 @@ function capitalizeFirstletter() {
 # Parallelize building of MobileRT.
 function parallelizeBuild() {
   if [ -x "$(command -v nproc)" ]; then
-    MAKEFLAGS=-j$(nproc --all);
+    MAKEFLAGS="-j$(nproc --all)";
   else
     # Assuming MacOS.
-    MAKEFLAGS=-j$(sysctl -n hw.logicalcpu);
+    MAKEFLAGS="-j$(sysctl -n hw.logicalcpu)";
   fi
   export MAKEFLAGS;
 }

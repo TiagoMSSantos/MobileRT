@@ -47,6 +47,9 @@ execute_process( COMMAND git clone https://github.com/imneme/pcg-cpp
 ###############################################################################
 message( STATUS "Updating third party repositories." )
 
+execute_process(COMMAND git submodule foreach "git clean -fxd;"
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
+
 execute_process(COMMAND git submodule foreach "git remote update --prune;"
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
 
@@ -54,9 +57,6 @@ execute_process(COMMAND git submodule foreach "git submodule update;"
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
 
 execute_process(COMMAND git submodule foreach "git fetch --tags --all;"
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
-
-execute_process(COMMAND git submodule foreach "git clean -dfx;"
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
 ###############################################################################
 ###############################################################################
@@ -172,6 +172,9 @@ target_include_directories( MobileRT SYSTEM PRIVATE
 
 target_include_directories( MobileRT SYSTEM PUBLIC
   "${CMAKE_CURRENT_SOURCE_DIR}/pcg-cpp/include" )
+
+# Add dependencies headers installed from conan package manager.
+target_include_directories( MobileRT SYSTEM PUBLIC ${CMAKE_INCLUDE_PATH} )
 ###############################################################################
 ###############################################################################
 

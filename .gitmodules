@@ -9,7 +9,7 @@
 
 [submodule "third_party/tinyobjloader"]
   path = app/third_party/tinyobjloader
-  url = https://github.com/syoyo/tinyobjloader
+  url = https://github.com/tinyobjloader/tinyobjloader
   update = checkout
   branch = master
   fetchRecurseSubmodules = false

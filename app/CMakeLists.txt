@@ -404,19 +404,6 @@ endif()
 
 
 ###############################################################################
-#find_package( glm )
-
-include_directories( SYSTEM ${CONAN_INCLUDE_DIRS_GLM} )
-include_directories( SYSTEM ${CONAN_INCLUDE_DIRS_STB} )
-include_directories( SYSTEM ${CONAN_INCLUDE_DIRS_TINYOBJLOADER} )
-include_directories( SYSTEM ${CONAN_INCLUDE_DIRS_QT} )
-#link_libraries( ${CONAN_LIB_DIRS_GLM} )
-#link_libraries( ${CONAN_LIB_DIRS_STB} )
-#link_libraries( ${CONAN_LIB_DIRS_QT} )
-###############################################################################
-
-
-###############################################################################
 # Add dependencies
 ###############################################################################
 message( STATUS "Adding sub directories." )

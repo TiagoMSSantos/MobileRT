@@ -132,9 +132,13 @@ function install_conan_dependencies() {
   -s compiler.libcxx=libstdc++ \
   -s compiler.cppstd=17 \
   -s os="Android" \
+  -s os.api_level="16" \
   -s build_type=Release \
+  -o bzip2:shared=True \
+  -c tools.android:ndk_path="${ANDROID_NDK_PATH}" \
   --build missing \
   --profile default \
+  --install-folder build_conan-android \
   ./app/third_party/conan/Android;
 
   export CONAN="TRUE";

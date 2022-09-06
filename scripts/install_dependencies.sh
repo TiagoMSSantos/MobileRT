@@ -105,6 +105,8 @@ function install_dependencies_debian() {
     lcov \
     python3 python3-pip python3-dev python3-setuptools \
     cpulimit;
+    echo "Installing dependencies that conan might use.";
+    sudo apt-get install --no-install-recommends -y libc++-dev;
 }
 
 function install_dependencies_red_hat() {
@@ -283,15 +285,16 @@ function update_python() {
 ###############################################################################
 function install_conan() {
   # Necessary to install python 3.9 which uses six version 1.15!
+  # Packages that should be used: six==1.15.0 conan==1.51.3 conan-package-tools
   echo "Installing conan";
-  pip3 install six==1.15.0 conan==1.51.3 conan-package-tools;
+  pip3 install six==1.15.0 conan==1.51.3 conan-package-tools --ignore-installed six;
   echo "Installed conan!";
   pip3 install clang;
 
   PATH=$(pip3 list -v | grep -i cmake | tr -s ' ' | cut -d ' ' -f 3):${PATH};
   PATH=$(pip3 list -v | grep -i conan | tr -s ' ' | cut -d ' ' -f 3):${PATH};
 
-  CONAN_PATH=$(find ~/ -iname "conan" -not -path "*/MobileRT/**/conan*");
+  CONAN_PATH=$(find ~/ -iname "conan" -not -path "*/MobileRT/**/conan*" || true);
   echo "Conan binary: ${CONAN_PATH}";
   echo "Conan location: ${CONAN_PATH%/conan}";
   export PATH=${CONAN_PATH%/conan}:${PATH};
@@ -334,7 +337,7 @@ function test_commands() {
 ###############################################################################
 echo "Host OS: ${OSTYPE}";
 executeWithoutExiting install_dependencies;
-#install_conan;
+install_conan;
 test_commands;
 ###############################################################################
 ###############################################################################

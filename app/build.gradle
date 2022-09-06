@@ -220,6 +220,7 @@ android {
         }
         externalNativeBuild {
             cmake {
+                arguments "-DCMAKE_VERBOSE_MAKEFILE=ON"
             }
         }
         javaCompileOptions {
