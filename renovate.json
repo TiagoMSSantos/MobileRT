@@ -63,7 +63,7 @@
   },
   "conan": {
     "enabled": true,
-    "ignoreDeps": ["stb", "glm"]
+    "ignoreDeps": ["stb", "glm", "gtest"]
   },
   "pre-commit": {
     "enabled": true
