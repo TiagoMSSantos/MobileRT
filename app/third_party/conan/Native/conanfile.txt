@@ -1,5 +1,5 @@
 [requires]
-qt/5.15.5
+qt/6.3.1
 boost/1.79.0
 tinyobjloader/1.0.6
 gtest/1.12.1
