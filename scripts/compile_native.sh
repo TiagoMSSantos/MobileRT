@@ -108,16 +108,14 @@ addOpenMpPath;
 
 ###############################################################################
 # Get the proper C compiler for conan.
-# Possible values for clang are ['3.3', '3.4', '3.5', '3.6', '3.7', '3.8', '3.9',
-# '4.0', '5.0', '6.0', '7.0', '7.1', '8', '9', '10', '11', '12', '13', '14', '15']
-# Possible values for gcc (Apple clang) are ['4.1', '4.4', '4.5', '4.6', '4.7',
-# '4.8', '4.9', '5', '5.1', '5.2', '5.3', '5.4', '5.5', '6', '6.1', '6.2', '6.3',
-# '6.4', '6.5', '7', '7.1', '7.2', '7.3', '7.4', '7.5', '8', '8.1', '8.2', '8.3',
-# '8.4', '9', '9.1', '9.2', '9.3', '9.4', '10', '10.1', '10.2', '10.3', '11',
-# '11.1', '11.2', '12']
+#
+# For more info, check:
+# https://docs.conan.io/en/1.51/reference/config_files/settings.yml.html
 ###############################################################################
-function addCompilerPath() {
+function addCompilerPathForConan() {
   if [[ "${compiler}" == *"clang++"* ]]; then
+    # Possible values for clang are ['3.3', '3.4', '3.5', '3.6', '3.7', '3.8', '3.9',
+    # '4.0', '5.0', '6.0', '7.0', '7.1', '8', '9', '10', '11', '12', '13', '14', '15']
     conan_compiler="clang";
     echo "Compiler version:";
     ${compiler} --version;
@@ -126,38 +124,50 @@ function addCompilerPath() {
     echo "Compiler version 3:";
     ${compiler} --version | grep -i version | sed 's/[ A-Za-z]//g' | awk -F '[^0-9]*' '{print $1}';
     conan_compiler_version=$(${compiler} --version | grep -i version | sed 's/[ A-Za-z]//g' | awk -F '[^0-9]*' '{print $1}' | head -1);
-    export CC=clang;
+    export CXX="${conan_compiler}++";
+    export CC="${conan_compiler}";
+    export CFLAGS="-stdlib=libc++";
+    export CXXFLAGS="-stdlib=libc++";
+    conan_libcxx="libc++";
   elif [[ "${compiler}" == *"g++"* ]]; then
-    conan_compiler="gcc";
+    export CXX="g++";
+    export CC="gcc";
+    if [[ "${OSTYPE}" == *"darwin"* ]]; then
+      # Possible values for Apple clang are ['5.0', '5.1', '6.0', '6.1', '7.0', '7.3',
+      # '8.0', '8.1', '9.0', '9.1', '10.0', '11.0', '12.0', '13', '13.0', '13.1']
+      echo "Detected MacOS, so the C++ compiler should be apple-clang instead of old gcc.";
+      conan_compiler="apple-clang";
+      export CFLAGS="-stdlib=libc++";
+      export CXXFLAGS="-stdlib=libc++";
+      conan_libcxx="libc++";
+    else
+      # Possible values for gcc (Apple clang) are ['4.1', '4.4', '4.5', '4.6', '4.7',
+      # '4.8', '4.9', '5', '5.1', '5.2', '5.3', '5.4', '5.5', '6', '6.1', '6.2', '6.3',
+      # '6.4', '6.5', '7', '7.1', '7.2', '7.3', '7.4', '7.5', '8', '8.1', '8.2', '8.3',
+      # '8.4', '9', '9.1', '9.2', '9.3', '9.4', '10', '10.1', '10.2', '10.3', '11',
+      # '11.1', '11.2', '12']
+      echo "Didn't detect MacOS, so the C++ compiler should be gcc.";
+      conan_compiler="gcc";
+      conan_libcxx="libstdc++";
+    fi
     echo "Compiler version:";
     ${compiler} -dumpversion;
     echo "Compiler version 2:";
     ${compiler} -dumpversion | sed 's/[ A-Za-z]//g' | awk -F '[^0-9]*' '{print $1}';
     conan_compiler_version=$(${compiler} -dumpversion | sed 's/[ A-Za-z]//g' | awk -F '[^0-9]*' '{print $1}' | head -1);
-    export CC=gcc;
   fi
 
-  # Flag `-v` not compatible with MSVC.
-  #${compiler} -v;
   set +u; # Because of Windows OS doesn't have clang++ nor g++.
-  echo "Detected '${conan_compiler}' '${conan_compiler_version}' compiler.";
-  set -u;
-
-  export CXX="${compiler}";
-
   # Fix compiler version used.
-  #if [ "${conan_compiler_version}" == "9.0" ]; then
-  #  conan_compiler_version=9;
-  #fi
-  #if [ "${conan_compiler_version}" == "12.0" ]; then
-  #  conan_compiler_version=12;
-  #fi
-  #if [ "${conan_compiler_version}" == "4.2" ]; then
-  #  conan_compiler_version=4.0;
-  #fi
+  if [[ "${conan_compiler}" == "apple-clang" && "${conan_compiler_version}" == "12" ]]; then
+    conan_compiler_version="12.0";
+  fi
+
+  echo "Detected '${conan_compiler}' '${conan_compiler_version}' '(${conan_libcxx})' compiler.";
+  set -u;
 }
 
-addCompilerPath;
+addCompilerPathForConan;
 ###############################################################################
 ###############################################################################
 
@@ -220,9 +230,9 @@ function install_conan_dependencies() {
     set -e;
     conan profile update settings.compiler="${conan_compiler}" mobilert;
     conan profile update settings.compiler.version="${conan_compiler_version}" mobilert;
-    conan profile update settings.compiler.libcxx=libstdc++ mobilert;
+    conan profile update settings.compiler.libcxx="${conan_libcxx}" mobilert;
     conan profile update settings.compiler.cppstd=17 mobilert;
-    # Possible values for compiler.libcxx are ['libstdc++', 'libstdc++11'].
+    # Possible values for compiler.libcxx for gcc are ['libstdc++', 'libstdc++11'].
     conan profile update settings.arch="${CPU_ARCHITECTURE}" mobilert;
     conan profile update settings.os="Linux" mobilert;
     conan profile update settings.build_type="Release" mobilert;
@@ -234,7 +244,7 @@ function install_conan_dependencies() {
     conan install \
     -s compiler=${conan_compiler} \
     -s compiler.version="${conan_compiler_version}" \
-    -s compiler.libcxx=libstdc++ \
+    -s compiler.libcxx="${conan_libcxx}" \
     -s compiler.cppstd=17 \
     -s arch="${CPU_ARCHITECTURE}" \
     -s os="Linux" \

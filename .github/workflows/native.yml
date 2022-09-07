@@ -102,6 +102,13 @@ jobs:
       run: |
         mkdir -p build_${{ matrix.type }};
 
+    - name: Check MacOS Xcode versions
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success() && startsWith(matrix.os, 'macos')
+      working-directory: .
+      run: |
+        ls -lahp /System/Volumes/Data/Applications/;
+
     - name: Install Dependencies
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
       if: success()

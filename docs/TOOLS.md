@@ -1,6 +1,6 @@
 # Tools commands
 
-## Code Coverage
+## Check code coverage
 Here are the commands to generate the code coverage report:
 ```bash
 find build_debug/* -name *.gcda | xargs rm;
@@ -19,7 +19,7 @@ bash <(curl -s https://codecov.io/bash);
 ./test-reporter-latest-linux-amd64 upload-coverage;
 ```
 
-## Code Duplication
+## Check code duplication
 Here are the commands to generate the code duplication report:
 ```bash
 jscpd -c .jscpd.json .;
@@ -58,4 +58,10 @@ docker buildx prune --all --force --verbose;
 docker network prune --force;
 docker volume prune --force;
 docker system df;
+```
+
+## Delete cache from conan package manager
+Here are the commands to delete all the cache from the conan package manager.
+```
+conan remove "*" --builds --src --system-reqs --force;
 ```

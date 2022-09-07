@@ -7,6 +7,9 @@ stb/cci.20210910
 pcg-cpp/cci.20210406
 
 [generators]
+CMakeDeps
+CMakeToolchain
 cmake
+markdown
 
 [options]

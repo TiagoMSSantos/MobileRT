@@ -332,6 +332,7 @@ function test_commands() {
 ###############################################################################
 # Execute script.
 ###############################################################################
+echo "Host OS: ${OSTYPE}";
 executeWithoutExiting install_dependencies;
 #install_conan;
 test_commands;
