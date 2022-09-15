@@ -162,7 +162,7 @@ function install_dependencies_alpine() {
   apk add \
     vim \
     findutils \
-    cmake make \
+    cmake make ncurses \
     bash shellcheck \
     git ca-certificates \
     qt5-qtbase-dev \
