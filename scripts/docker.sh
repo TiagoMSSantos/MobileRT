@@ -67,7 +67,7 @@ function pullDockerImage() {
   fi
 }
 
-# Helper command to compile the MobileRT in a docker container.
+# Helper command to update and compile the MobileRT in a docker container.
 # It builds the MobileRT in release mode.
 # The parameters are:
 # * VERSION
@@ -75,8 +75,15 @@ function compileMobileRTInDockerContainer() {
   docker run -t \
     --entrypoint bash \
     --name="mobile_rt_${1}" \
+    --volume="${PWD}":/MobileRT_volume \
     ptpuscas/mobile_rt:"${1}" \
-    -c "chmod -R +x ../scripts/ && ls -lahp ../scripts/ && bash ../scripts/compile_native.sh -t release -c g++ -r yes";
+    -c "cd ../ \
+      && cp -rpf ../MobileRT_volume/* ./ \
+      && find ./app/third_party/ -mindepth 1 -maxdepth 1 -type d ! -regex '^./app/third_party\(/conan*\)?' -exec rm -rf {} \; \
+      && ls -lahp ./ \
+      && chmod -R +x ./scripts/ \
+      && ls -lahp ./scripts/ \
+      && bash ./scripts/compile_native.sh -t release -c g++ -r yes";
 }
 
 # Helper command to execute the MobileRT unit tests in the docker container.

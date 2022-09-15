@@ -104,13 +104,13 @@ execute_process( COMMAND git submodule foreach "
     stable_releases=$(echo \"\${releases}\" | grep -i [0-9] | grep -i [.] | grep -v alpha | grep -v \"\\-a\" | grep -v beta | grep -v \"\\-b\" | grep -v rc | grep -v preview | grep -v \"\\-pre\" | grep -v bug | grep -v .x);
     echo \"Detected stable versions: \${stable_releases}\";
     last_stable_release=$(echo \"\${stable_releases}\" | head -1 || true);
-    if [ -z \${last_stable_release} ]; then
+    if [ -z \"\${last_stable_release}\" ]; then
       last_stable_release='master';
     fi;
     used_version_raw=$(git name-rev --name-only HEAD);
     used_version=$(echo \"\${used_version_raw}\" | cut -d '/' -f2 | cut -d '^' -f1);
 
-    if [ ! -z \$(git status -s) ]; then
+    if [ ! -z \"\$(git status -s | xargs echo -n)\" ]; then
       git status;
       echo \"$(tput -T xterm setaf 1)      Dependency \${dependency} has some unexpected unstaged diff! Please fix this! $(tput -T xterm sgr0)\";
       exit 1;
