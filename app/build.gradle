@@ -164,7 +164,7 @@ sonarqube {
 //        property 'sonar.jacoco.reportPath', 'build/jacoco/testDebugUnitTest.exec'
         property 'sonar.host.url', 'https://sonarcloud.io'
         property 'sonar.organization', 'tiagomssantos'
-        property 'sonar.coverage.jacoco.xmlReportPaths', 'build/reports/coverage/androidTest/debug/report.xml'
+        property 'sonar.coverage.jacoco.xmlReportPaths', 'build/reports/coverage/androidTest/debug/connected/report.xml'
         property 'sonar.junit.reportPaths', 'build/test-results/testDebugUnitTest'
         property 'sonar.exclusions', '**/*.kt'
         property 'sonar.verbose', 'true'

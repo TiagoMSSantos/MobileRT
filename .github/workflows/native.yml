@@ -202,7 +202,7 @@ jobs:
         key: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
         restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
         path: |
-          app/build/reports/coverage/androidTest/debug
+          app/build/reports/coverage/androidTest/debug/connected
           code_coverage_base.info
           code_coverage.info
           code_coverage_test.info
@@ -235,7 +235,7 @@ jobs:
         key: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
         restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
         path: |
-          app/build/reports/coverage/androidTest/debug
+          app/build/reports/coverage/androidTest/debug/connected
           code_coverage_base.info
           code_coverage.info
           code_coverage_test.info

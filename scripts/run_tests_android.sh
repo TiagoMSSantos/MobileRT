@@ -116,7 +116,7 @@ function gather_logs_func() {
   set -e;
 
   echo -e '\e]8;;file:///'"${PWD}"'/'"${reports_path}"'/androidTests/connected/index.html\aClick here to check the Android tests report.\e]8;;\a';
-  echo -e '\e]8;;file:///'"${PWD}"'/'"${reports_path}"'/coverage/androidTest/'"${type}"'/index.html\aClick here to check the Code coverage report.\e]8;;\a';
+  echo -e '\e]8;;file:///'"${PWD}"'/'"${reports_path}"'/coverage/androidTest/'"${type}"'/connected/index.html\aClick here to check the Code coverage report.\e]8;;\a';
   echo -e '\e]8;;file:///'"${PWD}"'/'"${reports_path}"'/logcat_app_'"${type}"'.log\aClick here to check the app log.\e]8;;\a';
 }
 
@@ -501,7 +501,7 @@ function runInstrumentationTests() {
 
   if [ "${run_test}" == "all" ]; then
     echo "Running all tests";
-    mkdir -p app/build/reports/coverage/androidTest/debug/;
+    mkdir -p app/build/reports/coverage/androidTest/debug/connected/;
     set +u; # Because 'code_coverage' is only set when debug.
     bash gradlew connected"${type}"AndroidTest -DtestType="${type}" \
       -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
