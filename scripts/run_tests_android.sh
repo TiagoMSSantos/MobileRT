@@ -501,7 +501,7 @@ function runInstrumentationTests() {
 
   if [ "${run_test}" == "all" ]; then
     echo "Running all tests";
-    mkdir -p app/build/reports/coverage/androidTest/debug/;
+    mkdir -p app/build/reports/coverage/androidTest/debug/connected/;
     set +u; # Because 'code_coverage' is only set when debug.
     bash gradlew connected"${type}"AndroidTest -DtestType="${type}" \
       -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \

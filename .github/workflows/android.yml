@@ -423,7 +423,7 @@ jobs:
       run: |
         # shellcheck shell=bash
         # shellcheck disable=SC1091
-        . scripts/helper_functions.sh && checkPathExists app/build/reports/coverage/androidTest/debug report.xml;
+        . scripts/helper_functions.sh && checkPathExists app/build/reports/coverage/androidTest/debug/connected report.xml;
 
     - name: Upload reports to cache
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -710,7 +710,7 @@ jobs:
       run: |
         # shellcheck shell=bash
         # shellcheck disable=SC1091
-        . scripts/helper_functions.sh && checkPathExists app/build/reports/coverage/androidTest/debug report.xml;
+        . scripts/helper_functions.sh && checkPathExists app/build/reports/coverage/androidTest/debug/connected report.xml;
 
     - name: Send code climate report
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -722,7 +722,7 @@ jobs:
         # shellcheck shell=bash
         # shellcheck disable=SC1091
         . ${{ github.workspace }}/scripts/helper_functions.sh && prepareBinaries;
-        ../../../../test-reporter-latest-linux-amd64 format-coverage -t jacoco ../../../build/reports/coverage/androidTest/debug/report.xml;
+        ../../../../test-reporter-latest-linux-amd64 format-coverage -t jacoco ../../../build/reports/coverage/androidTest/debug/connected/report.xml;
         ../../../../test-reporter-latest-linux-amd64 upload-coverage;
 
     - name: Validate codecov report
@@ -782,4 +782,4 @@ jobs:
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       run: |
-        curl --retry 5 --retry-delay 2 --connect-timeout 2 -s https://codecov.io/bash | bash -s -- -c -F aFlag -f app/build/reports/coverage/androidTest/debug/report.xml -v;
+        curl --retry 5 --retry-delay 2 --connect-timeout 2 -s https://codecov.io/bash | bash -s -- -c -F aFlag -f app/build/reports/coverage/androidTest/debug/connected/report.xml -v;
