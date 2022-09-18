@@ -34,6 +34,7 @@ buildscript {
     dependencies {
         final def currentOS = System.getProperty("os.name")
         println("OS: " + currentOS)
+        // Before updating gradle, check which version of Android Studio is compatible with it and update README.
         classpath 'com.android.tools.build:gradle:7.3.0'
         classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:3.4.0.2513'
         classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.10'
