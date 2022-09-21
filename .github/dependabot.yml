@@ -17,7 +17,7 @@ updates:
     # Check for Gradle updates at 4am UTC
     time: "04:00"
     timezone: "Europe/Lisbon"
-  open-pull-requests-limit: 10
+  open-pull-requests-limit: 0
   # Raise all gradle pull requests with reviewers
 #  reviewers:
 #    - "TiagoMSSantos"
@@ -44,7 +44,7 @@ updates:
     # Check for docker updates at 4am UTC
     time: "04:00"
     timezone: "Europe/Lisbon"
-  open-pull-requests-limit: 10
+  open-pull-requests-limit: 0
   # Raise all docker pull requests with reviewers
 #  reviewers:
 #    - "TiagoMSSantos"
@@ -70,7 +70,7 @@ updates:
     # Check for GitHub Actions updates at 4am UTC
     time: "04:00"
     timezone: "Europe/Lisbon"
-  open-pull-requests-limit: 10
+  open-pull-requests-limit: 0
   # Raise all GitHub Actions pull requests with reviewers
 #  reviewers:
 #    - "TiagoMSSantos"
