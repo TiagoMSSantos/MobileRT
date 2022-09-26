@@ -13,29 +13,11 @@ ProcessorCount( JOBS )
 ###############################################################################
 message( STATUS "Cloning third party repositories." )
 
-# These work via conan but not for all environments
-execute_process( COMMAND git clone https://github.com/g-truc/glm
-  --shallow-submodules --progress --jobs=${JOBS}
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} ERROR_QUIET )
-
-execute_process( COMMAND git clone https://github.com/nothings/stb
-  --shallow-submodules --progress --jobs=${JOBS}
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} ERROR_QUIET )
-
-
 execute_process( COMMAND git clone https://github.com/syoyo/tinyobjloader
   --shallow-submodules --progress --jobs=${JOBS}
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} ERROR_QUIET )
 
-execute_process( COMMAND git clone https://github.com/google/googletest
-  --shallow-submodules --progress --jobs=${JOBS}
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} ERROR_QUIET )
-
 execute_process( COMMAND git clone https://github.com/boostorg/boost
-  --shallow-submodules --progress --jobs=${JOBS}
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} ERROR_QUIET )
-
-execute_process( COMMAND git clone https://github.com/imneme/pcg-cpp
   --shallow-submodules --progress --jobs=${JOBS}
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} ERROR_QUIET )
 ###############################################################################
@@ -53,9 +35,6 @@ execute_process(COMMAND git submodule foreach "git clean -fxd;"
 execute_process(COMMAND git submodule foreach "git remote update --prune;"
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
 
-execute_process(COMMAND git submodule foreach "git submodule update;"
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
-
 execute_process(COMMAND git submodule foreach "git fetch --tags --all;"
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
 ###############################################################################
@@ -66,11 +45,7 @@ execute_process(COMMAND git submodule foreach "git fetch --tags --all;"
 # Set stable versions to be used
 ###############################################################################
 set( BOOST_VERSION "boost-1.80.0" )
-set( GLM_VERSION "0.9.9.8" )
-set( STB_VERSION "master" )
 set( TINYOBJLOADER_VERSION "v1.0.7" )
-set( GOOGLETEST_VERSION "release-1.12.1" )
-set( PCG_CPP_VERSION "master" )
 ###############################################################################
 ###############################################################################
 
@@ -80,23 +55,11 @@ set( PCG_CPP_VERSION "master" )
 ###############################################################################
 message( STATUS "Changing to stable versions." )
 
-execute_process( COMMAND git checkout --progress -f ${GLM_VERSION};
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/glm )
-
-execute_process( COMMAND git checkout --progress -f ${STB_VERSION};
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/stb )
-
 execute_process( COMMAND git checkout --progress -f ${TINYOBJLOADER_VERSION};
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tinyobjloader )
 
-execute_process( COMMAND git checkout --progress -f ${GOOGLETEST_VERSION};
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/googletest )
-
 execute_process( COMMAND git checkout --progress -f ${BOOST_VERSION};
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/boost )
-
-execute_process( COMMAND git checkout --progress -f ${PCG_CPP_VERSION};
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/pcg-cpp )
 
 execute_process( COMMAND git submodule foreach "
     dependency=$(git remote -v | head -n1 | awk '{print $2}');
@@ -146,35 +109,24 @@ execute_process(COMMAND git submodule foreach "git pull --rebase --progress || t
 ###############################################################################
 message( STATUS "Adding third party dependencies." )
 
-#add_subdirectory( glm )
-
-
 if( TARGET Components )
   add_subdirectory( tinyobjloader )
 endif( TARGET Components )
 
-
-# Remove Link Time Optimization for Google Test.
-string( REPLACE "-flto=full" "" CMAKE_CXX_FLAGS_RELEASE
-  ${CMAKE_CXX_FLAGS_RELEASE} )
-string( REPLACE "  " " " CMAKE_CXX_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE} )
-
-add_subdirectory( googletest )
-
-# Add Link Time Optimization again.
-set( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}" -flto=full )
-
-
-# This work via conan but not for all environments.
-target_include_directories( MobileRT SYSTEM PRIVATE
-  "${CMAKE_CURRENT_SOURCE_DIR}/stb" )
-
-
-target_include_directories( MobileRT SYSTEM PUBLIC
-  "${CMAKE_CURRENT_SOURCE_DIR}/pcg-cpp/include" )
-
 # Add dependencies headers installed from conan package manager.
-target_include_directories( MobileRT SYSTEM PUBLIC ${CMAKE_INCLUDE_PATH} )
+set( pcg-cpp_DIR "${CMAKE_SOURCE_DIR}/../build_conan-native" )
+find_package( pcg-cpp )
+target_include_directories( MobileRT SYSTEM PUBLIC ${pcg-cpp_INCLUDE_DIRS_RELEASE} )
+
+set( glm_DIR "${CMAKE_SOURCE_DIR}/../build_conan-native" )
+find_package( glm )
+target_include_directories( MobileRT SYSTEM PUBLIC ${glm_INCLUDE_DIRS_RELEASE} )
+
+set( stb_DIR "${CMAKE_SOURCE_DIR}/../build_conan-native" )
+find_package( stb )
+target_include_directories( MobileRT SYSTEM PUBLIC ${stb_INCLUDE_DIRS_RELEASE} )
+
+print_environment()
 ###############################################################################
 ###############################################################################
 

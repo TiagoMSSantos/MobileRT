@@ -126,9 +126,9 @@ function addCompilerPathForConan() {
     conan_compiler_version=$(${compiler} --version | grep -i version | sed 's/[ A-Za-z]//g' | awk -F '[^0-9]*' '{print $1}' | head -1);
     export CXX="${conan_compiler}++";
     export CC="${conan_compiler}";
-    export CFLAGS="-stdlib=libc++";
-    export CXXFLAGS="-stdlib=libc++";
-    conan_libcxx="libc++";
+    export CFLAGS="-stdlib=libstdc++";
+    export CXXFLAGS="-stdlib=libstdc++";
+    conan_libcxx="libstdc++";
   elif [[ "${compiler}" == *"g++"* ]]; then
     export CXX="g++";
     export CC="gcc";
@@ -138,10 +138,11 @@ function addCompilerPathForConan() {
       # Possible values for Apple clang are ['5.0', '5.1', '6.0', '6.1', '7.0', '7.3',
       # '8.0', '8.1', '9.0', '9.1', '10.0', '11.0', '12.0', '13', '13.0', '13.1']
       echo "Detected MacOS, so the C++ compiler should be apple-clang instead of old gcc.";
-      conan_compiler="apple-clang";
-      export CFLAGS="-stdlib=libc++";
-      export CXXFLAGS="-stdlib=libc++";
-      conan_libcxx="libc++";
+      sudo xcode-select --switch /System/Volumes/Data/Applications/Xcode.app/Contents/Developer;
+      # export CXX=/Applications/Xcode.app/Contents/Developer/usr/bin/g++;
+      # export CC=/Applications/Xcode.app/Contents/Developer/usr/bin/gcc;
+      conan_compiler="clang";
+      conan_libcxx="libstdc++";
     else
       # Possible values for gcc (Apple clang) are ['4.1', '4.4', '4.5', '4.6', '4.7',
       # '4.8', '4.9', '5', '5.1', '5.2', '5.3', '5.4', '5.5', '6', '6.1', '6.2', '6.3',
@@ -246,6 +247,10 @@ function install_conan_dependencies() {
     set -e;
 
     echo "Installing dependencies with conan.";
+    #conan install icu/71.1@ -pr:b profile-build -pr:h profile-host -b missing;
+    export MAKEFLAGS="${MAKEFLAGS} VERBOSE=1 AM_DEFAULT_VERBOSITY=1 V=1 CMAKE_VERBOSE_MAKEFILE=ON";
+    export SHELL="sh -x";
+    set -x;
     local conan_os="Linux";
     if [[ "${OSTYPE}" == *"darwin"* ]]; then
       conan_os="Macos";
@@ -265,6 +270,7 @@ function install_conan_dependencies() {
     --profile mobilert \
     --install-folder build_conan-native \
     ./app/third_party/conan/Native;
+    set +x;
 
     export CONAN="TRUE";
     echo "Done!";
@@ -321,15 +327,14 @@ function build() {
   compiler_version=$(${compiler} -v 2>&1 || true);
   if [[ "${compiler_version}" != *".exe"* ]]; then
     echo "Didn't detect C++ compiler for Windows!";
-    JOBS_FLAG="${MAKEFLAGS}";
   else
     echo "Detected C++ compiler for Windows!";
   fi
 
   if [ "${resCompile}" -eq 0 ]; then
     set +u;
-    echo "Calling Make with parameters: ${JOBS_FLAG}";
-    cmake --build . -- "${JOBS_FLAG}";
+    echo "Calling Make with parameters: ${MAKEFLAGS}";
+    cmake --build .;
     set -u;
     resCompile=${PIPESTATUS[0]};
   else
@@ -340,7 +345,7 @@ function build() {
 ###############################################################################
 ###############################################################################
 
-#install_conan_dependencies;
+install_conan_dependencies;
 createReportsFolders;
 build;
 validateNativeLibCompiled;

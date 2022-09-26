@@ -149,7 +149,7 @@ rm -rf app/build/;
 set -e;
 clearOldBuildFiles;
 clearAllBuildFiles;
-#install_conan_dependencies;
+install_conan_dependencies;
 createReportsFolders;
 build;
 checkLastModifiedFiles;

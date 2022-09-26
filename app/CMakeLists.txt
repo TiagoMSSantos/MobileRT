@@ -285,7 +285,6 @@ set( MOBILE_RT_HEADERS "${CMAKE_SOURCE_DIR}" )
 set( MOBILE_RC_HEADERS "${CMAKE_SOURCE_DIR}" )
 set( SCENES_HEADERS "${CMAKE_SOURCE_DIR}/Scenes" )
 set( THIRD_PARTY_HEADERS "${CMAKE_SOURCE_DIR}/third_party" )
-set( GLM_HEADERS "${CMAKE_SOURCE_DIR}/third_party/glm" )
 set( QT_HEADERS_RT "${CMAKE_SOURCE_DIR}/System_dependent/Native/QT/MobileRT" )
 set( QT_HEADERS
   "${CMAKE_SOURCE_DIR}/System_dependent/Native/Qt/build-${CMAKE_BUILD_TYPE}" )
@@ -506,7 +505,6 @@ set_target_properties( ${PROJECT_NAME} PROPERTIES
 message( STATUS "Adding MobileRT and third party headers." )
 target_include_directories( ${PROJECT_NAME} PRIVATE "${MOBILE_RC_HEADERS}" )
 target_include_directories( ${PROJECT_NAME} PRIVATE "${SCENES_HEADERS}" )
-target_include_directories( ${PROJECT_NAME} SYSTEM PRIVATE "${GLM_HEADERS}" )
 
 message( STATUS "Adding compiler flags." )
 target_compile_options( ${PROJECT_NAME} PRIVATE ${COMMON_FLAGS} )

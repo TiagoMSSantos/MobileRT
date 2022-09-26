@@ -48,7 +48,6 @@ set_target_properties( ${PROJECT_NAME} PROPERTIES
 ###############################################################################
 # Add dependencies headers installed from conan package manager.
 target_include_directories( ${PROJECT_NAME} SYSTEM PUBLIC ${CMAKE_INCLUDE_PATH} )
-target_link_libraries( ${PROJECT_NAME} PRIVATE ${gtest_LIBRARIES_TARGETS} )
 
 message( STATUS "Adding compiler flags." )
 target_compile_options( ${PROJECT_NAME} PRIVATE ${COMMON_FLAGS} )
@@ -74,10 +73,19 @@ endif()
 ###############################################################################
 message( STATUS "Linking with MobileRT and Google Test." )
 target_link_libraries( ${PROJECT_NAME} PRIVATE -L/usr/local/lib )
+
+set( GTest_DIR "${CMAKE_SOURCE_DIR}/../build_conan-native" )
+find_package( GTest )
+target_include_directories( ${PROJECT_NAME} SYSTEM PRIVATE ${gtest_INCLUDE_DIRS_RELEASE} )
+print_environment()
+target_link_libraries( ${PROJECT_NAME} PRIVATE -L${gtest_LIB_DIRS_RELEASE} )
+
 target_link_libraries( ${PROJECT_NAME}
-  PRIVATE MobileRT Components gtest
+  PRIVATE MobileRT Components
   general "${COMMON_LINKER_FLAGS}"
   debug "${COMMON_LINKER_FLAGS_DEBUG}" "${COMMON_LINKER_FLAGS_TEST}"
-  optimized "${COMMON_LINKER_FLAGS_RELEASE}" )
+  optimized "${COMMON_LINKER_FLAGS_RELEASE}"
+  PUBLIC GTest::gtest gtest
+)
 ###############################################################################
 ###############################################################################
