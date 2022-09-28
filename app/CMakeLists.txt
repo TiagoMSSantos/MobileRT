@@ -81,7 +81,7 @@ set( CMAKE_EXE_LINKER_FLAGS_DEBUG "" CACHE STRING "CUSTOM" FORCE )
 # (`dynamic_cast' and `typeid'). If you don't use those parts of the language,
 # you can save some space by using this flag.
 if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
-  set( CMAKE_EXE_LINKER_FLAGS_RELEASE "-O3 -discard-all -fno-rtti"
+  set( CMAKE_EXE_LINKER_FLAGS_RELEASE "-O3 -discard-all"
     CACHE STRING "CUSTOM" FORCE )
   set( CMAKE_SHARED_LINKER_FLAGS "-Bsymbolic -Bsymbolic-functions"
     CACHE STRING "CUSTOM" FORCE )
@@ -91,7 +91,7 @@ set( CMAKE_EXE_LINKER_FLAGS_MINSIZEREL "" CACHE STRING "CUSTOM" FORCE )
 
 set( CMAKE_SHARED_LINKER_FLAGS_DEBUG "" CACHE STRING "CUSTOM" FORCE )
 if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
-  set( CMAKE_SHARED_LINKER_FLAGS_RELEASE "-O3 -discard-all -fno-rtti"
+  set( CMAKE_SHARED_LINKER_FLAGS_RELEASE "-O3 -discard-all"
     CACHE STRING "CUSTOM" FORCE )
 endif()
 
@@ -151,9 +151,9 @@ project( AppMobileRT VERSION 1.0.0.0 LANGUAGES CXX )
 print_environment()
 if( DEFINED CONAN )
   if( DEFINED ANDROID_ABI )
-    include( ${CMAKE_CURRENT_SOURCE_DIR}/../conanbuildinfo.cmake )
+    include( ${CMAKE_SOURCE_DIR}/../conanbuildinfo.cmake )
   else()
-    include( ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake )
+    include( ${CMAKE_SOURCE_DIR}/../conanbuildinfo.cmake )
   endif()
   conan_basic_setup( TARGETS )
 endif()
@@ -364,7 +364,7 @@ set( COMMON_FLAGS_RELEASE "${COMMON_FLAGS_RELEASE}"
 
 message( STATUS "Setting common linker flags." )
 if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
-  set( COMMON_LINKER_FLAGS "${COMMON_LINKER_FLAGS}" -O3 -discard-all -fno-rtti )
+  set( COMMON_LINKER_FLAGS "${COMMON_LINKER_FLAGS}" -O3 -discard-all )
 endif()
 
 set( COMMON_LINKER_FLAGS_DEBUG "${COMMON_LINKER_FLAGS_DEBUG}"  )
@@ -467,7 +467,8 @@ else()
 
     target_link_libraries( ${PROJECT_NAME} PRIVATE -F/usr/local/lib )
     # If github action jurplel/install-qt-action was used, then Qt should be at root of project.
-    target_link_libraries( ${PROJECT_NAME} PRIVATE -F${CMAKE_SOURCE_DIR}/../Qt/5.15.2/clang_64/lib )
+    file( GLOB QT_LIBS "${CMAKE_SOURCE_DIR}/../Qt/*/*/lib/" )
+    target_link_libraries( ${PROJECT_NAME} PRIVATE -F${QT_LIBS} )
 
     target_link_libraries( ${PROJECT_NAME} PRIVATE "-framework QtCore" )
     target_link_libraries( ${PROJECT_NAME} PRIVATE "-framework QtGui" )

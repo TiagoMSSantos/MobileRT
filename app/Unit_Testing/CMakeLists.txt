@@ -23,9 +23,9 @@ add_executable( ${PROJECT_NAME} ${GTEST_SOURCES} ${MOBILE_DEPENDENT_SOURCES} ${S
 
 if( DEFINED CONAN )
   if( DEFINED ANDROID_ABI )
-    include( ${CMAKE_CURRENT_SOURCE_DIR}/../conanbuildinfo.cmake )
+    include( ${CMAKE_SOURCE_DIR}/../conanbuildinfo.cmake )
   else()
-    include( ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake )
+    include( ${CMAKE_SOURCE_DIR}/../conanbuildinfo.cmake )
   endif()
   conan_basic_setup( TARGETS )
 endif()

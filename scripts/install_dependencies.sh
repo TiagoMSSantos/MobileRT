@@ -106,7 +106,7 @@ function install_dependencies_debian() {
     python3 python3-pip python3-dev python3-setuptools \
     cpulimit;
     echo "Installing dependencies that conan might use.";
-    sudo apt-get install --no-install-recommends -y libc++-dev;
+    sudo apt-get install --no-install-recommends -y clang libc++-dev libc++abi-dev;
 }
 
 function install_dependencies_red_hat() {
@@ -232,7 +232,6 @@ function install_dependencies_macos() {
   echo "Install packages separately, so it continues regardless if some error occurs in one.";
   brew install cmake;
   brew install gcc@12; # GCC v12 is the latest version compatible with conan.
-  brew install openssl@1.0;
   brew install openssl@1.1;
   brew install shellcheck;
   brew install llvm;

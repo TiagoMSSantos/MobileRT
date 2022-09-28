@@ -40,8 +40,8 @@ concurrency:
 env:
   GITHUB_STEP_TIMEOUT_SMALL: 3
   GITHUB_STEP_TIMEOUT_MEDIUM: 6
-  GITHUB_STEP_TIMEOUT_LONG: 20
-  GITHUB_STEP_TIMEOUT_VERY_LONG: 30
+  GITHUB_STEP_TIMEOUT_LONG: 30
+  GITHUB_STEP_TIMEOUT_VERY_LONG: 60
 
 jobs:
   Matrix:
@@ -190,7 +190,7 @@ jobs:
         . scripts/helper_functions.sh && extractFilesFromArtifact ${{ env.GRADLE_PATH }};
 
     - name: Build ${{ matrix.type }}
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_VERY_LONG) }}
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
       if: success()
       working-directory: .
       run: |

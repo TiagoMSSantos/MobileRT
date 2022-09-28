@@ -132,6 +132,8 @@ function addCompilerPathForConan() {
   elif [[ "${compiler}" == *"g++"* ]]; then
     export CXX="g++";
     export CC="gcc";
+    #  Possible compiler values are ['Visual Studio', 'apple-clang', 'clang',
+    # 'gcc', 'intel', 'intel-cc', 'mcst-lcc', 'msvc', 'qcc', 'sun-cc']
     if [[ "${OSTYPE}" == *"darwin"* ]]; then
       # Possible values for Apple clang are ['5.0', '5.1', '6.0', '6.1', '7.0', '7.3',
       # '8.0', '8.1', '9.0', '9.1', '10.0', '11.0', '12.0', '13', '13.0', '13.1']
@@ -161,6 +163,9 @@ function addCompilerPathForConan() {
   # Fix compiler version used.
   if [[ "${conan_compiler}" == "apple-clang" && "${conan_compiler_version}" == "12" ]]; then
     conan_compiler_version="12.0";
+  fi
+  if [[ "${conan_compiler}" == "clang" && "${conan_compiler_version}" == "6" ]]; then
+    conan_compiler_version="6.0";
   fi
 
   echo "Detected '${conan_compiler}' '${conan_compiler_version}' '(${conan_libcxx})' compiler.";
@@ -241,13 +246,17 @@ function install_conan_dependencies() {
     set -e;
 
     echo "Installing dependencies with conan.";
+    local conan_os="Linux";
+    if [[ "${OSTYPE}" == *"darwin"* ]]; then
+      conan_os="Macos";
+    fi
     conan install \
     -s compiler=${conan_compiler} \
     -s compiler.version="${conan_compiler_version}" \
     -s compiler.libcxx="${conan_libcxx}" \
     -s compiler.cppstd=17 \
     -s arch="${CPU_ARCHITECTURE}" \
-    -s os="Linux" \
+    -s os="${conan_os}" \
     -s build_type=Release \
     -o bzip2:shared=True \
     -c tools.system.package_manager:mode=install \
@@ -302,7 +311,7 @@ function build() {
   cmake -DCMAKE_VERBOSE_MAKEFILE=ON \
     -DCMAKE_CXX_COMPILER="${compiler}" \
     -DCMAKE_BUILD_TYPE="${typeWithCapitalLetter}" \
-     ${addConanToolchain} \
+     "${addConanToolchain}" \
     ../app/;
   resCompile=${PIPESTATUS[0]};
   echo "Called CMake";

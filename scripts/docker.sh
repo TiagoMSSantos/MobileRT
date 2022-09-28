@@ -83,6 +83,7 @@ function compileMobileRTInDockerContainer() {
       && ls -lahp ./ \
       && chmod -R +x ./scripts/ \
       && ls -lahp ./scripts/ \
+      && bash ./scripts/install_dependencies.sh \
       && bash ./scripts/compile_native.sh -t release -c g++ -r yes";
 }
 

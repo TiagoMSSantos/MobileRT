@@ -40,7 +40,7 @@ concurrency:
 env:
   GITHUB_STEP_TIMEOUT_SMALL: 3
   GITHUB_STEP_TIMEOUT_MEDIUM: 6
-  GITHUB_STEP_TIMEOUT_LONG: 20
+  GITHUB_STEP_TIMEOUT_LONG: 30
 
 jobs:
   Build:
@@ -87,7 +87,7 @@ jobs:
 
     name: ${{ matrix.type }} ${{ matrix.compiler }} (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 30
+    timeout-minutes: 60
 
     steps:
     - name: Checkout
@@ -148,7 +148,7 @@ jobs:
         du -h -d 1 Qt;
 
     - name: Build ${{ matrix.type }}
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
       if: success()
       working-directory: .
       run: |
@@ -166,14 +166,14 @@ jobs:
       if: success() && matrix.type == 'debug'
       working-directory: build_${{ matrix.type }}
       run: |
-        DYLD_FALLBACK_LIBRARY_PATH=lib ./bin/UnitTestsd;
+        DYLD_FALLBACK_LIBRARY_PATH="lib" LD_LIBRARY_PATH=$(find ~/.conan -iname "libgtest.so" | grep -iv "build" | xargs ls -t | head -1 | xargs dirname) ./bin/UnitTestsd;
 
     - name: Run unit tests Release
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && matrix.type == 'release'
       working-directory: build_${{ matrix.type }}
       run: |
-        DYLD_FALLBACK_LIBRARY_PATH=lib ./bin/UnitTests;
+        DYLD_FALLBACK_LIBRARY_PATH="lib" LD_LIBRARY_PATH=$(find ~/.conan -iname "libgtest.so" | grep -iv "build" | xargs ls -t | head -1 | xargs dirname) ./bin/UnitTests;
 
     - name: Generate code coverage
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}

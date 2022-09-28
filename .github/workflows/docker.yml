@@ -38,8 +38,8 @@ concurrency:
 env:
   GITHUB_STEP_TIMEOUT_SMALL: 3
   GITHUB_STEP_TIMEOUT_MEDIUM: 6
-  GITHUB_STEP_TIMEOUT_LONG: 20
-  GITHUB_STEP_TIMEOUT_VERY_LONG: 30
+  GITHUB_STEP_TIMEOUT_LONG: 30
+  GITHUB_STEP_TIMEOUT_VERY_LONG: 60
 
 jobs:
   Build:
@@ -122,7 +122,7 @@ jobs:
         echo "BUILT_IMAGE=${BUILT_IMAGE}" >> "${GITHUB_ENV}";
 
     - name: Build the tagged Docker image
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
+      timeout-minutes: 300
       if: success() && env.BUILT_IMAGE == 'yes'
       run: |
         # shellcheck shell=bash
@@ -134,7 +134,7 @@ jobs:
           buildDockerImage ${{ matrix.BASE_IMAGE }} ${{ env.BRANCH }} ${{ env.VERSION }};
 
     - name: Pull and build MobileRT
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      timeout-minutes: 300
       if: success() && env.BUILT_IMAGE != 'yes'
       run: |
         # shellcheck shell=bash
@@ -153,7 +153,7 @@ jobs:
         . scripts/docker.sh && commitMobileRTDockerImage ${{ env.VERSION }};
 
     - name: Squash Docker image
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_VERY_LONG) }}
+      timeout-minutes: 120
       if: success() && (startsWith(matrix.BASE_IMAGE, 'gentoo'))
       run: |
         # shellcheck shell=bash

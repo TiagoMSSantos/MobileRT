@@ -20,7 +20,7 @@ concurrency:
 env:
   GITHUB_STEP_TIMEOUT_SMALL: 3
   GITHUB_STEP_TIMEOUT_MEDIUM: 6
-  GITHUB_STEP_TIMEOUT_LONG: 20
+  GITHUB_STEP_TIMEOUT_LONG: 30
 
 jobs:
   Build:
@@ -37,7 +37,7 @@ jobs:
 
     name: ${{ matrix.test }} [${{ matrix.type }} (${{ matrix.os }})]
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 25
+    timeout-minutes: 40
 
     steps:
     - name: Checkout
