@@ -203,7 +203,6 @@ jobs:
         # shellcheck shell=bash
         # shellcheck disable=SC1091
         . scripts/helper_functions.sh && checkPathExists ${{ env.ANDROID_NDK_PATH }};
-        . scripts/helper_functions.sh && checkPathExists .gradle;
         . scripts/helper_functions.sh && checkPathExists app/build;
         . scripts/helper_functions.sh && checkPathExists app/.cxx;
         . scripts/helper_functions.sh && checkPathExists app/third_party;
@@ -217,7 +216,6 @@ jobs:
         key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
         restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
         path: |
-          .gradle
           app/build
           app/.cxx
           app/third_party
@@ -350,7 +348,6 @@ jobs:
         key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
         restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
         path: |
-          .gradle
           app/build
           app/.cxx
           app/third_party
@@ -382,7 +379,6 @@ jobs:
         # shellcheck shell=bash
         # shellcheck disable=SC1091
         . scripts/helper_functions.sh && checkPathExists ${{ env.ANDROID_NDK_PATH }};
-        . scripts/helper_functions.sh && checkPathExists .gradle;
         . scripts/helper_functions.sh && checkPathExists app/build;
         . scripts/helper_functions.sh && checkPathExists app/.cxx;
         . scripts/helper_functions.sh && checkPathExists app/third_party;
@@ -556,7 +552,6 @@ jobs:
         key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
         restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
         path: |
-          .gradle
           app/build
           app/.cxx
           app/third_party
@@ -568,7 +563,6 @@ jobs:
         # shellcheck shell=bash
         # shellcheck disable=SC1091
         . scripts/helper_functions.sh && checkPathExists ${{ env.ANDROID_NDK_PATH }};
-        . scripts/helper_functions.sh && checkPathExists .gradle;
         . scripts/helper_functions.sh && checkPathExists app/build;
         . scripts/helper_functions.sh && checkPathExists app/.cxx;
         . scripts/helper_functions.sh && checkPathExists app/third_party;
@@ -668,7 +662,6 @@ jobs:
         key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
         restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
         path: |
-          .gradle
           app/build
           app/.cxx
           app/third_party
@@ -680,7 +673,6 @@ jobs:
         # shellcheck shell=bash
         # shellcheck disable=SC1091
         . scripts/helper_functions.sh && checkPathExists ${{ env.ANDROID_NDK_PATH }};
-        . scripts/helper_functions.sh && checkPathExists .gradle;
         . scripts/helper_functions.sh && checkPathExists app/build;
         . scripts/helper_functions.sh && checkPathExists app/.cxx;
         . scripts/helper_functions.sh && checkPathExists app/third_party;
@@ -741,7 +733,6 @@ jobs:
         key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
         restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
         path: |
-          .gradle
           app/build
           app/.cxx
           app/third_party
@@ -753,7 +744,6 @@ jobs:
         # shellcheck shell=bash
         # shellcheck disable=SC1091
         . scripts/helper_functions.sh && checkPathExists ${{ env.ANDROID_NDK_PATH }};
-        . scripts/helper_functions.sh && checkPathExists .gradle;
         . scripts/helper_functions.sh && checkPathExists app/build;
         . scripts/helper_functions.sh && checkPathExists app/.cxx;
         . scripts/helper_functions.sh && checkPathExists app/third_party;
