@@ -246,7 +246,11 @@ function install_dependencies_macos() {
   MAJOR_MAC_VERSION=$(sw_vers | grep ProductVersion | cut -d ':' -f2 | cut -d '.' -f1 | tr -d '[:space:]');
   echo "MacOS '${MAJOR_MAC_VERSION}' detected";
   # This command needs sudo.
-  sudo xcode-select --switch /System/Volumes/Data/Applications/Xcode.app/Contents/Developer;
+  # With Xcode_14.0.1.app, it throws this error on MacOS-12:
+  # ld: Assertion failed: (_file->_atomsArrayCount == computedAtomCount && "more atoms allocated than expected")
+  # For more information, check: https://stackoverflow.com/questions/73714336/xcode-update-to-version-2395-ld-compile-problem-occurs-computedatomcount-m
+  # Recommended Xcode_13.2.app because it seems the only one compatible with MacOS-11 & MacOS-12.
+  sudo xcode-select --switch /System/Volumes/Data/Applications/Xcode_13.2.app/Contents/Developer;
 }
 
 # Update Python, PIP and CMake versions if necessary.

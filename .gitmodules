@@ -20,7 +20,7 @@
   path = app/third_party/googletest
   url = https://github.com/google/googletest
   update = checkout
-  branch = master
+  branch = main
   fetchRecurseSubmodules = false
   ignore = none
   shallow = true

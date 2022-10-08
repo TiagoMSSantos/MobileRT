@@ -102,9 +102,10 @@ execute_process( COMMAND git submodule foreach "
     dependency=$(git remote -v | head -n1 | awk '{print $2}');
     releases=$(git for-each-ref --sort=-creatordate refs/tags | awk '{ print $3 }' | cut -d '/' -f 3);
     stable_releases=$(echo \"\${releases}\" | grep -i [0-9] | grep -i [.] | grep -v alpha | grep -v \"\\-a\" | grep -v beta | grep -v \"\\-b\" | grep -v rc | grep -v preview | grep -v \"\\-pre\" | grep -v bug | grep -v .x);
-    echo \"Detected stable versions: \${stable_releases}\";
+    echo \"Detected stable versions for '\${dependency}': \${stable_releases}\";
     last_stable_release=$(echo \"\${stable_releases}\" | head -1 || true);
     if [ -z \"\${last_stable_release}\" ]; then
+      echo \"Didn't detect any stable version for '\${dependency}'\";
       last_stable_release='master';
     fi;
     used_version_raw=$(git name-rev --name-only HEAD);
