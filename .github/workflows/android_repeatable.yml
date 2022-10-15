@@ -59,7 +59,7 @@ jobs:
         server-id: github
         server-username: GITHUB_ACTOR
         server-password: GITHUB_TOKEN
-        settings-path: ~/.m2
+        settings-path: ~/.gradle
         overwrite-settings: true
         gpg-private-key: ''
         gpg-passphrase: GPG_PASSPHRASE

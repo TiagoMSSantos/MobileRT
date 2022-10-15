@@ -70,7 +70,7 @@ jobs:
       run: |
         MATRIX=$(echo $(cat .github/workflows/android_matrix.json) | sed 's/ //g' );
         echo "Matrix: ${MATRIX}";
-        echo "::set-output name=matrix::${MATRIX}";
+        echo "matrix=${MATRIX}" >> ${GITHUB_OUTPUT};
 
 
   Build:
@@ -105,7 +105,7 @@ jobs:
         server-id: github
         server-username: GITHUB_ACTOR
         server-password: GITHUB_TOKEN
-        settings-path: ~/.m2
+        settings-path: ~/.gradle
         overwrite-settings: true
         gpg-private-key: ''
         gpg-passphrase: GPG_PASSPHRASE
@@ -320,7 +320,7 @@ jobs:
         server-id: github
         server-username: GITHUB_ACTOR
         server-password: GITHUB_TOKEN
-        settings-path: ~/.m2
+        settings-path: ~/.gradle
         overwrite-settings: true
         gpg-private-key: ''
         gpg-passphrase: GPG_PASSPHRASE
@@ -439,7 +439,7 @@ jobs:
       run: |
         MATRIX_SONAR=$(echo '${{ toJSON(matrix) }}' | jq -c -s '{"include":[.[]]}');
         echo "Matrix Sonar: ${MATRIX_SONAR}";
-        echo "::set-output name=matrix-sonar::${MATRIX_SONAR}";
+        echo "matrix-sonar=${MATRIX_SONAR}" >> ${GITHUB_OUTPUT};
 
     - name: Add base64 key to environment variable in order to sign APK
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -504,7 +504,7 @@ jobs:
         server-id: github
         server-username: GITHUB_ACTOR
         server-password: GITHUB_TOKEN
-        settings-path: ~/.m2
+        settings-path: ~/.gradle
         overwrite-settings: true
         gpg-private-key: ''
         gpg-passphrase: GPG_PASSPHRASE
@@ -614,7 +614,7 @@ jobs:
         server-id: github
         server-username: GITHUB_ACTOR
         server-password: GITHUB_TOKEN
-        settings-path: ~/.m2
+        settings-path: ~/.gradle
         overwrite-settings: true
         gpg-private-key: ''
         gpg-passphrase: GPG_PASSPHRASE

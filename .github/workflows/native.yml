@@ -191,7 +191,7 @@ jobs:
       run: |
         MATRIX_SONAR=$(echo '${{ toJSON(matrix) }}' | jq -c -s '{"include":[.[]]}');
         echo "Matrix Sonar: ${MATRIX_SONAR}";
-        echo "::set-output name=matrix-sonar::${MATRIX_SONAR}";
+        echo "matrix-sonar=${MATRIX_SONAR}" >> ${GITHUB_OUTPUT};
 
     - name: Upload coverage to cache
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
