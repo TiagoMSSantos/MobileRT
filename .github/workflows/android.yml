@@ -274,7 +274,7 @@ jobs:
         . scripts/helper_functions.sh && zipFilesForArtifact ${{ env.GRADLE_PATH }} gradle-packages.zip;
 
     - name: Upload Gradle packages as artifact
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+      timeout-minutes: 10
       if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug'
       uses: actions/upload-artifact@v3
       with:

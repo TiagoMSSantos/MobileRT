@@ -71,7 +71,7 @@ jobs:
 
         - os: macos-12
           type: release
-          compiler: g++-12
+          compiler: g++
 
         - os: macos-11
           type: release
@@ -79,7 +79,7 @@ jobs:
 
         - os: macos-11
           type: debug
-          compiler: g++-12
+          compiler: g++
 
         - os: macos-12
           type: debug
