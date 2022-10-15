@@ -400,8 +400,8 @@ dependencies {
     implementation "com.android.volley:volley:${volley_version}"
 
     // JSON serialization
-    implementation "com.fasterxml.jackson.core:jackson-core:${jackson_version}"
-    implementation "com.fasterxml.jackson.core:jackson-databind:${jackson_version}"
+    implementation "com.fasterxml.jackson.core:jackson-core:${jackson_core_version}"
+    implementation "com.fasterxml.jackson.core:jackson-databind:${jackson_databind_version}"
 
     // Add support for Kotlin
     implementation "androidx.core:core-ktx:${androidX_core_kotlin_version}"
