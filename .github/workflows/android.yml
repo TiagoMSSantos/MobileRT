@@ -221,7 +221,7 @@ jobs:
           app/third_party
 
     - name: Zip Gradle packages
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug'
       run: |
         set +e;
@@ -568,7 +568,7 @@ jobs:
         . scripts/helper_functions.sh && checkPathExists app/third_party;
 
     - name: Run unit tests Java
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
       working-directory: .
       run: |
