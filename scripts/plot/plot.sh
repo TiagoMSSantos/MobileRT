@@ -11,7 +11,7 @@
 ###############################################################################
 # Change directory to MobileRT root
 ###############################################################################
-cd "$(dirname "${BASH_SOURCE[0]}")/../.." || exit
+cd "$(dirname "${0}")/../.." || exit;
 ###############################################################################
 ###############################################################################
 
@@ -28,30 +28,30 @@ cd "$(dirname "${BASH_SOURCE[0]}")/../.." || exit
 SEP=" "
 SPEEDUP=${1}
 
-function prepareFilenames() {
+prepareFilenames() {
   i=1
   for FILE in ${FILES[@]}; do
     GRAPH[${i}]="file${i}='${FILE}'"
-    ((i++))
+    i=$(( i + 1 ));
   done
 
   i=1
   for f in ${GRAPH[@]}; do
     GRAPHS+=" -e ${f}"
-    ((i++))
+    i=$(( i + 1 ));
   done
 
   i=0
   for f in ${FILES[@]}; do
     FILEPATH=./${f#${PWD}/}
     FILENAMES+="${FILEPATH}${SEP}"
-    ((i++))
+    i=$(( i + 1 ));
   done
 
   FILENAMES="${FILENAMES%% }"
 }
 
-function drawPlot() {
+drawPlot() {
   echo "#FILES = '${#FILES[@]}'"
   echo "FILENAMES = '${FILENAMES}'"
   echo "SPEEDUP = '${SPEEDUP}'"

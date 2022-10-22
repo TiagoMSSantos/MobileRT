@@ -18,7 +18,7 @@
 ###############################################################################
 # Exit immediately if a command exits with a non-zero status.
 ###############################################################################
-set -euo pipefail;
+set -euo pipefail -o posix;
 ###############################################################################
 ###############################################################################
 
@@ -26,7 +26,7 @@ set -euo pipefail;
 ###############################################################################
 # Change directory to MobileRT root.
 ###############################################################################
-cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit;
+cd "$(dirname "${0}")/.." || exit;
 ###############################################################################
 ###############################################################################
 
@@ -44,19 +44,19 @@ fi
 ###############################################################################
 # Set paths for MobileRT.
 ###############################################################################
-function setPaths() {
+setPaths() {
   PATH_TO_SEARCH="../";
   FILE_TO_SEARCH="MobileRT.jks";
 
   set +e;
   FIND_MOBILERT=$(find ${PATH_TO_SEARCH} -iname "${FILE_TO_SEARCH}" 2> /dev/null | head -n 1);
-  MOBILERT_PATH="${FIND_MOBILERT//\/app\/"${FILE_TO_SEARCH}"/}";
+  MOBILERT_PATH=$(echo "${FIND_MOBILERT}" | sed 's/\/app\/.*//g');
   set -e;
 
   if [ -z "${MOBILERT_PATH}" ]; then
     PATH_TO_SEARCH="/";
     FIND_MOBILERT=$(find ${PATH_TO_SEARCH} -iname "MobileRT" 2> /dev/null | head -n 1);
-    MOBILERT_PATH="${FIND_MOBILERT//\/app\/"${FILE_TO_SEARCH}"/}";
+    MOBILERT_PATH=$(echo "${FIND_MOBILERT}" | sed "s/\/app\/${FILE_TO_SEARCH}/g");
   fi
 
   echo "FILE_TO_SEARCH = ${FILE_TO_SEARCH}";
@@ -89,7 +89,7 @@ function setPaths() {
 ###############################################################################
 # Set paths for MobileRT sources and headers.
 ###############################################################################
-function setHeaders() {
+setHeaders() {
   MOBILERT_SRCS="${MOBILERT_PATH}/app";
   COMPONENTS_SRCS="${MOBILERT_PATH}/app";
   DEPENDENT_SRCS="${MOBILERT_PATH}/app/System_dependent";
@@ -109,7 +109,7 @@ function setHeaders() {
 ###############################################################################
 # Set paths for the scene.
 ###############################################################################
-function setScene() {
+setScene() {
   SCN="${OBJS_PATH}/conference/conference";
   #SCN="${OBJS_PATH}/teapot/teapot";
   #SCN="${OBJS_PATH}/buddha/buddha";
@@ -140,7 +140,7 @@ function setScene() {
 ###############################################################################
 # Set options for the sanitizers.
 ###############################################################################
-function setOptionsSanitizers() {
+setOptionsSanitizers() {
   export ASAN_OPTIONS="suppressions=sanitizer_ignore.suppr:verbosity=1:strict_string_checks=1:detect_stack_use_after_return=1:check_initialization_order=1:strict_init_order=1:halt_on_error=0:detect_odr_violation=1";
   export LSAN_OPTIONS="suppressions=sanitizer_ignore.suppr:verbosity=1:strict_string_checks=1";
 }
@@ -151,7 +151,7 @@ function setOptionsSanitizers() {
 ###############################################################################
 # Set arguments for MobileRT.
 ###############################################################################
-function setArguments() {
+setArguments() {
   SPP="1";
   SPL="1";
   WIDTH="900";
@@ -184,7 +184,7 @@ function setArguments() {
 ###############################################################################
 ###############################################################################
 
-function execute() {
+execute() {
   #ASYNC="false";
   echo "";
   echo "THREAD = ${THREAD}";
@@ -203,7 +203,7 @@ function execute() {
   #perf report -g '' --show-nr-samples --hierarchy;
 }
 
-function debug() {
+debug() {
   echo "";
   echo "THREAD = ${THREAD}";
   echo "SHADER = ${SHADER}";
@@ -215,9 +215,11 @@ function debug() {
     ${REP} "${OBJ}" "${MTL}" "${CAM}" ${PRINT} ${ASYNC} ${SHOWIMAGE};
 }
 
-function clangtidy() {
+clangtidy() {
   GTK_HEADERS="$(pkg-config --cflags gtk+-2.0)";
-  GTK_HEADERS="${GTK_HEADERS//-I/-isystem}";
+  # shellcheck disable=SC2001
+  GTK_HEADERS=$(echo "${GTK_HEADERS}" | sed 's/-I/-isystem/g');
+  echo "GTK_HEADERS = ${GTK_HEADERS}";
 
   clang-tidy \
     -analyze-temporary-dtors \
@@ -247,7 +249,7 @@ function clangtidy() {
     "${GTK_HEADERS}";
 }
 
-function profile() {
+profile() {
   ASYNC=false;
   for R in $(seq 1 ${REPETITIONS}); do
     for THREAD in "${THREADS[@]}"; do
@@ -274,33 +276,36 @@ function profile() {
         done
       done
     done
-    ((R++));
+    R=$(( R + 1 ));
   done
 }
 
 ###############################################################################
 # Parse arguments.
 ###############################################################################
-function parseArguments() {
+parseArguments() {
   if [ $# -eq 0 ]; then
     execute;
   else
-    # shellcheck disable=SC1091
     for P in "${@}"; do
       case ${P} in
       "time")
         profile;
         sleep 2s;
         ;;
-      "drawt") . scripts/plot/plot.sh 0 ;;
-      "draws") . scripts/plot/plot.sh 1 ;;
+      "drawt")
+        # shellcheck disable=SC1091
+        . scripts/plot/plot.sh 0 ;;
+      "draws")
+        # shellcheck disable=SC1091
+        . scripts/plot/plot.sh 1 ;;
       "test") awk -f "${PLOT_SCRIPTS_PATH}/parser_median.awk" "${PLOT_SCRIPTS_PATH}/test.dat" ;;
       "release") execute ;;
       "debug") debug ;;
       "tidy") clangtidy ;;
       "gtest") "${BIN_DEBUG_PATH}"/UnitTestsd ;;
       *)
-        echo -e "\nWrong Parameter: ${P}";
+        printf "\nWrong Parameter: %s\n" "${P}";
         printArguments;
         break;
         ;;
@@ -309,7 +314,7 @@ function parseArguments() {
   fi
 }
 
-function printArguments() {
+printArguments() {
   echo "The valid parameters are:";
   echo "time - Profile application and log the measured times.";
   echo "drawt - Draw a graph of latencies with GNU Plot.";

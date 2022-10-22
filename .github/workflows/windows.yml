@@ -243,7 +243,7 @@ jobs:
       working-directory: .
       shell: bash
       run: |
-        bash scripts/compile_native.sh -t ${{ matrix.type }} -c ${{ matrix.cxx }};
+        sh scripts/compile_native.sh -t ${{ matrix.type }} -c ${{ matrix.cxx }};
 
     - name: Run unit tests Debug
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}

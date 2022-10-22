@@ -1,38 +1,38 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 ###############################################################################
 # README
 ###############################################################################
-# This script contains a bunch of helper functions for the bash scripts.
+# This script contains a bunch of helper functions for the shell scripts.
 ###############################################################################
 ###############################################################################
 
 # Helper command for compilation scripts.
-function helpCompile() {
+helpCompile() {
   echo "Usage: cmd [-h] [-t type] [-c compiler] [-r recompile]";
   exit 0;
 }
 
 # Helper command for Android compilation scripts.
-function helpCompileAndroid() {
+helpCompileAndroid() {
   echo "Usage: cmd [-h] [-t type] [-f cpu_architecture] [-c compiler] [-r recompile] [-n ndk_version] [-m cmake_version]";
   exit 0;
 }
 
 # Helper command for Android run tests scripts.
-function helpTestAndroid() {
+helpTestAndroid() {
   echo "Usage: cmd [-h] [-t type] [-f cpu_architecture] [-r run_test] [-n ndk_version] [-m cmake_version] [-k kill_previous]";
   exit 0;
 }
 
 # Helper command for compilation scripts.
-function helpCheck() {
+helpCheck() {
   echo "Usage: cmd [-h] [-f cpu_architecture] [-n ndk_version] [-m cmake_version]";
   exit 0;
 }
 
 # Argument parser for compilation scripts.
-function parseArgumentsToCompile() {
+parseArgumentsToCompile() {
   while getopts ":ht:c:r:" opt; do
     case ${opt} in
       t )
@@ -56,7 +56,7 @@ function parseArgumentsToCompile() {
 }
 
 # Argument parser for Android compilation scripts.
-function parseArgumentsToCompileAndroid() {
+parseArgumentsToCompileAndroid() {
   while getopts ":ht:c:r:n:m:f:" opt; do
     case ${opt} in
       n )
@@ -89,7 +89,7 @@ function parseArgumentsToCompileAndroid() {
 }
 
 # Argument parser for Android run tests scripts.
-function parseArgumentsToTestAndroid() {
+parseArgumentsToTestAndroid() {
   while getopts ":ht:r:k:n:m:f:" opt; do
     case ${opt} in
       n )
@@ -121,7 +121,7 @@ function parseArgumentsToTestAndroid() {
 }
 
 # Argument parser for linter scripts.
-function parseArgumentsToCheck() {
+parseArgumentsToCheck() {
   while getopts ":hm:n:f:" opt; do
     case ${opt} in
       n )
@@ -144,16 +144,16 @@ function parseArgumentsToCheck() {
 }
 
 # Call function multiple times until it fails and exit the process.
-function callCommandUntilError() {
+callCommandUntilError() {
   echo "";
   echo "Calling until error '$*'";
-  local retry=0;
+  retry=0;
   "$@";
-  local lastResult=${PIPESTATUS[0]};
-  while [[ "${lastResult}" -eq 0 && retry -lt 5 ]]; do
+  lastResult=${?};
+  while [ "${lastResult}" -eq 0 ] && [ ${retry} -lt 5 ]; do
     retry=$(( retry + 1 ));
     "$@";
-    lastResult=${PIPESTATUS[0]};
+    lastResult=${?};
     echo "Retry: ${retry} of command '$*'; result: '${lastResult}'";
     sleep 3;
   done
@@ -167,18 +167,18 @@ function callCommandUntilError() {
 }
 
 # Call function multiple times until it doesn't fail and then return.
-function callCommandUntilSuccess() {
+callCommandUntilSuccess() {
   echo "";
   echo "Calling until success '$*'";
-  local retry=0;
+  retry=0;
   set +e;
   "$@";
-  local lastResult=${PIPESTATUS[0]};
+  lastResult=${?};
   echo "result: '${lastResult}'";
-  while [[ "${lastResult}" -ne 0 && retry -lt 5 ]]; do
+  while [ "${lastResult}" -ne 0 ] && [ ${retry} -lt 5 ]; do
     retry=$(( retry + 1 ));
     "$@";
-    lastResult=${PIPESTATUS[0]};
+    lastResult=${?};
     echo "Retry: ${retry} of command '$*'; result: '${lastResult}'";
     sleep 3;
   done
@@ -192,17 +192,15 @@ function callCommandUntilSuccess() {
 }
 
 # Call an ADB shell function multiple times until it doesn't fail and then return.
-function callAdbShellCommandUntilSuccess() {
+callAdbShellCommandUntilSuccess() {
   echo "";
   echo "Calling ADB shell command until success '$*'";
-  local retry=0;
-  local output;
+  retry=0;
   output=$("$@");
   # echo "Output of command: '${output}'";
-  local lastResult;
   lastResult=$(echo "${output}" | grep '::.*::' | sed 's/:://g'| tr -d '[:space:]');
   echo "result: '${lastResult}'";
-  while [[ "${lastResult}" -ne 0 && retry -lt 5 ]]; do
+  while [ "${lastResult}" -ne 0 ] && [ ${retry} -lt 5 ]; do
     retry=$(( retry + 1 ));
     output=$("$@");
     echo "Output of command: '${output}'";
@@ -220,7 +218,7 @@ function callAdbShellCommandUntilSuccess() {
 
 # Outputs the exit code received by argument and exits the current process with
 # that exit code.
-function printCommandExitCode() {
+printCommandExitCode() {
   echo "######################################################################";
   echo "Results:";
   if [ "${1}" -eq 0 ]; then
@@ -232,12 +230,12 @@ function printCommandExitCode() {
 }
 
 # Check command is available.
-function checkCommand() {
+checkCommand() {
   if [ -x "$(command -v "${@}")" ]; then
     echo "Command '$*' installed!";
   else
     echo "Command '$*' is NOT installed.";
-    if [[ $(uname -a) == *"MINGW"* ]]; then
+    if (uname --all | grep -iq "MINGW.*"); then
       echo "Detected Windows OS, so ignoring this error ...";
       return 0;
     fi
@@ -246,14 +244,13 @@ function checkCommand() {
 }
 
 # Capitalize 1st letter.
-function capitalizeFirstletter() {
-  local res;
-  res="$(tr '[:lower:]' '[:upper:]' <<<"${1:0:1}")${1:1}";
+capitalizeFirstletter() {
+  res="$(echo "${1}" | cut -c 1 | tr '[:lower:]' '[:upper:]')$(echo "${1}" | cut -c 2-)";
   echo "${res}";
 }
 
 # Parallelize building of MobileRT.
-function parallelizeBuild() {
+parallelizeBuild() {
   if [ -x "$(command -v nproc)" ]; then
     MAKEFLAGS="-j$(nproc --all)";
   else
@@ -264,8 +261,7 @@ function parallelizeBuild() {
 }
 
 # Check the files that were modified in the last few minutes.
-function checkLastModifiedFiles() {
-  local MINUTES;
+checkLastModifiedFiles() {
   MINUTES=15;
   set +e;
   echo "#####################################################################";
@@ -282,38 +278,37 @@ function checkLastModifiedFiles() {
 # Parameters:
 # * path that should exist
 # * file that should also exist in the provided path
-function checkPathExists() {
+checkPathExists() {
   du -h -d 1 "${1}";
-  if [[ $# -eq 1 ]] ; then
+  if [ $# -eq 1 ] ; then
     return 0;
   fi
   ls -lahp "${1}"/"${2}";
 }
 
 # Change the mode of all binaries/scripts to be able to be executed.
-function prepareBinaries() {
-  local rootDir;
-  rootDir=$(dirname "${BASH_SOURCE[0]}")/..;
+# Parameters:
+# * Optional - path to MobileRT
+prepareBinaries() {
+  rootDir="${1:-${PWD}}";
   chmod +x "${rootDir}"/test-reporter-latest-linux-amd64;
   chmod +x "${rootDir}"/test-reporter-latest-darwin-amd64;
 }
 
 # Helper command to execute a command / function without exiting the script (without the set -e).
-function executeWithoutExiting () {
+executeWithoutExiting () {
   set +e;
   "$@";
   set -e;
 }
 
 # Private method which kills a process that is using a file.
-function _killProcessUsingFile() {
-  local processes_using_file;
+_killProcessUsingFile() {
   processes_using_file=$(lsof "${1}" | tail -n +2 | tr -s ' ');
-  local retry=0;
-  while [[ "${processes_using_file}" != "" && retry -lt 5 ]]; do
+  retry=0;
+  while [ "${processes_using_file}" != "" ] && [ ${retry} -lt 5 ]; do
     retry=$(( retry + 1 ));
     echo "processes_using_file: '${processes_using_file}'";
-    local process_id_using_file;
     process_id_using_file=$(echo "${processes_using_file}" | cut -d ' ' -f 2 | head -1);
     echo "Going to kill this process: '${process_id_using_file}'";
     set +e;
@@ -326,14 +321,15 @@ function _killProcessUsingFile() {
 # Delete all old build files (commonly called ".fuse_hidden<id>") that might not be able to be
 # deleted due to some process still using it. So this method detects which process uses them and
 # kills it first.
-function clearOldBuildFiles() {
+clearOldBuildFiles() {
   files_being_used=$(find . -iname "*.fuse_hidden*" || true);
-  local retry=0;
-  while [[ "${files_being_used}" != "" && retry -lt 5 ]]; do
+  retry=0;
+  while [ "${files_being_used}" != "" ] && [ ${retry} -lt 5 ]; do
     retry=$(( retry + 1 ));
     echo "files_being_used: '${files_being_used}'";
     while IFS= read -r file; do
-      while [[ -f "${file}" ]]; do
+      echo "file_being_used: '${file}'";
+      while [ -f "${file}" ]; do
         _killProcessUsingFile "${file}";
         echo "sleeping 2 secs";
         sleep 2;
@@ -341,13 +337,13 @@ function clearOldBuildFiles() {
         rm "${file}";
         set -e;
       done
-    done <<<"${files_being_used}";
+    done <"${files_being_used}";
     files_being_used=$(find . -iname "*.fuse_hidden*" | grep -i ".fuse_hidden" || true);
   done
 }
 
 # Create the reports' folders.
-function createReportsFolders() {
+createReportsFolders() {
   echo "Creating reports folders.";
   mkdir -p build/reports;
   mkdir -p app/build/reports;
@@ -355,8 +351,7 @@ function createReportsFolders() {
 }
 
 # Validate MobileRT native lib was compiled.
-function validateNativeLibCompiled() {
-  local nativeLib;
+validateNativeLibCompiled() {
   nativeLib=$(find . -iname "*mobilert*.so");
   find . -iname "*.so" 2> /dev/null;
   echo "nativeLib: ${nativeLib}";
@@ -370,7 +365,7 @@ function validateNativeLibCompiled() {
 # to extract it there.
 # Parameters:
 # * path where a zip file is stored (from the artifact) to be extracted
-function extractFilesFromArtifact() {
+extractFilesFromArtifact() {
   du -h -d 1 "${1}";
   ls -lahp "${1}";
 
@@ -398,24 +393,24 @@ function extractFilesFromArtifact() {
 # Parameters:
 # * path of a folder to be compacted
 # * name for the new zip file
-function zipFilesForArtifact() {
-  local pathName;
+zipFilesForArtifact() {
   pathName=$(basename "${1}");
   du -h -d 1 "${1}";
   ls -lahp "${1}";
 
-  pushd "${1}" || exit;
+  oldpath=$(pwd);
+  cd "${1}" || exit;
+
   echo "Zipping path: ${pathName}";
   zip -9 -v -r "${2}" ./*;
-  popd;
+  cd "${oldpath}" || exit;
 
   du -h -d 1 "${1}";
-  # shellcheck disable=SC2010
   ls -lahp "${1}";
 }
 
 # Generate code coverage.
-function generateCodeCoverage() {
+generateCodeCoverage() {
   lcov -c -d . --no-external -o code_coverage_test.info;
   lcov -a code_coverage_base.info -a code_coverage_test.info -o code_coverage.info;
   lcov --remove code_coverage.info -o code_coverage.info '*third_party*' '*build*';
@@ -424,7 +419,7 @@ function generateCodeCoverage() {
 }
 
 # Validate generated files for code coverage.
-function _validateCodeCoverage() {
+_validateCodeCoverage() {
   ls -lahp code_coverage_base.info;
   ls -lahp code_coverage_test.info;
   ls -lahp code_coverage.info;

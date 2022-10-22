@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 ###############################################################################
 # README
@@ -11,7 +11,7 @@
 ###############################################################################
 # Exit immediately if a command exits with a non-zero status.
 ###############################################################################
-set -euo pipefail;
+set -eu;
 ###############################################################################
 ###############################################################################
 
@@ -19,7 +19,7 @@ set -euo pipefail;
 ###############################################################################
 # Change directory to MobileRT root.
 ###############################################################################
-cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit;
+cd "$(dirname "${0}")/.." || exit;
 ###############################################################################
 ###############################################################################
 
@@ -52,7 +52,7 @@ cmake_version="3.22.1";
 cpu_architecture="\"x86\"";
 parallelizeBuild;
 
-function printEnvironment() {
+printEnvironment() {
   echo "";
   echo "Selected arguments:";
   echo "type: ${type}";
@@ -84,17 +84,17 @@ mkdir -p ${reports_path};
 type=$(capitalizeFirstletter "${type}");
 echo "type: '${type}'";
 
-function runUnitTests() {
+runUnitTests() {
   echo "Calling Gradle test";
   echo "Increasing ADB timeout to 10 minutes";
   export ADB_INSTALL_TIMEOUT=60000;
-  bash gradlew --no-rebuild --stop;
-  bash gradlew test"${type}"UnitTest --profile --parallel \
+  bash --posix gradlew --no-rebuild --stop;
+  bash --posix gradlew test"${type}"UnitTest --profile --parallel \
     -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
     -DabiFilters="[${cpu_architecture}]" \
     --no-rebuild \
     --console plain;
-  resUnitTests=${PIPESTATUS[0]};
+  resUnitTests=${?};
 }
 ###############################################################################
 ###############################################################################
@@ -103,7 +103,7 @@ createReportsFolders;
 runUnitTests;
 
 echo "";
-echo -e '\e]8;;file:///'"${PWD}"'/'${reports_path}'/tests/test'"${type}"'UnitTest/index.html\aClick here to check the Unit tests report.\e]8;;\a';
+printf '\e]8;;file:///'"%s"'/'"%s"'/tests/test'"%s"'UnitTest/index.html\aClick here to check the Unit tests report.\e]8;;\a' "${PWD}" "${reports_path}" "${type}";
 echo "";
 echo "";
 

@@ -109,7 +109,7 @@ jobs:
         . scripts/docker.sh && \
           checkAvailableVersion && \
           loginDockerHub ${{ secrets.DOCKERHUB_USERNAME }} ${{ secrets.DOCKERHUB_PASSWORD }};
-        echo "BUILT_IMAGE=yes" >> "${GITHUB_ENV}";
+        echo "BUILD_IMAGE=yes" >> "${GITHUB_ENV}";
 
     - name: Pull the tagged Docker image
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -119,11 +119,11 @@ jobs:
         # shellcheck disable=SC1091
         echo "VERSION: ${{ env.VERSION }}";
         . scripts/docker.sh && pullDockerImage ${{ env.VERSION }};
-        echo "BUILT_IMAGE=${BUILT_IMAGE}" >> "${GITHUB_ENV}";
+        echo "BUILD_IMAGE=${BUILD_IMAGE}" >> "${GITHUB_ENV}";
 
     - name: Build the tagged Docker image
       timeout-minutes: 300
-      if: success() && env.BUILT_IMAGE == 'yes'
+      if: success() && env.BUILD_IMAGE == 'yes'
       run: |
         # shellcheck shell=bash
         # shellcheck disable=SC1091
@@ -135,7 +135,7 @@ jobs:
 
     - name: Pull and build MobileRT
       timeout-minutes: 300
-      if: success() && env.BUILT_IMAGE != 'yes'
+      if: success() && env.BUILD_IMAGE != 'yes'
       run: |
         # shellcheck shell=bash
         # shellcheck disable=SC1091
@@ -145,7 +145,7 @@ jobs:
 
     - name: Update and commit MobileRT Docker image
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && env.BUILT_IMAGE != 'yes'
+      if: success() && env.BUILD_IMAGE != 'yes'
       run: |
         # shellcheck shell=bash
         # shellcheck disable=SC1091

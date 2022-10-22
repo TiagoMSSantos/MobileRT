@@ -70,7 +70,7 @@ jobs:
       if: success()
       working-directory: .
       run: |
-        bash scripts/compile_android.sh -t ${{ matrix.type }} -r yes -f "\"x86\"";
+        bash --posix scripts/compile_android.sh -t ${{ matrix.type }} -r yes -f "\"x86\"";
 
     - name: Run Android tests
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
@@ -91,7 +91,7 @@ jobs:
         sdcard-path-or-size: 100M
         ram-size: 1024M
         script: |
-          bash scripts/run_tests_android.sh -t ${{ matrix.type }} -r rep_puscas.mobilertapp.${{ matrix.test }} -k false -f "\"x86\"";
+          bash --posix scripts/run_tests_android.sh -t ${{ matrix.type }} -r rep_puscas.mobilertapp.${{ matrix.test }} -k false -f "\"x86\"";
 
     - name: Upload reports as artifact
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}

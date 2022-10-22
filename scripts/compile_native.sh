@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 ###############################################################################
 # README
@@ -16,7 +16,7 @@
 ###############################################################################
 # Exit immediately if a command exits with a non-zero status.
 ###############################################################################
-set -euo pipefail;
+set -eu;
 ###############################################################################
 ###############################################################################
 
@@ -24,17 +24,7 @@ set -euo pipefail;
 ###############################################################################
 # Change directory to MobileRT root.
 ###############################################################################
-cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit;
-###############################################################################
-###############################################################################
-
-
-###############################################################################
-# Execute Shellcheck on this script.
-###############################################################################
-if [ -x "$(command -v shellcheck)" ]; then
-  shellcheck "${0}" || exit
-fi
+cd "$(dirname "${0}")/.." || exit;
 ###############################################################################
 ###############################################################################
 
@@ -66,7 +56,7 @@ compiler="g++";
 recompile="no";
 parallelizeBuild;
 
-function printEnvironment() {
+printEnvironment() {
   echo "";
   echo "Selected arguments:";
   echo "type: ${type}";
@@ -89,7 +79,7 @@ printEnvironment;
 ###############################################################################
 # Fix llvm clang OpenMP library.
 ###############################################################################
-function addOpenMpPath() {
+addOpenMpPath() {
   set +e;
   OPENMP_INCLUDE_PATH="$(find /usr/local/Cellar/libomp -iname "omp.h" | head -1 2> /dev/null)";
   OPENMP_LIB_PATH="$(find /usr/local/Cellar/libomp -iname "libomp.dylib" | head -1 2> /dev/null)";
@@ -112,8 +102,8 @@ addOpenMpPath;
 # For more info, check:
 # https://docs.conan.io/en/1.51/reference/config_files/settings.yml.html
 ###############################################################################
-function addCompilerPathForConan() {
-  if [[ "${compiler}" == *"clang++"* ]]; then
+addCompilerPathForConan() {
+  if echo "${compiler}" | grep -q "clang++.*"; then
     # Possible values for clang are ['3.3', '3.4', '3.5', '3.6', '3.7', '3.8', '3.9',
     # '4.0', '5.0', '6.0', '7.0', '7.1', '8', '9', '10', '11', '12', '13', '14', '15']
     conan_compiler="clang";
@@ -129,12 +119,12 @@ function addCompilerPathForConan() {
     export CFLAGS="-stdlib=libc++";
     export CXXFLAGS="-stdlib=libc++";
     conan_libcxx="libc++";
-  elif [[ "${compiler}" == *"g++"* ]]; then
+  elif echo "${compiler}" | grep -q "g++.*"; then
     export CXX="g++";
     export CC="gcc";
     #  Possible compiler values are ['Visual Studio', 'apple-clang', 'clang',
     # 'gcc', 'intel', 'intel-cc', 'mcst-lcc', 'msvc', 'qcc', 'sun-cc']
-    if [[ "${OSTYPE}" == *"darwin"* ]]; then
+    if (uname --all | grep -iq "darwin.*"); then
       # Possible values for Apple clang are ['5.0', '5.1', '6.0', '6.1', '7.0', '7.3',
       # '8.0', '8.1', '9.0', '9.1', '10.0', '11.0', '12.0', '13', '13.0', '13.1']
       echo "Detected MacOS, so the C++ compiler should be apple-clang instead of old gcc.";
@@ -161,10 +151,10 @@ function addCompilerPathForConan() {
 
   set +u; # Because of Windows OS doesn't have clang++ nor g++.
   # Fix compiler version used.
-  if [[ "${conan_compiler}" == "apple-clang" && "${conan_compiler_version}" == "12" ]]; then
+  if [ "${conan_compiler}" = "apple-clang" ] && [ "${conan_compiler_version}" = "12" ]; then
     conan_compiler_version="12.0";
   fi
-  if [[ "${conan_compiler}" == "clang" && "${conan_compiler_version}" == "6" ]]; then
+  if [ "${conan_compiler}" = "clang" ] && [ "${conan_compiler_version}" = "6" ]; then
     conan_compiler_version="6.0";
   fi
 
@@ -180,7 +170,7 @@ addCompilerPathForConan;
 ###############################################################################
 # Get Conan path.
 ###############################################################################
-function addConanPath() {
+addConanPath() {
   if [ ! -x "$(command -v conan)" ]; then
     CONAN_PATH=$(find ~/ -iname "conan" || true);
   fi
@@ -204,11 +194,11 @@ addConanPath;
 ###############################################################################
 # Get CPU Architecture.
 ###############################################################################
-function setCpuArchitecture() {
+setCpuArchitecture() {
   CPU_ARCHITECTURE=x86_64;
   if [ -x "$(command -v uname)" ]; then
     CPU_ARCHITECTURE=$(uname -m);
-    if [ "${CPU_ARCHITECTURE}" == "aarch64" ]; then
+    if [ "${CPU_ARCHITECTURE}" = "aarch64" ]; then
       CPU_ARCHITECTURE=armv8;
     fi
   fi
@@ -223,7 +213,7 @@ setCpuArchitecture;
 # Add Conan remote dependencies.
 ###############################################################################
 # Install C++ Conan dependencies.
-function install_conan_dependencies() {
+install_conan_dependencies() {
 #  ln -s configure/config.guess /home/travis/.conan/data/libuuid/1.0.3/_/_/build/b818fa1fc0d3879f99937e93c6227da2690810fe/configure/config.guess;
 #  ln -s configure/config.sub /home/travis/.conan/data/libuuid/1.0.3/_/_/build/b818fa1fc0d3879f99937e93c6227da2690810fe/configure/config.sub;
 
@@ -246,8 +236,8 @@ function install_conan_dependencies() {
     set -e;
 
     echo "Installing dependencies with conan.";
-    local conan_os="Linux";
-    if [[ "${OSTYPE}" == *"darwin"* ]]; then
+    conan_os="Linux";
+    if uname --all | grep -iq "darwin.*"; then
       conan_os="Macos";
     fi
     conan install \
@@ -277,33 +267,33 @@ function install_conan_dependencies() {
 ###############################################################################
 # Compile for native.
 ###############################################################################
-function create_build_folder() {
+create_build_folder() {
   # Set path to build.
   build_path=build_${type};
 
   typeWithCapitalLetter=$(capitalizeFirstletter "${type}");
   echo "type: '${typeWithCapitalLetter}'";
 
-  if [ "${recompile}" == "yes" ]; then
+  if [ "${recompile}" = "yes" ]; then
     rm -rf "${build_path:?Missing build path}"/*;
   fi
   mkdir -p "${build_path}";
 }
 
-function build() {
+build() {
   create_build_folder;
-  pushd "${build_path}";
+  oldpath=$(pwd);
 
+  cd "${build_path}" || exit;
   echo "Adding cmake to PATH.";
   set +e;
   CMAKE_PATH=$(find ~/ -iname "cmake" 2> /dev/null | head -1);
   set -e;
   echo "CMAKE_PATH: ${CMAKE_PATH}";
-  export PATH=${CMAKE_PATH%/cmake}:${PATH};
-  local conanToolchainFile;
+  export PATH="${CMAKE_PATH%/cmake}":"${PATH}";
   conanToolchainFile="../build_conan-native/conan_toolchain.cmake";
-  local addConanToolchain="";
-  if [[ -f "${conanToolchainFile}" ]]; then
+  addConanToolchain="";
+  if [ -f "${conanToolchainFile}" ]; then
     addConanToolchain="-DCMAKE_TOOLCHAIN_FILE=${conanToolchainFile}";
   fi
 
@@ -313,17 +303,17 @@ function build() {
     -DCMAKE_BUILD_TYPE="${typeWithCapitalLetter}" \
      "${addConanToolchain}" \
     ../app/;
-  resCompile=${PIPESTATUS[0]};
+  resCompile=${?};
   echo "Called CMake";
 
-  local compiler_version;
   # The compiler might redirect the output to stderr, so we also have to redirect it to the variable.
   compiler_version=$(${compiler} -v 2>&1 || true);
-  if [[ "${compiler_version}" != *".exe"* ]]; then
+  echo "Compiler version: ${compiler_version}";
+  if echo "${compiler_version}" | grep -q "\.exe.*"; then
+    echo "Detected C++ compiler for Windows!";
+  else
     echo "Didn't detect C++ compiler for Windows!";
     JOBS_FLAG="${MAKEFLAGS}";
-  else
-    echo "Detected C++ compiler for Windows!";
   fi
 
   if [ "${resCompile}" -eq 0 ]; then
@@ -331,11 +321,11 @@ function build() {
     echo "Calling Make with parameters: ${JOBS_FLAG}";
     cmake --build . -- "${JOBS_FLAG}";
     set -u;
-    resCompile=${PIPESTATUS[0]};
+    resCompile=${?};
   else
     echo "Compilation: cmake failed";
   fi
-  popd;
+  cd "${oldpath}" || exit;
 }
 ###############################################################################
 ###############################################################################

@@ -41,7 +41,7 @@ buildscript {
         classpath 'gradle.plugin.com.github.spotbugs.snom:spotbugs-gradle-plugin:4.7.5'
         classpath 'com.github.ben-manes:gradle-versions-plugin:0.43.0'
 
-        /* To confirm JaCoCo version run: $ bash gradlew buildEnvironment */
+        /* To confirm JaCoCo version run: $ bash --posix gradlew buildEnvironment */
         /* Resolves issue of incorrect version use in one of jacoco/android plugin inner tasks */
         classpath "org.jacoco:org.jacoco.core:${jacoco_version}"
         classpath "org.jacoco:org.jacoco.report:${jacoco_version}"

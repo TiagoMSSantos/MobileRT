@@ -28,11 +28,11 @@ jscpd -c .jscpd.json .;
 ## Check dependency updates
 Here are the commands to generate the dependency updates report in `app/report.html`:
 ```bash
-bash gradlew dependencyUpdates -Drevision=release -DoutputFormatter=html -DoutputDir=.;
+bash --posix gradlew dependencyUpdates -Drevision=release -DoutputFormatter=html -DoutputDir=.;
 ```
 And the commands to generate the dependency report in `app/build/reports/project/dependencies/root.app.html`:
 ```bash
-bash gradlew htmlDependencyReport;
+bash --posix gradlew htmlDependencyReport;
 ```
 
 ## Delete Workflow runs

@@ -194,7 +194,7 @@ jobs:
       if: success()
       working-directory: .
       run: |
-        bash scripts/compile_android.sh -t ${{ matrix.type }} -r yes -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -f "\"x86\"";
+        bash --posix scripts/compile_android.sh -t ${{ matrix.type }} -r yes -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -f "\"x86\"";
 
     - name: Check binaries' paths
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -340,7 +340,7 @@ jobs:
         echo "GRADLE_PATH=${HOME}/.gradle" >> "${GITHUB_ENV}";
 
     - name: Download generated binaries from cache
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
       uses: actions/cache@v3
       with:
@@ -411,7 +411,7 @@ jobs:
         disable-linux-hw-accel: auto
         enable-hw-keyboard: false
         script: |
-          bash scripts/run_tests_android.sh -t ${{ matrix.type }} -r all -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -k false -f "\"x86\"";
+          bash --posix scripts/run_tests_android.sh -t ${{ matrix.type }} -r all -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -k false -f "\"x86\"";
 
     - name: Check report's paths
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -544,7 +544,7 @@ jobs:
         . scripts/helper_functions.sh && extractFilesFromArtifact ${{ env.GRADLE_PATH }};
 
     - name: Download generated binaries from cache
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
       uses: actions/cache@v3
       with:
@@ -572,14 +572,14 @@ jobs:
       if: success()
       working-directory: .
       run: |
-        bash scripts/run_tests.sh -t ${{ matrix.type }} -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -f "\"x86\"";
+        bash --posix scripts/run_tests.sh -t ${{ matrix.type }} -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -f "\"x86\"";
 
     - name: Run linter
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
       working-directory: .
       run: |
-        bash scripts/check_android.sh -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -f "\"x86\"";
+        bash --posix scripts/check_android.sh -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -f "\"x86\"";
 
 
   Sonar:
@@ -654,7 +654,7 @@ jobs:
         . scripts/helper_functions.sh && extractFilesFromArtifact ${{ env.GRADLE_PATH }};
 
     - name: Download generated binaries from cache
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
       uses: actions/cache@v3
       with:
@@ -713,7 +713,7 @@ jobs:
       run: |
         # shellcheck shell=bash
         # shellcheck disable=SC1091
-        . ${{ github.workspace }}/scripts/helper_functions.sh && prepareBinaries;
+        . ${{ github.workspace }}/scripts/helper_functions.sh && prepareBinaries ${{ github.workspace }};
         ../../../../test-reporter-latest-linux-amd64 format-coverage -t jacoco ../../../build/reports/coverage/androidTest/debug/connected/report.xml;
         ../../../../test-reporter-latest-linux-amd64 upload-coverage;
 
@@ -725,7 +725,7 @@ jobs:
         curl --retry 5 --retry-delay 2 --connect-timeout 2 --data-binary @codecov.yml https://codecov.io/validate;
 
     - name: Download generated binaries from cache
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
       uses: actions/cache@v3
       with:
@@ -755,7 +755,7 @@ jobs:
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
-        bash gradlew --profile --parallel -DabiFilters="[\"x86\"]" -DndkVersion=${{ matrix.ndk_version }} -DcmakeVersion=${{ matrix.cmake_version }} sonarqube --info;
+        bash --posix gradlew --profile --parallel -DabiFilters="[\"x86\"]" -DndkVersion=${{ matrix.ndk_version }} -DcmakeVersion=${{ matrix.cmake_version }} sonarqube --info;
 
     - name: Check sonar path
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}

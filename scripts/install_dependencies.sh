@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 ###############################################################################
 # README
@@ -24,7 +24,7 @@
 ###############################################################################
 # Exit immediately if a command exits with a non-zero status.
 ###############################################################################
-set -euo pipefail;
+set -eu;
 ###############################################################################
 ###############################################################################
 
@@ -32,7 +32,7 @@ set -euo pipefail;
 ###############################################################################
 # Change directory to MobileRT root.
 ###############################################################################
-cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit;
+cd "$(dirname "${0}")/.." || exit;
 ###############################################################################
 ###############################################################################
 
@@ -59,7 +59,7 @@ fi
 ###############################################################################
 # Install dependencies.
 ###############################################################################
-function install_dependencies() {
+install_dependencies() {
   if [ -x "$(command -v apt-get)" ]; then
     echo "Detected Debian based Linux";
     install_dependencies_debian;
@@ -84,7 +84,7 @@ function install_dependencies() {
   update_python;
 }
 
-function install_dependencies_debian() {
+install_dependencies_debian() {
   sudo apt-get update -y;
   sudo apt-get install --no-install-recommends -y \
     xorg-dev \
@@ -109,7 +109,7 @@ function install_dependencies_debian() {
     sudo apt-get install --no-install-recommends -y clang libc++-dev libc++abi-dev;
 }
 
-function install_dependencies_red_hat() {
+install_dependencies_red_hat() {
   yum update -y;
   dnf install -y \
     python3-pip \
@@ -134,7 +134,7 @@ function install_dependencies_red_hat() {
   yum install -y libXvMC xorg-x11-xtrans;
 }
 
-function install_dependencies_arch() {
+install_dependencies_arch() {
   # https://wiki.archlinux.org/title/Pacman/Package_signing#Upgrade_system_regularly
   echo "Removing packages from cache";
   rm -rf /var/cache/pacman/pkg/;
@@ -157,7 +157,7 @@ function install_dependencies_arch() {
     gcc;
 }
 
-function install_dependencies_alpine() {
+install_dependencies_alpine() {
   apk update;
   apk add \
     vim \
@@ -175,7 +175,7 @@ function install_dependencies_alpine() {
   libxtst-dev libxv-dev libxvmc-dev xcb-util-wm-dev;
 }
 
-function install_dependencies_gentoo() {
+install_dependencies_gentoo() {
   emerge --sync;
   emerge sys-apps/portage;
   emerge app-portage/layman;
@@ -192,10 +192,10 @@ function install_dependencies_gentoo() {
     dev-qt/qtcore dev-qt/qtgui dev-qt/qtwidgets;
 }
 
-function install_dependencies_macos() {
+install_dependencies_macos() {
   echo "Update homebrew (to use the new repository).";
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall.sh)";
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)";
+  sh -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall.sh)";
+  sh -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)";
 
   brew --version;
   brew update;
@@ -207,22 +207,24 @@ function install_dependencies_macos() {
   git config --global https.postBuffer 1048576000;
   git config --global core.compression -1;
   git config --global http.sslVerify "false";
-  if [[ -z "$(git config credential.https://github.com)" ]]; then
+  if [ -z "$(git config credential.https://github.com)" ]; then
     echo "Configuring github credentials.";
     git config --global credential.https://github.com "ci-user";
   fi
-  if [[ -z "$(git config user.name)" ]]; then
+  if [ -z "$(git config user.name)" ]; then
     echo "Configuring git user.";
     git config --global user.name "CI User";
   fi
-  if [[ -z "$(git config user.email)" ]]; then
+  if [ -z "$(git config user.email)" ]; then
     echo "Configuring git email.";
     git config --global user.email "user@ci.com";
   fi
 
   echo "Change Homebrew to a specific version since the latest one might break some packages URLs.";
   # E.g.: version 3.3.15 breaks the Qt4 package.
-  pushd /usr/local/Homebrew;
+  oldpath=$(pwd);
+  cd /usr/local/Homebrew || exit;
+
   git fetch --tags --all;
   git checkout 3.3.14;
   echo "Avoid homebrew from auto-update itself every time its installed something.";
@@ -240,9 +242,8 @@ function install_dependencies_macos() {
   brew install lcov;
   brew install python3;
   brew install pyenv;
-  popd;
+  cd "${oldpath}" || exit;
 
-  local MAJOR_MAC_VERSION;
   MAJOR_MAC_VERSION=$(sw_vers | grep ProductVersion | cut -d ':' -f2 | cut -d '.' -f1 | tr -d '[:space:]');
   echo "MacOS '${MAJOR_MAC_VERSION}' detected";
   # This command needs sudo.
@@ -254,7 +255,7 @@ function install_dependencies_macos() {
 }
 
 # Update Python, PIP and CMake versions if necessary.
-function update_python() {
+update_python() {
   if [ -x "$(command -v choco)" ]; then
     echo "Install Python with choco";
     choco install python --version 3.8.0;
@@ -277,7 +278,7 @@ function update_python() {
   CMAKE_PATH=$(find ~/ -iname "cmake" 2> /dev/null | head -1);
   set -e;
   echo "CMAKE_PATH: ${CMAKE_PATH}";
-  export PATH=${CMAKE_PATH%/cmake}:${PATH};
+  export PATH="${CMAKE_PATH%/cmake}":"${PATH}";
 }
 ###############################################################################
 ###############################################################################
@@ -286,7 +287,7 @@ function update_python() {
 ###############################################################################
 # Install Conan package manager.
 ###############################################################################
-function install_conan() {
+install_conan() {
   # Necessary to install python 3.9 which uses six version 1.15!
   # Packages that should be used: six==1.15.0 conan==1.51.3 conan-package-tools
   echo "Installing conan";
@@ -300,7 +301,7 @@ function install_conan() {
   CONAN_PATH=$(find ~/ -iname "conan" -not -path "*/MobileRT/**/conan*" || true);
   echo "Conan binary: ${CONAN_PATH}";
   echo "Conan location: ${CONAN_PATH%/conan}";
-  export PATH=${CONAN_PATH%/conan}:${PATH};
+  export PATH="${CONAN_PATH%/conan}":"${PATH}";
 
   conan -v;
   checkCommand conan;
@@ -314,8 +315,8 @@ function install_conan() {
 ###############################################################################
 # Test dependencies.
 ###############################################################################
-function test_commands() {
-  echo "Checking required bash commands.";
+test_commands() {
+  echo "Checking required shell commands.";
 
   checkCommand vim;
   checkCommand cmake;
@@ -338,7 +339,7 @@ function test_commands() {
 ###############################################################################
 # Execute script.
 ###############################################################################
-echo "Host OS: ${OSTYPE}";
+echo "Host OS: $(uname --all)";
 executeWithoutExiting install_dependencies;
 install_conan;
 test_commands;

@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 ###############################################################################
 # README
@@ -12,7 +12,7 @@
 ###############################################################################
 # Exit immediately if a command exits with a non-zero status.
 ###############################################################################
-set -euo pipefail;
+set -eu;
 ###############################################################################
 ###############################################################################
 
@@ -20,7 +20,7 @@ set -euo pipefail;
 ###############################################################################
 # Change directory to MobileRT root.
 ###############################################################################
-cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit;
+cd "$(dirname "${0}")/.." || exit;
 ###############################################################################
 ###############################################################################
 
@@ -54,7 +54,7 @@ cmake_version="3.22.1";
 cpu_architecture="\"x86\"";
 parallelizeBuild;
 
-function printEnvironment() {
+printEnvironment() {
   echo "";
   echo "Selected arguments:";
   echo "type: ${type}";
@@ -84,21 +84,21 @@ typeWithCapitalLetter=$(capitalizeFirstletter "${type}");
 # Set path to reports.
 echo "type: '${type}'";
 
-function clearAllBuildFiles() {
+clearAllBuildFiles() {
   callCommandUntilSuccess rm -rf app/build/;
 
-  if [ "${recompile}" == "yes" ]; then
+  if [ "${recompile}" = "yes" ]; then
     callCommandUntilSuccess rm -rf app/.cxx/;
     callCommandUntilSuccess rm -rf build/;
   fi
 }
 
-function build() {
+build() {
   echo "Calling the Gradle assemble to compile code for Android.";
   echo "Increasing ADB timeout to 10 minutes.";
   export ADB_INSTALL_TIMEOUT=60000;
-  bash gradlew --no-rebuild --stop;
-  bash gradlew clean \
+  bash --posix gradlew --no-rebuild --stop;
+  bash --posix gradlew clean \
     build"${typeWithCapitalLetter}" \
     assemble"${typeWithCapitalLetter}" \
     assemble"${typeWithCapitalLetter}"AndroidTest \
@@ -113,9 +113,9 @@ function build() {
     -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
     -DabiFilters="[${cpu_architecture}]" \
     --console plain;
-  resCompile=${PIPESTATUS[0]};
+  resCompile=${?};
   echo "Compiling APK to execute Android instrumentation tests.";
-  bash gradlew createDebugAndroidTestApkListingFileRedirect \
+  bash --posix gradlew createDebugAndroidTestApkListingFileRedirect \
     -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
     -DabiFilters="[${cpu_architecture}]" \
     --profile --parallel --console plain;
@@ -125,7 +125,7 @@ function build() {
 ###############################################################################
 
 # Install C++ Conan dependencies.
-function install_conan_dependencies() {
+install_conan_dependencies() {
   conan install \
   -s compiler=clang \
   -s compiler.version="9" \

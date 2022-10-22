@@ -75,7 +75,7 @@ It is also needed the [Qt4 or Qt5](https://www.qt.io/) library and the
 [git](https://git-scm.com/) control system to get the code from the repository.
 <br/>
 ```bash
-bash scripts/install_dependencies.sh
+sh scripts/install_dependencies.sh
 ```
 Then, to finally compile this code, just create a build directory and compile
 in it, like for example:
@@ -226,7 +226,7 @@ It's necessary the following SDKs in order to compile this project for Android:
 
 For native Linux and Mac support, the `install_dependencies.sh` script should download and install the necessary dependencies, by just calling:
 ```bash
-  bash scripts/install_dependencies.sh
+  sh scripts/install_dependencies.sh
 ```
 Note that the script already supports multiple Linux distributions like:
 - Debian

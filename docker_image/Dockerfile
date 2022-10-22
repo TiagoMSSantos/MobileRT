@@ -141,7 +141,7 @@ RUN git clone https://github.com/TiagoMSSantos/MobileRT.git \
 # Install dependencies
 ###############################################################################
 WORKDIR MobileRT
-RUN bash scripts/install_dependencies.sh;
+RUN sh scripts/install_dependencies.sh;
 ###############################################################################
 ###############################################################################
 
@@ -149,7 +149,7 @@ RUN bash scripts/install_dependencies.sh;
 ###############################################################################
 # Compile MobileRT
 ###############################################################################
-RUN bash scripts/compile_native.sh -t ${BUILD_TYPE} -c g++ -r yes && \
+RUN sh scripts/compile_native.sh -t ${BUILD_TYPE} -c g++ -r yes && \
     du -h -d 1 build_${BUILD_TYPE}/bin && \
     du -h -d 1 build_${BUILD_TYPE}/lib && \
     rm -rf app && \

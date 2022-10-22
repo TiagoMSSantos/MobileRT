@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 ###############################################################################
 # README
@@ -11,7 +11,7 @@
 ###############################################################################
 # Exit immediately if a command exits with a non-zero status.
 ###############################################################################
-set -euo pipefail;
+set -eu;
 ###############################################################################
 ###############################################################################
 
@@ -19,7 +19,7 @@ set -euo pipefail;
 ###############################################################################
 # Change directory to MobileRT root.
 ###############################################################################
-cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit;
+cd "$(dirname "${0}")/.." || exit;
 ###############################################################################
 ###############################################################################
 
@@ -51,7 +51,7 @@ cmake_version="3.22.1";
 cpu_architecture="\"x86\"";
 parallelizeBuild;
 
-function printEnvironment() {
+printEnvironment() {
   echo "";
   echo "Selected arguments:";
   echo "ndk_version: ${ndk_version}";
@@ -74,19 +74,19 @@ printEnvironment;
 ###############################################################################
 # Run Gradle linter.
 ###############################################################################
-function runLinter() {
+runLinter() {
   # Set path to reports.
   echo "Print Gradle version";
-  bash gradlew --no-rebuild --stop;
-  bash gradlew --no-rebuild --version;
+  bash --posix gradlew --no-rebuild --stop;
+  bash --posix gradlew --no-rebuild --version;
 
   echo "Calling the Gradle linter";
-  bash gradlew lint --profile --parallel \
+  bash --posix gradlew lint --profile --parallel \
     -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
     -DabiFilters="[${cpu_architecture}]" \
     --no-rebuild \
     --console plain;
-  resCheck=${PIPESTATUS[0]};
+  resCheck=${?};
 }
 ###############################################################################
 ###############################################################################

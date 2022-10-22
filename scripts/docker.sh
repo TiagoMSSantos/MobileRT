@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 ###############################################################################
 # README
@@ -17,9 +17,8 @@
 ###############################################################################
 
 # Helper command to check the available version of the docker command.
-function checkAvailableVersion() {
-  # shellcheck disable=SC2086,SC2010
-  ls ${PATH//:/ } 2> /dev/null | grep -i docker 2> /dev/null || true;
+checkAvailableVersion() {
+  echo "${PATH}" | sed 's/:/ /g' | xargs ls 2> /dev/null | grep -i docker 2> /dev/null || true;
   docker --version;
 }
 
@@ -27,7 +26,7 @@ function checkAvailableVersion() {
 # The parameters are:
 # * DOCKERHUB_USERNAME
 # * DOCKERHUB_PASSWORD
-function loginDockerHub() {
+loginDockerHub() {
   echo "${2}" | docker login -u "${1}" --password-stdin;
 }
 
@@ -37,8 +36,8 @@ function loginDockerHub() {
 # * BASE_IMAGE
 # * BRANCH
 # * VERSION
-function buildDockerImage() {
-  prepareBinaries;
+buildDockerImage() {
+  prepareBinaries .;
   du -h -d 1 scripts;
   docker build \
     -t ptpuscas/mobile_rt:"${3}" \
@@ -53,17 +52,16 @@ function buildDockerImage() {
 # Helper command to pull the MobileRT docker image.
 # The parameters are:
 # * VERSION
-function pullDockerImage() {
-  local output;
+pullDockerImage() {
   exec 5>&1;
   output=$(docker pull ptpuscas/mobile_rt:"${1}" | tee /dev/fd/5 || true);
   echo "Docker: ${output}";
-  if [[ ${output} != *"up to date"* && ${output} != *"Downloaded newer image for"* ]]; then
-    echo "Did not find the Docker image. Will have to build the image.";
-    export BUILT_IMAGE="yes";
-  else
+  if echo "${output}" | grep -q "up to date" || echo "${output}" | grep -q "Downloaded newer image for"; then
     echo "Docker image found!";
-    export BUILT_IMAGE="no";
+    export BUILD_IMAGE="no";
+  else
+    echo "Did not find the Docker image. Will have to build the image.";
+    export BUILD_IMAGE="yes";
   fi
 }
 
@@ -71,9 +69,9 @@ function pullDockerImage() {
 # It builds the MobileRT in release mode.
 # The parameters are:
 # * VERSION
-function compileMobileRTInDockerContainer() {
+compileMobileRTInDockerContainer() {
   docker run -t \
-    --entrypoint bash \
+    --entrypoint sh \
     --name="mobile_rt_${1}" \
     --volume="${PWD}":/MobileRT_volume \
     ptpuscas/mobile_rt:"${1}" \
@@ -83,16 +81,16 @@ function compileMobileRTInDockerContainer() {
       && ls -lahp ./ \
       && chmod -R +x ./scripts/ \
       && ls -lahp ./scripts/ \
-      && bash ./scripts/install_dependencies.sh \
-      && bash ./scripts/compile_native.sh -t release -c g++ -r yes";
+      && sh ./scripts/install_dependencies.sh \
+      && sh ./scripts/compile_native.sh -t release -c g++ -r yes";
 }
 
 # Helper command to execute the MobileRT unit tests in the docker container.
 # The parameters are:
 # * VERSION
-function executeUnitTestsInDockerContainer() {
+executeUnitTestsInDockerContainer() {
   docker run -t \
-    --entrypoint bash \
+    --entrypoint sh \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
     -e DISPLAY="${DISPLAY}" \
     --name="mobile_rt_${1}" \
@@ -102,14 +100,14 @@ function executeUnitTestsInDockerContainer() {
 # Helper command to push the MobileRT docker image into the docker registry.
 # The parameters are:
 # * VERSION
-function pushMobileRTDockerImage() {
+pushMobileRTDockerImage() {
   docker push ptpuscas/mobile_rt:"${1}";
 }
 
 # Helper command to commit a layer into the MobileRT docker image.
 # The parameters are:
 # * VERSION
-function commitMobileRTDockerImage() {
+commitMobileRTDockerImage() {
   docker commit mobile_rt_"${1}" ptpuscas/mobile_rt:"${1}";
   docker rm mobile_rt_"${1}";
 }
@@ -117,7 +115,7 @@ function commitMobileRTDockerImage() {
 # Helper command to squash all the layers of the MobileRT docker image.
 # The parameters are:
 # * VERSION
-function squashMobileRTDockerImage() {
+squashMobileRTDockerImage() {
   _installDockerSquashCommand;
   echo "docker history 1";
   docker history ptpuscas/mobile_rt:"${1}" || true;
@@ -129,7 +127,6 @@ function squashMobileRTDockerImage() {
   docker history ptpuscas/mobile_rt:"${1}" | grep -v "<missing>" | head -2 || true;
   echo "docker history 5";
   docker history ptpuscas/mobile_rt:"${1}" | grep -v "<missing>" | head -2 | tail -1 || true;
-  local LAST_LAYER_ID;
   LAST_LAYER_ID=$(docker history ptpuscas/mobile_rt:"${1}" | grep -v "<missing>" | head -2 | tail -1 | cut -d ' ' -f 1 || true);
   echo "LAST_LAYER_ID=${LAST_LAYER_ID}";
   docker-squash -v --tag ptpuscas/mobile_rt:"${1}" ptpuscas/mobile_rt:"${1}";
@@ -138,7 +135,7 @@ function squashMobileRTDockerImage() {
 }
 
 # Helper command to install the docker-squash command.
-function _installDockerSquashCommand() {
+_installDockerSquashCommand() {
   pip install --upgrade pip --user;
   pip3 install --upgrade pip --user;
   executeWithoutExiting python -m pip install --upgrade pip --user;
@@ -159,11 +156,11 @@ function _installDockerSquashCommand() {
 # https://docs.docker.com/docker-for-mac/install/
 # So, for now, we just use MacOS docker image that uses KVM (Kernel-based Virtual Machine)
 # in a Linux environment.
-function installDockerCommandForMacOS() {
+installDockerCommandForMacOS() {
   echo "Select XCode.";
   sudo xcode-select --switch /System/Volumes/Data/Applications/Xcode.app/Contents/Developer;
   echo "Update Homebrew";
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)";
+  sh -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)";
   echo "Install docker and virtualbox";
   brew install --cask docker virtualbox;
   brew install docker;
@@ -182,13 +179,14 @@ function installDockerCommandForMacOS() {
   docker ps;
   docker --version;
 
-  # shellcheck disable=SC2086,SC2010
-  ls ${PATH//:/ } 2> /dev/null | grep -i docker 2> /dev/null || true;
+  echo "${PATH}" | sed 's/:/ /g' | xargs ls 2> /dev/null | grep -i docker 2> /dev/null || true;
   export PATH=${PATH}:"/usr/local/bin/";
 
   echo "Start Docker";
   git clone https://github.com/docker/docker.github.io.git;
-  pushd docker.github.io || exit;
+  oldpath=$(pwd);
+  cd docker.github.io || exit;
+
   ls registry/recipes/osx;
   plutil -lint registry/recipes/osx/com.docker.registry.plist;
   cp registry/recipes/osx/com.docker.registry.plist ~/Library/LaunchAgents/;
@@ -200,5 +198,5 @@ function installDockerCommandForMacOS() {
   launchctl unload ~/Library/LaunchAgents/com.docker.registry.plist;
 
   open /Applications/Docker.app;
-  popd || exit;
+  cd "${oldpath}" || exit;
 }

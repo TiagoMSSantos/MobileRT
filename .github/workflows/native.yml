@@ -114,7 +114,7 @@ jobs:
       if: success()
       working-directory: .
       run: |
-        bash scripts/install_dependencies.sh;
+        sh scripts/install_dependencies.sh;
 
     - name: Install Qt MacOS
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
@@ -152,7 +152,7 @@ jobs:
       if: success()
       working-directory: .
       run: |
-        bash scripts/compile_native.sh -t ${{ matrix.type }} -c ${{ matrix.compiler }};
+        sh scripts/compile_native.sh -t ${{ matrix.type }} -c ${{ matrix.compiler }};
 
     - name: Generate code coverage base
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -249,7 +249,7 @@ jobs:
       run: |
         # shellcheck shell=bash
         # shellcheck disable=SC1091
-        . scripts/helper_functions.sh && prepareBinaries;
+        . scripts/helper_functions.sh && prepareBinaries ${{ github.workspace }};
         ./test-reporter-latest-linux-amd64 format-coverage -t lcov code_coverage.info;
         ./test-reporter-latest-linux-amd64 upload-coverage;
 
