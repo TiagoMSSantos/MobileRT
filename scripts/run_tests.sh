@@ -103,7 +103,7 @@ createReportsFolders;
 runUnitTests;
 
 echo "";
-printf '\e]8;;file:///'"%s"'/'"%s"'/tests/test'"%s"'UnitTest/index.html\aClick here to check the Unit tests report.\e]8;;\a' "${PWD}" "${reports_path}" "${type}";
+printf '\e]8;;file:///'"%s"'/'"%s"'/tests/test'"%s"'UnitTest/index.html\aClick here to check the Unit tests report.\e]8;;\a\n' "${PWD}" "${reports_path}" "${type}";
 echo "";
 echo "";
 

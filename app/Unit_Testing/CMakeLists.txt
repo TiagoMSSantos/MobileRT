@@ -72,6 +72,11 @@ endif()
 ###############################################################################
 # Link project
 ###############################################################################
+if( DEFINED ANDROID_ABI )
+  message( STATUS "Adding Android JNI layer." )
+  target_link_libraries( ${PROJECT_NAME} PRIVATE android jnigraphics )
+endif()
+
 message( STATUS "Linking with MobileRT and Google Test." )
 target_link_libraries( ${PROJECT_NAME} PRIVATE -L/usr/local/lib )
 target_link_libraries( ${PROJECT_NAME}

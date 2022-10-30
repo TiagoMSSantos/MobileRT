@@ -327,17 +327,17 @@ clearOldBuildFiles() {
   while [ "${files_being_used}" != "" ] && [ ${retry} -lt 5 ]; do
     retry=$(( retry + 1 ));
     echo "files_being_used: '${files_being_used}'";
-    while IFS= read -r file; do
-      echo "file_being_used: '${file}'";
-      while [ -f "${file}" ]; do
-        _killProcessUsingFile "${file}";
+    for file_being_used in ${files_being_used}; do
+      echo "file_being_used: '${file_being_used}'";
+      while [ -f "${file_being_used}" ]; do
+        _killProcessUsingFile "${file_being_used}";
         echo "sleeping 2 secs";
         sleep 2;
         set +e;
-        rm "${file}";
+        rm "${file_being_used}";
         set -e;
       done
-    done <"${files_being_used}";
+    done;
     files_being_used=$(find . -iname "*.fuse_hidden*" | grep -i ".fuse_hidden" || true);
   done
 }
