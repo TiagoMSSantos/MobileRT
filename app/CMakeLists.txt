@@ -568,7 +568,7 @@ endif()
 ###############################################################################
 message( STATUS "Linking with sub modules and third party libs." )
 target_link_libraries( ${PROJECT_NAME}
-  PRIVATE MobileRT Components
+  PUBLIC MobileRT Components
   general "${COMMON_LINKER_FLAGS}"
   debug "${COMMON_LINKER_FLAGS_DEBUG}" "${COMMON_LINKER_FLAGS_TEST}"
   optimized "${COMMON_LINKER_FLAGS_RELEASE}"
