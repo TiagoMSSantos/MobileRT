@@ -144,9 +144,7 @@ install_conan_dependencies() {
   export CONAN="TRUE";
 }
 
-set +e;
-rm -rf app/build/;
-set -e;
+rm -rf app/build/ || true;
 clearOldBuildFiles;
 clearAllBuildFiles;
 #install_conan_dependencies;

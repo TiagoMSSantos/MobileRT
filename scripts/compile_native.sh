@@ -77,13 +77,11 @@ printEnvironment;
 
 
 ###############################################################################
-# Fix llvm clang OpenMP library.
+# Fix llvm clang OpenMP library for MacOS.
 ###############################################################################
 addOpenMpPath() {
-  set +e;
-  OPENMP_INCLUDE_PATH="$(find /usr/local/Cellar/libomp -iname "omp.h" | head -1 2> /dev/null)";
-  OPENMP_LIB_PATH="$(find /usr/local/Cellar/libomp -iname "libomp.dylib" | head -1 2> /dev/null)";
-  set -e;
+  OPENMP_INCLUDE_PATH="$(find /usr/local/Cellar/libomp -iname "omp.h" | head -1 2> /dev/null || true)";
+  OPENMP_LIB_PATH="$(find /usr/local/Cellar/libomp -iname "libomp.dylib" | head -1 2> /dev/null || true)";
   echo "OPENMP_INCLUDE_PATH = ${OPENMP_INCLUDE_PATH}";
   echo "OPENMP_LIB_PATH = ${OPENMP_LIB_PATH}";
   set +u;
@@ -204,9 +202,7 @@ install_conan_dependencies() {
   echo "Checking if conan is available.";
   if [ -x "$(command -v conan)" ]; then
     echo "Setting up conan.";
-    set +e;
-    conan profile new mobilert;
-    set -e;
+    conan profile new mobilert || true;
     conan profile update settings.compiler="${conan_compiler}" mobilert;
     conan profile update settings.compiler.version="${conan_compiler_version}" mobilert;
     conan profile update settings.compiler.libcxx="${conan_libcxx}" mobilert;
@@ -215,9 +211,7 @@ install_conan_dependencies() {
     conan profile update settings.arch="${CPU_ARCHITECTURE}" mobilert;
     conan profile update settings.os="Linux" mobilert;
     conan profile update settings.build_type="Release" mobilert;
-    set +e;
-    conan remote add conancenter http://conan.io/center/;
-    set -e;
+    conan remote add conancenter http://conan.io/center/ || true;
 
     echo "Installing dependencies with conan.";
     conan_os="Linux";

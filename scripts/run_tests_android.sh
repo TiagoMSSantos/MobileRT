@@ -121,9 +121,7 @@ gather_logs_func() {
 
 clear_func() {
   echo "Killing pid of logcat: '${pid_logcat}'";
-  set +e;
-  kill -SIGTERM "${pid_logcat}" 2> /dev/null;
-  set -e;
+  kill -SIGTERM "${pid_logcat}" 2> /dev/null || true;
 
   echo "Will kill MobileRT process";
   pid_app=$(adb shell ps | grep -i puscas.mobilertapp | tr -s ' ' | cut -d ' ' -f 2);
@@ -134,9 +132,7 @@ clear_func() {
 
   # Kill all processes in the whole process group, thus killing also descendants.
   echo "All processes will be killed!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
-  set +e;
-  kill -SIGKILL -- -$$;
-  set -e;
+  kill -SIGKILL -- -$$ || true;
 }
 
 catch_signal() {
@@ -299,9 +295,7 @@ waitForEmulator() {
   unlockDevice;
 
   callCommandUntilSuccess adb devices;
-  set +e;
-  adb_devices_running=$(adb devices | grep -v 'List of devices attached');
-  set -e;
+  adb_devices_running=$(adb devices | grep -v 'List of devices attached' || true);
   echo "Devices running after triggering boot: '${adb_devices_running}'";
   if [ -z "${adb_devices_running}" ]; then
     # Abort if emulator didn't start.
@@ -442,10 +436,10 @@ verifyResources() {
   echo "Verify memory available on Android emulator:";
   set +e;
   callAdbShellCommandUntilSuccess adb shell 'cat /proc/meminfo; echo ::$?::';
+  set -e;
   echo "Verified memory available on Android emulator.";
 
-  grep -r "hw.ramSize" ~/.android 2> /dev/null;
-  set -e;
+  grep -r "hw.ramSize" ~/.android 2> /dev/null || true;
 }
 
 runInstrumentationTests() {

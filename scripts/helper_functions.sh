@@ -263,15 +263,13 @@ parallelizeBuild() {
 # Check the files that were modified in the last few minutes.
 checkLastModifiedFiles() {
   MINUTES=15;
-  set +e;
   echo "#####################################################################";
   echo "Files modified in home:";
-  find ~/ -type f -mmin -${MINUTES} -print 2> /dev/null | grep -v "mozilla" | grep -v "thunderbird" | grep -v "java";
+  find ~/ -type f -mmin -${MINUTES} -print 2> /dev/null | grep -v "mozilla" | grep -v "thunderbird" | grep -v "java" || true;
   echo "#####################################################################";
   echo "Files modified in workspace:";
-  find . -type f -mmin -${MINUTES} -print 2> /dev/null;
+  find . -type f -mmin -${MINUTES} -print 2> /dev/null || true;
   echo "#####################################################################";
-  set -e;
 }
 
 # Check if a path exists.
@@ -297,9 +295,7 @@ prepareBinaries() {
 
 # Helper command to execute a command / function without exiting the script (without the set -e).
 executeWithoutExiting () {
-  set +e;
-  "$@";
-  set -e;
+  "$@" || true;
 }
 
 # Private method which kills a process that is using a file.
@@ -311,10 +307,8 @@ _killProcessUsingFile() {
     echo "processes_using_file: '${processes_using_file}'";
     process_id_using_file=$(echo "${processes_using_file}" | cut -d ' ' -f 2 | head -1);
     echo "Going to kill this process: '${process_id_using_file}'";
-    set +e;
-    kill -SIGKILL "${process_id_using_file}";
-    processes_using_file=$(lsof "${1}" | tail -n +2 | tr -s ' ');
-    set -e;
+    kill -SIGKILL "${process_id_using_file}" || true;
+    processes_using_file=$(lsof "${1}" | tail -n +2 | tr -s ' ' || true);
   done
 }
 
@@ -333,9 +327,7 @@ clearOldBuildFiles() {
         _killProcessUsingFile "${file_being_used}";
         echo "sleeping 2 secs";
         sleep 2;
-        set +e;
-        rm "${file_being_used}";
-        set -e;
+        rm "${file_being_used}" || true;
       done
     done;
     files_being_used=$(find . -iname "*.fuse_hidden*" | grep -i ".fuse_hidden" || true);
