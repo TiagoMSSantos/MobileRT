@@ -124,7 +124,7 @@ addCompilerPathForConan() {
     export CC="gcc";
     #  Possible compiler values are ['Visual Studio', 'apple-clang', 'clang',
     # 'gcc', 'intel', 'intel-cc', 'mcst-lcc', 'msvc', 'qcc', 'sun-cc']
-    if (uname --all | grep -iq "darwin.*"); then
+    if (uname -a | grep -iq "darwin.*"); then
       # Possible values for Apple clang are ['5.0', '5.1', '6.0', '6.1', '7.0', '7.3',
       # '8.0', '8.1', '9.0', '9.1', '10.0', '11.0', '12.0', '13', '13.0', '13.1']
       echo "Detected MacOS, so the C++ compiler should be apple-clang instead of old gcc.";
@@ -170,23 +170,7 @@ addCompilerPathForConan;
 ###############################################################################
 # Get Conan path.
 ###############################################################################
-addConanPath() {
-  if [ ! -x "$(command -v conan)" ]; then
-    CONAN_PATH=$(find ~/ -iname "conan" || true);
-  fi
-
-  set +u;
-  echo "Conan binary: ${CONAN_PATH}";
-  echo "Conan location: ${CONAN_PATH%/conan}";
-  if [ -n "${CONAN_PATH}" ]; then
-    PATH=${CONAN_PATH%/conan}:${PATH};
-  fi
-  set -u;
-
-  echo "PATH: ${PATH}";
-}
-
-addConanPath;
+addCommandToPath "conan";
 ###############################################################################
 ###############################################################################
 
@@ -237,7 +221,7 @@ install_conan_dependencies() {
 
     echo "Installing dependencies with conan.";
     conan_os="Linux";
-    if uname --all | grep -iq "darwin.*"; then
+    if uname -a | grep -iq "darwin.*"; then
       conan_os="Macos";
     fi
     conan install \
@@ -285,12 +269,8 @@ build() {
   oldpath=$(pwd);
 
   cd "${build_path}" || exit;
-  echo "Adding cmake to PATH.";
-  set +e;
-  CMAKE_PATH=$(find ~/ -iname "cmake" 2> /dev/null | head -1);
-  set -e;
-  echo "CMAKE_PATH: ${CMAKE_PATH}";
-  export PATH="${CMAKE_PATH%/cmake}":"${PATH}";
+  addCommandToPath "cmake";
+
   conanToolchainFile="../build_conan-native/conan_toolchain.cmake";
   addConanToolchain="";
   if [ -f "${conanToolchainFile}" ]; then

@@ -235,7 +235,7 @@ checkCommand() {
     echo "Command '$*' installed!";
   else
     echo "Command '$*' is NOT installed.";
-    if (uname --all | grep -iq "MINGW.*"); then
+    if (uname -a | grep -iq "MINGW.*"); then
       echo "Detected Windows OS, so ignoring this error ...";
       return 0;
     fi
@@ -423,6 +423,21 @@ _validateCodeCoverage() {
   ls -lahp code_coverage_base.info;
   ls -lahp code_coverage_test.info;
   ls -lahp code_coverage.info;
+}
+
+# Add command to the PATH environment variable.
+# Parameters
+# 1) command name
+addCommandToPath() {
+  echo "Adding '${1}' to PATH.";
+  COMMAND_PATHS=$(find /usr/ ~/../ -type f -iname "${1}" 2> /dev/null | grep -i "bin" || true);
+  for COMMAND_PATH in ${COMMAND_PATHS}; do
+    echo "Command path to executable: ${COMMAND_PATH}";
+    echo "Command location: ${COMMAND_PATH%/"${1}"}";
+    export PATH="${PATH}":"${COMMAND_PATH%/"${1}"}";
+  done;
+
+  echo "PATH: ${PATH}";
 }
 
 ###############################################################################

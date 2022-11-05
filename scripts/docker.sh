@@ -180,7 +180,7 @@ installDockerCommandForMacOS() {
   docker --version;
 
   echo "${PATH}" | sed 's/:/ /g' | xargs ls 2> /dev/null | grep -i docker 2> /dev/null || true;
-  export PATH=${PATH}:"/usr/local/bin/";
+  export PATH="${PATH}":"/usr/local/bin/";
 
   echo "Start Docker";
   git clone https://github.com/docker/docker.github.io.git;

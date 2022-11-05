@@ -242,6 +242,7 @@ install_dependencies_macos() {
   brew install lcov;
   brew install python3;
   brew install pyenv;
+  brew install conan;
   cd "${oldpath}" || exit;
 
   MAJOR_MAC_VERSION=$(sw_vers | grep ProductVersion | cut -d ':' -f2 | cut -d '.' -f1 | tr -d '[:space:]');
@@ -273,12 +274,7 @@ update_python() {
   executeWithoutExiting python3 -m pip install --upgrade pip --user;
   pip3 install cmake --upgrade --user;
 
-  echo "Adding cmake to PATH.";
-  set +e;
-  CMAKE_PATH=$(find ~/ -iname "cmake" 2> /dev/null | head -1);
-  set -e;
-  echo "CMAKE_PATH: ${CMAKE_PATH}";
-  export PATH="${CMAKE_PATH%/cmake}":"${PATH}";
+  addCommandToPath "cmake";
 }
 ###############################################################################
 ###############################################################################
@@ -295,18 +291,13 @@ install_conan() {
   echo "Installed conan!";
   pip3 install clang;
 
-  PATH=$(pip3 list -v | grep -i cmake | tr -s ' ' | cut -d ' ' -f 3):${PATH};
-  PATH=$(pip3 list -v | grep -i conan | tr -s ' ' | cut -d ' ' -f 3):${PATH};
+  PATH=$(pip3 list -v | grep -i cmake | tr -s ' ' | cut -d ' ' -f 3 | head -1):${PATH};
+  PATH=$(pip3 list -v | grep -i conan | tr -s ' ' | cut -d ' ' -f 3 | head -1):${PATH};
 
-  CONAN_PATH=$(find ~/ -iname "conan" -not -path "*/MobileRT/**/conan*" || true);
-  echo "Conan binary: ${CONAN_PATH}";
-  echo "Conan location: ${CONAN_PATH%/conan}";
-  export PATH="${CONAN_PATH%/conan}":"${PATH}";
+  addCommandToPath "conan";
 
   conan -v;
   checkCommand conan;
-
-  echo "PATH: ${PATH}";
 }
 ###############################################################################
 ###############################################################################
@@ -339,7 +330,7 @@ test_commands() {
 ###############################################################################
 # Execute script.
 ###############################################################################
-echo "Host OS: $(uname --all)";
+echo "Host OS: $(uname -a)";
 executeWithoutExiting install_dependencies;
 install_conan;
 test_commands;
