@@ -1,4 +1,4 @@
-name: CodeQL
+name: Code Analysis
 
 # cron:  'a b c d e'
 # a: minute (0 - 59)
@@ -15,7 +15,7 @@ on:
     - '.github/workflows/**'
     - 'docs/**'
     - '**/renovate.json'
-    - '!.github/workflows/codeql-analysis.yml'
+    - '!.github/workflows/code-analysis.yml'
     branches:
     - '*'
 
@@ -56,6 +56,13 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
       uses: actions/checkout@v3
+
+    - name: Shell scripts unit tests
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success() && matrix.language == 'cpp'
+      working-directory: .
+      run: |
+        sh scripts/test/helper_functions.sh;
 
     - name: Set up JDK
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}

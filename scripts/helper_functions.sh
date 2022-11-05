@@ -9,7 +9,7 @@
 
 # Helper command for compilation scripts.
 helpCompile() {
-  echo "Usage: cmd [-h] [-t type] [-c compiler] [-r recompile]";
+  echo 'Usage: cmd [-h] [-t type] [-c compiler] [-r recompile]';
   exit 0;
 }
 
