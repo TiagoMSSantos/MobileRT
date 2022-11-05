@@ -109,7 +109,7 @@ jobs:
         . scripts/docker.sh && \
           checkAvailableVersion && \
           loginDockerHub ${{ secrets.DOCKERHUB_USERNAME }} ${{ secrets.DOCKERHUB_PASSWORD }};
-        echo "BUILD_IMAGE=yes" >> "${GITHUB_ENV}";
+        echo 'BUILD_IMAGE=yes' >> "${GITHUB_ENV}";
 
     - name: Pull the tagged Docker image
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}

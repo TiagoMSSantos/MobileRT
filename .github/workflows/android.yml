@@ -115,7 +115,7 @@ jobs:
       if: success()
       working-directory: .
       run: |
-        echo "Available Android versions:";
+        echo 'Available Android versions:';
         du -h -d 1 ${ANDROID_HOME}/ndk;
         du -h -d 1 ${ANDROID_HOME}/cmake;
         du -h -d 1 ${ANDROID_HOME}/build-tools;
@@ -331,7 +331,7 @@ jobs:
       if: success()
       working-directory: .
       run: |
-        echo "Available Android versions:";
+        echo 'Available Android versions:';
         du -h -d 1 ${ANDROID_HOME}/ndk;
         du -h -d 1 ${ANDROID_HOME}/cmake;
         du -h -d 1 ${ANDROID_HOME}/build-tools;
@@ -516,7 +516,7 @@ jobs:
       if: success()
       working-directory: .
       run: |
-        echo "Available Android versions:";
+        echo 'Available Android versions:';
         du -h -d 1 ${ANDROID_HOME}/ndk;
         du -h -d 1 ${ANDROID_HOME}/cmake;
         du -h -d 1 ${ANDROID_HOME}/build-tools;
@@ -627,7 +627,7 @@ jobs:
       if: success()
       working-directory: .
       run: |
-        echo "Available Android versions:";
+        echo 'Available Android versions:';
         du -h -d 1 ${ANDROID_HOME}/ndk;
         du -h -d 1 ${ANDROID_HOME}/cmake;
         du -h -d 1 ${ANDROID_HOME}/build-tools;

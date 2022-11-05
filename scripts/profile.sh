@@ -184,7 +184,7 @@ setArguments() {
 
 execute() {
   #ASYNC="false";
-  echo "";
+  echo '';
   echo "THREAD = ${THREAD}";
   echo "SHADER = ${SHADER}";
   echo "SCENE = ${SCENE}";
@@ -202,7 +202,7 @@ execute() {
 }
 
 debug() {
-  echo "";
+  echo '';
   echo "THREAD = ${THREAD}";
   echo "SHADER = ${SHADER}";
   echo "SCENE = ${SCENE}";
@@ -254,7 +254,7 @@ profile() {
       for SHADER in "${SHADERS[@]}"; do
         for SCENE in "${SCENES[@]}"; do
           for ACC in "${ACCELERATORS[@]}"; do
-            echo "";
+            echo '';
             echo "REPETITION = ${R}";
             echo "THREAD = ${THREAD}";
             echo "SHADER = ${SHADER}";
@@ -313,13 +313,13 @@ parseArguments() {
 }
 
 printArguments() {
-  echo "The valid parameters are:";
-  echo "time - Profile application and log the measured times.";
-  echo "drawt - Draw a graph of latencies with GNU Plot.";
-  echo "draws - Draw a graph of speedups with GNU Plot.";
-  echo "release - Execute MobileRT in release mode.";
-  echo "debug - Execute MobileRT in debug mode.";
-  echo "tidy - Execute C++ linter (clang-tidy) in MobileRT.";
+  echo 'The valid parameters are:';
+  echo 'time - Profile application and log the measured times.';
+  echo 'drawt - Draw a graph of latencies with GNU Plot.';
+  echo 'draws - Draw a graph of speedups with GNU Plot.';
+  echo 'release - Execute MobileRT in release mode.';
+  echo 'debug - Execute MobileRT in debug mode.';
+  echo 'tidy - Execute C++ linter (clang-tidy) in MobileRT.';
   echo "gtest - Execute MobileRT's unit tests.";
 }
 ###############################################################################

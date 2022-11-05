@@ -15,19 +15,19 @@ helpCompile() {
 
 # Helper command for Android compilation scripts.
 helpCompileAndroid() {
-  echo "Usage: cmd [-h] [-t type] [-f cpu_architecture] [-c compiler] [-r recompile] [-n ndk_version] [-m cmake_version]";
+  echo 'Usage: cmd [-h] [-t type] [-f cpu_architecture] [-c compiler] [-r recompile] [-n ndk_version] [-m cmake_version]';
   exit 0;
 }
 
 # Helper command for Android run tests scripts.
 helpTestAndroid() {
-  echo "Usage: cmd [-h] [-t type] [-f cpu_architecture] [-r run_test] [-n ndk_version] [-m cmake_version] [-k kill_previous]";
+  echo 'Usage: cmd [-h] [-t type] [-f cpu_architecture] [-r run_test] [-n ndk_version] [-m cmake_version] [-k kill_previous]';
   exit 0;
 }
 
 # Helper command for compilation scripts.
 helpCheck() {
-  echo "Usage: cmd [-h] [-f cpu_architecture] [-n ndk_version] [-m cmake_version]";
+  echo 'Usage: cmd [-h] [-f cpu_architecture] [-n ndk_version] [-m cmake_version]';
   exit 0;
 }
 
@@ -145,7 +145,7 @@ parseArgumentsToCheck() {
 
 # Call function multiple times until it fails and exit the process.
 callCommandUntilError() {
-  echo "";
+  echo '';
   echo "Calling until error '$*'";
   retry=0;
   "$@";
@@ -161,14 +161,14 @@ callCommandUntilError() {
     echo "$*: success - '${lastResult}'";
   else
     echo "$*: failed - '${lastResult}'";
-    echo "";
+    echo '';
     exit "${lastResult}";
   fi
 }
 
 # Call function multiple times until it doesn't fail and then return.
 callCommandUntilSuccess() {
-  echo "";
+  echo '';
   echo "Calling until success '$*'";
   retry=0;
   set +e;
@@ -193,7 +193,7 @@ callCommandUntilSuccess() {
 
 # Call an ADB shell function multiple times until it doesn't fail and then return.
 callAdbShellCommandUntilSuccess() {
-  echo "";
+  echo '';
   echo "Calling ADB shell command until success '$*'";
   retry=0;
   output=$("$@");
@@ -302,7 +302,7 @@ executeWithoutExiting () {
 _killProcessUsingFile() {
   processes_using_file=$(lsof "${1}" | tail -n +2 | tr -s ' ');
   retry=0;
-  while [ "${processes_using_file}" != "" ] && [ ${retry} -lt 5 ]; do
+  while [ "${processes_using_file}" != '' ] && [ ${retry} -lt 5 ]; do
     retry=$(( retry + 1 ));
     echo "processes_using_file: '${processes_using_file}'";
     process_id_using_file=$(echo "${processes_using_file}" | cut -d ' ' -f 2 | head -1);
@@ -318,7 +318,7 @@ _killProcessUsingFile() {
 clearOldBuildFiles() {
   files_being_used=$(find . -iname "*.fuse_hidden*" || true);
   retry=0;
-  while [ "${files_being_used}" != "" ] && [ ${retry} -lt 5 ]; do
+  while [ "${files_being_used}" != '' ] && [ ${retry} -lt 5 ]; do
     retry=$(( retry + 1 ));
     echo "files_being_used: '${files_being_used}'";
     for file_being_used in ${files_being_used}; do
@@ -426,7 +426,7 @@ addCommandToPath() {
   for COMMAND_PATH in ${COMMAND_PATHS}; do
     echo "Command path to executable: ${COMMAND_PATH}";
     echo "Command location: ${COMMAND_PATH%/"${1}"}";
-    export PATH="${PATH}":"${COMMAND_PATH%/"${1}"}";
+    export PATH="${PATH}:${COMMAND_PATH%/"${1}"}";
   done;
 
   echo "PATH: ${PATH}";

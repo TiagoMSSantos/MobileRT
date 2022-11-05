@@ -53,8 +53,8 @@ cpu_architecture="\"x86\"";
 parallelizeBuild;
 
 printEnvironment() {
-  echo "";
-  echo "Selected arguments:";
+  echo '';
+  echo 'Selected arguments:';
   echo "type: ${type}";
   echo "ndk_version: ${ndk_version}";
   echo "cmake_version: ${cmake_version}";
@@ -85,8 +85,8 @@ type=$(capitalizeFirstletter "${type}");
 echo "type: '${type}'";
 
 runUnitTests() {
-  echo "Calling Gradle test";
-  echo "Increasing ADB timeout to 10 minutes";
+  echo 'Calling Gradle test';
+  echo 'Increasing ADB timeout to 10 minutes';
   export ADB_INSTALL_TIMEOUT=60000;
   bash --posix gradlew --no-rebuild --stop;
   bash --posix gradlew test"${type}"UnitTest --profile --parallel \
@@ -102,10 +102,10 @@ runUnitTests() {
 createReportsFolders;
 runUnitTests;
 
-echo "";
+echo '';
 printf '\e]8;;file:///'"%s"'/'"%s"'/tests/test'"%s"'UnitTest/index.html\aClick here to check the Unit tests report.\e]8;;\a\n' "${PWD}" "${reports_path}" "${type}";
-echo "";
-echo "";
+echo '';
+echo '';
 
 ###############################################################################
 # Exit code.

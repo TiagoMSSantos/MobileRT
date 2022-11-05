@@ -81,33 +81,33 @@ RUN echo "DISPLAY = ${DISPLAY}"; \
 ###############################################################################
 RUN \
 if [ -x "$(command -v apt-get)" ]; then \
-  echo "Detected Debian based Linux"; \
+  echo 'Detected Debian based Linux'; \
   apt-get update -y; \
   apt-get install --no-install-recommends -y bash sudo git tzdata; \
 elif [ -x "$(command -v yum)" ]; then \
-  echo "Detected Red Hat based Linux"; \
+  echo 'Detected Red Hat based Linux'; \
   yum update -y; \
   yum install -y bash sudo git; \
 elif [ -x "$(command -v pacman)" ]; then \
-  echo "Detected Arch based Linux"; \
+  echo 'Detected Arch based Linux'; \
   rm -rf /var/cache/pacman/pkg/; \
   pacman -Sy archlinux-keyring --noconfirm --needed; \
-  echo "Resetting all the keys"; \
+  echo 'Resetting all the keys'; \
   pacman-key --init; \
   pacman-key --populate; \
-  echo "Upgrade system"; \
+  echo 'Upgrade system'; \
   pacman -Syu --noconfirm --needed; \
   pacman -Sy --noconfirm --needed bash sudo git; \
 elif [ -x "$(command -v apk)" ]; then \
-  echo "Detected Alpine based Linux"; \
+  echo 'Detected Alpine based Linux'; \
   apk update; \
   apk add bash sudo git; \
 elif [ -x "$(command -v emerge)" ]; then \
-  echo "Detected Gentoo based Linux"; \
+  echo 'Detected Gentoo based Linux'; \
   emerge --sync || true; \
   emerge bash sudo dev-vcs/git; \
 else \
-  echo "Detected unknown based Linux"; \
+  echo 'Detected unknown based Linux'; \
 fi
 ###############################################################################
 ###############################################################################

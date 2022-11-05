@@ -61,25 +61,25 @@ fi
 ###############################################################################
 install_dependencies() {
   if [ -x "$(command -v apt-get)" ]; then
-    echo "Detected Debian based Linux";
+    echo 'Detected Debian based Linux';
     install_dependencies_debian;
   elif [ -x "$(command -v yum)" ]; then
-    echo "Detected Red Hat based Linux";
+    echo 'Detected Red Hat based Linux';
     install_dependencies_red_hat;
   elif [ -x "$(command -v pacman)" ]; then
-    echo "Detected Arch based Linux";
+    echo 'Detected Arch based Linux';
     install_dependencies_arch;
   elif [ -x "$(command -v apk)" ]; then
-    echo "Detected Alpine based Linux";
+    echo 'Detected Alpine based Linux';
     install_dependencies_alpine;
   elif [ -x "$(command -v emerge)" ]; then
-    echo "Detected Gentoo based Linux";
+    echo 'Detected Gentoo based Linux';
     install_dependencies_gentoo;
   elif [ -x "$(command -v brew)" ]; then
-    echo "Detected MacOS";
+    echo 'Detected MacOS';
     install_dependencies_macos;
   else
-    echo "Detected unknown Operating System";
+    echo 'Detected unknown Operating System';
   fi
   update_python;
 }
@@ -105,7 +105,7 @@ install_dependencies_debian() {
     lcov \
     python3 python3-pip python3-dev python3-setuptools \
     cpulimit;
-    echo "Installing dependencies that conan might use.";
+    echo 'Installing dependencies that conan might use.';
     sudo apt-get install --no-install-recommends -y clang libc++-dev libc++abi-dev;
 }
 
@@ -122,7 +122,7 @@ install_dependencies_red_hat() {
     git ca-certificates \
     which \
     qt5-qtbase-devel;
-  echo "Installing dependencies that conan might use.";
+  echo 'Installing dependencies that conan might use.';
   yum install -y mesa-libGL-devel;
   yum install -y libXaw-devel libXcomposite-devel libXcursor-devel \
   libXtst-devel libXinerama-devel \
@@ -136,13 +136,13 @@ install_dependencies_red_hat() {
 
 install_dependencies_arch() {
   # https://wiki.archlinux.org/title/Pacman/Package_signing#Upgrade_system_regularly
-  echo "Removing packages from cache";
+  echo 'Removing packages from cache';
   rm -rf /var/cache/pacman/pkg/;
   pacman -Sy archlinux-keyring --noconfirm --needed;
-  echo "Resetting all the keys";
+  echo 'Resetting all the keys';
   pacman-key --init;
   pacman-key --populate;
-  echo "Upgrade system";
+  echo 'Upgrade system';
   pacman -Syu --noconfirm --needed;
   pacman -Sy --noconfirm --needed \
     glibc lib32-glibc \
@@ -169,7 +169,7 @@ install_dependencies_alpine() {
     which \
     g++ gcc \
     py3-pip;
-  echo "Installing dependencies that conan might use.";
+  echo 'Installing dependencies that conan might use.';
   apk add libfontenc-dev libxaw-dev libxcomposite-dev libxcursor-dev libxi-dev \
   libxinerama-dev libxkbfile-dev libxrandr-dev libxres-dev libxscrnsaver-dev \
   libxtst-dev libxv-dev libxvmc-dev xcb-util-wm-dev;
@@ -193,7 +193,7 @@ install_dependencies_gentoo() {
 }
 
 install_dependencies_macos() {
-  echo "Update homebrew (to use the new repository).";
+  echo 'Update homebrew (to use the new repository).';
   sh -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall.sh)";
   sh -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)";
 
@@ -201,37 +201,37 @@ install_dependencies_macos() {
   brew update;
   brew cleanup;
 
-  echo "Install and configure git.";
+  echo 'Install and configure git.';
   brew install git;
   git config --global http.postBuffer 1048576000;
   git config --global https.postBuffer 1048576000;
   git config --global core.compression -1;
   git config --global http.sslVerify "false";
   if [ -z "$(git config credential.https://github.com)" ]; then
-    echo "Configuring github credentials.";
+    echo 'Configuring github credentials.';
     git config --global credential.https://github.com "ci-user";
   fi
   if [ -z "$(git config user.name)" ]; then
-    echo "Configuring git user.";
+    echo 'Configuring git user.';
     git config --global user.name "CI User";
   fi
   if [ -z "$(git config user.email)" ]; then
-    echo "Configuring git email.";
+    echo 'Configuring git email.';
     git config --global user.email "user@ci.com";
   fi
 
-  echo "Change Homebrew to a specific version since the latest one might break some packages URLs.";
+  echo 'Change Homebrew to a specific version since the latest one might break some packages URLs.';
   # E.g.: version 3.3.15 breaks the Qt4 package.
   oldpath=$(pwd);
   cd /usr/local/Homebrew || exit;
 
   git fetch --tags --all;
   git checkout 3.3.14;
-  echo "Avoid homebrew from auto-update itself every time its installed something.";
+  echo 'Avoid homebrew from auto-update itself every time its installed something.';
   export HOMEBREW_NO_AUTO_UPDATE=1;
   brew --version;
 
-  echo "Install packages separately, so it continues regardless if some error occurs in one.";
+  echo 'Install packages separately, so it continues regardless if some error occurs in one.';
   brew install cmake;
   brew install gcc@12; # GCC v12 is the latest version compatible with conan.
   brew install openssl@1.1;
@@ -258,17 +258,17 @@ install_dependencies_macos() {
 # Update Python, PIP and CMake versions if necessary.
 update_python() {
   if [ -x "$(command -v choco)" ]; then
-    echo "Install Python with choco";
+    echo 'Install Python with choco';
     choco install python --version 3.8.0;
   fi
 
   if [ ! -x "$(command -v apt-get)" ]; then
-    echo "Not Debian based Linux detected";
-    echo "Ensure pip is used by default";
+    echo 'Not Debian based Linux detected';
+    echo 'Ensure pip is used by default';
     python3 -m ensurepip --default-pip;
   fi
 
-  echo "Upgrade pip";
+  echo 'Upgrade pip';
   pip install --upgrade pip --user;
   pip3 install --upgrade pip --user;
   executeWithoutExiting python3 -m pip install --upgrade pip --user;

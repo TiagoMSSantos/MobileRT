@@ -55,8 +55,8 @@ cpu_architecture="\"x86\"";
 parallelizeBuild;
 
 printEnvironment() {
-  echo "";
-  echo "Selected arguments:";
+  echo '';
+  echo 'Selected arguments:';
   echo "type: ${type}";
   echo "recompile: ${recompile}";
   echo "ndk_version: ${ndk_version}";
@@ -94,8 +94,8 @@ clearAllBuildFiles() {
 }
 
 build() {
-  echo "Calling the Gradle assemble to compile code for Android.";
-  echo "Increasing ADB timeout to 10 minutes.";
+  echo 'Calling the Gradle assemble to compile code for Android.';
+  echo 'Increasing ADB timeout to 10 minutes.';
   export ADB_INSTALL_TIMEOUT=60000;
   bash --posix gradlew --no-rebuild --stop;
   bash --posix gradlew clean \
@@ -114,12 +114,12 @@ build() {
     -DabiFilters="[${cpu_architecture}]" \
     --console plain;
   resCompile=${?};
-  echo "Compiling APK to execute Android instrumentation tests.";
+  echo 'Compiling APK to execute Android instrumentation tests.';
   bash --posix gradlew createDebugAndroidTestApkListingFileRedirect \
     -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
     -DabiFilters="[${cpu_architecture}]" \
     --profile --parallel --console plain;
-  echo "Android application compiled.";
+  echo 'Android application compiled.';
 }
 ###############################################################################
 ###############################################################################
@@ -153,7 +153,7 @@ build;
 checkLastModifiedFiles;
 validateNativeLibCompiled;
 
-echo "Searching for generated APK";
+echo 'Searching for generated APK';
 find . -iname "*.apk" | grep -i "output";
 apkPath=$(find . -iname "*.apk" | grep -i "output" | grep -i "test" | grep -i "${type}");
 echo "Generated APK: ${apkPath}";

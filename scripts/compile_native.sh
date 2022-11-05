@@ -57,8 +57,8 @@ recompile="no";
 parallelizeBuild;
 
 printEnvironment() {
-  echo "";
-  echo "Selected arguments:";
+  echo '';
+  echo 'Selected arguments:';
   echo "type: ${type}";
   echo "compiler: ${compiler}";
   echo "recompile: ${recompile}";
@@ -105,11 +105,11 @@ addCompilerPathForConan() {
     # Possible values for clang are ['3.3', '3.4', '3.5', '3.6', '3.7', '3.8', '3.9',
     # '4.0', '5.0', '6.0', '7.0', '7.1', '8', '9', '10', '11', '12', '13', '14', '15']
     conan_compiler="clang";
-    echo "Compiler version:";
+    echo 'Compiler version:';
     ${compiler} --version;
-    echo "Compiler version 2:";
+    echo 'Compiler version 2:';
     ${compiler} --version | grep -i version;
-    echo "Compiler version 3:";
+    echo 'Compiler version 3:';
     ${compiler} --version | grep -i version | sed 's/[ A-Za-z]//g' | awk -F '[^0-9]*' '{print $1}';
     conan_compiler_version=$(${compiler} --version | grep -i version | sed 's/[ A-Za-z]//g' | awk -F '[^0-9]*' '{print $1}' | head -1);
     export CXX="${conan_compiler}++";
@@ -125,7 +125,7 @@ addCompilerPathForConan() {
     if (uname -a | grep -iq "darwin.*"); then
       # Possible values for Apple clang are ['5.0', '5.1', '6.0', '6.1', '7.0', '7.3',
       # '8.0', '8.1', '9.0', '9.1', '10.0', '11.0', '12.0', '13', '13.0', '13.1']
-      echo "Detected MacOS, so the C++ compiler should be apple-clang instead of old gcc.";
+      echo 'Detected MacOS, so the C++ compiler should be apple-clang instead of old gcc.';
       conan_compiler="apple-clang";
       export CFLAGS="-stdlib=libc++";
       export CXXFLAGS="-stdlib=libc++";
@@ -140,9 +140,9 @@ addCompilerPathForConan() {
       conan_compiler="gcc";
       conan_libcxx="libstdc++";
     fi
-    echo "Compiler version:";
+    echo 'Compiler version:';
     ${compiler} -dumpversion;
-    echo "Compiler version 2:";
+    echo 'Compiler version 2:';
     ${compiler} -dumpversion | sed 's/[ A-Za-z]//g' | awk -F '[^0-9]*' '{print $1}';
     conan_compiler_version=$(${compiler} -dumpversion | sed 's/[ A-Za-z]//g' | awk -F '[^0-9]*' '{print $1}' | head -1);
   fi
@@ -199,9 +199,9 @@ install_conan_dependencies() {
 #  ln -s configure/config.guess /home/travis/.conan/data/libuuid/1.0.3/_/_/build/b818fa1fc0d3879f99937e93c6227da2690810fe/configure/config.guess;
 #  ln -s configure/config.sub /home/travis/.conan/data/libuuid/1.0.3/_/_/build/b818fa1fc0d3879f99937e93c6227da2690810fe/configure/config.sub;
 
-  echo "Checking if conan is available.";
+  echo 'Checking if conan is available.';
   if [ -x "$(command -v conan)" ]; then
-    echo "Setting up conan.";
+    echo 'Setting up conan.';
     conan profile new mobilert || true;
     conan profile update settings.compiler="${conan_compiler}" mobilert;
     conan profile update settings.compiler.version="${conan_compiler_version}" mobilert;
@@ -213,7 +213,7 @@ install_conan_dependencies() {
     conan profile update settings.build_type="Release" mobilert;
     conan remote add conancenter http://conan.io/center/ || true;
 
-    echo "Installing dependencies with conan.";
+    echo 'Installing dependencies with conan.';
     conan_os="Linux";
     if uname -a | grep -iq "darwin.*"; then
       conan_os="Macos";
@@ -235,7 +235,7 @@ install_conan_dependencies() {
     ./app/third_party/conan/Native;
 
     export CONAN="TRUE";
-    echo "Done!";
+    echo 'Done!';
   fi
 }
 ###############################################################################
@@ -266,25 +266,25 @@ build() {
   addCommandToPath "cmake";
 
   conanToolchainFile="../build_conan-native/conan_toolchain.cmake";
-  addConanToolchain="";
+  addConanToolchain='';
   if [ -f "${conanToolchainFile}" ]; then
     addConanToolchain="-DCMAKE_TOOLCHAIN_FILE=${conanToolchainFile}";
   fi
 
-  echo "Calling CMake";
+  echo 'Calling CMake';
   cmake -DCMAKE_VERBOSE_MAKEFILE=ON \
     -DCMAKE_CXX_COMPILER="${compiler}" \
     -DCMAKE_BUILD_TYPE="${typeWithCapitalLetter}" \
      "${addConanToolchain}" \
     ../app/;
   resCompile=${?};
-  echo "Called CMake";
+  echo 'Called CMake';
 
   # The compiler might redirect the output to stderr, so we also have to redirect it to the variable.
   compiler_version=$(${compiler} -v 2>&1 || true);
   echo "Compiler version: ${compiler_version}";
   if echo "${compiler_version}" | grep -q "\.exe.*"; then
-    echo "Detected C++ compiler for Windows!";
+    echo 'Detected C++ compiler for Windows!';
   else
     echo "Didn't detect C++ compiler for Windows!";
     JOBS_FLAG="${MAKEFLAGS}";
@@ -297,7 +297,7 @@ build() {
     set -u;
     resCompile=${?};
   else
-    echo "Compilation: cmake failed";
+    echo 'Compilation: cmake failed';
   fi
   cd "${oldpath}" || exit;
 }

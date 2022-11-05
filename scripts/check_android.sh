@@ -52,8 +52,8 @@ cpu_architecture="\"x86\"";
 parallelizeBuild;
 
 printEnvironment() {
-  echo "";
-  echo "Selected arguments:";
+  echo '';
+  echo 'Selected arguments:';
   echo "ndk_version: ${ndk_version}";
   echo "cmake_version: ${cmake_version}";
   echo "cpu_architecture: ${cpu_architecture}";
@@ -76,11 +76,11 @@ printEnvironment;
 ###############################################################################
 runLinter() {
   # Set path to reports.
-  echo "Print Gradle version";
+  echo 'Print Gradle version';
   bash --posix gradlew --no-rebuild --stop;
   bash --posix gradlew --no-rebuild --version;
 
-  echo "Calling the Gradle linter";
+  echo 'Calling the Gradle linter';
   bash --posix gradlew lint --profile --parallel \
     -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
     -DabiFilters="[${cpu_architecture}]" \
