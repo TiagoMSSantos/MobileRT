@@ -97,8 +97,8 @@ build() {
   echo 'Calling the Gradle assemble to compile code for Android.';
   echo 'Increasing ADB timeout to 10 minutes.';
   export ADB_INSTALL_TIMEOUT=60000;
-  bash --posix gradlew --no-rebuild --stop;
-  bash --posix gradlew clean \
+  sh gradlew --no-rebuild --stop;
+  sh gradlew clean \
     build"${typeWithCapitalLetter}" \
     assemble"${typeWithCapitalLetter}" \
     assemble"${typeWithCapitalLetter}"AndroidTest \
@@ -115,7 +115,7 @@ build() {
     --console plain;
   resCompile=${?};
   echo 'Compiling APK to execute Android instrumentation tests.';
-  bash --posix gradlew createDebugAndroidTestApkListingFileRedirect \
+  sh gradlew createDebugAndroidTestApkListingFileRedirect \
     -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
     -DabiFilters="[${cpu_architecture}]" \
     --profile --parallel --console plain;

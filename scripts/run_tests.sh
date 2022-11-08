@@ -88,8 +88,8 @@ runUnitTests() {
   echo 'Calling Gradle test';
   echo 'Increasing ADB timeout to 10 minutes';
   export ADB_INSTALL_TIMEOUT=60000;
-  bash --posix gradlew --no-rebuild --stop;
-  bash --posix gradlew test"${type}"UnitTest --profile --parallel \
+  sh gradlew --no-rebuild --stop;
+  sh gradlew test"${type}"UnitTest --profile --parallel \
     -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
     -DabiFilters="[${cpu_architecture}]" \
     --no-rebuild \

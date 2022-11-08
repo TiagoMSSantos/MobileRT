@@ -121,18 +121,18 @@ gather_logs_func() {
 
 clear_func() {
   echo "Killing pid of logcat: '${pid_logcat}'";
-  kill -SIGTERM "${pid_logcat}" 2> /dev/null || true;
+  kill -TERM "${pid_logcat}" 2> /dev/null || true;
 
   echo 'Will kill MobileRT process';
   pid_app=$(adb shell ps | grep -i puscas.mobilertapp | tr -s ' ' | cut -d ' ' -f 2);
   echo "Killing pid of MobileRT: '${pid_app}'";
   set +e;
-  callAdbShellCommandUntilSuccess adb shell 'kill -SIGTERM '"${pid_app}"'; echo ::$?::';
+  callAdbShellCommandUntilSuccess adb shell 'kill -TERM '"${pid_app}"'; echo ::$?::';
   set -e;
 
   # Kill all processes in the whole process group, thus killing also descendants.
   echo 'All processes will be killed!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!';
-  kill -SIGKILL -- -$$ || true;
+  kill -KILL -- -$$ || true;
 }
 
 catch_signal() {
@@ -153,7 +153,7 @@ catch_signal() {
 ###############################################################################
 
 unlockDevice() {
-  callCommandUntilSuccess bash --posix gradlew --daemon \
+  callCommandUntilSuccess sh gradlew --daemon \
     --no-rebuild \
     -DabiFilters="[${cpu_architecture}]" \
     -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}";
@@ -175,7 +175,7 @@ unlockDevice() {
   set +u;
   if [ -z "${CI}" ]; then
     echo "Killing previous Gradle Daemon process, just in case it was stuck: '${GRADLE_DAEMON_PROCESS}'";
-    kill -SIGKILL "${GRADLE_DAEMON_PROCESS}";
+    kill -KILL "${GRADLE_DAEMON_PROCESS}";
   fi
   set -u;
   set -e;
@@ -255,7 +255,7 @@ waitForEmulator() {
   set +u;
   if [ -z "${CI}" ]; then
     echo "Killing previous ADB process, just in case it was stuck: '${ADB_PROCESS}'";
-    kill -SIGKILL "${ADB_PROCESS}";
+    kill -KILL "${ADB_PROCESS}";
     sleep 3;
   fi
   set -u;
@@ -443,13 +443,12 @@ verifyResources() {
 }
 
 runInstrumentationTests() {
-
   echo 'Run instrumentation tests';
   set +e;
   set +u;
   if [ -z "${CI}" ]; then
-    jps | grep -i "gradle" | tr -s ' ' | cut -d ' ' -f 1 | head -1 | xargs kill -SIGKILL;
-    bash --posix gradlew --stop \
+    jps | grep -i "gradle" | tr -s ' ' | cut -d ' ' -f 1 | head -1 | xargs kill -KILL;
+    sh gradlew --stop \
       --no-rebuild \
       -DabiFilters="[${cpu_architecture}]" \
       -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}";
@@ -483,7 +482,7 @@ runInstrumentationTests() {
     echo "Running all tests";
     mkdir -p app/build/reports/coverage/androidTest/debug/connected/;
     set +u; # Because 'code_coverage' is only set when debug.
-    bash --posix gradlew connected"${type}"AndroidTest -DtestType="${type}" \
+    sh gradlew connected"${type}"AndroidTest -DtestType="${type}" \
       -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
       -DabiFilters="[${cpu_architecture}]" \
       ${code_coverage} --console plain --parallel;
@@ -491,14 +490,14 @@ runInstrumentationTests() {
   elif echo "${run_test}" | grep -q "rep_"; then
     run_test_without_prefix=${run_test#"rep_"};
     echo "Repeatable of test: ${run_test_without_prefix}";
-    callCommandUntilError bash --posix gradlew connectedAndroidTest -DtestType="${type}" \
+    callCommandUntilError sh gradlew connectedAndroidTest -DtestType="${type}" \
       -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
       -Pandroid.testInstrumentationRunnerArguments.class="${run_test_without_prefix}" \
       -DabiFilters="[${cpu_architecture}]" \
       --console plain --parallel;
   else
     echo "Running test: ${run_test}";
-    bash --posix gradlew connectedAndroidTest -DtestType="${type}" \
+    sh gradlew connectedAndroidTest -DtestType="${type}" \
       -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
       -Pandroid.testInstrumentationRunnerArguments.class="${run_test}" \
       -DabiFilters="[${cpu_architecture}]" \

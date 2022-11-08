@@ -47,12 +47,12 @@ This C++ Ray Tracer is compatible with Android and Linux. <br/>
 For Linux, if [docker](https://www.docker.com/) is installed, it is possible to
 try this ray tracer with ease by using the following commands to get the docker
 image and execute the container: <br/>
-```bash
+```
 docker pull ptpuscas/mobile_rt
 xhost +; docker run -it -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=${DISPLAY} ptpuscas/mobile_rt
 ```
 or
-```bash
+```
 xhost +; docker-compose -f docker_image/docker-compose.yml up MobileRT
 ```
 And a docker container should start and render the conference room model like
@@ -60,7 +60,7 @@ the image above :) <br/>
 
 ## Build docker image
 For the most curious, this is the command used to build the docker image:
-```bash
+```
 docker build -t ptpuscas/mobile_rt -f docker_image/Dockerfile --no-cache=false --build-arg BUILD_TYPE=release --build-arg BASE_IMAGE=ubuntu:20.04 .
 ```
 
@@ -74,12 +74,12 @@ To compile it, it is essential to install cmake and have a C++11 compiler.
 It is also needed the [Qt4 or Qt5](https://www.qt.io/) library and the
 [git](https://git-scm.com/) control system to get the code from the repository.
 <br/>
-```bash
+```
 sh scripts/install_dependencies.sh
 ```
 Then, to finally compile this code, just create a build directory and compile
 in it, like for example:
-```bash
+```
 mkdir -p build_Release
 cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=release ../app/
 ```
@@ -92,7 +92,7 @@ To execute the ray tracer just use the profile.sh script available in the
 For example, inside the build_Release directory (which should be inside the root
 folder of this project) that contains all the object files compiled previously,
 the following command should start the ray tracer: <br/>
-```bash
+```
 ../scripts/profile.sh Release
 ```
 
@@ -225,7 +225,7 @@ It's necessary the following SDKs in order to compile this project for Android:
   - It's recommended to use the Android Studio `2021.3.1` which is compatible with Gradle [7.3.0](https://github.com/TiagoMSSantos/MobileRT/blob/master/build.gradle#L38?) used by this project.
 
 For native Linux and Mac support, the `install_dependencies.sh` script should download and install the necessary dependencies, by just calling:
-```bash
+```
   sh scripts/install_dependencies.sh
 ```
 Note that the script already supports multiple Linux distributions like:

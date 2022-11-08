@@ -83,11 +83,11 @@ RUN \
 if [ -x "$(command -v apt-get)" ]; then \
   echo 'Detected Debian based Linux'; \
   apt-get update -y; \
-  apt-get install --no-install-recommends -y bash sudo git tzdata; \
+  apt-get install --no-install-recommends -y sudo git tzdata; \
 elif [ -x "$(command -v yum)" ]; then \
   echo 'Detected Red Hat based Linux'; \
   yum update -y; \
-  yum install -y bash sudo git; \
+  yum install -y sudo git; \
 elif [ -x "$(command -v pacman)" ]; then \
   echo 'Detected Arch based Linux'; \
   rm -rf /var/cache/pacman/pkg/; \
@@ -97,15 +97,15 @@ elif [ -x "$(command -v pacman)" ]; then \
   pacman-key --populate; \
   echo 'Upgrade system'; \
   pacman -Syu --noconfirm --needed; \
-  pacman -Sy --noconfirm --needed bash sudo git; \
+  pacman -Sy --noconfirm --needed sudo git; \
 elif [ -x "$(command -v apk)" ]; then \
   echo 'Detected Alpine based Linux'; \
   apk update; \
-  apk add bash sudo git; \
+  apk add sudo git; \
 elif [ -x "$(command -v emerge)" ]; then \
   echo 'Detected Gentoo based Linux'; \
   emerge --sync || true; \
-  emerge bash sudo dev-vcs/git; \
+  emerge sudo dev-vcs/git; \
 else \
   echo 'Detected unknown based Linux'; \
 fi

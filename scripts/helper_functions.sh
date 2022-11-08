@@ -307,7 +307,7 @@ _killProcessUsingFile() {
     echo "processes_using_file: '${processes_using_file}'";
     process_id_using_file=$(echo "${processes_using_file}" | cut -d ' ' -f 2 | head -1);
     echo "Going to kill this process: '${process_id_using_file}'";
-    kill -SIGKILL "${process_id_using_file}" || true;
+    kill -KILL "${process_id_using_file}" || true;
     processes_using_file=$(lsof "${1}" | tail -n +2 | tr -s ' ' || true);
   done
 }

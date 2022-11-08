@@ -37,7 +37,7 @@ env:
 
 defaults:
   run:
-    shell: bash
+    shell: sh
     working-directory: .
 
 concurrency:
@@ -199,7 +199,7 @@ jobs:
     - name: Install pthread
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
-      shell: bash
+      shell: sh
       working-directory: .
       run: |
         vcpkg install pthread:x86-windows;
@@ -241,7 +241,7 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
       if: success()
       working-directory: .
-      shell: bash
+      shell: sh
       run: |
         sh scripts/compile_native.sh -t ${{ matrix.type }} -c ${{ matrix.cxx }};
 

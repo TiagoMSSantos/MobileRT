@@ -29,7 +29,7 @@ on:
 
 defaults:
   run:
-    shell: bash
+    shell: sh
     working-directory: .
 
 concurrency:
@@ -180,7 +180,6 @@ jobs:
       if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug' && startsWith(matrix.compiler, 'g++')
       working-directory: .
       run: |
-        # shellcheck shell=bash
         # shellcheck disable=SC1091
         . scripts/helper_functions.sh && generateCodeCoverage;
 
@@ -247,7 +246,6 @@ jobs:
       env:
         CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
       run: |
-        # shellcheck shell=bash
         # shellcheck disable=SC1091
         . scripts/helper_functions.sh && prepareBinaries ${{ github.workspace }};
         ./test-reporter-latest-linux-amd64 format-coverage -t lcov code_coverage.info;

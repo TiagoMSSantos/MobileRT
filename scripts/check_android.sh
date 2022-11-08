@@ -77,11 +77,11 @@ printEnvironment;
 runLinter() {
   # Set path to reports.
   echo 'Print Gradle version';
-  bash --posix gradlew --no-rebuild --stop;
-  bash --posix gradlew --no-rebuild --version;
+  sh gradlew --no-rebuild --stop;
+  sh gradlew --no-rebuild --version;
 
   echo 'Calling the Gradle linter';
-  bash --posix gradlew lint --profile --parallel \
+  sh gradlew lint --profile --parallel \
     -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
     -DabiFilters="[${cpu_architecture}]" \
     --no-rebuild \

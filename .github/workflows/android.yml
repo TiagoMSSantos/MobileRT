@@ -29,7 +29,7 @@ on:
 
 defaults:
   run:
-    shell: bash
+    shell: sh
     working-directory: .
 
 concurrency:
@@ -185,7 +185,6 @@ jobs:
       if: success() && steps.download-gradle-artifact.outcome == 'success'
       working-directory: .
       run: |
-        # shellcheck shell=bash
         # shellcheck disable=SC1091
         . scripts/helper_functions.sh && extractFilesFromArtifact ${{ env.GRADLE_PATH }};
 
@@ -194,13 +193,12 @@ jobs:
       if: success()
       working-directory: .
       run: |
-        bash --posix scripts/compile_android.sh -t ${{ matrix.type }} -r yes -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -f "\"x86\"";
+        sh scripts/compile_android.sh -t ${{ matrix.type }} -r yes -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -f "\"x86\"";
 
     - name: Check binaries' paths
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       run: |
-        # shellcheck shell=bash
         # shellcheck disable=SC1091
         # NDK path might not exist and should be downloaded by the shell scripts.
         . scripts/helper_functions.sh && checkPathExists ${{ env.ANDROID_NDK_PATH }} || true;
@@ -270,7 +268,6 @@ jobs:
         find ${{ env.GRADLE_PATH }} -size 0 -exec rm {} \;
         set -e;
 
-        # shellcheck shell=bash
         # shellcheck disable=SC1091
         . scripts/helper_functions.sh && zipFilesForArtifact ${{ env.GRADLE_PATH }} gradle-packages.zip;
 
@@ -369,7 +366,6 @@ jobs:
       if: success()
       working-directory: .
       run: |
-        # shellcheck shell=bash
         # shellcheck disable=SC1091
         . scripts/helper_functions.sh && extractFilesFromArtifact ${{ env.GRADLE_PATH }};
 
@@ -377,7 +373,6 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       run: |
-        # shellcheck shell=bash
         # shellcheck disable=SC1091
         # NDK path might not exist and should be downloaded by the shell scripts.
         . scripts/helper_functions.sh && checkPathExists ${{ env.ANDROID_NDK_PATH }} || true;
@@ -413,13 +408,12 @@ jobs:
         disable-linux-hw-accel: auto
         enable-hw-keyboard: false
         script: |
-          bash --posix scripts/run_tests_android.sh -t ${{ matrix.type }} -r all -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -k false -f "\"x86\"";
+          sh scripts/run_tests_android.sh -t ${{ matrix.type }} -r all -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -k false -f "\"x86\"";
 
     - name: Check report's paths
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug'
       run: |
-        # shellcheck shell=bash
         # shellcheck disable=SC1091
         . scripts/helper_functions.sh && checkPathExists app/build/reports/coverage/androidTest/debug/connected report.xml;
 
@@ -541,7 +535,6 @@ jobs:
       if: success()
       working-directory: .
       run: |
-        # shellcheck shell=bash
         # shellcheck disable=SC1091
         . scripts/helper_functions.sh && extractFilesFromArtifact ${{ env.GRADLE_PATH }};
 
@@ -562,7 +555,6 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       run: |
-        # shellcheck shell=bash
         # shellcheck disable=SC1091
         # NDK path might not exist and should be downloaded by the shell scripts.
         . scripts/helper_functions.sh && checkPathExists ${{ env.ANDROID_NDK_PATH }} || true;
@@ -575,14 +567,14 @@ jobs:
       if: success()
       working-directory: .
       run: |
-        bash --posix scripts/run_tests.sh -t ${{ matrix.type }} -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -f "\"x86\"";
+        sh scripts/run_tests.sh -t ${{ matrix.type }} -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -f "\"x86\"";
 
     - name: Run linter
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
       working-directory: .
       run: |
-        bash --posix scripts/check_android.sh -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -f "\"x86\"";
+        sh scripts/check_android.sh -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -f "\"x86\"";
 
 
   Sonar:
@@ -652,7 +644,6 @@ jobs:
       if: success()
       working-directory: .
       run: |
-        # shellcheck shell=bash
         # shellcheck disable=SC1091
         . scripts/helper_functions.sh && extractFilesFromArtifact ${{ env.GRADLE_PATH }};
 
@@ -673,7 +664,6 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       run: |
-        # shellcheck shell=bash
         # shellcheck disable=SC1091
         # NDK path might not exist and should be downloaded by the shell scripts.
         . scripts/helper_functions.sh && checkPathExists ${{ env.ANDROID_NDK_PATH }} || true;
@@ -704,7 +694,6 @@ jobs:
       if: success()
       working-directory: .
       run: |
-        # shellcheck shell=bash
         # shellcheck disable=SC1091
         . scripts/helper_functions.sh && checkPathExists app/build/reports/coverage/androidTest/debug/connected report.xml;
 
@@ -715,7 +704,6 @@ jobs:
       env:
         CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
       run: |
-        # shellcheck shell=bash
         # shellcheck disable=SC1091
         . ${{ github.workspace }}/scripts/helper_functions.sh && prepareBinaries ${{ github.workspace }};
         ../../../../test-reporter-latest-linux-amd64 format-coverage -t jacoco ../../../build/reports/coverage/androidTest/debug/connected/report.xml;
@@ -745,7 +733,6 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       run: |
-        # shellcheck shell=bash
         # shellcheck disable=SC1091
         # NDK path might not exist and should be downloaded by the shell scripts.
         . scripts/helper_functions.sh && checkPathExists ${{ env.ANDROID_NDK_PATH }} || true;
@@ -760,13 +747,12 @@ jobs:
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
-        bash --posix gradlew --profile --parallel -DabiFilters="[\"x86\"]" -DndkVersion=${{ matrix.ndk_version }} -DcmakeVersion=${{ matrix.cmake_version }} sonarqube --info;
+        sh gradlew --profile --parallel -DabiFilters="[\"x86\"]" -DndkVersion=${{ matrix.ndk_version }} -DcmakeVersion=${{ matrix.cmake_version }} sonarqube --info;
 
     - name: Check sonar path
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       run: |
-        # shellcheck shell=bash
         # shellcheck disable=SC1091
         . scripts/helper_functions.sh && checkPathExists ~/.sonar;
 

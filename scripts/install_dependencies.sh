@@ -97,7 +97,7 @@ install_dependencies_debian() {
     sqlite3 \
     vim \
     findutils \
-    sudo git bash ca-certificates shellcheck \
+    sudo git ca-certificates shellcheck \
     libomp-dev \
     libatomic1 \
     qtbase5-dev qtbase5-dev-tools qtchooser qt5-qmake \
@@ -118,7 +118,6 @@ install_dependencies_red_hat() {
     vim \
     findutils \
     gcc-c++ cmake make \
-    bash \
     git ca-certificates \
     which \
     qt5-qtbase-devel;
@@ -149,7 +148,7 @@ install_dependencies_arch() {
     vim \
     findutils \
     cmake make \
-    bash shellcheck \
+    shellcheck \
     git ca-certificates \
     which \
     qt5-base \
@@ -163,7 +162,7 @@ install_dependencies_alpine() {
     vim \
     findutils \
     cmake make ncurses \
-    bash shellcheck \
+    shellcheck \
     git ca-certificates \
     qt5-qtbase-dev \
     which \
@@ -186,7 +185,7 @@ install_dependencies_gentoo() {
     vim \
     findutils \
     sys-devel/gcc cmake make \
-    bash shellcheck \
+    shellcheck \
     dev-vcs/git ca-certificates \
     which \
     dev-qt/qtcore dev-qt/qtgui dev-qt/qtwidgets;
@@ -312,7 +311,7 @@ test_commands() {
   checkCommand vim;
   checkCommand cmake;
   checkCommand make;
-  checkCommand bash;
+  checkCommand sh;
   checkCommand git;
   checkCommand g++;
   checkCommand python3;

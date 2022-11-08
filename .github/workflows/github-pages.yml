@@ -14,7 +14,7 @@ on:
 
 defaults:
   run:
-    shell: bash
+    shell: sh
     working-directory: .
 
 concurrency:

@@ -27,7 +27,7 @@ on:
 
 defaults:
   run:
-    shell: bash
+    shell: sh
     working-directory: .
 
 concurrency:
@@ -76,6 +76,7 @@ jobs:
     - name: Add branch name and version to environment variables
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
+      shell: bash
       env:
         BASE_IMAGE: ${{ matrix.BASE_IMAGE }}
       run: |
@@ -92,7 +93,6 @@ jobs:
       env:
         BASE_IMAGE: ${{ matrix.BASE_IMAGE }}
       run: |
-        # shellcheck shell=bash
         # shellcheck disable=SC1091
         . scripts/docker.sh && installDockerCommandForMacOS;
         # Add docker path to PATH environment variable to all workflow steps.
@@ -104,7 +104,6 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       run: |
-        # shellcheck shell=bash
         # shellcheck disable=SC1091
         . scripts/docker.sh && \
           checkAvailableVersion && \
@@ -115,7 +114,6 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && startsWith(matrix.BASE_IMAGE, 'gentoo')
       run: |
-        # shellcheck shell=bash
         # shellcheck disable=SC1091
         echo "VERSION: ${{ env.VERSION }}";
         . scripts/docker.sh && pullDockerImage ${{ env.VERSION }};
@@ -125,7 +123,6 @@ jobs:
       timeout-minutes: 300
       if: success() && env.BUILD_IMAGE == 'yes'
       run: |
-        # shellcheck shell=bash
         # shellcheck disable=SC1091
         echo "BASE_IMAGE: ${{ matrix.BASE_IMAGE }}";
         echo "BRANCH: ${{ env.BRANCH }}";
@@ -137,7 +134,6 @@ jobs:
       timeout-minutes: 300
       if: success() && env.BUILD_IMAGE != 'yes'
       run: |
-        # shellcheck shell=bash
         # shellcheck disable=SC1091
         echo "VERSION: ${{ env.VERSION }}";
         . scripts/docker.sh && \
@@ -147,7 +143,6 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && env.BUILD_IMAGE != 'yes'
       run: |
-        # shellcheck shell=bash
         # shellcheck disable=SC1091
         echo "VERSION: ${{ env.VERSION }}";
         . scripts/docker.sh && commitMobileRTDockerImage ${{ env.VERSION }};
@@ -156,7 +151,6 @@ jobs:
       timeout-minutes: 120
       if: success() && (startsWith(matrix.BASE_IMAGE, 'gentoo'))
       run: |
-        # shellcheck shell=bash
         # shellcheck disable=SC1091
         echo "VERSION: ${{ env.VERSION }}";
         . scripts/docker.sh && squashMobileRTDockerImage ${{ env.VERSION }};
@@ -165,7 +159,6 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       run: |
-        # shellcheck shell=bash
         # shellcheck disable=SC1091
         echo "VERSION: ${{ env.VERSION }}";
         . scripts/docker.sh && executeUnitTestsInDockerContainer ${{ env.VERSION }};
@@ -174,7 +167,6 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
       if: success() && env.BRANCH == 'master'
       run: |
-        # shellcheck shell=bash
         # shellcheck disable=SC1091
         echo "VERSION: ${{ env.VERSION }}";
         . scripts/docker.sh && pushMobileRTDockerImage ${{ env.VERSION }};
