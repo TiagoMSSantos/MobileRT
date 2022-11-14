@@ -47,11 +47,11 @@ fi
 ###############################################################################
 # Set default arguments.
 ###############################################################################
-type="release";
-recompile="no";
-ndk_version="23.2.8568313";
-cmake_version="3.22.1";
-cpu_architecture="\"x86\"";
+type='release';
+recompile='no';
+ndk_version='23.2.8568313';
+cmake_version='3.22.1';
+cpu_architecture='"x86"';
 parallelizeBuild;
 
 printEnvironment() {
@@ -87,7 +87,7 @@ echo "type: '${type}'";
 clearAllBuildFiles() {
   callCommandUntilSuccess rm -rf app/build/;
 
-  if [ "${recompile}" = "yes" ]; then
+  if [ "${recompile}" = 'yes' ]; then
     callCommandUntilSuccess rm -rf app/.cxx/;
     callCommandUntilSuccess rm -rf build/;
   fi
@@ -128,11 +128,11 @@ build() {
 install_conan_dependencies() {
   conan install \
   -s compiler=clang \
-  -s compiler.version="9" \
+  -s compiler.version='9' \
   -s compiler.libcxx=c++_shared \
   -s compiler.cppstd=17 \
-  -s os="Android" \
-  -s os.api_level="16" \
+  -s os='Android' \
+  -s os.api_level='16' \
   -s build_type=Release \
   -o bzip2:shared=True \
   -c tools.android:ndk_path="${ANDROID_NDK_PATH}" \
@@ -141,7 +141,7 @@ install_conan_dependencies() {
   --install-folder build_conan-android \
   ./app/third_party/conan/Android;
 
-  export CONAN="TRUE";
+  export CONAN='TRUE';
 }
 
 rm -rf app/build/ || true;

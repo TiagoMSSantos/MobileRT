@@ -46,10 +46,10 @@ fi
 ###############################################################################
 # Set default arguments.
 ###############################################################################
-type="release";
-ndk_version="23.2.8568313";
-cmake_version="3.22.1";
-cpu_architecture="\"x86\"";
+type='release';
+ndk_version='23.2.8568313';
+cmake_version='3.22.1';
+cpu_architecture='"x86"';
 parallelizeBuild;
 
 printEnvironment() {
@@ -103,7 +103,7 @@ createReportsFolders;
 runUnitTests;
 
 echo '';
-printf '\e]8;;file:///'"%s"'/'"%s"'/tests/test'"%s"'UnitTest/index.html\aClick here to check the Unit tests report.\e]8;;\a\n' "${PWD}" "${reports_path}" "${type}";
+printf '\e]8;;file://'"%s"'/'"%s"'/tests/test'"%s"'UnitTest/index.html\aClick here to check the Unit tests report.\e]8;;\a\n' "${PWD}" "${reports_path}" "${type}";
 echo '';
 echo '';
 

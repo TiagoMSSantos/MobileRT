@@ -7,6 +7,11 @@
 ###############################################################################
 ###############################################################################
 
+# shellcheck disable=SC2154
+# Ignore SC2154 checks because, by using the `assertEqual` function, it can
+# complain of certain variables not being explicitly set before calling the
+# function. E.g.:
+# assertEqual "${expected}" "${variableUsed}" "${_testName} <-flag>";
 
 ###############################################################################
 # Exit immediately if a command exits with a non-zero status.
@@ -47,6 +52,102 @@ fi
 # 1 -> failure (at least one test failed).
 exitValue=0;
 
+# Helper function which prints something to the shell console as an error.
+# This means that the text received as parameter will be printed with the red color.
+#
+# Arguments:
+#   1) String to be printed in the shell console
+_logError() {
+  if [ $# -ne 1 ]; then
+    echo 'Usage: _logError <message>';
+    exitValue=1;
+    return 1;
+  fi
+  printf "%s ${1} %s" "$(tput -T xterm setaf 1)" "$(tput -T xterm sgr0)";
+}
+
+# Helper function which prints something to the shell console as a success.
+# This means that the text received as parameter will be printed with the green color.
+#
+# Arguments:
+#   1) String to be printed in the shell console
+#
+# Output:
+#   exit code 1 if passed wrong parameters
+_logSuccess() {
+  if [ $# -ne 1 ]; then
+    echo 'Usage: _logSuccess <message>';
+    exitValue=1;
+    return 1;
+  fi
+  printf "%s ${1} %s" "$(tput -T xterm setaf 2)" "$(tput -T xterm sgr0)";
+}
+
+# Helper function which validates that an environment variable is not set.
+#
+# Parameters:
+# 1) Assertion's context message
+# 2+) Name(s) of environment(s) variable(s)
+#
+# Returns 1 if any variable was set previously.
+_validateEnvVariablesDoNotExist() {
+  if [ $# -lt 2 ]; then
+    echo 'Usage: _validateEnvVariablesDoNotExist <message> <var_name_1> <var_name_2> ... <var_name_n>';
+    exitValue=1;
+    return 1;
+  fi
+  message="${1}";
+  # Perform a shift of the parameters, so it's ignored the 1st element (message) in the next for loop.
+  shift;
+  for variable in "${@}"; do
+    variableValue=$(eval "echo \"\$${variable}\"");
+    if [ -n "${variableValue}" ]; then
+      _logError '[FAILED]';
+      echo "${message} | The '${variable}' environment variable should not be set beforehand. It has the value: '${variableValue}'";
+      exitValue=1;
+      return 1;
+    fi
+  done
+}
+
+# Helper function which validates that an environment variable is set.
+#
+# Parameters:
+# 1) Name of environment variable
+# 2) Expected value
+# 3) Assertion's context message
+#
+# Output:
+# Returns 1 if the variable was not set previously.
+# Returns 2 if the variable was set but does not have the expected value.
+_validateEnvVariableValue() {
+  if [ $# -ne 3 ]; then
+    echo 'Usage: _validateEnvVariableValue <name_env_var> <expected_value_env_var> <message>';
+    exitValue=1;
+    return 1;
+  fi
+  variableValue=$(eval "echo \"\$${1}\"");
+  if [ -z "${variableValue}" ]; then
+    _logError '[FAILED]';
+    echo "${3} | The '${1}' environment variable should be set beforehand. It doesn't have any value.";
+    exitValue=1;
+    return 1;
+  fi
+  if [ "${variableValue}" != "${2}" ]; then
+    _logError '[FAILED]';
+    echo "${3} | The '${1}' environment variable does not have the expected value '${2}'. Instead it has the value: '${variableValue}'";
+    exitValue=1;
+    return 2;
+  fi
+}
+
+# Helper function which clears the environment variables used by these tests.
+_clearEnvVariables() {
+  unset type compiler recompile;
+  unset ndk_version cmake_version cpu_architecture;
+  unset run_test kill_previous;
+}
+
 # Helper function which asserts that 2 parameters are equal.
 #
 # Arguments:
@@ -55,12 +156,12 @@ exitValue=0;
 #   3) Assertion's context message
 #
 # Output:
-#   exit code 0 if expected equals actual
-#   exit code 1 if expected doesn't equals actual
+#   exit code 1 if passed wrong parameters
 assertEqual() {
   if [ $# -ne 3 ]; then
-    echo "Usage: cmd <expected> <actual> <message>";
-    # return 1;
+    echo 'Usage: assertEqual <expected> <actual> <message>';
+    exitValue=1;
+    return 1;
   fi
 
   expected="${1}";
@@ -68,137 +169,288 @@ assertEqual() {
   message="${3}";
 
   if [ "${expected}" != "${actual}" ]; then
-    echo "$(tput -T xterm setaf 1) [FAILED] $(tput -T xterm sgr0) ${message} | Expected '${expected}', but the actual value is '${actual}'";
+    _logError '[FAILED]';
+    echo "${message} | Expected '${expected}', but the actual value is '${actual}'";
     exitValue=1;
   else
-   echo "$(tput -T xterm setaf 2) [PASSED] $(tput -T xterm sgr0) ${message}";
+    _logSuccess '[PASSED]';
+    echo "${message}";
   fi
 }
 
 
 # Tests the helpCompile function.
 testHelpCompile() {
-  # shellcheck disable=SC2091
-  $(helpCompile > /dev/null 2>&1);
+  eval '$(helpCompile > /dev/null 2>&1)';
   returnValue="$?";
 
-  expected="0";
-  assertEqual "${expected}" "${returnValue}" "testHelpCompile";
+  expected='0';
+  assertEqual "${expected}" "${returnValue}" 'testHelpCompile';
 }
 
 # Tests the helpCompileAndroid function.
 testHelpCompileAndroid() {
-  # shellcheck disable=SC2091
-  $(helpCompileAndroid > /dev/null 2>&1);
+  eval '$(helpCompileAndroid > /dev/null 2>&1)';
   returnValue="$?";
 
-  expected="0";
-  assertEqual "${expected}" "${returnValue}" "testHelpCompileAndroid";
+  expected='0';
+  assertEqual "${expected}" "${returnValue}" 'testHelpCompileAndroid';
 }
 
 # Tests the helpTestAndroid function.
 testHelpTestAndroid() {
-  # shellcheck disable=SC2091
-  $(helpTestAndroid > /dev/null 2>&1);
+  eval '$(helpTestAndroid > /dev/null 2>&1)';
   returnValue="$?";
 
-  expected="0";
-  assertEqual "${expected}" "${returnValue}" "testHelpTestAndroid";
+  expected='0';
+  assertEqual "${expected}" "${returnValue}" 'testHelpTestAndroid';
 }
 
 # Tests the helpCheck function.
 testHelpCheck() {
-  # shellcheck disable=SC2091
-  $(helpCheck > /dev/null 2>&1);
+  eval '$(helpCheck > /dev/null 2>&1)';
   returnValue="$?";
 
-  expected="0";
-  assertEqual "${expected}" "${returnValue}" "testHelpCheck";
-}
-
-# Helper function which validates that an environment variable is not set.
-#
-# Parameters:
-# 1) Name of environment variable
-#
-# Returns 1 if the variable was set previously.
-_validateEnvVariableDoesNotExist() {
-  set +u;
-  variableValue=$(eval "echo \"\$${1}\"");
-  # shellcheck disable=SC2154
-  if [ -n "${variableValue}" ]; then
-    echo "The '${1}' environment variable should not be set beforehand. It has the value: '${variableValue}'";
-    set -u;
-    return 1;
-  fi
-  set -u;
-}
-
-# Helper function which validates that an environment variable is set.
-#
-# Parameters:
-# 1) Name of environment variable
-# 2) Expected value
-#
-# Returns 1 if the variable was not set previously.
-# Returns 2 if the variable was set but does not have the expected value.
-_validateEnvVariableValue() {
-  set +u;
-  variableValue=$(eval "echo \"\$${1}\"");
-  # shellcheck disable=SC2154
-  if [ -z "${variableValue}" ]; then
-    echo "The '${1}' environment variable should be set beforehand. It doesn't have any value.";
-    set -u;
-    return 1;
-  fi
-  if [ "${variableValue}" != "${2}" ]; then
-    echo "The '${1}' environment variable does not have the expected value '${2}'. Instead it has the value: '${variableValue}'";
-    set -u;
-    return 2;
-  fi
-  set -u;
+  expected='0';
+  assertEqual "${expected}" "${returnValue}" 'testHelpCheck';
 }
 
 # Tests the parseArgumentsToCompile function.
 testParseArgumentsToCompile() {
-  unset type compiler recompile;
+  _functionName='parseArgumentsToCompile';
+  _testName="test$(capitalizeFirstletter ${_functionName})";
+
+  _clearEnvVariables;
   # Validate the `type` variable is set properly.
-  expected="type_test";
-  parseArgumentsToCompile -t "${expected}" > /dev/null 2>&1;
-  _validateEnvVariableValue "type" "${expected}";
-  _validateEnvVariableDoesNotExist "compiler";
-  _validateEnvVariableDoesNotExist "recompile";
-  # shellcheck disable=SC2154
-  assertEqual "${expected}" "${type}" "testParseArgumentsToCompile -t";
+  expected='type_test';
+  eval ${_functionName} -t "${expected}" > /dev/null 2>&1;
+  _validateEnvVariableValue 'type' "${expected}" "${_testName} -t";
+  _validateEnvVariablesDoNotExist "${_testName} -t" 'compiler' 'recompile';
+  assertEqual "${expected}" "${type}" "${_testName} -t";
 
-  unset type compiler recompile;
+  _clearEnvVariables;
   # Validate the `compiler` variable is set properly.
-  expected="g++";
-  parseArgumentsToCompile -c "${expected}" > /dev/null 2>&1;
-  _validateEnvVariableDoesNotExist "type";
-  _validateEnvVariableValue "compiler" "${expected}";
-  _validateEnvVariableDoesNotExist "recompile";
-  # shellcheck disable=SC2154
-  assertEqual "${expected}" "${compiler}" "testParseArgumentsToCompile -c";
+  expected='g++';
+  eval ${_functionName} -c "${expected}" > /dev/null 2>&1;
+  _validateEnvVariableValue 'compiler' "${expected}" "${_testName} -c";
+  _validateEnvVariablesDoNotExist "${_testName} -c" 'recompile' 'type';
+  assertEqual "${expected}" "${compiler}" "${_testName} -c";
 
-  unset type compiler recompile;
+  _clearEnvVariables;
   # Validate the `recompile` variable is set properly.
-  expected="recompile_test";
-  parseArgumentsToCompile -r "${expected}" > /dev/null 2>&1;
-  _validateEnvVariableDoesNotExist "type";
-  _validateEnvVariableDoesNotExist "compiler";
-  _validateEnvVariableValue "recompile" "${expected}";
-  # shellcheck disable=SC2154
-  assertEqual "${expected}" "${recompile}" "testParseArgumentsToCompile -r";
+  expected='recompile_test';
+  eval ${_functionName} -r "${expected}" > /dev/null 2>&1;
+  _validateEnvVariableValue 'recompile' "${expected}" "${_testName} -r";
+  _validateEnvVariablesDoNotExist "${_testName} -r" 'type' 'compiler';
+  assertEqual "${expected}" "${recompile}" "${_testName} -r";
+
+  _clearEnvVariables;
+  # Validate the help message returns the expected value.
+  eval '$(${_functionName} -h > /dev/null 2>&1)';
+  returnValue="$?";
+  expected='0';
+  assertEqual "${expected}" "${returnValue}" "${_testName} -h";
+
+  _clearEnvVariables;
+  # Validate the help message returns the expected value.
+  eval '$(${_functionName} \? > /dev/null 2>&1)';
+  returnValue="$?";
+  expected='0';
+  assertEqual "${expected}" "${returnValue}" "${_testName} ?";
+}
+
+# Tests the parseArgumentsToCompileAndroid function.
+testParseArgumentsToCompileAndroid() {
+  _functionName='parseArgumentsToCompileAndroid';
+  _testName="test$(capitalizeFirstletter ${_functionName})";
+
+  _clearEnvVariables;
+  # Validate the `ndk_version` variable is set properly.
+  expected='ndk_version_test';
+  eval ${_functionName} -n "${expected}" > /dev/null 2>&1;
+  _validateEnvVariableValue 'ndk_version' "${expected}" "${_testName} -n";
+  _validateEnvVariablesDoNotExist "${_testName} -n" 'cmake_version' 'type' 'compiler' 'recompile' 'cpu_architecture';
+  assertEqual "${expected}" "${ndk_version}" "${_testName} -n";
+
+  _clearEnvVariables;
+  # Validate the `cmake_version` variable is set properly.
+  expected='cmake_version_test';
+  eval ${_functionName} -m "${expected}" > /dev/null 2>&1;
+  _validateEnvVariableValue 'cmake_version' "${expected}" "${_testName} -m";
+  _validateEnvVariablesDoNotExist "${_testName} -m" 'ndk_version' 'type' 'compiler' 'recompile' 'cpu_architecture';
+  assertEqual "${expected}" "${cmake_version}" "${_testName} -m";
+
+  _clearEnvVariables;
+  # Validate the `type` variable is set properly.
+  expected='type_test';
+  eval ${_functionName} -t "${expected}" > /dev/null 2>&1;
+  _validateEnvVariableValue 'type' "${expected}" "${_testName} -t";
+  _validateEnvVariablesDoNotExist "${_testName} -t" 'ndk_version' 'cmake_version' 'compiler' 'recompile' 'cpu_architecture';
+  assertEqual "${expected}" "${type}" "${_testName} -t";
+
+  _clearEnvVariables;
+  # Validate the `compiler` variable is set properly.
+  expected='g++';
+  eval ${_functionName} -c "${expected}" > /dev/null 2>&1;
+  _validateEnvVariableValue 'compiler' "${expected}" "${_testName} -c";
+  _validateEnvVariablesDoNotExist "${_testName} -c" 'ndk_version' 'cmake_version' 'type' 'recompile' 'cpu_architecture';
+  assertEqual "${expected}" "${compiler}" "${_testName} -c";
+
+  _clearEnvVariables;
+  # Validate the `recompile` variable is set properly.
+  expected='recompile_test';
+  eval ${_functionName} -r "${expected}" > /dev/null 2>&1;
+  _validateEnvVariableValue 'recompile' "${expected}" "${_testName} -r";
+  _validateEnvVariablesDoNotExist "${_testName} -r" 'ndk_version' 'cmake_version' 'type' 'compiler' 'cpu_architecture';
+  assertEqual "${expected}" "${recompile}" "${_testName} -r";
+
+  _clearEnvVariables;
+  # Validate the `cpu_architecture` variable is set properly.
+  expected='cpu_architecture_test';
+  eval ${_functionName} -f "${expected}" > /dev/null 2>&1;
+  _validateEnvVariableValue 'cpu_architecture' "${expected}" "${_testName} -f";
+  _validateEnvVariablesDoNotExist "${_testName} -f" 'ndk_version' 'cmake_version' 'type' 'compiler' 'recompile';
+  assertEqual "${expected}" "${cpu_architecture}" "${_testName} -f";
+
+  _clearEnvVariables;
+  # Validate the help message returns the expected value.
+  eval '$(${_functionName} -h > /dev/null 2>&1)';
+  returnValue="$?";
+  expected='0';
+  assertEqual "${expected}" "${returnValue}" "${_testName} -h";
+
+  _clearEnvVariables;
+  # Validate the help message returns the expected value.
+  eval '$(${_functionName} \? > /dev/null 2>&1)';
+  returnValue="$?";
+  expected='0';
+  assertEqual "${expected}" "${returnValue}" "${_testName} ?";
+}
+
+# Tests the parseArgumentsToTestAndroid function.
+testParseArgumentsToTestAndroid() {
+  _functionName='parseArgumentsToTestAndroid';
+  _testName="test$(capitalizeFirstletter ${_functionName})";
+
+  _clearEnvVariables;
+  # Validate the `ndk_version` variable is set properly.
+  expected='ndk_version_test';
+  eval ${_functionName} -n "${expected}" > /dev/null 2>&1;
+  _validateEnvVariableValue 'ndk_version' "${expected}" "${_testName} -n";
+  _validateEnvVariablesDoNotExist "${_testName} -n" 'cmake_version' 'type' 'run_test' 'kill_previous' 'cpu_architecture';
+  assertEqual "${expected}" "${ndk_version}" "${_testName} -n";
+
+  _clearEnvVariables;
+  # Validate the `cmake_version` variable is set properly.
+  expected='cmake_version_test';
+  eval ${_functionName} -m "${expected}" > /dev/null 2>&1;
+  _validateEnvVariableValue 'cmake_version' "${expected}" "${_testName} -m";
+  _validateEnvVariablesDoNotExist "${_testName} -m" 'ndk_version' 'type' 'run_test' 'kill_previous' 'cpu_architecture';
+  assertEqual "${expected}" "${cmake_version}" "${_testName} -m";
+
+  _clearEnvVariables;
+  # Validate the `type` variable is set properly.
+  expected='type_test';
+  eval ${_functionName} -t "${expected}" > /dev/null 2>&1;
+  _validateEnvVariableValue 'type' "${expected}" "${_testName} -t";
+  _validateEnvVariablesDoNotExist "${_testName} -t" 'ndk_version' 'cmake_version' 'run_test' 'kill_previous' 'cpu_architecture';
+  assertEqual "${expected}" "${type}" "${_testName} -t";
+
+  _clearEnvVariables;
+  # Validate the `run_test` variable is set properly.
+  expected='run_test_test';
+  eval ${_functionName} -r "${expected}" > /dev/null 2>&1;
+  _validateEnvVariableValue 'run_test' "${expected}" "${_testName} -r";
+  _validateEnvVariablesDoNotExist "${_testName} -r" 'ndk_version' 'cmake_version' 'type' 'kill_previous' 'cpu_architecture';
+  assertEqual "${expected}" "${run_test}" "${_testName} -r";
+
+  _clearEnvVariables;
+  # Validate the `kill_previous` variable is set properly.
+  expected='kill_previous_test';
+  eval ${_functionName} -k "${expected}" > /dev/null 2>&1;
+  _validateEnvVariableValue 'kill_previous' "${expected}" "${_testName} -k";
+  _validateEnvVariablesDoNotExist "${_testName} -k" 'ndk_version' 'cmake_version' 'type' 'run_test' 'cpu_architecture';
+  assertEqual "${expected}" "${kill_previous}" "${_testName} -k";
+
+  _clearEnvVariables;
+  # Validate the `cpu_architecture` variable is set properly.
+  expected='cpu_architecture_test';
+  eval ${_functionName} -f "${expected}" > /dev/null 2>&1;
+  _validateEnvVariableValue 'cpu_architecture' "${expected}" "${_testName} -f";
+  _validateEnvVariablesDoNotExist "${_testName} -f" 'ndk_version' 'cmake_version' 'type' 'run_test' 'kill_previous';
+  assertEqual "${expected}" "${cpu_architecture}" "${_testName} -f";
+
+  _clearEnvVariables;
+  # Validate the help message returns the expected value.
+  eval '$(${_functionName} -h > /dev/null 2>&1)';
+  returnValue="$?";
+  expected='0';
+  assertEqual "${expected}" "${returnValue}" "${_testName} -h";
+
+  _clearEnvVariables;
+  # Validate the help message returns the expected value.
+  eval '$(${_functionName} \? > /dev/null 2>&1)';
+  returnValue="$?";
+  expected='0';
+  assertEqual "${expected}" "${returnValue}" "${_testName} ?";
+}
+
+# Tests the parseArgumentsToCheck function.
+testParseArgumentsToCheck() {
+  _functionName='parseArgumentsToCheck';
+  _testName="test$(capitalizeFirstletter ${_functionName})";
+
+  _clearEnvVariables;
+  # Validate the `ndk_version` variable is set properly.
+  expected='ndk_version_test';
+  eval ${_functionName} -n "${expected}" > /dev/null 2>&1;
+  _validateEnvVariableValue 'ndk_version' "${expected}" "${_testName} -n";
+  _validateEnvVariablesDoNotExist "${_testName} -n" 'cmake_version' 'cpu_architecture';
+  assertEqual "${expected}" "${ndk_version}" "${_testName} -n";
+
+  _clearEnvVariables;
+  # Validate the `cmake_version` variable is set properly.
+  expected='cmake_version_test';
+  eval ${_functionName} -m "${expected}" > /dev/null 2>&1;
+  _validateEnvVariableValue 'cmake_version' "${expected}" "${_testName} -m";
+  _validateEnvVariablesDoNotExist "${_testName} -m" 'ndk_version' 'cpu_architecture';
+  assertEqual "${expected}" "${cmake_version}" "${_testName} -m";
+
+  _clearEnvVariables;
+  # Validate the `cpu_architecture` variable is set properly.
+  expected='cpu_architecture_test';
+  eval ${_functionName} -f "${expected}" > /dev/null 2>&1;
+  _validateEnvVariableValue 'cpu_architecture' "${expected}" "${_testName} -f";
+  _validateEnvVariablesDoNotExist "${_testName} -f" 'ndk_version' 'cmake_version';
+  assertEqual "${expected}" "${cpu_architecture}" "${_testName} -f";
+
+  _clearEnvVariables;
+  # Validate the help message returns the expected value.
+  eval '$(${_functionName} -h > /dev/null 2>&1)';
+  returnValue="$?";
+  expected='0';
+  assertEqual "${expected}" "${returnValue}" "${_testName} -h";
+
+  _clearEnvVariables;
+  # Validate the help message returns the expected value.
+  eval '$(${_functionName} \? > /dev/null 2>&1)';
+  returnValue="$?";
+  expected='0';
+  assertEqual "${expected}" "${returnValue}" "${_testName} ?";
 }
 
 
+set +eu;
 # Execute all tests.
 testHelpCompile;
 testHelpCompileAndroid;
 testHelpTestAndroid;
 testHelpCheck;
 testParseArgumentsToCompile;
+testParseArgumentsToCompileAndroid;
+testParseArgumentsToTestAndroid;
+testParseArgumentsToCheck;
+set -eu;
 
 # Exit and return whether the tests passed or failed.
 exit "${exitValue}";

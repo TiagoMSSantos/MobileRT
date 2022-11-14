@@ -219,8 +219,8 @@ callAdbShellCommandUntilSuccess() {
 # Outputs the exit code received by argument and exits the current process with
 # that exit code.
 printCommandExitCode() {
-  echo "######################################################################";
-  echo "Results:";
+  echo '######################################################################';
+  echo 'Results:';
   if [ "${1}" -eq 0 ]; then
     echo "${2}: success";
   else
@@ -236,7 +236,7 @@ checkCommand() {
   else
     echo "Command '$*' is NOT installed.";
     if (uname -a | grep -iq "MINGW.*"); then
-      echo "Detected Windows OS, so ignoring this error ...";
+      echo 'Detected Windows OS, so ignoring this error ...';
       return 0;
     fi
     exit 1;
@@ -263,13 +263,13 @@ parallelizeBuild() {
 # Check the files that were modified in the last few minutes.
 checkLastModifiedFiles() {
   MINUTES=15;
-  echo "#####################################################################";
-  echo "Files modified in home:";
+  echo '#####################################################################';
+  echo 'Files modified in home:';
   find ~/ -type f -mmin -${MINUTES} -print 2> /dev/null | grep -v "mozilla" | grep -v "thunderbird" | grep -v "java" || true;
-  echo "#####################################################################";
-  echo "Files modified in workspace:";
+  echo '#####################################################################';
+  echo 'Files modified in workspace:';
   find . -type f -mmin -${MINUTES} -print 2> /dev/null || true;
-  echo "#####################################################################";
+  echo '#####################################################################';
 }
 
 # Check if a path exists.
@@ -325,7 +325,7 @@ clearOldBuildFiles() {
       echo "file_being_used: '${file_being_used}'";
       while [ -f "${file_being_used}" ]; do
         _killProcessUsingFile "${file_being_used}";
-        echo "sleeping 2 secs";
+        echo 'sleeping 2 secs';
         sleep 2;
         rm "${file_being_used}" || true;
       done
@@ -336,10 +336,10 @@ clearOldBuildFiles() {
 
 # Create the reports' folders.
 createReportsFolders() {
-  echo "Creating reports folders.";
+  echo 'Creating reports folders.';
   mkdir -p build/reports;
   mkdir -p app/build/reports;
-  echo "Created reports folders.";
+  echo 'Created reports folders.';
 }
 
 # Validate MobileRT native lib was compiled.

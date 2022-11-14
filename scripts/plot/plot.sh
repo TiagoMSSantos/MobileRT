@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 ###############################################################################
 # README
@@ -11,7 +11,7 @@
 ###############################################################################
 # Change directory to MobileRT root
 ###############################################################################
-cd "$(dirname "${0}")/../.." || exit;
+cd "$(dirname "${0}")/.." || exit;
 ###############################################################################
 ###############################################################################
 
@@ -25,24 +25,25 @@ cd "$(dirname "${0}")/../.." || exit;
 ###############################################################################
 
 
-SEP=" "
-SPEEDUP=${1}
+SEP=' ';
+SPEEDUP=${1};
 
 prepareFilenames() {
-  i=1
-  for FILE in ${FILES[@]}; do
-    GRAPH[${i}]="file${i}='${FILE}'"
+  FILES="$(find "${PLOT_GRAPHS}" -type f)";
+  i=1;
+  for FILE in ${FILES}; do
+    GRAPH[${i}]="file${i}=${FILE}";
     i=$(( i + 1 ));
   done
 
   i=1
-  for f in ${GRAPH[@]}; do
-    GRAPHS+=" -e ${f}"
+  for f in ${GRAPH}; do
+    GRAPHS[${i}]=" -e ${f}"
     i=$(( i + 1 ));
   done
 
   i=0
-  for f in ${FILES[@]}; do
+  for f in ${FILES}; do
     FILEPATH=./${f#${PWD}/}
     FILENAMES+="${FILEPATH}${SEP}"
     i=$(( i + 1 ));

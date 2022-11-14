@@ -47,12 +47,12 @@ fi
 ###############################################################################
 # Set default arguments.
 ###############################################################################
-type="release";
-run_test="all";
-ndk_version="23.2.8568313";
-cmake_version="3.22.1";
-kill_previous="true";
-cpu_architecture="\"x86\"";
+type='release';
+run_test='all';
+ndk_version='23.2.8568313';
+cmake_version='3.22.1';
+kill_previous='true';
+cpu_architecture='"x86"';
 parallelizeBuild;
 
 printEnvironment() {
@@ -73,11 +73,11 @@ printEnvironment() {
 # Set paths.
 ###############################################################################
 echo 'Set path to reports';
-reports_path="app/build/reports";
+reports_path='app/build/reports';
 
 echo 'Set path to instrumentation tests resources';
-mobilert_path="/data/local/tmp/MobileRT";
-sdcard_path="/mnt/sdcard/MobileRT";
+mobilert_path='/data/local/tmp/MobileRT';
+sdcard_path='/mnt/sdcard/MobileRT';
 ###############################################################################
 ###############################################################################
 
@@ -114,9 +114,9 @@ gather_logs_func() {
     > "${reports_path}"/logcat_app_"${type}".log;
   set -e;
 
-  printf '\e]8;;file:///'"%s"'/'"%s"'/androidTests/connected/index.html\aClick here to check the Android tests report.\e]8;;\a\n' "${PWD}" "${reports_path}";
-  printf '\e]8;;file:///'"%s"'/'"%s"'/coverage/androidTest/'"%s"'/connected/index.html\aClick here to check the Code coverage report.\e]8;;\a\n' "${PWD}" "${reports_path}" "${type}";
-  printf '\e]8;;file:///'"%s"'/'"%s"'/logcat_app_'"%s"'.log\aClick here to check the app log.\e]8;;\a\n' "${PWD}" "${reports_path}" "${type}";
+  printf '\e]8;;file://'"%s"'/'"%s"'/androidTests/connected/index.html\aClick here to check the Android tests report.\e]8;;\a\n' "${PWD}" "${reports_path}";
+  printf '\e]8;;file://'"%s"'/'"%s"'/coverage/androidTest/'"%s"'/connected/index.html\aClick here to check the Code coverage report.\e]8;;\a\n' "${PWD}" "${reports_path}" "${type}";
+  printf '\e]8;;file://'"%s"'/'"%s"'/logcat_app_'"%s"'.log\aClick here to check the app log.\e]8;;\a\n' "${PWD}" "${reports_path}" "${type}";
 }
 
 clear_func() {
@@ -215,8 +215,8 @@ runEmulator() {
   echo "pid: ${pid}";
   echo "script name: ${script_name}";
 
-  if [ "${type}" = "debug" ]; then
-    code_coverage="createDebugCoverageReport";
+  if [ "${type}" = 'debug' ]; then
+    code_coverage='createDebugCoverageReport';
   fi
 
   if [ "${kill_previous}" = true ]; then
@@ -286,7 +286,7 @@ waitForEmulator() {
   echo 'Finding at least 1 Android device on.';
   callCommandUntilSuccess adb shell 'ps > /dev/null;';
 
-  echo "Prepare traps";
+  echo 'Prepare traps';
   trap 'catch_signal ${?}' EXIT HUP INT QUIT ILL TRAP ABRT TERM;
 
   # Make the all other processes belong in the process group, so that will be killed at the end.
@@ -357,7 +357,7 @@ copyResources() {
 startCopyingLogcatToFile() {
   unlockDevice;
 
-  # echo "Disable animations";
+  # echo 'Disable animations';
   # puscas.mobilertapp not found
   # adb shell pm grant puscas.mobilertapp android.permission.SET_ANIMATION_SCALE;
 
@@ -384,8 +384,8 @@ startCopyingLogcatToFile() {
 runUnitTests() {
   echo 'Copy unit tests to Android emulator.';
   ls app/.cxx;
-  if [ "${type}" = "release" ]; then
-    typeWithCapitalLetter="RelWithDebInfo"
+  if [ "${type}" = 'release' ]; then
+    typeWithCapitalLetter='RelWithDebInfo';
   fi
   dirUnitTests="app/.cxx/${typeWithCapitalLetter}";
   echo 'Checking generated id.';
@@ -405,7 +405,7 @@ runUnitTests() {
   callCommandUntilSuccess adb push -p "${dirUnitTests}"/lib/* ${mobilert_path}/;
 
   echo 'Run unit tests';
-  if [ "${type}" = "debug" ]; then
+  if [ "${type}" = 'debug' ]; then
     # Ignore unit tests that should crash the system because of a failing assert.
     adb shell LD_LIBRARY_PATH=${mobilert_path} \
       ${mobilert_path}/UnitTests \
@@ -454,7 +454,7 @@ runInstrumentationTests() {
       -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}";
 
     numberOfFilesOpened=$(adb shell lsof /dev/goldfish_pipe | wc -l);
-    if [ "${numberOfFilesOpened}" -gt "32000" ]; then
+    if [ "${numberOfFilesOpened}" -gt '32000' ]; then
       echo "Kill 'graphics.allocator' process since it has a bug where it
         accumulates a memory leak by continuously using more and more
         files of '/dev/goldfish_pipe' and never freeing them.";
@@ -478,8 +478,8 @@ runInstrumentationTests() {
   adb shell 'pm list instrumentation;';
   unlockDevice;
 
-  if [ "${run_test}" = "all" ]; then
-    echo "Running all tests";
+  if [ "${run_test}" = 'all' ]; then
+    echo 'Running all tests';
     mkdir -p app/build/reports/coverage/androidTest/debug/connected/;
     set +u; # Because 'code_coverage' is only set when debug.
     sh gradlew connected"${type}"AndroidTest -DtestType="${type}" \

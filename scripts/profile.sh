@@ -45,14 +45,14 @@ fi
 # Set paths for MobileRT.
 ###############################################################################
 setPaths() {
-  PATH_TO_SEARCH="../";
-  FILE_TO_SEARCH="MobileRT.jks";
+  PATH_TO_SEARCH='../';
+  FILE_TO_SEARCH='MobileRT.jks';
 
   FIND_MOBILERT=$(find ${PATH_TO_SEARCH} -iname "${FILE_TO_SEARCH}" 2> /dev/null | head -n 1 || true);
   MOBILERT_PATH=$(echo "${FIND_MOBILERT}" | sed 's/\/app\/.*//g' || true);
 
   if [ -z "${MOBILERT_PATH}" ]; then
-    PATH_TO_SEARCH="/";
+    PATH_TO_SEARCH='/';
     FIND_MOBILERT=$(find ${PATH_TO_SEARCH} -iname "MobileRT" 2> /dev/null | head -n 1);
     MOBILERT_PATH=$(echo "${FIND_MOBILERT}" | sed "s/\/app\/${FILE_TO_SEARCH}/g");
   fi
@@ -75,10 +75,11 @@ setPaths() {
   set -u;
 
   mkdir -p "${PLOT_GRAPHS}";
-
-  for FOLDER in "${PLOT_GRAPHS[@]}"; do
-    FILES+=("$(find "${FOLDER}" -type f)");
-  done
+  set +u;
+  if [ -z "${PLOT_GRAPHS}" ]; then
+    PLOT_GRAPHS=${SCRIPTS_PATH}/"graphs";
+  fi
+  set -u;
 }
 ###############################################################################
 ###############################################################################
@@ -139,8 +140,8 @@ setScene() {
 # Set options for the sanitizers.
 ###############################################################################
 setOptionsSanitizers() {
-  export ASAN_OPTIONS="suppressions=sanitizer_ignore.suppr:verbosity=1:strict_string_checks=1:detect_stack_use_after_return=1:check_initialization_order=1:strict_init_order=1:halt_on_error=0:detect_odr_violation=1";
-  export LSAN_OPTIONS="suppressions=sanitizer_ignore.suppr:verbosity=1:strict_string_checks=1";
+  export ASAN_OPTIONS='suppressions=sanitizer_ignore.suppr:verbosity=1:strict_string_checks=1:detect_stack_use_after_return=1:check_initialization_order=1:strict_init_order=1:halt_on_error=0:detect_odr_violation=1';
+  export LSAN_OPTIONS='suppressions=sanitizer_ignore.suppr:verbosity=1:strict_string_checks=1';
 }
 ###############################################################################
 ###############################################################################
@@ -150,34 +151,34 @@ setOptionsSanitizers() {
 # Set arguments for MobileRT.
 ###############################################################################
 setArguments() {
-  SPP="1";
-  SPL="1";
-  WIDTH="900";
-  HEIGHT="900";
-  REP="1";
-  PRINT="false";
-  ASYNC="false";
-  SHOWIMAGE="false";
-  SEP="-";
+  SPP='1';
+  SPL='1';
+  WIDTH='900';
+  HEIGHT='900';
+  REP='1';
+  PRINT='false';
+  ASYNC='false';
+  SHOWIMAGE='false';
+  SEP='-';
 
   # Configuration for profiling.
-  REPETITIONS="2";
-  THREADS="1 2";
-  SHADERS="1 2";
-  SCENES="1 2";
-  ACCELERATORS="1 2";
+  REPETITIONS='2';
+  THREADS='1 2';
+  SHADERS='1 2';
+  SCENES='1 2';
+  ACCELERATORS='1 2';
 
   THREAD=$(nproc --all);
-  SHADER="1";
-  SCENE="4";
-  ACC="3";
-  PRINT="true";
-  SHOWIMAGE="true";
-  ASYNC="true";
-  SPP="1";
-  SPL="1";
+  SHADER='1';
+  SCENE='4';
+  ACC='3';
+  PRINT='true';
+  SHOWIMAGE='true';
+  ASYNC='true';
+  SPP='1';
+  SPL='1';
 
-  trap "exit" INT;
+  trap 'exit' INT;
 }
 ###############################################################################
 ###############################################################################
@@ -250,10 +251,10 @@ clangtidy() {
 profile() {
   ASYNC=false;
   for R in $(seq 1 ${REPETITIONS}); do
-    for THREAD in "${THREADS[@]}"; do
-      for SHADER in "${SHADERS[@]}"; do
-        for SCENE in "${SCENES[@]}"; do
-          for ACC in "${ACCELERATORS[@]}"; do
+    for THREAD in ${THREADS}; do
+      for SHADER in ${SHADERS}; do
+        for SCENE in ${SCENES}; do
+          for ACC in ${ACCELERATORS}; do
             echo '';
             echo "REPETITION = ${R}";
             echo "THREAD = ${THREAD}";

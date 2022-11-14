@@ -285,9 +285,9 @@ update_python() {
 install_conan() {
   # Necessary to install python 3.9 which uses six version 1.15!
   # Packages that should be used: six==1.15.0 conan==1.51.3 conan-package-tools
-  echo "Installing conan";
-  pip3 install six==1.15.0 conan==1.51.3 conan-package-tools --ignore-installed six;
-  echo "Installed conan!";
+  echo 'Installing conan';
+  pip3 install --ignore-installed six==1.15.0 conan==1.51.3 conan-package-tools;
+  echo 'Installed conan!';
   pip3 install clang;
 
   PATH=$(pip3 list -v | grep -i cmake | tr -s ' ' | cut -d ' ' -f 3 | head -1):${PATH};
@@ -306,7 +306,7 @@ install_conan() {
 # Test dependencies.
 ###############################################################################
 test_commands() {
-  echo "Checking required shell commands.";
+  echo 'Checking required shell commands.';
 
   checkCommand vim;
   checkCommand cmake;

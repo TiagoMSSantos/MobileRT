@@ -58,10 +58,10 @@ pullDockerImage() {
   echo "Docker: ${output}";
   if echo "${output}" | grep -q "up to date" || echo "${output}" | grep -q "Downloaded newer image for"; then
     echo 'Docker image found!';
-    export BUILD_IMAGE="no";
+    export BUILD_IMAGE='no';
   else
     echo 'Did not find the Docker image. Will have to build the image.';
-    export BUILD_IMAGE="yes";
+    export BUILD_IMAGE='yes';
   fi
 }
 
@@ -172,7 +172,7 @@ installDockerCommandForMacOS() {
   docker-machine create --driver virtualbox --virtualbox-boot2docker-url ~/.docker/machine/cache/boot2docker.iso default;
   echo 'Start service docker-machine';
   brew services start docker-machine;
-  eval "$(docker-machine env default)";
+  eval '$(docker-machine env default)';
   echo 'Restart service docker-machine';
   docker-machine restart;
   docker-machine env;

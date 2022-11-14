@@ -234,7 +234,7 @@ jobs:
         du -h -d 1 ${{ env.GRADLE_PATH }}/workers;
         du -h -d 1 ${{ env.GRADLE_PATH }}/native;
 
-        echo "Deleting unnecessary cache.";
+        echo 'Deleting unnecessary cache.';
         rm -rf ${{ env.GRADLE_PATH }}/caches/build-cache-*;
         rm -rf ${{ env.GRADLE_PATH }}/caches/journal-*;
         rm -rf ${{ env.GRADLE_PATH }}/daemon;
