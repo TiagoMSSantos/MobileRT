@@ -15,7 +15,12 @@ print "GNU Plot Script"
 reset
 set datafile separator ","
 #set output 'graph.png'
-set terminal wxt size 1700, 800 enhanced font "Verdana,8" title "Performance comparation" persist raise ctrl
+if (speedup eq "1") {
+  _title = 'Speed up'
+} else {
+  _title = 'Time (secs)'
+}
+set terminal wxt size 1700, 800 enhanced font "Verdana,8" title _title persist raise ctrl
 set key outside
 ###############################################################################
 ###############################################################################
@@ -93,18 +98,22 @@ index = 0
 startSep=0
 endSep = startSep + strstrt(filenames[startSep:], separator)
 filePath = filenames[startSep : endSep - 1]
-if (filePath eq "") {
-  print 'filePath: "' . filePath . '" invalid'
-  exit gnuplot
-}
 eval arrayPush("FILES", filePath)
 endSep = endSep + 1
 
-do for [i=2:files] {
+do for [i=2:filenumbers] {
   startSep = endSep
   endSep = startSep + strstrt(filenames[startSep:], separator)
   filePath = filenames[startSep : endSep - 2]
   eval arrayPush("FILES", filePath)
+}
+
+print "filenames: " . filenames
+print "filenumbers: " . filenumbers
+print "files:"
+do for [i = 1 : filenumbers] {
+  filePath = arrayGet("FILES", i)
+  print 'filePath: "' . filePath . '" i: ' . i . ' file[' . i . ']: ' . files[i]
 }
 ###############################################################################
 ###############################################################################
@@ -113,16 +122,15 @@ do for [i=2:files] {
 ###############################################################################
 # Stats to get min and max values
 ###############################################################################
-X_min = 0
+X_min = 123456789
 X_max = 0
-Y_min = 0
+Y_min = 123456789
 Y_max = 0
 
-do for [i=1:files] {
+do for [i=1:filenumbers] {
   filePath = arrayGet("FILES", i)
-  print "filePath: '".filePath."'"
   fileParsed = "< awk -v speedup=".speedup." -f scripts/plot/parser_median.awk ".filePath
-  print "fileParsed: '".fileParsed."'"
+  print 'fileParsed: '.fileParsed
   stats fileParsed using 1 nooutput name 'Fx_'
   stats fileParsed using 2 nooutput name 'Fy_'
 
@@ -140,6 +148,8 @@ Y_tick = (Y_max - Y_min) / 30
 ###############################################################################
 # Axis labels
 ###############################################################################
+print 'X_min: '.sprintf("%8.3f", X_min)
+print 'X_max: '.sprintf("%8.3f", X_max)
 set xlabel '#Threads'
 set xrange [0 : 0<*]
 set xtics X_min, 1, X_max offset graph 0, graph 0
@@ -149,9 +159,11 @@ if (speedup eq "1") {
   labelY = 'Speed up'
 } else {
   speedup = 0
-  labelY = 'Time (s)'
+  labelY = 'Time (secs)'
 }
 
+print 'Y_min: '.sprintf("%8.3f", Y_min)
+print 'Y_max: '.sprintf("%8.3f", Y_max)
 set ylabel labelY
 set yrange [0 : 0<*]
 set ytics Y_min, Y_tick, Y_max offset graph 0, graph 0
@@ -171,7 +183,7 @@ set linestyle 1 pointtype 7 pointsize 1.0 linetype 3 linewidth 2.5 dashtype 3
 # Plot
 ###############################################################################
 plot \
-for [i = 1 : files] \
+for [i = 1 : filenumbers] \
   filePath = arrayGet("FILES", i) \
   name = filePath[0 : strstrt(filePath[0:], ".dat") - 1] \
   file = "< awk -v speedup=" . speedup . " -f scripts/plot/parser_median.awk " . filePath \

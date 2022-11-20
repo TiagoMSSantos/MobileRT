@@ -11,7 +11,7 @@
 ###############################################################################
 # Change directory to MobileRT root
 ###############################################################################
-cd "$(dirname "${0}")/.." || exit;
+cd "$(dirname "${0}")/../.." || exit;
 ###############################################################################
 ###############################################################################
 
@@ -25,47 +25,80 @@ cd "$(dirname "${0}")/.." || exit;
 ###############################################################################
 
 
-SEP=' ';
-SPEEDUP=${1};
+SEP=',';
+SPEEDUP='0';
+if [ "${1}" = 'draws' ]; then
+  SPEEDUP='1';
+fi
+
+setPaths() {
+  PATH_TO_SEARCH='./';
+  FILE_TO_SEARCH='MobileRT.jks';
+
+  FIND_MOBILERT=$(find ${PATH_TO_SEARCH} -iname "${FILE_TO_SEARCH}" 2> /dev/null | head -n 1 || true);
+  MOBILERT_PATH=$(echo "${FIND_MOBILERT}" | sed 's/\/app\/.*//g' || true);
+
+  if [ -z "${MOBILERT_PATH}" ]; then
+    PATH_TO_SEARCH='/';
+    FIND_MOBILERT=$(find ${PATH_TO_SEARCH} -iname "MobileRT" 2> /dev/null | head -n 1);
+    MOBILERT_PATH=$(echo "${FIND_MOBILERT}" | sed "s/\/app\/${FILE_TO_SEARCH}/g");
+  fi
+
+  SCRIPTS_PATH="${MOBILERT_PATH}/scripts";
+  PLOT_SCRIPTS_PATH="${SCRIPTS_PATH}/plot";
+
+  set +u;
+  if [ -z "${PLOT_GRAPHS}" ]; then
+    PLOT_GRAPHS=${SCRIPTS_PATH}/"graphs";
+  fi
+  set -u;
+
+  mkdir -p "${PLOT_GRAPHS}";
+  set +u;
+  if [ -z "${PLOT_GRAPHS}" ]; then
+    PLOT_GRAPHS=${SCRIPTS_PATH}/"graphs";
+  fi
+  set -u;
+}
 
 prepareFilenames() {
   FILES="$(find "${PLOT_GRAPHS}" -type f)";
+  FILE_NUMBERS="$(find "${PLOT_GRAPHS}" -type f | wc -l)";
+
+  GRAPHS='';
   i=1;
   for FILE in ${FILES}; do
-    GRAPH[${i}]="file${i}=${FILE}";
+    GRAPHS="files[${i}]='${FILE}'; ${GRAPHS}";
     i=$(( i + 1 ));
   done
 
-  i=1
-  for f in ${GRAPH}; do
-    GRAPHS[${i}]=" -e ${f}"
-    i=$(( i + 1 ));
-  done
-
-  i=0
+  numberFiles=0;
+  FILENAMES='';
   for f in ${FILES}; do
-    FILEPATH=./${f#${PWD}/}
-    FILENAMES+="${FILEPATH}${SEP}"
-    i=$(( i + 1 ));
+    FILEPATH="./${f#"${PWD}"/}";
+    FILENAMES="${FILEPATH}${SEP}${FILENAMES}";
+    numberFiles=$(( numberFiles + 1 ));
   done
 
-  FILENAMES="${FILENAMES%% }"
+  FILENAMES="${FILENAMES%% }";
 }
 
 drawPlot() {
-  echo "#FILES = '${#FILES[@]}'"
-  echo "FILENAMES = '${FILENAMES}'"
-  echo "SPEEDUP = '${SPEEDUP}'"
-  echo "SEP = '${SEP}'"
-  echo "SCRIPT = '${PLOT_SCRIPTS_PATH}/plot_output.gp'"
+  echo "#FILES = '${FILES}'";
+  echo "FILENAMES = '${FILENAMES}'";
+  echo "SPEEDUP = '${SPEEDUP}'";
+  echo "SEP = '${SEP}'";
+  echo "GRAPHS = ${GRAPHS}";
+  echo "SCRIPT = '${PLOT_SCRIPTS_PATH}/plot_output.gp'";
 
   gnuplot \
-    -e "files='${#FILES[@]}'" \
+    -e "array files[${FILE_NUMBERS}]; ${GRAPHS}; filenumbers=${FILE_NUMBERS};" \
     -e "filenames='${FILENAMES}'" \
     -e "speedup='${SPEEDUP}'" \
-    -e "separator='${SEP}'"${GRAPHS} \
+    -e "separator='${SEP}'" \
     -c "${PLOT_SCRIPTS_PATH}/plot_output.gp"
 }
 
-prepareFilenames
-drawPlot
+setPaths;
+prepareFilenames;
+drawPlot;

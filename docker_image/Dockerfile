@@ -180,7 +180,7 @@ VOLUME /tmp/.X11-unix
 # Execute MobileRT by default
 ###############################################################################
 WORKDIR build_${BUILD_TYPE}
-ENTRYPOINT ["bash", "-c"]
-CMD ["bash ../scripts/profile.sh ${ENV_BUILD_TYPE}"]
+ENTRYPOINT ["sh", "-c"]
+CMD ["sh ../scripts/profile.sh ${ENV_BUILD_TYPE}"]
 ###############################################################################
 ###############################################################################

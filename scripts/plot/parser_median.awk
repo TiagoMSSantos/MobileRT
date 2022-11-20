@@ -7,17 +7,17 @@ BEGIN {
   index_threads = threads - 1;
   sum += $2;
   temp = $2;
-  print "START "
+  # print "START "
   for (i = 0; i < numThreads[index_threads]; i++) {
-    print "i: '" i "'"
+    # print "i: '" i "'"
     if (temp < array[index_threads, i]) {
       aux = array[index_threads, i];
-	  array[index_threads, i] = temp;
-	  temp = aux;
-	}
+      array[index_threads, i] = temp;
+      temp = aux;
+    }
   }
   array[index_threads, numThreads[index_threads]++] = temp;
-  print $0
+  # print $0
 }
 
 END {

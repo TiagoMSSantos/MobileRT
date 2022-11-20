@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 ###############################################################################
 # README
@@ -45,7 +45,7 @@ fi
 # Set paths for MobileRT.
 ###############################################################################
 setPaths() {
-  PATH_TO_SEARCH='../';
+  PATH_TO_SEARCH='./';
   FILE_TO_SEARCH='MobileRT.jks';
 
   FIND_MOBILERT=$(find ${PATH_TO_SEARCH} -iname "${FILE_TO_SEARCH}" 2> /dev/null | head -n 1 || true);
@@ -293,11 +293,9 @@ parseArguments() {
         sleep 2s;
         ;;
       "drawt")
-        # shellcheck disable=SC1091
-        . scripts/plot/plot.sh 0 ;;
+        sh scripts/plot/plot.sh "drawt" ;;
       "draws")
-        # shellcheck disable=SC1091
-        . scripts/plot/plot.sh 1 ;;
+        sh scripts/plot/plot.sh "draws" ;;
       "test") awk -f "${PLOT_SCRIPTS_PATH}/parser_median.awk" "${PLOT_SCRIPTS_PATH}/test.dat" ;;
       "release") execute ;;
       "debug") debug ;;

@@ -9,10 +9,10 @@ BEGIN {
   temp = $7;
   for (i = 0; i < n; i++) {
     if (temp < array[i]) {
-	  aux = array[i];
-	  array[i] = temp;
-	  temp = aux;
-	  }
+      aux = array[i];
+      array[i] = temp;
+      temp = aux;
+    }
   }
   array[n++]=temp;
   #print $0
