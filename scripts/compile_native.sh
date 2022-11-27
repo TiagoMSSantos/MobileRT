@@ -168,7 +168,7 @@ addCompilerPathForConan;
 ###############################################################################
 # Get Conan path.
 ###############################################################################
-addCommandToPath "conan";
+addCommandToPath 'conan';
 ###############################################################################
 ###############################################################################
 
@@ -263,7 +263,7 @@ build() {
   oldpath=$(pwd);
 
   cd "${build_path}" || exit;
-  addCommandToPath "cmake";
+  addCommandToPath 'cmake';
 
   conanToolchainFile='../build_conan-native/conan_toolchain.cmake';
   addConanToolchain='';
@@ -313,6 +313,6 @@ du -h -d 1 build_"${type}"/bin build_"${type}"/lib;
 ###############################################################################
 # Exit code.
 ###############################################################################
-printCommandExitCode "${resCompile}" "Compilation";
+printCommandExitCode "${resCompile}" 'Compilation';
 ###############################################################################
 ###############################################################################

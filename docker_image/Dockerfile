@@ -86,8 +86,9 @@ if [ -x "$(command -v apt-get)" ]; then \
   apt-get install --no-install-recommends -y sudo git tzdata; \
 elif [ -x "$(command -v yum)" ]; then \
   echo 'Detected Red Hat based Linux'; \
-  yum update -y; \
-  yum install -y sudo git; \
+  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False update -y; \
+  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y \
+    sudo git; \
 elif [ -x "$(command -v pacman)" ]; then \
   echo 'Detected Arch based Linux'; \
   rm -rf /var/cache/pacman/pkg/; \

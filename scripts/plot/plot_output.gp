@@ -3,8 +3,8 @@
 ###############################################################################
 # Enable print
 ###############################################################################
-set print "-"
-print "GNU Plot Script"
+set print '-'
+print 'GNU Plot Script'
 ###############################################################################
 ###############################################################################
 
@@ -108,9 +108,9 @@ do for [i=2:filenumbers] {
   eval arrayPush("FILES", filePath)
 }
 
-print "filenames: " . filenames
-print "filenumbers: " . filenumbers
-print "files:"
+print 'filenames: ' . filenames
+print 'filenumbers: ' . filenumbers
+print 'files:'
 do for [i = 1 : filenumbers] {
   filePath = arrayGet("FILES", i)
   print 'filePath: "' . filePath . '" i: ' . i . ' file[' . i . ']: ' . files[i]

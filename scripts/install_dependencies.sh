@@ -105,16 +105,16 @@ install_dependencies_debian() {
     lcov \
     python3 python3-pip python3-dev python3-setuptools \
     cpulimit;
-    echo 'Installing dependencies that conan might use.';
-    sudo apt-get install --no-install-recommends -y clang libc++-dev libc++abi-dev;
+  echo 'Installing dependencies that conan might use.';
+  sudo apt-get install --no-install-recommends -y clang libc++-dev libc++abi-dev;
 }
 
 install_dependencies_red_hat() {
-  yum update -y;
+  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False update -y;
   dnf install -y \
     python3-pip \
     ShellCheck;
-  yum install -y \
+  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y \
     vim \
     findutils \
     gcc-c++ cmake make \
@@ -122,15 +122,19 @@ install_dependencies_red_hat() {
     which \
     qt5-qtbase-devel;
   echo 'Installing dependencies that conan might use.';
-  yum install -y mesa-libGL-devel;
-  yum install -y libXaw-devel libXcomposite-devel libXcursor-devel \
-  libXtst-devel libXinerama-devel \
-  libXrandr-devel libXScrnSaver-devel libXdamage-devel \
-  libXv-devel libuuid-devel xkeyboard-config-devel;
-  yum install -y libfontenc libXdmcp libxkbfile libXres \
-  xcb-util-wm xcb-util-image \
-  xcb-util-keysyms xcb-util-renderutil libXxf86vm xcb-util;
-  yum install -y libXvMC xorg-x11-xtrans;
+  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y \
+    mesa-libGL-devel;
+  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y \
+    libXaw-devel libXcomposite-devel libXcursor-devel \
+    libXtst-devel libXinerama-devel \
+    libXrandr-devel libXScrnSaver-devel libXdamage-devel \
+    libXv-devel libuuid-devel xkeyboard-config-devel;
+  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y \
+    libfontenc libXdmcp libxkbfile libXres \
+    xcb-util-wm xcb-util-image \
+    xcb-util-keysyms xcb-util-renderutil libXxf86vm xcb-util;
+  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y \
+    libXvMC xorg-x11-xtrans;
 }
 
 install_dependencies_arch() {
@@ -170,8 +174,8 @@ install_dependencies_alpine() {
     py3-pip;
   echo 'Installing dependencies that conan might use.';
   apk add libfontenc-dev libxaw-dev libxcomposite-dev libxcursor-dev libxi-dev \
-  libxinerama-dev libxkbfile-dev libxrandr-dev libxres-dev libxscrnsaver-dev \
-  libxtst-dev libxv-dev libxvmc-dev xcb-util-wm-dev;
+    libxinerama-dev libxkbfile-dev libxrandr-dev libxres-dev libxscrnsaver-dev \
+    libxtst-dev libxv-dev libxvmc-dev xcb-util-wm-dev;
 }
 
 install_dependencies_gentoo() {
@@ -273,7 +277,7 @@ update_python() {
   executeWithoutExiting python3 -m pip install --upgrade pip --user;
   pip3 install cmake --upgrade --user;
 
-  addCommandToPath "cmake";
+  addCommandToPath 'cmake';
 }
 ###############################################################################
 ###############################################################################
@@ -293,7 +297,7 @@ install_conan() {
   PATH=$(pip3 list -v | grep -i cmake | tr -s ' ' | cut -d ' ' -f 3 | head -1):${PATH};
   PATH=$(pip3 list -v | grep -i conan | tr -s ' ' | cut -d ' ' -f 3 | head -1):${PATH};
 
-  addCommandToPath "conan";
+  addCommandToPath 'conan';
 
   conan -v;
   checkCommand conan;

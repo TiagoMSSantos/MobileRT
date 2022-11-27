@@ -288,21 +288,21 @@ parseArguments() {
   else
     for P in "${@}"; do
       case ${P} in
-      "time")
+      'time')
         profile;
         sleep 2s;
         ;;
-      "drawt")
-        sh scripts/plot/plot.sh "drawt" ;;
-      "draws")
-        sh scripts/plot/plot.sh "draws" ;;
-      "test") awk -f "${PLOT_SCRIPTS_PATH}/parser_median.awk" "${PLOT_SCRIPTS_PATH}/test.dat" ;;
-      "release") execute ;;
-      "debug") debug ;;
-      "tidy") clangtidy ;;
-      "gtest") "${BIN_DEBUG_PATH}"/UnitTestsd ;;
+      'drawt')
+        sh scripts/plot/plot.sh 'drawt' ;;
+      'draws')
+        sh scripts/plot/plot.sh 'draws' ;;
+      'test') awk -f "${PLOT_SCRIPTS_PATH}/parser_median.awk" "${PLOT_SCRIPTS_PATH}/test.dat" ;;
+      'release') execute ;;
+      'debug') debug ;;
+      'tidy') clangtidy ;;
+      'gtest') "${BIN_DEBUG_PATH}"/UnitTestsd ;;
       *)
-        printf "\nWrong Parameter: %s\n" "${P}";
+        printf '\nWrong Parameter: %s\n' "${P}";
         printArguments;
         break;
         ;;

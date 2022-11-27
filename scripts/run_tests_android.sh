@@ -529,7 +529,7 @@ checkLastModifiedFiles;
 ###############################################################################
 # Exit code
 ###############################################################################
-printCommandExitCode "${resUnitTests}" "Unit tests";
-printCommandExitCode "${resInstrumentationTests}" "Instrumentation tests";
+printCommandExitCode "${resUnitTests}" 'Unit tests';
+printCommandExitCode "${resInstrumentationTests}" 'Instrumentation tests';
 ###############################################################################
 ###############################################################################

@@ -15,7 +15,6 @@ BEGIN {
     }
   }
   array[n++]=temp;
-  #print $0
 }
 
 END {
@@ -24,8 +23,7 @@ END {
   }
   sum = 0;
   for (i = 0; i < n; i++) {
-  sum += array[i];
-    #print "array["i"] = " array[i];
+    sum += array[i];
   }
   print threads ", " sum;
 }
