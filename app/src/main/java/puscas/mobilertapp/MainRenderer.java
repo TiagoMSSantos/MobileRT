@@ -622,7 +622,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
             this.bitmap.eraseColor(Color.BLACK);
             validateBitmap(this.bitmap);
         } catch (final NullPointerException ex) {
-            // This `NullPointerException` should only be thrown in a Unit Test.
+            // This `NullPointerException` should only be thrown in an Unit Test.
             log.severe(ex.getMessage());
         }
 

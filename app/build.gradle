@@ -4,12 +4,12 @@ import groovy.json.JsonSlurper;
 // Apply plugins
 ///////////////////////////////////////////////////////////////////////////////
 plugins {
+    // Application plugin facilitates creating an executable JVM application.
+    id 'com.android.application'
+
     // JaCoCo plugin provides code coverage metrics for Java code via
     // integration with JaCoCo.
     id 'jacoco'
-
-    // Application plugin facilitates creating an executable JVM application.
-    id 'com.android.application'
 
     // Gradle plugin for running SonarQube analysis.
     id 'org.sonarqube'
@@ -297,12 +297,11 @@ android {
             all {
                 minHeapSize = "128m"
                 maxHeapSize = "512m"
-                // set JVM arguments for the test JVM(s)
-                // Enable JMockit for the unit tests
-//                jvmArgs "-javaagent:${classpath.find { it.name.contains("jmockit") }.absolutePath}"
-//                jacoco {
-//                    includeNoLocationClasses = true
-//                }
+                jvmArgs '-noverify', '-ea', '-Djdk.attach.allowAttachSelf=true'
+                jacoco {
+                    includeNoLocationClasses = true
+                    excludes = ['jdk.internal.*']
+                }
             }
             includeAndroidResources = true
             returnDefaultValues = true
@@ -363,6 +362,28 @@ configurations {
 
 
 ///////////////////////////////////////////////////////////////////////////////
+// Merge Jacoco reports from Unit Tests and Instrumentation Tests
+///////////////////////////////////////////////////////////////////////////////
+task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'createDebugCoverageReport']) {
+    reports {
+        xml.getRequired().set(true)
+        html.getRequired().set(true)
+    }
+    sourceDirectories.setFrom(files(["${project.projectDir}/src/main/java"]))
+    classDirectories.setFrom(
+        fileTree(dir: "${buildDir}/intermediates/javac/debug/classes/"),
+        fileTree(dir: "${buildDir}/tmp/kotlin-classes/debug/")
+    )
+    executionData.setFrom(fileTree(dir: "${buildDir}", includes: [
+        "**/test*UnitTest.exec",
+        "**/*coverage.ec"
+    ]))
+}
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////////////////////////////////////
 // Setup tests to execute in parallel
 ///////////////////////////////////////////////////////////////////////////////
 // ?: -> binary operator: x ?: y <==> x ? x : y
@@ -379,6 +400,8 @@ tasks.withType(Test).configureEach {
 dependencies {
     // Dependencies for the Android application
     println("Adding dependencies for MobileRT.")
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    testImplementation fileTree(dir: 'libs', include: ['*.jar'])
 
     // Android dependencies
     implementation "androidx.appcompat:appcompat:${appcompat_version}"
@@ -438,7 +461,16 @@ dependencies {
     testImplementation "junit:junit:${junit_version}"
     testImplementation "org.assertj:assertj-core:${assertj_version}"
     testImplementation "org.khronos:opengl-api:${khronos_gl_for_android_sdk_version}"
-    testImplementation "org.jmockit:jmockit:${jmockit_version}"
+    testImplementation "org.mockito:mockito-core:${mockito_version}"
+    testImplementation "org.mockito:mockito-inline:${mockito_version}"
+    testImplementation "org.powermock:powermock-core:${powermock_version}"
+    testImplementation "org.powermock:powermock-module-junit4:${powermock_version}"
+    testImplementation "org.powermock:powermock-api-mockito2:${powermock_version}"
+    // Necessary for code coverage to work properly.
+    // Should be used `powermock-module-junit4-rule-agent` instead of `powermock-module-junit4-rule`.
+    testImplementation "org.powermock:powermock-module-junit4-rule-agent:${powermock_version}"
+    testImplementation "org.powermock:powermock-module-javaagent:${powermock_version}"
+    testImplementation "org.powermock:powermock-classloading-xstream:${powermock_version}"
 
     // Annotations for the unit tests
     testAnnotationProcessor "org.projectlombok:lombok:${lombok_version}"
@@ -455,10 +487,6 @@ dependencies {
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:${junit5_version}"
     androidTestImplementation "org.junit.jupiter:junit-jupiter-api:${junit5_version}"
-
-//    androidTestImplementation "org.jmockit:jmockit:${jmockit_version}"
-//    androidTestImplementation "org.mockito:mockito-android:${mockito_version}"
-//    androidTestImplementation "org.mockito:mockito-core:${mockito_version}"
 }
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////

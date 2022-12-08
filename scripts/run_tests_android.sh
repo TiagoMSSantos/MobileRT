@@ -115,7 +115,7 @@ gather_logs_func() {
   set -e;
 
   printf '\e]8;;file://'"%s"'/'"%s"'/androidTests/connected/index.html\aClick here to check the Android tests report.\e]8;;\a\n' "${PWD}" "${reports_path}";
-  printf '\e]8;;file://'"%s"'/'"%s"'/coverage/androidTest/'"%s"'/connected/index.html\aClick here to check the Code coverage report.\e]8;;\a\n' "${PWD}" "${reports_path}" "${type}";
+  printf '\e]8;;file://'"%s"'/'"%s"'/jacoco/jacocoTestReport/html/index.html\aClick here to check the Code coverage report.\e]8;;\a\n' "${PWD}" "${reports_path}";
   printf '\e]8;;file://'"%s"'/'"%s"'/logcat_app_'"%s"'.log\aClick here to check the app log.\e]8;;\a\n' "${PWD}" "${reports_path}" "${type}";
 }
 
@@ -480,9 +480,9 @@ runInstrumentationTests() {
 
   if [ "${run_test}" = 'all' ]; then
     echo 'Running all tests';
-    mkdir -p app/build/reports/coverage/androidTest/debug/connected/;
+    mkdir -p app/build/reports/jacoco/jacocoTestReport/;
     set +u; # Because 'code_coverage' is only set when debug.
-    sh gradlew connected"${type}"AndroidTest -DtestType="${type}" \
+    sh gradlew jacocoTestReport -DtestType="${type}" \
       -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
       -DabiFilters="[${cpu_architecture}]" \
       ${code_coverage} --console plain --parallel;

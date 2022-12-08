@@ -2,24 +2,42 @@ package puscas.mobilertapp;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
-import edu.umd.cs.findbugs.annotations.NonNull;
-import edu.umd.cs.findbugs.annotations.Nullable;
+
+import org.assertj.core.api.Assertions;
+import org.jetbrains.annotations.Contract;
+import org.junit.Rule;
+import org.junit.Test;
+import org.powermock.api.support.membermodification.MemberModifier;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.rule.PowerMockRule;
+
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.egl.EGLSurface;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import lombok.extern.java.Log;
-import org.assertj.core.api.Assertions;
-import org.jetbrains.annotations.Contract;
-import org.junit.Ignore;
-import org.junit.Test;
 
 /**
  * The test suite for the {@link MyEglContextFactory} class.
  */
 @Log
+@PrepareForTest(MainActivity.class)
 public final class MyEglContextFactoryTest {
+
+    /**
+     * The {@link Rule} for the {@link MainActivity} for each test.
+     */
+    @Rule
+    public PowerMockRule rule = new PowerMockRule();
+
+    /**
+     * The {@link EGL10} value to return in the mocked {@link EGL10}.
+     */
+    static int eglErrorReturnedByMock = EGL10.EGL_SUCCESS;
 
     /**
      * Helper method that creates a {@link EGL10}.
@@ -140,7 +158,7 @@ public final class MyEglContextFactoryTest {
             @Contract(pure = true)
             @Override
             public int eglGetError() {
-                return 0;
+                return eglErrorReturnedByMock;
             }
 
             @Contract(pure = true)
@@ -208,17 +226,21 @@ public final class MyEglContextFactoryTest {
      * the {@link GLSurfaceView.EGLContextFactory} doesn't create the
      * {@link EGLContext}.
      */
-    @Ignore("Needs MobileRT library for some reason ...")
     @Test
     public void testInvalidCreateContext() {
+        MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
+
         final Context context = new MainActivity();
         final DrawView drawView = new DrawView(context);
 
+        eglErrorReturnedByMock = EGL10.EGL_SUCCESS;
         final GLSurfaceView.EGLContextFactory myEGLContextFactory = new MyEglContextFactory(drawView);
         final EGL10 egl = createEGL();
 
         final EGLContext eglContext = myEGLContextFactory.createContext(egl, null, null);
-        Assertions.assertThat(eglContext).isNull();
+        Assertions.assertThat(eglContext)
+            .as("The EGL context created")
+            .isNull();
     }
 
 }

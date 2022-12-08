@@ -18,18 +18,24 @@ import android.widget.CheckBox;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.VisibleForTesting;
+
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
-import edu.umd.cs.findbugs.annotations.NonNull;
-import edu.umd.cs.findbugs.annotations.Nullable;
+
+import org.apache.commons.lang3.tuple.Pair;
+
 import java.util.Arrays;
 import java.util.Map;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import java8.util.Optional;
 import java8.util.stream.IntStreams;
 import java8.util.stream.StreamSupport;
 import lombok.extern.java.Log;
-import org.apache.commons.lang3.tuple.Pair;
 import puscas.mobilertapp.configs.Config;
 import puscas.mobilertapp.configs.ConfigResolution;
 import puscas.mobilertapp.configs.ConfigSamples;
@@ -80,23 +86,6 @@ public final class MainActivity extends Activity {
      * codebase.
      */
     private static Activity currentInstance = null;
-
-    /*
-     ***********************************************************************
-     * Static class initializer
-     ***********************************************************************
-     */
-    static {
-        try {
-            System.loadLibrary("MobileRT");
-            System.loadLibrary("Components");
-            System.loadLibrary("AppMobileRT");
-        } catch (final UnsatisfiedLinkError ex) {
-            UtilsLogging.logThrowable(ex, "MainActivity#static");
-            throw ex;
-        }
-    }
-
 
     /*
      ***********************************************************************
@@ -155,6 +144,15 @@ public final class MainActivity extends Activity {
      * The path to a directory containing the OBJ and MTL files of a scene.
      */
     private String sceneFilePath = null;
+
+    /**
+     * Loads the MobileRT native library.
+     */
+    private static void loadMobileRT() {
+        System.loadLibrary("MobileRT");
+        System.loadLibrary("Components");
+        System.loadLibrary("AppMobileRT");
+    }
 
     /**
      * Helper method that calls the UI thread to update the UI with a custom message.
@@ -232,7 +230,14 @@ public final class MainActivity extends Activity {
      */
     @Override
     public void onCreate(@Nullable final Bundle savedInstanceState) {
-        currentInstance = this;
+        try {
+            loadMobileRT();
+        } catch (final Throwable ex) {
+            UtilsLogging.logThrowable(ex, "MainActivity#static");
+            throw ex;
+        }
+
+        setCurrentInstance();
         super.onCreate(savedInstanceState);
         log.info("onCreate start");
 
@@ -405,7 +410,6 @@ public final class MainActivity extends Activity {
      ***********************************************************************
      */
 
-    // Ray Tracing methods
 
     @Override
     protected void onActivityResult(final int requestCode,
@@ -798,6 +802,14 @@ public final class MainActivity extends Activity {
         Preconditions.checkNotNull(this.pickerShader, "pickerShader shouldn't be null");
         Preconditions.checkNotNull(this.pickerScene, "pickerScene shouldn't be null");
         Preconditions.checkNotNull(this.drawView, "drawView shouldn't be null");
+    }
+
+    /**
+     * Sets the {@link #currentInstance}.
+     */
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    void setCurrentInstance() {
+        currentInstance = this;
     }
 
 }
