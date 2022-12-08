@@ -2,15 +2,16 @@ package puscas.mobilertapp;
 
 import android.app.Activity;
 import android.opengl.GLSurfaceView;
-import edu.umd.cs.findbugs.annotations.NonNull;
-import edu.umd.cs.findbugs.annotations.Nullable;
-import java8.util.Objects;
+
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
+import java8.util.Objects;
 import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import puscas.mobilertapp.constants.ConstantsError;
@@ -19,7 +20,6 @@ import puscas.mobilertapp.exceptions.FailureException;
 /**
  * A customized eglCreateContext and eglDestroyContext calls.
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 @Log
 public class MyEglContextFactory implements GLSurfaceView.EGLContextFactory {

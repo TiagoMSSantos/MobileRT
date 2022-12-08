@@ -371,7 +371,8 @@ task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'crea
     }
     sourceDirectories.setFrom(files(["${project.projectDir}/src/main/java"]))
     classDirectories.setFrom(
-        fileTree(dir: "${buildDir}/intermediates/javac/debug/classes/"),
+        // Exclude the 'BuildConfig.class' because it is an automatically generated file.
+        fileTree(dir: "${buildDir}/intermediates/javac/debug/classes/", excludes: ['**/BuildConfig.class']),
         fileTree(dir: "${buildDir}/tmp/kotlin-classes/debug/")
     )
     executionData.setFrom(fileTree(dir: "${buildDir}", includes: [

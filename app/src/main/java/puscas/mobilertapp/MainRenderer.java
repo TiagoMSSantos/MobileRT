@@ -9,21 +9,26 @@ import android.opengl.GLUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.Uninterruptibles;
-import edu.umd.cs.findbugs.annotations.NonNull;
+
+import org.jetbrains.annotations.Contract;
+
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java8.util.Optional;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
+import java8.util.Optional;
 import lombok.AccessLevel;
 import lombok.Setter;
 import lombok.extern.java.Log;
-import org.jetbrains.annotations.Contract;
 import puscas.mobilertapp.configs.Config;
 import puscas.mobilertapp.configs.ConfigGlAttribute;
 import puscas.mobilertapp.configs.ConfigRenderTask;
@@ -40,7 +45,6 @@ import puscas.mobilertapp.utils.Utils;
 import puscas.mobilertapp.utils.UtilsBuffer;
 import puscas.mobilertapp.utils.UtilsGL;
 import puscas.mobilertapp.utils.UtilsGlMatrices;
-import puscas.mobilertapp.utils.UtilsLogging;
 import puscas.mobilertapp.utils.UtilsShader;
 
 /**
