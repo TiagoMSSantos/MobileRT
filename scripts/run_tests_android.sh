@@ -170,12 +170,15 @@ unlockDevice() {
   callCommandUntilSuccess adb disconnect;
   set +e;
   # shellcheck disable=SC2009
-  GRADLE_DAEMON_PROCESS=$(ps aux | grep -i "grep -i GradleDaemon" | grep -v "grep" | tr -s ' ' | cut -d ' ' -f 2 | head -1);
-  echo "Detected Gradle Daemon process: '${GRADLE_DAEMON_PROCESS}'";
+  GRADLE_DAEMON_PROCESSES=$(ps aux | grep -i "grep -i GradleDaemon" | grep -v "grep" | tr -s ' ' | cut -d ' ' -f 2);
+  echo "Detected Gradle Daemon process(es): '${GRADLE_DAEMON_PROCESSES}'";
   set +u;
   if [ -z "${CI}" ]; then
-    echo "Killing previous Gradle Daemon process, just in case it was stuck: '${GRADLE_DAEMON_PROCESS}'";
-    kill -KILL "${GRADLE_DAEMON_PROCESS}";
+    echo "Killing previous Gradle Daemon process, just in case it was stuck: '${GRADLE_DAEMON_PROCESSES}'";
+    for GRADLE_DAEMON_PROCESS in ${GRADLE_DAEMON_PROCESSES}; do
+      echo "Killing: '${GRADLE_DAEMON_PROCESS}'";
+      kill -KILL "${GRADLE_DAEMON_PROCESS}";
+    done;
   fi
   set -u;
   set -e;
@@ -450,7 +453,10 @@ runInstrumentationTests() {
   set +e;
   set +u;
   if [ -z "${CI}" ]; then
-    jps | grep -i "gradle" | tr -s ' ' | cut -d ' ' -f 1 | head -1 | xargs kill -KILL;
+    GRADLE_PROCESSES="$(jps | grep -i "gradle" | tr -s ' ' | cut -d ' ' -f 1)";
+    for GRADLE_PROCESS in ${GRADLE_PROCESSES}; do
+      kill -KILL "${GRADLE_PROCESS}";
+    done;
     sh gradlew --stop \
       --no-rebuild \
       -DabiFilters="[${cpu_architecture}]" \
