@@ -26,9 +26,9 @@
   "ignoreTests": false,
   "prConcurrentLimit": 0,
   "prHourlyLimit": 0,
-  "rebaseWhen": "behind-base-branch",
+  "rebaseWhen": "auto",
   "reviewersFromCodeOwners": true,
-  "recreateClosed": true,
+  "recreateClosed": false,
   "major": {
     "enabled": true,
     "automerge": false
