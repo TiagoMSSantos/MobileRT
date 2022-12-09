@@ -250,12 +250,15 @@ waitForEmulator() {
 
   set +e;
   # shellcheck disable=SC2009
-  ADB_PROCESS=$(ps aux | grep -i "adb" | grep -v "grep" | tr -s ' ' | cut -d ' ' -f 2 | head -1);
-  echo "Detected ADB process: '${ADB_PROCESS}'";
+  ADB_PROCESSES=$(ps aux | grep -i "adb" | grep -v "grep" | tr -s ' ' | cut -d ' ' -f 2);
+  echo "Detected ADB process(es): '${ADB_PROCESSES}'";
   set +u;
   if [ -z "${CI}" ]; then
-    echo "Killing previous ADB process, just in case it was stuck: '${ADB_PROCESS}'";
-    kill -KILL "${ADB_PROCESS}";
+    echo "Killing previous ADB process(es), just in case it was stuck: '${ADB_PROCESSES}'";
+    for ADB_PROCESS in ${ADB_PROCESSES}; do
+      echo "Killing: '${ADB_PROCESS}'";
+      kill -KILL "${ADB_PROCESS}";
+    done;
     sleep 3;
   fi
   set -u;
