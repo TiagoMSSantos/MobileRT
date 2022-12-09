@@ -3,22 +3,27 @@ package puscas.mobilertapp;
 import static puscas.mobilertapp.constants.Constants.BYTES_IN_MEGABYTE;
 
 import android.app.ActivityManager;
+import android.graphics.Bitmap;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Rule;
 import org.junit.Test;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.powermock.api.support.membermodification.MemberModifier;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.rule.PowerMockRule;
 
+import java.util.concurrent.CountDownLatch;
+
+import puscas.mobilertapp.configs.ConfigResolution;
 import puscas.mobilertapp.configs.ConfigSamples;
 import puscas.mobilertapp.exceptions.LowMemoryException;
 
 /**
  * The test suite for the {@link MainRenderer}.
  */
-@PrepareForTest(MainActivity.class)
+@PrepareForTest({MainActivity.class, Bitmap.class})
 public class MainRendererTest {
 
     /**
@@ -38,12 +43,19 @@ public class MainRendererTest {
         final ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
         UtilsT.setPrivateField(memoryInfo, "availMem", 100L * BYTES_IN_MEGABYTE);
         UtilsT.setPrivateField(mainRenderer, "memoryInfo", memoryInfo);
-        final Runnable runnable = () -> {};
+
+        final int initialValue = 1;
+        final CountDownLatch countDownLatch = new CountDownLatch(initialValue);
+        final Runnable runnable = countDownLatch::countDown;
 
         mainRenderer.setActivityManager(activityManagerMocked);
         Assertions.assertThatCode(() -> mainRenderer.checksFreeMemory(10, runnable))
             .as("The MainRenderer#checksFreeMemory method")
             .doesNotThrowAnyException();
+
+        Assertions.assertThat(countDownLatch.getCount())
+            .as("The CountDownLatch value")
+            .isEqualTo(initialValue);
     }
 
     /**
@@ -58,17 +70,27 @@ public class MainRendererTest {
         final ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
         UtilsT.setPrivateField(memoryInfo, "availMem", 9L * BYTES_IN_MEGABYTE);
         UtilsT.setPrivateField(mainRenderer, "memoryInfo", memoryInfo);
-        final Runnable runnable = () -> {};
+
+        final int initialValue = 2;
+        final CountDownLatch countDownLatch = new CountDownLatch(initialValue);
+        final Runnable runnable = countDownLatch::countDown;
 
         mainRenderer.setActivityManager(activityManagerMocked);
         Assertions.assertThatThrownBy(() -> mainRenderer.checksFreeMemory(10, runnable))
             .as("The MainRenderer#checksFreeMemory method")
             .isInstanceOf(LowMemoryException.class);
+        Assertions.assertThat(countDownLatch.getCount())
+            .as("The CountDownLatch value")
+            .isEqualTo(initialValue - 1);
 
         UtilsT.setPrivateField(memoryInfo, "lowMemory", true);
         Assertions.assertThatThrownBy(() -> mainRenderer.checksFreeMemory(1, runnable))
             .as("The MainRenderer#checksFreeMemory method")
             .isInstanceOf(LowMemoryException.class);
+
+        Assertions.assertThat(countDownLatch.getCount())
+            .as("The CountDownLatch value")
+            .isEqualTo(initialValue - 2);
     }
 
     /**
@@ -83,12 +105,19 @@ public class MainRendererTest {
         final ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
         UtilsT.setPrivateField(memoryInfo, "availMem", 100L * BYTES_IN_MEGABYTE);
         UtilsT.setPrivateField(mainRenderer, "memoryInfo", memoryInfo);
-        final Runnable runnable = () -> {};
+
+        final int initialValue = 1;
+        final CountDownLatch countDownLatch = new CountDownLatch(initialValue);
+        final Runnable runnable = countDownLatch::countDown;
 
         mainRenderer.setActivityManager(activityManagerMocked);
         Assertions.assertThatThrownBy(() -> mainRenderer.checksFreeMemory(0, runnable))
             .as("The MainRenderer#checksFreeMemory method")
             .isInstanceOf(IllegalArgumentException.class);
+
+        Assertions.assertThat(countDownLatch.getCount())
+            .as("The CountDownLatch value")
+            .isEqualTo(initialValue);
     }
 
     /**
@@ -103,6 +132,51 @@ public class MainRendererTest {
         Assertions.assertThatThrownBy(() -> mainRenderer.resetStats(0, ConfigSamples.builder().build(), -2, 0))
             .as("The MainRenderer#resetStats method")
             .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    /**
+     * Tests the {@link MainRenderer#setBitmap(ConfigResolution, ConfigResolution, boolean)} method
+     * (called by {@link MainRenderer#MainRenderer()}) will throw an {@link Exception} when the
+     * created {@link Bitmap} does not have the expected size.
+     */
+    @Test
+    public void testSetBitmap() {
+        MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
+        try (final MockedStatic<Bitmap> bitmapMockedStatic = Mockito.mockStatic(Bitmap.class)) {
+            final Bitmap bitmapMocked = Mockito.mock(Bitmap.class);
+            bitmapMockedStatic.when(() -> Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888))
+                .thenReturn(bitmapMocked);
+
+            Mockito.when(bitmapMocked.isRecycled())
+                .thenReturn(true);
+            Mockito.when(bitmapMocked.getWidth())
+                .thenReturn(1);
+            Mockito.when(bitmapMocked.getHeight())
+                .thenReturn(1);
+            Assertions.assertThatThrownBy(MainRenderer::new)
+                .as("The MainRenderer#setBitmap method")
+                .isInstanceOf(IllegalArgumentException.class);
+
+            Mockito.when(bitmapMocked.isRecycled())
+                .thenReturn(false);
+            Mockito.when(bitmapMocked.getWidth())
+                .thenReturn(2);
+            Mockito.when(bitmapMocked.getHeight())
+                .thenReturn(1);
+            Assertions.assertThatThrownBy(MainRenderer::new)
+                .as("The MainRenderer#setBitmap method")
+                .isInstanceOf(IllegalArgumentException.class);
+
+            Mockito.when(bitmapMocked.isRecycled())
+                .thenReturn(false);
+            Mockito.when(bitmapMocked.getWidth())
+                .thenReturn(1);
+            Mockito.when(bitmapMocked.getHeight())
+                .thenReturn(2);
+            Assertions.assertThatThrownBy(MainRenderer::new)
+                .as("The MainRenderer#setBitmap method")
+                .isInstanceOf(IllegalArgumentException.class);
+        }
     }
 
 }
