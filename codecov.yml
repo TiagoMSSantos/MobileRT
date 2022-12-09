@@ -3,7 +3,7 @@ codecov:
   token: "token"
   bot: "codecov-bot"
   strict_yaml_branch: "master"
-  max_report_age: "1h"
+  max_report_age: "5h"
   disable_default_path_fixes: false
   notify:
     after_n_builds: 1
@@ -12,21 +12,21 @@ codecov:
 coverage:
   precision: 2
   round: down
-  range: "70..100"
+  range: "0..100"
   status:
     project:
       default:
-        target: auto
+        target: 40%
         threshold: 0%
-        if_ci_failed: success
-        informational: true
+        if_ci_failed: error
+        informational: false
         only_pulls: false
     patch:
       default:
-        target: auto
+        target: 40%
         threshold: 0%
-        if_ci_failed: success
-        informational: true
+        if_ci_failed: error
+        informational: false
         only_pulls: false
 
 parsers:

@@ -170,12 +170,15 @@ unlockDevice() {
   callCommandUntilSuccess adb disconnect;
   set +e;
   # shellcheck disable=SC2009
-  GRADLE_DAEMON_PROCESS=$(ps aux | grep -i "grep -i GradleDaemon" | grep -v "grep" | tr -s ' ' | cut -d ' ' -f 2 | head -1);
-  echo "Detected Gradle Daemon process: '${GRADLE_DAEMON_PROCESS}'";
+  GRADLE_DAEMON_PROCESSES=$(ps aux | grep -i "grep -i GradleDaemon" | grep -v "grep" | tr -s ' ' | cut -d ' ' -f 2);
+  echo "Detected Gradle Daemon process(es): '${GRADLE_DAEMON_PROCESSES}'";
   set +u;
   if [ -z "${CI}" ]; then
-    echo "Killing previous Gradle Daemon process, just in case it was stuck: '${GRADLE_DAEMON_PROCESS}'";
-    kill -KILL "${GRADLE_DAEMON_PROCESS}";
+    echo "Killing previous Gradle Daemon process, just in case it was stuck: '${GRADLE_DAEMON_PROCESSES}'";
+    for GRADLE_DAEMON_PROCESS in ${GRADLE_DAEMON_PROCESSES}; do
+      echo "Killing: '${GRADLE_DAEMON_PROCESS}'";
+      kill -KILL "${GRADLE_DAEMON_PROCESS}";
+    done;
   fi
   set -u;
   set -e;
@@ -279,9 +282,10 @@ waitForEmulator() {
     # Possible machines locally:
     # q35
     # pc
-    callCommandUntilSuccess cpulimit --cpu 8 --limit 800 -- emulator -avd "${avd_emulator}" -cores 8 -memory 2048 -cache-size 2048 -partition-size 2048 -writable-system -ranchu -fixed-scale -skip-adb-auth -gpu swiftshader_indirect -no-audio -no-snapshot -no-snapstorage -no-snapshot-update-time -no-snapshot-save -no-snapshot-load -no-boot-anim -camera-back none -camera-front none -netfast -wipe-data -no-sim -no-passive-gps -read-only -no-direct-adb -no-location-ui -no-hidpi-scaling -no-mouse-reposition -no-nested-warnings -verbose -qemu -m 2048M -machine type=pc,accel=kvm -accel kvm,thread=multi:tcg,thread=multi -smp 8 &
+    # Disconnect the process from the terminal, redirects its output to nohup.out and shields it from SIGHUP.
+    setsid nohup cpulimit --cpu 8 --limit 800 -- emulator -avd "${avd_emulator}" -cores 8 -memory 2048 -cache-size 2048 -partition-size 2048 -writable-system -ranchu -fixed-scale -skip-adb-auth -gpu swiftshader_indirect -no-audio -no-snapshot -no-snapstorage -no-snapshot-update-time -no-snapshot-save -no-snapshot-load -no-boot-anim -camera-back none -camera-front none -netfast -wipe-data -no-sim -no-passive-gps -read-only -no-direct-adb -no-location-ui -no-hidpi-scaling -no-mouse-reposition -no-nested-warnings -verbose -qemu -m 2048M -machine type=pc,accel=kvm -accel kvm,thread=multi:tcg,thread=multi -smp 8 &
     sleep 20;
-    adb_devices_running=$(adb devices | tail -n +2);
+    adb_devices_running=$(callCommandUntilSuccess adb devices | tail -n +2);
   done
   set -e;
   echo "Devices running: '${adb_devices_running}'";
@@ -297,8 +301,7 @@ waitForEmulator() {
 
   unlockDevice;
 
-  callCommandUntilSuccess adb devices;
-  adb_devices_running=$(adb devices | grep -v 'List of devices attached' || true);
+  adb_devices_running=$(callCommandUntilSuccess adb devices | grep -v 'List of devices attached' || true);
   echo "Devices running after triggering boot: '${adb_devices_running}'";
   if [ -z "${adb_devices_running}" ]; then
     # Abort if emulator didn't start.
@@ -450,7 +453,10 @@ runInstrumentationTests() {
   set +e;
   set +u;
   if [ -z "${CI}" ]; then
-    jps | grep -i "gradle" | tr -s ' ' | cut -d ' ' -f 1 | head -1 | xargs kill -KILL;
+    GRADLE_PROCESSES="$(jps | grep -i "gradle" | tr -s ' ' | cut -d ' ' -f 1)";
+    for GRADLE_PROCESS in ${GRADLE_PROCESSES}; do
+      kill -KILL "${GRADLE_PROCESS}";
+    done;
     sh gradlew --stop \
       --no-rebuild \
       -DabiFilters="[${cpu_architecture}]" \

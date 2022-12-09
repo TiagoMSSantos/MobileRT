@@ -259,7 +259,258 @@ h3 {
         text-align: center;
 
     }
-}</style></head><body><div class="pure-g" id="layout"><div class="sidebar pure-u-1 pure-u-md-1-4"><div class="header"><img src="https://raw.githubusercontent.com/kucherenko/jscpd/1.0.0-alpha/assets/logo-small-box.svg?sanitize=true" width="190"><nav class="nav"><ul class="nav-list"><li class="nav-item"><a class="pure-button" href="#bash">bash</a></li><li class="nav-item"><a class="pure-button" href="#variable">variable</a></li><li class="nav-item"><a class="pure-button" href="#cpp">cpp</a></li><li class="nav-item"><a class="pure-button" href="#c">c</a></li><li class="nav-item"><a class="pure-button" href="#java">java</a></li><li class="nav-item"><a class="pure-button" href="#kotlin">kotlin</a></li></ul></nav></div></div><div class="content pure-u-1 pure-u-md-3-4"><div class="controls"><div class="pure-u"><button class="pure-button" onclick="collapseExpandAll()">Collapse/Expand All</button></div></div><table class="pure-table stats"><thead><tr><th>Total files</th><th>Total lines of code</th><th>Duplicated lines</th><th>% of duplications</th></tr></thead><tbody><tr><td>179</td><td>15652</td><td>139</td><td>0.89%</td></tr></tbody></table><div class="clones collapsed"><a name="bash"></a><h1 class="content-subhead">bash</h1><div class="mode-stats"><p><span class="mode-rate">0%</span> Total files: 9, total lines of code: 1331, duplicated lines: 0</p></div><a name="variable"></a><h1 class="content-subhead">variable</h1><div class="mode-stats"><p><span class="mode-rate">0%</span> Total files: 9, total lines of code: 942, duplicated lines: 0</p></div><a name="cpp"></a><h1 class="content-subhead">cpp</h1><div class="mode-stats"><p><span class="mode-rate">1.75%</span> Total files: 97, total lines of code: 7932, duplicated lines: 139</p></div><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Scenes/Scenes.cpp[208:43 - 216:29]<br/>app/Scenes/Scenes.cpp[122:44 - 129:22]</div></header><div class="clone-description"><pre data-first-start="208" data-second-start="122" data-length="8">);
+}</style></head><body><div class="pure-g" id="layout"><div class="sidebar pure-u-1 pure-u-md-1-4"><div class="header"><img src="https://raw.githubusercontent.com/kucherenko/jscpd/1.0.0-alpha/assets/logo-small-box.svg?sanitize=true" width="190"><nav class="nav"><ul class="nav-list"><li class="nav-item"><a class="pure-button" href="#bash">bash</a></li><li class="nav-item"><a class="pure-button" href="#variable">variable</a></li><li class="nav-item"><a class="pure-button" href="#cpp">cpp</a></li><li class="nav-item"><a class="pure-button" href="#c">c</a></li><li class="nav-item"><a class="pure-button" href="#java">java</a></li><li class="nav-item"><a class="pure-button" href="#kotlin">kotlin</a></li></ul></nav></div></div><div class="content pure-u-1 pure-u-md-3-4"><div class="controls"><div class="pure-u"><button class="pure-button" onclick="collapseExpandAll()">Collapse/Expand All</button></div></div><table class="pure-table stats"><thead><tr><th>Total files</th><th>Total lines of code</th><th>Duplicated lines</th><th>% of duplications</th></tr></thead><tbody><tr><td>189</td><td>18624</td><td>517</td><td>2.78%</td></tr></tbody></table><div class="clones collapsed"><a name="bash"></a><h1 class="content-subhead">bash</h1><div class="mode-stats"><p><span class="mode-rate">9.76%</span> Total files: 10, total lines of code: 2572, duplicated lines: 251</p></div><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">scripts/compile_android.sh[8:1 - 50:15]<br/>scripts/check_android.sh[7:1 - 49:27]</div></header><div class="clone-description"><pre data-first-start="8" data-second-start="7" data-length="42">###############################################################################
+###############################################################################
+
+
+###############################################################################
+# Exit immediately if a command exits with a non-zero status.
+###############################################################################
+set -eu;
+###############################################################################
+###############################################################################
+
+
+###############################################################################
+# Change directory to MobileRT root.
+###############################################################################
+cd &quot;$(dirname &quot;${0}&quot;)/..&quot; || exit;
+###############################################################################
+###############################################################################
+
+
+###############################################################################
+# Get helper functions.
+###############################################################################
+# shellcheck disable=SC1091
+. scripts/helper_functions.sh;
+###############################################################################
+###############################################################################
+
+
+###############################################################################
+# Execute Shellcheck on this script.
+###############################################################################
+if [ -x &quot;$(command -v shellcheck)&quot; ]; then
+  shellcheck &quot;${0}&quot; || exit
+fi
+###############################################################################
+###############################################################################
+
+
+###############################################################################
+# Set default arguments.
+###############################################################################
+type='release'</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">scripts/compile_native.sh[12:1 - 55:15]<br/>scripts/check_android.sh[7:1 - 51:15]</div></header><div class="clone-description"><pre data-first-start="12" data-second-start="7" data-length="43">###############################################################################
+###############################################################################
+
+
+###############################################################################
+# Exit immediately if a command exits with a non-zero status.
+###############################################################################
+set -eu;
+###############################################################################
+###############################################################################
+
+
+###############################################################################
+# Change directory to MobileRT root.
+###############################################################################
+cd &quot;$(dirname &quot;${0}&quot;)/..&quot; || exit;
+###############################################################################
+###############################################################################
+
+
+###############################################################################
+# Get helper functions.
+###############################################################################
+# shellcheck disable=SC1091
+. scripts/helper_functions.sh;
+###############################################################################
+###############################################################################
+
+
+###############################################################################
+# Execute Shellcheck on this script.
+###############################################################################
+if [ -x &quot;$(command -v shellcheck)&quot; ]; then
+  shellcheck &quot;${0}&quot; || exit
+fi
+###############################################################################
+###############################################################################
+
+
+###############################################################################
+# Set default arguments.
+###############################################################################
+type='release';
+compiler='g++'</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">scripts/install_dependencies.sh[20:1 - 60:24]<br/>scripts/check_android.sh[7:1 - 47:25]</div></header><div class="clone-description"><pre data-first-start="20" data-second-start="7" data-length="40">###############################################################################
+###############################################################################
+
+
+###############################################################################
+# Exit immediately if a command exits with a non-zero status.
+###############################################################################
+set -eu;
+###############################################################################
+###############################################################################
+
+
+###############################################################################
+# Change directory to MobileRT root.
+###############################################################################
+cd &quot;$(dirname &quot;${0}&quot;)/..&quot; || exit;
+###############################################################################
+###############################################################################
+
+
+###############################################################################
+# Get helper functions.
+###############################################################################
+# shellcheck disable=SC1091
+. scripts/helper_functions.sh;
+###############################################################################
+###############################################################################
+
+
+###############################################################################
+# Execute Shellcheck on this script.
+###############################################################################
+if [ -x &quot;$(command -v shellcheck)&quot; ]; then
+  shellcheck &quot;${0}&quot; || exit
+fi
+###############################################################################
+###############################################################################
+
+
+###############################################################################
+# Install dependencies.</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">scripts/run_tests.sh[7:1 - 50:27]<br/>scripts/check_android.sh[7:1 - 51:15]</div></header><div class="clone-description"><pre data-first-start="7" data-second-start="7" data-length="43">###############################################################################
+###############################################################################
+
+
+###############################################################################
+# Exit immediately if a command exits with a non-zero status.
+###############################################################################
+set -eu;
+###############################################################################
+###############################################################################
+
+
+###############################################################################
+# Change directory to MobileRT root.
+###############################################################################
+cd &quot;$(dirname &quot;${0}&quot;)/..&quot; || exit;
+###############################################################################
+###############################################################################
+
+
+###############################################################################
+# Get helper functions.
+###############################################################################
+# shellcheck disable=SC1091
+. scripts/helper_functions.sh;
+###############################################################################
+###############################################################################
+
+
+###############################################################################
+# Execute Shellcheck on this script.
+###############################################################################
+if [ -x &quot;$(command -v shellcheck)&quot; ]; then
+  shellcheck &quot;${0}&quot; || exit
+fi
+###############################################################################
+###############################################################################
+
+
+###############################################################################
+# Set default arguments.
+###############################################################################
+type='release';
+ndk_version='23.2.8568313'</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">scripts/plot/plot.sh[34:1 - 47:16]<br/>scripts/profile.sh[47:1 - 60:7]</div></header><div class="clone-description"><pre data-first-start="34" data-second-start="47" data-length="13">setPaths() {
+  PATH_TO_SEARCH='./';
+  FILE_TO_SEARCH='MobileRT.jks';
+
+  FIND_MOBILERT=$(find ${PATH_TO_SEARCH} -iname &quot;${FILE_TO_SEARCH}&quot; 2&gt; /dev/null | head -n 1 || true);
+  MOBILERT_PATH=$(echo &quot;${FIND_MOBILERT}&quot; | sed 's/\/app\/.*//g' || true);
+
+  if [ -z &quot;${MOBILERT_PATH}&quot; ]; then
+    PATH_TO_SEARCH='/';
+    FIND_MOBILERT=$(find ${PATH_TO_SEARCH} -iname &quot;MobileRT&quot; 2&gt; /dev/null | head -n 1);
+    MOBILERT_PATH=$(echo &quot;${FIND_MOBILERT}&quot; | sed &quot;s/\/app\/${FILE_TO_SEARCH}/g&quot;);
+  fi
+
+  SCRIPTS_PATH=</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">scripts/plot/plot.sh[48:43 - 64:17]<br/>scripts/profile.sh[69:45 - 84:80]</div></header><div class="clone-description"><pre data-first-start="48" data-second-start="69" data-length="16">;
+
+  set +u;
+  if [ -z &quot;${PLOT_GRAPHS}&quot; ]; then
+    PLOT_GRAPHS=${SCRIPTS_PATH}/&quot;graphs&quot;;
+  fi
+  set -u;
+
+  mkdir -p &quot;${PLOT_GRAPHS}&quot;;
+  set +u;
+  if [ -z &quot;${PLOT_GRAPHS}&quot; ]; then
+    PLOT_GRAPHS=${SCRIPTS_PATH}/&quot;graphs&quot;;
+  fi
+  set -u;
+}
+
+prepareFilenames</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">scripts/test/helper_functions.sh[313:68 - 330:50]<br/>scripts/test/helper_functions.sh[245:61 - 262:53]</div></header><div class="clone-description"><pre data-first-start="313" data-second-start="245" data-length="17">;
+
+  _clearEnvVariables;
+  # Validate the help message returns the expected value.
+  eval '$(${_functionName} -h &gt; /dev/null 2&gt;&amp;1)';
+  returnValue=&quot;$?&quot;;
+  expected='0';
+  assertEqual &quot;${expected}&quot; &quot;${returnValue}&quot; &quot;${_testName} -h&quot;;
+
+  _clearEnvVariables;
+  # Validate the help message returns the expected value.
+  eval '$(${_functionName} \? &gt; /dev/null 2&gt;&amp;1)';
+  returnValue=&quot;$?&quot;;
+  expected='0';
+  assertEqual &quot;${expected}&quot; &quot;${returnValue}&quot; &quot;${_testName} ?&quot;;
+}
+
+# Tests the parseArgumentsToTestAndroid function.</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">scripts/test/helper_functions.sh[380:116 - 398:44]<br/>scripts/test/helper_functions.sh[312:112 - 262:53]</div></header><div class="clone-description"><pre data-first-start="380" data-second-start="312" data-length="18">;
+  assertEqual &quot;${expected}&quot; &quot;${cpu_architecture}&quot; &quot;${_testName} -f&quot;;
+
+  _clearEnvVariables;
+  # Validate the help message returns the expected value.
+  eval '$(${_functionName} -h &gt; /dev/null 2&gt;&amp;1)';
+  returnValue=&quot;$?&quot;;
+  expected='0';
+  assertEqual &quot;${expected}&quot; &quot;${returnValue}&quot; &quot;${_testName} -h&quot;;
+
+  _clearEnvVariables;
+  # Validate the help message returns the expected value.
+  eval '$(${_functionName} \? &gt; /dev/null 2&gt;&amp;1)';
+  returnValue=&quot;$?&quot;;
+  expected='0';
+  assertEqual &quot;${expected}&quot; &quot;${returnValue}&quot; &quot;${_testName} ?&quot;;
+}
+
+# Tests the parseArgumentsToCheck function.</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">scripts/test/helper_functions.sh[424:82 - 443:4]<br/>scripts/test/helper_functions.sh[312:112 - 262:53]</div></header><div class="clone-description"><pre data-first-start="424" data-second-start="312" data-length="19">;
+  assertEqual &quot;${expected}&quot; &quot;${cpu_architecture}&quot; &quot;${_testName} -f&quot;;
+
+  _clearEnvVariables;
+  # Validate the help message returns the expected value.
+  eval '$(${_functionName} -h &gt; /dev/null 2&gt;&amp;1)';
+  returnValue=&quot;$?&quot;;
+  expected='0';
+  assertEqual &quot;${expected}&quot; &quot;${returnValue}&quot; &quot;${_testName} -h&quot;;
+
+  _clearEnvVariables;
+  # Validate the help message returns the expected value.
+  eval '$(${_functionName} \? &gt; /dev/null 2&gt;&amp;1)';
+  returnValue=&quot;$?&quot;;
+  expected='0';
+  assertEqual &quot;${expected}&quot; &quot;${returnValue}&quot; &quot;${_testName} ?&quot;;
+}
+
+
+set</pre></div></section><a name="variable"></a><h1 class="content-subhead">variable</h1><div class="mode-stats"><p><span class="mode-rate">0%</span> Total files: 10, total lines of code: 1721, duplicated lines: 0</p></div><a name="cpp"></a><h1 class="content-subhead">cpp</h1><div class="mode-stats"><p><span class="mode-rate">1.71%</span> Total files: 99, total lines of code: 8105, duplicated lines: 139</p></div><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/Scenes/Scenes.cpp[208:43 - 216:29]<br/>app/Scenes/Scenes.cpp[122:44 - 129:22]</div></header><div class="clone-description"><pre data-first-start="208" data-second-start="122" data-length="8">);
 
     // sphere - mirror
     scene.spheres_.emplace_back(Sphere {
@@ -398,4 +649,131 @@ h3 {
     m_ui-&gt;graphicsView-&gt;resize(m_config.width + 2, m_config.height + 2);
 }
 
-void MainWindow::keyPressEvent</pre></div></section><a name="c"></a><h1 class="content-subhead">c</h1><div class="mode-stats"><p><span class="mode-rate">0%</span> Total files: 4, total lines of code: 141, duplicated lines: 0</p></div><a name="java"></a><h1 class="content-subhead">java</h1><div class="mode-stats"><p><span class="mode-rate">0%</span> Total files: 59, total lines of code: 5185, duplicated lines: 0</p></div><a name="kotlin"></a><h1 class="content-subhead">kotlin</h1><div class="mode-stats"><p><span class="mode-rate">0%</span> Total files: 1, total lines of code: 121, duplicated lines: 0</p></div></div><div class="footer"><p>© 2013-2018 jscpd, copy/paste detector</p></div></div></div></body></html>
+void MainWindow::keyPressEvent</pre></div></section><a name="c"></a><h1 class="content-subhead">c</h1><div class="mode-stats"><p><span class="mode-rate">0%</span> Total files: 4, total lines of code: 141, duplicated lines: 0</p></div><a name="java"></a><h1 class="content-subhead">java</h1><div class="mode-stats"><p><span class="mode-rate">2.13%</span> Total files: 65, total lines of code: 5961, duplicated lines: 127</p></div><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/MainRendererTest.java[66:40 - 71:58]<br/>app/src/test/java/puscas/mobilertapp/MainRendererTest.java[39:37 - 44:60]</div></header><div class="clone-description"><pre data-first-start="66" data-second-start="39" data-length="5">() {
+        MemberModifier.suppress(MemberModifier.method(MainActivity.class, &quot;resetErrno&quot;));
+        final MainRenderer mainRenderer = new MainRenderer();
+        final ActivityManager activityManagerMocked = Mockito.mock(ActivityManager.class);
+        final ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
+        UtilsT.setPrivateField(memoryInfo, &quot;availMem&quot;, 9L</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/MainRendererTest.java[101:41 - 114:38]<br/>app/src/test/java/puscas/mobilertapp/MainRendererTest.java[39:37 - 52:34]</div></header><div class="clone-description"><pre data-first-start="101" data-second-start="39" data-length="13">() {
+        MemberModifier.suppress(MemberModifier.method(MainActivity.class, &quot;resetErrno&quot;));
+        final MainRenderer mainRenderer = new MainRenderer();
+        final ActivityManager activityManagerMocked = Mockito.mock(ActivityManager.class);
+        final ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
+        UtilsT.setPrivateField(memoryInfo, &quot;availMem&quot;, 100L * BYTES_IN_MEGABYTE);
+        UtilsT.setPrivateField(mainRenderer, &quot;memoryInfo&quot;, memoryInfo);
+
+        final int initialValue = 1;
+        final CountDownLatch countDownLatch = new CountDownLatch(initialValue);
+        final Runnable runnable = countDownLatch::countDown;
+
+        mainRenderer.setActivityManager(activityManagerMocked);
+        Assertions.assertThatThrownBy</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/MainRendererTest.java[163:30 - 173:30]<br/>app/src/test/java/puscas/mobilertapp/MainRendererTest.java[153:30 - 163:30]</div></header><div class="clone-description"><pre data-first-start="163" data-second-start="153" data-length="10">);
+            Mockito.when(bitmapMocked.getHeight())
+                .thenReturn(1);
+            Assertions.assertThatThrownBy(MainRenderer::new)
+                .as(&quot;The MainRenderer#setBitmap method&quot;)
+                .isInstanceOf(IllegalArgumentException.class);
+
+            Mockito.when(bitmapMocked.isRecycled())
+                .thenReturn(false);
+            Mockito.when(bitmapMocked.getWidth())
+                .thenReturn(1</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/MyEglContextFactoryTest.java[271:49 - 282:48]<br/>app/src/test/java/puscas/mobilertapp/MyEglContextFactoryTest.java[245:41 - 256:51]</div></header><div class="clone-description"><pre data-first-start="271" data-second-start="245" data-length="11">() {
+        MemberModifier.suppress(MemberModifier.method(MainActivity.class, &quot;resetErrno&quot;));
+
+        final Context context = new MainActivity();
+        final DrawView drawView = new DrawView(context);
+
+        final GLSurfaceView.EGLContextFactory myEGLContextFactory = new MyEglContextFactory(drawView);
+        final EGL10 egl = createEGL();
+
+        // Values to be returned by the EGL10 mocked.
+        eglContextDestroy = false;
+        eglErrorReturnedByMock = EGL10.EGL_NONE</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/MyEglContextFactoryTest.java[295:34 - 307:43]<br/>app/src/test/java/puscas/mobilertapp/MyEglContextFactoryTest.java[245:41 - 257:40]</div></header><div class="clone-description"><pre data-first-start="295" data-second-start="245" data-length="12">() {
+        MemberModifier.suppress(MemberModifier.method(MainActivity.class, &quot;resetErrno&quot;));
+
+        final Context context = new MainActivity();
+        final DrawView drawView = new DrawView(context);
+
+        final GLSurfaceView.EGLContextFactory myEGLContextFactory = new MyEglContextFactory(drawView);
+        final EGL10 egl = createEGL();
+
+        // Values to be returned by the EGL10 mocked.
+        eglContextDestroy = false;
+        eglErrorReturnedByMock = EGL10.EGL_SUCCESS;
+        eglContextReturnedByMock = Mockito</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/MyEglContextFactoryTest.java[320:37 - 330:36]<br/>app/src/test/java/puscas/mobilertapp/MyEglContextFactoryTest.java[245:41 - 255:26]</div></header><div class="clone-description"><pre data-first-start="320" data-second-start="245" data-length="10">() {
+        MemberModifier.suppress(MemberModifier.method(MainActivity.class, &quot;resetErrno&quot;));
+
+        final Context context = new MainActivity();
+        final DrawView drawView = new DrawView(context);
+
+        final GLSurfaceView.EGLContextFactory myEGLContextFactory = new MyEglContextFactory(drawView);
+        final EGL10 egl = createEGL();
+
+        // Values to be returned by the EGL10 mocked.
+        // Mock the 1st EGLContext.</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/MyEglContextFactoryTest.java[331:9 - 340:36]<br/>app/src/test/java/puscas/mobilertapp/MyEglContextFactoryTest.java[305:9 - 313:6]</div></header><div class="clone-description"><pre data-first-start="331" data-second-start="305" data-length="9">eglContextDestroy = false;
+        eglErrorReturnedByMock = EGL10.EGL_SUCCESS;
+        eglContextReturnedByMock = Mockito.mock(EGLContext.class);
+
+        final EGLContext eglContext = myEGLContextFactory.createContext(egl, null, null);
+        Assertions.assertThat(eglContext)
+            .as(&quot;The EGL context created&quot;)
+            .isNotNull();
+
+        // Mock the 2nd EGLContext.</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/MyEglContextFactoryTest.java[358:42 - 376:19]<br/>app/src/test/java/puscas/mobilertapp/MyEglContextFactoryTest.java[245:41 - 313:6]</div></header><div class="clone-description"><pre data-first-start="358" data-second-start="245" data-length="18">() {
+        MemberModifier.suppress(MemberModifier.method(MainActivity.class, &quot;resetErrno&quot;));
+
+        final Context context = new MainActivity();
+        final DrawView drawView = new DrawView(context);
+
+        final GLSurfaceView.EGLContextFactory myEGLContextFactory = new MyEglContextFactory(drawView);
+        final EGL10 egl = createEGL();
+
+        // Values to be returned by the EGL10 mocked.
+        eglContextDestroy = false;
+        eglErrorReturnedByMock = EGL10.EGL_SUCCESS;
+        eglContextReturnedByMock = Mockito.mock(EGLContext.class);
+
+        final EGLContext eglContext = myEGLContextFactory.createContext(egl, null, null);
+        Assertions.assertThat(eglContext)
+            .as(&quot;The EGL context created&quot;)
+            .isNotNull();
+        Assertions</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/MyEglContextFactoryTest.java[392:107 - 405:14]<br/>app/src/test/java/puscas/mobilertapp/MyEglContextFactoryTest.java[301:101 - 313:6]</div></header><div class="clone-description"><pre data-first-start="392" data-second-start="301" data-length="13">);
+        final EGL10 egl = createEGL();
+
+        // Values to be returned by the EGL10 mocked.
+        eglContextDestroy = false;
+        eglErrorReturnedByMock = EGL10.EGL_SUCCESS;
+        eglContextReturnedByMock = Mockito.mock(EGLContext.class);
+
+        final EGLContext eglContext = myEGLContextFactory.createContext(egl, null, null);
+        Assertions.assertThat(eglContext)
+            .as(&quot;The EGL context created&quot;)
+            .isNotNull();
+
+        final</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/androidTest/java/puscas/mobilertapp/utils/UtilsT.java[59:5 - 85:24]<br/>app/src/test/java/puscas/mobilertapp/UtilsT.java[20:5 - 46:23]</div></header><div class="clone-description"><pre data-first-start="59" data-second-start="20" data-length="26">/**
+     * Helper method that gets a private field from an {@link Object}.
+     *
+     * @param clazz     The {@link Object} to get the private field.
+     * @param fieldName The name of the field to get.
+     * @return The private field.
+     * @implNote This method uses reflection to be able to get the private
+     *           field from the {@link Object}.
+     */
+    @NonNull
+    public static &lt;T&gt; T getPrivateField(@NonNull final Object clazz,
+                                        @NonNull final String fieldName) {
+        Field field = null;
+        try {
+            // Use reflection to access the private field.
+            field = clazz.getClass().getDeclaredField(fieldName);
+        } catch (final NoSuchFieldException ex) {
+            log.warning(ex.getMessage());
+        }
+        Preconditions.checkNotNull(field, &quot;field shouldn't be null&quot;);
+        field.setAccessible(true); // Make the field public.
+
+        T privateField = null;
+        try {
+            privateField = (T) field.get(clazz);
+        } catch (final IllegalAccessException ex) {
+            log.warning</pre></div></section><a name="kotlin"></a><h1 class="content-subhead">kotlin</h1><div class="mode-stats"><p><span class="mode-rate">0%</span> Total files: 1, total lines of code: 124, duplicated lines: 0</p></div></div><div class="footer"><p>© 2013-2018 jscpd, copy/paste detector</p></div></div></div></body></html>
