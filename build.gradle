@@ -26,8 +26,6 @@ buildscript {
     }
 
     ext {
-        // Old Jacoco version so its compatible with Android Instrumentation Tests
-        old_jacoco_version = "0.8.4"
         jacoco_version = "0.8.8"
     }
 
@@ -123,7 +121,7 @@ subprojects {
         resolutionStrategy {
             eachDependency { details ->
                 if ('org.jacoco' == details.requested.group) {
-                    details.useVersion "${old_jacoco_version}"
+                    details.useVersion "${jacoco_version}"
                 }
             }
         }
