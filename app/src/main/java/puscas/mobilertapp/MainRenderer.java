@@ -188,13 +188,13 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
 
     /**
      * The {@link ConfigResolution} of the {@link Bitmap} where the Ray Tracer engine will render
-     * the scene.
+     * the scene. This represents the resolution of the desired {@link Bitmap}.
      */
     private ConfigResolution configResolution = ConfigResolution.builder().build();
 
     /**
-     * The {@link ConfigResolutionView} of the {@link DrawView} where the Ray Tracer engine will render
-     * the scene.
+     * The {@link ConfigResolution} of the {@link DrawView} where the Ray Tracer engine will render
+     * the scene. This represents the resolution the {@link View} in the OpenGL context.
      */
     private ConfigResolution configResolutionView = ConfigResolution.builder().build();
 

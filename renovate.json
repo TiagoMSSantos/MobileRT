@@ -74,5 +74,9 @@
   "dockerfile": {
     "enabled": true,
     "ignoreDeps": ["ubuntu"]
+  },
+  "gradle": {
+    "enabled": true,
+    "ignoreDeps": ["androidx.test:rules", "androidx.test:runner"]
   }
 }

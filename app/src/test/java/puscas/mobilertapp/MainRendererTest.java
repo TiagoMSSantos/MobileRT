@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import org.assertj.core.api.Assertions;
 import org.junit.Rule;
 import org.junit.Test;
+import org.mockito.ArgumentMatchers;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.powermock.api.support.membermodification.MemberModifier;
@@ -15,6 +16,8 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.rule.PowerMockRule;
 
 import java.util.concurrent.CountDownLatch;
+
+import javax.microedition.khronos.opengles.GL10;
 
 import puscas.mobilertapp.configs.ConfigResolution;
 import puscas.mobilertapp.configs.ConfigSamples;
@@ -177,6 +180,33 @@ public class MainRendererTest {
                 .as("The MainRenderer#setBitmap method")
                 .isInstanceOf(IllegalArgumentException.class);
         }
+    }
+
+    /**
+     * Tests that when the {@link MainRenderer#onDrawFrame(GL10)} method fails to render a frame,
+     * it still exits the method normally without any {@link Exception} being thrown.
+     */
+    @Test
+    public void testRenderingErrorOnDrawFrame() {
+        MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
+        MemberModifier.suppress(MemberModifier.method(MainActivity.class, "showUiMessage"));
+        MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetRenderButton"));
+        final MainRenderer mainRenderer = new MainRenderer();
+        Assertions.assertThat((boolean) UtilsT.getPrivateField(mainRenderer, "firstFrame"))
+            .as("The 1st frame field")
+            .isTrue();
+
+        try (final MockedStatic<MainActivity> mainActivityMockedStatic = Mockito.mockStatic(MainActivity.class)) {
+            mainRenderer.onDrawFrame(Mockito.mock(GL10.class));
+
+            mainActivityMockedStatic.verify(() -> MainActivity.showUiMessage(ArgumentMatchers.anyString()), Mockito.times(1));
+            mainActivityMockedStatic.verify(MainActivity::resetRenderButton, Mockito.times(1));
+
+            Assertions.assertThat((boolean) UtilsT.getPrivateField(mainRenderer, "firstFrame"))
+                .as("The 1st frame field")
+                .isFalse();
+        }
+
     }
 
 }

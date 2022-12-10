@@ -282,8 +282,17 @@ waitForEmulator() {
     # Possible machines locally:
     # q35
     # pc
-    # Disconnect the process from the terminal, redirects its output to nohup.out and shields it from SIGHUP.
-    setsid nohup cpulimit --cpu 8 --limit 800 -- emulator -avd "${avd_emulator}" -cores 8 -memory 2048 -cache-size 2048 -partition-size 2048 -writable-system -ranchu -fixed-scale -skip-adb-auth -gpu swiftshader_indirect -no-audio -no-snapshot -no-snapstorage -no-snapshot-update-time -no-snapshot-save -no-snapshot-load -no-boot-anim -camera-back none -camera-front none -netfast -wipe-data -no-sim -no-passive-gps -read-only -no-direct-adb -no-location-ui -no-hidpi-scaling -no-mouse-reposition -no-nested-warnings -verbose -qemu -m 2048M -machine type=pc,accel=kvm -accel kvm,thread=multi:tcg,thread=multi -smp 8 &
+    # setsid -> Run the Android emulator in a new session.
+    # nohup -> Disconnect the process from the terminal, redirects its output to nohup.out and shields it from SIGHUP.
+    # Both `setsid` and `nohup` are used to make sure the Android emulator continues to work after this script is completed.
+    setsid nohup cpulimit --cpu 8 --limit 800 -- \
+      emulator -avd "${avd_emulator}" -cores 8 -memory 2048 -cache-size 2048 -partition-size 2048 \
+      -writable-system -ranchu -fixed-scale -skip-adb-auth -gpu swiftshader_indirect -no-audio \
+      -no-snapshot -no-snapstorage -no-snapshot-update-time -no-snapshot-save -no-snapshot-load \
+      -no-boot-anim -camera-back none -camera-front none -netfast -wipe-data -no-sim \
+      -no-passive-gps -read-only -no-direct-adb -no-location-ui -no-hidpi-scaling \
+      -no-mouse-reposition -no-nested-warnings -verbose \
+      -qemu -m 2048M -machine type=pc,accel=kvm -accel kvm,thread=multi:tcg,thread=multi -smp 8 &
     sleep 20;
     adb_devices_running=$(callCommandUntilSuccess adb devices | tail -n +2);
   done
