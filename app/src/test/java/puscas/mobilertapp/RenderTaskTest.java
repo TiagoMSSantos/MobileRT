@@ -9,7 +9,8 @@ import org.junit.Test;
 public class RenderTaskTest {
 
     /**
-     * Tests the {@code toString} method in the builder class of {@link RenderTask}.
+     * Tests the {@link RenderTask#builder()#toString()} method in the builder class of
+     * {@link RenderTask}.
      */
     @Test
     public void testRenderTaskBuilderToString() {

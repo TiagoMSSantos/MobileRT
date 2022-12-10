@@ -7,13 +7,17 @@ import android.view.ViewGroup;
 import android.view.ViewManager;
 import android.widget.NumberPicker;
 import android.widget.TextView;
+
+import org.assertj.core.api.Assertions;
+import org.jetbrains.annotations.Contract;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.core.classloader.annotations.SuppressStaticInitializationFor;
+import org.powermock.modules.junit4.PowerMockRunner;
+
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import lombok.extern.java.Log;
-import org.assertj.core.api.Assertions;
-import org.jetbrains.annotations.Contract;
-import org.junit.Ignore;
-import org.junit.Test;
 import puscas.mobilertapp.MainActivity;
 import puscas.mobilertapp.constants.CustomNumberPicker;
 import puscas.mobilertapp.exceptions.FailureException;
@@ -22,6 +26,8 @@ import puscas.mobilertapp.exceptions.FailureException;
  * The test suite for the {@link CustomNumberPicker} util class.
  */
 @Log
+@RunWith(PowerMockRunner.class)
+@SuppressStaticInitializationFor("puscas.mobilertapp.MainActivity")
 public final class CustomNumberPickerTest {
 
     /**
@@ -184,7 +190,6 @@ public final class CustomNumberPickerTest {
      * Tests that the {@link CustomNumberPicker#addView(View, ViewGroup.LayoutParams)}
      * method throws an exception when provided a {@link View}.
      */
-    @Ignore("Needs MobileRT library for some reason ...")
     @Test
     public void testAddViewWithWrongView() {
         final Context context = new MainActivity();
@@ -198,9 +203,7 @@ public final class CustomNumberPickerTest {
             .as("CustomNumberPicker shouldn't be null.")
             .isNotNull();
 
-        Assertions.assertThatThrownBy(
-            () -> customNumberPicker.addView(view, params)
-        )
+        Assertions.assertThatThrownBy(() -> customNumberPicker.addView(view, params))
             .as("Assertions#assertThatThrownBy should throw an exception.")
             .isInstanceOf(FailureException.class)
             .hasMessageContaining("View cannot be cast to TextView.");
@@ -210,7 +213,6 @@ public final class CustomNumberPickerTest {
      * Tests that the {@link CustomNumberPicker#addView(View, ViewGroup.LayoutParams)}
      * method doesn't throw any exception when providing a valid {@link TextView}.
      */
-    @Ignore("Needs MobileRT library for some reason ...")
     @Test
     public void testAddViewWithTextView() {
         final Context context = new MainActivity();

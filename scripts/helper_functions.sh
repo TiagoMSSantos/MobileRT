@@ -150,7 +150,7 @@ callCommandUntilError() {
   retry=0;
   "$@";
   lastResult=${?};
-  while [ "${lastResult}" -eq 0 ] && [ ${retry} -lt 10 ]; do
+  while [ "${lastResult}" -eq 0 ] && [ ${retry} -lt 5 ]; do
     retry=$(( retry + 1 ));
     "$@";
     lastResult=${?};
@@ -175,7 +175,7 @@ callCommandUntilSuccess() {
   "$@";
   lastResult=${?};
   echo "result: '${lastResult}'";
-  while [ "${lastResult}" -ne 0 ] && [ ${retry} -lt 10 ]; do
+  while [ "${lastResult}" -ne 0 ] && [ ${retry} -lt 5 ]; do
     retry=$(( retry + 1 ));
     "$@";
     lastResult=${?};
@@ -200,7 +200,7 @@ callAdbShellCommandUntilSuccess() {
   # echo "Output of command: '${output}'";
   lastResult=$(echo "${output}" | grep '::.*::' | sed 's/:://g'| tr -d '[:space:]');
   echo "result: '${lastResult}'";
-  while [ "${lastResult}" -ne 0 ] && [ ${retry} -lt 10 ]; do
+  while [ "${lastResult}" -ne 0 ] && [ ${retry} -lt 20 ]; do
     retry=$(( retry + 1 ));
     output=$("$@");
     echo "Output of command: '${output}'";
@@ -302,7 +302,7 @@ executeWithoutExiting () {
 _killProcessUsingFile() {
   processes_using_file=$(lsof "${1}" | tail -n +2 | tr -s ' ');
   retry=0;
-  while [ "${processes_using_file}" != '' ] && [ ${retry} -lt 10 ]; do
+  while [ "${processes_using_file}" != '' ] && [ ${retry} -lt 5 ]; do
     retry=$(( retry + 1 ));
     echo "processes_using_file: '${processes_using_file}'";
     process_id_using_file=$(echo "${processes_using_file}" | cut -d ' ' -f 2 | head -1);
@@ -318,7 +318,7 @@ _killProcessUsingFile() {
 clearOldBuildFiles() {
   files_being_used=$(find . -iname "*.fuse_hidden*" || true);
   retry=0;
-  while [ "${files_being_used}" != '' ] && [ ${retry} -lt 10 ]; do
+  while [ "${files_being_used}" != '' ] && [ ${retry} -lt 5 ]; do
     retry=$(( retry + 1 ));
     echo "files_being_used: '${files_being_used}'";
     for file_being_used in ${files_being_used}; do

@@ -1,5 +1,7 @@
 package puscas.mobilertapp.utils;
 
+import static org.junit.Assert.*;
+
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
@@ -8,35 +10,26 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 
 /**
- * The unit tests for the {@link UtilsLogging} util class.
+ * The unit tests for the {@link UtilsShader} util class.
  */
-public class UtilsLoggingTest {
+public class UtilsShaderTest {
 
     /**
-     * Tests that it's not possible to instantiate {@link UtilsLogging}.
+     * Tests that it's not possible to instantiate {@link UtilsShader}.
      *
      * @throws NoSuchMethodException If Java reflection fails when using the private constructor.
      */
     @Test
-    public void testDefaultUtilsLogging() throws NoSuchMethodException {
-        final Constructor<UtilsLogging> constructor = UtilsLogging.class.getDeclaredConstructor();
+    public void testDefaultUtilsShader() throws NoSuchMethodException {
+        final Constructor<UtilsShader> constructor = UtilsShader.class.getDeclaredConstructor();
         Assertions.assertThat(Modifier.isPrivate(constructor.getModifiers()))
             .as("The constructor is private")
             .isTrue();
         constructor.setAccessible(true);
         Assertions.assertThatThrownBy(constructor::newInstance)
-            .as("The default constructor of UtilsLogging")
+            .as("The default constructor of UtilsShader")
             .isNotNull()
             .isInstanceOf(InvocationTargetException.class);
     }
 
-    /**
-     * Tests the {@link UtilsLogging#printStackTrace()} method.
-     */
-    @Test
-    public void testPrintStackTrace() {
-        Assertions.assertThatCode(UtilsLogging::printStackTrace)
-            .as("The UtilsLogging#printStackTrace method")
-            .doesNotThrowAnyException();
-    }
 }

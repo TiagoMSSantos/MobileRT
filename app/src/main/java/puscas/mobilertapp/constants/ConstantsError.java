@@ -1,9 +1,11 @@
 package puscas.mobilertapp.constants;
 
 import android.content.Context;
+
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
+
 import lombok.experimental.UtilityClass;
 import puscas.mobilertapp.DrawView;
 import puscas.mobilertapp.MyEglContextFactory;

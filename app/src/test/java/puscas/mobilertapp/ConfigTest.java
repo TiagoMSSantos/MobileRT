@@ -1,8 +1,9 @@
 package puscas.mobilertapp;
 
-import lombok.extern.java.Log;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
+
+import lombok.extern.java.Log;
 import puscas.mobilertapp.configs.Config;
 import puscas.mobilertapp.configs.ConfigResolution;
 import puscas.mobilertapp.configs.ConfigSamples;
@@ -96,6 +97,18 @@ public final class ConfigTest {
             .assertEquals(mat, config.getMatFilePath(), "MAT file path not the expected value.");
         Assertions
             .assertEquals(cam, config.getCamFilePath(), "CAM file path not the expected value.");
+    }
+
+    /**
+     * Tests the {@link Config#builder()#toString()} method in the builder class of {@link Config}.
+     */
+    @Test
+    public void testConfigBuilderToString() {
+        final String configBuilderStr = Config.builder().toString();
+        org.assertj.core.api.Assertions.assertThat(configBuilderStr)
+            .as("The toString of Config.builder()")
+            .isNotNull()
+            .isInstanceOf(String.class);
     }
 
 }
