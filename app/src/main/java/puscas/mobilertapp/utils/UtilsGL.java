@@ -2,15 +2,17 @@ package puscas.mobilertapp.utils;
 
 import android.opengl.GLES20;
 import android.opengl.GLUtils;
-import edu.umd.cs.findbugs.annotations.NonNull;
-import java8.util.function.BiFunction;
-import java8.util.function.Function;
-import java8.util.function.Supplier;
-import javax.annotation.Nonnull;
+
+import androidx.annotation.NonNull;
+
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
+
+import java8.util.function.BiFunction;
+import java8.util.function.Function;
+import java8.util.function.Supplier;
 import lombok.experimental.UtilityClass;
 import lombok.extern.java.Log;
 import puscas.mobilertapp.constants.ConstantsMethods;
@@ -166,7 +168,7 @@ public final class UtilsGL {
     /**
      * Helper method that generates and binds a texture name in OpenGL.
      */
-    @Nonnull
+    @NonNull
     public static int[] bindTexture() {
         log.info("bindTexture");
 

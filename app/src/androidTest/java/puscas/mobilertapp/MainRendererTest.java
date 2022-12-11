@@ -2,17 +2,20 @@ package puscas.mobilertapp;
 
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
+
 import com.google.common.base.Preconditions;
-import java.io.InputStream;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-import lombok.extern.java.Log;
+
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.runners.MethodSorters;
 
+import java.io.InputStream;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import lombok.extern.java.Log;
 import puscas.mobilertapp.utils.UtilsGL;
 import puscas.mobilertapp.utils.UtilsShader;
 import puscas.mobilertapp.utils.UtilsT;
@@ -68,9 +71,9 @@ public final class MainRendererTest extends AbstractTest {
      * Helper method that asserts the index of a GLSL shader with the expected.
      *
      * @param shaderIndex   The index of the shader.
-     * @param expectedIndex The expected index.
      */
-    private static void assertIndexOfShader(final int shaderIndex, final int expectedIndex) {
+    private static void assertIndexOfShader(final int shaderIndex) {
+        final int expectedIndex = 4;
         Assertions.assertEquals(
             expectedIndex,
             shaderIndex,
@@ -93,7 +96,7 @@ public final class MainRendererTest extends AbstractTest {
             puscas.mobilertapp.utils.Utils.readTextFromInputStream(inputStream);
 
         final int shaderIndex = createAndGetIndexOfShader(shaderCode, shaderType);
-        assertIndexOfShader(shaderIndex, 4);
+        assertIndexOfShader(shaderIndex);
     }
 
     /**
@@ -137,7 +140,8 @@ public final class MainRendererTest extends AbstractTest {
             UtilsGL.run(GLES20::glReleaseShaderCompiler);
             latch.countDown();
         });
-        latch.await(1L, TimeUnit.MINUTES);
+        Assertions.assertTrue(latch.await(1L, TimeUnit.MINUTES), "CountDownLatch has value zero as expected.");
+
         return shaderIndex.get();
     }
 

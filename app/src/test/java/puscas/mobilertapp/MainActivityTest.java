@@ -1,5 +1,7 @@
 package puscas.mobilertapp;
 
+import com.google.common.base.Preconditions;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,11 +15,14 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Objects;
 
+import lombok.extern.java.Log;
+
 /**
  * The test suite for {@link MainActivity} class.
  */
 @RunWith(PowerMockRunner.class)
 @SuppressStaticInitializationFor("puscas.mobilertapp.MainActivity")
+@Log
 public final class MainActivityTest {
 
     /**
@@ -31,11 +36,10 @@ public final class MainActivityTest {
 
     /**
      * Setup method called before each test.
-     *
-     * @implNote Loads the native MobileRT library for these tests.
      */
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
+        log.info("setUp");
         // Because of using PowerMock to mock the static initializer, then it's not necessary
         // to add the native MobileRT library to the Java library path.
         // addLibraryPath("../build_release/lib");
@@ -48,6 +52,7 @@ public final class MainActivityTest {
      */
     @After
     public void tearDown() {
+        log.info("tearDown");
     }
 
     /**
@@ -58,12 +63,15 @@ public final class MainActivityTest {
      *
      * @param pathToAdd The path to add.
      * @throws Exception If anything goes wrong.
+     * @implNote Loads the native MobileRT library to be used by the {@link MainActivity} that these
+     * tests use.
      */
     private static void addLibraryPath(final String pathToAdd) throws Exception{
         final Field usrPathsField = ClassLoader.class.getDeclaredField("usr_paths");
         usrPathsField.setAccessible(true);
         // Get array of paths.
         final String[] paths = (String[]) usrPathsField.get(null);
+        Preconditions.checkNotNull(paths, "paths should not be null");
         // Check if the path to add is already present.
         for(final String path : paths) {
             if (Objects.equals(path, pathToAdd)) {

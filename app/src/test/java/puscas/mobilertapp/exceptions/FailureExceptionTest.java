@@ -1,7 +1,8 @@
 package puscas.mobilertapp.exceptions;
 
-import lombok.extern.java.Log;
 import org.junit.Test;
+
+import lombok.extern.java.Log;
 
 /**
  * The test suite for {@link FailureException} class.

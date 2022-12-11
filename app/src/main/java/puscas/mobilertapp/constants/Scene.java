@@ -1,6 +1,7 @@
 package puscas.mobilertapp.constants;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
+import androidx.annotation.NonNull;
+
 import java8.util.J8Arrays;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

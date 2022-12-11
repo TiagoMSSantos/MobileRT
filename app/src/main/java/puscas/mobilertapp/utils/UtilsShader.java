@@ -2,9 +2,14 @@ package puscas.mobilertapp.utils;
 
 import android.opengl.GLES20;
 import android.opengl.GLUtils;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
+
+import com.google.common.base.Preconditions;
+
 import java.util.Map;
-import edu.umd.cs.findbugs.annotations.NonNull;
+
 import lombok.experimental.UtilityClass;
 import lombok.extern.java.Log;
 import puscas.mobilertapp.configs.ConfigGlAttribute;
@@ -43,8 +48,7 @@ public final class UtilsShader {
     public static void checksShaderLinkStatus(final int shaderProgram) {
         log.info("checksShaderLinkStatus");
         final int[] linkStatus = new int[1];
-        UtilsGL
-            .run(() -> GLES20.glGetProgramiv(shaderProgram, GLES20.GL_LINK_STATUS, linkStatus, 0));
+        UtilsGL.run(() -> GLES20.glGetProgramiv(shaderProgram, GLES20.GL_LINK_STATUS, linkStatus, 0));
 
         if (linkStatus[0] != GLES20.GL_TRUE) {
             final String strError = UtilsGL.run(shaderProgram, GLES20::glGetProgramInfoLog);
@@ -61,7 +65,7 @@ public final class UtilsShader {
      * @param source     The code of the shader.
      * @return The OpenGL index of the shader.
      */
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    @VisibleForTesting
     public static int loadShader(final int shaderType,
                                  @NonNull final String source) {
         log.info("loadShader");
@@ -171,6 +175,7 @@ public final class UtilsShader {
      */
     private static int getShaderIndex(@NonNull final Map<Integer, String> shadersCode, final int shaderType) {
         final String shaderCode = shadersCode.get(shaderType);
+        Preconditions.checkNotNull(shaderCode, "shaderCode shouldn't be null");
         return loadShader(shaderType, shaderCode);
     }
 

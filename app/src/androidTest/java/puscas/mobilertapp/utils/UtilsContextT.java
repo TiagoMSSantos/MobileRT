@@ -2,14 +2,18 @@ package puscas.mobilertapp.utils;
 
 import android.content.Context;
 import android.widget.Button;
+
+import androidx.annotation.NonNull;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.espresso.matcher.ViewMatchers;
+
 import com.google.common.util.concurrent.Uninterruptibles;
-import edu.umd.cs.findbugs.annotations.NonNull;
+
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
+
 import lombok.experimental.UtilityClass;
 import lombok.extern.java.Log;
 import puscas.mobilertapp.DrawView;

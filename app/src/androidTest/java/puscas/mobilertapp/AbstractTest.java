@@ -2,21 +2,26 @@ package puscas.mobilertapp;
 
 import android.Manifest;
 import android.content.Intent;
+
 import androidx.annotation.CallSuper;
+import androidx.annotation.NonNull;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
-import edu.umd.cs.findbugs.annotations.NonNull;
-import edu.umd.cs.findbugs.annotations.Nullable;
-import java.util.concurrent.TimeUnit;
-import javax.annotation.OverridingMethodsMustInvokeSuper;
-import lombok.extern.java.Log;
+
+import com.google.common.base.Preconditions;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
-import org.junit.jupiter.api.Assertions;
 import org.junit.rules.TestRule;
 import org.junit.rules.Timeout;
+
+import java.util.concurrent.TimeUnit;
+
+import javax.annotation.OverridingMethodsMustInvokeSuper;
+
+import lombok.extern.java.Log;
 
 /**
  * The abstract class for the Android Instrumentation Tests.
@@ -73,7 +78,6 @@ public abstract class AbstractTest {
     /**
      * The {@link MainActivity} to test.
      */
-    @Nullable
     protected MainActivity activity = null;
 
 
@@ -92,7 +96,7 @@ public abstract class AbstractTest {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         this.activity = this.mainActivityActivityTestRule.launchActivity(intent);
 
-        Assertions.assertNotNull(this.activity, "The Activity didn't start as expected!");
+        Preconditions.checkNotNull(this.activity, "The Activity didn't start as expected!");
     }
 
     /**
@@ -105,7 +109,7 @@ public abstract class AbstractTest {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         log.info(methodName);
 
-        Assertions.assertNotNull(this.activity, "The Activity didn't finish as expected!");
+        Preconditions.checkNotNull(this.activity, "The Activity didn't finish as expected!");
 
         this.activity.finish();
         this.mainActivityActivityTestRule.finishActivity();

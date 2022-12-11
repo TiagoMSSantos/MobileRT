@@ -1,11 +1,14 @@
 package puscas.mobilertapp;
 
 import com.google.common.base.Preconditions;
-import java.util.concurrent.TimeoutException;
-import lombok.extern.java.Log;
+
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
+
+import java.util.concurrent.TimeoutException;
+
+import lombok.extern.java.Log;
 import puscas.mobilertapp.constants.Constants;
 import puscas.mobilertapp.constants.Scene;
 import puscas.mobilertapp.utils.UtilsContextT;

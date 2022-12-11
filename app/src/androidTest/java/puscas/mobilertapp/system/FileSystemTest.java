@@ -1,14 +1,17 @@
 package puscas.mobilertapp.system;
 
 import com.google.common.collect.ImmutableList;
-import java.io.File;
-import java.util.List;
-import java8.util.stream.StreamSupport;
-import lombok.extern.java.Log;
+
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.runners.MethodSorters;
+
+import java.io.File;
+import java.util.List;
+
+import java8.util.stream.StreamSupport;
+import lombok.extern.java.Log;
 import puscas.mobilertapp.AbstractTest;
 import puscas.mobilertapp.MainActivity;
 import puscas.mobilertapp.constants.Constants;
@@ -142,8 +145,7 @@ public final class FileSystemTest extends AbstractTest {
      */
     private static String getAbsolutePath(final String path) {
         final File file = new File(path);
-        final String filePath = file.getAbsolutePath();
-        return filePath;
+        return file.getAbsolutePath();
     }
 
 }

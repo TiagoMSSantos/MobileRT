@@ -6,9 +6,13 @@ import android.graphics.Color;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLUtils;
+import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.OptIn;
 
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.Uninterruptibles;
@@ -24,8 +28,8 @@ import java.util.concurrent.TimeUnit;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import java8.util.Optional;
+import kotlinx.coroutines.DelicateCoroutinesApi;
 import lombok.AccessLevel;
 import lombok.Setter;
 import lombok.extern.java.Log;
@@ -589,8 +593,8 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
 
     /**
      * Creates a new {@link Bitmap} with the size of {@code width} and
-     * {@code height} and also sets the {@link #viewWidth} and
-     * {@link #viewHeight} fields.
+     * {@code height} and also sets the {@code #viewWidth} and
+     * {@code #viewHeight} fields.
      */
     private void setBitmap() {
         log.info(ConstantsMethods.SET_BITMAP);
@@ -603,11 +607,11 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
 
     /**
      * Creates a new {@link Bitmap} with the size of {@code width} and
-     * {@code height} and also sets the {@link #viewWidth} and
-     * {@link #viewHeight} fields.
+     * {@code height} and also sets the {@code #viewWidth} and
+     * {@code #viewHeight} fields.
      *
      * @param configResolution     The resolution of the new {@link Bitmap}.
-     * @param configResolutionView The resolution of the {@link android.view.SurfaceView}.
+     * @param configResolutionView The resolution of the {@link SurfaceView}.
      * @param rasterize            The new {@link #rasterize}.
      */
     void setBitmap(final ConfigResolution configResolution,
@@ -775,6 +779,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
     /**
      * Creates and launches the {@link RenderTask} field.
      */
+    @OptIn(markerClass = DelicateCoroutinesApi.class)
     private void createAndLaunchRenderTask() {
         log.info("createAndLaunchRenderTask");
 

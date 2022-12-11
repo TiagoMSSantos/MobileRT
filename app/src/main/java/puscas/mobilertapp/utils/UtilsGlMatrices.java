@@ -2,8 +2,11 @@ package puscas.mobilertapp.utils;
 
 import android.graphics.Bitmap;
 import android.opengl.Matrix;
-import edu.umd.cs.findbugs.annotations.NonNull;
+
+import androidx.annotation.NonNull;
+
 import java.nio.ByteBuffer;
+
 import lombok.experimental.UtilityClass;
 import lombok.extern.java.Log;
 import puscas.mobilertapp.constants.Constants;

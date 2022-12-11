@@ -49,7 +49,6 @@
         android:layout_below="@+id/pickerShader"
         android:layout_centerHorizontal="true"
         android:layout_margin="30dp"
-        android:onClick="startRender"
         android:text="@string/render"
         android:textAllCaps="false"
         android:textSize="17sp" />

@@ -1,7 +1,12 @@
 package puscas.mobilertapp.utils;
 
 import android.widget.NumberPicker;
-import edu.umd.cs.findbugs.annotations.NonNull;
+
+import androidx.annotation.NonNull;
+
+import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.Contract;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,11 +14,10 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
+
 import java8.util.Objects;
 import lombok.experimental.UtilityClass;
 import lombok.extern.java.Log;
-import org.apache.commons.lang3.tuple.Pair;
-import org.jetbrains.annotations.Contract;
 import puscas.mobilertapp.constants.Constants;
 import puscas.mobilertapp.constants.ConstantsMethods;
 import puscas.mobilertapp.constants.ConstantsUI;
@@ -78,7 +82,7 @@ public final class Utils {
             inputStream, Charset.defaultCharset());
              BufferedReader reader = new BufferedReader(isReader)) {
 
-            final StringBuilder stringBuilder = new StringBuilder(1);
+            final StringBuilder stringBuilder = new StringBuilder();
             String str = reader.readLine();
             while (Objects.nonNull(str)) {
                 stringBuilder.append(str).append(ConstantsUI.LINE_SEPARATOR);
@@ -133,8 +137,7 @@ public final class Utils {
         log.info("getValueFromPicker");
 
         try {
-            return Integer.parseInt(picker.getDisplayedValues()
-                [picker.getValue() - 1]);
+            return Integer.parseInt(picker.getDisplayedValues()[picker.getValue() - 1]);
         } catch (final NumberFormatException ex) {
             throw new FailureException(ex);
         }
@@ -157,8 +160,7 @@ public final class Utils {
 
         try {
             final int width = Integer.parseInt(strResolution.substring(0, strResolution.indexOf('x')));
-            final int height = Integer.parseInt(
-                strResolution.substring(strResolution.indexOf('x') + 1));
+            final int height = Integer.parseInt(strResolution.substring(strResolution.indexOf('x') + 1));
             return Pair.of(width, height);
         } catch (final NumberFormatException ex) {
             throw new FailureException(ex);

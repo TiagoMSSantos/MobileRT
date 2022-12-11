@@ -8,6 +8,9 @@ import android.view.ViewManager;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import org.assertj.core.api.Assertions;
 import org.jetbrains.annotations.Contract;
 import org.junit.Test;
@@ -15,8 +18,6 @@ import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.SuppressStaticInitializationFor;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
-import edu.umd.cs.findbugs.annotations.Nullable;
 import lombok.extern.java.Log;
 import puscas.mobilertapp.MainActivity;
 import puscas.mobilertapp.constants.CustomNumberPicker;

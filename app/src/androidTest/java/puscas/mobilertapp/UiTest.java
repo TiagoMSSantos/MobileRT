@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.NumberPicker;
 
+import androidx.annotation.NonNull;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.espresso.action.ViewActions;
@@ -21,7 +22,6 @@ import org.junit.runners.MethodSorters;
 
 import java.util.List;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import java8.util.stream.IntStreams;
 import lombok.extern.java.Log;
 import puscas.mobilertapp.constants.Accelerator;

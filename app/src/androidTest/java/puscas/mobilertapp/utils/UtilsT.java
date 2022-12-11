@@ -3,21 +3,26 @@ package puscas.mobilertapp.utils;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.widget.Button;
+
+import androidx.annotation.NonNull;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.matcher.ViewMatchers;
+
 import com.google.common.base.Preconditions;
-import edu.umd.cs.findbugs.annotations.NonNull;
+
+import org.junit.Assume;
+import org.junit.jupiter.api.Assertions;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+
 import java8.util.J8Arrays;
 import lombok.experimental.UtilityClass;
 import lombok.extern.java.Log;
-import org.junit.Assume;
-import org.junit.jupiter.api.Assertions;
 import puscas.mobilertapp.BuildConfig;
 import puscas.mobilertapp.ConstantsAndroidTests;
 import puscas.mobilertapp.DrawView;
@@ -66,6 +71,7 @@ public final class UtilsT {
      *           field from the {@link Object}.
      */
     @NonNull
+    @SuppressWarnings("unchecked")
     public static <T> T getPrivateField(@NonNull final Object clazz,
                                         @NonNull final String fieldName) {
         Field field = null;
@@ -101,6 +107,7 @@ public final class UtilsT {
      *           method from the {@link Object}.
      */
     @NonNull
+    @SuppressWarnings("unchecked")
     static <T> T invokePrivateMethod(@NonNull final Object clazz,
                                      @NonNull final String methodName,
                                      @NonNull final List<Class<?>> parameterTypes,

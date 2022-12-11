@@ -2,13 +2,16 @@ package puscas.mobilertapp;
 
 import android.graphics.Bitmap;
 import android.os.Build;
-import java.util.concurrent.TimeoutException;
-import lombok.extern.java.Log;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
+
+import java.util.concurrent.TimeoutException;
+
+import lombok.extern.java.Log;
 import puscas.mobilertapp.constants.Constants;
 import puscas.mobilertapp.constants.ConstantsUI;
 import puscas.mobilertapp.constants.Scene;

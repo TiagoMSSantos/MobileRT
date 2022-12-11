@@ -2,17 +2,22 @@ package puscas.mobilertapp;
 
 import android.view.View;
 import android.widget.Button;
+
+import androidx.annotation.NonNull;
 import androidx.test.espresso.UiController;
 import androidx.test.espresso.ViewAction;
 import androidx.test.espresso.matcher.ViewMatchers;
+
 import com.google.common.util.concurrent.Uninterruptibles;
-import edu.umd.cs.findbugs.annotations.NonNull;
-import java.util.concurrent.TimeUnit;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
+
 import org.hamcrest.Matcher;
 import org.jetbrains.annotations.NonNls;
 import org.junit.jupiter.api.Assertions;
+
+import java.util.concurrent.TimeUnit;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import puscas.mobilertapp.utils.Utils;
 
 /**
@@ -52,7 +57,7 @@ public final class ViewActionButton implements ViewAction {
 
     @NonNull
     @Override
-    public final Matcher<View> getConstraints() {
+    public Matcher<View> getConstraints() {
         log.info("ViewActionButton#getConstraints");
 
         return ViewMatchers.isAssignableFrom(Button.class);
@@ -60,14 +65,14 @@ public final class ViewActionButton implements ViewAction {
 
     @NonNull
     @Override
-    public final String getDescription() {
+    public String getDescription() {
         log.info("ViewActionButton#getDescription");
 
         return "Click button";
     }
 
     @Override
-    public final void perform(@NonNull final UiController uiController, @NonNull final View view) {
+    public void perform(@NonNull final UiController uiController, @NonNull final View view) {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         log.info(methodName);
 

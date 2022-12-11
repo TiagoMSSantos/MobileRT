@@ -1,11 +1,13 @@
 package puscas.mobilertapp.constants;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
+import androidx.annotation.NonNull;
+
+import org.jetbrains.annotations.Contract;
+
 import java8.util.J8Arrays;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
-import org.jetbrains.annotations.Contract;
 
 /**
  * The available acceleration structures for the Ray Tracer engine.

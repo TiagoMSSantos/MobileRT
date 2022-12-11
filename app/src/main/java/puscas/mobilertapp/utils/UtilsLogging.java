@@ -1,6 +1,7 @@
 package puscas.mobilertapp.utils;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
+import androidx.annotation.NonNull;
+
 import lombok.experimental.UtilityClass;
 import lombok.extern.java.Log;
 
@@ -28,7 +29,7 @@ public final class UtilsLogging {
      */
     public static void printStackTrace() {
         final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-        final StringBuilder stringBuilder = new StringBuilder("");
+        final StringBuilder stringBuilder = new StringBuilder();
         for (final StackTraceElement ste : stackTrace) {
             stringBuilder.append( "ste: ");
             stringBuilder.append(ste.toString());

@@ -19,6 +19,8 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
 import com.google.common.base.Preconditions;
@@ -30,8 +32,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.util.Arrays;
 import java.util.Map;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
-import edu.umd.cs.findbugs.annotations.Nullable;
 import java8.util.Optional;
 import java8.util.stream.IntStreams;
 import java8.util.stream.StreamSupport;
@@ -85,6 +85,7 @@ public final class MainActivity extends Activity {
      * have the application {@link Context} and so the method can be static and used anywhere in the
      * codebase.
      */
+    @SuppressWarnings("StaticFieldLeak")
     private static Activity currentInstance = null;
 
     /*
@@ -246,6 +247,8 @@ public final class MainActivity extends Activity {
 
         final TextView textView = findViewById(R.id.timeText);
         final Button renderButton = findViewById(R.id.renderButton);
+        renderButton.setOnClickListener(this::startRender);
+
         final ActivityManager activityManager = (ActivityManager) getSystemService(
             Context.ACTIVITY_SERVICE);
 
@@ -433,7 +436,7 @@ public final class MainActivity extends Activity {
      */
     public void startRender(@NonNull final View view) {
         try {
-            final String message = ConstantsMethods.START_RENDER + ": " + view.toString();
+            final String message = ConstantsMethods.START_RENDER + ": " + view;
             log.info(message);
 
             final State state = this.drawView.getRayTracerState();
@@ -648,7 +651,7 @@ public final class MainActivity extends Activity {
             .orElse(1));
 
         initializePickerResolutions(bundle.map(x -> x.getInt(ConstantsUI.PICKER_SIZE))
-            .orElse(4), 9);
+            .orElse(4));
     }
 
     /**
@@ -723,11 +726,10 @@ public final class MainActivity extends Activity {
      *
      * @param pickerSizes The default value to put in the
      *                    {@link #pickerResolutions} field.
-     * @param maxSizes    The maximum size value for the {@link NumberPicker}.
      */
-    private void initializePickerResolutions(final int pickerSizes,
-                                             final int maxSizes) {
+    private void initializePickerResolutions(final int pickerSizes) {
         log.info("initializePickerResolutions start");
+        final int maxSizes = 9;
         this.pickerResolutions.setMinValue(1);
         this.pickerResolutions.setMaxValue(maxSizes - 1);
         this.pickerResolutions.setWrapSelectorWheel(true);
@@ -807,7 +809,7 @@ public final class MainActivity extends Activity {
     /**
      * Sets the {@link #currentInstance}.
      */
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    @VisibleForTesting
     void setCurrentInstance() {
         currentInstance = this;
     }

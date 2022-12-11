@@ -1,8 +1,10 @@
 package puscas.mobilertapp.constants;
 
 import android.widget.Button;
-import lombok.experimental.UtilityClass;
+
 import org.jetbrains.annotations.NonNls;
+
+import lombok.experimental.UtilityClass;
 
 /**
  * Utility class with some constants for the Android interface.

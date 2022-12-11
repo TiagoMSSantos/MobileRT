@@ -40,11 +40,6 @@ public final class ConstantsMethods {
     public static final String ON_DETACHED_FROM_WINDOW = "onDetachedFromWindow";
 
     /**
-     * The name of the onCancelled() method.
-     */
-    public static final String ON_CANCELLED = "onCancelled";
-
-    /**
      * The name of the timer field.
      */
     public static final String TIMER = "RenderTask timer";

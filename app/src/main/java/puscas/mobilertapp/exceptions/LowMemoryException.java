@@ -1,6 +1,7 @@
 package puscas.mobilertapp.exceptions;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
+import androidx.annotation.NonNull;
+
 import lombok.NoArgsConstructor;
 
 /**

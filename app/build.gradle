@@ -417,11 +417,8 @@ dependencies {
 
     // Annotations
     implementation "org.projectlombok:lombok:${lombok_version}"
-    testImplementation "org.projectlombok:lombok:${lombok_version}"
-    androidTestImplementation "org.projectlombok:lombok:${lombok_version}"
     annotationProcessor "org.projectlombok:lombok:${lombok_version}"
-    testAnnotationProcessor "org.projectlombok:lombok:${lombok_version}"
-    androidTestAnnotationProcessor "org.projectlombok:lombok:${lombok_version}"
+    implementation "androidx.annotation:annotation:${androidX_annotation_version}"
     implementation "com.github.spotbugs:spotbugs-annotations:${spotbugs_annotations_version}"
 
     // Web

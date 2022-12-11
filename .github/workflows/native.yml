@@ -41,7 +41,7 @@ concurrency:
 # Default environment variables.
 env:
   GITHUB_STEP_TIMEOUT_SMALL: 4
-  GITHUB_STEP_TIMEOUT_MEDIUM: 8
+  GITHUB_STEP_TIMEOUT_MEDIUM: 10
   GITHUB_STEP_TIMEOUT_LONG: 30
 
 jobs:

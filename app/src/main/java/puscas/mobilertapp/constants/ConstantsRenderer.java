@@ -2,7 +2,9 @@ package puscas.mobilertapp.constants;
 
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
+
 import java.util.concurrent.ExecutorService;
+
 import lombok.experimental.UtilityClass;
 
 /**

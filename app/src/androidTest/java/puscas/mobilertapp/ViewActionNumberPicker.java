@@ -2,14 +2,17 @@ package puscas.mobilertapp;
 
 import android.view.View;
 import android.widget.NumberPicker;
+
+import androidx.annotation.NonNull;
 import androidx.test.espresso.UiController;
 import androidx.test.espresso.ViewAction;
 import androidx.test.espresso.matcher.ViewMatchers;
-import edu.umd.cs.findbugs.annotations.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
+
 import org.hamcrest.Matcher;
 import org.junit.jupiter.api.Assertions;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import puscas.mobilertapp.utils.Utils;
 
 /**
@@ -26,7 +29,7 @@ public final class ViewActionNumberPicker implements ViewAction {
 
     @NonNull
     @Override
-    public final Matcher<View> getConstraints() {
+    public Matcher<View> getConstraints() {
         log.info("ViewActionNumberPicker#getConstraints");
 
         return ViewMatchers.isAssignableFrom(NumberPicker.class);
@@ -34,19 +37,19 @@ public final class ViewActionNumberPicker implements ViewAction {
 
     @NonNull
     @Override
-    public final String getDescription() {
+    public String getDescription() {
         log.info("ViewActionNumberPicker#getDescription");
 
         return "Set the value of a NumberPicker: " + this.newValue;
     }
 
     @Override
-    public final void perform(@NonNull final UiController uiController, @NonNull final View view) {
+    public void perform(@NonNull final UiController uiController, @NonNull final View view) {
         final NumberPicker numberPicker = (NumberPicker) view;
         numberPicker.setValue(this.newValue);
         Utils.executeWithCatching(() -> uiController.loopMainThreadForAtLeast(100L));
         Assertions.assertEquals(this.newValue, numberPicker.getValue(),
-            "The setted value should be '" + this.newValue + "'");
+            "The set value should be '" + this.newValue + "'");
     }
 
 }

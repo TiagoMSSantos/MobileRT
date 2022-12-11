@@ -1,12 +1,11 @@
 package puscas.mobilertapp;
 
+import androidx.annotation.NonNull;
+
 import com.google.common.base.Preconditions;
 
 import java.lang.reflect.Field;
 
-import javax.annotation.Nonnull;
-
-import edu.umd.cs.findbugs.annotations.NonNull;
 import lombok.experimental.UtilityClass;
 import lombok.extern.java.Log;
 
@@ -27,6 +26,7 @@ public final class UtilsT {
      *           field from the {@link Object}.
      */
     @NonNull
+    @SuppressWarnings("unchecked")
     public static <T> T getPrivateField(@NonNull final Object clazz,
                                         @NonNull final String fieldName) {
         Field field = null;
@@ -59,10 +59,9 @@ public final class UtilsT {
      * @implNote This method uses reflection to be able to get the private
      *           field from the {@link Object}.
      */
-    @NonNull
     public static void setPrivateField(@NonNull final Object clazz,
                                        @NonNull final String fieldName,
-                                       @Nonnull final Object newValue) {
+                                       @NonNull final Object newValue) {
         Field field = null;
         try {
             // Use reflection to access the private field.

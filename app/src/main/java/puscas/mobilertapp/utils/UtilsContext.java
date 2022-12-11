@@ -8,17 +8,20 @@ import android.content.res.AssetManager;
 import android.opengl.GLES20;
 import android.os.Build;
 import android.os.Environment;
-import androidx.annotation.RequiresApi;
+
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+
 import com.google.common.collect.ImmutableMap;
-import edu.umd.cs.findbugs.annotations.NonNull;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Pattern;
+
 import java8.util.Optional;
 import lombok.experimental.UtilityClass;
 import lombok.extern.java.Log;
@@ -300,7 +303,6 @@ public final class UtilsContext {
      * @param activity   The {@link Activity} of MobileRT.
      * @param permission The permission to ask access to.
      */
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     private static void checksAccessPermission(@NonNull final Activity activity,
                                                @NonNull final String permission) {
         final int permissionCode = 1;
