@@ -23,7 +23,7 @@ public final class StateTest {
 
         Assertions.assertThat(State.BUSY.getId())
             .as("State id is not the expected.")
-            .isEqualTo(1);
+            .isOne();
 
         Assertions.assertThat(State.FINISHED.getId())
             .as("State id is not the expected.")

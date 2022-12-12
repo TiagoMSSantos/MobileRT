@@ -1,7 +1,7 @@
 package puscas.mobilertapp;
 
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
-import org.junit.jupiter.api.Assertions;
 
 import lombok.extern.java.Log;
 import puscas.mobilertapp.configs.Config;
@@ -23,23 +23,49 @@ public final class ConfigTest {
     @Test
     public void testDefaultBuild() {
         final Config config = Config.builder().build();
-        Assertions.assertEquals(1, config.getConfigResolution().getWidth(),
-            "Width not the expected value.");
-        Assertions.assertEquals(1, config.getConfigResolution().getHeight(),
-            "Height not the expected value.");
-        Assertions.assertEquals(0, config.getScene(), "Scene not the expected value.");
-        Assertions.assertEquals(0, config.getShader(), "Shader not the expected value.");
-        Assertions.assertEquals(0, config.getAccelerator(), "Accelerator not the expected value.");
-        Assertions.assertEquals(0, config.getConfigSamples().getSamplesPixel(),
-            "Samples per pixel not the expected value.");
-        Assertions.assertEquals(0, config.getConfigSamples().getSamplesLight(),
-            "Samples per light not the expected value.");
-        Assertions
-            .assertEquals("", config.getObjFilePath(), "OBJ file path not the expected value.");
-        Assertions
-            .assertEquals("", config.getMatFilePath(), "MAT file path not the expected value.");
-        Assertions
-            .assertEquals("", config.getCamFilePath(), "CAM file path not the expected value.");
+
+        Assertions.assertThat(config.getConfigResolution().getWidth())
+            .as("Width not the expected value.")
+            .isOne();
+
+        Assertions.assertThat(config.getConfigResolution().getHeight())
+            .as("Height not the expected value.")
+            .isOne();
+
+        Assertions.assertThat(config.getScene())
+            .as("Scene not the expected value.")
+            .isZero();
+
+        Assertions.assertThat(config.getShader())
+            .as("Shader not the expected value.")
+            .isZero();
+
+        Assertions.assertThat(config.getAccelerator())
+            .as("Accelerator not the expected value.")
+            .isZero();
+
+        Assertions.assertThat(config.getConfigSamples().getSamplesPixel())
+            .as("Samples per pixel not the expected value.")
+            .isZero();
+
+        Assertions.assertThat(config.getConfigSamples().getSamplesLight())
+            .as("Samples per light not the expected value.")
+            .isZero();
+
+        Assertions.assertThat(config.getObjFilePath())
+            .as("OBJ file path not the expected value.")
+            .isNotNull()
+            .isEmpty();
+
+        Assertions.assertThat(config.getMatFilePath())
+            .as("MAT file path not the expected value.")
+            .isNotNull()
+            .isEmpty();
+
+        Assertions.assertThat(config.getCamFilePath())
+            .as("CAM file path not the expected value.")
+            .isNotNull()
+            .isEmpty();
     }
 
     /**
@@ -79,24 +105,48 @@ public final class ConfigTest {
             .camFilePath(cam)
             .build();
 
-        Assertions.assertEquals(width, config.getConfigResolution().getWidth(),
-            "Width not the expected value.");
-        Assertions.assertEquals(height, config.getConfigResolution().getHeight(),
-            "Height not the expected value.");
-        Assertions.assertEquals(scene, config.getScene(), "Scene not the expected value.");
-        Assertions.assertEquals(shader, config.getShader(), "Shader not the expected value.");
-        Assertions.assertEquals(accelerator, config.getAccelerator(),
-            "Accelerator not the expected value.");
-        Assertions.assertEquals(spp, config.getConfigSamples().getSamplesPixel(),
-            "Samples per pixel not the expected value.");
-        Assertions.assertEquals(spl, config.getConfigSamples().getSamplesLight(),
-            "Samples per light not the expected value.");
-        Assertions
-            .assertEquals(obj, config.getObjFilePath(), "OBJ file path not the expected value.");
-        Assertions
-            .assertEquals(mat, config.getMatFilePath(), "MAT file path not the expected value.");
-        Assertions
-            .assertEquals(cam, config.getCamFilePath(), "CAM file path not the expected value.");
+        Assertions.assertThat(config.getConfigResolution().getWidth())
+            .as("Width not the expected value.")
+            .isEqualTo(width);
+
+        Assertions.assertThat(config.getConfigResolution().getHeight())
+            .as("Height not the expected value.")
+            .isEqualTo(height);
+
+        Assertions.assertThat(config.getScene())
+            .as("Scene not the expected value.")
+            .isEqualTo(scene);
+
+        Assertions.assertThat(config.getShader())
+            .as("Shader not the expected value.")
+            .isEqualTo(shader);
+
+        Assertions.assertThat(config.getAccelerator())
+            .as("Accelerator not the expected value.")
+            .isEqualTo(accelerator);
+
+        Assertions.assertThat(config.getConfigSamples().getSamplesPixel())
+            .as("Samples per pixel not the expected value.")
+            .isEqualTo(spp);
+
+        Assertions.assertThat(config.getConfigSamples().getSamplesLight())
+            .as("Samples per light not the expected value.")
+            .isEqualTo(spl);
+
+        Assertions.assertThat(config.getObjFilePath())
+            .as("OBJ file path not the expected value.")
+            .isNotNull()
+            .isEqualTo(obj);
+
+        Assertions.assertThat(config.getMatFilePath())
+            .as("MAT file path not the expected value.")
+            .isNotNull()
+            .isEqualTo(mat);
+
+        Assertions.assertThat(config.getCamFilePath())
+            .as("CAM file path not the expected value.")
+            .isNotNull()
+            .isEqualTo(cam);
     }
 
     /**

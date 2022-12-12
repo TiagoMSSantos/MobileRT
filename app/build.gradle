@@ -307,7 +307,6 @@ android {
             returnDefaultValues = true
         }
         setAnimationsDisabled true
-//        setExecution 'ANDROIDX_TEST_ORCHESTRATOR'
     }
 
     // Setup linter options
@@ -364,7 +363,11 @@ configurations {
 ///////////////////////////////////////////////////////////////////////////////
 // Merge Jacoco reports from Unit Tests and Instrumentation Tests
 ///////////////////////////////////////////////////////////////////////////////
-task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'createDebugCoverageReport']) {
+task jacocoTestReport(type: JacocoReport, dependsOn: [
+    "test" + systemTestType.capitalize() + "UnitTest",
+    "connected" + systemTestType.capitalize() + "AndroidTest",
+    "createDebugCoverageReport"
+]) {
     reports {
         xml.getRequired().set(true)
         html.getRequired().set(true)
@@ -402,7 +405,6 @@ dependencies {
     // Dependencies for the Android application
     println("Adding dependencies for MobileRT.")
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    testImplementation fileTree(dir: 'libs', include: ['*.jar'])
 
     // Android dependencies
     implementation "androidx.appcompat:appcompat:${appcompat_version}"
@@ -451,7 +453,6 @@ dependencies {
 
     androidTestImplementation "androidx.test:rules:${androidX_test_library_version}"
     androidTestImplementation "androidx.test:runner:${androidX_test_library_version}"
-//    androidTestUtil "androidx.test:orchestrator:${androidX_test_library_version}"
 
     // Annotations for the Android instrumentation tests
     androidTestAnnotationProcessor "org.projectlombok:lombok:${lombok_version}"
@@ -485,9 +486,8 @@ dependencies {
     // Need Android API 26
     // https://stackoverflow.com/questions/52510370/java-lang-noclassdeffounderror-failed-resolution-of-ljava-time-localdate-erro
     // Caused by: java.lang.NoClassDefFoundError: java.time.LocalDateTime
-    androidTestImplementation "org.assertj:assertj-core:${assertj_version}"
 
-    testImplementation "org.junit.jupiter:junit-jupiter-api:${junit5_version}"
+    // Preferred to use JUnit 5 over AssertJ because some CI builds fail when using AssertJ in Android Tests.
     androidTestImplementation "org.junit.jupiter:junit-jupiter-api:${junit5_version}"
 }
 ///////////////////////////////////////////////////////////////////////////////

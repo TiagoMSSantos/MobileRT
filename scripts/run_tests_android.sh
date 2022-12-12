@@ -523,6 +523,7 @@ runInstrumentationTests() {
   fi
   resInstrumentationTests=${?};
   pid_instrumentation_tests="$!";
+  echo 'Android test(s) executed!';
 
   mkdir -p ${reports_path};
   set +e;
