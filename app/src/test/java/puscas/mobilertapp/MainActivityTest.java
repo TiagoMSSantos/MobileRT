@@ -1,13 +1,17 @@
 package puscas.mobilertapp;
 
+import android.os.Bundle;
+
 import com.google.common.base.Preconditions;
 
+import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.core.classloader.annotations.SuppressStaticInitializationFor;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -22,6 +26,7 @@ import lombok.extern.java.Log;
  */
 @RunWith(PowerMockRunner.class)
 @SuppressStaticInitializationFor("puscas.mobilertapp.MainActivity")
+@PrepareForTest(MainActivity.class)
 @Log
 public final class MainActivityTest {
 
@@ -95,5 +100,16 @@ public final class MainActivityTest {
 
         Mockito.verify(mainActivityMocked, Mockito.times(1))
             .runOnUiThread(Mockito.any(Runnable.class));
+    }
+
+    /**
+     * Tests that the {@link MainActivity#onCreate(Bundle)} method will throw an {@link Exception}
+     * if the loading of native MobileRT library fails.
+     */
+    @Test
+    public void testOnCreateFailLoadLibrary() {
+        Assertions.assertThatThrownBy(() -> mainActivityMocked.onCreate(null))
+            .as("The MainActivity#onCreate")
+            .isInstanceOf(UnsatisfiedLinkError.class);
     }
 }

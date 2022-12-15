@@ -234,7 +234,7 @@ public final class MainActivity extends Activity {
         try {
             loadMobileRT();
         } catch (final Throwable ex) {
-            UtilsLogging.logThrowable(ex, "MainActivity#static");
+            UtilsLogging.logThrowable(ex, "MainActivity#onCreate");
             throw ex;
         }
 
