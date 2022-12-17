@@ -4,31 +4,30 @@
   "reporters": ["html", "console", "badge"],
   "mode": "mild",
   "ignore": [
-    "**/third_party/**",
+    "**/.gradle/**",
+    "**/.idea/**",
     "**/build*/**",
-    "**/*.xml",
-    "**/*.yml",
-    "**/*.md",
-    "**/*.svg",
-    "**/*.html"
+    "**/.cxx/**",
+    "**/third_party/**",
+    "**/WavefrontOBJs/**"
   ],
-  "pattern": "**/app/**",
+  "pattern": "**/**",
   "absolute": false,
   "gitignore": true,
   "min-lines": 0,
   "max-lines": 1000000000,
   "max-size": 1000000000,
-  "version": true,
   "min-tokens": 0,
   "blame": false,
-  "list": false,
-  "format": ["cpp", "c", "java", "kotlin", "bash", "git", "glsl"],
+  "format": ["cpp", "cpp-header", "c", "java", "kotlin", "bash", "git", "glsl", "docker", "markdown", "properties", "yaml"],
   "formats-exts": [
     "cpp:cpp,hpp,h",
+    "cpp-header:hpp,h",
     "c:c,h",
     "java:java",
     "kotlin:kt",
     "bash:sh",
-    "glsl:glsl"
+    "glsl:glsl",
+    "docker:Dockerfile"
   ]
 }

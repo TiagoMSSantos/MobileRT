@@ -259,7 +259,120 @@ h3 {
         text-align: center;
 
     }
-}</style></head><body><div class="pure-g" id="layout"><div class="sidebar pure-u-1 pure-u-md-1-4"><div class="header"><img src="https://raw.githubusercontent.com/kucherenko/jscpd/1.0.0-alpha/assets/logo-small-box.svg?sanitize=true" width="190"><nav class="nav"><ul class="nav-list"><li class="nav-item"><a class="pure-button" href="#bash">bash</a></li><li class="nav-item"><a class="pure-button" href="#variable">variable</a></li><li class="nav-item"><a class="pure-button" href="#cpp">cpp</a></li><li class="nav-item"><a class="pure-button" href="#c">c</a></li><li class="nav-item"><a class="pure-button" href="#java">java</a></li><li class="nav-item"><a class="pure-button" href="#kotlin">kotlin</a></li></ul></nav></div></div><div class="content pure-u-1 pure-u-md-3-4"><div class="controls"><div class="pure-u"><button class="pure-button" onclick="collapseExpandAll()">Collapse/Expand All</button></div></div><table class="pure-table stats"><thead><tr><th>Total files</th><th>Total lines of code</th><th>Duplicated lines</th><th>% of duplications</th></tr></thead><tbody><tr><td>205</td><td>19331</td><td>727</td><td>3.76%</td></tr></tbody></table><div class="clones collapsed"><a name="bash"></a><h1 class="content-subhead">bash</h1><div class="mode-stats"><p><span class="mode-rate">9.76%</span> Total files: 10, total lines of code: 2572, duplicated lines: 251</p></div><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">scripts/compile_android.sh[8:1 - 50:15]<br/>scripts/check_android.sh[7:1 - 49:27]</div></header><div class="clone-description"><pre data-first-start="8" data-second-start="7" data-length="42">###############################################################################
+}</style></head><body><div class="pure-g" id="layout"><div class="sidebar pure-u-1 pure-u-md-1-4"><div class="header"><img src="https://raw.githubusercontent.com/kucherenko/jscpd/1.0.0-alpha/assets/logo-small-box.svg?sanitize=true" width="190"><nav class="nav"><ul class="nav-list"><li class="nav-item"><a class="pure-button" href="#yaml">yaml</a></li><li class="nav-item"><a class="pure-button" href="#properties">properties</a></li><li class="nav-item"><a class="pure-button" href="#markdown">markdown</a></li><li class="nav-item"><a class="pure-button" href="#css">css</a></li><li class="nav-item"><a class="pure-button" href="#bash">bash</a></li><li class="nav-item"><a class="pure-button" href="#variable">variable</a></li><li class="nav-item"><a class="pure-button" href="#cpp">cpp</a></li><li class="nav-item"><a class="pure-button" href="#c">c</a></li><li class="nav-item"><a class="pure-button" href="#java">java</a></li><li class="nav-item"><a class="pure-button" href="#kotlin">kotlin</a></li></ul></nav></div></div><div class="content pure-u-1 pure-u-md-3-4"><div class="controls"><div class="pure-u"><button class="pure-button" onclick="collapseExpandAll()">Collapse/Expand All</button></div></div><table class="pure-table stats"><thead><tr><th>Total files</th><th>Total lines of code</th><th>Duplicated lines</th><th>% of duplications</th></tr></thead><tbody><tr><td>226</td><td>21512</td><td>840</td><td>3.9%</td></tr></tbody></table><div class="clones collapsed"><a name="yaml"></a><h1 class="content-subhead">yaml</h1><div class="mode-stats"><p><span class="mode-rate">7.75%</span> Total files: 12, total lines of code: 1459, duplicated lines: 113</p></div><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">.github/workflows/code-analysis.yml[22:1 - 44:75]<br/>.github/workflows/android_repeatable.yml[10:1 - 32:16]</div></header><div class="clone-description"><pre data-first-start="22" data-second-start="10" data-length="22">defaults:
+  run:
+    shell: sh
+    working-directory: .
+
+concurrency:
+  group: ${{ github.workflow }} ${{ github.ref }}
+  cancel-in-progress: true
+
+# Default environment variables.
+env:
+  GITHUB_STEP_TIMEOUT_SMALL: 4
+  GITHUB_STEP_TIMEOUT_MEDIUM: 10
+  GITHUB_STEP_TIMEOUT_LONG: 30
+
+jobs:
+  Build:
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+
+    strategy:
+      fail-fast: false
+      matrix:
+        # Override automatic language detection by changing the below list</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">.github/workflows/code-analysis.yml[67:5 - 87:18]<br/>.github/workflows/android_repeatable.yml[48:5 - 68:18]</div></header><div class="clone-description"><pre data-first-start="67" data-second-start="48" data-length="20">- name: Set up JDK
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+      if: success()
+      uses: actions/setup-java@v3
+      with:
+        # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml
+        java-version: 11
+        distribution: zulu
+        java-package: jdk
+        architecture: x64
+        check-latest: false
+        server-id: github
+        server-username: GITHUB_ACTOR
+        server-password: GITHUB_TOKEN
+        settings-path: ~/.gradle
+        overwrite-settings: true
+        gpg-private-key: ''
+        gpg-passphrase: GPG_PASSPHRASE
+        cache: gradle
+
+    - name: Check</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">.github/workflows/native.yml[32:1 - 51:12]<br/>.github/workflows/android_repeatable.yml[10:1 - 29:13]</div></header><div class="clone-description"><pre data-first-start="32" data-second-start="10" data-length="19">defaults:
+  run:
+    shell: sh
+    working-directory: .
+
+concurrency:
+  group: ${{ github.workflow }} ${{ github.ref }}
+  cancel-in-progress: true
+
+# Default environment variables.
+env:
+  GITHUB_STEP_TIMEOUT_SMALL: 4
+  GITHUB_STEP_TIMEOUT_MEDIUM: 10
+  GITHUB_STEP_TIMEOUT_LONG: 30
+
+jobs:
+  Build:
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+
+    outputs</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">.github/workflows/native.yml[233:7 - 244:6]<br/>.github/workflows/native.yml[200:7 - 212:8]</div></header><div class="clone-description"><pre data-first-start="233" data-second-start="200" data-length="11">uses: actions/cache@v3
+      with:
+        # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
+        key: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
+        restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
+        path: |
+          app/build/reports/coverage/androidTest/debug/connected
+          code_coverage_base.info
+          code_coverage.info
+          code_coverage_test.info
+
+    -</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">.github/workflows/windows.yml[115:5 - 141:21]<br/>.github/workflows/android_repeatable.yml[42:5 - 68:18]</div></header><div class="clone-description"><pre data-first-start="115" data-second-start="42" data-length="26">steps:
+    - name: Checkout
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+      if: success()
+      uses: actions/checkout@v3
+
+    - name: Set up JDK
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+      if: success()
+      uses: actions/setup-java@v3
+      with:
+        # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml
+        java-version: 11
+        distribution: zulu
+        java-package: jdk
+        architecture: x64
+        check-latest: false
+        server-id: github
+        server-username: GITHUB_ACTOR
+        server-password: GITHUB_TOKEN
+        settings-path: ~/.gradle
+        overwrite-settings: true
+        gpg-private-key: ''
+        gpg-passphrase: GPG_PASSPHRASE
+        cache: gradle
+
+    - name: Download</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">.github/workflows/windows.yml[220:9 - 235:24]<br/>.github/workflows/native.yml[132:9 - 146:23]</div></header><div class="clone-description"><pre data-first-start="220" data-second-start="132" data-length="15">dir: '${{ github.workspace }}'
+        install-deps: 'true'
+        modules: ''
+        cache: 'true'
+        cache-key-prefix: '${{ runner.os }}'
+        setup-python: 'false'
+        set-env: 'true'
+        tools-only: 'false'
+        aqtversion: '==2.1.*'
+        py7zrversion: '==0.19.*'
+        extra: '--external 7z'
+
+    - name: Check Qt path installation.
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success()
+      working-directory</pre></div></section><a name="properties"></a><h1 class="content-subhead">properties</h1><div class="mode-stats"><p><span class="mode-rate">0%</span> Total files: 3, total lines of code: 114, duplicated lines: 0</p></div><a name="markdown"></a><h1 class="content-subhead">markdown</h1><div class="mode-stats"><p><span class="mode-rate">0%</span> Total files: 5, total lines of code: 591, duplicated lines: 0</p></div><a name="css"></a><h1 class="content-subhead">css</h1><div class="mode-stats"><p><span class="mode-rate">0%</span> Total files: 1, total lines of code: 1, duplicated lines: 0</p></div><a name="bash"></a><h1 class="content-subhead">bash</h1><div class="mode-stats"><p><span class="mode-rate">9.76%</span> Total files: 10, total lines of code: 2572, duplicated lines: 251</p></div><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">scripts/compile_android.sh[8:1 - 50:15]<br/>scripts/check_android.sh[7:1 - 49:27]</div></header><div class="clone-description"><pre data-first-start="8" data-second-start="7" data-length="42">###############################################################################
 ###############################################################################
 
 
@@ -649,7 +762,7 @@ set</pre></div></section><a name="variable"></a><h1 class="content-subhead">vari
     m_ui-&gt;graphicsView-&gt;resize(m_config.width + 2, m_config.height + 2);
 }
 
-void MainWindow::keyPressEvent</pre></div></section><a name="c"></a><h1 class="content-subhead">c</h1><div class="mode-stats"><p><span class="mode-rate">0%</span> Total files: 4, total lines of code: 141, duplicated lines: 0</p></div><a name="java"></a><h1 class="content-subhead">java</h1><div class="mode-stats"><p><span class="mode-rate">5.05%</span> Total files: 81, total lines of code: 6668, duplicated lines: 337</p></div><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/androidTest/java/puscas/mobilertapp/RayTracingTest.java[7:29 - 16:48]<br/>app/src/androidTest/java/puscas/mobilertapp/PreviewTest.java[3:44 - 13:42]</div></header><div class="clone-description"><pre data-first-start="7" data-second-start="3" data-length="9">;
+void MainWindow::keyPressEvent</pre></div></section><a name="c"></a><h1 class="content-subhead">c</h1><div class="mode-stats"><p><span class="mode-rate">0%</span> Total files: 4, total lines of code: 141, duplicated lines: 0</p></div><a name="java"></a><h1 class="content-subhead">java</h1><div class="mode-stats"><p><span class="mode-rate">5.04%</span> Total files: 81, total lines of code: 6684, duplicated lines: 337</p></div><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/androidTest/java/puscas/mobilertapp/RayTracingTest.java[7:29 - 16:48]<br/>app/src/androidTest/java/puscas/mobilertapp/PreviewTest.java[3:44 - 13:42]</div></header><div class="clone-description"><pre data-first-start="7" data-second-start="3" data-length="9">;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;

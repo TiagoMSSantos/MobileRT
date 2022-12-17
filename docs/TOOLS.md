@@ -20,7 +20,8 @@ bash <(curl -s https://codecov.io/bash);
 ```
 
 ## Check code duplication
-Here are the commands to generate the code duplication report:
+Here are the commands to generate the
+[code duplication report](https://github.com/kucherenko/jscpd/blob/master/packages/jscpd/README.md):
 ```
 jscpd -c .jscpd.json .;
 ```
