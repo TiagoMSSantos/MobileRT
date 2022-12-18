@@ -89,10 +89,8 @@ public final class Utils {
                 str = reader.readLine();
             }
             return stringBuilder.toString();
-        } catch (final OutOfMemoryError ex1) {
-            throw new FailureException(ex1);
-        } catch (final IOException ex2) {
-            throw new FailureException(ex2);
+        } catch (final IOException ex) {
+            throw new FailureException(ex);
         } finally {
             final String message = "readTextFromInputStream" + ConstantsMethods.FINISHED;
             log.info(message);
@@ -138,7 +136,7 @@ public final class Utils {
 
         try {
             return Integer.parseInt(picker.getDisplayedValues()[picker.getValue() - 1]);
-        } catch (final NumberFormatException ex) {
+        } catch (final Throwable ex) {
             throw new FailureException(ex);
         }
     }
@@ -156,13 +154,12 @@ public final class Utils {
         @NonNull final NumberPicker picker) {
         log.info("getResolutionFromPicker");
 
-        final String strResolution = picker.getDisplayedValues()[picker.getValue() - 1];
-
         try {
+            final String strResolution = picker.getDisplayedValues()[picker.getValue() - 1];
             final int width = Integer.parseInt(strResolution.substring(0, strResolution.indexOf('x')));
             final int height = Integer.parseInt(strResolution.substring(strResolution.indexOf('x') + 1));
             return Pair.of(width, height);
-        } catch (final NumberFormatException ex) {
+        } catch (final Throwable ex) {
             throw new FailureException(ex);
         }
     }
