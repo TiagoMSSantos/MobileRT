@@ -14,9 +14,7 @@ import androidx.annotation.Nullable;
 import org.assertj.core.api.Assertions;
 import org.jetbrains.annotations.Contract;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.SuppressStaticInitializationFor;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.core.classloader.annotations.PrepareForTest;
 
 import lombok.extern.java.Log;
 import puscas.mobilertapp.MainActivity;
@@ -27,8 +25,7 @@ import puscas.mobilertapp.exceptions.FailureException;
  * The test suite for the {@link CustomNumberPicker} util class.
  */
 @Log
-@RunWith(PowerMockRunner.class)
-@SuppressStaticInitializationFor("puscas.mobilertapp.MainActivity")
+@PrepareForTest(MainActivity.class)
 public final class CustomNumberPickerTest {
 
     /**

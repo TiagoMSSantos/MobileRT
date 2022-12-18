@@ -7,13 +7,12 @@ import com.google.common.base.Preconditions;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.core.classloader.annotations.SuppressStaticInitializationFor;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.modules.junit4.rule.PowerMockRule;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -24,11 +23,15 @@ import lombok.extern.java.Log;
 /**
  * The test suite for {@link MainActivity} class.
  */
-@RunWith(PowerMockRunner.class)
-@SuppressStaticInitializationFor("puscas.mobilertapp.MainActivity")
 @PrepareForTest(MainActivity.class)
 @Log
 public final class MainActivityTest {
+
+    /**
+     * The {@link Rule} for the {@link MainActivity} for each test.
+     */
+    @Rule
+    public PowerMockRule rule = new PowerMockRule();
 
     /**
      * The mocked {@link MainActivity}.
@@ -110,6 +113,7 @@ public final class MainActivityTest {
     public void testOnCreateFailLoadLibrary() {
         Assertions.assertThatThrownBy(() -> mainActivityMocked.onCreate(null))
             .as("The MainActivity#onCreate")
-            .isInstanceOf(UnsatisfiedLinkError.class);
+            .isInstanceOf(UnsatisfiedLinkError.class)
+            .hasMessageContaining("no MobileRT in java.library.path");
     }
 }
