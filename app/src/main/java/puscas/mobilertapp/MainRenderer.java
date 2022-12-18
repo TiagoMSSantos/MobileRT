@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.OptIn;
+import androidx.annotation.VisibleForTesting;
 
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.Uninterruptibles;
@@ -513,7 +514,8 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * native arrays.
      * @throws LowMemoryException If the device has low free memory.
      */
-    private void initPreviewArrays() throws LowMemoryException {
+    @VisibleForTesting
+    void initPreviewArrays() throws LowMemoryException {
         log.info("initArrays");
         checksFreeMemory(1, this::freeArrays);
 
@@ -736,10 +738,11 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * @param numPrimitives The number of primitives in the scene.
      * @throws LowMemoryException If the device has low free memory.
      */
-    private Bitmap renderSceneToBitmap(@NonNull final ByteBuffer bbVertices,
-                                       @NonNull final ByteBuffer bbColors,
-                                       @NonNull final ByteBuffer bbCamera,
-                                       final int numPrimitives) throws LowMemoryException {
+    @VisibleForTesting
+    Bitmap renderSceneToBitmap(@NonNull final ByteBuffer bbVertices,
+                               @NonNull final ByteBuffer bbColors,
+                               @NonNull final ByteBuffer bbCamera,
+                               final int numPrimitives) throws LowMemoryException {
         log.info("renderSceneToBitmap");
 
         if (UtilsBuffer.isAnyByteBufferEmpty(bbVertices, bbColors, bbCamera)

@@ -4,6 +4,7 @@ import static puscas.mobilertapp.constants.Constants.BYTES_IN_MEGABYTE;
 
 import android.app.ActivityManager;
 import android.graphics.Bitmap;
+import android.opengl.GLES20;
 
 import com.google.common.util.concurrent.Uninterruptibles;
 
@@ -13,13 +14,16 @@ import org.junit.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
 import org.powermock.api.support.membermodification.MemberModifier;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.rule.PowerMockRule;
 
+import java.nio.ByteBuffer;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import puscas.mobilertapp.configs.ConfigResolution;
@@ -188,13 +192,31 @@ public class MainRendererTest {
     /**
      * Tests that when the {@link MainRenderer#onDrawFrame(GL10)} method fails to render a frame,
      * it still exits the method normally without any {@link Exception} being thrown.
+     *
+     * @throws LowMemoryException If the {@link MainRenderer} reports low memory.
      */
     @Test
-    public void testRenderingErrorOnDrawFrame() {
+    public void testRenderingErrorOnDrawFrame() throws LowMemoryException {
         MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
         MemberModifier.suppress(MemberModifier.method(MainActivity.class, "showUiMessage"));
         MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetRenderButton"));
-        final MainRenderer mainRenderer = new MainRenderer();
+        MemberModifier.suppress(MemberModifier.method(MainRenderer.class, "initPreviewArrays"));
+
+        final MainRenderer mainRenderer = Mockito.spy(MainRenderer.class);
+        Mockito.doNothing().when(mainRenderer).initPreviewArrays();
+        mainRenderer.setBitmap(ConfigResolution.builder().build(), ConfigResolution.builder().build(), true);
+
+        final ActivityManager activityManagerMocked = Mockito.mock(ActivityManager.class);
+        mainRenderer.setActivityManager(activityManagerMocked);
+
+        final ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
+        UtilsT.setPrivateField(memoryInfo, "availMem", 100L * BYTES_IN_MEGABYTE);
+        UtilsT.setPrivateField(mainRenderer, "memoryInfo", memoryInfo);
+
+        UtilsT.setPrivateField(mainRenderer, "arrayVertices", ByteBuffer.allocate(1));
+        UtilsT.setPrivateField(mainRenderer, "arrayColors", ByteBuffer.allocate(1));
+        UtilsT.setPrivateField(mainRenderer, "arrayCamera", ByteBuffer.allocate(1));
+
         Assertions.assertThat((boolean) UtilsT.getPrivateField(mainRenderer, "firstFrame"))
             .as("The 1st frame field")
             .isTrue();
@@ -209,7 +231,6 @@ public class MainRendererTest {
                 .as("The 1st frame field")
                 .isFalse();
         }
-
     }
 
     /**
@@ -242,5 +263,52 @@ public class MainRendererTest {
         Assertions.assertThat(thread.isAlive())
             .as("The thread calling the MainRender#onDrawFrame method")
             .isFalse();
+    }
+
+    /**
+     * Tests that the {@link MainRenderer#closeRenderer()} method will not call the
+     * {@link GLES20#glDeleteTextures(int, int[], int)} method if
+     * {@link MainRenderer#onSurfaceCreated(GL10, EGLConfig)} was not called first.
+     */
+    @Test
+    public void testCloseRenderer() {
+        MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
+        final MainRenderer mainRenderer = new MainRenderer();
+
+        try (final MockedStatic<GLES20> gles20MockedStatic = Mockito.mockStatic(GLES20.class)) {
+            mainRenderer.closeRenderer();
+
+            gles20MockedStatic.verify(() -> GLES20.glDeleteTextures(1, null, 0), Mockito.times(0));
+        }
+    }
+
+    /**
+     * Tests that the {@link MainRenderer#renderSceneToBitmap(ByteBuffer, ByteBuffer, ByteBuffer, int)}
+     * method will thrown a {@link LowMemoryException} if there is not enough memory available
+     * to render the scene.
+     */
+    @Test
+    public void testRenderSceneToBitmapLowMemory() {
+        MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
+        MemberModifier.suppress(MemberModifier.method(MainActivity.class, "showUiMessage"));
+        MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetRenderButton"));
+
+        final MainRenderer mainRenderer = new MainRenderer();
+        final ActivityManager activityManagerMocked = PowerMockito.mock(ActivityManager.class);
+        Mockito.doNothing().when(activityManagerMocked).getMemoryInfo(Mockito.any(ActivityManager.MemoryInfo.class));
+        mainRenderer.setActivityManager(activityManagerMocked);
+
+        final ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
+        UtilsT.setPrivateField(memoryInfo, "availMem", 100L * BYTES_IN_MEGABYTE);
+        UtilsT.setPrivateField(mainRenderer, "memoryInfo", memoryInfo);
+
+        Assertions.assertThatThrownBy(() -> mainRenderer.renderSceneToBitmap(
+            ByteBuffer.allocate(1),
+            ByteBuffer.allocate(1),
+            ByteBuffer.allocate(1),
+            1234567
+        ))
+            .as("The call to MainRenderer#renderSceneToBitmap method")
+            .isInstanceOf(LowMemoryException.class);
     }
 }
