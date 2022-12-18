@@ -5,6 +5,8 @@ import static puscas.mobilertapp.constants.Constants.BYTES_IN_MEGABYTE;
 import android.app.ActivityManager;
 import android.graphics.Bitmap;
 
+import com.google.common.util.concurrent.Uninterruptibles;
+
 import org.assertj.core.api.Assertions;
 import org.junit.Rule;
 import org.junit.Test;
@@ -16,6 +18,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.rule.PowerMockRule;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import javax.microedition.khronos.opengles.GL10;
 
@@ -220,14 +223,16 @@ public class MainRendererTest {
         MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetRenderButton"));
         final MainRenderer mainRenderer = new MainRenderer();
 
-        final Thread thread = new Thread(mainRenderer::getState);
-        thread.start();
-
-        Assertions.assertThat(thread.isAlive())
-            .as("The thread getting MainRender state")
+        final Thread thread = new Thread(() -> {
+            Uninterruptibles.sleepUninterruptibly(1L, TimeUnit.SECONDS);
+            mainRenderer.onDrawFrame(Mockito.mock(GL10.class));
+        });
+        Assertions.assertThat((boolean) UtilsT.getPrivateField(mainRenderer, "firstFrame"))
+            .as("The 1st frame field")
             .isTrue();
 
-        mainRenderer.onDrawFrame(Mockito.mock(GL10.class));
+        thread.start();
+        mainRenderer.getState();
 
         Assertions.assertThat((boolean) UtilsT.getPrivateField(mainRenderer, "firstFrame"))
             .as("The 1st frame field")
@@ -235,7 +240,7 @@ public class MainRendererTest {
 
         thread.join();
         Assertions.assertThat(thread.isAlive())
-            .as("The thread getting MainRender state")
+            .as("The thread calling the MainRender#onDrawFrame method")
             .isFalse();
     }
 }
