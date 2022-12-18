@@ -198,18 +198,6 @@ public final class UtilsContext {
         return cores;
     }
 
-    /**
-     * Helper method that checks if the system is a 64 device or not.
-     *
-     * @param context The {@link Context} of the Android system.
-     * @return Whether the system is 64 bit.
-     */
-    public static boolean is64BitDevice(@NonNull final Context context) {
-        log.info("is64BitDevice");
-        final String text = readTextAsset(context, "Utils" + ConstantsUI.FILE_SEPARATOR +  "cpuInfoPath.txt");
-        return text.matches("64.*bit");
-    }
-
 
     // Private methods
 

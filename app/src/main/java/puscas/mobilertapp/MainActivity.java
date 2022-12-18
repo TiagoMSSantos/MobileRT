@@ -68,7 +68,8 @@ public final class MainActivity extends Activity {
     /**
      * The request code for the new {@link Activity} to open an OBJ file.
      */
-    private static final int OPEN_FILE_REQUEST_CODE = 1;
+    @VisibleForTesting
+    static final int OPEN_FILE_REQUEST_CODE = 1;
 
     /**
      * The OpenGL ES version required to run this application.
@@ -420,7 +421,7 @@ public final class MainActivity extends Activity {
                                     @Nullable final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == Activity.RESULT_OK && requestCode == OPEN_FILE_REQUEST_CODE) {
+        if (requestCode == OPEN_FILE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             this.sceneFilePath = Optional.ofNullable(data)
                 .map(Intent::getData)
                 .map(this::getPathFromFile)
@@ -530,7 +531,7 @@ public final class MainActivity extends Activity {
      * @return The path to the file.
      */
     @NonNull
-    private String getPathFromFile(final Uri uri) {
+    private String getPathFromFile(@NonNull final Uri uri) {
         final String filePath = StreamSupport.stream(uri.getPathSegments())
             .skip(1L)
             .reduce("", (accumulator, segment) -> accumulator + ConstantsUI.FILE_SEPARATOR + segment);

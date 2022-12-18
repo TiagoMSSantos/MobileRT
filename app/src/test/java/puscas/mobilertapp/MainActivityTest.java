@@ -1,14 +1,20 @@
 package puscas.mobilertapp;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
 
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.mockito.ArgumentMatchers;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -19,11 +25,12 @@ import java.util.Arrays;
 import java.util.Objects;
 
 import lombok.extern.java.Log;
+import puscas.mobilertapp.utils.UtilsContext;
 
 /**
  * The test suite for {@link MainActivity} class.
  */
-@PrepareForTest(MainActivity.class)
+@PrepareForTest({MainActivity.class, UtilsContext.class})
 @Log
 public final class MainActivityTest {
 
@@ -52,7 +59,7 @@ public final class MainActivityTest {
         // to add the native MobileRT library to the Java library path.
         // addLibraryPath("../build_release/lib");
 
-        mainActivityMocked = PowerMockito.spy(new MainActivity());
+        mainActivityMocked = Mockito.spy(MainActivity.class);
     }
 
     /**
@@ -115,5 +122,58 @@ public final class MainActivityTest {
             .as("The MainActivity#onCreate")
             .isInstanceOf(UnsatisfiedLinkError.class)
             .hasMessageContaining("no MobileRT in java.library.path");
+    }
+
+    /**
+     * Tests that the {@link MainActivity#onActivityResult(int, int, Intent)} method sets the
+     * {@link MainActivity#sceneFilePath} field when it is called by an external file manager with
+     * a path to a file.
+     */
+    @Test
+    public void testOnActivityResultSetsSceneFilePath() {
+        final Intent intentMocked = Mockito.mock(Intent.class);
+
+        final Uri uriMocked = Mockito.mock(Uri.class);
+        Mockito.when(uriMocked.getPathSegments())
+            .thenReturn(ImmutableList.of("document", "1CE6-261B:MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.mtl"));
+        Mockito.when(intentMocked.getData())
+            .thenReturn(uriMocked);
+
+        try (final MockedStatic<UtilsContext> utilsContextMockedStatic = Mockito.mockStatic(UtilsContext.class)) {
+            utilsContextMockedStatic.when(() -> UtilsContext.getSdCardPath(ArgumentMatchers.any()))
+                .thenReturn("");
+
+            mainActivityMocked.onActivityResult(MainActivity.OPEN_FILE_REQUEST_CODE, Activity.RESULT_OK, intentMocked);
+
+            Assertions.assertThat((String) UtilsT.getPrivateField(mainActivityMocked, "sceneFilePath"))
+                .as("The 'MainActivity#sceneFilePath' field")
+                .isEqualTo("/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water");
+        }
+    }
+
+    /**
+     * Tests that the {@link MainActivity#getPathFromFile(Uri)} method will get the proper path to
+     * an OBJ file in the internal storage.
+     */
+    @Test
+    public void testOnActivityResultWithInternalPath() {
+        final Intent intentMocked = Mockito.mock(Intent.class);
+
+        final Uri uriMocked = Mockito.mock(Uri.class);
+        Mockito.when(uriMocked.getPathSegments())
+            .thenReturn(ImmutableList.of("file", "sdcard", "MobileRT", "WavefrontOBJs", "CornellBox", "CornellBox-Water.obj"));
+        Mockito.when(intentMocked.getData())
+            .thenReturn(uriMocked);
+
+        try (final MockedStatic<UtilsContext> utilsContextMockedStatic = Mockito.mockStatic(UtilsContext.class)) {
+            utilsContextMockedStatic.when(() -> UtilsContext.getInternalStoragePath(ArgumentMatchers.any()))
+                    .thenReturn("/mockedStorage");
+
+            mainActivityMocked.onActivityResult(MainActivity.OPEN_FILE_REQUEST_CODE, Activity.RESULT_OK, intentMocked);
+
+            Assertions.assertThat((String) UtilsT.getPrivateField(mainActivityMocked, "sceneFilePath"))
+                .as("The 'MainActivity#sceneFilePath' field")
+                .isEqualTo("/mockedStorage/sdcard/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water");
+        }
     }
 }

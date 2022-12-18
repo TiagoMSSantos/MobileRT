@@ -209,4 +209,33 @@ public class MainRendererTest {
 
     }
 
+    /**
+     * Tests that the {@link MainRenderer#getState()} method will advance when the
+     * {@link MainRenderer#onDrawFrame(GL10)} method is called for the 1st time.
+     */
+    @Test
+    public void testGetStateWhileCallingOnDrawFrame() throws InterruptedException {
+        MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
+        MemberModifier.suppress(MemberModifier.method(MainActivity.class, "showUiMessage"));
+        MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetRenderButton"));
+        final MainRenderer mainRenderer = new MainRenderer();
+
+        final Thread thread = new Thread(mainRenderer::getState);
+        thread.start();
+
+        Assertions.assertThat(thread.isAlive())
+            .as("The thread getting MainRender state")
+            .isTrue();
+
+        mainRenderer.onDrawFrame(Mockito.mock(GL10.class));
+
+        Assertions.assertThat((boolean) UtilsT.getPrivateField(mainRenderer, "firstFrame"))
+            .as("The 1st frame field")
+            .isFalse();
+
+        thread.join();
+        Assertions.assertThat(thread.isAlive())
+            .as("The thread getting MainRender state")
+            .isFalse();
+    }
 }

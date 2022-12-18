@@ -473,7 +473,6 @@ dependencies {
     // Should be used `powermock-module-junit4-rule-agent` instead of `powermock-module-junit4-rule`.
     testImplementation "org.powermock:powermock-module-junit4-rule-agent:${powermock_version}"
     testImplementation "org.powermock:powermock-module-javaagent:${powermock_version}"
-    testImplementation "org.powermock:powermock-classloading-xstream:${powermock_version}"
 
     // Annotations for the unit tests
     testAnnotationProcessor "org.projectlombok:lombok:${lombok_version}"
