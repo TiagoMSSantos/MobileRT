@@ -8,6 +8,7 @@ import java.lang.reflect.Field;
 
 import lombok.experimental.UtilityClass;
 import lombok.extern.java.Log;
+import puscas.mobilertapp.exceptions.FailureException;
 
 /**
  * Helper class which contains helper methods for the tests.
@@ -34,7 +35,7 @@ public final class UtilsT {
             // Use reflection to access the private field.
             field = clazz.getClass().getDeclaredField(fieldName);
         } catch (final NoSuchFieldException ex) {
-            log.warning(ex.getMessage());
+            throw new FailureException(ex);
         }
         Preconditions.checkNotNull(field, "field shouldn't be null");
         field.setAccessible(true); // Make the field public.
@@ -43,7 +44,7 @@ public final class UtilsT {
         try {
             privateField = (T) field.get(clazz);
         } catch (final IllegalAccessException ex) {
-            log.severe(ex.getMessage());
+            throw new FailureException(ex);
         }
         Preconditions.checkNotNull(privateField, "privateField shouldn't be null");
 
@@ -67,7 +68,7 @@ public final class UtilsT {
             // Use reflection to access the private field.
             field = clazz.getClass().getDeclaredField(fieldName);
         } catch (final NoSuchFieldException ex) {
-            log.severe(ex.getMessage());
+            throw new FailureException(ex);
         }
         Preconditions.checkNotNull(field, "field shouldn't be null");
         field.setAccessible(true); // Make the field public.
@@ -75,7 +76,7 @@ public final class UtilsT {
         try {
             field.set(clazz, newValue);
         } catch (final IllegalAccessException ex) {
-            log.severe(ex.getMessage());
+            throw new FailureException(ex);
         }
     }
 

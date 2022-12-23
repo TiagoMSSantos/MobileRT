@@ -114,6 +114,7 @@ gather_logs_func() {
     > "${reports_path}"/logcat_app_"${type}".log;
   set -e;
 
+  printf '\e]8;;file://'"%s"'/'"%s"'/tests/test'"%s"'UnitTest/index.html\aClick here to check the Unit tests report.\e]8;;\a\n' "${PWD}" "${reports_path}" "${typeWithCapitalLetter}";
   printf '\e]8;;file://'"%s"'/'"%s"'/androidTests/connected/index.html\aClick here to check the Android tests report.\e]8;;\a\n' "${PWD}" "${reports_path}";
   printf '\e]8;;file://'"%s"'/'"%s"'/jacoco/jacocoTestReport/html/index.html\aClick here to check the Code coverage report.\e]8;;\a\n' "${PWD}" "${reports_path}";
   printf '\e]8;;file://'"%s"'/'"%s"'/logcat_app_'"%s"'.log\aClick here to check the app log.\e]8;;\a\n' "${PWD}" "${reports_path}" "${type}";
@@ -161,13 +162,6 @@ unlockDevice() {
   echo 'Set adb as root, to be able to change files permissions';
   callCommandUntilSuccess adb root;
 
-  echo 'Wait for device to be ready to unlock.';
-  callCommandUntilSuccess adb kill-server;
-  callCommandUntilSuccess adb kill-server;
-  callCommandUntilSuccess adb kill-server;
-  callCommandUntilSuccess adb disconnect;
-  callCommandUntilSuccess adb disconnect;
-  callCommandUntilSuccess adb disconnect;
   set +e;
   # shellcheck disable=SC2009
   GRADLE_DAEMON_PROCESSES=$(ps aux | grep -i "grep -i GradleDaemon" | grep -v "grep" | tr -s ' ' | cut -d ' ' -f 2);
@@ -184,9 +178,6 @@ unlockDevice() {
   set -e;
 
   # Make sure ADB daemon started properly.
-  callCommandUntilSuccess adb start-server;
-  callCommandUntilSuccess adb start-server;
-  callCommandUntilSuccess adb start-server;
   callCommandUntilSuccess adb shell 'ps > /dev/null;';
   # adb shell needs ' instead of ", so 'getprop' works properly.
   # shellcheck disable=SC2016
@@ -201,9 +192,6 @@ unlockDevice() {
   callAdbShellCommandUntilSuccess adb shell 'input tap 800 400; echo ::$?::';
   callAdbShellCommandUntilSuccess adb shell 'input tap 1000 500; echo ::$?::';
 
-  callCommandUntilSuccess adb start-server;
-  callCommandUntilSuccess adb start-server;
-  callCommandUntilSuccess adb start-server;
   callCommandUntilSuccess adb get-state;
   callCommandUntilSuccess adb devices -l;
   callCommandUntilSuccess adb version;
@@ -251,20 +239,8 @@ waitForEmulator() {
   # Don't make the Android emulator belong in the process group, so it will not be killed at the end.
   set -m;
 
+  _restartAdbProcesses;
   set +e;
-  # shellcheck disable=SC2009
-  ADB_PROCESSES=$(ps aux | grep -i "adb" | grep -v "grep" | tr -s ' ' | cut -d ' ' -f 2);
-  echo "Detected ADB process(es): '${ADB_PROCESSES}'";
-  set +u;
-  if [ -z "${CI}" ]; then
-    echo "Killing previous ADB process(es), just in case it was stuck: '${ADB_PROCESSES}'";
-    for ADB_PROCESS in ${ADB_PROCESSES}; do
-      echo "Killing: '${ADB_PROCESS}'";
-      kill -KILL "${ADB_PROCESS}";
-    done;
-    sleep 3;
-  fi
-  set -u;
   adb_devices_running=$(adb devices | tail -n +2);
   retry=0;
   while [ "${adb_devices_running}" = '' ] && [ ${retry} -lt 3 ]; do
@@ -285,6 +261,8 @@ waitForEmulator() {
     # setsid -> Run the Android emulator in a new session.
     # nohup -> Disconnect the process from the terminal, redirects its output to nohup.out and shields it from SIGHUP.
     # Both `setsid` and `nohup` are used to make sure the Android emulator continues to work after this script is completed.
+    # Truncate nohup.out log file.
+    : > nohup.out;
     setsid nohup cpulimit --cpu 8 --limit 800 -- \
       emulator -avd "${avd_emulator}" -cores 8 -memory 2048 -cache-size 2048 -partition-size 2048 \
       -writable-system -ranchu -fixed-scale -skip-adb-auth -gpu swiftshader_indirect -no-audio \
@@ -298,6 +276,12 @@ waitForEmulator() {
   done
   set -e;
   echo "Devices running: '${adb_devices_running}'";
+
+  # shellcheck disable=SC2002
+  if (cat nohup.out | grep -iq "Process .* dead!"); then
+    echo "Android emulator didn't boot properly, please check the 'nohup.out' log file for more context.";
+    exit 1;
+  fi
 
   echo 'Finding at least 1 Android device on.';
   callCommandUntilSuccess adb shell 'ps > /dev/null;';
@@ -400,9 +384,11 @@ runUnitTests() {
   echo 'Copy unit tests to Android emulator.';
   ls app/.cxx;
   if [ "${type}" = 'release' ]; then
-    typeWithCapitalLetter='RelWithDebInfo';
+    typeWithDebInfo='RelWithDebInfo';
+  else
+    typeWithDebInfo="${typeWithCapitalLetter}";
   fi
-  dirUnitTests="app/.cxx/${typeWithCapitalLetter}";
+  dirUnitTests="app/.cxx/${typeWithDebInfo}";
   echo 'Checking generated id.';
   # Note: flag `-t` of `ls` is to sort by date (newest first).
   # shellcheck disable=SC2012
@@ -530,6 +516,25 @@ runInstrumentationTests() {
   adb logcat -v threadtime -d "*":V > "${reports_path}"/logcat_tests_"${type}".log 2>&1;
   set -e;
   echo "pid of instrumentation tests: '${pid_instrumentation_tests}'";
+}
+
+_restartAdbProcesses() {
+  set +eu;
+  # shellcheck disable=SC2009
+  ADB_PROCESSES=$(ps aux | grep -i "adb" | grep -v "grep" | tr -s ' ' | cut -d ' ' -f 2);
+  echo "Detected ADB process(es): '${ADB_PROCESSES}'";
+  if [ -z "${CI}" ]; then
+    echo "Killing previous ADB process(es), just in case it was stuck: '${ADB_PROCESSES}'";
+    for ADB_PROCESS in ${ADB_PROCESSES}; do
+      echo "Killing: '${ADB_PROCESS}'";
+      kill -KILL "${ADB_PROCESS}";
+    done;
+    sleep 3;
+  fi
+  set -eu;
+  callCommandUntilSuccess adb kill-server;
+  callCommandUntilSuccess adb start-server;
+
 }
 ###############################################################################
 ###############################################################################

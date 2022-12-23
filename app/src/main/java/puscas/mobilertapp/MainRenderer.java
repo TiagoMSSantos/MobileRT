@@ -628,13 +628,8 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         // `errno` to `ENOMEM` which means that the system didn't have enough memory to do some
         // operation, so we set the `errno` back to 0 here.
         MainActivity.resetErrno();
-        try {
-            this.bitmap.eraseColor(Color.BLACK);
-            validateBitmap(this.bitmap);
-        } catch (final NullPointerException ex) {
-            // This `NullPointerException` should only be thrown in an Unit Test.
-            log.severe(ex.getMessage());
-        }
+        this.bitmap.eraseColor(Color.BLACK);
+        validateBitmap(this.bitmap);
 
         this.firstFrame = true;
         this.rasterize = rasterize;
@@ -719,8 +714,8 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         if (this.textureHandle != null) {
             UtilsGL.run(() -> GLES20.glDeleteTextures(1, this.textureHandle, 0));
         }
-        GLES20.glDeleteProgram(this.shaderProgram);
-        GLES20.glDeleteProgram(this.shaderProgramRaster);
+        UtilsGL.run(() -> GLES20.glDeleteProgram(this.shaderProgram));
+        UtilsGL.run(() -> GLES20.glDeleteProgram(this.shaderProgramRaster));
 
         final String messageFinished = "closeRenderer" + ConstantsMethods.FINISHED;
         log.info(messageFinished);

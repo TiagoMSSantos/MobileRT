@@ -148,6 +148,7 @@ callCommandUntilError() {
   echo '';
   echo "Calling until error '$*'";
   retry=0;
+  set +e;
   "$@";
   lastResult=${?};
   while [ "${lastResult}" -eq 0 ] && [ ${retry} -lt 5 ]; do
@@ -155,8 +156,9 @@ callCommandUntilError() {
     "$@";
     lastResult=${?};
     echo "Retry: ${retry} of command '$*'; result: '${lastResult}'";
-    sleep 3;
+    sleep 2;
   done
+  set -e;
   if [ "${lastResult}" -eq 0 ]; then
     echo "$*: success - '${lastResult}'";
   else
@@ -180,7 +182,7 @@ callCommandUntilSuccess() {
     "$@";
     lastResult=${?};
     echo "Retry: ${retry} of command '$*'; result: '${lastResult}'";
-    sleep 3;
+    sleep 2;
   done
   set -e;
   if [ "${lastResult}" -eq 0 ]; then
@@ -196,19 +198,21 @@ callAdbShellCommandUntilSuccess() {
   echo '';
   echo "Calling ADB shell command until success '$*'";
   retry=0;
+  set +e;
   output=$("$@");
   # echo "Output of command: '${output}'";
   lastResult=$(echo "${output}" | grep '::.*::' | sed 's/:://g'| tr -d '[:space:]');
   echo "result: '${lastResult}'";
-  while [ "${lastResult}" -ne 0 ] && [ ${retry} -lt 20 ]; do
+  while [ "${lastResult}" != '0' ] && [ ${retry} -lt 5 ]; do
     retry=$(( retry + 1 ));
     output=$("$@");
     echo "Output of command: '${output}'";
     lastResult=$(echo "${output}" | grep '::.*::' | sed 's/:://g' | tr -d '[:space:]');
     echo "Retry: ${retry} of command '$*'; result: '${lastResult}'";
-    sleep 3;
+    sleep 2;
   done
-  if [ "${lastResult}" -eq 0 ]; then
+  set -e;
+  if [ "${lastResult}" = '0' ]; then
     echo "'$*': success";
   else
     echo "'$*': failed";
@@ -218,10 +222,13 @@ callAdbShellCommandUntilSuccess() {
 
 # Outputs the exit code received by argument and exits the current process with
 # that exit code.
+# Parameters:
+# * Error code
+# * Text to be printed
 printCommandExitCode() {
-  echo '######################################################################';
+  echo '#####################################################################';
   echo 'Results:';
-  if [ "${1}" -eq 0 ]; then
+  if [ "${1}" = '0' ]; then
     echo "${2}: success";
   else
     echo "${2}: failed";

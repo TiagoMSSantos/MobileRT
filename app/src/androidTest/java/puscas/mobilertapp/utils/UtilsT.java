@@ -1,7 +1,6 @@
 package puscas.mobilertapp.utils;
 
 import android.graphics.Bitmap;
-import android.os.Build;
 import android.widget.Button;
 
 import androidx.annotation.NonNull;
@@ -10,7 +9,6 @@ import androidx.test.espresso.matcher.ViewMatchers;
 
 import com.google.common.base.Preconditions;
 
-import org.junit.Assume;
 import org.junit.jupiter.api.Assertions;
 
 import java.lang.reflect.Field;
@@ -18,12 +16,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 
 import java8.util.J8Arrays;
 import lombok.experimental.UtilityClass;
 import lombok.extern.java.Log;
-import puscas.mobilertapp.BuildConfig;
 import puscas.mobilertapp.ConstantsAndroidTests;
 import puscas.mobilertapp.DrawView;
 import puscas.mobilertapp.MainRenderer;
@@ -32,6 +28,7 @@ import puscas.mobilertapp.ViewActionButton;
 import puscas.mobilertapp.constants.Constants;
 import puscas.mobilertapp.constants.ConstantsMethods;
 import puscas.mobilertapp.constants.State;
+import puscas.mobilertapp.exceptions.FailureException;
 
 /**
  * Helper class which contains helper methods for the tests.
@@ -39,27 +36,6 @@ import puscas.mobilertapp.constants.State;
 @UtilityClass
 @Log
 public final class UtilsT {
-
-    /**
-     * Helper method that checks if the current system should or not execute the
-     * flaky tests.
-     *
-     * @param numCores The number of CPU cores available.
-     */
-    static void checksIfSystemShouldContinue(final int numCores) {
-        final String messageDebug = "BuildConfig.DEBUG: " + BuildConfig.DEBUG;
-        log.info(messageDebug);
-        final String messageTags = "Build.TAGS: " + Build.TAGS;
-        log.info(messageTags);
-        final String messageNumCores = "numCores: " + numCores;
-        log.info(messageNumCores);
-        Assume.assumeFalse(
-            "This test fails in Debug with only 1 core.",
-            BuildConfig.DEBUG // Debug mode
-                && Build.TAGS.equals("test-keys") // In third party systems (CI)
-                && numCores == 1 // Android system with only 1 CPU core
-        );
-    }
 
     /**
      * Helper method that gets a private field from an {@link Object}.
@@ -74,21 +50,21 @@ public final class UtilsT {
     @SuppressWarnings("unchecked")
     public static <T> T getPrivateField(@NonNull final Object clazz,
                                         @NonNull final String fieldName) {
-        Field field = null;
+        final Field field;
         try {
             // Use reflection to access the private field.
             field = clazz.getClass().getDeclaredField(fieldName);
         } catch (final NoSuchFieldException ex) {
-            log.warning(ex.getMessage());
+            throw new FailureException(ex);
         }
         Preconditions.checkNotNull(field, "field shouldn't be null");
         field.setAccessible(true); // Make the field public.
 
-        T privateField = null;
+        final T privateField;
         try {
             privateField = (T) field.get(clazz);
         } catch (final IllegalAccessException ex) {
-            log.warning(ex.getMessage());
+            throw new FailureException(ex);
         }
         Preconditions.checkNotNull(privateField, "privateField shouldn't be null");
 
@@ -112,24 +88,24 @@ public final class UtilsT {
                                      @NonNull final String methodName,
                                      @NonNull final List<Class<?>> parameterTypes,
                                      @NonNull final Collection<Object> args) {
-        Method method = null;
+        final Method method;
         try {
             // Use reflection to access the private method.
             method = clazz.getClass()
                 .getDeclaredMethod(methodName, parameterTypes.toArray(new Class<?>[0]));
         } catch (final NoSuchMethodException ex) {
-            log.warning(ex.getMessage());
+            throw new FailureException(ex);
         }
         Preconditions.checkNotNull(method, "method shouldn't be null");
         method.setAccessible(true); // Make the method public.
 
-        T privateMethodReturnValue = null;
+        final T privateMethodReturnValue;
         try {
             privateMethodReturnValue = (T) method.invoke(clazz, args.toArray(new Object[0]));
         } catch (final IllegalAccessException ex) {
-            log.warning(ex.getMessage());
+            throw new FailureException(ex);
         } catch (final InvocationTargetException ex) {
-            log.warning(Objects.requireNonNull(ex.getCause()).getMessage());
+            throw new FailureException(ex);
         }
         Preconditions.checkNotNull(privateMethodReturnValue, "privateMethodReturnValue shouldn't be null");
 

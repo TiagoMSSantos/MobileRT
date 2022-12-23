@@ -28,7 +28,7 @@ import puscas.mobilertapp.exceptions.FailureException;
  * The test suite for the {@link MyEglContextFactory} class.
  */
 @Log
-@PrepareForTest(MainActivity.class)
+@PrepareForTest({MainActivity.class, MainRenderer.class})
 public final class MyEglContextFactoryTest {
 
     /**
@@ -245,6 +245,7 @@ public final class MyEglContextFactoryTest {
     @Test
     public void testInvalidCreateContext() {
         MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
+        MemberModifier.suppress(MemberModifier.method(MainRenderer.class, "setBitmap"));
 
         final Context context = new MainActivity();
         final DrawView drawView = new DrawView(context);
@@ -271,6 +272,7 @@ public final class MyEglContextFactoryTest {
     @Test
     public void testExceptionWhenCreatingContext() {
         MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
+        MemberModifier.suppress(MemberModifier.method(MainRenderer.class, "setBitmap"));
 
         final Context context = new MainActivity();
         final DrawView drawView = new DrawView(context);
@@ -295,6 +297,7 @@ public final class MyEglContextFactoryTest {
     @Test
     public void testCreateContext() {
         MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
+        MemberModifier.suppress(MemberModifier.method(MainRenderer.class, "setBitmap"));
 
         final Context context = new MainActivity();
         final DrawView drawView = new DrawView(context);
@@ -320,6 +323,7 @@ public final class MyEglContextFactoryTest {
     @Test
     public void testCreateNewContext() {
         MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
+        MemberModifier.suppress(MemberModifier.method(MainRenderer.class, "setBitmap"));
 
         final Context context = new MainActivity();
         final DrawView drawView = new DrawView(context);
@@ -358,6 +362,7 @@ public final class MyEglContextFactoryTest {
     @Test
     public void testInvalidDestroyContext() {
         MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
+        MemberModifier.suppress(MemberModifier.method(MainRenderer.class, "setBitmap"));
 
         final Context context = new MainActivity();
         final DrawView drawView = new DrawView(context);
