@@ -330,14 +330,6 @@ public final class DrawView extends GLSurfaceView {
     }
 
     @Override
-    public boolean performClick() {
-        super.performClick();
-        log.info("performClick");
-
-        return true;
-    }
-
-    @Override
     public void onWindowFocusChanged(final boolean hasWindowFocus) {
         super.onWindowFocusChanged(hasWindowFocus);
         log.info("onWindowFocusChanged");

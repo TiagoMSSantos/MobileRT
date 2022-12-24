@@ -259,7 +259,7 @@ h3 {
         text-align: center;
 
     }
-}</style></head><body><div class="pure-g" id="layout"><div class="sidebar pure-u-1 pure-u-md-1-4"><div class="header"><img src="https://raw.githubusercontent.com/kucherenko/jscpd/1.0.0-alpha/assets/logo-small-box.svg?sanitize=true" width="190"><nav class="nav"><ul class="nav-list"><li class="nav-item"><a class="pure-button" href="#yaml">yaml</a></li><li class="nav-item"><a class="pure-button" href="#properties">properties</a></li><li class="nav-item"><a class="pure-button" href="#markdown">markdown</a></li><li class="nav-item"><a class="pure-button" href="#css">css</a></li><li class="nav-item"><a class="pure-button" href="#bash">bash</a></li><li class="nav-item"><a class="pure-button" href="#variable">variable</a></li><li class="nav-item"><a class="pure-button" href="#cpp">cpp</a></li><li class="nav-item"><a class="pure-button" href="#c">c</a></li><li class="nav-item"><a class="pure-button" href="#java">java</a></li><li class="nav-item"><a class="pure-button" href="#kotlin">kotlin</a></li></ul></nav></div></div><div class="content pure-u-1 pure-u-md-3-4"><div class="controls"><div class="pure-u"><button class="pure-button" onclick="collapseExpandAll()">Collapse/Expand All</button></div></div><table class="pure-table stats"><thead><tr><th>Total files</th><th>Total lines of code</th><th>Duplicated lines</th><th>% of duplications</th></tr></thead><tbody><tr><td>226</td><td>21775</td><td>861</td><td>3.95%</td></tr></tbody></table><div class="clones collapsed"><a name="yaml"></a><h1 class="content-subhead">yaml</h1><div class="mode-stats"><p><span class="mode-rate">7.75%</span> Total files: 12, total lines of code: 1459, duplicated lines: 113</p></div><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">.github/workflows/code-analysis.yml[22:1 - 44:75]<br/>.github/workflows/android_repeatable.yml[10:1 - 32:16]</div></header><div class="clone-description"><pre data-first-start="22" data-second-start="10" data-length="22">defaults:
+}</style></head><body><div class="pure-g" id="layout"><div class="sidebar pure-u-1 pure-u-md-1-4"><div class="header"><img src="https://raw.githubusercontent.com/kucherenko/jscpd/1.0.0-alpha/assets/logo-small-box.svg?sanitize=true" width="190"><nav class="nav"><ul class="nav-list"><li class="nav-item"><a class="pure-button" href="#yaml">yaml</a></li><li class="nav-item"><a class="pure-button" href="#properties">properties</a></li><li class="nav-item"><a class="pure-button" href="#markdown">markdown</a></li><li class="nav-item"><a class="pure-button" href="#css">css</a></li><li class="nav-item"><a class="pure-button" href="#bash">bash</a></li><li class="nav-item"><a class="pure-button" href="#variable">variable</a></li><li class="nav-item"><a class="pure-button" href="#cpp">cpp</a></li><li class="nav-item"><a class="pure-button" href="#c">c</a></li><li class="nav-item"><a class="pure-button" href="#java">java</a></li><li class="nav-item"><a class="pure-button" href="#kotlin">kotlin</a></li></ul></nav></div></div><div class="content pure-u-1 pure-u-md-3-4"><div class="controls"><div class="pure-u"><button class="pure-button" onclick="collapseExpandAll()">Collapse/Expand All</button></div></div><table class="pure-table stats"><thead><tr><th>Total files</th><th>Total lines of code</th><th>Duplicated lines</th><th>% of duplications</th></tr></thead><tbody><tr><td>227</td><td>21931</td><td>910</td><td>4.15%</td></tr></tbody></table><div class="clones collapsed"><a name="yaml"></a><h1 class="content-subhead">yaml</h1><div class="mode-stats"><p><span class="mode-rate">7.75%</span> Total files: 12, total lines of code: 1459, duplicated lines: 113</p></div><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">.github/workflows/code-analysis.yml[22:1 - 44:75]<br/>.github/workflows/android_repeatable.yml[10:1 - 32:16]</div></header><div class="clone-description"><pre data-first-start="22" data-second-start="10" data-length="22">defaults:
   run:
     shell: sh
     working-directory: .
@@ -457,7 +457,7 @@ fi
 # Set default arguments.
 ###############################################################################
 type='release';
-compiler='g++'</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">scripts/helper_functions.sh[180:31 - 189:12]<br/>scripts/helper_functions.sh[154:31 - 163:11]</div></header><div class="clone-description"><pre data-first-start="180" data-second-start="154" data-length="9">'0' ] &amp;&amp; [ ${retry} -lt 5 ]; do
+compiler='g++'</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">scripts/helper_functions.sh[180:31 - 189:12]<br/>scripts/helper_functions.sh[154:31 - 163:11]</div></header><div class="clone-description"><pre data-first-start="180" data-second-start="154" data-length="9">0 ] &amp;&amp; [ ${retry} -lt 5 ]; do
     retry=$(( retry + 1 ));
     &quot;$@&quot;;
     lastResult=${?};
@@ -465,7 +465,7 @@ compiler='g++'</pre></div></section><section class="clone"><header><button class
     sleep 2;
   done
   set -e;
-  if [ &quot;${lastResult}&quot; -eq '0' ]; then
+  if [ &quot;${lastResult}&quot; -eq 0 ]; then
     echo &quot;'</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">scripts/install_dependencies.sh[20:1 - 60:24]<br/>scripts/check_android.sh[7:1 - 47:25]</div></header><div class="clone-description"><pre data-first-start="20" data-second-start="7" data-length="40">###############################################################################
 ###############################################################################
 
@@ -771,7 +771,7 @@ set</pre></div></section><a name="variable"></a><h1 class="content-subhead">vari
     m_ui-&gt;graphicsView-&gt;resize(m_config.width + 2, m_config.height + 2);
 }
 
-void MainWindow::keyPressEvent</pre></div></section><a name="c"></a><h1 class="content-subhead">c</h1><div class="mode-stats"><p><span class="mode-rate">0%</span> Total files: 4, total lines of code: 141, duplicated lines: 0</p></div><a name="java"></a><h1 class="content-subhead">java</h1><div class="mode-stats"><p><span class="mode-rate">5.03%</span> Total files: 81, total lines of code: 6933, duplicated lines: 349</p></div><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/androidTest/java/puscas/mobilertapp/RayTracingTest.java[7:29 - 16:48]<br/>app/src/androidTest/java/puscas/mobilertapp/PreviewTest.java[3:44 - 13:42]</div></header><div class="clone-description"><pre data-first-start="7" data-second-start="3" data-length="9">;
+void MainWindow::keyPressEvent</pre></div></section><a name="c"></a><h1 class="content-subhead">c</h1><div class="mode-stats"><p><span class="mode-rate">0%</span> Total files: 4, total lines of code: 141, duplicated lines: 0</p></div><a name="java"></a><h1 class="content-subhead">java</h1><div class="mode-stats"><p><span class="mode-rate">5.61%</span> Total files: 82, total lines of code: 7089, duplicated lines: 398</p></div><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/androidTest/java/puscas/mobilertapp/RayTracingTest.java[7:29 - 16:48]<br/>app/src/androidTest/java/puscas/mobilertapp/PreviewTest.java[3:44 - 13:42]</div></header><div class="clone-description"><pre data-first-start="7" data-second-start="3" data-length="9">;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
@@ -780,14 +780,34 @@ import java.util.concurrent.TimeoutException;
 
 import lombok.extern.java.Log;
 import puscas.mobilertapp.constants.Constants;
-import puscas.mobilertapp.constants.ConstantsUI</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/MainRendererTest.java[13:39 - 20:25]<br/>app/src/test/java/puscas/mobilertapp/MainActivityTest.java[13:24 - 20:26]</div></header><div class="clone-description"><pre data-first-start="13" data-second-start="13" data-length="7">;
+import puscas.mobilertapp.constants.ConstantsUI</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/DrawViewTest.java[63:39 - 70:22]<br/>app/src/test/java/puscas/mobilertapp/DrawViewTest.java[39:32 - 46:23]</div></header><div class="clone-description"><pre data-first-start="63" data-second-start="39" data-length="7">() {
+        MemberModifier.suppress(MemberModifier.method(MainActivity.class, &quot;resetErrno&quot;));
+        MemberModifier.suppress(MemberModifier.method(MainRenderer.class, &quot;setBitmap&quot;));
+
+        final DrawView drawView = PowerMockito.spy(new DrawView(new MainActivity()));
+
+        final ContextWrapper contextMocked = Mockito.mock(ContextWrapper.class);
+        final Context</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/DrawViewTest.java[88:46 - 94:23]<br/>app/src/test/java/puscas/mobilertapp/DrawViewTest.java[39:32 - 45:29]</div></header><div class="clone-description"><pre data-first-start="88" data-second-start="39" data-length="6">() {
+        MemberModifier.suppress(MemberModifier.method(MainActivity.class, &quot;resetErrno&quot;));
+        MemberModifier.suppress(MemberModifier.method(MainRenderer.class, &quot;setBitmap&quot;));
+
+        final DrawView drawView = PowerMockito.spy(new DrawView(new MainActivity()));
+
+        final TextView</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/MainRendererTest.java[13:39 - 20:25]<br/>app/src/test/java/puscas/mobilertapp/MainActivityTest.java[13:24 - 20:26]</div></header><div class="clone-description"><pre data-first-start="13" data-second-start="13" data-length="7">;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
-import org.powermock.api</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/MainRendererTest.java[81:40 - 88:58]<br/>app/src/test/java/puscas/mobilertapp/MainRendererTest.java[52:37 - 59:60]</div></header><div class="clone-description"><pre data-first-start="81" data-second-start="52" data-length="7">() {
+import org.powermock.api</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/MainRendererTest.java[17:32 - 24:12]<br/>app/src/test/java/puscas/mobilertapp/DrawViewTest.java[13:22 - 20:14]</div></header><div class="clone-description"><pre data-first-start="17" data-second-start="13" data-length="7">;
+import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.api.support.membermodification.MemberModifier;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.rule.PowerMockRule;
+
+import java</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/MainRendererTest.java[81:40 - 88:58]<br/>app/src/test/java/puscas/mobilertapp/MainRendererTest.java[52:37 - 59:60]</div></header><div class="clone-description"><pre data-first-start="81" data-second-start="52" data-length="7">() {
         MemberModifier.suppress(MemberModifier.method(MainActivity.class, &quot;resetErrno&quot;));
 
         final MainRenderer mainRenderer = createMainRenderer();
@@ -826,7 +846,36 @@ import org.powermock.api</pre></div></section><section class="clone"><header><bu
 
         final MainRenderer mainRenderer = createMainRenderer();
 
-        final ActivityManager</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/MainRendererTest.java[331:40 - 338:34]<br/>app/src/test/java/puscas/mobilertapp/MainRendererTest.java[164:89 - 172:33]</div></header><div class="clone-description"><pre data-first-start="331" data-second-start="164" data-length="7">;
+        final ActivityManager</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/MainRendererTest.java[330:55 - 345:12]<br/>app/src/test/java/puscas/mobilertapp/MainRendererTest.java[208:46 - 314:19]</div></header><div class="clone-description"><pre data-first-start="330" data-second-start="208" data-length="15">() {
+        MemberModifier.suppress(MemberModifier.method(MainActivity.class, &quot;resetErrno&quot;));
+        MemberModifier.suppress(MemberModifier.method(MainActivity.class, &quot;showUiMessage&quot;));
+        MemberModifier.suppress(MemberModifier.method(MainActivity.class, &quot;resetRenderButton&quot;));
+
+        final MainRenderer mainRenderer = createMainRenderer();
+
+        final ActivityManager activityManagerMocked = PowerMockito.mock(ActivityManager.class);
+        Mockito.doNothing().when(activityManagerMocked).getMemoryInfo(Mockito.any(ActivityManager.MemoryInfo.class));
+        mainRenderer.setActivityManager(activityManagerMocked);
+
+        final ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
+        UtilsT.setPrivateField(memoryInfo, &quot;availMem&quot;, 100L * BYTES_IN_MEGABYTE);
+        UtilsT.setPrivateField(mainRenderer, &quot;memoryInfo&quot;, memoryInfo);
+
+        try</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/MainRendererTest.java[352:13 - 359:44]<br/>app/src/test/java/puscas/mobilertapp/MainRendererTest.java[181:13 - 187:55]</div></header><div class="clone-description"><pre data-first-start="352" data-second-start="181" data-length="7">Mockito.when(bitmapMocked.isRecycled())
+                .thenReturn(false);
+            Mockito.when(bitmapMocked.getWidth())
+                .thenReturn(2);
+            Mockito.when(bitmapMocked.getHeight())
+                .thenReturn(1);
+
+            Assertions.assertThatThrownBy((</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/MainRendererTest.java[367:13 - 374:44]<br/>app/src/test/java/puscas/mobilertapp/MainRendererTest.java[191:13 - 197:55]</div></header><div class="clone-description"><pre data-first-start="367" data-second-start="191" data-length="7">Mockito.when(bitmapMocked.isRecycled())
+                .thenReturn(false);
+            Mockito.when(bitmapMocked.getWidth())
+                .thenReturn(1);
+            Mockito.when(bitmapMocked.getHeight())
+                .thenReturn(2);
+
+            Assertions.assertThatThrownBy((</pre></div></section><section class="clone"><header><button class="pure-button expand">+</button><button class="pure-button collapse">-</button><div class="clone-title">app/src/test/java/puscas/mobilertapp/MainRendererTest.java[390:40 - 397:34]<br/>app/src/test/java/puscas/mobilertapp/MainRendererTest.java[164:89 - 172:33]</div></header><div class="clone-description"><pre data-first-start="390" data-second-start="164" data-length="7">;
         try (final MockedStatic&lt;Bitmap&gt; bitmapMockedStatic = Mockito.mockStatic(Bitmap.class)) {
             final Bitmap bitmapMocked = Mockito.mock(Bitmap.class);
             bitmapMockedStatic.when(() -&gt; Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888))

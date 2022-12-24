@@ -1,8 +1,12 @@
 package puscas.mobilertapp;
 
+import static puscas.mobilertapp.constants.Constants.BYTES_IN_MEGABYTE;
+
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.widget.TextView;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Rule;
@@ -14,6 +18,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.rule.PowerMockRule;
 
 import puscas.mobilertapp.constants.ConstantsError;
+import puscas.mobilertapp.exceptions.FailureException;
 
 /**
  * The test suite for the {@link DrawView}.
@@ -73,5 +78,27 @@ public class DrawViewTest {
             .as("The call to DrawView#getActivity method")
             .isInstanceOf(IllegalStateException.class)
             .hasMessageContaining(ConstantsError.UNABLE_TO_FIND_AN_ACTIVITY);
+    }
+
+    /**
+     * Tests that the {@link DrawView#setViewAndActivityManager(TextView, ActivityManager)} method
+     * will throw a {@link FailureException} if there is not 2 free megabytes in main memory.
+     */
+    @Test
+    public void testSetViewAndActivityManager() {
+        MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
+        MemberModifier.suppress(MemberModifier.method(MainRenderer.class, "setBitmap"));
+
+        final DrawView drawView = PowerMockito.spy(new DrawView(new MainActivity()));
+
+        final TextView textViewMocked = Mockito.mock(TextView.class);
+        final ActivityManager activityManagerMocked = Mockito.mock(ActivityManager.class);
+        final ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
+        UtilsT.setPrivateField(memoryInfo, "availMem", (long) BYTES_IN_MEGABYTE);
+        UtilsT.setPrivateField(drawView.getRenderer(), "memoryInfo", memoryInfo);
+
+        Assertions.assertThatThrownBy(() -> drawView.setViewAndActivityManager(textViewMocked, activityManagerMocked))
+            .as("The call to DrawView#setViewAndActivityManager method")
+            .isInstanceOf(FailureException.class);
     }
 }
