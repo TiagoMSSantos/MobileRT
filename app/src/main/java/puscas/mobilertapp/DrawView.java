@@ -142,7 +142,8 @@ public final class DrawView extends GLSurfaceView {
      * @return The current {@link Activity}.
      */
     @NonNull
-    private Activity getActivity() {
+    @VisibleForTesting
+    Activity getActivity() {
         Context context = getContext();
         while (!(context instanceof Activity) && context instanceof ContextWrapper) {
             context = ((ContextWrapper) context).getBaseContext();
