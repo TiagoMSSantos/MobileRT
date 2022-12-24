@@ -292,7 +292,7 @@ public class MainRendererTest {
 
     /**
      * Tests that the {@link MainRenderer#renderSceneToBitmap(ByteBuffer, ByteBuffer, ByteBuffer, int)}
-     * method will thrown a {@link LowMemoryException} if there is not enough memory available
+     * method will throw a {@link LowMemoryException} if there is not enough memory available
      * to render the scene.
      */
     @Test
@@ -319,6 +319,65 @@ public class MainRendererTest {
         ))
             .as("The call to MainRenderer#renderSceneToBitmap method")
             .isInstanceOf(LowMemoryException.class);
+    }
+
+    /**
+     * Tests that the {@link MainRenderer#copyGlFrameBufferToBitmap(ConfigResolution, ConfigResolution)}
+     * method will throw an {@link IllegalArgumentException} if the new created {@link Bitmap} for
+     * preview does not have the expected width and height.
+     */
+    @Test
+    public void testCopyGlFrameBufferToBitmapBadBitmap() {
+        MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
+        MemberModifier.suppress(MemberModifier.method(MainActivity.class, "showUiMessage"));
+        MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetRenderButton"));
+
+        final MainRenderer mainRenderer = createMainRenderer();
+
+        final ActivityManager activityManagerMocked = PowerMockito.mock(ActivityManager.class);
+        Mockito.doNothing().when(activityManagerMocked).getMemoryInfo(Mockito.any(ActivityManager.MemoryInfo.class));
+        mainRenderer.setActivityManager(activityManagerMocked);
+
+        final ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
+        UtilsT.setPrivateField(memoryInfo, "availMem", 100L * BYTES_IN_MEGABYTE);
+        UtilsT.setPrivateField(mainRenderer, "memoryInfo", memoryInfo);
+
+        try (final MockedStatic<Bitmap> bitmapMockedStatic = Mockito.mockStatic(Bitmap.class)) {
+            final Bitmap bitmapMocked = Mockito.mock(Bitmap.class);
+            final int[] arrayBytesNewBitmap = new int[1];
+            bitmapMockedStatic.when(() -> Bitmap.createBitmap(arrayBytesNewBitmap, 1, 1, Bitmap.Config.ARGB_8888))
+                .thenReturn(bitmapMocked);
+
+            // Set width as invalid.
+            Mockito.when(bitmapMocked.isRecycled())
+                .thenReturn(false);
+            Mockito.when(bitmapMocked.getWidth())
+                .thenReturn(2);
+            Mockito.when(bitmapMocked.getHeight())
+                .thenReturn(1);
+
+            Assertions.assertThatThrownBy(() -> mainRenderer.copyGlFrameBufferToBitmap(
+                ConfigResolution.builder().build(),
+                ConfigResolution.builder().build()
+            ))
+            .as("The call to MainRenderer#copyGlFrameBufferToBitmap method")
+            .isInstanceOf(IllegalArgumentException.class);
+
+            // Set height as invalid.
+            Mockito.when(bitmapMocked.isRecycled())
+                .thenReturn(false);
+            Mockito.when(bitmapMocked.getWidth())
+                .thenReturn(1);
+            Mockito.when(bitmapMocked.getHeight())
+                .thenReturn(2);
+
+            Assertions.assertThatThrownBy(() -> mainRenderer.copyGlFrameBufferToBitmap(
+                ConfigResolution.builder().build(),
+                ConfigResolution.builder().build()
+            ))
+            .as("The call to MainRenderer#copyGlFrameBufferToBitmap method")
+            .isInstanceOf(IllegalArgumentException.class);
+        }
     }
 
     /**

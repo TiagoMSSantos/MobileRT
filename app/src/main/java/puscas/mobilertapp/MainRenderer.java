@@ -661,8 +661,9 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * @return A new {@link Bitmap} with the colors of the pixels in the OpenGL
      *     frame buffer.
      */
-    private Bitmap copyGlFrameBufferToBitmap(final ConfigResolution configResolution,
-                                             final ConfigResolution configResolutionView) {
+    @VisibleForTesting
+    Bitmap copyGlFrameBufferToBitmap(final ConfigResolution configResolution,
+                                     final ConfigResolution configResolutionView) {
         final int sizePixels = configResolutionView.getWidth() * configResolutionView.getHeight();
         final int[] arrayBytesPixels = new int[sizePixels];
         final int[] arrayBytesNewBitmap = new int[sizePixels];
@@ -686,9 +687,9 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         final Bitmap newBitmapWithPreviewScene = Bitmap.createScaledBitmap(
             bitmapView, configResolution.getWidth(), configResolution.getHeight(), true);
         Preconditions.checkArgument(bitmapView.getWidth() == configResolutionView.getWidth(),
-                "viewWidth is not the expected one");
+            "viewWidth is not the expected one");
         Preconditions.checkArgument(bitmapView.getHeight() == configResolutionView.getHeight(),
-                "viewHeight is not the expected one");
+            "viewHeight is not the expected one");
         return newBitmapWithPreviewScene;
     }
 
