@@ -167,7 +167,7 @@ public final class MainActivityTest {
 
         try (final MockedStatic<UtilsContext> utilsContextMockedStatic = Mockito.mockStatic(UtilsContext.class)) {
             utilsContextMockedStatic.when(() -> UtilsContext.getInternalStoragePath(ArgumentMatchers.any()))
-                    .thenReturn("/mockedStorage");
+                .thenReturn("/mockedStorage");
 
             mainActivityMocked.onActivityResult(MainActivity.OPEN_FILE_REQUEST_CODE, Activity.RESULT_OK, intentMocked);
 

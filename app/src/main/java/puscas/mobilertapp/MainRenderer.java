@@ -56,7 +56,7 @@ import puscas.mobilertapp.utils.UtilsShader;
  * The OpenGL renderer that shows the Ray Tracer engine rendered image.
  */
 @Log
-public final class MainRenderer implements GLSurfaceView.Renderer {
+public class MainRenderer implements GLSurfaceView.Renderer {
 
     /**
      * The name for the attribute location of vertex positions in {@link GLES20}.

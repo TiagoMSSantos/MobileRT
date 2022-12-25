@@ -30,7 +30,7 @@ public final class UtilsT {
     @SuppressWarnings("unchecked")
     public static <T> T getPrivateField(@NonNull final Object clazz,
                                         @NonNull final String fieldName) {
-        Field field = null;
+        final Field field;
         try {
             // Use reflection to access the private field.
             field = clazz.getClass().getDeclaredField(fieldName);
@@ -40,7 +40,7 @@ public final class UtilsT {
         Preconditions.checkNotNull(field, "field shouldn't be null");
         field.setAccessible(true); // Make the field public.
 
-        T privateField = null;
+        final T privateField;
         try {
             privateField = (T) field.get(clazz);
         } catch (final IllegalAccessException ex) {
@@ -63,7 +63,7 @@ public final class UtilsT {
     public static void setPrivateField(@NonNull final Object clazz,
                                        @NonNull final String fieldName,
                                        @NonNull final Object newValue) {
-        Field field = null;
+        final Field field;
         try {
             // Use reflection to access the private field.
             field = clazz.getClass().getDeclaredField(fieldName);

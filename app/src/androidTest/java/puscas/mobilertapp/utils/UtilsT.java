@@ -91,8 +91,7 @@ public final class UtilsT {
         final Method method;
         try {
             // Use reflection to access the private method.
-            method = clazz.getClass()
-                .getDeclaredMethod(methodName, parameterTypes.toArray(new Class<?>[0]));
+            method = clazz.getClass().getDeclaredMethod(methodName, parameterTypes.toArray(new Class<?>[0]));
         } catch (final NoSuchMethodException ex) {
             throw new FailureException(ex);
         }

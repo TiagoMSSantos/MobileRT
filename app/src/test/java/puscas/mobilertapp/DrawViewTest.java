@@ -6,9 +6,14 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.common.util.concurrent.ListeningExecutorService;
+import com.google.common.util.concurrent.MoreExecutors;
+
 import org.assertj.core.api.Assertions;
+import org.easymock.EasyMock;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -16,14 +21,25 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.api.support.membermodification.MemberModifier;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.rule.PowerMockRule;
+import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+
+import puscas.mobilertapp.configs.Config;
+import puscas.mobilertapp.configs.ConfigSamples;
 import puscas.mobilertapp.constants.ConstantsError;
 import puscas.mobilertapp.exceptions.FailureException;
+import puscas.mobilertapp.exceptions.LowMemoryException;
 
 /**
  * The test suite for the {@link DrawView}.
+ *
+ * @implNote Necessary to use the {@link EasyMock} class, so it's possible to mock only some methods
+ * and suppress the native methods in the {@link DrawView} and {@link MainRenderer} classes in the
+ * {@link #testRenderSceneWithLowMemory} test method.
  */
-@PrepareForTest({MainActivity.class, DrawView.class, MainRenderer.class})
+@PrepareForTest({MainActivity.class, MainRenderer.class})
 public class DrawViewTest {
 
     /**
@@ -100,5 +116,75 @@ public class DrawViewTest {
         Assertions.assertThatThrownBy(() -> drawView.setViewAndActivityManager(textViewMocked, activityManagerMocked))
             .as("The call to DrawView#setViewAndActivityManager method")
             .isInstanceOf(FailureException.class);
+    }
+
+    /**
+     * Tests that the {@link DrawView#renderScene(Config)} method will still continue without
+     * throwing any {@link Exception} even if the device doesn't have enough available memory to
+     * render a scene.
+     *
+     * @implNote Can't validate call to the {@link MainActivity#showUiMessage(String)} method due
+     * to conflicts with mocks.
+     *
+     * @throws Exception If there is an error with the mocks.
+     */
+    @Test
+    public void testRenderSceneWithLowMemory() throws Exception {
+        MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
+        MemberModifier.suppress(MemberModifier.method(MainActivity.class, "showUiMessage"));
+
+        final DrawView drawView = EasyMock.createMockBuilder(DrawView.class)
+            .addMockedMethod("rtStartRender")
+            .addMockedMethod("waitLastTask")
+            .addMockedMethod("rtGetNumberOfLights")
+            .addMockedMethod("createScene")
+            .createMock();
+
+        final MainRenderer mainRenderer = EasyMock.createMockBuilder(MainRenderer.class)
+            .addMockedMethod("rtInitialize")
+            .addMockedMethod("rtFinishRender")
+            .addMockedMethod("resetStats", int.class, ConfigSamples.class, int.class, int.class)
+            .createMock();
+
+        mainRenderer.resetStats(EasyMock.anyInt(), EasyMock.eq(ConfigSamples.builder().build()), EasyMock.anyInt(), EasyMock.anyInt());
+        EasyMock.expectLastCall().andVoid();
+        EasyMock.expect(mainRenderer.rtInitialize(EasyMock.anyObject(Config.class))).andReturn(2);
+        mainRenderer.rtFinishRender();
+        EasyMock.expectLastCall().andVoid();
+        ReflectionTestUtils.setField(drawView, "renderer", mainRenderer);
+        EasyMock.replay(mainRenderer);
+
+        final Button buttonMocked = Mockito.mock(Button.class);
+        drawView.setUpButtonRender(buttonMocked);
+
+        // Make the thread pool use only the thread from the test (current one), so it counts to the code coverage.
+        final ListeningExecutorService executorService = MoreExecutors.newDirectExecutorService();
+        ReflectionTestUtils.setField(drawView, "executorService", executorService);
+
+        EasyMock.expect(drawView.rtGetNumberOfLights()).andReturn(0);
+        drawView.rtStartRender(EasyMock.anyBoolean());
+        EasyMock.expectLastCall().andVoid().times(2);
+        drawView.waitLastTask();
+        EasyMock.expectLastCall().andVoid();
+
+        final Config config = Config.builder().build();
+        drawView.startRayTracing(config);
+        EasyMock.expectLastCall().andThrow(new LowMemoryException());
+
+        EasyMock.replay(drawView);
+        Assertions.assertThatCode(() -> drawView.renderScene(config))
+            .as("The call to DrawView#renderScene method")
+            .doesNotThrowAnyException();
+
+        executorService.shutdown();
+        Assertions.assertThat(executorService.awaitTermination(10L, TimeUnit.SECONDS))
+            .as("The thread pool finished")
+            .isTrue();
+        final Future<Boolean> lastTask = (Future) ReflectionTestUtils.getField(drawView, DrawView.class, "lastTask");
+        Assertions.assertThat(lastTask.get())
+            .as("The last task")
+            .isFalse();
+
+        // Missing verification of call to MainActivity#showUiMessage method.
     }
 }

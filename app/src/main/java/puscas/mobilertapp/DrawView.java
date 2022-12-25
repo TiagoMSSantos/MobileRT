@@ -41,7 +41,7 @@ import puscas.mobilertapp.utils.UtilsLogging;
  * The {@link GLSurfaceView} to show the scene being rendered.
  */
 @Log
-public final class DrawView extends GLSurfaceView {
+public class DrawView extends GLSurfaceView {
 
     /**
      * The {@link GLSurfaceView.Renderer}.
@@ -127,14 +127,16 @@ public final class DrawView extends GLSurfaceView {
      *
      * @param wait Whether it should wait for the Ray Tracer engine to stop at the beginning.
      */
-    private native void rtStartRender(boolean wait);
+    @VisibleForTesting
+    native void rtStartRender(boolean wait);
 
     /**
      * Gets the number of lights in the scene.
      *
      * @return The number of lights.
      */
-    private native int rtGetNumberOfLights();
+    @VisibleForTesting
+    native int rtGetNumberOfLights();
 
     /**
      * Helper method which gets the instance of the {@link Activity}.
@@ -242,7 +244,8 @@ public final class DrawView extends GLSurfaceView {
      * @param config The ray tracer configuration.
      * @throws LowMemoryException If the device has low free memory.
      */
-    private void startRayTracing(@NonNull final Config config) throws LowMemoryException {
+    @VisibleForTesting
+    void startRayTracing(@NonNull final Config config) throws LowMemoryException {
         final String message = ConstantsMethods.RENDER_SCENE + " executor";
         log.info(message);
 
@@ -284,7 +287,8 @@ public final class DrawView extends GLSurfaceView {
      * @param config The ray tracer configuration.
      * @throws LowMemoryException If the device has low free memory.
      */
-    private void createScene(final Config config) throws LowMemoryException {
+    @VisibleForTesting
+    void createScene(final Config config) throws LowMemoryException {
         log.info("createScene");
 
         MainActivity.resetErrno();
