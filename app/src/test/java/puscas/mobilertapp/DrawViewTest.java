@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -23,8 +24,10 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.rule.PowerMockRule;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import puscas.mobilertapp.configs.Config;
 import puscas.mobilertapp.configs.ConfigSamples;
@@ -123,10 +126,10 @@ public class DrawViewTest {
      * throwing any {@link Exception} even if the device doesn't have enough available memory to
      * render a scene.
      *
+     * @throws Exception If there is an error with the mocks.
+     *
      * @implNote Can't validate call to the {@link MainActivity#showUiMessage(String)} method due
      * to conflicts with mocks.
-     *
-     * @throws Exception If there is an error with the mocks.
      */
     @Test
     public void testRenderSceneWithLowMemory() throws Exception {
@@ -186,5 +189,64 @@ public class DrawViewTest {
             .isFalse();
 
         // Missing verification of call to MainActivity#showUiMessage method.
+    }
+
+    /**
+     * Tests that the {@link DrawView#waitLastTask()} method will call the {@link Thread#interrupt()}
+     * method if an {@link InterruptedException} was thrown while waiting for the last task to
+     * finish.
+     *
+     * @throws ExecutionException   If the mocks fail.
+     * @throws InterruptedException If the mocks fail.
+     * @throws TimeoutException     If the mocks fail.
+     *
+     * @implNote Can't validate call to the {@link Thread#currentThread()} method because it is a
+     * native method.
+     */
+    @Test
+    public void testWaitLastTaskInterrupt() throws ExecutionException, InterruptedException, TimeoutException {
+        MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
+        MemberModifier.suppress(MemberModifier.method(MainRenderer.class, "setBitmap"));
+
+        final DrawView drawView = PowerMockito.spy(new DrawView(new MainActivity()));
+        final Future<Boolean> lastTask = Mockito.mock(Future.class);
+        Mockito.when(lastTask.get(1L, TimeUnit.DAYS))
+            .thenThrow(new InterruptedException());
+        ReflectionTestUtils.setField(drawView, "lastTask", lastTask);
+
+        Assertions.assertThatCode(drawView::waitLastTask)
+            .as("The call to DrawView#waitLastTask method")
+            .doesNotThrowAnyException();
+
+        // Missing verification of call to Thread.currentThread().interrupt() method.
+    }
+
+    /**
+     * Tests that the {@link DrawView#onWindowFocusChanged(boolean)} method sets the current window
+     * as visible when it has focus and it isn't visible.
+     */
+    @Test
+    public void testOnWindowFocusChanged() {
+        MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
+        MemberModifier.suppress(MemberModifier.method(MainRenderer.class, "setBitmap"));
+
+        final DrawView drawView = PowerMockito.spy(new DrawView(new MainActivity()));
+        Mockito.when(drawView.getVisibility())
+            .thenReturn(View.GONE);
+
+
+        Assertions.assertThatCode(() -> drawView.onWindowFocusChanged(false))
+            .as("The call to DrawView#onWindowFocusChanged method")
+            .doesNotThrowAnyException();
+        Mockito.verify(drawView, Mockito.times(0))
+            .setVisibility(View.VISIBLE);
+
+
+        Assertions.assertThatCode(() -> drawView.onWindowFocusChanged(true))
+            .as("The call to DrawView#onWindowFocusChanged method")
+            .doesNotThrowAnyException();
+
+        Mockito.verify(drawView, Mockito.times(1))
+            .setVisibility(View.VISIBLE);
     }
 }
