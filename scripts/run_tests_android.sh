@@ -176,16 +176,7 @@ unlockDevice() {
   fi
   set -u;
   set -e;
-
-  # Make sure ADB daemon started properly.
-  callCommandUntilSuccess adb shell 'ps > /dev/null;';
-  # adb shell needs ' instead of ", so 'getprop' works properly.
-  # shellcheck disable=SC2016
-  callAdbShellCommandUntilSuccess adb shell 'echo -n ::$(($(getprop service.bootanim.exit)-1))::';
-  # shellcheck disable=SC2016
-  callAdbShellCommandUntilSuccess adb shell 'echo -n ::$(($(getprop sys.boot_completed)-1))::';
-  # shellcheck disable=SC2016
-  callAdbShellCommandUntilSuccess adb shell 'echo -n ::$(($(getprop dev.bootcomplete)-1))::';
+  _waitForEmulatorToBoot;
 
   echo 'Unlock device';
   callAdbShellCommandUntilSuccess adb shell 'input keyevent 82; echo ::$?::';
@@ -284,7 +275,7 @@ waitForEmulator() {
   fi
 
   echo 'Finding at least 1 Android device on.';
-  callCommandUntilSuccess adb shell 'ps > /dev/null;';
+  _waitForEmulatorToBoot;
 
   echo 'Prepare traps';
   trap 'catch_signal ${?}' EXIT HUP INT QUIT ILL TRAP ABRT TERM;
@@ -519,6 +510,7 @@ runInstrumentationTests() {
 }
 
 _restartAdbProcesses() {
+  callCommandUntilSuccess adb kill-server;
   set +eu;
   # shellcheck disable=SC2009
   ADB_PROCESSES=$(ps aux | grep -i "adb" | grep -v "grep" | tr -s ' ' | cut -d ' ' -f 2);
@@ -530,11 +522,25 @@ _restartAdbProcesses() {
       kill -KILL "${ADB_PROCESS}";
     done;
     sleep 3;
+    # Kill process(es) using same port as ADB
+    killProcessesUsingPort 5037
   fi
   set -eu;
-  callCommandUntilSuccess adb kill-server;
   callCommandUntilSuccess adb start-server;
+}
 
+# Waits for the Android Emulator to boot.
+# By using cpulimit to 1, it can take around 3 minutes to boot.
+_waitForEmulatorToBoot() {
+  # Make sure ADB daemon started properly.
+  callCommandUntilSuccess adb shell 'ps > /dev/null;';
+  # adb shell needs ' instead of ", so 'getprop' works properly.
+  # shellcheck disable=SC2016
+  callAdbShellCommandUntilSuccess adb shell 'echo -n ::$(($(getprop service.bootanim.exit)-1))::';
+  # shellcheck disable=SC2016
+  callAdbShellCommandUntilSuccess adb shell 'echo -n ::$(($(getprop sys.boot_completed)-1))::';
+  # shellcheck disable=SC2016
+  callAdbShellCommandUntilSuccess adb shell 'echo -n ::$(($(getprop dev.bootcomplete)-1))::';
 }
 ###############################################################################
 ###############################################################################

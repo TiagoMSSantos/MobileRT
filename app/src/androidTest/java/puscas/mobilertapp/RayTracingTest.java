@@ -1,14 +1,23 @@
 package puscas.mobilertapp;
 
+import android.app.Activity;
+import android.app.Instrumentation;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
+
+import androidx.test.espresso.intent.Intents;
+import androidx.test.espresso.intent.matcher.IntentMatchers;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
+import java.io.File;
 import java.util.concurrent.TimeoutException;
 
 import lombok.extern.java.Log;
@@ -83,6 +92,8 @@ public final class RayTracingTest extends AbstractTest {
 
     /**
      * Tests rendering a scene.
+     *
+     * @throws TimeoutException If it couldn't render the whole scene in time.
      */
     @Test(timeout = 2L * 60L * 1000L)
     public void testRenderScene() throws TimeoutException {
@@ -94,6 +105,8 @@ public final class RayTracingTest extends AbstractTest {
 
     /**
      * Tests rendering an OBJ scene in the internal storage.
+     *
+     * @throws TimeoutException If it couldn't render the whole scene in time.
      */
     @Test(timeout = 2L * 60L * 1000L)
     public void testRenderSceneFromInternalStorageOBJ() throws TimeoutException {
@@ -105,6 +118,8 @@ public final class RayTracingTest extends AbstractTest {
 
     /**
      * Tests rendering an OBJ scene in the SD card.
+     *
+     * @throws TimeoutException If it couldn't render the whole scene in time.
      */
     @Test(timeout = 2L * 60L * 1000L)
     public void testRenderSceneFromSDCardOBJ() throws TimeoutException {
@@ -112,6 +127,34 @@ public final class RayTracingTest extends AbstractTest {
         final int scene = Scene.TEST_SD_CARD.ordinal();
 
         assertRenderScene(numCores, scene, false);
+    }
+
+    /**
+     * Tests rendering an OBJ scene from an OBJ file which the path was loaded with an external file
+     * manager application.
+     *
+     * @throws TimeoutException If it couldn't render the whole scene in time.
+     *
+     * @implNote E.g. of an URL to file:<br>
+     * content://com.asus.filemanager.OpenFileProvider/file/storage/1CE6-261B/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj
+     */
+    @Test(timeout = 2L * 60L * 1000L)
+    @Ignore("Ignore because it fails in CI")
+    public void testRenderSceneExternalFileManagerOBJ() throws TimeoutException {
+        final int numCores = UtilsContext.getNumOfCores(this.activity);
+        final int scene = Scene.OBJ.ordinal();
+
+        // Mock the reply for the external file manager application.
+        final File fileToObj = new File("/file/storage/1CE6-261B/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj");
+        final Intent resultData = new Intent(Intent.ACTION_GET_CONTENT);
+        resultData.setData(Uri.fromFile(fileToObj));
+        final Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
+        Intents.init();
+        Intents.intending(IntentMatchers.anyIntent())
+            .respondWith(result);
+
+        assertRenderScene(numCores, scene, false);
+        Intents.release();
     }
 
     /**
@@ -124,8 +167,9 @@ public final class RayTracingTest extends AbstractTest {
      * @param expectedSameValues Whether the {@link Bitmap} should have have only one color.
      * @throws TimeoutException If it couldn't render the whole scene in time.
      */
-    private void assertRenderScene(final int numCores, final int scene, final boolean expectedSameValues)
-        throws TimeoutException {
+    private void assertRenderScene(final int numCores,
+                                   final int scene,
+                                   final boolean expectedSameValues) throws TimeoutException {
 
         UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SCENE, R.id.pickerScene, scene);
         UtilsPickerT.changePickerValue(ConstantsUI.PICKER_THREADS, R.id.pickerThreads, numCores);
@@ -136,9 +180,6 @@ public final class RayTracingTest extends AbstractTest {
         UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SHADER, R.id.pickerShader, 1);
 
         UtilsT.startRendering();
-        if (!expectedSameValues) {
-            UtilsT.assertRenderButtonText(Constants.STOP);
-        }
         UtilsContextT.waitUntilRenderingDone(this.activity);
 
         UtilsT.assertRenderButtonText(Constants.RENDER);

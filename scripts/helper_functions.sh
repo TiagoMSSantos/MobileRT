@@ -177,12 +177,12 @@ callCommandUntilSuccess() {
   "$@";
   lastResult=${?};
   echo "result: '${lastResult}'";
-  while [ "${lastResult}" -ne 0 ] && [ ${retry} -lt 5 ]; do
+  while [ "${lastResult}" -ne 0 ] && [ ${retry} -lt 30 ]; do
     retry=$(( retry + 1 ));
     "$@";
     lastResult=${?};
     echo "Retry: ${retry} of command '$*'; result: '${lastResult}'";
-    sleep 2;
+    sleep 3;
   done
   set -e;
   if [ "${lastResult}" -eq 0 ]; then
@@ -203,13 +203,13 @@ callAdbShellCommandUntilSuccess() {
   # echo "Output of command: '${output}'";
   lastResult=$(echo "${output}" | grep '::.*::' | sed 's/:://g'| tr -d '[:space:]');
   echo "result: '${lastResult}'";
-  while [ "${lastResult}" != '0' ] && [ ${retry} -lt 5 ]; do
+  while [ "${lastResult}" != '0' ] && [ ${retry} -lt 30 ]; do
     retry=$(( retry + 1 ));
     output=$("$@");
     echo "Output of command: '${output}'";
     lastResult=$(echo "${output}" | grep '::.*::' | sed 's/:://g' | tr -d '[:space:]');
     echo "Retry: ${retry} of command '$*'; result: '${lastResult}'";
-    sleep 2;
+    sleep 3;
   done
   set -e;
   if [ "${lastResult}" = '0' ]; then
@@ -316,6 +316,20 @@ _killProcessUsingFile() {
     echo "Going to kill this process: '${process_id_using_file}'";
     kill -KILL "${process_id_using_file}" || true;
     processes_using_file=$(lsof "${1}" | tail -n +2 | tr -s ' ' || true);
+  done
+}
+
+# Method which kills the processes that are using a port.
+killProcessesUsingPort() {
+  processes_using_port=$(lsof -i ":${1}" | tail -n +2 | tr -s ' ' | cut -d ' ' -f 2);
+  retry=0;
+  while [ "${processes_using_port}" != '' ] && [ ${retry} -lt 5 ]; do
+    retry=$(( retry + 1 ));
+    echo "processes_using_port: '${processes_using_port}'";
+    process_id_using_port=$(echo "${processes_using_port}" | head -1);
+    echo "Going to kill this process: '${process_id_using_port}'";
+    kill -KILL "${process_id_using_port}" || true;
+    processes_using_port=$(lsof -i ":${1}" | tail -n +2 | tr -s ' ' || true);
   done
 }
 

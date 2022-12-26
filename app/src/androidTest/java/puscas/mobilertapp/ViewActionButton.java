@@ -16,8 +16,10 @@ import org.junit.jupiter.api.Assertions;
 
 import java.util.concurrent.TimeUnit;
 
+import java8.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
+import puscas.mobilertapp.constants.Constants;
 import puscas.mobilertapp.utils.Utils;
 
 /**
@@ -92,17 +94,19 @@ public final class ViewActionButton implements ViewAction {
             }
 
             boolean textEqualsNotExpected = !button.getText().toString().equals(this.expectedText);
-            final long advanceSecs = 5L;
+            final long advanceSecs = 3L;
 
             // Wait until expected text is shown.
-            for (long currentTimeSecs = 0L; currentTimeSecs < 60L && textEqualsNotExpected;
+            for (long currentTimeSecs = 0L; currentTimeSecs < 10L && textEqualsNotExpected;
                  currentTimeSecs += advanceSecs) {
                 uiController.loopMainThreadForAtLeast(advanceSecs * 1000L);
                 Uninterruptibles.sleepUninterruptibly(advanceSecs, TimeUnit.SECONDS);
                 textEqualsNotExpected = !button.getText().toString().equals(this.expectedText);
             }
-            Assertions.assertEquals(this.expectedText, button.getText().toString(),
-                "Button with wrong text!!!!!");
+            if (!Objects.equals(this.expectedText, Constants.STOP)) {
+                Assertions.assertEquals(this.expectedText, button.getText().toString(),
+                    "Button with wrong text!!!!!");
+            }
         } finally {
             Utils.handleInterruption(methodName);
         }
