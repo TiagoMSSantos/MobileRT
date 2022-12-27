@@ -219,7 +219,7 @@ install_conan_dependencies() {
       conan_os='Macos';
     fi
     conan install \
-    -s compiler=${conan_compiler} \
+    -s compiler="${conan_compiler}" \
     -s compiler.version="${conan_compiler_version}" \
     -s compiler.libcxx="${conan_libcxx}" \
     -s compiler.cppstd=17 \

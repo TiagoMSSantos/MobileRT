@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -40,7 +41,6 @@ import puscas.mobilertapp.configs.Config;
 import puscas.mobilertapp.configs.ConfigResolution;
 import puscas.mobilertapp.configs.ConfigSamples;
 import puscas.mobilertapp.constants.Accelerator;
-import puscas.mobilertapp.constants.Constants;
 import puscas.mobilertapp.constants.ConstantsMethods;
 import puscas.mobilertapp.constants.ConstantsToast;
 import puscas.mobilertapp.constants.ConstantsUI;
@@ -475,32 +475,10 @@ public final class MainActivity extends Activity {
      * Helper method which starts the rendering process.
      */
     private void startRenderScene() {
-        switch (Scene.values()[this.pickerScene.getValue()]) {
-            case OBJ:
-                callFileManager();
-                break;
-
-            case TEST_INTERNAL_STORAGE:
-                final String sceneTeapot = "teapot" + ConstantsUI.FILE_SEPARATOR + "teapot";
-                final String internalStorage = UtilsContext.getInternalStoragePath(this);
-                final String sceneTeapotPath = internalStorage + ConstantsUI.FILE_SEPARATOR
-                    + Constants.MOBILERT_FOLDER_NAME + ConstantsUI.FILE_SEPARATOR
-                    + Constants.OBJ_FOLDER_NAME + ConstantsUI.FILE_SEPARATOR + sceneTeapot;
-                startRender(sceneTeapotPath);
-                break;
-
-            case TEST_SD_CARD:
-                final String scenePath = "CornellBox" + ConstantsUI.FILE_SEPARATOR + "CornellBox-Water";
-                final String sdCardPath = UtilsContext.getSdCardPath(this);
-                final String sceneCornellPath = sdCardPath + ConstantsUI.FILE_SEPARATOR
-                    + Constants.MOBILERT_FOLDER_NAME + ConstantsUI.FILE_SEPARATOR
-                    + Constants.OBJ_FOLDER_NAME + ConstantsUI.FILE_SEPARATOR + scenePath;
-                startRender(sceneCornellPath);
-                break;
-
-            default:
-                startRender("");
-                break;
+        if (Scene.values()[this.pickerScene.getValue()] == Scene.OBJ) {
+            callFileManager();
+        } else {
+            startRender("");
         }
     }
 
@@ -532,11 +510,13 @@ public final class MainActivity extends Activity {
      */
     @NonNull
     private String getPathFromFile(@NonNull final Uri uri) {
+        log.info("Parsing path:" + Arrays.toString(uri.getPathSegments().toArray()));
         final String filePath = StreamSupport.stream(uri.getPathSegments())
             .skip(1L)
             .reduce("", (accumulator, segment) -> accumulator + ConstantsUI.FILE_SEPARATOR + segment);
         final boolean externalSDCardPath = uri.getPathSegments().size() <= 2
-            || uri.getPathSegments().get(2).matches("^([A-Za-z0-9]){4}-([A-Za-z0-9]){4}$");
+            || uri.getPathSegments().get(2).matches("^([A-Za-z0-9]){4}-([A-Za-z0-9]){4}$")
+            || filePath.contains(Environment.getExternalStorageDirectory().getAbsolutePath());
 
         final int removeIndex = filePath.indexOf(ConstantsUI.PATH_SEPARATOR);
         final String startFilePath = removeIndex >= 0 ? filePath.substring(removeIndex) : filePath;

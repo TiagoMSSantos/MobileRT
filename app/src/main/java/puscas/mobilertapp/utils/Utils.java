@@ -164,21 +164,4 @@ public final class Utils {
         }
     }
 
-    /**
-     * Helper method that will execute a {@link Runnable} and will ignore any
-     * {@link Exception} that might be thrown.
-     * @implNote If an {@link Exception} is thrown, then it will just log
-     * the message.
-     *
-     * @param method The {@link Runnable} to call.
-     */
-    public static void executeWithCatching(@NonNull final Runnable method) {
-        log.info(ConstantsMethods.RUN);
-        try {
-            method.run();
-        } catch (final RuntimeException ex) {
-            log.warning(ex.getMessage());
-        }
-    }
-
 }

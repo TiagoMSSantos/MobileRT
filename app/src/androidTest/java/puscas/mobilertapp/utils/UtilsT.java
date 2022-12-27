@@ -9,7 +9,7 @@ import androidx.test.espresso.matcher.ViewMatchers;
 
 import com.google.common.base.Preconditions;
 
-import org.junit.jupiter.api.Assertions;
+import org.junit.Assert;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -131,8 +131,8 @@ public final class UtilsT {
             .allMatch(pixel -> pixel == firstPixel);
 
         log.info("Checking bitmap values.");
-        Assertions.assertEquals(expectedSameValues, bitmapSameColor,
-            "The rendered image should have different values."
+        Assert.assertEquals("The rendered image should have different values.",
+            expectedSameValues, bitmapSameColor
         );
     }
 
@@ -145,7 +145,7 @@ public final class UtilsT {
         assertRenderButtonText(Constants.RENDER);
         Espresso.onView(ViewMatchers.withId(R.id.renderButton))
             .perform(new ViewActionButton(Constants.STOP, false));
-        Utils.executeWithCatching(Espresso::onIdle);
+        UtilsT.executeWithCatching(Espresso::onIdle);
         log.info("startRendering" + ConstantsMethods.FINISHED);
     }
 
@@ -158,7 +158,7 @@ public final class UtilsT {
         assertRenderButtonText(Constants.STOP);
         Espresso.onView(ViewMatchers.withId(R.id.renderButton))
             .perform(new ViewActionButton(Constants.RENDER, false));
-        Utils.executeWithCatching(Espresso::onIdle);
+        UtilsT.executeWithCatching(Espresso::onIdle);
         assertRenderButtonText(Constants.RENDER);
         log.info("stopRendering" + ConstantsMethods.FINISHED);
     }
@@ -180,9 +180,9 @@ public final class UtilsT {
                 final Bitmap bitmap = getPrivateField(renderer, "bitmap");
                 assertRayTracingResultInBitmap(bitmap, expectedSameValues);
 
-                Assertions.assertTrue(
-                    renderer.getState() == State.IDLE || renderer.getState() == State.FINISHED,
-                    "State is not the expected"
+                Assert.assertTrue(
+                    "State is not the expected",
+                    renderer.getState() == State.IDLE || renderer.getState() == State.FINISHED
                 );
             });
     }
@@ -197,12 +197,29 @@ public final class UtilsT {
         Espresso.onView(ViewMatchers.withId(R.id.renderButton))
             .check((view, exception) -> {
                 final Button renderButton = view.findViewById(R.id.renderButton);
-                Assertions.assertEquals(
+                Assert.assertEquals(
+                    ConstantsAndroidTests.BUTTON_MESSAGE,
                     expectedText,
-                    renderButton.getText().toString(),
-                    ConstantsAndroidTests.BUTTON_MESSAGE
+                    renderButton.getText().toString()
                 );
             });
+    }
+
+    /**
+     * Helper method that will execute a {@link Runnable} and will ignore any
+     * {@link Exception} that might be thrown.
+     * @implNote If an {@link Exception} is thrown, then it will just log
+     * the message.
+     *
+     * @param method The {@link Runnable} to call.
+     */
+    public static void executeWithCatching(@NonNull final Runnable method) {
+        log.info(ConstantsMethods.RUN);
+        try {
+            method.run();
+        } catch (final RuntimeException ex) {
+            log.warning(ex.getMessage());
+        }
     }
 
 }

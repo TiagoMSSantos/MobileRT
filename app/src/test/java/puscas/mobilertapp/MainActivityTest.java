@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -19,7 +20,9 @@ import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.rule.PowerMockRule;
+import org.springframework.test.util.ReflectionTestUtils;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Objects;
@@ -139,13 +142,16 @@ public final class MainActivityTest {
         Mockito.when(intentMocked.getData())
             .thenReturn(uriMocked);
 
-        try (final MockedStatic<UtilsContext> utilsContextMockedStatic = Mockito.mockStatic(UtilsContext.class)) {
+        try (final MockedStatic<UtilsContext> utilsContextMockedStatic = Mockito.mockStatic(UtilsContext.class);
+             final MockedStatic<Environment> environmentMockedStatic = Mockito.mockStatic(Environment.class)) {
             utilsContextMockedStatic.when(() -> UtilsContext.getSdCardPath(ArgumentMatchers.any()))
                 .thenReturn("");
+            environmentMockedStatic.when(Environment::getExternalStorageDirectory)
+                .thenReturn(new File(""));
 
             mainActivityMocked.onActivityResult(MainActivity.OPEN_FILE_REQUEST_CODE, Activity.RESULT_OK, intentMocked);
 
-            Assertions.assertThat((String) UtilsT.getPrivateField(mainActivityMocked, "sceneFilePath"))
+            Assertions.assertThat((String) ReflectionTestUtils.getField(mainActivityMocked, "sceneFilePath"))
                 .as("The 'MainActivity#sceneFilePath' field")
                 .isEqualTo("/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water");
         }
@@ -165,13 +171,16 @@ public final class MainActivityTest {
         Mockito.when(intentMocked.getData())
             .thenReturn(uriMocked);
 
-        try (final MockedStatic<UtilsContext> utilsContextMockedStatic = Mockito.mockStatic(UtilsContext.class)) {
+        try (final MockedStatic<UtilsContext> utilsContextMockedStatic = Mockito.mockStatic(UtilsContext.class);
+             final MockedStatic<Environment> environmentMockedStatic = Mockito.mockStatic(Environment.class)) {
             utilsContextMockedStatic.when(() -> UtilsContext.getInternalStoragePath(ArgumentMatchers.any()))
                 .thenReturn("/mockedStorage");
+            environmentMockedStatic.when(Environment::getExternalStorageDirectory)
+                .thenReturn(new File("/mockedSDCard"));
 
             mainActivityMocked.onActivityResult(MainActivity.OPEN_FILE_REQUEST_CODE, Activity.RESULT_OK, intentMocked);
 
-            Assertions.assertThat((String) UtilsT.getPrivateField(mainActivityMocked, "sceneFilePath"))
+            Assertions.assertThat((String) ReflectionTestUtils.getField(mainActivityMocked, "sceneFilePath"))
                 .as("The 'MainActivity#sceneFilePath' field")
                 .isEqualTo("/mockedStorage/sdcard/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water");
         }

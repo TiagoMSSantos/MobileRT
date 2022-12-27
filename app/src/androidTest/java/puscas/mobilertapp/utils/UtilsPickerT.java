@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.matcher.ViewMatchers;
 
-import org.junit.jupiter.api.Assertions;
+import org.junit.Assert;
 
 import lombok.experimental.UtilityClass;
 import lombok.extern.java.Log;
@@ -34,8 +34,8 @@ public final class UtilsPickerT {
             .perform(new ViewActionNumberPicker(expectedValue))
             .check((view, exception) -> {
                 final NumberPicker numberPicker = view.findViewById(pickerId);
-                Assertions.assertEquals(expectedValue, numberPicker.getValue(),
-                    "Number picker '" + pickerName + "' with wrong value"
+                Assert.assertEquals("Number picker '" + pickerName + "' with wrong value",
+                    expectedValue, numberPicker.getValue()
                 );
             });
     }

@@ -14,6 +14,7 @@ import org.mockito.Mockito;
 import org.powermock.api.support.membermodification.MemberModifier;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.rule.PowerMockRule;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
@@ -411,7 +412,7 @@ public final class MyEglContextFactoryTest {
         final EGLContext eglContextMocked = Mockito.mock(EGLContext.class);
         myEGLContextFactory.destroyContext(egl, null, eglContextMocked);
 
-        final EGLContext newEglContext = UtilsT.getPrivateField(myEGLContextFactory, "eglContext");
+        final EGLContext newEglContext = (EGLContext) ReflectionTestUtils.getField(myEGLContextFactory, "eglContext");
         Assertions.assertThat(newEglContext)
             .as("The new EGL context created")
             .isNotSameAs(eglContext)

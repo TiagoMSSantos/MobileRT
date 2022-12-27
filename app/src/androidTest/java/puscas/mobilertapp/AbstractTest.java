@@ -5,6 +5,7 @@ import android.content.Intent;
 
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
+import androidx.test.espresso.Espresso;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
 
@@ -22,6 +23,7 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 
 import lombok.extern.java.Log;
+import puscas.mobilertapp.utils.UtilsT;
 
 /**
  * The abstract class for the Android Instrumentation Tests.
@@ -94,9 +96,11 @@ public abstract class AbstractTest {
         final Intent intent = new Intent(Intent.ACTION_PICK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        UtilsT.executeWithCatching(Espresso::onIdle);
         this.activity = this.mainActivityActivityTestRule.launchActivity(intent);
 
         Preconditions.checkNotNull(this.activity, "The Activity didn't start as expected!");
+        UtilsT.executeWithCatching(Espresso::onIdle);
     }
 
     /**
@@ -114,6 +118,7 @@ public abstract class AbstractTest {
         this.activity.finish();
         this.mainActivityActivityTestRule.finishActivity();
         this.activity = null;
+        UtilsT.executeWithCatching(Espresso::onIdle);
     }
 
 }

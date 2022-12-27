@@ -20,6 +20,7 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.api.support.membermodification.MemberModifier;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.rule.PowerMockRule;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.nio.ByteBuffer;
 import java.util.concurrent.CountDownLatch;
@@ -56,8 +57,8 @@ public class MainRendererTest {
 
         final ActivityManager activityManagerMocked = Mockito.mock(ActivityManager.class);
         final ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
-        UtilsT.setPrivateField(memoryInfo, "availMem", 100L * BYTES_IN_MEGABYTE);
-        UtilsT.setPrivateField(mainRenderer, "memoryInfo", memoryInfo);
+        ReflectionTestUtils.setField(memoryInfo, "availMem", 100L * BYTES_IN_MEGABYTE);
+        ReflectionTestUtils.setField(mainRenderer, "memoryInfo", memoryInfo);
 
         final int initialValue = 1;
         final CountDownLatch countDownLatch = new CountDownLatch(initialValue);
@@ -85,8 +86,8 @@ public class MainRendererTest {
 
         final ActivityManager activityManagerMocked = Mockito.mock(ActivityManager.class);
         final ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
-        UtilsT.setPrivateField(memoryInfo, "availMem", 9L * BYTES_IN_MEGABYTE);
-        UtilsT.setPrivateField(mainRenderer, "memoryInfo", memoryInfo);
+        ReflectionTestUtils.setField(memoryInfo, "availMem", 9L * BYTES_IN_MEGABYTE);
+        ReflectionTestUtils.setField(mainRenderer, "memoryInfo", memoryInfo);
 
         final int initialValue = 2;
         final CountDownLatch countDownLatch = new CountDownLatch(initialValue);
@@ -100,7 +101,7 @@ public class MainRendererTest {
             .as("The CountDownLatch value")
             .isEqualTo(initialValue - 1);
 
-        UtilsT.setPrivateField(memoryInfo, "lowMemory", true);
+        ReflectionTestUtils.setField(memoryInfo, "lowMemory", true);
         Assertions.assertThatThrownBy(() -> mainRenderer.checksFreeMemory(1, runnable))
             .as("The MainRenderer#checksFreeMemory method")
             .isInstanceOf(LowMemoryException.class);
@@ -122,8 +123,8 @@ public class MainRendererTest {
 
         final ActivityManager activityManagerMocked = Mockito.mock(ActivityManager.class);
         final ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
-        UtilsT.setPrivateField(memoryInfo, "availMem", 100L * BYTES_IN_MEGABYTE);
-        UtilsT.setPrivateField(mainRenderer, "memoryInfo", memoryInfo);
+        ReflectionTestUtils.setField(memoryInfo, "availMem", 100L * BYTES_IN_MEGABYTE);
+        ReflectionTestUtils.setField(mainRenderer, "memoryInfo", memoryInfo);
 
         final int initialValue = 1;
         final CountDownLatch countDownLatch = new CountDownLatch(initialValue);
@@ -216,14 +217,13 @@ public class MainRendererTest {
         mainRenderer.setActivityManager(activityManagerMocked);
 
         final ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
-        UtilsT.setPrivateField(memoryInfo, "availMem", 100L * BYTES_IN_MEGABYTE);
-        UtilsT.setPrivateField(mainRenderer, "memoryInfo", memoryInfo);
+        ReflectionTestUtils.setField(memoryInfo, "availMem", 100L * BYTES_IN_MEGABYTE);
+        ReflectionTestUtils.setField(mainRenderer, "memoryInfo", memoryInfo);
+        ReflectionTestUtils.setField(mainRenderer, "arrayVertices", ByteBuffer.allocate(1));
+        ReflectionTestUtils.setField(mainRenderer, "arrayColors", ByteBuffer.allocate(1));
+        ReflectionTestUtils.setField(mainRenderer, "arrayCamera", ByteBuffer.allocate(1));
 
-        UtilsT.setPrivateField(mainRenderer, "arrayVertices", ByteBuffer.allocate(1));
-        UtilsT.setPrivateField(mainRenderer, "arrayColors", ByteBuffer.allocate(1));
-        UtilsT.setPrivateField(mainRenderer, "arrayCamera", ByteBuffer.allocate(1));
-
-        Assertions.assertThat((boolean) UtilsT.getPrivateField(mainRenderer, "firstFrame"))
+        Assertions.assertThat((boolean) ReflectionTestUtils.getField(mainRenderer, "firstFrame"))
             .as("The 1st frame field")
             .isTrue();
 
@@ -233,7 +233,7 @@ public class MainRendererTest {
             mainActivityMockedStatic.verify(() -> MainActivity.showUiMessage(ArgumentMatchers.anyString()), Mockito.times(1));
             mainActivityMockedStatic.verify(MainActivity::resetRenderButton, Mockito.times(1));
 
-            Assertions.assertThat((boolean) UtilsT.getPrivateField(mainRenderer, "firstFrame"))
+            Assertions.assertThat((boolean) ReflectionTestUtils.getField(mainRenderer, "firstFrame"))
                 .as("The 1st frame field")
                 .isFalse();
         }
@@ -255,14 +255,14 @@ public class MainRendererTest {
             Uninterruptibles.sleepUninterruptibly(1L, TimeUnit.SECONDS);
             mainRenderer.onDrawFrame(Mockito.mock(GL10.class));
         });
-        Assertions.assertThat((boolean) UtilsT.getPrivateField(mainRenderer, "firstFrame"))
+        Assertions.assertThat((boolean) ReflectionTestUtils.getField(mainRenderer, "firstFrame"))
             .as("The 1st frame field")
             .isTrue();
 
         thread.start();
         mainRenderer.getState();
 
-        Assertions.assertThat((boolean) UtilsT.getPrivateField(mainRenderer, "firstFrame"))
+        Assertions.assertThat((boolean) ReflectionTestUtils.getField(mainRenderer, "firstFrame"))
             .as("The 1st frame field")
             .isFalse();
 
@@ -308,8 +308,8 @@ public class MainRendererTest {
         mainRenderer.setActivityManager(activityManagerMocked);
 
         final ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
-        UtilsT.setPrivateField(memoryInfo, "availMem", 100L * BYTES_IN_MEGABYTE);
-        UtilsT.setPrivateField(mainRenderer, "memoryInfo", memoryInfo);
+        ReflectionTestUtils.setField(memoryInfo, "availMem", 100L * BYTES_IN_MEGABYTE);
+        ReflectionTestUtils.setField(mainRenderer, "memoryInfo", memoryInfo);
 
         Assertions.assertThatThrownBy(() -> mainRenderer.renderSceneToBitmap(
             ByteBuffer.allocate(1),
@@ -335,12 +335,14 @@ public class MainRendererTest {
         final MainRenderer mainRenderer = createMainRenderer();
 
         final ActivityManager activityManagerMocked = PowerMockito.mock(ActivityManager.class);
-        Mockito.doNothing().when(activityManagerMocked).getMemoryInfo(Mockito.any(ActivityManager.MemoryInfo.class));
+        Mockito.doNothing()
+            .when(activityManagerMocked)
+            .getMemoryInfo(Mockito.any(ActivityManager.MemoryInfo.class));
         mainRenderer.setActivityManager(activityManagerMocked);
 
         final ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
-        UtilsT.setPrivateField(memoryInfo, "availMem", 100L * BYTES_IN_MEGABYTE);
-        UtilsT.setPrivateField(mainRenderer, "memoryInfo", memoryInfo);
+        ReflectionTestUtils.setField(memoryInfo, "availMem", 100L * BYTES_IN_MEGABYTE);
+        ReflectionTestUtils.setField(mainRenderer, "memoryInfo", memoryInfo);
 
         try (final MockedStatic<Bitmap> bitmapMockedStatic = Mockito.mockStatic(Bitmap.class)) {
             final Bitmap bitmapMocked = Mockito.mock(Bitmap.class);

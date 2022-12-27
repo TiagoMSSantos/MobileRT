@@ -2,9 +2,9 @@ package puscas.mobilertapp.system;
 
 import com.google.common.collect.ImmutableList;
 
+import org.junit.Assert;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
-import org.junit.jupiter.api.Assertions;
 import org.junit.runners.MethodSorters;
 
 import java.io.File;
@@ -62,8 +62,8 @@ public final class FileSystemTest extends AbstractTest {
                     }
                 }
                 log.info("List finished.");
-                Assertions.assertTrue(file.exists(), Constants.FILE_SHOULD_EXIST + ": " + filePath);
-                Assertions.assertTrue(file.isDirectory(), "File should be a directory: " + filePath);
+                Assert.assertTrue(Constants.FILE_SHOULD_EXIST + ": " + filePath, file.exists());
+                Assert.assertTrue("File should be a directory: " + filePath, file.isDirectory());
             });
     }
 
@@ -117,8 +117,8 @@ public final class FileSystemTest extends AbstractTest {
         StreamSupport.stream(paths)
             .forEach(path -> {
                 final File file = new File(path);
-                Assertions.assertFalse(file.exists(), "File should not exist!");
-                Assertions.assertFalse(file.canRead(), "File should not be readable!");
+                Assert.assertFalse("File should not exist!", file.exists());
+                Assert.assertFalse("File should not be readable!", file.canRead());
             });
     }
 
@@ -132,9 +132,9 @@ public final class FileSystemTest extends AbstractTest {
             .forEach(path -> {
                 final File file = new File(path);
                 final String filePath = file.getAbsolutePath();
-                Assertions.assertTrue(file.exists(), Constants.FILE_SHOULD_EXIST + ": " + filePath);
-                Assertions.assertTrue(file.isFile(), "File should be a file: " + filePath);
-                Assertions.assertTrue(file.canRead(), "File should be readable: " + filePath);
+                Assert.assertTrue(Constants.FILE_SHOULD_EXIST + ": " + filePath, file.exists());
+                Assert.assertTrue("File should be a file: " + filePath, file.isFile());
+                Assert.assertTrue("File should be readable: " + filePath, file.canRead());
             });
     }
 

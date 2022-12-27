@@ -5,9 +5,9 @@ import android.opengl.GLSurfaceView;
 
 import com.google.common.base.Preconditions;
 
+import org.junit.Assert;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
-import org.junit.jupiter.api.Assertions;
 import org.junit.runners.MethodSorters;
 
 import java.io.InputStream;
@@ -74,10 +74,10 @@ public final class MainRendererTest extends AbstractTest {
      */
     private static void assertIndexOfShader(final int shaderIndex) {
         final int expectedIndex = 4;
-        Assertions.assertEquals(
+        Assert.assertEquals(
+            "Shader index should be " + expectedIndex + ".",
             expectedIndex,
-            shaderIndex,
-            "Shader index should be " + expectedIndex + "."
+            shaderIndex
         );
     }
 
@@ -140,7 +140,7 @@ public final class MainRendererTest extends AbstractTest {
             UtilsGL.run(GLES20::glReleaseShaderCompiler);
             latch.countDown();
         });
-        Assertions.assertTrue(latch.await(1L, TimeUnit.MINUTES), "CountDownLatch has value zero as expected.");
+        Assert.assertTrue("CountDownLatch has value zero as expected.", latch.await(1L, TimeUnit.MINUTES));
 
         return shaderIndex.get();
     }

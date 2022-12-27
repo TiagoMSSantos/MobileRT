@@ -7,13 +7,13 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 
+import androidx.test.espresso.Espresso;
 import androidx.test.espresso.intent.Intents;
 import androidx.test.espresso.intent.matcher.IntentMatchers;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
@@ -104,48 +104,22 @@ public final class RayTracingTest extends AbstractTest {
     }
 
     /**
-     * Tests rendering an OBJ scene in the internal storage.
-     *
-     * @throws TimeoutException If it couldn't render the whole scene in time.
-     */
-    @Test(timeout = 2L * 60L * 1000L)
-    public void testRenderSceneFromInternalStorageOBJ() throws TimeoutException {
-        final int numCores = UtilsContext.getNumOfCores(this.activity);
-        final int scene = Scene.TEST_INTERNAL_STORAGE.ordinal();
-
-        assertRenderScene(numCores, scene, false);
-    }
-
-    /**
-     * Tests rendering an OBJ scene in the SD card.
-     *
-     * @throws TimeoutException If it couldn't render the whole scene in time.
-     */
-    @Test(timeout = 2L * 60L * 1000L)
-    public void testRenderSceneFromSDCardOBJ() throws TimeoutException {
-        final int numCores = UtilsContext.getNumOfCores(this.activity);
-        final int scene = Scene.TEST_SD_CARD.ordinal();
-
-        assertRenderScene(numCores, scene, false);
-    }
-
-    /**
      * Tests rendering an OBJ scene from an OBJ file which the path was loaded with an external file
-     * manager application.
+     * manager application. The OBJ is in an internal storage.
      *
      * @throws TimeoutException If it couldn't render the whole scene in time.
      *
      * @implNote E.g. of an URL to file:<br>
-     * content://com.asus.filemanager.OpenFileProvider/file/storage/1CE6-261B/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj
+     * file:///file/data/local/tmp/MobileRT/WavefrontOBJs/teapot/teapot.obj
      */
     @Test(timeout = 2L * 60L * 1000L)
-    @Ignore("Ignore because it fails in CI")
-    public void testRenderSceneExternalFileManagerOBJ() throws TimeoutException {
+    public void testRenderSceneFromInternalStorageOBJ() throws TimeoutException {
         final int numCores = UtilsContext.getNumOfCores(this.activity);
         final int scene = Scene.OBJ.ordinal();
 
         // Mock the reply for the external file manager application.
-        final File fileToObj = new File("/file/storage/1CE6-261B/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj");
+        final String internalStoragePath = UtilsContext.getInternalStoragePath(this.activity);
+        final File fileToObj = new File("/file" + internalStoragePath + "/MobileRT/WavefrontOBJs/teapot/teapot.obj");
         final Intent resultData = new Intent(Intent.ACTION_GET_CONTENT);
         resultData.setData(Uri.fromFile(fileToObj));
         final Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
@@ -154,6 +128,39 @@ public final class RayTracingTest extends AbstractTest {
             .respondWith(result);
 
         assertRenderScene(numCores, scene, false);
+        Intents.intended(IntentMatchers.anyIntent());
+
+        Intents.release();
+    }
+
+    /**
+     * Tests rendering an OBJ scene from an OBJ file which the path was loaded with an external file
+     * manager application. The OBJ is in an external SD card.
+     *
+     * @throws TimeoutException If it couldn't render the whole scene in time.
+     *
+     * @implNote E.g. of URLs to file:<br>
+     * content://com.asus.filemanager.OpenFileProvider/file/storage/1CE6-261B/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj
+     * content://com.asus.filemanager.OpenFileProvider/file/mnt/sdcard/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj
+     */
+    @Test(timeout = 2L * 60L * 1000L)
+    public void testRenderSceneFromSDCardOBJ() throws TimeoutException {
+        final int numCores = UtilsContext.getNumOfCores(this.activity);
+        final int scene = Scene.OBJ.ordinal();
+
+        // Mock the reply for the external file manager application.
+        final String sdCardPath = UtilsContext.getSdCardPath(this.activity);
+        final File fileToObj = new File("/file" + sdCardPath + "/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj");
+        final Intent resultData = new Intent(Intent.ACTION_GET_CONTENT);
+        resultData.setData(Uri.fromFile(fileToObj));
+        final Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
+        Intents.init();
+        Intents.intending(IntentMatchers.anyIntent())
+            .respondWith(result);
+
+        assertRenderScene(numCores, scene, false);
+        Intents.intended(IntentMatchers.anyIntent());
+
         Intents.release();
     }
 
@@ -184,6 +191,7 @@ public final class RayTracingTest extends AbstractTest {
 
         UtilsT.assertRenderButtonText(Constants.RENDER);
         UtilsT.testStateAndBitmap(expectedSameValues);
+        UtilsT.executeWithCatching(Espresso::onIdle);
     }
 
 }

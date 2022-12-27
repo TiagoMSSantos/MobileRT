@@ -65,19 +65,6 @@ public class UtilsTest {
     }
 
     /**
-     * Tests that the {@link Utils#executeWithCatching(Runnable)} method will don't throw any
-     * {@link Exception} even if the {@link Runnable} passed as parameter throws an {@link Exception}.
-     */
-    @Test
-    public void testExecuteWithCatching() {
-        Assertions.assertThatCode(() -> Utils.executeWithCatching(() -> {
-            throw new FailureException("test");
-        }))
-            .as("The call to Utils#executeWithCatching method")
-            .doesNotThrowAnyException();
-    }
-
-    /**
      * Tests that the method {@link Utils#getResolutionFromPicker(NumberPicker)} will throw a
      * {@link FailureException}.
      */

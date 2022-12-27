@@ -9,11 +9,11 @@ import androidx.test.espresso.ViewAction;
 import androidx.test.espresso.matcher.ViewMatchers;
 
 import org.hamcrest.Matcher;
-import org.junit.jupiter.api.Assertions;
+import org.junit.Assert;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
-import puscas.mobilertapp.utils.Utils;
+import puscas.mobilertapp.utils.UtilsT;
 
 /**
  * Auxiliary class which represents a {@link NumberPicker}.
@@ -47,9 +47,8 @@ public final class ViewActionNumberPicker implements ViewAction {
     public void perform(@NonNull final UiController uiController, @NonNull final View view) {
         final NumberPicker numberPicker = (NumberPicker) view;
         numberPicker.setValue(this.newValue);
-        Utils.executeWithCatching(() -> uiController.loopMainThreadForAtLeast(100L));
-        Assertions.assertEquals(this.newValue, numberPicker.getValue(),
-            "The set value should be '" + this.newValue + "'");
+        UtilsT.executeWithCatching(() -> uiController.loopMainThreadForAtLeast(100L));
+        Assert.assertEquals("The set value should be '" + this.newValue + "'", this.newValue, numberPicker.getValue());
     }
 
 }

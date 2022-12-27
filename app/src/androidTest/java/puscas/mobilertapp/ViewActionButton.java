@@ -8,18 +8,12 @@ import androidx.test.espresso.UiController;
 import androidx.test.espresso.ViewAction;
 import androidx.test.espresso.matcher.ViewMatchers;
 
-import com.google.common.util.concurrent.Uninterruptibles;
-
 import org.hamcrest.Matcher;
 import org.jetbrains.annotations.NonNls;
-import org.junit.jupiter.api.Assertions;
+import org.junit.Assert;
 
-import java.util.concurrent.TimeUnit;
-
-import java8.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
-import puscas.mobilertapp.constants.Constants;
 import puscas.mobilertapp.utils.Utils;
 
 /**
@@ -38,24 +32,6 @@ public final class ViewActionButton implements ViewAction {
      * Whether to do a long click or not.
      */
     private final boolean pressLongClick;
-
-    /**
-     * Helper method that waits until the {@link Button} shows the expected text.
-     *
-     * @param uiController The controller to use to interact with the UI.
-     * @param button       The {@link Button} to act upon. never null.
-     * @param expectedText The expected text shown in the {@link Button}.
-     */
-    private static void waitUntilTextIsShown(@NonNull final UiController uiController,
-                                             @NonNull final Button button,
-                                             @NonNull @NonNls final String expectedText) {
-        boolean textBeforeNotExpected = button.getText().toString().equals(expectedText);
-        while (textBeforeNotExpected) {
-            uiController.loopMainThreadForAtLeast(5000L);
-            textBeforeNotExpected = button.getText().toString().equals(expectedText);
-        }
-        uiController.loopMainThreadUntilIdle();
-    }
 
     @NonNull
     @Override
@@ -81,8 +57,6 @@ public final class ViewActionButton implements ViewAction {
         try {
             final Button button = (Button) view;
 
-//            waitUntilTextIsShown(uiController, button, this.expectedText);
-
             // Click the button.
             boolean buttonNotClickedProperly = this.pressLongClick
                 ? button.performLongClick() : !button.performClick();
@@ -93,20 +67,22 @@ public final class ViewActionButton implements ViewAction {
                     ? button.performLongClick() : !button.performClick();
             }
 
+            if (this.expectedText == null) {
+                uiController.loopMainThreadUntilIdle();
+                return;
+            }
             boolean textEqualsNotExpected = !button.getText().toString().equals(this.expectedText);
-            final long advanceSecs = 3L;
+            final long advanceSecs = 1L;
 
             // Wait until expected text is shown.
             for (long currentTimeSecs = 0L; currentTimeSecs < 10L && textEqualsNotExpected;
                  currentTimeSecs += advanceSecs) {
                 uiController.loopMainThreadForAtLeast(advanceSecs * 1000L);
-                Uninterruptibles.sleepUninterruptibly(advanceSecs, TimeUnit.SECONDS);
                 textEqualsNotExpected = !button.getText().toString().equals(this.expectedText);
             }
-            if (!Objects.equals(this.expectedText, Constants.STOP)) {
-                Assertions.assertEquals(this.expectedText, button.getText().toString(),
-                    "Button with wrong text!!!!!");
-            }
+            Assert.assertEquals("Button with wrong text!!!!!",
+                this.expectedText, button.getText().toString()
+            );
         } finally {
             Utils.handleInterruption(methodName);
         }

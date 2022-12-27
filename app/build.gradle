@@ -487,9 +487,6 @@ dependencies {
     // Need Android API 26
     // https://stackoverflow.com/questions/52510370/java-lang-noclassdeffounderror-failed-resolution-of-ljava-time-localdate-erro
     // Caused by: java.lang.NoClassDefFoundError: java.time.LocalDateTime
-
-    // Preferred to use JUnit 5 over AssertJ because some CI builds fail when using AssertJ in Android Tests.
-    androidTestImplementation "org.junit.jupiter:junit-jupiter-api:${junit5_version}"
 }
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////

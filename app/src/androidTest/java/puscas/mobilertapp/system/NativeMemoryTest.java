@@ -5,11 +5,11 @@ import static puscas.mobilertapp.ConstantsAndroidTests.NOT_ENOUGH_MEMORY_MESSAGE
 import android.os.Debug;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.jupiter.api.Assertions;
 import org.junit.runners.MethodSorters;
 
 import java.nio.ByteBuffer;
@@ -60,12 +60,11 @@ public final class NativeMemoryTest {
         final Collection<ByteBuffer> dummyArrays = new ArrayList<>(1);
 
         final long firstAvailableMemoryMB = getAvailableNativeMemoryInMB();
-        Assertions.assertTrue(firstAvailableMemoryMB > 300L, NOT_ENOUGH_MEMORY_MESSAGE);
+        Assert.assertTrue(NOT_ENOUGH_MEMORY_MESSAGE, firstAvailableMemoryMB > 300L);
         dummyArrays.add(ByteBuffer.allocateDirect(Constants.BYTES_IN_MEGABYTE));
 
         final long startAvailableMemory = getAvailableNativeMemoryInMB();
-        Assertions.assertTrue(startAvailableMemory < firstAvailableMemoryMB,
-            "Available memory didn't decrease as expected.");
+        Assert.assertTrue("Available memory didn't decrease as expected.", startAvailableMemory < firstAvailableMemoryMB);
 
         final long megaBytesToAllocate = 100L;
         int numAllocatedByteBuffers = 0;
@@ -75,18 +74,16 @@ public final class NativeMemoryTest {
             System.gc();
 
             final long beforeAvailableMemoryMB = getAvailableNativeMemoryInMB();
-            Assertions.assertTrue(beforeAvailableMemoryMB > megaBytesToAllocate, NOT_ENOUGH_MEMORY_MESSAGE);
+            Assert.assertTrue(NOT_ENOUGH_MEMORY_MESSAGE, beforeAvailableMemoryMB > megaBytesToAllocate);
             dummyArrays.add(ByteBuffer.allocateDirect(((int) megaBytesToAllocate * Constants.BYTES_IN_MEGABYTE)));
 
             final long afterAvailableMemory = getAvailableNativeMemoryInMB();
-            Assertions.assertTrue(afterAvailableMemory <= (beforeAvailableMemoryMB - megaBytesToAllocate),
-                    NOT_ENOUGH_MEMORY_MESSAGE);
+            Assert.assertTrue(NOT_ENOUGH_MEMORY_MESSAGE, afterAvailableMemory <= (beforeAvailableMemoryMB - megaBytesToAllocate));
 
             ++numAllocatedByteBuffers;
         }
 
-        Assertions.assertEquals(numAllocatedByteBuffers, dummyArrays.size(),
-                "The number of allocated `ByteBuffer` is not the expected.");
+        Assert.assertEquals( "The number of allocated `ByteBuffer` is not the expected.", numAllocatedByteBuffers, dummyArrays.size());
     }
 
     /**

@@ -15,9 +15,9 @@ import androidx.test.espresso.matcher.ViewMatchers;
 
 import com.google.common.collect.ImmutableList;
 
+import org.junit.Assert;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
-import org.junit.jupiter.api.Assertions;
 import org.junit.runners.MethodSorters;
 
 import java.util.List;
@@ -101,10 +101,8 @@ public final class UiTest extends AbstractTest {
     private static void assertPreviewCheckBox(@NonNull final View view,
                                               final boolean expectedValue) {
         final CheckBox checkbox = view.findViewById(R.id.preview);
-        Assertions.assertEquals(Constants.PREVIEW, checkbox.getText().toString(),
-            Constants.CHECK_BOX_MESSAGE);
-        Assertions.assertEquals(expectedValue, checkbox.isChecked(),
-            "Check box has not the expected value");
+        Assert.assertEquals(Constants.CHECK_BOX_MESSAGE, Constants.PREVIEW, checkbox.getText().toString());
+        Assert.assertEquals( "Check box has not the expected value", expectedValue, checkbox.isChecked());
     }
 
     /**
@@ -119,7 +117,7 @@ public final class UiTest extends AbstractTest {
         IntStreams.rangeClosed(1, 100).forEach(value ->
             UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SAMPLES_LIGHT, R.id.pickerSamplesLight, value)
         );
-        IntStreams.rangeClosed(0, 6).forEach(value ->
+        IntStreams.rangeClosed(0, 5).forEach(value ->
             UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SCENE, R.id.pickerScene, value)
         );
         IntStreams.rangeClosed(0, 4).forEach(value ->
@@ -183,7 +181,7 @@ public final class UiTest extends AbstractTest {
             .perform(new ViewActionButton(Constants.RENDER, true))
             .check((view, exception) -> {
                 final Button button = (Button) view;
-                Assertions.assertEquals(Constants.RENDER, button.getText().toString(), BUTTON_MESSAGE);
+                Assert.assertEquals(BUTTON_MESSAGE, Constants.RENDER, button.getText().toString());
             });
         UtilsT.testStateAndBitmap(true);
     }
@@ -195,7 +193,7 @@ public final class UiTest extends AbstractTest {
      * @param numCores    The number of CPU cores in the system.
      */
     private void assertClickRenderButton(final int repetitions, final int numCores) {
-        UtilsContextT.resetPickerValues(this.activity, Scene.TEST_INTERNAL_STORAGE.ordinal());
+        UtilsContextT.resetPickerValues(this.activity, Scene.CORNELL2.ordinal());
 
         final List<String> buttonTextList = ImmutableList.of(Constants.STOP, Constants.RENDER);
         IntStreams.range(0, buttonTextList.size() * repetitions).forEach(currentIndex -> {

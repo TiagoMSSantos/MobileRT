@@ -113,8 +113,8 @@ public class DrawViewTest {
         final TextView textViewMocked = Mockito.mock(TextView.class);
         final ActivityManager activityManagerMocked = Mockito.mock(ActivityManager.class);
         final ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
-        UtilsT.setPrivateField(memoryInfo, "availMem", (long) BYTES_IN_MEGABYTE);
-        UtilsT.setPrivateField(drawView.getRenderer(), "memoryInfo", memoryInfo);
+        ReflectionTestUtils.setField(memoryInfo, "availMem", (long) BYTES_IN_MEGABYTE);
+        ReflectionTestUtils.setField(drawView.getRenderer(), "memoryInfo", memoryInfo);
 
         Assertions.assertThatThrownBy(() -> drawView.setViewAndActivityManager(textViewMocked, activityManagerMocked))
             .as("The call to DrawView#setViewAndActivityManager method")

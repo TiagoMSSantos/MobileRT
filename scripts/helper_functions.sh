@@ -329,7 +329,7 @@ killProcessesUsingPort() {
     process_id_using_port=$(echo "${processes_using_port}" | head -1);
     echo "Going to kill this process: '${process_id_using_port}'";
     kill -KILL "${process_id_using_port}" || true;
-    processes_using_port=$(lsof -i ":${1}" | tail -n +2 | tr -s ' ' || true);
+    processes_using_port=$(lsof -i ":${1}" | tail -n +2 | tr -s ' ' | cut -d ' ' -f 2 || true);
   done
 }
 

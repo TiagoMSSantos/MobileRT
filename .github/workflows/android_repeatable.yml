@@ -30,7 +30,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - test: UiTest#testClickRenderButtonManyTimesWithPreview
+        - test: RayTracingTest#testRenderSceneFromSDCardOBJ
           type: debug
           os: macos-latest
           android_api: 16
