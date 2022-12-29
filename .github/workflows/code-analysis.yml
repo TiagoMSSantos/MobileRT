@@ -15,7 +15,9 @@ on:
     - '.github/workflows/**'
     - 'docs/**'
     - '**/renovate.json'
+    - '!gradle/wrapper/gradle-wrapper.properties'
     - '!.github/workflows/code-analysis.yml'
+    - '!*gradle*'
     branches:
     - '*'
 
