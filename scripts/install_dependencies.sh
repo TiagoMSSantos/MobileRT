@@ -49,7 +49,7 @@ cd "$(dirname "${0}")/.." || exit;
 ###############################################################################
 # Execute Shellcheck on this script.
 ###############################################################################
-if [ -x "$(command -v shellcheck)" ]; then
+if command -v shellcheck > /dev/null; then
   shellcheck "${0}" || exit
 fi
 ###############################################################################
@@ -60,22 +60,22 @@ fi
 # Install dependencies.
 ###############################################################################
 install_dependencies() {
-  if [ -x "$(command -v apt-get)" ]; then
+  if command -v apt-get > /dev/null; then
     echo 'Detected Debian based Linux';
     install_dependencies_debian;
-  elif [ -x "$(command -v yum)" ]; then
+  elif command -v yum > /dev/null; then
     echo 'Detected Red Hat based Linux';
     install_dependencies_red_hat;
-  elif [ -x "$(command -v pacman)" ]; then
+  elif command -v pacman > /dev/null; then
     echo 'Detected Arch based Linux';
     install_dependencies_arch;
-  elif [ -x "$(command -v apk)" ]; then
+  elif command -v apk > /dev/null; then
     echo 'Detected Alpine based Linux';
     install_dependencies_alpine;
-  elif [ -x "$(command -v emerge)" ]; then
+  elif command -v emerge > /dev/null; then
     echo 'Detected Gentoo based Linux';
     install_dependencies_gentoo;
-  elif [ -x "$(command -v brew)" ]; then
+  elif command -v brew > /dev/null; then
     echo 'Detected MacOS';
     install_dependencies_macos;
   else
@@ -260,12 +260,12 @@ install_dependencies_macos() {
 
 # Update Python, PIP and CMake versions if necessary.
 update_python() {
-  if [ -x "$(command -v choco)" ]; then
+  if command -v choco > /dev/null; then
     echo 'Install Python with choco';
     choco install python --version 3.8.0;
   fi
 
-  if [ ! -x "$(command -v apt-get)" ]; then
+  if ! command -v apt-get > /dev/null; then
     echo 'Not Debian based Linux detected';
     echo 'Ensure pip is used by default';
     python3 -m ensurepip --default-pip;

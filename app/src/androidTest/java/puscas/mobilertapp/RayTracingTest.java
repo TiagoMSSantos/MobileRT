@@ -110,7 +110,7 @@ public final class RayTracingTest extends AbstractTest {
      * @throws TimeoutException If it couldn't render the whole scene in time.
      *
      * @implNote E.g. of an URL to file:<br>
-     * file:///file/data/local/tmp/MobileRT/WavefrontOBJs/teapot/teapot.obj
+     * file:///file/data/local/tmp/MobileRT/WavefrontOBJs/teapot/teapot.obj<br>
      */
     @Test(timeout = 2L * 60L * 1000L)
     public void testRenderSceneFromInternalStorageOBJ() throws TimeoutException {
@@ -140,8 +140,8 @@ public final class RayTracingTest extends AbstractTest {
      * @throws TimeoutException If it couldn't render the whole scene in time.
      *
      * @implNote E.g. of URLs to file:<br>
-     * content://com.asus.filemanager.OpenFileProvider/file/storage/1CE6-261B/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj
-     * content://com.asus.filemanager.OpenFileProvider/file/mnt/sdcard/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj
+     * content://com.asus.filemanager.OpenFileProvider/file/storage/1CE6-261B/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj<br>
+     * content://com.asus.filemanager.OpenFileProvider/file/mnt/sdcard/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj<br>
      */
     @Test(timeout = 2L * 60L * 1000L)
     public void testRenderSceneFromSDCardOBJ() throws TimeoutException {

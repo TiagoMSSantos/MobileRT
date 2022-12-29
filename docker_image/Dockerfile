@@ -80,16 +80,16 @@ RUN echo "DISPLAY = ${DISPLAY}"; \
 # Install git
 ###############################################################################
 RUN \
-if [ -x "$(command -v apt-get)" ]; then \
+if command -v apt-get > /dev/null; then \
   echo 'Detected Debian based Linux'; \
   apt-get update -y; \
   apt-get install --no-install-recommends -y sudo git tzdata; \
-elif [ -x "$(command -v yum)" ]; then \
+elif command -v yum > /dev/null; then \
   echo 'Detected Red Hat based Linux'; \
   yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False update -y; \
   yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y \
     sudo git; \
-elif [ -x "$(command -v pacman)" ]; then \
+elif command -v pacman > /dev/null; then \
   echo 'Detected Arch based Linux'; \
   rm -rf /var/cache/pacman/pkg/; \
   pacman -Sy archlinux-keyring --noconfirm --needed; \
@@ -99,11 +99,11 @@ elif [ -x "$(command -v pacman)" ]; then \
   echo 'Upgrade system'; \
   pacman -Syu --noconfirm --needed; \
   pacman -Sy --noconfirm --needed sudo git; \
-elif [ -x "$(command -v apk)" ]; then \
+elif command -v apk > /dev/null; then \
   echo 'Detected Alpine based Linux'; \
   apk update; \
   apk add sudo git; \
-elif [ -x "$(command -v emerge)" ]; then \
+elif command -v emerge > /dev/null; then \
   echo 'Detected Gentoo based Linux'; \
   emerge --sync || true; \
   emerge sudo dev-vcs/git; \

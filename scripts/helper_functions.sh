@@ -238,7 +238,7 @@ printCommandExitCode() {
 
 # Check command is available.
 checkCommand() {
-  if [ -x "$(command -v "${@}")" ]; then
+  if command -v "${@}" > /dev/null; then
     echo "Command '$*' installed!";
   else
     echo "Command '$*' is NOT installed.";
@@ -258,7 +258,7 @@ capitalizeFirstletter() {
 
 # Parallelize building of MobileRT.
 parallelizeBuild() {
-  if [ -x "$(command -v nproc)" ]; then
+  if command -v nproc > /dev/null; then
     MAKEFLAGS="-j$(nproc --all)";
   else
     # Assuming MacOS.

@@ -41,7 +41,7 @@ cd "$(dirname "${0}")/.." || exit;
 ###############################################################################
 # Execute Shellcheck on this script.
 ###############################################################################
-if [ -x "$(command -v shellcheck)" ]; then
+if command -v shellcheck > /dev/null; then
   shellcheck "${0}" || exit
 fi
 ###############################################################################
@@ -178,7 +178,7 @@ addCommandToPath 'conan';
 ###############################################################################
 setCpuArchitecture() {
   CPU_ARCHITECTURE=x86_64;
-  if [ -x "$(command -v uname)" ]; then
+  if command -v uname > /dev/null; then
     CPU_ARCHITECTURE=$(uname -m);
     if [ "${CPU_ARCHITECTURE}" = 'aarch64' ]; then
       CPU_ARCHITECTURE=armv8;
@@ -200,7 +200,7 @@ install_conan_dependencies() {
 #  ln -s configure/config.sub /home/travis/.conan/data/libuuid/1.0.3/_/_/build/b818fa1fc0d3879f99937e93c6227da2690810fe/configure/config.sub;
 
   echo 'Checking if conan is available.';
-  if [ -x "$(command -v conan)" ]; then
+  if command -v conan > /dev/null; then
     echo 'Setting up conan.';
     conan profile new mobilert || true;
     conan profile update settings.compiler="${conan_compiler}" mobilert;

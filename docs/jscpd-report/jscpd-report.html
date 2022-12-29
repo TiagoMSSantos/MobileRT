@@ -404,7 +404,7 @@ cd &quot;$(dirname &quot;${0}&quot;)/..&quot; || exit;
 ###############################################################################
 # Execute Shellcheck on this script.
 ###############################################################################
-if [ -x &quot;$(command -v shellcheck)&quot; ]; then
+if command -v shellcheck &gt; /dev/null; then
   shellcheck &quot;${0}&quot; || exit
 fi
 ###############################################################################
@@ -446,7 +446,7 @@ cd &quot;$(dirname &quot;${0}&quot;)/..&quot; || exit;
 ###############################################################################
 # Execute Shellcheck on this script.
 ###############################################################################
-if [ -x &quot;$(command -v shellcheck)&quot; ]; then
+if command -v shellcheck &gt; /dev/null; then
   shellcheck &quot;${0}&quot; || exit
 fi
 ###############################################################################
@@ -489,7 +489,7 @@ cd &quot;$(dirname &quot;${0}&quot;)/..&quot; || exit;
 ###############################################################################
 # Execute Shellcheck on this script.
 ###############################################################################
-if [ -x &quot;$(command -v shellcheck)&quot; ]; then
+if command -v shellcheck &gt; /dev/null; then
   shellcheck &quot;${0}&quot; || exit
 fi
 ###############################################################################
@@ -529,7 +529,7 @@ cd &quot;$(dirname &quot;${0}&quot;)/..&quot; || exit;
 ###############################################################################
 # Execute Shellcheck on this script.
 ###############################################################################
-if [ -x &quot;$(command -v shellcheck)&quot; ]; then
+if command -v shellcheck &gt; /dev/null; then
   shellcheck &quot;${0}&quot; || exit
 fi
 ###############################################################################

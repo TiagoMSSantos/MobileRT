@@ -37,7 +37,7 @@ set -eu;
 ###############################################################################
 # Execute Shellcheck on this script.
 ###############################################################################
-if [ -x "$(command -v shellcheck)" ]; then
+if command -v shellcheck > /dev/null; then
   shellcheck "${0}" || exit
 fi
 ###############################################################################
@@ -215,7 +215,7 @@ runEmulator() {
     set -e;
   fi
 
-  if [ -x "$(command -v emulator)" ]; then
+  if command -v emulator > /dev/null; then
     avd_emulators=$(emulator -list-avds);
     echo "Emulators available: '${avd_emulators}'";
     avd_emulator=$(echo "${avd_emulators}" | head -1);
@@ -419,7 +419,7 @@ verifyResources() {
 #  adb shell cat ${sdcard_path}/WavefrontOBJs/CornellBox/CornellBox-Water.cam;
 
   echo 'Verify memory available on host:';
-  if [ -x "$(command -v free)" ]; then
+  if command -v free > /dev/null; then
     free -h;
   else
     vm_stat;
