@@ -109,8 +109,7 @@ gather_logs_func() {
   pid_app=$(grep -E -i "proc.puscas:*" "${reports_path}"/logcat_"${type}".log |
     grep -i "pid=" | cut -d "=" -f 2 | cut -d "u" -f 1 | tr -d ' ' | tail -1);
   echo "Filter logcat of the app: ${pid_app}";
-  # shellcheck disable=SC2002
-  cat "${reports_path}"/logcat_"${type}".log | grep -e "${pid_app}" -e "I DEBUG" \
+  grep -e "${pid_app}" -e "I DEBUG" "${reports_path}"/logcat_"${type}".log \
     > "${reports_path}"/logcat_app_"${type}".log;
   set -e;
 
@@ -268,8 +267,7 @@ waitForEmulator() {
   set -e;
   echo "Devices running: '${adb_devices_running}'";
 
-  # shellcheck disable=SC2002
-  if (cat nohup.out | grep -iq "Process .* dead!"); then
+  if (grep -iq "Process .* dead!" nohup.out); then
     echo "Android emulator didn't boot properly, please check the 'nohup.out' log file for more context.";
     exit 1;
   fi

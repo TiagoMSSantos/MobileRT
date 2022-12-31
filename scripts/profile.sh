@@ -216,7 +216,6 @@ debug() {
 
 clangtidy() {
   GTK_HEADERS="$(pkg-config --cflags gtk+-2.0)";
-  # shellcheck disable=SC2001
   GTK_HEADERS=$(echo "${GTK_HEADERS}" | sed 's/-I/-isystem/g');
   echo "GTK_HEADERS = ${GTK_HEADERS}";
 
