@@ -37,12 +37,7 @@ public enum Scene {
     /**
      * The Scene of an OBJ file.
      */
-    OBJ("OBJ"),
-
-    /**
-     * A scene of an OBJ file which doesn't exist.
-     */
-    WRONG_FILE("Wrong file");
+    OBJ("OBJ");
 
     /**
      * The name of the scene.

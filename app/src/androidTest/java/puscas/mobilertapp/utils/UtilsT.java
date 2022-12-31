@@ -139,12 +139,14 @@ public final class UtilsT {
     /**
      * Helper method that clicks the Render {@link Button} 1 time,
      * so it starts the Ray Tracing engine.
+     *
+     * @param expectedSameValues Whether the {@link Button} should not change at all.
      */
-    public static void startRendering() {
+    public static void startRendering(final boolean expectedSameValues) {
         log.info("startRendering");
         assertRenderButtonText(Constants.RENDER);
         Espresso.onView(ViewMatchers.withId(R.id.renderButton))
-            .perform(new ViewActionButton(Constants.STOP, false));
+            .perform(new ViewActionButton(expectedSameValues? Constants.RENDER : Constants.STOP, false));
         UtilsT.executeWithCatching(Espresso::onIdle);
         log.info("startRendering" + ConstantsMethods.FINISHED);
     }

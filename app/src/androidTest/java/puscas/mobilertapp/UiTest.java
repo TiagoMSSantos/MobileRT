@@ -117,7 +117,7 @@ public final class UiTest extends AbstractTest {
         IntStreams.rangeClosed(1, 100).forEach(value ->
             UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SAMPLES_LIGHT, R.id.pickerSamplesLight, value)
         );
-        IntStreams.rangeClosed(0, 5).forEach(value ->
+        IntStreams.rangeClosed(0, 4).forEach(value ->
             UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SCENE, R.id.pickerScene, value)
         );
         IntStreams.rangeClosed(0, 4).forEach(value ->

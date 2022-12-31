@@ -6,6 +6,7 @@ import android.content.Intent;
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.test.espresso.Espresso;
+import androidx.test.espresso.intent.Intents;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
 
@@ -101,6 +102,8 @@ public abstract class AbstractTest {
 
         Preconditions.checkNotNull(this.activity, "The Activity didn't start as expected!");
         UtilsT.executeWithCatching(Espresso::onIdle);
+
+        Intents.init();
     }
 
     /**
@@ -119,6 +122,8 @@ public abstract class AbstractTest {
         this.mainActivityActivityTestRule.finishActivity();
         this.activity = null;
         UtilsT.executeWithCatching(Espresso::onIdle);
+
+        Intents.release();
     }
 
 }

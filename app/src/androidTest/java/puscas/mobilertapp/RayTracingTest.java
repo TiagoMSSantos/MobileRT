@@ -78,14 +78,22 @@ public final class RayTracingTest extends AbstractTest {
     }
 
     /**
-     * Tests render a scene from an invalid OBJ file.
+     * Tests render a scene from an OBJ file that doesn't exist.
      *
      * @throws TimeoutException If it couldn't render the whole scene in time.
      */
     @Test(timeout = 2L * 60L * 1000L)
     public void testRenderInvalidScene() throws TimeoutException {
         final int numCores = UtilsContext.getNumOfCores(this.activity);
-        final int scene = Scene.WRONG_FILE.ordinal();
+        final int scene = Scene.OBJ.ordinal();
+
+        // Mock the reply as the external file manager application, to select an OBJ file that doesn't exist.
+        final File fileToObj = new File("/path/to/OBJ/file/that/doesn't/exist.obj");
+        final Intent resultData = new Intent(Intent.ACTION_GET_CONTENT);
+        resultData.setData(Uri.fromFile(fileToObj));
+        final Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
+        Intents.intending(IntentMatchers.anyIntent())
+            .respondWith(result);
 
         assertRenderScene(numCores, scene, true);
     }
@@ -117,20 +125,17 @@ public final class RayTracingTest extends AbstractTest {
         final int numCores = UtilsContext.getNumOfCores(this.activity);
         final int scene = Scene.OBJ.ordinal();
 
-        // Mock the reply for the external file manager application.
+        // Mock the reply as the external file manager application, to select an OBJ file.
         final String internalStoragePath = UtilsContext.getInternalStoragePath(this.activity);
         final File fileToObj = new File("/file" + internalStoragePath + "/MobileRT/WavefrontOBJs/teapot/teapot.obj");
         final Intent resultData = new Intent(Intent.ACTION_GET_CONTENT);
         resultData.setData(Uri.fromFile(fileToObj));
         final Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
-        Intents.init();
         Intents.intending(IntentMatchers.anyIntent())
             .respondWith(result);
 
         assertRenderScene(numCores, scene, false);
         Intents.intended(IntentMatchers.anyIntent());
-
-        Intents.release();
     }
 
     /**
@@ -154,14 +159,11 @@ public final class RayTracingTest extends AbstractTest {
         final Intent resultData = new Intent(Intent.ACTION_GET_CONTENT);
         resultData.setData(Uri.fromFile(fileToObj));
         final Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
-        Intents.init();
         Intents.intending(IntentMatchers.anyIntent())
             .respondWith(result);
 
         assertRenderScene(numCores, scene, false);
         Intents.intended(IntentMatchers.anyIntent());
-
-        Intents.release();
     }
 
     /**
@@ -186,7 +188,7 @@ public final class RayTracingTest extends AbstractTest {
         UtilsPickerT.changePickerValue(ConstantsUI.PICKER_ACCELERATOR, R.id.pickerAccelerator, 3);
         UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SHADER, R.id.pickerShader, 1);
 
-        UtilsT.startRendering();
+        UtilsT.startRendering(expectedSameValues);
         UtilsContextT.waitUntilRenderingDone(this.activity);
 
         UtilsT.assertRenderButtonText(Constants.RENDER);

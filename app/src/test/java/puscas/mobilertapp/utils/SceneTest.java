@@ -22,8 +22,7 @@ public final class SceneTest {
             "Spheres",
             "Cornell2",
             "Spheres2",
-            "OBJ",
-            "Wrong file"
+            "OBJ"
         );
     }
 
