@@ -92,10 +92,11 @@ public final class RayTracingTest extends AbstractTest {
         final Intent resultData = new Intent(Intent.ACTION_GET_CONTENT);
         resultData.setData(Uri.fromFile(fileToObj));
         final Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
+
         Intents.intending(IntentMatchers.anyIntent())
             .respondWith(result);
-
         assertRenderScene(numCores, scene, true);
+        Intents.intended(IntentMatchers.anyIntent());
     }
 
     /**
@@ -131,9 +132,9 @@ public final class RayTracingTest extends AbstractTest {
         final Intent resultData = new Intent(Intent.ACTION_GET_CONTENT);
         resultData.setData(Uri.fromFile(fileToObj));
         final Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
+
         Intents.intending(IntentMatchers.anyIntent())
             .respondWith(result);
-
         assertRenderScene(numCores, scene, false);
         Intents.intended(IntentMatchers.anyIntent());
     }
@@ -153,15 +154,15 @@ public final class RayTracingTest extends AbstractTest {
         final int numCores = UtilsContext.getNumOfCores(this.activity);
         final int scene = Scene.OBJ.ordinal();
 
-        // Mock the reply for the external file manager application.
+        // Mock the reply as the external file manager application, to select an OBJ file.
         final String sdCardPath = UtilsContext.getSdCardPath(this.activity);
         final File fileToObj = new File("/file" + sdCardPath + "/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj");
         final Intent resultData = new Intent(Intent.ACTION_GET_CONTENT);
         resultData.setData(Uri.fromFile(fileToObj));
         final Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
+
         Intents.intending(IntentMatchers.anyIntent())
             .respondWith(result);
-
         assertRenderScene(numCores, scene, false);
         Intents.intended(IntentMatchers.anyIntent());
     }
