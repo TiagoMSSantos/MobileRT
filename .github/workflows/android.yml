@@ -21,14 +21,20 @@ on:
     - '!app/CMakeLists.txt'
     - '!codecov.yml'
     - '!.github/workflows/android.yml'
+    - '!.github/workflows/native.yml'
+    - '!app/third_party/conan/Native/**'
+    - '!app/System_dependent/Native/**'
     - '!.github/workflows/android_matrix.json'
     - '!app/third_party/conan/Android/**'
     - '!app/System_dependent/Android_JNI/**'
     - '!scripts/compile_android.sh'
+    - '!scripts/compile_native.sh'
     - '!scripts/check_android.sh'
     - '!scripts/run_tests_android.sh'
     - '!*.java*'
     - '!*.kt*'
+    - '!*.c*'
+    - '!*.h*'
     - '!*gradle*'
 
 defaults:
@@ -276,7 +282,7 @@ jobs:
         . scripts/helper_functions.sh && zipFilesForArtifact ${{ env.GRADLE_PATH }} gradle-packages.zip;
 
     - name: Upload Gradle packages as artifact
-      timeout-minutes: 10
+      timeout-minutes: 15
       if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug'
       uses: actions/upload-artifact@v3
       with:

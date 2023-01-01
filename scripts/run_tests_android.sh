@@ -229,7 +229,9 @@ waitForEmulator() {
   # Don't make the Android emulator belong in the process group, so it will not be killed at the end.
   set -m;
 
-  _restartAdbProcesses;
+  callCommandUntilSuccess adb kill-server;
+  #_restartAdbProcesses;
+  callCommandUntilSuccess adb start-server;
   set +e;
   adb_devices_running=$(adb devices | tail -n +2);
   retry=0;
@@ -508,7 +510,6 @@ runInstrumentationTests() {
 }
 
 _restartAdbProcesses() {
-  callCommandUntilSuccess adb kill-server;
   set +eu;
   # shellcheck disable=SC2009
   ADB_PROCESSES=$(ps aux | grep -i "adb" | grep -v "grep" | tr -s ' ' | cut -d ' ' -f 2);
@@ -524,7 +525,6 @@ _restartAdbProcesses() {
     killProcessesUsingPort 5037
   fi
   set -eu;
-  callCommandUntilSuccess adb start-server;
 }
 
 # Waits for the Android Emulator to boot.

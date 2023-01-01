@@ -2,6 +2,7 @@ package puscas.mobilertapp;
 
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ConfigurationInfo;
@@ -422,10 +423,14 @@ public final class MainActivity extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == OPEN_FILE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            this.sceneFilePath = Optional.ofNullable(data)
-                .map(Intent::getData)
-                .map(this::getPathFromFile)
-                .orElse("");
+            try {
+                this.sceneFilePath = Optional.ofNullable(data)
+                    .map(Intent::getData)
+                    .map(this::getPathFromFile)
+                    .orElse("");
+            } catch (final Throwable ex) {
+                MainActivity.showUiMessage(ConstantsToast.COULD_NOT_RENDER_THE_SCENE + ex.getMessage());
+            }
         }
     }
 
@@ -449,7 +454,7 @@ public final class MainActivity extends Activity {
 
             final String messageFinished = ConstantsMethods.START_RENDER + ConstantsMethods.FINISHED;
             log.info(messageFinished);
-        } catch(final Throwable ex) {
+        } catch (final Throwable ex) {
             MainActivity.showUiMessage(ConstantsToast.COULD_NOT_RENDER_THE_SCENE + ex.getMessage());
         }
     }
@@ -515,6 +520,7 @@ public final class MainActivity extends Activity {
             .skip(1L)
             .reduce("", (accumulator, segment) -> accumulator + ConstantsUI.FILE_SEPARATOR + segment);
         final boolean externalSDCardPath = uri.getPathSegments().size() <= 2
+            || uri.getPathSegments().get(0).matches("sdcard")
             || uri.getPathSegments().get(2).matches("^([A-Za-z0-9]){4}-([A-Za-z0-9]){4}$")
             || filePath.contains(Environment.getExternalStorageDirectory().getAbsolutePath());
 
@@ -588,7 +594,7 @@ public final class MainActivity extends Activity {
             final Intent intentChooseFile = Intent.createChooser(intent,
                 "Select an OBJ file to load.");
             startActivityForResult(intentChooseFile, OPEN_FILE_REQUEST_CODE);
-        } catch (final android.content.ActivityNotFoundException ex) {
+        } catch (final ActivityNotFoundException ex) {
             Toast.makeText(this, ConstantsToast.PLEASE_INSTALL_FILE_MANAGER, Toast.LENGTH_LONG)
                 .show();
         }

@@ -75,16 +75,11 @@ public final class UtilsContext {
         log.info(message);
 
         final File file = new File(sdCardPathCleaned);
-        final boolean readable = file.setReadable(true, true);
-        if (!file.canRead() && !readable) {
-            throw new FailureException("External storage path is not readable: " + file.getAbsolutePath());
-        }
-        final boolean writable = file.setWritable(true, true);
-        if (!file.canWrite() && !writable) {
-            log.warning("External storage path is not writable: " + file.getAbsolutePath());
+        if (isPathReadable(file)) {
+            return file.getAbsolutePath();
         }
 
-        return sdCardPathCleaned;
+        throw new FailureException("The SD card path '" + file.getAbsolutePath() + "' can't be read.");
     }
 
     /**
@@ -118,31 +113,59 @@ public final class UtilsContext {
         final String message = "Internal storage path: " + internalStoragePathCleaned;
         log.info(message);
 
-        final File file = new File(internalStoragePathCleaned);
-        final boolean readable = file.setReadable(true);
-        if (!file.canRead() && !readable) {
-            final String fallbackPath = "/data/local/tmp";
-            log.warning("Internal storage path is not readable: " + file.getAbsolutePath() + "\n");
-            log.warning("Will try " + fallbackPath + " instead.");
-            final File fileSdCard = new File(fallbackPath);
-            final boolean readableSdCard = fileSdCard.setReadable(true);
-            if (!fileSdCard.canRead() && !readableSdCard) {
-                final String messageError = "Internal storage path is not readable: " + fileSdCard.getAbsolutePath();
-                log.warning(messageError);
-            }
-            final boolean writableSdCard = fileSdCard.setWritable(true);
-            if (!fileSdCard.canWrite() && !writableSdCard) {
-                final String messageError = "Internal storage path is not writable: " + fileSdCard.getAbsolutePath();
-                log.warning(messageError);
-            }
-            return fileSdCard.getAbsolutePath();
+        // If the internal storage path starts with '/data', then it's assumed that it's '/data/local/tmp'.
+        // Because the shell scripts are already trying to copy some OBJ files to '/data/local/tmp' by
+        // default as an internal storage path. But, for some reason, this path is not even readable
+        // from Android API even though it was possible to create it with ADB and even change the
+        // permissions of those files with ADB. That's why, it's not being called here the
+        // 'UtilsContext#isPathReadable' method to verify if this fallback path its readable.
+        if (internalStoragePathCleaned.startsWith("/data")) {
+            log.info("Since the internal storage path starts with '/data', then it's assuming " +
+                    "that the internal storage path is '/data/local/tmp'.");
+            return "/data/local/tmp";
         }
-        final boolean writable = file.setWritable(true);
-        if (!file.canWrite() && !writable) {
-            throw new FailureException("Internal storage path is not writable: " + file.getAbsolutePath());
+        final File file = new File(internalStoragePathCleaned);
+        if (isPathReadable(file)) {
+            return file.getAbsolutePath();
         }
 
-        return internalStoragePathCleaned;
+        throw new FailureException("The internal storage path '" + file.getAbsolutePath() + "' can't be read.");
+    }
+
+    /**
+     * Validates whether a {@link File path} is readable or not.
+     *
+     * @param file The path to a {@link File}.
+     * @return {@code true} if the path is readable or {@code false} if not.
+     */
+    private static boolean isPathReadable(final File file) {
+        final boolean readable = file.setReadable(true);
+        if (!file.canRead() && !readable) {
+            final File parentFile = file.getParentFile();
+            if (parentFile == null) {
+                log.warning("Trying to load file from '" + file.getAbsolutePath() + "' path, but it's not readable.\n");
+                return false;
+            }
+            final boolean parentReadable = parentFile.setReadable(true);
+            if (!parentFile.canRead() && !parentReadable) {
+                log.warning("Trying to load file from '" + parentFile.getAbsolutePath() + "' path, but it's not readable.\n");
+                return false;
+            }
+        }
+        final boolean writeable = file.setWritable(true);
+        if (!file.canWrite() && !writeable) {
+            final File parentFile = file.getParentFile();
+            if (parentFile == null) {
+                log.warning("Trying to load file from '" + file.getAbsolutePath() + "' path, but it's not writeable.\n");
+                return false;
+            }
+            final boolean parentWriteable = parentFile.setWritable(true);
+            if (!parentFile.canWrite() && !parentWriteable) {
+                log.warning("Trying to load file from '" + parentFile.getAbsolutePath() + "' path, but it's not writeable.\n");
+                // Do not return false, since Android API 24 emulator doesn't provide writeable file system.
+            }
+        }
+        return true;
     }
 
     /**
