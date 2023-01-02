@@ -405,7 +405,7 @@ tasks.withType(Test).configureEach {
 dependencies {
     // Dependencies for the Android application
     println("Adding dependencies for MobileRT.")
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
 
     // Android dependencies
     implementation "androidx.appcompat:appcompat:${appcompat_version}"
@@ -444,19 +444,22 @@ dependencies {
 
     androidTestImplementation "com.google.truth:truth:${truth_version}"
 
-    androidTestImplementation "androidx.test.espresso:espresso-accessibility:${espresso_version}"
-    androidTestImplementation "androidx.test.espresso:espresso-contrib:${espresso_version}"
-    androidTestImplementation "androidx.test.espresso:espresso-core:${espresso_version}"
-    androidTestImplementation "androidx.test.espresso:espresso-idling-resource:${espresso_version}"
-    androidTestImplementation "androidx.test.espresso:espresso-intents:${espresso_version}"
-    androidTestImplementation "androidx.test.espresso:espresso-web:${espresso_version}"
-    androidTestImplementation "androidx.test.espresso.idling:idling-concurrent:${espresso_version}"
+    androidTestImplementation "androidx.test.espresso:espresso-accessibility:${androidX_test_espresso_version}"
+    androidTestImplementation "androidx.test.espresso:espresso-contrib:${androidX_test_espresso_version}"
+    androidTestImplementation "androidx.test.espresso:espresso-idling-resource:${androidX_test_espresso_version}"
+    androidTestImplementation "androidx.test.espresso:espresso-intents:${androidX_test_espresso_version}"
+    androidTestImplementation "androidx.test.espresso:espresso-web:${androidX_test_espresso_version}"
+    androidTestImplementation "androidx.test.espresso.idling:idling-concurrent:${androidX_test_espresso_version}"
 
-    androidTestImplementation "androidx.test:rules:${androidX_test_library_version}"
-    androidTestImplementation "androidx.test:runner:${androidX_test_library_version}"
+    androidTestImplementation "androidx.test:rules:${androidX_test_version}"
 
     // Annotations for the Android instrumentation tests
     androidTestAnnotationProcessor "org.projectlombok:lombok:${lombok_version}"
+
+    // Enable tracing
+    debugImplementation "androidx.test.espresso:espresso-core:${androidX_test_espresso_version}"
+    debugImplementation "androidx.test:runner:${androidX_test_runner_version}"
+
 
 
     // Dependencies for the unit tests
@@ -479,6 +482,7 @@ dependencies {
 
     // Annotations for the unit tests
     testAnnotationProcessor "org.projectlombok:lombok:${lombok_version}"
+
 
 
     // Dependencies that give errors when added:
