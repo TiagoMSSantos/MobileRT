@@ -93,7 +93,7 @@ ext {
 
     appcompat_version = "1.5.1"
     androidX_core_kotlin_version = "1.9.0"
-    espresso_version = "3.4.0"
+    espresso_version = "3.5.0"
     kotlin_stdlib_jdk8_version = "1.7.22"
     multidex_version = "2.0.1"
     androidX_test_library_version = "1.4.0"
