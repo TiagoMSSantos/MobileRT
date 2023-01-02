@@ -203,7 +203,7 @@ public final class UiTest extends AbstractTest {
 
             incrementCountersAndUpdatePickers(numCores);
 
-            final int expectedIndexOld = currentIndex > 0? (currentIndex - 1) % buttonTextList.size() : 1;
+            final int expectedIndexOld = currentIndex > 0 ? (currentIndex - 1) % buttonTextList.size() : 1;
             final String expectedButtonTextOld = buttonTextList.get(expectedIndexOld);
             final ViewInteraction viewInteraction = Espresso.onView(ViewMatchers.withId(R.id.renderButton));
             final int expectedIndex = currentIndex % buttonTextList.size();

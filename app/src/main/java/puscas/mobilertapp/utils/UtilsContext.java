@@ -290,7 +290,9 @@ public final class UtilsContext {
      */
     public static void checksStoragePermission(@NonNull final Activity activity) {
         log.info("checksStoragePermission");
-        checksAccessPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            checksAccessPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE);
+        }
         checksAccessPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
     }
 

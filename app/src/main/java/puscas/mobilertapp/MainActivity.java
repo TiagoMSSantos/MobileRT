@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
@@ -220,10 +221,14 @@ public final class MainActivity extends Activity {
             numberPicker.setMaxValue(names.length - 1);
         }
 
-        numberPicker.setWrapSelectorWheel(true);
         numberPicker.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
         numberPicker.setValue(defaultValue);
         numberPicker.setDisplayedValues(names);
+
+        // For Android API < 15, this method crashes, so it's necessary to investigate it.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            numberPicker.setWrapSelectorWheel(true);
+        }
     }
 
     /*
@@ -719,9 +724,13 @@ public final class MainActivity extends Activity {
         final int maxSizes = 9;
         this.pickerResolutions.setMinValue(1);
         this.pickerResolutions.setMaxValue(maxSizes - 1);
-        this.pickerResolutions.setWrapSelectorWheel(true);
         this.pickerResolutions.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
         this.pickerResolutions.setValue(pickerSizes);
+
+        // For Android API < 15, this method crashes, so it's necessary to investigate it.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            this.pickerResolutions.setWrapSelectorWheel(true);
+        }
 
         final ViewTreeObserver vto = this.drawView.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(() -> {
@@ -758,9 +767,13 @@ public final class MainActivity extends Activity {
         final int maxCores = UtilsContext.getNumOfCores(this);
         this.pickerThreads.setMinValue(1);
         this.pickerThreads.setMaxValue(maxCores);
-        this.pickerThreads.setWrapSelectorWheel(true);
         this.pickerThreads.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
         this.pickerThreads.setValue(pickerThreads);
+
+        // For Android API < 15, this method crashes, so it's necessary to investigate it.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            this.pickerThreads.setWrapSelectorWheel(true);
+        }
     }
 
     /**

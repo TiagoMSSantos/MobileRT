@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLUtils;
+import android.os.Build;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
@@ -544,7 +545,12 @@ public class MainRenderer implements GLSurfaceView.Renderer {
 
         this.activityManager.getMemoryInfo(this.memoryInfo);
         final long availMem = this.memoryInfo.availMem / Constants.BYTES_IN_MEGABYTE;
-        final long totalMem = this.memoryInfo.totalMem / Constants.BYTES_IN_MEGABYTE;
+        final long totalMem;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            totalMem = this.memoryInfo.totalMem / Constants.BYTES_IN_MEGABYTE;
+        } else {
+            totalMem = -1L;
+        }
         final boolean insufficientMem = availMem <= (1 + memoryNeeded);
         final String message = "MEMORY AVAILABLE: " + availMem + "MB (" + totalMem + "MB) [Needed " + memoryNeeded + "MB]";
         log.info(message);

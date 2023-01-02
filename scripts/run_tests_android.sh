@@ -479,6 +479,7 @@ runInstrumentationTests() {
     set +u; # Because 'code_coverage' is only set when debug.
     sh gradlew jacocoTestReport -DtestType="${type}" \
       -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
+      -Pandroid.testInstrumentationRunnerArguments.package='puscas' \
       -DabiFilters="[${cpu_architecture}]" \
       ${code_coverage} --console plain --parallel;
     set -u;
@@ -534,11 +535,12 @@ _waitForEmulatorToBoot() {
   callCommandUntilSuccess adb shell 'ps > /dev/null;';
   # adb shell needs ' instead of ", so 'getprop' works properly.
   # shellcheck disable=SC2016
-  callAdbShellCommandUntilSuccess adb shell 'echo -n ::$(($(getprop service.bootanim.exit)-1))::';
-  # shellcheck disable=SC2016
   callAdbShellCommandUntilSuccess adb shell 'echo -n ::$(($(getprop sys.boot_completed)-1))::';
   # shellcheck disable=SC2016
   callAdbShellCommandUntilSuccess adb shell 'echo -n ::$(($(getprop dev.bootcomplete)-1))::';
+  # Property 'service.bootanim.exit' is not available in Android with API < 16.
+  # shellcheck disable=SC2016
+  adb shell 'getprop service.bootanim.exit';
 }
 ###############################################################################
 ###############################################################################

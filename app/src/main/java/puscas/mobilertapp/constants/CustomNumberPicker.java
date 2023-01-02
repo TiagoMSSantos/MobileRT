@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
@@ -35,14 +36,20 @@ public final class CustomNumberPicker extends NumberPicker {
         super.addView(child, params);
         log.info("addView");
 
-        if (!(child instanceof TextView)) {
-            throw new FailureException("View cannot be cast to TextView.");
+        if (child instanceof TextView) {
+            final TextView textView = (TextView) child;
+            final int color = Color.parseColor(ConstantsUI.COLOR_NUMBER_PICKER);
+            textView.setTextSize(ConstantsUI.TEXT_SIZE);
+            textView.setTextColor(color);
+            return;
         }
 
-        final TextView textView = (TextView) child;
-        final int color = Color.parseColor(ConstantsUI.COLOR_NUMBER_PICKER);
-        textView.setTextSize(ConstantsUI.TEXT_SIZE);
-        textView.setTextColor(color);
+        if (child instanceof ImageButton) {
+            // To be compatible with Android API 15 or older.
+            return;
+        }
+
+        throw new FailureException("View cannot be cast to TextView.");
     }
 
 }

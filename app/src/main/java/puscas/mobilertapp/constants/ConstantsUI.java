@@ -1,5 +1,6 @@
 package puscas.mobilertapp.constants;
 
+import android.os.Build;
 import android.os.Bundle;
 
 import java8.util.Optional;
@@ -93,7 +94,9 @@ public final class ConstantsUI {
 
     /**
      * The text size for the UI's {@link android.widget.NumberPicker}.
+     *
+     * @implNote Needs to be above 12.5F in order to be compatible with Android API < 16.
      */
-    static final float TEXT_SIZE = 15.0F;
+    static final float TEXT_SIZE = Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN ? 15.0F : 12.5F;
 
 }
