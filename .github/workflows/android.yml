@@ -774,3 +774,14 @@ jobs:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       run: |
         curl --retry 5 --retry-delay 2 --connect-timeout 2 -s https://codecov.io/bash | bash -s -- -c -F aFlag -f app/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml -v;
+
+    - name: Upload reports as artifact
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success()
+      uses: actions/upload-artifact@v3
+      with:
+        # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
+        name: reports
+        path: app/build/reports
+        if-no-files-found: error
+        retention-days: 90
