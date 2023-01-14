@@ -161,7 +161,7 @@ jobs:
       working-directory: .
       run: |
         rm -rf app/third_party/*;
-        printenv | grep -i git;
+        env | grep -i git;
 
     # Warning: Valid inputs are ['check_name', 'output', 'upload', 'ram',
     # 'add-snippets', 'threads', 'checkout_path', 'token', 'matrix']
