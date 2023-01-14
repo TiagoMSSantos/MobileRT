@@ -233,7 +233,7 @@ library for assertions unit tests
 ## Requirements
 It's necessary the following SDKs in order to compile this project for Android:
 - [Android SDK](https://developer.android.com/studio) which should also bring the [Android NDK](https://developer.android.com/ndk) in order to compile the native code.
-  - It's recommended to use the Android Studio `2021.3.1` which is compatible with Gradle [7.3.0](https://github.com/TiagoMSSantos/MobileRT/blob/master/build.gradle#L38?) used by this project.
+  - It's recommended to use the Android Studio `2022.1.1` which is compatible with Gradle [7.4.0](https://github.com/TiagoMSSantos/MobileRT/blob/master/build.gradle#L38?) used by this project.
 
 For native Linux and Mac support, the `install_dependencies.sh` script should download and install the necessary dependencies, by just calling:
 ```
