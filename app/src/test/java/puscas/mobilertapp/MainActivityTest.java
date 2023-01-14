@@ -70,6 +70,9 @@ public final class MainActivityTest {
         // addLibraryPath("../build_release/lib");
 
         mainActivityMocked = Mockito.spy(MainActivity.class);
+
+        // The #showUiMessage method needs #setCurrentInstance to set the #currentInstance field 1st.
+        mainActivityMocked.setCurrentInstance();
     }
 
     /**
@@ -114,8 +117,6 @@ public final class MainActivityTest {
      */
     @Test
     public void testShowUiMessage() {
-        // The #showUiMessage method needs #setCurrentInstance to set the #currentInstance field 1st.
-        mainActivityMocked.setCurrentInstance();
         MainActivity.showUiMessage("test");
 
         Mockito.verify(mainActivityMocked, Mockito.times(1))
@@ -146,6 +147,8 @@ public final class MainActivityTest {
         final Uri uriMocked = Mockito.mock(Uri.class);
         Mockito.when(uriMocked.getPathSegments())
             .thenReturn(ImmutableList.of("document", "1CE6-261B:MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.mtl"));
+        Mockito.when(uriMocked.getPath())
+            .thenReturn("/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.mtl");
         Mockito.when(intentMocked.getData())
             .thenReturn(uriMocked);
 
@@ -175,6 +178,8 @@ public final class MainActivityTest {
         final Uri uriMocked = Mockito.mock(Uri.class);
         Mockito.when(uriMocked.getPathSegments())
             .thenReturn(ImmutableList.of("file", "sdcard", "MobileRT", "WavefrontOBJs", "CornellBox", "CornellBox-Water.obj"));
+        Mockito.when(uriMocked.getPath())
+            .thenReturn("/mockedStorage/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.mtl");
         Mockito.when(intentMocked.getData())
             .thenReturn(uriMocked);
 
@@ -189,7 +194,7 @@ public final class MainActivityTest {
 
             Assertions.assertThat((String) ReflectionTestUtils.getField(mainActivityMocked, "sceneFilePath"))
                 .as("The 'MainActivity#sceneFilePath' field")
-                .isEqualTo("/mockedStorage/sdcard/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water");
+                .isEqualTo("/mockedStorage/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water");
         }
     }
 }

@@ -19,7 +19,6 @@ namespace Components {
         using triple = ::std::tuple<T1, T2, T3>;
 
     private:
-        ::std::string objFilePath_ {};
         ::tinyobj::attrib_t attrib_ {};
         ::std::vector<::tinyobj::shape_t> shapes_ {};
         ::std::vector<::tinyobj::material_t> materials_ {};
@@ -27,7 +26,7 @@ namespace Components {
     public:
         explicit OBJLoader() = delete;
 
-        explicit OBJLoader(::std::string objFilePath, const ::std::string &matFilePath);
+        explicit OBJLoader(::std::istream& isObj, ::std::istream& isMtl);
 
         OBJLoader(const OBJLoader &objLoader) = delete;
 
@@ -40,7 +39,9 @@ namespace Components {
         OBJLoader &operator=(OBJLoader &&objLoader) noexcept = delete;
 
         bool fillScene(::MobileRT::Scene *scene,
-                       ::std::function<::std::unique_ptr<::MobileRT::Sampler>()> lambda) final;
+                       ::std::function<::std::unique_ptr<::MobileRT::Sampler>()> lambda,
+                       ::std::string filePath,
+                       ::std::map<::std::string, ::MobileRT::Texture> texturesCache) final;
 
     private:
         triple<::glm::vec3, ::glm::vec3, ::glm::vec3> loadNormal(
@@ -52,12 +53,13 @@ namespace Components {
             const ::tinyobj::shape_t &shape,
             ::std::int32_t indexOffset) const;
 
-    private:
+    public:
         static const ::MobileRT::Texture& getTextureFromCache(
             ::std::map<::std::string, ::MobileRT::Texture> *const texturesCache,
             const ::std::string &filePath,
             const ::std::string &texPath);
 
+    private:
         static triple<::glm::vec2, ::glm::vec2, ::glm::vec2> normalizeTexCoord(
             const MobileRT::Texture &texture,
             const ::std::tuple<::glm::vec2, ::glm::vec2, ::glm::vec2> &texCoord);

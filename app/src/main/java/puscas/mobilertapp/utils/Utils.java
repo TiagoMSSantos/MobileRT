@@ -169,7 +169,8 @@ public final class Utils {
             final int height = Integer.parseInt(strResolution.substring(strResolution.indexOf('x') + 1));
             return Pair.of(width, height);
         } catch (final Exception ex) {
-            throw new FailureException(ex);
+            throw new FailureException("The Resolution Picker is not properly set. " +
+                "Probably the View was closed, and now it can't render anything in it.");
         }
     }
 

@@ -3,16 +3,19 @@ package puscas.mobilertapp;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.ActivityNotFoundException;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ConfigurationInfo;
 import android.content.pm.PackageManager;
+import android.content.res.AssetFileDescriptor;
 import android.net.Uri;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.ParcelFileDescriptor;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -32,8 +35,11 @@ import com.google.common.collect.ImmutableMap;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import javax.annotation.Nonnull;
@@ -172,8 +178,9 @@ public final class MainActivity extends Activity {
      */
     public static void showUiMessage(@Nonnull final String message) {
         currentInstance.runOnUiThread(() -> {
-            logger.info("showUiMessage");
-            Toast.makeText(currentInstance.getApplicationContext(), message, Toast.LENGTH_LONG).show();
+            logger.info("showUiMessage: " + message);
+            Toast.makeText(currentInstance.getApplicationContext(), message, Toast.LENGTH_LONG)
+                .show();
         });
     }
 
@@ -323,7 +330,11 @@ public final class MainActivity extends Activity {
         // render.
         // This method should be automatically called after `onActivityResult`.
         if (!Strings.isNullOrEmpty(this.sceneFilePath)) {
-            startRender(this.sceneFilePath);
+            try {
+                startRender(this.sceneFilePath);
+            } catch (final Throwable ex) {
+                showUiMessage(ex.getMessage());
+            }
         }
         logger.info("onPostResume end");
     }
@@ -432,17 +443,48 @@ public final class MainActivity extends Activity {
                                     final int resultCode,
                                     @Nullable final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        logger.info("onActivityResult");
 
-        if (requestCode == OPEN_FILE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            try {
-                this.sceneFilePath = Optional.ofNullable(data)
-                    .map(Intent::getData)
-                    .map(this::getPathFromFile)
-                    .orElse("");
-            } catch (final Exception ex) {
-                MainActivity.showUiMessage(ConstantsToast.COULD_NOT_RENDER_THE_SCENE + ex.getMessage());
+        try {
+            if (data != null) {
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && data.getClipData() != null) {
+                    final ClipData clipData = data.getClipData();
+                    final int numFiles = clipData.getItemCount();
+                    logger.info("Will read every selected file: " + numFiles);
+                    for (int i = 0; i < numFiles; ++i) {
+                        final ClipData.Item item = clipData.getItemAt(i);
+                        final Uri uri = item.getUri();
+                        if (uri == null) {
+                            throw new FailureException("There is no URI to a File! [" + i + "]");
+                        }
+                        this.sceneFilePath = getPathFromFile(uri);
+                        readFile(uri);
+                    }
+                } else {
+                    logger.info("Will read every file in a path.");
+                    final Uri uri = data.getData();
+                    if (uri == null) {
+                        throw new FailureException("There is no URI to a File!");
+                    }
+                    final File baseFile = new File(uri.getPath());
+                    final File[] files;
+                    if (baseFile.isDirectory()) {
+                        files = baseFile.listFiles();
+                    } else {
+                        files = new File(Objects.requireNonNull(baseFile.getParent())).listFiles();
+                    }
+                    this.sceneFilePath = getPathFromFile(uri);
+                    for(final File file : Objects.requireNonNull(files)) {
+                        readFile(Uri.fromFile(file));
+                    }
+                }
+            } else {
+                throw new FailureException("There is no URI to a File!");
             }
+        } catch (final Exception ex) {
+            MainActivity.showUiMessage(ConstantsToast.COULD_NOT_RENDER_THE_SCENE + ex.getMessage());
         }
+        logger.info("onActivityResult finished");
     }
 
     /**
@@ -480,7 +522,6 @@ public final class MainActivity extends Activity {
         logger.info(ConstantsMethods.START_RENDER);
 
         final Config config = createConfigFromUI(scenePath);
-
         this.drawView.renderScene(config);
 
         final String message = ConstantsMethods.START_RENDER + ConstantsMethods.FINISHED;
@@ -516,6 +557,18 @@ public final class MainActivity extends Activity {
     public static native void resetErrno();
 
     /**
+     * Reads a file from a file descriptor natively.
+     * It uses C functions in JNI to read the file.
+     *
+     * @param fd       The file descriptor.
+     * @param size     The size of the file in bytes.
+     * @param type     The type of the file. Where {@code 0} is for OBJ file, {@code 1} is for MTL
+     *                 file, {@code 2} is to read a CAM file and {@code 3} is to read a texture file.
+     * @param filePath The path to a file, which should be a texture to be used by MobileRT.
+     */
+    private native void readFile(int fd, long size, int type, String filePath);
+
+    /**
      * Gets the path of a file that was loaded with an external file manager.
      * <br>
      * This method basically translates an {@link Uri} path to a {@link String}
@@ -533,11 +586,13 @@ public final class MainActivity extends Activity {
         final boolean externalSDCardPath = uri.getPathSegments().size() <= 2
             || uri.getPathSegments().get(0).matches("sdcard")
             || uri.getPathSegments().get(2).matches("^([A-Za-z0-9]){4}-([A-Za-z0-9]){4}$")
+            || (uri.getPathSegments().get(0).matches("^mnt$") && uri.getPathSegments().get(1).matches("^sdcard$"))
             || filePath.contains(Environment.getExternalStorageDirectory().getAbsolutePath());
 
         final int removeIndex = filePath.indexOf(ConstantsUI.PATH_SEPARATOR);
         final String startFilePath = removeIndex >= 0 ? filePath.substring(removeIndex) : filePath;
-        final String cleanedFilePath = startFilePath.replace(ConstantsUI.PATH_SEPARATOR, ConstantsUI.FILE_SEPARATOR);
+        String cleanedFilePath = startFilePath.replace(ConstantsUI.PATH_SEPARATOR, ConstantsUI.FILE_SEPARATOR);
+        cleanedFilePath = cleanedFilePath.replaceFirst("^/sdcard/", "/");
         final String filePathWithoutExtension = cleanedFilePath.substring(0, cleanedFilePath.lastIndexOf('.'));
 
         final String devicePath;
@@ -552,7 +607,39 @@ public final class MainActivity extends Activity {
         if (filePathWithoutExtension.startsWith(devicePath)) {
             return filePathWithoutExtension;
         }
+
         return devicePath + filePathWithoutExtension;
+    }
+
+    /**
+     * Helper method to read a file natively.
+     *
+     * @param uri The {@link Uri} which should point to a {@link File}.
+     */
+    private void readFile(@NonNull final Uri uri) {
+        logger.info("readFile");
+        final String filePath = UtilsContext.cleanStoragePath(uri.getPath());
+        logger.info("Will read the following file: '" + filePath + "'");
+        try (AssetFileDescriptor assetFileDescriptor = getContentResolver().openAssetFileDescriptor(uri, "r")) {
+            logger.info("Opened AssetFileDescriptor");
+            final ParcelFileDescriptor parcelFileDescriptor = assetFileDescriptor.getParcelFileDescriptor();
+            final int fd = parcelFileDescriptor.getFd();
+            final long size = parcelFileDescriptor.getStatSize();
+            final String typeStr = filePath.substring(filePath.lastIndexOf(".")).toLowerCase();
+            final int type = Objects.equals(typeStr, ".obj") ? 0 :
+                             Objects.equals(typeStr, ".mtl") ? 1 :
+                             Objects.equals(typeStr, ".cam") ? 2 :
+                             3;
+
+            logger.info("Will read the following file: '" + filePath + "', [fd: " + fd + ", size: " + size + ", type: " + type + "]");
+            // Important: Native layer shouldn't assume ownership of this fd and close it.
+            readFile(fd, size, type, filePath);
+
+            parcelFileDescriptor.close();
+        } catch (final IOException ex) {
+            throw new FailureException(ex);
+        }
+        logger.info("Path '" + filePath +"' already read.");
     }
 
     /**
@@ -595,14 +682,24 @@ public final class MainActivity extends Activity {
      */
     private void callFileManager() {
         logger.info("callFileManager");
+        final Intent intent;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        } else {
+            intent = new Intent(Intent.ACTION_GET_CONTENT);
+        }
 
-        final Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.putExtra(Intent.EXTRA_TITLE, "Select an OBJ file to load.");
         intent.setType("*" + ConstantsUI.FILE_SEPARATOR + "*");
         intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+        }
         try {
-            final Intent intentChooseFile = Intent.createChooser(intent,
-                "Select an OBJ file to load.");
-            startActivityForResult(intentChooseFile, OPEN_FILE_REQUEST_CODE);
+            startActivityForResult(intent, OPEN_FILE_REQUEST_CODE);
         } catch (final ActivityNotFoundException ex) {
             Toast.makeText(this, ConstantsToast.PLEASE_INSTALL_FILE_MANAGER, Toast.LENGTH_LONG)
                 .show();

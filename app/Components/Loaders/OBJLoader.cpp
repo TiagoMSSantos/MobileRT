@@ -14,39 +14,31 @@ using ::MobileRT::Texture;
 using ::MobileRT::Triangle;
 using ::MobileRT::Sampler;
 
-OBJLoader::OBJLoader(::std::string objFilePath, const ::std::string &matFilePath) :
-    objFilePath_ {::std::move(objFilePath)} {
+OBJLoader::OBJLoader(::std::istream& isObj, ::std::istream& isMtl) {
+    isObj.exceptions(
+        isObj.exceptions() | ::std::ifstream::goodbit | ::std::ifstream::badbit |
+        ::std::ifstream::failbit
+    );
+    isMtl.exceptions(
+        isMtl.exceptions() | ::std::ifstream::goodbit | ::std::ifstream::badbit |
+        ::std::ifstream::failbit
+    );
+    ::tinyobj::MaterialStreamReader matStreamReader {isMtl};
 
-    LOG_INFO("Going to load OBJ and MTL files to create OBJLoader.");
-    MobileRT::checkSystemError("Before read OBJ.");
-    LOG_DEBUG("Will read OBJ path: '", this->objFilePath_, "' (size: '", this->objFilePath_.size(), "')");
-    ::std::ifstream objStream {this->objFilePath_, ::std::ios::binary};
-    MobileRT::checkSystemError(::std::string("After read OBJ `" + this->objFilePath_ + "`.").c_str());
-    objStream.exceptions(
-        objStream.exceptions() | ::std::ifstream::goodbit | ::std::ifstream::badbit |
-        ::std::ifstream::failbit
-    );
-    LOG_DEBUG("Will read MAT path: '", matFilePath, "' (size: '", matFilePath.size(), "')");
-    ::std::ifstream matStream {matFilePath, ::std::ios::binary};
-    MobileRT::checkSystemError(::std::string("After read MAT `" + matFilePath + "`.").c_str());
-    matStream.exceptions(
-        matStream.exceptions() | ::std::ifstream::goodbit | ::std::ifstream::badbit |
-        ::std::ifstream::failbit
-    );
-    ::tinyobj::MaterialStreamReader matStreamReader {matStream};
-    ::tinyobj::MaterialStreamReader *const matStreamReaderPtr {!matFilePath.empty() ? &matStreamReader : nullptr};
+    ::tinyobj::MaterialStreamReader *matStreamReaderPtr {&matStreamReader};
+    if (isMtl.peek() == ::std::char_traits<char>::eof()) {
+        matStreamReaderPtr = nullptr;
+    }
+
     ::std::string errors {};
     ::std::string warnings {};
 
     LOG_DEBUG("Going to call tinyobj::LoadObj");
-    LOG_DEBUG("OBJ file path: '", this->objFilePath_, "'");
-    LOG_DEBUG("MTL file path: '", matFilePath, "'");
-
     MobileRT::checkSystemError("Before LoadObj.");
     const auto ret {
         ::tinyobj::LoadObj(
             &this->attrib_, &this->shapes_, &this->materials_,
-            &warnings, &errors, &objStream, matStreamReaderPtr, true, true
+            &warnings, &errors, &isObj, matStreamReaderPtr, true, true
         )
     };
     // For some reason in Gentoo Linux, the `LoadObj` method fails
@@ -77,11 +69,12 @@ OBJLoader::OBJLoader(::std::string objFilePath, const ::std::string &matFilePath
 }
 
 bool OBJLoader::fillScene(Scene *const scene,
-                          ::std::function<::std::unique_ptr<Sampler>()> lambda) {
+                          ::std::function<::std::unique_ptr<Sampler>()> lambda,
+                          ::std::string filePath,
+                          ::std::map<::std::string, ::MobileRT::Texture> texturesCache) {
     LOG_DEBUG("FILLING SCENE");
     scene->triangles_.reserve(static_cast<::std::uint32_t> (this->numberTriangles_));
-    const ::std::string filePath {this->objFilePath_.substr(0, this->objFilePath_.find_last_of('/')) + '/'};
-    ::std::map<::std::string, Texture> texturesCache {};
+    filePath = filePath.substr(0, filePath.find_last_of('/')) + '/';
 
     // Loop over shapes.
     for (const auto &shape : this->shapes_) {
@@ -393,16 +386,12 @@ const Texture& OBJLoader::getTextureFromCache(
 }
 
 OBJLoader::~OBJLoader() {
-    this->objFilePath_.clear();
     this->attrib_.normals.clear();
     this->attrib_.texcoords.clear();
     this->attrib_.vertices.clear();
     this->shapes_.clear();
     this->materials_.clear();
 
-    this->objFilePath_.erase();
-
-    this->objFilePath_.shrink_to_fit();
     this->attrib_.normals.shrink_to_fit();
     this->attrib_.texcoords.shrink_to_fit();
     this->attrib_.vertices.shrink_to_fit();

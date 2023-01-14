@@ -86,6 +86,16 @@ void JNICALL Java_puscas_mobilertapp_MainActivity_resetErrno(
     jclass /*thiz*/
 );
 
+extern "C"
+JNIEXPORT
+void JNICALL Java_puscas_mobilertapp_MainActivity_readFile(
+        JNIEnv *env,
+        jobject thiz,
+        jint fd,
+        jlong size,
+        jint type,
+        jstring filePath
+);
 
 // MainRenderer
 extern "C"

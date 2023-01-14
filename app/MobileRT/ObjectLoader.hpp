@@ -5,6 +5,7 @@
 #include "MobileRT/Scene.hpp"
 #include "MobileRT/Shapes/Triangle.hpp"
 #include <functional>
+#include <map>
 #include <memory>
 #include <string>
 
@@ -47,7 +48,9 @@ namespace MobileRT {
          * @return True if it succeeded to fill the scene or false otherwise.
          */
         virtual bool fillScene(Scene *scene,
-                               ::std::function<::std::unique_ptr<Sampler>()> lambda) = 0;
+                               ::std::function<::std::unique_ptr<Sampler>()> lambda,
+                               ::std::string filePath,
+                               ::std::map<::std::string, ::MobileRT::Texture> texturesCache) = 0;
     };
 }//namespace MobileRT
 

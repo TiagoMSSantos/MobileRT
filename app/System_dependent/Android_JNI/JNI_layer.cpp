@@ -26,10 +26,12 @@
 
 #include <android/bitmap.h>
 #include <condition_variable>
-#include <glm/glm.hpp>
 #include <fstream>
+#include <istream>
+#include <glm/glm.hpp>
 #include <mutex>
 #include <string>
+#include <unistd.h>
 
 /**
  * The number of frames per second.
@@ -80,6 +82,26 @@ static ::std::condition_variable rendered_ {};
  * Whether or not the rendering process was finished.
  */
 static ::std::atomic<bool> finishedRendering_ {true};
+
+/**
+ * The definition of the OBJ file.
+ */
+static ::std::string objDefinition_ {};
+
+/**
+ * The definition of the MTL file.
+ */
+static ::std::string mtlDefinition_ {};
+
+/**
+ * The definition of the CAM file.
+ */
+static ::std::string camDefinition_ {};
+
+/**
+ * The cache for textures.
+ */
+static ::std::map<::std::string, ::MobileRT::Texture> texturesCache_ {};
 
 
 /**
@@ -469,14 +491,6 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
         const auto localObjFilePath {reinterpret_cast<jstring> (env->CallObjectMethod(localConfig, objMethodId))};
         const auto *const objFilePath {env->GetStringUTFChars(localObjFilePath, &isCopy)};
 
-        const auto mtlMethodId {env->GetMethodID(configClass, "getMatFilePath", "()Ljava/lang/String;")};
-        const auto localMatFilePath {reinterpret_cast<jstring> (env->CallObjectMethod(localConfig, mtlMethodId))};
-        const auto *const matFilePath {env->GetStringUTFChars(localMatFilePath, &isCopy)};
-
-        const auto camMethodId {env->GetMethodID(configClass, "getCamFilePath", "()Ljava/lang/String;")};
-        const auto localCamFilePath {reinterpret_cast<jstring> (env->CallObjectMethod(localConfig, camMethodId))};
-        const auto *const camFilePath {env->GetStringUTFChars(localCamFilePath, &isCopy)};
-
         const auto res {
             [&]() -> ::std::int32_t {
                 const ::std::lock_guard<::std::mutex> lock {mutex_};
@@ -514,14 +528,39 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
                         break;
 
                     default: {
-                        ASSERT(objFilePath != nullptr, "OBJ file path not valid.");
-                        ASSERT(matFilePath != nullptr, "MTL file path not valid.");
-                        ASSERT(camFilePath != nullptr, "CAM file path not valid.");
+                        if (objDefinition_.empty()) {
+                            LOG_DEBUG("OBJ file not read!");
+                            throw ::std::runtime_error {"OBJ file not read!"};
+                        }
+                        if (mtlDefinition_.empty()) {
+                            LOG_DEBUG("MTL file not read!");
+                        }
+                        if (camDefinition_.empty()) {
+                            LOG_DEBUG("CAM file not read!");
+                        }
 
-                        const auto cameraFactory{::Components::CameraFactory()};
-                        camera = cameraFactory.loadFromFile(camFilePath, ratio);
+                        const auto cameraFactory {::Components::CameraFactory()};
+                        const ::std::istringstream isCam {camDefinition_};
+                        ::std::istream iCam {isCam.rdbuf()};
+                        camera = cameraFactory.loadFromFile(iCam, ratio);
 
-                        ::Components::OBJLoader objLoader {objFilePath, matFilePath};
+                        const ::std::istringstream isObj {objDefinition_};
+                        const ::std::istringstream isMtl {mtlDefinition_};
+                        ::std::istream iObj {isObj.rdbuf()};
+                        ::std::istream iMtl {isMtl.rdbuf()};
+                        ::Components::OBJLoader objLoader {iObj, iMtl};
+                        objDefinition_.clear();
+                        mtlDefinition_.clear();
+                        camDefinition_.clear();
+                        iObj.clear();
+                        iMtl.clear();
+                        objDefinition_.erase();
+                        mtlDefinition_.erase();
+                        camDefinition_.erase();
+                        objDefinition_.shrink_to_fit();
+                        mtlDefinition_.shrink_to_fit();
+                        camDefinition_.shrink_to_fit();
+
                         MobileRT::checkSystemError("rtInitialize after loading OBJ");
                         LOG_DEBUG("OBJLOADER PROCESSED");
 
@@ -529,8 +568,11 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
                             return -1;
                         }
                         const auto sceneBuilt {objLoader.fillScene(&scene,
-                            []() {return ::MobileRT::std::make_unique<Components::StaticPCG>();}
+                            []() {return ::MobileRT::std::make_unique<Components::StaticPCG>();},
+                           objFilePath,
+                           texturesCache_
                         )};
+                        texturesCache_.clear();
                         MobileRT::checkSystemError("rtInitialize after filling scene");
                         if (!sceneBuilt) {
                             return -1;
@@ -606,18 +648,22 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
                 const auto materials {static_cast<::std::int32_t> (shader->getMaterials().size())};
                 numLights_ = static_cast<::std::int32_t> (shader->getLights().size());
                 const auto nPrimitives {triangles + spheres + planes};
-                renderer_ = ::MobileRT::std::make_unique<::MobileRT::Renderer>(
-                    ::std::move(shader), ::std::move(camera), ::std::move(samplerPixel),
-                    width, height, samplesPixel
-                );
-                timeRenderer_ = ::std::chrono::duration_cast<::std::chrono::milliseconds>(end - start).count();
-                LOG_INFO("TIME CONSTRUCTION RENDERER = ", timeRenderer_, "ms");
                 LOG_DEBUG("PLANES = ", planes);
                 LOG_DEBUG("SPHERES = ", spheres);
                 LOG_DEBUG("TRIANGLES = ", triangles);
                 LOG_DEBUG("LIGHTS = ", numLights_);
                 LOG_DEBUG("MATERIALS = ", materials);
                 LOG_DEBUG("TOTAL PRIMITIVES = ", nPrimitives);
+                LOG_DEBUG("width = ", width);
+                LOG_DEBUG("height = ", height);
+                LOG_DEBUG("samplesPixel = ", samplesPixel);
+                renderer_ = ::MobileRT::std::make_unique<::MobileRT::Renderer>(
+                    ::std::move(shader), ::std::move(camera), ::std::move(samplerPixel),
+                    width, height, samplesPixel
+                );
+                MobileRT::checkSystemError("Renderer was built.");
+                timeRenderer_ = ::std::chrono::duration_cast<::std::chrono::milliseconds>(end - start).count();
+                LOG_INFO("TIME CONSTRUCTION RENDERER = ", timeRenderer_, "ms");
                 MobileRT::checkSystemError("rtInitialize almost finished");
                 return nPrimitives;
             }()};
@@ -880,6 +926,63 @@ void Java_puscas_mobilertapp_MainActivity_resetErrno(
     MobileRT::checkSystemError("resetErrno start");
     env->ExceptionClear();
     MobileRT::checkSystemError("resetErrno finish");
+}
+
+extern "C"
+JNIEXPORT
+void JNICALL Java_puscas_mobilertapp_MainActivity_readFile(
+        JNIEnv *env,
+        jobject /*thiz*/,
+        jint fd,
+        jlong size,
+        jint type,
+        jstring jFilePath
+) {
+    if (errno == EACCES || errno == ENOTSOCK || errno == EPERM) {
+        // Ignore permission denied before reading the file.
+        // Ignore socket operation on non-socket.
+        // Ignore operation not permitted.
+        errno = 0;
+    }
+    LOG_DEBUG("Will read a file natively.");
+    ::std::string *file {nullptr};
+    switch (type) {
+        case 0:
+            file = &objDefinition_;
+            break;
+
+        case 1:
+            file = &mtlDefinition_;
+            break;
+
+        case 2:
+            file = &camDefinition_;
+            break;
+
+        default:
+            file = nullptr;
+    }
+
+    ASSERT(fd > 2, "File descriptor not valid.");
+    ASSERT(size > 0, "File size not valid.");
+
+    if (file != nullptr) {
+        LOG_DEBUG("Will read a scene file.");
+        file->resize(static_cast<::std::size_t> (size));
+        MobileRT::checkSystemError("Before read file.");
+        const auto remainingLength {::read(fd, &(*file)[0], static_cast<unsigned int>(size))};
+        MobileRT::checkSystemError("After read file.");
+        ASSERT(remainingLength == 0 || remainingLength == size, "File not read entirely.");
+        LOG_DEBUG("Read a scene file.");
+    } else {
+        LOG_DEBUG("Will read a texture file.");
+        jboolean isCopy {JNI_FALSE};
+        const ::std::string filePathRaw {env->GetStringUTFChars(jFilePath, &isCopy)};
+        const auto filePath {filePathRaw.substr(0, filePathRaw.find_last_of('/') + 1)};
+        const auto fileName {filePathRaw.substr(filePathRaw.find_last_of('/') + 1, filePathRaw.size())};
+        ::Components::OBJLoader::getTextureFromCache(&texturesCache_, filePath, fileName);
+        LOG_DEBUG("Read a texture file.");
+    }
 }
 
 extern "C"

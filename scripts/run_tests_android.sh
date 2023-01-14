@@ -193,6 +193,9 @@ unlockDevice() {
   callCommandUntilSuccess adb get-state;
   callCommandUntilSuccess adb devices -l;
   callCommandUntilSuccess adb version;
+
+  androidApi=$(adb shell getprop ro.build.version.sdk | tr -d '[:space:]');
+  echo "androidApi: '${androidApi}'";
 }
 
 runEmulator() {
@@ -353,7 +356,10 @@ copyResources() {
 
   echo 'Install File Manager';
   callAdbShellCommandUntilSuccess adb shell 'pm install -t -r '${mobilert_path}'/APKs/com.asus.filemanager.apk; echo ::$?::';
-  callAdbShellCommandUntilSuccess adb shell 'pm install -t -r '${mobilert_path}'/APKs/com.estrongs.android.pop_4.2.1.8-10057_minAPI14.apk; echo ::$?::';
+  if [ "${androidApi}" -lt 16 ]; then
+    # This file manager is compatible with Android 4.0.3 (API 15) which the Asus one is not.
+    callAdbShellCommandUntilSuccess adb shell 'pm install -t -r '${mobilert_path}'/APKs/com.estrongs.android.pop_4.2.1.8-10057_minAPI14.apk; echo ::$?::';
+  fi
 }
 
 startCopyingLogcatToFile() {
@@ -407,8 +413,6 @@ runUnitTests() {
 
   callCommandUntilSuccess adb push -p "${dirUnitTests}"/bin/* ${mobilert_path}/;
   callCommandUntilSuccess adb push -p "${dirUnitTests}"/lib/* ${mobilert_path}/;
-  androidApi=$(adb shell getprop ro.build.version.sdk | tr -d '[:space:]');
-  echo "androidApi: '${androidApi}'";
 
   echo 'Run unit tests';
   if [ "${type}" = 'debug' ]; then

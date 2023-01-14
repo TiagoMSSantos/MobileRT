@@ -38,6 +38,7 @@ Renderer::Renderer(::std::unique_ptr<Shader> shader,
         domainSize_ {(width / blockSizeX_) * (height / blockSizeY_)},
         resolution_ {width * height},
         samplesPixel_ {samplesPixel} {
+    LOG_DEBUG("Renderer constructor called.");
     fillArrayWithHaltonSeq(&randomSequence);
     Ray::resetIdGenerator();
 }

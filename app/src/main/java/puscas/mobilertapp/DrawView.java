@@ -234,7 +234,7 @@ public class DrawView extends GLSurfaceView {
                 return Boolean.TRUE;
             } catch (final LowMemoryException ex) {
                 MainActivity.showUiMessage(ConstantsToast.DEVICE_WITHOUT_ENOUGH_MEMORY + ex.getMessage());
-            } catch (final RuntimeException ex) {
+            } catch (final Throwable ex) {
                 renderer.resetStats();
                 MainActivity.showUiMessage(ConstantsToast.COULD_NOT_LOAD_THE_SCENE + ex.getMessage());
             }
@@ -331,6 +331,7 @@ public class DrawView extends GLSurfaceView {
     public void onPause() {
         logger.info("onPause");
         super.onPause();
+        logger.info("onPause");
 
         final Activity activity = getActivity();
         this.changingConfigs = activity.isChangingConfigurations();

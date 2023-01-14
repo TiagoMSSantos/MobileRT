@@ -408,10 +408,11 @@ jobs:
       with:
         # Check available parameters in: https://github.com/ReactiveCircus/android-emulator-runner/blob/main/action.yml
         # Available CI host machines: https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
+        # Max api level for 32bit is: 29
         api-level: ${{ matrix.android_api }}
         cmake: ${{ matrix.cmake_version }}
         target: default
-        arch: x86
+        arch: ${{ matrix.android_arch }}
         disable-animations: true
         disable-spellchecker: true
         channel: stable

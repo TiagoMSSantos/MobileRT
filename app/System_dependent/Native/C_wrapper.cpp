@@ -99,25 +99,34 @@ static void work_thread(::MobileRT::Config &config) {
                 default: {
                     LOG_DEBUG("OBJLoader starting loading scene");
                     const auto startLoading {::std::chrono::system_clock::now()};
-                    ::Components::OBJLoader objLoader {config.objFilePath, config.mtlFilePath};
+                    ::std::ifstream ifObj {config.objFilePath};
+                    ::std::ifstream ifMtl {config.mtlFilePath};
+                    ::Components::OBJLoader objLoader {ifObj, ifMtl};
                     if (!objLoader.isProcessed()) {
                         LOG_DEBUG("Error occurred while loading scene.");
                         exit(1);
                     }
                     const auto endLoading {::std::chrono::system_clock::now()};
                     timeLoading = endLoading - startLoading;
+                    ::std::map<::std::string, ::MobileRT::Texture> texturesCache {};
                     LOG_DEBUG("OBJLoader loaded = ", timeLoading.count(), " primitives");
                     const auto startFilling {::std::chrono::system_clock::now()};
                     // "objLoader.fillScene(&scene, []() {return ::MobileRT::std::make_unique<::Components::HaltonSeq> ();});"
                     // "objLoader.fillScene(&scene, []() {return ::MobileRT::std::make_unique<::Components::MersenneTwister> ();});"
-                    objLoader.fillScene(&scene, []() {return ::MobileRT::std::make_unique<Components::StaticHaltonSeq> (); });
+                    objLoader.fillScene(&scene, []() {return ::MobileRT::std::make_unique<Components::StaticHaltonSeq> (); },
+                                        config.objFilePath,
+                                        texturesCache
+                                        );
                     // "objLoader.fillScene(&scene, []() {return ::MobileRT::std::make_unique<Components::StaticMersenneTwister> ();});"
                     const auto endFilling {::std::chrono::system_clock::now()};
                     timeFilling = endFilling - startFilling;
+                    texturesCache.clear();
                     LOG_DEBUG("Scene filled = ", timeFilling.count(), " primitives");
 
                     const auto cameraFactory {::Components::CameraFactory()};
-                    camera = cameraFactory.loadFromFile(config.camFilePath, ratio);
+                    ::std::ifstream ifCamera {config.camFilePath};
+                    ::std::istream iCam {ifCamera.rdbuf()};
+                    camera = cameraFactory.loadFromFile(iCam, ratio);
                     maxDist = ::glm::vec3 {1, 1, 1};
                 }
                     break;

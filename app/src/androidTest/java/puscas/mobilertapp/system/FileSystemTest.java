@@ -39,6 +39,7 @@ public final class FileSystemTest extends AbstractTest {
         final List<String> paths = ImmutableList.<String>builder().add(
             internalStorage + Constants.OBJ_FILE_TEAPOT
         ).build();
+
         validatePathsExist(paths);
     }
 
@@ -66,6 +67,7 @@ public final class FileSystemTest extends AbstractTest {
                     }
                 }
                 logger.info("List finished.");
+
                 Assert.assertTrue(Constants.FILE_SHOULD_EXIST + ": " + filePath, file.exists());
                 Assert.assertTrue("File should be a directory: " + filePath, file.isDirectory());
             });
@@ -81,6 +83,7 @@ public final class FileSystemTest extends AbstractTest {
         final List<String> paths = ImmutableList.<String>builder().add(
             sdCardPath + ConstantsUI.FILE_SEPARATOR + Constants.OBJ_FILE_CORNELL_BOX
         ).build();
+
         validatePathsExist(paths);
     }
 
@@ -95,6 +98,7 @@ public final class FileSystemTest extends AbstractTest {
             Constants.EMPTY_FILE,
             internalStorage + Constants.OBJ_FILE_NOT_EXISTS
         ).build();
+
         validatePathsNotExist(paths);
     }
 
@@ -108,6 +112,7 @@ public final class FileSystemTest extends AbstractTest {
         final List<String> paths = ImmutableList.<String>builder().add(
             sdCardPath + ConstantsUI.FILE_SEPARATOR + Constants.OBJ_FILE_NOT_EXISTS_SD_CARD
         ).build();
+
         validatePathsNotExist(paths);
     }
 

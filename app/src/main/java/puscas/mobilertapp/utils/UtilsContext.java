@@ -67,6 +67,7 @@ public final class UtilsContext {
         final File[] externalFilesDirs = ContextCompat.getExternalFilesDirs(context, null);
 
         final String sdCardPath = Optional.of(externalFilesDirs)
+            .filter(dirs -> Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q)
             .map(dirs -> dirs.length > 1 ? dirs[1] : dirs[0])
             .map(File::getAbsolutePath)
             .orElseGet(() -> {
@@ -74,10 +75,17 @@ public final class UtilsContext {
                     logger.info("Using the old (deprecated) approach to retrieve the SD Card path.");
                     return Environment.getExternalStorageDirectory().getAbsolutePath();
                 } else {
+                    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
+                        return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
+                    }
                     logger.info("Using fallback path since using a SDK API 19+, and hoping this path is right.");
                     return "/mnt/sdcard";
                 }
             });
+
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
+            return sdCardPath;
+        }
 
         final String sdCardPathCleaned = cleanStoragePath(sdCardPath);
         final String message = "SD card path: " + sdCardPathCleaned;
@@ -242,7 +250,7 @@ public final class UtilsContext {
      * @return A cleaned storage path.
      */
     @NonNull
-    private static String cleanStoragePath(@NonNull final String storagePath) {
+    public static String cleanStoragePath(@NonNull final String storagePath) {
         String storagePathCleaned = storagePath;
 
         // Remove Android path
@@ -261,6 +269,18 @@ public final class UtilsContext {
         final int removeIndexUser = storagePathCleaned.indexOf("user/0/puscas.mobilertapp");
         if (removeIndexUser >= 1) {
             storagePathCleaned = storagePathCleaned.substring(0, removeIndexUser - 1);
+        }
+
+        // Remove document raw path
+        final int removeDocumentRaw = storagePathCleaned.indexOf("/document/raw:");
+        if (removeDocumentRaw == 0) {
+            storagePathCleaned = storagePathCleaned.substring(14);
+        }
+
+        // Remove path starting with '/file/'
+        final int removeFileType = storagePathCleaned.indexOf("/file/");
+        if (removeFileType == 0) {
+            storagePathCleaned = storagePathCleaned.substring(5);
         }
 
         return storagePathCleaned;
@@ -299,7 +319,12 @@ public final class UtilsContext {
      */
     public static void checksStoragePermission(@NonNull final Activity activity) {
         logger.info("checksStoragePermission");
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            // TODO: Necessary to fix granting permissions for Android API 33.
+            checksAccessPermission(activity, Manifest.permission.READ_MEDIA_IMAGES);
+            checksAccessPermission(activity, Manifest.permission.READ_MEDIA_VIDEO);
+            checksAccessPermission(activity, Manifest.permission.READ_MEDIA_AUDIO);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             checksAccessPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE);
         }
         checksAccessPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
@@ -327,7 +352,6 @@ public final class UtilsContext {
      */
     private static void checksAccessPermission(@NonNull final Activity activity,
                                                @NonNull final String permission) {
-        final int permissionCode = 1;
         final int permissionAccess = ContextCompat.checkSelfPermission(
             activity,
             permission
@@ -336,6 +360,7 @@ public final class UtilsContext {
             final String[] permissions = {
                 permission
             };
+            final int permissionCode = 1;
             ActivityCompat.requestPermissions(activity, permissions, permissionCode);
         }
     }

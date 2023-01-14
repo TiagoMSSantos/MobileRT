@@ -41,8 +41,7 @@ public final class CustomNumberPicker extends NumberPicker {
         super.addView(child, params);
         logger.info("addView");
 
-        if (child instanceof TextView) {
-            final TextView textView = (TextView) child;
+        if (child instanceof final TextView textView) {
             final int color = Color.parseColor(ConstantsUI.COLOR_NUMBER_PICKER);
             textView.setTextSize(ConstantsUI.TEXT_SIZE);
             textView.setTextColor(color);

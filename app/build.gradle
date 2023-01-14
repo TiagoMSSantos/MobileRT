@@ -222,7 +222,7 @@ android {
     defaultConfig {
         // The minimum Android API version possible is 14 due to compatibility with Appcompat dependency.
         setMinSdkVersion 14
-        setTargetSdkVersion 29
+        setTargetSdkVersion 33
         setTestInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         testInstrumentationRunnerArguments = ['clearPackageData': 'true', 'disableAnalytics': 'true']
         setApplicationId 'puscas.mobilertapp'

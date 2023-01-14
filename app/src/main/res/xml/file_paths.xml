@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths>
-    <external-path
-        name="root"
-        path="/" />
+    <external-path path="/" name="root" />
+    <external-path path="." name="workdir" />
+    <external-path path="/storage" name="storage_root" />
+    <external-path path="/storage/1CE6-261B" name="external_storage_root" />
+    <external-path path="MobileRT" name="MobileRT" />
 </paths>

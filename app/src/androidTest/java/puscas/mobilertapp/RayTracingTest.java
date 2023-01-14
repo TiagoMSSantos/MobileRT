@@ -2,6 +2,8 @@ package puscas.mobilertapp;
 
 import android.app.Activity;
 import android.app.Instrumentation;
+import android.content.ClipData;
+import android.content.ClipDescription;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -21,6 +23,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
 import puscas.mobilertapp.constants.Accelerator;
+import puscas.mobilertapp.constants.ConstantsUI;
 import puscas.mobilertapp.constants.Scene;
 import puscas.mobilertapp.constants.Shader;
 import puscas.mobilertapp.utils.UtilsContext;
@@ -129,10 +132,31 @@ public final class RayTracingTest extends AbstractTest {
         final int numCores = UtilsContext.getNumOfCores(this.activity);
 
         // Mock the reply as the external file manager application, to select an OBJ file.
+        final Intent resultData;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+            resultData = new Intent(Intent.ACTION_GET_CONTENT);
+        } else {
+            resultData = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        }
+        resultData.addCategory(Intent.CATEGORY_OPENABLE);
+        resultData.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            resultData.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+        }
         final String internalStoragePath = UtilsContext.getInternalStoragePath(this.activity);
-        final File fileToObj = new File("/file" + internalStoragePath + "/MobileRT/WavefrontOBJs/teapot/teapot.obj");
-        final Intent resultData = new Intent(Intent.ACTION_GET_CONTENT);
-        resultData.setData(Uri.fromFile(fileToObj));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            final Uri objFile = Uri.fromFile(new File(internalStoragePath + "/MobileRT/WavefrontOBJs/teapot/teapot.obj"));
+            final Uri mtlFile = Uri.fromFile(new File(internalStoragePath + "/MobileRT/WavefrontOBJs/teapot/teapot.mtl"));
+            final Uri camFile = Uri.fromFile(new File(internalStoragePath + "/MobileRT/WavefrontOBJs/teapot/teapot.cam"));
+            final Uri textureFile = Uri.fromFile(new File(internalStoragePath + "/MobileRT/WavefrontOBJs/teapot/default.png"));
+            final ClipData clipData = new ClipData(new ClipDescription("Scene", new String[]{"*" + ConstantsUI.FILE_SEPARATOR + "*"}), new ClipData.Item(objFile));
+            clipData.addItem(new ClipData.Item(mtlFile));
+            clipData.addItem(new ClipData.Item(camFile));
+            clipData.addItem(new ClipData.Item(textureFile));
+            resultData.setClipData(clipData);
+        } else {
+            resultData.setData(Uri.fromFile(new File(internalStoragePath + "/MobileRT/WavefrontOBJs/teapot/teapot.obj")));
+        }
         final Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
         Intents.intending(IntentMatchers.anyIntent()).respondWith(result);
 
@@ -155,10 +179,29 @@ public final class RayTracingTest extends AbstractTest {
         final int numCores = UtilsContext.getNumOfCores(this.activity);
 
         // Mock the reply as the external file manager application, to select an OBJ file.
+        final Intent resultData;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+            resultData = new Intent(Intent.ACTION_GET_CONTENT);
+        } else {
+            resultData = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        }
+        resultData.addCategory(Intent.CATEGORY_OPENABLE);
+        resultData.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            resultData.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+        }
         final String sdCardPath = UtilsContext.getSdCardPath(this.activity);
-        final File fileToObj = new File("/file" + sdCardPath + "/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj");
-        final Intent resultData = new Intent(Intent.ACTION_GET_CONTENT);
-        resultData.setData(Uri.fromFile(fileToObj));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            final Uri objFile = Uri.fromFile(new File(sdCardPath + "/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj"));
+            final Uri mtlFile = Uri.fromFile(new File(sdCardPath + "/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.mtl"));
+            final Uri camFile = Uri.fromFile(new File(sdCardPath + "/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.cam"));
+            final ClipData clipData = new ClipData(new ClipDescription("Scene", new String[]{"*" + ConstantsUI.FILE_SEPARATOR + "*"}), new ClipData.Item(objFile));
+            clipData.addItem(new ClipData.Item(mtlFile));
+            clipData.addItem(new ClipData.Item(camFile));
+            resultData.setClipData(clipData);
+        } else {
+            resultData.setData(Uri.fromFile(new File(sdCardPath + "/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj")));
+        }
         final Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
         Intents.intending(IntentMatchers.anyIntent()).respondWith(result);
 
