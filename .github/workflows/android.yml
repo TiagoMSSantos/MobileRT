@@ -133,7 +133,8 @@ jobs:
         ls -lahp ${HOME};
         echo "ANDROID_NDK_PATH=${ANDROID_HOME}/ndk/${{ matrix.ndk_version }}" >> "${GITHUB_ENV}";
         echo "GRADLE_PATH=${HOME}/.gradle" >> "${GITHUB_ENV}";
-        printenv;
+        df -Pk -h ${HOME};
+        env;
 
     # Useful step to avoid gradle having to download Gradle dependencies
     # Taken from: https://github.com/marketplace/actions/download-workflow-artifact
@@ -189,6 +190,11 @@ jobs:
         # Optional, choose to skip unpacking the downloaded artifact(s)
         # default false
         skip_unpack: false
+        # Optional, choose how to exit the action if no artifact is found
+        # can be one of:
+        #  "fail", "warn", "ignore"
+        # default fail
+        if_no_artifact_found: fail
 
     - name: Extract and check files from gradle artifact
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}

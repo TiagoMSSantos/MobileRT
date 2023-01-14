@@ -154,7 +154,7 @@ jobs:
       if: success() && startsWith(matrix.os, 'macos')
       working-directory: .
       run: |
-        printenv | grep -i qt;
+        env | grep -i qt;
         du -h -d 1 Qt;
 
     - name: Build ${{ matrix.type }}
