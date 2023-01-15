@@ -191,3 +191,9 @@
   - [x] Support MacOS
   - [x] Support Windows
   - [x] Support Docker with multiple Linux distributions
+
+## Infrastructure
+- [ ] Deploy MobileRT into cloud server
+  - [ ] Deploy into AWS EC2 instance
+- [ ] Deploy MobileRT into Kubernetes environment
+  - [ ] Deploy into AWS EKS cluster
