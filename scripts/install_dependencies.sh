@@ -179,20 +179,24 @@ install_dependencies_alpine() {
 }
 
 install_dependencies_gentoo() {
+  echo 'FEATURES="-sandbox -usersandbox"' >> /etc/portage/make.conf;
+  echo 'USE="dev-libs/libpcre2-10.35 pcre16 x11-libs/libxkbcommon-1.0.3 media-libs/libglvnd-1.3.2-r2 X"' >> /etc/portage/make.conf;
   emerge --sync;
   emerge sys-apps/portage;
   emerge app-portage/layman;
   emerge dev-libs/icu;
-  echo 'FEATURES="-sandbox -usersandbox"' >> /etc/portage/make.conf;
-  echo 'USE="dev-libs/libpcre2-10.35 pcre16 x11-libs/libxkbcommon-1.0.3 media-libs/libglvnd-1.3.2-r2 X"' >> /etc/portage/make.conf;
-  emerge \
-    vim \
-    findutils \
-    sys-devel/gcc cmake make \
-    shellcheck \
-    dev-vcs/git ca-certificates \
-    which \
-    dev-qt/qtcore dev-qt/qtgui dev-qt/qtwidgets;
+  emerge app-editors/vim;
+  emerge findutils;
+  emerge sys-devel/gcc;
+  emerge cmake;
+  emerge make;
+  emerge shellcheck;
+  emerge dev-vcs/git;
+  emerge ca-certificates;
+  emerge which;
+  emerge dev-qt/qtcore;
+  emerge dev-qt/qtgui;
+  emerge dev-qt/qtwidgets;
 }
 
 install_dependencies_macos() {

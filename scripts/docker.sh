@@ -94,7 +94,7 @@ executeUnitTestsInDockerContainer() {
     -v /tmp/.X11-unix:/tmp/.X11-unix \
     -e DISPLAY="${DISPLAY}" \
     --name="mobile_rt_${1}" \
-    ptpuscas/mobile_rt:"${1}" -c "./bin/UnitTests";
+    ptpuscas/mobile_rt:"${1}" -c "./build_release/bin/UnitTests";
 }
 
 # Helper command to push the MobileRT docker image into the docker registry.
@@ -108,7 +108,8 @@ pushMobileRTDockerImage() {
 # The parameters are:
 # * VERSION
 commitMobileRTDockerImage() {
-  docker commit mobile_rt_"${1}" ptpuscas/mobile_rt:"${1}";
+  docker commit \
+    mobile_rt_"${1}" ptpuscas/mobile_rt:"${1}";
   docker rm mobile_rt_"${1}";
 }
 
