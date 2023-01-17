@@ -105,6 +105,8 @@ elif command -v apk > /dev/null; then \
   apk add sudo git; \
 elif command -v emerge > /dev/null; then \
   echo 'Detected Gentoo based Linux'; \
+  echo 'FEATURES="-sandbox -usersandbox -ipc-sandbox -network-sandbox -pid-sandbox"' >> /etc/portage/make.conf; \
+  echo 'USE="dev-libs/libpcre2-10.35 pcre16 x11-libs/libxkbcommon-1.0.3 media-libs/libglvnd-1.3.2-r2 X"' >> /etc/portage/make.conf; \
   emerge --sync || true; \
   emerge sudo dev-vcs/git; \
 else \
@@ -159,12 +161,13 @@ RUN sh scripts/install_dependencies.sh;
 RUN sh scripts/compile_native.sh -t ${BUILD_TYPE} -c g++ -r yes && \
     du -h -d 1 build_${BUILD_TYPE}/bin && \
     du -h -d 1 build_${BUILD_TYPE}/lib && \
-    rm -rf app && \
+    rm -rf $(find app/ -iname "*" ! -name "MobileRT.jks" ! -name "app") && \
     rm -rf docs && \
     rm -rf documentation && \
     rm -rf git-hooks && \
     rm -rf gradle && \
-    rm -rf .git
+    rm -rf .git && \
+    chmod -R +x scripts/
 ###############################################################################
 ###############################################################################
 
@@ -180,8 +183,8 @@ VOLUME /tmp/.X11-unix
 ###############################################################################
 # Execute MobileRT by default
 ###############################################################################
-WORKDIR build_${BUILD_TYPE}
+WORKDIR .
 ENTRYPOINT ["sh", "-c"]
-CMD ["sh ../scripts/profile.sh ${ENV_BUILD_TYPE}"]
+CMD ["sh ./scripts/profile.sh ${ENV_BUILD_TYPE}"]
 ###############################################################################
 ###############################################################################
