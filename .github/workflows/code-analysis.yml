@@ -59,13 +59,6 @@ jobs:
       if: success()
       uses: actions/checkout@v3
 
-    - name: Shell scripts unit tests
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && matrix.language == 'cpp'
-      working-directory: .
-      run: |
-        sh scripts/test/helper_functions.sh;
-
     - name: Set up JDK
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
@@ -128,6 +121,14 @@ jobs:
       working-directory: .
       run: |
         sh scripts/install_dependencies.sh;
+
+    - name: Shell scripts unit tests
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+      if: success() && matrix.language == 'cpp'
+      working-directory: .
+      run: |
+        sh scripts/test/helper_functions.sh;
+        sh scripts/test/dockerfile.sh;
 
     - name: Autobuild
       id: autobuild

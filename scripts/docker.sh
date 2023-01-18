@@ -70,7 +70,7 @@ pullDockerImage() {
 # The parameters are:
 # * VERSION
 compileMobileRTInDockerContainer() {
-  xhost +; docker run -t \
+  docker run -t \
     --entrypoint sh \
     --name="mobile_rt_${1}" \
     --volume="${PWD}":/MobileRT_volume \
@@ -90,7 +90,7 @@ compileMobileRTInDockerContainer() {
 # The parameters are:
 # * VERSION
 executeUnitTestsInDockerContainer() {
-  xhost +; docker run -t \
+  docker run -t \
     --entrypoint sh \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
     -e DISPLAY="${DISPLAY}" \

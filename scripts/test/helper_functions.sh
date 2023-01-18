@@ -34,6 +34,8 @@ cd "$(dirname "${0}")/../.." || exit;
 ###############################################################################
 # shellcheck disable=SC1091
 . scripts/helper_functions.sh;
+# shellcheck disable=SC1091
+. scripts/test/utils.sh;
 ###############################################################################
 ###############################################################################
 
@@ -51,37 +53,6 @@ fi
 # 0 -> success (every test passed).
 # 1 -> failure (at least one test failed).
 exitValue=0;
-
-# Helper function which prints something to the shell console as an error.
-# This means that the text received as parameter will be printed with the red color.
-#
-# Arguments:
-#   1) String to be printed in the shell console
-_logError() {
-  if [ $# -ne 1 ]; then
-    echo 'Usage: _logError <message>';
-    exitValue=1;
-    return 1;
-  fi
-  printf "%s ${1} %s" "$(tput -T xterm setaf 1)" "$(tput -T xterm sgr0)";
-}
-
-# Helper function which prints something to the shell console as a success.
-# This means that the text received as parameter will be printed with the green color.
-#
-# Arguments:
-#   1) String to be printed in the shell console
-#
-# Output:
-#   exit code 1 if passed wrong parameters
-_logSuccess() {
-  if [ $# -ne 1 ]; then
-    echo 'Usage: _logSuccess <message>';
-    exitValue=1;
-    return 1;
-  fi
-  printf "%s ${1} %s" "$(tput -T xterm setaf 2)" "$(tput -T xterm sgr0)";
-}
 
 # Helper function which validates that an environment variable is not set.
 #
@@ -102,7 +73,7 @@ _validateEnvVariablesDoNotExist() {
   for variable in "${@}"; do
     variableValue=$(eval "echo \"\$${variable}\"");
     if [ -n "${variableValue}" ]; then
-      _logError '[FAILED]';
+      logError '[FAILED]';
       echo "${message} | The '${variable}' environment variable should not be set beforehand. It has the value: '${variableValue}'";
       exitValue=1;
       return 1;
@@ -128,13 +99,13 @@ _validateEnvVariableValue() {
   fi
   variableValue=$(eval "echo \"\$${1}\"");
   if [ -z "${variableValue}" ]; then
-    _logError '[FAILED]';
+    logError '[FAILED]';
     echo "${3} | The '${1}' environment variable should be set beforehand. It doesn't have any value.";
     exitValue=1;
     return 1;
   fi
   if [ "${variableValue}" != "${2}" ]; then
-    _logError '[FAILED]';
+    logError '[FAILED]';
     echo "${3} | The '${1}' environment variable does not have the expected value '${2}'. Instead it has the value: '${variableValue}'";
     exitValue=1;
     return 2;
@@ -157,10 +128,13 @@ _clearEnvVariables() {
 #
 # Output:
 #   exit code 1 if passed wrong parameters
+#
+# Output variable:
+#   exitValue: 1 if assert fails
 assertEqual() {
   if [ $# -ne 3 ]; then
     echo 'Usage: assertEqual <expected> <actual> <message>';
-    exitValue=1;
+    export exitValue=1;
     return 1;
   fi
 
@@ -169,11 +143,11 @@ assertEqual() {
   message="${3}";
 
   if [ "${expected}" != "${actual}" ]; then
-    _logError '[FAILED]';
+    logError '[FAILED]';
     echo "${message} | Expected '${expected}', but the actual value is '${actual}'";
-    exitValue=1;
+    export exitValue=1;
   else
-    _logSuccess '[PASSED]';
+    logSuccess '[PASSED]';
     echo "${message}";
   fi
 }

@@ -443,6 +443,10 @@ _validateCodeCoverage() {
 # 1) command name
 addCommandToPath() {
   echo "Adding '${1}' to PATH.";
+  if command -v "${1}" > /dev/null; then
+    echo "Command '${1}' already available.";
+    return;
+  fi
   COMMAND_PATHS=$(find /usr/ ~/../ -type f -iname "${1}" 2> /dev/null | grep -i "bin" || true);
   for COMMAND_PATH in ${COMMAND_PATHS}; do
     echo "Command path to executable: ${COMMAND_PATH}";

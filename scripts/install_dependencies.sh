@@ -88,7 +88,8 @@ install_dependencies_debian() {
   sudo apt-get update -y;
   sudo apt-get install --no-install-recommends -y \
     xorg-dev \
-    libx11-xcb-dev \
+    x11-xserver-utils \
+    libx11-xcb-dev libxcb-xinerama0 \
     libxcb-render-util0-dev libxcb-xkb-dev libxcb-icccm4-dev libxcb-image0-dev \
     libxcb-keysyms1-dev libxcb-xinerama0-dev libxcb-randr0-dev libxcb-shape0-dev \
     libxcb-sync-dev libxcb-xfixes0-dev \
@@ -182,22 +183,22 @@ install_dependencies_gentoo() {
   echo 'FEATURES="-sandbox -usersandbox -ipc-sandbox -network-sandbox -pid-sandbox"' >> /etc/portage/make.conf;
   echo 'USE="dev-libs/libpcre2-10.35 pcre16 x11-libs/libxkbcommon-1.0.3 media-libs/libglvnd-1.3.2-r2 X"' >> /etc/portage/make.conf;
   emerge --sync;
-  emerge sys-apps/portage;
-  emerge app-portage/layman;
-  emerge dev-libs/icu;
-  emerge app-editors/vim;
-  emerge findutils;
-  emerge sys-devel/gcc;
-  emerge cmake;
-  emerge make;
-  emerge shellcheck;
-  emerge dev-vcs/git;
-  emerge ca-certificates;
-  emerge which;
-  emerge xcb;
-  emerge dev-qt/qtcore;
-  emerge dev-qt/qtgui;
-  emerge dev-qt/qtwidgets;
+  emerge --changed-use sys-apps/portage;
+  emerge --changed-use app-portage/layman;
+  emerge --changed-use dev-libs/icu;
+  emerge --changed-use app-editors/vim;
+  emerge --changed-use findutils;
+  emerge --changed-use sys-devel/gcc;
+  emerge --changed-use cmake;
+  emerge --changed-use make;
+  emerge --changed-use shellcheck;
+  emerge --changed-use dev-vcs/git;
+  emerge --changed-use ca-certificates;
+  emerge --changed-use which;
+  emerge --changed-use xcb;
+  emerge --changed-use dev-qt/qtcore;
+  emerge --changed-use dev-qt/qtgui;
+  emerge --changed-use dev-qt/qtwidgets;
 }
 
 install_dependencies_macos() {

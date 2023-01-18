@@ -198,8 +198,8 @@ execute() {
   #perf stat \
   #perf record -g --call-graph 'fp' -- \
   "${BIN_RELEASE_PATH}"/AppMobileRT \
-    "${THREAD}" ${SHADER} ${SCENE} ${SPP} ${SPL} ${WIDTH} ${HEIGHT} ${ACC} \
-    ${REP} "${OBJ}" "${MTL}" "${CAM}" ${PRINT} ${ASYNC} ${SHOWIMAGE};
+    "${THREAD}" "${SHADER}" "${SCENE}" "${SPP}" "${SPL}" "${WIDTH}" "${HEIGHT}" "${ACC}" \
+    "${REP}" "${OBJ}" "${MTL}" "${CAM}" "${PRINT}" "${ASYNC}" "${SHOWIMAGE}";
   #perf report -g '' --show-nr-samples --hierarchy;
 }
 
@@ -211,8 +211,8 @@ debug() {
   echo "ACC = ${ACC}";
 
   "${BIN_DEBUG_PATH}"/AppMobileRTd \
-    "${THREAD}" ${SHADER} ${SCENE} ${SPP} ${SPL} ${WIDTH} ${HEIGHT} ${ACC} \
-    ${REP} "${OBJ}" "${MTL}" "${CAM}" ${PRINT} ${ASYNC} ${SHOWIMAGE};
+    "${THREAD}" "${SHADER}" "${SCENE}" "${SPP}" "${SPL}" "${WIDTH}" "${HEIGHT}" "${ACC}" \
+    "${REP}" "${OBJ}" "${MTL}" "${CAM}" "${PRINT}" "${ASYNC}" "${SHOWIMAGE}";
 }
 
 clangtidy() {
