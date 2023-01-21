@@ -1,0 +1,9 @@
+.SUFFIXES:
+.PHONY: all chart-install
+
+chart-install:
+	xhost +; \
+	helm install -f deploy/mobilert-chart/values.yaml mobilert-chart ./deploy/mobilert-chart/;
+
+chart-uninstall:
+	helm uninstall mobilert-chart

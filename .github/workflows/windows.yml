@@ -12,7 +12,7 @@ on:
     - 'app/third_party/conan/**'
     - 'app/System_dependent/**'
     - 'app/src/**'
-    - 'docker_image/**'
+    - 'deploy/**'
     - 'docs/**'
     - 'gradle/**'
     - 'scripts/**'

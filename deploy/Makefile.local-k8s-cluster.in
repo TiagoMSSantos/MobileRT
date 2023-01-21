@@ -1,0 +1,27 @@
+.SUFFIXES:
+.PHONY: all start
+
+start: boot-k8s-cluster-k3d
+
+boot-k8s-cluster-k3d:
+	@if ! k3d cluster list | grep -q "local"; then \
+		k3d cluster create local-cluster \
+			--registry-config "deploy/registry.yaml" \
+			--agents 1 \
+			--agents-memory 2048Mi \
+			--servers-memory 2048Mi \
+            --k3s-arg '--kubelet-arg=eviction-hard=imagefs.available<1%,nodefs.available<1%@server:*' \
+            --k3s-arg '--kubelet-arg=eviction-hard=imagefs.available<1%,nodefs.available<1%@agent:*' \
+            --k3s-arg '--kubelet-arg=eviction-minimum-reclaim=imagefs.available=1%,nodefs.available=1%@server:*' \
+            --k3s-arg '--kubelet-arg=eviction-minimum-reclaim=imagefs.available=1%,nodefs.available=1%@agent:*'; \
+        k3d cluster start local-cluster; \
+		# k3d node create worker --cluster local-cluster; \
+		# kubectl taint nodes k3d-local-cluster-server-0 node.kubernetes.io/disk-pressure-; \
+	else \
+		echo "K3D cluster already running"; \
+	fi
+
+stop: delete-k8s-cluster
+
+delete-k8s-cluster:
+	k3d cluster delete local-cluster;

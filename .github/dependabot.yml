@@ -37,7 +37,7 @@ updates:
 # Configuration for Dockerfile
 - package-ecosystem: "docker"
   # Look for a `Dockerfile` in the `root` directory
-  directory: "docker_image"
+  directory: "deploy"
   # Check for updates every day (weekdays)
   schedule:
     interval: "daily"

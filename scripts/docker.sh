@@ -41,7 +41,7 @@ buildDockerImage() {
   du -h -d 1 scripts;
   docker build \
     -t ptpuscas/mobile_rt:"${3}" \
-    -f docker_image/Dockerfile \
+    -f deploy/Dockerfile \
     --no-cache=false \
     --build-arg BASE_IMAGE="${1}" \
     --build-arg BRANCH="${2}" \

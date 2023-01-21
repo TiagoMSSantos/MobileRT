@@ -10,7 +10,7 @@ on:
     - 'app/release/**'
     - 'app/third_party/conan/**'
     - 'app/System_dependent/**'
-    - 'docker_image/**'
+    - 'deploy/**'
     - 'docs/**'
     - 'scripts/**'
     - 'WavefrontOBJs/**'

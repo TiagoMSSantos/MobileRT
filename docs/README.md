@@ -52,7 +52,7 @@ xhost +; docker run -it -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=${DISPLAY} p
 ```
 or
 ```
-xhost +; docker-compose -f docker_image/docker-compose.yml up MobileRT
+xhost +; docker-compose -f deploy/docker-compose.yml up MobileRT
 ```
 And a docker container should start and render the conference room model like
 the image above :) <br/>
@@ -60,7 +60,7 @@ the image above :) <br/>
 ## Build docker image
 For the most curious, this is the command used to build the docker image:
 ```
-docker build -t ptpuscas/mobile_rt -f docker_image/Dockerfile --no-cache=false --build-arg BUILD_TYPE=release --build-arg BASE_IMAGE=ubuntu:20.04 .
+docker build -t ptpuscas/mobile_rt -f deploy/Dockerfile --no-cache=false --build-arg BUILD_TYPE=release --build-arg BASE_IMAGE=ubuntu:20.04 .
 ```
 
 The docker image is in docker hub:
