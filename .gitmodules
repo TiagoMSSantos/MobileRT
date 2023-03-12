@@ -11,7 +11,7 @@
   path = app/third_party/tinyobjloader
   url = https://github.com/tinyobjloader/tinyobjloader
   update = checkout
-  branch = master
+  branch = release
   fetchRecurseSubmodules = false
   ignore = none
   shallow = true
