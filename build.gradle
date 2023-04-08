@@ -28,7 +28,7 @@ buildscript {
     // This block encapsulates custom properties and makes them available to all
     // modules in the project.
     ext {
-        jacoco_version = "0.8.8"
+        jacoco_version = "0.8.9"
         build_tools_version = "33.0.0"
 
         appcompat_version = "1.6.1"
