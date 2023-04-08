@@ -76,7 +76,7 @@ compileMobileRTInDockerContainer() {
     --volume="${PWD}":/MobileRT_volume \
     ptpuscas/mobile_rt:"${1}" \
     -c "cd ../ \
-      && cp -rpf ../MobileRT_volume/* ./ \
+      && cp -rpf /MobileRT_volume/* ./ \
       && find ./app/third_party/ -mindepth 1 -maxdepth 1 -type d ! -regex '^./app/third_party\(/conan*\)?' -exec rm -rf {} \; \
       && ls -lahp ./ \
       && chmod -R +x ./scripts/ \

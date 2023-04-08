@@ -182,23 +182,43 @@ install_dependencies_alpine() {
 install_dependencies_gentoo() {
   echo 'FEATURES="-sandbox -usersandbox -ipc-sandbox -network-sandbox -pid-sandbox"' >> /etc/portage/make.conf;
   echo 'USE="dev-libs/libpcre2-10.35 pcre16 x11-libs/libxkbcommon-1.0.3 media-libs/libglvnd-1.3.2-r2 X"' >> /etc/portage/make.conf;
+  echo 'Emerge sync';
   emerge --sync;
+  echo 'Emerge sys-apps/portage';
   emerge --changed-use sys-apps/portage;
+  echo 'Emerge app-portage/layman';
   emerge --changed-use app-portage/layman;
+  echo 'Emerge dev-libs/icu';
   emerge --changed-use dev-libs/icu;
+  echo 'Emerge app-editors/vim';
   emerge --changed-use app-editors/vim;
+  echo 'Emerge findutils';
   emerge --changed-use findutils;
-  emerge --changed-use sys-devel/gcc;
+  echo 'Emerge cmake';
   emerge --changed-use cmake;
+  echo 'Emerge make';
   emerge --changed-use make;
-  emerge --changed-use shellcheck;
+  echo 'Emerge dev-vcs/git';
   emerge --changed-use dev-vcs/git;
+  echo 'Emerge ca-certificates';
   emerge --changed-use ca-certificates;
+  echo 'Emerge which';
   emerge --changed-use which;
+  echo 'Emerge xcb';
   emerge --changed-use xcb;
+  echo 'Emerge dev-qt/qtcore';
   emerge --changed-use dev-qt/qtcore;
+  echo 'Emerge dev-qt/qtgui';
   emerge --changed-use dev-qt/qtgui;
+  echo 'Emerge dev-qt/qtwidgets';
   emerge --changed-use dev-qt/qtwidgets;
+  echo 'Emerge dev-lang/python';
+  emerge --changed-use dev-lang/python;
+  # These are optional since they are not required at take some time to compile.
+  # echo 'Emerge shellcheck';
+  # emerge --changed-use shellcheck;
+  # echo 'Emerge sys-devel/gcc';
+  # emerge --changed-use sys-devel/gcc;
 }
 
 install_dependencies_macos() {
@@ -278,10 +298,11 @@ update_python() {
   fi
 
   echo 'Upgrade pip';
-  pip install --upgrade pip --user;
-  pip3 install --upgrade pip --user;
+  executeWithoutExiting python -m pip install --upgrade pip --user;
   executeWithoutExiting python3 -m pip install --upgrade pip --user;
-  pip3 install cmake --upgrade --user;
+  echo 'Upgrade CMake from pip';
+  executeWithoutExiting python -m pip install cmake --upgrade --user;
+  executeWithoutExiting python3 -m pip install cmake --upgrade --user;
 
   addCommandToPath 'cmake';
 }
@@ -325,8 +346,9 @@ test_commands() {
   checkCommand git;
   checkCommand g++;
   checkCommand python3;
-  checkCommand pip;
-  checkCommand pip3;
+  # Linux Gentoo doesn't allow to use 'pip' directly.
+  # checkCommand pip;
+  # checkCommand pip3;
 
   # Can't install in docker container:
   #checkCommand clang++;

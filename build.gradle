@@ -123,6 +123,10 @@ subprojects {
                 if ('org.jacoco' == details.requested.group) {
                     details.useVersion "${jacoco_version}"
                 }
+                // Necessary because 'androidx.core:core-ktx' also brings the 'org.jetbrains.kotlin:kotlin-stdlib'.
+                if ('org.jetbrains.kotlin' == details.requested.group) {
+                    details.useVersion "${kotlin_stdlib_jdk8_version}"
+                }
             }
         }
     }
