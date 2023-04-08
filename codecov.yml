@@ -14,6 +14,8 @@ coverage:
   round: down
   range: "0..100"
   status:
+    default_rules:
+      flag_coverage_not_uploaded_behavior: include
     project:
       default:
         target: 40%
