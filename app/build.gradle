@@ -198,11 +198,6 @@ android {
     namespace 'puscas.mobilertapp'
     testNamespace 'puscas.mobilertapp.test'
 
-    adbOptions {
-        timeOutInMs 3 * 60 * 1000  // Set the timeout to 3 minutes
-        installOptions "-t"
-    }
-
     // Set NDK version
     setNdkVersion systemNDKVersion
 
@@ -341,29 +336,6 @@ android {
         setAnimationsDisabled true
     }
 
-    // Setup linter options
-    lintOptions {
-        setAbortOnError true
-        setCheckAllWarnings true
-        setExplainIssues true
-        setNoLines true
-        setShowAll true
-        setWarningsAsErrors false
-        setCheckDependencies true
-        setAbsolutePaths false
-        setCheckGeneratedSources true
-        setCheckReleaseBuilds true
-        setCheckTestSources true
-        setHtmlReport true
-        setXmlReport true
-        setTextReport true
-        setIgnoreTestSources false
-        setIgnoreWarnings false
-        setQuiet false
-        enable 'WrongThreadInterprocedural', 'RtlHardcoded','RtlCompat', 'RtlEnabled'
-        lintConfig file('lint.xml')
-    }
-
     // Add resources directories to tests
     sourceSets {
         // Unit tests
@@ -375,6 +347,17 @@ android {
             manifest.srcFile 'src/androidTest/AndroidManifest.xml'
             resources.srcDirs += ['src/androidTest/resources']
         }
+    }
+
+    // adbOptions
+    installation {
+        installOptions '-t'
+    }
+
+    // Setup linter options
+    lint {
+        enable 'WrongThreadInterprocedural', 'RtlHardcoded', 'RtlCompat', 'RtlEnabled'
+        lintConfig file('lint.xml')
     }
 }
 ///////////////////////////////////////////////////////////////////////////////

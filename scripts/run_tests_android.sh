@@ -205,7 +205,9 @@ runEmulator() {
   echo "script name: ${script_name}";
 
   if [ "${type}" = 'debug' ]; then
-    code_coverage='createDebugCoverageReport';
+    gradle_command='createDebugCoverageReport jacocoTestReport'
+  else
+    gradle_command='connectedAndroidTest';
   fi
 
   if [ "${kill_previous}" = true ]; then
@@ -481,13 +483,11 @@ runInstrumentationTests() {
   if [ "${run_test}" = 'all' ]; then
     echo 'Running all tests';
     mkdir -p app/build/reports/jacoco/jacocoTestReport/;
-    set +u; # Because 'code_coverage' is only set when debug.
-    sh gradlew jacocoTestReport -DtestType="${type}" \
+    sh gradlew ${gradle_command} -DtestType="${type}" \
       -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
       -Pandroid.testInstrumentationRunnerArguments.package='puscas' \
       -DabiFilters="[${cpu_architecture}]" \
-      ${code_coverage} --console plain --parallel --info --warning-mode all --stacktrace;
-    set -u;
+      --console plain --parallel --info --warning-mode all --stacktrace;
   elif echo "${run_test}" | grep -q "rep_"; then
     run_test_without_prefix=${run_test#"rep_"};
     echo "Repeatable of test: ${run_test_without_prefix}";
