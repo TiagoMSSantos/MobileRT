@@ -469,7 +469,7 @@ dependencies {
     testImplementation "org.assertj:assertj-core:${assertj_version}"
     testImplementation "org.khronos:opengl-api:${khronos_gl_for_android_sdk_version}"
     testImplementation "org.mockito:mockito-core:${mockito_version}"
-    testImplementation "org.mockito:mockito-inline:${mockito_version}"
+    testImplementation "org.mockito:mockito-inline:${mockito_inline_version}"
     testImplementation "org.powermock:powermock-core:${powermock_version}"
     testImplementation "org.powermock:powermock-module-junit4:${powermock_version}"
     testImplementation "org.powermock:powermock-api-mockito2:${powermock_version}"
