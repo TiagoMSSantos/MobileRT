@@ -763,7 +763,7 @@ jobs:
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
-        sh gradlew --profile --parallel -DabiFilters="[\"x86\"]" -DndkVersion=${{ matrix.ndk_version }} -DcmakeVersion=${{ matrix.cmake_version }} sonarqube --info;
+        sh gradlew --profile --parallel -DabiFilters="[\"x86\"]" -DndkVersion=${{ matrix.ndk_version }} -DcmakeVersion=${{ matrix.cmake_version }} sonar --info;
 
     - name: Check sonar path
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
