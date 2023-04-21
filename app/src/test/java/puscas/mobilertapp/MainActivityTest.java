@@ -27,6 +27,8 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Objects;
 
+import javax.annotation.Nonnull;
+
 import lombok.extern.java.Log;
 import puscas.mobilertapp.utils.UtilsContext;
 
@@ -40,6 +42,7 @@ public final class MainActivityTest {
     /**
      * The {@link Rule} for the {@link MainActivity} for each test.
      */
+    @Nonnull
     @Rule
     public PowerMockRule rule = new PowerMockRule();
 

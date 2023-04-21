@@ -35,6 +35,8 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.util.Arrays;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+
 import java8.util.Optional;
 import java8.util.stream.IntStreams;
 import java8.util.stream.StreamSupport;
@@ -164,7 +166,7 @@ public final class MainActivity extends Activity {
      * @param message The message to show on the UI.
      * @implNote Only the UI thread can update the UI with messages by using {@link Toast}.
      */
-    public static void showUiMessage(final String message) {
+    public static void showUiMessage(@Nonnull final String message) {
         currentInstance.runOnUiThread(() -> {
             log.info("showUiMessage");
             Toast.makeText(currentInstance.getApplicationContext(), message, Toast.LENGTH_LONG).show();

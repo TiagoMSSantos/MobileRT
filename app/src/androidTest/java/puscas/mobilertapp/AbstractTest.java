@@ -1,6 +1,9 @@
 package puscas.mobilertapp;
 
+import static android.os.Build.VERSION_CODES.JELLY_BEAN;
+
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.content.Intent;
 
 import androidx.annotation.CallSuper;
@@ -21,6 +24,7 @@ import org.junit.rules.Timeout;
 
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.Nullable;
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 
 import lombok.extern.java.Log;
@@ -57,6 +61,7 @@ public abstract class AbstractTest {
     /**
      * The {@link Rule} to access (read) the external SD card.
      */
+    @TargetApi(JELLY_BEAN)
     @NonNull
     @Rule
     public final GrantPermissionRule grantPermissionReadExternalStorageRule =
@@ -81,6 +86,7 @@ public abstract class AbstractTest {
     /**
      * The {@link MainActivity} to test.
      */
+    @Nullable
     protected MainActivity activity = null;
 
 

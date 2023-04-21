@@ -52,7 +52,7 @@ run_test='all';
 ndk_version='23.2.8568313';
 cmake_version='3.22.1';
 kill_previous='true';
-cpu_architecture='"x86"';
+cpu_architecture='"x86","x86_64"';
 parallelizeBuild;
 
 printEnvironment() {
@@ -257,7 +257,7 @@ waitForEmulator() {
     : > nohup.out;
     setsid nohup cpulimit --cpu 8 --limit 800 -- \
       emulator -avd "${avd_emulator}" -cores 8 -memory 2048 -cache-size 2048 -partition-size 2048 \
-      -writable-system -ranchu -fixed-scale -skip-adb-auth -gpu swiftshader_indirect -no-audio \
+      -ranchu -fixed-scale -skip-adb-auth -gpu swiftshader_indirect -no-audio \
       -no-snapshot -no-snapstorage -no-snapshot-update-time -no-snapshot-save -no-snapshot-load \
       -no-boot-anim -camera-back none -camera-front none -netfast -wipe-data -no-sim \
       -no-passive-gps -read-only -no-direct-adb -no-location-ui -no-hidpi-scaling \

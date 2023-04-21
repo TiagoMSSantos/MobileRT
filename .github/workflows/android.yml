@@ -209,7 +209,7 @@ jobs:
       if: success()
       working-directory: .
       run: |
-        sh scripts/compile_android.sh -t ${{ matrix.type }} -r yes -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -f "\"x86\"";
+        sh scripts/compile_android.sh -t ${{ matrix.type }} -r yes -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -f "\"x86\",\"x86_64\"";
 
     - name: Check binaries' paths
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -413,7 +413,7 @@ jobs:
         disable-animations: true
         disable-spellchecker: true
         channel: stable
-        emulator-options: -no-window -accel on -cores ${{ env.NCPU_CORES }} -memory ${{ env.MEM_MB }} -cache-size ${{ env.MEM_MB }} -partition-size ${{ env.MEM_MB }} -writable-system -ranchu -fixed-scale -skip-adb-auth -gpu swiftshader_indirect -no-audio -no-snapshot -no-snapstorage -no-snapshot-update-time -no-snapshot-save -no-snapshot-load -no-boot-anim -camera-back none -camera-front none -netfast -wipe-data -no-sim -no-passive-gps -read-only -no-direct-adb -no-location-ui -no-hidpi-scaling -no-mouse-reposition -no-nested-warnings -verbose
+        emulator-options: -no-window -accel on -cores ${{ env.NCPU_CORES }} -memory ${{ env.MEM_MB }} -cache-size ${{ env.MEM_MB }} -partition-size ${{ env.MEM_MB }} -ranchu -fixed-scale -skip-adb-auth -gpu swiftshader_indirect -no-audio -no-snapshot -no-snapstorage -no-snapshot-update-time -no-snapshot-save -no-snapshot-load -no-boot-anim -camera-back none -camera-front none -netfast -wipe-data -no-sim -no-passive-gps -read-only -no-direct-adb -no-location-ui -no-hidpi-scaling -no-mouse-reposition -no-nested-warnings -verbose
         cores: ${{ env.NCPU_CORES }}
         heap-size: ${{ env.MEM_MB }}M
         sdcard-path-or-size: ${{ env.MEM_MB }}M
@@ -424,7 +424,7 @@ jobs:
         disable-linux-hw-accel: auto
         enable-hw-keyboard: false
         script: |
-          sh scripts/run_tests_android.sh -t ${{ matrix.type }} -r all -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -k false -f "\"x86\"";
+          sh scripts/run_tests_android.sh -t ${{ matrix.type }} -r all -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -k false -f "\"x86\",\"x86_64\"";
 
     - name: Check report's paths
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -583,14 +583,14 @@ jobs:
       if: success()
       working-directory: .
       run: |
-        sh scripts/run_tests.sh -t ${{ matrix.type }} -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -f "\"x86\"";
+        sh scripts/run_tests.sh -t ${{ matrix.type }} -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -f "\"x86\",\"x86_64\"";
 
     - name: Run linter
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
       working-directory: .
       run: |
-        sh scripts/check_android.sh -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -f "\"x86\"";
+        sh scripts/check_android.sh -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -f "\"x86\",\"x86_64\"";
 
 
   Sonar:
@@ -763,7 +763,7 @@ jobs:
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
-        sh gradlew --profile --parallel -DabiFilters="[\"x86\"]" -DndkVersion=${{ matrix.ndk_version }} -DcmakeVersion=${{ matrix.cmake_version }} sonar --info;
+        sh gradlew --profile --parallel -DabiFilters="[\"x86\",\"x86_64\"]" -DndkVersion=${{ matrix.ndk_version }} -DcmakeVersion=${{ matrix.cmake_version }} sonar --info;
 
     - name: Check sonar path
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}

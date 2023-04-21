@@ -29,6 +29,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import javax.annotation.Nonnull;
+
 import puscas.mobilertapp.configs.Config;
 import puscas.mobilertapp.configs.ConfigSamples;
 import puscas.mobilertapp.constants.ConstantsError;
@@ -48,6 +50,7 @@ public class DrawViewTest {
     /**
      * The {@link Rule} for the {@link MainActivity} for each test.
      */
+    @Nonnull
     @Rule
     public PowerMockRule rule = new PowerMockRule();
 

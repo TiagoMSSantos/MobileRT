@@ -16,6 +16,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.rule.PowerMockRule;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import javax.annotation.Nonnull;
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
@@ -35,6 +36,7 @@ public final class MyEglContextFactoryTest {
     /**
      * The {@link Rule} for the {@link MainActivity} for each test.
      */
+    @Nonnull
     @Rule
     public PowerMockRule rule = new PowerMockRule();
 
