@@ -201,7 +201,7 @@ public final class UtilsContext {
             "Utils" + ConstantsUI.FILE_SEPARATOR + "cpuInfoDeviceSystemPath.txt");
         final File cpuTopologyPath = new File(cpuInfoPath.trim());
         final File[] files = cpuTopologyPath.listFiles(
-            pathname -> Pattern.matches("cpu[0-9]+", pathname.getName()));
+            pathname -> Pattern.matches("cpu\\d+", pathname.getName()));
         return Optional.ofNullable(files).map(filesInPath -> filesInPath.length).get();
     }
 

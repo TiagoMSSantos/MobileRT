@@ -118,26 +118,6 @@ jobs:
       if: success()
       uses: actions/checkout@v3
 
-    - name: Set up JDK
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-      if: success()
-      uses: actions/setup-java@v3
-      with:
-        # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml
-        java-version: 11
-        distribution: zulu
-        java-package: jdk
-        architecture: x64
-        check-latest: false
-        server-id: github
-        server-username: GITHUB_ACTOR
-        server-password: GITHUB_TOKEN
-        settings-path: ~/.gradle
-        overwrite-settings: true
-        gpg-private-key: ''
-        gpg-passphrase: GPG_PASSPHRASE
-        cache: gradle
-
     - name: Download Ninja and CMake
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
@@ -250,11 +230,11 @@ jobs:
       if: success() && matrix.type == 'debug'
       working-directory: build_${{ matrix.type }}
       run: |
-        DYLD_FALLBACK_LIBRARY_PATH=lib ./bin/Debug/UnitTestsd.exe;
+        DYLD_FALLBACK_LIBRARY_PATH=lib ./bin/Debug/UnitTestsd;
 
     - name: Run unit tests Release
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && matrix.type == 'release'
       working-directory: build_${{ matrix.type }}
       run: |
-        DYLD_FALLBACK_LIBRARY_PATH=lib ./bin/Debug/UnitTests.exe;
+        DYLD_FALLBACK_LIBRARY_PATH=lib ./bin/Debug/UnitTests;

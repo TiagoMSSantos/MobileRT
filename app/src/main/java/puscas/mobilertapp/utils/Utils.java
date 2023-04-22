@@ -136,7 +136,7 @@ public final class Utils {
 
         try {
             return Integer.parseInt(picker.getDisplayedValues()[picker.getValue() - 1]);
-        } catch (final Throwable ex) {
+        } catch (final Exception ex) {
             throw new FailureException(ex);
         }
     }
@@ -159,7 +159,7 @@ public final class Utils {
             final int width = Integer.parseInt(strResolution.substring(0, strResolution.indexOf('x')));
             final int height = Integer.parseInt(strResolution.substring(strResolution.indexOf('x') + 1));
             return Pair.of(width, height);
-        } catch (final Throwable ex) {
+        } catch (final Exception ex) {
             throw new FailureException(ex);
         }
     }

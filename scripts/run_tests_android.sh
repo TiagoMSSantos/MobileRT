@@ -21,6 +21,10 @@ cd "$(dirname "${0}")/.." || exit;
 # Exit immediately if a command exits with a non-zero status.
 ###############################################################################
 set -eu;
+
+# Make the all other processes belong in the process group, so that will be killed at the end.
+set +m;
+pid="$$";
 ###############################################################################
 ###############################################################################
 
@@ -98,12 +102,15 @@ typeWithCapitalLetter=$(capitalizeFirstletter "${type}");
 gather_logs_func() {
   echo '';
 
-  callCommandUntilSuccess adb shell 'ps > /dev/null;';
+  adb_devices_running=$(adb devices | tail -n +2);
+  if [ "${adb_devices_running}" != '' ]; then
+    callCommandUntilSuccess adb shell 'ps > /dev/null;';
 
-  echo 'Gathering logs';
-  adb logcat -v threadtime -d "*":V \
-    > "${reports_path}"/logcat_"${type}".log 2>&1;
-  echo "Copied logcat to logcat_${type}.log";
+    echo 'Gathering logs';
+    adb logcat -v threadtime -d "*":V \
+      > "${reports_path}"/logcat_"${type}".log 2>&1;
+    echo "Copied logcat to logcat_${type}.log";
+  fi
 
   set +e;
   pid_app=$(grep -E -i "proc.puscas:*" "${reports_path}"/logcat_"${type}".log |
@@ -120,19 +127,22 @@ gather_logs_func() {
 }
 
 clear_func() {
+  set +u; # Variable might not have been set if canceled too soo.
   echo "Killing pid of logcat: '${pid_logcat}'";
   kill -TERM "${pid_logcat}" 2> /dev/null || true;
+  set -u;
 
   echo 'Will kill MobileRT process';
   pid_app=$(adb shell ps | grep -i puscas.mobilertapp | tr -s ' ' | cut -d ' ' -f 2);
   echo "Killing pid of MobileRT: '${pid_app}'";
   set +e;
-  callAdbShellCommandUntilSuccess adb shell 'kill -TERM '"${pid_app}"'; echo ::$?::';
+  adb shell 'kill -TERM '"${pid_app}"'; echo ::$?::';
   set -e;
 
   # Kill all processes in the whole process group, thus killing also descendants.
-  echo 'All processes will be killed!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!';
-  kill -KILL -- -$$ || true;
+  trap - EXIT HUP INT QUIT ILL TRAP ABRT TERM; # Disable traps first, to avoid infinite loop.
+  echo "Killing all processes from the same group process id: '${pid}'";
+  kill -TERM -"${pid}" || true;
 }
 
 catch_signal() {
@@ -140,7 +150,7 @@ catch_signal() {
   echo 'Caught signal';
 
   gather_logs_func;
-  # clear_func;
+  clear_func;
 
   echo '';
 }
@@ -156,7 +166,7 @@ unlockDevice() {
   callCommandUntilSuccess sh gradlew --daemon \
     --no-rebuild \
     -DabiFilters="[${cpu_architecture}]" \
-    -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}";
+    -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" --info --warning-mode fail --stacktrace;
 
   echo 'Set adb as root, to be able to change files permissions';
   callCommandUntilSuccess adb root;
@@ -226,8 +236,6 @@ runEmulator() {
 
 waitForEmulator() {
   echo 'Wait for device to be available.';
-  # Don't make the Android emulator belong in the process group, so it will not be killed at the end.
-  set -m;
 
   callCommandUntilSuccess adb kill-server;
   #_restartAdbProcesses;
@@ -255,14 +263,17 @@ waitForEmulator() {
     # Both `setsid` and `nohup` are used to make sure the Android emulator continues to work after this script is completed.
     # Truncate nohup.out log file.
     : > nohup.out;
+    # Note that the 'memory', 'cache-size' and 'partition-size' might make Android emulator to boot slower.
+    # Using 'cache-size' and 'partition-size' below 256 and above 1024 seems to be slower.
+    # Also, using 8GB+ as memory seems to allow for Android emulator to boot faster.
     setsid nohup cpulimit --cpu 8 --limit 800 -- \
-      emulator -avd "${avd_emulator}" -cores 8 -memory 2048 -cache-size 2048 -partition-size 2048 \
+      emulator -avd "${avd_emulator}" -cores 8 -memory 4096 -cache-size 512 -partition-size 800 \
       -ranchu -fixed-scale -skip-adb-auth -gpu swiftshader_indirect -no-audio \
       -no-snapshot -no-snapstorage -no-snapshot-update-time -no-snapshot-save -no-snapshot-load \
       -no-boot-anim -camera-back none -camera-front none -netfast -wipe-data -no-sim \
       -no-passive-gps -read-only -no-direct-adb -no-location-ui -no-hidpi-scaling \
       -no-mouse-reposition -no-nested-warnings -verbose \
-      -qemu -m 2048M -machine type=pc,accel=kvm -accel kvm,thread=multi:tcg,thread=multi -smp 8 &
+      -qemu -m size=4096M,slots=1,maxmem=8192M -machine type=pc,accel=kvm -accel kvm,thread=multi:tcg,thread=multi -smp cpus=8,maxcpus=8,cores=8,threads=1,sockets=1
     sleep 20;
     adb_devices_running=$(callCommandUntilSuccess adb devices | tail -n +2);
   done
@@ -279,9 +290,6 @@ waitForEmulator() {
 
   echo 'Prepare traps';
   trap 'catch_signal ${?}' EXIT HUP INT QUIT ILL TRAP ABRT TERM;
-
-  # Make the all other processes belong in the process group, so that will be killed at the end.
-  set +m;
 
   unlockDevice;
 
@@ -436,8 +444,7 @@ verifyResources() {
 
 runInstrumentationTests() {
   echo 'Run instrumentation tests';
-  set +e;
-  set +u;
+  set +eu;
   if [ -z "${CI}" ]; then
     GRADLE_PROCESSES="$(jps | grep -i "gradle" | tr -s ' ' | cut -d ' ' -f 1)";
     for GRADLE_PROCESS in ${GRADLE_PROCESSES}; do
@@ -446,7 +453,7 @@ runInstrumentationTests() {
     sh gradlew --stop \
       --no-rebuild \
       -DabiFilters="[${cpu_architecture}]" \
-      -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}";
+      -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" --info --warning-mode fail --stacktrace;
 
     numberOfFilesOpened=$(adb shell lsof /dev/goldfish_pipe | wc -l);
     if [ "${numberOfFilesOpened}" -gt '32000' ]; then
@@ -459,8 +466,7 @@ runInstrumentationTests() {
       set -e;
     fi
   fi
-  set -u;
-  set -e;
+  set -eu;
 
   echo 'Searching for APK to install in Android emulator.';
   find . -iname "*.apk" | grep -i "output";
@@ -481,7 +487,7 @@ runInstrumentationTests() {
       -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
       -Pandroid.testInstrumentationRunnerArguments.package='puscas' \
       -DabiFilters="[${cpu_architecture}]" \
-      ${code_coverage} --console plain --parallel;
+      ${code_coverage} --console plain --parallel --info --warning-mode all --stacktrace;
     set -u;
   elif echo "${run_test}" | grep -q "rep_"; then
     run_test_without_prefix=${run_test#"rep_"};
@@ -490,14 +496,14 @@ runInstrumentationTests() {
       -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
       -Pandroid.testInstrumentationRunnerArguments.class="${run_test_without_prefix}" \
       -DabiFilters="[${cpu_architecture}]" \
-      --console plain --parallel;
+      --console plain --parallel --info --warning-mode all --stacktrace;
   else
     echo "Running test: ${run_test}";
     sh gradlew connectedAndroidTest -DtestType="${type}" \
       -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
       -Pandroid.testInstrumentationRunnerArguments.class="${run_test}" \
       -DabiFilters="[${cpu_architecture}]" \
-      --console plain --parallel;
+      --console plain --parallel --info --warning-mode all --stacktrace;
   fi
   resInstrumentationTests=${?};
   pid_instrumentation_tests="$!";
@@ -545,6 +551,8 @@ _waitForEmulatorToBoot() {
 ###############################################################################
 ###############################################################################
 
+# Increase memory for heap.
+export GRADLE_OPTS="-Xmx4G -Xms4G -XX:ActiveProcessorCount=3";
 clearOldBuildFiles;
 createReportsFolders;
 runEmulator;

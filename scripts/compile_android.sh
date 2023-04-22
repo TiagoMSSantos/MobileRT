@@ -97,7 +97,7 @@ build() {
   echo 'Calling the Gradle assemble to compile code for Android.';
   echo 'Increasing ADB timeout to 10 minutes.';
   export ADB_INSTALL_TIMEOUT=60000;
-  sh gradlew --no-rebuild --stop;
+  sh gradlew --no-rebuild --stop --info --warning-mode fail --stacktrace;
   sh gradlew clean \
     build"${typeWithCapitalLetter}" \
     assemble"${typeWithCapitalLetter}" \
@@ -112,13 +112,13 @@ build() {
     --profile --parallel \
     -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
     -DabiFilters="[${cpu_architecture}]" \
-    --console plain;
+    --console plain --info --warning-mode fail --stacktrace;
   resCompile=${?};
   echo 'Compiling APK to execute Android instrumentation tests.';
   sh gradlew createDebugAndroidTestApkListingFileRedirect \
     -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
     -DabiFilters="[${cpu_architecture}]" \
-    --profile --parallel --console plain;
+    --profile --parallel --console plain --info --warning-mode fail --stacktrace;
   echo 'Android application compiled.';
 }
 ###############################################################################
@@ -144,6 +144,8 @@ install_conan_dependencies() {
   export CONAN='TRUE';
 }
 
+# Increase memory for heap.
+export GRADLE_OPTS="-Xmx4G -Xms4G -XX:ActiveProcessorCount=3";
 rm -rf app/build/ || true;
 clearOldBuildFiles;
 clearAllBuildFiles;

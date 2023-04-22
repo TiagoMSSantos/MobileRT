@@ -77,20 +77,22 @@ printEnvironment;
 runLinter() {
   # Set path to reports.
   echo 'Print Gradle version';
-  sh gradlew --no-rebuild --stop;
-  sh gradlew --no-rebuild --version;
+  sh gradlew --no-rebuild --stop --info --warning-mode fail --stacktrace;
+  sh gradlew --no-rebuild --version --info --warning-mode fail --stacktrace;
 
   echo 'Calling the Gradle linter';
   sh gradlew lint --profile --parallel \
     -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
     -DabiFilters="[${cpu_architecture}]" \
     --no-rebuild \
-    --console plain;
+    --console plain --info --warning-mode fail --stacktrace;
   resCheck=${?};
 }
 ###############################################################################
 ###############################################################################
 
+# Increase memory for heap.
+export GRADLE_OPTS="-Xmx4G -Xms4G -XX:ActiveProcessorCount=3";
 createReportsFolders;
 runLinter;
 

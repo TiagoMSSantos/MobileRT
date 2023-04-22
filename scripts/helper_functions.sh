@@ -177,7 +177,7 @@ callCommandUntilSuccess() {
   "$@";
   lastResult=${?};
   echo "result: '${lastResult}'";
-  while [ "${lastResult}" -ne 0 ] && [ ${retry} -lt 30 ]; do
+  while [ "${lastResult}" -ne 0 ] && [ ${retry} -lt 10 ]; do
     retry=$(( retry + 1 ));
     "$@";
     lastResult=${?};
@@ -203,7 +203,7 @@ callAdbShellCommandUntilSuccess() {
   # echo "Output of command: '${output}'";
   lastResult=$(echo "${output}" | grep '::.*::' | sed 's/:://g'| tr -d '[:space:]');
   echo "result: '${lastResult}'";
-  while [ "${lastResult}" != '0' ] && [ ${retry} -lt 30 ]; do
+  while [ "${lastResult}" != '0' ] && [ ${retry} -lt 60 ]; do
     retry=$(( retry + 1 ));
     output=$("$@");
     echo "Output of command: '${output}'";

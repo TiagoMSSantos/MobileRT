@@ -457,8 +457,7 @@ public class MainRenderer implements GLSurfaceView.Renderer {
      *                   engine.
      * @throws LowMemoryException If the device has low free memory.
      */
-    private native void rtRenderIntoBitmap(Bitmap image,
-                                           int numThreads) throws LowMemoryException;
+    private native void rtRenderIntoBitmap(Bitmap image, int numThreads) throws LowMemoryException;
 
     /**
      * Creates a native array with all the positions of triangles in the scene.

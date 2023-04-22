@@ -88,17 +88,19 @@ runUnitTests() {
   echo 'Calling Gradle test';
   echo 'Increasing ADB timeout to 10 minutes';
   export ADB_INSTALL_TIMEOUT=60000;
-  sh gradlew --no-rebuild --stop;
+  sh gradlew --no-rebuild --stop --info --warning-mode fail --stacktrace;
   sh gradlew test"${type}"UnitTest --profile --parallel \
     -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
     -DabiFilters="[${cpu_architecture}]" \
     --no-rebuild \
-    --console plain;
+    --console plain --info --warning-mode all --stacktrace;
   resUnitTests=${?};
 }
 ###############################################################################
 ###############################################################################
 
+# Increase memory for heap.
+export GRADLE_OPTS="-Xmx4G -Xms4G -XX:ActiveProcessorCount=3";
 createReportsFolders;
 runUnitTests;
 

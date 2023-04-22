@@ -1,6 +1,5 @@
 package puscas.mobilertapp.utils
 
-import java.util.logging.Logger
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
@@ -8,6 +7,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
+import java.util.logging.Logger
 
 /**
  * An abstract class which simulates the deprecated [android.os.AsyncTask] from Java.

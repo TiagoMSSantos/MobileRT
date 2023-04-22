@@ -242,7 +242,7 @@ public final class MainActivity extends Activity {
     public void onCreate(@Nullable final Bundle savedInstanceState) {
         try {
             loadMobileRT();
-        } catch (final Throwable ex) {
+        } catch (final Exception ex) {
             UtilsLogging.logThrowable(ex, "MainActivity#onCreate");
             throw ex;
         }
@@ -435,7 +435,7 @@ public final class MainActivity extends Activity {
                     .map(Intent::getData)
                     .map(this::getPathFromFile)
                     .orElse("");
-            } catch (final Throwable ex) {
+            } catch (final Exception ex) {
                 MainActivity.showUiMessage(ConstantsToast.COULD_NOT_RENDER_THE_SCENE + ex.getMessage());
             }
         }
@@ -461,7 +461,7 @@ public final class MainActivity extends Activity {
 
             final String messageFinished = ConstantsMethods.START_RENDER + ConstantsMethods.FINISHED;
             log.info(messageFinished);
-        } catch (final Throwable ex) {
+        } catch (final Exception ex) {
             MainActivity.showUiMessage(ConstantsToast.COULD_NOT_RENDER_THE_SCENE + ex.getMessage());
         }
     }
