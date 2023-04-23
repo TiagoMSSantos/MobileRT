@@ -16,7 +16,6 @@ import org.jetbrains.annotations.Contract;
 import org.junit.Test;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 
-import lombok.extern.java.Log;
 import puscas.mobilertapp.MainActivity;
 import puscas.mobilertapp.constants.CustomNumberPicker;
 import puscas.mobilertapp.exceptions.FailureException;
@@ -24,7 +23,6 @@ import puscas.mobilertapp.exceptions.FailureException;
 /**
  * The test suite for the {@link CustomNumberPicker} util class.
  */
-@Log
 @PrepareForTest(MainActivity.class)
 public final class CustomNumberPickerTest {
 

@@ -26,18 +26,22 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.logging.Logger;
 
 import javax.annotation.Nonnull;
 
-import lombok.extern.java.Log;
 import puscas.mobilertapp.utils.UtilsContext;
 
 /**
  * The test suite for {@link MainActivity} class.
  */
 @PrepareForTest({MainActivity.class, UtilsContext.class})
-@Log
 public final class MainActivityTest {
+
+    /**
+     * Logger for this class.
+     */
+    private static final Logger logger = Logger.getLogger(MainActivityTest.class.getSimpleName());
 
     /**
      * The {@link Rule} for the {@link MainActivity} for each test.
@@ -60,7 +64,7 @@ public final class MainActivityTest {
      */
     @Before
     public void setUp() {
-        log.info("setUp");
+        logger.info("setUp");
         // Because of using PowerMock to mock the static initializer, then it's not necessary
         // to add the native MobileRT library to the Java library path.
         // addLibraryPath("../build_release/lib");
@@ -73,7 +77,7 @@ public final class MainActivityTest {
      */
     @After
     public void tearDown() {
-        log.info("tearDown");
+        logger.info("tearDown");
     }
 
     /**

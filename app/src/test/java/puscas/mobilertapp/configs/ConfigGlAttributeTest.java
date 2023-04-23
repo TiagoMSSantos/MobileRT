@@ -9,13 +9,13 @@ import org.junit.Test;
 public class ConfigGlAttributeTest {
 
     /**
-     * Tests the {@link ConfigGlAttribute#builder()#toString()} method in the builder class of {@link Config}.
+     * Tests the {@link ConfigGlAttribute.Builder#toString()} method in the builder class of {@link Config}.
      */
     @Test
     public void testConfigGlAttributeBuilderToString() {
-        final String configGlAttributeBuilderStr = ConfigGlAttribute.builder().toString();
+        final String configGlAttributeBuilderStr = ConfigGlAttribute.Builder.Companion.create().toString();
         Assertions.assertThat(configGlAttributeBuilderStr)
-            .as("The toString of ConfigGlAttribute.builder()")
+            .as("The toString of ConfigGlAttribute.Builder")
             .isNotNull()
             .isInstanceOf(String.class);
     }

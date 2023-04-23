@@ -1,11 +1,8 @@
 package puscas.mobilertapp.constants;
 
-import lombok.experimental.UtilityClass;
-
 /**
  * Utility class with the text constants for the {@link android.widget.Toast}.
  */
-@UtilityClass
 public final class ConstantsToast {
 
     /**
@@ -30,5 +27,12 @@ public final class ConstantsToast {
      * A warning message for when the Android device couldn't render the scene.
      */
     public static final String COULD_NOT_RENDER_THE_SCENE = "Could not render the scene!\n";
+
+    /**
+     * Private constructor to avoid creating instances.
+     */
+    private ConstantsToast() {
+        throw new UnsupportedOperationException("Not implemented.");
+    }
 
 }

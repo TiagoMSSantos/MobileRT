@@ -9,13 +9,11 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import lombok.extern.java.Log;
 import puscas.mobilertapp.constants.Constants;
 
 /**
  * The unit tests for Java memory behaviour in the system.
  */
-@Log
 public final class JavaMemoryTest {
 
     /**

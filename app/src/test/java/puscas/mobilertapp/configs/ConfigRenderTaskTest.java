@@ -1,7 +1,11 @@
 package puscas.mobilertapp.configs;
 
+import android.widget.Button;
+import android.widget.TextView;
+
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 /**
  * The test suite for {@link ConfigRenderTask} class.
@@ -13,7 +17,12 @@ public class ConfigRenderTaskTest {
      */
     @Test
     public void testDefaultConfigRenderTask() {
-        final ConfigRenderTask configRenderTask = ConfigRenderTask.builder().build();
+        final ConfigRenderTask.Builder builder = ConfigRenderTask.Builder.Companion.create();
+        final TextView mockedTextView = Mockito.mock(TextView.class);
+        final Button mockedButton = Mockito.mock(Button.class);
+        builder.setTextView(mockedTextView);
+        builder.setButtonRender(mockedButton);
+        final ConfigRenderTask configRenderTask = builder.build();
         Assertions.assertThat(configRenderTask)
             .as("The default constructor of ConfigRenderTask")
             .isNotNull()
@@ -21,13 +30,13 @@ public class ConfigRenderTaskTest {
     }
 
     /**
-     * Tests the {@link ConfigRenderTask#builder()#toString()} method in the builder class of {@link Config}.
+     * Tests the {@link ConfigRenderTask.Builder#toString()} method in the builder class of {@link Config}.
      */
     @Test
     public void testConfigRenderTaskBuilderToString() {
-        final String configRenderTaskBuilderStr = ConfigRenderTask.builder().toString();
+        final String configRenderTaskBuilderStr = ConfigRenderTask.Builder.Companion.create().toString();
         Assertions.assertThat(configRenderTaskBuilderStr)
-            .as("The toString of ConfigRenderTask.builder()")
+            .as("The toString of ConfigRenderTask.Builder")
             .isNotNull()
             .isInstanceOf(String.class);
     }

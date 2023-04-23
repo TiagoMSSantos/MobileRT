@@ -21,9 +21,9 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import java8.util.stream.IntStreams;
-import lombok.extern.java.Log;
 import puscas.mobilertapp.constants.Accelerator;
 import puscas.mobilertapp.constants.Constants;
 import puscas.mobilertapp.constants.ConstantsUI;
@@ -38,8 +38,12 @@ import puscas.mobilertapp.utils.UtilsT;
  * The test suite for the User Interface.
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-@Log
 public final class UiTest extends AbstractTest {
+
+    /**
+     * Logger for this class.
+     */
+    private static final Logger logger = Logger.getLogger(UiTest.class.getSimpleName());
 
     /**
      * The current index of the scene in the {@link NumberPicker}.
@@ -199,7 +203,7 @@ public final class UiTest extends AbstractTest {
         IntStreams.range(0, buttonTextList.size() * repetitions).forEach(currentIndex -> {
 
             final String message = "currentIndex = " + currentIndex;
-            log.info(message);
+            logger.info(message);
 
             incrementCountersAndUpdatePickers(numCores);
 

@@ -2,12 +2,9 @@ package puscas.mobilertapp.exceptions;
 
 import androidx.annotation.NonNull;
 
-import lombok.NoArgsConstructor;
-
 /**
  * An {@link Exception} which represents the system with low memory.
  */
-@NoArgsConstructor
 public class LowMemoryException extends Exception {
 
     /**

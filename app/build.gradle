@@ -27,6 +27,7 @@ plugins {
 
     // Add support for the language Kotlin.
     id 'kotlin-android'
+    id 'org.jetbrains.kotlin.android'
 
     // Add support for IDE plugin.
     // Useful to add custom sources and tests directories.

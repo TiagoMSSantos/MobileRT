@@ -152,7 +152,7 @@ public class MainRendererTest {
 
         final MainRenderer mainRenderer = createMainRenderer();
 
-        Assertions.assertThatThrownBy(() -> mainRenderer.resetStats(0, ConfigSamples.builder().build(), -2, 0))
+        Assertions.assertThatThrownBy(() -> mainRenderer.resetStats(0, ConfigSamples.Builder.Companion.create().build(), -2, 0))
             .as("The MainRenderer#resetStats method")
             .isInstanceOf(IllegalArgumentException.class);
     }
@@ -361,8 +361,8 @@ public class MainRendererTest {
                 .thenReturn(1);
 
             Assertions.assertThatThrownBy(() -> mainRenderer.copyGlFrameBufferToBitmap(
-                ConfigResolution.builder().build(),
-                ConfigResolution.builder().build()
+                ConfigResolution.Builder.Companion.create().build(),
+                ConfigResolution.Builder.Companion.create().build()
             ))
             .as("The call to MainRenderer#copyGlFrameBufferToBitmap method")
             .isInstanceOf(IllegalArgumentException.class);
@@ -376,8 +376,8 @@ public class MainRendererTest {
                 .thenReturn(2);
 
             Assertions.assertThatThrownBy(() -> mainRenderer.copyGlFrameBufferToBitmap(
-                ConfigResolution.builder().build(),
-                ConfigResolution.builder().build()
+                ConfigResolution.Builder.Companion.create().build(),
+                ConfigResolution.Builder.Companion.create().build()
             ))
             .as("The call to MainRenderer#copyGlFrameBufferToBitmap method")
             .isInstanceOf(IllegalArgumentException.class);
@@ -394,7 +394,7 @@ public class MainRendererTest {
         final MainRenderer mainRenderer;
         try (final MockedStatic<Bitmap> bitmapMockedStatic = Mockito.mockStatic(Bitmap.class)) {
             final Bitmap bitmapMocked = Mockito.mock(Bitmap.class);
-            bitmapMockedStatic.when(() -> Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888))
+            bitmapMockedStatic.when(() -> Bitmap.createBitmap(Mockito.eq(1), Mockito.eq(1), Mockito.eq(Bitmap.Config.ARGB_8888)))
                 .thenReturn(bitmapMocked);
 
             Mockito.when(bitmapMocked.isRecycled())
@@ -410,7 +410,7 @@ public class MainRendererTest {
             } catch (final LowMemoryException ex) {
                 throw new FailureException(ex);
             }
-            mainRenderer.setBitmap(ConfigResolution.builder().build(), ConfigResolution.builder().build(), true);
+            mainRenderer.setBitmap(ConfigResolution.Builder.Companion.create().build(), ConfigResolution.Builder.Companion.create().build(), true);
         }
         return mainRenderer;
     }

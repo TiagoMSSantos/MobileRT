@@ -7,8 +7,8 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import java.util.concurrent.TimeoutException;
+import java.util.logging.Logger;
 
-import lombok.extern.java.Log;
 import puscas.mobilertapp.constants.Constants;
 import puscas.mobilertapp.constants.Scene;
 import puscas.mobilertapp.utils.UtilsContextT;
@@ -18,8 +18,12 @@ import puscas.mobilertapp.utils.UtilsT;
  * The test suite for the preview feature (rasterize one frame of the scene).
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-@Log
 public final class PreviewTest extends AbstractTest {
+
+    /**
+     * Logger for this class.
+     */
+    private static final Logger logger = Logger.getLogger(PreviewTest.class.getSimpleName());
 
     /**
      * Tests the preview feature in a scene which uses perspective camera.
@@ -28,7 +32,7 @@ public final class PreviewTest extends AbstractTest {
      */
     @Test(timeout = 5L * 60L * 1000L)
     public void testPreviewScenePerspectiveCamera() throws TimeoutException {
-        log.info("testPreviewScenePerspectiveCamera start");
+        logger.info("testPreviewScenePerspectiveCamera start");
         Preconditions.checkNotNull(this.activity, "Activity can't be null");
 
         UtilsContextT.resetPickerValues(this.activity, Scene.CORNELL2.ordinal());
@@ -41,7 +45,7 @@ public final class PreviewTest extends AbstractTest {
         UtilsT.assertRenderButtonText(Constants.RENDER);
 
         UtilsT.testStateAndBitmap(false);
-        log.info("testPreviewScenePerspectiveCamera finished");
+        logger.info("testPreviewScenePerspectiveCamera finished");
     }
 
     /**
@@ -51,7 +55,7 @@ public final class PreviewTest extends AbstractTest {
      */
     @Test(timeout = 5L * 60L * 1000L)
     public void testPreviewSceneOrthographicCamera() throws TimeoutException {
-        log.info("testPreviewSceneOrthographicCamera start");
+        logger.info("testPreviewSceneOrthographicCamera start");
         Preconditions.checkNotNull(this.activity, "Activity can't be null");
 
         UtilsContextT.resetPickerValues(this.activity, Scene.SPHERES.ordinal());
@@ -64,7 +68,7 @@ public final class PreviewTest extends AbstractTest {
         UtilsT.assertRenderButtonText(Constants.RENDER);
 
         UtilsT.testStateAndBitmap(false);
-        log.info("testPreviewSceneOrthographicCamera finished");
+        logger.info("testPreviewSceneOrthographicCamera finished");
     }
 
 }

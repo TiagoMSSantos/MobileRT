@@ -5,6 +5,8 @@ import android.opengl.GLUtils;
 
 import androidx.annotation.NonNull;
 
+import java.util.logging.Logger;
+
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
@@ -13,8 +15,6 @@ import javax.microedition.khronos.egl.EGLDisplay;
 import java8.util.function.BiFunction;
 import java8.util.function.Function;
 import java8.util.function.Supplier;
-import lombok.experimental.UtilityClass;
-import lombok.extern.java.Log;
 import puscas.mobilertapp.constants.ConstantsMethods;
 import puscas.mobilertapp.constants.ConstantsRenderer;
 import puscas.mobilertapp.exceptions.FailureException;
@@ -22,9 +22,19 @@ import puscas.mobilertapp.exceptions.FailureException;
 /**
  * Utility class with some helper methods for OpenGL framework.
  */
-@UtilityClass
-@Log
 public final class UtilsGL {
+
+    /**
+     * Logger for this class.
+     */
+    private static final Logger logger = Logger.getLogger(UtilsGL.class.getSimpleName());
+
+    /**
+     * Private constructor to avoid creating instances.
+     */
+    private UtilsGL() {
+        throw new UnsupportedOperationException("Not implemented.");
+    }
 
     /**
      * Helper method that will execute a GL method and then will check for
@@ -36,7 +46,7 @@ public final class UtilsGL {
      * @param method The method to call.
      */
     public static void run(@NonNull final Runnable method) {
-        log.info(ConstantsMethods.RUN);
+        logger.info(ConstantsMethods.RUN);
         method.run();
         checksGlError();
     }
@@ -52,7 +62,7 @@ public final class UtilsGL {
      */
     @NonNull
     public static <T> T run(@NonNull final Supplier<T> method) {
-        log.info(ConstantsMethods.RUN);
+        logger.info(ConstantsMethods.RUN);
         final T result = method.get();
         checksGlError();
         return result;
@@ -71,7 +81,7 @@ public final class UtilsGL {
     @NonNull
     public static <T, R> T run(@NonNull final R arg,
                                @NonNull final Function<R, T> method) {
-        log.info(ConstantsMethods.RUN);
+        logger.info(ConstantsMethods.RUN);
         final T result = method.apply(arg);
         checksGlError();
         return result;
@@ -92,7 +102,7 @@ public final class UtilsGL {
     public static <T, R, S> T run(@NonNull final R arg1,
                                   @NonNull final S arg2,
                                   @NonNull final BiFunction<R, S, T> method) {
-        log.info(ConstantsMethods.RUN);
+        logger.info(ConstantsMethods.RUN);
         final T result = method.apply(arg1, arg2);
         checksGlError();
         return result;
@@ -106,7 +116,7 @@ public final class UtilsGL {
      *     {@code False} otherwise.
      */
     public static boolean checkGL20Support() {
-        log.info("checkGL20Support");
+        logger.info("checkGL20Support");
 
         final EGL10 egl = (EGL10) EGLContext.getEGL();
         final EGLDisplay display = egl.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY);
@@ -148,7 +158,7 @@ public final class UtilsGL {
      * capabilities.
      */
     public static void resetOpenGlBuffers() {
-        log.info("resetOpenGlBuffers");
+        logger.info("resetOpenGlBuffers");
 
         run(() -> GLES20.glClear(ConstantsRenderer.ALL_BUFFER_BIT));
 
@@ -170,7 +180,7 @@ public final class UtilsGL {
      */
     @NonNull
     public static int[] bindTexture() {
-        log.info("bindTexture");
+        logger.info("bindTexture");
 
         final int numTextures = 1;
         final int[] textureHandle = new int[numTextures];
@@ -197,7 +207,7 @@ public final class UtilsGL {
      * @param attributes The indexes of the attributes data.
      */
     public static void disableAttributeData(@NonNull final int... attributes) {
-        log.info("disableAttributeData");
+        logger.info("disableAttributeData");
 
         for (final int attribute : attributes) {
             run(() -> GLES20.glDisableVertexAttribArray(attribute));

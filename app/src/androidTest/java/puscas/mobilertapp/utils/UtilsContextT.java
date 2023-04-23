@@ -13,9 +13,8 @@ import com.google.common.util.concurrent.Uninterruptibles;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Logger;
 
-import lombok.experimental.UtilityClass;
-import lombok.extern.java.Log;
 import puscas.mobilertapp.DrawView;
 import puscas.mobilertapp.MainActivity;
 import puscas.mobilertapp.MainRenderer;
@@ -27,9 +26,19 @@ import puscas.mobilertapp.constants.State;
 /**
  * Helper class which contains helper methods that need the {@link Context} for the tests.
  */
-@UtilityClass
-@Log
 public final class UtilsContextT {
+
+    /**
+     * Logger for this class.
+     */
+    private static final Logger logger = Logger.getLogger(UtilsContextT.class.getSimpleName());
+
+    /**
+     * Private constructor to avoid creating instances.
+     */
+    private UtilsContextT() {
+        throw new UnsupportedOperationException("Not implemented.");
+    }
 
     /**
      * Helper method that waits until the Ray Tracing engine stops rendering
@@ -40,7 +49,7 @@ public final class UtilsContextT {
      */
     public static void waitUntilRenderingDone(@NonNull final MainActivity activity)
         throws TimeoutException {
-        log.info("waitUntilRenderingDone start");
+        logger.info("waitUntilRenderingDone start");
         final AtomicBoolean done = new AtomicBoolean(false);
         final long advanceSecs = 3L;
 
@@ -55,16 +64,16 @@ public final class UtilsContextT {
 
             renderButtonView.check((view, exception) -> {
                 final Button renderButton = view.findViewById(R.id.renderButton);
-                log.info("Checking if rendering done.");
+                logger.info("Checking if rendering done.");
                 if (renderButton.getText().toString().equals(Constants.RENDER)
                     && renderer.getState() == State.IDLE) {
                     done.set(true);
-                    log.info("Rendering done.");
+                    logger.info("Rendering done.");
                 }
             });
         }
 
-        log.info("waitUntilRenderingDone finished");
+        logger.info("waitUntilRenderingDone finished");
         if (!done.get()) {
             throw new TimeoutException("The Ray Tracing engine didn't stop rendering the scene.");
         }
@@ -78,7 +87,7 @@ public final class UtilsContextT {
      * @param scene   The id of the scene to set.
      */
     public static void resetPickerValues(@NonNull final Context context, final int scene) {
-        log.info("resetPickerValues");
+        logger.info("resetPickerValues");
 
         final int numCores = UtilsContext.getNumOfCores(context);
 

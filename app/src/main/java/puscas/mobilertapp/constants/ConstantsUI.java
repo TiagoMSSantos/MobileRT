@@ -4,13 +4,11 @@ import android.os.Build;
 import android.os.Bundle;
 
 import java8.util.Optional;
-import lombok.experimental.UtilityClass;
 
 /**
  * Utility class with constants for the User Interface (including
  * {@link android.widget.NumberPicker} used).
  */
-@UtilityClass
 public final class ConstantsUI {
 
     /**
@@ -98,5 +96,12 @@ public final class ConstantsUI {
      * @implNote Needs to be above 12.5F in order to be compatible with Android API < 16.
      */
     static final float TEXT_SIZE = Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN ? 15.0F : 12.5F;
+
+    /**
+     * Private constructor to avoid creating instances.
+     */
+    private ConstantsUI() {
+        throw new UnsupportedOperationException("Not implemented.");
+    }
 
 }

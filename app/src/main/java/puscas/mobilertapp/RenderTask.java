@@ -19,10 +19,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 import kotlinx.coroutines.DelicateCoroutinesApi;
 import lombok.Builder;
-import lombok.extern.java.Log;
 import puscas.mobilertapp.configs.ConfigRenderTask;
 import puscas.mobilertapp.constants.Constants;
 import puscas.mobilertapp.constants.ConstantsMethods;
@@ -36,8 +36,12 @@ import puscas.mobilertapp.utils.Utils;
  * An asynchronous task to render a frame and update the {@link TextView} text.
  * At the end of the task, it sets the render {@link Button} to "Render".
  */
-@Log
 public final class RenderTask extends AsyncTaskCoroutine {
+
+    /**
+     * Logger for this class.
+     */
+    private static final Logger logger = Logger.getLogger(RenderTask.class.getSimpleName());
 
     /**
      * The number of milliseconds in a second.
@@ -187,7 +191,7 @@ public final class RenderTask extends AsyncTaskCoroutine {
     @OptIn(markerClass = DelicateCoroutinesApi.class)
     private RenderTask(@NonNull final ConfigRenderTask config) {
         super();
-        log.info("RenderTask");
+        logger.info("RenderTask");
 
         this.formatter.setMaximumFractionDigits(2);
         this.formatter.setMinimumFractionDigits(2);
@@ -208,7 +212,7 @@ public final class RenderTask extends AsyncTaskCoroutine {
         resetTextStats();
 
         this.timer = () -> {
-            log.info(ConstantsMethods.TIMER);
+            logger.info(ConstantsMethods.TIMER);
             updateFps();
             updateTextStats();
 
@@ -221,7 +225,7 @@ public final class RenderTask extends AsyncTaskCoroutine {
                 this.executorService.shutdown();
             }
 
-            log.info(ConstantsMethods.TIMER + ConstantsMethods.FINISHED);
+            logger.info(ConstantsMethods.TIMER + ConstantsMethods.FINISHED);
         };
 
         checksArguments();
@@ -325,33 +329,33 @@ public final class RenderTask extends AsyncTaskCoroutine {
 
     @Override
     protected void onPreExecute() {
-        log.info("onPreExecute");
+        logger.info("onPreExecute");
     }
 
     @Override
     protected void doInBackground() {
-        log.info("doInBackground");
+        logger.info("doInBackground");
 
         this.executorService.scheduleAtFixedRate(this.timer, 0L,
             this.updateInterval, TimeUnit.MILLISECONDS);
         Utils.waitExecutorToFinish(this.executorService);
 
         final String message = "doInBackground" + ConstantsMethods.FINISHED;
-        log.info(message);
+        logger.info(message);
     }
 
     @Override
     protected void onProgressUpdate() {
-        log.info("onProgressUpdate");
+        logger.info("onProgressUpdate");
         printText();
 
         final String message = "onProgressUpdate" + ConstantsMethods.FINISHED;
-        log.info(message);
+        logger.info(message);
     }
 
     @Override
     protected void onPostExecute() {
-        log.info("onPostExecute");
+        logger.info("onPostExecute");
 
         printText();
         this.requestRender.run();
@@ -362,7 +366,7 @@ public final class RenderTask extends AsyncTaskCoroutine {
         this.buttonRender.get().setText(R.string.render);
 
         final String message = "onPostExecute" + ConstantsMethods.FINISHED;
-        log.info(message);
+        logger.info(message);
     }
 
 }

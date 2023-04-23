@@ -9,9 +9,9 @@ import org.junit.runners.MethodSorters;
 
 import java.io.File;
 import java.util.List;
+import java.util.logging.Logger;
 
 import java8.util.stream.StreamSupport;
-import lombok.extern.java.Log;
 import puscas.mobilertapp.AbstractTest;
 import puscas.mobilertapp.MainActivity;
 import puscas.mobilertapp.constants.Constants;
@@ -22,8 +22,12 @@ import puscas.mobilertapp.utils.UtilsContext;
  * The test suite for the File system operations used in {@link MainActivity}.
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-@Log
 public final class FileSystemTest extends AbstractTest {
+
+    /**
+     * Logger for this class.
+     */
+    private static final Logger logger = Logger.getLogger(FileSystemTest.class.getSimpleName());
 
     /**
      * Tests that a file in the internal storage from the Android device exists and is readable.
@@ -54,14 +58,14 @@ public final class FileSystemTest extends AbstractTest {
             .forEach(path -> {
                 final File file = new File(path);
                 final String filePath = getAbsolutePath(path);
-                log.info("Files in directory: " + filePath);
+                logger.info("Files in directory: " + filePath);
                 final String[] list = file.list();
                 if (list != null) {
                     for (final String content : list) {
-                        log.info(getAbsolutePath(content));
+                        logger.info(getAbsolutePath(content));
                     }
                 }
-                log.info("List finished.");
+                logger.info("List finished.");
                 Assert.assertTrue(Constants.FILE_SHOULD_EXIST + ": " + filePath, file.exists());
                 Assert.assertTrue("File should be a directory: " + filePath, file.isDirectory());
             });

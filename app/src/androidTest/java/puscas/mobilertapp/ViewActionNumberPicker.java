@@ -11,26 +11,38 @@ import androidx.test.espresso.matcher.ViewMatchers;
 import org.hamcrest.Matcher;
 import org.junit.Assert;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
+import java.util.logging.Logger;
+
 import puscas.mobilertapp.utils.UtilsT;
 
 /**
  * Auxiliary class which represents a {@link NumberPicker}.
  */
-@Log
-@RequiredArgsConstructor
 public final class ViewActionNumberPicker implements ViewAction {
+
+    /**
+     * Logger for this class.
+     */
+    private static final Logger logger = Logger.getLogger(ViewActionNumberPicker.class.getSimpleName());
 
     /**
      * The value to be set in the {@link NumberPicker}.
      */
     private final int newValue;
 
+    /**
+     * The constructor.
+     *
+     * @param newValue The value to be set in the {@link NumberPicker}.
+     */
+    public ViewActionNumberPicker(final int newValue) {
+        this.newValue = newValue;
+    }
+
     @NonNull
     @Override
     public Matcher<View> getConstraints() {
-        log.info("ViewActionNumberPicker#getConstraints");
+        logger.info("ViewActionNumberPicker#getConstraints");
 
         return ViewMatchers.isAssignableFrom(NumberPicker.class);
     }
@@ -38,7 +50,7 @@ public final class ViewActionNumberPicker implements ViewAction {
     @NonNull
     @Override
     public String getDescription() {
-        log.info("ViewActionNumberPicker#getDescription");
+        logger.info("ViewActionNumberPicker#getDescription");
 
         return "Set the value of a NumberPicker: " + this.newValue;
     }

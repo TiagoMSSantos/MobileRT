@@ -16,10 +16,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Logger;
 
 import java8.util.J8Arrays;
-import lombok.experimental.UtilityClass;
-import lombok.extern.java.Log;
 import puscas.mobilertapp.ConstantsAndroidTests;
 import puscas.mobilertapp.DrawView;
 import puscas.mobilertapp.MainRenderer;
@@ -33,9 +32,19 @@ import puscas.mobilertapp.exceptions.FailureException;
 /**
  * Helper class which contains helper methods for the tests.
  */
-@UtilityClass
-@Log
 public final class UtilsT {
+
+    /**
+     * Logger for this class.
+     */
+    private static final Logger logger = Logger.getLogger(UtilsT.class.getSimpleName());
+
+    /**
+     * Private constructor to avoid creating instances.
+     */
+    private UtilsT() {
+        throw new UnsupportedOperationException("Not implemented.");
+    }
 
     /**
      * Helper method that gets a private field from an {@link Object}.
@@ -130,7 +139,7 @@ public final class UtilsT {
         final boolean bitmapSameColor = J8Arrays.stream(pixels)
             .allMatch(pixel -> pixel == firstPixel);
 
-        log.info("Checking bitmap values.");
+        logger.info("Checking bitmap values.");
         Assert.assertEquals("The rendered image should have different values.",
             expectedSameValues, bitmapSameColor
         );
@@ -143,12 +152,12 @@ public final class UtilsT {
      * @param expectedSameValues Whether the {@link Button} should not change at all.
      */
     public static void startRendering(final boolean expectedSameValues) {
-        log.info("startRendering");
+        logger.info("startRendering");
         assertRenderButtonText(Constants.RENDER);
         Espresso.onView(ViewMatchers.withId(R.id.renderButton))
             .perform(new ViewActionButton(expectedSameValues ? Constants.RENDER : Constants.STOP, false));
         UtilsT.executeWithCatching(Espresso::onIdle);
-        log.info("startRendering" + ConstantsMethods.FINISHED);
+        logger.info("startRendering" + ConstantsMethods.FINISHED);
     }
 
     /**
@@ -156,13 +165,13 @@ public final class UtilsT {
      * so it stops the Ray Tracing engine.
      */
     public static void stopRendering() {
-        log.info("stopRendering");
+        logger.info("stopRendering");
         assertRenderButtonText(Constants.STOP);
         Espresso.onView(ViewMatchers.withId(R.id.renderButton))
             .perform(new ViewActionButton(Constants.RENDER, false));
         UtilsT.executeWithCatching(Espresso::onIdle);
         assertRenderButtonText(Constants.RENDER);
-        log.info("stopRendering" + ConstantsMethods.FINISHED);
+        logger.info("stopRendering" + ConstantsMethods.FINISHED);
     }
 
     /**
@@ -174,7 +183,7 @@ public final class UtilsT {
      *                           one color.
      */
     public static void testStateAndBitmap(final boolean expectedSameValues) {
-        log.info("testBitmap");
+        logger.info("testBitmap");
         Espresso.onView(ViewMatchers.withId(R.id.drawLayout))
             .check((view, exception) -> {
                 final DrawView drawView = (DrawView) view;
@@ -195,7 +204,7 @@ public final class UtilsT {
      * @param expectedText The expected text shown in the {@link Button}.
      */
     public static void assertRenderButtonText(@NonNull final String expectedText) {
-        log.info("assertRenderButtonText");
+        logger.info("assertRenderButtonText");
         Espresso.onView(ViewMatchers.withId(R.id.renderButton))
             .check((view, exception) -> {
                 final Button renderButton = view.findViewById(R.id.renderButton);
@@ -216,11 +225,11 @@ public final class UtilsT {
      * @param method The {@link Runnable} to call.
      */
     public static void executeWithCatching(@NonNull final Runnable method) {
-        log.info(ConstantsMethods.RUN);
+        logger.info(ConstantsMethods.RUN);
         try {
             method.run();
         } catch (final RuntimeException ex) {
-            log.warning(ex.getMessage());
+            logger.warning(ex.getMessage());
         }
     }
 

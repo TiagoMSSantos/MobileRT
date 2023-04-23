@@ -1,13 +1,18 @@
 package puscas.mobilertapp.constants;
 
-import lombok.experimental.UtilityClass;
 import puscas.mobilertapp.utils.UtilsGL;
 
 /**
  * Utility class with the text constants for the names of methods.
  */
-@UtilityClass
 public final class ConstantsMethods {
+
+    /**
+     * Private constructor to avoid creating instances.
+     */
+    private ConstantsMethods() {
+        throw new UnsupportedOperationException("Not implemented.");
+    }
 
     /**
      * The constant used when a method is about to return.

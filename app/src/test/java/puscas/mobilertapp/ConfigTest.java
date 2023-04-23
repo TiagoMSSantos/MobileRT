@@ -3,7 +3,6 @@ package puscas.mobilertapp;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
-import lombok.extern.java.Log;
 import puscas.mobilertapp.configs.Config;
 import puscas.mobilertapp.configs.ConfigResolution;
 import puscas.mobilertapp.configs.ConfigSamples;
@@ -14,7 +13,6 @@ import puscas.mobilertapp.constants.Shader;
 /**
  * The test suite for {@link Config} class.
  */
-@Log
 public final class ConfigTest {
 
     /**
@@ -22,7 +20,7 @@ public final class ConfigTest {
      */
     @Test
     public void testDefaultBuild() {
-        final Config config = Config.builder().build();
+        final Config config = Config.Builder.Companion.create().build();
 
         Assertions.assertThat(config.getConfigResolution().getWidth())
             .as("Width not the expected value.")
@@ -84,26 +82,23 @@ public final class ConfigTest {
         final String mat = "def";
         final String cam = "ghi";
 
-        final Config config = Config.builder()
-            .configResolution(
-                ConfigResolution.builder()
-                    .width(width)
-                    .height(height)
-                    .build()
-            )
-            .scene(scene)
-            .shader(shader)
-            .accelerator(accelerator)
-            .configSamples(
-                ConfigSamples.builder()
-                    .samplesPixel(spp)
-                    .samplesLight(spl)
-                    .build()
-            )
-            .objFilePath(obj)
-            .matFilePath(mat)
-            .camFilePath(cam)
-            .build();
+        final Config.Builder builder = Config.Builder.Companion.create();
+        final ConfigResolution.Builder builderResolution = ConfigResolution.Builder.Companion.create();
+        builderResolution.setWidth(width);
+        builderResolution.setHeight(height);
+        builder.setConfigResolution(builderResolution.build());
+        builder.setScene(scene);
+        builder.setShader(shader);
+        builder.setAccelerator(accelerator);
+
+        final ConfigSamples.Builder builderSamples = ConfigSamples.Builder.Companion.create();
+        builderSamples.setSamplesPixel(spp);
+        builderSamples.setSamplesLight(spl);
+        builder.setConfigSamples(builderSamples.build());
+        builder.setObjFilePath(obj);
+        builder.setMatFilePath(mat);
+        builder.setCamFilePath(cam);
+        final Config config = builder.build();
 
         Assertions.assertThat(config.getConfigResolution().getWidth())
             .as("Width not the expected value.")
@@ -150,13 +145,13 @@ public final class ConfigTest {
     }
 
     /**
-     * Tests the {@link Config#builder()#toString()} method in the builder class of {@link Config}.
+     * Tests the {@link Config.Builder#toString()} method in the builder class of {@link Config}.
      */
     @Test
     public void testConfigBuilderToString() {
-        final String configBuilderStr = Config.builder().toString();
-        org.assertj.core.api.Assertions.assertThat(configBuilderStr)
-            .as("The toString of Config.builder()")
+        final String configBuilderStr = Config.Builder.Companion.create().toString();
+        Assertions.assertThat(configBuilderStr)
+            .as("The toString of Config.Builder")
             .isNotNull()
             .isInstanceOf(String.class);
     }

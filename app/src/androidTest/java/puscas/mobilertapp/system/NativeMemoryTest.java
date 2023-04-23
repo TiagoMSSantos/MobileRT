@@ -16,21 +16,25 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Locale;
+import java.util.logging.Logger;
 
-import lombok.extern.java.Log;
 import puscas.mobilertapp.constants.Constants;
 
 /**
  * The Android tests for memory behaviour in the system.
- *
+ * <p>
  * These tests are useful to test the behaviour of allocating and freeing
  * native heap memory, as the Android unit tests only have Java heap and not a
  * native heap memory available.
  */
 @Ignore("Ignore because JVM only has 2MB of native heap by default for the tests.")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-@Log
 public final class NativeMemoryTest {
+
+    /**
+     * Logger for this class.
+     */
+    private static final Logger logger = Logger.getLogger(NativeMemoryTest.class.getSimpleName());
 
     /**
      * Setup method called before each test.
@@ -38,7 +42,7 @@ public final class NativeMemoryTest {
     @Before
     public void setUp() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        log.info(methodName);
+        logger.info(methodName);
     }
 
     /**
@@ -47,7 +51,7 @@ public final class NativeMemoryTest {
     @After
     public void tearDown() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        log.info(methodName);
+        logger.info(methodName);
     }
 
 
@@ -100,7 +104,7 @@ public final class NativeMemoryTest {
                 convertBytesToKiloBytes(nativeHeapSizeBytes),
                 convertBytesToMegaBytes(nativeHeapSizeBytes)
         );
-        log.info(sizeNativeHeap);
+        logger.info(sizeNativeHeap);
 
 
         final long nativeHeapAllocatedSizeBytes = Debug.getNativeHeapAllocatedSize();
@@ -109,7 +113,7 @@ public final class NativeMemoryTest {
                 convertBytesToKiloBytes(nativeHeapAllocatedSizeBytes),
                 convertBytesToMegaBytes(nativeHeapAllocatedSizeBytes)
         );
-        log.info(sizeNativeAllocatedHeap);
+        logger.info(sizeNativeAllocatedHeap);
 
 
         final long nativeHeapFreeSizeBytes = Debug.getNativeHeapFreeSize();
@@ -119,7 +123,7 @@ public final class NativeMemoryTest {
                 convertBytesToKiloBytes(nativeHeapFreeSizeBytes),
                 availableMemoryMb
         );
-        log.info(sizeNativeHeapFree);
+        logger.info(sizeNativeHeapFree);
 
         return availableMemoryMb;
     }

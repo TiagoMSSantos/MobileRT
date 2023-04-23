@@ -1,12 +1,8 @@
 package puscas.mobilertapp.constants;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
 /**
  * The states which the Ray Tracer engine can have.
  */
-@RequiredArgsConstructor
 public enum State {
 
     /**
@@ -32,6 +28,23 @@ public enum State {
     /**
      * The current State of the Ray Tracer engine.
      */
-    @Getter
     private final int id;
+
+    /**
+     * The constructor.
+     *
+     * @param id The id.
+     */
+    State(final int id) {
+        this.id = id;
+    }
+
+    /**
+     * Gets the id.
+     *
+     * @return The id.
+     */
+    public int getId() {
+        return id;
+    }
 }

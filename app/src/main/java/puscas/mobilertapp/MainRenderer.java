@@ -21,20 +21,19 @@ import com.google.common.util.concurrent.Uninterruptibles;
 
 import org.jetbrains.annotations.Contract;
 
+import java.lang.annotation.Native;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import java8.util.Optional;
 import kotlinx.coroutines.DelicateCoroutinesApi;
-import lombok.AccessLevel;
-import lombok.Setter;
-import lombok.extern.java.Log;
 import puscas.mobilertapp.configs.Config;
 import puscas.mobilertapp.configs.ConfigGlAttribute;
 import puscas.mobilertapp.configs.ConfigRenderTask;
@@ -56,8 +55,12 @@ import puscas.mobilertapp.utils.UtilsShader;
 /**
  * The OpenGL renderer that shows the Ray Tracer engine rendered image.
  */
-@Log
 public class MainRenderer implements GLSurfaceView.Renderer {
+
+    /**
+     * Logger for this class.
+     */
+    private static final Logger logger = Logger.getLogger(MainRenderer.class.getSimpleName());
 
     /**
      * The name for the attribute location of vertex positions in {@link GLES20}.
@@ -137,17 +140,18 @@ public class MainRenderer implements GLSurfaceView.Renderer {
      *
      * @see ActivityManager#getMemoryInfo(ActivityManager.MemoryInfo)
      */
-    @Setter(AccessLevel.PACKAGE)
     private ActivityManager activityManager = null;
 
     /**
      * The {@link Bitmap} where the Ray Tracer engine will render the scene.
      */
+    @Native
     private Bitmap bitmap = null;
 
     /**
      * The number of threads to be used by the Ray Tracer engine.
      */
+    @Native
     private int numThreads = 0;
 
     /**
@@ -188,21 +192,19 @@ public class MainRenderer implements GLSurfaceView.Renderer {
     /**
      * Configurator for the {@link RenderTask}.
      */
-    private final ConfigRenderTask.ConfigRenderTaskBuilder configRenderTask = ConfigRenderTask.builder()
-        .updateInterval(DEFAULT_UPDATE_INTERVAL)
-        .finishRender(this::rtFinishRender);
+    private final ConfigRenderTask.Builder configRenderTask = ConfigRenderTask.Builder.Companion.create();
 
     /**
      * The {@link ConfigResolution} of the {@link Bitmap} where the Ray Tracer engine will render
      * the scene. This represents the resolution of the desired {@link Bitmap}.
      */
-    private ConfigResolution configResolution = ConfigResolution.builder().build();
+    private ConfigResolution configResolution = ConfigResolution.Builder.Companion.create().build();
 
     /**
      * The {@link ConfigResolution} of the {@link DrawView} where the Ray Tracer engine will render
      * the scene. This represents the resolution the {@link View} in the OpenGL context.
      */
-    private ConfigResolution configResolutionView = ConfigResolution.builder().build();
+    private ConfigResolution configResolutionView = ConfigResolution.Builder.Companion.create().build();
 
     /**
      * The OpenGL program shader for the 2 triangles containing a texture with
@@ -227,7 +229,6 @@ public class MainRenderer implements GLSurfaceView.Renderer {
      * The {@link TextView} which will output the debug information about the
      * Ray Tracer engine.
      */
-    @Setter(AccessLevel.PACKAGE)
     private TextView textView = null;
 
     /**
@@ -235,7 +236,6 @@ public class MainRenderer implements GLSurfaceView.Renderer {
      * It is important to let the {@link RenderTask} update its state after the
      * rendering process.
      */
-    @Setter(AccessLevel.PACKAGE)
     private Button buttonRender = null;
 
     /**
@@ -254,7 +254,36 @@ public class MainRenderer implements GLSurfaceView.Renderer {
      * The constructor for this class.
      */
     MainRenderer() {
+        configRenderTask.setUpdateInterval(DEFAULT_UPDATE_INTERVAL);
+        configRenderTask.setFinishRender(this::rtFinishRender);
         setBitmap();
+    }
+
+    /**
+     * Sets the {@link #activityManager}.
+     *
+     * @param activityManager The {@link ActivityManager}.
+     */
+    void setActivityManager(final ActivityManager activityManager) {
+        this.activityManager = activityManager;
+    }
+
+    /**
+     * Sets the {@link #textView}.
+     *
+     * @param textView The {@link TextView}.
+     */
+    void setTextView(final TextView textView) {
+        this.textView = textView;
+    }
+
+    /**
+     * Sets the {@link  #buttonRender}.
+     *
+     * @param buttonRender The {@link Button}.
+     */
+    void setButtonRender(Button buttonRender) {
+        this.buttonRender = buttonRender;
     }
 
     /**
@@ -329,21 +358,19 @@ public class MainRenderer implements GLSurfaceView.Renderer {
     private static void connectAttributes(final int shaderProgram,
                                           @NonNull final ByteBuffer bbVertices,
                                           @NonNull final ByteBuffer bbColors) {
-        final ConfigGlAttribute verticesAttribute = ConfigGlAttribute.builder()
-            .attributeName(VERTEX_POSITION)
-            .buffer(bbVertices)
-            .attributeLocation(0)
-            .componentsInBuffer(VERTEX_COMPONENTS)
-            .build();
-        UtilsShader.connectOpenGlAttribute(shaderProgram, verticesAttribute);
+        final ConfigGlAttribute.Builder builderVerticesAttribute = ConfigGlAttribute.Builder.Companion.create();
+        builderVerticesAttribute.setAttributeName(VERTEX_POSITION);
+        builderVerticesAttribute.setBuffer(bbVertices);
+        builderVerticesAttribute.setAttributeLocation(0);
+        builderVerticesAttribute.setComponentsInBuffer(VERTEX_COMPONENTS);
+        UtilsShader.connectOpenGlAttribute(shaderProgram, builderVerticesAttribute.build());
 
-        final ConfigGlAttribute colorsAttribute = ConfigGlAttribute.builder()
-            .attributeName(VERTEX_COLOR)
-            .buffer(bbColors)
-            .attributeLocation(1)
-            .componentsInBuffer(PIXEL_COLORS)
-            .build();
-        UtilsShader.connectOpenGlAttribute(shaderProgram, colorsAttribute);
+        final ConfigGlAttribute.Builder builderColorsAttribute = ConfigGlAttribute.Builder.Companion.create();
+        builderColorsAttribute.setAttributeName(VERTEX_COLOR);
+        builderColorsAttribute.setBuffer(bbColors);
+        builderColorsAttribute.setAttributeLocation(1);
+        builderColorsAttribute.setComponentsInBuffer(PIXEL_COLORS);
+        UtilsShader.connectOpenGlAttribute(shaderProgram, builderColorsAttribute.build());
     }
 
     /**
@@ -353,7 +380,7 @@ public class MainRenderer implements GLSurfaceView.Renderer {
      * @return The number of vertices in the {@link ByteBuffer}.
      */
     private static int getVertexCount(@NonNull final ByteBuffer bbVertices) {
-        log.info("getVertexCount");
+        logger.info("getVertexCount");
 
         return bbVertices.capacity() / (Constants.BYTES_IN_FLOAT * VERTEX_COMPONENTS);
     }
@@ -376,12 +403,12 @@ public class MainRenderer implements GLSurfaceView.Renderer {
      */
     @NonNull
     public State getState() {
-        log.info("getState");
+        logger.info("getState");
 
         while (this.firstFrame) {
-            log.info("Waiting for the onDraw to start the RT engine!!!");
+            logger.info("Waiting for the onDraw to start the RT engine!!!");
             Uninterruptibles.sleepUninterruptibly(500L, TimeUnit.MILLISECONDS);
-            log.info("Waited for the onDraw to start the RT engine!!!");
+            logger.info("Waited for the onDraw to start the RT engine!!!");
         }
 
         MainActivity.resetErrno();
@@ -394,7 +421,7 @@ public class MainRenderer implements GLSurfaceView.Renderer {
      * Resets some stats about the Ray Tracer engine.
      */
     void resetStats() {
-        resetStats(-1, ConfigSamples.builder().build(), -1, -1);
+        resetStats(-1, ConfigSamples.Builder.Companion.create().build(), -1, -1);
     }
 
     /**
@@ -409,7 +436,7 @@ public class MainRenderer implements GLSurfaceView.Renderer {
                     final ConfigSamples configSamples,
                     final int numPrimitives,
                     final int numLights) {
-        log.info("resetStats");
+        logger.info("resetStats");
 
         Preconditions.checkArgument(numPrimitives >= -1, "numPrimitives shouldn't be negative");
 
@@ -418,18 +445,17 @@ public class MainRenderer implements GLSurfaceView.Renderer {
         final String numLightsStr = "numLights: " + numLights;
         final String samplesPixelStr = "samplesPixel: " + configSamples.getSamplesPixel();
         final String samplesLightStr = "samplesLight: " + configSamples.getSamplesLight();
-        log.info(numThreadsStr);
-        log.info(numPrimitivesStr);
-        log.info(numLightsStr);
-        log.info(samplesPixelStr);
-        log.info(samplesLightStr);
+        logger.info(numThreadsStr);
+        logger.info(numPrimitivesStr);
+        logger.info(numLightsStr);
+        logger.info(samplesPixelStr);
+        logger.info(samplesLightStr);
 
         this.numThreads = numThreads;
         this.numPrimitives = numPrimitives;
 
-        this.configRenderTask
-            .samples(configSamples)
-            .numLights(numLights);
+        this.configRenderTask.setSamples(configSamples);
+        this.configRenderTask.setNumLights(numLights);
     }
 
     /**
@@ -502,7 +528,7 @@ public class MainRenderer implements GLSurfaceView.Renderer {
      * native arrays.
      */
     void freeArrays() {
-        log.info("freeArrays");
+        logger.info("freeArrays");
         this.arrayVertices = rtFreeNativeBuffer(this.arrayVertices);
         this.arrayColors = rtFreeNativeBuffer(this.arrayColors);
         this.arrayCamera = rtFreeNativeBuffer(this.arrayCamera);
@@ -516,7 +542,7 @@ public class MainRenderer implements GLSurfaceView.Renderer {
      */
     @VisibleForTesting
     void initPreviewArrays() throws LowMemoryException {
-        log.info("initArrays");
+        logger.info("initArrays");
         checksFreeMemory(1, this::freeArrays);
 
         this.arrayVertices = rtInitVerticesArray();
@@ -552,7 +578,7 @@ public class MainRenderer implements GLSurfaceView.Renderer {
         }
         final boolean insufficientMem = availMem <= (1 + memoryNeeded);
         final String message = "MEMORY AVAILABLE: " + availMem + "MB (" + totalMem + "MB) [Needed " + memoryNeeded + "MB]";
-        log.info(message);
+        logger.info(message);
         return insufficientMem || this.memoryInfo.lowMemory;
     }
 
@@ -566,10 +592,10 @@ public class MainRenderer implements GLSurfaceView.Renderer {
      */
     void checksFreeMemory(final int memoryNeeded,
                           final Runnable function) throws LowMemoryException {
-        log.info("checksFreeMemory");
+        logger.info("checksFreeMemory");
         if (isLowMemory(memoryNeeded)) {
             function.run();
-            throw new LowMemoryException();
+            throw new LowMemoryException("The device has not enough memory.");
         }
     }
 
@@ -581,9 +607,9 @@ public class MainRenderer implements GLSurfaceView.Renderer {
      *                      {@link GLSurfaceView#requestRender()} method.
      */
     void prepareRenderer(final Runnable requestRender) {
-        log.info("prepareRenderer");
+        logger.info("prepareRenderer");
 
-        this.configRenderTask.requestRender(requestRender);
+        this.configRenderTask.setRequestRender(requestRender);
     }
 
     /**
@@ -604,12 +630,12 @@ public class MainRenderer implements GLSurfaceView.Renderer {
      * {@code #viewHeight} fields.
      */
     private void setBitmap() {
-        log.info(ConstantsMethods.SET_BITMAP);
+        logger.info(ConstantsMethods.SET_BITMAP);
 
-        setBitmap(ConfigResolution.builder().build(), ConfigResolution.builder().build(), false);
+        setBitmap(ConfigResolution.Builder.Companion.create().build(), ConfigResolution.Builder.Companion.create().build(), false);
 
         final String message = ConstantsMethods.SET_BITMAP + ConstantsMethods.FINISHED;
-        log.info(message);
+        logger.info(message);
     }
 
     /**
@@ -624,7 +650,7 @@ public class MainRenderer implements GLSurfaceView.Renderer {
     void setBitmap(final ConfigResolution configResolution,
                    final ConfigResolution configResolutionView,
                    final boolean rasterize) {
-        log.info(ConstantsMethods.SET_BITMAP);
+        logger.info(ConstantsMethods.SET_BITMAP);
         this.configResolution = configResolution;
         this.configResolutionView = configResolutionView;
 
@@ -640,7 +666,7 @@ public class MainRenderer implements GLSurfaceView.Renderer {
         this.rasterize = rasterize;
 
         final String messageFinished = ConstantsMethods.SET_BITMAP + ConstantsMethods.FINISHED;
-        log.info(messageFinished);
+        logger.info(messageFinished);
     }
 
     /**
@@ -702,20 +728,20 @@ public class MainRenderer implements GLSurfaceView.Renderer {
      * Waits for the last {@link RenderTask} to finish.
      */
     void waitLastTask() {
-        log.info("waitLastTask");
+        logger.info("waitLastTask");
 
         Optional.ofNullable(this.renderTask)
             .ifPresent(RenderTask::waitToFinish);
 
         final String messageFinished = "waitLastTask" + ConstantsMethods.FINISHED;
-        log.info(messageFinished);
+        logger.info(messageFinished);
     }
 
     /**
      * Closes the Renderer.
      */
     void closeRenderer() {
-        log.info("closeRenderer");
+        logger.info("closeRenderer");
 
         if (this.textureHandle != null) {
             UtilsGL.run(() -> GLES20.glDeleteTextures(1, this.textureHandle, 0));
@@ -724,7 +750,7 @@ public class MainRenderer implements GLSurfaceView.Renderer {
         UtilsGL.run(() -> GLES20.glDeleteProgram(this.shaderProgramRaster));
 
         final String messageFinished = "closeRenderer" + ConstantsMethods.FINISHED;
-        log.info(messageFinished);
+        logger.info(messageFinished);
     }
 
     /**
@@ -744,7 +770,7 @@ public class MainRenderer implements GLSurfaceView.Renderer {
                                @NonNull final ByteBuffer bbColors,
                                @NonNull final ByteBuffer bbCamera,
                                final int numPrimitives) throws LowMemoryException {
-        log.info("renderSceneToBitmap");
+        logger.info("renderSceneToBitmap");
 
         if (UtilsBuffer.isAnyByteBufferEmpty(bbVertices, bbColors, bbCamera)
             || numPrimitives <= 0) {
@@ -753,7 +779,7 @@ public class MainRenderer implements GLSurfaceView.Renderer {
         UtilsGL.run(() -> GLES20.glClear(ConstantsRenderer.ALL_BUFFER_BIT));
 
         final int neededMemoryMb = Utils.calculateSceneSize(numPrimitives);
-        checksFreeMemory(neededMemoryMb, () -> log.severe("SYSTEM WITH LOW MEMORY!!!"));
+        checksFreeMemory(neededMemoryMb, () -> logger.severe("SYSTEM WITH LOW MEMORY!!!"));
 
         UtilsBuffer.resetByteBuffers(bbVertices, bbColors, bbCamera);
 
@@ -785,17 +811,16 @@ public class MainRenderer implements GLSurfaceView.Renderer {
      */
     @OptIn(markerClass = DelicateCoroutinesApi.class)
     private void createAndLaunchRenderTask() {
-        log.info("createAndLaunchRenderTask");
+        logger.info("createAndLaunchRenderTask");
 
         waitLastTask();
 
-        final ConfigRenderTask config = this.configRenderTask
-            .textView(this.textView)
-            .buttonRender(this.buttonRender)
-            .numPrimitives(this.numPrimitives)
-            .numThreads(this.numThreads)
-            .resolution(this.configResolution)
-            .build();
+        this.configRenderTask.setTextView(this.textView);
+        this.configRenderTask.setButtonRender(this.buttonRender);
+        this.configRenderTask.setNumPrimitives(this.numPrimitives);
+        this.configRenderTask.setNumThreads(this.numThreads);
+        this.configRenderTask.setResolution(this.configResolution);
+        final ConfigRenderTask config = this.configRenderTask.build();
 
         this.renderTask = RenderTask.builder()
             .config(config)
@@ -803,7 +828,7 @@ public class MainRenderer implements GLSurfaceView.Renderer {
 
         this.renderTask.executeAsync();
         final String message = "createAndLaunchRenderTask" + ConstantsMethods.FINISHED;
-        log.info(message);
+        logger.info(message);
     }
 
     /**
@@ -812,25 +837,23 @@ public class MainRenderer implements GLSurfaceView.Renderer {
      * @param bitmap The {@link Bitmap} to draw.
      */
     private void drawBitmap(final Bitmap bitmap) {
-        log.info("drawBitmap");
+        logger.info("drawBitmap");
 
         UtilsGL.run(() -> GLES20.glUseProgram(this.shaderProgram));
 
-        final ConfigGlAttribute verticesAttribute = ConfigGlAttribute.builder()
-            .attributeName(VERTEX_POSITION)
-            .buffer(this.floatBufferVertices)
-            .attributeLocation(0)
-            .componentsInBuffer(VERTEX_COMPONENTS)
-            .build();
-        UtilsShader.connectOpenGlAttribute(this.shaderProgram, verticesAttribute);
+        final ConfigGlAttribute.Builder builderVerticesAttribute = ConfigGlAttribute.Builder.Companion.create();
+        builderVerticesAttribute.setAttributeName(VERTEX_POSITION);
+        builderVerticesAttribute.setBuffer(this.floatBufferVertices);
+        builderVerticesAttribute.setAttributeLocation(0);
+        builderVerticesAttribute.setComponentsInBuffer(VERTEX_COMPONENTS);
+        UtilsShader.connectOpenGlAttribute(this.shaderProgram, builderVerticesAttribute.build());
 
-        final ConfigGlAttribute textureAttribute = ConfigGlAttribute.builder()
-            .attributeName(VERTEX_TEX_COORD)
-            .buffer(this.floatBufferTexture)
-            .attributeLocation(1)
-            .componentsInBuffer(TEXTURE_COMPONENTS)
-            .build();
-        UtilsShader.connectOpenGlAttribute(this.shaderProgram, textureAttribute);
+        final ConfigGlAttribute.Builder builderTextureAttribute = ConfigGlAttribute.Builder.Companion.create();
+        builderTextureAttribute.setAttributeName(VERTEX_TEX_COORD);
+        builderTextureAttribute.setBuffer(this.floatBufferTexture);
+        builderTextureAttribute.setAttributeLocation(1);
+        builderTextureAttribute.setComponentsInBuffer(TEXTURE_COMPONENTS);
+        UtilsShader.connectOpenGlAttribute(this.shaderProgram, builderTextureAttribute.build());
 
         final int vertexCount = this.verticesTexture.length / Constants.BYTES_IN_FLOAT;
         UtilsGL.run(() -> GLES20.glDrawArrays(GLES20.GL_TRIANGLE_FAN, 0, vertexCount));
@@ -839,7 +862,7 @@ public class MainRenderer implements GLSurfaceView.Renderer {
             GLES20.GL_RGBA, bitmap, GLES20.GL_UNSIGNED_BYTE, 0));
 
         final String message = "drawBitmap" + ConstantsMethods.FINISHED;
-        log.info(message);
+        logger.info(message);
     }
 
     /**
@@ -867,7 +890,7 @@ public class MainRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onSurfaceCreated(@NonNull final GL10 gl, @NonNull final EGLConfig config) {
-        log.info("onSurfaceCreated");
+        logger.info("onSurfaceCreated");
 
         UtilsGL.resetOpenGlBuffers();
 
@@ -880,21 +903,19 @@ public class MainRenderer implements GLSurfaceView.Renderer {
         this.floatBufferTexture = UtilsBuffer.allocateBuffer(this.texCoords);
 
         // Bind Attributes
-        final ConfigGlAttribute verticesAttribute = ConfigGlAttribute.builder()
-            .attributeName(VERTEX_POSITION)
-            .buffer(this.floatBufferVertices)
-            .attributeLocation(0)
-            .componentsInBuffer(VERTEX_COMPONENTS)
-            .build();
-        UtilsShader.connectOpenGlAttribute(this.shaderProgram, verticesAttribute);
+        final ConfigGlAttribute.Builder builderVerticesAttribute = ConfigGlAttribute.Builder.Companion.create();
+        builderVerticesAttribute.setAttributeName(VERTEX_POSITION);
+        builderVerticesAttribute.setBuffer(this.floatBufferVertices);
+        builderVerticesAttribute.setAttributeLocation(0);
+        builderVerticesAttribute.setComponentsInBuffer(VERTEX_COMPONENTS);
+        UtilsShader.connectOpenGlAttribute(this.shaderProgram, builderVerticesAttribute.build());
 
-        final ConfigGlAttribute textureAttribute = ConfigGlAttribute.builder()
-            .attributeName(VERTEX_TEX_COORD)
-            .buffer(this.floatBufferTexture)
-            .attributeLocation(1)
-            .componentsInBuffer(TEXTURE_COMPONENTS)
-            .build();
-        UtilsShader.connectOpenGlAttribute(this.shaderProgram, textureAttribute);
+        final ConfigGlAttribute.Builder builderTextureAttribute = ConfigGlAttribute.Builder.Companion.create();
+        builderTextureAttribute.setAttributeName(VERTEX_TEX_COORD);
+        builderTextureAttribute.setBuffer(this.floatBufferTexture);
+        builderTextureAttribute.setAttributeLocation(1);
+        builderTextureAttribute.setComponentsInBuffer(TEXTURE_COMPONENTS);
+        UtilsShader.connectOpenGlAttribute(this.shaderProgram, builderTextureAttribute.build());
 
         UtilsGL.run(() -> GLES20.glLinkProgram(this.shaderProgram));
         UtilsShader.checksShaderLinkStatus(this.shaderProgram);
@@ -905,23 +926,23 @@ public class MainRenderer implements GLSurfaceView.Renderer {
         this.textureHandle = UtilsGL.bindTexture();
 
         final String message = "onSurfaceCreated" + ConstantsMethods.FINISHED;
-        log.info(message);
+        logger.info(message);
     }
 
     @Override
     public void onSurfaceChanged(@NonNull final GL10 gl, final int width, final int height) {
-        log.info("onSurfaceChanged");
+        logger.info("onSurfaceChanged");
 
         UtilsGL.run(() -> GLES20.glViewport(0, 0, width, height));
 
         final String message = "onSurfaceChanged" + ConstantsMethods.FINISHED;
-        log.info(message);
+        logger.info(message);
     }
 
     @Override
     public void onDrawFrame(@NonNull final GL10 gl) {
         if (this.firstFrame) {
-            log.info("onDrawFirstFrame");
+            logger.info("onDrawFirstFrame");
             UtilsGL.resetOpenGlBuffers();
 
             try {
@@ -943,7 +964,7 @@ public class MainRenderer implements GLSurfaceView.Renderer {
             createAndLaunchRenderTask();
 
             final String message = "onDrawFirstFrame" + ConstantsMethods.FINISHED;
-            log.info(message);
+            logger.info(message);
         }
 
         drawBitmap(this.bitmap);

@@ -4,13 +4,17 @@ import android.widget.Button;
 
 import org.jetbrains.annotations.NonNls;
 
-import lombok.experimental.UtilityClass;
-
 /**
  * Utility class with some constants for the Android interface.
  */
-@UtilityClass
 public final class Constants {
+
+    /**
+     * Private constructor to avoid creating instances.
+     */
+    private Constants() {
+        throw new UnsupportedOperationException("Not implemented.");
+    }
 
     /**
      * An empty path which should not point to a file.

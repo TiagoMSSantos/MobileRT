@@ -8,16 +8,26 @@ import androidx.test.espresso.matcher.ViewMatchers;
 
 import org.junit.Assert;
 
-import lombok.experimental.UtilityClass;
-import lombok.extern.java.Log;
+import java.util.logging.Logger;
+
 import puscas.mobilertapp.ViewActionNumberPicker;
 
 /**
  * Helper class which contains helper methods about the {@link NumberPicker}s for the tests.
  */
-@UtilityClass
-@Log
 public final class UtilsPickerT {
+
+    /**
+     * Logger for this class.
+     */
+    private static final Logger logger = Logger.getLogger(UtilsPickerT.class.getSimpleName());
+
+    /**
+     * Private constructor to avoid creating instances.
+     */
+    private UtilsPickerT() {
+        throw new UnsupportedOperationException("Not implemented.");
+    }
 
     /**
      * Helper method which changes the {@code value} of a {@link NumberPicker}.
@@ -29,7 +39,7 @@ public final class UtilsPickerT {
     public static void changePickerValue(@NonNull final String pickerName,
                                          final int pickerId,
                                          final int expectedValue) {
-        log.info("changePickerValue");
+        logger.info("changePickerValue");
         Espresso.onView(ViewMatchers.withId(pickerId))
             .perform(new ViewActionNumberPicker(expectedValue))
             .check((view, exception) -> {

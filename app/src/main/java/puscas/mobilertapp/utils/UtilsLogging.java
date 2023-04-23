@@ -2,15 +2,24 @@ package puscas.mobilertapp.utils;
 
 import androidx.annotation.NonNull;
 
-import lombok.experimental.UtilityClass;
-import lombok.extern.java.Log;
+import java.util.logging.Logger;
 
 /**
  * Utility class with some helper methods for the logging.
  */
-@UtilityClass
-@Log
 public final class UtilsLogging {
+
+    /**
+     * Logger for this class.
+     */
+    private static final Logger logger = Logger.getLogger(UtilsLogging.class.getSimpleName());
+
+    /**
+     * Private constructor to avoid creating instances.
+     */
+    private UtilsLogging() {
+        throw new UnsupportedOperationException("Not implemented.");
+    }
 
     /**
      * Helper method that prints the message of a {@link Throwable}.
@@ -21,7 +30,7 @@ public final class UtilsLogging {
     public static void logThrowable(@NonNull final Throwable ex,
                                     @NonNull final String methodName) {
         final String message = methodName + " exception: " + ex.getMessage();
-        log.severe(message);
+        logger.severe(message);
     }
 
     /**
@@ -33,7 +42,7 @@ public final class UtilsLogging {
         for (final StackTraceElement ste : stackTrace) {
             stringBuilder.append( "ste: ");
             stringBuilder.append(ste.toString());
-            log.severe(stringBuilder.toString());
+            logger.severe(stringBuilder.toString());
             stringBuilder.setLength(0);
         }
     }

@@ -6,24 +6,26 @@ import android.opengl.GLSurfaceView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.util.logging.Logger;
+
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 
 import java8.util.Objects;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
 import puscas.mobilertapp.constants.ConstantsError;
 import puscas.mobilertapp.exceptions.FailureException;
 
 /**
  * A customized eglCreateContext and eglDestroyContext calls.
  */
-@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-@Log
 public class MyEglContextFactory implements GLSurfaceView.EGLContextFactory {
+
+    /**
+     * Logger for this class.
+     */
+    private static final Logger logger = Logger.getLogger(MyEglContextFactory.class.getSimpleName());
 
     /**
      * The "Embedded-System Graphics Library" version.
@@ -41,12 +43,21 @@ public class MyEglContextFactory implements GLSurfaceView.EGLContextFactory {
      */
     private EGLContext eglContext;
 
+    /**
+     * The constructor.
+     *
+     * @param drawView The {@link GLSurfaceView} to be used to get the {@link Activity#isChangingConfigurations()}.
+     */
+    MyEglContextFactory(final DrawView drawView) {
+        this.drawView = drawView;
+    }
+
     @Nullable
     @Override
     public final EGLContext createContext(@NonNull final EGL10 egl10,
                                           @NonNull final EGLDisplay display,
                                           @NonNull final EGLConfig eglConfig) {
-        log.info("createContext");
+        logger.info("createContext");
 
         final int eglError = egl10.eglGetError();
         if (eglError != EGL10.EGL_SUCCESS) {
@@ -54,13 +65,13 @@ public class MyEglContextFactory implements GLSurfaceView.EGLContextFactory {
         }
 
         if (Objects.nonNull(this.eglContext)) {
-            log.info("createContext delete older context");
+            logger.info("createContext delete older context");
             final EGLContext egl14Context = egl10.eglGetCurrentContext(); //get an EGL10 context representation of our EGL14 context
             destroyContext(egl10, display, egl14Context);
             destroyContext(egl10, display, this.eglContext);
             this.eglContext = null;
         } else {
-            log.info("createContext create new context");
+            logger.info("createContext create new context");
             final int[] attribList = {
                 0x3098, // the same value as EGL14.EGL_CONTEXT_CLIENT_VERSION
                 EGL_CONTEXT_CLIENT_VERSION,
@@ -70,7 +81,7 @@ public class MyEglContextFactory implements GLSurfaceView.EGLContextFactory {
             this.eglContext = egl10.eglCreateContext(display, eglConfig, egl14Context, attribList);
         }
 
-        log.info("createContext finished");
+        logger.info("createContext finished");
         return this.eglContext;
     }
 
@@ -78,7 +89,7 @@ public class MyEglContextFactory implements GLSurfaceView.EGLContextFactory {
     public final void destroyContext(@NonNull final EGL10 egl10,
                                      @NonNull final EGLDisplay display,
                                      @NonNull final EGLContext context) {
-        log.info("destroyContext");
+        logger.info("destroyContext");
 
         if (this.drawView.isChangingConfigs()) {
             this.eglContext = context;
@@ -87,7 +98,7 @@ public class MyEglContextFactory implements GLSurfaceView.EGLContextFactory {
                 ConstantsError.EGL_DESTROY_CONTEXT_FAILED + egl10.eglGetError());
         }
 
-        log.info("destroyContext finished");
+        logger.info("destroyContext finished");
     }
 
 }

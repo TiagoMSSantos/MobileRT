@@ -23,18 +23,22 @@ import org.junit.rules.TestRule;
 import org.junit.rules.Timeout;
 
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 
-import lombok.extern.java.Log;
 import puscas.mobilertapp.utils.UtilsT;
 
 /**
  * The abstract class for the Android Instrumentation Tests.
  */
-@Log
 public abstract class AbstractTest {
+
+    /**
+     * Logger for this class.
+     */
+    private static final Logger logger = Logger.getLogger(AbstractTest.class.getSimpleName());
 
     /**
      * The {@link Rule} for the {@link Timeout} for all the tests.
@@ -98,7 +102,7 @@ public abstract class AbstractTest {
     @OverridingMethodsMustInvokeSuper
     public void setUp() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        log.info(methodName);
+        logger.info(methodName);
 
         final Intent intent = new Intent(Intent.ACTION_PICK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -120,7 +124,7 @@ public abstract class AbstractTest {
     @OverridingMethodsMustInvokeSuper
     public void tearDown() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        log.info(methodName);
+        logger.info(methodName);
 
         Preconditions.checkNotNull(this.activity, "The Activity didn't finish as expected!");
 

@@ -152,7 +152,7 @@ public class DrawViewTest {
             .addMockedMethod("resetStats", int.class, ConfigSamples.class, int.class, int.class)
             .createMock();
 
-        mainRenderer.resetStats(EasyMock.anyInt(), EasyMock.eq(ConfigSamples.builder().build()), EasyMock.anyInt(), EasyMock.anyInt());
+        mainRenderer.resetStats(EasyMock.anyInt(), EasyMock.eq(ConfigSamples.Builder.Companion.create().build()), EasyMock.anyInt(), EasyMock.anyInt());
         EasyMock.expectLastCall().andVoid();
         EasyMock.expect(mainRenderer.rtInitialize(EasyMock.anyObject(Config.class))).andReturn(2);
         mainRenderer.rtFinishRender();
@@ -173,9 +173,9 @@ public class DrawViewTest {
         drawView.waitLastTask();
         EasyMock.expectLastCall().andVoid();
 
-        final Config config = Config.builder().build();
+        final Config config = Config.Builder.Companion.create().build();
         drawView.startRayTracing(config);
-        EasyMock.expectLastCall().andThrow(new LowMemoryException());
+        EasyMock.expectLastCall().andThrow(new LowMemoryException("The device has not enough memory."));
 
         EasyMock.replay(drawView);
         Assertions.assertThatCode(() -> drawView.renderScene(config))

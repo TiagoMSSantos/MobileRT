@@ -14,10 +14,9 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 import java8.util.Objects;
-import lombok.experimental.UtilityClass;
-import lombok.extern.java.Log;
 import puscas.mobilertapp.constants.Constants;
 import puscas.mobilertapp.constants.ConstantsMethods;
 import puscas.mobilertapp.constants.ConstantsUI;
@@ -26,9 +25,19 @@ import puscas.mobilertapp.exceptions.FailureException;
 /**
  * Utility class with some helper methods.
  */
-@UtilityClass
-@Log
 public final class Utils {
+
+    /**
+     * Logger for this class.
+     */
+    private static final Logger logger = Logger.getLogger(Utils.class.getSimpleName());
+
+    /**
+     * Private constructor to avoid creating instances.
+     */
+    private Utils() {
+        throw new UnsupportedOperationException("Not implemented.");
+    }
 
     /**
      * Helper method that waits for an {@link ExecutorService} to finish all the
@@ -37,7 +46,7 @@ public final class Utils {
      * @param executorService The {@link ExecutorService}.
      */
     public static void waitExecutorToFinish(@NonNull final ExecutorService executorService) {
-        log.info("waitExecutorToFinish");
+        logger.info("waitExecutorToFinish");
 
         boolean running = true;
         do {
@@ -52,7 +61,7 @@ public final class Utils {
         while (running);
 
         final String message = "waitExecutorToFinish" + ConstantsMethods.FINISHED;
-        log.info(message);
+        logger.info(message);
     }
 
     /**
@@ -66,7 +75,7 @@ public final class Utils {
     public static void handleInterruption(@NonNull final String methodName) {
         final boolean interrupted = Thread.interrupted();
         final String message = methodName + " exception: " + interrupted;
-        log.severe(message);
+        logger.severe(message);
     }
 
     /**
@@ -77,7 +86,7 @@ public final class Utils {
      */
     @NonNull
     public static String readTextFromInputStream(@NonNull final InputStream inputStream) {
-        log.info("readTextFromInputStream");
+        logger.info("readTextFromInputStream");
         try (InputStreamReader isReader = new InputStreamReader(
             inputStream, Charset.defaultCharset());
              BufferedReader reader = new BufferedReader(isReader)) {
@@ -93,7 +102,7 @@ public final class Utils {
             throw new FailureException(ex);
         } finally {
             final String message = "readTextFromInputStream" + ConstantsMethods.FINISHED;
-            log.info(message);
+            logger.info(message);
         }
     }
 
@@ -108,7 +117,7 @@ public final class Utils {
      */
     @Contract(pure = true)
     public static int calculateSceneSize(final int numPrimitives) {
-        log.info("calculateSceneSize");
+        logger.info("calculateSceneSize");
         final int triangleVerticesSize = 3 * Constants.BYTES_IN_FLOAT * 3;
         final int triangleNormalsSize = 3 * Constants.BYTES_IN_FLOAT * 3;
         final int triangleTextureCoordinatesSize = 2 * Constants.BYTES_IN_FLOAT * 3;
@@ -132,7 +141,7 @@ public final class Utils {
      * @return The current displayed value in the {@link NumberPicker}.
      */
     public static int getValueFromPicker(@NonNull final NumberPicker picker) {
-        log.info("getValueFromPicker");
+        logger.info("getValueFromPicker");
 
         try {
             return Integer.parseInt(picker.getDisplayedValues()[picker.getValue() - 1]);
@@ -152,7 +161,7 @@ public final class Utils {
     @NonNull
     public static Pair<Integer, Integer> getResolutionFromPicker(
         @NonNull final NumberPicker picker) {
-        log.info("getResolutionFromPicker");
+        logger.info("getResolutionFromPicker");
 
         try {
             final String strResolution = picker.getDisplayedValues()[picker.getValue() - 1];

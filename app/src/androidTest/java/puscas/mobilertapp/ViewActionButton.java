@@ -12,16 +12,19 @@ import org.hamcrest.Matcher;
 import org.jetbrains.annotations.NonNls;
 import org.junit.Assert;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
+import java.util.logging.Logger;
+
 import puscas.mobilertapp.utils.Utils;
 
 /**
  * Auxiliary class which represents the render {@link Button}.
  */
-@Log
-@RequiredArgsConstructor
 public final class ViewActionButton implements ViewAction {
+
+    /**
+     * Logger for this class.
+     */
+    private static final Logger logger = Logger.getLogger(ViewActionButton.class.getSimpleName());
 
     /**
      * The expected text for the {@link Button}.
@@ -33,10 +36,21 @@ public final class ViewActionButton implements ViewAction {
      */
     private final boolean pressLongClick;
 
+    /**
+     * The constructor.
+     *
+     * @param expectedText   The expected text for the {@link Button}.
+     * @param pressLongClick Whether to do a long click or not.
+     */
+    public ViewActionButton(final String expectedText, final boolean pressLongClick) {
+        this.expectedText = expectedText;
+        this.pressLongClick = pressLongClick;
+    }
+
     @NonNull
     @Override
     public Matcher<View> getConstraints() {
-        log.info("ViewActionButton#getConstraints");
+        logger.info("ViewActionButton#getConstraints");
 
         return ViewMatchers.isAssignableFrom(Button.class);
     }
@@ -44,7 +58,7 @@ public final class ViewActionButton implements ViewAction {
     @NonNull
     @Override
     public String getDescription() {
-        log.info("ViewActionButton#getDescription");
+        logger.info("ViewActionButton#getDescription");
 
         return "Click button";
     }
@@ -52,7 +66,7 @@ public final class ViewActionButton implements ViewAction {
     @Override
     public void perform(@NonNull final UiController uiController, @NonNull final View view) {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        log.info(methodName);
+        logger.info(methodName);
 
         try {
             final Button button = (Button) view;

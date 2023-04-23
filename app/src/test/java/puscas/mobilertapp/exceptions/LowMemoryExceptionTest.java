@@ -2,21 +2,10 @@ package puscas.mobilertapp.exceptions;
 
 import org.junit.Test;
 
-import lombok.extern.java.Log;
-
 /**
  * The test suite for {@link LowMemoryException} class.
  */
-@Log
 public final class LowMemoryExceptionTest {
-
-    /**
-     * Tests the constructor without arguments.
-     */
-    @Test(expected = LowMemoryException.class)
-    public void testConstructorWithoutArguments() throws LowMemoryException {
-        throw new LowMemoryException();
-    }
 
     /**
      * Tests the constructor that receives a {@link Throwable}.

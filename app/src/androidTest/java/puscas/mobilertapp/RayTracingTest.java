@@ -19,8 +19,8 @@ import org.junit.runners.MethodSorters;
 
 import java.io.File;
 import java.util.concurrent.TimeoutException;
+import java.util.logging.Logger;
 
-import lombok.extern.java.Log;
 import puscas.mobilertapp.constants.Accelerator;
 import puscas.mobilertapp.constants.Constants;
 import puscas.mobilertapp.constants.ConstantsUI;
@@ -35,8 +35,12 @@ import puscas.mobilertapp.utils.UtilsT;
  * The test suite for the Ray Tracing engine used in {@link MainActivity}.
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-@Log
 public final class RayTracingTest extends AbstractTest {
+
+    /**
+     * Logger for this class.
+     */
+    private static final Logger logger = Logger.getLogger(RayTracingTest.class.getSimpleName());
 
     /**
      * A setup method which is called first.
@@ -44,30 +48,30 @@ public final class RayTracingTest extends AbstractTest {
     @BeforeClass
     public static void setUpAll() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        log.info(methodName);
+        logger.info(methodName);
 
-        log.info("---------------------------------------------------");
+        logger.info("---------------------------------------------------");
         final String messageDevice = "Device: " + Build.DEVICE;
-        log.info(messageDevice);
+        logger.info(messageDevice);
         final String messageUser = "User: " + Build.USER;
-        log.info(messageUser);
+        logger.info(messageUser);
         final String messageType = "Type: " + Build.TYPE;
-        log.info(messageType);
+        logger.info(messageType);
         final String messageTags = "Tags: " + Build.TAGS;
-        log.info(messageTags);
+        logger.info(messageTags);
         final String messageHost = "Host: " + Build.HOST;
-        log.info(messageHost);
+        logger.info(messageHost);
         final String messageFingerPrint = "Fingerprint: " + Build.FINGERPRINT;
-        log.info(messageFingerPrint);
+        logger.info(messageFingerPrint);
         final String messageDisplay = "Display: " + Build.DISPLAY;
-        log.info(messageDisplay);
+        logger.info(messageDisplay);
         final String messageBrand = "Brand: " + Build.BRAND;
-        log.info(messageBrand);
+        logger.info(messageBrand);
         final String messageModel = "Model: " + Build.MODEL;
-        log.info(messageModel);
+        logger.info(messageModel);
         final String messageProduct = "Product: " + Build.PRODUCT;
-        log.info(messageProduct);
-        log.info("---------------------------------------------------");
+        logger.info(messageProduct);
+        logger.info("---------------------------------------------------");
     }
 
     /**
@@ -76,7 +80,7 @@ public final class RayTracingTest extends AbstractTest {
     @AfterClass
     public static void tearDownAll() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        log.info(methodName);
+        logger.info(methodName);
     }
 
     /**

@@ -23,13 +23,11 @@ import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.egl.EGLSurface;
 
-import lombok.extern.java.Log;
 import puscas.mobilertapp.exceptions.FailureException;
 
 /**
  * The test suite for the {@link MyEglContextFactory} class.
  */
-@Log
 @PrepareForTest({MainActivity.class, MainRenderer.class})
 public final class MyEglContextFactoryTest {
 

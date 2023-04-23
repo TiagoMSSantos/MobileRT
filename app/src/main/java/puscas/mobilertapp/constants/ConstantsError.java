@@ -6,15 +6,20 @@ import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 
-import lombok.experimental.UtilityClass;
 import puscas.mobilertapp.DrawView;
 import puscas.mobilertapp.MyEglContextFactory;
 
 /**
  * Utility class with the text constants for the errors.
  */
-@UtilityClass
 public final class ConstantsError {
+
+    /**
+     * Private constructor to avoid creating instances.
+     */
+    private ConstantsError() {
+        throw new UnsupportedOperationException("Not implemented.");
+    }
 
     /**
      * A message for when the

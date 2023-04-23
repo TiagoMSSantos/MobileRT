@@ -3,13 +3,11 @@ package puscas.mobilertapp.utils;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
-import lombok.extern.java.Log;
 import puscas.mobilertapp.constants.State;
 
 /**
  * The unit tests for the {@link State} util class.
  */
-@Log
 public final class StateTest {
 
     /**

@@ -6,17 +6,19 @@ import android.opengl.Matrix;
 import androidx.annotation.NonNull;
 
 import java.nio.ByteBuffer;
+import java.util.logging.Logger;
 
-import lombok.experimental.UtilityClass;
-import lombok.extern.java.Log;
 import puscas.mobilertapp.constants.Constants;
 
 /**
  * Utility class with some helper methods for the matrices in OpenGL framework.
  */
-@UtilityClass
-@Log
 public final class UtilsGlMatrices {
+
+    /**
+     * Logger for this class.
+     */
+    private static final Logger logger = Logger.getLogger(UtilsGlMatrices.class.getSimpleName());
 
     /**
      * Empirical value that makes the OpenGL perspective camera more similar
@@ -43,13 +45,20 @@ public final class UtilsGlMatrices {
     private static final float Z_FAR = 1.0e+30F;
 
     /**
+     * Private constructor to avoid creating instances.
+     */
+    private UtilsGlMatrices() {
+        throw new UnsupportedOperationException("Not implemented.");
+    }
+
+    /**
      * Creates the model matrix and sets it as an identity matrix.
      *
      * @return A float array with the model matrix data.
      */
     @NonNull
     public static float[] createModelMatrix() {
-        log.info("createModelMatrix");
+        logger.info("createModelMatrix");
 
         final float[] modelMatrix = new float[16];
         Matrix.setIdentityM(modelMatrix, 0);
@@ -69,7 +78,7 @@ public final class UtilsGlMatrices {
     public static float[] createProjectionMatrix(@NonNull final ByteBuffer bbCamera,
                                                  final int width,
                                                  final int height) {
-        log.info("createProjectionMatrix");
+        logger.info("createProjectionMatrix");
 
         final float fovX =
             bbCamera.getFloat(16 * Constants.BYTES_IN_FLOAT) * FIX_ASPECT_PERSPECTIVE;
@@ -107,7 +116,7 @@ public final class UtilsGlMatrices {
      */
     @NonNull
     public static float[] createViewMatrix(@NonNull final ByteBuffer bbCamera) {
-        log.info("createViewMatrix");
+        logger.info("createViewMatrix");
 
         final float eyeX = bbCamera.getFloat(0);
         final float eyeY = bbCamera.getFloat(Constants.BYTES_IN_FLOAT);

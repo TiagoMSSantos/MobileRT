@@ -5,13 +5,17 @@ import android.opengl.GLSurfaceView;
 
 import java.util.concurrent.ExecutorService;
 
-import lombok.experimental.UtilityClass;
-
 /**
  * Utility class with the constants for the {@link GLSurfaceView.Renderer}.
  */
-@UtilityClass
 public final class ConstantsRenderer {
+
+    /**
+     * Private constructor to avoid creating instances.
+     */
+    private ConstantsRenderer() {
+        throw new UnsupportedOperationException("Not implemented.");
+    }
 
     /**
      * The number of threads to be used by the DrawView,

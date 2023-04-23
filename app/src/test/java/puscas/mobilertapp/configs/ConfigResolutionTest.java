@@ -9,13 +9,13 @@ import org.junit.Test;
 public class ConfigResolutionTest {
 
     /**
-     * Tests the {@link ConfigResolution#builder()#toString()} method in the builder class of {@link Config}.
+     * Tests the {@link ConfigResolution.Builder#toString()} method in the builder class of {@link Config}.
      */
     @Test
     public void testConfigResolutionBuilderToString() {
-        final String configResolutionBuilderStr = ConfigResolution.builder().toString();
+        final String configResolutionBuilderStr = ConfigResolution.Builder.Companion.create().toString();
         Assertions.assertThat(configResolutionBuilderStr)
-            .as("The toString of ConfigResolution.builder()")
+            .as("The toString of ConfigResolution.Builder")
             .isNotNull()
             .isInstanceOf(String.class);
     }

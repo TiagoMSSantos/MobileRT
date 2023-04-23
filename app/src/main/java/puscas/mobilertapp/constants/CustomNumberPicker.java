@@ -11,15 +11,20 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
-import lombok.extern.java.Log;
+import java.util.logging.Logger;
+
 import puscas.mobilertapp.exceptions.FailureException;
 
 /**
  * Custom {@link NumberPicker} for the User Interface with smaller text size
  * and black color for all the number pickers used.
  */
-@Log
 public final class CustomNumberPicker extends NumberPicker {
+
+    /**
+     * Logger for this class.
+     */
+    private static final Logger logger = Logger.getLogger(CustomNumberPicker.class.getSimpleName());
 
     /**
      * The constructor for this class.
@@ -34,7 +39,7 @@ public final class CustomNumberPicker extends NumberPicker {
     @Override
     public void addView(@NonNull final View child, @NonNull final ViewGroup.LayoutParams params) {
         super.addView(child, params);
-        log.info("addView");
+        logger.info("addView");
 
         if (child instanceof TextView) {
             final TextView textView = (TextView) child;

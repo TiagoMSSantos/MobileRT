@@ -2,21 +2,10 @@ package puscas.mobilertapp.exceptions;
 
 import org.junit.Test;
 
-import lombok.extern.java.Log;
-
 /**
  * The test suite for {@link FailureException} class.
  */
-@Log
 public final class FailureExceptionTest {
-
-    /**
-     * Tests the constructor without arguments.
-     */
-    @Test(expected = RuntimeException.class)
-    public void testConstructorWithoutArguments() {
-        throw new FailureException();
-    }
 
     /**
      * Tests the constructor that receives a {@link Throwable}.

@@ -2,16 +2,13 @@ package puscas.mobilertapp.constants;
 
 import androidx.annotation.NonNull;
 
+import java.util.logging.Logger;
+
 import java8.util.J8Arrays;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
 
 /**
  * The available shaders for the Ray Tracer engine.
  */
-@RequiredArgsConstructor
-@Log
 public enum Shader {
 
     /**
@@ -40,17 +37,39 @@ public enum Shader {
     DIFFUSE("Diffuse");
 
     /**
+     * Logger for this class.
+     */
+    private static final Logger logger = Logger.getLogger(Shader.class.getSimpleName());
+
+    /**
      * The name of the shader for the Ray Tracer engine.
      */
-    @Getter
     private final String name;
+
+    /**
+     * The constructor.
+     *
+     * @param name The name.
+     */
+    Shader(final String name) {
+        this.name = name;
+    }
+
+    /**
+     * Gets the name.
+     *
+     * @return The name.
+     */
+    private String getName() {
+        return name;
+    }
 
     /**
      * Gets the names of all available shaders.
      */
     @NonNull
     public static String[] getNames() {
-        log.info(ConstantsMethods.GET_NAMES);
+        logger.info(ConstantsMethods.GET_NAMES);
 
         return J8Arrays.stream(values())
             .map(Shader::getName)

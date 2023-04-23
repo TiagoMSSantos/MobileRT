@@ -3,13 +3,11 @@ package puscas.mobilertapp.utils;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
-import lombok.extern.java.Log;
 import puscas.mobilertapp.constants.Accelerator;
 
 /**
  * The unit tests for the {@link Accelerator} util class.
  */
-@Log
 public final class AcceleratorTest {
 
     /**

@@ -34,13 +34,13 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.annotation.Nonnull;
 
 import java8.util.Optional;
 import java8.util.stream.IntStreams;
 import java8.util.stream.StreamSupport;
-import lombok.extern.java.Log;
 import puscas.mobilertapp.configs.Config;
 import puscas.mobilertapp.configs.ConfigResolution;
 import puscas.mobilertapp.configs.ConfigSamples;
@@ -60,7 +60,6 @@ import puscas.mobilertapp.utils.UtilsLogging;
 /**
  * The main {@link Activity} for the Android User Interface.
  */
-@Log
 public final class MainActivity extends Activity {
 
     /*
@@ -68,6 +67,11 @@ public final class MainActivity extends Activity {
      * Private static fields
      ***********************************************************************
      */
+
+    /**
+     * Logger for this class.
+     */
+    private static final Logger logger = Logger.getLogger(MainActivity.class.getSimpleName());
 
     /**
      * The request code for the new {@link Activity} to open an OBJ file.
@@ -168,7 +172,7 @@ public final class MainActivity extends Activity {
      */
     public static void showUiMessage(@Nonnull final String message) {
         currentInstance.runOnUiThread(() -> {
-            log.info("showUiMessage");
+            logger.info("showUiMessage");
             Toast.makeText(currentInstance.getApplicationContext(), message, Toast.LENGTH_LONG).show();
         });
     }
@@ -180,7 +184,7 @@ public final class MainActivity extends Activity {
      */
     public static void resetRenderButton() {
         currentInstance.runOnUiThread(() -> {
-            log.info("updateRenderButton");
+            logger.info("updateRenderButton");
             final Button renderButton = currentInstance.findViewById(R.id.renderButton);
             renderButton.setText(R.string.render);
         });
@@ -249,7 +253,7 @@ public final class MainActivity extends Activity {
 
         setCurrentInstance();
         super.onCreate(savedInstanceState);
-        log.info("onCreate start");
+        logger.info("onCreate start");
 
         setContentView(R.layout.activity_main);
         initializeViews();
@@ -272,13 +276,13 @@ public final class MainActivity extends Activity {
         UtilsContext.checksStoragePermission(this);
         UtilsContext.checksInternetPermission(this);
 
-        log.info("onCreate finish");
+        logger.info("onCreate finish");
     }
 
     @Override
     protected void onRestoreInstanceState(@NonNull final Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        log.info("onRestoreInstanceState");
+        logger.info("onRestoreInstanceState");
 
         final int scene = savedInstanceState.getInt(ConstantsUI.PICKER_SCENE);
         final int shader = savedInstanceState.getInt(ConstantsUI.PICKER_SHADER);
@@ -302,17 +306,17 @@ public final class MainActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        log.info("onResume start");
+        logger.info("onResume start");
 
         this.drawView.onResume();
         this.drawView.setVisibility(View.VISIBLE);
-        log.info("onResume end");
+        logger.info("onResume end");
     }
 
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        log.info("onPostResume start");
+        logger.info("onPostResume start");
 
         // Start rendering if its resuming from selecting a scene via an
         // external file manager and it was selected a file with a scene to
@@ -321,13 +325,13 @@ public final class MainActivity extends Activity {
         if (!Strings.isNullOrEmpty(this.sceneFilePath)) {
             startRender(this.sceneFilePath);
         }
-        log.info("onPostResume end");
+        logger.info("onPostResume end");
     }
 
     @Override
     protected void onSaveInstanceState(@NonNull final Bundle outState) {
         super.onSaveInstanceState(outState);
-        log.info("onSaveInstanceState");
+        logger.info("onSaveInstanceState");
 
         outState.putInt(ConstantsUI.PICKER_SCENE, this.pickerScene.getValue());
         outState.putInt(ConstantsUI.PICKER_SHADER, this.pickerShader.getValue());
@@ -344,7 +348,7 @@ public final class MainActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
-        log.info("onPause");
+        logger.info("onPause");
 
         Utils.handleInterruption("MainActivity#onPause");
 
@@ -354,30 +358,30 @@ public final class MainActivity extends Activity {
         this.sceneFilePath = null;
 
         final String message = "onPause" + ConstantsMethods.FINISHED;
-        log.info(message);
+        logger.info(message);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        log.info(ConstantsMethods.ON_DESTROY);
+        logger.info(ConstantsMethods.ON_DESTROY);
 
         this.drawView.onDetachedFromWindow();
         this.drawView.setVisibility(View.INVISIBLE);
 
         final String message = ConstantsMethods.ON_DESTROY + ConstantsMethods.FINISHED;
-        log.info(message);
+        logger.info(message);
     }
 
     @Override
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        log.info(ConstantsMethods.ON_DETACHED_FROM_WINDOW);
+        logger.info(ConstantsMethods.ON_DETACHED_FROM_WINDOW);
 
         this.drawView.onDetachedFromWindow();
 
         final String message = ConstantsMethods.ON_DETACHED_FROM_WINDOW + ConstantsMethods.FINISHED;
-        log.info(message);
+        logger.info(message);
     }
 
 
@@ -392,24 +396,24 @@ public final class MainActivity extends Activity {
                                            @NonNull final String[] permissions,
                                            @NonNull final int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        log.info("onRequestPermissionsResult");
+        logger.info("onRequestPermissionsResult");
 
         if (permissions.length > 0) {
-            log.info("Requested permissions: " + Arrays.toString(permissions));
+            logger.info("Requested permissions: " + Arrays.toString(permissions));
 
             // If request is cancelled, the result arrays are empty.
             if (grantResults.length > 0 &&
                 grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // Permission is granted. Continue the action or workflow
                 // in your app.
-                log.info("Permission granted!");
+                logger.info("Permission granted!");
             }  else {
                 // Explain to the user that the feature is unavailable because
                 // the features requires a permission that the user has denied.
                 // At the same time, respect the user's decision. Don't link to
                 // system settings in an effort to convince the user to change
                 // their decision.
-                log.severe("Permission NOT granted");
+                logger.severe("Permission NOT granted");
             }
             // Other 'case' lines to check for other
             // permissions this app might request.
@@ -450,7 +454,7 @@ public final class MainActivity extends Activity {
     public void startRender(@NonNull final View view) {
         try {
             final String message = ConstantsMethods.START_RENDER + ": " + view;
-            log.info(message);
+            logger.info(message);
 
             final State state = this.drawView.getRayTracerState();
             if (state == State.BUSY) {
@@ -460,7 +464,7 @@ public final class MainActivity extends Activity {
             }
 
             final String messageFinished = ConstantsMethods.START_RENDER + ConstantsMethods.FINISHED;
-            log.info(messageFinished);
+            logger.info(messageFinished);
         } catch (final Exception ex) {
             MainActivity.showUiMessage(ConstantsToast.COULD_NOT_RENDER_THE_SCENE + ex.getMessage());
         }
@@ -473,14 +477,14 @@ public final class MainActivity extends Activity {
      *                  of a scene to render.
      */
     private void startRender(@NonNull final String scenePath) {
-        log.info(ConstantsMethods.START_RENDER);
+        logger.info(ConstantsMethods.START_RENDER);
 
         final Config config = createConfigFromUI(scenePath);
 
         this.drawView.renderScene(config);
 
         final String message = ConstantsMethods.START_RENDER + ConstantsMethods.FINISHED;
-        log.info(message);
+        logger.info(message);
     }
 
     /**
@@ -522,7 +526,7 @@ public final class MainActivity extends Activity {
      */
     @NonNull
     private String getPathFromFile(@NonNull final Uri uri) {
-        log.info("Parsing path:" + Arrays.toString(uri.getPathSegments().toArray()));
+        logger.info("Parsing path:" + Arrays.toString(uri.getPathSegments().toArray()));
         final String filePath = StreamSupport.stream(uri.getPathSegments())
             .skip(1L)
             .reduce("", (accumulator, segment) -> accumulator + ConstantsUI.FILE_SEPARATOR + segment);
@@ -563,28 +567,26 @@ public final class MainActivity extends Activity {
         final Pair<Integer, Integer> resolution =
             Utils.getResolutionFromPicker(this.pickerResolutions);
 
-        return Config.builder()
-            .scene(this.pickerScene.getValue())
-            .shader(this.pickerShader.getValue())
-            .accelerator(this.pickerAccelerator.getValue())
-            .configSamples(
-                ConfigSamples.builder()
-                    .samplesPixel(Utils.getValueFromPicker(this.pickerSamplesPixel))
-                    .samplesLight(Utils.getValueFromPicker(this.pickerSamplesLight))
-                    .build()
-            )
-            .configResolution(
-                ConfigResolution.builder()
-                    .width(resolution.getLeft())
-                    .height(resolution.getRight())
-                    .build()
-            )
-            .objFilePath(scenePath + ".obj")
-            .matFilePath(scenePath + ".mtl")
-            .camFilePath(scenePath + ".cam")
-            .threads(this.pickerThreads.getValue())
-            .rasterize(this.checkBoxRasterize.isChecked())
-            .build();
+        final Config.Builder builder = Config.Builder.Companion.create();
+        builder.setScene(this.pickerScene.getValue());
+        builder.setShader(this.pickerShader.getValue());
+        builder.setAccelerator(this.pickerAccelerator.getValue());
+
+        final ConfigSamples.Builder builderConfigSamples = ConfigSamples.Builder.Companion.create();
+        builderConfigSamples.setSamplesPixel(Utils.getValueFromPicker(this.pickerSamplesPixel));
+        builderConfigSamples.setSamplesLight(Utils.getValueFromPicker(this.pickerSamplesLight));
+        builder.setConfigSamples(builderConfigSamples.build());
+        final ConfigResolution.Builder builderConfigRes = ConfigResolution.Builder.Companion.create();
+        builderConfigRes.setWidth(resolution.getLeft());
+        builderConfigRes.setHeight(resolution.getRight());
+        builder.setConfigResolution(builderConfigRes.build());
+        builder.setObjFilePath(scenePath + ".obj");
+        builder.setMatFilePath(scenePath + ".mtl");
+        builder.setCamFilePath(scenePath + ".cam");
+        builder.setThreads(this.pickerThreads.getValue());
+        builder.setRasterize(this.checkBoxRasterize.isChecked());
+
+        return builder.build();
     }
 
     /**
@@ -592,7 +594,7 @@ public final class MainActivity extends Activity {
      * select the OBJ file for the Ray Tracer engine to load.
      */
     private void callFileManager() {
-        log.info("callFileManager");
+        logger.info("callFileManager");
 
         final Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("*" + ConstantsUI.FILE_SEPARATOR + "*");
@@ -607,7 +609,7 @@ public final class MainActivity extends Activity {
         }
 
         final String message = "callFileManager" + ConstantsMethods.FINISHED;
-        log.info(message);
+        logger.info(message);
     }
 
     /**
@@ -661,7 +663,7 @@ public final class MainActivity extends Activity {
      *                     process starts.
      */
     private void setupRenderer(final TextView textView, final Button renderButton) {
-        log.info("setupRenderer start");
+        logger.info("setupRenderer start");
 
         this.drawView.setVisibility(View.INVISIBLE);
         this.drawView.setEGLContextClientVersion(MyEglContextFactory.EGL_CONTEXT_CLIENT_VERSION);
@@ -695,7 +697,7 @@ public final class MainActivity extends Activity {
         this.drawView.setVisibility(View.VISIBLE);
         this.drawView.setPreserveEGLContextOnPause(true);
 
-        log.info("setupRenderer finish");
+        logger.info("setupRenderer finish");
     }
 
     /**
@@ -722,7 +724,7 @@ public final class MainActivity extends Activity {
      *                    {@link #pickerResolutions} field.
      */
     private void initializePickerResolutions(final int pickerSizes) {
-        log.info("initializePickerResolutions start");
+        logger.info("initializePickerResolutions start");
         final int maxSizes = 9;
         this.pickerResolutions.setMinValue(1);
         this.pickerResolutions.setMaxValue(maxSizes - 1);
@@ -736,7 +738,7 @@ public final class MainActivity extends Activity {
 
         final ViewTreeObserver vto = this.drawView.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(() -> {
-            log.info("initializePickerResolutions 1");
+            logger.info("initializePickerResolutions 1");
             resetErrno();
             final double widthView = this.drawView.getWidth();
             final double heightView = this.drawView.getHeight();
@@ -754,9 +756,9 @@ public final class MainActivity extends Activity {
                 .toArray(String[]::new);
 
             this.pickerResolutions.setDisplayedValues(resolutions);
-            log.info("initializePickerResolutions 2");
+            logger.info("initializePickerResolutions 2");
         });
-        log.info("initializePickerResolutions finish");
+        logger.info("initializePickerResolutions finish");
     }
 
     /**

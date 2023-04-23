@@ -15,7 +15,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import lombok.extern.java.Log;
 import puscas.mobilertapp.utils.UtilsGL;
 import puscas.mobilertapp.utils.UtilsShader;
 import puscas.mobilertapp.utils.UtilsT;
@@ -24,7 +23,6 @@ import puscas.mobilertapp.utils.UtilsT;
  * The test suite for the {@link MainRenderer}.
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-@Log
 public final class MainRendererTest extends AbstractTest {
 
     /**
