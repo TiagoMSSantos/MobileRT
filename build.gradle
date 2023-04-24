@@ -45,7 +45,7 @@ buildscript {
         lombok_version = "1.18.26"
         spotbugs_annotations_version = "4.7.3"
         volley_version = "1.2.1"
-        jackson_core_version = "2.14.2"
+        jackson_core_version = "2.15.0"
         jackson_databind_version = "2.14.2"
         mockito_version = "5.3.1"
         mockito_inline_version = "5.2.0"
