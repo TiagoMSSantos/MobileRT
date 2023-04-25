@@ -21,9 +21,11 @@ import java.io.File;
 import java.util.concurrent.TimeoutException;
 
 import lombok.extern.java.Log;
+import puscas.mobilertapp.constants.Accelerator;
 import puscas.mobilertapp.constants.Constants;
 import puscas.mobilertapp.constants.ConstantsUI;
 import puscas.mobilertapp.constants.Scene;
+import puscas.mobilertapp.constants.Shader;
 import puscas.mobilertapp.utils.UtilsContext;
 import puscas.mobilertapp.utils.UtilsContextT;
 import puscas.mobilertapp.utils.UtilsPickerT;
@@ -85,7 +87,6 @@ public final class RayTracingTest extends AbstractTest {
     @Test(timeout = 2L * 60L * 1000L)
     public void testRenderInvalidScene() throws TimeoutException {
         final int numCores = UtilsContext.getNumOfCores(this.activity);
-        final int scene = Scene.OBJ.ordinal();
 
         // Mock the reply as the external file manager application, to select an OBJ file that doesn't exist.
         final File fileToObj = new File("/path/to/OBJ/file/that/doesn't/exist.obj");
@@ -95,21 +96,68 @@ public final class RayTracingTest extends AbstractTest {
 
         Intents.intending(IntentMatchers.anyIntent())
             .respondWith(result);
-        assertRenderScene(numCores, scene, true);
+        assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, true);
         Intents.intended(IntentMatchers.anyIntent());
     }
 
     /**
-     * Tests rendering a scene.
+     * Tests rendering a scene with the No Shadows shader.
      *
      * @throws TimeoutException If it couldn't render the whole scene in time.
      */
     @Test(timeout = 2L * 60L * 1000L)
-    public void testRenderScene() throws TimeoutException {
+    public void testRenderSceneWithNoShadows() throws TimeoutException {
         final int numCores = UtilsContext.getNumOfCores(this.activity);
-        final int scene = Scene.CORNELL2.ordinal();
 
-        assertRenderScene(numCores, scene, false);
+        assertRenderScene(numCores, Scene.CORNELL, Shader.NO_SHADOWS, false);
+    }
+
+    /**
+     * Tests rendering a scene with the Whitted shader.
+     *
+     * @throws TimeoutException If it couldn't render the whole scene in time.
+     */
+    @Test(timeout = 2L * 60L * 1000L)
+    public void testRenderSceneWithWhitted() throws TimeoutException {
+        final int numCores = UtilsContext.getNumOfCores(this.activity);
+
+        assertRenderScene(numCores, Scene.CORNELL, Shader.WHITTED, false);
+    }
+
+    /**
+     * Tests rendering a scene with the Path Tracing shader.
+     *
+     * @throws TimeoutException If it couldn't render the whole scene in time.
+     */
+    @Test(timeout = 2L * 60L * 1000L)
+    public void testRenderSceneWithPathTracing() throws TimeoutException {
+        final int numCores = UtilsContext.getNumOfCores(this.activity);
+
+        assertRenderScene(numCores, Scene.CORNELL, Shader.PATH_TRACING, false);
+    }
+
+    /**
+     * Tests rendering a scene with the Depth Map shader.
+     *
+     * @throws TimeoutException If it couldn't render the whole scene in time.
+     */
+    @Test(timeout = 2L * 60L * 1000L)
+    public void testRenderSceneWithDepthMap() throws TimeoutException {
+        final int numCores = UtilsContext.getNumOfCores(this.activity);
+
+        assertRenderScene(numCores, Scene.CORNELL, Shader.DEPTH_MAP, false);
+    }
+
+    /**
+     * Tests rendering a scene with the Diffuse shader.
+     *
+     * @throws TimeoutException If it couldn't render the whole scene in time.
+     */
+    @Test(timeout = 2L * 60L * 1000L)
+    public void testRenderSceneWithDiffuse() throws TimeoutException {
+        final int numCores = UtilsContext.getNumOfCores(this.activity);
+
+        assertRenderScene(numCores, Scene.CORNELL, Shader.DIFFUSE, false);
     }
 
     /**
@@ -124,7 +172,6 @@ public final class RayTracingTest extends AbstractTest {
     @Test(timeout = 2L * 60L * 1000L)
     public void testRenderSceneFromInternalStorageOBJ() throws TimeoutException {
         final int numCores = UtilsContext.getNumOfCores(this.activity);
-        final int scene = Scene.OBJ.ordinal();
 
         // Mock the reply as the external file manager application, to select an OBJ file.
         final String internalStoragePath = UtilsContext.getInternalStoragePath(this.activity);
@@ -135,7 +182,7 @@ public final class RayTracingTest extends AbstractTest {
 
         Intents.intending(IntentMatchers.anyIntent())
             .respondWith(result);
-        assertRenderScene(numCores, scene, false);
+        assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, false);
         Intents.intended(IntentMatchers.anyIntent());
     }
 
@@ -152,7 +199,6 @@ public final class RayTracingTest extends AbstractTest {
     @Test(timeout = 2L * 60L * 1000L)
     public void testRenderSceneFromSDCardOBJ() throws TimeoutException {
         final int numCores = UtilsContext.getNumOfCores(this.activity);
-        final int scene = Scene.OBJ.ordinal();
 
         // Mock the reply as the external file manager application, to select an OBJ file.
         final String sdCardPath = UtilsContext.getSdCardPath(this.activity);
@@ -163,7 +209,7 @@ public final class RayTracingTest extends AbstractTest {
 
         Intents.intending(IntentMatchers.anyIntent())
             .respondWith(result);
-        assertRenderScene(numCores, scene, false);
+        assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, false);
         Intents.intended(IntentMatchers.anyIntent());
     }
 
@@ -174,20 +220,25 @@ public final class RayTracingTest extends AbstractTest {
      *
      * @param numCores           The number of CPU cores to use in the Ray Tracing process.
      * @param scene              The desired scene to render.
+     * @param shader             The desired shader to be used.
      * @param expectedSameValues Whether the {@link Bitmap} should have have only one color.
      * @throws TimeoutException If it couldn't render the whole scene in time.
      */
     private void assertRenderScene(final int numCores,
-                                   final int scene,
+                                   final Scene scene,
+                                   final Shader shader,
                                    final boolean expectedSameValues) throws TimeoutException {
 
-        UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SCENE, R.id.pickerScene, scene);
+        UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SCENE, R.id.pickerScene, scene.ordinal());
         UtilsPickerT.changePickerValue(ConstantsUI.PICKER_THREADS, R.id.pickerThreads, numCores);
         UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SIZE, R.id.pickerSize, 1);
         UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SAMPLES_PIXEL, R.id.pickerSamplesPixel, 1);
         UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SAMPLES_LIGHT, R.id.pickerSamplesLight, 1);
-        UtilsPickerT.changePickerValue(ConstantsUI.PICKER_ACCELERATOR, R.id.pickerAccelerator, 3);
-        UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SHADER, R.id.pickerShader, 1);
+        UtilsPickerT.changePickerValue(ConstantsUI.PICKER_ACCELERATOR, R.id.pickerAccelerator, Accelerator.BVH.ordinal());
+        UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SHADER, R.id.pickerShader, shader.ordinal());
+
+        // Make sure these tests do not use preview feature.
+        UiTest.clickPreviewCheckBox(false);
 
         UtilsT.startRendering(expectedSameValues);
         UtilsContextT.waitUntilRenderingDone(this.activity);

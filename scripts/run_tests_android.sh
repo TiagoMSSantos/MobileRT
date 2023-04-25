@@ -243,6 +243,8 @@ waitForEmulator() {
   set +e;
   adb_devices_running=$(adb devices | tail -n +2);
   retry=0;
+  # Truncate nohup.out log file.
+  : > nohup.out;
   while [ "${adb_devices_running}" = '' ] && [ ${retry} -lt 3 ]; do
     retry=$((retry + 1));
     echo 'Booting a new Android emulator.';
@@ -261,8 +263,6 @@ waitForEmulator() {
     # setsid -> Run the Android emulator in a new session.
     # nohup -> Disconnect the process from the terminal, redirects its output to nohup.out and shields it from SIGHUP.
     # Both `setsid` and `nohup` are used to make sure the Android emulator continues to work after this script is completed.
-    # Truncate nohup.out log file.
-    : > nohup.out;
     # Note that the 'memory', 'cache-size' and 'partition-size' might make Android emulator to boot slower.
     # Using 'cache-size' and 'partition-size' below 256 and above 1024 seems to be slower.
     # Also, using 8GB+ as memory seems to allow for Android emulator to boot faster.

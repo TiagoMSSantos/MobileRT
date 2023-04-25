@@ -165,7 +165,7 @@ sonar {
         property 'sonar.junit.reportPaths', 'build/test-results/testDebugUnitTest'
 
         // More properties
-        property 'sonar.exclusions', '**/*.kt,**/test*,**/*Generated*,**/third_party*,**/build*'
+        property 'sonar.exclusions', '**/test*,**/*Generated*,**/third_party*,**/build*'
 
         property 'sonar.host.url', 'https://sonarcloud.io'
         property 'sonar.verbose', 'true'
@@ -183,7 +183,7 @@ sonar {
         property 'sonar.log.level.web', 'TRACE'
         property 'sonar.log.level.ce', 'TRACE'
         property 'sonar.log.level.es', 'TRACE'
-        property 'sonar.inclusions', '**/src/**/*.java,**/*.cpp,**/*.hpp'
+        property 'sonar.inclusions', '**/src/**/*.java,**/src/**/*.kt,**/*.cpp,**/*.hpp'
         property 'sonar.scm.exclusions.disabled', 'false'
     }
 }
@@ -435,6 +435,11 @@ dependencies {
     implementation "com.google.guava:guava:${guava_version}"
     implementation "net.sourceforge.streamsupport:streamsupport:${stream_support_version}"
 
+    // Kotlin dependencies
+    implementation "androidx.core:core-ktx:${androidX_core_kotlin_version}"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:${kotlin_stdlib_jdk8_version}"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:${kotlinx_coroutines_android_version}"
+
     // More dependencies
     implementation "org.apache.commons:commons-lang3:${commons_lang3_version}"
 
@@ -450,12 +455,6 @@ dependencies {
     // JSON serialization
     implementation "com.fasterxml.jackson.core:jackson-core:${jackson_core_version}"
     implementation "com.fasterxml.jackson.core:jackson-databind:${jackson_databind_version}"
-
-    // Add support for Kotlin
-    implementation "androidx.core:core-ktx:${androidX_core_kotlin_version}"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:${kotlin_stdlib_jdk8_version}"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:${kotlinx_coroutines_android_version}"
-
 
 
     // Dependencies for the Android instrumentation tests
