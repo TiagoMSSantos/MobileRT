@@ -245,7 +245,8 @@ waitForEmulator() {
   retry=0;
   # Truncate nohup.out log file.
   : > nohup.out;
-  while [ "${adb_devices_running}" = '' ] && [ ${retry} -lt 3 ]; do
+  set +u; # 'avd_emulator' might not have been set
+  while [ "${avd_emulator}" != '' ] && [ "${adb_devices_running}" = '' ] && [ ${retry} -lt 3 ]; do
     retry=$((retry + 1));
     echo 'Booting a new Android emulator.';
     # Possible CPU accelerators locally (Intel CPU + Linux OS based) [qemu-system-i386 -accel ?]:
@@ -277,7 +278,7 @@ waitForEmulator() {
     sleep 20;
     adb_devices_running=$(callCommandUntilSuccess adb devices | tail -n +2);
   done
-  set -e;
+  set -eu;
   echo "Devices running: '${adb_devices_running}'";
 
   if (grep -iq "Process .* dead!" nohup.out); then

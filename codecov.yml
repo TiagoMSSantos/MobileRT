@@ -1,9 +1,8 @@
 codecov:
   require_ci_to_pass: true
-  token: "token"
   bot: "codecov-bot"
   strict_yaml_branch: "master"
-  max_report_age: "24h"
+  max_report_age: off
   disable_default_path_fixes: false
   notify:
     after_n_builds: 1
