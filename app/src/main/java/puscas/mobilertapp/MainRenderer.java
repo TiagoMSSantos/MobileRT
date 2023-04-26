@@ -820,11 +820,10 @@ public class MainRenderer implements GLSurfaceView.Renderer {
         this.configRenderTask.setNumPrimitives(this.numPrimitives);
         this.configRenderTask.setNumThreads(this.numThreads);
         this.configRenderTask.setResolution(this.configResolution);
-        final ConfigRenderTask config = this.configRenderTask.build();
 
-        this.renderTask = RenderTask.builder()
-            .config(config)
-            .build();
+        final RenderTask.Builder builder = RenderTask.Builder.Companion.create();
+        builder.setConfig(this.configRenderTask.build());
+        this.renderTask = builder.build();
 
         this.renderTask.executeAsync();
         final String message = "createAndLaunchRenderTask" + ConstantsMethods.FINISHED;

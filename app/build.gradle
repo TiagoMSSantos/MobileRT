@@ -445,8 +445,6 @@ dependencies {
     implementation "org.apache.commons:commons-lang3:${commons_lang3_version}"
 
     // Annotations
-    implementation "org.projectlombok:lombok:${lombok_version}"
-    annotationProcessor "org.projectlombok:lombok:${lombok_version}"
     implementation "androidx.annotation:annotation:${androidX_annotation_version}"
     implementation "com.github.spotbugs:spotbugs-annotations:${spotbugs_annotations_version}"
 
@@ -473,9 +471,6 @@ dependencies {
 
     androidTestImplementation "androidx.test:rules:${androidX_test_version}"
 
-    // Annotations for the Android instrumentation tests
-    androidTestAnnotationProcessor "org.projectlombok:lombok:${lombok_version}"
-
     // Enable tracing
     debugImplementation "androidx.test.espresso:espresso-core:${androidX_test_espresso_version}"
     debugImplementation "androidx.test:runner:${androidX_test_runner_version}"
@@ -499,10 +494,6 @@ dependencies {
     testImplementation "org.powermock:powermock-module-javaagent:${powermock_version}"
     testImplementation "org.easymock:easymock:${easymock_version}"
     testImplementation "org.springframework:spring-test:${spring_version}"
-
-    // Annotations for the unit tests
-    testAnnotationProcessor "org.projectlombok:lombok:${lombok_version}"
-
 
 
     // Dependencies that give errors when added:

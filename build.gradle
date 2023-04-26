@@ -42,7 +42,6 @@ buildscript {
         guava_version = "31.1-jre"
         stream_support_version = "1.7.4"
         commons_lang3_version = "3.12.0"
-        lombok_version = "1.18.26"
         spotbugs_annotations_version = "4.7.3"
         volley_version = "1.2.1"
         jackson_core_version = "2.15.0"

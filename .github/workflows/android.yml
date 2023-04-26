@@ -402,6 +402,7 @@ jobs:
       if: success() && !startsWith(matrix.os, 'windows')
       uses: ReactiveCircus/android-emulator-runner@v2
       env:
+        ANDROID_EMULATOR_WAIT_TIME_BEFORE_KILL: 1
         NCPU_CORES: 3
         MEM_MB: 8192
       with:
@@ -424,7 +425,7 @@ jobs:
         force-avd-creation: true
         disable-linux-hw-accel: auto
         enable-hw-keyboard: false
-        emulator-boot-timeout: 420 # 7 min timeout since it can take a little more than 5 min to boot
+        emulator-boot-timeout: 360 # 6 min timeout since it can take a little more than 5 min to boot
         script: |
           sh scripts/run_tests_android.sh -t ${{ matrix.type }} -r all -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -k false -f "\"x86\",\"x86_64\"";
 

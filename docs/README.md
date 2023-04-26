@@ -135,8 +135,6 @@ to reduce complexity
 libraries to reduce complexity
 - [x] Java [Apache Commons](https://commons.apache.org/)
 framework to reduce complexity
-- [x] Java [Project Lombok](https://projectlombok.org/)
-library to use annotations
 - [x] Java [JUnit4](https://junit.org/junit4/)
 framework for unit tests
 - [x] Java [AssertJ](https://assertj.github.io/doc/)

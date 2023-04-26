@@ -9,14 +9,14 @@ import org.junit.Test;
 public class RenderTaskTest {
 
     /**
-     * Tests the {@link RenderTask#builder()#toString()} method in the builder class of
+     * Tests the {@link RenderTask.Builder#toString()} method in the builder class of
      * {@link RenderTask}.
      */
     @Test
     public void testRenderTaskBuilderToString() {
-        final String renderTaskBuilderStr = RenderTask.builder().toString();
+        final String renderTaskBuilderStr = RenderTask.Builder.Companion.create().toString();
         Assertions.assertThat(renderTaskBuilderStr)
-            .as("The toString of RenderTask.builder()")
+            .as("The toString of RenderTask.Builder")
             .isNotNull()
             .isInstanceOf(String.class);
     }
