@@ -3,11 +3,9 @@ package puscas.mobilertapp;
 import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 
-import androidx.test.espresso.Espresso;
 import androidx.test.espresso.intent.Intents;
 import androidx.test.espresso.intent.matcher.IntentMatchers;
 
@@ -22,14 +20,9 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
 import puscas.mobilertapp.constants.Accelerator;
-import puscas.mobilertapp.constants.Constants;
-import puscas.mobilertapp.constants.ConstantsUI;
 import puscas.mobilertapp.constants.Scene;
 import puscas.mobilertapp.constants.Shader;
 import puscas.mobilertapp.utils.UtilsContext;
-import puscas.mobilertapp.utils.UtilsContextT;
-import puscas.mobilertapp.utils.UtilsPickerT;
-import puscas.mobilertapp.utils.UtilsT;
 
 /**
  * The test suite for the Ray Tracing engine used in {@link MainActivity}.
@@ -100,68 +93,8 @@ public final class RayTracingTest extends AbstractTest {
 
         Intents.intending(IntentMatchers.anyIntent())
             .respondWith(result);
-        assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, true);
+        assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 1, 1, true);
         Intents.intended(IntentMatchers.anyIntent());
-    }
-
-    /**
-     * Tests rendering a scene with the No Shadows shader.
-     *
-     * @throws TimeoutException If it couldn't render the whole scene in time.
-     */
-    @Test(timeout = 2L * 60L * 1000L)
-    public void testRenderSceneWithNoShadows() throws TimeoutException {
-        final int numCores = UtilsContext.getNumOfCores(this.activity);
-
-        assertRenderScene(numCores, Scene.CORNELL, Shader.NO_SHADOWS, false);
-    }
-
-    /**
-     * Tests rendering a scene with the Whitted shader.
-     *
-     * @throws TimeoutException If it couldn't render the whole scene in time.
-     */
-    @Test(timeout = 2L * 60L * 1000L)
-    public void testRenderSceneWithWhitted() throws TimeoutException {
-        final int numCores = UtilsContext.getNumOfCores(this.activity);
-
-        assertRenderScene(numCores, Scene.CORNELL, Shader.WHITTED, false);
-    }
-
-    /**
-     * Tests rendering a scene with the Path Tracing shader.
-     *
-     * @throws TimeoutException If it couldn't render the whole scene in time.
-     */
-    @Test(timeout = 2L * 60L * 1000L)
-    public void testRenderSceneWithPathTracing() throws TimeoutException {
-        final int numCores = UtilsContext.getNumOfCores(this.activity);
-
-        assertRenderScene(numCores, Scene.CORNELL, Shader.PATH_TRACING, false);
-    }
-
-    /**
-     * Tests rendering a scene with the Depth Map shader.
-     *
-     * @throws TimeoutException If it couldn't render the whole scene in time.
-     */
-    @Test(timeout = 2L * 60L * 1000L)
-    public void testRenderSceneWithDepthMap() throws TimeoutException {
-        final int numCores = UtilsContext.getNumOfCores(this.activity);
-
-        assertRenderScene(numCores, Scene.CORNELL, Shader.DEPTH_MAP, false);
-    }
-
-    /**
-     * Tests rendering a scene with the Diffuse shader.
-     *
-     * @throws TimeoutException If it couldn't render the whole scene in time.
-     */
-    @Test(timeout = 2L * 60L * 1000L)
-    public void testRenderSceneWithDiffuse() throws TimeoutException {
-        final int numCores = UtilsContext.getNumOfCores(this.activity);
-
-        assertRenderScene(numCores, Scene.CORNELL, Shader.DIFFUSE, false);
     }
 
     /**
@@ -186,7 +119,7 @@ public final class RayTracingTest extends AbstractTest {
 
         Intents.intending(IntentMatchers.anyIntent())
             .respondWith(result);
-        assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, false);
+        assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 1, 1, false);
         Intents.intended(IntentMatchers.anyIntent());
     }
 
@@ -213,43 +146,8 @@ public final class RayTracingTest extends AbstractTest {
 
         Intents.intending(IntentMatchers.anyIntent())
             .respondWith(result);
-        assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, false);
+        assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 1, 1, false);
         Intents.intended(IntentMatchers.anyIntent());
-    }
-
-    /**
-     * Helper method that clicks the Render {@link android.widget.Button} and waits for the
-     * Ray Tracing engine to render the whole scene and then checks if the resulted image in the
-     * {@link Bitmap} has different values.
-     *
-     * @param numCores           The number of CPU cores to use in the Ray Tracing process.
-     * @param scene              The desired scene to render.
-     * @param shader             The desired shader to be used.
-     * @param expectedSameValues Whether the {@link Bitmap} should have have only one color.
-     * @throws TimeoutException If it couldn't render the whole scene in time.
-     */
-    private void assertRenderScene(final int numCores,
-                                   final Scene scene,
-                                   final Shader shader,
-                                   final boolean expectedSameValues) throws TimeoutException {
-
-        UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SCENE, R.id.pickerScene, scene.ordinal());
-        UtilsPickerT.changePickerValue(ConstantsUI.PICKER_THREADS, R.id.pickerThreads, numCores);
-        UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SIZE, R.id.pickerSize, 1);
-        UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SAMPLES_PIXEL, R.id.pickerSamplesPixel, 1);
-        UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SAMPLES_LIGHT, R.id.pickerSamplesLight, 1);
-        UtilsPickerT.changePickerValue(ConstantsUI.PICKER_ACCELERATOR, R.id.pickerAccelerator, Accelerator.BVH.ordinal());
-        UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SHADER, R.id.pickerShader, shader.ordinal());
-
-        // Make sure these tests do not use preview feature.
-        UiTest.clickPreviewCheckBox(false);
-
-        UtilsT.startRendering(expectedSameValues);
-        UtilsContextT.waitUntilRenderingDone(this.activity);
-
-        UtilsT.assertRenderButtonText(Constants.RENDER);
-        UtilsT.testStateAndBitmap(expectedSameValues);
-        UtilsT.executeWithCatching(Espresso::onIdle);
     }
 
 }

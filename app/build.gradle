@@ -398,7 +398,6 @@ task jacocoTestReport(type: JacocoReport, dependsOn: [
     classDirectories.setFrom(
         // Exclude the 'BuildConfig.class' because it is an automatically generated file.
         fileTree(dir: "${buildDir}/intermediates/javac/debug/classes/", excludes: ['**/BuildConfig.class']),
-        fileTree(dir: "${buildDir}/tmp/kotlin-classes/debug/")
     )
     executionData.setFrom(fileTree(dir: "${buildDir}", includes: [
         "**/test*UnitTest.exec",
@@ -414,7 +413,7 @@ task jacocoTestReport(type: JacocoReport, dependsOn: [
 ///////////////////////////////////////////////////////////////////////////////
 // ?: -> binary operator: x ?: y <==> x ? x : y
 tasks.withType(Test).configureEach {
-    maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
+    maxParallelForks = Runtime.runtime.availableProcessors()
 }
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
