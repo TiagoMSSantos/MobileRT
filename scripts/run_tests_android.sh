@@ -410,10 +410,11 @@ runUnitTests() {
     # Ignore unit tests that should crash the system because of a failing assert.
     adb shell LD_LIBRARY_PATH=${mobilert_path} \
       ${mobilert_path}/UnitTests \
-      --gtest_filter=-*.TestInvalid*;
+      --gtest_filter=-*.TestInvalid*:*Engine*;
   else
     adb shell LD_LIBRARY_PATH=${mobilert_path} \
-      ${mobilert_path}/UnitTests;
+      ${mobilert_path}/UnitTests \
+      --gtest_filter=-*Engine*;
   fi
   resUnitTests=${?};
 }

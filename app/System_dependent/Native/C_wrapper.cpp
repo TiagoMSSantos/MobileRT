@@ -240,6 +240,8 @@ static void work_thread(::MobileRT::Config &config) {
     } catch (...) {
         LOG_ERROR("Unknown error");
     }
+    // Force the calling Ray Tracing engine destructors, which is useful for the unit tests.
+    renderer_.reset(nullptr);
 }
 
 /**

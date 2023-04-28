@@ -171,19 +171,19 @@ jobs:
       run: |
         lcov -c -i -d . --no-external -o code_coverage_base.info;
 
-    - name: Run unit tests Debug
+    - name: Run unit tests
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && matrix.type == 'debug'
+      if: success()
       working-directory: build_${{ matrix.type }}
       run: |
-        DYLD_FALLBACK_LIBRARY_PATH="lib" LD_LIBRARY_PATH=$(find ~/.conan -iname "libgtest.so" | grep -iv "build" | xargs ls -t | head -1 | xargs dirname) ./bin/UnitTestsd;
+        DYLD_FALLBACK_LIBRARY_PATH="lib" LD_LIBRARY_PATH=$(find ~/.conan -iname "libgtest.so" | grep -iv "build" | xargs ls -t | head -1 | xargs dirname) ./bin/UnitTests* --gtest_filter=-*Engine*;
 
-    - name: Run unit tests Release
+    - name: Run unit tests Ray Tracing engine (for code coverage)
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && matrix.type == 'release'
-      working-directory: build_${{ matrix.type }}
+      if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug' && startsWith(matrix.compiler, 'g++')
+      working-directory: .
       run: |
-        DYLD_FALLBACK_LIBRARY_PATH="lib" LD_LIBRARY_PATH=$(find ~/.conan -iname "libgtest.so" | grep -iv "build" | xargs ls -t | head -1 | xargs dirname) ./bin/UnitTests;
+        DYLD_FALLBACK_LIBRARY_PATH="lib" LD_LIBRARY_PATH=$(find ~/.conan -iname "libgtest.so" | grep -iv "build" | xargs ls -t | head -1 | xargs dirname) ./build_${{ matrix.type }}/bin/UnitTestsd --gtest_filter=*Engine*;
 
     - name: Generate code coverage
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}

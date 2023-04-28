@@ -230,11 +230,11 @@ jobs:
       if: success() && matrix.type == 'debug'
       working-directory: build_${{ matrix.type }}
       run: |
-        DYLD_FALLBACK_LIBRARY_PATH=lib ./bin/Debug/UnitTestsd;
+        DYLD_FALLBACK_LIBRARY_PATH=lib ./bin/Debug/UnitTestsd --gtest_filter=-*Engine*;
 
     - name: Run unit tests Release
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && matrix.type == 'release'
       working-directory: build_${{ matrix.type }}
       run: |
-        DYLD_FALLBACK_LIBRARY_PATH=lib ./bin/Debug/UnitTests;
+        DYLD_FALLBACK_LIBRARY_PATH=lib ./bin/Debug/UnitTests --gtest_filter=-*Engine*;

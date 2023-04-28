@@ -10,6 +10,7 @@ import androidx.test.espresso.matcher.ViewMatchers;
 
 import com.google.common.util.concurrent.Uninterruptibles;
 
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -64,9 +65,10 @@ public final class UtilsContextT {
 
             renderButtonView.check((view, exception) -> {
                 final Button renderButton = view.findViewById(R.id.renderButton);
-                logger.info("Checking if rendering done.");
-                if (renderButton.getText().toString().equals(Constants.RENDER)
-                    && renderer.getState() == State.IDLE) {
+                final String renderButtonText = renderButton.getText().toString();
+                final State rendererState = renderer.getState();
+                logger.info("Checking if rendering done. State: '" + rendererState.name() + "', Button: '" + renderButtonText + "'");
+                if (Objects.equals(renderButtonText, Constants.RENDER) && Objects.equals(rendererState, State.IDLE)) {
                     done.set(true);
                     logger.info("Rendering done.");
                 }

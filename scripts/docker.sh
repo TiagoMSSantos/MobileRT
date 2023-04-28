@@ -95,7 +95,7 @@ executeUnitTestsInDockerContainer() {
     -v /tmp/.X11-unix:/tmp/.X11-unix \
     -e DISPLAY="${DISPLAY}" \
     --name="mobile_rt_${1}" \
-    ptpuscas/mobile_rt:"${1}" -c "./build_release/bin/UnitTests";
+    ptpuscas/mobile_rt:"${1}" -c "./build_release/bin/UnitTests --gtest_filter=-*Engine*";
 }
 
 # Helper command to push the MobileRT docker image into the docker registry.

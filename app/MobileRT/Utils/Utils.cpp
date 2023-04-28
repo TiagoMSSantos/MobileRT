@@ -236,7 +236,7 @@ namespace MobileRT {
      * @param message The message to be logged in the `std::runtime_error` that might be thrown.
      */
     void checkSystemError(const char *const message) {
-        LOG_DEBUG("checkSystemError: ", message);
+        LOG_DEBUG("Called checkSystemError");
 
         if (errno != 0 && errno != EAGAIN && errno != EWOULDBLOCK) {// if there is an error
             ::std::setlocale(LC_ALL, "en_US.UTF-8");

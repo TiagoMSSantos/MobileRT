@@ -12,6 +12,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
@@ -90,9 +91,8 @@ public final class RayTracingTest extends AbstractTest {
         final Intent resultData = new Intent(Intent.ACTION_GET_CONTENT);
         resultData.setData(Uri.fromFile(fileToObj));
         final Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
+        Intents.intending(IntentMatchers.anyIntent()).respondWith(result);
 
-        Intents.intending(IntentMatchers.anyIntent())
-            .respondWith(result);
         assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 1, 1, true);
         Intents.intended(IntentMatchers.anyIntent());
     }
@@ -116,9 +116,8 @@ public final class RayTracingTest extends AbstractTest {
         final Intent resultData = new Intent(Intent.ACTION_GET_CONTENT);
         resultData.setData(Uri.fromFile(fileToObj));
         final Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
+        Intents.intending(IntentMatchers.anyIntent()).respondWith(result);
 
-        Intents.intending(IntentMatchers.anyIntent())
-            .respondWith(result);
         assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 1, 1, false);
         Intents.intended(IntentMatchers.anyIntent());
     }
@@ -143,11 +142,24 @@ public final class RayTracingTest extends AbstractTest {
         final Intent resultData = new Intent(Intent.ACTION_GET_CONTENT);
         resultData.setData(Uri.fromFile(fileToObj));
         final Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
+        Intents.intending(IntentMatchers.anyIntent()).respondWith(result);
 
-        Intents.intending(IntentMatchers.anyIntent())
-            .respondWith(result);
         assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 1, 1, false);
         Intents.intended(IntentMatchers.anyIntent());
+    }
+
+    /**
+     * Tests rendering a scene without any {@link Accelerator}.
+     * It shouldn't render anything and be just a black image.
+     *
+     * @throws TimeoutException If it couldn't render the whole scene in time.
+     */
+    @Ignore("It's failing in CI for Linux machines")
+    @Test(timeout = 2L * 60L * 1000L)
+    public void testRenderSceneWithoutAccelerator() throws TimeoutException {
+        final int numCores = UtilsContext.getNumOfCores(this.activity);
+
+        assertRenderScene(numCores, Scene.CORNELL, Shader.WHITTED, Accelerator.NONE, 1, 1, true);
     }
 
 }

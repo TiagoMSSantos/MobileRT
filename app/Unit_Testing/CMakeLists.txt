@@ -16,7 +16,14 @@ message( STATUS "Setting up Unit Tests project." )
 project( UnitTests VERSION 1.0.0.0 LANGUAGES CXX )
 
 message( STATUS "Adding unit tests source files." )
-file( GLOB_RECURSE GTEST_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/**.cpp" )
+file( GLOB GTEST_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp" )
+
+if( NOT DEFINED ANDROID_ABI )
+  # Add native Ray Tracing engine tests if it's not for Android, so the code coverage is more accurate.
+  # Also, since these engine tests use the native 'System_Dependent' dependency, it won't work in Android.
+  file( GLOB GTEST_SOURCES_RAY_TRACING "${CMAKE_CURRENT_SOURCE_DIR}/engine/*.cpp" )
+  set( GTEST_SOURCES "${GTEST_SOURCES};${GTEST_SOURCES_RAY_TRACING}" CACHE STRING "CUSTOM" FORCE )
+endif()
 
 message( STATUS "Creating executable." )
 add_executable( ${PROJECT_NAME} ${GTEST_SOURCES} ${MOBILE_DEPENDENT_SOURCES} ${SCENES_SOURCES} )
