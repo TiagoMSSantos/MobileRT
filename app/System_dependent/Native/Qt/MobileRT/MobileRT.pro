@@ -23,6 +23,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 INCLUDEPATH += ../../../../
 INCLUDEPATH += ../../../../System_dependent/Native
 INCLUDEPATH += ../../../../third_party
+INCLUDEPATH += ../../../../third_party/glm
 INCLUDEPATH += ../../../../third_party/boost/libs/assert/include
 INCLUDEPATH += ../../../../third_party/pcg-cpp/include
 INCLUDEPATH += ../../../../Scenes
