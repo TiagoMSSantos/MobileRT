@@ -426,8 +426,8 @@ zipFilesForArtifact() {
 generateCodeCoverage() {
   lcov -c -d . --no-external -o code_coverage_test.info;
   lcov -a code_coverage_base.info -a code_coverage_test.info -o code_coverage.info;
-  lcov --remove code_coverage.info -o code_coverage.info '*third_party*' '*build*';
-  genhtml code_coverage.info -o code_coverage_report --no-branch-coverage -t MobileRT_code_coverage;
+  lcov --remove code_coverage.info '*third_party*' '*build*' '*Unit_Testing*' -o code_coverage_filtered.info;
+  genhtml code_coverage_filtered.info -o code_coverage_report --no-branch-coverage -t MobileRT_code_coverage;
   _validateCodeCoverage;
 }
 
@@ -436,6 +436,7 @@ _validateCodeCoverage() {
   ls -lahp code_coverage_base.info;
   ls -lahp code_coverage_test.info;
   ls -lahp code_coverage.info;
+  ls -lahp code_coverage_filtered.info;
 }
 
 # Add command to the PATH environment variable.

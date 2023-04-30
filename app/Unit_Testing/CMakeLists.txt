@@ -62,6 +62,8 @@ target_compile_options( ${PROJECT_NAME} PRIVATE ${COMMON_FLAGS} )
 target_compile_options( ${PROJECT_NAME} PRIVATE
   $<$<CONFIG:DEBUG>:${COMMON_FLAGS_DEBUG}> )
 target_compile_options( ${PROJECT_NAME} PRIVATE
+  $<$<CONFIG:DEBUG>:${COMMON_FLAGS_TEST}> )
+target_compile_options( ${PROJECT_NAME} PRIVATE
   $<$<CONFIG:RELEASE>:${COMMON_FLAGS_RELEASE}> )
 
 # Turn off warnings because of Google Test

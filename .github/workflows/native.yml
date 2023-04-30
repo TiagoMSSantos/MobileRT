@@ -215,6 +215,7 @@ jobs:
           code_coverage_base.info
           code_coverage.info
           code_coverage_test.info
+          code_coverage_filtered.info
 
 
   Sonar:
@@ -248,6 +249,7 @@ jobs:
           code_coverage_base.info
           code_coverage.info
           code_coverage_test.info
+          code_coverage_filtered.info
 
     - name: Send code climate report
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -258,7 +260,7 @@ jobs:
       run: |
         # shellcheck disable=SC1091
         . scripts/helper_functions.sh && prepareBinaries ${{ github.workspace }};
-        ./test-reporter-latest-linux-amd64 format-coverage -t lcov code_coverage.info;
+        ./test-reporter-latest-linux-amd64 format-coverage -t lcov code_coverage_filtered.info;
         ./test-reporter-latest-linux-amd64 upload-coverage;
 
     - name: Validate codecov report

@@ -166,7 +166,8 @@ sonar {
         property 'sonar.junit.reportPaths', 'build/test-results/testDebugUnitTest'
 
         // More properties
-        property 'sonar.exclusions', '**/test*,**/*Generated*,**/third_party*,**/build*'
+        property 'sonar.inclusions', '**/src/**/*.java,**/src/**/*.kt,**/*.cpp,**/*.hpp'
+        property 'sonar.exclusions', '**/Unit_Testing/**,**/test**,**/**Generated**,**/third_party**,**/build**'
 
         property 'sonar.host.url', 'https://sonarcloud.io'
         property 'sonar.verbose', 'true'
@@ -184,7 +185,6 @@ sonar {
         property 'sonar.log.level.web', 'TRACE'
         property 'sonar.log.level.ce', 'TRACE'
         property 'sonar.log.level.es', 'TRACE'
-        property 'sonar.inclusions', '**/src/**/*.java,**/src/**/*.kt,**/*.cpp,**/*.hpp'
         property 'sonar.scm.exclusions.disabled', 'false'
     }
 }

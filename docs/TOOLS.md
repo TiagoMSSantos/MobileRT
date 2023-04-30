@@ -12,10 +12,10 @@ lcov -c -i -d . --no-external -o code_coverage_base.info;
 ./build_debug/bin/UnitTestsd;
 lcov -c -d . --no-external -o code_coverage_test.info;
 lcov -a code_coverage_base.info -a code_coverage_test.info -o code_coverage.info;
-lcov --remove code_coverage.info -o code_coverage.info '*third_party*' '*build*';
+lcov --remove code_coverage.info '*third_party*' '*build*' '*Unit_Testing*' -o code_coverage_filtered.info;
 genhtml code_coverage.info -o code_coverage_report --no-branch-coverage -t MobileRT_code_coverage;
 bash <(curl -s https://codecov.io/bash);
-./test-reporter-latest-linux-amd64 format-coverage -t lcov code_coverage.info;
+./test-reporter-latest-linux-amd64 format-coverage -t lcov code_coverage_filtered.info;
 ./test-reporter-latest-linux-amd64 upload-coverage;
 ```
 
