@@ -102,7 +102,7 @@ void Renderer::renderScene(::std::int32_t *const bitmap, const ::std::int32_t ti
         LOG_DEBUG("renderScene (tid: ", tid, "), sample: ", sample);
         while (true) {
             const auto tile {getTile(sample)};
-            LOG_DEBUG("Will (tid: ", tid, "), get tile: ", tile,", bx=", this->blockSizeX_, ", by=", this->blockSizeY_, ", spp=", sample, " (total: ", this->samplesPixel_, ")");
+            LOG_DEBUG("Will (tid: ", tid, ") get tile: ", tile,", bx=", this->blockSizeX_, ", by=", this->blockSizeY_, ", spp=", sample, " (total: ", this->samplesPixel_, ")");
             if (tile >= 1.0F) {
                 break;
             }

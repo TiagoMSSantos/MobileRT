@@ -6,9 +6,9 @@ using ::Components::CameraFactory;
 ::std::unique_ptr<::MobileRT::Camera> CameraFactory::loadFromFile (
         const ::std::string &filePath, const float aspectRatio) const {
 
-    MobileRT::checkSystemError("Error before read CAM.");
+    MobileRT::checkSystemError("Before read CAM.");
     ::std::ifstream infile {filePath, ::std::ios::binary};
-    MobileRT::checkSystemError(::std::string("Error after read CAM `" + filePath + "`.").c_str());
+    MobileRT::checkSystemError(::std::string("After read CAM `" + filePath + "`.").c_str());
 
     ::std::unique_ptr<::MobileRT::Camera> camera {};
     ::std::string line {};

@@ -18,17 +18,17 @@ OBJLoader::OBJLoader(::std::string objFilePath, const ::std::string &matFilePath
     objFilePath_ {::std::move(objFilePath)} {
 
     LOG_INFO("Going to load OBJ and MTL files to create OBJLoader.");
-    MobileRT::checkSystemError("Error before read OBJ.");
+    MobileRT::checkSystemError("Before read OBJ.");
     LOG_DEBUG("Will read OBJ path: '", this->objFilePath_, "' (size: '", this->objFilePath_.size(), "')");
     ::std::ifstream objStream {this->objFilePath_, ::std::ios::binary};
-    MobileRT::checkSystemError(::std::string("Error after read OBJ `" + this->objFilePath_ + "`.").c_str());
+    MobileRT::checkSystemError(::std::string("After read OBJ `" + this->objFilePath_ + "`.").c_str());
     objStream.exceptions(
         objStream.exceptions() | ::std::ifstream::goodbit | ::std::ifstream::badbit |
         ::std::ifstream::failbit
     );
     LOG_DEBUG("Will read MAT path: '", matFilePath, "' (size: '", matFilePath.size(), "')");
     ::std::ifstream matStream {matFilePath, ::std::ios::binary};
-    MobileRT::checkSystemError(::std::string("Error after read MAT `" + matFilePath + "`.").c_str());
+    MobileRT::checkSystemError(::std::string("After read MAT `" + matFilePath + "`.").c_str());
     matStream.exceptions(
         matStream.exceptions() | ::std::ifstream::goodbit | ::std::ifstream::badbit |
         ::std::ifstream::failbit
@@ -42,7 +42,7 @@ OBJLoader::OBJLoader(::std::string objFilePath, const ::std::string &matFilePath
     LOG_DEBUG("OBJ file path: '", this->objFilePath_, "'");
     LOG_DEBUG("MTL file path: '", matFilePath, "'");
 
-    MobileRT::checkSystemError("Error before LoadObj.");
+    MobileRT::checkSystemError("Before LoadObj.");
     const auto ret {
         ::tinyobj::LoadObj(
             &this->attrib_, &this->shapes_, &this->materials_,
@@ -52,7 +52,7 @@ OBJLoader::OBJLoader(::std::string objFilePath, const ::std::string &matFilePath
     // For some reason in Gentoo Linux, the `LoadObj` method fails
     // in release with error code ENOENT: No such file or directory.
     errno = 0;
-    MobileRT::checkSystemError("Error after LoadObj.");
+    MobileRT::checkSystemError("After LoadObj.");
 
     LOG_DEBUG("Called tinyobj::LoadObj");
 

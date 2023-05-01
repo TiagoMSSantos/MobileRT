@@ -148,7 +148,7 @@ jobs:
 
     - name: Squash Docker image
       timeout-minutes: 120
-      if: success() && (startsWith(matrix.BASE_IMAGE, 'gentoo'))
+      if: success() && env.BRANCH == 'master' && startsWith(matrix.BASE_IMAGE, 'gentoo')
       run: |
         # shellcheck disable=SC1091
         echo "VERSION: ${{ env.VERSION }}";

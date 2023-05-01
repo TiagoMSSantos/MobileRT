@@ -100,24 +100,22 @@ typeWithCapitalLetter=$(capitalizeFirstletter "${type}");
 # Helper functions.
 ###############################################################################
 gather_logs_func() {
-  echo '';
-
   adb_devices_running=$(adb devices | tail -n +2);
   if [ "${adb_devices_running}" != '' ]; then
     callCommandUntilSuccess adb shell 'ps > /dev/null;';
-
-    echo 'Gathering logs';
     adb logcat -v threadtime -d "*":V \
       > "${reports_path}"/logcat_"${type}".log 2>&1;
     echo "Copied logcat to logcat_${type}.log";
+  else
+    echo 'Logs not gathered because Android emulator is down.';
   fi
 
   set +e;
   pid_app=$(grep -E -i "proc.puscas:*" "${reports_path}"/logcat_"${type}".log |
     grep -i "pid=" | cut -d "=" -f 2 | cut -d "u" -f 1 | tr -d ' ' | tail -1);
-  echo "Filter logcat of the app: ${pid_app}";
   grep -e "${pid_app}" -e "I DEBUG" "${reports_path}"/logcat_"${type}".log \
     > "${reports_path}"/logcat_app_"${type}".log;
+  echo "Filtered logcat of the app '${pid_app}' to logcat_app_${type}.log";
   set -e;
 
   printf '\e]8;;file://'"%s"'/'"%s"'/tests/test'"%s"'UnitTest/index.html\aClick here to check the Unit tests report.\e]8;;\a\n' "${PWD}" "${reports_path}" "${typeWithCapitalLetter}";
@@ -127,12 +125,11 @@ gather_logs_func() {
 }
 
 clear_func() {
-  set +u; # Variable might not have been set if canceled too soo.
+  set +u; # Variable might not have been set if canceled too soon.
   echo "Killing pid of logcat: '${pid_logcat}'";
   kill -TERM "${pid_logcat}" 2> /dev/null || true;
   set -u;
 
-  echo 'Will kill MobileRT process';
   pid_app=$(adb shell ps | grep -i puscas.mobilertapp | tr -s ' ' | cut -d ' ' -f 2);
   echo "Killing pid of MobileRT: '${pid_app}'";
   set +e;

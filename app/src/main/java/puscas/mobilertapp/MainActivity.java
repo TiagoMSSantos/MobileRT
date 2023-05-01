@@ -739,7 +739,6 @@ public final class MainActivity extends Activity {
         final ViewTreeObserver vto = this.drawView.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(() -> {
             logger.info("initializePickerResolutions 1");
-            resetErrno();
             final double widthView = this.drawView.getWidth();
             final double heightView = this.drawView.getHeight();
 
@@ -749,6 +748,7 @@ public final class MainActivity extends Activity {
                 .map(value -> (value + 1.0) * 0.1)
                 .map(value -> value * value)
                 .mapToObj(value -> {
+                    resetErrno(); // Necessary to avoid 'EWOULDBLOCK'.
                     final int width = rtResize((int) Math.round(widthView * value));
                     final int height = rtResize((int) Math.round(heightView * value));
                     return String.valueOf(width) + 'x' + height;
