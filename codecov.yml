@@ -24,7 +24,8 @@ coverage:
     project:
       default:
         target: 70%
-        threshold: 0%
+        # Note that the native coverage is reported 1st and might fail, so it was added a threshold because of that.
+        threshold: 1%
         if_ci_failed: error
         informational: false
         only_pulls: false
