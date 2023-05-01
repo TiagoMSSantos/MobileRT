@@ -44,7 +44,7 @@ Shader::Shader(Scene scene, const ::std::int32_t samplesLight, const Accelerator
  * @param scene The scene geometry.
  */
 void Shader::initializeAccelerators(Scene scene) {
-    LOG_DEBUG("initializeAccelerators");
+    ::MobileRT::checkSystemError("initializeAccelerators start");
     switch (this->accelerator_) {
         case Accelerator::ACC_NAIVE: {
             this->naivePlanes_ = Naive<Plane> {::std::move(scene.planes_)};
@@ -68,10 +68,12 @@ void Shader::initializeAccelerators(Scene scene) {
             break;
         }
     }
+    ::MobileRT::checkSystemError("initializeAccelerators end");
     this->lights_ = ::std::move(scene.lights_);
     LOG_DEBUG("accelerator = ", this->accelerator_);
     LOG_DEBUG("materials = ", this->materials_.size());
     LOG_DEBUG("lights = ", this->lights_.size());
+    ::MobileRT::checkSystemError("initializeAccelerators end 2");
 }
 
 /**

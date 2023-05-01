@@ -229,9 +229,9 @@ printCommandExitCode() {
   echo '#####################################################################';
   echo 'Results:';
   if [ "${1}" = '0' ]; then
-    echo "${2}: success";
+    echo "${2}: success (${1})";
   else
-    echo "${2}: failed";
+    echo "${2}: failed (${1})";
     exit "${1}";
   fi
 }

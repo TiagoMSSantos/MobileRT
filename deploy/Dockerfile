@@ -130,10 +130,13 @@ RUN git config --global http.postBuffer 1048576000; \
 ###############################################################################
 # Get MobileRT contents (required to create docker image in CI)
 ###############################################################################
+WORKDIR /
 RUN git clone https://github.com/TiagoMSSantos/MobileRT.git \
   --shallow-submodules \
   --progress \
-  --branch ${BRANCH};
+  --branch ${BRANCH} && \
+  ls -la ./MobileRT/app/src/androidTest/resources/CornellBox/CornellBox-Water.obj && \
+  ls -la ./MobileRT/app/src/androidTest/resources/teapot/teapot.obj;
 ###############################################################################
 ###############################################################################
 
@@ -149,7 +152,7 @@ RUN git clone https://github.com/TiagoMSSantos/MobileRT.git \
 ###############################################################################
 # Install dependencies
 ###############################################################################
-WORKDIR MobileRT
+WORKDIR /MobileRT
 RUN sh scripts/install_dependencies.sh;
 ###############################################################################
 ###############################################################################
@@ -161,12 +164,20 @@ RUN sh scripts/install_dependencies.sh;
 RUN sh scripts/compile_native.sh -t ${BUILD_TYPE} -c g++ -r yes && \
     du -h -d 1 build_${BUILD_TYPE}/bin && \
     du -h -d 1 build_${BUILD_TYPE}/lib && \
-    rm -rf $(find app/ -iname "*" ! -name "MobileRT.jks" ! -name "app") && \
-    rm -rf docs && \
-    rm -rf documentation && \
-    rm -rf git-hooks && \
-    rm -rf gradle && \
-    rm -rf .git && \
+    ls -la ./app/src/androidTest/resources/CornellBox/CornellBox-Water.obj && \
+    ls -la ./app/src/androidTest/resources/teapot/teapot.obj && \
+    rm -rfv $(find app/ -iname "*" ! -name "app" ! -name "MobileRT.jks" ! -name "src" ! -name "androidTest" ! -name "resources" | grep -v "src/androidTest/resources") && \
+    rm -rfv docs && \
+    rm -rfv documentation && \
+    rm -rfv git-hooks && \
+    rm -rfv gradle && \
+    rm -rfv .git && \
+    ls -la ./app/src/androidTest/resources/CornellBox/CornellBox-Water.obj && \
+    ls -la ./app/src/androidTest/resources/CornellBox/CornellBox-Water.mtl && \
+    ls -la ./app/src/androidTest/resources/CornellBox/CornellBox-Water.cam && \
+    ls -la ./app/src/androidTest/resources/teapot/teapot.obj && \
+    ls -la ./app/src/androidTest/resources/teapot/teapot.mtl && \
+    ls -la ./app/src/androidTest/resources/teapot/teapot.cam && \
     chmod -R +x scripts/
 ###############################################################################
 ###############################################################################
@@ -183,7 +194,6 @@ VOLUME /tmp/.X11-unix
 ###############################################################################
 # Execute MobileRT by default
 ###############################################################################
-WORKDIR .
 ENTRYPOINT ["sh", "-c"]
 CMD ["sh ./scripts/profile.sh ${ENV_BUILD_TYPE}"]
 ###############################################################################

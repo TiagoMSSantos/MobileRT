@@ -160,7 +160,15 @@ jobs:
       run: |
         # shellcheck disable=SC1091
         echo "VERSION: ${{ env.VERSION }}";
-        . scripts/docker.sh && executeUnitTestsInDockerContainer ${{ env.VERSION }};
+        . scripts/docker.sh && executeUnitTestsInDockerContainer ${{ env.VERSION }} --gtest_filter=-*Engine*;
+
+    - name: Run unit tests Ray Tracing engine (for code coverage)
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success()
+      run: |
+        # shellcheck disable=SC1091
+        echo "VERSION: ${{ env.VERSION }}";
+        . scripts/docker.sh && executeUnitTestsInDockerContainer ${{ env.VERSION }} --gtest_filter=*Engine*;
 
     - name: Push the tagged Docker image
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}

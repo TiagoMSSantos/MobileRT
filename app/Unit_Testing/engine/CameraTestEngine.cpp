@@ -32,17 +32,29 @@ CameraTestEngine::~CameraTestEngine () {
 }
 
 TEST_F(CameraTestEngine, testRenderSceneWithOrthographic) {
+    ::MobileRT::checkSystemError("testRenderSceneWithOrthographic start");
+
     config.sceneIndex = 1; // Spheres
     config.shader = 1; // Whitted
     config.accelerator = ::MobileRT::Shader::Accelerator::ACC_BVH;
 
+    ASSERT_TRUE(::std::all_of(config.bitmap.begin()+1, config.bitmap.end(), ::std::bind(std::equal_to<int>(), ::std::placeholders::_1, config.bitmap.front())));
     RayTrace(config, false);
+    ASSERT_FALSE(::std::all_of(config.bitmap.begin()+1, config.bitmap.end(), ::std::bind(std::equal_to<int>(), ::std::placeholders::_1, config.bitmap.front())));
+
+    ::MobileRT::checkSystemError("testRenderSceneWithOrthographic end");
 }
 
 TEST_F(CameraTestEngine, testRenderSceneWithPerspective) {
+    ::MobileRT::checkSystemError("testRenderSceneWithPerspective start");
+
     config.sceneIndex = 0; // CornellBox
     config.shader = 1; // Whitted
     config.accelerator = ::MobileRT::Shader::Accelerator::ACC_BVH;
 
+    ASSERT_TRUE(::std::all_of(config.bitmap.begin()+1, config.bitmap.end(), ::std::bind(std::equal_to<int>(), ::std::placeholders::_1, config.bitmap.front())));
     RayTrace(config, false);
+    ASSERT_FALSE(::std::all_of(config.bitmap.begin()+1, config.bitmap.end(), ::std::bind(std::equal_to<int>(), ::std::placeholders::_1, config.bitmap.front())));
+
+    ::MobileRT::checkSystemError("testRenderSceneWithPerspective end");
 }

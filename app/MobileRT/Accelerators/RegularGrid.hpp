@@ -121,6 +121,7 @@ namespace MobileRT {
         },
         // precalculate size of a cell (for x, y, and z)
         cellSize_ {(worldBoundaries_.getPointMax() - worldBoundaries_.getPointMin()) * (1.0F / static_cast<float> (gridSize_))} {
+        ::MobileRT::checkSystemError("RegularGrid constructor start");
         LOG_DEBUG(typeid(T).name());
         const auto worldBoundsMin {this->worldBoundaries_.getPointMin()};
         const auto worldBoundsMax {this->worldBoundaries_.getPointMax()};
@@ -134,7 +135,11 @@ namespace MobileRT {
         );
 
         LOG_DEBUG("PRIMITIVES = ", this->primitives_.size());
+
+        ::MobileRT::checkSystemError("RegularGrid constructor before adding primitives");
         addPrimitives();
+
+        ::MobileRT::checkSystemError("RegularGrid constructor end");
     }
 
     /**
@@ -172,6 +177,7 @@ namespace MobileRT {
      */
     template<typename T>
     void RegularGrid<T>::addPrimitives() {
+        ::MobileRT::checkSystemError("RegularGrid addPrimitives start");
         const auto worldBoundsMin {this->worldBoundaries_.getPointMin()};
         const auto worldBoundsMax {this->worldBoundaries_.getPointMax()};
 
@@ -184,13 +190,19 @@ namespace MobileRT {
         const auto dyReci {dy > 0 ? 1.0F / dy : 1.0F};
         const auto dzReci {dz > 0 ? 1.0F / dz : 1.0F};
         const auto numPrimitives {static_cast<::std::uint32_t> (this->primitives_.size())};
+
         ::std::vector<::std::mutex> mutexes (this->grid_.size());
+
+        ::MobileRT::checkSystemError("RegularGrid addPrimitives before calling OpenMP");
         const auto num_max_threads {omp_get_max_threads()};
+        errno = 0; // In some compilers, OpenMP sets 'errno' to 'EFAULT - Bad address (14)'.
         LOG_DEBUG("num_max_threads = ", num_max_threads);
 
+        ::MobileRT::checkSystemError("RegularGrid addPrimitives before adding primitives");
         #pragma omp parallel for
         // store primitives in the grid cells
         for (::std::int32_t index = 0; index < static_cast<::std::int32_t> (numPrimitives); ++index) {
+            ::MobileRT::checkSystemError(::std::string("RegularGrid addPrimitives (" + ::std::to_string(index) + ")").c_str());
             auto &primitive {this->primitives_[static_cast<::std::uint32_t> (index)]};
             const auto bound {primitive.getAABB()};
             const auto &bv1 {bound.getPointMin()};
@@ -243,7 +255,9 @@ namespace MobileRT {
                     }
                 }
             }
+            ::MobileRT::checkSystemError(::std::string("RegularGrid addPrimitives end (" + ::std::to_string(index) + ")").c_str());
         }
+        ::MobileRT::checkSystemError("RegularGrid addPrimitives end");
     }
 
     /**

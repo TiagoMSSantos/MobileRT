@@ -97,14 +97,16 @@ static void work_thread(::MobileRT::Config &config) {
                     break;
 
                 default: {
+                    LOG_DEBUG("OBJLoader starting loading scene");
                     const auto startLoading {::std::chrono::system_clock::now()};
                     ::Components::OBJLoader objLoader {config.objFilePath, config.mtlFilePath};
                     if (!objLoader.isProcessed()) {
-                        exit(0);
+                        LOG_DEBUG("Error occurred while loading scene.");
+                        exit(1);
                     }
                     const auto endLoading {::std::chrono::system_clock::now()};
                     timeLoading = endLoading - startLoading;
-                    LOG_DEBUG("OBJLoader loaded = ", timeLoading.count());
+                    LOG_DEBUG("OBJLoader loaded = ", timeLoading.count(), " primitives");
                     const auto startFilling {::std::chrono::system_clock::now()};
                     // "objLoader.fillScene(&scene, []() {return ::MobileRT::std::make_unique<::Components::HaltonSeq> ();});"
                     // "objLoader.fillScene(&scene, []() {return ::MobileRT::std::make_unique<::Components::MersenneTwister> ();});"
@@ -112,7 +114,7 @@ static void work_thread(::MobileRT::Config &config) {
                     // "objLoader.fillScene(&scene, []() {return ::MobileRT::std::make_unique<Components::StaticMersenneTwister> ();});"
                     const auto endFilling {::std::chrono::system_clock::now()};
                     timeFilling = endFilling - startFilling;
-                    LOG_DEBUG("Scene filled = ", timeFilling.count());
+                    LOG_DEBUG("Scene filled = ", timeFilling.count(), " primitives");
 
                     const auto cameraFactory {::Components::CameraFactory()};
                     camera = cameraFactory.loadFromFile(config.camFilePath, ratio);
@@ -126,6 +128,7 @@ static void work_thread(::MobileRT::Config &config) {
             } else {
                 samplerPixel = ::MobileRT::std::make_unique<::Components::Constant> (0.5F);
             }
+            ::MobileRT::checkSystemError("Starting creating shader");
             // Start timer to measure latency of creating shader (including the build of
             // acceleration structure)
             const auto startCreating {::std::chrono::system_clock::now()};
@@ -173,6 +176,7 @@ static void work_thread(::MobileRT::Config &config) {
             }
             // Stop timer
             const auto endCreating {::std::chrono::system_clock::now()};
+            ::MobileRT::checkSystemError("Created shader");
             timeCreating = endCreating - startCreating;
             LOG_DEBUG("Shader created = ", timeCreating.count());
 
@@ -182,11 +186,13 @@ static void work_thread(::MobileRT::Config &config) {
             const auto numLights {static_cast<::std::int32_t> (shader_->getLights().size())};
             const auto nPrimitives {triangles + spheres + planes};
 
+            ::MobileRT::checkSystemError("Starting creating renderer");
             LOG_INFO("Started creating Renderer");
             renderer_ = ::MobileRT::std::make_unique<::MobileRT::Renderer> (
                     ::std::move(shader_), ::std::move(camera), ::std::move(samplerPixel),
                     config.width, config.height, config.samplesPixel
             );
+            ::MobileRT::checkSystemError("Created renderer");
 
             // Print debug information
             LOG_DEBUG("TRIANGLES = ", triangles);
@@ -203,6 +209,7 @@ static void work_thread(::MobileRT::Config &config) {
             LOG_DEBUG("height_ = ", config.height);
 
             auto repeats {config.repeats};
+            ::MobileRT::checkSystemError("Starting rendering");
             LOG_INFO("Started rendering scene");
             const auto startRendering {::std::chrono::system_clock::now()};
             do {
@@ -211,6 +218,7 @@ static void work_thread(::MobileRT::Config &config) {
                 repeats--;
             } while (repeats > 0);
             const auto endRendering {::std::chrono::system_clock::now()};
+            ::MobileRT::checkSystemError("Rendering ended");
 
             timeRendering = endRendering - startRendering;
             LOG_INFO("Finished rendering scene");

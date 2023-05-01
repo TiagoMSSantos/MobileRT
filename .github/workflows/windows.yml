@@ -225,16 +225,23 @@ jobs:
       run: |
         sh scripts/compile_native.sh -t ${{ matrix.type }} -c ${{ matrix.cxx }};
 
-    - name: Run unit tests Debug
+    - name: Run unit tests
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && matrix.type == 'debug'
+      if: success()
       working-directory: build_${{ matrix.type }}
       run: |
-        DYLD_FALLBACK_LIBRARY_PATH=lib ./bin/Debug/UnitTestsd --gtest_filter=-*Engine*;
+        pwd;
+        ls -la .;
+        ls -la ./bin;
+        ls -la ./bin/Debug;
+        ./bin/Debug/UnitTests* --gtest_filter=-*Engine*;
 
-    - name: Run unit tests Release
+    - name: Run unit tests Ray Tracing engine (for code coverage)
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && matrix.type == 'release'
-      working-directory: build_${{ matrix.type }}
+      if: success()
+      working-directory: .
       run: |
-        DYLD_FALLBACK_LIBRARY_PATH=lib ./bin/Debug/UnitTests --gtest_filter=-*Engine*;
+        ls -la ./app/src/androidTest/resources/CornellBox/CornellBox-Water.obj;
+        ls -la ./app/src/androidTest/resources/CornellBox/CornellBox-Water.mtl;
+        ls -la ./app/src/androidTest/resources/CornellBox/CornellBox-Water.cam;
+        ./build_${{ matrix.type }}/bin/Debug/UnitTests* --gtest_filter=*Engine*;

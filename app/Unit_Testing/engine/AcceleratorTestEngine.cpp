@@ -32,6 +32,8 @@ AcceleratorTestEngine::~AcceleratorTestEngine () {
 }
 
 TEST_F(AcceleratorTestEngine, testRenderSceneWithNaive) {
+    ::MobileRT::checkSystemError("testRenderSceneWithNaive start");
+
     config.sceneIndex = -1; // OBJ
     config.shader = 1; // Whitted
     config.accelerator = ::MobileRT::Shader::Accelerator::ACC_NAIVE;
@@ -40,10 +42,15 @@ TEST_F(AcceleratorTestEngine, testRenderSceneWithNaive) {
     config.mtlFilePath = ::std::string {"./app/src/androidTest/resources/CornellBox/CornellBox-Water.mtl"};
     config.camFilePath = ::std::string {"./app/src/androidTest/resources/CornellBox/CornellBox-Water.cam"};
 
+    ASSERT_TRUE(::std::all_of(config.bitmap.begin()+1, config.bitmap.end(), ::std::bind(std::equal_to<int>(), ::std::placeholders::_1, config.bitmap.front())));
     RayTrace(config, false);
+    ASSERT_FALSE(::std::all_of(config.bitmap.begin()+1, config.bitmap.end(), ::std::bind(std::equal_to<int>(), ::std::placeholders::_1, config.bitmap.front())));
+
+    ::MobileRT::checkSystemError("testRenderSceneWithNaive end");
 }
 
 TEST_F(AcceleratorTestEngine, testRenderSceneWithRegularGrid) {
+    ::MobileRT::checkSystemError("testRenderSceneWithRegularGrid start");
     config.sceneIndex = -1; // OBJ
     config.shader = 1; // Whitted
     config.accelerator = ::MobileRT::Shader::Accelerator::ACC_REGULAR_GRID;
@@ -52,10 +59,15 @@ TEST_F(AcceleratorTestEngine, testRenderSceneWithRegularGrid) {
     config.mtlFilePath = ::std::string {"./app/src/androidTest/resources/CornellBox/CornellBox-Water.mtl"};
     config.camFilePath = ::std::string {"./app/src/androidTest/resources/CornellBox/CornellBox-Water.cam"};
 
+    ASSERT_TRUE(::std::all_of(config.bitmap.begin()+1, config.bitmap.end(), ::std::bind(std::equal_to<int>(), ::std::placeholders::_1, config.bitmap.front())));
     RayTrace(config, false);
+    ASSERT_FALSE(::std::all_of(config.bitmap.begin()+1, config.bitmap.end(), ::std::bind(std::equal_to<int>(), ::std::placeholders::_1, config.bitmap.front())));
+
+    ::MobileRT::checkSystemError("testRenderSceneWithRegularGrid end");
 }
 
 TEST_F(AcceleratorTestEngine, testRenderSceneWithBVH) {
+    ::MobileRT::checkSystemError("testRenderSceneWithBVH start");
     config.sceneIndex = -1; // OBJ
     config.shader = 1; // Whitted
     config.accelerator = ::MobileRT::Shader::Accelerator::ACC_BVH;
@@ -64,5 +76,9 @@ TEST_F(AcceleratorTestEngine, testRenderSceneWithBVH) {
     config.mtlFilePath = ::std::string {"./app/src/androidTest/resources/CornellBox/CornellBox-Water.mtl"};
     config.camFilePath = ::std::string {"./app/src/androidTest/resources/CornellBox/CornellBox-Water.cam"};
 
+    ASSERT_TRUE(::std::all_of(config.bitmap.begin()+1, config.bitmap.end(), ::std::bind(std::equal_to<int>(), ::std::placeholders::_1, config.bitmap.front())));
     RayTrace(config, false);
+    ASSERT_FALSE(::std::all_of(config.bitmap.begin()+1, config.bitmap.end(), ::std::bind(std::equal_to<int>(), ::std::placeholders::_1, config.bitmap.front())));
+
+    ::MobileRT::checkSystemError("testRenderSceneWithBVH end");
 }

@@ -75,27 +75,30 @@ compileMobileRTInDockerContainer() {
     --name="mobile_rt_${1}" \
     --volume="${PWD}":/MobileRT_volume \
     ptpuscas/mobile_rt:"${1}" \
-    -c "cd ../ \
-      && cp -rpf /MobileRT_volume/* ./ \
+    -c "git init \
+      && cd / \
+      && cp -rpf /MobileRT_volume/* /MobileRT/ \
+      && cd /MobileRT/ \
       && find ./app/third_party/ -mindepth 1 -maxdepth 1 -type d ! -regex '^./app/third_party\(/conan*\)?' -exec rm -rf {} \; \
       && ls -lahp ./ \
       && chmod -R +x ./scripts/ \
       && ls -lahp ./scripts/ \
       && sh ./scripts/install_dependencies.sh \
-      && git init \
       && sh ./scripts/compile_native.sh -t release -c g++ -r yes";
 }
 
 # Helper command to execute the MobileRT unit tests in the docker container.
 # The parameters are:
-# * VERSION
+# * VERSION of the docker image
+# * PARAMETERS for the unit tests
 executeUnitTestsInDockerContainer() {
   docker run -t \
     --entrypoint sh \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
     -e DISPLAY="${DISPLAY}" \
     --name="mobile_rt_${1}" \
-    ptpuscas/mobile_rt:"${1}" -c "./build_release/bin/UnitTests --gtest_filter=-*Engine*";
+    ptpuscas/mobile_rt:"${1}" -c "./build_release/bin/UnitTests ${2}";
+  docker rm --force --volumes "mobile_rt_${1}";
 }
 
 # Helper command to push the MobileRT docker image into the docker registry.

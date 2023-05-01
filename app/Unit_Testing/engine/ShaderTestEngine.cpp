@@ -33,6 +33,8 @@ ShaderTestEngine::~ShaderTestEngine () {
 }
 
 TEST_F(ShaderTestEngine, testRenderSceneWithNoShadows) {
+    ::MobileRT::checkSystemError("testRenderSceneWithNoShadows start");
+
     config.sceneIndex = -1; // OBJ
     config.shader = 0; // No Shadows
     config.accelerator = ::MobileRT::Shader::Accelerator::ACC_BVH;
@@ -41,10 +43,16 @@ TEST_F(ShaderTestEngine, testRenderSceneWithNoShadows) {
     config.mtlFilePath = ::std::string {"./app/src/androidTest/resources/CornellBox/CornellBox-Water.mtl"};
     config.camFilePath = ::std::string {"./app/src/androidTest/resources/CornellBox/CornellBox-Water.cam"};
 
+    ASSERT_TRUE(::std::all_of(config.bitmap.begin()+1, config.bitmap.end(), ::std::bind(std::equal_to<int>(), ::std::placeholders::_1, config.bitmap.front())));
     RayTrace(config, false);
+    ASSERT_FALSE(::std::all_of(config.bitmap.begin()+1, config.bitmap.end(), ::std::bind(std::equal_to<int>(), ::std::placeholders::_1, config.bitmap.front())));
+
+    ::MobileRT::checkSystemError("testRenderSceneWithNoShadows end");
 }
 
 TEST_F(ShaderTestEngine, testRenderSceneWithWhitted) {
+    ::MobileRT::checkSystemError("testRenderSceneWithWhitted start");
+
     config.sceneIndex = -1; // OBJ
     config.shader = 1; // Whitted
     config.accelerator = ::MobileRT::Shader::Accelerator::ACC_BVH;
@@ -53,10 +61,16 @@ TEST_F(ShaderTestEngine, testRenderSceneWithWhitted) {
     config.mtlFilePath = ::std::string {"./app/src/androidTest/resources/CornellBox/CornellBox-Water.mtl"};
     config.camFilePath = ::std::string {"./app/src/androidTest/resources/CornellBox/CornellBox-Water.cam"};
 
+    ASSERT_TRUE(::std::all_of(config.bitmap.begin()+1, config.bitmap.end(), ::std::bind(std::equal_to<int>(), ::std::placeholders::_1, config.bitmap.front())));
     RayTrace(config, false);
+    ASSERT_FALSE(::std::all_of(config.bitmap.begin()+1, config.bitmap.end(), ::std::bind(std::equal_to<int>(), ::std::placeholders::_1, config.bitmap.front())));
+
+    ::MobileRT::checkSystemError("testRenderSceneWithWhitted end");
 }
 
 TEST_F(ShaderTestEngine, testRenderSceneWithPathTracing) {
+    ::MobileRT::checkSystemError("testRenderSceneWithPathTracing start");
+
     config.sceneIndex = -1; // OBJ
     config.shader = 2; // PathTracing
     config.accelerator = ::MobileRT::Shader::Accelerator::ACC_BVH;
@@ -65,10 +79,16 @@ TEST_F(ShaderTestEngine, testRenderSceneWithPathTracing) {
     config.mtlFilePath = ::std::string {"./app/src/androidTest/resources/CornellBox/CornellBox-Water.mtl"};
     config.camFilePath = ::std::string {"./app/src/androidTest/resources/CornellBox/CornellBox-Water.cam"};
 
+    ASSERT_TRUE(::std::all_of(config.bitmap.begin()+1, config.bitmap.end(), ::std::bind(std::equal_to<int>(), ::std::placeholders::_1, config.bitmap.front())));
     RayTrace(config, false);
+    ASSERT_FALSE(::std::all_of(config.bitmap.begin()+1, config.bitmap.end(), ::std::bind(std::equal_to<int>(), ::std::placeholders::_1, config.bitmap.front())));
+
+    ::MobileRT::checkSystemError("testRenderSceneWithPathTracing end");
 }
 
 TEST_F(ShaderTestEngine, testRenderSceneWithDepthMap) {
+    ::MobileRT::checkSystemError("testRenderSceneWithDepthMap start");
+
     config.sceneIndex = -1; // OBJ
     config.shader = 3; // DepthMap
     config.accelerator = ::MobileRT::Shader::Accelerator::ACC_BVH;
@@ -77,10 +97,16 @@ TEST_F(ShaderTestEngine, testRenderSceneWithDepthMap) {
     config.mtlFilePath = ::std::string {"./app/src/androidTest/resources/CornellBox/CornellBox-Water.mtl"};
     config.camFilePath = ::std::string {"./app/src/androidTest/resources/CornellBox/CornellBox-Water.cam"};
 
+    ASSERT_TRUE(::std::all_of(config.bitmap.begin()+1, config.bitmap.end(), ::std::bind(std::equal_to<int>(), ::std::placeholders::_1, config.bitmap.front())));
     RayTrace(config, false);
+    ASSERT_FALSE(::std::all_of(config.bitmap.begin()+1, config.bitmap.end(), ::std::bind(std::equal_to<int>(), ::std::placeholders::_1, config.bitmap.front())));
+
+    ::MobileRT::checkSystemError("testRenderSceneWithDepthMap end");
 }
 
 TEST_F(ShaderTestEngine, testRenderSceneWithDiffuse) {
+    ::MobileRT::checkSystemError("testRenderSceneWithDiffuse start");
+
     config.sceneIndex = -1; // OBJ
     config.shader = 4; // DiffuseMaterial
     config.accelerator = ::MobileRT::Shader::Accelerator::ACC_BVH;
@@ -89,5 +115,9 @@ TEST_F(ShaderTestEngine, testRenderSceneWithDiffuse) {
     config.mtlFilePath = ::std::string {"./app/src/androidTest/resources/CornellBox/CornellBox-Water.mtl"};
     config.camFilePath = ::std::string {"./app/src/androidTest/resources/CornellBox/CornellBox-Water.cam"};
 
+    ASSERT_TRUE(::std::all_of(config.bitmap.begin()+1, config.bitmap.end(), ::std::bind(std::equal_to<int>(), ::std::placeholders::_1, config.bitmap.front())));
     RayTrace(config, false);
+    ASSERT_FALSE(::std::all_of(config.bitmap.begin()+1, config.bitmap.end(), ::std::bind(std::equal_to<int>(), ::std::placeholders::_1, config.bitmap.front())));
+
+    ::MobileRT::checkSystemError("testRenderSceneWithDiffuse end");
 }

@@ -162,8 +162,8 @@ clearAllBuildFiles;
 #install_conan_dependencies;
 createReportsFolders;
 build;
-checkLastModifiedFiles;
 validateNativeLibCompiled;
+# checkLastModifiedFiles;
 
 echo 'Searching for generated APK';
 find . -iname "*.apk" | grep -i "output";
