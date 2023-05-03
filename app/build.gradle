@@ -134,8 +134,8 @@ allprojects {
 ///////////////////////////////////////////////////////////////////////////////
 jacoco {
     setToolVersion "${jacoco_version}"
-    setTargetCompatibility JavaVersion.VERSION_11
-    setSourceCompatibility JavaVersion.VERSION_11
+    setTargetCompatibility JavaVersion.VERSION_17
+    setSourceCompatibility JavaVersion.VERSION_17
 }
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -261,11 +261,11 @@ android {
 
     // Set Java version
     compileOptions {
-        setTargetCompatibility JavaVersion.VERSION_1_8
-        setSourceCompatibility JavaVersion.VERSION_1_8
+        setTargetCompatibility JavaVersion.VERSION_17
+        setSourceCompatibility JavaVersion.VERSION_17
     }
     kotlinOptions {
-        setJvmTarget JavaVersion.VERSION_1_8.toString()
+        setJvmTarget JavaVersion.VERSION_17.toString()
         freeCompilerArgs += [
             '-opt-in=kotlin.RequiresOptIn',
             '-opt-in=kotlinx.coroutines.DelicateCoroutinesApi',
@@ -319,7 +319,17 @@ android {
             all {
                 minHeapSize = "128m"
                 maxHeapSize = "512m"
-                jvmArgs '-noverify', '-ea', '-Djdk.attach.allowAttachSelf=true'
+                jvmArgs '-noverify', '-ea', '-Djdk.attach.allowAttachSelf=true',
+                        // Flags added for Java 9+ to be able to use reflection. because
+                        // Java Platform Module System that was introduced in Java 9, has an
+                        // implementation of strong encapsulation.
+                        // '--add-opens {A}/{package}={B}' (If the reflecting code is in a named module, 'B' can be replaced by its name.)
+                        '--add-opens=java.base/java.lang=ALL-UNNAMED',
+                        '--add-opens=java.base/java.util=ALL-UNNAMED',
+                        '--add-opens=java.base/java.util.concurrent=ALL-UNNAMED',
+                        '--add-opens=java.base/java.io=ALL-UNNAMED',
+                        '--add-opens=java.base/java.nio=ALL-UNNAMED',
+                        '--add-opens=java.logging/java.util.logging=ALL-UNNAMED'
                 jacoco {
                     includeNoLocationClasses = true
                     excludes = ['jdk.internal.*']

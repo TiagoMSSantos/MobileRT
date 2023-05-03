@@ -51,7 +51,7 @@ jobs:
       uses: actions/setup-java@v3
       with:
         # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml
-        java-version: 11
+        java-version: 17
         distribution: zulu
         java-package: jdk
         architecture: x64
