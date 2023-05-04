@@ -25,7 +25,7 @@ services:
             - /tmp/.X11-unix:/tmp/.X11-unix
 
     zookeeper:
-        image: confluentinc/cp-zookeeper:7.3.3
+        image: confluentinc/cp-zookeeper:7.4.0
         hostname: zookeeper
         container_name: zookeeper
         ports:
