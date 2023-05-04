@@ -153,7 +153,7 @@ services:
             STREAMS_SCHEMA_REGISTRY_PORT: 8081
 
     rest-proxy:
-        image: confluentinc/cp-kafka-rest:7.3.3
+        image: confluentinc/cp-kafka-rest:7.4.0
         depends_on:
             - zookeeper
             - broker
