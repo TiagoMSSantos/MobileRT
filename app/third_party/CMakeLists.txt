@@ -65,7 +65,7 @@ execute_process(COMMAND git submodule foreach "git fetch --tags --all;"
 ###############################################################################
 # Set stable versions to be used
 ###############################################################################
-set( BOOST_VERSION "boost-1.80.0" )
+set( BOOST_VERSION "boost-1.82.0" )
 set( GLM_VERSION "0.9.9.8" )
 set( STB_VERSION "master" )
 set( TINYOBJLOADER_VERSION "v1.0.7" )

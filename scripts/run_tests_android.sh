@@ -330,11 +330,13 @@ copyResources() {
   # callAdbShellCommandUntilSuccess adb shell 'rm -r '${sdcard_path_android}'; echo ::$?::';
 
   callAdbShellCommandUntilSuccess adb shell 'mkdir -p '${mobilert_path}'/WavefrontOBJs/teapot; echo ::$?::';
+  callAdbShellCommandUntilSuccess adb shell 'mkdir -p '${sdcard_path}'/WavefrontOBJs/teapot; echo ::$?::';
   callAdbShellCommandUntilSuccess adb shell 'mkdir -p '${sdcard_path}'/WavefrontOBJs/CornellBox; echo ::$?::';
   callAdbShellCommandUntilSuccess adb shell 'mkdir -p '${sdcard_path_android}'/WavefrontOBJs/CornellBox; echo ::$?::';
 
   echo 'Copy tests resources';
   callCommandUntilSuccess adb push -p app/src/androidTest/resources/teapot ${mobilert_path}/WavefrontOBJs;
+  callCommandUntilSuccess adb push -p app/src/androidTest/resources/teapot ${sdcard_path}/WavefrontOBJs;
   callCommandUntilSuccess adb push -p app/src/androidTest/resources/CornellBox ${sdcard_path}/WavefrontOBJs;
   set +e;
   # Push to SD Card in `/storage/` if possible (necessary for Android 5+).
@@ -351,6 +353,7 @@ copyResources() {
 
   echo 'Install File Manager';
   callAdbShellCommandUntilSuccess adb shell 'pm install -t -r '${mobilert_path}'/APKs/com.asus.filemanager.apk; echo ::$?::';
+  callAdbShellCommandUntilSuccess adb shell 'pm install -t -r '${mobilert_path}'/APKs/com.estrongs.android.pop_4.2.1.8-10057_minAPI14.apk; echo ::$?::';
 }
 
 startCopyingLogcatToFile() {
