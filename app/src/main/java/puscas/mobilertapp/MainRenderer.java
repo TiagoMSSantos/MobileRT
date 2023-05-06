@@ -940,6 +940,9 @@ public class MainRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onDrawFrame(@NonNull final GL10 gl) {
+        // Reset OpenGL frame buffer before drawing the new frame.
+        UtilsGL.run(() -> GLES20.glClear(ConstantsRenderer.ALL_BUFFER_BIT));
+
         if (this.firstFrame) {
             logger.info("onDrawFirstFrame");
             UtilsGL.resetOpenGlBuffers();

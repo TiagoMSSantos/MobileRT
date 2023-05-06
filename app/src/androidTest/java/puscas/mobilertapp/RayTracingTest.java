@@ -98,6 +98,24 @@ public final class RayTracingTest extends AbstractTest {
     }
 
     /**
+     * Tests not selecting a file when choosing an OBJ scene in the file manager.
+     *
+     * @throws TimeoutException If there is a timeout while waiting for the engine to become idle.
+     */
+    @Test(timeout = 60L * 1000L)
+    public void testNotSelectingScene() throws TimeoutException {
+        final int numCores = UtilsContext.getNumOfCores(this.activity);
+
+        // Mock the reply as the external file manager application, to not select anything.
+        final Intent resultData = new Intent(Intent.ACTION_GET_CONTENT);
+        final Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_CANCELED, resultData);
+        Intents.intending(IntentMatchers.anyIntent()).respondWith(result);
+
+        assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 1, 1, true);
+        Intents.intended(IntentMatchers.anyIntent());
+    }
+
+    /**
      * Tests rendering an OBJ scene from an OBJ file which the path was loaded with an external file
      * manager application. The OBJ is in an internal storage.
      *

@@ -208,6 +208,7 @@ public class DrawView extends GLSurfaceView {
 
         waitLastTask();
         this.renderer.updateButton(R.string.render);
+        finishRenderer();
 
         final String message = "stopDrawing" + ConstantsMethods.FINISHED;
         logger.info(message);
@@ -346,7 +347,7 @@ public class DrawView extends GLSurfaceView {
     protected void onDetachedFromWindow() {
         logger.info(ConstantsMethods.ON_DETACHED_FROM_WINDOW);
         super.onDetachedFromWindow();
-        this.finishRenderer();
+        finishRenderer();
         setVisibility(View.GONE);
         this.renderer.closeRenderer();
 

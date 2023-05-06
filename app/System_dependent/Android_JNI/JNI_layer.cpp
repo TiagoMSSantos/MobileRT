@@ -212,10 +212,6 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitVerticesArray(
     JNIEnv *env,
     jobject /*thiz*/
 ) {
-    if (errno == ENOTTY) {
-        // Ignore inappropriate I/O control operation
-        errno = 0;
-    }
     try {
         MobileRT::checkSystemError("rtInitVerticesArray start");
         jobject directBuffer {};
@@ -227,7 +223,6 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitVerticesArray(
                 const auto arrayBytes {arraySize * static_cast<jlong> (sizeof(jfloat))};
 
                 float *const floatBuffer {new float[arraySize]};
-                errno = 0;
 
                 if (floatBuffer != nullptr) {
                     directBuffer = env->NewDirectByteBuffer(floatBuffer, arrayBytes);
@@ -295,7 +290,6 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitColorsArray(
                 const auto arrayBytes {arraySize * static_cast<::std::int64_t> (sizeof(jfloat))};
 
                 float *const floatBuffer {new float[arraySize]};
-                errno = 0;
 
                 if (floatBuffer != nullptr) {
                     directBuffer = env->NewDirectByteBuffer(floatBuffer, arrayBytes);
@@ -537,7 +531,6 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
                         const auto sceneBuilt {objLoader.fillScene(&scene,
                             []() {return ::MobileRT::std::make_unique<Components::StaticPCG>();}
                         )};
-                        errno = 0;
                         MobileRT::checkSystemError("rtInitialize after filling scene");
                         if (!sceneBuilt) {
                             return -1;
@@ -604,7 +597,6 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
                     }
                 }
                 const auto end {::std::chrono::system_clock::now()};
-                errno = 0;
                 MobileRT::checkSystemError("rtInitialize after loading shader");
 
                 LOG_DEBUG("LOADING RENDERER");
@@ -735,7 +727,6 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
                     {
                         if (renderer_ != nullptr) {
                             renderer_->renderFrame(dstPixels, nThreads);
-                            errno = 0;
                         }
                     }
                     LOG_DEBUG("FINISHED RENDERING");
@@ -789,7 +780,6 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
         thread_->detach();
 
         LOG_DEBUG("rtRenderIntoBitmap finished preparing");
-        errno = 0;
         MobileRT::checkSystemError("rtRenderIntoBitmap finish");
         env->ExceptionClear();
     } catch (const ::std::bad_alloc &badAlloc) {
@@ -821,7 +811,7 @@ float Java_puscas_mobilertapp_RenderTask_rtGetFps(
 ) {
     if (errno == ETIMEDOUT || errno == EBADF) {
         // Ignore connection timed out
-        // Ignore bad file descriptor
+        // Ignore bad file descriptor (necessary for Android API 24)
         errno = 0;
     }
     MobileRT::checkSystemError("rtGetFps start");
@@ -847,7 +837,7 @@ extern "C"
     jobject /*thiz*/
 ) {
     if (errno == EBADF) {
-        // Ignore bad file descriptor
+        // Ignore bad file descriptor (necessary for Android API 24)
         errno = 0;
     }
     MobileRT::checkSystemError("rtGetSample start");
