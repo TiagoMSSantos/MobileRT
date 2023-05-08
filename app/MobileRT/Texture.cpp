@@ -65,6 +65,7 @@ Texture Texture::createTexture(const char *const textureFilePath) {
     if (data == nullptr) {
         const auto &error {stbi_failure_reason()};
         LOG_ERROR("Error reading texture: ", error);
+        throw ::std::runtime_error {error};
     }
     ::std::shared_ptr<::std::uint8_t> pointer {data, [](::std::uint8_t *const internalData) {
         stbi_image_free(internalData);

@@ -146,9 +146,9 @@ public final class MainActivityTest {
 
         final Uri uriMocked = Mockito.mock(Uri.class);
         Mockito.when(uriMocked.getPathSegments())
-            .thenReturn(ImmutableList.of("document", "1CE6-261B:MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.mtl"));
+            .thenReturn(ImmutableList.of("mnt", "sdcard", "MobileRT", "WavefrontOBJs", "CornellBox", "CornellBox-Water.obj"));
         Mockito.when(uriMocked.getPath())
-            .thenReturn("/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.mtl");
+            .thenReturn("/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj");
         Mockito.when(intentMocked.getData())
             .thenReturn(uriMocked);
 
@@ -163,7 +163,7 @@ public final class MainActivityTest {
 
             Assertions.assertThat((String) ReflectionTestUtils.getField(mainActivityMocked, "sceneFilePath"))
                 .as("The 'MainActivity#sceneFilePath' field")
-                .isEqualTo("/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water");
+                .isEqualTo("/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj");
         }
     }
 
@@ -179,7 +179,7 @@ public final class MainActivityTest {
         Mockito.when(uriMocked.getPathSegments())
             .thenReturn(ImmutableList.of("file", "sdcard", "MobileRT", "WavefrontOBJs", "CornellBox", "CornellBox-Water.obj"));
         Mockito.when(uriMocked.getPath())
-            .thenReturn("/mockedStorage/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.mtl");
+            .thenReturn("/mockedStorage/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj");
         Mockito.when(intentMocked.getData())
             .thenReturn(uriMocked);
 
@@ -194,7 +194,7 @@ public final class MainActivityTest {
 
             Assertions.assertThat((String) ReflectionTestUtils.getField(mainActivityMocked, "sceneFilePath"))
                 .as("The 'MainActivity#sceneFilePath' field")
-                .isEqualTo("/mockedStorage/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water");
+                .isEqualTo("/mockedStorage/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj");
         }
     }
 }

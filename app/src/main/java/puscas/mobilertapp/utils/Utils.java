@@ -53,6 +53,7 @@ public final class Utils {
             try {
                 running = !executorService.awaitTermination(1L, TimeUnit.DAYS);
             } catch (final InterruptedException ex) {
+                UtilsLogging.logThrowable(ex, "Utils#waitExecutorToFinish");
                 Thread.currentThread().interrupt();
             } finally {
                 handleInterruption("Utils#waitExecutorToFinish");
@@ -99,6 +100,7 @@ public final class Utils {
             }
             return stringBuilder.toString();
         } catch (final IOException ex) {
+            UtilsLogging.logThrowable(ex, "Utils#readTextFromInputStream");
             throw new FailureException(ex);
         } finally {
             final String message = "readTextFromInputStream" + ConstantsMethods.FINISHED;
@@ -146,6 +148,7 @@ public final class Utils {
         try {
             return Integer.parseInt(picker.getDisplayedValues()[picker.getValue() - 1]);
         } catch (final Exception ex) {
+            UtilsLogging.logThrowable(ex, "Utils#getValueFromPicker");
             throw new FailureException(ex);
         }
     }
@@ -169,6 +172,7 @@ public final class Utils {
             final int height = Integer.parseInt(strResolution.substring(strResolution.indexOf('x') + 1));
             return Pair.of(width, height);
         } catch (final Exception ex) {
+            UtilsLogging.logThrowable(ex, "Utils#getResolutionFromPicker");
             throw new FailureException("The Resolution Picker is not properly set. " +
                 "Probably the View was closed, and now it can't render anything in it.");
         }

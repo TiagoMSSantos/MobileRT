@@ -37,7 +37,7 @@ public final class FileSystemTest extends AbstractTest {
         final String internalStorage = UtilsContext.getInternalStoragePath(this.activity);
 
         final List<String> paths = ImmutableList.<String>builder().add(
-            internalStorage + Constants.OBJ_FILE_TEAPOT
+            internalStorage + Constants.OBJ_FILE_CORNELL_BOX
         ).build();
 
         validatePathsExist(paths);
@@ -81,7 +81,7 @@ public final class FileSystemTest extends AbstractTest {
         final String sdCardPath = UtilsContext.getSdCardPath(this.activity);
 
         final List<String> paths = ImmutableList.<String>builder().add(
-            sdCardPath + ConstantsUI.FILE_SEPARATOR + Constants.OBJ_FILE_CORNELL_BOX
+            sdCardPath + ConstantsUI.FILE_SEPARATOR + Constants.OBJ_FILE_TEAPOT
         ).build();
 
         validatePathsExist(paths);

@@ -83,10 +83,6 @@ public final class UtilsContext {
                 }
             });
 
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
-            return sdCardPath;
-        }
-
         final String sdCardPathCleaned = cleanStoragePath(sdCardPath);
         final String message = "SD card path: " + sdCardPathCleaned;
         logger.info(message);
@@ -138,8 +134,8 @@ public final class UtilsContext {
         // 'UtilsContext#isPathReadable' method to verify if this fallback path its readable.
         if (internalStoragePathCleaned.startsWith("/data")) {
             logger.info("Since the internal storage path starts with '/data', then it's assuming " +
-                    "that the internal storage path is '/data/local/tmp'.");
-            return "/data/local/tmp";
+                    "that the internal storage path is '/data/local/tmp/'.");
+            return "/data/local/tmp/";
         }
         final File file = new File(internalStoragePathCleaned);
         if (isPathReadable(file)) {
@@ -201,6 +197,7 @@ public final class UtilsContext {
         try (InputStream inputStream = assetManager.open(filePath)) {
             text = Utils.readTextFromInputStream(inputStream);
         } catch (final IOException ex) {
+            UtilsLogging.logThrowable(ex, "UtilsContext#readTextAsset");
             throw new FailureException(ex);
         }
         return text;
@@ -281,6 +278,12 @@ public final class UtilsContext {
         final int removeFileType = storagePathCleaned.indexOf("/file/");
         if (removeFileType == 0) {
             storagePathCleaned = storagePathCleaned.substring(5);
+        }
+
+        // Remove path ending with '/Download'
+        final boolean removeDownloadPath = storagePathCleaned.endsWith("/Download");
+        if (removeDownloadPath) {
+            storagePathCleaned = storagePathCleaned.substring(0, storagePathCleaned.length() - 9);
         }
 
         return storagePathCleaned;

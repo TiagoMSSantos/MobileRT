@@ -376,9 +376,11 @@ const Texture& OBJLoader::getTextureFromCache(
 
     if (itTexture == texturesCache->cend()) {// If the texture is not in the cache.
         const auto texturePath {filePath + texPath};
+        LOG_DEBUG("Loading texture: ", texturePath);
         auto &&texture {Texture::createTexture(texturePath.c_str())};
         auto &&pair {::std::make_pair(texPath, ::std::move(texture))};
         const auto res {::std::get<0> (texturesCache->emplace(::std::move(pair)))};// Add it to the cache.
+        LOG_DEBUG("Texture loaded: ", texturePath, ", is valid: ", res->second.isValid()? "true" : "false");
         return res->second;
     }
 

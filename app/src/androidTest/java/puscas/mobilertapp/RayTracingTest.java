@@ -145,17 +145,15 @@ public final class RayTracingTest extends AbstractTest {
         }
         final String internalStoragePath = UtilsContext.getInternalStoragePath(this.activity);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            final Uri objFile = Uri.fromFile(new File(internalStoragePath + "/MobileRT/WavefrontOBJs/teapot/teapot.obj"));
-            final Uri mtlFile = Uri.fromFile(new File(internalStoragePath + "/MobileRT/WavefrontOBJs/teapot/teapot.mtl"));
-            final Uri camFile = Uri.fromFile(new File(internalStoragePath + "/MobileRT/WavefrontOBJs/teapot/teapot.cam"));
-            final Uri textureFile = Uri.fromFile(new File(internalStoragePath + "/MobileRT/WavefrontOBJs/teapot/default.png"));
+            final Uri objFile = Uri.fromFile(new File(internalStoragePath + "/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj"));
+            final Uri mtlFile = Uri.fromFile(new File(internalStoragePath + "/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.mtl"));
+            final Uri camFile = Uri.fromFile(new File(internalStoragePath + "/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.cam"));
             final ClipData clipData = new ClipData(new ClipDescription("Scene", new String[]{"*" + ConstantsUI.FILE_SEPARATOR + "*"}), new ClipData.Item(objFile));
             clipData.addItem(new ClipData.Item(mtlFile));
             clipData.addItem(new ClipData.Item(camFile));
-            clipData.addItem(new ClipData.Item(textureFile));
             resultData.setClipData(clipData);
         } else {
-            resultData.setData(Uri.fromFile(new File(internalStoragePath + "/MobileRT/WavefrontOBJs/teapot/teapot.obj")));
+            resultData.setData(Uri.fromFile(new File(internalStoragePath + "/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj")));
         }
         final Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
         Intents.intending(IntentMatchers.anyIntent()).respondWith(result);
@@ -192,15 +190,17 @@ public final class RayTracingTest extends AbstractTest {
         }
         final String sdCardPath = UtilsContext.getSdCardPath(this.activity);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            final Uri objFile = Uri.fromFile(new File(sdCardPath + "/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj"));
-            final Uri mtlFile = Uri.fromFile(new File(sdCardPath + "/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.mtl"));
-            final Uri camFile = Uri.fromFile(new File(sdCardPath + "/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.cam"));
+            final Uri objFile = Uri.fromFile(new File(sdCardPath + "/MobileRT/WavefrontOBJs/teapot/teapot.obj"));
+            final Uri mtlFile = Uri.fromFile(new File(sdCardPath + "/MobileRT/WavefrontOBJs/teapot/teapot.mtl"));
+            final Uri camFile = Uri.fromFile(new File(sdCardPath + "/MobileRT/WavefrontOBJs/teapot/teapot.cam"));
+            final Uri textureFile = Uri.fromFile(new File(sdCardPath + "/MobileRT/WavefrontOBJs/teapot/default.png"));
             final ClipData clipData = new ClipData(new ClipDescription("Scene", new String[]{"*" + ConstantsUI.FILE_SEPARATOR + "*"}), new ClipData.Item(objFile));
             clipData.addItem(new ClipData.Item(mtlFile));
             clipData.addItem(new ClipData.Item(camFile));
+            clipData.addItem(new ClipData.Item(textureFile));
             resultData.setClipData(clipData);
         } else {
-            resultData.setData(Uri.fromFile(new File(sdCardPath + "/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj")));
+            resultData.setData(Uri.fromFile(new File(sdCardPath + "/MobileRT/WavefrontOBJs/teapot/teapot.obj")));
         }
         final Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
         Intents.intending(IntentMatchers.anyIntent()).respondWith(result);

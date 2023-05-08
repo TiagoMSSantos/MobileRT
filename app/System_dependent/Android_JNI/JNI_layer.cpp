@@ -938,10 +938,11 @@ void JNICALL Java_puscas_mobilertapp_MainActivity_readFile(
         jint type,
         jstring jFilePath
 ) {
-    if (errno == EACCES || errno == ENOTSOCK || errno == EPERM) {
+    if (errno == EACCES || errno == ENOTSOCK || errno == EPERM || errno == ENOENT) {
         // Ignore permission denied before reading the file.
         // Ignore socket operation on non-socket.
         // Ignore operation not permitted.
+        // Ignore no such file or directory.
         errno = 0;
     }
     LOG_DEBUG("Will read a file natively.");

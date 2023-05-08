@@ -230,6 +230,7 @@ public final class MainActivity extends Activity {
             numberPicker.setMinValue(minValue);
             numberPicker.setMaxValue(names.length);
         } catch (final NumberFormatException ex) {
+            UtilsLogging.logThrowable(ex, "MainActivity#initializePicker");
             numberPicker.setMinValue(0);
             numberPicker.setMaxValue(names.length - 1);
         }
@@ -333,6 +334,7 @@ public final class MainActivity extends Activity {
             try {
                 startRender(this.sceneFilePath);
             } catch (final Throwable ex) {
+                UtilsLogging.logThrowable(ex, "MainActivity#onPostResume");
                 showUiMessage(ex.getMessage());
             }
         }
@@ -457,8 +459,11 @@ public final class MainActivity extends Activity {
                         if (uri == null) {
                             throw new FailureException("There is no URI to a File! [" + i + "]");
                         }
-                        this.sceneFilePath = getPathFromFile(uri);
+                        final String filePath = getPathFromFile(uri);
                         readFile(uri);
+                        if (filePath.endsWith(".obj")) {
+                            this.sceneFilePath = filePath;
+                        }
                     }
                 } else {
                     logger.info("Will read every file in a path.");
@@ -473,8 +478,14 @@ public final class MainActivity extends Activity {
                     } else {
                         files = new File(Objects.requireNonNull(baseFile.getParent())).listFiles();
                     }
-                    this.sceneFilePath = getPathFromFile(uri);
-                    for(final File file : Objects.requireNonNull(files)) {
+                    final String filePath = getPathFromFile(uri);
+                    if (filePath.endsWith(".obj")) {
+                        this.sceneFilePath = filePath;
+                    }
+                    if (files == null) {
+                        throw new FailureException("It couldn't list the files in the selected path. Are you sure the necessary permissions were given?");
+                    }
+                    for(final File file : files) {
                         readFile(Uri.fromFile(file));
                     }
                 }
@@ -482,6 +493,7 @@ public final class MainActivity extends Activity {
                 throw new FailureException("There is no URI to a File!");
             }
         } catch (final Exception ex) {
+            UtilsLogging.logThrowable(ex, "MainActivity#onActivityResult");
             MainActivity.showUiMessage(ConstantsToast.COULD_NOT_RENDER_THE_SCENE + ex.getMessage());
         }
         logger.info("onActivityResult finished");
@@ -508,6 +520,7 @@ public final class MainActivity extends Activity {
             final String messageFinished = ConstantsMethods.START_RENDER + ConstantsMethods.FINISHED;
             logger.info(messageFinished);
         } catch (final Exception ex) {
+            UtilsLogging.logThrowable(ex, "MainActivity#startRender");
             MainActivity.showUiMessage(ConstantsToast.COULD_NOT_RENDER_THE_SCENE + ex.getMessage());
         }
     }
@@ -583,17 +596,20 @@ public final class MainActivity extends Activity {
         final String filePath = StreamSupport.stream(uri.getPathSegments())
             .skip(1L)
             .reduce("", (accumulator, segment) -> accumulator + ConstantsUI.FILE_SEPARATOR + segment);
-        final boolean externalSDCardPath = uri.getPathSegments().size() <= 2
-            || uri.getPathSegments().get(0).matches("sdcard")
-            || uri.getPathSegments().get(2).matches("^([A-Za-z0-9]){4}-([A-Za-z0-9]){4}$")
+        final boolean externalSDCardPath =
+               uri.getPathSegments().get(0).matches("sdcard")
+            || (uri.getPathSegments().size() > 1 && uri.getPathSegments().get(1).matches("^([A-Za-z0-9]){4}-([A-Za-z0-9]){4}:.+$"))
+            || (uri.getPathSegments().size() > 1 && uri.getPathSegments().get(1).matches("^([A-Za-z0-9]){4}-([A-Za-z0-9]){4}$"))
+            || (uri.getPathSegments().size() > 2 && uri.getPathSegments().get(2).matches("^([A-Za-z0-9]){4}-([A-Za-z0-9]){4}$"))
             || (uri.getPathSegments().get(0).matches("^mnt$") && uri.getPathSegments().get(1).matches("^sdcard$"))
+            || (uri.getPathSegments().get(0).matches("^storage$") && uri.getPathSegments().get(1).matches("^emulated$") && uri.getPathSegments().get(2).matches("^0$"))
             || filePath.contains(Environment.getExternalStorageDirectory().getAbsolutePath());
 
         final int removeIndex = filePath.indexOf(ConstantsUI.PATH_SEPARATOR);
         final String startFilePath = removeIndex >= 0 ? filePath.substring(removeIndex) : filePath;
         String cleanedFilePath = startFilePath.replace(ConstantsUI.PATH_SEPARATOR, ConstantsUI.FILE_SEPARATOR);
         cleanedFilePath = cleanedFilePath.replaceFirst("^/sdcard/", "/");
-        final String filePathWithoutExtension = cleanedFilePath.substring(0, cleanedFilePath.lastIndexOf('.'));
+        cleanedFilePath = cleanedFilePath.replaceFirst("^/([A-Za-z0-9]){4}-([A-Za-z0-9]){4}/", "/");
 
         final String devicePath;
         if (externalSDCardPath) {
@@ -604,11 +620,14 @@ public final class MainActivity extends Activity {
 
         // SDK API 30 looks like to get the path to the file properly without having to get the
         // SD card path and prefix with it.
-        if (filePathWithoutExtension.startsWith(devicePath)) {
-            return filePathWithoutExtension;
+        if (cleanedFilePath.startsWith(devicePath)) {
+            return cleanedFilePath;
+        }
+        if (cleanedFilePath.startsWith("/emulated/0/")) {
+            return "/storage" + cleanedFilePath;
         }
 
-        return devicePath + filePathWithoutExtension;
+        return devicePath + cleanedFilePath;
     }
 
     /**
@@ -618,7 +637,7 @@ public final class MainActivity extends Activity {
      */
     private void readFile(@NonNull final Uri uri) {
         logger.info("readFile");
-        final String filePath = UtilsContext.cleanStoragePath(uri.getPath());
+        final String filePath = getPathFromFile(uri);
         logger.info("Will read the following file: '" + filePath + "'");
         try (AssetFileDescriptor assetFileDescriptor = getContentResolver().openAssetFileDescriptor(uri, "r")) {
             logger.info("Opened AssetFileDescriptor");
@@ -637,6 +656,7 @@ public final class MainActivity extends Activity {
 
             parcelFileDescriptor.close();
         } catch (final IOException ex) {
+            UtilsLogging.logThrowable(ex, "MainActivity#readFile");
             throw new FailureException(ex);
         }
         logger.info("Path '" + filePath +"' already read.");
@@ -667,9 +687,16 @@ public final class MainActivity extends Activity {
         builderConfigRes.setWidth(resolution.getLeft());
         builderConfigRes.setHeight(resolution.getRight());
         builder.setConfigResolution(builderConfigRes.build());
-        builder.setObjFilePath(scenePath + ".obj");
-        builder.setMatFilePath(scenePath + ".mtl");
-        builder.setCamFilePath(scenePath + ".cam");
+        final int startOfExtension = scenePath.lastIndexOf('.');
+        final String filePathWithoutExtension;
+        if (startOfExtension >= 0) {
+            filePathWithoutExtension = scenePath.substring(0, startOfExtension);
+        } else {
+            filePathWithoutExtension = scenePath;
+        }
+        builder.setObjFilePath(filePathWithoutExtension + ".obj");
+        builder.setMatFilePath(filePathWithoutExtension + ".mtl");
+        builder.setCamFilePath(filePathWithoutExtension + ".cam");
         builder.setThreads(this.pickerThreads.getValue());
         builder.setRasterize(this.checkBoxRasterize.isChecked());
 
@@ -683,9 +710,7 @@ public final class MainActivity extends Activity {
     private void callFileManager() {
         logger.info("callFileManager");
         final Intent intent;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         } else {
             intent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -701,6 +726,7 @@ public final class MainActivity extends Activity {
         try {
             startActivityForResult(intent, OPEN_FILE_REQUEST_CODE);
         } catch (final ActivityNotFoundException ex) {
+            UtilsLogging.logThrowable(ex, "MainActivity#callFileManager");
             Toast.makeText(this, ConstantsToast.PLEASE_INSTALL_FILE_MANAGER, Toast.LENGTH_LONG)
                 .show();
         }

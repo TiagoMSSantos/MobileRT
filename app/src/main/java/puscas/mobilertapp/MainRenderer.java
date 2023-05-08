@@ -50,6 +50,7 @@ import puscas.mobilertapp.utils.Utils;
 import puscas.mobilertapp.utils.UtilsBuffer;
 import puscas.mobilertapp.utils.UtilsGL;
 import puscas.mobilertapp.utils.UtilsGlMatrices;
+import puscas.mobilertapp.utils.UtilsLogging;
 import puscas.mobilertapp.utils.UtilsShader;
 
 /**
@@ -956,6 +957,7 @@ public class MainRenderer implements GLSurfaceView.Renderer {
                 MainActivity.resetErrno();
                 rtRenderIntoBitmap(this.bitmap, this.numThreads);
             } catch (final Throwable ex) {
+                UtilsLogging.logThrowable(ex, "MainRenderer#onDrawFrame");
                 MainActivity.showUiMessage(ConstantsToast.COULD_NOT_RENDER_THE_SCENE + ex.getMessage());
                 MainActivity.resetRenderButton();
                 return;

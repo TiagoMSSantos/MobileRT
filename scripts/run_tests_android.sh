@@ -329,21 +329,20 @@ copyResources() {
 
   callAdbShellCommandUntilSuccess adb shell 'rm -r '${mobilert_path}'; echo ::$?::';
   callAdbShellCommandUntilSuccess adb shell 'rm -r '${sdcard_path}'; echo ::$?::';
-  # TODO: Deleting recently created path in SD card fails on CI pipeline,
-  # callAdbShellCommandUntilSuccess adb shell 'rm -r '${sdcard_path_android}'; echo ::$?::';
+  if [ "${androidApi}" -gt 29 ]; then
+    callAdbShellCommandUntilSuccess adb shell 'rm -r '${sdcard_path_android}'; echo ::$?::';
+  fi
 
-  callAdbShellCommandUntilSuccess adb shell 'mkdir -p '${mobilert_path}'/WavefrontOBJs/teapot; echo ::$?::';
+  callAdbShellCommandUntilSuccess adb shell 'mkdir -p '${mobilert_path}'/WavefrontOBJs/CornellBox; echo ::$?::';
   callAdbShellCommandUntilSuccess adb shell 'mkdir -p '${sdcard_path}'/WavefrontOBJs/teapot; echo ::$?::';
-  callAdbShellCommandUntilSuccess adb shell 'mkdir -p '${sdcard_path}'/WavefrontOBJs/CornellBox; echo ::$?::';
-  callAdbShellCommandUntilSuccess adb shell 'mkdir -p '${sdcard_path_android}'/WavefrontOBJs/CornellBox; echo ::$?::';
+  callAdbShellCommandUntilSuccess adb shell 'mkdir -p '${sdcard_path_android}'/WavefrontOBJs/teapot; echo ::$?::';
 
   echo 'Copy tests resources';
-  callCommandUntilSuccess adb push -p app/src/androidTest/resources/teapot ${mobilert_path}/WavefrontOBJs;
   callCommandUntilSuccess adb push -p app/src/androidTest/resources/teapot ${sdcard_path}/WavefrontOBJs;
-  callCommandUntilSuccess adb push -p app/src/androidTest/resources/CornellBox ${sdcard_path}/WavefrontOBJs;
+  callCommandUntilSuccess adb push -p app/src/androidTest/resources/CornellBox ${mobilert_path}/WavefrontOBJs;
   set +e;
   # Push to SD Card in `/storage/` if possible (necessary for Android 5+).
-  adb push -p app/src/androidTest/resources/CornellBox ${sdcard_path_android}/WavefrontOBJs;
+  adb push -p app/src/androidTest/resources/teapot ${sdcard_path_android}/WavefrontOBJs;
   set -e;
 
   echo 'Copy File Manager';
@@ -355,8 +354,15 @@ copyResources() {
   callAdbShellCommandUntilSuccess adb shell 'chmod -R 777 '${sdcard_path_android}'; echo ::$?::';
 
   echo 'Install File Manager';
-  callAdbShellCommandUntilSuccess adb shell 'pm install -t -r '${mobilert_path}'/APKs/com.asus.filemanager.apk; echo ::$?::';
-  if [ "${androidApi}" -lt 16 ]; then
+  if [ "${androidApi}" -gt 31 ]; then
+    echo "Not installing any file manager APK because the available ones are not compatible with Android API: ${androidApi}";
+  elif [ "${androidApi}" -gt 30 ]; then
+    callAdbShellCommandUntilSuccess adb shell 'pm install -t -r '${mobilert_path}'/APKs/asus-file-manager-2-8-0-85-230220.apk echo ::$?::';
+  elif [ "${androidApi}" -gt 29 ]; then
+    callAdbShellCommandUntilSuccess adb shell 'pm install -t -r '${mobilert_path}'/APKs/com.asus.filemanager_2.7.0.28_220608-1520700140_minAPI30_apkmirror.com.apk; echo ::$?::';
+  elif [ "${androidApi}" -gt 16 ]; then
+    callAdbShellCommandUntilSuccess adb shell 'pm install -t -r '${mobilert_path}'/APKs/com.asus.filemanager.apk; echo ::$?::';
+  elif [ "${androidApi}" -lt 16 ]; then
     # This file manager is compatible with Android 4.0.3 (API 15) which the Asus one is not.
     callAdbShellCommandUntilSuccess adb shell 'pm install -t -r '${mobilert_path}'/APKs/com.estrongs.android.pop_4.2.1.8-10057_minAPI14.apk; echo ::$?::';
   fi
