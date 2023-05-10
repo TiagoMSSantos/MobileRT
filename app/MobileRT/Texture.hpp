@@ -3,6 +3,7 @@
 
 #include <glm/glm.hpp>
 #include <memory>
+#include <string>
 #include <vector>
 
 namespace MobileRT {
@@ -46,7 +47,9 @@ namespace MobileRT {
 
         bool operator==(const Texture &texture) const;
 
-        static Texture createTexture(const char *textureFilePath);
+        static Texture createTexture(::std::string &&texture, long size);
+
+        static Texture createTexture(const ::std::string &texturePath);
     };
 }//namespace MobileRT
 

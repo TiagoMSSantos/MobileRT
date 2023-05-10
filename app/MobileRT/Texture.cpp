@@ -49,19 +49,45 @@ Texture::Texture(
 }
 
 /**
- * A factory which loads a texture file and creates a new Texture.
+ * A factory which loads a texture from memory in binary format and creates a new Texture.
  *
- * @param textureFilePath The path to the texture file.
+ * @param textureBinary The texture loaded in memory.
+ * @param size          The size of the texture in bytes.
  * @return A new texture.
  */
-Texture Texture::createTexture(const char *const textureFilePath) {
+Texture Texture::createTexture(::std::string &&textureBinary, const long size) {
     ::std::int32_t width {};
     ::std::int32_t height {};
     ::std::int32_t channels {};
-    const auto info {stbi_info(textureFilePath, &width, &height, &channels)};
-    ::std::uint8_t *data {stbi_load(textureFilePath, &width, &height, &channels, 0)};
-    LOG_DEBUG("new Texture: ", width, "x", height, ", c: ", channels, ", info: ", info, ", file:",
-              textureFilePath);
+    const auto info {stbi_info_from_memory(reinterpret_cast<unsigned char const *> (textureBinary.c_str()), static_cast<int> (size), &width, &height, &channels)};
+    ::std::uint8_t *data {stbi_load_from_memory(reinterpret_cast<unsigned char const *> (textureBinary.c_str()), static_cast<int> (size), &width, &height, &channels, 0)};
+    LOG_DEBUG("new Texture: ", width, "x", height, ", c: ", channels, ", info: ", info);
+    if (data == nullptr) {
+        const auto &error {stbi_failure_reason()};
+        LOG_ERROR("Error reading texture: ", error);
+        throw ::std::runtime_error {error};
+    }
+    ::std::shared_ptr<::std::uint8_t> pointer {data, [](::std::uint8_t *const internalData) {
+        stbi_image_free(internalData);
+        LOG_DEBUG("Deleted texture");
+    }};
+    Texture texture {pointer, width, height, channels};
+    return texture;
+}
+
+/**
+ * A factory which loads a texture file and creates a new Texture.
+ *
+ * @param texturePath The path to the texture file.
+ * @return A new texture.
+ */
+Texture Texture::createTexture(const ::std::string &texturePath) {
+    ::std::int32_t width {};
+    ::std::int32_t height {};
+    ::std::int32_t channels {};
+    const auto info {stbi_info(texturePath.c_str(), &width, &height, &channels)};
+    ::std::uint8_t *data {stbi_load(texturePath.c_str(), &width, &height, &channels, 0)};
+    LOG_DEBUG("new Texture: ", width, "x", height, ", c: ", channels, ", info: ", info);
     if (data == nullptr) {
         const auto &error {stbi_failure_reason()};
         LOG_ERROR("Error reading texture: ", error);

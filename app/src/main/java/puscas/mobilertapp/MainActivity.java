@@ -597,11 +597,12 @@ public final class MainActivity extends Activity {
             .skip(1L)
             .reduce("", (accumulator, segment) -> accumulator + ConstantsUI.FILE_SEPARATOR + segment);
         final boolean externalSDCardPath =
-               uri.getPathSegments().get(0).matches("sdcard")
+                uri.getPathSegments().get(0).matches("sdcard")
             || (uri.getPathSegments().size() > 1 && uri.getPathSegments().get(1).matches("^([A-Za-z0-9]){4}-([A-Za-z0-9]){4}:.+$"))
             || (uri.getPathSegments().size() > 1 && uri.getPathSegments().get(1).matches("^([A-Za-z0-9]){4}-([A-Za-z0-9]){4}$"))
             || (uri.getPathSegments().size() > 2 && uri.getPathSegments().get(2).matches("^([A-Za-z0-9]){4}-([A-Za-z0-9]){4}$"))
             || (uri.getPathSegments().get(0).matches("^mnt$") && uri.getPathSegments().get(1).matches("^sdcard$"))
+            || (uri.getPathSegments().get(0).matches("^storage$") && uri.getPathSegments().get(1).matches("^sdcard$"))
             || (uri.getPathSegments().get(0).matches("^storage$") && uri.getPathSegments().get(1).matches("^emulated$") && uri.getPathSegments().get(2).matches("^0$"))
             || filePath.contains(Environment.getExternalStorageDirectory().getAbsolutePath());
 
@@ -610,6 +611,7 @@ public final class MainActivity extends Activity {
         String cleanedFilePath = startFilePath.replace(ConstantsUI.PATH_SEPARATOR, ConstantsUI.FILE_SEPARATOR);
         cleanedFilePath = cleanedFilePath.replaceFirst("^/sdcard/", "/");
         cleanedFilePath = cleanedFilePath.replaceFirst("^/([A-Za-z0-9]){4}-([A-Za-z0-9]){4}/", "/");
+        cleanedFilePath = cleanedFilePath.replaceFirst("^/local/tmp/", "/");
 
         final String devicePath;
         if (externalSDCardPath) {

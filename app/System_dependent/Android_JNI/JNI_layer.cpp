@@ -977,11 +977,17 @@ void JNICALL Java_puscas_mobilertapp_MainActivity_readFile(
         LOG_DEBUG("Read a scene file.");
     } else {
         LOG_DEBUG("Will read a texture file.");
+        ::std::string texture {};
+        texture.resize(static_cast<::std::size_t> (size));
+        MobileRT::checkSystemError("Before read file.");
+        const auto remainingLength {::read(fd, &texture[0], static_cast<unsigned int>(size))};
+        MobileRT::checkSystemError("After read file.");
+        ASSERT(remainingLength == 0 || remainingLength == size, "File not read entirely.");
+
         jboolean isCopy {JNI_FALSE};
         const ::std::string filePathRaw {env->GetStringUTFChars(jFilePath, &isCopy)};
-        const auto filePath {filePathRaw.substr(0, filePathRaw.find_last_of('/') + 1)};
         const auto fileName {filePathRaw.substr(filePathRaw.find_last_of('/') + 1, filePathRaw.size())};
-        ::Components::OBJLoader::getTextureFromCache(&texturesCache_, filePath, fileName);
+        ::Components::OBJLoader::getTextureFromCache(&texturesCache_, ::std::move(texture), static_cast<long> (size), fileName);
         LOG_DEBUG("Read a texture file.");
     }
 }

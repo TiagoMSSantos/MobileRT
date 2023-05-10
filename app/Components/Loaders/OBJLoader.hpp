@@ -56,7 +56,8 @@ namespace Components {
     public:
         static const ::MobileRT::Texture& getTextureFromCache(
             ::std::map<::std::string, ::MobileRT::Texture> *const texturesCache,
-            const ::std::string &filePath,
+            ::std::string &&textureBinary,
+            long size,
             const ::std::string &texPath);
 
     private:

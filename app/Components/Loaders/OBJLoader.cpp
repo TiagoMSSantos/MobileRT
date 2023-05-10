@@ -68,6 +68,35 @@ OBJLoader::OBJLoader(::std::istream& isObj, ::std::istream& isMtl) {
     }
 }
 
+/**
+ * Helper method that gets a Texture from a cache passed by a parameter.
+ * If the cache, does not have the texture, then it will create one and add it in it.
+ *
+ * @param texturesCache The cache for the textures.
+ * @param filePath      The path to the directory of the texture file.
+ * @param texPath       The texture file name.
+ * @return The texture loaded.
+ */
+static const Texture& getTextureFromCache(
+    ::std::map<::std::string, Texture> *const texturesCache,
+    const ::std::string &filePath,
+    const ::std::string &texPath
+) {
+    const auto itTexture {texturesCache->find(texPath)};
+
+    if (itTexture == texturesCache->cend()) {// If the texture is not in the cache.
+        const auto texturePath {filePath + texPath};
+        LOG_DEBUG("Loading texture: ", texturePath);
+        auto &&texture {Texture::createTexture(texturePath)};
+        auto &&pair {::std::make_pair(texPath, ::std::move(texture))};
+        const auto res {::std::get<0> (texturesCache->emplace(::std::move(pair)))};// Add it to the cache.
+        LOG_DEBUG("Texture loaded: ", texturePath, ", is valid: ", res->second.isValid()? "true" : "false");
+        return res->second;
+    }
+
+    return texturesCache->find(texPath)->second;// Get texture from cache.
+}
+
 bool OBJLoader::fillScene(Scene *const scene,
                           ::std::function<::std::unique_ptr<Sampler>()> lambda,
                           ::std::string filePath,
@@ -147,7 +176,7 @@ bool OBJLoader::fillScene(Scene *const scene,
                             ::glm::vec2 {tx1, ty1}, ::glm::vec2 {tx2, ty2}, ::glm::vec2 {tx3, ty3}
                         };
 
-                        texture = getTextureFromCache(&texturesCache, filePath, mat.diffuse_texname);
+                        texture = ::getTextureFromCache(&texturesCache, filePath, mat.diffuse_texname);
                         texCoord = normalizeTexCoord(texture, texCoord);
                     }
 
@@ -363,24 +392,25 @@ OBJLoader::triple<::glm::vec2, ::glm::vec2, ::glm::vec2> OBJLoader::normalizeTex
  * If the cache, does not have the texture, then it will create one and add it in it.
  *
  * @param texturesCache The cache for the textures.
- * @param filePath      The path to the directory of the texture file.
+ * @param textureBinary The texture in binary format.
+ * @param size          The size of the texture in bytes.
  * @param texPath       The texture file name.
  * @return The texture loaded.
  */
 const Texture& OBJLoader::getTextureFromCache(
     ::std::map<::std::string, Texture> *const texturesCache,
-    const ::std::string &filePath,
+    ::std::string &&textureBinary,
+    const long size,
     const ::std::string &texPath
 ) {
     const auto itTexture {texturesCache->find(texPath)};
 
     if (itTexture == texturesCache->cend()) {// If the texture is not in the cache.
-        const auto texturePath {filePath + texPath};
-        LOG_DEBUG("Loading texture: ", texturePath);
-        auto &&texture {Texture::createTexture(texturePath.c_str())};
+        LOG_DEBUG("Loading texture: ", texPath);
+        auto &&texture {Texture::createTexture(::std::move(textureBinary), size)};
         auto &&pair {::std::make_pair(texPath, ::std::move(texture))};
         const auto res {::std::get<0> (texturesCache->emplace(::std::move(pair)))};// Add it to the cache.
-        LOG_DEBUG("Texture loaded: ", texturePath, ", is valid: ", res->second.isValid()? "true" : "false");
+        LOG_DEBUG("Texture loaded: ", texPath, ", is valid: ", res->second.isValid()? "true" : "false");
         return res->second;
     }
 
