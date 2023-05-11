@@ -163,9 +163,9 @@ library for assertions unit tests
       <td style="text-align:center">4.0.3 (API 15) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
       <td style="text-align:center">4.1 (API 16) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25"></td>
       <td style="text-align:center">4.4 (API 19) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
-      <td style="text-align:center">7.0 (API 24) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
+      <td style="text-align:center">7.0 (API 24) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25"></td>
       <td style="text-align:center">10 (API 29) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
-      <td style="text-align:center">13 (API 33) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
+      <td style="text-align:center">12 (API 31) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
     </tr>
     <tr>
       <td style="text-align:center"><b>MacOS</b></td>
@@ -229,7 +229,7 @@ library for assertions unit tests
   Table: <br/>
   <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="15" height="15" style="text-align:center" align="left"> -> actively tested <br/>
   <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="15" height="15" align="left"> -> tested <br/>
-  <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="15" height="15" align="left"> -> not tested yet <br/>
+  <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="15" height="15" align="left"> -> not tested <br/>
 </div>
 
 ## Requirements

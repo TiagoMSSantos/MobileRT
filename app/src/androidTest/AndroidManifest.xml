@@ -6,15 +6,16 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO"/>
     <uses-feature android:glEsVersion="0x00020000" />
 
     <application
         android:allowBackup="false"
         android:extractNativeLibs="true"
         android:hardwareAccelerated="false"
-        android:label="MobileRT_test"
-        android:requestLegacyExternalStorage="true"
-        tools:targetApi="q">
+        android:label="MobileRT_test">
         <activity
             android:name="puscas.mobilertapp.MainActivity"
             android:exported="true">

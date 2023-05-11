@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2023-05-07T13:33:29.149Z",
+    "detectionDate": "2023-05-12T17:13:41.414Z",
     "formats": {
       "java": {
         "sources": {
@@ -341,8 +341,8 @@
             "newClones": 0
           },
           "app/src/main/java/puscas/mobilertapp/utils/UtilsLogging.java": {
-            "lines": 49,
-            "tokens": 296,
+            "lines": 50,
+            "tokens": 322,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -377,8 +377,8 @@
             "newClones": 0
           },
           "app/src/main/java/puscas/mobilertapp/utils/UtilsContext.java": {
-            "lines": 366,
-            "tokens": 2597,
+            "lines": 370,
+            "tokens": 2638,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -401,8 +401,8 @@
             "newClones": 0
           },
           "app/src/main/java/puscas/mobilertapp/utils/Utils.java": {
-            "lines": 176,
-            "tokens": 1218,
+            "lines": 180,
+            "tokens": 1266,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -665,8 +665,8 @@
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/system/FileSystemTest.java": {
-            "lines": 159,
-            "tokens": 1233,
+            "lines": 164,
+            "tokens": 1244,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -692,11 +692,11 @@
             "lines": 234,
             "tokens": 2922,
             "sources": 1,
-            "clones": 16,
-            "duplicatedLines": 449,
-            "duplicatedTokens": 6313,
-            "percentage": 191.88,
-            "percentageTokens": 216.05,
+            "clones": 15,
+            "duplicatedLines": 435,
+            "duplicatedTokens": 6211,
+            "percentage": 185.9,
+            "percentageTokens": 212.56,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -774,13 +774,13 @@
           },
           "app/src/test/java/puscas/mobilertapp/MainActivityTest.java": {
             "lines": 199,
-            "tokens": 1390,
+            "tokens": 1402,
             "sources": 1,
             "clones": 3,
             "duplicatedLines": 19,
             "duplicatedTokens": 226,
             "percentage": 9.55,
-            "percentageTokens": 16.26,
+            "percentageTokens": 16.12,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -845,20 +845,20 @@
             "newClones": 0
           },
           "app/src/main/java/puscas/mobilertapp/MainRenderer.java": {
-            "lines": 985,
-            "tokens": 6251,
+            "lines": 987,
+            "tokens": 6274,
             "sources": 1,
             "clones": 2,
             "duplicatedLines": 28,
             "duplicatedTokens": 316,
             "percentage": 2.84,
-            "percentageTokens": 5.06,
+            "percentageTokens": 5.04,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "app/src/main/java/puscas/mobilertapp/MainActivity.java": {
-            "lines": 917,
-            "tokens": 7107,
+            "lines": 945,
+            "tokens": 7491,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -869,8 +869,8 @@
             "newClones": 0
           },
           "app/src/main/java/puscas/mobilertapp/DrawView.java": {
-            "lines": 422,
-            "tokens": 2470,
+            "lines": 426,
+            "tokens": 2518,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -929,14 +929,14 @@
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/RayTracingTest.java": {
-            "lines": 225,
-            "tokens": 2292,
+            "lines": 228,
+            "tokens": 2325,
             "sources": 1,
-            "clones": 6,
-            "duplicatedLines": 115,
-            "duplicatedTokens": 1029,
-            "percentage": 51.11,
-            "percentageTokens": 44.9,
+            "clones": 5,
+            "duplicatedLines": 101,
+            "duplicatedTokens": 927,
+            "percentage": 44.3,
+            "percentageTokens": 39.87,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -977,27 +977,27 @@
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/AbstractTest.java": {
-            "lines": 200,
-            "tokens": 1302,
+            "lines": 187,
+            "tokens": 1230,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 7,
             "duplicatedTokens": 66,
-            "percentage": 3.5,
-            "percentageTokens": 5.07,
+            "percentage": 3.74,
+            "percentageTokens": 5.37,
             "newDuplicatedLines": 0,
             "newClones": 0
           }
         },
         "total": {
-          "lines": 9298,
-          "tokens": 65076,
+          "lines": 9336,
+          "tokens": 65630,
           "sources": 82,
-          "clones": 60,
-          "duplicatedLines": 761,
-          "duplicatedTokens": 8429,
-          "percentage": 8.18,
-          "percentageTokens": 12.95,
+          "clones": 59,
+          "duplicatedLines": 747,
+          "duplicatedTokens": 8327,
+          "percentage": 8,
+          "percentageTokens": 12.69,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -1453,14 +1453,14 @@
             "newClones": 0
           },
           "app/Components/Loaders/OBJLoader.cpp": {
-            "lines": 399,
-            "tokens": 4877,
+            "lines": 431,
+            "tokens": 5176,
             "sources": 1,
             "clones": 8,
             "duplicatedLines": 64,
             "duplicatedTokens": 834,
-            "percentage": 16.04,
-            "percentageTokens": 17.1,
+            "percentage": 14.85,
+            "percentageTokens": 16.11,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -1633,14 +1633,14 @@
             "newClones": 0
           },
           "app/MobileRT/Texture.cpp": {
-            "lines": 91,
-            "tokens": 823,
+            "lines": 118,
+            "tokens": 1176,
             "sources": 1,
-            "clones": 0,
-            "duplicatedLines": 0,
-            "duplicatedTokens": 0,
-            "percentage": 0,
-            "percentageTokens": 0,
+            "clones": 2,
+            "duplicatedLines": 40,
+            "duplicatedTokens": 366,
+            "percentage": 33.9,
+            "percentageTokens": 31.12,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -1778,14 +1778,14 @@
           }
         },
         "total": {
-          "lines": 5486,
-          "tokens": 52340,
+          "lines": 5545,
+          "tokens": 52992,
           "sources": 56,
-          "clones": 27,
-          "duplicatedLines": 248,
-          "duplicatedTokens": 3821,
-          "percentage": 4.52,
-          "percentageTokens": 7.3,
+          "clones": 28,
+          "duplicatedLines": 268,
+          "duplicatedTokens": 4004,
+          "percentage": 4.83,
+          "percentageTokens": 7.56,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -1973,14 +1973,14 @@
             "newClones": 0
           },
           ".github/workflows/android.yml": {
-            "lines": 800,
-            "tokens": 5892,
+            "lines": 801,
+            "tokens": 5902,
             "sources": 1,
             "clones": 16,
             "duplicatedLines": 432,
             "duplicatedTokens": 2927,
-            "percentage": 54,
-            "percentageTokens": 49.68,
+            "percentage": 53.93,
+            "percentageTokens": 49.59,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2070,13 +2070,13 @@
           }
         },
         "total": {
-          "lines": 2590,
-          "tokens": 17077,
+          "lines": 2591,
+          "tokens": 17087,
           "sources": 23,
           "clones": 16,
           "duplicatedLines": 389,
           "duplicatedTokens": 2552,
-          "percentage": 15.02,
+          "percentage": 15.01,
           "percentageTokens": 14.94,
           "newDuplicatedLines": 0,
           "newClones": 0
@@ -2194,7 +2194,7 @@
           },
           "docs/README.md": {
             "lines": 262,
-            "tokens": 1910,
+            "tokens": 1908,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2243,7 +2243,7 @@
         },
         "total": {
           "lines": 2128,
-          "tokens": 20955,
+          "tokens": 20953,
           "sources": 13,
           "clones": 1,
           "duplicatedLines": 23,
@@ -2581,8 +2581,8 @@
             "newClones": 0
           },
           "app/Components/Loaders/OBJLoader.hpp": {
-            "lines": 58,
-            "tokens": 602,
+            "lines": 59,
+            "tokens": 606,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2665,8 +2665,8 @@
             "newClones": 0
           },
           "app/MobileRT/Texture.hpp": {
-            "lines": 45,
-            "tokens": 321,
+            "lines": 47,
+            "tokens": 347,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2822,8 +2822,8 @@
           }
         },
         "total": {
-          "lines": 3288,
-          "tokens": 23659,
+          "lines": 3291,
+          "tokens": 23689,
           "sources": 47,
           "clones": 2,
           "duplicatedLines": 23,
@@ -2885,8 +2885,8 @@
             "newClones": 0
           },
           "scripts/run_tests_android.sh": {
-            "lines": 583,
-            "tokens": 4072,
+            "lines": 589,
+            "tokens": 4194,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2994,14 +2994,14 @@
           }
         },
         "total": {
-          "lines": 3382,
-          "tokens": 20683,
+          "lines": 3388,
+          "tokens": 20805,
           "sources": 13,
           "clones": 11,
           "duplicatedLines": 260,
           "duplicatedTokens": 1172,
-          "percentage": 7.69,
-          "percentageTokens": 5.67,
+          "percentage": 7.67,
+          "percentageTokens": 5.63,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3128,14 +3128,14 @@
       }
     },
     "total": {
-      "lines": 26959,
-      "tokens": 203838,
+      "lines": 27066,
+      "tokens": 205204,
       "sources": 247,
       "clones": 117,
-      "duplicatedLines": 1704,
-      "duplicatedTokens": 16293,
+      "duplicatedLines": 1710,
+      "duplicatedTokens": 16374,
       "percentage": 6.32,
-      "percentageTokens": 7.99,
+      "percentageTokens": 7.98,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -3936,7 +3936,7 @@
     {
       "format": "java",
       "lines": 31,
-      "fragment": "() throws TimeoutException {\n        final int numCores = UtilsContext.getNumOfCores(this.activity);\n\n        // Mock the reply as the external file manager application, to select an OBJ file.\n        final Intent resultData;\n        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {\n            resultData = new Intent(Intent.ACTION_GET_CONTENT);\n        } else {\n            resultData = new Intent(Intent.ACTION_OPEN_DOCUMENT);\n        }\n        resultData.addCategory(Intent.CATEGORY_OPENABLE);\n        resultData.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);\n        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {\n            resultData.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);\n        }\n        final String sdCardPath = UtilsContext.getSdCardPath(this.activity);\n        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {\n            final Uri objFile = Uri.fromFile(new File(sdCardPath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj\"));\n            final Uri mtlFile = Uri.fromFile(new File(sdCardPath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.mtl\"));\n            final Uri camFile = Uri.fromFile(new File(sdCardPath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.cam\"));\n            final ClipData clipData = new ClipData(new ClipDescription(\"Scene\", new String[]{\"*\" + ConstantsUI.FILE_SEPARATOR + \"*\"}), new ClipData.Item(objFile));\n            clipData.addItem(new ClipData.Item(mtlFile));\n            clipData.addItem(new ClipData.Item(camFile));\n            resultData.setClipData(clipData);\n        } else {\n            resultData.setData(Uri.fromFile(new File(sdCardPath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj\")));\n        }\n        final Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);\n        Intents.intending(IntentMatchers.anyIntent()).respondWith(result);\n\n        assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED",
+      "fragment": "() throws TimeoutException {\n        final int numCores = UtilsContext.getNumOfCores(this.activity);\n\n        // Mock the reply as the external file manager application, to select an OBJ file.\n        final Intent resultData;\n        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {\n            resultData = new Intent(Intent.ACTION_GET_CONTENT);\n        } else {\n            resultData = new Intent(Intent.ACTION_OPEN_DOCUMENT);\n        }\n        resultData.addCategory(Intent.CATEGORY_OPENABLE);\n        resultData.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);\n        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {\n            resultData.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);\n        }\n        final String internalStoragePath = UtilsContext.getInternalStoragePath(this.activity);\n        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {\n            final Uri objFile = Uri.fromFile(new File(internalStoragePath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj\"));\n            final Uri mtlFile = Uri.fromFile(new File(internalStoragePath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.mtl\"));\n            final Uri camFile = Uri.fromFile(new File(internalStoragePath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.cam\"));\n            final ClipData clipData = new ClipData(new ClipDescription(\"Scene\", new String[]{\"*\" + ConstantsUI.FILE_SEPARATOR + \"*\"}), new ClipData.Item(objFile));\n            clipData.addItem(new ClipData.Item(mtlFile));\n            clipData.addItem(new ClipData.Item(camFile));\n            resultData.setClipData(clipData);\n        } else {\n            resultData.setData(Uri.fromFile(new File(internalStoragePath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj\")));\n        }\n        final Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);\n        Intents.intending(IntentMatchers.anyIntent()).respondWith(result);\n\n        assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/androidTest/java/puscas/mobilertapp/engine/ShaderTest.java",
@@ -3972,7 +3972,7 @@
     {
       "format": "java",
       "lines": 31,
-      "fragment": "() throws TimeoutException {\n        final int numCores = UtilsContext.getNumOfCores(this.activity);\n\n        // Mock the reply as the external file manager application, to select an OBJ file.\n        final Intent resultData;\n        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {\n            resultData = new Intent(Intent.ACTION_GET_CONTENT);\n        } else {\n            resultData = new Intent(Intent.ACTION_OPEN_DOCUMENT);\n        }\n        resultData.addCategory(Intent.CATEGORY_OPENABLE);\n        resultData.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);\n        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {\n            resultData.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);\n        }\n        final String sdCardPath = UtilsContext.getSdCardPath(this.activity);\n        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {\n            final Uri objFile = Uri.fromFile(new File(sdCardPath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj\"));\n            final Uri mtlFile = Uri.fromFile(new File(sdCardPath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.mtl\"));\n            final Uri camFile = Uri.fromFile(new File(sdCardPath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.cam\"));\n            final ClipData clipData = new ClipData(new ClipDescription(\"Scene\", new String[]{\"*\" + ConstantsUI.FILE_SEPARATOR + \"*\"}), new ClipData.Item(objFile));\n            clipData.addItem(new ClipData.Item(mtlFile));\n            clipData.addItem(new ClipData.Item(camFile));\n            resultData.setClipData(clipData);\n        } else {\n            resultData.setData(Uri.fromFile(new File(sdCardPath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj\")));\n        }\n        final Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);\n        Intents.intending(IntentMatchers.anyIntent()).respondWith(result);\n\n        assertRenderScene(numCores, Scene.OBJ, Shader.PATH_TRACING",
+      "fragment": "() throws TimeoutException {\n        final int numCores = UtilsContext.getNumOfCores(this.activity);\n\n        // Mock the reply as the external file manager application, to select an OBJ file.\n        final Intent resultData;\n        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {\n            resultData = new Intent(Intent.ACTION_GET_CONTENT);\n        } else {\n            resultData = new Intent(Intent.ACTION_OPEN_DOCUMENT);\n        }\n        resultData.addCategory(Intent.CATEGORY_OPENABLE);\n        resultData.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);\n        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {\n            resultData.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);\n        }\n        final String internalStoragePath = UtilsContext.getInternalStoragePath(this.activity);\n        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {\n            final Uri objFile = Uri.fromFile(new File(internalStoragePath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj\"));\n            final Uri mtlFile = Uri.fromFile(new File(internalStoragePath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.mtl\"));\n            final Uri camFile = Uri.fromFile(new File(internalStoragePath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.cam\"));\n            final ClipData clipData = new ClipData(new ClipDescription(\"Scene\", new String[]{\"*\" + ConstantsUI.FILE_SEPARATOR + \"*\"}), new ClipData.Item(objFile));\n            clipData.addItem(new ClipData.Item(mtlFile));\n            clipData.addItem(new ClipData.Item(camFile));\n            resultData.setClipData(clipData);\n        } else {\n            resultData.setData(Uri.fromFile(new File(internalStoragePath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj\")));\n        }\n        final Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);\n        Intents.intending(IntentMatchers.anyIntent()).respondWith(result);\n\n        assertRenderScene(numCores, Scene.OBJ, Shader.PATH_TRACING",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/androidTest/java/puscas/mobilertapp/engine/ShaderTest.java",
@@ -4008,7 +4008,7 @@
     {
       "format": "java",
       "lines": 31,
-      "fragment": "() throws TimeoutException {\n        final int numCores = UtilsContext.getNumOfCores(this.activity);\n\n        // Mock the reply as the external file manager application, to select an OBJ file.\n        final Intent resultData;\n        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {\n            resultData = new Intent(Intent.ACTION_GET_CONTENT);\n        } else {\n            resultData = new Intent(Intent.ACTION_OPEN_DOCUMENT);\n        }\n        resultData.addCategory(Intent.CATEGORY_OPENABLE);\n        resultData.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);\n        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {\n            resultData.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);\n        }\n        final String sdCardPath = UtilsContext.getSdCardPath(this.activity);\n        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {\n            final Uri objFile = Uri.fromFile(new File(sdCardPath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj\"));\n            final Uri mtlFile = Uri.fromFile(new File(sdCardPath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.mtl\"));\n            final Uri camFile = Uri.fromFile(new File(sdCardPath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.cam\"));\n            final ClipData clipData = new ClipData(new ClipDescription(\"Scene\", new String[]{\"*\" + ConstantsUI.FILE_SEPARATOR + \"*\"}), new ClipData.Item(objFile));\n            clipData.addItem(new ClipData.Item(mtlFile));\n            clipData.addItem(new ClipData.Item(camFile));\n            resultData.setClipData(clipData);\n        } else {\n            resultData.setData(Uri.fromFile(new File(sdCardPath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj\")));\n        }\n        final Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);\n        Intents.intending(IntentMatchers.anyIntent()).respondWith(result);\n\n        assertRenderScene(numCores, Scene.OBJ, Shader.DEPTH_MAP",
+      "fragment": "() throws TimeoutException {\n        final int numCores = UtilsContext.getNumOfCores(this.activity);\n\n        // Mock the reply as the external file manager application, to select an OBJ file.\n        final Intent resultData;\n        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {\n            resultData = new Intent(Intent.ACTION_GET_CONTENT);\n        } else {\n            resultData = new Intent(Intent.ACTION_OPEN_DOCUMENT);\n        }\n        resultData.addCategory(Intent.CATEGORY_OPENABLE);\n        resultData.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);\n        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {\n            resultData.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);\n        }\n        final String internalStoragePath = UtilsContext.getInternalStoragePath(this.activity);\n        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {\n            final Uri objFile = Uri.fromFile(new File(internalStoragePath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj\"));\n            final Uri mtlFile = Uri.fromFile(new File(internalStoragePath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.mtl\"));\n            final Uri camFile = Uri.fromFile(new File(internalStoragePath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.cam\"));\n            final ClipData clipData = new ClipData(new ClipDescription(\"Scene\", new String[]{\"*\" + ConstantsUI.FILE_SEPARATOR + \"*\"}), new ClipData.Item(objFile));\n            clipData.addItem(new ClipData.Item(mtlFile));\n            clipData.addItem(new ClipData.Item(camFile));\n            resultData.setClipData(clipData);\n        } else {\n            resultData.setData(Uri.fromFile(new File(internalStoragePath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj\")));\n        }\n        final Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);\n        Intents.intending(IntentMatchers.anyIntent()).respondWith(result);\n\n        assertRenderScene(numCores, Scene.OBJ, Shader.DEPTH_MAP",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/androidTest/java/puscas/mobilertapp/engine/ShaderTest.java",
@@ -4044,7 +4044,7 @@
     {
       "format": "java",
       "lines": 31,
-      "fragment": "() throws TimeoutException {\n        final int numCores = UtilsContext.getNumOfCores(this.activity);\n\n        // Mock the reply as the external file manager application, to select an OBJ file.\n        final Intent resultData;\n        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {\n            resultData = new Intent(Intent.ACTION_GET_CONTENT);\n        } else {\n            resultData = new Intent(Intent.ACTION_OPEN_DOCUMENT);\n        }\n        resultData.addCategory(Intent.CATEGORY_OPENABLE);\n        resultData.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);\n        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {\n            resultData.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);\n        }\n        final String sdCardPath = UtilsContext.getSdCardPath(this.activity);\n        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {\n            final Uri objFile = Uri.fromFile(new File(sdCardPath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj\"));\n            final Uri mtlFile = Uri.fromFile(new File(sdCardPath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.mtl\"));\n            final Uri camFile = Uri.fromFile(new File(sdCardPath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.cam\"));\n            final ClipData clipData = new ClipData(new ClipDescription(\"Scene\", new String[]{\"*\" + ConstantsUI.FILE_SEPARATOR + \"*\"}), new ClipData.Item(objFile));\n            clipData.addItem(new ClipData.Item(mtlFile));\n            clipData.addItem(new ClipData.Item(camFile));\n            resultData.setClipData(clipData);\n        } else {\n            resultData.setData(Uri.fromFile(new File(sdCardPath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj\")));\n        }\n        final Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);\n        Intents.intending(IntentMatchers.anyIntent()).respondWith(result);\n\n        assertRenderScene(numCores, Scene.OBJ, Shader.DIFFUSE",
+      "fragment": "() throws TimeoutException {\n        final int numCores = UtilsContext.getNumOfCores(this.activity);\n\n        // Mock the reply as the external file manager application, to select an OBJ file.\n        final Intent resultData;\n        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {\n            resultData = new Intent(Intent.ACTION_GET_CONTENT);\n        } else {\n            resultData = new Intent(Intent.ACTION_OPEN_DOCUMENT);\n        }\n        resultData.addCategory(Intent.CATEGORY_OPENABLE);\n        resultData.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);\n        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {\n            resultData.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);\n        }\n        final String internalStoragePath = UtilsContext.getInternalStoragePath(this.activity);\n        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {\n            final Uri objFile = Uri.fromFile(new File(internalStoragePath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj\"));\n            final Uri mtlFile = Uri.fromFile(new File(internalStoragePath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.mtl\"));\n            final Uri camFile = Uri.fromFile(new File(internalStoragePath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.cam\"));\n            final ClipData clipData = new ClipData(new ClipDescription(\"Scene\", new String[]{\"*\" + ConstantsUI.FILE_SEPARATOR + \"*\"}), new ClipData.Item(objFile));\n            clipData.addItem(new ClipData.Item(mtlFile));\n            clipData.addItem(new ClipData.Item(camFile));\n            resultData.setClipData(clipData);\n        } else {\n            resultData.setData(Uri.fromFile(new File(internalStoragePath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj\")));\n        }\n        final Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);\n        Intents.intending(IntentMatchers.anyIntent()).respondWith(result);\n\n        assertRenderScene(numCores, Scene.OBJ, Shader.DIFFUSE",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/androidTest/java/puscas/mobilertapp/engine/ShaderTest.java",
@@ -4116,7 +4116,7 @@
     {
       "format": "java",
       "lines": 31,
-      "fragment": "() throws TimeoutException {\n        final int numCores = UtilsContext.getNumOfCores(this.activity);\n\n        // Mock the reply as the external file manager application, to select an OBJ file.\n        final Intent resultData;\n        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {\n            resultData = new Intent(Intent.ACTION_GET_CONTENT);\n        } else {\n            resultData = new Intent(Intent.ACTION_OPEN_DOCUMENT);\n        }\n        resultData.addCategory(Intent.CATEGORY_OPENABLE);\n        resultData.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);\n        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {\n            resultData.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);\n        }\n        final String sdCardPath = UtilsContext.getSdCardPath(this.activity);\n        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {\n            final Uri objFile = Uri.fromFile(new File(sdCardPath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj\"));\n            final Uri mtlFile = Uri.fromFile(new File(sdCardPath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.mtl\"));\n            final Uri camFile = Uri.fromFile(new File(sdCardPath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.cam\"));\n            final ClipData clipData = new ClipData(new ClipDescription(\"Scene\", new String[]{\"*\" + ConstantsUI.FILE_SEPARATOR + \"*\"}), new ClipData.Item(objFile));\n            clipData.addItem(new ClipData.Item(mtlFile));\n            clipData.addItem(new ClipData.Item(camFile));\n            resultData.setClipData(clipData);\n        } else {\n            resultData.setData(Uri.fromFile(new File(sdCardPath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj\")));\n        }\n        final Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);\n        Intents.intending(IntentMatchers.anyIntent()).respondWith(result);\n\n        assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, Accelerator.NAIVE",
+      "fragment": "() throws TimeoutException {\n        final int numCores = UtilsContext.getNumOfCores(this.activity);\n\n        // Mock the reply as the external file manager application, to select an OBJ file.\n        final Intent resultData;\n        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {\n            resultData = new Intent(Intent.ACTION_GET_CONTENT);\n        } else {\n            resultData = new Intent(Intent.ACTION_OPEN_DOCUMENT);\n        }\n        resultData.addCategory(Intent.CATEGORY_OPENABLE);\n        resultData.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);\n        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {\n            resultData.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);\n        }\n        final String internalStoragePath = UtilsContext.getInternalStoragePath(this.activity);\n        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {\n            final Uri objFile = Uri.fromFile(new File(internalStoragePath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj\"));\n            final Uri mtlFile = Uri.fromFile(new File(internalStoragePath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.mtl\"));\n            final Uri camFile = Uri.fromFile(new File(internalStoragePath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.cam\"));\n            final ClipData clipData = new ClipData(new ClipDescription(\"Scene\", new String[]{\"*\" + ConstantsUI.FILE_SEPARATOR + \"*\"}), new ClipData.Item(objFile));\n            clipData.addItem(new ClipData.Item(mtlFile));\n            clipData.addItem(new ClipData.Item(camFile));\n            resultData.setClipData(clipData);\n        } else {\n            resultData.setData(Uri.fromFile(new File(internalStoragePath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj\")));\n        }\n        final Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);\n        Intents.intending(IntentMatchers.anyIntent()).respondWith(result);\n\n        assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, Accelerator.NAIVE",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/androidTest/java/puscas/mobilertapp/engine/AcceleratorTest.java",
@@ -4152,7 +4152,7 @@
     {
       "format": "java",
       "lines": 31,
-      "fragment": "() throws TimeoutException {\n        final int numCores = UtilsContext.getNumOfCores(this.activity);\n\n        // Mock the reply as the external file manager application, to select an OBJ file.\n        final Intent resultData;\n        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {\n            resultData = new Intent(Intent.ACTION_GET_CONTENT);\n        } else {\n            resultData = new Intent(Intent.ACTION_OPEN_DOCUMENT);\n        }\n        resultData.addCategory(Intent.CATEGORY_OPENABLE);\n        resultData.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);\n        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {\n            resultData.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);\n        }\n        final String sdCardPath = UtilsContext.getSdCardPath(this.activity);\n        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {\n            final Uri objFile = Uri.fromFile(new File(sdCardPath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj\"));\n            final Uri mtlFile = Uri.fromFile(new File(sdCardPath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.mtl\"));\n            final Uri camFile = Uri.fromFile(new File(sdCardPath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.cam\"));\n            final ClipData clipData = new ClipData(new ClipDescription(\"Scene\", new String[]{\"*\" + ConstantsUI.FILE_SEPARATOR + \"*\"}), new ClipData.Item(objFile));\n            clipData.addItem(new ClipData.Item(mtlFile));\n            clipData.addItem(new ClipData.Item(camFile));\n            resultData.setClipData(clipData);\n        } else {\n            resultData.setData(Uri.fromFile(new File(sdCardPath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj\")));\n        }\n        final Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);\n        Intents.intending(IntentMatchers.anyIntent()).respondWith(result);\n\n        assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, Accelerator.REG_GRID",
+      "fragment": "() throws TimeoutException {\n        final int numCores = UtilsContext.getNumOfCores(this.activity);\n\n        // Mock the reply as the external file manager application, to select an OBJ file.\n        final Intent resultData;\n        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {\n            resultData = new Intent(Intent.ACTION_GET_CONTENT);\n        } else {\n            resultData = new Intent(Intent.ACTION_OPEN_DOCUMENT);\n        }\n        resultData.addCategory(Intent.CATEGORY_OPENABLE);\n        resultData.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);\n        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {\n            resultData.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);\n        }\n        final String internalStoragePath = UtilsContext.getInternalStoragePath(this.activity);\n        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {\n            final Uri objFile = Uri.fromFile(new File(internalStoragePath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj\"));\n            final Uri mtlFile = Uri.fromFile(new File(internalStoragePath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.mtl\"));\n            final Uri camFile = Uri.fromFile(new File(internalStoragePath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.cam\"));\n            final ClipData clipData = new ClipData(new ClipDescription(\"Scene\", new String[]{\"*\" + ConstantsUI.FILE_SEPARATOR + \"*\"}), new ClipData.Item(objFile));\n            clipData.addItem(new ClipData.Item(mtlFile));\n            clipData.addItem(new ClipData.Item(camFile));\n            resultData.setClipData(clipData);\n        } else {\n            resultData.setData(Uri.fromFile(new File(internalStoragePath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj\")));\n        }\n        final Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);\n        Intents.intending(IntentMatchers.anyIntent()).respondWith(result);\n\n        assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, Accelerator.REG_GRID",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/androidTest/java/puscas/mobilertapp/engine/AcceleratorTest.java",
@@ -4188,7 +4188,7 @@
     {
       "format": "java",
       "lines": 35,
-      "fragment": "() throws TimeoutException {\n        final int numCores = UtilsContext.getNumOfCores(this.activity);\n\n        // Mock the reply as the external file manager application, to select an OBJ file.\n        final Intent resultData;\n        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {\n            resultData = new Intent(Intent.ACTION_GET_CONTENT);\n        } else {\n            resultData = new Intent(Intent.ACTION_OPEN_DOCUMENT);\n        }\n        resultData.addCategory(Intent.CATEGORY_OPENABLE);\n        resultData.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);\n        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {\n            resultData.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);\n        }\n        final String sdCardPath = UtilsContext.getSdCardPath(this.activity);\n        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {\n            final Uri objFile = Uri.fromFile(new File(sdCardPath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj\"));\n            final Uri mtlFile = Uri.fromFile(new File(sdCardPath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.mtl\"));\n            final Uri camFile = Uri.fromFile(new File(sdCardPath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.cam\"));\n            final ClipData clipData = new ClipData(new ClipDescription(\"Scene\", new String[]{\"*\" + ConstantsUI.FILE_SEPARATOR + \"*\"}), new ClipData.Item(objFile));\n            clipData.addItem(new ClipData.Item(mtlFile));\n            clipData.addItem(new ClipData.Item(camFile));\n            resultData.setClipData(clipData);\n        } else {\n            resultData.setData(Uri.fromFile(new File(sdCardPath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj\")));\n        }\n        final Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);\n        Intents.intending(IntentMatchers.anyIntent()).respondWith(result);\n\n        assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 1, 1, false);\n        Intents.intended(IntentMatchers.anyIntent());\n    }\n\n}",
+      "fragment": "() throws TimeoutException {\n        final int numCores = UtilsContext.getNumOfCores(this.activity);\n\n        // Mock the reply as the external file manager application, to select an OBJ file.\n        final Intent resultData;\n        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {\n            resultData = new Intent(Intent.ACTION_GET_CONTENT);\n        } else {\n            resultData = new Intent(Intent.ACTION_OPEN_DOCUMENT);\n        }\n        resultData.addCategory(Intent.CATEGORY_OPENABLE);\n        resultData.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);\n        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {\n            resultData.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);\n        }\n        final String internalStoragePath = UtilsContext.getInternalStoragePath(this.activity);\n        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {\n            final Uri objFile = Uri.fromFile(new File(internalStoragePath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj\"));\n            final Uri mtlFile = Uri.fromFile(new File(internalStoragePath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.mtl\"));\n            final Uri camFile = Uri.fromFile(new File(internalStoragePath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.cam\"));\n            final ClipData clipData = new ClipData(new ClipDescription(\"Scene\", new String[]{\"*\" + ConstantsUI.FILE_SEPARATOR + \"*\"}), new ClipData.Item(objFile));\n            clipData.addItem(new ClipData.Item(mtlFile));\n            clipData.addItem(new ClipData.Item(camFile));\n            resultData.setClipData(clipData);\n        } else {\n            resultData.setData(Uri.fromFile(new File(internalStoragePath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj\")));\n        }\n        final Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);\n        Intents.intending(IntentMatchers.anyIntent()).respondWith(result);\n\n        assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 1, 1, false);\n        Intents.intended(IntentMatchers.anyIntent());\n    }\n\n}",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/androidTest/java/puscas/mobilertapp/engine/AcceleratorTest.java",
@@ -4800,7 +4800,7 @@
     {
       "format": "java",
       "lines": 7,
-      "fragment": "llBox/CornellBox-Water.mtl\");\n        Mockito.when(intentMocked.getData())\n            .thenReturn(uriMocked);\n\n        try (final MockedStatic<UtilsContext> utilsContextMockedStatic = Mockito.mockStatic(UtilsContext.class);\n             final MockedStatic<Environment> environmentMockedStatic = Mockito.mockStatic(Environment.class)) {\n            utilsContextMocke",
+      "fragment": "llBox/CornellBox-Water.obj\");\n        Mockito.when(intentMocked.getData())\n            .thenReturn(uriMocked);\n\n        try (final MockedStatic<UtilsContext> utilsContextMockedStatic = Mockito.mockStatic(UtilsContext.class);\n             final MockedStatic<Environment> environmentMockedStatic = Mockito.mockStatic(Environment.class)) {\n            utilsContextMocke",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainActivityTest.java",
@@ -4809,12 +4809,12 @@
         "startLoc": {
           "line": 182,
           "column": 72,
-          "position": 1206
+          "position": 1218
         },
         "endLoc": {
           "line": 188,
           "column": 23,
-          "position": 1286
+          "position": 1298
         }
       },
       "secondFile": {
@@ -4824,12 +4824,12 @@
         "startLoc": {
           "line": 151,
           "column": 58,
-          "position": 908
+          "position": 920
         },
         "endLoc": {
           "line": 157,
           "column": 14,
-          "position": 988
+          "position": 1000
         }
       }
     },
@@ -5056,32 +5056,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/src/main/java/puscas/mobilertapp/MainRenderer.java",
-        "start": 905,
-        "end": 919,
+        "start": 906,
+        "end": 920,
         "startLoc": {
-          "line": 905,
+          "line": 906,
           "column": 9,
-          "position": 5570
+          "position": 5581
         },
         "endLoc": {
-          "line": 919,
+          "line": 920,
           "column": 8,
-          "position": 5728
+          "position": 5739
         }
       },
       "secondFile": {
         "name": "app/src/main/java/puscas/mobilertapp/MainRenderer.java",
-        "start": 843,
-        "end": 857,
+        "start": 844,
+        "end": 858,
         "startLoc": {
-          "line": 843,
+          "line": 844,
           "column": 9,
-          "position": 4996
+          "position": 5007
         },
         "endLoc": {
-          "line": 857,
+          "line": 858,
           "column": 6,
-          "position": 5154
+          "position": 5165
         }
       }
     },
@@ -5128,53 +5128,89 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/src/androidTest/java/puscas/mobilertapp/RayTracingTest.java",
-        "start": 114,
-        "end": 129,
+        "start": 115,
+        "end": 130,
         "startLoc": {
-          "line": 114,
+          "line": 115,
           "column": 16,
-          "position": 1009
+          "position": 1018
         },
         "endLoc": {
-          "line": 129,
+          "line": 130,
           "column": 8,
-          "position": 1083
+          "position": 1092
         }
       },
       "secondFile": {
         "name": "app/src/androidTest/java/puscas/mobilertapp/RayTracingTest.java",
-        "start": 96,
-        "end": 107,
+        "start": 97,
+        "end": 108,
         "startLoc": {
-          "line": 96,
+          "line": 97,
           "column": 10,
-          "position": 840
+          "position": 849
         },
         "endLoc": {
-          "line": 107,
+          "line": 108,
           "column": 8,
-          "position": 914
+          "position": 923
+        }
+      }
+    },
+    {
+      "format": "java",
+      "lines": 44,
+      "fragment": "() throws TimeoutException {\n        final int numCores = UtilsContext.getNumOfCores(this.activity);\n\n        // Mock the reply as the external file manager application, to select an OBJ file.\n        final Intent resultData;\n        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {\n            resultData = new Intent(Intent.ACTION_GET_CONTENT);\n        } else {\n            resultData = new Intent(Intent.ACTION_OPEN_DOCUMENT);\n        }\n        resultData.addCategory(Intent.CATEGORY_OPENABLE);\n        resultData.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);\n        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {\n            resultData.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);\n        }\n        final String internalStoragePath = UtilsContext.getInternalStoragePath(this.activity);\n        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {\n            final Uri objFile = Uri.fromFile(new File(internalStoragePath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj\"));\n            final Uri mtlFile = Uri.fromFile(new File(internalStoragePath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.mtl\"));\n            final Uri camFile = Uri.fromFile(new File(internalStoragePath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.cam\"));\n            final ClipData clipData = new ClipData(new ClipDescription(\"Scene\", new String[]{\"*\" + ConstantsUI.FILE_SEPARATOR + \"*\"}), new ClipData.Item(objFile));\n            clipData.addItem(new ClipData.Item(mtlFile));\n            clipData.addItem(new ClipData.Item(camFile));\n            resultData.setClipData(clipData);\n        } else {\n            resultData.setData(Uri.fromFile(new File(internalStoragePath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj\")));\n        }\n        final Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);\n        Intents.intending(IntentMatchers.anyIntent()).respondWith(result);\n\n        assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 1, 1, false);\n        Intents.intended(IntentMatchers.anyIntent());\n    }\n\n    /**\n     * Tests rendering an OBJ scene from an OBJ file which the path was loaded with an external file\n     * manager application. The OBJ is in an external SD card.\n     *\n     * @throws TimeoutException If it couldn't render the whole scene in time.\n     *\n     * @implNote E.g. of URLs to file:<br>\n     * content://com.asus.filemanager.OpenFileProvider/file/storage/1CE6-261B/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj<br>\n     * content://com.asus.filemanager.OpenFileProvider/file/mnt/sdcard/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj<br>\n     */",
+      "tokens": 0,
+      "firstFile": {
+        "name": "app/src/androidTest/java/puscas/mobilertapp/RayTracingTest.java",
+        "start": 132,
+        "end": 175,
+        "startLoc": {
+          "line": 132,
+          "column": 38,
+          "position": 1121
+        },
+        "endLoc": {
+          "line": 175,
+          "column": 8,
+          "position": 1626
+        }
+      },
+      "secondFile": {
+        "name": "app/src/androidTest/java/puscas/mobilertapp/engine/ShaderTest.java",
+        "start": 41,
+        "end": 119,
+        "startLoc": {
+          "line": 41,
+          "column": 29,
+          "position": 282
+        },
+        "endLoc": {
+          "line": 119,
+          "column": 8,
+          "position": 1321
         }
       }
     },
     {
       "format": "java",
       "lines": 16,
-      "fragment": "() throws TimeoutException {\n        final int numCores = UtilsContext.getNumOfCores(this.activity);\n\n        // Mock the reply as the external file manager application, to select an OBJ file.\n        final Intent resultData;\n        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {\n            resultData = new Intent(Intent.ACTION_GET_CONTENT);\n        } else {\n            resultData = new Intent(Intent.ACTION_OPEN_DOCUMENT);\n        }\n        resultData.addCategory(Intent.CATEGORY_OPENABLE);\n        resultData.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);\n        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {\n            resultData.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);\n        }\n        final String internalStoragePath",
+      "fragment": "() throws TimeoutException {\n        final int numCores = UtilsContext.getNumOfCores(this.activity);\n\n        // Mock the reply as the external file manager application, to select an OBJ file.\n        final Intent resultData;\n        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {\n            resultData = new Intent(Intent.ACTION_GET_CONTENT);\n        } else {\n            resultData = new Intent(Intent.ACTION_OPEN_DOCUMENT);\n        }\n        resultData.addCategory(Intent.CATEGORY_OPENABLE);\n        resultData.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);\n        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {\n            resultData.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);\n        }\n        final String sdCardPath",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/androidTest/java/puscas/mobilertapp/RayTracingTest.java",
-        "start": 131,
-        "end": 146,
+        "start": 177,
+        "end": 192,
         "startLoc": {
-          "line": 131,
-          "column": 38,
-          "position": 1112
+          "line": 177,
+          "column": 29,
+          "position": 1655
         },
         "endLoc": {
-          "line": 146,
-          "column": 20,
-          "position": 1284
+          "line": 192,
+          "column": 11,
+          "position": 1827
         }
       },
       "secondFile": {
@@ -5188,80 +5224,8 @@
         },
         "endLoc": {
           "line": 56,
-          "column": 11,
+          "column": 20,
           "position": 454
-        }
-      }
-    },
-    {
-      "format": "java",
-      "lines": 19,
-      "fragment": ")));\n        }\n        final Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);\n        Intents.intending(IntentMatchers.anyIntent()).respondWith(result);\n\n        assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 1, 1, false);\n        Intents.intended(IntentMatchers.anyIntent());\n    }\n\n    /**\n     * Tests rendering an OBJ scene from an OBJ file which the path was loaded with an external file\n     * manager application. The OBJ is in an external SD card.\n     *\n     * @throws TimeoutException If it couldn't render the whole scene in time.\n     *\n     * @implNote E.g. of URLs to file:<br>\n     * content://com.asus.filemanager.OpenFileProvider/file/storage/1CE6-261B/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj<br>\n     * content://com.asus.filemanager.OpenFileProvider/file/mnt/sdcard/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj<br>\n     */",
-      "tokens": 0,
-      "firstFile": {
-        "name": "app/src/androidTest/java/puscas/mobilertapp/RayTracingTest.java",
-        "start": 158,
-        "end": 176,
-        "startLoc": {
-          "line": 158,
-          "column": 44,
-          "position": 1557
-        },
-        "endLoc": {
-          "line": 176,
-          "column": 8,
-          "position": 1659
-        }
-      },
-      "secondFile": {
-        "name": "app/src/androidTest/java/puscas/mobilertapp/engine/ShaderTest.java",
-        "start": 106,
-        "end": 119,
-        "startLoc": {
-          "line": 106,
-          "column": 58,
-          "position": 1219
-        },
-        "endLoc": {
-          "line": 119,
-          "column": 8,
-          "position": 1321
-        }
-      }
-    },
-    {
-      "format": "java",
-      "lines": 40,
-      "fragment": "() throws TimeoutException {\n        final int numCores = UtilsContext.getNumOfCores(this.activity);\n\n        // Mock the reply as the external file manager application, to select an OBJ file.\n        final Intent resultData;\n        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {\n            resultData = new Intent(Intent.ACTION_GET_CONTENT);\n        } else {\n            resultData = new Intent(Intent.ACTION_OPEN_DOCUMENT);\n        }\n        resultData.addCategory(Intent.CATEGORY_OPENABLE);\n        resultData.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);\n        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {\n            resultData.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);\n        }\n        final String sdCardPath = UtilsContext.getSdCardPath(this.activity);\n        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {\n            final Uri objFile = Uri.fromFile(new File(sdCardPath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj\"));\n            final Uri mtlFile = Uri.fromFile(new File(sdCardPath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.mtl\"));\n            final Uri camFile = Uri.fromFile(new File(sdCardPath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.cam\"));\n            final ClipData clipData = new ClipData(new ClipDescription(\"Scene\", new String[]{\"*\" + ConstantsUI.FILE_SEPARATOR + \"*\"}), new ClipData.Item(objFile));\n            clipData.addItem(new ClipData.Item(mtlFile));\n            clipData.addItem(new ClipData.Item(camFile));\n            resultData.setClipData(clipData);\n        } else {\n            resultData.setData(Uri.fromFile(new File(sdCardPath + \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj\")));\n        }\n        final Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);\n        Intents.intending(IntentMatchers.anyIntent()).respondWith(result);\n\n        assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 1, 1, false);\n        Intents.intended(IntentMatchers.anyIntent());\n    }\n\n    /**\n     * Tests rendering a scene without any {@link Accelerator}.\n     * It shouldn't render anything and be just a black image.\n     *\n     * @throws TimeoutException If it couldn't render the whole scene in time.\n     */",
-      "tokens": 0,
-      "firstFile": {
-        "name": "app/src/androidTest/java/puscas/mobilertapp/RayTracingTest.java",
-        "start": 178,
-        "end": 217,
-        "startLoc": {
-          "line": 178,
-          "column": 29,
-          "position": 1688
-        },
-        "endLoc": {
-          "line": 217,
-          "column": 8,
-          "position": 2193
-        }
-      },
-      "secondFile": {
-        "name": "app/src/androidTest/java/puscas/mobilertapp/engine/ShaderTest.java",
-        "start": 41,
-        "end": 119,
-        "startLoc": {
-          "line": 41,
-          "column": 29,
-          "position": 282
-        },
-        "endLoc": {
-          "line": 119,
-          "column": 8,
-          "position": 1321
         }
       }
     },
@@ -5272,17 +5236,17 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/src/androidTest/java/puscas/mobilertapp/AbstractTest.java",
-        "start": 33,
-        "end": 40,
+        "start": 31,
+        "end": 38,
         "startLoc": {
-          "line": 33,
+          "line": 31,
           "column": 33,
-          "position": 271
+          "position": 249
         },
         "endLoc": {
-          "line": 40,
+          "line": 38,
           "column": 14,
-          "position": 337
+          "position": 315
         }
       },
       "secondFile": {
@@ -5920,32 +5884,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 179,
-        "end": 191,
+        "start": 208,
+        "end": 220,
         "startLoc": {
-          "line": 179,
+          "line": 208,
           "column": 2,
-          "position": 2097
+          "position": 2361
         },
         "endLoc": {
-          "line": 191,
+          "line": 220,
           "column": 2,
-          "position": 2236
+          "position": 2500
         }
       },
       "secondFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 158,
-        "end": 170,
+        "start": 187,
+        "end": 199,
         "startLoc": {
-          "line": 158,
+          "line": 187,
           "column": 2,
-          "position": 1840
+          "position": 2104
         },
         "endLoc": {
-          "line": 170,
+          "line": 199,
           "column": 2,
-          "position": 1979
+          "position": 2243
         }
       }
     },
@@ -5956,32 +5920,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 226,
-        "end": 234,
+        "start": 255,
+        "end": 263,
         "startLoc": {
-          "line": 226,
+          "line": 255,
           "column": 21,
-          "position": 2732
+          "position": 2996
         },
         "endLoc": {
-          "line": 234,
+          "line": 263,
           "column": 2,
-          "position": 2833
+          "position": 3097
         }
       },
       "secondFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 179,
-        "end": 166,
+        "start": 208,
+        "end": 195,
         "startLoc": {
-          "line": 179,
+          "line": 208,
           "column": 25,
-          "position": 2091
+          "position": 2355
         },
         "endLoc": {
-          "line": 166,
+          "line": 195,
           "column": 2,
-          "position": 1935
+          "position": 2199
         }
       }
     },
@@ -5992,32 +5956,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 244,
-        "end": 250,
+        "start": 273,
+        "end": 279,
         "startLoc": {
-          "line": 244,
+          "line": 273,
           "column": 25,
-          "position": 2941
+          "position": 3205
         },
         "endLoc": {
-          "line": 250,
+          "line": 279,
           "column": 35,
-          "position": 3029
+          "position": 3293
         }
       },
       "secondFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 205,
-        "end": 211,
+        "start": 234,
+        "end": 240,
         "startLoc": {
-          "line": 205,
+          "line": 234,
           "column": 29,
-          "position": 2385
+          "position": 2649
         },
         "endLoc": {
-          "line": 211,
+          "line": 240,
           "column": 5,
-          "position": 2474
+          "position": 2738
         }
       }
     },
@@ -6028,32 +5992,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 307,
-        "end": 313,
+        "start": 336,
+        "end": 342,
         "startLoc": {
-          "line": 307,
+          "line": 336,
           "column": 1,
-          "position": 3648
+          "position": 3912
         },
         "endLoc": {
-          "line": 313,
+          "line": 342,
           "column": 3,
-          "position": 3737
+          "position": 4001
         }
       },
       "secondFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 268,
-        "end": 275,
+        "start": 297,
+        "end": 304,
         "startLoc": {
-          "line": 268,
+          "line": 297,
           "column": 1,
-          "position": 3109
+          "position": 3373
         },
         "endLoc": {
-          "line": 275,
+          "line": 304,
           "column": 6,
-          "position": 3199
+          "position": 3463
         }
       }
     },
@@ -6490,6 +6454,42 @@
       }
     },
     {
+      "format": "cpp",
+      "lines": 21,
+      "fragment": "nfo {stbi_info(texturePath.c_str(), &width, &height, &channels)};\n    ::std::uint8_t *data {stbi_load(texturePath.c_str(), &width, &height, &channels, 0)};\n    LOG_DEBUG(\"new Texture: \", width, \"x\", height, \", c: \", channels, \", info: \", info);\n    if (data == nullptr) {\n        const auto &error {stbi_failure_reason()};\n        LOG_ERROR(\"Error reading texture: \", error);\n        throw ::std::runtime_error {error};\n    }\n    ::std::shared_ptr<::std::uint8_t> pointer {data, [](::std::uint8_t *const internalData) {\n        stbi_image_free(internalData);\n        LOG_DEBUG(\"Deleted texture\");\n    }};\n    Texture texture {pointer, width, height, channels};\n    return",
+      "tokens": 0,
+      "firstFile": {
+        "name": "app/MobileRT/Texture.cpp",
+        "start": 89,
+        "end": 109,
+        "startLoc": {
+          "line": 89,
+          "column": 2,
+          "position": 802
+        },
+        "endLoc": {
+          "line": 109,
+          "column": 4,
+          "position": 985
+        }
+      },
+      "secondFile": {
+        "name": "app/MobileRT/Texture.cpp",
+        "start": 63,
+        "end": 83,
+        "startLoc": {
+          "line": 63,
+          "column": 5,
+          "position": 515
+        },
+        "endLoc": {
+          "line": 83,
+          "column": 4,
+          "position": 698
+        }
+      }
+    },
+    {
       "format": "markdown",
       "lines": 24,
       "fragment": "###########################\n\n\n###############################################################################\n# Set headers\n###############################################################################\nmessage( STATUS \"Adding MobileRT and third party headers.\" )\ntarget_include_directories( ${PROJECT_NAME} SYSTEM PUBLIC\n  \"${THIRD_PARTY_HEADERS}\" )\ntarget_include_directories( ${PROJECT_NAME} PRIVATE \"${MOBILE_R",
@@ -6856,17 +6856,17 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android.yml",
-        "start": 442,
-        "end": 448,
+        "start": 443,
+        "end": 449,
         "startLoc": {
-          "line": 442,
+          "line": 443,
           "column": 7,
-          "position": 3387
+          "position": 3397
         },
         "endLoc": {
-          "line": 448,
+          "line": 449,
           "column": 28,
-          "position": 3478
+          "position": 3488
         }
       },
       "secondFile": {
@@ -6892,17 +6892,17 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android.yml",
-        "start": 502,
-        "end": 541,
+        "start": 503,
+        "end": 542,
         "startLoc": {
-          "line": 502,
+          "line": 503,
           "column": 5,
-          "position": 3934
+          "position": 3944
         },
         "endLoc": {
-          "line": 541,
+          "line": 542,
           "column": 69,
-          "position": 4138
+          "position": 4148
         }
       },
       "secondFile": {
@@ -6928,17 +6928,17 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android.yml",
-        "start": 541,
-        "end": 560,
+        "start": 542,
+        "end": 561,
         "startLoc": {
-          "line": 541,
+          "line": 542,
           "column": 5,
-          "position": 4138
+          "position": 4148
         },
         "endLoc": {
-          "line": 560,
+          "line": 561,
           "column": 9,
-          "position": 4272
+          "position": 4282
         }
       },
       "secondFile": {
@@ -6964,17 +6964,17 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android.yml",
-        "start": 560,
-        "end": 573,
+        "start": 561,
+        "end": 574,
         "startLoc": {
-          "line": 560,
+          "line": 561,
           "column": 5,
-          "position": 4267
+          "position": 4277
         },
         "endLoc": {
-          "line": 573,
+          "line": 574,
           "column": 6,
-          "position": 4402
+          "position": 4412
         }
       },
       "secondFile": {
@@ -7000,32 +7000,32 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android.yml",
-        "start": 626,
-        "end": 694,
+        "start": 627,
+        "end": 695,
         "startLoc": {
-          "line": 626,
+          "line": 627,
           "column": 9,
-          "position": 4735
+          "position": 4745
         },
         "endLoc": {
-          "line": 694,
+          "line": 695,
           "column": 7,
-          "position": 5146
+          "position": 5156
         }
       },
       "secondFile": {
         "name": ".github/workflows/android.yml",
         "start": 331,
-        "end": 584,
+        "end": 585,
         "startLoc": {
           "line": 331,
           "column": 9,
           "position": 2451
         },
         "endLoc": {
-          "line": 584,
+          "line": 585,
           "column": 4,
-          "position": 4441
+          "position": 4451
         }
       }
     },
@@ -7036,32 +7036,32 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android.yml",
-        "start": 704,
-        "end": 712,
+        "start": 705,
+        "end": 713,
         "startLoc": {
-          "line": 704,
+          "line": 705,
           "column": 7,
-          "position": 5226
+          "position": 5236
         },
         "endLoc": {
-          "line": 712,
+          "line": 713,
           "column": 6,
-          "position": 5326
+          "position": 5336
         }
       },
       "secondFile": {
         "name": ".github/workflows/native.yml",
         "start": 211,
-        "end": 450,
+        "end": 451,
         "startLoc": {
           "line": 211,
           "column": 7,
           "position": 1374
         },
         "endLoc": {
-          "line": 450,
+          "line": 451,
           "column": 4,
-          "position": 3487
+          "position": 3497
         }
       }
     },
@@ -7072,32 +7072,32 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android.yml",
-        "start": 739,
-        "end": 763,
+        "start": 740,
+        "end": 764,
         "startLoc": {
-          "line": 739,
+          "line": 740,
           "column": 5,
-          "position": 5479
+          "position": 5489
         },
         "endLoc": {
-          "line": 763,
+          "line": 764,
           "column": 8,
-          "position": 5653
+          "position": 5663
         }
       },
       "secondFile": {
         "name": ".github/workflows/android.yml",
         "start": 356,
-        "end": 584,
+        "end": 585,
         "startLoc": {
           "line": 356,
           "column": 5,
           "position": 2559
         },
         "endLoc": {
-          "line": 584,
+          "line": 585,
           "column": 4,
-          "position": 4441
+          "position": 4451
         }
       }
     },

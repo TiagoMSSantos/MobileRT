@@ -1,12 +1,10 @@
 package puscas.mobilertapp;
 
-import static android.os.Build.VERSION_CODES.JELLY_BEAN;
-import static android.os.Build.VERSION_CODES.TIRAMISU;
-
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.widget.Button;
 
 import androidx.annotation.CallSuper;
@@ -76,7 +74,7 @@ public abstract class AbstractTest {
     /**
      * The {@link Rule} to access (read) the external SD card.
      */
-    @TargetApi(JELLY_BEAN)
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @NonNull
     @Rule
     public final GrantPermissionRule grantPermissionReadExternalStorageRule =
