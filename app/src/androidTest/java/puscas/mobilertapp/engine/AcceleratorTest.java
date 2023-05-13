@@ -49,7 +49,7 @@ public final class AcceleratorTest extends AbstractTest {
             resultData = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         }
         resultData.addCategory(Intent.CATEGORY_OPENABLE);
-        resultData.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+        resultData.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_PREFIX_URI_PERMISSION | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             resultData.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         }
@@ -89,7 +89,7 @@ public final class AcceleratorTest extends AbstractTest {
             resultData = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         }
         resultData.addCategory(Intent.CATEGORY_OPENABLE);
-        resultData.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+        resultData.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_PREFIX_URI_PERMISSION | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             resultData.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         }
@@ -129,7 +129,7 @@ public final class AcceleratorTest extends AbstractTest {
             resultData = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         }
         resultData.addCategory(Intent.CATEGORY_OPENABLE);
-        resultData.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+        resultData.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_PREFIX_URI_PERMISSION | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             resultData.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         }

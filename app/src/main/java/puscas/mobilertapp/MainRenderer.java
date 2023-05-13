@@ -747,8 +747,12 @@ public class MainRenderer implements GLSurfaceView.Renderer {
         if (this.textureHandle != null) {
             UtilsGL.run(() -> GLES20.glDeleteTextures(1, this.textureHandle, 0));
         }
-        UtilsGL.run(() -> GLES20.glDeleteProgram(this.shaderProgram));
-        UtilsGL.run(() -> GLES20.glDeleteProgram(this.shaderProgramRaster));
+        if (this.shaderProgram != 0) {
+            UtilsGL.run(() -> GLES20.glDeleteProgram(this.shaderProgram));
+        }
+        if (this.shaderProgramRaster != 0) {
+            UtilsGL.run(() -> GLES20.glDeleteProgram(this.shaderProgramRaster));
+        }
 
         final String messageFinished = "closeRenderer" + ConstantsMethods.FINISHED;
         logger.info(messageFinished);

@@ -12,7 +12,6 @@ import androidx.test.espresso.intent.Intents;
 import androidx.test.espresso.intent.matcher.IntentMatchers;
 
 import org.junit.AfterClass;
-import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Ignore;
@@ -140,7 +139,7 @@ public final class RayTracingTest extends AbstractTest {
             resultData = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         }
         resultData.addCategory(Intent.CATEGORY_OPENABLE);
-        resultData.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+        resultData.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_PREFIX_URI_PERMISSION | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             resultData.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         }
@@ -185,7 +184,7 @@ public final class RayTracingTest extends AbstractTest {
             resultData = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         }
         resultData.addCategory(Intent.CATEGORY_OPENABLE);
-        resultData.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+        resultData.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_PREFIX_URI_PERMISSION | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             resultData.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         }
@@ -206,8 +205,6 @@ public final class RayTracingTest extends AbstractTest {
         final Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
         Intents.intending(IntentMatchers.anyIntent()).respondWith(result);
 
-        // TODO: Necessary to find a way to give permissions for Android API 30+ to read files from SD Card via mocked Intent.
-        Assume.assumeTrue(Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q);
         assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 1, 1, false);
         Intents.intended(IntentMatchers.anyIntent());
     }

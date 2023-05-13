@@ -275,7 +275,7 @@ waitForEmulator() {
       -ranchu -fixed-scale -skip-adb-auth -gpu swiftshader_indirect -no-audio \
       -no-snapshot -no-snapstorage -no-snapshot-update-time -no-snapshot-save -no-snapshot-load \
       -no-boot-anim -camera-back none -camera-front none -netfast -wipe-data -no-sim \
-      -no-passive-gps -read-only -no-direct-adb -no-location-ui -no-hidpi-scaling \
+      -no-passive-gps -no-direct-adb -no-location-ui -no-hidpi-scaling \
       -no-mouse-reposition -no-nested-warnings -verbose \
       -qemu -m size=4096M,slots=1,maxmem=8192M -machine type=pc,accel=kvm -accel kvm,thread=multi:tcg,thread=multi -smp cpus=8,maxcpus=8,cores=8,threads=1,sockets=1
     sleep 20;
@@ -483,12 +483,19 @@ runInstrumentationTests() {
   set -eu;
 
   echo 'Searching for APK to install in Android emulator.';
-  find . -iname "*.apk" | grep -i "output";
-  apkPath=$(find . -iname "*.apk" | grep -i "output" | grep -i "test" | grep -i "${type}");
-  echo "Will install APK: ${apkPath}";
-  callCommandUntilSuccess adb push -p "${apkPath}" "${mobilert_path}";
+  apksPath=$(find . -iname "*.apk" | grep -i "output");
+  for apkPath in ${apksPath}; do
+    echo "Will install APK: ${apkPath}";
+    callCommandUntilSuccess adb push -p "${apkPath}" "${mobilert_path}";
+  done;
   callCommandUntilSuccess adb shell 'ls -la '${mobilert_path};
+  echo "Installing both APKs for tests and app.";
   callAdbShellCommandUntilSuccess adb shell 'pm install -t -r '${mobilert_path}'/app-'${type}'-androidTest.apk; echo ::$?::';
+  callAdbShellCommandUntilSuccess adb shell 'pm install -t -r '${mobilert_path}'/app-'${type}'.apk; echo ::$?::';
+  if [ "${androidApi}" -gt 29 ]; then
+    echo "Giving permissions for MobileRT app to access any file from the external storage.";
+    callAdbShellCommandUntilSuccess adb shell 'appops set --uid puscas.mobilertapp MANAGE_EXTERNAL_STORAGE allow; echo ::$?::';
+  fi
   echo 'List of instrumented APKs:';
   adb shell 'pm list instrumentation;';
   unlockDevice;

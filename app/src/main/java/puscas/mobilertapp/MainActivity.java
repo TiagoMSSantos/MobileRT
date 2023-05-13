@@ -4,11 +4,11 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ConfigurationInfo;
 import android.content.pm.PackageManager;
-import android.content.res.AssetFileDescriptor;
 import android.net.Uri;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
@@ -282,7 +282,6 @@ public final class MainActivity extends Activity {
             .orElse(true));
 
         UtilsContext.checksStoragePermission(this);
-        UtilsContext.checksInternetPermission(this);
 
         logger.info("onCreate finish");
     }
@@ -641,22 +640,21 @@ public final class MainActivity extends Activity {
         logger.info("readFile");
         final String filePath = getPathFromFile(uri);
         logger.info("Will read the following file: '" + filePath + "'");
-        try (AssetFileDescriptor assetFileDescriptor = getContentResolver().openAssetFileDescriptor(uri, "r")) {
+        final ContentResolver contentResolver = getContentResolver();
+
+        try (ParcelFileDescriptor parcelFileDescriptor = contentResolver.openFileDescriptor(uri, "r")) {
             logger.info("Opened AssetFileDescriptor");
-            final ParcelFileDescriptor parcelFileDescriptor = assetFileDescriptor.getParcelFileDescriptor();
             final int fd = parcelFileDescriptor.getFd();
             final long size = parcelFileDescriptor.getStatSize();
             final String typeStr = filePath.substring(filePath.lastIndexOf(".")).toLowerCase();
             final int type = Objects.equals(typeStr, ".obj") ? 0 :
-                             Objects.equals(typeStr, ".mtl") ? 1 :
-                             Objects.equals(typeStr, ".cam") ? 2 :
-                             3;
+                Objects.equals(typeStr, ".mtl") ? 1 :
+                Objects.equals(typeStr, ".cam") ? 2 :
+                3;
 
             logger.info("Will read the following file: '" + filePath + "', [fd: " + fd + ", size: " + size + ", type: " + type + "]");
             // Important: Native layer shouldn't assume ownership of this fd and close it.
             readFile(fd, size, type, filePath);
-
-            parcelFileDescriptor.close();
         } catch (final IOException ex) {
             UtilsLogging.logThrowable(ex, "MainActivity#readFile");
             throw new FailureException(ex);
@@ -721,7 +719,7 @@ public final class MainActivity extends Activity {
         intent.putExtra(Intent.EXTRA_TITLE, "Select an OBJ file to load.");
         intent.setType("*" + ConstantsUI.FILE_SEPARATOR + "*");
         intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_PREFIX_URI_PERMISSION | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         }

@@ -1,20 +1,23 @@
 package puscas.mobilertapp;
 
 import android.Manifest;
-import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.widget.Button;
 
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.intent.Intents;
+import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
-import androidx.test.rule.GrantPermissionRule;
 
 import com.google.common.base.Preconditions;
+import com.google.common.util.concurrent.Uninterruptibles;
 
 import org.junit.After;
 import org.junit.Before;
@@ -72,31 +75,6 @@ public abstract class AbstractTest {
         new ActivityTestRule<>(MainActivity.class, true, true);
 
     /**
-     * The {@link Rule} to access (read) the external SD card.
-     */
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    @NonNull
-    @Rule
-    public final GrantPermissionRule grantPermissionReadExternalStorageRule =
-        GrantPermissionRule.grant(Manifest.permission.READ_EXTERNAL_STORAGE);
-
-    /**
-     * The {@link Rule} to access (write) the external SD card.
-     */
-    @NonNull
-    @Rule
-    public final GrantPermissionRule grantPermissionWriteExternalStorageRule =
-        GrantPermissionRule.grant(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-    /**
-     * The {@link Rule} to access the Internet.
-     */
-    @NonNull
-    @Rule
-    public final GrantPermissionRule grantPermissionInternetRule =
-        GrantPermissionRule.grant(Manifest.permission.INTERNET);
-
-    /**
      * The {@link MainActivity} to test.
      */
     @Nullable
@@ -116,13 +94,75 @@ public abstract class AbstractTest {
         final Intent intent = new Intent(Intent.ACTION_PICK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        UtilsT.executeWithCatching(Espresso::onIdle);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_PREFIX_URI_PERMISSION | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+        }
+
         this.activity = this.mainActivityActivityTestRule.launchActivity(intent);
+        grantPermissions(this.activity);
 
         Preconditions.checkNotNull(this.activity, "The Activity didn't start as expected!");
-        UtilsT.executeWithCatching(Espresso::onIdle);
-
         Intents.init();
+
+        UtilsT.executeWithCatching(Espresso::onIdle);
+        // Wait a bit for the permissions to be granted to the app before starting the test. Necessary for Android 12+.
+        Uninterruptibles.sleepUninterruptibly(2L, TimeUnit.SECONDS);
+    }
+
+    /**
+     * Grant permissions for the {@link MainActivity} to be able to load files from an external
+     * storage.
+     *
+     * @param activity The {@link Activity}.
+     */
+    private static void grantPermissions(final Activity activity) {
+        logger.info("Granting permissions to the MainActivity to be able to read files from an external storage.");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            InstrumentationRegistry.getInstrumentation().getUiAutomation().grantRuntimePermission(
+                androidx.test.core.app.ApplicationProvider.getApplicationContext().getPackageName(), Manifest.permission.READ_MEDIA_AUDIO
+            );
+            InstrumentationRegistry.getInstrumentation().getUiAutomation().grantRuntimePermission(
+                androidx.test.core.app.ApplicationProvider.getApplicationContext().getPackageName(), Manifest.permission.READ_MEDIA_VIDEO
+            );
+            InstrumentationRegistry.getInstrumentation().getUiAutomation().grantRuntimePermission(
+                androidx.test.core.app.ApplicationProvider.getApplicationContext().getPackageName(), Manifest.permission.READ_MEDIA_IMAGES
+            );
+            waitForPermission(activity, android.Manifest.permission.READ_MEDIA_AUDIO);
+            waitForPermission(activity, android.Manifest.permission.READ_MEDIA_VIDEO);
+            waitForPermission(activity, android.Manifest.permission.READ_MEDIA_IMAGES);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+            InstrumentationRegistry.getInstrumentation().getUiAutomation().grantRuntimePermission(
+                androidx.test.core.app.ApplicationProvider.getApplicationContext().getPackageName(), android.Manifest.permission.READ_EXTERNAL_STORAGE
+            );
+            waitForPermission(activity, android.Manifest.permission.READ_EXTERNAL_STORAGE);
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH && Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) {
+            logger.info("Granting permissions to the tests to be able to read files from an external storage.");
+            InstrumentationRegistry.getInstrumentation().getUiAutomation().grantRuntimePermission(
+                androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().getContext().getPackageName(), android.Manifest.permission.READ_EXTERNAL_STORAGE
+            );
+        }
+        logger.info("Permissions granted.");
+    }
+
+    /**
+     * Waits for a permission to be granted.
+     *
+     * @param activity   The {@link Activity}.
+     * @param permission The permission which should be granted.
+     */
+    private static void waitForPermission(final Activity activity, final String permission) {
+        while (ContextCompat.checkSelfPermission(
+            activity,
+            permission
+        ) != PackageManager.PERMISSION_GRANTED) {
+            logger.info("Waiting for the permission '" + permission + "'to be granted to the app.");
+            Espresso.onIdle();
+            Uninterruptibles.sleepUninterruptibly(2L, TimeUnit.SECONDS);
+        }
+        logger.info("Permission '" + permission + "' granted to the app!");
     }
 
     /**

@@ -352,9 +352,11 @@ public class DrawView extends GLSurfaceView {
     protected void onDetachedFromWindow() {
         logger.info(ConstantsMethods.ON_DETACHED_FROM_WINDOW);
         super.onDetachedFromWindow();
+
         finishRenderer();
+        // We need to call `closeRenderer` method with the GL rendering thread.
+        queueEvent(this.renderer::closeRenderer);
         setVisibility(View.GONE);
-        this.renderer.closeRenderer();
 
         final String message = ConstantsMethods.ON_DETACHED_FROM_WINDOW + ConstantsMethods.FINISHED;
         logger.info(message);

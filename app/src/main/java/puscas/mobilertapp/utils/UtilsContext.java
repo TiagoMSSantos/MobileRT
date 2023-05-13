@@ -3,11 +3,13 @@ package puscas.mobilertapp.utils;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.opengl.GLES20;
 import android.os.Build;
 import android.os.Environment;
+import android.provider.Settings;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -327,21 +329,12 @@ public final class UtilsContext {
             checksAccessPermission(activity, Manifest.permission.READ_MEDIA_IMAGES);
             checksAccessPermission(activity, Manifest.permission.READ_MEDIA_VIDEO);
             checksAccessPermission(activity, Manifest.permission.READ_MEDIA_AUDIO);
+            checksAccessPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             checksAccessPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE);
         }
-        checksAccessPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-    }
-
-    /**
-     * Helper method which asks the user for permission to access the internet
-     * if it doesn't have it yet.
-     *
-     * @param activity The {@link Activity} of MobileRT.
-     */
-    public static void checksInternetPermission(@NonNull final Activity activity) {
-        logger.info("checksInternetPermission");
-        checksAccessPermission(activity, Manifest.permission.INTERNET);
+        // TODO: Can request only one set of permissions at a time.
+        // checksAccessPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
     }
 
     /**

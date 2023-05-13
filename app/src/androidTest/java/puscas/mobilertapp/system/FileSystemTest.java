@@ -1,11 +1,8 @@
 package puscas.mobilertapp.system;
 
-import android.os.Build;
-
 import com.google.common.collect.ImmutableList;
 
 import org.junit.Assert;
-import org.junit.Assume;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
@@ -87,8 +84,6 @@ public final class FileSystemTest extends AbstractTest {
             sdCardPath + ConstantsUI.FILE_SEPARATOR + Constants.OBJ_FILE_TEAPOT
         ).build();
 
-        // TODO: Necessary to find a way to give permissions for Android API 30+ to read files from SD Card for the test.
-        Assume.assumeTrue(Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q);
         validatePathsExist(paths);
     }
 

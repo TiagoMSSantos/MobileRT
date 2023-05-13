@@ -416,7 +416,7 @@ jobs:
         disable-animations: true
         disable-spellchecker: true
         channel: stable
-        emulator-options: -no-window -accel on -cores ${{ env.NCPU_CORES }} -memory ${{ env.MEM_MB }} -cache-size 512 -partition-size 800 -ranchu -fixed-scale -skip-adb-auth -gpu swiftshader_indirect -no-audio -no-snapshot -no-snapstorage -no-snapshot-update-time -no-snapshot-save -no-snapshot-load -no-boot-anim -camera-back none -camera-front none -netfast -wipe-data -no-sim -no-passive-gps -read-only -no-direct-adb -no-location-ui -no-hidpi-scaling -no-mouse-reposition -no-nested-warnings -verbose
+        emulator-options: -no-window -accel on -cores ${{ env.NCPU_CORES }} -memory ${{ env.MEM_MB }} -cache-size 512 -partition-size 800 -ranchu -fixed-scale -skip-adb-auth -gpu swiftshader_indirect -no-audio -no-snapshot -no-snapstorage -no-snapshot-update-time -no-snapshot-save -no-snapshot-load -no-boot-anim -camera-back none -camera-front none -netfast -wipe-data -no-sim -no-passive-gps -no-direct-adb -no-location-ui -no-hidpi-scaling -no-mouse-reposition -no-nested-warnings -verbose
         cores: ${{ env.NCPU_CORES }}
         ram-size: ${{ env.MEM_MB }}M
         heap-size: 2048M
