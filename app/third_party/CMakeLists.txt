@@ -69,7 +69,7 @@ set( BOOST_VERSION "boost-1.82.0" )
 set( GLM_VERSION "0.9.9.8" )
 set( STB_VERSION "master" )
 set( TINYOBJLOADER_VERSION "v1.0.7" )
-set( GOOGLETEST_VERSION "release-1.12.1" )
+set( GOOGLETEST_VERSION "v1.13.0" )
 set( PCG_CPP_VERSION "master" )
 ###############################################################################
 ###############################################################################

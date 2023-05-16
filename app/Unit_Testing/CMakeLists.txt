@@ -58,7 +58,7 @@ target_include_directories( ${PROJECT_NAME} SYSTEM PUBLIC ${CMAKE_INCLUDE_PATH} 
 target_link_libraries( ${PROJECT_NAME} PRIVATE ${gtest_LIBRARIES_TARGETS} )
 
 message( STATUS "Adding compiler flags." )
-target_compile_options( ${PROJECT_NAME} PRIVATE ${COMMON_FLAGS} )
+target_compile_options( ${PROJECT_NAME} PRIVATE ${COMMON_FLAGS} -std=c++14 )
 target_compile_options( ${PROJECT_NAME} PRIVATE
   $<$<CONFIG:DEBUG>:${COMMON_FLAGS_DEBUG}> )
 target_compile_options( ${PROJECT_NAME} PRIVATE
