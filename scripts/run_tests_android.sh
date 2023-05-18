@@ -408,7 +408,8 @@ runUnitTests() {
   # Note: flag `-t` of `ls` is to sort by date (newest first).
   # shellcheck disable=SC2012
   generatedId=$(ls -t "${dirUnitTests}" | head -1);
-  dirUnitTests="${dirUnitTests}/${generatedId}/x86";
+  android_cpu_architecture=$(adb shell getprop ro.product.cpu.abi | tr -d '[:space:]');
+  dirUnitTests="${dirUnitTests}/${generatedId}/${android_cpu_architecture}";
   find . -iname "*unittests*" -exec readlink -f {} \;
   echo 'Checking generated unit tests binaries.';
   files=$(ls "${dirUnitTests}");
@@ -586,8 +587,8 @@ runInstrumentationTests;
 ###############################################################################
 # Exit code
 ###############################################################################
-if [ "${androidApi}" = '15' ] || [ "${androidApi}" -gt 30 ]; then
-  # TODO: Fix the native unit tests in Android API 15 and Android 31+. Ignore the result for now.
+if [ "${androidApi}" = '15' ]; then
+  # TODO: Fix the native unit tests in Android API 15. Ignore the result for now.
   printCommandExitCode '0' "Unit tests (result: ${resUnitTests})";
 else
   printCommandExitCode "${resUnitTests}" 'Unit tests';
