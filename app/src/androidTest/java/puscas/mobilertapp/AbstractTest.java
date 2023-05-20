@@ -72,7 +72,7 @@ public abstract class AbstractTest {
     @NonNull
     @Rule
     public final ActivityTestRule<MainActivity> mainActivityActivityTestRule =
-        new ActivityTestRule<>(MainActivity.class, true, true);
+        new ActivityTestRule<>(MainActivity.class, true, false);
 
     /**
      * The {@link MainActivity} to test.
@@ -177,6 +177,7 @@ public abstract class AbstractTest {
 
         Preconditions.checkNotNull(this.activity, "The Activity didn't finish as expected!");
 
+        Espresso.pressBackUnconditionally();
         this.activity.finish();
         this.mainActivityActivityTestRule.finishActivity();
         this.activity = null;

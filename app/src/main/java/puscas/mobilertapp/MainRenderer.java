@@ -945,6 +945,8 @@ public class MainRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onDrawFrame(@NonNull final GL10 gl) {
+        logger.info("onDrawFrame");
+
         // Reset OpenGL frame buffer before drawing the new frame.
         UtilsGL.run(() -> GLES20.glClear(ConstantsRenderer.ALL_BUFFER_BIT));
 
@@ -976,6 +978,7 @@ public class MainRenderer implements GLSurfaceView.Renderer {
         }
 
         drawBitmap(this.bitmap);
+        logger.info("onDrawFrame finished");
     }
 
     /**

@@ -60,16 +60,28 @@ void Renderer::renderFrame(::std::int32_t *const bitmap, const ::std::int32_t nu
 
     const auto numChildren {numThreads - 1};
     ::std::vector<::std::thread> threads {};
-    threads.reserve(static_cast<::std::uint32_t> (numChildren));
 
+    MobileRT::checkSystemError("Reserving capacity for render threads");
+    threads.reserve(static_cast<::std::uint32_t> (numChildren));
+    MobileRT::checkSystemError("Reserved capacity for render threads");
+
+    MobileRT::checkSystemError("Creating render threads");
     for (::std::int32_t i {}; i < numChildren; ++i) {
         threads.emplace_back(&Renderer::renderScene, this, bitmap, i);
     }
+    if (errno == EINVAL) {
+        // Ignore invalid argument (necessary for Android API 16)
+        errno = 0;
+    }
+    MobileRT::checkSystemError("Created render threads");
     renderScene(bitmap, numChildren);
+    MobileRT::checkSystemError("Rendered scene");
     for (auto &thread : threads) {
         thread.join();
     }
+    MobileRT::checkSystemError("All render threads finished");
     threads.clear();
+    MobileRT::checkSystemError("Deleted render threads");
 
     LOG_DEBUG("FINISH");
 }
@@ -123,12 +135,17 @@ void Renderer::renderScene(::std::int32_t *const bitmap, const ::std::int32_t ti
                     const auto r2 {this->samplerPixel_->getSample()};
                     const auto deviationU {(r1 - 0.5F) * 2.0F * pixelWidth};
                     const auto deviationV {(r2 - 0.5F) * 2.0F * pixelHeight};
+                    LOG_DEBUG("(tid: ", tid, ") Generating ray, u: ", u, ", v: ", v, ", deviationU: ", deviationU, ", deviationV: ", deviationV);
                     auto &&ray {this->camera_->generateRay(u, v, deviationU, deviationV)};
                     pixelRgb = {};
+                    LOG_DEBUG("(tid: ", tid, ") Ray tracing, id: ", ray.id_, ", depth: ", ray.depth_, ", origin: ", ray.origin_.length(), ", direction", ray.direction_.length());
                     this->shader_->rayTrace(&pixelRgb, ::std::move(ray));
                     const auto pixelIndex {yWidth + x};
+                    LOG_DEBUG("(tid: ", tid, ") pixelIndex: ", pixelIndex);
                     ::std::int32_t *bitmapPixel {&bitmap[pixelIndex]};
+                    LOG_DEBUG("(tid: ", tid, ") bitmapPixel: ", *bitmapPixel);
                     const auto pixelColor {::MobileRT::incrementalAvg(pixelRgb, *bitmapPixel, sample + 1)};
+                    LOG_DEBUG("(tid: ", tid, ") pixelColor: ", pixelColor);
                     *bitmapPixel = pixelColor;
                 }
             }

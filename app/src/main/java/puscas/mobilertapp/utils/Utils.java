@@ -4,7 +4,6 @@ import android.widget.NumberPicker;
 
 import androidx.annotation.NonNull;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Contract;
 
 import java.io.BufferedReader;
@@ -17,6 +16,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import java8.util.Objects;
+import kotlin.Pair;
 import puscas.mobilertapp.constants.Constants;
 import puscas.mobilertapp.constants.ConstantsMethods;
 import puscas.mobilertapp.constants.ConstantsUI;
@@ -170,7 +170,7 @@ public final class Utils {
             final String strResolution = picker.getDisplayedValues()[picker.getValue() - 1];
             final int width = Integer.parseInt(strResolution.substring(0, strResolution.indexOf('x')));
             final int height = Integer.parseInt(strResolution.substring(strResolution.indexOf('x') + 1));
-            return Pair.of(width, height);
+            return new Pair<>(width, height);
         } catch (final Exception ex) {
             UtilsLogging.logThrowable(ex, "Utils#getResolutionFromPicker");
             throw new FailureException("The Resolution Picker is not properly set. " +

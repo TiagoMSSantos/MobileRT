@@ -31,6 +31,7 @@ import java.util.concurrent.TimeoutException;
 
 import javax.annotation.Nonnull;
 
+import kotlin.Pair;
 import puscas.mobilertapp.configs.Config;
 import puscas.mobilertapp.configs.ConfigSamples;
 import puscas.mobilertapp.constants.ConstantsError;
@@ -164,10 +165,12 @@ public class DrawViewTest {
         drawView.setUpButtonRender(buttonMocked);
 
         // Make the thread pool use only the thread from the test (current one), so it counts to the code coverage.
-        final ListeningExecutorService executorService = MoreExecutors.newDirectExecutorService();
-        ReflectionTestUtils.setField(drawView, "executorService", executorService);
+        final ListeningExecutorService currentThreadExecutorService = MoreExecutors.newDirectExecutorService();
+        ReflectionTestUtils.setField(drawView, "executorService", currentThreadExecutorService);
 
         EasyMock.expect(drawView.rtGetNumberOfLights()).andReturn(0);
+        // For the mock of 'rtStartRender' to work, it's necessary for the method to be package visible,
+        // otherwise an 'UnsatisfiedLinkError' is thrown.
         drawView.rtStartRender(EasyMock.anyBoolean());
         EasyMock.expectLastCall().andVoid().times(2);
         drawView.waitLastTask();
@@ -182,12 +185,12 @@ public class DrawViewTest {
             .as("The call to DrawView#renderScene method")
             .doesNotThrowAnyException();
 
-        executorService.shutdown();
-        Assertions.assertThat(executorService.awaitTermination(10L, TimeUnit.SECONDS))
+        currentThreadExecutorService.shutdown();
+        Assertions.assertThat(currentThreadExecutorService.awaitTermination(10L, TimeUnit.SECONDS))
             .as("The thread pool finished")
             .isTrue();
-        final Future<Boolean> lastTask = (Future) ReflectionTestUtils.getField(drawView, DrawView.class, "lastTask");
-        Assertions.assertThat(lastTask.get())
+        final Pair<Long, Future<Boolean>> lastTask = (Pair<Long, Future<Boolean>>) ReflectionTestUtils.getField(drawView, DrawView.class, "lastTask");
+        Assertions.assertThat(lastTask.getSecond().get())
             .as("The last task")
             .isFalse();
 
@@ -215,7 +218,8 @@ public class DrawViewTest {
         final Future<Boolean> lastTask = Mockito.mock(Future.class);
         Mockito.when(lastTask.get(1L, TimeUnit.DAYS))
             .thenThrow(new InterruptedException());
-        ReflectionTestUtils.setField(drawView, "lastTask", lastTask);
+        // The '-1L' value is to allow the 'waitLastTask' method to not block waiting for the task to start and finish.
+        ReflectionTestUtils.setField(drawView, "lastTask", new Pair<>(-1L, lastTask));
 
         Assertions.assertThatCode(drawView::waitLastTask)
             .as("The call to DrawView#waitLastTask method")

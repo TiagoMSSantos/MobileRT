@@ -13,16 +13,20 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 
+import com.google.common.util.concurrent.Uninterruptibles;
+
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
 import java8.util.Optional;
+import kotlin.Pair;
 import puscas.mobilertapp.configs.Config;
 import puscas.mobilertapp.configs.ConfigResolution;
 import puscas.mobilertapp.constants.ConstantsError;
@@ -67,7 +71,7 @@ public class DrawView extends GLSurfaceView {
     /**
      * The last task submitted to {@link #executorService}.
      */
-    private Future<Boolean> lastTask = null;
+    private Pair<Long, Future<Boolean>> lastTask = null;
 
     /**
      * The constructor for this class.
@@ -144,6 +148,8 @@ public class DrawView extends GLSurfaceView {
      * Sets the Ray Tracer engine {@link State} to {@link State#BUSY}.
      *
      * @param wait Whether it should wait for the Ray Tracer engine to stop at the beginning.
+     * @implNote Necessary to be package visible so it's possible to mock it in the unit tests,
+     *           otherwise an {@link UnsatisfiedLinkError} is thrown.
      */
     @VisibleForTesting
     native void rtStartRender(boolean wait);
@@ -205,6 +211,7 @@ public class DrawView extends GLSurfaceView {
 
         rtStopRender(true);
         Optional.ofNullable(this.lastTask)
+            .map(Pair::getSecond)
             .ifPresent(task -> task.cancel(false));
 
         waitLastTask();
@@ -220,14 +227,15 @@ public class DrawView extends GLSurfaceView {
      *
      * @param config The ray tracer configuration.
      */
-    void renderScene(@NonNull final Config config) {
+    synchronized void renderScene(@NonNull final Config config) {
         logger.info(ConstantsMethods.RENDER_SCENE);
 
         waitLastTask();
         MainActivity.resetErrno();
         rtStartRender(false);
 
-        this.lastTask = this.executorService.submit(() -> {
+        final long tasksAlreadyDone = this.executorService instanceof ThreadPoolExecutor? ((ThreadPoolExecutor) this.executorService).getCompletedTaskCount() : -1L;
+        final Future<Boolean> newTask = this.executorService.submit(() -> {
             this.renderer.waitLastTask();
             try {
                 rtStartRender(true);
@@ -251,6 +259,7 @@ public class DrawView extends GLSurfaceView {
 
             return Boolean.FALSE;
         });
+        this.lastTask = new Pair<>(tasksAlreadyDone, newTask);
 
         // This should be executed by the UI thread, so it's good to go.
         this.renderer.updateButton(R.string.stop);
@@ -268,14 +277,13 @@ public class DrawView extends GLSurfaceView {
      */
     @VisibleForTesting
     void startRayTracing(@NonNull final Config config) throws LowMemoryException {
-        final String message = ConstantsMethods.RENDER_SCENE + " executor";
+        final String message = "startRayTracing executor";
         logger.info(message);
 
         createScene(config);
         requestRender(); // This will make the `MainRenderer#onDrawFrame` method to be called.
 
-        final String messageFinished = ConstantsMethods.RENDER_SCENE + " executor"
-            + ConstantsMethods.FINISHED;
+        final String messageFinished = "startRayTracing executor" + ConstantsMethods.FINISHED;
         logger.info(messageFinished);
     }
 
@@ -285,11 +293,16 @@ public class DrawView extends GLSurfaceView {
     void waitLastTask() {
         logger.info("waitLastTask");
 
+        while (this.lastTask != null && ((ThreadPoolExecutor) this.executorService).getCompletedTaskCount() <= this.lastTask.getFirst()) {
+            logger.info("Waiting for last task to finish create the renderer.");
+            Uninterruptibles.sleepUninterruptibly(500L, TimeUnit.MILLISECONDS);
+        }
+
         this.renderer.waitLastTask();
         Optional.ofNullable(this.lastTask)
             .ifPresent(task -> {
                 try {
-                    task.get(1L, TimeUnit.DAYS);
+                    task.getSecond().get(1L, TimeUnit.DAYS);
                 } catch (final ExecutionException | TimeoutException | RuntimeException ex) {
                     UtilsLogging.logThrowable(ex, "DrawView#waitLastTask");
                 } catch (final InterruptedException ex) {
@@ -353,6 +366,7 @@ public class DrawView extends GLSurfaceView {
         logger.info(ConstantsMethods.ON_DETACHED_FROM_WINDOW);
         super.onDetachedFromWindow();
 
+        stopDrawing();
         finishRenderer();
         // We need to call `closeRenderer` method with the GL rendering thread.
         queueEvent(this.renderer::closeRenderer);
@@ -365,9 +379,10 @@ public class DrawView extends GLSurfaceView {
     @Override
     public void onWindowFocusChanged(final boolean hasWindowFocus) {
         super.onWindowFocusChanged(hasWindowFocus);
-        logger.info("onWindowFocusChanged");
+        logger.info("onWindowFocusChanged hasWindowFocus: " + hasWindowFocus + ", visibility: " + getVisibility());
 
         if (hasWindowFocus && getVisibility() == View.GONE) {
+            logger.info("Setting window to: visible");
             setVisibility(View.VISIBLE);
         }
 

@@ -156,7 +156,6 @@ public final class UtilsT {
         assertRenderButtonText(Constants.RENDER);
         Espresso.onView(ViewMatchers.withId(R.id.renderButton))
             .perform(new ViewActionButton(expectedSameValues ? Constants.RENDER : Constants.STOP, false));
-        UtilsT.executeWithCatching(Espresso::onIdle);
         logger.info("startRendering" + ConstantsMethods.FINISHED);
     }
 

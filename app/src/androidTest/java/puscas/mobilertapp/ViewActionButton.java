@@ -12,6 +12,7 @@ import org.hamcrest.Matcher;
 import org.jetbrains.annotations.NonNls;
 import org.junit.Assert;
 
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import puscas.mobilertapp.utils.Utils;
@@ -85,14 +86,14 @@ public final class ViewActionButton implements ViewAction {
                 uiController.loopMainThreadUntilIdle();
                 return;
             }
-            boolean textEqualsNotExpected = !button.getText().toString().equals(this.expectedText);
+            boolean textEqualsNotExpected = !Objects.equals(button.getText().toString(), this.expectedText);
             final long advanceSecs = 1L;
 
             // Wait until expected text is shown.
             for (long currentTimeSecs = 0L; currentTimeSecs < 10L && textEqualsNotExpected;
                  currentTimeSecs += advanceSecs) {
                 uiController.loopMainThreadForAtLeast(advanceSecs * 1000L);
-                textEqualsNotExpected = !button.getText().toString().equals(this.expectedText);
+                textEqualsNotExpected = !Objects.equals(button.getText().toString(), this.expectedText);
             }
             Assert.assertEquals("Button with wrong text!!!!!",
                 this.expectedText, button.getText().toString()

@@ -100,16 +100,6 @@ typeWithCapitalLetter=$(capitalizeFirstletter "${type}");
 # Helper functions.
 ###############################################################################
 gather_logs_func() {
-  adb_devices_running=$(adb devices | tail -n +2);
-  if [ "${adb_devices_running}" != '' ]; then
-    callCommandUntilSuccess adb shell 'ps > /dev/null;';
-    adb logcat -v threadtime -d "*":V \
-      > "${reports_path}"/logcat_"${type}".log 2>&1;
-    echo "Copied logcat to logcat_${type}.log";
-  else
-    echo 'Logs not gathered because Android emulator is down.';
-  fi
-
   set +e;
   pid_app=$(grep -E -i "proc.puscas:*" "${reports_path}"/logcat_"${type}".log |
     grep -i "pid=" | cut -d "=" -f 2 | cut -d "u" -f 1 | tr -d ' ' | tail -1);
@@ -388,9 +378,10 @@ startCopyingLogcatToFile() {
   # -b all -> Unable to open log device '/dev/log/all': No such file or directory
   # -b crash -> Unable to open log device '/dev/log/crash': No such file or directory
   callAdbShellCommandUntilSuccess adb shell 'logcat -b main -b system -b radio -b events -c; echo ::$?::';
+  callAdbShellCommandUntilSuccess adb shell 'logcat -c; echo ::$?::';
 
   echo 'Copy realtime logcat to file';
-  adb logcat -v threadtime "*":V &
+  adb logcat -v threadtime "*":V | tee "${reports_path}"/logcat_"${type}".log 2>&1 &
   pid_logcat="$!";
   echo "pid of logcat: '${pid_logcat}'";
 }
@@ -528,11 +519,6 @@ runInstrumentationTests() {
   resInstrumentationTests=${?};
   pid_instrumentation_tests="$!";
   echo 'Android test(s) executed!';
-
-  mkdir -p ${reports_path};
-  set +e;
-  adb logcat -v threadtime -d "*":V > "${reports_path}"/logcat_tests_"${type}".log 2>&1;
-  set -e;
   echo "pid of instrumentation tests: '${pid_instrumentation_tests}'";
 }
 
@@ -578,8 +564,8 @@ createReportsFolders;
 runEmulator;
 waitForEmulator;
 copyResources;
-startCopyingLogcatToFile;
 verifyResources;
+startCopyingLogcatToFile;
 runUnitTests;
 runInstrumentationTests;
 # checkLastModifiedFiles;

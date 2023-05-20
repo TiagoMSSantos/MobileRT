@@ -33,8 +33,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -47,6 +45,7 @@ import javax.annotation.Nonnull;
 import java8.util.Optional;
 import java8.util.stream.IntStreams;
 import java8.util.stream.StreamSupport;
+import kotlin.Pair;
 import puscas.mobilertapp.configs.Config;
 import puscas.mobilertapp.configs.ConfigResolution;
 import puscas.mobilertapp.configs.ConfigSamples;
@@ -334,7 +333,7 @@ public final class MainActivity extends Activity {
                 startRender(this.sceneFilePath);
             } catch (final Throwable ex) {
                 UtilsLogging.logThrowable(ex, "MainActivity#onPostResume");
-                showUiMessage(ex.getMessage());
+                showUiMessage(Objects.requireNonNull(ex.getMessage()));
             }
         }
         logger.info("onPostResume end");
@@ -489,7 +488,8 @@ public final class MainActivity extends Activity {
                     }
                 }
             } else {
-                throw new FailureException("There is no URI to a File!");
+                logger.severe("There is no URI to a File!");
+                this.sceneFilePath = null;
             }
         } catch (final Exception ex) {
             UtilsLogging.logThrowable(ex, "MainActivity#onActivityResult");
@@ -684,8 +684,8 @@ public final class MainActivity extends Activity {
         builderConfigSamples.setSamplesLight(Utils.getValueFromPicker(this.pickerSamplesLight));
         builder.setConfigSamples(builderConfigSamples.build());
         final ConfigResolution.Builder builderConfigRes = ConfigResolution.Builder.Companion.create();
-        builderConfigRes.setWidth(resolution.getLeft());
-        builderConfigRes.setHeight(resolution.getRight());
+        builderConfigRes.setWidth(resolution.getFirst());
+        builderConfigRes.setHeight(resolution.getSecond());
         builder.setConfigResolution(builderConfigRes.build());
         final int startOfExtension = scenePath.lastIndexOf('.');
         final String filePathWithoutExtension;
@@ -719,7 +719,7 @@ public final class MainActivity extends Activity {
         intent.putExtra(Intent.EXTRA_TITLE, "Select an OBJ file to load.");
         intent.setType("*" + ConstantsUI.FILE_SEPARATOR + "*");
         intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_PREFIX_URI_PERMISSION | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         }

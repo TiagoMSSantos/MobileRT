@@ -238,7 +238,10 @@ namespace MobileRT {
     void checkSystemError(const char *const message) {
         LOG_DEBUG("Called checkSystemError: ", message);
 
-        if (errno != 0 && errno != EWOULDBLOCK) {// if there is an error
+        // Ignore the following errors, because they are set by some Android C++ functions:
+        // * Invalid argument
+        // * Resource unavailable, try again
+        if (errno != 0 && errno != EWOULDBLOCK && errno != EINVAL) {// if there is an error
             ::std::setlocale(LC_ALL, "en_US.UTF-8");
             const ErrorType currentError {getErrorCode()};
             LOG_DEBUG("errorCode: ", currentError.codeText);

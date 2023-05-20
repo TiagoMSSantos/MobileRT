@@ -411,6 +411,8 @@ public class MainRendererTest {
                 throw new FailureException(ex);
             }
             mainRenderer.setBitmap(ConfigResolution.Builder.Companion.create().build(), ConfigResolution.Builder.Companion.create().build(), true);
+            // Set number of threads to 1, so the 'onDraw' method tries to render the scene, which the tests expect.
+            mainRenderer.resetStats(1, ConfigSamples.Builder.Companion.create().build(), 0, 0);
         }
         return mainRenderer;
     }

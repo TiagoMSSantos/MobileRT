@@ -51,7 +51,7 @@ env:
   GITHUB_STEP_TIMEOUT_SMALL: 4
   GITHUB_STEP_TIMEOUT_MEDIUM: 10
   GITHUB_STEP_TIMEOUT_LONG: 30
-  GITHUB_STEP_TIMEOUT_VERY_LONG: 60
+  GITHUB_STEP_TIMEOUT_VERY_LONG: 40
 
 jobs:
   Matrix:
@@ -426,7 +426,7 @@ jobs:
         force-avd-creation: true
         disable-linux-hw-accel: auto
         enable-hw-keyboard: false
-        emulator-boot-timeout: 360 # 6 min timeout since it can take a little more than 5 min to boot
+        emulator-boot-timeout: 900 # It can take more than 5 min to boot, and the tests can take more than 17 min to finish.
         script: |
           sh scripts/run_tests_android.sh -t ${{ matrix.type }} -r all -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -k false -f "\"x86\",\"x86_64\"";
 

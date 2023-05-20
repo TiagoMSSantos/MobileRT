@@ -156,7 +156,9 @@ class RenderTask private constructor(
             requestRender.run()
             publishProgressAsync()
             if (currentState != State.BUSY) {
+                logger.info("Stopping RenderTask")
                 executorService.shutdown()
+                logger.info("Stopped RenderTask")
             }
             logger.info(ConstantsMethods.TIMER + ConstantsMethods.FINISHED)
         }

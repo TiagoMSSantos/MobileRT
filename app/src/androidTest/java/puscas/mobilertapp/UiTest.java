@@ -142,7 +142,7 @@ public final class UiTest extends AbstractTest {
      * Tests changing all the {@link NumberPicker} and clicking the render
      * {@link Button} few times.
      */
-    @Test(timeout = 20L * 60L * 1000L)
+    @Test(timeout = 2L * 60L * 1000L)
     public void testUI() {
         UtilsT.assertRenderButtonText(Constants.RENDER);
 
@@ -154,8 +154,10 @@ public final class UiTest extends AbstractTest {
 
     /**
      * Tests clicking the render {@link Button} many times without preview.
+     *
+     * @implNote This test can take more than 2 min in CI.
      */
-    @Test(timeout = 20L * 60L * 1000L)
+    @Test(timeout = 3L * 60L * 1000L)
     public void testClickRenderButtonManyTimesWithoutPreview() {
         clickPreviewCheckBox(false);
 
@@ -165,8 +167,10 @@ public final class UiTest extends AbstractTest {
 
     /**
      * Tests clicking the render {@link Button} many times with preview.
+     *
+     * @implNote This test can take more than 2 min in CI.
      */
-    @Test(timeout = 30L * 60L * 1000L)
+    @Test(timeout = 3L * 60L * 1000L)
     public void testClickRenderButtonManyTimesWithPreview() {
         clickPreviewCheckBox(false);
         clickPreviewCheckBox(true);
@@ -197,7 +201,7 @@ public final class UiTest extends AbstractTest {
      * @param numCores    The number of CPU cores in the system.
      */
     private void assertClickRenderButton(final int repetitions, final int numCores) {
-        UtilsContextT.resetPickerValues(this.activity, Scene.CORNELL2.ordinal());
+        UtilsContextT.resetPickerValues(this.activity, Scene.CORNELL2.ordinal(), Accelerator.BVH, 99, 99);
 
         final List<String> buttonTextList = ImmutableList.of(Constants.STOP, Constants.RENDER);
         IntStreams.range(0, buttonTextList.size() * repetitions).forEach(currentIndex -> {

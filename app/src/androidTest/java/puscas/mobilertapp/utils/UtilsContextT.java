@@ -20,8 +20,10 @@ import puscas.mobilertapp.DrawView;
 import puscas.mobilertapp.MainActivity;
 import puscas.mobilertapp.MainRenderer;
 import puscas.mobilertapp.R;
+import puscas.mobilertapp.constants.Accelerator;
 import puscas.mobilertapp.constants.Constants;
 import puscas.mobilertapp.constants.ConstantsUI;
+import puscas.mobilertapp.constants.Shader;
 import puscas.mobilertapp.constants.State;
 
 /**
@@ -85,10 +87,13 @@ public final class UtilsContextT {
      * Helper method that resets the {@link android.widget.NumberPicker}s values
      * in the UI to some predefined values.
      *
-     * @param context The {@link Context} of the application.
-     * @param scene   The id of the scene to set.
+     * @param context     The {@link Context} of the application.
+     * @param scene       The id of the scene to set.
+     * @param accelerator The {@link Accelerator} to use.
+     * @param spp         The number of samples per pixel. Acceptable range is: [1-99].
+     * @param spl         The number of samples per light. Acceptable range is: [1-100].
      */
-    public static void resetPickerValues(@NonNull final Context context, final int scene) {
+    public static void resetPickerValues(@NonNull final Context context, final int scene, final Accelerator accelerator, final int spp, final int spl) {
         logger.info("resetPickerValues");
 
         final int numCores = UtilsContext.getNumOfCores(context);
@@ -96,10 +101,10 @@ public final class UtilsContextT {
         UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SCENE, R.id.pickerScene, scene);
         UtilsPickerT.changePickerValue(ConstantsUI.PICKER_THREADS, R.id.pickerThreads, numCores);
         UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SIZE, R.id.pickerSize, 8);
-        UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SAMPLES_PIXEL, R.id.pickerSamplesPixel, 1);
-        UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SAMPLES_LIGHT, R.id.pickerSamplesLight, 1);
-        UtilsPickerT.changePickerValue(ConstantsUI.PICKER_ACCELERATOR, R.id.pickerAccelerator, 3);
-        UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SHADER, R.id.pickerShader, 2);
+        UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SAMPLES_PIXEL, R.id.pickerSamplesPixel, spp);
+        UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SAMPLES_LIGHT, R.id.pickerSamplesLight, spl);
+        UtilsPickerT.changePickerValue(ConstantsUI.PICKER_ACCELERATOR, R.id.pickerAccelerator, accelerator.ordinal());
+        UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SHADER, R.id.pickerShader, Shader.PATH_TRACING.ordinal());
     }
 
 }

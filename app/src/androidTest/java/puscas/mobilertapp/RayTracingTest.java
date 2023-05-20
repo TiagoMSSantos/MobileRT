@@ -85,7 +85,7 @@ public final class RayTracingTest extends AbstractTest {
      *
      * @throws TimeoutException If it couldn't render the whole scene in time.
      */
-    @Test(timeout = 2L * 60L * 1000L)
+    @Test(timeout = 60L * 1000L)
     public void testRenderInvalidScene() throws TimeoutException {
         final int numCores = UtilsContext.getNumOfCores(this.activity);
 

@@ -313,8 +313,12 @@ _killProcessUsingFile() {
     retry=$(( retry + 1 ));
     echo "processes_using_file: '${processes_using_file}'";
     process_id_using_file=$(echo "${processes_using_file}" | cut -d ' ' -f 2 | head -1);
-    echo "Going to kill this process: '${process_id_using_file}'";
-    kill -KILL "${process_id_using_file}" || true;
+    if ps aux "${process_id_using_file}" | grep -iq "android-studio"; then
+      echo "Not killing process: '${process_id_using_file}' because it is the Android Studio";
+    else
+      echo "Going to kill this process: '${process_id_using_file}'";
+      kill -KILL "${process_id_using_file}" || true;
+    fi
     processes_using_file=$(lsof "${1}" | tail -n +2 | tr -s ' ' || true);
   done
 }
@@ -356,8 +360,11 @@ clearOldBuildFiles() {
 }
 
 # Create the reports' folders.
+# Also delete any logs previously created.
 createReportsFolders() {
   echo 'Creating reports folders.';
+  rm -rf build/reports;
+  rm -rf app/build/reports;
   mkdir -p build/reports;
   mkdir -p app/build/reports;
   echo 'Created reports folders.';

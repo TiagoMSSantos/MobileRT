@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2023-05-14T09:21:54.010Z",
+    "detectionDate": "2023-05-21T15:23:58.003Z",
     "formats": {
       "java": {
         "sources": {
@@ -402,7 +402,7 @@
           },
           "app/src/main/java/puscas/mobilertapp/utils/Utils.java": {
             "lines": 180,
-            "tokens": 1266,
+            "tokens": 1260,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -617,8 +617,8 @@
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/utils/UtilsT.java": {
-            "lines": 235,
-            "tokens": 1625,
+            "lines": 234,
+            "tokens": 1613,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -641,8 +641,8 @@
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/utils/UtilsContextT.java": {
-            "lines": 104,
-            "tokens": 891,
+            "lines": 109,
+            "tokens": 944,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -692,11 +692,11 @@
             "lines": 234,
             "tokens": 2982,
             "sources": 1,
-            "clones": 16,
-            "duplicatedLines": 449,
-            "duplicatedTokens": 6469,
-            "percentage": 191.88,
-            "percentageTokens": 216.93,
+            "clones": 17,
+            "duplicatedLines": 480,
+            "duplicatedTokens": 6955,
+            "percentage": 205.13,
+            "percentageTokens": 233.23,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -761,14 +761,14 @@
             "newClones": 0
           },
           "app/src/test/java/puscas/mobilertapp/MainRendererTest.java": {
-            "lines": 416,
-            "tokens": 3698,
+            "lines": 418,
+            "tokens": 3731,
             "sources": 1,
             "clones": 19,
             "duplicatedLines": 177,
             "duplicatedTokens": 1874,
-            "percentage": 42.55,
-            "percentageTokens": 50.68,
+            "percentage": 42.34,
+            "percentageTokens": 50.23,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -785,14 +785,14 @@
             "newClones": 0
           },
           "app/src/test/java/puscas/mobilertapp/DrawViewTest.java": {
-            "lines": 254,
-            "tokens": 2087,
+            "lines": 258,
+            "tokens": 2131,
             "sources": 1,
             "clones": 9,
             "duplicatedLines": 54,
             "duplicatedTokens": 703,
-            "percentage": 21.26,
-            "percentageTokens": 33.68,
+            "percentage": 20.93,
+            "percentageTokens": 32.99,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -845,32 +845,32 @@
             "newClones": 0
           },
           "app/src/main/java/puscas/mobilertapp/MainRenderer.java": {
-            "lines": 991,
-            "tokens": 6310,
+            "lines": 994,
+            "tokens": 6329,
             "sources": 1,
             "clones": 2,
             "duplicatedLines": 28,
             "duplicatedTokens": 316,
-            "percentage": 2.83,
-            "percentageTokens": 5.01,
+            "percentage": 2.82,
+            "percentageTokens": 4.99,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "app/src/main/java/puscas/mobilertapp/MainActivity.java": {
             "lines": 943,
-            "tokens": 7480,
+            "tokens": 7472,
             "sources": 1,
-            "clones": 1,
-            "duplicatedLines": 5,
-            "duplicatedTokens": 71,
-            "percentage": 0.53,
-            "percentageTokens": 0.95,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "app/src/main/java/puscas/mobilertapp/DrawView.java": {
-            "lines": 428,
-            "tokens": 2524,
+            "lines": 443,
+            "tokens": 2726,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -905,8 +905,8 @@
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/ViewActionButton.java": {
-            "lines": 104,
-            "tokens": 708,
+            "lines": 105,
+            "tokens": 723,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -917,38 +917,38 @@
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/UiTest.java": {
-            "lines": 262,
-            "tokens": 2134,
+            "lines": 266,
+            "tokens": 2145,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 7,
             "duplicatedTokens": 66,
-            "percentage": 2.67,
-            "percentageTokens": 3.09,
+            "percentage": 2.63,
+            "percentageTokens": 3.08,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/RayTracingTest.java": {
             "lines": 225,
-            "tokens": 2316,
+            "tokens": 2311,
             "sources": 1,
-            "clones": 6,
-            "duplicatedLines": 115,
-            "duplicatedTokens": 1053,
-            "percentage": 51.11,
-            "percentageTokens": 45.47,
+            "clones": 8,
+            "duplicatedLines": 137,
+            "duplicatedTokens": 1230,
+            "percentage": 60.89,
+            "percentageTokens": 53.22,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/PreviewTest.java": {
-            "lines": 73,
-            "tokens": 471,
+            "lines": 120,
+            "tokens": 1112,
             "sources": 1,
-            "clones": 0,
-            "duplicatedLines": 0,
-            "duplicatedTokens": 0,
-            "percentage": 0,
-            "percentageTokens": 0,
+            "clones": 5,
+            "duplicatedLines": 73,
+            "duplicatedTokens": 805,
+            "percentage": 60.83,
+            "percentageTokens": 72.39,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -977,27 +977,27 @@
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/AbstractTest.java": {
-            "lines": 226,
-            "tokens": 1788,
+            "lines": 228,
+            "tokens": 1802,
             "sources": 1,
-            "clones": 2,
-            "duplicatedLines": 12,
-            "duplicatedTokens": 137,
-            "percentage": 5.31,
-            "percentageTokens": 7.66,
+            "clones": 1,
+            "duplicatedLines": 7,
+            "duplicatedTokens": 66,
+            "percentage": 3.07,
+            "percentageTokens": 3.66,
             "newDuplicatedLines": 0,
             "newClones": 0
           }
         },
         "total": {
-          "lines": 9364,
-          "tokens": 66237,
+          "lines": 9446,
+          "tokens": 67238,
           "sources": 82,
-          "clones": 61,
-          "duplicatedLines": 766,
-          "duplicatedTokens": 8608,
-          "percentage": 8.18,
-          "percentageTokens": 13,
+          "clones": 64,
+          "duplicatedLines": 824,
+          "duplicatedTokens": 9271,
+          "percentage": 8.72,
+          "percentageTokens": 13.79,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -1077,8 +1077,8 @@
             "newClones": 0
           },
           "app/src/main/java/puscas/mobilertapp/RenderTask.kt": {
-            "lines": 313,
-            "tokens": 1894,
+            "lines": 315,
+            "tokens": 1910,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -1090,8 +1090,8 @@
           }
         },
         "total": {
-          "lines": 644,
-          "tokens": 3648,
+          "lines": 646,
+          "tokens": 3664,
           "sources": 7,
           "clones": 0,
           "duplicatedLines": 0,
@@ -1213,8 +1213,8 @@
             "newClones": 0
           },
           "app/MobileRT/Utils/Utils.cpp": {
-            "lines": 274,
-            "tokens": 2084,
+            "lines": 277,
+            "tokens": 2101,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -1681,8 +1681,8 @@
             "newClones": 0
           },
           "app/MobileRT/Renderer.cpp": {
-            "lines": 176,
-            "tokens": 1803,
+            "lines": 193,
+            "tokens": 2027,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -1778,14 +1778,14 @@
           }
         },
         "total": {
-          "lines": 5545,
-          "tokens": 52992,
+          "lines": 5565,
+          "tokens": 53233,
           "sources": 56,
           "clones": 28,
           "duplicatedLines": 268,
           "duplicatedTokens": 4004,
-          "percentage": 4.83,
-          "percentageTokens": 7.56,
+          "percentage": 4.82,
+          "percentageTokens": 7.52,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -1916,11 +1916,11 @@
             "lines": 282,
             "tokens": 1889,
             "sources": 1,
-            "clones": 8,
-            "duplicatedLines": 144,
-            "duplicatedTokens": 954,
-            "percentage": 51.06,
-            "percentageTokens": 50.5,
+            "clones": 9,
+            "duplicatedLines": 169,
+            "duplicatedTokens": 1083,
+            "percentage": 59.93,
+            "percentageTokens": 57.33,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -1937,14 +1937,14 @@
             "newClones": 0
           },
           ".github/workflows/docker.yml": {
-            "lines": 178,
-            "tokens": 973,
+            "lines": 177,
+            "tokens": 967,
             "sources": 1,
-            "clones": 0,
-            "duplicatedLines": 0,
-            "duplicatedTokens": 0,
-            "percentage": 0,
-            "percentageTokens": 0,
+            "clones": 1,
+            "duplicatedLines": 21,
+            "duplicatedTokens": 109,
+            "percentage": 11.86,
+            "percentageTokens": 11.27,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -1953,10 +1953,10 @@
             "tokens": 1142,
             "sources": 1,
             "clones": 4,
-            "duplicatedLines": 111,
-            "duplicatedTokens": 640,
-            "percentage": 57.81,
-            "percentageTokens": 56.04,
+            "duplicatedLines": 114,
+            "duplicatedTokens": 654,
+            "percentage": 59.38,
+            "percentageTokens": 57.27,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -1965,10 +1965,10 @@
             "tokens": 720,
             "sources": 1,
             "clones": 3,
-            "duplicatedLines": 77,
-            "duplicatedTokens": 484,
-            "percentage": 74.04,
-            "percentageTokens": 67.22,
+            "duplicatedLines": 78,
+            "duplicatedTokens": 490,
+            "percentage": 75,
+            "percentageTokens": 68.06,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2070,14 +2070,14 @@
           }
         },
         "total": {
-          "lines": 2591,
-          "tokens": 17082,
+          "lines": 2590,
+          "tokens": 17076,
           "sources": 23,
-          "clones": 16,
-          "duplicatedLines": 389,
-          "duplicatedTokens": 2552,
-          "percentage": 15.01,
-          "percentageTokens": 14.94,
+          "clones": 17,
+          "duplicatedLines": 414,
+          "duplicatedTokens": 2681,
+          "percentage": 15.98,
+          "percentageTokens": 15.7,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2110,13 +2110,13 @@
           },
           "app/Unit_Testing/CMakeLists.txt": {
             "lines": 91,
-            "tokens": 564,
+            "tokens": 566,
             "sources": 1,
-            "clones": 1,
-            "duplicatedLines": 23,
-            "duplicatedTokens": 92,
-            "percentage": 25.27,
-            "percentageTokens": 16.31,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2148,11 +2148,11 @@
             "lines": 56,
             "tokens": 329,
             "sources": 1,
-            "clones": 1,
-            "duplicatedLines": 23,
-            "duplicatedTokens": 92,
-            "percentage": 41.07,
-            "percentageTokens": 27.96,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2243,13 +2243,13 @@
         },
         "total": {
           "lines": 2128,
-          "tokens": 20953,
+          "tokens": 20955,
           "sources": 13,
-          "clones": 1,
-          "duplicatedLines": 23,
-          "duplicatedTokens": 92,
-          "percentage": 1.08,
-          "percentageTokens": 0.44,
+          "clones": 0,
+          "duplicatedLines": 0,
+          "duplicatedTokens": 0,
+          "percentage": 0,
+          "percentageTokens": 0,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2885,8 +2885,8 @@
             "newClones": 0
           },
           "scripts/run_tests_android.sh": {
-            "lines": 596,
-            "tokens": 4237,
+            "lines": 583,
+            "tokens": 4121,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2933,8 +2933,8 @@
             "newClones": 0
           },
           "scripts/helper_functions.sh": {
-            "lines": 461,
-            "tokens": 3151,
+            "lines": 468,
+            "tokens": 3205,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2994,14 +2994,14 @@
           }
         },
         "total": {
-          "lines": 3395,
-          "tokens": 20848,
+          "lines": 3389,
+          "tokens": 20786,
           "sources": 13,
           "clones": 11,
           "duplicatedLines": 260,
           "duplicatedTokens": 1172,
-          "percentage": 7.66,
-          "percentageTokens": 5.62,
+          "percentage": 7.67,
+          "percentageTokens": 5.64,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3128,14 +3128,14 @@
       }
     },
     "total": {
-      "lines": 27101,
-      "tokens": 205849,
+      "lines": 27198,
+      "tokens": 207041,
       "sources": 247,
-      "clones": 119,
-      "duplicatedLines": 1729,
-      "duplicatedTokens": 16655,
-      "percentage": 6.38,
-      "percentageTokens": 8.09,
+      "clones": 122,
+      "duplicatedLines": 1789,
+      "duplicatedTokens": 17355,
+      "percentage": 6.58,
+      "percentageTokens": 8.38,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -4876,32 +4876,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/DrawViewTest.java",
-        "start": 85,
-        "end": 92,
+        "start": 86,
+        "end": 93,
         "startLoc": {
-          "line": 85,
+          "line": 86,
           "column": 23,
-          "position": 608
+          "position": 615
         },
         "endLoc": {
-          "line": 92,
+          "line": 93,
           "column": 8,
-          "position": 701
+          "position": 708
         }
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/DrawViewTest.java",
-        "start": 61,
-        "end": 68,
+        "start": 62,
+        "end": 69,
         "startLoc": {
-          "line": 61,
+          "line": 62,
           "column": 16,
-          "position": 414
+          "position": 421
         },
         "endLoc": {
-          "line": 68,
+          "line": 69,
           "column": 9,
-          "position": 507
+          "position": 514
         }
       }
     },
@@ -4912,104 +4912,104 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/DrawViewTest.java",
-        "start": 110,
-        "end": 116,
+        "start": 111,
+        "end": 117,
         "startLoc": {
-          "line": 110,
+          "line": 111,
           "column": 30,
-          "position": 812
+          "position": 819
         },
         "endLoc": {
-          "line": 116,
+          "line": 117,
           "column": 9,
-          "position": 886
+          "position": 893
         }
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/DrawViewTest.java",
-        "start": 61,
-        "end": 67,
+        "start": 62,
+        "end": 68,
         "startLoc": {
-          "line": 61,
+          "line": 62,
           "column": 16,
-          "position": 414
+          "position": 421
         },
         "endLoc": {
-          "line": 67,
+          "line": 68,
           "column": 15,
-          "position": 488
+          "position": 495
         }
       }
     },
     {
       "format": "java",
       "lines": 6,
-      "fragment": "xception {\n        MemberModifier.suppress(MemberModifier.method(MainActivity.class, \"resetErrno\"));\n        MemberModifier.suppress(MemberModifier.method(MainRenderer.class, \"setBitmap\"));\n\n        final DrawView drawView = PowerMockito.spy(new DrawView(new MainActivity()));\n        fin",
+      "fragment": " TimeoutException {\n        MemberModifier.suppress(MemberModifier.method(MainActivity.class, \"resetErrno\"));\n        MemberModifier.suppress(MemberModifier.method(MainRenderer.class, \"setBitmap\"));\n\n        final DrawView drawView = PowerMockito.spy(new DrawView(new MainActivity()));\n  ",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/DrawViewTest.java",
-        "start": 210,
-        "end": 215,
+        "start": 213,
+        "end": 218,
         "startLoc": {
-          "line": 210,
+          "line": 213,
           "column": 2,
-          "position": 1691
+          "position": 1720
         },
         "endLoc": {
-          "line": 215,
+          "line": 218,
           "column": 7,
-          "position": 1761
+          "position": 1790
         }
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/DrawViewTest.java",
-        "start": 61,
-        "end": 67,
+        "start": 62,
+        "end": 68,
         "startLoc": {
-          "line": 61,
+          "line": 62,
           "column": 2,
-          "position": 417
+          "position": 424
         },
         "endLoc": {
-          "line": 67,
+          "line": 68,
           "column": 15,
-          "position": 488
+          "position": 495
         }
       }
     },
     {
       "format": "java",
       "lines": 6,
-      "fragment": "WindowFocusChanged() {\n        MemberModifier.suppress(MemberModifier.method(MainActivity.class, \"resetErrno\"));\n        MemberModifier.suppress(MemberModifier.method(MainRenderer.class, \"setBitmap\"));\n\n        final DrawView drawView = PowerMockito.spy(new DrawView(new MainActivity())",
+      "fragment": "id testOnWindowFocusChanged() {\n        MemberModifier.suppress(MemberModifier.method(MainActivity.class, \"resetErrno\"));\n        MemberModifier.suppress(MemberModifier.method(MainRenderer.class, \"setBitmap\"));\n\n        final DrawView drawView = PowerMockito.spy(new DrawView(new MainAc",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/DrawViewTest.java",
-        "start": 232,
-        "end": 237,
+        "start": 236,
+        "end": 241,
         "startLoc": {
-          "line": 232,
+          "line": 236,
           "column": 25,
-          "position": 1869
+          "position": 1913
         },
         "endLoc": {
-          "line": 237,
+          "line": 241,
           "column": 8,
-          "position": 1940
+          "position": 1984
         }
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/DrawViewTest.java",
-        "start": 61,
-        "end": 67,
+        "start": 62,
+        "end": 68,
         "startLoc": {
-          "line": 61,
+          "line": 62,
           "column": 16,
-          "position": 414
+          "position": 421
         },
         "endLoc": {
-          "line": 67,
+          "line": 68,
           "column": 6,
-          "position": 486
+          "position": 493
         }
       }
     },
@@ -5133,12 +5133,12 @@
         "startLoc": {
           "line": 114,
           "column": 16,
-          "position": 1009
+          "position": 1004
         },
         "endLoc": {
           "line": 129,
           "column": 8,
-          "position": 1083
+          "position": 1078
         }
       },
       "secondFile": {
@@ -5148,12 +5148,12 @@
         "startLoc": {
           "line": 96,
           "column": 10,
-          "position": 840
+          "position": 835
         },
         "endLoc": {
           "line": 107,
           "column": 8,
-          "position": 914
+          "position": 909
         }
       }
     },
@@ -5169,12 +5169,12 @@
         "startLoc": {
           "line": 131,
           "column": 38,
-          "position": 1112
+          "position": 1107
         },
         "endLoc": {
           "line": 174,
           "column": 8,
-          "position": 1629
+          "position": 1624
         }
       },
       "secondFile": {
@@ -5205,12 +5205,12 @@
         "startLoc": {
           "line": 176,
           "column": 29,
-          "position": 1658
+          "position": 1653
         },
         "endLoc": {
           "line": 191,
           "column": 11,
-          "position": 1842
+          "position": 1837
         }
       },
       "secondFile": {
@@ -5241,12 +5241,12 @@
         "startLoc": {
           "line": 203,
           "column": 44,
-          "position": 2115
+          "position": 2110
         },
         "endLoc": {
           "line": 217,
           "column": 8,
-          "position": 2217
+          "position": 2212
         }
       },
       "secondFile": {
@@ -5262,6 +5262,150 @@
           "line": 119,
           "column": 8,
           "position": 1345
+        }
+      }
+    },
+    {
+      "format": "java",
+      "lines": 14,
+      "fragment": "package puscas.mobilertapp;\n\nimport android.app.Activity;\nimport android.app.Instrumentation;\nimport android.content.ClipData;\nimport android.content.ClipDescription;\nimport android.content.Intent;\nimport android.net.Uri;\nimport android.os.Build;\n\nimport androidx.test.espresso.intent.Intents;\nimport androidx.test.espresso.intent.matcher.IntentMatchers;\n\nimport com",
+      "tokens": 0,
+      "firstFile": {
+        "name": "app/src/androidTest/java/puscas/mobilertapp/PreviewTest.java",
+        "start": 1,
+        "end": 14,
+        "startLoc": {
+          "line": 1,
+          "column": 1,
+          "position": 0
+        },
+        "endLoc": {
+          "line": 14,
+          "column": 4,
+          "position": 103
+        }
+      },
+      "secondFile": {
+        "name": "app/src/androidTest/java/puscas/mobilertapp/RayTracingTest.java",
+        "start": 1,
+        "end": 14,
+        "startLoc": {
+          "line": 1,
+          "column": 1,
+          "position": 0
+        },
+        "endLoc": {
+          "line": 14,
+          "column": 4,
+          "position": 105
+        }
+      }
+    },
+    {
+      "format": "java",
+      "lines": 10,
+      "fragment": ";\nimport org.junit.Test;\nimport org.junit.runners.MethodSorters;\n\nimport java.io.File;\nimport java.util.concurrent.TimeoutException;\nimport java.util.logging.Logger;\n\nimport puscas.mobilertapp.constants.Accelerator;\nimport puscas.mobilertapp.constants.Constants",
+      "tokens": 0,
+      "firstFile": {
+        "name": "app/src/androidTest/java/puscas/mobilertapp/PreviewTest.java",
+        "start": 16,
+        "end": 25,
+        "startLoc": {
+          "line": 16,
+          "column": 15,
+          "position": 122
+        },
+        "endLoc": {
+          "line": 25,
+          "column": 10,
+          "position": 196
+        }
+      },
+      "secondFile": {
+        "name": "app/src/androidTest/java/puscas/mobilertapp/RayTracingTest.java",
+        "start": 17,
+        "end": 26,
+        "startLoc": {
+          "line": 17,
+          "column": 7,
+          "position": 135
+        },
+        "endLoc": {
+          "line": 26,
+          "column": 12,
+          "position": 209
+        }
+      }
+    },
+    {
+      "format": "java",
+      "lines": 32,
+      "fragment": ");\n\n        // Mock the reply as the external file manager application, to select an OBJ file.\n        final Intent resultData;\n        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {\n            resultData = new Intent(Intent.ACTION_GET_CONTENT);\n        } else {\n            resultData = new Intent(Intent.ACTION_OPEN_DOCUMENT);\n        }\n        resultData.addCategory(Intent.CATEGORY_OPENABLE);\n        resultData.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_PREFIX_URI_PERMISSION | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);\n        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {\n            resultData.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);\n        }\n        final String sdCardPath = UtilsContext.getSdCardPath(this.activity);\n        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {\n            final Uri objFile = Uri.fromFile(new File(sdCardPath + \"/MobileRT/WavefrontOBJs/teapot/teapot.obj\"));\n            final Uri mtlFile = Uri.fromFile(new File(sdCardPath + \"/MobileRT/WavefrontOBJs/teapot/teapot.mtl\"));\n            final Uri camFile = Uri.fromFile(new File(sdCardPath + \"/MobileRT/WavefrontOBJs/teapot/teapot.cam\"));\n            final Uri textureFile = Uri.fromFile(new File(sdCardPath + \"/MobileRT/WavefrontOBJs/teapot/default.png\"));\n            final ClipData clipData = new ClipData(new ClipDescription(\"Scene\", new String[]{\"*\" + ConstantsUI.FILE_SEPARATOR + \"*\"}), new ClipData.Item(objFile));\n            clipData.addItem(new ClipData.Item(mtlFile));\n            clipData.addItem(new ClipData.Item(camFile));\n            clipData.addItem(new ClipData.Item(textureFile));\n            resultData.setClipData(clipData);\n        } else {\n            resultData.setData(Uri.fromFile(new File(sdCardPath + \"/MobileRT/WavefrontOBJs/teapot/teapot.obj\")));\n        }\n        final Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);\n        Intents.intending(IntentMatchers.anyIntent()).respondWith(result);\n\n        UtilsContextT",
+      "tokens": 0,
+      "firstFile": {
+        "name": "app/src/androidTest/java/puscas/mobilertapp/PreviewTest.java",
+        "start": 52,
+        "end": 83,
+        "startLoc": {
+          "line": 52,
+          "column": 25,
+          "position": 364
+        },
+        "endLoc": {
+          "line": 83,
+          "column": 14,
+          "position": 850
+        }
+      },
+      "secondFile": {
+        "name": "app/src/androidTest/java/puscas/mobilertapp/engine/ShaderTest.java",
+        "start": 42,
+        "end": 208,
+        "startLoc": {
+          "line": 42,
+          "column": 9,
+          "position": 307
+        },
+        "endLoc": {
+          "line": 208,
+          "column": 18,
+          "position": 2164
+        }
+      }
+    },
+    {
+      "format": "java",
+      "lines": 11,
+      "fragment": ".ordinal(), Accelerator.NAIVE, 99, 99);\n\n        UtilsT.startRendering(false);\n        UtilsT.stopRendering();\n\n        UtilsContextT.waitUntilRenderingDone(this.activity);\n\n        UtilsT.assertRenderButtonText(Constants.RENDER);\n\n        UtilsT.testStateAndBitmap(false);\n        logger",
+      "tokens": 0,
+      "firstFile": {
+        "name": "app/src/androidTest/java/puscas/mobilertapp/PreviewTest.java",
+        "start": 108,
+        "end": 118,
+        "startLoc": {
+          "line": 108,
+          "column": 8,
+          "position": 1029
+        },
+        "endLoc": {
+          "line": 118,
+          "column": 7,
+          "position": 1100
+        }
+      },
+      "secondFile": {
+        "name": "app/src/androidTest/java/puscas/mobilertapp/PreviewTest.java",
+        "start": 83,
+        "end": 93,
+        "startLoc": {
+          "line": 83,
+          "column": 4,
+          "position": 862
+        },
+        "endLoc": {
+          "line": 93,
+          "column": 8,
+          "position": 933
         }
       }
     },
@@ -5298,42 +5442,6 @@
           "line": 32,
           "column": 13,
           "position": 265
-        }
-      }
-    },
-    {
-      "format": "java",
-      "lines": 6,
-      "fragment": "IVITY_NEW_TASK);\n        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_PREFIX_URI_PERMISSION | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);\n        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {\n            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);\n        }\n",
-      "tokens": 0,
-      "firstFile": {
-        "name": "app/src/androidTest/java/puscas/mobilertapp/AbstractTest.java",
-        "start": 96,
-        "end": 101,
-        "startLoc": {
-          "line": 96,
-          "column": 23,
-          "position": 654
-        },
-        "endLoc": {
-          "line": 101,
-          "column": 7,
-          "position": 725
-        }
-      },
-      "secondFile": {
-        "name": "app/src/main/java/puscas/mobilertapp/MainActivity.java",
-        "start": 721,
-        "end": 726,
-        "startLoc": {
-          "line": 721,
-          "column": 18,
-          "position": 5480
-        },
-        "endLoc": {
-          "line": 726,
-          "column": 4,
-          "position": 5551
         }
       }
     },
@@ -6562,42 +6670,6 @@
       }
     },
     {
-      "format": "markdown",
-      "lines": 24,
-      "fragment": "###########################\n\n\n###############################################################################\n# Set headers\n###############################################################################\nmessage( STATUS \"Adding MobileRT and third party headers.\" )\ntarget_include_directories( ${PROJECT_NAME} SYSTEM PUBLIC\n  \"${THIRD_PARTY_HEADERS}\" )\ntarget_include_directories( ${PROJECT_NAME} PRIVATE \"${MOBILE_R",
-      "tokens": 0,
-      "firstFile": {
-        "name": "app/Components/CMakeLists.txt",
-        "start": 31,
-        "end": 54,
-        "startLoc": {
-          "line": 31,
-          "column": 2,
-          "position": 186
-        },
-        "endLoc": {
-          "line": 54,
-          "column": 9,
-          "position": 278
-        }
-      },
-      "secondFile": {
-        "name": "app/Unit_Testing/CMakeLists.txt",
-        "start": 58,
-        "end": 70,
-        "startLoc": {
-          "line": 58,
-          "column": 2,
-          "position": 303
-        },
-        "endLoc": {
-          "line": 70,
-          "column": 4,
-          "position": 384
-        }
-      }
-    },
-    {
       "format": "yaml",
       "lines": 15,
       "fragment": "dir: '${{ github.workspace }}'\n        install-deps: 'true'\n        modules: ''\n        cache: 'true'\n        cache-key-prefix: '${{ runner.os }}'\n        setup-python: 'false'\n        set-env: 'true'\n        tools-only: 'false'\n        aqtversion: '==2.1.*'\n        py7zrversion: '==0.19.*'\n        extra: '--external 7z'\n\n    - name: Check Qt path installation.\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n      if: success() &&",
@@ -6671,32 +6743,32 @@
     },
     {
       "format": "yaml",
-      "lines": 20,
-      "fragment": "defaults:\n  run:\n    shell: sh\n    working-directory: .\n\nconcurrency:\n  group: ${{ github.workflow }} ${{ github.ref }}\n  cancel-in-progress: true\n\n# Default environment variables.\nenv:\n  GITHUB_STEP_TIMEOUT_SMALL: 4\n  GITHUB_STEP_TIMEOUT_MEDIUM: 10\n  GITHUB_STEP_TIMEOUT_LONG: 30\n\njobs:\n  Build:\n    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'\n\n    strategy",
+      "lines": 22,
+      "fragment": "- '!*gradle*'\n\ndefaults:\n  run:\n    shell: sh\n    working-directory: .\n\nconcurrency:\n  group: ${{ github.workflow }} ${{ github.ref }}\n  cancel-in-progress: true\n\n# Default environment variables.\nenv:\n  GITHUB_STEP_TIMEOUT_SMALL: 4\n  GITHUB_STEP_TIMEOUT_MEDIUM: 10\n  GITHUB_STEP_TIMEOUT_LONG: 30\n\njobs:\n  Build:\n    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'\n\n    strategy",
       "tokens": 0,
       "firstFile": {
-        "name": ".github/workflows/code-analysis.yml",
-        "start": 24,
-        "end": 43,
+        "name": ".github/workflows/docker.yml",
+        "start": 25,
+        "end": 46,
         "startLoc": {
-          "line": 24,
-          "column": 1,
-          "position": 81
+          "line": 25,
+          "column": 5,
+          "position": 112
         },
         "endLoc": {
-          "line": 43,
+          "line": 46,
           "column": 9,
-          "position": 185
+          "position": 221
         }
       },
       "secondFile": {
         "name": ".github/workflows/native.yml",
-        "start": 40,
+        "start": 38,
         "end": 59,
         "startLoc": {
-          "line": 40,
-          "column": 1,
-          "position": 184
+          "line": 38,
+          "column": 5,
+          "position": 179
         },
         "endLoc": {
           "line": 59,
@@ -6708,36 +6780,72 @@
     {
       "format": "yaml",
       "lines": 23,
-      "fragment": "defaults:\n  run:\n    shell: sh\n    working-directory: .\n\nconcurrency:\n  group: ${{ github.workflow }} ${{ github.ref }}\n  cancel-in-progress: true\n\n# Default environment variables.\nenv:\n  GITHUB_STEP_TIMEOUT_SMALL: 4\n  GITHUB_STEP_TIMEOUT_MEDIUM: 10\n  GITHUB_STEP_TIMEOUT_LONG: 30\n\njobs:\n  Build:\n    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'\n\n    strategy:\n      fail-fast: false\n      matrix:\n        include",
+      "fragment": "defaults:\n  run:\n    shell: sh\n    working-directory: .\n\nconcurrency:\n  group: ${{ github.workflow }} ${{ github.ref }}\n  cancel-in-progress: true\n\n# Default environment variables.\nenv:\n  GITHUB_STEP_TIMEOUT_SMALL: 4\n  GITHUB_STEP_TIMEOUT_MEDIUM: 10\n  GITHUB_STEP_TIMEOUT_LONG: 30\n\njobs:\n  Build:\n    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'\n\n    strategy:\n      fail-fast: false\n      matrix:\n        # Override automatic language detection by changing the below list",
       "tokens": 0,
       "firstFile": {
-        "name": ".github/workflows/android_repeatable.yml",
-        "start": 10,
-        "end": 32,
+        "name": ".github/workflows/code-analysis.yml",
+        "start": 24,
+        "end": 46,
         "startLoc": {
-          "line": 10,
+          "line": 24,
           "column": 1,
-          "position": 32
+          "position": 81
         },
         "endLoc": {
-          "line": 32,
-          "column": 8,
-          "position": 150
+          "line": 46,
+          "column": 67,
+          "position": 199
         }
       },
       "secondFile": {
         "name": ".github/workflows/native.yml",
         "start": 40,
-        "end": 46,
+        "end": 49,
         "startLoc": {
           "line": 40,
           "column": 1,
           "position": 184
         },
         "endLoc": {
-          "line": 46,
-          "column": 67,
-          "position": 199
+          "line": 49,
+          "column": 8,
+          "position": 235
+        }
+      }
+    },
+    {
+      "format": "yaml",
+      "lines": 24,
+      "fragment": "defaults:\n  run:\n    shell: sh\n    working-directory: .\n\nconcurrency:\n  group: ${{ github.workflow }} ${{ github.ref }}\n  cancel-in-progress: true\n\n# Default environment variables.\nenv:\n  GITHUB_STEP_TIMEOUT_SMALL: 4\n  GITHUB_STEP_TIMEOUT_MEDIUM: 10\n  GITHUB_STEP_TIMEOUT_LONG: 30\n\njobs:\n  Build:\n    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'\n\n    strategy:\n      fail-fast: false\n      matrix:\n        include:\n        - test",
+      "tokens": 0,
+      "firstFile": {
+        "name": ".github/workflows/android_repeatable.yml",
+        "start": 10,
+        "end": 33,
+        "startLoc": {
+          "line": 10,
+          "column": 1,
+          "position": 32
+        },
+        "endLoc": {
+          "line": 33,
+          "column": 5,
+          "position": 156
+        }
+      },
+      "secondFile": {
+        "name": ".github/workflows/native.yml",
+        "start": 40,
+        "end": 50,
+        "startLoc": {
+          "line": 40,
+          "column": 1,
+          "position": 184
+        },
+        "endLoc": {
+          "line": 50,
+          "column": 3,
+          "position": 241
         }
       }
     },
