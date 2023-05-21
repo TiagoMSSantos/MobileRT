@@ -85,11 +85,11 @@ typeWithCapitalLetter=$(capitalizeFirstletter "${type}");
 echo "type: '${type}'";
 
 clearAllBuildFiles() {
-  callCommandUntilSuccess rm -rf app/build/;
+  callCommandUntilSuccess rm -rf build/;
+  rm -rf app/build/; # Note that Android Studio might still be using this folder because some process might still be using a ".fuse_hidden<id>" file.
 
   if [ "${recompile}" = 'yes' ]; then
     callCommandUntilSuccess rm -rf app/.cxx/;
-    callCommandUntilSuccess rm -rf build/;
   fi
 }
 

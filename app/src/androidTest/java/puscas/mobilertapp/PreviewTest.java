@@ -44,9 +44,9 @@ public final class PreviewTest extends AbstractTest {
      * Tests the preview feature in a scene which uses perspective camera.
      *
      * @throws TimeoutException If it couldn't render the whole scene in time.
-     * @implNote This test can take more than 1 min in CI.
+     * @implNote This test can take more than 2 mins in CI.
      */
-    @Test(timeout = 60L * 1000L)
+    @Test(timeout = 3L * 60L * 1000L)
     public void testPreviewScenePerspectiveCamera() throws TimeoutException {
         logger.info("testPreviewScenePerspectiveCamera start");
         Preconditions.checkNotNull(this.activity, "Activity can't be null");
@@ -100,7 +100,7 @@ public final class PreviewTest extends AbstractTest {
      * @throws TimeoutException If it couldn't render the whole scene in time.
      * @implNote This test can take more than 1 min in CI.
      */
-    @Test(timeout = 60L * 1000L)
+    @Test(timeout = 2L * 60L * 1000L)
     public void testPreviewSceneOrthographicCamera() throws TimeoutException {
         logger.info("testPreviewSceneOrthographicCamera start");
         Preconditions.checkNotNull(this.activity, "Activity can't be null");

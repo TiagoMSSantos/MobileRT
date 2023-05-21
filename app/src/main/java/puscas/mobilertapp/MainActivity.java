@@ -377,6 +377,7 @@ public final class MainActivity extends Activity {
         super.onDestroy();
         logger.info(ConstantsMethods.ON_DESTROY);
 
+        MainActivity.resetErrno(); // Avoid 'bad file descriptor' error.
         this.drawView.onDetachedFromWindow();
         this.drawView.setVisibility(View.INVISIBLE);
 
@@ -798,6 +799,7 @@ public final class MainActivity extends Activity {
         this.drawView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
 
         renderButton.setOnLongClickListener((final View view) -> {
+            onDestroy(); // Necessary to stop any previous render before recreating the Activity.
             recreate();
             return false;
         });

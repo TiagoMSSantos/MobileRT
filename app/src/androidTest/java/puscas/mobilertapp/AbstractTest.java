@@ -1,7 +1,7 @@
 package puscas.mobilertapp;
 
 import android.Manifest;
-import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -114,35 +114,20 @@ public abstract class AbstractTest {
      * Grant permissions for the {@link MainActivity} to be able to load files from an external
      * storage.
      *
-     * @param activity The {@link Activity}.
+     * @param context The {@link Context} of the {@link MainActivity}.
      */
-    private static void grantPermissions(final Activity activity) {
+    private static void grantPermissions(final Context context) {
         logger.info("Granting permissions to the MainActivity to be able to read files from an external storage.");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             InstrumentationRegistry.getInstrumentation().getUiAutomation().grantRuntimePermission(
-                androidx.test.core.app.ApplicationProvider.getApplicationContext().getPackageName(), Manifest.permission.READ_MEDIA_AUDIO
+                context.getPackageName(), Manifest.permission.READ_MEDIA_IMAGES
             );
-            InstrumentationRegistry.getInstrumentation().getUiAutomation().grantRuntimePermission(
-                androidx.test.core.app.ApplicationProvider.getApplicationContext().getPackageName(), Manifest.permission.READ_MEDIA_VIDEO
-            );
-            InstrumentationRegistry.getInstrumentation().getUiAutomation().grantRuntimePermission(
-                androidx.test.core.app.ApplicationProvider.getApplicationContext().getPackageName(), Manifest.permission.READ_MEDIA_IMAGES
-            );
-            waitForPermission(activity, android.Manifest.permission.READ_MEDIA_AUDIO);
-            waitForPermission(activity, android.Manifest.permission.READ_MEDIA_VIDEO);
-            waitForPermission(activity, android.Manifest.permission.READ_MEDIA_IMAGES);
+            waitForPermission(context, android.Manifest.permission.READ_MEDIA_IMAGES);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
             InstrumentationRegistry.getInstrumentation().getUiAutomation().grantRuntimePermission(
-                androidx.test.core.app.ApplicationProvider.getApplicationContext().getPackageName(), android.Manifest.permission.READ_EXTERNAL_STORAGE
+                context.getPackageName(), android.Manifest.permission.READ_EXTERNAL_STORAGE
             );
-            waitForPermission(activity, android.Manifest.permission.READ_EXTERNAL_STORAGE);
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH && Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) {
-            logger.info("Granting permissions to the tests to be able to read files from an external storage.");
-            InstrumentationRegistry.getInstrumentation().getUiAutomation().grantRuntimePermission(
-                androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().getContext().getPackageName(), android.Manifest.permission.READ_EXTERNAL_STORAGE
-            );
+            waitForPermission(context, android.Manifest.permission.READ_EXTERNAL_STORAGE);
         }
         logger.info("Permissions granted.");
     }
@@ -150,12 +135,12 @@ public abstract class AbstractTest {
     /**
      * Waits for a permission to be granted.
      *
-     * @param activity   The {@link Activity}.
+     * @param context    The {@link Context}.
      * @param permission The permission which should be granted.
      */
-    private static void waitForPermission(final Activity activity, final String permission) {
+    private static void waitForPermission(final Context context, final String permission) {
         while (ContextCompat.checkSelfPermission(
-            activity,
+            context,
             permission
         ) != PackageManager.PERMISSION_GRANTED) {
             logger.info("Waiting for the permission '" + permission + "'to be granted to the app.");

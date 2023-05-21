@@ -315,6 +315,7 @@ _killProcessUsingFile() {
     process_id_using_file=$(echo "${processes_using_file}" | cut -d ' ' -f 2 | head -1);
     if ps aux "${process_id_using_file}" | grep -iq "android-studio"; then
       echo "Not killing process: '${process_id_using_file}' because it is the Android Studio";
+      return;
     else
       echo "Going to kill this process: '${process_id_using_file}'";
       kill -KILL "${process_id_using_file}" || true;
@@ -348,7 +349,9 @@ clearOldBuildFiles() {
     echo "files_being_used: '${files_being_used}'";
     for file_being_used in ${files_being_used}; do
       echo "file_being_used: '${file_being_used}'";
-      while [ -f "${file_being_used}" ]; do
+      retry_file=0;
+      while [ -f "${file_being_used}" ] && [ ${retry_file} -lt 3 ]; do
+        retry_file=$(( retry_file + 1 ));
         _killProcessUsingFile "${file_being_used}";
         echo 'sleeping 2 secs';
         sleep 2;

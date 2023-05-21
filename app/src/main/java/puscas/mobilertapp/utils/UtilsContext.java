@@ -3,13 +3,11 @@ package puscas.mobilertapp.utils;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.opengl.GLES20;
 import android.os.Build;
 import android.os.Environment;
-import android.provider.Settings;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -327,8 +325,6 @@ public final class UtilsContext {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             // TODO: Necessary to fix granting permissions for Android API 33.
             checksAccessPermission(activity, Manifest.permission.READ_MEDIA_IMAGES);
-            checksAccessPermission(activity, Manifest.permission.READ_MEDIA_VIDEO);
-            checksAccessPermission(activity, Manifest.permission.READ_MEDIA_AUDIO);
             checksAccessPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             checksAccessPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE);
