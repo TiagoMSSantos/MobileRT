@@ -110,6 +110,8 @@ void Renderer::renderScene(::std::int32_t *const bitmap, const ::std::int32_t ti
     const auto pixelHeight {0.5F / this->height_};
     ::glm::vec3 pixelRgb {};
     LOG_DEBUG("renderScene (tid: ", tid, ")");
+    const auto currentTidStr {::std::string("renderScene (" + ::std::to_string(tid) + ")")};
+    MobileRT::checkSystemError((currentTidStr + " start").c_str());
 
     for (::std::int32_t sample {}; sample < this->samplesPixel_; ++sample) {
         LOG_DEBUG("renderScene (tid: ", tid, "), sample: ", sample);
@@ -158,6 +160,7 @@ void Renderer::renderScene(::std::int32_t *const bitmap, const ::std::int32_t ti
         LOG_DEBUG("renderScene (tid: ", tid, ") sample: ", sample, " finished");
     }
     LOG_DEBUG("renderScene (tid: ", tid,") finished");
+    MobileRT::checkSystemError((currentTidStr + " end").c_str());
 }
 
 /**

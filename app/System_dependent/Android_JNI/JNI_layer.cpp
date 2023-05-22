@@ -438,7 +438,7 @@ void Java_puscas_mobilertapp_DrawView_rtStopRender(
         LOG_DEBUG("Renderer finished");
     }
     env->ExceptionClear();
-    LOG_DEBUG("stopRender finished");
+    LOG_DEBUG("rtStopRender finished");
     MobileRT::checkSystemError("rtStopRender finish");
 }
 
@@ -730,11 +730,10 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
                 ASSERT(env != nullptr, "JNIEnv not valid.");
                 MobileRT::checkSystemError("rtRenderIntoBitmap step 1");
                 const auto jniError {
-                    javaVM_->GetEnv(reinterpret_cast<void **> (const_cast<JNIEnv **> (&env)),
-                                    JNI_VERSION_1_6)
+                    javaVM_->GetEnv(reinterpret_cast<void **> (const_cast<JNIEnv **> (&env)), JNI_VERSION_1_6)
                 };
 
-                LOG_DEBUG("rtRenderIntoBitmap step 2");
+                LOG_DEBUG("rtRenderIntoBitmap step 2: ", jniError);
                 ASSERT(jniError == JNI_OK || jniError == JNI_EDETACHED, "JNIEnv not valid.");
                 {
                     MobileRT::checkSystemError("rtRenderIntoBitmap step 2");
@@ -809,11 +808,11 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
                         const auto result {
                             javaVM_->GetEnv(reinterpret_cast<void **> (const_cast<JNIEnv **> (&env)), JNI_VERSION_1_6)
                         };
-                        ASSERT(result == JNI_OK || jniError == JNI_EDETACHED, "JNIEnv not valid.");
+                        ASSERT(result == JNI_OK, "JNIEnv not valid.");
                         static_cast<void> (result);
                     }
                     env->ExceptionClear();
-                    if (jniError == JNI_EDETACHED) {
+                    {
                         const auto result {javaVM_->DetachCurrentThread()};
                         ASSERT(result == JNI_OK, "Couldn't detach the current thread from JVM.");
                         static_cast<void> (result);

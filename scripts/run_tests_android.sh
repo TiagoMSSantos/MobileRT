@@ -344,17 +344,21 @@ copyResources() {
   callAdbShellCommandUntilSuccess adb shell 'chmod -R 777 '${sdcard_path_android}'; echo ::$?::';
 
   echo 'Install File Manager';
+  set +e;
+  adb shell pm;
+  set -e;
+  unlockDevice;
   if [ "${androidApi}" -gt 31 ]; then
     echo "Not installing any file manager APK because the available ones are not compatible with Android API: ${androidApi}";
   elif [ "${androidApi}" -gt 30 ]; then
-    callAdbShellCommandUntilSuccess adb shell 'pm install -t -r '${mobilert_path}'/APKs/asus-file-manager-2-8-0-85-230220.apk; echo ::$?::';
+    callAdbShellCommandUntilSuccess adb shell 'pm install -r '${mobilert_path}'/APKs/asus-file-manager-2-8-0-85-230220.apk; echo ::$?::';
   elif [ "${androidApi}" -gt 29 ]; then
-    callAdbShellCommandUntilSuccess adb shell 'pm install -t -r '${mobilert_path}'/APKs/com.asus.filemanager_2.7.0.28_220608-1520700140_minAPI30_apkmirror.com.apk; echo ::$?::';
+    callAdbShellCommandUntilSuccess adb shell 'pm install -r '${mobilert_path}'/APKs/com.asus.filemanager_2.7.0.28_220608-1520700140_minAPI30_apkmirror.com.apk; echo ::$?::';
   elif [ "${androidApi}" -gt 16 ]; then
-    callAdbShellCommandUntilSuccess adb shell 'pm install -t -r '${mobilert_path}'/APKs/com.asus.filemanager.apk; echo ::$?::';
+    callAdbShellCommandUntilSuccess adb shell 'pm install -r '${mobilert_path}'/APKs/com.asus.filemanager.apk; echo ::$?::';
   elif [ "${androidApi}" -lt 16 ]; then
     # This file manager is compatible with Android 4.0.3 (API 15) which the Asus one is not.
-    callAdbShellCommandUntilSuccess adb shell 'pm install -t -r '${mobilert_path}'/APKs/com.estrongs.android.pop_4.2.1.8-10057_minAPI14.apk; echo ::$?::';
+    callAdbShellCommandUntilSuccess adb shell 'pm install -r '${mobilert_path}'/APKs/com.estrongs.android.pop_4.2.1.8-10057_minAPI14.apk; echo ::$?::';
   fi
 }
 
@@ -481,9 +485,10 @@ runInstrumentationTests() {
     callCommandUntilSuccess adb push -p "${apkPath}" "${mobilert_path}";
   done;
   callCommandUntilSuccess adb shell 'ls -la '${mobilert_path};
+  unlockDevice;
   echo "Installing both APKs for tests and app.";
-  callAdbShellCommandUntilSuccess adb shell 'pm install -t -r '${mobilert_path}'/app-'${type}'-androidTest.apk; echo ::$?::';
-  callAdbShellCommandUntilSuccess adb shell 'pm install -t -r '${mobilert_path}'/app-'${type}'.apk; echo ::$?::';
+  callAdbShellCommandUntilSuccess adb shell 'pm install -r '${mobilert_path}'/app-'${type}'-androidTest.apk; echo ::$?::';
+  callAdbShellCommandUntilSuccess adb shell 'pm install -r '${mobilert_path}'/app-'${type}'.apk; echo ::$?::';
   if [ "${androidApi}" -gt 29 ]; then
     echo "Giving permissions for MobileRT app to access any file from the external storage.";
     callAdbShellCommandUntilSuccess adb shell 'appops set --uid puscas.mobilertapp MANAGE_EXTERNAL_STORAGE allow; echo ::$?::';

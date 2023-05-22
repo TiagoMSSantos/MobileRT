@@ -196,11 +196,11 @@ callCommandUntilSuccess() {
 # Call an ADB shell function multiple times until it doesn't fail and then return.
 callAdbShellCommandUntilSuccess() {
   echo '';
-  echo "Calling ADB shell command until success '$*'";
   retry=0;
   set +e;
+  echo "Calling ADB shell command until success '$*'";
   output=$("$@");
-  # echo "Output of command: '${output}'";
+  echo "Output of command: '${output}'";
   lastResult=$(echo "${output}" | grep '::.*::' | sed 's/:://g'| tr -d '[:space:]');
   echo "result: '${lastResult}'";
   while [ "${lastResult}" != '0' ] && [ ${retry} -lt 60 ]; do
@@ -344,17 +344,17 @@ killProcessesUsingPort() {
 clearOldBuildFiles() {
   files_being_used=$(find . -iname "*.fuse_hidden*" || true);
   retry=0;
-  while [ "${files_being_used}" != '' ] && [ ${retry} -lt 5 ]; do
+  while [ "${files_being_used}" != '' ] && [ ${retry} -lt 3 ]; do
     retry=$(( retry + 1 ));
     echo "files_being_used: '${files_being_used}'";
     for file_being_used in ${files_being_used}; do
       echo "file_being_used: '${file_being_used}'";
       retry_file=0;
-      while [ -f "${file_being_used}" ] && [ ${retry_file} -lt 3 ]; do
+      while [ -f "${file_being_used}" ] && [ ${retry_file} -lt 2 ]; do
         retry_file=$(( retry_file + 1 ));
         _killProcessUsingFile "${file_being_used}";
-        echo 'sleeping 2 secs';
-        sleep 2;
+        echo 'sleeping 1 sec';
+        sleep 1;
         rm "${file_being_used}" || true;
       done
     done;
