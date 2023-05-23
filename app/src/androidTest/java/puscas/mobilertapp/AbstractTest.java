@@ -1,6 +1,8 @@
 package puscas.mobilertapp;
 
 import android.Manifest;
+import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -26,10 +28,13 @@ import org.junit.Rule;
 import org.junit.rules.TestRule;
 import org.junit.rules.Timeout;
 
+import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 
@@ -111,6 +116,54 @@ public abstract class AbstractTest {
     }
 
     /**
+     * Tear down method called after each test.
+     */
+    @After
+    @CallSuper
+    @OverridingMethodsMustInvokeSuper
+    public void tearDown() {
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        logger.info(methodName);
+
+        Preconditions.checkNotNull(this.activity, "The Activity didn't finish as expected!");
+        while (isActivityRunning(this.activity)) {
+            UtilsT.executeWithCatching(Espresso::pressBackUnconditionally);
+            this.activity.finish();
+            this.mainActivityActivityTestRule.finishActivity();
+            logger.warning("Waiting for the Activity triggered by the test to finish.");
+            Uninterruptibles.sleepUninterruptibly(1L, TimeUnit.SECONDS);
+        }
+
+        this.activity = null;
+        UtilsT.executeWithCatching(Espresso::onIdle);
+
+        Intents.release();
+    }
+
+    /**
+     * Checks whether the {@link #activity} is running or not.
+     *
+     * @param activity The {@link Activity} used by the tests.
+     * @return {@code true} if it is still running, otherwise {@code false}.
+     */
+    private boolean isActivityRunning(@Nonnull final Activity activity) {
+        // Note that 'Activity#isDestroyed' only exists on Android API 17+.
+        // More info: https://developer.android.com/reference/android/app/Activity#isDestroyed()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            return !activity.isFinishing() || !activity.isDestroyed();
+        } else {
+            final ActivityManager activityManager = (ActivityManager) activity.getSystemService(Context.ACTIVITY_SERVICE);
+            final List<ActivityManager.RunningTaskInfo> tasksRunning = activityManager.getRunningTasks(Integer.MAX_VALUE);
+            for (ActivityManager.RunningTaskInfo taskRunning : tasksRunning) {
+                if (Objects.equals(activity.getPackageName(), taskRunning.baseActivity.getPackageName())) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    /**
      * Grant permissions for the {@link MainActivity} to be able to load files from an external
      * storage.
      *
@@ -144,31 +197,10 @@ public abstract class AbstractTest {
             permission
         ) != PackageManager.PERMISSION_GRANTED) {
             logger.info("Waiting for the permission '" + permission + "'to be granted to the app.");
-            Espresso.onIdle();
+            UtilsT.executeWithCatching(Espresso::onIdle);
             Uninterruptibles.sleepUninterruptibly(2L, TimeUnit.SECONDS);
         }
         logger.info("Permission '" + permission + "' granted to the app!");
-    }
-
-    /**
-     * Tear down method called after each test.
-     */
-    @After
-    @CallSuper
-    @OverridingMethodsMustInvokeSuper
-    public void tearDown() {
-        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        logger.info(methodName);
-
-        Preconditions.checkNotNull(this.activity, "The Activity didn't finish as expected!");
-
-        Espresso.pressBackUnconditionally();
-        this.activity.finish();
-        this.mainActivityActivityTestRule.finishActivity();
-        this.activity = null;
-        UtilsT.executeWithCatching(Espresso::onIdle);
-
-        Intents.release();
     }
 
     /**

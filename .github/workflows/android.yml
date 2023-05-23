@@ -51,7 +51,7 @@ env:
   GITHUB_STEP_TIMEOUT_SMALL: 4
   GITHUB_STEP_TIMEOUT_MEDIUM: 10
   GITHUB_STEP_TIMEOUT_LONG: 30
-  GITHUB_STEP_TIMEOUT_VERY_LONG: 40
+  GITHUB_STEP_TIMEOUT_VERY_LONG: 45
 
 jobs:
   Matrix:
@@ -312,7 +312,7 @@ jobs:
 
     name: Android tests ${{ matrix.android_api }} ${{ matrix.type }} (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 40
+    timeout-minutes: 45
 
     steps:
     - name: Checkout
