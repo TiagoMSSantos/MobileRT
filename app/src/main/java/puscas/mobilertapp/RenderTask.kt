@@ -155,9 +155,7 @@ class RenderTask private constructor(
             requestRender.run()
             publishProgressAsync()
             if (currentState != State.BUSY) {
-                logger.info("Stopping RenderTask")
-                executorService.shutdown()
-                logger.info("Stopped RenderTask")
+                stopTask()
             }
             logger.info(ConstantsMethods.TIMER + ConstantsMethods.FINISHED)
         }
@@ -261,37 +259,61 @@ class RenderTask private constructor(
         textView.text = aux
     }
 
+    /**
+     * Helper method which waits for the [executorService] to finish.
+     */
+    override fun waitForTaskToFinish() {
+        logger.info("waitForTaskToFinish")
+        Utils.waitExecutorToFinish(this.executorService)
+        logger.info("waitForTaskToFinish finished")
+    }
+
+    /**
+     * Helper method which stops the [AsyncTaskCoroutine].
+     */
+    override fun stopTask() {
+        logger.info("stopTask")
+        this.executorService.shutdown()
+        logger.info("stopTask finished")
+    }
+
     override fun onPreExecute() {
         logger.info("onPreExecute")
     }
 
     override fun doInBackground() {
         logger.info("doInBackground")
-        executorService.scheduleAtFixedRate(
-            timer, 0L,
-            updateInterval, TimeUnit.MILLISECONDS
-        )
-        Utils.waitExecutorToFinish(executorService)
+        try {
+            this.executorService.scheduleAtFixedRate(
+                this.timer, 0L,
+                this.updateInterval, TimeUnit.MILLISECONDS
+            )
+        } catch (ex: Throwable) {
+            logger.severe("doInBackground failed")
+            return
+        }
+        waitForTaskToFinish()
         val message = "doInBackground" + ConstantsMethods.FINISHED
         logger.info(message)
     }
 
     override fun onProgressUpdate() {
-        logger.info("onProgressUpdate")
+        this.logger.info("onProgressUpdate")
         printText()
         val message = "onProgressUpdate" + ConstantsMethods.FINISHED
-        logger.info(message)
+        this.logger.info(message)
     }
 
     override fun onPostExecute() {
-        logger.info("onPostExecute")
+        this.logger.info("onPostExecute")
         printText()
-        requestRender.run()
+        this.requestRender.run()
+        stopTask()
         MainActivity.resetErrno()
-        finishRender.run()
-        buttonRender.setText(R.string.render)
+        this.finishRender.run()
+        this.buttonRender.setText(R.string.render)
         val message = "onPostExecute" + ConstantsMethods.FINISHED
-        logger.info(message)
+        this.logger.info(message)
     }
 
     class Builder private constructor() {

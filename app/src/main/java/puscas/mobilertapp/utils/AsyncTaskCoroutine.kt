@@ -73,6 +73,16 @@ abstract class AsyncTaskCoroutine {
     protected abstract fun onPostExecute()
 
     /**
+     * Helper method which waits for the [doInBackground] method to finish.
+     */
+    protected abstract fun waitForTaskToFinish()
+
+    /**
+     * Helper method which stops the [AsyncTaskCoroutine].
+     */
+    protected abstract fun stopTask()
+
+    /**
      * This method can be invoked from [doInBackground] to
      * publish updates on the UI thread while the background computation is
      * still running. Each call to this method will trigger the execution of
@@ -114,11 +124,23 @@ abstract class AsyncTaskCoroutine {
      * Waits for the task to finish.
      */
     fun waitToFinish() {
-        runBlocking {
-            logger.info("waitToFinish")
-            lastJob?.await()
-            logger.info("waitToFinish finished")
+        logger.info("waitToFinish")
+
+        runBlocking(Dispatchers.IO) {
+            logger.info("waitToFinish 1")
+            val finished: Unit? = lastJob?.await()
+            logger.info("waitToFinish 2: $finished")
+            lastJob?.join()
+            logger.info("waitToFinish 3")
+            if (finished != null) {
+                waitForTaskToFinish()
+            } else {
+                stopTask()
+            }
+            logger.info("waitToFinish 4")
         }
+
+        logger.info("waitToFinish finished: " + lastJob?.isCompleted)
     }
 
 }

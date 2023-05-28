@@ -110,8 +110,9 @@ public final class UtilsT {
      */
     public static void startRendering(final boolean expectedSameValues) {
         logger.info("startRendering");
+        waitForAppToIdle();
         assertRenderButtonText(Constants.RENDER);
-        UtilsT.waitForAppToIdle();
+        waitForAppToIdle();
         Espresso.onView(ViewMatchers.withId(R.id.renderButton))
             .perform(new ViewActionButton(expectedSameValues ? Constants.RENDER : Constants.STOP, false));
         logger.info("startRendering" + ConstantsMethods.FINISHED);
@@ -125,7 +126,7 @@ public final class UtilsT {
         logger.info("stopRendering");
         Espresso.onView(ViewMatchers.withId(R.id.renderButton))
             .perform(new ViewActionButton(Constants.RENDER, false));
-        UtilsT.waitForAppToIdle();
+        waitForAppToIdle();
         assertRenderButtonText(Constants.RENDER);
         logger.info("stopRendering" + ConstantsMethods.FINISHED);
     }
@@ -140,6 +141,7 @@ public final class UtilsT {
      */
     public static void testStateAndBitmap(final boolean expectedSameValues) {
         logger.info("testBitmap");
+        waitForAppToIdle();
         Espresso.onView(ViewMatchers.withId(R.id.drawLayout))
             .check((view, exception) -> {
                 final DrawView drawView = (DrawView) view;
@@ -152,6 +154,7 @@ public final class UtilsT {
                     renderer.getState() == State.IDLE || renderer.getState() == State.FINISHED
                 );
             });
+        waitForAppToIdle();
     }
 
     /**

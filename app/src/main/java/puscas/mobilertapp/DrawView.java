@@ -142,7 +142,8 @@ public class DrawView extends GLSurfaceView {
      *
      * @param wait Whether it should wait for the Ray Tracer engine to stop.
      */
-    private native void rtStopRender(boolean wait);
+    @VisibleForTesting
+    native void rtStopRender(boolean wait);
 
     /**
      * Sets the Ray Tracer engine {@link State} to {@link State#BUSY}.
@@ -230,8 +231,9 @@ public class DrawView extends GLSurfaceView {
     synchronized void renderScene(@NonNull final Config config) {
         logger.info(ConstantsMethods.RENDER_SCENE);
 
-        waitLastTask();
         MainActivity.resetErrno();
+        stopDrawing();
+        waitLastTask();
         rtStartRender(false);
 
         final long tasksAlreadyDone = this.executorService instanceof ThreadPoolExecutor? ((ThreadPoolExecutor) this.executorService).getCompletedTaskCount() : -1L;

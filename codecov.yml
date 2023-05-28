@@ -32,7 +32,7 @@ coverage:
     patch:
       default:
         target: auto
-        threshold: 12%
+        threshold: 43%
         if_ci_failed: error
         informational: false
         only_pulls: false

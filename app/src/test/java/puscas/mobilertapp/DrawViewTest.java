@@ -141,7 +141,8 @@ public class DrawViewTest {
         MemberModifier.suppress(MemberModifier.method(MainActivity.class, "showUiMessage"));
 
         final DrawView drawView = EasyMock.createMockBuilder(DrawView.class)
-            .addMockedMethod("rtStartRender")
+            .addMockedMethod("rtStartRender", boolean.class)
+            .addMockedMethod("rtStopRender", boolean.class)
             .addMockedMethod("waitLastTask")
             .addMockedMethod("rtGetNumberOfLights")
             .addMockedMethod("createScene")
@@ -150,6 +151,7 @@ public class DrawViewTest {
         final MainRenderer mainRenderer = EasyMock.createMockBuilder(MainRenderer.class)
             .addMockedMethod("rtInitialize")
             .addMockedMethod("rtFinishRender")
+            .addMockedMethod("freeArrays")
             .addMockedMethod("resetStats", int.class, ConfigSamples.class, int.class, int.class)
             .createMock();
 
@@ -157,8 +159,10 @@ public class DrawViewTest {
         EasyMock.expectLastCall().andVoid();
         EasyMock.expect(mainRenderer.rtInitialize(EasyMock.anyObject(Config.class))).andReturn(2);
         mainRenderer.rtFinishRender();
-        EasyMock.expectLastCall().andVoid();
+        EasyMock.expectLastCall().andVoid().anyTimes();
         ReflectionTestUtils.setField(drawView, "renderer", mainRenderer);
+        mainRenderer.freeArrays();
+        EasyMock.expectLastCall().andVoid().times(1);
         EasyMock.replay(mainRenderer);
 
         final Button buttonMocked = Mockito.mock(Button.class);
@@ -174,7 +178,9 @@ public class DrawViewTest {
         drawView.rtStartRender(EasyMock.anyBoolean());
         EasyMock.expectLastCall().andVoid().times(2);
         drawView.waitLastTask();
-        EasyMock.expectLastCall().andVoid();
+        EasyMock.expectLastCall().andVoid().times(2);
+        drawView.rtStopRender(EasyMock.anyBoolean());
+        EasyMock.expectLastCall().andVoid().times(1);
 
         final Config config = Config.Builder.Companion.create().build();
         drawView.startRayTracing(config);

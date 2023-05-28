@@ -812,6 +812,9 @@ public class MainRenderer implements GLSurfaceView.Renderer {
     private void createAndLaunchRenderTask() {
         logger.info("createAndLaunchRenderTask");
 
+        Optional.ofNullable(this.renderTask)
+            .ifPresent(RenderTask::stopTask);
+
         waitLastTask();
 
         this.configRenderTask.setTextView(this.textView);

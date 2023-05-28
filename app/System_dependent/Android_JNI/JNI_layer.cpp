@@ -850,6 +850,7 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
                 LOG_DEBUG("Total Millions rays per second = ", (static_cast<double> (castedRays) / renderingTime)
                     / 1000000L);
 
+                state_ = State::IDLE;
                 LOG_DEBUG("rtRenderIntoBitmap finished");
             }
         };
