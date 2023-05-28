@@ -147,15 +147,15 @@ parseArgumentsToCheck() {
 callCommandUntilError() {
   echo '';
   echo "Calling until error '$*'";
-  retry=0;
+  _retry=0;
   set +e;
   "$@";
   lastResult=${?};
-  while [ "${lastResult}" -eq 0 ] && [ ${retry} -lt 5 ]; do
-    retry=$(( retry + 1 ));
+  while [ "${lastResult}" -eq 0 ] && [ ${_retry} -lt 5 ]; do
+    _retry=$(( _retry + 1 ));
     "$@";
     lastResult=${?};
-    echo "Retry: ${retry} of command '$*'; result: '${lastResult}'";
+    echo "Retry: ${_retry} of command '$*'; result: '${lastResult}'";
     sleep 2;
   done
   set -e;
@@ -172,16 +172,16 @@ callCommandUntilError() {
 callCommandUntilSuccess() {
   echo '';
   echo "Calling until success '$*'";
-  retry=0;
+  _retry=0;
   set +e;
   "$@";
   lastResult=${?};
   echo "result: '${lastResult}'";
-  while [ "${lastResult}" -ne 0 ] && [ ${retry} -lt 10 ]; do
-    retry=$(( retry + 1 ));
+  while [ "${lastResult}" -ne 0 ] && [ ${_retry} -lt 10 ]; do
+    _retry=$(( _retry + 1 ));
     "$@";
     lastResult=${?};
-    echo "Retry: ${retry} of command '$*'; result: '${lastResult}'";
+    echo "Retry: ${_retry} of command '$*'; result: '${lastResult}'";
     sleep 3;
   done
   set -e;
@@ -196,19 +196,19 @@ callCommandUntilSuccess() {
 # Call an ADB shell function multiple times until it doesn't fail and then return.
 callAdbShellCommandUntilSuccess() {
   echo '';
-  retry=0;
+  _retry=0;
   set +e;
   echo "Calling ADB shell command until success '$*'";
   output=$("$@");
   echo "Output of command: '${output}'";
   lastResult=$(echo "${output}" | grep '::.*::' | sed 's/:://g'| tr -d '[:space:]');
   echo "result: '${lastResult}'";
-  while [ "${lastResult}" != '0' ] && [ ${retry} -lt 60 ]; do
-    retry=$(( retry + 1 ));
+  while [ "${lastResult}" != '0' ] && [ ${_retry} -lt 60 ]; do
+    _retry=$(( _retry + 1 ));
     output=$("$@");
     echo "Output of command: '${output}'";
     lastResult=$(echo "${output}" | grep '::.*::' | sed 's/:://g' | tr -d '[:space:]');
-    echo "Retry: ${retry} of command '$*'; result: '${lastResult}'";
+    echo "Retry: ${_retry} of command '$*'; result: '${lastResult}'";
     sleep 3;
   done
   set -e;
@@ -308,12 +308,12 @@ executeWithoutExiting () {
 # Private method which kills a process that is using a file.
 _killProcessUsingFile() {
   processes_using_file=$(lsof "${1}" | tail -n +2 | tr -s ' ');
-  retry=0;
-  while [ "${processes_using_file}" != '' ] && [ ${retry} -lt 5 ]; do
-    retry=$(( retry + 1 ));
+  _retry=0;
+  while [ "${processes_using_file}" != '' ] && [ ${_retry} -lt 5 ]; do
+    _retry=$(( _retry + 1 ));
     echo "processes_using_file: '${processes_using_file}'";
     process_id_using_file=$(echo "${processes_using_file}" | cut -d ' ' -f 2 | head -1);
-    if ps aux "${process_id_using_file}" | grep -iq "android-studio"; then
+    if ps aux | grep -i "${process_id_using_file}" | grep -iq "android-studio"; then
       echo "Not killing process: '${process_id_using_file}' because it is the Android Studio";
       return;
     else
@@ -327,9 +327,9 @@ _killProcessUsingFile() {
 # Method which kills the processes that are using a port.
 killProcessesUsingPort() {
   processes_using_port=$(lsof -i ":${1}" | tail -n +2 | tr -s ' ' | cut -d ' ' -f 2);
-  retry=0;
-  while [ "${processes_using_port}" != '' ] && [ ${retry} -lt 5 ]; do
-    retry=$(( retry + 1 ));
+  _retry=0;
+  while [ "${processes_using_port}" != '' ] && [ ${_retry} -lt 5 ]; do
+    _retry=$(( _retry + 1 ));
     echo "processes_using_port: '${processes_using_port}'";
     process_id_using_port=$(echo "${processes_using_port}" | head -1);
     echo "Going to kill this process: '${process_id_using_port}'";
@@ -343,10 +343,12 @@ killProcessesUsingPort() {
 # kills it first.
 clearOldBuildFiles() {
   files_being_used=$(find . -iname "*.fuse_hidden*" || true);
-  retry=0;
-  while [ "${files_being_used}" != '' ] && [ ${retry} -lt 3 ]; do
-    retry=$(( retry + 1 ));
+  retry_files=0;
+  while [ "${files_being_used}" != '' ] && [ ${retry_files} -lt 3 ]; do
+    retry_files=$(( retry_files + 1 ));
     echo "files_being_used: '${files_being_used}'";
+    old_IFS=${IFS};
+    IFS="$(printf '\n')";
     for file_being_used in ${files_being_used}; do
       echo "file_being_used: '${file_being_used}'";
       retry_file=0;
@@ -358,6 +360,7 @@ clearOldBuildFiles() {
         rm "${file_being_used}" || true;
       done
     done;
+    IFS=${old_IFS};
     files_being_used=$(find . -iname "*.fuse_hidden*" | grep -i ".fuse_hidden" || true);
   done
 }
