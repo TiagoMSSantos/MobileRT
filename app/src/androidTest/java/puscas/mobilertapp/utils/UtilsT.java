@@ -154,6 +154,7 @@ public final class UtilsT {
     public static void startRendering(final boolean expectedSameValues) {
         logger.info("startRendering");
         assertRenderButtonText(Constants.RENDER);
+        UtilsT.executeWithCatching(Espresso::onIdle);
         Espresso.onView(ViewMatchers.withId(R.id.renderButton))
             .perform(new ViewActionButton(expectedSameValues ? Constants.RENDER : Constants.STOP, false));
         logger.info("startRendering" + ConstantsMethods.FINISHED);
@@ -203,7 +204,7 @@ public final class UtilsT {
      * @param expectedText The expected text shown in the {@link Button}.
      */
     public static void assertRenderButtonText(@NonNull final String expectedText) {
-        logger.info("assertRenderButtonText");
+        logger.info("assertRenderButtonText: " + expectedText);
         Espresso.onView(ViewMatchers.withId(R.id.renderButton))
             .check((view, exception) -> {
                 final Button renderButton = view.findViewById(R.id.renderButton);

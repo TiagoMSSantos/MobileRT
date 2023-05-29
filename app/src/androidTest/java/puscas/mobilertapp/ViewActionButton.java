@@ -16,6 +16,7 @@ import java.util.Objects;
 import java.util.logging.Logger;
 
 import puscas.mobilertapp.utils.Utils;
+import puscas.mobilertapp.utils.UtilsT;
 
 /**
  * Auxiliary class which represents the render {@link Button}.
@@ -77,13 +78,14 @@ public final class ViewActionButton implements ViewAction {
                 ? button.performLongClick() : !button.performClick();
 
             while (buttonNotClickedProperly) {
-                uiController.loopMainThreadForAtLeast(5000L);
+                UtilsT.executeWithCatching(() -> uiController.loopMainThreadForAtLeast(5000L));
                 buttonNotClickedProperly = this.pressLongClick
                     ? button.performLongClick() : !button.performClick();
             }
 
             if (this.expectedText == null) {
-                uiController.loopMainThreadUntilIdle();
+                UtilsT.executeWithCatching(uiController::loopMainThreadUntilIdle);
+                logger.info("Clicked button: " + null + ", long click: " + this.pressLongClick);
                 return;
             }
             boolean textEqualsNotExpected = !Objects.equals(button.getText().toString(), this.expectedText);
@@ -92,12 +94,15 @@ public final class ViewActionButton implements ViewAction {
             // Wait until expected text is shown.
             for (long currentTimeSecs = 0L; currentTimeSecs < 10L && textEqualsNotExpected;
                  currentTimeSecs += advanceSecs) {
-                uiController.loopMainThreadForAtLeast(advanceSecs * 1000L);
+                UtilsT.executeWithCatching(() -> uiController.loopMainThreadForAtLeast(advanceSecs * 1000L));
                 textEqualsNotExpected = !Objects.equals(button.getText().toString(), this.expectedText);
             }
             Assert.assertEquals("Button with wrong text!!!!!",
                 this.expectedText, button.getText().toString()
             );
+            // Let the engine boot for a while.
+            UtilsT.executeWithCatching(() -> uiController.loopMainThreadForAtLeast(500L));
+            logger.info("Clicked button: " + this.expectedText + ", long click: " + this.pressLongClick);
         } finally {
             Utils.handleInterruption(methodName);
         }

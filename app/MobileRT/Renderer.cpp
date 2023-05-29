@@ -140,7 +140,7 @@ void Renderer::renderScene(::std::int32_t *const bitmap, const ::std::int32_t ti
                     LOG_DEBUG("(tid: ", tid, ") Generating ray, u: ", u, ", v: ", v, ", deviationU: ", deviationU, ", deviationV: ", deviationV);
                     auto &&ray {this->camera_->generateRay(u, v, deviationU, deviationV)};
                     pixelRgb = {};
-                    LOG_DEBUG("(tid: ", tid, ") Ray tracing, id: ", ray.id_, ", depth: ", ray.depth_, ", origin: ", ray.origin_.length(), ", direction", ray.direction_.length());
+                    LOG_DEBUG("(tid: ", tid, ") Ray tracing, id: ", ray.id_, ", depth: ", ray.depth_, ", origin: ", ray.origin_.length(), ", direction: ", ray.direction_.length());
                     this->shader_->rayTrace(&pixelRgb, ::std::move(ray));
                     const auto pixelIndex {yWidth + x};
                     LOG_DEBUG("(tid: ", tid, ") pixelIndex: ", pixelIndex);

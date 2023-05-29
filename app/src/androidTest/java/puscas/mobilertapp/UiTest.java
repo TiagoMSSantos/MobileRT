@@ -21,6 +21,7 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
 import java8.util.stream.IntStreams;
@@ -29,6 +30,7 @@ import puscas.mobilertapp.constants.Constants;
 import puscas.mobilertapp.constants.ConstantsUI;
 import puscas.mobilertapp.constants.Scene;
 import puscas.mobilertapp.constants.Shader;
+import puscas.mobilertapp.constants.State;
 import puscas.mobilertapp.utils.UtilsContext;
 import puscas.mobilertapp.utils.UtilsContextT;
 import puscas.mobilertapp.utils.UtilsPickerT;
@@ -86,6 +88,7 @@ public final class UiTest extends AbstractTest {
      * @param expectedValue The expected value for the {@link CheckBox}.
      */
     public static void clickPreviewCheckBox(final boolean expectedValue) {
+        UtilsT.executeWithCatching(Espresso::onIdle);
         Espresso.onView(ViewMatchers.withId(R.id.preview))
             .check((view, exception) ->
                 assertPreviewCheckBox(view, !expectedValue)
@@ -141,9 +144,11 @@ public final class UiTest extends AbstractTest {
     /**
      * Tests changing all the {@link NumberPicker} and clicking the render
      * {@link Button} few times.
+     *
+     * @throws TimeoutException If the Ray Tracing engine didn't reach the expected {@link State}.
      */
     @Test(timeout = 2L * 60L * 1000L)
-    public void testUI() {
+    public void testUI() throws TimeoutException {
         UtilsT.assertRenderButtonText(Constants.RENDER);
 
         final int numCores = UtilsContext.getNumOfCores(this.activity);
@@ -155,10 +160,11 @@ public final class UiTest extends AbstractTest {
     /**
      * Tests clicking the render {@link Button} many times without preview.
      *
+     * @throws TimeoutException If the Ray Tracing engine didn't reach the expected {@link State}.
      * @implNote This test can take more than 2 min in CI.
      */
     @Test(timeout = 3L * 60L * 1000L)
-    public void testClickRenderButtonManyTimesWithoutPreview() {
+    public void testClickRenderButtonManyTimesWithoutPreview() throws TimeoutException {
         clickPreviewCheckBox(false);
 
         final int numCores = UtilsContext.getNumOfCores(this.activity);
@@ -168,10 +174,11 @@ public final class UiTest extends AbstractTest {
     /**
      * Tests clicking the render {@link Button} many times with preview.
      *
+     * @throws TimeoutException If the Ray Tracing engine didn't reach the expected {@link State}.
      * @implNote This test can take more than 2 min in CI.
      */
     @Test(timeout = 3L * 60L * 1000L)
-    public void testClickRenderButtonManyTimesWithPreview() {
+    public void testClickRenderButtonManyTimesWithPreview() throws TimeoutException {
         clickPreviewCheckBox(false);
         clickPreviewCheckBox(true);
 
@@ -200,12 +207,11 @@ public final class UiTest extends AbstractTest {
      * @param repetitions The number of repetitions.
      * @param numCores    The number of CPU cores in the system.
      */
-    private void assertClickRenderButton(final int repetitions, final int numCores) {
+    private void assertClickRenderButton(final int repetitions, final int numCores) throws TimeoutException {
         UtilsContextT.resetPickerValues(this.activity, Scene.CORNELL2.ordinal(), Accelerator.BVH, 99, 99);
 
         final List<String> buttonTextList = ImmutableList.of(Constants.STOP, Constants.RENDER);
-        IntStreams.range(0, buttonTextList.size() * repetitions).forEach(currentIndex -> {
-
+        for (int currentIndex = 0; currentIndex < buttonTextList.size() * repetitions; currentIndex++) {
             final String message = "currentIndex = " + currentIndex;
             logger.info(message);
 
@@ -221,8 +227,13 @@ public final class UiTest extends AbstractTest {
 
             viewInteraction.perform(new ViewActionButton(expectedButtonText, false));
 
+            if (expectedIndex % 2 == 0) {
+                UtilsContextT.waitUntil(this.activity, expectedButtonText, State.BUSY);
+            } else {
+                UtilsContextT.waitUntil(this.activity, expectedButtonText, State.IDLE, State.FINISHED);
+            }
             UtilsT.assertRenderButtonText(expectedButtonText);
-        });
+        }
     }
 
     /**

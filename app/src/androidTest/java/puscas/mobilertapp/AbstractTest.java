@@ -43,6 +43,7 @@ import puscas.mobilertapp.constants.Constants;
 import puscas.mobilertapp.constants.ConstantsUI;
 import puscas.mobilertapp.constants.Scene;
 import puscas.mobilertapp.constants.Shader;
+import puscas.mobilertapp.constants.State;
 import puscas.mobilertapp.utils.UtilsContextT;
 import puscas.mobilertapp.utils.UtilsPickerT;
 import puscas.mobilertapp.utils.UtilsT;
@@ -127,12 +128,12 @@ public abstract class AbstractTest {
 
         Preconditions.checkNotNull(this.activity, "The Activity didn't finish as expected!");
         while (isActivityRunning(this.activity)) {
-            UtilsT.executeWithCatching(Espresso::pressBackUnconditionally);
             this.activity.finish();
             this.mainActivityActivityTestRule.finishActivity();
             logger.warning("Waiting for the Activity triggered by the test to finish.");
             Uninterruptibles.sleepUninterruptibly(1L, TimeUnit.SECONDS);
         }
+        UtilsT.executeWithCatching(Espresso::pressBackUnconditionally);
 
         this.activity = null;
         UtilsT.executeWithCatching(Espresso::onIdle);
@@ -236,7 +237,7 @@ public abstract class AbstractTest {
         UiTest.clickPreviewCheckBox(false);
 
         UtilsT.startRendering(expectedSameValues);
-        UtilsContextT.waitUntilRenderingDone(this.activity);
+        UtilsContextT.waitUntil(this.activity, Constants.RENDER, State.IDLE, State.FINISHED);
 
         UtilsT.assertRenderButtonText(Constants.RENDER);
         UtilsT.testStateAndBitmap(expectedSameValues);

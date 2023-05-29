@@ -40,6 +40,7 @@ public final class UtilsPickerT {
                                          final int pickerId,
                                          final int expectedValue) {
         logger.info("changePickerValue");
+        UtilsT.executeWithCatching(Espresso::onIdle);
         Espresso.onView(ViewMatchers.withId(pickerId))
             .perform(new ViewActionNumberPicker(expectedValue))
             .check((view, exception) -> {
@@ -48,6 +49,7 @@ public final class UtilsPickerT {
                     expectedValue, numberPicker.getValue()
                 );
             });
+        UtilsT.executeWithCatching(Espresso::onIdle);
     }
 
 }

@@ -25,6 +25,7 @@ import puscas.mobilertapp.constants.Accelerator;
 import puscas.mobilertapp.constants.Constants;
 import puscas.mobilertapp.constants.ConstantsUI;
 import puscas.mobilertapp.constants.Scene;
+import puscas.mobilertapp.constants.State;
 import puscas.mobilertapp.utils.UtilsContext;
 import puscas.mobilertapp.utils.UtilsContextT;
 import puscas.mobilertapp.utils.UtilsT;
@@ -83,9 +84,10 @@ public final class PreviewTest extends AbstractTest {
         UtilsContextT.resetPickerValues(this.activity, Scene.OBJ.ordinal(), Accelerator.NAIVE, 99, 99);
 
         UtilsT.startRendering(false);
-        UtilsT.stopRendering();
+        UtilsContextT.waitUntil(this.activity, Constants.STOP, State.BUSY);
 
-        UtilsContextT.waitUntilRenderingDone(this.activity);
+        UtilsT.stopRendering();
+        UtilsContextT.waitUntil(this.activity, Constants.RENDER, State.IDLE, State.FINISHED);
 
         UtilsT.assertRenderButtonText(Constants.RENDER);
 
@@ -108,9 +110,10 @@ public final class PreviewTest extends AbstractTest {
         UtilsContextT.resetPickerValues(this.activity, Scene.SPHERES.ordinal(), Accelerator.NAIVE, 99, 99);
 
         UtilsT.startRendering(false);
-        UtilsT.stopRendering();
+        UtilsContextT.waitUntil(this.activity, Constants.STOP, State.BUSY);
 
-        UtilsContextT.waitUntilRenderingDone(this.activity);
+        UtilsT.stopRendering();
+        UtilsContextT.waitUntil(this.activity, Constants.RENDER, State.IDLE, State.FINISHED);
 
         UtilsT.assertRenderButtonText(Constants.RENDER);
 

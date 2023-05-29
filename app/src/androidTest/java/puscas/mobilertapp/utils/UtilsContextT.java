@@ -10,6 +10,7 @@ import androidx.test.espresso.matcher.ViewMatchers;
 
 import com.google.common.util.concurrent.Uninterruptibles;
 
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -21,7 +22,6 @@ import puscas.mobilertapp.MainActivity;
 import puscas.mobilertapp.MainRenderer;
 import puscas.mobilertapp.R;
 import puscas.mobilertapp.constants.Accelerator;
-import puscas.mobilertapp.constants.Constants;
 import puscas.mobilertapp.constants.ConstantsUI;
 import puscas.mobilertapp.constants.Shader;
 import puscas.mobilertapp.constants.State;
@@ -44,24 +44,23 @@ public final class UtilsContextT {
     }
 
     /**
-     * Helper method that waits until the Ray Tracing engine stops rendering
-     * the scene.
+     * Helper method that waits until the Ray Tracing engine reaches the expected {@link State}.
      *
-     * @param activity The {@link MainActivity} of MobileRT.
-     * @throws TimeoutException If the Ray Tracing engine didn't stop rendering the scene.
+     * @param activity           The {@link MainActivity} of MobileRT.
+     * @param expectedButtonText The expected {@link Button} text.
+     * @param expectedStates     The expected {@link State}s.
+     * @throws TimeoutException If the Ray Tracing engine didn't reach the expected {@link State}.
      */
-    public static void waitUntilRenderingDone(@NonNull final MainActivity activity)
-        throws TimeoutException {
-        logger.info("waitUntilRenderingDone start");
+    public static void waitUntil(@NonNull final MainActivity activity, final String expectedButtonText, final State... expectedStates) throws TimeoutException {
+        logger.info("waitUntil start, expected button: " + expectedButtonText + ", expected state: " + expectedStates[0].name());
         final AtomicBoolean done = new AtomicBoolean(false);
         final long advanceSecs = 3L;
 
         final DrawView drawView = UtilsT.getPrivateField(activity, "drawView");
         final MainRenderer renderer = drawView.getRenderer();
-        final ViewInteraction renderButtonView =
-            Espresso.onView(ViewMatchers.withId(R.id.renderButton));
+        final ViewInteraction renderButtonView = Espresso.onView(ViewMatchers.withId(R.id.renderButton));
 
-        for (long currentTimeSecs = 0L; currentTimeSecs < 300L && !done.get();
+        for (long currentTimeSecs = 0L; currentTimeSecs < 60L && !done.get();
              currentTimeSecs += advanceSecs) {
             Uninterruptibles.sleepUninterruptibly(advanceSecs, TimeUnit.SECONDS);
 
@@ -69,17 +68,17 @@ public final class UtilsContextT {
                 final Button renderButton = view.findViewById(R.id.renderButton);
                 final String renderButtonText = renderButton.getText().toString();
                 final State rendererState = renderer.getState();
-                logger.info("Checking if rendering done. State: '" + rendererState.name() + "', Button: '" + renderButtonText + "'");
-                if (Objects.equals(renderButtonText, Constants.RENDER) && Objects.equals(rendererState, State.IDLE)) {
+                logger.info("State: '" + rendererState.name() + "', Button: '" + renderButtonText + "'");
+                if (Objects.equals(renderButtonText, expectedButtonText) && Arrays.asList(expectedStates).contains(rendererState)) {
                     done.set(true);
-                    logger.info("Rendering done.");
+                    logger.info("waitUntil success");
                 }
             });
         }
 
-        logger.info("waitUntilRenderingDone finished");
+        logger.info("waitUntil finished");
         if (!done.get()) {
-            throw new TimeoutException("The Ray Tracing engine didn't stop rendering the scene.");
+            throw new TimeoutException("The Ray Tracing engine didn't reach the expected state.");
         }
     }
 
