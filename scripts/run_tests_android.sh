@@ -80,7 +80,8 @@ echo 'Set path to reports';
 reports_path='app/build/reports';
 
 echo 'Set path to instrumentation tests resources';
-mobilert_path='/data/local/tmp/MobileRT';
+internal_path='/data/local/tmp';
+mobilert_path="${internal_path}/MobileRT";
 sdcard_path='/mnt/sdcard/MobileRT';
 ###############################################################################
 ###############################################################################
@@ -121,11 +122,9 @@ clear_func() {
   kill -TERM "${pid_logcat}" 2> /dev/null || true;
   set -u;
 
-  pid_app=$(adb shell ps | grep -i puscas.mobilertapp | tr -s ' ' | cut -d ' ' -f 2);
-  echo "Killing pid of MobileRT: '${pid_app}'";
-  set +e;
-  adb shell 'kill -TERM '"${pid_app}"'; echo ::$?::';
-  set -e;
+  kill_mobilert_processes;
+  kill_gradle_processes;
+  kill_adb_processes;
 
   # Kill all processes in the whole process group, thus killing also descendants.
   trap - EXIT HUP INT QUIT ILL TRAP ABRT TERM; # Disable traps first, to avoid infinite loop.
@@ -141,6 +140,41 @@ catch_signal() {
   clear_func;
 
   echo '';
+}
+
+kill_mobilert_processes() {
+  pid_apps=$(adb shell ps | grep -i "puscas.mobilertapp" | tr -s ' ' | cut -d ' ' -f 2);
+  for pid_app in ${pid_apps}; do
+    echo "Killing pid of MobileRT: '${pid_app}'";
+    set +e;
+    adb shell 'kill -TERM '"${pid_app}";
+    set -e;
+  done
+}
+
+kill_gradle_processes() {
+  # shellcheck disable=SC2009
+  GRADLE_PROCESSES=$(ps aux | grep -i "mobilert" | grep -v "grep" | tr -s ' ' | cut -d ' ' -f 2);
+  echo "Killing any Gradle process, because it should be already killed: '${GRADLE_PROCESSES}'";
+  for GRADLE_PROCESS in ${GRADLE_PROCESSES}; do
+    echo "Killing: '${GRADLE_PROCESS}'";
+    kill -TERM "${GRADLE_PROCESS}";
+  done;
+}
+
+kill_adb_processes() {
+  # shellcheck disable=SC2009
+  ADB_PROCESSES=$(ps aux | grep -i " adb " | grep -v "grep" | tr -s ' ' | cut -d ' ' -f 2);
+  echo "Detected ADB process(es): '${ADB_PROCESSES}'";
+  set +u;
+  if [ -z "${CI}" ]; then
+    for ADB_PROCESS in ${ADB_PROCESSES}; do
+      echo "Killing: '${ADB_PROCESS}'";
+      kill -TERM "${ADB_PROCESS}";
+    done;
+    sleep 3;
+  fi
+  set -u;
 }
 ###############################################################################
 ###############################################################################
@@ -168,7 +202,7 @@ unlockDevice() {
     echo "Killing previous Gradle Daemon process, just in case it was stuck: '${GRADLE_DAEMON_PROCESSES}'";
     for GRADLE_DAEMON_PROCESS in ${GRADLE_DAEMON_PROCESSES}; do
       echo "Killing: '${GRADLE_DAEMON_PROCESS}'";
-      kill -KILL "${GRADLE_DAEMON_PROCESS}";
+      kill -TERM "${GRADLE_DAEMON_PROCESS}";
     done;
   fi
   set -u;
@@ -282,9 +316,6 @@ waitForEmulator() {
   echo 'Finding at least 1 Android device on.';
   _waitForEmulatorToBoot;
 
-  echo 'Prepare traps';
-  trap 'catch_signal ${?}' EXIT HUP INT QUIT ILL TRAP ABRT TERM;
-
   unlockDevice;
 
   adb_devices_running=$(callCommandUntilSuccess adb devices | grep -v 'List of devices attached' || true);
@@ -313,15 +344,17 @@ copyResources() {
   echo "sdcard_path_android: '${sdcard_path_android}'";
 
   echo 'Prepare copy unit tests';
+  callAdbShellCommandUntilSuccess adb shell 'rm -r '${internal_path}'; echo ::$?::';
+  set +e;
+  adb shell 'rm -r '${sdcard_path};
+  if [ "${androidApi}" -gt 29 ]; then
+    adb shell 'rm -r '${sdcard_path_android};
+  fi
+  set -e;
+
   callAdbShellCommandUntilSuccess adb shell 'mkdir -p '${mobilert_path}'; echo ::$?::';
   callAdbShellCommandUntilSuccess adb shell 'mkdir -p '${sdcard_path}'; echo ::$?::';
   callAdbShellCommandUntilSuccess adb shell 'mkdir -p '${sdcard_path_android}'; echo ::$?::';
-
-  callAdbShellCommandUntilSuccess adb shell 'rm -r '${mobilert_path}'; echo ::$?::';
-  callAdbShellCommandUntilSuccess adb shell 'rm -r '${sdcard_path}'; echo ::$?::';
-  if [ "${androidApi}" -gt 29 ]; then
-    callAdbShellCommandUntilSuccess adb shell 'rm -r '${sdcard_path_android}'; echo ::$?::';
-  fi
 
   callAdbShellCommandUntilSuccess adb shell 'mkdir -p '${mobilert_path}'/WavefrontOBJs/CornellBox; echo ::$?::';
   callAdbShellCommandUntilSuccess adb shell 'mkdir -p '${sdcard_path}'/WavefrontOBJs/teapot; echo ::$?::';
@@ -351,12 +384,24 @@ copyResources() {
   if [ "${androidApi}" -gt 31 ]; then
     echo "Not installing any file manager APK because the available ones are not compatible with Android API: ${androidApi}";
   elif [ "${androidApi}" -gt 30 ]; then
+    set +e;
+    adb shell "pm uninstall ${mobilert_path}/APKs/asus-file-manager-2-8-0-85-230220.apk;";
+    set -e;
     callAdbShellCommandUntilSuccess adb shell 'pm install -r '${mobilert_path}'/APKs/asus-file-manager-2-8-0-85-230220.apk; echo ::$?::';
   elif [ "${androidApi}" -gt 29 ]; then
+    set +e;
+    adb shell "pm uninstall ${mobilert_path}/APKs/com.asus.filemanager_2.7.0.28_220608-1520700140_minAPI30_apkmirror.com.apk;";
+    set -e;
     callAdbShellCommandUntilSuccess adb shell 'pm install -r '${mobilert_path}'/APKs/com.asus.filemanager_2.7.0.28_220608-1520700140_minAPI30_apkmirror.com.apk; echo ::$?::';
   elif [ "${androidApi}" -gt 16 ]; then
+    set +e;
+    adb shell "pm uninstall ${mobilert_path}/APKs/com.asus.filemanager.apk";
+    set -e;
     callAdbShellCommandUntilSuccess adb shell 'pm install -r '${mobilert_path}'/APKs/com.asus.filemanager.apk; echo ::$?::';
   elif [ "${androidApi}" -lt 16 ]; then
+    set +e;
+    adb shell "pm uninstall ${mobilert_path}/APKs/com.estrongs.android.pop_4.2.1.8-10057_minAPI14.apk;";
+    set -e;
     # This file manager is compatible with Android 4.0.3 (API 15) which the Asus one is not.
     callAdbShellCommandUntilSuccess adb shell 'pm install -r '${mobilert_path}'/APKs/com.estrongs.android.pop_4.2.1.8-10057_minAPI14.apk; echo ::$?::';
   fi
@@ -458,7 +503,7 @@ runInstrumentationTests() {
   if [ -z "${CI}" ]; then
     GRADLE_PROCESSES="$(jps | grep -i "gradle" | tr -s ' ' | cut -d ' ' -f 1)";
     for GRADLE_PROCESS in ${GRADLE_PROCESSES}; do
-      kill -KILL "${GRADLE_PROCESS}";
+      kill -TERM "${GRADLE_PROCESS}";
     done;
     sh gradlew --stop \
       --no-rebuild \
@@ -487,7 +532,12 @@ runInstrumentationTests() {
   callCommandUntilSuccess adb shell 'ls -la '${mobilert_path};
   unlockDevice;
   echo "Installing both APKs for tests and app.";
-  callAdbShellCommandUntilSuccess adb shell 'pm install -r '${mobilert_path}'/app-'${type}'-androidTest.apk; echo ::$?::';
+  set +e;
+  adb shell "pm uninstall ${mobilert_path}/app-${type}-androidTest.apk;";
+  adb shell "pm uninstall ${mobilert_path}/app-${type}.apk;";
+  adb shell rm -r /data/app/puscas.mobilertapp*;
+  set -e;
+  callCommandUntilSuccess adb shell ls -la /data/app/;
   callAdbShellCommandUntilSuccess adb shell 'pm install -r '${mobilert_path}'/app-'${type}'.apk; echo ::$?::';
   if [ "${androidApi}" -gt 29 ]; then
     echo "Giving permissions for MobileRT app to access any file from the external storage.";
@@ -528,21 +578,13 @@ runInstrumentationTests() {
 }
 
 _restartAdbProcesses() {
-  set +eu;
-  # shellcheck disable=SC2009
-  ADB_PROCESSES=$(ps aux | grep -i "adb" | grep -v "grep" | tr -s ' ' | cut -d ' ' -f 2);
-  echo "Detected ADB process(es): '${ADB_PROCESSES}'";
+  kill_adb_processes;
+  set +u;
   if [ -z "${CI}" ]; then
-    echo "Killing previous ADB process(es), just in case it was stuck: '${ADB_PROCESSES}'";
-    for ADB_PROCESS in ${ADB_PROCESSES}; do
-      echo "Killing: '${ADB_PROCESS}'";
-      kill -KILL "${ADB_PROCESS}";
-    done;
-    sleep 3;
     # Kill process(es) using same port as ADB
     killProcessesUsingPort 5037
   fi
-  set -eu;
+  set -u;
 }
 
 # Waits for the Android Emulator to boot.
@@ -564,6 +606,8 @@ _waitForEmulatorToBoot() {
 
 # Increase memory for heap.
 export GRADLE_OPTS="-Xmx4G -Xms4G -XX:ActiveProcessorCount=3";
+echo 'Prepare traps';
+trap 'catch_signal ${?}' EXIT HUP INT QUIT ILL TRAP ABRT TERM;
 clearOldBuildFiles;
 createReportsFolders;
 runEmulator;
@@ -571,6 +615,8 @@ waitForEmulator;
 copyResources;
 verifyResources;
 startCopyingLogcatToFile;
+kill_gradle_processes;
+kill_mobilert_processes;
 runUnitTests;
 runInstrumentationTests;
 # checkLastModifiedFiles;

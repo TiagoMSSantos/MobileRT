@@ -88,7 +88,7 @@ public final class UiTest extends AbstractTest {
      * @param expectedValue The expected value for the {@link CheckBox}.
      */
     public static void clickPreviewCheckBox(final boolean expectedValue) {
-        UtilsT.executeWithCatching(Espresso::onIdle);
+        UtilsT.waitForAppToIdle();
         Espresso.onView(ViewMatchers.withId(R.id.preview))
             .check((view, exception) ->
                 assertPreviewCheckBox(view, !expectedValue)

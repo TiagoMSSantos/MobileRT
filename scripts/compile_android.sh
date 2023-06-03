@@ -86,7 +86,9 @@ echo "type: '${type}'";
 
 clearAllBuildFiles() {
   callCommandUntilSuccess rm -rf build/;
+  set +e;
   rm -rf app/build/; # Note that Android Studio might still be using this folder because some process might still be using a ".fuse_hidden<id>" file.
+  set -e;
 
   if [ "${recompile}" = 'yes' ]; then
     callCommandUntilSuccess rm -rf app/.cxx/;

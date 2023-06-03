@@ -111,7 +111,7 @@ public abstract class AbstractTest {
         Preconditions.checkNotNull(this.activity, "The Activity didn't start as expected!");
         Intents.init();
 
-        UtilsT.executeWithCatching(Espresso::onIdle);
+        UtilsT.waitForAppToIdle();
         // Wait a bit for the permissions to be granted to the app before starting the test. Necessary for Android 12+.
         Uninterruptibles.sleepUninterruptibly(2L, TimeUnit.SECONDS);
     }
@@ -136,7 +136,7 @@ public abstract class AbstractTest {
         UtilsT.executeWithCatching(Espresso::pressBackUnconditionally);
 
         this.activity = null;
-        UtilsT.executeWithCatching(Espresso::onIdle);
+        UtilsT.waitForAppToIdle();
 
         Intents.release();
     }
@@ -198,7 +198,7 @@ public abstract class AbstractTest {
             permission
         ) != PackageManager.PERMISSION_GRANTED) {
             logger.info("Waiting for the permission '" + permission + "'to be granted to the app.");
-            UtilsT.executeWithCatching(Espresso::onIdle);
+            UtilsT.waitForAppToIdle();
             Uninterruptibles.sleepUninterruptibly(2L, TimeUnit.SECONDS);
         }
         logger.info("Permission '" + permission + "' granted to the app!");
@@ -241,7 +241,7 @@ public abstract class AbstractTest {
 
         UtilsT.assertRenderButtonText(Constants.RENDER);
         UtilsT.testStateAndBitmap(expectedSameValues);
-        UtilsT.executeWithCatching(Espresso::onIdle);
+        UtilsT.waitForAppToIdle();
     }
 
 }

@@ -769,6 +769,11 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
 
                 LOG_DEBUG("rtRenderIntoBitmap step 5");
                 ::std::int32_t rep {1};
+                {
+                    const auto result {javaVM_->DetachCurrentThread()};
+                    ASSERT(result == JNI_OK, "Couldn't detach the current thread from JVM.");
+                    static_cast<void> (result);
+                }
                 LOG_DEBUG("WILL START TO RENDER");
                 MobileRT::checkSystemError("starting render timer");
                 const auto startRendering {::std::chrono::system_clock::now()};
@@ -796,6 +801,17 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
                     if (state_ != State::STOPPED) {
                         state_ = State::FINISHED;
                         LOG_DEBUG("STATE = FINISHED");
+                    }
+                    {
+                        MobileRT::checkSystemError("rtRenderIntoBitmap step 6");
+                        const auto result {javaVM_->AttachCurrentThread(const_cast<JNIEnv **> (&env), nullptr)};
+                        if (errno == EINVAL) {
+                            // Ignore invalid argument (necessary for Android API 16)
+                            errno = 0;
+                        }
+                        MobileRT::checkSystemError("rtRenderIntoBitmap step 7");
+                        ASSERT(result == JNI_OK, "Couldn't attach current thread to JVM.");
+                        static_cast<void> (result);
                     }
                     {
                         const auto result{AndroidBitmap_unlockPixels(env, globalBitmap)};

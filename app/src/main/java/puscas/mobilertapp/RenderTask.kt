@@ -14,7 +14,6 @@ import puscas.mobilertapp.constants.ConstantsUI
 import puscas.mobilertapp.constants.State
 import puscas.mobilertapp.utils.AsyncTaskCoroutine
 import puscas.mobilertapp.utils.Utils
-import java.lang.ref.WeakReference
 import java.math.RoundingMode
 import java.text.NumberFormat
 import java.util.Locale
@@ -27,7 +26,7 @@ import java.util.logging.Logger
  * An asynchronous task to render a frame and update the [TextView] text.
  * At the end of the task, it sets the render [Button] to "Render".
  *
- * @property requestRender  A [Runnable] to the [DrawView.requestRender] method which is alled in the [RenderTask.timer].
+ * @property requestRender  A [Runnable] to the [DrawView.requestRender] method which is used in the [RenderTask.timer].
  * @property finishRender   A [Runnable] method which stops the Ray Tracer engine and sets the [RenderTask.stateT] to [State.IDLE].
  * @property updateInterval The interval in `TimeUnit.MILLISECONDS` between each call to the [RenderTask.timer] [Runnable].
  * @property primitivesT    The number of primitives and lights in the scene.
@@ -47,8 +46,8 @@ class RenderTask private constructor(
     private val threadsT: String,
     private val samplesPixelT: String,
     private val samplesLightT: String,
-    private val textView: WeakReference<TextView>,
-    private val buttonRender: WeakReference<Button>,
+    private val textView: TextView,
+    private val buttonRender: Button,
 ) : AsyncTaskCoroutine() {
 
     /**
@@ -259,7 +258,7 @@ class RenderTask private constructor(
         val aux = (fpsT + fpsRenderT + resolutionT + threadsT + samplesPixelT
                 + samplesLightT + sampleT + ConstantsUI.LINE_SEPARATOR
                 + stateT + allocatedT + timeFrameT + timeT + primitivesT)
-        textView.get()!!.text = aux
+        textView.text = aux
     }
 
     override fun onPreExecute() {
@@ -290,7 +289,7 @@ class RenderTask private constructor(
         requestRender.run()
         MainActivity.resetErrno()
         finishRender.run()
-        buttonRender.get()!!.setText(R.string.render)
+        buttonRender.setText(R.string.render)
         val message = "onPostExecute" + ConstantsMethods.FINISHED
         logger.info(message)
     }
@@ -309,8 +308,8 @@ class RenderTask private constructor(
             ",t:" + config.numThreads,
             ",spp:" + config.samples.samplesPixel,
             ",spl:" + config.samples.samplesLight,
-            WeakReference(config.textView),
-            WeakReference(config.buttonRender),
+            config.textView,
+            config.buttonRender,
         )
     }
 }

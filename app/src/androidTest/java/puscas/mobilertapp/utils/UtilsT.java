@@ -16,6 +16,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import java8.util.J8Arrays;
@@ -154,7 +156,7 @@ public final class UtilsT {
     public static void startRendering(final boolean expectedSameValues) {
         logger.info("startRendering");
         assertRenderButtonText(Constants.RENDER);
-        UtilsT.executeWithCatching(Espresso::onIdle);
+        UtilsT.waitForAppToIdle();
         Espresso.onView(ViewMatchers.withId(R.id.renderButton))
             .perform(new ViewActionButton(expectedSameValues ? Constants.RENDER : Constants.STOP, false));
         logger.info("startRendering" + ConstantsMethods.FINISHED);
@@ -169,7 +171,7 @@ public final class UtilsT {
         assertRenderButtonText(Constants.STOP);
         Espresso.onView(ViewMatchers.withId(R.id.renderButton))
             .perform(new ViewActionButton(Constants.RENDER, false));
-        UtilsT.executeWithCatching(Espresso::onIdle);
+        UtilsT.waitForAppToIdle();
         assertRenderButtonText(Constants.RENDER);
         logger.info("stopRendering" + ConstantsMethods.FINISHED);
     }
@@ -225,12 +227,31 @@ public final class UtilsT {
      * @param method The {@link Runnable} to call.
      */
     public static void executeWithCatching(@NonNull final Runnable method) {
-        logger.info(ConstantsMethods.RUN);
+        logger.info("executeWithCatching");
         try {
             method.run();
         } catch (final RuntimeException ex) {
-            logger.warning(ex.getMessage());
+            logger.warning("Error: " + ex.getMessage());
         }
+    }
+
+    /**+
+     * Loops the main thread until the app goes idle.
+     */
+    public static void waitForAppToIdle() {
+        final CountDownLatch latch = new CountDownLatch(1);
+        UtilsT.executeWithCatching(Espresso.onIdle(() -> {
+            latch.countDown();
+            return null;
+        }));
+        final boolean result;
+        try {
+            result = latch.await(1L, TimeUnit.MINUTES);
+        } catch (final InterruptedException ex) {
+            throw new RuntimeException(ex);
+        }
+        Assert.assertTrue("The CountDownLatch should be finished.", result);
+        Assert.assertEquals("The CountDownLatch should be zero.", 0L, latch.getCount());
     }
 
 }

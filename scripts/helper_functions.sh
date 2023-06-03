@@ -344,7 +344,7 @@ killProcessesUsingPort() {
 clearOldBuildFiles() {
   files_being_used=$(find . -iname "*.fuse_hidden*" || true);
   retry_files=0;
-  while [ "${files_being_used}" != '' ] && [ ${retry_files} -lt 3 ]; do
+  while [ "${files_being_used}" != '' ] && [ ${retry_files} -lt 10 ]; do
     retry_files=$(( retry_files + 1 ));
     echo "files_being_used: '${files_being_used}'";
     old_IFS=${IFS};

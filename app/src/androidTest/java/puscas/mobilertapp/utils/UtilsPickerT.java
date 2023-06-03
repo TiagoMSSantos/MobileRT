@@ -39,8 +39,8 @@ public final class UtilsPickerT {
     public static void changePickerValue(@NonNull final String pickerName,
                                          final int pickerId,
                                          final int expectedValue) {
-        logger.info("changePickerValue");
-        UtilsT.executeWithCatching(Espresso::onIdle);
+        logger.info("changePickerValue picker: " + pickerName + ", value: " + expectedValue);
+        UtilsT.waitForAppToIdle();
         Espresso.onView(ViewMatchers.withId(pickerId))
             .perform(new ViewActionNumberPicker(expectedValue))
             .check((view, exception) -> {
@@ -49,7 +49,7 @@ public final class UtilsPickerT {
                     expectedValue, numberPicker.getValue()
                 );
             });
-        UtilsT.executeWithCatching(Espresso::onIdle);
+        UtilsT.waitForAppToIdle();
     }
 
 }
