@@ -12,7 +12,6 @@ import android.widget.Button;
 
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.intent.Intents;
@@ -80,8 +79,11 @@ public abstract class AbstractTest {
     /**
      * The {@link MainActivity} to test.
      */
-    @Nullable
-    protected MainActivity activity = null;
+    @NonNull
+    protected MainActivity activity = this.mainActivityActivityTestRule.launchActivity(new Intent(Intent.ACTION_PICK)
+        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_PREFIX_URI_PERMISSION | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION));
 
 
     /**
@@ -93,18 +95,9 @@ public abstract class AbstractTest {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         logger.info(methodName);
 
-        final Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_PREFIX_URI_PERMISSION | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-        }
-
-        this.activity = this.mainActivityActivityTestRule.launchActivity(intent);
+        Preconditions.checkNotNull(this.activity, "The Activity didn't start as expected!");
         grantPermissions(this.activity);
 
-        Preconditions.checkNotNull(this.activity, "The Activity didn't start as expected!");
         Intents.init();
 
         UtilsT.waitForAppToIdle();
@@ -129,8 +122,6 @@ public abstract class AbstractTest {
             Uninterruptibles.sleepUninterruptibly(1L, TimeUnit.SECONDS);
         }
         UtilsT.executeWithCatching(Espresso::pressBackUnconditionally);
-
-        this.activity = null;
         UtilsT.waitForAppToIdle();
 
         Intents.release();
@@ -165,7 +156,7 @@ public abstract class AbstractTest {
      *
      * @param context The {@link Context} of the {@link MainActivity}.
      */
-    private static void grantPermissions(final Context context) {
+    private static void grantPermissions(@NonNull final Context context) {
         logger.info("Granting permissions to the MainActivity to be able to read files from an external storage.");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             InstrumentationRegistry.getInstrumentation().getUiAutomation().grantRuntimePermission(
@@ -187,7 +178,7 @@ public abstract class AbstractTest {
      * @param context    The {@link Context}.
      * @param permission The permission which should be granted.
      */
-    private static void waitForPermission(final Context context, final String permission) {
+    private static void waitForPermission(@NonNull final Context context, @NonNull final String permission) {
         while (ContextCompat.checkSelfPermission(
             context,
             permission
