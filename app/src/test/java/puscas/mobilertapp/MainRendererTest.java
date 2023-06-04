@@ -26,7 +26,6 @@ import java.nio.ByteBuffer;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.Nonnull;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
@@ -44,7 +43,7 @@ public class MainRendererTest {
     /**
      * The {@link Rule} for the {@link MainActivity} for each test.
      */
-    @Nonnull
+    @NonNull
     @Rule
     public PowerMockRule rule = new PowerMockRule();
 

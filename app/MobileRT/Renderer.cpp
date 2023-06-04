@@ -109,15 +109,15 @@ void Renderer::renderScene(::std::int32_t *const bitmap, const ::std::int32_t ti
     const auto pixelWidth {0.5F / this->width_};
     const auto pixelHeight {0.5F / this->height_};
     ::glm::vec3 pixelRgb {};
-    LOG_DEBUG("renderScene (tid: ", tid, ")");
+    LOG_DEBUG("(tid: ", tid, ") renderScene");
     const auto currentTidStr {::std::string("renderScene (" + ::std::to_string(tid) + ")")};
     MobileRT::checkSystemError((currentTidStr + " start").c_str());
 
     for (::std::int32_t sample {}; sample < this->samplesPixel_; ++sample) {
-        LOG_DEBUG("renderScene (tid: ", tid, "), sample: ", sample);
+        LOG_DEBUG("(tid: ", tid, ") renderScene sample: ", sample);
         while (true) {
             const auto tile {getTile(sample)};
-            LOG_DEBUG("Will (tid: ", tid, ") get tile: ", tile,", bx=", this->blockSizeX_, ", by=", this->blockSizeY_, ", spp=", sample, " (total: ", this->samplesPixel_, ")");
+            LOG_DEBUG("(tid: ", tid, ") Will get tile: ", tile,", bx=", this->blockSizeX_, ", by=", this->blockSizeY_, ", spp=", sample, " (total: ", this->samplesPixel_, ")");
             if (tile >= 1.0F) {
                 break;
             }
@@ -125,7 +125,7 @@ void Renderer::renderScene(::std::int32_t *const bitmap, const ::std::int32_t ti
             const auto pixel {roundBlock * this->blockSizeX_ % this->resolution_};
             const auto startY {((pixel / this->width_) * this->blockSizeY_) % this->height_};
             const auto endY {startY + this->blockSizeY_};
-            LOG_DEBUG("Will (tid: ", tid, ") render a tile. roundBlock: '", roundBlock, "', pixel: '", pixel, "', startY: '", startY, "', endY: '", endY, "'");
+            LOG_DEBUG("(tid: ", tid, ") Will render a tile. roundBlock: '", roundBlock, "', pixel: '", pixel, "', startY: '", startY, "', endY: '", endY, "'");
             for (auto y {startY}; y < endY; ++y) {
                 const auto v {y * invImgHeight};
                 const auto yWidth {y * this->width_};
@@ -151,15 +151,15 @@ void Renderer::renderScene(::std::int32_t *const bitmap, const ::std::int32_t ti
                     *bitmapPixel = pixelColor;
                 }
             }
-            LOG_DEBUG("Tile rendered (tid: ", tid, ")");
+            LOG_DEBUG("(tid: ", tid, ") Tile rendered");
         }
         if (tid == 0) {
             this->sample_ = sample + 1;
-            LOG_DEBUG("Sample (tid: ", tid , ") = ", this->sample_);
+            LOG_DEBUG("(tid: ", tid, ") Sample = ", this->sample_);
         }
-        LOG_DEBUG("renderScene (tid: ", tid, ") sample: ", sample, " finished");
+        LOG_DEBUG("(tid: ", tid, ") renderScene sample: ", sample, " finished");
     }
-    LOG_DEBUG("renderScene (tid: ", tid,") finished");
+    LOG_DEBUG("(tid: ", tid, ") renderScene finished");
     MobileRT::checkSystemError((currentTidStr + " end").c_str());
 }
 

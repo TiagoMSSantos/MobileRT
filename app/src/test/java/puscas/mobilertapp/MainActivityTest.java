@@ -6,6 +6,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 
+import androidx.annotation.NonNull;
+
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
@@ -28,8 +30,6 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.logging.Logger;
 
-import javax.annotation.Nonnull;
-
 import puscas.mobilertapp.utils.UtilsContext;
 
 /**
@@ -46,7 +46,7 @@ public final class MainActivityTest {
     /**
      * The {@link Rule} for the {@link MainActivity} for each test.
      */
-    @Nonnull
+    @NonNull
     @Rule
     public PowerMockRule rule = new PowerMockRule();
 

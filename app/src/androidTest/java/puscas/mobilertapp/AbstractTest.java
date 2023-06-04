@@ -12,6 +12,7 @@ import android.widget.Button;
 
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.intent.Intents;
@@ -33,10 +34,6 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.OverridingMethodsMustInvokeSuper;
 
 import puscas.mobilertapp.constants.Accelerator;
 import puscas.mobilertapp.constants.Constants;
@@ -92,7 +89,6 @@ public abstract class AbstractTest {
      */
     @Before
     @CallSuper
-    @OverridingMethodsMustInvokeSuper
     public void setUp() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         logger.info(methodName);
@@ -121,7 +117,6 @@ public abstract class AbstractTest {
      */
     @After
     @CallSuper
-    @OverridingMethodsMustInvokeSuper
     public void tearDown() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         logger.info(methodName);
@@ -147,7 +142,7 @@ public abstract class AbstractTest {
      * @param activity The {@link Activity} used by the tests.
      * @return {@code true} if it is still running, otherwise {@code false}.
      */
-    private boolean isActivityRunning(@Nonnull final Activity activity) {
+    private boolean isActivityRunning(@NonNull final Activity activity) {
         // Note that 'Activity#isDestroyed' only exists on Android API 17+.
         // More info: https://developer.android.com/reference/android/app/Activity#isDestroyed()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
@@ -238,6 +233,7 @@ public abstract class AbstractTest {
 
         UtilsT.startRendering(expectedSameValues);
         UtilsContextT.waitUntil(this.activity, Constants.RENDER, State.IDLE, State.FINISHED);
+        UtilsT.waitForAppToIdle();
 
         UtilsT.assertRenderButtonText(Constants.RENDER);
         UtilsT.testStateAndBitmap(expectedSameValues);

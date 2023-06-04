@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 
@@ -28,8 +30,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
-import javax.annotation.Nonnull;
 
 import kotlin.Pair;
 import puscas.mobilertapp.configs.Config;
@@ -51,7 +51,7 @@ public class DrawViewTest {
     /**
      * The {@link Rule} for the {@link MainActivity} for each test.
      */
-    @Nonnull
+    @NonNull
     @Rule
     public PowerMockRule rule = new PowerMockRule();
 

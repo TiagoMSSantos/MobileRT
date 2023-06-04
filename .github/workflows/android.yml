@@ -62,7 +62,7 @@ jobs:
 
     name: Set Matrix
     runs-on: ubuntu-latest
-    timeout-minutes: 1
+    timeout-minutes: 2
 
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}

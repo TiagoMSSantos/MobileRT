@@ -40,8 +40,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Logger;
 
-import javax.annotation.Nonnull;
-
 import java8.util.Optional;
 import java8.util.stream.IntStreams;
 import java8.util.stream.StreamSupport;
@@ -175,7 +173,7 @@ public final class MainActivity extends Activity {
      * @param message The message to show on the UI.
      * @implNote Only the UI thread can update the UI with messages by using {@link Toast}.
      */
-    public static void showUiMessage(@Nonnull final String message) {
+    public static void showUiMessage(@NonNull final String message) {
         currentInstance.runOnUiThread(() -> {
             logger.info("showUiMessage: " + message);
             Toast.makeText(currentInstance.getApplicationContext(), message, Toast.LENGTH_LONG)
@@ -238,7 +236,7 @@ public final class MainActivity extends Activity {
         numberPicker.setValue(defaultValue);
         numberPicker.setDisplayedValues(names);
 
-        // For Android API < 15, this method crashes, so it's necessary to investigate it.
+        // TODO: For Android API < 15, this method crashes, so it's necessary to investigate it.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             numberPicker.setWrapSelectorWheel(true);
         }
@@ -856,7 +854,7 @@ public final class MainActivity extends Activity {
         this.pickerResolutions.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
         this.pickerResolutions.setValue(pickerSizes);
 
-        // For Android API < 15, this method crashes, so it's necessary to investigate it.
+        // TODO: For Android API < 15, this method crashes, so it's necessary to investigate it.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             this.pickerResolutions.setWrapSelectorWheel(true);
         }
@@ -899,7 +897,7 @@ public final class MainActivity extends Activity {
         this.pickerThreads.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
         this.pickerThreads.setValue(pickerThreads);
 
-        // For Android API < 15, this method crashes, so it's necessary to investigate it.
+        // TODO: For Android API < 15, this method crashes, so it's necessary to investigate it.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             this.pickerThreads.setWrapSelectorWheel(true);
         }

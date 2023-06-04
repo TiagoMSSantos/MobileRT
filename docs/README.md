@@ -19,7 +19,7 @@
 [comment]: # (Continuous Integration & Code coverage)
 [![Unit Tests C++](https://github.com/TiagoMSSantos/MobileRT/workflows/Native%20(Qt)/badge.svg)](https://github.com/TiagoMSSantos/MobileRT/actions)
 [![Tests Android](https://github.com/TiagoMSSantos/MobileRT/workflows/Android/badge.svg)](https://github.com/TiagoMSSantos/MobileRT/actions)
-[![codecov](https://codecov.io/gh/TiagoMSSantos/MobileRT/branch/master/graph/badge.svg)](https://codecov.io/gh/TiagoMSSantos/MobileRT)
+[![codecov](https://codecov.io/gh/TiagoMSSantos/MobileRT/branch/master/graph/badge.svg)](https://app.codecov.io/gh/TiagoMSSantos/MobileRT/tree/master)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=TiagoMSSantos_MobileRT&metric=alert_status)](https://sonarcloud.io/dashboard?id=TiagoMSSantos_MobileRT)
 
 <!-- 

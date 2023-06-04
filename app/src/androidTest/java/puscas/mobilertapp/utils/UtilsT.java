@@ -12,10 +12,6 @@ import com.google.common.base.Preconditions;
 import org.junit.Assert;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
@@ -58,7 +54,6 @@ public final class UtilsT {
      *           field from the {@link Object}.
      */
     @NonNull
-    @SuppressWarnings("unchecked")
     public static <T> T getPrivateField(@NonNull final Object clazz,
                                         @NonNull final String fieldName) {
         final Field field;
@@ -80,46 +75,6 @@ public final class UtilsT {
         Preconditions.checkNotNull(privateField, "privateField shouldn't be null");
 
         return privateField;
-    }
-
-    /**
-     * Helper method that invokes a private method from an {@link Object}.
-     *
-     * @param clazz          The {@link Object} to invoke the private method.
-     * @param methodName     The name of the method to invoke.
-     * @param parameterTypes The types of the parameters of the method.
-     * @param args           The arguments to pass to the method.
-     * @return The return value from the private method.
-     * @implNote This method uses reflection to be able to invoke the private
-     *           method from the {@link Object}.
-     */
-    @NonNull
-    @SuppressWarnings("unchecked")
-    static <T> T invokePrivateMethod(@NonNull final Object clazz,
-                                     @NonNull final String methodName,
-                                     @NonNull final List<Class<?>> parameterTypes,
-                                     @NonNull final Collection<Object> args) {
-        final Method method;
-        try {
-            // Use reflection to access the private method.
-            method = clazz.getClass().getDeclaredMethod(methodName, parameterTypes.toArray(new Class<?>[0]));
-        } catch (final NoSuchMethodException ex) {
-            throw new FailureException(ex);
-        }
-        Preconditions.checkNotNull(method, "method shouldn't be null");
-        method.setAccessible(true); // Make the method public.
-
-        final T privateMethodReturnValue;
-        try {
-            privateMethodReturnValue = (T) method.invoke(clazz, args.toArray(new Object[0]));
-        } catch (final IllegalAccessException ex) {
-            throw new FailureException(ex);
-        } catch (final InvocationTargetException ex) {
-            throw new FailureException(ex);
-        }
-        Preconditions.checkNotNull(privateMethodReturnValue, "privateMethodReturnValue shouldn't be null");
-
-        return privateMethodReturnValue;
     }
 
     /**
@@ -168,7 +123,6 @@ public final class UtilsT {
      */
     public static void stopRendering() {
         logger.info("stopRendering");
-        assertRenderButtonText(Constants.STOP);
         Espresso.onView(ViewMatchers.withId(R.id.renderButton))
             .perform(new ViewActionButton(Constants.RENDER, false));
         UtilsT.waitForAppToIdle();

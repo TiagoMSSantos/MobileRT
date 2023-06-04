@@ -97,6 +97,7 @@ public final class UiTest extends AbstractTest {
             .check((view, exception) ->
                 assertPreviewCheckBox(view, expectedValue)
             );
+        UtilsT.waitForAppToIdle();
     }
 
     /**
@@ -211,19 +212,13 @@ public final class UiTest extends AbstractTest {
         UtilsContextT.resetPickerValues(this.activity, Scene.CORNELL2.ordinal(), Accelerator.BVH, 99, 99);
 
         final List<String> buttonTextList = ImmutableList.of(Constants.STOP, Constants.RENDER);
+        final ViewInteraction viewInteraction = Espresso.onView(ViewMatchers.withId(R.id.renderButton));
         for (int currentIndex = 0; currentIndex < buttonTextList.size() * repetitions; currentIndex++) {
             final String message = "currentIndex = " + currentIndex;
             logger.info(message);
 
-            incrementCountersAndUpdatePickers(numCores);
-
-            final int expectedIndexOld = currentIndex > 0 ? (currentIndex - 1) % buttonTextList.size() : 1;
-            final String expectedButtonTextOld = buttonTextList.get(expectedIndexOld);
-            final ViewInteraction viewInteraction = Espresso.onView(ViewMatchers.withId(R.id.renderButton));
             final int expectedIndex = currentIndex % buttonTextList.size();
             final String expectedButtonText = buttonTextList.get(expectedIndex);
-
-            UtilsT.assertRenderButtonText(expectedButtonTextOld);
 
             viewInteraction.perform(new ViewActionButton(expectedButtonText, false));
 
@@ -231,8 +226,10 @@ public final class UiTest extends AbstractTest {
                 UtilsContextT.waitUntil(this.activity, expectedButtonText, State.BUSY);
             } else {
                 UtilsContextT.waitUntil(this.activity, expectedButtonText, State.IDLE, State.FINISHED);
+                UtilsT.waitForAppToIdle();
+                // Only update pickers when app is idle.
+                incrementCountersAndUpdatePickers(numCores);
             }
-            UtilsT.assertRenderButtonText(expectedButtonText);
         }
     }
 

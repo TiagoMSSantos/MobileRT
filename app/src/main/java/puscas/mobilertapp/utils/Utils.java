@@ -162,8 +162,7 @@ public final class Utils {
      * @return The current displayed resolution in the {@link NumberPicker}.
      */
     @NonNull
-    public static Pair<Integer, Integer> getResolutionFromPicker(
-        @NonNull final NumberPicker picker) {
+    public static Pair<Integer, Integer> getResolutionFromPicker(@NonNull final NumberPicker picker) {
         logger.info("getResolutionFromPicker");
 
         try {

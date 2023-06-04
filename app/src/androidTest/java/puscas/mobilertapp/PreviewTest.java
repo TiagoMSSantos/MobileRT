@@ -88,6 +88,7 @@ public final class PreviewTest extends AbstractTest {
 
         UtilsT.stopRendering();
         UtilsContextT.waitUntil(this.activity, Constants.RENDER, State.IDLE, State.FINISHED);
+        UtilsT.waitForAppToIdle();
 
         UtilsT.assertRenderButtonText(Constants.RENDER);
 
@@ -114,6 +115,7 @@ public final class PreviewTest extends AbstractTest {
 
         UtilsT.stopRendering();
         UtilsContextT.waitUntil(this.activity, Constants.RENDER, State.IDLE, State.FINISHED);
+        UtilsT.waitForAppToIdle();
 
         UtilsT.assertRenderButtonText(Constants.RENDER);
 
