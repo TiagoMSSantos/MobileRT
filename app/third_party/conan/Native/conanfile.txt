@@ -6,7 +6,7 @@ gtest/1.12.1
 #tinyobjloader/1.0.6 # Necessary version 1.0.7 at least, because it supports colors.
 glm/cci.20220420
 stb/cci.20210910
-pcg-cpp/cci.20220409
+pcg-cpp/cci.20210406
 
 [generators]
 CMakeDeps
