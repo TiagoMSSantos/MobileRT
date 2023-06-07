@@ -1,5 +1,7 @@
 package puscas.mobilertapp;
 
+import android.util.Log;
+
 /**
  * Helper class which contains helper constants for the tests.
  */
@@ -22,4 +24,8 @@ public final class ConstantsAndroidTests {
      */
     public static final String BUTTON_MESSAGE = "Button message is not the expected.";
 
+    /**
+     * The {@link Log} message to be shown when mocking the external file manager application reply.
+     */
+    public static final String MOCK_FILE_MANAGER_REPLY = "Mocking the reply as the external file manager application, to select an OBJ file.";
 }

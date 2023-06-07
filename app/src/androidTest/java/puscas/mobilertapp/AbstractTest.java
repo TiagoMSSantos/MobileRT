@@ -3,10 +3,14 @@ package puscas.mobilertapp;
 import android.Manifest;
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.Instrumentation;
+import android.content.ClipData;
+import android.content.ClipDescription;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.widget.Button;
 
@@ -15,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.intent.Intents;
+import androidx.test.espresso.intent.matcher.IntentMatchers;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 
@@ -28,6 +33,8 @@ import org.junit.Rule;
 import org.junit.rules.TestRule;
 import org.junit.rules.Timeout;
 
+import java.io.File;
+import java.nio.file.FileSystem;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -40,6 +47,7 @@ import puscas.mobilertapp.constants.ConstantsUI;
 import puscas.mobilertapp.constants.Scene;
 import puscas.mobilertapp.constants.Shader;
 import puscas.mobilertapp.constants.State;
+import puscas.mobilertapp.utils.UtilsContext;
 import puscas.mobilertapp.utils.UtilsContextT;
 import puscas.mobilertapp.utils.UtilsPickerT;
 import puscas.mobilertapp.utils.UtilsT;
@@ -229,6 +237,45 @@ public abstract class AbstractTest {
         UtilsT.assertRenderButtonText(Constants.RENDER);
         UtilsT.testStateAndBitmap(expectedSameValues);
         UtilsT.waitForAppToIdle();
+    }
+
+    /**
+     * Helper method that mocks the reply of an external file manager.
+     * It's expected that the provided path to the {@link File}, is relative to the SD card, whether
+     * external or internal storage.
+     *
+     * @param externalSdcard Whether the {@link File} is in the external SD Card or in the internal
+     *                       storage.
+     * @param filesPath      The relative path to multiple {@link File}s. The path should be
+     *                       relative to the external SD card path or to the internal storage path
+     *                       in the Android {@link FileSystem}.
+     */
+    protected void mockFileManagerReply(final boolean externalSdcard, final String... filesPath) {
+        logger.info(ConstantsAndroidTests.MOCK_FILE_MANAGER_REPLY);
+        final Intent resultData;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+            resultData = new Intent(Intent.ACTION_GET_CONTENT);
+        } else {
+            resultData = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        }
+        resultData.addCategory(Intent.CATEGORY_OPENABLE);
+        resultData.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_PREFIX_URI_PERMISSION | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            resultData.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+        }
+        final String storagePath = externalSdcard ? UtilsContext.getSdCardPath(this.activity) : UtilsContext.getInternalStoragePath(this.activity);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            final Uri firstFile = Uri.fromFile(new File(storagePath + filesPath[0]));
+            final ClipData clipData = new ClipData(new ClipDescription("Scene", new String[]{"*" + ConstantsUI.FILE_SEPARATOR + "*"}), new ClipData.Item(firstFile));
+            for (int index = 1; index < filesPath.length; ++index) {
+                clipData.addItem(new ClipData.Item(Uri.fromFile(new File(storagePath + filesPath[index]))));
+            }
+            resultData.setClipData(clipData);
+        } else {
+            resultData.setData(Uri.fromFile(new File(storagePath + filesPath[0])));
+        }
+        final Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
+        Intents.intending(IntentMatchers.anyIntent()).respondWith(result);
     }
 
 }
