@@ -9,7 +9,6 @@ import android.widget.NumberPicker;
 
 import androidx.annotation.NonNull;
 import androidx.test.espresso.Espresso;
-import androidx.test.espresso.ViewInteraction;
 import androidx.test.espresso.action.ViewActions;
 import androidx.test.espresso.matcher.ViewMatchers;
 
@@ -162,7 +161,7 @@ public final class UiTest extends AbstractTest {
      * Tests clicking the render {@link Button} many times without preview.
      *
      * @throws TimeoutException If the Ray Tracing engine didn't reach the expected {@link State}.
-     * @implNote This test can take more than 2 min in CI.
+     * @implNote This test can take more than 2 minutes in CI.
      */
     @Test(timeout = 3L * 60L * 1000L)
     public void testClickRenderButtonManyTimesWithoutPreview() throws TimeoutException {
@@ -176,7 +175,7 @@ public final class UiTest extends AbstractTest {
      * Tests clicking the render {@link Button} many times with preview.
      *
      * @throws TimeoutException If the Ray Tracing engine didn't reach the expected {@link State}.
-     * @implNote This test can take more than 2 min in CI.
+     * @implNote This test can take more than 2 minutes in CI.
      */
     @Test(timeout = 3L * 60L * 1000L)
     public void testClickRenderButtonManyTimesWithPreview() throws TimeoutException {
@@ -212,7 +211,6 @@ public final class UiTest extends AbstractTest {
         UtilsContextT.resetPickerValues(this.activity, Scene.CORNELL2.ordinal(), Accelerator.BVH, 99, 99);
 
         final List<String> buttonTextList = ImmutableList.of(Constants.STOP, Constants.RENDER);
-        final ViewInteraction viewInteraction = Espresso.onView(ViewMatchers.withId(R.id.renderButton));
         for (int currentIndex = 0; currentIndex < buttonTextList.size() * repetitions; currentIndex++) {
             final String message = "currentIndex = " + currentIndex;
             logger.info(message);
@@ -220,7 +218,8 @@ public final class UiTest extends AbstractTest {
             final int expectedIndex = currentIndex % buttonTextList.size();
             final String expectedButtonText = buttonTextList.get(expectedIndex);
 
-            viewInteraction.perform(new ViewActionButton(expectedButtonText, false));
+            Espresso.onView(ViewMatchers.withId(R.id.renderButton))
+                .perform(new ViewActionButton(expectedButtonText, false));
 
             if (expectedIndex % 2 == 0) {
                 UtilsContextT.waitUntil(this.activity, expectedButtonText, State.BUSY);

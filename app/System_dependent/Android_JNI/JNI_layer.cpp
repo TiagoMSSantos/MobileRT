@@ -451,16 +451,19 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
     MobileRT::checkSystemError("rtInitialize start");
     LOG_DEBUG("INITIALIZE");
     try {
-        const auto configClass{env->GetObjectClass(localConfig)};
+        const auto configClass {env->GetObjectClass(localConfig)};
 
         const auto sceneMethodId {env->GetMethodID(configClass, "getScene", "()I")};
         const auto sceneIndex {env->CallIntMethod(localConfig, sceneMethodId)};
+        LOG_DEBUG("sceneIndex: ", sceneIndex);
 
         const auto shaderMethodId {env->GetMethodID(configClass, "getShader", "()I")};
         const auto shaderIndex {env->CallIntMethod(localConfig, shaderMethodId)};
+        LOG_DEBUG("shaderIndex: ", shaderIndex);
 
         const auto acceleratorMethodId {env->GetMethodID(configClass, "getAccelerator", "()I")};
         const auto acceleratorIndex {env->CallIntMethod(localConfig, acceleratorMethodId)};
+        LOG_DEBUG("acceleratorIndex: ", acceleratorIndex);
 
 
         const auto configResolutionMethodId {env->GetMethodID(configClass, "getConfigResolution",
@@ -470,9 +473,11 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
 
         const auto widthMethodId {env->GetMethodID(resolutionConfigClass, "getWidth", "()I")};
         const auto width {env->CallIntMethod(resolutionConfig, widthMethodId)};
+        LOG_DEBUG("width: ", width);
 
         const auto heightMethodId {env->GetMethodID(resolutionConfigClass, "getHeight", "()I")};
         const auto height {env->CallIntMethod(resolutionConfig, heightMethodId)};
+        LOG_DEBUG("height: ", height);
 
 
         const auto configSamplesMethodId {env->GetMethodID(configClass, "getConfigSamples",
@@ -482,49 +487,53 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
 
         const auto samplesPixelMethodId {env->GetMethodID(samplesConfigClass, "getSamplesPixel", "()I")};
         const auto samplesPixel {env->CallIntMethod(samplesConfig, samplesPixelMethodId)};
+        LOG_DEBUG("samplesPixel: ", samplesPixel);
 
         const auto samplesLightMethodId {env->GetMethodID(samplesConfigClass, "getSamplesLight", "()I")};
         const auto samplesLight {env->CallIntMethod(samplesConfig, samplesLightMethodId)};
+        LOG_DEBUG("samplesLight: ", samplesLight);
 
         jboolean isCopy {JNI_FALSE};
         const auto objMethodId {env->GetMethodID(configClass, "getObjFilePath", "()Ljava/lang/String;")};
         const auto localObjFilePath {reinterpret_cast<jstring> (env->CallObjectMethod(localConfig, objMethodId))};
         const auto *const objFilePath {env->GetStringUTFChars(localObjFilePath, &isCopy)};
+        LOG_DEBUG("objFilePath: ", objFilePath);
 
         const auto res {
             [&]() -> ::std::int32_t {
+                LOG_DEBUG("Acquiring lock");
                 const ::std::lock_guard<::std::mutex> lock {mutex_};
                 renderer_ = nullptr;
                 const auto ratio {static_cast<float> (width) / static_cast<float> (height)};
-                ::MobileRT::Scene scene{};
-                ::std::unique_ptr<::MobileRT::Sampler> samplerPixel{};
-                ::std::unique_ptr<::MobileRT::Shader> shader{};
-                ::std::unique_ptr<::MobileRT::Camera> camera{};
-                ::glm::vec3 maxDist{};
+                ::MobileRT::Scene scene {};
+                ::std::unique_ptr<::MobileRT::Sampler> samplerPixel {};
+                ::std::unique_ptr<::MobileRT::Shader> shader {};
+                ::std::unique_ptr<::MobileRT::Camera> camera {};
+                ::glm::vec3 maxDist {};
                 LOG_DEBUG("LOADING SCENE: ", sceneIndex);
                 switch (sceneIndex) {
                     case 0:
                         scene = cornellBox_Scene(::std::move(scene));
                         camera = cornellBox_Cam(ratio);
-                        maxDist = ::glm::vec3{1, 1, 1};
+                        maxDist = ::glm::vec3 {1, 1, 1};
                         break;
 
                     case 1:
                         scene = spheres_Scene(::std::move(scene));
                         camera = spheres_Cam(ratio);
-                        maxDist = ::glm::vec3{8, 8, 8};
+                        maxDist = ::glm::vec3 {8, 8, 8};
                         break;
 
                     case 2:
                         scene = cornellBox2_Scene(::std::move(scene));
                         camera = cornellBox_Cam(ratio);
-                        maxDist = ::glm::vec3{1, 1, 1};
+                        maxDist = ::glm::vec3 {1, 1, 1};
                         break;
 
                     case 3:
                         scene = spheres2_Scene(::std::move(scene));
                         camera = spheres2_Cam(ratio);
-                        maxDist = ::glm::vec3{8, 8, 8};
+                        maxDist = ::glm::vec3 {8, 8, 8};
                         break;
 
                     default: {
@@ -679,7 +688,7 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
         handleException(env, exception, "java/lang/RuntimeException");
         return -2;
     } catch (...) {
-        handleException(env, ::std::exception{}, "java/lang/RuntimeException");
+        handleException(env, ::std::exception {}, "java/lang/RuntimeException");
         return -3;
     }
 }
@@ -1017,7 +1026,7 @@ void JNICALL Java_puscas_mobilertapp_MainActivity_readFile(
         const ::std::string filePathRaw {env->GetStringUTFChars(jFilePath, &isCopy)};
         const auto fileName {filePathRaw.substr(filePathRaw.find_last_of('/') + 1, filePathRaw.size())};
         ::Components::OBJLoader::getTextureFromCache(&texturesCache_, ::std::move(texture), static_cast<long> (size), fileName);
-        LOG_DEBUG("Read a texture file.");
+        LOG_DEBUG("Read a texture file: ", filePathRaw);
     }
 }
 

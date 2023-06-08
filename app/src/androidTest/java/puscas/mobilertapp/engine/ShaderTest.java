@@ -10,6 +10,7 @@ import org.junit.runners.MethodSorters;
 import java.util.concurrent.TimeoutException;
 
 import puscas.mobilertapp.AbstractTest;
+import puscas.mobilertapp.ConstantsAndroidTests;
 import puscas.mobilertapp.MainActivity;
 import puscas.mobilertapp.constants.Accelerator;
 import puscas.mobilertapp.constants.Scene;
@@ -30,9 +31,9 @@ public final class ShaderTest extends AbstractTest {
     @Test(timeout = 2L * 60L * 1000L)
     public void testRenderSceneWithNoShadows() throws TimeoutException {
         mockFileManagerReply(false,
-            "/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj",
-            "/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.mtl",
-            "/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.cam"
+            ConstantsAndroidTests.CORNELL_BOX_WATER_OBJ,
+            ConstantsAndroidTests.CORNELL_BOX_WATER_MTL,
+            ConstantsAndroidTests.CORNELL_BOX_WATER_CAM
         );
 
         final int numCores = UtilsContext.getNumOfCores(this.activity);
@@ -48,9 +49,9 @@ public final class ShaderTest extends AbstractTest {
     @Test(timeout = 2L * 60L * 1000L)
     public void testRenderSceneWithWhitted() throws TimeoutException {
         mockFileManagerReply(false,
-            "/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj",
-            "/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.mtl",
-            "/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.cam"
+            ConstantsAndroidTests.CORNELL_BOX_WATER_OBJ,
+            ConstantsAndroidTests.CORNELL_BOX_WATER_MTL,
+            ConstantsAndroidTests.CORNELL_BOX_WATER_CAM
         );
 
         final int numCores = UtilsContext.getNumOfCores(this.activity);
@@ -66,9 +67,9 @@ public final class ShaderTest extends AbstractTest {
     @Test(timeout = 2L * 60L * 1000L)
     public void testRenderSceneWithPathTracing() throws TimeoutException {
         mockFileManagerReply(false,
-            "/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj",
-            "/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.mtl",
-            "/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.cam"
+            ConstantsAndroidTests.CORNELL_BOX_WATER_OBJ,
+            ConstantsAndroidTests.CORNELL_BOX_WATER_MTL,
+            ConstantsAndroidTests.CORNELL_BOX_WATER_CAM
         );
 
         final int numCores = UtilsContext.getNumOfCores(this.activity);
@@ -84,9 +85,9 @@ public final class ShaderTest extends AbstractTest {
     @Test(timeout = 2L * 60L * 1000L)
     public void testRenderSceneWithDepthMap() throws TimeoutException {
         mockFileManagerReply(false,
-            "/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj",
-            "/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.mtl",
-            "/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.cam"
+            ConstantsAndroidTests.CORNELL_BOX_WATER_OBJ,
+            ConstantsAndroidTests.CORNELL_BOX_WATER_MTL,
+            ConstantsAndroidTests.CORNELL_BOX_WATER_CAM
         );
 
         final int numCores = UtilsContext.getNumOfCores(this.activity);
@@ -102,9 +103,9 @@ public final class ShaderTest extends AbstractTest {
     @Test(timeout = 2L * 60L * 1000L)
     public void testRenderSceneWithDiffuse() throws TimeoutException {
         mockFileManagerReply(false,
-            "/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj",
-            "/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.mtl",
-            "/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.cam"
+            ConstantsAndroidTests.CORNELL_BOX_WATER_OBJ,
+            ConstantsAndroidTests.CORNELL_BOX_WATER_MTL,
+            ConstantsAndroidTests.CORNELL_BOX_WATER_CAM
         );
 
         final int numCores = UtilsContext.getNumOfCores(this.activity);

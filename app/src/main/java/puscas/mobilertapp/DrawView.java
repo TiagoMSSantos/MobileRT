@@ -329,6 +329,9 @@ public class DrawView extends GLSurfaceView {
 
         MainActivity.resetErrno();
         final int numPrimitives = this.renderer.rtInitialize(config);
+        if (numPrimitives <= -1) {
+            throw new FailureException("Couldn't load the scene.");
+        }
 
         this.renderer.resetStats(config.getThreads(), config.getConfigSamples(),
             numPrimitives, rtGetNumberOfLights());

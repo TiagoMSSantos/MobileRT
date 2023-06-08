@@ -92,8 +92,7 @@ public final class ViewActionButton implements ViewAction {
             final long advanceSecs = 1L;
 
             // Wait until expected text is shown.
-            for (long currentTimeSecs = 0L; currentTimeSecs < 10L && textEqualsNotExpected;
-                 currentTimeSecs += advanceSecs) {
+            for (long currentTimeSecs = 0L; currentTimeSecs < 10L && textEqualsNotExpected; currentTimeSecs += advanceSecs) {
                 UtilsT.executeWithCatching(() -> uiController.loopMainThreadForAtLeast(advanceSecs * 1000L));
                 textEqualsNotExpected = !Objects.equals(button.getText().toString(), this.expectedText);
             }

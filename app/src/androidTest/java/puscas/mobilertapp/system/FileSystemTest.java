@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -36,10 +37,7 @@ public final class FileSystemTest extends AbstractTest {
     public void testFilesExistAndReadableFromInternalStorage() {
         final String internalStorage = UtilsContext.getInternalStoragePath(this.activity);
 
-        final List<String> paths = ImmutableList.<String>builder().add(
-            internalStorage + Constants.OBJ_FILE_CORNELL_BOX
-        ).build();
-
+        final List<String> paths = Collections.singletonList(internalStorage + Constants.OBJ_FILE_CORNELL_BOX);
         validatePathsExist(paths);
     }
 
@@ -80,10 +78,7 @@ public final class FileSystemTest extends AbstractTest {
     public void testFilesExistAndReadableSdCard() {
         final String sdCardPath = UtilsContext.getSdCardPath(this.activity);
 
-        final List<String> paths = ImmutableList.<String>builder().add(
-            sdCardPath + ConstantsUI.FILE_SEPARATOR + Constants.OBJ_FILE_TEAPOT
-        ).build();
-
+        final List<String> paths = Collections.singletonList(sdCardPath + ConstantsUI.FILE_SEPARATOR + Constants.OBJ_FILE_TEAPOT);
         validatePathsExist(paths);
     }
 
@@ -109,10 +104,7 @@ public final class FileSystemTest extends AbstractTest {
     public void testFilesNotExistSdCard() {
         final String sdCardPath = UtilsContext.getSdCardPath(this.activity);
 
-        final List<String> paths = ImmutableList.<String>builder().add(
-            sdCardPath + ConstantsUI.FILE_SEPARATOR + Constants.OBJ_FILE_NOT_EXISTS_SD_CARD
-        ).build();
-
+        final List<String> paths = Collections.singletonList(sdCardPath + ConstantsUI.FILE_SEPARATOR + Constants.OBJ_FILE_NOT_EXISTS_SD_CARD);
         validatePathsNotExist(paths);
     }
 

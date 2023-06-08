@@ -2,13 +2,14 @@ package puscas.mobilertapp.system;
 
 import static puscas.mobilertapp.ConstantsAndroidTests.NOT_ENOUGH_MEMORY_MESSAGE;
 
+import android.os.Build;
 import android.os.Debug;
 
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
@@ -27,7 +28,6 @@ import puscas.mobilertapp.constants.Constants;
  * native heap memory, as the Android unit tests only have Java heap and not a
  * native heap memory available.
  */
-@Ignore("Ignore because JVM only has 2MB of native heap by default for the tests.")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public final class NativeMemoryTest {
 
@@ -60,29 +60,29 @@ public final class NativeMemoryTest {
      */
     @Test
     public void testAllocatingHeapMemoryNative() {
+        Assume.assumeTrue("Only Android API 20+ have more than 5MB of native heap.", Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH);
+        Runtime.getRuntime().gc();
+
         // Dummy array to hold the allocated memory.
         final Collection<ByteBuffer> dummyArrays = new ArrayList<>(1);
-
         final long firstAvailableMemoryMB = getAvailableNativeMemoryInMB();
-        Assert.assertTrue(NOT_ENOUGH_MEMORY_MESSAGE, firstAvailableMemoryMB > 300L);
-        dummyArrays.add(ByteBuffer.allocateDirect(Constants.BYTES_IN_MEGABYTE));
 
-        final long startAvailableMemory = getAvailableNativeMemoryInMB();
-        Assert.assertTrue("Available memory didn't decrease as expected.", startAvailableMemory < firstAvailableMemoryMB);
-
-        final long megaBytesToAllocate = 100L;
+        final long expectedAvailableMemory = 2L;
+        final int megaBytesToAllocate = 50;
+        final int maxMegaBytesToAllocate = 80; // Max heap around 80MB.
         int numAllocatedByteBuffers = 0;
-        for(long l = 0L; getAvailableNativeMemoryInMB() >= startAvailableMemory - 2L * megaBytesToAllocate; l += megaBytesToAllocate) {
+
+        for(long memAllocated = 0L; getAvailableNativeMemoryInMB() > 0L && firstAvailableMemoryMB > getAvailableNativeMemoryInMB() + 2L * megaBytesToAllocate && memAllocated < maxMegaBytesToAllocate; memAllocated += megaBytesToAllocate) {
             // Force garbage collection now, before retrieving available memory
             // of the before and after allocating memory.
-            System.gc();
+            Runtime.getRuntime().gc();
+
+            Assert.assertTrue(NOT_ENOUGH_MEMORY_MESSAGE + firstAvailableMemoryMB + " >= " + expectedAvailableMemory, firstAvailableMemoryMB >= expectedAvailableMemory);
 
             final long beforeAvailableMemoryMB = getAvailableNativeMemoryInMB();
-            Assert.assertTrue(NOT_ENOUGH_MEMORY_MESSAGE, beforeAvailableMemoryMB > megaBytesToAllocate);
-            dummyArrays.add(ByteBuffer.allocateDirect(((int) megaBytesToAllocate * Constants.BYTES_IN_MEGABYTE)));
-
+            dummyArrays.add(ByteBuffer.allocateDirect((megaBytesToAllocate * Constants.BYTES_IN_MEGABYTE)));
             final long afterAvailableMemory = getAvailableNativeMemoryInMB();
-            Assert.assertTrue(NOT_ENOUGH_MEMORY_MESSAGE, afterAvailableMemory <= (beforeAvailableMemoryMB - megaBytesToAllocate));
+            Assert.assertTrue(NOT_ENOUGH_MEMORY_MESSAGE + afterAvailableMemory + " <= " + beforeAvailableMemoryMB, afterAvailableMemory <= beforeAvailableMemoryMB);
 
             ++numAllocatedByteBuffers;
         }

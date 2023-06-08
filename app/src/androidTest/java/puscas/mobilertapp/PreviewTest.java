@@ -32,17 +32,16 @@ public final class PreviewTest extends AbstractTest {
      * Tests the preview feature in a scene which uses perspective camera.
      *
      * @throws TimeoutException If it couldn't render the whole scene in time.
-     * @implNote This test can take more than 2 mins in CI.
+     * @implNote This test can take more than 2 minutes in CI.
      */
     @Test(timeout = 3L * 60L * 1000L)
     public void testPreviewScenePerspectiveCamera() throws TimeoutException {
         logger.info("testPreviewScenePerspectiveCamera start");
 
-        mockFileManagerReply(true,
-            "/MobileRT/WavefrontOBJs/teapot/teapot.obj",
-            "/MobileRT/WavefrontOBJs/teapot/teapot.mtl",
-            "/MobileRT/WavefrontOBJs/teapot/teapot.cam",
-            "/MobileRT/WavefrontOBJs/teapot/default.png"
+        mockFileManagerReply(false,
+            ConstantsAndroidTests.CORNELL_BOX_WATER_OBJ,
+            ConstantsAndroidTests.CORNELL_BOX_WATER_MTL,
+            ConstantsAndroidTests.CORNELL_BOX_WATER_CAM
         );
 
         UtilsContextT.resetPickerValues(this.activity, Scene.OBJ.ordinal(), Accelerator.NAIVE, 99, 99);
@@ -65,7 +64,7 @@ public final class PreviewTest extends AbstractTest {
      * Tests the preview feature in a scene which uses orthographic camera.
      *
      * @throws TimeoutException If it couldn't render the whole scene in time.
-     * @implNote This test can take more than 1 min in CI.
+     * @implNote This test can take more than 1 minute in CI.
      */
     @Test(timeout = 2L * 60L * 1000L)
     public void testPreviewSceneOrthographicCamera() throws TimeoutException {

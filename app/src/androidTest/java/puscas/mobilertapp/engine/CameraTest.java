@@ -26,7 +26,6 @@ public final class CameraTest extends AbstractTest {
     @Test(timeout = 2L * 60L * 1000L)
     public void testRenderSceneWithOrthographic() throws TimeoutException {
         final int numCores = UtilsContext.getNumOfCores(this.activity);
-
         assertRenderScene(numCores, Scene.SPHERES, Shader.WHITTED, Accelerator.BVH, 1, 1, false);
     }
 
@@ -38,7 +37,6 @@ public final class CameraTest extends AbstractTest {
     @Test(timeout = 2L * 60L * 1000L)
     public void testRenderSceneWithPerspective() throws TimeoutException {
         final int numCores = UtilsContext.getNumOfCores(this.activity);
-
         assertRenderScene(numCores, Scene.CORNELL, Shader.WHITTED, Accelerator.BVH, 1, 1, false);
     }
 

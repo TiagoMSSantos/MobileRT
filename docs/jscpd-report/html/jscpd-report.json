@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2023-06-20T19:16:12.171Z",
+    "detectionDate": "2023-06-21T17:48:42.227Z",
     "formats": {
       "java": {
         "sources": {
@@ -642,7 +642,7 @@
           },
           "app/src/androidTest/java/puscas/mobilertapp/utils/UtilsContextT.java": {
             "lines": 106,
-            "tokens": 951,
+            "tokens": 969,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -654,7 +654,7 @@
           },
           "app/src/androidTest/java/puscas/mobilertapp/system/NativeMemoryTest.java": {
             "lines": 150,
-            "tokens": 988,
+            "tokens": 1028,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -665,8 +665,8 @@
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/system/FileSystemTest.java": {
-            "lines": 159,
-            "tokens": 1201,
+            "lines": 151,
+            "tokens": 1171,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -689,20 +689,20 @@
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/engine/ShaderTest.java": {
-            "lines": 114,
-            "tokens": 808,
+            "lines": 115,
+            "tokens": 847,
             "sources": 1,
-            "clones": 4,
-            "duplicatedLines": 54,
-            "duplicatedTokens": 389,
-            "percentage": 47.37,
-            "percentageTokens": 48.14,
+            "clones": 5,
+            "duplicatedLines": 77,
+            "duplicatedTokens": 509,
+            "percentage": 66.96,
+            "percentageTokens": 60.09,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/engine/CameraTest.java": {
-            "lines": 44,
-            "tokens": 318,
+            "lines": 42,
+            "tokens": 316,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -713,14 +713,14 @@
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/engine/AcceleratorTest.java": {
-            "lines": 78,
-            "tokens": 552,
+            "lines": 79,
+            "tokens": 579,
             "sources": 1,
             "clones": 2,
-            "duplicatedLines": 32,
-            "duplicatedTokens": 242,
-            "percentage": 41.03,
-            "percentageTokens": 43.84,
+            "duplicatedLines": 33,
+            "duplicatedTokens": 257,
+            "percentage": 41.77,
+            "percentageTokens": 44.39,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -845,14 +845,14 @@
             "newClones": 0
           },
           "app/src/main/java/puscas/mobilertapp/MainRenderer.java": {
-            "lines": 994,
-            "tokens": 6329,
+            "lines": 988,
+            "tokens": 6274,
             "sources": 1,
             "clones": 2,
             "duplicatedLines": 28,
             "duplicatedTokens": 316,
-            "percentage": 2.82,
-            "percentageTokens": 4.99,
+            "percentage": 2.83,
+            "percentageTokens": 5.04,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -869,8 +869,8 @@
             "newClones": 0
           },
           "app/src/main/java/puscas/mobilertapp/DrawView.java": {
-            "lines": 443,
-            "tokens": 2726,
+            "lines": 446,
+            "tokens": 2754,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -905,8 +905,8 @@
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/ViewActionButton.java": {
-            "lines": 110,
-            "tokens": 832,
+            "lines": 109,
+            "tokens": 831,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -917,38 +917,38 @@
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/UiTest.java": {
-            "lines": 274,
-            "tokens": 2208,
+            "lines": 273,
+            "tokens": 2187,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 15,
             "duplicatedTokens": 114,
-            "percentage": 5.47,
-            "percentageTokens": 5.16,
+            "percentage": 5.49,
+            "percentageTokens": 5.21,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/RayTracingTest.java": {
-            "lines": 174,
-            "tokens": 1310,
+            "lines": 171,
+            "tokens": 1312,
             "sources": 1,
-            "clones": 2,
-            "duplicatedLines": 20,
-            "duplicatedTokens": 137,
-            "percentage": 11.49,
-            "percentageTokens": 10.46,
+            "clones": 5,
+            "duplicatedLines": 72,
+            "duplicatedTokens": 386,
+            "percentage": 42.11,
+            "percentageTokens": 29.42,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/PreviewTest.java": {
-            "lines": 88,
-            "tokens": 629,
+            "lines": 87,
+            "tokens": 631,
             "sources": 1,
             "clones": 4,
             "duplicatedLines": 42,
             "duplicatedTokens": 370,
-            "percentage": 47.73,
-            "percentageTokens": 58.82,
+            "percentage": 48.28,
+            "percentageTokens": 58.64,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -965,8 +965,8 @@
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/ConstantsAndroidTests.java": {
-            "lines": 30,
-            "tokens": 117,
+            "lines": 47,
+            "tokens": 187,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -991,13 +991,13 @@
         },
         "total": {
           "lines": 9218,
-          "tokens": 62873,
+          "tokens": 62990,
           "sources": 82,
-          "clones": 53,
-          "duplicatedLines": 499,
-          "duplicatedTokens": 4535,
-          "percentage": 5.41,
-          "percentageTokens": 7.21,
+          "clones": 55,
+          "duplicatedLines": 537,
+          "duplicatedTokens": 4727,
+          "percentage": 5.83,
+          "percentageTokens": 7.5,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3129,13 +3129,13 @@
     },
     "total": {
       "lines": 27037,
-      "tokens": 203191,
+      "tokens": 203308,
       "sources": 247,
-      "clones": 111,
-      "duplicatedLines": 1461,
-      "duplicatedTokens": 12599,
-      "percentage": 5.4,
-      "percentageTokens": 6.2,
+      "clones": 113,
+      "duplicatedLines": 1499,
+      "duplicatedTokens": 12791,
+      "percentage": 5.54,
+      "percentageTokens": 6.29,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -3935,73 +3935,73 @@
     },
     {
       "format": "java",
-      "lines": 21,
-      "fragment": "package puscas.mobilertapp.engine;\n\nimport androidx.test.espresso.intent.Intents;\nimport androidx.test.espresso.intent.matcher.IntentMatchers;\n\nimport org.junit.FixMethodOrder;\nimport org.junit.Test;\nimport org.junit.runners.MethodSorters;\n\nimport java.util.concurrent.TimeoutException;\n\nimport puscas.mobilertapp.AbstractTest;\nimport puscas.mobilertapp.MainActivity;\nimport puscas.mobilertapp.constants.Accelerator;\nimport puscas.mobilertapp.constants.Scene;\nimport puscas.mobilertapp.constants.Shader;\nimport puscas.mobilertapp.utils.UtilsContext;\n\n/**\n * The test suite for the {@link Accelerator}s used in {@link MainActivity}.\n */",
+      "lines": 22,
+      "fragment": "package puscas.mobilertapp.engine;\n\nimport androidx.test.espresso.intent.Intents;\nimport androidx.test.espresso.intent.matcher.IntentMatchers;\n\nimport org.junit.FixMethodOrder;\nimport org.junit.Test;\nimport org.junit.runners.MethodSorters;\n\nimport java.util.concurrent.TimeoutException;\n\nimport puscas.mobilertapp.AbstractTest;\nimport puscas.mobilertapp.ConstantsAndroidTests;\nimport puscas.mobilertapp.MainActivity;\nimport puscas.mobilertapp.constants.Accelerator;\nimport puscas.mobilertapp.constants.Scene;\nimport puscas.mobilertapp.constants.Shader;\nimport puscas.mobilertapp.utils.UtilsContext;\n\n/**\n * The test suite for the {@link Accelerator}s used in {@link MainActivity}.\n */",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/androidTest/java/puscas/mobilertapp/engine/AcceleratorTest.java",
         "start": 1,
-        "end": 21,
+        "end": 22,
         "startLoc": {
           "line": 1,
           "column": 1,
           "position": 0
         },
         "endLoc": {
-          "line": 21,
+          "line": 22,
           "column": 4,
-          "position": 144
+          "position": 153
         }
       },
       "secondFile": {
         "name": "app/src/androidTest/java/puscas/mobilertapp/engine/ShaderTest.java",
         "start": 1,
-        "end": 21,
+        "end": 22,
         "startLoc": {
           "line": 1,
           "column": 1,
           "position": 0
         },
         "endLoc": {
-          "line": 21,
+          "line": 22,
           "column": 4,
-          "position": 144
+          "position": 153
         }
       }
     },
     {
       "format": "java",
       "lines": 13,
-      "fragment": "() throws TimeoutException {\n        mockFileManagerReply(false,\n            \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj\",\n            \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.mtl\",\n            \"/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.cam\"\n        );\n\n        final int numCores = UtilsContext.getNumOfCores(this.activity);\n        assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 1, 1, false);\n        Intents.intended(IntentMatchers.anyIntent());\n    }\n\n}",
+      "fragment": "() throws TimeoutException {\n        mockFileManagerReply(false,\n            ConstantsAndroidTests.CORNELL_BOX_WATER_OBJ,\n            ConstantsAndroidTests.CORNELL_BOX_WATER_MTL,\n            ConstantsAndroidTests.CORNELL_BOX_WATER_CAM\n        );\n\n        final int numCores = UtilsContext.getNumOfCores(this.activity);\n        assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 1, 1, false);\n        Intents.intended(IntentMatchers.anyIntent());\n    }\n\n}",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/androidTest/java/puscas/mobilertapp/engine/AcceleratorTest.java",
-        "start": 67,
-        "end": 79,
+        "start": 68,
+        "end": 80,
         "startLoc": {
-          "line": 67,
+          "line": 68,
           "column": 23,
-          "position": 454
+          "position": 475
         },
         "endLoc": {
-          "line": 79,
+          "line": 80,
           "column": 2,
-          "position": 552
+          "position": 579
         }
       },
       "secondFile": {
         "name": "app/src/androidTest/java/puscas/mobilertapp/engine/ShaderTest.java",
-        "start": 49,
-        "end": 65,
+        "start": 50,
+        "end": 66,
         "startLoc": {
-          "line": 49,
+          "line": 50,
           "column": 27,
-          "position": 326
+          "position": 341
         },
         "endLoc": {
-          "line": 65,
+          "line": 66,
           "column": 8,
-          "position": 425
+          "position": 446
         }
       }
     },
@@ -4840,32 +4840,104 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/src/main/java/puscas/mobilertapp/MainRenderer.java",
-        "start": 910,
-        "end": 924,
+        "start": 904,
+        "end": 918,
         "startLoc": {
-          "line": 910,
+          "line": 904,
           "column": 9,
-          "position": 5617
+          "position": 5562
         },
         "endLoc": {
-          "line": 924,
+          "line": 918,
           "column": 8,
-          "position": 5775
+          "position": 5720
         }
       },
       "secondFile": {
         "name": "app/src/main/java/puscas/mobilertapp/MainRenderer.java",
-        "start": 848,
-        "end": 862,
+        "start": 842,
+        "end": 856,
         "startLoc": {
-          "line": 848,
+          "line": 842,
           "column": 9,
-          "position": 5043
+          "position": 4988
         },
         "endLoc": {
-          "line": 862,
+          "line": 856,
           "column": 6,
-          "position": 5201
+          "position": 5146
+        }
+      }
+    },
+    {
+      "format": "java",
+      "lines": 16,
+      "fragment": ");\n\n        final int numCores = UtilsContext.getNumOfCores(this.activity);\n        assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 1, 1, true);\n        Intents.intended(IntentMatchers.anyIntent());\n    }\n\n    /**\n     * Tests rendering an OBJ scene from an OBJ file which the path was loaded with an external file\n     * manager application. The OBJ is in an internal storage.\n     *\n     * @throws TimeoutException If it couldn't render the whole scene in time.\n     *\n     * @implNote E.g. of an URL to file:<br>\n     * file:///file/data/local/tmp/MobileRT/WavefrontOBJs/teapot/teapot.obj<br>\n     */",
+      "tokens": 0,
+      "firstFile": {
+        "name": "app/src/androidTest/java/puscas/mobilertapp/RayTracingTest.java",
+        "start": 105,
+        "end": 120,
+        "startLoc": {
+          "line": 105,
+          "column": 7,
+          "position": 876
+        },
+        "endLoc": {
+          "line": 120,
+          "column": 8,
+          "position": 948
+        }
+      },
+      "secondFile": {
+        "name": "app/src/androidTest/java/puscas/mobilertapp/RayTracingTest.java",
+        "start": 88,
+        "end": 99,
+        "startLoc": {
+          "line": 88,
+          "column": 9,
+          "position": 708
+        },
+        "endLoc": {
+          "line": 99,
+          "column": 8,
+          "position": 780
+        }
+      }
+    },
+    {
+      "format": "java",
+      "lines": 23,
+      "fragment": "() throws TimeoutException {\n        mockFileManagerReply(false,\n            ConstantsAndroidTests.CORNELL_BOX_WATER_OBJ,\n            ConstantsAndroidTests.CORNELL_BOX_WATER_MTL,\n            ConstantsAndroidTests.CORNELL_BOX_WATER_CAM\n        );\n\n        final int numCores = UtilsContext.getNumOfCores(this.activity);\n        assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 1, 1, false);\n        Intents.intended(IntentMatchers.anyIntent());\n    }\n\n    /**\n     * Tests rendering an OBJ scene from an OBJ file which the path was loaded with an external file\n     * manager application. The OBJ is in an external SD card and the scene contains texture(s) in\n     * order to also validate that they are properly read.\n     *\n     * @throws TimeoutException If it couldn't render the whole scene in time.\n     *\n     * @implNote E.g. of URLs to file:<br>\n     * content://com.asus.filemanager.OpenFileProvider/file/storage/1CE6-261B/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj<br>\n     * content://com.asus.filemanager.OpenFileProvider/file/mnt/sdcard/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj<br>\n     */",
+      "tokens": 0,
+      "firstFile": {
+        "name": "app/src/androidTest/java/puscas/mobilertapp/RayTracingTest.java",
+        "start": 122,
+        "end": 144,
+        "startLoc": {
+          "line": 122,
+          "column": 38,
+          "position": 977
+        },
+        "endLoc": {
+          "line": 144,
+          "column": 8,
+          "position": 1082
+        }
+      },
+      "secondFile": {
+        "name": "app/src/androidTest/java/puscas/mobilertapp/engine/ShaderTest.java",
+        "start": 50,
+        "end": 66,
+        "startLoc": {
+          "line": 50,
+          "column": 27,
+          "position": 341
+        },
+        "endLoc": {
+          "line": 66,
+          "column": 8,
+          "position": 446
         }
       }
     },
@@ -4876,32 +4948,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/src/androidTest/java/puscas/mobilertapp/RayTracingTest.java",
-        "start": 154,
-        "end": 166,
+        "start": 152,
+        "end": 164,
         "startLoc": {
-          "line": 154,
+          "line": 152,
           "column": 9,
-          "position": 1139
+          "position": 1142
         },
         "endLoc": {
-          "line": 166,
+          "line": 164,
           "column": 8,
-          "position": 1211
+          "position": 1214
         }
       },
       "secondFile": {
         "name": "app/src/androidTest/java/puscas/mobilertapp/engine/ShaderTest.java",
-        "start": 54,
-        "end": 65,
+        "start": 55,
+        "end": 66,
         "startLoc": {
-          "line": 54,
+          "line": 55,
           "column": 9,
-          "position": 353
+          "position": 374
         },
         "endLoc": {
-          "line": 65,
+          "line": 66,
           "column": 8,
-          "position": 425
+          "position": 446
         }
       }
     },
@@ -4984,32 +5056,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/src/androidTest/java/puscas/mobilertapp/PreviewTest.java",
-        "start": 74,
-        "end": 86,
+        "start": 73,
+        "end": 85,
         "startLoc": {
-          "line": 74,
+          "line": 73,
           "column": 8,
-          "position": 502
+          "position": 504
         },
         "endLoc": {
-          "line": 86,
+          "line": 85,
           "column": 7,
-          "position": 617
+          "position": 619
         }
       },
       "secondFile": {
         "name": "app/src/androidTest/java/puscas/mobilertapp/PreviewTest.java",
-        "start": 48,
-        "end": 60,
+        "start": 47,
+        "end": 59,
         "startLoc": {
-          "line": 48,
+          "line": 47,
           "column": 4,
-          "position": 300
+          "position": 302
         },
         "endLoc": {
-          "line": 60,
+          "line": 59,
           "column": 8,
-          "position": 415
+          "position": 417
         }
       }
     },
@@ -5035,17 +5107,17 @@
       },
       "secondFile": {
         "name": "app/src/androidTest/java/puscas/mobilertapp/UiTest.java",
-        "start": 27,
-        "end": 41,
+        "start": 26,
+        "end": 40,
         "startLoc": {
-          "line": 27,
+          "line": 26,
           "column": 11,
-          "position": 211
+          "position": 200
         },
         "endLoc": {
-          "line": 41,
+          "line": 40,
           "column": 4,
-          "position": 324
+          "position": 313
         }
       }
     },

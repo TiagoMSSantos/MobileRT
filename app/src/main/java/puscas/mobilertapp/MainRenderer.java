@@ -437,18 +437,12 @@ public class MainRenderer implements GLSurfaceView.Renderer {
                     final ConfigSamples configSamples,
                     final int numPrimitives,
                     final int numLights) {
-        logger.info("resetStats");
+        logger.info("resetStats numThreads: " + numThreads + ", numPrimitives: " + numPrimitives + ", numLights: " + numLights);
 
         Preconditions.checkArgument(numPrimitives >= -1, "numPrimitives shouldn't be negative");
 
-        final String numThreadsStr = "numThreads: " + numThreads;
-        final String numPrimitivesStr = "numPrimitives: " + numPrimitives;
-        final String numLightsStr = "numLights: " + numLights;
         final String samplesPixelStr = "samplesPixel: " + configSamples.getSamplesPixel();
         final String samplesLightStr = "samplesLight: " + configSamples.getSamplesLight();
-        logger.info(numThreadsStr);
-        logger.info(numPrimitivesStr);
-        logger.info(numLightsStr);
         logger.info(samplesPixelStr);
         logger.info(samplesLightStr);
 

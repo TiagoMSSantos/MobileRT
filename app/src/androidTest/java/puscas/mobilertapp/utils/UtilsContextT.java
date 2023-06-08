@@ -53,24 +53,24 @@ public final class UtilsContextT {
     public static void waitUntil(@NonNull final MainActivity activity, final String expectedButtonText, final State... expectedStates) throws TimeoutException {
         logger.info("waitUntil start, expected button: " + expectedButtonText + ", expected state: " + expectedStates[0].name());
         final AtomicBoolean done = new AtomicBoolean(false);
-        final long advanceSecs = 3L;
+        final long advanceSecs = 1L;
 
         final DrawView drawView = UtilsT.getPrivateField(activity, "drawView");
         final MainRenderer renderer = drawView.getRenderer();
 
-        for (long currentTimeSecs = 0L; currentTimeSecs < 60L && !done.get();
-             currentTimeSecs += advanceSecs) {
+        for (long currentTimeSecs = 0L; currentTimeSecs < 60L && !done.get(); currentTimeSecs += advanceSecs) {
             Uninterruptibles.sleepUninterruptibly(advanceSecs, TimeUnit.SECONDS);
 
-            Espresso.onView(ViewMatchers.withId(R.id.renderButton)).check((view, exception) -> {
-                final Button renderButton = view.findViewById(R.id.renderButton);
-                final String renderButtonText = renderButton.getText().toString();
-                final State rendererState = renderer.getState();
-                logger.info("State: '" + rendererState.name() + "', Button: '" + renderButtonText + "'");
-                if (Objects.equals(renderButtonText, expectedButtonText) && Arrays.asList(expectedStates).contains(rendererState)) {
-                    done.set(true);
-                    logger.info("waitUntil success");
-                }
+            Espresso.onView(ViewMatchers.withId(R.id.renderButton))
+                .check((view, exception) -> {
+                    final Button renderButton = view.findViewById(R.id.renderButton);
+                    final String renderButtonText = renderButton.getText().toString();
+                    final State rendererState = renderer.getState();
+                    logger.info("State: '" + rendererState.name() + "', Button: '" + renderButtonText + "'. Expecting: " + expectedButtonText + ", " + Arrays.toString(expectedStates));
+                    if (Objects.equals(renderButtonText, expectedButtonText) && Arrays.asList(expectedStates).contains(rendererState)) {
+                        done.set(true);
+                        logger.info("waitUntil success");
+                    }
             });
         }
 

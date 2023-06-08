@@ -82,13 +82,12 @@ public final class RayTracingTest extends AbstractTest {
      */
     @Test(timeout = 60L * 1000L)
     public void testRenderInvalidScene() throws TimeoutException {
-        final int numCores = UtilsContext.getNumOfCores(this.activity);
-
         // Mock the reply as the external file manager application, to select an OBJ file that doesn't exist.
         mockFileManagerReply(false,
             "/path/to/OBJ/file/that/doesn't/exist.obj"
         );
 
+        final int numCores = UtilsContext.getNumOfCores(this.activity);
         assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 1, 1, true);
         Intents.intended(IntentMatchers.anyIntent());
     }
@@ -100,13 +99,12 @@ public final class RayTracingTest extends AbstractTest {
      */
     @Test(timeout = 60L * 1000L)
     public void testNotSelectingScene() throws TimeoutException {
-        final int numCores = UtilsContext.getNumOfCores(this.activity);
-
         // Mock the reply as the external file manager application, to not select anything.
         final Intent resultData = new Intent(Intent.ACTION_GET_CONTENT);
         final Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_CANCELED, resultData);
         Intents.intending(IntentMatchers.anyIntent()).respondWith(result);
 
+        final int numCores = UtilsContext.getNumOfCores(this.activity);
         assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 1, 1, true);
         Intents.intended(IntentMatchers.anyIntent());
     }
@@ -122,21 +120,21 @@ public final class RayTracingTest extends AbstractTest {
      */
     @Test(timeout = 2L * 60L * 1000L)
     public void testRenderSceneFromInternalStorageOBJ() throws TimeoutException {
-        final int numCores = UtilsContext.getNumOfCores(this.activity);
-
         mockFileManagerReply(false,
-            "/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj",
-            "/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.mtl",
-            "/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.cam"
+            ConstantsAndroidTests.CORNELL_BOX_WATER_OBJ,
+            ConstantsAndroidTests.CORNELL_BOX_WATER_MTL,
+            ConstantsAndroidTests.CORNELL_BOX_WATER_CAM
         );
 
+        final int numCores = UtilsContext.getNumOfCores(this.activity);
         assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 1, 1, false);
         Intents.intended(IntentMatchers.anyIntent());
     }
 
     /**
      * Tests rendering an OBJ scene from an OBJ file which the path was loaded with an external file
-     * manager application. The OBJ is in an external SD card.
+     * manager application. The OBJ is in an external SD card and the scene contains texture(s) in
+     * order to also validate that they are properly read.
      *
      * @throws TimeoutException If it couldn't render the whole scene in time.
      *
@@ -168,7 +166,6 @@ public final class RayTracingTest extends AbstractTest {
     @Test(timeout = 2L * 60L * 1000L)
     public void testRenderSceneWithoutAccelerator() throws TimeoutException {
         final int numCores = UtilsContext.getNumOfCores(this.activity);
-
         assertRenderScene(numCores, Scene.CORNELL, Shader.WHITTED, Accelerator.NONE, 1, 1, true);
     }
 
