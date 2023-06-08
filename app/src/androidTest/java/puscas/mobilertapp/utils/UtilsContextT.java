@@ -5,7 +5,6 @@ import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.test.espresso.Espresso;
-import androidx.test.espresso.ViewInteraction;
 import androidx.test.espresso.matcher.ViewMatchers;
 
 import com.google.common.util.concurrent.Uninterruptibles;
@@ -58,13 +57,12 @@ public final class UtilsContextT {
 
         final DrawView drawView = UtilsT.getPrivateField(activity, "drawView");
         final MainRenderer renderer = drawView.getRenderer();
-        final ViewInteraction renderButtonView = Espresso.onView(ViewMatchers.withId(R.id.renderButton));
 
         for (long currentTimeSecs = 0L; currentTimeSecs < 60L && !done.get();
              currentTimeSecs += advanceSecs) {
             Uninterruptibles.sleepUninterruptibly(advanceSecs, TimeUnit.SECONDS);
 
-            renderButtonView.check((view, exception) -> {
+            Espresso.onView(ViewMatchers.withId(R.id.renderButton)).check((view, exception) -> {
                 final Button renderButton = view.findViewById(R.id.renderButton);
                 final String renderButtonText = renderButton.getText().toString();
                 final State rendererState = renderer.getState();

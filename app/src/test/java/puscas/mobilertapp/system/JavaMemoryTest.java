@@ -36,7 +36,7 @@ public final class JavaMemoryTest {
 
             // Force garbage collection now, before retrieving available memory
             // of the before and after allocating memory.
-            System.gc();
+            Runtime.getRuntime().gc();
 
             final long beforeAvailableMemoryMB = getAvailableJavaMemoryInMB();
             Assertions.assertThat(beforeAvailableMemoryMB)

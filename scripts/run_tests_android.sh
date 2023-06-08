@@ -153,13 +153,19 @@ kill_mobilert_processes() {
 }
 
 kill_gradle_processes() {
+  set +e;
+  scriptName=$(basename "${0}");
   # shellcheck disable=SC2009
-  GRADLE_PROCESSES=$(ps aux | grep -i "mobilert" | grep -v "grep" | tr -s ' ' | cut -d ' ' -f 2);
+  GRADLE_PROCESSES=$(ps aux | grep -i "mobilert" | grep -v "grep" | grep -v "${scriptName}");
+  set -e;
+  set +u; # 'GRADLE_PROCESSES' might not be set if didn't find any process(es).
   echo "Killing any Gradle process, because it should be already killed: '${GRADLE_PROCESSES}'";
+  GRADLE_PROCESSES=$(echo "${GRADLE_PROCESSES}" | tr -s ' ' | cut -d ' ' -f 2);
   for GRADLE_PROCESS in ${GRADLE_PROCESSES}; do
     echo "Killing: '${GRADLE_PROCESS}'";
     kill -TERM "${GRADLE_PROCESS}";
   done;
+  set -u;
 }
 
 kill_adb_processes() {

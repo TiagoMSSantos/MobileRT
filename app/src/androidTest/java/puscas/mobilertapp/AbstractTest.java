@@ -30,6 +30,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
+import org.junit.rules.TestName;
 import org.junit.rules.TestRule;
 import org.junit.rules.Timeout;
 
@@ -85,6 +86,12 @@ public abstract class AbstractTest {
         new ActivityTestRule<>(MainActivity.class, true, false);
 
     /**
+     * The {@link Rule} to get the name of the current test.
+     */
+    @Rule
+    final public TestName testName = new TestName();
+
+    /**
      * The {@link MainActivity} to test.
      */
     @NonNull
@@ -101,7 +108,7 @@ public abstract class AbstractTest {
     @CallSuper
     public void setUp() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        logger.info(methodName);
+        logger.info(methodName + ": " + this.testName.getMethodName());
 
         Preconditions.checkNotNull(this.activity, "The Activity didn't start as expected!");
         grantPermissions(this.activity);
@@ -111,6 +118,7 @@ public abstract class AbstractTest {
         UtilsT.waitForAppToIdle();
         // Wait a bit for the permissions to be granted to the app before starting the test. Necessary for Android 12+.
         Uninterruptibles.sleepUninterruptibly(2L, TimeUnit.SECONDS);
+        logger.info(methodName + ": " + this.testName.getMethodName() + " started");
     }
 
     /**
@@ -120,19 +128,22 @@ public abstract class AbstractTest {
     @CallSuper
     public void tearDown() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        logger.info(methodName);
+        logger.info(methodName + ": " + this.testName.getMethodName());
 
         Preconditions.checkNotNull(this.activity, "The Activity didn't finish as expected!");
+        logger.info("Will wait for the Activity triggered by the test to finish.");
         while (isActivityRunning(this.activity)) {
+            logger.info("Finishing the Activity.");
             this.activity.finish();
-            this.mainActivityActivityTestRule.finishActivity();
             logger.warning("Waiting for the Activity triggered by the test to finish.");
             Uninterruptibles.sleepUninterruptibly(1L, TimeUnit.SECONDS);
         }
+        logger.info("Activity finished.");
         UtilsT.executeWithCatching(Espresso::pressBackUnconditionally);
         UtilsT.waitForAppToIdle();
 
         Intents.release();
+        logger.info(methodName + ": " + this.testName.getMethodName() + " finished");
     }
 
     /**
@@ -250,19 +261,9 @@ public abstract class AbstractTest {
      *                       relative to the external SD card path or to the internal storage path
      *                       in the Android {@link FileSystem}.
      */
-    protected void mockFileManagerReply(final boolean externalSdcard, final String... filesPath) {
+    protected void mockFileManagerReply(final boolean externalSdcard, @NonNull final String... filesPath) {
         logger.info(ConstantsAndroidTests.MOCK_FILE_MANAGER_REPLY);
-        final Intent resultData;
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-            resultData = new Intent(Intent.ACTION_GET_CONTENT);
-        } else {
-            resultData = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-        }
-        resultData.addCategory(Intent.CATEGORY_OPENABLE);
-        resultData.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_PREFIX_URI_PERMISSION | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            resultData.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-        }
+        final Intent resultData = MainActivity.createIntentToLoadFiles();
         final String storagePath = externalSdcard ? UtilsContext.getSdCardPath(this.activity) : UtilsContext.getInternalStoragePath(this.activity);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             final Uri firstFile = Uri.fromFile(new File(storagePath + filesPath[0]));

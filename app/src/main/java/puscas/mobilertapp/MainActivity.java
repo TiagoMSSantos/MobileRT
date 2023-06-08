@@ -428,7 +428,30 @@ public final class MainActivity extends Activity {
             // Other 'case' lines to check for other
             // permissions this app might request.
         }
-}
+    }
+
+    /**
+     * Helper method which creates an {@link Intent} with the goal to ask Android System to read
+     * some files by an external file manager.
+     *
+     * @return The {@link Intent} to load files.
+     */
+    public static Intent createIntentToLoadFiles() {
+        final Intent intent;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        } else {
+            intent = new Intent(Intent.ACTION_GET_CONTENT);
+        }
+        intent.putExtra(Intent.EXTRA_TITLE, "Select an OBJ file to load.");
+        intent.setType("*" + ConstantsUI.FILE_SEPARATOR + "*");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+        }
+        return intent;
+    }
 
     /*
      ***********************************************************************
@@ -442,10 +465,10 @@ public final class MainActivity extends Activity {
                                     final int resultCode,
                                     @Nullable final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        logger.info("onActivityResult");
+        logger.info("onActivityResult requestCode: " + requestCode + ", resultCode: " + resultCode);
 
         try {
-            if (data != null) {
+            if (data != null && Objects.equals(resultCode, Activity.RESULT_OK)) {
                 if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && data.getClipData() != null) {
                     final ClipData clipData = data.getClipData();
                     final int numFiles = clipData.getItemCount();
@@ -708,20 +731,7 @@ public final class MainActivity extends Activity {
      */
     private void callFileManager() {
         logger.info("callFileManager");
-        final Intent intent;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-        } else {
-            intent = new Intent(Intent.ACTION_GET_CONTENT);
-        }
-
-        intent.putExtra(Intent.EXTRA_TITLE, "Select an OBJ file to load.");
-        intent.setType("*" + ConstantsUI.FILE_SEPARATOR + "*");
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-        }
+        final Intent intent = createIntentToLoadFiles();
         try {
             startActivityForResult(intent, OPEN_FILE_REQUEST_CODE);
         } catch (final ActivityNotFoundException ex) {
