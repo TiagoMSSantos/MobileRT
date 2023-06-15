@@ -1,5 +1,5 @@
 [requires]
-icu/73.1
+icu/73.2
 qt/6.5.0
 boost/1.82.0
 gtest/1.12.1
