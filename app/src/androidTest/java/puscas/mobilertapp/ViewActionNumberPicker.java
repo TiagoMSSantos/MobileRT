@@ -59,7 +59,7 @@ public final class ViewActionNumberPicker implements ViewAction {
     public void perform(@NonNull final UiController uiController, @NonNull final View view) {
         final NumberPicker numberPicker = (NumberPicker) view;
         numberPicker.setValue(this.newValue);
-        UtilsT.executeWithCatching(() -> uiController.loopMainThreadForAtLeast(100L));
+        UtilsT.executeWithCatching(uiController::loopMainThreadUntilIdle);
         Assert.assertEquals("The set value should be '" + this.newValue + "'", this.newValue, numberPicker.getValue());
     }
 

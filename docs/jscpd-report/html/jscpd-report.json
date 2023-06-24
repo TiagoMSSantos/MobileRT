@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2023-06-24T08:25:19.889Z",
+    "detectionDate": "2023-06-24T13:28:35.514Z",
     "formats": {
       "java": {
         "sources": {
@@ -692,11 +692,11 @@
             "lines": 115,
             "tokens": 847,
             "sources": 1,
-            "clones": 5,
-            "duplicatedLines": 77,
-            "duplicatedTokens": 509,
-            "percentage": 66.96,
-            "percentageTokens": 60.09,
+            "clones": 4,
+            "duplicatedLines": 67,
+            "duplicatedTokens": 434,
+            "percentage": 58.26,
+            "percentageTokens": 51.24,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -894,7 +894,7 @@
           },
           "app/src/androidTest/java/puscas/mobilertapp/ViewActionNumberPicker.java": {
             "lines": 65,
-            "tokens": 408,
+            "tokens": 399,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -906,7 +906,7 @@
           },
           "app/src/androidTest/java/puscas/mobilertapp/ViewActionButton.java": {
             "lines": 109,
-            "tokens": 831,
+            "tokens": 800,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -933,22 +933,22 @@
             "tokens": 1312,
             "sources": 1,
             "clones": 5,
-            "duplicatedLines": 72,
-            "duplicatedTokens": 386,
-            "percentage": 42.11,
-            "percentageTokens": 29.42,
+            "duplicatedLines": 75,
+            "duplicatedTokens": 405,
+            "percentage": 43.86,
+            "percentageTokens": 30.87,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/PreviewTest.java": {
-            "lines": 87,
-            "tokens": 631,
+            "lines": 89,
+            "tokens": 646,
             "sources": 1,
-            "clones": 4,
-            "duplicatedLines": 42,
-            "duplicatedTokens": 370,
-            "percentage": 48.28,
-            "percentageTokens": 58.64,
+            "clones": 3,
+            "duplicatedLines": 35,
+            "duplicatedTokens": 314,
+            "percentage": 39.33,
+            "percentageTokens": 48.61,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -977,27 +977,27 @@
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/AbstractTest.java": {
-            "lines": 281,
-            "tokens": 2318,
+            "lines": 288,
+            "tokens": 2388,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 15,
             "duplicatedTokens": 114,
-            "percentage": 5.34,
-            "percentageTokens": 4.92,
+            "percentage": 5.21,
+            "percentageTokens": 4.77,
             "newDuplicatedLines": 0,
             "newClones": 0
           }
         },
         "total": {
-          "lines": 9232,
-          "tokens": 63121,
+          "lines": 9241,
+          "tokens": 63166,
           "sources": 82,
-          "clones": 55,
-          "duplicatedLines": 537,
-          "duplicatedTokens": 4727,
-          "percentage": 5.82,
-          "percentageTokens": 7.49,
+          "clones": 54,
+          "duplicatedLines": 530,
+          "duplicatedTokens": 4671,
+          "percentage": 5.74,
+          "percentageTokens": 7.39,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3128,14 +3128,14 @@
       }
     },
     "total": {
-      "lines": 27095,
-      "tokens": 203692,
+      "lines": 27104,
+      "tokens": 203737,
       "sources": 247,
-      "clones": 113,
-      "duplicatedLines": 1499,
-      "duplicatedTokens": 12791,
-      "percentage": 5.53,
-      "percentageTokens": 6.28,
+      "clones": 112,
+      "duplicatedLines": 1492,
+      "duplicatedTokens": 12735,
+      "percentage": 5.5,
+      "percentageTokens": 6.25,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -4979,68 +4979,32 @@
     },
     {
       "format": "java",
-      "lines": 11,
-      "fragment": ";\n\nimport androidx.test.espresso.intent.Intents;\nimport androidx.test.espresso.intent.matcher.IntentMatchers;\n\nimport org.junit.FixMethodOrder;\nimport org.junit.Test;\nimport org.junit.runners.MethodSorters;\n\nimport java.util.concurrent.TimeoutException;\nimport java",
+      "lines": 12,
+      "fragment": ";\n\nimport org.junit.FixMethodOrder;\nimport org.junit.Ignore;\nimport org.junit.Test;\nimport org.junit.runners.MethodSorters;\n\nimport java.util.concurrent.TimeoutException;\nimport java.util.logging.Logger;\n\nimport puscas.mobilertapp.constants.Accelerator;\nimport puscas.mobilertapp.constants.Constants",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/androidTest/java/puscas/mobilertapp/PreviewTest.java",
-        "start": 1,
-        "end": 11,
+        "start": 4,
+        "end": 15,
         "startLoc": {
-          "line": 1,
-          "column": 12,
-          "position": 5
-        },
-        "endLoc": {
-          "line": 11,
-          "column": 5,
-          "position": 80
-        }
-      },
-      "secondFile": {
-        "name": "app/src/androidTest/java/puscas/mobilertapp/engine/ShaderTest.java",
-        "start": 1,
-        "end": 12,
-        "startLoc": {
-          "line": 1,
-          "column": 7,
-          "position": 7
-        },
-        "endLoc": {
-          "line": 12,
-          "column": 7,
-          "position": 83
-        }
-      }
-    },
-    {
-      "format": "java",
-      "lines": 9,
-      "fragment": ";\nimport org.junit.Test;\nimport org.junit.runners.MethodSorters;\n\nimport java.util.concurrent.TimeoutException;\nimport java.util.logging.Logger;\n\nimport puscas.mobilertapp.constants.Accelerator;\nimport puscas.mobilertapp.constants.Constants",
-      "tokens": 0,
-      "firstFile": {
-        "name": "app/src/androidTest/java/puscas/mobilertapp/PreviewTest.java",
-        "start": 6,
-        "end": 14,
-        "startLoc": {
-          "line": 6,
+          "line": 4,
           "column": 15,
-          "position": 44
+          "position": 34
         },
         "endLoc": {
-          "line": 14,
+          "line": 15,
           "column": 10,
-          "position": 109
+          "position": 118
         }
       },
       "secondFile": {
         "name": "app/src/androidTest/java/puscas/mobilertapp/RayTracingTest.java",
-        "start": 14,
+        "start": 12,
         "end": 22,
         "startLoc": {
-          "line": 14,
-          "column": 7,
-          "position": 108
+          "line": 12,
+          "column": 12,
+          "position": 90
         },
         "endLoc": {
           "line": 22,
@@ -5056,32 +5020,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/src/androidTest/java/puscas/mobilertapp/PreviewTest.java",
-        "start": 73,
-        "end": 85,
+        "start": 75,
+        "end": 87,
         "startLoc": {
-          "line": 73,
+          "line": 75,
           "column": 8,
-          "position": 504
+          "position": 519
         },
         "endLoc": {
-          "line": 85,
+          "line": 87,
           "column": 7,
-          "position": 619
+          "position": 634
         }
       },
       "secondFile": {
         "name": "app/src/androidTest/java/puscas/mobilertapp/PreviewTest.java",
-        "start": 47,
-        "end": 59,
+        "start": 49,
+        "end": 61,
         "startLoc": {
-          "line": 47,
+          "line": 49,
           "column": 4,
-          "position": 302
+          "position": 317
         },
         "endLoc": {
-          "line": 59,
+          "line": 61,
           "column": 8,
-          "position": 417
+          "position": 432
         }
       }
     },

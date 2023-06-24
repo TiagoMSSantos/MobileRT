@@ -132,13 +132,17 @@ public abstract class AbstractTest {
 
         Preconditions.checkNotNull(this.activity, "The Activity didn't finish as expected!");
         logger.info("Will wait for the Activity triggered by the test to finish.");
+
+        UtilsT.waitForAppToIdle();
         while (isActivityRunning(this.activity)) {
             logger.info("Finishing the Activity.");
             this.activity.finish();
             logger.warning("Waiting for the Activity triggered by the test to finish.");
             Uninterruptibles.sleepUninterruptibly(1L, TimeUnit.SECONDS);
+            UtilsT.waitForAppToIdle();
         }
         logger.info("Activity finished.");
+
         UtilsT.executeWithCatching(Espresso::pressBackUnconditionally);
         UtilsT.waitForAppToIdle();
 
@@ -242,6 +246,9 @@ public abstract class AbstractTest {
         UiTest.clickPreviewCheckBox(false);
 
         UtilsT.startRendering(expectedSameValues);
+        if (!expectedSameValues) {
+            UtilsContextT.waitUntil(this.activity, Constants.STOP, State.BUSY);
+        }
         UtilsContextT.waitUntil(this.activity, Constants.RENDER, State.IDLE, State.FINISHED);
         UtilsT.waitForAppToIdle();
 
@@ -266,14 +273,14 @@ public abstract class AbstractTest {
         final Intent resultData = MainActivity.createIntentToLoadFiles();
         final String storagePath = externalSdcard ? UtilsContext.getSdCardPath(this.activity) : UtilsContext.getInternalStoragePath(this.activity);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            final Uri firstFile = Uri.fromFile(new File(storagePath + filesPath[0]));
+            final Uri firstFile = Uri.fromFile(new File(storagePath + ConstantsUI.FILE_SEPARATOR + filesPath[0]));
             final ClipData clipData = new ClipData(new ClipDescription("Scene", new String[]{"*" + ConstantsUI.FILE_SEPARATOR + "*"}), new ClipData.Item(firstFile));
             for (int index = 1; index < filesPath.length; ++index) {
-                clipData.addItem(new ClipData.Item(Uri.fromFile(new File(storagePath + filesPath[index]))));
+                clipData.addItem(new ClipData.Item(Uri.fromFile(new File(storagePath + ConstantsUI.FILE_SEPARATOR + filesPath[index]))));
             }
             resultData.setClipData(clipData);
         } else {
-            resultData.setData(Uri.fromFile(new File(storagePath + filesPath[0])));
+            resultData.setData(Uri.fromFile(new File(storagePath + ConstantsUI.FILE_SEPARATOR + filesPath[0])));
         }
         final Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
         Intents.intending(IntentMatchers.anyIntent()).respondWith(result);
