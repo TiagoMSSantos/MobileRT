@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2023-06-24T13:28:35.514Z",
+    "detectionDate": "2023-06-25T10:03:16.317Z",
     "formats": {
       "java": {
         "sources": {
@@ -1901,14 +1901,14 @@
             "newClones": 0
           },
           ".github/workflows/windows.yml": {
-            "lines": 246,
-            "tokens": 1473,
+            "lines": 248,
+            "tokens": 1483,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 14,
             "duplicatedTokens": 99,
-            "percentage": 5.69,
-            "percentageTokens": 6.72,
+            "percentage": 5.65,
+            "percentageTokens": 6.68,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -1937,14 +1937,14 @@
             "newClones": 0
           },
           ".github/workflows/docker.yml": {
-            "lines": 177,
-            "tokens": 967,
+            "lines": 179,
+            "tokens": 977,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 21,
             "duplicatedTokens": 109,
-            "percentage": 11.86,
-            "percentageTokens": 11.27,
+            "percentage": 11.73,
+            "percentageTokens": 11.16,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2070,14 +2070,14 @@
           }
         },
         "total": {
-          "lines": 2590,
-          "tokens": 17076,
+          "lines": 2594,
+          "tokens": 17096,
           "sources": 23,
           "clones": 17,
           "duplicatedLines": 411,
           "duplicatedTokens": 2661,
-          "percentage": 15.87,
-          "percentageTokens": 15.58,
+          "percentage": 15.84,
+          "percentageTokens": 15.57,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3128,8 +3128,8 @@
       }
     },
     "total": {
-      "lines": 27104,
-      "tokens": 203737,
+      "lines": 27108,
+      "tokens": 203757,
       "sources": 247,
       "clones": 112,
       "duplicatedLines": 1492,
@@ -6331,17 +6331,17 @@
       },
       "secondFile": {
         "name": ".github/workflows/windows.yml",
-        "start": 200,
-        "end": 215,
+        "start": 202,
+        "end": 217,
         "startLoc": {
-          "line": 200,
+          "line": 202,
           "column": 9,
-          "position": 1188
+          "position": 1198
         },
         "endLoc": {
-          "line": 215,
+          "line": 217,
           "column": 18,
-          "position": 1288
+          "position": 1298
         }
       }
     },
@@ -6388,17 +6388,17 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/docker.yml",
-        "start": 25,
-        "end": 46,
+        "start": 27,
+        "end": 48,
         "startLoc": {
-          "line": 25,
+          "line": 27,
           "column": 5,
-          "position": 112
+          "position": 122
         },
         "endLoc": {
-          "line": 46,
+          "line": 48,
           "column": 9,
-          "position": 221
+          "position": 231
         }
       },
       "secondFile": {
@@ -6440,16 +6440,16 @@
       "secondFile": {
         "name": ".github/workflows/native.yml",
         "start": 40,
-        "end": 49,
+        "end": 51,
         "startLoc": {
           "line": 40,
           "column": 1,
           "position": 184
         },
         "endLoc": {
-          "line": 49,
+          "line": 51,
           "column": 8,
-          "position": 235
+          "position": 245
         }
       }
     },
@@ -6476,16 +6476,16 @@
       "secondFile": {
         "name": ".github/workflows/native.yml",
         "start": 40,
-        "end": 50,
+        "end": 52,
         "startLoc": {
           "line": 40,
           "column": 1,
           "position": 184
         },
         "endLoc": {
-          "line": 50,
+          "line": 52,
           "column": 3,
-          "position": 241
+          "position": 251
         }
       }
     },

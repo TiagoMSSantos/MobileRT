@@ -1,0 +1,652 @@
+[0m[33mcommit dc211545b8de6a3c4940a99cf2ed71cf0d3cb21c[m[33m ([m[1;36mHEAD -> [m[1;32munignore-test-testRenderSceneWithoutAccelerator[m[33m)[m[0m
+[0mAuthor:     TiagoMSSantos <tiago_s@outlook.pt>[0m
+[0mAuthorDate: 2023-06-25 07:53:52 +0100[0m
+[0mCommit:     TiagoMSSantos <tiago_s@outlook.pt>[0m
+[0mCommitDate: 2023-06-25 10:37:41 +0100[0m
+[0m[0m
+[0m    test(androidTest): Unignore `RayTracingTest#testRenderSceneWithoutAccelerator` test[0m
+[0m    [0m
+[0m    This commit unignores the Android test `RayTracingTest#testRenderSceneWithoutAccelerator`[0m
+[0m    because it was only failing in CI when Linux machines were used since they do not have[0m
+[0m    a hardware accelerated Android emulator.[0m
+[0m    This test, from now on, will only not be executed when Linux machines are used.[0m
+[0m[0m
+[0m[1mdiff --git .github/workflows/docker.yml .github/workflows/docker.yml[m[0m
+[0m[1mindex fa541824..8f054092 100644[m[0m
+[0m[1m--- .github/workflows/docker.yml[m[0m
+[0m[1m+++ .github/workflows/docker.yml[m[0m
+[0m[36m@@ -13,6 +13,8 @@[m [mon:[m[0m
+[0m     - 'docs/**'[0m
+[0m     - 'scripts/**'[0m
+[0m     - 'WavefrontOBJs/**'[0m
+[0m[32m+    [0m[0m[1m[38;2;255;255;255m[42m- '**/*.java'[0m
+[0m[32m+    [0m[0m[1m[38;2;255;255;255m[42m- '**/*.kt'[0m
+[0m     - '!.github/workflows/docker.yml'[0m
+[0m     - '!app/third_party/conan/Native/**'[0m
+[0m     - '!app/System_dependent/CMakeLists.txt'[0m
+[0m[1mdiff --git .github/workflows/windows.yml .github/workflows/windows.yml[m[0m
+[0m[1mindex 0fa9685f..ccf0cd0c 100644[m[0m
+[0m[1m--- .github/workflows/windows.yml[m[0m
+[0m[1m+++ .github/workflows/windows.yml[m[0m
+[0m[36m@@ -17,6 +17,8 @@[m [mon:[m[0m
+[0m     - 'gradle/**'[0m
+[0m     - 'scripts/**'[0m
+[0m     - 'WavefrontOBJs/**'[0m
+[0m[32m+    [0m[0m[1m[38;2;255;255;255m[42m- '**/*.java'[0m
+[0m[32m+    [0m[0m[1m[38;2;255;255;255m[42m- '**/*.kt'[0m
+[0m     - '!.github/workflows/windows.yml'[0m
+[0m     - '!app/CMakeLists.txt'[0m
+[0m     - '!app/third_party/conan/Native/**'[0m
+[0m[1mdiff --git app/src/androidTest/java/puscas/mobilertapp/RayTracingTest.java app/src/androidTest/java/puscas/mobilertapp/RayTracingTest.java[m[0m
+[0m[1mindex 35133370..d0979b97 100644[m[0m
+[0m[1m--- app/src/androidTest/java/puscas/mobilertapp/RayTracingTest.java[m[0m
+[0m[1m+++ app/src/androidTest/java/puscas/mobilertapp/RayTracingTest.java[m[0m
+[0m[36m@@ -9,9 +9,9 @@[m [mimport androidx.test.espresso.intent.Intents;[m[0m
+[0m import androidx.test.espresso.intent.matcher.IntentMatchers;[0m
+[0m [0m
+[0m import org.junit.AfterClass;[0m
+[0m[32m+[0m[0m[32mimport org.junit.[0m[0m[1m[38;2;255;255;255m[42mAssume[0m[0m[32m;[0m
+[0m import org.junit.BeforeClass;[0m
+[0m import org.junit.FixMethodOrder;[0m
+[0m[31m-[0m[0m[31mimport org.junit.[0m[0m[1m[38;2;255;255;255m[41mIgnore[0m[0m[31m;[0m
+[0m import org.junit.Test;[0m
+[0m import org.junit.runners.MethodSorters;[0m
+[0m [0m
+[0m[36m@@ -162,9 +162,21 @@[m [mpublic final class RayTracingTest extends AbstractTest {[m[0m
+[0m      *[0m
+[0m      * @throws TimeoutException If it couldn't render the whole scene in time.[0m
+[0m      */[0m
+[0m[31m-    [0m[0m[1m[38;2;255;255;255m[41m@Ignore[0m[0m[31m("[0m[0m[1m[38;2;255;255;255m[41mIt's[0m[0m[31m failing in CI for Linux machines")[0m
+[0m     @Test(timeout = 2L * 60L * 1000L)[0m
+[0m     public void testRenderSceneWithoutAccelerator() throws TimeoutException {[0m
+[0m[32m+        [0m[0m[1m[38;2;255;255;255m[42mfinal String osName = System.getProperty[0m[0m[32m("[0m[0m[1m[38;2;255;255;255m[42mos.name", "Unknown");[0m
+[0m[32m+        [0m[0m[1m[38;2;255;255;255m[42mfinal String osVersion = System.getProperty("os.version", "Unknown");[0m
+[0m[32m+        [0m[0m[1m[38;2;255;255;255m[42mfinal String osArch = System.getProperty("os.arch", "Unknown");[0m
+[0m[32m+        [0m[0m[1m[38;2;255;255;255m[42mfinal String httpAgent = System.getProperty("http.agent");[0m
+[0m[32m+        [0m[0m[1m[38;2;255;255;255m[42massert osName != null;[0m
+[0m[32m+        [0m[0m[1m[38;2;255;255;255m[42massert osVersion != null;[0m
+[0m[32m+        [0m[0m[1m[38;2;255;255;255m[42massert osArch != null;[0m
+[0m[32m+        [0m[0m[1m[38;2;255;255;255m[42massert httpAgent != null;[0m
+[0m[32m+        [0m[0m[1m[38;2;255;255;255m[42mfinal String osFullName = osName + ", " + osVersion + ", " + osArch + " (" + httpAgent + ")";[0m
+[0m[32m+[0m[0m[41m[0m
+[0m[32m+        [0m[0m[1m[38;2;255;255;255m[42mlogger.info("Detected OS: " + osFullName);[0m
+[0m[32m+        [0m[0m[1m[38;2;255;255;255m[42mAssume.assumeTrue("Test is[0m[0m[32m failing in CI for Linux machines[0m[0m[1m[38;2;255;255;255m[42m.", !osFullName.toLowerCase().contains("linux[0m[0m[32m")[0m[0m[1m[38;2;255;255;255m[42m);[0m[0m[32m[0m
+[0m[32m+[0m[0m[41m[0m
+[0m         final int numCores = UtilsContext.getNumOfCores(this.activity);[0m
+[0m         assertRenderScene(numCores, Scene.CORNELL, Shader.WHITTED, Accelerator.NONE, 1, 1, true);[0m
+[0m     }[0m
+[0m[1mdiff --git app/src/androidTest/java/puscas/mobilertapp/engine/CameraTest.java app/src/androidTest/java/puscas/mobilertapp/engine/CameraTest.java[m[0m
+[0m[1mindex 4635914c..55a45558 100644[m[0m
+[0m[1m--- app/src/androidTest/java/puscas/mobilertapp/engine/CameraTest.java[m[0m
+[0m[1m+++ app/src/androidTest/java/puscas/mobilertapp/engine/CameraTest.java[m[0m
+[0m[36m@@ -26,7 +26,7 @@[m [mpublic final class CameraTest extends AbstractTest {[m[0m
+[0m     @Test(timeout = 2L * 60L * 1000L)[0m
+[0m     public void testRenderSceneWithOrthographic() throws TimeoutException {[0m
+[0m         final int numCores = UtilsContext.getNumOfCores(this.activity);[0m
+[0m[31m-        [0m[0m[31massertRenderScene(numCores, Scene.SPHERES, Shader.WHITTED, Accelerator.BVH, [0m[0m[1m[38;2;255;255;255m[41m1[0m[0m[31m, 1, false);[0m
+[0m[32m+        [0m[0m[32massertRenderScene(numCores, Scene.SPHERES, Shader.WHITTED, Accelerator.BVH, [0m[0m[1m[38;2;255;255;255m[42m2[0m[0m[32m, 1, false);[0m
+[0m     }[0m
+[0m [0m
+[0m     /**[0m
+[0m[36m@@ -37,7 +37,7 @@[m [mpublic final class CameraTest extends AbstractTest {[m[0m
+[0m     @Test(timeout = 2L * 60L * 1000L)[0m
+[0m     public void testRenderSceneWithPerspective() throws TimeoutException {[0m
+[0m         final int numCores = UtilsContext.getNumOfCores(this.activity);[0m
+[0m[31m-        [0m[0m[31massertRenderScene(numCores, Scene.CORNELL, Shader.WHITTED, Accelerator.BVH, [0m[0m[1m[38;2;255;255;255m[41m1[0m[0m[31m, 1, false);[0m
+[0m[32m+        [0m[0m[32massertRenderScene(numCores, Scene.CORNELL, Shader.WHITTED, Accelerator.BVH, [0m[0m[1m[38;2;255;255;255m[42m2[0m[0m[32m, 1, false);[0m
+[0m     }[0m
+[0m [0m
+[0m }[0m
+[0m[1mdiff --git docs/jscpd-report/html/index.html docs/jscpd-report/html/index.html[m[0m
+[0m[1mindex c08040cf..a03ced84 100644[m[0m
+[0m[1m--- docs/jscpd-report/html/index.html[m[0m
+[0m[1m+++ docs/jscpd-report/html/index.html[m[0m
+[0m[36m@@ -2,7 +2,7 @@[m[0m
+[0m                        // <!--[0m
+[0m                        window.initialData = {[0m
+[0m   "statistics": {[0m
+[0m[31m-    [0m[0m[31m"detectionDate": "2023-06-[0m[0m[1m[38;2;255;255;255m[41m24T13[0m[0m[31m:[0m[0m[1m[38;2;255;255;255m[41m28[0m[0m[31m:[0m[0m[1m[38;2;255;255;255m[41m35[0m[0m[31m.[0m[0m[1m[38;2;255;255;255m[41m514Z[0m[0m[31m",[0m
+[0m[32m+    [0m[0m[32m"detectionDate": "2023-06-[0m[0m[1m[38;2;255;255;255m[42m25T09[0m[0m[32m:[0m[0m[1m[38;2;255;255;255m[42m37[0m[0m[32m:[0m[0m[1m[38;2;255;255;255m[42m30[0m[0m[32m.[0m[0m[1m[38;2;255;255;255m[42m179Z[0m[0m[32m",[0m
+[0m     "formats": {[0m
+[0m       "java": {[0m
+[0m         "sources": {[0m
+[0m[36m@@ -931,14 +931,14 @@[m[0m
+[0m             "newClones": 0[0m
+[0m           },[0m
+[0m           "app/src/androidTest/java/puscas/mobilertapp/RayTracingTest.java": {[0m
+[0m[31m-            [0m[0m[31m"lines": [0m[0m[1m[38;2;255;255;255m[41m171[0m[0m[31m,[0m
+[0m[31m-            [0m[0m[31m"tokens": [0m[0m[1m[38;2;255;255;255m[41m1312[0m[0m[31m,[0m
+[0m[32m+            [0m[0m[32m"lines": [0m[0m[1m[38;2;255;255;255m[42m183[0m[0m[32m,[0m
+[0m[32m+            [0m[0m[32m"tokens": [0m[0m[1m[38;2;255;255;255m[42m1500[0m[0m[32m,[0m
+[0m             "sources": 1,[0m
+[0m             "clones": 5,[0m
+[0m[31m-            [0m[0m[31m"duplicatedLines": [0m[0m[1m[38;2;255;255;255m[41m75[0m[0m[31m,[0m
+[0m[31m-            [0m[0m[31m"duplicatedTokens": [0m[0m[1m[38;2;255;255;255m[41m405[0m[0m[31m,[0m
+[0m[31m-            [0m[0m[31m"percentage": [0m[0m[1m[38;2;255;255;255m[41m43[0m[0m[31m.[0m[0m[1m[38;2;255;255;255m[41m86[0m[0m[31m,[0m
+[0m[31m-            [0m[0m[31m"percentageTokens": [0m[0m[1m[38;2;255;255;255m[41m30[0m[0m[31m.[0m[0m[1m[38;2;255;255;255m[41m87[0m[0m[31m,[0m
+[0m[32m+            [0m[0m[32m"duplicatedLines": [0m[0m[1m[38;2;255;255;255m[42m72[0m[0m[32m,[0m
+[0m[32m+            [0m[0m[32m"duplicatedTokens": [0m[0m[1m[38;2;255;255;255m[42m386[0m[0m[32m,[0m
+[0m[32m+            [0m[0m[32m"percentage": [0m[0m[1m[38;2;255;255;255m[42m39[0m[0m[32m.[0m[0m[1m[38;2;255;255;255m[42m34[0m[0m[32m,[0m
+[0m[32m+            [0m[0m[32m"percentageTokens": [0m[0m[1m[38;2;255;255;255m[42m25[0m[0m[32m.[0m[0m[1m[38;2;255;255;255m[42m73[0m[0m[32m,[0m
+[0m             "newDuplicatedLines": 0,[0m
+[0m             "newClones": 0[0m
+[0m           },[0m
+[0m[36m@@ -947,10 +947,10 @@[m[0m
+[0m             "tokens": 646,[0m
+[0m             "sources": 1,[0m
+[0m             "clones": 3,[0m
+[0m[31m-            [0m[0m[31m"duplicatedLines": [0m[0m[1m[38;2;255;255;255m[41m35[0m[0m[31m,[0m
+[0m[31m-            [0m[0m[31m"duplicatedTokens": [0m[0m[1m[38;2;255;255;255m[41m314[0m[0m[31m,[0m
+[0m[31m-            [0m[0m[31m"percentage": [0m[0m[1m[38;2;255;255;255m[41m39[0m[0m[31m.[0m[0m[1m[38;2;255;255;255m[41m33[0m[0m[31m,[0m
+[0m[31m-            [0m[0m[31m"percentageTokens": [0m[0m[1m[38;2;255;255;255m[41m48[0m[0m[31m.[0m[0m[1m[38;2;255;255;255m[41m61[0m[0m[31m,[0m
+[0m[32m+            [0m[0m[32m"duplicatedLines": [0m[0m[1m[38;2;255;255;255m[42m32[0m[0m[32m,[0m
+[0m[32m+            [0m[0m[32m"duplicatedTokens": [0m[0m[1m[38;2;255;255;255m[42m295[0m[0m[32m,[0m
+[0m[32m+            [0m[0m[32m"percentage": [0m[0m[1m[38;2;255;255;255m[42m35[0m[0m[32m.[0m[0m[1m[38;2;255;255;255m[42m96[0m[0m[32m,[0m
+[0m[32m+            [0m[0m[32m"percentageTokens": [0m[0m[1m[38;2;255;255;255m[42m45[0m[0m[32m.[0m[0m[1m[38;2;255;255;255m[42m67[0m[0m[32m,[0m
+[0m             "newDuplicatedLines": 0,[0m
+[0m             "newClones": 0[0m
+[0m           },[0m
+[0m[36m@@ -992,14 +992,14 @@[m[0m
+[0m           }[0m
+[0m         },[0m
+[0m         "total": {[0m
+[0m[31m-          [0m[0m[31m"lines": [0m[0m[1m[38;2;255;255;255m[41m9241[0m[0m[31m,[0m
+[0m[31m-          [0m[0m[31m"tokens": [0m[0m[1m[38;2;255;255;255m[41m63166[0m[0m[31m,[0m
+[0m[32m+          [0m[0m[32m"lines": [0m[0m[1m[38;2;255;255;255m[42m9253[0m[0m[32m,[0m
+[0m[32m+          [0m[0m[32m"tokens": [0m[0m[1m[38;2;255;255;255m[42m63354[0m[0m[32m,[0m
+[0m           "sources": 82,[0m
+[0m           "clones": 54,[0m
+[0m[31m-          [0m[0m[31m"duplicatedLines": [0m[0m[1m[38;2;255;255;255m[41m530[0m[0m[31m,[0m
+[0m[31m-          [0m[0m[31m"duplicatedTokens": [0m[0m[1m[38;2;255;255;255m[41m4671[0m[0m[31m,[0m
+[0m[31m-          [0m[0m[31m"percentage": 5.[0m[0m[1m[38;2;255;255;255m[41m74[0m[0m[31m,[0m
+[0m[31m-          [0m[0m[31m"percentageTokens": 7.[0m[0m[1m[38;2;255;255;255m[41m39[0m[0m[31m,[0m
+[0m[32m+          [0m[0m[32m"duplicatedLines": [0m[0m[1m[38;2;255;255;255m[42m527[0m[0m[32m,[0m
+[0m[32m+          [0m[0m[32m"duplicatedTokens": [0m[0m[1m[38;2;255;255;255m[42m4652[0m[0m[32m,[0m
+[0m[32m+          [0m[0m[32m"percentage": 5.[0m[0m[1m[38;2;255;255;255m[42m7[0m[0m[32m,[0m
+[0m[32m+          [0m[0m[32m"percentageTokens": 7.[0m[0m[1m[38;2;255;255;255m[42m34[0m[0m[32m,[0m
+[0m           "newDuplicatedLines": 0,[0m
+[0m           "newClones": 0[0m
+[0m         }[0m
+[0m[36m@@ -1903,14 +1903,14 @@[m[0m
+[0m             "newClones": 0[0m
+[0m           },[0m
+[0m           ".github/workflows/windows.yml": {[0m
+[0m[31m-            [0m[0m[31m"lines": [0m[0m[1m[38;2;255;255;255m[41m246[0m[0m[31m,[0m
+[0m[31m-            [0m[0m[31m"tokens": [0m[0m[1m[38;2;255;255;255m[41m1473[0m[0m[31m,[0m
+[0m[32m+            [0m[0m[32m"lines": [0m[0m[1m[38;2;255;255;255m[42m248[0m[0m[32m,[0m
+[0m[32m+            [0m[0m[32m"tokens": [0m[0m[1m[38;2;255;255;255m[42m1483[0m[0m[32m,[0m
+[0m             "sources": 1,[0m
+[0m             "clones": 1,[0m
+[0m             "duplicatedLines": 14,[0m
+[0m             "duplicatedTokens": 99,[0m
+[0m[31m-            [0m[0m[31m"percentage": 5.[0m[0m[1m[38;2;255;255;255m[41m69[0m[0m[31m,[0m
+[0m[31m-            [0m[0m[31m"percentageTokens": 6.[0m[0m[1m[38;2;255;255;255m[41m72[0m[0m[31m,[0m
+[0m[32m+            [0m[0m[32m"percentage": 5.[0m[0m[1m[38;2;255;255;255m[42m65[0m[0m[32m,[0m
+[0m[32m+            [0m[0m[32m"percentageTokens": 6.[0m[0m[1m[38;2;255;255;255m[42m68[0m[0m[32m,[0m
+[0m             "newDuplicatedLines": 0,[0m
+[0m             "newClones": 0[0m
+[0m           },[0m
+[0m[36m@@ -1939,14 +1939,14 @@[m[0m
+[0m             "newClones": 0[0m
+[0m           },[0m
+[0m           ".github/workflows/docker.yml": {[0m
+[0m[31m-            [0m[0m[31m"lines": [0m[0m[1m[38;2;255;255;255m[41m177[0m[0m[31m,[0m
+[0m[31m-            [0m[0m[31m"tokens": [0m[0m[1m[38;2;255;255;255m[41m967[0m[0m[31m,[0m
+[0m[32m+            [0m[0m[32m"lines": [0m[0m[1m[38;2;255;255;255m[42m179[0m[0m[32m,[0m
+[0m[32m+            [0m[0m[32m"tokens": [0m[0m[1m[38;2;255;255;255m[42m977[0m[0m[32m,[0m
+[0m             "sources": 1,[0m
+[0m             "clones": 1,[0m
+[0m             "duplicatedLines": 21,[0m
+[0m             "duplicatedTokens": 109,[0m
+[0m[31m-            [0m[0m[31m"percentage": 11.[0m[0m[1m[38;2;255;255;255m[41m86[0m[0m[31m,[0m
+[0m[31m-            [0m[0m[31m"percentageTokens": 11.[0m[0m[1m[38;2;255;255;255m[41m27[0m[0m[31m,[0m
+[0m[32m+            [0m[0m[32m"percentage": 11.[0m[0m[1m[38;2;255;255;255m[42m73[0m[0m[32m,[0m
+[0m[32m+            [0m[0m[32m"percentageTokens": 11.[0m[0m[1m[38;2;255;255;255m[42m16[0m[0m[32m,[0m
+[0m             "newDuplicatedLines": 0,[0m
+[0m             "newClones": 0[0m
+[0m           },[0m
+[0m[36m@@ -2072,14 +2072,14 @@[m[0m
+[0m           }[0m
+[0m         },[0m
+[0m         "total": {[0m
+[0m[31m-          [0m[0m[31m"lines": [0m[0m[1m[38;2;255;255;255m[41m2590[0m[0m[31m,[0m
+[0m[31m-          [0m[0m[31m"tokens": [0m[0m[1m[38;2;255;255;255m[41m17076[0m[0m[31m,[0m
+[0m[32m+          [0m[0m[32m"lines": [0m[0m[1m[38;2;255;255;255m[42m2594[0m[0m[32m,[0m
+[0m[32m+          [0m[0m[32m"tokens": [0m[0m[1m[38;2;255;255;255m[42m17096[0m[0m[32m,[0m
+[0m           "sources": 23,[0m
+[0m           "clones": 17,[0m
+[0m           "duplicatedLines": 411,[0m
+[0m           "duplicatedTokens": 2661,[0m
+[0m[31m-          [0m[0m[31m"percentage": 15.[0m[0m[1m[38;2;255;255;255m[41m87[0m[0m[31m,[0m
+[0m[31m-          [0m[0m[31m"percentageTokens": 15.[0m[0m[1m[38;2;255;255;255m[41m58[0m[0m[31m,[0m
+[0m[32m+          [0m[0m[32m"percentage": 15.[0m[0m[1m[38;2;255;255;255m[42m84[0m[0m[32m,[0m
+[0m[32m+          [0m[0m[32m"percentageTokens": 15.[0m[0m[1m[38;2;255;255;255m[42m57[0m[0m[32m,[0m
+[0m           "newDuplicatedLines": 0,[0m
+[0m           "newClones": 0[0m
+[0m         }[0m
+[0m[36m@@ -3130,14 +3130,14 @@[m[0m
+[0m       }[0m
+[0m     },[0m
+[0m     "total": {[0m
+[0m[31m-      [0m[0m[31m"lines": [0m[0m[1m[38;2;255;255;255m[41m27104[0m[0m[31m,[0m
+[0m[31m-      [0m[0m[31m"tokens": [0m[0m[1m[38;2;255;255;255m[41m203737[0m[0m[31m,[0m
+[0m[32m+      [0m[0m[32m"lines": [0m[0m[1m[38;2;255;255;255m[42m27120[0m[0m[32m,[0m
+[0m[32m+      [0m[0m[32m"tokens": [0m[0m[1m[38;2;255;255;255m[42m203945[0m[0m[32m,[0m
+[0m       "sources": 247,[0m
+[0m       "clones": 112,[0m
+[0m[31m-      [0m[0m[31m"duplicatedLines": [0m[0m[1m[38;2;255;255;255m[41m1492[0m[0m[31m,[0m
+[0m[31m-      [0m[0m[31m"duplicatedTokens": [0m[0m[1m[38;2;255;255;255m[41m12735[0m[0m[31m,[0m
+[0m[31m-      [0m[0m[31m"percentage": 5.[0m[0m[1m[38;2;255;255;255m[41m5[0m[0m[31m,[0m
+[0m[31m-      [0m[0m[31m"percentageTokens": 6.[0m[0m[1m[38;2;255;255;255m[41m25[0m[0m[31m,[0m
+[0m[32m+      [0m[0m[32m"duplicatedLines": [0m[0m[1m[38;2;255;255;255m[42m1489[0m[0m[32m,[0m
+[0m[32m+      [0m[0m[32m"duplicatedTokens": [0m[0m[1m[38;2;255;255;255m[42m12716[0m[0m[32m,[0m
+[0m[32m+      [0m[0m[32m"percentage": 5.[0m[0m[1m[38;2;255;255;255m[42m49[0m[0m[32m,[0m
+[0m[32m+      [0m[0m[32m"percentageTokens": 6.[0m[0m[1m[38;2;255;255;255m[42m24[0m[0m[32m,[0m
+[0m       "newDuplicatedLines": 0,[0m
+[0m       "newClones": 0[0m
+[0m     }[0m
+[0m[36m@@ -4981,17 +4981,17 @@[m[0m
+[0m     },[0m
+[0m     {[0m
+[0m       "format": "java",[0m
+[0m[31m-      [0m[0m[31m"lines": [0m[0m[1m[38;2;255;255;255m[41m12[0m[0m[31m,[0m
+[0m[31m-      [0m[0m[31m"fragment": ";\[0m[0m[1m[38;2;255;255;255m[41mn\nimport org.junit.FixMethodOrder;\nimport org.junit.Ignore;\[0m[0m[31mnimport org.junit.Test;\nimport org.junit.runners.MethodSorters;\n\nimport java.util.concurrent.TimeoutException;\nimport java.util.logging.Logger;\n\nimport puscas.mobilertapp.constants.Accelerator;\nimport puscas.mobilertapp.constants.Constants",[0m
+[0m[32m+      [0m[0m[32m"lines": [0m[0m[1m[38;2;255;255;255m[42m9[0m[0m[32m,[0m
+[0m[32m+      [0m[0m[32m"fragment": ";\nimport org.junit.Test;\nimport org.junit.runners.MethodSorters;\n\nimport java.util.concurrent.TimeoutException;\nimport java.util.logging.Logger;\n\nimport puscas.mobilertapp.constants.Accelerator;\nimport puscas.mobilertapp.constants.Constants",[0m
+[0m       "tokens": 0,[0m
+[0m       "firstFile": {[0m
+[0m         "name": "app/src/androidTest/java/puscas/mobilertapp/PreviewTest.java",[0m
+[0m[31m-        [0m[0m[31m"start": [0m[0m[1m[38;2;255;255;255m[41m4[0m[0m[31m,[0m
+[0m[32m+        [0m[0m[32m"start": [0m[0m[1m[38;2;255;255;255m[42m7[0m[0m[32m,[0m
+[0m         "end": 15,[0m
+[0m         "startLoc": {[0m
+[0m[31m-          [0m[0m[31m"line": [0m[0m[1m[38;2;255;255;255m[41m4[0m[0m[31m,[0m
+[0m[31m-          [0m[0m[31m"column": [0m[0m[1m[38;2;255;255;255m[41m15[0m[0m[31m,[0m
+[0m[31m-          [0m[0m[31m"position": [0m[0m[1m[38;2;255;255;255m[41m34[0m[0m[31m[0m
+[0m[32m+          [0m[0m[32m"line": [0m[0m[1m[38;2;255;255;255m[42m7[0m[0m[32m,[0m
+[0m[32m+          [0m[0m[32m"column": [0m[0m[1m[38;2;255;255;255m[42m7[0m[0m[32m,[0m
+[0m[32m+          [0m[0m[32m"position": [0m[0m[1m[38;2;255;255;255m[42m53[0m[0m[32m[0m
+[0m         },[0m
+[0m         "endLoc": {[0m
+[0m           "line": 15,[0m
+[0m[36m@@ -5001,12 +5001,12 @@[m[0m
+[0m       },[0m
+[0m       "secondFile": {[0m
+[0m         "name": "app/src/androidTest/java/puscas/mobilertapp/RayTracingTest.java",[0m
+[0m[31m-        [0m[0m[31m"start": [0m[0m[1m[38;2;255;255;255m[41m12[0m[0m[31m,[0m
+[0m[32m+        [0m[0m[32m"start": [0m[0m[1m[38;2;255;255;255m[42m14[0m[0m[32m,[0m
+[0m         "end": 22,[0m
+[0m         "startLoc": {[0m
+[0m[31m-          [0m[0m[31m"line": [0m[0m[1m[38;2;255;255;255m[41m12[0m[0m[31m,[0m
+[0m[31m-          [0m[0m[31m"column": [0m[0m[1m[38;2;255;255;255m[41m12[0m[0m[31m,[0m
+[0m[31m-          [0m[0m[31m"position": [0m[0m[1m[38;2;255;255;255m[41m90[0m[0m[31m[0m
+[0m[32m+          [0m[0m[32m"line": [0m[0m[1m[38;2;255;255;255m[42m14[0m[0m[32m,[0m
+[0m[32m+          [0m[0m[32m"column": [0m[0m[1m[38;2;255;255;255m[42m15[0m[0m[32m,[0m
+[0m[32m+          [0m[0m[32m"position": [0m[0m[1m[38;2;255;255;255m[42m108[0m[0m[32m[0m
+[0m         },[0m
+[0m         "endLoc": {[0m
+[0m           "line": 22,[0m
+[0m[36m@@ -6333,17 +6333,17 @@[m[0m
+[0m       },[0m
+[0m       "secondFile": {[0m
+[0m         "name": ".github/workflows/windows.yml",[0m
+[0m[31m-        [0m[0m[31m"start": [0m[0m[1m[38;2;255;255;255m[41m200[0m[0m[31m,[0m
+[0m[31m-        [0m[0m[31m"end": [0m[0m[1m[38;2;255;255;255m[41m215[0m[0m[31m,[0m
+[0m[32m+        [0m[0m[32m"start": [0m[0m[1m[38;2;255;255;255m[42m202[0m[0m[32m,[0m
+[0m[32m+        [0m[0m[32m"end": [0m[0m[1m[38;2;255;255;255m[42m217[0m[0m[32m,[0m
+[0m         "startLoc": {[0m
+[0m[31m-          [0m[0m[31m"line": [0m[0m[1m[38;2;255;255;255m[41m200[0m[0m[31m,[0m
+[0m[32m+          [0m[0m[32m"line": [0m[0m[1m[38;2;255;255;255m[42m202[0m[0m[32m,[0m
+[0m           "column": 9,[0m
+[0m[31m-          [0m[0m[31m"position": [0m[0m[1m[38;2;255;255;255m[41m1188[0m[0m[31m[0m
+[0m[32m+          [0m[0m[32m"position": [0m[0m[1m[38;2;255;255;255m[42m1198[0m[0m[32m[0m
+[0m         },[0m
+[0m         "endLoc": {[0m
+[0m[31m-          [0m[0m[31m"line": [0m[0m[1m[38;2;255;255;255m[41m215[0m[0m[31m,[0m
+[0m[32m+          [0m[0m[32m"line": [0m[0m[1m[38;2;255;255;255m[42m217[0m[0m[32m,[0m
+[0m           "column": 18,[0m
+[0m[31m-          [0m[0m[31m"position": [0m[0m[1m[38;2;255;255;255m[41m1288[0m[0m[31m[0m
+[0m[32m+          [0m[0m[32m"position": [0m[0m[1m[38;2;255;255;255m[42m1298[0m[0m[32m[0m
+[0m         }[0m
+[0m       }[0m
+[0m     },[0m
+[0m[36m@@ -6390,17 +6390,17 @@[m[0m
+[0m       "tokens": 0,[0m
+[0m       "firstFile": {[0m
+[0m         "name": ".github/workflows/docker.yml",[0m
+[0m[31m-        [0m[0m[31m"start": [0m[0m[1m[38;2;255;255;255m[41m25[0m[0m[31m,[0m
+[0m[31m-        [0m[0m[31m"end": [0m[0m[1m[38;2;255;255;255m[41m46[0m[0m[31m,[0m
+[0m[32m+        [0m[0m[32m"start": [0m[0m[1m[38;2;255;255;255m[42m27[0m[0m[32m,[0m
+[0m[32m+        [0m[0m[32m"end": [0m[0m[1m[38;2;255;255;255m[42m48[0m[0m[32m,[0m
+[0m         "startLoc": {[0m
+[0m[31m-          [0m[0m[31m"line": [0m[0m[1m[38;2;255;255;255m[41m25[0m[0m[31m,[0m
+[0m[32m+          [0m[0m[32m"line": [0m[0m[1m[38;2;255;255;255m[42m27[0m[0m[32m,[0m
+[0m           "column": 5,[0m
+[0m[31m-          [0m[0m[31m"position": [0m[0m[1m[38;2;255;255;255m[41m112[0m[0m[31m[0m
+[0m[32m+          [0m[0m[32m"position": [0m[0m[1m[38;2;255;255;255m[42m122[0m[0m[32m[0m
+[0m         },[0m
+[0m         "endLoc": {[0m
+[0m[31m-          [0m[0m[31m"line": [0m[0m[1m[38;2;255;255;255m[41m46[0m[0m[31m,[0m
+[0m[32m+          [0m[0m[32m"line": [0m[0m[1m[38;2;255;255;255m[42m48[0m[0m[32m,[0m
+[0m           "column": 9,[0m
+[0m[31m-          [0m[0m[31m"position": [0m[0m[1m[38;2;255;255;255m[41m221[0m[0m[31m[0m
+[0m[32m+          [0m[0m[32m"position": [0m[0m[1m[38;2;255;255;255m[42m231[0m[0m[32m[0m
+[0m         }[0m
+[0m       },[0m
+[0m       "secondFile": {[0m
+[0m[36m@@ -6442,16 +6442,16 @@[m[0m
+[0m       "secondFile": {[0m
+[0m         "name": ".github/workflows/native.yml",[0m
+[0m         "start": 40,[0m
+[0m[31m-        [0m[0m[31m"end": [0m[0m[1m[38;2;255;255;255m[41m49[0m[0m[31m,[0m
+[0m[32m+        [0m[0m[32m"end": [0m[0m[1m[38;2;255;255;255m[42m51[0m[0m[32m,[0m
+[0m         "startLoc": {[0m
+[0m           "line": 40,[0m
+[0m           "column": 1,[0m
+[0m           "position": 184[0m
+[0m         },[0m
+[0m         "endLoc": {[0m
+[0m[31m-          [0m[0m[31m"line": [0m[0m[1m[38;2;255;255;255m[41m49[0m[0m[31m,[0m
+[0m[32m+          [0m[0m[32m"line": [0m[0m[1m[38;2;255;255;255m[42m51[0m[0m[32m,[0m
+[0m           "column": 8,[0m
+[0m[31m-          [0m[0m[31m"position": [0m[0m[1m[38;2;255;255;255m[41m235[0m[0m[31m[0m
+[0m[32m+          [0m[0m[32m"position": [0m[0m[1m[38;2;255;255;255m[42m245[0m[0m[32m[0m
+[0m         }[0m
+[0m       }[0m
+[0m     },[0m
+[0m[36m@@ -6478,16 +6478,16 @@[m[0m
+[0m       "secondFile": {[0m
+[0m         "name": ".github/workflows/native.yml",[0m
+[0m         "start": 40,[0m
+[0m[31m-        [0m[0m[31m"end": [0m[0m[1m[38;2;255;255;255m[41m50[0m[0m[31m,[0m
+[0m[32m+        [0m[0m[32m"end": [0m[0m[1m[38;2;255;255;255m[42m52[0m[0m[32m,[0m
+[0m         "startLoc": {[0m
+[0m           "line": 40,[0m
+[0m           "column": 1,[0m
+[0m           "position": 184[0m
+[0m         },[0m
+[0m         "endLoc": {[0m
+[0m[31m-          [0m[0m[31m"line": [0m[0m[1m[38;2;255;255;255m[41m50[0m[0m[31m,[0m
+[0m[32m+          [0m[0m[32m"line": [0m[0m[1m[38;2;255;255;255m[42m52[0m[0m[32m,[0m
+[0m           "column": 3,[0m
+[0m[31m-          [0m[0m[31m"position": [0m[0m[1m[38;2;255;255;255m[41m241[0m[0m[31m[0m
+[0m[32m+          [0m[0m[32m"position": [0m[0m[1m[38;2;255;255;255m[42m251[0m[0m[32m[0m
+[0m         }[0m
+[0m       }[0m
+[0m     },[0m
+[0m[1mdiff --git docs/jscpd-report/html/jscpd-report.json docs/jscpd-report/html/jscpd-report.json[m[0m
+[0m[1mindex 37fa1ea4..4be09f49 100644[m[0m
+[0m[1m--- docs/jscpd-report/html/jscpd-report.json[m[0m
+[0m[1m+++ docs/jscpd-report/html/jscpd-report.json[m[0m
+[0m[36m@@ -1,6 +1,6 @@[m[0m
+[0m {[0m
+[0m   "statistics": {[0m
+[0m[31m-    [0m[0m[31m"detectionDate": "2023-06-[0m[0m[1m[38;2;255;255;255m[41m24T13[0m[0m[31m:[0m[0m[1m[38;2;255;255;255m[41m28[0m[0m[31m:[0m[0m[1m[38;2;255;255;255m[41m35[0m[0m[31m.[0m[0m[1m[38;2;255;255;255m[41m514Z[0m[0m[31m",[0m
+[0m[32m+    [0m[0m[32m"detectionDate": "2023-06-[0m[0m[1m[38;2;255;255;255m[42m25T09[0m[0m[32m:[0m[0m[1m[38;2;255;255;255m[42m37[0m[0m[32m:[0m[0m[1m[38;2;255;255;255m[42m30[0m[0m[32m.[0m[0m[1m[38;2;255;255;255m[42m179Z[0m[0m[32m",[0m
+[0m     "formats": {[0m
+[0m       "java": {[0m
+[0m         "sources": {[0m
+[0m[36m@@ -929,14 +929,14 @@[m[0m
+[0m             "newClones": 0[0m
+[0m           },[0m
+[0m           "app/src/androidTest/java/puscas/mobilertapp/RayTracingTest.java": {[0m
+[0m[31m-            [0m[0m[31m"lines": [0m[0m[1m[38;2;255;255;255m[41m171[0m[0m[31m,[0m
+[0m[31m-            [0m[0m[31m"tokens": [0m[0m[1m[38;2;255;255;255m[41m1312[0m[0m[31m,[0m
+[0m[32m+            [0m[0m[32m"lines": [0m[0m[1m[38;2;255;255;255m[42m183[0m[0m[32m,[0m
+[0m[32m+            [0m[0m[32m"tokens": [0m[0m[1m[38;2;255;255;255m[42m1500[0m[0m[32m,[0m
+[0m             "sources": 1,[0m
+[0m             "clones": 5,[0m
+[0m[31m-            [0m[0m[31m"duplicatedLines": [0m[0m[1m[38;2;255;255;255m[41m75[0m[0m[31m,[0m
+[0m[31m-            [0m[0m[31m"duplicatedTokens": [0m[0m[1m[38;2;255;255;255m[41m405[0m[0m[31m,[0m
+[0m[31m-            [0m[0m[31m"percentage": [0m[0m[1m[38;2;255;255;255m[41m43[0m[0m[31m.[0m[0m[1m[38;2;255;255;255m[41m86[0m[0m[31m,[0m
+[0m[31m-            [0m[0m[31m"percentageTokens": [0m[0m[1m[38;2;255;255;255m[41m30[0m[0m[31m.[0m[0m[1m[38;2;255;255;255m[41m87[0m[0m[31m,[0m
+[0m[32m+            [0m[0m[32m"duplicatedLines": [0m[0m[1m[38;2;255;255;255m[42m72[0m[0m[32m,[0m
+[0m[32m+            [0m[0m[32m"duplicatedTokens": [0m[0m[1m[38;2;255;255;255m[42m386[0m[0m[32m,[0m
+[0m[32m+            [0m[0m[32m"percentage": [0m[0m[1m[38;2;255;255;255m[42m39[0m[0m[32m.[0m[0m[1m[38;2;255;255;255m[42m34[0m[0m[32m,[0m
+[0m[32m+            [0m[0m[32m"percentageTokens": [0m[0m[1m[38;2;255;255;255m[42m25[0m[0m[32m.[0m[0m[1m[38;2;255;255;255m[42m73[0m[0m[32m,[0m
+[0m             "newDuplicatedLines": 0,[0m
+[0m             "newClones": 0[0m
+[0m           },[0m
+[0m[36m@@ -945,10 +945,10 @@[m[0m
+[0m             "tokens": 646,[0m
+[0m             "sources": 1,[0m
+[0m             "clones": 3,[0m
+[0m[31m-            [0m[0m[31m"duplicatedLines": [0m[0m[1m[38;2;255;255;255m[41m35[0m[0m[31m,[0m
+[0m[31m-            [0m[0m[31m"duplicatedTokens": [0m[0m[1m[38;2;255;255;255m[41m314[0m[0m[31m,[0m
+[0m[31m-            [0m[0m[31m"percentage": [0m[0m[1m[38;2;255;255;255m[41m39[0m[0m[31m.[0m[0m[1m[38;2;255;255;255m[41m33[0m[0m[31m,[0m
+[0m[31m-            [0m[0m[31m"percentageTokens": [0m[0m[1m[38;2;255;255;255m[41m48[0m[0m[31m.[0m[0m[1m[38;2;255;255;255m[41m61[0m[0m[31m,[0m
+[0m[32m+            [0m[0m[32m"duplicatedLines": [0m[0m[1m[38;2;255;255;255m[42m32[0m[0m[32m,[0m
+[0m[32m+            [0m[0m[32m"duplicatedTokens": [0m[0m[1m[38;2;255;255;255m[42m295[0m[0m[32m,[0m
+[0m[32m+            [0m[0m[32m"percentage": [0m[0m[1m[38;2;255;255;255m[42m35[0m[0m[32m.[0m[0m[1m[38;2;255;255;255m[42m96[0m[0m[32m,[0m
+[0m[32m+            [0m[0m[32m"percentageTokens": [0m[0m[1m[38;2;255;255;255m[42m45[0m[0m[32m.[0m[0m[1m[38;2;255;255;255m[42m67[0m[0m[32m,[0m
+[0m             "newDuplicatedLines": 0,[0m
+[0m             "newClones": 0[0m
+[0m           },[0m
+[0m[36m@@ -990,14 +990,14 @@[m[0m
+[0m           }[0m
+[0m         },[0m
+[0m         "total": {[0m
+[0m[31m-          [0m[0m[31m"lines": [0m[0m[1m[38;2;255;255;255m[41m9241[0m[0m[31m,[0m
+[0m[31m-          [0m[0m[31m"tokens": [0m[0m[1m[38;2;255;255;255m[41m63166[0m[0m[31m,[0m
+[0m[32m+          [0m[0m[32m"lines": [0m[0m[1m[38;2;255;255;255m[42m9253[0m[0m[32m,[0m
+[0m[32m+          [0m[0m[32m"tokens": [0m[0m[1m[38;2;255;255;255m[42m63354[0m[0m[32m,[0m
+[0m           "sources": 82,[0m
+[0m           "clones": 54,[0m
+[0m[31m-          [0m[0m[31m"duplicatedLines": [0m[0m[1m[38;2;255;255;255m[41m530[0m[0m[31m,[0m
+[0m[31m-          [0m[0m[31m"duplicatedTokens": [0m[0m[1m[38;2;255;255;255m[41m4671[0m[0m[31m,[0m
+[0m[31m-          [0m[0m[31m"percentage": 5.[0m[0m[1m[38;2;255;255;255m[41m74[0m[0m[31m,[0m
+[0m[31m-          [0m[0m[31m"percentageTokens": 7.[0m[0m[1m[38;2;255;255;255m[41m39[0m[0m[31m,[0m
+[0m[32m+          [0m[0m[32m"duplicatedLines": [0m[0m[1m[38;2;255;255;255m[42m527[0m[0m[32m,[0m
+[0m[32m+          [0m[0m[32m"duplicatedTokens": [0m[0m[1m[38;2;255;255;255m[42m4652[0m[0m[32m,[0m
+[0m[32m+          [0m[0m[32m"percentage": 5.[0m[0m[1m[38;2;255;255;255m[42m7[0m[0m[32m,[0m
+[0m[32m+          [0m[0m[32m"percentageTokens": 7.[0m[0m[1m[38;2;255;255;255m[42m34[0m[0m[32m,[0m
+[0m           "newDuplicatedLines": 0,[0m
+[0m           "newClones": 0[0m
+[0m         }[0m
+[0m[36m@@ -1901,14 +1901,14 @@[m[0m
+[0m             "newClones": 0[0m
+[0m           },[0m
+[0m           ".github/workflows/windows.yml": {[0m
+[0m[31m-            [0m[0m[31m"lines": [0m[0m[1m[38;2;255;255;255m[41m246[0m[0m[31m,[0m
+[0m[31m-            [0m[0m[31m"tokens": [0m[0m[1m[38;2;255;255;255m[41m1473[0m[0m[31m,[0m
+[0m[32m+            [0m[0m[32m"lines": [0m[0m[1m[38;2;255;255;255m[42m248[0m[0m[32m,[0m
+[0m[32m+            [0m[0m[32m"tokens": [0m[0m[1m[38;2;255;255;255m[42m1483[0m[0m[32m,[0m
+[0m             "sources": 1,[0m
+[0m             "clones": 1,[0m
+[0m             "duplicatedLines": 14,[0m
+[0m             "duplicatedTokens": 99,[0m
+[0m[31m-            [0m[0m[31m"percentage": 5.[0m[0m[1m[38;2;255;255;255m[41m69[0m[0m[31m,[0m
+[0m[31m-            [0m[0m[31m"percentageTokens": 6.[0m[0m[1m[38;2;255;255;255m[41m72[0m[0m[31m,[0m
+[0m[32m+            [0m[0m[32m"percentage": 5.[0m[0m[1m[38;2;255;255;255m[42m65[0m[0m[32m,[0m
+[0m[32m+            [0m[0m[32m"percentageTokens": 6.[0m[0m[1m[38;2;255;255;255m[42m68[0m[0m[32m,[0m
+[0m             "newDuplicatedLines": 0,[0m
+[0m             "newClones": 0[0m
+[0m           },[0m
+[0m[36m@@ -1937,14 +1937,14 @@[m[0m
+[0m             "newClones": 0[0m
+[0m           },[0m
+[0m           ".github/workflows/docker.yml": {[0m
+[0m[31m-            [0m[0m[31m"lines": [0m[0m[1m[38;2;255;255;255m[41m177[0m[0m[31m,[0m
+[0m[31m-            [0m[0m[31m"tokens": [0m[0m[1m[38;2;255;255;255m[41m967[0m[0m[31m,[0m
+[0m[32m+            [0m[0m[32m"lines": [0m[0m[1m[38;2;255;255;255m[42m179[0m[0m[32m,[0m
+[0m[32m+            [0m[0m[32m"tokens": [0m[0m[1m[38;2;255;255;255m[42m977[0m[0m[32m,[0m
+[0m             "sources": 1,[0m
+[0m             "clones": 1,[0m
+[0m             "duplicatedLines": 21,[0m
+[0m             "duplicatedTokens": 109,[0m
+[0m[31m-            [0m[0m[31m"percentage": 11.[0m[0m[1m[38;2;255;255;255m[41m86[0m[0m[31m,[0m
+[0m[31m-            [0m[0m[31m"percentageTokens": 11.[0m[0m[1m[38;2;255;255;255m[41m27[0m[0m[31m,[0m
+[0m[32m+            [0m[0m[32m"percentage": 11.[0m[0m[1m[38;2;255;255;255m[42m73[0m[0m[32m,[0m
+[0m[32m+            [0m[0m[32m"percentageTokens": 11.[0m[0m[1m[38;2;255;255;255m[42m16[0m[0m[32m,[0m
+[0m             "newDuplicatedLines": 0,[0m
+[0m             "newClones": 0[0m
+[0m           },[0m
+[0m[36m@@ -2070,14 +2070,14 @@[m[0m
+[0m           }[0m
+[0m         },[0m
+[0m         "total": {[0m
+[0m[31m-          [0m[0m[31m"lines": [0m[0m[1m[38;2;255;255;255m[41m2590[0m[0m[31m,[0m
+[0m[31m-          [0m[0m[31m"tokens": [0m[0m[1m[38;2;255;255;255m[41m17076[0m[0m[31m,[0m
+[0m[32m+          [0m[0m[32m"lines": [0m[0m[1m[38;2;255;255;255m[42m2594[0m[0m[32m,[0m
+[0m[32m+          [0m[0m[32m"tokens": [0m[0m[1m[38;2;255;255;255m[42m17096[0m[0m[32m,[0m
+[0m           "sources": 23,[0m
+[0m           "clones": 17,[0m
+[0m           "duplicatedLines": 411,[0m
+[0m           "duplicatedTokens": 2661,[0m
+[0m[31m-          [0m[0m[31m"percentage": 15.[0m[0m[1m[38;2;255;255;255m[41m87[0m[0m[31m,[0m
+[0m[31m-          [0m[0m[31m"percentageTokens": 15.[0m[0m[1m[38;2;255;255;255m[41m58[0m[0m[31m,[0m
+[0m[32m+          [0m[0m[32m"percentage": 15.[0m[0m[1m[38;2;255;255;255m[42m84[0m[0m[32m,[0m
+[0m[32m+          [0m[0m[32m"percentageTokens": 15.[0m[0m[1m[38;2;255;255;255m[42m57[0m[0m[32m,[0m
+[0m           "newDuplicatedLines": 0,[0m
+[0m           "newClones": 0[0m
+[0m         }[0m
+[0m[36m@@ -3128,14 +3128,14 @@[m[0m
+[0m       }[0m
+[0m     },[0m
+[0m     "total": {[0m
+[0m[31m-      [0m[0m[31m"lines": [0m[0m[1m[38;2;255;255;255m[41m27104[0m[0m[31m,[0m
+[0m[31m-      [0m[0m[31m"tokens": [0m[0m[1m[38;2;255;255;255m[41m203737[0m[0m[31m,[0m
+[0m[32m+      [0m[0m[32m"lines": [0m[0m[1m[38;2;255;255;255m[42m27120[0m[0m[32m,[0m
+[0m[32m+      [0m[0m[32m"tokens": [0m[0m[1m[38;2;255;255;255m[42m203945[0m[0m[32m,[0m
+[0m       "sources": 247,[0m
+[0m       "clones": 112,[0m
+[0m[31m-      [0m[0m[31m"duplicatedLines": [0m[0m[1m[38;2;255;255;255m[41m1492[0m[0m[31m,[0m
+[0m[31m-      [0m[0m[31m"duplicatedTokens": [0m[0m[1m[38;2;255;255;255m[41m12735[0m[0m[31m,[0m
+[0m[31m-      [0m[0m[31m"percentage": 5.[0m[0m[1m[38;2;255;255;255m[41m5[0m[0m[31m,[0m
+[0m[31m-      [0m[0m[31m"percentageTokens": 6.[0m[0m[1m[38;2;255;255;255m[41m25[0m[0m[31m,[0m
+[0m[32m+      [0m[0m[32m"duplicatedLines": [0m[0m[1m[38;2;255;255;255m[42m1489[0m[0m[32m,[0m
+[0m[32m+      [0m[0m[32m"duplicatedTokens": [0m[0m[1m[38;2;255;255;255m[42m12716[0m[0m[32m,[0m
+[0m[32m+      [0m[0m[32m"percentage": 5.[0m[0m[1m[38;2;255;255;255m[42m49[0m[0m[32m,[0m
+[0m[32m+      [0m[0m[32m"percentageTokens": 6.[0m[0m[1m[38;2;255;255;255m[42m24[0m[0m[32m,[0m
+[0m       "newDuplicatedLines": 0,[0m
+[0m       "newClones": 0[0m
+[0m     }[0m
+[0m[36m@@ -4979,17 +4979,17 @@[m[0m
+[0m     },[0m
+[0m     {[0m
+[0m       "format": "java",[0m
+[0m[31m-      [0m[0m[31m"lines": [0m[0m[1m[38;2;255;255;255m[41m12[0m[0m[31m,[0m
+[0m[31m-      [0m[0m[31m"fragment": ";\[0m[0m[1m[38;2;255;255;255m[41mn\nimport org.junit.FixMethodOrder;\nimport org.junit.Ignore;\[0m[0m[31mnimport org.junit.Test;\nimport org.junit.runners.MethodSorters;\n\nimport java.util.concurrent.TimeoutException;\nimport java.util.logging.Logger;\n\nimport puscas.mobilertapp.constants.Accelerator;\nimport puscas.mobilertapp.constants.Constants",[0m
+[0m[32m+      [0m[0m[32m"lines": [0m[0m[1m[38;2;255;255;255m[42m9[0m[0m[32m,[0m
+[0m[32m+      [0m[0m[32m"fragment": ";\nimport org.junit.Test;\nimport org.junit.runners.MethodSorters;\n\nimport java.util.concurrent.TimeoutException;\nimport java.util.logging.Logger;\n\nimport puscas.mobilertapp.constants.Accelerator;\nimport puscas.mobilertapp.constants.Constants",[0m
+[0m       "tokens": 0,[0m
+[0m       "firstFile": {[0m
+[0m         "name": "app/src/androidTest/java/puscas/mobilertapp/PreviewTest.java",[0m
+[0m[31m-        [0m[0m[31m"start": [0m[0m[1m[38;2;255;255;255m[41m4[0m[0m[31m,[0m
+[0m[32m+        [0m[0m[32m"start": [0m[0m[1m[38;2;255;255;255m[42m7[0m[0m[32m,[0m
+[0m         "end": 15,[0m
+[0m         "startLoc": {[0m
+[0m[31m-          [0m[0m[31m"line": [0m[0m[1m[38;2;255;255;255m[41m4[0m[0m[31m,[0m
+[0m[31m-          [0m[0m[31m"column": [0m[0m[1m[38;2;255;255;255m[41m15[0m[0m[31m,[0m
+[0m[31m-          [0m[0m[31m"position": [0m[0m[1m[38;2;255;255;255m[41m34[0m[0m[31m[0m
+[0m[32m+          [0m[0m[32m"line": [0m[0m[1m[38;2;255;255;255m[42m7[0m[0m[32m,[0m
+[0m[32m+          [0m[0m[32m"column": [0m[0m[1m[38;2;255;255;255m[42m7[0m[0m[32m,[0m
+[0m[32m+          [0m[0m[32m"position": [0m[0m[1m[38;2;255;255;255m[42m53[0m[0m[32m[0m
+[0m         },[0m
+[0m         "endLoc": {[0m
+[0m           "line": 15,[0m
+[0m[36m@@ -4999,12 +4999,12 @@[m[0m
+[0m       },[0m
+[0m       "secondFile": {[0m
+[0m         "name": "app/src/androidTest/java/puscas/mobilertapp/RayTracingTest.java",[0m
+[0m[31m-        [0m[0m[31m"start": [0m[0m[1m[38;2;255;255;255m[41m12[0m[0m[31m,[0m
+[0m[32m+        [0m[0m[32m"start": [0m[0m[1m[38;2;255;255;255m[42m14[0m[0m[32m,[0m
+[0m         "end": 22,[0m
+[0m         "startLoc": {[0m
+[0m[31m-          [0m[0m[31m"line": [0m[0m[1m[38;2;255;255;255m[41m12[0m[0m[31m,[0m
+[0m[31m-          [0m[0m[31m"column": [0m[0m[1m[38;2;255;255;255m[41m12[0m[0m[31m,[0m
+[0m[31m-          [0m[0m[31m"position": [0m[0m[1m[38;2;255;255;255m[41m90[0m[0m[31m[0m
+[0m[32m+          [0m[0m[32m"line": [0m[0m[1m[38;2;255;255;255m[42m14[0m[0m[32m,[0m
+[0m[32m+          [0m[0m[32m"column": [0m[0m[1m[38;2;255;255;255m[42m15[0m[0m[32m,[0m
+[0m[32m+          [0m[0m[32m"position": [0m[0m[1m[38;2;255;255;255m[42m108[0m[0m[32m[0m
+[0m         },[0m
+[0m         "endLoc": {[0m
+[0m           "line": 22,[0m
+[0m[36m@@ -6331,17 +6331,17 @@[m[0m
+[0m       },[0m
+[0m       "secondFile": {[0m
+[0m         "name": ".github/workflows/windows.yml",[0m
+[0m[31m-        [0m[0m[31m"start": [0m[0m[1m[38;2;255;255;255m[41m200[0m[0m[31m,[0m
+[0m[31m-        [0m[0m[31m"end": [0m[0m[1m[38;2;255;255;255m[41m215[0m[0m[31m,[0m
+[0m[32m+        [0m[0m[32m"start": [0m[0m[1m[38;2;255;255;255m[42m202[0m[0m[32m,[0m
+[0m[32m+        [0m[0m[32m"end": [0m[0m[1m[38;2;255;255;255m[42m217[0m[0m[32m,[0m
+[0m         "startLoc": {[0m
+[0m[31m-          [0m[0m[31m"line": [0m[0m[1m[38;2;255;255;255m[41m200[0m[0m[31m,[0m
+[0m[32m+          [0m[0m[32m"line": [0m[0m[1m[38;2;255;255;255m[42m202[0m[0m[32m,[0m
+[0m           "column": 9,[0m
+[0m[31m-          [0m[0m[31m"position": [0m[0m[1m[38;2;255;255;255m[41m1188[0m[0m[31m[0m
+[0m[32m+          [0m[0m[32m"position": [0m[0m[1m[38;2;255;255;255m[42m1198[0m[0m[32m[0m
+[0m         },[0m
+[0m         "endLoc": {[0m
+[0m[31m-          [0m[0m[31m"line": [0m[0m[1m[38;2;255;255;255m[41m215[0m[0m[31m,[0m
+[0m[32m+          [0m[0m[32m"line": [0m[0m[1m[38;2;255;255;255m[42m217[0m[0m[32m,[0m
+[0m           "column": 18,[0m
+[0m[31m-          [0m[0m[31m"position": [0m[0m[1m[38;2;255;255;255m[41m1288[0m[0m[31m[0m
+[0m[32m+          [0m[0m[32m"position": [0m[0m[1m[38;2;255;255;255m[42m1298[0m[0m[32m[0m
+[0m         }[0m
+[0m       }[0m
+[0m     },[0m
+[0m[36m@@ -6388,17 +6388,17 @@[m[0m
+[0m       "tokens": 0,[0m
+[0m       "firstFile": {[0m
+[0m         "name": ".github/workflows/docker.yml",[0m
+[0m[31m-        [0m[0m[31m"start": [0m[0m[1m[38;2;255;255;255m[41m25[0m[0m[31m,[0m
+[0m[31m-        [0m[0m[31m"end": [0m[0m[1m[38;2;255;255;255m[41m46[0m[0m[31m,[0m
+[0m[32m+        [0m[0m[32m"start": [0m[0m[1m[38;2;255;255;255m[42m27[0m[0m[32m,[0m
+[0m[32m+        [0m[0m[32m"end": [0m[0m[1m[38;2;255;255;255m[42m48[0m[0m[32m,[0m
+[0m         "startLoc": {[0m
+[0m[31m-          [0m[0m[31m"line": [0m[0m[1m[38;2;255;255;255m[41m25[0m[0m[31m,[0m
+[0m[32m+          [0m[0m[32m"line": [0m[0m[1m[38;2;255;255;255m[42m27[0m[0m[32m,[0m
+[0m           "column": 5,[0m
+[0m[31m-          [0m[0m[31m"position": [0m[0m[1m[38;2;255;255;255m[41m112[0m[0m[31m[0m
+[0m[32m+          [0m[0m[32m"position": [0m[0m[1m[38;2;255;255;255m[42m122[0m[0m[32m[0m
+[0m         },[0m
+[0m         "endLoc": {[0m
+[0m[31m-          [0m[0m[31m"line": [0m[0m[1m[38;2;255;255;255m[41m46[0m[0m[31m,[0m
+[0m[32m+          [0m[0m[32m"line": [0m[0m[1m[38;2;255;255;255m[42m48[0m[0m[32m,[0m
+[0m           "column": 9,[0m
+[0m[31m-          [0m[0m[31m"position": [0m[0m[1m[38;2;255;255;255m[41m221[0m[0m[31m[0m
+[0m[32m+          [0m[0m[32m"position": [0m[0m[1m[38;2;255;255;255m[42m231[0m[0m[32m[0m
+[0m         }[0m
+[0m       },[0m
+[0m       "secondFile": {[0m
+[0m[36m@@ -6440,16 +6440,16 @@[m[0m
+[0m       "secondFile": {[0m
+[0m         "name": ".github/workflows/native.yml",[0m
+[0m         "start": 40,[0m
+[0m[31m-        [0m[0m[31m"end": [0m[0m[1m[38;2;255;255;255m[41m49[0m[0m[31m,[0m
+[0m[32m+        [0m[0m[32m"end": [0m[0m[1m[38;2;255;255;255m[42m51[0m[0m[32m,[0m
+[0m         "startLoc": {[0m
+[0m           "line": 40,[0m
+[0m           "column": 1,[0m
+[0m           "position": 184[0m
+[0m         },[0m
+[0m         "endLoc": {[0m
+[0m[31m-          [0m[0m[31m"line": [0m[0m[1m[38;2;255;255;255m[41m49[0m[0m[31m,[0m
+[0m[32m+          [0m[0m[32m"line": [0m[0m[1m[38;2;255;255;255m[42m51[0m[0m[32m,[0m
+[0m           "column": 8,[0m
+[0m[31m-          [0m[0m[31m"position": [0m[0m[1m[38;2;255;255;255m[41m235[0m[0m[31m[0m
+[0m[32m+          [0m[0m[32m"position": [0m[0m[1m[38;2;255;255;255m[42m245[0m[0m[32m[0m
+[0m         }[0m
+[0m       }[0m
+[0m     },[0m
+[0m[36m@@ -6476,16 +6476,16 @@[m[0m
+[0m       "secondFile": {[0m
+[0m         "name": ".github/workflows/native.yml",[0m
+[0m         "start": 40,[0m
+[0m[31m-        [0m[0m[31m"end": [0m[0m[1m[38;2;255;255;255m[41m50[0m[0m[31m,[0m
+[0m[32m+        [0m[0m[32m"end": [0m[0m[1m[38;2;255;255;255m[42m52[0m[0m[32m,[0m
+[0m         "startLoc": {[0m
+[0m           "line": 40,[0m
+[0m           "column": 1,[0m
+[0m           "position": 184[0m
+[0m         },[0m
+[0m         "endLoc": {[0m
+[0m[31m-          [0m[0m[31m"line": [0m[0m[1m[38;2;255;255;255m[41m50[0m[0m[31m,[0m
+[0m[32m+          [0m[0m[32m"line": [0m[0m[1m[38;2;255;255;255m[42m52[0m[0m[32m,[0m
+[0m           "column": 3,[0m
+[0m[31m-          [0m[0m[31m"position": [0m[0m[1m[38;2;255;255;255m[41m241[0m[0m[31m[0m
+[0m[32m+          [0m[0m[32m"position": [0m[0m[1m[38;2;255;255;255m[42m251[0m[0m[32m[0m
+[0m         }[0m
+[0m       }[0m
+[0m     },[0m

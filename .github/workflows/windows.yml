@@ -17,6 +17,8 @@ on:
     - 'gradle/**'
     - 'scripts/**'
     - 'WavefrontOBJs/**'
+    - '**/*.java'
+    - '**/*.kt'
     - '!.github/workflows/windows.yml'
     - '!app/CMakeLists.txt'
     - '!app/third_party/conan/Native/**'

@@ -13,6 +13,8 @@ on:
     - 'docs/**'
     - 'scripts/**'
     - 'WavefrontOBJs/**'
+    - '**/*.java'
+    - '**/*.kt'
     - '!.github/workflows/docker.yml'
     - '!app/third_party/conan/Native/**'
     - '!app/System_dependent/CMakeLists.txt'
