@@ -56,9 +56,8 @@ public final class PreviewTest extends AbstractTest {
         UtilsT.waitForAppToIdle();
 
         UtilsT.assertRenderButtonText(Constants.RENDER);
-
         UtilsT.testStateAndBitmap(false);
-        Intents.intended(IntentMatchers.anyIntent());
+
         logger.info("testPreviewScenePerspectiveCamera finished");
     }
 

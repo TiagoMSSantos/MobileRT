@@ -1,8 +1,5 @@
 package puscas.mobilertapp.engine;
 
-import androidx.test.espresso.intent.Intents;
-import androidx.test.espresso.intent.matcher.IntentMatchers;
-
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
@@ -38,7 +35,6 @@ public final class ShaderTest extends AbstractTest {
 
         final int numCores = UtilsContext.getNumOfCores(this.activity);
         assertRenderScene(numCores, Scene.OBJ, Shader.NO_SHADOWS, Accelerator.BVH, 1, 1, false);
-        Intents.intended(IntentMatchers.anyIntent());
     }
 
     /**
@@ -56,7 +52,6 @@ public final class ShaderTest extends AbstractTest {
 
         final int numCores = UtilsContext.getNumOfCores(this.activity);
         assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 1, 1, false);
-        Intents.intended(IntentMatchers.anyIntent());
     }
 
     /**
@@ -74,7 +69,6 @@ public final class ShaderTest extends AbstractTest {
 
         final int numCores = UtilsContext.getNumOfCores(this.activity);
         assertRenderScene(numCores, Scene.OBJ, Shader.PATH_TRACING, Accelerator.BVH, 1, 1, false);
-        Intents.intended(IntentMatchers.anyIntent());
     }
 
     /**
@@ -92,7 +86,6 @@ public final class ShaderTest extends AbstractTest {
 
         final int numCores = UtilsContext.getNumOfCores(this.activity);
         assertRenderScene(numCores, Scene.OBJ, Shader.DEPTH_MAP, Accelerator.BVH, 1, 1, false);
-        Intents.intended(IntentMatchers.anyIntent());
     }
 
     /**
@@ -110,7 +103,6 @@ public final class ShaderTest extends AbstractTest {
 
         final int numCores = UtilsContext.getNumOfCores(this.activity);
         assertRenderScene(numCores, Scene.OBJ, Shader.DIFFUSE, Accelerator.BVH, 1, 1, false);
-        Intents.intended(IntentMatchers.anyIntent());
     }
 
 }

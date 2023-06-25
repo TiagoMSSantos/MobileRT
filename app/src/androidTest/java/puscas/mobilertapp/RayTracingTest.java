@@ -89,7 +89,6 @@ public final class RayTracingTest extends AbstractTest {
 
         final int numCores = UtilsContext.getNumOfCores(this.activity);
         assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 1, 1, true);
-        Intents.intended(IntentMatchers.anyIntent());
     }
 
     /**
@@ -128,7 +127,6 @@ public final class RayTracingTest extends AbstractTest {
 
         final int numCores = UtilsContext.getNumOfCores(this.activity);
         assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 1, 1, false);
-        Intents.intended(IntentMatchers.anyIntent());
     }
 
     /**
@@ -153,7 +151,6 @@ public final class RayTracingTest extends AbstractTest {
 
         final int numCores = UtilsContext.getNumOfCores(this.activity);
         assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 1, 1, false);
-        Intents.intended(IntentMatchers.anyIntent());
     }
 
     /**

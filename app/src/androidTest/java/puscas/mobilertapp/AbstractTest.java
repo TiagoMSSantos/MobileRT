@@ -36,6 +36,8 @@ import org.junit.rules.Timeout;
 
 import java.io.File;
 import java.nio.file.FileSystem;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -92,6 +94,16 @@ public abstract class AbstractTest {
     final public TestName testName = new TestName();
 
     /**
+     * A {@link Deque} to store {@link Runnable}s which should be called at the end of the test.
+     * The {@link #tearDown()} method which is called after every test will call use this field and
+     * call the method {@link Runnable#run()} of every {@link Runnable} stored temporarily here.
+     * <p>
+     * For example, this is useful to store temporarily {@link Runnable}s of methods that will close
+     * a resource at the end of the test.
+     */
+    final private Deque<Runnable> closeActions = new ArrayDeque<>();
+
+    /**
      * The {@link MainActivity} to test.
      */
     @NonNull
@@ -129,6 +141,10 @@ public abstract class AbstractTest {
     public void tearDown() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         logger.info(methodName + ": " + this.testName.getMethodName());
+
+        for (final Runnable method : this.closeActions) {
+            method.run();
+        }
 
         Preconditions.checkNotNull(this.activity, "The Activity didn't finish as expected!");
         logger.info("Will wait for the Activity triggered by the test to finish.");
@@ -267,6 +283,11 @@ public abstract class AbstractTest {
      * @param filesPath      The relative path to multiple {@link File}s. The path should be
      *                       relative to the external SD card path or to the internal storage path
      *                       in the Android {@link FileSystem}.
+     *
+     * @implNote This method stores a {@link Runnable} into the {@link #closeActions} in order to
+     * call it in the {@link #tearDown()} method after every test. This {@link Runnable} verifies
+     * whether the expected mocked {@link Intent} used by this method was really received by the
+     * tested application. This is done to avoid duplicated code.
      */
     protected void mockFileManagerReply(final boolean externalSdcard, @NonNull final String... filesPath) {
         logger.info(ConstantsAndroidTests.MOCK_FILE_MANAGER_REPLY);
@@ -284,6 +305,10 @@ public abstract class AbstractTest {
         }
         final Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
         Intents.intending(IntentMatchers.anyIntent()).respondWith(result);
+
+        // Temporarily store the assertion that verifies if the application received the expected Intent.
+        // And call it in the `teardown` method after every test in order to avoid duplicated code.
+        this.closeActions.add(() -> Intents.intended(IntentMatchers.anyIntent()));
     }
 
 }
