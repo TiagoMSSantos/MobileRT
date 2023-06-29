@@ -47,7 +47,7 @@ buildscript {
         easymock_version = "5.1.0"
         spring_version = "5.3.24"
         junit_version = "4.13.2"
-        kotlinx_coroutines_android_version = "1.7.1"
+        kotlinx_coroutines_android_version = "1.7.2"
         assertj_version = "3.24.2"
         khronos_gl_for_android_sdk_version = "gl1.1-android-2.1_r1"
     }
