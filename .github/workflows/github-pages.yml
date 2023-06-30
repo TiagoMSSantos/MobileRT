@@ -5,6 +5,7 @@ on:
   push:
     branches:
     - master
+    - gh-pages
     paths-ignore:
     - '*'
     - '.github/**'
@@ -46,7 +47,7 @@ jobs:
       run: |
         curl --fail --request POST \
           --url https://api.github.com/repos/${{ github.repository }}/pages/builds \
-          --header "Authorization: Bearer ${{ secrets.REPOSITORY_TOKEN }}";
+          --header "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}";
 
     - name: Doxygen build
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}

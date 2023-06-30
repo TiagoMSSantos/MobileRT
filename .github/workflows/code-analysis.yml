@@ -44,8 +44,8 @@ jobs:
       fail-fast: false
       matrix:
         # Override automatic language detection by changing the below list
-        # Supported options are ['csharp', 'cpp', 'go', 'java', 'javascript', 'python']
-        language: ['cpp', 'java']
+        # Supported options are ['cpp', 'csharp', 'go', 'java', 'javascript', 'python', 'ruby', 'swift']
+        language: ['cpp', 'java', 'ruby']
         # Learn more...
         # https://docs.github.com/en/github/finding-security-vulnerabilities-and-errors-in-your-code/configuring-code-scanning#overriding-automatic-language-detection
 
@@ -96,7 +96,7 @@ jobs:
     # Valid inputs are ['tools', 'languages', 'token', 'matrix', 'config-file', 'queries']
     # Queries: must be a built-in suite (security-extended or security-and-quality),
     # a relative path, or be of the form "owner/repo[/path]@ref"
-    # Unable to download and extract the tools needed for installing the python dependecies.
+    # Unable to download and extract the tools needed for installing the python dependencies.
     # You can call this action with 'setup-python-dependencies: false' to disable this process.
     - name: Initialize CodeQL
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -114,6 +114,7 @@ jobs:
         ram: 6144
         threads: 3
         debug: false
+        packs: codeql/cpp-queries,codeql/java-queries,codeql/ruby-queries
 
     - name: Install dependencies
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
