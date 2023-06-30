@@ -74,7 +74,11 @@
 **/*.bbl
 **/*.blg
 **/*.synctex.gz
+
+# Ruby Bundler versions installed
 **/Gemfile.lock
+# Ruby Jekyll site served locally
+**/_site
 
 # Doxygen output
 **/*doxygen*

@@ -19,6 +19,7 @@ nomarkdown: true
 highlighter: rouge
 plugins:
   - jekyll-feed
+  - jekyll-github-metadata
 include:
   - README.md
 

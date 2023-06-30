@@ -262,3 +262,4 @@ This project started as a [Masters' dissertation](https://repositorium.sdum.umin
 Click [here](https://github.com/TiagoMSSantos/MobileRT/blob/master/docs/TODO.md?) to check the TODO list. <br/>
 Click [here](https://github.com/TiagoMSSantos/MobileRT/blob/master/docs/TOOLS.md?) to check the code coverage and code duplication commands. <br/>
 Click [here](https://codedocs.xyz/TiagoMSSantos/MobileRT/) to check the Doxygen codebase documentation. <br/>
+Click [here](https://github.com/TiagoMSSantos/MobileRT/blob/master/docs/BUILD_DOCS.md?) to build and serve the documentation locally. <br/>

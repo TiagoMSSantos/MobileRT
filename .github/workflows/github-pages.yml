@@ -42,7 +42,7 @@ jobs:
 
     - name: Trigger GitHub pages rebuild
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && github.event_name == 'workflow_dispatch'
+      if: success() && ((github.event_name == 'workflow_dispatch' && github.ref_name == 'master') || github.ref_name != 'master')
       working-directory: .
       run: |
         curl --fail --request POST \
