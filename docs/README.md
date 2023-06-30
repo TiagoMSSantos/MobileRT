@@ -10,7 +10,7 @@
   - Microsoft Visual C++ (MSVC)
 
 [comment]: # (Licenses and documentation)
-[![GitHub](https://img.shields.io/github/license/TiagoMSSantos/MobileRT)](https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/LICENSE)
+[![GitHub](https://img.shields.io/github/license/TiagoMSSantos/MobileRT)](https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/{{ site.github.source.branch }}/LICENSE)
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FTiagoMSSantos%2FMobileRT.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FTiagoMSSantos%2FMobileRT?ref=badge_shield)
 [![Known Vulnerabilities](https://snyk.io/test/github/TiagoMSSantos/MobileRT/badge.svg?targetFile=app/build.gradle)](https://snyk.io/test/github/TiagoMSSantos/MobileRT?targetFile=app/build.gradle)
 [![Documentation](https://codedocs.xyz/TiagoMSSantos/MobileRT.svg)](https://codedocs.xyz/TiagoMSSantos/MobileRT/)
@@ -19,7 +19,7 @@
 [comment]: # (Continuous Integration & Code coverage)
 [![Unit Tests C++](https://github.com/TiagoMSSantos/MobileRT/workflows/Native%20(Qt)/badge.svg)](https://github.com/TiagoMSSantos/MobileRT/actions)
 [![Tests Android](https://github.com/TiagoMSSantos/MobileRT/workflows/Android/badge.svg)](https://github.com/TiagoMSSantos/MobileRT/actions)
-[![codecov](https://codecov.io/gh/TiagoMSSantos/MobileRT/branch/master/graph/badge.svg)](https://app.codecov.io/gh/TiagoMSSantos/MobileRT/tree/master)
+[![codecov](https://codecov.io/gh/TiagoMSSantos/MobileRT/branch/{{ site.github.source.branch }}/graph/badge.svg)](https://app.codecov.io/gh/TiagoMSSantos/MobileRT/tree/{{ site.github.source.branch }})
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=TiagoMSSantos_MobileRT&metric=alert_status)](https://sonarcloud.io/dashboard?id=TiagoMSSantos_MobileRT)
 
 <!-- 
@@ -36,8 +36,8 @@
 [![codebeat badge](https://codebeat.co/assets/svg/badges/B-66bd63-dcc2e015f60fd0645631f8e7891440fb04fff8acc238aa755faf7de8c0ff7e2b.svg)](https://codebeat.co/projects/github-com-tiagomssantos-mobilert-master)
 -->
 
-<img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/Example_Android.gif" alt="MobileRT: Android" width="400"/>
-<img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/Example_Linux.gif" alt="MobileRT: Linux" height="400"/>
+<img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/{{ site.github.source.branch }}/docs/Example_Android.gif" alt="MobileRT: Android" width="400"/>
+<img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/{{ site.github.source.branch }}/docs/Example_Linux.gif" alt="MobileRT: Linux" height="400"/>
 
 
 ## Run docker image
@@ -95,7 +95,7 @@ The following command should start the ray tracer when executed in the root dire
 
 ## Android
 To try this ray tracer for Android just download the
-[APK](https://github.com/TiagoMSSantos/MobileRT/blob/master/app/release/app-release.apk?raw=true)
+[APK](https://github.com/TiagoMSSantos/MobileRT/blob/{{ site.github.source.branch }}/app/release/app-release.apk?raw=true)
 file available in the repository.
 
 ## Models Wavefront OBJ
@@ -128,7 +128,7 @@ framework for Linux interface
 - [x] C++ [Google Test](https://github.com/google/googletest)
 framework for unit tests
 - [x] C [STB libraries](https://github.com/nothings/stb)
-librart to load the textures
+library to load the textures
 - [x] Java [Streams](https://github.com/stefan-zobel/streamsupport)
 to reduce complexity
 - [x] Java [Google Guava](https://github.com/google/guava)
@@ -159,83 +159,83 @@ library for assertions unit tests
     </tr>
     <tr>
       <td style="text-align:center"><b>Android</b></td>
-      <td style="text-align:center">4.0 (API 14) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
-      <td style="text-align:center">4.0.3 (API 15) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
-      <td style="text-align:center">4.1 (API 16) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25"></td>
-      <td style="text-align:center">4.4 (API 19) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
-      <td style="text-align:center">10 (API 29) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
-      <td style="text-align:center">12 (API 31) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
-      <td style="text-align:center">13 (API 33) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25"></td>
+      <td style="text-align:center">4.0 (API 14) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/{{ site.github.source.branch }}/docs/cross_red.png" width="25" height="25"></td>
+      <td style="text-align:center">4.0.3 (API 15) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/{{ site.github.source.branch }}/docs/checkmark_green.png" width="25" height="25"></td>
+      <td style="text-align:center">4.1 (API 16) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/{{ site.github.source.branch }}/docs/checkmark_gray.png" width="25" height="25"></td>
+      <td style="text-align:center">4.4 (API 19) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/{{ site.github.source.branch }}/docs/checkmark_green.png" width="25" height="25"></td>
+      <td style="text-align:center">10 (API 29) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/{{ site.github.source.branch }}/docs/checkmark_green.png" width="25" height="25"></td>
+      <td style="text-align:center">12 (API 31) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/{{ site.github.source.branch }}/docs/checkmark_green.png" width="25" height="25"></td>
+      <td style="text-align:center">13 (API 33) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/{{ site.github.source.branch }}/docs/checkmark_gray.png" width="25" height="25"></td>
     </tr>
     <tr>
       <td style="text-align:center"><b>MacOS</b></td>
-      <td style="text-align:center">10.11 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
-      <td style="text-align:center">10.12 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
-      <td style="text-align:center">10.13 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
-      <td style="text-align:center">10.14 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
-      <td style="text-align:center">10.15 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25"></td>
-      <td style="text-align:center">11.0 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
-      <td style="text-align:center">12 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
+      <td style="text-align:center">10.11 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/{{ site.github.source.branch }}/docs/cross_red.png" width="25" height="25"></td>
+      <td style="text-align:center">10.12 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/{{ site.github.source.branch }}/docs/cross_red.png" width="25" height="25"></td>
+      <td style="text-align:center">10.13 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/{{ site.github.source.branch }}/docs/cross_red.png" width="25" height="25"></td>
+      <td style="text-align:center">10.14 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/{{ site.github.source.branch }}/docs/cross_red.png" width="25" height="25"></td>
+      <td style="text-align:center">10.15 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/{{ site.github.source.branch }}/docs/checkmark_gray.png" width="25" height="25"></td>
+      <td style="text-align:center">11.0 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/{{ site.github.source.branch }}/docs/checkmark_green.png" width="25" height="25"></td>
+      <td style="text-align:center">12 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/{{ site.github.source.branch }}/docs/checkmark_green.png" width="25" height="25"></td>
     </tr>
     <tr>
       <td style="text-align:center"><b>Windows</b></td>
-      <td style="text-align:center">Server 2019 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
-      <td style="text-align:center">Server 2022 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
-      <td style="text-align:center">Vista<br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
-      <td style="text-align:center">7<br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
-      <td style="text-align:center">8<br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
-      <td style="text-align:center">10<br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
-      <td style="text-align:center">11<br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
+      <td style="text-align:center">Server 2019 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/{{ site.github.source.branch }}/docs/checkmark_green.png" width="25" height="25"></td>
+      <td style="text-align:center">Server 2022 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/{{ site.github.source.branch }}/docs/checkmark_green.png" width="25" height="25"></td>
+      <td style="text-align:center">Vista<br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/{{ site.github.source.branch }}/docs/cross_red.png" width="25" height="25"></td>
+      <td style="text-align:center">7<br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/{{ site.github.source.branch }}/docs/cross_red.png" width="25" height="25"></td>
+      <td style="text-align:center">8<br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/{{ site.github.source.branch }}/docs/cross_red.png" width="25" height="25"></td>
+      <td style="text-align:center">10<br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/{{ site.github.source.branch }}/docs/cross_red.png" width="25" height="25"></td>
+      <td style="text-align:center">11<br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/{{ site.github.source.branch }}/docs/cross_red.png" width="25" height="25"></td>
     </tr>
     <tr>
       <td style="text-align:center"><b>Ubuntu</b></td>
-      <td style="text-align:center">10.04 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
-      <td style="text-align:center">12.04 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
-      <td style="text-align:center">14.04 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
-      <td style="text-align:center">16.04 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25"></td>
-      <td style="text-align:center">18.04 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25"></td>
-      <td style="text-align:center">20.04 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
-      <td style="text-align:center">22.04 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
+      <td style="text-align:center">10.04 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/{{ site.github.source.branch }}/docs/cross_red.png" width="25" height="25"></td>
+      <td style="text-align:center">12.04 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/{{ site.github.source.branch }}/docs/cross_red.png" width="25" height="25"></td>
+      <td style="text-align:center">14.04 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/{{ site.github.source.branch }}/docs/cross_red.png" width="25" height="25"></td>
+      <td style="text-align:center">16.04 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/{{ site.github.source.branch }}/docs/checkmark_gray.png" width="25" height="25"></td>
+      <td style="text-align:center">18.04 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/{{ site.github.source.branch }}/docs/checkmark_gray.png" width="25" height="25"></td>
+      <td style="text-align:center">20.04 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/{{ site.github.source.branch }}/docs/checkmark_green.png" width="25" height="25"></td>
+      <td style="text-align:center">22.04 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/{{ site.github.source.branch }}/docs/checkmark_green.png" width="25" height="25"></td>
     </tr>
     <tr>
       <td style="text-align:center"><b>CentOS</b></td>
-      <td style="text-align:center">3 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
-      <td style="text-align:center">4 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
-      <td style="text-align:center">5 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
-      <td style="text-align:center">6 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
-      <td style="text-align:center">7 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
-      <td style="text-align:center">8 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25"></td>
-      <td style="text-align:center">stream <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
+      <td style="text-align:center">3 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/{{ site.github.source.branch }}/docs/cross_red.png" width="25" height="25"></td>
+      <td style="text-align:center">4 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/{{ site.github.source.branch }}/docs/cross_red.png" width="25" height="25"></td>
+      <td style="text-align:center">5 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/{{ site.github.source.branch }}/docs/cross_red.png" width="25" height="25"></td>
+      <td style="text-align:center">6 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/{{ site.github.source.branch }}/docs/cross_red.png" width="25" height="25"></td>
+      <td style="text-align:center">7 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/{{ site.github.source.branch }}/docs/cross_red.png" width="25" height="25"></td>
+      <td style="text-align:center">8 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/{{ site.github.source.branch }}/docs/checkmark_gray.png" width="25" height="25"></td>
+      <td style="text-align:center">stream <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/{{ site.github.source.branch }}/docs/checkmark_green.png" width="25" height="25"></td>
     </tr>
     <tr>
       <td style="text-align:center"><b>Alpine</b></td>
-      <td style="text-align:center">3.11 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
-      <td style="text-align:center">3.12 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
-      <td style="text-align:center">3.13 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
-      <td style="text-align:center">3.14 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
-      <td style="text-align:center">3.15 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25"></td>
-      <td style="text-align:center">3.16 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25"></td>
-      <td style="text-align:center">3.17 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
+      <td style="text-align:center">3.11 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/{{ site.github.source.branch }}/docs/cross_red.png" width="25" height="25"></td>
+      <td style="text-align:center">3.12 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/{{ site.github.source.branch }}/docs/cross_red.png" width="25" height="25"></td>
+      <td style="text-align:center">3.13 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/{{ site.github.source.branch }}/docs/cross_red.png" width="25" height="25"></td>
+      <td style="text-align:center">3.14 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/{{ site.github.source.branch }}/docs/cross_red.png" width="25" height="25"></td>
+      <td style="text-align:center">3.15 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/{{ site.github.source.branch }}/docs/checkmark_gray.png" width="25" height="25"></td>
+      <td style="text-align:center">3.16 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/{{ site.github.source.branch }}/docs/checkmark_gray.png" width="25" height="25"></td>
+      <td style="text-align:center">3.17 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/{{ site.github.source.branch }}/docs/checkmark_green.png" width="25" height="25"></td>
     </tr>
     <tr>
       <td style="text-align:center"><b>Arch Linux</b></td>
-      <td style="text-align:center" colspan="7" align="center">base-devel <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
+      <td style="text-align:center" colspan="7" align="center">base-devel <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/{{ site.github.source.branch }}/docs/checkmark_green.png" width="25" height="25"></td>
     </tr>
     <tr>
       <td style="text-align:center"><b>Gentoo</b></td>
-      <td style="text-align:center" colspan="7" align="center">stage3:x86 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
+      <td style="text-align:center" colspan="7" align="center">stage3:x86 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/{{ site.github.source.branch }}/docs/checkmark_green.png" width="25" height="25"></td>
     </tr>
   </table>
   Table: <br/>
-  <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="15" height="15" style="text-align:center" align="left"> -> actively tested <br/>
-  <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="15" height="15" align="left"> -> tested <br/>
-  <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="15" height="15" align="left"> -> not tested <br/>
+  <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/{{ site.github.source.branch }}/docs/checkmark_green.png" width="15" height="15" style="text-align:center" align="left"> -> actively tested <br/>
+  <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/{{ site.github.source.branch }}/docs/checkmark_gray.png" width="15" height="15" align="left"> -> tested <br/>
+  <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/{{ site.github.source.branch }}/docs/cross_red.png" width="15" height="15" align="left"> -> not tested <br/>
 </div>
 
 ## Requirements
 It's necessary the following SDKs in order to compile this project for Android:
 - [Android SDK](https://developer.android.com/studio) which should also bring the [Android NDK](https://developer.android.com/ndk) in order to compile the native code.
-  - It's recommended to use the Android Studio `2022.2.1` which is compatible with Gradle [8.0.2](https://github.com/TiagoMSSantos/MobileRT/blob/master/build.gradle#L65?) used by this project.
+  - It's recommended to use the Android Studio `2022.2.1` which is compatible with Gradle [8.0.2](https://github.com/TiagoMSSantos/MobileRT/blob/{{ site.github.source.branch }}/build.gradle#L65?) used by this project.
 
 For native Linux and Mac support, the `install_dependencies.sh` script should download and install the necessary dependencies, by just calling:
 ```
@@ -259,7 +259,7 @@ For Linux in a [Docker](https://www.docker.com/) container:
 
 ## Documentation
 This project started as a [Masters' dissertation](https://repositorium.sdum.uminho.pt/handle/1822/66577). <br/>
-Click [here](https://github.com/TiagoMSSantos/MobileRT/blob/master/docs/TODO.md?) to check the TODO list. <br/>
-Click [here](https://github.com/TiagoMSSantos/MobileRT/blob/master/docs/TOOLS.md?) to check the code coverage and code duplication commands. <br/>
+Click [here](/{{ site.github.repository_name }}/TODO) to check the TODO list. <br/>
+Click [here](/{{ site.github.repository_name }}/TOOLS) to check the code coverage and code duplication commands. <br/>
 Click [here](https://codedocs.xyz/TiagoMSSantos/MobileRT/) to check the Doxygen codebase documentation. <br/>
-Click [here](https://github.com/TiagoMSSantos/MobileRT/blob/master/docs/BUILD_DOCS.md?) to build and serve the documentation locally. <br/>
+Click [here](/{{ site.github.repository_name }}/BUILD_DOCS) to build and serve the documentation locally. <br/>
