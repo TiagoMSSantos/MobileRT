@@ -216,6 +216,12 @@ android {
         }
     }
 
+    configurations {
+        // Necessary to remove `listenablefuture` from dependencies:
+        // https://stackoverflow.com/questions/56639529/duplicate-class-com-google-common-util-concurrent-listenablefuture-found-in-modu
+        all*.exclude group: 'com.google.guava', module: 'listenablefuture'
+    }
+
     // Setup default configurations
     defaultConfig {
         // The minimum Android API version possible is 14 due to compatibility with Appcompat dependency.
@@ -424,6 +430,7 @@ dependencies {
 
     // Java dependencies
     implementation "com.google.guava:guava:${guava_version}"
+    implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
     implementation "net.sourceforge.streamsupport:streamsupport:${stream_support_version}"
 
     // Kotlin dependencies

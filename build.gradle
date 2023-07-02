@@ -39,7 +39,7 @@ buildscript {
         androidX_test_version = "1.5.0"
         androidX_test_runner_version = "1.5.2"
         androidX_annotation_version = "1.6.0"
-        guava_version = "32.0.1-jre"
+        guava_version = "32.1.1-jre"
         stream_support_version = "1.7.4"
         mockito_version = "5.4.0"
         mockito_inline_version = "5.2.0"
