@@ -13,5 +13,5 @@ group :jekyll_plugins do
   gem 'jekyll-sass-converter', '~> 1.5.2'
   gem 'sass', '~> 3.7.4'
   gem 'jekyll-github-metadata', '~> 2.13.0'
-  gem 'kramdown', '~> 2.3.2'
+  gem 'kramdown', '~> 2.4.0'
 end
