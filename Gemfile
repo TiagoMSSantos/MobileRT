@@ -5,7 +5,7 @@
 source 'https://rubygems.org'
 
 ruby '~> 2.7.4'
-gem 'jekyll', '~> 3.9.3'
+gem 'jekyll', '~> 4.3.0'
 
 group :jekyll_plugins do
   gem 'github-pages', '~> 228', group: :jekyll_plugins
