@@ -61,6 +61,9 @@
   "git-submodules": {
     "enabled": false
   },
+  "bundler": {
+    "enabled": false
+  },
   "conan": {
     "enabled": true,
     "ignoreDeps": ["stb", "glm", "gtest", "pcg-cpp"]
