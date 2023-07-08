@@ -28,28 +28,28 @@ buildscript {
     // This block encapsulates custom properties and makes them available to all
     // modules in the project.
     ext {
-        jacoco_version = "0.8.10"
-        build_tools_version = "33.0.0"
+        jacoco_version = '0.8.10'
+        build_tools_version = '33.0.0'
 
-        appcompat_version = "1.6.1"
-        androidX_core_kotlin_version = "1.10.1"
-        kotlin_stdlib_jdk8_version = "1.9.0"
-        multidex_version = "2.0.1"
-        androidX_test_espresso_version = "3.5.1"
-        androidX_test_version = "1.5.0"
-        androidX_test_runner_version = "1.5.2"
-        androidX_annotation_version = "1.6.0"
-        guava_version = "32.1.1-jre"
-        stream_support_version = "1.7.4"
-        mockito_version = "5.4.0"
-        mockito_inline_version = "5.2.0"
-        powermock_version = "2.0.9"
-        easymock_version = "5.1.0"
+        appcompat_version = '1.6.1'
+        androidX_core_kotlin_version = '1.10.1'
+        kotlin_stdlib_jdk8_version = '1.9.0'
+        multidex_version = '2.0.1'
+        androidX_test_espresso_version = '3.5.1'
+        androidX_test_version = '1.5.0'
+        androidX_test_runner_version = '1.5.2'
+        androidX_annotation_version = '1.6.0'
+        guava_version = '32.1.1-jre'
+        stream_support_version = '1.7.4'
+        mockito_version = '5.4.0'
+        mockito_inline_version = '5.2.0'
+        powermock_version = '2.0.9'
+        easymock_version = '5.1.0'
         spring_version = '6.0.10'
-        junit_version = "4.13.2"
-        kotlinx_coroutines_android_version = "1.7.2"
-        assertj_version = "3.24.2"
-        khronos_gl_for_android_sdk_version = "gl1.1-android-2.1_r1"
+        junit_version = '4.13.2'
+        kotlinx_coroutines_android_version = '1.7.2'
+        assertj_version = '3.24.2'
+        khronos_gl_for_android_sdk_version = 'gl1.1-android-2.1_r1'
     }
 
     dependencies {
