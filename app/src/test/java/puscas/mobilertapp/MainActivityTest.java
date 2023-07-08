@@ -146,16 +146,16 @@ public final class MainActivityTest {
 
         final Uri uriMocked = Mockito.mock(Uri.class);
         Mockito.when(uriMocked.getPathSegments())
-            .thenReturn(ImmutableList.of("mnt", "sdcard", "MobileRT", "WavefrontOBJs", "CornellBox", "CornellBox-Water.obj"));
+            .thenReturn(ImmutableList.of("data", "local", "tmp", "MobileRT", "WavefrontOBJs", "CornellBox", "CornellBox-Water.obj"));
         Mockito.when(uriMocked.getPath())
-            .thenReturn("/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj");
+            .thenReturn("/data/local/tmp/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj");
         Mockito.when(intentMocked.getData())
             .thenReturn(uriMocked);
 
         try (final MockedStatic<UtilsContext> utilsContextMockedStatic = Mockito.mockStatic(UtilsContext.class);
              final MockedStatic<Environment> environmentMockedStatic = Mockito.mockStatic(Environment.class)) {
-            utilsContextMockedStatic.when(() -> UtilsContext.getSdCardPath(ArgumentMatchers.any()))
-                .thenReturn("");
+            utilsContextMockedStatic.when(() -> UtilsContext.getInternalStoragePath(ArgumentMatchers.any()))
+                .thenReturn("/data/local/tmp");
             environmentMockedStatic.when(Environment::getExternalStorageDirectory)
                 .thenReturn(new File(""));
 
@@ -163,7 +163,7 @@ public final class MainActivityTest {
 
             Assertions.assertThat((String) ReflectionTestUtils.getField(mainActivityMocked, "sceneFilePath"))
                 .as("The 'MainActivity#sceneFilePath' field")
-                .isEqualTo("/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj");
+                .isEqualTo("/data/local/tmp/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj");
         }
     }
 
@@ -179,14 +179,14 @@ public final class MainActivityTest {
         Mockito.when(uriMocked.getPathSegments())
             .thenReturn(ImmutableList.of("file", "sdcard", "MobileRT", "WavefrontOBJs", "CornellBox", "CornellBox-Water.obj"));
         Mockito.when(uriMocked.getPath())
-            .thenReturn("/mockedStorage/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj");
+            .thenReturn("/data/local/tmp/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj");
         Mockito.when(intentMocked.getData())
             .thenReturn(uriMocked);
 
         try (final MockedStatic<UtilsContext> utilsContextMockedStatic = Mockito.mockStatic(UtilsContext.class);
              final MockedStatic<Environment> environmentMockedStatic = Mockito.mockStatic(Environment.class)) {
             utilsContextMockedStatic.when(() -> UtilsContext.getInternalStoragePath(ArgumentMatchers.any()))
-                .thenReturn("/mockedStorage");
+                .thenReturn("/data/local/tmp");
             environmentMockedStatic.when(Environment::getExternalStorageDirectory)
                 .thenReturn(new File("/mockedSDCard"));
 
@@ -194,7 +194,7 @@ public final class MainActivityTest {
 
             Assertions.assertThat((String) ReflectionTestUtils.getField(mainActivityMocked, "sceneFilePath"))
                 .as("The 'MainActivity#sceneFilePath' field")
-                .isEqualTo("/mockedStorage/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj");
+                .isEqualTo("/data/local/tmp/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj");
         }
     }
 }

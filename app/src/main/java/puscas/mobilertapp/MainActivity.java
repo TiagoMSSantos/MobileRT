@@ -614,6 +614,8 @@ public final class MainActivity extends Activity {
     @NonNull
     private String getPathFromFile(@NonNull final Uri uri) {
         logger.info("Parsing path:" + Arrays.toString(uri.getPathSegments().toArray()));
+        validatePathIsAccessible(uri);
+
         final String filePath = StreamSupport.stream(uri.getPathSegments())
             .skip(1L)
             .reduce("", (accumulator, segment) -> accumulator + ConstantsUI.FILE_SEPARATOR + segment);
@@ -651,6 +653,32 @@ public final class MainActivity extends Activity {
         }
 
         return devicePath + cleanedFilePath;
+    }
+
+    /**
+     * Validates that the user selected path in {@link Uri} can be read safely.
+     * If the {@link Uri path} that the user selected can be dangerous, like '/data', '/system',
+     * then a {@link SecurityException} is thrown.
+     *
+     * @param uri The {@link Uri} reference for the file.
+     */
+    private void validatePathIsAccessible(@NonNull final Uri uri) {
+        logger.info("validatePathIsAccessible");
+        final File file = new File(uri.getPath());
+        final String path = file.getAbsolutePath();
+
+        boolean externalStorage1 = path.matches("^/document/([A-Za-z0-9]){4}-([A-Za-z0-9]){4}:.+$");
+        boolean externalStorage2 = path.matches("^/mnt/sdcard/.+$");
+        boolean externalStorage3 = path.matches("^/storage/emulated/0/.+$");
+        boolean externalStorage4 = path.matches("^/storage/([A-Za-z0-9]){4}-([A-Za-z0-9]){4}/.+$");
+        boolean externalStorage5 = path.matches("^/storage/sdcard/.+$");
+        boolean internalStorage = path.matches("^/data/local/tmp/.+$");
+
+        if (externalStorage1 || externalStorage2 || externalStorage3 || externalStorage4 || externalStorage5 || internalStorage) {
+            return;
+        }
+
+        throw new SecurityException("User shouldn't try to read files from the path: '" + uri.getPath() + "'");
     }
 
     /**
