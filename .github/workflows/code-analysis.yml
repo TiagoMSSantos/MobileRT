@@ -134,7 +134,7 @@ jobs:
     - name: Autobuild
       id: autobuild
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
-      if: success()
+      if: success() && matrix.language != 'cpp'
       uses: github/codeql-action/autobuild@v2
       continue-on-error: true
       with:
@@ -152,7 +152,7 @@ jobs:
 
     - name: Build C++
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-      if: success() && matrix.language == 'cpp' && steps.autobuild.outcome == 'failure'
+      if: success() && matrix.language == 'cpp'
       working-directory: .
       run: |
         sh scripts/compile_native.sh -t debug -c g++ -r yes;
@@ -162,7 +162,7 @@ jobs:
       if: success() && matrix.language == 'cpp'
       working-directory: .
       run: |
-        rm -rf app/third_party/*;
+        find . -iname "third_party" -print -exec rm -rf {} \; || true;
         env | grep -i git;
 
     # Warning: Valid inputs are ['check_name', 'output', 'upload', 'ram',
