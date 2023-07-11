@@ -491,16 +491,16 @@ public final class MainActivity extends Activity {
                     if (uri == null) {
                         throw new FailureException("There is no URI to a File!");
                     }
+                    final String filePath = getPathFromFile(uri);
+                    if (filePath.endsWith(".obj")) {
+                        this.sceneFilePath = filePath;
+                    }
                     final File baseFile = new File(uri.getPath());
                     final File[] files;
                     if (baseFile.isDirectory()) {
                         files = baseFile.listFiles();
                     } else {
                         files = new File(Objects.requireNonNull(baseFile.getParent())).listFiles();
-                    }
-                    final String filePath = getPathFromFile(uri);
-                    if (filePath.endsWith(".obj")) {
-                        this.sceneFilePath = filePath;
                     }
                     if (files == null) {
                         throw new FailureException("It couldn't list the files in the selected path. Are you sure the necessary permissions were given?");
@@ -664,8 +664,7 @@ public final class MainActivity extends Activity {
      */
     private void validatePathIsAccessible(@NonNull final Uri uri) {
         logger.info("validatePathIsAccessible");
-        final File file = new File(uri.getPath());
-        final String path = file.getAbsolutePath();
+        final String path = uri.getPath();
 
         boolean externalStorage1 = path.matches("^/document/([A-Za-z0-9]){4}-([A-Za-z0-9]){4}:.+$");
         boolean externalStorage2 = path.matches("^/mnt/sdcard/.+$");
