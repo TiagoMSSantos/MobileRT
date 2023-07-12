@@ -45,7 +45,7 @@ jobs:
       matrix:
         # Override automatic language detection by changing the below list
         # Supported options are ['cpp', 'csharp', 'go', 'java', 'javascript', 'python', 'ruby', 'swift']
-        language: ['cpp', 'java', 'ruby']
+        language: ['cpp', 'java']
         # Learn more...
         # https://docs.github.com/en/github/finding-security-vulnerabilities-and-errors-in-your-code/configuring-code-scanning#overriding-automatic-language-detection
 
@@ -61,7 +61,7 @@ jobs:
 
     - name: Set up JDK
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-      if: success()
+      if: success() && matrix.language == 'java'
       uses: actions/setup-java@v3
       with:
         # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml
@@ -81,7 +81,7 @@ jobs:
 
     - name: Check available Android versions
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-      if: success()
+      if: success() && matrix.language == 'java'
       working-directory: .
       run: |
         echo 'Available Android versions:';
@@ -118,18 +118,19 @@ jobs:
 
     - name: Install dependencies
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
-      if: success()
+      if: success() && matrix.language == 'cpp'
       working-directory: .
       run: |
         sh scripts/install_dependencies.sh;
 
+    # Only execute shell unit tests for 'cpp' language because it doesn't matter in which build
+    # these tests are executed.
     - name: Shell scripts unit tests
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success() && matrix.language == 'cpp'
       working-directory: .
       run: |
         sh scripts/test/helper_functions.sh;
-        sh scripts/test/dockerfile.sh;
 
     - name: Autobuild
       id: autobuild
@@ -143,27 +144,12 @@ jobs:
         matrix: ${{ toJson(matrix) }}
         working-directory: ${{ github.workspace }}
 
-    - name: Build Gradle
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
-      if: success() && matrix.language == 'java' && steps.autobuild.outcome == 'failure'
-      working-directory: .
-      run: |
-        sh scripts/compile_android.sh -t debug -r yes -f "\"x86\"";
-
     - name: Build C++
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success() && matrix.language == 'cpp'
       working-directory: .
       run: |
         sh scripts/compile_native.sh -t debug -c g++ -r yes;
-
-    - name: Remove unnecessary code
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && matrix.language == 'cpp'
-      working-directory: .
-      run: |
-        find . -iname "third_party" -print -exec rm -rf {} \; || true;
-        env | grep -i git;
 
     # Warning: Valid inputs are ['check_name', 'output', 'upload', 'ram',
     # 'add-snippets', 'threads', 'checkout_path', 'token', 'matrix']
@@ -175,7 +161,7 @@ jobs:
         # Check available parameters in: https://github.com/github/codeql-action/blob/main/analyze/action.yml
         check_name: CodeQL
         output: ../results
-        upload: true
+        upload: never
         # Check cleanup-level in: https://codeql.github.com/docs/codeql-cli/manual/database-cleanup/
         cleanup-level: brutal
         # The amount of memory in MB that can be used by CodeQL for database finalization and query execution.
@@ -192,3 +178,41 @@ jobs:
         wait-for-processing: true
         token: ${{ github.token }}
         matrix: ${{ toJson(matrix) }}
+
+    - name: Validate CodeQL output was generated
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success()
+      working-directory: .
+      run: |
+        ls -lahp ../results/;
+        ls -lahp ../results/${{ matrix.language }}.sarif;
+        cat ../results/${{ matrix.language }}.sarif;
+
+    - name: Filter SARIF
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+      if: success()
+      uses: advanced-security/filter-sarif@v1
+      with:
+        # Check available parameters in: https://github.com/advanced-security/filter-sarif/blob/main/action.yml
+        patterns: |
+          -**/*third_party*/**/*:**
+        input: ../results/${{ matrix.language }}.sarif
+        output: ../results/${{ matrix.language }}-filtered.sarif
+
+    - name: Validate CodeQL output was generated
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success()
+      working-directory: .
+      run: |
+        ls -lahp ../results/;
+        ls -lahp ../results/${{ matrix.language }}.sarif;
+        ls -lahp ../results/${{ matrix.language }}-filtered.sarif;
+        cat ../results/${{ matrix.language }}-filtered.sarif;
+
+    - name: Upload SARIF
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success()
+      uses: github/codeql-action/upload-sarif@v2
+      with:
+        # Check available parameters in: https://github.com/github/codeql-action/blob/main/upload-sarif/action.yml
+        sarif_file: ../results/${{ matrix.language }}-filtered.sarif

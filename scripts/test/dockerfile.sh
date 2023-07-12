@@ -4,6 +4,9 @@
 # README
 ###############################################################################
 # Tests for the entrypoint in the `Dockerfile` file.
+#
+# Parameters:
+# * VERSION - version (or tag) of the docker container of MobileRT
 ###############################################################################
 ###############################################################################
 
@@ -54,11 +57,10 @@ exitValue=0;
 
 
 # Tests the MobileRT in docker container.
+# It uses the command 'timeout' as entrypoint in order to make MobileRT automatically exit after 5 seconds.
 testMobileRTContainer() {
   _mobilertVersion="${1}";
   echo "Starting test - testMobileRTContainer: ${_mobilertVersion}";
-  addCommandToPath 'xhost';
-  xhost +;
   docker run -t \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
     -e DISPLAY=':0' \
@@ -75,14 +77,8 @@ testMobileRTContainer() {
 }
 
 set +eu;
-# Execute all tests.
-testMobileRTContainer 'gentoo-stage3-latest';
-testMobileRTContainer 'sickcodes-docker-osx-latest';
-testMobileRTContainer 'tgagor-centos-stream';
-testMobileRTContainer 'archlinux-archlinux-base-devel';
-testMobileRTContainer 'ubuntu-22.04';
-# TODO: Necessary to find an alternative to `timeout` from busybox.
-# testMobileRTContainer 'alpine-3.17';
+# Execute all tests for a specific version of MobileRT container.
+testMobileRTContainer "${1}";
 set -eu;
 
 # Remove all docker containers.

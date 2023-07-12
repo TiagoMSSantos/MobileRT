@@ -155,7 +155,7 @@ jobs:
         echo "VERSION: ${{ env.VERSION }}";
         . scripts/docker.sh && squashMobileRTDockerImage ${{ env.VERSION }};
 
-    - name: Run the unit tests
+    - name: Run unit tests
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       run: |
@@ -170,6 +170,14 @@ jobs:
         # shellcheck disable=SC1091
         echo "VERSION: ${{ env.VERSION }}";
         . scripts/docker.sh && executeUnitTestsInDockerContainer ${{ env.VERSION }} --gtest_filter=*Engine*;
+
+    - name: Run Dockerfile unit tests
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+      # TODO: Necessary to find an alternative to `timeout` command from busybox for the 'alpine' container.
+      if: success() && !startsWith(matrix.BASE_IMAGE, 'alpine')
+      working-directory: .
+      run: |
+        sh scripts/test/dockerfile.sh ${{ env.VERSION }};
 
     - name: Push the tagged Docker image
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
