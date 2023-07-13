@@ -160,7 +160,7 @@ jobs:
       with:
         # Check available parameters in: https://github.com/github/codeql-action/blob/main/analyze/action.yml
         check_name: CodeQL
-        output: ../results
+        output: codeql-results
         upload: never
         # Check cleanup-level in: https://codeql.github.com/docs/codeql-cli/manual/database-cleanup/
         cleanup-level: brutal
@@ -184,9 +184,8 @@ jobs:
       if: success()
       working-directory: .
       run: |
-        ls -lahp ../results/;
-        ls -lahp ../results/${{ matrix.language }}.sarif;
-        cat ../results/${{ matrix.language }}.sarif;
+        ls -lahp ./codeql-results/;
+        ls -lahp ./codeql-results/${{ matrix.language }}.sarif;
 
     - name: Filter SARIF
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
@@ -196,18 +195,17 @@ jobs:
         # Check available parameters in: https://github.com/advanced-security/filter-sarif/blob/main/action.yml
         patterns: |
           -**/*third_party*/**/*:**
-        input: ../results/${{ matrix.language }}.sarif
-        output: ../results/${{ matrix.language }}-filtered.sarif
+        input: ./codeql-results/${{ matrix.language }}.sarif
+        output: ./codeql-results/${{ matrix.language }}-filtered.sarif
 
     - name: Validate CodeQL output was generated
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       working-directory: .
       run: |
-        ls -lahp ../results/;
-        ls -lahp ../results/${{ matrix.language }}.sarif;
-        ls -lahp ../results/${{ matrix.language }}-filtered.sarif;
-        cat ../results/${{ matrix.language }}-filtered.sarif;
+        ls -lahp ./codeql-results/;
+        ls -lahp ./codeql-results/${{ matrix.language }}.sarif;
+        ls -lahp ./codeql-results/${{ matrix.language }}-filtered.sarif;
 
     - name: Upload SARIF
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -215,4 +213,15 @@ jobs:
       uses: github/codeql-action/upload-sarif@v2
       with:
         # Check available parameters in: https://github.com/github/codeql-action/blob/main/upload-sarif/action.yml
-        sarif_file: ../results/${{ matrix.language }}-filtered.sarif
+        sarif_file: ./codeql-results/${{ matrix.language }}-filtered.sarif
+
+    - name: Upload reports as artifact
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success()
+      uses: actions/upload-artifact@v3
+      with:
+        # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
+        name: sarif_${{ matrix.language }}-artifacts
+        path: codeql-results
+        if-no-files-found: error
+        retention-days: 90
