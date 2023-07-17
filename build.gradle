@@ -57,7 +57,7 @@ buildscript {
         println("OS: " + currentOS)
         // Before updating gradle, check which version of Android Studio is compatible with it and update README.
         classpath 'com.android.tools.build:gradle:8.0.2'
-        classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:4.2.1.3168'
+        classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:4.3.0.3225'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlin_stdlib_jdk8_version}"
         classpath 'com.github.ben-manes:gradle-versions-plugin:0.47.0'
 
