@@ -467,12 +467,12 @@ jobs:
     - name: Sign APK
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
-      uses: r0adkll/sign-android-release@v1
+      uses: ilharp/sign-android-release@v1
       with:
-        # Check available parameters in: https://github.com/r0adkll/sign-android-release/blob/master/action.yml
-        releaseDirectory: app/build/outputs/apk/${{ matrix.type }}
-        signingKeyBase64: ${{ env.BASE64_KEY }}
-        alias: ${{ secrets.KEY_ALIAS }}
+        # Check available parameters in: https://github.com/ilharp/sign-android-release/blob/master/action.yml
+        releaseDir: app/build/outputs/apk/${{ matrix.type }}
+        signingKey: ${{ env.BASE64_KEY }}
+        keyAlias: ${{ secrets.KEY_ALIAS }}
         keyStorePassword: ${{ secrets.SIGNING_KEY }}
         keyPassword: ${{ secrets.SIGNING_KEY }}
 
