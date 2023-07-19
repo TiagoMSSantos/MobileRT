@@ -144,6 +144,16 @@ jobs:
         matrix: ${{ toJson(matrix) }}
         working-directory: ${{ github.workspace }}
 
+    - name: Validate Gradle Wrapper
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success() && matrix.language == 'java'
+      uses: gradle/wrapper-validation-action@v1
+      with:
+        # Check available parameters in: https://github.com/gradle/wrapper-validation-action/blob/main/action.yml
+        min-wrapper-count: 1
+        allow-snapshots: false
+        allow-checksums: ''
+
     - name: Build C++
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success() && matrix.language == 'cpp'
