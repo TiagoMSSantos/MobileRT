@@ -430,6 +430,18 @@ jobs:
         script: |
           sh scripts/run_tests_android.sh -t ${{ matrix.type }} -r all -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -k false -f "\"x86\",\"x86_64\"";
 
+    - name: Publish Android Test Report
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success() || failure() # always run even if the previous step fails
+      uses: mikepenz/action-junit-report@v3
+      with:
+        # Check available parameters in: https://github.com/mikepenz/action-junit-report/blob/main/action.yml
+        check_name: 'Android Test Report - API ${{ matrix.android_api }} ${{ matrix.type }} (${{ matrix.os }})'
+        report_paths: '**/build/**/*-results/**/TEST-*.xml'
+        require_tests: true
+        require_passed_tests: true
+        include_passed: true
+
     - name: Check report's paths
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug'
@@ -596,6 +608,17 @@ jobs:
       run: |
         sh scripts/check_android.sh -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -f "\"x86\",\"x86_64\"";
 
+    - name: Publish Unit Test Report
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success() || failure() # always run even if the previous step fails
+      uses: mikepenz/action-junit-report@v3
+      with:
+        # Check available parameters in: https://github.com/mikepenz/action-junit-report/blob/main/action.yml
+        check_name: 'Unit Test Report - API ${{ matrix.android_api }} ${{ matrix.type }} (${{ matrix.os }})'
+        report_paths: '**/build/**/*-results/**/TEST-*.xml'
+        require_tests: true
+        require_passed_tests: true
+        include_passed: true
 
   Sonar:
     needs: [AndroidTests]
@@ -614,6 +637,12 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
       uses: actions/checkout@v3
+
+    - name: Unshallow repository
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success()
+      run: |
+        git fetch --unshallow;
 
     - name: Set up JDK
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
@@ -762,7 +791,7 @@ jobs:
         . scripts/helper_functions.sh && checkPathExists app/third_party;
 
     - name: Analyze Sonar
-      timeout-minutes: 3
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       working-directory: .
       env:
