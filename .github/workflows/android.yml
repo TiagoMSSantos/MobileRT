@@ -93,7 +93,7 @@ jobs:
 
     name: Build ${{ matrix.android_api }} ${{ matrix.type }} (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 30
+    timeout-minutes: 35
 
     steps:
     - name: Checkout
@@ -288,7 +288,7 @@ jobs:
         . scripts/helper_functions.sh && zipFilesForArtifact ${{ env.GRADLE_PATH }} gradle-packages.zip;
 
     - name: Upload Gradle packages as artifact
-      timeout-minutes: 15
+      timeout-minutes: 20
       if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug'
       uses: actions/upload-artifact@v3
       with:
