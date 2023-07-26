@@ -117,8 +117,6 @@ build() {
     bundle"${typeWithCapitalLetter}" \
     bundle"${typeWithCapitalLetter}"ClassesToCompileJar \
     bundle"${typeWithCapitalLetter}"ClassesToRuntimeJar \
-    bundle"${typeWithCapitalLetter}"AndroidTestClassesToCompileJar \
-    bundle"${typeWithCapitalLetter}"AndroidTestClassesToRuntimeJar \
     package"${typeWithCapitalLetter}"Bundle \
     -DtestType="${type}" \
     --profile --parallel \
