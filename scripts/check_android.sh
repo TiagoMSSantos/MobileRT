@@ -85,7 +85,7 @@ runLinter() {
     -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
     -DabiFilters="[${cpu_architecture}]" \
     --no-rebuild \
-    --console plain --info --warning-mode fail --stacktrace;
+    --console plain --info --warning-mode all --stacktrace;
   resCheck=${?};
 }
 ###############################################################################
