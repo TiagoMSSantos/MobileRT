@@ -433,7 +433,7 @@ jobs:
     - name: Publish Android Test Report
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() || failure() # always run even if the previous step fails
-      uses: mikepenz/action-junit-report@v3
+      uses: mikepenz/action-junit-report@v4
       with:
         # Check available parameters in: https://github.com/mikepenz/action-junit-report/blob/main/action.yml
         check_name: 'Android Test Report - API ${{ matrix.android_api }} ${{ matrix.type }} (${{ matrix.os }})'
@@ -611,7 +611,7 @@ jobs:
     - name: Publish Unit Test Report
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() || failure() # always run even if the previous step fails
-      uses: mikepenz/action-junit-report@v3
+      uses: mikepenz/action-junit-report@v4
       with:
         # Check available parameters in: https://github.com/mikepenz/action-junit-report/blob/main/action.yml
         check_name: 'Unit Test Report - API ${{ matrix.android_api }} ${{ matrix.type }} (${{ matrix.os }})'
