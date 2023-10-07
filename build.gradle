@@ -41,7 +41,7 @@ buildscript {
         androidX_annotation_version = '1.7.0'
         guava_version = '32.1.2-jre'
         stream_support_version = '1.7.4'
-        mockito_version = '5.5.0'
+        mockito_version = '5.6.0'
         mockito_inline_version = '5.2.0'
         powermock_version = '2.0.9'
         easymock_version = '5.2.0'
