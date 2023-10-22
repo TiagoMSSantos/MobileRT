@@ -288,7 +288,7 @@ checkPathExists() {
   if [ $# -eq 1 ] ; then
     return 0;
   fi
-  ls -lahp "${1}"/"${2}";
+  validateFileExists "${1}"/"${2}";
 }
 
 # Change the mode of all binaries/scripts to be able to be executed.
@@ -446,10 +446,10 @@ generateCodeCoverage() {
 
 # Validate generated files for code coverage.
 _validateCodeCoverage() {
-  ls -lahp code_coverage_base.info;
-  ls -lahp code_coverage_test.info;
-  ls -lahp code_coverage.info;
-  ls -lahp code_coverage_filtered.info;
+  validateFileExists code_coverage_base.info;
+  validateFileExists code_coverage_test.info;
+  validateFileExists code_coverage.info;
+  validateFileExists code_coverage_filtered.info;
 }
 
 # Add command to the PATH environment variable.
@@ -471,5 +471,20 @@ addCommandToPath() {
   echo "PATH: ${PATH}";
 }
 
+# Validate whether a file exists or not.
+# Also check if the file has some content.
+# Parameters
+# 1) path to file
+validateFileExists() {
+  filePath="${1}";
+  if [ ! -f "${filePath}" ]; then
+    echo "File '${filePath}' does NOT exist." >&2;
+    exit 1;
+  fi
+  if [ ! -s "${filePath}" ]; then
+    echo "File '${filePath}' is empty." >&2;
+    exit 1;
+  fi
+}
 ###############################################################################
 ###############################################################################

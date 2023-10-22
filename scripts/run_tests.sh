@@ -104,8 +104,11 @@ export GRADLE_OPTS="-Xmx4G -Xms4G -XX:ActiveProcessorCount=3";
 createReportsFolders;
 runUnitTests;
 
+unitTestsReport="${PWD}/${reports_path}/tests/test${type}UnitTest/index.html";
+validateFileExists "${unitTestsReport}";
+
 echo '';
-printf '\e]8;;file://'"%s"'/'"%s"'/tests/test'"%s"'UnitTest/index.html\aClick here to check the Unit tests report.\e]8;;\a\n' "${PWD}" "${reports_path}" "${type}";
+printf '\e]8;;file://'"%s"'\aClick here to check the Unit tests report.\e]8;;\a\n' "${unitTestsReport}";
 echo '';
 echo '';
 

@@ -109,11 +109,26 @@ gather_logs_func() {
   echo "Filtered logcat of the app '${pid_app}' to logcat_app_${type}.log";
   set -e;
 
-  printf '\e]8;;file://'"%s"'/'"%s"'/tests/test'"%s"'UnitTest/index.html\aClick here to check the Unit tests report.\e]8;;\a\n' "${PWD}" "${reports_path}" "${typeWithCapitalLetter}";
-  printf '\e]8;;file://'"%s"'/'"%s"'/androidTests/connected/index.html\aClick here to check the Android tests report.\e]8;;\a\n' "${PWD}" "${reports_path}";
-  printf '\e]8;;file://'"%s"'/'"%s"'/jacoco/jacocoTestReport/html/index.html\aClick here to check the Code coverage report.\e]8;;\a\n' "${PWD}" "${reports_path}";
-  printf '\e]8;;file://'"%s"'/'"%s"'/logcat_app_'"%s"'.log\aClick here to check the app log.\e]8;;\a  ' "${PWD}" "${reports_path}" "${type}";
-  printf '\e]8;;file://'"%s"'/'"%s"'/logcat_'"%s"'.log\aClick here to check the whole logcat.\e]8;;\a\n' "${PWD}" "${reports_path}" "${type}";
+  unitTestsReport="${PWD}/${reports_path}/tests/test${typeWithCapitalLetter}UnitTest/index.html";
+  androidTestsReport="${PWD}/${reports_path}/androidTests/connected/${type}/index.html";
+  jacocoTestReport="${PWD}/${reports_path}/jacoco/jacocoTestReport/html/index.html";
+  appLog="${PWD}/${reports_path}/logcat_app_${type}.log";
+  androidLogcat="${PWD}/${reports_path}/logcat_${type}.log";
+
+  if [ "${type}" != "release" ]; then
+    validateFileExists "${unitTestsReport}";
+    validateFileExists "${jacocoTestReport}";
+    printf '\e]8;;file://'"%s"'\aClick here to check the Unit tests report.\e]8;;\a\n' "${unitTestsReport}";
+    printf '\e]8;;file://'"%s"'\aClick here to check the Code coverage report.\e]8;;\a\n' "${jacocoTestReport}";
+  fi
+
+  validateFileExists "${androidTestsReport}";
+  validateFileExists "${appLog}";
+  validateFileExists "${androidLogcat}";
+
+  printf '\e]8;;file://'"%s"'\aClick here to check the Android tests report.\e]8;;\a\n' "${androidTestsReport}";
+  printf '\e]8;;file://'"%s"'\aClick here to check the app log.\e]8;;\a  ' "${appLog}";
+  printf '\e]8;;file://'"%s"'\aClick here to check the whole logcat.\e]8;;\a\n' "${androidLogcat}";
 }
 
 clear_func() {
