@@ -33,7 +33,7 @@ buildscript {
 
         appcompat_version = '1.6.1'
         androidX_core_kotlin_version = '1.10.1'
-        kotlin_stdlib_jdk8_version = '1.9.0'
+        kotlin_stdlib_jdk8_version = '1.9.20'
         multidex_version = '2.0.1'
         androidX_test_espresso_version = '3.5.1'
         androidX_test_version = '1.5.0'
