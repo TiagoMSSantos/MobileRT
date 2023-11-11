@@ -155,7 +155,7 @@ install_conan_dependencies() {
 }
 
 # Increase memory for heap.
-export GRADLE_OPTS="-Xmx4G -Xms4G -XX:ActiveProcessorCount=3";
+export GRADLE_OPTS="-Xms4G -Xmx4G -XX:ActiveProcessorCount=3";
 rm -rf app/build/ || true;
 clearOldBuildFiles;
 clearAllBuildFiles;

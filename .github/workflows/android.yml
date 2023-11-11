@@ -209,7 +209,21 @@ jobs:
       if: success()
       working-directory: .
       run: |
+        sudo dmesg; # Print Kernel logs to know from which timestamp the new logs will appear.
         sh scripts/compile_android.sh -t ${{ matrix.type }} -r yes -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -f "\"x86\",\"x86_64\"";
+
+    - name: Print error logs
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: failure()
+      working-directory: .
+      run: |
+        ls -lahp .;
+        set +e;
+        # Print native JVM stacktrace if possible.
+        cat hs_err_pid*.log;
+        set -e;
+        # Print JVM errors if provided by Kernel, and just check the logs from the last line of the previous call.
+        sudo dmesg;
 
     - name: Check binaries' paths
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -798,7 +812,7 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
         # https://docs.sonarqube.org/latest/requirements/prerequisites-and-overview/
-        GRADLE_OPTS: -Xmx4G -Xms4G -XX:ActiveProcessorCount=3
+        GRADLE_OPTS: -Xms4G -Xmx4G -XX:ActiveProcessorCount=3
       run: |
         # It seems that only 1 CPU core is used by Sonar, and thus it takes a long time.
         sh gradlew --profile --parallel -DabiFilters="[\"x86\",\"x86_64\"]" -DndkVersion=${{ matrix.ndk_version }} -DcmakeVersion=${{ matrix.cmake_version }} --info --warning-mode all --stacktrace sonar;
