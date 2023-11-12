@@ -203,7 +203,7 @@ android {
     setTestBuildType systemTestType
 
     // Setup required versions to compile
-    setCompileSdkVersion 33
+    setCompileSdkVersion 34
     setBuildToolsVersion "${build_tools_version}"
 
     // Setup signing configurations
@@ -226,7 +226,7 @@ android {
     defaultConfig {
         // The minimum Android API version possible is 14 due to compatibility with Appcompat dependency.
         setMinSdkVersion 14
-        setTargetSdkVersion 33
+        setTargetSdkVersion 34
         setTestInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         testInstrumentationRunnerArguments = ['clearPackageData': 'true', 'disableAnalytics': 'true']
         setApplicationId 'puscas.mobilertapp'
