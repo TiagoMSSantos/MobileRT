@@ -4,6 +4,8 @@
 # README
 ###############################################################################
 # Tests for the entrypoint in the `Dockerfile` file.
+# Note that these tests remove all running containers in order to make sure the
+# container, volume and network launched by the test are removed.
 #
 # Parameters:
 # * VERSION - Version (or tag) of the docker container of MobileRT.
@@ -64,7 +66,7 @@ exitValue=0;
 
 
 # Tests the MobileRT in docker container.
-# It uses the command 'timeout' as entrypoint in order to make MobileRT automatically exit after 5 seconds.
+# It uses the command 'timeout' as entrypoint in order to make MobileRT automatically exit after some seconds.
 # Flag '--init': Run an init inside the container that forwards signals and reaps processes
 # Args:
 # * Version of MobileRT docker image
@@ -73,6 +75,7 @@ testMobileRTContainer() {
   _mobilertVersion="${1}";
   _mode="${2}";
 
+  removeAllContainers;
   echo "Starting test - testMobileRTContainer: ${_mobilertVersion} (expecting return ${expected})";
   docker run -t \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
@@ -86,12 +89,12 @@ testMobileRTContainer() {
 
   returnValue="$?";
   assertEqual "${expected}" "${returnValue}" "testMobileRTContainer: ${_mobilertVersion}";
+  removeAllContainers;
 }
 
 set +eu;
 # Execute all tests for a specific version of MobileRT container.
 testMobileRTContainer "${1}" 'release';
-removeAllContainers;
 set -eu;
 
 # Exit and return whether the tests passed or failed.
