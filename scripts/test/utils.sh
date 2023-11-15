@@ -95,3 +95,15 @@ assertEqual() {
     echo "${message}";
   fi
 }
+
+# Helper function which removes all docker containers.
+# It also removes all volumes and networks used by docker containers.
+removeAllContainers() {
+  docker rm -f "$(docker ps -a | awk 'NR>1 {print $1}')";
+  docker system prune --volumes --force;
+  docker builder prune --all --force;
+  docker buildx prune --all --force --verbose;
+  docker network prune --force;
+  docker volume prune --force;
+  docker system df;
+}

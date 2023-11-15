@@ -68,8 +68,10 @@ exitValue=0;
 # Flag '--init': Run an init inside the container that forwards signals and reaps processes
 # Args:
 # * Version of MobileRT docker image
+# * Mode to be used by the 'profile.sh' script.
 testMobileRTContainer() {
   _mobilertVersion="${1}";
+  _mode="${2}";
 
   echo "Starting test - testMobileRTContainer: ${_mobilertVersion} (expecting return ${expected})";
   docker run -t \
@@ -80,7 +82,7 @@ testMobileRTContainer() {
     --entrypoint timeout \
     --name="${_mobilertVersion}" \
     ptpuscas/mobile_rt:"${_mobilertVersion}" \
-    4 ./scripts/profile.sh release 100;
+    4 ./scripts/profile.sh "${_mode}" 100;
 
   returnValue="$?";
   assertEqual "${expected}" "${returnValue}" "testMobileRTContainer: ${_mobilertVersion}";
@@ -88,17 +90,9 @@ testMobileRTContainer() {
 
 set +eu;
 # Execute all tests for a specific version of MobileRT container.
-testMobileRTContainer "${1}";
+testMobileRTContainer "${1}" 'release';
+removeAllContainers;
 set -eu;
-
-# Remove all docker containers.
-docker rm -f "$(docker ps -a | grep -v 'portainer' | awk 'NR>1 {print $1}')";
-docker system prune --volumes --force;
-docker builder prune --all --force;
-docker buildx prune --all --force --verbose;
-docker network prune --force;
-docker volume prune --force;
-docker system df;
 
 # Exit and return whether the tests passed or failed.
 exit "${exitValue}";
