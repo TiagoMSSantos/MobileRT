@@ -6,7 +6,8 @@
 # Tests for the entrypoint in the `Dockerfile` file.
 #
 # Parameters:
-# * VERSION - version (or tag) of the docker container of MobileRT
+# * VERSION - Version (or tag) of the docker container of MobileRT.
+# * EXPECTED_RETURN_VALUE - Expected return value from the 'timeout' command.
 ###############################################################################
 ###############################################################################
 
@@ -50,6 +51,12 @@ fi
 ###############################################################################
 ###############################################################################
 
+if [ "$#" -lt 2 ]; then
+  expected='124'; # Expects to return timeout.
+else
+  expected="${2}"; # Expects a custom return value.
+fi
+
 # Whether the tests passed or failed.
 # 0 -> success (every test passed).
 # 1 -> failure (at least one test failed).
@@ -58,21 +65,24 @@ exitValue=0;
 
 # Tests the MobileRT in docker container.
 # It uses the command 'timeout' as entrypoint in order to make MobileRT automatically exit after 5 seconds.
+# Flag '--init': Run an init inside the container that forwards signals and reaps processes
+# Args:
+# * Version of MobileRT docker image
 testMobileRTContainer() {
   _mobilertVersion="${1}";
-  echo "Starting test - testMobileRTContainer: ${_mobilertVersion}";
+
+  echo "Starting test - testMobileRTContainer: ${_mobilertVersion} (expecting return ${expected})";
   docker run -t \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
     -e DISPLAY=':0' \
     -e QT_QPA_PLATFORM='offscreen' \
+    --init \
     --entrypoint timeout \
     --name="${_mobilertVersion}" \
     ptpuscas/mobile_rt:"${_mobilertVersion}" \
-    5 ./scripts/profile.sh release;
+    4 ./scripts/profile.sh release 100;
 
   returnValue="$?";
-  expected='124'; # Expects to return timeout.
-
   assertEqual "${expected}" "${returnValue}" "testMobileRTContainer: ${_mobilertVersion}";
 }
 
@@ -83,6 +93,12 @@ set -eu;
 
 # Remove all docker containers.
 docker rm -f "$(docker ps -a | grep -v 'portainer' | awk 'NR>1 {print $1}')";
+docker system prune --volumes --force;
+docker builder prune --all --force;
+docker buildx prune --all --force --verbose;
+docker network prune --force;
+docker volume prune --force;
+docker system df;
 
 # Exit and return whether the tests passed or failed.
 exit "${exitValue}";

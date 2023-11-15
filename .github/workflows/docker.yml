@@ -172,12 +172,15 @@ jobs:
         . scripts/docker.sh && executeUnitTestsInDockerContainer ${{ env.VERSION }} --gtest_filter=*Engine*;
 
     - name: Run Dockerfile unit tests
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-      # TODO: Necessary to find an alternative to `timeout` command from busybox for the 'alpine' container.
-      if: success() && !startsWith(matrix.BASE_IMAGE, 'alpine')
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success()
       working-directory: .
       run: |
-        sh scripts/test/dockerfile.sh ${{ env.VERSION }};
+        if echo "${{ matrix.BASE_IMAGE }}" | grep -q "alpine"; then
+          sh scripts/test/dockerfile.sh ${{ env.VERSION }} 143; # Expect SIGTERM (15). 128 + 15 = 143
+        else
+          sh scripts/test/dockerfile.sh ${{ env.VERSION }};
+        fi
 
     - name: Push the tagged Docker image
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}

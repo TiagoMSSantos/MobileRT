@@ -186,12 +186,23 @@ setArguments() {
 
 execute() {
   #ASYNC="false";
+  set +u;
+  if [ -z "${1}" ]; then
+    WIDTH='900';
+    HEIGHT='900';
+  else
+    WIDTH="${1}";
+    HEIGHT="${1}";
+  fi
+  set -u;
   echo '';
   echo "THREAD = ${THREAD}";
   echo "SHADER = ${SHADER}";
   echo "SCENE = ${SCENE}";
   echo "ACC = ${ACC}";
   echo "ASYNC = ${ASYNC}";
+  echo "WIDTH = ${WIDTH}";
+  echo "HEIGHT = ${HEIGHT}";
 
   #perf script report callgrind > perf.callgrind
   #kcachegrind perf.callgrind
@@ -297,7 +308,13 @@ parseArguments() {
       'draws')
         sh scripts/plot/plot.sh 'draws' ;;
       'test') awk -f "${PLOT_SCRIPTS_PATH}/parser_median.awk" "${PLOT_SCRIPTS_PATH}/test.dat" ;;
-      'release') execute ;;
+      'release')
+        if [ "$#" -lt 2 ]; then
+          execute;
+        else
+          execute "${2}";
+        fi
+        ;;
       'debug') debug ;;
       'tidy') clangtidy ;;
       'gtest') "${BIN_DEBUG_PATH}"/UnitTestsd ;;
