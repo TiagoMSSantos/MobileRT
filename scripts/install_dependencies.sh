@@ -32,7 +32,9 @@ set -eu;
 ###############################################################################
 # Change directory to MobileRT root.
 ###############################################################################
-cd "$(dirname "${0}")/.." || exit;
+if [ $# -ge 1 ]; then
+  cd "$(dirname "${0}")/.." || exit 1;
+fi
 ###############################################################################
 ###############################################################################
 
@@ -272,6 +274,8 @@ install_dependencies_macos() {
   brew install python3;
   brew install pyenv;
   brew install conan;
+  brew update;
+  brew install coreutils; # To install 'timeout' command.
   cd "${oldpath}" || exit;
 
   MAJOR_MAC_VERSION=$(sw_vers | grep ProductVersion | cut -d ':' -f2 | cut -d '.' -f1 | tr -d '[:space:]');
@@ -346,6 +350,7 @@ test_commands() {
   checkCommand git;
   checkCommand g++;
   checkCommand python3;
+  checkCommand timeout;
   # Linux Gentoo doesn't allow to use 'pip' directly.
   # checkCommand pip;
   # checkCommand pip3;

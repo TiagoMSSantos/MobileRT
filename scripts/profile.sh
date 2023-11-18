@@ -26,7 +26,9 @@ set -eu;
 ###############################################################################
 # Change directory to MobileRT root.
 ###############################################################################
-cd "$(dirname "${0}")/.." || exit;
+if [ $# -ge 1 ]; then
+  cd "$(dirname "${0}")/.." || exit 1;
+fi
 ###############################################################################
 ###############################################################################
 
@@ -63,8 +65,17 @@ setPaths() {
   echo "PATH_TO_SEARCH = ${PATH_TO_SEARCH}";
   echo "MOBILERT_PATH = ${MOBILERT_PATH}";
 
-  BIN_DEBUG_PATH="${MOBILERT_PATH}/build_debug/bin";
-  BIN_RELEASE_PATH="${MOBILERT_PATH}/build_release/bin";
+  if (uname -a | grep -iq "MINGW.*"); then
+    BIN_DEBUG_PATH="${MOBILERT_PATH}/build_debug/bin/Debug";
+    BIN_RELEASE_PATH="${MOBILERT_PATH}/build_release/bin/Debug";
+    BIN_DEBUG_EXE="${BIN_DEBUG_PATH}"/AppMobileRTd
+    BIN_RELEASE_EXE="${BIN_RELEASE_PATH}"/AppMobileRT
+  else
+    BIN_DEBUG_PATH="${MOBILERT_PATH}/build_debug/bin";
+    BIN_RELEASE_PATH="${MOBILERT_PATH}/build_release/bin";
+    BIN_DEBUG_EXE="${BIN_DEBUG_PATH}"/AppMobileRTd
+    BIN_RELEASE_EXE="${BIN_RELEASE_PATH}"/AppMobileRT
+  fi
   SCRIPTS_PATH="${MOBILERT_PATH}/scripts";
   PLOT_SCRIPTS_PATH="${SCRIPTS_PATH}/plot";
   OBJS_PATH="${MOBILERT_PATH}/WavefrontOBJs";
@@ -208,7 +219,7 @@ execute() {
   #kcachegrind perf.callgrind
   #perf stat \
   #perf record -g --call-graph 'fp' -- \
-  "${BIN_RELEASE_PATH}"/AppMobileRT \
+  "${BIN_RELEASE_EXE}" \
     "${THREAD}" "${SHADER}" "${SCENE}" "${SPP}" "${SPL}" "${WIDTH}" "${HEIGHT}" "${ACC}" \
     "${REP}" "${OBJ}" "${MTL}" "${CAM}" "${PRINT}" "${ASYNC}" "${SHOWIMAGE}";
   #perf report -g '' --show-nr-samples --hierarchy;
@@ -221,7 +232,7 @@ debug() {
   echo "SCENE = ${SCENE}";
   echo "ACC = ${ACC}";
 
-  "${BIN_DEBUG_PATH}"/AppMobileRTd \
+  "${BIN_DEBUG_EXE}" \
     "${THREAD}" "${SHADER}" "${SCENE}" "${SPP}" "${SPL}" "${WIDTH}" "${HEIGHT}" "${ACC}" \
     "${REP}" "${OBJ}" "${MTL}" "${CAM}" "${PRINT}" "${ASYNC}" "${SHOWIMAGE}";
 }

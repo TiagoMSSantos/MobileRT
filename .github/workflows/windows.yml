@@ -236,3 +236,19 @@ jobs:
         ls -la ./app/src/androidTest/resources/CornellBox/CornellBox-Water.mtl;
         ls -la ./app/src/androidTest/resources/CornellBox/CornellBox-Water.cam;
         ./build_${{ matrix.type }}/bin/Debug/UnitTests* --gtest_filter=*Engine*;
+
+    - name: Test profile script ${{ matrix.type }}
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success()
+      working-directory: .
+      shell: sh
+      run: |
+        set +e;
+        QT_QPA_PLATFORM='offscreen' timeout 4 sh ./scripts/profile.sh "${{ matrix.type }}" 100;
+        returnValue="$?";
+        set -e;
+        # shellcheck disable=SC1091
+        . scripts/test/utils.sh && assertEqual '124' "${returnValue}" "test profile script: ${{ matrix.type }}";
+        if [ "${returnValue}" != '124' ]; then
+          exit "${returnValue}"; # Exit with error if test failed.
+        fi
