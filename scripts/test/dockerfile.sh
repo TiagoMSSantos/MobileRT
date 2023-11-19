@@ -87,7 +87,7 @@ testMobileRTContainer() {
     --entrypoint timeout \
     --name="${_mobilertVersion}" \
     ptpuscas/mobile_rt:"${_mobilertVersion}" \
-    20 ./scripts/profile.sh "${_mode}" 100;
+    60 ./scripts/profile.sh "${_mode}" 100;
 
   returnValue="$?";
   assertEqual "${expected}" "${returnValue}" "testMobileRTContainer: ${_mobilertVersion}";

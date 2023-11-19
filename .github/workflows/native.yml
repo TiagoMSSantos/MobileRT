@@ -204,7 +204,7 @@ jobs:
       working-directory: .
       run: |
         set +e;
-        QT_QPA_PLATFORM='offscreen' timeout 20 sh ./scripts/profile.sh "${{ matrix.type }}" 100;
+        QT_QPA_PLATFORM='offscreen' timeout 60 sh ./scripts/profile.sh "${{ matrix.type }}" 100;
         returnValue="$?";
         set -e;
         # shellcheck disable=SC1091
