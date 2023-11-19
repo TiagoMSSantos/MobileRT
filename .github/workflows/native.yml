@@ -188,13 +188,23 @@ jobs:
         ls -la ./app/src/androidTest/resources/CornellBox/CornellBox-Water.cam;
         LD_LIBRARY_PATH=$(find ~/.conan -iname "libgtest.so" | grep -iv "build" | xargs ls -t | head -1 | xargs dirname) ./build_${{ matrix.type }}/bin/UnitTests* --gtest_filter=*Engine*;
 
+    - name: Create symbolic links for Qt in MacOS
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success() && startsWith(matrix.os, 'macos')
+      working-directory: .
+      run: |
+        otool -L ${PWD}/build_${{ matrix.type }}/bin/AppMobileRT*;
+        sudo ln -s ${Qt5_DIR}/lib/QtCore.framework /Library/Frameworks/;
+        sudo ln -s ${Qt5_DIR}/lib/QtGui.framework /Library/Frameworks/;
+        sudo ln -s ${Qt5_DIR}/lib/QtWidgets.framework /Library/Frameworks/;
+
     - name: Test profile script ${{ matrix.type }}
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && !startsWith(matrix.os, 'macos')
+      if: success()
       working-directory: .
       run: |
         set +e;
-        QT_QPA_PLATFORM='offscreen' timeout 4 sh ./scripts/profile.sh "${{ matrix.type }}" 100;
+        QT_QPA_PLATFORM='offscreen' timeout 20 sh ./scripts/profile.sh "${{ matrix.type }}" 100;
         returnValue="$?";
         set -e;
         # shellcheck disable=SC1091

@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2023-07-19T08:00:14.540Z",
+    "detectionDate": "2023-11-19T12:32:07.730Z",
     "formats": {
       "java": {
         "sources": {
@@ -1901,26 +1901,26 @@
             "newClones": 0
           },
           ".github/workflows/windows.yml": {
-            "lines": 237,
-            "tokens": 1402,
+            "lines": 253,
+            "tokens": 1462,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 14,
             "duplicatedTokens": 99,
-            "percentage": 5.91,
-            "percentageTokens": 7.06,
+            "percentage": 5.53,
+            "percentageTokens": 6.77,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           ".github/workflows/native.yml": {
-            "lines": 282,
-            "tokens": 1889,
+            "lines": 307,
+            "tokens": 2003,
             "sources": 1,
             "clones": 9,
             "duplicatedLines": 169,
             "duplicatedTokens": 1083,
-            "percentage": 59.93,
-            "percentageTokens": 57.33,
+            "percentage": 55.05,
+            "percentageTokens": 54.07,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -1937,14 +1937,14 @@
             "newClones": 0
           },
           ".github/workflows/docker.yml": {
-            "lines": 187,
-            "tokens": 1031,
+            "lines": 191,
+            "tokens": 1027,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 21,
             "duplicatedTokens": 109,
-            "percentage": 11.23,
-            "percentageTokens": 10.57,
+            "percentage": 10.99,
+            "percentageTokens": 10.61,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -1973,14 +1973,14 @@
             "newClones": 0
           },
           ".github/workflows/android.yml": {
-            "lines": 801,
-            "tokens": 5897,
+            "lines": 844,
+            "tokens": 6161,
             "sources": 1,
             "clones": 16,
             "duplicatedLines": 427,
             "duplicatedTokens": 2900,
-            "percentage": 53.31,
-            "percentageTokens": 49.18,
+            "percentage": 50.59,
+            "percentageTokens": 47.07,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2070,14 +2070,14 @@
           }
         },
         "total": {
-          "lines": 2640,
-          "tokens": 17453,
+          "lines": 2728,
+          "tokens": 17887,
           "sources": 23,
           "clones": 17,
           "duplicatedLines": 400,
           "duplicatedTokens": 2585,
-          "percentage": 15.15,
-          "percentageTokens": 14.81,
+          "percentage": 14.66,
+          "percentageTokens": 14.45,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2849,32 +2849,32 @@
       "bash": {
         "sources": {
           "scripts/test/utils.sh": {
-            "lines": 96,
-            "tokens": 371,
+            "lines": 110,
+            "tokens": 485,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 11,
             "duplicatedTokens": 79,
-            "percentage": 11.46,
-            "percentageTokens": 21.29,
+            "percentage": 10,
+            "percentageTokens": 16.29,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "scripts/test/helper_functions.sh": {
-            "lines": 429,
-            "tokens": 2963,
+            "lines": 431,
+            "tokens": 2977,
             "sources": 1,
             "clones": 7,
             "duplicatedLines": 119,
             "duplicatedTokens": 859,
-            "percentage": 27.74,
-            "percentageTokens": 28.99,
+            "percentage": 27.61,
+            "percentageTokens": 28.85,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "scripts/test/dockerfile.sh": {
-            "lines": 87,
-            "tokens": 338,
+            "lines": 102,
+            "tokens": 396,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2885,20 +2885,20 @@
             "newClones": 0
           },
           "scripts/plot/plot.sh": {
-            "lines": 103,
-            "tokens": 622,
+            "lines": 105,
+            "tokens": 635,
             "sources": 1,
             "clones": 3,
             "duplicatedLines": 27,
             "duplicatedTokens": 229,
-            "percentage": 26.21,
-            "percentageTokens": 36.82,
+            "percentage": 25.71,
+            "percentageTokens": 36.06,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "scripts/run_tests_android.sh": {
-            "lines": 640,
-            "tokens": 4511,
+            "lines": 657,
+            "tokens": 4600,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2909,44 +2909,44 @@
             "newClones": 0
           },
           "scripts/run_tests.sh": {
-            "lines": 116,
-            "tokens": 461,
+            "lines": 121,
+            "tokens": 483,
             "sources": 1,
             "clones": 4,
-            "duplicatedLines": 168,
-            "duplicatedTokens": 474,
-            "percentage": 144.83,
-            "percentageTokens": 102.82,
+            "duplicatedLines": 176,
+            "duplicatedTokens": 534,
+            "percentage": 145.45,
+            "percentageTokens": 110.56,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "scripts/profile.sh": {
-            "lines": 331,
-            "tokens": 1952,
+            "lines": 359,
+            "tokens": 2152,
             "sources": 1,
             "clones": 3,
             "duplicatedLines": 27,
             "duplicatedTokens": 229,
-            "percentage": 8.16,
-            "percentageTokens": 11.73,
+            "percentage": 7.52,
+            "percentageTokens": 10.64,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "scripts/install_dependencies.sh": {
-            "lines": 369,
-            "tokens": 2251,
+            "lines": 374,
+            "tokens": 2292,
             "sources": 1,
             "clones": 1,
-            "duplicatedLines": 40,
-            "duplicatedTokens": 113,
-            "percentage": 10.84,
-            "percentageTokens": 5.02,
+            "duplicatedLines": 42,
+            "duplicatedTokens": 128,
+            "percentage": 11.23,
+            "percentageTokens": 5.58,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "scripts/helper_functions.sh": {
-            "lines": 474,
-            "tokens": 3274,
+            "lines": 489,
+            "tokens": 3370,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2958,7 +2958,7 @@
           },
           "scripts/docker.sh": {
             "lines": 206,
-            "tokens": 1363,
+            "tokens": 1367,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2969,51 +2969,51 @@
             "newClones": 0
           },
           "scripts/compile_native.sh": {
-            "lines": 317,
-            "tokens": 1814,
+            "lines": 320,
+            "tokens": 1843,
             "sources": 1,
             "clones": 1,
-            "duplicatedLines": 43,
-            "duplicatedTokens": 122,
-            "percentage": 13.56,
-            "percentageTokens": 6.73,
+            "duplicatedLines": 45,
+            "duplicatedTokens": 137,
+            "percentage": 14.06,
+            "percentageTokens": 7.43,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "scripts/compile_android.sh": {
             "lines": 179,
-            "tokens": 926,
+            "tokens": 923,
             "sources": 1,
             "clones": 1,
-            "duplicatedLines": 43,
-            "duplicatedTokens": 122,
-            "percentage": 24.02,
-            "percentageTokens": 13.17,
+            "duplicatedLines": 45,
+            "duplicatedTokens": 137,
+            "percentage": 25.14,
+            "percentageTokens": 14.84,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "scripts/check_android.sh": {
-            "lines": 103,
-            "tokens": 385,
+            "lines": 105,
+            "tokens": 400,
             "sources": 1,
             "clones": 1,
-            "duplicatedLines": 42,
-            "duplicatedTokens": 117,
-            "percentage": 40.78,
-            "percentageTokens": 30.39,
+            "duplicatedLines": 44,
+            "duplicatedTokens": 132,
+            "percentage": 41.9,
+            "percentageTokens": 33,
             "newDuplicatedLines": 0,
             "newClones": 0
           }
         },
         "total": {
-          "lines": 3450,
-          "tokens": 21231,
+          "lines": 3558,
+          "tokens": 21923,
           "sources": 13,
           "clones": 11,
-          "duplicatedLines": 260,
-          "duplicatedTokens": 1172,
-          "percentage": 7.54,
-          "percentageTokens": 5.52,
+          "duplicatedLines": 268,
+          "duplicatedTokens": 1232,
+          "percentage": 7.53,
+          "percentageTokens": 5.62,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3021,8 +3021,8 @@
       "properties": {
         "sources": {
           "gradle/wrapper/gradle-wrapper.properties": {
-            "lines": 5,
-            "tokens": 20,
+            "lines": 6,
+            "tokens": 26,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -3033,8 +3033,8 @@
             "newClones": 0
           },
           "sonar-project.properties": {
-            "lines": 34,
-            "tokens": 94,
+            "lines": 35,
+            "tokens": 98,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -3045,8 +3045,8 @@
             "newClones": 0
           },
           "gradle.properties": {
-            "lines": 87,
-            "tokens": 215,
+            "lines": 91,
+            "tokens": 225,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -3058,8 +3058,8 @@
           }
         },
         "total": {
-          "lines": 126,
-          "tokens": 329,
+          "lines": 132,
+          "tokens": 349,
           "sources": 3,
           "clones": 0,
           "duplicatedLines": 0,
@@ -3140,14 +3140,14 @@
       }
     },
     "total": {
-      "lines": 27197,
-      "tokens": 204293,
+      "lines": 27399,
+      "tokens": 205439,
       "sources": 248,
       "clones": 111,
-      "duplicatedLines": 1463,
-      "duplicatedTokens": 12601,
-      "percentage": 5.38,
-      "percentageTokens": 6.17,
+      "duplicatedLines": 1471,
+      "duplicatedTokens": 12661,
+      "percentage": 5.37,
+      "percentageTokens": 6.16,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -5824,32 +5824,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "scripts/test/helper_functions.sh",
-        "start": 137,
-        "end": 148,
+        "start": 139,
+        "end": 150,
         "startLoc": {
-          "line": 137,
+          "line": 139,
           "column": 2,
-          "position": 554
+          "position": 568
         },
         "endLoc": {
-          "line": 148,
+          "line": 150,
           "column": 7,
-          "position": 633
+          "position": 647
         }
       },
       "secondFile": {
         "name": "scripts/test/utils.sh",
-        "start": 80,
-        "end": 91,
+        "start": 82,
+        "end": 93,
         "startLoc": {
-          "line": 80,
+          "line": 82,
           "column": 5,
-          "position": 264
+          "position": 276
         },
         "endLoc": {
-          "line": 91,
+          "line": 93,
           "column": 28,
-          "position": 343
+          "position": 355
         }
       }
     },
@@ -5860,32 +5860,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "scripts/test/helper_functions.sh",
-        "start": 287,
-        "end": 304,
+        "start": 289,
+        "end": 306,
         "startLoc": {
-          "line": 287,
+          "line": 289,
           "column": 5,
-          "position": 1782
+          "position": 1796
         },
         "endLoc": {
-          "line": 304,
+          "line": 306,
           "column": 50,
-          "position": 1901
+          "position": 1915
         }
       },
       "secondFile": {
         "name": "scripts/test/helper_functions.sh",
-        "start": 219,
-        "end": 236,
+        "start": 221,
+        "end": 238,
         "startLoc": {
-          "line": 219,
+          "line": 221,
           "column": 5,
-          "position": 1140
+          "position": 1154
         },
         "endLoc": {
-          "line": 236,
+          "line": 238,
           "column": 53,
-          "position": 1259
+          "position": 1273
         }
       }
     },
@@ -5896,32 +5896,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "scripts/test/helper_functions.sh",
-        "start": 354,
-        "end": 372,
+        "start": 356,
+        "end": 374,
         "startLoc": {
-          "line": 354,
+          "line": 356,
           "column": 16,
-          "position": 2408
+          "position": 2422
         },
         "endLoc": {
-          "line": 372,
+          "line": 374,
           "column": 44,
-          "position": 2543
+          "position": 2557
         }
       },
       "secondFile": {
         "name": "scripts/test/helper_functions.sh",
-        "start": 286,
-        "end": 236,
+        "start": 288,
+        "end": 238,
         "startLoc": {
-          "line": 286,
+          "line": 288,
           "column": 12,
-          "position": 1766
+          "position": 1780
         },
         "endLoc": {
-          "line": 236,
+          "line": 238,
           "column": 53,
-          "position": 1259
+          "position": 1273
         }
       }
     },
@@ -5932,32 +5932,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "scripts/test/helper_functions.sh",
-        "start": 398,
-        "end": 417,
+        "start": 400,
+        "end": 419,
         "startLoc": {
-          "line": 398,
+          "line": 400,
           "column": 16,
-          "position": 2783
+          "position": 2797
         },
         "endLoc": {
-          "line": 417,
+          "line": 419,
           "column": 4,
-          "position": 2919
+          "position": 2933
         }
       },
       "secondFile": {
         "name": "scripts/test/helper_functions.sh",
-        "start": 286,
-        "end": 236,
+        "start": 288,
+        "end": 238,
         "startLoc": {
-          "line": 286,
+          "line": 288,
           "column": 12,
-          "position": 1766
+          "position": 1780
         },
         "endLoc": {
-          "line": 236,
+          "line": 238,
           "column": 53,
-          "position": 1259
+          "position": 1273
         }
       }
     },
@@ -6328,32 +6328,32 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/native.yml",
-        "start": 245,
-        "end": 257,
+        "start": 270,
+        "end": 282,
         "startLoc": {
-          "line": 245,
+          "line": 270,
           "column": 7,
-          "position": 1627
+          "position": 1741
         },
         "endLoc": {
-          "line": 257,
+          "line": 282,
           "column": 2,
-          "position": 1722
+          "position": 1836
         }
       },
       "secondFile": {
         "name": ".github/workflows/native.yml",
-        "start": 211,
-        "end": 224,
+        "start": 236,
+        "end": 249,
         "startLoc": {
-          "line": 211,
+          "line": 236,
           "column": 7,
-          "position": 1374
+          "position": 1488
         },
         "endLoc": {
-          "line": 224,
+          "line": 249,
           "column": 6,
-          "position": 1470
+          "position": 1584
         }
       }
     },
@@ -6364,17 +6364,17 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/docker.yml",
-        "start": 27,
-        "end": 48,
+        "start": 28,
+        "end": 49,
         "startLoc": {
-          "line": 27,
+          "line": 28,
           "column": 5,
-          "position": 122
+          "position": 127
         },
         "endLoc": {
-          "line": 48,
+          "line": 49,
           "column": 9,
-          "position": 231
+          "position": 236
         }
       },
       "secondFile": {
@@ -6416,16 +6416,16 @@
       "secondFile": {
         "name": ".github/workflows/native.yml",
         "start": 40,
-        "end": 51,
+        "end": 52,
         "startLoc": {
           "line": 40,
           "column": 1,
           "position": 184
         },
         "endLoc": {
-          "line": 51,
+          "line": 52,
           "column": 8,
-          "position": 245
+          "position": 250
         }
       }
     },
@@ -6452,16 +6452,16 @@
       "secondFile": {
         "name": ".github/workflows/native.yml",
         "start": 40,
-        "end": 52,
+        "end": 53,
         "startLoc": {
           "line": 40,
           "column": 1,
           "position": 184
         },
         "endLoc": {
-          "line": 52,
+          "line": 53,
           "column": 3,
-          "position": 251
+          "position": 256
         }
       }
     },
@@ -6540,7 +6540,7 @@
     {
       "format": "yaml",
       "lines": 26,
-      "fragment": "steps:\n    - name: Checkout\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n      if: success()\n      uses: actions/checkout@v3\n\n    - name: Set up JDK\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n      if: success()\n      uses: actions/setup-java@v3\n      with:\n        # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml\n        java-version: 17\n        distribution: zulu\n        java-package: jdk\n        architecture: x64\n        check-latest: false\n        server-id: github\n        server-username: GITHUB_ACTOR\n        server-password: GITHUB_TOKEN\n        settings-path: ~/.gradle\n        overwrite-settings: true\n        gpg-private-key: ''\n        gpg-passphrase: GPG_PASSPHRASE\n\n    -",
+      "fragment": "steps:\n    - name: Checkout\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n      if: success()\n      uses: actions/checkout@v4\n\n    - name: Set up JDK\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n      if: success()\n      uses: actions/setup-java@v3\n      with:\n        # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml\n        java-version: 17\n        distribution: zulu\n        java-package: jdk\n        architecture: x64\n        check-latest: false\n        server-id: github\n        server-username: GITHUB_ACTOR\n        server-password: GITHUB_TOKEN\n        settings-path: ~/.gradle\n        overwrite-settings: true\n        gpg-private-key: ''\n        gpg-passphrase: GPG_PASSPHRASE\n\n    -",
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android.yml",
@@ -6576,21 +6576,21 @@
     {
       "format": "yaml",
       "lines": 27,
-      "fragment": "steps:\n    - name: Checkout\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n      if: success()\n      uses: actions/checkout@v3\n\n    - name: Set up JDK\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n      if: success()\n      uses: actions/setup-java@v3\n      with:\n        # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml\n        java-version: 17\n        distribution: zulu\n        java-package: jdk\n        architecture: x64\n        check-latest: false\n        server-id: github\n        server-username: GITHUB_ACTOR\n        server-password: GITHUB_TOKEN\n        settings-path: ~/.gradle\n        overwrite-settings: true\n        gpg-private-key: ''\n        gpg-passphrase: GPG_PASSPHRASE\n\n    - name: Add custom environment variables\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL)",
+      "fragment": "steps:\n    - name: Checkout\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n      if: success()\n      uses: actions/checkout@v4\n\n    - name: Set up JDK\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n      if: success()\n      uses: actions/setup-java@v3\n      with:\n        # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml\n        java-version: 17\n        distribution: zulu\n        java-package: jdk\n        architecture: x64\n        check-latest: false\n        server-id: github\n        server-username: GITHUB_ACTOR\n        server-password: GITHUB_TOKEN\n        settings-path: ~/.gradle\n        overwrite-settings: true\n        gpg-private-key: ''\n        gpg-passphrase: GPG_PASSPHRASE\n\n    - name: Add custom environment variables\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL)",
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android.yml",
-        "start": 317,
-        "end": 343,
+        "start": 331,
+        "end": 357,
         "startLoc": {
-          "line": 317,
+          "line": 331,
           "column": 5,
-          "position": 2355
+          "position": 2400
         },
         "endLoc": {
-          "line": 343,
+          "line": 357,
           "column": 40,
-          "position": 2533
+          "position": 2578
         }
       },
       "secondFile": {
@@ -6616,32 +6616,32 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android.yml",
-        "start": 357,
-        "end": 369,
+        "start": 371,
+        "end": 383,
         "startLoc": {
-          "line": 357,
+          "line": 371,
           "column": 2,
-          "position": 2584
+          "position": 2629
         },
         "endLoc": {
-          "line": 369,
+          "line": 383,
           "column": 69,
-          "position": 2689
+          "position": 2734
         }
       },
       "secondFile": {
         "name": ".github/workflows/android.yml",
-        "start": 226,
-        "end": 238,
+        "start": 240,
+        "end": 252,
         "startLoc": {
-          "line": 226,
+          "line": 240,
           "column": 2,
-          "position": 1216
+          "position": 1261
         },
         "endLoc": {
-          "line": 238,
+          "line": 252,
           "column": 2,
-          "position": 1321
+          "position": 1366
         }
       }
     },
@@ -6652,68 +6652,68 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android.yml",
-        "start": 443,
-        "end": 449,
+        "start": 469,
+        "end": 475,
         "startLoc": {
-          "line": 443,
+          "line": 469,
           "column": 7,
-          "position": 3392
+          "position": 3525
         },
         "endLoc": {
-          "line": 449,
+          "line": 475,
           "column": 28,
-          "position": 3483
+          "position": 3616
         }
       },
       "secondFile": {
         "name": ".github/workflows/native.yml",
-        "start": 211,
-        "end": 221,
+        "start": 236,
+        "end": 246,
         "startLoc": {
-          "line": 211,
+          "line": 236,
           "column": 7,
-          "position": 1374
+          "position": 1488
         },
         "endLoc": {
-          "line": 221,
+          "line": 246,
           "column": 38,
-          "position": 1465
+          "position": 1579
         }
       }
     },
     {
       "format": "yaml",
       "lines": 40,
-      "fragment": "steps:\n    - name: Checkout\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n      if: success()\n      uses: actions/checkout@v3\n\n    - name: Set up JDK\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n      if: success()\n      uses: actions/setup-java@v3\n      with:\n        # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml\n        java-version: 17\n        distribution: zulu\n        java-package: jdk\n        architecture: x64\n        check-latest: false\n        server-id: github\n        server-username: GITHUB_ACTOR\n        server-password: GITHUB_TOKEN\n        settings-path: ~/.gradle\n        overwrite-settings: true\n        gpg-private-key: ''\n        gpg-passphrase: GPG_PASSPHRASE\n\n    - name: Add custom environment variables\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n      if: success()\n      working-directory: .\n      run: |\n        echo 'Available Android versions:';\n        du -h -d 1 ${ANDROID_HOME}/ndk;\n        du -h -d 1 ${ANDROID_HOME}/cmake;\n        du -h -d 1 ${ANDROID_HOME}/build-tools;\n        ls -lahp ${ANDROID_HOME}/platforms;\n        ls -lahp ${HOME};\n        echo \"ANDROID_NDK_PATH=${ANDROID_HOME}/ndk/${{ matrix.ndk_version }}\" >> \"${GITHUB_ENV}\";\n        echo \"GRADLE_PATH=${HOME}/.gradle\" >> \"${GITHUB_ENV}\";\n\n    # Useful step to avoid gradle having to download Gradle dependencies",
+      "fragment": "steps:\n    - name: Checkout\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n      if: success()\n      uses: actions/checkout@v4\n\n    - name: Set up JDK\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n      if: success()\n      uses: actions/setup-java@v3\n      with:\n        # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml\n        java-version: 17\n        distribution: zulu\n        java-package: jdk\n        architecture: x64\n        check-latest: false\n        server-id: github\n        server-username: GITHUB_ACTOR\n        server-password: GITHUB_TOKEN\n        settings-path: ~/.gradle\n        overwrite-settings: true\n        gpg-private-key: ''\n        gpg-passphrase: GPG_PASSPHRASE\n\n    - name: Add custom environment variables\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n      if: success()\n      working-directory: .\n      run: |\n        echo 'Available Android versions:';\n        du -h -d 1 ${ANDROID_HOME}/ndk;\n        du -h -d 1 ${ANDROID_HOME}/cmake;\n        du -h -d 1 ${ANDROID_HOME}/build-tools;\n        ls -lahp ${ANDROID_HOME}/platforms;\n        ls -lahp ${HOME};\n        echo \"ANDROID_NDK_PATH=${ANDROID_HOME}/ndk/${{ matrix.ndk_version }}\" >> \"${GITHUB_ENV}\";\n        echo \"GRADLE_PATH=${HOME}/.gradle\" >> \"${GITHUB_ENV}\";\n\n    # Useful step to avoid gradle having to download Gradle dependencies",
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android.yml",
-        "start": 503,
-        "end": 542,
+        "start": 529,
+        "end": 568,
         "startLoc": {
-          "line": 503,
+          "line": 529,
           "column": 5,
-          "position": 3939
+          "position": 4072
         },
         "endLoc": {
-          "line": 542,
+          "line": 568,
           "column": 69,
-          "position": 4143
+          "position": 4276
         }
       },
       "secondFile": {
         "name": ".github/workflows/android_repeatable.yml",
         "start": 42,
-        "end": 356,
+        "end": 370,
         "startLoc": {
           "line": 42,
           "column": 5,
           "position": 238
         },
         "endLoc": {
-          "line": 356,
+          "line": 370,
           "column": 2,
-          "position": 2559
+          "position": 2604
         }
       }
     },
@@ -6724,32 +6724,32 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android.yml",
-        "start": 542,
-        "end": 561,
+        "start": 568,
+        "end": 587,
         "startLoc": {
-          "line": 542,
+          "line": 568,
           "column": 5,
-          "position": 4143
+          "position": 4276
         },
         "endLoc": {
-          "line": 561,
+          "line": 587,
           "column": 9,
-          "position": 4277
+          "position": 4410
         }
       },
       "secondFile": {
         "name": ".github/workflows/android.yml",
-        "start": 369,
-        "end": 388,
+        "start": 383,
+        "end": 402,
         "startLoc": {
-          "line": 369,
+          "line": 383,
           "column": 5,
-          "position": 2689
+          "position": 2734
         },
         "endLoc": {
-          "line": 388,
+          "line": 402,
           "column": 6,
-          "position": 2823
+          "position": 2868
         }
       }
     },
@@ -6760,32 +6760,32 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android.yml",
-        "start": 561,
-        "end": 574,
+        "start": 587,
+        "end": 600,
         "startLoc": {
-          "line": 561,
+          "line": 587,
           "column": 5,
-          "position": 4272
+          "position": 4405
         },
         "endLoc": {
-          "line": 574,
+          "line": 600,
           "column": 6,
-          "position": 4407
+          "position": 4540
         }
       },
       "secondFile": {
         "name": ".github/workflows/android.yml",
-        "start": 356,
-        "end": 238,
+        "start": 370,
+        "end": 252,
         "startLoc": {
-          "line": 356,
+          "line": 370,
           "column": 5,
-          "position": 2559
+          "position": 2604
         },
         "endLoc": {
-          "line": 238,
+          "line": 252,
           "column": 4,
-          "position": 1326
+          "position": 1371
         }
       }
     },
@@ -6796,32 +6796,32 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android.yml",
-        "start": 627,
-        "end": 695,
+        "start": 670,
+        "end": 738,
         "startLoc": {
-          "line": 627,
+          "line": 670,
           "column": 9,
-          "position": 4740
+          "position": 4997
         },
         "endLoc": {
-          "line": 695,
+          "line": 738,
           "column": 7,
-          "position": 5151
+          "position": 5408
         }
       },
       "secondFile": {
         "name": ".github/workflows/android.yml",
-        "start": 331,
-        "end": 585,
+        "start": 345,
+        "end": 611,
         "startLoc": {
-          "line": 331,
+          "line": 345,
           "column": 9,
-          "position": 2451
+          "position": 2496
         },
         "endLoc": {
-          "line": 585,
+          "line": 611,
           "column": 4,
-          "position": 4446
+          "position": 4579
         }
       }
     },
@@ -6832,32 +6832,32 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android.yml",
-        "start": 705,
-        "end": 713,
+        "start": 748,
+        "end": 756,
         "startLoc": {
-          "line": 705,
+          "line": 748,
           "column": 7,
-          "position": 5231
+          "position": 5488
         },
         "endLoc": {
-          "line": 713,
+          "line": 756,
           "column": 6,
-          "position": 5331
+          "position": 5588
         }
       },
       "secondFile": {
         "name": ".github/workflows/native.yml",
-        "start": 211,
-        "end": 451,
+        "start": 236,
+        "end": 477,
         "startLoc": {
-          "line": 211,
+          "line": 236,
           "column": 7,
-          "position": 1374
+          "position": 1488
         },
         "endLoc": {
-          "line": 451,
+          "line": 477,
           "column": 4,
-          "position": 3492
+          "position": 3625
         }
       }
     },
@@ -6868,32 +6868,32 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android.yml",
-        "start": 740,
-        "end": 764,
+        "start": 783,
+        "end": 807,
         "startLoc": {
-          "line": 740,
+          "line": 783,
           "column": 5,
-          "position": 5484
+          "position": 5741
         },
         "endLoc": {
-          "line": 764,
+          "line": 807,
           "column": 8,
-          "position": 5658
+          "position": 5915
         }
       },
       "secondFile": {
         "name": ".github/workflows/android.yml",
-        "start": 356,
-        "end": 585,
+        "start": 370,
+        "end": 611,
         "startLoc": {
-          "line": 356,
+          "line": 370,
           "column": 5,
-          "position": 2559
+          "position": 2604
         },
         "endLoc": {
-          "line": 585,
+          "line": 611,
           "column": 4,
-          "position": 4446
+          "position": 4579
         }
       }
     },
@@ -6904,32 +6904,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "scripts/profile.sh",
-        "start": 47,
-        "end": 53,
+        "start": 49,
+        "end": 55,
         "startLoc": {
-          "line": 47,
+          "line": 49,
           "column": 1,
-          "position": 123
+          "position": 138
         },
         "endLoc": {
-          "line": 53,
+          "line": 55,
           "column": 14,
-          "position": 191
+          "position": 206
         }
       },
       "secondFile": {
         "name": "scripts/plot/plot.sh",
-        "start": 34,
-        "end": 41,
+        "start": 36,
+        "end": 43,
         "startLoc": {
-          "line": 34,
+          "line": 36,
           "column": 1,
-          "position": 100
+          "position": 113
         },
         "endLoc": {
-          "line": 41,
+          "line": 43,
           "column": 3,
-          "position": 168
+          "position": 181
         }
       }
     },
@@ -6940,32 +6940,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "scripts/profile.sh",
-        "start": 53,
-        "end": 59,
+        "start": 55,
+        "end": 61,
         "startLoc": {
-          "line": 53,
+          "line": 55,
           "column": 2,
-          "position": 199
+          "position": 214
         },
         "endLoc": {
-          "line": 59,
+          "line": 61,
           "column": 14,
-          "position": 266
+          "position": 281
         }
       },
       "secondFile": {
         "name": "scripts/plot/plot.sh",
-        "start": 39,
-        "end": 45,
+        "start": 41,
+        "end": 47,
         "startLoc": {
-          "line": 39,
+          "line": 41,
           "column": 5,
-          "position": 164
+          "position": 177
         },
         "endLoc": {
-          "line": 45,
+          "line": 47,
           "column": 3,
-          "position": 231
+          "position": 244
         }
       }
     },
@@ -6976,161 +6976,53 @@
       "tokens": 0,
       "firstFile": {
         "name": "scripts/profile.sh",
-        "start": 70,
-        "end": 85,
+        "start": 81,
+        "end": 96,
         "startLoc": {
-          "line": 70,
+          "line": 81,
           "column": 16,
-          "position": 344
+          "position": 433
         },
         "endLoc": {
-          "line": 85,
+          "line": 96,
           "column": 80,
-          "position": 438
+          "position": 527
         }
       },
       "secondFile": {
         "name": "scripts/plot/plot.sh",
-        "start": 48,
-        "end": 64,
+        "start": 50,
+        "end": 66,
         "startLoc": {
-          "line": 48,
+          "line": 50,
           "column": 7,
-          "position": 248
+          "position": 261
         },
         "endLoc": {
-          "line": 64,
+          "line": 66,
           "column": 17,
-          "position": 343
-        }
-      }
-    },
-    {
-      "format": "bash",
-      "lines": 41,
-      "fragment": "###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Exit immediately if a command exits with a non-zero status.\n###############################################################################\nset -eu;\n###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Change directory to MobileRT root.\n###############################################################################\ncd \"$(dirname \"${0}\")/..\" || exit;\n###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Get helper functions.\n###############################################################################\n# shellcheck disable=SC1091\n. scripts/helper_functions.sh;\n###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Execute Shellcheck on this script.\n###############################################################################\nif command -v shellcheck > /dev/null; then\n  shellcheck \"${0}\" || exit\nfi\n###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Install dependencies.",
-      "tokens": 0,
-      "firstFile": {
-        "name": "scripts/install_dependencies.sh",
-        "start": 20,
-        "end": 60,
-        "startLoc": {
-          "line": 20,
-          "column": 1,
-          "position": 37
-        },
-        "endLoc": {
-          "line": 60,
-          "column": 24,
-          "position": 150
-        }
-      },
-      "secondFile": {
-        "name": "scripts/run_tests.sh",
-        "start": 7,
-        "end": 47,
-        "startLoc": {
-          "line": 7,
-          "column": 1,
-          "position": 11
-        },
-        "endLoc": {
-          "line": 47,
-          "column": 25,
-          "position": 124
-        }
-      }
-    },
-    {
-      "format": "bash",
-      "lines": 44,
-      "fragment": "###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Exit immediately if a command exits with a non-zero status.\n###############################################################################\nset -eu;\n###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Change directory to MobileRT root.\n###############################################################################\ncd \"$(dirname \"${0}\")/..\" || exit;\n###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Get helper functions.\n###############################################################################\n# shellcheck disable=SC1091\n. scripts/helper_functions.sh;\n###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Execute Shellcheck on this script.\n###############################################################################\nif command -v shellcheck > /dev/null; then\n  shellcheck \"${0}\" || exit\nfi\n###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Set default arguments.\n###############################################################################\ntype='release';\ncompiler",
-      "tokens": 0,
-      "firstFile": {
-        "name": "scripts/compile_native.sh",
-        "start": 12,
-        "end": 55,
-        "startLoc": {
-          "line": 12,
-          "column": 1,
-          "position": 21
-        },
-        "endLoc": {
-          "line": 55,
-          "column": 9,
-          "position": 143
-        }
-      },
-      "secondFile": {
-        "name": "scripts/run_tests.sh",
-        "start": 7,
-        "end": 50,
-        "startLoc": {
-          "line": 7,
-          "column": 1,
-          "position": 11
-        },
-        "endLoc": {
-          "line": 50,
-          "column": 12,
-          "position": 133
-        }
-      }
-    },
-    {
-      "format": "bash",
-      "lines": 44,
-      "fragment": "###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Exit immediately if a command exits with a non-zero status.\n###############################################################################\nset -eu;\n###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Change directory to MobileRT root.\n###############################################################################\ncd \"$(dirname \"${0}\")/..\" || exit;\n###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Get helper functions.\n###############################################################################\n# shellcheck disable=SC1091\n. scripts/helper_functions.sh;\n###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Execute Shellcheck on this script.\n###############################################################################\nif command -v shellcheck > /dev/null; then\n  shellcheck \"${0}\" || exit\nfi\n###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Set default arguments.\n###############################################################################\ntype='release';\nrecompile",
-      "tokens": 0,
-      "firstFile": {
-        "name": "scripts/compile_android.sh",
-        "start": 8,
-        "end": 51,
-        "startLoc": {
-          "line": 8,
-          "column": 1,
-          "position": 13
-        },
-        "endLoc": {
-          "line": 51,
-          "column": 10,
-          "position": 135
-        }
-      },
-      "secondFile": {
-        "name": "scripts/run_tests.sh",
-        "start": 7,
-        "end": 50,
-        "startLoc": {
-          "line": 7,
-          "column": 1,
-          "position": 11
-        },
-        "endLoc": {
-          "line": 50,
-          "column": 12,
-          "position": 133
+          "position": 356
         }
       }
     },
     {
       "format": "bash",
       "lines": 43,
-      "fragment": "###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Exit immediately if a command exits with a non-zero status.\n###############################################################################\nset -eu;\n###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Change directory to MobileRT root.\n###############################################################################\ncd \"$(dirname \"${0}\")/..\" || exit;\n###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Get helper functions.\n###############################################################################\n# shellcheck disable=SC1091\n. scripts/helper_functions.sh;\n###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Execute Shellcheck on this script.\n###############################################################################\nif command -v shellcheck > /dev/null; then\n  shellcheck \"${0}\" || exit\nfi\n###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Set default arguments.\n###############################################################################\nndk_version",
+      "fragment": "###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Exit immediately if a command exits with a non-zero status.\n###############################################################################\nset -eu;\n###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Change directory to MobileRT root.\n###############################################################################\nif [ $# -ge 1 ]; then\n  cd \"$(dirname \"${0}\")/..\" || exit 1;\nfi\n###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Get helper functions.\n###############################################################################\n# shellcheck disable=SC1091\n. scripts/helper_functions.sh;\n###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Execute Shellcheck on this script.\n###############################################################################\nif command -v shellcheck > /dev/null; then\n  shellcheck \"${0}\" || exit 1;\nfi\n###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Install dependencies.",
       "tokens": 0,
       "firstFile": {
-        "name": "scripts/check_android.sh",
-        "start": 7,
-        "end": 49,
+        "name": "scripts/install_dependencies.sh",
+        "start": 20,
+        "end": 62,
         "startLoc": {
-          "line": 7,
+          "line": 20,
           "column": 1,
-          "position": 11
+          "position": 37
         },
         "endLoc": {
-          "line": 49,
-          "column": 12,
-          "position": 128
+          "line": 62,
+          "column": 24,
+          "position": 165
         }
       },
       "secondFile": {
@@ -7144,8 +7036,116 @@
         },
         "endLoc": {
           "line": 49,
+          "column": 25,
+          "position": 139
+        }
+      }
+    },
+    {
+      "format": "bash",
+      "lines": 46,
+      "fragment": "###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Exit immediately if a command exits with a non-zero status.\n###############################################################################\nset -eu;\n###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Change directory to MobileRT root.\n###############################################################################\nif [ $# -ge 1 ]; then\n  cd \"$(dirname \"${0}\")/..\" || exit 1;\nfi\n###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Get helper functions.\n###############################################################################\n# shellcheck disable=SC1091\n. scripts/helper_functions.sh;\n###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Execute Shellcheck on this script.\n###############################################################################\nif command -v shellcheck > /dev/null; then\n  shellcheck \"${0}\" || exit 1;\nfi\n###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Set default arguments.\n###############################################################################\ntype='release';\ncompiler",
+      "tokens": 0,
+      "firstFile": {
+        "name": "scripts/compile_native.sh",
+        "start": 12,
+        "end": 57,
+        "startLoc": {
+          "line": 12,
+          "column": 1,
+          "position": 21
+        },
+        "endLoc": {
+          "line": 57,
+          "column": 9,
+          "position": 158
+        }
+      },
+      "secondFile": {
+        "name": "scripts/run_tests.sh",
+        "start": 7,
+        "end": 52,
+        "startLoc": {
+          "line": 7,
+          "column": 1,
+          "position": 11
+        },
+        "endLoc": {
+          "line": 52,
+          "column": 12,
+          "position": 148
+        }
+      }
+    },
+    {
+      "format": "bash",
+      "lines": 46,
+      "fragment": "###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Exit immediately if a command exits with a non-zero status.\n###############################################################################\nset -eu;\n###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Change directory to MobileRT root.\n###############################################################################\nif [ $# -ge 1 ]; then\n  cd \"$(dirname \"${0}\")/..\" || exit 1;\nfi\n###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Get helper functions.\n###############################################################################\n# shellcheck disable=SC1091\n. scripts/helper_functions.sh;\n###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Execute Shellcheck on this script.\n###############################################################################\nif command -v shellcheck > /dev/null; then\n  shellcheck \"${0}\" || exit 1;\nfi\n###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Set default arguments.\n###############################################################################\ntype='release';\nrecompile",
+      "tokens": 0,
+      "firstFile": {
+        "name": "scripts/compile_android.sh",
+        "start": 8,
+        "end": 53,
+        "startLoc": {
+          "line": 8,
+          "column": 1,
+          "position": 13
+        },
+        "endLoc": {
+          "line": 53,
+          "column": 10,
+          "position": 150
+        }
+      },
+      "secondFile": {
+        "name": "scripts/run_tests.sh",
+        "start": 7,
+        "end": 52,
+        "startLoc": {
+          "line": 7,
+          "column": 1,
+          "position": 11
+        },
+        "endLoc": {
+          "line": 52,
+          "column": 12,
+          "position": 148
+        }
+      }
+    },
+    {
+      "format": "bash",
+      "lines": 45,
+      "fragment": "###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Exit immediately if a command exits with a non-zero status.\n###############################################################################\nset -eu;\n###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Change directory to MobileRT root.\n###############################################################################\nif [ $# -ge 1 ]; then\n  cd \"$(dirname \"${0}\")/..\" || exit 1;\nfi\n###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Get helper functions.\n###############################################################################\n# shellcheck disable=SC1091\n. scripts/helper_functions.sh;\n###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Execute Shellcheck on this script.\n###############################################################################\nif command -v shellcheck > /dev/null; then\n  shellcheck \"${0}\" || exit 1;\nfi\n###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Set default arguments.\n###############################################################################\nndk_version",
+      "tokens": 0,
+      "firstFile": {
+        "name": "scripts/check_android.sh",
+        "start": 7,
+        "end": 51,
+        "startLoc": {
+          "line": 7,
+          "column": 1,
+          "position": 11
+        },
+        "endLoc": {
+          "line": 51,
+          "column": 12,
+          "position": 143
+        }
+      },
+      "secondFile": {
+        "name": "scripts/run_tests.sh",
+        "start": 7,
+        "end": 51,
+        "startLoc": {
+          "line": 7,
+          "column": 1,
+          "position": 11
+        },
+        "endLoc": {
+          "line": 51,
           "column": 5,
-          "position": 128
+          "position": 143
         }
       }
     }

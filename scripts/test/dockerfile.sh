@@ -50,7 +50,7 @@ fi
 # Execute Shellcheck on this script.
 ###############################################################################
 if command -v shellcheck > /dev/null; then
-  shellcheck "${0}" || exit;
+  shellcheck "${0}" || exit 1;
 fi
 ###############################################################################
 ###############################################################################
@@ -87,7 +87,7 @@ testMobileRTContainer() {
     --entrypoint timeout \
     --name="${_mobilertVersion}" \
     ptpuscas/mobile_rt:"${_mobilertVersion}" \
-    4 ./scripts/profile.sh "${_mode}" 100;
+    20 ./scripts/profile.sh "${_mode}" 100;
 
   returnValue="$?";
   assertEqual "${expected}" "${returnValue}" "testMobileRTContainer: ${_mobilertVersion}";

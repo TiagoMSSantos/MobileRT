@@ -44,7 +44,7 @@ fi
 # Execute Shellcheck on this script.
 ###############################################################################
 if command -v shellcheck > /dev/null; then
-  shellcheck "${0}" || exit
+  shellcheck "${0}" || exit 1;
 fi
 ###############################################################################
 ###############################################################################
@@ -264,7 +264,7 @@ build() {
   create_build_folder;
   oldpath=$(pwd);
 
-  cd "${build_path}" || exit;
+  cd "${build_path}" || exit 1;
   addCommandToPath 'cmake';
 
   conanToolchainFile='../build_conan-native/conan_toolchain.cmake';
@@ -301,7 +301,7 @@ build() {
   else
     echo 'Compilation: cmake failed';
   fi
-  cd "${oldpath}" || exit;
+  cd "${oldpath}" || exit 1;
 }
 ###############################################################################
 ###############################################################################

@@ -52,7 +52,7 @@ fi
 # Execute Shellcheck on this script.
 ###############################################################################
 if command -v shellcheck > /dev/null; then
-  shellcheck "${0}" || exit
+  shellcheck "${0}" || exit 1;
 fi
 ###############################################################################
 ###############################################################################
@@ -254,7 +254,7 @@ install_dependencies_macos() {
   echo 'Change Homebrew to a specific version since the latest one might break some packages URLs.';
   # E.g.: version 3.3.15 breaks the Qt4 package.
   oldpath=$(pwd);
-  cd /usr/local/Homebrew || exit;
+  cd /usr/local/Homebrew || exit 1;
 
   git fetch --tags --all;
   git checkout 3.3.14;
@@ -276,7 +276,7 @@ install_dependencies_macos() {
   brew install conan;
   brew update;
   brew install coreutils; # To install 'timeout' command.
-  cd "${oldpath}" || exit;
+  cd "${oldpath}" || exit 1;
 
   MAJOR_MAC_VERSION=$(sw_vers | grep ProductVersion | cut -d ':' -f2 | cut -d '.' -f1 | tr -d '[:space:]');
   echo "MacOS '${MAJOR_MAC_VERSION}' detected";

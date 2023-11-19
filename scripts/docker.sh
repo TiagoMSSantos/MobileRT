@@ -190,7 +190,7 @@ installDockerCommandForMacOS() {
   echo 'Start Docker';
   git clone https://github.com/docker/docker.github.io.git;
   oldpath=$(pwd);
-  cd docker.github.io || exit;
+  cd docker.github.io || exit 1;
 
   ls registry/recipes/osx;
   plutil -lint registry/recipes/osx/com.docker.registry.plist;
@@ -203,5 +203,5 @@ installDockerCommandForMacOS() {
   launchctl unload ~/Library/LaunchAgents/com.docker.registry.plist;
 
   open /Applications/Docker.app;
-  cd "${oldpath}" || exit;
+  cd "${oldpath}" || exit 1;
 }
