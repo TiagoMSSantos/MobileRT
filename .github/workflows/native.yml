@@ -51,6 +51,9 @@ env:
   GITHUB_STEP_TIMEOUT_SMALL: 4
   GITHUB_STEP_TIMEOUT_MEDIUM: 10
   GITHUB_STEP_TIMEOUT_LONG: 30
+  CMAKE_VERSION: 3.24.1
+  NINJA_VERSION: 1.11.0
+  CCACHE_VERSION: 4.6
 
 jobs:
   Build:
@@ -63,39 +66,71 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - os: ubuntu-22.04
+        - name: G++
+          os: ubuntu-22.04
           type: release
           compiler: g++
 
-        - os: ubuntu-20.04
-          type: release
-          compiler: clang++
-
-        - os: ubuntu-20.04
+        - name: G++
+          os: ubuntu-20.04
           type: debug
           compiler: g++
 
-        - os: ubuntu-22.04
-          type: debug
-          compiler: clang++
-
-        - os: macos-12
+        - name: G++
+          os: macos-12
           type: release
           compiler: g++
 
-        - os: macos-11
-          type: release
-          compiler: clang++
-
-        - os: macos-11
+        - name: G++
+          os: macos-11
           type: debug
           compiler: g++
 
-        - os: macos-12
+        - name: Clang++
+          os: ubuntu-22.04
           type: debug
           compiler: clang++
 
-    name: ${{ matrix.type }} ${{ matrix.compiler }} (${{ matrix.os }})
+        - name: Clang++
+          os: ubuntu-20.04
+          type: release
+          compiler: clang++
+
+        - name: Clang++
+          os: macos-12
+          type: debug
+          compiler: clang++
+
+        - name: Clang++
+          os: macos-11
+          type: release
+          compiler: clang++
+
+        - name: MSVC
+          os: windows-2022
+          type: release
+          cxx: "C:/PROGRA~2/MICROS~1/2019/Enterprise/VC/Tools/MSVC/14.28.29333/bin/HostX64/x86/cl.exe"
+          cc: "C:/PROGRA~2/MICROS~1/2019/Enterprise/VC/Tools/MSVC/14.28.29333/bin/HostX64/x86/cl.exe"
+
+        - name: MSVC
+          os: windows-2019
+          type: debug
+          cxx: "C:/PROGRA~2/MICROS~1/2017/Enterprise/VC/Tools/MSVC/14.16.27023/bin/Hostx64/x86/cl.exe"
+          cc: "C:/PROGRA~2/MICROS~1/2017/Enterprise/VC/Tools/MSVC/14.16.27023/bin/Hostx64/x86/cl.exe"
+
+        - name: MinGW
+          os: windows-2022
+          type: release
+          cxx: "gcc"
+          cc: "g++"
+
+        - name: MinGW
+          os: windows-2019
+          type: debug
+          cxx: "gcc"
+          cc: "g++"
+
+    name: ${{ matrix.name }} ${{ matrix.type }} (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     timeout-minutes: 60
 
@@ -104,6 +139,62 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
       uses: actions/checkout@v4
+
+    - name: Download Ninja and CMake Windows
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success() && startsWith(matrix.os, 'windows')
+      working-directory: .
+      id: cmake_and_ninja
+      shell: cmake -P {0}
+      run: |
+        set(cmake_version $ENV{CMAKE_VERSION})
+        set(ninja_version $ENV{NINJA_VERSION})
+
+        message(STATUS "Using host CMake version: ${CMAKE_VERSION}")
+
+        if ("${{ runner.os }}" MATCHES "Windows")
+        set(ninja_suffix "win.zip")
+        set(cmake_suffix "win64-x64.zip")
+        set(cmake_dir "cmake-${cmake_version}-win64-x64/bin")
+        endif()
+
+        set(ninja_url "https://github.com/ninja-build/ninja/releases/download/v${ninja_version}/ninja-${ninja_suffix}")
+        file(DOWNLOAD "${ninja_url}" ninja.zip SHOW_PROGRESS)
+        execute_process(COMMAND ${CMAKE_COMMAND} -E tar xvf ninja.zip)
+
+        set(cmake_url "https://github.com/Kitware/CMake/releases/download/v${cmake_version}/cmake-${cmake_version}-${cmake_suffix}")
+        file(DOWNLOAD "${cmake_url}" cmake.zip SHOW_PROGRESS)
+        execute_process(COMMAND ${CMAKE_COMMAND} -E tar xvf cmake.zip)
+
+        # Save the path for other steps
+        file(TO_CMAKE_PATH "$ENV{GITHUB_WORKSPACE}/${cmake_dir}" cmake_dir)
+
+        if (NOT "${{ runner.os }}" MATCHES "Windows")
+        execute_process(
+         COMMAND chmod +x ninja
+         COMMAND chmod +x ${cmake_dir}/cmake
+        )
+        endif()
+
+    - name: Download ccache Windows
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success() && startsWith(matrix.os, 'windows')
+      working-directory: .
+      id: ccache
+      shell: cmake -P {0}
+      run: |
+        set(ccache_url "https://github.com/cristianadam/ccache/releases/download/v$ENV{CCACHE_VERSION}/${{ runner.os }}.tar.xz")
+        file(DOWNLOAD "${ccache_url}" ccache.tar.xz SHOW_PROGRESS)
+        execute_process(COMMAND ${CMAKE_COMMAND} -E tar xvf ccache.tar.xz)
+
+    - name: Install pthread Windows
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+      if: success() && startsWith(matrix.os, 'windows')
+      working-directory: .
+      run: |
+        vcpkg install pthread:x86-windows;
+        vcpkg install pthread:x64-windows;
+      # find "C:/Program Files (x86)/Microsoft Visual Studio/" -iname cl.exe;
 
     - name: Setup build directory
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -149,7 +240,30 @@ jobs:
         py7zrversion: '==0.19.*'
         extra: '--external 7z'
 
-    - name: Check Qt path installation.
+    - name: Install Qt Windows
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+      if: success() && startsWith(matrix.os, 'windows')
+      uses: jurplel/install-qt-action@v3
+      # Download Qt from: https://download.qt.io/online/qtsdkrepository/
+      with:
+        # Check available parameters in: https://github.com/jurplel/install-qt-action/blob/master/action.yml
+        version: '5.15.2' # Also update: app/CMakeLists.txt
+        host: 'windows'
+        target: 'desktop'
+        arch: 'win64_msvc2019_64'
+        dir: '${{ github.workspace }}'
+        install-deps: 'true'
+        modules: ''
+        cache: 'true'
+        cache-key-prefix: '${{ runner.os }}'
+        setup-python: 'false'
+        set-env: 'true'
+        tools-only: 'false'
+        aqtversion: '==2.1.*'
+        py7zrversion: '==0.19.*'
+        extra: '--external 7z'
+
+    - name: Check Qt path installation MacOS
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && startsWith(matrix.os, 'macos')
       working-directory: .
@@ -173,20 +287,41 @@ jobs:
 
     - name: Run unit tests
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success()
+      if: success() && !startsWith(matrix.os, 'windows')
       working-directory: build_${{ matrix.type }}
       run: |
         LD_LIBRARY_PATH=$(find ~/.conan -iname "libgtest.so" | grep -iv "build" | xargs ls -t | head -1 | xargs dirname) ./bin/UnitTests* --gtest_filter=-*Engine*;
 
+    - name: Run unit tests Windows
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success() && startsWith(matrix.os, 'windows')
+      working-directory: build_${{ matrix.type }}
+      run: |
+        pwd;
+        ls -la .;
+        ls -la ./bin;
+        ls -la ./bin/Debug;
+        ./bin/Debug/UnitTests* --gtest_filter=-*Engine*;
+
     - name: Run unit tests Ray Tracing engine (for code coverage)
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success()
+      if: success() && !startsWith(matrix.os, 'windows')
       working-directory: .
       run: |
         ls -la ./app/src/androidTest/resources/CornellBox/CornellBox-Water.obj;
         ls -la ./app/src/androidTest/resources/CornellBox/CornellBox-Water.mtl;
         ls -la ./app/src/androidTest/resources/CornellBox/CornellBox-Water.cam;
         LD_LIBRARY_PATH=$(find ~/.conan -iname "libgtest.so" | grep -iv "build" | xargs ls -t | head -1 | xargs dirname) ./build_${{ matrix.type }}/bin/UnitTests* --gtest_filter=*Engine*;
+
+    - name: Run unit tests Ray Tracing engine (for code coverage) Windows
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success() && startsWith(matrix.os, 'windows')
+      working-directory: .
+      run: |
+        ls -la ./app/src/androidTest/resources/CornellBox/CornellBox-Water.obj;
+        ls -la ./app/src/androidTest/resources/CornellBox/CornellBox-Water.mtl;
+        ls -la ./app/src/androidTest/resources/CornellBox/CornellBox-Water.cam;
+        ./build_${{ matrix.type }}/bin/Debug/UnitTests* --gtest_filter=*Engine*;
 
     - name: Create symbolic links for Qt in MacOS
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
