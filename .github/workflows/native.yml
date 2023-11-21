@@ -224,7 +224,7 @@ jobs:
       if: success()
       working-directory: build_${{ matrix.type }}
       run: |
-        unitTestsExe=$(find . -type f -name "UnitTests*");
+        unitTestsExe=$(find . -type f -name "UnitTests*" | head -1);
         echo "Unit tests executable: ${unitTestsExe}";
         LD_LIBRARY_PATH=$(find ~/.conan -iname "libgtest.so" | grep -iv "build" | xargs ls -t | head -1 | xargs dirname) ${unitTestsExe} --gtest_filter=-*Engine*;
 
@@ -236,7 +236,7 @@ jobs:
         ls -la ./app/src/androidTest/resources/CornellBox/CornellBox-Water.obj;
         ls -la ./app/src/androidTest/resources/CornellBox/CornellBox-Water.mtl;
         ls -la ./app/src/androidTest/resources/CornellBox/CornellBox-Water.cam;
-        unitTestsExe=$(find build_${{ matrix.type }} -type f -name "UnitTests*");
+        unitTestsExe=$(find build_${{ matrix.type }} -type f -name "UnitTests*" | head -1);
         echo "Unit tests executable: ${unitTestsExe}";
         LD_LIBRARY_PATH=$(find ~/.conan -iname "libgtest.so" | grep -iv "build" | xargs ls -t | head -1 | xargs dirname) ${unitTestsExe} --gtest_filter=*Engine*;
 
