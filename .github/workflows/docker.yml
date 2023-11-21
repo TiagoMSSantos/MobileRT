@@ -87,6 +87,7 @@ jobs:
         export VERSION="${BASE_IMAGE/\//-}";
         export VERSION="${VERSION/:/-}";
         echo "VERSION=${VERSION}" >> "${GITHUB_ENV}";
+        echo 'BUILD_IMAGE=yes' >> "${GITHUB_ENV}";
 
     - name: Install docker MacOS
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -104,12 +105,11 @@ jobs:
     - name: Login to DockerHub Registry
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
-      run: |
-        # shellcheck disable=SC1091
-        . scripts/docker.sh && \
-          checkAvailableVersion && \
-          loginDockerHub ${{ secrets.DOCKERHUB_USERNAME }} ${{ secrets.DOCKERHUB_PASSWORD }};
-        echo 'BUILD_IMAGE=yes' >> "${GITHUB_ENV}";
+      uses: docker/login-action@v3
+      with:
+        # Check available parameters in: https://github.com/docker/login-action/blob/master/action.yml
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
     - name: Pull the tagged Docker image
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}

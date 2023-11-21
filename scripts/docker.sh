@@ -22,14 +22,6 @@ checkAvailableVersion() {
   docker --version;
 }
 
-# Helper command to perform login in dockerhub (https://hub.docker.com/) via docker command.
-# The parameters are:
-# * DOCKERHUB_USERNAME
-# * DOCKERHUB_PASSWORD
-loginDockerHub() {
-  echo "${2}" | docker login -u "${1}" --password-stdin;
-}
-
 # Helper command to build the MobileRT docker image.
 # It builds the image in release mode.
 # The parameters are:
