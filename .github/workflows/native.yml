@@ -167,7 +167,7 @@ jobs:
       run: |
         ls -lahp /System/Volumes/Data/Applications/;
 
-    - name: Install Dependencies
+    - name: Install dependencies
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
       if: success()
       working-directory: .
@@ -256,7 +256,7 @@ jobs:
       working-directory: .
       run: |
         set +e;
-        QT_QPA_PLATFORM='offscreen' timeout 60 sh ./scripts/profile.sh "${{ matrix.type }}" 100;
+        QT_QPA_PLATFORM='offscreen' timeout 60 sh scripts/profile.sh "${{ matrix.type }}" 100;
         returnValue="$?";
         set -e;
         # shellcheck disable=SC1091

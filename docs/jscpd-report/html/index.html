@@ -2,7 +2,7 @@
                        // <!--
                        window.initialData = {
   "statistics": {
-    "detectionDate": "2023-11-19T13:42:16.760Z",
+    "detectionDate": "2023-11-22T19:00:07.638Z",
     "formats": {
       "java": {
         "sources": {
@@ -1902,27 +1902,15 @@
             "newDuplicatedLines": 0,
             "newClones": 0
           },
-          ".github/workflows/windows.yml": {
-            "lines": 253,
-            "tokens": 1462,
-            "sources": 1,
-            "clones": 1,
-            "duplicatedLines": 14,
-            "duplicatedTokens": 99,
-            "percentage": 5.53,
-            "percentageTokens": 6.77,
-            "newDuplicatedLines": 0,
-            "newClones": 0
-          },
           ".github/workflows/native.yml": {
-            "lines": 307,
-            "tokens": 2003,
+            "lines": 359,
+            "tokens": 2301,
             "sources": 1,
-            "clones": 9,
-            "duplicatedLines": 169,
-            "duplicatedTokens": 1083,
-            "percentage": 55.05,
-            "percentageTokens": 54.07,
+            "clones": 8,
+            "duplicatedLines": 155,
+            "duplicatedTokens": 984,
+            "percentage": 43.18,
+            "percentageTokens": 42.76,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -1940,13 +1928,13 @@
           },
           ".github/workflows/docker.yml": {
             "lines": 191,
-            "tokens": 1027,
+            "tokens": 1061,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 21,
             "duplicatedTokens": 109,
             "percentage": 10.99,
-            "percentageTokens": 10.61,
+            "percentageTokens": 10.27,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2072,14 +2060,14 @@
           }
         },
         "total": {
-          "lines": 2728,
-          "tokens": 17887,
-          "sources": 23,
-          "clones": 17,
-          "duplicatedLines": 400,
-          "duplicatedTokens": 2585,
-          "percentage": 14.66,
-          "percentageTokens": 14.45,
+          "lines": 2527,
+          "tokens": 16757,
+          "sources": 22,
+          "clones": 16,
+          "duplicatedLines": 386,
+          "duplicatedTokens": 2486,
+          "percentage": 15.28,
+          "percentageTokens": 14.84,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2959,8 +2947,8 @@
             "newClones": 0
           },
           "scripts/docker.sh": {
-            "lines": 206,
-            "tokens": 1367,
+            "lines": 198,
+            "tokens": 1328,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -3008,14 +2996,14 @@
           }
         },
         "total": {
-          "lines": 3558,
-          "tokens": 21923,
+          "lines": 3550,
+          "tokens": 21884,
           "sources": 13,
           "clones": 11,
           "duplicatedLines": 268,
           "duplicatedTokens": 1232,
-          "percentage": 7.53,
-          "percentageTokens": 5.62,
+          "percentage": 7.55,
+          "percentageTokens": 5.63,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3142,14 +3130,14 @@
       }
     },
     "total": {
-      "lines": 27399,
-      "tokens": 205439,
-      "sources": 248,
-      "clones": 111,
-      "duplicatedLines": 1471,
-      "duplicatedTokens": 12661,
-      "percentage": 5.37,
-      "percentageTokens": 6.16,
+      "lines": 27190,
+      "tokens": 204270,
+      "sources": 247,
+      "clones": 110,
+      "duplicatedLines": 1457,
+      "duplicatedTokens": 12562,
+      "percentage": 5.36,
+      "percentageTokens": 6.15,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -6289,73 +6277,37 @@
     },
     {
       "format": "yaml",
-      "lines": 15,
-      "fragment": "dir: '${{ github.workspace }}'\n        install-deps: 'true'\n        modules: ''\n        cache: 'true'\n        cache-key-prefix: '${{ runner.os }}'\n        setup-python: 'false'\n        set-env: 'true'\n        tools-only: 'false'\n        aqtversion: '==2.1.*'\n        py7zrversion: '==0.19.*'\n        extra: '--external 7z'\n\n    - name: Check Qt path installation.\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n      if: success() &&",
-      "tokens": 0,
-      "firstFile": {
-        "name": ".github/workflows/native.yml",
-        "start": 140,
-        "end": 154,
-        "startLoc": {
-          "line": 140,
-          "column": 9,
-          "position": 830
-        },
-        "endLoc": {
-          "line": 154,
-          "column": 3,
-          "position": 929
-        }
-      },
-      "secondFile": {
-        "name": ".github/workflows/windows.yml",
-        "start": 191,
-        "end": 206,
-        "startLoc": {
-          "line": 191,
-          "column": 9,
-          "position": 1117
-        },
-        "endLoc": {
-          "line": 206,
-          "column": 18,
-          "position": 1217
-        }
-      }
-    },
-    {
-      "format": "yaml",
       "lines": 13,
       "fragment": "uses: actions/cache@v3\n      with:\n        # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml\n        key: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}\n        restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}\n        path: |\n          app/build/reports/coverage/androidTest/debug/connected\n          code_coverage_base.info\n          code_coverage.info\n          code_coverage_test.info\n          code_coverage_filtered.info\n\n    -",
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/native.yml",
-        "start": 270,
-        "end": 282,
+        "start": 322,
+        "end": 334,
         "startLoc": {
-          "line": 270,
+          "line": 322,
           "column": 7,
-          "position": 1741
+          "position": 2039
         },
         "endLoc": {
-          "line": 282,
+          "line": 334,
           "column": 2,
-          "position": 1836
+          "position": 2134
         }
       },
       "secondFile": {
         "name": ".github/workflows/native.yml",
-        "start": 236,
-        "end": 249,
+        "start": 288,
+        "end": 301,
         "startLoc": {
-          "line": 236,
+          "line": 288,
           "column": 7,
-          "position": 1488
+          "position": 1786
         },
         "endLoc": {
-          "line": 249,
+          "line": 301,
           "column": 6,
-          "position": 1584
+          "position": 1882
         }
       }
     },
@@ -6669,17 +6621,17 @@
       },
       "secondFile": {
         "name": ".github/workflows/native.yml",
-        "start": 236,
-        "end": 246,
+        "start": 288,
+        "end": 298,
         "startLoc": {
-          "line": 236,
+          "line": 288,
           "column": 7,
-          "position": 1488
+          "position": 1786
         },
         "endLoc": {
-          "line": 246,
+          "line": 298,
           "column": 38,
-          "position": 1579
+          "position": 1877
         }
       }
     },
@@ -6849,12 +6801,12 @@
       },
       "secondFile": {
         "name": ".github/workflows/native.yml",
-        "start": 236,
+        "start": 288,
         "end": 477,
         "startLoc": {
-          "line": 236,
+          "line": 288,
           "column": 7,
-          "position": 1488
+          "position": 1786
         },
         "endLoc": {
           "line": 477,
