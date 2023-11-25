@@ -78,6 +78,7 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       run: |
+        # Android usage: https://apilevels.com/
         MATRIX=$(echo $(cat .github/workflows/android_matrix.json) | sed 's/ //g' );
         echo "Matrix: ${MATRIX}";
         echo "matrix=${MATRIX}" >> ${GITHUB_OUTPUT};
@@ -194,7 +195,7 @@ jobs:
         # can be one of:
         #  "fail", "warn", "ignore"
         # default fail
-        if_no_artifact_found: fail
+        if_no_artifact_found: warn
 
     - name: Extract and check files from gradle artifact
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}

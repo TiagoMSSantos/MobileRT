@@ -366,7 +366,7 @@ test_commands() {
 ###############################################################################
 # Execute script.
 ###############################################################################
-echo "Host OS: $(uname -a)";
+echo "Detected Host OS: $(uname -a)";
 executeWithoutExiting install_dependencies;
 # TODO: Add back the installation of conan package manager for all Linux distributions.
 # install_conan;

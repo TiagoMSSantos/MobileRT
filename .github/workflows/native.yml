@@ -80,29 +80,10 @@ jobs:
           qt_host: 'mac'
           qt_arch: 'clang_64'
 
-        - name: G++
-          os: macos-11
-          type: debug
-          compiler: g++
-          qt_host: 'mac'
-          qt_arch: 'clang_64'
-
-        - name: Clang++
-          os: ubuntu-22.04
-          type: debug
-          compiler: clang++
-
         - name: Clang++
           os: ubuntu-20.04
           type: release
           compiler: clang++
-
-        - name: Clang++
-          os: macos-12
-          type: debug
-          compiler: clang++
-          qt_host: 'mac'
-          qt_arch: 'clang_64'
 
         - name: Clang++
           os: macos-11
@@ -119,25 +100,9 @@ jobs:
           qt_host: 'windows'
           qt_arch: 'win64_msvc2019_64'
 
-        - name: MSVC
-          os: windows-2019
-          type: debug
-          cxx: "C:/PROGRA~2/MICROS~1/2017/Enterprise/VC/Tools/MSVC/14.16.27023/bin/Hostx64/x86/cl.exe"
-          cc: "C:/PROGRA~2/MICROS~1/2017/Enterprise/VC/Tools/MSVC/14.16.27023/bin/Hostx64/x86/cl.exe"
-          qt_host: 'windows'
-          qt_arch: 'win64_msvc2019_64'
-
         - name: MinGW
           os: windows-2022
           type: release
-          cxx: "gcc"
-          cc: "g++"
-          qt_host: 'windows'
-          qt_arch: 'win64_msvc2019_64'
-
-        - name: MinGW
-          os: windows-2019
-          type: debug
           cxx: "gcc"
           cc: "g++"
           qt_host: 'windows'

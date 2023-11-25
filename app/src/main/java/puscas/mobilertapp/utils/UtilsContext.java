@@ -67,7 +67,6 @@ public final class UtilsContext {
         final File[] externalFilesDirs = ContextCompat.getExternalFilesDirs(context, null);
 
         final String sdCardPath = Optional.of(externalFilesDirs)
-            .filter(dirs -> Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q)
             .map(dirs -> dirs.length > 1 ? dirs[1] : dirs[0])
             .map(File::getAbsolutePath)
             .orElseGet(() -> {
@@ -76,6 +75,7 @@ public final class UtilsContext {
                     return Environment.getExternalStorageDirectory().getAbsolutePath();
                 } else {
                     if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
+                        logger.info("Using the new approach to retrieve the SD Card path.");
                         return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
                     }
                     logger.info("Using fallback path since using a SDK API 19+, and hoping this path is right.");

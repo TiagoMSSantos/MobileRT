@@ -202,7 +202,7 @@ public abstract class AbstractTest {
                 context.getPackageName(), Manifest.permission.READ_MEDIA_IMAGES
             );
             waitForPermission(context, android.Manifest.permission.READ_MEDIA_IMAGES);
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             InstrumentationRegistry.getInstrumentation().getUiAutomation().grantRuntimePermission(
                 context.getPackageName(), android.Manifest.permission.READ_EXTERNAL_STORAGE
             );

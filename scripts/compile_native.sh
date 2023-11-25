@@ -306,7 +306,7 @@ build() {
 ###############################################################################
 ###############################################################################
 
-echo "Host OS: $(uname -a)";
+echo "Detected Host OS: $(uname -a)";
 #install_conan_dependencies;
 createReportsFolders;
 build;

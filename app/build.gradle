@@ -440,6 +440,7 @@ dependencies {
 
     // Annotations
     implementation "androidx.annotation:annotation:${androidX_annotation_version}"
+    implementation "androidx.annotation:annotation-jvm:${androidX_annotation_version}"
 
 
 
@@ -452,7 +453,8 @@ dependencies {
     androidTestImplementation "androidx.test.espresso:espresso-web:${androidX_test_espresso_version}"
     androidTestImplementation "androidx.test.espresso.idling:idling-concurrent:${androidX_test_espresso_version}"
 
-    androidTestImplementation "androidx.test:rules:${androidX_test_version}"
+    androidTestImplementation "androidx.test:rules:${androidX_test_rules_version}"
+    androidTestImplementation "androidx.test:monitor:${androidX_test_monitor_version}"
 
     // Enable tracing
     debugImplementation "androidx.test.espresso:espresso-core:${androidX_test_espresso_version}"

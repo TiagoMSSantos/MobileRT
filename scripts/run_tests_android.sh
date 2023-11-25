@@ -84,7 +84,6 @@ reports_path='app/build/reports';
 echo 'Set path to instrumentation tests resources';
 internal_path='/data/local/tmp';
 mobilert_path="${internal_path}/MobileRT";
-sdcard_path='/mnt/sdcard/MobileRT';
 ###############################################################################
 ###############################################################################
 
@@ -117,7 +116,7 @@ gather_logs_func() {
   appLog="${PWD}/${reports_path}/logcat_app_${type}.log";
   androidLogcat="${PWD}/${reports_path}/logcat_${type}.log";
 
-  if [ "${type}" != "release" ]; then
+  if [ "${type}" != 'release' ]; then
     validateFileExists "${unitTestsReport}";
     validateFileExists "${jacocoTestReport}";
     printf '\e]8;;file://'"%s"'\aClick here to check the Unit tests report.\e]8;;\a\n' "${unitTestsReport}";
@@ -208,6 +207,7 @@ kill_adb_processes() {
 ###############################################################################
 
 unlockDevice() {
+  echo 'unlockDevice called';
   callCommandUntilSuccess sh gradlew --daemon \
     --no-rebuild \
     -DabiFilters="[${cpu_architecture}]" \
@@ -355,12 +355,19 @@ copyResources() {
   mkdir -p ${reports_path};
 
   unlockDevice;
-  sdcard_path_android="$(adb shell ls -d '/storage/*' | grep -v 'emulated' | grep -v 'self' | tail -1)";
+  echo 'Possible SD Card paths:';
+  adb shell ls -d '/storage/*' | grep -v 'self';
+  sdcard_path_android="$(adb shell ls -d '/storage/*' | grep -v '/storage/emulated' | grep -v 'self' | tail -1)";
+  if [ "${sdcard_path_android}" = '' ] || [ "${sdcard_path_android}" = '/storage/emulated' ]; then
+    # If there is no SD card volume mounted on /storage/ path, then use the legacy path.
+    sdcard_path_android='/mnt/sdcard';
+  fi
+  echo "sdcard_path_android: '${sdcard_path_android}'";
   # Delete all special character that might be invisible!
   sdcard_path_android="$(echo "${sdcard_path_android}" | tr -d '[:space:]')";
   if echo "${sdcard_path_android}" | grep -q "Nosuchfileordirectory"; then
     # If there is no SD card volume mounted on /storage/ path, then use the legacy path.
-    sdcard_path_android=${sdcard_path};
+    sdcard_path_android='/mnt/sdcard/MobileRT';
   else
     sdcard_path_android="${sdcard_path_android}/MobileRT";
   fi
@@ -369,25 +376,20 @@ copyResources() {
   echo 'Prepare copy unit tests';
   callAdbShellCommandUntilSuccess adb shell 'rm -r '${internal_path}'; echo ::$?::';
   set +e;
-  adb shell 'rm -r '${sdcard_path};
   if [ "${androidApi}" -gt 29 ]; then
     adb shell 'rm -r '${sdcard_path_android};
   fi
   set -e;
 
   callAdbShellCommandUntilSuccess adb shell 'mkdir -p '${mobilert_path}'; echo ::$?::';
-  callAdbShellCommandUntilSuccess adb shell 'mkdir -p '${sdcard_path}'; echo ::$?::';
   callAdbShellCommandUntilSuccess adb shell 'mkdir -p '${sdcard_path_android}'; echo ::$?::';
 
   callAdbShellCommandUntilSuccess adb shell 'mkdir -p '${mobilert_path}'/WavefrontOBJs/CornellBox; echo ::$?::';
-  callAdbShellCommandUntilSuccess adb shell 'mkdir -p '${sdcard_path}'/WavefrontOBJs/teapot; echo ::$?::';
   callAdbShellCommandUntilSuccess adb shell 'mkdir -p '${sdcard_path_android}'/WavefrontOBJs/teapot; echo ::$?::';
 
   echo 'Copy tests resources';
-  callCommandUntilSuccess adb push -p app/src/androidTest/resources/teapot ${sdcard_path}/WavefrontOBJs;
   callCommandUntilSuccess adb push -p app/src/androidTest/resources/CornellBox ${mobilert_path}/WavefrontOBJs;
   set +e;
-  # Push to SD Card in `/storage/` if possible (necessary for Android 5+).
   adb push -p app/src/androidTest/resources/teapot ${sdcard_path_android}/WavefrontOBJs;
   set -e;
 
@@ -396,7 +398,6 @@ copyResources() {
 
   echo 'Change resources permissions';
   callAdbShellCommandUntilSuccess adb shell 'chmod -R 777 '${mobilert_path}'; echo ::$?::';
-  callAdbShellCommandUntilSuccess adb shell 'chmod -R 777 '${sdcard_path}'; echo ::$?::';
   callAdbShellCommandUntilSuccess adb shell 'chmod -R 777 '${sdcard_path_android}'; echo ::$?::';
 
   echo 'Install File Manager';
@@ -498,11 +499,7 @@ runUnitTests() {
 verifyResources() {
   echo 'Verify resources in SD Card';
   callCommandUntilSuccess adb shell 'ls -laR '${mobilert_path}/WavefrontOBJs;
-  callCommandUntilSuccess adb shell 'ls -laR '${sdcard_path}/WavefrontOBJs;
   callCommandUntilSuccess adb shell 'ls -laR '${sdcard_path_android}/WavefrontOBJs;
-#  adb shell cat ${sdcard_path}/WavefrontOBJs/CornellBox/CornellBox-Water.obj;
-#  adb shell cat ${sdcard_path}/WavefrontOBJs/CornellBox/CornellBox-Water.mtl;
-#  adb shell cat ${sdcard_path}/WavefrontOBJs/CornellBox/CornellBox-Water.cam;
 
   echo 'Verify memory available on host:';
   if command -v free > /dev/null; then
@@ -554,7 +551,7 @@ runInstrumentationTests() {
   done;
   callCommandUntilSuccess adb shell 'ls -la '${mobilert_path};
   unlockDevice;
-  echo "Installing both APKs for tests and app.";
+  echo 'Installing both APKs for tests and app.';
   set +e;
   adb shell "pm uninstall ${mobilert_path}/app-${type}-androidTest.apk;";
   adb shell "pm uninstall ${mobilert_path}/app-${type}.apk;";
@@ -563,7 +560,7 @@ runInstrumentationTests() {
   callCommandUntilSuccess adb shell ls -la /data/app/;
   callAdbShellCommandUntilSuccess adb shell 'pm install -r '${mobilert_path}'/app-'${type}'.apk; echo ::$?::';
   if [ "${androidApi}" -gt 29 ]; then
-    echo "Giving permissions for MobileRT app to access any file from the external storage.";
+    echo 'Giving permissions for MobileRT app to access any file from the external storage.';
     callAdbShellCommandUntilSuccess adb shell 'appops set --uid puscas.mobilertapp MANAGE_EXTERNAL_STORAGE allow; echo ::$?::';
   fi
   echo 'List of instrumented APKs:';
