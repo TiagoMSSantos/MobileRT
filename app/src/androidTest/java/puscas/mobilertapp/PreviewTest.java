@@ -1,8 +1,5 @@
 package puscas.mobilertapp;
 
-import androidx.test.espresso.intent.Intents;
-import androidx.test.espresso.intent.matcher.IntentMatchers;
-
 import org.junit.FixMethodOrder;
 import org.junit.Ignore;
 import org.junit.Test;

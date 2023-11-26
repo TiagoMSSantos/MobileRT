@@ -357,14 +357,18 @@ copyResources() {
   unlockDevice;
   echo 'Possible SD Card paths:';
   adb shell ls -d '/storage/*' | grep -v 'self';
+  adb shell df;
+  set +e;
+  adb shell env | grep -i "storage";
+  set -e;
   sdcard_path_android="$(adb shell ls -d '/storage/*' | grep -v '/storage/emulated' | grep -v 'self' | tail -1)";
+  # Delete all special character that might be invisible!
+  sdcard_path_android="$(echo "${sdcard_path_android}" | tr -d '[:space:]')";
   if [ "${sdcard_path_android}" = '' ] || [ "${sdcard_path_android}" = '/storage/emulated' ]; then
     # If there is no SD card volume mounted on /storage/ path, then use the legacy path.
     sdcard_path_android='/mnt/sdcard';
   fi
   echo "sdcard_path_android: '${sdcard_path_android}'";
-  # Delete all special character that might be invisible!
-  sdcard_path_android="$(echo "${sdcard_path_android}" | tr -d '[:space:]')";
   if echo "${sdcard_path_android}" | grep -q "Nosuchfileordirectory"; then
     # If there is no SD card volume mounted on /storage/ path, then use the legacy path.
     sdcard_path_android='/mnt/sdcard/MobileRT';
