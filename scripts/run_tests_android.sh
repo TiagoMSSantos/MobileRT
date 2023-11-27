@@ -378,8 +378,8 @@ copyResources() {
   echo "sdcard_path_android: '${sdcard_path_android}'";
 
   echo 'Prepare copy unit tests';
-  callAdbShellCommandUntilSuccess adb shell 'rm -r '${internal_path}'; echo ::$?::';
   set +e;
+  adb shell rm -r ${mobilert_path};
   if [ "${androidApi}" -gt 29 ]; then
     adb shell 'rm -r '${sdcard_path_android};
   fi
@@ -448,7 +448,8 @@ startCopyingLogcatToFile() {
   # adb shell settings put global animator_duration_scale 0.0;
 
   echo 'Activate JNI extended checking mode';
-  callAdbShellCommandUntilSuccess adb shell 'setprop dalvik.vm.checkjni true; echo ::$?::';
+  # Command fails on Android 34.
+  # callAdbShellCommandUntilSuccess adb shell 'setprop dalvik.vm.checkjni true; echo ::$?::';
   callAdbShellCommandUntilSuccess adb shell 'setprop debug.checkjni 1; echo ::$?::';
 
   echo 'Clear logcat';
@@ -560,8 +561,8 @@ runInstrumentationTests() {
   adb shell "pm uninstall ${mobilert_path}/app-${type}-androidTest.apk;";
   adb shell "pm uninstall ${mobilert_path}/app-${type}.apk;";
   adb shell rm -r /data/app/puscas.mobilertapp*;
+  adb shell ls -la /data/app/;
   set -e;
-  callCommandUntilSuccess adb shell ls -la /data/app/;
   callAdbShellCommandUntilSuccess adb shell 'pm install -r '${mobilert_path}'/app-'${type}'.apk; echo ::$?::';
   if [ "${androidApi}" -gt 29 ]; then
     echo 'Giving permissions for MobileRT app to access any file from the external storage.';

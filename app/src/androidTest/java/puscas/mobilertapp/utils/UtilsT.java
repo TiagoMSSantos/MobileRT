@@ -188,7 +188,7 @@ public final class UtilsT {
         try {
             method.run();
         } catch (final RuntimeException ex) {
-            logger.warning("Error: " + ex.getMessage());
+            logger.warning("Error: " + ex.getMessage() + "\nCause: " + ex.getCause());
         }
     }
 
@@ -197,9 +197,9 @@ public final class UtilsT {
      */
     public static void waitForAppToIdle() {
         final CountDownLatch latch = new CountDownLatch(1);
-        UtilsT.executeWithCatching(Espresso.onIdle(() -> {
+        UtilsT.executeWithCatching(() -> Espresso.onIdle(() -> {
             latch.countDown();
-            return null;
+            return 0;
         }));
         final boolean result;
         try {
