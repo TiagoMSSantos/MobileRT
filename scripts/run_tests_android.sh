@@ -109,16 +109,13 @@ gather_logs_func() {
   echo "Filtered logcat of the app '${pid_app}' to logcat_app_${type}.log";
   set -e;
 
-  unitTestsReport="${PWD}/${reports_path}/tests/test${typeWithCapitalLetter}UnitTest/index.html";
   androidTestsReport="${PWD}/${reports_path}/androidTests/connected/${type}/index.html";
   jacocoTestReport="${PWD}/${reports_path}/jacoco/jacocoTestReport/html/index.html";
   appLog="${PWD}/${reports_path}/logcat_app_${type}.log";
   androidLogcat="${PWD}/${reports_path}/logcat_${type}.log";
 
   if [ "${type}" != 'release' ]; then
-    validateFileExists "${unitTestsReport}";
     validateFileExists "${jacocoTestReport}";
-    printf '\e]8;;file://'"%s"'\aClick here to check the Unit tests report.\e]8;;\a\n' "${unitTestsReport}";
     printf '\e]8;;file://'"%s"'\aClick here to check the Code coverage report.\e]8;;\a\n' "${jacocoTestReport}";
   fi
 

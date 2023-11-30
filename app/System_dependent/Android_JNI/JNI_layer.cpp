@@ -210,7 +210,17 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitCameraArray(
                             floatBuffer[i++] = sizeH;
                             floatBuffer[i] = sizeV;
                         }
+                        if (perspective == nullptr && orthographic == nullptr) {
+                            const auto errorMessage {"Scene provided to MobileRT doesn't have any type of camera."};
+                            throw ::std::runtime_error {errorMessage};
+                        }
+                    } else {
+                        const auto errorMessage {"JNIEnv::NewDirectByteBuffer failed to allocate native memory!"};
+                        throw ::std::runtime_error {errorMessage};
                     }
+                } else {
+                    const auto errorMessage {"C++ failed to allocate native memory!"};
+                    throw ::std::runtime_error {errorMessage};
                 }
 
             }
@@ -277,8 +287,13 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitVerticesArray(
                             floatBuffer[i++] = -pointC.z;
                             floatBuffer[i++] = pointC.w;
                         }
+                    } else {
+                        const auto errorMessage {"JNIEnv::NewDirectByteBuffer failed to allocate native memory!"};
+                        throw ::std::runtime_error {errorMessage};
                     }
-
+                } else {
+                    const auto errorMessage {"C++ failed to allocate native memory!"};
+                    throw ::std::runtime_error {errorMessage};
                 }
             }
             env->ExceptionClear();
@@ -350,7 +365,13 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitColorsArray(
                             floatBuffer[i++] = color.b;
                             floatBuffer[i++] = 1.0F;
                         }
+                    } else {
+                        const auto errorMessage {"JNIEnv::NewDirectByteBuffer failed to allocate native memory!"};
+                        throw ::std::runtime_error {errorMessage};
                     }
+                } else {
+                    const auto errorMessage {"C++ failed to allocate native memory!"};
+                    throw ::std::runtime_error {errorMessage};
                 }
 
             }
