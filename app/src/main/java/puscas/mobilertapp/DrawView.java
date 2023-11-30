@@ -246,7 +246,7 @@ public class DrawView extends GLSurfaceView {
             } catch (final LowMemoryException ex) {
                 UtilsLogging.logThrowable(ex, "DrawView#renderScene");
                 MainActivity.showUiMessage(ConstantsToast.DEVICE_WITHOUT_ENOUGH_MEMORY + ex.getMessage());
-            } catch (final Throwable ex) {
+            } catch (final Exception ex) {
                 UtilsLogging.logThrowable(ex, "DrawView#renderScene");
                 renderer.resetStats();
                 MainActivity.showUiMessage(ConstantsToast.COULD_NOT_LOAD_THE_SCENE + ex.getMessage());

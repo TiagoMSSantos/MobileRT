@@ -181,7 +181,7 @@ public abstract class AbstractTest {
             final ActivityManager activityManager = (ActivityManager) activity.getSystemService(Context.ACTIVITY_SERVICE);
             final List<ActivityManager.RunningTaskInfo> tasksRunning = activityManager.getRunningTasks(Integer.MAX_VALUE);
             for (ActivityManager.RunningTaskInfo taskRunning : tasksRunning) {
-                if (Objects.equals(activity.getPackageName(), taskRunning.baseActivity.getPackageName())) {
+                if (taskRunning.baseActivity != null && Objects.equals(activity.getPackageName(), taskRunning.baseActivity.getPackageName())) {
                     return true;
                 }
             }

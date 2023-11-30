@@ -329,7 +329,7 @@ public final class MainActivity extends Activity {
         if (!Strings.isNullOrEmpty(this.sceneFilePath)) {
             try {
                 startRender(this.sceneFilePath);
-            } catch (final Throwable ex) {
+            } catch (final Exception ex) {
                 UtilsLogging.logThrowable(ex, "MainActivity#onPostResume");
                 showUiMessage(Objects.requireNonNull(ex.getMessage()));
             }

@@ -959,7 +959,7 @@ public class MainRenderer implements GLSurfaceView.Renderer {
 
                 MainActivity.resetErrno();
                 rtRenderIntoBitmap(this.bitmap, this.numThreads);
-            } catch (final Throwable ex) {
+            } catch (final Exception ex) {
                 UtilsLogging.logThrowable(ex, "MainRenderer#onDrawFrame");
                 MainActivity.showUiMessage(ConstantsToast.COULD_NOT_RENDER_THE_SCENE + ex.getMessage());
                 MainActivity.resetRenderButton();

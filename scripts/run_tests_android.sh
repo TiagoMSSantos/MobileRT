@@ -82,8 +82,7 @@ echo 'Set path to reports';
 reports_path='app/build/reports';
 
 echo 'Set path to instrumentation tests resources';
-internal_path='/data/local/tmp';
-mobilert_path="${internal_path}/MobileRT";
+mobilert_path='/data/local/tmp/MobileRT';
 ###############################################################################
 ###############################################################################
 
@@ -402,7 +401,8 @@ copyResources() {
 
   echo 'Change resources permissions';
   callAdbShellCommandUntilSuccess adb shell 'chmod -R 777 '${mobilert_path}'; echo ::$?::';
-  callAdbShellCommandUntilSuccess adb shell 'chmod -R 777 '${sdcard_path_android}'; echo ::$?::';
+  # Doesn't work on Android API 24.
+  # callAdbShellCommandUntilSuccess adb shell 'chmod -R 777 '${sdcard_path_android}'; echo ::$?::';
 
   echo 'Install File Manager';
   set +e;
