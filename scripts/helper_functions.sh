@@ -177,7 +177,8 @@ callCommandUntilSuccess() {
   "$@";
   lastResult=${?};
   echo "result: '${lastResult}'";
-  while [ "${lastResult}" -ne 0 ] && [ ${_retry} -lt 10 ]; do
+  # Android API 33 can take more than 1 minute to boot.
+  while [ "${lastResult}" -ne 0 ] && [ ${_retry} -lt 25 ]; do
     _retry=$(( _retry + 1 ));
     "$@";
     lastResult=${?};

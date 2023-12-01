@@ -1,7 +1,6 @@
 package puscas.mobilertapp;
 
 import org.junit.FixMethodOrder;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
@@ -32,7 +31,6 @@ public final class PreviewTest extends AbstractTest {
      * @throws TimeoutException If it couldn't render the whole scene in time.
      * @implNote This test can take more than 2 minutes in CI.
      */
-    @Ignore("Test fails locally. Maybe due to the time it takes to load the scene primitives when pressing stop?")
     @Test(timeout = 3L * 60L * 1000L)
     public void testPreviewScenePerspectiveCamera() throws TimeoutException {
         logger.info("testPreviewScenePerspectiveCamera start");

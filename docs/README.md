@@ -162,10 +162,10 @@ library for assertions unit tests
       <td style="text-align:center">4.0 <br> (API 14) <br> and older <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
       <td style="text-align:center">4.0.3 <br> (API 15) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
       <td style="text-align:center">4.1 <br> (API 16) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25"></td>
-      <td style="text-align:center">5 <br> (API 21) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
+      <td style="text-align:center">5.1 <br> (API 22) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
       <td style="text-align:center">9 <br> (API 28) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
       <td style="text-align:center">12 <br> (API 32) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25"></td>
-      <td style="text-align:center">14 <br> (API 34) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
+      <td style="text-align:center">13 <br> (API 33) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
     </tr>
     <tr>
       <td style="text-align:center"><b>MacOS</b></td>
@@ -235,7 +235,7 @@ library for assertions unit tests
 ## Requirements
 It's necessary the following SDKs in order to compile this project for Android:
 - [Android SDK](https://developer.android.com/studio) which should also bring the [Android NDK](https://developer.android.com/ndk) in order to compile the native code.
-  - It's recommended to use the Android Studio `2022.2.1` which is compatible with Gradle [8.0.2](https://github.com/TiagoMSSantos/MobileRT/blob/master/build.gradle#L65?) used by this project.
+  - It's recommended to use the Android Studio `2023.1.1` which is compatible with Gradle [8.2.0](https://github.com/TiagoMSSantos/MobileRT/blob/master/build.gradle#L60?) used by this project.
 
 For native Linux and Mac support, the `install_dependencies.sh` script should download and install the necessary dependencies, by just calling:
 ```
