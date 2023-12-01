@@ -11,10 +11,9 @@ import androidx.annotation.NonNull;
 import com.google.common.util.concurrent.Uninterruptibles;
 
 import org.assertj.core.api.Assertions;
-import org.junit.Ignore;
+import org.easymock.EasyMock;
 import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.ArgumentMatchers;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
@@ -55,7 +54,7 @@ public class MainRendererTest {
     public void testChecksFreeMemory() {
         MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
 
-        final MainRenderer mainRenderer = createMainRenderer();
+        final MainRenderer mainRenderer = createMockedMainRenderer();
 
         final ActivityManager activityManagerMocked = Mockito.mock(ActivityManager.class);
         final ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
@@ -84,7 +83,7 @@ public class MainRendererTest {
     public void testChecksFreeLowMemory() {
         MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
 
-        final MainRenderer mainRenderer = createMainRenderer();
+        final MainRenderer mainRenderer = createMockedMainRenderer();
 
         final ActivityManager activityManagerMocked = Mockito.mock(ActivityManager.class);
         final ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
@@ -121,7 +120,7 @@ public class MainRendererTest {
     public void testChecksFreeZeroMemory() {
         MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
 
-        final MainRenderer mainRenderer = createMainRenderer();
+        final MainRenderer mainRenderer = createMockedMainRenderer();
 
         final ActivityManager activityManagerMocked = Mockito.mock(ActivityManager.class);
         final ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
@@ -150,7 +149,7 @@ public class MainRendererTest {
     public void testResetStats() {
         MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
 
-        final MainRenderer mainRenderer = createMainRenderer();
+        final MainRenderer mainRenderer = createMockedMainRenderer();
 
         Assertions.assertThatThrownBy(() -> mainRenderer.resetStats(0, ConfigSamples.Builder.Companion.create().build(), -2, 0))
             .as("The MainRenderer#resetStats method")
@@ -207,39 +206,39 @@ public class MainRendererTest {
      * Tests that when the {@link MainRenderer#onDrawFrame(GL10)} method fails to render a frame,
      * it still exits the method normally without any {@link Exception} being thrown.
      */
-    @Ignore("Error: UnsatisfiedLinkError: 'void puscas.mobilertapp.MainActivity.resetErrno()'")
     @Test
-    public void testRenderingErrorOnDrawFrame() {
+    public void testRenderingErrorOnDrawFrame() throws LowMemoryException {
         MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
         MemberModifier.suppress(MemberModifier.method(MainActivity.class, "showUiMessage"));
         MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetRenderButton"));
-        MemberModifier.suppress(MemberModifier.method(MainRenderer.class, "initPreviewArrays"));
 
-        final ActivityManager activityManagerMocked = Mockito.mock(ActivityManager.class);
-        final MainRenderer mainRenderer = createMainRenderer();
-        mainRenderer.setActivityManager(activityManagerMocked);
+        final MainRenderer mainRenderer = createMockedMainRenderer();
 
         final ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
         ReflectionTestUtils.setField(memoryInfo, "availMem", 100L * BYTES_IN_MEGABYTE);
-        ReflectionTestUtils.setField(mainRenderer, "memoryInfo", memoryInfo);
         ReflectionTestUtils.setField(mainRenderer, "arrayVertices", ByteBuffer.allocate(1));
         ReflectionTestUtils.setField(mainRenderer, "arrayColors", ByteBuffer.allocate(1));
         ReflectionTestUtils.setField(mainRenderer, "arrayCamera", ByteBuffer.allocate(1));
 
         Assertions.assertThat((boolean) ReflectionTestUtils.getField(mainRenderer, "firstFrame"))
-            .as("The 1st frame field")
+            .as("The 1st frame field should be true")
             .isTrue();
 
-        try (final MockedStatic<MainActivity> mainActivityMockedStatic = Mockito.mockStatic(MainActivity.class)) {
-            mainRenderer.onDrawFrame(Mockito.mock(GL10.class));
 
-            mainActivityMockedStatic.verify(() -> MainActivity.showUiMessage(ArgumentMatchers.anyString()), Mockito.times(1));
-            mainActivityMockedStatic.verify(MainActivity::resetRenderButton, Mockito.times(1));
+        // Setup mock.
+        mainRenderer.rtRenderIntoBitmap(EasyMock.anyObject(Bitmap.class), EasyMock.anyInt());
+        EasyMock.expectLastCall().andThrow(new FailureException("Exception test")).anyTimes();
+        EasyMock.replay(mainRenderer);
 
-            Assertions.assertThat((boolean) ReflectionTestUtils.getField(mainRenderer, "firstFrame"))
-                .as("The 1st frame field")
-                .isFalse();
-        }
+        Assertions.assertThatCode(() -> mainRenderer.onDrawFrame(EasyMock.mock(GL10.class)))
+            .as("The call to 'onDrawFrame' should catch the exception and not rethrow it.")
+            .doesNotThrowAnyException();
+
+        EasyMock.verify(mainRenderer);
+
+        Assertions.assertThat((boolean) ReflectionTestUtils.getField(mainRenderer, "firstFrame"))
+            .as("The 1st frame field should be false")
+            .isFalse();
     }
 
     /**
@@ -252,7 +251,7 @@ public class MainRendererTest {
         MemberModifier.suppress(MemberModifier.method(MainActivity.class, "showUiMessage"));
         MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetRenderButton"));
 
-        final MainRenderer mainRenderer = createMainRenderer();
+        final MainRenderer mainRenderer = createMockedMainRenderer();
 
         final Thread thread = new Thread(() -> {
             Uninterruptibles.sleepUninterruptibly(1L, TimeUnit.SECONDS);
@@ -284,7 +283,7 @@ public class MainRendererTest {
     public void testCloseRenderer() {
         MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
 
-        final MainRenderer mainRenderer = createMainRenderer();
+        final MainRenderer mainRenderer = createMockedMainRenderer();
 
         try (final MockedStatic<GLES20> gles20MockedStatic = Mockito.mockStatic(GLES20.class)) {
             mainRenderer.closeRenderer();
@@ -304,7 +303,7 @@ public class MainRendererTest {
         MemberModifier.suppress(MemberModifier.method(MainActivity.class, "showUiMessage"));
         MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetRenderButton"));
 
-        final MainRenderer mainRenderer = createMainRenderer();
+        final MainRenderer mainRenderer = createMockedMainRenderer();
 
         final ActivityManager activityManagerMocked = PowerMockito.mock(ActivityManager.class);
         Mockito.doNothing().when(activityManagerMocked).getMemoryInfo(Mockito.any(ActivityManager.MemoryInfo.class));
@@ -335,7 +334,7 @@ public class MainRendererTest {
         MemberModifier.suppress(MemberModifier.method(MainActivity.class, "showUiMessage"));
         MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetRenderButton"));
 
-        final MainRenderer mainRenderer = createMainRenderer();
+        final MainRenderer mainRenderer = createMockedMainRenderer();
 
         final ActivityManager activityManagerMocked = PowerMockito.mock(ActivityManager.class);
         Mockito.doNothing()
@@ -386,12 +385,12 @@ public class MainRendererTest {
     }
 
     /**
-     * Helper method which creates a valid {@link MainRenderer}.
+     * Helper method which creates a partial mocked {@link MainRenderer} for the tests.
      *
-     * @return A new {@link MainRenderer} to be used by the tests.
+     * @return A partial mocked {@link MainRenderer} to be used by the tests.
      */
     @NonNull
-    private MainRenderer createMainRenderer() {
+    private MainRenderer createMockedMainRenderer() {
         final MainRenderer mainRenderer;
         try (final MockedStatic<Bitmap> bitmapMockedStatic = Mockito.mockStatic(Bitmap.class)) {
             final Bitmap bitmapMocked = Mockito.mock(Bitmap.class);
@@ -405,15 +404,16 @@ public class MainRendererTest {
             Mockito.when(bitmapMocked.getHeight())
                 .thenReturn(1);
 
-            mainRenderer = Mockito.spy(MainRenderer.class);
-            try {
-                Mockito.doNothing().when(mainRenderer).initPreviewArrays();
-            } catch (final LowMemoryException ex) {
-                throw new FailureException(ex);
-            }
-            mainRenderer.setBitmap(ConfigResolution.Builder.Companion.create().build(), ConfigResolution.Builder.Companion.create().build(), true);
-            // Set number of threads to 1, so the 'onDraw' method tries to render the scene, which the tests expect.
-            mainRenderer.resetStats(1, ConfigSamples.Builder.Companion.create().build(), 0, 0);
+            mainRenderer = EasyMock.partialMockBuilder(MainRenderer.class)
+                .addMockedMethod("initPreviewArrays")
+                .addMockedMethod("rtRenderIntoBitmap", Bitmap.class, int.class)
+                .withConstructor()
+                .createMock();
+
+            mainRenderer.initPreviewArrays();
+            EasyMock.expectLastCall().andVoid().anyTimes();
+        } catch (final LowMemoryException ex) {
+            throw new RuntimeException(ex);
         }
         return mainRenderer;
     }

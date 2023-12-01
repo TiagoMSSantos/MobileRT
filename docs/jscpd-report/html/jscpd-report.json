@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2023-12-01T09:10:24.011Z",
+    "detectionDate": "2023-12-01T12:39:01.943Z",
     "formats": {
       "java": {
         "sources": {
@@ -762,13 +762,13 @@
           },
           "app/src/test/java/puscas/mobilertapp/MainRendererTest.java": {
             "lines": 419,
-            "tokens": 3737,
+            "tokens": 3641,
             "sources": 1,
-            "clones": 19,
-            "duplicatedLines": 177,
-            "duplicatedTokens": 1874,
-            "percentage": 42.24,
-            "percentageTokens": 50.15,
+            "clones": 20,
+            "duplicatedLines": 184,
+            "duplicatedTokens": 1962,
+            "percentage": 43.91,
+            "percentageTokens": 53.89,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -776,11 +776,11 @@
             "lines": 199,
             "tokens": 1405,
             "sources": 1,
-            "clones": 3,
-            "duplicatedLines": 29,
-            "duplicatedTokens": 366,
-            "percentage": 14.57,
-            "percentageTokens": 26.05,
+            "clones": 2,
+            "duplicatedLines": 22,
+            "duplicatedTokens": 300,
+            "percentage": 11.06,
+            "percentageTokens": 21.35,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -845,13 +845,13 @@
             "newClones": 0
           },
           "app/src/main/java/puscas/mobilertapp/MainRenderer.java": {
-            "lines": 991,
-            "tokens": 6296,
+            "lines": 992,
+            "tokens": 6301,
             "sources": 1,
             "clones": 2,
             "duplicatedLines": 28,
             "duplicatedTokens": 316,
-            "percentage": 2.83,
+            "percentage": 2.82,
             "percentageTokens": 5.02,
             "newDuplicatedLines": 0,
             "newClones": 0
@@ -990,14 +990,14 @@
           }
         },
         "total": {
-          "lines": 9272,
-          "tokens": 63255,
+          "lines": 9273,
+          "tokens": 63164,
           "sources": 82,
           "clones": 53,
           "duplicatedLines": 509,
-          "duplicatedTokens": 4594,
+          "duplicatedTokens": 4605,
           "percentage": 5.49,
-          "percentageTokens": 7.26,
+          "percentageTokens": 7.29,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3128,12 +3128,12 @@
       }
     },
     "total": {
-      "lines": 27157,
-      "tokens": 204059,
+      "lines": 27158,
+      "tokens": 203968,
       "sources": 247,
       "clones": 110,
       "duplicatedLines": 1454,
-      "duplicatedTokens": 12543,
+      "duplicatedTokens": 12554,
       "percentage": 5.35,
       "percentageTokens": 6.15,
       "newDuplicatedLines": 0,
@@ -4264,17 +4264,17 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainRendererTest.java",
-        "start": 20,
-        "end": 26,
+        "start": 19,
+        "end": 25,
         "startLoc": {
-          "line": 20,
+          "line": 19,
           "column": 13,
-          "position": 156
+          "position": 147
         },
         "endLoc": {
-          "line": 26,
+          "line": 25,
           "column": 5,
-          "position": 219
+          "position": 210
         }
       },
       "secondFile": {
@@ -4296,72 +4296,72 @@
     {
       "format": "java",
       "lines": 8,
-      "fragment": "() {\n        MemberModifier.suppress(MemberModifier.method(MainActivity.class, \"resetErrno\"));\n\n        final MainRenderer mainRenderer = createMainRenderer();\n\n        final ActivityManager activityManagerMocked = Mockito.mock(ActivityManager.class);\n        final ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();\n        ReflectionTestUtils.setField(memoryInfo, \"availMem\", 9",
+      "fragment": "() {\n        MemberModifier.suppress(MemberModifier.method(MainActivity.class, \"resetErrno\"));\n\n        final MainRenderer mainRenderer = createMockedMainRenderer();\n\n        final ActivityManager activityManagerMocked = Mockito.mock(ActivityManager.class);\n        final ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();\n        ReflectionTestUtils.setField(memoryInfo, \"availMem\", 9",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainRendererTest.java",
-        "start": 84,
-        "end": 91,
+        "start": 83,
+        "end": 90,
         "startLoc": {
-          "line": 84,
+          "line": 83,
           "column": 24,
-          "position": 633
+          "position": 624
         },
         "endLoc": {
-          "line": 91,
+          "line": 90,
           "column": 2,
-          "position": 723
+          "position": 714
         }
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainRendererTest.java",
-        "start": 55,
-        "end": 62,
+        "start": 54,
+        "end": 61,
         "startLoc": {
-          "line": 55,
+          "line": 54,
           "column": 21,
-          "position": 384
+          "position": 375
         },
         "endLoc": {
-          "line": 62,
+          "line": 61,
           "column": 4,
-          "position": 474
+          "position": 465
         }
       }
     },
     {
       "format": "java",
       "lines": 16,
-      "fragment": "() {\n        MemberModifier.suppress(MemberModifier.method(MainActivity.class, \"resetErrno\"));\n\n        final MainRenderer mainRenderer = createMainRenderer();\n\n        final ActivityManager activityManagerMocked = Mockito.mock(ActivityManager.class);\n        final ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();\n        ReflectionTestUtils.setField(memoryInfo, \"availMem\", 100L * BYTES_IN_MEGABYTE);\n        ReflectionTestUtils.setField(mainRenderer, \"memoryInfo\", memoryInfo);\n\n        final int initialValue = 1;\n        final CountDownLatch countDownLatch = new CountDownLatch(initialValue);\n        final Runnable runnable = countDownLatch::countDown;\n\n        mainRenderer.setActivityManager(activityManagerMocked);\n        Assertions.assertThatThrownBy",
+      "fragment": "() {\n        MemberModifier.suppress(MemberModifier.method(MainActivity.class, \"resetErrno\"));\n\n        final MainRenderer mainRenderer = createMockedMainRenderer();\n\n        final ActivityManager activityManagerMocked = Mockito.mock(ActivityManager.class);\n        final ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();\n        ReflectionTestUtils.setField(memoryInfo, \"availMem\", 100L * BYTES_IN_MEGABYTE);\n        ReflectionTestUtils.setField(mainRenderer, \"memoryInfo\", memoryInfo);\n\n        final int initialValue = 1;\n        final CountDownLatch countDownLatch = new CountDownLatch(initialValue);\n        final Runnable runnable = countDownLatch::countDown;\n\n        mainRenderer.setActivityManager(activityManagerMocked);\n        Assertions.assertThatThrownBy",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainRendererTest.java",
-        "start": 121,
-        "end": 136,
+        "start": 120,
+        "end": 135,
         "startLoc": {
-          "line": 121,
+          "line": 120,
           "column": 25,
-          "position": 975
+          "position": 966
         },
         "endLoc": {
-          "line": 136,
+          "line": 135,
           "column": 19,
-          "position": 1147
+          "position": 1138
         }
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainRendererTest.java",
-        "start": 55,
-        "end": 70,
+        "start": 54,
+        "end": 69,
         "startLoc": {
-          "line": 55,
+          "line": 54,
           "column": 21,
-          "position": 384
+          "position": 375
         },
         "endLoc": {
-          "line": 70,
+          "line": 69,
           "column": 15,
-          "position": 556
+          "position": 547
         }
       }
     },
@@ -4372,248 +4372,248 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainRendererTest.java",
-        "start": 187,
-        "end": 197,
+        "start": 186,
+        "end": 196,
         "startLoc": {
-          "line": 187,
+          "line": 186,
           "column": 2,
-          "position": 1573
+          "position": 1564
         },
         "endLoc": {
-          "line": 197,
+          "line": 196,
           "column": 2,
-          "position": 1661
+          "position": 1652
         }
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainRendererTest.java",
-        "start": 177,
-        "end": 187,
+        "start": 176,
+        "end": 186,
         "startLoc": {
-          "line": 177,
+          "line": 176,
           "column": 2,
-          "position": 1484
+          "position": 1475
         },
         "endLoc": {
-          "line": 187,
+          "line": 186,
           "column": 2,
-          "position": 1572
+          "position": 1563
         }
       }
     },
     {
       "format": "java",
       "lines": 8,
-      "fragment": "stRenderSceneToBitmapLowMemory() {\n        MemberModifier.suppress(MemberModifier.method(MainActivity.class, \"resetErrno\"));\n        MemberModifier.suppress(MemberModifier.method(MainActivity.class, \"showUiMessage\"));\n        MemberModifier.suppress(MemberModifier.method(MainActivity.class, \"resetRenderButton\"));\n\n        final MainRenderer mainRenderer = createMainRenderer();\n",
+      "fragment": "ception {\n        MemberModifier.suppress(MemberModifier.method(MainActivity.class, \"resetErrno\"));\n        MemberModifier.suppress(MemberModifier.method(MainActivity.class, \"showUiMessage\"));\n        MemberModifier.suppress(MemberModifier.method(MainActivity.class, \"resetRenderButton\"));\n\n        final MainRenderer mainRenderer = createMockedMainRenderer();\n\n        fina",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainRendererTest.java",
-        "start": 302,
-        "end": 309,
+        "start": 249,
+        "end": 256,
         "startLoc": {
-          "line": 302,
-          "column": 33,
-          "position": 2563
+          "line": 249,
+          "column": 2,
+          "position": 2108
         },
         "endLoc": {
-          "line": 309,
-          "column": 16,
-          "position": 2644
+          "line": 256,
+          "column": 7,
+          "position": 2186
         }
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainRendererTest.java",
-        "start": 212,
-        "end": 257,
+        "start": 210,
+        "end": 217,
         "startLoc": {
-          "line": 212,
-          "column": 30,
-          "position": 1738
+          "line": 210,
+          "column": 2,
+          "position": 1730
         },
         "endLoc": {
-          "line": 257,
-          "column": 7,
-          "position": 2246
+          "line": 217,
+          "column": 16,
+          "position": 1808
+        }
+      }
+    },
+    {
+      "format": "java",
+      "lines": 8,
+      "fragment": "tmapLowMemory() {\n        MemberModifier.suppress(MemberModifier.method(MainActivity.class, \"resetErrno\"));\n        MemberModifier.suppress(MemberModifier.method(MainActivity.class, \"showUiMessage\"));\n        MemberModifier.suppress(MemberModifier.method(MainActivity.class, \"resetRenderButton\"));\n\n        final MainRenderer mainRenderer = createMockedMainRenderer();\n\n        final ActivityManager activ",
+      "tokens": 0,
+      "firstFile": {
+        "name": "app/src/test/java/puscas/mobilertapp/MainRendererTest.java",
+        "start": 301,
+        "end": 308,
+        "startLoc": {
+          "line": 301,
+          "column": 2,
+          "position": 2506
+        },
+        "endLoc": {
+          "line": 308,
+          "column": 22,
+          "position": 2586
+        }
+      },
+      "secondFile": {
+        "name": "app/src/test/java/puscas/mobilertapp/MainRendererTest.java",
+        "start": 210,
+        "end": 217,
+        "startLoc": {
+          "line": 210,
+          "column": 2,
+          "position": 1730
+        },
+        "endLoc": {
+          "line": 217,
+          "column": 2,
+          "position": 1809
         }
       }
     },
     {
       "format": "java",
       "lines": 18,
-      "fragment": "GlFrameBufferToBitmapBadBitmap() {\n        MemberModifier.suppress(MemberModifier.method(MainActivity.class, \"resetErrno\"));\n        MemberModifier.suppress(MemberModifier.method(MainActivity.class, \"showUiMessage\"));\n        MemberModifier.suppress(MemberModifier.method(MainActivity.class, \"resetRenderButton\"));\n\n        final MainRenderer mainRenderer = createMainRenderer();\n\n        final ActivityManager activityManagerMocked = PowerMockito.mock(ActivityManager.class);\n        Mockito.doNothing()\n            .when(activityManagerMocked)\n            .getMemoryInfo(Mockito.any(ActivityManager.MemoryInfo.class));\n        mainRenderer.setActivityManager(activityManagerMocked);\n\n        final ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();\n        ReflectionTestUtils.setField(memoryInfo, \"availMem\", 100L * BYTES_IN_MEGABYTE);\n        ReflectionTestUtils.setField(mainRenderer, \"memoryIn",
+      "fragment": "oBitmapBadBitmap() {\n        MemberModifier.suppress(MemberModifier.method(MainActivity.class, \"resetErrno\"));\n        MemberModifier.suppress(MemberModifier.method(MainActivity.class, \"showUiMessage\"));\n        MemberModifier.suppress(MemberModifier.method(MainActivity.class, \"resetRenderButton\"));\n\n        final MainRenderer mainRenderer = createMockedMainRenderer();\n\n        final ActivityManager activityManagerMocked = PowerMockito.mock(ActivityManager.class);\n        Mockito.doNothing()\n            .when(activityManagerMocked)\n            .getMemoryInfo(Mockito.any(ActivityManager.MemoryInfo.class));\n        mainRenderer.setActivityManager(activityManagerMocked);\n\n        final ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();\n        ReflectionTestUtils.setField(memoryInfo, \"availMem\", 100L * BYTES_IN_MEGABYTE);\n        ReflectionTestUtils.setField(mainRenderer, \"memoryInfo\", memoryInf",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainRendererTest.java",
-        "start": 333,
-        "end": 350,
+        "start": 332,
+        "end": 349,
         "startLoc": {
-          "line": 333,
+          "line": 332,
           "column": 39,
-          "position": 2836
+          "position": 2776
         },
         "endLoc": {
-          "line": 350,
+          "line": 349,
           "column": 4,
-          "position": 3031
+          "position": 2971
         }
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainRendererTest.java",
-        "start": 212,
-        "end": 317,
+        "start": 301,
+        "end": 316,
         "startLoc": {
-          "line": 212,
-          "column": 30,
-          "position": 1738
+          "line": 301,
+          "column": 33,
+          "position": 2503
         },
         "endLoc": {
-          "line": 317,
+          "line": 316,
           "column": 11,
-          "position": 2754
+          "position": 2694
         }
       }
     },
     {
       "format": "java",
       "lines": 8,
-      "fragment": " // Set width as invalid.\n            Mockito.when(bitmapMocked.isRecycled())\n                .thenReturn(false);\n            Mockito.when(bitmapMocked.getWidth())\n                .thenReturn(2);\n            Mockito.when(bitmapMocked.getHeight())\n                .thenReturn(1);\n\n     ",
+      "fragment": "as invalid.\n            Mockito.when(bitmapMocked.isRecycled())\n                .thenReturn(false);\n            Mockito.when(bitmapMocked.getWidth())\n                .thenReturn(2);\n            Mockito.when(bitmapMocked.getHeight())\n                .thenReturn(1);\n\n            Asserti",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainRendererTest.java",
-        "start": 357,
-        "end": 364,
+        "start": 356,
+        "end": 363,
         "startLoc": {
-          "line": 357,
+          "line": 356,
           "column": 13,
-          "position": 3137
+          "position": 3077
         },
         "endLoc": {
-          "line": 364,
+          "line": 363,
           "column": 2,
-          "position": 3202
+          "position": 3142
         }
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainRendererTest.java",
-        "start": 184,
-        "end": 190,
+        "start": 183,
+        "end": 189,
         "startLoc": {
-          "line": 184,
+          "line": 183,
           "column": 13,
-          "position": 1537
+          "position": 1528
         },
         "endLoc": {
-          "line": 190,
+          "line": 189,
           "column": 13,
-          "position": 1601
+          "position": 1592
         }
       }
     },
     {
       "format": "java",
       "lines": 8,
-      "fragment": "// Set height as invalid.\n            Mockito.when(bitmapMocked.isRecycled())\n                .thenReturn(false);\n            Mockito.when(bitmapMocked.getWidth())\n                .thenReturn(1);\n            Mockito.when(bitmapMocked.getHeight())\n                .thenReturn(2);\n\n     ",
+      "fragment": "as invalid.\n            Mockito.when(bitmapMocked.isRecycled())\n                .thenReturn(false);\n            Mockito.when(bitmapMocked.getWidth())\n                .thenReturn(1);\n            Mockito.when(bitmapMocked.getHeight())\n                .thenReturn(2);\n\n            Asserti",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainRendererTest.java",
-        "start": 372,
-        "end": 379,
+        "start": 371,
+        "end": 378,
         "startLoc": {
-          "line": 372,
+          "line": 371,
           "column": 13,
-          "position": 3270
+          "position": 3210
         },
         "endLoc": {
-          "line": 379,
+          "line": 378,
           "column": 2,
-          "position": 3335
+          "position": 3275
         }
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainRendererTest.java",
-        "start": 194,
-        "end": 200,
+        "start": 193,
+        "end": 199,
         "startLoc": {
-          "line": 194,
+          "line": 193,
           "column": 13,
-          "position": 1626
+          "position": 1617
         },
         "endLoc": {
-          "line": 200,
+          "line": 199,
           "column": 13,
-          "position": 1690
+          "position": 1681
         }
       }
     },
     {
       "format": "java",
       "lines": 9,
-      "fragment": "eight())\n                .thenReturn(2);\n\n            Assertions.assertThatThrownBy(() -> mainRenderer.copyGlFrameBufferToBitmap(\n                ConfigResolution.Builder.Companion.create().build(),\n                ConfigResolution.Builder.Companion.create().build()\n            ))\n            .as(\"The call to MainRenderer#copyGlFrameBufferToBitmap method\")\n            .isInstanceOf(Ille",
+      "fragment": "           .thenReturn(2);\n\n            Assertions.assertThatThrownBy(() -> mainRenderer.copyGlFrameBufferToBitmap(\n                ConfigResolution.Builder.Companion.create().build(),\n                ConfigResolution.Builder.Companion.create().build()\n            ))\n            .as(\"The call to MainRenderer#copyGlFrameBufferToBitmap method\")\n            .isInstanceOf(IllegalArgumentExc",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainRendererTest.java",
-        "start": 377,
-        "end": 385,
+        "start": 376,
+        "end": 384,
         "startLoc": {
-          "line": 377,
+          "line": 376,
           "column": 2,
-          "position": 3326
+          "position": 3266
         },
         "endLoc": {
-          "line": 385,
+          "line": 384,
           "column": 2,
-          "position": 3399
+          "position": 3339
         }
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainRendererTest.java",
-        "start": 362,
-        "end": 371,
+        "start": 361,
+        "end": 370,
         "startLoc": {
-          "line": 362,
+          "line": 361,
           "column": 2,
-          "position": 3193
+          "position": 3133
         },
         "endLoc": {
-          "line": 371,
+          "line": 370,
           "column": 26,
-          "position": 3267
-        }
-      }
-    },
-    {
-      "format": "java",
-      "lines": 8,
-      "fragment": ";\nimport org.junit.Rule;\nimport org.junit.Test;\nimport org.mockito.ArgumentMatchers;\nimport org.mockito.MockedStatic;\nimport org.mockito.Mockito;\nimport org.powermock.api.mockito.PowerMockito;\nimport org.powermock.core",
-      "tokens": 0,
-      "firstFile": {
-        "name": "app/src/test/java/puscas/mobilertapp/MainActivityTest.java",
-        "start": 16,
-        "end": 23,
-        "startLoc": {
-          "line": 16,
-          "column": 7,
-          "position": 120
-        },
-        "endLoc": {
-          "line": 23,
-          "column": 5,
-          "position": 186
-        }
-      },
-      "secondFile": {
-        "name": "app/src/test/java/puscas/mobilertapp/MainRendererTest.java",
-        "start": 14,
-        "end": 21,
-        "startLoc": {
-          "line": 14,
-          "column": 7,
-          "position": 98
-        },
-        "endLoc": {
-          "line": 21,
-          "column": 4,
-          "position": 164
+          "position": 3207
         }
       }
     },
@@ -4675,17 +4675,17 @@
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainRendererTest.java",
-        "start": 18,
-        "end": 26,
+        "start": 17,
+        "end": 25,
         "startLoc": {
-          "line": 18,
+          "line": 17,
           "column": 13,
-          "position": 134
+          "position": 125
         },
         "endLoc": {
-          "line": 26,
+          "line": 25,
           "column": 4,
-          "position": 221
+          "position": 212
         }
       }
     },
@@ -4876,32 +4876,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/src/main/java/puscas/mobilertapp/MainRenderer.java",
-        "start": 907,
-        "end": 921,
+        "start": 908,
+        "end": 922,
         "startLoc": {
-          "line": 907,
+          "line": 908,
           "column": 9,
-          "position": 5584
+          "position": 5589
         },
         "endLoc": {
-          "line": 921,
+          "line": 922,
           "column": 8,
-          "position": 5742
+          "position": 5747
         }
       },
       "secondFile": {
         "name": "app/src/main/java/puscas/mobilertapp/MainRenderer.java",
-        "start": 845,
-        "end": 859,
+        "start": 846,
+        "end": 860,
         "startLoc": {
-          "line": 845,
+          "line": 846,
           "column": 9,
-          "position": 5010
+          "position": 5015
         },
         "endLoc": {
-          "line": 859,
+          "line": 860,
           "column": 6,
-          "position": 5168
+          "position": 5173
         }
       }
     },

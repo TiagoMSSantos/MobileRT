@@ -140,7 +140,7 @@ public class DrawViewTest {
         MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
         MemberModifier.suppress(MemberModifier.method(MainActivity.class, "showUiMessage"));
 
-        final DrawView drawView = EasyMock.createMockBuilder(DrawView.class)
+        final DrawView drawView = EasyMock.partialMockBuilder(DrawView.class)
             .addMockedMethod("rtStartRender", boolean.class)
             .addMockedMethod("rtStopRender", boolean.class)
             .addMockedMethod("waitLastTask")
@@ -148,7 +148,7 @@ public class DrawViewTest {
             .addMockedMethod("createScene")
             .createMock();
 
-        final MainRenderer mainRenderer = EasyMock.createMockBuilder(MainRenderer.class)
+        final MainRenderer mainRenderer = EasyMock.partialMockBuilder(MainRenderer.class)
             .addMockedMethod("rtInitialize")
             .addMockedMethod("rtFinishRender")
             .addMockedMethod("freeArrays")

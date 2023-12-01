@@ -255,8 +255,8 @@ public class MainRenderer implements GLSurfaceView.Renderer {
      * The constructor for this class.
      */
     MainRenderer() {
-        configRenderTask.setUpdateInterval(DEFAULT_UPDATE_INTERVAL);
-        configRenderTask.setFinishRender(this::rtFinishRender);
+        this.configRenderTask.setUpdateInterval(DEFAULT_UPDATE_INTERVAL);
+        this.configRenderTask.setFinishRender(this::rtFinishRender);
         setBitmap();
     }
 
@@ -478,7 +478,8 @@ public class MainRenderer implements GLSurfaceView.Renderer {
      *                   engine.
      * @throws LowMemoryException If the device has low free memory.
      */
-    private native void rtRenderIntoBitmap(Bitmap image, int numThreads) throws LowMemoryException;
+    @VisibleForTesting
+    native void rtRenderIntoBitmap(Bitmap image, int numThreads) throws LowMemoryException;
 
     /**
      * Creates a native array with all the positions of triangles in the scene.
