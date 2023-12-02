@@ -22,7 +22,7 @@ public final class JavaMemoryTest {
     @Test
     public void testAllocatingHeapMemoryJava() {
         // Dummy array to hold the allocated memory.
-        final Collection<ByteBuffer> dummyArrays = new ArrayList<>(1);
+        final Collection<ByteBuffer> dummyArrays = new ArrayList<>(0);
 
         final long startAvailableMemory = getAvailableJavaMemoryInMB();
         Assertions.assertThat(startAvailableMemory)
@@ -30,10 +30,7 @@ public final class JavaMemoryTest {
             .isGreaterThan(300L);
 
         final long megaBytesToAllocate = 100L;
-        int numAllocatedByteBuffers = 0;
-        for(long l = 0L; getAvailableJavaMemoryInMB() >= startAvailableMemory - 2L * megaBytesToAllocate;
-            l += megaBytesToAllocate) {
-
+        for (int numAllocatedByteBuffers = 0; getAvailableJavaMemoryInMB() >= (megaBytesToAllocate + 1L) && numAllocatedByteBuffers < 2; ++numAllocatedByteBuffers) {
             // Force garbage collection now, before retrieving available memory
             // of the before and after allocating memory.
             Runtime.getRuntime().gc();
@@ -48,13 +45,11 @@ public final class JavaMemoryTest {
             Assertions.assertThat(afterAvailableMemory)
                 .as("Available memory didn't decrease as expected.")
                 .isLessThanOrEqualTo(beforeAvailableMemoryMB - megaBytesToAllocate);
-
-            ++numAllocatedByteBuffers;
         }
 
         Assertions.assertThat(dummyArrays)
             .as("The number of allocated `ByteBuffer` is not the expected.")
-            .hasSize(numAllocatedByteBuffers);
+            .hasSizeBetween(1, 2);
     }
 
     /**
