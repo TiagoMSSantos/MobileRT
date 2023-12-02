@@ -5,7 +5,7 @@ import androidx.annotation.NonNull;
 /**
  * An {@link Exception} which represents the system with a failure.
  */
-public class FailureException extends RuntimeException {
+public final class FailureException extends RuntimeException {
 
     /**
      * The Serial UUID.

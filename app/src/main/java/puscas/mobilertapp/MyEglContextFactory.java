@@ -20,7 +20,7 @@ import puscas.mobilertapp.exceptions.FailureException;
 /**
  * A customized eglCreateContext and eglDestroyContext calls.
  */
-public class MyEglContextFactory implements GLSurfaceView.EGLContextFactory {
+public final class MyEglContextFactory implements GLSurfaceView.EGLContextFactory {
 
     /**
      * Logger for this class.

@@ -42,7 +42,7 @@ import puscas.mobilertapp.utils.UtilsLogging;
 /**
  * The {@link GLSurfaceView} to show the scene being rendered.
  */
-public class DrawView extends GLSurfaceView {
+public final class DrawView extends GLSurfaceView {
 
     /**
      * Logger for this class.

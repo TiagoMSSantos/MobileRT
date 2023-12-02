@@ -5,7 +5,7 @@ import androidx.annotation.NonNull;
 /**
  * An {@link Exception} which represents the system with low memory.
  */
-public class LowMemoryException extends Exception {
+public final class LowMemoryException extends Exception {
 
     /**
      * The Serial UUID.

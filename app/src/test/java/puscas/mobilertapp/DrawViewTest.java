@@ -10,20 +10,18 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 
 import org.assertj.core.api.Assertions;
 import org.easymock.EasyMock;
-import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.api.support.membermodification.MemberModifier;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.rule.PowerMockRule;
+import org.powermock.core.classloader.annotations.PrepareOnlyThisForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.concurrent.ExecutionException;
@@ -45,15 +43,10 @@ import puscas.mobilertapp.exceptions.LowMemoryException;
  * and suppress the native methods in the {@link DrawView} and {@link MainRenderer} classes in the
  * {@link #testRenderSceneWithLowMemory} test method.
  */
-@PrepareForTest({MainActivity.class, MainRenderer.class})
+// Annotations necessary for PowerMock to be able to mock final classes and static methods.
+@RunWith(PowerMockRunner.class)
+@PrepareOnlyThisForTest({MainActivity.class, DrawView.class, MainRenderer.class})
 public class DrawViewTest {
-
-    /**
-     * The {@link Rule} for the {@link MainActivity} for each test.
-     */
-    @NonNull
-    @Rule
-    public PowerMockRule rule = new PowerMockRule();
 
     /**
      * Tests the {@link DrawView#getActivity()} method.
@@ -63,41 +56,58 @@ public class DrawViewTest {
         MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
         MemberModifier.suppress(MemberModifier.method(MainRenderer.class, "setBitmap"));
 
-        final DrawView drawView = PowerMockito.spy(new DrawView(new MainActivity()));
+        final ContextWrapper contextWrapperMocked = EasyMock.mock(ContextWrapper.class);
+        final Activity activityMocked = EasyMock.mock(Activity.class);
 
-        final ContextWrapper contextMocked = Mockito.mock(ContextWrapper.class);
-        final Activity activityMocked = Mockito.mock(Activity.class);
-        Mockito.when(contextMocked.getBaseContext())
-            .thenReturn(activityMocked);
+        EasyMock.expect(contextWrapperMocked.getBaseContext())
+            .andReturn(activityMocked)
+            .anyTimes();
 
-        Mockito.when(drawView.getContext())
-            .thenReturn(contextMocked);
+        final Context contextMocked = EasyMock.partialMockBuilder(Context.class)
+            .withConstructor()
+            .createMock();
 
-        Assertions.assertThat(drawView.getActivity())
+        final DrawView drawViewMocked = EasyMock.partialMockBuilder(DrawView.class)
+            .withConstructor(Context.class)
+            .withArgs(contextMocked)
+            .addMockedMethod("getContext")
+            .createMock();
+        EasyMock.expect(drawViewMocked.getContext())
+            .andReturn(activityMocked)
+            .anyTimes();
+
+        EasyMock.replay(activityMocked, contextWrapperMocked, contextMocked, drawViewMocked);
+        Assertions.assertThat(drawViewMocked.getActivity())
             .as("The call to DrawView#getActivity method")
             .isSameAs(activityMocked);
     }
 
     /**
      * Tests that the {@link DrawView#getActivity()} method will throw an {@link IllegalStateException}
-     * if the provided {@link android.content.Context} is {@link Activity}.
+     * if the provided {@link android.content.Context} is not an {@link Activity}.
      */
     @Test
     public void testGetActivityFailure() {
         MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
         MemberModifier.suppress(MemberModifier.method(MainRenderer.class, "setBitmap"));
 
-        final DrawView drawView = PowerMockito.spy(new DrawView(new MainActivity()));
+        final DrawView drawViewMocked = EasyMock.partialMockBuilder(DrawView.class)
+            .withConstructor(Context.class)
+            .withArgs(new MainActivity())
+            .addMockedMethod("getContext")
+            .createMock();
 
-        final ContextWrapper contextMocked = Mockito.mock(ContextWrapper.class);
-        final Context baseContextMocked = Mockito.mock(Context.class);
-        Mockito.when(contextMocked.getBaseContext())
-            .thenReturn(baseContextMocked);
+        final ContextWrapper contextMocked = EasyMock.mock(ContextWrapper.class);
+        final Context baseContextMocked = EasyMock.mock(Context.class);
+        EasyMock.expect(contextMocked.getBaseContext())
+            .andReturn(baseContextMocked)
+            .anyTimes();
+        EasyMock.expect(drawViewMocked.getContext())
+            .andReturn(contextMocked)
+            .anyTimes();
 
-        Mockito.when(drawView.getContext())
-            .thenReturn(contextMocked);
-
-        Assertions.assertThatThrownBy(drawView::getActivity)
+        EasyMock.replay(drawViewMocked, contextMocked, baseContextMocked);
+        Assertions.assertThatThrownBy(drawViewMocked::getActivity)
             .as("The call to DrawView#getActivity method")
             .isInstanceOf(IllegalStateException.class)
             .hasMessageContaining(ConstantsError.UNABLE_TO_FIND_AN_ACTIVITY);

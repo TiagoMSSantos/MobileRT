@@ -12,12 +12,12 @@ import com.google.common.util.concurrent.Uninterruptibles;
 
 import org.assertj.core.api.Assertions;
 import org.easymock.EasyMock;
-import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
 import org.powermock.api.support.membermodification.MemberModifier;
 import org.powermock.core.classloader.annotations.PrepareOnlyThisForTest;
-import org.powermock.modules.junit4.rule.PowerMockRule;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.nio.ByteBuffer;
@@ -35,16 +35,10 @@ import puscas.mobilertapp.exceptions.LowMemoryException;
 /**
  * The test suite for the {@link MainRenderer}.
  */
-// Annotation & Rule necessary for PowerMock to be able to mock static methods.
-@PrepareOnlyThisForTest({MainActivity.class, Bitmap.class, GLES20.class})
-public class MainRendererTest {
-
-    /**
-     * The {@link Rule} for the {@link PowerMock} to be able to mock static methods.
-     */
-    @NonNull
-    @Rule
-    public PowerMockRule rule = new PowerMockRule();
+// Annotations necessary for PowerMock to be able to mock final classes and static methods.
+@RunWith(PowerMockRunner.class)
+@PrepareOnlyThisForTest({MainActivity.class, MainRenderer.class, Bitmap.class, GLES20.class})
+public final class MainRendererTest {
 
     /**
      * Tests the {@link MainRenderer#checksFreeMemory(int, Runnable)} method.
