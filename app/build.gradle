@@ -328,7 +328,9 @@ android {
                         '--add-opens=java.base/java.util.concurrent=ALL-UNNAMED',
                         '--add-opens=java.base/java.io=ALL-UNNAMED',
                         '--add-opens=java.base/java.nio=ALL-UNNAMED',
-                        '--add-opens=java.logging/java.util.logging=ALL-UNNAMED'
+                        '--add-opens=java.logging/java.util.logging=ALL-UNNAMED',
+                        // Allow to use reflection in private native methods:
+                        '--add-opens=java.base/java.lang.reflect=ALL-UNNAMED'
                 jacoco {
                     includeNoLocationClasses = true
                     excludes = ['jdk.internal.*']
@@ -473,6 +475,7 @@ dependencies {
     testImplementation "org.powermock:powermock-core:${powermock_version}"
     testImplementation "org.powermock:powermock-module-junit4:${powermock_version}"
     testImplementation "org.powermock:powermock-api-mockito2:${powermock_version}"
+    testImplementation "org.powermock:powermock-api-easymock:${powermock_version}"
     // Necessary for code coverage to work properly.
     // Should be used `powermock-module-junit4-rule-agent` instead of `powermock-module-junit4-rule`.
     testImplementation "org.powermock:powermock-module-junit4-rule-agent:${powermock_version}"

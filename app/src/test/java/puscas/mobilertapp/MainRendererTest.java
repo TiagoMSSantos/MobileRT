@@ -14,11 +14,9 @@ import org.assertj.core.api.Assertions;
 import org.easymock.EasyMock;
 import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
+import org.powermock.api.easymock.PowerMock;
 import org.powermock.api.support.membermodification.MemberModifier;
-import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.core.classloader.annotations.PrepareOnlyThisForTest;
 import org.powermock.modules.junit4.rule.PowerMockRule;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -37,11 +35,12 @@ import puscas.mobilertapp.exceptions.LowMemoryException;
 /**
  * The test suite for the {@link MainRenderer}.
  */
-@PrepareForTest({MainActivity.class, Bitmap.class})
+// Annotation & Rule necessary for PowerMock to be able to mock static methods.
+@PrepareOnlyThisForTest({MainActivity.class, Bitmap.class, GLES20.class})
 public class MainRendererTest {
 
     /**
-     * The {@link Rule} for the {@link MainActivity} for each test.
+     * The {@link Rule} for the {@link PowerMock} to be able to mock static methods.
      */
     @NonNull
     @Rule
@@ -52,11 +51,9 @@ public class MainRendererTest {
      */
     @Test
     public void testChecksFreeMemory() {
-        MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
-
         final MainRenderer mainRenderer = createMockedMainRenderer();
 
-        final ActivityManager activityManagerMocked = Mockito.mock(ActivityManager.class);
+        final ActivityManager activityManagerMocked = EasyMock.mock(ActivityManager.class);
         final ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
         ReflectionTestUtils.setField(memoryInfo, "availMem", 100L * BYTES_IN_MEGABYTE);
         ReflectionTestUtils.setField(mainRenderer, "memoryInfo", memoryInfo);
@@ -81,11 +78,9 @@ public class MainRendererTest {
      */
     @Test
     public void testChecksFreeLowMemory() {
-        MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
-
         final MainRenderer mainRenderer = createMockedMainRenderer();
 
-        final ActivityManager activityManagerMocked = Mockito.mock(ActivityManager.class);
+        final ActivityManager activityManagerMocked = EasyMock.mock(ActivityManager.class);
         final ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
         ReflectionTestUtils.setField(memoryInfo, "availMem", 9L * BYTES_IN_MEGABYTE);
         ReflectionTestUtils.setField(mainRenderer, "memoryInfo", memoryInfo);
@@ -118,11 +113,9 @@ public class MainRendererTest {
      */
     @Test
     public void testChecksFreeZeroMemory() {
-        MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
-
         final MainRenderer mainRenderer = createMockedMainRenderer();
 
-        final ActivityManager activityManagerMocked = Mockito.mock(ActivityManager.class);
+        final ActivityManager activityManagerMocked = EasyMock.mock(ActivityManager.class);
         final ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
         ReflectionTestUtils.setField(memoryInfo, "availMem", 100L * BYTES_IN_MEGABYTE);
         ReflectionTestUtils.setField(mainRenderer, "memoryInfo", memoryInfo);
@@ -147,8 +140,6 @@ public class MainRendererTest {
      */
     @Test
     public void testResetStats() {
-        MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
-
         final MainRenderer mainRenderer = createMockedMainRenderer();
 
         Assertions.assertThatThrownBy(() -> mainRenderer.resetStats(0, ConfigSamples.Builder.Companion.create().build(), -2, 0))
@@ -165,41 +156,59 @@ public class MainRendererTest {
     public void testSetBitmap() {
         MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
 
-        try (final MockedStatic<Bitmap> bitmapMockedStatic = Mockito.mockStatic(Bitmap.class)) {
-            final Bitmap bitmapMocked = Mockito.mock(Bitmap.class);
-            bitmapMockedStatic.when(() -> Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888))
-                .thenReturn(bitmapMocked);
+        final Bitmap bitmapMocked = EasyMock.createNiceMock(Bitmap.class);
+        EasyMock.expect(bitmapMocked.isRecycled())
+            .andReturn(true)
+            .anyTimes();
+        EasyMock.expect(bitmapMocked.getWidth())
+            .andReturn(1)
+            .anyTimes();
+        EasyMock.expect(bitmapMocked.getHeight())
+            .andReturn(1)
+            .anyTimes();
+        EasyMock.replay(bitmapMocked);
 
-            Mockito.when(bitmapMocked.isRecycled())
-                .thenReturn(true);
-            Mockito.when(bitmapMocked.getWidth())
-                .thenReturn(1);
-            Mockito.when(bitmapMocked.getHeight())
-                .thenReturn(1);
-            Assertions.assertThatThrownBy(MainRenderer::new)
-                .as("The MainRenderer#setBitmap method")
-                .isInstanceOf(IllegalArgumentException.class);
+        PowerMock.mockStatic(Bitmap.class);
+        EasyMock.expect(Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888))
+            .andReturn(bitmapMocked)
+            .anyTimes();
+        PowerMock.replayAll();
 
-            Mockito.when(bitmapMocked.isRecycled())
-                .thenReturn(false);
-            Mockito.when(bitmapMocked.getWidth())
-                .thenReturn(2);
-            Mockito.when(bitmapMocked.getHeight())
-                .thenReturn(1);
-            Assertions.assertThatThrownBy(MainRenderer::new)
-                .as("The MainRenderer#setBitmap method")
-                .isInstanceOf(IllegalArgumentException.class);
+        Assertions.assertThatThrownBy(MainRenderer::new)
+            .as("The MainRenderer#setBitmap method")
+            .isInstanceOf(IllegalArgumentException.class);
 
-            Mockito.when(bitmapMocked.isRecycled())
-                .thenReturn(false);
-            Mockito.when(bitmapMocked.getWidth())
-                .thenReturn(1);
-            Mockito.when(bitmapMocked.getHeight())
-                .thenReturn(2);
-            Assertions.assertThatThrownBy(MainRenderer::new)
-                .as("The MainRenderer#setBitmap method")
-                .isInstanceOf(IllegalArgumentException.class);
-        }
+        EasyMock.reset(bitmapMocked);
+        EasyMock.expect(bitmapMocked.isRecycled())
+            .andReturn(false)
+            .anyTimes();
+        EasyMock.expect(bitmapMocked.getWidth())
+            .andReturn(2)
+            .anyTimes();
+        EasyMock.expect(bitmapMocked.getHeight())
+            .andReturn(1)
+            .anyTimes();
+        EasyMock.replay(bitmapMocked);
+
+        Assertions.assertThatThrownBy(MainRenderer::new)
+            .as("The MainRenderer#setBitmap method")
+            .isInstanceOf(IllegalArgumentException.class);
+
+        EasyMock.reset(bitmapMocked);
+        EasyMock.expect(bitmapMocked.isRecycled())
+            .andReturn(false)
+            .anyTimes();
+        EasyMock.expect(bitmapMocked.getWidth())
+            .andReturn(1)
+            .anyTimes();
+        EasyMock.expect(bitmapMocked.getHeight())
+            .andReturn(2)
+            .anyTimes();
+        EasyMock.replay(bitmapMocked);
+
+        Assertions.assertThatThrownBy(MainRenderer::new)
+            .as("The MainRenderer#setBitmap method")
+            .isInstanceOf(IllegalArgumentException.class);
     }
 
     /**
@@ -208,7 +217,6 @@ public class MainRendererTest {
      */
     @Test
     public void testRenderingErrorOnDrawFrame() throws LowMemoryException {
-        MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
         MemberModifier.suppress(MemberModifier.method(MainActivity.class, "showUiMessage"));
         MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetRenderButton"));
 
@@ -247,7 +255,6 @@ public class MainRendererTest {
      */
     @Test
     public void testGetStateWhileCallingOnDrawFrame() throws InterruptedException {
-        MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
         MemberModifier.suppress(MemberModifier.method(MainActivity.class, "showUiMessage"));
         MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetRenderButton"));
 
@@ -255,7 +262,7 @@ public class MainRendererTest {
 
         final Thread thread = new Thread(() -> {
             Uninterruptibles.sleepUninterruptibly(1L, TimeUnit.SECONDS);
-            mainRenderer.onDrawFrame(Mockito.mock(GL10.class));
+            mainRenderer.onDrawFrame(EasyMock.mock(GL10.class));
         });
         Assertions.assertThat((boolean) ReflectionTestUtils.getField(mainRenderer, "firstFrame"))
             .as("The 1st frame field")
@@ -281,15 +288,16 @@ public class MainRendererTest {
      */
     @Test
     public void testCloseRenderer() {
-        MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
-
         final MainRenderer mainRenderer = createMockedMainRenderer();
 
-        try (final MockedStatic<GLES20> gles20MockedStatic = Mockito.mockStatic(GLES20.class)) {
-            mainRenderer.closeRenderer();
+        PowerMock.mockStaticStrict(GLES20.class);
+        GLES20.glDeleteTextures(EasyMock.anyInt(), EasyMock.anyObject(int[].class), EasyMock.anyInt());
+        PowerMock.expectLastCall().andThrow(new FailureException("Method 'glDeleteTextures' should not be called!")).anyTimes();
 
-            gles20MockedStatic.verify(() -> GLES20.glDeleteTextures(1, null, 0), Mockito.times(0));
-        }
+        PowerMock.replayAll();
+        mainRenderer.closeRenderer();
+
+        PowerMock.verifyAll();
     }
 
     /**
@@ -298,15 +306,15 @@ public class MainRendererTest {
      * to render the scene.
      */
     @Test
-    public void testRenderSceneToBitmapLowMemory() {
-        MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
+    public void testRenderSceneToBitmapLowMemory() throws LowMemoryException {
         MemberModifier.suppress(MemberModifier.method(MainActivity.class, "showUiMessage"));
         MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetRenderButton"));
 
         final MainRenderer mainRenderer = createMockedMainRenderer();
 
-        final ActivityManager activityManagerMocked = PowerMockito.mock(ActivityManager.class);
-        Mockito.doNothing().when(activityManagerMocked).getMemoryInfo(Mockito.any(ActivityManager.MemoryInfo.class));
+        final ActivityManager activityManagerMocked = PowerMock.createMock(ActivityManager.class);
+        activityManagerMocked.getMemoryInfo(EasyMock.anyObject(ActivityManager.MemoryInfo.class));
+        EasyMock.expectLastCall().andVoid().anyTimes();
         mainRenderer.setActivityManager(activityManagerMocked);
 
         final ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
@@ -330,58 +338,72 @@ public class MainRendererTest {
      */
     @Test
     public void testCopyGlFrameBufferToBitmapBadBitmap() {
-        MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
         MemberModifier.suppress(MemberModifier.method(MainActivity.class, "showUiMessage"));
         MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetRenderButton"));
 
         final MainRenderer mainRenderer = createMockedMainRenderer();
 
-        final ActivityManager activityManagerMocked = PowerMockito.mock(ActivityManager.class);
-        Mockito.doNothing()
-            .when(activityManagerMocked)
-            .getMemoryInfo(Mockito.any(ActivityManager.MemoryInfo.class));
+        final ActivityManager activityManagerMocked = PowerMock.createMock(ActivityManager.class);
+        activityManagerMocked.getMemoryInfo(EasyMock.anyObject(ActivityManager.MemoryInfo.class));
+        EasyMock.expectLastCall().andVoid().anyTimes();
         mainRenderer.setActivityManager(activityManagerMocked);
 
         final ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
         ReflectionTestUtils.setField(memoryInfo, "availMem", 100L * BYTES_IN_MEGABYTE);
         ReflectionTestUtils.setField(mainRenderer, "memoryInfo", memoryInfo);
 
-        try (final MockedStatic<Bitmap> bitmapMockedStatic = Mockito.mockStatic(Bitmap.class)) {
-            final Bitmap bitmapMocked = Mockito.mock(Bitmap.class);
-            final int[] arrayBytesNewBitmap = new int[1];
-            bitmapMockedStatic.when(() -> Bitmap.createBitmap(arrayBytesNewBitmap, 1, 1, Bitmap.Config.ARGB_8888))
-                .thenReturn(bitmapMocked);
 
-            // Set width as invalid.
-            Mockito.when(bitmapMocked.isRecycled())
-                .thenReturn(false);
-            Mockito.when(bitmapMocked.getWidth())
-                .thenReturn(2);
-            Mockito.when(bitmapMocked.getHeight())
-                .thenReturn(1);
+        final Bitmap bitmapMocked = EasyMock.mock(Bitmap.class);
+        final int[] arrayBytesNewBitmap = new int[1];
 
-            Assertions.assertThatThrownBy(() -> mainRenderer.copyGlFrameBufferToBitmap(
-                ConfigResolution.Builder.Companion.create().build(),
-                ConfigResolution.Builder.Companion.create().build()
-            ))
-            .as("The call to MainRenderer#copyGlFrameBufferToBitmap method")
-            .isInstanceOf(IllegalArgumentException.class);
+        PowerMock.mockStatic(Bitmap.class);
+        EasyMock.expect(Bitmap.createBitmap(arrayBytesNewBitmap, 1, 1, Bitmap.Config.ARGB_8888))
+            .andReturn(bitmapMocked)
+            .anyTimes();
+        EasyMock.expect(Bitmap.createScaledBitmap(EasyMock.anyObject(Bitmap.class), EasyMock.eq(1), EasyMock.eq(1), EasyMock.eq(true)))
+            .andReturn(bitmapMocked)
+            .anyTimes();
+        PowerMock.replayAll();
 
-            // Set height as invalid.
-            Mockito.when(bitmapMocked.isRecycled())
-                .thenReturn(false);
-            Mockito.when(bitmapMocked.getWidth())
-                .thenReturn(1);
-            Mockito.when(bitmapMocked.getHeight())
-                .thenReturn(2);
+        // Set width as invalid.
+        EasyMock.reset(bitmapMocked);
+        EasyMock.expect(bitmapMocked.isRecycled())
+            .andReturn(false)
+            .anyTimes();
+        EasyMock.expect(bitmapMocked.getWidth())
+            .andReturn(2)
+            .anyTimes();
+        EasyMock.expect(bitmapMocked.getHeight())
+            .andReturn(1)
+            .anyTimes();
 
-            Assertions.assertThatThrownBy(() -> mainRenderer.copyGlFrameBufferToBitmap(
-                ConfigResolution.Builder.Companion.create().build(),
-                ConfigResolution.Builder.Companion.create().build()
-            ))
-            .as("The call to MainRenderer#copyGlFrameBufferToBitmap method")
-            .isInstanceOf(IllegalArgumentException.class);
-        }
+        EasyMock.replay(bitmapMocked);
+        Assertions.assertThatThrownBy(() -> mainRenderer.copyGlFrameBufferToBitmap(
+            ConfigResolution.Builder.Companion.create().build(),
+            ConfigResolution.Builder.Companion.create().build()
+        ))
+        .as("The call to MainRenderer#copyGlFrameBufferToBitmap method")
+        .isInstanceOf(IllegalArgumentException.class);
+
+        // Set height as invalid.
+        EasyMock.reset(bitmapMocked);
+        EasyMock.expect(bitmapMocked.isRecycled())
+            .andReturn(false)
+            .anyTimes();
+        EasyMock.expect(bitmapMocked.getWidth())
+            .andReturn(2)
+            .anyTimes();
+        EasyMock.expect(bitmapMocked.getHeight())
+            .andReturn(2)
+            .anyTimes();
+
+        EasyMock.replay(bitmapMocked);
+        Assertions.assertThatThrownBy(() -> mainRenderer.copyGlFrameBufferToBitmap(
+            ConfigResolution.Builder.Companion.create().build(),
+            ConfigResolution.Builder.Companion.create().build()
+        ))
+        .as("The call to MainRenderer#copyGlFrameBufferToBitmap method")
+        .isInstanceOf(IllegalArgumentException.class);
     }
 
     /**
@@ -392,18 +414,25 @@ public class MainRendererTest {
     @NonNull
     private MainRenderer createMockedMainRenderer() {
         final MainRenderer mainRenderer;
-        try (final MockedStatic<Bitmap> bitmapMockedStatic = Mockito.mockStatic(Bitmap.class)) {
-            final Bitmap bitmapMocked = Mockito.mock(Bitmap.class);
-            bitmapMockedStatic.when(() -> Bitmap.createBitmap(Mockito.eq(1), Mockito.eq(1), Mockito.eq(Bitmap.Config.ARGB_8888)))
-                .thenReturn(bitmapMocked);
+        final Bitmap bitmapMocked = EasyMock.createNiceMock(Bitmap.class);
+        EasyMock.expect(bitmapMocked.isRecycled())
+            .andReturn(false)
+            .anyTimes();
+        EasyMock.expect(bitmapMocked.getWidth())
+            .andReturn(1)
+            .anyTimes();
+        EasyMock.expect(bitmapMocked.getHeight())
+            .andReturn(1)
+            .anyTimes();
+        EasyMock.replay(bitmapMocked);
+        PowerMock.mockStatic(Bitmap.class);
+        try {
+            EasyMock.expect(Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888))
+                .andReturn(bitmapMocked)
+                .anyTimes();
 
-            Mockito.when(bitmapMocked.isRecycled())
-                .thenReturn(false);
-            Mockito.when(bitmapMocked.getWidth())
-                .thenReturn(1);
-            Mockito.when(bitmapMocked.getHeight())
-                .thenReturn(1);
-
+            PowerMock.replayAll();
+            MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
             mainRenderer = EasyMock.partialMockBuilder(MainRenderer.class)
                 .addMockedMethod("initPreviewArrays")
                 .addMockedMethod("rtRenderIntoBitmap", Bitmap.class, int.class)
