@@ -17,8 +17,6 @@ import org.assertj.core.api.Assertions;
 import org.easymock.EasyMock;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
 import org.powermock.api.support.membermodification.MemberModifier;
 import org.powermock.core.classloader.annotations.PrepareOnlyThisForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -122,15 +120,19 @@ public class DrawViewTest {
         MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
         MemberModifier.suppress(MemberModifier.method(MainRenderer.class, "setBitmap"));
 
-        final DrawView drawView = PowerMockito.spy(new DrawView(new MainActivity()));
+        final DrawView drawViewMocked = EasyMock.partialMockBuilder(DrawView.class)
+            .withConstructor(Context.class)
+            .withArgs(new MainActivity())
+            .addMockedMethod("getContext")
+            .createMock();
 
-        final TextView textViewMocked = Mockito.mock(TextView.class);
-        final ActivityManager activityManagerMocked = Mockito.mock(ActivityManager.class);
+        final TextView textViewMocked = EasyMock.mock(TextView.class);
+        final ActivityManager activityManagerMocked = EasyMock.mock(ActivityManager.class);
         final ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
         ReflectionTestUtils.setField(memoryInfo, "availMem", (long) BYTES_IN_MEGABYTE);
-        ReflectionTestUtils.setField(drawView.getRenderer(), "memoryInfo", memoryInfo);
+        ReflectionTestUtils.setField(drawViewMocked.getRenderer(), "memoryInfo", memoryInfo);
 
-        Assertions.assertThatThrownBy(() -> drawView.setViewAndActivityManager(textViewMocked, activityManagerMocked))
+        Assertions.assertThatThrownBy(() -> drawViewMocked.setViewAndActivityManager(textViewMocked, activityManagerMocked))
             .as("The call to DrawView#setViewAndActivityManager method")
             .isInstanceOf(FailureException.class);
     }
@@ -175,7 +177,7 @@ public class DrawViewTest {
         EasyMock.expectLastCall().andVoid().times(1);
         EasyMock.replay(mainRenderer);
 
-        final Button buttonMocked = Mockito.mock(Button.class);
+        final Button buttonMocked = EasyMock.mock(Button.class);
         drawView.setUpButtonRender(buttonMocked);
 
         // Make the thread pool use only the thread from the test (current one), so it counts to the code coverage.
@@ -230,14 +232,20 @@ public class DrawViewTest {
         MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
         MemberModifier.suppress(MemberModifier.method(MainRenderer.class, "setBitmap"));
 
-        final DrawView drawView = PowerMockito.spy(new DrawView(new MainActivity()));
-        final Future<Boolean> lastTask = Mockito.mock(Future.class);
-        Mockito.when(lastTask.get(1L, TimeUnit.DAYS))
-            .thenThrow(new InterruptedException());
-        // The '-1L' value is to allow the 'waitLastTask' method to not block waiting for the task to start and finish.
-        ReflectionTestUtils.setField(drawView, "lastTask", new Pair<>(-1L, lastTask));
+        final DrawView drawViewMocked = EasyMock.partialMockBuilder(DrawView.class)
+            .withConstructor(Context.class)
+            .withArgs(new MainActivity())
+            .addMockedMethod("getContext")
+            .createMock();
 
-        Assertions.assertThatCode(drawView::waitLastTask)
+        final Future<Boolean> lastTask = EasyMock.mock(Future.class);
+        EasyMock.expect(lastTask.get(1L, TimeUnit.DAYS))
+            .andThrow(new InterruptedException())
+            .anyTimes();
+        // The '-1L' value is to allow the 'waitLastTask' method to not block waiting for the task to start and finish.
+        ReflectionTestUtils.setField(drawViewMocked, "lastTask", new Pair<>(-1L, lastTask));
+
+        Assertions.assertThatCode(drawViewMocked::waitLastTask)
             .as("The call to DrawView#waitLastTask method")
             .doesNotThrowAnyException();
 
@@ -253,23 +261,37 @@ public class DrawViewTest {
         MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
         MemberModifier.suppress(MemberModifier.method(MainRenderer.class, "setBitmap"));
 
-        final DrawView drawView = PowerMockito.spy(new DrawView(new MainActivity()));
-        Mockito.when(drawView.getVisibility())
-            .thenReturn(View.GONE);
+        final DrawView drawViewMocked = EasyMock.partialMockBuilder(DrawView.class)
+            .withConstructor(Context.class)
+            .withArgs(new MainActivity())
+            .addMockedMethod("getContext")
+            .addMockedMethod("getVisibility")
+            .addMockedMethod("setVisibility")
+            .createMock();
+        EasyMock.expect(drawViewMocked.getVisibility())
+            .andReturn(View.GONE)
+            .anyTimes();
 
-
-        Assertions.assertThatCode(() -> drawView.onWindowFocusChanged(false))
+        EasyMock.replay(drawViewMocked);
+        Assertions.assertThatCode(() -> drawViewMocked.onWindowFocusChanged(false))
             .as("The call to DrawView#onWindowFocusChanged method")
             .doesNotThrowAnyException();
-        Mockito.verify(drawView, Mockito.times(0))
-            .setVisibility(View.VISIBLE);
+        EasyMock.verify(drawViewMocked);
 
 
-        Assertions.assertThatCode(() -> drawView.onWindowFocusChanged(true))
+        EasyMock.reset(drawViewMocked);
+        drawViewMocked.setVisibility(View.VISIBLE);
+        EasyMock.expectLastCall().times(1);
+        EasyMock.expect(drawViewMocked.getVisibility())
+            .andReturn(View.GONE)
+            .anyTimes();
+
+        EasyMock.replay(drawViewMocked);
+        Assertions.assertThatCode(() -> drawViewMocked.onWindowFocusChanged(true))
             .as("The call to DrawView#onWindowFocusChanged method")
             .doesNotThrowAnyException();
 
-        Mockito.verify(drawView, Mockito.times(1))
-            .setVisibility(View.VISIBLE);
+        EasyMock.verifyUnexpectedCalls(drawViewMocked);
+        EasyMock.verify(drawViewMocked);
     }
 }
