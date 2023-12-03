@@ -1,11 +1,8 @@
-package puscas.mobilertapp;
+package puscas.mobilertapp.configs;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
-import puscas.mobilertapp.configs.Config;
-import puscas.mobilertapp.configs.ConfigResolution;
-import puscas.mobilertapp.configs.ConfigSamples;
 import puscas.mobilertapp.constants.Accelerator;
 import puscas.mobilertapp.constants.Scene;
 import puscas.mobilertapp.constants.Shader;
@@ -64,6 +61,14 @@ public final class ConfigTest {
             .as("CAM file path not the expected value.")
             .isNotNull()
             .isEmpty();
+
+        Assertions.assertThat(config.getThreads())
+            .as("Number of threads not the expected value.")
+            .isEqualTo(0);
+
+        Assertions.assertThat(config.getRasterize())
+            .as("Rasterize field not the expected value.")
+            .isEqualTo(false);
     }
 
     /**
@@ -81,6 +86,8 @@ public final class ConfigTest {
         final String obj = "abc";
         final String mat = "def";
         final String cam = "ghi";
+        final int threads = 123;
+        final boolean rasterize = true;
 
         final Config.Builder builder = Config.Builder.Companion.create();
         final ConfigResolution.Builder builderResolution = ConfigResolution.Builder.Companion.create();
@@ -98,6 +105,8 @@ public final class ConfigTest {
         builder.setObjFilePath(obj);
         builder.setMatFilePath(mat);
         builder.setCamFilePath(cam);
+        builder.setThreads(threads);
+        builder.setRasterize(rasterize);
         final Config config = builder.build();
 
         Assertions.assertThat(config.getConfigResolution().getWidth())
@@ -142,6 +151,14 @@ public final class ConfigTest {
             .as("CAM file path not the expected value.")
             .isNotNull()
             .isEqualTo(cam);
+
+        Assertions.assertThat(config.getThreads())
+            .as("Number of threads not the expected value.")
+            .isEqualTo(threads);
+
+        Assertions.assertThat(config.getRasterize())
+            .as("Rasterize field not the expected value.")
+            .isEqualTo(rasterize);
     }
 
     /**
