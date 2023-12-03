@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2023-12-03T13:27:20.489Z",
+    "detectionDate": "2023-12-03T14:19:28.947Z",
     "formats": {
       "java": {
         "sources": {
@@ -115,18 +115,6 @@
           "app/src/test/java/puscas/mobilertapp/utils/SceneTest.java": {
             "lines": 26,
             "tokens": 117,
-            "sources": 1,
-            "clones": 0,
-            "duplicatedLines": 0,
-            "duplicatedTokens": 0,
-            "percentage": 0,
-            "percentageTokens": 0,
-            "newDuplicatedLines": 0,
-            "newClones": 0
-          },
-          "app/src/test/java/puscas/mobilertapp/utils/CustomNumberPickerTest.java": {
-            "lines": 227,
-            "tokens": 1584,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -265,6 +253,18 @@
             "duplicatedTokens": 130,
             "percentage": 53.13,
             "percentageTokens": 65.99,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "app/src/test/java/puscas/mobilertapp/configs/CustomNumberPickerTest.java": {
+            "lines": 73,
+            "tokens": 483,
+            "sources": 1,
+            "clones": 2,
+            "duplicatedLines": 16,
+            "duplicatedTokens": 132,
+            "percentage": 21.92,
+            "percentageTokens": 27.33,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -990,14 +990,14 @@
           }
         },
         "total": {
-          "lines": 9344,
-          "tokens": 64030,
+          "lines": 9190,
+          "tokens": 62929,
           "sources": 82,
-          "clones": 53,
-          "duplicatedLines": 539,
-          "duplicatedTokens": 4672,
-          "percentage": 5.77,
-          "percentageTokens": 7.3,
+          "clones": 54,
+          "duplicatedLines": 547,
+          "duplicatedTokens": 4738,
+          "percentage": 5.95,
+          "percentageTokens": 7.53,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3128,14 +3128,14 @@
       }
     },
     "total": {
-      "lines": 27221,
-      "tokens": 204858,
+      "lines": 27067,
+      "tokens": 203757,
       "sources": 247,
-      "clones": 110,
-      "duplicatedLines": 1484,
-      "duplicatedTokens": 12621,
-      "percentage": 5.45,
-      "percentageTokens": 6.16,
+      "clones": 111,
+      "duplicatedLines": 1492,
+      "duplicatedTokens": 12687,
+      "percentage": 5.51,
+      "percentageTokens": 6.23,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -3930,6 +3930,42 @@
           "line": 36,
           "column": 35,
           "position": 236
+        }
+      }
+    },
+    {
+      "format": "java",
+      "lines": 9,
+      "fragment": ".class);\n\n        EasyMock.replay(viewMocked);\n        Assertions.assertThatCode(() -> this.targetCustomNumberPicker.addView(viewMocked, EasyMock.mock(ViewGroup.LayoutParams.class)))\n                .as(\"ViewManager#addView shouldn't throw any exception.\")\n                .doesNotThrowAnyException();\n    }\n\n}",
+      "tokens": 0,
+      "firstFile": {
+        "name": "app/src/test/java/puscas/mobilertapp/configs/CustomNumberPickerTest.java",
+        "start": 66,
+        "end": 74,
+        "startLoc": {
+          "line": 66,
+          "column": 12,
+          "position": 417
+        },
+        "endLoc": {
+          "line": 74,
+          "column": 2,
+          "position": 483
+        }
+      },
+      "secondFile": {
+        "name": "app/src/test/java/puscas/mobilertapp/configs/CustomNumberPickerTest.java",
+        "start": 49,
+        "end": 63,
+        "startLoc": {
+          "line": 49,
+          "column": 9,
+          "position": 320
+        },
+        "endLoc": {
+          "line": 63,
+          "column": 8,
+          "position": 387
         }
       }
     },
