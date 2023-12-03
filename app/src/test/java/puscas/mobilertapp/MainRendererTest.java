@@ -210,7 +210,7 @@ public final class MainRendererTest {
      * it still exits the method normally without any {@link Exception} being thrown.
      */
     @Test
-    public void testRenderingErrorOnDrawFrame() throws LowMemoryException {
+    public void testRenderingErrorOnDrawFrame() throws Exception {
         MemberModifier.suppress(MemberModifier.method(MainActivity.class, "showUiMessage"));
         MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetRenderButton"));
 
@@ -228,7 +228,7 @@ public final class MainRendererTest {
 
 
         // Setup mock.
-        mainRenderer.rtRenderIntoBitmap(EasyMock.anyObject(Bitmap.class), EasyMock.anyInt());
+        PowerMock.expectPrivate(mainRenderer, "rtRenderIntoBitmap", EasyMock.anyObject(Bitmap.class), EasyMock.anyInt());
         EasyMock.expectLastCall().andThrow(new FailureException("Exception test")).anyTimes();
         EasyMock.replay(mainRenderer);
 
@@ -427,15 +427,11 @@ public final class MainRendererTest {
 
             PowerMock.replayAll();
             MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
-            mainRenderer = EasyMock.partialMockBuilder(MainRenderer.class)
-                .addMockedMethod("initPreviewArrays")
-                .addMockedMethod("rtRenderIntoBitmap", Bitmap.class, int.class)
-                .withConstructor()
-                .createMock();
+            mainRenderer = PowerMock.createNicePartialMockAndInvokeDefaultConstructor(MainRenderer.class, "initPreviewArrays", "rtRenderIntoBitmap");
 
             mainRenderer.initPreviewArrays();
             EasyMock.expectLastCall().andVoid().anyTimes();
-        } catch (final LowMemoryException ex) {
+        } catch (final Exception ex) {
             throw new RuntimeException(ex);
         }
         return mainRenderer;
