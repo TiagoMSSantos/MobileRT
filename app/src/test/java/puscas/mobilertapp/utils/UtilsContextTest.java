@@ -10,7 +10,7 @@ import java.lang.reflect.Modifier;
 /**
  * The unit tests for the {@link UtilsContext} util class.
  */
-public class UtilsContextTest {
+public final class UtilsContextTest {
 
     /**
      * Tests that it's not possible to instantiate {@link UtilsContext}.

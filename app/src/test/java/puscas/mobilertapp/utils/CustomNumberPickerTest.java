@@ -14,7 +14,6 @@ import androidx.annotation.Nullable;
 import org.assertj.core.api.Assertions;
 import org.jetbrains.annotations.Contract;
 import org.junit.Test;
-import org.powermock.core.classloader.annotations.PrepareForTest;
 
 import puscas.mobilertapp.MainActivity;
 import puscas.mobilertapp.constants.CustomNumberPicker;
@@ -23,7 +22,6 @@ import puscas.mobilertapp.exceptions.FailureException;
 /**
  * The test suite for the {@link CustomNumberPicker} util class.
  */
-@PrepareForTest(MainActivity.class)
 public final class CustomNumberPickerTest {
 
     /**

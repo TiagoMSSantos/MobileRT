@@ -10,7 +10,7 @@ import java.lang.reflect.Modifier;
 /**
  * The unit tests for the {@link UtilsGlMatrices} util class.
  */
-public class UtilsGlMatricesTest {
+public final class UtilsGlMatricesTest {
 
     /**
      * Tests that it's not possible to instantiate {@link UtilsGlMatrices}.

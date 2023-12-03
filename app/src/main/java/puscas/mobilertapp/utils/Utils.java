@@ -58,8 +58,7 @@ public final class Utils {
             } finally {
                 handleInterruption("Utils#waitExecutorToFinish");
             }
-        }
-        while (running);
+        } while (running);
 
         final String message = "waitExecutorToFinish" + ConstantsMethods.FINISHED;
         logger.info(message);

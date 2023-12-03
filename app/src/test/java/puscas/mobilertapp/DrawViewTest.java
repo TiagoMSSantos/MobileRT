@@ -41,10 +41,10 @@ import puscas.mobilertapp.exceptions.LowMemoryException;
  * and suppress the native methods in the {@link DrawView} and {@link MainRenderer} classes in the
  * {@link #testRenderSceneWithLowMemory} test method.
  */
-// Annotations necessary for PowerMock to be able to mock final classes and static methods.
+// Annotations necessary for PowerMock to be able to mock final classes, and static and native methods.
 @RunWith(PowerMockRunner.class)
 @PrepareOnlyThisForTest({MainActivity.class, DrawView.class, MainRenderer.class})
-public class DrawViewTest {
+public final class DrawViewTest {
 
     /**
      * Tests the {@link DrawView#getActivity()} method.

@@ -371,9 +371,7 @@ clearOldBuildFiles() {
 createReportsFolders() {
   echo 'Creating reports folders.';
   rm -rf build/reports;
-  set +e;
   rm -rf app/build/reports;
-  set -e;
   mkdir -p build/reports;
   mkdir -p app/build/reports;
   echo 'Created reports folders.';

@@ -54,9 +54,9 @@ public final class MyEglContextFactory implements GLSurfaceView.EGLContextFactor
 
     @Nullable
     @Override
-    public final EGLContext createContext(@NonNull final EGL10 egl10,
-                                          @NonNull final EGLDisplay display,
-                                          @NonNull final EGLConfig eglConfig) {
+    public EGLContext createContext(@NonNull final EGL10 egl10,
+                                    @NonNull final EGLDisplay display,
+                                    @NonNull final EGLConfig eglConfig) {
         logger.info("createContext");
 
         final int eglError = egl10.eglGetError();
@@ -86,9 +86,9 @@ public final class MyEglContextFactory implements GLSurfaceView.EGLContextFactor
     }
 
     @Override
-    public final void destroyContext(@NonNull final EGL10 egl10,
-                                     @NonNull final EGLDisplay display,
-                                     @NonNull final EGLContext context) {
+    public void destroyContext(@NonNull final EGL10 egl10,
+                               @NonNull final EGLDisplay display,
+                               @NonNull final EGLContext context) {
         logger.info("destroyContext");
 
         if (this.drawView.isChangingConfigs()) {

@@ -35,7 +35,7 @@ import puscas.mobilertapp.exceptions.LowMemoryException;
 /**
  * The test suite for the {@link MainRenderer}.
  */
-// Annotations necessary for PowerMock to be able to mock final classes and static methods.
+// Annotations necessary for PowerMock to be able to mock final classes, and static and native methods.
 @RunWith(PowerMockRunner.class)
 @PrepareOnlyThisForTest({MainActivity.class, MainRenderer.class, Bitmap.class, GLES20.class})
 public final class MainRendererTest {

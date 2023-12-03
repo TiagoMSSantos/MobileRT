@@ -10,7 +10,7 @@ import java.lang.reflect.Modifier;
 /**
  * The unit tests for the {@link UtilsBuffer} util class.
  */
-public class UtilsBufferTest {
+public final class UtilsBufferTest {
 
     /**
      * Tests that it's not possible to instantiate {@link UtilsBuffer}.

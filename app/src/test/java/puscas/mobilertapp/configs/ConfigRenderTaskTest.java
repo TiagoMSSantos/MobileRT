@@ -4,13 +4,13 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import org.assertj.core.api.Assertions;
+import org.easymock.EasyMock;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 /**
  * The test suite for {@link ConfigRenderTask} class.
  */
-public class ConfigRenderTaskTest {
+public final class ConfigRenderTaskTest {
 
     /**
      * Tests the default constructor of {@link ConfigRenderTask}.
@@ -18,8 +18,8 @@ public class ConfigRenderTaskTest {
     @Test
     public void testDefaultConfigRenderTask() {
         final ConfigRenderTask.Builder builder = ConfigRenderTask.Builder.Companion.create();
-        final TextView mockedTextView = Mockito.mock(TextView.class);
-        final Button mockedButton = Mockito.mock(Button.class);
+        final TextView mockedTextView = EasyMock.mock(TextView.class);
+        final Button mockedButton = EasyMock.mock(Button.class);
         builder.setTextView(mockedTextView);
         builder.setButtonRender(mockedButton);
         final ConfigRenderTask configRenderTask = builder.build();

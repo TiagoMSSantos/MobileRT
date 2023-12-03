@@ -10,7 +10,7 @@ import java.lang.reflect.Modifier;
 /**
  * The unit tests for the {@link ConstantsToast} util class.
  */
-public class ConstantsToastTest {
+public final class ConstantsToastTest {
 
     /**
      * Tests that it's not possible to instantiate {@link ConstantsToast}.

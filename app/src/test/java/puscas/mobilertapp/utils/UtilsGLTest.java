@@ -10,7 +10,7 @@ import java.lang.reflect.Modifier;
 /**
  * The unit tests for the {@link UtilsGL} util class.
  */
-public class UtilsGLTest {
+public final class UtilsGLTest {
 
     /**
      * Tests that it's not possible to instantiate {@link UtilsGL}.

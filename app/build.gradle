@@ -470,15 +470,8 @@ dependencies {
     testImplementation "junit:junit:${junit_version}"
     testImplementation "org.assertj:assertj-core:${assertj_version}"
     testImplementation "org.khronos:opengl-api:${khronos_gl_for_android_sdk_version}"
-    testImplementation "org.mockito:mockito-core:${mockito_version}"
-    testImplementation "org.mockito:mockito-inline:${mockito_inline_version}"
-    testImplementation "org.powermock:powermock-core:${powermock_version}"
     testImplementation "org.powermock:powermock-module-junit4:${powermock_version}"
     testImplementation "org.powermock:powermock-api-easymock:${powermock_version}"
-    // Necessary for code coverage to work properly.
-    // Should be used `powermock-module-junit4-rule-agent` instead of `powermock-module-junit4-rule`.
-    testImplementation "org.powermock:powermock-module-junit4-rule-agent:${powermock_version}"
-    testImplementation "org.powermock:powermock-module-javaagent:${powermock_version}"
     testImplementation "org.easymock:easymock:${easymock_version}"
     testImplementation "org.springframework:spring-test:${spring_version}"
 

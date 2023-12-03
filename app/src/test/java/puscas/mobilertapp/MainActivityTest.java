@@ -31,7 +31,7 @@ import puscas.mobilertapp.utils.UtilsContext;
 /**
  * The test suite for {@link MainActivity} class.
  */
-// Annotations necessary for PowerMock to be able to mock final classes and static methods.
+// Annotations necessary for PowerMock to be able to mock final classes, and static and native methods.
 @RunWith(PowerMockRunner.class)
 @PrepareOnlyThisForTest({MainActivity.class, UtilsContext.class, Environment.class})
 public final class MainActivityTest {

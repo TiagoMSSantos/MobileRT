@@ -10,7 +10,7 @@ import java.lang.reflect.Modifier;
 /**
  * The unit tests for the {@link ConstantsMethods} util class.
  */
-public class ConstantsMethodsTest {
+public final class ConstantsMethodsTest {
 
     /**
      * Tests that it's not possible to instantiate {@link ConstantsMethods}.

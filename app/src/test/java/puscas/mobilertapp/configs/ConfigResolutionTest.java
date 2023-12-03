@@ -6,7 +6,7 @@ import org.junit.Test;
 /**
  * The test suite for {@link ConfigResolution} class.
  */
-public class ConfigResolutionTest {
+public final class ConfigResolutionTest {
 
     /**
      * Tests the {@link ConfigResolution.Builder#toString()} method in the builder class of {@link Config}.

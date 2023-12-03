@@ -6,7 +6,7 @@ import org.junit.Test;
 /**
  * The test suite for {@link ConfigGlAttribute} class.
  */
-public class ConfigGlAttributeTest {
+public final class ConfigGlAttributeTest {
 
     /**
      * Tests the {@link ConfigGlAttribute.Builder#toString()} method in the builder class of {@link Config}.

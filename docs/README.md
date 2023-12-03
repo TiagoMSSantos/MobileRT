@@ -132,8 +132,6 @@ library to load the textures
 - [x] Java [Streams](https://github.com/stefan-zobel/streamsupport)
 to reduce complexity
 - [x] Java [Google Guava](https://github.com/google/guava)
-libraries to reduce complexity
-- [x] Java [Apache Commons](https://commons.apache.org/)
 framework to reduce complexity
 - [x] Java [JUnit4](https://junit.org/junit4/)
 framework for unit tests
@@ -141,13 +139,10 @@ framework for unit tests
 library for unit tests assertions
 - [x] Java [Android Espresso](https://developer.android.com/training/testing/espresso)
 library for instrumented tests
-
-<!--
-- [x] Java [Mockito](https://site.mockito.org/)
+- [x] Java [EasyMock](https://easymock.org/)
 framework for mocking in unit tests
-- [x] Java [Google Truth](https://truth.dev/)
-library for assertions unit tests
--->
+- [x] Java [PowerMock for EasyMock](https://github.com/powermock/powermock/wiki/EasyMock)
+  framework to improve mocking in unit tests (allow mocking `final` classes, `native` and `static` methods
 
 ## Supported Operating Systems
 <div ><!-- The extra space before closing the tag is necessary for the GitHub Flavored Markdown parser to detect HTML -->

@@ -10,7 +10,7 @@ import java.lang.reflect.Modifier;
 /**
  * The unit tests for the {@link UtilsShader} util class.
  */
-public class UtilsShaderTest {
+public final class UtilsShaderTest {
 
     /**
      * Tests that it's not possible to instantiate {@link UtilsShader}.

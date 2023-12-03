@@ -6,7 +6,7 @@ import org.junit.Test;
 /**
  * The test suite for the {@link RenderTask} class.
  */
-public class RenderTaskTest {
+public final class RenderTaskTest {
 
     /**
      * Tests the {@link RenderTask.Builder#toString()} method in the builder class of

@@ -7,13 +7,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.assertj.core.api.Assertions;
+import org.easymock.EasyMock;
 import org.jetbrains.annotations.Contract;
-import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.Mockito;
+import org.junit.runner.RunWith;
 import org.powermock.api.support.membermodification.MemberModifier;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.rule.PowerMockRule;
+import org.powermock.core.classloader.annotations.PrepareOnlyThisForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.microedition.khronos.egl.EGL10;
@@ -27,15 +27,10 @@ import puscas.mobilertapp.exceptions.FailureException;
 /**
  * The test suite for the {@link MyEglContextFactory} class.
  */
-@PrepareForTest({MainActivity.class, MainRenderer.class})
+// Annotations necessary for PowerMock to be able to mock final classes, and static and native methods.
+@RunWith(PowerMockRunner.class)
+@PrepareOnlyThisForTest({MainActivity.class, MainRenderer.class, DrawView.class})
 public final class MyEglContextFactoryTest {
-
-    /**
-     * The {@link Rule} for the {@link MainActivity} for each test.
-     */
-    @NonNull
-    @Rule
-    public PowerMockRule rule = new PowerMockRule();
 
     /**
      * The {@link EGL10} value to return by the mocked {@link EGL10} when the {@link EGL10#eglGetError()}
@@ -308,7 +303,7 @@ public final class MyEglContextFactoryTest {
         // Values to be returned by the EGL10 mocked.
         eglContextDestroy = false;
         eglErrorReturnedByMock = EGL10.EGL_SUCCESS;
-        eglContextReturnedByMock = Mockito.mock(EGLContext.class);
+        eglContextReturnedByMock = EasyMock.mock(EGLContext.class);
 
         final EGLContext eglContext = myEGLContextFactory.createContext(egl, null, null);
         Assertions.assertThat(eglContext)
@@ -335,7 +330,7 @@ public final class MyEglContextFactoryTest {
         // Mock the 1st EGLContext.
         eglContextDestroy = false;
         eglErrorReturnedByMock = EGL10.EGL_SUCCESS;
-        eglContextReturnedByMock = Mockito.mock(EGLContext.class);
+        eglContextReturnedByMock = EasyMock.mock(EGLContext.class);
 
         final EGLContext eglContext = myEGLContextFactory.createContext(egl, null, null);
         Assertions.assertThat(eglContext)
@@ -345,7 +340,7 @@ public final class MyEglContextFactoryTest {
         // Mock the 2nd EGLContext.
         eglContextDestroy = true;
         eglErrorReturnedByMock = EGL10.EGL_SUCCESS;
-        eglContextReturnedByMock = Mockito.mock(EGLContext.class);
+        eglContextReturnedByMock = EasyMock.mock(EGLContext.class);
 
         final EGLContext newEglContext = myEGLContextFactory.createContext(egl, null, null);
         Assertions.assertThat(newEglContext)
@@ -373,7 +368,7 @@ public final class MyEglContextFactoryTest {
         // Values to be returned by the EGL10 mocked.
         eglContextDestroy = false;
         eglErrorReturnedByMock = EGL10.EGL_SUCCESS;
-        eglContextReturnedByMock = Mockito.mock(EGLContext.class);
+        eglContextReturnedByMock = EasyMock.mock(EGLContext.class);
 
         final EGLContext eglContext = myEGLContextFactory.createContext(egl, null, null);
         Assertions.assertThat(eglContext)
@@ -391,9 +386,10 @@ public final class MyEglContextFactoryTest {
     @Test
     public void testDestroyContext() {
         MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
-        final DrawView drawViewMocked = Mockito.mock(DrawView.class);
-        Mockito.when(drawViewMocked.isChangingConfigs())
-            .thenReturn(true);
+        final DrawView drawViewMocked = EasyMock.mock(DrawView.class);
+        EasyMock.expect(drawViewMocked.isChangingConfigs())
+            .andReturn(true)
+            .anyTimes();
 
         final GLSurfaceView.EGLContextFactory myEGLContextFactory = new MyEglContextFactory(drawViewMocked);
         final EGL10 egl = createEGL();
@@ -401,14 +397,16 @@ public final class MyEglContextFactoryTest {
         // Values to be returned by the EGL10 mocked.
         eglContextDestroy = false;
         eglErrorReturnedByMock = EGL10.EGL_SUCCESS;
-        eglContextReturnedByMock = Mockito.mock(EGLContext.class);
+        eglContextReturnedByMock = EasyMock.mock(EGLContext.class);
 
         final EGLContext eglContext = myEGLContextFactory.createContext(egl, null, null);
         Assertions.assertThat(eglContext)
             .as("The EGL context created")
             .isNotNull();
 
-        final EGLContext eglContextMocked = Mockito.mock(EGLContext.class);
+        final EGLContext eglContextMocked = EasyMock.mock(EGLContext.class);
+
+        EasyMock.replay(drawViewMocked, eglContextReturnedByMock, eglContextMocked);
         myEGLContextFactory.destroyContext(egl, null, eglContextMocked);
 
         final EGLContext newEglContext = (EGLContext) ReflectionTestUtils.getField(myEGLContextFactory, "eglContext");

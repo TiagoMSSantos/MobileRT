@@ -6,7 +6,7 @@ import org.junit.Test;
 /**
  * The test suite for {@link ConfigSamples} class.
  */
-public class ConfigSamplesTest {
+public final class ConfigSamplesTest {
 
     /**
      * Tests the {@link ConfigSamples.Builder#toString()} method in the builder class of {@link Config}.

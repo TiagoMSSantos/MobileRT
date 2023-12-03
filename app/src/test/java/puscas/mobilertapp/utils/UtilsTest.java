@@ -3,8 +3,8 @@ package puscas.mobilertapp.utils;
 import android.widget.NumberPicker;
 
 import org.assertj.core.api.Assertions;
+import org.easymock.EasyMock;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
@@ -18,7 +18,7 @@ import puscas.mobilertapp.exceptions.FailureException;
 /**
  * The unit tests for the {@link Utils} util class.
  */
-public class UtilsTest {
+public final class UtilsTest {
 
     /**
      * Tests that it's not possible to instantiate {@link Utils}.
@@ -44,7 +44,7 @@ public class UtilsTest {
      */
     @Test
     public void testReadTextFromInputStreamFail() {
-        final InputStream inputStreamMocked = Mockito.mock(InputStream.class);
+        final InputStream inputStreamMocked = EasyMock.mock(InputStream.class);
 
         Assertions.assertThatThrownBy(() -> Utils.readTextFromInputStream(inputStreamMocked))
             .as("The call to Utils#readTextFromInputStream method")
@@ -57,7 +57,7 @@ public class UtilsTest {
      */
     @Test
     public void testGetValueFromPickerFail() {
-        final NumberPicker numberPickerMocked = Mockito.mock(NumberPicker.class);
+        final NumberPicker numberPickerMocked = EasyMock.mock(NumberPicker.class);
 
         Assertions.assertThatThrownBy(() -> Utils.getValueFromPicker(numberPickerMocked))
             .as("The call to Utils#getValueFromPicker method")
@@ -70,7 +70,7 @@ public class UtilsTest {
      */
     @Test
     public void testGetResolutionFromPickerFail() {
-        final NumberPicker numberPickerMocked = Mockito.mock(NumberPicker.class);
+        final NumberPicker numberPickerMocked = EasyMock.mock(NumberPicker.class);
 
         Assertions.assertThatThrownBy(() ->Utils.getResolutionFromPicker(numberPickerMocked))
             .as("The call to Utils#getResolutionFromPicker method")
@@ -86,12 +86,14 @@ public class UtilsTest {
      */
     @Test
     public void testWaitExecutorToFinishInterruptsThread() throws InterruptedException {
-        final ExecutorService numberPickerMocked = Mockito.mock(ExecutorService.class);
-        Mockito.when(numberPickerMocked.awaitTermination(1L, TimeUnit.DAYS))
-            .thenReturn(false)
-            .thenThrow(new InterruptedException("test"))
-            .thenReturn(true);
+        final ExecutorService numberPickerMocked = EasyMock.mock(ExecutorService.class);
 
+        EasyMock.expect(numberPickerMocked.awaitTermination(1L, TimeUnit.DAYS))
+            .andReturn(false)
+            .andThrow(new InterruptedException("test"))
+            .andReturn(true);
+
+        EasyMock.replay(numberPickerMocked);
         Assertions.assertThatCode(() ->Utils.waitExecutorToFinish(numberPickerMocked))
             .as("The call to Utils#waitExecutorToFinish method")
             .doesNotThrowAnyException();

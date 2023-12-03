@@ -10,7 +10,7 @@ import java.lang.reflect.Modifier;
 /**
  * The unit tests for the {@link UtilsLogging} util class.
  */
-public class UtilsLoggingTest {
+public final class UtilsLoggingTest {
 
     /**
      * Tests that it's not possible to instantiate {@link UtilsLogging}.

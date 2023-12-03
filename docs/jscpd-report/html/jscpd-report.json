@@ -1,90 +1,90 @@
 {
   "statistics": {
-    "detectionDate": "2023-12-02T18:38:12.452Z",
+    "detectionDate": "2023-12-03T09:34:30.732Z",
     "formats": {
       "java": {
         "sources": {
           "app/src/test/java/puscas/mobilertapp/utils/UtilsTest.java": {
-            "lines": 98,
-            "tokens": 609,
+            "lines": 100,
+            "tokens": 621,
             "sources": 1,
             "clones": 12,
             "duplicatedLines": 72,
             "duplicatedTokens": 756,
-            "percentage": 73.47,
-            "percentageTokens": 124.14,
+            "percentage": 72,
+            "percentageTokens": 121.74,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "app/src/test/java/puscas/mobilertapp/utils/UtilsShaderTest.java": {
             "lines": 32,
-            "tokens": 195,
+            "tokens": 197,
             "sources": 1,
             "clones": 6,
             "duplicatedLines": 61,
             "duplicatedTokens": 398,
             "percentage": 190.63,
-            "percentageTokens": 204.1,
+            "percentageTokens": 202.03,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "app/src/test/java/puscas/mobilertapp/utils/UtilsLoggingTest.java": {
             "lines": 41,
-            "tokens": 240,
+            "tokens": 242,
             "sources": 1,
             "clones": 2,
             "duplicatedLines": 17,
             "duplicatedTokens": 130,
             "percentage": 41.46,
-            "percentageTokens": 54.17,
+            "percentageTokens": 53.72,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "app/src/test/java/puscas/mobilertapp/utils/UtilsGlMatricesTest.java": {
             "lines": 32,
-            "tokens": 195,
+            "tokens": 197,
             "sources": 1,
             "clones": 2,
             "duplicatedLines": 17,
             "duplicatedTokens": 130,
             "percentage": 53.13,
-            "percentageTokens": 66.67,
+            "percentageTokens": 65.99,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "app/src/test/java/puscas/mobilertapp/utils/UtilsGLTest.java": {
             "lines": 32,
-            "tokens": 195,
+            "tokens": 197,
             "sources": 1,
             "clones": 2,
             "duplicatedLines": 17,
             "duplicatedTokens": 130,
             "percentage": 53.13,
-            "percentageTokens": 66.67,
+            "percentageTokens": 65.99,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "app/src/test/java/puscas/mobilertapp/utils/UtilsContextTest.java": {
             "lines": 32,
-            "tokens": 195,
+            "tokens": 197,
             "sources": 1,
             "clones": 2,
             "duplicatedLines": 17,
             "duplicatedTokens": 130,
             "percentage": 53.13,
-            "percentageTokens": 66.67,
+            "percentageTokens": 65.99,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "app/src/test/java/puscas/mobilertapp/utils/UtilsBufferTest.java": {
             "lines": 32,
-            "tokens": 195,
+            "tokens": 197,
             "sources": 1,
             "clones": 2,
             "duplicatedLines": 17,
             "duplicatedTokens": 130,
             "percentage": 53.13,
-            "percentageTokens": 66.67,
+            "percentageTokens": 65.99,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -125,8 +125,8 @@
             "newClones": 0
           },
           "app/src/test/java/puscas/mobilertapp/utils/CustomNumberPickerTest.java": {
-            "lines": 229,
-            "tokens": 1606,
+            "lines": 227,
+            "tokens": 1584,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -198,79 +198,79 @@
           },
           "app/src/test/java/puscas/mobilertapp/constants/ConstantsUITest.java": {
             "lines": 32,
-            "tokens": 195,
+            "tokens": 197,
             "sources": 1,
             "clones": 6,
             "duplicatedLines": 61,
             "duplicatedTokens": 398,
             "percentage": 190.63,
-            "percentageTokens": 204.1,
+            "percentageTokens": 202.03,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "app/src/test/java/puscas/mobilertapp/constants/ConstantsToastTest.java": {
             "lines": 32,
-            "tokens": 195,
+            "tokens": 197,
             "sources": 1,
             "clones": 2,
             "duplicatedLines": 17,
             "duplicatedTokens": 130,
             "percentage": 53.13,
-            "percentageTokens": 66.67,
+            "percentageTokens": 65.99,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "app/src/test/java/puscas/mobilertapp/constants/ConstantsTest.java": {
             "lines": 32,
-            "tokens": 195,
+            "tokens": 197,
             "sources": 1,
             "clones": 2,
             "duplicatedLines": 17,
             "duplicatedTokens": 130,
             "percentage": 53.13,
-            "percentageTokens": 66.67,
+            "percentageTokens": 65.99,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "app/src/test/java/puscas/mobilertapp/constants/ConstantsRendererTest.java": {
             "lines": 32,
-            "tokens": 195,
+            "tokens": 197,
             "sources": 1,
             "clones": 2,
             "duplicatedLines": 17,
             "duplicatedTokens": 130,
             "percentage": 53.13,
-            "percentageTokens": 66.67,
+            "percentageTokens": 65.99,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "app/src/test/java/puscas/mobilertapp/constants/ConstantsMethodsTest.java": {
             "lines": 32,
-            "tokens": 195,
+            "tokens": 197,
             "sources": 1,
             "clones": 2,
             "duplicatedLines": 17,
             "duplicatedTokens": 130,
             "percentage": 53.13,
-            "percentageTokens": 66.67,
+            "percentageTokens": 65.99,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "app/src/test/java/puscas/mobilertapp/constants/ConstantsErrorTest.java": {
             "lines": 32,
-            "tokens": 195,
+            "tokens": 197,
             "sources": 1,
             "clones": 2,
             "duplicatedLines": 17,
             "duplicatedTokens": 130,
             "percentage": 53.13,
-            "percentageTokens": 66.67,
+            "percentageTokens": 65.99,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "app/src/test/java/puscas/mobilertapp/configs/ConfigSamplesTest.java": {
             "lines": 22,
-            "tokens": 120,
+            "tokens": 122,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -282,7 +282,7 @@
           },
           "app/src/test/java/puscas/mobilertapp/configs/ConfigResolutionTest.java": {
             "lines": 22,
-            "tokens": 120,
+            "tokens": 122,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -294,7 +294,7 @@
           },
           "app/src/test/java/puscas/mobilertapp/configs/ConfigRenderTaskTest.java": {
             "lines": 43,
-            "tokens": 294,
+            "tokens": 296,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -306,7 +306,7 @@
           },
           "app/src/test/java/puscas/mobilertapp/configs/ConfigGlAttributeTest.java": {
             "lines": 22,
-            "tokens": 120,
+            "tokens": 122,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -401,8 +401,8 @@
             "newClones": 0
           },
           "app/src/main/java/puscas/mobilertapp/utils/Utils.java": {
-            "lines": 179,
-            "tokens": 1258,
+            "lines": 178,
+            "tokens": 1257,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -738,7 +738,7 @@
           },
           "app/src/test/java/puscas/mobilertapp/RenderTaskTest.java": {
             "lines": 22,
-            "tokens": 117,
+            "tokens": 119,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -749,14 +749,14 @@
             "newClones": 0
           },
           "app/src/test/java/puscas/mobilertapp/MyEglContextFactoryTest.java": {
-            "lines": 421,
-            "tokens": 3097,
+            "lines": 419,
+            "tokens": 3107,
             "sources": 1,
-            "clones": 12,
-            "duplicatedLines": 154,
-            "duplicatedTokens": 1522,
-            "percentage": 36.58,
-            "percentageTokens": 49.14,
+            "clones": 14,
+            "duplicatedLines": 168,
+            "duplicatedTokens": 1666,
+            "percentage": 40.1,
+            "percentageTokens": 53.62,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -766,9 +766,9 @@
             "sources": 1,
             "clones": 17,
             "duplicatedLines": 182,
-            "duplicatedTokens": 1725,
+            "duplicatedTokens": 1723,
             "percentage": 41.18,
-            "percentageTokens": 46.31,
+            "percentageTokens": 46.26,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -786,13 +786,13 @@
           },
           "app/src/test/java/puscas/mobilertapp/DrawViewTest.java": {
             "lines": 296,
-            "tokens": 2470,
+            "tokens": 2472,
             "sources": 1,
             "clones": 7,
-            "duplicatedLines": 62,
-            "duplicatedTokens": 639,
-            "percentage": 20.95,
-            "percentageTokens": 25.87,
+            "duplicatedLines": 64,
+            "duplicatedTokens": 659,
+            "percentage": 21.62,
+            "percentageTokens": 26.66,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -834,13 +834,13 @@
           },
           "app/src/main/java/puscas/mobilertapp/MyEglContextFactory.java": {
             "lines": 103,
-            "tokens": 708,
+            "tokens": 704,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 9,
             "duplicatedTokens": 74,
             "percentage": 8.74,
-            "percentageTokens": 10.45,
+            "percentageTokens": 10.51,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -990,14 +990,14 @@
           }
         },
         "total": {
-          "lines": 9305,
-          "tokens": 63413,
+          "lines": 9302,
+          "tokens": 63444,
           "sources": 82,
-          "clones": 51,
-          "duplicatedLines": 516,
-          "duplicatedTokens": 4446,
-          "percentage": 5.55,
-          "percentageTokens": 7.01,
+          "clones": 52,
+          "duplicatedLines": 524,
+          "duplicatedTokens": 4527,
+          "percentage": 5.63,
+          "percentageTokens": 7.14,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2181,8 +2181,8 @@
             "newClones": 0
           },
           "docs/README.md": {
-            "lines": 263,
-            "tokens": 1930,
+            "lines": 258,
+            "tokens": 1970,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2242,8 +2242,8 @@
           }
         },
         "total": {
-          "lines": 2141,
-          "tokens": 21061,
+          "lines": 2136,
+          "tokens": 21101,
           "sources": 14,
           "clones": 0,
           "duplicatedLines": 0,
@@ -2933,8 +2933,8 @@
             "newClones": 0
           },
           "scripts/helper_functions.sh": {
-            "lines": 492,
-            "tokens": 3385,
+            "lines": 490,
+            "tokens": 3373,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2994,8 +2994,8 @@
           }
         },
         "total": {
-          "lines": 3552,
-          "tokens": 21888,
+          "lines": 3550,
+          "tokens": 21876,
           "sources": 13,
           "clones": 11,
           "duplicatedLines": 268,
@@ -3033,8 +3033,8 @@
             "newClones": 0
           },
           "gradle.properties": {
-            "lines": 91,
-            "tokens": 225,
+            "lines": 90,
+            "tokens": 221,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -3046,8 +3046,8 @@
           }
         },
         "total": {
-          "lines": 132,
-          "tokens": 349,
+          "lines": 131,
+          "tokens": 345,
           "sources": 3,
           "clones": 0,
           "duplicatedLines": 0,
@@ -3128,14 +3128,14 @@
       }
     },
     "total": {
-      "lines": 27190,
-      "tokens": 204217,
+      "lines": 27179,
+      "tokens": 204272,
       "sources": 247,
-      "clones": 108,
-      "duplicatedLines": 1461,
-      "duplicatedTokens": 12395,
-      "percentage": 5.37,
-      "percentageTokens": 6.07,
+      "clones": 109,
+      "duplicatedLines": 1469,
+      "duplicatedTokens": 12476,
+      "percentage": 5.4,
+      "percentageTokens": 6.11,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -3153,12 +3153,12 @@
         "startLoc": {
           "line": 22,
           "column": 12,
-          "position": 109
+          "position": 111
         },
         "endLoc": {
           "line": 28,
           "column": 41,
-          "position": 172
+          "position": 174
         }
       },
       "secondFile": {
@@ -3168,12 +3168,12 @@
         "startLoc": {
           "line": 30,
           "column": 6,
-          "position": 171
+          "position": 173
         },
         "endLoc": {
           "line": 36,
           "column": 35,
-          "position": 234
+          "position": 236
         }
       }
     },
@@ -3225,12 +3225,12 @@
         "startLoc": {
           "line": 22,
           "column": 13,
-          "position": 109
+          "position": 111
         },
         "endLoc": {
           "line": 28,
           "column": 42,
-          "position": 172
+          "position": 174
         }
       },
       "secondFile": {
@@ -3240,12 +3240,12 @@
         "startLoc": {
           "line": 30,
           "column": 6,
-          "position": 171
+          "position": 173
         },
         "endLoc": {
           "line": 36,
           "column": 35,
-          "position": 234
+          "position": 236
         }
       }
     },
@@ -3297,12 +3297,12 @@
         "startLoc": {
           "line": 22,
           "column": 16,
-          "position": 109
+          "position": 111
         },
         "endLoc": {
           "line": 28,
           "column": 46,
-          "position": 172
+          "position": 174
         }
       },
       "secondFile": {
@@ -3312,12 +3312,12 @@
         "startLoc": {
           "line": 30,
           "column": 6,
-          "position": 171
+          "position": 173
         },
         "endLoc": {
           "line": 36,
           "column": 35,
-          "position": 234
+          "position": 236
         }
       }
     },
@@ -3369,12 +3369,12 @@
         "startLoc": {
           "line": 22,
           "column": 8,
-          "position": 109
+          "position": 111
         },
         "endLoc": {
           "line": 28,
           "column": 37,
-          "position": 172
+          "position": 174
         }
       },
       "secondFile": {
@@ -3384,12 +3384,12 @@
         "startLoc": {
           "line": 30,
           "column": 6,
-          "position": 171
+          "position": 173
         },
         "endLoc": {
           "line": 36,
           "column": 35,
-          "position": 234
+          "position": 236
         }
       }
     },
@@ -3441,12 +3441,12 @@
         "startLoc": {
           "line": 22,
           "column": 13,
-          "position": 109
+          "position": 111
         },
         "endLoc": {
           "line": 28,
           "column": 42,
-          "position": 172
+          "position": 174
         }
       },
       "secondFile": {
@@ -3456,12 +3456,12 @@
         "startLoc": {
           "line": 30,
           "column": 6,
-          "position": 171
+          "position": 173
         },
         "endLoc": {
           "line": 36,
           "column": 35,
-          "position": 234
+          "position": 236
         }
       }
     },
@@ -3513,12 +3513,12 @@
         "startLoc": {
           "line": 22,
           "column": 12,
-          "position": 109
+          "position": 111
         },
         "endLoc": {
           "line": 28,
           "column": 41,
-          "position": 172
+          "position": 174
         }
       },
       "secondFile": {
@@ -3528,12 +3528,12 @@
         "startLoc": {
           "line": 30,
           "column": 6,
-          "position": 171
+          "position": 173
         },
         "endLoc": {
           "line": 36,
           "column": 35,
-          "position": 234
+          "position": 236
         }
       }
     },
@@ -3549,12 +3549,12 @@
         "startLoc": {
           "line": 22,
           "column": 12,
-          "position": 109
+          "position": 111
         },
         "endLoc": {
           "line": 28,
           "column": 41,
-          "position": 172
+          "position": 174
         }
       },
       "secondFile": {
@@ -3564,12 +3564,12 @@
         "startLoc": {
           "line": 30,
           "column": 6,
-          "position": 171
+          "position": 173
         },
         "endLoc": {
           "line": 36,
           "column": 35,
-          "position": 234
+          "position": 236
         }
       }
     },
@@ -3621,12 +3621,12 @@
         "startLoc": {
           "line": 22,
           "column": 15,
-          "position": 109
+          "position": 111
         },
         "endLoc": {
           "line": 28,
           "column": 44,
-          "position": 172
+          "position": 174
         }
       },
       "secondFile": {
@@ -3636,12 +3636,12 @@
         "startLoc": {
           "line": 30,
           "column": 6,
-          "position": 171
+          "position": 173
         },
         "endLoc": {
           "line": 36,
           "column": 35,
-          "position": 234
+          "position": 236
         }
       }
     },
@@ -3693,12 +3693,12 @@
         "startLoc": {
           "line": 22,
           "column": 10,
-          "position": 109
+          "position": 111
         },
         "endLoc": {
           "line": 28,
           "column": 39,
-          "position": 172
+          "position": 174
         }
       },
       "secondFile": {
@@ -3708,12 +3708,12 @@
         "startLoc": {
           "line": 30,
           "column": 6,
-          "position": 171
+          "position": 173
         },
         "endLoc": {
           "line": 36,
           "column": 35,
-          "position": 234
+          "position": 236
         }
       }
     },
@@ -3765,12 +3765,12 @@
         "startLoc": {
           "line": 22,
           "column": 18,
-          "position": 109
+          "position": 111
         },
         "endLoc": {
           "line": 28,
           "column": 47,
-          "position": 172
+          "position": 174
         }
       },
       "secondFile": {
@@ -3780,12 +3780,12 @@
         "startLoc": {
           "line": 30,
           "column": 6,
-          "position": 171
+          "position": 173
         },
         "endLoc": {
           "line": 36,
           "column": 35,
-          "position": 234
+          "position": 236
         }
       }
     },
@@ -3837,12 +3837,12 @@
         "startLoc": {
           "line": 22,
           "column": 17,
-          "position": 109
+          "position": 111
         },
         "endLoc": {
           "line": 28,
           "column": 46,
-          "position": 172
+          "position": 174
         }
       },
       "secondFile": {
@@ -3852,12 +3852,12 @@
         "startLoc": {
           "line": 30,
           "column": 6,
-          "position": 171
+          "position": 173
         },
         "endLoc": {
           "line": 36,
           "column": 35,
-          "position": 234
+          "position": 236
         }
       }
     },
@@ -3909,12 +3909,12 @@
         "startLoc": {
           "line": 22,
           "column": 15,
-          "position": 109
+          "position": 111
         },
         "endLoc": {
           "line": 28,
           "column": 44,
-          "position": 172
+          "position": 174
         }
       },
       "secondFile": {
@@ -3924,12 +3924,12 @@
         "startLoc": {
           "line": 30,
           "column": 6,
-          "position": 171
+          "position": 173
         },
         "endLoc": {
           "line": 36,
           "column": 35,
-          "position": 234
+          "position": 236
         }
       }
     },
@@ -4048,68 +4048,68 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MyEglContextFactoryTest.java",
-        "start": 273,
-        "end": 285,
+        "start": 268,
+        "end": 280,
         "startLoc": {
-          "line": 273,
+          "line": 268,
           "column": 33,
-          "position": 1852
+          "position": 1840
         },
         "endLoc": {
-          "line": 285,
+          "line": 280,
           "column": 9,
-          "position": 1982
+          "position": 1970
         }
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MyEglContextFactoryTest.java",
-        "start": 246,
-        "end": 258,
+        "start": 241,
+        "end": 253,
         "startLoc": {
-          "line": 246,
+          "line": 241,
           "column": 25,
-          "position": 1649
+          "position": 1637
         },
         "endLoc": {
-          "line": 258,
+          "line": 253,
           "column": 12,
-          "position": 1779
+          "position": 1767
         }
       }
     },
     {
       "format": "java",
       "lines": 14,
-      "fragment": "() {\n        MemberModifier.suppress(MemberModifier.method(MainActivity.class, \"resetErrno\"));\n        MemberModifier.suppress(MemberModifier.method(MainRenderer.class, \"setBitmap\"));\n\n        final Context context = new MainActivity();\n        final DrawView drawView = new DrawView(context);\n\n        final GLSurfaceView.EGLContextFactory myEGLContextFactory = new MyEglContextFactory(drawView);\n        final EGL10 egl = createEGL();\n\n        // Values to be returned by the EGL10 mocked.\n        eglContextDestroy = false;\n        eglErrorReturnedByMock = EGL10.EGL_SUCCESS;\n        eglContextReturnedByMock = Mockito",
+      "fragment": "() {\n        MemberModifier.suppress(MemberModifier.method(MainActivity.class, \"resetErrno\"));\n        MemberModifier.suppress(MemberModifier.method(MainRenderer.class, \"setBitmap\"));\n\n        final Context context = new MainActivity();\n        final DrawView drawView = new DrawView(context);\n\n        final GLSurfaceView.EGLContextFactory myEGLContextFactory = new MyEglContextFactory(drawView);\n        final EGL10 egl = createEGL();\n\n        // Values to be returned by the EGL10 mocked.\n        eglContextDestroy = false;\n        eglErrorReturnedByMock = EGL10.EGL_SUCCESS;\n        eglContextReturnedByMock = EasyMock",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MyEglContextFactoryTest.java",
-        "start": 298,
-        "end": 311,
+        "start": 293,
+        "end": 306,
         "startLoc": {
-          "line": 298,
+          "line": 293,
           "column": 18,
-          "position": 2052
+          "position": 2040
         },
         "endLoc": {
-          "line": 311,
-          "column": 8,
-          "position": 2190
+          "line": 306,
+          "column": 9,
+          "position": 2178
         }
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MyEglContextFactoryTest.java",
-        "start": 246,
-        "end": 259,
+        "start": 241,
+        "end": 254,
         "startLoc": {
-          "line": 246,
+          "line": 241,
           "column": 25,
-          "position": 1649
+          "position": 1637
         },
         "endLoc": {
-          "line": 259,
+          "line": 254,
           "column": 5,
-          "position": 1787
+          "position": 1775
         }
       }
     },
@@ -4120,140 +4120,176 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MyEglContextFactoryTest.java",
-        "start": 324,
-        "end": 335,
+        "start": 319,
+        "end": 330,
         "startLoc": {
-          "line": 324,
+          "line": 319,
           "column": 21,
-          "position": 2262
+          "position": 2250
         },
         "endLoc": {
-          "line": 335,
+          "line": 330,
           "column": 28,
-          "position": 2378
+          "position": 2366
         }
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MyEglContextFactoryTest.java",
-        "start": 246,
-        "end": 257,
+        "start": 241,
+        "end": 252,
         "startLoc": {
-          "line": 246,
+          "line": 241,
           "column": 25,
-          "position": 1649
+          "position": 1637
         },
         "endLoc": {
-          "line": 257,
+          "line": 252,
           "column": 18,
-          "position": 1765
+          "position": 1753
         }
       }
     },
     {
       "format": "java",
       "lines": 10,
-      "fragment": "eglContextDestroy = false;\n        eglErrorReturnedByMock = EGL10.EGL_SUCCESS;\n        eglContextReturnedByMock = Mockito.mock(EGLContext.class);\n\n        final EGLContext eglContext = myEGLContextFactory.createContext(egl, null, null);\n        Assertions.assertThat(eglContext)\n            .as(\"The EGL context created\")\n            .isNotNull();\n\n        // Mock the 2nd EGLContext.",
+      "fragment": "eglContextDestroy = false;\n        eglErrorReturnedByMock = EGL10.EGL_SUCCESS;\n        eglContextReturnedByMock = EasyMock.mock(EGLContext.class);\n\n        final EGLContext eglContext = myEGLContextFactory.createContext(egl, null, null);\n        Assertions.assertThat(eglContext)\n            .as(\"The EGL context created\")\n            .isNotNull();\n\n        // Mock the 2nd EGLContext.",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MyEglContextFactoryTest.java",
-        "start": 336,
-        "end": 345,
+        "start": 331,
+        "end": 340,
         "startLoc": {
-          "line": 336,
+          "line": 331,
           "column": 9,
-          "position": 2381
+          "position": 2369
         },
         "endLoc": {
-          "line": 345,
+          "line": 340,
           "column": 28,
-          "position": 2461
+          "position": 2449
         }
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MyEglContextFactoryTest.java",
-        "start": 309,
-        "end": 317,
+        "start": 304,
+        "end": 312,
         "startLoc": {
-          "line": 309,
+          "line": 304,
           "column": 9,
-          "position": 2168
+          "position": 2156
         },
         "endLoc": {
-          "line": 317,
+          "line": 312,
           "column": 2,
-          "position": 2247
+          "position": 2235
         }
       }
     },
     {
       "format": "java",
       "lines": 20,
-      "fragment": "() {\n        MemberModifier.suppress(MemberModifier.method(MainActivity.class, \"resetErrno\"));\n        MemberModifier.suppress(MemberModifier.method(MainRenderer.class, \"setBitmap\"));\n\n        final Context context = new MainActivity();\n        final DrawView drawView = new DrawView(context);\n\n        final GLSurfaceView.EGLContextFactory myEGLContextFactory = new MyEglContextFactory(drawView);\n        final EGL10 egl = createEGL();\n\n        // Values to be returned by the EGL10 mocked.\n        eglContextDestroy = false;\n        eglErrorReturnedByMock = EGL10.EGL_SUCCESS;\n        eglContextReturnedByMock = Mockito.mock(EGLContext.class);\n\n        final EGLContext eglContext = myEGLContextFactory.createContext(egl, null, null);\n        Assertions.assertThat(eglContext)\n            .as(\"The EGL context created\")\n            .isNotNull();\n        Assertions",
+      "fragment": "() {\n        MemberModifier.suppress(MemberModifier.method(MainActivity.class, \"resetErrno\"));\n        MemberModifier.suppress(MemberModifier.method(MainRenderer.class, \"setBitmap\"));\n\n        final Context context = new MainActivity();\n        final DrawView drawView = new DrawView(context);\n\n        final GLSurfaceView.EGLContextFactory myEGLContextFactory = new MyEglContextFactory(drawView);\n        final EGL10 egl = createEGL();\n\n        // Values to be returned by the EGL10 mocked.\n        eglContextDestroy = false;\n        eglErrorReturnedByMock = EGL10.EGL_SUCCESS;\n        eglContextReturnedByMock = EasyMock.mock(EGLContext.class);\n\n        final EGLContext eglContext = myEGLContextFactory.createContext(egl, null, null);\n        Assertions.assertThat(eglContext)\n            .as(\"The EGL context created\")\n            .isNotNull();\n        Assertions",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MyEglContextFactoryTest.java",
-        "start": 363,
-        "end": 382,
+        "start": 358,
+        "end": 377,
         "startLoc": {
-          "line": 363,
+          "line": 358,
           "column": 26,
-          "position": 2565
+          "position": 2553
         },
         "endLoc": {
-          "line": 382,
+          "line": 377,
           "column": 11,
-          "position": 2760
+          "position": 2748
         }
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MyEglContextFactoryTest.java",
-        "start": 246,
-        "end": 317,
+        "start": 241,
+        "end": 312,
         "startLoc": {
-          "line": 246,
+          "line": 241,
           "column": 25,
-          "position": 1649
+          "position": 1637
         },
         "endLoc": {
-          "line": 317,
+          "line": 312,
           "column": 2,
-          "position": 2247
+          "position": 2235
         }
       }
     },
     {
       "format": "java",
       "lines": 14,
-      "fragment": ");\n        final EGL10 egl = createEGL();\n\n        // Values to be returned by the EGL10 mocked.\n        eglContextDestroy = false;\n        eglErrorReturnedByMock = EGL10.EGL_SUCCESS;\n        eglContextReturnedByMock = Mockito.mock(EGLContext.class);\n\n        final EGLContext eglContext = myEGLContextFactory.createContext(egl, null, null);\n        Assertions.assertThat(eglContext)\n            .as(\"The EGL context created\")\n            .isNotNull();\n\n        final",
+      "fragment": ");\n        final EGL10 egl = createEGL();\n\n        // Values to be returned by the EGL10 mocked.\n        eglContextDestroy = false;\n        eglErrorReturnedByMock = EGL10.EGL_SUCCESS;\n        eglContextReturnedByMock = EasyMock.mock(EGLContext.class);\n\n        final EGLContext eglContext = myEGLContextFactory.createContext(egl, null, null);\n        Assertions.assertThat(eglContext)\n            .as(\"The EGL context created\")\n            .isNotNull();\n\n        final",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MyEglContextFactoryTest.java",
-        "start": 398,
-        "end": 411,
+        "start": 394,
+        "end": 407,
         "startLoc": {
-          "line": 398,
+          "line": 394,
           "column": 15,
-          "position": 2897
+          "position": 2891
         },
         "endLoc": {
-          "line": 411,
+          "line": 407,
           "column": 6,
-          "position": 2999
+          "position": 2993
         }
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MyEglContextFactoryTest.java",
-        "start": 305,
-        "end": 317,
+        "start": 300,
+        "end": 312,
         "startLoc": {
-          "line": 305,
+          "line": 300,
           "column": 9,
-          "position": 2146
+          "position": 2134
         },
         "endLoc": {
-          "line": 317,
+          "line": 312,
           "column": 2,
-          "position": 2247
+          "position": 2235
+        }
+      }
+    },
+    {
+      "format": "java",
+      "lines": 7,
+      "fragment": ";\nimport org.powermock.api.support.membermodification.MemberModifier;\nimport org.powermock.core.classloader.annotations.PrepareOnlyThisForTest;\nimport org.powermock.modules.junit4.PowerMockRunner;\nimport org.springframework.test.util.ReflectionTestUtils;\n\nimport java",
+      "tokens": 0,
+      "firstFile": {
+        "name": "app/src/test/java/puscas/mobilertapp/MainRendererTest.java",
+        "start": 17,
+        "end": 23,
+        "startLoc": {
+          "line": 17,
+          "column": 10,
+          "position": 131
+        },
+        "endLoc": {
+          "line": 23,
+          "column": 5,
+          "position": 192
+        }
+      },
+      "secondFile": {
+        "name": "app/src/test/java/puscas/mobilertapp/MyEglContextFactoryTest.java",
+        "start": 13,
+        "end": 19,
+        "startLoc": {
+          "line": 13,
+          "column": 8,
+          "position": 97
+        },
+        "endLoc": {
+          "line": 19,
+          "column": 6,
+          "position": 158
         }
       }
     },
@@ -4619,17 +4655,17 @@
     },
     {
       "format": "java",
-      "lines": 7,
-      "fragment": ";\nimport org.powermock.api.support.membermodification.MemberModifier;\nimport org.powermock.core.classloader.annotations.PrepareOnlyThisForTest;\nimport org.powermock.modules.junit4.PowerMockRunner;\nimport org.springframework.test.util.ReflectionTestUtils;\n\nimport java.util",
+      "lines": 9,
+      "fragment": ";\nimport org.junit.Test;\nimport org.junit.runner.RunWith;\nimport org.powermock.api.support.membermodification.MemberModifier;\nimport org.powermock.core.classloader.annotations.PrepareOnlyThisForTest;\nimport org.powermock.modules.junit4.PowerMockRunner;\nimport org.springframework.test.util.ReflectionTestUtils;\n\nimport java.util",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/DrawViewTest.java",
-        "start": 19,
+        "start": 17,
         "end": 25,
         "startLoc": {
-          "line": 19,
-          "column": 8,
-          "position": 159
+          "line": 17,
+          "column": 9,
+          "position": 139
         },
         "endLoc": {
           "line": 25,
@@ -4638,13 +4674,13 @@
         }
       },
       "secondFile": {
-        "name": "app/src/test/java/puscas/mobilertapp/MainRendererTest.java",
-        "start": 17,
+        "name": "app/src/test/java/puscas/mobilertapp/MyEglContextFactoryTest.java",
+        "start": 11,
         "end": 23,
         "startLoc": {
-          "line": 17,
-          "column": 10,
-          "position": 131
+          "line": 11,
+          "column": 9,
+          "position": 77
         },
         "endLoc": {
           "line": 23,
@@ -4665,12 +4701,12 @@
         "startLoc": {
           "line": 119,
           "column": 30,
-          "position": 911
+          "position": 913
         },
         "endLoc": {
           "line": 129,
           "column": 9,
-          "position": 1011
+          "position": 1013
         }
       },
       "secondFile": {
@@ -4680,12 +4716,12 @@
         "startLoc": {
           "line": 88,
           "column": 23,
-          "position": 655
+          "position": 657
         },
         "endLoc": {
           "line": 98,
           "column": 15,
-          "position": 755
+          "position": 757
         }
       }
     },
@@ -4701,12 +4737,12 @@
         "startLoc": {
           "line": 231,
           "column": 2,
-          "position": 1926
+          "position": 1928
         },
         "endLoc": {
           "line": 241,
           "column": 7,
-          "position": 2023
+          "position": 2025
         }
       },
       "secondFile": {
@@ -4716,12 +4752,12 @@
         "startLoc": {
           "line": 88,
           "column": 2,
-          "position": 658
+          "position": 660
         },
         "endLoc": {
           "line": 98,
           "column": 15,
-          "position": 755
+          "position": 757
         }
       }
     },
@@ -4737,12 +4773,12 @@
         "startLoc": {
           "line": 260,
           "column": 25,
-          "position": 2152
+          "position": 2154
         },
         "endLoc": {
           "line": 268,
           "column": 16,
-          "position": 2243
+          "position": 2245
         }
       },
       "secondFile": {
@@ -4752,12 +4788,12 @@
         "startLoc": {
           "line": 88,
           "column": 23,
-          "position": 655
+          "position": 657
         },
         "endLoc": {
           "line": 96,
           "column": 11,
-          "position": 746
+          "position": 748
         }
       }
     },
