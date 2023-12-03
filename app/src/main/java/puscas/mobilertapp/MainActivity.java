@@ -27,7 +27,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.VisibleForTesting;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -79,8 +78,7 @@ public final class MainActivity extends Activity {
     /**
      * The request code for the new {@link Activity} to open an OBJ file.
      */
-    @VisibleForTesting
-    static final int OPEN_FILE_REQUEST_CODE = 1;
+    private static final int OPEN_FILE_REQUEST_CODE = 1;
 
     /**
      * The OpenGL ES version required to run this application.
@@ -267,8 +265,7 @@ public final class MainActivity extends Activity {
         final Button renderButton = findViewById(R.id.renderButton);
         renderButton.setOnClickListener(this::startRender);
 
-        final ActivityManager activityManager = (ActivityManager) getSystemService(
-            Context.ACTIVITY_SERVICE);
+        final ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
 
         checksOpenGlVersion(activityManager);
         setupRenderer(textView, renderButton);
@@ -973,8 +970,7 @@ public final class MainActivity extends Activity {
     /**
      * Sets the {@link #currentInstance}.
      */
-    @VisibleForTesting
-    void setCurrentInstance() {
+    private void setCurrentInstance() {
         currentInstance = this;
     }
 
