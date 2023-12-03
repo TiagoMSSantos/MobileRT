@@ -222,25 +222,24 @@ public final class MainRendererTest {
         ReflectionTestUtils.setField(mainRenderer, "arrayColors", ByteBuffer.allocate(1));
         ReflectionTestUtils.setField(mainRenderer, "arrayCamera", ByteBuffer.allocate(1));
 
-        Assertions.assertThat((boolean) ReflectionTestUtils.getField(mainRenderer, "firstFrame"))
-            .as("The 1st frame field should be true")
-            .isTrue();
-
-
         // Setup mock.
         PowerMock.expectPrivate(mainRenderer, "rtRenderIntoBitmap", EasyMock.anyObject(Bitmap.class), EasyMock.anyInt());
         EasyMock.expectLastCall().andThrow(new FailureException("Exception test")).anyTimes();
         EasyMock.replay(mainRenderer);
 
+        Assertions.assertThat((boolean) ReflectionTestUtils.getField(mainRenderer, "firstFrame"))
+            .as("The 1st frame field should be true")
+            .isTrue();
+
         Assertions.assertThatCode(() -> mainRenderer.onDrawFrame(EasyMock.mock(GL10.class)))
             .as("The call to 'onDrawFrame' should catch the exception and not rethrow it.")
             .doesNotThrowAnyException();
 
-        EasyMock.verify(mainRenderer);
-
         Assertions.assertThat((boolean) ReflectionTestUtils.getField(mainRenderer, "firstFrame"))
             .as("The 1st frame field should be false")
             .isFalse();
+
+        EasyMock.verify(mainRenderer);
     }
 
     /**
@@ -300,7 +299,7 @@ public final class MainRendererTest {
      * to render the scene.
      */
     @Test
-    public void testRenderSceneToBitmapLowMemory() throws LowMemoryException {
+    public void testRenderSceneToBitmapLowMemory() {
         MemberModifier.suppress(MemberModifier.method(MainActivity.class, "showUiMessage"));
         MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetRenderButton"));
 
@@ -429,8 +428,7 @@ public final class MainRendererTest {
             MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
             mainRenderer = PowerMock.createNicePartialMockAndInvokeDefaultConstructor(MainRenderer.class, "initPreviewArrays", "rtRenderIntoBitmap");
 
-            mainRenderer.initPreviewArrays();
-            EasyMock.expectLastCall().andVoid().anyTimes();
+            PowerMock.expectPrivate(mainRenderer, "initPreviewArrays").andVoid().anyTimes();
         } catch (final Exception ex) {
             throw new RuntimeException(ex);
         }

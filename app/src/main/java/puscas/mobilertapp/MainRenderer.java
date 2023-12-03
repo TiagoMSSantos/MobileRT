@@ -535,8 +535,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * native arrays.
      * @throws LowMemoryException If the device has low free memory.
      */
-    @VisibleForTesting
-    void initPreviewArrays() throws LowMemoryException {
+    private void initPreviewArrays() throws LowMemoryException {
         logger.info("initArrays");
         checksFreeMemory(1, this::freeArrays);
 

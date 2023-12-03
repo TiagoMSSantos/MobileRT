@@ -176,6 +176,10 @@ public final class MainActivityTest {
             .anyTimes();
         PowerMock.replayAll();
 
+        Assertions.assertThat((String) ReflectionTestUtils.getField(this.targetMainActivityMocked, "sceneFilePath"))
+            .as("The 'MainActivity#sceneFilePath' field")
+            .isNull();
+
         final int openFileRequestCode = (int) ReflectionTestUtils.getField(MainActivity.class, "OPEN_FILE_REQUEST_CODE");
         this.targetMainActivityMocked.onActivityResult(openFileRequestCode, Activity.RESULT_OK, intentMocked);
 
@@ -217,6 +221,10 @@ public final class MainActivityTest {
             .andReturn(new File("/mockedSDCard"))
             .anyTimes();
         PowerMock.replayAll();
+
+        Assertions.assertThat((String) ReflectionTestUtils.getField(this.targetMainActivityMocked, "sceneFilePath"))
+            .as("The 'MainActivity#sceneFilePath' field")
+            .isNull();
 
         final int openFileRequestCode = (int) ReflectionTestUtils.getField(MainActivity.class, "OPEN_FILE_REQUEST_CODE");
         this.targetMainActivityMocked.onActivityResult(openFileRequestCode, Activity.RESULT_OK, intentMocked);
