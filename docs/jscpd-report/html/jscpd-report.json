@@ -1,18 +1,18 @@
 {
   "statistics": {
-    "detectionDate": "2023-12-03T14:34:36.597Z",
+    "detectionDate": "2023-12-03T16:20:51.482Z",
     "formats": {
       "java": {
         "sources": {
           "app/src/test/java/puscas/mobilertapp/utils/UtilsTest.java": {
             "lines": 100,
-            "tokens": 621,
+            "tokens": 623,
             "sources": 1,
             "clones": 12,
             "duplicatedLines": 72,
             "duplicatedTokens": 756,
             "percentage": 72,
-            "percentageTokens": 121.74,
+            "percentageTokens": 121.35,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -991,7 +991,7 @@
         },
         "total": {
           "lines": 9207,
-          "tokens": 63052,
+          "tokens": 63054,
           "sources": 82,
           "clones": 54,
           "duplicatedLines": 547,
@@ -3129,7 +3129,7 @@
     },
     "total": {
       "lines": 27084,
-      "tokens": 203880,
+      "tokens": 203882,
       "sources": 247,
       "clones": 111,
       "duplicatedLines": 1492,

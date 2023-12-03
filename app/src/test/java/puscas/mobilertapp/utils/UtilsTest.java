@@ -72,13 +72,13 @@ public final class UtilsTest {
     public void testGetResolutionFromPickerFail() {
         final NumberPicker numberPickerMocked = EasyMock.mock(NumberPicker.class);
 
-        Assertions.assertThatThrownBy(() ->Utils.getResolutionFromPicker(numberPickerMocked))
+        Assertions.assertThatThrownBy(() -> Utils.getResolutionFromPicker(numberPickerMocked))
             .as("The call to Utils#getResolutionFromPicker method")
             .isInstanceOf(FailureException.class);
     }
 
     /**
-     * Tests that the method {@link Utils#getResolutionFromPicker(NumberPicker)} does not throw any
+     * Tests that the method {@link Utils#waitExecutorToFinish(ExecutorService)} does not throw any
      * {@link Exception} even if the the {@link ExecutorService#awaitTermination(long, TimeUnit)}
      * method throws an {@link Exception}.
      *
@@ -86,15 +86,15 @@ public final class UtilsTest {
      */
     @Test
     public void testWaitExecutorToFinishInterruptsThread() throws InterruptedException {
-        final ExecutorService numberPickerMocked = EasyMock.mock(ExecutorService.class);
+        final ExecutorService executorServiceMocked = EasyMock.mock(ExecutorService.class);
 
-        EasyMock.expect(numberPickerMocked.awaitTermination(1L, TimeUnit.DAYS))
+        EasyMock.expect(executorServiceMocked.awaitTermination(1L, TimeUnit.DAYS))
             .andReturn(false)
             .andThrow(new InterruptedException("test"))
             .andReturn(true);
 
-        EasyMock.replay(numberPickerMocked);
-        Assertions.assertThatCode(() ->Utils.waitExecutorToFinish(numberPickerMocked))
+        EasyMock.replay(executorServiceMocked);
+        Assertions.assertThatCode(() -> Utils.waitExecutorToFinish(executorServiceMocked))
             .as("The call to Utils#waitExecutorToFinish method")
             .doesNotThrowAnyException();
     }
