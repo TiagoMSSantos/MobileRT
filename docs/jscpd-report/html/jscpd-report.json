@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2023-12-03T18:21:00.778Z",
+    "detectionDate": "2023-12-03T18:50:02.165Z",
     "formats": {
       "java": {
         "sources": {
@@ -305,8 +305,8 @@
             "newClones": 0
           },
           "app/src/test/java/puscas/mobilertapp/configs/ConfigRenderTaskTest.java": {
-            "lines": 43,
-            "tokens": 296,
+            "lines": 125,
+            "tokens": 1085,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -990,14 +990,14 @@
           }
         },
         "total": {
-          "lines": 9254,
-          "tokens": 63396,
+          "lines": 9336,
+          "tokens": 64185,
           "sources": 82,
           "clones": 54,
           "duplicatedLines": 547,
           "duplicatedTokens": 4738,
-          "percentage": 5.91,
-          "percentageTokens": 7.47,
+          "percentage": 5.86,
+          "percentageTokens": 7.38,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3128,14 +3128,14 @@
       }
     },
     "total": {
-      "lines": 27131,
-      "tokens": 204224,
+      "lines": 27213,
+      "tokens": 205013,
       "sources": 247,
       "clones": 111,
       "duplicatedLines": 1492,
       "duplicatedTokens": 12687,
-      "percentage": 5.5,
-      "percentageTokens": 6.21,
+      "percentage": 5.48,
+      "percentageTokens": 6.19,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
