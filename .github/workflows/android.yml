@@ -458,6 +458,8 @@ jobs:
         require_tests: true
         require_passed_tests: true
         include_passed: true
+        check_retries: true
+        fail_on_failure: true
 
     - name: Check report's paths
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -636,6 +638,8 @@ jobs:
         require_tests: true
         require_passed_tests: true
         include_passed: true
+        check_retries: true
+        fail_on_failure: true
 
   Sonar:
     needs: [AndroidTests]
