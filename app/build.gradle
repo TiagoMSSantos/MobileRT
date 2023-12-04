@@ -1,4 +1,4 @@
-import groovy.json.JsonSlurper;
+import groovy.json.JsonSlurper
 
 ///////////////////////////////////////////////////////////////////////////////
 // Apply plugins
@@ -159,7 +159,7 @@ sonar {
         property 'sonar.java.target', "${project.targetCompatibility}"
         property 'sonar.sources', 'src/main/java'
         property 'sonar.tests', 'src/test/java, src/androidTest/java'
-        property 'sonar.java.binaries', 'build/intermediates/javac/debug/classes/'
+        property 'sonar.java.binaries', 'build/intermediates/javac/debug/classes/,build/tmp/kotlin-classes/debug/'
         property 'sonar.java.test.binaries', 'build/intermediates/javac/debugUnitTest/classes/,build/intermediates/javac/debugAndroidTest/classes/'
         property 'sonar.junit.reportPaths', 'build/test-results/testDebugUnitTest'
 
@@ -357,7 +357,7 @@ android {
 
     // adbOptions
     installation {
-        installOptions '-t'
+        installOptions ['-t']
     }
 
     // Setup linter options
@@ -384,20 +384,25 @@ configurations {
 ///////////////////////////////////////////////////////////////////////////////
 // Merge Jacoco reports from Unit Tests and Instrumentation Tests
 ///////////////////////////////////////////////////////////////////////////////
-task jacocoTestReport(type: JacocoReport, dependsOn: [
-    "test" + systemTestType.capitalize() + "UnitTest",
-    "connected" + systemTestType.capitalize() + "AndroidTest",
-    "createDebugCoverageReport"
-]) {
+tasks.register('jacocoTestReport', JacocoReport) {
+    dependsOn = [
+        "test" + systemTestType.capitalize() + "UnitTest",
+        "connected" + systemTestType.capitalize() + "AndroidTest",
+        "createDebugCoverageReport"
+    ]
     reports {
         xml.getRequired().set(true)
         html.getRequired().set(true)
     }
-    sourceDirectories.setFrom(files(["${project.projectDir}/src/main/java"]))
-    classDirectories.setFrom(
-        // Exclude the 'BuildConfig.class' because it is an automatically generated file.
-        fileTree(dir: "${buildDir}/intermediates/javac/debug/classes/", excludes: ['**/BuildConfig.class']),
-    )
+    def sourceFiles = files(["${project.projectDir}/src/main/java/**/*"]).getFiles()
+    println("sourceFiles: " + sourceFiles)
+    sourceDirectories.setFrom(sourceFiles)
+    // Exclude the 'BuildConfig.class' because it is an automatically generated file.
+    def javaClasses = fileTree(dir: "${buildDir}/intermediates/javac/debug/classes/", excludes: ['**/BuildConfig.class'])
+    def kotlinClasses = fileTree(dir: "${buildDir}/tmp/kotlin-classes/debug/")
+    def allClasses = javaClasses + kotlinClasses
+    println("allClasses: " + allClasses)
+    classDirectories.setFrom(allClasses)
     executionData.setFrom(fileTree(dir: "${buildDir}", includes: [
         "**/test*UnitTest.exec",
         "**/*coverage.ec"
