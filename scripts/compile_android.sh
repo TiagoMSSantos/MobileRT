@@ -170,7 +170,7 @@ validateNativeLibCompiled;
 echo 'Searching for generated APK';
 find . -iname "*.apk" | grep -i "output";
 apkPath=$(find . -iname "*.apk" | grep -i "output" | grep -i "test" | grep -i "${type}");
-echo "Generated APK: ${apkPath}";
+echo "Generated Test APK: ${apkPath}";
 
 ###############################################################################
 # Exit code

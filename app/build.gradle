@@ -92,12 +92,9 @@ idea.module {
     resourceDirs += resourcesAssetsDir
     resourceDirs += resourcesProdDir
 
-    testSourceDirs += unitTestsDir
-    testSourceDirs += unitTestsJavaDir
-    testSourceDirs += androidTestsJavaDir
+    getTestSources().setFrom(unitTestsDir, unitTestsJavaDir, androidTestsJavaDir)
 
-    testResourceDirs += resourcesTestsDir
-    testResourceDirs += resourcesAndroidTestsDir
+    getTestResources().setFrom(resourcesTestsDir, resourcesAndroidTestsDir)
 }
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -107,7 +104,7 @@ idea.module {
 // Add flags to Java compiler
 ///////////////////////////////////////////////////////////////////////////////
 allprojects {
-    tasks.withType(JavaCompile) {
+    tasks.withType(JavaCompile).configureEach {
         println("Adding additional flags to the compiler.")
 
         options.setCompilerArgs([
@@ -314,31 +311,29 @@ android {
 
     // Configure test options
     testOptions {
-        unitTests {
-            all {
-                minHeapSize = "128m"
-                maxHeapSize = "512m"
-                jvmArgs '-noverify', '-ea', '-Djdk.attach.allowAttachSelf=true',
-                        // Flags added for Java 9+ to be able to use reflection. because
-                        // Java Platform Module System that was introduced in Java 9, has an
-                        // implementation of strong encapsulation.
-                        // '--add-opens {A}/{package}={B}' (If the reflecting code is in a named module, 'B' can be replaced by its name.)
-                        '--add-opens=java.base/java.lang=ALL-UNNAMED',
-                        '--add-opens=java.base/java.util=ALL-UNNAMED',
-                        '--add-opens=java.base/java.util.concurrent=ALL-UNNAMED',
-                        '--add-opens=java.base/java.io=ALL-UNNAMED',
-                        '--add-opens=java.base/java.nio=ALL-UNNAMED',
-                        '--add-opens=java.logging/java.util.logging=ALL-UNNAMED',
-                        // Allow to use reflection in private native methods:
-                        '--add-opens=java.base/java.lang.reflect=ALL-UNNAMED'
-                jacoco {
-                    includeNoLocationClasses = true
-                    excludes = ['jdk.internal.*']
-                }
+        unitTests.all {
+            minHeapSize = '128m'
+            maxHeapSize = '512m'
+            jvmArgs '-noverify', '-ea', '-Djdk.attach.allowAttachSelf=true',
+                // Flags added for Java 9+ to be able to use reflection. because
+                // Java Platform Module System that was introduced in Java 9, has an
+                // implementation of strong encapsulation.
+                // '--add-opens {A}/{package}={B}' (If the reflecting code is in a named module, 'B' can be replaced by its name.)
+                '--add-opens=java.base/java.lang=ALL-UNNAMED',
+                '--add-opens=java.base/java.util=ALL-UNNAMED',
+                '--add-opens=java.base/java.util.concurrent=ALL-UNNAMED',
+                '--add-opens=java.base/java.io=ALL-UNNAMED',
+                '--add-opens=java.base/java.nio=ALL-UNNAMED',
+                '--add-opens=java.logging/java.util.logging=ALL-UNNAMED',
+                // Allow to use reflection in private native methods:
+                '--add-opens=java.base/java.lang.reflect=ALL-UNNAMED'
+            jacoco {
+                includeNoLocationClasses = true
+                excludes = ['jdk.internal.*']
             }
-            includeAndroidResources = true
-            returnDefaultValues = true
         }
+        unitTests.includeAndroidResources = true
+        unitTests.returnDefaultValues = true
         setAnimationsDisabled true
     }
 
@@ -523,14 +518,12 @@ def isNonStable = { String version ->
 // https://github.com/ben-manes/gradle-versions-plugin
 tasks.named("dependencyUpdates").configure {
     resolutionStrategy {
-        componentSelection {
-            all {
-                if (isNonStable(it.candidate.version) && !isNonStable(it.currentVersion)) {
-                    reject('Release candidate')
-                }
-                if (it.currentVersion.contains("native-mt") && !it.candidate.version.contains("native-mt")) {
-                    reject('kotlinx.coroutines not the same type of version')
-                }
+        componentSelection.configureEach {
+            if (isNonStable(it.candidate.version) && !isNonStable(it.currentVersion)) {
+                reject('Release candidate')
+            }
+            if (it.currentVersion.contains("native-mt") && !it.candidate.version.contains("native-mt")) {
+                reject('kotlinx.coroutines not the same type of version')
             }
         }
     }
