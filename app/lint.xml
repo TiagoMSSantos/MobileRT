@@ -1,39 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <lint>
     <!-- list of issues to configure -->
-
-    <!-- Ignore the DuplicateStrings issue in the specified files. -->
-    <!-- E.g.: ~/.gradle/caches/transforms-2/files-2.1/a8ad6db1aa576d586aae69df6afae8c3/ -->
-    <!-- appcompat-1.2.0/res/values-ar/values-ar.xml -->
-    <issue id="DuplicateStrings">
-        <ignore path="**/.gradle/caches/**/appcompat-*/res/values*/values*.xml"/>
-    </issue>
-
-    <!-- Ignore InvalidPackage issue in jacoco dependency when using Java 11. -->
-    <!-- Error: Invalid package reference in library; not included in Android: java.lang.management. -->
-    <!-- Referenced from org.jacoco.agent.rt.internal_1f1cc91.JmxRegistration. [InvalidPackage] -->
-    <issue id="InvalidPackage">
-        <ignore path="**/.gradle/caches/**/org.jacoco/org.jacoco.agent/**/org.jacoco.agent-*-runtime.jar"/>
-    </issue>
-
-    <!-- Ignore InvalidPackage issue in com.android.tools:common dependency. -->
-    <!-- Invalid package reference in com.android.tools:common; not included in Android: java.lang.management. -->
-    <!-- Referenced from com.android.utils.JvmWideVariable. -->
-    <issue id="InvalidPackage">
-        <ignore path="**/com.android.tools/common/**.jar"/>
-    </issue>
-
-    <!-- Ignore InvalidPackage issue in com.android.tools:common dependency. -->
-    <!-- Invalid package reference in com.android.tools.ddms:ddmlib; not included in Android: java.awt.image. -->
-    <!-- Referenced from com.android.ddmlib.BitmapDecoder. -->
-    <issue id="InvalidPackage">
-        <ignore path="**/com.android.tools.ddms/ddmlib/**.jar"/>
-    </issue>
-
-    <!-- Ignore InvalidPackage: Invalid package reference in -->
-    <!-- org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm; not included in Android: -->
-    <!-- java.lang.instrument. Referenced from kotlinx.coroutines.debug.AgentPremain.-->
-    <issue id="InvalidPackage">
-        <ignore regexp="kotlinx.coroutines.debug.AgentPremain"/>
-    </issue>
 </lint>

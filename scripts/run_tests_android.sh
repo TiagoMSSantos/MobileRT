@@ -13,7 +13,7 @@
 # Change directory to MobileRT root.
 ###############################################################################
 if [ $# -ge 1 ]; then
-  cd "$(dirname "${0}")/.." || exit 1;
+  cd "$(dirname "${0}")/.." || return 1;
 fi
 ###############################################################################
 ###############################################################################
@@ -44,7 +44,7 @@ pid="$$";
 # Execute Shellcheck on this script.
 ###############################################################################
 if command -v shellcheck > /dev/null; then
-  shellcheck "${0}" || exit 1;
+  shellcheck "${0}" || return 1;
 fi
 ###############################################################################
 ###############################################################################
@@ -132,26 +132,28 @@ clear_func() {
   set +u; # Variable might not have been set if canceled too soon.
   echo "Killing pid of logcat: '${pid_logcat}'";
   kill -TERM "${pid_logcat}" 2> /dev/null || true;
+  # shellcheck disable=SC2009
+  pid_tee=$(ps | grep -i "tee" | tr -s ' ' | cut -d ' ' -f 2);
+  echo "Killing pid of tee used by logcat command: '${pid_tee}'";
+  kill -TERM "${pid_tee}" 2> /dev/null || true;
   set -u;
 
   kill_mobilert_processes;
   kill_gradle_processes;
   kill_adb_processes;
-
-  # Kill all processes in the whole process group, thus killing also descendants.
-  trap - EXIT HUP INT QUIT ILL TRAP ABRT TERM; # Disable traps first, to avoid infinite loop.
-  echo "Killing all processes from the same group process id: '${pid}'";
-  kill -TERM -"${pid}" || true;
 }
 
 catch_signal() {
   echo '';
   echo 'Caught signal';
 
-  gather_logs_func;
   clear_func;
+  gather_logs_func;
 
-  echo '';
+  # Kill all processes in the whole process group, thus killing also descendants.
+  trap - EXIT HUP INT QUIT ILL TRAP ABRT TERM; # Disable traps first, to avoid infinite loop.
+  echo "Killing all processes from the same group process id: '${pid}'";
+  kill -TERM -"${pid}" || true;
 }
 
 kill_mobilert_processes() {

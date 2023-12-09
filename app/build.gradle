@@ -43,18 +43,18 @@ plugins {
 ///////////////////////////////////////////////////////////////////////////////
 // Get system components versions from properties
 ///////////////////////////////////////////////////////////////////////////////
-println("Reading system properties.")
+println('Reading system properties.')
 
 final def systemNDKVersion = System.getProperty('ndkVersion', '23.2.8568313')
 final def systemCMakeVersion = System.getProperty('cmakeVersion', '3.22.1')
 final def systemTestType = System.getProperty('testType', 'debug')
-final def customAbiFilters = System.getProperty('abiFilters', "[\"armeabi-v7a\", \"x86\", \"arm64-v8a\", \"x86_64\"]")
+final def customAbiFilters = System.getProperty('abiFilters', '["armeabi-v7a", "x86", "arm64-v8a", "x86_64"]')
 final def systemAbiFilters = new JsonSlurper().parseText(customAbiFilters) as String[]
 
-println("NDK version: " + systemNDKVersion)
-println("CMake version: " + systemCMakeVersion)
-println("Test type: " + systemTestType)
-println("ABI Filters: " + systemAbiFilters)
+println('NDK version: ' + systemNDKVersion)
+println('CMake version: ' + systemCMakeVersion)
+println('Test type: ' + systemTestType)
+println('ABI Filters: ' + systemAbiFilters)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -63,23 +63,23 @@ println("ABI Filters: " + systemAbiFilters)
 // Set source directories for the IDE
 ///////////////////////////////////////////////////////////////////////////////
 ext {
-    javaDir = file("$projectDir/src/main/java")
-    kotlinDir = file("$projectDir/src/main/kotlin")
+    javaDir = file("${projectDir}/src/main/java")
+    kotlinDir = file("${projectDir}/src/main/kotlin")
 
-    mobileRtDir = file("$projectDir/MobileRT")
-    componentsDir = file("$projectDir/Components")
-    scenesDir = file("$projectDir/Scenes")
-    systemDependentDir = file("$projectDir/System_dependent")
+    mobileRtDir = file("${projectDir}/MobileRT")
+    componentsDir = file("${projectDir}/Components")
+    scenesDir = file("${projectDir}/Scenes")
+    systemDependentDir = file("${projectDir}/System_dependent")
 
-    resourcesAssetsDir = file("$projectDir/src/main/assets")
-    resourcesProdDir = file("$projectDir/src/main/res")
+    resourcesAssetsDir = file("${projectDir}/src/main/assets")
+    resourcesProdDir = file("${projectDir}/src/main/res")
 
-    unitTestsDir = file("$projectDir/Unit_Testing")
-    unitTestsJavaDir = file("$projectDir/src/test/java")
-    androidTestsJavaDir = file("$projectDir/src/androidTest/java")
+    unitTestsDir = file("${projectDir}/Unit_Testing")
+    unitTestsJavaDir = file("${projectDir}/src/test/java")
+    androidTestsJavaDir = file("${projectDir}/src/androidTest/java")
 
-    resourcesTestsDir = file("$projectDir/src/test/resources")
-    resourcesAndroidTestsDir = file("$projectDir/src/androidTest/resources")
+    resourcesTestsDir = file("${projectDir}/src/test/resources")
+    resourcesAndroidTestsDir = file("${projectDir}/src/androidTest/resources")
 }
 idea.module {
     sourceDirs += javaDir
@@ -105,7 +105,7 @@ idea.module {
 ///////////////////////////////////////////////////////////////////////////////
 allprojects {
     tasks.withType(JavaCompile).configureEach {
-        println("Adding additional flags to the compiler.")
+        println('Adding additional flags to the compiler.')
 
         options.setCompilerArgs([
             '-Xlint:all',
@@ -238,7 +238,7 @@ android {
         }
         externalNativeBuild {
             cmake {
-                arguments "-DCMAKE_VERBOSE_MAKEFILE=ON"
+                arguments '-DCMAKE_VERBOSE_MAKEFILE=ON'
             }
         }
         javaCompileOptions {
@@ -381,27 +381,39 @@ configurations {
 ///////////////////////////////////////////////////////////////////////////////
 tasks.register('jacocoTestReport', JacocoReport) {
     dependsOn = [
-        "test" + systemTestType.capitalize() + "UnitTest",
-        "connected" + systemTestType.capitalize() + "AndroidTest",
-        "createDebugCoverageReport"
+        'test' + systemTestType.capitalize() + 'UnitTest',
+        'connected' + systemTestType.capitalize() + 'AndroidTest',
+        'createDebugCoverageReport'
     ]
     reports {
         xml.getRequired().set(true)
         html.getRequired().set(true)
     }
+
+    // Set source files.
     def sourceFiles = files(["${project.projectDir}/src/main/java/**/*"]).getFiles()
-    println("sourceFiles: " + sourceFiles)
+    println('sourceFiles: ' + sourceFiles)
     sourceDirectories.setFrom(sourceFiles)
-    // Exclude the 'BuildConfig.class' because it is an automatically generated file.
-    def javaClasses = fileTree(dir: "${buildDir}/intermediates/javac/debug/classes/", excludes: ['**/BuildConfig.class'])
-    def kotlinClasses = fileTree(dir: "${buildDir}/tmp/kotlin-classes/debug/")
+
+    // Set class files.
+    def javaClasses = fileTree(
+        dir: "${layout.buildDirectory.getAsFile().get().toString()}/intermediates/javac/debug/classes/",
+        // Exclude the 'BuildConfig.class' because it is an automatically generated file.
+        excludes: ['**/BuildConfig.class', '**/package-info.class', '**/AgentJar.class'],
+    )
+    def kotlinClasses = fileTree(
+        dir: "${layout.buildDirectory.getAsFile().get().toString()}/tmp/kotlin-classes/debug/",
+        excludes: ['**/BuildConfig.class', '**/package-info.class', '**/AgentJar.class'],
+    )
     def allClasses = javaClasses + kotlinClasses
-    println("allClasses: " + allClasses)
+    println('allClasses: ' + allClasses)
     classDirectories.setFrom(allClasses)
-    executionData.setFrom(fileTree(dir: "${buildDir}", includes: [
-        "**/test*UnitTest.exec",
-        "**/*coverage.ec"
-    ]))
+
+    // Set execution data files to analyze.
+    executionData.setFrom(fileTree(
+        dir: "${layout.buildDirectory.getAsFile().get().toString()}",
+        includes: ['**/test*UnitTest.exec', '**/*coverage.ec'],
+    ))
 }
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -423,7 +435,7 @@ tasks.withType(Test).configureEach {
 ///////////////////////////////////////////////////////////////////////////////
 dependencies {
     // Dependencies for the Android application
-    println("Adding dependencies for MobileRT.")
+    println('Adding dependencies for MobileRT.')
     implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
 
     // Android dependencies
@@ -447,7 +459,7 @@ dependencies {
 
 
     // Dependencies for the Android instrumentation tests
-    println("Adding dependencies for the instrumentation tests.")
+    println('Adding dependencies for the instrumentation tests.')
     androidTestImplementation "androidx.test.espresso:espresso-accessibility:${androidX_test_espresso_version}"
     androidTestImplementation "androidx.test.espresso:espresso-contrib:${androidX_test_espresso_version}"
     androidTestImplementation "androidx.test.espresso:espresso-idling-resource:${androidX_test_espresso_version}"
@@ -465,7 +477,7 @@ dependencies {
 
 
     // Dependencies for the unit tests
-    println("Adding dependencies for the unit tests.")
+    println('Adding dependencies for the unit tests.')
 
     testImplementation "junit:junit:${junit_version}"
     testImplementation "org.assertj:assertj-core:${assertj_version}"
@@ -516,13 +528,13 @@ def isNonStable = { String version ->
 }
 
 // https://github.com/ben-manes/gradle-versions-plugin
-tasks.named("dependencyUpdates").configure {
+tasks.named('dependencyUpdates').configure {
     resolutionStrategy {
         componentSelection.configureEach {
             if (isNonStable(it.candidate.version) && !isNonStable(it.currentVersion)) {
                 reject('Release candidate')
             }
-            if (it.currentVersion.contains("native-mt") && !it.candidate.version.contains("native-mt")) {
+            if (it.currentVersion.contains('native-mt') && !it.candidate.version.contains('native-mt')) {
                 reject('kotlinx.coroutines not the same type of version')
             }
         }

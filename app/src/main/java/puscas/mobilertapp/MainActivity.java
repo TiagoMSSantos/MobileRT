@@ -35,6 +35,7 @@ import com.google.common.collect.ImmutableMap;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Logger;
@@ -692,7 +693,7 @@ public final class MainActivity extends Activity {
             logger.info("Opened AssetFileDescriptor");
             final int fd = parcelFileDescriptor.getFd();
             final long size = parcelFileDescriptor.getStatSize();
-            final String typeStr = filePath.substring(filePath.lastIndexOf(".")).toLowerCase();
+            final String typeStr = filePath.substring(filePath.lastIndexOf(".")).toLowerCase(Locale.getDefault());
             final int type = Objects.equals(typeStr, ".obj") ? 0 :
                 Objects.equals(typeStr, ".mtl") ? 1 :
                 Objects.equals(typeStr, ".cam") ? 2 :

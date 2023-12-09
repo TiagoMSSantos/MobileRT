@@ -2,12 +2,10 @@ package puscas.mobilertapp.system;
 
 import static puscas.mobilertapp.ConstantsAndroidTests.NOT_ENOUGH_MEMORY_MESSAGE;
 
-import android.os.Build;
 import android.os.Debug;
 
 import org.junit.After;
 import org.junit.Assert;
-import org.junit.Assume;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -60,7 +58,6 @@ public final class NativeMemoryTest {
      */
     @Test
     public void testAllocatingHeapMemoryNative() {
-        Assume.assumeTrue("Only Android API 20+ have more than 5MB of native heap.", Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH);
         Runtime.getRuntime().gc();
 
         // Dummy array to hold the allocated memory.

@@ -480,11 +480,16 @@ validateFileExists() {
   filePath="${1}";
   if [ ! -f "${filePath}" ]; then
     echo "File '${filePath}' does NOT exist." >&2;
-    exit 1;
+    return 1;
   fi
   if [ ! -s "${filePath}" ]; then
     echo "File '${filePath}' is empty." >&2;
-    exit 1;
+    return 1;
+  fi
+  fileSize=$(wc -w "${filePath}" | cut -d ' ' -f1);
+  if [ "${fileSize}" -lt 300 ]; then
+    echo "File '${filePath}' contains less than 300 words." >&2;
+    return 1;
   fi
 }
 ###############################################################################
