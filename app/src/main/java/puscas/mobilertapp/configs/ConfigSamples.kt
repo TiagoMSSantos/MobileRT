@@ -13,7 +13,7 @@ data class ConfigSamples private constructor(
 
     init {
         require(samplesPixel >= 0) { "The samplesPixel must be >= 0." }
-        require(samplesPixel >= 0) { "The samplesLight must be >= 0." }
+        require(samplesLight >= 0) { "The samplesLight must be >= 0." }
     }
 
     class Builder private constructor() {
