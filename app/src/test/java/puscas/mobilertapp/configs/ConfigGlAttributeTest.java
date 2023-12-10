@@ -19,7 +19,8 @@ public final class ConfigGlAttributeTest {
     public void testDefaultConfigGlAttribute() {
         Assertions.assertThatThrownBy(() -> ConfigGlAttribute.Builder.Companion.create().build())
             .as("The ConfigGlAttribute#Builder#build shouldn't be possible with the default values")
-            .isInstanceOf(UninitializedPropertyAccessException.class);
+            .isInstanceOf(UninitializedPropertyAccessException.class)
+            .hasMessage("lateinit property buffer has not been initialized");
     }
 
     /**
@@ -53,6 +54,43 @@ public final class ConfigGlAttributeTest {
         Assertions.assertThat(configGlAttribute.getComponentsInBuffer())
             .as("ComponentsInBuffer not the expected value.")
             .isEqualTo(attributeComponentsInBuffer);
+    }
+
+    /**
+     * Test the building of {@link ConfigGlAttribute} with invalid values.
+     * <p>
+     * The {@link ConfigGlAttribute.Builder#build()} should fail with an exception.
+     */
+    @Test
+    public void testConfigGlAttributeWithInvalidValues() {
+        final int attributeLocation = 123;
+        final int componentsInBuffer = 456;
+        final ByteBuffer byteBuffer = ByteBuffer.allocate(1);
+
+        final ConfigGlAttribute.Builder builder = ConfigGlAttribute.Builder.Companion.create();
+        builder.setBuffer(byteBuffer);
+
+        builder.setAttributeLocation(-1);
+        builder.setComponentsInBuffer(componentsInBuffer);
+        Assertions.assertThatThrownBy(builder::build)
+            .as("The attributeLocation is invalid.")
+            .isInstanceOf(IllegalArgumentException.class);
+        builder.setAttributeLocation(Integer.MIN_VALUE);
+        builder.setComponentsInBuffer(componentsInBuffer);
+        Assertions.assertThatThrownBy(builder::build)
+            .as("The attributeLocation is invalid.")
+            .isInstanceOf(IllegalArgumentException.class);
+
+        builder.setAttributeLocation(attributeLocation);
+        builder.setComponentsInBuffer(-1);
+        Assertions.assertThatThrownBy(builder::build)
+            .as("The attributeLocation is invalid.")
+            .isInstanceOf(IllegalArgumentException.class);
+        builder.setAttributeLocation(attributeLocation);
+        builder.setComponentsInBuffer(Integer.MIN_VALUE);
+        Assertions.assertThatThrownBy(builder::build)
+            .as("The attributeLocation is invalid.")
+            .isInstanceOf(IllegalArgumentException.class);
     }
 
     /**

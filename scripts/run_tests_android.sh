@@ -253,7 +253,7 @@ runEmulator() {
   echo "script name: ${script_name}";
 
   if [ "${type}" = 'debug' ]; then
-    gradle_command='jacocoTestReport'
+    gradle_command='jacocoTestReport';
   else
     gradle_command='connectedAndroidTest';
   fi
