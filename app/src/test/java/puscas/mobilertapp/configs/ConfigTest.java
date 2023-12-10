@@ -162,6 +162,41 @@ public final class ConfigTest {
     }
 
     /**
+     * Test the building of {@link Config} with invalid values.
+     * <p>
+     * The {@link Config.Builder#build()} should fail with an exception.
+     */
+    @Test
+    public void testBuildWithInvalidValues() {
+        final int scene = Scene.OBJ.ordinal();
+        final int shader = Shader.WHITTED.ordinal();
+
+        final Config.Builder builder = Config.Builder.Companion.create();
+
+        builder.setScene(-1);
+        builder.setShader(shader);
+        Assertions.assertThatThrownBy(builder::build)
+            .as("The scene is invalid.")
+            .isInstanceOf(IllegalArgumentException.class);
+        builder.setScene(Integer.MIN_VALUE);
+        builder.setShader(shader);
+        Assertions.assertThatThrownBy(builder::build)
+            .as("The scene is invalid.")
+            .isInstanceOf(IllegalArgumentException.class);
+
+        builder.setScene(scene);
+        builder.setShader(-1);
+        Assertions.assertThatThrownBy(builder::build)
+            .as("The shader is invalid.")
+            .isInstanceOf(IllegalArgumentException.class);
+        builder.setScene(scene);
+        builder.setShader(Integer.MIN_VALUE);
+        Assertions.assertThatThrownBy(builder::build)
+            .as("The shader is invalid.")
+            .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    /**
      * Tests the {@link Config.Builder#toString()} method in the builder class of {@link Config}.
      */
     @Test

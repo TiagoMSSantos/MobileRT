@@ -383,7 +383,6 @@ tasks.register('jacocoTestReport', JacocoReport) {
     dependsOn = [
         'test' + systemTestType.capitalize() + 'UnitTest',
         'connected' + systemTestType.capitalize() + 'AndroidTest',
-        'createDebugCoverageReport'
     ]
     reports {
         xml.getRequired().set(true)
