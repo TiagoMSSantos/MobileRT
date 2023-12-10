@@ -9,6 +9,66 @@ import org.junit.Test;
 public final class ConfigResolutionTest {
 
     /**
+     * Tests the default constructor of {@link ConfigResolution}.
+     */
+    @Test
+    public void testDefaultConstructor() {
+        final ConfigResolution configResolution = ConfigResolution.Builder.Companion.create().build();
+
+        Assertions.assertThat(configResolution.getWidth())
+            .as("Width not the expected value.")
+            .isOne();
+
+        Assertions.assertThat(configResolution.getHeight())
+            .as("Height not the expected value.")
+            .isOne();
+    }
+
+    /**
+     * Test the building of {@link ConfigResolution} with invalid values.
+     * <p>
+     * The {@link ConfigResolution.Builder#build()} should fail with an exception.
+     */
+    @Test
+    public void testBuildWithInvalidValues() {
+        final ConfigResolution.Builder builder = ConfigResolution.Builder.Companion.create();
+        final int width = 123;
+        final int height = 456;
+
+        builder.setWidth(0);
+        builder.setHeight(height);
+        Assertions.assertThatThrownBy(builder::build)
+            .as("Width not the expected value.")
+            .isInstanceOf(IllegalArgumentException.class);
+        builder.setWidth(-1);
+        builder.setHeight(height);
+        Assertions.assertThatThrownBy(builder::build)
+            .as("Width not the expected value.")
+            .isInstanceOf(IllegalArgumentException.class);
+        builder.setWidth(Integer.MIN_VALUE);
+        builder.setHeight(height);
+        Assertions.assertThatThrownBy(builder::build)
+            .as("Width not the expected value.")
+            .isInstanceOf(IllegalArgumentException.class);
+
+        builder.setWidth(width);
+        builder.setHeight(-1);
+        Assertions.assertThatThrownBy(builder::build)
+            .as("Height not the expected value.")
+            .isInstanceOf(IllegalArgumentException.class);
+        builder.setWidth(width);
+        builder.setHeight(0);
+        Assertions.assertThatThrownBy(builder::build)
+            .as("Height not the expected value.")
+            .isInstanceOf(IllegalArgumentException.class);
+        builder.setWidth(width);
+        builder.setHeight(Integer.MIN_VALUE);
+        Assertions.assertThatThrownBy(builder::build)
+            .as("Height not the expected value.")
+            .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    /**
      * Tests the {@link ConfigResolution.Builder#toString()} method in the builder class of {@link Config}.
      */
     @Test

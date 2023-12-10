@@ -62,7 +62,7 @@ public final class ConfigGlAttributeTest {
      * The {@link ConfigGlAttribute.Builder#build()} should fail with an exception.
      */
     @Test
-    public void testConfigGlAttributeWithInvalidValues() {
+    public void testBuildConfigGlAttributeWithInvalidValues() {
         final int attributeLocation = 123;
         final int componentsInBuffer = 456;
         final ByteBuffer byteBuffer = ByteBuffer.allocate(1);
@@ -84,12 +84,12 @@ public final class ConfigGlAttributeTest {
         builder.setAttributeLocation(attributeLocation);
         builder.setComponentsInBuffer(-1);
         Assertions.assertThatThrownBy(builder::build)
-            .as("The attributeLocation is invalid.")
+            .as("The componentsInBuffer is invalid.")
             .isInstanceOf(IllegalArgumentException.class);
         builder.setAttributeLocation(attributeLocation);
         builder.setComponentsInBuffer(Integer.MIN_VALUE);
         Assertions.assertThatThrownBy(builder::build)
-            .as("The attributeLocation is invalid.")
+            .as("The componentsInBuffer is invalid.")
             .isInstanceOf(IllegalArgumentException.class);
     }
 
