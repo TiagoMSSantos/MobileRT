@@ -94,6 +94,35 @@ public final class ConfigGlAttributeTest {
     }
 
     /**
+     * Tests the {@link ConfigGlAttribute.Builder}.
+     */
+    @Test
+    public void testBuilder() {
+        final ConfigGlAttribute.Builder builder = ConfigGlAttribute.Builder.Companion.create();
+        final String attributeName = "test name";
+        final ByteBuffer byteBuffer = ByteBuffer.allocate(1);
+        final int attributeLocation = 123;
+        final int attributeComponentsInBuffer = 456;
+        builder.setAttributeName(attributeName);
+        builder.setBuffer(byteBuffer);
+        builder.setAttributeLocation(attributeLocation);
+        builder.setComponentsInBuffer(attributeComponentsInBuffer);
+
+        Assertions.assertThat(builder.getAttributeName())
+            .as("AttributeName not the expected value.")
+            .isEqualTo(attributeName);
+        Assertions.assertThat(builder.getBuffer())
+            .as("Buffer not the expected value.")
+            .isEqualTo(byteBuffer);
+        Assertions.assertThat(builder.getAttributeLocation())
+            .as("AttributeLocation not the expected value.")
+            .isEqualTo(attributeLocation);
+        Assertions.assertThat(builder.getComponentsInBuffer())
+            .as("AttributeComponentsInBuffer not the expected value.")
+            .isEqualTo(attributeComponentsInBuffer);
+    }
+
+    /**
      * Tests the {@link ConfigGlAttribute.Builder#toString()} method in the builder class of {@link Config}.
      */
     @Test
