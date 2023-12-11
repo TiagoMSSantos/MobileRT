@@ -4,6 +4,7 @@ import android.widget.NumberPicker;
 
 import org.assertj.core.api.Assertions;
 import org.easymock.EasyMock;
+import org.easymock.MockType;
 import org.junit.Test;
 
 import java.io.InputStream;
@@ -57,8 +58,9 @@ public final class UtilsTest {
      */
     @Test
     public void testGetValueFromPickerFail() {
-        final NumberPicker numberPickerMocked = EasyMock.mock(NumberPicker.class);
+        final NumberPicker numberPickerMocked = EasyMock.mock(MockType.NICE, NumberPicker.class);
 
+        EasyMock.replay(numberPickerMocked);
         Assertions.assertThatThrownBy(() -> Utils.getValueFromPicker(numberPickerMocked))
             .as("The call to Utils#getValueFromPicker method")
             .isInstanceOf(FailureException.class);
@@ -70,8 +72,9 @@ public final class UtilsTest {
      */
     @Test
     public void testGetResolutionFromPickerFail() {
-        final NumberPicker numberPickerMocked = EasyMock.mock(NumberPicker.class);
+        final NumberPicker numberPickerMocked = EasyMock.mock(MockType.NICE, NumberPicker.class);
 
+        EasyMock.replay(numberPickerMocked);
         Assertions.assertThatThrownBy(() -> Utils.getResolutionFromPicker(numberPickerMocked))
             .as("The call to Utils#getResolutionFromPicker method")
             .isInstanceOf(FailureException.class);

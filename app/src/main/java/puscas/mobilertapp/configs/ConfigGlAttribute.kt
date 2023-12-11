@@ -26,7 +26,7 @@ data class ConfigGlAttribute private constructor(
 
     init {
         require(attributeLocation >= 0) { "The attributeLocation must be >= 0." }
-        require(componentsInBuffer >= 0) { "The componentsInBuffer be >= 0." }
+        require(componentsInBuffer >= 0) { "The componentsInBuffer must be >= 0." }
     }
 
     class Builder private constructor() {

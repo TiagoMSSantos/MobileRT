@@ -37,7 +37,7 @@ data class ConfigRenderTask private constructor(
 
     init {
         require(updateInterval >= 0) { "The updateInterval must be >= 0." }
-        require(numLights >= 0) { "The numLights be >= 0." }
+        require(numLights >= 0) { "The numLights must be >= 0." }
     }
 
     class Builder private constructor() {

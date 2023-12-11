@@ -18,15 +18,21 @@ public final class ConfigRenderTaskTest {
      * Tests the default constructor of {@link ConfigRenderTask}.
      */
     @Test
-    public void testDefaultConfigRenderTask() {
+    public void testDefaultConstructor() {
         final ConfigRenderTask.Builder builder = ConfigRenderTask.Builder.Companion.create();
         Assertions.assertThatThrownBy(() -> ConfigRenderTask.Builder.Companion.create().build())
             .as("The ConfigRenderTask#Builder#build shouldn't be possible with the default values")
-            .isInstanceOf(UninitializedPropertyAccessException.class);
+            .isInstanceOf(UninitializedPropertyAccessException.class)
+            .hasMessage("lateinit property textView has not been initialized");
 
         final TextView mockedTextView = EasyMock.mock(TextView.class);
-        final Button mockedButton = EasyMock.mock(Button.class);
         builder.setTextView(mockedTextView);
+        Assertions.assertThatThrownBy(builder::build)
+            .as("The ConfigRenderTask#Builder#build shouldn't be possible with the default values")
+            .isInstanceOf(UninitializedPropertyAccessException.class)
+            .hasMessage("lateinit property buttonRender has not been initialized");
+
+        final Button mockedButton = EasyMock.mock(Button.class);
         builder.setButtonRender(mockedButton);
         final ConfigRenderTask configRenderTask = builder.build();
 
@@ -60,7 +66,7 @@ public final class ConfigRenderTaskTest {
      * Tests the building of {@link ConfigRenderTask} with valid values.
      */
     @Test
-    public void testBuildConfigGlAttribute() {
+    public void testBuildConfigRenderTask() {
         final ConfigRenderTask.Builder builder = ConfigRenderTask.Builder.Companion.create();
 
         final int updateInterval = 123;
