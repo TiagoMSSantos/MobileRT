@@ -62,12 +62,16 @@ public final class ConfigGlAttributeTest {
      * The {@link ConfigGlAttribute.Builder#build()} should fail with an exception.
      */
     @Test
-    public void testBuildConfigGlAttributeWithInvalidValues() {
+    public void testBuildWithInvalidValues() {
         final int attributeLocation = 123;
         final int componentsInBuffer = 456;
         final ByteBuffer byteBuffer = ByteBuffer.allocate(1);
-
         final ConfigGlAttribute.Builder builder = ConfigGlAttribute.Builder.Companion.create();
+
+        Assertions.assertThatThrownBy(() -> builder.setBuffer(null))
+            .as("The buffer is null.")
+            .isInstanceOf(NullPointerException.class);
+
         builder.setBuffer(byteBuffer);
 
         builder.setAttributeLocation(-1);

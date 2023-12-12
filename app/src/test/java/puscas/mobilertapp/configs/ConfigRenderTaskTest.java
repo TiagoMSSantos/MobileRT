@@ -118,6 +118,52 @@ public final class ConfigRenderTaskTest {
     }
 
     /**
+     * Test the building of {@link ConfigRenderTask} with invalid values.
+     * <p>
+     * The {@link ConfigRenderTask.Builder#build()} should fail with an exception.
+     */
+    @Test
+    public void testBuildWithInvalidValues() {
+        final ConfigRenderTask.Builder builder = ConfigRenderTask.Builder.Companion.create();
+
+        Assertions.assertThatThrownBy(() -> builder.setTextView(null))
+            .as("The textView is null.")
+            .isInstanceOf(NullPointerException.class);
+        Assertions.assertThatThrownBy(() -> builder.setButtonRender(null))
+            .as("The buttonRender is null.")
+            .isInstanceOf(NullPointerException.class);
+
+        final TextView mockedTextView = EasyMock.mock(TextView.class);
+        final Button mockedButton = EasyMock.mock(Button.class);
+        final int updateInterval = 123;
+        final int numLights = 234;
+        builder.setTextView(mockedTextView);
+        builder.setButtonRender(mockedButton);
+
+        builder.setUpdateInterval(-1L);
+        builder.setNumLights(numLights);
+        Assertions.assertThatThrownBy(builder::build)
+            .as("The updateInterval is invalid.")
+            .isInstanceOf(IllegalArgumentException.class);
+        builder.setUpdateInterval(Integer.MIN_VALUE);
+        builder.setNumLights(numLights);
+        Assertions.assertThatThrownBy(builder::build)
+            .as("The updateInterval is invalid.")
+            .isInstanceOf(IllegalArgumentException.class);
+
+        builder.setUpdateInterval(updateInterval);
+        builder.setNumLights(-1L);
+        Assertions.assertThatThrownBy(builder::build)
+            .as("The numLights is invalid.")
+            .isInstanceOf(IllegalArgumentException.class);
+        builder.setUpdateInterval(updateInterval);
+        builder.setNumLights(Integer.MIN_VALUE);
+        Assertions.assertThatThrownBy(builder::build)
+            .as("The numLights is invalid.")
+            .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    /**
      * Tests the {@link ConfigRenderTask.Builder#toString()} method in the builder class of {@link Config}.
      */
     @Test

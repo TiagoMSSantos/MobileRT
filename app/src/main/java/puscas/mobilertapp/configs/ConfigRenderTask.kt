@@ -5,7 +5,7 @@ import android.widget.Button
 import android.widget.TextView
 import puscas.mobilertapp.DrawView
 import puscas.mobilertapp.RenderTask
-import puscas.mobilertapp.constants.State;
+import puscas.mobilertapp.constants.State
 
 /**
  * The configurator for the [RenderTask].
