@@ -33,7 +33,7 @@ buildscript {
         androidX_core_kotlin_version = '1.12.0'
         kotlin_stdlib_jdk8_version = '1.9.21'
         multidex_version = '2.0.1'
-        androidX_annotation_version = '1.7.0'
+        androidX_annotation_version = '1.7.1'
         guava_version = '32.1.3-jre'
         stream_support_version = '1.7.4'
         kotlinx_coroutines_android_version = '1.7.3'
