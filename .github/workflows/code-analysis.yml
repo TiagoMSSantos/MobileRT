@@ -101,7 +101,7 @@ jobs:
     - name: Initialize CodeQL
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
-      uses: github/codeql-action/init@v2
+      uses: github/codeql-action/init@v3
       with:
         # Check available parameters in: https://github.com/github/codeql-action/blob/main/init/action.yml
         languages: ${{ matrix.language }}
@@ -136,7 +136,7 @@ jobs:
       id: autobuild
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
       if: success() && matrix.language != 'cpp'
-      uses: github/codeql-action/autobuild@v2
+      uses: github/codeql-action/autobuild@v3
       continue-on-error: true
       with:
         # Check available parameters in: https://github.com/github/codeql-action/blob/main/autobuild/action.yml
@@ -166,7 +166,7 @@ jobs:
     - name: Perform CodeQL Analysis
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
-      uses: github/codeql-action/analyze@v2
+      uses: github/codeql-action/analyze@v3
       with:
         # Check available parameters in: https://github.com/github/codeql-action/blob/main/analyze/action.yml
         check_name: CodeQL
@@ -220,7 +220,7 @@ jobs:
     - name: Upload SARIF
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
-      uses: github/codeql-action/upload-sarif@v2
+      uses: github/codeql-action/upload-sarif@v3
       with:
         # Check available parameters in: https://github.com/github/codeql-action/blob/main/upload-sarif/action.yml
         sarif_file: ./codeql-results/${{ matrix.language }}-filtered.sarif
