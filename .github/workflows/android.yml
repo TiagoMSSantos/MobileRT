@@ -386,7 +386,7 @@ jobs:
     - name: Download Gradle packages artifact
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         # Check available parameters in: https://github.com/actions/download-artifact/blob/main/action.yml
         name: gradle-packages
@@ -575,7 +575,7 @@ jobs:
     - name: Download Gradle packages artifact
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         # Check available parameters in: https://github.com/actions/download-artifact/blob/main/action.yml
         name: gradle-packages
@@ -704,7 +704,7 @@ jobs:
     - name: Download Gradle packages artifact
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         # Check available parameters in: https://github.com/actions/download-artifact/blob/main/action.yml
         name: gradle-packages
