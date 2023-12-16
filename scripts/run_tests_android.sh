@@ -563,6 +563,10 @@ runInstrumentationTests() {
   adb shell ls -la /data/app/;
   set -e;
   callAdbShellCommandUntilSuccess adb shell 'pm install -r '${mobilert_path}'/app-'${type}'.apk; echo ::$?::';
+  if [ "${androidApi}" -gt 22 ] && [ "${androidApi}" -lt 28 ]; then
+    echo 'Granting read external SD Card to MobileRT.';
+    callAdbShellCommandUntilSuccess adb shell 'pm grant puscas.mobilertapp android.permission.READ_EXTERNAL_STORAGE; echo ::$?::';
+  fi
   if [ "${androidApi}" -gt 29 ]; then
     echo 'Giving permissions for MobileRT app to access any file from the external storage.';
     callAdbShellCommandUntilSuccess adb shell 'appops set --uid puscas.mobilertapp MANAGE_EXTERNAL_STORAGE allow; echo ::$?::';
