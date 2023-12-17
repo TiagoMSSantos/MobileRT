@@ -205,6 +205,7 @@ public final class UtilsT {
         try {
             result = latch.await(1L, TimeUnit.MINUTES);
         } catch (final InterruptedException ex) {
+            logger.severe("Error: " + ex.getMessage());
             throw new RuntimeException(ex);
         }
         Assert.assertTrue("The CountDownLatch should be finished.", result);

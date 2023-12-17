@@ -17,7 +17,6 @@ import android.widget.Button;
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
-import androidx.test.espresso.Espresso;
 import androidx.test.espresso.intent.Intents;
 import androidx.test.espresso.intent.matcher.IntentMatchers;
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -147,8 +146,8 @@ public abstract class AbstractTest {
         }
 
         Preconditions.checkNotNull(this.activity, "The Activity didn't finish as expected!");
-        logger.info("Will wait for the Activity triggered by the test to finish.");
 
+        logger.info("Will wait for the Activity triggered by the test to finish.");
         UtilsT.waitForAppToIdle();
         while (isActivityRunning(this.activity)) {
             logger.info("Finishing the Activity.");
@@ -157,10 +156,8 @@ public abstract class AbstractTest {
             Uninterruptibles.sleepUninterruptibly(1L, TimeUnit.SECONDS);
             UtilsT.waitForAppToIdle();
         }
-        logger.info("Activity finished.");
-
-        UtilsT.executeWithCatching(Espresso::pressBackUnconditionally);
         UtilsT.waitForAppToIdle();
+        logger.info("Activity finished.");
 
         Intents.release();
         logger.info(methodName + ": " + this.testName.getMethodName() + " finished");
