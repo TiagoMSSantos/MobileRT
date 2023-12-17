@@ -424,8 +424,6 @@ jobs:
         # Check available parameters in: https://github.com/ReactiveCircus/android-emulator-runner/blob/main/action.yml
         # Available CI host machines: https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
         # Max api level for 32bit is: 29
-        # TODO: Discover why Android APIs 22-27 seem to not have GLES 2.0, because it outputs the following error:
-        # There was an error while creating the shader object: (0) 0x0
         api-level: ${{ matrix.android_api }}
         cmake: ${{ matrix.cmake_version }}
         target: default
@@ -509,7 +507,7 @@ jobs:
 
     - name: Upload APK as artifact
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && startsWith(matrix.os, 'macos')
+      if: success() && startsWith(matrix.os, 'macos') && matrix.type == 'release' && matrix.android_arch == 'x86'
       uses: actions/upload-artifact@v4
       with:
         # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml

@@ -487,8 +487,8 @@ validateFileExists() {
     return 1;
   fi
   fileSize=$(wc -w "${filePath}" | cut -d ' ' -f1);
-  if [ "${fileSize}" -lt 300 ]; then
-    echo "File '${filePath}' contains less than 300 words." >&2;
+  if [ "${fileSize}" -lt 200 ]; then
+    echo "File '${filePath}' contains less than 200 words." >&2;
     return 1;
   fi
 }

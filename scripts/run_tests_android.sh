@@ -109,23 +109,24 @@ gather_logs_func() {
   echo "Filtered logcat of the app '${pid_app}' to logcat_app_${type}.log";
   set -e;
 
+  appLog="${PWD}/${reports_path}/logcat_app_${type}.log";
+  androidLogcat="${PWD}/${reports_path}/logcat_${type}.log";
+  androidTestsReport="${PWD}/${reports_path}/androidTests/connected/${type}/index.html";
+
+  validateFileExists "${androidLogcat}";
+  printf '\e]8;;file://'"%s"'\aClick here to check the whole logcat.\e]8;;\a  ' "${androidLogcat}";
+
+  validateFileExists "${appLog}";
+  printf '\e]8;;file://'"%s"'\aClick here to check the app log.\e]8;;\a\n' "${appLog}";
+
+  validateFileExists "${androidTestsReport}";
+  printf '\e]8;;file://'"%s"'\aClick here to check the Android tests report.\e]8;;\a\n' "${androidTestsReport}";
+
   if [ "${type}" != 'release' ] && ! echo "${run_test}" | grep -q "rep_"; then
     jacocoTestReport="${PWD}/${reports_path}/jacoco/jacocoTestReport/html/index.html";
     validateFileExists "${jacocoTestReport}";
     printf '\e]8;;file://'"%s"'\aClick here to check the Code coverage report.\e]8;;\a\n' "${jacocoTestReport}";
   fi
-
-  androidTestsReport="${PWD}/${reports_path}/androidTests/connected/${type}/index.html";
-  appLog="${PWD}/${reports_path}/logcat_app_${type}.log";
-  androidLogcat="${PWD}/${reports_path}/logcat_${type}.log";
-
-  validateFileExists "${androidTestsReport}";
-  validateFileExists "${appLog}";
-  validateFileExists "${androidLogcat}";
-
-  printf '\e]8;;file://'"%s"'\aClick here to check the Android tests report.\e]8;;\a\n' "${androidTestsReport}";
-  printf '\e]8;;file://'"%s"'\aClick here to check the app log.\e]8;;\a  ' "${appLog}";
-  printf '\e]8;;file://'"%s"'\aClick here to check the whole logcat.\e]8;;\a\n' "${androidLogcat}";
 }
 
 clear_func() {
@@ -186,7 +187,7 @@ kill_adb_processes() {
   # shellcheck disable=SC2009
   ADB_PROCESSES=$(ps aux | grep -i " adb " | grep -v "grep" | tr -s ' ' | cut -d ' ' -f 2);
   echo "Detected ADB process(es): '${ADB_PROCESSES}'";
-  set +u;
+  set +eu;
   if [ -z "${CI}" ]; then
     for ADB_PROCESS in ${ADB_PROCESSES}; do
       echo "Killing: '${ADB_PROCESS}'";
@@ -194,7 +195,7 @@ kill_adb_processes() {
     done;
     sleep 3;
   fi
-  set -u;
+  set -eu;
 }
 ###############################################################################
 ###############################################################################
@@ -563,13 +564,21 @@ runInstrumentationTests() {
   adb shell ls -la /data/app/;
   set -e;
   callAdbShellCommandUntilSuccess adb shell 'pm install -r '${mobilert_path}'/app-'${type}'.apk; echo ::$?::';
-  if [ "${androidApi}" -gt 22 ] && [ "${androidApi}" -lt 28 ]; then
+  callAdbShellCommandUntilSuccess adb shell 'pm install -r '${mobilert_path}'/app-'${type}'-androidTest.apk; echo ::$?::';
+  if { [ "${androidApi}" -gt 22 ] && [ "${androidApi}" -lt 28 ]; } || [ "${androidApi}" -gt 33 ]; then
     echo 'Granting read external SD Card to MobileRT.';
     callAdbShellCommandUntilSuccess adb shell 'pm grant puscas.mobilertapp android.permission.READ_EXTERNAL_STORAGE; echo ::$?::';
+    callAdbShellCommandUntilSuccess adb shell 'pm grant puscas.mobilertapp.test android.permission.READ_EXTERNAL_STORAGE; echo ::$?::';
   fi
   if [ "${androidApi}" -gt 29 ]; then
     echo 'Giving permissions for MobileRT app to access any file from the external storage.';
     callAdbShellCommandUntilSuccess adb shell 'appops set --uid puscas.mobilertapp MANAGE_EXTERNAL_STORAGE allow; echo ::$?::';
+    callAdbShellCommandUntilSuccess adb shell 'appops set --uid puscas.mobilertapp READ_EXTERNAL_STORAGE allow; echo ::$?::';
+    callAdbShellCommandUntilSuccess adb shell 'appops set --uid puscas.mobilertapp READ_MEDIA_IMAGES allow; echo ::$?::';
+
+    callAdbShellCommandUntilSuccess adb shell 'appops set --uid puscas.mobilertapp.test MANAGE_EXTERNAL_STORAGE allow; echo ::$?::';
+    callAdbShellCommandUntilSuccess adb shell 'appops set --uid puscas.mobilertapp.test READ_EXTERNAL_STORAGE allow; echo ::$?::';
+    callAdbShellCommandUntilSuccess adb shell 'appops set --uid puscas.mobilertapp.test READ_MEDIA_IMAGES allow; echo ::$?::';
   fi
   echo 'List of instrumented APKs:';
   adb shell 'pm list instrumentation;';

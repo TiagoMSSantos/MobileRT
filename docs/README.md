@@ -158,8 +158,8 @@ framework for mocking in unit tests
       <td style="text-align:center">5 <br> (API 21) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
       <td style="text-align:center">8.1 <br> (API 27) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
       <td style="text-align:center">12 <br> (API 32) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25"></td>
-      <td style="text-align:center">13 <br> (API 33) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
-      <td style="text-align:center">14 <br> (API 34) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
+      <td style="text-align:center">13 <br> (API 33) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25"></td>
+      <td style="text-align:center">14 <br> (API 34) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
     </tr>
     <tr>
       <td style="text-align:center"><b>MacOS</b></td>

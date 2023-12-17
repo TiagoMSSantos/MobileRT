@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2023-12-16T12:44:32.461Z",
+    "detectionDate": "2023-12-17T12:04:26.569Z",
     "formats": {
       "java": {
         "sources": {
@@ -401,8 +401,8 @@
             "newClones": 0
           },
           "app/src/main/java/puscas/mobilertapp/utils/UtilsContext.java": {
-            "lines": 359,
-            "tokens": 2551,
+            "lines": 361,
+            "tokens": 2585,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -1002,14 +1002,14 @@
           }
         },
         "total": {
-          "lines": 9736,
-          "tokens": 67200,
+          "lines": 9738,
+          "tokens": 67234,
           "sources": 83,
           "clones": 55,
           "duplicatedLines": 558,
           "duplicatedTokens": 4856,
           "percentage": 5.73,
-          "percentageTokens": 7.23,
+          "percentageTokens": 7.22,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -1973,14 +1973,14 @@
             "newClones": 0
           },
           ".github/workflows/android.yml": {
-            "lines": 851,
-            "tokens": 6191,
+            "lines": 849,
+            "tokens": 6201,
             "sources": 1,
             "clones": 16,
             "duplicatedLines": 427,
             "duplicatedTokens": 2900,
-            "percentage": 50.18,
-            "percentageTokens": 46.84,
+            "percentage": 50.29,
+            "percentageTokens": 46.77,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2070,14 +2070,14 @@
           }
         },
         "total": {
-          "lines": 2499,
-          "tokens": 16582,
+          "lines": 2497,
+          "tokens": 16592,
           "sources": 22,
           "clones": 16,
           "duplicatedLines": 386,
           "duplicatedTokens": 2486,
-          "percentage": 15.45,
-          "percentageTokens": 14.99,
+          "percentage": 15.46,
+          "percentageTokens": 14.98,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2897,8 +2897,8 @@
             "newClones": 0
           },
           "scripts/run_tests_android.sh": {
-            "lines": 662,
-            "tokens": 4693,
+            "lines": 671,
+            "tokens": 4802,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -3006,14 +3006,14 @@
           }
         },
         "total": {
-          "lines": 3560,
-          "tokens": 22029,
+          "lines": 3569,
+          "tokens": 22138,
           "sources": 13,
           "clones": 11,
           "duplicatedLines": 268,
           "duplicatedTokens": 1232,
-          "percentage": 7.53,
-          "percentageTokens": 5.59,
+          "percentage": 7.51,
+          "percentageTokens": 5.57,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3140,8 +3140,8 @@
       }
     },
     "total": {
-      "lines": 27621,
-      "tokens": 208192,
+      "lines": 27630,
+      "tokens": 208345,
       "sources": 248,
       "clones": 112,
       "duplicatedLines": 1503,
@@ -6688,17 +6688,17 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android.yml",
-        "start": 474,
-        "end": 480,
+        "start": 472,
+        "end": 478,
         "startLoc": {
-          "line": 474,
+          "line": 472,
           "column": 7,
-          "position": 3543
+          "position": 3537
         },
         "endLoc": {
-          "line": 480,
+          "line": 478,
           "column": 28,
-          "position": 3634
+          "position": 3628
         }
       },
       "secondFile": {
@@ -6724,17 +6724,17 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android.yml",
-        "start": 534,
-        "end": 573,
+        "start": 532,
+        "end": 571,
         "startLoc": {
-          "line": 534,
+          "line": 532,
           "column": 5,
-          "position": 4090
+          "position": 4100
         },
         "endLoc": {
-          "line": 573,
+          "line": 571,
           "column": 69,
-          "position": 4294
+          "position": 4304
         }
       },
       "secondFile": {
@@ -6760,17 +6760,17 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android.yml",
-        "start": 573,
-        "end": 592,
+        "start": 571,
+        "end": 590,
         "startLoc": {
-          "line": 573,
+          "line": 571,
           "column": 5,
-          "position": 4294
+          "position": 4304
         },
         "endLoc": {
-          "line": 592,
+          "line": 590,
           "column": 9,
-          "position": 4428
+          "position": 4438
         }
       },
       "secondFile": {
@@ -6796,17 +6796,17 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android.yml",
-        "start": 592,
-        "end": 605,
+        "start": 590,
+        "end": 603,
         "startLoc": {
-          "line": 592,
+          "line": 590,
           "column": 5,
-          "position": 4423
+          "position": 4433
         },
         "endLoc": {
-          "line": 605,
+          "line": 603,
           "column": 6,
-          "position": 4558
+          "position": 4568
         }
       },
       "secondFile": {
@@ -6832,32 +6832,32 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android.yml",
-        "start": 677,
-        "end": 745,
+        "start": 675,
+        "end": 743,
         "startLoc": {
-          "line": 677,
+          "line": 675,
           "column": 9,
-          "position": 5027
+          "position": 5037
         },
         "endLoc": {
-          "line": 745,
+          "line": 743,
           "column": 7,
-          "position": 5438
+          "position": 5448
         }
       },
       "secondFile": {
         "name": ".github/workflows/android.yml",
         "start": 346,
-        "end": 616,
+        "end": 614,
         "startLoc": {
           "line": 346,
           "column": 9,
           "position": 2496
         },
         "endLoc": {
-          "line": 616,
+          "line": 614,
           "column": 4,
-          "position": 4597
+          "position": 4607
         }
       }
     },
@@ -6868,32 +6868,32 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android.yml",
-        "start": 755,
-        "end": 763,
+        "start": 753,
+        "end": 761,
         "startLoc": {
-          "line": 755,
+          "line": 753,
           "column": 7,
-          "position": 5518
+          "position": 5528
         },
         "endLoc": {
-          "line": 763,
+          "line": 761,
           "column": 6,
-          "position": 5618
+          "position": 5628
         }
       },
       "secondFile": {
         "name": ".github/workflows/native.yml",
         "start": 253,
-        "end": 482,
+        "end": 480,
         "startLoc": {
           "line": 253,
           "column": 7,
           "position": 1581
         },
         "endLoc": {
-          "line": 482,
+          "line": 480,
           "column": 4,
-          "position": 3643
+          "position": 3637
         }
       }
     },
@@ -6904,32 +6904,32 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android.yml",
-        "start": 790,
-        "end": 814,
+        "start": 788,
+        "end": 812,
         "startLoc": {
-          "line": 790,
+          "line": 788,
           "column": 5,
-          "position": 5771
+          "position": 5781
         },
         "endLoc": {
-          "line": 814,
+          "line": 812,
           "column": 8,
-          "position": 5945
+          "position": 5955
         }
       },
       "secondFile": {
         "name": ".github/workflows/android.yml",
         "start": 371,
-        "end": 616,
+        "end": 614,
         "startLoc": {
           "line": 371,
           "column": 5,
           "position": 2604
         },
         "endLoc": {
-          "line": 616,
+          "line": 614,
           "column": 4,
-          "position": 4597
+          "position": 4607
         }
       }
     },
