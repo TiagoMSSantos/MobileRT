@@ -124,7 +124,7 @@ squashMobileRTDockerImage() {
   docker history ptpuscas/mobile_rt:"${1}" | grep -v "<missing>" | head -2 || true;
   echo 'docker history 5';
   docker history ptpuscas/mobile_rt:"${1}" | grep -v "<missing>" | head -2 | tail -1 || true;
-  LAST_LAYER_ID=$(docker history ptpuscas/mobile_rt:"${1}" | grep -v "<missing>" | head -2 | tail -1 | cut -d ' ' -f 1 || true);
+  LAST_LAYER_ID=$(docker history ptpuscas/mobile_rt:"${1}" | grep -v "<missing>" | head -2 | tail -1 | tr -s ' ' | cut -d ' ' -f 1 || true);
   echo "LAST_LAYER_ID=${LAST_LAYER_ID}";
   docker-squash -v --tag ptpuscas/mobile_rt:"${1}" ptpuscas/mobile_rt:"${1}";
   echo 'docker squash finished';

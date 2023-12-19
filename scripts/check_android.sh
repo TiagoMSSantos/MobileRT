@@ -65,6 +65,15 @@ printEnvironment() {
 
 
 ###############################################################################
+# Set paths.
+###############################################################################
+echo 'Set path to linter reports';
+reports_path='app/build/reports';
+###############################################################################
+###############################################################################
+
+
+###############################################################################
 # Parse arguments.
 ###############################################################################
 parseArgumentsToCheck "$@";
@@ -97,6 +106,10 @@ runLinter() {
 export GRADLE_OPTS="-Xms4G -Xmx4G -XX:ActiveProcessorCount=3";
 createReportsFolders;
 runLinter;
+
+linterReport="${PWD}/${reports_path}/lint-results-debug.html";
+validateFileExists "${linterReport}";
+printf '\n\e]8;;file://'"%s"'\aClick here to check the Linter report.\e]8;;\a\n' "${linterReport}";
 
 ###############################################################################
 # Exit code

@@ -313,7 +313,7 @@ _killProcessUsingFile() {
   while [ "${processes_using_file}" != '' ] && [ ${_retry} -lt 5 ]; do
     _retry=$(( _retry + 1 ));
     echo "processes_using_file: '${processes_using_file}'";
-    process_id_using_file=$(echo "${processes_using_file}" | cut -d ' ' -f 2 | head -1);
+    process_id_using_file=$(echo "${processes_using_file}" | tr -s ' ' | cut -d ' ' -f 2 | head -1);
     if ps aux | grep -i "${process_id_using_file}" | grep -iq "android-studio"; then
       echo "Not killing process: '${process_id_using_file}' because it is the Android Studio";
       return;
@@ -486,7 +486,7 @@ validateFileExists() {
     echo "File '${filePath}' is empty." >&2;
     return 1;
   fi
-  fileSize=$(wc -w "${filePath}" | cut -d ' ' -f1);
+  fileSize=$(wc -w "${filePath}" | tr -s ' ' | cut -d ' ' -f1);
   if [ "${fileSize}" -lt 200 ]; then
     echo "File '${filePath}' contains less than 200 words." >&2;
     return 1;

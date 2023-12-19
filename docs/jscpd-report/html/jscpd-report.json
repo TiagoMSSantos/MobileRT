@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2023-12-17T15:39:58.754Z",
+    "detectionDate": "2023-12-19T20:36:59.367Z",
     "formats": {
       "java": {
         "sources": {
@@ -2946,7 +2946,7 @@
           },
           "scripts/helper_functions.sh": {
             "lines": 495,
-            "tokens": 3431,
+            "tokens": 3443,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2958,7 +2958,7 @@
           },
           "scripts/docker.sh": {
             "lines": 198,
-            "tokens": 1328,
+            "tokens": 1334,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2993,27 +2993,27 @@
             "newClones": 0
           },
           "scripts/check_android.sh": {
-            "lines": 105,
-            "tokens": 400,
+            "lines": 118,
+            "tokens": 450,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 44,
             "duplicatedTokens": 132,
-            "percentage": 41.9,
-            "percentageTokens": 33,
+            "percentage": 37.29,
+            "percentageTokens": 29.33,
             "newDuplicatedLines": 0,
             "newClones": 0
           }
         },
         "total": {
-          "lines": 3569,
-          "tokens": 22138,
+          "lines": 3582,
+          "tokens": 22206,
           "sources": 13,
           "clones": 11,
           "duplicatedLines": 268,
           "duplicatedTokens": 1232,
-          "percentage": 7.51,
-          "percentageTokens": 5.57,
+          "percentage": 7.48,
+          "percentageTokens": 5.55,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3140,14 +3140,14 @@
       }
     },
     "total": {
-      "lines": 27628,
-      "tokens": 208338,
+      "lines": 27641,
+      "tokens": 208406,
       "sources": 248,
       "clones": 112,
       "duplicatedLines": 1503,
       "duplicatedTokens": 12805,
       "percentage": 5.44,
-      "percentageTokens": 6.15,
+      "percentageTokens": 6.14,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
