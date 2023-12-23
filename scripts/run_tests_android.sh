@@ -134,7 +134,7 @@ clear_func() {
   echo "Killing pid of logcat: '${pid_logcat}'";
   kill -TERM "${pid_logcat}" 2> /dev/null || true;
   # shellcheck disable=SC2009
-  pid_tee=$(ps | grep -i "tee" | tr -s ' ' | cut -d ' ' -f 2);
+  pid_tee=$(ps aux | grep -i "tee" | tr -s ' ' | cut -d ' ' -f 2);
   echo "Killing pid of tee used by logcat command: '${pid_tee}'";
   kill -TERM "${pid_tee}" 2> /dev/null || true;
   set -u;
