@@ -1,6 +1,5 @@
 package puscas.mobilertapp;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Instrumentation;
@@ -194,12 +193,7 @@ public abstract class AbstractTest {
      */
     private static void grantPermissions(@NonNull final Context context) {
         logger.info("Granting permissions to the MainActivity to be able to read files from an external storage.");
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            InstrumentationRegistry.getInstrumentation().getUiAutomation().grantRuntimePermission(
-                context.getPackageName(), Manifest.permission.READ_MEDIA_IMAGES
-            );
-            waitForPermission(context, android.Manifest.permission.READ_MEDIA_IMAGES);
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             InstrumentationRegistry.getInstrumentation().getUiAutomation().grantRuntimePermission(
                 context.getPackageName(), android.Manifest.permission.READ_EXTERNAL_STORAGE
             );

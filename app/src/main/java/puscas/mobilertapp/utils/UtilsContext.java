@@ -324,15 +324,9 @@ public final class UtilsContext {
         logger.info("checksStoragePermission");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             logger.info("Android 14 detected, so not asking for read external SD card permissions.");
-        } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.TIRAMISU) {
-            // TODO: Necessary to fix granting permissions for Android API 33.
-            checksAccessPermission(activity, Manifest.permission.READ_MEDIA_IMAGES);
-            checksAccessPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             checksAccessPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE);
         }
-        // TODO: Can request only one set of permissions at a time.
-        // checksAccessPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
     }
 
     /**

@@ -574,11 +574,9 @@ runInstrumentationTests() {
     echo 'Giving permissions for MobileRT app to access any file from the external storage.';
     callAdbShellCommandUntilSuccess adb shell 'appops set --uid puscas.mobilertapp MANAGE_EXTERNAL_STORAGE allow; echo ::$?::';
     callAdbShellCommandUntilSuccess adb shell 'appops set --uid puscas.mobilertapp READ_EXTERNAL_STORAGE allow; echo ::$?::';
-    callAdbShellCommandUntilSuccess adb shell 'appops set --uid puscas.mobilertapp READ_MEDIA_IMAGES allow; echo ::$?::';
 
     callAdbShellCommandUntilSuccess adb shell 'appops set --uid puscas.mobilertapp.test MANAGE_EXTERNAL_STORAGE allow; echo ::$?::';
     callAdbShellCommandUntilSuccess adb shell 'appops set --uid puscas.mobilertapp.test READ_EXTERNAL_STORAGE allow; echo ::$?::';
-    callAdbShellCommandUntilSuccess adb shell 'appops set --uid puscas.mobilertapp.test READ_MEDIA_IMAGES allow; echo ::$?::';
   fi
   echo 'List of instrumented APKs:';
   adb shell 'pm list instrumentation;';
