@@ -34,7 +34,7 @@ public final class ShaderTest extends AbstractTest {
         );
 
         final int numCores = UtilsContext.getNumOfCores(this.activity);
-        assertRenderScene(numCores, Scene.OBJ, Shader.NO_SHADOWS, Accelerator.BVH, 1, 1, false);
+        assertRenderScene(numCores, Scene.OBJ, Shader.NO_SHADOWS, Accelerator.BVH, 1, 1, false, false);
     }
 
     /**
@@ -51,7 +51,7 @@ public final class ShaderTest extends AbstractTest {
         );
 
         final int numCores = UtilsContext.getNumOfCores(this.activity);
-        assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 1, 1, false);
+        assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 1, 1, false, false);
     }
 
     /**
@@ -68,7 +68,7 @@ public final class ShaderTest extends AbstractTest {
         );
 
         final int numCores = UtilsContext.getNumOfCores(this.activity);
-        assertRenderScene(numCores, Scene.OBJ, Shader.PATH_TRACING, Accelerator.BVH, 1, 1, false);
+        assertRenderScene(numCores, Scene.OBJ, Shader.PATH_TRACING, Accelerator.BVH, 1, 1, false, false);
     }
 
     /**
@@ -85,7 +85,7 @@ public final class ShaderTest extends AbstractTest {
         );
 
         final int numCores = UtilsContext.getNumOfCores(this.activity);
-        assertRenderScene(numCores, Scene.OBJ, Shader.DEPTH_MAP, Accelerator.BVH, 1, 1, false);
+        assertRenderScene(numCores, Scene.OBJ, Shader.DEPTH_MAP, Accelerator.BVH, 1, 1, false, false);
     }
 
     /**
@@ -102,7 +102,7 @@ public final class ShaderTest extends AbstractTest {
         );
 
         final int numCores = UtilsContext.getNumOfCores(this.activity);
-        assertRenderScene(numCores, Scene.OBJ, Shader.DIFFUSE, Accelerator.BVH, 1, 1, false);
+        assertRenderScene(numCores, Scene.OBJ, Shader.DIFFUSE, Accelerator.BVH, 1, 1, false, false);
     }
 
 }

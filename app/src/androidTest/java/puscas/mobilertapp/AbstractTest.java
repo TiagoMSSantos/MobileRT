@@ -1,5 +1,6 @@
 package puscas.mobilertapp;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Instrumentation;
@@ -176,7 +177,7 @@ public abstract class AbstractTest {
         } else {
             final ActivityManager activityManager = (ActivityManager) activity.getSystemService(Context.ACTIVITY_SERVICE);
             final List<ActivityManager.RunningTaskInfo> tasksRunning = activityManager.getRunningTasks(Integer.MAX_VALUE);
-            for (ActivityManager.RunningTaskInfo taskRunning : tasksRunning) {
+            for (final ActivityManager.RunningTaskInfo taskRunning : tasksRunning) {
                 if (taskRunning.baseActivity != null && Objects.equals(activity.getPackageName(), taskRunning.baseActivity.getPackageName())) {
                     return true;
                 }
@@ -195,9 +196,9 @@ public abstract class AbstractTest {
         logger.info("Granting permissions to the MainActivity to be able to read files from an external storage.");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             InstrumentationRegistry.getInstrumentation().getUiAutomation().grantRuntimePermission(
-                context.getPackageName(), android.Manifest.permission.READ_EXTERNAL_STORAGE
+                context.getPackageName(), Manifest.permission.READ_EXTERNAL_STORAGE
             );
-            waitForPermission(context, android.Manifest.permission.READ_EXTERNAL_STORAGE);
+            waitForPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE);
         }
         logger.info("Permissions granted.");
     }
@@ -225,13 +226,14 @@ public abstract class AbstractTest {
      * Ray Tracing engine to render the whole scene and then checks if the resulted image in the
      * {@link Bitmap} has different values.
      *
-     * @param numCores           The number of CPU cores to use in the Ray Tracing process.
-     * @param scene              The desired scene to render.
-     * @param shader             The desired shader to be used.
-     * @param accelerator        The desired accelerator to be used.
-     * @param spp                The desired number of samples per pixel.
-     * @param spl                The desired number of samples per light.
-     * @param expectedSameValues Whether the {@link Bitmap} should have have only one color.
+     * @param numCores                     The number of CPU cores to use in the Ray Tracing process.
+     * @param scene                        The desired scene to render.
+     * @param shader                       The desired shader to be used.
+     * @param accelerator                  The desired accelerator to be used.
+     * @param spp                          The desired number of samples per pixel.
+     * @param spl                          The desired number of samples per light.
+     * @param showRenderWhenPressingButton Whether to show the {@link Constants#RENDER} text in the render button after pressing it.
+     * @param expectedSameValues           Whether the {@link Bitmap} should have have only one color.
      * @throws TimeoutException If it couldn't render the whole scene in time.
      */
     protected void assertRenderScene(final int numCores,
@@ -240,6 +242,7 @@ public abstract class AbstractTest {
                                      final Accelerator accelerator,
                                      final int spp,
                                      final int spl,
+                                     final boolean showRenderWhenPressingButton,
                                      final boolean expectedSameValues) throws TimeoutException {
         UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SCENE, R.id.pickerScene, scene.ordinal());
         UtilsPickerT.changePickerValue(ConstantsUI.PICKER_THREADS, R.id.pickerThreads, numCores);
@@ -252,7 +255,7 @@ public abstract class AbstractTest {
         // Make sure these tests do not use preview feature.
         UiTest.clickPreviewCheckBox(false);
 
-        UtilsT.startRendering(expectedSameValues);
+        UtilsT.startRendering(showRenderWhenPressingButton);
         if (!expectedSameValues) {
             UtilsContextT.waitUntil(this.activity, Constants.STOP, State.BUSY);
         }

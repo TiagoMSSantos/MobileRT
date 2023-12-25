@@ -340,14 +340,9 @@ public final class UtilsContext {
      */
     private static void checksAccessPermission(@NonNull final Activity activity,
                                                @NonNull final String permission) {
-        final int permissionAccess = ContextCompat.checkSelfPermission(
-            activity,
-            permission
-        );
+        final int permissionAccess = ContextCompat.checkSelfPermission(activity, permission);
         if (permissionAccess != PackageManager.PERMISSION_GRANTED) {
-            final String[] permissions = {
-                permission
-            };
+            final String[] permissions = {permission};
             final int permissionCode = 1;
             ActivityCompat.requestPermissions(activity, permissions, permissionCode);
         }

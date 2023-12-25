@@ -137,17 +137,23 @@ void Renderer::renderScene(::std::int32_t *const bitmap, const ::std::int32_t ti
                     const auto r2 {this->samplerPixel_->getSample()};
                     const auto deviationU {(r1 - 0.5F) * 2.0F * pixelWidth};
                     const auto deviationV {(r2 - 0.5F) * 2.0F * pixelHeight};
-                    LOG_DEBUG("(tid: ", tid, ") Generating ray, u: ", u, ", v: ", v, ", deviationU: ", deviationU, ", deviationV: ", deviationV);
+                    // LOG_DEBUG("(tid: ", tid, ") Generating ray, u: ", u, ", v: ", v, ", deviationU: ", deviationU, ", deviationV: ", deviationV);
                     auto &&ray {this->camera_->generateRay(u, v, deviationU, deviationV)};
                     pixelRgb = {};
-                    LOG_DEBUG("(tid: ", tid, ") Ray tracing, id: ", ray.id_, ", depth: ", ray.depth_, ", origin: ", ray.origin_.length(), ", direction: ", ray.direction_.length());
+                    LOG_DEBUG(
+                        "(tid: ", tid, ") u: ", u, ", v: ", v,
+                        ", deviationU: ", deviationU, ", deviationV: ", deviationV,
+                        ", rayId: ", ray.id_, ", depth: ", ray.depth_, ", origin: ", ray.origin_.length(), ", direction: ", ray.direction_.length()
+                    );
                     this->shader_->rayTrace(&pixelRgb, ::std::move(ray));
                     const auto pixelIndex {yWidth + x};
-                    LOG_DEBUG("(tid: ", tid, ") pixelIndex: ", pixelIndex);
                     ::std::int32_t *bitmapPixel {&bitmap[pixelIndex]};
-                    LOG_DEBUG("(tid: ", tid, ") bitmapPixel: ", *bitmapPixel);
                     const auto pixelColor {::MobileRT::incrementalAvg(pixelRgb, *bitmapPixel, sample + 1)};
-                    LOG_DEBUG("(tid: ", tid, ") pixelColor: ", pixelColor);
+                    LOG_DEBUG(
+                        "(tid: ", tid, ") pixelIndex: ", pixelIndex,
+                        ", bitmapPixel: ", *bitmapPixel,
+                        ", pixelColor: ", pixelColor
+                    );
                     *bitmapPixel = pixelColor;
                 }
             }

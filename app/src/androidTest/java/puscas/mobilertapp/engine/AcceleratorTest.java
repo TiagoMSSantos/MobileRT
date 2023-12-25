@@ -34,7 +34,7 @@ public final class AcceleratorTest extends AbstractTest {
         );
 
         final int numCores = UtilsContext.getNumOfCores(this.activity);
-        assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, Accelerator.NAIVE, 1, 1, false);
+        assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, Accelerator.NAIVE, 1, 1, false, false);
     }
 
     /**
@@ -51,7 +51,7 @@ public final class AcceleratorTest extends AbstractTest {
         );
 
         final int numCores = UtilsContext.getNumOfCores(this.activity);
-        assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, Accelerator.REG_GRID, 1, 1, false);
+        assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, Accelerator.REG_GRID, 1, 1, false, false);
     }
 
     /**
@@ -68,7 +68,7 @@ public final class AcceleratorTest extends AbstractTest {
         );
 
         final int numCores = UtilsContext.getNumOfCores(this.activity);
-        assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 1, 1, false);
+        assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 1, 1, false, false);
     }
 
 }

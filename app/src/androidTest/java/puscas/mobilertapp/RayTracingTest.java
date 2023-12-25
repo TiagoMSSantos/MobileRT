@@ -11,7 +11,6 @@ import androidx.test.espresso.intent.matcher.IntentMatchers;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
@@ -88,7 +87,7 @@ public final class RayTracingTest extends AbstractTest {
         );
 
         final int numCores = UtilsContext.getNumOfCores(this.activity);
-        assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 1, 1, true);
+        assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 1, 1, true, true);
     }
 
     /**
@@ -104,7 +103,7 @@ public final class RayTracingTest extends AbstractTest {
         Intents.intending(IntentMatchers.anyIntent()).respondWith(result);
 
         final int numCores = UtilsContext.getNumOfCores(this.activity);
-        assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 1, 1, true);
+        assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 1, 1, true, true);
         Intents.intended(IntentMatchers.anyIntent());
     }
 
@@ -126,7 +125,7 @@ public final class RayTracingTest extends AbstractTest {
         );
 
         final int numCores = UtilsContext.getNumOfCores(this.activity);
-        assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 1, 1, false);
+        assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 1, 1, false, false);
     }
 
     /**
@@ -150,7 +149,7 @@ public final class RayTracingTest extends AbstractTest {
         );
 
         final int numCores = UtilsContext.getNumOfCores(this.activity);
-        assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 1, 1, false);
+        assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 1, 1, false, false);
     }
 
     /**
@@ -159,11 +158,10 @@ public final class RayTracingTest extends AbstractTest {
      *
      * @throws TimeoutException If it couldn't render the whole scene in time.
      */
-    @Ignore("It's failing in CI for Linux machines")
     @Test(timeout = 2L * 60L * 1000L)
     public void testRenderSceneWithoutAccelerator() throws TimeoutException {
         final int numCores = UtilsContext.getNumOfCores(this.activity);
-        assertRenderScene(numCores, Scene.CORNELL, Shader.WHITTED, Accelerator.NONE, 1, 1, true);
+        assertRenderScene(numCores, Scene.CORNELL, Shader.WHITTED, Accelerator.NONE, 1, 1, false, true);
     }
 
 }
