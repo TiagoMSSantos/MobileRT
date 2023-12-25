@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2023-12-25T15:55:43.146Z",
+    "detectionDate": "2023-12-25T18:19:22.046Z",
     "formats": {
       "java": {
         "sources": {
@@ -989,21 +989,21 @@
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/AbstractTest.java": {
-            "lines": 307,
-            "tokens": 2413,
+            "lines": 302,
+            "tokens": 2371,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 15,
             "duplicatedTokens": 114,
-            "percentage": 4.89,
-            "percentageTokens": 4.72,
+            "percentage": 4.97,
+            "percentageTokens": 4.81,
             "newDuplicatedLines": 0,
             "newClones": 0
           }
         },
         "total": {
-          "lines": 9720,
-          "tokens": 67119,
+          "lines": 9715,
+          "tokens": 67077,
           "sources": 83,
           "clones": 55,
           "duplicatedLines": 560,
@@ -3140,14 +3140,14 @@
       }
     },
     "total": {
-      "lines": 27630,
-      "tokens": 208311,
+      "lines": 27625,
+      "tokens": 208269,
       "sources": 248,
       "clones": 112,
       "duplicatedLines": 1505,
       "duplicatedTokens": 12821,
       "percentage": 5.45,
-      "percentageTokens": 6.15,
+      "percentageTokens": 6.16,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -5104,17 +5104,17 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/src/androidTest/java/puscas/mobilertapp/AbstractTest.java",
-        "start": 44,
-        "end": 59,
+        "start": 45,
+        "end": 60,
         "startLoc": {
-          "line": 44,
+          "line": 45,
           "column": 7,
-          "position": 394
+          "position": 405
         },
         "endLoc": {
-          "line": 59,
+          "line": 60,
           "column": 4,
-          "position": 508
+          "position": 519
         }
       },
       "secondFile": {

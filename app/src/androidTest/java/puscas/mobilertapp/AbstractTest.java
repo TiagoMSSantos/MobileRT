@@ -16,11 +16,12 @@ import android.widget.Button;
 
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.intent.Intents;
 import androidx.test.espresso.intent.matcher.IntentMatchers;
 import androidx.test.platform.app.InstrumentationRegistry;
-import androidx.test.rule.ActivityTestRule;
 
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.Uninterruptibles;
@@ -79,12 +80,16 @@ public abstract class AbstractTest {
     public final TestRule timeoutRule = new Timeout(40L, TimeUnit.MINUTES);
 
     /**
-     * The {@link Rule} to create the {@link MainActivity}.
+     * The {@link ActivityScenario} to create the {@link MainActivity}.
      */
     @NonNull
-    @Rule
-    public final ActivityTestRule<MainActivity> mainActivityActivityTestRule =
-        new ActivityTestRule<>(MainActivity.class, true, false);
+    private final ActivityScenario<MainActivity> mainActivityActivityTestRule = ActivityScenario.launch(MainActivity.class);
+
+    /**
+     * The {@link MainActivity} to test.
+     */
+    @Nullable
+    protected MainActivity activity = null;
 
     /**
      * The {@link Rule} to get the name of the current test.
@@ -102,15 +107,6 @@ public abstract class AbstractTest {
      */
     final private Deque<Runnable> closeActions = new ArrayDeque<>();
 
-    /**
-     * The {@link MainActivity} to test.
-     */
-    @NonNull
-    protected MainActivity activity = this.mainActivityActivityTestRule.launchActivity(new Intent(Intent.ACTION_PICK)
-        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_PREFIX_URI_PERMISSION | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION));
-
 
     /**
      * Setup method called before each test.
@@ -120,6 +116,8 @@ public abstract class AbstractTest {
     public void setUp() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         logger.info(methodName + ": " + this.testName.getMethodName());
+
+        this.mainActivityActivityTestRule.onActivity(activity -> this.activity = activity);
 
         Preconditions.checkNotNull(this.activity, "The Activity didn't start as expected!");
         grantPermissions(this.activity);
@@ -210,10 +208,7 @@ public abstract class AbstractTest {
      * @param permission The permission which should be granted.
      */
     private static void waitForPermission(@NonNull final Context context, @NonNull final String permission) {
-        while (ContextCompat.checkSelfPermission(
-            context,
-            permission
-        ) != PackageManager.PERMISSION_GRANTED) {
+        while (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
             logger.info("Waiting for the permission '" + permission + "'to be granted to the app.");
             UtilsT.waitForAppToIdle();
             Uninterruptibles.sleepUninterruptibly(2L, TimeUnit.SECONDS);
