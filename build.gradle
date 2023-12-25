@@ -48,7 +48,7 @@ buildscript {
         androidX_test_rules_version = '1.5.0'
         androidX_test_monitor_version = '1.6.1'
         androidX_test_runner_version = '1.5.2'
-        spring_version = '6.1.1'
+        spring_version = '6.1.2'
 
         // Unit tests dependencies
         assertj_version = '3.24.2'
@@ -71,8 +71,8 @@ buildscript {
         classpath "org.jacoco:org.jacoco.report:${jacoco_version}"
         classpath "org.jacoco:org.jacoco.agent:${jacoco_version}"
 
-//        classpath 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.5.1'
-//        classpath 'org.pitest:pitest-command-line:0.33'
+        // classpath 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.15.0'
+        // classpath 'org.pitest:pitest-command-line:1.15.3'
     }
 }
 ///////////////////////////////////////////////////////////////////////////////

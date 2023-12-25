@@ -134,7 +134,7 @@ clear_func() {
   echo "Killing pid of logcat: '${pid_logcat}'";
   kill -TERM "${pid_logcat}" 2> /dev/null || true;
   # shellcheck disable=SC2009
-  pid_tee=$(ps aux | grep -i "tee" | tr -s ' ' | cut -d ' ' -f 2);
+  pid_tee=$(ps aux | grep -i "tee" | grep -v "grep" | tr -s ' ' | cut -d ' ' -f 2);
   echo "Killing pid of tee used by logcat command: '${pid_tee}'";
   kill -TERM "${pid_tee}" 2> /dev/null || true;
   set -u;
@@ -174,7 +174,8 @@ kill_gradle_processes() {
   GRADLE_PROCESSES=$(ps aux | grep -i "mobilert" | grep -v "grep" | grep -v "${scriptName}");
   set -e;
   set +u; # 'GRADLE_PROCESSES' might not be set if didn't find any process(es).
-  echo "Killing any Gradle process, because it should be already killed: '${GRADLE_PROCESSES}'";
+  GRADLE_PROCESSES_STR="$(echo "${GRADLE_PROCESSES}" | tr '\n' ',' | sed 's/,$//')";
+  echo "Killing any Gradle process, because it should be already killed: '${GRADLE_PROCESSES_STR}'";
   GRADLE_PROCESSES=$(echo "${GRADLE_PROCESSES}" | tr -s ' ' | cut -d ' ' -f 2);
   for GRADLE_PROCESS in ${GRADLE_PROCESSES}; do
     echo "Killing: '${GRADLE_PROCESS}'";
@@ -186,11 +187,11 @@ kill_gradle_processes() {
 kill_adb_processes() {
   # shellcheck disable=SC2009
   ADB_PROCESSES=$(ps aux | grep -i " adb " | grep -v "grep" | tr -s ' ' | cut -d ' ' -f 2);
-  echo "Detected ADB process(es): '${ADB_PROCESSES}'";
+  ADB_PROCESSES_STR="$(echo "${ADB_PROCESSES}" | tr '\n' ',' | sed 's/,$//')";
+  echo "Killing the detected ADB process(es): '${ADB_PROCESSES_STR}'";
   set +eu;
   if [ -z "${CI}" ]; then
     for ADB_PROCESS in ${ADB_PROCESSES}; do
-      echo "Killing: '${ADB_PROCESS}'";
       kill -TERM "${ADB_PROCESS}";
     done;
     sleep 3;
