@@ -2,6 +2,8 @@ package puscas.mobilertapp.exceptions;
 
 import androidx.annotation.NonNull;
 
+import java.io.Serial;
+
 /**
  * An {@link Exception} which represents the system with a failure.
  */
@@ -10,7 +12,8 @@ public final class FailureException extends RuntimeException {
     /**
      * The Serial UUID.
      */
-    private static final long serialVersionUID = -7934346360661057805L;
+    @Serial
+    private static final long serialVersionUID = -7199144687688639370L;
 
     /**
      * The constructor for rethrows.

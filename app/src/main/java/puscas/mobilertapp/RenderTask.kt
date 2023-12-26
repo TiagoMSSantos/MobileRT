@@ -150,7 +150,7 @@ class RenderTask private constructor(
             logger.info(ConstantsMethods.TIMER)
             updateFps()
             updateTextStats()
-            val currentState = State.values()[rtGetState()]
+            val currentState = State.entries[rtGetState()]
             stateT = currentState.toString()
             requestRender.run()
             publishProgressAsync()

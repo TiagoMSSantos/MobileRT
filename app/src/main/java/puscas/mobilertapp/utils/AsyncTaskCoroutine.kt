@@ -92,8 +92,8 @@ abstract class AsyncTaskCoroutine {
      * @see [doInBackground]
      */
     @DelicateCoroutinesApi
-    protected fun publishProgressAsync(): Deferred<Unit> {
-        return GlobalScope.async(Dispatchers.Main) {
+    protected fun publishProgressAsync() {
+        GlobalScope.async(Dispatchers.Main) {
             onProgressUpdate()
         }
     }
@@ -109,8 +109,8 @@ abstract class AsyncTaskCoroutine {
      * method on the UI thread.
      */
     @DelicateCoroutinesApi
-    fun executeAsync(): Deferred<Unit> {
-        return GlobalScope.async(Dispatchers.Main) {
+    fun executeAsync() {
+        GlobalScope.async(Dispatchers.Main) {
             onPreExecute()
             lastJob = GlobalScope.async(Dispatchers.IO) {
                 doInBackground()

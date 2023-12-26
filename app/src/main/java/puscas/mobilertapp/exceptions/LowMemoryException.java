@@ -2,6 +2,8 @@ package puscas.mobilertapp.exceptions;
 
 import androidx.annotation.NonNull;
 
+import java.io.Serial;
+
 /**
  * An {@link Exception} which represents the system with low memory.
  */
@@ -10,7 +12,8 @@ public final class LowMemoryException extends Exception {
     /**
      * The Serial UUID.
      */
-    private static final long serialVersionUID = -7934346360661057805L;
+    @Serial
+    private static final long serialVersionUID = -6179575914997567912L;
 
     /**
      * The constructor for rethrows.
