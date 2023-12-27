@@ -429,4 +429,8 @@ testParseArgumentsToCheck;
 set -eu;
 
 # Exit and return whether the tests passed or failed.
-return "${exitValue}";
+if [ "${exitValue}" != 0 ]; then
+  # Only return 'exitValue' if some test(s) failed, so the code coverage works properly.
+  # Because 'return' can only be used from a function or sourced script.
+  return "${exitValue}";
+fi

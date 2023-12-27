@@ -5,6 +5,8 @@
 source 'https://rubygems.org'
 
 ruby '~> 2.7.4'
+
+# Gems for the Github Markdown
 gem 'jekyll', '~> 3.9.3'
 
 group :jekyll_plugins do
@@ -15,3 +17,8 @@ group :jekyll_plugins do
   gem 'jekyll-github-metadata', '~> 2.13.0'
   gem 'kramdown', '~> 2.3.2'
 end
+
+# Gems for bash code coverage
+gem 'bashcov'
+gem 'simplecov'
+gem 'simplecov-cobertura'

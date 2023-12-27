@@ -33,6 +33,8 @@ helpCheck() {
 
 # Argument parser for compilation scripts.
 parseArgumentsToCompile() {
+  # Reset the index of the last option argument processed by the getopts.
+  OPTIND=0;
   while getopts ":ht:c:r:" opt; do
     case ${opt} in
       t )
@@ -57,6 +59,8 @@ parseArgumentsToCompile() {
 
 # Argument parser for Android compilation scripts.
 parseArgumentsToCompileAndroid() {
+  # Reset the index of the last option argument processed by the getopts.
+  OPTIND=0;
   while getopts ":ht:c:r:n:m:f:" opt; do
     case ${opt} in
       n )
@@ -90,6 +94,8 @@ parseArgumentsToCompileAndroid() {
 
 # Argument parser for Android run tests scripts.
 parseArgumentsToTestAndroid() {
+  # Reset the index of the last option argument processed by the getopts.
+  OPTIND=0;
   while getopts ":ht:r:k:n:m:f:" opt; do
     case ${opt} in
       n )
@@ -122,6 +128,8 @@ parseArgumentsToTestAndroid() {
 
 # Argument parser for linter scripts.
 parseArgumentsToCheck() {
+  # Reset the index of the last option argument processed by the getopts.
+  OPTIND=0;
   while getopts ":hm:n:f:" opt; do
     case ${opt} in
       n )

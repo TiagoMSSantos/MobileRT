@@ -123,6 +123,20 @@ jobs:
       run: |
         sh scripts/install_dependencies.sh;
 
+    - name: Setup Ruby, JRuby and TruffleRuby
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success() && matrix.language == 'cpp'
+      uses: ruby/setup-ruby@v1.163.0
+      with:
+        # Check available parameters in: https://github.com/ruby/setup-ruby/blob/master/action.yml
+        ruby-version: '2.7'
+
+    - name: Install Ruby dependencies
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+      if: success() && matrix.language == 'cpp'
+      run: |
+        bundle install && bundle update --bundler;
+
     # Only execute shell unit tests for 'cpp' language because it doesn't matter in which build
     # these tests are executed.
     - name: Shell scripts unit tests
@@ -130,7 +144,12 @@ jobs:
       if: success() && matrix.language == 'cpp'
       working-directory: .
       run: |
-        sh scripts/test/helper_functions.sh;
+        bashcov scripts/test/helper_functions.sh;
+
+    - name: Upload reports to Codecov
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success() && matrix.language == 'cpp'
+      uses: codecov/codecov-action@v2
 
     - name: Autobuild
       id: autobuild
