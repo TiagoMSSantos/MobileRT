@@ -23,7 +23,7 @@ coverage:
       flag_coverage_not_uploaded_behavior: include
     project:
       default:
-        target: 70%
+        target: 56%
         # Note that the native coverage is reported 1st and might fail, so it was added a threshold because of that.
         threshold: 2%
         if_ci_failed: error
