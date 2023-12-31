@@ -10,32 +10,32 @@
 # Helper command for compilation scripts.
 helpCompile() {
   echo 'Usage: cmd [-h] [-t type] [-c compiler] [-r recompile]';
-  exit 0;
+  return 1;
 }
 
 # Helper command for Android compilation scripts.
 helpCompileAndroid() {
   echo 'Usage: cmd [-h] [-t type] [-f cpu_architecture] [-c compiler] [-r recompile] [-n ndk_version] [-m cmake_version]';
-  exit 0;
+  return 1;
 }
 
 # Helper command for Android run tests scripts.
 helpTestAndroid() {
   echo 'Usage: cmd [-h] [-t type] [-f cpu_architecture] [-r run_test] [-n ndk_version] [-m cmake_version] [-k kill_previous]';
-  exit 0;
+  return 1;
 }
 
 # Helper command for compilation scripts.
 helpCheck() {
   echo 'Usage: cmd [-h] [-f cpu_architecture] [-n ndk_version] [-m cmake_version]';
-  exit 0;
+  return 1;
 }
 
 # Argument parser for compilation scripts.
 parseArgumentsToCompile() {
   # Reset the index of the last option argument processed by the getopts.
   OPTIND=0;
-  while getopts ":ht:c:r:" opt; do
+  while getopts "ht:c:r:" opt; do
     case ${opt} in
       t )
         export type=${OPTARG};
@@ -61,7 +61,7 @@ parseArgumentsToCompile() {
 parseArgumentsToCompileAndroid() {
   # Reset the index of the last option argument processed by the getopts.
   OPTIND=0;
-  while getopts ":ht:c:r:n:m:f:" opt; do
+  while getopts "ht:c:r:n:m:f:" opt; do
     case ${opt} in
       n )
         export ndk_version=${OPTARG};
@@ -96,7 +96,7 @@ parseArgumentsToCompileAndroid() {
 parseArgumentsToTestAndroid() {
   # Reset the index of the last option argument processed by the getopts.
   OPTIND=0;
-  while getopts ":ht:r:k:n:m:f:" opt; do
+  while getopts "ht:r:k:n:m:f:" opt; do
     case ${opt} in
       n )
         export ndk_version=${OPTARG};
@@ -130,7 +130,7 @@ parseArgumentsToTestAndroid() {
 parseArgumentsToCheck() {
   # Reset the index of the last option argument processed by the getopts.
   OPTIND=0;
-  while getopts ":hm:n:f:" opt; do
+  while getopts "hm:n:f:" opt; do
     case ${opt} in
       n )
         export ndk_version=${OPTARG};
@@ -246,6 +246,8 @@ printCommandExitCode() {
 }
 
 # Check command is available.
+# Parameters:
+# * command to check if is available.
 checkCommand() {
   if command -v "${@}" > /dev/null; then
     echo "Command '$*' installed!";
@@ -297,7 +299,7 @@ checkPathExists() {
   if [ $# -eq 1 ] ; then
     return 0;
   fi
-  validateFileExists "${1}"/"${2}";
+  validateFileExistsAndHasSomeContent "${1}"/"${2}";
 }
 
 # Change the mode of all binaries/scripts to be able to be executed.
@@ -307,11 +309,6 @@ prepareBinaries() {
   rootDir="${1:-${PWD}}";
   chmod +x "${rootDir}"/test-reporter-latest-linux-amd64;
   chmod +x "${rootDir}"/test-reporter-latest-darwin-amd64;
-}
-
-# Helper command to execute a command / function without exiting the script (without the set -e).
-executeWithoutExiting () {
-  "$@" || true;
 }
 
 # Private method which kills a process that is using a file.
@@ -415,6 +412,7 @@ extractFilesFromArtifact() {
     done;
     rm -v -- "${filename}" || true;
   done;
+
   # Delete every zip file found.
   find "${1}" -maxdepth 1 -iname "*.zip" | while read -r filename; do
     rm -v -- "${filename}" || true;
@@ -455,10 +453,10 @@ generateCodeCoverage() {
 
 # Validate generated files for code coverage.
 _validateCodeCoverage() {
-  validateFileExists code_coverage_base.info;
-  validateFileExists code_coverage_test.info;
-  validateFileExists code_coverage.info;
-  validateFileExists code_coverage_filtered.info;
+  validateFileExistsAndHasSomeContent code_coverage_base.info;
+  validateFileExistsAndHasSomeContent code_coverage_test.info;
+  validateFileExistsAndHasSomeContent code_coverage.info;
+  validateFileExistsAndHasSomeContent code_coverage_filtered.info;
 }
 
 # Add command to the PATH environment variable.
@@ -484,7 +482,7 @@ addCommandToPath() {
 # Also check if the file has some content.
 # Parameters
 # 1) path to file
-validateFileExists() {
+validateFileExistsAndHasSomeContent() {
   filePath="${1}";
   if [ ! -f "${filePath}" ]; then
     echo "File '${filePath}' does NOT exist." >&2;

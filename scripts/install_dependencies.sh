@@ -302,11 +302,11 @@ update_python() {
   fi
 
   echo 'Upgrade pip';
-  executeWithoutExiting python -m pip install --upgrade pip --user;
-  executeWithoutExiting python3 -m pip install --upgrade pip --user;
+  python -m pip install --upgrade pip --user || true;
+  python3 -m pip install --upgrade pip --user || true;
   echo 'Upgrade CMake from pip';
-  executeWithoutExiting python -m pip install cmake --upgrade --user;
-  executeWithoutExiting python3 -m pip install cmake --upgrade --user;
+  python -m pip install cmake --upgrade --user || true;
+  python3 -m pip install cmake --upgrade --user || true;
 
   addCommandToPath 'cmake';
 }
@@ -367,7 +367,7 @@ test_commands() {
 # Execute script.
 ###############################################################################
 echo "Detected Host OS: $(uname -a)";
-executeWithoutExiting install_dependencies;
+install_dependencies || true;
 # TODO: Add back the installation of conan package manager for all Linux distributions.
 # install_conan;
 test_commands;

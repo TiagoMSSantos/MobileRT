@@ -107,7 +107,7 @@ createReportsFolders;
 runUnitTests;
 
 unitTestsReport="${PWD}/${reports_path}/tests/test${type}UnitTest/index.html";
-validateFileExists "${unitTestsReport}";
+validateFileExistsAndHasSomeContent "${unitTestsReport}";
 
 echo '';
 printf '\e]8;;file://'"%s"'\aClick here to check the Unit tests report.\e]8;;\a\n' "${unitTestsReport}";

@@ -135,8 +135,8 @@ squashMobileRTDockerImage() {
 _installDockerSquashCommand() {
   pip install --upgrade pip --user;
   pip3 install --upgrade pip --user;
-  executeWithoutExiting python -m pip install --upgrade pip --user;
-  executeWithoutExiting python3 -m pip install --upgrade pip --user;
+  python -m pip install --upgrade pip --user || true;
+  python3 -m pip install --upgrade pip --user || true;
 
   pip install -v docker==5.0.3;
   pip install -v docker-squash;

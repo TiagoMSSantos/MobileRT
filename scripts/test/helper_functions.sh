@@ -92,7 +92,7 @@ _validateEnvVariablesDoNotExist() {
 #
 # Output:
 # Returns 1 if the variable was not set previously.
-# Returns 2 if the variable was set but does not have the expected value.
+# Returns 2 if the variable was set but does NOT have the expected value.
 _validateEnvVariableValue() {
   if [ $# -ne 3 ]; then
     echo 'Usage: _validateEnvVariableValue <name_env_var> <expected_value_env_var> <message>';
@@ -108,7 +108,7 @@ _validateEnvVariableValue() {
   fi
   if [ "${variableValue}" != "${2}" ]; then
     logError '[FAILED]';
-    echo "${3} | The '${1}' environment variable does not have the expected value '${2}'. Instead it has the value: '${variableValue}'";
+    echo "${3} | The '${1}' environment variable does NOT have the expected value '${2}'. Instead it has the value: '${variableValue}'";
     exitValue=1;
     return 2;
   fi
@@ -160,7 +160,7 @@ testHelpCompile() {
   eval '$(helpCompile > /dev/null 2>&1)';
   returnValue="$?";
 
-  expected='0';
+  expected='1';
   assertEqual "${expected}" "${returnValue}" 'testHelpCompile';
 }
 
@@ -169,7 +169,7 @@ testHelpCompileAndroid() {
   eval '$(helpCompileAndroid > /dev/null 2>&1)';
   returnValue="$?";
 
-  expected='0';
+  expected='1';
   assertEqual "${expected}" "${returnValue}" 'testHelpCompileAndroid';
 }
 
@@ -178,7 +178,7 @@ testHelpTestAndroid() {
   eval '$(helpTestAndroid > /dev/null 2>&1)';
   returnValue="$?";
 
-  expected='0';
+  expected='1';
   assertEqual "${expected}" "${returnValue}" 'testHelpTestAndroid';
 }
 
@@ -187,7 +187,7 @@ testHelpCheck() {
   eval '$(helpCheck > /dev/null 2>&1)';
   returnValue="$?";
 
-  expected='0';
+  expected='1';
   assertEqual "${expected}" "${returnValue}" 'testHelpCheck';
 }
 
@@ -224,14 +224,14 @@ testParseArgumentsToCompile() {
   # Validate the help message returns the expected value.
   eval '$(${_functionName} -h > /dev/null 2>&1)';
   returnValue="$?";
-  expected='0';
+  expected='1';
   assertEqual "${expected}" "${returnValue}" "${_testName} -h";
 
   _clearEnvVariables;
-  # Validate the help message returns the expected value.
-  eval '$(${_functionName} \? > /dev/null 2>&1)';
+  # Validate the help message returns the expected value, when using the wrong parameter.
+  eval '$(${_functionName} -z > /dev/null 2>&1)';
   returnValue="$?";
-  expected='0';
+  expected='1';
   assertEqual "${expected}" "${returnValue}" "${_testName} ?";
 }
 
@@ -292,14 +292,14 @@ testParseArgumentsToCompileAndroid() {
   # Validate the help message returns the expected value.
   eval '$(${_functionName} -h > /dev/null 2>&1)';
   returnValue="$?";
-  expected='0';
+  expected='1';
   assertEqual "${expected}" "${returnValue}" "${_testName} -h";
 
   _clearEnvVariables;
-  # Validate the help message returns the expected value.
-  eval '$(${_functionName} \? > /dev/null 2>&1)';
+  # Validate the help message returns the expected value, when using the wrong parameter.
+  eval '$(${_functionName} -z > /dev/null 2>&1)';
   returnValue="$?";
-  expected='0';
+  expected='1';
   assertEqual "${expected}" "${returnValue}" "${_testName} ?";
 }
 
@@ -360,14 +360,14 @@ testParseArgumentsToTestAndroid() {
   # Validate the help message returns the expected value.
   eval '$(${_functionName} -h > /dev/null 2>&1)';
   returnValue="$?";
-  expected='0';
+  expected='1';
   assertEqual "${expected}" "${returnValue}" "${_testName} -h";
 
   _clearEnvVariables;
-  # Validate the help message returns the expected value.
-  eval '$(${_functionName} \? > /dev/null 2>&1)';
+  # Validate the help message returns the expected value, when using the wrong parameter.
+  eval '$(${_functionName} -z > /dev/null 2>&1)';
   returnValue="$?";
-  expected='0';
+  expected='1';
   assertEqual "${expected}" "${returnValue}" "${_testName} ?";
 }
 
@@ -404,15 +404,53 @@ testParseArgumentsToCheck() {
   # Validate the help message returns the expected value.
   eval '$(${_functionName} -h > /dev/null 2>&1)';
   returnValue="$?";
-  expected='0';
+  expected='1';
   assertEqual "${expected}" "${returnValue}" "${_testName} -h";
 
   _clearEnvVariables;
-  # Validate the help message returns the expected value.
-  eval '$(${_functionName} \? > /dev/null 2>&1)';
+  # Validate the help message returns the expected value, when using the wrong parameter.
+  eval '$(${_functionName} -z > /dev/null 2>&1)';
   returnValue="$?";
-  expected='0';
+  expected='1';
   assertEqual "${expected}" "${returnValue}" "${_testName} ?";
+}
+
+# Tests the printCommandExitCode function.
+testPrintCommandExitCode() {
+  _functionName='printCommandExitCode';
+  _testName="test$(capitalizeFirstletter ${_functionName})";
+
+  # Validate the exit code is the one provided as argument.
+  expectedExitCode='135';
+  eval '$(${_functionName} "${expectedExitCode}" "message to be printed" > /dev/null 2>&1)';
+  returnValue="$?";
+  assertEqual "${expectedExitCode}" "${returnValue}" "${_testName} ${expectedExitCode}";
+
+  # Validate the exit code is the one provided as argument, even if the exit code is 0.
+  expectedExitCode='0';
+  eval ${_functionName} "${expectedExitCode}" > /dev/null 2>&1;
+  returnValue="$?";
+  assertEqual "${expectedExitCode}" "${returnValue}" "${_testName} ${expectedExitCode}";
+}
+
+# Tests the checkCommand function.
+testCheckCommand() {
+  _functionName='checkCommand';
+  _testName="test$(capitalizeFirstletter ${_functionName})";
+
+  # Validate the exit code is the expected one when command does NOT exist.
+  expectedExitCode='1';
+  commandToCheck='commandThatDoesNotExist';
+  eval '$(${_functionName} "${commandToCheck}" > /dev/null 2>&1)';
+  returnValue="$?";
+  assertEqual "${expectedExitCode}" "${returnValue}" "${_testName} ${commandToCheck}";
+
+  # Validate the exit code is the expected one when command DOES exist.
+  expectedExitCode='0';
+  commandToCheck='wc';
+  eval '$(${_functionName} "${commandToCheck}" > /dev/null 2>&1)';
+  returnValue="$?";
+  assertEqual "${expectedExitCode}" "${returnValue}" "${_testName} ${commandToCheck}";
 }
 
 
@@ -426,6 +464,8 @@ testParseArgumentsToCompile;
 testParseArgumentsToCompileAndroid;
 testParseArgumentsToTestAndroid;
 testParseArgumentsToCheck;
+testPrintCommandExitCode;
+testCheckCommand;
 set -eu;
 
 # Exit and return whether the tests passed or failed.

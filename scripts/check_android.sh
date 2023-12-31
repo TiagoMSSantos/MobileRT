@@ -108,7 +108,7 @@ createReportsFolders;
 runLinter;
 
 linterReport="${PWD}/${reports_path}/lint-results-debug.html";
-validateFileExists "${linterReport}";
+validateFileExistsAndHasSomeContent "${linterReport}";
 printf '\n\e]8;;file://'"%s"'\aClick here to check the Linter report.\e]8;;\a\n' "${linterReport}";
 
 ###############################################################################

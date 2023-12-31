@@ -95,6 +95,7 @@ jobs:
         - name: MSVC
           os: windows-2022
           type: release
+          compiler: g++
           cxx: "C:/PROGRA~2/MICROS~1/2019/Enterprise/VC/Tools/MSVC/14.28.29333/bin/HostX64/x86/cl.exe"
           cc: "C:/PROGRA~2/MICROS~1/2019/Enterprise/VC/Tools/MSVC/14.28.29333/bin/HostX64/x86/cl.exe"
           qt_host: 'windows'
@@ -103,6 +104,7 @@ jobs:
         - name: MinGW
           os: windows-2022
           type: release
+          compiler: g++
           cxx: "gcc"
           cc: "g++"
           qt_host: 'windows'
