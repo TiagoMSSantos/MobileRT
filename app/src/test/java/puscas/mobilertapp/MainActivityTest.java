@@ -26,6 +26,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.File;
 import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import puscas.mobilertapp.constants.ConstantsUI;
@@ -53,7 +54,7 @@ public final class MainActivityTest {
     /**
      * Setup method called before each test.
      * <p>
-     * The {@link #targetMainActivityMocked}
+     * Sets the {@link #targetMainActivityMocked}.
      * The {@link MainActivity#showUiMessage(String)} method needs {@link MainActivity#setCurrentInstance()}
      * to be called so it sets the {@link MainActivity#currentInstance} field 1st.
      *
@@ -88,6 +89,7 @@ public final class MainActivityTest {
             .anyTimes();
 
         PowerMock.mockStaticNice(UtilsContext.class);
+
         EasyMock.expect(UtilsContext.readShaders(EasyMock.anyObject(Context.class), EasyMock.anyObject(Map.class)))
             .andReturn(EasyMock.mock(Map.class))
             .anyTimes();
@@ -180,7 +182,7 @@ public final class MainActivityTest {
             .as("The 'MainActivity#sceneFilePath' field")
             .isNull();
 
-        final int openFileRequestCode = (int) ReflectionTestUtils.getField(MainActivity.class, "OPEN_FILE_REQUEST_CODE");
+        final int openFileRequestCode = (int) Objects.requireNonNull(ReflectionTestUtils.getField(MainActivity.class, "OPEN_FILE_REQUEST_CODE"));
         this.targetMainActivityMocked.onActivityResult(openFileRequestCode, Activity.RESULT_OK, intentMocked);
 
         Assertions.assertThat((String) ReflectionTestUtils.getField(this.targetMainActivityMocked, "sceneFilePath"))
@@ -226,7 +228,7 @@ public final class MainActivityTest {
             .as("The 'MainActivity#sceneFilePath' field")
             .isNull();
 
-        final int openFileRequestCode = (int) ReflectionTestUtils.getField(MainActivity.class, "OPEN_FILE_REQUEST_CODE");
+        final int openFileRequestCode = (int) Objects.requireNonNull(ReflectionTestUtils.getField(MainActivity.class, "OPEN_FILE_REQUEST_CODE"));
         this.targetMainActivityMocked.onActivityResult(openFileRequestCode, Activity.RESULT_OK, intentMocked);
 
         Assertions.assertThat((String) ReflectionTestUtils.getField(this.targetMainActivityMocked, "sceneFilePath"))

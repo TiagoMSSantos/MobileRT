@@ -486,7 +486,7 @@ public final class MainActivity extends Activity {
                 } else {
                     logger.info("Will read every file in a path.");
                     final Uri uri = data.getData();
-                    if (uri == null) {
+                    if (uri == null || uri.getPath() == null) {
                         throw new FailureException("There is no URI to a File!");
                     }
                     final String filePath = getPathFromFile(uri);
@@ -662,7 +662,7 @@ public final class MainActivity extends Activity {
      */
     private void validatePathIsAccessible(@NonNull final Uri uri) {
         logger.info("validatePathIsAccessible");
-        final String path = uri.getPath();
+        final String path = Objects.requireNonNull(uri.getPath());
 
         boolean externalStorage1 = path.matches("^/document/([A-Za-z0-9]){4}-([A-Za-z0-9]){4}:.+$");
         boolean externalStorage2 = path.matches("^/mnt/sdcard/.+$");
@@ -689,7 +689,7 @@ public final class MainActivity extends Activity {
         logger.info("Will read the following file: '" + filePath + "'");
         final ContentResolver contentResolver = getContentResolver();
 
-        try (ParcelFileDescriptor parcelFileDescriptor = contentResolver.openFileDescriptor(uri, "r")) {
+        try (ParcelFileDescriptor parcelFileDescriptor = Objects.requireNonNull(contentResolver.openFileDescriptor(uri, "r"))) {
             logger.info("Opened AssetFileDescriptor");
             final int fd = parcelFileDescriptor.getFd();
             final long size = parcelFileDescriptor.getStatSize();

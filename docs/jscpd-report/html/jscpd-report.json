@@ -1,18 +1,18 @@
 {
   "statistics": {
-    "detectionDate": "2024-01-01T10:04:07.437Z",
+    "detectionDate": "2024-01-01T11:34:34.832Z",
     "formats": {
       "java": {
         "sources": {
           "app/src/test/java/puscas/mobilertapp/utils/UtilsTest.java": {
-            "lines": 103,
-            "tokens": 667,
+            "lines": 108,
+            "tokens": 739,
             "sources": 1,
             "clones": 12,
             "duplicatedLines": 72,
             "duplicatedTokens": 840,
-            "percentage": 69.9,
-            "percentageTokens": 125.94,
+            "percentage": 66.67,
+            "percentageTokens": 113.67,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -785,38 +785,38 @@
             "newClones": 0
           },
           "app/src/test/java/puscas/mobilertapp/MainRendererTest.java": {
-            "lines": 436,
-            "tokens": 3692,
+            "lines": 437,
+            "tokens": 3721,
             "sources": 1,
             "clones": 17,
             "duplicatedLines": 182,
             "duplicatedTokens": 1729,
-            "percentage": 41.74,
-            "percentageTokens": 46.83,
+            "percentage": 41.65,
+            "percentageTokens": 46.47,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "app/src/test/java/puscas/mobilertapp/MainActivityTest.java": {
-            "lines": 235,
-            "tokens": 1953,
+            "lines": 237,
+            "tokens": 1973,
             "sources": 1,
             "clones": 6,
             "duplicatedLines": 66,
-            "duplicatedTokens": 630,
-            "percentage": 28.09,
-            "percentageTokens": 32.26,
+            "duplicatedTokens": 640,
+            "percentage": 27.85,
+            "percentageTokens": 32.44,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "app/src/test/java/puscas/mobilertapp/DrawViewTest.java": {
-            "lines": 296,
-            "tokens": 2472,
+            "lines": 297,
+            "tokens": 2486,
             "sources": 1,
             "clones": 7,
             "duplicatedLines": 64,
             "duplicatedTokens": 659,
-            "percentage": 21.62,
-            "percentageTokens": 26.66,
+            "percentage": 21.55,
+            "percentageTokens": 26.51,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -870,7 +870,7 @@
           },
           "app/src/main/java/puscas/mobilertapp/MainActivity.java": {
             "lines": 977,
-            "tokens": 7757,
+            "tokens": 7779,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -1002,14 +1002,14 @@
           }
         },
         "total": {
-          "lines": 9720,
-          "tokens": 67180,
+          "lines": 9729,
+          "tokens": 67337,
           "sources": 83,
           "clones": 55,
           "duplicatedLines": 560,
-          "duplicatedTokens": 4956,
+          "duplicatedTokens": 4961,
           "percentage": 5.76,
-          "percentageTokens": 7.38,
+          "percentageTokens": 7.37,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3140,14 +3140,14 @@
       }
     },
     "total": {
-      "lines": 27701,
-      "tokens": 208900,
+      "lines": 27710,
+      "tokens": 209057,
       "sources": 248,
       "clones": 112,
       "duplicatedLines": 1504,
-      "duplicatedTokens": 12904,
+      "duplicatedTokens": 12909,
       "percentage": 5.43,
-      "percentageTokens": 6.18,
+      "percentageTokens": 6.17,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -3175,17 +3175,17 @@
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/utils/UtilsTest.java",
-        "start": 31,
-        "end": 37,
+        "start": 32,
+        "end": 38,
         "startLoc": {
-          "line": 31,
+          "line": 32,
           "column": 6,
-          "position": 182
+          "position": 191
         },
         "endLoc": {
-          "line": 37,
+          "line": 38,
           "column": 35,
-          "position": 252
+          "position": 261
         }
       }
     },
@@ -3247,17 +3247,17 @@
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/utils/UtilsTest.java",
-        "start": 31,
-        "end": 37,
+        "start": 32,
+        "end": 38,
         "startLoc": {
-          "line": 31,
+          "line": 32,
           "column": 6,
-          "position": 182
+          "position": 191
         },
         "endLoc": {
-          "line": 37,
+          "line": 38,
           "column": 35,
-          "position": 252
+          "position": 261
         }
       }
     },
@@ -3319,17 +3319,17 @@
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/utils/UtilsTest.java",
-        "start": 31,
-        "end": 37,
+        "start": 32,
+        "end": 38,
         "startLoc": {
-          "line": 31,
+          "line": 32,
           "column": 6,
-          "position": 182
+          "position": 191
         },
         "endLoc": {
-          "line": 37,
+          "line": 38,
           "column": 35,
-          "position": 252
+          "position": 261
         }
       }
     },
@@ -3391,17 +3391,17 @@
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/utils/UtilsTest.java",
-        "start": 31,
-        "end": 37,
+        "start": 32,
+        "end": 38,
         "startLoc": {
-          "line": 31,
+          "line": 32,
           "column": 6,
-          "position": 182
+          "position": 191
         },
         "endLoc": {
-          "line": 37,
+          "line": 38,
           "column": 35,
-          "position": 252
+          "position": 261
         }
       }
     },
@@ -3463,17 +3463,17 @@
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/utils/UtilsTest.java",
-        "start": 31,
-        "end": 37,
+        "start": 32,
+        "end": 38,
         "startLoc": {
-          "line": 31,
+          "line": 32,
           "column": 6,
-          "position": 182
+          "position": 191
         },
         "endLoc": {
-          "line": 37,
+          "line": 38,
           "column": 35,
-          "position": 252
+          "position": 261
         }
       }
     },
@@ -3535,17 +3535,17 @@
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/utils/UtilsTest.java",
-        "start": 31,
-        "end": 37,
+        "start": 32,
+        "end": 38,
         "startLoc": {
-          "line": 31,
+          "line": 32,
           "column": 6,
-          "position": 182
+          "position": 191
         },
         "endLoc": {
-          "line": 37,
+          "line": 38,
           "column": 35,
-          "position": 252
+          "position": 261
         }
       }
     },
@@ -3571,17 +3571,17 @@
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/utils/UtilsTest.java",
-        "start": 31,
-        "end": 37,
+        "start": 32,
+        "end": 38,
         "startLoc": {
-          "line": 31,
+          "line": 32,
           "column": 6,
-          "position": 182
+          "position": 191
         },
         "endLoc": {
-          "line": 37,
+          "line": 38,
           "column": 35,
-          "position": 252
+          "position": 261
         }
       }
     },
@@ -3643,17 +3643,17 @@
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/utils/UtilsTest.java",
-        "start": 31,
-        "end": 37,
+        "start": 32,
+        "end": 38,
         "startLoc": {
-          "line": 31,
+          "line": 32,
           "column": 6,
-          "position": 182
+          "position": 191
         },
         "endLoc": {
-          "line": 37,
+          "line": 38,
           "column": 35,
-          "position": 252
+          "position": 261
         }
       }
     },
@@ -3715,17 +3715,17 @@
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/utils/UtilsTest.java",
-        "start": 31,
-        "end": 37,
+        "start": 32,
+        "end": 38,
         "startLoc": {
-          "line": 31,
+          "line": 32,
           "column": 6,
-          "position": 182
+          "position": 191
         },
         "endLoc": {
-          "line": 37,
+          "line": 38,
           "column": 35,
-          "position": 252
+          "position": 261
         }
       }
     },
@@ -3787,17 +3787,17 @@
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/utils/UtilsTest.java",
-        "start": 31,
-        "end": 37,
+        "start": 32,
+        "end": 38,
         "startLoc": {
-          "line": 31,
+          "line": 32,
           "column": 6,
-          "position": 182
+          "position": 191
         },
         "endLoc": {
-          "line": 37,
+          "line": 38,
           "column": 35,
-          "position": 252
+          "position": 261
         }
       }
     },
@@ -3859,17 +3859,17 @@
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/utils/UtilsTest.java",
-        "start": 31,
-        "end": 37,
+        "start": 32,
+        "end": 38,
         "startLoc": {
-          "line": 31,
+          "line": 32,
           "column": 6,
-          "position": 182
+          "position": 191
         },
         "endLoc": {
-          "line": 37,
+          "line": 38,
           "column": 35,
-          "position": 252
+          "position": 261
         }
       }
     },
@@ -3931,17 +3931,17 @@
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/utils/UtilsTest.java",
-        "start": 31,
-        "end": 37,
+        "start": 32,
+        "end": 38,
         "startLoc": {
-          "line": 31,
+          "line": 32,
           "column": 6,
-          "position": 182
+          "position": 191
         },
         "endLoc": {
-          "line": 37,
+          "line": 38,
           "column": 35,
-          "position": 252
+          "position": 261
         }
       }
     },
@@ -4384,32 +4384,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainRendererTest.java",
-        "start": 109,
-        "end": 122,
+        "start": 110,
+        "end": 123,
         "startLoc": {
-          "line": 109,
+          "line": 110,
           "column": 25,
-          "position": 903
+          "position": 912
         },
         "endLoc": {
-          "line": 122,
+          "line": 123,
           "column": 19,
-          "position": 1055
+          "position": 1064
         }
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainRendererTest.java",
-        "start": 47,
-        "end": 60,
+        "start": 48,
+        "end": 61,
         "startLoc": {
-          "line": 47,
+          "line": 48,
           "column": 21,
-          "position": 352
+          "position": 361
         },
         "endLoc": {
-          "line": 60,
+          "line": 61,
           "column": 15,
-          "position": 504
+          "position": 513
         }
       }
     },
@@ -4420,32 +4420,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainRendererTest.java",
-        "start": 185,
-        "end": 196,
+        "start": 186,
+        "end": 197,
         "startLoc": {
-          "line": 185,
+          "line": 186,
           "column": 13,
-          "position": 1540
+          "position": 1549
         },
         "endLoc": {
-          "line": 196,
+          "line": 197,
           "column": 2,
-          "position": 1624
+          "position": 1633
         }
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainRendererTest.java",
-        "start": 169,
-        "end": 180,
+        "start": 170,
+        "end": 181,
         "startLoc": {
-          "line": 169,
+          "line": 170,
           "column": 2,
-          "position": 1414
+          "position": 1423
         },
         "endLoc": {
-          "line": 180,
+          "line": 181,
           "column": 2,
-          "position": 1498
+          "position": 1507
         }
       }
     },
@@ -4456,32 +4456,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainRendererTest.java",
-        "start": 333,
-        "end": 349,
+        "start": 334,
+        "end": 350,
         "startLoc": {
-          "line": 333,
+          "line": 334,
           "column": 39,
-          "position": 2723
+          "position": 2752
         },
         "endLoc": {
-          "line": 349,
+          "line": 350,
           "column": 6,
-          "position": 2903
+          "position": 2932
         }
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainRendererTest.java",
-        "start": 302,
-        "end": 317,
+        "start": 303,
+        "end": 318,
         "startLoc": {
-          "line": 302,
+          "line": 303,
           "column": 33,
-          "position": 2462
+          "position": 2491
         },
         "endLoc": {
-          "line": 317,
+          "line": 318,
           "column": 11,
-          "position": 2641
+          "position": 2670
         }
       }
     },
@@ -4492,32 +4492,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainRendererTest.java",
-        "start": 362,
-        "end": 374,
+        "start": 363,
+        "end": 375,
         "startLoc": {
-          "line": 362,
+          "line": 363,
           "column": 9,
-          "position": 3063
+          "position": 3092
         },
         "endLoc": {
-          "line": 374,
+          "line": 375,
           "column": 2,
-          "position": 3164
+          "position": 3193
         }
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainRendererTest.java",
-        "start": 175,
-        "end": 187,
+        "start": 176,
+        "end": 188,
         "startLoc": {
-          "line": 175,
+          "line": 176,
           "column": 9,
-          "position": 1448
+          "position": 1457
         },
         "endLoc": {
-          "line": 187,
+          "line": 188,
           "column": 13,
-          "position": 1549
+          "position": 1558
         }
       }
     },
@@ -4528,32 +4528,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainRendererTest.java",
-        "start": 382,
-        "end": 390,
+        "start": 383,
+        "end": 391,
         "startLoc": {
-          "line": 382,
+          "line": 383,
           "column": 9,
-          "position": 3232
+          "position": 3261
         },
         "endLoc": {
-          "line": 390,
+          "line": 391,
           "column": 2,
-          "position": 3308
+          "position": 3337
         }
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainRendererTest.java",
-        "start": 175,
-        "end": 183,
+        "start": 176,
+        "end": 184,
         "startLoc": {
-          "line": 175,
+          "line": 176,
           "column": 9,
-          "position": 1448
+          "position": 1457
         },
         "endLoc": {
-          "line": 183,
+          "line": 184,
           "column": 2,
-          "position": 1524
+          "position": 1533
         }
       }
     },
@@ -4564,32 +4564,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainRendererTest.java",
-        "start": 390,
-        "end": 400,
+        "start": 391,
+        "end": 401,
         "startLoc": {
-          "line": 390,
+          "line": 391,
           "column": 2,
-          "position": 3309
+          "position": 3338
         },
         "endLoc": {
-          "line": 400,
+          "line": 401,
           "column": 2,
-          "position": 3397
+          "position": 3426
         }
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainRendererTest.java",
-        "start": 370,
-        "end": 381,
+        "start": 371,
+        "end": 382,
         "startLoc": {
-          "line": 370,
+          "line": 371,
           "column": 2,
-          "position": 3140
+          "position": 3169
         },
         "endLoc": {
-          "line": 381,
+          "line": 382,
           "column": 26,
-          "position": 3229
+          "position": 3258
         }
       }
     },
@@ -4600,32 +4600,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainRendererTest.java",
-        "start": 410,
-        "end": 418,
+        "start": 411,
+        "end": 419,
         "startLoc": {
-          "line": 410,
+          "line": 411,
           "column": 6,
-          "position": 3441
+          "position": 3470
         },
         "endLoc": {
-          "line": 418,
+          "line": 419,
           "column": 2,
-          "position": 3512
+          "position": 3541
         }
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainRendererTest.java",
-        "start": 191,
-        "end": 199,
+        "start": 192,
+        "end": 200,
         "startLoc": {
-          "line": 191,
+          "line": 192,
           "column": 13,
-          "position": 1579
+          "position": 1588
         },
         "endLoc": {
-          "line": 199,
+          "line": 200,
           "column": 2,
-          "position": 1650
+          "position": 1659
         }
       }
     },
@@ -4636,32 +4636,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainRendererTest.java",
-        "start": 412,
-        "end": 422,
+        "start": 413,
+        "end": 423,
         "startLoc": {
-          "line": 412,
+          "line": 413,
           "column": 6,
-          "position": 3461
+          "position": 3490
         },
         "endLoc": {
-          "line": 422,
+          "line": 423,
           "column": 4,
-          "position": 3543
+          "position": 3572
         }
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainRendererTest.java",
-        "start": 155,
-        "end": 166,
+        "start": 156,
+        "end": 167,
         "startLoc": {
-          "line": 155,
+          "line": 156,
           "column": 5,
-          "position": 1290
+          "position": 1299
         },
         "endLoc": {
-          "line": 166,
+          "line": 167,
           "column": 9,
-          "position": 1373
+          "position": 1382
         }
       }
     },
@@ -4672,32 +4672,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainActivityTest.java",
-        "start": 201,
-        "end": 209,
+        "start": 203,
+        "end": 211,
         "startLoc": {
-          "line": 201,
+          "line": 203,
           "column": 9,
-          "position": 1569
+          "position": 1584
         },
         "endLoc": {
-          "line": 209,
+          "line": 211,
           "column": 6,
-          "position": 1644
+          "position": 1659
         }
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainActivityTest.java",
-        "start": 158,
-        "end": 166,
+        "start": 160,
+        "end": 168,
         "startLoc": {
-          "line": 158,
+          "line": 160,
           "column": 6,
-          "position": 1181
+          "position": 1191
         },
         "endLoc": {
-          "line": 166,
+          "line": 168,
           "column": 9,
-          "position": 1256
+          "position": 1266
         }
       }
     },
@@ -4708,68 +4708,68 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainActivityTest.java",
-        "start": 211,
-        "end": 221,
+        "start": 213,
+        "end": 223,
         "startLoc": {
-          "line": 211,
+          "line": 213,
           "column": 9,
-          "position": 1712
+          "position": 1727
         },
         "endLoc": {
-          "line": 221,
+          "line": 223,
           "column": 16,
-          "position": 1810
+          "position": 1825
         }
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainActivityTest.java",
-        "start": 164,
-        "end": 175,
+        "start": 166,
+        "end": 177,
         "startLoc": {
-          "line": 164,
+          "line": 166,
           "column": 10,
-          "position": 1246
+          "position": 1256
         },
         "endLoc": {
-          "line": 175,
+          "line": 177,
           "column": 3,
-          "position": 1345
+          "position": 1355
         }
       }
     },
     {
       "format": "java",
       "lines": 16,
-      "fragment": "))\n            .anyTimes();\n        PowerMock.replayAll();\n\n        Assertions.assertThat((String) ReflectionTestUtils.getField(this.targetMainActivityMocked, \"sceneFilePath\"))\n            .as(\"The 'MainActivity#sceneFilePath' field\")\n            .isNull();\n\n        final int openFileRequestCode = (int) ReflectionTestUtils.getField(MainActivity.class, \"OPEN_FILE_REQUEST_CODE\");\n        this.targetMainActivityMocked.onActivityResult(openFileRequestCode, Activity.RESULT_OK, intentMocked);\n\n        Assertions.assertThat((String) ReflectionTestUtils.getField(this.targetMainActivityMocked, \"sceneFilePath\"))\n            .as(\"The 'MainActivity#sceneFilePath' field\")\n            .isEqualTo(\"/data/local/tmp/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj\");\n    }\n}",
+      "fragment": "))\n            .anyTimes();\n        PowerMock.replayAll();\n\n        Assertions.assertThat((String) ReflectionTestUtils.getField(this.targetMainActivityMocked, \"sceneFilePath\"))\n            .as(\"The 'MainActivity#sceneFilePath' field\")\n            .isNull();\n\n        final int openFileRequestCode = (int) Objects.requireNonNull(ReflectionTestUtils.getField(MainActivity.class, \"OPEN_FILE_REQUEST_CODE\"));\n        this.targetMainActivityMocked.onActivityResult(openFileRequestCode, Activity.RESULT_OK, intentMocked);\n\n        Assertions.assertThat((String) ReflectionTestUtils.getField(this.targetMainActivityMocked, \"sceneFilePath\"))\n            .as(\"The 'MainActivity#sceneFilePath' field\")\n            .isEqualTo(\"/data/local/tmp/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj\");\n    }\n}",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainActivityTest.java",
-        "start": 221,
-        "end": 236,
+        "start": 223,
+        "end": 238,
         "startLoc": {
-          "line": 221,
+          "line": 223,
           "column": 16,
-          "position": 1811
+          "position": 1826
         },
         "endLoc": {
-          "line": 236,
+          "line": 238,
           "column": 2,
-          "position": 1953
+          "position": 1973
         }
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainActivityTest.java",
-        "start": 175,
-        "end": 194,
+        "start": 177,
+        "end": 196,
         "startLoc": {
-          "line": 175,
+          "line": 177,
           "column": 3,
-          "position": 1346
+          "position": 1356
         },
         "endLoc": {
-          "line": 194,
+          "line": 196,
           "column": 8,
-          "position": 1490
+          "position": 1505
         }
       }
     },
@@ -4816,32 +4816,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/DrawViewTest.java",
-        "start": 119,
-        "end": 129,
+        "start": 120,
+        "end": 130,
         "startLoc": {
-          "line": 119,
+          "line": 120,
           "column": 30,
-          "position": 913
+          "position": 922
         },
         "endLoc": {
-          "line": 129,
+          "line": 130,
           "column": 9,
-          "position": 1013
+          "position": 1022
         }
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/DrawViewTest.java",
-        "start": 88,
-        "end": 98,
+        "start": 89,
+        "end": 99,
         "startLoc": {
-          "line": 88,
+          "line": 89,
           "column": 23,
-          "position": 657
+          "position": 666
         },
         "endLoc": {
-          "line": 98,
+          "line": 99,
           "column": 15,
-          "position": 757
+          "position": 766
         }
       }
     },
@@ -4852,32 +4852,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/DrawViewTest.java",
-        "start": 231,
-        "end": 241,
+        "start": 232,
+        "end": 242,
         "startLoc": {
-          "line": 231,
+          "line": 232,
           "column": 2,
-          "position": 1928
+          "position": 1942
         },
         "endLoc": {
-          "line": 241,
+          "line": 242,
           "column": 7,
-          "position": 2025
+          "position": 2039
         }
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/DrawViewTest.java",
-        "start": 88,
-        "end": 98,
+        "start": 89,
+        "end": 99,
         "startLoc": {
-          "line": 88,
+          "line": 89,
           "column": 2,
-          "position": 660
+          "position": 669
         },
         "endLoc": {
-          "line": 98,
+          "line": 99,
           "column": 15,
-          "position": 757
+          "position": 766
         }
       }
     },
@@ -4888,32 +4888,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/DrawViewTest.java",
-        "start": 260,
-        "end": 268,
+        "start": 261,
+        "end": 269,
         "startLoc": {
-          "line": 260,
+          "line": 261,
           "column": 25,
-          "position": 2154
+          "position": 2168
         },
         "endLoc": {
-          "line": 268,
+          "line": 269,
           "column": 16,
-          "position": 2245
+          "position": 2259
         }
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/DrawViewTest.java",
-        "start": 88,
-        "end": 96,
+        "start": 89,
+        "end": 97,
         "startLoc": {
-          "line": 88,
+          "line": 89,
           "column": 23,
-          "position": 657
+          "position": 666
         },
         "endLoc": {
-          "line": 96,
+          "line": 97,
           "column": 11,
-          "position": 748
+          "position": 757
         }
       }
     },

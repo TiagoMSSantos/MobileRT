@@ -21,6 +21,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.nio.ByteBuffer;
+import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -227,7 +228,7 @@ public final class MainRendererTest {
         EasyMock.expectLastCall().andThrow(new FailureException("Exception test")).anyTimes();
         EasyMock.replay(mainRenderer);
 
-        Assertions.assertThat((boolean) ReflectionTestUtils.getField(mainRenderer, "firstFrame"))
+        Assertions.assertThat((boolean) Objects.requireNonNull(ReflectionTestUtils.getField(mainRenderer, "firstFrame")))
             .as("The 1st frame field should be true")
             .isTrue();
 
@@ -235,7 +236,7 @@ public final class MainRendererTest {
             .as("The call to 'onDrawFrame' should catch the exception and not rethrow it.")
             .doesNotThrowAnyException();
 
-        Assertions.assertThat((boolean) ReflectionTestUtils.getField(mainRenderer, "firstFrame"))
+        Assertions.assertThat((boolean) Objects.requireNonNull(ReflectionTestUtils.getField(mainRenderer, "firstFrame")))
             .as("The 1st frame field should be false")
             .isFalse();
 
@@ -257,14 +258,14 @@ public final class MainRendererTest {
             Uninterruptibles.sleepUninterruptibly(1L, TimeUnit.SECONDS);
             mainRenderer.onDrawFrame(EasyMock.mock(GL10.class));
         });
-        Assertions.assertThat((boolean) ReflectionTestUtils.getField(mainRenderer, "firstFrame"))
+        Assertions.assertThat((boolean) Objects.requireNonNull(ReflectionTestUtils.getField(mainRenderer, "firstFrame")))
             .as("The 1st frame field")
             .isTrue();
 
         thread.start();
         mainRenderer.getState();
 
-        Assertions.assertThat((boolean) ReflectionTestUtils.getField(mainRenderer, "firstFrame"))
+        Assertions.assertThat((boolean) Objects.requireNonNull(ReflectionTestUtils.getField(mainRenderer, "firstFrame")))
             .as("The 1st frame field")
             .isFalse();
 

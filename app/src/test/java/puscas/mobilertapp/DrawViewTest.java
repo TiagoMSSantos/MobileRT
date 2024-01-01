@@ -22,6 +22,7 @@ import org.powermock.core.classloader.annotations.PrepareOnlyThisForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -207,9 +208,9 @@ public final class DrawViewTest {
         Assertions.assertThat(currentThreadExecutorService.awaitTermination(10L, TimeUnit.SECONDS))
             .as("The thread pool finished")
             .isTrue();
-        final Pair<Long, Future<Boolean>> lastTask = (Pair<Long, Future<Boolean>>) ReflectionTestUtils.getField(drawView, DrawView.class, "lastTask");
+        final Pair<Long, Future<Boolean>> lastTask = (Pair<Long, Future<Boolean>>) Objects.requireNonNull(ReflectionTestUtils.getField(drawView, DrawView.class, "lastTask"));
         Assertions.assertThat(lastTask.getSecond().get())
-            .as("The last task")
+            .as("The last task should be false.")
             .isFalse();
 
         // Missing verification of call to MainActivity#showUiMessage method.

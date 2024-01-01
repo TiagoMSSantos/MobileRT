@@ -7,6 +7,7 @@ import org.easymock.EasyMock;
 import org.easymock.MockType;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -44,9 +45,13 @@ public final class UtilsTest {
      * {@link FailureException} if it occurs an error while reading the file.
      */
     @Test
-    public void testReadTextFromInputStreamFail() {
+    public void testReadTextFromInputStreamFail() throws IOException {
         final InputStream inputStreamMocked = EasyMock.mock(InputStream.class);
+        EasyMock.expect(inputStreamMocked.read(EasyMock.anyObject(), EasyMock.anyInt(), EasyMock.anyInt()))
+            .andThrow(new IOException("Test error"))
+            .anyTimes();
 
+        EasyMock.replay(inputStreamMocked);
         Assertions.assertThatThrownBy(() -> Utils.readTextFromInputStream(inputStreamMocked))
             .as("The call to Utils#readTextFromInputStream method")
             .isInstanceOf(FailureException.class);
