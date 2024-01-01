@@ -1,90 +1,90 @@
 {
   "statistics": {
-    "detectionDate": "2023-12-31T13:27:45.184Z",
+    "detectionDate": "2024-01-01T10:04:07.437Z",
     "formats": {
       "java": {
         "sources": {
           "app/src/test/java/puscas/mobilertapp/utils/UtilsTest.java": {
             "lines": 103,
-            "tokens": 660,
+            "tokens": 667,
             "sources": 1,
             "clones": 12,
             "duplicatedLines": 72,
-            "duplicatedTokens": 756,
+            "duplicatedTokens": 840,
             "percentage": 69.9,
-            "percentageTokens": 114.55,
+            "percentageTokens": 125.94,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "app/src/test/java/puscas/mobilertapp/utils/UtilsShaderTest.java": {
             "lines": 32,
-            "tokens": 197,
+            "tokens": 204,
             "sources": 1,
             "clones": 6,
             "duplicatedLines": 61,
-            "duplicatedTokens": 398,
+            "duplicatedTokens": 405,
             "percentage": 190.63,
-            "percentageTokens": 202.03,
+            "percentageTokens": 198.53,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "app/src/test/java/puscas/mobilertapp/utils/UtilsLoggingTest.java": {
             "lines": 41,
-            "tokens": 242,
+            "tokens": 249,
             "sources": 1,
             "clones": 2,
             "duplicatedLines": 17,
-            "duplicatedTokens": 130,
+            "duplicatedTokens": 137,
             "percentage": 41.46,
-            "percentageTokens": 53.72,
+            "percentageTokens": 55.02,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "app/src/test/java/puscas/mobilertapp/utils/UtilsGlMatricesTest.java": {
             "lines": 32,
-            "tokens": 197,
+            "tokens": 204,
             "sources": 1,
             "clones": 2,
             "duplicatedLines": 17,
-            "duplicatedTokens": 130,
+            "duplicatedTokens": 137,
             "percentage": 53.13,
-            "percentageTokens": 65.99,
+            "percentageTokens": 67.16,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "app/src/test/java/puscas/mobilertapp/utils/UtilsGLTest.java": {
             "lines": 32,
-            "tokens": 197,
+            "tokens": 204,
             "sources": 1,
             "clones": 2,
             "duplicatedLines": 17,
-            "duplicatedTokens": 130,
+            "duplicatedTokens": 137,
             "percentage": 53.13,
-            "percentageTokens": 65.99,
+            "percentageTokens": 67.16,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "app/src/test/java/puscas/mobilertapp/utils/UtilsContextTest.java": {
             "lines": 32,
-            "tokens": 197,
+            "tokens": 204,
             "sources": 1,
             "clones": 2,
             "duplicatedLines": 17,
-            "duplicatedTokens": 130,
+            "duplicatedTokens": 137,
             "percentage": 53.13,
-            "percentageTokens": 65.99,
+            "percentageTokens": 67.16,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "app/src/test/java/puscas/mobilertapp/utils/UtilsBufferTest.java": {
             "lines": 32,
-            "tokens": 197,
+            "tokens": 204,
             "sources": 1,
             "clones": 2,
             "duplicatedLines": 17,
-            "duplicatedTokens": 130,
+            "duplicatedTokens": 137,
             "percentage": 53.13,
-            "percentageTokens": 65.99,
+            "percentageTokens": 67.16,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -186,73 +186,73 @@
           },
           "app/src/test/java/puscas/mobilertapp/constants/ConstantsUITest.java": {
             "lines": 32,
-            "tokens": 197,
+            "tokens": 204,
             "sources": 1,
             "clones": 6,
             "duplicatedLines": 61,
-            "duplicatedTokens": 398,
+            "duplicatedTokens": 405,
             "percentage": 190.63,
-            "percentageTokens": 202.03,
+            "percentageTokens": 198.53,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "app/src/test/java/puscas/mobilertapp/constants/ConstantsToastTest.java": {
             "lines": 32,
-            "tokens": 197,
+            "tokens": 204,
             "sources": 1,
             "clones": 2,
             "duplicatedLines": 17,
-            "duplicatedTokens": 130,
+            "duplicatedTokens": 137,
             "percentage": 53.13,
-            "percentageTokens": 65.99,
+            "percentageTokens": 67.16,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "app/src/test/java/puscas/mobilertapp/constants/ConstantsTest.java": {
             "lines": 32,
-            "tokens": 197,
+            "tokens": 204,
             "sources": 1,
             "clones": 2,
             "duplicatedLines": 17,
-            "duplicatedTokens": 130,
+            "duplicatedTokens": 137,
             "percentage": 53.13,
-            "percentageTokens": 65.99,
+            "percentageTokens": 67.16,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "app/src/test/java/puscas/mobilertapp/constants/ConstantsRendererTest.java": {
             "lines": 32,
-            "tokens": 197,
+            "tokens": 204,
             "sources": 1,
             "clones": 2,
             "duplicatedLines": 17,
-            "duplicatedTokens": 130,
+            "duplicatedTokens": 137,
             "percentage": 53.13,
-            "percentageTokens": 65.99,
+            "percentageTokens": 67.16,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "app/src/test/java/puscas/mobilertapp/constants/ConstantsMethodsTest.java": {
             "lines": 32,
-            "tokens": 197,
+            "tokens": 204,
             "sources": 1,
             "clones": 2,
             "duplicatedLines": 17,
-            "duplicatedTokens": 130,
+            "duplicatedTokens": 137,
             "percentage": 53.13,
-            "percentageTokens": 65.99,
+            "percentageTokens": 67.16,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "app/src/test/java/puscas/mobilertapp/constants/ConstantsErrorTest.java": {
             "lines": 32,
-            "tokens": 197,
+            "tokens": 204,
             "sources": 1,
             "clones": 2,
             "duplicatedLines": 17,
-            "duplicatedTokens": 130,
+            "duplicatedTokens": 137,
             "percentage": 53.13,
-            "percentageTokens": 65.99,
+            "percentageTokens": 67.16,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -1003,13 +1003,13 @@
         },
         "total": {
           "lines": 9720,
-          "tokens": 67089,
+          "tokens": 67180,
           "sources": 83,
           "clones": 55,
           "duplicatedLines": 560,
-          "duplicatedTokens": 4872,
+          "duplicatedTokens": 4956,
           "percentage": 5.76,
-          "percentageTokens": 7.26,
+          "percentageTokens": 7.38,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3141,13 +3141,13 @@
     },
     "total": {
       "lines": 27701,
-      "tokens": 208809,
+      "tokens": 208900,
       "sources": 248,
       "clones": 112,
       "duplicatedLines": 1504,
-      "duplicatedTokens": 12820,
+      "duplicatedTokens": 12904,
       "percentage": 5.43,
-      "percentageTokens": 6.14,
+      "percentageTokens": 6.18,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -3156,7 +3156,7 @@
     {
       "format": "java",
       "lines": 7,
-      "fragment": "= UtilsShader.class.getDeclaredConstructor();\n        Assertions.assertThat(Modifier.isPrivate(constructor.getModifiers()))\n            .as(\"The constructor is private\")\n            .isTrue();\n        constructor.setAccessible(true);\n        Assertions.assertThatThrownBy(constructor::newInstance)\n            .as(\"The default constructor of",
+      "fragment": "= UtilsShader.class.getDeclaredConstructor();\n        Assertions.assertThat(Modifier.isPrivate(constructor.getModifiers()))\n            .as(\"The constructor is private\")\n            .isTrue();\n        constructor.setAccessible(true);\n        Assertions.assertThatThrownBy(() -> constructor.newInstance())\n            .as(\"The default constructor of",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/utils/UtilsShaderTest.java",
@@ -3170,7 +3170,7 @@
         "endLoc": {
           "line": 28,
           "column": 41,
-          "position": 174
+          "position": 181
         }
       },
       "secondFile": {
@@ -3185,7 +3185,7 @@
         "endLoc": {
           "line": 37,
           "column": 35,
-          "position": 245
+          "position": 252
         }
       }
     },
@@ -3228,7 +3228,7 @@
     {
       "format": "java",
       "lines": 7,
-      "fragment": "= UtilsLogging.class.getDeclaredConstructor();\n        Assertions.assertThat(Modifier.isPrivate(constructor.getModifiers()))\n            .as(\"The constructor is private\")\n            .isTrue();\n        constructor.setAccessible(true);\n        Assertions.assertThatThrownBy(constructor::newInstance)\n            .as(\"The default constructor of",
+      "fragment": "= UtilsLogging.class.getDeclaredConstructor();\n        Assertions.assertThat(Modifier.isPrivate(constructor.getModifiers()))\n            .as(\"The constructor is private\")\n            .isTrue();\n        constructor.setAccessible(true);\n        Assertions.assertThatThrownBy(() -> constructor.newInstance())\n            .as(\"The default constructor of",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/utils/UtilsLoggingTest.java",
@@ -3242,7 +3242,7 @@
         "endLoc": {
           "line": 28,
           "column": 42,
-          "position": 174
+          "position": 181
         }
       },
       "secondFile": {
@@ -3257,7 +3257,7 @@
         "endLoc": {
           "line": 37,
           "column": 35,
-          "position": 245
+          "position": 252
         }
       }
     },
@@ -3300,7 +3300,7 @@
     {
       "format": "java",
       "lines": 7,
-      "fragment": "= UtilsGlMatrices.class.getDeclaredConstructor();\n        Assertions.assertThat(Modifier.isPrivate(constructor.getModifiers()))\n            .as(\"The constructor is private\")\n            .isTrue();\n        constructor.setAccessible(true);\n        Assertions.assertThatThrownBy(constructor::newInstance)\n            .as(\"The default constructor of ",
+      "fragment": "= UtilsGlMatrices.class.getDeclaredConstructor();\n        Assertions.assertThat(Modifier.isPrivate(constructor.getModifiers()))\n            .as(\"The constructor is private\")\n            .isTrue();\n        constructor.setAccessible(true);\n        Assertions.assertThatThrownBy(() -> constructor.newInstance())\n            .as(\"The default constructor of ",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/utils/UtilsGlMatricesTest.java",
@@ -3314,7 +3314,7 @@
         "endLoc": {
           "line": 28,
           "column": 46,
-          "position": 174
+          "position": 181
         }
       },
       "secondFile": {
@@ -3329,7 +3329,7 @@
         "endLoc": {
           "line": 37,
           "column": 35,
-          "position": 245
+          "position": 252
         }
       }
     },
@@ -3372,7 +3372,7 @@
     {
       "format": "java",
       "lines": 7,
-      "fragment": "= UtilsGL.class.getDeclaredConstructor();\n        Assertions.assertThat(Modifier.isPrivate(constructor.getModifiers()))\n            .as(\"The constructor is private\")\n            .isTrue();\n        constructor.setAccessible(true);\n        Assertions.assertThatThrownBy(constructor::newInstance)\n            .as(\"The default constructor of",
+      "fragment": "= UtilsGL.class.getDeclaredConstructor();\n        Assertions.assertThat(Modifier.isPrivate(constructor.getModifiers()))\n            .as(\"The constructor is private\")\n            .isTrue();\n        constructor.setAccessible(true);\n        Assertions.assertThatThrownBy(() -> constructor.newInstance())\n            .as(\"The default constructor of",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/utils/UtilsGLTest.java",
@@ -3386,7 +3386,7 @@
         "endLoc": {
           "line": 28,
           "column": 37,
-          "position": 174
+          "position": 181
         }
       },
       "secondFile": {
@@ -3401,7 +3401,7 @@
         "endLoc": {
           "line": 37,
           "column": 35,
-          "position": 245
+          "position": 252
         }
       }
     },
@@ -3444,7 +3444,7 @@
     {
       "format": "java",
       "lines": 7,
-      "fragment": "= UtilsContext.class.getDeclaredConstructor();\n        Assertions.assertThat(Modifier.isPrivate(constructor.getModifiers()))\n            .as(\"The constructor is private\")\n            .isTrue();\n        constructor.setAccessible(true);\n        Assertions.assertThatThrownBy(constructor::newInstance)\n            .as(\"The default constructor of",
+      "fragment": "= UtilsContext.class.getDeclaredConstructor();\n        Assertions.assertThat(Modifier.isPrivate(constructor.getModifiers()))\n            .as(\"The constructor is private\")\n            .isTrue();\n        constructor.setAccessible(true);\n        Assertions.assertThatThrownBy(() -> constructor.newInstance())\n            .as(\"The default constructor of",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/utils/UtilsContextTest.java",
@@ -3458,7 +3458,7 @@
         "endLoc": {
           "line": 28,
           "column": 42,
-          "position": 174
+          "position": 181
         }
       },
       "secondFile": {
@@ -3473,7 +3473,7 @@
         "endLoc": {
           "line": 37,
           "column": 35,
-          "position": 245
+          "position": 252
         }
       }
     },
@@ -3516,7 +3516,7 @@
     {
       "format": "java",
       "lines": 7,
-      "fragment": "= UtilsBuffer.class.getDeclaredConstructor();\n        Assertions.assertThat(Modifier.isPrivate(constructor.getModifiers()))\n            .as(\"The constructor is private\")\n            .isTrue();\n        constructor.setAccessible(true);\n        Assertions.assertThatThrownBy(constructor::newInstance)\n            .as(\"The default constructor of",
+      "fragment": "= UtilsBuffer.class.getDeclaredConstructor();\n        Assertions.assertThat(Modifier.isPrivate(constructor.getModifiers()))\n            .as(\"The constructor is private\")\n            .isTrue();\n        constructor.setAccessible(true);\n        Assertions.assertThatThrownBy(() -> constructor.newInstance())\n            .as(\"The default constructor of",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/utils/UtilsBufferTest.java",
@@ -3530,7 +3530,7 @@
         "endLoc": {
           "line": 28,
           "column": 41,
-          "position": 174
+          "position": 181
         }
       },
       "secondFile": {
@@ -3545,14 +3545,14 @@
         "endLoc": {
           "line": 37,
           "column": 35,
-          "position": 245
+          "position": 252
         }
       }
     },
     {
       "format": "java",
       "lines": 7,
-      "fragment": "= ConstantsUI.class.getDeclaredConstructor();\n        Assertions.assertThat(Modifier.isPrivate(constructor.getModifiers()))\n            .as(\"The constructor is private\")\n            .isTrue();\n        constructor.setAccessible(true);\n        Assertions.assertThatThrownBy(constructor::newInstance)\n            .as(\"The default constructor of",
+      "fragment": "= ConstantsUI.class.getDeclaredConstructor();\n        Assertions.assertThat(Modifier.isPrivate(constructor.getModifiers()))\n            .as(\"The constructor is private\")\n            .isTrue();\n        constructor.setAccessible(true);\n        Assertions.assertThatThrownBy(() -> constructor.newInstance())\n            .as(\"The default constructor of",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/constants/ConstantsUITest.java",
@@ -3566,7 +3566,7 @@
         "endLoc": {
           "line": 28,
           "column": 41,
-          "position": 174
+          "position": 181
         }
       },
       "secondFile": {
@@ -3581,7 +3581,7 @@
         "endLoc": {
           "line": 37,
           "column": 35,
-          "position": 245
+          "position": 252
         }
       }
     },
@@ -3624,7 +3624,7 @@
     {
       "format": "java",
       "lines": 7,
-      "fragment": "= ConstantsToast.class.getDeclaredConstructor();\n        Assertions.assertThat(Modifier.isPrivate(constructor.getModifiers()))\n            .as(\"The constructor is private\")\n            .isTrue();\n        constructor.setAccessible(true);\n        Assertions.assertThatThrownBy(constructor::newInstance)\n            .as(\"The default constructor of",
+      "fragment": "= ConstantsToast.class.getDeclaredConstructor();\n        Assertions.assertThat(Modifier.isPrivate(constructor.getModifiers()))\n            .as(\"The constructor is private\")\n            .isTrue();\n        constructor.setAccessible(true);\n        Assertions.assertThatThrownBy(() -> constructor.newInstance())\n            .as(\"The default constructor of",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/constants/ConstantsToastTest.java",
@@ -3638,7 +3638,7 @@
         "endLoc": {
           "line": 28,
           "column": 44,
-          "position": 174
+          "position": 181
         }
       },
       "secondFile": {
@@ -3653,7 +3653,7 @@
         "endLoc": {
           "line": 37,
           "column": 35,
-          "position": 245
+          "position": 252
         }
       }
     },
@@ -3696,7 +3696,7 @@
     {
       "format": "java",
       "lines": 7,
-      "fragment": "= Constants.class.getDeclaredConstructor();\n        Assertions.assertThat(Modifier.isPrivate(constructor.getModifiers()))\n            .as(\"The constructor is private\")\n            .isTrue();\n        constructor.setAccessible(true);\n        Assertions.assertThatThrownBy(constructor::newInstance)\n            .as(\"The default constructor of",
+      "fragment": "= Constants.class.getDeclaredConstructor();\n        Assertions.assertThat(Modifier.isPrivate(constructor.getModifiers()))\n            .as(\"The constructor is private\")\n            .isTrue();\n        constructor.setAccessible(true);\n        Assertions.assertThatThrownBy(() -> constructor.newInstance())\n            .as(\"The default constructor of",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/constants/ConstantsTest.java",
@@ -3710,7 +3710,7 @@
         "endLoc": {
           "line": 28,
           "column": 39,
-          "position": 174
+          "position": 181
         }
       },
       "secondFile": {
@@ -3725,7 +3725,7 @@
         "endLoc": {
           "line": 37,
           "column": 35,
-          "position": 245
+          "position": 252
         }
       }
     },
@@ -3768,7 +3768,7 @@
     {
       "format": "java",
       "lines": 7,
-      "fragment": "= ConstantsRenderer.class.getDeclaredConstructor();\n        Assertions.assertThat(Modifier.isPrivate(constructor.getModifiers()))\n            .as(\"The constructor is private\")\n            .isTrue();\n        constructor.setAccessible(true);\n        Assertions.assertThatThrownBy(constructor::newInstance)\n            .as(\"The default constructor of",
+      "fragment": "= ConstantsRenderer.class.getDeclaredConstructor();\n        Assertions.assertThat(Modifier.isPrivate(constructor.getModifiers()))\n            .as(\"The constructor is private\")\n            .isTrue();\n        constructor.setAccessible(true);\n        Assertions.assertThatThrownBy(() -> constructor.newInstance())\n            .as(\"The default constructor of",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/constants/ConstantsRendererTest.java",
@@ -3782,7 +3782,7 @@
         "endLoc": {
           "line": 28,
           "column": 47,
-          "position": 174
+          "position": 181
         }
       },
       "secondFile": {
@@ -3797,7 +3797,7 @@
         "endLoc": {
           "line": 37,
           "column": 35,
-          "position": 245
+          "position": 252
         }
       }
     },
@@ -3840,7 +3840,7 @@
     {
       "format": "java",
       "lines": 7,
-      "fragment": "= ConstantsMethods.class.getDeclaredConstructor();\n        Assertions.assertThat(Modifier.isPrivate(constructor.getModifiers()))\n            .as(\"The constructor is private\")\n            .isTrue();\n        constructor.setAccessible(true);\n        Assertions.assertThatThrownBy(constructor::newInstance)\n            .as(\"The default constructor of",
+      "fragment": "= ConstantsMethods.class.getDeclaredConstructor();\n        Assertions.assertThat(Modifier.isPrivate(constructor.getModifiers()))\n            .as(\"The constructor is private\")\n            .isTrue();\n        constructor.setAccessible(true);\n        Assertions.assertThatThrownBy(() -> constructor.newInstance())\n            .as(\"The default constructor of",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/constants/ConstantsMethodsTest.java",
@@ -3854,7 +3854,7 @@
         "endLoc": {
           "line": 28,
           "column": 46,
-          "position": 174
+          "position": 181
         }
       },
       "secondFile": {
@@ -3869,7 +3869,7 @@
         "endLoc": {
           "line": 37,
           "column": 35,
-          "position": 245
+          "position": 252
         }
       }
     },
@@ -3912,7 +3912,7 @@
     {
       "format": "java",
       "lines": 7,
-      "fragment": "= ConstantsError.class.getDeclaredConstructor();\n        Assertions.assertThat(Modifier.isPrivate(constructor.getModifiers()))\n            .as(\"The constructor is private\")\n            .isTrue();\n        constructor.setAccessible(true);\n        Assertions.assertThatThrownBy(constructor::newInstance)\n            .as(\"The default constructor of",
+      "fragment": "= ConstantsError.class.getDeclaredConstructor();\n        Assertions.assertThat(Modifier.isPrivate(constructor.getModifiers()))\n            .as(\"The constructor is private\")\n            .isTrue();\n        constructor.setAccessible(true);\n        Assertions.assertThatThrownBy(() -> constructor.newInstance())\n            .as(\"The default constructor of",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/constants/ConstantsErrorTest.java",
@@ -3926,7 +3926,7 @@
         "endLoc": {
           "line": 28,
           "column": 44,
-          "position": 174
+          "position": 181
         }
       },
       "secondFile": {
@@ -3941,7 +3941,7 @@
         "endLoc": {
           "line": 37,
           "column": 35,
-          "position": 245
+          "position": 252
         }
       }
     },
