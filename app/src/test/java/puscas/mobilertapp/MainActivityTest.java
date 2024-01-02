@@ -137,7 +137,9 @@ public final class MainActivityTest {
     public void testOnCreateFailLoadLibrary() throws Exception {
         PowerMock.reset(MainActivity.class);
         final FailureException failureException = new FailureException("Test");
-        PowerMock.expectPrivate(MainActivity.class, "loadMobileRT").andThrow(failureException).anyTimes();
+        PowerMock.expectPrivate(MainActivity.class, "loadMobileRT")
+            .andThrow(failureException)
+            .anyTimes();
 
         PowerMock.replayAll();
         Assertions.assertThatThrownBy(() -> this.targetMainActivityMocked.onCreate(null))

@@ -14,7 +14,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
+import kotlin.Pair;
+import puscas.mobilertapp.constants.ConstantsUI;
 import puscas.mobilertapp.exceptions.FailureException;
 
 /**
@@ -58,6 +61,34 @@ public final class UtilsTest {
     }
 
     /**
+     * Tests the method {@link Utils#readTextFromInputStream(InputStream)}.
+     */
+    @Test
+    public void testReadTextFromInputStream() throws IOException {
+        final InputStream inputStreamMocked = EasyMock.mock(MockType.NICE, InputStream.class);
+        final String expectedString = "abc";
+        final AtomicBoolean alreadyReadString = new AtomicBoolean(false);
+
+        EasyMock.expect(inputStreamMocked.read(EasyMock.anyObject(), EasyMock.anyInt(), EasyMock.anyInt()))
+            .andAnswer(() -> {
+                if (!alreadyReadString.get()) {
+                    alreadyReadString.set(true);
+                    final byte[] inputParamToMutate = EasyMock.getCurrentArgument(0);
+                    System.arraycopy(expectedString.getBytes(), 0, inputParamToMutate, 0, expectedString.length());
+                    return expectedString.length();
+                }
+                return -1;
+            })
+            .anyTimes();
+
+        EasyMock.replay(inputStreamMocked);
+        final String output = Utils.readTextFromInputStream(inputStreamMocked);
+        Assertions.assertThat(output)
+            .as("The input stream")
+            .isEqualTo(expectedString + ConstantsUI.LINE_SEPARATOR);
+    }
+
+    /**
      * Tests that {@link Utils#getValueFromPicker(NumberPicker)} method will throw a
      * {@link FailureException} if it occurs an error while parsing the {@link NumberPicker}.
      */
@@ -73,7 +104,8 @@ public final class UtilsTest {
 
     /**
      * Tests that the method {@link Utils#getResolutionFromPicker(NumberPicker)} will throw a
-     * {@link FailureException}.
+     * {@link FailureException} if the {@link NumberPicker#getDisplayedValues()} does not contain
+     * a resolution with the format: width x height.
      */
     @Test
     public void testGetResolutionFromPickerFail() {
@@ -83,6 +115,28 @@ public final class UtilsTest {
         Assertions.assertThatThrownBy(() -> Utils.getResolutionFromPicker(numberPickerMocked))
             .as("The call to Utils#getResolutionFromPicker method")
             .isInstanceOf(FailureException.class);
+    }
+
+    /**
+     * Tests the method {@link Utils#getResolutionFromPicker(NumberPicker)}.
+     */
+    @Test
+    public void testGetResolutionFromPicker() {
+        final NumberPicker numberPickerMocked = EasyMock.mock(MockType.NICE, NumberPicker.class);
+        final int width = 123;
+        final int height = 456;
+        EasyMock.expect(numberPickerMocked.getDisplayedValues())
+            .andReturn(new String[]{width + "x" + height})
+            .anyTimes();
+        EasyMock.expect(numberPickerMocked.getValue())
+            .andReturn(1)
+            .anyTimes();
+
+        EasyMock.replay(numberPickerMocked);
+        final Pair<Integer, Integer> resolutionFromPicker = Utils.getResolutionFromPicker(numberPickerMocked);
+        Assertions.assertThat(resolutionFromPicker)
+            .as("The resolution picker")
+            .isEqualTo(new Pair<>(width, height));
     }
 
     /**
