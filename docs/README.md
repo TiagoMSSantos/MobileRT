@@ -224,7 +224,7 @@ framework for mocking in unit tests
 ## Requirements
 It's necessary the following SDKs in order to compile this project for Android:
 - [Android SDK](https://developer.android.com/studio) which should also bring the [Android NDK](https://developer.android.com/ndk) in order to compile the native code.
-  - It's recommended to use the Android Studio `2023.1.1` which is compatible with Gradle [8.2.0](https://github.com/TiagoMSSantos/MobileRT/blob/master/build.gradle#L60?) used by this project.
+  - It's recommended to use the Android Studio `2023.1.1` which is compatible with Gradle [8.2.1](https://github.com/TiagoMSSantos/MobileRT/blob/master/build.gradle#L63?) used by this project.
 
 For native Linux and Mac support, the `install_dependencies.sh` script should download and install the necessary dependencies, by just calling:
 ```
