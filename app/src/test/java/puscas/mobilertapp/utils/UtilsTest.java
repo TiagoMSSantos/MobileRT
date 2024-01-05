@@ -37,7 +37,7 @@ public final class UtilsTest {
             .as("The constructor is private")
             .isTrue();
         constructor.setAccessible(true);
-        Assertions.assertThatThrownBy(() -> constructor.newInstance())
+        Assertions.assertThatThrownBy(constructor::newInstance)
             .as("The default constructor of Utils")
             .isNotNull()
             .isInstanceOf(InvocationTargetException.class);

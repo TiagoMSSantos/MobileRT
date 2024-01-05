@@ -24,7 +24,7 @@ public final class ConstantsErrorTest {
             .as("The constructor is private")
             .isTrue();
         constructor.setAccessible(true);
-        Assertions.assertThatThrownBy(() -> constructor.newInstance())
+        Assertions.assertThatThrownBy(constructor::newInstance)
             .as("The default constructor of ConstantsError")
             .isNotNull()
             .isInstanceOf(InvocationTargetException.class);

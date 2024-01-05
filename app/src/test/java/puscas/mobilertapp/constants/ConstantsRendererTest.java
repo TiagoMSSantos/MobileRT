@@ -24,7 +24,7 @@ public final class ConstantsRendererTest {
             .as("The constructor is private")
             .isTrue();
         constructor.setAccessible(true);
-        Assertions.assertThatThrownBy(() -> constructor.newInstance())
+        Assertions.assertThatThrownBy(constructor::newInstance)
             .as("The default constructor of ConstantsRenderer")
             .isNotNull()
             .isInstanceOf(InvocationTargetException.class);
