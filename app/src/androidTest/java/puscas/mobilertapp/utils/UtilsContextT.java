@@ -66,17 +66,20 @@ public final class UtilsContextT {
                     final Button renderButton = view.findViewById(R.id.renderButton);
                     final String renderButtonText = renderButton.getText().toString();
                     final State rendererState = renderer.getState();
-                    logger.info("State: '" + rendererState.name() + "', Button: '" + renderButtonText + "'. Expecting: " + expectedButtonText + ", " + Arrays.toString(expectedStates));
                     if (Objects.equals(renderButtonText, expectedButtonText) && Arrays.asList(expectedStates).contains(rendererState)) {
                         done.set(true);
                         logger.info("waitUntil success");
+                    } else {
+                        logger.info("State: '" + rendererState.name() + "' (expecting " + Arrays.toString(expectedStates) + "), Button: '" + renderButtonText + "' (expecting [" + expectedButtonText + "]");
                     }
             });
         }
 
         logger.info("waitUntil finished");
         if (!done.get()) {
-            throw new TimeoutException("The Ray Tracing engine didn't reach the expected state.");
+            final State rendererState = renderer.getState();
+            final String errorMessage = "State: '" + rendererState.name() + "' (expecting " + Arrays.toString(expectedStates) + "), Expected button: '" + expectedButtonText + "'";
+            throw new TimeoutException("The Ray Tracing engine didn't reach the expected state. " + errorMessage);
         }
     }
 
