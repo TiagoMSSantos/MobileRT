@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.opengl.Matrix;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
 
 import java.nio.ByteBuffer;
 import java.util.logging.Logger;
@@ -45,6 +46,30 @@ public final class UtilsGlMatrices {
     private static final float Z_FAR = 1.0e+30F;
 
     /**
+     * The index of FOV X in {@link ByteBuffer camera's data} of perspective camera.
+     */
+    @VisibleForTesting
+    static final int INDEX_FOVX = 16 * Constants.BYTES_IN_FLOAT;
+
+    /**
+     * The index of FOV Y in {@link ByteBuffer camera's data} of perspective camera.
+     */
+    @VisibleForTesting
+    static final int INDEX_FOVY = 17 * Constants.BYTES_IN_FLOAT;
+
+    /**
+     * The index of horizontal size in {@link ByteBuffer camera's data} of orthographic camera.
+     */
+    @VisibleForTesting
+    static final int INDEX_SIZEH = 18 * Constants.BYTES_IN_FLOAT;
+
+    /**
+     * The index of vertical size in {@link ByteBuffer camera's data} of orthographic camera.
+     */
+    @VisibleForTesting
+    static final int INDEX_SIZEY = 19 * Constants.BYTES_IN_FLOAT;
+
+    /**
      * Private constructor to avoid creating instances.
      */
     private UtilsGlMatrices() {
@@ -80,28 +105,21 @@ public final class UtilsGlMatrices {
                                                  final int height) {
         logger.info("createProjectionMatrix");
 
-        final float fovX =
-            bbCamera.getFloat(16 * Constants.BYTES_IN_FLOAT) * FIX_ASPECT_PERSPECTIVE;
-        final float fovY =
-            bbCamera.getFloat(17 * Constants.BYTES_IN_FLOAT) * FIX_ASPECT_PERSPECTIVE;
+        final float fovX = bbCamera.getFloat(INDEX_FOVX) * FIX_ASPECT_PERSPECTIVE;
+        final float fovY = bbCamera.getFloat(INDEX_FOVY) * FIX_ASPECT_PERSPECTIVE;
 
-        final float sizeH =
-            bbCamera.getFloat(18 * Constants.BYTES_IN_FLOAT) * FIX_ASPECT_ORTHOGRAPHIC;
-        final float sizeV =
-            bbCamera.getFloat(19 * Constants.BYTES_IN_FLOAT) * FIX_ASPECT_ORTHOGRAPHIC;
+        final float sizeH = bbCamera.getFloat(INDEX_SIZEH) * FIX_ASPECT_ORTHOGRAPHIC;
+        final float sizeV = bbCamera.getFloat(INDEX_SIZEY) * FIX_ASPECT_ORTHOGRAPHIC;
 
         final float[] projectionMatrix = new float[16];
 
-        // If the camera is a perspective camera.
         if (fovX > 0.0F && fovY > 0.0F) {
+            // If the camera is a perspective camera.
             final float aspectPerspective = (float) width / (float) height;
             Matrix.perspectiveM(projectionMatrix, 0, fovY, aspectPerspective, Z_NEAR, Z_FAR);
-        }
-
-        // If the camera is an orthographic camera.
-        if (sizeH > 0.0F && sizeV > 0.0F) {
-            Matrix.orthoM(projectionMatrix, 0, -sizeH, sizeH,
-                -sizeV, sizeV, Z_NEAR, Z_FAR);
+        } else if (sizeH > 0.0F && sizeV > 0.0F) {
+            // If the camera is an orthographic camera.
+            Matrix.orthoM(projectionMatrix, 0, -sizeH, sizeH, -sizeV, sizeV, Z_NEAR, Z_FAR);
         }
 
         return projectionMatrix;

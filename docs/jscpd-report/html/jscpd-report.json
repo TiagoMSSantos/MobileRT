@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-01-05T08:33:34.177Z",
+    "detectionDate": "2024-01-06T11:34:02.647Z",
     "formats": {
       "java": {
         "sources": {
@@ -20,11 +20,11 @@
             "lines": 117,
             "tokens": 805,
             "sources": 1,
-            "clones": 3,
-            "duplicatedLines": 19,
-            "duplicatedTokens": 192,
-            "percentage": 16.24,
-            "percentageTokens": 23.85,
+            "clones": 4,
+            "duplicatedLines": 32,
+            "duplicatedTokens": 314,
+            "percentage": 27.35,
+            "percentageTokens": 39.01,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -32,23 +32,23 @@
             "lines": 41,
             "tokens": 242,
             "sources": 1,
-            "clones": 5,
-            "duplicatedLines": 50,
-            "duplicatedTokens": 331,
-            "percentage": 121.95,
-            "percentageTokens": 136.78,
+            "clones": 4,
+            "duplicatedLines": 39,
+            "duplicatedTokens": 264,
+            "percentage": 95.12,
+            "percentageTokens": 109.09,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "app/src/test/java/puscas/mobilertapp/utils/UtilsGlMatricesTest.java": {
-            "lines": 32,
-            "tokens": 197,
+            "lines": 182,
+            "tokens": 1710,
             "sources": 1,
-            "clones": 2,
-            "duplicatedLines": 17,
-            "duplicatedTokens": 130,
-            "percentage": 53.13,
-            "percentageTokens": 65.99,
+            "clones": 4,
+            "duplicatedLines": 33,
+            "duplicatedTokens": 327,
+            "percentage": 18.13,
+            "percentageTokens": 19.12,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -377,8 +377,8 @@
             "newClones": 0
           },
           "app/src/main/java/puscas/mobilertapp/utils/UtilsGlMatrices.java": {
-            "lines": 148,
-            "tokens": 997,
+            "lines": 166,
+            "tokens": 1085,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -1002,14 +1002,14 @@
           }
         },
         "total": {
-          "lines": 9873,
-          "tokens": 68441,
+          "lines": 10041,
+          "tokens": 70042,
           "sources": 83,
-          "clones": 56,
-          "duplicatedLines": 562,
-          "duplicatedTokens": 4939,
+          "clones": 57,
+          "duplicatedLines": 571,
+          "duplicatedTokens": 5065,
           "percentage": 5.69,
-          "percentageTokens": 7.22,
+          "percentageTokens": 7.23,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3140,14 +3140,14 @@
       }
     },
     "total": {
-      "lines": 27854,
-      "tokens": 210161,
+      "lines": 28022,
+      "tokens": 211762,
       "sources": 248,
-      "clones": 113,
-      "duplicatedLines": 1506,
-      "duplicatedTokens": 12887,
+      "clones": 114,
+      "duplicatedLines": 1515,
+      "duplicatedTokens": 13013,
       "percentage": 5.41,
-      "percentageTokens": 6.13,
+      "percentageTokens": 6.15,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -3227,37 +3227,37 @@
     },
     {
       "format": "java",
-      "lines": 12,
-      "fragment": "package puscas.mobilertapp.utils;\n\nimport org.assertj.core.api.Assertions;\nimport org.junit.Test;\n\nimport java.lang.reflect.Constructor;\nimport java.lang.reflect.InvocationTargetException;\nimport java.lang.reflect.Modifier;\n\n/**\n * The unit tests for the {@link UtilsGlMatrices} util class.\n */",
+      "lines": 14,
+      "fragment": ";\n\nimport org.assertj.core.api.Assertions;\nimport org.easymock.EasyMock;\nimport org.junit.Test;\nimport org.junit.runner.RunWith;\nimport org.powermock.api.easymock.PowerMock;\nimport org.powermock.core.classloader.annotations.PrepareOnlyThisForTest;\nimport org.powermock.modules.junit4.PowerMockRunner;\n\nimport java.lang.reflect.Constructor;\nimport java.lang.reflect.InvocationTargetException;\nimport java.lang.reflect.Modifier;\nimport java",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/utils/UtilsGlMatricesTest.java",
-        "start": 1,
-        "end": 12,
+        "start": 3,
+        "end": 16,
         "startLoc": {
-          "line": 1,
-          "column": 1,
-          "position": 0
+          "line": 3,
+          "column": 7,
+          "position": 17
         },
         "endLoc": {
-          "line": 12,
-          "column": 4,
-          "position": 67
+          "line": 16,
+          "column": 5,
+          "position": 139
         }
       },
       "secondFile": {
-        "name": "app/src/test/java/puscas/mobilertapp/utils/UtilsLoggingTest.java",
-        "start": 1,
-        "end": 12,
+        "name": "app/src/test/java/puscas/mobilertapp/utils/UtilsShaderTest.java",
+        "start": 3,
+        "end": 17,
         "startLoc": {
-          "line": 1,
-          "column": 1,
-          "position": 0
+          "line": 3,
+          "column": 7,
+          "position": 17
         },
         "endLoc": {
-          "line": 12,
-          "column": 4,
-          "position": 67
+          "line": 17,
+          "column": 7,
+          "position": 140
         }
       }
     },
@@ -3268,17 +3268,17 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/utils/UtilsGlMatricesTest.java",
-        "start": 22,
-        "end": 28,
+        "start": 51,
+        "end": 57,
         "startLoc": {
-          "line": 22,
+          "line": 51,
           "column": 16,
-          "position": 111
+          "position": 377
         },
         "endLoc": {
-          "line": 28,
+          "line": 57,
           "column": 46,
-          "position": 174
+          "position": 440
         }
       },
       "secondFile": {
@@ -3294,6 +3294,42 @@
           "line": 41,
           "column": 35,
           "position": 285
+        }
+      }
+    },
+    {
+      "format": "java",
+      "lines": 8,
+      "fragment": "ockedCamera, 1.0f, 0.0f, 0.0f, 0.0f);\n        Assertions.assertThat(UtilsGlMatrices.createProjectionMatrix(mockedCamera, width, height))\n            .as(\"The projection matrix should be zero\")\n            .containsOnly(expectedEmptyArray);\n        PowerMock.verifyAll();\n\n        mockMatrixMethods(0, 0);\n        mockCamera(m",
+      "tokens": 0,
+      "firstFile": {
+        "name": "app/src/test/java/puscas/mobilertapp/utils/UtilsGlMatricesTest.java",
+        "start": 81,
+        "end": 88,
+        "startLoc": {
+          "line": 81,
+          "column": 5,
+          "position": 698
+        },
+        "endLoc": {
+          "line": 88,
+          "column": 5,
+          "position": 769
+        }
+      },
+      "secondFile": {
+        "name": "app/src/test/java/puscas/mobilertapp/utils/UtilsGlMatricesTest.java",
+        "start": 74,
+        "end": 81,
+        "startLoc": {
+          "line": 74,
+          "column": 5,
+          "position": 626
+        },
+        "endLoc": {
+          "line": 81,
+          "column": 5,
+          "position": 697
         }
       }
     },
