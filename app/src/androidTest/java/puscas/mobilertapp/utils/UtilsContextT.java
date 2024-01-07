@@ -70,7 +70,7 @@ public final class UtilsContextT {
                         done.set(true);
                         logger.info("waitUntil success");
                     } else {
-                        logger.info("State: '" + rendererState.name() + "' (expecting " + Arrays.toString(expectedStates) + "), Button: '" + renderButtonText + "' (expecting [" + expectedButtonText + "]");
+                        logger.info("State: '" + rendererState.name() + "' (expecting " + Arrays.toString(expectedStates) + "), Button: '" + renderButtonText + "' (expecting [" + expectedButtonText + "])");
                     }
             });
         }
