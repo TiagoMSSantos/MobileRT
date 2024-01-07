@@ -60,7 +60,7 @@ jobs:
           BASE_IMAGE: alpine:3.19
         - os: ubuntu-latest
           BASE_IMAGE: gentoo/stage3:latest
-        - os: ubuntu-latest
+        - os: macos-latest
           BASE_IMAGE: sickcodes/docker-osx:latest
 
     runs-on: ${{ matrix.os }}
@@ -90,17 +90,13 @@ jobs:
         echo 'BUILD_IMAGE=yes' >> "${GITHUB_ENV}";
 
     - name: Install docker MacOS
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success() && startsWith(matrix.os, 'macos')
       env:
         BASE_IMAGE: ${{ matrix.BASE_IMAGE }}
       run: |
         # shellcheck disable=SC1091
         . scripts/docker.sh && installDockerCommandForMacOS;
-        # Add docker path to PATH environment variable to all workflow steps.
-        export PATH=${PATH}:"/usr/local/etc/bash_completion.d/";
-        export PATH=${PATH}:"/Applications/Docker.app/";
-        echo "${PATH}" >> "${GITHUB_PATH}";
 
     - name: Login to DockerHub Registry
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -128,8 +124,7 @@ jobs:
         echo "BASE_IMAGE: ${{ matrix.BASE_IMAGE }}";
         echo "BRANCH: ${{ env.BRANCH }}";
         echo "VERSION: ${{ env.VERSION }}";
-        . scripts/docker.sh && \
-          buildDockerImage ${{ matrix.BASE_IMAGE }} ${{ env.BRANCH }} ${{ env.VERSION }};
+        . scripts/docker.sh && buildDockerImage ${{ matrix.BASE_IMAGE }} ${{ env.BRANCH }} ${{ env.VERSION }};
 
     - name: Pull and build MobileRT
       timeout-minutes: 300
@@ -137,8 +132,7 @@ jobs:
       run: |
         # shellcheck disable=SC1091
         echo "VERSION: ${{ env.VERSION }}";
-        . scripts/docker.sh && \
-          compileMobileRTInDockerContainer ${{ env.VERSION }};
+        . scripts/docker.sh && compileMobileRTInDockerContainer ${{ env.VERSION }};
 
     - name: Update and commit MobileRT Docker image
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}

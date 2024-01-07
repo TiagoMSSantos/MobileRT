@@ -104,8 +104,7 @@ pushMobileRTDockerImage() {
 # The parameters are:
 # * VERSION
 commitMobileRTDockerImage() {
-  docker commit \
-    mobile_rt_"${1}" ptpuscas/mobile_rt:"${1}";
+  docker commit mobile_rt_"${1}" ptpuscas/mobile_rt:"${1}";
   docker rm mobile_rt_"${1}";
 }
 
@@ -147,53 +146,31 @@ _installDockerSquashCommand() {
   pip freeze -v | grep -i docker;
 }
 
-# Helper command to install the docker command for MacOS.
-# This code installs Docker on MacOS but the command `docker` doesn't do anything.
+# Helper function to install the docker command for MacOS.
 # Its necessary to install Docker Desktop on Mac:
 # https://docs.docker.com/docker-for-mac/install/
-# So, for now, we just use MacOS docker image that uses KVM (Kernel-based Virtual Machine)
-# in a Linux environment.
 installDockerCommandForMacOS() {
   echo 'Select XCode.';
   sudo xcode-select --switch /System/Volumes/Data/Applications/Xcode.app/Contents/Developer;
+  # To avoid error: "Bash must not run in POSIX mode. Please unset POSIXLY_CORRECT and try again."
+  set +e;
   echo 'Update Homebrew';
   sh -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)";
-  echo 'Install docker and virtualbox';
-  brew install --cask docker virtualbox;
-  brew install docker;
-  echo 'Install docker-machine';
-  mkdir -p ~/.docker/machine/cache/;
-  curl -Lo ~/.docker/machine/cache/boot2docker.iso https://github.com/boot2docker/boot2docker/releases/download/v19.03.12/boot2docker.iso;
-  brew install docker-machine;
-  echo 'Create docker-machine';
-  docker-machine create --driver virtualbox --virtualbox-boot2docker-url ~/.docker/machine/cache/boot2docker.iso default;
-  echo 'Start service docker-machine';
-  brew services start docker-machine;
-  eval '$(docker-machine env default)';
-  echo 'Restart service docker-machine';
-  docker-machine restart;
-  docker-machine env;
-  docker ps;
-  docker --version;
+  set -e;
+  echo 'Install docker & colima';
+  brew install docker docker-compose colima;
+  echo 'Start colima';
+  colima start;
+  # For testcontainers to find the Colima socket
+  # https://github.com/abiosoft/colima/blob/main/docs/FAQ.md#cannot-connect-to-the-docker-daemon-at-unixvarrundockersock-is-the-docker-daemon-running
+  sudo ln -sf "${HOME}/.colima/default/docker.sock /var/run/docker.sock";
 
+  echo 'Docker commands detected:';
   echo "${PATH}" | sed 's/:/ /g' | xargs ls 2> /dev/null | grep -i docker 2> /dev/null || true;
-  export PATH="${PATH}:/usr/local/bin/";
 
-  echo 'Start Docker';
-  git clone https://github.com/docker/docker.github.io.git;
-  oldpath=$(pwd);
-  cd docker.github.io || exit 1;
-
-  ls registry/recipes/osx;
-  plutil -lint registry/recipes/osx/com.docker.registry.plist;
-  cp registry/recipes/osx/com.docker.registry.plist ~/Library/LaunchAgents/;
-  chmod 644 ~/Library/LaunchAgents/com.docker.registry.plist;
-  launchctl load ~/Library/LaunchAgents/com.docker.registry.plist;
-  echo 'Restart Docker registry';
-  launchctl stop com.docker.registry;
-  launchctl start com.docker.registry;
-  launchctl unload ~/Library/LaunchAgents/com.docker.registry.plist;
-
-  open /Applications/Docker.app;
-  cd "${oldpath}" || exit 1;
+  echo 'Validating docker command works';
+  docker --version;
+  docker ps -a;
+  docker image ls -a;
+  docker info;
 }

@@ -470,7 +470,6 @@ set -eu;
 
 # Exit and return whether the tests passed or failed.
 if [ "${exitValue}" != 0 ]; then
-  # Only return 'exitValue' if some test(s) failed, so the code coverage works properly.
-  # Because 'return' can only be used from a function or sourced script.
+  # Only return 'exitValue' if some test(s) failed, because 'return' can only be used from a function or sourced script in bash shell.
   return "${exitValue}";
 fi
