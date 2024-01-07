@@ -139,9 +139,6 @@ public final class UtilsGL {
         return numConfig[0] > 0;
     }
 
-
-    // Private methods
-
     /**
      * Helper method which checks and prints errors in the OpenGL framework.
      */

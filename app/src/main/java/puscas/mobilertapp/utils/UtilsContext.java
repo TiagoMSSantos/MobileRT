@@ -235,9 +235,6 @@ public final class UtilsContext {
         return cores;
     }
 
-
-    // Private methods
-
     /**
      * Helper method that cleans the path to the external SD Card or to the internal storage.
      * This is useful for some devices since the {@link #getSdCardPath(Context)}

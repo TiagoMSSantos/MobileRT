@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-01-06T11:34:02.647Z",
+    "detectionDate": "2024-01-07T10:43:33.033Z",
     "formats": {
       "java": {
         "sources": {
@@ -20,11 +20,11 @@
             "lines": 117,
             "tokens": 805,
             "sources": 1,
-            "clones": 4,
-            "duplicatedLines": 32,
-            "duplicatedTokens": 314,
-            "percentage": 27.35,
-            "percentageTokens": 39.01,
+            "clones": 5,
+            "duplicatedLines": 40,
+            "duplicatedTokens": 395,
+            "percentage": 34.19,
+            "percentageTokens": 49.07,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -32,11 +32,11 @@
             "lines": 41,
             "tokens": 242,
             "sources": 1,
-            "clones": 4,
-            "duplicatedLines": 39,
-            "duplicatedTokens": 264,
-            "percentage": 95.12,
-            "percentageTokens": 109.09,
+            "clones": 3,
+            "duplicatedLines": 28,
+            "duplicatedTokens": 197,
+            "percentage": 68.29,
+            "percentageTokens": 81.4,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -53,14 +53,14 @@
             "newClones": 0
           },
           "app/src/test/java/puscas/mobilertapp/utils/UtilsGLTest.java": {
-            "lines": 32,
-            "tokens": 197,
+            "lines": 108,
+            "tokens": 841,
             "sources": 1,
             "clones": 2,
-            "duplicatedLines": 17,
-            "duplicatedTokens": 130,
-            "percentage": 53.13,
-            "percentageTokens": 65.99,
+            "duplicatedLines": 12,
+            "duplicatedTokens": 128,
+            "percentage": 11.11,
+            "percentageTokens": 15.22,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -389,20 +389,20 @@
             "newClones": 0
           },
           "app/src/main/java/puscas/mobilertapp/utils/UtilsGL.java": {
-            "lines": 216,
-            "tokens": 1430,
+            "lines": 213,
+            "tokens": 1425,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 9,
             "duplicatedTokens": 74,
-            "percentage": 4.17,
-            "percentageTokens": 5.17,
+            "percentage": 4.23,
+            "percentageTokens": 5.19,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "app/src/main/java/puscas/mobilertapp/utils/UtilsContext.java": {
-            "lines": 350,
-            "tokens": 2514,
+            "lines": 347,
+            "tokens": 2509,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -801,10 +801,10 @@
             "tokens": 1977,
             "sources": 1,
             "clones": 7,
-            "duplicatedLines": 72,
-            "duplicatedTokens": 705,
-            "percentage": 30.13,
-            "percentageTokens": 35.66,
+            "duplicatedLines": 74,
+            "duplicatedTokens": 721,
+            "percentage": 30.96,
+            "percentageTokens": 36.47,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -869,8 +869,8 @@
             "newClones": 0
           },
           "app/src/main/java/puscas/mobilertapp/MainActivity.java": {
-            "lines": 977,
-            "tokens": 7779,
+            "lines": 952,
+            "tokens": 7762,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -1002,14 +1002,14 @@
           }
         },
         "total": {
-          "lines": 10041,
-          "tokens": 70042,
+          "lines": 10086,
+          "tokens": 70659,
           "sources": 83,
           "clones": 57,
-          "duplicatedLines": 571,
-          "duplicatedTokens": 5065,
-          "percentage": 5.69,
-          "percentageTokens": 7.23,
+          "duplicatedLines": 568,
+          "duplicatedTokens": 5079,
+          "percentage": 5.63,
+          "percentageTokens": 7.19,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3140,14 +3140,14 @@
       }
     },
     "total": {
-      "lines": 28022,
-      "tokens": 211762,
+      "lines": 28067,
+      "tokens": 212379,
       "sources": 248,
       "clones": 114,
-      "duplicatedLines": 1515,
-      "duplicatedTokens": 13013,
-      "percentage": 5.41,
-      "percentageTokens": 6.15,
+      "duplicatedLines": 1512,
+      "duplicatedTokens": 13027,
+      "percentage": 5.39,
+      "percentageTokens": 6.13,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -3335,37 +3335,37 @@
     },
     {
       "format": "java",
-      "lines": 12,
-      "fragment": "package puscas.mobilertapp.utils;\n\nimport org.assertj.core.api.Assertions;\nimport org.junit.Test;\n\nimport java.lang.reflect.Constructor;\nimport java.lang.reflect.InvocationTargetException;\nimport java.lang.reflect.Modifier;\n\n/**\n * The unit tests for the {@link UtilsGL} util class.\n */",
+      "lines": 7,
+      "fragment": ";\nimport org.junit.Test;\nimport org.junit.runner.RunWith;\nimport org.powermock.api.easymock.PowerMock;\nimport org.powermock.core.classloader.annotations.PrepareOnlyThisForTest;\nimport org.powermock.modules.junit4.PowerMockRunner;\nimport org",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/utils/UtilsGLTest.java",
-        "start": 1,
-        "end": 12,
+        "start": 8,
+        "end": 14,
         "startLoc": {
-          "line": 1,
-          "column": 1,
-          "position": 0
+          "line": 8,
+          "column": 9,
+          "position": 58
         },
         "endLoc": {
-          "line": 12,
+          "line": 14,
           "column": 4,
-          "position": 67
+          "position": 123
         }
       },
       "secondFile": {
-        "name": "app/src/test/java/puscas/mobilertapp/utils/UtilsLoggingTest.java",
-        "start": 1,
-        "end": 12,
+        "name": "app/src/test/java/puscas/mobilertapp/utils/UtilsShaderTest.java",
+        "start": 6,
+        "end": 13,
         "startLoc": {
-          "line": 1,
-          "column": 1,
-          "position": 0
+          "line": 6,
+          "column": 9,
+          "position": 40
         },
         "endLoc": {
-          "line": 12,
-          "column": 4,
-          "position": 67
+          "line": 13,
+          "column": 5,
+          "position": 106
         }
       }
     },
@@ -3376,17 +3376,17 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/utils/UtilsGLTest.java",
-        "start": 22,
-        "end": 28,
+        "start": 41,
+        "end": 47,
         "startLoc": {
-          "line": 22,
+          "line": 41,
           "column": 8,
-          "position": 111
+          "position": 293
         },
         "endLoc": {
-          "line": 28,
+          "line": 47,
           "column": 37,
-          "position": 174
+          "position": 356
         }
       },
       "secondFile": {
@@ -4703,37 +4703,37 @@
     },
     {
       "format": "java",
-      "lines": 7,
-      "fragment": ";\nimport org.junit.Test;\nimport org.junit.runner.RunWith;\nimport org.powermock.api.easymock.PowerMock;\nimport org.powermock.core.classloader.annotations.PrepareOnlyThisForTest;\nimport org.powermock.modules.junit4.PowerMockRunner;\nimport org",
+      "lines": 9,
+      "fragment": ";\nimport org.junit.Test;\nimport org.junit.runner.RunWith;\nimport org.powermock.api.easymock.PowerMock;\nimport org.powermock.core.classloader.annotations.PrepareOnlyThisForTest;\nimport org.powermock.modules.junit4.PowerMockRunner;\nimport org.springframework.test.util.ReflectionTestUtils;\n\nimport java.io",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainActivityTest.java",
         "start": 19,
-        "end": 25,
+        "end": 27,
         "startLoc": {
           "line": 19,
           "column": 7,
           "position": 151
         },
         "endLoc": {
-          "line": 25,
-          "column": 4,
-          "position": 216
+          "line": 27,
+          "column": 3,
+          "position": 232
         }
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/utils/UtilsShaderTest.java",
         "start": 6,
-        "end": 13,
+        "end": 16,
         "startLoc": {
           "line": 6,
           "column": 9,
           "position": 40
         },
         "endLoc": {
-          "line": 13,
+          "line": 16,
           "column": 5,
-          "position": 106
+          "position": 139
         }
       }
     },

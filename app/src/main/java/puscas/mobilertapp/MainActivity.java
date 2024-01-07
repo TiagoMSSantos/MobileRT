@@ -65,12 +65,6 @@ import puscas.mobilertapp.utils.UtilsLogging;
  */
 public final class MainActivity extends Activity {
 
-    /*
-     ***********************************************************************
-     * Private static fields
-     ***********************************************************************
-     */
-
     /**
      * Logger for this class.
      */
@@ -241,11 +235,6 @@ public final class MainActivity extends Activity {
         }
     }
 
-    /*
-     ***********************************************************************
-     * Overloaded methods
-     ***********************************************************************
-     */
     @Override
     public void onCreate(@Nullable final Bundle savedInstanceState) {
         try {
@@ -392,13 +381,6 @@ public final class MainActivity extends Activity {
         logger.info(message);
     }
 
-
-    /*
-     ***********************************************************************
-     * Public methods
-     ***********************************************************************
-     */
-
     @Override
     public void onRequestPermissionsResult(final int requestCode,
                                            @NonNull final String[] permissions,
@@ -450,13 +432,6 @@ public final class MainActivity extends Activity {
         }
         return intent;
     }
-
-    /*
-     ***********************************************************************
-     * Private methods
-     ***********************************************************************
-     */
-
 
     @Override
     protected void onActivityResult(final int requestCode,
