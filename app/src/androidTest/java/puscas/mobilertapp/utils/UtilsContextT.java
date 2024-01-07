@@ -21,6 +21,7 @@ import puscas.mobilertapp.MainActivity;
 import puscas.mobilertapp.MainRenderer;
 import puscas.mobilertapp.R;
 import puscas.mobilertapp.constants.Accelerator;
+import puscas.mobilertapp.constants.Constants;
 import puscas.mobilertapp.constants.ConstantsUI;
 import puscas.mobilertapp.constants.Shader;
 import puscas.mobilertapp.constants.State;
@@ -51,14 +52,20 @@ public final class UtilsContextT {
      * @throws TimeoutException If the Ray Tracing engine didn't reach the expected {@link State}.
      */
     public static void waitUntil(@NonNull final MainActivity activity, final String expectedButtonText, final State... expectedStates) throws TimeoutException {
-        logger.info("waitUntil start, expected button: " + expectedButtonText + ", expected state: " + expectedStates[0].name());
+        logger.info("waitUntil start, expected button: " + expectedButtonText + ", expected state(s): " + Arrays.toString(expectedStates));
         final AtomicBoolean done = new AtomicBoolean(false);
+        /*
+        Only advance 1 second at a time, otherwise the following error can appear:
+            signal 11 (SIGSEGV), code 1 (SEGV_MAPERR), fault addr 0x0000000000000000
+            29878 29878 F DEBUG   : Cause: null pointer dereference
+         */
         final long advanceSecs = 1L;
 
         final DrawView drawView = UtilsT.getPrivateField(activity, "drawView");
         final MainRenderer renderer = drawView.getRenderer();
 
-        for (long currentTimeSecs = 0L; currentTimeSecs < 60L && !done.get(); currentTimeSecs += advanceSecs) {
+        final long timeSecsToWait = Objects.equals(expectedButtonText, Constants.STOP) ? 10L : 60L;
+        for (long currentTimeSecs = 0L; currentTimeSecs < timeSecsToWait && !done.get(); currentTimeSecs += advanceSecs) {
             Uninterruptibles.sleepUninterruptibly(advanceSecs, TimeUnit.SECONDS);
 
             Espresso.onView(ViewMatchers.withId(R.id.renderButton))
@@ -72,7 +79,7 @@ public final class UtilsContextT {
                     } else {
                         logger.info("State: '" + rendererState.name() + "' (expecting " + Arrays.toString(expectedStates) + "), Button: '" + renderButtonText + "' (expecting [" + expectedButtonText + "])");
                     }
-            });
+                });
         }
 
         logger.info("waitUntil finished");
