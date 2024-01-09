@@ -1,5 +1,6 @@
 package puscas.mobilertapp.utils
 
+import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
@@ -93,9 +94,9 @@ abstract class AsyncTaskCoroutine {
      */
     @DelicateCoroutinesApi
     protected fun publishProgressAsync() {
-        GlobalScope.async(Dispatchers.Main) {
+        GlobalScope.async(context = Dispatchers.Main, start = CoroutineStart.DEFAULT, block = {
             onProgressUpdate()
-        }
+        })
     }
 
     /**
@@ -110,14 +111,14 @@ abstract class AsyncTaskCoroutine {
      */
     @DelicateCoroutinesApi
     fun executeAsync() {
-        GlobalScope.async(Dispatchers.Main) {
+        GlobalScope.async(context = Dispatchers.Main, start = CoroutineStart.DEFAULT, block = {
             onPreExecute()
-            lastJob = GlobalScope.async(Dispatchers.IO) {
+            lastJob = GlobalScope.async(context = Dispatchers.IO, start = CoroutineStart.DEFAULT, block = {
                 doInBackground()
-            }
+            })
             (lastJob ?: return@async).await()
             onPostExecute()
-        }
+        })
     }
 
     /**
