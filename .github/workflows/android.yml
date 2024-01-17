@@ -240,7 +240,7 @@ jobs:
     - name: Upload generated binaries to cache
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
         key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
@@ -371,7 +371,7 @@ jobs:
     - name: Download generated binaries from cache
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
         key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
@@ -469,7 +469,7 @@ jobs:
     - name: Upload reports to cache
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug'
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
         key: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
@@ -590,7 +590,7 @@ jobs:
     - name: Download generated binaries from cache
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
         key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
@@ -719,7 +719,7 @@ jobs:
     - name: Download generated binaries from cache
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
         key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
@@ -750,7 +750,7 @@ jobs:
     - name: Download reports from cache
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && startsWith(matrix.os, 'ubuntu')
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
         key: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
@@ -788,7 +788,7 @@ jobs:
     - name: Download generated binaries from cache
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
         key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
