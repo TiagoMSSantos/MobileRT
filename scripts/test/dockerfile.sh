@@ -80,14 +80,14 @@ testMobileRTContainer() {
   removeAllContainers;
   echo "Starting test - testMobileRTContainer: ${_mobilertVersion} (expecting return ${expected})";
   docker run -t \
-    -v /tmp/.X11-unix:/tmp/.X11-unix \
     -e DISPLAY=':0' \
     -e QT_QPA_PLATFORM='offscreen' \
+    -e BUILD_TYPE='release' \
     --init \
-    --entrypoint timeout \
+    --entrypoint sh \
     --name="${_mobilertVersion}" \
     ptpuscas/mobile_rt:"${_mobilertVersion}" \
-    60 ./scripts/profile.sh "${_mode}" 100;
+    -c "timeout 60 sh ./scripts/profile.sh ${_mode} 100";
 
   returnValue="$?";
   assertEqual "${expected}" "${returnValue}" "testMobileRTContainer: ${_mobilertVersion}";

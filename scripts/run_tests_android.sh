@@ -488,8 +488,8 @@ runUnitTests() {
 
   unlockDevice;
 
-  callCommandUntilSuccess adb push -p "${dirUnitTests}"/bin/* ${mobilert_path}/;
-  callCommandUntilSuccess adb push -p "${dirUnitTests}"/lib/* ${mobilert_path}/;
+  callCommandUntilSuccess adb push -p "${dirUnitTests}"/bin/* ${mobilert_path};
+  callCommandUntilSuccess adb push -p "${dirUnitTests}"/lib/* ${mobilert_path};
 
   echo 'Run unit tests';
   if [ "${type}" = 'debug' ]; then
@@ -562,7 +562,7 @@ runInstrumentationTests() {
   adb shell "pm uninstall ${mobilert_path}/app-${type}-androidTest.apk;";
   adb shell "pm uninstall ${mobilert_path}/app-${type}.apk;";
   adb shell rm -r /data/app/puscas.mobilertapp*;
-  adb shell ls -la /data/app/;
+  adb shell ls -la /data/app;
   set -e;
   callAdbShellCommandUntilSuccess adb shell 'pm install -r '${mobilert_path}'/app-'${type}'.apk; echo ::$?::';
   callAdbShellCommandUntilSuccess adb shell 'pm install -r '${mobilert_path}'/app-'${type}'-androidTest.apk; echo ::$?::';
@@ -585,7 +585,7 @@ runInstrumentationTests() {
 
   if [ "${run_test}" = 'all' ]; then
     echo 'Running all tests';
-    mkdir -p app/build/reports/jacoco/jacocoTestReport/;
+    mkdir -p app/build/reports/jacoco/jacocoTestReport;
     sh gradlew ${gradle_command} -DtestType="${type}" \
       -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
       -Pandroid.testInstrumentationRunnerArguments.package='puscas' \

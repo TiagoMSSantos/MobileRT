@@ -32,13 +32,17 @@ buildDockerImage() {
   prepareBinaries .;
   du -h -d 1 scripts;
   docker build \
-    -t ptpuscas/mobile_rt:"${3}" \
     -f deploy/Dockerfile \
     --no-cache=false \
     --build-arg BASE_IMAGE="${1}" \
     --build-arg BRANCH="${2}" \
     --build-arg BUILD_TYPE=release \
     .;
+
+  imageId=$(docker images | awk '{print $3}' | awk 'NR==2');
+  docker images;
+  echo "imageId: ${imageId}";
+  docker tag "${imageId}" ptpuscas/mobile_rt:"${3}";
 }
 
 # Helper command to pull the MobileRT docker image.
@@ -86,7 +90,6 @@ compileMobileRTInDockerContainer() {
 executeUnitTestsInDockerContainer() {
   docker run -t \
     --entrypoint sh \
-    -v /tmp/.X11-unix:/tmp/.X11-unix \
     -e DISPLAY="${DISPLAY}" \
     --name="mobile_rt_${1}" \
     ptpuscas/mobile_rt:"${1}" -c "./build_release/bin/UnitTests ${2}";
@@ -157,13 +160,20 @@ installDockerCommandForMacOS() {
   echo 'Update Homebrew';
   sh -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)";
   set -e;
+  brew update;
   echo 'Install docker & colima';
-  brew install docker docker-compose colima;
-  echo 'Start colima';
-  colima start;
+  brew install docker docker-buildx docker-compose colima;
   # For testcontainers to find the Colima socket
   # https://github.com/abiosoft/colima/blob/main/docs/FAQ.md#cannot-connect-to-the-docker-daemon-at-unixvarrundockersock-is-the-docker-daemon-running
   sudo ln -sf "${HOME}/.colima/default/docker.sock /var/run/docker.sock";
+
+  echo 'Symlink Docker plugins, so Docker can find them';
+  mkdir -p "${HOME}/.docker/cli-plugins";
+  ln -sfn /usr/local/opt/docker-buildx/bin/docker-buildx "${HOME}/.docker/cli-plugins/docker-buildx";
+  ln -sfn /usr/local/opt/docker-compose/bin/docker-compose "${HOME}/.docker/cli-plugins/docker-compose";
+
+  echo 'Start colima';
+  colima start;
 
   echo 'Docker commands detected:';
   echo "${PATH}" | sed 's/:/ /g' | xargs ls 2> /dev/null | grep -i docker 2> /dev/null || true;

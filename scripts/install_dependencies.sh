@@ -143,7 +143,7 @@ install_dependencies_red_hat() {
 install_dependencies_arch() {
   # https://wiki.archlinux.org/title/Pacman/Package_signing#Upgrade_system_regularly
   echo 'Removing packages from cache';
-  rm -rf /var/cache/pacman/pkg/;
+  rm -rf /var/cache/pacman/pkg;
   pacman -Sy archlinux-keyring --noconfirm --needed;
   echo 'Resetting all the keys';
   pacman-key --init;

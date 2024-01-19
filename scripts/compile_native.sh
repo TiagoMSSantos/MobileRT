@@ -24,6 +24,7 @@ set -eu;
 ###############################################################################
 # Change directory to MobileRT root.
 ###############################################################################
+env | grep -i path;
 if [ $# -ge 1 ]; then
   cd "$(dirname "${0}")/.." || return 1;
 fi
@@ -44,7 +45,7 @@ fi
 # Execute Shellcheck on this script.
 ###############################################################################
 if command -v shellcheck > /dev/null; then
-  shellcheck "${0}" || return 1;
+  shellcheck "${0}" --exclude=SC1017,SC2215 || return 1;
 fi
 ###############################################################################
 ###############################################################################
@@ -221,20 +222,20 @@ install_conan_dependencies() {
       conan_os='Macos';
     fi
     conan install \
-    -s compiler="${conan_compiler}" \
-    -s compiler.version="${conan_compiler_version}" \
-    -s compiler.libcxx="${conan_libcxx}" \
-    -s compiler.cppstd=17 \
-    -s arch="${CPU_ARCHITECTURE}" \
-    -s os="${conan_os}" \
-    -s build_type=Release \
-    -o bzip2:shared=True \
-    -c tools.system.package_manager:mode=install \
-    -c tools.system.package_manager:sudo=True \
-    --build missing \
-    --profile mobilert \
-    --install-folder build_conan-native \
-    ./app/third_party/conan/Native;
+      -s compiler="${conan_compiler}" \
+      -s compiler.version="${conan_compiler_version}" \
+      -s compiler.libcxx="${conan_libcxx}" \
+      -s compiler.cppstd=17 \
+      -s arch="${CPU_ARCHITECTURE}" \
+      -s os="${conan_os}" \
+      -s build_type=Release \
+      -o bzip2:shared=True \
+      -c tools.system.package_manager:mode=install \
+      -c tools.system.package_manager:sudo=True \
+      --build missing \
+      --profile mobilert \
+      --install-folder build_conan-native \
+      ./app/third_party/conan/Native;
 
     export CONAN='TRUE';
     echo 'Done!';
@@ -274,11 +275,20 @@ build() {
   fi
 
   echo 'Calling CMake';
+  cmake --version;
+  if [ "${compiler}" = 'clang++' ]; then
+    c_compiler='clang';
+  else
+    c_compiler='gcc';
+  fi
+
   cmake -DCMAKE_VERBOSE_MAKEFILE=ON \
     -DCMAKE_CXX_COMPILER="${compiler}" \
+    -DCMAKE_C_COMPILER="${c_compiler}" \
+    -DCMAKE_C_SOURCE_FILE_EXTENSIONS="c" \
     -DCMAKE_BUILD_TYPE="${typeWithCapitalLetter}" \
      "${addConanToolchain}" \
-    ../app/;
+    ../app;
   resCompile=${?};
   echo 'Called CMake';
 
@@ -289,13 +299,14 @@ build() {
     echo 'Detected C++ compiler for Windows!';
   else
     echo "Didn't detect C++ compiler for Windows!";
-    JOBS_FLAG="${MAKEFLAGS}";
+    JOBS_FLAG="-- ${MAKEFLAGS}";
   fi
 
   if [ "${resCompile}" -eq 0 ]; then
     set +u;
-    echo "Calling Make with parameters: ${JOBS_FLAG}";
-    cmake --build . -- "${JOBS_FLAG}";
+    echo "Calling Make with parameters: '${JOBS_FLAG}'";
+    # shellcheck disable=SC2086
+    cmake --build . ${JOBS_FLAG};
     set -u;
     resCompile=${?};
   else

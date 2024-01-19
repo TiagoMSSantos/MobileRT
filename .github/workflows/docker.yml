@@ -62,9 +62,11 @@ jobs:
           BASE_IMAGE: gentoo/stage3:latest
         - os: macos-latest
           BASE_IMAGE: sickcodes/docker-osx:latest
+        - os: windows-latest
+          BASE_IMAGE: mcr.microsoft.com/windows/servercore:ltsc2022
 
     runs-on: ${{ matrix.os }}
-    # Necessary timeout of +/- 300 min to be able to build MobileRT with gentoo,
+    # Necessary timeout of +/- 300 min to be able to build MobileRT with gentoo.
     # That's why we try to pull a previously available version and update it with a new layer instead.
     timeout-minutes: 300
 
@@ -84,8 +86,8 @@ jobs:
         export BRANCH=${GITHUB_REF#refs/heads/};
         echo "BRANCH: ${BRANCH}";
         echo "BRANCH=${BRANCH}" >> "${GITHUB_ENV}";
-        export VERSION="${BASE_IMAGE/\//-}";
-        export VERSION="${VERSION/:/-}";
+        export VERSION="${BASE_IMAGE//\//-}";
+        export VERSION="${VERSION//:/-}";
         echo "VERSION=${VERSION}" >> "${GITHUB_ENV}";
         echo 'BUILD_IMAGE=yes' >> "${GITHUB_ENV}";
 
@@ -116,9 +118,9 @@ jobs:
         . scripts/docker.sh && pullDockerImage ${{ env.VERSION }};
         echo "BUILD_IMAGE=${BUILD_IMAGE}" >> "${GITHUB_ENV}";
 
-    - name: Build the tagged Docker image
+    - name: Build Docker image
       timeout-minutes: 300
-      if: success() && env.BUILD_IMAGE == 'yes'
+      if: success() && env.BUILD_IMAGE == 'yes' && !startsWith(matrix.os, 'windows')
       run: |
         # shellcheck disable=SC1091
         echo "BASE_IMAGE: ${{ matrix.BASE_IMAGE }}";
@@ -126,8 +128,45 @@ jobs:
         echo "VERSION: ${{ env.VERSION }}";
         . scripts/docker.sh && buildDockerImage ${{ matrix.BASE_IMAGE }} ${{ env.BRANCH }} ${{ env.VERSION }};
 
+    - name: Windows copy necessary tools to workspace
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success() && env.BUILD_IMAGE == 'yes' && startsWith(matrix.os, 'windows')
+      shell: powershell
+      run: |
+        Write-Host "Copying shell binaries to workspace."
+        # where.exe sh
+        New-Item -Type dir .\\binariesShell
+        Copy-Item -Path "C:\\Program Files\\Git\\usr\\bin\\*" -Destination ".\\binariesShell" -Recurse
+
+        Write-Host "Copying resource compiler binaries to workspace."
+        # Get-ChildItem -Path "C:\\Program Files (x86)\\Windows Kits\\10\\bin" -Include rc.exe -File -Recurse -ErrorAction SilentlyContinue | ForEach-Object{$_.FullName}
+        New-Item -Type dir .\\binariesResourceCompiler
+        Copy-Item -Path "C:\\Program Files (x86)\\Windows Kits\\10\\bin\\10.0.22621.0\\x64\\*" -Destination ".\\binariesResourceCompiler" -Recurse
+
+        Write-Host "Copying nmake binaries to workspace."
+        # Get-ChildItem -Path "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC" -Include nmake.exe -File -Recurse -ErrorAction SilentlyContinue | ForEach-Object{$_.FullName}
+        New-Item -Type dir .\\binariesNmake
+        Copy-Item -Path "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx86\\x64\\*" -Destination ".\\binariesNmake" -Recurse
+
+    - name: Windows build Docker image
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
+      if: success() && env.BUILD_IMAGE == 'yes' && startsWith(matrix.os, 'windows')
+      shell: powershell
+      run: |
+        Write-Host "BASE_IMAGE: ${{ matrix.BASE_IMAGE }}"
+        Write-Host "BRANCH: ${{ env.BRANCH }}"
+        Write-Host "VERSION: ${{ env.VERSION }}"
+
+        docker build -t ptpuscas/mobile_rt:"${{ env.VERSION }}" `
+          -f deploy/Dockerfile.windows `
+          --no-cache=false `
+          --build-arg BASE_IMAGE="${{ matrix.BASE_IMAGE }}" `
+          --build-arg BRANCH="${{ env.BRANCH }}" `
+          --build-arg BUILD_TYPE=release .
+        docker images
+
     - name: Pull and build MobileRT
-      timeout-minutes: 300
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
       if: success() && env.BUILD_IMAGE != 'yes'
       run: |
         # shellcheck disable=SC1091

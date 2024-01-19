@@ -72,7 +72,6 @@ if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
 endif()
 if( CMAKE_HOST_WIN32 MATCHES "1" )
   set( CMAKE_EXE_LINKER_FLAGS  "-FORCE" CACHE STRING "CUSTOM" FORCE )
-  set( CMAKE_GENERATOR_PLATFORM  "x64" CACHE STRING "CUSTOM" FORCE )
 endif()
 set( CMAKE_EXE_LINKER_FLAGS_DEBUG "" CACHE STRING "CUSTOM" FORCE )
 # discard-all: delete all local symbols.
@@ -357,10 +356,8 @@ endif()
 set( COMMON_FLAGS_RELEASE "${COMMON_FLAGS_RELEASE}" -DNDEBUG -ffunction-sections -fdata-sections )
 if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
   set( COMMON_FLAGS_RELEASE "${COMMON_FLAGS_RELEASE}" -O3 )
+  set( COMMON_FLAGS_RELEASE "${COMMON_FLAGS_RELEASE}" -Wno-unused-command-line-argument )
 endif()
-
-set( COMMON_FLAGS_RELEASE "${COMMON_FLAGS_RELEASE}"
-  -Wno-unused-command-line-argument )
 
 message( STATUS "Setting common linker flags." )
 if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
@@ -485,6 +482,8 @@ else()
     elseif( Qt4_FOUND )
       message( STATUS "Linking with Qt4." )
       target_link_libraries( ${PROJECT_NAME} PRIVATE Qt4::QtCore Qt4::QtGui Qt4::Widgets )
+    else()
+      message( STATUS "Did not find any Qt in the system." )
     endif()
 
   endif()

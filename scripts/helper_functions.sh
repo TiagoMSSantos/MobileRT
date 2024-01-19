@@ -39,13 +39,16 @@ parseArgumentsToCompile() {
     case ${opt} in
       t )
         export type=${OPTARG};
+        echo "Setting type: ${type}";
         ;;
       c )
         export compiler=${OPTARG};
         checkCommand "${compiler}";
+        echo "Setting compiler: ${compiler}";
         ;;
       r )
         export recompile=${OPTARG};
+        echo "Setting recompile: ${recompile}";
         ;;
       h )
         helpCompile;
@@ -269,10 +272,14 @@ capitalizeFirstletter() {
 
 # Parallelize building of MobileRT.
 parallelizeBuild() {
-  if command -v nproc > /dev/null; then
+  uname -a;
+  if uname -a | grep -iq "mingw" || uname -a | grep -iq "windows" || uname -a | grep -iq "msys"; then
+    echo 'Assuming Windows.';
+  elif command -v nproc > /dev/null; then
+    echo 'Assuming Linux.';
     MAKEFLAGS="-j$(nproc --all)";
-  else
-    # Assuming MacOS.
+  elif command -v sysctl > /dev/null; then
+    echo 'Assuming MacOS.';
     MAKEFLAGS="-j$(sysctl -n hw.logicalcpu)";
   fi
   export MAKEFLAGS;
@@ -384,8 +391,10 @@ createReportsFolders() {
 
 # Validate MobileRT native lib was compiled.
 validateNativeLibCompiled() {
-  nativeLib=$(find . -iname "*mobilert*.so");
-  find . -iname "*.so" 2> /dev/null;
+  set +e;
+  nativeLib=$(find . -iname "*mobilert*.a" -or -iname "*mobilert*.dll*" -or -iname "*mobilert*.so");
+  find . -iname "*mobilert*.a" -or -iname "*mobilert*.dll*" -or -iname "*mobilert*.so" 2> /dev/null;
+  set -e;
   echo "nativeLib: ${nativeLib}";
   if [ "$(echo "${nativeLib}" | wc -l)" -eq 0 ]; then
     exit 1;

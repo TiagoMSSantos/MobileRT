@@ -5,7 +5,7 @@ Here are the commands to generate the code coverage report:
 ```
 find build_debug/* -name *.gcda | xargs rm;
 pushd build_debug;
-cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=debug ../app/;
+cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=debug ../app;
 cmake --build .;
 popd;
 lcov -c -i -d . --no-external -o code_coverage_base.info;

@@ -1,0 +1,168 @@
+###############################################################################
+# README
+###############################################################################
+# This Dockerfile prepares a docker image with MobileRT.
+#
+# It setups MobileRT by fetching it from git and compiling it using the
+# `compile_native.sh` script inside the docker image.
+# The script `compile_native.sh` compiles the MobileRT.
+#
+# At the moment, this Dockerfile allows to setup MobileRT inside a docker image
+# in Windows Operating System:
+# * Windows Server Core
+###############################################################################
+###############################################################################
+
+
+###############################################################################
+# Set base docker image
+###############################################################################
+ARG BASE_IMAGE=mcr.microsoft.com/windows/servercore:ltsc2022
+FROM ${BASE_IMAGE}
+###############################################################################
+###############################################################################
+
+
+###############################################################################
+# Setup arguments
+###############################################################################
+ARG BUILD_TYPE=release
+ARG BRANCH=master
+###############################################################################
+###############################################################################
+
+
+###############################################################################
+# Define cmd as shell
+###############################################################################
+SHELL ["cmd", "/S", "/V:ON", "/C"]
+###############################################################################
+###############################################################################
+
+
+###############################################################################
+# Install dependencies
+###############################################################################
+# Users: https://techcommunity.microsoft.com/t5/itops-talk-blog/how-to-change-the-user-account-for-windows-containers/ba-p/3601571
+USER ContainerAdministrator
+
+# Install chocolatey Package Manager.
+RUN powershell -NoProfile -ExecutionPolicy Bypass -Command "Set-ExecutionPolicy Bypass -Scope Process -Force; \
+  [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; \
+  iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))"
+
+RUN \
+  # Install cmake: https://community.chocolatey.org/packages/cmake
+  choco install cmake -y --installargs 'ADD_CMAKE_TO_PATH=System' --version=3.13.0 && \
+  # Install git: https://community.chocolatey.org/packages/git
+  choco install git -y && \
+  # Install make: https://community.chocolatey.org/packages/make
+  choco install make -y && \
+  # Install shellcheck: https://community.chocolatey.org/packages/shellcheck  
+  choco install shellcheck -y && \
+  # Install Qt: https://community.chocolatey.org/packages/qt5-default
+  choco install qt5-default -y
+
+RUN \
+  # Splitted installation of dependencies to avoid error: 
+  # Running ["VC_redist.x86.exe"] was not successful. Exit code was '1618'. Exit code indicates the following: Another installation currently in progress.
+  # Install Visual C++ Build Tools: https://community.chocolatey.org/packages/visualcpp-build-tools
+  choco install visualcpp-build-tools -y
+
+RUN \
+  # Set system environment variables. ContainerAdministrator must be used so the change is persisted in the image.
+  # Set lib path. Windows doesn't use LD_LIBRARY_PATH, but use PATH instead.
+  setx /M PATH "C:\\MobileRT\\binariesShell;C:\\MobileRT\\binariesResourceCompiler;C:\\MobileRT\\binariesNmake;C:\\MobileRT\\libraries;C:\\MobileRT\\build_!BUILD_TYPE!\\lib;C:\\Qt\\5.15.2\\mingw81_64\\bin;!PATH!" && \
+  setx /M RC "rc" && \
+  setx /M CXX "g++" && \
+  setx /M CC "gcc" && \
+  setx /M CXXFLAGS "-O3 -std=c++11" && \
+  # Search Qt headers & libraries.
+  cd C:\\Qt && \
+  dir /s Qt5Core.dll && \
+  cd C: && \
+  # Set path to Qt headers & libraries.
+  setx /M CPLUS_INCLUDE_PATH "!CPLUS_INCLUDE_PATH!;C:\\Qt\\5.15.2\\mingw81_64\\include;C:\\Qt\\5.15.2\\mingw81_64\\include\\QtWidgets;C:\\Qt\\5.15.2\\mingw81_64\\include\\QtGui;C:\\Qt\\5.15.2\\mingw81_64\\include\\QtCore" && \
+  setx /M Qt5_DIR "C:\\Qt\\5.15.2\\mingw81_64\\lib\\cmake\\Qt5" && \
+  # Configure git.
+  git config --system https.postBuffer "1048576000" && \
+  git config --system --add safe.directory C:/MobileRT
+
+USER ContainerUser
+###############################################################################
+###############################################################################
+
+
+###############################################################################
+# Get MobileRT contents (required to create docker image in CI)
+###############################################################################
+WORKDIR /
+RUN \
+  # Test commands.
+  git --version && \
+  cmake --version && \
+  make --version && \
+  g++ --version && \
+  gcc --version && \
+  shellcheck --version && \
+  # Clone repository.
+  git clone https://github.com/TiagoMSSantos/MobileRT.git \
+    --shallow-submodules \
+    --progress \
+    --branch !BRANCH! && \
+  dir .\MobileRT\app\src\androidTest\resources\CornellBox\CornellBox-Water.obj && \
+  dir .\MobileRT\app\src\androidTest\resources\teapot\teapot.obj && \
+  # Print environment.
+  echo "BRANCH: !BRANCH!" && \
+  echo "BUILD_TYPE: !BUILD_TYPE!"
+###############################################################################
+###############################################################################
+
+
+###############################################################################
+# Copy necessary tools to docker image
+###############################################################################
+COPY . MobileRT
+WORKDIR MobileRT
+###############################################################################
+###############################################################################
+
+
+###############################################################################
+# Compile MobileRT
+###############################################################################
+RUN \
+  # Test commands.
+  dir . && \
+  rc /? && \
+  nmake /? && \
+  # Compile MobileRT.
+  sh scripts/compile_native.sh -t !BUILD_TYPE! -c g++ -r yes && \
+  du -h -d 1 build_!BUILD_TYPE!/bin && \
+  du -h -d 1 build_!BUILD_TYPE!/lib && \
+  ls -la ./app/src/androidTest/resources/CornellBox/CornellBox-Water.obj && \
+  ls -la ./app/src/androidTest/resources/teapot/teapot.obj && \
+  rm -rfv docs && \
+  rm -rfv documentation && \
+  rm -rfv git-hooks && \
+  rm -rfv gradle && \
+  rm -rfv .git && \
+  ls -la ./app/src/androidTest/resources/CornellBox/CornellBox-Water.obj && \
+  ls -la ./app/src/androidTest/resources/CornellBox/CornellBox-Water.mtl && \
+  ls -la ./app/src/androidTest/resources/CornellBox/CornellBox-Water.cam && \
+  ls -la ./app/src/androidTest/resources/teapot/teapot.obj && \
+  ls -la ./app/src/androidTest/resources/teapot/teapot.mtl && \
+  ls -la ./app/src/androidTest/resources/teapot/teapot.cam && \
+  ls -la ./binariesShell && \
+  cd
+###############################################################################
+###############################################################################
+
+
+###############################################################################
+# Execute MobileRT by default
+###############################################################################
+ENTRYPOINT ["C:\\Windows\\System32\\cmd.exe", "/S", "/V:ON", "/C"]
+CMD ["sh ./scripts/profile.sh !BUILD_TYPE!"]
+###############################################################################
+###############################################################################

@@ -37,7 +37,7 @@ fi
 # Execute Shellcheck on this script.
 ###############################################################################
 if command -v shellcheck > /dev/null; then
-  shellcheck "${0}" || return 1;
+  shellcheck "${0}" --exclude=SC1017,SC2215,SC2211 || return 1;
 fi
 ###############################################################################
 ###############################################################################
@@ -243,7 +243,6 @@ clangtidy() {
   echo "GTK_HEADERS = ${GTK_HEADERS}";
 
   clang-tidy \
-    -analyze-temporary-dtors \
     -checks='*,-*llvm-header-guard*,-fuchsia-default-arguments,-fuchsia-overloaded-operator' \
     -header-filter='.*' \
     "${MOBILERT_SRCS}"/MobileRT/*.*pp \

@@ -132,7 +132,7 @@ jobs:
       if: success() && startsWith(matrix.os, 'macos')
       working-directory: .
       run: |
-        ls -lahp /System/Volumes/Data/Applications/;
+        ls -lahp /System/Volumes/Data/Applications;
 
     - name: Install dependencies
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
@@ -213,9 +213,9 @@ jobs:
       working-directory: .
       run: |
         otool -L ${PWD}/build_${{ matrix.type }}/bin/AppMobileRT*;
-        sudo ln -s ${Qt5_DIR}/lib/QtCore.framework /Library/Frameworks/;
-        sudo ln -s ${Qt5_DIR}/lib/QtGui.framework /Library/Frameworks/;
-        sudo ln -s ${Qt5_DIR}/lib/QtWidgets.framework /Library/Frameworks/;
+        sudo ln -s ${Qt5_DIR}/lib/QtCore.framework /Library/Frameworks;
+        sudo ln -s ${Qt5_DIR}/lib/QtGui.framework /Library/Frameworks;
+        sudo ln -s ${Qt5_DIR}/lib/QtWidgets.framework /Library/Frameworks;
 
     - name: Test profile script ${{ matrix.type }}
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}

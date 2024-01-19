@@ -213,7 +213,7 @@ jobs:
       if: success()
       working-directory: .
       run: |
-        ls -lahp ./codeql-results/;
+        ls -lahp ./codeql-results;
         ls -lahp ./codeql-results/${{ matrix.language }}.sarif;
 
     - name: Filter SARIF
@@ -232,7 +232,7 @@ jobs:
       if: success()
       working-directory: .
       run: |
-        ls -lahp ./codeql-results/;
+        ls -lahp ./codeql-results;
         ls -lahp ./codeql-results/${{ matrix.language }}.sarif;
         ls -lahp ./codeql-results/${{ matrix.language }}-filtered.sarif;
 
