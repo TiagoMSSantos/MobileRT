@@ -24,8 +24,12 @@ coverage:
     project:
       default:
         target: 56%
-        # Note that the native coverage is reported 1st and might fail, so it was added a threshold because of that.
-        threshold: 2%
+        # Note that code coverage requires the following tests to validate the whole codebase:
+        # * Android tests (from Android workflow)
+        # * Native tests (from Native workflow)
+        # * Shell script tests (from Code Analysis workflow)
+        # So, if not all workflows above were executed, then the code coverage is not valid, and thus it was added a threshold because of that.
+        threshold: 53%
         if_ci_failed: error
         informational: false
         only_pulls: false

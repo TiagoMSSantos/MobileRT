@@ -1,25 +1,43 @@
 name: Code Analysis
 
-# cron:  'a b c d e'
-# a: minute (0 - 59)
-# b: hour (0 - 23)
-# c: day of the month (1 - 31)
-# d: month (1 - 12 or JAN-DEC)
-# e: day of the week (0 - 6 or SUN-SAT)
-
 on:
   workflow_dispatch:
   push:
     paths-ignore:
-    - '*'
     - '.github/workflows/**'
-    - 'docs/**'
-    - '**/renovate.json'
-    - '!gradle/wrapper/gradle-wrapper.properties'
-    - '!.github/workflows/code-analysis.yml'
-    - '!*gradle*'
-    branches:
     - '*'
+    - 'app/debug/**'
+    - 'app/release/**'
+    - 'app/third_party/conan/**'
+    - 'app/System_dependent/**'
+    - 'deploy/**'
+    - 'docs/**'
+    - 'scripts/**'
+    - 'WavefrontOBJs/**'
+    - '!app/System_dependent/CMakeLists.txt'
+    - '!gradle/wrapper/gradle-wrapper.properties'
+    - '!scripts/run_tests.sh'
+    - '!scripts/helper_functions.sh'
+    - '!scripts/install_dependencies.sh'
+    - '!app/CMakeLists.txt'
+    - '!codecov.yml'
+    - '!.github/workflows/android.yml'
+    - '!.github/workflows/native.yml'
+    - '!.github/workflows/code-analysis.yml'
+    - '!app/third_party/conan/Native/**'
+    - '!app/System_dependent/Native/**'
+    - '!.github/workflows/android_matrix.json'
+    - '!app/third_party/conan/Android/**'
+    - '!app/System_dependent/Android_JNI/**'
+    - '!scripts/compile_android.sh'
+    - '!scripts/compile_native.sh'
+    - '!scripts/check_android.sh'
+    - '!scripts/run_tests_android.sh'
+    - '!*.java*'
+    - '!*.kt*'
+    - '!*.c*'
+    - '!*.h*'
+    - '!*gradle*'
 
 defaults:
   run:
@@ -139,7 +157,7 @@ jobs:
 
     # Only execute shell unit tests for 'cpp' language because it doesn't matter in which build
     # these tests are executed.
-    - name: Shell scripts unit tests
+    - name: Code Coverage Shell script tests
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success() && matrix.language == 'cpp'
       working-directory: .

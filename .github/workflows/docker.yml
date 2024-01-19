@@ -65,6 +65,7 @@ jobs:
         - os: windows-latest
           BASE_IMAGE: mcr.microsoft.com/windows/servercore:ltsc2022
 
+    name: ${{ matrix.BASE_IMAGE }} (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     # Necessary timeout of +/- 300 min to be able to build MobileRT with gentoo.
     # That's why we try to pull a previously available version and update it with a new layer instead.

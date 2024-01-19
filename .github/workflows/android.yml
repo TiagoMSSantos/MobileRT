@@ -4,8 +4,8 @@ on:
   workflow_dispatch:
   push:
     paths-ignore:
+    - '.github/workflows/**'
     - '*'
-    - '.github/**'
     - 'app/debug/**'
     - 'app/release/**'
     - 'app/third_party/conan/**'
@@ -15,6 +15,7 @@ on:
     - 'scripts/**'
     - 'WavefrontOBJs/**'
     - '!app/System_dependent/CMakeLists.txt'
+    - '!gradle/wrapper/gradle-wrapper.properties'
     - '!scripts/run_tests.sh'
     - '!scripts/helper_functions.sh'
     - '!scripts/install_dependencies.sh'
@@ -22,6 +23,7 @@ on:
     - '!codecov.yml'
     - '!.github/workflows/android.yml'
     - '!.github/workflows/native.yml'
+    - '!.github/workflows/code-analysis.yml'
     - '!app/third_party/conan/Native/**'
     - '!app/System_dependent/Native/**'
     - '!.github/workflows/android_matrix.json'

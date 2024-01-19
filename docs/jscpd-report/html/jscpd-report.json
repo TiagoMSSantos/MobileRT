@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-01-19T16:43:14.239Z",
+    "detectionDate": "2024-01-19T19:28:34.946Z",
     "formats": {
       "java": {
         "sources": {
@@ -1913,14 +1913,14 @@
             "newClones": 0
           },
           ".github/workflows/native.yml": {
-            "lines": 326,
-            "tokens": 2108,
+            "lines": 328,
+            "tokens": 2118,
             "sources": 1,
             "clones": 8,
-            "duplicatedLines": 155,
-            "duplicatedTokens": 984,
-            "percentage": 47.55,
-            "percentageTokens": 46.68,
+            "duplicatedLines": 196,
+            "duplicatedTokens": 1180,
+            "percentage": 59.76,
+            "percentageTokens": 55.71,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -1937,26 +1937,26 @@
             "newClones": 0
           },
           ".github/workflows/docker.yml": {
-            "lines": 224,
-            "tokens": 1426,
+            "lines": 225,
+            "tokens": 1449,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 21,
             "duplicatedTokens": 109,
-            "percentage": 9.38,
-            "percentageTokens": 7.64,
+            "percentage": 9.33,
+            "percentageTokens": 7.52,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           ".github/workflows/code-analysis.yml": {
-            "lines": 255,
-            "tokens": 1649,
+            "lines": 273,
+            "tokens": 1764,
             "sources": 1,
             "clones": 2,
-            "duplicatedLines": 39,
-            "duplicatedTokens": 217,
-            "percentage": 15.29,
-            "percentageTokens": 13.16,
+            "duplicatedLines": 78,
+            "duplicatedTokens": 403,
+            "percentage": 28.57,
+            "percentageTokens": 22.85,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -1973,14 +1973,14 @@
             "newClones": 0
           },
           ".github/workflows/android.yml": {
-            "lines": 849,
-            "tokens": 6201,
+            "lines": 851,
+            "tokens": 6211,
             "sources": 1,
             "clones": 16,
-            "duplicatedLines": 427,
-            "duplicatedTokens": 2900,
-            "percentage": 50.29,
-            "percentageTokens": 46.77,
+            "duplicatedLines": 429,
+            "duplicatedTokens": 2910,
+            "percentage": 50.41,
+            "percentageTokens": 46.85,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2045,8 +2045,8 @@
             "newClones": 0
           },
           "codecov.yml": {
-            "lines": 56,
-            "tokens": 272,
+            "lines": 60,
+            "tokens": 284,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2070,14 +2070,14 @@
           }
         },
         "total": {
-          "lines": 2551,
-          "tokens": 17132,
+          "lines": 2578,
+          "tokens": 17302,
           "sources": 22,
           "clones": 16,
-          "duplicatedLines": 386,
-          "duplicatedTokens": 2486,
-          "percentage": 15.13,
-          "percentageTokens": 14.51,
+          "duplicatedLines": 427,
+          "duplicatedTokens": 2682,
+          "percentage": 16.56,
+          "percentageTokens": 15.5,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3140,14 +3140,14 @@
       }
     },
     "total": {
-      "lines": 28113,
-      "tokens": 212950,
+      "lines": 28140,
+      "tokens": 213120,
       "sources": 248,
       "clones": 113,
-      "duplicatedLines": 1467,
-      "duplicatedTokens": 12890,
-      "percentage": 5.22,
-      "percentageTokens": 6.05,
+      "duplicatedLines": 1508,
+      "duplicatedTokens": 13086,
+      "percentage": 5.36,
+      "percentageTokens": 6.14,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -6436,32 +6436,32 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/native.yml",
-        "start": 289,
-        "end": 301,
+        "start": 291,
+        "end": 303,
         "startLoc": {
-          "line": 289,
+          "line": 291,
           "column": 7,
-          "position": 1846
+          "position": 1856
         },
         "endLoc": {
-          "line": 301,
+          "line": 303,
           "column": 2,
-          "position": 1941
+          "position": 1951
         }
       },
       "secondFile": {
         "name": ".github/workflows/native.yml",
-        "start": 255,
-        "end": 268,
+        "start": 257,
+        "end": 270,
         "startLoc": {
-          "line": 255,
+          "line": 257,
           "column": 7,
-          "position": 1593
+          "position": 1603
         },
         "endLoc": {
-          "line": 268,
+          "line": 270,
           "column": 6,
-          "position": 1689
+          "position": 1699
         }
       }
     },
@@ -6487,48 +6487,48 @@
       },
       "secondFile": {
         "name": ".github/workflows/native.yml",
-        "start": 38,
-        "end": 59,
+        "start": 40,
+        "end": 61,
         "startLoc": {
-          "line": 38,
+          "line": 40,
           "column": 5,
-          "position": 179
+          "position": 189
         },
         "endLoc": {
-          "line": 59,
+          "line": 61,
           "column": 8,
-          "position": 288
+          "position": 298
         }
       }
     },
     {
       "format": "yaml",
-      "lines": 23,
-      "fragment": "defaults:\n  run:\n    shell: sh\n    working-directory: .\n\nconcurrency:\n  group: ${{ github.workflow }} ${{ github.ref }}\n  cancel-in-progress: true\n\n# Default environment variables.\nenv:\n  GITHUB_STEP_TIMEOUT_SMALL: 4\n  GITHUB_STEP_TIMEOUT_MEDIUM: 10\n  GITHUB_STEP_TIMEOUT_LONG: 30\n\njobs:\n  Build:\n    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'\n\n    strategy:\n      fail-fast: false\n      matrix:\n        # Override automatic language detection by changing the below list",
+      "lines": 62,
+      "fragment": "on:\n  workflow_dispatch:\n  push:\n    paths-ignore:\n    - '.github/workflows/**'\n    - '*'\n    - 'app/debug/**'\n    - 'app/release/**'\n    - 'app/third_party/conan/**'\n    - 'app/System_dependent/**'\n    - 'deploy/**'\n    - 'docs/**'\n    - 'scripts/**'\n    - 'WavefrontOBJs/**'\n    - '!app/System_dependent/CMakeLists.txt'\n    - '!gradle/wrapper/gradle-wrapper.properties'\n    - '!scripts/run_tests.sh'\n    - '!scripts/helper_functions.sh'\n    - '!scripts/install_dependencies.sh'\n    - '!app/CMakeLists.txt'\n    - '!codecov.yml'\n    - '!.github/workflows/android.yml'\n    - '!.github/workflows/native.yml'\n    - '!.github/workflows/code-analysis.yml'\n    - '!app/third_party/conan/Native/**'\n    - '!app/System_dependent/Native/**'\n    - '!.github/workflows/android_matrix.json'\n    - '!app/third_party/conan/Android/**'\n    - '!app/System_dependent/Android_JNI/**'\n    - '!scripts/compile_android.sh'\n    - '!scripts/compile_native.sh'\n    - '!scripts/check_android.sh'\n    - '!scripts/run_tests_android.sh'\n    - '!*.java*'\n    - '!*.kt*'\n    - '!*.c*'\n    - '!*.h*'\n    - '!*gradle*'\n\ndefaults:\n  run:\n    shell: sh\n    working-directory: .\n\nconcurrency:\n  group: ${{ github.workflow }} ${{ github.ref }}\n  cancel-in-progress: true\n\n# Default environment variables.\nenv:\n  GITHUB_STEP_TIMEOUT_SMALL: 4\n  GITHUB_STEP_TIMEOUT_MEDIUM: 10\n  GITHUB_STEP_TIMEOUT_LONG: 30\n\njobs:\n  Build:\n    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'\n\n    strategy:\n      fail-fast: false\n      matrix:\n        # Override automatic language detection by changing the below list",
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/code-analysis.yml",
-        "start": 24,
-        "end": 46,
+        "start": 3,
+        "end": 64,
         "startLoc": {
-          "line": 24,
+          "line": 3,
           "column": 1,
-          "position": 81
+          "position": 8
         },
         "endLoc": {
-          "line": 46,
+          "line": 64,
           "column": 67,
-          "position": 199
+          "position": 312
         }
       },
       "secondFile": {
         "name": ".github/workflows/native.yml",
-        "start": 40,
+        "start": 3,
         "end": 52,
         "startLoc": {
-          "line": 40,
+          "line": 3,
           "column": 1,
-          "position": 184
+          "position": 8
         },
         "endLoc": {
           "line": 52,
@@ -6559,12 +6559,12 @@
       },
       "secondFile": {
         "name": ".github/workflows/native.yml",
-        "start": 40,
+        "start": 42,
         "end": 53,
         "startLoc": {
-          "line": 40,
+          "line": 42,
           "column": 1,
-          "position": 184
+          "position": 194
         },
         "endLoc": {
           "line": 53,
@@ -6595,53 +6595,53 @@
       },
       "secondFile": {
         "name": ".github/workflows/code-analysis.yml",
-        "start": 65,
-        "end": 82,
+        "start": 83,
+        "end": 100,
         "startLoc": {
-          "line": 65,
+          "line": 83,
           "column": 7,
-          "position": 330
+          "position": 443
         },
         "endLoc": {
-          "line": 82,
+          "line": 100,
           "column": 6,
-          "position": 429
+          "position": 542
         }
       }
     },
     {
       "format": "yaml",
-      "lines": 52,
-      "fragment": "on:\n  workflow_dispatch:\n  push:\n    paths-ignore:\n    - '*'\n    - '.github/**'\n    - 'app/debug/**'\n    - 'app/release/**'\n    - 'app/third_party/conan/**'\n    - 'app/System_dependent/**'\n    - 'deploy/**'\n    - 'docs/**'\n    - 'scripts/**'\n    - 'WavefrontOBJs/**'\n    - '!app/System_dependent/CMakeLists.txt'\n    - '!scripts/run_tests.sh'\n    - '!scripts/helper_functions.sh'\n    - '!scripts/install_dependencies.sh'\n    - '!app/CMakeLists.txt'\n    - '!codecov.yml'\n    - '!.github/workflows/android.yml'\n    - '!.github/workflows/native.yml'\n    - '!app/third_party/conan/Native/**'\n    - '!app/System_dependent/Native/**'\n    - '!.github/workflows/android_matrix.json'\n    - '!app/third_party/conan/Android/**'\n    - '!app/System_dependent/Android_JNI/**'\n    - '!scripts/compile_android.sh'\n    - '!scripts/compile_native.sh'\n    - '!scripts/check_android.sh'\n    - '!scripts/run_tests_android.sh'\n    - '!*.java*'\n    - '!*.kt*'\n    - '!*.c*'\n    - '!*.h*'\n    - '!*gradle*'\n\ndefaults:\n  run:\n    shell: sh\n    working-directory: .\n\nconcurrency:\n  group: ${{ github.workflow }} ${{ github.ref }}\n  cancel-in-progress: true\n\n# Default environment variables.\nenv:\n  GITHUB_STEP_TIMEOUT_SMALL: 4\n  GITHUB_STEP_TIMEOUT_MEDIUM: 10\n  GITHUB_STEP_TIMEOUT_LONG: 30\n  GITHUB_STEP_TIMEOUT_VERY_LONG",
+      "lines": 54,
+      "fragment": "on:\n  workflow_dispatch:\n  push:\n    paths-ignore:\n    - '.github/workflows/**'\n    - '*'\n    - 'app/debug/**'\n    - 'app/release/**'\n    - 'app/third_party/conan/**'\n    - 'app/System_dependent/**'\n    - 'deploy/**'\n    - 'docs/**'\n    - 'scripts/**'\n    - 'WavefrontOBJs/**'\n    - '!app/System_dependent/CMakeLists.txt'\n    - '!gradle/wrapper/gradle-wrapper.properties'\n    - '!scripts/run_tests.sh'\n    - '!scripts/helper_functions.sh'\n    - '!scripts/install_dependencies.sh'\n    - '!app/CMakeLists.txt'\n    - '!codecov.yml'\n    - '!.github/workflows/android.yml'\n    - '!.github/workflows/native.yml'\n    - '!.github/workflows/code-analysis.yml'\n    - '!app/third_party/conan/Native/**'\n    - '!app/System_dependent/Native/**'\n    - '!.github/workflows/android_matrix.json'\n    - '!app/third_party/conan/Android/**'\n    - '!app/System_dependent/Android_JNI/**'\n    - '!scripts/compile_android.sh'\n    - '!scripts/compile_native.sh'\n    - '!scripts/check_android.sh'\n    - '!scripts/run_tests_android.sh'\n    - '!*.java*'\n    - '!*.kt*'\n    - '!*.c*'\n    - '!*.h*'\n    - '!*gradle*'\n\ndefaults:\n  run:\n    shell: sh\n    working-directory: .\n\nconcurrency:\n  group: ${{ github.workflow }} ${{ github.ref }}\n  cancel-in-progress: true\n\n# Default environment variables.\nenv:\n  GITHUB_STEP_TIMEOUT_SMALL: 4\n  GITHUB_STEP_TIMEOUT_MEDIUM: 10\n  GITHUB_STEP_TIMEOUT_LONG: 30\n  GITHUB_STEP_TIMEOUT_VERY_LONG",
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android.yml",
         "start": 3,
-        "end": 54,
+        "end": 56,
         "startLoc": {
           "line": 3,
           "column": 1,
           "position": 6
         },
         "endLoc": {
-          "line": 54,
+          "line": 56,
           "column": 30,
-          "position": 258
+          "position": 268
         }
       },
       "secondFile": {
         "name": ".github/workflows/native.yml",
         "start": 3,
-        "end": 55,
+        "end": 57,
         "startLoc": {
           "line": 3,
           "column": 1,
           "position": 8
         },
         "endLoc": {
-          "line": 55,
+          "line": 57,
           "column": 5,
-          "position": 260
+          "position": 270
         }
       }
     },
@@ -6652,17 +6652,17 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android.yml",
-        "start": 99,
-        "end": 124,
+        "start": 101,
+        "end": 126,
         "startLoc": {
-          "line": 99,
+          "line": 101,
           "column": 5,
-          "position": 540
+          "position": 550
         },
         "endLoc": {
-          "line": 124,
+          "line": 126,
           "column": 2,
-          "position": 697
+          "position": 707
         }
       },
       "secondFile": {
@@ -6688,32 +6688,32 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android.yml",
-        "start": 332,
-        "end": 358,
+        "start": 334,
+        "end": 360,
         "startLoc": {
-          "line": 332,
+          "line": 334,
           "column": 5,
-          "position": 2400
+          "position": 2410
         },
         "endLoc": {
-          "line": 358,
+          "line": 360,
           "column": 40,
-          "position": 2578
+          "position": 2588
         }
       },
       "secondFile": {
         "name": ".github/workflows/android_repeatable.yml",
         "start": 42,
-        "end": 125,
+        "end": 127,
         "startLoc": {
           "line": 42,
           "column": 5,
           "position": 238
         },
         "endLoc": {
-          "line": 125,
+          "line": 127,
           "column": 41,
-          "position": 718
+          "position": 728
         }
       }
     },
@@ -6724,32 +6724,32 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android.yml",
-        "start": 372,
-        "end": 384,
+        "start": 374,
+        "end": 386,
         "startLoc": {
-          "line": 372,
+          "line": 374,
           "column": 2,
-          "position": 2629
+          "position": 2639
         },
         "endLoc": {
-          "line": 384,
+          "line": 386,
           "column": 69,
-          "position": 2734
+          "position": 2744
         }
       },
       "secondFile": {
         "name": ".github/workflows/android.yml",
-        "start": 241,
-        "end": 253,
+        "start": 243,
+        "end": 255,
         "startLoc": {
-          "line": 241,
+          "line": 243,
           "column": 2,
-          "position": 1261
+          "position": 1271
         },
         "endLoc": {
-          "line": 253,
+          "line": 255,
           "column": 2,
-          "position": 1366
+          "position": 1376
         }
       }
     },
@@ -6760,32 +6760,32 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android.yml",
-        "start": 472,
-        "end": 478,
+        "start": 474,
+        "end": 480,
         "startLoc": {
-          "line": 472,
+          "line": 474,
           "column": 7,
-          "position": 3537
+          "position": 3547
         },
         "endLoc": {
-          "line": 478,
+          "line": 480,
           "column": 28,
-          "position": 3628
+          "position": 3638
         }
       },
       "secondFile": {
         "name": ".github/workflows/native.yml",
-        "start": 255,
-        "end": 265,
+        "start": 257,
+        "end": 267,
         "startLoc": {
-          "line": 255,
+          "line": 257,
           "column": 7,
-          "position": 1593
+          "position": 1603
         },
         "endLoc": {
-          "line": 265,
+          "line": 267,
           "column": 38,
-          "position": 1684
+          "position": 1694
         }
       }
     },
@@ -6796,32 +6796,32 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android.yml",
-        "start": 532,
-        "end": 571,
+        "start": 534,
+        "end": 573,
         "startLoc": {
-          "line": 532,
+          "line": 534,
           "column": 5,
-          "position": 4100
+          "position": 4110
         },
         "endLoc": {
-          "line": 571,
+          "line": 573,
           "column": 69,
-          "position": 4304
+          "position": 4314
         }
       },
       "secondFile": {
         "name": ".github/workflows/android_repeatable.yml",
         "start": 42,
-        "end": 371,
+        "end": 373,
         "startLoc": {
           "line": 42,
           "column": 5,
           "position": 238
         },
         "endLoc": {
-          "line": 371,
+          "line": 373,
           "column": 2,
-          "position": 2604
+          "position": 2614
         }
       }
     },
@@ -6832,32 +6832,32 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android.yml",
-        "start": 571,
-        "end": 590,
+        "start": 573,
+        "end": 592,
         "startLoc": {
-          "line": 571,
+          "line": 573,
           "column": 5,
-          "position": 4304
+          "position": 4314
         },
         "endLoc": {
-          "line": 590,
+          "line": 592,
           "column": 9,
-          "position": 4438
+          "position": 4448
         }
       },
       "secondFile": {
         "name": ".github/workflows/android.yml",
-        "start": 384,
-        "end": 403,
+        "start": 386,
+        "end": 405,
         "startLoc": {
-          "line": 384,
+          "line": 386,
           "column": 5,
-          "position": 2734
+          "position": 2744
         },
         "endLoc": {
-          "line": 403,
+          "line": 405,
           "column": 6,
-          "position": 2868
+          "position": 2878
         }
       }
     },
@@ -6868,32 +6868,32 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android.yml",
-        "start": 590,
-        "end": 603,
+        "start": 592,
+        "end": 605,
         "startLoc": {
-          "line": 590,
+          "line": 592,
           "column": 5,
-          "position": 4433
+          "position": 4443
         },
         "endLoc": {
-          "line": 603,
+          "line": 605,
           "column": 6,
-          "position": 4568
+          "position": 4578
         }
       },
       "secondFile": {
         "name": ".github/workflows/android.yml",
-        "start": 371,
-        "end": 253,
+        "start": 373,
+        "end": 255,
         "startLoc": {
-          "line": 371,
+          "line": 373,
           "column": 5,
-          "position": 2604
+          "position": 2614
         },
         "endLoc": {
-          "line": 253,
+          "line": 255,
           "column": 4,
-          "position": 1371
+          "position": 1381
         }
       }
     },
@@ -6904,32 +6904,32 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android.yml",
-        "start": 675,
-        "end": 743,
+        "start": 677,
+        "end": 745,
         "startLoc": {
-          "line": 675,
+          "line": 677,
           "column": 9,
-          "position": 5037
+          "position": 5047
         },
         "endLoc": {
-          "line": 743,
+          "line": 745,
           "column": 7,
-          "position": 5448
+          "position": 5458
         }
       },
       "secondFile": {
         "name": ".github/workflows/android.yml",
-        "start": 346,
-        "end": 614,
+        "start": 348,
+        "end": 616,
         "startLoc": {
-          "line": 346,
+          "line": 348,
           "column": 9,
-          "position": 2496
+          "position": 2506
         },
         "endLoc": {
-          "line": 614,
+          "line": 616,
           "column": 4,
-          "position": 4607
+          "position": 4617
         }
       }
     },
@@ -6940,32 +6940,32 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android.yml",
-        "start": 753,
-        "end": 761,
+        "start": 755,
+        "end": 763,
         "startLoc": {
-          "line": 753,
+          "line": 755,
           "column": 7,
-          "position": 5528
+          "position": 5538
         },
         "endLoc": {
-          "line": 761,
+          "line": 763,
           "column": 6,
-          "position": 5628
+          "position": 5638
         }
       },
       "secondFile": {
         "name": ".github/workflows/native.yml",
-        "start": 255,
-        "end": 480,
+        "start": 257,
+        "end": 482,
         "startLoc": {
-          "line": 255,
+          "line": 257,
           "column": 7,
-          "position": 1593
+          "position": 1603
         },
         "endLoc": {
-          "line": 480,
+          "line": 482,
           "column": 4,
-          "position": 3637
+          "position": 3647
         }
       }
     },
@@ -6976,32 +6976,32 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android.yml",
-        "start": 788,
-        "end": 812,
+        "start": 790,
+        "end": 814,
         "startLoc": {
-          "line": 788,
+          "line": 790,
           "column": 5,
-          "position": 5781
+          "position": 5791
         },
         "endLoc": {
-          "line": 812,
+          "line": 814,
           "column": 8,
-          "position": 5955
+          "position": 5965
         }
       },
       "secondFile": {
         "name": ".github/workflows/android.yml",
-        "start": 371,
-        "end": 614,
+        "start": 373,
+        "end": 616,
         "startLoc": {
-          "line": 371,
+          "line": 373,
           "column": 5,
-          "position": 2604
+          "position": 2614
         },
         "endLoc": {
-          "line": 614,
+          "line": 616,
           "column": 4,
-          "position": 4607
+          "position": 4617
         }
       }
     },
