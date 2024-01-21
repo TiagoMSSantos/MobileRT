@@ -125,7 +125,7 @@ addCompilerPathForConan() {
     export CC='gcc';
     #  Possible compiler values are ['Visual Studio', 'apple-clang', 'clang',
     # 'gcc', 'intel', 'intel-cc', 'mcst-lcc', 'msvc', 'qcc', 'sun-cc']
-    if (uname -a | grep -iq "darwin.*"); then
+    if (uname -a | grep -iq 'darwin'); then
       # Possible values for Apple clang are ['5.0', '5.1', '6.0', '6.1', '7.0', '7.3',
       # '8.0', '8.1', '9.0', '9.1', '10.0', '11.0', '12.0', '13', '13.0', '13.1']
       echo 'Detected MacOS, so the C++ compiler should be apple-clang instead of old gcc.';
@@ -218,7 +218,7 @@ install_conan_dependencies() {
 
     echo 'Installing dependencies with conan.';
     conan_os='Linux';
-    if uname -a | grep -iq "darwin.*"; then
+    if uname -a | grep -iq 'darwin'; then
       conan_os='Macos';
     fi
     conan install \

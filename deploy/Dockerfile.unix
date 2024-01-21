@@ -11,8 +11,7 @@
 # And the script `compile_native.sh` compiles the MobileRT.
 #
 # At the moment, this Dockerfile allows to setup MobileRT inside a docker image
-# in multiple Operating Systems.
-# Unix distributions:
+# in multiple Operating Systems based on Unix systems:
 # * Debian
 # * Red Hat
 # * Arch
@@ -54,7 +53,7 @@ USER root
 ###############################################################################
 ENV \
   # Create an environment variable to use it in the docker container when boot
-  ENV_BUILD_TYPE="${BUILD_TYPE}" \
+  BUILD_TYPE="${BUILD_TYPE}" \
   # Allow execution of Qt in docker
   DISPLAY=":1" \
   QT_GRAPHICSSYSTEM="native" \
@@ -68,13 +67,14 @@ WORKDIR /
 
 
 ###############################################################################
-# Install git
+# Install git & get MobileRT contents (required to create docker image in CI)
 ###############################################################################
 RUN \
-  # Print environment.
+  # Print environment
   uname -a; \
-  if uname -a | grep -iq "windows" || uname -a | grep -iq "mingw"; then \
+  if uname -a | grep -iq 'mingw' || uname -a | grep -iq 'windows' || uname -a | grep -iq 'msys'; then \
     echo 'Detected Windows OS.'; \
+    exit 1; \
   else \
     echo 'Detected Unix OS.'; \
     echo "DISPLAY = ${DISPLAY}"; \
@@ -115,26 +115,18 @@ RUN \
   else \
     echo 'Assuming Windows OS.'; \
   fi; \
-  # Configure git.
+  # Configure git
   git config --global http.postBuffer 1048576000; \
   git config --global https.postBuffer 1048576000; \
   git config --global core.compression -1; \
   git config --global http.sslVerify "false"; \
-  # Clone repository.
+  # Clone repository
   git clone https://github.com/TiagoMSSantos/MobileRT.git \
   --shallow-submodules \
   --progress \
   --branch ${BRANCH} && \
   ls -la ./MobileRT/app/src/androidTest/resources/CornellBox/CornellBox-Water.obj && \
   ls -la ./MobileRT/app/src/androidTest/resources/teapot/teapot.obj;
-###############################################################################
-###############################################################################
-
-
-###############################################################################
-# Alernative: Copy MobileRT contents locally (not possible in CI)
-###############################################################################
-# COPY . MobileRT
 ###############################################################################
 ###############################################################################
 
@@ -187,6 +179,6 @@ VOLUME /tmp/.X11-unix
 # Execute MobileRT by default
 ###############################################################################
 ENTRYPOINT ["sh", "-c"]
-CMD ["sh ./scripts/profile.sh ${ENV_BUILD_TYPE}"]
+CMD ["sh ./scripts/profile.sh ${BUILD_TYPE}"]
 ###############################################################################
 ###############################################################################

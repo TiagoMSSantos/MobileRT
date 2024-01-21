@@ -65,7 +65,7 @@ setPaths() {
   echo "PATH_TO_SEARCH = ${PATH_TO_SEARCH}";
   echo "MOBILERT_PATH = ${MOBILERT_PATH}";
 
-  if (uname -a | grep -iq "MINGW.*"); then
+  if (uname -a | grep -iq 'mingw' || uname -a | grep -iq 'windows'); then
     BIN_DEBUG_PATH="${MOBILERT_PATH}/build_debug/bin/Debug";
     BIN_RELEASE_PATH="${MOBILERT_PATH}/build_release/bin/Debug";
     BIN_DEBUG_EXE="${BIN_DEBUG_PATH}"/AppMobileRTd

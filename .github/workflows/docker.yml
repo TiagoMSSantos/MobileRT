@@ -110,7 +110,7 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-    - name: Pull the tagged Docker image
+    - name: Pull Docker image
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && startsWith(matrix.BASE_IMAGE, 'gentoo')
       run: |
@@ -118,16 +118,6 @@ jobs:
         echo "VERSION: ${{ env.VERSION }}";
         . scripts/docker.sh && pullDockerImage ${{ env.VERSION }};
         echo "BUILD_IMAGE=${BUILD_IMAGE}" >> "${GITHUB_ENV}";
-
-    - name: Build Docker image
-      timeout-minutes: 300
-      if: success() && env.BUILD_IMAGE == 'yes' && !startsWith(matrix.os, 'windows')
-      run: |
-        # shellcheck disable=SC1091
-        echo "BASE_IMAGE: ${{ matrix.BASE_IMAGE }}";
-        echo "BRANCH: ${{ env.BRANCH }}";
-        echo "VERSION: ${{ env.VERSION }}";
-        . scripts/docker.sh && buildDockerImage ${{ matrix.BASE_IMAGE }} ${{ env.BRANCH }} ${{ env.VERSION }};
 
     - name: Windows copy necessary tools to workspace
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -149,24 +139,17 @@ jobs:
         New-Item -Type dir .\\binariesNmake
         Copy-Item -Path "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx86\\x64\\*" -Destination ".\\binariesNmake" -Recurse
 
-    - name: Windows build Docker image
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
-      if: success() && env.BUILD_IMAGE == 'yes' && startsWith(matrix.os, 'windows')
-      shell: powershell
+    - name: Build Docker image
+      timeout-minutes: 300
+      if: success() && env.BUILD_IMAGE == 'yes'
       run: |
-        Write-Host "BASE_IMAGE: ${{ matrix.BASE_IMAGE }}"
-        Write-Host "BRANCH: ${{ env.BRANCH }}"
-        Write-Host "VERSION: ${{ env.VERSION }}"
+        # shellcheck disable=SC1091
+        echo "BASE_IMAGE: ${{ matrix.BASE_IMAGE }}";
+        echo "BRANCH: ${{ env.BRANCH }}";
+        echo "VERSION: ${{ env.VERSION }}";
+        . scripts/docker.sh && buildDockerImage ${{ matrix.BASE_IMAGE }} ${{ env.BRANCH }} ${{ env.VERSION }};
 
-        docker build -t ptpuscas/mobile_rt:"${{ env.VERSION }}" `
-          -f deploy/Dockerfile.windows `
-          --no-cache=false `
-          --build-arg BASE_IMAGE="${{ matrix.BASE_IMAGE }}" `
-          --build-arg BRANCH="${{ env.BRANCH }}" `
-          --build-arg BUILD_TYPE=release .
-        docker images
-
-    - name: Pull and build MobileRT
+    - name: Build MobileRT
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
       if: success() && env.BUILD_IMAGE != 'yes'
       run: |
@@ -174,7 +157,7 @@ jobs:
         echo "VERSION: ${{ env.VERSION }}";
         . scripts/docker.sh && compileMobileRTInDockerContainer ${{ env.VERSION }};
 
-    - name: Update and commit MobileRT Docker image
+    - name: Commit MobileRT Docker image layer
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && env.BUILD_IMAGE != 'yes'
       run: |
@@ -217,7 +200,7 @@ jobs:
           sh scripts/test/dockerfile.sh ${{ env.VERSION }};
         fi
 
-    - name: Push the tagged Docker image
+    - name: Push Docker image
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
       if: success() && env.BRANCH == 'master'
       run: |

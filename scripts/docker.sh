@@ -31,8 +31,17 @@ checkAvailableVersion() {
 buildDockerImage() {
   prepareBinaries .;
   du -h -d 1 scripts;
+
+  if echo "${1}" | grep -iq 'microsoft' || echo "${1}" | grep -iq 'windows'; then
+    echo 'Building Docker image based on Windows.';
+    dockerBaseOS='windows';
+  else
+    echo 'Building Docker image based on Unix.';
+    dockerBaseOS='unix';
+  fi
+
   docker build \
-    -f deploy/Dockerfile \
+    -f deploy/Dockerfile."${dockerBaseOS}" \
     --no-cache=false \
     --build-arg BASE_IMAGE="${1}" \
     --build-arg BRANCH="${2}" \
@@ -155,11 +164,13 @@ _installDockerSquashCommand() {
 installDockerCommandForMacOS() {
   echo 'Select XCode.';
   sudo xcode-select --switch /System/Volumes/Data/Applications/Xcode.app/Contents/Developer;
-  # To avoid error: "Bash must not run in POSIX mode. Please unset POSIXLY_CORRECT and try again."
-  set +e;
-  echo 'Update Homebrew';
+
+  echo 'Update homebrew (to use the new repository).';
+  set +e; # To avoid error: "Bash must not run in POSIX mode. Please unset POSIXLY_CORRECT and try again."
+  sh -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall.sh)";
   sh -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)";
   set -e;
+
   brew update;
   echo 'Install docker & colima';
   brew install docker docker-buildx docker-compose colima;
@@ -173,7 +184,7 @@ installDockerCommandForMacOS() {
   ln -sfn /usr/local/opt/docker-compose/bin/docker-compose "${HOME}/.docker/cli-plugins/docker-compose";
 
   echo 'Start colima';
-  colima start;
+  colima start || true;
 
   echo 'Docker commands detected:';
   echo "${PATH}" | sed 's/:/ /g' | xargs ls 2> /dev/null | grep -i docker 2> /dev/null || true;

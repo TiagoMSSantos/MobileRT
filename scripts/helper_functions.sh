@@ -256,8 +256,8 @@ checkCommand() {
     echo "Command '$*' installed!";
   else
     echo "Command '$*' is NOT installed.";
-    if (uname -a | grep -iq "MINGW.*"); then
-      echo 'Detected Windows OS, so ignoring this error ...';
+    if (uname -a | grep -iq 'mingw' || uname -a | grep -iq 'windows' || uname -a | grep -iq 'msys') && echo "$*" | grep -iq 'python'; then
+      echo "Detected Windows OS, so ignoring not having 'python' ...";
       return 0;
     fi
     exit 1;
@@ -273,7 +273,7 @@ capitalizeFirstletter() {
 # Parallelize building of MobileRT.
 parallelizeBuild() {
   uname -a;
-  if uname -a | grep -iq "mingw" || uname -a | grep -iq "windows" || uname -a | grep -iq "msys"; then
+  if uname -a | grep -iq 'mingw' || uname -a | grep -iq 'windows' || uname -a | grep -iq 'msys'; then
     echo 'Assuming Windows.';
   elif command -v nproc > /dev/null; then
     echo 'Assuming Linux.';
@@ -326,7 +326,7 @@ _killProcessUsingFile() {
     _retry=$(( _retry + 1 ));
     echo "processes_using_file: '${processes_using_file}'";
     process_id_using_file=$(echo "${processes_using_file}" | tr -s ' ' | cut -d ' ' -f 2 | head -1);
-    if ps aux | grep -i "${process_id_using_file}" | grep -iq "android-studio"; then
+    if ps aux | grep -i "${process_id_using_file}" | grep -iq 'android-studio'; then
       echo "Not killing process: '${process_id_using_file}' because it is the Android Studio";
       return;
     else
@@ -477,11 +477,13 @@ addCommandToPath() {
     echo "Command '${1}' already available.";
     return;
   fi
-  COMMAND_PATHS=$(find /usr/ ~/../ -type f -iname "${1}" 2> /dev/null | grep -i "bin" || true);
+  COMMAND_PATHS=$(find /usr/ ~/../ /c/Program Files/ -type f -iname "${1}" -or -iname "${1}.exe" 2> /dev/null | grep -i "bin" || true);
   for COMMAND_PATH in ${COMMAND_PATHS}; do
     echo "Command path to executable: ${COMMAND_PATH}";
-    echo "Command location: ${COMMAND_PATH%/"${1}"}";
+    echo "Command location Unix: ${COMMAND_PATH%/"${1}"}";
+    echo "Command location Windows: ${COMMAND_PATH%/"${1}.exe"}";
     export PATH="${PATH}:${COMMAND_PATH%/"${1}"}";
+    export PATH="${PATH}:${COMMAND_PATH%/"${1}.exe"}";
   done;
 
   echo "PATH: ${PATH}";

@@ -98,7 +98,7 @@ clearAllBuildFiles() {
 
 build() {
   build_wrapper="";
-  if echo "${type}" | grep -iq "debug" && uname -a | grep -iq "linux"; then
+  if echo "${type}" | grep -iq 'debug' && uname -a | grep -iq 'linux'; then
     # Download Build Wrapper from: https://docs.sonarqube.org/latest/analyzing-source-code/languages/c-family/
     # * https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip
     # * https://sonarcloud.io/static/cpp/build-wrapper-macosx-x86.zip

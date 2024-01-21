@@ -10,6 +10,7 @@
 # following Operating Systems:
 # * Linux
 # * MacOS
+# * Windows
 #
 # And it is compatible with the following Linux distributions:
 # * Debian
@@ -80,6 +81,9 @@ install_dependencies() {
   elif command -v brew > /dev/null; then
     echo 'Detected MacOS';
     install_dependencies_macos;
+  elif command -v choco > /dev/null; then
+    echo 'Detected Windows';
+    install_dependencies_windows;
   else
     echo 'Detected unknown Operating System';
   fi
@@ -107,37 +111,54 @@ install_dependencies_debian() {
     g++ build-essential cmake make \
     lcov \
     python3 python3-pip python3-dev python3-setuptools \
-    cpulimit;
+    cpulimit lsof zip unzip;
   echo 'Installing dependencies that conan might use.';
   sudo apt-get install --no-install-recommends -y clang libc++-dev libc++abi-dev;
 }
 
 install_dependencies_red_hat() {
   yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False update -y;
-  dnf install -y \
-    python3-pip \
-    ShellCheck;
-  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y \
-    vim \
-    findutils \
-    gcc-c++ cmake make \
-    git ca-certificates \
-    which \
-    qt5-qtbase-devel;
+  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y epel-release;
+  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False update -y;
+  dnf install -y python3-pip;
+  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y ShellCheck;
+  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y vim;
+  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y findutils;
+  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y gcc-c++;
+  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y cmake;
+  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y make;
+  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y git;
+  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y ca-certificates;
+  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y which;
+  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y qt5-qtbase-devel;
+  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y procps; # Install 'ps'
+  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y lsof; # Install 'lsof'
+
   echo 'Installing dependencies that conan might use.';
-  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y \
-    mesa-libGL-devel;
-  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y \
-    libXaw-devel libXcomposite-devel libXcursor-devel \
-    libXtst-devel libXinerama-devel \
-    libXrandr-devel libXScrnSaver-devel libXdamage-devel \
-    libXv-devel libuuid-devel xkeyboard-config-devel;
-  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y \
-    libfontenc libXdmcp libxkbfile libXres \
-    xcb-util-wm xcb-util-image \
-    xcb-util-keysyms xcb-util-renderutil libXxf86vm xcb-util;
-  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y \
-    libXvMC xorg-x11-xtrans;
+  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y mesa-libGL-devel;
+  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y libXaw-devel;
+  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y libXcomposite-devel;
+  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y libXcursor-devel;
+  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y libXtst-devel;
+  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y libXinerama-devel;
+  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y libXrandr-devel;
+  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y libXScrnSaver-devel;
+  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y libXdamage-devel;
+  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y libXv-devel;
+  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y libuuid-devel;
+  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y xkeyboard-config-devel;
+  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y libfontenc;
+  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y libXdmcp;
+  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y libxkbfile;
+  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y libXres;
+  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y xcb-util-wm;
+  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y xcb-util-image;
+  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y xcb-util-keysyms;
+  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y xcb-util-renderutil;
+  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y libXxf86vm;
+  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y xcb-util;
+  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y zip;
+  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y unzip;
 }
 
 install_dependencies_arch() {
@@ -150,17 +171,22 @@ install_dependencies_arch() {
   pacman-key --populate;
   echo 'Upgrade system';
   pacman -Syu --noconfirm --needed;
-  pacman -Sy --noconfirm --needed \
-    glibc lib32-glibc \
-    vim \
-    findutils \
-    cmake make \
-    shellcheck \
-    git ca-certificates \
-    which \
-    qt5-base \
-    python3 \
-    gcc;
+  pacman -Sy --noconfirm --needed glibc;
+  pacman -Sy --noconfirm --needed lib32-glibc;
+  pacman -Sy --noconfirm --needed vim;
+  pacman -Sy --noconfirm --needed findutils;
+  pacman -Sy --noconfirm --needed cmake;
+  pacman -Sy --noconfirm --needed make;
+  pacman -Sy --noconfirm --needed shellcheck;
+  pacman -Sy --noconfirm --needed git;
+  pacman -Sy --noconfirm --needed ca-certificates;
+  pacman -Sy --noconfirm --needed which;
+  pacman -Sy --noconfirm --needed qt5-base;
+  pacman -Sy --noconfirm --needed python3;
+  pacman -Sy --noconfirm --needed gcc;
+  pacman -Sy --noconfirm --needed lsof;
+  pacman -Sy --noconfirm --needed zip;
+  pacman -Sy --noconfirm --needed unzip;
 }
 
 install_dependencies_alpine() {
@@ -174,7 +200,8 @@ install_dependencies_alpine() {
     qt5-qtbase-dev \
     which \
     g++ gcc \
-    py3-pip;
+    py3-pip \
+    zip unzip;
   echo 'Installing dependencies that conan might use.';
   apk add libfontenc-dev libxaw-dev libxcomposite-dev libxcursor-dev libxi-dev \
     libxinerama-dev libxkbfile-dev libxrandr-dev libxres-dev libxscrnsaver-dev \
@@ -185,11 +212,9 @@ install_dependencies_gentoo() {
   echo 'FEATURES="-sandbox -usersandbox -ipc-sandbox -network-sandbox -pid-sandbox"' >> /etc/portage/make.conf;
   echo 'USE="dev-libs/libpcre2-10.35 pcre16 x11-libs/libxkbcommon-1.0.3 media-libs/libglvnd-1.3.2-r2 X"' >> /etc/portage/make.conf;
   echo 'Emerge sync';
-  emerge --sync;
+  emerge --sync || true;
   echo 'Emerge sys-apps/portage';
   emerge --changed-use sys-apps/portage;
-  echo 'Emerge app-portage/layman';
-  emerge --changed-use app-portage/layman;
   echo 'Emerge dev-libs/icu';
   emerge --changed-use dev-libs/icu;
   echo 'Emerge app-editors/vim';
@@ -216,17 +241,22 @@ install_dependencies_gentoo() {
   emerge --changed-use dev-qt/qtwidgets;
   echo 'Emerge dev-lang/python';
   emerge --changed-use dev-lang/python;
-  # These are optional since they are not required at take some time to compile.
-  # echo 'Emerge shellcheck';
-  # emerge --changed-use shellcheck;
-  # echo 'Emerge sys-devel/gcc';
-  # emerge --changed-use sys-devel/gcc;
+  echo 'Emerge shellcheck';
+  emerge --changed-use dev-util/shellcheck-bin;
+  echo 'Emerge lsof';
+  emerge --changed-use sys-process/lsof;
+  echo 'Emerge zip';
+  emerge --changed-use app-arch/zip;
+  echo 'Emerge unzip';
+  emerge --changed-use app-arch/unzip;
 }
 
 install_dependencies_macos() {
   echo 'Update homebrew (to use the new repository).';
+  set +e; # To avoid error: "Bash must not run in POSIX mode. Please unset POSIXLY_CORRECT and try again."
   sh -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall.sh)";
   sh -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)";
+  set -e;
 
   brew --version;
   brew update;
@@ -263,19 +293,12 @@ install_dependencies_macos() {
   brew --version;
 
   echo 'Install packages separately, so it continues regardless if some error occurs in one.';
-  brew install cmake;
-  brew install gcc@12; # GCC v12 is the latest version compatible with conan.
-  brew install openssl@1.1;
-  brew install shellcheck;
-  brew install llvm;
-  brew install libomp;
-  brew install cpulimit;
-  brew install lcov;
-  brew install python3;
-  brew install pyenv;
-  brew install conan;
   brew update;
   brew install coreutils; # To install 'timeout' command.
+  brew install util-linux; # To install 'setsid' command.
+  brew install zip;
+  brew install unzip;
+  addCommandToPath 'setsid';
   cd "${oldpath}" || exit 1;
 
   MAJOR_MAC_VERSION=$(sw_vers | grep ProductVersion | cut -d ':' -f2 | cut -d '.' -f1 | tr -d '[:space:]');
@@ -288,17 +311,29 @@ install_dependencies_macos() {
   sudo xcode-select --switch /System/Volumes/Data/Applications/Xcode_13.2.app/Contents/Developer;
 }
 
+install_dependencies_windows() {
+  # Install cmake: https://community.chocolatey.org/packages/cmake
+  choco install cmake -y --version=3.13.0;
+  # Install make: https://community.chocolatey.org/packages/make
+  choco install make -y;
+  # Install shellcheck: https://community.chocolatey.org/packages/shellcheck
+  choco install shellcheck -y;
+  # Install Qt: https://community.chocolatey.org/packages/qt5-default
+  # To avoid error: mingw (exited 404)
+  choco install qt5-default -y || true;
+
+  # Splitted installation of dependencies to avoid error: 
+  # Running ["VC_redist.x86.exe"] was not successful. Exit code was '1618'. Exit code indicates the following: Another installation currently in progress.
+  # Install Visual C++ Build Tools: https://community.chocolatey.org/packages/visualcpp-build-tools
+  choco install visualcpp-build-tools -y;
+}
+
 # Update Python, PIP and CMake versions if necessary.
 update_python() {
-  if command -v choco > /dev/null; then
-    echo 'Install Python with choco';
-    choco install python --version 3.8.0;
-  fi
-
   if ! command -v apt-get > /dev/null; then
     echo 'Not Debian based Linux detected';
     echo 'Ensure pip is used by default';
-    python3 -m ensurepip --default-pip;
+    python3 -m ensurepip --default-pip || true;
   fi
 
   echo 'Upgrade pip';
@@ -349,15 +384,92 @@ test_commands() {
   checkCommand sh;
   checkCommand git;
   checkCommand g++;
-  checkCommand python3;
+  checkCommand gcc;
   checkCommand timeout;
+  checkCommand set;
+  checkCommand cd;
+  checkCommand dirname;
+  checkCommand .;
+  checkCommand echo;
+  checkCommand rm;
+  checkCommand find;
+  checkCommand env;
+  checkCommand export;
+  checkCommand command;
+  checkCommand if;
+  checkCommand else;
+  checkCommand elif;
+  checkCommand mkdir;
+  checkCommand pwd;
+  checkCommand exit;
+  checkCommand du;
+  checkCommand ls;
+  checkCommand uname;
+  checkCommand trap;
+  checkCommand grep;
+  checkCommand tr;
+  checkCommand xargs;
+  checkCommand cut;
+  checkCommand kill;
+  checkCommand sleep;
+  checkCommand printf;
+  checkCommand ln;
+  checkCommand return;
+  checkCommand chmod;
+  checkCommand for;
+  checkCommand while;
+  checkCommand in;
+  checkCommand case;
+  checkCommand break;
+  checkCommand sed;
+  checkCommand ps;
+  checkCommand true;
+  checkCommand exec;
+  checkCommand awk;
+  checkCommand head;
+  checkCommand tail;
+  checkCommand getopts;
+  checkCommand read;
+  checkCommand basename;
+  checkCommand wc;
+  checkCommand nohup;
+  checkCommand eval;
+  checkCommand cat;
+  checkCommand tput;
+  checkCommand tee;
+  checkCommand unzip;
+
+  if command -v brew > /dev/null; then
+    # Only available in MacOS.
+    checkCommand vm_stat;
+    checkCommand sw_vers;
+    checkCommand curl;
+  else
+    # Not available in MacOS.
+    checkCommand shellcheck;
+  fi
+
+  if ! command -v brew > /dev/null && ! command -v choco > /dev/null; then
+    # Not available in MacOS & Windows.
+    checkCommand free;
+  fi
+
+  if ! command -v choco > /dev/null; then
+    # Not available in Windows.
+    checkCommand sudo;
+    checkCommand pkg-config;
+    checkCommand setsid;
+    checkCommand lsof;
+    checkCommand zip;
+  fi
+
   # Linux Gentoo doesn't allow to use 'pip' directly.
   # checkCommand pip;
   # checkCommand pip3;
 
   # Can't install in docker container:
-  #checkCommand clang++;
-  #checkCommand cpulimit;
+  # checkCommand clang++;
+  # checkCommand cpulimit;
 }
 ###############################################################################
 ###############################################################################
@@ -367,7 +479,7 @@ test_commands() {
 # Execute script.
 ###############################################################################
 echo "Detected Host OS: $(uname -a)";
-install_dependencies || true;
+install_dependencies;
 # TODO: Add back the installation of conan package manager for all Linux distributions.
 # install_conan;
 test_commands;

@@ -8,7 +8,7 @@
 # The script `compile_native.sh` compiles the MobileRT.
 #
 # At the moment, this Dockerfile allows to setup MobileRT inside a docker image
-# in Windows Operating System:
+# based on Windows Operating Systems:
 # * Windows Server Core
 ###############################################################################
 ###############################################################################
@@ -41,7 +41,7 @@ SHELL ["cmd", "/S", "/V:ON", "/C"]
 
 
 ###############################################################################
-# Install dependencies
+# Install git & setup environment
 ###############################################################################
 # Users: https://techcommunity.microsoft.com/t5/itops-talk-blog/how-to-change-the-user-account-for-windows-containers/ba-p/3601571
 USER ContainerAdministrator
@@ -56,12 +56,9 @@ RUN \
   choco install cmake -y --installargs 'ADD_CMAKE_TO_PATH=System' --version=3.13.0 && \
   # Install git: https://community.chocolatey.org/packages/git
   choco install git -y && \
-  # Install make: https://community.chocolatey.org/packages/make
-  choco install make -y && \
-  # Install shellcheck: https://community.chocolatey.org/packages/shellcheck  
-  choco install shellcheck -y && \
   # Install Qt: https://community.chocolatey.org/packages/qt5-default
-  choco install qt5-default -y
+  # To avoid error: mingw (exited 404)
+  choco install qt5-default -y || echo 'Error installing Qt.'
 
 RUN \
   # Splitted installation of dependencies to avoid error: 
@@ -77,10 +74,6 @@ RUN \
   setx /M CXX "g++" && \
   setx /M CC "gcc" && \
   setx /M CXXFLAGS "-O3 -std=c++11" && \
-  # Search Qt headers & libraries.
-  cd C:\\Qt && \
-  dir /s Qt5Core.dll && \
-  cd C: && \
   # Set path to Qt headers & libraries.
   setx /M CPLUS_INCLUDE_PATH "!CPLUS_INCLUDE_PATH!;C:\\Qt\\5.15.2\\mingw81_64\\include;C:\\Qt\\5.15.2\\mingw81_64\\include\\QtWidgets;C:\\Qt\\5.15.2\\mingw81_64\\include\\QtGui;C:\\Qt\\5.15.2\\mingw81_64\\include\\QtCore" && \
   setx /M Qt5_DIR "C:\\Qt\\5.15.2\\mingw81_64\\lib\\cmake\\Qt5" && \
@@ -98,13 +91,6 @@ USER ContainerUser
 ###############################################################################
 WORKDIR /
 RUN \
-  # Test commands.
-  git --version && \
-  cmake --version && \
-  make --version && \
-  g++ --version && \
-  gcc --version && \
-  shellcheck --version && \
   # Clone repository.
   git clone https://github.com/TiagoMSSantos/MobileRT.git \
     --shallow-submodules \
@@ -129,14 +115,25 @@ WORKDIR MobileRT
 
 
 ###############################################################################
+# Install dependencies
+###############################################################################
+USER ContainerAdministrator
+RUN sh scripts/install_dependencies.sh
+USER ContainerUser
+
+RUN \
+  # Test commands
+  dir . && \
+  rc /? && \
+  nmake /?
+###############################################################################
+###############################################################################
+
+
+###############################################################################
 # Compile MobileRT
 ###############################################################################
 RUN \
-  # Test commands.
-  dir . && \
-  rc /? && \
-  nmake /? && \
-  # Compile MobileRT.
   sh scripts/compile_native.sh -t !BUILD_TYPE! -c g++ -r yes && \
   du -h -d 1 build_!BUILD_TYPE!/bin && \
   du -h -d 1 build_!BUILD_TYPE!/lib && \
