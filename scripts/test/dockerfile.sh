@@ -90,6 +90,7 @@ testMobileRTContainer() {
     -c "timeout 60 sh ./scripts/profile.sh ${_mode} 100";
 
   returnValue="$?";
+  echo 'Test finished.'
   assertEqual "${expected}" "${returnValue}" "testMobileRTContainer: ${_mobilertVersion}";
   removeAllContainers;
 }
