@@ -52,6 +52,10 @@ fi
 if [ $# -ge 1 ] && command -v shellcheck > /dev/null; then
   shellcheck "${0}" || return 1;
 fi
+if [ $# -lt 1 ]; then
+  echo 'Usage: dockerfile.sh <VERSION> [EXPECTED_RETURN_VALUE]';
+  return 1;
+fi
 ###############################################################################
 ###############################################################################
 
@@ -79,6 +83,8 @@ testMobileRTContainer() {
 
   removeAllContainers;
   echo "Starting test - testMobileRTContainer: ${_mobilertVersion} (expecting return ${expected})";
+
+  set +e;
   docker run -t \
     -e DISPLAY=':0' \
     -e QT_QPA_PLATFORM='offscreen' \
@@ -88,17 +94,16 @@ testMobileRTContainer() {
     --name="${_mobilertVersion}" \
     ptpuscas/mobile_rt:"${_mobilertVersion}" \
     -c "timeout 60 sh ./scripts/profile.sh ${_mode} 100";
-
   returnValue="$?";
+  set -e;
+
   echo 'Test finished.'
   assertEqual "${expected}" "${returnValue}" "testMobileRTContainer: ${_mobilertVersion}";
   removeAllContainers;
 }
 
-set +eu;
 # Execute all tests for a specific version of MobileRT container.
 testMobileRTContainer "${1}" 'release';
-set -eu;
 
 # Exit and return whether the tests passed or failed.
 if [ "${exitValue}" != 0 ]; then

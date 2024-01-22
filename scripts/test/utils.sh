@@ -102,7 +102,7 @@ assertEqual() {
 # It also removes all volumes and networks used by docker containers.
 removeAllContainers() {
   echo 'Removing all docker containers, volumes and networks.'
-  docker rm -f "$(docker ps -a | awk 'NR>1 {print $1}')";
+  docker rm -f "$(docker ps -a | awk 'NR>1 {print $1}')" || true;
   docker system prune --volumes --force;
   docker network prune --force;
   docker volume prune --force;
