@@ -39,7 +39,7 @@ fi
 ###############################################################################
 # Execute Shellcheck on this script.
 ###############################################################################
-if command -v shellcheck > /dev/null; then
+if [ $# -ge 1 ] && command -v shellcheck > /dev/null; then
   shellcheck "${0}" || return 1;
 fi
 ###############################################################################
@@ -156,7 +156,7 @@ install_conan_dependencies() {
 }
 
 # Increase memory for heap.
-export GRADLE_OPTS="-Xms4G -Xmx4G -XX:ActiveProcessorCount=3";
+export GRADLE_OPTS='-Xms4G -Xmx4G -XX:ActiveProcessorCount=3';
 rm -rf app/build/ || true;
 clearOldBuildFiles;
 clearAllBuildFiles;

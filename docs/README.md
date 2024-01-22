@@ -2,7 +2,7 @@
 - A portable Ray Tracing (RT) engine for multiple devices.
 - Already available interfaces for:
   - Android (through **Java** + **JNI** and **C**)
-  - Linux, MacOS X, Windows (through **Qt** 4 or 5)
+  - Linux, MacOS, Windows (through **Qt** 4 or 5)
 - Compatible with C++ compilers:
   - GNU C++ Compiler (g++)
   - Clang++
@@ -47,10 +47,10 @@ For Linux, if [docker](https://www.docker.com/) is installed, it is possible to
 try this ray tracer with ease by using the following commands to get the docker
 image and execute the container: <br/>
 ```
-docker pull ptpuscas/mobile_rt
-xhost +; docker run -it -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=${DISPLAY} ptpuscas/mobile_rt
+docker pull ptpuscas/mobile_rt:ubuntu-22.04
+xhost +; docker run -it -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=${DISPLAY} ptpuscas/mobile_rt:ubuntu-22.04
 ```
-or
+or (still WIP)
 ```
 xhost +; docker-compose -f deploy/docker-compose.yml up MobileRT
 ```
@@ -60,7 +60,7 @@ the image above :) <br/>
 ## Build docker image
 For the most curious, this is the command used to build the docker image:
 ```
-docker build -t ptpuscas/mobile_rt -f deploy/Dockerfile.unix --no-cache=false --build-arg BUILD_TYPE=release --build-arg BASE_IMAGE=ubuntu:20.04 .
+docker build -t ptpuscas/mobile_rt:ubuntu-22.04 -f deploy/Dockerfile.unix --no-cache=false --build-arg BUILD_TYPE=release --build-arg BASE_IMAGE=ubuntu:22.04 .
 ```
 
 The docker image is in docker hub:
@@ -90,7 +90,7 @@ To execute the ray tracer just use the `profile.sh` shell script available in th
 `scripts` directory.
 The following command should start the ray tracer when executed in the root directory: <br/>
 ```
-./scripts/profile.sh release
+sh scripts/profile.sh release
 ```
 
 ## Android
@@ -157,13 +157,11 @@ framework for mocking in unit tests
       <td style="text-align:center">4.0.3 <br> (API 15) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
       <td style="text-align:center">5 <br> (API 21) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
       <td style="text-align:center">8.1 <br> (API 27) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
-      <td style="text-align:center">12 <br> (API 32) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25"></td>
       <td style="text-align:center">13 <br> (API 33) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25"></td>
       <td style="text-align:center">14 <br> (API 34) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
     </tr>
     <tr>
       <td style="text-align:center"><b>MacOS</b></td>
-      <td style="text-align:center">10.12 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
       <td style="text-align:center">10.13 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
       <td style="text-align:center">10.14 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
       <td style="text-align:center">10.15 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25"></td>
@@ -174,14 +172,12 @@ framework for mocking in unit tests
       <td style="text-align:center"><b>Windows</b></td>
       <td style="text-align:center">Server 2019 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
       <td style="text-align:center">Server 2022 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
-      <td style="text-align:center">7<br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
       <td style="text-align:center">8<br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
       <td style="text-align:center">10<br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
       <td style="text-align:center">11<br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
     </tr>
     <tr>
       <td style="text-align:center"><b>Ubuntu</b></td>
-      <td style="text-align:center">12.04 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
       <td style="text-align:center">14.04 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
       <td style="text-align:center">16.04 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25"></td>
       <td style="text-align:center">18.04 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25"></td>
@@ -190,7 +186,6 @@ framework for mocking in unit tests
     </tr>
     <tr>
       <td style="text-align:center"><b>CentOS</b></td>
-      <td style="text-align:center">4 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
       <td style="text-align:center">5 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
       <td style="text-align:center">6 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
       <td style="text-align:center">7 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
@@ -199,7 +194,6 @@ framework for mocking in unit tests
     </tr>
     <tr>
       <td style="text-align:center"><b>Alpine</b></td>
-      <td style="text-align:center">3.14 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25"></td>
       <td style="text-align:center">3.15 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25"></td>
       <td style="text-align:center">3.16 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25"></td>
       <td style="text-align:center">3.17 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25"></td>
@@ -237,14 +231,9 @@ Note that the script already supports multiple Linux distributions like:
 - Alpine
 - Gentoo
 
-If the distribution you use is not supported, you can always open an issue or even a pull request :)
-
-For native Windows support:
-- [Microsoft Visual C++ (MSVC)](https://visualstudio.microsoft.com/)
-- [Qt4 or Qt5](https://www.qt.io/)
-
-For Linux in a [Docker](https://www.docker.com/) container:
-  - [Docker Engine](https://docs.docker.com/engine/install/)
+It also supports installing dependencies in MacOS and in Windows Operating Systems.
+Note that these scripts are tested in Github actions pipeline only, so might assume that some tools were already installed.
+If the distribution you use is not supported, or it's missing the installation of some tool, you can always open an issue or even a pull request :)
 
 ## Documentation
 This project started as a [Masters' dissertation](https://repositorium.sdum.uminho.pt/handle/1822/66577). <br/>

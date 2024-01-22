@@ -101,7 +101,9 @@ assertEqual() {
 # Helper function which removes all docker containers.
 # It also removes all volumes and networks used by docker containers.
 removeAllContainers() {
+  set +e;
   docker rm -f "$(docker ps -a | awk 'NR>1 {print $1}')";
+  set -e;
   docker system prune --volumes --force;
   docker network prune --force;
   docker volume prune --force;
