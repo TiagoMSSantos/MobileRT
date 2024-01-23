@@ -90,14 +90,13 @@ testMobileRTContainer() {
     -e QT_QPA_PLATFORM='offscreen' \
     -e BUILD_TYPE='release' \
     --init \
-    --entrypoint sh \
     --name="${_mobilertVersion}" \
     ptpuscas/mobile_rt:"${_mobilertVersion}" \
     -c "timeout 60 sh ./scripts/profile.sh ${_mode} 100";
   returnValue="$?";
   set -e;
 
-  echo 'Test finished.'
+  echo 'Test finished.';
   assertEqual "${expected}" "${returnValue}" "testMobileRTContainer: ${_mobilertVersion}";
   removeAllContainers;
 }
