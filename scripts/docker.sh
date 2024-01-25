@@ -58,16 +58,17 @@ buildDockerImage() {
 # The parameters are:
 # * VERSION
 pullDockerImage() {
-  exec 5>&1;
-  output=$(docker pull ptpuscas/mobile_rt:"${1}" | tee /dev/fd/5 || true);
+  exec 3>&1; # Open file descriptor 3 and redirect it to stdout.
+  output=$(docker pull ptpuscas/mobile_rt:"${1}" | tee /proc/self/fd/3 || true);
   echo "Docker: ${output}";
-  if echo "${output}" | grep -q "up to date" || echo "${output}" | grep -q "Downloaded newer image for"; then
+  if echo "${output}" | grep -q 'up to date' || echo "${output}" | grep -q 'Downloaded newer image for'; then
     echo 'Docker image found!';
     export BUILD_IMAGE='no';
   else
     echo 'Did not find the Docker image. Will have to build the image.';
     export BUILD_IMAGE='yes';
   fi
+  exec 3>&-; # Close file descriptor 3.
 }
 
 # Helper command to update and compile the MobileRT in a docker container.
@@ -75,13 +76,22 @@ pullDockerImage() {
 # The parameters are:
 # * VERSION
 compileMobileRTInDockerContainer() {
+  if echo "${1}" | grep -iq 'microsoft' || echo "${1}" | grep -iq 'windows'; then
+    echo 'Compiling MobileRT in Windows based Docker image.';
+    mobilertVolumeInContainer='C:/MobileRT/MobileRT_volume';
+    currentPath='D:/a/MobileRT/MobileRT';
+  else
+    echo 'Compiling MobileRT in Unix based Docker image.';
+    mobilertVolumeInContainer='/MobileRT_volume';
+    currentPath="${PWD}";
+  fi
   docker run -t \
     --name="mobile_rt_${1}" \
-    --volume="${PWD}":/MobileRT_volume \
+    --volume="${currentPath}":"${mobilertVolumeInContainer}" \
     ptpuscas/mobile_rt:"${1}" \
-      sh -c "git init \
+      -c "git init \
       && cd / \
-      && cp -rpf /MobileRT_volume/* /MobileRT/ \
+      && cp -rpf ${mobilertVolumeInContainer}/* /MobileRT/ \
       && cd /MobileRT/ \
       && find ./app/third_party/ -mindepth 1 -maxdepth 1 -type d ! -regex '^./app/third_party\(/conan*\)?' -exec rm -rf {} \; \
       && ls -lahp ./ \
@@ -171,7 +181,7 @@ installDockerCommandForMacOS() {
 
   brew update;
   echo 'Install docker & colima';
-  brew install docker docker-buildx docker-compose colima;
+  brew install docker colima;
   # For testcontainers to find the Colima socket
   # https://github.com/abiosoft/colima/blob/main/docs/FAQ.md#cannot-connect-to-the-docker-daemon-at-unixvarrundockersock-is-the-docker-daemon-running
   sudo ln -sf "${HOME}/.colima/default/docker.sock /var/run/docker.sock";

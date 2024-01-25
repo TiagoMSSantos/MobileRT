@@ -86,7 +86,7 @@ testMobileRTContainer() {
   echo "Starting test - testMobileRTContainer: ${_mobilertVersion} (expecting return ${expected})";
 
   set +e;
-  exec 3<> /tmp/fd3  # Open file descriptor 3.
+  exec 3<> /tmp/fd3; # Open file descriptor 3.
   (docker run -t \
     -e DISPLAY=':0' \
     -e QT_QPA_PLATFORM='offscreen' \
@@ -96,7 +96,7 @@ testMobileRTContainer() {
     ptpuscas/mobile_rt:"${_mobilertVersion}" \
     -c "timeout 15 sh ./scripts/profile.sh ${_mode} 100" || echo "$?" >&3) | tee "${_logFile}";
   returnValue=$(cat /tmp/fd3);
-  exec 3>&- # Close file descriptor 3.
+  exec 3>&-; # Close file descriptor 3.
   set -e;
 
   # TODO: Increase the number of chars in Windows terminal lines. Currently only shows 80 chars per line.
