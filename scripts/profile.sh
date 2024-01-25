@@ -305,7 +305,7 @@ profile() {
 ###############################################################################
 parseArguments() {
   if [ $# -eq 0 ]; then
-    execute;
+    printArguments;
   else
     for P in "${@}"; do
       case ${P} in

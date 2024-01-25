@@ -76,11 +76,10 @@ pullDockerImage() {
 # * VERSION
 compileMobileRTInDockerContainer() {
   docker run -t \
-    --entrypoint sh \
     --name="mobile_rt_${1}" \
     --volume="${PWD}":/MobileRT_volume \
     ptpuscas/mobile_rt:"${1}" \
-    -c "git init \
+      sh -c "git init \
       && cd / \
       && cp -rpf /MobileRT_volume/* /MobileRT/ \
       && cd /MobileRT/ \
@@ -98,10 +97,9 @@ compileMobileRTInDockerContainer() {
 # * PARAMETERS for the unit tests
 executeUnitTestsInDockerContainer() {
   docker run -t \
-    --entrypoint sh \
     -e DISPLAY="${DISPLAY}" \
     --name="mobile_rt_${1}" \
-    ptpuscas/mobile_rt:"${1}" -c "./build_release/bin/UnitTests ${2}";
+    ptpuscas/mobile_rt:"${1}" "./build_release/bin/UnitTests ${2}";
   docker rm --force --volumes "mobile_rt_${1}";
 }
 

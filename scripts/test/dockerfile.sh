@@ -80,23 +80,46 @@ exitValue=0;
 testMobileRTContainer() {
   _mobilertVersion="${1}";
   _mode="${2}";
+  _logFile='docker_test.log';
 
   removeAllContainers;
   echo "Starting test - testMobileRTContainer: ${_mobilertVersion} (expecting return ${expected})";
 
   set +e;
-  docker run -t \
+  exec 3<> /tmp/fd3  # Open file descriptor 3.
+  (docker run -t \
     -e DISPLAY=':0' \
     -e QT_QPA_PLATFORM='offscreen' \
     -e BUILD_TYPE='release' \
     --init \
     --name="${_mobilertVersion}" \
     ptpuscas/mobile_rt:"${_mobilertVersion}" \
-    -c "timeout 60 sh ./scripts/profile.sh ${_mode} 100";
-  returnValue="$?";
+    -c "timeout 15 sh ./scripts/profile.sh ${_mode} 100" || echo "$?" >&3) | tee "${_logFile}";
+  returnValue=$(cat /tmp/fd3);
+  exec 3>&- # Close file descriptor 3.
   set -e;
 
-  echo 'Test finished.';
+  # TODO: Increase the number of chars in Windows terminal lines. Currently only shows 80 chars per line.
+  echo 'Validating if MobileRT finished rendering the Conference scene.';
+  ls -lahp "${_logFile}";
+  # grep -qne 'Finished rendering scene' "${_logFile}";
+  # grep -qne 'Total Millions rays per second' "${_logFile}";
+  grep -qne 'SCENE DELETED' "${_logFile}";
+  echo 'Validating number of primitives and lights.';
+  grep -qne 'PRIMITIVES = 331179' "${_logFile}";
+  grep -qne 'LIGHTS = 2' "${_logFile}";
+  echo 'Validating selected shader and scene.';
+  grep -qne 'shader = 1' "${_logFile}";
+  grep -qne 'scene = 4' "${_logFile}";
+  echo 'Validating number of samples.'
+  grep -qne 'samplesPixel = 1' "${_logFile}";
+  grep -qne 'samplesLight = 1' "${_logFile}";
+  echo 'Validating resolution.';
+  grep -qne 'width_ = 96' "${_logFile}";
+  grep -qne 'height_ = 96' "${_logFile}";
+  rm "${_logFile}";
+  echo 'Validated that MobileRT finished rendering the scene.';
+
   assertEqual "${expected}" "${returnValue}" "testMobileRTContainer: ${_mobilertVersion}";
   removeAllContainers;
 }
