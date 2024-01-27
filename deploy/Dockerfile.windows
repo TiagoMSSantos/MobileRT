@@ -70,7 +70,7 @@ RUN \
   # Set system environment variables. ContainerAdministrator must be used so the change is persisted in the image.
   # Set lib path. Windows doesn't use LD_LIBRARY_PATH, but use PATH instead.
   setx /M PATH "C:\\MobileRT\\binariesShell;C:\\MobileRT\\binariesResourceCompiler;C:\\MobileRT\\binariesNmake;C:\\MobileRT\\libraries;C:\\MobileRT\\build_!BUILD_TYPE!\\lib;C:\\Qt\\5.15.2\\mingw81_64\\bin;!PATH!" && \
-  setx /M RC "rc" && \
+  setx /M RC "rc /v" && \
   setx /M CXX "g++" && \
   setx /M CC "gcc" && \
   setx /M CXXFLAGS "-O3 -std=c++11" && \
@@ -118,6 +118,7 @@ WORKDIR MobileRT
 # Install dependencies
 ###############################################################################
 USER ContainerAdministrator
+
 RUN sh scripts/install_dependencies.sh
 USER ContainerUser
 
@@ -125,7 +126,9 @@ RUN \
   # Test commands
   dir . && \
   rc /? && \
-  nmake /?
+  nmake /? && \
+  ranlib --help && \
+  ar --help
 ###############################################################################
 ###############################################################################
 
@@ -151,6 +154,7 @@ RUN \
   ls -la ./app/src/androidTest/resources/teapot/teapot.mtl && \
   ls -la ./app/src/androidTest/resources/teapot/teapot.cam && \
   ls -la ./binariesShell && \
+  set && \
   cd
 ###############################################################################
 ###############################################################################

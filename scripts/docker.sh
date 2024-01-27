@@ -58,8 +58,10 @@ buildDockerImage() {
 # The parameters are:
 # * VERSION
 pullDockerImage() {
-  exec 3>&1; # Open file descriptor 3 and redirect it to stdout.
-  output=$(docker pull ptpuscas/mobile_rt:"${1}" | tee /proc/self/fd/3 || true);
+  rm -f /tmp/fd3;
+  exec 3<> /tmp/fd3; # Open file descriptor 3.
+  (docker pull ptpuscas/mobile_rt:"${1}" || true) | tee /tmp/fd3;
+  output=$(cat /tmp/fd3);
   echo "Docker: ${output}";
   if echo "${output}" | grep -q 'up to date' || echo "${output}" | grep -q 'Downloaded newer image for'; then
     echo 'Docker image found!';
@@ -78,18 +80,21 @@ pullDockerImage() {
 compileMobileRTInDockerContainer() {
   if echo "${1}" | grep -iq 'microsoft' || echo "${1}" | grep -iq 'windows'; then
     echo 'Compiling MobileRT in Windows based Docker image.';
+    currentPath=$(echo "${PWD}" | sed 's/\\/\//g' | sed 's/\/d\//D:\//' );
     mobilertVolumeInContainer='C:/MobileRT/MobileRT_volume';
-    currentPath='D:/a/MobileRT/MobileRT';
   else
     echo 'Compiling MobileRT in Unix based Docker image.';
-    mobilertVolumeInContainer='/MobileRT_volume';
     currentPath="${PWD}";
+    mobilertVolumeInContainer='/MobileRT_volume';
   fi
+  echo "Current path: ${currentPath}";
+  echo "Volume path: ${mobilertVolumeInContainer}";
   docker run -t \
-    --name="mobile_rt_${1}" \
+    --name="mobile_rt_built_${1}" \
     --volume="${currentPath}":"${mobilertVolumeInContainer}" \
     ptpuscas/mobile_rt:"${1}" \
-      -c "git init \
+      -c "env && pwd \
+      && git init \
       && cd / \
       && cp -rpf ${mobilertVolumeInContainer}/* /MobileRT/ \
       && cd /MobileRT/ \
@@ -108,9 +113,9 @@ compileMobileRTInDockerContainer() {
 executeUnitTestsInDockerContainer() {
   docker run -t \
     -e DISPLAY="${DISPLAY}" \
-    --name="mobile_rt_${1}" \
+    --name="mobile_rt_tests_${1}" \
     ptpuscas/mobile_rt:"${1}" "./build_release/bin/UnitTests ${2}";
-  docker rm --force --volumes "mobile_rt_${1}";
+  docker rm --force --volumes "mobile_rt_tests_${1}";
 }
 
 # Helper command to push the MobileRT docker image into the docker registry.
@@ -124,8 +129,8 @@ pushMobileRTDockerImage() {
 # The parameters are:
 # * VERSION
 commitMobileRTDockerImage() {
-  docker commit mobile_rt_"${1}" ptpuscas/mobile_rt:"${1}";
-  docker rm mobile_rt_"${1}";
+  docker commit mobile_rt_built_"${1}" ptpuscas/mobile_rt:"${1}";
+  docker rm mobile_rt_built_"${1}";
 }
 
 # Helper command to squash all the layers of the MobileRT docker image.
