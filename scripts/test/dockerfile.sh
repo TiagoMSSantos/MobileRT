@@ -95,7 +95,7 @@ testMobileRTContainer() {
     --init \
     --name="${_mobilertVersion}" \
     ptpuscas/mobile_rt:"${_mobilertVersion}" \
-    -c "timeout 15 sh ./scripts/profile.sh ${_mode} 100" || echo "$?" >&3) | tee "${_logFile}";
+    -c "timeout 15 sh scripts/profile.sh ${_mode} 100" || echo "$?" >&3) | tee "${_logFile}";
   returnValue=$(cat /tmp/fd3);
   exec 3>&-; # Close file descriptor 3.
   set -e;
