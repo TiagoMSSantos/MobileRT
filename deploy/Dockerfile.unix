@@ -147,8 +147,6 @@ RUN \
   sh scripts/compile_native.sh -t ${BUILD_TYPE} -c g++ -r yes && \
   du -h -d 1 build_${BUILD_TYPE}/bin && \
   du -h -d 1 build_${BUILD_TYPE}/lib && \
-  ls -la ./app/src/androidTest/resources/CornellBox/CornellBox-Water.obj && \
-  ls -la ./app/src/androidTest/resources/teapot/teapot.obj && \
   rm -rfv $(find app/ -iname "*" ! -name "app" ! -name "MobileRT.jks" ! -name "src" ! -name "androidTest" ! -name "resources" | grep -v "src/androidTest/resources") && \
   rm -rfv docs && \
   rm -rfv documentation && \

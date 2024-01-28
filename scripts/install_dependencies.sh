@@ -83,6 +83,7 @@ install_dependencies() {
     install_dependencies_macos;
   elif command -v choco > /dev/null; then
     echo 'Detected Windows';
+    # Requires running chocolatey in an elevated command shell.
     install_dependencies_windows;
   else
     echo 'Detected unknown Operating System';
@@ -313,19 +314,19 @@ install_dependencies_macos() {
 
 install_dependencies_windows() {
   # Install cmake: https://community.chocolatey.org/packages/cmake
-  choco install cmake -y --version=3.13.0;
+  choco install -y cmake --version=3.13.0;
   # Install make: https://community.chocolatey.org/packages/make
-  choco install make -y;
+  choco install -y make;
   # Install shellcheck: https://community.chocolatey.org/packages/shellcheck
-  choco install shellcheck -y;
+  choco install -y shellcheck;
   # Install Qt: https://community.chocolatey.org/packages/qt5-default
   # To avoid error: mingw (exited 404)
-  choco install qt5-default -y || true;
+  choco install -y qt5-default || true;
 
   # Splitted installation of dependencies to avoid error: 
   # Running ["VC_redist.x86.exe"] was not successful. Exit code was '1618'. Exit code indicates the following: Another installation currently in progress.
   # Install Visual C++ Build Tools: https://community.chocolatey.org/packages/visualcpp-build-tools
-  choco install visualcpp-build-tools -y;
+  choco install -y visualcpp-build-tools;
 }
 
 # Update Python, PIP and CMake versions if necessary.
@@ -438,6 +439,8 @@ test_commands() {
   checkCommand tput;
   checkCommand tee;
   checkCommand unzip;
+  checkCommand ranlib;
+  checkCommand ar;
 
   if command -v brew > /dev/null; then
     # Only available in MacOS.

@@ -297,6 +297,7 @@ build() {
   echo "Compiler version: ${compiler_version}";
   if echo "${compiler_version}" | grep -q "\.exe.*"; then
     echo 'Detected C++ compiler for Windows!';
+    JOBS_FLAG='';
   else
     echo "Didn't detect C++ compiler for Windows!";
     JOBS_FLAG="-- ${MAKEFLAGS}";

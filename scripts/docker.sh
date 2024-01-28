@@ -93,17 +93,17 @@ compileMobileRTInDockerContainer() {
     --name="mobile_rt_built_${1}" \
     --volume="${currentPath}":"${mobilertVolumeInContainer}" \
     ptpuscas/mobile_rt:"${1}" \
-      -c "env && pwd \
+      "echo Current path in container: $(pwd) \
+      && cp -rpf ${mobilertVolumeInContainer}/* . \
+      && rm -rf app/third_party/boost \
+      && rm -rf app/third_party/glm \
+      && rm -rf app/third_party/googletest \
+      && rm -rf app/third_party/pcg-cpp \
+      && rm -rf app/third_party/stb \
+      && rm -rf app/third_party/tinyobjloader \
       && git init \
-      && cd / \
-      && cp -rpf ${mobilertVolumeInContainer}/* /MobileRT/ \
-      && cd /MobileRT/ \
-      && find ./app/third_party/ -mindepth 1 -maxdepth 1 -type d ! -regex '^./app/third_party\(/conan*\)?' -exec rm -rf {} \; \
-      && ls -lahp ./ \
-      && chmod -R +x ./scripts/ \
-      && ls -lahp ./scripts/ \
-      && sh ./scripts/install_dependencies.sh \
-      && sh ./scripts/compile_native.sh -t release -c g++ -r yes";
+      && ls -lahp . \
+      && sh scripts/compile_native.sh -t release -c g++ -r yes";
 }
 
 # Helper command to execute the MobileRT unit tests in the docker container.

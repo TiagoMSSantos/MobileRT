@@ -53,18 +53,18 @@ RUN powershell -NoProfile -ExecutionPolicy Bypass -Command "Set-ExecutionPolicy 
 
 RUN \
   # Install cmake: https://community.chocolatey.org/packages/cmake
-  choco install cmake -y --installargs 'ADD_CMAKE_TO_PATH=System' --version=3.13.0 && \
+  choco install -y cmake --installargs 'ADD_CMAKE_TO_PATH=System' --version=3.13.0 && \
   # Install git: https://community.chocolatey.org/packages/git
-  choco install git -y && \
+  choco install -y git && \
   # Install Qt: https://community.chocolatey.org/packages/qt5-default
   # To avoid error: mingw (exited 404)
-  choco install qt5-default -y || echo 'Error installing Qt.'
+  choco install -y qt5-default || echo 'Error installing Qt.'
 
 RUN \
   # Splitted installation of dependencies to avoid error: 
   # Running ["VC_redist.x86.exe"] was not successful. Exit code was '1618'. Exit code indicates the following: Another installation currently in progress.
   # Install Visual C++ Build Tools: https://community.chocolatey.org/packages/visualcpp-build-tools
-  choco install visualcpp-build-tools -y
+  choco install -y visualcpp-build-tools
 
 RUN \
   # Set system environment variables. ContainerAdministrator must be used so the change is persisted in the image.
@@ -118,17 +118,16 @@ WORKDIR MobileRT
 # Install dependencies
 ###############################################################################
 USER ContainerAdministrator
-
 RUN sh scripts/install_dependencies.sh
 USER ContainerUser
 
 RUN \
   # Test commands
   dir . && \
+  choco /? && \
   rc /? && \
   nmake /? && \
-  ranlib --help && \
-  ar --help
+  qmake --help
 ###############################################################################
 ###############################################################################
 
@@ -140,8 +139,6 @@ RUN \
   sh scripts/compile_native.sh -t !BUILD_TYPE! -c g++ -r yes && \
   du -h -d 1 build_!BUILD_TYPE!/bin && \
   du -h -d 1 build_!BUILD_TYPE!/lib && \
-  ls -la ./app/src/androidTest/resources/CornellBox/CornellBox-Water.obj && \
-  ls -la ./app/src/androidTest/resources/teapot/teapot.obj && \
   rm -rfv docs && \
   rm -rfv documentation && \
   rm -rfv git-hooks && \
@@ -154,7 +151,10 @@ RUN \
   ls -la ./app/src/androidTest/resources/teapot/teapot.mtl && \
   ls -la ./app/src/androidTest/resources/teapot/teapot.cam && \
   ls -la ./binariesShell && \
+  ls -la ./binariesResourceCompiler && \
+  ls -la ./binariesNmake && \
   set && \
+  ls -la . && \
   cd
 ###############################################################################
 ###############################################################################
@@ -163,7 +163,7 @@ RUN \
 ###############################################################################
 # Execute MobileRT by default
 ###############################################################################
-ENTRYPOINT ["cmd", "/S", "/V:ON", "/C", "sh", "-c"]
+ENTRYPOINT ["cmd", "/S", "/V:ON", "/E:ON", "/C", "sh", "-c"]
 CMD ["sh ./scripts/profile.sh ${BUILD_TYPE}"]
 ###############################################################################
 ###############################################################################
