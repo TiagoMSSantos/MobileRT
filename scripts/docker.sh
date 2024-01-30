@@ -101,6 +101,7 @@ compileMobileRTInDockerContainer() {
       && rm -rf app/third_party/pcg-cpp \
       && rm -rf app/third_party/stb \
       && rm -rf app/third_party/tinyobjloader \
+      && rm -rf build_* \
       && git init \
       && ls -lahp . \
       && sh scripts/compile_native.sh -t release -c g++ -r yes";
@@ -114,7 +115,7 @@ executeUnitTestsInDockerContainer() {
   docker run -t \
     -e DISPLAY="${DISPLAY}" \
     --name="mobile_rt_tests_${1}" \
-    ptpuscas/mobile_rt:"${1}" "./build_release/bin/UnitTests ${2}";
+    ptpuscas/mobile_rt:"${1}" "./build_release/bin/UnitTests" "${2}";
   docker rm --force --volumes "mobile_rt_tests_${1}";
 }
 

@@ -70,13 +70,14 @@ RUN \
   # Set system environment variables. ContainerAdministrator must be used so the change is persisted in the image.
   # Set lib path. Windows doesn't use LD_LIBRARY_PATH, but use PATH instead.
   setx /M PATH "C:\\MobileRT\\binariesShell;C:\\MobileRT\\binariesResourceCompiler;C:\\MobileRT\\binariesNmake;C:\\MobileRT\\libraries;C:\\MobileRT\\build_!BUILD_TYPE!\\lib;C:\\Qt\\5.15.2\\mingw81_64\\bin;!PATH!" && \
-  setx /M RC "rc /v" && \
+  setx /M RC "rc" && \
   setx /M CXX "g++" && \
   setx /M CC "gcc" && \
   setx /M CXXFLAGS "-O3 -std=c++11" && \
   # Set path to Qt headers & libraries.
-  setx /M CPLUS_INCLUDE_PATH "!CPLUS_INCLUDE_PATH!;C:\\Qt\\5.15.2\\mingw81_64\\include;C:\\Qt\\5.15.2\\mingw81_64\\include\\QtWidgets;C:\\Qt\\5.15.2\\mingw81_64\\include\\QtGui;C:\\Qt\\5.15.2\\mingw81_64\\include\\QtCore" && \
   setx /M Qt5_DIR "C:\\Qt\\5.15.2\\mingw81_64\\lib\\cmake\\Qt5" && \
+  setx /M CPLUS_INCLUDE_PATH "!CPLUS_INCLUDE_PATH!;C:\\Qt\\5.15.2\\mingw81_64\\include;C:\\Qt\\5.15.2\\mingw81_64\\include\\QtWidgets;C:\\Qt\\5.15.2\\mingw81_64\\include\\QtGui;C:\\Qt\\5.15.2\\mingw81_64\\include\\QtCore" && \
+  setx /M BUILD_TYPE "release" && \
   # Configure git.
   git config --system https.postBuffer "1048576000" && \
   git config --system --add safe.directory C:/MobileRT
@@ -118,7 +119,9 @@ WORKDIR MobileRT
 # Install dependencies
 ###############################################################################
 USER ContainerAdministrator
-RUN sh scripts/install_dependencies.sh
+RUN \
+  sh scripts/install_dependencies.sh && \
+  icacls "C:\MobileRT" /c /t /grant:r "Authenticated Users":(OI)(CI)F
 USER ContainerUser
 
 RUN \
@@ -164,6 +167,6 @@ RUN \
 # Execute MobileRT by default
 ###############################################################################
 ENTRYPOINT ["cmd", "/S", "/V:ON", "/E:ON", "/C", "sh", "-c"]
-CMD ["sh scripts/profile.sh ${BUILD_TYPE}"]
+CMD ["sh scripts/profile.sh !BUILD_TYPE!"]
 ###############################################################################
 ###############################################################################
