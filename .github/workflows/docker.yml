@@ -109,10 +109,12 @@ jobs:
         # Check available parameters in: https://github.com/docker/login-action/blob/master/action.yml
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
+        ecr: false
+        logout: true
 
     - name: Pull Docker image
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && startsWith(matrix.BASE_IMAGE, 'gentoo')
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
+      if: success() && (startsWith(matrix.BASE_IMAGE, 'gentoo') || contains(matrix.BASE_IMAGE, 'osx') || contains(matrix.BASE_IMAGE, 'windows'))
       run: |
         # shellcheck disable=SC1091
         echo "VERSION: ${{ env.VERSION }}";
