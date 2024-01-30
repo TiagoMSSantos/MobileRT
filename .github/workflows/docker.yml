@@ -113,7 +113,7 @@ jobs:
         logout: true
 
     - name: Pull Docker image
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
+      timeout-minutes: 40
       if: success() && (startsWith(matrix.BASE_IMAGE, 'gentoo') || contains(matrix.BASE_IMAGE, 'osx') || contains(matrix.BASE_IMAGE, 'windows'))
       run: |
         # shellcheck disable=SC1091
