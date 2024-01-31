@@ -1,7 +1,7 @@
 # MobileRT: Mobile Ray Tracing engine
 
 ## Build documentation locally
-- Necessary to install Ruby 2.7.4.
+- Necessary to install Ruby 3.3.0.
 
 ```
 bundle install;

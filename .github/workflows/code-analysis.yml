@@ -144,10 +144,10 @@ jobs:
     - name: Setup Ruby, JRuby and TruffleRuby
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && matrix.language == 'cpp'
-      uses: ruby/setup-ruby@v1.170.0
+      uses: ruby/setup-ruby@v1
       with:
         # Check available parameters in: https://github.com/ruby/setup-ruby/blob/master/action.yml
-        ruby-version: '2.7'
+        ruby-version: '3.3'
 
     - name: Install Ruby dependencies
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
