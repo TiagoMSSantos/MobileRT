@@ -162,11 +162,11 @@ framework for mocking in unit tests
     </tr>
     <tr>
       <td style="text-align:center"><b>MacOS</b></td>
-      <td style="text-align:center">10.13 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
-      <td style="text-align:center">10.14 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
       <td style="text-align:center">10.15 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25"></td>
-      <td style="text-align:center">11.0 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
+      <td style="text-align:center">11 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
       <td style="text-align:center">12 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
+      <td style="text-align:center">13 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
+      <td style="text-align:center">14 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
     </tr>
     <tr>
       <td style="text-align:center"><b>Windows</b></td>
@@ -222,7 +222,7 @@ It's necessary the following SDKs in order to compile this project for Android:
 
 For native Linux and Mac support, the `install_dependencies.sh` script should download and install the necessary dependencies, by just calling:
 ```
-  sh scripts/install_dependencies.sh
+sh scripts/install_dependencies.sh
 ```
 Note that the script already supports multiple Linux distributions like:
 - Debian

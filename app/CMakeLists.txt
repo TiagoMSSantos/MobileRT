@@ -128,9 +128,15 @@ if( NOT DEFINED ANDROID_ABI )
   if( CMAKE_HOST_SYSTEM_NAME MATCHES "Darwin" )
     message( STATUS "Detected native MacOS." )
 
-    # Add linker flag to link with Qt framework in MacOS
+    message( STATUS "Add linker flag to link with Qt framework in MacOS." )
     set( CMAKE_SHARED_LIBRARY_SONAME_CXX_FLAG "-Wl,-install_name,"
       CACHE STRING "CUSTOM" FORCE )
+
+    message( STATUS "Link to OpenMP lib." )
+    set( OpenMP_CXX_FLAGS "-fopenmp" CACHE STRING "CUSTOM" FORCE )
+    set( OpenMP_CXX_LIB_NAMES "libomp" CACHE STRING "CUSTOM" FORCE )
+    set( OpenMP_libomp_LIBRARY "${OpenMP_CXX_LIB_NAMES}" CACHE STRING "CUSTOM" FORCE )
+    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -isystem /opt/local/include/libomp -L/opt/local/lib/libomp" CACHE STRING "CUSTOM" FORCE )
   endif()
 endif()
 

@@ -295,6 +295,7 @@ install_dependencies_macos() {
 
   echo 'Install packages separately, so it continues regardless if some error occurs in one.';
   brew update;
+  sudo port install libomp;
   brew install coreutils; # To install 'timeout' command.
   brew install util-linux; # To install 'setsid' command.
   brew install zip;
