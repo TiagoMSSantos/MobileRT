@@ -58,7 +58,7 @@ RUN \
   choco install -y git && \
   # Install Qt: https://community.chocolatey.org/packages/qt5-default
   # To avoid error: mingw (exited 404)
-  choco install -y qt5-default || echo 'Error installing Qt.'
+  (choco install -y qt5-default || echo 'Error installing Qt.')
 
 RUN \
   # Splitted installation of dependencies to avoid error: 
@@ -70,18 +70,16 @@ RUN \
 RUN \
   # Set system environment variables. ContainerAdministrator must be used so the change is persisted in the image.
   # Set lib path. Windows doesn't use LD_LIBRARY_PATH, but use PATH instead.
-  setx /M PATH "C:\\MobileRT\\binariesShell;C:\\MobileRT\\binariesResourceCompiler;C:\\MobileRT\\binariesNmake;C:\\MobileRT\\libraries;C:\\MobileRT\\build_!BUILD_TYPE!\\lib;C:\\Qt\\5.15.2\\mingw81_64\\bin;!PATH!" && \
   setx /M RC "rc" && \
   setx /M CXX "g++" && \
   setx /M CC "gcc" && \
   setx /M CXXFLAGS "-O3 -std=c++11" && \
-  # Set path to Qt headers & libraries.
-  setx /M Qt5_DIR "C:\\Qt\\5.15.2\\mingw81_64\\lib\\cmake\\Qt5" && \
-  setx /M CPLUS_INCLUDE_PATH "!CPLUS_INCLUDE_PATH!;C:\\Qt\\5.15.2\\mingw81_64\\include;C:\\Qt\\5.15.2\\mingw81_64\\include\\QtWidgets;C:\\Qt\\5.15.2\\mingw81_64\\include\\QtGui;C:\\Qt\\5.15.2\\mingw81_64\\include\\QtCore" && \
-  setx /M BUILD_TYPE "release" && \
+  setx /M BUILD_TYPE "!BUILD_TYPE!" && \
+  setx /M PATH "C:\\MobileRT\\binariesShell;C:\\MobileRT\\binariesResourceCompiler;C:\\MobileRT\\binariesNmake;C:\\MobileRT\\libraries;C:\\MobileRT\\build_!BUILD_TYPE!\\lib;!PATH!" && \
   # Configure git.
-  git config --system https.postBuffer "1048576000" && \
-  git config --system --add safe.directory C:/MobileRT
+  git config --system https.postBuffer 1048576000 && \
+  git config --system --add safe.directory C:/MobileRT && \
+  set
 
 USER ContainerUser
 ###############################################################################
@@ -110,7 +108,7 @@ RUN \
 ###############################################################################
 # Copy necessary tools to docker image
 ###############################################################################
-COPY . MobileRT
+COPY tools MobileRT
 WORKDIR MobileRT
 ###############################################################################
 ###############################################################################
@@ -120,13 +118,29 @@ WORKDIR MobileRT
 # Install dependencies
 ###############################################################################
 USER ContainerAdministrator
+
 RUN \
+  sh -c "find /Qt -name bin | cut -d / -f 3" > qt_version.txt && \
+  for /f "delims=" %x in (qt_version.txt) do set QT_VERSION="%x" && \
+  setx /M QT_VERSION "!QT_VERSION: =!"
+
+RUN \
+  setx /M PATH "C:\\Qt\\!QT_VERSION!\\mingw81_64\\bin;!PATH!" && \
+  setx /M Qt5_DIR "C:\\Qt\\!QT_VERSION!\\mingw81_64\\lib\\cmake\\Qt5" && \
+  setx /M CPLUS_INCLUDE_PATH "!CPLUS_INCLUDE_PATH!;C:\\Qt\\!QT_VERSION!\\mingw81_64\\include;C:\\Qt\\!QT_VERSION!\\mingw81_64\\include\\QtWidgets;C:\\Qt\\!QT_VERSION!\\mingw81_64\\include\\QtGui;C:\\Qt\\!QT_VERSION!\\mingw81_64\\include\\QtCore" && \
+  dir . && \
+  ls -la . && \
+  ls -la ./binariesShell && \
+  ls -la ./binariesResourceCompiler && \
+  ls -la ./binariesNmake && \
+  set && \
   sh scripts/install_dependencies.sh && \
   icacls "C:\MobileRT" /c /t /grant:r "Authenticated Users":(OI)(CI)F
 USER ContainerUser
 
 RUN \
   # Test commands
+  set && \
   dir . && \
   choco /? && \
   rc /? && \
