@@ -285,7 +285,12 @@ install_dependencies_macos() {
   echo 'Change Homebrew to a specific version since the latest one might break some packages URLs.';
   # E.g.: version 3.3.15 breaks the Qt4 package.
   oldpath=$(pwd);
-  cd /usr/local/Homebrew || exit 1;
+  set +e;
+  # Path for Intel macOS. More info: https://raw.githubusercontent.com/Homebrew/install/master/install.sh
+  cd /usr/local/Homebrew;
+  # Path for ARM macOS.
+  cd /opt/homebrew;
+  set -e;
 
   git fetch --tags --all;
   git checkout 3.3.14;
@@ -295,7 +300,13 @@ install_dependencies_macos() {
 
   echo 'Install packages separately, so it continues regardless if some error occurs in one.';
   brew update;
+  set +e;
   sudo port install libomp;
+  installedLibOmp=$?;
+  if [ "${installedLibOmp}" != "0" ]; then
+    brew install libomp;
+  fi
+  set -e;
   brew install coreutils; # To install 'timeout' command.
   brew install util-linux; # To install 'setsid' command.
   brew install zip;
@@ -309,8 +320,10 @@ install_dependencies_macos() {
   # With Xcode_14.0.1.app, it throws this error on MacOS-12:
   # ld: Assertion failed: (_file->_atomsArrayCount == computedAtomCount && "more atoms allocated than expected")
   # For more information, check: https://stackoverflow.com/questions/73714336/xcode-update-to-version-2395-ld-compile-problem-occurs-computedatomcount-m
-  # Recommended Xcode_13.2.app because it seems the only one compatible with MacOS-11 & MacOS-12.
-  sudo xcode-select --switch /System/Volumes/Data/Applications/Xcode_13.2.app/Contents/Developer;
+  # Recommended Xcode_13.2.app because it seems the only one compatible with MacOS-11 & MacOS-12:
+  sudo xcode-select --switch /System/Volumes/Data/Applications/Xcode_13.2.app/Contents/Developer || true;
+  # To be compatible with MacOS-13 & MacOS-14:
+  sudo xcode-select --switch /System/Volumes/Data/Applications/Xcode_14.1.app/Contents/Developer || true;
 }
 
 install_dependencies_windows() {
@@ -456,13 +469,13 @@ test_commands() {
   if ! command -v brew > /dev/null && ! command -v choco > /dev/null; then
     # Not available in MacOS & Windows.
     checkCommand free;
+    checkCommand setsid;
   fi
 
   if ! command -v choco > /dev/null; then
     # Not available in Windows.
     checkCommand sudo;
     checkCommand pkg-config;
-    checkCommand setsid;
     checkCommand lsof;
     checkCommand zip;
   fi

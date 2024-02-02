@@ -65,15 +65,24 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - name: G++
-          os: ubuntu-22.04
-          type: release
-          compiler: g++
-
+        # Ubuntu
         - name: G++
           os: ubuntu-20.04
           type: debug
           compiler: g++
+
+        - name: Clang++
+          os: ubuntu-22.04
+          type: release
+          compiler: clang++
+
+        # MacOS
+        - name: Clang++
+          os: macos-13
+          type: release
+          compiler: clang++
+          qt_host: 'mac'
+          qt_arch: 'clang_64'
 
         - name: G++
           os: macos-12
@@ -83,17 +92,13 @@ jobs:
           qt_arch: 'clang_64'
 
         - name: Clang++
-          os: ubuntu-20.04
-          type: release
-          compiler: clang++
-
-        - name: Clang++
           os: macos-11
           type: release
           compiler: clang++
           qt_host: 'mac'
           qt_arch: 'clang_64'
 
+        # Windows
         - name: MSVC
           os: windows-2022
           type: release
@@ -104,7 +109,7 @@ jobs:
           qt_arch: 'win64_msvc2019_64'
 
         - name: MinGW
-          os: windows-2022
+          os: windows-2019
           type: release
           compiler: g++
           cxx: "gcc"
@@ -138,7 +143,7 @@ jobs:
 
     - name: Install MacPorts (MacOS)
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && startsWith(matrix.os, 'macos')
+      if: success() && startsWith(matrix.os, 'macos-11')
       uses: melusina-org/setup-macports@v1
       with:
         # Check available parameters in: https://github.com/melusina-org/setup-macports/blob/main/action.yaml

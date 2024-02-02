@@ -83,8 +83,9 @@ printEnvironment;
 # Fix llvm clang OpenMP library for MacOS.
 ###############################################################################
 addOpenMpPath() {
-  OPENMP_INCLUDE_PATH="$(find /usr/local/Cellar/libomp -iname "omp.h" | head -1 2> /dev/null || true)";
-  OPENMP_LIB_PATH="$(find /usr/local/Cellar/libomp -iname "libomp.dylib" | head -1 2> /dev/null || true)";
+  OPENMP_INCLUDE_PATH="$(find /usr/local/Cellar/libomp /opt/homebrew/opt/libomp/include -iname "omp.h" | head -1 2> /dev/null || true)";
+  OPENMP_LIB_PATH="$(find /usr/local/Cellar/libomp /opt/homebrew/opt/libomp/lib -iname "libomp.dylib" | head -1 2> /dev/null || true)";
+
   echo "OPENMP_INCLUDE_PATH = ${OPENMP_INCLUDE_PATH}";
   echo "OPENMP_LIB_PATH = ${OPENMP_LIB_PATH}";
   set +u;
