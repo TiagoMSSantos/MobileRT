@@ -77,6 +77,11 @@ jobs:
           compiler: clang++
 
         # MacOS
+        - name: G++
+          os: macos-14
+          type: release
+          compiler: g++
+
         - name: Clang++
           os: macos-13
           type: release
@@ -117,7 +122,7 @@ jobs:
           qt_host: 'windows'
           qt_arch: 'win64_msvc2019_64'
 
-    name: ${{ matrix.name }} ${{ matrix.type }} (${{ matrix.os }})
+    name: ${{ matrix.name }} ${{ matrix.os }} (${{ matrix.type }})
     runs-on: ${{ matrix.os }}
     timeout-minutes: 60
 
@@ -149,16 +154,9 @@ jobs:
         # Check available parameters in: https://github.com/melusina-org/setup-macports/blob/main/action.yaml
         parameters: '.github/macports.yml'
 
-    - name: Install dependencies
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
-      if: success()
-      working-directory: .
-      run: |
-        sh scripts/install_dependencies.sh;
-
-    - name: Install Qt (MacOS & Windows)
+    - name: Install Qt (Windows & MacOS)
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-      if: success() && (startsWith(matrix.os, 'windows') || startsWith(matrix.os, 'macos'))
+      if: success() && (startsWith(matrix.os, 'windows') || startsWith(matrix.os, 'macos-11') || startsWith(matrix.os, 'macos-12') || startsWith(matrix.os, 'macos-13'))
       uses: jurplel/install-qt-action@v3
       # Download Qt from: https://download.qt.io/online/qtsdkrepository/
       with:
@@ -179,13 +177,46 @@ jobs:
         py7zrversion: '==0.19.*'
         extra: '--external 7z'
 
+    - name: Install dependencies
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
+      if: success()
+      working-directory: .
+      run: |
+        sh scripts/install_dependencies.sh;
+
     - name: Check Qt path installation MacOS
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && startsWith(matrix.os, 'macos')
       working-directory: .
       run: |
-        env | grep -i qt;
-        du -h -d 1 Qt;
+        set +e;
+        test -d /opt/homebrew/Cellar/qt@5;
+        qtPathFromHomebrewForMacOS14=$?;
+        test -d /usr/local/Cellar/qt@5;
+        qtPathFromHomebrewForMacOS13=$?;
+        test -d /opt/local/libexec/qt5;
+        qtPathFromMacPortsForMacOS11=$?;
+        set -e;
+        if [ "${qtPathFromHomebrewForMacOS14}" = '0' ]; then
+          echo 'Adding Qt v5 lib path to compiler in MacOS-14';
+          echo "Qt5_DIR=/opt/homebrew/Cellar/qt@5/5.15.12/lib/cmake/Qt5" >> "${GITHUB_ENV}";
+          echo "CPPFLAGS=${CPPFLAGS} -I/opt/homebrew/opt/qt@5/include" >> "${GITHUB_ENV}";
+          echo "LDFLAGS=${LDFLAGS} -L/opt/homebrew/opt/qt@5/lib" >> "${GITHUB_ENV}";
+        elif [ "${qtPathFromHomebrewForMacOS13}" = '0' ]; then
+          echo 'Adding Qt v5 lib path to compiler in MacOS-13 & MacOS-12';
+          echo "Qt5_DIR=/usr/local/Cellar/qt@5/5.15.12/lib/cmake/Qt5" >> "${GITHUB_ENV}";
+          echo "CPPFLAGS=${CPPFLAGS} -I/usr/local/opt/qt@5/include" >> "${GITHUB_ENV}";
+          echo "LDFLAGS=${LDFLAGS} -L/usr/local/opt/qt@5/lib" >> "${GITHUB_ENV}";
+        elif [ "${qtPathFromMacPortsForMacOS11}" = '0' ]; then
+          echo 'Adding Qt v5 lib path to compiler in MacOS-11';
+          echo "Qt5_DIR=/opt/local/lib/cmake/Qt5" >> "${GITHUB_ENV}";
+          echo "CPPFLAGS=${CPPFLAGS} -I/opt/local/libexec/qt5/include" >> "${GITHUB_ENV}";
+          echo "LDFLAGS=${LDFLAGS} -L/opt/local/libexec/qt5/lib" >> "${GITHUB_ENV}";
+        else
+          echo 'Expecting Qt was installed in MobileRT root path.';
+          env | grep -ie qt -ie flags;
+          du -h -d 1 Qt;
+        fi
 
     - name: Build ${{ matrix.type }}
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}

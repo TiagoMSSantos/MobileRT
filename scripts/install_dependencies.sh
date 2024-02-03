@@ -254,17 +254,18 @@ install_dependencies_gentoo() {
 
 install_dependencies_macos() {
   echo 'Update homebrew (to use the new repository).';
+
   set +e; # To avoid error: "Bash must not run in POSIX mode. Please unset POSIXLY_CORRECT and try again."
   sh -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall.sh)";
   sh -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)";
   set -e;
 
   brew --version;
-  brew update;
+  brew update || true;
   brew cleanup;
 
   echo 'Install and configure git.';
-  brew install git;
+  brew install --ignore-dependencies --skip-cask-deps --skip-post-install git;
   git config --global http.postBuffer 1048576000;
   git config --global https.postBuffer 1048576000;
   git config --global core.compression -1;
@@ -285,6 +286,7 @@ install_dependencies_macos() {
   echo 'Change Homebrew to a specific version since the latest one might break some packages URLs.';
   # E.g.: version 3.3.15 breaks the Qt4 package.
   oldpath=$(pwd);
+
   set +e;
   # Path for Intel macOS. More info: https://raw.githubusercontent.com/Homebrew/install/master/install.sh
   cd /usr/local/Homebrew;
@@ -300,19 +302,44 @@ install_dependencies_macos() {
 
   echo 'Install packages separately, so it continues regardless if some error occurs in one.';
   brew update;
+
   set +e;
-  sudo port install libomp;
+  sudo port help;
+  echo 'Installing OpenMP via MacPorts.';
+  sudo port -bn install libomp;
   installedLibOmp=$?;
   if [ "${installedLibOmp}" != "0" ]; then
-    brew install libomp;
+    echo 'Installing OpenMP via MacPorts failed. Installing OpenMP via Homebrew.';
+    brew install --ignore-dependencies --skip-cask-deps --skip-post-install libomp;
   fi
   set -e;
-  brew install coreutils; # To install 'timeout' command.
-  brew install util-linux; # To install 'setsid' command.
-  brew install zip;
-  brew install unzip;
-  addCommandToPath 'setsid';
+
+  echo 'Installing more dependencies.';
+  brew install --ignore-dependencies --skip-cask-deps --skip-post-install coreutils; # To install 'timeout' command.
+  brew install --ignore-dependencies --skip-cask-deps --skip-post-install zip;
+  brew install --ignore-dependencies --skip-cask-deps --skip-post-install unzip;
   cd "${oldpath}" || exit 1;
+
+  set +e;
+  test -d Qt;
+  qtAlreadyInstalled=$?;
+  if [ "${qtAlreadyInstalled}" = '0' ]; then
+    echo 'Detected Qt folder in MobileRT root dir. Assuming Qt is already installed there. Not installing Qt via package manager.';
+  else
+    echo 'Installing Qt via MacPorts.';
+    sudo port -n install qt5;
+    installedLibQt=$?;
+    if [ "${installedLibQt}" != "0" ]; then
+      echo 'Installing Qt via MacPorts failed. Installing Qt via Homebrew.';
+      brew install --ignore-dependencies --skip-cask-deps --skip-post-install qt@5;
+    fi
+  fi
+  set -e;
+
+  echo 'Checking Qt path.';
+  find /opt/homebrew/opt /opt/homebrew/Cellar /usr/local/opt /usr/local/Cellar /opt/local/libexec -iname "Qt5Config.cmake" 2> /dev/null || true;
+  find /opt/homebrew/opt /opt/homebrew/Cellar /usr/local/opt /usr/local/Cellar /opt/local/libexec -iname "QDialog*" 2> /dev/null || true;
+  find /opt/homebrew/opt/qt@5 /opt/homebrew/Cellar/qt@5 /usr/local/opt/qt@5 /usr/local/Cellar/qt@5 /opt/local/libexec/qt5 -iname "*.dylib*" 2> /dev/null || true;
 
   MAJOR_MAC_VERSION=$(sw_vers | grep ProductVersion | cut -d ':' -f2 | cut -d '.' -f1 | tr -d '[:space:]');
   echo "MacOS '${MAJOR_MAC_VERSION}' detected";

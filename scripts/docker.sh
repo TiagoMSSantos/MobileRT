@@ -187,7 +187,7 @@ installDockerCommandForMacOS() {
 
   brew update;
   echo 'Install docker & colima';
-  brew install docker colima;
+  brew install --ignore-dependencies --skip-cask-deps --skip-post-install docker colima;
   # For testcontainers to find the Colima socket
   # https://github.com/abiosoft/colima/blob/main/docs/FAQ.md#cannot-connect-to-the-docker-daemon-at-unixvarrundockersock-is-the-docker-daemon-running
   sudo ln -sf "${HOME}/.colima/default/docker.sock /var/run/docker.sock";
