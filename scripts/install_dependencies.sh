@@ -88,7 +88,7 @@ install_dependencies() {
   else
     echo 'Detected unknown Operating System';
   fi
-  update_python;
+  # update_python;
 }
 
 install_dependencies_debian() {
@@ -354,20 +354,33 @@ install_dependencies_macos() {
 }
 
 install_dependencies_windows() {
-  # Install cmake: https://community.chocolatey.org/packages/cmake
-  choco install -y cmake --version=3.13.0;
-  # Install make: https://community.chocolatey.org/packages/make
-  choco install -y make;
-  # Install shellcheck: https://community.chocolatey.org/packages/shellcheck
-  choco install -y shellcheck;
-  # Install Qt: https://community.chocolatey.org/packages/qt5-default
-  # To avoid error: mingw (exited 404)
-  choco install -y qt5-default || true;
+  if ! command -v cmake > /dev/null; then
+    # Install cmake: https://community.chocolatey.org/packages/cmake
+    choco install -y cmake --version=3.13.0;
+  fi
 
-  # Splitted installation of dependencies to avoid error: 
-  # Running ["VC_redist.x86.exe"] was not successful. Exit code was '1618'. Exit code indicates the following: Another installation currently in progress.
-  # Install Visual C++ Build Tools: https://community.chocolatey.org/packages/visualcpp-build-tools
-  choco install -y visualcpp-build-tools;
+  if ! command -v make > /dev/null; then
+    # Install make: https://community.chocolatey.org/packages/make
+    choco install -y make;
+  fi
+
+  if ! command -v shellcheck > /dev/null; then
+    # Install shellcheck: https://community.chocolatey.org/packages/shellcheck
+    choco install -y shellcheck;
+  fi
+
+  set +e;
+  test -d Qt;
+  qtAlreadyInstalled=$?;
+  set -e;
+  if [ "${qtAlreadyInstalled}" = '0' ]; then
+    echo 'Detected Qt folder in MobileRT root dir. Assuming Qt is already installed there. Not installing Qt via package manager.';
+  else
+    echo 'Installing Qt via Chocolatey.';
+    # Install Qt: https://community.chocolatey.org/packages/qt5-default
+    # To avoid error: mingw (exited 404)
+    choco install -y qt5-default || true;
+  fi
 }
 
 # Update Python, PIP and CMake versions if necessary.
