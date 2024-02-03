@@ -170,14 +170,6 @@ addCompilerPathForConan;
 
 
 ###############################################################################
-# Get Conan path.
-###############################################################################
-addCommandToPath 'conan';
-###############################################################################
-###############################################################################
-
-
-###############################################################################
 # Get CPU Architecture.
 ###############################################################################
 setCpuArchitecture() {
@@ -203,6 +195,7 @@ install_conan_dependencies() {
 #  ln -s configure/config.guess /home/travis/.conan/data/libuuid/1.0.3/_/_/build/b818fa1fc0d3879f99937e93c6227da2690810fe/configure/config.guess;
 #  ln -s configure/config.sub /home/travis/.conan/data/libuuid/1.0.3/_/_/build/b818fa1fc0d3879f99937e93c6227da2690810fe/configure/config.sub;
 
+  addCommandToPath 'conan';
   echo 'Checking if conan is available.';
   if command -v conan > /dev/null; then
     echo 'Setting up conan.';
