@@ -254,55 +254,13 @@ install_dependencies_gentoo() {
 
 install_dependencies_macos() {
   echo 'Update homebrew (to use the new repository).';
-
-  set +e; # To avoid error: "Bash must not run in POSIX mode. Please unset POSIXLY_CORRECT and try again."
-  sh -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall.sh)";
-  sh -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)";
-  set -e;
-
   brew --version;
   brew update || true;
-  brew cleanup;
 
-  echo 'Install and configure git.';
-  brew install --ignore-dependencies --skip-cask-deps --skip-post-install git;
-  git config --global http.postBuffer 1048576000;
-  git config --global https.postBuffer 1048576000;
-  git config --global core.compression -1;
-  git config --global http.sslVerify "false";
-  if [ -z "$(git config credential.https://github.com)" ]; then
-    echo 'Configuring github credentials.';
-    git config --global credential.https://github.com "ci-user";
-  fi
-  if [ -z "$(git config user.name)" ]; then
-    echo 'Configuring git user.';
-    git config --global user.name "CI User";
-  fi
-  if [ -z "$(git config user.email)" ]; then
-    echo 'Configuring git email.';
-    git config --global user.email "user@ci.com";
-  fi
-
-  echo 'Change Homebrew to a specific version since the latest one might break some packages URLs.';
-  # E.g.: version 3.3.15 breaks the Qt4 package.
-  oldpath=$(pwd);
-
-  set +e;
-  # Path for Intel macOS. More info: https://raw.githubusercontent.com/Homebrew/install/master/install.sh
-  cd /usr/local/Homebrew;
-  # Path for ARM macOS.
-  cd /opt/homebrew;
-  set -e;
-
-  git fetch --tags --all;
-  git checkout 3.3.14;
   echo 'Avoid homebrew from auto-update itself every time its installed something.';
   export HOMEBREW_NO_AUTO_UPDATE=1;
-  brew --version;
 
   echo 'Install packages separately, so it continues regardless if some error occurs in one.';
-  brew update;
-
   set +e;
   sudo port help;
   echo 'Installing OpenMP via MacPorts.';
@@ -318,7 +276,6 @@ install_dependencies_macos() {
   brew install --ignore-dependencies --skip-cask-deps --skip-post-install coreutils; # To install 'timeout' command.
   brew install --ignore-dependencies --skip-cask-deps --skip-post-install zip;
   brew install --ignore-dependencies --skip-cask-deps --skip-post-install unzip;
-  cd "${oldpath}" || exit 1;
 
   set +e;
   test -d Qt;
@@ -327,7 +284,7 @@ install_dependencies_macos() {
     echo 'Detected Qt folder in MobileRT root dir. Assuming Qt is already installed there. Not installing Qt via package manager.';
   else
     echo 'Installing Qt via MacPorts.';
-    sudo port -n install qt5;
+    sudo port -bn install qt5;
     installedLibQt=$?;
     if [ "${installedLibQt}" != "0" ]; then
       echo 'Installing Qt via MacPorts failed. Installing Qt via Homebrew.';

@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-02-03T15:43:06.853Z",
+    "detectionDate": "2024-02-03T17:31:31.383Z",
     "formats": {
       "java": {
         "sources": {
@@ -2945,14 +2945,14 @@
             "newClones": 0
           },
           "scripts/install_dependencies.sh": {
-            "lines": 543,
-            "tokens": 4066,
+            "lines": 500,
+            "tokens": 3735,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 42,
             "duplicatedTokens": 120,
-            "percentage": 7.73,
-            "percentageTokens": 2.95,
+            "percentage": 8.4,
+            "percentageTokens": 3.21,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2969,8 +2969,8 @@
             "newClones": 0
           },
           "scripts/docker.sh": {
-            "lines": 210,
-            "tokens": 1478,
+            "lines": 204,
+            "tokens": 1431,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -3018,14 +3018,14 @@
           }
         },
         "total": {
-          "lines": 3859,
-          "tokens": 24983,
+          "lines": 3810,
+          "tokens": 24605,
           "sources": 13,
           "clones": 10,
           "duplicatedLines": 222,
           "duplicatedTokens": 1070,
-          "percentage": 5.75,
-          "percentageTokens": 4.28,
+          "percentage": 5.83,
+          "percentageTokens": 4.35,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3152,14 +3152,14 @@
       }
     },
     "total": {
-      "lines": 28402,
-      "tokens": 215458,
+      "lines": 28353,
+      "tokens": 215080,
       "sources": 249,
       "clones": 113,
       "duplicatedLines": 1508,
       "duplicatedTokens": 13062,
-      "percentage": 5.31,
-      "percentageTokens": 6.06,
+      "percentage": 5.32,
+      "percentageTokens": 6.07,
       "newDuplicatedLines": 0,
       "newClones": 0
     }

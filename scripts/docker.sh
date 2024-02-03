@@ -179,33 +179,27 @@ installDockerCommandForMacOS() {
   echo 'Select XCode.';
   sudo xcode-select --switch /System/Volumes/Data/Applications/Xcode.app/Contents/Developer;
 
-  echo 'Update homebrew (to use the new repository).';
-  set +e; # To avoid error: "Bash must not run in POSIX mode. Please unset POSIXLY_CORRECT and try again."
-  sh -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall.sh)";
-  sh -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)";
-  set -e;
-
   brew update;
-  echo 'Install docker & colima';
+  echo 'Install docker & colima.';
   brew install --ignore-dependencies --skip-cask-deps --skip-post-install docker colima;
   # For testcontainers to find the Colima socket
   # https://github.com/abiosoft/colima/blob/main/docs/FAQ.md#cannot-connect-to-the-docker-daemon-at-unixvarrundockersock-is-the-docker-daemon-running
   sudo ln -sf "${HOME}/.colima/default/docker.sock /var/run/docker.sock";
 
-  echo 'Symlink Docker plugins, so Docker can find them';
+  echo 'Symlink Docker plugins, so Docker can find them.';
   mkdir -p "${HOME}/.docker/cli-plugins";
   ln -sfn /usr/local/opt/docker-buildx/bin/docker-buildx "${HOME}/.docker/cli-plugins/docker-buildx";
   ln -sfn /usr/local/opt/docker-compose/bin/docker-compose "${HOME}/.docker/cli-plugins/docker-compose";
 
-  echo 'Start colima';
+  echo 'Start colima.';
   colima start || true;
 
   echo 'Docker commands detected:';
   echo "${PATH}" | sed 's/:/ /g' | xargs ls 2> /dev/null | grep -i docker 2> /dev/null || true;
 
-  echo 'Validating docker command works';
+  echo 'Validating docker command works.';
   docker --version;
-  docker ps -a;
-  docker image ls -a;
   docker info;
+  docker image ls -a;
+  docker ps -a;
 }
