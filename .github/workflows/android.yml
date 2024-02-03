@@ -270,6 +270,7 @@ jobs:
         echo 'Deleting unnecessary cache.';
         rm -rf ${{ env.GRADLE_PATH }}/caches/build-cache-*;
         rm -rf ${{ env.GRADLE_PATH }}/caches/journal-*;
+        rm -rf ${{ env.GRADLE_PATH }}/caches/transforms-4;
         rm -rf ${{ env.GRADLE_PATH }}/daemon;
         rm -rf ${{ env.GRADLE_PATH }}/jdks;
         rm -rf ${{ env.GRADLE_PATH }}/kotlin-profile;
