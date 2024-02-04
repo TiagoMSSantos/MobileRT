@@ -76,6 +76,11 @@ jobs:
           type: release
           compiler: clang++
 
+        - name: Intel C++
+          os: ubuntu-20.04
+          type: release
+          compiler: icpx
+
         # MacOS
         - name: G++
           os: macos-14
@@ -218,6 +223,25 @@ jobs:
           du -h -d 1 Qt;
         fi
 
+    - name: Install Intel C++ Compiler
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success() && startsWith(matrix.compiler, 'icpx')
+      working-directory: .
+      run: |
+        wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB;
+        sudo apt-key add GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB;
+        rm GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB;
+        echo "deb https://apt.repos.intel.com/oneapi all main" | sudo tee /etc/apt/sources.list.d/oneAPI.list;
+        sudo apt-get update;
+        sudo apt-get install intel-oneapi-compiler-dpcpp-cpp;
+        . /opt/intel/oneapi/setvars.sh;
+        env;
+        which icpx;
+        which icx;
+        echo 'Storing LD_LIBRARY_PATH & PATH in workflow environment variables.';
+        echo "LD_LIBRARY_PATH=${LD_LIBRARY_PATH}" >> "${GITHUB_ENV}";
+        echo "PATH=${PATH}" >> "${GITHUB_ENV}";
+
     - name: Build ${{ matrix.type }}
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
       if: success()
@@ -239,7 +263,7 @@ jobs:
       run: |
         unitTestsExe=$(find . -type f -name "UnitTests*" | head -1);
         echo "Unit tests executable: ${unitTestsExe}";
-        LD_LIBRARY_PATH=$(find ~/.conan -iname "libgtest.so" | grep -iv "build" | xargs ls -t | head -1 | xargs dirname) ${unitTestsExe} --gtest_filter=-*Engine*;
+        LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:$(find ~/.conan -iname 'libgtest.so' | grep -iv 'build' | xargs ls -t | head -1 | xargs dirname)" ${unitTestsExe} --gtest_filter=-*Engine*;
 
     - name: Run unit tests Ray Tracing engine (for code coverage)
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -251,7 +275,7 @@ jobs:
         ls -la ./app/src/androidTest/resources/CornellBox/CornellBox-Water.cam;
         unitTestsExe=$(find build_${{ matrix.type }} -type f -name "UnitTests*" | head -1);
         echo "Unit tests executable: ${unitTestsExe}";
-        LD_LIBRARY_PATH=$(find ~/.conan -iname "libgtest.so" | grep -iv "build" | xargs ls -t | head -1 | xargs dirname) ${unitTestsExe} --gtest_filter=*Engine*;
+        LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:$(find ~/.conan -iname 'libgtest.so' | grep -iv 'build' | xargs ls -t | head -1 | xargs dirname)" ${unitTestsExe} --gtest_filter=*Engine*;
 
     - name: Create symbolic links for Qt in MacOS
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}

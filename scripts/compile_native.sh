@@ -272,9 +272,12 @@ build() {
   cmake --version;
   if [ "${compiler}" = 'clang++' ]; then
     c_compiler='clang';
+  elif [ "${compiler}" = 'icpx' ]; then
+    c_compiler='icx';
   else
     c_compiler='gcc';
   fi
+  addCommandToPath "${c_compiler}";
 
   cmake -DCMAKE_VERBOSE_MAKEFILE=ON \
     -DCMAKE_CXX_COMPILER="${compiler}" \

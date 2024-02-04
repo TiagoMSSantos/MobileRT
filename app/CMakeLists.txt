@@ -291,6 +291,13 @@ if( NOT DEFINED ANDROID_ABI AND CMAKE_HOST_SYSTEM_NAME MATCHES "Darwin" )
   endif()
 endif()
 
+if ( CMAKE_CXX_COMPILER_ID STREQUAL "IntelLLVM" )
+  message( STATUS "Detected IntelLLVM compiler." )
+  set( COMMON_FLAGS "${COMMON_FLAGS}" -ffp-model=precise )
+else()
+  message( STATUS "Not using IntelLLVM compiler." )
+endif()
+
 message( STATUS "Setting up common headers." )
 set( MOBILE_RT_HEADERS "${CMAKE_SOURCE_DIR}" )
 set( MOBILE_RC_HEADERS "${CMAKE_SOURCE_DIR}" )

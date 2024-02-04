@@ -8,6 +8,7 @@
   - Clang++
   - MinGW (g++)
   - Microsoft Visual C++ (MSVC)
+  - Intel® oneAPI DPC++/C++ Compiler (ICX)
 
 [comment]: # (Licenses and documentation)
 [![GitHub](https://img.shields.io/github/license/TiagoMSSantos/MobileRT)](https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/LICENSE)
