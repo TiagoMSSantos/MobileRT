@@ -113,7 +113,7 @@ jobs:
         logout: true
 
     - name: Pull Docker image
-      timeout-minutes: 40
+      timeout-minutes: 50
       if: success() && (startsWith(matrix.BASE_IMAGE, 'gentoo') || contains(matrix.BASE_IMAGE, 'osx') || contains(matrix.BASE_IMAGE, 'windows'))
       run: |
         # shellcheck disable=SC1091
@@ -169,7 +169,7 @@ jobs:
 
     - name: Squash Docker image
       timeout-minutes: 120
-      if: success() && env.BRANCH == 'master' && startsWith(matrix.BASE_IMAGE, 'gentoo')
+      if: success() && env.BRANCH == 'master' && startsWith(matrix.BASE_IMAGE, 'gentoo') && false
       run: |
         # shellcheck disable=SC1091
         echo "VERSION: ${{ env.VERSION }}";

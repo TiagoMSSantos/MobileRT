@@ -176,23 +176,19 @@ _installDockerSquashCommand() {
 # Its necessary to install Docker Desktop on Mac:
 # https://docs.docker.com/docker-for-mac/install/
 installDockerCommandForMacOS() {
-  echo 'Select XCode.';
-  sudo xcode-select --switch /System/Volumes/Data/Applications/Xcode.app/Contents/Developer;
-
   brew update;
-  echo 'Install docker & colima.';
-  brew install --ignore-dependencies --skip-cask-deps --skip-post-install docker colima;
-  # For testcontainers to find the Colima socket
-  # https://github.com/abiosoft/colima/blob/main/docs/FAQ.md#cannot-connect-to-the-docker-daemon-at-unixvarrundockersock-is-the-docker-daemon-running
-  sudo ln -sf "${HOME}/.colima/default/docker.sock /var/run/docker.sock";
+  echo 'Avoid homebrew from auto-update itself every time its installed something.';
+  export HOMEBREW_NO_AUTO_UPDATE=1;
+  export HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1;
 
-  echo 'Symlink Docker plugins, so Docker can find them.';
-  mkdir -p "${HOME}/.docker/cli-plugins";
-  ln -sfn /usr/local/opt/docker-buildx/bin/docker-buildx "${HOME}/.docker/cli-plugins/docker-buildx";
-  ln -sfn /usr/local/opt/docker-compose/bin/docker-compose "${HOME}/.docker/cli-plugins/docker-compose";
+  echo 'Install docker & colima.';
+  brew install --ignore-dependencies --skip-cask-deps --skip-post-install docker colima lima;
+  echo 'Install qemu.';
+  brew install --ignore-dependencies --skip-cask-deps --skip-post-install qemu libssh libslirp capstone dtc snappy vde ncurses;
 
   echo 'Start colima.';
-  colima start || true;
+  # Check available resources: https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners/about-github-hosted-runners
+  colima start --cpu 4 --memory 14 --disk 14;
 
   echo 'Docker commands detected:';
   echo "${PATH}" | sed 's/:/ /g' | xargs ls 2> /dev/null | grep -i docker 2> /dev/null || true;

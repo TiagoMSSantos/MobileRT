@@ -259,6 +259,7 @@ install_dependencies_macos() {
 
   echo 'Avoid homebrew from auto-update itself every time its installed something.';
   export HOMEBREW_NO_AUTO_UPDATE=1;
+  export HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1;
 
   echo 'Install packages separately, so it continues regardless if some error occurs in one.';
   set +e;
