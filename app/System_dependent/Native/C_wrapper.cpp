@@ -34,6 +34,8 @@ static ::std::unique_ptr<::MobileRT::Renderer> renderer_ {};
  * @param config The MobileRT configurator.
  */
 static void work_thread(::MobileRT::Config &config) {
+    // Reset all errors due to Qt.
+    errno = 0;
     try {
         ::std::ostringstream ss {""};
         ::std::streambuf *old_buf_stdout {};

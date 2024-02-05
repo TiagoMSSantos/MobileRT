@@ -195,6 +195,8 @@ setArguments() {
 ###############################################################################
 ###############################################################################
 
+# Params:
+# * width and height
 execute() {
   #ASYNC="false";
   set +u;
@@ -235,6 +237,48 @@ debug() {
   "${BIN_DEBUG_EXE}" \
     "${THREAD}" "${SHADER}" "${SCENE}" "${SPP}" "${SPL}" "${WIDTH}" "${HEIGHT}" "${ACC}" \
     "${REP}" "${OBJ}" "${MTL}" "${CAM}" "${PRINT}" "${ASYNC}" "${SHOWIMAGE}";
+}
+
+# Params:
+# * mode
+# * width and height
+# * timeout in seconds
+executeTimeout() {
+  set +u;
+  if [ -z "${2}" ]; then
+    WIDTH='900';
+    HEIGHT='900';
+  else
+    WIDTH="${2}";
+    HEIGHT="${2}";
+  fi
+  set -u;
+
+  echo '';
+  echo "THREAD = ${THREAD}";
+  echo "SHADER = ${SHADER}";
+  echo "SCENE = ${SCENE}";
+  echo "ACC = ${ACC}";
+  echo "ASYNC = ${ASYNC}";
+  echo "WIDTH = ${WIDTH}";
+  echo "HEIGHT = ${HEIGHT}";
+
+  set +u;
+  if [ "${1}" = 'release' ]; then
+    echo 'Executing in release mode.';
+    BIN_PATH_EXE="${BIN_RELEASE_EXE}";
+  elif [ "${1}" = 'debug' ]; then
+    echo 'Executing in debug mode.';
+    BIN_PATH_EXE="${BIN_DEBUG_EXE}";
+  fi
+  set -u;
+
+  QT_QPA_PLATFORM='offscreen' timeout "${3}" \
+    "${BIN_PATH_EXE}" \
+      "${THREAD}" "${SHADER}" "${SCENE}" "${SPP}" "${SPL}" "${WIDTH}" "${HEIGHT}" "${ACC}" \
+      "${REP}" "${OBJ}" "${MTL}" "${CAM}" "${PRINT}" "${ASYNC}" "${SHOWIMAGE}";
+  returnValue="$?";
+  return "${returnValue}";
 }
 
 clangtidy() {
@@ -300,6 +344,53 @@ profile() {
   done
 }
 
+# Params:
+# * mode
+# * width and height
+executePerf() {
+  ASYNC="false";
+
+  set +u;
+  if [ -z "${2}" ]; then
+    WIDTH='900';
+    HEIGHT='900';
+  else
+    WIDTH="${2}";
+    HEIGHT="${2}";
+  fi
+  set -u;
+
+  echo '';
+  echo "SHOWIMAGE = ${SHOWIMAGE}";
+  echo "THREAD = ${THREAD}";
+  echo "SHADER = ${SHADER}";
+  echo "SCENE = ${SCENE}";
+  echo "ACC = ${ACC}";
+  echo "ASYNC = ${ASYNC}";
+  echo "WIDTH = ${WIDTH}";
+  echo "HEIGHT = ${HEIGHT}";
+
+  set +u;
+  if [ "${1}" = 'release' ]; then
+    echo 'Executing in release mode.';
+    BIN_PATH_EXE="${BIN_RELEASE_EXE}";
+  elif [ "${1}" = 'debug' ]; then
+    echo 'Executing in debug mode.';
+    BIN_PATH_EXE="${BIN_DEBUG_EXE}";
+  fi
+  set -u;
+
+  #perf script report callgrind > perf.callgrind
+  #kcachegrind perf.callgrind
+  #perf record -g --call-graph 'fp' --freq=3250 --sample-cpu --period
+  QT_QPA_PLATFORM='offscreen' perf stat -- \
+    "${BIN_PATH_EXE}" \
+    "${THREAD}" "${SHADER}" "${SCENE}" "${SPP}" "${SPL}" "${WIDTH}" "${HEIGHT}" "${ACC}" \
+    "${REP}" "${OBJ}" "${MTL}" "${CAM}" "${PRINT}" "${ASYNC}" "${SHOWIMAGE}";
+  # perf report -i 'perf.data' -g '' --show-nr-samples --hierarchy > perf.log;
+  # cat perf.log;
+}
+
 ###############################################################################
 # Parse arguments.
 ###############################################################################
@@ -309,9 +400,16 @@ parseArguments() {
   else
     for P in "${@}"; do
       case ${P} in
+      'perf')
+        executePerf "${2}" "${3}";
+        return;
+        ;;
       'time')
         profile;
         sleep 2s;
+        ;;
+      'timeout')
+        executeTimeout "${2}" "${3}" "${4}";
         ;;
       'drawt')
         sh scripts/plot/plot.sh 'drawt' ;;
@@ -345,6 +443,8 @@ printArguments() {
   echo 'draws - Draw a graph of speedups with GNU Plot.';
   echo 'release - Execute MobileRT in release mode.';
   echo 'debug - Execute MobileRT in debug mode.';
+  echo 'perf - Execute perf on MobileRT.';
+  echo 'timeout - Execute MobileRT for a given timeout.';
   echo 'tidy - Execute C++ linter (clang-tidy) in MobileRT.';
   echo "gtest - Execute MobileRT's unit tests.";
 }

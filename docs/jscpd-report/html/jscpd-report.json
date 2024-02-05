@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-02-05T08:32:34.631Z",
+    "detectionDate": "2024-02-05T21:36:00.583Z",
     "formats": {
       "java": {
         "sources": {
@@ -1213,8 +1213,8 @@
             "newClones": 0
           },
           "app/System_dependent/Native/C_wrapper.cpp": {
-            "lines": 257,
-            "tokens": 2653,
+            "lines": 259,
+            "tokens": 2664,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -1790,8 +1790,8 @@
           }
         },
         "total": {
-          "lines": 5574,
-          "tokens": 53288,
+          "lines": 5576,
+          "tokens": 53299,
           "sources": 56,
           "clones": 28,
           "duplicatedLines": 268,
@@ -1913,14 +1913,14 @@
             "newClones": 0
           },
           ".github/workflows/native.yml": {
-            "lines": 396,
-            "tokens": 2339,
+            "lines": 397,
+            "tokens": 2337,
             "sources": 1,
             "clones": 8,
             "duplicatedLines": 196,
             "duplicatedTokens": 1180,
-            "percentage": 49.49,
-            "percentageTokens": 50.45,
+            "percentage": 49.37,
+            "percentageTokens": 50.49,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2082,8 +2082,8 @@
           }
         },
         "total": {
-          "lines": 2635,
-          "tokens": 17402,
+          "lines": 2636,
+          "tokens": 17400,
           "sources": 23,
           "clones": 16,
           "duplicatedLines": 427,
@@ -2933,14 +2933,14 @@
             "newClones": 0
           },
           "scripts/profile.sh": {
-            "lines": 358,
-            "tokens": 2157,
+            "lines": 458,
+            "tokens": 2881,
             "sources": 1,
-            "clones": 3,
-            "duplicatedLines": 27,
-            "duplicatedTokens": 229,
-            "percentage": 7.54,
-            "percentageTokens": 10.62,
+            "clones": 5,
+            "duplicatedLines": 65,
+            "duplicatedTokens": 509,
+            "percentage": 14.19,
+            "percentageTokens": 17.67,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -3018,14 +3018,14 @@
           }
         },
         "total": {
-          "lines": 3811,
-          "tokens": 24647,
+          "lines": 3911,
+          "tokens": 25371,
           "sources": 13,
-          "clones": 10,
-          "duplicatedLines": 222,
-          "duplicatedTokens": 1070,
-          "percentage": 5.83,
-          "percentageTokens": 4.34,
+          "clones": 11,
+          "duplicatedLines": 241,
+          "duplicatedTokens": 1210,
+          "percentage": 6.16,
+          "percentageTokens": 4.77,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3152,14 +3152,14 @@
       }
     },
     "total": {
-      "lines": 28387,
-      "tokens": 215282,
+      "lines": 28490,
+      "tokens": 216015,
       "sources": 249,
-      "clones": 113,
-      "duplicatedLines": 1508,
-      "duplicatedTokens": 13062,
-      "percentage": 5.31,
-      "percentageTokens": 6.07,
+      "clones": 114,
+      "duplicatedLines": 1527,
+      "duplicatedTokens": 13202,
+      "percentage": 5.36,
+      "percentageTokens": 6.11,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -6448,32 +6448,32 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/native.yml",
-        "start": 359,
-        "end": 371,
+        "start": 360,
+        "end": 372,
         "startLoc": {
-          "line": 359,
+          "line": 360,
           "column": 7,
-          "position": 2077
+          "position": 2075
         },
         "endLoc": {
-          "line": 371,
+          "line": 372,
           "column": 2,
-          "position": 2172
+          "position": 2170
         }
       },
       "secondFile": {
         "name": ".github/workflows/native.yml",
-        "start": 325,
-        "end": 338,
+        "start": 326,
+        "end": 339,
         "startLoc": {
-          "line": 325,
+          "line": 326,
           "column": 7,
-          "position": 1824
+          "position": 1822
         },
         "endLoc": {
-          "line": 338,
+          "line": 339,
           "column": 6,
-          "position": 1920
+          "position": 1918
         }
       }
     },
@@ -6787,17 +6787,17 @@
       },
       "secondFile": {
         "name": ".github/workflows/native.yml",
-        "start": 325,
-        "end": 335,
+        "start": 326,
+        "end": 336,
         "startLoc": {
-          "line": 325,
+          "line": 326,
           "column": 7,
-          "position": 1824
+          "position": 1822
         },
         "endLoc": {
-          "line": 335,
+          "line": 336,
           "column": 38,
-          "position": 1915
+          "position": 1913
         }
       }
     },
@@ -6967,12 +6967,12 @@
       },
       "secondFile": {
         "name": ".github/workflows/native.yml",
-        "start": 325,
+        "start": 326,
         "end": 483,
         "startLoc": {
-          "line": 325,
+          "line": 326,
           "column": 7,
-          "position": 1824
+          "position": 1822
         },
         "endLoc": {
           "line": 483,
@@ -7122,6 +7122,42 @@
           "line": 66,
           "column": 17,
           "position": 356
+        }
+      }
+    },
+    {
+      "format": "bash",
+      "lines": 20,
+      "fragment": ";\n  echo \"THREAD = ${THREAD}\";\n  echo \"SHADER = ${SHADER}\";\n  echo \"SCENE = ${SCENE}\";\n  echo \"ACC = ${ACC}\";\n  echo \"ASYNC = ${ASYNC}\";\n  echo \"WIDTH = ${WIDTH}\";\n  echo \"HEIGHT = ${HEIGHT}\";\n\n  set +u;\n  if [ \"${1}\" = 'release' ]; then\n    echo 'Executing in release mode.';\n    BIN_PATH_EXE=\"${BIN_RELEASE_EXE}\";\n  elif [ \"${1}\" = 'debug' ]; then\n    echo 'Executing in debug mode.';\n    BIN_PATH_EXE=\"${BIN_DEBUG_EXE}\";\n  fi\n  set -u;\n\n  #perf script report callgrind > perf.callgrind",
+      "tokens": 0,
+      "firstFile": {
+        "name": "scripts/profile.sh",
+        "start": 364,
+        "end": 383,
+        "startLoc": {
+          "line": 364,
+          "column": 2,
+          "position": 2273
+        },
+        "endLoc": {
+          "line": 383,
+          "column": 47,
+          "position": 2413
+        }
+      },
+      "secondFile": {
+        "name": "scripts/profile.sh",
+        "start": 257,
+        "end": 276,
+        "startLoc": {
+          "line": 257,
+          "column": 3,
+          "position": 1386
+        },
+        "endLoc": {
+          "line": 276,
+          "column": 16,
+          "position": 1526
         }
       }
     },
