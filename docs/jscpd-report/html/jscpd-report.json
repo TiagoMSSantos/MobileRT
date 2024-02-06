@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-02-05T21:50:09.267Z",
+    "detectionDate": "2024-02-06T20:30:37.019Z",
     "formats": {
       "java": {
         "sources": {
@@ -1914,13 +1914,13 @@
           },
           ".github/workflows/native.yml": {
             "lines": 419,
-            "tokens": 2357,
+            "tokens": 2407,
             "sources": 1,
             "clones": 8,
             "duplicatedLines": 196,
             "duplicatedTokens": 1180,
             "percentage": 46.78,
-            "percentageTokens": 50.06,
+            "percentageTokens": 49.02,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2083,13 +2083,13 @@
         },
         "total": {
           "lines": 2658,
-          "tokens": 17420,
+          "tokens": 17470,
           "sources": 23,
           "clones": 16,
           "duplicatedLines": 427,
           "duplicatedTokens": 2682,
           "percentage": 16.06,
-          "percentageTokens": 15.4,
+          "percentageTokens": 15.35,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2933,14 +2933,14 @@
             "newClones": 0
           },
           "scripts/profile.sh": {
-            "lines": 458,
-            "tokens": 2881,
+            "lines": 464,
+            "tokens": 2921,
             "sources": 1,
             "clones": 5,
             "duplicatedLines": 65,
             "duplicatedTokens": 509,
-            "percentage": 14.19,
-            "percentageTokens": 17.67,
+            "percentage": 14.01,
+            "percentageTokens": 17.43,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -3018,14 +3018,14 @@
           }
         },
         "total": {
-          "lines": 3911,
-          "tokens": 25371,
+          "lines": 3917,
+          "tokens": 25411,
           "sources": 13,
           "clones": 11,
           "duplicatedLines": 241,
           "duplicatedTokens": 1210,
-          "percentage": 6.16,
-          "percentageTokens": 4.77,
+          "percentage": 6.15,
+          "percentageTokens": 4.76,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3152,13 +3152,13 @@
       }
     },
     "total": {
-      "lines": 28512,
-      "tokens": 216035,
+      "lines": 28518,
+      "tokens": 216125,
       "sources": 249,
       "clones": 114,
       "duplicatedLines": 1527,
       "duplicatedTokens": 13202,
-      "percentage": 5.36,
+      "percentage": 5.35,
       "percentageTokens": 6.11,
       "newDuplicatedLines": 0,
       "newClones": 0
@@ -6453,12 +6453,12 @@
         "startLoc": {
           "line": 382,
           "column": 7,
-          "position": 2095
+          "position": 2145
         },
         "endLoc": {
           "line": 394,
           "column": 2,
-          "position": 2190
+          "position": 2240
         }
       },
       "secondFile": {
@@ -6468,12 +6468,12 @@
         "startLoc": {
           "line": 348,
           "column": 7,
-          "position": 1842
+          "position": 1892
         },
         "endLoc": {
           "line": 361,
           "column": 6,
-          "position": 1938
+          "position": 1988
         }
       }
     },
@@ -6792,12 +6792,12 @@
         "startLoc": {
           "line": 348,
           "column": 7,
-          "position": 1842
+          "position": 1892
         },
         "endLoc": {
           "line": 358,
           "column": 38,
-          "position": 1933
+          "position": 1983
         }
       }
     },
@@ -6972,7 +6972,7 @@
         "startLoc": {
           "line": 348,
           "column": 7,
-          "position": 1842
+          "position": 1892
         },
         "endLoc": {
           "line": 483,
@@ -7128,7 +7128,7 @@
     {
       "format": "bash",
       "lines": 20,
-      "fragment": ";\n  echo \"THREAD = ${THREAD}\";\n  echo \"SHADER = ${SHADER}\";\n  echo \"SCENE = ${SCENE}\";\n  echo \"ACC = ${ACC}\";\n  echo \"ASYNC = ${ASYNC}\";\n  echo \"WIDTH = ${WIDTH}\";\n  echo \"HEIGHT = ${HEIGHT}\";\n\n  set +u;\n  if [ \"${1}\" = 'release' ]; then\n    echo 'Executing in release mode.';\n    BIN_PATH_EXE=\"${BIN_RELEASE_EXE}\";\n  elif [ \"${1}\" = 'debug' ]; then\n    echo 'Executing in debug mode.';\n    BIN_PATH_EXE=\"${BIN_DEBUG_EXE}\";\n  fi\n  set -u;\n\n  #perf script report callgrind > perf.callgrind",
+      "fragment": ";\n  echo \"THREAD = ${THREAD}\";\n  echo \"SHADER = ${SHADER}\";\n  echo \"SCENE = ${SCENE}\";\n  echo \"ACC = ${ACC}\";\n  echo \"ASYNC = ${ASYNC}\";\n  echo \"WIDTH = ${WIDTH}\";\n  echo \"HEIGHT = ${HEIGHT}\";\n\n  set +u;\n  if [ \"${1}\" = 'release' ]; then\n    echo 'Executing in release mode.';\n    BIN_PATH_EXE=\"${BIN_RELEASE_EXE}\";\n  elif [ \"${1}\" = 'debug' ]; then\n    echo 'Executing in debug mode.';\n    BIN_PATH_EXE=\"${BIN_DEBUG_EXE}\";\n  fi\n  set -u;\n\n  echo",
       "tokens": 0,
       "firstFile": {
         "name": "scripts/profile.sh",
@@ -7141,7 +7141,7 @@
         },
         "endLoc": {
           "line": 383,
-          "column": 47,
+          "column": 5,
           "position": 2413
         }
       },

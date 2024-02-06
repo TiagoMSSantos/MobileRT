@@ -303,27 +303,27 @@ jobs:
           exit "${returnValue}"; # Exit with error if test failed.
         fi
 
-    # TODO: Investigate how to use 'per' in github actions machines.
-    # - name: Profile MobileRT ${{ matrix.type }}
-    #   timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-    #   if: success()
-    #   working-directory: .
-    #   run: |
-    #     sudo sysctl kernel.yama.ptrace_scope=0;
-    #     sudo sysctl kernel.yama.ptrace_scope;
-    #     sudo sysctl kernel.kptr_restrict=0;
-    #     sudo sysctl kernel.kptr_restrict;
-    #     sudo sysctl kernel.nmi_watchdog=0;
-    #     sudo sysctl kernel.nmi_watchdog;
-    #     sudo sysctl kernel.perf_event_paranoid=-1;
-    #     sudo sysctl kernel.perf_event_paranoid;
-    #     sudo sysctl vm.max_map_count=100000000;
-    #     sudo sysctl vm.max_map_count;
-    #     sudo sysctl kernel.perf_event_max_sample_rate=3250;
-    #     sudo sysctl kernel.perf_event_max_sample_rate;
-    #     sudo sysctl net.ipv4.tcp_timestamps=0;
-    #     sudo sysctl net.ipv4.tcp_timestamps;
-    #     sh scripts/profile.sh perf "${{ matrix.type }}" 100;
+    # TODO: Investigate how to use 'perf record' in github actions machines.
+    - name: Profile MobileRT ${{ matrix.type }}
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success() && matrix.type == 'release' && startsWith(matrix.os, 'ubuntu')
+      working-directory: .
+      run: |
+        sudo sysctl kernel.yama.ptrace_scope=0;
+        sudo sysctl kernel.yama.ptrace_scope;
+        sudo sysctl kernel.kptr_restrict=0;
+        sudo sysctl kernel.kptr_restrict;
+        sudo sysctl kernel.nmi_watchdog=0;
+        sudo sysctl kernel.nmi_watchdog;
+        sudo sysctl kernel.perf_event_paranoid=-1;
+        sudo sysctl kernel.perf_event_paranoid;
+        sudo sysctl vm.max_map_count=100000000;
+        sudo sysctl vm.max_map_count;
+        sudo sysctl kernel.perf_event_max_sample_rate=3250;
+        sudo sysctl kernel.perf_event_max_sample_rate;
+        sudo sysctl net.ipv4.tcp_timestamps=0;
+        sudo sysctl net.ipv4.tcp_timestamps;
+        sh scripts/profile.sh perf "${{ matrix.type }}" 100;
 
     - name: Generate code coverage
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}

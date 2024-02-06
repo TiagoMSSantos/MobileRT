@@ -380,14 +380,20 @@ executePerf() {
   fi
   set -u;
 
-  #perf script report callgrind > perf.callgrind
-  #kcachegrind perf.callgrind
-  #perf record -g --call-graph 'fp' --freq=3250 --sample-cpu --period
+  echo 'All events:';
+  perf list | tee perf_events.log;
+
+  echo 'Hardware events:';
+  perf list hw | tee perf_events_hw.log;
+
+  # perf script report callgrind > perf.callgrind
+  # kcachegrind perf.callgrind
+  # perf record -g --call-graph 'fp' --freq=3250 --sample-cpu --period
   QT_QPA_PLATFORM='offscreen' perf stat -- \
     "${BIN_PATH_EXE}" \
     "${THREAD}" "${SHADER}" "${SCENE}" "${SPP}" "${SPL}" "${WIDTH}" "${HEIGHT}" "${ACC}" \
     "${REP}" "${OBJ}" "${MTL}" "${CAM}" "${PRINT}" "${ASYNC}" "${SHOWIMAGE}";
-  # perf report -i 'perf.data' -g '' --show-nr-samples --hierarchy > perf.log;
+  # perf report -i 'perf.data' -g '' --show-nr-samples --hierarchy --header > perf.log;
   # cat perf.log;
 }
 
