@@ -323,7 +323,7 @@ jobs:
         sudo sysctl kernel.perf_event_max_sample_rate;
         sudo sysctl net.ipv4.tcp_timestamps=0;
         sudo sysctl net.ipv4.tcp_timestamps;
-        sh scripts/profile.sh perf "${{ matrix.type }}" 100;
+        sh scripts/profile.sh perf "${{ matrix.type }}" 500;
 
     - name: Generate code coverage
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}

@@ -21,6 +21,9 @@ int main(int argc, char **argv) {
 
     if (argc != 16) {
         LOG_ERROR("Wrong number of arguments: ", argc, ", must be 16");
+        for (int i = 0; i < argc - 1; ++i) {
+            LOG_ERROR(i, " ", argv[i]);
+        }
         ::std::exit(1);
     }
 
