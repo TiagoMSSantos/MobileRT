@@ -25,6 +25,7 @@ on:
     - '!scripts/helper_functions.sh'
     - '!scripts/docker.sh'
     - '!scripts/test/dockerfile.sh'
+    - '!scripts/profile.sh'
     - '!*gradle*'
 
 defaults:

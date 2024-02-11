@@ -33,6 +33,7 @@ on:
     - '!scripts/compile_native.sh'
     - '!scripts/check_android.sh'
     - '!scripts/run_tests_android.sh'
+    - '!scripts/profile.sh'
     - '!*.java*'
     - '!*.kt*'
     - '!*.c*'
