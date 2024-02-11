@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-02-11T08:33:00.186Z",
+    "detectionDate": "2024-02-11T09:19:21.190Z",
     "formats": {
       "java": {
         "sources": {
@@ -2933,14 +2933,14 @@
             "newClones": 0
           },
           "scripts/profile.sh": {
-            "lines": 464,
-            "tokens": 2921,
+            "lines": 465,
+            "tokens": 2934,
             "sources": 1,
             "clones": 5,
             "duplicatedLines": 65,
             "duplicatedTokens": 509,
-            "percentage": 14.01,
-            "percentageTokens": 17.43,
+            "percentage": 13.98,
+            "percentageTokens": 17.35,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -3018,8 +3018,8 @@
           }
         },
         "total": {
-          "lines": 3917,
-          "tokens": 25411,
+          "lines": 3918,
+          "tokens": 25424,
           "sources": 13,
           "clones": 11,
           "duplicatedLines": 241,
@@ -3152,8 +3152,8 @@
       }
     },
     "total": {
-      "lines": 28521,
-      "tokens": 216174,
+      "lines": 28522,
+      "tokens": 216187,
       "sources": 249,
       "clones": 114,
       "duplicatedLines": 1527,

@@ -389,12 +389,13 @@ executePerf() {
   # perf script report callgrind > perf.callgrind
   # kcachegrind perf.callgrind
   # perf record -g --call-graph 'fp' --freq=3250 --sample-cpu --period
-  QT_QPA_PLATFORM='offscreen' perf stat -- \
+  QT_QPA_PLATFORM='offscreen' perf stat --output perf.log -- \
     "${BIN_PATH_EXE}" \
     "${THREAD}" "${SHADER}" "${SCENE}" "${SPP}" "${SPL}" "${WIDTH}" "${HEIGHT}" "${ACC}" \
     "${REP}" "${OBJ}" "${MTL}" "${CAM}" "${PRINT}" "${ASYNC}" "${SHOWIMAGE}";
   # perf report -i 'perf.data' -g '' --show-nr-samples --hierarchy --header > perf.log;
-  # cat perf.log;
+  echo 'Perf results:';
+  cat perf.log;
 }
 
 ###############################################################################
