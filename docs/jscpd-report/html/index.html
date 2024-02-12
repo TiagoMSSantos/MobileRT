@@ -2,7 +2,7 @@
                        // <!--
                        window.initialData = {
   "statistics": {
-    "detectionDate": "2024-02-11T10:33:20.885Z",
+    "detectionDate": "2024-02-12T21:40:28.494Z",
     "formats": {
       "java": {
         "sources": {
@@ -1227,8 +1227,8 @@
             "newClones": 0
           },
           "app/MobileRT/Utils/Utils.cpp": {
-            "lines": 277,
-            "tokens": 2101,
+            "lines": 284,
+            "tokens": 2117,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -1251,8 +1251,8 @@
             "newClones": 0
           },
           "app/MobileRT/Shapes/Triangle.cpp": {
-            "lines": 390,
-            "tokens": 3601,
+            "lines": 401,
+            "tokens": 3746,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -1467,14 +1467,14 @@
             "newClones": 0
           },
           "app/Components/Loaders/OBJLoader.cpp": {
-            "lines": 431,
-            "tokens": 5176,
+            "lines": 437,
+            "tokens": 5330,
             "sources": 1,
             "clones": 8,
             "duplicatedLines": 64,
             "duplicatedTokens": 834,
-            "percentage": 14.85,
-            "percentageTokens": 16.11,
+            "percentage": 14.65,
+            "percentageTokens": 15.65,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -1792,14 +1792,14 @@
           }
         },
         "total": {
-          "lines": 5579,
-          "tokens": 53348,
+          "lines": 5603,
+          "tokens": 53663,
           "sources": 56,
           "clones": 28,
           "duplicatedLines": 268,
           "duplicatedTokens": 4004,
-          "percentage": 4.8,
-          "percentageTokens": 7.51,
+          "percentage": 4.78,
+          "percentageTokens": 7.46,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2319,8 +2319,8 @@
             "newClones": 0
           },
           "app/MobileRT/Utils/Utils.hpp": {
-            "lines": 359,
-            "tokens": 2212,
+            "lines": 361,
+            "tokens": 2227,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2355,14 +2355,14 @@
             "newClones": 0
           },
           "app/MobileRT/Shapes/Triangle.hpp": {
-            "lines": 107,
-            "tokens": 839,
+            "lines": 110,
+            "tokens": 902,
             "sources": 1,
             "clones": 2,
             "duplicatedLines": 22,
             "duplicatedTokens": 264,
-            "percentage": 20.56,
-            "percentageTokens": 31.47,
+            "percentage": 20,
+            "percentageTokens": 29.27,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2848,8 +2848,8 @@
           }
         },
         "total": {
-          "lines": 3291,
-          "tokens": 23689,
+          "lines": 3296,
+          "tokens": 23767,
           "sources": 47,
           "clones": 2,
           "duplicatedLines": 23,
@@ -3154,14 +3154,14 @@
       }
     },
     "total": {
-      "lines": 28524,
-      "tokens": 216205,
+      "lines": 28553,
+      "tokens": 216598,
       "sources": 249,
       "clones": 115,
       "duplicatedLines": 1527,
       "duplicatedTokens": 13204,
       "percentage": 5.35,
-      "percentageTokens": 6.11,
+      "percentageTokens": 6.1,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -5690,21 +5690,21 @@
     {
       "format": "cpp-header",
       "lines": 12,
-      "fragment": "TexCoordA () const;\n\n        ::glm::vec2 getTexCoordB () const;\n\n        ::glm::vec2 getTexCoordC () const;\n\n        ::std::int32_t getMaterialIndex () const;\n\n        class Builder final {\n        private:\n            ::glm::vec3 AC_ {};\n            ::glm::vec3 AB_ {};\n            ::glm::vec3 pointA_ {};\n            ::glm::vec3 normalA_ {};\n            ::glm::vec3 normalB_ {};\n            ::glm::vec3 norm",
+      "fragment": "oordC () const;\n\n        ::std::int32_t getMaterialIndex () const;\n\n        friend ::std::ostream& operator << (::std::ostream &os, const Triangle& triangle);\n\n        class Builder final {\n        private:\n            ::glm::vec3 AC_ {};\n            ::glm::vec3 AB_ {};\n            ::glm::vec3 pointA_ {};\n            ::glm::vec3 normalA_ {};\n            ::glm::vec3 normalB_ {};\n            ::glm::vec3 norm",
       "tokens": 0,
       "firstFile": {
         "name": "app/MobileRT/Shapes/Triangle.hpp",
-        "start": 76,
-        "end": 87,
+        "start": 78,
+        "end": 89,
         "startLoc": {
-          "line": 76,
+          "line": 78,
           "column": 9,
-          "position": 527
+          "position": 560
         },
         "endLoc": {
-          "line": 87,
+          "line": 89,
           "column": 7,
-          "position": 659
+          "position": 692
         }
       },
       "secondFile": {
@@ -5834,21 +5834,21 @@
     {
       "format": "cpp",
       "lines": 13,
-      "fragment": "ghtPos[1], \"', z:'\", lightPos[2], \"'\");\n                    } else {\n                        // If it is a primitive.\n\n                        Triangle::Builder builder {\n                            Triangle::Builder(\n                                ::std::get<0> (vertices), ::std::get<1> (vertices), ::std::get<2> (vertices)\n                            )\n                                .withNormals(\n                                    ::std::get<0>(normal),\n                                    ::std::get<1>(normal),\n                                    ::std::get<2>(normal))\n                                .withTexCoords(\n                                    ::s",
+      "fragment": "eaLight>(material, lambda(), triangle));\n                    } else {\n                        // If it is a primitive.\n                        Triangle::Builder builder {\n                            Triangle::Builder(\n                                ::std::get<0> (vertices), ::std::get<1> (vertices), ::std::get<2> (vertices)\n                            )\n                                .withNormals(\n                                    ::std::get<0>(normal),\n                                    ::std::get<1>(normal),\n                                    ::std::get<2>(normal))\n                                .withTexCoords(\n                                    ::s",
       "tokens": 0,
       "firstFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 208,
-        "end": 220,
+        "start": 205,
+        "end": 217,
         "startLoc": {
-          "line": 208,
+          "line": 205,
           "column": 2,
-          "position": 2361
+          "position": 2302
         },
         "endLoc": {
-          "line": 220,
+          "line": 217,
           "column": 2,
-          "position": 2500
+          "position": 2441
         }
       },
       "secondFile": {
@@ -5874,27 +5874,27 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 255,
-        "end": 263,
+        "start": 251,
+        "end": 259,
         "startLoc": {
-          "line": 255,
+          "line": 251,
           "column": 21,
-          "position": 2996
+          "position": 2936
         },
         "endLoc": {
-          "line": 263,
+          "line": 259,
           "column": 2,
-          "position": 3097
+          "position": 3037
         }
       },
       "secondFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 208,
+        "start": 205,
         "end": 195,
         "startLoc": {
-          "line": 208,
+          "line": 205,
           "column": 25,
-          "position": 2355
+          "position": 2296
         },
         "endLoc": {
           "line": 195,
@@ -5910,32 +5910,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 273,
-        "end": 279,
+        "start": 269,
+        "end": 275,
         "startLoc": {
-          "line": 273,
+          "line": 269,
           "column": 25,
-          "position": 3205
+          "position": 3145
         },
         "endLoc": {
-          "line": 279,
+          "line": 275,
           "column": 35,
-          "position": 3293
+          "position": 3233
         }
       },
       "secondFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 234,
-        "end": 240,
+        "start": 231,
+        "end": 237,
         "startLoc": {
-          "line": 234,
+          "line": 231,
           "column": 29,
-          "position": 2649
+          "position": 2590
         },
         "endLoc": {
-          "line": 240,
+          "line": 237,
           "column": 5,
-          "position": 2738
+          "position": 2679
         }
       }
     },
@@ -5946,32 +5946,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 336,
-        "end": 342,
+        "start": 342,
+        "end": 348,
         "startLoc": {
-          "line": 336,
+          "line": 342,
           "column": 1,
-          "position": 3912
+          "position": 4066
         },
         "endLoc": {
-          "line": 342,
+          "line": 348,
           "column": 3,
-          "position": 4001
+          "position": 4155
         }
       },
       "secondFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 297,
-        "end": 304,
+        "start": 303,
+        "end": 310,
         "startLoc": {
-          "line": 297,
+          "line": 303,
           "column": 1,
-          "position": 3373
+          "position": 3527
         },
         "endLoc": {
-          "line": 304,
+          "line": 310,
           "column": 6,
-          "position": 3463
+          "position": 3617
         }
       }
     },

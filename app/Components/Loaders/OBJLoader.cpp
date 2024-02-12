@@ -200,11 +200,8 @@ bool OBJLoader::fillScene(Scene *const scene,
                         };
                         scene->lights_.emplace_back(
                             ::MobileRT::std::make_unique<AreaLight>(material, lambda(), triangle));
-                        const auto lightPos {scene->lights_.back()->getPosition()};
-                        LOG_DEBUG("Light position at: x:'", lightPos[0], "', y:'", lightPos[1], "', z:'", lightPos[2], "'");
                     } else {
                         // If it is a primitive.
-
                         Triangle::Builder builder {
                             Triangle::Builder(
                                 ::std::get<0> (vertices), ::std::get<1> (vertices), ::std::get<2> (vertices)
@@ -239,7 +236,6 @@ bool OBJLoader::fillScene(Scene *const scene,
                     }
                 } else {
                     // If it doesn't contain material.
-
                     const auto itColor {this->attrib_.colors.cbegin() + 3 * idx1.vertex_index};
                     const auto red {*(itColor + 0)};
                     const auto green {*(itColor + 1)};
@@ -278,6 +274,16 @@ bool OBJLoader::fillScene(Scene *const scene,
                 }
             }// Loop over vertices in the face.
             indexOffset += faceVertices;
+
+            if (scene->triangles_.size() > 0 && scene->triangles_.size() % 10000 == 0) {
+                const auto& triangle {scene->triangles_.back()};
+                LOG_DEBUG("Triangle ", scene->triangles_.size(), " position at ", triangle);
+                MobileRT::printFreeMemory();
+            } else if (scene->lights_.size() > 0 && scene->lights_.size() % 1000 == 0) {
+                const auto& lightPos {scene->lights_.back()->getPosition()};
+                LOG_DEBUG("Light ", scene->lights_.size(), " position at: x: ", lightPos[0], ", y: ", lightPos[1], ", z: ", lightPos[2]);
+                MobileRT::printFreeMemory();
+            }
         }// The number of vertices per face.
     }// Loop over shapes.
 

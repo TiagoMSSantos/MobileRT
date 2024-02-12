@@ -266,9 +266,7 @@ namespace MobileRT {
                 // NaCL                              __native_client__
                 // AsmJS                             __asmjs__
                 // Fuschia                           __Fuchsia__
-                const auto bytesInMegabyte {1048576};
-                LOG_INFO("Available memory: ",  (sysconf(_SC_PHYS_PAGES) * sysconf(_SC_PAGESIZE)) / bytesInMegabyte, " MB");
-                LOG_INFO("Free memory: ",  (sysconf(_SC_AVPHYS_PAGES) * sysconf(_SC_PAGESIZE)) / bytesInMegabyte, " MB");
+                printFreeMemory();
             #endif
 
             // Necessary to reset the error code so the Android Instrumentation
@@ -279,6 +277,15 @@ namespace MobileRT {
             errno = 0;
             throw ::std::runtime_error {errorMessage};
         }
+    }
+
+    /**
+     * Prints the current memory that is free related to the available one.
+     */
+    void printFreeMemory() {
+        const auto bytesInMegabyte {1048576};
+        LOG_INFO("Free memory: ",  (sysconf(_SC_AVPHYS_PAGES) * sysconf(_SC_PAGESIZE)) / bytesInMegabyte,
+            " MB [Available memory: ",  (sysconf(_SC_PHYS_PAGES) * sysconf(_SC_PAGESIZE)) / bytesInMegabyte, " MB]");
     }
 
 }//namespace MobileRT

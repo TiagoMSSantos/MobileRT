@@ -108,6 +108,8 @@ namespace MobileRT {
 
     void checkSystemError(const char *message);
 
+    void printFreeMemory();
+
    /**
     * Helper method which adds a parameter into the ostringstream.
     *
@@ -129,7 +131,7 @@ namespace MobileRT {
     * @param parameter The parameter to add in the ostringstream.
     */
     template <typename Type>
-    void addToStringStream(::std::ostringstream *oss, Type parameter) {
+    void addToStringStream(::std::ostringstream *oss, const Type& parameter) {
         *oss << parameter;
     }
 
@@ -159,7 +161,7 @@ namespace MobileRT {
      * @param args The rest of the arguments.
      */
     template <typename First, typename... Args>
-    void addToStringStream(::std::ostringstream *oss, First parameter, Args &&... args) {
+    void addToStringStream(::std::ostringstream *oss, const First& parameter, Args &&... args) {
         *oss << parameter;
         addToStringStream(oss, args...);
     }

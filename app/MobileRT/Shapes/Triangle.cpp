@@ -392,3 +392,14 @@ Triangle::Builder Triangle::Builder::withMaterialIndex(const ::std::int32_t mate
 Triangle Triangle::Builder::build() {
     return Triangle(*this);
 }
+
+/**
+ * Convert class to output stream.
+ */
+::std::ostream& MobileRT::operator << (::std::ostream &os, const Triangle& triangle) {
+    const auto &pointA {::glm::to_string(triangle.pointA_)};
+    const auto &pointB {::glm::to_string(triangle.pointA_ + triangle.AB_)};
+    const auto &pointC {::glm::to_string(triangle.pointA_ + triangle.AC_)};
+
+    return (os << "A: " << pointA  << ", B: " << pointB << ", C: " << pointC);
+}

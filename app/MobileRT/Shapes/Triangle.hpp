@@ -72,6 +72,8 @@ namespace MobileRT {
 
         ::std::int32_t getMaterialIndex () const;
 
+        friend ::std::ostream& operator << (::std::ostream &os, const Triangle& triangle);
+
         class Builder final {
         private:
             ::glm::vec3 AC_ {};
@@ -108,9 +110,10 @@ namespace MobileRT {
             Builder withMaterialIndex(::std::int32_t materialIndex);
 
             Triangle build();
-
         };
     };
+
+    ::std::ostream& operator << (::std::ostream &os, const Triangle& triangle);
 }//namespace MobileRT
 
 #endif //MOBILERT_SHAPES_TRIANGLE_HPP
