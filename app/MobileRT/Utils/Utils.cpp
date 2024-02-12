@@ -252,22 +252,7 @@ namespace MobileRT {
                                      ::std::strerror(errno)
             };
             LOG_ERROR("errorMessage: ", errorMessage);
-
-            #if !defined(_WIN32) && !defined(__APPLE__)
-                // Only check available memory for Unix systems, since it doesn't work on Windows nor MacOS.
-                // Check: https://blog.kowalczyk.info/article/j/guide-to-predefined-macros-in-c-compilers-gcc-clang-msvc-etc..html
-                // Linux and Linux-derived           __linux__
-                // Android                           __ANDROID__ (implies __linux__)
-                // Linux (non-Android)               __linux__ && !__ANDROID__
-                // Darwin (Mac OS X and iOS)         __APPLE__
-                // Akaros (http://akaros.org)        __ros__
-                // Windows                           _WIN32
-                // Windows 64 bit                    _WIN64 (implies _WIN32)
-                // NaCL                              __native_client__
-                // AsmJS                             __asmjs__
-                // Fuschia                           __Fuchsia__
-                printFreeMemory();
-            #endif
+            printFreeMemory();
 
             // Necessary to reset the error code so the Android Instrumentation
             // Tests that test failures, like trying to read an OBJ that
@@ -283,9 +268,23 @@ namespace MobileRT {
      * Prints the current memory that is free related to the available one.
      */
     void printFreeMemory() {
-        const auto bytesInMegabyte {1048576};
-        LOG_INFO("Free memory: ",  (sysconf(_SC_AVPHYS_PAGES) * sysconf(_SC_PAGESIZE)) / bytesInMegabyte,
-            " MB [Available memory: ",  (sysconf(_SC_PHYS_PAGES) * sysconf(_SC_PAGESIZE)) / bytesInMegabyte, " MB]");
+        #if !defined(_WIN32) && !defined(__APPLE__)
+            // Only check available memory for Linux systems, since it doesn't work on Windows nor MacOS.
+            // Check: https://blog.kowalczyk.info/article/j/guide-to-predefined-macros-in-c-compilers-gcc-clang-msvc-etc..html
+            // Linux and Linux-derived           __linux__
+            // Android                           __ANDROID__ (implies __linux__)
+            // Linux (non-Android)               __linux__ && !__ANDROID__
+            // Darwin (Mac OS X and iOS)         __APPLE__
+            // Akaros (http://akaros.org)        __ros__
+            // Windows                           _WIN32
+            // Windows 64 bit                    _WIN64 (implies _WIN32)
+            // NaCL                              __native_client__
+            // AsmJS                             __asmjs__
+            // Fuschia                           __Fuchsia__
+            const auto bytesInMegabyte {1048576};
+            LOG_INFO("Free memory: ",  (sysconf(_SC_AVPHYS_PAGES) * sysconf(_SC_PAGESIZE)) / bytesInMegabyte,
+                " MB [Available memory: ",  (sysconf(_SC_PHYS_PAGES) * sysconf(_SC_PAGESIZE)) / bytesInMegabyte, " MB]");
+        #endif
     }
 
 }//namespace MobileRT

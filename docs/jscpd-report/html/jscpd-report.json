@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-02-12T21:48:31.172Z",
+    "detectionDate": "2024-02-12T21:55:29.293Z",
     "formats": {
       "java": {
         "sources": {
@@ -1225,8 +1225,8 @@
             "newClones": 0
           },
           "app/MobileRT/Utils/Utils.cpp": {
-            "lines": 284,
-            "tokens": 2117,
+            "lines": 283,
+            "tokens": 2116,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -1790,8 +1790,8 @@
           }
         },
         "total": {
-          "lines": 5603,
-          "tokens": 53663,
+          "lines": 5602,
+          "tokens": 53662,
           "sources": 56,
           "clones": 28,
           "duplicatedLines": 268,
@@ -3152,8 +3152,8 @@
       }
     },
     "total": {
-      "lines": 28553,
-      "tokens": 216598,
+      "lines": 28552,
+      "tokens": 216597,
       "sources": 249,
       "clones": 115,
       "duplicatedLines": 1527,
