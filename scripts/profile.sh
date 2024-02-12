@@ -409,7 +409,6 @@ parseArguments() {
       case ${P} in
       'perf')
         executePerf "${2}" "${3}";
-        return;
         ;;
       'time')
         profile;
@@ -439,6 +438,7 @@ parseArguments() {
         break;
         ;;
       esac
+    return;
     done
   fi
 }
