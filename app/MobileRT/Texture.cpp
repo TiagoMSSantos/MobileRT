@@ -95,7 +95,7 @@ Texture Texture::createTexture(const ::std::string &texturePath) {
     }
     ::std::shared_ptr<::std::uint8_t> pointer {data, [](::std::uint8_t *const internalData) {
         stbi_image_free(internalData);
-        LOG_DEBUG("Deleted texture");
+        // LOG_DEBUG("Deleted texture");
     }};
     Texture texture {pointer, width, height, channels};
     return texture;

@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-02-12T21:55:29.293Z",
+    "detectionDate": "2024-02-18T14:14:41.604Z",
     "formats": {
       "java": {
         "sources": {
@@ -1646,13 +1646,13 @@
           },
           "app/MobileRT/Texture.cpp": {
             "lines": 118,
-            "tokens": 1176,
+            "tokens": 1172,
             "sources": 1,
             "clones": 2,
-            "duplicatedLines": 40,
-            "duplicatedTokens": 366,
-            "percentage": 33.9,
-            "percentageTokens": 31.12,
+            "duplicatedLines": 18,
+            "duplicatedTokens": 288,
+            "percentage": 15.25,
+            "percentageTokens": 24.57,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -1791,13 +1791,13 @@
         },
         "total": {
           "lines": 5602,
-          "tokens": 53662,
+          "tokens": 53658,
           "sources": 56,
           "clones": 28,
-          "duplicatedLines": 268,
-          "duplicatedTokens": 4004,
-          "percentage": 4.78,
-          "percentageTokens": 7.46,
+          "duplicatedLines": 257,
+          "duplicatedTokens": 3965,
+          "percentage": 4.59,
+          "percentageTokens": 7.39,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2933,14 +2933,14 @@
             "newClones": 0
           },
           "scripts/profile.sh": {
-            "lines": 465,
-            "tokens": 2942,
+            "lines": 486,
+            "tokens": 3120,
             "sources": 1,
             "clones": 5,
             "duplicatedLines": 65,
             "duplicatedTokens": 509,
-            "percentage": 13.98,
-            "percentageTokens": 17.3,
+            "percentage": 13.37,
+            "percentageTokens": 16.31,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -3018,14 +3018,14 @@
           }
         },
         "total": {
-          "lines": 3918,
-          "tokens": 25432,
+          "lines": 3939,
+          "tokens": 25610,
           "sources": 13,
           "clones": 11,
           "duplicatedLines": 241,
           "duplicatedTokens": 1210,
-          "percentage": 6.15,
-          "percentageTokens": 4.76,
+          "percentage": 6.12,
+          "percentageTokens": 4.72,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3152,14 +3152,14 @@
       }
     },
     "total": {
-      "lines": 28552,
-      "tokens": 216597,
+      "lines": 28573,
+      "tokens": 216771,
       "sources": 249,
       "clones": 115,
-      "duplicatedLines": 1527,
-      "duplicatedTokens": 13204,
-      "percentage": 5.35,
-      "percentageTokens": 6.1,
+      "duplicatedLines": 1516,
+      "duplicatedTokens": 13165,
+      "percentage": 5.31,
+      "percentageTokens": 6.07,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -6407,37 +6407,37 @@
     },
     {
       "format": "cpp",
-      "lines": 21,
-      "fragment": "nfo {stbi_info(texturePath.c_str(), &width, &height, &channels)};\n    ::std::uint8_t *data {stbi_load(texturePath.c_str(), &width, &height, &channels, 0)};\n    LOG_DEBUG(\"new Texture: \", width, \"x\", height, \", c: \", channels, \", info: \", info);\n    if (data == nullptr) {\n        const auto &error {stbi_failure_reason()};\n        LOG_ERROR(\"Error reading texture: \", error);\n        throw ::std::runtime_error {error};\n    }\n    ::std::shared_ptr<::std::uint8_t> pointer {data, [](::std::uint8_t *const internalData) {\n        stbi_image_free(internalData);\n        LOG_DEBUG(\"Deleted texture\");\n    }};\n    Texture texture {pointer, width, height, channels};\n    return",
+      "lines": 10,
+      "fragment": "nfo {stbi_info(texturePath.c_str(), &width, &height, &channels)};\n    ::std::uint8_t *data {stbi_load(texturePath.c_str(), &width, &height, &channels, 0)};\n    LOG_DEBUG(\"new Texture: \", width, \"x\", height, \", c: \", channels, \", info: \", info);\n    if (data == nullptr) {\n        const auto &error {stbi_failure_reason()};\n        LOG_ERROR(\"Error reading texture: \", error);\n        throw ::std::runtime_error {error};\n    }\n    ::std::shared_ptr<::std::uint8_t> pointer {data, ",
       "tokens": 0,
       "firstFile": {
         "name": "app/MobileRT/Texture.cpp",
         "start": 89,
-        "end": 109,
+        "end": 98,
         "startLoc": {
           "line": 89,
           "column": 2,
           "position": 802
         },
         "endLoc": {
-          "line": 109,
-          "column": 4,
-          "position": 985
+          "line": 98,
+          "column": 33,
+          "position": 946
         }
       },
       "secondFile": {
         "name": "app/MobileRT/Texture.cpp",
         "start": 63,
-        "end": 83,
+        "end": 72,
         "startLoc": {
           "line": 63,
           "column": 5,
           "position": 515
         },
         "endLoc": {
-          "line": 83,
-          "column": 4,
-          "position": 698
+          "line": 72,
+          "column": 10,
+          "position": 659
         }
       }
     },
@@ -7132,17 +7132,17 @@
       "tokens": 0,
       "firstFile": {
         "name": "scripts/profile.sh",
-        "start": 81,
-        "end": 96,
+        "start": 82,
+        "end": 97,
         "startLoc": {
-          "line": 81,
-          "column": 16,
-          "position": 443
+          "line": 82,
+          "column": 2,
+          "position": 451
         },
         "endLoc": {
-          "line": 96,
+          "line": 97,
           "column": 80,
-          "position": 537
+          "position": 545
         }
       },
       "secondFile": {
@@ -7168,32 +7168,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "scripts/profile.sh",
-        "start": 364,
-        "end": 383,
+        "start": 376,
+        "end": 395,
         "startLoc": {
-          "line": 364,
+          "line": 376,
           "column": 2,
-          "position": 2273
+          "position": 2370
         },
         "endLoc": {
-          "line": 383,
+          "line": 395,
           "column": 5,
-          "position": 2413
+          "position": 2510
         }
       },
       "secondFile": {
         "name": "scripts/profile.sh",
-        "start": 257,
-        "end": 276,
+        "start": 269,
+        "end": 288,
         "startLoc": {
-          "line": 257,
+          "line": 269,
           "column": 3,
-          "position": 1386
+          "position": 1483
         },
         "endLoc": {
-          "line": 276,
+          "line": 288,
           "column": 16,
-          "position": 1526
+          "position": 1623
         }
       }
     },
