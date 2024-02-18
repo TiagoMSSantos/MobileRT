@@ -79,6 +79,7 @@ setPaths() {
   SCRIPTS_PATH="${MOBILERT_PATH}/scripts";
   PLOT_SCRIPTS_PATH="${SCRIPTS_PATH}/plot";
   OBJS_PATH="${MOBILERT_PATH}/WavefrontOBJs";
+  echo "OBJS_PATH = ${OBJS_PATH}";
 
   set +u;
   if [ -z "${PLOT_GRAPHS}" ]; then
@@ -121,25 +122,30 @@ setHeaders() {
 # Set paths for the scene.
 ###############################################################################
 setScene() {
-  SCN="${OBJS_PATH}/conference/conference";
-  #SCN="${OBJS_PATH}/teapot/teapot";
-  #SCN="${OBJS_PATH}/buddha/buddha";
-  #SCN="${OBJS_PATH}/dragon/dragon";
-  #SCN="${OBJS_PATH}/sponza/sponza";
-  #SCN="${OBJS_PATH}/powerplant/powerplant";
-  #SCN="${OBJS_PATH}/San_Miguel/san-miguel";
-  #SCN="${OBJS_PATH}/San_Miguel/san-miguel-low-poly";
-  #SCN="${OBJS_PATH}/CornellBox/CornellBox-Empty-CO";
-  #SCN="${OBJS_PATH}/CornellBox/CornellBox-Empty-Squashed";
-  #SCN="${OBJS_PATH}/CornellBox/CornellBox-Empty-White";
-  #SCN="${OBJS_PATH}/CornellBox/CornellBox-Glossy-Floor";
-  #SCN="${OBJS_PATH}/CornellBox/CornellBox-Glossy";
-  #SCN="${OBJS_PATH}/CornellBox/CornellBox-Mirror";
-  #SCN="${OBJS_PATH}/CornellBox/CornellBox-Original";
-  #SCN="${OBJS_PATH}/CornellBox/CornellBox-Sphere";
-  #SCN="${OBJS_PATH}/CornellBox/CornellBox-Water";
-  #SCN="${OBJS_PATH}/CornellBox/water";
-
+  set +u; 
+  if [ -z "${1}" ]; then
+    SCN="${OBJS_PATH}/conference/conference";
+    # SCN="${OBJS_PATH}/teapot/teapot";
+    # SCN="${OBJS_PATH}/buddha/buddha";
+    # SCN="${OBJS_PATH}/dragon/dragon";
+    # SCN="${OBJS_PATH}/sponza/sponza";
+    # SCN="${OBJS_PATH}/powerplant/powerplant";
+    # SCN="${OBJS_PATH}/San_Miguel/san-miguel";
+    # SCN="${OBJS_PATH}/San_Miguel/san-miguel-low-poly";
+    # SCN="${OBJS_PATH}/CornellBox/CornellBox-Empty-CO";
+    # SCN="${OBJS_PATH}/CornellBox/CornellBox-Empty-Squashed";
+    # SCN="${OBJS_PATH}/CornellBox/CornellBox-Empty-White";
+    # SCN="${OBJS_PATH}/CornellBox/CornellBox-Glossy-Floor";
+    # SCN="${OBJS_PATH}/CornellBox/CornellBox-Glossy";
+    # SCN="${OBJS_PATH}/CornellBox/CornellBox-Mirror";
+    # SCN="${OBJS_PATH}/CornellBox/CornellBox-Original";
+    # SCN="${OBJS_PATH}/CornellBox/CornellBox-Sphere";
+    # SCN="${OBJS_PATH}/CornellBox/CornellBox-Water";
+    # SCN="${OBJS_PATH}/CornellBox/water";
+  else
+    SCN="${OBJS_PATH}/${1}/${1}";
+  fi
+  set -u;
   OBJ="${SCN}.obj";
   MTL="${SCN}.mtl";
   CAM="${SCN}.cam";
@@ -197,8 +203,8 @@ setArguments() {
 
 # Params:
 # * width and height
+# * asynchronous - If false, MobileRT will not show rendered image and will exit when the scene is rendered.
 execute() {
-  #ASYNC="false";
   set +u;
   if [ -z "${1}" ]; then
     WIDTH='900';
@@ -206,6 +212,11 @@ execute() {
   else
     WIDTH="${1}";
     HEIGHT="${1}";
+  fi
+  if [ -z "${1}" ]; then
+    ASYNC='true';
+  else
+    ASYNC="${2}";
   fi
   set -u;
   echo '';
@@ -216,6 +227,7 @@ execute() {
   echo "ASYNC = ${ASYNC}";
   echo "WIDTH = ${WIDTH}";
   echo "HEIGHT = ${HEIGHT}";
+  echo "OBJ = ${OBJ}";
 
   #perf script report callgrind > perf.callgrind
   #kcachegrind perf.callgrind
@@ -424,9 +436,18 @@ parseArguments() {
       'test') awk -f "${PLOT_SCRIPTS_PATH}/parser_median.awk" "${PLOT_SCRIPTS_PATH}/test.dat" ;;
       'release')
         if [ "$#" -lt 2 ]; then
+          echo 'Executing using default resolution & scene.';
           execute;
         else
-          execute "${2}";
+          if [ "$#" -gt 2 ]; then
+            echo "Executing using resolution '${2}' & scene '${3}'.";
+            setScene "${3}";
+          fi
+          if [ "$#" -gt 3 ]; then
+            execute "${2}" "${4}";
+          else
+            execute "${2}";
+          fi
         fi
         ;;
       'debug') debug ;;
