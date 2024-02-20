@@ -85,6 +85,7 @@ testMobileRTContainer() {
   removeAllContainers;
   echo "Starting test - testMobileRTContainer: ${_mobilertVersion} (expecting return ${expected})";
 
+  mkdir -p /tmp;
   rm -f /tmp/fd3;
   set +e;
   exec 3<> /tmp/fd3; # Open file descriptor 3.

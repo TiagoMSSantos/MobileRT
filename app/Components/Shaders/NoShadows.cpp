@@ -22,12 +22,11 @@ bool NoShadows::shade(::glm::vec3 *const rgb, const Intersection &intersection) 
 
     // direct lighting - only for diffuse materials
     if (::MobileRT::hasPositiveValue(kD)) {
-        const auto sizeLights {this->lights_.size()};
+        const auto sizeLights {getNumberOfLights()};
         if (sizeLights > 0) {
             const auto samplesLight {this->samplesLight_};
             for (::std::int32_t j {}; j < samplesLight; ++j) {
-                const auto chosenLight {getLightIndex()};
-                auto &light {*this->lights_[chosenLight]};
+                auto &light {getLight()};
                 const auto &lightPosition {light.getPosition()};
                 //vectorIntersectCameraNormalized = light.position_ - intersection.point_
                 const auto &vectorToLightNormalized {::glm::normalize(lightPosition - intersection.point_)};

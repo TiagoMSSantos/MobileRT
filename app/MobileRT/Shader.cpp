@@ -1,6 +1,7 @@
 #include "MobileRT/Shader.hpp"
 #include "MobileRT/Utils/Utils.hpp"
 #include <array>
+#include <boost/foreach.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
 #include <random>
@@ -72,7 +73,7 @@ void Shader::initializeAccelerators(Scene scene) {
     this->lights_ = ::std::move(scene.lights_);
     LOG_DEBUG("accelerator = ", this->accelerator_);
     LOG_DEBUG("materials = ", this->materials_.size());
-    LOG_DEBUG("lights = ", this->lights_.size());
+    LOG_DEBUG("areaLights = ", this->lights_.size());
     ::MobileRT::checkSystemError("initializeAccelerators end 2");
 }
 
@@ -163,9 +164,14 @@ bool Shader::shadowTrace(const float distance, Ray &&ray) {
  * @param intersection The current intersection of the ray with previous primitives.
  * @return The intersection of the casted ray and the light sources.
  */
-Intersection Shader::traceLights(Intersection intersection) const {
-    for (const auto &light : this->lights_) {
-        intersection = light->intersect(::std::move(intersection));
+Intersection Shader::traceLights(Intersection intersection) {
+    BOOST_FOREACH(Scene::TypeLights& vt, this->lights_) {
+        if (vt.which() == 0) {
+            intersection = ::boost::get<::Components::AreaLight>(vt).intersect(::std::move(intersection));
+        }
+        if (vt.which() == 1) {
+            intersection = ::boost::get<::Components::PointLight>(vt).intersect(::std::move(intersection));
+        }
     }
     return intersection;
 }
@@ -174,8 +180,13 @@ Intersection Shader::traceLights(Intersection intersection) const {
  * Resets the sampling process of all the lights in the scene.
  */
 void Shader::resetSampling() {
-    for (const auto &light : this->lights_) {
-        light->resetSampling();
+    BOOST_FOREACH(Scene::TypeLights& vt, this->lights_) {
+        if (vt.which() == 0) {
+            ::boost::get<::Components::AreaLight>(vt).resetSampling();
+        }
+        if (vt.which() == 1) {
+            ::boost::get<::Components::PointLight>(vt).resetSampling();
+        }
     }
 }
 
@@ -220,7 +231,7 @@ void Shader::resetSampling() {
  *
  * @return The index of a random chosen light.
  */
-::std::uint32_t Shader::getLightIndex () {
+Light& Shader::getLight() {
     static ::std::atomic<::std::uint32_t> sampler {};
     const auto current {sampler.fetch_add(1, ::std::memory_order_relaxed)};
 
@@ -229,7 +240,13 @@ void Shader::resetSampling() {
     const auto sizeLights {static_cast<::std::uint32_t> (this->lights_.size())};
     const auto randomNumber {*it};
     const auto chosenLight {static_cast<::std::uint32_t> (::std::floor(randomNumber * sizeLights * 0.99999F))};
-    return chosenLight;
+
+    Scene::TypeLights &light {this->lights_[chosenLight]};
+    if (light.which() == 0) {
+        return ::boost::get<::Components::AreaLight>(light);
+    } else {
+        return ::boost::get<::Components::PointLight>(light);
+    }
 }
 
 /**
@@ -299,12 +316,12 @@ const ::std::vector<Triangle>& Shader::getTriangles() const {
 }
 
 /**
- * Gets the lights in the scene.
+ * Gets the number of lights in the scene.
  *
- * @return The lights in the scene.
+ * @return The number of lights in the scene.
  */
-const ::std::vector<::std::unique_ptr<Light>>& Shader::getLights() const {
-    return this->lights_;
+::std::int32_t Shader::getNumberOfLights() const {
+    return static_cast<::std::int32_t> (this->lights_.size());
 }
 
 /**

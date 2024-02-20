@@ -9,6 +9,8 @@
 #include "MobileRT/Ray.hpp"
 #include "MobileRT/Sampler.hpp"
 #include "MobileRT/Scene.hpp"
+#include "Components/Lights/AreaLight.hpp"
+#include "Components/Lights/PointLight.hpp"
 
 namespace MobileRT {
     /**
@@ -43,10 +45,10 @@ namespace MobileRT {
 
     protected:
         const ::std::int32_t samplesLight_ {};
-        ::std::vector<::std::unique_ptr<Light>> lights_ {};
+        ::std::vector<Scene::TypeLights> lights_ {};
 
     private:
-        Intersection traceLights(Intersection intersection) const;
+        Intersection traceLights(Intersection intersection);
 
     protected:
         /**
@@ -63,7 +65,7 @@ namespace MobileRT {
 
         static ::glm::vec3 getCosineSampleHemisphere(const ::glm::vec3 &normal);
 
-        ::std::uint32_t getLightIndex ();
+        Light& getLight();
 
     public:
         void initializeAccelerators(Scene scene);
@@ -97,7 +99,7 @@ namespace MobileRT {
 
         const ::std::vector<Material>& getMaterials() const;
 
-        const ::std::vector<::std::unique_ptr<Light>>& getLights() const;
+        ::std::int32_t getNumberOfLights() const;
     };
 }//namespace MobileRT
 

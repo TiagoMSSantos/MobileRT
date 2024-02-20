@@ -19,13 +19,13 @@ namespace Components {
 
         PointLight(const PointLight &pointLight) = delete;
 
-        PointLight(PointLight &&pointLight) noexcept = delete;
+        PointLight(PointLight &&pointLight) noexcept = default;
 
         ~PointLight() final = default;
 
         PointLight &operator=(const PointLight &pointLight) = delete;
 
-        PointLight &operator=(PointLight &&pointLight) noexcept = delete;
+        PointLight &operator=(PointLight &&pointLight) noexcept = default;
 
         ::glm::vec3 getPosition() final;
 

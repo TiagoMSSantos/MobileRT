@@ -6,6 +6,7 @@ project( MobileRT VERSION 1.0.0.0 LANGUAGES CXX )
 
 message( STATUS "Adding MobileRT source files." )
 file( GLOB_RECURSE MOBILE_RT_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/**.cpp" )
+set( MOBILE_RT_SOURCES "${MOBILE_RT_SOURCES}" ../Components/Lights/AreaLight.cpp ../Components/Lights/PointLight.cpp )
 
 message( STATUS "Setting up as library." )
 if( DEFINED ANDROID_ABI )

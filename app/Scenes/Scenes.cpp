@@ -108,10 +108,7 @@ inline Scene cornellBox(Scene scene) {
 
 Scene cornellBox_Scene(Scene scene) {
     LOG_DEBUG("SCENE: cornellBox_Scene");
-    scene.lights_.emplace_back(::MobileRT::std::make_unique<PointLight> (
-            lightMat,
-            ::glm::vec3 {0.0F, 0.99F, 0.0F}
-    ));
+    scene.lights_.emplace_back(PointLight {lightMat, ::glm::vec3 {0.0F, 0.99F, 0.0F}});
 
     // triangle - yellow
     const Triangle triangle {
@@ -172,17 +169,8 @@ Scene cornellBox2_Scene(Scene scene) {
                     .build()
     };
 
-    scene.lights_.emplace_back(::MobileRT::std::make_unique<AreaLight> (
-        lightMat,
-        ::std::move(samplerPoint1),
-        triangle1
-    ));
-
-    scene.lights_.emplace_back(::MobileRT::std::make_unique<AreaLight> (
-        lightMat,
-        ::std::move(samplerPoint2),
-        triangle2
-    ));
+    scene.lights_.emplace_back(AreaLight {lightMat, ::std::move(samplerPoint1), triangle1 });
+    scene.lights_.emplace_back(AreaLight {lightMat, ::std::move(samplerPoint2), triangle2 });
 
     const Triangle triangle3 {
             triangleBuilder.withMaterialIndex(static_cast<::std::int32_t> (scene.materials_.size())).build()
@@ -263,7 +251,7 @@ Scene spheres_Scene(Scene scene) {
 
 Scene spheres2_Scene(Scene scene) {
     LOG_DEBUG("SCENE: spheres2_Scene");
-    scene.lights_.emplace_back(::MobileRT::std::make_unique<PointLight> (lightMat, ::glm::vec3 {0.0F, 15.0F, 4.0F}));
+    scene.lights_.emplace_back(PointLight {lightMat, ::glm::vec3 {0.0F, 15.0F, 4.0F}});
 
     // create one sphere
     scene.spheres_.emplace_back(Sphere {::glm::vec3 {-1.0F, 1.0F, 6.0F}, 1.0F,

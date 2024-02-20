@@ -676,7 +676,7 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
                 const auto spheres {static_cast<::std::int32_t> (shader->getSpheres().size())};
                 const auto triangles {static_cast<::std::int32_t> (shader->getTriangles().size())};
                 const auto materials {static_cast<::std::int32_t> (shader->getMaterials().size())};
-                numLights_ = static_cast<::std::int32_t> (shader->getLights().size());
+                numLights_ = static_cast<::std::int32_t> (shader->getNumberOfLights());
                 const auto nPrimitives {triangles + spheres + planes};
                 LOG_DEBUG("PLANES = ", planes);
                 LOG_DEBUG("SPHERES = ", spheres);

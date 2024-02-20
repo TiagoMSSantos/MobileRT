@@ -53,16 +53,15 @@ bool PathTracer::shade(::glm::vec3 *const rgb, const Intersection &intersection)
     // shadowed direct lighting - only for diffuse materials
     //Ld = Ld (p->Wr)
     if (::MobileRT::hasPositiveValue(kD)) {
-        const auto sizeLights {this->lights_.size()};
+        const auto sizeLights {getNumberOfLights()};
         if (sizeLights > 0) {
             const auto samplesLight {this->samplesLight_};
             //direct light
             for (::std::int32_t i {}; i < samplesLight; ++i) {
                 //PDF = 1 / sizeLights
-                const auto chosenLight {getLightIndex()};
-                auto &light {*this->lights_[chosenLight]};
+                auto &light {getLight()};
                 //calculates vector starting in intersection to the light
-                const auto lightPosition {light.getPosition()};
+                const auto &lightPosition {light.getPosition()};
                 auto vectorToLight {lightPosition - intersection.point_};
                 //distance from intersection to the light (and normalize it)
                 const auto distanceToLight {::glm::length(vectorToLight)};

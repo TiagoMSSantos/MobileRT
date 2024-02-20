@@ -111,29 +111,33 @@ static void work_thread(::MobileRT::Config &config) {
                     const auto endLoading {::std::chrono::system_clock::now()};
                     timeLoading = endLoading - startLoading;
                     ::std::map<::std::string, ::MobileRT::Texture> texturesCache {};
-                    LOG_DEBUG("OBJLoader loaded = ", timeLoading.count(), " primitives");
+                    LOG_DEBUG("OBJLoader loaded = ", ::std::chrono::duration_cast<::std::chrono::seconds>(timeLoading).count(), " seconds");
                     const auto startFilling {::std::chrono::system_clock::now()};
                     // "objLoader.fillScene(&scene, []() {return ::MobileRT::std::make_unique<::Components::HaltonSeq> ();});"
                     // "objLoader.fillScene(&scene, []() {return ::MobileRT::std::make_unique<::Components::MersenneTwister> ();});"
                     objLoader.fillScene(&scene, []() {return ::MobileRT::std::make_unique<Components::StaticHaltonSeq> (); },
                                         config.objFilePath,
                                         texturesCache
-                                        );
+                    );
+                    ::MobileRT::checkSystemError("Filled Scene.");
                     // "objLoader.fillScene(&scene, []() {return ::MobileRT::std::make_unique<Components::StaticMersenneTwister> ();});"
                     const auto endFilling {::std::chrono::system_clock::now()};
                     timeFilling = endFilling - startFilling;
                     texturesCache.clear();
-                    LOG_DEBUG("Scene filled = ", timeFilling.count(), " primitives");
+                    LOG_DEBUG("Scene filled = ", ::std::chrono::duration_cast<::std::chrono::seconds>(timeFilling).count(), " seconds");
 
                     const auto cameraFactory {::Components::CameraFactory()};
                     ::std::ifstream ifCamera {config.camFilePath};
                     ::std::istream iCam {ifCamera.rdbuf()};
+                    ::MobileRT::checkSystemError("Loading Camera file.");
                     camera = cameraFactory.loadFromFile(iCam, ratio);
+                    ::MobileRT::checkSystemError("Loaded Camera file.");
                     maxDist = ::glm::vec3 {1, 1, 1};
                 }
                     break;
             }
             // Setup sampler
+            ::MobileRT::checkSystemError("Creating Sampler.");
             if (config.samplesPixel > 1) {
                 samplerPixel = ::MobileRT::std::make_unique<::Components::StaticHaltonSeq> ();
             } else {
@@ -194,7 +198,7 @@ static void work_thread(::MobileRT::Config &config) {
             const auto planes {static_cast<::std::int32_t> (shader_->getPlanes().size())};
             const auto spheres {static_cast<::std::int32_t> (shader_->getSpheres().size())};
             const auto triangles {static_cast<::std::int32_t> (shader_->getTriangles().size())};
-            const auto numLights {static_cast<::std::int32_t> (shader_->getLights().size())};
+            const auto numLights {static_cast<::std::int32_t> (shader_->getNumberOfLights())};
             const auto nPrimitives {triangles + spheres + planes};
 
             ::MobileRT::checkSystemError("Starting creating renderer");

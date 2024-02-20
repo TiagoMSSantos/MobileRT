@@ -30,13 +30,13 @@ namespace Components {
 
         AreaLight(const AreaLight &areaLight) = delete;
 
-        AreaLight(AreaLight &&areaLight) noexcept = delete;
+        AreaLight(AreaLight &&areaLight) noexcept = default;
 
         ~AreaLight() final = default;
 
         AreaLight &operator=(const AreaLight &areaLight) = delete;
 
-        AreaLight &operator=(AreaLight &&areaLight) noexcept = delete;
+        AreaLight &operator=(AreaLight &&areaLight) noexcept = default;
 
         ::glm::vec3 getPosition() final;
 

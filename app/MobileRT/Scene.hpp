@@ -10,8 +10,11 @@
 #include "MobileRT/Shapes/Sphere.hpp"
 #include "MobileRT/Shapes/Triangle.hpp"
 #include "MobileRT/Utils/Utils.hpp"
+#include <boost/variant.hpp>
 #include <glm/glm.hpp>
 #include <vector>
+#include "Components/Lights/AreaLight.hpp"
+#include "Components/Lights/PointLight.hpp"
 
 namespace MobileRT {
     /**
@@ -19,10 +22,14 @@ namespace MobileRT {
      */
     class Scene final {
     public:
+        /**
+         * The type of the lights that can be used in the scene.
+         */
+        using TypeLights = ::boost::variant<::Components::AreaLight, ::Components::PointLight>;
         ::std::vector<Triangle> triangles_ {};
         ::std::vector<Sphere> spheres_ {};
         ::std::vector<Plane> planes_ {};
-        ::std::vector<::std::unique_ptr<Light>> lights_ {};
+        ::std::vector<TypeLights> lights_ {};
         ::std::vector<Material> materials_ {};
 
     private:

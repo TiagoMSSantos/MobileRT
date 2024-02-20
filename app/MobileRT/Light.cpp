@@ -12,8 +12,6 @@ Light::Light(Material radiance) :
     radiance_ {::std::move(radiance)} {
 }
 
-/**
- * The destructor.
- */
 Light::~Light() {
+
 }

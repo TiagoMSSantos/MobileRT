@@ -58,6 +58,7 @@ buildDockerImage() {
 # The parameters are:
 # * VERSION
 pullDockerImage() {
+  mkdir -p /tmp;
   rm -f /tmp/fd3;
   exec 3<> /tmp/fd3; # Open file descriptor 3.
   (docker pull ptpuscas/mobile_rt:"${1}" || true) | tee /tmp/fd3;
@@ -130,6 +131,10 @@ pushMobileRTDockerImage() {
 # The parameters are:
 # * VERSION
 commitMobileRTDockerImage() {
+  docker ps -a;
+  docker images -a;
+  du -h -d 1 /tmp 2> /dev/null || true;
+  rm -rf /tmp || true;
   docker commit mobile_rt_built_"${1}" ptpuscas/mobile_rt:"${1}";
   docker rm mobile_rt_built_"${1}";
 }

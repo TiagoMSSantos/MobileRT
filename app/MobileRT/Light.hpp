@@ -22,25 +22,25 @@ namespace MobileRT {
 
         Light(const Light &light) = delete;
 
-        Light(Light &&light) noexcept = delete;
+        Light(Light &&light) noexcept = default;
 
         virtual ~Light();
 
         Light &operator=(const Light &light) = delete;
 
-        Light &operator=(Light &&light) noexcept = delete;
+        Light &operator=(Light &&light) noexcept = default;
 
         /**
          * Gets the position of the light.
          *
          * @return The position of the light.
          */
-        virtual ::glm::vec3 getPosition() = 0;
+        virtual ::glm::vec3 getPosition() { return ::glm::vec3 {0.0F}; }
 
         /**
          * Resets the sampling counter.
          */
-        virtual void resetSampling() = 0;
+        virtual void resetSampling() { }
 
         /**
          * Determines if a ray intersects this light or not and calculates the intersection point.
@@ -48,7 +48,7 @@ namespace MobileRT {
          * @param intersection The previous intersection of the ray in the scene.
          * @return The intersection point.
          */
-        virtual Intersection intersect(Intersection &&intersection) = 0;
+        virtual Intersection intersect(Intersection &&intersection) { return ::std::move(intersection); }
     };
 }//namespace MobileRT
 

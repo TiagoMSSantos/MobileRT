@@ -11,17 +11,17 @@ using ::MobileRT::Light;
  * The destructor.
  */
 Scene::~Scene() {
-    //may not free the memory
+    // May not free the memory.
     this->planes_.clear();
     this->spheres_.clear();
     this->triangles_.clear();
     this->lights_.clear();
 
-    //force free memory
+    // Force free memory.
     ::std::vector<Plane> {}.swap(this->planes_);
     ::std::vector<Sphere> {}.swap(this->spheres_);
     ::std::vector<Triangle> {}.swap(this->triangles_);
-    ::std::vector<::std::unique_ptr<Light>> {}.swap(this->lights_);
+    ::std::vector<TypeLights> {}.swap(this->lights_);
 
     LOG_DEBUG("SCENE DELETED");
 }

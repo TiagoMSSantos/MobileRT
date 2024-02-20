@@ -35,13 +35,12 @@ bool Whitted::shade(::glm::vec3 *const rgb, const Intersection &intersection) {
 
     // shadowed direct lighting - only for diffuse materials
     if (::MobileRT::hasPositiveValue(kD)) {
-        const auto sizeLights {this->lights_.size()};
+        const auto sizeLights {getNumberOfLights()};
         if (sizeLights > 0) {
             const auto samplesLight {this->samplesLight_};
             for (::std::int32_t i {}; i < samplesLight; ++i) {
-                const auto chosenLight {getLightIndex()};
-                auto &light {*this->lights_[chosenLight]};
-                const auto lightPosition {light.getPosition()};
+                auto &light {getLight()};
+                const auto &lightPosition {light.getPosition()};
                 //calculates vector starting in intersection to the light
                 auto vectorToLight {lightPosition - intersection.point_};
                 //distance from intersection to the light (and normalize it)

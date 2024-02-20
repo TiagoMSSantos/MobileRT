@@ -60,9 +60,11 @@ Texture Texture::createTexture(::std::string &&textureBinary, const long size) {
     ::std::int32_t height {};
     ::std::int32_t channels {};
     const auto info {stbi_info_from_memory(reinterpret_cast<unsigned char const *> (textureBinary.c_str()), static_cast<int> (size), &width, &height, &channels)};
+    ::MobileRT::checkSystemError("Creating Texture from memory.");
     ::std::uint8_t *data {stbi_load_from_memory(reinterpret_cast<unsigned char const *> (textureBinary.c_str()), static_cast<int> (size), &width, &height, &channels, 0)};
+    ::MobileRT::checkSystemError("Loaded Image for Texture.");
     LOG_DEBUG("new Texture: ", width, "x", height, ", c: ", channels, ", info: ", info);
-    if (data == nullptr) {
+    if (data == nullptr || width <= 0 || height <= 0 || channels <= 0) {
         const auto &error {stbi_failure_reason()};
         LOG_ERROR("Error reading texture: ", error);
         throw ::std::runtime_error {error};
@@ -72,6 +74,7 @@ Texture Texture::createTexture(::std::string &&textureBinary, const long size) {
         LOG_DEBUG("Deleted texture");
     }};
     Texture texture {pointer, width, height, channels};
+    ::MobileRT::checkSystemError("Created Texture.");
     return texture;
 }
 
@@ -86,9 +89,12 @@ Texture Texture::createTexture(const ::std::string &texturePath) {
     ::std::int32_t height {};
     ::std::int32_t channels {};
     const auto info {stbi_info(texturePath.c_str(), &width, &height, &channels)};
+    ::MobileRT::checkSystemError(("Creating Texture from: " + texturePath).c_str());
     ::std::uint8_t *data {stbi_load(texturePath.c_str(), &width, &height, &channels, 0)};
+    errno = 0;
+    ::MobileRT::checkSystemError("Loaded Image for Texture.");
     LOG_DEBUG("new Texture: ", width, "x", height, ", c: ", channels, ", info: ", info);
-    if (data == nullptr) {
+    if (data == nullptr || width <= 0 || height <= 0 || channels <= 0) {
         const auto &error {stbi_failure_reason()};
         LOG_ERROR("Error reading texture: ", error);
         throw ::std::runtime_error {error};
@@ -98,6 +104,7 @@ Texture Texture::createTexture(const ::std::string &texturePath) {
         // LOG_DEBUG("Deleted texture");
     }};
     Texture texture {pointer, width, height, channels};
+    ::MobileRT::checkSystemError("Created Texture.");
     return texture;
 }
 

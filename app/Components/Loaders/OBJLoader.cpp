@@ -147,9 +147,7 @@ bool OBJLoader::fillScene(Scene *const scene,
                     const auto hasTexture {!mat.diffuse_texname.empty()};
                     const auto hasCoordTex {!this->attrib_.texcoords.empty()};
                     Texture texture {};
-                    auto texCoord
-                        {::std::make_tuple(::glm::vec2 {-1}, ::glm::vec2 {-1}, ::glm::vec2 {-1})};
-
+                    auto texCoord {::std::make_tuple(::glm::vec2 {-1}, ::glm::vec2 {-1}, ::glm::vec2 {-1})};
                     if (hasTexture && hasCoordTex) {
                         const auto itTexCoords1 {
                             this->attrib_.texcoords.cbegin() +
@@ -181,9 +179,8 @@ bool OBJLoader::fillScene(Scene *const scene,
                     }
 
                     Material material {diffuse, specular, transmittance, indexRefraction, emission, texture};
-
-                    // If the primitive is a light source.
                     if (::MobileRT::hasPositiveValue(emission)) {
+                        // If the primitive is a light source.
                         const auto &triangle {
                         Triangle::Builder(
                                 ::std::get<0> (vertices), ::std::get<1> (vertices), ::std::get<2> (vertices)
@@ -198,8 +195,7 @@ bool OBJLoader::fillScene(Scene *const scene,
                                 ::std::get<2>(texCoord))
                             .build()
                         };
-                        scene->lights_.emplace_back(
-                            ::MobileRT::std::make_unique<AreaLight>(material, lambda(), triangle));
+                        scene->lights_.emplace_back(AreaLight {material, lambda(), triangle});
                     } else {
                         // If it is a primitive.
                         Triangle::Builder builder {
@@ -216,21 +212,17 @@ bool OBJLoader::fillScene(Scene *const scene,
                                     ::std::get<2>(texCoord))
                         };
 
-                        const auto itFoundMat
-                            {::std::find(scene->materials_.begin(), scene->materials_.end(), material)};
-
-                        // If the material is already in the scene.
+                        const auto itFoundMat {::std::find(scene->materials_.begin(), scene->materials_.end(), material)};
                         if (itFoundMat != scene->materials_.cend()) {
+                            // If the material is already in the scene.
                             const auto materialIndex {static_cast<::std::int32_t> (
                                                           itFoundMat - scene->materials_.cbegin()
                                                       )};
-                            const auto &triangle {builder.withMaterialIndex(materialIndex).build()};
-                            scene->triangles_.emplace_back(triangle);
+                            scene->triangles_.emplace_back(builder.withMaterialIndex(materialIndex).build());
                         } else {
                             // If the scene doesn't have the material yet.
                             const auto materialIndex {static_cast<::std::int32_t> (scene->materials_.size())};
-                            const auto &triangle {builder.withMaterialIndex(materialIndex).build()};
-                            scene->triangles_.emplace_back(triangle);
+                            scene->triangles_.emplace_back(builder.withMaterialIndex(materialIndex).build());
                             scene->materials_.emplace_back(::std::move(material));
                         }
                     }
@@ -280,12 +272,14 @@ bool OBJLoader::fillScene(Scene *const scene,
                 LOG_DEBUG("Triangle ", scene->triangles_.size(), " position at ", triangle);
                 MobileRT::printFreeMemory();
             } else if (scene->lights_.size() > 0 && scene->lights_.size() % 1000 == 0) {
-                const auto& lightPos {scene->lights_.back()->getPosition()};
+                const auto& lightPos {::boost::get<::Components::AreaLight>(scene->lights_.back()).getPosition()};
                 LOG_DEBUG("Light ", scene->lights_.size(), " position at: x: ", lightPos[0], ", y: ", lightPos[1], ", z: ", lightPos[2]);
                 MobileRT::printFreeMemory();
             }
         }// The number of vertices per face.
     }// Loop over shapes.
+
+    ::MobileRT::checkSystemError("Filled Scene");
 
     return true;
 }
