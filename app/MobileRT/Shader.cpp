@@ -2,6 +2,7 @@
 #include "MobileRT/Utils/Utils.hpp"
 #include <array>
 #include <boost/foreach.hpp>
+#include <boost/variant/apply_visitor.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
 #include <random>
@@ -158,6 +159,17 @@ bool Shader::shadowTrace(const float distance, Ray &&ray) {
     return res;
 }
 
+struct FunctorIntersect : public ::boost::static_visitor<Intersection> {
+    mutable Intersection param;
+
+    FunctorIntersect(Intersection&& p) : param(p) {}
+
+    template <typename T>
+    Intersection operator()(T& light) const {
+        return light.intersect(::std::move(param));
+    }
+};
+
 /**
  * Helper method which calculates the nearest intersection point of a casted ray and the light sources.
  *
@@ -165,28 +177,25 @@ bool Shader::shadowTrace(const float distance, Ray &&ray) {
  * @return The intersection of the casted ray and the light sources.
  */
 Intersection Shader::traceLights(Intersection intersection) {
-    BOOST_FOREACH(Scene::TypeLights& vt, this->lights_) {
-        if (vt.which() == 0) {
-            intersection = ::boost::get<::Components::AreaLight>(vt).intersect(::std::move(intersection));
-        }
-        if (vt.which() == 1) {
-            intersection = ::boost::get<::Components::PointLight>(vt).intersect(::std::move(intersection));
-        }
+    BOOST_FOREACH(Scene::TypeLights &vt, this->lights_) {
+        intersection = ::boost::apply_visitor(FunctorIntersect{::std::move(intersection)}, vt);
     }
     return intersection;
 }
+
+struct FunctorResetSampling : public ::boost::static_visitor<void> {
+    template <typename T>
+    void operator()(T& value) const {
+        value.resetSampling();
+    }
+};
 
 /**
  * Resets the sampling process of all the lights in the scene.
  */
 void Shader::resetSampling() {
-    BOOST_FOREACH(Scene::TypeLights& vt, this->lights_) {
-        if (vt.which() == 0) {
-            ::boost::get<::Components::AreaLight>(vt).resetSampling();
-        }
-        if (vt.which() == 1) {
-            ::boost::get<::Components::PointLight>(vt).resetSampling();
-        }
+    BOOST_FOREACH(Scene::TypeLights &vt, this->lights_) {
+        ::boost::apply_visitor(FunctorResetSampling(), vt);
     }
 }
 
@@ -226,6 +235,13 @@ void Shader::resetSampling() {
     return direction;
 }
 
+struct FunctorGet : public ::boost::static_visitor<Light&> {
+    template <typename T>
+    T& operator()(T& value) const {
+        return value;
+    }
+};
+
 /**
  * Calculates the index of a random chosen light in the scene.
  *
@@ -242,11 +258,7 @@ Light& Shader::getLight() {
     const auto chosenLight {static_cast<::std::uint32_t> (::std::floor(randomNumber * sizeLights * 0.99999F))};
 
     Scene::TypeLights &light {this->lights_[chosenLight]};
-    if (light.which() == 0) {
-        return ::boost::get<::Components::AreaLight>(light);
-    } else {
-        return ::boost::get<::Components::PointLight>(light);
-    }
+    return ::boost::apply_visitor(FunctorGet(), light);
 }
 
 /**

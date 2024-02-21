@@ -114,7 +114,7 @@ jobs:
         logout: true
 
     - name: Pull Docker image
-      timeout-minutes: 150
+      timeout-minutes: 180
       if: success() && (startsWith(matrix.BASE_IMAGE, 'gentoo') || contains(matrix.BASE_IMAGE, 'osx') || contains(matrix.BASE_IMAGE, 'windows'))
       run: |
         # shellcheck disable=SC1091
