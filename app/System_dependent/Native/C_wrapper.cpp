@@ -110,17 +110,16 @@ static void work_thread(::MobileRT::Config &config) {
                     }
                     const auto endLoading {::std::chrono::system_clock::now()};
                     timeLoading = endLoading - startLoading;
-                    ::std::map<::std::string, ::MobileRT::Texture> texturesCache {};
+                    ::std::unordered_map<::std::string, ::MobileRT::Texture> texturesCache {};
                     LOG_DEBUG("OBJLoader loaded = ", ::std::chrono::duration_cast<::std::chrono::seconds>(timeLoading).count(), " seconds");
                     const auto startFilling {::std::chrono::system_clock::now()};
-                    // "objLoader.fillScene(&scene, []() {return ::MobileRT::std::make_unique<::Components::HaltonSeq> ();});"
-                    // "objLoader.fillScene(&scene, []() {return ::MobileRT::std::make_unique<::Components::MersenneTwister> ();});"
-                    objLoader.fillScene(&scene, []() {return ::MobileRT::std::make_unique<Components::StaticHaltonSeq> (); },
-                                        config.objFilePath,
-                                        texturesCache
+                    objLoader.fillScene(
+                        &scene,
+                        []() { return ::MobileRT::std::make_unique<Components::StaticHaltonSeq> (); },
+                        config.objFilePath,
+                        texturesCache
                     );
                     ::MobileRT::checkSystemError("Filled Scene.");
-                    // "objLoader.fillScene(&scene, []() {return ::MobileRT::std::make_unique<Components::StaticMersenneTwister> ();});"
                     const auto endFilling {::std::chrono::system_clock::now()};
                     timeFilling = endFilling - startFilling;
                     texturesCache.clear();

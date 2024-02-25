@@ -53,7 +53,6 @@ bool Whitted::shade(::glm::vec3 *const rgb, const Intersection &intersection) {
                     //intersection between shadow ray and the closest primitive
                     //if there are no primitives between intersection and the light
                     if (!shadowTrace(distanceToLight, ::std::move(shadowRay))) {
-                        // "rgb += kD * radLight * cosNl;"
                         *rgb += light.radiance_.Le_ * cosNl;
                     }
                 }

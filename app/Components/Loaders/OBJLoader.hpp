@@ -3,9 +3,10 @@
 
 #include "MobileRT/ObjectLoader.hpp"
 #include "MobileRT/Sampler.hpp"
+#include "MobileRT/Scene.hpp"
 #include "MobileRT/Texture.hpp"
 
-#include <map>
+#include <unordered_map>
 #include <tinyobjloader/tiny_obj_loader.h>
 
 namespace Components {
@@ -41,7 +42,7 @@ namespace Components {
         bool fillScene(::MobileRT::Scene *scene,
                        ::std::function<::std::unique_ptr<::MobileRT::Sampler>()> lambda,
                        ::std::string filePath,
-                       ::std::map<::std::string, ::MobileRT::Texture> texturesCache) final;
+                       ::std::unordered_map<::std::string, ::MobileRT::Texture> texturesCache) final;
 
     private:
         triple<::glm::vec3, ::glm::vec3, ::glm::vec3> loadNormal(
@@ -53,9 +54,15 @@ namespace Components {
             const ::tinyobj::shape_t &shape,
             ::std::int32_t indexOffset) const;
 
+        const ::MobileRT::Texture& getTextureFromCache(
+            ::std::unordered_map<::std::string, ::MobileRT::Texture> *const texturesCache,
+            const ::std::string &filePath,
+            const ::std::string &texPath
+        );
+
     public:
         static const ::MobileRT::Texture& getTextureFromCache(
-            ::std::map<::std::string, ::MobileRT::Texture> *const texturesCache,
+            ::std::unordered_map<::std::string, ::MobileRT::Texture> *const texturesCache,
             ::std::string &&textureBinary,
             long size,
             const ::std::string &texPath);

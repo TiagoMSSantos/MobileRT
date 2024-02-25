@@ -239,13 +239,32 @@ execute() {
   #perf report -g '' --show-nr-samples --hierarchy;
 }
 
+# Params:
+# * width and height
+# * asynchronous - If false, MobileRT will not show rendered image and will exit when the scene is rendered.
 debug() {
+  set +u;
+  if [ -z "${1}" ]; then
+    WIDTH='900';
+    HEIGHT='900';
+  else
+    WIDTH="${1}";
+    HEIGHT="${1}";
+  fi
+  if [ -z "${1}" ]; then
+    ASYNC='true';
+  else
+    ASYNC="${2}";
+  fi
+  set -u;
+
   echo '';
   echo "THREAD = ${THREAD}";
   echo "SHADER = ${SHADER}";
   echo "SCENE = ${SCENE}";
   echo "ACC = ${ACC}";
 
+  # gdb --args \
   "${BIN_DEBUG_EXE}" \
     "${THREAD}" "${SHADER}" "${SCENE}" "${SPP}" "${SPL}" "${WIDTH}" "${HEIGHT}" "${ACC}" \
     "${REP}" "${OBJ}" "${MTL}" "${CAM}" "${PRINT}" "${ASYNC}" "${SHOWIMAGE}";
@@ -434,23 +453,22 @@ parseArguments() {
       'draws')
         sh scripts/plot/plot.sh 'draws' ;;
       'test') awk -f "${PLOT_SCRIPTS_PATH}/parser_median.awk" "${PLOT_SCRIPTS_PATH}/test.dat" ;;
-      'release')
+      'debug' | 'release')
         if [ "$#" -lt 2 ]; then
           echo 'Executing using default resolution & scene.';
-          execute;
+          if [ "${1}" = 'release' ]; then execute; else debug; fi
         else
           if [ "$#" -gt 2 ]; then
             echo "Executing using resolution '${2}' & scene '${3}'.";
             setScene "${3}";
           fi
           if [ "$#" -gt 3 ]; then
-            execute "${2}" "${4}";
+            if [ "${1}" = 'release' ]; then execute "${2}" "${4}"; else debug "${2}" "${4}"; fi
           else
-            execute "${2}";
+            if [ "${1}" = 'release' ]; then execute "${2}"; else debug "${2}"; fi
           fi
         fi
         ;;
-      'debug') debug ;;
       'tidy') clangtidy ;;
       'gtest') "${BIN_DEBUG_PATH}"/UnitTestsd ;;
       *)

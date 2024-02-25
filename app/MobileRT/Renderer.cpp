@@ -137,7 +137,6 @@ void Renderer::renderScene(::std::int32_t *const bitmap, const ::std::int32_t ti
                     const auto r2 {this->samplerPixel_->getSample()};
                     const auto deviationU {(r1 - 0.5F) * 2.0F * pixelWidth};
                     const auto deviationV {(r2 - 0.5F) * 2.0F * pixelHeight};
-                    // LOG_DEBUG("(tid: ", tid, ") Generating ray, u: ", u, ", v: ", v, ", deviationU: ", deviationU, ", deviationV: ", deviationV);
                     auto &&ray {this->camera_->generateRay(u, v, deviationU, deviationV)};
                     pixelRgb = {};
                     LOG_DEBUG(

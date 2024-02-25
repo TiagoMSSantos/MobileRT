@@ -19,5 +19,5 @@ void ::Dependent::printWarn(const ::std::string &log) {
 }
 
 void ::Dependent::printError(const ::std::string &log) {
-    ::std::cerr << log.c_str();
+    ::std::cerr << log.c_str() << ::std::endl << ::std::flush;
 }

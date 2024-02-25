@@ -199,8 +199,8 @@ namespace MobileRT {
         LOG_DEBUG("num_max_threads = ", num_max_threads);
 
         ::MobileRT::checkSystemError("RegularGrid addPrimitives before adding primitives");
-        #pragma omp parallel for
         // store primitives in the grid cells
+        #pragma omp parallel for
         for (::std::int32_t index = 0; index < static_cast<::std::int32_t> (numPrimitives); ++index) {
             ::MobileRT::checkSystemError(::std::string("RegularGrid addPrimitives (" + ::std::to_string(index) + ")").c_str());
             auto &primitive {this->primitives_[static_cast<::std::uint32_t> (index)]};
@@ -244,13 +244,11 @@ namespace MobileRT {
                                 worldBoundsMin[2] + static_cast<float>(z) * dz
                         };
                         const AABB cell {pos, pos + ::glm::vec3 {dx, dy, dz}};
-                        //LOG_DEBUG("min=(", pos[0], ", ", pos[1], ", ", pos[2], ") max=(", dx, ", ", dy, ",", dz, ")");
                         // do an accurate aabb / primitive intersection test
                         const auto intersectedBox {primitive.intersect(cell)};
                         if (intersectedBox) {
                             ::std::lock_guard<::std::mutex> lock {mutexes[idx]};
                             this->grid_[idx].emplace_back(&primitive);
-                            // "LOG_DEBUG("add idx = ", idx, " index = ", index);"
                         }
                     }
                 }
