@@ -22,6 +22,7 @@
 #include <vector>
 
 namespace MobileRT {
+
 #define LOG_DEBUG(...) \
     ::Dependent::printDebug( \
         ::MobileRT::convertToString(::MobileRT::getFileName(__FILE__), ":", __LINE__, ": ", __VA_ARGS__) \

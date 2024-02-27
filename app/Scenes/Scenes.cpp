@@ -18,18 +18,18 @@ using ::Components::StaticHaltonSeq;
 
 namespace {
     const Material lightMat {::glm::vec3 {0.0F, 0.0F, 0.0F},
-                                    ::glm::vec3 {0.0F, 0.0F, 0.0F},
-                                    ::glm::vec3 {0.0F, 0.0F, 0.0F},
-                                    1.0F,
-                                    ::glm::vec3 {0.9F, 0.9F, 0.9F}};
+                                ::glm::vec3 {0.0F, 0.0F, 0.0F},
+                                ::glm::vec3 {0.0F, 0.0F, 0.0F},
+                                1.0F,
+                                ::glm::vec3 {0.9F, 0.9F, 0.9F}};
 
     const Material mirrorMat {::glm::vec3 {0.0F, 0.0F, 0.0F},
-                                     ::glm::vec3 {0.9F, 0.9F, 0.9F},
-                                     ::glm::vec3 {0.0F, 0.0F, 0.0F}, 1.0F};
+                                ::glm::vec3 {0.9F, 0.9F, 0.9F},
+                                ::glm::vec3 {0.0F, 0.0F, 0.0F}, 1.0F};
 
     const Material transmissionMat {::glm::vec3 {0.0F, 0.0F, 0.0F},
-                                           ::glm::vec3 {0.0F, 0.0F, 0.0F},
-                                           ::glm::vec3 {0.9F, 0.9F, 0.9F}, 1.9F};
+                                        ::glm::vec3 {0.0F, 0.0F, 0.0F},
+                                        ::glm::vec3 {0.9F, 0.9F, 0.9F}, 1.9F};
 
     const Material lightGrayMat {::glm::vec3 {0.7F, 0.7F, 0.7F}};
 
@@ -46,9 +46,9 @@ namespace {
     const Material lightBlueMat {::glm::vec3 {0.0F, 0.9F, 0.9F}};
 
     Triangle::Builder triangleBuilder {Triangle::Builder(
-            ::glm::vec3 {0.5F, -0.5F, 0.99F},
-            ::glm::vec3 {0.5F, 0.5F, 1.001F},
-            ::glm::vec3 {-0.5F, -0.5F, 0.99F}
+        ::glm::vec3 {0.5F, -0.5F, 0.99F},
+        ::glm::vec3 {0.5F, 0.5F, 1.001F},
+        ::glm::vec3 {-0.5F, -0.5F, 0.99F}
     )};
 
     const ::glm::vec3 back {0.0F, 0.0F, 1.0F};
@@ -109,13 +109,13 @@ inline Scene cornellBox(Scene scene) {
 Scene cornellBox_Scene(Scene scene) {
     LOG_DEBUG("SCENE: cornellBox_Scene");
     scene.lights_.emplace_back(::MobileRT::std::make_unique<PointLight> (
-            lightMat,
-            ::glm::vec3 {0.0F, 0.99F, 0.0F}
+        lightMat,
+        ::glm::vec3 {0.0F, 0.99F, 0.0F}
     ));
 
     // triangle - yellow
     const Triangle triangle {
-            triangleBuilder.withMaterialIndex(static_cast<::std::int32_t> (scene.materials_.size())).build()
+        triangleBuilder.withMaterialIndex(static_cast<::std::int32_t> (scene.materials_.size())).build()
     };
 
     scene.triangles_.emplace_back(triangle);
@@ -123,12 +123,12 @@ Scene cornellBox_Scene(Scene scene) {
 
     // sphere - mirror
     scene.spheres_.emplace_back(Sphere {
-            ::glm::vec3 {0.45F, -0.65F, 0.4F}, 0.35F, static_cast<::std::int32_t> (scene.materials_.size())});
+        ::glm::vec3 {0.45F, -0.65F, 0.4F}, 0.35F, static_cast<::std::int32_t> (scene.materials_.size())});
     scene.materials_.emplace_back(mirrorMat);
 
     // sphere - green
     scene.spheres_.emplace_back(Sphere {
-            ::glm::vec3 {-0.45F, -0.1F, 0.0F}, 0.35F, static_cast<::std::int32_t> (scene.materials_.size())});
+        ::glm::vec3 {-0.45F, -0.1F, 0.0F}, 0.35F, static_cast<::std::int32_t> (scene.materials_.size())});
     scene.materials_.emplace_back(greenMat);
 
     scene = cornellBox(::std::move(scene));
@@ -141,10 +141,10 @@ Scene cornellBox_Scene(Scene scene) {
     const auto fovX {45.0F * ratio};
     const auto fovY {45.0F};
     auto res {::MobileRT::std::make_unique<Components::Perspective> (
-            ::glm::vec3 {0.0F, 0.0F, -3.4F},
-            ::glm::vec3 {0.0F, 0.0F, 1.0F},
-            ::glm::vec3 {0.0F, 1.0F, 0.0F},
-            fovX, fovY
+        ::glm::vec3 {0.0F, 0.0F, -3.4F},
+        ::glm::vec3 {0.0F, 0.0F, 1.0F},
+        ::glm::vec3 {0.0F, 1.0F, 0.0F},
+        fovX, fovY
     )};
     return ::std::move(res);
 }
@@ -155,21 +155,21 @@ Scene cornellBox2_Scene(Scene scene) {
     ::std::unique_ptr<Sampler> samplerPoint2 {::MobileRT::std::make_unique<StaticHaltonSeq> ()};
 
     const Triangle triangle1 {
-            Triangle::Builder(
-                    ::glm::vec3{-0.25F, 0.99F, -0.25F},
-                    ::glm::vec3{0.25F, 0.99F, -0.25F},
-                    ::glm::vec3{0.25F, 0.99F, 0.25F}
-            )
-                    .build()
+        Triangle::Builder(
+            ::glm::vec3{-0.25F, 0.99F, -0.25F},
+            ::glm::vec3{0.25F, 0.99F, -0.25F},
+            ::glm::vec3{0.25F, 0.99F, 0.25F}
+        )
+        .build()
     };
 
     const Triangle triangle2 {
-            Triangle::Builder(
-                    ::glm::vec3{0.25F, 0.99F, 0.25F},
-                    ::glm::vec3{-0.25F, 0.99F, 0.25F},
-                    ::glm::vec3{-0.25F, 0.99F, -0.25F}
-            )
-                    .build()
+        Triangle::Builder(
+            ::glm::vec3{0.25F, 0.99F, 0.25F},
+            ::glm::vec3{-0.25F, 0.99F, 0.25F},
+            ::glm::vec3{-0.25F, 0.99F, -0.25F}
+        )
+        .build()
     };
 
     scene.lights_.emplace_back(::MobileRT::std::make_unique<AreaLight> (
@@ -195,13 +195,13 @@ Scene cornellBox2_Scene(Scene scene) {
     // triangle - green
 
     const Triangle triangle4 {
-            Triangle::Builder(
-                    ::glm::vec3 {-0.5F, 0.5F, 0.99F},
-                    ::glm::vec3 {-0.5F, -0.5F, 0.99F},
-                    ::glm::vec3 {0.5F, 0.5F, 0.99F}
-            )
-            .withMaterialIndex(static_cast<::std::int32_t> (scene.materials_.size()))
-            .build()
+        Triangle::Builder(
+            ::glm::vec3 {-0.5F, 0.5F, 0.99F},
+            ::glm::vec3 {-0.5F, -0.5F, 0.99F},
+            ::glm::vec3 {0.5F, 0.5F, 0.99F}
+        )
+        .withMaterialIndex(static_cast<::std::int32_t> (scene.materials_.size()))
+        .build()
     };
 
     scene.triangles_.emplace_back(triangle4);
@@ -209,14 +209,14 @@ Scene cornellBox2_Scene(Scene scene) {
 
     // sphere - mirror
     scene.spheres_.emplace_back(Sphere {
-            ::glm::vec3 {0.45F, -0.65F, 0.4F}, 0.35F,
-            static_cast<::std::int32_t> (scene.materials_.size())});
+        ::glm::vec3 {0.45F, -0.65F, 0.4F}, 0.35F,
+        static_cast<::std::int32_t> (scene.materials_.size())});
     scene.materials_.emplace_back(mirrorMat);
 
     // sphere - transmission
     scene.spheres_.emplace_back(Sphere {
-            ::glm::vec3 {-0.4F, -0.3F, 0.0F}, 0.35F,
-            static_cast<::std::int32_t> (scene.materials_.size())});
+        ::glm::vec3 {-0.4F, -0.3F, 0.0F}, 0.35F,
+        static_cast<::std::int32_t> (scene.materials_.size())});
     scene.materials_.emplace_back(transmissionMat);
 
     scene = cornellBox(::std::move(scene));
@@ -234,13 +234,13 @@ Scene spheres_Scene(Scene scene) {
     scene.materials_.emplace_back(redMat);
 
     const Triangle triangle {
-            Triangle::Builder(
-                    ::glm::vec3 {0.0F, 10.0F, 10.0F},
-                    ::glm::vec3 {0.0F, 0.0F, 10.0F},
-                    ::glm::vec3 {10.0F, 0.0F, 10.0F}
-            )
-            .withMaterialIndex(static_cast<::std::int32_t> (scene.materials_.size()))
-            .build()
+        Triangle::Builder(
+            ::glm::vec3 {0.0F, 10.0F, 10.0F},
+            ::glm::vec3 {0.0F, 0.0F, 10.0F},
+            ::glm::vec3 {10.0F, 0.0F, 10.0F}
+        )
+        .withMaterialIndex(static_cast<::std::int32_t> (scene.materials_.size()))
+        .build()
     };
 
     scene.triangles_.emplace_back(triangle);
@@ -253,10 +253,10 @@ Scene spheres_Scene(Scene scene) {
     const auto sizeH {10.0F * ratio};
     const auto sizeV {10.0F};
     auto res {::MobileRT::std::make_unique<Components::Orthographic> (
-            ::glm::vec3 {0.0F, 1.0F, -10.0F},
-            ::glm::vec3 {0.0F, 1.0F, 7.0F},
-            ::glm::vec3 {0.0F, 1.0F, 0.0F},
-            sizeH, sizeV
+        ::glm::vec3 {0.0F, 1.0F, -10.0F},
+        ::glm::vec3 {0.0F, 1.0F, 7.0F},
+        ::glm::vec3 {0.0F, 1.0F, 0.0F},
+        sizeH, sizeV
     )};
     return ::std::move(res);
 }
@@ -293,10 +293,10 @@ Scene spheres2_Scene(Scene scene) {
     const auto fovX {60.0F * ratio};
     const auto fovY {60.0F};
     auto  res {::MobileRT::std::make_unique<Components::Perspective> (
-            ::glm::vec3{0.0F, 0.5F, 1.0F},
-            ::glm::vec3{0.0F, 0.0F, 7.0F},
-            ::glm::vec3{0.0F, 1.0F, 0.0F},
-            fovX, fovY
+        ::glm::vec3{0.0F, 0.5F, 1.0F},
+        ::glm::vec3{0.0F, 0.0F, 7.0F},
+        ::glm::vec3{0.0F, 1.0F, 0.0F},
+        fovX, fovY
     )};
     return ::std::move(res);
 }

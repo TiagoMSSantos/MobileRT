@@ -5,7 +5,7 @@
 #include "MobileRT/Scene.hpp"
 #include "MobileRT/Shapes/Triangle.hpp"
 #include <functional>
-#include <map>
+#include <unordered_map>
 #include <memory>
 #include <string>
 
@@ -50,7 +50,7 @@ namespace MobileRT {
         virtual bool fillScene(Scene *scene,
                                ::std::function<::std::unique_ptr<Sampler>()> lambda,
                                ::std::string filePath,
-                               ::std::map<::std::string, ::MobileRT::Texture> texturesCache) = 0;
+                               ::std::unordered_map<::std::string, ::MobileRT::Texture> texturesCache) = 0;
     };
 }//namespace MobileRT
 

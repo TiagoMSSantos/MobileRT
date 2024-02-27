@@ -101,7 +101,7 @@ static ::std::string camDefinition_ {};
 /**
  * The cache for textures.
  */
-static ::std::map<::std::string, ::MobileRT::Texture> texturesCache_ {};
+static ::std::unordered_map<::std::string, ::MobileRT::Texture> texturesCache_ {};
 
 
 /**
@@ -597,10 +597,11 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
                         if (!objLoader.isProcessed()) {
                             return -1;
                         }
-                        const auto sceneBuilt {objLoader.fillScene(&scene,
+                        const auto sceneBuilt {objLoader.fillScene(
+                            &scene,
                             []() {return ::MobileRT::std::make_unique<Components::StaticPCG>();},
-                           objFilePath,
-                           texturesCache_
+                            objFilePath,
+                            texturesCache_
                         )};
                         texturesCache_.clear();
                         MobileRT::checkSystemError("rtInitialize after filling scene");

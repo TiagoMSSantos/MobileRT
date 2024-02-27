@@ -59,11 +59,16 @@ Texture Texture::createTexture(::std::string &&textureBinary, const long size) {
     ::std::int32_t width {};
     ::std::int32_t height {};
     ::std::int32_t channels {};
-    const auto info {stbi_info_from_memory(reinterpret_cast<unsigned char const *> (textureBinary.c_str()), static_cast<int> (size), &width, &height, &channels)};
-    ::std::uint8_t *data {stbi_load_from_memory(reinterpret_cast<unsigned char const *> (textureBinary.c_str()), static_cast<int> (size), &width, &height, &channels, 0)};
+    const int info {stbi_info_from_memory(reinterpret_cast<unsigned char const *> (textureBinary.c_str()), static_cast<int> (size), &width, &height, &channels)};
+    if (info <= 0) {
+        const char *error {stbi_failure_reason()};
+        LOG_ERROR("Error reading texture: ", error);
+        throw ::std::runtime_error {error};
+    }
+    ::std::uint8_t *const data {stbi_load_from_memory(reinterpret_cast<unsigned char const *> (textureBinary.c_str()), static_cast<int> (size), &width, &height, &channels, 0)};
     LOG_DEBUG("new Texture: ", width, "x", height, ", c: ", channels, ", info: ", info);
-    if (data == nullptr) {
-        const auto &error {stbi_failure_reason()};
+    if (data == nullptr || width <= 0 || height <= 0 || channels <= 0) {
+        const char *error {stbi_failure_reason()};
         LOG_ERROR("Error reading texture: ", error);
         throw ::std::runtime_error {error};
     }
@@ -72,6 +77,7 @@ Texture Texture::createTexture(::std::string &&textureBinary, const long size) {
         LOG_DEBUG("Deleted texture");
     }};
     Texture texture {pointer, width, height, channels};
+    ::MobileRT::checkSystemError("Created Texture.");
     return texture;
 }
 
@@ -85,19 +91,25 @@ Texture Texture::createTexture(const ::std::string &texturePath) {
     ::std::int32_t width {};
     ::std::int32_t height {};
     ::std::int32_t channels {};
-    const auto info {stbi_info(texturePath.c_str(), &width, &height, &channels)};
-    ::std::uint8_t *data {stbi_load(texturePath.c_str(), &width, &height, &channels, 0)};
+    ::MobileRT::checkSystemError(("Loading Texture from: " + texturePath).c_str());
+    const int info {stbi_info(texturePath.c_str(), &width, &height, &channels)};
+    if (info <= 0) {
+        const char *error {stbi_failure_reason()};
+        LOG_ERROR("Error reading texture: ", error);
+        throw ::std::runtime_error {error};
+    }
+    ::std::uint8_t *const data {stbi_load(texturePath.c_str(), &width, &height, &channels, 0)};
     LOG_DEBUG("new Texture: ", width, "x", height, ", c: ", channels, ", info: ", info);
-    if (data == nullptr) {
-        const auto &error {stbi_failure_reason()};
+    if (data == nullptr || width <= 0 || height <= 0 || channels <= 0) {
+        const char *error {stbi_failure_reason()};
         LOG_ERROR("Error reading texture: ", error);
         throw ::std::runtime_error {error};
     }
     ::std::shared_ptr<::std::uint8_t> pointer {data, [](::std::uint8_t *const internalData) {
         stbi_image_free(internalData);
-        // LOG_DEBUG("Deleted texture");
     }};
     Texture texture {pointer, width, height, channels};
+    ::MobileRT::checkSystemError("Created Texture.");
     return texture;
 }
 

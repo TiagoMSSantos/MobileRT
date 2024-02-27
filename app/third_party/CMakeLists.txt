@@ -66,10 +66,10 @@ execute_process(COMMAND git submodule foreach "git fetch --tags --all;"
 # Set stable versions to be used
 ###############################################################################
 set( BOOST_VERSION "boost-1.84.0" )
-set( GLM_VERSION "1.0.0" )
+set( GLM_VERSION "1.0.1" )
 set( STB_VERSION "master" )
 set( TINYOBJLOADER_VERSION "v1.0.7" )
-set( GOOGLETEST_VERSION "v1.14.0" )
+set( GOOGLETEST_VERSION "release-1.12.1" )
 set( PCG_CPP_VERSION "master" )
 ###############################################################################
 ###############################################################################
@@ -187,7 +187,7 @@ message( STATUS "Adding C++ Boost dependencies." )
 set( BOOST_PATH "${CMAKE_CURRENT_SOURCE_DIR}/boost/libs" )
 
 message( STATUS "Updating and adding all C++ Boost modules used." )
-foreach( submodule assert )
+foreach( submodule assert variant type_index config container_hash throw_exception core mpl detail preprocessor call_traits utility type_traits static_assert integer foreach range iterator )
   execute_process( COMMAND git submodule update --init --rebase
     ${BOOST_PATH}/${submodule}
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/boost )

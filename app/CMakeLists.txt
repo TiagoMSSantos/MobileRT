@@ -38,10 +38,11 @@ message( STATUS "Adding custom default flags for all third party projects." )
 
 message( STATUS "Setting default compiler flags." )
 set( ANDROID_COMPILER_FLAGS "" CACHE STRING "CUSTOM" FORCE )
+set( CMAKE_CXX_STANDARD "11" CACHE STRING "CUSTOM" FORCE )
 
 if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
     # PIC: Position Independent Code
-    set( CMAKE_CXX_FLAGS "-std=c++11 -fPIC -Bsymbolic -Bsymbolic-functions"
+    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -Bsymbolic -Bsymbolic-functions"
       CACHE STRING "CUSTOM" FORCE )
 endif()
 # _GLIBCXX_DEBUG: activate debug mode and all the assertions
@@ -203,6 +204,16 @@ set( COMMON_LINKER_FLAGS_RELEASE "" )
 ###############################################################################
 ###############################################################################
 
+message( STATUS "Use C++11 in all variants." )
+if( CMAKE_HOST_WIN32 MATCHES "1" AND ( CMAKE_CXX_COMPILER MATCHES "clang" OR CMAKE_CXX_COMPILER MATCHES "g[++]") AND CMAKE_BUILD_TOOL MATCHES "MSBuild" )
+  set( COMMON_FLAGS "${COMMON_FLAGS}" /std=c++11 )
+elseif( CMAKE_HOST_WIN32 MATCHES "1" AND CMAKE_BUILD_TOOL MATCHES "MSBuild" )
+  set( COMMON_FLAGS "${COMMON_FLAGS}" /std:c++11 )
+else()
+  set( COMMON_FLAGS "${COMMON_FLAGS}" -std=c++11 )
+  set( COMMON_LINKER_FLAGS "${COMMON_LINKER_FLAGS}" -std=c++11 )
+endif()
+
 message( STATUS
   "Setting up the name of the OS and the proper interface layer." )
 message( STATUS "Host system: ${CMAKE_HOST_SYSTEM_NAME}." )
@@ -214,6 +225,10 @@ if( DEFINED ANDROID_ABI )
   set( MOBILE_DEPENDENT_HEADERS
     "${CMAKE_SOURCE_DIR}/System_dependent/Android_JNI" )
   set( COMMON_FLAGS "${COMMON_FLAGS}" -stdlib=libc++ )
+  CHECK_CXX_COMPILER_FLAG( "-Wno-unsafe-buffer-usage" COMPILER_SUPPORTS_FLAG )
+  if( COMPILER_SUPPORTS_FLAG )
+    set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-unsafe-buffer-usage )
+  endif()
 else()
   message( STATUS "Detected Native OS." )
 
@@ -319,10 +334,11 @@ if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
 endif()
 
 if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
+  message( STATUS "Not using Windows." )
   if( DEFINED ANDROID_ABI OR CMAKE_CXX_COMPILER MATCHES "clang"
     OR (CMAKE_CXX_COMPILER MATCHES "g[++]" AND NOT CMAKE_CXX_COMPILER MATCHES "clang")
   )
-    set( COMMON_FLAGS "${COMMON_FLAGS}" -std=c++11 )
+    message( STATUS "Detected Android or Clang compiler. or GCC compiler." )
   endif()
   # Turn off C++98 pedantic warning so it can use C++11 features
   set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-c++98-compat-pedantic )
