@@ -40,7 +40,7 @@
 
 | Android                                                              | Linux                                                             |
 |:--------------------------------------------------------------------:|:-----------------------------------------------------------------:|
-| <img src="Example_Android.gif" alt="MobileRT: Android" width="300"/> | <img src="Example_Linux.gif" alt="MobileRT: Linux" height="225"/> |
+| <img src="Example_Android.gif" alt="MobileRT: Android" width="350"/> | <img src="Example_Linux.gif" alt="MobileRT: Linux" height="263"/> |
 
 ## Run docker image
 
