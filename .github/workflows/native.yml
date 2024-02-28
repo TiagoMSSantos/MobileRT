@@ -162,7 +162,7 @@ jobs:
 
     - name: Install Qt (Windows & MacOS)
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-      if: success() && (startsWith(matrix.os, 'windows') || startsWith(matrix.os, 'macos-11') || startsWith(matrix.os, 'macos-12') || startsWith(matrix.os, 'macos-13'))
+      if: success() && (startsWith(matrix.os, 'windows') || startsWith(matrix.os, 'macos-11'))
       uses: jurplel/install-qt-action@v3
       # Download Qt from: https://download.qt.io/online/qtsdkrepository/
       with:
@@ -205,12 +205,16 @@ jobs:
         set -e;
         if [ "${qtPathFromHomebrewForMacOS14}" = '0' ]; then
           echo 'Adding Qt v5 lib path to compiler in MacOS-14';
-          echo "Qt5_DIR=/opt/homebrew/Cellar/qt@5/5.15.12/lib/cmake/Qt5" >> "${GITHUB_ENV}";
+          qtVersion=$(ls -t '/opt/homebrew/Cellar/qt@5/' | head -1);
+          echo "Detected Qt version: ${qtVersion}";
+          echo "Qt5_DIR=/opt/homebrew/Cellar/qt@5/${qtVersion}/lib/cmake/Qt5" >> "${GITHUB_ENV}";
           echo "CPPFLAGS=${CPPFLAGS} -I/opt/homebrew/opt/qt@5/include" >> "${GITHUB_ENV}";
           echo "LDFLAGS=${LDFLAGS} -L/opt/homebrew/opt/qt@5/lib" >> "${GITHUB_ENV}";
         elif [ "${qtPathFromHomebrewForMacOS13}" = '0' ]; then
           echo 'Adding Qt v5 lib path to compiler in MacOS-13 & MacOS-12';
-          echo "Qt5_DIR=/usr/local/Cellar/qt@5/5.15.12/lib/cmake/Qt5" >> "${GITHUB_ENV}";
+          qtVersion=$(ls -t '/usr/local/Cellar/qt@5/' | head -1);
+          echo "Detected Qt version: ${qtVersion}";
+          echo "Qt5_DIR=/usr/local/Cellar/qt@5/${qtVersion}/lib/cmake/Qt5" >> "${GITHUB_ENV}";
           echo "CPPFLAGS=${CPPFLAGS} -I/usr/local/opt/qt@5/include" >> "${GITHUB_ENV}";
           echo "LDFLAGS=${LDFLAGS} -L/usr/local/opt/qt@5/lib" >> "${GITHUB_ENV}";
         elif [ "${qtPathFromMacPortsForMacOS11}" = '0' ]; then

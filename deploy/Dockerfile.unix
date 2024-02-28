@@ -120,10 +120,10 @@ RUN \
   # Configure git
   git config --global http.postBuffer 1048576000; \
   git config --global https.postBuffer 1048576000; \
-  git config --global core.compression -1; \
+  git config --global core.compression 0; \
   git config --global http.sslVerify "false"; \
   # Clone repository
-  git clone https://github.com/TiagoMSSantos/MobileRT.git \
+  git clone --depth 1 https://github.com/TiagoMSSantos/MobileRT.git \
   --shallow-submodules \
   --progress \
   --branch ${BRANCH} && \

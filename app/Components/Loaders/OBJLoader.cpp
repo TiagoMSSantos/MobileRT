@@ -2,6 +2,7 @@
 #include "Components/Lights/AreaLight.hpp"
 #include <cstring>
 #include <fstream>
+#include <omp.h>
 #include <unordered_map>
 #include <tuple>
 #include <utility>
@@ -76,6 +77,11 @@ bool OBJLoader::fillScene(Scene *const scene,
     LOG_DEBUG("FILLING SCENE with ", this->numberTriangles_, " triangles in ", this->shapes_.size(), " shapes & ", this->materials_.size(), " materials.");
     filePath = filePath.substr(0, filePath.find_last_of('/')) + '/';
     const ::std::int32_t shapesSize {static_cast<::std::int32_t> (this->shapes_.size())};
+
+    ::MobileRT::checkSystemError("Starting to fill scene.");
+    const int num_max_threads {omp_get_max_threads()};
+    errno = 0; // In some compilers, OpenMP sets 'errno' to 'EFAULT - Bad address (14)'.
+    LOG_DEBUG("num_max_threads = ", num_max_threads);
 
     #pragma omp parallel shared(scene)
     {

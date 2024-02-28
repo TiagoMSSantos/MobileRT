@@ -60,9 +60,16 @@ fi
 ###############################################################################
 
 if [ "$#" -lt 2 ]; then
-  expected='124'; # Expects to return timeout.
+  expectedReturnValue='124'; # Expects to return timeout.
 else
-  expected="${2}"; # Expects a custom return value.
+  expectedReturnValue="${2}"; # Expects a custom return value.
+fi
+
+if echo "${1}" | grep -q "osx"; then
+  # Increase timeout for MacOS docker image.
+  MOBILERT_TIMEOUT='45';
+else
+  MOBILERT_TIMEOUT='15';
 fi
 
 # Whether the tests passed or failed.
@@ -83,7 +90,7 @@ testMobileRTContainer() {
   _logFile='docker_test.log';
 
   removeAllContainers;
-  echo "Starting test - testMobileRTContainer: ${_mobilertVersion} (expecting return ${expected})";
+  echo "Starting test - testMobileRTContainer: ${_mobilertVersion} (expecting return ${expectedReturnValue}) (timeout: ${MOBILERT_TIMEOUT})";
 
   rm -f /tmp/fd3;
   set +e;
@@ -95,7 +102,7 @@ testMobileRTContainer() {
     --init \
     --name="${_mobilertVersion}" \
     ptpuscas/mobile_rt:"${_mobilertVersion}" \
-    -c "timeout 15 sh scripts/profile.sh ${_mode} 100" || echo "$?" >&3) | tee "${_logFile}";
+    -c "timeout ${MOBILERT_TIMEOUT} sh scripts/profile.sh ${_mode} 100 conference true" || echo "$?" >&3) | tee "${_logFile}";
   returnValue=$(cat /tmp/fd3);
   exec 3>&-; # Close file descriptor 3.
   set -e;
@@ -121,7 +128,7 @@ testMobileRTContainer() {
   rm "${_logFile}";
   echo 'Validated that MobileRT finished rendering the scene.';
 
-  assertEqual "${expected}" "${returnValue}" "testMobileRTContainer: ${_mobilertVersion}";
+  assertEqual "${expectedReturnValue}" "${returnValue}" "testMobileRTContainer: ${_mobilertVersion}";
   removeAllContainers;
 }
 

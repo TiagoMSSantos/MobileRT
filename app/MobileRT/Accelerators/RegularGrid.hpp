@@ -194,7 +194,7 @@ namespace MobileRT {
         ::std::vector<::std::mutex> mutexes (this->grid_.size());
 
         ::MobileRT::checkSystemError("RegularGrid addPrimitives before calling OpenMP");
-        const auto num_max_threads {omp_get_max_threads()};
+        const int num_max_threads {omp_get_max_threads()};
         errno = 0; // In some compilers, OpenMP sets 'errno' to 'EFAULT - Bad address (14)'.
         LOG_DEBUG("num_max_threads = ", num_max_threads);
 

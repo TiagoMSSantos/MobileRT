@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-02-27T09:12:23.699Z",
+    "detectionDate": "2024-02-28T20:56:00.678Z",
     "formats": {
       "java": {
         "sources": {
@@ -1465,14 +1465,14 @@
             "newClones": 0
           },
           "app/Components/Loaders/OBJLoader.cpp": {
-            "lines": 482,
-            "tokens": 5755,
+            "lines": 487,
+            "tokens": 5800,
             "sources": 1,
             "clones": 8,
             "duplicatedLines": 94,
             "duplicatedTokens": 1072,
-            "percentage": 19.5,
-            "percentageTokens": 18.63,
+            "percentage": 19.3,
+            "percentageTokens": 18.48,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -1790,8 +1790,8 @@
           }
         },
         "total": {
-          "lines": 5672,
-          "tokens": 54608,
+          "lines": 5677,
+          "tokens": 54653,
           "sources": 56,
           "clones": 29,
           "duplicatedLines": 278,
@@ -1913,14 +1913,14 @@
             "newClones": 0
           },
           ".github/workflows/native.yml": {
-            "lines": 420,
-            "tokens": 2412,
+            "lines": 424,
+            "tokens": 2392,
             "sources": 1,
             "clones": 9,
             "duplicatedLines": 196,
             "duplicatedTokens": 1182,
-            "percentage": 46.67,
-            "percentageTokens": 49,
+            "percentage": 46.23,
+            "percentageTokens": 49.41,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2082,14 +2082,14 @@
           }
         },
         "total": {
-          "lines": 2660,
-          "tokens": 17480,
+          "lines": 2664,
+          "tokens": 17460,
           "sources": 23,
           "clones": 17,
           "duplicatedLines": 427,
           "duplicatedTokens": 2684,
-          "percentage": 16.05,
-          "percentageTokens": 15.35,
+          "percentage": 16.03,
+          "percentageTokens": 15.37,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2241,8 +2241,8 @@
             "newClones": 0
           },
           "app/CMakeLists.txt": {
-            "lines": 612,
-            "tokens": 3727,
+            "lines": 606,
+            "tokens": 3717,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2266,8 +2266,8 @@
           }
         },
         "total": {
-          "lines": 2215,
-          "tokens": 21610,
+          "lines": 2209,
+          "tokens": 21600,
           "sources": 14,
           "clones": 1,
           "duplicatedLines": 23,
@@ -2885,8 +2885,8 @@
             "newClones": 0
           },
           "scripts/test/dockerfile.sh": {
-            "lines": 134,
-            "tokens": 657,
+            "lines": 141,
+            "tokens": 700,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -3018,14 +3018,14 @@
           }
         },
         "total": {
-          "lines": 3957,
-          "tokens": 25797,
+          "lines": 3964,
+          "tokens": 25840,
           "sources": 13,
           "clones": 12,
           "duplicatedLines": 263,
           "duplicatedTokens": 1354,
-          "percentage": 6.65,
-          "percentageTokens": 5.25,
+          "percentage": 6.63,
+          "percentageTokens": 5.24,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3152,13 +3152,13 @@
       }
     },
     "total": {
-      "lines": 28736,
-      "tokens": 218365,
+      "lines": 28746,
+      "tokens": 218423,
       "sources": 249,
       "clones": 118,
       "duplicatedLines": 1582,
       "duplicatedTokens": 13627,
-      "percentage": 5.51,
+      "percentage": 5.5,
       "percentageTokens": 6.24,
       "newDuplicatedLines": 0,
       "newClones": 0
@@ -5832,34 +5832,70 @@
     {
       "format": "cpp",
       "lines": 15,
-      "fragment": "          {\n                                lights.emplace_back(::MobileRT::std::make_unique<AreaLight>(material, lambda(), triangle));\n                            }\n                        } else {\n                            // If it is a primitive.\n                            Triangle::Builder builder {\n                                Triangle::Builder(\n                                    ::std::get<0> (vertices), ::std::get<1> (vertices), ::std::get<2> (vertices)\n                                )\n                                .withNormals(\n                                    ::std::get<0>(normal),\n                                    ::std::get<1>(normal),\n                                    ::std::get<2>(normal)\n                     ",
+      "fragment": "                          {\n                                lights.emplace_back(::MobileRT::std::make_unique<AreaLight>(material, lambda(), triangle));\n                            }\n                        } else {\n                            // If it is a primitive.\n                            Triangle::Builder builder {\n                                Triangle::Builder(\n                                    ::std::get<0> (vertices), ::std::get<1> (vertices), ::std::get<2> (vertices)\n                                )\n                                .withNormals(\n                                    ::std::get<0>(normal),\n                                    ::std::get<1>(normal),\n                                    ::std::get<2>(normal)\n     ",
       "tokens": 0,
       "firstFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 187,
-        "end": 201,
+        "start": 193,
+        "end": 207,
         "startLoc": {
-          "line": 187,
+          "line": 193,
           "column": 2,
-          "position": 2169
+          "position": 2215
         },
         "endLoc": {
-          "line": 201,
+          "line": 207,
           "column": 2,
-          "position": 2312
+          "position": 2358
         }
       },
       "secondFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 166,
-        "end": 180,
+        "start": 172,
+        "end": 186,
         "startLoc": {
-          "line": 166,
+          "line": 172,
           "column": 2,
-          "position": 1966
+          "position": 2012
         },
         "endLoc": {
-          "line": 180,
+          "line": 186,
+          "column": 2,
+          "position": 2155
+        }
+      }
+    },
+    {
+      "format": "cpp",
+      "lines": 10,
+      "fragment": "0F};\n                        const ::glm::vec3 &transmittance {0.0F, 0.0F, 0.0F};\n                        const auto indexRefraction {1.0F};\n                        const ::glm::vec3 &emission {0.0F, 0.0F, 0.0F};\n                        Material material {diffuse, specular, transmittance, indexRefraction, emission};\n                        Triangle::Builder builder {\n                            Triangle::Builder(\n                                ::std::get<0> (vertices), ",
+      "tokens": 0,
+      "firstFile": {
+        "name": "app/Components/Loaders/OBJLoader.cpp",
+        "start": 237,
+        "end": 246,
+        "startLoc": {
+          "line": 237,
+          "column": 25,
+          "position": 2773
+        },
+        "endLoc": {
+          "line": 246,
+          "column": 2,
+          "position": 2876
+        }
+      },
+      "secondFile": {
+        "name": "app/Components/Loaders/OBJLoader.cpp",
+        "start": 193,
+        "end": 181,
+        "startLoc": {
+          "line": 193,
+          "column": 29,
+          "position": 2209
+        },
+        "endLoc": {
+          "line": 181,
           "column": 2,
           "position": 2109
         }
@@ -5867,109 +5903,73 @@
     },
     {
       "format": "cpp",
-      "lines": 10,
-      "fragment": "             const ::glm::vec3 &transmittance {0.0F, 0.0F, 0.0F};\n                        const auto indexRefraction {1.0F};\n                        const ::glm::vec3 &emission {0.0F, 0.0F, 0.0F};\n                        Material material {diffuse, specular, transmittance, indexRefraction, emission};\n                        Triangle::Builder builder {\n                            Triangle::Builder(\n                                ::std::get<0> (vertices), ::std::get<1> (v",
-      "tokens": 0,
-      "firstFile": {
-        "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 231,
-        "end": 240,
-        "startLoc": {
-          "line": 231,
-          "column": 25,
-          "position": 2727
-        },
-        "endLoc": {
-          "line": 240,
-          "column": 2,
-          "position": 2830
-        }
-      },
-      "secondFile": {
-        "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 187,
-        "end": 175,
-        "startLoc": {
-          "line": 187,
-          "column": 29,
-          "position": 2163
-        },
-        "endLoc": {
-          "line": 175,
-          "column": 2,
-          "position": 2063
-        }
-      }
-    },
-    {
-      "format": "cpp",
       "lines": 19,
-      "fragment": "               ::std::get<0> (vertices), ::std::get<1> (vertices), ::std::get<2> (vertices)\n                            )\n                            .withNormals(\n                                ::std::get<0>(normal),\n                                ::std::get<1>(normal),\n                                ::std::get<2>(normal)\n                            )\n                        };\n                        ::std::int32_t materialIndex {-1};\n                        #pragma omp critical\n                        {\n                            const auto itFoundMat {::std::find(scene->materials_.begin(), scene->materials_.end(), material)};\n                            if (itFoundMat != scene->materials_.cend()) {\n                                // If the material is already in the scene.\n                                materialIndex = static_cast<::std::int32_t> (itFoundMat - scene->materials_.cbegin());\n                            } else {\n                                // If the scene doesn't have material yet.\n                                materialIndex = static_cast<::std::int32_",
+      "fragment": "                               ::std::get<0> (vertices), ::std::get<1> (vertices), ::std::get<2> (vertices)\n                            )\n                            .withNormals(\n                                ::std::get<0>(normal),\n                                ::std::get<1>(normal),\n                                ::std::get<2>(normal)\n                            )\n                        };\n                        ::std::int32_t materialIndex {-1};\n                        #pragma omp critical\n                        {\n                            const auto itFoundMat {::std::find(scene->materials_.begin(), scene->materials_.end(), material)};\n                            if (itFoundMat != scene->materials_.cend()) {\n                                // If the material is already in the scene.\n                                materialIndex = static_cast<::std::int32_t> (itFoundMat - scene->materials_.cbegin());\n                            } else {\n                                // If the scene doesn't have material yet.\n                                materialIndex = static_ca",
       "tokens": 0,
       "firstFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 238,
-        "end": 256,
+        "start": 244,
+        "end": 262,
         "startLoc": {
-          "line": 238,
+          "line": 244,
           "column": 7,
-          "position": 2824
+          "position": 2870
         },
         "endLoc": {
-          "line": 256,
+          "line": 262,
           "column": 35,
-          "position": 3025
+          "position": 3071
         }
       },
       "secondFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 199,
-        "end": 218,
+        "start": 205,
+        "end": 224,
         "startLoc": {
-          "line": 199,
+          "line": 205,
           "column": 9,
-          "position": 2306
+          "position": 2352
         },
         "endLoc": {
-          "line": 218,
+          "line": 224,
           "column": 5,
-          "position": 2508
+          "position": 2554
         }
       }
     },
     {
       "format": "cpp",
       "lines": 7,
-      "fragment": "dices of the normals in the tinyobjloader structure.\n * @param vertex      The vertices' values of the triangle.\n * @return The loaded normal.\n */\nOBJLoader::triple<::glm::vec3, ::glm::vec3, ",
+      "fragment": "dexOffset The indices of the normals in the tinyobjloader structure.\n * @param vertex      The vertices' values of the triangle.\n * @return The loaded normal.\n */\nOBJLoader::triple<::glm::vec",
       "tokens": 0,
       "firstFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 353,
-        "end": 359,
+        "start": 359,
+        "end": 365,
         "startLoc": {
-          "line": 353,
+          "line": 359,
           "column": 1,
-          "position": 4205
+          "position": 4251
         },
         "endLoc": {
-          "line": 359,
+          "line": 365,
           "column": 3,
-          "position": 4294
+          "position": 4340
         }
       },
       "secondFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 314,
-        "end": 321,
+        "start": 320,
+        "end": 327,
         "startLoc": {
-          "line": 314,
+          "line": 320,
           "column": 1,
-          "position": 3666
+          "position": 3712
         },
         "endLoc": {
-          "line": 321,
+          "line": 327,
           "column": 6,
-          "position": 3756
+          "position": 3802
         }
       }
     },
@@ -6520,32 +6520,32 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/native.yml",
-        "start": 383,
-        "end": 395,
+        "start": 387,
+        "end": 399,
         "startLoc": {
-          "line": 383,
+          "line": 387,
           "column": 7,
-          "position": 2150
+          "position": 2130
         },
         "endLoc": {
-          "line": 395,
+          "line": 399,
           "column": 2,
-          "position": 2245
+          "position": 2225
         }
       },
       "secondFile": {
         "name": ".github/workflows/native.yml",
-        "start": 349,
-        "end": 362,
+        "start": 353,
+        "end": 366,
         "startLoc": {
-          "line": 349,
+          "line": 353,
           "column": 7,
-          "position": 1897
+          "position": 1877
         },
         "endLoc": {
-          "line": 362,
+          "line": 366,
           "column": 6,
-          "position": 1993
+          "position": 1973
         }
       }
     },
@@ -6895,17 +6895,17 @@
       },
       "secondFile": {
         "name": ".github/workflows/native.yml",
-        "start": 349,
-        "end": 359,
+        "start": 353,
+        "end": 363,
         "startLoc": {
-          "line": 349,
+          "line": 353,
           "column": 7,
-          "position": 1897
+          "position": 1877
         },
         "endLoc": {
-          "line": 359,
+          "line": 363,
           "column": 38,
-          "position": 1988
+          "position": 1968
         }
       }
     },
@@ -7075,12 +7075,12 @@
       },
       "secondFile": {
         "name": ".github/workflows/native.yml",
-        "start": 349,
+        "start": 353,
         "end": 483,
         "startLoc": {
-          "line": 349,
+          "line": 353,
           "column": 7,
-          "position": 1897
+          "position": 1877
         },
         "endLoc": {
           "line": 483,

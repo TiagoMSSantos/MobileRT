@@ -138,12 +138,6 @@ if( NOT DEFINED ANDROID_ABI )
     set( OpenMP_CXX_LIB_NAMES "libomp" CACHE STRING "CUSTOM" FORCE )
     set( OpenMP_libomp_LIBRARY "${OpenMP_CXX_LIB_NAMES}" CACHE STRING "CUSTOM" FORCE )
     set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -isystem /opt/local/include/libomp -L/opt/local/lib/libomp" CACHE STRING "CUSTOM" FORCE )
-
-    message( STATUS "Link with Qt v5 for MacOS-14." )
-    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -isystem /opt/homebrew/Cellar/qt@5/5.15.12/include -isystem /opt/homebrew/Cellar/qt@5/5.15.12/include/QtCore -isystem /opt/homebrew/Cellar/qt@5/5.15.12/include/QtGui -isystem /opt/homebrew/Cellar/qt@5/5.15.12/include/QtWidgets -F/opt/homebrew/Cellar/qt@5/5.15.12/Frameworks" CACHE STRING "CUSTOM" FORCE )
-
-    message( STATUS "Link with Qt v5 for MacOS-13." )
-    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -isystem /usr/local/Cellar/qt@5/5.15.12/include -isystem /usr/local/Cellar/qt@5/5.15.12/include/QtCore -isystem /usr/local/Cellar/qt@5/5.15.12/include/QtGui -isystem /usr/local/Cellar/qt@5/5.15.12/include/QtWidgets -F/usr/local/opt/qt@5/lib -F/usr/local/Cellar/qt@5/5.15.12/Frameworks" CACHE STRING "CUSTOM" FORCE )
   endif()
 endif()
 
