@@ -249,7 +249,7 @@ jobs:
         echo "PATH=${PATH}" >> "${GITHUB_ENV}";
 
     - name: Build ${{ matrix.type }}
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
+      timeout-minutes: 40
       if: success()
       working-directory: .
       run: |
