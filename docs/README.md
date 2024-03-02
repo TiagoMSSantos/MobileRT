@@ -260,7 +260,8 @@ If the distribution you use is not supported, or it's missing the installation o
 ## Documentation
 
 This project started as a [Masters' dissertation](https://repositorium.sdum.uminho.pt/handle/1822/66577).  
-Click [here](https://github.com/TiagoMSSantos/MobileRT/blob/master/docs/TODO.md?) to check the TODO list.  
-Click [here](https://github.com/TiagoMSSantos/MobileRT/blob/master/docs/TOOLS.md?) to check the code coverage and code duplication commands.  
+Click [here](TODO.md?) to check the TODO list.  
+Click [here](TOOLS.md?) to check the code coverage and code duplication commands.  
 Click [here](https://codedocs.xyz/TiagoMSSantos/MobileRT/) to check the Doxygen codebase documentation.  
-Click [here](https://github.com/TiagoMSSantos/MobileRT/blob/master/docs/BUILD_DOCS.md?) to build and serve the documentation locally.  
+Click [here](BUILD_DOCS.md?) to build and serve the documentation locally.  
+Click [here](BLENDER.md?) for some basic Blender tips.  

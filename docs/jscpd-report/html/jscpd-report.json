@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-02-28T20:56:00.678Z",
+    "detectionDate": "2024-03-02T18:04:31.867Z",
     "formats": {
       "java": {
         "sources": {
@@ -2205,8 +2205,8 @@
             "newClones": 0
           },
           "docs/README.md": {
-            "lines": 263,
-            "tokens": 2028,
+            "lines": 264,
+            "tokens": 2043,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2231,6 +2231,18 @@
           "docs/BUILD_DOCS.md": {
             "lines": 12,
             "tokens": 78,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "docs/BLENDER.md": {
+            "lines": 74,
+            "tokens": 651,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2266,14 +2278,14 @@
           }
         },
         "total": {
-          "lines": 2209,
-          "tokens": 21600,
-          "sources": 14,
+          "lines": 2284,
+          "tokens": 22266,
+          "sources": 15,
           "clones": 1,
           "duplicatedLines": 23,
           "duplicatedTokens": 92,
-          "percentage": 1.04,
-          "percentageTokens": 0.43,
+          "percentage": 1.01,
+          "percentageTokens": 0.41,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3152,14 +3164,14 @@
       }
     },
     "total": {
-      "lines": 28746,
-      "tokens": 218423,
-      "sources": 249,
+      "lines": 28821,
+      "tokens": 219089,
+      "sources": 250,
       "clones": 118,
       "duplicatedLines": 1582,
       "duplicatedTokens": 13627,
-      "percentage": 5.5,
-      "percentageTokens": 6.24,
+      "percentage": 5.49,
+      "percentageTokens": 6.22,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
