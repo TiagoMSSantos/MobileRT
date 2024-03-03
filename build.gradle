@@ -48,7 +48,7 @@ buildscript {
         androidX_test_rules_version = '1.5.0'
         androidX_test_monitor_version = '1.6.1'
         androidX_test_runner_version = '1.5.2'
-        spring_version = '6.1.2'
+        spring_version = '6.1.4'
 
         // Unit tests dependencies
         assertj_version = '3.25.3'
@@ -60,6 +60,7 @@ buildscript {
         final def currentOS = System.getProperty("os.name")
         println("OS: " + currentOS)
         // Before updating gradle, check which version of Android Studio is compatible with it and update README.
+        // Compatibility matrix: https://developer.android.com/build/releases/gradle-plugin#android_gradle_plugin_and_android_studio_compatibility
         classpath 'com.android.tools.build:gradle:8.2.2'
         classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:4.4.1.3373'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlin_stdlib_jdk8_version}"
