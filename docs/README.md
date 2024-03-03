@@ -237,7 +237,7 @@ framework for mocking in unit tests
 It's necessary the following SDKs in order to compile this project for Android:
 
 - [Android SDK](https://developer.android.com/studio) which should also bring the [Android NDK](https://developer.android.com/ndk) in order to compile the native code.
-  - It's recommended to use the Android Studio `2023.1.1` which is compatible with Gradle [8.2.2](https://github.com/TiagoMSSantos/MobileRT/blob/master/build.gradle#L63?) used by this project.
+  - It's recommended to use the Android Studio `2023.2.1` which is compatible with Gradle [8.2.2](../build.gradle#L64) used by this project.
 
 For native Linux and Mac support, the `install_dependencies.sh` script should download and install the necessary dependencies, by just calling:
 
@@ -260,8 +260,8 @@ If the distribution you use is not supported, or it's missing the installation o
 ## Documentation
 
 This project started as a [Masters' dissertation](https://repositorium.sdum.uminho.pt/handle/1822/66577).  
-Click [here](TODO.md?) to check the TODO list.  
-Click [here](TOOLS.md?) to check the code coverage and code duplication commands.  
+Click [here](FEATURES.md) to check the features list that are supported.  
+Click [here](TOOLS.md) to check the code coverage and code duplication commands.  
 Click [here](https://codedocs.xyz/TiagoMSSantos/MobileRT/) to check the Doxygen codebase documentation.  
-Click [here](BUILD_DOCS.md?) to build and serve the documentation locally.  
-Click [here](BLENDER.md?) for some basic Blender tips.  
+Click [here](BUILD_DOCS.md) to build and serve the documentation locally.  
+Click [here](BLENDER.md) for some basic Blender tips.  

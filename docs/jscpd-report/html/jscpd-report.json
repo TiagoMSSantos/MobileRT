@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-03-02T18:04:31.867Z",
+    "detectionDate": "2024-03-03T10:39:05.245Z",
     "formats": {
       "java": {
         "sources": {
@@ -1914,13 +1914,13 @@
           },
           ".github/workflows/native.yml": {
             "lines": 424,
-            "tokens": 2392,
+            "tokens": 2385,
             "sources": 1,
             "clones": 9,
             "duplicatedLines": 196,
             "duplicatedTokens": 1182,
             "percentage": 46.23,
-            "percentageTokens": 49.41,
+            "percentageTokens": 49.56,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2083,13 +2083,13 @@
         },
         "total": {
           "lines": 2664,
-          "tokens": 17460,
+          "tokens": 17453,
           "sources": 23,
           "clones": 17,
           "duplicatedLines": 427,
           "duplicatedTokens": 2684,
           "percentage": 16.03,
-          "percentageTokens": 15.37,
+          "percentageTokens": 15.38,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2184,11 +2184,11 @@
             "lines": 215,
             "tokens": 2457,
             "sources": 1,
-            "clones": 0,
-            "duplicatedLines": 0,
-            "duplicatedTokens": 0,
-            "percentage": 0,
-            "percentageTokens": 0,
+            "clones": 1,
+            "duplicatedLines": 215,
+            "duplicatedTokens": 2457,
+            "percentage": 100,
+            "percentageTokens": 100,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2206,13 +2206,25 @@
           },
           "docs/README.md": {
             "lines": 264,
-            "tokens": 2043,
+            "tokens": 2049,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
             "duplicatedTokens": 0,
             "percentage": 0,
             "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "docs/FEATURES.md": {
+            "lines": 215,
+            "tokens": 2457,
+            "sources": 1,
+            "clones": 1,
+            "duplicatedLines": 215,
+            "duplicatedTokens": 2457,
+            "percentage": 100,
+            "percentageTokens": 100,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2278,14 +2290,14 @@
           }
         },
         "total": {
-          "lines": 2284,
-          "tokens": 22266,
-          "sources": 15,
-          "clones": 1,
-          "duplicatedLines": 23,
-          "duplicatedTokens": 92,
-          "percentage": 1.01,
-          "percentageTokens": 0.41,
+          "lines": 2499,
+          "tokens": 24729,
+          "sources": 16,
+          "clones": 2,
+          "duplicatedLines": 238,
+          "duplicatedTokens": 2549,
+          "percentage": 9.52,
+          "percentageTokens": 10.31,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3164,14 +3176,14 @@
       }
     },
     "total": {
-      "lines": 28821,
-      "tokens": 219089,
-      "sources": 250,
-      "clones": 118,
-      "duplicatedLines": 1582,
-      "duplicatedTokens": 13627,
-      "percentage": 5.49,
-      "percentageTokens": 6.22,
+      "lines": 29036,
+      "tokens": 221545,
+      "sources": 251,
+      "clones": 119,
+      "duplicatedLines": 1797,
+      "duplicatedTokens": 16084,
+      "percentage": 6.19,
+      "percentageTokens": 7.26,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -6537,12 +6549,12 @@
         "startLoc": {
           "line": 387,
           "column": 7,
-          "position": 2130
+          "position": 2123
         },
         "endLoc": {
           "line": 399,
           "column": 2,
-          "position": 2225
+          "position": 2218
         }
       },
       "secondFile": {
@@ -6552,12 +6564,12 @@
         "startLoc": {
           "line": 353,
           "column": 7,
-          "position": 1877
+          "position": 1870
         },
         "endLoc": {
           "line": 366,
           "column": 6,
-          "position": 1973
+          "position": 1966
         }
       }
     },
@@ -6912,12 +6924,12 @@
         "startLoc": {
           "line": 353,
           "column": 7,
-          "position": 1877
+          "position": 1870
         },
         "endLoc": {
           "line": 363,
           "column": 38,
-          "position": 1968
+          "position": 1961
         }
       }
     },
@@ -7092,7 +7104,7 @@
         "startLoc": {
           "line": 353,
           "column": 7,
-          "position": 1877
+          "position": 1870
         },
         "endLoc": {
           "line": 483,
@@ -7422,6 +7434,42 @@
           "line": 51,
           "column": 5,
           "position": 135
+        }
+      }
+    },
+    {
+      "format": "markdown",
+      "lines": 216,
+      "fragment": "atures\n\n## Ray tracing engine\n\n- [ ] Support for textures with different materials\n- [x] Support acceleration structures\n- [x] Support OpenGL Mathematics for math library\n- [ ] Support Eigen for math library\n- [x] Support Google Test for unit tests\n- [x] Support Boost for assertions\n- [x] Support stb for textures\n- [ ] Support Google Benchmark\n- [ ] Support Microsoft Guidelines Support Library\n- [x] Split Material from Primitive in order to save memory\n- [ ] Support GPU ray tracing\n- [x] Split naive acceleration structure from Scene\n- [ ] Support acceleration structures compatible with the lights\n\n## Shapes\n\n- [x] Support triangle\n  - [x] Support normals per vertex\n  - [x] Support texture coordinates\n  - [x] Support textures\n  - [ ] Support ray packet intersections\n- [x] Support plane\n- [x] Support sphere\n- [ ] Support square / rectangle\n\n## Acceleration structures\n\n- [x] Support Axis Aligned Bounding Box\n- [x] Support Naive\n- [x] Support Regular Grid\n  - [x] Parallelize build\n- [x] Support Bounding Volume Hierarchy\n  - [ ] Parallelize build\n  - [ ] Support ray packet intersections\n- [ ] Support KD-Tree\n- [x] Make all acceleration structures as templates\n\n## Shaders\n\n- [x] Support DepthMap\n- [x] Support only material color\n- [x] Support simple shader without shadows\n- [x] Support Whitted\n- [x] Support Path Tracing\n  - [ ] Fix algorithm\n- [ ] Support Bidirectional Path Tracing\n- [ ] Support Metropolis light transport\n- [ ] Support Wireframe shader\n- [ ] Fix refractions\n- [ ] Improve shaders performance\n\n## Samplers\n\n- [x] Support constant\n- [x] Support stratified\n- [x] Support Halton Sequence\n- [x] Support Mersenne Twister\n- [x] Support PCG\n\n## Cameras\n\n- [x] Support orthographic Camera\n- [x] Support perspective Camera\n- [ ] Support fisheye Camera\n\n## Loaders\n\n- [x] Support Wavefront OBJ\n  - [ ] Optimize code\n- [ ] Support Autodesk FBX\n- [ ] Support CAD STL\n- [ ] Support PLY\n\n## Lights\n\n- [x] Support point light\n- [x] Support triangle area light\n- [ ] Support sphere area light\n- [ ] Support plane area light\n\n## Ray tracing JNI layer\n\n- [ ] Refactor DrawView translation unit\n- [ ] Improve DrawView code readability\n- [x] Fix race conditions\n\n## Android Interface\n\n- [x] Compatible with Android 4.1 (API 16)\n- [x] Support preview (rasterization of 1 frame)\n- [x] Support any OpenGL framerate\n- [x] Support reset button\n- [ ] Support export rendered image\n- [x] Fix memory leak in Java UI\n- [x] Fix load of obj files in Android 10\n- [x] Improve Java UI code to more Object Oriented\n- [ ] Change Android icon\n- [x] Remove usage of deprecated methods\n- [x] Add Android instrumented unit tests\n- [x] Make Android instrumented tests run on debug and release\n- [x] Make all Android instrumented tests pass without flakiness\n\n## Linux Interface\n\n- [x] Support Linux's UI with Qt 4\n- [x] Support Linux's UI with Qt 5\n- [x] Support options menu in GUI\n- [x] Support about menu in GUI\n- [x] Support for selection of OBJ files in GUI\n- [ ] Support selection of all ray tracer options in GUI\n\n## Building process\n\n- [x] Compatible with C++11 compilers\n- [ ] Compatible with C++03 compilers\n- [x] Compatible with GNU C++ Compiler (g++)\n- [x] Compatible with Clang++\n- [x] Compatible with MinGW (g++)\n- [x] Compatible with Microsoft Visual C++ (MSVC)\n- [x] Support compiler warnings for clang / g++ in CMake\n- [x] Support compiler warnings for Java\n- [x] Support warnings for Gradle\n- [x] Support rules with optimizations for proguard\n- [x] Support C++ compilation with optimization flags\n- [x] Support C++ exceptions\n- [x] Support C++ OpenMP\n- [x] Support CMake jobs to improve building time\n- [x] Support CMake to clone the third party repositories\n- [x] Support CMake to pull new versions of third party repositories\n- [x] Split the Android application in 3 layers:\n  - [x] MobileRT (ray tracing engine)\n  - [x] Rendering components (cameras, lights, loaders, samplers, shaders)\n  - [x] UI (Android through JNI, Linux through Qt)\n\n## System\n\n- [x] Support unit tests (code coverage)\n- [ ] Support to export rendered image to a file\n- [ ] Support to store rendered image to a database\n- [ ] Support to load image from a database\n- [ ] Support to continue rendering an image loaded from a database\n- [ ] Remove MobileRT duplicated code\n- [ ] Remove Components duplicated code\n- [ ] Remove Android JNI duplicated code\n- [ ] Remove Android UI duplicated code\n- [ ] Remove Qt duplicated code\n- [ ] Remove Java tests duplicated code\n- [ ] Remove C++ tests duplicated code\n- [x] Add message reasons to all assertions\n- [x] Load lights and cameras from files\n- [ ] Prepare more scene models\n- [x] Support Android interface\n- [x] Support Linux interface\n- [x] Support MacOS X interface\n- [x] Support Windows interface\n- [ ] Support web browser interface\n- [ ] Support Clang format\n\n## Docker\n\n- [x] Make a docker image with MobileRT\n  - [x] Create image based on ubuntu\n  - [x] Create image based on alpine\n  - [x] Create image based on centos\n  - [x] Create image based on archlinux\n  - [x] Create image based on gentoo\n- [x] Add an example model to the docker image\n- [ ] Make the ray tracer distribute the load across different engines\n- [ ] Use docker compose to launch multiple containers and distribute the load\n\n## Documentation\n\n- [x] Support doxygen documentation in the MobileRT\n- [ ] Support doxygen documentation in the Components\n- [ ] Support doxygen documentation in the JNI layer\n- [ ] Support doxygen documentation in the Qt interface\n- [x] Support javadoc in the Android UI\n- [x] Add comments for readability in the native building files\n- [ ] Add comments for readability in the gradle building files\n- [x] Add comments for readability in the scripts\n\n## Broadcast bitmap to multiple desktop devices\n\n- [ ] Support Android interface to send updated bitmap regularly to Kafka topic via REST API\n- [ ] Develop small pc application that subscribes to that topic via KAFKA client\n- [ ] Support application to show bitmap in every update\n\n## Broadcast bitmap to multiple Android devices\n\n- [ ] Support Linux interface to send updated bitmap regularly to Kafka topic via KAFKA client\n- [ ] Support Android interface to subscribe to that that topic via REST API\n- [ ] Support Android interface to show bitmap in every update\n\n## Tests\n\n- [x] C++ unit tests\n- [x] Android instrumentation tests\n- [ ] C++ end to end tests (selenium)\n- [ ] Android performance tests\n- [ ] C++ performance tests\n- [x] Support CI/CD pipeline\n  - [x] Support linter\n  - [x] Support Android\n  - [x] Support Linux\n  - [x] Support MacO",
+      "tokens": 0,
+      "firstFile": {
+        "name": "docs/FEATURES.md",
+        "start": 5,
+        "end": 220,
+        "startLoc": {
+          "line": 5,
+          "column": 1,
+          "position": 4
+        },
+        "endLoc": {
+          "line": 220,
+          "column": 8,
+          "position": 2461
+        }
+      },
+      "secondFile": {
+        "name": "docs/TODO.md",
+        "start": 5,
+        "end": 220,
+        "startLoc": {
+          "line": 5,
+          "column": 1,
+          "position": 4
+        },
+        "endLoc": {
+          "line": 220,
+          "column": 8,
+          "position": 2461
         }
       }
     }

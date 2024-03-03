@@ -187,7 +187,7 @@ message( STATUS "Adding C++ Boost dependencies." )
 set( BOOST_PATH "${CMAKE_CURRENT_SOURCE_DIR}/boost/libs" )
 
 message( STATUS "Updating and adding all C++ Boost modules used." )
-foreach( submodule assert variant type_index config container_hash throw_exception core mpl detail preprocessor call_traits utility type_traits static_assert integer foreach range iterator )
+foreach( submodule assert variant type_index config container_hash throw_exception core mpl detail preprocessor call_traits utility type_traits static_assert integer foreach range iterator sort )
   execute_process( COMMAND git submodule update --init --rebase
     ${BOOST_PATH}/${submodule}
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/boost )
