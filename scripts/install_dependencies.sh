@@ -268,6 +268,15 @@ install_dependencies_macos() {
   echo 'Install packages separately, so it continues regardless if some error occurs in one.';
   set +e;
   sudo port help;
+  echo 'Updating MacPorts.';
+  sudo port -bn selfupdate;
+  echo 'Installing git via MacPorts.';
+  sudo port -bn install git git-lfs;
+  installedGit=$?;
+  if [ "${installedGit}" != "0" ]; then
+    echo 'Installing git via MacPorts failed. Installing git via Homebrew.';
+    brew install --ignore-dependencies --skip-cask-deps --skip-post-install git git-lfs;
+  fi
   echo 'Installing OpenMP via MacPorts.';
   sudo port -bn install libomp;
   installedLibOmp=$?;
@@ -281,7 +290,6 @@ install_dependencies_macos() {
   brew install --ignore-dependencies --skip-cask-deps --skip-post-install coreutils; # To install 'timeout' command.
   brew install --ignore-dependencies --skip-cask-deps --skip-post-install zip;
   brew install --ignore-dependencies --skip-cask-deps --skip-post-install unzip;
-  brew install --ignore-dependencies --skip-cask-deps --skip-post-install git-lfs;
 
   set +e;
   test -d Qt;
