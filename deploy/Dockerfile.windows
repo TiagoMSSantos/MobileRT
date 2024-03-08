@@ -55,7 +55,7 @@ RUN \
   # Install cmake: https://community.chocolatey.org/packages/cmake
   choco install -y cmake --installargs 'ADD_CMAKE_TO_PATH=System' --version=3.13.0 && \
   # Install git: https://community.chocolatey.org/packages/git
-  choco install -y git && \
+  choco install -y git git-lfs && \
   # Install Qt: https://community.chocolatey.org/packages/qt5-default
   # To avoid error: mingw (exited 404)
   (choco install -y qt5-default || echo 'Error installing Qt.')
@@ -96,8 +96,10 @@ RUN \
     --shallow-submodules \
     --progress \
     --branch !BRANCH! && \
-  dir .\MobileRT\app\src\androidTest\resources\CornellBox\CornellBox-Water.obj && \
-  dir .\MobileRT\app\src\androidTest\resources\teapot\teapot.obj && \
+  cd MobileRT && \
+  git lfs pull && \
+  dir .\app\src\androidTest\resources\CornellBox\CornellBox-Water.obj && \
+  dir .\app\src\androidTest\resources\teapot\teapot.obj && \
   # Print environment.
   echo "BRANCH: !BRANCH!" && \
   echo "BUILD_TYPE: !BUILD_TYPE!"

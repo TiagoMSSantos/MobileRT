@@ -105,7 +105,7 @@ install_dependencies_debian() {
     sqlite3 \
     vim \
     findutils \
-    sudo git ca-certificates shellcheck \
+    sudo git git-lfs ca-certificates shellcheck \
     libomp-dev \
     libatomic1 \
     qtbase5-dev qtbase5-dev-tools qtchooser qt5-qmake \
@@ -129,6 +129,7 @@ install_dependencies_red_hat() {
   yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y cmake;
   yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y make;
   yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y git;
+  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y git-lfs;
   yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y ca-certificates;
   yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y which;
   yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y qt5-qtbase-devel;
@@ -180,6 +181,7 @@ install_dependencies_arch() {
   pacman -Sy --noconfirm --needed make;
   pacman -Sy --noconfirm --needed shellcheck;
   pacman -Sy --noconfirm --needed git;
+  pacman -Sy --noconfirm --needed git-lfs;
   pacman -Sy --noconfirm --needed ca-certificates;
   pacman -Sy --noconfirm --needed which;
   pacman -Sy --noconfirm --needed qt5-base;
@@ -197,7 +199,7 @@ install_dependencies_alpine() {
     findutils \
     cmake make ncurses \
     shellcheck \
-    git ca-certificates \
+    git git-lfs ca-certificates \
     qt5-qtbase-dev \
     which \
     g++ gcc \
@@ -228,6 +230,8 @@ install_dependencies_gentoo() {
   emerge --changed-use make;
   echo 'Emerge dev-vcs/git';
   emerge --changed-use dev-vcs/git;
+  echo 'Emerge dev-vcs/git-lfs';
+  emerge --changed-use dev-vcs/git-lfs;
   echo 'Emerge ca-certificates';
   emerge --changed-use ca-certificates;
   echo 'Emerge which';
@@ -277,6 +281,7 @@ install_dependencies_macos() {
   brew install --ignore-dependencies --skip-cask-deps --skip-post-install coreutils; # To install 'timeout' command.
   brew install --ignore-dependencies --skip-cask-deps --skip-post-install zip;
   brew install --ignore-dependencies --skip-cask-deps --skip-post-install unzip;
+  brew install --ignore-dependencies --skip-cask-deps --skip-post-install git-lfs;
 
   set +e;
   test -d Qt;
@@ -396,6 +401,7 @@ test_commands() {
   checkCommand make;
   checkCommand sh;
   checkCommand git;
+  checkCommand git-lfs;
   checkCommand g++;
   checkCommand gcc;
   checkCommand timeout;

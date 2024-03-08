@@ -86,12 +86,12 @@ RUN \
   if command -v apt-get > /dev/null; then \
     echo 'Detected Debian based Linux'; \
     apt-get update -y; \
-    apt-get install --no-install-recommends -y sudo git tzdata; \
+    apt-get install --no-install-recommends -y sudo git git-lfs tzdata; \
   elif command -v yum > /dev/null; then \
     echo 'Detected Red Hat based Linux'; \
     yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False update -y; \
     yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y \
-      sudo git; \
+      sudo git git-lfs; \
   elif command -v pacman > /dev/null; then \
     echo 'Detected Arch based Linux'; \
     rm -rf /var/cache/pacman/pkg; \
@@ -101,11 +101,11 @@ RUN \
     pacman-key --populate; \
     echo 'Upgrade system'; \
     pacman -Syu --noconfirm --needed; \
-    pacman -Sy --noconfirm --needed sudo git; \
+    pacman -Sy --noconfirm --needed sudo git git-lfs; \
   elif command -v apk > /dev/null; then \
     echo 'Detected Alpine based Linux'; \
     apk update; \
-    apk add sudo git; \
+    apk add sudo git git-lfs; \
   elif command -v emerge > /dev/null; then \
     echo 'Detected Gentoo based Linux'; \
     echo 'FEATURES="-sandbox -usersandbox -ipc-sandbox -network-sandbox -pid-sandbox"' >> /etc/portage/make.conf; \
@@ -113,7 +113,7 @@ RUN \
     set +e; \
     emerge --sync; \
     set -e; \
-    emerge sudo dev-vcs/git; \
+    emerge sudo dev-vcs/git dev-vcs/git-lfs; \
   else \
     echo 'Assuming Windows OS.'; \
   fi; \
@@ -127,8 +127,10 @@ RUN \
   --shallow-submodules \
   --progress \
   --branch ${BRANCH} && \
-  ls -la ./MobileRT/app/src/androidTest/resources/CornellBox/CornellBox-Water.obj && \
-  ls -la ./MobileRT/app/src/androidTest/resources/teapot/teapot.obj;
+  cd MobileRT && \
+  git lfs pull && \
+  ls -la ./app/src/androidTest/resources/CornellBox/CornellBox-Water.obj && \
+  ls -la ./app/src/androidTest/resources/teapot/teapot.obj;
 ###############################################################################
 ###############################################################################
 
