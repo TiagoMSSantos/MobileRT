@@ -35,9 +35,9 @@ OBJLoader::OBJLoader(::std::istream& isObj, ::std::istream& isMtl) {
     ::std::string errors {};
     ::std::string warnings {};
 
-    LOG_DEBUG("Going to call tinyobj::LoadObj");
+    LOG_INFO("Going to call tinyobj::LoadObj");
     MobileRT::checkSystemError("Before LoadObj.");
-    const auto ret {
+    const bool ret {
         ::tinyobj::LoadObj(
             &this->attrib_, &this->shapes_, &this->materials_,
             &warnings, &errors, &isObj, matStreamReaderPtr, true, true
@@ -60,28 +60,27 @@ OBJLoader::OBJLoader(::std::istream& isObj, ::std::istream& isMtl) {
 
     if (ret) {
         this->numberTriangles_ = 0;
-        for (const auto &shape : this->shapes_) {
-            for (const auto numFaceVertices : shape.mesh.num_face_vertices) {
-                const auto triangles {static_cast<::std::uint32_t>(numFaceVertices / 3)};
+        for (const ::tinyobj::shape_t &shape : this->shapes_) {
+            for (const unsigned char numFaceVertices : shape.mesh.num_face_vertices) {
+                const ::std::uint32_t triangles {static_cast<::std::uint32_t>(numFaceVertices / 3)};
                 this->numberTriangles_ += triangles;
             }
         }
         this->isProcessed_ = true;
     }
+
+    LOG_INFO("Called tinyobj::LoadObj and loaded ", this->numberTriangles_, " triangles");
 }
 
 bool OBJLoader::fillScene(Scene *const scene,
                           ::std::function<::std::unique_ptr<Sampler>()> lambda,
                           ::std::string filePath,
                           ::std::unordered_map<::std::string, ::MobileRT::Texture> texturesCache) {
-    LOG_DEBUG("FILLING SCENE with ", this->numberTriangles_, " triangles in ", this->shapes_.size(), " shapes & ", this->materials_.size(), " materials.");
+    ::MobileRT::checkSystemError("Starting to fill scene.");
+    LOG_INFO("FILLING SCENE with ", this->numberTriangles_, " triangles in ", this->shapes_.size(), " shapes & ", this->materials_.size(), " materials, omp_get_max_threads = ", omp_get_max_threads());
+    errno = 0; // In some compilers, OpenMP sets 'errno' to 'EFAULT - Bad address (14)'.
     filePath = filePath.substr(0, filePath.find_last_of('/')) + '/';
     const ::std::int32_t shapesSize {static_cast<::std::int32_t> (this->shapes_.size())};
-
-    ::MobileRT::checkSystemError("Starting to fill scene.");
-    const int num_max_threads {omp_get_max_threads()};
-    errno = 0; // In some compilers, OpenMP sets 'errno' to 'EFAULT - Bad address (14)'.
-    LOG_DEBUG("num_max_threads = ", num_max_threads);
 
     #pragma omp parallel shared(scene)
     {
@@ -99,8 +98,8 @@ bool OBJLoader::fillScene(Scene *const scene,
             // The number of vertices per face.
             const ::std::int32_t faces {static_cast<::std::int32_t> (shape.mesh.num_face_vertices.size())};
             for (::std::int32_t face = 0; face < faces; ++face) {
-                const auto it {shape.mesh.num_face_vertices.cbegin() + face};
-                const ::std::int32_t faceVertices {static_cast<::std::int32_t>(*it)};
+                const auto itFace {shape.mesh.num_face_vertices.cbegin() + face};
+                const ::std::int32_t faceVertices {static_cast<::std::int32_t>(*itFace)};
 
                 if (faceVertices % 3 != 0) {// If the number of vertices in the face is not multiple of 3,
                                             // then it does not make a triangle.
@@ -110,53 +109,53 @@ bool OBJLoader::fillScene(Scene *const scene,
 
                 // Loop over vertices in the face.
                 for (::std::int32_t vertex = 0; vertex < faceVertices; vertex += 3) {
-                    const auto vertices {loadVertices(shape, indexOffset + vertex)};
-                    const auto normal {loadNormal(shape, indexOffset + vertex, vertices)};
+                    const OBJLoader::triple<::glm::vec3, ::glm::vec3, ::glm::vec3> vertices {loadVertices(shape, indexOffset + vertex)};
+                    const OBJLoader::triple<::glm::vec3, ::glm::vec3, ::glm::vec3> normal {loadNormal(shape, indexOffset + vertex, vertices)};
 
                     // per-face material.
                     const auto itMaterialShape {shape.mesh.material_ids.cbegin() + face};
-                    const auto materialId {*itMaterialShape};
+                    const int materialId {*itMaterialShape};
 
                     const auto itIdx {shape.mesh.indices.cbegin() + indexOffset + vertex};
-                    const auto idx1 {*(itIdx + 0)};
-                    const auto idx2 {*(itIdx + 1)};
-                    const auto idx3 {*(itIdx + 2)};
+                    const ::tinyobj::index_t idx1 {*(itIdx + 0)};
+                    const ::tinyobj::index_t idx2 {*(itIdx + 1)};
+                    const ::tinyobj::index_t idx3 {*(itIdx + 2)};
 
                     // If it contains material.
                     if (materialId >= 0) {
                         const auto itMaterial {this->materials_.cbegin() + static_cast<::std::int32_t> (materialId)};
-                        const auto &mat {*itMaterial};
+                        const ::tinyobj::material_t &mat {*itMaterial};
                         const ::glm::vec3 &diffuse {::MobileRT::toVec3(mat.diffuse)};
                         const ::glm::vec3 &specular {::MobileRT::toVec3(mat.specular)};
                         const ::glm::vec3 &transmittance {::MobileRT::toVec3(mat.transmittance) * (1.0F - mat.dissolve)};
                         const ::glm::vec3 &emission {::MobileRT::normalize(::MobileRT::toVec3(mat.emission))};
-                        const auto indexRefraction {mat.ior};
+                        const float indexRefraction {mat.ior};
 
-                        const auto hasTexture {!mat.diffuse_texname.empty()};
-                        const auto hasCoordTex {!this->attrib_.texcoords.empty()};
+                        const bool hasTexture {!mat.diffuse_texname.empty()};
+                        const bool hasCoordTex {!this->attrib_.texcoords.empty()};
                         Texture texture {};
-                        auto texCoord {::std::make_tuple(::glm::vec2 {-1}, ::glm::vec2 {-1}, ::glm::vec2 {-1})};
+                        ::std::tuple<::glm::vec2, ::glm::vec2, ::glm::vec2> texCoord {::std::make_tuple(::glm::vec2 {-1}, ::glm::vec2 {-1}, ::glm::vec2 {-1})};
                         if (hasTexture && hasCoordTex) {
                             const auto itTexCoords1 {
                                 this->attrib_.texcoords.cbegin() +
                                 2 * static_cast<::std::int32_t> (idx1.texcoord_index)
                             };
-                            const auto tx1 {*(itTexCoords1 + 0)};
-                            const auto ty1 {*(itTexCoords1 + 1)};
+                            const float tx1 {*(itTexCoords1 + 0)};
+                            const float ty1 {*(itTexCoords1 + 1)};
 
                             const auto itTexCoords2 {
                                 this->attrib_.texcoords.cbegin() +
                                 2 * static_cast<::std::int32_t> (idx2.texcoord_index)
                             };
-                            const auto tx2 {*(itTexCoords2 + 0)};
-                            const auto ty2 {*(itTexCoords2 + 1)};
+                            const float tx2 {*(itTexCoords2 + 0)};
+                            const float ty2 {*(itTexCoords2 + 1)};
 
                             const auto itTexCoords3 {
                                 this->attrib_.texcoords.cbegin() +
                                 2 * static_cast<::std::int32_t> (idx3.texcoord_index)
                             };
-                            const auto tx3 {*(itTexCoords3 + 0)};
-                            const auto ty3 {*(itTexCoords3 + 1)};
+                            const float tx3 {*(itTexCoords3 + 0)};
+                            const float ty3 {*(itTexCoords3 + 1)};
 
                             texCoord = triple<::glm::vec2, ::glm::vec2, ::glm::vec2> {
                                 ::glm::vec2 {tx1, ty1}, ::glm::vec2 {tx2, ty2}, ::glm::vec2 {tx3, ty3}
@@ -169,7 +168,7 @@ bool OBJLoader::fillScene(Scene *const scene,
                         Material material {diffuse, specular, transmittance, indexRefraction, emission, texture};
                         if (::MobileRT::hasPositiveValue(emission)) {
                             // If the primitive is a light source.
-                            const auto &triangle {
+                            const Triangle &triangle {
                                 Triangle::Builder(
                                     ::std::get<0> (vertices), ::std::get<1> (vertices), ::std::get<2> (vertices)
                                 )
@@ -224,14 +223,14 @@ bool OBJLoader::fillScene(Scene *const scene,
                     } else {
                         // If it doesn't contain material.
                         const auto itColor {this->attrib_.colors.cbegin() + 3 * idx1.vertex_index};
-                        const auto red {*(itColor + 0)};
-                        const auto green {*(itColor + 1)};
-                        const auto blue {*(itColor + 2)};
+                        const float red {*(itColor + 0)};
+                        const float green {*(itColor + 1)};
+                        const float blue {*(itColor + 2)};
 
                         const ::glm::vec3 &diffuse {red, green, blue};
                         const ::glm::vec3 &specular {0.0F, 0.0F, 0.0F};
                         const ::glm::vec3 &transmittance {0.0F, 0.0F, 0.0F};
-                        const auto indexRefraction {1.0F};
+                        const float indexRefraction {1.0F};
                         const ::glm::vec3 &emission {0.0F, 0.0F, 0.0F};
                         Material material {diffuse, specular, transmittance, indexRefraction, emission};
                         Triangle::Builder builder {
@@ -263,22 +262,25 @@ bool OBJLoader::fillScene(Scene *const scene,
 
                 indexOffset += faceVertices;
 
-                if (triangles.size() > 0 && triangles.size() % 10000 == 0) {
-                    const auto& triangle {triangles.back()};
-                    LOG_DEBUG("Triangle ", triangles.size(), " position at ", triangle);
-                    MobileRT::printFreeMemory();
+                if (triangles.size() > 0 && triangles.size() % 100000 == 0) {
+                    LOG_DEBUG("Triangle ", triangles.size(), " position at ", triangles.back());
                 } else if (lights.size() > 0 && lights.size() % 1000 == 0) {
-                    const auto& lightPos {lights.back()->getPosition()};
-                    LOG_DEBUG("Light ", lights.size(), " position at: x: ", lightPos[0], ", y: ", lightPos[1], ", z: ", lightPos[2]);
-                    MobileRT::printFreeMemory();
+                    LOG_DEBUG("Light ", lights.size(), " position at: ", lights.back()->getPosition(), ", radiance: ", lights.back()->radiance_.Le_);
                 }
             } // The number of vertices per face.
         } // Loop over shapes.
 
         #pragma omp critical
         {
-            LOG_DEBUG("Local triangles: ", triangles.size(), ", total: ", scene->triangles_.size());
-            LOG_DEBUG("Local lights:  ", lights.size(), ", total: ", scene->lights_.size());
+            if (triangles.size() > 0) {
+                LOG_INFO("Local triangles: ", triangles.size(), ", total: ", scene->triangles_.size(), ", last triangle: ", triangles.back());
+            }
+            if (lights.size() > 0) {
+                const ::std::unique_ptr<Light> &light {lights.back()};
+                const ::glm::vec3 &lightPos {light->getPosition()};
+                const ::glm::vec3 &lightRadiance {light->radiance_.Le_};
+                LOG_INFO("Local lights:  ", lights.size(), ", total: ", scene->lights_.size(), ", last light: ", lightPos, ", radiance: ", lightRadiance);
+            }
 
             scene->triangles_.reserve(scene->triangles_.size() + triangles.size());
             ::std::move(::std::begin(triangles), ::std::end(triangles), ::std::back_inserter(scene->triangles_));
@@ -320,22 +322,22 @@ OBJLoader::triple<::glm::vec3, ::glm::vec3, ::glm::vec3> OBJLoader::loadVertices
 ) const {
     const auto itIdx {shape.mesh.indices.cbegin() + indexOffset};
 
-    const auto idx1 {*(itIdx + 0)};
-    const auto idx2 {*(itIdx + 1)};
-    const auto idx3 {*(itIdx + 2)};
+    const ::tinyobj::index_t idx1 {*(itIdx + 0)};
+    const ::tinyobj::index_t idx2 {*(itIdx + 1)};
+    const ::tinyobj::index_t idx3 {*(itIdx + 2)};
 
     const auto itVertex1 {this->attrib_.vertices.cbegin() + 3 * idx1.vertex_index};
-    const auto vx1 {*(itVertex1 + 0)};
-    const auto vy1 {*(itVertex1 + 1)};
-    const auto vz1 {*(itVertex1 + 2)};
+    const float vx1 {*(itVertex1 + 0)};
+    const float vy1 {*(itVertex1 + 1)};
+    const float vz1 {*(itVertex1 + 2)};
     const auto itVertex2 {this->attrib_.vertices.cbegin() + 3 * idx2.vertex_index};
-    const auto vx2 {*(itVertex2 + 0)};
-    const auto vy2 {*(itVertex2 + 1)};
-    const auto vz2 {*(itVertex2 + 2)};
+    const float vx2 {*(itVertex2 + 0)};
+    const float vy2 {*(itVertex2 + 1)};
+    const float vz2 {*(itVertex2 + 2)};
     const auto itVertex3 {this->attrib_.vertices.cbegin() + 3 * idx3.vertex_index};
-    const auto vx3 {*(itVertex3 + 0)};
-    const auto vy3 {*(itVertex3 + 1)};
-    const auto vz3 {*(itVertex3 + 2)};
+    const float vx3 {*(itVertex3 + 0)};
+    const float vy3 {*(itVertex3 + 1)};
+    const float vz3 {*(itVertex3 + 2)};
 
     const ::glm::vec3 &vertex1 {-vx1, vy1, vz1};
     const ::glm::vec3 &vertex2 {-vx2, vy2, vz2};
@@ -358,9 +360,9 @@ OBJLoader::triple<::glm::vec3, ::glm::vec3, ::glm::vec3> OBJLoader::loadNormal(
     const triple<::glm::vec3, ::glm::vec3, ::glm::vec3> &vertex
 ) const {
     const auto itIdx {shape.mesh.indices.cbegin() + indexOffset};
-    const auto idx1 {*(itIdx + 0)};
-    const auto idx2 {*(itIdx + 1)};
-    const auto idx3 {*(itIdx + 2)};
+    const ::tinyobj::index_t idx1 {*(itIdx + 0)};
+    const ::tinyobj::index_t idx2 {*(itIdx + 1)};
+    const ::tinyobj::index_t idx3 {*(itIdx + 2)};
 
     if (!this->attrib_.normals.empty()) {// If it has normals.
         const auto itNormal1 {this->attrib_.normals.cbegin() + 3 * idx1.normal_index};
@@ -374,10 +376,10 @@ OBJLoader::triple<::glm::vec3, ::glm::vec3, ::glm::vec3> OBJLoader::loadNormal(
         };
     } else {
         // If it doesn't have normals, we have to calculate a normal.
-        const auto AB {::std::get<1>(vertex) - ::std::get<0>(vertex)};
-        const auto AC {::std::get<2>(vertex) - ::std::get<0>(vertex)};
+        const ::glm::vec3 AB {::std::get<1>(vertex) - ::std::get<0>(vertex)};
+        const ::glm::vec3 AC {::std::get<2>(vertex) - ::std::get<0>(vertex)};
 
-        const auto normalDir {::glm::normalize(::glm::cross(AC, AB))};
+        const ::glm::vec3 normalDir {::glm::normalize(::glm::cross(AC, AB))};
         return triple<::glm::vec3, ::glm::vec3, ::glm::vec3> {
             normalDir, normalDir, normalDir
         };
@@ -429,12 +431,12 @@ const Texture& OBJLoader::getTextureFromCache(
     const auto itTexture {texturesCache->find(texPath)};
 
     if (itTexture == texturesCache->cend()) {// If the texture is not in the cache.
-        LOG_DEBUG("Loading texture: ", texPath);
-        auto &&texture {Texture::createTexture(::std::move(textureBinary), size)};
-        auto &&pair {::std::make_pair(texPath, ::std::move(texture))};
-        const auto res {::std::get<0> (texturesCache->emplace(::std::move(pair)))};// Add it to the cache.
-        LOG_DEBUG("Texture loaded: ", texPath, ", is valid: ", res->second.isValid()? "true" : "false");
-        return res->second;
+        Texture &&texture {Texture::createTexture(::std::move(textureBinary), size)};
+        ::std::pair<::std::string, Texture> &&pair {::std::make_pair(texPath, ::std::move(texture))};
+        const Texture *res {nullptr};
+        const auto pairResult {texturesCache->emplace(::std::move(pair))};// Add it to the cache.
+        res = &(::std::get<0>(pairResult)->second);
+        return *res;
     }
 
     return texturesCache->find(texPath)->second;// Get texture from cache.
@@ -457,14 +459,12 @@ const Texture& OBJLoader::getTextureFromCache(
     const auto itTexture {texturesCache->find(texPath)};
 
     if (itTexture == texturesCache->cend()) {// If the texture is not in the cache.
-        const auto texturePath {filePath + texPath};
-        LOG_DEBUG("Loading texture: ", texturePath);
-        auto &&texture {Texture::createTexture(texturePath)};
-        auto &&pair {::std::make_pair(texPath, ::std::move(texture))};
+        const ::std::string texturePath {filePath + texPath};
+        Texture &&texture {Texture::createTexture(texturePath)};
+        ::std::pair<::std::string, Texture> &&pair {::std::make_pair(texPath, ::std::move(texture))};
         const Texture *res {nullptr};
-        auto result {texturesCache->emplace(::std::move(pair))}; // Add it to the cache.
-        res = &(::std::get<0>(result)->second);
-        LOG_DEBUG("Texture loaded: ", texturePath, ", is valid: ", res->isValid()? "true" : "false");
+        auto pairResult {texturesCache->emplace(::std::move(pair))}; // Add it to the cache.
+        res = &(::std::get<0>(pairResult)->second);
         return *res;
     }
 

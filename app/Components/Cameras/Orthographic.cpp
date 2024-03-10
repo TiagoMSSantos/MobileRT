@@ -14,21 +14,21 @@ Orthographic::Orthographic(
 
 Ray Orthographic::generateRay(const float u, const float v,
                               const float deviationU, const float deviationV) const {
-    const auto rightFactor {(u - 0.5F) * this->sizeH_};
-    const auto &right {this->right_ * rightFactor + this->right_ * deviationU};
-    const auto upFactor {(0.5F - v) * this->sizeV_};
-    const auto &up {this->up_ * upFactor + this->up_ * deviationV};
+    const float rightFactor {(u - 0.5F) * this->sizeH_};
+    const ::glm::vec3 &right {this->right_ * rightFactor + this->right_ * deviationU};
+    const float upFactor {(0.5F - v) * this->sizeV_};
+    const ::glm::vec3 &up {this->up_ * upFactor + this->up_ * deviationV};
     const Ray ray {this->direction_, this->position_ + right + up, 1, false};
     return ray;
 }
 
 AABB Orthographic::getAABB() const {
-    const auto &min {
+    const ::glm::vec3 &min {
         this->position_ +
         this->right_ * (0.0F - 0.5F) * this->sizeH_ + this->right_ * -0.5F +
         this->up_ * (0.5F - 0.0F) * this->sizeV_ + this->up_ * -0.5F
     };
-    const auto &max {
+    const ::glm::vec3 &max {
         this->position_ +
         this->right_ * (1.0F - 0.5F) * this->sizeH_ + this->right_ * 0.5F +
         this->up_ * (0.5F - 1.0F) * this->sizeV_ + this->up_ * 0.5F

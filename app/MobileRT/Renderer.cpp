@@ -41,6 +41,7 @@ Renderer::Renderer(::std::unique_ptr<Shader> shader,
     LOG_DEBUG("Renderer constructor called.");
     fillArrayWithHaltonSeq(&randomSequence);
     Ray::resetIdGenerator();
+    LOG_DEBUG("Renderer constructor finished.");
 }
 
 /**
@@ -50,15 +51,15 @@ Renderer::Renderer(::std::unique_ptr<Shader> shader,
  * @param numThreads The number of threads to use during the rendering process.
  */
 void Renderer::renderFrame(::std::int32_t *const bitmap, const ::std::int32_t numThreads) {
-    LOG_DEBUG("numThreads = ", numThreads);
-    LOG_DEBUG("Resolution = ", this->width_, "x", this->height_);
+    LOG_INFO("numThreads = ", numThreads);
+    LOG_INFO("Resolution = ", this->width_, "x", this->height_);
 
     this->sample_ = 0;
     this->samplerPixel_->resetSampling();
     this->shader_->resetSampling();
     this->block_ = 0;
 
-    const auto numChildren {numThreads - 1};
+    const ::std::int32_t numChildren {numThreads - 1};
     ::std::vector<::std::thread> threads {};
 
     MobileRT::checkSystemError("Reserving capacity for render threads");
@@ -76,7 +77,7 @@ void Renderer::renderFrame(::std::int32_t *const bitmap, const ::std::int32_t nu
     MobileRT::checkSystemError("Created render threads");
     renderScene(bitmap, numChildren);
     MobileRT::checkSystemError("Rendered scene");
-    for (auto &thread : threads) {
+    for (::std::thread &thread : threads) {
         thread.join();
     }
     MobileRT::checkSystemError("All render threads finished");
@@ -104,40 +105,40 @@ void Renderer::stopRender() {
  * @param tid    The thread id.
  */
 void Renderer::renderScene(::std::int32_t *const bitmap, const ::std::int32_t tid) {
-    const auto invImgWidth {1.0F / this->width_};
-    const auto invImgHeight {1.0F / this->height_};
-    const auto pixelWidth {0.5F / this->width_};
-    const auto pixelHeight {0.5F / this->height_};
+    const float invImgWidth {1.0F / this->width_};
+    const float invImgHeight {1.0F / this->height_};
+    const float pixelWidth {0.5F / this->width_};
+    const float pixelHeight {0.5F / this->height_};
     ::glm::vec3 pixelRgb {};
-    LOG_DEBUG("(tid: ", tid, ") renderScene");
-    const auto currentTidStr {::std::string("renderScene (" + ::std::to_string(tid) + ")")};
+    LOG_INFO("(tid: ", tid, ") renderScene");
+    const ::std::string currentTidStr {::std::string("renderScene (" + ::std::to_string(tid) + ")")};
     MobileRT::checkSystemError((currentTidStr + " start").c_str());
 
     for (::std::int32_t sample {}; sample < this->samplesPixel_; ++sample) {
-        LOG_DEBUG("(tid: ", tid, ") renderScene sample: ", sample);
+        LOG_INFO("(tid: ", tid, ") renderScene sample: ", sample);
         while (true) {
-            const auto tile {getTile(sample)};
+            const float tile {getTile(sample)};
             LOG_DEBUG("(tid: ", tid, ") Will get tile: ", tile,", bx=", this->blockSizeX_, ", by=", this->blockSizeY_, ", spp=", sample, " (total: ", this->samplesPixel_, ")");
             if (tile >= 1.0F) {
                 break;
             }
-            const auto roundBlock {static_cast<::std::int32_t> (::roundf(tile * this->domainSize_))};
-            const auto pixel {roundBlock * this->blockSizeX_ % this->resolution_};
-            const auto startY {((pixel / this->width_) * this->blockSizeY_) % this->height_};
-            const auto endY {startY + this->blockSizeY_};
+            const ::std::int32_t roundBlock {static_cast<::std::int32_t> (::roundf(tile * this->domainSize_))};
+            const ::std::int32_t pixel {roundBlock * this->blockSizeX_ % this->resolution_};
+            const ::std::int32_t startY {((pixel / this->width_) * this->blockSizeY_) % this->height_};
+            const ::std::int32_t endY {startY + this->blockSizeY_};
             LOG_DEBUG("(tid: ", tid, ") Will render a tile. roundBlock: '", roundBlock, "', pixel: '", pixel, "', startY: '", startY, "', endY: '", endY, "'");
-            for (auto y {startY}; y < endY; ++y) {
-                const auto v {y * invImgHeight};
-                const auto yWidth {y * this->width_};
-                const auto startX {(pixel + yWidth) % this->width_};
-                const auto endX {startX + this->blockSizeX_};
-                for (auto x {startX}; x < endX; ++x) {
-                    const auto u {x * invImgWidth};
-                    const auto r1 {this->samplerPixel_->getSample()};
-                    const auto r2 {this->samplerPixel_->getSample()};
-                    const auto deviationU {(r1 - 0.5F) * 2.0F * pixelWidth};
-                    const auto deviationV {(r2 - 0.5F) * 2.0F * pixelHeight};
-                    auto &&ray {this->camera_->generateRay(u, v, deviationU, deviationV)};
+            for (::std::int32_t y {startY}; y < endY; ++y) {
+                const float v {y * invImgHeight};
+                const ::std::int32_t yWidth {y * this->width_};
+                const ::std::int32_t startX {(pixel + yWidth) % this->width_};
+                const ::std::int32_t endX {startX + this->blockSizeX_};
+                for (::std::int32_t x {startX}; x < endX; ++x) {
+                    const float u {x * invImgWidth};
+                    const float r1 {this->samplerPixel_->getSample()};
+                    const float r2 {this->samplerPixel_->getSample()};
+                    const float deviationU {(r1 - 0.5F) * 2.0F * pixelWidth};
+                    const float deviationV {(r2 - 0.5F) * 2.0F * pixelHeight};
+                    Ray &&ray {this->camera_->generateRay(u, v, deviationU, deviationV)};
                     pixelRgb = {};
                     LOG_DEBUG(
                         "(tid: ", tid, ") u: ", u, ", v: ", v,
@@ -145,9 +146,9 @@ void Renderer::renderScene(::std::int32_t *const bitmap, const ::std::int32_t ti
                         ", rayId: ", ray.id_, ", depth: ", ray.depth_, ", origin: ", ray.origin_.length(), ", direction: ", ray.direction_.length()
                     );
                     this->shader_->rayTrace(&pixelRgb, ::std::move(ray));
-                    const auto pixelIndex {yWidth + x};
+                    const ::std::int32_t pixelIndex {yWidth + x};
                     ::std::int32_t *bitmapPixel {&bitmap[pixelIndex]};
-                    const auto pixelColor {::MobileRT::incrementalAvg(pixelRgb, *bitmapPixel, sample + 1)};
+                    const ::std::int32_t pixelColor {::MobileRT::incrementalAvg(pixelRgb, *bitmapPixel, sample + 1)};
                     LOG_DEBUG(
                         "(tid: ", tid, ") pixelIndex: ", pixelIndex,
                         ", bitmapPixel: ", *bitmapPixel,
@@ -162,9 +163,9 @@ void Renderer::renderScene(::std::int32_t *const bitmap, const ::std::int32_t ti
             this->sample_ = sample + 1;
             LOG_DEBUG("(tid: ", tid, ") Sample = ", this->sample_);
         }
-        LOG_DEBUG("(tid: ", tid, ") renderScene sample: ", sample, " finished");
+        LOG_INFO("(tid: ", tid, ") renderScene sample: ", sample, " finished");
     }
-    LOG_DEBUG("(tid: ", tid, ") renderScene finished");
+    LOG_INFO("(tid: ", tid, ") renderScene finished");
     MobileRT::checkSystemError((currentTidStr + " end").c_str());
 }
 
@@ -186,13 +187,13 @@ void Renderer::renderScene(::std::int32_t *const bitmap, const ::std::int32_t ti
  * @return A random value between 0 and 1.
  */
 float Renderer::getTile(const ::std::int32_t sample) {
-    const auto current {this->block_.fetch_add(1, ::std::memory_order_relaxed) - NumberOfTiles * sample};
-    if (current >= NumberOfTiles) {
+    const ::std::int32_t selectedSample {this->block_.fetch_add(1, ::std::memory_order_relaxed) - NumberOfTiles * sample};
+    if (selectedSample >= NumberOfTiles) {
         this->block_.fetch_sub(1, ::std::memory_order_relaxed);
         return 1.0F;
     }
-    const auto it {randomSequence.begin() + current};
-    return *it;
+    const auto itTile {randomSequence.cbegin() + selectedSample};
+    return *itTile;
 }
 
 /**
@@ -201,6 +202,6 @@ float Renderer::getTile(const ::std::int32_t sample) {
  * @return The total number of casted rays.
  */
 ::std::uint64_t Renderer::getTotalCastedRays() const {
-    const auto castedRays {Ray::getNumberOfCastedRays()};
+    const ::std::uint64_t castedRays {Ray::getNumberOfCastedRays()};
     return castedRays;
 }

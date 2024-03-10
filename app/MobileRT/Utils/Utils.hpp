@@ -23,10 +23,22 @@
 
 namespace MobileRT {
 
-#define LOG_DEBUG(...) \
-    ::Dependent::printDebug( \
-        ::MobileRT::convertToString(::MobileRT::getFileName(__FILE__), ":", __LINE__, ": ", __VA_ARGS__) \
-    )
+#ifndef NDEBUG
+    /**
+     * If in debug mode, then the `LOG_DEBUG` macro will print the given message to the console.
+     */
+    #define LOG_DEBUG(...) \
+        ::Dependent::printDebug( \
+            ::MobileRT::convertToString(::MobileRT::getFileName(__FILE__), ":", __LINE__, ": ", __VA_ARGS__) \
+        )
+#else
+    /**
+     * If in release mode, then the `LOG_DEBUG` macro should do nothing, to
+     * eventually make the compiler optimize and remove it from the
+     * generated binary code.
+     */
+    #define LOG_DEBUG(...) do { } while (false)
+#endif
 
 #define LOG_INFO(...) \
     ::Dependent::printInfo( \
@@ -124,7 +136,23 @@ namespace MobileRT {
         *oss << ::glm::to_string(parameter);
     }
 
-    /**
+   /**
+    * Helper method which adds a parameter into the ostringstream.
+    *
+    * @tparam First The type of the first argument.
+    * @tparam S The size of the vec.
+    * @tparam T The type of the vec.
+    * @param oss The ostringstream to add the parameters.
+    * @param firstParameter The first parameter of the list to add in the ostringstream.
+    * @param vectorParameter The vector parameter to add in the ostringstream.
+    */
+    template<typename First, ::std::int32_t S, typename T>
+    void addToStringStream(::std::ostringstream *const oss, const First& firstParameter, const ::glm::vec<S, T> vectorParameter) {
+        *oss << firstParameter;
+        *oss << ::glm::to_string(vectorParameter);
+    }
+
+   /**
     * Helper method which adds a parameter into the ostringstream.
     *
     * @tparam Type The type of the argument.
@@ -179,7 +207,7 @@ namespace MobileRT {
         ::std::ostringstream oss {""};
         addToStringStream(&oss, args...);
         oss << '\n';
-        const auto &line {oss.str()};
+        const ::std::string &line {oss.str()};
         return line;
     }
 
@@ -191,13 +219,13 @@ namespace MobileRT {
      */
     ::std::string getFileName(const char *const filepath) {
         const ::std::string &filePath {filepath};
-        auto filePos {filePath.rfind('/')};
+        ::std::string::size_type filePos {filePath.rfind('/')};
         if (filePos != ::std::string::npos) {
             ++filePos;
         } else {
             filePos = 0;
         }
-        const auto &res {filePath.substr(filePos)};
+        const ::std::string &res {filePath.substr(filePos)};
         return res;
     }
 
@@ -212,9 +240,9 @@ namespace MobileRT {
       */
     template<typename T, ::std::size_t S>
     void fillArrayWithHaltonSeq(::std::array<T, S> *const values) {
-        for (auto it {values->begin()}; it < values->end(); ::std::advance(it, 1)) {
-            const auto index {static_cast<::std::uint32_t> (::std::distance(values->begin(), it))};
-            *it = ::MobileRT::haltonSequence(index, 2);
+        for (auto itValues {values->begin()}; itValues < values->end(); ::std::advance(itValues, 1)) {
+            const ::std::uint32_t index {static_cast<::std::uint32_t> (::std::distance(values->begin(), itValues))};
+            *itValues = ::MobileRT::haltonSequence(index, 2);
         }
         static ::std::random_device randomDevice {};
         static ::std::mt19937 generator {randomDevice()};
@@ -265,9 +293,9 @@ namespace MobileRT {
      */
     template<::std::int32_t S, typename T>
     bool isValid(const ::glm::vec<S, T> &value) {
-        const auto isNaN {::glm::all(::glm::isnan(value))};
-        const auto isInf {::glm::all(::glm::isinf(value))};
-        const auto res {!isNaN && !isInf};
+        const bool isNaN {::glm::all(::glm::isnan(value))};
+        const bool isInf {::glm::all(::glm::isinf(value))};
+        const bool res {!isNaN && !isInf};
         return res;
     }
 
@@ -296,7 +324,7 @@ namespace MobileRT {
     inline ::std::array<T, S> toArray(const char *const values) {
         ::std::stringstream data {values};
         ::std::array<float, S> parsedValues {};
-        for (auto i {0u}; i < S; ++i) {
+        for (::std::uint32_t i {0u}; i < S; ++i) {
             data >> parsedValues[i];
         }
         return parsedValues;

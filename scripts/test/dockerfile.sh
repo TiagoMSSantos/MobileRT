@@ -110,21 +110,30 @@ testMobileRTContainer() {
   # TODO: Increase the number of chars in Windows terminal lines. Currently only shows 80 chars per line.
   echo 'Validating if MobileRT finished rendering the Conference scene.';
   ls -lahp "${_logFile}";
-  # grep -qne 'Finished rendering scene' "${_logFile}";
-  # grep -qne 'Total Millions rays per second' "${_logFile}";
-  grep -qne 'SCENE DELETED' "${_logFile}";
+  grep -qne 'Finished rendering sc' "${_logFile}";
+  grep -qne 'cene' "${_logFile}";
+  grep -qne 'Total Millions rays p' "${_logFile}";
+  grep -qne 'per second = ' "${_logFile}";
   echo 'Validating number of primitives and lights.';
-  grep -qne 'PRIMITIVES = 331179' "${_logFile}";
+  grep -qne 'TRIANGLES = 331179' "${_logFile}";
   grep -qne 'LIGHTS = 2' "${_logFile}";
-  echo 'Validating selected shader and scene.';
+  echo 'Validating selected shader, scene and accelerator.';
   grep -qne 'shader = 1' "${_logFile}";
   grep -qne 'scene = 4' "${_logFile}";
+  grep -qne 'accelerator = 3' "${_logFile}";
   echo 'Validating number of samples.'
   grep -qne 'samplesPixel = 1' "${_logFile}";
   grep -qne 'samplesLight = 1' "${_logFile}";
   echo 'Validating resolution.';
-  grep -qne 'width_ = 96' "${_logFile}";
-  grep -qne 'height_ = 96' "${_logFile}";
+  grep -qne 'width = 96' "${_logFile}";
+  grep -qne 'height = 96' "${_logFile}";
+  echo 'Validating repetitions.';
+  grep -qne 'repeats = 1' "${_logFile}";
+  echo 'Validating time was printed.';
+  grep -qne 'Loading Time in secs ' "${_logFile}";
+  grep -qne 'Filling Time in secs ' "${_logFile}";
+  grep -qne 'Creating Time in secs' "${_logFile}";
+  grep -qne 'Rendering Time in sec' "${_logFile}";
   rm "${_logFile}";
   echo 'Validated that MobileRT finished rendering the scene.';
 

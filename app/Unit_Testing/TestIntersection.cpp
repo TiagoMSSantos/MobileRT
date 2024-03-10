@@ -23,18 +23,17 @@ TestIntersection::~TestIntersection () {
  * In this case the normal has length of 0 and should be 1.
  */
 TEST_F(TestIntersection, TestInvalidConstructor) {
-    const auto intPoint {::glm::vec3 {10.0F, 0.0F, 10.0F}};
+    const ::glm::vec3 intPoint {::glm::vec3 {10.0F, 0.0F, 10.0F}};
     const float dist {1.2F};
 
     // Normal must have a length of 1.
-    const auto normal {::glm::vec3 {0.0F, 0.0F, 0.0F}};
-    const auto primitive {nullptr};
-    const auto materialIndex {0};
+    const ::glm::vec3 normal {::glm::vec3 {0.0F, 0.0F, 0.0F}};
+    const void *primitive {nullptr};
+    const ::std::int32_t materialIndex {0};
     const ::glm::vec2 texCoords {0.4F, 0.6F};
     Ray ray {::glm::vec3 {1.0F}, ::glm::vec3 {}, 0, false};
 
-    ASSERT_DEBUG_DEATH(const Intersection intersection
-        (::std::move(ray), intPoint, dist, normal, primitive, materialIndex, texCoords);, "");
+    ASSERT_DEBUG_DEATH(const Intersection intersection(::std::move(ray), intPoint, dist, normal, primitive, materialIndex, texCoords);, "");
 }
 
 /**
@@ -42,11 +41,11 @@ TEST_F(TestIntersection, TestInvalidConstructor) {
  * In this case the normal has length of 10 and should be 1.
  */
 TEST_F(TestIntersection, TestInvalidConstructor2) {
-    const auto intPoint {::glm::vec3 {10.0F, 0.0F, 10.0F}};
+    const ::glm::vec3 intPoint {::glm::vec3 {10.0F, 0.0F, 10.0F}};
     const float dist {0.0F};
-    const auto normal {::glm::vec3 {0.0F, 0.0F, 10.0F}};
-    const auto primitive {nullptr};
-    const auto materialIndex {0};
+    const ::glm::vec3 normal {::glm::vec3 {0.0F, 0.0F, 10.0F}};
+    const void *primitive {nullptr};
+    const ::std::int32_t materialIndex {0};
     const ::glm::vec2 texCoords {0.4F, 0.6F};
     Ray ray {::glm::vec3 {1.0F}, ::glm::vec3 {}, 0, false};
 
@@ -69,11 +68,11 @@ TEST_F(TestIntersection, TestInvalidConstructor3) {
  * Tests the Intersection constructor.
  */
 TEST_F(TestIntersection, TestConstructor) {
-    const auto intPoint {::glm::vec3 {10.0F, 0.0F, 10.0F}};
+    const ::glm::vec3 intPoint {::glm::vec3 {10.0F, 0.0F, 10.0F}};
     const float dist {1.2F};
-    const auto normal {::glm::normalize(::glm::vec3 {0.0F, 0.0F, 10.0F})};
-    const auto primitive {nullptr};
-    const auto materialIndex {0};
+    const ::glm::vec3 normal {::glm::normalize(::glm::vec3 {0.0F, 0.0F, 10.0F})};
+    const void *primitive {nullptr};
+    const ::std::int32_t materialIndex {0};
     const ::glm::vec2 texCoords {0.4F, 0.6F};
     Ray ray {::glm::vec3 {1.0F}, ::glm::vec3 {}, 0, false};
 

@@ -64,38 +64,38 @@ Intersection Triangle::intersect(Intersection intersection) const {
         return intersection;
     }
 
-    const auto &perpendicularVector {::glm::cross(intersection.ray_.direction_, this->AC_)};
-    const auto normalizedProjection {::glm::dot(this->AB_, perpendicularVector)};
+    const ::glm::vec3 &perpendicularVector {::glm::cross(intersection.ray_.direction_, this->AC_)};
+    const float normalizedProjection {::glm::dot(this->AB_, perpendicularVector)};
     if (::std::abs(normalizedProjection) < Epsilon) {
         return intersection;
     }
 
     //u v = barycentric coordinates (uv-space are inside a unit triangle)
-    const auto normalizedProjectionInv {1.0F / normalizedProjection};
-    const auto &vectorToCamera {intersection.ray_.origin_ - this->pointA_};
-    const auto u {normalizedProjectionInv * ::glm::dot(vectorToCamera, perpendicularVector)};
+    const float normalizedProjectionInv {1.0F / normalizedProjection};
+    const ::glm::vec3 &vectorToCamera {intersection.ray_.origin_ - this->pointA_};
+    const float u {normalizedProjectionInv * ::glm::dot(vectorToCamera, perpendicularVector)};
     if (u < 0.0F || u > 1.0F) {
         return intersection;
     }
 
-    const auto &upPerpendicularVector {::glm::cross(vectorToCamera, this->AB_)};
-    const auto v {normalizedProjectionInv * ::glm::dot (intersection.ray_.direction_, upPerpendicularVector)};
+    const ::glm::vec3 &upPerpendicularVector {::glm::cross(vectorToCamera, this->AB_)};
+    const float v {normalizedProjectionInv * ::glm::dot (intersection.ray_.direction_, upPerpendicularVector)};
     if (v < 0.0F || (u + v) > 1.0F) {
         return intersection;
     }
 
     // at this stage we can compute t to find out where
     // the intersection point is on the line
-    const auto distanceToIntersection {normalizedProjectionInv * ::glm::dot(AC_, upPerpendicularVector)};
+    const float distanceToIntersection {normalizedProjectionInv * ::glm::dot(AC_, upPerpendicularVector)};
 
     if (distanceToIntersection < Epsilon || distanceToIntersection >= intersection.length_) {
         return intersection;
     }
 
-    const auto w {1.0F - u - v};
-    const auto &intersectionNormal {::glm::normalize(this->normalA_ * w + this->normalB_ * u + this->normalC_ * v)};
-    const auto &texCoords {this->texCoordA_ * w + this->texCoordB_ * u + this->texCoordC_ * v};
-    const auto &intersectionPoint {intersection.ray_.origin_ + intersection.ray_.direction_ * distanceToIntersection};
+    const float w {1.0F - u - v};
+    const ::glm::vec3 &intersectionNormal {::glm::normalize(this->normalA_ * w + this->normalB_ * u + this->normalC_ * v)};
+    const ::glm::vec2 &texCoords {this->texCoordA_ * w + this->texCoordB_ * u + this->texCoordC_ * v};
+    const ::glm::vec3 &intersectionPoint {intersection.ray_.origin_ + intersection.ray_.direction_ * distanceToIntersection};
     const Intersection res {::std::move(intersection.ray_),
                             intersectionPoint, distanceToIntersection,
                             intersectionNormal,
@@ -113,10 +113,10 @@ Intersection Triangle::intersect(Intersection intersection) const {
  * @return The bounding box of the triangle.
  */
 AABB Triangle::getAABB() const {
-    const auto &pointB {this->pointA_ + this->AB_};
-    const auto &pointC {this->pointA_ + this->AC_};
-    const auto &min {::glm::min(this->pointA_, ::glm::min(pointB, pointC))};
-    const auto &max {::glm::max(this->pointA_, ::glm::max(pointB, pointC))};
+    const ::glm::vec3 &pointB {this->pointA_ + this->AB_};
+    const ::glm::vec3 &pointC {this->pointA_ + this->AC_};
+    const ::glm::vec3 &min {::glm::min(this->pointA_, ::glm::min(pointB, pointC))};
+    const ::glm::vec3 &max {::glm::max(this->pointA_, ::glm::max(pointB, pointC))};
     const AABB res {min, max};
     return res;
 }
@@ -139,12 +139,12 @@ bool Triangle::isNearFarInvalid(const float near, const float far) {
  * @return Whether if the bounding box intersects the triangle or not.
  */
 bool Triangle::intersect(const AABB &box) const {
-    auto intersectRayAABB {
+    auto lambdaIntersectRayAABB {
         [&](const ::glm::vec3 &orig, const ::glm::vec3 &vec) -> bool {
             ::glm::vec3 t1 {};
             ::glm::vec3 t2 {}; // vectors to hold the T-values for every direction
-            auto tNear {::std::numeric_limits<float>::min()};
-            auto tFar {::std::numeric_limits<float>::max()};
+            float tNear {::std::numeric_limits<float>::min()};
+            float tFar {::std::numeric_limits<float>::max()};
             if (::std::fabs(vec[0]) < ::std::numeric_limits<float>::epsilon()) {
                 // ray parallel to planes in this direction
                 if ((orig[0] < box.getPointMin()[0]) || ((orig[0] + vec[0]) > box.getPointMax()[0])) {
@@ -199,30 +199,30 @@ bool Triangle::intersect(const AABB &box) const {
             return true; // if we made it here, there was an intersection - YAY
         }};
 
-    auto isOverTriangle {
+    auto lambdaIsOverTriangle {
         [&](const ::glm::vec3 &vec) -> bool {
-            const auto &perpendicularVector {::glm::cross(vec, this->AC_)};
-            const auto normalizedProjection {::glm::dot(this->AB_, perpendicularVector)};
-            const auto res {::std::abs(normalizedProjection) < Epsilon};
+            const ::glm::vec3 &perpendicularVector {::glm::cross(vec, this->AC_)};
+            const float normalizedProjection {::glm::dot(this->AB_, perpendicularVector)};
+            const bool res {::std::abs(normalizedProjection) < Epsilon};
             return res;
         }
     };
 
-    const auto &min {box.getPointMin()};
-    const auto &max {box.getPointMax()};
-    const auto &vec {max - min};
+    const ::glm::vec3 &min {box.getPointMin()};
+    const ::glm::vec3 &max {box.getPointMax()};
+    const ::glm::vec3 &vec {max - min};
     Ray ray {vec, min, 1, false};
-    const auto intersectedAB {intersectRayAABB(this->pointA_, this->AB_)};
-    const auto intersectedAC {intersectRayAABB(this->pointA_, this->AC_)};
-    const auto &pointB {this->pointA_ + this->AB_};
-    const auto &pointC {this->pointA_ + this->AC_};
-    const auto intersectedBC {intersectRayAABB(pointB, pointC - pointB)};
+    const bool intersectedAB {lambdaIntersectRayAABB(this->pointA_, this->AB_)};
+    const bool intersectedAC {lambdaIntersectRayAABB(this->pointA_, this->AC_)};
+    const ::glm::vec3 &pointB {this->pointA_ + this->AB_};
+    const ::glm::vec3 &pointC {this->pointA_ + this->AC_};
+    const bool intersectedBC {lambdaIntersectRayAABB(pointB, pointC - pointB)};
     Intersection intersection {::std::move(ray)};
-    const auto lastDist {intersection.length_};
+    const float lastDist {intersection.length_};
     intersection = intersect(intersection);
-    const auto intersectedRay {intersection.length_ < lastDist};
-    const auto insideTriangle {isOverTriangle(vec)};
-    const auto res {intersectedAB || intersectedAC || intersectedBC || intersectedRay || insideTriangle};
+    const bool intersectedRay {intersection.length_ < lastDist};
+    const bool insideTriangle {lambdaIsOverTriangle(vec)};
+    const bool res {intersectedAB || intersectedAC || intersectedBC || intersectedRay || insideTriangle};
 
     return res;
 }
@@ -250,7 +250,7 @@ bool Triangle::intersect(const AABB &box) const {
  *
  * @return The point A.
  */
-::glm::vec3  Triangle::getA() const {
+::glm::vec3 Triangle::getA() const {
     return this->pointA_;
 }
 
@@ -397,9 +397,9 @@ Triangle Triangle::Builder::build() {
  * Convert class to output stream.
  */
 ::std::ostream& MobileRT::operator << (::std::ostream &os, const Triangle& triangle) {
-    const auto &pointA {::glm::to_string(triangle.pointA_)};
-    const auto &pointB {::glm::to_string(triangle.pointA_ + triangle.AB_)};
-    const auto &pointC {::glm::to_string(triangle.pointA_ + triangle.AC_)};
+    const ::std::string &pointA {::glm::to_string(triangle.pointA_)};
+    const ::std::string &pointB {::glm::to_string(triangle.pointA_ + triangle.AB_)};
+    const ::std::string &pointC {::glm::to_string(triangle.pointA_ + triangle.AC_)};
 
     return (os << "A: " << pointA  << ", B: " << pointB << ", C: " << pointC);
 }

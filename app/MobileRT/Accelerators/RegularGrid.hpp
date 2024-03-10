@@ -72,7 +72,7 @@ namespace MobileRT {
     public:
         explicit RegularGrid() = default;
 
-        explicit RegularGrid(::std::vector<T> &&primitives,::std::uint32_t gridSize);
+        explicit RegularGrid(::std::vector<T> &&primitives, ::std::uint32_t gridSize);
 
         RegularGrid(const RegularGrid &regularGrid) = delete;
 
@@ -122,10 +122,10 @@ namespace MobileRT {
         // precalculate size of a cell (for x, y, and z)
         cellSize_ {(worldBoundaries_.getPointMax() - worldBoundaries_.getPointMin()) * (1.0F / static_cast<float> (gridSize_))} {
         ::MobileRT::checkSystemError("RegularGrid constructor start");
-        LOG_DEBUG(typeid(T).name());
-        const auto worldBoundsMin {this->worldBoundaries_.getPointMin()};
-        const auto worldBoundsMax {this->worldBoundaries_.getPointMax()};
-        LOG_DEBUG("scene min=(",
+        LOG_INFO("Building RegularGrid for: ", typeid(T).name());
+        const ::glm::vec3 worldBoundsMin {this->worldBoundaries_.getPointMin()};
+        const ::glm::vec3 worldBoundsMax {this->worldBoundaries_.getPointMax()};
+        LOG_INFO("scene min=(",
                   worldBoundsMin[0], ", ",
                   worldBoundsMin[1], ", ",
                   worldBoundsMin[2], ") max=(",
@@ -134,7 +134,7 @@ namespace MobileRT {
                   worldBoundsMax[2], ")"
         );
 
-        LOG_DEBUG("PRIMITIVES = ", this->primitives_.size());
+        LOG_INFO("PRIMITIVES = ", this->primitives_.size());
 
         ::MobileRT::checkSystemError("RegularGrid constructor before adding primitives");
         addPrimitives();
@@ -178,62 +178,61 @@ namespace MobileRT {
     template<typename T>
     void RegularGrid<T>::addPrimitives() {
         ::MobileRT::checkSystemError("RegularGrid addPrimitives start");
-        const auto worldBoundsMin {this->worldBoundaries_.getPointMin()};
-        const auto worldBoundsMax {this->worldBoundaries_.getPointMax()};
+        const ::glm::vec3 worldBoundsMin {this->worldBoundaries_.getPointMin()};
+        const ::glm::vec3 worldBoundsMax {this->worldBoundaries_.getPointMax()};
 
         // calculate cell width, height and depth
-        const auto size {worldBoundsMax - worldBoundsMin};
-        const auto dx {size[0] / this->gridSize_};
-        const auto dy {size[1] / this->gridSize_};
-        const auto dz {size[2] / this->gridSize_};
-        const auto dxReci {dx > 0 ? 1.0F / dx : 1.0F};
-        const auto dyReci {dy > 0 ? 1.0F / dy : 1.0F};
-        const auto dzReci {dz > 0 ? 1.0F / dz : 1.0F};
-        const auto numPrimitives {static_cast<::std::uint32_t> (this->primitives_.size())};
+        const ::glm::vec3 size {worldBoundsMax - worldBoundsMin};
+        const float dx {size[0] / this->gridSize_};
+        const float dy {size[1] / this->gridSize_};
+        const float dz {size[2] / this->gridSize_};
+        const float dxReci {dx > 0 ? 1.0F / dx : 1.0F};
+        const float dyReci {dy > 0 ? 1.0F / dy : 1.0F};
+        const float dzReci {dz > 0 ? 1.0F / dz : 1.0F};
+        const ::std::uint32_t numPrimitives {static_cast<::std::uint32_t> (this->primitives_.size())};
 
         ::std::vector<::std::mutex> mutexes (this->grid_.size());
 
         ::MobileRT::checkSystemError("RegularGrid addPrimitives before calling OpenMP");
-        const int num_max_threads {omp_get_max_threads()};
         errno = 0; // In some compilers, OpenMP sets 'errno' to 'EFAULT - Bad address (14)'.
-        LOG_DEBUG("num_max_threads = ", num_max_threads);
+        LOG_INFO("omp_get_max_threads = ", omp_get_max_threads());
 
         ::MobileRT::checkSystemError("RegularGrid addPrimitives before adding primitives");
         // store primitives in the grid cells
         #pragma omp parallel for
         for (::std::int32_t index = 0; index < static_cast<::std::int32_t> (numPrimitives); ++index) {
             ::MobileRT::checkSystemError(::std::string("RegularGrid addPrimitives (" + ::std::to_string(index) + ")").c_str());
-            auto &primitive {this->primitives_[static_cast<::std::uint32_t> (index)]};
-            const auto bound {primitive.getAABB()};
-            const auto &bv1 {bound.getPointMin()};
-            const auto &bv2 {bound.getPointMax()};
+            T &primitive {this->primitives_[static_cast<::std::uint32_t> (index)]};
+            const AABB bound {primitive.getAABB()};
+            const ::glm::vec3 &bv1 {bound.getPointMin()};
+            const ::glm::vec3 &bv2 {bound.getPointMax()};
 
             // find out which cells could contain the primitive (based on aabb)
-            auto x1 {static_cast<::std::int32_t> ((bv1[0] - worldBoundsMin[0]) * dxReci)};
-            auto x2 {static_cast<::std::int32_t> ((bv2[0] - worldBoundsMin[0]) * dxReci) + 1};
+            ::std::int32_t x1 {static_cast<::std::int32_t> ((bv1[0] - worldBoundsMin[0]) * dxReci)};
+            ::std::int32_t x2 {static_cast<::std::int32_t> ((bv2[0] - worldBoundsMin[0]) * dxReci) + 1};
             x1 = ::std::max(0, x1);
             x2 = ::std::min(x2, this->gridSize_ - 1);
             x2 = ::std::fabs(size[0]) < ::std::numeric_limits<float>::epsilon()? 0 : x2;
             x1 = ::std::min(x1, x2);
-            auto y1 {static_cast<::std::int32_t> ((bv1[1] - worldBoundsMin[1]) * dyReci)};
-            auto y2 {static_cast<::std::int32_t> ((bv2[1] - worldBoundsMin[1]) * dyReci) + 1};
+            ::std::int32_t y1 {static_cast<::std::int32_t> ((bv1[1] - worldBoundsMin[1]) * dyReci)};
+            ::std::int32_t y2 {static_cast<::std::int32_t> ((bv2[1] - worldBoundsMin[1]) * dyReci) + 1};
             y1 = ::std::max(0, y1);
             y2 = ::std::min(y2, this->gridSize_ - 1);
             y2 = ::std::fabs(size[1]) < ::std::numeric_limits<float>::epsilon()? 0 : y2;
             y1 = ::std::min(y1, y2);
-            auto z1 {static_cast<::std::int32_t> ((bv1[2] - worldBoundsMin[2]) * dzReci)};
-            auto z2 {static_cast<::std::int32_t> ((bv2[2] - worldBoundsMin[2]) * dzReci) + 1};
+            ::std::int32_t z1 {static_cast<::std::int32_t> ((bv1[2] - worldBoundsMin[2]) * dzReci)};
+            ::std::int32_t z2 {static_cast<::std::int32_t> ((bv2[2] - worldBoundsMin[2]) * dzReci) + 1};
             z1 = ::std::max(0, z1);
             z2 = ::std::min(z2, this->gridSize_ - 1);
             z2 = ::std::fabs(size[2]) < ::std::numeric_limits<float>::epsilon()? 0 : z2;
             z1 = ::std::min(z1, z2);
 
             //loop over candidate cells
-            for (auto x {x1}; x <= x2; ++x) {
-                for (auto y {y1}; y <= y2; ++y) {
-                    for (auto z {z1}; z <= z2; ++z) {
+            for (::std::int32_t x {x1}; x <= x2; ++x) {
+                for (::std::int32_t y {y1}; y <= y2; ++y) {
+                    for (::std::int32_t z {z1}; z <= z2; ++z) {
                         // construct aabb for current cell
-                        const auto idx {static_cast<::std::uint32_t> (
+                        const ::std::uint32_t idx {static_cast<::std::uint32_t> (
                             x +
                             y * this->gridSize_ +
                             z * this->gridSize_ * this->gridSize_
@@ -245,7 +244,7 @@ namespace MobileRT {
                         };
                         const AABB cell {pos, pos + ::glm::vec3 {dx, dy, dz}};
                         // do an accurate aabb / primitive intersection test
-                        const auto intersectedBox {primitive.intersect(cell)};
+                        const bool intersectedBox {primitive.intersect(cell)};
                         if (intersectedBox) {
                             ::std::lock_guard<::std::mutex> lock {mutexes[idx]};
                             this->grid_[idx].emplace_back(&primitive);
@@ -301,13 +300,13 @@ namespace MobileRT {
      */
     template<typename T>
     Intersection RegularGrid<T>::intersect(Intersection intersection) {
-        const auto worldBoundsMin {this->worldBoundaries_.getPointMin()};
+        const ::glm::vec3 &worldBoundsMin {this->worldBoundaries_.getPointMin()};
 
         // setup 3DDDA (double check reusability of primary ray data)
-        const auto &cell {(intersection.ray_.origin_ - worldBoundsMin) * this->cellSizeInverted_};
-        auto cellX {static_cast<::std::int32_t> (cell[0])};
-        auto cellY {static_cast<::std::int32_t> (cell[1])};
-        auto cellZ {static_cast<::std::int32_t> (cell[2])};
+        const ::glm::vec3 &cell {(intersection.ray_.origin_ - worldBoundsMin) * this->cellSizeInverted_};
+        ::std::int32_t cellX {static_cast<::std::int32_t> (cell[0])};
+        ::std::int32_t cellY {static_cast<::std::int32_t> (cell[1])};
+        ::std::int32_t cellZ {static_cast<::std::int32_t> (cell[2])};
 
         cellX = ::std::min(cellX, this->gridSize_ - 1);
         cellX = ::std::max(cellX, 0);
@@ -352,7 +351,7 @@ namespace MobileRT {
 
         ::glm::vec3 tmax {}, tdelta {};
         if (::std::fabs(intersection.ray_.direction_[0]) > ::std::numeric_limits<float>::epsilon()) {
-            const auto rxr {1.0F / intersection.ray_.direction_[0]};
+            const float rxr {1.0F / intersection.ray_.direction_[0]};
             tmax[0] = ((cb[0] - intersection.ray_.origin_[0]) * rxr);
             tdelta[0] = (this->cellSize_[0] * static_cast<float> (stepX) * rxr);
         } else {
@@ -360,7 +359,7 @@ namespace MobileRT {
         }
 
         if (::std::fabs(intersection.ray_.direction_[1]) > ::std::numeric_limits<float>::epsilon()) {
-            const auto ryr {1.0F / intersection.ray_.direction_[1]};
+            const float ryr {1.0F / intersection.ray_.direction_[1]};
             tmax[1] = ((cb[1] - intersection.ray_.origin_[1]) * ryr);
             tdelta[1] = (this->cellSize_[1] * static_cast<float> (stepY) * ryr);
         } else {
@@ -368,7 +367,7 @@ namespace MobileRT {
         }
 
         if (::std::fabs(intersection.ray_.direction_[2]) > ::std::numeric_limits<float>::epsilon()) {
-            const auto rzr {1.0F / intersection.ray_.direction_[2]};
+            const float rzr {1.0F / intersection.ray_.direction_[2]};
             tmax[2] = ((cb[2] - intersection.ray_.origin_[2]) * rzr);
             tdelta[2] = (this->cellSize_[2] * static_cast<float> (stepZ) * rzr);
         } else {
@@ -380,13 +379,13 @@ namespace MobileRT {
         while (true) {
 
             // Get the primitives inside the cell.
-            const auto index {getCellIndex(cellX, cellY, cellZ)};
-            const auto itPrimitive {this->grid_.begin() + index};
-            auto primitivesList {*itPrimitive};
+            const ::std::int32_t index {getCellIndex(cellX, cellY, cellZ)};
+            const auto itPrimitives {this->grid_.begin() + index};
+            ::std::vector<T*> primitivesList {*itPrimitives};
 
             // Check if the ray intersects any primitive in the cell.
-            for (auto *const primitive : primitivesList) {
-                const auto lastDist {intersection.length_};
+            for (T *const primitive : primitivesList) {
+                const float lastDist {intersection.length_};
                 intersection = primitive->intersect(intersection);
                 if (intersection.length_ < lastDist) {
                     if (intersection.ray_.shadowTrace_) {
@@ -431,12 +430,12 @@ namespace MobileRT {
         while (true) {
 
             // Get the primitives in the cell.
-            const auto index {getCellIndex(cellX, cellY, cellZ)};
+            const ::std::int32_t index {getCellIndex(cellX, cellY, cellZ)};
             const auto itPrimitives {this->grid_.begin() + index};
-            auto primitivesList {*itPrimitives};
+            ::std::vector<T*> primitivesList {*itPrimitives};
 
             // Check if the ray intersects any primitive in the cell.
-            for (auto *const primitive : primitivesList) {
+            for (T *const primitive : primitivesList) {
                 intersection = primitive->intersect(intersection);
             }
             if (tmax[0] < tmax[1]) {
@@ -497,7 +496,7 @@ namespace MobileRT {
             const ::std::int32_t cellX,
             const ::std::int32_t cellY,
             const ::std::int32_t cellZ) const {
-        const auto index {
+        const ::std::int32_t index {
             static_cast<::std::int32_t> (
                  static_cast<::std::uint32_t> (cellX) +
                  (static_cast<::std::uint32_t> (cellY) << (this->gridShift_)) +

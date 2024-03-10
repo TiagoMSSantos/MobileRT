@@ -95,9 +95,9 @@ inline void assertRayTriangle (const ::glm::vec3 &orig,
  * Tests the Triangle constructor with invalid parameters.
  */
 TEST_F(TestTriangle, TestInvalidConstructor) {
-    const auto A {::glm::vec3 {0.0F, 0.0F, 0.0F}};
-    const auto B {::glm::vec3 {0.0F, 0.0F, 0.0F}};
-    const auto C {::glm::vec3 {0.0F, 0.0F, 0.0F}};
+    const ::glm::vec3 A {::glm::vec3 {0.0F, 0.0F, 0.0F}};
+    const ::glm::vec3 B {::glm::vec3 {0.0F, 0.0F, 0.0F}};
+    const ::glm::vec3 C {::glm::vec3 {0.0F, 0.0F, 0.0F}};
 
     ASSERT_DEBUG_DEATH(Triangle::Builder(A, B, C).build();, "");
 }
@@ -106,12 +106,12 @@ TEST_F(TestTriangle, TestInvalidConstructor) {
  * Tests the Triangle constructor with invalid parameters.
  */
 TEST_F(TestTriangle, TestInvalidConstructor2) {
-    const auto A {::glm::vec3 {10.0F, 0.0F, 10.0F}};
-    const auto B {::glm::vec3 {0.0F, 0.0F, 10.0F}};
-    const auto C {::glm::vec3 {0.0F, 10.0F, 10.0F}};
-    const auto normalA {::glm::vec3 {0, 0, 0}};
-    const auto normalB {::glm::vec3 {0, 0, 0}};
-    const auto normalC {::glm::vec3 {0, 0, 0}};
+    const ::glm::vec3 A {::glm::vec3 {10.0F, 0.0F, 10.0F}};
+    const ::glm::vec3 B {::glm::vec3 {0.0F, 0.0F, 10.0F}};
+    const ::glm::vec3 C {::glm::vec3 {0.0F, 10.0F, 10.0F}};
+    const ::glm::vec3 normalA {::glm::vec3 {0, 0, 0}};
+    const ::glm::vec3 normalB {::glm::vec3 {0, 0, 0}};
+    const ::glm::vec3 normalC {::glm::vec3 {0, 0, 0}};
 
     ASSERT_DEBUG_DEATH(
         Triangle::Builder(A, B, C)
@@ -125,16 +125,16 @@ TEST_F(TestTriangle, TestInvalidConstructor2) {
  * Tests the Triangle constructor.
  */
 TEST_F(TestTriangle, TestConstructor) {
-    const auto A {::glm::vec3 {10.0F, 0.0F, 10.0F}};
-    const auto B {::glm::vec3 {0.0F, 0.0F, 10.0F}};
-    const auto C {::glm::vec3 {0.0F, 10.0F, 10.0F}};
-    const auto normalA {::glm::vec3 {1, 2, 3}};
-    const auto normalB {::glm::vec3 {4, 5, 6}};
-    const auto normalC {::glm::vec3 {7, 8, 9}};
-    const auto texCoordsA {::glm::vec2 {1, 2}};
-    const auto texCoordsB {::glm::vec2 {4, 5}};
-    const auto texCoordsC {::glm::vec2 {7, 8}};
-    const auto materialIndex {19};
+    const ::glm::vec3 A {::glm::vec3 {10.0F, 0.0F, 10.0F}};
+    const ::glm::vec3 B {::glm::vec3 {0.0F, 0.0F, 10.0F}};
+    const ::glm::vec3 C {::glm::vec3 {0.0F, 10.0F, 10.0F}};
+    const ::glm::vec3 normalA {::glm::vec3 {1, 2, 3}};
+    const ::glm::vec3 normalB {::glm::vec3 {4, 5, 6}};
+    const ::glm::vec3 normalC {::glm::vec3 {7, 8, 9}};
+    const ::glm::vec2 texCoordsA {::glm::vec2 {1, 2}};
+    const ::glm::vec2 texCoordsB {::glm::vec2 {4, 5}};
+    const ::glm::vec2 texCoordsC {::glm::vec2 {7, 8}};
+    const ::std::int32_t materialIndex {19};
     const Triangle triangle4 {
         Triangle::Builder(A, B, C)
             .withNormals(normalA, normalB, normalC)
@@ -142,12 +142,12 @@ TEST_F(TestTriangle, TestConstructor) {
             .withMaterialIndex(materialIndex)
             .build()
     };
-    const auto pointA {triangle4.getA()};
-    const auto pointB {pointA + triangle4.getAB()};
-    const auto pointC {pointA + triangle4.getAC()};
-    const auto normalA2 {::glm::normalize(normalA)};
-    const auto normalB2 {::glm::normalize(normalB)};
-    const auto normalC2 {::glm::normalize(normalC)};
+    const ::glm::vec3 pointA {triangle4.getA()};
+    const ::glm::vec3 pointB {pointA + triangle4.getAB()};
+    const ::glm::vec3 pointC {pointA + triangle4.getAC()};
+    const ::glm::vec3 normalA2 {::glm::normalize(normalA)};
+    const ::glm::vec3 normalB2 {::glm::normalize(normalB)};
+    const ::glm::vec3 normalC2 {::glm::normalize(normalC)};
 
     ASSERT_EQ(materialIndex, triangle4.getMaterialIndex());
     for (int i {0}; i < ::MobileRT::NumberOfAxes; ++i) {
@@ -169,9 +169,9 @@ TEST_F(TestTriangle, TestConstructor) {
  * Tests the Triangle constructor.
  */
 TEST_F(TestTriangle, ConstructorVALUES) {
-    const auto pointA {triangle->getA()};
-    const auto AC {triangle->getAC()};
-    const auto AB {triangle->getAB()};
+    const ::glm::vec3 pointA {triangle->getA()};
+    const ::glm::vec3 AC {triangle->getAC()};
+    const ::glm::vec3 AB {triangle->getAB()};
     ASSERT_EQ(0.0F, pointA[0]);
     ASSERT_EQ(0.0F, pointA[1]);
     ASSERT_EQ(0.0F, pointA[2]);

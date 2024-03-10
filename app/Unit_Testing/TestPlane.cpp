@@ -32,7 +32,7 @@ namespace {
  * In this case the normal has length of 0 and should be 1.
  */
 TEST_F(TestPlane, TestInvalidConstructor) {
-    const auto materialIndex {19};
+    const ::std::int32_t materialIndex {19};
     const ::glm::vec3 point {1, 2, 3};
     const ::glm::vec3 normal {0, 0, 0};
 
@@ -44,7 +44,7 @@ TEST_F(TestPlane, TestInvalidConstructor) {
  * In this case the normal have an infinite value but should have a length of 1.
  */
 TEST_F(TestPlane, TestInvalidConstructor2) {
-    const auto materialIndex {19};
+    const ::std::int32_t materialIndex {19};
     const ::glm::vec3 point {1, 2, 3};
     const ::glm::vec3 normal {::std::numeric_limits<float>::infinity(), 1, 0};
 
@@ -56,7 +56,7 @@ TEST_F(TestPlane, TestInvalidConstructor2) {
  * In this case the normal have a NaN value but should have a length of 1.
  */
 TEST_F(TestPlane, TestInvalidConstructor3) {
-    const auto materialIndex {19};
+    const ::std::int32_t materialIndex {19};
     const ::glm::vec3 point {1, 2, 3};
     const ::glm::vec3 normal {1, ::std::numeric_limits<float>::quiet_NaN(), 0};
 
@@ -67,10 +67,10 @@ TEST_F(TestPlane, TestInvalidConstructor3) {
  * Tests the Plane constructor.
  */
 TEST_F(TestPlane, TestConstructor) {
-    const auto materialIndex {19};
+    const ::std::int32_t materialIndex {19};
     const ::glm::vec3 point {1, 2, 3};
     const ::glm::vec3 normal {4, 5, 6};
-    const auto normal2 {::glm::normalize(normal)};
+    const ::glm::vec3 normal2 {::glm::normalize(normal)};
     const Plane plane2 {point, normal, materialIndex};
 
     ASSERT_EQ(materialIndex, plane2.getMaterialIndex());
@@ -84,12 +84,12 @@ TEST_F(TestPlane, TestConstructor) {
  * Tests the Plane copy constructor.
  */
 TEST_F(TestPlane, TestCopyConstructor) {
-    const auto materialIndex {19};
+    const ::std::int32_t materialIndex {19};
     const ::glm::vec3 point {1, 2, 3};
     const ::glm::vec3 normal {4, 5, 6};
-    const auto normal2 {::glm::normalize(normal)};
+    const ::glm::vec3 normal2 {::glm::normalize(normal)};
     const Plane plane2 {point, normal, materialIndex};
-    const auto plane3 {plane2};
+    const Plane plane3 {plane2};
 
     ASSERT_EQ(materialIndex, plane3.getMaterialIndex());
     for (int i {0}; i < ::MobileRT::NumberOfAxes; ++i) {
@@ -102,12 +102,12 @@ TEST_F(TestPlane, TestCopyConstructor) {
  * Tests the Plane move constructor.
  */
 TEST_F(TestPlane, TestMoveConstructor) {
-    const auto materialIndex {19};
+    const ::std::int32_t materialIndex {19};
     const ::glm::vec3 point {1, 2, 3};
     const ::glm::vec3 normal {4, 5, 6};
-    const auto normal2 {::glm::normalize(normal)};
+    const ::glm::vec3 normal2 {::glm::normalize(normal)};
     Plane plane2 {point, normal, materialIndex};
-    const auto plane3 {::std::move(plane2)};
+    const Plane plane3 {::std::move(plane2)};
 
     ASSERT_EQ(materialIndex, plane3.getMaterialIndex());
     for (int i {0}; i < ::MobileRT::NumberOfAxes; ++i) {
@@ -237,11 +237,10 @@ TEST_F(TestPlane, IntersectBoxBorderZ) {
  * To get the AABB of a plane, it must calculate first the right vector and then multiply it by 100.
  */
 TEST_F(TestPlane, Box) {
-    const auto box2 {plane->getAABB()};
-    const AABB
-        expectedBox {::glm::vec3 {-1, -70.7107F, -70.7107F}, ::glm::vec3 {-1, 70.7107F, 70.7107F}};
+    const AABB box2 {plane->getAABB()};
+    const AABB expectedBox {::glm::vec3 {-1, -70.7107F, -70.7107F}, ::glm::vec3 {-1, 70.7107F, 70.7107F}};
 
-    for (auto axis {0}; axis < ::MobileRT::NumberOfAxes; ++axis) {
+    for (int axis {0}; axis < ::MobileRT::NumberOfAxes; ++axis) {
         ASSERT_FLOAT_EQ(expectedBox.getPointMin()[axis], box2.getPointMin()[axis]);
         ASSERT_FLOAT_EQ(expectedBox.getPointMax()[axis], box2.getPointMax()[axis]);
     }
@@ -253,9 +252,9 @@ TEST_F(TestPlane, Box) {
  * the direction is positive of that axis, but the plane is placed in the other side.
  */
 TEST_F(TestPlane, IntersectionRayOutsideX) {
-    const auto direction {::glm::vec3 {10.0F, 0.0F, 10.0F}};
-    const auto origin {::glm::vec3 {0.0F, 0.0F, 10.0F}};
-    const auto depth {19};
+    const ::glm::vec3 direction {::glm::vec3 {10.0F, 0.0F, 10.0F}};
+    const ::glm::vec3 origin {::glm::vec3 {0.0F, 0.0F, 10.0F}};
+    const ::std::int32_t depth {19};
     ::MobileRT::Ray ray {direction, origin, depth, false, nullptr};
     ::MobileRT::Intersection intersection {::std::move(ray)};
 
@@ -270,9 +269,9 @@ TEST_F(TestPlane, IntersectionRayOutsideX) {
  * the direction is negative of that axis.
  */
 TEST_F(TestPlane, IntersectionRayInsideX) {
-    const auto direction {::glm::vec3 {-10.0F, 0.0F, 10.0F}};
-    const auto origin {::glm::vec3 {0.0F, 0.0F, 10.0F}};
-    const auto depth {19};
+    const ::glm::vec3 direction {::glm::vec3 {-10.0F, 0.0F, 10.0F}};
+    const ::glm::vec3 origin {::glm::vec3 {0.0F, 0.0F, 10.0F}};
+    const ::std::int32_t depth {19};
     ::MobileRT::Ray ray {direction, origin, depth, false, nullptr};
     ::MobileRT::Intersection intersection {::std::move(ray)};
 

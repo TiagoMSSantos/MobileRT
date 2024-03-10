@@ -34,12 +34,12 @@ Material::Material(
  * @return Whether the material is equal to this one.
  */
 bool Material::operator==(const Material &material) const {
-    const auto sameKd {::MobileRT::equal(this->Kd_, material.Kd_)};
-    const auto sameKs {::MobileRT::equal(this->Ks_, material.Ks_)};
-    const auto sameKt {::MobileRT::equal(this->Kt_, material.Kt_)};
-    const auto sameLe {::MobileRT::equal(this->Le_, material.Le_)};
-    const auto sameRi {::MobileRT::equal(this->refractiveIndice_, material.refractiveIndice_)};
-    const auto sameTexture {this->texture_ == material.texture_};
-    const auto same {sameKd && sameKs && sameKt && sameLe && sameRi && sameTexture};
+    const bool sameKd {::MobileRT::equal(this->Kd_, material.Kd_)};
+    const bool sameKs {::MobileRT::equal(this->Ks_, material.Ks_)};
+    const bool sameKt {::MobileRT::equal(this->Kt_, material.Kt_)};
+    const bool sameLe {::MobileRT::equal(this->Le_, material.Le_)};
+    const bool sameRi {::MobileRT::equal(this->refractiveIndice_, material.refractiveIndice_)};
+    const bool sameTexture {this->texture_ == material.texture_};
+    const bool same {sameKd && sameKs && sameKt && sameLe && sameRi && sameTexture};
     return same;
 }

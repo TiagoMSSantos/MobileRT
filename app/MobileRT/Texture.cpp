@@ -35,10 +35,9 @@ Texture::Texture(
  * @return The color of the point.
  */
 ::glm::vec3 Texture::loadColor(const ::glm::vec2 &texCoords) const {
-    const auto u {static_cast<::std::int32_t> (texCoords[0] * this->width_)};
-    const auto v {static_cast<::std::int32_t> (texCoords[1] * this->height_)};
-    const auto index
-        {static_cast<::std::uint32_t> (v * this->width_ * this->channels_ + u * this->channels_)};
+    const ::std::int32_t u {static_cast<::std::int32_t> (texCoords[0] * this->width_)};
+    const ::std::int32_t v {static_cast<::std::int32_t> (texCoords[1] * this->height_)};
+    const ::std::uint32_t index {static_cast<::std::uint32_t> (v * this->width_ * this->channels_ + u * this->channels_)};
 
     const ::glm::vec3 vec {
         static_cast<float> (this->image_[index + 0]) / 255.0F,
@@ -60,13 +59,12 @@ Texture Texture::createTexture(::std::string &&textureBinary, const long size) {
     ::std::int32_t height {};
     ::std::int32_t channels {};
     const int info {stbi_info_from_memory(reinterpret_cast<unsigned char const *> (textureBinary.c_str()), static_cast<int> (size), &width, &height, &channels)};
-    if (info <= 0) {
+    if (info <= 0 || size <= 0) {
         const char *error {stbi_failure_reason()};
         LOG_ERROR("Error reading texture: ", error);
         throw ::std::runtime_error {error};
     }
     ::std::uint8_t *const data {stbi_load_from_memory(reinterpret_cast<unsigned char const *> (textureBinary.c_str()), static_cast<int> (size), &width, &height, &channels, 0)};
-    LOG_DEBUG("new Texture: ", width, "x", height, ", c: ", channels, ", info: ", info);
     if (data == nullptr || width <= 0 || height <= 0 || channels <= 0) {
         const char *error {stbi_failure_reason()};
         LOG_ERROR("Error reading texture: ", error);
@@ -95,11 +93,10 @@ Texture Texture::createTexture(const ::std::string &texturePath) {
     const int info {stbi_info(texturePath.c_str(), &width, &height, &channels)};
     if (info <= 0) {
         const char *error {stbi_failure_reason()};
-        LOG_ERROR("Error reading texture: ", error);
-        throw ::std::runtime_error {error};
+        LOG_ERROR(("Error reading texture '" + texturePath + "': " + error).c_str());
+        throw ::std::runtime_error {("Error reading texture '" + texturePath + "': " + error)};
     }
     ::std::uint8_t *const data {stbi_load(texturePath.c_str(), &width, &height, &channels, 0)};
-    LOG_DEBUG("new Texture: ", width, "x", height, ", c: ", channels, ", info: ", info);
     if (data == nullptr || width <= 0 || height <= 0 || channels <= 0) {
         const char *error {stbi_failure_reason()};
         LOG_ERROR("Error reading texture: ", error);
@@ -109,7 +106,7 @@ Texture Texture::createTexture(const ::std::string &texturePath) {
         stbi_image_free(internalData);
     }};
     Texture texture {pointer, width, height, channels};
-    ::MobileRT::checkSystemError("Created Texture.");
+    ::MobileRT::checkSystemError(("Created Texture: " + texturePath).c_str());
     return texture;
 }
 
@@ -120,11 +117,11 @@ Texture Texture::createTexture(const ::std::string &texturePath) {
  * @return Whether both textures are equal.
  */
 bool Texture::operator==(const Texture &texture) const {
-    const auto sameWidth {this->width_ == texture.width_};
-    const auto sameHeight {this->height_ == texture.height_};
-    const auto sameChannels {this->channels_ == texture.channels_};
-    const auto samePointer {this->image_ == texture.image_};
-    const auto same {sameWidth && sameHeight && sameChannels && samePointer};
+    const bool sameWidth {this->width_ == texture.width_};
+    const bool sameHeight {this->height_ == texture.height_};
+    const bool sameChannels {this->channels_ == texture.channels_};
+    const bool samePointer {this->image_ == texture.image_};
+    const bool same {sameWidth && sameHeight && sameChannels && samePointer};
     return same;
 }
 

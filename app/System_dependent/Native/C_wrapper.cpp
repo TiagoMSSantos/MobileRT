@@ -51,8 +51,8 @@ static void work_thread(::MobileRT::Config &config) {
         }
         {
             // Print debug information
-            LOG_DEBUG("width_ = ", config.width);
-            LOG_DEBUG("height_ = ", config.height);
+            LOG_DEBUG("width = ", config.width);
+            LOG_DEBUG("height = ", config.height);
             LOG_DEBUG("threads = ", config.threads);
             LOG_DEBUG("shader = ", config.shader);
             LOG_DEBUG("scene = ", config.sceneIndex);
@@ -65,7 +65,7 @@ static void work_thread(::MobileRT::Config &config) {
             LOG_DEBUG("mtlFilePath = ", config.mtlFilePath);
             LOG_DEBUG("camFilePath = ", config.camFilePath);
 
-            const auto ratio {static_cast<float> (config.width) / config.height};
+            const float ratio {static_cast<float> (config.width) / config.height};
             ::MobileRT::Scene scene {};
             ::std::unique_ptr<::MobileRT::Sampler> samplerPixel {};
             ::std::unique_ptr<::MobileRT::Shader> shader_ {};
@@ -100,19 +100,19 @@ static void work_thread(::MobileRT::Config &config) {
 
                 default: {
                     LOG_DEBUG("OBJLoader starting loading scene");
-                    const auto startLoading {::std::chrono::system_clock::now()};
+                    const auto chronoStartLoading {::std::chrono::system_clock::now()};
                     ::std::ifstream ifObj {config.objFilePath};
                     ::std::ifstream ifMtl {config.mtlFilePath};
                     ::Components::OBJLoader objLoader {ifObj, ifMtl};
                     if (!objLoader.isProcessed()) {
-                        LOG_DEBUG("Error occurred while loading scene.");
+                        LOG_ERROR("Error occurred while loading scene.");
                         exit(1);
                     }
-                    const auto endLoading {::std::chrono::system_clock::now()};
-                    timeLoading = endLoading - startLoading;
+                    const auto chronoEndLoading {::std::chrono::system_clock::now()};
+                    timeLoading = chronoEndLoading - chronoStartLoading;
                     ::std::unordered_map<::std::string, ::MobileRT::Texture> texturesCache {};
-                    LOG_DEBUG("OBJLoader loaded = ", ::std::chrono::duration_cast<::std::chrono::seconds>(timeLoading).count(), " seconds");
-                    const auto startFilling {::std::chrono::system_clock::now()};
+                    LOG_INFO("OBJLoader loaded = ", ::std::chrono::duration_cast<::std::chrono::seconds>(timeLoading).count(), " seconds");
+                    const auto chronoStartFilling {::std::chrono::system_clock::now()};
                     objLoader.fillScene(
                         &scene,
                         []() { return ::MobileRT::std::make_unique<Components::StaticHaltonSeq> (); },
@@ -120,12 +120,12 @@ static void work_thread(::MobileRT::Config &config) {
                         texturesCache
                     );
                     ::MobileRT::checkSystemError("Filled Scene.");
-                    const auto endFilling {::std::chrono::system_clock::now()};
-                    timeFilling = endFilling - startFilling;
+                    const auto chronoEndFilling {::std::chrono::system_clock::now()};
+                    timeFilling = chronoEndFilling - chronoStartFilling;
                     texturesCache.clear();
-                    LOG_DEBUG("Scene filled = ", ::std::chrono::duration_cast<::std::chrono::seconds>(timeFilling).count(), " seconds");
+                    LOG_INFO("Scene filled = ", ::std::chrono::duration_cast<::std::chrono::seconds>(timeFilling).count(), " seconds");
 
-                    const auto cameraFactory {::Components::CameraFactory()};
+                    ::Components::CameraFactory cameraFactory {::Components::CameraFactory()};
                     ::std::ifstream ifCamera {config.camFilePath};
                     ::std::istream iCam {ifCamera.rdbuf()};
                     ::MobileRT::checkSystemError("Loading Camera file.");
@@ -145,7 +145,7 @@ static void work_thread(::MobileRT::Config &config) {
             ::MobileRT::checkSystemError("Starting creating shader");
             // Start timer to measure latency of creating shader (including the build of
             // acceleration structure)
-            const auto startCreating {::std::chrono::system_clock::now()};
+            const auto chronoStartCreating {::std::chrono::system_clock::now()};
             // Setup shader
             switch (config.shader) {
                 case 1: {
@@ -189,16 +189,14 @@ static void work_thread(::MobileRT::Config &config) {
                 }
             }
             // Stop timer
-            const auto endCreating {::std::chrono::system_clock::now()};
+            const auto chronoEndCreating {::std::chrono::system_clock::now()};
             ::MobileRT::checkSystemError("Created shader");
-            timeCreating = endCreating - startCreating;
-            LOG_DEBUG("Shader created = ", timeCreating.count());
-
-            const auto planes {static_cast<::std::int32_t> (shader_->getPlanes().size())};
-            const auto spheres {static_cast<::std::int32_t> (shader_->getSpheres().size())};
-            const auto triangles {static_cast<::std::int32_t> (shader_->getTriangles().size())};
-            const auto numLights {static_cast<::std::int32_t> (shader_->getLights().size())};
-            const auto nPrimitives {triangles + spheres + planes};
+            timeCreating = chronoEndCreating - chronoStartCreating;
+            LOG_INFO("TRIANGLES = ", static_cast<::std::int32_t> (shader_->getTriangles().size()));
+            LOG_INFO("LIGHTS = ", static_cast<::std::int32_t> (shader_->getLights().size()));
+            LOG_DEBUG("SPHERES = ", static_cast<::std::int32_t> (shader_->getSpheres().size()));
+            LOG_DEBUG("PLANES = ", static_cast<::std::int32_t> (shader_->getPlanes().size()));
+            LOG_DEBUG("Shader created = ", timeCreating.count(), " secs");
 
             ::MobileRT::checkSystemError("Starting creating renderer");
             LOG_INFO("Started creating Renderer");
@@ -209,32 +207,29 @@ static void work_thread(::MobileRT::Config &config) {
             ::MobileRT::checkSystemError("Created renderer");
 
             // Print debug information
-            LOG_DEBUG("TRIANGLES = ", triangles);
-            LOG_DEBUG("SPHERES = ", spheres);
-            LOG_DEBUG("PLANES = ", planes);
-            LOG_DEBUG("PRIMITIVES = ", nPrimitives);
-            LOG_DEBUG("LIGHTS = ", numLights);
-            LOG_DEBUG("threads = ", config.threads);
-            LOG_DEBUG("shader = ", config.shader);
-            LOG_DEBUG("scene = ", config.sceneIndex);
-            LOG_DEBUG("samplesPixel = ", config.samplesPixel);
-            LOG_DEBUG("samplesLight = ", config.samplesLight);
-            LOG_DEBUG("width_ = ", config.width);
-            LOG_DEBUG("height_ = ", config.height);
+            LOG_INFO("threads = ", config.threads);
+            LOG_INFO("shader = ", config.shader);
+            LOG_INFO("scene = ", config.sceneIndex);
+            LOG_INFO("samplesPixel = ", config.samplesPixel);
+            LOG_INFO("samplesLight = ", config.samplesLight);
+            LOG_INFO("width = ", config.width);
+            LOG_INFO("height = ", config.height);
+            LOG_INFO("repeats = ", config.repeats);
+            LOG_INFO("accelerator = ", config.accelerator);
 
-            auto repeats {config.repeats};
+            ::std::int32_t repeats {config.repeats};
             ::MobileRT::checkSystemError("Starting rendering");
             LOG_INFO("Started rendering scene");
-            const auto startRendering {::std::chrono::system_clock::now()};
+            const auto chronoStartRendering {::std::chrono::system_clock::now()};
             do {
                 // Render a frame
                 renderer_->renderFrame(config.bitmap.data(), config.threads);
                 repeats--;
             } while (repeats > 0);
-            const auto endRendering {::std::chrono::system_clock::now()};
+            const auto chronoEndRendering {::std::chrono::system_clock::now()};
             ::MobileRT::checkSystemError("Rendering ended");
 
-            timeRendering = endRendering - startRendering;
+            timeRendering = chronoEndRendering - chronoStartRendering;
             LOG_INFO("Finished rendering scene");
         }
         if (!config.printStdOut) {
@@ -244,15 +239,15 @@ static void work_thread(::MobileRT::Config &config) {
         }
 
         // Print some latencies
-        const auto renderingTime {timeRendering.count()};
-        const auto castedRays {renderer_->getTotalCastedRays()};
-        LOG_DEBUG("Loading Time in secs = ", timeLoading.count());
-        LOG_DEBUG("Filling Time in secs = ", timeFilling.count());
-        LOG_DEBUG("Creating Time in secs = ", timeCreating.count());
-        LOG_DEBUG("Rendering Time in secs = ", renderingTime);
-        LOG_DEBUG("Casted rays = ", castedRays);
-        LOG_DEBUG("width_ = ", config.width);
-        LOG_DEBUG("height_ = ", config.height);
+        const double renderingTime {timeRendering.count()};
+        const ::std::uint64_t castedRays {renderer_->getTotalCastedRays()};
+        LOG_INFO("Loading Time in secs = ", timeLoading.count());
+        LOG_INFO("Filling Time in secs = ", timeFilling.count());
+        LOG_INFO("Creating Time in secs = ", timeCreating.count());
+        LOG_INFO("Rendering Time in secs = ", renderingTime);
+        LOG_INFO("Casted rays = ", castedRays);
+        LOG_INFO("width = ", config.width);
+        LOG_INFO("height = ", config.height);
 
         LOG_INFO("Total Millions rays per second = ", (static_cast<double> (castedRays) / renderingTime) / 1000000L);
     } catch (const ::std::bad_alloc &badAlloc) {

@@ -37,7 +37,7 @@ Camera::Camera(const Camera &camera) {
  * @return The number of radians.
  */
 float Camera::degToRad(const float deg) {
-    const auto radians {(deg * ::glm::pi<float>()) / 180.0F};
+    const float radians {(deg * ::glm::pi<float>()) / 180.0F};
     return radians;
 }
 
@@ -48,7 +48,7 @@ float Camera::degToRad(const float deg) {
  * @return The number of degrees.
  */
 float Camera::radToDeg(const float rad) {
-    const auto degrees {(rad / ::glm::pi<float>()) * 180.0F};
+    const float degrees {(rad / ::glm::pi<float>()) * 180.0F};
     return degrees;
 }
 
@@ -58,8 +58,8 @@ float Camera::radToDeg(const float rad) {
  * @return The bounding box which surrounds the camera.
  */
 AABB Camera::getAABB() const {
-    const auto &min {this->position_};
-    const auto &max {this->position_};
+    const ::glm::vec3 &min {this->position_};
+    const ::glm::vec3 &max {this->position_};
     const AABB res {min, max};
     return res;
 }

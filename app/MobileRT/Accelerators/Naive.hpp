@@ -55,7 +55,7 @@ namespace MobileRT {
     template<typename T>
     Naive<T>::Naive(::std::vector<T> &&primitives) :
         primitives_ {::std::move(primitives)} {
-        LOG_DEBUG(typeid(T).name());
+        LOG_INFO("Built Native for: ", typeid(T).name());
     }
 
     /**
@@ -83,8 +83,8 @@ namespace MobileRT {
      */
     template<typename T>
     Intersection Naive<T>::intersect(Intersection intersection) {
-        const auto lastDist {intersection.length_};
-        for (auto &primitive : this->primitives_) {
+        const float lastDist {intersection.length_};
+        for (T &primitive : this->primitives_) {
             intersection = primitive.intersect(intersection);
             if (intersection.ray_.shadowTrace_ && intersection.length_ < lastDist) {
                 return intersection;

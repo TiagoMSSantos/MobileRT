@@ -51,7 +51,7 @@ namespace MobileRT {
         template<typename T>
         static ::MobileRT::AABB getBounds(const ::std::vector<T> &primitives) {
             ::MobileRT::AABB bounds {::glm::vec3 {RayLengthMax}, ::glm::vec3 {-RayLengthMax}};
-            for (const auto &primitive : primitives) {
+            for (const T &primitive : primitives) {
                 bounds = getBoxBounds(primitive.getAABB(), bounds);
             }
             const ::MobileRT::AABB res {

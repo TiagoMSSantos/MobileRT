@@ -23,7 +23,7 @@ namespace {
      * @return The new value of the counter.
      */
     ::std::uint64_t generateId() {
-        const auto currentId {counter.fetch_add(1L, ::std::memory_order_relaxed)};
+        const ::std::uint64_t currentId {counter.fetch_add(1L, ::std::memory_order_relaxed)};
         return currentId;
     }
 

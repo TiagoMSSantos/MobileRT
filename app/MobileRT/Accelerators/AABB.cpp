@@ -32,24 +32,24 @@ void AABB::checkArguments() const {
  * @return Whether the ray intersected this AABB.
  */
 bool AABB::intersect(const Ray &ray) const {
-    const auto invDirX {1.0F / ray.direction_[0]};
-    const auto rayOrgX {ray.origin_[0]};
-    const auto t1X {(this->pointMin_[0] - rayOrgX) * invDirX};
-    const auto t2X {(this->pointMax_[0] - rayOrgX) * invDirX};
-    auto tMin {::std::min(t1X, t2X)};
-    auto tMax {::std::max(t1X, t2X)};
+    const float invDirX {1.0F / ray.direction_[0]};
+    const float rayOrgX {ray.origin_[0]};
+    const float t1X {(this->pointMin_[0] - rayOrgX) * invDirX};
+    const float t2X {(this->pointMax_[0] - rayOrgX) * invDirX};
+    float tMin {::std::min(t1X, t2X)};
+    float tMax {::std::max(t1X, t2X)};
 
-    for (auto axis {1}; axis < 3; ++axis) {
-        const auto invDir {1.0F / ray.direction_[axis]};
-        const auto rayOrg {ray.origin_[axis]};
-        const auto t1 {(this->pointMin_[axis] - rayOrg) * invDir};
-        const auto t2 {(this->pointMax_[axis] - rayOrg) * invDir};
+    for (int axis {1}; axis < 3; ++axis) {
+        const float invDir {1.0F / ray.direction_[axis]};
+        const float rayOrg {ray.origin_[axis]};
+        const float t1 {(this->pointMin_[axis] - rayOrg) * invDir};
+        const float t2 {(this->pointMax_[axis] - rayOrg) * invDir};
 
         tMin = ::std::max(tMin, ::std::min(t1, t2));
         tMax = ::std::min(tMax, ::std::max(t1, t2));
     }
 
-    const auto intersected {tMax >= ::std::max(tMin, 0.0F)};
+    const bool intersected {tMax >= ::std::max(tMin, 0.0F)};
     return intersected;
 }
 
@@ -59,13 +59,13 @@ bool AABB::intersect(const Ray &ray) const {
  * @return The surface area.
  */
 float AABB::getSurfaceArea() const {
-    const auto length {this->pointMax_ - this->pointMin_};
+    const ::glm::vec3 length {this->pointMax_ - this->pointMin_};
 
-    const auto bottomTopArea {2 * length[0] * length[2]};
-    const auto sideAreaXY {2 * length[0] * length[1]};
-    const auto sideAreaZY {2 * length[2] * length[1]};
+    const float bottomTopArea {2 * length[0] * length[2]};
+    const float sideAreaXY {2 * length[0] * length[1]};
+    const float sideAreaZY {2 * length[2] * length[1]};
 
-    const auto surfaceArea {bottomTopArea + sideAreaXY + sideAreaZY};
+    const float surfaceArea {bottomTopArea + sideAreaXY + sideAreaZY};
 
     return surfaceArea;
 }
@@ -79,8 +79,8 @@ float AABB::getSurfaceArea() const {
  * @return The centroid.
  */
 ::glm::vec3 AABB::getCentroid() const {
-    const auto &length {(this->pointMax_ - this->pointMin_) / 2.0F};
-    const auto &res {this->pointMin_ + length};
+    const ::glm::vec3 &length {(this->pointMax_ - this->pointMin_) / 2.0F};
+    const ::glm::vec3 &res {this->pointMin_ + length};
     return res;
 }
 
@@ -111,8 +111,8 @@ namespace MobileRT {
      * @return A box which surrounds both boxes.
      */
     AABB surroundingBox(const AABB &box1, const AABB &box2) {
-        const auto &min {::glm::min(box1.getPointMin(), box2.getPointMin())};
-        const auto &max {::glm::max(box1.getPointMax(), box2.getPointMax())};
+        const ::glm::vec3 &min {::glm::min(box1.getPointMin(), box2.getPointMin())};
+        const ::glm::vec3 &max {::glm::max(box1.getPointMax(), box2.getPointMax())};
         const AABB res {min, max};
 
         return res;

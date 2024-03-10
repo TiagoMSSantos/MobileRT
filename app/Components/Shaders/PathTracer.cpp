@@ -20,12 +20,12 @@ PathTracer::PathTracer(Scene scene,
 
 //pag 28 slides Monte Carlo
 bool PathTracer::shade(::glm::vec3 *const rgb, const Intersection &intersection) {
-    const auto rayDepth {intersection.ray_.depth_};
+    const ::std::int32_t rayDepth {intersection.ray_.depth_};
     if (rayDepth > RayDepthMax) {
         return false;
     }
 
-    const auto &lE {intersection.material_->Le_};
+    const ::glm::vec3 &lE {intersection.material_->Le_};
     //stop if it intersects a light source
     if (::MobileRT::hasPositiveValue(lE)) {
         *rgb = lE;
@@ -36,39 +36,39 @@ bool PathTracer::shade(::glm::vec3 *const rgb, const Intersection &intersection)
     ::glm::vec3 LiS {};
     ::glm::vec3 LiT {};
 
-    const auto &kD {intersection.material_->Kd_};
-    const auto &kS {intersection.material_->Ks_};
-    const auto &kT {intersection.material_->Kt_};
-    const auto finishProbability {0.5F};
-    const auto continueProbability {1.0F - finishProbability};
+    const ::glm::vec3 &kD {intersection.material_->Kd_};
+    const ::glm::vec3 &kS {intersection.material_->Ks_};
+    const ::glm::vec3 &kT {intersection.material_->Kt_};
+    const float finishProbability {0.5F};
+    const float continueProbability {1.0F - finishProbability};
 
     // the normal always points to outside objects (e.g., spheres)
     // if the cosine between the ray and the normal is less than 0 then
     // the ray intersected the object from the inside and the shading normal
     // should be symmetric to the geometric normal
-    const auto &shadingNormal {intersection.normal_};
+    const ::glm::vec3 &shadingNormal {intersection.normal_};
 
-    auto intersectedLight {false};
+    bool intersectedLight {false};
 
     // shadowed direct lighting - only for diffuse materials
     //Ld = Ld (p->Wr)
     if (::MobileRT::hasPositiveValue(kD)) {
-        const auto sizeLights {this->lights_.size()};
+        const long long unsigned sizeLights {this->lights_.size()};
         if (sizeLights > 0) {
-            const auto samplesLight {this->samplesLight_};
+            const ::std::int32_t samplesLight {this->samplesLight_};
             //direct light
             for (::std::int32_t i {}; i < samplesLight; ++i) {
                 //PDF = 1 / sizeLights
-                const auto chosenLight {getLightIndex()};
-                auto &light {*this->lights_[chosenLight]};
+                const ::std::uint32_t chosenLight {getLightIndex()};
+                ::MobileRT::Light &light {*this->lights_[chosenLight]};
                 //calculates vector starting in intersection to the light
-                const auto lightPosition {light.getPosition()};
-                auto vectorToLight {lightPosition - intersection.point_};
+                const ::glm::vec3 lightPosition {light.getPosition()};
+                ::glm::vec3 vectorToLight {lightPosition - intersection.point_};
                 //distance from intersection to the light (and normalize it)
-                const auto distanceToLight {::glm::length(vectorToLight)};
+                const float distanceToLight {::glm::length(vectorToLight)};
                 vectorToLight = ::glm::normalize(vectorToLight);
                 //x*x + y*y + z*z
-                const auto cosNormalLight {::glm::dot(shadingNormal, vectorToLight)};
+                const float cosNormalLight {::glm::dot(shadingNormal, vectorToLight)};
                 if (cosNormalLight > 0.0F) {
                     //shadow ray->orig=intersection, dir=light
                     Ray shadowRay {vectorToLight, intersection.point_, rayDepth + 1, true, intersection.primitive_};
@@ -87,7 +87,7 @@ bool PathTracer::shade(::glm::vec3 *const rgb, const Intersection &intersection)
 
         //indirect light
         if (rayDepth <= RayDepthMin || this->samplerRussianRoulette_->getSample() > finishProbability) {
-            const auto &newDirection {getCosineSampleHemisphere(shadingNormal)};
+            const ::glm::vec3 &newDirection {getCosineSampleHemisphere(shadingNormal)};
             Ray normalizedSecundaryRay {newDirection, intersection.point_, rayDepth + 1, false, intersection.primitive_};
 
             //Li = Pi/N * SOMATORIO i=1->i=N [fr (p,Wi <-> Wr) L(p <- Wi)]
@@ -116,7 +116,7 @@ bool PathTracer::shade(::glm::vec3 *const rgb, const Intersection &intersection)
     // specular reflection
     if (::MobileRT::hasPositiveValue(kS)) {
         //PDF = 1 / 2 Pi
-        const auto &reflectionDir {::glm::reflect(intersection.ray_.direction_, shadingNormal)};
+        const ::glm::vec3 &reflectionDir {::glm::reflect(intersection.ray_.direction_, shadingNormal)};
         Ray specularRay {reflectionDir, intersection.point_, rayDepth + 1, false, intersection.primitive_};
         ::glm::vec3 LiS_RGB {};
         rayTrace(&LiS_RGB, ::std::move(specularRay));
@@ -126,8 +126,8 @@ bool PathTracer::shade(::glm::vec3 *const rgb, const Intersection &intersection)
     // specular transmission
     if (::MobileRT::hasPositiveValue(kT)) {
         //PDF = 1 / 2 Pi
-        const auto refractiveIndice {1.0F / intersection.material_->refractiveIndice_};
-        const auto &refractDir {::glm::refract(intersection.ray_.direction_, shadingNormal, refractiveIndice)};
+        const float refractiveIndice {1.0F / intersection.material_->refractiveIndice_};
+        const ::glm::vec3 &refractDir {::glm::refract(intersection.ray_.direction_, shadingNormal, refractiveIndice)};
         Ray transmissionRay {refractDir, intersection.point_, rayDepth + 1, false, intersection.primitive_};
         ::glm::vec3 LiT_RGB {};
         rayTrace(&LiT_RGB, ::std::move(transmissionRay));

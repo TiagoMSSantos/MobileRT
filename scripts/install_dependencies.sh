@@ -337,7 +337,7 @@ install_dependencies_windows() {
 
   if ! command -v shellcheck > /dev/null; then
     # Install shellcheck: https://community.chocolatey.org/packages/shellcheck
-    choco install -y shellcheck;
+    choco install -y shellcheck || true;
   fi
 
   set +e;
@@ -473,15 +473,13 @@ test_commands() {
     checkCommand vm_stat;
     checkCommand sw_vers;
     checkCommand curl;
-  else
-    # Not available in MacOS.
-    checkCommand shellcheck;
   fi
 
   if ! command -v brew > /dev/null && ! command -v choco > /dev/null; then
     # Not available in MacOS & Windows.
     checkCommand free;
     checkCommand setsid;
+    checkCommand shellcheck;
   fi
 
   if ! command -v choco > /dev/null; then

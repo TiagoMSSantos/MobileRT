@@ -42,15 +42,15 @@ Intersection Plane::intersect(Intersection intersection) const {
 
     // is ray parallel or contained in the Plane ??
     // planes have two sides!!!
-    const auto normalizedProjection {::glm::dot(this->normal_, intersection.ray_.direction_)};
+    const float normalizedProjection {::glm::dot(this->normal_, intersection.ray_.direction_)};
     if (::std::abs(normalizedProjection) < Epsilon) {
         return intersection;
     }
 
     //https://en.wikipedia.org/wiki/Line%E2%80%93plane_intersection
-    const auto vecToPlane {this->point_ - intersection.ray_.origin_};
-    const auto scalarProjectionVecToPlaneOnNormal {::glm::dot(this->normal_, vecToPlane)};
-    const auto distanceToIntersection {scalarProjectionVecToPlaneOnNormal / normalizedProjection};
+    const ::glm::vec3 vecToPlane {this->point_ - intersection.ray_.origin_};
+    const float scalarProjectionVecToPlaneOnNormal {::glm::dot(this->normal_, vecToPlane)};
+    const float distanceToIntersection {scalarProjectionVecToPlaneOnNormal / normalizedProjection};
 
     // is it in front of the eye?
     // is it farther than the ray length ??
@@ -59,7 +59,7 @@ Intersection Plane::intersect(Intersection intersection) const {
     }
 
     // if so, then we have an intersection
-    const auto intersectionPoint {intersection.ray_.origin_ + intersection.ray_.direction_ * distanceToIntersection};
+    const ::glm::vec3 intersectionPoint {intersection.ray_.origin_ + intersection.ray_.direction_ * distanceToIntersection};
     const Intersection res {::std::move(intersection.ray_),
                             intersectionPoint,
                             distanceToIntersection,
@@ -101,9 +101,9 @@ Intersection Plane::intersect(Intersection intersection) const {
  * @return The bounding box of the plane.
  */
 AABB Plane::getAABB() const {
-    const auto &rightDir {getRightVector()};
-    const auto &min {this->point_ + rightDir * -100.0F};
-    const auto &max {this->point_ + rightDir * 100.0F};
+    const ::glm::vec3 &rightDir {getRightVector()};
+    const ::glm::vec3 &min {this->point_ + rightDir * -100.0F};
+    const ::glm::vec3 &max {this->point_ + rightDir * 100.0F};
     const AABB res {min, max};
     return res;
 }
@@ -120,20 +120,20 @@ float Plane::distance(const ::glm::vec3 &point) const {
     //abc = normal
     //x0,y0,z0 = point
     //D = |ax0 + by0 + cz0 + d| / sqrt(a² + b² + c²)
-    const auto d {
+    const float d {
         this->normal_[0] * -this->point_[0] +
         this->normal_[1] * -this->point_[1] +
         this->normal_[2] * -this->point_[2]
     };
-    const auto numerator {this->normal_[0] * point[0] + this->normal_[1] * point[1] + this->normal_[2] * point[2] + d};
-    const auto denumerator {
+    const float numerator {this->normal_[0] * point[0] + this->normal_[1] * point[1] + this->normal_[2] * point[2] + d};
+    const float denumerator {
         ::std::sqrt(
             this->normal_[0] * this->normal_[0] +
             this->normal_[1] * this->normal_[1] +
             this->normal_[2] * this->normal_[2]
         )
     };
-    const auto res {numerator / denumerator};
+    const float res {numerator / denumerator};
     return res;
 }
 
@@ -144,12 +144,12 @@ float Plane::distance(const ::glm::vec3 &point) const {
  * @return Whether if the bounding box intersects the plane or not.
  */
 bool Plane::intersect(const AABB &box) const {
-    const auto &positiveVertex {box.getPointMax()};
-    const auto &negativeVertex {box.getPointMin()};
+    const ::glm::vec3 &positiveVertex {box.getPointMax()};
+    const ::glm::vec3 &negativeVertex {box.getPointMin()};
 
-    const auto distanceP {distance(positiveVertex)};
-    const auto distanceN {distance(negativeVertex)};
-    const auto res {(distanceP <= 0 && distanceN >= 0) || (distanceP >= 0 && distanceN <= 0)};
+    const float distanceP {distance(positiveVertex)};
+    const float distanceN {distance(negativeVertex)};
+    const bool res {(distanceP <= 0 && distanceN >= 0) || (distanceP >= 0 && distanceN <= 0)};
 
     return res;
 }

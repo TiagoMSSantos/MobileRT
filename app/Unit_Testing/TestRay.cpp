@@ -22,10 +22,10 @@ TestRay::~TestRay() {
  * Tests the Ray constructor with invalid parameters.
  */
 TEST_F(TestRay, TestInvalidConstructor) {
-    const auto direction {::glm::vec3 {0.0F, 0.0F, 0.0F}};
-    const auto origin {::glm::vec3 {0.0F, 0.0F, 10.0F}};
-    const auto depth {19};
-    const auto primitive {nullptr};
+    const ::glm::vec3 direction {::glm::vec3 {0.0F, 0.0F, 0.0F}};
+    const ::glm::vec3 origin {::glm::vec3 {0.0F, 0.0F, 10.0F}};
+    const ::std::int32_t depth {19};
+    const void* primitive {nullptr};
 
     ASSERT_DEBUG_DEATH(const Ray ray (direction, origin, depth, false, primitive);, "");
 }
@@ -34,10 +34,10 @@ TEST_F(TestRay, TestInvalidConstructor) {
  * Tests the Ray constructor.
  */
 TEST_F(TestRay, TestConstructor) {
-    const auto direction {::glm::vec3 {10.0F, 0.0F, 10.0F}};
-    const auto origin {::glm::vec3 {0.0F, 0.0F, 10.0F}};
-    const auto depth {19};
-    const auto primitive {nullptr};
+    const ::glm::vec3 direction {::glm::vec3 {10.0F, 0.0F, 10.0F}};
+    const ::glm::vec3 origin {::glm::vec3 {0.0F, 0.0F, 10.0F}};
+    const ::std::int32_t depth {19};
+    const void* primitive {nullptr};
     const Ray ray {direction, origin, depth, false, primitive};
 
     ASSERT_EQ(depth, ray.depth_);
@@ -52,10 +52,10 @@ TEST_F(TestRay, TestConstructor) {
  * Tests the Ray id generator.
  */
 TEST_F(TestRay, TestId) {
-    const auto direction {::glm::vec3 {10.0F, 0.0F, 10.0F}};
-    const auto origin {::glm::vec3 {0.0F, 0.0F, 10.0F}};
-    const auto depth {19};
-    const auto primitive {nullptr};
+    const ::glm::vec3 direction {::glm::vec3 {10.0F, 0.0F, 10.0F}};
+    const ::glm::vec3 origin {::glm::vec3 {0.0F, 0.0F, 10.0F}};
+    const ::std::int32_t depth {19};
+    const void* primitive {nullptr};
     const Ray ray1 {direction, origin, depth, false, primitive};
     const Ray ray2 {direction, origin, depth, false, primitive};
 

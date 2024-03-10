@@ -26,10 +26,9 @@ f 44 45
     )"};
 
     ::std::stringstream stream {data};
-    const auto aspectRatio {1.0F};
-    const auto
-        camera {::Components::PerspectiveLoader().loadFromStream(::std::move(stream), aspectRatio)};
-    const auto perspectiveCamera {dynamic_cast<const ::Components::Perspective *> (camera.get())};
+    const float aspectRatio {1.0F};
+    const ::std::unique_ptr<::MobileRT::Camera> camera {::Components::PerspectiveLoader().loadFromStream(::std::move(stream), aspectRatio)};
+    const ::Components::Perspective *perspectiveCamera {dynamic_cast<const ::Components::Perspective *> (camera.get())};
 
     ASSERT_TRUE(perspectiveCamera != nullptr);
 

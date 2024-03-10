@@ -8,12 +8,12 @@ HaltonSeq::HaltonSeq(const ::std::uint32_t width, const ::std::uint32_t height,
 }
 
 float HaltonSeq::getSample(const ::std::uint32_t sample) {
-    const auto current {this->sample_.fetch_add(1, ::std::memory_order_relaxed)};
+    const ::std::uint32_t current {this->sample_.fetch_add(1, ::std::memory_order_relaxed)};
     if (current >= (this->domainSize_ * (sample + 1))) {
         this->sample_.fetch_sub(1, ::std::memory_order_relaxed);
         return 1.0F;
     }
-    const auto index {current - (sample * this->domainSize_)};
-    const auto res {::MobileRT::haltonSequence(index, 2)};
+    const ::std::uint32_t index {current - (sample * this->domainSize_)};
+    const float res {::MobileRT::haltonSequence(index, 2)};
     return res;
 }

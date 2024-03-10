@@ -8,6 +8,6 @@ float PCG::getSample(const ::std::uint32_t /*sample*/) {
     thread_local static ::pcg32 generator(seedSource);
     thread_local static ::std::uniform_real_distribution<float> uniformDist {0.0F, 1.0F};
 
-    const auto res {uniformDist(generator)};
+    const float res {uniformDist(generator)};
     return res;
 }

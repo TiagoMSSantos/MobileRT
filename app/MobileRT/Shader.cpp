@@ -54,7 +54,7 @@ void Shader::initializeAccelerators(Scene scene) {
         }
 
         case Accelerator::ACC_REGULAR_GRID: {
-            const auto gridSize {32U};
+            const ::std::uint32_t gridSize {32U};
             this->gridPlanes_ = RegularGrid<Plane> {::std::move(scene.planes_), gridSize};
             this->gridSpheres_ = RegularGrid<Sphere> {::std::move(scene.spheres_), gridSize};
             this->gridTriangles_ = RegularGrid<Triangle> {::std::move(scene.triangles_), gridSize};
@@ -70,9 +70,9 @@ void Shader::initializeAccelerators(Scene scene) {
     }
     ::MobileRT::checkSystemError("initializeAccelerators end");
     this->lights_ = ::std::move(scene.lights_);
-    LOG_DEBUG("accelerator = ", this->accelerator_);
-    LOG_DEBUG("materials = ", this->materials_.size());
-    LOG_DEBUG("lights = ", this->lights_.size());
+    LOG_INFO("accelerator = ", this->accelerator_);
+    LOG_INFO("materials = ", this->materials_.size());
+    LOG_INFO("lights = ", this->lights_.size());
     ::MobileRT::checkSystemError("initializeAccelerators end 2");
 }
 
@@ -85,7 +85,7 @@ void Shader::initializeAccelerators(Scene scene) {
  */
 bool Shader::rayTrace(::glm::vec3 *rgb, Ray &&ray) {
     Intersection intersection {::std::move(ray)};
-    const auto lastDist {intersection.length_};
+    const float lastDist {intersection.length_};
     switch (this->accelerator_) {
         case Accelerator::ACC_NAIVE: {
             intersection = this->naivePlanes_.trace(intersection);
@@ -109,13 +109,13 @@ bool Shader::rayTrace(::glm::vec3 *rgb, Ray &&ray) {
         }
     }
     intersection = traceLights(intersection);
-    const auto matIndex {intersection.materialIndex_};
+    const ::std::int32_t matIndex {intersection.materialIndex_};
     if (matIndex >= 0) {
-        auto &material {this->materials_[static_cast<::std::uint32_t> (matIndex)]};
+        Material &material {this->materials_[static_cast<::std::uint32_t> (matIndex)]};
         intersection.material_ = &material;
-        const auto &texCoords {intersection.texCoords_};
+        const ::glm::vec2 &texCoords {intersection.texCoords_};
         if (texCoords[0] >= 0 && texCoords[1] >= 0) {
-            const auto &texture {material.texture_};
+            const Texture &texture {material.texture_};
             intersection.material_->Kd_ = texture.loadColor(texCoords);
         }
     }
@@ -153,7 +153,7 @@ bool Shader::shadowTrace(const float distance, Ray &&ray) {
             break;
         }
     }
-    const auto res {intersection.length_ < distance};
+    const bool res {intersection.length_ < distance};
     return res;
 }
 
@@ -164,7 +164,7 @@ bool Shader::shadowTrace(const float distance, Ray &&ray) {
  * @return The intersection of the casted ray and the light sources.
  */
 Intersection Shader::traceLights(Intersection intersection) const {
-    for (const auto &light : this->lights_) {
+    for (const ::std::unique_ptr<Light> &light : this->lights_) {
         intersection = light->intersect(::std::move(intersection));
     }
     return intersection;
@@ -174,7 +174,7 @@ Intersection Shader::traceLights(Intersection intersection) const {
  * Resets the sampling process of all the lights in the scene.
  */
 void Shader::resetSampling() {
-    for (const auto &light : this->lights_) {
+    for (const ::std::unique_ptr<Light> &light : this->lights_) {
         light->resetSampling();
     }
 }
@@ -187,18 +187,18 @@ void Shader::resetSampling() {
  */
 ::glm::vec3 Shader::getCosineSampleHemisphere(const ::glm::vec3 &normal) {
     static ::std::atomic<::std::uint32_t> sampler {};
-    const auto current1 {sampler.fetch_add(1, ::std::memory_order_relaxed)};
-    const auto current2 {sampler.fetch_add(1, ::std::memory_order_relaxed)};
+    const ::std::uint32_t current1 {sampler.fetch_add(1, ::std::memory_order_relaxed)};
+    const ::std::uint32_t current2 {sampler.fetch_add(1, ::std::memory_order_relaxed)};
 
-    const auto it1 {randomSequence.begin() + (current1 & ::MobileRT::ArrayMask)};
-    const auto it2 {randomSequence.begin() + (current2 & ::MobileRT::ArrayMask)};
+    const auto itRandomValue1 {randomSequence.begin() + (current1 & ::MobileRT::ArrayMask)};
+    const auto itRandomValue2 {randomSequence.begin() + (current2 & ::MobileRT::ArrayMask)};
 
-    const auto uniformRandom1 {*it1};
-    const auto uniformRandom2 {*it2};
+    const float uniformRandom1 {*itRandomValue1};
+    const float uniformRandom2 {*itRandomValue2};
 
-    const auto phi {::glm::two_pi<float> () * uniformRandom1};// random angle around - azimuthal angle
-    const auto r2 {uniformRandom2};// random distance from center
-    const auto cosTheta {::std::sqrt(r2)};// square root of distance from center - cos(theta) = cos(elevation angle)
+    const float phi {::glm::two_pi<float> () * uniformRandom1};// random angle around - azimuthal angle
+    const float r2 {uniformRandom2};// random distance from center
+    const float cosTheta {::std::sqrt(r2)};// square root of distance from center - cos(theta) = cos(elevation angle)
 
     ::glm::vec3 u {::std::abs(normal[0]) > 0.1F
         ? ::glm::vec3 {0.0F, 1.0F, 0.0F}
@@ -222,13 +222,13 @@ void Shader::resetSampling() {
  */
 ::std::uint32_t Shader::getLightIndex () {
     static ::std::atomic<::std::uint32_t> sampler {};
-    const auto current {sampler.fetch_add(1, ::std::memory_order_relaxed)};
+    const ::std::uint32_t current {sampler.fetch_add(1, ::std::memory_order_relaxed)};
 
-    const auto it {randomSequence.begin() + (current & ::MobileRT::ArrayMask)};
+    const auto itRandomValue {randomSequence.begin() + (current & ::MobileRT::ArrayMask)};
 
-    const auto sizeLights {static_cast<::std::uint32_t> (this->lights_.size())};
-    const auto randomNumber {*it};
-    const auto chosenLight {static_cast<::std::uint32_t> (::std::floor(randomNumber * sizeLights * 0.99999F))};
+    const ::std::uint32_t sizeLights {static_cast<::std::uint32_t> (this->lights_.size())};
+    const float randomNumber {*itRandomValue};
+    const ::std::uint32_t chosenLight {static_cast<::std::uint32_t> (::std::floor(randomNumber * sizeLights * 0.99999F))};
     return chosenLight;
 }
 

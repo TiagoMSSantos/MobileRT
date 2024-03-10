@@ -15,13 +15,13 @@ AreaLight::AreaLight(
 }
 
 ::glm::vec3 AreaLight::getPosition() {
-    auto r {this->samplerPointLight_->getSample()};
-    auto s {this->samplerPointLight_->getSample()};
+    float r {this->samplerPointLight_->getSample()};
+    float s {this->samplerPointLight_->getSample()};
     if (r + s >= 1.0F) {
         r = 1.0F - r;
         s = 1.0F - s;
     }
-    const auto &position {this->triangle_.getA() + r * this->triangle_.getAB() + s * this->triangle_.getAC()};
+    const ::glm::vec3 &position {this->triangle_.getA() + r * this->triangle_.getAB() + s * this->triangle_.getAC()};
     return position;
 }
 
@@ -30,9 +30,9 @@ void AreaLight::resetSampling() {
 }
 
 Intersection AreaLight::intersect(Intersection &&intersection) {
-    const auto lastDist {intersection.length_};
+    const float lastDist {intersection.length_};
     intersection = this->triangle_.intersect(intersection);
-    const auto intersected {intersection.length_ < lastDist};
+    const bool intersected {intersection.length_ < lastDist};
     if (intersected) {
         intersection.material_ = &this->radiance_;
         intersection.materialIndex_ = -1;

@@ -82,11 +82,11 @@ namespace MobileRT {
 
     ErrorType getErrorCode() {
         ErrorType currentError {};
-        const auto errors {getErrorType()};
-        const auto arrSize {static_cast<int> (errors.size())};
+        const ::std::array<ErrorType, 55> errors {getErrorType()};
+        const int arrSize {static_cast<int> (errors.size())};
 
         if (errno < arrSize) {
-            for(auto i {0}; i < arrSize; i++) {
+            for(int i {0}; i < arrSize; i++) {
                 if(errors[static_cast<unsigned long> (i)].code == errno) {
                     currentError = errors[static_cast<unsigned long> (i)];
                 }

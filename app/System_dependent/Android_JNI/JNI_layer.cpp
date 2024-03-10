@@ -114,8 +114,8 @@ static ::std::unordered_map<::std::string, ::MobileRT::Texture> texturesCache_ {
 static void handleException(JNIEnv *const env,
                             const ::std::exception &exception,
                             const char *const exceptionName) {
-    const auto clazz {env->FindClass(exceptionName)};
-    const auto res {env->ThrowNew(clazz, exception.what())};
+    const jclass clazz {env->FindClass(exceptionName)};
+    const jint res {env->ThrowNew(clazz, exception.what())};
     if (res != 0) {
         LOG_ERROR("ERROR: ", res);
     } else {
@@ -135,7 +135,7 @@ extern "C"
 
     JNIEnv *jniEnv {};
     {
-        const ::std::int32_t result {javaVM_->GetEnv(reinterpret_cast<void **> (&jniEnv), JNI_VERSION_1_6)};
+        const jint result {javaVM_->GetEnv(reinterpret_cast<void **> (&jniEnv), JNI_VERSION_1_6)};
         ASSERT(result == JNI_OK, "JNI was not loaded properly.");
         static_cast<void> (result);
     }
@@ -163,7 +163,7 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitCameraArray(
             if (renderer_ != nullptr) {
                 ::MobileRT::Camera *const camera {renderer_->camera_.get()};
                 const ::std::int64_t arraySize {20};
-                const auto arrayBytes {arraySize * sizeof(jfloat)};
+                const jlong arrayBytes {arraySize * sizeof(jfloat)};
 
                 float *const floatBuffer {new float[arraySize]};
 
@@ -192,8 +192,8 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitCameraArray(
                         floatBuffer[i++] = camera->right_.z;
                         floatBuffer[i++] = 1.0F;
 
-                        const auto *const perspective {dynamic_cast<::Components::Perspective *> (camera)};
-                        const auto *const orthographic {dynamic_cast<::Components::Orthographic *> (camera)};
+                        const ::Components::Perspective *const perspective {dynamic_cast<::Components::Perspective *> (camera)};
+                        const ::Components::Orthographic *const orthographic {dynamic_cast<::Components::Orthographic *> (camera)};
                         if (perspective != nullptr) {
                             const float hFov{perspective->getHFov()};
                             const float vFov{perspective->getVFov()};
@@ -211,15 +211,15 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitCameraArray(
                             floatBuffer[i] = sizeV;
                         }
                         if (perspective == nullptr && orthographic == nullptr) {
-                            const auto errorMessage {"Scene provided to MobileRT doesn't have any type of camera."};
+                            const ::std::string errorMessage {"Scene provided to MobileRT doesn't have any type of camera."};
                             throw ::std::runtime_error {errorMessage};
                         }
                     } else {
-                        const auto errorMessage {"JNIEnv::NewDirectByteBuffer failed to allocate native memory!"};
+                        const ::std::string errorMessage {"JNIEnv::NewDirectByteBuffer failed to allocate native memory!"};
                         throw ::std::runtime_error {errorMessage};
                     }
                 } else {
-                    const auto errorMessage {"C++ failed to allocate native memory!"};
+                    const ::std::string errorMessage {"C++ failed to allocate native memory!"};
                     throw ::std::runtime_error {errorMessage};
                 }
 
@@ -244,24 +244,23 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitVerticesArray(
     JNIEnv *env,
     jobject /*thiz*/
 ) {
+    MobileRT::checkSystemError("rtInitVerticesArray start");
     try {
-        MobileRT::checkSystemError("rtInitVerticesArray start");
         jobject directBuffer {};
         {
             const ::std::lock_guard<::std::mutex> lock {mutex_};
             if (renderer_ != nullptr) {
-                const auto &triangles {renderer_->shader_->getTriangles()};
-                const auto arraySize {static_cast<::std::uint32_t> (triangles.size() * 3 * 4)};
-                const auto arrayBytes {arraySize * static_cast<jlong> (sizeof(jfloat))};
+                const ::std::vector<::MobileRT::Triangle> &triangles {renderer_->shader_->getTriangles()};
+                const ::std::uint32_t arraySize {static_cast<::std::uint32_t> (triangles.size() * 3 * 4)};
+                const jlong arrayBytes {arraySize * static_cast<jlong> (sizeof(jfloat))};
 
                 float *const floatBuffer {new float[arraySize]};
 
                 if (floatBuffer != nullptr) {
                     directBuffer = env->NewDirectByteBuffer(floatBuffer, arrayBytes);
-
                     if (directBuffer != nullptr) {
                         ::std::int32_t i {};
-                        for (const auto &triangle : triangles) {
+                        for (const ::MobileRT::Triangle &triangle : triangles) {
                             const ::glm::vec4 &pointA {triangle.getA().x,
                                                       triangle.getA().y,
                                                       triangle.getA().z, 1.0F};
@@ -288,11 +287,11 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitVerticesArray(
                             floatBuffer[i++] = pointC.w;
                         }
                     } else {
-                        const auto errorMessage {"JNIEnv::NewDirectByteBuffer failed to allocate native memory!"};
+                        const ::std::string errorMessage {"JNIEnv::NewDirectByteBuffer failed to allocate native memory!"};
                         throw ::std::runtime_error {errorMessage};
                     }
                 } else {
-                    const auto errorMessage {"C++ failed to allocate native memory!"};
+                    const ::std::string errorMessage {"C++ failed to allocate native memory!"};
                     throw ::std::runtime_error {errorMessage};
                 }
             }
@@ -318,13 +317,13 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitColorsArray(
 ) {
     MobileRT::checkSystemError("rtInitColorsArray start");
     try {
-        jobject directBuffer{};
+        jobject directBuffer {};
         {
             const ::std::lock_guard<::std::mutex> lock {mutex_};
             if (renderer_ != nullptr) {
-                const auto &triangles {renderer_->shader_->getTriangles()};
-                const auto arraySize {static_cast<::std::uint32_t> (triangles.size() * 3 * 4)};
-                const auto arrayBytes {arraySize * static_cast<::std::int64_t> (sizeof(jfloat))};
+                const ::std::vector<::MobileRT::Triangle> &triangles {renderer_->shader_->getTriangles()};
+                const ::std::uint32_t arraySize {static_cast<::std::uint32_t> (triangles.size() * 3 * 4)};
+                const jlong arrayBytes {arraySize * static_cast<::std::int64_t> (sizeof(jfloat))};
 
                 float *const floatBuffer {new float[arraySize]};
 
@@ -332,19 +331,18 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitColorsArray(
                     directBuffer = env->NewDirectByteBuffer(floatBuffer, arrayBytes);
                     if (directBuffer != nullptr) {
                         ::std::int32_t i {};
-                        for (const auto &triangle : triangles) {
-                            const auto materialIndex{triangle.getMaterialIndex()};
-                            auto material{::MobileRT::Material{}};
+                        for (const ::MobileRT::Triangle &triangle : triangles) {
+                            const ::std::int32_t materialIndex {triangle.getMaterialIndex()};
+                            ::MobileRT::Material material {::MobileRT::Material{}};
                             if (materialIndex >= 0) {
-                                material = renderer_->shader_->getMaterials()
-                                [static_cast<::std::uint32_t> (materialIndex)];
+                                material = renderer_->shader_->getMaterials()[static_cast<::std::uint32_t> (materialIndex)];
                             }
 
-                            const auto &kD{material.Kd_};
-                            const auto &kS{material.Ks_};
-                            const auto &kT{material.Kt_};
-                            const auto &lE{material.Le_};
-                            auto color{kD};
+                            const ::glm::vec3 &kD{material.Kd_};
+                            const ::glm::vec3 &kS{material.Ks_};
+                            const ::glm::vec3 &kT{material.Kt_};
+                            const ::glm::vec3 &lE{material.Le_};
+                            ::glm::vec3 color {kD};
 
                             color = ::glm::all(::glm::greaterThan(kS, color)) ? kS : color;
                             color = ::glm::all(::glm::greaterThan(kT, color)) ? kT : color;
@@ -366,11 +364,11 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitColorsArray(
                             floatBuffer[i++] = 1.0F;
                         }
                     } else {
-                        const auto errorMessage {"JNIEnv::NewDirectByteBuffer failed to allocate native memory!"};
+                        const ::std::string errorMessage {"JNIEnv::NewDirectByteBuffer failed to allocate native memory!"};
                         throw ::std::runtime_error {errorMessage};
                     }
                 } else {
-                    const auto errorMessage {"C++ failed to allocate native memory!"};
+                    const ::std::string errorMessage {"C++ failed to allocate native memory!"};
                     throw ::std::runtime_error {errorMessage};
                 }
 
@@ -395,8 +393,8 @@ static void updateFps() {
     static ::std::int32_t frame {};
     static ::std::chrono::steady_clock::time_point timebase {};
     ++frame;
-    const auto timeNow {::std::chrono::steady_clock::now()};
-    const auto timeElapsed {::std::chrono::duration_cast<::std::chrono::milliseconds>(timeNow - timebase).count()};
+    const ::std::chrono::steady_clock::time_point timeNow {::std::chrono::steady_clock::now()};
+    const long long timeElapsed {::std::chrono::duration_cast<::std::chrono::milliseconds>(timeNow - timebase).count()};
     fps_ = (static_cast<float>(frame) * 1000.0F) / static_cast<float>(timeElapsed);
     if (timeElapsed > 1000) {
         timebase = timeNow;
@@ -472,60 +470,60 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
     MobileRT::checkSystemError("rtInitialize start");
     LOG_DEBUG("INITIALIZE");
     try {
-        const auto configClass {env->GetObjectClass(localConfig)};
+        const jclass configClass {env->GetObjectClass(localConfig)};
 
-        const auto sceneMethodId {env->GetMethodID(configClass, "getScene", "()I")};
-        const auto sceneIndex {env->CallIntMethod(localConfig, sceneMethodId)};
+        const jmethodID sceneMethodId {env->GetMethodID(configClass, "getScene", "()I")};
+        const jint sceneIndex {env->CallIntMethod(localConfig, sceneMethodId)};
         LOG_DEBUG("sceneIndex: ", sceneIndex);
 
-        const auto shaderMethodId {env->GetMethodID(configClass, "getShader", "()I")};
-        const auto shaderIndex {env->CallIntMethod(localConfig, shaderMethodId)};
+        const jmethodID shaderMethodId {env->GetMethodID(configClass, "getShader", "()I")};
+        const jint shaderIndex {env->CallIntMethod(localConfig, shaderMethodId)};
         LOG_DEBUG("shaderIndex: ", shaderIndex);
 
-        const auto acceleratorMethodId {env->GetMethodID(configClass, "getAccelerator", "()I")};
-        const auto acceleratorIndex {env->CallIntMethod(localConfig, acceleratorMethodId)};
+        const jmethodID acceleratorMethodId {env->GetMethodID(configClass, "getAccelerator", "()I")};
+        const jint acceleratorIndex {env->CallIntMethod(localConfig, acceleratorMethodId)};
         LOG_DEBUG("acceleratorIndex: ", acceleratorIndex);
 
 
-        const auto configResolutionMethodId {env->GetMethodID(configClass, "getConfigResolution",
+        const jmethodID configResolutionMethodId {env->GetMethodID(configClass, "getConfigResolution",
                                                          "()Lpuscas/mobilertapp/configs/ConfigResolution;")};
-        const auto resolutionConfig {env->CallObjectMethod(localConfig, configResolutionMethodId)};
-        const auto resolutionConfigClass {env->GetObjectClass(resolutionConfig)};
+        const jobject resolutionConfig {env->CallObjectMethod(localConfig, configResolutionMethodId)};
+        const jclass resolutionConfigClass {env->GetObjectClass(resolutionConfig)};
 
-        const auto widthMethodId {env->GetMethodID(resolutionConfigClass, "getWidth", "()I")};
-        const auto width {env->CallIntMethod(resolutionConfig, widthMethodId)};
+        const jmethodID widthMethodId {env->GetMethodID(resolutionConfigClass, "getWidth", "()I")};
+        const jint width {env->CallIntMethod(resolutionConfig, widthMethodId)};
         LOG_DEBUG("width: ", width);
 
-        const auto heightMethodId {env->GetMethodID(resolutionConfigClass, "getHeight", "()I")};
-        const auto height {env->CallIntMethod(resolutionConfig, heightMethodId)};
+        const jmethodID heightMethodId {env->GetMethodID(resolutionConfigClass, "getHeight", "()I")};
+        const jint height {env->CallIntMethod(resolutionConfig, heightMethodId)};
         LOG_DEBUG("height: ", height);
 
 
-        const auto configSamplesMethodId {env->GetMethodID(configClass, "getConfigSamples",
+        const jmethodID configSamplesMethodId {env->GetMethodID(configClass, "getConfigSamples",
                                                       "()Lpuscas/mobilertapp/configs/ConfigSamples;")};
-        const auto samplesConfig {env->CallObjectMethod(localConfig, configSamplesMethodId)};
-        const auto samplesConfigClass {env->GetObjectClass(samplesConfig)};
+        const jobject samplesConfig {env->CallObjectMethod(localConfig, configSamplesMethodId)};
+        const jclass samplesConfigClass {env->GetObjectClass(samplesConfig)};
 
-        const auto samplesPixelMethodId {env->GetMethodID(samplesConfigClass, "getSamplesPixel", "()I")};
-        const auto samplesPixel {env->CallIntMethod(samplesConfig, samplesPixelMethodId)};
+        const jmethodID samplesPixelMethodId {env->GetMethodID(samplesConfigClass, "getSamplesPixel", "()I")};
+        const jint samplesPixel {env->CallIntMethod(samplesConfig, samplesPixelMethodId)};
         LOG_DEBUG("samplesPixel: ", samplesPixel);
 
-        const auto samplesLightMethodId {env->GetMethodID(samplesConfigClass, "getSamplesLight", "()I")};
-        const auto samplesLight {env->CallIntMethod(samplesConfig, samplesLightMethodId)};
+        const jmethodID samplesLightMethodId {env->GetMethodID(samplesConfigClass, "getSamplesLight", "()I")};
+        const jint samplesLight {env->CallIntMethod(samplesConfig, samplesLightMethodId)};
         LOG_DEBUG("samplesLight: ", samplesLight);
 
         jboolean isCopy {JNI_FALSE};
-        const auto objMethodId {env->GetMethodID(configClass, "getObjFilePath", "()Ljava/lang/String;")};
-        const auto localObjFilePath {reinterpret_cast<jstring> (env->CallObjectMethod(localConfig, objMethodId))};
-        const auto *const objFilePath {env->GetStringUTFChars(localObjFilePath, &isCopy)};
+        const jmethodID objMethodId {env->GetMethodID(configClass, "getObjFilePath", "()Ljava/lang/String;")};
+        const jstring localObjFilePath {reinterpret_cast<jstring> (env->CallObjectMethod(localConfig, objMethodId))};
+        const ::std::string objFilePath {env->GetStringUTFChars(localObjFilePath, &isCopy)};
         LOG_DEBUG("objFilePath: ", objFilePath);
 
-        const auto res {
+        const ::std::int32_t res {
             [&]() -> ::std::int32_t {
                 LOG_DEBUG("Acquiring lock");
                 const ::std::lock_guard<::std::mutex> lock {mutex_};
                 renderer_ = nullptr;
-                const auto ratio {static_cast<float> (width) / static_cast<float> (height)};
+                const float ratio {static_cast<float> (width) / static_cast<float> (height)};
                 ::MobileRT::Scene scene {};
                 ::std::unique_ptr<::MobileRT::Sampler> samplerPixel {};
                 ::std::unique_ptr<::MobileRT::Shader> shader {};
@@ -569,7 +567,7 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
                             LOG_DEBUG("CAM file not read!");
                         }
 
-                        const auto cameraFactory {::Components::CameraFactory()};
+                        ::Components::CameraFactory cameraFactory {::Components::CameraFactory()};
                         const ::std::istringstream isCam {camDefinition_};
                         ::std::istream iCam {isCam.rdbuf()};
                         camera = cameraFactory.loadFromFile(iCam, ratio);
@@ -597,7 +595,7 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
                         if (!objLoader.isProcessed()) {
                             return -1;
                         }
-                        const auto sceneBuilt {objLoader.fillScene(
+                        const bool sceneBuilt {objLoader.fillScene(
                             &scene,
                             []() {return ::MobileRT::std::make_unique<Components::StaticPCG>();},
                             objFilePath,
@@ -620,7 +618,7 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
                 LOG_DEBUG("LOADING ACCELERATOR: ", ::MobileRT::Shader::Accelerator(acceleratorIndex));
                 LOG_DEBUG("samplesLight: ", samplesLight);
                 MobileRT::checkSystemError("rtInitialize before loading shader");
-                const auto start {::std::chrono::system_clock::now()};
+                const auto chronoStart {::std::chrono::system_clock::now()};
                 switch (shaderIndex) {
                     case 1: {
                         shader = ::MobileRT::std::make_unique<Components::Whitted>(
@@ -669,16 +667,16 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
                         break;
                     }
                 }
-                const auto end {::std::chrono::system_clock::now()};
+                const auto chronoEnd {::std::chrono::system_clock::now()};
                 MobileRT::checkSystemError("rtInitialize after loading shader");
 
                 LOG_DEBUG("LOADING RENDERER");
-                const auto planes {static_cast<::std::int32_t> (shader->getPlanes().size())};
-                const auto spheres {static_cast<::std::int32_t> (shader->getSpheres().size())};
-                const auto triangles {static_cast<::std::int32_t> (shader->getTriangles().size())};
-                const auto materials {static_cast<::std::int32_t> (shader->getMaterials().size())};
+                const ::std::int32_t planes {static_cast<::std::int32_t> (shader->getPlanes().size())};
+                const ::std::int32_t spheres {static_cast<::std::int32_t> (shader->getSpheres().size())};
+                const ::std::int32_t triangles {static_cast<::std::int32_t> (shader->getTriangles().size())};
+                const ::std::int32_t materials {static_cast<::std::int32_t> (shader->getMaterials().size())};
                 numLights_ = static_cast<::std::int32_t> (shader->getLights().size());
-                const auto nPrimitives {triangles + spheres + planes};
+                const ::std::int32_t nPrimitives {triangles + spheres + planes};
                 LOG_DEBUG("PLANES = ", planes);
                 LOG_DEBUG("SPHERES = ", spheres);
                 LOG_DEBUG("TRIANGLES = ", triangles);
@@ -693,7 +691,7 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
                     width, height, samplesPixel
                 );
                 MobileRT::checkSystemError("Renderer was built.");
-                timeRenderer_ = ::std::chrono::duration_cast<::std::chrono::milliseconds>(end - start).count();
+                timeRenderer_ = ::std::chrono::duration_cast<::std::chrono::milliseconds>(chronoEnd - chronoStart).count();
                 LOG_INFO("TIME CONSTRUCTION RENDERER = ", timeRenderer_, "ms");
                 MobileRT::checkSystemError("rtInitialize almost finished");
                 return nPrimitives;
@@ -751,7 +749,7 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
     LOG_DEBUG("rtRenderIntoBitmap");
     LOG_DEBUG("nThreads = ", nThreads);
     try {
-        auto globalBitmap {static_cast<jobject> (env->NewGlobalRef(localBitmap))};
+        jobject globalBitmap {static_cast<jobject> (env->NewGlobalRef(localBitmap))};
 
         auto lambda {
             [=]() -> void {
@@ -760,7 +758,7 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
                 LOG_DEBUG("rtRenderIntoBitmap step 1");
                 ASSERT(env != nullptr, "JNIEnv not valid.");
                 MobileRT::checkSystemError("rtRenderIntoBitmap step 1");
-                const auto jniError {
+                const jint jniError {
                     javaVM_->GetEnv(reinterpret_cast<void **> (const_cast<JNIEnv **> (&env)), JNI_VERSION_1_6)
                 };
 
@@ -768,7 +766,7 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
                 ASSERT(jniError == JNI_OK || jniError == JNI_EDETACHED, "JNIEnv not valid.");
                 {
                     MobileRT::checkSystemError("rtRenderIntoBitmap step 2");
-                    const auto result {javaVM_->AttachCurrentThread(const_cast<JNIEnv **> (&env), nullptr)};
+                    const jint result {javaVM_->AttachCurrentThread(const_cast<JNIEnv **> (&env), nullptr)};
                     if (errno == EINVAL) {
                         // Ignore invalid argument (necessary for Android API 16)
                         errno = 0;
@@ -781,7 +779,7 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
                 LOG_DEBUG("rtRenderIntoBitmap step 3");
                 ::std::int32_t *dstPixels {};
                 {
-                    const auto ret {
+                    const jint ret {
                         AndroidBitmap_lockPixels(env, globalBitmap,
                                                  reinterpret_cast<void **> (&dstPixels))
                     };
@@ -793,7 +791,7 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
                 AndroidBitmapInfo info {};
                 {
                     MobileRT::checkSystemError("rtRenderIntoBitmap step 4");
-                    const auto ret {AndroidBitmap_getInfo(env, globalBitmap, &info)};
+                    const jint ret {AndroidBitmap_getInfo(env, globalBitmap, &info)};
                     ASSERT(ret == JNI_OK, "Couldn't get the Android bitmap information structure.");
                     LOG_DEBUG("ret = ", ret);
                 }
@@ -801,13 +799,13 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
                 LOG_DEBUG("rtRenderIntoBitmap step 5");
                 ::std::int32_t rep {1};
                 {
-                    const auto result {javaVM_->DetachCurrentThread()};
+                    const jint result {javaVM_->DetachCurrentThread()};
                     ASSERT(result == JNI_OK, "Couldn't detach the current thread from JVM.");
                     static_cast<void> (result);
                 }
                 LOG_DEBUG("WILL START TO RENDER");
                 MobileRT::checkSystemError("starting render timer");
-                const auto startRendering {::std::chrono::system_clock::now()};
+                const auto chronoStartRendering {::std::chrono::system_clock::now()};
                 while (state_ == State::BUSY && rep > 0) {
                     LOG_DEBUG("STARTING RENDERING");
                     LOG_DEBUG("nThreads = ", nThreads);
@@ -822,8 +820,8 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
                     updateFps();
                     rep--;
                 }
-                const auto endRendering {::std::chrono::system_clock::now()};
-                timeRendering = endRendering - startRendering;
+                const auto chronoEndRendering {::std::chrono::system_clock::now()};
+                timeRendering = chronoEndRendering - chronoStartRendering;
                 LOG_DEBUG("RENDER FINISHED");
                 finishedRendering_ = true;
                 rendered_.notify_all();
@@ -835,7 +833,7 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
                     }
                     {
                         MobileRT::checkSystemError("rtRenderIntoBitmap step 6");
-                        const auto result {javaVM_->AttachCurrentThread(const_cast<JNIEnv **> (&env), nullptr)};
+                        const jint result {javaVM_->AttachCurrentThread(const_cast<JNIEnv **> (&env), nullptr)};
                         if (errno == EINVAL) {
                             // Ignore invalid argument (necessary for Android API 16)
                             errno = 0;
@@ -845,14 +843,14 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
                         static_cast<void> (result);
                     }
                     {
-                        const auto result{AndroidBitmap_unlockPixels(env, globalBitmap)};
+                        const jint result{AndroidBitmap_unlockPixels(env, globalBitmap)};
                         ASSERT(result == JNI_OK, "Couldn't unlock the Android bitmap pixels.");
                         static_cast<void> (result);
                     }
 
                     env->DeleteGlobalRef(globalBitmap);
                     {
-                        const auto result {
+                        const jint result {
                             javaVM_->GetEnv(reinterpret_cast<void **> (const_cast<JNIEnv **> (&env)), JNI_VERSION_1_6)
                         };
                         ASSERT(result == JNI_OK, "JNIEnv not valid.");
@@ -860,17 +858,16 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
                     }
                     env->ExceptionClear();
                     {
-                        const auto result {javaVM_->DetachCurrentThread()};
+                        const jint result {javaVM_->DetachCurrentThread()};
                         ASSERT(result == JNI_OK, "Couldn't detach the current thread from JVM.");
                         static_cast<void> (result);
                     }
                 }
-                const auto renderingTime {timeRendering.count()};
-                const auto castedRays {renderer_->getTotalCastedRays()};
+                const double renderingTime {timeRendering.count()};
+                const ::std::uint64_t castedRays {renderer_->getTotalCastedRays()};
                 LOG_DEBUG("Rendering Time in secs = ", renderingTime);
                 LOG_DEBUG("Casted rays = ", castedRays);
-                LOG_DEBUG("Total Millions rays per second = ", (static_cast<double> (castedRays) / renderingTime)
-                    / 1000000L);
+                LOG_DEBUG("Total Millions rays per second = ", (static_cast<double> (castedRays) / renderingTime) / 1000000L);
 
                 state_ = State::IDLE;
                 LOG_DEBUG("rtRenderIntoBitmap finished");
@@ -905,7 +902,7 @@ extern "C"
 ) {
     MobileRT::checkSystemError("rtGetState start");
 
-    const auto res {static_cast<::std::int32_t> (state_.load())};
+    const ::std::int32_t res {static_cast<::std::int32_t> (state_.load())};
     env->ExceptionClear();
     MobileRT::checkSystemError("rtGetState finish");
     return res;
@@ -968,7 +965,7 @@ extern "C"
 ) {
     MobileRT::checkSystemError("rtResize start");
 
-    const auto res{
+    const ::std::int32_t res{
         ::MobileRT::roundDownToMultipleOf(
             size, static_cast<::std::int32_t> (::std::sqrt(::MobileRT::NumberOfTiles))
         )
@@ -1032,7 +1029,7 @@ void JNICALL Java_puscas_mobilertapp_MainActivity_readFile(
         LOG_DEBUG("Will read a scene file.");
         file->resize(static_cast<::std::size_t> (size));
         MobileRT::checkSystemError("Before read file.");
-        const auto remainingLength {::read(fd, &(*file)[0], static_cast<unsigned int>(size))};
+        const long remainingLength {::read(fd, &(*file)[0], static_cast<unsigned int>(size))};
         MobileRT::checkSystemError("After read file.");
         ASSERT(remainingLength == 0 || remainingLength == size, "File not read entirely.");
         LOG_DEBUG("Read a scene file.");
@@ -1041,13 +1038,13 @@ void JNICALL Java_puscas_mobilertapp_MainActivity_readFile(
         ::std::string texture {};
         texture.resize(static_cast<::std::size_t> (size));
         MobileRT::checkSystemError("Before read file.");
-        const auto remainingLength {::read(fd, &texture[0], static_cast<unsigned int>(size))};
+        const long remainingLength {::read(fd, &texture[0], static_cast<unsigned int>(size))};
         MobileRT::checkSystemError("After read file.");
         ASSERT(remainingLength == 0 || remainingLength == size, "File not read entirely.");
 
         jboolean isCopy {JNI_FALSE};
         const ::std::string filePathRaw {env->GetStringUTFChars(jFilePath, &isCopy)};
-        const auto fileName {filePathRaw.substr(filePathRaw.find_last_of('/') + 1, filePathRaw.size())};
+        const ::std::string fileName {filePathRaw.substr(filePathRaw.find_last_of('/') + 1, filePathRaw.size())};
         ::Components::OBJLoader::getTextureFromCache(&texturesCache_, ::std::move(texture), static_cast<long> (size), fileName);
         LOG_DEBUG("Read a texture file: ", filePathRaw);
     }
@@ -1072,7 +1069,7 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtFreeNativeBuffer(
 ) {
     MobileRT::checkSystemError("rtFreeNativeBuffer start");
     if (bufferRef != nullptr) {
-        auto *buffer{env->GetDirectBufferAddress(bufferRef)};
+        void *buffer{env->GetDirectBufferAddress(bufferRef)};
         float *const floatBuffer{static_cast<float *> (buffer)};
         delete[] floatBuffer;
     }

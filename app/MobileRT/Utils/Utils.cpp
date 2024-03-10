@@ -24,8 +24,8 @@ namespace MobileRT {
      */
     ::std::int32_t roundDownToMultipleOf(const ::std::int32_t value,
                                          const ::std::int32_t multiple) {
-        const auto rest {value % multiple};
-        const auto res {rest > 1 ? value - rest : value};
+        const ::std::int32_t rest {value % multiple};
+        const ::std::int32_t res {rest > 1 ? value - rest : value};
         return res;
     }
 
@@ -40,9 +40,9 @@ namespace MobileRT {
      * @return A value in the Halton Sequence.
      */
     float haltonSequence(::std::uint32_t index, const ::std::uint32_t base) {
-        auto fraction {1.0F};
-        auto nextValue {0.0F};
-        const auto baseInFloat {static_cast<float> (base)};
+        float fraction {1.0F};
+        float nextValue {0.0F};
+        const float baseInFloat {static_cast<float> (base)};
         while (index > 0) {
             fraction /= baseInFloat;
             nextValue += fraction * static_cast<float> (index % base);
@@ -64,29 +64,26 @@ namespace MobileRT {
      */
     ::std::int32_t incrementalAvg(
         const ::glm::vec3 &sample, const ::std::int32_t avg, const ::std::int32_t numSample) {
-        const auto avgUnsigned {static_cast<::std::uint32_t> (avg)};
-        const auto numSampleUnsigned {static_cast<::std::uint32_t> (numSample)};
+        const ::std::uint32_t avgUnsigned {static_cast<::std::uint32_t> (avg)};
+        const ::std::uint32_t numSampleUnsigned {static_cast<::std::uint32_t> (numSample)};
 
-        const auto lastRed {avgUnsigned & 0xFFU};
-        const auto lastGreen {(avgUnsigned >> 8U) & 0xFFU};
-        const auto lastBlue {(avgUnsigned >> 16U) & 0xFFU};
+        const ::std::uint32_t lastRed {avgUnsigned & 0xFFU};
+        const ::std::uint32_t lastGreen {(avgUnsigned >> 8U) & 0xFFU};
+        const ::std::uint32_t lastBlue {(avgUnsigned >> 16U) & 0xFFU};
 
-        const auto samplerRed {static_cast<::std::uint32_t> (sample[0] * 255U)};
-        const auto samplerGreen {static_cast<::std::uint32_t> (sample[1] * 255U)};
-        const auto samplerBlue {static_cast<::std::uint32_t> (sample[2] * 255U)};
+        const ::std::uint32_t samplerRed {static_cast<::std::uint32_t> (sample[0] * 255U)};
+        const ::std::uint32_t samplerGreen {static_cast<::std::uint32_t> (sample[1] * 255U)};
+        const ::std::uint32_t samplerBlue {static_cast<::std::uint32_t> (sample[2] * 255U)};
 
-        const auto currentRed {((numSampleUnsigned - 1U) * lastRed + samplerRed)
-                               / numSampleUnsigned};
-        const auto currentGreen {((numSampleUnsigned - 1U) * lastGreen + samplerGreen)
-                                 / numSampleUnsigned};
-        const auto currentBlue {((numSampleUnsigned - 1U) * lastBlue + samplerBlue)
-                                / numSampleUnsigned};
+        const ::std::uint32_t currentRed {((numSampleUnsigned - 1U) * lastRed + samplerRed) / numSampleUnsigned};
+        const ::std::uint32_t currentGreen {((numSampleUnsigned - 1U) * lastGreen + samplerGreen) / numSampleUnsigned};
+        const ::std::uint32_t currentBlue {((numSampleUnsigned - 1U) * lastBlue + samplerBlue) / numSampleUnsigned};
 
-        const auto retR {::std::min(currentRed, 255U)};
-        const auto retG {::std::min(currentGreen, 255U)};
-        const auto retB {::std::min(currentBlue, 255U)};
+        const ::std::uint32_t retR {::std::min(currentRed, 255U)};
+        const ::std::uint32_t retG {::std::min(currentGreen, 255U)};
+        const ::std::uint32_t retB {::std::min(currentBlue, 255U)};
 
-        const auto res {static_cast<::std::int32_t> (0xFF000000 | retB << 16U | retG << 8U | retR)};
+        const ::std::int32_t res {static_cast<::std::int32_t> (0xFF000000 | retB << 16U | retG << 8U | retR)};
 
         return res;
     }
@@ -98,7 +95,7 @@ namespace MobileRT {
      * @return The values parsed into a vec2.
      */
     ::glm::vec2 toVec2(const char *const values) {
-        const auto parsedValues {toArray<2, float>(values)};
+        const ::std::array<float, 2> parsedValues {toArray<2, float>(values)};
         return {parsedValues[0], parsedValues[1]};
     }
 
@@ -109,7 +106,7 @@ namespace MobileRT {
      * @return The values parsed into a vec3.
      */
     ::glm::vec3 toVec3(const char *const values) {
-        const auto parsedValues {toArray<3, float>(values)};
+        const ::std::array<float, 3> parsedValues {toArray<3, float>(values)};
         return {parsedValues[0], parsedValues[1], parsedValues[2]};
     }
 
@@ -133,8 +130,8 @@ namespace MobileRT {
      * @return Whether the two values are equal or not.
      */
     bool equal(const float a, const float b) {
-        const auto absValue {::std::fabs(a - b)};
-        const auto res {absValue < Epsilon};
+        const float absValue {::std::fabs(a - b)};
+        const bool res {absValue < Epsilon};
         return res;
     }
 
@@ -150,7 +147,7 @@ namespace MobileRT {
      */
     bool equal(const ::glm::vec3 &vec1, const ::glm::vec3 &vec2) {
         bool res {equal(vec1[0], vec2[0])};
-        for (auto i {1}; i < NumberOfAxes; ++i) {
+        for (::std::int32_t i {1}; i < NumberOfAxes; ++i) {
             res = res && equal(vec1[i], vec2[i]);
         }
         return res;
@@ -163,9 +160,9 @@ namespace MobileRT {
      * @return Whether the floating point value is valid or not.
      */
     bool isValid(const float value) {
-        const auto isNaN {::std::isnan(value)};
-        const auto isInf {::std::isinf(value)};
-        const auto res {!isNaN && !isInf};
+        const bool isNaN {::std::isnan(value)};
+        const bool isInf {::std::isinf(value)};
+        const bool res {!isNaN && !isInf};
         return res;
     }
 
@@ -177,7 +174,7 @@ namespace MobileRT {
      * @return A normalized vec2 value.
      */
     ::glm::vec2 normalize(const ::glm::vec2 &textureCoordinates) {
-        const auto texCoords {::glm::fract(textureCoordinates)};
+        const ::glm::vec2 texCoords {::glm::fract(textureCoordinates)};
         return texCoords;
     }
 
@@ -189,8 +186,8 @@ namespace MobileRT {
      * @return A normalized vec3 value.
      */
     ::glm::vec3 normalize(const ::glm::vec3 &color) {
-        const auto max {::std::max(::std::max(color[0], color[1]), color[2])};
-        auto res {color};
+        const float max {::std::max(::std::max(color[0], color[1]), color[2])};
+        ::glm::vec3 res {color};
         if (max > 1.0F) {
             res = color / max;
         }
@@ -238,8 +235,6 @@ namespace MobileRT {
      */
     void checkSystemError(const char *const message) {
         try {
-            LOG_DEBUG("Called checkSystemError (" , errno, "): ", message);
-
             // Ignore the following errors, because they are set by some Android C++ functions:
             // * Invalid argument
             // * Resource unavailable, try again
@@ -249,7 +244,7 @@ namespace MobileRT {
                 const ErrorType currentError {getErrorCode()};
                 LOG_ERROR("errorCode: ", currentError.codeText);
 
-                const auto errorMessage {::std::string(message) + '\n' + currentError.codeText + '\n' +
+                const ::std::string errorMessage {::std::string(message) + '\n' + currentError.codeText + '\n' +
                                         currentError.description + '\n' +
                                         ::std::string("errno (") + ::MobileRT::std::to_string(errno) + "): " +
                                         ::std::strerror(errno)
@@ -291,7 +286,7 @@ namespace MobileRT {
             // NaCL                              __native_client__
             // AsmJS                             __asmjs__
             // Fuschia                           __Fuchsia__
-            const auto bytesInMegabyte {1048576};
+            const int bytesInMegabyte {1048576};
             LOG_INFO("Free memory: ",  (sysconf(_SC_AVPHYS_PAGES) * sysconf(_SC_PAGESIZE)) / bytesInMegabyte,
                 " MB [Available memory: ",  (sysconf(_SC_PHYS_PAGES) * sysconf(_SC_PAGESIZE)) / bytesInMegabyte, " MB]");
         #endif

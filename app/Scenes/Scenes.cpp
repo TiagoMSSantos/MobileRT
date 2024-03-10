@@ -138,15 +138,15 @@ Scene cornellBox_Scene(Scene scene) {
 
 ::std::unique_ptr<::MobileRT::Camera> cornellBox_Cam(const float ratio) {
     LOG_DEBUG("CAMERA: cornellBox_Cam");
-    const auto fovX {45.0F * ratio};
-    const auto fovY {45.0F};
-    auto res {::MobileRT::std::make_unique<Components::Perspective> (
+    const float fovX {45.0F * ratio};
+    const float fovY {45.0F};
+    ::std::unique_ptr<::MobileRT::Camera> res {::MobileRT::std::make_unique<Components::Perspective> (
         ::glm::vec3 {0.0F, 0.0F, -3.4F},
         ::glm::vec3 {0.0F, 0.0F, 1.0F},
         ::glm::vec3 {0.0F, 1.0F, 0.0F},
         fovX, fovY
     )};
-    return ::std::move(res);
+    return res;
 }
 
 Scene cornellBox2_Scene(Scene scene) {
@@ -250,15 +250,15 @@ Scene spheres_Scene(Scene scene) {
 
 ::std::unique_ptr<::MobileRT::Camera> spheres_Cam(float ratio) {
     LOG_DEBUG("CAMERA: spheres_Cam");
-    const auto sizeH {10.0F * ratio};
-    const auto sizeV {10.0F};
-    auto res {::MobileRT::std::make_unique<Components::Orthographic> (
+    const float sizeH {10.0F * ratio};
+    const float sizeV {10.0F};
+    ::std::unique_ptr<::MobileRT::Camera> res {::MobileRT::std::make_unique<Components::Orthographic> (
         ::glm::vec3 {0.0F, 1.0F, -10.0F},
         ::glm::vec3 {0.0F, 1.0F, 7.0F},
         ::glm::vec3 {0.0F, 1.0F, 0.0F},
         sizeH, sizeV
     )};
-    return ::std::move(res);
+    return res;
 }
 
 Scene spheres2_Scene(Scene scene) {
@@ -288,15 +288,15 @@ Scene spheres2_Scene(Scene scene) {
     return scene;
 }
 
-::std::unique_ptr<::MobileRT::Camera> spheres2_Cam(float ratio) {
+::std::unique_ptr<::MobileRT::Camera> spheres2_Cam(const float ratio) {
     LOG_DEBUG("CAMERA: spheres2_Cam");
-    const auto fovX {60.0F * ratio};
-    const auto fovY {60.0F};
-    auto  res {::MobileRT::std::make_unique<Components::Perspective> (
+    const float fovX {60.0F * ratio};
+    const float fovY {60.0F};
+    ::std::unique_ptr<::MobileRT::Camera> res {::MobileRT::std::make_unique<Components::Perspective> (
         ::glm::vec3{0.0F, 0.5F, 1.0F},
         ::glm::vec3{0.0F, 0.0F, 7.0F},
         ::glm::vec3{0.0F, 1.0F, 0.0F},
         fovX, fovY
     )};
-    return ::std::move(res);
+    return res;
 }

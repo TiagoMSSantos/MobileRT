@@ -10,8 +10,7 @@ namespace Components {
      */
     class CameraFactory {
         public:
-            ::std::unique_ptr<::MobileRT::Camera> loadFromFile(::std::istream &isCam,
-                                                               float aspectRatio) const;
+            ::std::unique_ptr<::MobileRT::Camera> loadFromFile(::std::istream &isCam, float aspectRatio) const;
     };
 }//namespace Components
 

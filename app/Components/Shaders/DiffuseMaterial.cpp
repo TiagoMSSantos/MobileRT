@@ -9,10 +9,10 @@ DiffuseMaterial::DiffuseMaterial(Scene scene, const Accelerator accelerator) :
 }
 
 bool DiffuseMaterial::shade(::glm::vec3 *const rgb, const Intersection &intersection) {
-    const auto &lE {intersection.material_->Le_};
-    const auto &kD {intersection.material_->Kd_};
-    const auto &kS {intersection.material_->Ks_};
-    const auto &kT {intersection.material_->Kt_};
+    const ::glm::vec3 &lE {intersection.material_->Le_};
+    const ::glm::vec3 &kD {intersection.material_->Kd_};
+    const ::glm::vec3 &kS {intersection.material_->Ks_};
+    const ::glm::vec3 &kT {intersection.material_->Kt_};
 
     if (::MobileRT::hasPositiveValue(kD)) {
         *rgb = kD;

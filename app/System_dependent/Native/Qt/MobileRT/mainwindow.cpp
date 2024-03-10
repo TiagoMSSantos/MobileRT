@@ -124,7 +124,7 @@ void MainWindow::select_obj() {
     dialog.setNameFilter("OBJ file (*.obj)");
 
     if (dialog.exec()) {
-        const auto fileName {dialog.selectedFiles().at(0).section(".", 0, 0).toStdString()};
+        const ::std::string fileName {dialog.selectedFiles().at(0).section(".", 0, 0).toStdString()};
         m_config.objFilePath = fileName + ".obj";
         m_config.mtlFilePath = fileName + ".mtl";
         m_config.camFilePath = fileName + ".cam";
@@ -142,7 +142,7 @@ void MainWindow::select_config() {
     builder.withSpp(m_config.samplesPixel);
     builder.withSpl(m_config.samplesLight);
 
-    auto config {builder.build()};
+    Config config {builder.build()};
 
     if (config.exec()) {
         m_config.shader = config.getShader();

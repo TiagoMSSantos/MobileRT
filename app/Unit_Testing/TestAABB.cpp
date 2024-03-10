@@ -25,8 +25,8 @@ namespace {
  * Tests the AABB constructor with invalid parameters.
  */
 TEST_F(TestAABB, TestInvalidConstructor) {
-    const auto pointMin {::glm::vec3 {0.0F, 0.0F, 10.0F}};
-    const auto pointMax {::glm::vec3 {0.0F, 0.0F, 10.0F}};
+    const ::glm::vec3 pointMin {::glm::vec3 {0.0F, 0.0F, 10.0F}};
+    const ::glm::vec3 pointMax {::glm::vec3 {0.0F, 0.0F, 10.0F}};
 
     ASSERT_DEBUG_DEATH(const AABB box(pointMin, pointMax);, "");
 }
@@ -35,8 +35,8 @@ TEST_F(TestAABB, TestInvalidConstructor) {
  * Tests the AABB constructor.
  */
 TEST_F(TestAABB, TestConstructor) {
-    const auto pointMin {::glm::vec3 {1.0F, 2.0F, 3.0F}};
-    const auto pointMax {::glm::vec3 {4.0F, 5.0F, 6.0F}};
+    const ::glm::vec3 pointMin {::glm::vec3 {1.0F, 2.0F, 3.0F}};
+    const ::glm::vec3 pointMax {::glm::vec3 {4.0F, 5.0F, 6.0F}};
     const AABB box(pointMin, pointMax);
 
     for (int i {0}; i < ::MobileRT::NumberOfAxes; ++i) {
@@ -58,7 +58,7 @@ TEST_F(TestAABB, TestCentroid) {
  * Tests the calculation of the surface area in an AABB.
  */
 TEST_F(TestAABB, TestSurfaceArea) {
-    const auto expectedSurfaceArea {0.0F};
+    const float expectedSurfaceArea {0.0F};
 
     ASSERT_EQ(box1.getSurfaceArea(), expectedSurfaceArea);
 }
@@ -68,7 +68,7 @@ TEST_F(TestAABB, TestSurfaceArea) {
  */
 TEST_F(TestAABB, TestSurfaceArea2) {
     const AABB box2 {::glm::vec3 {0.0F, 0.0F, 0.0F}, ::glm::vec3 {1.0F, 1.0F, 0.0F}};
-    const auto expectedSurfaceArea {2.0F};
+    const float expectedSurfaceArea {2.0F};
 
     ASSERT_EQ(box2.getSurfaceArea(), expectedSurfaceArea);
 }
@@ -77,7 +77,7 @@ TEST_F(TestAABB, TestSurfaceArea2) {
  * Tests the calculation of the minimum point in an AABB.
  */
 TEST_F(TestAABB, TestMinPoint) {
-    const auto pointMin {::glm::vec3 {0.0F, 0.0F, 0.0F}};
+    const ::glm::vec3 pointMin {::glm::vec3 {0.0F, 0.0F, 0.0F}};
 
     ASSERT_EQ(box1.getPointMin(), pointMin);
 }
@@ -86,7 +86,7 @@ TEST_F(TestAABB, TestMinPoint) {
  * Tests the calculation of the maximum point in an AABB.
  */
 TEST_F(TestAABB, TestMaxPoint) {
-    const auto pointMax {::glm::vec3 {1.0F, 0.0F, 0.0F}};
+    const ::glm::vec3 pointMax {::glm::vec3 {1.0F, 0.0F, 0.0F}};
 
     ASSERT_EQ(box1.getPointMax(), pointMax);
 }
@@ -96,10 +96,10 @@ TEST_F(TestAABB, TestMaxPoint) {
  */
 TEST_F(TestAABB, TestSurroundingBox) {
     const AABB box2 {::glm::vec3 {0.0F, 1.0F, 0.0F}, ::glm::vec3 {1.0F, 1.0F, 0.0F}};
-    const auto surroundingBox {::MobileRT::surroundingBox(box1, box2)};
+    const AABB surroundingBox {::MobileRT::surroundingBox(box1, box2)};
 
-    const auto expectedMin {::glm::vec3 {0.0F, 0.0F, 0.0F}};
-    const auto expectedMax {::glm::vec3 {1.0F, 1.0F, 0.0F}};
+    const ::glm::vec3 expectedMin {::glm::vec3 {0.0F, 0.0F, 0.0F}};
+    const ::glm::vec3 expectedMax {::glm::vec3 {1.0F, 1.0F, 0.0F}};
 
     ASSERT_EQ(surroundingBox.getPointMin(), expectedMin);
     ASSERT_EQ(surroundingBox.getPointMax(), expectedMax);
@@ -112,7 +112,7 @@ TEST_F(TestAABB, TestRayIntersectionOk) {
     const ::glm::vec3 orig {2, 0, 0};
     const ::glm::vec3 dir {::glm::vec3 {-1, 0, 0}};
     const ::MobileRT::Ray ray {dir, orig, 1, false, nullptr};
-    const auto intersected {box1.intersect(ray)};
+    const bool intersected {box1.intersect(ray)};
 
     ASSERT_EQ(true, intersected);
 }
@@ -124,7 +124,7 @@ TEST_F(TestAABB, TestRayIntersectionFail) {
     const ::glm::vec3 orig {2, 0, 0};
     const ::glm::vec3 dir {::glm::vec3 {1, 0, 0}};
     const ::MobileRT::Ray ray {dir, orig, 1, false, nullptr};
-    const auto intersected {box1.intersect(ray)};
+    const bool intersected {box1.intersect(ray)};
 
     ASSERT_EQ(false, intersected);
 }

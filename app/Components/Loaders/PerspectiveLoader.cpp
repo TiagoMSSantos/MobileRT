@@ -24,7 +24,7 @@ namespace {
 
     ::std::string line {};
     while (::std::getline(cameraDefinition, line)) {
-        const auto key {line[0]};
+        const char key {line[0]};
         line.erase(0, 1);
         const auto* const value {line.c_str()};
         switch (key) {
