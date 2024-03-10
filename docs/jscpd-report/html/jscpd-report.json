@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-03-10T17:17:36.265Z",
+    "detectionDate": "2024-03-10T22:25:32.070Z",
     "formats": {
       "java": {
         "sources": {
@@ -1214,7 +1214,7 @@
           },
           "app/System_dependent/Native/C_wrapper.cpp": {
             "lines": 257,
-            "tokens": 2686,
+            "tokens": 2790,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -1250,7 +1250,7 @@
           },
           "app/MobileRT/Shapes/Triangle.cpp": {
             "lines": 401,
-            "tokens": 3803,
+            "tokens": 3842,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -1466,13 +1466,13 @@
           },
           "app/Components/Loaders/OBJLoader.cpp": {
             "lines": 487,
-            "tokens": 5957,
+            "tokens": 6007,
             "sources": 1,
             "clones": 10,
-            "duplicatedLines": 114,
-            "duplicatedTokens": 1242,
-            "percentage": 23.41,
-            "percentageTokens": 20.85,
+            "duplicatedLines": 120,
+            "duplicatedTokens": 1404,
+            "percentage": 24.64,
+            "percentageTokens": 23.37,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -1791,13 +1791,13 @@
         },
         "total": {
           "lines": 5662,
-          "tokens": 55451,
+          "tokens": 55644,
           "sources": 56,
           "clones": 30,
-          "duplicatedLines": 279,
-          "duplicatedTokens": 4241,
-          "percentage": 4.93,
-          "percentageTokens": 7.65,
+          "duplicatedLines": 282,
+          "duplicatedTokens": 4322,
+          "percentage": 4.98,
+          "percentageTokens": 7.77,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3165,13 +3165,13 @@
     },
     "total": {
       "lines": 28878,
-      "tokens": 220664,
+      "tokens": 220857,
       "sources": 250,
       "clones": 120,
-      "duplicatedLines": 1589,
-      "duplicatedTokens": 13764,
-      "percentage": 5.5,
-      "percentageTokens": 6.24,
+      "duplicatedLines": 1592,
+      "duplicatedTokens": 13845,
+      "percentage": 5.51,
+      "percentageTokens": 6.27,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -6059,37 +6059,37 @@
     },
     {
       "format": "cpp",
-      "lines": 11,
-      "fragment": "ache->find(texPath)};\n\n    if (itTexture == texturesCache->cend()) {// If the texture is not in the cache.\n        const ::std::string texturePath {filePath + texPath};\n        Texture &&texture {Texture::createTexture(texturePath)};\n        ::std::pair<::std::string, ",
+      "lines": 14,
+      "fragment": ":std::string, Texture> *const texturesCache,\n    const ::std::string &filePath,\n    const ::std::string &texPath\n) {\n    const auto itTexture {texturesCache->find(texPath)};\n\n    if (itTexture == texturesCache->cend()) {// If the texture is not in the cache.\n        const ::std::string texturePath {filePath + texPath};\n        Texture &&texture {Texture::createTexture(texturePath)};\n        ::std::pair<::std::string, Texture> &&pair {::std::make_pair(texPath, ::std::move(texture))};\n        ",
       "tokens": 0,
       "firstFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 466,
+        "start": 463,
         "end": 476,
         "startLoc": {
-          "line": 466,
-          "column": 9,
-          "position": 5621
+          "line": 463,
+          "column": 12,
+          "position": 5590
         },
         "endLoc": {
           "line": 476,
           "column": 4,
-          "position": 5697
+          "position": 5747
         }
       },
       "secondFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 437,
+        "start": 434,
         "end": 453,
         "startLoc": {
-          "line": 437,
-          "column": 2,
-          "position": 5361
+          "line": 434,
+          "column": 5,
+          "position": 5304
         },
         "endLoc": {
           "line": 453,
           "column": 4,
-          "position": 5436
+          "position": 5461
         }
       }
     },

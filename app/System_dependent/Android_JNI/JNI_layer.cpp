@@ -618,7 +618,7 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
                 LOG_DEBUG("LOADING ACCELERATOR: ", ::MobileRT::Shader::Accelerator(acceleratorIndex));
                 LOG_DEBUG("samplesLight: ", samplesLight);
                 MobileRT::checkSystemError("rtInitialize before loading shader");
-                const auto chronoStart {::std::chrono::system_clock::now()};
+                const ::std::chrono::time_point<::std::chrono::system_clock> chronoStart {::std::chrono::system_clock::now()};
                 switch (shaderIndex) {
                     case 1: {
                         shader = ::MobileRT::std::make_unique<Components::Whitted>(
@@ -667,7 +667,7 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
                         break;
                     }
                 }
-                const auto chronoEnd {::std::chrono::system_clock::now()};
+                const ::std::chrono::time_point<::std::chrono::system_clock> chronoEnd {::std::chrono::system_clock::now()};
                 MobileRT::checkSystemError("rtInitialize after loading shader");
 
                 LOG_DEBUG("LOADING RENDERER");
@@ -751,7 +751,7 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
     try {
         jobject globalBitmap {static_cast<jobject> (env->NewGlobalRef(localBitmap))};
 
-        auto lambda {
+        ::std::function<void()> lambda {
             [=]() -> void {
                 ::std::chrono::duration<double> timeRendering {};
 
@@ -805,7 +805,7 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
                 }
                 LOG_DEBUG("WILL START TO RENDER");
                 MobileRT::checkSystemError("starting render timer");
-                const auto chronoStartRendering {::std::chrono::system_clock::now()};
+                const ::std::chrono::time_point<::std::chrono::system_clock> chronoStartRendering {::std::chrono::system_clock::now()};
                 while (state_ == State::BUSY && rep > 0) {
                     LOG_DEBUG("STARTING RENDERING");
                     LOG_DEBUG("nThreads = ", nThreads);
@@ -820,7 +820,7 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
                     updateFps();
                     rep--;
                 }
-                const auto chronoEndRendering {::std::chrono::system_clock::now()};
+                const ::std::chrono::time_point<::std::chrono::system_clock> chronoEndRendering {::std::chrono::system_clock::now()};
                 timeRendering = chronoEndRendering - chronoStartRendering;
                 LOG_DEBUG("RENDER FINISHED");
                 finishedRendering_ = true;

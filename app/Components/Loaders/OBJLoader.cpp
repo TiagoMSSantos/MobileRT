@@ -430,11 +430,11 @@ const Texture& OBJLoader::getTextureFromCache(
 ) {
     const auto itTexture {texturesCache->find(texPath)};
 
-    if (itTexture == texturesCache->cend()) {// If the texture is not in the cache.
+    if (itTexture == texturesCache->cend()) { // If the texture is not in the cache.
         Texture &&texture {Texture::createTexture(::std::move(textureBinary), size)};
         ::std::pair<::std::string, Texture> &&pair {::std::make_pair(texPath, ::std::move(texture))};
         const Texture *res {nullptr};
-        const auto pairResult {texturesCache->emplace(::std::move(pair))};// Add it to the cache.
+        const ::std::pair<::std::unordered_map<::std::string, Texture>::iterator, bool> pairResult {texturesCache->emplace(::std::move(pair))}; // Add it to the cache.
         res = &(::std::get<0>(pairResult)->second);
         return *res;
     }
@@ -463,7 +463,7 @@ const Texture& OBJLoader::getTextureFromCache(
         Texture &&texture {Texture::createTexture(texturePath)};
         ::std::pair<::std::string, Texture> &&pair {::std::make_pair(texPath, ::std::move(texture))};
         const Texture *res {nullptr};
-        auto pairResult {texturesCache->emplace(::std::move(pair))}; // Add it to the cache.
+        const ::std::pair<::std::unordered_map<::std::string, Texture>::iterator, bool> pairResult {texturesCache->emplace(::std::move(pair))}; // Add it to the cache.
         res = &(::std::get<0>(pairResult)->second);
         return *res;
     }

@@ -100,7 +100,7 @@ static void work_thread(::MobileRT::Config &config) {
 
                 default: {
                     LOG_DEBUG("OBJLoader starting loading scene");
-                    const auto chronoStartLoading {::std::chrono::system_clock::now()};
+                    const ::std::chrono::time_point<::std::chrono::system_clock> chronoStartLoading {::std::chrono::system_clock::now()};
                     ::std::ifstream ifObj {config.objFilePath};
                     ::std::ifstream ifMtl {config.mtlFilePath};
                     ::Components::OBJLoader objLoader {ifObj, ifMtl};
@@ -108,11 +108,11 @@ static void work_thread(::MobileRT::Config &config) {
                         LOG_ERROR("Error occurred while loading scene.");
                         exit(1);
                     }
-                    const auto chronoEndLoading {::std::chrono::system_clock::now()};
+                    const ::std::chrono::time_point<::std::chrono::system_clock> chronoEndLoading {::std::chrono::system_clock::now()};
                     timeLoading = chronoEndLoading - chronoStartLoading;
                     ::std::unordered_map<::std::string, ::MobileRT::Texture> texturesCache {};
                     LOG_INFO("OBJLoader loaded = ", ::std::chrono::duration_cast<::std::chrono::seconds>(timeLoading).count(), " seconds");
-                    const auto chronoStartFilling {::std::chrono::system_clock::now()};
+                    const ::std::chrono::time_point<::std::chrono::system_clock> chronoStartFilling {::std::chrono::system_clock::now()};
                     objLoader.fillScene(
                         &scene,
                         []() { return ::MobileRT::std::make_unique<Components::StaticHaltonSeq> (); },
@@ -120,7 +120,7 @@ static void work_thread(::MobileRT::Config &config) {
                         texturesCache
                     );
                     ::MobileRT::checkSystemError("Filled Scene.");
-                    const auto chronoEndFilling {::std::chrono::system_clock::now()};
+                    const ::std::chrono::time_point<::std::chrono::system_clock> chronoEndFilling {::std::chrono::system_clock::now()};
                     timeFilling = chronoEndFilling - chronoStartFilling;
                     texturesCache.clear();
                     LOG_INFO("Scene filled = ", ::std::chrono::duration_cast<::std::chrono::seconds>(timeFilling).count(), " seconds");
@@ -145,7 +145,7 @@ static void work_thread(::MobileRT::Config &config) {
             ::MobileRT::checkSystemError("Starting creating shader");
             // Start timer to measure latency of creating shader (including the build of
             // acceleration structure)
-            const auto chronoStartCreating {::std::chrono::system_clock::now()};
+            const ::std::chrono::time_point<::std::chrono::system_clock> chronoStartCreating {::std::chrono::system_clock::now()};
             // Setup shader
             switch (config.shader) {
                 case 1: {
@@ -189,7 +189,7 @@ static void work_thread(::MobileRT::Config &config) {
                 }
             }
             // Stop timer
-            const auto chronoEndCreating {::std::chrono::system_clock::now()};
+            const ::std::chrono::time_point<::std::chrono::system_clock> chronoEndCreating {::std::chrono::system_clock::now()};
             ::MobileRT::checkSystemError("Created shader");
             timeCreating = chronoEndCreating - chronoStartCreating;
             LOG_INFO("TRIANGLES = ", static_cast<::std::int32_t> (shader_->getTriangles().size()));
@@ -220,13 +220,13 @@ static void work_thread(::MobileRT::Config &config) {
             ::std::int32_t repeats {config.repeats};
             ::MobileRT::checkSystemError("Starting rendering");
             LOG_INFO("Started rendering scene");
-            const auto chronoStartRendering {::std::chrono::system_clock::now()};
+            const ::std::chrono::time_point<::std::chrono::system_clock> chronoStartRendering {::std::chrono::system_clock::now()};
             do {
                 // Render a frame
                 renderer_->renderFrame(config.bitmap.data(), config.threads);
                 repeats--;
             } while (repeats > 0);
-            const auto chronoEndRendering {::std::chrono::system_clock::now()};
+            const ::std::chrono::time_point<::std::chrono::system_clock> chronoEndRendering {::std::chrono::system_clock::now()};
             ::MobileRT::checkSystemError("Rendering ended");
 
             timeRendering = chronoEndRendering - chronoStartRendering;

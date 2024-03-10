@@ -1,5 +1,6 @@
 #include "MobileRT/Shapes/Triangle.hpp"
 #include <cmath>
+#include <functional>
 
 using ::MobileRT::AABB;
 using ::MobileRT::Triangle;
@@ -139,7 +140,7 @@ bool Triangle::isNearFarInvalid(const float near, const float far) {
  * @return Whether if the bounding box intersects the triangle or not.
  */
 bool Triangle::intersect(const AABB &box) const {
-    auto lambdaIntersectRayAABB {
+    ::std::function<bool(const ::glm::vec3&, const ::glm::vec3&)> lambdaIntersectRayAABB {
         [&](const ::glm::vec3 &orig, const ::glm::vec3 &vec) -> bool {
             ::glm::vec3 t1 {};
             ::glm::vec3 t2 {}; // vectors to hold the T-values for every direction
@@ -199,7 +200,7 @@ bool Triangle::intersect(const AABB &box) const {
             return true; // if we made it here, there was an intersection - YAY
         }};
 
-    auto lambdaIsOverTriangle {
+    ::std::function<bool(const ::glm::vec3&)> lambdaIsOverTriangle {
         [&](const ::glm::vec3 &vec) -> bool {
             const ::glm::vec3 &perpendicularVector {::glm::cross(vec, this->AC_)};
             const float normalizedProjection {::glm::dot(this->AB_, perpendicularVector)};
