@@ -751,7 +751,7 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
     try {
         jobject globalBitmap {static_cast<jobject> (env->NewGlobalRef(localBitmap))};
 
-        ::std::function<void()> lambda {
+        const ::std::function<void()> lambda {
             [=]() -> void {
                 ::std::chrono::duration<double> timeRendering {};
 

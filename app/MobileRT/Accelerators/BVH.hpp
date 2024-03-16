@@ -167,16 +167,16 @@ namespace MobileRT {
         ::std::array<::std::int32_t, StackSize> stackBoxBegin {};
         ::std::array<::std::int32_t, StackSize> stackBoxEnd {};
 
-        auto itStackBoxIndex {stackBoxIndex.begin()};
+        ::std::array<::std::int32_t, StackSize>::iterator itStackBoxIndex {stackBoxIndex.begin()};
         ::std::advance(itStackBoxIndex, 1);
 
-        auto itStackBoxBegin {stackBoxBegin.begin()};
+        ::std::array<::std::int32_t, StackSize>::iterator itStackBoxBegin {stackBoxBegin.begin()};
         ::std::advance(itStackBoxBegin, 1);
 
-        auto itStackBoxEnd {stackBoxEnd.begin()};
+        ::std::array<::std::int32_t, StackSize>::iterator itStackBoxEnd {stackBoxEnd.begin()};
         ::std::advance(itStackBoxEnd, 1);
 
-        const auto itStackBoxIndexBegin {stackBoxIndex.cbegin()};
+        const ::std::array<::std::int32_t, StackSize>::const_iterator itStackBoxIndexBegin {stackBoxIndex.cbegin()};
 
         // Auxiliary structure used to sort all the AABBs by the position of the centroid.
         ::std::vector<BuildNode> buildNodes {};
@@ -219,7 +219,7 @@ namespace MobileRT {
             const float stepAxis {step[longestAxis]};
             const float startBox {surroundingBox.getPointMin()[longestAxis]};
             const float bucket1MaxLimit {startBox + stepAxis};
-            auto itBucket {::std::partition(itBegin, itEnd,
+            typename ::std::vector<BuildNode>::iterator itBucket {::std::partition(itBegin, itEnd,
                 [&](const BuildNode &node) {
                     return node.centroid_[longestAxis] < bucket1MaxLimit;
                 }
@@ -338,12 +338,12 @@ namespace MobileRT {
         ::std::int32_t boxIndex {};
         ::std::array<::std::int32_t, StackSize> stackBoxIndex {};
 
-        const auto itBeginBoxIndex {stackBoxIndex.cbegin()};
-        auto itStackBoxIndex {stackBoxIndex.begin()};
+        const ::std::array<::std::int32_t, StackSize>::const_iterator itBeginBoxIndex {stackBoxIndex.cbegin()};
+        ::std::array<::std::int32_t, StackSize>::iterator itStackBoxIndex {stackBoxIndex.begin()};
         ::std::advance(itStackBoxIndex, 1);
 
-        const auto itBoxes {this->boxes_.begin()};
-        const auto itPrimitives {this->primitives_.begin()};
+        const typename ::std::vector<BVHNode>::iterator itBoxes {this->boxes_.begin()};
+        const typename ::std::vector<T>::iterator itPrimitives {this->primitives_.begin()};
         do {
             const BVHNode &node {*(itBoxes + boxIndex)};
             if (node.box_.intersect(intersection.ray_)) {
@@ -410,7 +410,7 @@ namespace MobileRT {
 
         ::std::vector<float> leftArea (sizeUnsigned);
         AABB leftBox {*itBoxes};
-        const auto itLeftArea {leftArea.begin()};
+        const ::std::vector<float>::iterator itLeftArea {leftArea.begin()};
         *itLeftArea = leftBox.getSurfaceArea();
         for (::std::int32_t i {1}; i < numBoxes; ++i) {
             leftBox = surroundingBox(leftBox, *(itBoxes + i));
@@ -419,7 +419,7 @@ namespace MobileRT {
 
         ::std::vector<float> rightArea (sizeUnsigned);
         AABB rightBox {*(itBoxes + numBoxes)};
-        const auto itRightArea {rightArea.begin()};
+        const ::std::vector<float>::iterator itRightArea {rightArea.begin()};
         *(itRightArea + numBoxes - 1) = rightBox.getSurfaceArea();
         for (long i {numBoxes - 2}; i >= 0; --i) {
             rightBox = surroundingBox(rightBox, *(itBoxes + i + 1));

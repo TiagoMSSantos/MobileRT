@@ -240,7 +240,7 @@ namespace MobileRT {
       */
     template<typename T, ::std::size_t S>
     void fillArrayWithHaltonSeq(::std::array<T, S> *const values) {
-        for (auto itValues {values->begin()}; itValues < values->end(); ::std::advance(itValues, 1)) {
+        for (typename ::std::array<T, S>::iterator itValues {values->begin()}; itValues < values->end(); ::std::advance(itValues, 1)) {
             const ::std::uint32_t index {static_cast<::std::uint32_t> (::std::distance(values->begin(), itValues))};
             *itValues = ::MobileRT::haltonSequence(index, 2);
         }

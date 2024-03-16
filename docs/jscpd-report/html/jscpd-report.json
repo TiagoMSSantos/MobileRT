@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-03-10T22:25:32.070Z",
+    "detectionDate": "2024-03-16T07:57:10.801Z",
     "formats": {
       "java": {
         "sources": {
@@ -1250,7 +1250,7 @@
           },
           "app/MobileRT/Shapes/Triangle.cpp": {
             "lines": 401,
-            "tokens": 3842,
+            "tokens": 3846,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -1466,13 +1466,13 @@
           },
           "app/Components/Loaders/OBJLoader.cpp": {
             "lines": 487,
-            "tokens": 6007,
+            "tokens": 6037,
             "sources": 1,
             "clones": 10,
             "duplicatedLines": 120,
             "duplicatedTokens": 1404,
             "percentage": 24.64,
-            "percentageTokens": 23.37,
+            "percentageTokens": 23.26,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -1791,13 +1791,13 @@
         },
         "total": {
           "lines": 5662,
-          "tokens": 55644,
+          "tokens": 55678,
           "sources": 56,
           "clones": 30,
           "duplicatedLines": 282,
           "duplicatedTokens": 4322,
           "percentage": 4.98,
-          "percentageTokens": 7.77,
+          "percentageTokens": 7.76,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2330,7 +2330,7 @@
           },
           "app/MobileRT/Utils/Utils.hpp": {
             "lines": 390,
-            "tokens": 2351,
+            "tokens": 2364,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2426,7 +2426,7 @@
           },
           "app/MobileRT/Accelerators/BVH.hpp": {
             "lines": 469,
-            "tokens": 4223,
+            "tokens": 4353,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2859,13 +2859,13 @@
         },
         "total": {
           "lines": 3352,
-          "tokens": 24349,
+          "tokens": 24492,
           "sources": 47,
           "clones": 3,
           "duplicatedLines": 29,
           "duplicatedTokens": 314,
           "percentage": 0.87,
-          "percentageTokens": 1.29,
+          "percentageTokens": 1.28,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3165,13 +3165,13 @@
     },
     "total": {
       "lines": 28878,
-      "tokens": 220857,
+      "tokens": 221034,
       "sources": 250,
       "clones": 120,
       "duplicatedLines": 1592,
       "duplicatedTokens": 13845,
       "percentage": 5.51,
-      "percentageTokens": 6.27,
+      "percentageTokens": 6.26,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -5925,12 +5925,12 @@
         "startLoc": {
           "line": 192,
           "column": 2,
-          "position": 2293
+          "position": 2295
         },
         "endLoc": {
           "line": 206,
           "column": 2,
-          "position": 2436
+          "position": 2438
         }
       },
       "secondFile": {
@@ -5940,12 +5940,12 @@
         "startLoc": {
           "line": 171,
           "column": 2,
-          "position": 2090
+          "position": 2092
         },
         "endLoc": {
           "line": 185,
           "column": 2,
-          "position": 2233
+          "position": 2235
         }
       }
     },
@@ -5961,12 +5961,12 @@
         "startLoc": {
           "line": 236,
           "column": 25,
-          "position": 2851
+          "position": 2853
         },
         "endLoc": {
           "line": 245,
           "column": 2,
-          "position": 2954
+          "position": 2956
         }
       },
       "secondFile": {
@@ -5976,12 +5976,12 @@
         "startLoc": {
           "line": 192,
           "column": 29,
-          "position": 2287
+          "position": 2289
         },
         "endLoc": {
           "line": 180,
           "column": 2,
-          "position": 2187
+          "position": 2189
         }
       }
     },
@@ -5997,12 +5997,12 @@
         "startLoc": {
           "line": 243,
           "column": 7,
-          "position": 2948
+          "position": 2950
         },
         "endLoc": {
           "line": 261,
           "column": 35,
-          "position": 3149
+          "position": 3151
         }
       },
       "secondFile": {
@@ -6012,12 +6012,12 @@
         "startLoc": {
           "line": 204,
           "column": 9,
-          "position": 2430
+          "position": 2432
         },
         "endLoc": {
           "line": 223,
           "column": 5,
-          "position": 2632
+          "position": 2634
         }
       }
     },
@@ -6033,12 +6033,12 @@
         "startLoc": {
           "line": 361,
           "column": 1,
-          "position": 4417
+          "position": 4419
         },
         "endLoc": {
           "line": 367,
           "column": 3,
-          "position": 4515
+          "position": 4517
         }
       },
       "secondFile": {
@@ -6048,19 +6048,19 @@
         "startLoc": {
           "line": 322,
           "column": 1,
-          "position": 3869
+          "position": 3871
         },
         "endLoc": {
           "line": 329,
           "column": 6,
-          "position": 3968
+          "position": 3970
         }
       }
     },
     {
       "format": "cpp",
       "lines": 14,
-      "fragment": ":std::string, Texture> *const texturesCache,\n    const ::std::string &filePath,\n    const ::std::string &texPath\n) {\n    const auto itTexture {texturesCache->find(texPath)};\n\n    if (itTexture == texturesCache->cend()) {// If the texture is not in the cache.\n        const ::std::string texturePath {filePath + texPath};\n        Texture &&texture {Texture::createTexture(texturePath)};\n        ::std::pair<::std::string, Texture> &&pair {::std::make_pair(texPath, ::std::move(texture))};\n        ",
+      "fragment": "onst ::std::string &filePath,\n    const ::std::string &texPath\n) {\n    const ::std::unordered_map<::std::string, Texture>::iterator itTexture {texturesCache->find(texPath)};\n\n    if (itTexture == texturesCache->cend()) {// If the texture is not in the cache.\n        const ::std::string texturePath {filePath + texPath};\n        Texture &&texture {Texture::createTexture(texturePath)};\n        ::std::pair<::std::string, Texture> &&pair {::std::make_pair(texPath, ::std::move(texture))};\n        ",
       "tokens": 0,
       "firstFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
@@ -6069,12 +6069,12 @@
         "startLoc": {
           "line": 463,
           "column": 12,
-          "position": 5590
+          "position": 5620
         },
         "endLoc": {
           "line": 476,
           "column": 4,
-          "position": 5747
+          "position": 5777
         }
       },
       "secondFile": {
@@ -6084,12 +6084,12 @@
         "startLoc": {
           "line": 434,
           "column": 5,
-          "position": 5304
+          "position": 5320
         },
         "endLoc": {
           "line": 453,
           "column": 4,
-          "position": 5461
+          "position": 5477
         }
       }
     },

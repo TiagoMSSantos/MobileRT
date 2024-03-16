@@ -73,7 +73,7 @@ OBJLoader::OBJLoader(::std::istream& isObj, ::std::istream& isMtl) {
 }
 
 bool OBJLoader::fillScene(Scene *const scene,
-                          ::std::function<::std::unique_ptr<Sampler>()> lambda,
+                          const ::std::function<::std::unique_ptr<Sampler>()> lambda,
                           ::std::string filePath,
                           ::std::unordered_map<::std::string, ::MobileRT::Texture> texturesCache) {
     ::MobileRT::checkSystemError("Starting to fill scene.");
@@ -428,7 +428,7 @@ const Texture& OBJLoader::getTextureFromCache(
     const long size,
     const ::std::string &texPath
 ) {
-    const auto itTexture {texturesCache->find(texPath)};
+    const ::std::unordered_map<::std::string, Texture>::iterator itTexture {texturesCache->find(texPath)};
 
     if (itTexture == texturesCache->cend()) { // If the texture is not in the cache.
         Texture &&texture {Texture::createTexture(::std::move(textureBinary), size)};
@@ -456,7 +456,7 @@ const Texture& OBJLoader::getTextureFromCache(
     const ::std::string &filePath,
     const ::std::string &texPath
 ) {
-    const auto itTexture {texturesCache->find(texPath)};
+    const ::std::unordered_map<::std::string, Texture>::iterator itTexture {texturesCache->find(texPath)};
 
     if (itTexture == texturesCache->cend()) {// If the texture is not in the cache.
         const ::std::string texturePath {filePath + texPath};

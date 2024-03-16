@@ -140,7 +140,7 @@ bool Triangle::isNearFarInvalid(const float near, const float far) {
  * @return Whether if the bounding box intersects the triangle or not.
  */
 bool Triangle::intersect(const AABB &box) const {
-    ::std::function<bool(const ::glm::vec3&, const ::glm::vec3&)> lambdaIntersectRayAABB {
+    const ::std::function<bool(const ::glm::vec3&, const ::glm::vec3&)> lambdaIntersectRayAABB {
         [&](const ::glm::vec3 &orig, const ::glm::vec3 &vec) -> bool {
             ::glm::vec3 t1 {};
             ::glm::vec3 t2 {}; // vectors to hold the T-values for every direction
@@ -200,7 +200,7 @@ bool Triangle::intersect(const AABB &box) const {
             return true; // if we made it here, there was an intersection - YAY
         }};
 
-    ::std::function<bool(const ::glm::vec3&)> lambdaIsOverTriangle {
+    const ::std::function<bool(const ::glm::vec3&)> lambdaIsOverTriangle {
         [&](const ::glm::vec3 &vec) -> bool {
             const ::glm::vec3 &perpendicularVector {::glm::cross(vec, this->AC_)};
             const float normalizedProjection {::glm::dot(this->AB_, perpendicularVector)};
