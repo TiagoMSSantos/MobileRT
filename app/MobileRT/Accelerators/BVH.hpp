@@ -203,17 +203,8 @@ namespace MobileRT {
                   : 2
             };
 
-            // Use C++ standard sort.
-            // ::std::sort(itBegin, itEnd,
-            //     [&](const BuildNode &node1, const BuildNode &node2) {
-            //         return node1.centroid_[longestAxis] < node2.centroid_[longestAxis];
-            //     }
-            // );
-
-            // Use C++ Boost Radix sort.
-            // ::boost::sort::spreadsort::float_sort(itBegin, itEnd, rightshift(longestAxis), lessthan(longestAxis));
-
-            // Use C++ partition to sort primitives by buckets where each bucket don't have primitives sorted inside (it is faster than standard sort).
+            // Use C++ partition to sort primitives by buckets where each bucket don't have primitives sorted inside.
+            // It is faster than using C++ standard sort or C++ Boost Radix sort.
             const int numBuckets {10};
             const ::glm::vec3 step {maxDist / static_cast<float> (numBuckets)};
             const float stepAxis {step[longestAxis]};

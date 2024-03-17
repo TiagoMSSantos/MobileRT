@@ -239,7 +239,6 @@ namespace MobileRT {
             // * Invalid argument
             // * Resource unavailable, try again
             if (errno != 0 && errno != EWOULDBLOCK && errno != EINVAL) {// if there is an error
-                // ::std::setlocale(LC_ALL, "en_US.UTF-8");
                 LOG_ERROR("ERROR 1: ", errno);
                 const ErrorType currentError {getErrorCode()};
                 LOG_ERROR("errorCode: ", currentError.codeText);
