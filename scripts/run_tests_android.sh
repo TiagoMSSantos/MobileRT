@@ -277,7 +277,7 @@ runEmulator() {
   if command -v emulator > /dev/null; then
     avd_emulators=$(emulator -list-avds);
     echo "Emulators available: '${avd_emulators}'";
-    avd_emulator=$(echo "${avd_emulators}" | head -1);
+    avd_emulator=$(echo "${avd_emulators}" | tail -1);
     echo "Start '${avd_emulator}'";
   else
     echo 'Command emulator is NOT installed.';
@@ -298,7 +298,7 @@ waitForEmulator() {
   set +u; # 'avd_emulator' might not have been set
   while [ "${avd_emulator}" != '' ] && [ "${adb_devices_running}" = '' ] && [ ${retry} -lt 3 ]; do
     retry=$((retry + 1));
-    echo 'Booting a new Android emulator.';
+    echo "Booting a new Android emulator: '${avd_emulator}'";
     # Possible CPU accelerators locally (Intel CPU + Linux OS based) [qemu-system-i386 -accel ?]:
     # kvm, tcg
     # Possible CPU accelerators:

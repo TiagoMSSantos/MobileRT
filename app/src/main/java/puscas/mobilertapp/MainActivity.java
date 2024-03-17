@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ConfigurationInfo;
@@ -33,9 +32,9 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 
 import java.io.File;
-import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Logger;
@@ -567,13 +566,15 @@ public final class MainActivity extends Activity {
      * Reads a file from a file descriptor natively.
      * It uses C functions in JNI to read the file.
      *
-     * @param fd       The file descriptor.
-     * @param size     The size of the file in bytes.
-     * @param type     The type of the file. Where {@code 0} is for OBJ file, {@code 1} is for MTL
-     *                 file, {@code 2} is to read a CAM file and {@code 3} is to read a texture file.
-     * @param filePath The path to a file, which should be a texture to be used by MobileRT.
+     * @param fileDescriptor The file descriptor.
+     * @param filePathSize   The size of the file in bytes.
+     * @param filePath       The path to a file to be used by MobileRT, which should be either:<br/>
+     *                       * an OBJ file<br/>
+     *                       * a MTL file<br/>
+     *                       * a CAM file<br/>
+     *                       * a texture file<br/>
      */
-    private native void readFile(int fd, long size, int type, String filePath);
+    private native void readFile(int fileDescriptor, long filePathSize, String filePath);
 
     /**
      * Gets the path of a file that was loaded with an external file manager.
@@ -660,24 +661,34 @@ public final class MainActivity extends Activity {
      */
     private void readFile(@NonNull final Uri uri) {
         logger.info("readFile");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            final Path normalizedPath = FileSystems.getDefault().getPath(uri.getPath()).normalize();
+            if (!normalizedPath.startsWith("/data/local/tmp/")
+             && !normalizedPath.startsWith("/storage/")
+             && !normalizedPath.startsWith(Environment.getExternalStorageDirectory().getPath())) {
+                throw new SecurityException("The provided file path is not from a safe internal storage or external SD Card path.");
+            }
+        } else {
+            final String normalizedPath = new File(Objects.requireNonNull(uri.getPath())).getAbsolutePath();
+            if (!normalizedPath.startsWith("/data/local/tmp/")
+             && !normalizedPath.startsWith("/storage/")
+             && !normalizedPath.startsWith(Environment.getExternalStorageDirectory().getPath())) {
+                throw new SecurityException("The provided file path is not from a safe internal storage or external SD Card path.");
+            }
+        }
+
         final String filePath = getPathFromFile(uri);
         logger.info("Will read the following file: '" + filePath + "'");
-        final ContentResolver contentResolver = getContentResolver();
 
-        try (ParcelFileDescriptor parcelFileDescriptor = Objects.requireNonNull(contentResolver.openFileDescriptor(uri, "r"))) {
+        try (ParcelFileDescriptor parcelFileDescriptor = Objects.requireNonNull(getContentResolver().openFileDescriptor(uri, "r"))) {
             logger.info("Opened AssetFileDescriptor");
-            final int fd = parcelFileDescriptor.getFd();
-            final long size = parcelFileDescriptor.getStatSize();
-            final String typeStr = filePath.substring(filePath.lastIndexOf(".")).toLowerCase(Locale.getDefault());
-            final int type = Objects.equals(typeStr, ".obj") ? 0 :
-                Objects.equals(typeStr, ".mtl") ? 1 :
-                Objects.equals(typeStr, ".cam") ? 2 :
-                3;
+            final int fileDescriptor = parcelFileDescriptor.getFd();
+            final long fileSize = parcelFileDescriptor.getStatSize();
 
-            logger.info("Will read the following file: '" + filePath + "', [fd: " + fd + ", size: " + size + ", type: " + type + "]");
+            logger.info("Will read the following file: '" + filePath + "', [fd: " + fileDescriptor + ", size: " + fileSize +  "]");
             // Important: Native layer shouldn't assume ownership of this fd and close it.
-            readFile(fd, size, type, filePath);
-        } catch (final IOException ex) {
+            readFile(fileDescriptor, fileSize, filePath);
+        } catch (final Exception ex) {
             UtilsLogging.logThrowable(ex, "MainActivity#readFile");
             throw new FailureException(ex);
         }

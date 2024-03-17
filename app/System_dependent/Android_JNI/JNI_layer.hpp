@@ -91,9 +91,8 @@ JNIEXPORT
 void JNICALL Java_puscas_mobilertapp_MainActivity_readFile(
         JNIEnv *env,
         jobject thiz,
-        jint fd,
-        jlong size,
-        jint type,
+        jint fileDescriptor,
+        jlong fileSize,
         jstring filePath
 );
 

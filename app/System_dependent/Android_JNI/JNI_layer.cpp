@@ -991,9 +991,8 @@ JNIEXPORT
 void JNICALL Java_puscas_mobilertapp_MainActivity_readFile(
         JNIEnv *env,
         jobject /*thiz*/,
-        jint fd,
-        jlong size,
-        jint type,
+        jint fileDescriptor,
+        jlong fileSize,
         jstring jFilePath
 ) {
     if (errno == EACCES || errno == ENOTSOCK || errno == EPERM || errno == ENOENT) {
@@ -1003,6 +1002,15 @@ void JNICALL Java_puscas_mobilertapp_MainActivity_readFile(
         // Ignore no such file or directory.
         errno = 0;
     }
+    jboolean isCopy {JNI_FALSE};
+    const ::std::string filePathRaw {env->GetStringUTFChars(jFilePath, &isCopy)};
+    const ::std::string typeStr {filePathRaw.substr(filePathRaw.find_last_of("."), filePathRaw.size())};
+    const int type {
+          typeStr == ".obj" ? 0
+        : typeStr == ".mtl" ? 1
+        : typeStr == ".cam" ? 2
+        : 3
+    };
     LOG_DEBUG("Will read a file natively.");
     ::std::string *file {nullptr};
     switch (type) {
@@ -1022,30 +1030,27 @@ void JNICALL Java_puscas_mobilertapp_MainActivity_readFile(
             file = nullptr;
     }
 
-    ASSERT(fd > 2, "File descriptor not valid.");
-    ASSERT(size > 0, "File size not valid.");
+    ASSERT(fileDescriptor > 2, "File descriptor not valid.");
+    ASSERT(fileSize > 0, "File size not valid.");
 
     if (file != nullptr) {
         LOG_DEBUG("Will read a scene file.");
-        file->resize(static_cast<::std::size_t> (size));
+        file->resize(static_cast<::std::size_t> (fileSize));
         MobileRT::checkSystemError("Before read file.");
-        const long remainingLength {::read(fd, &(*file)[0], static_cast<unsigned int>(size))};
+        const long remainingLength {::read(fileDescriptor, &(*file)[0], static_cast<unsigned int>(fileSize))};
         MobileRT::checkSystemError("After read file.");
-        ASSERT(remainingLength == 0 || remainingLength == size, "File not read entirely.");
+        ASSERT(remainingLength == 0 || remainingLength == fileSize, "File not read entirely.");
         LOG_DEBUG("Read a scene file.");
     } else {
         LOG_DEBUG("Will read a texture file.");
         ::std::string texture {};
-        texture.resize(static_cast<::std::size_t> (size));
+        texture.resize(static_cast<::std::size_t> (fileSize));
         MobileRT::checkSystemError("Before read file.");
-        const long remainingLength {::read(fd, &texture[0], static_cast<unsigned int>(size))};
+        const long remainingLength {::read(fileDescriptor, &texture[0], static_cast<unsigned int>(fileSize))};
         MobileRT::checkSystemError("After read file.");
-        ASSERT(remainingLength == 0 || remainingLength == size, "File not read entirely.");
-
-        jboolean isCopy {JNI_FALSE};
-        const ::std::string filePathRaw {env->GetStringUTFChars(jFilePath, &isCopy)};
+        ASSERT(remainingLength == 0 || remainingLength == fileSize, "File not read entirely.");
         const ::std::string fileName {filePathRaw.substr(filePathRaw.find_last_of('/') + 1, filePathRaw.size())};
-        ::Components::OBJLoader::getTextureFromCache(&texturesCache_, ::std::move(texture), static_cast<long> (size), fileName);
+        ::Components::OBJLoader::getTextureFromCache(&texturesCache_, ::std::move(texture), static_cast<long> (fileSize), fileName);
         LOG_DEBUG("Read a texture file: ", filePathRaw);
     }
 }
