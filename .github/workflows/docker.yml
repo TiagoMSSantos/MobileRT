@@ -115,7 +115,7 @@ jobs:
 
     - name: Pull Docker image
       timeout-minutes: 240
-      if: success() && (startsWith(matrix.BASE_IMAGE, 'gentoo') || contains(matrix.BASE_IMAGE, 'osx') || contains(matrix.BASE_IMAGE, 'windows'))
+      if: success() && (startsWith(matrix.BASE_IMAGE, 'gentoo') || contains(matrix.BASE_IMAGE, 'windows'))
       run: |
         # shellcheck disable=SC1091
         echo "VERSION: ${{ env.VERSION }}";
