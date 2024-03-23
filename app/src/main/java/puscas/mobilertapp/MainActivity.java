@@ -30,11 +30,13 @@ import androidx.annotation.Nullable;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.io.Files;
 
 import java.io.File;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Logger;
@@ -661,20 +663,17 @@ public final class MainActivity extends Activity {
      */
     private void readFile(@NonNull final Uri uri) {
         logger.info("readFile");
+        final List<String> allowedPaths = List.of(Environment.getExternalStorageDirectory().getPath(), "/data/local/tmp/", "/storage/");
+        boolean isAllowedPath;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             final Path normalizedPath = FileSystems.getDefault().getPath(uri.getPath()).normalize();
-            if (!normalizedPath.startsWith("/data/local/tmp/")
-             && !normalizedPath.startsWith("/storage/")
-             && !normalizedPath.startsWith(Environment.getExternalStorageDirectory().getPath())) {
-                throw new SecurityException("The provided file path is not from a safe internal storage or external SD Card path.");
-            }
+            isAllowedPath = allowedPaths.stream().anyMatch(normalizedPath::startsWith);
         } else {
-            final String normalizedPath = new File(Objects.requireNonNull(uri.getPath())).getAbsolutePath();
-            if (!normalizedPath.startsWith("/data/local/tmp/")
-             && !normalizedPath.startsWith("/storage/")
-             && !normalizedPath.startsWith(Environment.getExternalStorageDirectory().getPath())) {
-                throw new SecurityException("The provided file path is not from a safe internal storage or external SD Card path.");
-            }
+            final String normalizedPath = Files.simplifyPath(new File(Objects.requireNonNull(uri.getPath())).getAbsolutePath());
+            isAllowedPath = StreamSupport.stream(allowedPaths).anyMatch(normalizedPath::startsWith);
+        }
+        if (!isAllowedPath) {
+            throw new SecurityException("The provided file path is not from a safe internal storage or external SD Card path.");
         }
 
         final String filePath = getPathFromFile(uri);
