@@ -41,6 +41,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Logger;
 
+import javax.annotation.Nonnull;
+
 import java8.util.Optional;
 import java8.util.stream.IntStreams;
 import java8.util.stream.StreamSupport;
@@ -469,16 +471,7 @@ public final class MainActivity extends Activity {
                     if (filePath.endsWith(".obj")) {
                         this.sceneFilePath = filePath;
                     }
-                    final File baseFile = new File(uri.getPath());
-                    final File[] files;
-                    if (baseFile.isDirectory()) {
-                        files = baseFile.listFiles();
-                    } else {
-                        files = new File(Objects.requireNonNull(baseFile.getParent())).listFiles();
-                    }
-                    if (files == null) {
-                        throw new FailureException("It couldn't list the files in the selected path. Are you sure the necessary permissions were given?");
-                    }
+                    final File[] files = getFilesFromDirectory(uri);
                     for(final File file : files) {
                         readFile(Uri.fromFile(file));
                     }
@@ -492,6 +485,30 @@ public final class MainActivity extends Activity {
             MainActivity.showUiMessage(ConstantsToast.COULD_NOT_RENDER_THE_SCENE + ex.getMessage());
         }
         logger.info("onActivityResult finished");
+    }
+
+    /**
+     * Gets the files from the directory path received via parameter.
+     * <p>
+     * If the provided path is to a file instead of a directory, then this method lists all files
+     * inside the directory containing that file.
+     *
+     * @param uri The {@link Uri} pointing to a path.
+     * @return An array of {@link File}s that are in the desired path.
+     */
+    @NonNull
+    private static File[] getFilesFromDirectory(@Nonnull final Uri uri) {
+        final File baseFile = new File(Objects.requireNonNull(uri.getPath()));
+        final File[] files;
+        if (baseFile.isDirectory()) {
+            files = baseFile.listFiles();
+        } else {
+            files = new File(Objects.requireNonNull(baseFile.getParent())).listFiles();
+        }
+        if (files == null) {
+            throw new FailureException("It couldn't list the files in the selected path. Are you sure the necessary permissions were given?");
+        }
+        return files;
     }
 
     /**
@@ -605,13 +622,6 @@ public final class MainActivity extends Activity {
             || (uri.getPathSegments().get(0).matches("^storage$") && uri.getPathSegments().get(1).matches("^emulated$") && uri.getPathSegments().get(2).matches("^0$"))
             || filePath.contains(Environment.getExternalStorageDirectory().getAbsolutePath());
 
-        final int removeIndex = filePath.indexOf(ConstantsUI.PATH_SEPARATOR);
-        final String startFilePath = removeIndex >= 0 ? filePath.substring(removeIndex) : filePath;
-        String cleanedFilePath = startFilePath.replace(ConstantsUI.PATH_SEPARATOR, ConstantsUI.FILE_SEPARATOR);
-        cleanedFilePath = cleanedFilePath.replaceFirst("^/sdcard/", "/");
-        cleanedFilePath = cleanedFilePath.replaceFirst("^/([A-Za-z0-9]){4}-([A-Za-z0-9]){4}/", "/");
-        cleanedFilePath = cleanedFilePath.replaceFirst("^/local/tmp/", "/");
-
         final String devicePath;
         if (externalSDCardPath) {
             devicePath = UtilsContext.getSdCardPath(this);
@@ -621,6 +631,7 @@ public final class MainActivity extends Activity {
 
         // SDK API 30 looks like to get the path to the file properly without having to get the
         // SD card path and prefix with it.
+        final String cleanedFilePath = cleanFilePath(filePath);
         if (cleanedFilePath.startsWith(devicePath)) {
             return cleanedFilePath;
         }
@@ -629,6 +640,24 @@ public final class MainActivity extends Activity {
         }
 
         return devicePath + cleanedFilePath;
+    }
+
+    /**
+     * Cleans the file path, by removing the prefix of the path that points to a local storage or
+     * to an external SD card.
+     *
+     * @param filePath The path a file.
+     * @return The relative path to the file, without the path prefix to the storage.
+     */
+    @NonNull
+    private static String cleanFilePath(final String filePath) {
+        final int removeIndex = filePath.indexOf(ConstantsUI.PATH_SEPARATOR);
+        final String startFilePath = removeIndex >= 0 ? filePath.substring(removeIndex) : filePath;
+        String cleanedFilePath = startFilePath.replace(ConstantsUI.PATH_SEPARATOR, ConstantsUI.FILE_SEPARATOR);
+        cleanedFilePath = cleanedFilePath.replaceFirst("^/sdcard/", "/");
+        cleanedFilePath = cleanedFilePath.replaceFirst("^/([A-Za-z0-9]){4}-([A-Za-z0-9]){4}/", "/");
+        cleanedFilePath = cleanedFilePath.replaceFirst("^/local/tmp/", "/");
+        return cleanedFilePath;
     }
 
     /**
@@ -664,7 +693,7 @@ public final class MainActivity extends Activity {
     private void readFile(@NonNull final Uri uri) {
         logger.info("readFile");
         final List<String> allowedPaths = List.of(Environment.getExternalStorageDirectory().getPath(), "/data/local/tmp/", "/storage/");
-        boolean isAllowedPath;
+        final boolean isAllowedPath;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             final Path normalizedPath = FileSystems.getDefault().getPath(uri.getPath()).normalize();
             isAllowedPath = allowedPaths.stream().anyMatch(normalizedPath::startsWith);
