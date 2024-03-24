@@ -63,25 +63,25 @@ fi
 # Install dependencies.
 ###############################################################################
 install_dependencies() {
-  if command -v apt-get > /dev/null; then
+  if uname -a | grep -iq 'linux' && command -v apt-get > /dev/null; then
     echo 'Detected Debian based Linux';
     install_dependencies_debian;
-  elif command -v yum > /dev/null; then
+  elif uname -a | grep -iq 'linux' && command -v yum > /dev/null; then
     echo 'Detected Red Hat based Linux';
     install_dependencies_red_hat;
-  elif command -v pacman > /dev/null; then
+  elif uname -a | grep -iq 'linux' && command -v pacman > /dev/null; then
     echo 'Detected Arch based Linux';
     install_dependencies_arch;
-  elif command -v apk > /dev/null; then
+  elif uname -a | grep -iq 'linux' && command -v apk > /dev/null; then
     echo 'Detected Alpine based Linux';
     install_dependencies_alpine;
-  elif command -v emerge > /dev/null; then
+  elif uname -a | grep -iq 'linux' && command -v emerge > /dev/null; then
     echo 'Detected Gentoo based Linux';
     install_dependencies_gentoo;
-  elif command -v brew > /dev/null; then
+  elif uname -a | grep -iq 'darwin' && command -v brew > /dev/null; then
     echo 'Detected MacOS';
     install_dependencies_macos;
-  elif command -v choco > /dev/null; then
+  elif uname -a | grep -iq 'msys' && command -v choco > /dev/null; then
     echo 'Detected Windows';
     # Requires running chocolatey in an elevated command shell.
     install_dependencies_windows;
@@ -468,21 +468,21 @@ test_commands() {
   checkCommand ranlib;
   checkCommand ar;
 
-  if command -v brew > /dev/null; then
+  if uname -a | grep -iq 'darwin'; then
     # Only available in MacOS.
     checkCommand vm_stat;
     checkCommand sw_vers;
     checkCommand curl;
   fi
 
-  if ! command -v brew > /dev/null && ! command -v choco > /dev/null; then
+  if ! uname -a | grep -iq 'msys' && ! uname -a | grep -iq 'darwin'; then
     # Not available in MacOS & Windows.
     checkCommand free;
     checkCommand setsid;
     checkCommand shellcheck;
   fi
 
-  if ! command -v choco > /dev/null; then
+  if ! uname -a | grep -iq 'msys'; then
     # Not available in Windows.
     checkCommand sudo;
     checkCommand pkg-config;

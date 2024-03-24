@@ -72,7 +72,7 @@ WORKDIR /
 RUN \
   # Print environment
   uname -a; \
-  if uname -a | grep -iq 'mingw' || uname -a | grep -iq 'windows' || uname -a | grep -iq 'msys'; then \
+  if uname -a | grep -iq 'msys'; then \
     echo 'Detected Windows OS.'; \
     exit 1; \
   else \
@@ -83,16 +83,16 @@ RUN \
     echo "DEBIAN_FRONTEND = ${DEBIAN_FRONTEND}"; \
     echo "BUILD_TYPE = ${BUILD_TYPE}"; \
   fi; \
-  if command -v apt-get > /dev/null; then \
+  if uname -a | grep -iq 'linux' && command -v apt-get > /dev/null; then \
     echo 'Detected Debian based Linux'; \
     apt-get update -y; \
     apt-get install --no-install-recommends -y sudo git git-lfs tzdata; \
-  elif command -v yum > /dev/null; then \
+  elif uname -a | grep -iq 'linux' && command -v yum > /dev/null; then \
     echo 'Detected Red Hat based Linux'; \
     yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False update -y; \
     yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y \
       sudo git git-lfs; \
-  elif command -v pacman > /dev/null; then \
+  elif uname -a | grep -iq 'linux' && command -v pacman > /dev/null; then \
     echo 'Detected Arch based Linux'; \
     rm -rf /var/cache/pacman/pkg; \
     pacman -Sy archlinux-keyring --noconfirm --needed; \
@@ -102,11 +102,11 @@ RUN \
     echo 'Upgrade system'; \
     pacman -Syu --noconfirm --needed; \
     pacman -Sy --noconfirm --needed sudo git git-lfs; \
-  elif command -v apk > /dev/null; then \
+  elif uname -a | grep -iq 'linux' && command -v apk > /dev/null; then \
     echo 'Detected Alpine based Linux'; \
     apk update; \
     apk add sudo git git-lfs; \
-  elif command -v emerge > /dev/null; then \
+  elif uname -a | grep -iq 'linux' && command -v emerge > /dev/null; then \
     echo 'Detected Gentoo based Linux'; \
     echo 'FEATURES="-sandbox -usersandbox -ipc-sandbox -network-sandbox -pid-sandbox"' >> /etc/portage/make.conf; \
     echo 'USE="dev-libs/libpcre2-10.35 pcre16 x11-libs/libxkbcommon-1.0.3 media-libs/libglvnd-1.3.2-r2 X"' >> /etc/portage/make.conf; \

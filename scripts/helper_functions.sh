@@ -257,7 +257,7 @@ checkCommand() {
     echo "Command '$*' installed!";
   else
     echo "Command '$*' is NOT installed.";
-    if (uname -a | grep -iq 'mingw' || uname -a | grep -iq 'windows' || uname -a | grep -iq 'msys') && echo "$*" | grep -iq 'python'; then
+    if uname -a | grep -iq 'msys' && echo "$*" | grep -iq 'python'; then
       echo "Detected Windows OS, so ignoring not having 'python' ...";
       return 0;
     fi
@@ -274,7 +274,7 @@ capitalizeFirstletter() {
 # Parallelize building of MobileRT.
 parallelizeBuild() {
   uname -a;
-  if uname -a | grep -iq 'mingw' || uname -a | grep -iq 'windows' || uname -a | grep -iq 'msys'; then
+  if uname -a | grep -iq 'msys'; then
     echo 'Assuming Windows.';
   elif command -v nproc > /dev/null; then
     echo 'Assuming Linux.';
