@@ -119,6 +119,7 @@ build() {
     bundle"${typeWithCapitalLetter}"ClassesToCompileJar \
     bundle"${typeWithCapitalLetter}"ClassesToRuntimeJar \
     package"${typeWithCapitalLetter}"Bundle \
+    compile"${typeWithCapitalLetter}"UnitTestSources \
     -DtestType="${type}" \
     --profile --parallel \
     -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \

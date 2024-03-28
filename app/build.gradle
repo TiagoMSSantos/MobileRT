@@ -157,7 +157,8 @@ sonar {
         property 'sonar.sources', 'src/main/java'
         property 'sonar.tests', 'src/test/java, src/androidTest/java'
         property 'sonar.java.binaries', 'build/intermediates/javac/debug/classes/,build/tmp/kotlin-classes/debug/'
-        property 'sonar.java.test.binaries', 'build/intermediates/javac/debugUnitTest/classes/,build/intermediates/javac/debugAndroidTest/classes/'
+        properties['sonar.java.test.binaries'] += 'build/intermediates/javac/debugUnitTest/classes/'
+        properties['sonar.java.test.binaries'] += 'build/intermediates/javac/debugAndroidTest/classes/'
         property 'sonar.junit.reportPaths', 'build/test-results/testDebugUnitTest'
 
         // More properties
