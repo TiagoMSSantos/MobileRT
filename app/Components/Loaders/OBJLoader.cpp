@@ -36,7 +36,7 @@ OBJLoader::OBJLoader(::std::istream& isObj, ::std::istream& isMtl) {
     ::std::string warnings {};
 
     LOG_INFO("Going to call tinyobj::LoadObj");
-    MobileRT::checkSystemError("Before LoadObj.");
+    ::MobileRT::checkSystemError("Before LoadObj.");
     const bool ret {
         ::tinyobj::LoadObj(
             &this->attrib_, &this->shapes_, &this->materials_,
@@ -46,7 +46,7 @@ OBJLoader::OBJLoader(::std::istream& isObj, ::std::istream& isMtl) {
     // For some reason in Gentoo Linux, the `LoadObj` method fails
     // in release with error code ENOENT: No such file or directory.
     errno = 0;
-    MobileRT::checkSystemError("After LoadObj.");
+    ::MobileRT::checkSystemError("After LoadObj.");
 
     LOG_DEBUG("Called tinyobj::LoadObj");
 

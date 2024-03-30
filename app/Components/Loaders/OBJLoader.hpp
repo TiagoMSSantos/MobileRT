@@ -69,7 +69,7 @@ namespace Components {
 
     private:
         static triple<::glm::vec2, ::glm::vec2, ::glm::vec2> normalizeTexCoord(
-            const MobileRT::Texture &texture,
+            const ::MobileRT::Texture &texture,
             const ::std::tuple<::glm::vec2, ::glm::vec2, ::glm::vec2> &texCoord);
     };
 }//namespace Components

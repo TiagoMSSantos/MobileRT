@@ -62,11 +62,11 @@ void Renderer::renderFrame(::std::int32_t *const bitmap, const ::std::int32_t nu
     const ::std::int32_t numChildren {numThreads - 1};
     ::std::vector<::std::thread> threads {};
 
-    MobileRT::checkSystemError("Reserving capacity for render threads");
+    ::MobileRT::checkSystemError("Reserving capacity for render threads");
     threads.reserve(static_cast<::std::uint32_t> (numChildren));
-    MobileRT::checkSystemError("Reserved capacity for render threads");
+    ::MobileRT::checkSystemError("Reserved capacity for render threads");
 
-    MobileRT::checkSystemError("Creating render threads");
+    ::MobileRT::checkSystemError("Creating render threads");
     for (::std::int32_t i {}; i < numChildren; ++i) {
         threads.emplace_back(&Renderer::renderScene, this, bitmap, i);
     }
@@ -74,15 +74,15 @@ void Renderer::renderFrame(::std::int32_t *const bitmap, const ::std::int32_t nu
         // Ignore invalid argument (necessary for Android API 16)
         errno = 0;
     }
-    MobileRT::checkSystemError("Created render threads");
+    ::MobileRT::checkSystemError("Created render threads");
     renderScene(bitmap, numChildren);
-    MobileRT::checkSystemError("Rendered scene");
+    ::MobileRT::checkSystemError("Rendered scene");
     for (::std::thread &thread : threads) {
         thread.join();
     }
-    MobileRT::checkSystemError("All render threads finished");
+    ::MobileRT::checkSystemError("All render threads finished");
     threads.clear();
-    MobileRT::checkSystemError("Deleted render threads");
+    ::MobileRT::checkSystemError("Deleted render threads");
 
     LOG_DEBUG("FINISH");
 }
@@ -112,7 +112,7 @@ void Renderer::renderScene(::std::int32_t *const bitmap, const ::std::int32_t ti
     ::glm::vec3 pixelRgb {};
     LOG_INFO("(tid: ", tid, ") renderScene");
     const ::std::string currentTidStr {::std::string("renderScene (" + ::std::to_string(tid) + ")")};
-    MobileRT::checkSystemError((currentTidStr + " start").c_str());
+    ::MobileRT::checkSystemError((currentTidStr + " start").c_str());
 
     for (::std::int32_t sample {}; sample < this->samplesPixel_; ++sample) {
         LOG_INFO("(tid: ", tid, ") renderScene sample: ", sample);
@@ -166,7 +166,7 @@ void Renderer::renderScene(::std::int32_t *const bitmap, const ::std::int32_t ti
         LOG_INFO("(tid: ", tid, ") renderScene sample: ", sample, " finished");
     }
     LOG_INFO("(tid: ", tid, ") renderScene finished");
-    MobileRT::checkSystemError((currentTidStr + " end").c_str());
+    ::MobileRT::checkSystemError((currentTidStr + " end").c_str());
 }
 
 /**

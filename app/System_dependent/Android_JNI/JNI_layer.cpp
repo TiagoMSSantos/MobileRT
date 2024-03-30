@@ -129,7 +129,7 @@ extern "C"
 ::std::int32_t JNI_OnLoad(JavaVM *const jvm, void * /*reserved*/) {
     // Reset errno to avoid "errno EINVAL (22): Invalid argument".
     errno = 0;
-    MobileRT::checkSystemError("JNI_OnLoad start");
+    ::MobileRT::checkSystemError("JNI_OnLoad start");
     LOG_DEBUG("JNI_OnLoad");
     javaVM_.reset(jvm);
 
@@ -141,7 +141,7 @@ extern "C"
     }
     ASSERT(jniEnv != nullptr, "JNIEnv was not loaded properly.");
     jniEnv->ExceptionClear();
-    MobileRT::checkSystemError("JNI_OnLoad finish");
+    ::MobileRT::checkSystemError("JNI_OnLoad finish");
     return JNI_VERSION_1_6;
 }
 
@@ -155,7 +155,7 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitCameraArray(
     JNIEnv *env,
     jobject /*thiz*/
 ) {
-    MobileRT::checkSystemError("rtInitCameraArray start");
+    ::MobileRT::checkSystemError("rtInitCameraArray start");
     try {
         jobject directBuffer {};
         {
@@ -226,7 +226,7 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitCameraArray(
             }
             env->ExceptionClear();
         }
-        MobileRT::checkSystemError("rtInitCameraArray finish");
+        ::MobileRT::checkSystemError("rtInitCameraArray finish");
         return directBuffer;
     } catch (const ::std::bad_alloc &badAlloc) {
         handleException(env, badAlloc, "puscas/mobilertapp/exceptions/LowMemoryException");
@@ -235,7 +235,7 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitCameraArray(
     } catch (...) {
         handleException(env, ::std::exception{}, "java/lang/RuntimeException");
     }
-    MobileRT::checkSystemError("rtInitCameraArray finish");
+    ::MobileRT::checkSystemError("rtInitCameraArray finish");
     return nullptr;
 }
 
@@ -244,7 +244,7 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitVerticesArray(
     JNIEnv *env,
     jobject /*thiz*/
 ) {
-    MobileRT::checkSystemError("rtInitVerticesArray start");
+    ::MobileRT::checkSystemError("rtInitVerticesArray start");
     try {
         jobject directBuffer {};
         {
@@ -297,7 +297,7 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitVerticesArray(
             }
             env->ExceptionClear();
         }
-        MobileRT::checkSystemError("rtInitVerticesArray finish");
+        ::MobileRT::checkSystemError("rtInitVerticesArray finish");
         return directBuffer;
     } catch (const ::std::bad_alloc &badAlloc) {
         handleException(env, badAlloc, "puscas/mobilertapp/exceptions/LowMemoryException");
@@ -306,7 +306,7 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitVerticesArray(
     } catch (...) {
         handleException(env, ::std::exception{}, "java/lang/RuntimeException");
     }
-    MobileRT::checkSystemError("rtInitVerticesArray finish");
+    ::MobileRT::checkSystemError("rtInitVerticesArray finish");
     return nullptr;
 }
 
@@ -315,7 +315,7 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitColorsArray(
     JNIEnv *env,
     jobject /*thiz*/
 ) {
-    MobileRT::checkSystemError("rtInitColorsArray start");
+    ::MobileRT::checkSystemError("rtInitColorsArray start");
     try {
         jobject directBuffer {};
         {
@@ -375,7 +375,7 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitColorsArray(
             }
             env->ExceptionClear();
         }
-        MobileRT::checkSystemError("rtInitColorsArray finish 1");
+        ::MobileRT::checkSystemError("rtInitColorsArray finish 1");
         return directBuffer;
     } catch (const ::std::bad_alloc &badAlloc) {
         handleException(env, badAlloc, "puscas/mobilertapp/exceptions/LowMemoryException");
@@ -384,12 +384,12 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitColorsArray(
     } catch (...) {
         handleException(env, ::std::exception{}, "java/lang/RuntimeException");
     }
-    MobileRT::checkSystemError("rtInitColorsArray finish 2");
+    ::MobileRT::checkSystemError("rtInitColorsArray finish 2");
     return nullptr;
 }
 
 static void updateFps() {
-    MobileRT::checkSystemError("updateFps start");
+    ::MobileRT::checkSystemError("updateFps start");
     static ::std::int32_t frame {};
     static ::std::chrono::steady_clock::time_point timebase {};
     ++frame;
@@ -400,7 +400,7 @@ static void updateFps() {
         timebase = timeNow;
         frame = 0;
     }
-    MobileRT::checkSystemError("updateFps finish");
+    ::MobileRT::checkSystemError("updateFps finish");
 }
 
 extern "C"
@@ -410,7 +410,7 @@ void Java_puscas_mobilertapp_DrawView_rtStartRender(
     jboolean wait
 ) {
     try {
-        MobileRT::checkSystemError("rtStartRender start");
+        ::MobileRT::checkSystemError("rtStartRender start");
         if (wait) {
             ::std::unique_lock<::std::mutex> lock {mutex_};
             rendered_.wait(lock, [&] { return finishedRendering_.load(); });
@@ -419,7 +419,7 @@ void Java_puscas_mobilertapp_DrawView_rtStartRender(
         state_ = State::BUSY;
         LOG_DEBUG("STATE = BUSY");
         env->ExceptionClear();
-        MobileRT::checkSystemError("rtStartRender finish");
+        ::MobileRT::checkSystemError("rtStartRender finish");
     } catch (const ::std::exception &exception) {
         handleException(env, exception, "java/lang/RuntimeException");
     }
@@ -431,7 +431,7 @@ void Java_puscas_mobilertapp_DrawView_rtStopRender(
     jobject /*thiz*/,
     jboolean wait
 ) {
-    MobileRT::checkSystemError("rtStopRender start");
+    ::MobileRT::checkSystemError("rtStopRender start");
     {
         LOG_DEBUG("Will get lock");
         state_ = State::STOPPED;
@@ -458,7 +458,7 @@ void Java_puscas_mobilertapp_DrawView_rtStopRender(
     }
     env->ExceptionClear();
     LOG_DEBUG("rtStopRender finished");
-    MobileRT::checkSystemError("rtStopRender finish");
+    ::MobileRT::checkSystemError("rtStopRender finish");
 }
 
 extern "C"
@@ -467,7 +467,7 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
     jobject /*thiz*/,
     jobject localConfig
 ) {
-    MobileRT::checkSystemError("rtInitialize start");
+    ::MobileRT::checkSystemError("rtInitialize start");
     LOG_DEBUG("INITIALIZE");
     try {
         const jclass configClass {env->GetObjectClass(localConfig)};
@@ -589,7 +589,7 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
                         mtlDefinition_.shrink_to_fit();
                         camDefinition_.shrink_to_fit();
 
-                        MobileRT::checkSystemError("rtInitialize after loading OBJ");
+                        ::MobileRT::checkSystemError("rtInitialize after loading OBJ");
                         LOG_DEBUG("OBJLOADER PROCESSED");
 
                         if (!objLoader.isProcessed()) {
@@ -602,7 +602,7 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
                             texturesCache_
                         )};
                         texturesCache_.clear();
-                        MobileRT::checkSystemError("rtInitialize after filling scene");
+                        ::MobileRT::checkSystemError("rtInitialize after filling scene");
                         if (!sceneBuilt) {
                             return -1;
                         }
@@ -617,7 +617,7 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
                 LOG_DEBUG("LOADING SHADER: ", shaderIndex);
                 LOG_DEBUG("LOADING ACCELERATOR: ", ::MobileRT::Shader::Accelerator(acceleratorIndex));
                 LOG_DEBUG("samplesLight: ", samplesLight);
-                MobileRT::checkSystemError("rtInitialize before loading shader");
+                ::MobileRT::checkSystemError("rtInitialize before loading shader");
                 const ::std::chrono::time_point<::std::chrono::system_clock> chronoStart {::std::chrono::system_clock::now()};
                 switch (shaderIndex) {
                     case 1: {
@@ -668,7 +668,7 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
                     }
                 }
                 const ::std::chrono::time_point<::std::chrono::system_clock> chronoEnd {::std::chrono::system_clock::now()};
-                MobileRT::checkSystemError("rtInitialize after loading shader");
+                ::MobileRT::checkSystemError("rtInitialize after loading shader");
 
                 LOG_DEBUG("LOADING RENDERER");
                 const ::std::int32_t planes {static_cast<::std::int32_t> (shader->getPlanes().size())};
@@ -690,16 +690,16 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
                     ::std::move(shader), ::std::move(camera), ::std::move(samplerPixel),
                     width, height, samplesPixel
                 );
-                MobileRT::checkSystemError("Renderer was built.");
+                ::MobileRT::checkSystemError("Renderer was built.");
                 timeRenderer_ = ::std::chrono::duration_cast<::std::chrono::milliseconds>(chronoEnd - chronoStart).count();
                 LOG_INFO("TIME CONSTRUCTION RENDERER = ", timeRenderer_, "ms");
-                MobileRT::checkSystemError("rtInitialize almost finished");
+                ::MobileRT::checkSystemError("rtInitialize almost finished");
                 return nPrimitives;
             }()};
 
         env->ExceptionClear();
         LOG_DEBUG("PRIMITIVES = ", res);
-        MobileRT::checkSystemError("rtInitialize finish");
+        ::MobileRT::checkSystemError("rtInitialize finish");
         return res;
     } catch (const ::std::bad_alloc &badAlloc) {
         handleException(env, badAlloc, "puscas/mobilertapp/exceptions/LowMemoryException");
@@ -718,7 +718,7 @@ void Java_puscas_mobilertapp_MainRenderer_rtFinishRender(
     JNIEnv *env,
     jobject /*thiz*/
 ) {
-    MobileRT::checkSystemError("rtFinishRender start");
+    ::MobileRT::checkSystemError("rtFinishRender start");
 
     {
         const ::std::lock_guard<::std::mutex> lock {mutex_};
@@ -735,7 +735,7 @@ void Java_puscas_mobilertapp_MainRenderer_rtFinishRender(
         finishedRendering_ = true;
         env->ExceptionClear();
     }
-    MobileRT::checkSystemError("rtFinishRender finish");
+    ::MobileRT::checkSystemError("rtFinishRender finish");
 }
 
 extern "C"
@@ -745,7 +745,7 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
     jobject localBitmap,
     jint nThreads
 ) {
-    MobileRT::checkSystemError("rtRenderIntoBitmap start");
+    ::MobileRT::checkSystemError("rtRenderIntoBitmap start");
     LOG_DEBUG("rtRenderIntoBitmap");
     LOG_DEBUG("nThreads = ", nThreads);
     try {
@@ -757,7 +757,7 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
 
                 LOG_DEBUG("rtRenderIntoBitmap step 1");
                 ASSERT(env != nullptr, "JNIEnv not valid.");
-                MobileRT::checkSystemError("rtRenderIntoBitmap step 1");
+                ::MobileRT::checkSystemError("rtRenderIntoBitmap step 1");
                 const jint jniError {
                     javaVM_->GetEnv(reinterpret_cast<void **> (const_cast<JNIEnv **> (&env)), JNI_VERSION_1_6)
                 };
@@ -765,13 +765,13 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
                 LOG_DEBUG("rtRenderIntoBitmap step 2: ", jniError);
                 ASSERT(jniError == JNI_OK || jniError == JNI_EDETACHED, "JNIEnv not valid.");
                 {
-                    MobileRT::checkSystemError("rtRenderIntoBitmap step 2");
+                    ::MobileRT::checkSystemError("rtRenderIntoBitmap step 2");
                     const jint result {javaVM_->AttachCurrentThread(const_cast<JNIEnv **> (&env), nullptr)};
                     if (errno == EINVAL) {
                         // Ignore invalid argument (necessary for Android API 16)
                         errno = 0;
                     }
-                    MobileRT::checkSystemError("rtRenderIntoBitmap step 3");
+                    ::MobileRT::checkSystemError("rtRenderIntoBitmap step 3");
                     ASSERT(result == JNI_OK, "Couldn't attach current thread to JVM.");
                     static_cast<void> (result);
                 }
@@ -790,7 +790,7 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
                 LOG_DEBUG("rtRenderIntoBitmap step 4");
                 AndroidBitmapInfo info {};
                 {
-                    MobileRT::checkSystemError("rtRenderIntoBitmap step 4");
+                    ::MobileRT::checkSystemError("rtRenderIntoBitmap step 4");
                     const jint ret {AndroidBitmap_getInfo(env, globalBitmap, &info)};
                     ASSERT(ret == JNI_OK, "Couldn't get the Android bitmap information structure.");
                     LOG_DEBUG("ret = ", ret);
@@ -804,16 +804,16 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
                     static_cast<void> (result);
                 }
                 LOG_DEBUG("WILL START TO RENDER");
-                MobileRT::checkSystemError("starting render timer");
+                ::MobileRT::checkSystemError("starting render timer");
                 const ::std::chrono::time_point<::std::chrono::system_clock> chronoStartRendering {::std::chrono::system_clock::now()};
                 while (state_ == State::BUSY && rep > 0) {
                     LOG_DEBUG("STARTING RENDERING");
                     LOG_DEBUG("nThreads = ", nThreads);
                     {
                         if (renderer_ != nullptr) {
-                            MobileRT::checkSystemError("starting renderFrame");
+                            ::MobileRT::checkSystemError("starting renderFrame");
                             renderer_->renderFrame(dstPixels, nThreads);
-                            MobileRT::checkSystemError("renderFrame done");
+                            ::MobileRT::checkSystemError("renderFrame done");
                         }
                     }
                     LOG_DEBUG("FINISHED RENDERING");
@@ -832,13 +832,13 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
                         LOG_DEBUG("STATE = FINISHED");
                     }
                     {
-                        MobileRT::checkSystemError("rtRenderIntoBitmap step 6");
+                        ::MobileRT::checkSystemError("rtRenderIntoBitmap step 6");
                         const jint result {javaVM_->AttachCurrentThread(const_cast<JNIEnv **> (&env), nullptr)};
                         if (errno == EINVAL) {
                             // Ignore invalid argument (necessary for Android API 16)
                             errno = 0;
                         }
-                        MobileRT::checkSystemError("rtRenderIntoBitmap step 7");
+                        ::MobileRT::checkSystemError("rtRenderIntoBitmap step 7");
                         ASSERT(result == JNI_OK, "Couldn't attach current thread to JVM.");
                         static_cast<void> (result);
                     }
@@ -874,17 +874,17 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
             }
         };
 
-        MobileRT::checkSystemError("rtRenderIntoBitmap creating thread");
+        ::MobileRT::checkSystemError("rtRenderIntoBitmap creating thread");
         thread_ = ::MobileRT::std::make_unique<::std::thread>(lambda);
         if (errno == EINVAL) {
             // Ignore invalid argument (necessary for Android API 16)
             errno = 0;
         }
-        MobileRT::checkSystemError("rtRenderIntoBitmap detaching thread");
+        ::MobileRT::checkSystemError("rtRenderIntoBitmap detaching thread");
         thread_->detach();
 
         LOG_DEBUG("rtRenderIntoBitmap finished preparing");
-        MobileRT::checkSystemError("rtRenderIntoBitmap finish");
+        ::MobileRT::checkSystemError("rtRenderIntoBitmap finish");
         env->ExceptionClear();
     } catch (const ::std::bad_alloc &badAlloc) {
         handleException(env, badAlloc, "puscas/mobilertapp/exceptions/LowMemoryException");
@@ -900,11 +900,11 @@ extern "C"
     JNIEnv *env,
     jobject /*thiz*/
 ) {
-    MobileRT::checkSystemError("rtGetState start");
+    ::MobileRT::checkSystemError("rtGetState start");
 
     const ::std::int32_t res {static_cast<::std::int32_t> (state_.load())};
     env->ExceptionClear();
-    MobileRT::checkSystemError("rtGetState finish");
+    ::MobileRT::checkSystemError("rtGetState finish");
     return res;
 }
 
@@ -918,9 +918,9 @@ float Java_puscas_mobilertapp_RenderTask_rtGetFps(
         // Ignore bad file descriptor (necessary for Android API 24)
         errno = 0;
     }
-    MobileRT::checkSystemError("rtGetFps start");
+    ::MobileRT::checkSystemError("rtGetFps start");
     env->ExceptionClear();
-    MobileRT::checkSystemError("rtGetFps finish");
+    ::MobileRT::checkSystemError("rtGetFps finish");
     return fps_;
 }
 
@@ -929,9 +929,9 @@ jlong Java_puscas_mobilertapp_RenderTask_rtGetTimeRenderer(
     JNIEnv *env,
     jobject /*thiz*/
 ) {
-    MobileRT::checkSystemError("rtGetTimeRenderer start");
+    ::MobileRT::checkSystemError("rtGetTimeRenderer start");
     env->ExceptionClear();
-    MobileRT::checkSystemError("rtGetTimeRenderer finish");
+    ::MobileRT::checkSystemError("rtGetTimeRenderer finish");
     return timeRenderer_;
 }
 
@@ -944,7 +944,7 @@ extern "C"
         // Ignore bad file descriptor (necessary for Android API 24)
         errno = 0;
     }
-    MobileRT::checkSystemError("rtGetSample start");
+    ::MobileRT::checkSystemError("rtGetSample start");
     ::std::int32_t sample {};
     {
         const ::std::lock_guard<::std::mutex> lock {mutex_};
@@ -953,7 +953,7 @@ extern "C"
         }
     }
     env->ExceptionClear();
-    MobileRT::checkSystemError("rtGetSample finish");
+    ::MobileRT::checkSystemError("rtGetSample finish");
     return sample;
 }
 
@@ -963,7 +963,7 @@ extern "C"
     jobject /*thiz*/,
     jint size
 ) {
-    MobileRT::checkSystemError("rtResize start");
+    ::MobileRT::checkSystemError("rtResize start");
 
     const ::std::int32_t res{
         ::MobileRT::roundDownToMultipleOf(
@@ -971,7 +971,7 @@ extern "C"
         )
     };
     env->ExceptionClear();
-    MobileRT::checkSystemError("rtResize finish");
+    ::MobileRT::checkSystemError("rtResize finish");
     return res;
 }
 
@@ -981,9 +981,9 @@ void Java_puscas_mobilertapp_MainActivity_resetErrno(
     jclass /*thiz*/
 ) {
     errno = 0;
-    MobileRT::checkSystemError("resetErrno start");
+    ::MobileRT::checkSystemError("resetErrno start");
     env->ExceptionClear();
-    MobileRT::checkSystemError("resetErrno finish");
+    ::MobileRT::checkSystemError("resetErrno finish");
 }
 
 extern "C"
@@ -1036,18 +1036,18 @@ void JNICALL Java_puscas_mobilertapp_MainActivity_readFile(
     if (file != nullptr) {
         LOG_DEBUG("Will read a scene file.");
         file->resize(static_cast<::std::size_t> (fileSize));
-        MobileRT::checkSystemError("Before read file.");
+        ::MobileRT::checkSystemError("Before read file.");
         const long remainingLength {::read(fileDescriptor, &(*file)[0], static_cast<unsigned int>(fileSize))};
-        MobileRT::checkSystemError("After read file.");
+        ::MobileRT::checkSystemError("After read file.");
         ASSERT(remainingLength == 0 || remainingLength == fileSize, "File not read entirely.");
         LOG_DEBUG("Read a scene file.");
     } else {
         LOG_DEBUG("Will read a texture file.");
         ::std::string texture {};
         texture.resize(static_cast<::std::size_t> (fileSize));
-        MobileRT::checkSystemError("Before read file.");
+        ::MobileRT::checkSystemError("Before read file.");
         const long remainingLength {::read(fileDescriptor, &texture[0], static_cast<unsigned int>(fileSize))};
-        MobileRT::checkSystemError("After read file.");
+        ::MobileRT::checkSystemError("After read file.");
         ASSERT(remainingLength == 0 || remainingLength == fileSize, "File not read entirely.");
         const ::std::string fileName {filePathRaw.substr(filePathRaw.find_last_of('/') + 1, filePathRaw.size())};
         ::Components::OBJLoader::getTextureFromCache(&texturesCache_, ::std::move(texture), static_cast<long> (fileSize), fileName);
@@ -1060,9 +1060,9 @@ extern "C"
     JNIEnv *env,
     jobject /*thiz*/
 ) {
-    MobileRT::checkSystemError("rtGetNumberOfLights start");
+    ::MobileRT::checkSystemError("rtGetNumberOfLights start");
     env->ExceptionClear();
-    MobileRT::checkSystemError("rtGetNumberOfLights finish");
+    ::MobileRT::checkSystemError("rtGetNumberOfLights finish");
     return numLights_;
 }
 
@@ -1072,12 +1072,12 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtFreeNativeBuffer(
     jobject /*thiz*/,
     jobject bufferRef
 ) {
-    MobileRT::checkSystemError("rtFreeNativeBuffer start");
+    ::MobileRT::checkSystemError("rtFreeNativeBuffer start");
     if (bufferRef != nullptr) {
         void *buffer{env->GetDirectBufferAddress(bufferRef)};
         float *const floatBuffer{static_cast<float *> (buffer)};
         delete[] floatBuffer;
     }
-    MobileRT::checkSystemError("rtFreeNativeBuffer finish");
+    ::MobileRT::checkSystemError("rtFreeNativeBuffer finish");
     return nullptr;
 }

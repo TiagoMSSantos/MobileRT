@@ -397,7 +397,7 @@ Triangle Triangle::Builder::build() {
 /**
  * Convert class to output stream.
  */
-::std::ostream& MobileRT::operator << (::std::ostream &os, const Triangle& triangle) {
+::std::ostream& ::MobileRT::operator << (::std::ostream &os, const Triangle& triangle) {
     const ::std::string &pointA {::glm::to_string(triangle.pointA_)};
     const ::std::string &pointB {::glm::to_string(triangle.pointA_ + triangle.AB_)};
     const ::std::string &pointC {::glm::to_string(triangle.pointA_ + triangle.AC_)};

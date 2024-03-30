@@ -84,6 +84,16 @@ namespace MobileRT {
         private:
             void build(::std::vector<T> &&primitives);
 
+            void build(::std::int32_t currentBoxIndex,
+                       ::std::int32_t beginBoxIndex,
+                       ::std::int32_t endBoxIndex,
+                       ::std::vector<BuildNode> &buildNodes,
+                       const ::std::array<::std::int32_t, StackSize>::const_iterator itStackBoxIndexBegin,
+                       ::std::array<::std::int32_t, StackSize>::iterator itStackBoxIndex,
+                       ::std::array<::std::int32_t, StackSize>::iterator itStackBoxBegin,
+                       ::std::array<::std::int32_t, StackSize>::iterator itStackBoxEnd,
+                       ::std::int32_t *maxNodeIndex);
+
             Intersection intersect(Intersection intersection);
 
             template<typename Iterator>
@@ -187,6 +197,38 @@ namespace MobileRT {
             buildNodes.emplace_back(BuildNode {::std::move(box), static_cast<::std::int32_t> (i)});
         }
 
+        LOG_INFO("Building BVH");
+        build(currentBoxIndex, beginBoxIndex, endBoxIndex, buildNodes, itStackBoxIndexBegin, itStackBoxIndex, itStackBoxBegin, itStackBoxEnd, &maxNodeIndex);
+
+        LOG_INFO("maxNodeIndex = ", maxNodeIndex);
+        this->boxes_.erase (this->boxes_.begin() + maxNodeIndex + 1, this->boxes_.end());
+        this->boxes_.shrink_to_fit();
+        ::std::vector<BVHNode> {this->boxes_}.swap(this->boxes_);
+
+        LOG_INFO("Inserting primitives into BVH with the proper order.");
+        this->primitives_.reserve(static_cast<long unsigned> (primitivesSize));
+        for (::std::uint32_t i {}; i < primitivesSize; ++i) {
+            const BuildNode &node {buildNodes[i]};
+            const ::std::uint32_t oldIndex {static_cast<::std::uint32_t> (node.oldIndex_)};
+            this->primitives_.emplace_back(::std::move(primitives[oldIndex]));
+        }
+    }
+
+    /**
+     * Build the BVH structure.
+     * 
+     * @tparam T The type of the primitives.
+     */
+    template<typename T>
+    void BVH<T>::build(::std::int32_t currentBoxIndex,
+                       ::std::int32_t beginBoxIndex,
+                       ::std::int32_t endBoxIndex,
+                       ::std::vector<BuildNode> &buildNodes,
+                       const ::std::array<::std::int32_t, StackSize>::const_iterator itStackBoxIndexBegin,
+                       ::std::array<::std::int32_t, StackSize>::iterator itStackBoxIndex,
+                       ::std::array<::std::int32_t, StackSize>::iterator itStackBoxBegin,
+                       ::std::array<::std::int32_t, StackSize>::iterator itStackBoxEnd,
+                       ::std::int32_t *maxNodeIndex) {
         do {
             const auto itCurrentBox {this->boxes_.begin() + currentBoxIndex};
             const ::std::int32_t boxPrimitivesSize {endBoxIndex - beginBoxIndex};
@@ -199,8 +241,8 @@ namespace MobileRT {
                 maxDist[0] >= maxDist[1] && maxDist[0] >= maxDist[2]
                 ? 0
                 : maxDist[1] >= maxDist[0] && maxDist[1] >= maxDist[2]
-                  ? 1
-                  : 2
+                    ? 1
+                    : 2
             };
 
             // Use C++ partition to sort primitives by buckets where each bucket don't have primitives sorted inside.
@@ -240,44 +282,28 @@ namespace MobileRT {
                 itCurrentBox->indexOffset_ = beginBoxIndex;
                 itCurrentBox->numPrimitives_ = boxPrimitivesSize;
 
+                LOG_INFO("Pop stacks");
                 ::std::advance(itStackBoxIndex, -1); // pop
-                currentBoxIndex = *itStackBoxIndex;
+                // currentBoxIndex = *itStackBoxIndex;
                 ::std::advance(itStackBoxBegin, -1); // pop
-                beginBoxIndex = *itStackBoxBegin;
+                // beginBoxIndex = *itStackBoxBegin;
                 ::std::advance(itStackBoxEnd, -1); // pop
-                endBoxIndex = *itStackBoxEnd;
+                // endBoxIndex = *itStackBoxEnd;
             } else {
-                const ::std::int32_t left {maxNodeIndex + 1};
+                const ::std::int32_t left {*maxNodeIndex + 1};
                 const ::std::int32_t right {left + 1};
                 const ::std::int32_t splitIndex {getSplitIndexSah(boxes.begin(), boxes.end())};
 
                 itCurrentBox->indexOffset_ = left;
-                maxNodeIndex = ::std::max(right, maxNodeIndex);
+                *maxNodeIndex = ::std::max(right, *maxNodeIndex);
 
                 *itStackBoxIndex = right;
-                ::std::advance(itStackBoxIndex, 1); // push
                 *itStackBoxBegin = beginBoxIndex + splitIndex;
-                ::std::advance(itStackBoxBegin, 1); // push
                 *itStackBoxEnd = endBoxIndex;
-                ::std::advance(itStackBoxEnd, 1); // push
 
-                currentBoxIndex = left;
-                endBoxIndex = beginBoxIndex + splitIndex;
+                build(left, beginBoxIndex, beginBoxIndex + splitIndex, buildNodes, itStackBoxIndexBegin, itStackBoxIndex + 1, itStackBoxBegin + 1, itStackBoxEnd + 1, maxNodeIndex);
             }
         } while(itStackBoxIndex > itStackBoxIndexBegin);
-
-        LOG_INFO("maxNodeIndex = ", maxNodeIndex);
-        this->boxes_.erase (this->boxes_.begin() + maxNodeIndex + 1, this->boxes_.end());
-        this->boxes_.shrink_to_fit();
-        ::std::vector<BVHNode> {this->boxes_}.swap(this->boxes_);
-
-        // Insert primitives with the proper order.
-        this->primitives_.reserve(static_cast<long unsigned> (primitivesSize));
-        for (::std::uint32_t i {}; i < primitivesSize; ++i) {
-            const BuildNode &node {buildNodes[i]};
-            const ::std::uint32_t oldIndex {static_cast<::std::uint32_t> (node.oldIndex_)};
-            this->primitives_.emplace_back(::std::move(primitives[oldIndex]));
-        }
     }
 
     /**
