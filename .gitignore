@@ -34,6 +34,7 @@
 **/*coverage*.info
 **/.jscpd*
 **/*.gcov
+/coverage
 
 # Conan temporary files
 **/conanbuildinfo.cmake

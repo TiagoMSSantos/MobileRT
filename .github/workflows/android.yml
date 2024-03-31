@@ -213,7 +213,7 @@ jobs:
       working-directory: .
       run: |
         sudo dmesg; # Print Kernel logs to know from which timestamp the new logs will appear.
-        sh scripts/compile_android.sh -t ${{ matrix.type }} -r yes -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -f "\"x86\",\"x86_64\"";
+        sh scripts/compile_android.sh -t ${{ matrix.type }} -r yes -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -g ${{ matrix.gradle_version }} -f "\"x86\",\"x86_64\"";
 
     - name: Print error logs
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -236,6 +236,10 @@ jobs:
         # NDK path might not exist and should be downloaded by the shell scripts.
         . scripts/helper_functions.sh && checkPathExists ${{ env.ANDROID_NDK_PATH }} || true;
         . scripts/helper_functions.sh && checkPathExists app/build;
+        . scripts/helper_functions.sh && checkPathExists app/build/intermediates;
+        . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac;
+        . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/debug;
+        . scripts/helper_functions.sh && checkPathExists app/build/tmp/kotlin-classes/debug;
         . scripts/helper_functions.sh && checkPathExists app/.cxx;
         . scripts/helper_functions.sh && checkPathExists app/third_party;
 
@@ -411,6 +415,10 @@ jobs:
         # NDK path might not exist and should be downloaded by the shell scripts.
         . scripts/helper_functions.sh && checkPathExists ${{ env.ANDROID_NDK_PATH }} || true;
         . scripts/helper_functions.sh && checkPathExists app/build;
+        . scripts/helper_functions.sh && checkPathExists app/build/intermediates;
+        . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac;
+        . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/debug;
+        . scripts/helper_functions.sh && checkPathExists app/build/tmp/kotlin-classes/debug;
         . scripts/helper_functions.sh && checkPathExists app/.cxx;
         . scripts/helper_functions.sh && checkPathExists app/third_party;
 
@@ -446,7 +454,7 @@ jobs:
         enable-hw-keyboard: false
         emulator-boot-timeout: 900 # It can take more than 5 min to boot, and the tests can take more than 17 min to finish.
         script: |
-          sh scripts/run_tests_android.sh -t ${{ matrix.type }} -r all -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -k false -f "\"x86\",\"x86_64\"";
+          sh scripts/run_tests_android.sh -t ${{ matrix.type }} -r all -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -g ${{ matrix.gradle_version }} -k false -f "\"x86\",\"x86_64\"";
 
     - name: Publish Android Test Report
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -611,6 +619,10 @@ jobs:
         # NDK path might not exist and should be downloaded by the shell scripts.
         . scripts/helper_functions.sh && checkPathExists ${{ env.ANDROID_NDK_PATH }} || true;
         . scripts/helper_functions.sh && checkPathExists app/build;
+        . scripts/helper_functions.sh && checkPathExists app/build/intermediates;
+        . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac;
+        . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/debug;
+        . scripts/helper_functions.sh && checkPathExists app/build/tmp/kotlin-classes/debug;
         . scripts/helper_functions.sh && checkPathExists app/.cxx;
         . scripts/helper_functions.sh && checkPathExists app/third_party;
 
@@ -619,14 +631,14 @@ jobs:
       if: success()
       working-directory: .
       run: |
-        sh scripts/run_tests.sh -t ${{ matrix.type }} -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -f "\"x86\",\"x86_64\"";
+        sh scripts/run_tests.sh -t ${{ matrix.type }} -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -g ${{ matrix.gradle_version }} -f "\"x86\",\"x86_64\"";
 
     - name: Run linter
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
       working-directory: .
       run: |
-        sh scripts/check_android.sh -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -f "\"x86\",\"x86_64\"";
+        sh scripts/check_android.sh -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -g ${{ matrix.gradle_version }} -f "\"x86\",\"x86_64\"";
 
     - name: Publish Unit Test Report
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -740,6 +752,12 @@ jobs:
         # NDK path might not exist and should be downloaded by the shell scripts.
         . scripts/helper_functions.sh && checkPathExists ${{ env.ANDROID_NDK_PATH }} || true;
         . scripts/helper_functions.sh && checkPathExists app/build;
+        . scripts/helper_functions.sh && checkPathExists app/build/intermediates;
+        . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac;
+        . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/debug;
+        . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/debugUnitTest;
+        . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/debugAndroidTest;
+        . scripts/helper_functions.sh && checkPathExists app/build/tmp/kotlin-classes/debug;
         . scripts/helper_functions.sh && checkPathExists app/.cxx;
         . scripts/helper_functions.sh && checkPathExists app/third_party;
 
@@ -809,6 +827,12 @@ jobs:
         # NDK path might not exist and should be downloaded by the shell scripts.
         . scripts/helper_functions.sh && checkPathExists ${{ env.ANDROID_NDK_PATH }} || true;
         . scripts/helper_functions.sh && checkPathExists app/build;
+        . scripts/helper_functions.sh && checkPathExists app/build/intermediates;
+        . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac;
+        . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/debug;
+        . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/debugUnitTest;
+        . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/debugAndroidTest;
+        . scripts/helper_functions.sh && checkPathExists app/build/tmp/kotlin-classes/debug;
         . scripts/helper_functions.sh && checkPathExists app/.cxx;
         . scripts/helper_functions.sh && checkPathExists app/third_party;
 
@@ -823,7 +847,7 @@ jobs:
         GRADLE_OPTS: -Xms4G -Xmx4G -XX:ActiveProcessorCount=3
       run: |
         # It seems that only 1 CPU core is used by Sonar, and thus it takes a long time.
-        sh gradlew --profile --parallel -DabiFilters="[\"x86\",\"x86_64\"]" -DndkVersion=${{ matrix.ndk_version }} -DcmakeVersion=${{ matrix.cmake_version }} --info --warning-mode all --stacktrace sonar;
+        sh gradlew --profile --parallel -DabiFilters="[\"x86\",\"x86_64\"]" -DndkVersion=${{ matrix.ndk_version }} -DcmakeVersion=${{ matrix.cmake_version }} -DgradleVersion=${{ matrix.gradle_version }} --info --warning-mode all --stacktrace sonar;
 
     - name: Check sonar path
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
