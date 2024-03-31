@@ -51,10 +51,24 @@ final def systemTestType = System.getProperty('testType', 'debug')
 final def customAbiFilters = System.getProperty('abiFilters', '["armeabi-v7a", "x86", "arm64-v8a", "x86_64"]')
 final def systemAbiFilters = new JsonSlurper().parseText(customAbiFilters) as String[]
 
+final def gradleVersionArray = gradleVersion.split("\\.").collect()
+final def gradleVersionValue = gradleVersionArray[0] + '.' + gradleVersionArray[1] as Float
+def javaBinariesPath, javaUnitTestBinaries, javaAndroidTestBinaries
+if (gradleVersionValue >= 8.3) {
+    javaBinariesPath = 'compileDebugJavaWithJavac/classes/'
+    javaUnitTestBinaries = 'compileDebugUnitTestJavaWithJavac/classes/'
+    javaAndroidTestBinaries = 'compileDebugAndroidTestJavaWithJavac/classes/'
+} else {
+    javaBinariesPath = 'classes/'
+    javaUnitTestBinaries = 'classes/'
+    javaAndroidTestBinaries = 'classes/'
+}
+
 println('NDK version: ' + systemNDKVersion)
 println('CMake version: ' + systemCMakeVersion)
 println('Test type: ' + systemTestType)
 println('ABI Filters: ' + systemAbiFilters)
+println('gradleVersion: ' + gradleVersion)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -156,9 +170,9 @@ sonar {
         property 'sonar.java.target', "${project.targetCompatibility}"
         property 'sonar.sources', 'src/main/java'
         property 'sonar.tests', 'src/test/java, src/androidTest/java'
-        property 'sonar.java.binaries', 'build/intermediates/javac/debug/classes/,build/tmp/kotlin-classes/debug/'
-        properties['sonar.java.test.binaries'] += 'build/intermediates/javac/debugUnitTest/classes/'
-        properties['sonar.java.test.binaries'] += 'build/intermediates/javac/debugAndroidTest/classes/'
+        property 'sonar.java.binaries', "build/intermediates/javac/debug/${javaBinariesPath},build/tmp/kotlin-classes/debug/"
+        properties['sonar.java.test.binaries'] += "build/intermediates/javac/debugUnitTest/${javaUnitTestBinaries}"
+        properties['sonar.java.test.binaries'] += "build/intermediates/javac/debugAndroidTest/${javaAndroidTestBinaries}"
         property 'sonar.junit.reportPaths', 'build/test-results/testDebugUnitTest'
 
         // More properties
@@ -397,7 +411,7 @@ tasks.register('jacocoTestReport', JacocoReport) {
 
     // Set class files.
     def javaClasses = fileTree(
-        dir: "${layout.buildDirectory.getAsFile().get().toString()}/intermediates/javac/debug/classes/",
+        dir: "${layout.buildDirectory.getAsFile().get().toString()}/intermediates/javac/debug/${javaBinariesPath}",
         // Exclude the 'BuildConfig.class' because it is an automatically generated file.
         excludes: ['**/BuildConfig.class', '**/package-info.class', '**/AgentJar.class'],
     )

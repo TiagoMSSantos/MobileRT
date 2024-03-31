@@ -57,6 +57,7 @@ type='release';
 run_test='all';
 ndk_version='23.2.8568313';
 cmake_version='3.22.1';
+gradle_version='8.2.2';
 kill_previous='true';
 cpu_architecture='"x86","x86_64"';
 parallelizeBuild;
@@ -68,6 +69,7 @@ printEnvironment() {
   echo "run_test: ${run_test}";
   echo "ndk_version: ${ndk_version}";
   echo "cmake_version: ${cmake_version}";
+  echo "gradle_version: ${gradle_version}";
   echo "kill_previous: ${kill_previous}";
   echo "cpu_architecture: ${cpu_architecture}";
 }
@@ -211,7 +213,7 @@ unlockDevice() {
   callCommandUntilSuccess sh gradlew --daemon \
     --no-rebuild \
     -DabiFilters="[${cpu_architecture}]" \
-    -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" --info --warning-mode fail --stacktrace;
+    -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" -DgradleVersion="${gradle_version}" --info --warning-mode fail --stacktrace;
 
   echo 'Set adb as root, to be able to change files permissions';
   callCommandUntilSuccess adb root;
@@ -534,7 +536,7 @@ runInstrumentationTests() {
     sh gradlew --stop \
       --no-rebuild \
       -DabiFilters="[${cpu_architecture}]" \
-      -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" --info --warning-mode fail --stacktrace;
+      -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" -DgradleVersion="${gradle_version}" --info --warning-mode fail --stacktrace;
 
     numberOfFilesOpened=$(adb shell lsof /dev/goldfish_pipe | wc -l);
     if [ "${numberOfFilesOpened}" -gt '32000' ]; then
@@ -587,7 +589,7 @@ runInstrumentationTests() {
     echo 'Running all tests';
     mkdir -p app/build/reports/jacoco/jacocoTestReport;
     sh gradlew ${gradle_command} -DtestType="${type}" \
-      -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
+      -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" -DgradleVersion="${gradle_version}" \
       -Pandroid.testInstrumentationRunnerArguments.package='puscas' \
       -DabiFilters="[${cpu_architecture}]" \
       --console plain --parallel --info --warning-mode all --stacktrace;
@@ -595,14 +597,14 @@ runInstrumentationTests() {
     run_test_without_prefix=${run_test#"rep_"};
     echo "Repeatable of test: ${run_test_without_prefix}";
     callCommandUntilError sh gradlew connectedAndroidTest -DtestType="${type}" \
-      -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
+      -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" -DgradleVersion="${gradle_version}" \
       -Pandroid.testInstrumentationRunnerArguments.class="${run_test_without_prefix}" \
       -DabiFilters="[${cpu_architecture}]" \
       --console plain --parallel --info --warning-mode all --stacktrace;
   else
     echo "Running test: ${run_test}";
     sh gradlew connectedAndroidTest -DtestType="${type}" \
-      -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" \
+      -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" -DgradleVersion="${gradle_version}" \
       -Pandroid.testInstrumentationRunnerArguments.class="${run_test}" \
       -DabiFilters="[${cpu_architecture}]" \
       --console plain --parallel --info --warning-mode all --stacktrace;

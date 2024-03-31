@@ -168,6 +168,10 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && matrix.language == 'cpp'
       uses: codecov/codecov-action@v4
+      with:
+        # Check available parameters in: https://github.com/codecov/codecov-action/blob/main/action.yml
+        token: ${{ secrets.CODECOV_TOKEN }}
+        directory: 'coverage'
 
     - name: Autobuild
       id: autobuild
