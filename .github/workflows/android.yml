@@ -497,12 +497,13 @@ jobs:
         echo "Matrix Sonar: ${MATRIX_SONAR}";
         echo "matrix-sonar=${MATRIX_SONAR}" >> ${GITHUB_OUTPUT};
 
-    - name: Add base64 key to environment variable in order to sign APK
+    - name: Add base64 key & Android Build Tools version to environment variables in order to sign APK
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       working-directory: .
       run: |
         echo "BASE64_KEY=$(openssl base64 < app/MobileRT.jks | tr -d '[:space:]')" >> "${GITHUB_ENV}";
+        echo 'ANDROID_BUILD_TOOLS_VERSION=34.0.0' >> "${GITHUB_ENV}";
 
     - name: Sign APK
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -515,6 +516,7 @@ jobs:
         keyAlias: ${{ secrets.KEY_ALIAS }}
         keyStorePassword: ${{ secrets.SIGNING_KEY }}
         keyPassword: ${{ secrets.SIGNING_KEY }}
+        buildToolsVersion: ${{ env.ANDROID_BUILD_TOOLS_VERSION }}
 
     - name: Upload APK as artifact
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
