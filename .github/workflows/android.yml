@@ -53,7 +53,6 @@ env:
   GITHUB_STEP_TIMEOUT_SMALL: 4
   GITHUB_STEP_TIMEOUT_MEDIUM: 10
   GITHUB_STEP_TIMEOUT_LONG: 30
-  GITHUB_STEP_TIMEOUT_VERY_LONG: 45
 
 jobs:
   Matrix:
@@ -424,7 +423,7 @@ jobs:
 
     - name: Run Android tests
       id: android-tests
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_VERY_LONG) }}
+      timeout-minutes: 35
       if: success() && !startsWith(matrix.os, 'windows')
       uses: ReactiveCircus/android-emulator-runner@v2
       env:
