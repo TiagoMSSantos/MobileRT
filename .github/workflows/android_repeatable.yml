@@ -32,11 +32,11 @@ jobs:
         include:
         - test: RayTracingTest#testRenderSceneFromSDCardOBJ
           type: debug
-          os: macos-latest
+          host_os: macos-latest
           android_api: 16
 
-    name: ${{ matrix.test }} [${{ matrix.type }} (${{ matrix.os }})]
-    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.test }} [${{ matrix.type }} (${{ matrix.host_os }})]
+    runs-on: ${{ matrix.host_os }}
     timeout-minutes: 40
 
     steps:
@@ -74,7 +74,7 @@ jobs:
 
     - name: Run Android tests
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
-      if: success() && !startsWith(matrix.os, 'windows')
+      if: success() && !startsWith(matrix.host_os, 'windows')
       uses: ReactiveCircus/android-emulator-runner@v2
       env:
         NCPU_CORES: 4
@@ -99,7 +99,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
-        name: reports_${{ matrix.type }}_${{ matrix.os }}-artifacts
+        name: reports_${{ matrix.type }}_${{ matrix.host_os }}-artifacts
         path: app/build/reports
         if-no-files-found: error
         retention-days: 90

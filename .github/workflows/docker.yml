@@ -51,23 +51,23 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - os: ubuntu-latest
+        - host_os: ubuntu-latest
           BASE_IMAGE: ubuntu:22.04
-        - os: ubuntu-latest
+        - host_os: ubuntu-latest
           BASE_IMAGE: tgagor/centos:stream
-        - os: ubuntu-latest
+        - host_os: ubuntu-latest
           BASE_IMAGE: archlinux/archlinux:base-devel
-        - os: ubuntu-latest
+        - host_os: ubuntu-latest
           BASE_IMAGE: alpine:3.19
-        - os: ubuntu-latest
+        - host_os: ubuntu-latest
           BASE_IMAGE: gentoo/stage3:latest
-        - os: macos-latest
+        - host_os: macos-latest
           BASE_IMAGE: sickcodes/docker-osx:latest
-        - os: windows-latest
+        - host_os: windows-latest
           BASE_IMAGE: mcr.microsoft.com/windows/servercore:ltsc2022
 
-    name: ${{ matrix.BASE_IMAGE }} (${{ matrix.os }})
-    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.BASE_IMAGE }} (${{ matrix.host_os }})
+    runs-on: ${{ matrix.host_os }}
     # Necessary timeout of +/- 300 min to be able to build MobileRT with gentoo.
     # That's why we try to pull a previously available version and update it with a new layer instead.
     timeout-minutes: 300
@@ -95,7 +95,7 @@ jobs:
 
     - name: Install docker MacOS
       timeout-minutes: 15
-      if: success() && startsWith(matrix.os, 'macos')
+      if: success() && startsWith(matrix.host_os, 'macos')
       env:
         BASE_IMAGE: ${{ matrix.BASE_IMAGE }}
       run: |
@@ -124,7 +124,7 @@ jobs:
 
     - name: Windows copy necessary tools to workspace
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && env.BUILD_IMAGE == 'yes' && startsWith(matrix.os, 'windows')
+      if: success() && env.BUILD_IMAGE == 'yes' && startsWith(matrix.host_os, 'windows')
       shell: powershell
       run: |
         Write-Host "Copying shell binaries to workspace."

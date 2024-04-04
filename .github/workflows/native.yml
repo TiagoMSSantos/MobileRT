@@ -68,44 +68,38 @@ jobs:
         include:
         # Ubuntu
         - name: G++
-          os: ubuntu-20.04
+          host_os: ubuntu-20.04
           type: debug
           compiler: g++
 
         - name: Clang++
-          os: ubuntu-22.04
+          host_os: ubuntu-22.04
           type: release
           compiler: clang++
 
         - name: Intel C++
-          os: ubuntu-20.04
+          host_os: ubuntu-20.04
           type: release
           compiler: icpx
 
         # MacOS
         - name: G++
-          os: macos-14
+          host_os: macos-14
           type: release
           compiler: g++
-          qt_host: 'mac'
-          qt_arch: 'clang_64'
 
         - name: Clang++
-          os: macos-13
+          host_os: macos-13
           type: release
           compiler: clang++
-          qt_host: 'mac'
-          qt_arch: 'clang_64'
 
         - name: G++
-          os: macos-12
+          host_os: macos-12
           type: release
           compiler: g++
-          qt_host: 'mac'
-          qt_arch: 'clang_64'
 
         - name: Clang++
-          os: macos-11
+          host_os: macos-11
           type: release
           compiler: clang++
           qt_host: 'mac'
@@ -113,7 +107,7 @@ jobs:
 
         # Windows
         - name: MSVC
-          os: windows-2022
+          host_os: windows-2022
           type: release
           compiler: g++
           cxx: "C:/PROGRA~2/MICROS~1/2019/Enterprise/VC/Tools/MSVC/14.28.29333/bin/HostX64/x86/cl.exe"
@@ -122,7 +116,7 @@ jobs:
           qt_arch: 'win64_msvc2019_64'
 
         - name: MinGW
-          os: windows-2019
+          host_os: windows-2019
           type: release
           compiler: g++
           cxx: "gcc"
@@ -130,8 +124,8 @@ jobs:
           qt_host: 'windows'
           qt_arch: 'win64_msvc2019_64'
 
-    name: ${{ matrix.name }} ${{ matrix.os }} (${{ matrix.type }})
-    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.name }} ${{ matrix.host_os }} (${{ matrix.type }})
+    runs-on: ${{ matrix.host_os }}
     timeout-minutes: 60
 
     steps:
@@ -149,14 +143,14 @@ jobs:
 
     - name: Check MacOS Xcode versions
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && startsWith(matrix.os, 'macos')
+      if: success() && startsWith(matrix.host_os, 'macos')
       working-directory: .
       run: |
         ls -lahp /System/Volumes/Data/Applications;
 
     - name: Install MacPorts (MacOS)
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && startsWith(matrix.os, 'macos-11')
+      if: success() && startsWith(matrix.host_os, 'macos-11')
       uses: melusina-org/setup-macports@v1
       with:
         # Check available parameters in: https://github.com/melusina-org/setup-macports/blob/main/action.yaml
@@ -164,7 +158,7 @@ jobs:
 
     - name: Install Qt (Windows & MacOS)
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-      if: success() && (startsWith(matrix.os, 'windows') || startsWith(matrix.os, 'macos-11'))
+      if: success() && (startsWith(matrix.host_os, 'windows') || startsWith(matrix.host_os, 'macos-11'))
       uses: jurplel/install-qt-action@v3
       # Download Qt from: https://download.qt.io/online/qtsdkrepository/
       with:
@@ -177,7 +171,7 @@ jobs:
         install-deps: 'true'
         modules: ''
         cache: 'true'
-        cache-key-prefix: '${{ runner.os }}'
+        cache-key-prefix: '${{ runner.host_os }}'
         setup-python: 'false'
         set-env: 'true'
         tools-only: 'false'
@@ -194,7 +188,7 @@ jobs:
 
     - name: Check Qt path installation MacOS
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && startsWith(matrix.os, 'macos')
+      if: success() && startsWith(matrix.host_os, 'macos')
       working-directory: .
       run: |
         set +e;
@@ -259,7 +253,7 @@ jobs:
 
     - name: Generate code coverage base
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug' && startsWith(matrix.compiler, 'g++')
+      if: success() && startsWith(matrix.host_os, 'ubuntu') && matrix.type == 'debug' && startsWith(matrix.compiler, 'g++')
       working-directory: .
       run: |
         lcov -c -i -d . --no-external -o code_coverage_base.info;
@@ -287,7 +281,7 @@ jobs:
 
     - name: Create symbolic links for Qt in MacOS
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && startsWith(matrix.os, 'macos')
+      if: success() && startsWith(matrix.host_os, 'macos')
       working-directory: .
       run: |
         otool -L ${PWD}/build_${{ matrix.type }}/bin/AppMobileRT*;
@@ -313,7 +307,7 @@ jobs:
     # TODO: Investigate how to use 'perf record' in github actions machines.
     - name: Profile MobileRT ${{ matrix.type }}
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && matrix.type == 'release' && startsWith(matrix.os, 'ubuntu')
+      if: success() && matrix.type == 'release' && startsWith(matrix.host_os, 'ubuntu')
       working-directory: .
       run: |
         sudo sysctl kernel.yama.ptrace_scope=0;
@@ -334,7 +328,7 @@ jobs:
 
     - name: Generate code coverage
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug' && startsWith(matrix.compiler, 'g++')
+      if: success() && startsWith(matrix.host_os, 'ubuntu') && matrix.type == 'debug' && startsWith(matrix.compiler, 'g++')
       working-directory: .
       run: |
         # shellcheck disable=SC1091
@@ -343,7 +337,7 @@ jobs:
     - name: Set Matrix for Sonar
       id: set-matrix-sonar
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug' && startsWith(matrix.compiler, 'g++')
+      if: success() && startsWith(matrix.host_os, 'ubuntu') && matrix.type == 'debug' && startsWith(matrix.compiler, 'g++')
       run: |
         MATRIX_SONAR=$(echo '${{ toJSON(matrix) }}' | jq -c -s '{"include":[.[]]}');
         echo "Matrix Sonar: ${MATRIX_SONAR}";
@@ -351,12 +345,12 @@ jobs:
 
     - name: Upload coverage to cache
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug' && startsWith(matrix.compiler, 'g++')
+      if: success() && startsWith(matrix.host_os, 'ubuntu') && matrix.type == 'debug' && startsWith(matrix.compiler, 'g++')
       uses: actions/cache@v4
       with:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
-        key: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
-        restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
+        key: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.host_os }}
+        restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.host_os }}
         path: |
           app/build/reports/coverage/androidTest/debug/connected
           code_coverage_base.info
@@ -374,7 +368,7 @@ jobs:
       matrix: ${{ fromJSON(needs.Build.outputs.matrix-sonar) }}
 
     name: Code Coverage
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.host_os }}
     timeout-minutes: 3
 
     steps:
@@ -389,8 +383,8 @@ jobs:
       uses: actions/cache@v4
       with:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
-        key: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
-        restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
+        key: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.host_os }}
+        restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.host_os }}
         path: |
           app/build/reports/coverage/androidTest/debug/connected
           code_coverage_base.info

@@ -93,8 +93,8 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJSON(needs.Matrix.outputs.matrix) }}
 
-    name: Build ${{ matrix.android_api }} ${{ matrix.type }} (${{ matrix.os }})
-    runs-on: ${{ matrix.os }}
+    name: Build ${{ matrix.android_api }} ${{ matrix.type }} (${{ matrix.host_os }})
+    runs-on: ${{ matrix.host_os }}
     timeout-minutes: 35
 
     steps:
@@ -248,8 +248,8 @@ jobs:
       uses: actions/cache@v4
       with:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
-        key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
-        restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
+        key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.host_os }}
+        restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.host_os }}
         path: |
           app/build
           app/.cxx
@@ -257,7 +257,7 @@ jobs:
 
     - name: Zip Gradle packages
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-      if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug'
+      if: success() && startsWith(matrix.host_os, 'ubuntu') && matrix.type == 'debug'
       run: |
         set +e;
         du -h -d 1 ${{ env.GRADLE_PATH }};
@@ -310,7 +310,7 @@ jobs:
 
     - name: Upload Gradle packages as artifact
       timeout-minutes: 20
-      if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug'
+      if: success() && startsWith(matrix.host_os, 'ubuntu') && matrix.type == 'debug'
       uses: actions/upload-artifact@v4
       with:
         # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
@@ -331,8 +331,8 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJSON(needs.Matrix.outputs.matrix) }}
 
-    name: Android tests ${{ matrix.android_api }} ${{ matrix.type }} (${{ matrix.os }})
-    runs-on: ${{ matrix.os }}
+    name: Android tests ${{ matrix.android_api }} ${{ matrix.type }} (${{ matrix.host_os }})
+    runs-on: ${{ matrix.host_os }}
     timeout-minutes: 45
 
     steps:
@@ -380,8 +380,8 @@ jobs:
       uses: actions/cache@v4
       with:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
-        key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
-        restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
+        key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.host_os }}
+        restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.host_os }}
         path: |
           app/build
           app/.cxx
@@ -424,7 +424,7 @@ jobs:
     - name: Run Android tests
       id: android-tests
       timeout-minutes: 35
-      if: success() && !startsWith(matrix.os, 'windows')
+      if: success() && !startsWith(matrix.host_os, 'windows')
       uses: ReactiveCircus/android-emulator-runner@v2
       env:
         ANDROID_EMULATOR_WAIT_TIME_BEFORE_KILL: 1
@@ -461,7 +461,7 @@ jobs:
       uses: mikepenz/action-junit-report@v4
       with:
         # Check available parameters in: https://github.com/mikepenz/action-junit-report/blob/main/action.yml
-        check_name: 'Android Test Report - API ${{ matrix.android_api }} ${{ matrix.type }} (${{ matrix.os }})'
+        check_name: 'Android Test Report - API ${{ matrix.android_api }} ${{ matrix.type }} (${{ matrix.host_os }})'
         report_paths: '**/build/**/*-results/**/TEST-*.xml'
         require_tests: true
         require_passed_tests: true
@@ -471,26 +471,26 @@ jobs:
 
     - name: Check report's paths
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug'
+      if: success() && startsWith(matrix.host_os, 'ubuntu') && matrix.type == 'debug'
       run: |
         # shellcheck disable=SC1091
         . scripts/helper_functions.sh && checkPathExists app/build/reports/jacoco/jacocoTestReport jacocoTestReport.xml;
 
     - name: Upload reports to cache
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug'
+      if: success() && startsWith(matrix.host_os, 'ubuntu') && matrix.type == 'debug'
       uses: actions/cache@v4
       with:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
-        key: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
-        restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
+        key: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.host_os }}
+        restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.host_os }}
         path: |
           app/build/reports
 
     - name: Set Matrix for Sonar
       id: set-matrix-sonar
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && startsWith(matrix.os, 'ubuntu') && matrix.type == 'debug'
+      if: success() && startsWith(matrix.host_os, 'ubuntu') && matrix.type == 'debug'
       run: |
         MATRIX_SONAR=$(echo '${{ toJSON(matrix) }}' | jq -c -s '{"include":[.[]]}');
         echo "Matrix Sonar: ${MATRIX_SONAR}";
@@ -519,7 +519,7 @@ jobs:
 
     - name: Upload APK as artifact
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && startsWith(matrix.os, 'macos') && matrix.type == 'release' && matrix.android_arch == 'x86'
+      if: success() && startsWith(matrix.host_os, 'macos') && matrix.type == 'release' && matrix.android_arch == 'x86'
       uses: actions/upload-artifact@v4
       with:
         # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
@@ -537,8 +537,8 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJSON(needs.Matrix.outputs.matrix) }}
 
-    name: Unit tests ${{ matrix.android_api }} ${{ matrix.type }} (${{ matrix.os }})
-    runs-on: ${{ matrix.os }}
+    name: Unit tests ${{ matrix.android_api }} ${{ matrix.type }} (${{ matrix.host_os }})
+    runs-on: ${{ matrix.host_os }}
     timeout-minutes: 15
 
     steps:
@@ -605,8 +605,8 @@ jobs:
       uses: actions/cache@v4
       with:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
-        key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
-        restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
+        key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.host_os }}
+        restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.host_os }}
         path: |
           app/build
           app/.cxx
@@ -647,7 +647,7 @@ jobs:
       uses: mikepenz/action-junit-report@v4
       with:
         # Check available parameters in: https://github.com/mikepenz/action-junit-report/blob/main/action.yml
-        check_name: 'Unit Test Report - API ${{ matrix.android_api }} ${{ matrix.type }} (${{ matrix.os }})'
+        check_name: 'Unit Test Report - API ${{ matrix.android_api }} ${{ matrix.type }} (${{ matrix.host_os }})'
         report_paths: '**/build/**/*-results/**/TEST-*.xml'
         require_tests: true
         require_passed_tests: true
@@ -663,8 +663,8 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJSON(needs.AndroidTests.outputs.matrix-sonar) }}
 
-    name: Code Coverage & Sonar ${{ matrix.type }} (${{ matrix.os }})
-    runs-on: ${{ matrix.os }}
+    name: Code Coverage & Sonar ${{ matrix.type }} (${{ matrix.host_os }})
+    runs-on: ${{ matrix.host_os }}
     timeout-minutes: 10
 
     steps:
@@ -738,8 +738,8 @@ jobs:
       uses: actions/cache@v4
       with:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
-        key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
-        restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
+        key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.host_os }}
+        restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.host_os }}
         path: |
           app/build
           app/.cxx
@@ -771,12 +771,12 @@ jobs:
 
     - name: Download reports from cache
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && startsWith(matrix.os, 'ubuntu')
+      if: success() && startsWith(matrix.host_os, 'ubuntu')
       uses: actions/cache@v4
       with:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
-        key: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
-        restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
+        key: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.host_os }}
+        restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.host_os }}
         path: |
           app/build/reports
 
@@ -813,8 +813,8 @@ jobs:
       uses: actions/cache@v4
       with:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
-        key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
-        restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.os }}
+        key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.host_os }}
+        restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.host_os }}
         path: |
           app/build
           app/.cxx
