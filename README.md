@@ -1,0 +1,2 @@
+# MobileRT
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/1a82c08b61fb4800b08f453631b35b40)](https://app.codacy.com/gh/TiagoMSSantos/MobileRT?utm_source=github.com&utm_medium=referral&utm_content=TiagoMSSantos/MobileRT&utm_campaign=Badge_Grade)
