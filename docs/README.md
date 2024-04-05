@@ -38,8 +38,9 @@
 [![codebeat badge](https://codebeat.co/assets/svg/badges/B-66bd63-dcc2e015f60fd0645631f8e7891440fb04fff8acc238aa755faf7de8c0ff7e2b.svg)](https://codebeat.co/projects/github-com-tiagomssantos-mobilert-master)
 -->
 
-<img src="Example_Android.gif" alt="MobileRT: Android" width="400"/>
-<img src="Example_Linux.gif" alt="MobileRT: Linux" height="400"/>
+<!-- The images have the full path to the repository so they also appear in Docker hub. -->
+<img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/Example_Android.gif" alt="MobileRT: Android" width="400"/>
+<img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/Example_Linux.gif" alt="MobileRT: Linux" height="400"/>
 
 ## Run docker image
 
@@ -171,65 +172,65 @@ framework for mocking in unit tests
     </tr>
     <tr>
       <td style="text-align:center"><b>Android</b></td>
-      <td style="text-align:center">4.0.3 <br> (API 15) <br> <img src="checkmark_green.png" width="25" height="25"></td>
-      <td style="text-align:center">5 <br> (API 21) <br> <img src="checkmark_green.png" width="25" height="25"></td>
-      <td style="text-align:center">8.1 <br> (API 27) <br> <img src="checkmark_green.png" width="25" height="25"></td>
-      <td style="text-align:center">13 <br> (API 33) <br> <img src="checkmark_green.png" width="25" height="25"></td>
-      <td style="text-align:center">14 <br> (API 34) <br> <img src="checkmark_gray.png" width="25" height="25"></td>
+      <td style="text-align:center">4.0.3 <br> (API 15) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
+      <td style="text-align:center">5 <br> (API 21) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
+      <td style="text-align:center">8.1 <br> (API 27) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
+      <td style="text-align:center">13 <br> (API 33) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
+      <td style="text-align:center">14 <br> (API 34) <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25"></td>
     </tr>
     <tr>
       <td style="text-align:center"><b>MacOS</b></td>
-      <td style="text-align:center">10.15 <br> <img src="checkmark_gray.png" width="25" height="25"></td>
-      <td style="text-align:center">11 <br> <img src="checkmark_green.png" width="25" height="25"></td>
-      <td style="text-align:center">12 <br> <img src="checkmark_green.png" width="25" height="25"></td>
-      <td style="text-align:center">13 <br> <img src="checkmark_green.png" width="25" height="25"></td>
-      <td style="text-align:center">14 <br> <img src="checkmark_green.png" width="25" height="25"></td>
+      <td style="text-align:center">10.15 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25"></td>
+      <td style="text-align:center">11 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
+      <td style="text-align:center">12 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
+      <td style="text-align:center">13 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
+      <td style="text-align:center">14 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
     </tr>
     <tr>
       <td style="text-align:center"><b>Windows</b></td>
-      <td style="text-align:center">Server 2019 <br> <img src="checkmark_green.png" width="25" height="25"></td>
-      <td style="text-align:center">Server 2022 <br> <img src="checkmark_green.png" width="25" height="25"></td>
-      <td style="text-align:center">8<br> <img src="cross_red.png" width="25" height="25"></td>
-      <td style="text-align:center">10<br> <img src="cross_red.png" width="25" height="25"></td>
-      <td style="text-align:center">11<br> <img src="cross_red.png" width="25" height="25"></td>
+      <td style="text-align:center">Server 2019 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
+      <td style="text-align:center">Server 2022 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
+      <td style="text-align:center">8<br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
+      <td style="text-align:center">10<br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
+      <td style="text-align:center">11<br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
     </tr>
     <tr>
       <td style="text-align:center"><b>Ubuntu</b></td>
-      <td style="text-align:center">14.04 <br> <img src="cross_red.png" width="25" height="25"></td>
-      <td style="text-align:center">16.04 <br> <img src="checkmark_gray.png" width="25" height="25"></td>
-      <td style="text-align:center">18.04 <br> <img src="checkmark_gray.png" width="25" height="25"></td>
-      <td style="text-align:center">20.04 <br> <img src="checkmark_green.png" width="25" height="25"></td>
-      <td style="text-align:center">22.04 <br> <img src="checkmark_green.png" width="25" height="25"></td>
+      <td style="text-align:center">14.04 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
+      <td style="text-align:center">16.04 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25"></td>
+      <td style="text-align:center">18.04 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25"></td>
+      <td style="text-align:center">20.04 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
+      <td style="text-align:center">22.04 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
     </tr>
     <tr>
       <td style="text-align:center"><b>CentOS</b></td>
-      <td style="text-align:center">5 <br> <img src="cross_red.png" width="25" height="25"></td>
-      <td style="text-align:center">6 <br> <img src="cross_red.png" width="25" height="25"></td>
-      <td style="text-align:center">7 <br> <img src="cross_red.png" width="25" height="25"></td>
-      <td style="text-align:center">8 <br> <img src="checkmark_gray.png" width="25" height="25"></td>
-      <td style="text-align:center">stream <br> <img src="checkmark_green.png" width="25" height="25"></td>
+      <td style="text-align:center">5 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
+      <td style="text-align:center">6 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
+      <td style="text-align:center">7 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25"></td>
+      <td style="text-align:center">8 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25"></td>
+      <td style="text-align:center">stream <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
     </tr>
     <tr>
       <td style="text-align:center"><b>Alpine</b></td>
-      <td style="text-align:center">3.15 <br> <img src="checkmark_gray.png" width="25" height="25"></td>
-      <td style="text-align:center">3.16 <br> <img src="checkmark_gray.png" width="25" height="25"></td>
-      <td style="text-align:center">3.17 <br> <img src="checkmark_gray.png" width="25" height="25"></td>
-      <td style="text-align:center">3.18 <br> <img src="checkmark_gray.png" width="25" height="25"></td>
-      <td style="text-align:center">3.19 <br> <img src="checkmark_green.png" width="25" height="25"></td>
+      <td style="text-align:center">3.15 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25"></td>
+      <td style="text-align:center">3.16 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25"></td>
+      <td style="text-align:center">3.17 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25"></td>
+      <td style="text-align:center">3.18 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25"></td>
+      <td style="text-align:center">3.19 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
     </tr>
     <tr>
       <td style="text-align:center"><b>Arch Linux</b></td>
-      <td style="text-align:center" colspan="7" align="center">base-devel <br> <img src="checkmark_green.png" width="25" height="25"></td>
+      <td style="text-align:center" colspan="7" align="center">base-devel <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
     </tr>
     <tr>
       <td style="text-align:center"><b>Gentoo</b></td>
-      <td style="text-align:center" colspan="7" align="center">stage3:x86 <br> <img src="checkmark_green.png" width="25" height="25"></td>
+      <td style="text-align:center" colspan="7" align="center">stage3:x86 <br> <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25"></td>
     </tr>
   </table>
   Table: <br/>
-  <img src="checkmark_green.png" width="15" height="15" style="text-align:center" align="left"> -> actively tested <br/>
-  <img src="checkmark_gray.png" width="15" height="15" align="left"> -> tested <br/>
-  <img src="cross_red.png" width="15" height="15" align="left"> -> not tested <br/>
+  <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="15" height="15" style="text-align:center" align="left"> -> actively tested <br/>
+  <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="15" height="15" align="left"> -> tested <br/>
+  <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="15" height="15" align="left"> -> not tested <br/>
 </div>
 
 ## Requirements
