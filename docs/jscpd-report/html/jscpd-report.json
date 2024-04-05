@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-04-05T07:45:10.791Z",
+    "detectionDate": "2024-04-05T08:28:15.453Z",
     "formats": {
       "java": {
         "sources": {
@@ -2169,8 +2169,8 @@
             "newClones": 0
           },
           "docs/TOOLS.md": {
-            "lines": 79,
-            "tokens": 612,
+            "lines": 78,
+            "tokens": 582,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2193,8 +2193,8 @@
             "newClones": 0
           },
           "docs/README.md": {
-            "lines": 265,
-            "tokens": 2051,
+            "lines": 271,
+            "tokens": 2098,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2278,13 +2278,13 @@
           }
         },
         "total": {
-          "lines": 2285,
-          "tokens": 22274,
+          "lines": 2290,
+          "tokens": 22291,
           "sources": 15,
           "clones": 1,
           "duplicatedLines": 23,
           "duplicatedTokens": 92,
-          "percentage": 1.01,
+          "percentage": 1,
           "percentageTokens": 0.41,
           "newDuplicatedLines": 0,
           "newClones": 0
@@ -3164,13 +3164,13 @@
       }
     },
     "total": {
-      "lines": 28975,
-      "tokens": 221711,
+      "lines": 28980,
+      "tokens": 221728,
       "sources": 250,
       "clones": 120,
       "duplicatedLines": 1604,
       "duplicatedTokens": 13840,
-      "percentage": 5.54,
+      "percentage": 5.53,
       "percentageTokens": 6.24,
       "newDuplicatedLines": 0,
       "newClones": 0

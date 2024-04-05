@@ -9,15 +9,15 @@
 # At the moment, this script installs the necessary dependencies for the
 # following Operating Systems:
 # * Linux
-# * MacOS
-# * Windows
+# * MacOS (using Homebrew)
+# * Windows (using Chocolatey)
 #
 # And it is compatible with the following Linux distributions:
-# * Debian
-# * Red Hat
-# * Arch
-# * Alpine
-# * Gentoo
+# * Debian (using apt)
+# * Red Hat (using yum)
+# * Arch (using pacman)
+# * Alpine (using apk)
+# * Gentoo (using emerge)
 ###############################################################################
 ###############################################################################
 

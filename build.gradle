@@ -28,6 +28,7 @@ buildscript {
     // This block encapsulates custom properties and makes them available to all
     // modules in the project.
     ext {
+        // Before updating gradle, check which version of Android Studio is compatible with it and update README.
         // Allow to setup more recently versions of Gradle, but use 8.2.2 by default because it's compatible with Android 15.
         gradleVersion = System.getProperty('gradleVersion', '8.2.2')
 
@@ -62,7 +63,6 @@ buildscript {
     dependencies {
         final def currentOS = System.getProperty("os.name")
         println("OS: " + currentOS)
-        // Before updating gradle, check which version of Android Studio is compatible with it and update README.
         // Compatibility matrix: https://developer.android.com/build/releases/gradle-plugin#android_gradle_plugin_and_android_studio_compatibility
         classpath "com.android.tools.build:gradle:${gradleVersion}"
         classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:5.0.0.4638'

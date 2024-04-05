@@ -12,7 +12,7 @@
   - Intel® oneAPI DPC++/C++ Compiler (ICX)
 
 [//]: # (Licenses and documentation)
-[![GitHub](https://img.shields.io/github/license/TiagoMSSantos/MobileRT)](https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/LICENSE)
+[![GitHub](https://img.shields.io/github/license/TiagoMSSantos/MobileRT)](https://github.com/TiagoMSSantos/MobileRT/blob/master/LICENSE.md)
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FTiagoMSSantos%2FMobileRT.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FTiagoMSSantos%2FMobileRT?ref=badge_shield)
 [![Known Vulnerabilities](https://snyk.io/test/github/TiagoMSSantos/MobileRT/badge.svg?targetFile=app/build.gradle)](https://snyk.io/test/github/TiagoMSSantos/MobileRT?targetFile=app/build.gradle)
 [![Documentation](https://codedocs.xyz/TiagoMSSantos/MobileRT.svg)](https://codedocs.xyz/TiagoMSSantos/MobileRT/)
@@ -30,7 +30,7 @@
 
 [//]: # (Static analysis)
 [![Maintainability](https://api.codeclimate.com/v1/badges/6a80c282c888f405d779/maintainability)](https://codeclimate.com/github/TiagoMSSantos/MobileRT/maintainability)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/c4f4fb76bb934fe6980b969e7c8aac0e)](https://www.codacy.com/gh/TiagoMSSantos/MobileRT/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=TiagoMSSantos/MobileRT&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/c4f4fb76bb934fe6980b969e7c8aac0e)](https://app.codacy.com/gh/TiagoMSSantos/MobileRT/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 [![Copy Paste Status](https://tiagomssantos.github.io/MobileRT/jscpd-report/jscpd-badge.svg)](https://tiagomssantos.github.io/MobileRT/jscpd-report/jscpd-report)
 [![Docker Pulls](https://img.shields.io/docker/pulls/ptpuscas/mobile_rt)](https://hub.docker.com/r/ptpuscas/mobile_rt)
 
@@ -163,6 +163,7 @@ framework for mocking in unit tests
 
 ## Supported Operating Systems
 
+<!-- The images have the full path to the repository so they also appear in Docker hub. -->
 <div ><!-- The extra space before closing the tag is necessary for the GitHub Flavored Markdown parser to detect HTML -->
   <table><!-- Note: Doxygen does not support class="tg" -->
     <!-- Note: Doxygen does not support thead nor tbody tags! -->
@@ -238,31 +239,36 @@ framework for mocking in unit tests
 It's necessary the following SDKs in order to compile this project for Android:
 
 - [Android SDK](https://developer.android.com/studio) which should also bring the [Android NDK](https://developer.android.com/ndk) in order to compile the native code.
-  - It's recommended to use the Android Studio `2023.2.1` which is compatible with Gradle [8.2.2](../build.gradle#L64) used by this project.
+  - It's recommended to use the Android Studio `2023.2.1` which is compatible with Gradle [8.2.2](../build.gradle#33) used by this project.
 
-For native Linux and Mac support, the `install_dependencies.sh` script should download and install the necessary dependencies, by just calling:
+For native **Linux**, **MacOS** and **Windows** support, the `install_dependencies.sh` script should download and install the necessary dependencies, by just calling:
 
 ```shell
 sh scripts/install_dependencies.sh
 ```
 
-Note that the script already supports multiple Linux distributions like:
+Note that the script already supports multiple **Linux** distributions like:
 
-- Debian
-- Red Hat
-- Arch
-- Alpine
-- Gentoo
+- Debian (using apt)
+- Red Hat (using yum)
+- Arch (using pacman)
+- Alpine (using apk)
+- Gentoo (using emerge)
 
-It also supports installing dependencies in MacOS and in Windows Operating Systems.
+It also supports installing dependencies in the following Operating Systems:
+
+- MacOS (using Homebrew)
+- Windows (using Chocolatey)
+
 Note that these scripts are tested in Github actions pipeline only, so might assume that some tools were already installed.
 If the distribution you use is not supported, or it's missing the installation of some tool, you can always open an issue or even a pull request :)
 
 ## Documentation
 
+<!-- The documentation have the full path to the repository so the URL also work in Docker hub. -->
 This project started as a [Masters' dissertation](https://repositorium.sdum.uminho.pt/handle/1822/66577).  
-Click [here](FEATURES.md) to check the features list that are supported.  
-Click [here](TOOLS.md) to check the code coverage and code duplication commands.  
+Click [here](https://github.com/TiagoMSSantos/MobileRT/blob/master/docs/FEATURES.md) to check the features list that are supported.  
+Click [here](https://github.com/TiagoMSSantos/MobileRT/blob/master/docs/TOOLS.md) to check the code coverage and code duplication commands.  
+Click [here](https://github.com/TiagoMSSantos/MobileRT/blob/master/docs/BUILD_DOCS.md) to build and serve the documentation locally.  
+Click [here](https://github.com/TiagoMSSantos/MobileRT/blob/master/docs/BLENDER.md) for some basic Blender tips.  
 Click [here](https://codedocs.xyz/TiagoMSSantos/MobileRT/) to check the Doxygen codebase documentation.  
-Click [here](BUILD_DOCS.md) to build and serve the documentation locally.  
-Click [here](BLENDER.md) for some basic Blender tips.  

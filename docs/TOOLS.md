@@ -66,7 +66,6 @@ Here are the commands to remove all docker containers and mounted volumes.
 
 ```shell
 docker system df;
-docker rm -f $(docker ps -a | grep -v "portainer" | awk 'NR>1 {print $1}');
 docker system prune --volumes --force;
 docker builder prune --all --force;
 docker buildx prune --all --force --verbose;
