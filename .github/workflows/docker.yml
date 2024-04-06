@@ -114,7 +114,7 @@ jobs:
         logout: true
 
     - name: Pull base Docker image
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
       if: success()
       run: |
         docker image pull ${{ matrix.BASE_IMAGE }};
