@@ -113,7 +113,13 @@ jobs:
         ecr: false
         logout: true
 
-    - name: Pull Docker image
+    - name: Pull base Docker image
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+      if: success()
+      run: |
+        docker image pull ${{ matrix.BASE_IMAGE }};
+
+    - name: Pull MobileRT Docker image
       timeout-minutes: 240
       if: success() && (startsWith(matrix.BASE_IMAGE, 'gentoo') || contains(matrix.BASE_IMAGE, 'windows'))
       run: |
@@ -152,6 +158,14 @@ jobs:
         echo "VERSION: ${{ env.VERSION }}";
         . scripts/docker.sh && buildDockerImage ${{ matrix.BASE_IMAGE }} ${{ env.BRANCH }} ${{ env.VERSION }};
 
+    - name: Squash Docker image
+      timeout-minutes: 120
+      if: success() && env.BUILD_IMAGE != 'yes' && startsWith(matrix.BASE_IMAGE, 'gentoo')
+      run: |
+        # shellcheck disable=SC1091
+        echo "VERSION: ${{ env.VERSION }}";
+        . scripts/docker.sh && squashMobileRTDockerImage ${{ env.VERSION }};
+
     - name: Build MobileRT
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
       if: success() && env.BUILD_IMAGE != 'yes'
@@ -167,14 +181,6 @@ jobs:
         # shellcheck disable=SC1091
         echo "VERSION: ${{ env.VERSION }}";
         . scripts/docker.sh && commitMobileRTDockerImage ${{ env.VERSION }};
-
-    - name: Squash Docker image
-      timeout-minutes: 120
-      if: success() && env.BRANCH == 'master' && startsWith(matrix.BASE_IMAGE, 'gentoo') && false
-      run: |
-        # shellcheck disable=SC1091
-        echo "VERSION: ${{ env.VERSION }}";
-        . scripts/docker.sh && squashMobileRTDockerImage ${{ env.VERSION }};
 
     - name: Run unit tests
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
