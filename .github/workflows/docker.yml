@@ -24,7 +24,7 @@ on:
     - '!scripts/run_tests.sh'
     - '!scripts/helper_functions.sh'
     - '!scripts/docker.sh'
-    - '!scripts/test/dockerfile.sh'
+    - '!scripts/test/docker/dockerfile.sh'
     - '!scripts/profile.sh'
     - '!*gradle*'
 
@@ -198,9 +198,9 @@ jobs:
       working-directory: .
       run: |
         if echo "${{ matrix.BASE_IMAGE }}" | grep -q "alpine"; then
-          sh scripts/test/dockerfile.sh ${{ env.VERSION }} 143; # Expect SIGTERM (15). 128 + 15 = 143
+          sh scripts/test/docker/dockerfile.sh ${{ env.VERSION }} 143; # Expect SIGTERM (15). 128 + 15 = 143
         else
-          sh scripts/test/dockerfile.sh ${{ env.VERSION }};
+          sh scripts/test/docker/dockerfile.sh ${{ env.VERSION }};
         fi
 
     - name: Push Docker image

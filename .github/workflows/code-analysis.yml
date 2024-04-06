@@ -164,6 +164,13 @@ jobs:
       run: |
         bashcov scripts/test/helper_functions.sh;
 
+    - name: Check code coverage report
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success() && matrix.language == 'cpp'
+      run: |
+        # shellcheck disable=SC1091
+        . scripts/helper_functions.sh && checkPathExists coverage coverage.xml;
+
     - name: Upload reports to Codecov
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && matrix.language == 'cpp'
