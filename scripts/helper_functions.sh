@@ -285,10 +285,10 @@ parallelizeBuild() {
   uname -a;
   if uname -a | grep -iq 'msys'; then
     echo 'Assuming Windows.';
-  elif command -v nproc > /dev/null; then
+  elif uname -a | grep -iq 'linux' && command -v nproc > /dev/null; then
     echo 'Assuming Linux.';
     MAKEFLAGS="-j$(nproc --all)";
-  elif command -v sysctl > /dev/null; then
+  elif uname -a | grep -iq 'darwin' && command -v sysctl > /dev/null; then
     echo 'Assuming MacOS.';
     MAKEFLAGS="-j$(sysctl -n hw.logicalcpu)";
   fi

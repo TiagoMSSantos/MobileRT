@@ -119,6 +119,7 @@ _clearEnvVariables() {
   unset type compiler recompile;
   unset ndk_version cmake_version gradle_version cpu_architecture;
   unset run_test kill_previous;
+  unset MAKEFLAGS;
 }
 
 # Helper function which asserts that 2 parameters are equal.
@@ -478,7 +479,7 @@ testCheckCommand() {
 
   # Validate the exit code is 0 if python command DOES exist on Windows OS.
   # Setup mocks:
-  uname() { echo "Windows msys"; } # Emulate Windows OS.
+  uname() { echo 'msys'; } # Emulate Windows OS.
   command() { return 0; } # Emulate command found.
   expectedExitCode='0';
   commandToCheck='python';
@@ -489,7 +490,7 @@ testCheckCommand() {
 
   # Validate the exit code is 0 if python command does NOT exist on Windows OS.
   # Setup mocks:
-  uname() { echo "Windows msys"; } # Emulate Windows OS.
+  uname() { echo 'msys'; } # Emulate Windows OS.
   command() { return 1; } # Emulate command not found.
   expectedExitCode='0';
   commandToCheck='python';
@@ -533,6 +534,48 @@ testAddCommandToPath() {
   assertEqual "${expectedExitCode}" "${returnValue}" "${_testName} ${commandToAdd} was NOT added to PATH";
 }
 
+# Tests the parallelizeBuild function.
+testParallelizeBuild() {
+  _functionName='parallelizeBuild';
+  _testName="test$(capitalizeFirstletter ${_functionName})";
+
+  _clearEnvVariables;
+  # Validate the exit code is 0 if using Linux, and the 'MAKEFLAGS' is properly set.
+  expectedExitCode='0';
+  nproc() { echo '11'; } # Emulate 11 CPU cores available.
+  eval '${_functionName} > /dev/null';
+  returnValue="$?";
+  unset -f nproc; # Restore original function.
+  expected='-j11';
+  _validateEnvVariableValue 'MAKEFLAGS' "${expected}" "${_testName} Linux";
+  assertEqual "${expectedExitCode}" "${returnValue}" "${_testName} Linux";
+
+  _clearEnvVariables;
+  # Validate the exit code is 0 if using MacOS, and the 'MAKEFLAGS' is properly set.
+  # Setup mocks:
+  uname() { echo 'darwin'; } # Emulate MacOS.
+  sysctl() { echo '22'; } # Emulate 22 CPU cores available.
+  expectedExitCode='0';
+  eval '${_functionName} > /dev/null';
+  returnValue="$?";
+  unset -f uname sysctl; # Restore original functions.
+  expected='-j22';
+  _validateEnvVariableValue 'MAKEFLAGS' "${expected}" "${_testName} MacOS";  
+  assertEqual "${expectedExitCode}" "${returnValue}" "${_testName} MacOS";
+
+  _clearEnvVariables;
+  # Validate the exit code is 0 if using Windows, and the 'MAKEFLAGS' is NOT set.
+  # Setup mocks:
+  uname() { echo 'msys'; } # Emulate Windows OS.
+  expectedExitCode='0';
+  eval '${_functionName} > /dev/null';
+  returnValue="$?";
+  unset -f uname; # Restore original function.
+  expected='';
+  _validateEnvVariablesDoNotExist "${_testName} Windows" 'MAKEFLAGS';
+  assertEqual "${expectedExitCode}" "${returnValue}" "${_testName} Windows";
+}
+
 
 set +eu;
 # Execute all tests.
@@ -547,6 +590,7 @@ testParseArgumentsToCheck;
 testPrintCommandExitCode;
 testCheckCommand;
 testAddCommandToPath;
+testParallelizeBuild;
 set -eu;
 
 # Exit and return whether the tests passed or failed.

@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-04-07T08:49:21.235Z",
+    "detectionDate": "2024-04-07T11:17:29.076Z",
     "formats": {
       "java": {
         "sources": {
@@ -2121,14 +2121,14 @@
             "newClones": 0
           },
           "scripts/test/helper_functions.sh": {
-            "lines": 555,
-            "tokens": 3955,
+            "lines": 599,
+            "tokens": 4291,
             "sources": 1,
             "clones": 7,
             "duplicatedLines": 117,
             "duplicatedTokens": 839,
-            "percentage": 21.08,
-            "percentageTokens": 21.21,
+            "percentage": 19.53,
+            "percentageTokens": 19.55,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2194,7 +2194,7 @@
           },
           "scripts/helper_functions.sh": {
             "lines": 526,
-            "tokens": 3702,
+            "tokens": 3730,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2254,14 +2254,14 @@
           }
         },
         "total": {
-          "lines": 4089,
-          "tokens": 26994,
+          "lines": 4133,
+          "tokens": 27358,
           "sources": 13,
           "clones": 12,
           "duplicatedLines": 263,
           "duplicatedTokens": 1345,
-          "percentage": 6.43,
-          "percentageTokens": 4.98,
+          "percentage": 6.36,
+          "percentageTokens": 4.92,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3164,14 +3164,14 @@
       }
     },
     "total": {
-      "lines": 29054,
-      "tokens": 222225,
+      "lines": 29098,
+      "tokens": 222589,
       "sources": 250,
       "clones": 120,
       "duplicatedLines": 1604,
       "duplicatedTokens": 13831,
-      "percentage": 5.52,
-      "percentageTokens": 6.22,
+      "percentage": 5.51,
+      "percentageTokens": 6.21,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -6100,17 +6100,17 @@
       "tokens": 0,
       "firstFile": {
         "name": "scripts/test/helper_functions.sh",
-        "start": 139,
-        "end": 150,
+        "start": 140,
+        "end": 151,
         "startLoc": {
-          "line": 139,
+          "line": 140,
           "column": 2,
-          "position": 562
+          "position": 568
         },
         "endLoc": {
-          "line": 150,
+          "line": 151,
           "column": 7,
-          "position": 641
+          "position": 647
         }
       },
       "secondFile": {
@@ -6136,32 +6136,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "scripts/test/helper_functions.sh",
-        "start": 297,
-        "end": 314,
+        "start": 298,
+        "end": 315,
         "startLoc": {
-          "line": 297,
+          "line": 298,
           "column": 5,
-          "position": 1822
+          "position": 1828
         },
         "endLoc": {
-          "line": 314,
+          "line": 315,
           "column": 50,
-          "position": 1938
+          "position": 1944
         }
       },
       "secondFile": {
         "name": "scripts/test/helper_functions.sh",
-        "start": 221,
-        "end": 238,
+        "start": 222,
+        "end": 239,
         "startLoc": {
-          "line": 221,
+          "line": 222,
           "column": 5,
-          "position": 1121
+          "position": 1127
         },
         "endLoc": {
-          "line": 238,
+          "line": 239,
           "column": 53,
-          "position": 1237
+          "position": 1243
         }
       }
     },
@@ -6172,32 +6172,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "scripts/test/helper_functions.sh",
-        "start": 372,
-        "end": 390,
+        "start": 373,
+        "end": 391,
         "startLoc": {
-          "line": 372,
+          "line": 373,
           "column": 16,
-          "position": 2507
+          "position": 2513
         },
         "endLoc": {
-          "line": 390,
+          "line": 391,
           "column": 44,
-          "position": 2639
+          "position": 2645
         }
       },
       "secondFile": {
         "name": "scripts/test/helper_functions.sh",
-        "start": 296,
-        "end": 238,
+        "start": 297,
+        "end": 239,
         "startLoc": {
-          "line": 296,
+          "line": 297,
           "column": 12,
-          "position": 1806
+          "position": 1812
         },
         "endLoc": {
-          "line": 238,
+          "line": 239,
           "column": 53,
-          "position": 1237
+          "position": 1243
         }
       }
     },
@@ -6208,32 +6208,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "scripts/test/helper_functions.sh",
-        "start": 424,
-        "end": 442,
+        "start": 425,
+        "end": 443,
         "startLoc": {
-          "line": 424,
+          "line": 425,
           "column": 17,
-          "position": 2944
+          "position": 2950
         },
         "endLoc": {
-          "line": 442,
+          "line": 443,
           "column": 43,
-          "position": 3076
+          "position": 3082
         }
       },
       "secondFile": {
         "name": "scripts/test/helper_functions.sh",
-        "start": 296,
-        "end": 238,
+        "start": 297,
+        "end": 239,
         "startLoc": {
-          "line": 296,
+          "line": 297,
           "column": 12,
-          "position": 1806
+          "position": 1812
         },
         "endLoc": {
-          "line": 238,
+          "line": 239,
           "column": 53,
-          "position": 1237
+          "position": 1243
         }
       }
     },
