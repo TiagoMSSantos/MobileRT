@@ -477,7 +477,7 @@ parseArguments() {
         break;
         ;;
       esac
-    return;
+    return 0;
     done
   fi
 }

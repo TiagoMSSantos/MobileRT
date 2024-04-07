@@ -484,6 +484,7 @@ testCheckCommand() {
   commandToCheck='python';
   eval '$(${_functionName} "${commandToCheck}" > /dev/null)';
   returnValue="$?";
+  unset -f uname command; # Restore original functions.
   assertEqual "${expectedExitCode}" "${returnValue}" "${_testName} ${commandToCheck} exists on Windows OS";
 
   # Validate the exit code is 0 if python command does NOT exist on Windows OS.
@@ -494,7 +495,42 @@ testCheckCommand() {
   commandToCheck='python';
   eval '$(${_functionName} "${commandToCheck}" > /dev/null)';
   returnValue="$?";
+  unset -f uname command; # Restore original functions.
   assertEqual "${expectedExitCode}" "${returnValue}" "${_testName} ${commandToCheck} does NOT exist on Windows OS";
+}
+
+# Tests the addCommandToPath function.
+testAddCommandToPath() {
+  _functionName='addCommandToPath';
+  _testName="test$(capitalizeFirstletter ${_functionName})";
+
+  # Validate the exit code is 0 if the command 'wc' was already added to the PATH environment variable.
+  expectedExitCode='0';
+  commandToAdd='wc';
+  eval '$(${_functionName} "${commandToAdd}" > /dev/null)';
+  returnValue="$?";
+  assertEqual "${expectedExitCode}" "${returnValue}" "${_testName} ${commandToAdd} was already in PATH";
+
+  # Validate the exit code is 0 after adding the command 'wc' to the PATH environment variable.
+  # Setup mocks:
+  command() { return 1; } # Emulate command not found.
+  expectedExitCode='0';
+  commandToAdd='wc';
+  eval '$(${_functionName} "${commandToAdd}" > /dev/null)';
+  returnValue="$?";
+  unset -f command; # Restore original function.
+  assertEqual "${expectedExitCode}" "${returnValue}" "${_testName} ${commandToAdd} was added to PATH";
+
+  # Validate the exit code is 1 if adding the command 'wc' is not successful since the command was not found.
+  # Setup mocks:
+  command() { return 1; } # Emulate command not found.
+  find() { echo ''; } # Emulate command was not found.
+  expectedExitCode='1';
+  commandToAdd='wc';
+  eval '$(${_functionName} "${commandToAdd}" > /dev/null)';
+  returnValue="$?";
+  unset -f command find; # Restore original functions.
+  assertEqual "${expectedExitCode}" "${returnValue}" "${_testName} ${commandToAdd} was NOT added to PATH";
 }
 
 
@@ -510,6 +546,7 @@ testParseArgumentsToTestAndroid;
 testParseArgumentsToCheck;
 testPrintCommandExitCode;
 testCheckCommand;
+testAddCommandToPath;
 set -eu;
 
 # Exit and return whether the tests passed or failed.

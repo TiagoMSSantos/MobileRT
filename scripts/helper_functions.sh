@@ -338,7 +338,7 @@ _killProcessUsingFile() {
     process_id_using_file=$(echo "${processes_using_file}" | tr -s ' ' | cut -d ' ' -f 2 | head -1);
     if ps aux | grep -i "${process_id_using_file}" | grep -iq 'android-studio'; then
       echo "Not killing process: '${process_id_using_file}' because it is the Android Studio";
-      return;
+      return 0;
     else
       echo "Going to kill this process: '${process_id_using_file}'";
       kill -KILL "${process_id_using_file}" || true;
@@ -485,7 +485,7 @@ addCommandToPath() {
   echo "Adding '${1}' to PATH.";
   if command -v "${1}" > /dev/null; then
     echo "Command '${1}' already available.";
-    return;
+    return 0;
   fi
   COMMAND_PATHS=$(find /opt/intel/oneapi/compiler ~/.. /usr /c/Program Files -type f -iname "${1}" -or -iname "${1}.exe" 2> /dev/null | grep -i "bin" || true);
   for COMMAND_PATH in ${COMMAND_PATHS}; do
@@ -495,6 +495,10 @@ addCommandToPath() {
     export PATH="${PATH}:${COMMAND_PATH%/"${1}"}";
     export PATH="${PATH}:${COMMAND_PATH%/"${1}.exe"}";
   done;
+  if [ -z "${COMMAND_PATHS}" ]; then
+    echo "Command '${1}' was not found in the system.";
+    return 1;
+  fi
 
   echo "PATH: ${PATH}";
 }
