@@ -115,18 +115,18 @@ gather_logs_func() {
   androidLogcat="${PWD}/${reports_path}/logcat_${type}.log";
   androidTestsReport="${PWD}/${reports_path}/androidTests/connected/${type}/index.html";
 
-  validateFileExistsAndHasSomeContent "${androidLogcat}";
+  checkPathExists . "${androidLogcat}";
   printf '\e]8;;file://'"%s"'\aClick here to check the whole logcat.\e]8;;\a  ' "${androidLogcat}";
 
-  validateFileExistsAndHasSomeContent "${appLog}";
+  checkPathExists . "${appLog}";
   printf '\e]8;;file://'"%s"'\aClick here to check the app log.\e]8;;\a\n' "${appLog}";
 
-  validateFileExistsAndHasSomeContent "${androidTestsReport}";
+  checkPathExists . "${androidTestsReport}";
   printf '\e]8;;file://'"%s"'\aClick here to check the Android tests report.\e]8;;\a\n' "${androidTestsReport}";
 
   if [ "${type}" != 'release' ] && ! echo "${run_test}" | grep -q "rep_"; then
     jacocoTestReport="${PWD}/${reports_path}/jacoco/jacocoTestReport/html/index.html";
-    validateFileExistsAndHasSomeContent "${jacocoTestReport}";
+    checkPathExists . "${jacocoTestReport}";
     printf '\e]8;;file://'"%s"'\aClick here to check the Code coverage report.\e]8;;\a\n' "${jacocoTestReport}";
   fi
 }

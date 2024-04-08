@@ -313,10 +313,11 @@ checkLastModifiedFiles() {
 # * file that should also exist in the provided path
 checkPathExists() {
   du -h -d 1 "${1}";
-  if [ $# -eq 1 ] ; then
+  returnValue="$?";
+  if [ "${returnValue}" = '0' ] && [ $# -eq 1 ] ; then
     return 0;
   fi
-  validateFileExistsAndHasSomeContent "${1}"/"${2}";
+  _validateFileExistsAndHasSomeContent "${1}"/"${2}";
 }
 
 # Change the mode of all binaries/scripts to be able to be executed.
@@ -472,10 +473,10 @@ generateCodeCoverage() {
 
 # Validate generated files for code coverage.
 _validateCodeCoverage() {
-  validateFileExistsAndHasSomeContent code_coverage_base.info;
-  validateFileExistsAndHasSomeContent code_coverage_test.info;
-  validateFileExistsAndHasSomeContent code_coverage.info;
-  validateFileExistsAndHasSomeContent code_coverage_filtered.info;
+  _validateFileExistsAndHasSomeContent code_coverage_base.info;
+  _validateFileExistsAndHasSomeContent code_coverage_test.info;
+  _validateFileExistsAndHasSomeContent code_coverage.info;
+  _validateFileExistsAndHasSomeContent code_coverage_filtered.info;
 }
 
 # Add command to the PATH environment variable.
@@ -507,7 +508,7 @@ addCommandToPath() {
 # Also check if the file has some content.
 # Parameters
 # 1) path to file
-validateFileExistsAndHasSomeContent() {
+_validateFileExistsAndHasSomeContent() {
   filePath="${1}";
   if [ ! -f "${filePath}" ]; then
     echo "File '${filePath}' does NOT exist." >&2;

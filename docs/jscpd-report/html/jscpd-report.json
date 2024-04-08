@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-04-07T11:17:29.076Z",
+    "detectionDate": "2024-04-08T07:33:15.053Z",
     "formats": {
       "java": {
         "sources": {
@@ -2121,14 +2121,14 @@
             "newClones": 0
           },
           "scripts/test/helper_functions.sh": {
-            "lines": 599,
-            "tokens": 4291,
+            "lines": 664,
+            "tokens": 4792,
             "sources": 1,
             "clones": 7,
             "duplicatedLines": 117,
             "duplicatedTokens": 839,
-            "percentage": 19.53,
-            "percentageTokens": 19.55,
+            "percentage": 17.62,
+            "percentageTokens": 17.51,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2146,7 +2146,7 @@
           },
           "scripts/run_tests_android.sh": {
             "lines": 672,
-            "tokens": 4867,
+            "tokens": 4875,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2158,13 +2158,13 @@
           },
           "scripts/run_tests.sh": {
             "lines": 123,
-            "tokens": 494,
+            "tokens": 496,
             "sources": 1,
             "clones": 3,
             "duplicatedLines": 131,
             "duplicatedTokens": 373,
             "percentage": 106.5,
-            "percentageTokens": 75.51,
+            "percentageTokens": 75.2,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2193,8 +2193,8 @@
             "newClones": 0
           },
           "scripts/helper_functions.sh": {
-            "lines": 526,
-            "tokens": 3730,
+            "lines": 527,
+            "tokens": 3752,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2242,26 +2242,26 @@
           },
           "scripts/check_android.sh": {
             "lines": 120,
-            "tokens": 461,
+            "tokens": 463,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 44,
             "duplicatedTokens": 124,
             "percentage": 36.67,
-            "percentageTokens": 26.9,
+            "percentageTokens": 26.78,
             "newDuplicatedLines": 0,
             "newClones": 0
           }
         },
         "total": {
-          "lines": 4133,
-          "tokens": 27358,
+          "lines": 4199,
+          "tokens": 27893,
           "sources": 13,
           "clones": 12,
           "duplicatedLines": 263,
           "duplicatedTokens": 1345,
-          "percentage": 6.36,
-          "percentageTokens": 4.92,
+          "percentage": 6.26,
+          "percentageTokens": 4.82,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3164,14 +3164,14 @@
       }
     },
     "total": {
-      "lines": 29098,
-      "tokens": 222589,
+      "lines": 29164,
+      "tokens": 223124,
       "sources": 250,
       "clones": 120,
       "duplicatedLines": 1604,
       "duplicatedTokens": 13831,
-      "percentage": 5.51,
-      "percentageTokens": 6.21,
+      "percentage": 5.5,
+      "percentageTokens": 6.2,
       "newDuplicatedLines": 0,
       "newClones": 0
     }

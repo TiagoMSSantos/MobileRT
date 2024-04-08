@@ -576,6 +576,70 @@ testParallelizeBuild() {
   assertEqual "${expectedExitCode}" "${returnValue}" "${_testName} Windows";
 }
 
+# Tests the checkPathExists function.
+testCheckPathExists() {
+  _functionName='checkPathExists';
+  _testName="test$(capitalizeFirstletter ${_functionName})";
+
+  # Validate the exit code is 1 if path do NOT exist.
+  expectedExitCode='1';
+  pathToValidate='path/that/does/not/exist';
+  eval '${_functionName} "${pathToValidate}" > /dev/null 2>&1';
+  returnValue="$?";
+  assertEqual "${expectedExitCode}" "${returnValue}" "${_testName} path do NOT exist";
+
+  # Validate the exit code is 0 if path DOES exist.
+  expectedExitCode='0';
+  pathToValidate='app';
+  eval '${_functionName} "${pathToValidate}" > /dev/null';
+  returnValue="$?";
+  assertEqual "${expectedExitCode}" "${returnValue}" "${_testName} path DOES exist";
+
+  # Validate the exit code is 1 if path exists but the file does NOT.
+  expectedExitCode='1';
+  pathToValidate='app';
+  fileToValidate='fileThatDoesNotExist';
+  eval '${_functionName} "${pathToValidate}" "${fileToValidate}" > /dev/null 2>&1';
+  returnValue="$?";
+  assertEqual "${expectedExitCode}" "${returnValue}" "${_testName} file do NOT exist";
+
+  # Validate the exit code is 1 if path & file exist but the file is EMPTY.
+  expectedExitCode='1';
+  pathToValidate='app';
+  fileToValidate='emptyFile.log';
+  rm -f "${pathToValidate}/${fileToValidate}";
+  touch "${pathToValidate}/${fileToValidate}";
+  eval '${_functionName} "${pathToValidate}" "${fileToValidate}" > /dev/null 2>&1';
+  returnValue="$?";
+  assertEqual "${expectedExitCode}" "${returnValue}" "${_testName} file is empty";
+
+  # Validate the exit code is 1 if path & file exist but the file has less than 200 words in it.
+  expectedExitCode='1';
+  pathToValidate='app';
+  fileToValidate='fileWithLessThan200words.log';
+  rm -f "${pathToValidate}/${fileToValidate}";
+  touch "${pathToValidate}/${fileToValidate}";
+  for VARIABLE in $(seq 1 199); do
+    echo "${VARIABLE}" >> "${pathToValidate}/${fileToValidate}";
+  done;
+  eval '${_functionName} "${pathToValidate}" "${fileToValidate}" > /dev/null 2>&1';
+  returnValue="$?";
+  assertEqual "${expectedExitCode}" "${returnValue}" "${_testName} file has less than 200 words";
+
+  # Validate the exit code is 0 if path & file exist and the file has more or equal than 200 words in it.
+  expectedExitCode='0';
+  pathToValidate='app';
+  fileToValidate='fileWith200words.log';
+  rm -f "${pathToValidate}/${fileToValidate}";
+  touch "${pathToValidate}/${fileToValidate}";
+  for VARIABLE in $(seq 1 200); do
+    echo "${VARIABLE}" >> "${pathToValidate}/${fileToValidate}";
+  done;
+  eval '${_functionName} "${pathToValidate}" "${fileToValidate}" > /dev/null';
+  returnValue="$?";
+  assertEqual "${expectedExitCode}" "${returnValue}" "${_testName} file has 200 words";
+}
+
 
 set +eu;
 # Execute all tests.
@@ -591,6 +655,7 @@ testPrintCommandExitCode;
 testCheckCommand;
 testAddCommandToPath;
 testParallelizeBuild;
+testCheckPathExists;
 set -eu;
 
 # Exit and return whether the tests passed or failed.
