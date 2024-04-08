@@ -111,23 +111,26 @@ gather_logs_func() {
   echo "Filtered logcat of the app '${pid_app}' to logcat_app_${type}.log";
   set -e;
 
-  appLog="${PWD}/${reports_path}/logcat_app_${type}.log";
-  androidLogcat="${PWD}/${reports_path}/logcat_${type}.log";
-  androidTestsReport="${PWD}/${reports_path}/androidTests/connected/${type}/index.html";
+  appLogPath="${PWD}/${reports_path}";
+  appLog="logcat_app_${type}.log";
+  androidLogcat="logcat_${type}.log";
+  androidTestsReportPath="${PWD}/${reports_path}/androidTests/connected/${type}";
+  androidTestsReport='index.html';
 
-  checkPathExists . "${androidLogcat}";
-  printf '\e]8;;file://'"%s"'\aClick here to check the whole logcat.\e]8;;\a  ' "${androidLogcat}";
+  checkPathExists "${appLogPath}" "${androidLogcat}";
+  printf '\e]8;;file://'"%s"'\aClick here to check the whole logcat.\e]8;;\a  ' "${appLogPath}/${androidLogcat}";
 
-  checkPathExists . "${appLog}";
-  printf '\e]8;;file://'"%s"'\aClick here to check the app log.\e]8;;\a\n' "${appLog}";
+  checkPathExists "${appLogPath}" "${appLog}";
+  printf '\e]8;;file://'"%s"'\aClick here to check the app log.\e]8;;\a\n' "${appLogPath}/${appLog}";
 
-  checkPathExists . "${androidTestsReport}";
-  printf '\e]8;;file://'"%s"'\aClick here to check the Android tests report.\e]8;;\a\n' "${androidTestsReport}";
+  checkPathExists "${androidTestsReportPath}" "${androidTestsReport}";
+  printf '\e]8;;file://'"%s"'\aClick here to check the Android tests report.\e]8;;\a\n' "${androidTestsReportPath}/${androidTestsReport}";
 
   if [ "${type}" != 'release' ] && ! echo "${run_test}" | grep -q "rep_"; then
-    jacocoTestReport="${PWD}/${reports_path}/jacoco/jacocoTestReport/html/index.html";
-    checkPathExists . "${jacocoTestReport}";
-    printf '\e]8;;file://'"%s"'\aClick here to check the Code coverage report.\e]8;;\a\n' "${jacocoTestReport}";
+    jacocoTestReportPath="${PWD}/${reports_path}/jacoco/jacocoTestReport/html";
+    jacocoTestReport='index.html';
+    checkPathExists "${jacocoTestReportPath}" "${jacocoTestReport}";
+    printf '\e]8;;file://'"%s"'\aClick here to check the Code coverage report.\e]8;;\a\n' "${jacocoTestReportPath}/${jacocoTestReport}";
   fi
 }
 

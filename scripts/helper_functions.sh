@@ -312,7 +312,7 @@ checkLastModifiedFiles() {
 # * path that should exist
 # * file that should also exist in the provided path
 checkPathExists() {
-  du -h -d 1 "${1}";
+  du -h -d 1 "${1}" > /dev/null;
   returnValue="$?";
   if [ "${returnValue}" = '0' ] && [ $# -eq 1 ] ; then
     return 0;

@@ -109,9 +109,10 @@ export GRADLE_OPTS="-Xms4G -Xmx4G -XX:ActiveProcessorCount=3";
 createReportsFolders;
 runLinter;
 
-linterReport="${PWD}/${reports_path}/lint-results-debug.html";
-checkPathExists . "${linterReport}";
-printf '\n\e]8;;file://'"%s"'\aClick here to check the Linter report.\e]8;;\a\n' "${linterReport}";
+linterReportPath="${PWD}/${reports_path}";
+linterReport='lint-results-debug.html';
+checkPathExists "${linterReportPath}" "${linterReport}";
+printf '\n\e]8;;file://'"%s"'\aClick here to check the Linter report.\e]8;;\a\n' "${linterReportPath}/${linterReport}";
 
 ###############################################################################
 # Exit code
