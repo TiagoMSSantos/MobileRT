@@ -3,6 +3,7 @@ ignore:
   - "**/Unit_Testing/**"
   - "**/test/**"
   - "**/androidTest/**"
+  - "gradlew"
 
 codecov:
   require_ci_to_pass: true
