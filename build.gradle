@@ -52,7 +52,7 @@ buildscript {
         androidX_test_rules_version = '1.5.0'
         androidX_test_monitor_version = '1.6.1'
         androidX_test_runner_version = '1.5.2'
-        spring_version = '6.1.4'
+        spring_version = '6.1.6'
 
         // Unit tests dependencies
         assertj_version = '3.25.3'
