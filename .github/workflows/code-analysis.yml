@@ -195,9 +195,9 @@ jobs:
     - name: Validate Gradle Wrapper
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && matrix.language == 'java'
-      uses: gradle/wrapper-validation-action@v3
+      uses: gradle/actions/wrapper-validation@v3
       with:
-        # Check available parameters in: https://github.com/gradle/wrapper-validation-action/blob/main/action.yml
+        # Check available parameters in: https://github.com/gradle/actions/blob/main/wrapper-validation/action.yml
         min-wrapper-count: 1
         allow-snapshots: false
         allow-checksums: ''
