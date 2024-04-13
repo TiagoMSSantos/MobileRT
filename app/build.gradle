@@ -272,11 +272,11 @@ android {
 
     // Set Java version
     compileOptions {
-        setTargetCompatibility JavaVersion.VERSION_17
-        setSourceCompatibility JavaVersion.VERSION_17
+        setTargetCompatibility JavaVersion.VERSION_21
+        setSourceCompatibility JavaVersion.VERSION_21
     }
     kotlinOptions {
-        setJvmTarget JavaVersion.VERSION_17.toString()
+        setJvmTarget JavaVersion.VERSION_21.toString()
         freeCompilerArgs += [
             '-opt-in=kotlin.RequiresOptIn',
             '-opt-in=kotlinx.coroutines.DelicateCoroutinesApi',
