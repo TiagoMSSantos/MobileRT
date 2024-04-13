@@ -15,6 +15,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.nio.ByteBuffer;
 
+import puscas.mobilertapp.constants.Constants;
 import puscas.mobilertapp.exceptions.FailureException;
 
 /**
@@ -66,55 +67,76 @@ public final class UtilsGlMatricesTest {
     public void testCreateProjectionMatrix() {
         PowerMock.mockStaticPartialNice(Matrix.class, "perspectiveM", "orthoM");
         final float[] expectedEmptyArray = new float[]{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f };
-        final ByteBuffer mockedCamera = EasyMock.mock(ByteBuffer.class);
+        final ByteBuffer camera = ByteBuffer.allocate(UtilsGlMatrices.INDEX_SIZEY + Constants.BYTES_IN_FLOAT);
         final int width = 10;
         final int height = 10;
 
         mockMatrixMethods(0, 0);
-        mockCamera(mockedCamera, 0.0f, 0.0f, 0.0f, 0.0f);
-        Assertions.assertThat(UtilsGlMatrices.createProjectionMatrix(mockedCamera, width, height))
+        camera.putFloat(UtilsGlMatrices.INDEX_FOVX, 0.0f);
+        camera.putFloat(UtilsGlMatrices.INDEX_FOVY, 0.0f);
+        camera.putFloat(UtilsGlMatrices.INDEX_SIZEH, 0.0f);
+        camera.putFloat(UtilsGlMatrices.INDEX_SIZEY, 0.0f);
+        Assertions.assertThat(UtilsGlMatrices.createProjectionMatrix(camera, width, height))
             .as("The projection matrix should be zero")
             .containsOnly(expectedEmptyArray);
         PowerMock.verifyAll();
 
         mockMatrixMethods(0, 0);
-        mockCamera(mockedCamera, 1.0f, 0.0f, 0.0f, 0.0f);
-        Assertions.assertThat(UtilsGlMatrices.createProjectionMatrix(mockedCamera, width, height))
+        camera.putFloat(UtilsGlMatrices.INDEX_FOVX, 1.0f);
+        camera.putFloat(UtilsGlMatrices.INDEX_FOVY, 0.0f);
+        camera.putFloat(UtilsGlMatrices.INDEX_SIZEH, 0.0f);
+        camera.putFloat(UtilsGlMatrices.INDEX_SIZEY, 0.0f);
+        Assertions.assertThat(UtilsGlMatrices.createProjectionMatrix(camera, width, height))
             .as("The projection matrix should be zero")
             .containsOnly(expectedEmptyArray);
         PowerMock.verifyAll();
 
         mockMatrixMethods(0, 0);
-        mockCamera(mockedCamera, 0.0f, 1.0f, 0.0f, 0.0f);
-        Assertions.assertThat(UtilsGlMatrices.createProjectionMatrix(mockedCamera, width, height))
+        camera.putFloat(UtilsGlMatrices.INDEX_FOVX, 0.0f);
+        camera.putFloat(UtilsGlMatrices.INDEX_FOVY, 1.0f);
+        camera.putFloat(UtilsGlMatrices.INDEX_SIZEH, 0.0f);
+        camera.putFloat(UtilsGlMatrices.INDEX_SIZEY, 0.0f);
+        Assertions.assertThat(UtilsGlMatrices.createProjectionMatrix(camera, width, height))
             .as("The projection matrix should be zero")
             .containsOnly(expectedEmptyArray);
         PowerMock.verifyAll();
 
         mockMatrixMethods(1, 0);
-        mockCamera(mockedCamera, 1.0f, 1.0f, 0.0f, 0.0f);
-        Assertions.assertThat(UtilsGlMatrices.createProjectionMatrix(mockedCamera, width, height))
+        camera.putFloat(UtilsGlMatrices.INDEX_FOVX, 1.0f);
+        camera.putFloat(UtilsGlMatrices.INDEX_FOVY, 1.0f);
+        camera.putFloat(UtilsGlMatrices.INDEX_SIZEH, 0.0f);
+        camera.putFloat(UtilsGlMatrices.INDEX_SIZEY, 0.0f);
+        Assertions.assertThat(UtilsGlMatrices.createProjectionMatrix(camera, width, height))
             .as("The projection matrix should be filled with perspective camera's data")
             .containsOnly(projectionMatrixPerspectiveCamera);
         PowerMock.verifyAll();
 
         mockMatrixMethods(0, 0);
-        mockCamera(mockedCamera, 0.0f, 0.0f, 1.0f, 0.0f);
-        Assertions.assertThat(UtilsGlMatrices.createProjectionMatrix(mockedCamera, width, height))
+        camera.putFloat(UtilsGlMatrices.INDEX_FOVX, 0.0f);
+        camera.putFloat(UtilsGlMatrices.INDEX_FOVY, 0.0f);
+        camera.putFloat(UtilsGlMatrices.INDEX_SIZEH, 1.0f);
+        camera.putFloat(UtilsGlMatrices.INDEX_SIZEY, 0.0f);
+        Assertions.assertThat(UtilsGlMatrices.createProjectionMatrix(camera, width, height))
             .as("The projection matrix should be zero")
             .containsOnly(expectedEmptyArray);
         PowerMock.verifyAll();
 
         mockMatrixMethods(0, 0);
-        mockCamera(mockedCamera, 0.0f, 0.0f, 0.0f, 1.0f);
-        Assertions.assertThat(UtilsGlMatrices.createProjectionMatrix(mockedCamera, width, height))
+        camera.putFloat(UtilsGlMatrices.INDEX_FOVX, 0.0f);
+        camera.putFloat(UtilsGlMatrices.INDEX_FOVY, 0.0f);
+        camera.putFloat(UtilsGlMatrices.INDEX_SIZEH, 0.0f);
+        camera.putFloat(UtilsGlMatrices.INDEX_SIZEY, 1.0f);
+        Assertions.assertThat(UtilsGlMatrices.createProjectionMatrix(camera, width, height))
             .as("The projection matrix should be zero")
             .containsOnly(expectedEmptyArray);
         PowerMock.verifyAll();
 
         mockMatrixMethods(0, 1);
-        mockCamera(mockedCamera, 0.0f, 0.0f, 1.0f, 1.0f);
-        Assertions.assertThat(UtilsGlMatrices.createProjectionMatrix(mockedCamera, width, height))
+        camera.putFloat(UtilsGlMatrices.INDEX_FOVX, 0.0f);
+        camera.putFloat(UtilsGlMatrices.INDEX_FOVY, 0.0f);
+        camera.putFloat(UtilsGlMatrices.INDEX_SIZEH, 1.0f);
+        camera.putFloat(UtilsGlMatrices.INDEX_SIZEY, 1.0f);
+        Assertions.assertThat(UtilsGlMatrices.createProjectionMatrix(camera, width, height))
             .as("The projection matrix should be filled with orthographic camera's data")
             .containsOnly(projectionMatrixOrthographicCamera);
         PowerMock.verifyAll();
@@ -158,26 +180,6 @@ public final class UtilsGlMatricesTest {
                 .times(timesOrthoM);
         }
         PowerMock.replayAll();
-    }
-
-    /**
-     * Mocks the {@link ByteBuffer camera's} data.
-     *
-     * @param mockedCamera The {@link ByteBuffer mocked camera}.
-     * @param fovX         The FOV X of perspective camera.
-     * @param fovY         The FOV Y of perspective camera.
-     * @param sizeH        The horizontal size.
-     * @param sizeY        The vertical size.
-     */
-    private void mockCamera(final ByteBuffer mockedCamera,
-                            final float fovX, final float fovY,
-                            final float sizeH, final float sizeY) {
-        EasyMock.reset(mockedCamera);
-        EasyMock.expect(mockedCamera.getFloat(UtilsGlMatrices.INDEX_FOVX)).andReturn(fovX).anyTimes();
-        EasyMock.expect(mockedCamera.getFloat(UtilsGlMatrices.INDEX_FOVY)).andReturn(fovY).anyTimes();
-        EasyMock.expect(mockedCamera.getFloat(UtilsGlMatrices.INDEX_SIZEH)).andReturn(sizeH).anyTimes();
-        EasyMock.expect(mockedCamera.getFloat(UtilsGlMatrices.INDEX_SIZEY)).andReturn(sizeY).anyTimes();
-        PowerMock.replayAll(mockedCamera);
     }
 
 }

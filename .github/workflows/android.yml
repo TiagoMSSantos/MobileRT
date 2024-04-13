@@ -109,7 +109,7 @@ jobs:
       uses: actions/setup-java@v4
       with:
         # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml
-        java-version: 17
+        java-version: 21
         distribution: zulu
         java-package: jdk
         architecture: x64
@@ -347,7 +347,7 @@ jobs:
       uses: actions/setup-java@v4
       with:
         # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml
-        java-version: 17
+        java-version: 21
         distribution: zulu
         java-package: jdk
         architecture: x64
@@ -553,7 +553,7 @@ jobs:
       uses: actions/setup-java@v4
       with:
         # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml
-        java-version: 17
+        java-version: 21
         distribution: zulu
         java-package: jdk
         architecture: x64
@@ -686,8 +686,8 @@ jobs:
       with:
         # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml
         # Sonar recommended JVM: https://docs.sonarqube.org/latest/requirements/prerequisites-and-overview/
-        java-version: 17
-        distribution: oracle
+        java-version: 21
+        distribution: zulu
         java-package: jdk
         architecture: x64
         check-latest: false

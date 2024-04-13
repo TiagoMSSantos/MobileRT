@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-04-13T09:28:09.668Z",
+    "detectionDate": "2024-04-13T13:12:09.269Z",
     "formats": {
       "java": {
         "sources": {
@@ -41,14 +41,14 @@
             "newClones": 0
           },
           "app/src/test/java/puscas/mobilertapp/utils/UtilsGlMatricesTest.java": {
-            "lines": 182,
-            "tokens": 1710,
+            "lines": 184,
+            "tokens": 1815,
             "sources": 1,
-            "clones": 4,
-            "duplicatedLines": 33,
-            "duplicatedTokens": 327,
-            "percentage": 18.13,
-            "percentageTokens": 19.12,
+            "clones": 10,
+            "duplicatedLines": 83,
+            "duplicatedTokens": 879,
+            "percentage": 45.11,
+            "percentageTokens": 48.43,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -1002,14 +1002,14 @@
           }
         },
         "total": {
-          "lines": 10132,
-          "tokens": 70915,
+          "lines": 10134,
+          "tokens": 71020,
           "sources": 83,
-          "clones": 57,
-          "duplicatedLines": 568,
-          "duplicatedTokens": 5079,
-          "percentage": 5.61,
-          "percentageTokens": 7.16,
+          "clones": 60,
+          "duplicatedLines": 593,
+          "duplicatedTokens": 5355,
+          "percentage": 5.85,
+          "percentageTokens": 7.54,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -1977,10 +1977,10 @@
             "tokens": 6239,
             "sources": 1,
             "clones": 16,
-            "duplicatedLines": 451,
-            "duplicatedTokens": 2896,
-            "percentage": 51.43,
-            "percentageTokens": 46.42,
+            "duplicatedLines": 455,
+            "duplicatedTokens": 2920,
+            "percentage": 51.88,
+            "percentageTokens": 46.8,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2086,10 +2086,10 @@
           "tokens": 17548,
           "sources": 23,
           "clones": 17,
-          "duplicatedLines": 439,
-          "duplicatedTokens": 2679,
-          "percentage": 16.24,
-          "percentageTokens": 15.27,
+          "duplicatedLines": 441,
+          "duplicatedTokens": 2691,
+          "percentage": 16.32,
+          "percentageTokens": 15.34,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3164,14 +3164,14 @@
       }
     },
     "total": {
-      "lines": 29170,
-      "tokens": 223179,
+      "lines": 29172,
+      "tokens": 223284,
       "sources": 250,
-      "clones": 120,
-      "duplicatedLines": 1604,
-      "duplicatedTokens": 13831,
-      "percentage": 5.5,
-      "percentageTokens": 6.2,
+      "clones": 123,
+      "duplicatedLines": 1631,
+      "duplicatedTokens": 14119,
+      "percentage": 5.59,
+      "percentageTokens": 6.32,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -3292,17 +3292,17 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/utils/UtilsGlMatricesTest.java",
-        "start": 51,
-        "end": 57,
+        "start": 52,
+        "end": 58,
         "startLoc": {
-          "line": 51,
+          "line": 52,
           "column": 16,
-          "position": 377
+          "position": 388
         },
         "endLoc": {
-          "line": 57,
+          "line": 58,
           "column": 46,
-          "position": 440
+          "position": 451
         }
       },
       "secondFile": {
@@ -3323,37 +3323,145 @@
     },
     {
       "format": "java",
-      "lines": 8,
-      "fragment": "ockedCamera, 1.0f, 0.0f, 0.0f, 0.0f);\n        Assertions.assertThat(UtilsGlMatrices.createProjectionMatrix(mockedCamera, width, height))\n            .as(\"The projection matrix should be zero\")\n            .containsOnly(expectedEmptyArray);\n        PowerMock.verifyAll();\n\n        mockMatrixMethods(0, 0);\n        mockCamera(m",
+      "lines": 11,
+      "fragment": ".INDEX_FOVX, 1.0f);\n        camera.putFloat(UtilsGlMatrices.INDEX_FOVY, 0.0f);\n        camera.putFloat(UtilsGlMatrices.INDEX_SIZEH, 0.0f);\n        camera.putFloat(UtilsGlMatrices.INDEX_SIZEY, 0.0f);\n        Assertions.assertThat(UtilsGlMatrices.createProjectionMatrix(camera, width, height))\n            .as(\"The projection matrix should be zero\")\n            .containsOnly(expectedEmptyArray);\n        PowerMock.verifyAll();\n\n        mockMatrixMethods(0, 0);\n        camera.putFloat(UtilsGlMatrices",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/utils/UtilsGlMatricesTest.java",
-        "start": 81,
-        "end": 88,
+        "start": 85,
+        "end": 95,
         "startLoc": {
-          "line": 81,
+          "line": 85,
           "column": 5,
-          "position": 698
+          "position": 756
         },
         "endLoc": {
-          "line": 88,
+          "line": 95,
           "column": 5,
-          "position": 769
+          "position": 864
         }
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/utils/UtilsGlMatricesTest.java",
-        "start": 74,
-        "end": 81,
+        "start": 75,
+        "end": 85,
         "startLoc": {
-          "line": 74,
+          "line": 75,
           "column": 5,
-          "position": 626
+          "position": 647
         },
         "endLoc": {
-          "line": 81,
+          "line": 85,
           "column": 5,
-          "position": 697
+          "position": 755
+        }
+      }
+    },
+    {
+      "format": "java",
+      "lines": 9,
+      "fragment": ".INDEX_FOVY, 1.0f);\n        camera.putFloat(UtilsGlMatrices.INDEX_SIZEH, 0.0f);\n        camera.putFloat(UtilsGlMatrices.INDEX_SIZEY, 0.0f);\n        Assertions.assertThat(UtilsGlMatrices.createProjectionMatrix(camera, width, height))\n            .as(\"The projection matrix should be zero\")\n            .containsOnly(expectedEmptyArray);\n        PowerMock.verifyAll();\n\n        mo",
+      "tokens": 0,
+      "firstFile": {
+        "name": "app/src/test/java/puscas/mobilertapp/utils/UtilsGlMatricesTest.java",
+        "start": 96,
+        "end": 104,
+        "startLoc": {
+          "line": 96,
+          "column": 5,
+          "position": 879
+        },
+        "endLoc": {
+          "line": 104,
+          "column": 2,
+          "position": 956
+        }
+      },
+      "secondFile": {
+        "name": "app/src/test/java/puscas/mobilertapp/utils/UtilsGlMatricesTest.java",
+        "start": 76,
+        "end": 84,
+        "startLoc": {
+          "line": 76,
+          "column": 5,
+          "position": 661
+        },
+        "endLoc": {
+          "line": 84,
+          "column": 2,
+          "position": 738
+        }
+      }
+    },
+    {
+      "format": "java",
+      "lines": 6,
+      "fragment": ".INDEX_FOVX, 1.0f);\n        camera.putFloat(UtilsGlMatrices.INDEX_FOVY, 1.0f);\n        camera.putFloat(UtilsGlMatrices.INDEX_SIZEH, 0.0f);\n        camera.putFloat(UtilsGlMatrices.INDEX_SIZEY, 0.0f);\n        Assertions.assertThat(UtilsGlMatrices.createProjectionMatrix(camera, width, height))\n            .as(\"The projection matrix should be filled with perspecti",
+      "tokens": 0,
+      "firstFile": {
+        "name": "app/src/test/java/puscas/mobilertapp/utils/UtilsGlMatricesTest.java",
+        "start": 105,
+        "end": 110,
+        "startLoc": {
+          "line": 105,
+          "column": 5,
+          "position": 974
+        },
+        "endLoc": {
+          "line": 110,
+          "column": 72,
+          "position": 1042
+        }
+      },
+      "secondFile": {
+        "name": "app/src/test/java/puscas/mobilertapp/utils/UtilsGlMatricesTest.java",
+        "start": 95,
+        "end": 100,
+        "startLoc": {
+          "line": 95,
+          "column": 5,
+          "position": 865
+        },
+        "endLoc": {
+          "line": 100,
+          "column": 39,
+          "position": 933
+        }
+      }
+    },
+    {
+      "format": "java",
+      "lines": 10,
+      "fragment": "INDEX_SIZEH, 1.0f);\n        camera.putFloat(UtilsGlMatrices.INDEX_SIZEY, 0.0f);\n        Assertions.assertThat(UtilsGlMatrices.createProjectionMatrix(camera, width, height))\n            .as(\"The projection matrix should be zero\")\n            .containsOnly(expectedEmptyArray);\n        PowerMock.verifyAll();\n\n        mockMatrixMethods(0, 0);\n        camera.putFloat(UtilsGlMatrices.INDEX_FOVX, 0.0f);\n        camera.putFloat(UtilsGlMatrices",
+      "tokens": 0,
+      "firstFile": {
+        "name": "app/src/test/java/puscas/mobilertapp/utils/UtilsGlMatricesTest.java",
+        "start": 117,
+        "end": 126,
+        "startLoc": {
+          "line": 117,
+          "column": 5,
+          "position": 1111
+        },
+        "endLoc": {
+          "line": 126,
+          "column": 5,
+          "position": 1205
+        }
+      },
+      "secondFile": {
+        "name": "app/src/test/java/puscas/mobilertapp/utils/UtilsGlMatricesTest.java",
+        "start": 77,
+        "end": 96,
+        "startLoc": {
+          "line": 77,
+          "column": 5,
+          "position": 675
+        },
+        "endLoc": {
+          "line": 96,
+          "column": 5,
+          "position": 878
         }
       }
     },
@@ -6780,7 +6888,7 @@
     {
       "format": "yaml",
       "lines": 18,
-      "fragment": "uses: actions/setup-java@v4\n      with:\n        # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml\n        java-version: 17\n        distribution: zulu\n        java-package: jdk\n        architecture: x64\n        check-latest: false\n        server-id: github\n        server-username: GITHUB_ACTOR\n        server-password: GITHUB_TOKEN\n        settings-path: ~/.gradle\n        overwrite-settings: true\n        gpg-private-key: ''\n        gpg-passphrase: GPG_PASSPHRASE\n        cache: gradle\n\n    - name: Build",
+      "fragment": "uses: actions/setup-java@v4\n      with:\n        # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml\n        java-version: 21\n        distribution: zulu\n        java-package: jdk\n        architecture: x64\n        check-latest: false\n        server-id: github\n        server-username: GITHUB_ACTOR\n        server-password: GITHUB_TOKEN\n        settings-path: ~/.gradle\n        overwrite-settings: true\n        gpg-private-key: ''\n        gpg-passphrase: GPG_PASSPHRASE\n        cache: gradle\n\n    - name: Build",
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android_repeatable.yml",
@@ -6852,7 +6960,7 @@
     {
       "format": "yaml",
       "lines": 26,
-      "fragment": "steps:\n    - name: Checkout\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n      if: success()\n      uses: actions/checkout@v4\n\n    - name: Set up JDK\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n      if: success()\n      uses: actions/setup-java@v4\n      with:\n        # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml\n        java-version: 17\n        distribution: zulu\n        java-package: jdk\n        architecture: x64\n        check-latest: false\n        server-id: github\n        server-username: GITHUB_ACTOR\n        server-password: GITHUB_TOKEN\n        settings-path: ~/.gradle\n        overwrite-settings: true\n        gpg-private-key: ''\n        gpg-passphrase: GPG_PASSPHRASE\n\n    -",
+      "fragment": "steps:\n    - name: Checkout\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n      if: success()\n      uses: actions/checkout@v4\n\n    - name: Set up JDK\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n      if: success()\n      uses: actions/setup-java@v4\n      with:\n        # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml\n        java-version: 21\n        distribution: zulu\n        java-package: jdk\n        architecture: x64\n        check-latest: false\n        server-id: github\n        server-username: GITHUB_ACTOR\n        server-password: GITHUB_TOKEN\n        settings-path: ~/.gradle\n        overwrite-settings: true\n        gpg-private-key: ''\n        gpg-passphrase: GPG_PASSPHRASE\n\n    -",
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android.yml",
@@ -6888,7 +6996,7 @@
     {
       "format": "yaml",
       "lines": 27,
-      "fragment": "steps:\n    - name: Checkout\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n      if: success()\n      uses: actions/checkout@v4\n\n    - name: Set up JDK\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n      if: success()\n      uses: actions/setup-java@v4\n      with:\n        # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml\n        java-version: 17\n        distribution: zulu\n        java-package: jdk\n        architecture: x64\n        check-latest: false\n        server-id: github\n        server-username: GITHUB_ACTOR\n        server-password: GITHUB_TOKEN\n        settings-path: ~/.gradle\n        overwrite-settings: true\n        gpg-private-key: ''\n        gpg-passphrase: GPG_PASSPHRASE\n\n    - name: Add custom environment variables\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL)",
+      "fragment": "steps:\n    - name: Checkout\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n      if: success()\n      uses: actions/checkout@v4\n\n    - name: Set up JDK\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n      if: success()\n      uses: actions/setup-java@v4\n      with:\n        # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml\n        java-version: 21\n        distribution: zulu\n        java-package: jdk\n        architecture: x64\n        check-latest: false\n        server-id: github\n        server-username: GITHUB_ACTOR\n        server-password: GITHUB_TOKEN\n        settings-path: ~/.gradle\n        overwrite-settings: true\n        gpg-private-key: ''\n        gpg-passphrase: GPG_PASSPHRASE\n\n    - name: Add custom environment variables\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL)",
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android.yml",
@@ -6996,7 +7104,7 @@
     {
       "format": "yaml",
       "lines": 40,
-      "fragment": "steps:\n    - name: Checkout\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n      if: success()\n      uses: actions/checkout@v4\n\n    - name: Set up JDK\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n      if: success()\n      uses: actions/setup-java@v4\n      with:\n        # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml\n        java-version: 17\n        distribution: zulu\n        java-package: jdk\n        architecture: x64\n        check-latest: false\n        server-id: github\n        server-username: GITHUB_ACTOR\n        server-password: GITHUB_TOKEN\n        settings-path: ~/.gradle\n        overwrite-settings: true\n        gpg-private-key: ''\n        gpg-passphrase: GPG_PASSPHRASE\n\n    - name: Add custom environment variables\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n      if: success()\n      working-directory: .\n      run: |\n        echo 'Available Android versions:';\n        du -h -d 1 ${ANDROID_HOME}/ndk;\n        du -h -d 1 ${ANDROID_HOME}/cmake;\n        du -h -d 1 ${ANDROID_HOME}/build-tools;\n        ls -lahp ${ANDROID_HOME}/platforms;\n        ls -lahp ${HOME};\n        echo \"ANDROID_NDK_PATH=${ANDROID_HOME}/ndk/${{ matrix.ndk_version }}\" >> \"${GITHUB_ENV}\";\n        echo \"GRADLE_PATH=${HOME}/.gradle\" >> \"${GITHUB_ENV}\";\n\n    # Useful step to avoid gradle having to download Gradle dependencies",
+      "fragment": "steps:\n    - name: Checkout\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n      if: success()\n      uses: actions/checkout@v4\n\n    - name: Set up JDK\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n      if: success()\n      uses: actions/setup-java@v4\n      with:\n        # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml\n        java-version: 21\n        distribution: zulu\n        java-package: jdk\n        architecture: x64\n        check-latest: false\n        server-id: github\n        server-username: GITHUB_ACTOR\n        server-password: GITHUB_TOKEN\n        settings-path: ~/.gradle\n        overwrite-settings: true\n        gpg-private-key: ''\n        gpg-passphrase: GPG_PASSPHRASE\n\n    - name: Add custom environment variables\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n      if: success()\n      working-directory: .\n      run: |\n        echo 'Available Android versions:';\n        du -h -d 1 ${ANDROID_HOME}/ndk;\n        du -h -d 1 ${ANDROID_HOME}/cmake;\n        du -h -d 1 ${ANDROID_HOME}/build-tools;\n        ls -lahp ${ANDROID_HOME}/platforms;\n        ls -lahp ${HOME};\n        echo \"ANDROID_NDK_PATH=${ANDROID_HOME}/ndk/${{ matrix.ndk_version }}\" >> \"${GITHUB_ENV}\";\n        echo \"GRADLE_PATH=${HOME}/.gradle\" >> \"${GITHUB_ENV}\";\n\n    # Useful step to avoid gradle having to download Gradle dependencies",
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android.yml",
@@ -7103,17 +7211,17 @@
     },
     {
       "format": "yaml",
-      "lines": 73,
-      "fragment": "java-package: jdk\n        architecture: x64\n        check-latest: false\n        server-id: github\n        server-username: GITHUB_ACTOR\n        server-password: GITHUB_TOKEN\n        settings-path: ~/.gradle\n        overwrite-settings: true\n        gpg-private-key: ''\n        gpg-passphrase: GPG_PASSPHRASE\n\n    - name: Add custom environment variables\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n      if: success()\n      working-directory: .\n      run: |\n        echo 'Available Android versions:';\n        du -h -d 1 ${ANDROID_HOME}/ndk;\n        du -h -d 1 ${ANDROID_HOME}/cmake;\n        du -h -d 1 ${ANDROID_HOME}/build-tools;\n        ls -lahp ${ANDROID_HOME}/platforms;\n        ls -lahp ${HOME};\n        echo \"ANDROID_NDK_PATH=${ANDROID_HOME}/ndk/${{ matrix.ndk_version }}\" >> \"${GITHUB_ENV}\";\n        echo \"GRADLE_PATH=${HOME}/.gradle\" >> \"${GITHUB_ENV}\";\n\n    # Useful step to avoid gradle having to download Gradle dependencies\n    # Taken from: https://github.com/marketplace/actions/download-a-build-artifact\n    - name: Download Gradle packages artifact\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n      if: success()\n      uses: actions/download-artifact@v4\n      with:\n        # Check available parameters in: https://github.com/actions/download-artifact/blob/main/action.yml\n        name: gradle-packages\n        path: ${{ env.GRADLE_PATH }}\n\n    - name: Extract and check files from gradle artifact\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n      if: success()\n      working-directory: .\n      run: |\n        # shellcheck disable=SC1091\n        . scripts/helper_functions.sh && extractFilesFromArtifact ${{ env.GRADLE_PATH }};\n\n    - name: Download generated binaries from cache\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n      if: success()\n      uses: actions/cache@v4\n      with:\n        # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml\n        key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.host_os }}\n        restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.host_os }}\n        path: |\n          app/build\n          app/.cxx\n          app/third_party\n\n    - name: Check binaries' paths\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n      if: success()\n      run: |\n        # shellcheck disable=SC1091\n        # NDK path might not exist and should be downloaded by the shell scripts.\n        . scripts/helper_functions.sh && checkPathExists ${{ env.ANDROID_NDK_PATH }} || true;\n        . scripts/helper_functions.sh && checkPathExists app/build;\n        . scripts/helper_functions.sh && checkPathExists app/build/intermediates;\n        . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac;\n        . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/debug;\n        . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/debugUnitTest;\n        . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/debugAndroidTest;\n        . scripts/helper_functions.sh && checkPathExists app/build/tmp/kotlin-classes/debug;\n        . scripts/helper_functions.sh && checkPathExists app/.cxx;\n        . scripts/helper_functions.sh && checkPathExists app/third_party;",
+      "lines": 75,
+      "fragment": "java-version: 21\n        distribution: zulu\n        java-package: jdk\n        architecture: x64\n        check-latest: false\n        server-id: github\n        server-username: GITHUB_ACTOR\n        server-password: GITHUB_TOKEN\n        settings-path: ~/.gradle\n        overwrite-settings: true\n        gpg-private-key: ''\n        gpg-passphrase: GPG_PASSPHRASE\n\n    - name: Add custom environment variables\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n      if: success()\n      working-directory: .\n      run: |\n        echo 'Available Android versions:';\n        du -h -d 1 ${ANDROID_HOME}/ndk;\n        du -h -d 1 ${ANDROID_HOME}/cmake;\n        du -h -d 1 ${ANDROID_HOME}/build-tools;\n        ls -lahp ${ANDROID_HOME}/platforms;\n        ls -lahp ${HOME};\n        echo \"ANDROID_NDK_PATH=${ANDROID_HOME}/ndk/${{ matrix.ndk_version }}\" >> \"${GITHUB_ENV}\";\n        echo \"GRADLE_PATH=${HOME}/.gradle\" >> \"${GITHUB_ENV}\";\n\n    # Useful step to avoid gradle having to download Gradle dependencies\n    # Taken from: https://github.com/marketplace/actions/download-a-build-artifact\n    - name: Download Gradle packages artifact\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n      if: success()\n      uses: actions/download-artifact@v4\n      with:\n        # Check available parameters in: https://github.com/actions/download-artifact/blob/main/action.yml\n        name: gradle-packages\n        path: ${{ env.GRADLE_PATH }}\n\n    - name: Extract and check files from gradle artifact\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n      if: success()\n      working-directory: .\n      run: |\n        # shellcheck disable=SC1091\n        . scripts/helper_functions.sh && extractFilesFromArtifact ${{ env.GRADLE_PATH }};\n\n    - name: Download generated binaries from cache\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n      if: success()\n      uses: actions/cache@v4\n      with:\n        # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml\n        key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.host_os }}\n        restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.host_os }}\n        path: |\n          app/build\n          app/.cxx\n          app/third_party\n\n    - name: Check binaries' paths\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n      if: success()\n      run: |\n        # shellcheck disable=SC1091\n        # NDK path might not exist and should be downloaded by the shell scripts.\n        . scripts/helper_functions.sh && checkPathExists ${{ env.ANDROID_NDK_PATH }} || true;\n        . scripts/helper_functions.sh && checkPathExists app/build;\n        . scripts/helper_functions.sh && checkPathExists app/build/intermediates;\n        . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac;\n        . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/debug;\n        . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/debugUnitTest;\n        . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/debugAndroidTest;\n        . scripts/helper_functions.sh && checkPathExists app/build/tmp/kotlin-classes/debug;\n        . scripts/helper_functions.sh && checkPathExists app/.cxx;\n        . scripts/helper_functions.sh && checkPathExists app/third_party;",
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android.yml",
-        "start": 691,
+        "start": 689,
         "end": 763,
         "startLoc": {
-          "line": 691,
+          "line": 689,
           "column": 9,
-          "position": 5075
+          "position": 5063
         },
         "endLoc": {
           "line": 763,
@@ -7123,12 +7231,12 @@
       },
       "secondFile": {
         "name": ".github/workflows/android.yml",
-        "start": 352,
+        "start": 350,
         "end": 628,
         "startLoc": {
-          "line": 352,
+          "line": 350,
           "column": 9,
-          "position": 2518
+          "position": 2506
         },
         "endLoc": {
           "line": 628,
