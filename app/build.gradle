@@ -216,7 +216,7 @@ android {
 
     // Setup required versions to compile
     setCompileSdkVersion 34
-    setBuildToolsVersion "${build_tools_version}"
+    setBuildToolsVersion '34.0.0'
 
     // Setup signing configurations
     signingConfigs {
@@ -453,18 +453,18 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
 
     // Android dependencies
-    implementation "androidx.appcompat:appcompat:${appcompat_version}"
-    implementation "androidx.multidex:multidex:${multidex_version}"
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.multidex:multidex:2.0.1'
 
     // Java dependencies
-    implementation "com.google.guava:guava:${guava_version}"
+    implementation 'com.google.guava:guava:33.1.0-jre'
     implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
-    implementation "net.sourceforge.streamsupport:streamsupport:${stream_support_version}"
+    implementation 'net.sourceforge.streamsupport:streamsupport:1.7.4'
 
     // Kotlin dependencies
-    implementation "androidx.core:core-ktx:${androidX_core_kotlin_version}"
+    implementation 'androidx.core:core-ktx:1.12.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:${kotlin_stdlib_jdk8_version}"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:${kotlinx_coroutines_android_version}"
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0'
 
     // Annotations
     implementation "androidx.annotation:annotation:${androidX_annotation_version}"
@@ -481,25 +481,25 @@ dependencies {
     androidTestImplementation "androidx.test.espresso:espresso-web:${androidX_test_espresso_version}"
     androidTestImplementation "androidx.test.espresso.idling:idling-concurrent:${androidX_test_espresso_version}"
 
-    androidTestImplementation "androidx.test:rules:${androidX_test_rules_version}"
-    androidTestImplementation "androidx.test:monitor:${androidX_test_monitor_version}"
+    androidTestImplementation 'androidx.test:rules:1.5.0'
+    androidTestImplementation 'androidx.test:monitor:1.6.1'
 
     // Enable tracing
     debugImplementation "androidx.test.espresso:espresso-core:${androidX_test_espresso_version}"
-    debugImplementation "androidx.test:runner:${androidX_test_runner_version}"
+    debugImplementation 'androidx.test:runner:1.5.2'
 
 
 
     // Dependencies for the unit tests
     println('Adding dependencies for the unit tests.')
 
-    testImplementation "junit:junit:${junit_version}"
-    testImplementation "org.assertj:assertj-core:${assertj_version}"
-    testImplementation "org.khronos:opengl-api:${khronos_gl_for_android_sdk_version}"
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.assertj:assertj-core:3.25.3'
+    testImplementation 'org.khronos:opengl-api:gl1.1-android-2.1_r1'
     testImplementation "org.powermock:powermock-module-junit4:${powermock_version}"
     testImplementation "org.powermock:powermock-api-easymock:${powermock_version}"
-    testImplementation "org.easymock:easymock:${easymock_version}"
-    testImplementation "org.springframework:spring-test:${spring_version}"
+    testImplementation 'org.easymock:easymock:5.2.0'
+    testImplementation 'org.springframework:spring-test:6.1.6'
 
 
     // Dependencies that give errors when added:

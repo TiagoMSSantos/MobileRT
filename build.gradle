@@ -32,31 +32,16 @@ buildscript {
         // Allow to setup more recently versions of Gradle, but use 8.2.2 by default because it's compatible with Android 15.
         gradleVersion = System.getProperty('gradleVersion', '8.2.2')
 
-        build_tools_version = '34.0.0'
-        appcompat_version = '1.6.1'
-        androidX_core_kotlin_version = '1.12.0'
         kotlin_stdlib_jdk8_version = '1.9.23'
-        multidex_version = '2.0.1'
         androidX_annotation_version = '1.7.1'
-        guava_version = '33.1.0-jre'
-        stream_support_version = '1.7.4'
-        kotlinx_coroutines_android_version = '1.8.0'
-        khronos_gl_for_android_sdk_version = 'gl1.1-android-2.1_r1'
 
         // Test dependencies
-        junit_version = '4.13.2'
         jacoco_version = '0.8.12'
 
         // Android tests dependencies
         androidX_test_espresso_version = '3.5.1'
-        androidX_test_rules_version = '1.5.0'
-        androidX_test_monitor_version = '1.6.1'
-        androidX_test_runner_version = '1.5.2'
-        spring_version = '6.1.6'
 
         // Unit tests dependencies
-        assertj_version = '3.25.3'
-        easymock_version = '5.2.0'
         powermock_version = '2.0.9'
     }
 
