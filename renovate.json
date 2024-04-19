@@ -79,7 +79,6 @@
     "ignoreDeps": ["ubuntu"]
   },
   "gradle": {
-    "enabled": true,
-    "ignoreDeps": ["org.springframework:spring-test"]
+    "enabled": true
   }
 }
