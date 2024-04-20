@@ -32,7 +32,7 @@ jobs:
         include:
         - test: RayTracingTest#testRenderSceneFromSDCardOBJ
           type: debug
-          host_os: macos-latest
+          host_os: ubuntu-latest
           android_api: 16
 
     name: ${{ matrix.test }} [${{ matrix.type }} (${{ matrix.host_os }})]
@@ -71,6 +71,14 @@ jobs:
       working-directory: .
       run: |
         sh scripts/compile_android.sh -t ${{ matrix.type }} -r yes -f "\"x86\"";
+
+    - name: Enable KVM group permissions
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success() && (startsWith(matrix.host_os, 'ubuntu-latest') || startsWith(matrix.host_os, 'ubuntu-22'))
+      run: |
+        echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules;
+        sudo udevadm control --reload-rules;
+        sudo udevadm trigger --name-match=kvm;
 
     - name: Run Android tests
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}

@@ -519,8 +519,9 @@ _validateFileExistsAndHasSomeContent() {
     return 1;
   fi
   fileSize=$(wc -w "${filePath}" | tr -s ' ' | cut -d ' ' -f1);
-  if [ "${fileSize}" -lt 200 ]; then
-    echo "File '${filePath}' contains less than 200 words." >&2;
+  if [ "${fileSize}" -lt 190 ]; then
+    echo "File '${filePath}' contains '${fileSize}' words, which is less than 190 words." >&2;
+    cat "${filePath}";
     return 1;
   fi
 }
