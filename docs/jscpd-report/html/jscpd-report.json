@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-04-21T11:21:44.477Z",
+    "detectionDate": "2024-04-21T15:41:47.585Z",
     "formats": {
       "java": {
         "sources": {
@@ -1962,25 +1962,25 @@
           },
           ".github/workflows/android_repeatable.yml": {
             "lines": 113,
-            "tokens": 772,
+            "tokens": 760,
             "sources": 1,
             "clones": 5,
             "duplicatedLines": 137,
             "duplicatedTokens": 809,
             "percentage": 121.24,
-            "percentageTokens": 104.79,
+            "percentageTokens": 106.45,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           ".github/workflows/android.yml": {
             "lines": 893,
-            "tokens": 6466,
+            "tokens": 6454,
             "sources": 1,
             "clones": 17,
             "duplicatedLines": 467,
             "duplicatedTokens": 3156,
             "percentage": 52.3,
-            "percentageTokens": 48.81,
+            "percentageTokens": 48.9,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2083,13 +2083,13 @@
         },
         "total": {
           "lines": 2730,
-          "tokens": 17870,
+          "tokens": 17846,
           "sources": 23,
           "clones": 17,
           "duplicatedLines": 444,
           "duplicatedTokens": 2757,
           "percentage": 16.26,
-          "percentageTokens": 15.43,
+          "percentageTokens": 15.45,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3165,7 +3165,7 @@
     },
     "total": {
       "lines": 29200,
-      "tokens": 223616,
+      "tokens": 223592,
       "sources": 250,
       "clones": 123,
       "duplicatedLines": 1634,
@@ -7113,12 +7113,12 @@
         "startLoc": {
           "line": 556,
           "column": 5,
-          "position": 4277
+          "position": 4265
         },
         "endLoc": {
           "line": 597,
           "column": 69,
-          "position": 4493
+          "position": 4481
         }
       },
       "secondFile": {
@@ -7149,12 +7149,12 @@
         "startLoc": {
           "line": 597,
           "column": 5,
-          "position": 4493
+          "position": 4481
         },
         "endLoc": {
           "line": 616,
           "column": 9,
-          "position": 4627
+          "position": 4615
         }
       },
       "secondFile": {
@@ -7185,12 +7185,12 @@
         "startLoc": {
           "line": 616,
           "column": 5,
-          "position": 4622
+          "position": 4610
         },
         "endLoc": {
           "line": 629,
           "column": 6,
-          "position": 4773
+          "position": 4761
         }
       },
       "secondFile": {
@@ -7221,12 +7221,12 @@
         "startLoc": {
           "line": 703,
           "column": 9,
-          "position": 5230
+          "position": 5218
         },
         "endLoc": {
           "line": 779,
           "column": 74,
-          "position": 5672
+          "position": 5660
         }
       },
       "secondFile": {
@@ -7241,7 +7241,7 @@
         "endLoc": {
           "line": 642,
           "column": 74,
-          "position": 4803
+          "position": 4791
         }
       }
     },
@@ -7257,12 +7257,12 @@
         "startLoc": {
           "line": 791,
           "column": 7,
-          "position": 5761
+          "position": 5749
         },
         "endLoc": {
           "line": 799,
           "column": 6,
-          "position": 5877
+          "position": 5865
         }
       },
       "secondFile": {
@@ -7272,12 +7272,12 @@
         "startLoc": {
           "line": 494,
           "column": 7,
-          "position": 3675
+          "position": 3663
         },
         "endLoc": {
           "line": 502,
           "column": 4,
-          "position": 3791
+          "position": 3779
         }
       }
     },
@@ -7293,12 +7293,12 @@
         "startLoc": {
           "line": 826,
           "column": 5,
-          "position": 6030
+          "position": 6018
         },
         "endLoc": {
           "line": 856,
           "column": 8,
-          "position": 6220
+          "position": 6208
         }
       },
       "secondFile": {
@@ -7313,7 +7313,7 @@
         "endLoc": {
           "line": 781,
           "column": 7,
-          "position": 5681
+          "position": 5669
         }
       }
     },
