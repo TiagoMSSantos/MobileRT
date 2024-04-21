@@ -121,6 +121,8 @@ jobs:
         overwrite-settings: true
         gpg-private-key: ''
         gpg-passphrase: GPG_PASSPHRASE
+        cache: gradle
+        cache-dependency-path: '**/build.gradle'
 
     - name: Add custom environment variables
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
@@ -248,8 +250,8 @@ jobs:
       uses: actions/cache@v4
       with:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
-        key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.host_os }}
-        restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.host_os }}
+        key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.android_api }}_${{ matrix.type }}_${{ matrix.host_os }}
+        restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.android_api }}_${{ matrix.type }}_${{ matrix.host_os }}
         path: |
           app/build
           app/.cxx
@@ -359,6 +361,8 @@ jobs:
         overwrite-settings: true
         gpg-private-key: ''
         gpg-passphrase: GPG_PASSPHRASE
+        cache: gradle
+        cache-dependency-path: '**/build.gradle'
 
     - name: Add custom environment variables
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -380,8 +384,8 @@ jobs:
       uses: actions/cache@v4
       with:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
-        key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.host_os }}
-        restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.host_os }}
+        key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.android_api }}_${{ matrix.type }}_${{ matrix.host_os }}
+        restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.android_api }}_${{ matrix.type }}_${{ matrix.host_os }}
         path: |
           app/build
           app/.cxx
@@ -431,7 +435,7 @@ jobs:
 
     - name: Run Android tests
       id: android-tests
-      timeout-minutes: 35
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
       if: success() && !startsWith(matrix.host_os, 'windows')
       uses: ReactiveCircus/android-emulator-runner@v2
       env:
@@ -490,8 +494,8 @@ jobs:
       uses: actions/cache@v4
       with:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
-        key: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.host_os }}
-        restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.host_os }}
+        key: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.android_api }}_${{ matrix.type }}_${{ matrix.host_os }}
+        restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.android_api }}_${{ matrix.type }}_${{ matrix.host_os }}
         path: |
           app/build/reports
 
@@ -573,6 +577,8 @@ jobs:
         overwrite-settings: true
         gpg-private-key: ''
         gpg-passphrase: GPG_PASSPHRASE
+        cache: gradle
+        cache-dependency-path: '**/build.gradle'
 
     - name: Add custom environment variables
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -613,8 +619,8 @@ jobs:
       uses: actions/cache@v4
       with:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
-        key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.host_os }}
-        restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.host_os }}
+        key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.android_api }}_${{ matrix.type }}_${{ matrix.host_os }}
+        restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.android_api }}_${{ matrix.type }}_${{ matrix.host_os }}
         path: |
           app/build
           app/.cxx
@@ -706,6 +712,8 @@ jobs:
         overwrite-settings: true
         gpg-private-key: ''
         gpg-passphrase: GPG_PASSPHRASE
+        cache: gradle
+        cache-dependency-path: '**/build.gradle'
 
     - name: Add custom environment variables
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -746,8 +754,8 @@ jobs:
       uses: actions/cache@v4
       with:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
-        key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.host_os }}
-        restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.host_os }}
+        key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.android_api }}_${{ matrix.type }}_${{ matrix.host_os }}
+        restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.android_api }}_${{ matrix.type }}_${{ matrix.host_os }}
         path: |
           app/build
           app/.cxx
@@ -783,8 +791,8 @@ jobs:
       uses: actions/cache@v4
       with:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
-        key: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.host_os }}
-        restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.host_os }}
+        key: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.android_api }}_${{ matrix.type }}_${{ matrix.host_os }}
+        restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.android_api }}_${{ matrix.type }}_${{ matrix.host_os }}
         path: |
           app/build/reports
 
@@ -821,8 +829,8 @@ jobs:
       uses: actions/cache@v4
       with:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
-        key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.host_os }}
-        restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.host_os }}
+        key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.android_api }}_${{ matrix.type }}_${{ matrix.host_os }}
+        restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.android_api }}_${{ matrix.type }}_${{ matrix.host_os }}
         path: |
           app/build
           app/.cxx

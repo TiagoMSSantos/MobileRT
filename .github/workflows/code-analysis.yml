@@ -97,6 +97,7 @@ jobs:
         gpg-private-key: ''
         gpg-passphrase: GPG_PASSPHRASE
         cache: gradle
+        cache-dependency-path: '**/build.gradle'
 
     - name: Check available Android versions
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}

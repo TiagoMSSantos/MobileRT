@@ -349,8 +349,8 @@ jobs:
       uses: actions/cache@v4
       with:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
-        key: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.host_os }}
-        restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.host_os }}
+        key: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.name }}_${{ matrix.type }}_${{ matrix.host_os }}
+        restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.name }}_${{ matrix.type }}_${{ matrix.host_os }}
         path: |
           app/build/reports/coverage/androidTest/debug/connected
           code_coverage_base.info
@@ -383,8 +383,8 @@ jobs:
       uses: actions/cache@v4
       with:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
-        key: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.host_os }}
-        restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.type }}_${{ matrix.host_os }}
+        key: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.name }}_${{ matrix.type }}_${{ matrix.host_os }}
+        restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.name }}_${{ matrix.type }}_${{ matrix.host_os }}
         path: |
           app/build/reports/coverage/androidTest/debug/connected
           code_coverage_base.info

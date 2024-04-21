@@ -37,7 +37,7 @@ jobs:
 
     name: ${{ matrix.test }} [${{ matrix.type }} (${{ matrix.host_os }})]
     runs-on: ${{ matrix.host_os }}
-    timeout-minutes: 40
+    timeout-minutes: 30
 
     steps:
     - name: Checkout
@@ -64,9 +64,10 @@ jobs:
         gpg-private-key: ''
         gpg-passphrase: GPG_PASSPHRASE
         cache: gradle
+        cache-dependency-path: '**/build.gradle'
 
     - name: Build ${{ matrix.type }}
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
+      timeout-minutes: 20
       if: success()
       working-directory: .
       run: |
@@ -81,7 +82,7 @@ jobs:
         sudo udevadm trigger --name-match=kvm;
 
     - name: Run Android tests
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
+      timeout-minutes: 20
       if: success() && !startsWith(matrix.host_os, 'windows')
       uses: ReactiveCircus/android-emulator-runner@v2
       env:
