@@ -250,8 +250,8 @@ jobs:
       uses: actions/cache@v4
       with:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
-        key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.android_api }}_${{ matrix.type }}_${{ matrix.host_os }}
-        restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.android_api }}_${{ matrix.type }}_${{ matrix.host_os }}
+        key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.android_api }}_${{ matrix.android_arch }}_${{ matrix.ndk_version }}_${{ matrix.cmake_version }}_${{ matrix.gradle_version }}_${{ matrix.type }}_${{ matrix.host_os }}
+        restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.android_api }}_${{ matrix.android_arch }}_${{ matrix.ndk_version }}_${{ matrix.cmake_version }}_${{ matrix.gradle_version }}_${{ matrix.type }}_${{ matrix.host_os }}
         path: |
           app/build
           app/.cxx
@@ -384,8 +384,8 @@ jobs:
       uses: actions/cache@v4
       with:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
-        key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.android_api }}_${{ matrix.type }}_${{ matrix.host_os }}
-        restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.android_api }}_${{ matrix.type }}_${{ matrix.host_os }}
+        key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.android_api }}_${{ matrix.android_arch }}_${{ matrix.ndk_version }}_${{ matrix.cmake_version }}_${{ matrix.gradle_version }}_${{ matrix.type }}_${{ matrix.host_os }}
+        restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.android_api }}_${{ matrix.android_arch }}_${{ matrix.ndk_version }}_${{ matrix.cmake_version }}_${{ matrix.gradle_version }}_${{ matrix.type }}_${{ matrix.host_os }}
         path: |
           app/build
           app/.cxx
@@ -494,8 +494,8 @@ jobs:
       uses: actions/cache@v4
       with:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
-        key: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.android_api }}_${{ matrix.type }}_${{ matrix.host_os }}
-        restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.android_api }}_${{ matrix.type }}_${{ matrix.host_os }}
+        key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.android_api }}_${{ matrix.android_arch }}_${{ matrix.ndk_version }}_${{ matrix.cmake_version }}_${{ matrix.gradle_version }}_${{ matrix.type }}_${{ matrix.host_os }}
+        restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.android_api }}_${{ matrix.android_arch }}_${{ matrix.ndk_version }}_${{ matrix.cmake_version }}_${{ matrix.gradle_version }}_${{ matrix.type }}_${{ matrix.host_os }}
         path: |
           app/build/reports
 
@@ -619,8 +619,8 @@ jobs:
       uses: actions/cache@v4
       with:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
-        key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.android_api }}_${{ matrix.type }}_${{ matrix.host_os }}
-        restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.android_api }}_${{ matrix.type }}_${{ matrix.host_os }}
+        key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.android_api }}_${{ matrix.android_arch }}_${{ matrix.ndk_version }}_${{ matrix.cmake_version }}_${{ matrix.gradle_version }}_${{ matrix.type }}_${{ matrix.host_os }}
+        restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.android_api }}_${{ matrix.android_arch }}_${{ matrix.ndk_version }}_${{ matrix.cmake_version }}_${{ matrix.gradle_version }}_${{ matrix.type }}_${{ matrix.host_os }}
         path: |
           app/build
           app/.cxx
@@ -754,8 +754,8 @@ jobs:
       uses: actions/cache@v4
       with:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
-        key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.android_api }}_${{ matrix.type }}_${{ matrix.host_os }}
-        restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.android_api }}_${{ matrix.type }}_${{ matrix.host_os }}
+        key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.android_api }}_${{ matrix.android_arch }}_${{ matrix.ndk_version }}_${{ matrix.cmake_version }}_${{ matrix.gradle_version }}_${{ matrix.type }}_${{ matrix.host_os }}
+        restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.android_api }}_${{ matrix.android_arch }}_${{ matrix.ndk_version }}_${{ matrix.cmake_version }}_${{ matrix.gradle_version }}_${{ matrix.type }}_${{ matrix.host_os }}
         path: |
           app/build
           app/.cxx
@@ -791,8 +791,8 @@ jobs:
       uses: actions/cache@v4
       with:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
-        key: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.android_api }}_${{ matrix.type }}_${{ matrix.host_os }}
-        restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ matrix.android_api }}_${{ matrix.type }}_${{ matrix.host_os }}
+        key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.android_api }}_${{ matrix.android_arch }}_${{ matrix.ndk_version }}_${{ matrix.cmake_version }}_${{ matrix.gradle_version }}_${{ matrix.type }}_${{ matrix.host_os }}
+        restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.android_api }}_${{ matrix.android_arch }}_${{ matrix.ndk_version }}_${{ matrix.cmake_version }}_${{ matrix.gradle_version }}_${{ matrix.type }}_${{ matrix.host_os }}
         path: |
           app/build/reports
 
@@ -829,8 +829,8 @@ jobs:
       uses: actions/cache@v4
       with:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
-        key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.android_api }}_${{ matrix.type }}_${{ matrix.host_os }}
-        restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ matrix.android_api }}_${{ matrix.type }}_${{ matrix.host_os }}
+        key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.android_api }}_${{ matrix.android_arch }}_${{ matrix.ndk_version }}_${{ matrix.cmake_version }}_${{ matrix.gradle_version }}_${{ matrix.type }}_${{ matrix.host_os }}
+        restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.android_api }}_${{ matrix.android_arch }}_${{ matrix.ndk_version }}_${{ matrix.cmake_version }}_${{ matrix.gradle_version }}_${{ matrix.type }}_${{ matrix.host_os }}
         path: |
           app/build
           app/.cxx
