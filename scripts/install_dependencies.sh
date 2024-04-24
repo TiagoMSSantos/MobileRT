@@ -92,6 +92,7 @@ install_dependencies() {
 }
 
 install_dependencies_debian() {
+  sudo rm /etc/apt/sources.list.d/microsoft-prod.list || true;
   sudo apt-get update -y;
   sudo apt-get install --no-install-recommends -y \
     xorg-dev \

@@ -85,6 +85,7 @@ RUN \
   fi; \
   if uname -a | grep -iq 'linux' && command -v apt-get > /dev/null; then \
     echo 'Detected Debian based Linux'; \
+    rm /etc/apt/sources.list.d/microsoft-prod.list || true; \
     apt-get update -y; \
     apt-get install --no-install-recommends -y sudo git git-lfs tzdata; \
   elif uname -a | grep -iq 'linux' && command -v yum > /dev/null; then \

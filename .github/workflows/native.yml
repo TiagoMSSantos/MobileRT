@@ -227,6 +227,7 @@ jobs:
         sudo apt-key add "${gpgKey}";
         rm "${gpgKey}";
         echo 'deb https://apt.repos.intel.com/oneapi all main' | sudo tee /etc/apt/sources.list.d/oneAPI.list;
+        sudo rm /etc/apt/sources.list.d/microsoft-prod.list || true;
         sudo apt-get update;
         sudo apt-get install intel-oneapi-compiler-dpcpp-cpp;
         . /opt/intel/oneapi/setvars.sh;
