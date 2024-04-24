@@ -10,6 +10,7 @@ import android.widget.NumberPicker;
 import androidx.annotation.NonNull;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.action.ViewActions;
+import androidx.test.espresso.matcher.RootMatchers;
 import androidx.test.espresso.matcher.ViewMatchers;
 
 import com.google.common.collect.ImmutableList;
@@ -89,6 +90,7 @@ public final class UiTest extends AbstractTest {
     public static void clickPreviewCheckBox(final boolean expectedValue) {
         UtilsT.waitForAppToIdle();
         Espresso.onView(ViewMatchers.withId(R.id.preview))
+            .inRoot(RootMatchers.isTouchable())
             .check((view, exception) ->
                 assertPreviewCheckBox(view, !expectedValue)
             )
@@ -193,6 +195,7 @@ public final class UiTest extends AbstractTest {
     @Test(timeout = 60L * 1000L)
     public void testClickRenderButtonLongPress() {
         Espresso.onView(ViewMatchers.withId(R.id.renderButton))
+            .inRoot(RootMatchers.isTouchable())
             .perform(new ViewActionButton(Constants.RENDER, true))
             .check((view, exception) -> {
                 final Button button = (Button) view;
@@ -219,6 +222,7 @@ public final class UiTest extends AbstractTest {
             final String expectedButtonText = buttonTextList.get(expectedIndex);
 
             Espresso.onView(ViewMatchers.withId(R.id.renderButton))
+                .inRoot(RootMatchers.isTouchable())
                 .perform(new ViewActionButton(expectedButtonText, false));
 
             if (expectedIndex % 2 == 0) {

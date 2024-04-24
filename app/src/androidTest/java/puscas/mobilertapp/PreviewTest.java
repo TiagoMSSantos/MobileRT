@@ -41,6 +41,7 @@ public final class PreviewTest extends AbstractTest {
             ConstantsAndroidTests.CORNELL_BOX_WATER_CAM
         );
 
+        UtilsContextT.waitUntil(this.activity, Constants.RENDER, State.IDLE);
         UtilsContextT.resetPickerValues(this.activity, Scene.OBJ.ordinal(), Accelerator.NAIVE, 99, 99);
 
         UtilsT.startRendering(false);
@@ -66,6 +67,7 @@ public final class PreviewTest extends AbstractTest {
     public void testPreviewSceneOrthographicCamera() throws TimeoutException {
         logger.info("testPreviewSceneOrthographicCamera start");
 
+        UtilsContextT.waitUntil(this.activity, Constants.RENDER, State.IDLE);
         UtilsContextT.resetPickerValues(this.activity, Scene.SPHERES.ordinal(), Accelerator.NAIVE, 99, 99);
 
         UtilsT.startRendering(false);

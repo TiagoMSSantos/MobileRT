@@ -5,6 +5,7 @@ import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.test.espresso.Espresso;
+import androidx.test.espresso.matcher.RootMatchers;
 import androidx.test.espresso.matcher.ViewMatchers;
 
 import com.google.common.base.Preconditions;
@@ -114,6 +115,7 @@ public final class UtilsT {
         assertRenderButtonText(Constants.RENDER);
         waitForAppToIdle();
         Espresso.onView(ViewMatchers.withId(R.id.renderButton))
+            .inRoot(RootMatchers.isTouchable())
             .perform(new ViewActionButton(expectedSameValues ? Constants.RENDER : Constants.STOP, false));
         logger.info("startRendering" + ConstantsMethods.FINISHED);
     }
@@ -125,6 +127,7 @@ public final class UtilsT {
     public static void stopRendering() {
         logger.info("stopRendering");
         Espresso.onView(ViewMatchers.withId(R.id.renderButton))
+            .inRoot(RootMatchers.isTouchable())
             .perform(new ViewActionButton(Constants.RENDER, false));
         waitForAppToIdle();
         assertRenderButtonText(Constants.RENDER);
@@ -143,6 +146,7 @@ public final class UtilsT {
         logger.info("testBitmap");
         waitForAppToIdle();
         Espresso.onView(ViewMatchers.withId(R.id.drawLayout))
+            .inRoot(RootMatchers.isTouchable())
             .check((view, exception) -> {
                 final DrawView drawView = (DrawView) view;
                 final MainRenderer renderer = drawView.getRenderer();
@@ -165,6 +169,7 @@ public final class UtilsT {
     public static void assertRenderButtonText(@NonNull final String expectedText) {
         logger.info("assertRenderButtonText: " + expectedText);
         Espresso.onView(ViewMatchers.withId(R.id.renderButton))
+            .inRoot(RootMatchers.isTouchable())
             .check((view, exception) -> {
                 final Button renderButton = view.findViewById(R.id.renderButton);
                 Assert.assertEquals(

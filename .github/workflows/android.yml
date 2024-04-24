@@ -444,7 +444,7 @@ jobs:
         MEM_MB: 1024
       with:
         # Check available parameters in: https://github.com/ReactiveCircus/android-emulator-runner/blob/main/action.yml
-        # Available CI host machines: https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
+        # Available CI host machines: https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners/about-github-hosted-runners#standard-github-hosted-runners-for-public-repositories
         # Max api level for 32bit is: 29
         api-level: ${{ matrix.android_api }}
         cmake: ${{ matrix.cmake_version }}
@@ -859,7 +859,7 @@ jobs:
       working-directory: .
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
+        # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners/about-github-hosted-runners#standard-github-hosted-runners-for-public-repositories
         # https://docs.sonarqube.org/latest/requirements/prerequisites-and-overview/
         GRADLE_OPTS: -Xms4G -Xmx4G -XX:ActiveProcessorCount=3
       run: |

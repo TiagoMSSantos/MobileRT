@@ -187,8 +187,8 @@ installDockerCommandForMacOS() {
   brew install --ignore-dependencies --skip-cask-deps --skip-post-install qemu libssh libslirp capstone dtc snappy vde ncurses;
 
   echo 'Start colima.';
-  # Check available resources: https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners/about-github-hosted-runners
-  colima start --cpu 4 --memory 14 --disk 14;
+  # Check available resources: https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners/about-github-hosted-runners#standard-github-hosted-runners-for-public-repositories
+  colima start --cpu 4 --memory 6 --disk 14;
 
   echo 'Docker commands detected:';
   echo "${PATH}" | sed 's/:/ /g' | xargs ls 2> /dev/null | grep -i docker 2> /dev/null || true;

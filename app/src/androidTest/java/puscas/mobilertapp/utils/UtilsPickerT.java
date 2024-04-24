@@ -4,6 +4,7 @@ import android.widget.NumberPicker;
 
 import androidx.annotation.NonNull;
 import androidx.test.espresso.Espresso;
+import androidx.test.espresso.matcher.RootMatchers;
 import androidx.test.espresso.matcher.ViewMatchers;
 
 import org.junit.Assert;
@@ -42,6 +43,7 @@ public final class UtilsPickerT {
         logger.info("changePickerValue picker: " + pickerName + ", value: " + expectedValue);
         UtilsT.waitForAppToIdle();
         Espresso.onView(ViewMatchers.withId(pickerId))
+            .inRoot(RootMatchers.isTouchable())
             .perform(new ViewActionNumberPicker(expectedValue))
             .check((view, exception) -> {
                 final NumberPicker numberPicker = view.findViewById(pickerId);

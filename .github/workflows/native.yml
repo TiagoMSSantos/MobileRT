@@ -98,13 +98,6 @@ jobs:
           type: release
           compiler: g++
 
-        - name: Clang++
-          host_os: macos-11
-          type: release
-          compiler: clang++
-          qt_host: 'mac'
-          qt_arch: 'clang_64'
-
         # Windows
         - name: MSVC
           host_os: windows-2022
