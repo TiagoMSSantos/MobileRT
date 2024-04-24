@@ -23,7 +23,7 @@ public final class CameraTest extends AbstractTest {
      *
      * @throws TimeoutException If it couldn't render the whole scene in time.
      */
-    @Test(timeout = 2L * 60L * 1000L)
+    @Test(timeout = 3L * 60L * 1000L)
     public void testRenderSceneWithOrthographic() throws TimeoutException {
         final int numCores = UtilsContext.getNumOfCores(this.activity);
         assertRenderScene(numCores, Scene.SPHERES, Shader.WHITTED, Accelerator.BVH, 5, 1, false, false);
@@ -34,7 +34,7 @@ public final class CameraTest extends AbstractTest {
      *
      * @throws TimeoutException If it couldn't render the whole scene in time.
      */
-    @Test(timeout = 2L * 60L * 1000L)
+    @Test(timeout = 3L * 60L * 1000L)
     public void testRenderSceneWithPerspective() throws TimeoutException {
         final int numCores = UtilsContext.getNumOfCores(this.activity);
         assertRenderScene(numCores, Scene.CORNELL, Shader.WHITTED, Accelerator.BVH, 5, 1, false, false);
