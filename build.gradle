@@ -31,6 +31,18 @@ buildscript {
         // Before updating gradle, check which version of Android Studio is compatible with it and update README.
         // Allow to setup more recently versions of Gradle, but use 8.2.2 by default because it's compatible with Android 15.
         gradleVersion = System.getProperty('gradleVersion', '8.2.2')
+        // The default minimum Android API version possible is 14 due to compatibility with Appcompat dependency.
+        androidApiVersion = System.getProperty('androidApiVersion', '14')
+
+        final def androidApiVersionArray = androidApiVersion.split("\\.").collect()
+        final def androidApiVersionValue = androidApiVersionArray[0] as Float
+        if (androidApiVersionValue >= 19) {
+            common_libraries_android_framework = '1.13.0'
+            androidApiVersion = '19'
+        } else {
+            common_libraries_android_framework = '1.12.0'
+            androidApiVersion = '14'
+        }
 
         kotlin_stdlib_jdk8_version = '1.9.23'
         androidX_annotation_version = '1.7.1'

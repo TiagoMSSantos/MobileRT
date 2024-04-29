@@ -117,7 +117,7 @@ _validateEnvVariableValue() {
 # Helper function which clears the environment variables used by these tests.
 _clearEnvVariables() {
   unset type compiler recompile;
-  unset ndk_version cmake_version gradle_version cpu_architecture;
+  unset ndk_version cmake_version gradle_version android_api_version cpu_architecture;
   unset run_test kill_previous;
   unset MAKEFLAGS;
 }
@@ -246,7 +246,7 @@ testParseArgumentsToCompileAndroid() {
   expected='ndk_version_test';
   eval ${_functionName} -n "${expected}" > /dev/null;
   _validateEnvVariableValue 'ndk_version' "${expected}" "${_testName} -n";
-  _validateEnvVariablesDoNotExist "${_testName} -n" 'cmake_version' 'gradle_version' 'type' 'compiler' 'recompile' 'cpu_architecture';
+  _validateEnvVariablesDoNotExist "${_testName} -n" 'cmake_version' 'gradle_version' 'android_api_version' 'type' 'compiler' 'recompile' 'cpu_architecture';
   assertEqual "${expected}" "${ndk_version}" "${_testName} -n";
 
   _clearEnvVariables;
@@ -254,7 +254,7 @@ testParseArgumentsToCompileAndroid() {
   expected='cmake_version_test';
   eval ${_functionName} -m "${expected}" > /dev/null;
   _validateEnvVariableValue 'cmake_version' "${expected}" "${_testName} -m";
-  _validateEnvVariablesDoNotExist "${_testName} -m" 'ndk_version' 'gradle_version' 'type' 'compiler' 'recompile' 'cpu_architecture';
+  _validateEnvVariablesDoNotExist "${_testName} -m" 'ndk_version' 'gradle_version' 'android_api_version' 'type' 'compiler' 'recompile' 'cpu_architecture';
   assertEqual "${expected}" "${cmake_version}" "${_testName} -m";
 
   _clearEnvVariables;
@@ -262,15 +262,23 @@ testParseArgumentsToCompileAndroid() {
   expected='gradle_version_test';
   eval ${_functionName} -g "${expected}" > /dev/null;
   _validateEnvVariableValue 'gradle_version' "${expected}" "${_testName} -g";
-  _validateEnvVariablesDoNotExist "${_testName} -g" 'ndk_version' 'cmake_version' 'type' 'compiler' 'recompile' 'cpu_architecture';
+  _validateEnvVariablesDoNotExist "${_testName} -g" 'android_api_version' 'ndk_version' 'cmake_version' 'type' 'compiler' 'recompile' 'cpu_architecture';
   assertEqual "${expected}" "${gradle_version}" "${_testName} -g";
+
+  _clearEnvVariables;
+  # Validate the `android_api_version` variable is set properly.
+  expected='android_api_version_test';
+  eval ${_functionName} -a "${expected}" > /dev/null;
+  _validateEnvVariableValue 'android_api_version' "${expected}" "${_testName} -a";
+  _validateEnvVariablesDoNotExist "${_testName} -a" 'gradle_version' 'ndk_version' 'cmake_version' 'type' 'compiler' 'recompile' 'cpu_architecture';
+  assertEqual "${expected}" "${android_api_version}" "${_testName} -a";
 
   _clearEnvVariables;
   # Validate the `type` variable is set properly.
   expected='type_test';
   eval ${_functionName} -t "${expected}" > /dev/null;
   _validateEnvVariableValue 'type' "${expected}" "${_testName} -t";
-  _validateEnvVariablesDoNotExist "${_testName} -t" 'ndk_version' 'cmake_version' 'gradle_version' 'compiler' 'recompile' 'cpu_architecture';
+  _validateEnvVariablesDoNotExist "${_testName} -t" 'ndk_version' 'cmake_version' 'gradle_version' 'android_api_version' 'compiler' 'recompile' 'cpu_architecture';
   assertEqual "${expected}" "${type}" "${_testName} -t";
 
   _clearEnvVariables;
@@ -278,7 +286,7 @@ testParseArgumentsToCompileAndroid() {
   expected='g++';
   eval ${_functionName} -c "${expected}" > /dev/null;
   _validateEnvVariableValue 'compiler' "${expected}" "${_testName} -c";
-  _validateEnvVariablesDoNotExist "${_testName} -c" 'ndk_version' 'cmake_version' 'gradle_version' 'type' 'recompile' 'cpu_architecture';
+  _validateEnvVariablesDoNotExist "${_testName} -c" 'ndk_version' 'cmake_version' 'gradle_version' 'android_api_version' 'type' 'recompile' 'cpu_architecture';
   assertEqual "${expected}" "${compiler}" "${_testName} -c";
 
   _clearEnvVariables;
@@ -286,7 +294,7 @@ testParseArgumentsToCompileAndroid() {
   expected='recompile_test';
   eval ${_functionName} -r "${expected}" > /dev/null;
   _validateEnvVariableValue 'recompile' "${expected}" "${_testName} -r";
-  _validateEnvVariablesDoNotExist "${_testName} -r" 'ndk_version' 'cmake_version' 'gradle_version' 'type' 'compiler' 'cpu_architecture';
+  _validateEnvVariablesDoNotExist "${_testName} -r" 'ndk_version' 'cmake_version' 'gradle_version' 'android_api_version' 'type' 'compiler' 'cpu_architecture';
   assertEqual "${expected}" "${recompile}" "${_testName} -r";
 
   _clearEnvVariables;
@@ -294,7 +302,7 @@ testParseArgumentsToCompileAndroid() {
   expected='cpu_architecture_test';
   eval ${_functionName} -f "${expected}" > /dev/null;
   _validateEnvVariableValue 'cpu_architecture' "${expected}" "${_testName} -f";
-  _validateEnvVariablesDoNotExist "${_testName} -f" 'ndk_version' 'cmake_version' 'gradle_version' 'type' 'compiler' 'recompile';
+  _validateEnvVariablesDoNotExist "${_testName} -f" 'ndk_version' 'cmake_version' 'gradle_version' 'android_api_version' 'type' 'compiler' 'recompile';
   assertEqual "${expected}" "${cpu_architecture}" "${_testName} -f";
 
   _clearEnvVariables;

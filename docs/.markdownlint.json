@@ -1,0 +1,12 @@
+{
+    "line-length": {
+        "line_length": 100,
+        "stern": true,
+        "headings": false,
+        "tables": false,
+        "code_blocks": false
+    },
+    "no-inline-html": {
+        "allowed_elements": [ "div", "table", "tr", "th", "td", "b", "br", "img" ]
+    }
+}

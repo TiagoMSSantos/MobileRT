@@ -15,19 +15,19 @@ helpCompile() {
 
 # Helper command for Android compilation scripts.
 helpCompileAndroid() {
-  echo 'Usage: cmd [-h] [-t type] [-f cpu_architecture] [-c compiler] [-r recompile] [-n ndk_version] [-m cmake_version] [-g gradle_version]';
+  echo 'Usage: cmd [-h] [-t type] [-f cpu_architecture] [-c compiler] [-r recompile] [-n ndk_version] [-m cmake_version] [-g gradle_version] [-a android_api_version]';
   return 1;
 }
 
 # Helper command for Android run tests scripts.
 helpTestAndroid() {
-  echo 'Usage: cmd [-h] [-t type] [-f cpu_architecture] [-r run_test] [-n ndk_version] [-m cmake_version] [-g gradle_version] [-k kill_previous]';
+  echo 'Usage: cmd [-h] [-t type] [-f cpu_architecture] [-r run_test] [-n ndk_version] [-m cmake_version] [-g gradle_version] [-a android_api_version] [-k kill_previous]';
   return 1;
 }
 
 # Helper command for compilation scripts.
 helpCheck() {
-  echo 'Usage: cmd [-h] [-f cpu_architecture] [-n ndk_version] [-m cmake_version] [-g gradle_version]';
+  echo 'Usage: cmd [-h] [-f cpu_architecture] [-n ndk_version] [-m cmake_version] [-g gradle_version] [-a android_api_version]';
   return 1;
 }
 
@@ -65,7 +65,7 @@ parseArgumentsToCompile() {
 parseArgumentsToCompileAndroid() {
   # Reset the index of the last option argument processed by the getopts.
   OPTIND=0;
-  while getopts "ht:c:r:n:m:g:f:" opt; do
+  while getopts "ht:c:r:n:m:g:a:f:" opt; do
     case ${opt} in
       n )
         export ndk_version=${OPTARG};
@@ -75,6 +75,9 @@ parseArgumentsToCompileAndroid() {
         ;;
       g )
         export gradle_version=${OPTARG};
+        ;;
+      a )
+        export android_api_version=${OPTARG};
         ;;
       t )
         export type=${OPTARG};
@@ -103,7 +106,7 @@ parseArgumentsToCompileAndroid() {
 parseArgumentsToTestAndroid() {
   # Reset the index of the last option argument processed by the getopts.
   OPTIND=0;
-  while getopts "ht:r:k:n:m:g:f:" opt; do
+  while getopts "ht:r:k:n:m:g:a:f:" opt; do
     case ${opt} in
       n )
         export ndk_version=${OPTARG};
@@ -113,6 +116,9 @@ parseArgumentsToTestAndroid() {
         ;;
       g )
         export gradle_version=${OPTARG};
+        ;;
+      a )
+        export android_api_version=${OPTARG};
         ;;
       t )
         export type=${OPTARG};
@@ -140,7 +146,7 @@ parseArgumentsToTestAndroid() {
 parseArgumentsToCheck() {
   # Reset the index of the last option argument processed by the getopts.
   OPTIND=0;
-  while getopts "hm:g:n:f:" opt; do
+  while getopts "hm:g:a:n:f:" opt; do
     case ${opt} in
       n )
         export ndk_version=${OPTARG};
@@ -150,6 +156,9 @@ parseArgumentsToCheck() {
         ;;
       g )
         export gradle_version=${OPTARG};
+        ;;
+      a )
+        export android_api_version=${OPTARG};
         ;;
       f )
         export cpu_architecture=${OPTARG};
