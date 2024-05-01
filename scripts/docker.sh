@@ -204,8 +204,8 @@ installDockerCommandForMacOS() {
     rm -rf ~/.lima;
     rm -rf ~/Library/Caches/colima;
     rm -rf ~/Library/Caches/lima;
-    # Use version v0.6.6 to fix hanging at level=info msg="Expanding to 14GiB". More info: https://github.com/abiosoft/colima/issues/930
-    curl -o /tmp/colima.rb -L https://github.com/abiosoft/colima/releases/download/v0.6.6/colima-Darwin-x86_64;
+    # Use version v0.6.8 to fix hanging at level=info msg="Expanding to 14GiB". More info: https://github.com/abiosoft/colima/issues/930
+    curl -o /tmp/colima.rb -L https://github.com/abiosoft/colima/releases/download/v0.6.8/colima-Darwin-x86_64;
     chmod +x /tmp/colima.rb;
   else
     ln -s $(which colima) /tmp/colima.rb;
