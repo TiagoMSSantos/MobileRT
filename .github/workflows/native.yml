@@ -141,8 +141,8 @@ jobs:
       run: |
         ls -lahp /System/Volumes/Data/Applications;
 
-    - name: Install MacPorts (MacOS)
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+    - name: Install MacPorts (MacOS 11)
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success() && startsWith(matrix.host_os, 'macos-11')
       uses: melusina-org/setup-macports@v1
       with:

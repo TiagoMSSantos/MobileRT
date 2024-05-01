@@ -93,8 +93,16 @@ jobs:
         echo "VERSION=${VERSION}" >> "${GITHUB_ENV}";
         echo 'BUILD_IMAGE=yes' >> "${GITHUB_ENV}";
 
+    - name: Install MacPorts (MacOS 11)
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+      if: success() && startsWith(matrix.host_os, 'macos-11')
+      uses: melusina-org/setup-macports@v1
+      with:
+        # Check available parameters in: https://github.com/melusina-org/setup-macports/blob/main/action.yaml
+        parameters: '.github/macports.yml'
+
     - name: Install docker MacOS
-      timeout-minutes: 15
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
       if: success() && startsWith(matrix.host_os, 'macos')
       env:
         BASE_IMAGE: ${{ matrix.BASE_IMAGE }}
@@ -114,7 +122,7 @@ jobs:
         logout: true
 
     - name: Pull base Docker image
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
+      timeout-minutes: 60
       if: success()
       run: |
         docker image pull ${{ matrix.BASE_IMAGE }};

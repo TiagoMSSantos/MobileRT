@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-04-29T17:58:39.457Z",
+    "detectionDate": "2024-05-01T10:09:33.399Z",
     "formats": {
       "java": {
         "sources": {
@@ -1914,13 +1914,13 @@
           },
           ".github/workflows/native.yml": {
             "lines": 414,
-            "tokens": 2416,
+            "tokens": 2418,
             "sources": 1,
             "clones": 8,
             "duplicatedLines": 184,
             "duplicatedTokens": 1093,
             "percentage": 44.44,
-            "percentageTokens": 45.24,
+            "percentageTokens": 45.2,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -1937,14 +1937,14 @@
             "newClones": 0
           },
           ".github/workflows/docker.yml": {
-            "lines": 217,
-            "tokens": 1327,
+            "lines": 225,
+            "tokens": 1393,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 21,
             "duplicatedTokens": 109,
-            "percentage": 9.68,
-            "percentageTokens": 8.21,
+            "percentage": 9.33,
+            "percentageTokens": 7.82,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2082,14 +2082,14 @@
           }
         },
         "total": {
-          "lines": 2724,
-          "tokens": 18448,
+          "lines": 2732,
+          "tokens": 18516,
           "sources": 23,
           "clones": 17,
           "duplicatedLines": 444,
           "duplicatedTokens": 3189,
-          "percentage": 16.3,
-          "percentageTokens": 17.29,
+          "percentage": 16.25,
+          "percentageTokens": 17.22,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2205,8 +2205,8 @@
             "newClones": 0
           },
           "scripts/docker.sh": {
-            "lines": 200,
-            "tokens": 1425,
+            "lines": 235,
+            "tokens": 1709,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2254,14 +2254,14 @@
           }
         },
         "total": {
-          "lines": 4231,
-          "tokens": 28222,
+          "lines": 4266,
+          "tokens": 28506,
           "sources": 13,
           "clones": 13,
           "duplicatedLines": 280,
           "duplicatedTokens": 1443,
-          "percentage": 6.62,
-          "percentageTokens": 5.11,
+          "percentage": 6.56,
+          "percentageTokens": 5.06,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3164,14 +3164,14 @@
       }
     },
     "total": {
-      "lines": 29247,
-      "tokens": 224696,
+      "lines": 29290,
+      "tokens": 225048,
       "sources": 250,
       "clones": 126,
       "duplicatedLines": 1665,
       "duplicatedTokens": 14852,
-      "percentage": 5.69,
-      "percentageTokens": 6.61,
+      "percentage": 5.68,
+      "percentageTokens": 6.6,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -6789,12 +6789,12 @@
         "startLoc": {
           "line": 377,
           "column": 7,
-          "position": 2106
+          "position": 2108
         },
         "endLoc": {
           "line": 389,
           "column": 2,
-          "position": 2249
+          "position": 2251
         }
       },
       "secondFile": {
@@ -6804,12 +6804,12 @@
         "startLoc": {
           "line": 343,
           "column": 7,
-          "position": 1805
+          "position": 1807
         },
         "endLoc": {
           "line": 356,
           "column": 6,
-          "position": 1949
+          "position": 1951
         }
       }
     },

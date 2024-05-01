@@ -176,19 +176,54 @@ _installDockerSquashCommand() {
 # Its necessary to install Docker Desktop on Mac:
 # https://docs.docker.com/docker-for-mac/install/
 installDockerCommandForMacOS() {
+  MAJOR_MAC_VERSION=$(sw_vers | grep ProductVersion | cut -d ':' -f2 | cut -d '.' -f1 | tr -d '[:space:]');
+  echo "MacOS '${MAJOR_MAC_VERSION}' detected";
+
   brew update;
   echo 'Avoid homebrew from auto-update itself every time its installed something.';
   export HOMEBREW_NO_AUTO_UPDATE=1;
   export HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1;
 
+  if [ "${MAJOR_MAC_VERSION}" = 11 ]; then
+    echo 'Updating MacPorts.';
+    sudo port -bn selfupdate;
+    echo 'Installing docker via MacPorts.';
+    sudo port -bn install docker;
+    echo "Ignoring errors from homebrew, because MacOS '${MAJOR_MAC_VERSION}' was detected.";
+    set +e;
+  fi
   echo 'Install docker & colima.';
   brew install --ignore-dependencies --skip-cask-deps --skip-post-install docker colima lima;
   echo 'Install qemu.';
   brew install --ignore-dependencies --skip-cask-deps --skip-post-install qemu libssh libslirp capstone dtc snappy vde ncurses;
+  set -e;
+
+  if [ "${MAJOR_MAC_VERSION}" = 14 ]; then
+    echo 'Installing a specific version of colima.';
+    rm -rf ~/.colima;
+    rm -rf ~/.lima;
+    rm -rf ~/Library/Caches/colima;
+    rm -rf ~/Library/Caches/lima;
+    # Use version v0.6.6 to fix hanging at level=info msg="Expanding to 14GiB". More info: https://github.com/abiosoft/colima/issues/930
+    curl -o /tmp/colima.rb -L https://github.com/abiosoft/colima/releases/download/v0.6.6/colima-Darwin-x86_64;
+    chmod +x /tmp/colima.rb;
+  else
+    ln -s $(which colima) /tmp/colima.rb;
+  fi
 
   echo 'Start colima.';
+  /tmp/colima.rb start --help;
+  set +e;
   # Check available resources: https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners/about-github-hosted-runners#standard-github-hosted-runners-for-public-repositories
-  colima start --cpu 4 --memory 6 --disk 14;
+  # To setup Colima for MacOS with CPU ARM M1: https://www.tyler-wright.com/using-colima-on-an-m1-m2-mac
+  /tmp/colima.rb start --cpu 4 --memory 7 --disk 14 --mount-type=virtiofs;
+  startedColima=$?;
+  set -e;
+  if [ "${startedColima}" != "0" ]; then
+    echo 'Starting colima failed. Printing the error logs.';
+    cat /Users/runner/.colima/_lima/colima/ha.stderr.log;
+    exit 1;
+  fi
 
   echo 'Docker commands detected:';
   echo "${PATH}" | sed 's/:/ /g' | xargs ls 2> /dev/null | grep -i docker 2> /dev/null || true;

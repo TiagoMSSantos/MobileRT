@@ -1,4 +1,4 @@
-version: '2.9.1'
+version: '2.9.3'
 prefix: '/opt/local'
 variants:
   deselect: x11
