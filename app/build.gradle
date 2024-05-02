@@ -457,7 +457,7 @@ dependencies {
     implementation 'androidx.multidex:multidex:2.0.1'
 
     // Java dependencies
-    implementation 'com.google.guava:guava:33.1.0-jre'
+    implementation 'com.google.guava:guava:33.2.0-jre'
     implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
     implementation 'net.sourceforge.streamsupport:streamsupport:1.7.4'
 
