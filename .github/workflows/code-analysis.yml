@@ -116,8 +116,6 @@ jobs:
     # Valid inputs are ['tools', 'languages', 'token', 'matrix', 'config-file', 'queries']
     # Queries: must be a built-in suite (security-extended or security-and-quality),
     # a relative path, or be of the form "owner/repo[/path]@ref"
-    # Unable to download and extract the tools needed for installing the python dependencies.
-    # You can call this action with 'setup-python-dependencies: false' to disable this process.
     - name: Initialize CodeQL
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
@@ -129,7 +127,6 @@ jobs:
         matrix: ${{ toJson(matrix) }}
         config-file: .github/codeql/codeql-config.yml
         queries: +security-and-quality
-        setup-python-dependencies: true
         source-root: .
         ram: 6144
         threads: 3
