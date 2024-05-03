@@ -519,7 +519,7 @@ jobs:
     - name: Sign APK
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
-      uses: ilharp/sign-android-release@v1
+      uses: ilharp/sign-android-release@nightly
       with:
         # Check available parameters in: https://github.com/ilharp/sign-android-release/blob/master/action.yml
         releaseDir: app/build/outputs/apk/${{ matrix.type }}
