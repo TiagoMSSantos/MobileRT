@@ -63,7 +63,7 @@
       ],
       "depNameTemplate": "androidx.core:core-ktx",
       "datasourceTemplate": "maven",
-      "versioning": "gradle"
+      "versioningTemplate": "gradle"
     }
   ],
   "regex": {
