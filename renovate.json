@@ -80,5 +80,11 @@
   },
   "gradle": {
     "enabled": true
-  }
+  },
+  "packageRules": [
+    {
+      "matchPackagePatterns": ["^androidx.core:core-ktx$"],
+      "allowedVersions": ">=1.13"
+    }
+  ]
 }
