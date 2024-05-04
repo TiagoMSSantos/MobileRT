@@ -94,6 +94,7 @@
   "packageRules": [
     {
       "matchPackagePatterns": ["androidx.core:core-ktx"],
+      "matchDatasources": ["gradle"],
       "matchCurrentVersion": ">=1.13",
       "matchCurrentValue": "!/^1\\.12\\.0/"
     }
