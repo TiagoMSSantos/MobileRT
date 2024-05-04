@@ -71,8 +71,7 @@
     "ignoreDeps": ["androidx.core:core-ktx"]
   },
   "maven": {
-    "enabled": true,
-    "ignoreDeps": ["androidx.core:core-ktx"]
+    "enabled": true
   },
   "customManagers": [
     {
