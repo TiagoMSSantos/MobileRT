@@ -58,9 +58,9 @@
       "fileMatch": ["build.gradle"],
       "matchStringsStrategy": "any",
       "matchStrings": [
+        "[\"](?<depName>.*?):${common_libraries_android_framework}[\"]",
         "common_libraries_android_framework = ['\"](?<currentValue>.*)['\"]"
       ],
-      "datasourceTemplate": "gradle-version",
       "depNameTemplate": "androidx.core:core-ktx"
     }
   ],
@@ -94,7 +94,7 @@
   "packageRules": [
     {
       "matchPackagePatterns": ["androidx.core:core-ktx"],
-      "matchDatasources": ["gradle-version"],
+      "matchCategories": ["java"],
       "matchCurrentVersion": ">=1.13",
       "matchCurrentValue": "!/^1\\.12\\.0/"
     }
