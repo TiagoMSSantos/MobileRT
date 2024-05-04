@@ -42,32 +42,6 @@
     "automerge": true,
     "groupName": "all patch updates"
   },
-  "customManagers": [
-    {
-      "description": "Update base docker image references",
-      "fileMatch": ["Dockerfile", "\\.github\\/workflows\\/.+\\.ya?ml"],
-      "matchStringsStrategy": "any",
-      "matchStrings": [
-        "BASE_IMAGE=(?<depName>.*?):(?<currentValue>.*)",
-        "BASE_IMAGE: (?<depName>.*?):(?<currentValue>.*)"
-      ],
-      "datasourceTemplate": "docker"
-    },
-    {
-      "description": "Update androidx.core:core-ktx",
-      "fileMatch": ["build.gradle"],
-      "matchStringsStrategy": "any",
-      "matchStrings": [
-        "[\"](?<depName>.*?):${common_libraries_android_framework}[\"]",
-        "common_libraries_android_framework = ['\"](?<currentValue>.*)['\"]"
-      ],
-      "depNameTemplate": "androidx.core:core-ktx",
-      "datasourceTemplate": "maven",
-      "versioningTemplate": "gradle",
-      "customType": "regex",
-      "registryUrlTemplate": "https://dl.google.com/android/maven2/"
-    }
-  ],
   "regex": {
     "enabled": true,
     "ignoreDeps": ["ubuntu"]
@@ -98,6 +72,31 @@
   "maven": {
     "enabled": true
   },
+  "customManagers": [
+    {
+      "description": "Update base docker image references",
+      "fileMatch": ["Dockerfile", "\\.github\\/workflows\\/.+\\.ya?ml"],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
+        "BASE_IMAGE=(?<depName>.*?):(?<currentValue>.*)",
+        "BASE_IMAGE: (?<depName>.*?):(?<currentValue>.*)"
+      ],
+      "datasourceTemplate": "docker"
+    },
+    {
+      "description": "Update androidx.core:core-ktx",
+      "fileMatch": ["build.gradle"],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
+        "if (androidApiVersionValue >= 19) {\n.*common_libraries_android_framework = ['\"](?<currentValue>.*)['\"]"
+      ],
+      "depNameTemplate": "androidx.core:core-ktx",
+      "datasourceTemplate": "maven",
+      "versioningTemplate": "gradle",
+      "customType": "regex",
+      "registryUrlTemplate": "https://dl.google.com/android/maven2/"
+    }
+  ],
   "packageRules": [
     {
       "groupName": "Update androidx.core:core-ktx",
