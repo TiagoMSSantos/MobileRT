@@ -93,11 +93,18 @@
   "gradle": {
     "enabled": true
   },
+  "maven": {
+    "enabled": true
+  },
   "packageRules": [
     {
+      "groupName": "Update androidx.core:core-ktx",
+      "description": "Update androidx.core:core-ktx",
       "matchPackagePatterns": ["androidx.core:core-ktx"],
+      "matchPackageNames": ["androidx.core:core-ktx"],
+      "matchDatasources": ["maven"],
       "matchCategories": ["java"],
-      "matchCurrentVersion": ">=1.13",
+      "matchCurrentVersion": "!/^1\\.12\\.0/",
       "matchCurrentValue": "!/^1\\.12\\.0/"
     }
   ]
