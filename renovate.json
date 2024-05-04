@@ -61,7 +61,8 @@
         "[\"](?<depName>.*?):${common_libraries_android_framework}[\"]",
         "common_libraries_android_framework = ['\"](?<currentValue>.*)['\"]"
       ],
-      "depNameTemplate": "androidx.core:core-ktx"
+      "depNameTemplate": "androidx.core:core-ktx",
+      "datasourceTemplate": "maven"
     }
   ],
   "regex": {
