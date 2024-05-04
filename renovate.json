@@ -60,7 +60,8 @@
       "matchStrings": [
         "common_libraries_android_framework = (?<currentValue>.*)"
       ],
-      "datasourceTemplate": "gradle"
+      "datasourceTemplate": "gradle",
+      "depNameTemplate": "androidx.core:core-ktx"
     }
   ],
   "regex": {
