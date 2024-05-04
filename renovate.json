@@ -63,7 +63,8 @@
       ],
       "depNameTemplate": "androidx.core:core-ktx",
       "datasourceTemplate": "maven",
-      "versioningTemplate": "gradle"
+      "versioningTemplate": "gradle",
+      "customType": "regex"
     }
   ],
   "regex": {
@@ -105,7 +106,9 @@
       "matchDatasources": ["maven"],
       "matchCategories": ["java"],
       "matchCurrentVersion": "!/^1\\.12\\.0/",
-      "matchCurrentValue": "!/^1\\.12\\.0/"
+      "matchCurrentValue": "!/^1\\.12\\.0/",
+      "versioning": "gradle",
+      "registryUrls": ["https://dl.google.com/android/maven2"]
     }
   ]
 }
