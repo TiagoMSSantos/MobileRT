@@ -67,7 +67,8 @@
     "ignoreDeps": ["ubuntu"]
   },
   "gradle": {
-    "enabled": true
+    "enabled": true,
+    "ignoreDeps": ["androidx.core:core-ktx"]
   },
   "maven": {
     "enabled": true,
