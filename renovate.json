@@ -62,7 +62,8 @@
         "common_libraries_android_framework = ['\"](?<currentValue>.*)['\"]"
       ],
       "depNameTemplate": "androidx.core:core-ktx",
-      "datasourceTemplate": "maven"
+      "datasourceTemplate": "maven",
+      "versioning": "gradle"
     }
   ],
   "regex": {
