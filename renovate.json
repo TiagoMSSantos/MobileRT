@@ -64,7 +64,8 @@
       "depNameTemplate": "androidx.core:core-ktx",
       "datasourceTemplate": "maven",
       "versioningTemplate": "gradle",
-      "customType": "regex"
+      "customType": "regex",
+      "registryUrlTemplate": "https://dl.google.com/android/maven2/"
     }
   ],
   "regex": {
@@ -108,7 +109,8 @@
       "matchCurrentVersion": "!/^1\\.12\\.0/",
       "matchCurrentValue": "!/^1\\.12\\.0/",
       "versioning": "gradle",
-      "registryUrls": ["https://dl.google.com/android/maven2"]
+      "registryUrls": ["https://dl.google.com/android/maven2"],
+      "sourceUrl": "https://cs.android.com/androidx/platform/frameworks/support"
     }
   ]
 }
