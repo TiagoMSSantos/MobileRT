@@ -58,7 +58,7 @@
       "fileMatch": ["build.gradle"],
       "matchStringsStrategy": "any",
       "matchStrings": [
-        "common_libraries_android_framework = '(?<currentValue>.*)'"
+        "common_libraries_android_framework = ['\"]?(?<currentValue>.*)['\"]?"
       ],
       "datasourceTemplate": "gradle-version",
       "depNameTemplate": "androidx.core:core-ktx"
