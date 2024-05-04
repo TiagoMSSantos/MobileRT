@@ -84,7 +84,7 @@
   "packageRules": [
     {
       "matchPackagePatterns": ["^androidx.core:core-ktx$"],
-      "allowedVersions": ">=1.13"
+      "matchCurrentVersion": ">=1.13"
     }
   ]
 }
