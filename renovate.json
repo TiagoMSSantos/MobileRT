@@ -96,19 +96,5 @@
       "customType": "regex",
       "registryUrlTemplate": "https://dl.google.com/android/maven2/"
     }
-  ],
-  "packageRules": [
-    {
-      "groupName": "Update androidx.core:core-ktx",
-      "description": "Update androidx.core:core-ktx",
-      "matchPackagePatterns": ["androidx.core:core-ktx"],
-      "matchPackageNames": ["androidx.core:core-ktx"],
-      "matchDatasources": ["maven"],
-      "matchCategories": ["java"],
-      "matchCurrentVersion": "!/^1\\.12\\.0/",
-      "matchCurrentValue": "!/^1\\.12\\.0/",
-      "versioning": "gradle",
-      "registryUrls": ["https://dl.google.com/android/maven2"]
-    }
   ]
 }
