@@ -43,8 +43,7 @@
     "groupName": "all patch updates"
   },
   "regex": {
-    "enabled": true,
-    "ignoreDeps": ["ubuntu"]
+    "enabled": true
   },
   "git-submodules": {
     "enabled": false
@@ -63,8 +62,7 @@
     "enabled": true
   },
   "dockerfile": {
-    "enabled": true,
-    "ignoreDeps": ["ubuntu"]
+    "enabled": true
   },
   "gradle": {
     "enabled": true
@@ -103,6 +101,13 @@
       "matchManagers": ["regex", "gradle"],
       "matchCurrentVersion": "/^1\\.12\\.0/",
       "matchCurrentValue": "/^1\\.12\\.0/"
+    },
+    {
+      "groupName": "Update Ubuntu to LTS versions",
+      "matchDepNames": ["ubuntu"],
+      "matchManagers": ["regex", "docker"],
+      "versioning": "ubuntu",
+      "allowedVersions": "/^[0-9]+\\.04$/"
     }
   ]
 }
