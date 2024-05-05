@@ -74,7 +74,6 @@
   },
   "customManagers": [
     {
-      "description": "Update base docker image references",
       "fileMatch": ["Dockerfile", "\\.github\\/workflows\\/.+\\.ya?ml"],
       "matchStringsStrategy": "any",
       "matchStrings": [
@@ -84,7 +83,6 @@
       "datasourceTemplate": "docker"
     },
     {
-      "description": "Update androidx.core:core-ktx",
       "fileMatch": ["build.gradle"],
       "matchStringsStrategy": "any",
       "matchStrings": [
@@ -94,23 +92,17 @@
       "datasourceTemplate": "maven",
       "versioningTemplate": "gradle",
       "customType": "regex",
-      "registryUrlTemplate": "https://dl.google.com/android/maven2/"
+      "registryUrlTemplate": "https://dl.google.com/android/maven2"
     }
   ],
   "packageRules": [
     {
       "groupName": "Ignore update androidx.core:core-ktx for Android API < 19",
-      "description": "Ignore update androidx.core:core-ktx for Android API < 19",
       "enabled": false,
-      "matchPackagePatterns": ["androidx.core:core-ktx"],
-      "matchPackageNames": ["androidx.core:core-ktx"],
+      "matchDepNames": ["androidx.core:core-ktx"],
       "matchManagers": ["regex", "gradle"],
-      "matchDatasources": ["maven"],
-      "matchCategories": ["java"],
       "matchCurrentVersion": "/^1\\.12\\.0/",
-      "matchCurrentValue": "/^1\\.12\\.0/",
-      "versioning": "gradle",
-      "registryUrls": ["https://dl.google.com/android/maven2"]
+      "matchCurrentValue": "/^1\\.12\\.0/"
     }
   ]
 }
