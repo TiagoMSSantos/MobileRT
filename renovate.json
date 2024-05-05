@@ -82,6 +82,19 @@
         "BASE_IMAGE: (?<depName>.*?):(?<currentValue>.*)"
       ],
       "datasourceTemplate": "docker"
+    },
+    {
+      "description": "Update androidx.core:core-ktx",
+      "fileMatch": ["build.gradle"],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
+        "common_libraries_android_framework = ['\"](?<currentValue>.*)['\"]"
+      ],
+      "depNameTemplate": "androidx.core:core-ktx",
+      "datasourceTemplate": "maven",
+      "versioningTemplate": "gradle",
+      "customType": "regex",
+      "registryUrlTemplate": "https://dl.google.com/android/maven2/"
     }
   ],
   "packageRules": [
