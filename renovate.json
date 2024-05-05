@@ -67,8 +67,7 @@
     "ignoreDeps": ["ubuntu"]
   },
   "gradle": {
-    "enabled": true,
-    "ignoreDeps": ["androidx.core:core-ktx"]
+    "enabled": true
   },
   "maven": {
     "enabled": true
@@ -83,19 +82,21 @@
         "BASE_IMAGE: (?<depName>.*?):(?<currentValue>.*)"
       ],
       "datasourceTemplate": "docker"
-    },
+    }
+  ],
+  "packageRules": [
     {
-      "description": "Update androidx.core:core-ktx",
-      "fileMatch": ["build.gradle"],
-      "matchStringsStrategy": "any",
-      "matchStrings": [
-        "if (androidApiVersionValue >= 19) {\n.*common_libraries_android_framework = ['\"](?<currentValue>.*)['\"]"
-      ],
-      "depNameTemplate": "androidx.core:core-ktx",
-      "datasourceTemplate": "maven",
-      "versioningTemplate": "gradle",
-      "customType": "regex",
-      "registryUrlTemplate": "https://dl.google.com/android/maven2/"
+      "groupName": "Ignore update androidx.core:core-ktx for Android API < 19",
+      "description": "Ignore update androidx.core:core-ktx for Android API < 19",
+      "enabled": false,
+      "matchPackagePatterns": ["androidx.core:core-ktx"],
+      "matchPackageNames": ["androidx.core:core-ktx"],
+      "matchDatasources": ["maven"],
+      "matchCategories": ["java"],
+      "matchCurrentVersion": "/^1\\.12\\.0/",
+      "matchCurrentValue": "/^1\\.12\\.0/",
+      "versioning": "gradle",
+      "registryUrls": ["https://dl.google.com/android/maven2"]
     }
   ]
 }
