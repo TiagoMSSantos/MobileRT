@@ -104,6 +104,7 @@
       "enabled": false,
       "matchPackagePatterns": ["androidx.core:core-ktx"],
       "matchPackageNames": ["androidx.core:core-ktx"],
+      "matchManagers": ["regex"],
       "matchDatasources": ["maven"],
       "matchCategories": ["java"],
       "matchCurrentVersion": "/^1\\.12\\.0/",
