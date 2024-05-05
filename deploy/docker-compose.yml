@@ -14,7 +14,7 @@ networks:
 services:
     MobileRT:
         build: .
-        image: ptpuscas/mobile_rt:ubuntu-22.04
+        image: ptpuscas/mobile_rt:ubuntu-24.04
         hostname: MobileRT
         networks:
             - cluster

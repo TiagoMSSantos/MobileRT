@@ -51,8 +51,8 @@ try this ray tracer with ease by using the following commands to get the docker
 image and execute the container:
 
 ```shell
-docker pull ptpuscas/mobile_rt:ubuntu-22.04
-xhost +; docker run -it -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=${DISPLAY} ptpuscas/mobile_rt:ubuntu-22.04
+docker pull ptpuscas/mobile_rt:ubuntu-24.04
+xhost +; docker run -it -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=${DISPLAY} ptpuscas/mobile_rt:ubuntu-24.04
 ```
 
 or (still WIP)
@@ -69,7 +69,7 @@ the image above :)
 For the most curious, this is the command used to build the docker image:
 
 ```shell
-docker build -t ptpuscas/mobile_rt:ubuntu-22.04 -f deploy/Dockerfile.unix --no-cache=false --build-arg BUILD_TYPE=release --build-arg BASE_IMAGE=ubuntu:22.04 .
+docker build -t ptpuscas/mobile_rt:ubuntu-24.04 -f deploy/Dockerfile.unix --no-cache=false --build-arg BUILD_TYPE=release --build-arg BASE_IMAGE=ubuntu:24.04 .
 ```
 
 The docker image is in docker hub:
@@ -203,13 +203,13 @@ framework for mocking in unit tests
     </tr>
     <tr>
       <td style="text-align:center"><b>Ubuntu</b></td>
-      <td style="text-align:center">10.04<br><img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25" alt="red"></td>
       <td style="text-align:center">12.04<br><img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25" alt="red"></td>
       <td style="text-align:center">14.04<br><img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25" alt="red"></td>
       <td style="text-align:center">16.04<br><img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25" alt="gray"></td>
       <td style="text-align:center">18.04<br><img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25" alt="gray"></td>
       <td style="text-align:center">20.04<br><img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25" alt="green"></td>
       <td style="text-align:center">22.04<br><img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25" alt="green"></td>
+      <td style="text-align:center">24.04<br><img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25" alt="green"></td>
     </tr>
     <tr>
       <td style="text-align:center"><b>CentOS</b></td>
