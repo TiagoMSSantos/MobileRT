@@ -107,6 +107,13 @@
       "matchManagers": ["regex", "dockerfile"],
       "versioning": "ubuntu",
       "allowedVersions": "/^[0-9]+\\.04$/"
+    },
+    {
+      "groupName": "Update conan dependencies",
+      "matchDepNames": ["pcg-cpp", "stb"],
+      "matchManagers": ["conan"],
+      "versioning": "conan",
+      "allowedVersions": "!/^cci\\.[0-9]+$/"
     }
   ]
 }
