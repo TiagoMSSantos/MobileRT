@@ -3,8 +3,8 @@ icu/74.2
 qt/6.7.0
 boost/1.85.0
 gtest/1.14.0
-#tinyobjloader/1.0.6 # Necessary version 1.0.7 at least, because it supports colors.
-glm/cci.20220420
+tinyobjloader/1.0.7
+glm/1.0.1
 stb/cci.20230920
 pcg-cpp/cci.20220409
 
