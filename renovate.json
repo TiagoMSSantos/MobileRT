@@ -105,7 +105,7 @@
     {
       "groupName": "Update Ubuntu to LTS versions",
       "matchDepNames": ["ubuntu"],
-      "matchManagers": ["regex", "docker"],
+      "matchManagers": ["regex", "dockerfile"],
       "versioning": "ubuntu",
       "allowedVersions": "/^[0-9]+\\.04$/"
     }
