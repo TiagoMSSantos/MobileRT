@@ -90,6 +90,18 @@
       "versioningTemplate": "gradle",
       "customType": "regex",
       "registryUrlTemplate": "https://dl.google.com/android/maven2"
+    },
+    {
+      "fileMatch": ["\\.github\\/workflows\\/android_matrix\\.json"],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
+        "['\"]gradle_version['\"]: ['\"](?<currentValue>.*)['\"]"
+      ],
+      "depNameTemplate": "com.android.tools.build:gradle",
+      "datasourceTemplate": "maven",
+      "versioningTemplate": "gradle",
+      "customType": "regex",
+      "registryUrlTemplate": "https://dl.google.com/android/maven2"
     }
   ],
   "packageRules": [
@@ -114,6 +126,13 @@
       "matchManagers": ["conan"],
       "versioning": "conan",
       "allowedVersions": "!/^cci\\.[0-9]+$/"
+    },
+    {
+      "groupName": "Update Android Gradle version",
+      "matchDepNames": ["com.android.tools.build:gradle"],
+      "matchManagers": ["regex", "gradle"],
+      "matchCurrentVersion": "!/^8\\.2\\.2$/",
+      "matchCurrentValue": "!/^8\\.2\\.2$/"
     }
   ]
 }
