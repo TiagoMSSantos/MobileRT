@@ -127,12 +127,12 @@
       "allowedVersions": "!/^cci\\.[0-9]+$/"
     },
     {
-      "groupName": "Update Android Gradle version",
+      "groupName": "Ignore update Android Gradle version for Android API <= 21",
+      "enabled": false,
       "matchDepNames": ["com.android.tools.build:gradle"],
       "matchManagers": ["regex", "gradle"],
-      "matchCurrentVersion": "!/^8\\.2\\.2$/",
-      "matchCurrentValue": "!/^8\\.2\\.2$/",
-      "separateMajorMinor": false
+      "matchCurrentVersion": "/^8\\.2\\.2$/",
+      "matchCurrentValue": "/^8\\.2\\.2$/"
     }
   ]
 }
