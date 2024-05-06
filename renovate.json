@@ -131,7 +131,8 @@
       "matchDepNames": ["com.android.tools.build:gradle"],
       "matchManagers": ["regex", "gradle"],
       "matchCurrentVersion": "!/^8\\.2\\.2$/",
-      "matchCurrentValue": "!/^8\\.2\\.2$/"
+      "matchCurrentValue": "!/^8\\.2\\.2$/",
+      "separateMajorMinor": false
     }
   ]
 }
