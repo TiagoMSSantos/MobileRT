@@ -95,7 +95,7 @@
       "fileMatch": ["\\.github\\/workflows\\/android_matrix\\.json"],
       "matchStringsStrategy": "any",
       "matchStrings": [
-        "['\"]gradle_version['\"]: ['\"](?<currentValue>.*)['\"]"
+        "['\"]gradle_version['\"]: ['\"](?<currentValue>.*?)['\"]"
       ],
       "depNameTemplate": "com.android.tools.build:gradle",
       "datasourceTemplate": "maven",
