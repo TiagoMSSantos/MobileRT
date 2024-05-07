@@ -44,7 +44,7 @@ buildscript {
             androidApiVersion = '14'
         }
 
-        kotlin_stdlib_jdk8_version = '1.9.23'
+        kotlin_stdlib_jdk8_version = '1.9.24'
         androidX_annotation_version = '1.7.1'
 
         // Test dependencies
