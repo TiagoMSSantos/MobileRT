@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-05-06T08:17:50.043Z",
+    "detectionDate": "2024-05-08T08:24:47.376Z",
     "formats": {
       "java": {
         "sources": {
@@ -2145,8 +2145,8 @@
             "newClones": 0
           },
           "scripts/run_tests_android.sh": {
-            "lines": 677,
-            "tokens": 4948,
+            "lines": 678,
+            "tokens": 4982,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2193,14 +2193,14 @@
             "newClones": 0
           },
           "scripts/helper_functions.sh": {
-            "lines": 537,
-            "tokens": 3817,
+            "lines": 543,
+            "tokens": 3836,
             "sources": 1,
             "clones": 2,
             "duplicatedLines": 34,
             "duplicatedTokens": 196,
-            "percentage": 6.33,
-            "percentageTokens": 5.13,
+            "percentage": 6.26,
+            "percentageTokens": 5.11,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2230,13 +2230,13 @@
           },
           "scripts/compile_android.sh": {
             "lines": 184,
-            "tokens": 974,
+            "tokens": 980,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 45,
             "duplicatedTokens": 129,
             "percentage": 24.46,
-            "percentageTokens": 13.24,
+            "percentageTokens": 13.16,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2254,14 +2254,14 @@
           }
         },
         "total": {
-          "lines": 4266,
-          "tokens": 28506,
+          "lines": 4273,
+          "tokens": 28565,
           "sources": 13,
           "clones": 13,
           "duplicatedLines": 280,
           "duplicatedTokens": 1443,
-          "percentage": 6.56,
-          "percentageTokens": 5.06,
+          "percentage": 6.55,
+          "percentageTokens": 5.05,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3164,13 +3164,13 @@
       }
     },
     "total": {
-      "lines": 29287,
-      "tokens": 225036,
+      "lines": 29294,
+      "tokens": 225095,
       "sources": 250,
       "clones": 126,
       "duplicatedLines": 1665,
       "duplicatedTokens": 14852,
-      "percentage": 5.69,
+      "percentage": 5.68,
       "percentageTokens": 6.6,
       "newDuplicatedLines": 0,
       "newClones": 0

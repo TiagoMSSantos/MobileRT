@@ -215,13 +215,13 @@ kill_adb_processes() {
 
 unlockDevice() {
   echo 'unlockDevice called';
-  callCommandUntilSuccess sh gradlew --daemon \
+  callCommandUntilSuccess 5 sh gradlew --daemon \
     --no-rebuild \
     -DabiFilters="[${cpu_architecture}]" \
     -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" -DgradleVersion="${gradle_version}" -DandroidApiVersion="${android_api_version}" --info --warning-mode fail --stacktrace;
 
   echo 'Set adb as root, to be able to change files permissions';
-  callCommandUntilSuccess adb root;
+  callCommandUntilSuccess 5 adb root;
 
   set +e;
   # shellcheck disable=SC2009
@@ -244,9 +244,9 @@ unlockDevice() {
   callAdbShellCommandUntilSuccess adb shell 'input tap 800 400; echo ::$?::';
   callAdbShellCommandUntilSuccess adb shell 'input tap 1000 500; echo ::$?::';
 
-  callCommandUntilSuccess adb get-state;
-  callCommandUntilSuccess adb devices -l;
-  callCommandUntilSuccess adb version;
+  callCommandUntilSuccess 5 adb get-state;
+  callCommandUntilSuccess 5 adb devices -l;
+  callCommandUntilSuccess 5 adb version;
 
   androidApi=$(adb shell getprop ro.build.version.sdk | tr -d '[:space:]');
   echo "androidApi: '${androidApi}'";
@@ -294,9 +294,9 @@ runEmulator() {
 waitForEmulator() {
   echo 'Wait for device to be available.';
 
-  callCommandUntilSuccess adb kill-server;
+  callCommandUntilSuccess 5 adb kill-server;
   #_restartAdbProcesses;
-  callCommandUntilSuccess adb start-server;
+  callCommandUntilSuccess 5 adb start-server;
   set +e;
   adb_devices_running=$(adb devices | tail -n +2);
   retry=0;
@@ -333,7 +333,7 @@ waitForEmulator() {
       -no-mouse-reposition -no-nested-warnings -verbose \
       -qemu -m size=4096M,slots=1,maxmem=8192M -machine type=pc,accel=kvm -accel kvm,thread=multi:tcg,thread=multi -smp cpus=8,maxcpus=8,cores=8,threads=1,sockets=1
     sleep 20;
-    adb_devices_running=$(callCommandUntilSuccess adb devices | tail -n +2);
+    adb_devices_running=$(callCommandUntilSuccess 5 adb devices | tail -n +2);
   done
   set -eu;
   echo "Devices running: '${adb_devices_running}'";
@@ -348,7 +348,7 @@ waitForEmulator() {
 
   unlockDevice;
 
-  adb_devices_running=$(callCommandUntilSuccess adb devices | grep -v 'List of devices attached' || true);
+  adb_devices_running=$(callCommandUntilSuccess 5 adb devices | grep -v 'List of devices attached' || true);
   echo "Devices running after triggering boot: '${adb_devices_running}'";
   if [ -z "${adb_devices_running}" ]; then
     # Abort if emulator didn't start.
@@ -399,13 +399,13 @@ copyResources() {
   callAdbShellCommandUntilSuccess adb shell 'mkdir -p '${sdcard_path_android}'/WavefrontOBJs/teapot; echo ::$?::';
 
   echo 'Copy tests resources';
-  callCommandUntilSuccess adb push -p app/src/androidTest/resources/CornellBox ${mobilert_path}/WavefrontOBJs;
+  callCommandUntilSuccess 5 adb push -p app/src/androidTest/resources/CornellBox ${mobilert_path}/WavefrontOBJs;
   set +e;
   adb push -p app/src/androidTest/resources/teapot ${sdcard_path_android}/WavefrontOBJs;
   set -e;
 
   echo 'Copy File Manager';
-  callCommandUntilSuccess adb push -p app/src/androidTest/resources/APKs ${mobilert_path};
+  callCommandUntilSuccess 5 adb push -p app/src/androidTest/resources/APKs ${mobilert_path};
 
   echo 'Change resources permissions';
   callAdbShellCommandUntilSuccess adb shell 'chmod -R 777 '${mobilert_path}'; echo ::$?::';
@@ -495,8 +495,8 @@ runUnitTests() {
 
   unlockDevice;
 
-  callCommandUntilSuccess adb push -p "${dirUnitTests}"/bin/* ${mobilert_path};
-  callCommandUntilSuccess adb push -p "${dirUnitTests}"/lib/* ${mobilert_path};
+  callCommandUntilSuccess 5 adb push -p "${dirUnitTests}"/bin/* ${mobilert_path};
+  callCommandUntilSuccess 5 adb push -p "${dirUnitTests}"/lib/* ${mobilert_path};
 
   echo 'Run unit tests';
   if [ "${type}" = 'debug' ]; then
@@ -511,8 +511,8 @@ runUnitTests() {
 
 verifyResources() {
   echo 'Verify resources in SD Card';
-  callCommandUntilSuccess adb shell 'ls -laR '${mobilert_path}/WavefrontOBJs;
-  callCommandUntilSuccess adb shell 'ls -laR '${sdcard_path_android}/WavefrontOBJs;
+  callCommandUntilSuccess 5 adb shell 'ls -laR '${mobilert_path}/WavefrontOBJs;
+  callCommandUntilSuccess 5 adb shell 'ls -laR '${sdcard_path_android}/WavefrontOBJs;
 
   echo 'Verify memory available on host:';
   if command -v free > /dev/null; then
@@ -560,9 +560,9 @@ runInstrumentationTests() {
   apksPath=$(find . -iname "*.apk" | grep -i "output");
   for apkPath in ${apksPath}; do
     echo "Will install APK: ${apkPath}";
-    callCommandUntilSuccess adb push -p "${apkPath}" "${mobilert_path}";
+    callCommandUntilSuccess 5 adb push -p "${apkPath}" "${mobilert_path}";
   done;
-  callCommandUntilSuccess adb shell 'ls -la '${mobilert_path};
+  callCommandUntilSuccess 5 adb shell 'ls -la '${mobilert_path};
   unlockDevice;
   echo 'Installing both APKs for tests and app.';
   set +e;
@@ -632,9 +632,10 @@ _restartAdbProcesses() {
 
 # Waits for the Android Emulator to boot.
 # By using cpulimit to 1, it can take around 3 minutes to boot.
+# E.g.: Android API 33 can take more than 1 minute to boot.
 _waitForEmulatorToBoot() {
   # Make sure ADB daemon started properly.
-  callCommandUntilSuccess adb shell 'ps > /dev/null;';
+  callCommandUntilSuccess 25 adb shell 'ps > /dev/null;';
   # adb shell needs ' instead of ", so 'getprop' works properly.
   # shellcheck disable=SC2016
   callAdbShellCommandUntilSuccess adb shell 'echo -n ::$(($(getprop sys.boot_completed)-1))::';

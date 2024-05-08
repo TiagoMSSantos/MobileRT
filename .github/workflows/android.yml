@@ -465,7 +465,7 @@ jobs:
         enable-hw-keyboard: false
         emulator-boot-timeout: 900 # It can take more than 5 min to boot, and the tests can take more than 17 min to finish.
         script: |
-          sh scripts/run_tests_android.sh -t ${{ matrix.type }} -r all -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -g ${{ matrix.gradle_version }} -a ${{ matrix.android_api }} -k false -f "\"x86\",\"x86_64\"";
+          . scripts/helper_functions.sh && callCommandUntilSuccess 5 sh scripts/run_tests_android.sh -t ${{ matrix.type }} -r all -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -g ${{ matrix.gradle_version }} -a ${{ matrix.android_api }} -k false -f "\"x86\",\"x86_64\"";
 
     - name: Publish Android Test Report
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}

@@ -199,18 +199,24 @@ callCommandUntilError() {
 }
 
 # Call function multiple times until it doesn't fail and then return.
+# Every attempt are made with a 3 seconds delay.
+# Parameters:
+# * The maximum number of retries.
 callCommandUntilSuccess() {
   echo '';
   echo "Calling until success '$*'";
   _retry=0;
+  _maxRetries=${1};
   set +e;
-  "$@";
+  # Perform a shift of the parameters, so it's ignored the 1st element (number of retries).
+  shift;
+  "${@}";
   lastResult=${?};
   echo "result: '${lastResult}'";
   # Android API 33 can take more than 1 minute to boot.
-  while [ "${lastResult}" -ne 0 ] && [ ${_retry} -lt 25 ]; do
+  while [ "${lastResult}" -ne 0 ] && [ ${_retry} -lt ${_maxRetries} ]; do
     _retry=$(( _retry + 1 ));
-    "$@";
+    "${@}";
     lastResult=${?};
     echo "Retry: ${_retry} of command '$*'; result: '${lastResult}'";
     sleep 3;
