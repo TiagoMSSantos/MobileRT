@@ -464,7 +464,7 @@ dependencies {
     // Kotlin dependencies
     implementation "androidx.core:core-ktx:${common_libraries_android_framework}"
     implementation "org.jetbrains.kotlin:kotlin-stdlib:${kotlin_stdlib_jdk8_version}"
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1'
 
     // Annotations
     implementation "androidx.annotation:annotation:${androidX_annotation_version}"
