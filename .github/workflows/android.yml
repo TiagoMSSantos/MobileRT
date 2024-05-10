@@ -646,7 +646,7 @@ jobs:
       if: success()
       working-directory: .
       run: |
-        sh scripts/run_tests.sh -t ${{ matrix.type }} -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -g ${{ matrix.gradle_version }} -a ${{ matrix.android_api }} -f "\"x86\",\"x86_64\"";
+        . scripts/helper_functions.sh && callCommandUntilSuccess 5 sh scripts/run_tests.sh -t ${{ matrix.type }} -n ${{ matrix.ndk_version }} -m ${{ matrix.cmake_version }} -g ${{ matrix.gradle_version }} -a ${{ matrix.android_api }} -f "\"x86\",\"x86_64\"";
 
     - name: Run linter
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
