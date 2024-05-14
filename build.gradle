@@ -45,7 +45,7 @@ buildscript {
         }
 
         kotlin_stdlib_jdk8_version = '1.9.24'
-        androidX_annotation_version = '1.7.1'
+        androidX_annotation_version = '1.8.0'
 
         // Test dependencies
         jacoco_version = '0.8.12'
