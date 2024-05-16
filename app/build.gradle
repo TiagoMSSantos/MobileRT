@@ -499,7 +499,7 @@ dependencies {
     testImplementation "org.powermock:powermock-module-junit4:${powermock_version}"
     testImplementation "org.powermock:powermock-api-easymock:${powermock_version}"
     testImplementation 'org.easymock:easymock:5.2.0'
-    testImplementation 'org.springframework:spring-test:6.1.6'
+    testImplementation 'org.springframework:spring-test:6.1.7'
 
 
     // Dependencies that give errors when added:
