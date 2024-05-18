@@ -68,9 +68,6 @@
   "maven": {
     "enabled": true
   },
-  "github-releases": {
-    "enabled": true
-  },
   "customManagers": [
     {
       "fileMatch": ["Dockerfile", "\\.github\\/workflows\\/.+\\.ya?ml"],
