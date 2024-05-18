@@ -150,7 +150,7 @@
     {
       "groupName": "Update NDK to stable versions",
       "matchDepNames": ["android/ndk"],
-      "versioning": "regex:^r?(?<major>[0-9]+)\\.?(?<minor>[0-9]+)?\\.?(?<patch>[0-9]+)?(?<minor>[a-z]+)?-?(?<prerelease>[0-9a-z]+)?.*$",
+      "versioning": "regex:^r?(?<major>[0-9]+)\\.?(?<minor>[0-9a-z]+)?\\.?(?<patch>[0-9]+)?-?(?<prerelease>[0-9a-z]+)?.*$",
       "allowedVersions": "!/^r[0-9]+\\-.*$/"
     },
     {
