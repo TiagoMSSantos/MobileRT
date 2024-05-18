@@ -76,7 +76,8 @@
         "BASE_IMAGE=(?<depName>.*?):(?<currentValue>.*)",
         "BASE_IMAGE: (?<depName>.*?):(?<currentValue>.*)"
       ],
-      "datasourceTemplate": "docker"
+      "datasourceTemplate": "docker",
+      "customType": "regex"
     },
     {
       "fileMatch": ["build.gradle"],
@@ -148,6 +149,7 @@
     {
       "groupName": "Update NDK to stable versions",
       "matchDepNames": ["android/ndk"],
+      "versioning": "git",
       "allowedVersions": "!/^r[0-9]+\\-.*$/"
     }
   ]
