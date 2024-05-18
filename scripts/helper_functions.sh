@@ -15,19 +15,19 @@ helpCompile() {
 
 # Helper command for Android compilation scripts.
 helpCompileAndroid() {
-  echo 'Usage: cmd [-h] [-t type] [-f cpu_architecture] [-c compiler] [-r recompile] [-n ndk_version] [-m cmake_version] [-g gradle_version] [-a android_api_version]';
+  echo 'Usage: cmd [-h] [-t type] [-f cpu_architecture] [-c compiler] [-r recompile] [-n ndk_version] [-g gradle_version] [-a android_api_version]';
   return 1;
 }
 
 # Helper command for Android run tests scripts.
 helpTestAndroid() {
-  echo 'Usage: cmd [-h] [-t type] [-f cpu_architecture] [-r run_test] [-n ndk_version] [-m cmake_version] [-g gradle_version] [-a android_api_version] [-k kill_previous]';
+  echo 'Usage: cmd [-h] [-t type] [-f cpu_architecture] [-r run_test] [-n ndk_version] [-g gradle_version] [-a android_api_version] [-k kill_previous]';
   return 1;
 }
 
 # Helper command for compilation scripts.
 helpCheck() {
-  echo 'Usage: cmd [-h] [-f cpu_architecture] [-n ndk_version] [-m cmake_version] [-g gradle_version] [-a android_api_version]';
+  echo 'Usage: cmd [-h] [-f cpu_architecture] [-n ndk_version] [-g gradle_version] [-a android_api_version]';
   return 1;
 }
 
@@ -70,9 +70,6 @@ parseArgumentsToCompileAndroid() {
       n )
         export ndk_version=${OPTARG};
         ;;
-      m )
-        export cmake_version=${OPTARG};
-        ;;
       g )
         export gradle_version=${OPTARG};
         ;;
@@ -111,9 +108,6 @@ parseArgumentsToTestAndroid() {
       n )
         export ndk_version=${OPTARG};
         ;;
-      m )
-        export cmake_version=${OPTARG};
-        ;;
       g )
         export gradle_version=${OPTARG};
         ;;
@@ -150,9 +144,6 @@ parseArgumentsToCheck() {
     case ${opt} in
       n )
         export ndk_version=${OPTARG};
-        ;;
-      m )
-        export cmake_version=${OPTARG};
         ;;
       g )
         export gradle_version=${OPTARG};

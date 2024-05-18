@@ -46,7 +46,6 @@ plugins {
 println('Reading system properties.')
 
 final def systemNDKVersion = System.getProperty('ndkVersion', '23.2.8568313')
-final def systemCMakeVersion = System.getProperty('cmakeVersion', '3.22.1')
 final def systemTestType = System.getProperty('testType', 'debug')
 final def customAbiFilters = System.getProperty('abiFilters', '["armeabi-v7a", "x86", "arm64-v8a", "x86_64"]')
 final def systemAbiFilters = new JsonSlurper().parseText(customAbiFilters) as String[]
@@ -65,7 +64,6 @@ if (gradleVersionValue >= 8.3) {
 }
 
 println('NDK version: ' + systemNDKVersion)
-println('CMake version: ' + systemCMakeVersion)
 println('Test type: ' + systemTestType)
 println('ABI Filters: ' + systemAbiFilters)
 println('gradleVersion: ' + gradleVersion)
@@ -266,7 +264,7 @@ android {
     externalNativeBuild {
         cmake {
             setPath 'CMakeLists.txt'
-            setVersion systemCMakeVersion
+            setVersion '3.22.1'
         }
     }
 

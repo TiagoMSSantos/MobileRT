@@ -68,6 +68,9 @@
   "maven": {
     "enabled": true
   },
+  "github-releases": {
+    "enabled": true
+  },
   "customManagers": [
     {
       "fileMatch": ["Dockerfile", "\\.github\\/workflows\\/.+\\.ya?ml"],
@@ -99,6 +102,17 @@
       "depNameTemplate": "com.android.tools.build:gradle",
       "datasourceTemplate": "maven",
       "versioningTemplate": "gradle",
+      "customType": "regex",
+      "registryUrlTemplate": "https://dl.google.com/android/maven2"
+    },
+    {
+      "fileMatch": ["\\.github\\/workflows\\/android_matrix\\.json"],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
+        "['\"]ndk_version['\"]: ['\"](?<currentValue>.*?)['\"]"
+      ],
+      "depNameTemplate": "ndk",
+      "datasourceTemplate": "github-releases",
       "customType": "regex",
       "registryUrlTemplate": "https://dl.google.com/android/maven2"
     }
@@ -133,6 +147,12 @@
       "matchManagers": ["regex", "gradle"],
       "matchCurrentVersion": "/^8\\.2\\.2$/",
       "matchCurrentValue": "/^8\\.2\\.2$/"
+    },
+    {
+      "groupName": "Update NDK",
+      "matchDepNames": ["ndk"],
+      "matchManagers": ["github-releases"],
+      "allowedVersions": "!/^r[0-9]+-.*$/"
     }
   ]
 }

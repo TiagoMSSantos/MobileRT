@@ -52,7 +52,6 @@ fi
 type='release';
 recompile='no';
 ndk_version='23.2.8568313';
-cmake_version='3.22.1';
 gradle_version='8.2.2';
 android_api_version='14';
 cpu_architecture='"x86","x86_64"';
@@ -64,7 +63,6 @@ printEnvironment() {
   echo "type: ${type}";
   echo "recompile: ${recompile}";
   echo "ndk_version: ${ndk_version}";
-  echo "cmake_version: ${cmake_version}";
   echo "gradle_version: ${gradle_version}";
   echo "android_api_version: ${android_api_version}";
   echo "cpu_architecture: ${cpu_architecture}";
@@ -127,13 +125,13 @@ build() {
     compile"${typeWithCapitalLetter}"UnitTestSources \
     -DtestType="${type}" \
     --profile --parallel \
-    -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" -DgradleVersion="${gradle_version}" -DandroidApiVersion="${android_api_version}" \
+    -DndkVersion="${ndk_version}" -DgradleVersion="${gradle_version}" -DandroidApiVersion="${android_api_version}" \
     -DabiFilters="[${cpu_architecture}]" \
     --console plain --info --warning-mode fail --stacktrace;
   resCompile=${?};
   echo 'Compiling APK to execute Android instrumentation tests.';
   sh gradlew createDebugAndroidTestApkListingFileRedirect \
-    -DndkVersion="${ndk_version}" -DcmakeVersion="${cmake_version}" -DgradleVersion="${gradle_version}" -DandroidApiVersion="${android_api_version}" \
+    -DndkVersion="${ndk_version}" -DgradleVersion="${gradle_version}" -DandroidApiVersion="${android_api_version}" \
     -DabiFilters="[${cpu_architecture}]" \
     --profile --parallel --console plain --info --warning-mode fail --stacktrace;
   echo 'Android application compiled.';
