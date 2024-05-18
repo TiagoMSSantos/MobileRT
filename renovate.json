@@ -151,7 +151,6 @@
     {
       "groupName": "Update NDK",
       "matchDepNames": ["ndk"],
-      "matchManagers": ["github-releases"],
       "allowedVersions": "!/^r[0-9]+-.*$/"
     }
   ]
