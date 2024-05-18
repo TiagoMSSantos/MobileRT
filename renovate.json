@@ -110,7 +110,8 @@
       ],
       "depNameTemplate": "android/ndk",
       "datasourceTemplate": "github-releases",
-      "customType": "regex"
+      "customType": "regex",
+      "registryUrlTemplate": "https://github.com"
     }
   ],
   "packageRules": [
@@ -147,7 +148,7 @@
     {
       "groupName": "Update NDK to stable versions",
       "matchDepNames": ["android/ndk"],
-      "allowedVersions": "!/^r[0-9]+-.*$/"
+      "allowedVersions": "!/^r[0-9]+\\-.*$/"
     }
   ]
 }
