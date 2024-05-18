@@ -38,10 +38,8 @@ buildscript {
         final def androidApiVersionValue = androidApiVersionArray[0] as Float
         if (androidApiVersionValue >= 19) {
             common_libraries_android_framework = '1.13.1'
-            androidApiVersion = '19'
         } else {
             common_libraries_android_framework = '1.12.0'
-            androidApiVersion = '14'
         }
 
         kotlin_stdlib_jdk8_version = '1.9.24'
