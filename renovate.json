@@ -23,6 +23,7 @@
   "separateMultipleMajor": true,
   "separateMultipleMinor": false,
   "ignoreTests": false,
+  "ignoreUnstable": true,
   "prConcurrentLimit": 0,
   "prHourlyLimit": 0,
   "rebaseWhen": "auto",
@@ -149,8 +150,15 @@
     {
       "groupName": "Update NDK to stable versions",
       "matchDepNames": ["android/ndk"],
-      "versioning": "regex:^r?(?<major>[0-9]+).*$",
+      "versioning": "regex:^r?(?<major>[0-9]+)[a-z]*-?(?<prerelease>[0-9a-z]+)?$",
       "allowedVersions": "!/^r[0-9]+\\-.*$/"
+    },
+    {
+      "groupName": "Ignore update NDK for Android API < 21",
+      "enabled": false,
+      "matchDepNames": ["android/ndk"],
+      "matchCurrentVersion": "/^23\\.2\\.8568313$/",
+      "matchCurrentValue": "/^23\\.2\\.8568313$/"
     }
   ]
 }
