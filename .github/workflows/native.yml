@@ -68,7 +68,7 @@ jobs:
         include:
         # Ubuntu
         - name: G++
-          host_os: ubuntu-20.04
+          host_os: ubuntu-22.04
           type: debug
           compiler: g++
 
@@ -78,7 +78,7 @@ jobs:
           compiler: clang++
 
         - name: Intel C++
-          host_os: ubuntu-20.04
+          host_os: ubuntu-22.04
           type: release
           compiler: icpx
 
