@@ -265,7 +265,7 @@
       "enabled": false,
       "matchDatasources": ["github-runners"],
       "matchDepNames": ["ubuntu"],
-      "versioning": "regex:^(?<major>[0-9]+)?\\.?(?<minor>[0-9]+)?.*$",
+      "versioning": "regex:^(?<major>[0-9a-z]+)?\\.?(?<minor>[0-9]+)?.*$",
       "matchCurrentVersion": "/^latest|20\\.04$/"
     },
     {
