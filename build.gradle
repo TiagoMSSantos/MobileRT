@@ -37,7 +37,7 @@ buildscript {
         final def androidApiVersionArray = androidApiVersion.split("\\.").collect()
         final def androidApiVersionValue = androidApiVersionArray[0] as Float
         if (androidApiVersionValue >= 19) {
-            common_libraries_android_framework = '1.13.1'
+            common_libraries_android_framework = '1.14.0-alpha01'
         } else {
             common_libraries_android_framework = '1.12.0'
         }
