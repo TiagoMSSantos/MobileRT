@@ -109,7 +109,7 @@ jobs:
           qt_arch: 'win64_msvc2019_64'
 
         - name: MinGW
-          host_os: windows-2019
+          host_os: windows-2022
           type: release
           compiler: g++
           cxx: "gcc"
