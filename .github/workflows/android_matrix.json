@@ -2,7 +2,7 @@
   "include":
   [
     { "host_os": "ubuntu-22.04", "android_api": "15", "android_arch": "x86", "ndk_version": "23.2.8568313", "gradle_version": "8.2.2", "type": "release" },
-    { "host_os": "ubuntu-20.04", "android_api": "21", "android_arch": "x86", "ndk_version": "26.3.11579264", "gradle_version": "8.2.2", "type": "debug" },
+    { "host_os": "ubuntu-20.04", "android_api": "21", "android_arch": "x86", "ndk_version": "26.3.11579264", "gradle_version": "8.4.0", "type": "debug" },
     { "host_os": "ubuntu-20.04", "android_api": "29", "android_arch": "x86", "ndk_version": "26.3.11579264", "gradle_version": "8.4.0", "type": "release" },
     { "host_os": "ubuntu-22.04", "android_api": "33", "android_arch": "x86_64", "ndk_version": "26.3.11579264", "gradle_version": "8.4.0", "type": "release" }
   ]
