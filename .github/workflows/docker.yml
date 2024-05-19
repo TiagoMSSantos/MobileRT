@@ -63,7 +63,7 @@ jobs:
           BASE_IMAGE: gentoo/stage3:latest
         - host_os: macos-latest
           BASE_IMAGE: sickcodes/docker-osx:latest
-        - host_os: windows-latest
+        - host_os: windows-2016
           BASE_IMAGE: mcr.microsoft.com/windows/servercore:ltsc2022
 
     name: ${{ matrix.BASE_IMAGE }} (${{ matrix.host_os }})
