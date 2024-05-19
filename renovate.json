@@ -253,9 +253,12 @@
       "versioning": "regex:^(?<compatibility>[a-z]+)-(?<major>[0-9]+)\\.(?<minor>[0-9]+)\\.?(?<patch>[0-9]+)?-?(?<prerelease>[0-9a-z]+)?.*$"
     },
     {
-      "groupName": "Update Operating Systems on Github Runners",
+      "groupName": "Ignore update Operating Systems on Github Runners if latest is used",
+      "enabled": false,
       "matchManagers": ["regex"],
-      "versioning": "regex:^(?<major>[0-9]+)?\\.?(?<minor>[0-9]+)?.*$"
+      "versioning": "regex:^(?<major>[0-9]+)?\\.?(?<minor>[0-9]+)?.*$",
+      "matchCurrentVersion": "/^latest$/",
+      "matchCurrentValue": "/^latest$/"
     }
   ]
 }
