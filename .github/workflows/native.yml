@@ -94,7 +94,7 @@ jobs:
           compiler: clang++
 
         - name: G++
-          host_os: macos-12
+          host_os: macos-13
           type: release
           compiler: g++
 
