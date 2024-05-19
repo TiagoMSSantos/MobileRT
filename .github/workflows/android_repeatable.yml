@@ -32,7 +32,7 @@ jobs:
         include:
         - test: RayTracingTest#testRenderSceneFromSDCardOBJ
           type: debug
-          host_os: ubuntu-latest
+          host_os: ubuntu-16.04
           android_api: 16
 
     name: ${{ matrix.test }} [${{ matrix.type }} (${{ matrix.host_os }})]

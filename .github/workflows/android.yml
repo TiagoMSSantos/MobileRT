@@ -62,7 +62,7 @@ jobs:
       fail-fast: true
 
     name: Set Matrix
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-16.04
     timeout-minutes: 2
 
     outputs:
