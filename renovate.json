@@ -260,6 +260,12 @@
       "versioning": "regex:^(?<major>[0-9]+)?\\.?(?<minor>[0-9]+)?.*$",
       "matchCurrentVersion": "/^latest$/",
       "matchCurrentValue": "/^latest$/"
+    },
+    {
+      "groupName": "Ignore specific versions of Ubuntu already being used",
+      "matchDatasources": ["github-runners"],
+      "matchDepNames": ["ubuntu"],
+      "allowedVersions": ">20.04"
     }
   ]
 }
