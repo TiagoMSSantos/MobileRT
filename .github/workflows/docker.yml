@@ -60,7 +60,7 @@ jobs:
         - host_os: ubuntu-latest
           BASE_IMAGE: alpine:3.19
         - host_os: ubuntu-latest
-          BASE_IMAGE: gentoo/stage3:latest
+          BASE_IMAGE: gentoo/stage3:20210504
         - host_os: macos-latest
           BASE_IMAGE: sickcodes/docker-osx:latest
         - host_os: windows-latest
