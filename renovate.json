@@ -225,6 +225,11 @@
       "matchDepNames": ["android/ndk"],
       "matchCurrentVersion": "/^23\\.2\\.8568313$/",
       "matchCurrentValue": "/^23\\.2\\.8568313$/"
+    },
+    {
+      "groupName": "Update Boost C++ Libraries",
+      "matchDepNames": ["boostorg/boost"],
+      "extractVersion": "^boost-(?<version>.*)$"
     }
   ]
 }
