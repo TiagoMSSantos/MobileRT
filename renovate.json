@@ -119,7 +119,7 @@
       "fileMatch": ["app\\/third_party\\/CMakeLists\\.txt"],
       "matchStringsStrategy": "any",
       "matchStrings": [
-        "set( BOOST_VERSION ['\"](?<currentValue>.*?)['\"] )"
+        "set\\( BOOST_VERSION ['\"](?<currentValue>.*?)['\"] \\)"
       ],
       "depNameTemplate": "boostorg/boost",
       "datasourceTemplate": "github-releases",
@@ -130,7 +130,7 @@
       "fileMatch": ["app\\/third_party\\/CMakeLists\\.txt"],
       "matchStringsStrategy": "any",
       "matchStrings": [
-        "set( GLM_VERSION ['\"](?<currentValue>.*?)['\"] )"
+        "set\\( GLM_VERSION ['\"](?<currentValue>.*?)['\"] \\)"
       ],
       "depNameTemplate": "g-truc/glm",
       "datasourceTemplate": "github-releases",
@@ -141,7 +141,7 @@
       "fileMatch": ["app\\/third_party\\/CMakeLists\\.txt"],
       "matchStringsStrategy": "any",
       "matchStrings": [
-        "set( STB_VERSION ['\"](?<currentValue>.*?)['\"] )"
+        "set\\( STB_VERSION ['\"](?<currentValue>.*?)['\"] \\)"
       ],
       "depNameTemplate": "nothings/stb",
       "datasourceTemplate": "github-releases",
@@ -152,7 +152,7 @@
       "fileMatch": ["app\\/third_party\\/CMakeLists\\.txt"],
       "matchStringsStrategy": "any",
       "matchStrings": [
-        "set( TINYOBJLOADER_VERSION ['\"](?<currentValue>.*?)['\"] )"
+        "set\\( TINYOBJLOADER_VERSION ['\"](?<currentValue>.*?)['\"] \\)"
       ],
       "depNameTemplate": "syoyo/tinyobjloader",
       "datasourceTemplate": "github-releases",
@@ -163,7 +163,7 @@
       "fileMatch": ["app\\/third_party\\/CMakeLists\\.txt"],
       "matchStringsStrategy": "any",
       "matchStrings": [
-        "set( GOOGLETEST_VERSION ['\"](?<currentValue>.*?)['\"] )"
+        "set\\( GOOGLETEST_VERSION ['\"](?<currentValue>.*?)['\"] \\)"
       ],
       "depNameTemplate": "google/googletest",
       "datasourceTemplate": "github-releases",
@@ -174,7 +174,7 @@
       "fileMatch": ["app\\/third_party\\/CMakeLists\\.txt"],
       "matchStringsStrategy": "any",
       "matchStrings": [
-        "set( PCG_CPP_VERSION ['\"](?<currentValue>.*?)['\"] )"
+        "set\\( PCG_CPP_VERSION ['\"](?<currentValue>.*?)['\"] \\)"
       ],
       "depNameTemplate": "imneme/pcg-cpp",
       "datasourceTemplate": "github-releases",
