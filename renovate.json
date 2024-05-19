@@ -119,7 +119,7 @@
       "fileMatch": ["app\\/third_party\\/CMakeLists\\.txt"],
       "matchStringsStrategy": "any",
       "matchStrings": [
-        "set\\( BOOST_VERSION ['\"](?<currentValue>.*?)['\"] \\)"
+        "set\\( BOOST_VERSION ['\"]boost-(?<currentValue>.*?)['\"] \\)"
       ],
       "depNameTemplate": "boostorg/boost",
       "datasourceTemplate": "github-releases",
