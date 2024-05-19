@@ -173,7 +173,7 @@ jobs:
     - name: Upload reports to Codecov
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && matrix.language == 'cpp'
-      uses: codecov/codecov-action@v4
+      uses: codecov/codecov-action@2.0.0
       with:
         # Check available parameters in: https://github.com/codecov/codecov-action/blob/main/action.yml
         token: ${{ secrets.CODECOV_TOKEN }}
@@ -275,7 +275,7 @@ jobs:
     - name: Upload reports as artifact
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@2.1.0
       with:
         # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
         name: sarif_${{ matrix.language }}-artifacts
