@@ -258,7 +258,8 @@
       "enabled": false,
       "matchDatasources": ["github-runners"],
       "versioning": "regex:^(?<major>[0-9a-z]+)?\\.?(?<minor>[0-9]+)?.*$",
-      "matchCurrentVersion": "/^latest$/"
+      "matchCurrentVersion": "/^latest$/",
+      "matchCurrentValue": "/^latest$/"
     },
     {
       "groupName": "Ignore specific versions of Ubuntu already being used",
@@ -266,7 +267,8 @@
       "matchDatasources": ["github-runners"],
       "matchDepNames": ["ubuntu"],
       "versioning": "regex:^(?<major>[0-9a-z]+)?\\.?(?<minor>[0-9]+)?.*$",
-      "matchCurrentVersion": "/^latest|20\\.04$/"
+      "matchCurrentVersion": "/^latest|20\\.04$/",
+      "matchCurrentValue": "/^latest|20\\.04$/"
     },
     {
       "groupName": "Ignore specific versions of Windows already being used",
@@ -274,7 +276,8 @@
       "matchDatasources": ["github-runners"],
       "matchDepNames": ["windows"],
       "versioning": "regex:^(?<major>[0-9]+)?\\.?(?<minor>[0-9]+)?.*$",
-      "matchCurrentVersion": "/^2019$/"
+      "matchCurrentVersion": "/^2019$/",
+      "matchCurrentValue": "/^2019$/"
     },
     {
       "groupName": "Ignore specific versions of MacOS already being used",
@@ -282,7 +285,8 @@
       "matchDatasources": ["github-runners"],
       "matchDepNames": ["macos"],
       "versioning": "regex:^(?<major>[0-9]+)?\\.?(?<minor>[0-9]+)?.*$",
-      "matchCurrentVersion": "/^12|13$/"
+      "matchCurrentVersion": "/^12|13$/",
+      "matchCurrentValue": "/^12|13$/"
     }
   ]
 }
