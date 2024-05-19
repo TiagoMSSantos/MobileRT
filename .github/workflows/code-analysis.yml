@@ -69,7 +69,7 @@ jobs:
         # https://docs.github.com/en/github/finding-security-vulnerabilities-and-errors-in-your-code/configuring-code-scanning#overriding-automatic-language-detection
 
     name: Analyze ${{ matrix.language }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     timeout-minutes: 30
 
     steps:
