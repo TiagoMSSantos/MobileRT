@@ -236,6 +236,11 @@
       "matchDepNames": ["google/googletest"],
       "versioning": "regex:^(v|release-)?(?<major>[0-9]+)\\.(?<minor>[0-9]+)\\.(?<patch>[0-9]+)-?(?<prerelease>[0-9a-z]+)?.*$",
       "allowedVersions": "<1.13"
+    },
+    {
+      "groupName": "Update MobileRT docker images",
+      "matchDepNames": ["ptpuscas/mobile_rt"],
+      "versioning": "regex:^(?<compatibility>[a-z]+)-(?<major>[0-9]+)\\.(?<minor>[0-9]+)\\.?(?<patch>[0-9]+)?-?(?<prerelease>[0-9a-z]+)?.*$"
     }
   ]
 }
