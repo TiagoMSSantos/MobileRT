@@ -241,6 +241,11 @@
       "groupName": "Update MobileRT docker images",
       "matchDepNames": ["ptpuscas/mobile_rt"],
       "versioning": "regex:^(?<compatibility>[a-z]+)-(?<major>[0-9]+)\\.(?<minor>[0-9]+)\\.?(?<patch>[0-9]+)?-?(?<prerelease>[0-9a-z]+)?.*$"
+    },
+    {
+      "groupName": "Update Operating Systems on Github Actions",
+      "matchManagers": ["github-actions"],
+      "versioning": "regex:^(?<major>[0-9]+)?\\.?(?<minor>[0-9]+)?.*$"
     }
   ]
 }
