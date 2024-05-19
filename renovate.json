@@ -230,6 +230,11 @@
       "groupName": "Update Boost C++ Libraries",
       "matchDepNames": ["boostorg/boost"],
       "extractVersion": "^boost-(?<version>.*)$"
+    },
+    {
+      "groupName": "Update GoogleTest to a version that supports C++11",
+      "matchDepNames": ["google/googletest"],
+      "allowedVersions": "<1.13"
     }
   ]
 }
