@@ -114,6 +114,72 @@
       "datasourceTemplate": "github-releases",
       "customType": "regex",
       "registryUrlTemplate": "https://github.com"
+    },
+    {
+      "fileMatch": ["app\\/third_party\\/CMakeLists\\.txt"],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
+        "set( BOOST_VERSION ['\"](?<currentValue>.*?)['\"] )"
+      ],
+      "depNameTemplate": "boostorg/boost",
+      "datasourceTemplate": "github-releases",
+      "customType": "regex",
+      "registryUrlTemplate": "https://github.com"
+    },
+    {
+      "fileMatch": ["app\\/third_party\\/CMakeLists\\.txt"],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
+        "set( GLM_VERSION ['\"](?<currentValue>.*?)['\"] )"
+      ],
+      "depNameTemplate": "g-truc/glm",
+      "datasourceTemplate": "github-releases",
+      "customType": "regex",
+      "registryUrlTemplate": "https://github.com"
+    },
+    {
+      "fileMatch": ["app\\/third_party\\/CMakeLists\\.txt"],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
+        "set( STB_VERSION ['\"](?<currentValue>.*?)['\"] )"
+      ],
+      "depNameTemplate": "nothings/stb",
+      "datasourceTemplate": "github-releases",
+      "customType": "regex",
+      "registryUrlTemplate": "https://github.com"
+    },
+    {
+      "fileMatch": ["app\\/third_party\\/CMakeLists\\.txt"],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
+        "set( TINYOBJLOADER_VERSION ['\"](?<currentValue>.*?)['\"] )"
+      ],
+      "depNameTemplate": "syoyo/tinyobjloader",
+      "datasourceTemplate": "github-releases",
+      "customType": "regex",
+      "registryUrlTemplate": "https://github.com"
+    },
+    {
+      "fileMatch": ["app\\/third_party\\/CMakeLists\\.txt"],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
+        "set( GOOGLETEST_VERSION ['\"](?<currentValue>.*?)['\"] )"
+      ],
+      "depNameTemplate": "google/googletest",
+      "datasourceTemplate": "github-releases",
+      "customType": "regex",
+      "registryUrlTemplate": "https://github.com"
+    },
+    {
+      "fileMatch": ["app\\/third_party\\/CMakeLists\\.txt"],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
+        "set( PCG_CPP_VERSION ['\"](?<currentValue>.*?)['\"] )"
+      ],
+      "depNameTemplate": "imneme/pcg-cpp",
+      "datasourceTemplate": "github-releases",
+      "customType": "regex",
+      "registryUrlTemplate": "https://github.com"
     }
   ],
   "packageRules": [
