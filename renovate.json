@@ -81,6 +81,15 @@
       "customType": "regex"
     },
     {
+      "fileMatch": ["\\.github\\/workflows\\/.+\\.ya?ml"],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
+        "host_os: (?<depName>.*?)-(?<currentValue>.*)",
+        "runs-on: (?<depName>.*?)-(?<currentValue>.*)"
+      ],
+      "customType": "regex"
+    },
+    {
       "fileMatch": ["build.gradle"],
       "matchStringsStrategy": "any",
       "matchStrings": [
@@ -243,8 +252,8 @@
       "versioning": "regex:^(?<compatibility>[a-z]+)-(?<major>[0-9]+)\\.(?<minor>[0-9]+)\\.?(?<patch>[0-9]+)?-?(?<prerelease>[0-9a-z]+)?.*$"
     },
     {
-      "groupName": "Update Operating Systems on Github Actions",
-      "matchManagers": ["github-actions"],
+      "groupName": "Update Operating Systems on Github Runners",
+      "matchManagers": ["regex"],
       "versioning": "regex:^(?<major>[0-9]+)?\\.?(?<minor>[0-9]+)?.*$"
     }
   ]
