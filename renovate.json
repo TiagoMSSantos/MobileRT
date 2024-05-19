@@ -234,6 +234,7 @@
     {
       "groupName": "Update GoogleTest to a version that supports C++11",
       "matchDepNames": ["google/googletest"],
+      "versioning": "regex:^(v|release-)?(?<version>.*)$",
       "allowedVersions": "<1.13"
     }
   ]
