@@ -51,15 +51,15 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - host_os: ubuntu-latest
+        - host_os: ubuntu-22.04
           BASE_IMAGE: ubuntu:24.04
-        - host_os: ubuntu-latest
+        - host_os: ubuntu-22.04
           BASE_IMAGE: tgagor/centos:stream
-        - host_os: ubuntu-latest
+        - host_os: ubuntu-22.04
           BASE_IMAGE: archlinux/archlinux:base-devel
-        - host_os: ubuntu-latest
+        - host_os: ubuntu-22.04
           BASE_IMAGE: alpine:3.19
-        - host_os: ubuntu-latest
+        - host_os: ubuntu-22.04
           BASE_IMAGE: gentoo/stage3:latest
         - host_os: macos-latest
           BASE_IMAGE: sickcodes/docker-osx:latest
