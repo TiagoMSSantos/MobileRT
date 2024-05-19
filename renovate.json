@@ -268,6 +268,22 @@
       "matchDepNames": ["ubuntu"],
       "versioning": "regex:^(?<major>[0-9]+)?\\.?(?<minor>[0-9]+)?.*$",
       "matchCurrentVersion": "/^20\\.04$/"
+    },
+    {
+      "groupName": "Ignore specific versions of Windows already being used",
+      "enabled": false,
+      "matchDatasources": ["github-runners"],
+      "matchDepNames": ["windows"],
+      "versioning": "regex:^(?<major>[0-9]+)?\\.?(?<minor>[0-9]+)?.*$",
+      "matchCurrentVersion": "/^2019$/"
+    },
+    {
+      "groupName": "Ignore specific versions of MacOS already being used",
+      "enabled": false,
+      "matchDatasources": ["github-runners"],
+      "matchDepNames": ["macos"],
+      "versioning": "regex:^(?<major>[0-9]+)?\\.?(?<minor>[0-9]+)?.*$",
+      "matchCurrentVersion": "/^12|13$/"
     }
   ]
 }
