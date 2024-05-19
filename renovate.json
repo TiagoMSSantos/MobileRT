@@ -263,9 +263,11 @@
     },
     {
       "groupName": "Ignore specific versions of Ubuntu already being used",
+      "enabled": false,
       "matchDatasources": ["github-runners"],
       "matchDepNames": ["ubuntu"],
-      "allowedVersions": ">20.04"
+      "versioning": "regex:^(?<major>[0-9]+)?\\.?(?<minor>[0-9]+)?.*$",
+      "matchCurrentVersion": "!/^20\\.04$/"
     }
   ]
 }
