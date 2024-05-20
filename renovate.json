@@ -199,8 +199,7 @@
       "enabled": false,
       "matchDepNames": ["androidx.core:core-ktx"],
       "matchManagers": ["regex", "gradle"],
-      "matchCurrentVersion": "/^1\\.12\\.0/",
-      "matchCurrentValue": "/^1\\.12\\.0/"
+      "matchCurrentVersion": "/^1\\.12\\.0/"
     },
     {
       "groupName": "Update Ubuntu to LTS versions",
@@ -221,8 +220,7 @@
       "enabled": false,
       "matchDepNames": ["com.android.tools.build:gradle"],
       "matchManagers": ["regex", "gradle"],
-      "matchCurrentVersion": "/^8\\.2\\.2$/",
-      "matchCurrentValue": "/^8\\.2\\.2$/"
+      "matchCurrentVersion": "/^8\\.2\\.2$/"
     },
     {
       "groupName": "Update NDK to stable versions",
@@ -234,8 +232,7 @@
       "groupName": "Ignore update NDK for Android API < 21",
       "enabled": false,
       "matchDepNames": ["android/ndk"],
-      "matchCurrentVersion": "/^23\\.2\\.8568313$/",
-      "matchCurrentValue": "/^23\\.2\\.8568313$/"
+      "matchCurrentVersion": "/^23\\.2\\.8568313$/"
     },
     {
       "groupName": "Update Boost C++ Libraries",
@@ -258,8 +255,7 @@
       "enabled": false,
       "matchDatasources": ["github-runners"],
       "versioning": "regex:^(?<major>[0-9a-z]+)?\\.?(?<minor>[0-9]+)?.*$",
-      "matchCurrentVersion": "/^latest$/",
-      "matchCurrentValue": "/^latest$/"
+      "matchCurrentVersion": "/^latest$/"
     },
     {
       "groupName": "Ignore specific versions of Ubuntu already being used",
@@ -267,8 +263,7 @@
       "matchDatasources": ["github-runners"],
       "matchDepNames": ["ubuntu"],
       "versioning": "regex:^(?<major>[0-9a-z]+)?\\.?(?<minor>[0-9]+)?.*$",
-      "matchCurrentVersion": "/^latest|20\\.04$/",
-      "matchCurrentValue": "/^latest|20\\.04$/"
+      "matchCurrentVersion": "!/^22\\.04$/"
     },
     {
       "groupName": "Ignore specific versions of Windows already being used",
@@ -276,8 +271,7 @@
       "matchDatasources": ["github-runners"],
       "matchDepNames": ["windows"],
       "versioning": "regex:^(?<major>[0-9]+)?\\.?(?<minor>[0-9]+)?.*$",
-      "matchCurrentVersion": "/^2019$/",
-      "matchCurrentValue": "/^2019$/"
+      "matchCurrentVersion": "!/^2022$/"
     },
     {
       "groupName": "Ignore specific versions of MacOS already being used",
@@ -285,8 +279,7 @@
       "matchDatasources": ["github-runners"],
       "matchDepNames": ["macos"],
       "versioning": "regex:^(?<major>[0-9]+)?\\.?(?<minor>[0-9]+)?.*$",
-      "matchCurrentVersion": "/^12|13$/",
-      "matchCurrentValue": "/^12|13$/"
+      "matchCurrentVersion": "!/^14$/"
     }
   ]
 }
