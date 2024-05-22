@@ -182,7 +182,6 @@ installDockerCommandForMacOS() {
   brew update;
   echo 'Avoid homebrew from auto-update itself every time its installed something.';
   export HOMEBREW_NO_AUTO_UPDATE=1;
-  export HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1;
 
   if [ "${MAJOR_MAC_VERSION}" = 11 ]; then
     echo 'Updating MacPorts.';
@@ -193,9 +192,9 @@ installDockerCommandForMacOS() {
     set +e;
   fi
   echo 'Install docker & colima.';
-  brew install --ignore-dependencies --skip-cask-deps --skip-post-install docker colima lima;
+  brew install --skip-cask-deps --skip-post-install docker colima lima;
   echo 'Install qemu.';
-  brew install --ignore-dependencies --skip-cask-deps --skip-post-install qemu libssh libslirp capstone dtc snappy vde ncurses;
+  brew install --skip-cask-deps --skip-post-install qemu libssh libslirp capstone dtc snappy vde ncurses;
   set -e;
 
   if [ "${MAJOR_MAC_VERSION}" = 14 ]; then
