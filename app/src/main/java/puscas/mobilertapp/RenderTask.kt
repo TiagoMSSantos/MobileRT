@@ -175,7 +175,7 @@ class RenderTask private constructor(
         timeT = "[" + formatter.format(
             (currentTime - startTimeStamp).toDouble() / millisecondsInSecond.toDouble()
         ) + "]"
-        allocatedT = ",m:" + Debug.getNativeHeapAllocatedSize() / Constants.BYTES_IN_MEGABYTE + "mb"
+        allocatedT = ",m:" + (Debug.getNativeHeapAllocatedSize() / Constants.BYTES_IN_MEGABYTE) + "mb"
         sampleT = "," + rtGetSample()
     }
 
@@ -189,7 +189,7 @@ class RenderTask private constructor(
         timeFrameT = ",t:" + formatter.format(0.0)
         timeT = "[" + formatter.format(0.0) + "]"
         stateT = " " + State.IDLE.id
-        allocatedT = ",m:" + Debug.getNativeHeapAllocatedSize() / Constants.BYTES_IN_MEGABYTE + "mb"
+        allocatedT = ",m:" + (Debug.getNativeHeapAllocatedSize() / Constants.BYTES_IN_MEGABYTE) + "mb"
         sampleT = ",0"
     }
 
