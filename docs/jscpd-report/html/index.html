@@ -2,7 +2,7 @@
                        // <!--
                        window.initialData = {
   "statistics": {
-    "detectionDate": "2024-05-20T06:57:50.966Z",
+    "detectionDate": "2024-05-23T06:44:18.883Z",
     "formats": {
       "java": {
         "sources": {
@@ -1092,7 +1092,7 @@
           },
           "app/src/main/java/puscas/mobilertapp/RenderTask.kt": {
             "lines": 336,
-            "tokens": 2000,
+            "tokens": 2004,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -1105,7 +1105,7 @@
         },
         "total": {
           "lines": 690,
-          "tokens": 3928,
+          "tokens": 3932,
           "sources": 7,
           "clones": 0,
           "duplicatedLines": 0,
@@ -1976,13 +1976,13 @@
           },
           ".github/workflows/android.yml": {
             "lines": 893,
-            "tokens": 6914,
+            "tokens": 6893,
             "sources": 1,
             "clones": 17,
             "duplicatedLines": 467,
-            "duplicatedTokens": 3796,
+            "duplicatedTokens": 3768,
             "percentage": 52.3,
-            "percentageTokens": 54.9,
+            "percentageTokens": 54.66,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2085,13 +2085,13 @@
         },
         "total": {
           "lines": 2731,
-          "tokens": 18529,
+          "tokens": 18508,
           "sources": 23,
           "clones": 17,
           "duplicatedLines": 444,
-          "duplicatedTokens": 3109,
+          "duplicatedTokens": 3095,
           "percentage": 16.26,
-          "percentageTokens": 16.78,
+          "percentageTokens": 16.72,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2184,13 +2184,13 @@
           },
           "scripts/install_dependencies.sh": {
             "lines": 514,
-            "tokens": 4002,
+            "tokens": 4111,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 42,
             "duplicatedTokens": 120,
             "percentage": 8.17,
-            "percentageTokens": 3,
+            "percentageTokens": 2.92,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2207,8 +2207,8 @@
             "newClones": 0
           },
           "scripts/docker.sh": {
-            "lines": 235,
-            "tokens": 1709,
+            "lines": 243,
+            "tokens": 1974,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2256,14 +2256,14 @@
           }
         },
         "total": {
-          "lines": 4232,
-          "tokens": 28142,
+          "lines": 4240,
+          "tokens": 28516,
           "sources": 13,
           "clones": 12,
           "duplicatedLines": 263,
           "duplicatedTokens": 1345,
-          "percentage": 6.21,
-          "percentageTokens": 4.78,
+          "percentage": 6.2,
+          "percentageTokens": 4.72,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3166,14 +3166,14 @@
       }
     },
     "total": {
-      "lines": 29255,
-      "tokens": 224697,
+      "lines": 29263,
+      "tokens": 225054,
       "sources": 250,
       "clones": 125,
       "duplicatedLines": 1648,
-      "duplicatedTokens": 14674,
+      "duplicatedTokens": 14660,
       "percentage": 5.63,
-      "percentageTokens": 6.53,
+      "percentageTokens": 6.51,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -7187,12 +7187,12 @@
         "startLoc": {
           "line": 556,
           "column": 5,
-          "position": 4469
+          "position": 4462
         },
         "endLoc": {
           "line": 597,
           "column": 69,
-          "position": 4685
+          "position": 4678
         }
       },
       "secondFile": {
@@ -7214,7 +7214,7 @@
     {
       "format": "yaml",
       "lines": 20,
-      "fragment": "# Useful step to avoid gradle having to download Gradle dependencies\n    # Taken from: https://github.com/marketplace/actions/download-a-build-artifact\n    - name: Download Gradle packages artifact\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n      if: success()\n      uses: actions/download-artifact@v4\n      with:\n        # Check available parameters in: https://github.com/actions/download-artifact/blob/main/action.yml\n        name: gradle-packages\n        path: ${{ env.GRADLE_PATH }}\n\n    - name: Extract and check files from gradle artifact\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n      if: success()\n      working-directory: .\n      run: |\n        # shellcheck disable=SC1091\n        . scripts/helper_functions.sh && extractFilesFromArtifact ${{ env.GRADLE_PATH }};\n\n    - name: Download",
+      "fragment": "# Useful step to avoid gradle having to download Gradle dependencies\n    # Taken from: https://github.com/marketplace/actions/download-a-build-artifact\n    - name: Download Gradle packages artifact\n      timeout-minutes: 2\n      if: success()\n      uses: actions/download-artifact@v4\n      with:\n        # Check available parameters in: https://github.com/actions/download-artifact/blob/main/action.yml\n        name: gradle-packages\n        path: ${{ env.GRADLE_PATH }}\n\n    - name: Extract and check files from gradle artifact\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n      if: success()\n      working-directory: .\n      run: |\n        # shellcheck disable=SC1091\n        . scripts/helper_functions.sh && extractFilesFromArtifact ${{ env.GRADLE_PATH }};\n\n    - name: Download",
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android.yml",
@@ -7223,12 +7223,12 @@
         "startLoc": {
           "line": 597,
           "column": 5,
-          "position": 4685
+          "position": 4678
         },
         "endLoc": {
           "line": 616,
           "column": 9,
-          "position": 4819
+          "position": 4805
         }
       },
       "secondFile": {
@@ -7243,7 +7243,7 @@
         "endLoc": {
           "line": 413,
           "column": 6,
-          "position": 3092
+          "position": 3085
         }
       }
     },
@@ -7259,12 +7259,12 @@
         "startLoc": {
           "line": 616,
           "column": 5,
-          "position": 4814
+          "position": 4800
         },
         "endLoc": {
           "line": 629,
           "column": 6,
-          "position": 5029
+          "position": 5015
         }
       },
       "secondFile": {
@@ -7286,7 +7286,7 @@
     {
       "format": "yaml",
       "lines": 77,
-      "fragment": "java-version: 21\n        distribution: zulu\n        java-package: jdk\n        architecture: x64\n        check-latest: false\n        server-id: github\n        server-username: GITHUB_ACTOR\n        server-password: GITHUB_TOKEN\n        settings-path: ~/.gradle\n        overwrite-settings: true\n        gpg-private-key: ''\n        gpg-passphrase: GPG_PASSPHRASE\n        cache: gradle\n        cache-dependency-path: '**/build.gradle'\n\n    - name: Add custom environment variables\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n      if: success()\n      working-directory: .\n      run: |\n        echo 'Available Android versions:';\n        du -h -d 1 ${ANDROID_HOME}/ndk;\n        du -h -d 1 ${ANDROID_HOME}/cmake;\n        du -h -d 1 ${ANDROID_HOME}/build-tools;\n        ls -lahp ${ANDROID_HOME}/platforms;\n        ls -lahp ${HOME};\n        echo \"ANDROID_NDK_PATH=${ANDROID_HOME}/ndk/${{ matrix.ndk_version }}\" >> \"${GITHUB_ENV}\";\n        echo \"GRADLE_PATH=${HOME}/.gradle\" >> \"${GITHUB_ENV}\";\n\n    # Useful step to avoid gradle having to download Gradle dependencies\n    # Taken from: https://github.com/marketplace/actions/download-a-build-artifact\n    - name: Download Gradle packages artifact\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n      if: success()\n      uses: actions/download-artifact@v4\n      with:\n        # Check available parameters in: https://github.com/actions/download-artifact/blob/main/action.yml\n        name: gradle-packages\n        path: ${{ env.GRADLE_PATH }}\n\n    - name: Extract and check files from gradle artifact\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n      if: success()\n      working-directory: .\n      run: |\n        # shellcheck disable=SC1091\n        . scripts/helper_functions.sh && extractFilesFromArtifact ${{ env.GRADLE_PATH }};\n\n    - name: Download generated binaries from cache\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n      if: success()\n      uses: actions/cache@v4\n      with:\n        # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml\n        key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.android_api }}_${{ matrix.android_arch }}_${{ matrix.ndk_version }}_${{ matrix.gradle_version }}_${{ matrix.type }}_${{ matrix.host_os }}\n        restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.android_api }}_${{ matrix.android_arch }}_${{ matrix.ndk_version }}_${{ matrix.gradle_version }}_${{ matrix.type }}_${{ matrix.host_os }}\n        path: |\n          app/build\n          app/.cxx\n          app/third_party\n\n    - name: Check binaries' paths\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n      if: success()\n      run: |\n        # shellcheck disable=SC1091\n        # NDK path might not exist and should be downloaded by the shell scripts.\n        . scripts/helper_functions.sh && checkPathExists ${{ env.ANDROID_NDK_PATH }} || true;\n        . scripts/helper_functions.sh && checkPathExists app/build;\n        . scripts/helper_functions.sh && checkPathExists app/build/intermediates;\n        . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac;\n        . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/debug;\n        . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/debugUnitTest;\n        . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/debugAndroidTest;\n        . scripts/helper_functions.sh && checkPathExists app/build/tmp/kotlin-classes/debug;\n        . scripts/helper_functions.sh && checkPathExists app/.cxx;\n        . scripts/helper_functions.sh && checkPathExists app/third_party;",
+      "fragment": "java-version: 21\n        distribution: zulu\n        java-package: jdk\n        architecture: x64\n        check-latest: false\n        server-id: github\n        server-username: GITHUB_ACTOR\n        server-password: GITHUB_TOKEN\n        settings-path: ~/.gradle\n        overwrite-settings: true\n        gpg-private-key: ''\n        gpg-passphrase: GPG_PASSPHRASE\n        cache: gradle\n        cache-dependency-path: '**/build.gradle'\n\n    - name: Add custom environment variables\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n      if: success()\n      working-directory: .\n      run: |\n        echo 'Available Android versions:';\n        du -h -d 1 ${ANDROID_HOME}/ndk;\n        du -h -d 1 ${ANDROID_HOME}/cmake;\n        du -h -d 1 ${ANDROID_HOME}/build-tools;\n        ls -lahp ${ANDROID_HOME}/platforms;\n        ls -lahp ${HOME};\n        echo \"ANDROID_NDK_PATH=${ANDROID_HOME}/ndk/${{ matrix.ndk_version }}\" >> \"${GITHUB_ENV}\";\n        echo \"GRADLE_PATH=${HOME}/.gradle\" >> \"${GITHUB_ENV}\";\n\n    # Useful step to avoid gradle having to download Gradle dependencies\n    # Taken from: https://github.com/marketplace/actions/download-a-build-artifact\n    - name: Download Gradle packages artifact\n      timeout-minutes: 2\n      if: success()\n      uses: actions/download-artifact@v4\n      with:\n        # Check available parameters in: https://github.com/actions/download-artifact/blob/main/action.yml\n        name: gradle-packages\n        path: ${{ env.GRADLE_PATH }}\n\n    - name: Extract and check files from gradle artifact\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n      if: success()\n      working-directory: .\n      run: |\n        # shellcheck disable=SC1091\n        . scripts/helper_functions.sh && extractFilesFromArtifact ${{ env.GRADLE_PATH }};\n\n    - name: Download generated binaries from cache\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n      if: success()\n      uses: actions/cache@v4\n      with:\n        # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml\n        key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.android_api }}_${{ matrix.android_arch }}_${{ matrix.ndk_version }}_${{ matrix.gradle_version }}_${{ matrix.type }}_${{ matrix.host_os }}\n        restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.android_api }}_${{ matrix.android_arch }}_${{ matrix.ndk_version }}_${{ matrix.gradle_version }}_${{ matrix.type }}_${{ matrix.host_os }}\n        path: |\n          app/build\n          app/.cxx\n          app/third_party\n\n    - name: Check binaries' paths\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n      if: success()\n      run: |\n        # shellcheck disable=SC1091\n        # NDK path might not exist and should be downloaded by the shell scripts.\n        . scripts/helper_functions.sh && checkPathExists ${{ env.ANDROID_NDK_PATH }} || true;\n        . scripts/helper_functions.sh && checkPathExists app/build;\n        . scripts/helper_functions.sh && checkPathExists app/build/intermediates;\n        . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac;\n        . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/debug;\n        . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/debugUnitTest;\n        . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/debugAndroidTest;\n        . scripts/helper_functions.sh && checkPathExists app/build/tmp/kotlin-classes/debug;\n        . scripts/helper_functions.sh && checkPathExists app/.cxx;\n        . scripts/helper_functions.sh && checkPathExists app/third_party;",
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android.yml",
@@ -7295,12 +7295,12 @@
         "startLoc": {
           "line": 703,
           "column": 9,
-          "position": 5486
+          "position": 5472
         },
         "endLoc": {
           "line": 779,
           "column": 74,
-          "position": 5992
+          "position": 5971
         }
       },
       "secondFile": {
@@ -7315,7 +7315,7 @@
         "endLoc": {
           "line": 642,
           "column": 74,
-          "position": 5059
+          "position": 5045
         }
       }
     },
@@ -7331,12 +7331,12 @@
         "startLoc": {
           "line": 791,
           "column": 7,
-          "position": 6081
+          "position": 6060
         },
         "endLoc": {
           "line": 799,
           "column": 6,
-          "position": 6261
+          "position": 6240
         }
       },
       "secondFile": {
@@ -7346,12 +7346,12 @@
         "startLoc": {
           "line": 494,
           "column": 7,
-          "position": 3802
+          "position": 3795
         },
         "endLoc": {
           "line": 502,
           "column": 4,
-          "position": 3982
+          "position": 3975
         }
       }
     },
@@ -7367,12 +7367,12 @@
         "startLoc": {
           "line": 826,
           "column": 5,
-          "position": 6414
+          "position": 6393
         },
         "endLoc": {
           "line": 856,
           "column": 8,
-          "position": 6668
+          "position": 6647
         }
       },
       "secondFile": {
@@ -7387,7 +7387,7 @@
         "endLoc": {
           "line": 781,
           "column": 7,
-          "position": 6001
+          "position": 5980
         }
       }
     },
