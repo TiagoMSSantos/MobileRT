@@ -275,21 +275,22 @@ install_dependencies_macos() {
   installedGit=$?;
   if [ "${installedGit}" != "0" ]; then
     echo 'Installing git via MacPorts failed. Installing git via Homebrew.';
-    brew install --skip-cask-deps --skip-post-install git git-lfs;
+    brew list git > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install git;
+    brew list git-lfs > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install git-lfs;
   fi
   echo 'Installing OpenMP via MacPorts.';
   sudo port -bn install libomp;
   installedLibOmp=$?;
   if [ "${installedLibOmp}" != "0" ]; then
     echo 'Installing OpenMP via MacPorts failed. Installing OpenMP via Homebrew.';
-    brew install --skip-cask-deps --skip-post-install libomp;
+    brew list libomp > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install libomp;
   fi
   set -e;
 
   echo 'Installing more dependencies.';
-  brew install --skip-cask-deps --skip-post-install coreutils; # To install 'timeout' command.
-  brew install --skip-cask-deps --skip-post-install zip;
-  brew install --skip-cask-deps --skip-post-install unzip;
+  brew list coreutils > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install coreutils; # To install 'timeout' command.
+  brew list zip > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install zip;
+  brew list unzip > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install unzip;
 
   set +e;
   test -d Qt;
@@ -302,7 +303,7 @@ install_dependencies_macos() {
     installedLibQt=$?;
     if [ "${installedLibQt}" != "0" ]; then
       echo 'Installing Qt via MacPorts failed. Installing Qt via Homebrew.';
-      brew install --skip-cask-deps --skip-post-install qt@5;
+      brew list qt@5 > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install qt@5;
     fi
   fi
   set -e;
