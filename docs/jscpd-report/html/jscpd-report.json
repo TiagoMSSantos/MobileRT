@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-05-23T06:44:18.883Z",
+    "detectionDate": "2024-05-25T13:06:33.191Z",
     "formats": {
       "java": {
         "sources": {
@@ -2206,7 +2206,7 @@
           },
           "scripts/docker.sh": {
             "lines": 243,
-            "tokens": 1974,
+            "tokens": 1972,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2255,7 +2255,7 @@
         },
         "total": {
           "lines": 4240,
-          "tokens": 28516,
+          "tokens": 28514,
           "sources": 13,
           "clones": 12,
           "duplicatedLines": 263,
@@ -3165,7 +3165,7 @@
     },
     "total": {
       "lines": 29263,
-      "tokens": 225054,
+      "tokens": 225052,
       "sources": 250,
       "clones": 125,
       "duplicatedLines": 1648,

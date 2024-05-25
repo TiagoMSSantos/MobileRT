@@ -192,7 +192,7 @@ installDockerCommandForMacOS() {
     set +e;
   fi
   echo 'Install docker & colima.';
-  brew list docker > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install docker;
+  brew list docker > /dev/null 2>&1 || brew install --skip-cask-deps homebrew/cask/docker;
   brew list colima > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install colima;
   brew list lima > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install lima;
   echo 'Install qemu.';
