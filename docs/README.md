@@ -223,13 +223,13 @@ framework for mocking in unit tests
     </tr>
     <tr>
       <td style="text-align:center"><b>Alpine</b></td>
-      <td style="text-align:center">1<br><img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25" alt="red"></td>
       <td style="text-align:center">2<br><img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25" alt="red"></td>
       <td style="text-align:center">3.15<br><img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25" alt="gray"></td>
       <td style="text-align:center">3.16<br><img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25" alt="gray"></td>
       <td style="text-align:center">3.17<br><img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25" alt="gray"></td>
       <td style="text-align:center">3.18<br><img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25" alt="gray"></td>
-      <td style="text-align:center">3.19<br><img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25" alt="green"></td>
+      <td style="text-align:center">3.19<br><img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25" alt="gray"></td>
+      <td style="text-align:center">3.20<br><img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25" alt="green"></td>
     </tr>
     <tr>
       <td style="text-align:center"><b>Arch Linux</b></td>
