@@ -1,6 +1,10 @@
 {
+    "verbose": true,
+    "show_kramdown_warnings": true,
+    "git_recurse": true,
+    "ignore_front_matter": false,
     "line-length": {
-        "line_length": 100,
+        "line_length": 226,
         "stern": true,
         "headings": false,
         "tables": false,
@@ -8,5 +12,28 @@
     },
     "no-inline-html": {
         "allowed_elements": [ "div", "table", "tr", "th", "td", "b", "br", "img" ]
-    }
+    },
+    "header-increment": true,
+    "first-header-h1": true,
+    "header-style": true,
+    "ul-style": {
+        "style": "consistent"
+    },
+    "list-indent": true,
+    "no-trailing-spaces": true,
+    "no-hard-tabs": true,
+    "no-reversed-links": true,
+    "no-multiple-blanks": true,
+    "no-missing-space-atx": true,
+    "no-missing-space-closed-atx": true,
+    "no-duplicate-header": true,
+    "no-trailing-punctuation": true,
+    "no-multiple-space-blockquote": true,
+    "no-bare-urls": true,
+    "no-emphasis-as-header": true,
+    "no-space-in-emphasis": true,
+    "no-space-in-code": true,
+    "no-space-in-links": true,
+    "no-empty-links": true,
+    "no-alt-text": true
 }

@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-05-25T13:06:33.191Z",
+    "detectionDate": "2024-05-26T08:36:36.868Z",
     "formats": {
       "java": {
         "sources": {
@@ -1925,8 +1925,8 @@
             "newClones": 0
           },
           ".github/workflows/github-pages.yml": {
-            "lines": 70,
-            "tokens": 447,
+            "lines": 77,
+            "tokens": 491,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2082,14 +2082,14 @@
           }
         },
         "total": {
-          "lines": 2731,
-          "tokens": 18508,
+          "lines": 2738,
+          "tokens": 18552,
           "sources": 23,
           "clones": 17,
           "duplicatedLines": 444,
           "duplicatedTokens": 3095,
-          "percentage": 16.26,
-          "percentageTokens": 16.72,
+          "percentage": 16.22,
+          "percentageTokens": 16.68,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3164,8 +3164,8 @@
       }
     },
     "total": {
-      "lines": 29263,
-      "tokens": 225052,
+      "lines": 29270,
+      "tokens": 225096,
       "sources": 250,
       "clones": 125,
       "duplicatedLines": 1648,

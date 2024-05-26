@@ -40,6 +40,13 @@ jobs:
       if: success()
       uses: actions/checkout@v4
 
+    - name: Lint documentation files
+      uses: docker://avtodev/markdown-lint:v1
+      with:
+        # Check available parameters in: https://github.com/avto-dev/markdown-lint/blob/master/action.yml
+        config: 'docs/.markdownlint.json'
+        args: 'docs/*.md'
+
     - name: Trigger GitHub pages rebuild
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && ((github.event_name == 'workflow_dispatch' && github.ref_name == 'master') || github.ref_name != 'master')
