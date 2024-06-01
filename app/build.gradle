@@ -50,7 +50,7 @@ final def systemTestType = System.getProperty('testType', 'debug')
 final def customAbiFilters = System.getProperty('abiFilters', '["armeabi-v7a", "x86", "arm64-v8a", "x86_64"]')
 final def systemAbiFilters = new JsonSlurper().parseText(customAbiFilters) as String[]
 
-final def gradleVersionArray = gradleVersion.split("\\.").collect()
+final def gradleVersionArray = gradle_version.split("\\.").collect()
 final def gradleVersionValue = gradleVersionArray[0] + '.' + gradleVersionArray[1] as Float
 def javaBinariesPath, javaUnitTestBinaries, javaAndroidTestBinaries
 if (gradleVersionValue >= 8.3) {
@@ -63,10 +63,14 @@ if (gradleVersionValue >= 8.3) {
     javaAndroidTestBinaries = 'classes/'
 }
 
+println('Android API version: ' + androidApiVersion)
 println('NDK version: ' + systemNDKVersion)
 println('Test type: ' + systemTestType)
 println('ABI Filters: ' + systemAbiFilters)
-println('gradleVersion: ' + gradleVersion)
+
+println('Gradle version: ' + gradle_version)
+println('AndroidX Common libraries Framework version: ' + common_libraries_android_framework)
+println('AndroidX appcompat version: ' + androidX_appcompat_version)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -451,7 +455,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
 
     // Android dependencies
-    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation "androidx.appcompat:appcompat:${androidX_appcompat_version}"
     implementation 'androidx.multidex:multidex:2.0.1'
 
     // Java dependencies

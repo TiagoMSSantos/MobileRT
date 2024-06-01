@@ -58,6 +58,7 @@ Texture Texture::createTexture(::std::string &&textureBinary, const long size) {
     ::std::int32_t width {};
     ::std::int32_t height {};
     ::std::int32_t channels {};
+    LOG_INFO("Loading Texture with size: ", size);
     const int info {stbi_info_from_memory(reinterpret_cast<unsigned char const *> (textureBinary.c_str()), static_cast<int> (size), &width, &height, &channels)};
     if (info <= 0 || size <= 0) {
         const char *error {stbi_failure_reason()};
@@ -76,6 +77,7 @@ Texture Texture::createTexture(::std::string &&textureBinary, const long size) {
     }};
     Texture texture {pointer, width, height, channels};
     ::MobileRT::checkSystemError("Created Texture.");
+    LOG_INFO("Created Texture.");
     return texture;
 }
 
@@ -89,6 +91,7 @@ Texture Texture::createTexture(const ::std::string &texturePath) {
     ::std::int32_t width {};
     ::std::int32_t height {};
     ::std::int32_t channels {};
+    LOG_INFO("Loading Texture from: ", texturePath);
     ::MobileRT::checkSystemError(("Loading Texture from: " + texturePath).c_str());
     const int info {stbi_info(texturePath.c_str(), &width, &height, &channels)};
     if (info <= 0) {
@@ -107,6 +110,7 @@ Texture Texture::createTexture(const ::std::string &texturePath) {
     }};
     Texture texture {pointer, width, height, channels};
     ::MobileRT::checkSystemError(("Created Texture: " + texturePath).c_str());
+    LOG_INFO("Created Texture: ", texturePath);
     return texture;
 }
 

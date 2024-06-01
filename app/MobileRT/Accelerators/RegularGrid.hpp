@@ -195,7 +195,7 @@ namespace MobileRT {
 
         ::MobileRT::checkSystemError("RegularGrid addPrimitives before calling OpenMP");
         errno = 0; // In some compilers, OpenMP sets 'errno' to 'EFAULT - Bad address (14)'.
-        LOG_INFO("omp_get_max_threads = ", omp_get_max_threads());
+        // omp_get_max_threads(): Fatal signal 8 (SIGFPE) at 0xb7707ac8 (code=1), thread 3810 (pool-20-thread-)
 
         ::MobileRT::checkSystemError("RegularGrid addPrimitives before adding primitives");
         // store primitives in the grid cells

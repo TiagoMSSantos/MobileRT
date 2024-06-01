@@ -28,18 +28,25 @@ buildscript {
     // This block encapsulates custom properties and makes them available to all
     // modules in the project.
     ext {
-        // Before updating gradle, check which version of Android Studio is compatible with it and update README.
-        // Allow to setup more recently versions of Gradle, but use 8.2.2 by default because it's compatible with Android 15.
-        gradleVersion = System.getProperty('gradleVersion', '8.2.2')
         // The default minimum Android API version possible is 14 due to compatibility with Appcompat dependency.
         androidApiVersion = System.getProperty('androidApiVersion', '14')
-
         final def androidApiVersionArray = androidApiVersion.split("\\.").collect()
         final def androidApiVersionValue = androidApiVersionArray[0] as Float
+
+        if (androidApiVersionValue >= 16) {
+            gradle_version = '8.4.1'
+        } else {
+            gradle_version = '8.2.2'
+        }
         if (androidApiVersionValue >= 19) {
             common_libraries_android_framework = '1.13.1'
         } else {
             common_libraries_android_framework = '1.12.0'
+        }
+        if (androidApiVersionValue >= 21) {
+            androidX_appcompat_version = '1.7.0'
+        } else {
+            androidX_appcompat_version = '1.6.1'
         }
 
         kotlin_stdlib_jdk8_version = '2.0.0'
@@ -59,7 +66,7 @@ buildscript {
         final def currentOS = System.getProperty("os.name")
         println("OS: " + currentOS)
         // Compatibility matrix: https://developer.android.com/build/releases/gradle-plugin#android_gradle_plugin_and_android_studio_compatibility
-        classpath "com.android.tools.build:gradle:${gradleVersion}"
+        classpath "com.android.tools.build:gradle:${gradle_version}"
         classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:5.0.0.4638'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlin_stdlib_jdk8_version}"
         classpath 'com.github.ben-manes:gradle-versions-plugin:0.51.0'
