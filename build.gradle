@@ -46,7 +46,7 @@ buildscript {
         if (androidApiVersionValue >= 21) {
             androidX_appcompat_version = '1.7.0'
         } else {
-            androidX_appcompat_version = '1.6.1'
+            androidX_appcompat_version = '1.7.0'
         }
 
         kotlin_stdlib_jdk8_version = '2.0.0'
