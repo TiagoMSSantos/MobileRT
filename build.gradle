@@ -39,9 +39,9 @@ buildscript {
             gradle_version = '8.2.2'
         }
         if (androidApiVersionValue >= 19) {
-            common_libraries_android_framework = '1.13.1'
+            common_libraries_android_framework_version = '1.13.1'
         } else {
-            common_libraries_android_framework = '1.12.0'
+            common_libraries_android_framework_version = '1.12.0'
         }
         if (androidApiVersionValue >= 21) {
             androidX_appcompat_version = '1.7.0'

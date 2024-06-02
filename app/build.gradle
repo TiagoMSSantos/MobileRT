@@ -69,7 +69,7 @@ println('Test type: ' + systemTestType)
 println('ABI Filters: ' + systemAbiFilters)
 
 println('Gradle version: ' + gradle_version)
-println('AndroidX Common libraries Framework version: ' + common_libraries_android_framework)
+println('AndroidX Common libraries Framework version: ' + common_libraries_android_framework_version)
 println('AndroidX appcompat version: ' + androidX_appcompat_version)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -464,7 +464,7 @@ dependencies {
     implementation 'net.sourceforge.streamsupport:streamsupport:1.7.4'
 
     // Kotlin dependencies
-    implementation "androidx.core:core-ktx:${common_libraries_android_framework}"
+    implementation "androidx.core:core-ktx:${common_libraries_android_framework_version}"
     implementation "org.jetbrains.kotlin:kotlin-stdlib:${kotlin_stdlib_jdk8_version}"
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1'
 

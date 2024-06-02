@@ -95,7 +95,7 @@
       "fileMatch": ["build.gradle"],
       "matchStringsStrategy": "any",
       "matchStrings": [
-        "common_libraries_android_framework = ['\"](?<currentValue>.*)['\"]"
+        "common_libraries_android_framework_version = ['\"](?<currentValue>.*)['\"]"
       ],
       "depNameTemplate": "androidx.core:core-ktx",
       "datasourceTemplate": "maven",
@@ -110,6 +110,18 @@
         "gradle_version = ['\"](?<currentValue>.*)['\"]"
       ],
       "depNameTemplate": "com.android.tools.build:gradle",
+      "datasourceTemplate": "maven",
+      "versioningTemplate": "gradle",
+      "customType": "regex",
+      "registryUrlTemplate": "https://dl.google.com/android/maven2"
+    },
+    {
+      "fileMatch": ["build.gradle"],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
+        "androidX_appcompat_version = ['\"](?<currentValue>.*)['\"]"
+      ],
+      "depNameTemplate": "androidx.appcompat:appcompat",
       "datasourceTemplate": "maven",
       "versioningTemplate": "gradle",
       "customType": "regex",
@@ -221,6 +233,13 @@
       "matchDepNames": ["com.android.tools.build:gradle"],
       "matchManagers": ["regex", "gradle"],
       "matchCurrentVersion": "/^8\\.2\\.2$/"
+    },
+    {
+      "groupName": "Ignore update Android appcompat version for Android API < 21",
+      "enabled": false,
+      "matchDepNames": ["androidx.appcompat:appcompat"],
+      "matchManagers": ["regex", "gradle"],
+      "matchCurrentVersion": "/^1\\.6\\.1$/"
     },
     {
       "groupName": "Update NDK to stable versions",
