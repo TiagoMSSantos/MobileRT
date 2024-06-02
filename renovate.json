@@ -104,10 +104,10 @@
       "registryUrlTemplate": "https://dl.google.com/android/maven2"
     },
     {
-      "fileMatch": ["\\.github\\/workflows\\/android_matrix\\.json"],
+      "fileMatch": ["build.gradle"],
       "matchStringsStrategy": "any",
       "matchStrings": [
-        "['\"]gradle_version['\"]: ['\"](?<currentValue>.*?)['\"]"
+        "gradle_version = ['\"](?<currentValue>.*)['\"]"
       ],
       "depNameTemplate": "com.android.tools.build:gradle",
       "datasourceTemplate": "maven",
@@ -216,7 +216,7 @@
       "allowedVersions": "!/^cci\\.[0-9]+$/"
     },
     {
-      "groupName": "Ignore update Android Gradle version for Android API <= 21",
+      "groupName": "Ignore update Android Gradle version for Android API <= 15",
       "enabled": false,
       "matchDepNames": ["com.android.tools.build:gradle"],
       "matchManagers": ["regex", "gradle"],

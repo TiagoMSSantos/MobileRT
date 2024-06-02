@@ -50,7 +50,6 @@ fi
 ###############################################################################
 type='release';
 ndk_version='23.2.8568313';
-gradle_version='8.2.2';
 android_api_version='14';
 cpu_architecture='"x86","x86_64"';
 parallelizeBuild;
@@ -60,7 +59,6 @@ printEnvironment() {
   echo 'Selected arguments:';
   echo "type: ${type}";
   echo "ndk_version: ${ndk_version}";
-  echo "gradle_version: ${gradle_version}";
   echo "android_api_version: ${android_api_version}";
   echo "cpu_architecture: ${cpu_architecture}";
 }
@@ -94,7 +92,7 @@ runUnitTests() {
   export ADB_INSTALL_TIMEOUT=60000;
   sh gradlew --no-rebuild --stop --info --warning-mode fail --stacktrace;
   sh gradlew test"${type}"UnitTest --profile --parallel \
-    -DndkVersion="${ndk_version}" -DgradleVersion="${gradle_version}" -DandroidApiVersion="${android_api_version}" \
+    -DndkVersion="${ndk_version}" -DandroidApiVersion="${android_api_version}" \
     -DabiFilters="[${cpu_architecture}]" \
     --no-rebuild \
     --console plain --info --warning-mode all --stacktrace;

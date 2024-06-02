@@ -132,24 +132,8 @@ namespace MobileRT {
     * @param parameter The parameter to add in the ostringstream.
     */
     template<::std::int32_t S, typename T>
-    void addToStringStream(::std::ostringstream *oss, ::glm::vec<S, T> parameter) {
+    void addToStringStream(::std::ostringstream *oss, const ::glm::vec<S, T>& parameter) {
         *oss << ::glm::to_string(parameter);
-    }
-
-   /**
-    * Helper method which adds a parameter into the ostringstream.
-    *
-    * @tparam First The type of the first argument.
-    * @tparam S The size of the vec.
-    * @tparam T The type of the vec.
-    * @param oss The ostringstream to add the parameters.
-    * @param firstParameter The first parameter of the list to add in the ostringstream.
-    * @param vectorParameter The vector parameter to add in the ostringstream.
-    */
-    template<typename First, ::std::int32_t S, typename T>
-    void addToStringStream(::std::ostringstream *const oss, const First& firstParameter, const ::glm::vec<S, T> vectorParameter) {
-        *oss << firstParameter;
-        *oss << ::glm::to_string(vectorParameter);
     }
 
    /**
@@ -165,22 +149,6 @@ namespace MobileRT {
     }
 
     /**
-     * Helper method which adds a parameter into the ostringstream.
-     *
-     * @tparam S The size of the vec.
-     * @tparam T The type of the vec.
-     * @tparam Args The type of the rest of the arguments.
-     * @param oss The ostringstream to add the parameters.
-     * @param parameter The first parameter of the list to add.
-     * @param args The rest of the arguments.
-     */
-    template<::std::int32_t S, typename T, typename... Args>
-    void addToStringStream(::std::ostringstream *oss, ::glm::vec<S, T> parameter, Args &&... args) {
-        *oss << ::glm::to_string(parameter);
-        addToStringStream(oss, args...);
-    }
-
-    /**
      * Helper method which add a parameter into the ostringstream.
      *
      * @tparam First The type of the first argument.
@@ -191,7 +159,7 @@ namespace MobileRT {
      */
     template <typename First, typename... Args>
     void addToStringStream(::std::ostringstream *oss, const First& parameter, Args &&... args) {
-        *oss << parameter;
+        addToStringStream(oss, parameter);
         addToStringStream(oss, args...);
     }
 

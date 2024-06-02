@@ -77,7 +77,8 @@ bool OBJLoader::fillScene(Scene *const scene,
                           ::std::string filePath,
                           ::std::unordered_map<::std::string, ::MobileRT::Texture> texturesCache) {
     ::MobileRT::checkSystemError("Starting to fill scene.");
-    LOG_INFO("FILLING SCENE with ", this->numberTriangles_, " triangles in ", this->shapes_.size(), " shapes & ", this->materials_.size(), " materials, omp_get_max_threads = ", omp_get_max_threads());
+    LOG_INFO("FILLING SCENE with ", this->numberTriangles_, " triangles in ", this->shapes_.size(), " shapes & ", this->materials_.size(), " materials");
+    // omp_get_max_threads(): Fatal signal 8 (SIGFPE) at 0xb7707ac8 (code=1), thread 3810 (pool-20-thread-)
     errno = 0; // In some compilers, OpenMP sets 'errno' to 'EFAULT - Bad address (14)'.
     filePath = filePath.substr(0, filePath.find_last_of('/')) + '/';
     const ::std::int32_t shapesSize {static_cast<::std::int32_t> (this->shapes_.size())};
@@ -97,6 +98,7 @@ bool OBJLoader::fillScene(Scene *const scene,
             ::std::int32_t indexOffset {0};
             // The number of vertices per face.
             const ::std::int32_t faces {static_cast<::std::int32_t> (shape.mesh.num_face_vertices.size())};
+            LOG_DEBUG("Loading shape: ", shapeIndex);
             for (::std::int32_t face = 0; face < faces; ++face) {
                 const auto itFace {shape.mesh.num_face_vertices.cbegin() + face};
                 const ::std::int32_t faceVertices {static_cast<::std::int32_t>(*itFace)};
@@ -399,11 +401,13 @@ OBJLoader::triple<::glm::vec2, ::glm::vec2, ::glm::vec2> OBJLoader::normalizeTex
 ) {
     if (!texture.isValid()) {// If the texture is not valid.
         // Reset texture coordinates to -1.
+        LOG_DEBUG("Reseting texture coordinates to: -1");
         return triple<::glm::vec2, ::glm::vec2, ::glm::vec2> {
             ::glm::vec2 {-1}, ::glm::vec2 {-1}, ::glm::vec2 {-1}
         };
     } else {
         // Normalize the texture coordinates to be between [0, 1]
+        LOG_DEBUG("Normalizing texture coordinates: ", ::std::get<0>(texCoord), ::std::get<1>(texCoord), ::std::get<2>(texCoord));
         return triple<::glm::vec2, ::glm::vec2, ::glm::vec2> {
             ::MobileRT::normalize(::std::get<0>(texCoord)),
             ::MobileRT::normalize(::std::get<1>(texCoord)),
