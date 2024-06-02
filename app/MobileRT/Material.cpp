@@ -24,7 +24,6 @@ Material::Material(
     Kt_ {kT},
     refractiveIndice_ {refractiveIndice},
     texture_ {::std::move(texture)} {
-    LOG_INFO("Creating material");
 }
 
 /**
