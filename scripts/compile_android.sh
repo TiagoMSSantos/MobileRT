@@ -107,10 +107,12 @@ build() {
     build_wrapper="./build-wrapper-linux-x86-64 --out-dir build_wrapper_output_directory";
   fi
 
-  echo 'Calling the Gradle assemble to compile code for Android.';
   echo 'Increasing ADB timeout to 10 minutes.';
   export ADB_INSTALL_TIMEOUT=60000;
+
+  echo 'Calling the Gradle assemble to compile code for Android.';
   sh gradlew --no-rebuild --stop --info --warning-mode fail --stacktrace;
+  sh gradlew wrapper -DandroidApiVersion="${android_api_version}";
   sh gradlew clean \
     build"${typeWithCapitalLetter}" \
     assemble"${typeWithCapitalLetter}" \
