@@ -31,7 +31,7 @@ buildscript {
         // The default minimum Android API version possible is 14 due to compatibility with Appcompat dependency.
         androidApiVersion = System.getProperty('androidApiVersion', '14')
         final def androidApiVersionArray = androidApiVersion.split("\\.").collect()
-        final def androidApiVersionValue = androidApiVersionArray[0] as Float
+        androidApiVersionValue = androidApiVersionArray[0] as Float
 
         if (androidApiVersionValue >= 16) {
             gradle_version = '8.4.1'
@@ -101,6 +101,24 @@ allprojects {
         maven { url 'https://plugins.gradle.org/m2/'}
         maven { url 'https://jitpack.io' }
     }
+}
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////////////////////////////////////
+// Allow to use different versions of Gradle depending on the Android API version
+///////////////////////////////////////////////////////////////////////////////
+tasks.named('wrapper', Wrapper) {it ->
+    println('Setting Gradle wrapper version')
+    it.distributionType = Wrapper.DistributionType.BIN
+    if (androidApiVersionValue >= 16) {
+        it.gradleVersion = '8.8'
+    } else {
+        it.gradleVersion = '8.7'
+    }
+    it.distributionUrl = 'https://services.gradle.org/distributions/gradle-' + it.gradleVersion + '-bin.zip'
+    println('Gradle wrapper version: ' + it.gradleVersion)
 }
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
