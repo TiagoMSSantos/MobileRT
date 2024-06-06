@@ -136,7 +136,8 @@
       "depNameTemplate": "gradle",
       "datasourceTemplate": "maven",
       "versioningTemplate": "gradle",
-      "customType": "regex"
+      "customType": "regex",
+      "registryUrlTemplate": "https://services.gradle.org/versions/all"
     },
     {
       "fileMatch": ["\\.github\\/workflows\\/android_matrix\\.json"],
