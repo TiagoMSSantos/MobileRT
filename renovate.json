@@ -134,7 +134,7 @@
         "it.gradleVersion = ['\"](?<currentValue>.*)['\"]"
       ],
       "depNameTemplate": "gradle",
-      "datasourceTemplate": "maven",
+      "datasourceTemplate": "gradle-version",
       "versioningTemplate": "gradle",
       "customType": "regex",
       "registryUrlTemplate": "https://services.gradle.org/versions/all"
