@@ -128,6 +128,17 @@
       "registryUrlTemplate": "https://dl.google.com/android/maven2"
     },
     {
+      "fileMatch": ["build.gradle"],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
+        "it.gradleVersion = ['\"](?<currentValue>.*)['\"]"
+      ],
+      "depNameTemplate": "gradle",
+      "datasourceTemplate": "maven",
+      "versioningTemplate": "gradle",
+      "customType": "regex"
+    },
+    {
       "fileMatch": ["\\.github\\/workflows\\/android_matrix\\.json"],
       "matchStringsStrategy": "any",
       "matchStrings": [
@@ -299,6 +310,12 @@
       "matchDepNames": ["macos"],
       "versioning": "regex:^(?<major>[0-9]+)?\\.?(?<minor>[0-9]+)?.*$",
       "matchCurrentVersion": "!/^14$/"
+    },
+    {
+      "groupName": "Ignore update Gradle for Android API <= 15",
+      "enabled": false,
+      "matchDepNames": ["gradle"],
+      "matchCurrentVersion": "/^8\\.7$/"
     }
   ]
 }
