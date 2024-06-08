@@ -177,6 +177,7 @@ namespace MobileRT {
      */
     template<typename T>
     void RegularGrid<T>::addPrimitives() {
+        LOG_INFO("Will add primitives to RegularGrid (", typeid(T).name(), ")");
         ::MobileRT::checkSystemError("RegularGrid addPrimitives start");
         const ::glm::vec3 worldBoundsMin {this->worldBoundaries_.getPointMin()};
         const ::glm::vec3 worldBoundsMax {this->worldBoundaries_.getPointMax()};
@@ -198,6 +199,7 @@ namespace MobileRT {
         // omp_get_max_threads(): Fatal signal 8 (SIGFPE) at 0xb7707ac8 (code=1), thread 3810 (pool-20-thread-)
 
         ::MobileRT::checkSystemError("RegularGrid addPrimitives before adding primitives");
+        LOG_INFO("Adding primitives to RegularGrid (", typeid(T).name(), ")");
         // store primitives in the grid cells
         #pragma omp parallel for
         for (::std::int32_t index = 0; index < static_cast<::std::int32_t> (numPrimitives); ++index) {
@@ -254,6 +256,7 @@ namespace MobileRT {
             }
             ::MobileRT::checkSystemError(::std::string("RegularGrid addPrimitives end (" + ::std::to_string(index) + ")").c_str());
         }
+        LOG_INFO("Added primitives to RegularGrid (", typeid(T).name(), ")");
         ::MobileRT::checkSystemError("RegularGrid addPrimitives end");
     }
 

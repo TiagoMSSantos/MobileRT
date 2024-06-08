@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-06-06T06:35:40.801Z",
+    "detectionDate": "2024-06-08T08:38:01.503Z",
     "formats": {
       "java": {
         "sources": {
@@ -1974,13 +1974,13 @@
           },
           ".github/workflows/android.yml": {
             "lines": 893,
-            "tokens": 6757,
+            "tokens": 6785,
             "sources": 1,
             "clones": 17,
             "duplicatedLines": 467,
             "duplicatedTokens": 3608,
             "percentage": 52.3,
-            "percentageTokens": 53.4,
+            "percentageTokens": 53.18,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2083,13 +2083,13 @@
         },
         "total": {
           "lines": 2739,
-          "tokens": 18421,
+          "tokens": 18449,
           "sources": 23,
           "clones": 17,
           "duplicatedLines": 442,
           "duplicatedTokens": 3010,
           "percentage": 16.14,
-          "percentageTokens": 16.34,
+          "percentageTokens": 16.32,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2573,14 +2573,14 @@
             "newClones": 0
           },
           "app/MobileRT/Accelerators/RegularGrid.hpp": {
-            "lines": 511,
-            "tokens": 5107,
+            "lines": 514,
+            "tokens": 5167,
             "sources": 1,
             "clones": 4,
             "duplicatedLines": 36,
             "duplicatedTokens": 364,
-            "percentage": 7.05,
-            "percentageTokens": 7.13,
+            "percentage": 7,
+            "percentageTokens": 7.04,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -3030,8 +3030,8 @@
           }
         },
         "total": {
-          "lines": 3310,
-          "tokens": 24265,
+          "lines": 3313,
+          "tokens": 24325,
           "sources": 47,
           "clones": 3,
           "duplicatedLines": 29,
@@ -3164,13 +3164,13 @@
       }
     },
     "total": {
-      "lines": 29209,
-      "tokens": 224471,
+      "lines": 29212,
+      "tokens": 224559,
       "sources": 250,
       "clones": 125,
       "duplicatedLines": 1646,
       "duplicatedTokens": 14575,
-      "percentage": 5.64,
+      "percentage": 5.63,
       "percentageTokens": 6.49,
       "newDuplicatedLines": 0,
       "newClones": 0
@@ -5920,32 +5920,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/MobileRT/Accelerators/RegularGrid.hpp",
-        "start": 433,
-        "end": 439,
+        "start": 436,
+        "end": 442,
         "startLoc": {
-          "line": 433,
+          "line": 436,
           "column": 13,
-          "position": 4382
+          "position": 4442
         },
         "endLoc": {
-          "line": 439,
+          "line": 442,
           "column": 13,
-          "position": 4469
+          "position": 4529
         }
       },
       "secondFile": {
         "name": "app/MobileRT/Accelerators/RegularGrid.hpp",
-        "start": 382,
-        "end": 388,
+        "start": 385,
+        "end": 391,
         "startLoc": {
-          "line": 382,
+          "line": 385,
           "column": 13,
-          "position": 3893
+          "position": 3953
         },
         "endLoc": {
-          "line": 388,
+          "line": 391,
           "column": 6,
-          "position": 3980
+          "position": 4040
         }
       }
     },
@@ -5956,32 +5956,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/MobileRT/Accelerators/RegularGrid.hpp",
-        "start": 470,
-        "end": 482,
+        "start": 473,
+        "end": 485,
         "startLoc": {
-          "line": 470,
+          "line": 473,
           "column": 2,
-          "position": 4786
+          "position": 4846
         },
         "endLoc": {
-          "line": 482,
+          "line": 485,
           "column": 2,
-          "position": 4881
+          "position": 4941
         }
       },
       "secondFile": {
         "name": "app/MobileRT/Accelerators/RegularGrid.hpp",
-        "start": 450,
-        "end": 461,
+        "start": 453,
+        "end": 464,
         "startLoc": {
-          "line": 450,
+          "line": 453,
           "column": 2,
-          "position": 4596
+          "position": 4656
         },
         "endLoc": {
-          "line": 461,
+          "line": 464,
           "column": 5,
-          "position": 4690
+          "position": 4750
         }
       }
     },
@@ -7185,12 +7185,12 @@
         "startLoc": {
           "line": 556,
           "column": 5,
-          "position": 4390
+          "position": 4418
         },
         "endLoc": {
           "line": 597,
           "column": 69,
-          "position": 4606
+          "position": 4634
         }
       },
       "secondFile": {
@@ -7221,12 +7221,12 @@
         "startLoc": {
           "line": 597,
           "column": 5,
-          "position": 4606
+          "position": 4634
         },
         "endLoc": {
           "line": 616,
           "column": 9,
-          "position": 4733
+          "position": 4761
         }
       },
       "secondFile": {
@@ -7257,12 +7257,12 @@
         "startLoc": {
           "line": 616,
           "column": 5,
-          "position": 4728
+          "position": 4756
         },
         "endLoc": {
           "line": 629,
           "column": 6,
-          "position": 4927
+          "position": 4955
         }
       },
       "secondFile": {
@@ -7293,12 +7293,12 @@
         "startLoc": {
           "line": 703,
           "column": 9,
-          "position": 5384
+          "position": 5412
         },
         "endLoc": {
           "line": 779,
           "column": 74,
-          "position": 5867
+          "position": 5895
         }
       },
       "secondFile": {
@@ -7313,7 +7313,7 @@
         "endLoc": {
           "line": 642,
           "column": 74,
-          "position": 4957
+          "position": 4985
         }
       }
     },
@@ -7329,12 +7329,12 @@
         "startLoc": {
           "line": 791,
           "column": 7,
-          "position": 5956
+          "position": 5984
         },
         "endLoc": {
           "line": 799,
           "column": 6,
-          "position": 6120
+          "position": 6148
         }
       },
       "secondFile": {
@@ -7365,12 +7365,12 @@
         "startLoc": {
           "line": 826,
           "column": 5,
-          "position": 6273
+          "position": 6301
         },
         "endLoc": {
           "line": 856,
           "column": 8,
-          "position": 6511
+          "position": 6539
         }
       },
       "secondFile": {
@@ -7385,7 +7385,7 @@
         "endLoc": {
           "line": 781,
           "column": 7,
-          "position": 5876
+          "position": 5904
         }
       }
     },
