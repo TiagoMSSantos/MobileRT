@@ -230,7 +230,7 @@ namespace MobileRT {
             z2 = ::std::fabs(size[2]) < ::std::numeric_limits<float>::epsilon()? 0 : z2;
             z1 = ::std::min(z1, z2);
 
-            LOG_DEBUG("Looping over candidate cells for primitive ", index, " to RegularGrid (", typeid(T).name(), ") on coordinates: (", x1, x2, ", ", y1, y2, ", ", z1, z2, ")");
+            LOG_DEBUG("Looping over candidate cells for primitive ", index, " to RegularGrid (", typeid(T).name(), ") on coordinates: (", x1, "-", x2, ", ", y1, "-", y2, ", ", z1, "-", z2, ")");
             for (::std::int32_t x {x1}; x <= x2; ++x) {
                 for (::std::int32_t y {y1}; y <= y2; ++y) {
                     for (::std::int32_t z {z1}; z <= z2; ++z) {
@@ -249,10 +249,11 @@ namespace MobileRT {
                         // do an accurate aabb / primitive intersection test
                         const bool intersectedBox {primitive.intersect(cell)};
                         if (intersectedBox) {
-                            LOG_DEBUG("Adding primitive ", index, " to RegularGrid (", typeid(T).name(), ") on coordinates: ", x, y, z);
+                            LOG_DEBUG("Adding primitive ", index, " to RegularGrid (", typeid(T).name(), ") on coordinates: (", x, ", ", y, ", ", z, ")");
                             ::std::lock_guard<::std::mutex> lock {mutexes[idx]};
+                            LOG_DEBUG("Acquired lock to add primitive ", index, " to RegularGrid (", typeid(T).name(), ") on coordinates: (", x, ", ", y, ", ", z, ")");
                             this->grid_[idx].emplace_back(&primitive);
-                            LOG_DEBUG("Added primitive ", index, " to RegularGrid (", typeid(T).name(), ") on coordinates: ", x, y, z);
+                            LOG_DEBUG("Added primitive ", index, " to RegularGrid (", typeid(T).name(), ") on coordinates: (", x, ", ", y, ", ", z, ")");
                         }
                     }
                 }
