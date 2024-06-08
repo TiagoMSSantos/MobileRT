@@ -394,7 +394,7 @@ jobs:
     # Useful step to avoid gradle having to download Gradle dependencies
     # Taken from: https://github.com/marketplace/actions/download-a-build-artifact
     - name: Download Gradle packages artifact
-      timeout-minutes: 2
+      timeout-minutes: 3
       if: success()
       uses: actions/download-artifact@v4
       with:
