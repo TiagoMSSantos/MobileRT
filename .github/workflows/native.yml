@@ -355,7 +355,7 @@ jobs:
 
   Sonar:
     needs: [Build]
-    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    if: always() && needs.Build.outputs.matrix-sonar != ''
 
     strategy:
       fail-fast: false

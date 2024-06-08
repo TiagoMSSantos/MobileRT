@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-06-08T08:38:01.503Z",
+    "detectionDate": "2024-06-08T10:36:57.081Z",
     "formats": {
       "java": {
         "sources": {
@@ -1914,13 +1914,13 @@
           },
           ".github/workflows/native.yml": {
             "lines": 414,
-            "tokens": 2418,
+            "tokens": 2415,
             "sources": 1,
             "clones": 8,
             "duplicatedLines": 182,
             "duplicatedTokens": 1088,
             "percentage": 43.96,
-            "percentageTokens": 45,
+            "percentageTokens": 45.05,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2083,7 +2083,7 @@
         },
         "total": {
           "lines": 2739,
-          "tokens": 18449,
+          "tokens": 18446,
           "sources": 23,
           "clones": 17,
           "duplicatedLines": 442,
@@ -3165,7 +3165,7 @@
     },
     "total": {
       "lines": 29212,
-      "tokens": 224559,
+      "tokens": 224556,
       "sources": 250,
       "clones": 125,
       "duplicatedLines": 1646,
@@ -6789,12 +6789,12 @@
         "startLoc": {
           "line": 377,
           "column": 7,
-          "position": 2108
+          "position": 2105
         },
         "endLoc": {
           "line": 389,
           "column": 2,
-          "position": 2251
+          "position": 2248
         }
       },
       "secondFile": {
