@@ -203,6 +203,7 @@ namespace MobileRT {
         // store primitives in the grid cells
         #pragma omp parallel for
         for (::std::int32_t index = 0; index < static_cast<::std::int32_t> (numPrimitives); ++index) {
+            LOG_DEBUG("Adding primitive ", index, " to RegularGrid (", typeid(T).name(), ")");
             ::MobileRT::checkSystemError(::std::string("RegularGrid addPrimitives (" + ::std::to_string(index) + ")").c_str());
             T &primitive {this->primitives_[static_cast<::std::uint32_t> (index)]};
             const AABB bound {primitive.getAABB()};
@@ -254,6 +255,7 @@ namespace MobileRT {
                     }
                 }
             }
+            LOG_DEBUG("Added primitive ", index, " to RegularGrid (", typeid(T).name(), ")");
             ::MobileRT::checkSystemError(::std::string("RegularGrid addPrimitives end (" + ::std::to_string(index) + ")").c_str());
         }
         LOG_INFO("Added primitives to RegularGrid (", typeid(T).name(), ")");
