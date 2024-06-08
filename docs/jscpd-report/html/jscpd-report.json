@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-06-08T11:43:54.475Z",
+    "detectionDate": "2024-06-08T12:42:15.191Z",
     "formats": {
       "java": {
         "sources": {
@@ -2573,14 +2573,14 @@
             "newClones": 0
           },
           "app/MobileRT/Accelerators/RegularGrid.hpp": {
-            "lines": 514,
-            "tokens": 5167,
+            "lines": 518,
+            "tokens": 5339,
             "sources": 1,
             "clones": 4,
             "duplicatedLines": 36,
             "duplicatedTokens": 364,
-            "percentage": 7,
-            "percentageTokens": 7.04,
+            "percentage": 6.95,
+            "percentageTokens": 6.82,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -3030,14 +3030,14 @@
           }
         },
         "total": {
-          "lines": 3313,
-          "tokens": 24325,
+          "lines": 3317,
+          "tokens": 24497,
           "sources": 47,
           "clones": 3,
           "duplicatedLines": 29,
           "duplicatedTokens": 314,
-          "percentage": 0.88,
-          "percentageTokens": 1.29,
+          "percentage": 0.87,
+          "percentageTokens": 1.28,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3164,8 +3164,8 @@
       }
     },
     "total": {
-      "lines": 29212,
-      "tokens": 224556,
+      "lines": 29216,
+      "tokens": 224728,
       "sources": 250,
       "clones": 125,
       "duplicatedLines": 1646,
@@ -5920,32 +5920,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/MobileRT/Accelerators/RegularGrid.hpp",
-        "start": 436,
-        "end": 442,
+        "start": 440,
+        "end": 446,
         "startLoc": {
-          "line": 436,
+          "line": 440,
           "column": 13,
-          "position": 4442
+          "position": 4614
         },
         "endLoc": {
-          "line": 442,
+          "line": 446,
           "column": 13,
-          "position": 4529
+          "position": 4701
         }
       },
       "secondFile": {
         "name": "app/MobileRT/Accelerators/RegularGrid.hpp",
-        "start": 385,
-        "end": 391,
+        "start": 389,
+        "end": 395,
         "startLoc": {
-          "line": 385,
+          "line": 389,
           "column": 13,
-          "position": 3953
+          "position": 4125
         },
         "endLoc": {
-          "line": 391,
+          "line": 395,
           "column": 6,
-          "position": 4040
+          "position": 4212
         }
       }
     },
@@ -5956,32 +5956,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/MobileRT/Accelerators/RegularGrid.hpp",
-        "start": 473,
-        "end": 485,
+        "start": 477,
+        "end": 489,
         "startLoc": {
-          "line": 473,
+          "line": 477,
           "column": 2,
-          "position": 4846
+          "position": 5018
         },
         "endLoc": {
-          "line": 485,
+          "line": 489,
           "column": 2,
-          "position": 4941
+          "position": 5113
         }
       },
       "secondFile": {
         "name": "app/MobileRT/Accelerators/RegularGrid.hpp",
-        "start": 453,
-        "end": 464,
+        "start": 457,
+        "end": 468,
         "startLoc": {
-          "line": 453,
+          "line": 457,
           "column": 2,
-          "position": 4656
+          "position": 4828
         },
         "endLoc": {
-          "line": 464,
+          "line": 468,
           "column": 5,
-          "position": 4750
+          "position": 4922
         }
       }
     },
