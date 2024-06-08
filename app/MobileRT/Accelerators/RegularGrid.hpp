@@ -199,7 +199,7 @@ namespace MobileRT {
         // omp_get_max_threads(): Fatal signal 8 (SIGFPE) at 0xb7707ac8 (code=1), thread 3810 (pool-20-thread-)
 
         ::MobileRT::checkSystemError("RegularGrid addPrimitives before adding primitives");
-        LOG_INFO("Adding primitives to RegularGrid (", typeid(T).name(), ")");
+        LOG_INFO("Adding primitives to RegularGrid (", typeid(T).name(), ") (mutexes: ", mutexes.size(), ")");
         // store primitives in the grid cells
         #pragma omp parallel for
         for (::std::int32_t index = 0; index < static_cast<::std::int32_t> (numPrimitives); ++index) {
@@ -249,9 +249,9 @@ namespace MobileRT {
                         // do an accurate aabb / primitive intersection test
                         const bool intersectedBox {primitive.intersect(cell)};
                         if (intersectedBox) {
-                            LOG_DEBUG("Adding primitive ", index, " to RegularGrid (", typeid(T).name(), ") on coordinates: (", x, ", ", y, ", ", z, ")");
+                            LOG_DEBUG("Adding primitive ", index, " (", idx, ") to RegularGrid (", typeid(T).name(), ") on coordinates: (", x, ", ", y, ", ", z, ")");
                             ::std::lock_guard<::std::mutex> lock {mutexes[idx]};
-                            LOG_DEBUG("Acquired lock to add primitive ", index, " to RegularGrid (", typeid(T).name(), ") on coordinates: (", x, ", ", y, ", ", z, ")");
+                            LOG_DEBUG("Acquired lock to add primitive ", index, " (", idx, ") to RegularGrid (", typeid(T).name(), ") on coordinates: (", x, ", ", y, ", ", z, ")");
                             this->grid_[idx].emplace_back(&primitive);
                             LOG_DEBUG("Added primitive ", index, " to RegularGrid (", typeid(T).name(), ") on coordinates: (", x, ", ", y, ", ", z, ")");
                         }
