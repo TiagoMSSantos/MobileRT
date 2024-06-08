@@ -201,7 +201,7 @@ namespace MobileRT {
         ::MobileRT::checkSystemError("RegularGrid addPrimitives before adding primitives");
         LOG_INFO("Adding primitives to RegularGrid (", typeid(T).name(), ") (mutexes: ", mutexes.size(), ")");
         // store primitives in the grid cells
-        #pragma omp parallel for shared(mutexes, grid_)
+        #pragma omp parallel for schedule(static, 1) shared(mutexes) firstprivate(worldBoundsMin, worldBoundsMax, size, dx, dy, dz, dxReci, dyReci, dzReci, numPrimitives)
         for (::std::int32_t index = 0; index < static_cast<::std::int32_t> (numPrimitives); ++index) {
             LOG_DEBUG("Adding primitive ", index, " to RegularGrid (", typeid(T).name(), ")");
             ::MobileRT::checkSystemError(::std::string("RegularGrid addPrimitives (" + ::std::to_string(index) + ")").c_str());
