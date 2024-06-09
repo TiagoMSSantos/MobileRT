@@ -149,6 +149,16 @@ jobs:
         # Check available parameters in: https://github.com/melusina-org/setup-macports/blob/main/action.yaml
         parameters: '.github/macports.yml'
 
+    - name: Install C++ Boost Thread Windows
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success() && startsWith(matrix.host_os, 'windows')
+      working-directory: .
+      run: |
+        git clone --recursive https://github.com/microsoft/vcpkg.git
+        ./vcpkg/bootstrap-vcpkg.bat
+        ./vcpkg/vcpkg integrate install
+        ./vcpkg/vcpkg install boost-thread
+
     - name: Install Qt (Windows & MacOS)
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success() && (startsWith(matrix.host_os, 'windows') || startsWith(matrix.host_os, 'macos-11'))

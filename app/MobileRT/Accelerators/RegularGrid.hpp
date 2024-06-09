@@ -3,9 +3,8 @@
 
 #include "MobileRT/Accelerators/AABB.hpp"
 #include "MobileRT/Scene.hpp"
+#include <boost/thread/mutex.hpp>
 #include <glm/glm.hpp>
-#include <mutex>
-#include <omp.h>
 #include <vector>
 
 namespace MobileRT {
@@ -192,14 +191,14 @@ namespace MobileRT {
         const float dzReci {dz > 0 ? 1.0F / dz : 1.0F};
         const ::std::uint32_t numPrimitives {static_cast<::std::uint32_t> (this->primitives_.size())};
 
-        ::std::vector<::std::mutex> mutexes (this->grid_.size());
+        ::std::vector<::boost::mutex> mutexes (this->grid_.size());
 
         ::MobileRT::checkSystemError("RegularGrid addPrimitives before calling OpenMP");
         errno = 0; // In some compilers, OpenMP sets 'errno' to 'EFAULT - Bad address (14)'.
         // omp_get_max_threads(): Fatal signal 8 (SIGFPE) at 0xb7707ac8 (code=1), thread 3810 (pool-20-thread-)
 
         ::MobileRT::checkSystemError("RegularGrid addPrimitives before adding primitives");
-        LOG_INFO("Adding primitives to RegularGrid (", typeid(T).name(), ") (mutexes: ", mutexes.size(), ")");
+        LOG_INFO("Adding primitives to RegularGrid (", typeid(T).name(), ") (mutexes: ", mutexes.size(), " [", mutexes.capacity(), ", ", mutexes.max_size(), "])");
         // store primitives in the grid cells
         #pragma omp parallel for schedule(static, 1) shared(mutexes) firstprivate(worldBoundsMin, worldBoundsMax, size, dx, dy, dz, dxReci, dyReci, dzReci, numPrimitives)
         for (::std::int32_t index = 0; index < static_cast<::std::int32_t> (numPrimitives); ++index) {
@@ -250,7 +249,7 @@ namespace MobileRT {
                         const bool intersectedBox {primitive.intersect(cell)};
                         if (intersectedBox) {
                             LOG_DEBUG("Adding primitive ", index, " (", idx, ") to RegularGrid (", typeid(T).name(), ") on coordinates: (", x, ", ", y, ", ", z, ")");
-                            ::std::lock_guard<::std::mutex> lock {mutexes[idx]};
+                            ::std::lock_guard<::boost::mutex> lock {mutexes[idx]};
                             LOG_DEBUG("Acquired lock to add primitive ", index, " (", idx, ") to RegularGrid (", typeid(T).name(), ") on coordinates: (", x, ", ", y, ", ", z, ")");
                             this->grid_[idx].emplace_back(&primitive);
                             LOG_DEBUG("Added primitive ", index, " to RegularGrid (", typeid(T).name(), ") on coordinates: (", x, ", ", y, ", ", z, ")");

@@ -2,7 +2,7 @@
                        // <!--
                        window.initialData = {
   "statistics": {
-    "detectionDate": "2024-06-08T12:57:51.574Z",
+    "detectionDate": "2024-06-09T14:21:19.981Z",
     "formats": {
       "java": {
         "sources": {
@@ -1915,14 +1915,14 @@
             "newClones": 0
           },
           ".github/workflows/native.yml": {
-            "lines": 414,
-            "tokens": 2415,
+            "lines": 424,
+            "tokens": 2471,
             "sources": 1,
             "clones": 8,
             "duplicatedLines": 182,
             "duplicatedTokens": 1088,
-            "percentage": 43.96,
-            "percentageTokens": 45.05,
+            "percentage": 42.92,
+            "percentageTokens": 44.03,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2084,14 +2084,14 @@
           }
         },
         "total": {
-          "lines": 2739,
-          "tokens": 18446,
+          "lines": 2749,
+          "tokens": 18502,
           "sources": 23,
           "clones": 17,
           "duplicatedLines": 442,
           "duplicatedTokens": 3010,
-          "percentage": 16.14,
-          "percentageTokens": 16.32,
+          "percentage": 16.08,
+          "percentageTokens": 16.27,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2576,13 +2576,13 @@
           },
           "app/MobileRT/Accelerators/RegularGrid.hpp": {
             "lines": 519,
-            "tokens": 5410,
+            "tokens": 5452,
             "sources": 1,
             "clones": 4,
             "duplicatedLines": 36,
             "duplicatedTokens": 364,
             "percentage": 6.94,
-            "percentageTokens": 6.73,
+            "percentageTokens": 6.68,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -3033,7 +3033,7 @@
         },
         "total": {
           "lines": 3318,
-          "tokens": 24568,
+          "tokens": 24610,
           "sources": 47,
           "clones": 3,
           "duplicatedLines": 29,
@@ -3166,8 +3166,8 @@
       }
     },
     "total": {
-      "lines": 29217,
-      "tokens": 224799,
+      "lines": 29227,
+      "tokens": 224897,
       "sources": 250,
       "clones": 125,
       "duplicatedLines": 1646,
@@ -5918,72 +5918,72 @@
     {
       "format": "cpp-header",
       "lines": 7,
-      "fragment": "               return intersection;\n                    }\n                    tmax[2] = (tmax[2] + tdelta[2]);\n                }\n            }\n\n        }\n        testloop:\n        while (true) {\n\n            // Get the primitives in the cell.\n            const ::std::int32_t index {getCellIndex(cellX, cellY, cellZ)};\n            const auto itPrim",
+      "fragment": "1] = (tmax[1] + tdelta[1]);\n                } else {\n                    cellZ += stepZ;\n                    if (cellZ == outZ) {\n                        return intersection;\n                    }\n                    tmax[2] = (tmax[2] + tdelta[2]);\n                }\n            }\n\n        }\n        testloop:\n        while (true) {\n\n            /",
       "tokens": 0,
       "firstFile": {
         "name": "app/MobileRT/Accelerators/RegularGrid.hpp",
-        "start": 441,
-        "end": 447,
+        "start": 440,
+        "end": 446,
         "startLoc": {
-          "line": 441,
+          "line": 440,
           "column": 13,
-          "position": 4685
+          "position": 4726
         },
         "endLoc": {
-          "line": 447,
+          "line": 446,
           "column": 13,
-          "position": 4772
+          "position": 4813
         }
       },
       "secondFile": {
         "name": "app/MobileRT/Accelerators/RegularGrid.hpp",
-        "start": 390,
-        "end": 396,
+        "start": 389,
+        "end": 395,
         "startLoc": {
-          "line": 390,
+          "line": 389,
           "column": 13,
-          "position": 4196
+          "position": 4237
         },
         "endLoc": {
-          "line": 396,
+          "line": 395,
           "column": 6,
-          "position": 4283
+          "position": 4324
         }
       }
     },
     {
       "format": "cpp-header",
       "lines": 13,
-      "fragment": "n.length_ < tmax[1]) {\n                        break;\n                    }\n                    cellY += stepY;\n                    if (cellY == outY) {\n                        break;\n                    }\n                    tmax[1] = (tmax[1] + tdelta[1]);\n                } else {\n                    if (intersection.length_ < tmax[2]) {\n                      ",
+      "fragment": " (tmax[2] + tdelta[2]);\n                }\n            } else {\n                if (tmax[1] < tmax[2]) {\n                    if (intersection.length_ < tmax[1]) {\n                        break;\n                    }\n                    cellY += stepY;\n                    if (cellY == outY) {\n                        break;\n                    }\n                   ",
       "tokens": 0,
       "firstFile": {
         "name": "app/MobileRT/Accelerators/RegularGrid.hpp",
-        "start": 478,
-        "end": 490,
+        "start": 477,
+        "end": 489,
         "startLoc": {
-          "line": 478,
+          "line": 477,
           "column": 2,
-          "position": 5089
+          "position": 5130
         },
         "endLoc": {
-          "line": 490,
+          "line": 489,
           "column": 2,
-          "position": 5184
+          "position": 5225
         }
       },
       "secondFile": {
         "name": "app/MobileRT/Accelerators/RegularGrid.hpp",
-        "start": 458,
-        "end": 469,
+        "start": 457,
+        "end": 468,
         "startLoc": {
-          "line": 458,
+          "line": 457,
           "column": 2,
-          "position": 4899
+          "position": 4940
         },
         "endLoc": {
-          "line": 469,
+          "line": 468,
           "column": 5,
-          "position": 4993
+          "position": 5034
         }
       }
     },
@@ -6786,32 +6786,32 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/native.yml",
-        "start": 377,
-        "end": 389,
+        "start": 387,
+        "end": 399,
         "startLoc": {
-          "line": 377,
+          "line": 387,
           "column": 7,
-          "position": 2105
+          "position": 2161
         },
         "endLoc": {
-          "line": 389,
+          "line": 399,
           "column": 2,
-          "position": 2248
+          "position": 2304
         }
       },
       "secondFile": {
         "name": ".github/workflows/native.yml",
-        "start": 343,
-        "end": 356,
+        "start": 353,
+        "end": 366,
         "startLoc": {
-          "line": 343,
+          "line": 353,
           "column": 7,
-          "position": 1807
+          "position": 1863
         },
         "endLoc": {
-          "line": 356,
+          "line": 366,
           "column": 6,
-          "position": 1951
+          "position": 2007
         }
       }
     },
