@@ -48,7 +48,6 @@ fi
 ###############################################################################
 # Set default arguments.
 ###############################################################################
-ndk_version='23.2.8568313';
 android_api_version='14';
 cpu_architecture='"x86","x86_64"';
 parallelizeBuild;
@@ -56,7 +55,6 @@ parallelizeBuild;
 printEnvironment() {
   echo '';
   echo 'Selected arguments:';
-  echo "ndk_version: ${ndk_version}";
   echo "android_api_version: ${android_api_version}";
   echo "cpu_architecture: ${cpu_architecture}";
 }
@@ -88,13 +86,16 @@ printEnvironment;
 runLinter() {
   # Set path to reports.
   echo 'Print Gradle version';
-  sh gradlew --no-rebuild --stop --info --warning-mode fail --stacktrace;
-  sh gradlew --no-rebuild --version --info --warning-mode fail --stacktrace;
+  sh gradlew \
+    -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]" \
+    --no-rebuild --stop --info --warning-mode fail --stacktrace;
+  sh gradlew \
+    -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]" \
+    --no-rebuild --version --info --warning-mode fail --stacktrace;
 
   echo 'Calling the Gradle linter';
   sh gradlew lint --profile --parallel \
-    -DndkVersion="${ndk_version}" -DandroidApiVersion="${android_api_version}" \
-    -DabiFilters="[${cpu_architecture}]" \
+    -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]" \
     --no-rebuild \
     --console plain --info --warning-mode all --stacktrace;
   resCheck=${?};

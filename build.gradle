@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Setup necessary imports
 ///////////////////////////////////////////////////////////////////////////////
-
+import groovy.json.JsonSlurper
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -28,26 +28,43 @@ buildscript {
     // This block encapsulates custom properties and makes them available to all
     // modules in the project.
     ext {
+        systemTestType = System.getProperty('testType', 'debug')
+        final def customAbiFilters = System.getProperty('abiFilters', '["armeabi-v7a", "x86", "arm64-v8a", "x86_64"]')
+        systemAbiFilters = new JsonSlurper().parseText(customAbiFilters) as String[]
+
         // The default minimum Android API version possible is 14 due to compatibility with Appcompat dependency.
         androidApiVersion = System.getProperty('androidApiVersion', '14')
         final def androidApiVersionArray = androidApiVersion.split("\\.").collect()
         androidApiVersionValue = androidApiVersionArray[0] as Float
 
+        if (androidApiVersionValue >= 21) {
+            androidX_appcompat_version = '1.7.0'
+            ndk_version = '26.3.11579264'
+        }
+        if (androidApiVersionValue >= 19) {
+            common_libraries_android_framework_version = '1.13.1'
+            if (project.properties["ndk_version"] == null) {
+                ndk_version = '25.2.9519653'
+            }
+        }
         if (androidApiVersionValue >= 16) {
             gradle_version = '8.4.1'
         } else {
             gradle_version = '8.2.2'
         }
-        if (androidApiVersionValue >= 19) {
-            common_libraries_android_framework_version = '1.13.1'
-        } else {
-            common_libraries_android_framework_version = '1.12.0'
-        }
-        if (androidApiVersionValue >= 21) {
-            androidX_appcompat_version = '1.7.0'
-        } else {
+
+        if (project.properties["androidX_appcompat_version"] == null) {
             androidX_appcompat_version = '1.6.1'
         }
+        if (project.properties["common_libraries_android_framework_version"] == null) {
+            common_libraries_android_framework_version = '1.12.0'
+        }
+        if (project.properties["ndk_version"] == null) {
+            ndk_version = '23.2.8568313'
+        }
+
+        final def gradleVersionArray = gradle_version.split("\\.").collect()
+        gradleVersionValue = gradleVersionArray[0] + '.' + gradleVersionArray[1] as Float
 
         kotlin_stdlib_jdk8_version = '2.0.0'
         androidX_annotation_version = '1.8.0'

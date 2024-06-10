@@ -1,9 +1,9 @@
 {
   "include":
   [
-    { "host_os": "ubuntu-22.04", "android_api": "15", "ndk_version": "23.2.8568313", "type": "release" },
-    { "host_os": "ubuntu-20.04", "android_api": "21", "ndk_version": "26.3.11579264", "type": "release" },
-    { "host_os": "ubuntu-20.04", "android_api": "29", "ndk_version": "26.3.11579264", "type": "debug" },
-    { "host_os": "ubuntu-22.04", "android_api": "34", "ndk_version": "26.3.11579264", "type": "release" }
+    { "host_os": "ubuntu-22.04", "android_api": "15", "type": "release" },
+    { "host_os": "ubuntu-20.04", "android_api": "21", "type": "release" },
+    { "host_os": "ubuntu-20.04", "android_api": "29", "type": "debug" },
+    { "host_os": "ubuntu-22.04", "android_api": "34", "type": "release" }
   ]
 }

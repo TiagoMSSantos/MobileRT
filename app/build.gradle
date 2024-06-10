@@ -1,5 +1,3 @@
-import groovy.json.JsonSlurper
-
 ///////////////////////////////////////////////////////////////////////////////
 // Apply plugins
 ///////////////////////////////////////////////////////////////////////////////
@@ -44,14 +42,6 @@ plugins {
 // Get system components versions from properties
 ///////////////////////////////////////////////////////////////////////////////
 println('Reading system properties.')
-
-final def systemNDKVersion = System.getProperty('ndkVersion', '23.2.8568313')
-final def systemTestType = System.getProperty('testType', 'debug')
-final def customAbiFilters = System.getProperty('abiFilters', '["armeabi-v7a", "x86", "arm64-v8a", "x86_64"]')
-final def systemAbiFilters = new JsonSlurper().parseText(customAbiFilters) as String[]
-
-final def gradleVersionArray = gradle_version.split("\\.").collect()
-final def gradleVersionValue = gradleVersionArray[0] + '.' + gradleVersionArray[1] as Float
 def javaBinariesPath, javaUnitTestBinaries, javaAndroidTestBinaries
 if (gradleVersionValue >= 8.3) {
     javaBinariesPath = 'compileDebugJavaWithJavac/classes/'
@@ -64,7 +54,7 @@ if (gradleVersionValue >= 8.3) {
 }
 
 println('Android API version: ' + androidApiVersion)
-println('NDK version: ' + systemNDKVersion)
+println('NDK version: ' + ndk_version)
 println('Test type: ' + systemTestType)
 println('ABI Filters: ' + systemAbiFilters)
 
@@ -211,7 +201,7 @@ android {
     testNamespace 'puscas.mobilertapp.test'
 
     // Set NDK version
-    setNdkVersion systemNDKVersion
+    setNdkVersion ndk_version
 
     // Set build type for the tests
     setTestBuildType systemTestType

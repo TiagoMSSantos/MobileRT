@@ -140,10 +140,10 @@
       "registryUrlTemplate": "https://services.gradle.org/versions/all"
     },
     {
-      "fileMatch": ["\\.github\\/workflows\\/android_matrix\\.json"],
+      "fileMatch": ["build.gradle"],
       "matchStringsStrategy": "any",
       "matchStrings": [
-        "['\"]ndk_version['\"]: ['\"](?<currentValue>.*?)['\"]"
+        "ndk_version = ['\"](?<currentValue>.*)['\"]"
       ],
       "depNameTemplate": "android/ndk",
       "datasourceTemplate": "github-releases",
@@ -261,6 +261,18 @@
     },
     {
       "groupName": "Ignore update NDK for Android API < 21",
+      "enabled": false,
+      "matchDepNames": ["android/ndk"],
+      "matchCurrentVersion": "/^25.\\.2\\.9519653$/"
+    },
+    {
+      "groupName": "Ignore update NDK for Android API < 19",
+      "enabled": false,
+      "matchDepNames": ["android/ndk"],
+      "matchCurrentVersion": "/^24.\\.0\\.8215888$/"
+    },
+    {
+      "groupName": "Ignore update NDK for Android API < 16",
       "enabled": false,
       "matchDepNames": ["android/ndk"],
       "matchCurrentVersion": "/^23\\.2\\.8568313$/"

@@ -49,7 +49,6 @@ fi
 # Set default arguments.
 ###############################################################################
 type='release';
-ndk_version='23.2.8568313';
 android_api_version='14';
 cpu_architecture='"x86","x86_64"';
 parallelizeBuild;
@@ -58,7 +57,6 @@ printEnvironment() {
   echo '';
   echo 'Selected arguments:';
   echo "type: ${type}";
-  echo "ndk_version: ${ndk_version}";
   echo "android_api_version: ${android_api_version}";
   echo "cpu_architecture: ${cpu_architecture}";
 }
@@ -83,17 +81,18 @@ printEnvironment;
 reports_path=app/build/reports;
 mkdir -p ${reports_path};
 
-type=$(capitalizeFirstletter "${type}");
+typeWithCapitalLetter=$(capitalizeFirstletter "${type}");
 echo "type: '${type}'";
 
 runUnitTests() {
   echo 'Calling Gradle test';
   echo 'Increasing ADB timeout to 10 minutes';
   export ADB_INSTALL_TIMEOUT=60000;
-  sh gradlew --no-rebuild --stop --info --warning-mode fail --stacktrace;
+  sh gradlew -\
+    -DtestType="${type}" -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]" \
+    -no-rebuild --stop --info --warning-mode fail --stacktrace;
   sh gradlew test"${type}"UnitTest --profile --parallel \
-    -DndkVersion="${ndk_version}" -DandroidApiVersion="${android_api_version}" \
-    -DabiFilters="[${cpu_architecture}]" \
+    -DtestType="${type}" -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]" \
     --no-rebuild \
     --console plain --info --warning-mode all --stacktrace;
   resUnitTests=${?};
@@ -106,7 +105,7 @@ export GRADLE_OPTS="-Xms4G -Xmx4G -XX:ActiveProcessorCount=3";
 createReportsFolders;
 runUnitTests;
 
-unitTestsReportPath="${PWD}/${reports_path}/tests/test${type}UnitTest";
+unitTestsReportPath="${PWD}/${reports_path}/tests/test${typeWithCapitalLetter}UnitTest";
 unitTestsReport='index.html';
 checkPathExists "${unitTestsReportPath}" "${unitTestsReport}";
 

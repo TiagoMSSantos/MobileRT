@@ -51,7 +51,6 @@ fi
 ###############################################################################
 type='release';
 recompile='no';
-ndk_version='23.2.8568313';
 android_api_version='14';
 cpu_architecture='"x86","x86_64"';
 parallelizeBuild;
@@ -61,7 +60,6 @@ printEnvironment() {
   echo 'Selected arguments:';
   echo "type: ${type}";
   echo "recompile: ${recompile}";
-  echo "ndk_version: ${ndk_version}";
   echo "android_api_version: ${android_api_version}";
   echo "cpu_architecture: ${cpu_architecture}";
 }
@@ -111,9 +109,11 @@ build() {
   export ADB_INSTALL_TIMEOUT=60000;
 
   echo 'Calling the Gradle assemble to compile code for Android.';
-  sh gradlew --no-rebuild --stop --info --warning-mode fail --stacktrace;
+  sh gradlew \
+    -DtestType="${type}" -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]" \
+    --no-rebuild --stop --info --warning-mode fail --stacktrace;
   echo "Setting Gradle Wrapper to a version that is compatible with Android API: '${android_api_version}'".;
-  sh gradlew wrapper -DandroidApiVersion="${android_api_version}";
+  sh gradlew wrapper -DtestType="${type}" -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]";
   sh gradlew clean \
     build"${typeWithCapitalLetter}" \
     assemble"${typeWithCapitalLetter}" \
@@ -124,16 +124,13 @@ build() {
     package"${typeWithCapitalLetter}"Bundle \
     compile"${typeWithCapitalLetter}"Sources \
     compile"${typeWithCapitalLetter}"UnitTestSources \
-    -DtestType="${type}" \
     --profile --parallel \
-    -DndkVersion="${ndk_version}" -DandroidApiVersion="${android_api_version}" \
-    -DabiFilters="[${cpu_architecture}]" \
+    -DtestType="${type}" -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]" \
     --console plain --info --warning-mode fail --stacktrace;
   resCompile=${?};
   echo 'Compiling APK to execute Android instrumentation tests.';
   sh gradlew createDebugAndroidTestApkListingFileRedirect \
-    -DndkVersion="${ndk_version}" -DandroidApiVersion="${android_api_version}" \
-    -DabiFilters="[${cpu_architecture}]" \
+    -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]" \
     --profile --parallel --console plain --info --warning-mode fail --stacktrace;
   echo 'Android application compiled.';
 }

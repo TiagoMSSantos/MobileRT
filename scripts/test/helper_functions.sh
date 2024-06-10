@@ -117,7 +117,7 @@ _validateEnvVariableValue() {
 # Helper function which clears the environment variables used by these tests.
 _clearEnvVariables() {
   unset type compiler recompile;
-  unset ndk_version android_api_version cpu_architecture;
+  unset android_api_version cpu_architecture;
   unset run_test kill_previous;
   unset MAKEFLAGS;
 }
@@ -242,19 +242,11 @@ testParseArgumentsToCompileAndroid() {
   _testName="test$(capitalizeFirstletter ${_functionName})";
 
   _clearEnvVariables;
-  # Validate the `ndk_version` variable is set properly.
-  expected='ndk_version_test';
-  eval ${_functionName} -n "${expected}" > /dev/null;
-  _validateEnvVariableValue 'ndk_version' "${expected}" "${_testName} -n";
-  _validateEnvVariablesDoNotExist "${_testName} -n" 'android_api_version' 'type' 'compiler' 'recompile' 'cpu_architecture';
-  assertEqual "${expected}" "${ndk_version}" "${_testName} -n";
-
-  _clearEnvVariables;
   # Validate the `android_api_version` variable is set properly.
   expected='android_api_version_test';
   eval ${_functionName} -a "${expected}" > /dev/null;
   _validateEnvVariableValue 'android_api_version' "${expected}" "${_testName} -a";
-  _validateEnvVariablesDoNotExist "${_testName} -a" 'ndk_version' 'type' 'compiler' 'recompile' 'cpu_architecture';
+  _validateEnvVariablesDoNotExist "${_testName} -a" 'type' 'compiler' 'recompile' 'cpu_architecture';
   assertEqual "${expected}" "${android_api_version}" "${_testName} -a";
 
   _clearEnvVariables;
@@ -262,7 +254,7 @@ testParseArgumentsToCompileAndroid() {
   expected='type_test';
   eval ${_functionName} -t "${expected}" > /dev/null;
   _validateEnvVariableValue 'type' "${expected}" "${_testName} -t";
-  _validateEnvVariablesDoNotExist "${_testName} -t" 'ndk_version' 'android_api_version' 'compiler' 'recompile' 'cpu_architecture';
+  _validateEnvVariablesDoNotExist "${_testName} -t" 'android_api_version' 'compiler' 'recompile' 'cpu_architecture';
   assertEqual "${expected}" "${type}" "${_testName} -t";
 
   _clearEnvVariables;
@@ -270,7 +262,7 @@ testParseArgumentsToCompileAndroid() {
   expected='g++';
   eval ${_functionName} -c "${expected}" > /dev/null;
   _validateEnvVariableValue 'compiler' "${expected}" "${_testName} -c";
-  _validateEnvVariablesDoNotExist "${_testName} -c" 'ndk_version' 'android_api_version' 'type' 'recompile' 'cpu_architecture';
+  _validateEnvVariablesDoNotExist "${_testName} -c" 'android_api_version' 'type' 'recompile' 'cpu_architecture';
   assertEqual "${expected}" "${compiler}" "${_testName} -c";
 
   _clearEnvVariables;
@@ -278,7 +270,7 @@ testParseArgumentsToCompileAndroid() {
   expected='recompile_test';
   eval ${_functionName} -r "${expected}" > /dev/null;
   _validateEnvVariableValue 'recompile' "${expected}" "${_testName} -r";
-  _validateEnvVariablesDoNotExist "${_testName} -r" 'ndk_version' 'android_api_version' 'type' 'compiler' 'cpu_architecture';
+  _validateEnvVariablesDoNotExist "${_testName} -r" 'android_api_version' 'type' 'compiler' 'cpu_architecture';
   assertEqual "${expected}" "${recompile}" "${_testName} -r";
 
   _clearEnvVariables;
@@ -286,7 +278,7 @@ testParseArgumentsToCompileAndroid() {
   expected='cpu_architecture_test';
   eval ${_functionName} -f "${expected}" > /dev/null;
   _validateEnvVariableValue 'cpu_architecture' "${expected}" "${_testName} -f";
-  _validateEnvVariablesDoNotExist "${_testName} -f" 'ndk_version' 'android_api_version' 'type' 'compiler' 'recompile';
+  _validateEnvVariablesDoNotExist "${_testName} -f" 'android_api_version' 'type' 'compiler' 'recompile';
   assertEqual "${expected}" "${cpu_architecture}" "${_testName} -f";
 
   _clearEnvVariables;
@@ -310,19 +302,11 @@ testParseArgumentsToTestAndroid() {
   _testName="test$(capitalizeFirstletter ${_functionName})";
 
   _clearEnvVariables;
-  # Validate the `ndk_version` variable is set properly.
-  expected='ndk_version_test';
-  eval ${_functionName} -n "${expected}" > /dev/null;
-  _validateEnvVariableValue 'ndk_version' "${expected}" "${_testName} -n";
-  _validateEnvVariablesDoNotExist "${_testName} -n" 'type' 'run_test' 'kill_previous' 'cpu_architecture';
-  assertEqual "${expected}" "${ndk_version}" "${_testName} -n";
-
-  _clearEnvVariables;
   # Validate the `type` variable is set properly.
   expected='type_test';
   eval ${_functionName} -t "${expected}" > /dev/null;
   _validateEnvVariableValue 'type' "${expected}" "${_testName} -t";
-  _validateEnvVariablesDoNotExist "${_testName} -t" 'ndk_version' 'run_test' 'kill_previous' 'cpu_architecture';
+  _validateEnvVariablesDoNotExist "${_testName} -t" 'run_test' 'kill_previous' 'cpu_architecture';
   assertEqual "${expected}" "${type}" "${_testName} -t";
 
   _clearEnvVariables;
@@ -330,7 +314,7 @@ testParseArgumentsToTestAndroid() {
   expected='run_test_test';
   eval ${_functionName} -r "${expected}" > /dev/null;
   _validateEnvVariableValue 'run_test' "${expected}" "${_testName} -r";
-  _validateEnvVariablesDoNotExist "${_testName} -r" 'ndk_version' 'type' 'kill_previous' 'cpu_architecture';
+  _validateEnvVariablesDoNotExist "${_testName} -r" 'type' 'kill_previous' 'cpu_architecture';
   assertEqual "${expected}" "${run_test}" "${_testName} -r";
 
   _clearEnvVariables;
@@ -338,7 +322,7 @@ testParseArgumentsToTestAndroid() {
   expected='kill_previous_test';
   eval ${_functionName} -k "${expected}" > /dev/null;
   _validateEnvVariableValue 'kill_previous' "${expected}" "${_testName} -k";
-  _validateEnvVariablesDoNotExist "${_testName} -k" 'ndk_version' 'type' 'run_test' 'cpu_architecture';
+  _validateEnvVariablesDoNotExist "${_testName} -k" 'type' 'run_test' 'cpu_architecture';
   assertEqual "${expected}" "${kill_previous}" "${_testName} -k";
 
   _clearEnvVariables;
@@ -346,7 +330,7 @@ testParseArgumentsToTestAndroid() {
   expected='cpu_architecture_test';
   eval ${_functionName} -f "${expected}" > /dev/null;
   _validateEnvVariableValue 'cpu_architecture' "${expected}" "${_testName} -f";
-  _validateEnvVariablesDoNotExist "${_testName} -f" 'ndk_version' 'type' 'run_test' 'kill_previous';
+  _validateEnvVariablesDoNotExist "${_testName} -f" 'type' 'run_test' 'kill_previous';
   assertEqual "${expected}" "${cpu_architecture}" "${_testName} -f";
 
   _clearEnvVariables;
@@ -370,19 +354,11 @@ testParseArgumentsToCheck() {
   _testName="test$(capitalizeFirstletter ${_functionName})";
 
   _clearEnvVariables;
-  # Validate the `ndk_version` variable is set properly.
-  expected='ndk_version_test';
-  eval ${_functionName} -n "${expected}" > /dev/null;
-  _validateEnvVariableValue 'ndk_version' "${expected}" "${_testName} -n";
-  _validateEnvVariablesDoNotExist "${_testName} -n" 'cpu_architecture';
-  assertEqual "${expected}" "${ndk_version}" "${_testName} -n";
-
-  _clearEnvVariables;
   # Validate the `cpu_architecture` variable is set properly.
   expected='cpu_architecture_test';
   eval ${_functionName} -f "${expected}" > /dev/null;
   _validateEnvVariableValue 'cpu_architecture' "${expected}" "${_testName} -f";
-  _validateEnvVariablesDoNotExist "${_testName} -f" 'ndk_version';
+  _validateEnvVariablesDoNotExist "${_testName} -f" 'android_api_version';
   assertEqual "${expected}" "${cpu_architecture}" "${_testName} -f";
 
   _clearEnvVariables;

@@ -135,7 +135,6 @@ jobs:
         du -h -d 1 ${ANDROID_HOME}/build-tools;
         ls -lahp ${ANDROID_HOME}/platforms;
         ls -lahp ${HOME};
-        echo "ANDROID_NDK_PATH=${ANDROID_HOME}/ndk/${{ matrix.ndk_version }}" >> "${GITHUB_ENV}";
         echo "GRADLE_PATH=${HOME}/.gradle" >> "${GITHUB_ENV}";
         df -Pk -h ${HOME};
         env;
@@ -207,6 +206,9 @@ jobs:
       run: |
         # shellcheck disable=SC1091
         . scripts/helper_functions.sh && extractFilesFromArtifact ${{ env.GRADLE_PATH }};
+        set +e;
+        find ${{ env.GRADLE_PATH }} -name "transforms" -exec rm -rf {} \;
+        set -e;
 
     - name: Build ${{ matrix.type }}
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
@@ -214,7 +216,7 @@ jobs:
       working-directory: .
       run: |
         sudo dmesg; # Print Kernel logs to know from which timestamp the new logs will appear.
-        sh scripts/compile_android.sh -t ${{ matrix.type }} -r yes -n ${{ matrix.ndk_version }} -a ${{ matrix.android_api }} -f "\"x86\",\"x86_64\"";
+        sh scripts/compile_android.sh -t ${{ matrix.type }} -r yes -a ${{ matrix.android_api }} -f "\"x86\",\"x86_64\"";
 
     - name: Print error logs
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -250,8 +252,8 @@ jobs:
       uses: actions/cache@v4
       with:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
-        key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.android_api }}_${{ matrix.ndk_version }}_${{ matrix.type }}_${{ matrix.host_os }}
-        restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.android_api }}_${{ matrix.ndk_version }}_${{ matrix.type }}_${{ matrix.host_os }}
+        key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.android_api }}_${{ matrix.type }}_${{ matrix.host_os }}
+        restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.android_api }}_${{ matrix.type }}_${{ matrix.host_os }}
         path: |
           app/build
           app/.cxx
@@ -302,6 +304,7 @@ jobs:
         find ${{ env.GRADLE_PATH }} -name "*README*" -exec rm {} \;
         find ${{ env.GRADLE_PATH }} -name "*NOTICE*" -exec rm {} \;
         find ${{ env.GRADLE_PATH }} -name "*LICENSE*" -exec rm {} \;
+        find ${{ env.GRADLE_PATH }} -name "transforms" -exec rm -rf {} \;
 
         find ${{ env.GRADLE_PATH }} -empty -exec rm -rf {} \;
         find ${{ env.GRADLE_PATH }} -size 0 -exec rm {} \;
@@ -375,7 +378,6 @@ jobs:
         du -h -d 1 ${ANDROID_HOME}/build-tools;
         ls -lahp ${ANDROID_HOME}/platforms;
         ls -lahp ${HOME};
-        echo "ANDROID_NDK_PATH=${ANDROID_HOME}/ndk/${{ matrix.ndk_version }}" >> "${GITHUB_ENV}";
         echo "GRADLE_PATH=${HOME}/.gradle" >> "${GITHUB_ENV}";
 
     - name: Download generated binaries from cache
@@ -384,8 +386,8 @@ jobs:
       uses: actions/cache@v4
       with:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
-        key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.android_api }}_${{ matrix.ndk_version }}_${{ matrix.type }}_${{ matrix.host_os }}
-        restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.android_api }}_${{ matrix.ndk_version }}_${{ matrix.type }}_${{ matrix.host_os }}
+        key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.android_api }}_${{ matrix.type }}_${{ matrix.host_os }}
+        restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.android_api }}_${{ matrix.type }}_${{ matrix.host_os }}
         path: |
           app/build
           app/.cxx
@@ -475,7 +477,7 @@ jobs:
         enable-hw-keyboard: false
         emulator-boot-timeout: 900 # It can take more than 5 min to boot, and the tests can take more than 17 min to finish.
         script: |
-          sh scripts/run_tests_android.sh -t ${{ matrix.type }} -r all -n ${{ matrix.ndk_version }} -a ${{ matrix.android_api }} -k false -f "\"x86\",\"x86_64\"";
+          sh scripts/run_tests_android.sh -t ${{ matrix.type }} -r all -a ${{ matrix.android_api }} -k false -f "\"x86\",\"x86_64\"";
 
     - name: Publish Android Test Report
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -504,8 +506,8 @@ jobs:
       uses: actions/cache@v4
       with:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
-        key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.android_api }}_${{ matrix.ndk_version }}_${{ matrix.type }}_${{ matrix.host_os }}
-        restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.android_api }}_${{ matrix.ndk_version }}_${{ matrix.type }}_${{ matrix.host_os }}
+        key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.android_api }}_${{ matrix.type }}_${{ matrix.host_os }}
+        restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.android_api }}_${{ matrix.type }}_${{ matrix.host_os }}
         path: |
           app/build/reports
 
@@ -601,7 +603,6 @@ jobs:
         du -h -d 1 ${ANDROID_HOME}/build-tools;
         ls -lahp ${ANDROID_HOME}/platforms;
         ls -lahp ${HOME};
-        echo "ANDROID_NDK_PATH=${ANDROID_HOME}/ndk/${{ matrix.ndk_version }}" >> "${GITHUB_ENV}";
         echo "GRADLE_PATH=${HOME}/.gradle" >> "${GITHUB_ENV}";
 
     # Useful step to avoid gradle having to download Gradle dependencies
@@ -629,8 +630,8 @@ jobs:
       uses: actions/cache@v4
       with:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
-        key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.android_api }}_${{ matrix.ndk_version }}_${{ matrix.type }}_${{ matrix.host_os }}
-        restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.android_api }}_${{ matrix.ndk_version }}_${{ matrix.type }}_${{ matrix.host_os }}
+        key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.android_api }}_${{ matrix.type }}_${{ matrix.host_os }}
+        restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.android_api }}_${{ matrix.type }}_${{ matrix.host_os }}
         path: |
           app/build
           app/.cxx
@@ -656,14 +657,14 @@ jobs:
       if: success()
       working-directory: .
       run: |
-        sh scripts/run_tests.sh -t ${{ matrix.type }} -n ${{ matrix.ndk_version }} -a ${{ matrix.android_api }} -f "\"x86\",\"x86_64\"";
+        sh scripts/run_tests.sh -t ${{ matrix.type }} -a ${{ matrix.android_api }} -f "\"x86\",\"x86_64\"";
 
     - name: Run linter
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
       working-directory: .
       run: |
-        sh scripts/check_android.sh -n ${{ matrix.ndk_version }} -a ${{ matrix.android_api }} -f "\"x86\",\"x86_64\"";
+        sh scripts/check_android.sh -a ${{ matrix.android_api }} -f "\"x86\",\"x86_64\"";
 
     - name: Publish Unit Test Report
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -736,7 +737,6 @@ jobs:
         du -h -d 1 ${ANDROID_HOME}/build-tools;
         ls -lahp ${ANDROID_HOME}/platforms;
         ls -lahp ${HOME};
-        echo "ANDROID_NDK_PATH=${ANDROID_HOME}/ndk/${{ matrix.ndk_version }}" >> "${GITHUB_ENV}";
         echo "GRADLE_PATH=${HOME}/.gradle" >> "${GITHUB_ENV}";
 
     # Useful step to avoid gradle having to download Gradle dependencies
@@ -764,8 +764,8 @@ jobs:
       uses: actions/cache@v4
       with:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
-        key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.android_api }}_${{ matrix.ndk_version }}_${{ matrix.type }}_${{ matrix.host_os }}
-        restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.android_api }}_${{ matrix.ndk_version }}_${{ matrix.type }}_${{ matrix.host_os }}
+        key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.android_api }}_${{ matrix.type }}_${{ matrix.host_os }}
+        restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.android_api }}_${{ matrix.type }}_${{ matrix.host_os }}
         path: |
           app/build
           app/.cxx
@@ -801,8 +801,8 @@ jobs:
       uses: actions/cache@v4
       with:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
-        key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.android_api }}_${{ matrix.ndk_version }}_${{ matrix.type }}_${{ matrix.host_os }}
-        restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.android_api }}_${{ matrix.ndk_version }}_${{ matrix.type }}_${{ matrix.host_os }}
+        key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.android_api }}_${{ matrix.type }}_${{ matrix.host_os }}
+        restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.android_api }}_${{ matrix.type }}_${{ matrix.host_os }}
         path: |
           app/build/reports
 
@@ -839,8 +839,8 @@ jobs:
       uses: actions/cache@v4
       with:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
-        key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.android_api }}_${{ matrix.ndk_version }}_${{ matrix.type }}_${{ matrix.host_os }}
-        restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.android_api }}_${{ matrix.ndk_version }}_${{ matrix.type }}_${{ matrix.host_os }}
+        key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.android_api }}_${{ matrix.type }}_${{ matrix.host_os }}
+        restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.android_api }}_${{ matrix.type }}_${{ matrix.host_os }}
         path: |
           app/build
           app/.cxx
@@ -874,7 +874,7 @@ jobs:
         GRADLE_OPTS: -Xms4G -Xmx4G -XX:ActiveProcessorCount=3
       run: |
         # It seems that only 1 CPU core is used by Sonar, and thus it takes a long time.
-        sh gradlew --profile --parallel -DabiFilters="[\"x86\",\"x86_64\"]" -DndkVersion=${{ matrix.ndk_version }} -DandroidApiVersion=${{ matrix.android_api }} --info --warning-mode all --stacktrace sonar;
+        sh gradlew --profile --parallel -DabiFilters="[\"x86\",\"x86_64\"]" -DandroidApiVersion=${{ matrix.android_api }} --info --warning-mode all --stacktrace sonar;
 
     - name: Check sonar path
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
