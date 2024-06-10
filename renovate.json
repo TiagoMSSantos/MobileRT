@@ -263,6 +263,7 @@
       "groupName": "Ignore update NDK for Android API < 21",
       "enabled": false,
       "matchDepNames": ["android/ndk"],
+      "versioning": "regex:^r?(?<major>[0-9]+)\\.?(?<minor>[0-9a-z]+)?\\.?(?<patch>[0-9]+)?-?(?<prerelease>[0-9a-z]+)?.*$",
       "matchCurrentVersion": "<26"
     },
     {
