@@ -48,7 +48,7 @@ buildscript {
             }
         }
         if (androidApiVersionValue >= 16) {
-            gradle_version = '8.4.1'
+            gradle_version = '8.4.2'
         } else {
             gradle_version = '8.2.2'
         }
