@@ -263,7 +263,7 @@
       "groupName": "Ignore update NDK for Android API < 21",
       "enabled": false,
       "matchDepNames": ["android/ndk"],
-      "matchCurrentVersion": "/^(25.\\.2\\.9519653|23\\.2\\.8568313)$/"
+      "matchCurrentVersion": "<26"
     },
     {
       "groupName": "Update Boost C++ Libraries",
