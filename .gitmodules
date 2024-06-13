@@ -40,7 +40,7 @@
   update = checkout
   branch = master
   fetchRecurseSubmodules = false
-  ignore = none
+  ignore = dirty
   shallow = true
 
 [submodule "third_party/pcg-cpp"]
