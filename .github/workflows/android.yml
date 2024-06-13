@@ -398,7 +398,7 @@ jobs:
     - name: Download Gradle packages artifact
       timeout-minutes: 3
       if: success()
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v4.1.7
       with:
         # Check available parameters in: https://github.com/actions/download-artifact/blob/main/action.yml
         name: gradle-packages
@@ -610,7 +610,7 @@ jobs:
     - name: Download Gradle packages artifact
       timeout-minutes: 3
       if: success()
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v4.1.7
       with:
         # Check available parameters in: https://github.com/actions/download-artifact/blob/main/action.yml
         name: gradle-packages
@@ -744,7 +744,7 @@ jobs:
     - name: Download Gradle packages artifact
       timeout-minutes: 3
       if: success()
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v4.1.7
       with:
         # Check available parameters in: https://github.com/actions/download-artifact/blob/main/action.yml
         name: gradle-packages
