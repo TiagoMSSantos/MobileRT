@@ -8,7 +8,7 @@ image:
   repository: ptpuscas/mobile_rt
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "alpine-3.20"
+  tag: "alpine-3.20@sha256:74f5f4ef7a7259ccf8e25110b730dc07a12c28a4bb7082132ffaf28c5c8ed6e5"
 
 configmap:
   DISPLAY: ":0"
