@@ -2,7 +2,11 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "enabled": true,
   "extends": [
+    ":enableRenovate",
+    ":enableVulnerabilityAlerts",
     "config:base",
+    "config:best-practices",
+    "config:recommended",
     "github>whitesource/merge-confidence:beta",
     ":dependencyDashboard",
     ":rebaseStalePrs",
@@ -13,7 +17,11 @@
     ":automergeTesters",
     ":automergeTypes",
     ":automergePatch",
-    ":semanticCommits"
+    ":semanticCommits",
+    "helpers:pinGitHubActionDigests",
+    ":pinDevDependencies",
+    ":docker",
+    "docker:pinDigests"
   ],
   "osvVulnerabilityAlerts": true,
   "dependencyDashboardOSVVulnerabilitySummary": "all",
@@ -44,6 +52,10 @@
     "enabled": true,
     "automerge": true,
     "groupName": "all patch updates"
+  },
+  "digest": {
+    "enabled": true,
+    "automerge": false
   },
   "regex": {
     "enabled": true
