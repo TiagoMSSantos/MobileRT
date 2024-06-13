@@ -125,7 +125,7 @@ jobs:
     - name: Checkout
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
-      uses: actions/checkout@v4
+      uses: actions/checkout@v4.1.7
 
     - name: Setup build directory
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -379,7 +379,7 @@ jobs:
     - name: Checkout
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
-      uses: actions/checkout@v4
+      uses: actions/checkout@v4.1.7
 
     - name: Download reports from cache
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
