@@ -7,6 +7,7 @@
     "config:base",
     "config:best-practices",
     "config:recommended",
+    "mergeConfidence:all-badges",
     "github>whitesource/merge-confidence:beta",
     ":dependencyDashboard",
     ":rebaseStalePrs",
@@ -28,6 +29,7 @@
   "timezone": "UTC",
   "branchPrefix": "up-renovate-",
   "fetchReleaseNotes": true,
+  "fetchChangeLogs": "pr",
   "separateMajorMinor": true,
   "separateMinorPatch": true,
   "separateMultipleMajor": true,
@@ -40,6 +42,7 @@
   "rebaseWhen": "auto",
   "reviewersFromCodeOwners": true,
   "recreateClosed": false,
+  "recreateWhen": "auto",
   "major": {
     "enabled": true,
     "automerge": false
@@ -54,7 +57,7 @@
     "groupName": "all patch updates"
   },
   "digest": {
-    "enabled": true,
+    "enabled": false,
     "automerge": false
   },
   "regex": {
@@ -86,7 +89,10 @@
   },
   "customManagers": [
     {
-      "fileMatch": ["Dockerfile", "\\.github\\/workflows\\/.+\\.ya?ml"],
+      "fileMatch": [
+        "Dockerfile",
+        "\\.github\\/workflows\\/.+\\.ya?ml"
+      ],
       "matchStringsStrategy": "any",
       "matchStrings": [
         "BASE_IMAGE=(?<depName>.*?):(?<currentValue>.*)",
@@ -96,7 +102,9 @@
       "customType": "regex"
     },
     {
-      "fileMatch": ["\\.github\\/workflows\\/.+\\.ya?ml"],
+      "fileMatch": [
+        "\\.github\\/workflows\\/.+\\.ya?ml"
+      ],
       "matchStringsStrategy": "any",
       "matchStrings": [
         "host_os: (?<depName>.*?)-(?<currentValue>.*)",
@@ -106,7 +114,9 @@
       "customType": "regex"
     },
     {
-      "fileMatch": ["build.gradle"],
+      "fileMatch": [
+        "build.gradle"
+      ],
       "matchStringsStrategy": "any",
       "matchStrings": [
         "common_libraries_android_framework_version = ['\"](?<currentValue>.*)['\"]"
@@ -118,7 +128,9 @@
       "registryUrlTemplate": "https://dl.google.com/android/maven2"
     },
     {
-      "fileMatch": ["build.gradle"],
+      "fileMatch": [
+        "build.gradle"
+      ],
       "matchStringsStrategy": "any",
       "matchStrings": [
         "gradle_version = ['\"](?<currentValue>.*)['\"]"
@@ -130,7 +142,9 @@
       "registryUrlTemplate": "https://dl.google.com/android/maven2"
     },
     {
-      "fileMatch": ["build.gradle"],
+      "fileMatch": [
+        "build.gradle"
+      ],
       "matchStringsStrategy": "any",
       "matchStrings": [
         "androidX_appcompat_version = ['\"](?<currentValue>.*)['\"]"
@@ -142,7 +156,9 @@
       "registryUrlTemplate": "https://dl.google.com/android/maven2"
     },
     {
-      "fileMatch": ["build.gradle"],
+      "fileMatch": [
+        "build.gradle"
+      ],
       "matchStringsStrategy": "any",
       "matchStrings": [
         "it.gradleVersion = ['\"](?<currentValue>.*)['\"]"
@@ -154,7 +170,9 @@
       "registryUrlTemplate": "https://services.gradle.org/versions/all"
     },
     {
-      "fileMatch": ["build.gradle"],
+      "fileMatch": [
+        "build.gradle"
+      ],
       "matchStringsStrategy": "any",
       "matchStrings": [
         "ndk_version = ['\"](?<currentValue>.*)['\"]"
@@ -165,7 +183,9 @@
       "registryUrlTemplate": "https://github.com"
     },
     {
-      "fileMatch": ["app\\/third_party\\/CMakeLists\\.txt"],
+      "fileMatch": [
+        "app\\/third_party\\/CMakeLists\\.txt"
+      ],
       "matchStringsStrategy": "any",
       "matchStrings": [
         "set\\( BOOST_VERSION ['\"]boost-(?<currentValue>.*?)['\"] \\)"
@@ -176,7 +196,9 @@
       "registryUrlTemplate": "https://github.com"
     },
     {
-      "fileMatch": ["app\\/third_party\\/CMakeLists\\.txt"],
+      "fileMatch": [
+        "app\\/third_party\\/CMakeLists\\.txt"
+      ],
       "matchStringsStrategy": "any",
       "matchStrings": [
         "set\\( GLM_VERSION ['\"](?<currentValue>.*?)['\"] \\)"
@@ -187,7 +209,9 @@
       "registryUrlTemplate": "https://github.com"
     },
     {
-      "fileMatch": ["app\\/third_party\\/CMakeLists\\.txt"],
+      "fileMatch": [
+        "app\\/third_party\\/CMakeLists\\.txt"
+      ],
       "matchStringsStrategy": "any",
       "matchStrings": [
         "set\\( STB_VERSION ['\"](?<currentValue>.*?)['\"] \\)"
@@ -198,7 +222,9 @@
       "registryUrlTemplate": "https://github.com"
     },
     {
-      "fileMatch": ["app\\/third_party\\/CMakeLists\\.txt"],
+      "fileMatch": [
+        "app\\/third_party\\/CMakeLists\\.txt"
+      ],
       "matchStringsStrategy": "any",
       "matchStrings": [
         "set\\( TINYOBJLOADER_VERSION ['\"](?<currentValue>.*?)['\"] \\)"
@@ -209,7 +235,9 @@
       "registryUrlTemplate": "https://github.com"
     },
     {
-      "fileMatch": ["app\\/third_party\\/CMakeLists\\.txt"],
+      "fileMatch": [
+        "app\\/third_party\\/CMakeLists\\.txt"
+      ],
       "matchStringsStrategy": "any",
       "matchStrings": [
         "set\\( GOOGLETEST_VERSION ['\"](?<currentValue>.*?)['\"] \\)"
@@ -220,7 +248,9 @@
       "registryUrlTemplate": "https://github.com"
     },
     {
-      "fileMatch": ["app\\/third_party\\/CMakeLists\\.txt"],
+      "fileMatch": [
+        "app\\/third_party\\/CMakeLists\\.txt"
+      ],
       "matchStringsStrategy": "any",
       "matchStrings": [
         "set\\( PCG_CPP_VERSION ['\"](?<currentValue>.*?)['\"] \\)"
@@ -235,97 +265,149 @@
     {
       "groupName": "Ignore update androidx.core:core-ktx for Android API < 19",
       "enabled": false,
-      "matchDepNames": ["androidx.core:core-ktx"],
-      "matchManagers": ["regex", "gradle"],
+      "matchDepNames": [
+        "androidx.core:core-ktx"
+      ],
+      "matchManagers": [
+        "custom.regex",
+        "gradle"
+      ],
       "matchCurrentVersion": "/^1\\.12\\.0/"
     },
     {
       "groupName": "Update Ubuntu to LTS versions",
-      "matchDepNames": ["ubuntu"],
-      "matchManagers": ["regex", "dockerfile"],
+      "matchDepNames": [
+        "ubuntu"
+      ],
+      "matchManagers": [
+        "custom.regex",
+        "dockerfile"
+      ],
       "versioning": "ubuntu",
       "allowedVersions": "/^[0-9]+\\.04$/"
     },
     {
       "groupName": "Update conan dependencies",
-      "matchDepNames": ["pcg-cpp", "stb"],
-      "matchManagers": ["conan"],
+      "matchDepNames": [
+        "pcg-cpp",
+        "stb"
+      ],
+      "matchManagers": [
+        "conan"
+      ],
       "versioning": "conan",
       "allowedVersions": "!/^cci\\.[0-9]+$/"
     },
     {
       "groupName": "Ignore update Android Gradle version for Android API <= 15",
       "enabled": false,
-      "matchDepNames": ["com.android.tools.build:gradle"],
-      "matchManagers": ["regex", "gradle"],
+      "matchDepNames": [
+        "com.android.tools.build:gradle"
+      ],
+      "matchManagers": [
+        "custom.regex",
+        "gradle"
+      ],
       "matchCurrentVersion": "/^8\\.2\\.2$/"
     },
     {
       "groupName": "Ignore update Android appcompat version for Android API < 21",
       "enabled": false,
-      "matchDepNames": ["androidx.appcompat:appcompat"],
-      "matchManagers": ["regex", "gradle"],
+      "matchDepNames": [
+        "androidx.appcompat:appcompat"
+      ],
+      "matchManagers": [
+        "custom.regex",
+        "gradle"
+      ],
       "matchCurrentVersion": "/^1\\.6\\.1$/"
     },
     {
       "groupName": "Update NDK to stable versions",
-      "matchDepNames": ["android/ndk"],
-      "matchManagers": ["regex", "gradle"],
+      "matchDepNames": [
+        "android/ndk"
+      ],
+      "matchManagers": [
+        "custom.regex",
+        "gradle"
+      ],
       "versioning": "regex:^r?(?<major>[0-9]+)\\.?(?<minor>[0-9a-z]+)?\\.?(?<patch>[0-9]+)?-?(?<prerelease>[0-9a-z]+)?.*$",
       "matchCurrentVersion": "!/^(25\\.2\\.9519653)|(23\\.2\\.8568313)$/",
       "allowedVersions": "/^r?[0-9]+\\.?[0-9a-z]*\\.?[0-9]*.*$/"
     },
     {
       "groupName": "Update Boost C++ Libraries",
-      "matchDepNames": ["boostorg/boost"],
+      "matchDepNames": [
+        "boostorg/boost"
+      ],
       "extractVersion": "^boost-(?<version>.*)$"
     },
     {
       "groupName": "Update GoogleTest to a version that supports C++11",
-      "matchDepNames": ["google/googletest"],
+      "matchDepNames": [
+        "google/googletest"
+      ],
       "versioning": "regex:^(v|release-)?(?<major>[0-9]+)\\.(?<minor>[0-9]+)\\.(?<patch>[0-9]+)-?(?<prerelease>[0-9a-z]+)?.*$",
       "allowedVersions": "<1.13"
     },
     {
       "groupName": "Update MobileRT docker images",
-      "matchDepNames": ["ptpuscas/mobile_rt"],
+      "matchDepNames": [
+        "ptpuscas/mobile_rt"
+      ],
       "versioning": "regex:^(?<compatibility>[a-z]+)-(?<major>[0-9]+)\\.(?<minor>[0-9]+)\\.?(?<patch>[0-9]+)?-?(?<prerelease>[0-9a-z]+)?.*$"
     },
     {
       "groupName": "Ignore update Operating Systems on Github Runners if latest is used",
       "enabled": false,
-      "matchDatasources": ["github-runners"],
+      "matchDatasources": [
+        "github-runners"
+      ],
       "versioning": "regex:^(?<major>[0-9a-z]+)?\\.?(?<minor>[0-9]+)?.*$",
       "matchCurrentVersion": "/^latest$/"
     },
     {
       "groupName": "Ignore specific versions of Ubuntu already being used",
       "enabled": false,
-      "matchDatasources": ["github-runners"],
-      "matchDepNames": ["ubuntu"],
+      "matchDatasources": [
+        "github-runners"
+      ],
+      "matchDepNames": [
+        "ubuntu"
+      ],
       "versioning": "regex:^(?<major>[0-9a-z]+)?\\.?(?<minor>[0-9]+)?.*$",
       "matchCurrentVersion": "!/^22\\.04$/"
     },
     {
       "groupName": "Ignore specific versions of Windows already being used",
       "enabled": false,
-      "matchDatasources": ["github-runners"],
-      "matchDepNames": ["windows"],
+      "matchDatasources": [
+        "github-runners"
+      ],
+      "matchDepNames": [
+        "windows"
+      ],
       "versioning": "regex:^(?<major>[0-9]+)?\\.?(?<minor>[0-9]+)?.*$",
       "matchCurrentVersion": "!/^2022$/"
     },
     {
       "groupName": "Ignore specific versions of MacOS already being used",
       "enabled": false,
-      "matchDatasources": ["github-runners"],
-      "matchDepNames": ["macos"],
+      "matchDatasources": [
+        "github-runners"
+      ],
+      "matchDepNames": [
+        "macos"
+      ],
       "versioning": "regex:^(?<major>[0-9]+)?\\.?(?<minor>[0-9]+)?.*$",
       "matchCurrentVersion": "!/^14$/"
     },
     {
       "groupName": "Ignore update Gradle for Android API <= 15",
       "enabled": false,
-      "matchDepNames": ["gradle"],
+      "matchDepNames": [
+        "gradle"
+      ],
       "matchCurrentVersion": "/^8\\.7$/"
     }
   ]
