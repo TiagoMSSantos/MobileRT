@@ -259,7 +259,8 @@
       "matchCategories": [
         "docker"
       ],
-      "enabled": true
+      "enabled": true,
+      "pinDigests": false
     },
     {
       "groupName": "Ignore update androidx.core:core-ktx for Android API < 19",
