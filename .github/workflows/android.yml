@@ -249,7 +249,7 @@ jobs:
     - name: Upload generated binaries to cache
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
-      uses: actions/cache@v4
+      uses: actions/cache@v4.0.2
       with:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
         key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.android_api }}_${{ matrix.type }}_${{ matrix.host_os }}
@@ -383,7 +383,7 @@ jobs:
     - name: Download generated binaries from cache
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
-      uses: actions/cache@v4
+      uses: actions/cache@v4.0.2
       with:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
         key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.android_api }}_${{ matrix.type }}_${{ matrix.host_os }}
@@ -482,7 +482,7 @@ jobs:
     - name: Publish Android Test Report
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() || failure() # always run even if the previous step fails
-      uses: mikepenz/action-junit-report@v4
+      uses: mikepenz/action-junit-report@v4.0.4
       with:
         # Check available parameters in: https://github.com/mikepenz/action-junit-report/blob/main/action.yml
         check_name: 'Android Test Report - API ${{ matrix.android_api }} ${{ matrix.type }} (${{ matrix.host_os }})'
@@ -503,7 +503,7 @@ jobs:
     - name: Upload reports to cache
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && startsWith(matrix.host_os, 'ubuntu') && matrix.type == 'debug'
-      uses: actions/cache@v4
+      uses: actions/cache@v4.0.2
       with:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
         key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.android_api }}_${{ matrix.type }}_${{ matrix.host_os }}
@@ -627,7 +627,7 @@ jobs:
     - name: Download generated binaries from cache
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
-      uses: actions/cache@v4
+      uses: actions/cache@v4.0.2
       with:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
         key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.android_api }}_${{ matrix.type }}_${{ matrix.host_os }}
@@ -669,7 +669,7 @@ jobs:
     - name: Publish Unit Test Report
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() || failure() # always run even if the previous step fails
-      uses: mikepenz/action-junit-report@v4
+      uses: mikepenz/action-junit-report@v4.0.4
       with:
         # Check available parameters in: https://github.com/mikepenz/action-junit-report/blob/main/action.yml
         check_name: 'Unit Test Report - API ${{ matrix.android_api }} ${{ matrix.type }} (${{ matrix.host_os }})'
@@ -761,7 +761,7 @@ jobs:
     - name: Download generated binaries from cache
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
-      uses: actions/cache@v4
+      uses: actions/cache@v4.0.2
       with:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
         key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.android_api }}_${{ matrix.type }}_${{ matrix.host_os }}
@@ -798,7 +798,7 @@ jobs:
     - name: Download reports from cache
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && startsWith(matrix.host_os, 'ubuntu')
-      uses: actions/cache@v4
+      uses: actions/cache@v4.0.2
       with:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
         key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.android_api }}_${{ matrix.type }}_${{ matrix.host_os }}
@@ -836,7 +836,7 @@ jobs:
     - name: Download generated binaries from cache
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
-      uses: actions/cache@v4
+      uses: actions/cache@v4.0.2
       with:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
         key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.android_api }}_${{ matrix.type }}_${{ matrix.host_os }}
