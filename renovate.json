@@ -17,8 +17,6 @@
     ":automergeTypes",
     ":automergePatch",
     ":semanticCommits",
-    "helpers:pinGitHubActionDigests",
-    "helpers:pinGitHubActionDigestsToSemver",
     ":pinDevDependencies",
     ":docker",
     "docker:pinDigests"
