@@ -4,11 +4,9 @@
   "extends": [
     ":enableRenovate",
     ":enableVulnerabilityAlerts",
-    "config:base",
-    "config:best-practices",
     "config:recommended",
+    "config:best-practices",
     "mergeConfidence:all-badges",
-    "github>whitesource/merge-confidence:beta",
     ":dependencyDashboard",
     ":rebaseStalePrs",
     ":automergePr",
@@ -28,7 +26,6 @@
   "dependencyDashboardOSVVulnerabilitySummary": "all",
   "timezone": "UTC",
   "branchPrefix": "up-renovate-",
-  "fetchReleaseNotes": true,
   "fetchChangeLogs": "pr",
   "separateMajorMinor": true,
   "separateMinorPatch": true,
@@ -41,7 +38,6 @@
   "branchConcurrentLimit": 0,
   "rebaseWhen": "auto",
   "reviewersFromCodeOwners": true,
-  "recreateClosed": false,
   "recreateWhen": "auto",
   "major": {
     "enabled": true,
@@ -73,9 +69,6 @@
     "enabled": true
   },
   "pre-commit": {
-    "enabled": true
-  },
-  "docker": {
     "enabled": true
   },
   "dockerfile": {
@@ -262,6 +255,12 @@
     }
   ],
   "packageRules": [
+    {
+      "matchCategories": [
+        "docker"
+      ],
+      "enabled": true
+    },
     {
       "groupName": "Ignore update androidx.core:core-ktx for Android API < 19",
       "enabled": false,
