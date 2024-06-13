@@ -18,8 +18,7 @@
     ":automergePatch",
     ":semanticCommits",
     ":pinDevDependencies",
-    ":docker",
-    "docker:pinDigests"
+    ":docker"
   ],
   "osvVulnerabilityAlerts": true,
   "dependencyDashboardOSVVulnerabilitySummary": "all",
