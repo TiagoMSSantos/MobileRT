@@ -264,6 +264,13 @@
       "pinDigests": false
     },
     {
+      "matchDepTypes": [
+        "action"
+      ],
+      "enabled": true,
+      "pinDigests": false
+    },
+    {
       "groupName": "Ignore update androidx.core:core-ktx for Android API < 19",
       "enabled": false,
       "matchDepNames": [
