@@ -32,18 +32,24 @@
   "ignoreTests": false,
   "ignoreUnstable": true,
   "prConcurrentLimit": 10,
+  "branchConcurrentLimit": 10,
   "prHourlyLimit": 0,
-  "branchConcurrentLimit": 0,
   "rebaseWhen": "auto",
-  "reviewersFromCodeOwners": true,
   "recreateWhen": "auto",
+  "reviewersFromCodeOwners": true,
+  "automerge": true,
+  "automergeSchedule": [
+    "at any time"
+  ],
+  "automergeStrategy": "rebase",
+  "automergeType": "pr",
   "major": {
     "enabled": true,
-    "automerge": false
+    "automerge": true
   },
   "minor": {
     "enabled": true,
-    "automerge": false
+    "automerge": true
   },
   "patch": {
     "enabled": true,
@@ -266,6 +272,11 @@
       ],
       "enabled": true,
       "pinDigests": false
+    },
+    {
+      "matchUpdateTypes": ["major", "minor", "patch"],
+      "enabled": true,
+      "automerge": true
     },
     {
       "groupName": "Ignore update androidx.core:core-ktx for Android API < 19",
