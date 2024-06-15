@@ -180,7 +180,6 @@ jobs:
         directory: 'coverage'
 
     - name: Autobuild
-      id: autobuild
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
       if: success() && matrix.language != 'cpp'
       uses: github/codeql-action/autobuild@v3
