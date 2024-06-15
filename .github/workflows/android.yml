@@ -446,7 +446,6 @@ jobs:
         sudo udevadm trigger --name-match=kvm;
 
     - name: Run Android tests
-      id: android-tests
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
       if: success() && !startsWith(matrix.host_os, 'windows')
       uses: ReactiveCircus/android-emulator-runner@v2
