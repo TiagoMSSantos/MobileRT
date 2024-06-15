@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <tuple>
 #include <utility>
+#include <boost/thread/mutex.hpp>
 
 using ::Components::AreaLight;
 using ::Components::OBJLoader;
@@ -82,15 +83,19 @@ bool OBJLoader::fillScene(Scene *const scene,
     errno = 0; // In some compilers, OpenMP sets 'errno' to 'EFAULT - Bad address (14)'.
     filePath = filePath.substr(0, filePath.find_last_of('/')) + '/';
     const ::std::int32_t shapesSize {static_cast<::std::int32_t> (this->shapes_.size())};
+    ::boost::mutex mutex {};
+    LOG_INFO("1");
 
-    #pragma omp parallel shared(scene)
+    #pragma omp parallel shared(scene, mutex)
     {
+        LOG_INFO("2");
         ::std::vector<Triangle> triangles {};
         ::std::vector<::std::unique_ptr<Light>> lights {};
 
         // Loop over shapes.
         #pragma omp for schedule(static, 1) firstprivate(filePath, lambda, texturesCache, shapesSize)
         for (::std::int32_t shapeIndex = 0; shapeIndex < shapesSize; ++shapeIndex) {
+            LOG_INFO("3");
             const auto itShape {this->shapes_.cbegin() + shapeIndex};
             const ::tinyobj::shape_t &shape {*itShape};
 
@@ -208,8 +213,8 @@ bool OBJLoader::fillScene(Scene *const scene,
                             };
 
                             ::std::int32_t materialIndex {-1};
-                            #pragma omp critical
                             {
+                                const ::std::lock_guard<::boost::mutex> lock {mutex};
                                 const auto itFoundMat {::std::find(scene->materials_.begin(), scene->materials_.end(), material)};
                                 if (itFoundMat != scene->materials_.cend()) {
                                     // If the material is already in the scene.
@@ -246,8 +251,8 @@ bool OBJLoader::fillScene(Scene *const scene,
                             )
                         };
                         ::std::int32_t materialIndex {-1};
-                        #pragma omp critical
                         {
+                            const ::std::lock_guard<::boost::mutex> lock {mutex};
                             const auto itFoundMat {::std::find(scene->materials_.begin(), scene->materials_.end(), material)};
                             if (itFoundMat != scene->materials_.cend()) {
                                 // If the material is already in the scene.
@@ -272,8 +277,8 @@ bool OBJLoader::fillScene(Scene *const scene,
             } // The number of vertices per face.
         } // Loop over shapes.
 
-        #pragma omp critical
         {
+            const ::std::lock_guard<::boost::mutex> lock {mutex};
             if (triangles.size() > 0) {
                 LOG_INFO("Local triangles: ", triangles.size(), ", total: ", scene->triangles_.size(), ", last triangle: ", triangles.back());
             }
