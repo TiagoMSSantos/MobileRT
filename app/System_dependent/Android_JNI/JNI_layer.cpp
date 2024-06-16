@@ -593,6 +593,7 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
                         LOG_DEBUG("OBJLOADER PROCESSED");
 
                         if (!objLoader.isProcessed()) {
+                            LOG_ERROR("OBJLOADER could not load the scene.");
                             return -1;
                         }
                         const bool sceneBuilt {objLoader.fillScene(
@@ -604,6 +605,7 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
                         texturesCache_.clear();
                         MobileRT::checkSystemError("rtInitialize after filling scene");
                         if (!sceneBuilt) {
+                            LOG_ERROR("OBJLOADER could not load the scene.");
                             return -1;
                         }
 

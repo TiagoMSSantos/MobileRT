@@ -2,11 +2,9 @@
 #include "Components/Lights/AreaLight.hpp"
 #include <cstring>
 #include <fstream>
-#include <omp.h>
-#include <unordered_map>
+#include <thread>
 #include <tuple>
 #include <utility>
-#include <boost/thread/mutex.hpp>
 
 using ::Components::AreaLight;
 using ::Components::OBJLoader;
@@ -79,234 +77,26 @@ bool OBJLoader::fillScene(Scene *const scene,
                           ::std::unordered_map<::std::string, ::MobileRT::Texture> texturesCache) {
     ::MobileRT::checkSystemError("Starting to fill scene.");
     LOG_INFO("FILLING SCENE with ", this->numberTriangles_, " triangles in ", this->shapes_.size(), " shapes & ", this->materials_.size(), " materials");
-    // omp_get_max_threads(): Fatal signal 8 (SIGFPE) at 0xb7707ac8 (code=1), thread 3810 (pool-20-thread-)
-    errno = 0; // In some compilers, OpenMP sets 'errno' to 'EFAULT - Bad address (14)'.
     filePath = filePath.substr(0, filePath.find_last_of('/')) + '/';
-    const ::std::int32_t shapesSize {static_cast<::std::int32_t> (this->shapes_.size())};
     ::boost::mutex mutex {};
-    LOG_INFO("1");
 
-    #pragma omp parallel shared(scene, mutex)
-    {
-        LOG_INFO("2");
-        ::std::vector<Triangle> triangles {};
-        ::std::vector<::std::unique_ptr<Light>> lights {};
-
-        // Loop over shapes.
-        #pragma omp for schedule(static, 1) firstprivate(filePath, lambda, texturesCache, shapesSize)
-        for (::std::int32_t shapeIndex = 0; shapeIndex < shapesSize; ++shapeIndex) {
-            LOG_INFO("3");
-            const auto itShape {this->shapes_.cbegin() + shapeIndex};
-            const ::tinyobj::shape_t &shape {*itShape};
-
-            // Loop over faces in polygon.
-            ::std::int32_t indexOffset {0};
-            // The number of vertices per face.
-            const ::std::int32_t faces {static_cast<::std::int32_t> (shape.mesh.num_face_vertices.size())};
-            LOG_DEBUG("Loading shape: ", shapeIndex);
-            for (::std::int32_t face = 0; face < faces; ++face) {
-                const auto itFace {shape.mesh.num_face_vertices.cbegin() + face};
-                const ::std::int32_t faceVertices {static_cast<::std::int32_t>(*itFace)};
-
-                if (faceVertices % 3 != 0) {// If the number of vertices in the face is not multiple of 3,
-                                            // then it does not make a triangle.
-                    LOG_DEBUG("num_face_vertices [", face, "] = '", faceVertices, "'");
-                    continue;
-                }
-
-                // Loop over vertices in the face.
-                for (::std::int32_t vertex = 0; vertex < faceVertices; vertex += 3) {
-                    const OBJLoader::triple<::glm::vec3, ::glm::vec3, ::glm::vec3> vertices {loadVertices(shape, indexOffset + vertex)};
-                    const OBJLoader::triple<::glm::vec3, ::glm::vec3, ::glm::vec3> normal {loadNormal(shape, indexOffset + vertex, vertices)};
-
-                    // per-face material.
-                    const auto itMaterialShape {shape.mesh.material_ids.cbegin() + face};
-                    const int materialId {*itMaterialShape};
-
-                    const auto itIdx {shape.mesh.indices.cbegin() + indexOffset + vertex};
-                    const ::tinyobj::index_t idx1 {*(itIdx + 0)};
-                    const ::tinyobj::index_t idx2 {*(itIdx + 1)};
-                    const ::tinyobj::index_t idx3 {*(itIdx + 2)};
-
-                    // If it contains material.
-                    if (materialId >= 0) {
-                        const auto itMaterial {this->materials_.cbegin() + static_cast<::std::int32_t> (materialId)};
-                        const ::tinyobj::material_t &mat {*itMaterial};
-                        const ::glm::vec3 &diffuse {::MobileRT::toVec3(mat.diffuse)};
-                        const ::glm::vec3 &specular {::MobileRT::toVec3(mat.specular)};
-                        const ::glm::vec3 &transmittance {::MobileRT::toVec3(mat.transmittance) * (1.0F - mat.dissolve)};
-                        const ::glm::vec3 &emission {::MobileRT::normalize(::MobileRT::toVec3(mat.emission))};
-                        const float indexRefraction {mat.ior};
-
-                        const bool hasTexture {!mat.diffuse_texname.empty()};
-                        const bool hasCoordTex {!this->attrib_.texcoords.empty()};
-                        Texture texture {};
-                        ::std::tuple<::glm::vec2, ::glm::vec2, ::glm::vec2> texCoord {::std::make_tuple(::glm::vec2 {-1}, ::glm::vec2 {-1}, ::glm::vec2 {-1})};
-                        if (hasTexture && hasCoordTex) {
-                            const auto itTexCoords1 {
-                                this->attrib_.texcoords.cbegin() +
-                                2 * static_cast<::std::int32_t> (idx1.texcoord_index)
-                            };
-                            const float tx1 {*(itTexCoords1 + 0)};
-                            const float ty1 {*(itTexCoords1 + 1)};
-
-                            const auto itTexCoords2 {
-                                this->attrib_.texcoords.cbegin() +
-                                2 * static_cast<::std::int32_t> (idx2.texcoord_index)
-                            };
-                            const float tx2 {*(itTexCoords2 + 0)};
-                            const float ty2 {*(itTexCoords2 + 1)};
-
-                            const auto itTexCoords3 {
-                                this->attrib_.texcoords.cbegin() +
-                                2 * static_cast<::std::int32_t> (idx3.texcoord_index)
-                            };
-                            const float tx3 {*(itTexCoords3 + 0)};
-                            const float ty3 {*(itTexCoords3 + 1)};
-
-                            texCoord = triple<::glm::vec2, ::glm::vec2, ::glm::vec2> {
-                                ::glm::vec2 {tx1, ty1}, ::glm::vec2 {tx2, ty2}, ::glm::vec2 {tx3, ty3}
-                            };
-
-                            texture = getTextureFromCache(&texturesCache, filePath, mat.diffuse_texname);
-                            texCoord = normalizeTexCoord(texture, texCoord);
-                        }
-
-                        Material material {diffuse, specular, transmittance, indexRefraction, emission, texture};
-                        if (::MobileRT::hasPositiveValue(emission)) {
-                            // If the primitive is a light source.
-                            const Triangle &triangle {
-                                Triangle::Builder(
-                                    ::std::get<0> (vertices), ::std::get<1> (vertices), ::std::get<2> (vertices)
-                                )
-                                .withNormals(
-                                    ::std::get<0>(normal),
-                                    ::std::get<1>(normal),
-                                    ::std::get<2>(normal)
-                                )
-                                .withTexCoords(
-                                    ::std::get<0>(texCoord),
-                                    ::std::get<1>(texCoord),
-                                    ::std::get<2>(texCoord)
-                                )
-                                .build()
-                            };
-                            {
-                                lights.emplace_back(::MobileRT::std::make_unique<AreaLight>(material, lambda(), triangle));
-                            }
-                        } else {
-                            // If it is a primitive.
-                            Triangle::Builder builder {
-                                Triangle::Builder(
-                                    ::std::get<0> (vertices), ::std::get<1> (vertices), ::std::get<2> (vertices)
-                                )
-                                .withNormals(
-                                    ::std::get<0>(normal),
-                                    ::std::get<1>(normal),
-                                    ::std::get<2>(normal)
-                                )
-                                .withTexCoords(
-                                    ::std::get<0>(texCoord),
-                                    ::std::get<1>(texCoord),
-                                    ::std::get<2>(texCoord)
-                                )
-                            };
-
-                            ::std::int32_t materialIndex {-1};
-                            {
-                                const ::std::lock_guard<::boost::mutex> lock {mutex};
-                                const auto itFoundMat {::std::find(scene->materials_.begin(), scene->materials_.end(), material)};
-                                if (itFoundMat != scene->materials_.cend()) {
-                                    // If the material is already in the scene.
-                                    materialIndex = static_cast<::std::int32_t> (itFoundMat - scene->materials_.cbegin());
-                                } else {
-                                    // If the scene doesn't have material yet.
-                                    materialIndex = static_cast<::std::int32_t> (scene->materials_.size());
-                                    scene->materials_.emplace_back(::std::move(material));
-                                }
-                            }
-                            triangles.emplace_back(builder.withMaterialIndex(materialIndex).build());
-                        }
-                    } else {
-                        // If it doesn't contain material.
-                        const auto itColor {this->attrib_.colors.cbegin() + 3 * idx1.vertex_index};
-                        const float red {*(itColor + 0)};
-                        const float green {*(itColor + 1)};
-                        const float blue {*(itColor + 2)};
-
-                        const ::glm::vec3 &diffuse {red, green, blue};
-                        const ::glm::vec3 &specular {0.0F, 0.0F, 0.0F};
-                        const ::glm::vec3 &transmittance {0.0F, 0.0F, 0.0F};
-                        const float indexRefraction {1.0F};
-                        const ::glm::vec3 &emission {0.0F, 0.0F, 0.0F};
-                        Material material {diffuse, specular, transmittance, indexRefraction, emission};
-                        Triangle::Builder builder {
-                            Triangle::Builder(
-                                ::std::get<0> (vertices), ::std::get<1> (vertices), ::std::get<2> (vertices)
-                            )
-                            .withNormals(
-                                ::std::get<0>(normal),
-                                ::std::get<1>(normal),
-                                ::std::get<2>(normal)
-                            )
-                        };
-                        ::std::int32_t materialIndex {-1};
-                        {
-                            const ::std::lock_guard<::boost::mutex> lock {mutex};
-                            const auto itFoundMat {::std::find(scene->materials_.begin(), scene->materials_.end(), material)};
-                            if (itFoundMat != scene->materials_.cend()) {
-                                // If the material is already in the scene.
-                                materialIndex = static_cast<::std::int32_t> (itFoundMat - scene->materials_.cbegin());
-                            } else {
-                                // If the scene doesn't have material yet.
-                                materialIndex = static_cast<::std::int32_t> (scene->materials_.size());
-                                scene->materials_.emplace_back(::std::move(material));
-                            }
-                        }
-                        triangles.emplace_back(builder.withMaterialIndex(materialIndex).build());
-                    }
-                } // Loop over vertices in the face.
-
-                indexOffset += faceVertices;
-
-                if (triangles.size() > 0 && triangles.size() % 100000 == 0) {
-                    LOG_DEBUG("Triangle ", triangles.size(), " position at ", triangles.back());
-                } else if (lights.size() > 0 && lights.size() % 1000 == 0) {
-                    LOG_DEBUG("Light ", lights.size(), " position at: ", lights.back()->getPosition(), ", radiance: ", lights.back()->radiance_.Le_);
-                }
-            } // The number of vertices per face.
-        } // Loop over shapes.
-
-        {
-            const ::std::lock_guard<::boost::mutex> lock {mutex};
-            if (triangles.size() > 0) {
-                LOG_INFO("Local triangles: ", triangles.size(), ", total: ", scene->triangles_.size(), ", last triangle: ", triangles.back());
-            }
-            if (lights.size() > 0) {
-                const ::std::unique_ptr<Light> &light {lights.back()};
-                const ::glm::vec3 &lightPos {light->getPosition()};
-                const ::glm::vec3 &lightRadiance {light->radiance_.Le_};
-                LOG_INFO("Local lights:  ", lights.size(), ", total: ", scene->lights_.size(), ", last light: ", lightPos, ", radiance: ", lightRadiance);
-            }
-
-            scene->triangles_.reserve(scene->triangles_.size() + triangles.size());
-            ::std::move(::std::begin(triangles), ::std::end(triangles), ::std::back_inserter(scene->triangles_));
-
-            scene->lights_.reserve(scene->lights_.size() + lights.size());
-            ::std::move(::std::begin(lights), ::std::end(lights), ::std::back_inserter(scene->lights_));
-        }
-
-        triangles.clear();
-        triangles.shrink_to_fit();
-        ::std::vector<Triangle> {}.swap(triangles);
-
-        lights.clear();
-        lights.shrink_to_fit();
-        ::std::vector<::std::unique_ptr<Light>> {}.swap(lights);
+    const ::std::uint32_t numChildren {::std::thread::hardware_concurrency()};
+    if (numChildren <= 0) {
+        LOG_ERROR("Number of available CPU cores is ", numChildren);
+        return false;
+    }
+    ::std::vector<::std::thread> threads {};
+    threads.reserve(numChildren);
+    LOG_INFO("Created mutex and it will fill the scene using ", numChildren + 1, " threads");
+    for (::std::uint32_t i {}; i < numChildren; ++i) {
+        threads.emplace_back(&OBJLoader::fillSceneThreadWork, this, i, numChildren + 1, scene, lambda, filePath, &texturesCache, &mutex);
+    }
+    fillSceneThreadWork(numChildren, numChildren + 1, scene, lambda, filePath, &texturesCache, &mutex);
+    for (::std::thread &thread : threads) {
+        thread.join();
     }
 
     ASSERT(static_cast<::std::int32_t> (scene->triangles_.size()), this->numberTriangles_, "Number of triangles in the scene is not correct.");
-
     ::MobileRT::checkSystemError("Filled Scene");
 
     LOG_INFO("Total triangles loaded: ", scene->triangles_.size());
@@ -478,6 +268,232 @@ const Texture& OBJLoader::getTextureFromCache(
     }
 
     return texturesCache->find(texPath)->second;// Get texture from cache.
+}
+
+/**
+ * Fill the scene with the loaded triangles.
+ */
+void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
+                                    const ::std::uint32_t numberOfThreads,
+                                    Scene *const scene,
+                                    const ::std::function<::std::unique_ptr<Sampler>()> &lambda,
+                                    const ::std::string &filePath,
+                                    ::std::unordered_map<::std::string, ::MobileRT::Texture> *const texturesCache,
+                                    ::boost::mutex *const mutex) {
+    ::std::vector<Triangle> triangles {};
+    ::std::vector<::std::unique_ptr<Light>> lights {};
+    const ::std::uint32_t shapesSize {static_cast<::std::uint32_t> (this->shapes_.size())};
+
+    // Loop over shapes.
+    for (::std::uint32_t shapeIndex {threadId}; shapeIndex < shapesSize; shapeIndex += numberOfThreads) {
+        LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") filling scene.");
+        const auto itShape {this->shapes_.cbegin() + static_cast<::std::int32_t> (shapeIndex)};
+        const ::tinyobj::shape_t &shape {*itShape};
+
+        // Loop over faces in polygon.
+        ::std::int32_t indexOffset {0};
+        // The number of vertices per face.
+        const ::std::int32_t faces {static_cast<::std::int32_t> (shape.mesh.num_face_vertices.size())};
+        LOG_DEBUG("Loading shape: ", shapeIndex);
+        for (::std::int32_t face = 0; face < faces; ++face) {
+            const auto itFace {shape.mesh.num_face_vertices.cbegin() + face};
+            const ::std::int32_t faceVertices {static_cast<::std::int32_t>(*itFace)};
+
+            if (faceVertices % 3 != 0) {// If the number of vertices in the face is not multiple of 3,
+                                        // then it does not make a triangle.
+                LOG_DEBUG("num_face_vertices [", face, "] = '", faceVertices, "'");
+                continue;
+            }
+
+            // Loop over vertices in the face.
+            for (::std::int32_t vertex = 0; vertex < faceVertices; vertex += 3) {
+                const OBJLoader::triple<::glm::vec3, ::glm::vec3, ::glm::vec3> vertices {loadVertices(shape, indexOffset + vertex)};
+                const OBJLoader::triple<::glm::vec3, ::glm::vec3, ::glm::vec3> normal {loadNormal(shape, indexOffset + vertex, vertices)};
+
+                // per-face material.
+                const auto itMaterialShape {shape.mesh.material_ids.cbegin() + face};
+                const int materialId {*itMaterialShape};
+
+                const auto itIdx {shape.mesh.indices.cbegin() + indexOffset + vertex};
+                const ::tinyobj::index_t idx1 {*(itIdx + 0)};
+                const ::tinyobj::index_t idx2 {*(itIdx + 1)};
+                const ::tinyobj::index_t idx3 {*(itIdx + 2)};
+
+                // If it contains material.
+                if (materialId >= 0) {
+                    const auto itMaterial {this->materials_.cbegin() + static_cast<::std::int32_t> (materialId)};
+                    const ::tinyobj::material_t &mat {*itMaterial};
+                    const ::glm::vec3 &diffuse {::MobileRT::toVec3(mat.diffuse)};
+                    const ::glm::vec3 &specular {::MobileRT::toVec3(mat.specular)};
+                    const ::glm::vec3 &transmittance {::MobileRT::toVec3(mat.transmittance) * (1.0F - mat.dissolve)};
+                    const ::glm::vec3 &emission {::MobileRT::normalize(::MobileRT::toVec3(mat.emission))};
+                    const float indexRefraction {mat.ior};
+
+                    const bool hasTexture {!mat.diffuse_texname.empty()};
+                    const bool hasCoordTex {!this->attrib_.texcoords.empty()};
+                    Texture texture {};
+                    ::std::tuple<::glm::vec2, ::glm::vec2, ::glm::vec2> texCoord {::std::make_tuple(::glm::vec2 {-1}, ::glm::vec2 {-1}, ::glm::vec2 {-1})};
+                    if (hasTexture && hasCoordTex) {
+                        const auto itTexCoords1 {
+                            this->attrib_.texcoords.cbegin() +
+                            2 * static_cast<::std::int32_t> (idx1.texcoord_index)
+                        };
+                        const float tx1 {*(itTexCoords1 + 0)};
+                        const float ty1 {*(itTexCoords1 + 1)};
+
+                        const auto itTexCoords2 {
+                            this->attrib_.texcoords.cbegin() +
+                            2 * static_cast<::std::int32_t> (idx2.texcoord_index)
+                        };
+                        const float tx2 {*(itTexCoords2 + 0)};
+                        const float ty2 {*(itTexCoords2 + 1)};
+
+                        const auto itTexCoords3 {
+                            this->attrib_.texcoords.cbegin() +
+                            2 * static_cast<::std::int32_t> (idx3.texcoord_index)
+                        };
+                        const float tx3 {*(itTexCoords3 + 0)};
+                        const float ty3 {*(itTexCoords3 + 1)};
+
+                        texCoord = triple<::glm::vec2, ::glm::vec2, ::glm::vec2> {
+                            ::glm::vec2 {tx1, ty1}, ::glm::vec2 {tx2, ty2}, ::glm::vec2 {tx3, ty3}
+                        };
+
+                        texture = getTextureFromCache(texturesCache, filePath, mat.diffuse_texname);
+                        texCoord = normalizeTexCoord(texture, texCoord);
+                    }
+
+                    Material material {diffuse, specular, transmittance, indexRefraction, emission, texture};
+                    if (::MobileRT::hasPositiveValue(emission)) {
+                        // If the primitive is a light source.
+                        const Triangle &triangle {
+                            Triangle::Builder(
+                                ::std::get<0> (vertices), ::std::get<1> (vertices), ::std::get<2> (vertices)
+                            )
+                            .withNormals(
+                                ::std::get<0>(normal),
+                                ::std::get<1>(normal),
+                                ::std::get<2>(normal)
+                            )
+                            .withTexCoords(
+                                ::std::get<0>(texCoord),
+                                ::std::get<1>(texCoord),
+                                ::std::get<2>(texCoord)
+                            )
+                            .build()
+                        };
+                        {
+                            lights.emplace_back(::MobileRT::std::make_unique<AreaLight>(material, lambda(), triangle));
+                        }
+                    } else {
+                        // If it is a primitive.
+                        Triangle::Builder builder {
+                            Triangle::Builder(
+                                ::std::get<0> (vertices), ::std::get<1> (vertices), ::std::get<2> (vertices)
+                            )
+                            .withNormals(
+                                ::std::get<0>(normal),
+                                ::std::get<1>(normal),
+                                ::std::get<2>(normal)
+                            )
+                            .withTexCoords(
+                                ::std::get<0>(texCoord),
+                                ::std::get<1>(texCoord),
+                                ::std::get<2>(texCoord)
+                            )
+                        };
+
+                        ::std::int32_t materialIndex {-1};
+                        {
+                            const ::std::lock_guard<::boost::mutex> lock {*mutex};
+                            const auto itFoundMat {::std::find(scene->materials_.begin(), scene->materials_.end(), material)};
+                            if (itFoundMat != scene->materials_.cend()) {
+                                // If the material is already in the scene.
+                                materialIndex = static_cast<::std::int32_t> (itFoundMat - scene->materials_.cbegin());
+                            } else {
+                                // If the scene doesn't have material yet.
+                                materialIndex = static_cast<::std::int32_t> (scene->materials_.size());
+                                scene->materials_.emplace_back(::std::move(material));
+                            }
+                        }
+                        triangles.emplace_back(builder.withMaterialIndex(materialIndex).build());
+                    }
+                } else {
+                    // If it doesn't contain material.
+                    const auto itColor {this->attrib_.colors.cbegin() + 3 * idx1.vertex_index};
+                    const float red {*(itColor + 0)};
+                    const float green {*(itColor + 1)};
+                    const float blue {*(itColor + 2)};
+
+                    const ::glm::vec3 &diffuse {red, green, blue};
+                    const ::glm::vec3 &specular {0.0F, 0.0F, 0.0F};
+                    const ::glm::vec3 &transmittance {0.0F, 0.0F, 0.0F};
+                    const float indexRefraction {1.0F};
+                    const ::glm::vec3 &emission {0.0F, 0.0F, 0.0F};
+                    Material material {diffuse, specular, transmittance, indexRefraction, emission};
+                    Triangle::Builder builder {
+                        Triangle::Builder(
+                            ::std::get<0> (vertices), ::std::get<1> (vertices), ::std::get<2> (vertices)
+                        )
+                        .withNormals(
+                            ::std::get<0>(normal),
+                            ::std::get<1>(normal),
+                            ::std::get<2>(normal)
+                        )
+                    };
+                    ::std::int32_t materialIndex {-1};
+                    {
+                        const ::std::lock_guard<::boost::mutex> lock {*mutex};
+                        const auto itFoundMat {::std::find(scene->materials_.begin(), scene->materials_.end(), material)};
+                        if (itFoundMat != scene->materials_.cend()) {
+                            // If the material is already in the scene.
+                            materialIndex = static_cast<::std::int32_t> (itFoundMat - scene->materials_.cbegin());
+                        } else {
+                            // If the scene doesn't have material yet.
+                            materialIndex = static_cast<::std::int32_t> (scene->materials_.size());
+                            scene->materials_.emplace_back(::std::move(material));
+                        }
+                    }
+                    triangles.emplace_back(builder.withMaterialIndex(materialIndex).build());
+                }
+            } // Loop over vertices in the face.
+
+            indexOffset += faceVertices;
+
+            if (triangles.size() > 0 && triangles.size() % 100000 == 0) {
+                LOG_DEBUG("Triangle ", triangles.size(), " position at ", triangles.back());
+            } else if (lights.size() > 0 && lights.size() % 1000 == 0) {
+                LOG_DEBUG("Light ", lights.size(), " position at: ", lights.back()->getPosition(), ", radiance: ", lights.back()->radiance_.Le_);
+            }
+        } // The number of vertices per face.
+    } // Loop over shapes.
+
+    {
+        const ::std::lock_guard<::boost::mutex> lock {*mutex};
+        if (triangles.size() > 0) {
+            LOG_INFO("Local triangles: ", triangles.size(), ", total: ", scene->triangles_.size(), ", last triangle: ", triangles.back());
+        }
+        if (lights.size() > 0) {
+            const ::std::unique_ptr<Light> &light {lights.back()};
+            const ::glm::vec3 &lightPos {light->getPosition()};
+            const ::glm::vec3 &lightRadiance {light->radiance_.Le_};
+            LOG_INFO("Local lights:  ", lights.size(), ", total: ", scene->lights_.size(), ", last light: ", lightPos, ", radiance: ", lightRadiance);
+        }
+
+        scene->triangles_.reserve(scene->triangles_.size() + triangles.size());
+        ::std::move(::std::begin(triangles), ::std::end(triangles), ::std::back_inserter(scene->triangles_));
+
+        scene->lights_.reserve(scene->lights_.size() + lights.size());
+        ::std::move(::std::begin(lights), ::std::end(lights), ::std::back_inserter(scene->lights_));
+    }
+
+    triangles.clear();
+    triangles.shrink_to_fit();
+    ::std::vector<Triangle> {}.swap(triangles);
+
+    lights.clear();
+    lights.shrink_to_fit();
+    ::std::vector<::std::unique_ptr<Light>> {}.swap(lights);
 }
 
 /**

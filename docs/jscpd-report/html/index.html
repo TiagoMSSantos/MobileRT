@@ -2,7 +2,7 @@
                        // <!--
                        window.initialData = {
   "statistics": {
-    "detectionDate": "2024-06-15T16:34:51.648Z",
+    "detectionDate": "2024-06-16T09:03:35.963Z",
     "formats": {
       "java": {
         "sources": {
@@ -1215,8 +1215,8 @@
             "newClones": 0
           },
           "app/System_dependent/Native/C_wrapper.cpp": {
-            "lines": 257,
-            "tokens": 2790,
+            "lines": 261,
+            "tokens": 2822,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -1467,14 +1467,14 @@
             "newClones": 0
           },
           "app/Components/Loaders/OBJLoader.cpp": {
-            "lines": 495,
-            "tokens": 6185,
+            "lines": 513,
+            "tokens": 6521,
             "sources": 1,
             "clones": 10,
             "duplicatedLines": 120,
-            "duplicatedTokens": 1442,
-            "percentage": 24.24,
-            "percentageTokens": 23.31,
+            "duplicatedTokens": 1444,
+            "percentage": 23.39,
+            "percentageTokens": 22.14,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -1792,14 +1792,14 @@
           }
         },
         "total": {
-          "lines": 5673,
-          "tokens": 55860,
+          "lines": 5695,
+          "tokens": 56228,
           "sources": 56,
           "clones": 30,
           "duplicatedLines": 282,
-          "duplicatedTokens": 4341,
-          "percentage": 4.97,
-          "percentageTokens": 7.77,
+          "duplicatedTokens": 4342,
+          "percentage": 4.95,
+          "percentageTokens": 7.72,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -1916,13 +1916,13 @@
           },
           ".github/workflows/native.yml": {
             "lines": 424,
-            "tokens": 2471,
+            "tokens": 2478,
             "sources": 1,
             "clones": 8,
             "duplicatedLines": 182,
             "duplicatedTokens": 1088,
             "percentage": 42.92,
-            "percentageTokens": 44.03,
+            "percentageTokens": 43.91,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2085,7 +2085,7 @@
         },
         "total": {
           "lines": 2757,
-          "tokens": 18356,
+          "tokens": 18363,
           "sources": 23,
           "clones": 17,
           "duplicatedLines": 440,
@@ -2575,14 +2575,14 @@
             "newClones": 0
           },
           "app/MobileRT/Accelerators/RegularGrid.hpp": {
-            "lines": 519,
-            "tokens": 5454,
+            "lines": 543,
+            "tokens": 5753,
             "sources": 1,
             "clones": 4,
             "duplicatedLines": 36,
             "duplicatedTokens": 364,
-            "percentage": 6.94,
-            "percentageTokens": 6.67,
+            "percentage": 6.63,
+            "percentageTokens": 6.33,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2791,8 +2791,8 @@
             "newClones": 0
           },
           "app/Components/Loaders/OBJLoader.hpp": {
-            "lines": 65,
-            "tokens": 670,
+            "lines": 78,
+            "tokens": 783,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -3032,14 +3032,14 @@
           }
         },
         "total": {
-          "lines": 3318,
-          "tokens": 24612,
+          "lines": 3355,
+          "tokens": 25024,
           "sources": 47,
           "clones": 3,
           "duplicatedLines": 29,
           "duplicatedTokens": 314,
-          "percentage": 0.87,
-          "percentageTokens": 1.28,
+          "percentage": 0.86,
+          "percentageTokens": 1.25,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3166,14 +3166,14 @@
       }
     },
     "total": {
-      "lines": 29201,
-      "tokens": 224541,
+      "lines": 29260,
+      "tokens": 225328,
       "sources": 250,
       "clones": 125,
       "duplicatedLines": 1644,
-      "duplicatedTokens": 14448,
-      "percentage": 5.63,
-      "percentageTokens": 6.43,
+      "duplicatedTokens": 14449,
+      "percentage": 5.62,
+      "percentageTokens": 6.41,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -5918,72 +5918,72 @@
     {
       "format": "cpp-header",
       "lines": 7,
-      "fragment": "1] = (tmax[1] + tdelta[1]);\n                } else {\n                    cellZ += stepZ;\n                    if (cellZ == outZ) {\n                        return intersection;\n                    }\n                    tmax[2] = (tmax[2] + tdelta[2]);\n                }\n            }\n\n        }\n        testloop:\n        while (true) {\n\n            /",
+      "fragment": "ntersection;\n                    }\n                    tmax[2] = (tmax[2] + tdelta[2]);\n                }\n            }\n\n        }\n        testloop:\n        while (true) {\n\n            // Get the primitives in the cell.\n            const ::std::int32_t index {getCellIndex(cellX, cellY, cellZ)};\n            const auto itPrimitives {this->grid_.beg",
       "tokens": 0,
       "firstFile": {
         "name": "app/MobileRT/Accelerators/RegularGrid.hpp",
-        "start": 440,
-        "end": 446,
+        "start": 464,
+        "end": 470,
         "startLoc": {
-          "line": 440,
+          "line": 464,
           "column": 13,
-          "position": 4728
+          "position": 5027
         },
         "endLoc": {
-          "line": 446,
+          "line": 470,
           "column": 13,
-          "position": 4815
+          "position": 5114
         }
       },
       "secondFile": {
         "name": "app/MobileRT/Accelerators/RegularGrid.hpp",
-        "start": 389,
-        "end": 395,
+        "start": 413,
+        "end": 419,
         "startLoc": {
-          "line": 389,
+          "line": 413,
           "column": 13,
-          "position": 4239
+          "position": 4538
         },
         "endLoc": {
-          "line": 395,
+          "line": 419,
           "column": 6,
-          "position": 4326
+          "position": 4625
         }
       }
     },
     {
       "format": "cpp-header",
       "lines": 13,
-      "fragment": " (tmax[2] + tdelta[2]);\n                }\n            } else {\n                if (tmax[1] < tmax[2]) {\n                    if (intersection.length_ < tmax[1]) {\n                        break;\n                    }\n                    cellY += stepY;\n                    if (cellY == outY) {\n                        break;\n                    }\n                   ",
+      "fragment": "                        break;\n                    }\n                    cellY += stepY;\n                    if (cellY == outY) {\n                        break;\n                    }\n                    tmax[1] = (tmax[1] + tdelta[1]);\n                } else {\n                    if (intersection.length_ < tmax[2]) {\n                        break;\n              ",
       "tokens": 0,
       "firstFile": {
         "name": "app/MobileRT/Accelerators/RegularGrid.hpp",
-        "start": 477,
-        "end": 489,
+        "start": 501,
+        "end": 513,
         "startLoc": {
-          "line": 477,
+          "line": 501,
           "column": 2,
-          "position": 5132
+          "position": 5431
         },
         "endLoc": {
-          "line": 489,
+          "line": 513,
           "column": 2,
-          "position": 5227
+          "position": 5526
         }
       },
       "secondFile": {
         "name": "app/MobileRT/Accelerators/RegularGrid.hpp",
-        "start": 457,
-        "end": 468,
+        "start": 481,
+        "end": 492,
         "startLoc": {
-          "line": 457,
+          "line": 481,
           "column": 2,
-          "position": 4942
+          "position": 5241
         },
         "endLoc": {
-          "line": 468,
+          "line": 492,
           "column": 5,
-          "position": 5036
+          "position": 5335
         }
       }
     },
@@ -6097,181 +6097,181 @@
     },
     {
       "format": "cpp",
-      "lines": 15,
-      "fragment": "uild()\n                            };\n                            {\n                                lights.emplace_back(::MobileRT::std::make_unique<AreaLight>(material, lambda(), triangle));\n                            }\n                        } else {\n                            // If it is a primitive.\n                            Triangle::Builder builder {\n                                Triangle::Builder(\n                                    ::std::get<0> (vertices), ::std::get<1> (vertices), ::std::get<2> (vertices)\n                                )\n                                .withNormals(\n                                    ::std::get<0>(normal),\n                                    ::std::get<1>(normal),\n                       ",
-      "tokens": 0,
-      "firstFile": {
-        "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 199,
-        "end": 213,
-        "startLoc": {
-          "line": 199,
-          "column": 2,
-          "position": 2337
-        },
-        "endLoc": {
-          "line": 213,
-          "column": 2,
-          "position": 2480
-        }
-      },
-      "secondFile": {
-        "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 178,
-        "end": 192,
-        "startLoc": {
-          "line": 178,
-          "column": 2,
-          "position": 2134
-        },
-        "endLoc": {
-          "line": 192,
-          "column": 2,
-          "position": 2277
-        }
-      }
-    },
-    {
-      "format": "cpp",
-      "lines": 10,
-      "fragment": "lar {0.0F, 0.0F, 0.0F};\n                        const ::glm::vec3 &transmittance {0.0F, 0.0F, 0.0F};\n                        const float indexRefraction {1.0F};\n                        const ::glm::vec3 &emission {0.0F, 0.0F, 0.0F};\n                        Material material {diffuse, specular, transmittance, indexRefraction, emission};\n                        Triangle::Builder builder {\n                            Triangle::Builder(\n                                ::std:",
-      "tokens": 0,
-      "firstFile": {
-        "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 243,
-        "end": 252,
-        "startLoc": {
-          "line": 243,
-          "column": 25,
-          "position": 2914
-        },
-        "endLoc": {
-          "line": 252,
-          "column": 2,
-          "position": 3017
-        }
-      },
-      "secondFile": {
-        "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 199,
-        "end": 187,
-        "startLoc": {
-          "line": 199,
-          "column": 29,
-          "position": 2331
-        },
-        "endLoc": {
-          "line": 187,
-          "column": 2,
-          "position": 2231
-        }
-      }
-    },
-    {
-      "format": "cpp",
-      "lines": 19,
-      "fragment": "Triangle::Builder(\n                                ::std::get<0> (vertices), ::std::get<1> (vertices), ::std::get<2> (vertices)\n                            )\n                            .withNormals(\n                                ::std::get<0>(normal),\n                                ::std::get<1>(normal),\n                                ::std::get<2>(normal)\n                            )\n                        };\n                        ::std::int32_t materialIndex {-1};\n                        {\n                            const ::std::lock_guard<::boost::mutex> lock {mutex};\n                            const auto itFoundMat {::std::find(scene->materials_.begin(), scene->materials_.end(), material)};\n                            if (itFoundMat != scene->materials_.cend()) {\n                                // If the material is already in the scene.\n                                materialIndex = static_cast<::std::int32_t> (itFoundMat - scene->materials_.cbegin());\n                            } else {\n                                // If the scene doesn't have material yet.\n                                materialIndex = static_ca",
-      "tokens": 0,
-      "firstFile": {
-        "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 250,
-        "end": 268,
-        "startLoc": {
-          "line": 250,
-          "column": 7,
-          "position": 3011
-        },
-        "endLoc": {
-          "line": 268,
-          "column": 35,
-          "position": 3231
-        }
-      },
-      "secondFile": {
-        "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 211,
-        "end": 230,
-        "startLoc": {
-          "line": 211,
-          "column": 9,
-          "position": 2474
-        },
-        "endLoc": {
-          "line": 230,
-          "column": 5,
-          "position": 2695
-        }
-      }
-    },
-    {
-      "format": "cpp",
       "lines": 7,
-      "fragment": "s of the normals in the tinyobjloader structure.\n * @param vertex      The vertices' values of the triangle.\n * @return The loaded normal.\n */\nOBJLoader::triple<::glm::vec3, ::glm::vec3, ::glm::vec3> OBJLoader::loadNormal(\n    const ",
+      "fragment": "lm::vec3> OBJLoader::loadNormal(\n    const ::tinyobj::shape_t &shape,\n    const ::std::int32_t indexOffset,\n    const triple<::glm::vec3, ::glm::vec3, ::glm::vec3> &vertex\n) const {\n    const auto itIdx {shape.mesh.indices.cbegin() +",
       "tokens": 0,
       "firstFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 368,
-        "end": 374,
+        "start": 158,
+        "end": 164,
         "startLoc": {
-          "line": 368,
+          "line": 158,
           "column": 1,
-          "position": 4518
+          "position": 1698
         },
         "endLoc": {
-          "line": 374,
+          "line": 164,
           "column": 3,
-          "position": 4616
+          "position": 1796
         }
       },
       "secondFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 329,
-        "end": 336,
+        "start": 119,
+        "end": 126,
         "startLoc": {
-          "line": 329,
+          "line": 119,
           "column": 1,
-          "position": 3970
+          "position": 1150
         },
         "endLoc": {
-          "line": 336,
+          "line": 126,
           "column": 6,
-          "position": 4069
+          "position": 1249
         }
       }
     },
     {
       "format": "cpp",
       "lines": 14,
-      "fragment": "filePath,\n    const ::std::string &texPath\n) {\n    const ::std::unordered_map<::std::string, Texture>::iterator itTexture {texturesCache->find(texPath)};\n\n    if (itTexture == texturesCache->cend()) {// If the texture is not in the cache.\n        const ::std::string texturePath {filePath + texPath};\n        Texture &&texture {Texture::createTexture(texturePath)};\n        ::std::pair<::std::string, Texture> &&pair {::std::make_pair(texPath, ::std::move(texture))};\n        const Texture *res {",
+      "fragment": ">cend()) {// If the texture is not in the cache.\n        const ::std::string texturePath {filePath + texPath};\n        Texture &&texture {Texture::createTexture(texturePath)};\n        ::std::pair<::std::string, Texture> &&pair {::std::make_pair(texPath, ::std::move(texture))};\n        const Texture *res {nullptr};\n        const ::std::pair<::std::unordered_map<::std::string, Texture>::iterator, bool> pairResult {texturesCache->emplace(::std::move(pair))}; // Add it to the cache.\n        res = &(::std::get<0>(pairResu",
       "tokens": 0,
       "firstFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 472,
-        "end": 485,
+        "start": 262,
+        "end": 275,
         "startLoc": {
-          "line": 472,
+          "line": 262,
           "column": 12,
-          "position": 5769
+          "position": 2949
         },
         "endLoc": {
-          "line": 485,
+          "line": 275,
           "column": 4,
-          "position": 5926
+          "position": 3106
         }
       },
       "secondFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 443,
-        "end": 462,
+        "start": 233,
+        "end": 252,
         "startLoc": {
-          "line": 443,
+          "line": 233,
           "column": 5,
-          "position": 5469
+          "position": 2649
         },
         "endLoc": {
-          "line": 462,
+          "line": 252,
           "column": 4,
-          "position": 5626
+          "position": 2806
+        }
+      }
+    },
+    {
+      "format": "cpp",
+      "lines": 15,
+      "fragment": "da(), triangle));\n                        }\n                    } else {\n                        // If it is a primitive.\n                        Triangle::Builder builder {\n                            Triangle::Builder(\n                                ::std::get<0> (vertices), ::std::get<1> (vertices), ::std::get<2> (vertices)\n                            )\n                            .withNormals(\n                                ::std::get<0>(normal),\n                                ::std::get<1>(normal),\n                                ::std::get<2>(normal)\n                            )\n                            .withTexCoords(\n                                ::std::get<0>(texCoor",
+      "tokens": 0,
+      "firstFile": {
+        "name": "app/Components/Loaders/OBJLoader.cpp",
+        "start": 390,
+        "end": 404,
+        "startLoc": {
+          "line": 390,
+          "column": 2,
+          "position": 4782
+        },
+        "endLoc": {
+          "line": 404,
+          "column": 2,
+          "position": 4925
+        }
+      },
+      "secondFile": {
+        "name": "app/Components/Loaders/OBJLoader.cpp",
+        "start": 369,
+        "end": 383,
+        "startLoc": {
+          "line": 369,
+          "column": 2,
+          "position": 4579
+        },
+        "endLoc": {
+          "line": 383,
+          "column": 2,
+          "position": 4722
+        }
+      }
+    },
+    {
+      "format": "cpp",
+      "lines": 10,
+      "fragment": "   const ::glm::vec3 &emission {0.0F, 0.0F, 0.0F};\n                    Material material {diffuse, specular, transmittance, indexRefraction, emission};\n                    Triangle::Builder builder {\n                        Triangle::Builder(\n                            ::std::get<0> (vertices), ::std::get<1> (vertices), ::std::get<2> (vertices)\n                        )\n                        .withNormals(\n                           ",
+      "tokens": 0,
+      "firstFile": {
+        "name": "app/Components/Loaders/OBJLoader.cpp",
+        "start": 434,
+        "end": 443,
+        "startLoc": {
+          "line": 434,
+          "column": 21,
+          "position": 5360
+        },
+        "endLoc": {
+          "line": 443,
+          "column": 2,
+          "position": 5463
+        }
+      },
+      "secondFile": {
+        "name": "app/Components/Loaders/OBJLoader.cpp",
+        "start": 390,
+        "end": 378,
+        "startLoc": {
+          "line": 390,
+          "column": 25,
+          "position": 4776
+        },
+        "endLoc": {
+          "line": 378,
+          "column": 2,
+          "position": 4676
+        }
+      }
+    },
+    {
+      "format": "cpp",
+      "lines": 19,
+      "fragment": "        .withNormals(\n                            ::std::get<0>(normal),\n                            ::std::get<1>(normal),\n                            ::std::get<2>(normal)\n                        )\n                    };\n                    ::std::int32_t materialIndex {-1};\n                    {\n                        const ::std::lock_guard<::boost::mutex> lock {*mutex};\n                        const auto itFoundMat {::std::find(scene->materials_.begin(), scene->materials_.end(), material)};\n                        if (itFoundMat != scene->materials_.cend()) {\n                            // If the material is already in the scene.\n                            materialIndex = static_cast<::std::int32_t> (itFoundMat - scene->materials_.cbegin());\n                        } else {\n                            // If the scene doesn't have material yet.\n                            materialIndex = static_cast<::std::int32_t> (scene->materials_.size());\n                            scene->materials_.emplace_back(::std::move(material));\n                        }\n          ",
+      "tokens": 0,
+      "firstFile": {
+        "name": "app/Components/Loaders/OBJLoader.cpp",
+        "start": 441,
+        "end": 459,
+        "startLoc": {
+          "line": 441,
+          "column": 7,
+          "position": 5457
+        },
+        "endLoc": {
+          "line": 459,
+          "column": 35,
+          "position": 5678
+        }
+      },
+      "secondFile": {
+        "name": "app/Components/Loaders/OBJLoader.cpp",
+        "start": 402,
+        "end": 421,
+        "startLoc": {
+          "line": 402,
+          "column": 9,
+          "position": 4919
+        },
+        "endLoc": {
+          "line": 421,
+          "column": 5,
+          "position": 5141
         }
       }
     },
@@ -6791,12 +6791,12 @@
         "startLoc": {
           "line": 387,
           "column": 7,
-          "position": 2161
+          "position": 2168
         },
         "endLoc": {
           "line": 399,
           "column": 2,
-          "position": 2304
+          "position": 2311
         }
       },
       "secondFile": {

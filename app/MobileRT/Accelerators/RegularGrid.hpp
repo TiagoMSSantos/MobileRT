@@ -59,8 +59,18 @@ namespace MobileRT {
          */
         ::glm::vec3 cellSize_ {};
 
+        /**
+         * The mutexes to allow multiple threads add primitives to the grid.
+         */
+        ::std::vector<::boost::mutex> mutexes_ {};
+
     private:
         void addPrimitives();
+
+        /**
+         * Store primitives in the grid cells.
+         */
+        void addPrimitivesThreadWork(::std::uint32_t threadId, ::std::uint32_t numberOfThreads);
 
         Intersection intersect(Intersection intersection);
 
@@ -178,6 +188,32 @@ namespace MobileRT {
     void RegularGrid<T>::addPrimitives() {
         LOG_INFO("Will add primitives to RegularGrid (", typeid(T).name(), ")");
         ::MobileRT::checkSystemError("RegularGrid addPrimitives start");
+        this->mutexes_ = ::std::vector<::boost::mutex> (this->grid_.size());
+        ::MobileRT::checkSystemError("RegularGrid created mutexes");
+
+        LOG_INFO("Adding primitives to RegularGrid (", typeid(T).name(), ") (mutexes: ", this->mutexes_.size(), " [", this->mutexes_.capacity(), ", ", this->mutexes_.max_size(), "])");
+        const ::std::uint32_t numChildren {::std::thread::hardware_concurrency()};
+        if (numChildren <= 0) {
+            LOG_ERROR("Number of available CPU cores is ", numChildren);
+            return;
+        }
+        ::std::vector<::std::thread> threads {};
+        threads.reserve(numChildren);
+        LOG_INFO("Created mutexes and it will fill the Regular Grid using ", numChildren + 1, " threads");
+        for (::std::uint32_t i {}; i < numChildren; ++i) {
+            threads.emplace_back(&RegularGrid::addPrimitivesThreadWork, this, i, numChildren + 1);
+        }
+        addPrimitivesThreadWork(numChildren, numChildren + 1);
+        for (::std::thread &thread : threads) {
+            thread.join();
+        }
+
+        LOG_INFO("Added primitives to RegularGrid (", typeid(T).name(), ")");
+        ::MobileRT::checkSystemError("RegularGrid addPrimitives end");
+    }
+
+    template<typename T>
+    void RegularGrid<T>::addPrimitivesThreadWork(const ::std::uint32_t threadId, const ::std::uint32_t numberOfThreads) {
         const ::glm::vec3 worldBoundsMin {this->worldBoundaries_.getPointMin()};
         const ::glm::vec3 worldBoundsMax {this->worldBoundaries_.getPointMax()};
 
@@ -191,17 +227,7 @@ namespace MobileRT {
         const float dzReci {dz > 0 ? 1.0F / dz : 1.0F};
         const ::std::uint32_t numPrimitives {static_cast<::std::uint32_t> (this->primitives_.size())};
 
-        ::std::vector<::boost::mutex> mutexes (this->grid_.size());
-
-        ::MobileRT::checkSystemError("RegularGrid addPrimitives before calling OpenMP");
-        errno = 0; // In some compilers, OpenMP sets 'errno' to 'EFAULT - Bad address (14)'.
-        // omp_get_max_threads(): Fatal signal 8 (SIGFPE) at 0xb7707ac8 (code=1), thread 3810 (pool-20-thread-)
-
-        ::MobileRT::checkSystemError("RegularGrid addPrimitives before adding primitives");
-        LOG_INFO("Adding primitives to RegularGrid (", typeid(T).name(), ") (mutexes: ", mutexes.size(), " [", mutexes.capacity(), ", ", mutexes.max_size(), "])");
-        // store primitives in the grid cells
-        #pragma omp parallel for schedule(static, 1) shared(mutexes) firstprivate(worldBoundsMin, worldBoundsMax, size, dx, dy, dz, dxReci, dyReci, dzReci, numPrimitives)
-        for (::std::int32_t index = 0; index < static_cast<::std::int32_t> (numPrimitives); ++index) {
+        for (::std::int32_t index {static_cast<::std::int32_t>(threadId)}; index < static_cast<::std::int32_t> (numPrimitives); index += static_cast<::std::int32_t>(numberOfThreads)) {
             LOG_DEBUG("Adding primitive ", index, " to RegularGrid (", typeid(T).name(), ")");
             ::MobileRT::checkSystemError(::std::string("RegularGrid addPrimitives (" + ::std::to_string(index) + ")").c_str());
             T &primitive {this->primitives_[static_cast<::std::uint32_t> (index)]};
@@ -249,7 +275,7 @@ namespace MobileRT {
                         const bool intersectedBox {primitive.intersect(cell)};
                         if (intersectedBox) {
                             LOG_DEBUG("Adding primitive ", index, " (", idx, ") to RegularGrid (", typeid(T).name(), ") on coordinates: (", x, ", ", y, ", ", z, ")");
-                            const ::std::lock_guard<::boost::mutex> lock {mutexes[idx]};
+                            const ::std::lock_guard<::boost::mutex> lock {this->mutexes_[idx]};
                             LOG_DEBUG("Acquired lock to add primitive ", index, " (", idx, ") to RegularGrid (", typeid(T).name(), ") on coordinates: (", x, ", ", y, ", ", z, ")");
                             this->grid_[idx].emplace_back(&primitive);
                             LOG_DEBUG("Added primitive ", index, " to RegularGrid (", typeid(T).name(), ") on coordinates: (", x, ", ", y, ", ", z, ")");
@@ -260,8 +286,6 @@ namespace MobileRT {
             LOG_DEBUG("Added primitive ", index, " to RegularGrid (", typeid(T).name(), ")");
             ::MobileRT::checkSystemError(::std::string("RegularGrid addPrimitives end (" + ::std::to_string(index) + ")").c_str());
         }
-        LOG_INFO("Added primitives to RegularGrid (", typeid(T).name(), ")");
-        ::MobileRT::checkSystemError("RegularGrid addPrimitives end");
     }
 
     /**

@@ -113,12 +113,16 @@ static void work_thread(::MobileRT::Config &config) {
                     ::std::unordered_map<::std::string, ::MobileRT::Texture> texturesCache {};
                     LOG_INFO("OBJLoader loaded = ", ::std::chrono::duration_cast<::std::chrono::seconds>(timeLoading).count(), " seconds");
                     const ::std::chrono::time_point<::std::chrono::system_clock> chronoStartFilling {::std::chrono::system_clock::now()};
-                    objLoader.fillScene(
+                    const bool sceneBuilt {objLoader.fillScene(
                         &scene,
                         []() { return ::MobileRT::std::make_unique<Components::StaticHaltonSeq> (); },
                         config.objFilePath,
                         texturesCache
-                    );
+                    )};
+                    if (!sceneBuilt) {
+                        LOG_ERROR("OBJLOADER could not load the scene.");
+                        return;
+                    }
                     ::MobileRT::checkSystemError("Filled Scene.");
                     const ::std::chrono::time_point<::std::chrono::system_clock> chronoEndFilling {::std::chrono::system_clock::now()};
                     timeFilling = chronoEndFilling - chronoStartFilling;
