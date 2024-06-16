@@ -272,14 +272,18 @@ capitalizeFirstletter() {
 parallelizeBuild() {
   uname -a;
   if uname -a | grep -iq 'msys'; then
-    echo 'Assuming Windows.';
+    NCPU_CORES="$(nproc --all)";
+    echo "Assuming Windows with ${NCPU_CORES} cores. But not using them to compile project.";
   elif uname -a | grep -iq 'linux' && command -v nproc > /dev/null; then
-    echo 'Assuming Linux.';
-    MAKEFLAGS="-j$(nproc --all)";
+    NCPU_CORES="$(nproc --all)";
+    echo "Assuming Linux with ${NCPU_CORES} cores.";
+    MAKEFLAGS="-j${NCPU_CORES}";
   elif uname -a | grep -iq 'darwin' && command -v sysctl > /dev/null; then
-    echo 'Assuming MacOS.';
-    MAKEFLAGS="-j$(sysctl -n hw.logicalcpu)";
+    NCPU_CORES="$(sysctl -n hw.logicalcpu)";
+    echo "Assuming MacOS with ${NCPU_CORES} cores.";
+    MAKEFLAGS="-j${NCPU_CORES}";
   fi
+  export NCPU_CORES;
   export MAKEFLAGS;
 }
 

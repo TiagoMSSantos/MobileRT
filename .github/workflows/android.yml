@@ -436,6 +436,7 @@ jobs:
         else
           echo 'ANDROID_ARCH=x86' >> "${GITHUB_ENV}";
         fi
+        . scripts/helper_functions.sh && parallelizeBuild && echo "NCPU_CORES=${NCPU_CORES}" >> "${GITHUB_ENV}";
 
     - name: Enable KVM group permissions
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -451,7 +452,6 @@ jobs:
       uses: ReactiveCircus/android-emulator-runner@v2
       env:
         ANDROID_EMULATOR_WAIT_TIME_BEFORE_KILL: 1
-        NCPU_CORES: 3
         MEM_MB: 1024
       with:
         # Check available parameters in: https://github.com/ReactiveCircus/android-emulator-runner/blob/main/action.yml

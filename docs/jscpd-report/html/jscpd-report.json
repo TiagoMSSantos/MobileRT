@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-06-16T09:03:35.963Z",
+    "detectionDate": "2024-06-16T10:41:11.076Z",
     "formats": {
       "java": {
         "sources": {
@@ -1466,13 +1466,13 @@
           },
           "app/Components/Loaders/OBJLoader.cpp": {
             "lines": 513,
-            "tokens": 6521,
+            "tokens": 6527,
             "sources": 1,
             "clones": 10,
             "duplicatedLines": 120,
             "duplicatedTokens": 1444,
             "percentage": 23.39,
-            "percentageTokens": 22.14,
+            "percentageTokens": 22.12,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -1791,7 +1791,7 @@
         },
         "total": {
           "lines": 5695,
-          "tokens": 56228,
+          "tokens": 56234,
           "sources": 56,
           "clones": 30,
           "duplicatedLines": 282,
@@ -1961,26 +1961,26 @@
             "newClones": 0
           },
           ".github/workflows/android_repeatable.yml": {
-            "lines": 113,
-            "tokens": 760,
+            "lines": 112,
+            "tokens": 762,
             "sources": 1,
             "clones": 5,
             "duplicatedLines": 136,
             "duplicatedTokens": 809,
-            "percentage": 120.35,
-            "percentageTokens": 106.45,
+            "percentage": 121.43,
+            "percentageTokens": 106.17,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           ".github/workflows/android.yml": {
             "lines": 902,
-            "tokens": 6645,
+            "tokens": 6639,
             "sources": 1,
             "clones": 17,
             "duplicatedLines": 464,
             "duplicatedTokens": 3316,
             "percentage": 51.44,
-            "percentageTokens": 49.9,
+            "percentageTokens": 49.95,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2082,13 +2082,13 @@
           }
         },
         "total": {
-          "lines": 2757,
-          "tokens": 18363,
+          "lines": 2756,
+          "tokens": 18359,
           "sources": 23,
           "clones": 17,
           "duplicatedLines": 440,
           "duplicatedTokens": 2864,
-          "percentage": 15.96,
+          "percentage": 15.97,
           "percentageTokens": 15.6,
           "newDuplicatedLines": 0,
           "newClones": 0
@@ -2193,8 +2193,8 @@
             "newClones": 0
           },
           "scripts/helper_functions.sh": {
-            "lines": 516,
-            "tokens": 3683,
+            "lines": 520,
+            "tokens": 3717,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2254,13 +2254,13 @@
           }
         },
         "total": {
-          "lines": 4164,
-          "tokens": 27821,
+          "lines": 4168,
+          "tokens": 27855,
           "sources": 13,
           "clones": 12,
           "duplicatedLines": 263,
           "duplicatedTokens": 1345,
-          "percentage": 6.32,
+          "percentage": 6.31,
           "percentageTokens": 4.83,
           "newDuplicatedLines": 0,
           "newClones": 0
@@ -3164,8 +3164,8 @@
       }
     },
     "total": {
-      "lines": 29260,
-      "tokens": 225328,
+      "lines": 29263,
+      "tokens": 225364,
       "sources": 250,
       "clones": 125,
       "duplicatedLines": 1644,
@@ -6141,12 +6141,12 @@
         "startLoc": {
           "line": 262,
           "column": 12,
-          "position": 2949
+          "position": 2955
         },
         "endLoc": {
           "line": 275,
           "column": 4,
-          "position": 3106
+          "position": 3112
         }
       },
       "secondFile": {
@@ -6156,12 +6156,12 @@
         "startLoc": {
           "line": 233,
           "column": 5,
-          "position": 2649
+          "position": 2655
         },
         "endLoc": {
           "line": 252,
           "column": 4,
-          "position": 2806
+          "position": 2812
         }
       }
     },
@@ -6177,12 +6177,12 @@
         "startLoc": {
           "line": 390,
           "column": 2,
-          "position": 4782
+          "position": 4788
         },
         "endLoc": {
           "line": 404,
           "column": 2,
-          "position": 4925
+          "position": 4931
         }
       },
       "secondFile": {
@@ -6192,12 +6192,12 @@
         "startLoc": {
           "line": 369,
           "column": 2,
-          "position": 4579
+          "position": 4585
         },
         "endLoc": {
           "line": 383,
           "column": 2,
-          "position": 4722
+          "position": 4728
         }
       }
     },
@@ -6213,12 +6213,12 @@
         "startLoc": {
           "line": 434,
           "column": 21,
-          "position": 5360
+          "position": 5366
         },
         "endLoc": {
           "line": 443,
           "column": 2,
-          "position": 5463
+          "position": 5469
         }
       },
       "secondFile": {
@@ -6228,12 +6228,12 @@
         "startLoc": {
           "line": 390,
           "column": 25,
-          "position": 4776
+          "position": 4782
         },
         "endLoc": {
           "line": 378,
           "column": 2,
-          "position": 4676
+          "position": 4682
         }
       }
     },
@@ -6249,12 +6249,12 @@
         "startLoc": {
           "line": 441,
           "column": 7,
-          "position": 5457
+          "position": 5463
         },
         "endLoc": {
           "line": 459,
           "column": 35,
-          "position": 5678
+          "position": 5684
         }
       },
       "secondFile": {
@@ -6264,12 +6264,12 @@
         "startLoc": {
           "line": 402,
           "column": 9,
-          "position": 4919
+          "position": 4925
         },
         "endLoc": {
           "line": 421,
           "column": 5,
-          "position": 5141
+          "position": 5147
         }
       }
     },
@@ -7185,12 +7185,12 @@
         "startLoc": {
           "line": 567,
           "column": 5,
-          "position": 4392
+          "position": 4386
         },
         "endLoc": {
           "line": 607,
           "column": 69,
-          "position": 4608
+          "position": 4602
         }
       },
       "secondFile": {
@@ -7221,12 +7221,12 @@
         "startLoc": {
           "line": 607,
           "column": 5,
-          "position": 4608
+          "position": 4602
         },
         "endLoc": {
           "line": 626,
           "column": 9,
-          "position": 4742
+          "position": 4736
         }
       },
       "secondFile": {
@@ -7257,12 +7257,12 @@
         "startLoc": {
           "line": 626,
           "column": 5,
-          "position": 4737
+          "position": 4731
         },
         "endLoc": {
           "line": 639,
           "column": 6,
-          "position": 4904
+          "position": 4898
         }
       },
       "secondFile": {
@@ -7293,12 +7293,12 @@
         "startLoc": {
           "line": 713,
           "column": 9,
-          "position": 5361
+          "position": 5355
         },
         "endLoc": {
           "line": 788,
           "column": 74,
-          "position": 5819
+          "position": 5813
         }
       },
       "secondFile": {
@@ -7313,7 +7313,7 @@
         "endLoc": {
           "line": 652,
           "column": 74,
-          "position": 4934
+          "position": 4928
         }
       }
     },
@@ -7329,12 +7329,12 @@
         "startLoc": {
           "line": 800,
           "column": 7,
-          "position": 5908
+          "position": 5902
         },
         "endLoc": {
           "line": 808,
           "column": 6,
-          "position": 6040
+          "position": 6034
         }
       },
       "secondFile": {
@@ -7344,12 +7344,12 @@
         "startLoc": {
           "line": 505,
           "column": 7,
-          "position": 3753
+          "position": 3747
         },
         "endLoc": {
           "line": 513,
           "column": 4,
-          "position": 3885
+          "position": 3879
         }
       }
     },
@@ -7365,12 +7365,12 @@
         "startLoc": {
           "line": 835,
           "column": 5,
-          "position": 6193
+          "position": 6187
         },
         "endLoc": {
           "line": 865,
           "column": 8,
-          "position": 6399
+          "position": 6393
         }
       },
       "secondFile": {
@@ -7385,7 +7385,7 @@
         "endLoc": {
           "line": 790,
           "column": 7,
-          "position": 5828
+          "position": 5822
         }
       }
     },
