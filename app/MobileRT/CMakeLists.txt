@@ -51,42 +51,14 @@ target_compile_options( ${PROJECT_NAME} PRIVATE
 ###############################################################################
 
 if( DEFINED ANDROID_ABI )
-  message( STATUS "Android OS: Linking with JNI log and static OpenMP." )
-
-  target_link_libraries( ${PROJECT_NAME} PRIVATE libomp.a )
   target_link_libraries( ${PROJECT_NAME} PUBLIC log )
 else()
   if( CMAKE_HOST_SYSTEM MATCHES "Linux" )
-    if( CMAKE_CXX_COMPILER MATCHES "clang" )
-      message( STATUS "Linux OS: Linking Clang with dynamic OpenMP." )
-
-      target_link_libraries( ${PROJECT_NAME} PUBLIC -fopenmp=libiomp5 )
-    else()
-      message( STATUS "Linux OS: Linking GCC with dynamic OpenMP." )
-
-      target_link_libraries( ${PROJECT_NAME} PUBLIC -fopenmp )
-    endif()
-  else()
-    if( CMAKE_CXX_COMPILER_ID MATCHES "[Cc]lang" )
-      message( STATUS "Native OS: Linking Clang with dynamic OpenMP." )
-
-      target_link_directories( ${PROJECT_NAME} PRIVATE /usr/local/Cellar/llvm/11.0.1/lib )
-      target_link_libraries( ${PROJECT_NAME} PRIVATE omp )
-    else()
-      message( STATUS "Native OS: Linking GCC with dynamic OpenMP." )
-
-      if( NOT CMAKE_HOST_WIN32 MATCHES "1" AND NOT CMAKE_HOST_SYSTEM MATCHES "Darwin" )
-        target_link_libraries( ${PROJECT_NAME} PRIVATE gomp )
-      else()
-        target_link_libraries( ${PROJECT_NAME} PUBLIC -fopenmp )
-      endif()
-    endif()
+    message( STATUS "Detected Linux." )
   endif()
   message( STATUS "Native OS: Linking with pthread." )
-  find_package( OpenMP REQUIRED )
   if( CMAKE_HOST_WIN32 MATCHES "1" )
     find_package( Threads REQUIRED )
-    target_link_libraries( ${PROJECT_NAME} PRIVATE OpenMP::OpenMP_CXX )
   else()
     target_link_libraries( ${PROJECT_NAME} PUBLIC pthread )
   endif()

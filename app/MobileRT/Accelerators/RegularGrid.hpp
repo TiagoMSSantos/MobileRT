@@ -3,7 +3,7 @@
 
 #include "MobileRT/Accelerators/AABB.hpp"
 #include "MobileRT/Scene.hpp"
-#include <boost/thread/mutex.hpp>
+#include <mutex>
 #include <glm/glm.hpp>
 #include <vector>
 
@@ -62,7 +62,7 @@ namespace MobileRT {
         /**
          * The mutexes to allow multiple threads add primitives to the grid.
          */
-        ::std::vector<::boost::mutex> mutexes_ {};
+        ::std::vector<::std::mutex> mutexes_ {};
 
     private:
         void addPrimitives();
@@ -188,7 +188,7 @@ namespace MobileRT {
     void RegularGrid<T>::addPrimitives() {
         LOG_INFO("Will add primitives to RegularGrid (", typeid(T).name(), ")");
         ::MobileRT::checkSystemError("RegularGrid addPrimitives start");
-        this->mutexes_ = ::std::vector<::boost::mutex> (this->grid_.size());
+        this->mutexes_ = ::std::vector<::std::mutex> (this->grid_.size());
         ::MobileRT::checkSystemError("RegularGrid created mutexes");
 
         LOG_INFO("Adding primitives to RegularGrid (", typeid(T).name(), ") (mutexes: ", this->mutexes_.size(), " [", this->mutexes_.capacity(), ", ", this->mutexes_.max_size(), "])");
@@ -275,7 +275,7 @@ namespace MobileRT {
                         const bool intersectedBox {primitive.intersect(cell)};
                         if (intersectedBox) {
                             LOG_DEBUG("Adding primitive ", index, " (", idx, ") to RegularGrid (", typeid(T).name(), ") on coordinates: (", x, ", ", y, ", ", z, ")");
-                            const ::std::lock_guard<::boost::mutex> lock {this->mutexes_[idx]};
+                            const ::std::lock_guard<::std::mutex> lock {this->mutexes_[idx]};
                             LOG_DEBUG("Acquired lock to add primitive ", index, " (", idx, ") to RegularGrid (", typeid(T).name(), ") on coordinates: (", x, ", ", y, ", ", z, ")");
                             this->grid_[idx].emplace_back(&primitive);
                             LOG_DEBUG("Added primitive ", index, " to RegularGrid (", typeid(T).name(), ") on coordinates: (", x, ", ", y, ", ", z, ")");

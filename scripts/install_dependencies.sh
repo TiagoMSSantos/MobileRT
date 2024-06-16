@@ -107,7 +107,6 @@ install_dependencies_debian() {
     vim \
     findutils \
     sudo git git-lfs ca-certificates shellcheck \
-    libomp-dev \
     libatomic1 \
     qtbase5-dev qtbase5-dev-tools qtchooser qt5-qmake \
     g++ build-essential cmake make \
@@ -277,13 +276,6 @@ install_dependencies_macos() {
     echo 'Installing git via MacPorts failed. Installing git via Homebrew.';
     brew list git > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install git;
     brew list git-lfs > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install git-lfs;
-  fi
-  echo 'Installing OpenMP via MacPorts.';
-  sudo port -bn install libomp;
-  installedLibOmp=$?;
-  if [ "${installedLibOmp}" != "0" ]; then
-    echo 'Installing OpenMP via MacPorts failed. Installing OpenMP via Homebrew.';
-    brew list libomp > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install libomp;
   fi
   set -e;
 

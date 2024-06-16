@@ -78,7 +78,7 @@ bool OBJLoader::fillScene(Scene *const scene,
     ::MobileRT::checkSystemError("Starting to fill scene.");
     LOG_INFO("FILLING SCENE with ", this->numberTriangles_, " triangles in ", this->shapes_.size(), " shapes & ", this->materials_.size(), " materials");
     filePath = filePath.substr(0, filePath.find_last_of('/')) + '/';
-    ::boost::mutex mutex {};
+    ::std::mutex mutex {};
 
     const ::std::uint32_t numChildren {::std::thread::hardware_concurrency()};
     if (numChildren <= 0) {
@@ -279,7 +279,7 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
                                     const ::std::function<::std::unique_ptr<Sampler>()> &lambda,
                                     const ::std::string &filePath,
                                     ::std::unordered_map<::std::string, ::MobileRT::Texture> *const texturesCache,
-                                    ::boost::mutex *const mutex) {
+                                    ::std::mutex *const mutex) {
     ::std::vector<Triangle> triangles {};
     ::std::vector<::std::unique_ptr<Light>> lights {};
     const ::std::uint32_t shapesSize {static_cast<::std::uint32_t> (this->shapes_.size())};
@@ -405,7 +405,7 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
 
                         ::std::int32_t materialIndex {-1};
                         {
-                            const ::std::lock_guard<::boost::mutex> lock {*mutex};
+                            const ::std::lock_guard<::std::mutex> lock {*mutex};
                             const auto itFoundMat {::std::find(scene->materials_.begin(), scene->materials_.end(), material)};
                             if (itFoundMat != scene->materials_.cend()) {
                                 // If the material is already in the scene.
@@ -443,7 +443,7 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
                     };
                     ::std::int32_t materialIndex {-1};
                     {
-                        const ::std::lock_guard<::boost::mutex> lock {*mutex};
+                        const ::std::lock_guard<::std::mutex> lock {*mutex};
                         const auto itFoundMat {::std::find(scene->materials_.begin(), scene->materials_.end(), material)};
                         if (itFoundMat != scene->materials_.cend()) {
                             // If the material is already in the scene.
@@ -469,7 +469,7 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
     } // Loop over shapes.
 
     {
-        const ::std::lock_guard<::boost::mutex> lock {*mutex};
+        const ::std::lock_guard<::std::mutex> lock {*mutex};
         if (triangles.size() > 0) {
             LOG_INFO("Local triangles: ", triangles.size(), ", total: ", scene->triangles_.size(), ", last triangle: ", triangles.back());
         }

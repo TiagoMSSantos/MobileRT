@@ -80,25 +80,6 @@ printEnvironment;
 
 
 ###############################################################################
-# Fix llvm clang OpenMP library for MacOS.
-###############################################################################
-addOpenMpPath() {
-  OPENMP_INCLUDE_PATH="$(find /usr/local/Cellar/libomp /opt/homebrew/opt/libomp/include -iname "omp.h" | head -1 2> /dev/null || true)";
-  OPENMP_LIB_PATH="$(find /usr/local/Cellar/libomp /opt/homebrew/opt/libomp/lib -iname "libomp.dylib" | head -1 2> /dev/null || true)";
-
-  echo "OPENMP_INCLUDE_PATH = ${OPENMP_INCLUDE_PATH}";
-  echo "OPENMP_LIB_PATH = ${OPENMP_LIB_PATH}";
-  set +u;
-  export CPLUS_INCLUDE_PATH="${OPENMP_INCLUDE_PATH%/omp.h}:${CPLUS_INCLUDE_PATH}";
-  export LIBRARY_PATH="${OPENMP_LIB_PATH%/libomp.dylib}:${LIBRARY_PATH}";
-  set -u;
-}
-addOpenMpPath;
-###############################################################################
-###############################################################################
-
-
-###############################################################################
 # Get the proper C compiler for conan.
 #
 # For more info, check:

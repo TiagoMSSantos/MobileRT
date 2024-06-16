@@ -127,7 +127,6 @@
 - [x] Support rules with optimizations for proguard
 - [x] Support C++ compilation with optimization flags
 - [x] Support C++ exceptions
-- [x] Support C++ OpenMP
 - [x] Support CMake jobs to improve building time
 - [x] Support CMake to clone the third party repositories
 - [x] Support CMake to pull new versions of third party repositories

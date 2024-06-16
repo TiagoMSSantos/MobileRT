@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-06-16T10:41:11.076Z",
+    "detectionDate": "2024-06-16T17:49:06.175Z",
     "formats": {
       "java": {
         "sources": {
@@ -2169,26 +2169,26 @@
             "newClones": 0
           },
           "scripts/profile.sh": {
-            "lines": 504,
-            "tokens": 3293,
+            "lines": 503,
+            "tokens": 3286,
             "sources": 1,
             "clones": 7,
             "duplicatedLines": 109,
             "duplicatedTokens": 797,
-            "percentage": 21.63,
-            "percentageTokens": 24.2,
+            "percentage": 21.67,
+            "percentageTokens": 24.25,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "scripts/install_dependencies.sh": {
-            "lines": 514,
-            "tokens": 4111,
+            "lines": 506,
+            "tokens": 4026,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 42,
             "duplicatedTokens": 120,
-            "percentage": 8.17,
-            "percentageTokens": 2.92,
+            "percentage": 8.3,
+            "percentageTokens": 2.98,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2217,8 +2217,8 @@
             "newClones": 0
           },
           "scripts/compile_native.sh": {
-            "lines": 329,
-            "tokens": 1936,
+            "lines": 310,
+            "tokens": 1816,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2254,14 +2254,14 @@
           }
         },
         "total": {
-          "lines": 4168,
-          "tokens": 27855,
+          "lines": 4140,
+          "tokens": 27643,
           "sources": 13,
           "clones": 12,
           "duplicatedLines": 263,
           "duplicatedTokens": 1345,
-          "percentage": 6.31,
-          "percentageTokens": 4.83,
+          "percentage": 6.35,
+          "percentageTokens": 4.87,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2317,8 +2317,8 @@
             "newClones": 0
           },
           "app/MobileRT/CMakeLists.txt": {
-            "lines": 99,
-            "tokens": 524,
+            "lines": 71,
+            "tokens": 444,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2377,8 +2377,8 @@
             "newClones": 0
           },
           "docs/FEATURES.md": {
-            "lines": 215,
-            "tokens": 2457,
+            "lines": 214,
+            "tokens": 2447,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2425,8 +2425,8 @@
             "newClones": 0
           },
           "app/CMakeLists.txt": {
-            "lines": 606,
-            "tokens": 3717,
+            "lines": 569,
+            "tokens": 3511,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2450,14 +2450,14 @@
           }
         },
         "total": {
-          "lines": 2302,
-          "tokens": 22333,
+          "lines": 2236,
+          "tokens": 22037,
           "sources": 15,
           "clones": 1,
           "duplicatedLines": 23,
           "duplicatedTokens": 92,
-          "percentage": 1,
-          "percentageTokens": 0.41,
+          "percentage": 1.03,
+          "percentageTokens": 0.42,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3164,14 +3164,14 @@
       }
     },
     "total": {
-      "lines": 29263,
-      "tokens": 225364,
+      "lines": 29169,
+      "tokens": 224856,
       "sources": 250,
       "clones": 125,
       "duplicatedLines": 1644,
       "duplicatedTokens": 14449,
-      "percentage": 5.62,
-      "percentageTokens": 6.41,
+      "percentage": 5.64,
+      "percentageTokens": 6.43,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -5916,7 +5916,7 @@
     {
       "format": "cpp-header",
       "lines": 7,
-      "fragment": "ntersection;\n                    }\n                    tmax[2] = (tmax[2] + tdelta[2]);\n                }\n            }\n\n        }\n        testloop:\n        while (true) {\n\n            // Get the primitives in the cell.\n            const ::std::int32_t index {getCellIndex(cellX, cellY, cellZ)};\n            const auto itPrimitives {this->grid_.beg",
+      "fragment": "                }\n                    tmax[2] = (tmax[2] + tdelta[2]);\n                }\n            }\n\n        }\n        testloop:\n        while (true) {\n\n            // Get the primitives in the cell.\n            const ::std::int32_t index {getCellIndex(cellX, cellY, cellZ)};\n            const auto itPrimitives {this->grid_.begin() + index};\n  ",
       "tokens": 0,
       "firstFile": {
         "name": "app/MobileRT/Accelerators/RegularGrid.hpp",
@@ -5952,7 +5952,7 @@
     {
       "format": "cpp-header",
       "lines": 13,
-      "fragment": "                        break;\n                    }\n                    cellY += stepY;\n                    if (cellY == outY) {\n                        break;\n                    }\n                    tmax[1] = (tmax[1] + tdelta[1]);\n                } else {\n                    if (intersection.length_ < tmax[2]) {\n                        break;\n              ",
+      "fragment": "       break;\n                    }\n                    cellY += stepY;\n                    if (cellY == outY) {\n                        break;\n                    }\n                    tmax[1] = (tmax[1] + tdelta[1]);\n                } else {\n                    if (intersection.length_ < tmax[2]) {\n                        break;\n                    }\n         ",
       "tokens": 0,
       "firstFile": {
         "name": "app/MobileRT/Accelerators/RegularGrid.hpp",
@@ -6240,7 +6240,7 @@
     {
       "format": "cpp",
       "lines": 19,
-      "fragment": "        .withNormals(\n                            ::std::get<0>(normal),\n                            ::std::get<1>(normal),\n                            ::std::get<2>(normal)\n                        )\n                    };\n                    ::std::int32_t materialIndex {-1};\n                    {\n                        const ::std::lock_guard<::boost::mutex> lock {*mutex};\n                        const auto itFoundMat {::std::find(scene->materials_.begin(), scene->materials_.end(), material)};\n                        if (itFoundMat != scene->materials_.cend()) {\n                            // If the material is already in the scene.\n                            materialIndex = static_cast<::std::int32_t> (itFoundMat - scene->materials_.cbegin());\n                        } else {\n                            // If the scene doesn't have material yet.\n                            materialIndex = static_cast<::std::int32_t> (scene->materials_.size());\n                            scene->materials_.emplace_back(::std::move(material));\n                        }\n          ",
+      "fragment": "        .withNormals(\n                            ::std::get<0>(normal),\n                            ::std::get<1>(normal),\n                            ::std::get<2>(normal)\n                        )\n                    };\n                    ::std::int32_t materialIndex {-1};\n                    {\n                        const ::std::lock_guard<::std::mutex> lock {*mutex};\n                        const auto itFoundMat {::std::find(scene->materials_.begin(), scene->materials_.end(), material)};\n                        if (itFoundMat != scene->materials_.cend()) {\n                            // If the material is already in the scene.\n                            materialIndex = static_cast<::std::int32_t> (itFoundMat - scene->materials_.cbegin());\n                        } else {\n                            // If the scene doesn't have material yet.\n                            materialIndex = static_cast<::std::int32_t> (scene->materials_.size());\n                            scene->materials_.emplace_back(::std::move(material));\n                        }\n          ",
       "tokens": 0,
       "firstFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
@@ -7540,17 +7540,17 @@
       "tokens": 0,
       "firstFile": {
         "name": "scripts/profile.sh",
-        "start": 395,
-        "end": 414,
+        "start": 394,
+        "end": 413,
         "startLoc": {
-          "line": 395,
+          "line": 394,
           "column": 2,
-          "position": 2462
+          "position": 2455
         },
         "endLoc": {
-          "line": 414,
+          "line": 413,
           "column": 5,
-          "position": 2602
+          "position": 2595
         }
       },
       "secondFile": {

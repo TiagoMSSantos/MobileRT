@@ -130,14 +130,7 @@ if( NOT DEFINED ANDROID_ABI )
     message( STATUS "Detected native MacOS." )
 
     message( STATUS "Add linker flag to link with Qt framework in MacOS." )
-    set( CMAKE_SHARED_LIBRARY_SONAME_CXX_FLAG "-Wl,-install_name,"
-      CACHE STRING "CUSTOM" FORCE )
-
-    message( STATUS "Link to OpenMP lib." )
-    set( OpenMP_CXX_FLAGS "-fopenmp" CACHE STRING "CUSTOM" FORCE )
-    set( OpenMP_CXX_LIB_NAMES "libomp" CACHE STRING "CUSTOM" FORCE )
-    set( OpenMP_libomp_LIBRARY "${OpenMP_CXX_LIB_NAMES}" CACHE STRING "CUSTOM" FORCE )
-    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -isystem /opt/local/include/libomp -L/opt/local/lib/libomp" CACHE STRING "CUSTOM" FORCE )
+    set( CMAKE_SHARED_LIBRARY_SONAME_CXX_FLAG "-Wl,-install_name," CACHE STRING "CUSTOM" FORCE )
   endif()
 endif()
 
@@ -208,11 +201,8 @@ else()
   set( COMMON_LINKER_FLAGS "${COMMON_LINKER_FLAGS}" -std=c++11 )
 endif()
 
-message( STATUS
-  "Setting up the name of the OS and the proper interface layer." )
+message( STATUS "Setting up the name of the OS and the proper interface layer." )
 message( STATUS "Host system: ${CMAKE_HOST_SYSTEM_NAME}." )
-# Use to make MacOS use the right OpenMP headers
-#set( CMAKE_SYSTEM_NAME "Linux" )
 if( DEFINED ANDROID_ABI )
   message( STATUS "Detected Android OS." )
 
@@ -280,12 +270,6 @@ if( DEFINED ANDROID_ABI AND NOT CMAKE_HOST_WIN32 MATCHES "1" )
 endif()
 
 message( STATUS "CMAKE_HOST_SYSTEM_NAME = ${CMAKE_HOST_SYSTEM_NAME}" )
-if( NOT DEFINED ANDROID_ABI AND CMAKE_HOST_SYSTEM_NAME MATCHES "Darwin" )
-  message( STATUS "Detected native MacOS." )
-
-  # Turn off the warning flag because of OpenMP in MacOS
-  set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-reserved-id-macro )
-endif()
 
 if( NOT DEFINED ANDROID_ABI AND CMAKE_HOST_SYSTEM_NAME MATCHES "Darwin" )
   message( STATUS "Detected native MacOS." )
@@ -354,27 +338,6 @@ if( DEFINED ANDROID_ABI OR CMAKE_CXX_COMPILER MATCHES "clang" )
   # Turn off exit time destructors warning because of the usage of
   # static variables in namespaces
   set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-exit-time-destructors )
-endif()
-
-if( DEFINED ANDROID_ABI
-    OR CMAKE_CXX_COMPILER MATCHES "clang" AND CMAKE_HOST_SYSTEM MATCHES "Linux"
-)
-  message( STATUS "Detected Android OS or Clang compiler in Linux." )
-  message( STATUS "Adding OpenMP." )
-
-  # Xpreprocessor: it passes an option to the preprocessor. It is useful to
-  # pass options that GCC doesn't recognize.
-  set( COMMON_FLAGS "${COMMON_FLAGS}" -Xpreprocessor -fopenmp )
-  if( NOT DEFINED ANDROID_ABI )
-    set( COMMON_FLAGS "${COMMON_FLAGS}" -openmp )
-  endif()
-else()
-  message( STATUS "Detected Mac or Windows OS or GCC compiler." )
-
-  if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
-    message( STATUS "Adding OpenMP." )
-    set( COMMON_FLAGS "${COMMON_FLAGS}" -Xpreprocessor -fopenmp )
-  endif()
 endif()
 
 if( NOT CMAKE_HOST_WIN32 MATCHES "1" )

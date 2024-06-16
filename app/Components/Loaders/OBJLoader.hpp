@@ -6,8 +6,8 @@
 #include "MobileRT/Scene.hpp"
 #include "MobileRT/Texture.hpp"
 
+#include <mutex>
 #include <unordered_map>
-#include <boost/thread/mutex.hpp>
 #include <tinyobjloader/tiny_obj_loader.h>
 
 namespace Components {
@@ -72,7 +72,7 @@ namespace Components {
                                  const ::std::function<::std::unique_ptr<::MobileRT::Sampler>()> &lambda,
                                  const ::std::string &filePath,
                                  ::std::unordered_map<::std::string, ::MobileRT::Texture> *const texturesCache,
-                                 ::boost::mutex *const mutex);
+                                 ::std::mutex *const mutex);
 
     public:
         static const ::MobileRT::Texture& getTextureFromCache(
