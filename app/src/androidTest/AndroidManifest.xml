@@ -18,7 +18,7 @@
         android:hardwareAccelerated="false"
         android:label="MobileRT_test"
         android:requestLegacyExternalStorage="true"
-        tools:targetApi="s">
+        tools:targetApi="r">
         <activity
             android:name="puscas.mobilertapp.MainActivity"
             android:exported="true">

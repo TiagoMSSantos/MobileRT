@@ -171,7 +171,7 @@ public abstract class AbstractTest {
         // Note that 'Activity#isDestroyed' only exists on Android API 17+.
         // More info: https://developer.android.com/reference/android/app/Activity#isDestroyed()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            return !activity.isFinishing() || !activity.isDestroyed();
+            return !activity.isDestroyed();
         } else {
             final ActivityManager activityManager = (ActivityManager) activity.getSystemService(Context.ACTIVITY_SERVICE);
             final List<ActivityManager.RunningTaskInfo> tasksRunning = activityManager.getRunningTasks(Integer.MAX_VALUE);
@@ -197,6 +197,13 @@ public abstract class AbstractTest {
                 context.getPackageName(), Manifest.permission.READ_EXTERNAL_STORAGE
             );
             waitForPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE);
+
+            // Necessary for the tests and MobileRT to be able to read any file from SD Card, by having the permission: 'MANAGE_EXTERNAL_STORAGE'.
+            InstrumentationRegistry.getInstrumentation().getUiAutomation().adoptShellPermissionIdentity();
+            InstrumentationRegistry.getInstrumentation().getUiAutomation().grantRuntimePermission(
+                InstrumentationRegistry.getInstrumentation().getContext().getPackageName(), Manifest.permission.READ_EXTERNAL_STORAGE
+            );
+            waitForPermission(InstrumentationRegistry.getInstrumentation().getContext(), Manifest.permission.READ_EXTERNAL_STORAGE);
         }
         logger.info("Permissions granted.");
     }
@@ -208,12 +215,20 @@ public abstract class AbstractTest {
      * @param permission The permission which should be granted.
      */
     private static void waitForPermission(@NonNull final Context context, @NonNull final String permission) {
-        while (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
-            logger.info("Waiting for the permission '" + permission + "'to be granted to the app.");
+        final long timeSecsToWait = 20L;
+        final long advanceSecs = 2L;
+        long currentTimeSecs = 0L;
+        while (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED && currentTimeSecs < timeSecsToWait) {
+            logger.info("Waiting for the permission '" + permission + "' to be granted to the app: " + context.getPackageName());
             UtilsT.waitForAppToIdle();
-            Uninterruptibles.sleepUninterruptibly(2L, TimeUnit.SECONDS);
+            Uninterruptibles.sleepUninterruptibly(advanceSecs, TimeUnit.SECONDS);
+            currentTimeSecs += advanceSecs;
         }
-        logger.info("Permission '" + permission + "' granted to the app!");
+        if (ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED) {
+            logger.info("Permission '" + permission + "' granted to the app: " + context.getPackageName());
+        } else {
+            throw new RuntimeException("Permission '" + permission + "' NOT granted to the app: " + context.getPackageName());
+        }
     }
 
     /**
@@ -280,7 +295,7 @@ public abstract class AbstractTest {
      */
     protected void mockFileManagerReply(final boolean externalSdcard, @NonNull final String... filesPath) {
         logger.info(ConstantsAndroidTests.MOCK_FILE_MANAGER_REPLY);
-        final Intent resultData = MainActivity.createIntentToLoadFiles();
+        final Intent resultData = MainActivity.createIntentToLoadFiles(this.activity.getPackageName());
         final String storagePath = externalSdcard ? UtilsContext.getSdCardPath(this.activity) : UtilsContext.getInternalStoragePath(this.activity);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             final Uri firstFile = Uri.fromFile(new File(storagePath + ConstantsUI.FILE_SEPARATOR + filesPath[0]));

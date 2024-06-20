@@ -196,7 +196,7 @@ OBJLoader::triple<::glm::vec2, ::glm::vec2, ::glm::vec2> OBJLoader::normalizeTex
 ) {
     if (!texture.isValid()) {// If the texture is not valid.
         // Reset texture coordinates to -1.
-        LOG_DEBUG("Reseting texture coordinates to: -1");
+        LOG_DEBUG("Resetting texture coordinates to: -1");
         return triple<::glm::vec2, ::glm::vec2, ::glm::vec2> {
             ::glm::vec2 {-1}, ::glm::vec2 {-1}, ::glm::vec2 {-1}
         };

@@ -417,15 +417,15 @@ public final class MainActivity extends Activity {
      * Helper method which creates an {@link Intent} with the goal to ask Android System to read
      * some files by an external file manager.
      *
+     * @param packageName The name of the Android package.
      * @return The {@link Intent} to load files.
      */
-    public static Intent createIntentToLoadFiles() {
-        final Intent intent;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-        } else {
-            intent = new Intent(Intent.ACTION_GET_CONTENT);
-        }
+    public static Intent createIntentToLoadFiles(@NonNull final String packageName) {
+        final String message = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
+            ? "Requesting Intent to load a file for: '" + packageName + "' (has shared/external file access: " + Environment.isExternalStorageManager() + ")"
+            : "Requesting Intent to load a file for: '" + packageName + "'";
+        logger.info(message);
+        final Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.putExtra(Intent.EXTRA_TITLE, "Select an OBJ file to load.");
         intent.setType("*" + ConstantsUI.FILE_SEPARATOR + "*");
         intent.addCategory(Intent.CATEGORY_OPENABLE);
@@ -692,11 +692,12 @@ public final class MainActivity extends Activity {
      */
     private void readFile(@NonNull final Uri uri) {
         logger.info("readFile");
-        final List<String> allowedPaths = List.of(Environment.getExternalStorageDirectory().getPath(), "/data/local/tmp/", "/storage/");
+        final List<String> allowedPaths = List.of(UtilsContext.getSdCardPath(this), UtilsContext.getInternalStoragePath(this));
         final boolean isAllowedPath;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             final Path normalizedPath = FileSystems.getDefault().getPath(uri.getPath()).normalize();
-            isAllowedPath = allowedPaths.stream().anyMatch(normalizedPath::startsWith);
+            final String normalizedPathStr = UtilsContext.cleanStoragePath(normalizedPath.toFile().getAbsolutePath());
+            isAllowedPath = allowedPaths.stream().anyMatch(normalizedPathStr::startsWith);
         } else {
             final String normalizedPath = Files.simplifyPath(new File(Objects.requireNonNull(uri.getPath())).getAbsolutePath());
             isAllowedPath = StreamSupport.stream(allowedPaths).anyMatch(normalizedPath::startsWith);
@@ -770,7 +771,7 @@ public final class MainActivity extends Activity {
      */
     private void callFileManager() {
         logger.info("callFileManager");
-        final Intent intent = createIntentToLoadFiles();
+        final Intent intent = createIntentToLoadFiles(getPackageName());
         try {
             startActivityForResult(intent, OPEN_FILE_REQUEST_CODE);
         } catch (final ActivityNotFoundException ex) {

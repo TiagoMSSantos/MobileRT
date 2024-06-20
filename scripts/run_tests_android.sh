@@ -403,8 +403,7 @@ copyResources() {
 
   echo 'Change resources permissions';
   callAdbShellCommandUntilSuccess adb shell 'chmod -R 777 '${mobilert_path}'; echo ::$?::';
-  # Doesn't work on Android API 24.
-  # callAdbShellCommandUntilSuccess adb shell 'chmod -R 777 '${sdcard_path_android}'; echo ::$?::';
+  callAdbShellCommandUntilSuccess adb shell 'chmod -R 777 '${sdcard_path_android}'; echo ::$?::';
 
   echo 'Install File Manager';
   set +e;
@@ -506,6 +505,7 @@ runUnitTests() {
 verifyResources() {
   echo 'Verify resources in SD Card';
   callCommandUntilSuccess 5 adb shell 'ls -laR '${mobilert_path}/WavefrontOBJs;
+  callCommandUntilSuccess 5 adb shell 'ls -laR '${sdcard_path_android};
   callCommandUntilSuccess 5 adb shell 'ls -laR '${sdcard_path_android}/WavefrontOBJs;
 
   echo 'Verify memory available on host:';
@@ -567,18 +567,15 @@ runInstrumentationTests() {
   set -e;
   callAdbShellCommandUntilSuccess adb shell 'pm install -r '${mobilert_path}'/app-'${type}'.apk; echo ::$?::';
   callAdbShellCommandUntilSuccess adb shell 'pm install -r '${mobilert_path}'/app-'${type}'-androidTest.apk; echo ::$?::';
-  if { [ "${androidApi}" -gt 22 ] && [ "${androidApi}" -lt 28 ]; } || [ "${androidApi}" -gt 33 ]; then
-    echo 'Granting read external SD Card to MobileRT.';
-    callAdbShellCommandUntilSuccess adb shell 'pm grant puscas.mobilertapp android.permission.READ_EXTERNAL_STORAGE; echo ::$?::';
-    callAdbShellCommandUntilSuccess adb shell 'pm grant puscas.mobilertapp.test android.permission.READ_EXTERNAL_STORAGE; echo ::$?::';
-  fi
   if [ "${androidApi}" -gt 29 ]; then
     echo 'Giving permissions for MobileRT app to access any file from the external storage.';
-    callAdbShellCommandUntilSuccess adb shell 'appops set --uid puscas.mobilertapp MANAGE_EXTERNAL_STORAGE allow; echo ::$?::';
-    callAdbShellCommandUntilSuccess adb shell 'appops set --uid puscas.mobilertapp READ_EXTERNAL_STORAGE allow; echo ::$?::';
-
     callAdbShellCommandUntilSuccess adb shell 'appops set --uid puscas.mobilertapp.test MANAGE_EXTERNAL_STORAGE allow; echo ::$?::';
-    callAdbShellCommandUntilSuccess adb shell 'appops set --uid puscas.mobilertapp.test READ_EXTERNAL_STORAGE allow; echo ::$?::';
+    callAdbShellCommandUntilSuccess adb shell 'appops set --uid puscas.mobilertapp MANAGE_EXTERNAL_STORAGE allow; echo ::$?::';
+  fi
+  if { [ "${androidApi}" -gt 22 ] && [ "${androidApi}" -lt 28 ]; } || [ "${androidApi}" = 30 ] || [ "${androidApi}" -gt 33 ]; then
+    echo 'Granting read external SD Card to MobileRT.';
+    callAdbShellCommandUntilSuccess adb shell 'pm grant puscas.mobilertapp.test android.permission.READ_EXTERNAL_STORAGE; echo ::$?::';
+    callAdbShellCommandUntilSuccess adb shell 'pm grant puscas.mobilertapp android.permission.READ_EXTERNAL_STORAGE; echo ::$?::';
   fi
   echo 'List of instrumented APKs:';
   adb shell 'pm list instrumentation;';

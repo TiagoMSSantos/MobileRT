@@ -283,6 +283,17 @@ public final class UtilsContext {
             storagePathCleaned = storagePathCleaned.substring(0, storagePathCleaned.length() - 9);
         }
 
+        // Replace prefix document path
+        if (storagePathCleaned.startsWith("/document/")) {
+            storagePathCleaned = storagePathCleaned.replaceFirst("/document/", "/storage/");
+        }
+
+        // Replace first ':' found in path by '/'
+        final int replacePathDivisor = storagePathCleaned.indexOf(":");
+        if (replacePathDivisor >= 0) {
+            storagePathCleaned = storagePathCleaned.replaceFirst(":", "/");
+        }
+
         return storagePathCleaned;
     }
 
@@ -319,9 +330,7 @@ public final class UtilsContext {
      */
     public static void checksStoragePermission(@NonNull final Activity activity) {
         logger.info("checksStoragePermission");
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-            logger.info("Android 14 detected, so not asking for read external SD card permissions.");
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             checksAccessPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE);
         }
     }
