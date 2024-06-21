@@ -2,7 +2,7 @@
                        // <!--
                        window.initialData = {
   "statistics": {
-    "detectionDate": "2024-06-16T18:19:17.580Z",
+    "detectionDate": "2024-06-21T19:46:16.539Z",
     "formats": {
       "java": {
         "sources": {
@@ -403,8 +403,8 @@
             "newClones": 0
           },
           "app/src/main/java/puscas/mobilertapp/utils/UtilsContext.java": {
-            "lines": 347,
-            "tokens": 2509,
+            "lines": 356,
+            "tokens": 2565,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -871,8 +871,8 @@
             "newClones": 0
           },
           "app/src/main/java/puscas/mobilertapp/MainActivity.java": {
-            "lines": 991,
-            "tokens": 7975,
+            "lines": 992,
+            "tokens": 8030,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -991,27 +991,27 @@
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/AbstractTest.java": {
-            "lines": 302,
-            "tokens": 2371,
+            "lines": 321,
+            "tokens": 2616,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 15,
             "duplicatedTokens": 114,
-            "percentage": 4.97,
-            "percentageTokens": 4.81,
+            "percentage": 4.67,
+            "percentageTokens": 4.36,
             "newDuplicatedLines": 0,
             "newClones": 0
           }
         },
         "total": {
-          "lines": 10149,
-          "tokens": 71213,
+          "lines": 10178,
+          "tokens": 71569,
           "sources": 83,
           "clones": 62,
           "duplicatedLines": 607,
           "duplicatedTokens": 5492,
-          "percentage": 5.98,
-          "percentageTokens": 7.71,
+          "percentage": 5.96,
+          "percentageTokens": 7.67,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -1963,14 +1963,14 @@
             "newClones": 0
           },
           ".github/workflows/android_repeatable.yml": {
-            "lines": 112,
-            "tokens": 762,
+            "lines": 122,
+            "tokens": 810,
             "sources": 1,
-            "clones": 5,
-            "duplicatedLines": 136,
-            "duplicatedTokens": 809,
-            "percentage": 121.43,
-            "percentageTokens": 106.17,
+            "clones": 6,
+            "duplicatedLines": 156,
+            "duplicatedTokens": 913,
+            "percentage": 127.87,
+            "percentageTokens": 112.72,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -1978,11 +1978,11 @@
             "lines": 902,
             "tokens": 6639,
             "sources": 1,
-            "clones": 17,
-            "duplicatedLines": 464,
-            "duplicatedTokens": 3316,
-            "percentage": 51.44,
-            "percentageTokens": 49.95,
+            "clones": 18,
+            "duplicatedLines": 484,
+            "duplicatedTokens": 3420,
+            "percentage": 53.66,
+            "percentageTokens": 51.51,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2084,14 +2084,14 @@
           }
         },
         "total": {
-          "lines": 2746,
-          "tokens": 18303,
+          "lines": 2756,
+          "tokens": 18351,
           "sources": 23,
-          "clones": 17,
-          "duplicatedLines": 440,
-          "duplicatedTokens": 2864,
-          "percentage": 16.02,
-          "percentageTokens": 15.65,
+          "clones": 18,
+          "duplicatedLines": 460,
+          "duplicatedTokens": 2968,
+          "percentage": 16.69,
+          "percentageTokens": 16.17,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2147,8 +2147,8 @@
             "newClones": 0
           },
           "scripts/run_tests_android.sh": {
-            "lines": 672,
-            "tokens": 4869,
+            "lines": 669,
+            "tokens": 4879,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2256,14 +2256,14 @@
           }
         },
         "total": {
-          "lines": 4140,
-          "tokens": 27643,
+          "lines": 4137,
+          "tokens": 27653,
           "sources": 13,
           "clones": 12,
           "duplicatedLines": 263,
           "duplicatedTokens": 1345,
-          "percentage": 6.35,
-          "percentageTokens": 4.87,
+          "percentage": 6.36,
+          "percentageTokens": 4.86,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3166,14 +3166,14 @@
       }
     },
     "total": {
-      "lines": 29159,
-      "tokens": 224800,
+      "lines": 29195,
+      "tokens": 225214,
       "sources": 250,
-      "clones": 125,
-      "duplicatedLines": 1644,
-      "duplicatedTokens": 14449,
-      "percentage": 5.64,
-      "percentageTokens": 6.43,
+      "clones": 126,
+      "duplicatedLines": 1664,
+      "duplicatedTokens": 14553,
+      "percentage": 5.7,
+      "percentageTokens": 6.46,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -7172,6 +7172,42 @@
           "line": 262,
           "column": 2,
           "position": 1414
+        }
+      }
+    },
+    {
+      "format": "yaml",
+      "lines": 21,
+      "fragment": "- name: Set Android CPU Architecture\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n      if: success()\n      run: |\n        if [ \"${{ matrix.android_api }}\" -gt 29 ]; then\n          echo 'ANDROID_ARCH=x86_64' >> \"${GITHUB_ENV}\";\n        else\n          echo 'ANDROID_ARCH=x86' >> \"${GITHUB_ENV}\";\n        fi\n        . scripts/helper_functions.sh && parallelizeBuild && echo \"NCPU_CORES=${NCPU_CORES}\" >> \"${GITHUB_ENV}\";\n\n    - name: Enable KVM group permissions\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n      if: success() && startsWith(matrix.host_os, 'ubuntu')\n      run: |\n        echo 'KERNEL==\"kvm\", GROUP=\"kvm\", MODE=\"0666\", OPTIONS+=\"static_node=kvm\"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules;\n        sudo udevadm control --reload-rules;\n        sudo udevadm trigger --name-match=kvm;\n\n    - name: Run Android tests\n      timeout-minutes: $",
+      "tokens": 0,
+      "firstFile": {
+        "name": ".github/workflows/android.yml",
+        "start": 430,
+        "end": 450,
+        "startLoc": {
+          "line": 430,
+          "column": 5,
+          "position": 3044
+        },
+        "endLoc": {
+          "line": 450,
+          "column": 2,
+          "position": 3148
+        }
+      },
+      "secondFile": {
+        "name": ".github/workflows/android_repeatable.yml",
+        "start": 76,
+        "end": 96,
+        "startLoc": {
+          "line": 76,
+          "column": 5,
+          "position": 450
+        },
+        "endLoc": {
+          "line": 96,
+          "column": 3,
+          "position": 554
         }
       }
     },

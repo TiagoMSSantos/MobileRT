@@ -123,10 +123,10 @@ public abstract class AbstractTest {
         grantPermissions(this.activity);
 
         Intents.init();
-
         UtilsT.waitForAppToIdle();
         // Wait a bit for the permissions to be granted to the app before starting the test. Necessary for Android 12+.
         Uninterruptibles.sleepUninterruptibly(2L, TimeUnit.SECONDS);
+
         logger.info(methodName + ": " + this.testName.getMethodName() + " started");
     }
 
@@ -154,6 +154,8 @@ public abstract class AbstractTest {
             Uninterruptibles.sleepUninterruptibly(1L, TimeUnit.SECONDS);
             UtilsT.waitForAppToIdle();
         }
+        // Wait for the app to be closed. Necessary for Android 12+.
+        this.mainActivityActivityTestRule.close();
         UtilsT.waitForAppToIdle();
         logger.info("Activity finished.");
 
@@ -198,8 +200,10 @@ public abstract class AbstractTest {
             );
             waitForPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE);
 
-            // Necessary for the tests and MobileRT to be able to read any file from SD Card, by having the permission: 'MANAGE_EXTERNAL_STORAGE'.
-            InstrumentationRegistry.getInstrumentation().getUiAutomation().adoptShellPermissionIdentity();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                // Necessary for the tests and MobileRT to be able to read any file from SD Card, by having the permission: 'MANAGE_EXTERNAL_STORAGE'.
+                InstrumentationRegistry.getInstrumentation().getUiAutomation().adoptShellPermissionIdentity();
+            }
             InstrumentationRegistry.getInstrumentation().getUiAutomation().grantRuntimePermission(
                 InstrumentationRegistry.getInstrumentation().getContext().getPackageName(), Manifest.permission.READ_EXTERNAL_STORAGE
             );
