@@ -57,7 +57,7 @@ buildscript {
             androidX_appcompat_version = '1.6.1'
         }
         if (project.properties["common_libraries_android_framework_version"] == null) {
-            common_libraries_android_framework_version = '1.12.0'
+            common_libraries_android_framework_version = '1.13.1'
         }
         if (project.properties["ndk_version"] == null) {
             ndk_version = '23.2.8568313'
