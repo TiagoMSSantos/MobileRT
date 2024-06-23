@@ -130,6 +130,20 @@
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
+        "common_libraries_android_framework_version = ['\"](?<currentValue>.*)['\"]"
+      ],
+      "depNameTemplate": "androidx.core:core",
+      "datasourceTemplate": "maven",
+      "versioningTemplate": "gradle",
+      "customType": "regex",
+      "registryUrlTemplate": "https://dl.google.com/android/maven2"
+    },
+    {
+      "fileMatch": [
+        "build.gradle"
+      ],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
         "gradle_version = ['\"](?<currentValue>.*)['\"]"
       ],
       "depNameTemplate": "com.android.tools.build:gradle",
@@ -279,10 +293,11 @@
       "automerge": true
     },
     {
-      "groupName": "Ignore update androidx.core:core-ktx for Android API < 19",
+      "groupName": "Ignore update androidx.core:core for Android API < 19",
       "enabled": false,
       "matchDepNames": [
-        "androidx.core:core-ktx"
+        "androidx.core:core-ktx",
+        "androidx.core:core"
       ],
       "matchManagers": [
         "custom.regex",
