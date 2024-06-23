@@ -10,7 +10,6 @@ import puscas.mobilertapp.AbstractTest;
 import puscas.mobilertapp.constants.Accelerator;
 import puscas.mobilertapp.constants.Scene;
 import puscas.mobilertapp.constants.Shader;
-import puscas.mobilertapp.utils.UtilsContext;
 
 /**
  * The test suite for the cameras used in Ray Tracing engine.
@@ -25,8 +24,7 @@ public final class CameraTest extends AbstractTest {
      */
     @Test(timeout = 3L * 60L * 1000L)
     public void testRenderSceneWithOrthographic() throws TimeoutException {
-        final int numCores = UtilsContext.getNumOfCores(this.activity);
-        assertRenderScene(numCores, Scene.SPHERES, Shader.WHITTED, Accelerator.BVH, 5, 1, false, false);
+        assertRenderScene(Scene.SPHERES, Shader.WHITTED, Accelerator.BVH, 5, 1, false, false);
     }
 
     /**
@@ -36,8 +34,7 @@ public final class CameraTest extends AbstractTest {
      */
     @Test(timeout = 3L * 60L * 1000L)
     public void testRenderSceneWithPerspective() throws TimeoutException {
-        final int numCores = UtilsContext.getNumOfCores(this.activity);
-        assertRenderScene(numCores, Scene.CORNELL, Shader.WHITTED, Accelerator.BVH, 5, 1, false, false);
+        assertRenderScene(Scene.CORNELL, Shader.WHITTED, Accelerator.BVH, 5, 1, false, false);
     }
 
 }

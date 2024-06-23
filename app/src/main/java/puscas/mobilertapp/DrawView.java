@@ -100,6 +100,7 @@ public final class DrawView extends GLSurfaceView {
         logger.info("DrawView start 2");
 
         this.renderer.prepareRenderer(this::requestRender);
+        initEglContextFactory();
 
         logger.info("DrawView finished 2");
     }

@@ -42,7 +42,7 @@ public final class PreviewTest extends AbstractTest {
         );
 
         UtilsContextT.waitUntil(this.activity, Constants.RENDER, State.IDLE);
-        UtilsContextT.resetPickerValues(this.activity, Scene.OBJ.ordinal(), Accelerator.NAIVE, 99, 99);
+        UtilsContextT.resetPickerValues(Scene.OBJ.ordinal(), Accelerator.NAIVE, 99, 99);
 
         UtilsT.startRendering(false);
         UtilsContextT.waitUntil(this.activity, Constants.STOP, State.BUSY);
@@ -68,7 +68,7 @@ public final class PreviewTest extends AbstractTest {
         logger.info("testPreviewSceneOrthographicCamera start");
 
         UtilsContextT.waitUntil(this.activity, Constants.RENDER, State.IDLE);
-        UtilsContextT.resetPickerValues(this.activity, Scene.SPHERES.ordinal(), Accelerator.NAIVE, 99, 99);
+        UtilsContextT.resetPickerValues(Scene.SPHERES.ordinal(), Accelerator.NAIVE, 99, 99);
 
         UtilsT.startRendering(false);
         UtilsContextT.waitUntil(this.activity, Constants.STOP, State.BUSY);

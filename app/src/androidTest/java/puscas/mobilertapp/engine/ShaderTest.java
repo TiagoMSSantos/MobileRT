@@ -12,7 +12,6 @@ import puscas.mobilertapp.MainActivity;
 import puscas.mobilertapp.constants.Accelerator;
 import puscas.mobilertapp.constants.Scene;
 import puscas.mobilertapp.constants.Shader;
-import puscas.mobilertapp.utils.UtilsContext;
 
 /**
  * The test suite for the {@link Shader}s used in {@link MainActivity}.
@@ -33,8 +32,7 @@ public final class ShaderTest extends AbstractTest {
             ConstantsAndroidTests.CORNELL_BOX_WATER_CAM
         );
 
-        final int numCores = UtilsContext.getNumOfCores(this.activity);
-        assertRenderScene(numCores, Scene.OBJ, Shader.NO_SHADOWS, Accelerator.BVH, 2, 1, false, false);
+        assertRenderScene(Scene.OBJ, Shader.NO_SHADOWS, Accelerator.BVH, 3, 1, false, false);
     }
 
     /**
@@ -50,8 +48,7 @@ public final class ShaderTest extends AbstractTest {
             ConstantsAndroidTests.CORNELL_BOX_WATER_CAM
         );
 
-        final int numCores = UtilsContext.getNumOfCores(this.activity);
-        assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 2, 1, false, false);
+        assertRenderScene(Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 3, 1, false, false);
     }
 
     /**
@@ -67,8 +64,7 @@ public final class ShaderTest extends AbstractTest {
             ConstantsAndroidTests.CORNELL_BOX_WATER_CAM
         );
 
-        final int numCores = UtilsContext.getNumOfCores(this.activity);
-        assertRenderScene(numCores, Scene.OBJ, Shader.PATH_TRACING, Accelerator.BVH, 2, 1, false, false);
+        assertRenderScene(Scene.OBJ, Shader.PATH_TRACING, Accelerator.BVH, 3, 1, false, false);
     }
 
     /**
@@ -84,8 +80,7 @@ public final class ShaderTest extends AbstractTest {
             ConstantsAndroidTests.CORNELL_BOX_WATER_CAM
         );
 
-        final int numCores = UtilsContext.getNumOfCores(this.activity);
-        assertRenderScene(numCores, Scene.OBJ, Shader.DEPTH_MAP, Accelerator.BVH, 2, 1, false, false);
+        assertRenderScene(Scene.OBJ, Shader.DEPTH_MAP, Accelerator.BVH, 3, 1, false, false);
     }
 
     /**
@@ -101,8 +96,7 @@ public final class ShaderTest extends AbstractTest {
             ConstantsAndroidTests.CORNELL_BOX_WATER_CAM
         );
 
-        final int numCores = UtilsContext.getNumOfCores(this.activity);
-        assertRenderScene(numCores, Scene.OBJ, Shader.DIFFUSE, Accelerator.BVH, 2, 1, false, false);
+        assertRenderScene(Scene.OBJ, Shader.DIFFUSE, Accelerator.BVH, 3, 1, false, false);
     }
 
 }

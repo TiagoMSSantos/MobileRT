@@ -20,7 +20,6 @@ import java.util.logging.Logger;
 import puscas.mobilertapp.constants.Accelerator;
 import puscas.mobilertapp.constants.Scene;
 import puscas.mobilertapp.constants.Shader;
-import puscas.mobilertapp.utils.UtilsContext;
 
 /**
  * The test suite for the Ray Tracing engine used in {@link MainActivity}.
@@ -86,8 +85,7 @@ public final class RayTracingTest extends AbstractTest {
             "/path/to/OBJ/file/that/doesn't/exist.obj"
         );
 
-        final int numCores = UtilsContext.getNumOfCores(this.activity);
-        assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 1, 1, true, true);
+        assertRenderScene(Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 1, 1, true, true);
     }
 
     /**
@@ -102,8 +100,7 @@ public final class RayTracingTest extends AbstractTest {
         final Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_CANCELED, resultData);
         Intents.intending(IntentMatchers.anyIntent()).respondWith(result);
 
-        final int numCores = UtilsContext.getNumOfCores(this.activity);
-        assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 1, 1, true, true);
+        assertRenderScene(Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 1, 1, true, true);
         Intents.intended(IntentMatchers.anyIntent());
     }
 
@@ -124,8 +121,7 @@ public final class RayTracingTest extends AbstractTest {
             ConstantsAndroidTests.CORNELL_BOX_WATER_CAM
         );
 
-        final int numCores = UtilsContext.getNumOfCores(this.activity);
-        assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 2, 1, false, false);
+        assertRenderScene(Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 2, 1, false, false);
     }
 
     /**
@@ -148,8 +144,7 @@ public final class RayTracingTest extends AbstractTest {
             "/MobileRT/WavefrontOBJs/teapot/default.png"
         );
 
-        final int numCores = UtilsContext.getNumOfCores(this.activity);
-        assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 2, 1, false, false);
+        assertRenderScene(Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 2, 1, false, false);
     }
 
     /**
@@ -160,8 +155,7 @@ public final class RayTracingTest extends AbstractTest {
      */
     @Test(timeout = 2L * 60L * 1000L)
     public void testRenderSceneWithoutAccelerator() throws TimeoutException {
-        final int numCores = UtilsContext.getNumOfCores(this.activity);
-        assertRenderScene(numCores, Scene.CORNELL, Shader.WHITTED, Accelerator.NONE, 1, 1, false, true);
+        assertRenderScene(Scene.CORNELL, Shader.WHITTED, Accelerator.NONE, 1, 1, false, true);
     }
 
 }

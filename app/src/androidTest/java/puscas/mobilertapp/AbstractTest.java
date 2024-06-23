@@ -21,6 +21,7 @@ import androidx.core.content.ContextCompat;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.intent.Intents;
 import androidx.test.espresso.intent.matcher.IntentMatchers;
+import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.google.common.base.Preconditions;
@@ -83,7 +84,8 @@ public abstract class AbstractTest {
      * The {@link ActivityScenario} to create the {@link MainActivity}.
      */
     @NonNull
-    private final ActivityScenario<MainActivity> mainActivityActivityTestRule = ActivityScenario.launch(MainActivity.class);
+    @Rule
+    public final ActivityScenarioRule<MainActivity> mainActivityActivityTestRule = new ActivityScenarioRule<>(MainActivity.class);
 
     /**
      * The {@link MainActivity} to test.
@@ -117,16 +119,17 @@ public abstract class AbstractTest {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         logger.info(methodName + ": " + this.testName.getMethodName());
 
-        this.mainActivityActivityTestRule.onActivity(activity -> this.activity = activity);
+        this.mainActivityActivityTestRule.getScenario().onActivity(activity -> this.activity = activity);
 
         Preconditions.checkNotNull(this.activity, "The Activity didn't start as expected!");
-        grantPermissions(this.activity);
+        grantPermissions();
+
+        // Wait a bit for the permissions to be granted to the app before starting the test. Necessary for Android 6+.
+        UtilsT.waitForAppToIdle();
+        Uninterruptibles.sleepUninterruptibly(7L, TimeUnit.SECONDS);
+        UtilsT.waitForAppToIdle();
 
         Intents.init();
-        UtilsT.waitForAppToIdle();
-        // Wait a bit for the permissions to be granted to the app before starting the test. Necessary for Android 12+.
-        Uninterruptibles.sleepUninterruptibly(2L, TimeUnit.SECONDS);
-
         logger.info(methodName + ": " + this.testName.getMethodName() + " started");
     }
 
@@ -142,6 +145,7 @@ public abstract class AbstractTest {
         for (final Runnable method : this.closeActions) {
             method.run();
         }
+        Intents.release();
 
         Preconditions.checkNotNull(this.activity, "The Activity didn't finish as expected!");
 
@@ -150,16 +154,13 @@ public abstract class AbstractTest {
         while (isActivityRunning(this.activity)) {
             logger.info("Finishing the Activity.");
             this.activity.finish();
-            logger.warning("Waiting for the Activity triggered by the test to finish.");
-            Uninterruptibles.sleepUninterruptibly(1L, TimeUnit.SECONDS);
             UtilsT.waitForAppToIdle();
         }
         // Wait for the app to be closed. Necessary for Android 12+.
-        this.mainActivityActivityTestRule.close();
+        this.mainActivityActivityTestRule.getScenario().close();
         UtilsT.waitForAppToIdle();
         logger.info("Activity finished.");
 
-        Intents.release();
         logger.info(methodName + ": " + this.testName.getMethodName() + " finished");
     }
 
@@ -189,25 +190,31 @@ public abstract class AbstractTest {
     /**
      * Grant permissions for the {@link MainActivity} to be able to load files from an external
      * storage.
-     *
-     * @param context The {@link Context} of the {@link MainActivity}.
      */
-    private static void grantPermissions(@NonNull final Context context) {
+    private static void grantPermissions() {
         logger.info("Granting permissions to the MainActivity to be able to read files from an external storage.");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            // Necessary for the tests and MobileRT to be able to read any file from SD Card on Android 11+, by having the permission: 'MANAGE_EXTERNAL_STORAGE'.
+            InstrumentationRegistry.getInstrumentation().getUiAutomation().adoptShellPermissionIdentity();
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             InstrumentationRegistry.getInstrumentation().getUiAutomation().grantRuntimePermission(
-                context.getPackageName(), Manifest.permission.READ_EXTERNAL_STORAGE
+                InstrumentationRegistry.getInstrumentation().getTargetContext().getPackageName(), Manifest.permission.READ_EXTERNAL_STORAGE
             );
-            waitForPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE);
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                // Necessary for the tests and MobileRT to be able to read any file from SD Card, by having the permission: 'MANAGE_EXTERNAL_STORAGE'.
-                InstrumentationRegistry.getInstrumentation().getUiAutomation().adoptShellPermissionIdentity();
-            }
             InstrumentationRegistry.getInstrumentation().getUiAutomation().grantRuntimePermission(
                 InstrumentationRegistry.getInstrumentation().getContext().getPackageName(), Manifest.permission.READ_EXTERNAL_STORAGE
             );
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand("pm grant puscas.mobilertapp android.permission.READ_EXTERNAL_STORAGE");
+            InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand("pm grant puscas.mobilertapp.test android.permission.READ_EXTERNAL_STORAGE");
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            waitForPermission(InstrumentationRegistry.getInstrumentation().getTargetContext(), Manifest.permission.READ_EXTERNAL_STORAGE);
             waitForPermission(InstrumentationRegistry.getInstrumentation().getContext(), Manifest.permission.READ_EXTERNAL_STORAGE);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            waitForPermission(InstrumentationRegistry.getInstrumentation().getTargetContext(), Manifest.permission.MANAGE_EXTERNAL_STORAGE);
+            waitForPermission(InstrumentationRegistry.getInstrumentation().getContext(), Manifest.permission.MANAGE_EXTERNAL_STORAGE);
         }
         logger.info("Permissions granted.");
     }
@@ -240,7 +247,6 @@ public abstract class AbstractTest {
      * Ray Tracing engine to render the whole scene and then checks if the resulted image in the
      * {@link Bitmap} has different values.
      *
-     * @param numCores                     The number of CPU cores to use in the Ray Tracing process.
      * @param scene                        The desired scene to render.
      * @param shader                       The desired shader to be used.
      * @param accelerator                  The desired accelerator to be used.
@@ -250,14 +256,15 @@ public abstract class AbstractTest {
      * @param expectedSameValues           Whether the {@link Bitmap} should have have only one color.
      * @throws TimeoutException If it couldn't render the whole scene in time.
      */
-    protected void assertRenderScene(final int numCores,
-                                     final Scene scene,
+    protected void assertRenderScene(final Scene scene,
                                      final Shader shader,
                                      final Accelerator accelerator,
                                      final int spp,
                                      final int spl,
                                      final boolean showRenderWhenPressingButton,
                                      final boolean expectedSameValues) throws TimeoutException {
+        final int numCores = UtilsContext.getNumOfCores(InstrumentationRegistry.getInstrumentation().getTargetContext());
+
         UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SCENE, R.id.pickerScene, scene.ordinal());
         UtilsPickerT.changePickerValue(ConstantsUI.PICKER_THREADS, R.id.pickerThreads, numCores);
         UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SIZE, R.id.pickerSize, 1);
@@ -299,8 +306,10 @@ public abstract class AbstractTest {
      */
     protected void mockFileManagerReply(final boolean externalSdcard, @NonNull final String... filesPath) {
         logger.info(ConstantsAndroidTests.MOCK_FILE_MANAGER_REPLY);
-        final Intent resultData = MainActivity.createIntentToLoadFiles(this.activity.getPackageName());
-        final String storagePath = externalSdcard ? UtilsContext.getSdCardPath(this.activity) : UtilsContext.getInternalStoragePath(this.activity);
+        final Intent resultData = MainActivity.createIntentToLoadFiles(InstrumentationRegistry.getInstrumentation().getTargetContext().getPackageName());
+        final String storagePath = externalSdcard
+            ? UtilsContext.getSdCardPath(InstrumentationRegistry.getInstrumentation().getTargetContext())
+            : UtilsContext.getInternalStoragePath(InstrumentationRegistry.getInstrumentation().getTargetContext());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             final Uri firstFile = Uri.fromFile(new File(storagePath + ConstantsUI.FILE_SEPARATOR + filesPath[0]));
             final ClipData clipData = new ClipData(new ClipDescription("Scene", new String[]{"*" + ConstantsUI.FILE_SEPARATOR + "*"}), new ClipData.Item(firstFile));

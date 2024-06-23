@@ -57,6 +57,7 @@ public final class ViewActionNumberPicker implements ViewAction {
 
     @Override
     public void perform(@NonNull final UiController uiController, @NonNull final View view) {
+        logger.info("ViewActionNumberPicker#perform");
         final NumberPicker numberPicker = (NumberPicker) view;
         numberPicker.setValue(this.newValue);
         UtilsT.executeWithCatching(uiController::loopMainThreadUntilIdle);

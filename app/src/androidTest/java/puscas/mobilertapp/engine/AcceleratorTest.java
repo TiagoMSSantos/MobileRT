@@ -12,7 +12,6 @@ import puscas.mobilertapp.MainActivity;
 import puscas.mobilertapp.constants.Accelerator;
 import puscas.mobilertapp.constants.Scene;
 import puscas.mobilertapp.constants.Shader;
-import puscas.mobilertapp.utils.UtilsContext;
 
 /**
  * The test suite for the {@link Accelerator}s used in {@link MainActivity}.
@@ -33,8 +32,7 @@ public final class AcceleratorTest extends AbstractTest {
             ConstantsAndroidTests.CORNELL_BOX_WATER_CAM
         );
 
-        final int numCores = UtilsContext.getNumOfCores(this.activity);
-        assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, Accelerator.NAIVE, 1, 1, false, false);
+        assertRenderScene(Scene.OBJ, Shader.WHITTED, Accelerator.NAIVE, 2, 1, false, false);
     }
 
     /**
@@ -50,8 +48,7 @@ public final class AcceleratorTest extends AbstractTest {
             ConstantsAndroidTests.CORNELL_BOX_WATER_CAM
         );
 
-        final int numCores = UtilsContext.getNumOfCores(this.activity);
-        assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, Accelerator.REG_GRID, 2, 1, false, false);
+        assertRenderScene(Scene.OBJ, Shader.WHITTED, Accelerator.REG_GRID, 3, 1, false, false);
     }
 
     /**
@@ -67,8 +64,7 @@ public final class AcceleratorTest extends AbstractTest {
             ConstantsAndroidTests.CORNELL_BOX_WATER_CAM
         );
 
-        final int numCores = UtilsContext.getNumOfCores(this.activity);
-        assertRenderScene(numCores, Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 2, 1, false, false);
+        assertRenderScene(Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 3, 1, false, false);
     }
 
 }

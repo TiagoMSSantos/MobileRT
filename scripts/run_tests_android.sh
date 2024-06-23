@@ -474,14 +474,29 @@ runUnitTests() {
     typeWithDebInfo="${typeWithCapitalLetter}";
   fi
   dirUnitTests="app/.cxx/${typeWithDebInfo}";
-  echo 'Checking generated id.';
+  android_cpu_architecture=$(adb shell getprop ro.product.cpu.abi | tr -d '[:space:]');
+  echo "Checking generated id for: ${android_cpu_architecture}";
   # Note: flag `-t` of `ls` is to sort by date (newest first).
   # shellcheck disable=SC2012
-  generatedId=$(ls -t "${dirUnitTests}" | head -1);
-  android_cpu_architecture=$(adb shell getprop ro.product.cpu.abi | tr -d '[:space:]');
+  generatedId=$(find app/.cxx/ -iname "*unittests" -printf "%T@ %Tc %p\n"  -exec readlink -f {} \; \
+    | sort -n -r \
+    | grep "${typeWithDebInfo}/" \
+    | grep "${android_cpu_architecture}/" \
+    | head -1 \
+    | tr -s ' ' \
+    | cut -d ' ' -f 7 \
+    | sed "s/app\/.cxx\/${typeWithDebInfo}\///g" \
+    | sed "s/\/${android_cpu_architecture}\/bin\/UnitTests//g");
+  echo "Generated id: ${generatedId}";
   dirUnitTests="${dirUnitTests}/${generatedId}/${android_cpu_architecture}";
-  find . -iname "*unittests*" -exec readlink -f {} \;
-  echo 'Checking generated unit tests binaries.';
+  find app/.cxx/ -iname "*unittests" -printf "%T@ %Tc %p\n"  -exec readlink -f {} \; \
+    | sort -n -r \
+    | grep "${typeWithDebInfo}/" \
+    | grep "${android_cpu_architecture}/" \
+    | head -1 \
+    | tr -s ' ' \
+    | cut -d ' ' -f 7;
+  echo "Checking generated unit tests binaries: ${dirUnitTests}";
   files=$(ls "${dirUnitTests}");
   echo "Copy unit tests bin: ${files}/bin";
   echo "Copy unit tests libs: ${files}/lib";
@@ -567,12 +582,7 @@ runInstrumentationTests() {
   set -e;
   callAdbShellCommandUntilSuccess adb shell 'pm install -r '${mobilert_path}'/app-'${type}'.apk; echo ::$?::';
   callAdbShellCommandUntilSuccess adb shell 'pm install -r '${mobilert_path}'/app-'${type}'-androidTest.apk; echo ::$?::';
-  if [ "${androidApi}" -gt 29 ]; then
-    echo 'Giving permissions for MobileRT app to access any file from the external storage.';
-    callAdbShellCommandUntilSuccess adb shell 'appops set --uid puscas.mobilertapp.test MANAGE_EXTERNAL_STORAGE allow; echo ::$?::';
-    callAdbShellCommandUntilSuccess adb shell 'appops set --uid puscas.mobilertapp MANAGE_EXTERNAL_STORAGE allow; echo ::$?::';
-  fi
-  if { [ "${androidApi}" -gt 22 ] && [ "${androidApi}" -lt 28 ]; } || [ "${androidApi}" = 30 ] || [ "${androidApi}" -gt 33 ]; then
+  if { [ "${androidApi}" -gt 22 ] && [ "${androidApi}" -lt 28 ]; }; then
     echo 'Granting read external SD Card to MobileRT.';
     callAdbShellCommandUntilSuccess adb shell 'pm grant puscas.mobilertapp.test android.permission.READ_EXTERNAL_STORAGE; echo ::$?::';
     callAdbShellCommandUntilSuccess adb shell 'pm grant puscas.mobilertapp android.permission.READ_EXTERNAL_STORAGE; echo ::$?::';
@@ -584,7 +594,7 @@ runInstrumentationTests() {
   if [ "${run_test}" = 'all' ]; then
     echo 'Running all tests';
     mkdir -p app/build/reports/jacoco/jacocoTestReport;
-    callCommandUntilSuccess 3 sh gradlew ${gradle_command} -DtestType="${type}" \
+    sh gradlew ${gradle_command} -DtestType="${type}" \
       -DandroidApiVersion="${android_api_version}" \
       -Pandroid.testInstrumentationRunnerArguments.package='puscas' \
       -DabiFilters="[${cpu_architecture}]" \

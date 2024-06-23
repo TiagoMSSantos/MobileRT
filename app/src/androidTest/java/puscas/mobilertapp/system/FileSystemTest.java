@@ -1,5 +1,7 @@
 package puscas.mobilertapp.system;
 
+import androidx.test.platform.app.InstrumentationRegistry;
+
 import com.google.common.collect.ImmutableList;
 
 import org.junit.Assert;
@@ -35,7 +37,7 @@ public final class FileSystemTest extends AbstractTest {
      */
     @Test(timeout = 5L * 1000L)
     public void testFilesExistAndReadableFromInternalStorage() {
-        final String internalStorage = UtilsContext.getInternalStoragePath(this.activity);
+        final String internalStorage = UtilsContext.getInternalStoragePath(InstrumentationRegistry.getInstrumentation().getTargetContext());
 
         final List<String> paths = Collections.singletonList(internalStorage + Constants.OBJ_FILE_CORNELL_BOX);
         validatePathsExist(paths);
@@ -46,7 +48,7 @@ public final class FileSystemTest extends AbstractTest {
      */
     @Test(timeout = 5L * 1000L)
     public void testReadableSdCard() {
-        final String sdCardPath = UtilsContext.getSdCardPath(this.activity);
+        final String sdCardPath = UtilsContext.getSdCardPath(InstrumentationRegistry.getInstrumentation().getTargetContext());
 
         final List<String> paths = ImmutableList.<String>builder().add(
             "/mnt",
@@ -76,7 +78,7 @@ public final class FileSystemTest extends AbstractTest {
      */
     @Test(timeout = 5L * 1000L)
     public void testFilesExistAndReadableSdCard() {
-        final String sdCardPath = UtilsContext.getSdCardPath(this.activity);
+        final String sdCardPath = UtilsContext.getSdCardPath(InstrumentationRegistry.getInstrumentation().getTargetContext());
 
         final List<String> paths = Collections.singletonList(sdCardPath + ConstantsUI.FILE_SEPARATOR + Constants.OBJ_FILE_TEAPOT);
         validatePathsExist(paths);
@@ -87,7 +89,7 @@ public final class FileSystemTest extends AbstractTest {
      */
     @Test(timeout = 5L * 1000L)
     public void testFilesNotExist() {
-        final String internalStorage = UtilsContext.getInternalStoragePath(this.activity);
+        final String internalStorage = UtilsContext.getInternalStoragePath(InstrumentationRegistry.getInstrumentation().getTargetContext());
 
         final List<String> paths = ImmutableList.<String>builder().add(
             Constants.EMPTY_FILE,
@@ -102,7 +104,7 @@ public final class FileSystemTest extends AbstractTest {
      */
     @Test(timeout = 5L * 1000L)
     public void testFilesNotExistSdCard() {
-        final String sdCardPath = UtilsContext.getSdCardPath(this.activity);
+        final String sdCardPath = UtilsContext.getSdCardPath(InstrumentationRegistry.getInstrumentation().getTargetContext());
 
         final List<String> paths = Collections.singletonList(sdCardPath + ConstantsUI.FILE_SEPARATOR + Constants.OBJ_FILE_NOT_EXISTS_SD_CARD);
         validatePathsNotExist(paths);

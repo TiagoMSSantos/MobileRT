@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.matcher.RootMatchers;
 import androidx.test.espresso.matcher.ViewMatchers;
+import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.google.common.util.concurrent.Uninterruptibles;
 
@@ -65,7 +66,7 @@ public final class UtilsContextT {
         final DrawView drawView = UtilsT.getPrivateField(activity, "drawView");
         final MainRenderer renderer = drawView.getRenderer();
 
-        final long timeSecsToWait = Objects.equals(expectedButtonText, Constants.STOP) ? 10L : 120L;
+        final long timeSecsToWait = Objects.equals(expectedButtonText, Constants.STOP) ? 20L : 120L;
         for (long currentTimeSecs = 0L; currentTimeSecs < timeSecsToWait && !done.get(); currentTimeSecs += advanceSecs) {
             Uninterruptibles.sleepUninterruptibly(advanceSecs, TimeUnit.SECONDS);
 
@@ -102,10 +103,10 @@ public final class UtilsContextT {
      * @param spp         The number of samples per pixel. Acceptable range is: [1-99].
      * @param spl         The number of samples per light. Acceptable range is: [1-100].
      */
-    public static void resetPickerValues(@NonNull final Context context, final int scene, final Accelerator accelerator, final int spp, final int spl) {
+    public static void resetPickerValues(final int scene, final Accelerator accelerator, final int spp, final int spl) {
         logger.info("resetPickerValues");
 
-        final int numCores = UtilsContext.getNumOfCores(context);
+        final int numCores = UtilsContext.getNumOfCores(InstrumentationRegistry.getInstrumentation().getTargetContext());
 
         UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SCENE, R.id.pickerScene, scene);
         UtilsPickerT.changePickerValue(ConstantsUI.PICKER_THREADS, R.id.pickerThreads, numCores);

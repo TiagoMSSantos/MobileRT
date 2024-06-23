@@ -110,7 +110,6 @@ jobs:
         du -h -d 1 ${ANDROID_HOME}/build-tools;
         ls -lahp ${ANDROID_HOME}/platforms;
         ls -lahp ${HOME};
-        echo "ANDROID_NDK_PATH=${ANDROID_HOME}/ndk/23.2.8568313" >> "${GITHUB_ENV}";
 
     # Initializes the CodeQL tools for scanning.
     # Valid inputs are ['tools', 'languages', 'token', 'matrix', 'config-file', 'queries']

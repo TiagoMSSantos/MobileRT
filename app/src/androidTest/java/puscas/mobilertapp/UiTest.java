@@ -12,6 +12,7 @@ import androidx.test.espresso.Espresso;
 import androidx.test.espresso.action.ViewActions;
 import androidx.test.espresso.matcher.RootMatchers;
 import androidx.test.espresso.matcher.ViewMatchers;
+import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.google.common.collect.ImmutableList;
 
@@ -116,10 +117,9 @@ public final class UiTest extends AbstractTest {
 
     /**
      * Helper method which tests the range of the {@link NumberPicker} in the UI.
-     *
-     * @param numCores The number of CPU cores in the system.
      */
-    private static void assertPickerNumbers(final int numCores) {
+    private static void assertPickerNumbers() {
+        final int numCores = UtilsContext.getNumOfCores(InstrumentationRegistry.getInstrumentation().getTargetContext());
         IntStreams.rangeClosed(0, 2).forEach(value ->
             UtilsPickerT.changePickerValue(ConstantsUI.PICKER_ACCELERATOR, R.id.pickerAccelerator, value)
         );
@@ -153,9 +153,8 @@ public final class UiTest extends AbstractTest {
     public void testUI() throws TimeoutException {
         UtilsT.assertRenderButtonText(Constants.RENDER);
 
-        final int numCores = UtilsContext.getNumOfCores(this.activity);
-        assertClickRenderButton(1, numCores);
-        assertPickerNumbers(numCores);
+        assertClickRenderButton(1);
+        assertPickerNumbers();
         clickPreviewCheckBox(false);
     }
 
@@ -169,8 +168,7 @@ public final class UiTest extends AbstractTest {
     public void testClickRenderButtonManyTimesWithoutPreview() throws TimeoutException {
         clickPreviewCheckBox(false);
 
-        final int numCores = UtilsContext.getNumOfCores(this.activity);
-        assertClickRenderButton(5, numCores);
+        assertClickRenderButton(5);
     }
 
     /**
@@ -184,8 +182,7 @@ public final class UiTest extends AbstractTest {
         clickPreviewCheckBox(false);
         clickPreviewCheckBox(true);
 
-        final int numCores = UtilsContext.getNumOfCores(this.activity);
-        assertClickRenderButton(5, numCores);
+        assertClickRenderButton(5);
     }
 
     /**
@@ -208,10 +205,9 @@ public final class UiTest extends AbstractTest {
      * Helper method which tests clicking the render {@link Button}.
      *
      * @param repetitions The number of repetitions.
-     * @param numCores    The number of CPU cores in the system.
      */
-    private void assertClickRenderButton(final int repetitions, final int numCores) throws TimeoutException {
-        UtilsContextT.resetPickerValues(this.activity, Scene.CORNELL2.ordinal(), Accelerator.BVH, 99, 99);
+    private void assertClickRenderButton(final int repetitions) throws TimeoutException {
+        UtilsContextT.resetPickerValues(Scene.CORNELL2.ordinal(), Accelerator.BVH, 99, 99);
 
         final List<String> buttonTextList = ImmutableList.of(Constants.STOP, Constants.RENDER);
         for (int currentIndex = 0; currentIndex < buttonTextList.size() * repetitions; currentIndex++) {
@@ -231,7 +227,7 @@ public final class UiTest extends AbstractTest {
                 UtilsContextT.waitUntil(this.activity, expectedButtonText, State.IDLE, State.FINISHED);
                 UtilsT.waitForAppToIdle();
                 // Only update pickers when app is idle.
-                incrementCountersAndUpdatePickers(numCores);
+                incrementCountersAndUpdatePickers();
             }
         }
     }
@@ -239,10 +235,9 @@ public final class UiTest extends AbstractTest {
     /**
      * Helper method that increments all the fields' counters and updates all
      * the {@link NumberPicker}s in the UI with the current values.
-     *
-     * @param numCores The number of CPU cores in the system.
      */
-    private void incrementCountersAndUpdatePickers(final int numCores) {
+    private void incrementCountersAndUpdatePickers() {
+        final int numCores = UtilsContext.getNumOfCores(InstrumentationRegistry.getInstrumentation().getTargetContext());
         final int finalCounterScene = Math.min(this.counterScene % Scene.values().length, 3);
         final int finalCounterAccelerator = Math.max(this.counterAccelerator % Accelerator.values().length, 1);
         final int finalCounterShader = Math.max(this.counterShader % Shader.values().length, 0);

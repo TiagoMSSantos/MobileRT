@@ -447,6 +447,7 @@ dependencies {
     // Android dependencies
     implementation "androidx.appcompat:appcompat:${androidX_appcompat_version}"
     implementation 'androidx.multidex:multidex:2.0.1'
+    implementation "androidx.core:core:${common_libraries_android_framework_version}"
 
     // Java dependencies
     implementation 'com.google.guava:guava:33.2.1-jre'
@@ -473,6 +474,8 @@ dependencies {
     androidTestImplementation "androidx.test.espresso:espresso-web:${androidX_test_espresso_version}"
     androidTestImplementation "androidx.test.espresso.idling:idling-concurrent:${androidX_test_espresso_version}"
 
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.ext:junit-ktx:1.1.5'
     androidTestImplementation 'androidx.test:rules:1.5.0'
     androidTestImplementation 'androidx.test:monitor:1.6.1'
 
