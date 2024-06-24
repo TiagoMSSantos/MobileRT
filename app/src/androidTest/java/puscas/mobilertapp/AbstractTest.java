@@ -124,9 +124,9 @@ public abstract class AbstractTest {
         Preconditions.checkNotNull(this.activity, "The Activity didn't start as expected!");
         grantPermissions();
 
-        // Wait a bit for the permissions to be granted to the app before starting the test. Necessary for Android 6+.
+        // Wait a bit for the permissions to be granted to the app before starting the test.
         UtilsT.waitForAppToIdle();
-        Uninterruptibles.sleepUninterruptibly(4L, TimeUnit.SECONDS);
+        Uninterruptibles.sleepUninterruptibly(3L, TimeUnit.SECONDS);
         UtilsT.waitForAppToIdle();
 
         Intents.init();

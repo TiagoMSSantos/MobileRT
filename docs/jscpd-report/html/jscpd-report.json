@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-06-24T11:08:49.812Z",
+    "detectionDate": "2024-06-24T17:36:48.074Z",
     "formats": {
       "java": {
         "sources": {
@@ -641,14 +641,14 @@
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/utils/UtilsT.java": {
-            "lines": 219,
-            "tokens": 1574,
+            "lines": 225,
+            "tokens": 1619,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 6,
             "duplicatedTokens": 70,
-            "percentage": 2.74,
-            "percentageTokens": 4.45,
+            "percentage": 2.67,
+            "percentageTokens": 4.32,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -944,23 +944,23 @@
             "lines": 160,
             "tokens": 1152,
             "sources": 1,
-            "clones": 1,
-            "duplicatedLines": 10,
-            "duplicatedTokens": 75,
-            "percentage": 6.25,
-            "percentageTokens": 6.51,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/PreviewTest.java": {
-            "lines": 85,
-            "tokens": 621,
+            "lines": 86,
+            "tokens": 632,
             "sources": 1,
             "clones": 3,
-            "duplicatedLines": 34,
-            "duplicatedTokens": 313,
-            "percentage": 40,
-            "percentageTokens": 50.4,
+            "duplicatedLines": 29,
+            "duplicatedTokens": 288,
+            "percentage": 33.72,
+            "percentageTokens": 45.57,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -992,24 +992,24 @@
             "lines": 330,
             "tokens": 2822,
             "sources": 1,
-            "clones": 1,
-            "duplicatedLines": 15,
-            "duplicatedTokens": 114,
-            "percentage": 4.55,
-            "percentageTokens": 4.04,
+            "clones": 2,
+            "duplicatedLines": 22,
+            "duplicatedTokens": 180,
+            "percentage": 6.67,
+            "percentageTokens": 6.38,
             "newDuplicatedLines": 0,
             "newClones": 0
           }
         },
         "total": {
-          "lines": 10167,
-          "tokens": 71435,
+          "lines": 10174,
+          "tokens": 71491,
           "sources": 83,
           "clones": 60,
-          "duplicatedLines": 576,
-          "duplicatedTokens": 5298,
-          "percentage": 5.67,
-          "percentageTokens": 7.42,
+          "duplicatedLines": 572,
+          "duplicatedTokens": 5281,
+          "percentage": 5.62,
+          "percentageTokens": 7.39,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3164,14 +3164,14 @@
       }
     },
     "total": {
-      "lines": 29188,
-      "tokens": 225164,
+      "lines": 29195,
+      "tokens": 225220,
       "sources": 250,
       "clones": 124,
-      "duplicatedLines": 1627,
-      "duplicatedTokens": 14367,
-      "percentage": 5.57,
-      "percentageTokens": 6.38,
+      "duplicatedLines": 1623,
+      "duplicatedTokens": 14350,
+      "percentage": 5.56,
+      "percentageTokens": 6.37,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -4171,17 +4171,17 @@
       },
       "secondFile": {
         "name": "app/src/androidTest/java/puscas/mobilertapp/utils/UtilsT.java",
-        "start": 170,
-        "end": 175,
+        "start": 176,
+        "end": 181,
         "startLoc": {
-          "line": 170,
+          "line": 176,
           "column": 13,
-          "position": 1180
+          "position": 1225
         },
         "endLoc": {
-          "line": 175,
+          "line": 181,
           "column": 7,
-          "position": 1249
+          "position": 1294
         }
       }
     },
@@ -5231,73 +5231,73 @@
     },
     {
       "format": "java",
-      "lines": 11,
-      "fragment": ";\n\nimport org.junit.FixMethodOrder;\nimport org.junit.Test;\nimport org.junit.runners.MethodSorters;\n\nimport java.util.concurrent.TimeoutException;\nimport java.util.logging.Logger;\n\nimport puscas.mobilertapp.constants.Accelerator;\nimport puscas.mobilertapp.constants.Constants",
+      "lines": 12,
+      "fragment": ".ordinal(), Accelerator.NAIVE, 99, 99);\n\n        UtilsT.startRendering(false);\n        UtilsContextT.waitUntil(this.activity, Constants.STOP, State.BUSY);\n\n        UtilsT.stopRendering();\n        UtilsContextT.waitUntil(this.activity, Constants.RENDER, State.IDLE, State.FINISHED);\n\n        UtilsT.assertRenderButtonText(Constants.RENDER);\n        UtilsT.testStateAndBitmap(false);\n\n        logger.info(\"testPreviewSceneOrthographicCamera finished\"",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/androidTest/java/puscas/mobilertapp/PreviewTest.java",
-        "start": 1,
-        "end": 11,
+        "start": 73,
+        "end": 84,
         "startLoc": {
-          "line": 1,
-          "column": 12,
-          "position": 5
+          "line": 73,
+          "column": 8,
+          "position": 513
         },
         "endLoc": {
-          "line": 11,
-          "column": 10,
-          "position": 80
+          "line": 84,
+          "column": 46,
+          "position": 624
         }
       },
       "secondFile": {
-        "name": "app/src/androidTest/java/puscas/mobilertapp/RayTracingTest.java",
-        "start": 12,
-        "end": 21,
+        "name": "app/src/androidTest/java/puscas/mobilertapp/PreviewTest.java",
+        "start": 48,
+        "end": 59,
         "startLoc": {
-          "line": 12,
-          "column": 12,
-          "position": 90
+          "line": 48,
+          "column": 4,
+          "position": 316
         },
         "endLoc": {
-          "line": 21,
-          "column": 6,
-          "position": 164
+          "line": 59,
+          "column": 45,
+          "position": 427
         }
       }
     },
     {
       "format": "java",
-      "lines": 13,
-      "fragment": ".ordinal(), Accelerator.NAIVE, 99, 99);\n\n        UtilsT.startRendering(false);\n        UtilsContextT.waitUntil(this.activity, Constants.STOP, State.BUSY);\n\n        UtilsT.stopRendering();\n        UtilsContextT.waitUntil(this.activity, Constants.RENDER, State.IDLE, State.FINISHED);\n        UtilsT.waitForAppToIdle();\n\n        UtilsT.assertRenderButtonText(Constants.RENDER);\n\n        UtilsT.testStateAndBitmap(false);\n        logger.info(\"testPreviewSceneOrthographicCamera finished\"",
+      "lines": 8,
+      "fragment": ";\nimport java.util.concurrent.TimeUnit;\nimport java.util.concurrent.TimeoutException;\nimport java.util.logging.Logger;\n\nimport puscas.mobilertapp.constants.Accelerator;\nimport puscas.mobilertapp.constants.Constants;\nimport puscas.mobilertapp.constants.ConstantsUI",
       "tokens": 0,
       "firstFile": {
-        "name": "app/src/androidTest/java/puscas/mobilertapp/PreviewTest.java",
-        "start": 71,
-        "end": 83,
+        "name": "app/src/androidTest/java/puscas/mobilertapp/AbstractTest.java",
+        "start": 43,
+        "end": 50,
         "startLoc": {
-          "line": 71,
+          "line": 43,
           "column": 8,
-          "position": 494
+          "position": 387
         },
         "endLoc": {
-          "line": 83,
-          "column": 46,
-          "position": 613
+          "line": 50,
+          "column": 12,
+          "position": 453
         }
       },
       "secondFile": {
         "name": "app/src/androidTest/java/puscas/mobilertapp/PreviewTest.java",
-        "start": 45,
-        "end": 57,
+        "start": 7,
+        "end": 15,
         "startLoc": {
-          "line": 45,
-          "column": 4,
-          "position": 289
+          "line": 7,
+          "column": 14,
+          "position": 51
         },
         "endLoc": {
-          "line": 57,
-          "column": 45,
-          "position": 408
+          "line": 15,
+          "column": 6,
+          "position": 118
         }
       }
     },

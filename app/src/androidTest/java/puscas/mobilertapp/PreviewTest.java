@@ -1,9 +1,12 @@
 package puscas.mobilertapp;
 
+import com.google.common.util.concurrent.Uninterruptibles;
+
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
@@ -49,7 +52,6 @@ public final class PreviewTest extends AbstractTest {
 
         UtilsT.stopRendering();
         UtilsContextT.waitUntil(this.activity, Constants.RENDER, State.IDLE, State.FINISHED);
-        UtilsT.waitForAppToIdle();
 
         UtilsT.assertRenderButtonText(Constants.RENDER);
         UtilsT.testStateAndBitmap(false);
@@ -75,11 +77,10 @@ public final class PreviewTest extends AbstractTest {
 
         UtilsT.stopRendering();
         UtilsContextT.waitUntil(this.activity, Constants.RENDER, State.IDLE, State.FINISHED);
-        UtilsT.waitForAppToIdle();
 
         UtilsT.assertRenderButtonText(Constants.RENDER);
-
         UtilsT.testStateAndBitmap(false);
+
         logger.info("testPreviewSceneOrthographicCamera finished");
     }
 

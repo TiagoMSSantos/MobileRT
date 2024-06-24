@@ -9,6 +9,7 @@ import androidx.test.espresso.matcher.RootMatchers;
 import androidx.test.espresso.matcher.ViewMatchers;
 
 import com.google.common.base.Preconditions;
+import com.google.common.util.concurrent.Uninterruptibles;
 
 import org.junit.Assert;
 
@@ -129,7 +130,12 @@ public final class UtilsT {
         Espresso.onView(ViewMatchers.withId(R.id.renderButton))
             .inRoot(RootMatchers.isTouchable())
             .perform(new ViewActionButton(Constants.RENDER, false));
-        waitForAppToIdle();
+
+        // Wait a bit for the app to stop completely.
+        UtilsT.waitForAppToIdle();
+        Uninterruptibles.sleepUninterruptibly(4L, TimeUnit.SECONDS);
+        UtilsT.waitForAppToIdle();
+
         assertRenderButtonText(Constants.RENDER);
         logger.info("stopRendering" + ConstantsMethods.FINISHED);
     }
