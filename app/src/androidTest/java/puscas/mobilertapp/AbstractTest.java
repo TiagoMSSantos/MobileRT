@@ -126,7 +126,7 @@ public abstract class AbstractTest {
 
         // Wait a bit for the permissions to be granted to the app before starting the test. Necessary for Android 6+.
         UtilsT.waitForAppToIdle();
-        Uninterruptibles.sleepUninterruptibly(7L, TimeUnit.SECONDS);
+        Uninterruptibles.sleepUninterruptibly(4L, TimeUnit.SECONDS);
         UtilsT.waitForAppToIdle();
 
         Intents.init();

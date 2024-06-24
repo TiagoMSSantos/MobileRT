@@ -97,7 +97,6 @@ public final class UtilsContextT {
      * Helper method that resets the {@link android.widget.NumberPicker}s values
      * in the UI to some predefined values.
      *
-     * @param context     The {@link Context} of the application.
      * @param scene       The id of the scene to set.
      * @param accelerator The {@link Accelerator} to use.
      * @param spp         The number of samples per pixel. Acceptable range is: [1-99].
