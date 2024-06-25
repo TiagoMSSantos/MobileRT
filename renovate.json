@@ -144,6 +144,62 @@
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
+        "androidX_test_runner_version = ['\"](?<currentValue>.*)['\"]"
+      ],
+      "depNameTemplate": "androidx.test:runner",
+      "datasourceTemplate": "maven",
+      "versioningTemplate": "gradle",
+      "customType": "regex",
+      "registryUrlTemplate": "https://dl.google.com/android/maven2"
+    },
+    {
+      "fileMatch": [
+        "build.gradle"
+      ],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
+        "androidX_test_rules_version = ['\"](?<currentValue>.*)['\"]"
+      ],
+      "depNameTemplate": "androidx.test:rules",
+      "datasourceTemplate": "maven",
+      "versioningTemplate": "gradle",
+      "customType": "regex",
+      "registryUrlTemplate": "https://dl.google.com/android/maven2"
+    },
+    {
+      "fileMatch": [
+        "build.gradle"
+      ],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
+        "androidX_test_monitor_version = ['\"](?<currentValue>.*)['\"]"
+      ],
+      "depNameTemplate": "androidx.test:monitor",
+      "datasourceTemplate": "maven",
+      "versioningTemplate": "gradle",
+      "customType": "regex",
+      "registryUrlTemplate": "https://dl.google.com/android/maven2"
+    },
+    {
+      "fileMatch": [
+        "build.gradle"
+      ],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
+        "androidX_test_junit_version = ['\"](?<currentValue>.*)['\"]"
+      ],
+      "depNameTemplate": "androidx.test.ext:junit",
+      "datasourceTemplate": "maven",
+      "versioningTemplate": "gradle",
+      "customType": "regex",
+      "registryUrlTemplate": "https://dl.google.com/android/maven2"
+    },
+    {
+      "fileMatch": [
+        "build.gradle"
+      ],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
         "gradle_version = ['\"](?<currentValue>.*)['\"]"
       ],
       "depNameTemplate": "com.android.tools.build:gradle",
@@ -304,6 +360,54 @@
         "gradle"
       ],
       "matchCurrentVersion": "/^1\\.12\\.0/"
+    },
+    {
+      "groupName": "Ignore update androidx.test:runner for Android API < 19",
+      "enabled": false,
+      "matchDepNames": [
+        "androidx.test:runner"
+      ],
+      "matchManagers": [
+        "custom.regex",
+        "gradle"
+      ],
+      "matchCurrentVersion": "/^1\\.5\\.2/"
+    },
+    {
+      "groupName": "Ignore update androidx.test:rules for Android API < 19",
+      "enabled": false,
+      "matchDepNames": [
+        "androidx.test:rules"
+      ],
+      "matchManagers": [
+        "custom.regex",
+        "gradle"
+      ],
+      "matchCurrentVersion": "/^1\\.5\\.0/"
+    },
+    {
+      "groupName": "Ignore update androidx.test:monitor for Android API < 19",
+      "enabled": false,
+      "matchDepNames": [
+        "androidx.test:monitor"
+      ],
+      "matchManagers": [
+        "custom.regex",
+        "gradle"
+      ],
+      "matchCurrentVersion": "/^1\\.6\\.1/"
+    },
+    {
+      "groupName": "Ignore update androidx.test.ext:junit for Android API < 19",
+      "enabled": false,
+      "matchDepNames": [
+        "androidx.test.ext:junit"
+      ],
+      "matchManagers": [
+        "custom.regex",
+        "gradle"
+      ],
+      "matchCurrentVersion": "/^1\\.1\\.5/"
     },
     {
       "groupName": "Update Ubuntu to LTS versions",
