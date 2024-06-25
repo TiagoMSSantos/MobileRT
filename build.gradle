@@ -58,7 +58,7 @@ buildscript {
         }
 
         if (project.properties["androidX_test_monitor_version"] == null) {
-            androidX_test_monitor_version = '1.6.1'
+            androidX_test_monitor_version = '1.7.0'
         }
         if (project.properties["androidX_test_junit_version"] == null) {
             androidX_test_junit_version = '1.1.5'
