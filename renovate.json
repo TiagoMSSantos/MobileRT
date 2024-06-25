@@ -200,6 +200,20 @@
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
+        "androidX_test_junit_version = ['\"](?<currentValue>.*)['\"]"
+      ],
+      "depNameTemplate": "androidx.test.ext:junit-ktx",
+      "datasourceTemplate": "maven",
+      "versioningTemplate": "gradle",
+      "customType": "regex",
+      "registryUrlTemplate": "https://dl.google.com/android/maven2"
+    },
+    {
+      "fileMatch": [
+        "build.gradle"
+      ],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
         "gradle_version = ['\"](?<currentValue>.*)['\"]"
       ],
       "depNameTemplate": "com.android.tools.build:gradle",
@@ -401,7 +415,8 @@
       "groupName": "Ignore update androidx.test.ext:junit for Android API < 19",
       "enabled": false,
       "matchDepNames": [
-        "androidx.test.ext:junit"
+        "androidx.test.ext:junit",
+        "androidx.test.ext:junit-ktx"
       ],
       "matchManagers": [
         "custom.regex",
