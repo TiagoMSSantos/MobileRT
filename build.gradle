@@ -43,6 +43,10 @@ buildscript {
         }
         if (androidApiVersionValue >= 19) {
             common_libraries_android_framework_version = '1.13.1'
+            androidX_test_junit_version = '1.2.0'
+            androidX_test_runner_version = '1.6.0'
+            androidX_test_rules_version = '1.6.0'
+            androidX_test_monitor_version = '1.7.0'
             if (project.properties["ndk_version"] == null) {
                 ndk_version = '25.2.9519653'
             }
@@ -53,6 +57,18 @@ buildscript {
             gradle_version = '8.2.2'
         }
 
+        if (project.properties["androidX_test_monitor_version"] == null) {
+            androidX_test_monitor_version = '1.6.1'
+        }
+        if (project.properties["androidX_test_junit_version"] == null) {
+            androidX_test_junit_version = '1.1.5'
+        }
+        if (project.properties["androidX_test_runner_version"] == null) {
+            androidX_test_runner_version = '1.5.2'
+        }
+        if (project.properties["androidX_test_rules_version"] == null) {
+            androidX_test_rules_version = '1.5.0'
+        }
         if (project.properties["androidX_appcompat_version"] == null) {
             androidX_appcompat_version = '1.6.1'
         }
