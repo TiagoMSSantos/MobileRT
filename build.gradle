@@ -67,7 +67,7 @@ buildscript {
             androidX_test_runner_version = '1.5.2'
         }
         if (project.properties["androidX_test_rules_version"] == null) {
-            androidX_test_rules_version = '1.5.0'
+            androidX_test_rules_version = '1.6.0'
         }
         if (project.properties["androidX_appcompat_version"] == null) {
             androidX_appcompat_version = '1.6.1'
