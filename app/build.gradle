@@ -448,6 +448,7 @@ dependencies {
     implementation "androidx.appcompat:appcompat:${androidX_appcompat_version}"
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation "androidx.core:core:${common_libraries_android_framework_version}"
+    implementation "androidx.activity:activity:${androidX_activity_version}"
 
     // Java dependencies
     implementation 'com.google.guava:guava:33.2.1-jre'
@@ -465,7 +466,6 @@ dependencies {
 
 
 
-    // Dependencies for the Android instrumentation tests
     println('Adding dependencies for the instrumentation tests.')
     androidTestImplementation "androidx.test.espresso:espresso-accessibility:${androidX_test_espresso_version}"
     androidTestImplementation "androidx.test.espresso:espresso-contrib:${androidX_test_espresso_version}"
@@ -478,10 +478,13 @@ dependencies {
     androidTestImplementation "androidx.test.ext:junit-ktx:${androidX_test_junit_version}"
     androidTestImplementation "androidx.test:rules:${androidX_test_rules_version}"
     androidTestImplementation "androidx.test:monitor:${androidX_test_monitor_version}"
+    androidTestImplementation "androidx.startup:startup-runtime:${androidX_startup_version}"
+    androidTestImplementation "androidx.emoji2:emoji2:${androidX_emoji_version}"
 
     // Enable tracing
     debugImplementation "androidx.test.espresso:espresso-core:${androidX_test_espresso_version}"
     debugImplementation "androidx.test:runner:${androidX_test_runner_version}"
+    androidTestImplementation "androidx.tracing:tracing:${androidX_tracing_version}"
 
 
 

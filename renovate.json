@@ -425,6 +425,24 @@
       "matchCurrentVersion": "/^1\\.1\\.5/"
     },
     {
+      "groupName": "Ignore update androidx.test.espresso for Android API < 19",
+      "enabled": false,
+      "matchDepNames": [
+        "androidx.test.espresso:espresso-accessibility",
+        "androidx.test.espresso:espresso-contrib",
+        "androidx.test.espresso:espresso-idling-resource",
+        "androidx.test.espresso:espresso-intents",
+        "androidx.test.espresso:espresso-web",
+        "androidx.test.espresso.idling:idling-concurrent",
+        "androidx.test.espresso:espresso-core"
+      ],
+      "matchManagers": [
+        "custom.regex",
+        "gradle"
+      ],
+      "matchCurrentVersion": "/^3\\.5\\.1/"
+    },
+    {
       "groupName": "Update Ubuntu to LTS versions",
       "matchDepNames": [
         "ubuntu"
