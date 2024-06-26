@@ -96,7 +96,7 @@ buildscript {
             androidX_startup_version = '1.1.1'
         }
         if (project.properties["androidX_emoji_version"] == null) {
-            androidX_emoji_version = '1.2.0'
+            androidX_emoji_version = '1.4.0'
         }
 
         final def gradleVersionArray = gradle_version.split("\\.").collect()
