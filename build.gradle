@@ -90,7 +90,7 @@ buildscript {
             androidX_tracing_version = '1.0.0'
         }
         if (project.properties["androidX_activity_version"] == null) {
-            androidX_activity_version = '1.7.0'
+            androidX_activity_version = '1.7.2'
         }
         if (project.properties["androidX_startup_version"] == null) {
             androidX_startup_version = '1.1.1'
