@@ -214,6 +214,48 @@
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
+        "androidX_tracing_version = ['\"](?<currentValue>.*)['\"]"
+      ],
+      "depNameTemplate": "androidx.tracing:tracing",
+      "datasourceTemplate": "maven",
+      "versioningTemplate": "gradle",
+      "customType": "regex",
+      "registryUrlTemplate": "https://dl.google.com/android/maven2"
+    },
+    {
+      "fileMatch": [
+        "build.gradle"
+      ],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
+        "androidX_emoji_version = ['\"](?<currentValue>.*)['\"]"
+      ],
+      "depNameTemplate": "androidx.emoji2:emoji2",
+      "datasourceTemplate": "maven",
+      "versioningTemplate": "gradle",
+      "customType": "regex",
+      "registryUrlTemplate": "https://dl.google.com/android/maven2"
+    },
+    {
+      "fileMatch": [
+        "build.gradle"
+      ],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
+        "androidX_activity_version = ['\"](?<currentValue>.*)['\"]"
+      ],
+      "depNameTemplate": "androidx.activity:activity",
+      "datasourceTemplate": "maven",
+      "versioningTemplate": "gradle",
+      "customType": "regex",
+      "registryUrlTemplate": "https://dl.google.com/android/maven2"
+    },
+    {
+      "fileMatch": [
+        "build.gradle"
+      ],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
         "gradle_version = ['\"](?<currentValue>.*)['\"]"
       ],
       "depNameTemplate": "com.android.tools.build:gradle",
@@ -441,6 +483,42 @@
         "gradle"
       ],
       "matchCurrentVersion": "/^3\\.5\\.1/"
+    },
+    {
+      "groupName": "Ignore update androidx.activity:activity for Android API < 19",
+      "enabled": false,
+      "matchDepNames": [
+        "androidx.activity:activity"
+      ],
+      "matchManagers": [
+        "custom.regex",
+        "gradle"
+      ],
+      "matchCurrentVersion": "/^1\\.7\\.2/"
+    },
+    {
+      "groupName": "Ignore update androidx.tracing:tracing for Android API < 19",
+      "enabled": false,
+      "matchDepNames": [
+        "androidx.tracing:tracing"
+      ],
+      "matchManagers": [
+        "custom.regex",
+        "gradle"
+      ],
+      "matchCurrentVersion": "/^1\\.0\\.0/"
+    },
+    {
+      "groupName": "Ignore update androidx.emoji2:emoji2 for Android API < 19",
+      "enabled": false,
+      "matchDepNames": [
+        "androidx.emoji2:emoji2"
+      ],
+      "matchManagers": [
+        "custom.regex",
+        "gradle"
+      ],
+      "matchCurrentVersion": "/^1\\.2\\.0/"
     },
     {
       "groupName": "Update Ubuntu to LTS versions",
