@@ -47,8 +47,8 @@ buildscript {
             androidX_test_runner_version = '1.5.2'
             androidX_test_rules_version = '1.5.0'
             androidX_test_espresso_version = '3.6.0'
-            androidX_test_monitor_version = '1.7.0'
-            androidX_tracing_version = '1.1.0'
+            androidX_test_monitor_version = '1.7.1'
+            androidX_tracing_version = '1.2.0'
             androidX_activity_version = '1.7.2'
             androidX_startup_version = '1.1.1'
             androidX_emoji_version = '1.2.0'
@@ -200,12 +200,6 @@ subprojects {
                 }
                 if ('androidx.tracing' == details.requested.group) {
                     details.useVersion "${androidX_tracing_version}"
-                }
-                if ('androidx.activity' == details.requested.group) {
-                    details.useVersion "${androidX_activity_version}"
-                }
-                if ('androidx.startup' == details.requested.group) {
-                    details.useVersion "${androidX_startup_version}"
                 }
             }
         }
