@@ -50,7 +50,6 @@ buildscript {
             androidX_test_monitor_version = '1.7.1'
             androidX_tracing_version = '1.2.0'
             androidX_activity_version = '1.9.0'
-            androidX_emoji_version = '1.4.0'
             if (project.properties["ndk_version"] == null) {
                 ndk_version = '25.2.9519653'
             }
@@ -91,9 +90,6 @@ buildscript {
         if (project.properties["androidX_activity_version"] == null) {
             androidX_activity_version = '1.7.2'
         }
-        if (project.properties["androidX_emoji_version"] == null) {
-            androidX_emoji_version = '1.2.0'
-        }
 
         final def gradleVersionArray = gradle_version.split("\\.").collect()
         gradleVersionValue = gradleVersionArray[0] + '.' + gradleVersionArray[1] as Float
@@ -104,6 +100,7 @@ buildscript {
         // Test dependencies
         jacoco_version = '0.8.12'
         androidX_startup_version = '1.1.1'
+        androidX_emoji_version = '1.4.0'
 
         // Unit tests dependencies
         powermock_version = '2.0.9'
