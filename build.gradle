@@ -43,8 +43,8 @@ buildscript {
         }
         if (androidApiVersionValue >= 19) {
             common_libraries_android_framework_version = '1.13.1'
-            androidX_test_junit_version = '1.2.0'
-            androidX_test_runner_version = '1.6.0'
+            androidX_test_junit_version = '1.2.1'
+            androidX_test_runner_version = '1.6.1'
             androidX_test_rules_version = '1.6.0'
             androidX_test_espresso_version = '3.6.0'
             androidX_test_monitor_version = '1.7.1'
