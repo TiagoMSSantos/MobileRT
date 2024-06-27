@@ -46,9 +46,9 @@ buildscript {
             androidX_test_junit_version = '1.1.5'
             androidX_test_runner_version = '1.5.2'
             androidX_test_rules_version = '1.5.0'
-            androidX_test_espresso_version = '3.5.1'
-            androidX_test_monitor_version = '1.6.1'
-            androidX_tracing_version = '1.0.0'
+            androidX_test_espresso_version = '3.6.0'
+            androidX_test_monitor_version = '1.7.0'
+            androidX_tracing_version = '1.1.0'
             androidX_activity_version = '1.7.2'
             androidX_startup_version = '1.1.1'
             androidX_emoji_version = '1.2.0'
@@ -198,13 +198,13 @@ subprojects {
                 if ('org.jetbrains.kotlin' == details.requested.group) {
                     details.useVersion "${kotlin_stdlib_jdk8_version}"
                 }
-                if ('androidx.tracing:tracing' == details.requested.group) {
+                if ('androidx.tracing' == details.requested.group) {
                     details.useVersion "${androidX_tracing_version}"
                 }
-                if ('androidx.activity:activity' == details.requested.group) {
+                if ('androidx.activity' == details.requested.group) {
                     details.useVersion "${androidX_activity_version}"
                 }
-                if ('androidx.startup:startup-runtime' == details.requested.group) {
+                if ('androidx.startup' == details.requested.group) {
                     details.useVersion "${androidX_startup_version}"
                 }
             }

@@ -482,8 +482,8 @@ dependencies {
     androidTestImplementation "androidx.emoji2:emoji2:${androidX_emoji_version}"
 
     // Enable tracing
-    debugImplementation "androidx.test.espresso:espresso-core:${androidX_test_espresso_version}"
-    debugImplementation "androidx.test:runner:${androidX_test_runner_version}"
+    androidTestImplementation "androidx.test.espresso:espresso-core:${androidX_test_espresso_version}"
+    androidTestImplementation "androidx.test:runner:${androidX_test_runner_version}"
     androidTestImplementation "androidx.tracing:tracing:${androidX_tracing_version}"
 
 
