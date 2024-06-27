@@ -43,15 +43,14 @@ buildscript {
         }
         if (androidApiVersionValue >= 19) {
             common_libraries_android_framework_version = '1.13.1'
-            androidX_test_junit_version = '1.1.5'
-            androidX_test_runner_version = '1.5.2'
-            androidX_test_rules_version = '1.5.0'
+            androidX_test_junit_version = '1.2.0'
+            androidX_test_runner_version = '1.6.0'
+            androidX_test_rules_version = '1.6.0'
             androidX_test_espresso_version = '3.6.0'
             androidX_test_monitor_version = '1.7.1'
             androidX_tracing_version = '1.2.0'
-            androidX_activity_version = '1.7.2'
-            androidX_startup_version = '1.1.1'
-            androidX_emoji_version = '1.2.0'
+            androidX_activity_version = '1.9.0'
+            androidX_emoji_version = '1.4.0'
             if (project.properties["ndk_version"] == null) {
                 ndk_version = '25.2.9519653'
             }
@@ -92,9 +91,6 @@ buildscript {
         if (project.properties["androidX_activity_version"] == null) {
             androidX_activity_version = '1.7.2'
         }
-        if (project.properties["androidX_startup_version"] == null) {
-            androidX_startup_version = '1.1.1'
-        }
         if (project.properties["androidX_emoji_version"] == null) {
             androidX_emoji_version = '1.2.0'
         }
@@ -107,6 +103,7 @@ buildscript {
 
         // Test dependencies
         jacoco_version = '0.8.12'
+        androidX_startup_version = '1.1.1'
 
         // Unit tests dependencies
         powermock_version = '2.0.9'
@@ -186,7 +183,7 @@ repositories {
     maven { url 'https://jitpack.io' }
 }
 
-/* Force Jacoco Agent version upgrade */
+// Enforce some dependencies versions because they are used by multiple dependencies
 subprojects {
     configurations.configureEach {
         resolutionStrategy {
@@ -194,12 +191,14 @@ subprojects {
                 if ('org.jacoco' == details.requested.group) {
                     details.useVersion "${jacoco_version}"
                 }
-                // Necessary because 'androidx.core:core-ktx' also brings the 'org.jetbrains.kotlin:kotlin-stdlib'.
                 if ('org.jetbrains.kotlin' == details.requested.group) {
                     details.useVersion "${kotlin_stdlib_jdk8_version}"
                 }
                 if ('androidx.tracing' == details.requested.group) {
                     details.useVersion "${androidX_tracing_version}"
+                }
+                if ('androidx.emoji2' == details.requested.group) {
+                    details.useVersion "${androidX_emoji_version}"
                 }
             }
         }
