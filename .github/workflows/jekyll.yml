@@ -26,15 +26,29 @@ concurrency:
   group: "pages"
   cancel-in-progress: false
 
+# Default environment variables.
+env:
+  GITHUB_STEP_TIMEOUT_SMALL: 4
+
 jobs:
   # Build job
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         uses: actions/checkout@v4
 
+      - name: Lint documentation files
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        uses: docker://avtodev/markdown-lint:v1
+        with:
+          # Check available parameters in: https://github.com/avto-dev/markdown-lint/blob/master/action.yml
+          config: 'docs/.markdownlint.json'
+          args: 'docs/*.md'
+
       - name: Setup Ruby
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         uses: ruby/setup-ruby@v1.182.0
         with:
           ruby-version: '3.2.2' # Not needed with a .ruby-version file
@@ -43,11 +57,13 @@ jobs:
 
       - name: Setup Pages
         id: pages
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         uses: actions/configure-pages@v5
         with:
           generator_config_file: docs/_config.yml
 
       - name: Build with Jekyll
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         # Outputs to the './_site' directory by default
         run: bundle exec jekyll build --source ./docs --baseurl "${{ steps.pages.outputs.base_path }}"
         env:
@@ -67,5 +83,27 @@ jobs:
     needs: build
     steps:
       - name: Deploy to GitHub Pages
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Doxygen build
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success()
+        uses: mattnotmitt/doxygen-action@v1
+        with:
+          # Check available parameters in: https://github.com/mattnotmitt/doxygen-action/blob/master/action.yml
+          doxyfile-path: ".codedocs" # Path to Doxyfile (default is ./Doxyfile)
+          working-directory: "." # Working directory (default is .)
+          enable-latex: false # Flag to enable make-ing of the LaTeX part of the doxygen output (default is false)
+
+      - name: Sync README with docker hub
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success()
+        uses: ms-jpq/sync-dockerhub-readme@v1
+        with:
+          # Check available parameters in: https://github.com/ms-jpq/sync-dockerhub-readme/blob/whale/action.yml
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          repository: ptpuscas/mobile_rt
+          readme: "docs/README.md"
