@@ -6,7 +6,7 @@ url: https://tiagomssantos.github.io  # the base hostname and protocol for your 
 baseurl: /MobileRT # the subpath of your site, e.g. /blog
 
 title: MobileRT
-repository: MobileRT
+repository: TiagoMSSantos/MobileRT
 email: tiago_s@outlook.pt
 description: >- # this means to ignore newlines until next config
   MobileRT - A multi platform C++ CPU progressive Ray Tracer. 
