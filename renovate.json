@@ -214,6 +214,20 @@
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
+        "androidX_test_espresso_version = ['\"](?<currentValue>.*)['\"]"
+      ],
+      "depNameTemplate": "androidx.test.espresso:espresso-core",
+      "datasourceTemplate": "maven",
+      "versioningTemplate": "gradle",
+      "customType": "regex",
+      "registryUrlTemplate": "https://dl.google.com/android/maven2"
+    },
+    {
+      "fileMatch": [
+        "build.gradle"
+      ],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
         "androidX_tracing_version = ['\"](?<currentValue>.*)['\"]"
       ],
       "depNameTemplate": "androidx.tracing:tracing",
