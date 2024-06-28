@@ -159,7 +159,7 @@ tasks.named('wrapper', Wrapper) {it ->
     if (androidApiVersionValue >= 16) {
         it.gradleVersion = '8.8'
     } else {
-        it.gradleVersion = '8.7'
+        it.gradleVersion = '8.8'
     }
     it.distributionUrl = 'https://services.gradle.org/distributions/gradle-' + it.gradleVersion + '-bin.zip'
     println('Gradle wrapper version: ' + it.gradleVersion)
