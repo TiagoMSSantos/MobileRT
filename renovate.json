@@ -405,8 +405,9 @@
       "automerge": true
     },
     {
-      "groupName": "Ignore update androidx.core:core for Android API < 19",
-      "enabled": false,
+      "groupName": "Only update patches of androidx.core:core for Android API < 19",
+      "enabled": true,
+      "matchUpdateTypes": ["patch"],
       "matchDepNames": [
         "androidx.core:core-ktx",
         "androidx.core:core"
@@ -415,11 +416,12 @@
         "custom.regex",
         "gradle"
       ],
-      "matchCurrentVersion": "/^1\\.12\\.0/"
+      "matchCurrentVersion": "/^1\\.12\\..+/"
     },
     {
-      "groupName": "Ignore update androidx.test:runner for Android API < 19",
-      "enabled": false,
+      "groupName": "Only update patches of androidx.test:runner for Android API < 19",
+      "enabled": true,
+      "matchUpdateTypes": ["patch"],
       "matchDepNames": [
         "androidx.test:runner"
       ],
@@ -427,11 +429,12 @@
         "custom.regex",
         "gradle"
       ],
-      "matchCurrentVersion": "/^1\\.5\\.2/"
+      "matchCurrentVersion": "/^1\\.5\\..+/"
     },
     {
-      "groupName": "Ignore update androidx.test:rules for Android API < 19",
-      "enabled": false,
+      "groupName": "Only update patches of androidx.test:rules for Android API < 19",
+      "enabled": true,
+      "matchUpdateTypes": ["patch"],
       "matchDepNames": [
         "androidx.test:rules"
       ],
@@ -439,11 +442,12 @@
         "custom.regex",
         "gradle"
       ],
-      "matchCurrentVersion": "/^1\\.5\\.0/"
+      "matchCurrentVersion": "/^1\\.5\\..+/"
     },
     {
-      "groupName": "Ignore update androidx.test:monitor for Android API < 19",
-      "enabled": false,
+      "groupName": "Only update patches of androidx.test:monitor for Android API < 19",
+      "enabled": true,
+      "matchUpdateTypes": ["patch"],
       "matchDepNames": [
         "androidx.test:monitor"
       ],
@@ -451,11 +455,12 @@
         "custom.regex",
         "gradle"
       ],
-      "matchCurrentVersion": "/^1\\.6\\.1/"
+      "matchCurrentVersion": "/^1\\.6\\..+/"
     },
     {
-      "groupName": "Ignore update androidx.test.ext:junit for Android API < 19",
-      "enabled": false,
+      "groupName": "Only update patches of androidx.test.ext:junit for Android API < 19",
+      "enabled": true,
+      "matchUpdateTypes": ["patch"],
       "matchDepNames": [
         "androidx.test.ext:junit",
         "androidx.test.ext:junit-ktx"
@@ -464,11 +469,12 @@
         "custom.regex",
         "gradle"
       ],
-      "matchCurrentVersion": "/^1\\.1\\.5/"
+      "matchCurrentVersion": "/^1\\.1\\..+/"
     },
     {
-      "groupName": "Ignore update androidx.test.espresso for Android API < 19",
-      "enabled": false,
+      "groupName": "Only update patches of androidx.test.espresso for Android API < 19",
+      "enabled": true,
+      "matchUpdateTypes": ["patch"],
       "matchDepNames": [
         "androidx.test.espresso:espresso-accessibility",
         "androidx.test.espresso:espresso-contrib",
@@ -482,11 +488,12 @@
         "custom.regex",
         "gradle"
       ],
-      "matchCurrentVersion": "/^3\\.5\\.1/"
+      "matchCurrentVersion": "/^3\\.5\\..+/"
     },
     {
-      "groupName": "Ignore update androidx.activity:activity for Android API < 19",
-      "enabled": false,
+      "groupName": "Only update patches of androidx.activity:activity for Android API < 19",
+      "enabled": true,
+      "matchUpdateTypes": ["patch"],
       "matchDepNames": [
         "androidx.activity:activity"
       ],
@@ -494,11 +501,12 @@
         "custom.regex",
         "gradle"
       ],
-      "matchCurrentVersion": "/^1\\.7\\.2/"
+      "matchCurrentVersion": "/^1\\.7\\..+/"
     },
     {
-      "groupName": "Ignore update androidx.tracing:tracing for Android API < 19",
-      "enabled": false,
+      "groupName": "Only update patches of androidx.tracing:tracing for Android API < 19",
+      "enabled": true,
+      "matchUpdateTypes": ["patch"],
       "matchDepNames": [
         "androidx.tracing:tracing"
       ],
@@ -506,11 +514,12 @@
         "custom.regex",
         "gradle"
       ],
-      "matchCurrentVersion": "/^1\\.0\\.0/"
+      "matchCurrentVersion": "/^1\\.0\\..+/"
     },
     {
-      "groupName": "Ignore update androidx.emoji2:emoji2 for Android API < 19",
-      "enabled": false,
+      "groupName": "Only update patches of androidx.emoji2:emoji2 for Android API < 19",
+      "enabled": true,
+      "matchUpdateTypes": ["patch"],
       "matchDepNames": [
         "androidx.emoji2:emoji2"
       ],
@@ -518,10 +527,11 @@
         "custom.regex",
         "gradle"
       ],
-      "matchCurrentVersion": "/^1\\.2\\.0/"
+      "matchCurrentVersion": "/^1\\.2\\..+/"
     },
     {
       "groupName": "Update Ubuntu to LTS versions",
+      "enabled": true,
       "matchDepNames": [
         "ubuntu"
       ],
@@ -534,6 +544,7 @@
     },
     {
       "groupName": "Update conan dependencies",
+      "enabled": true,
       "matchDepNames": [
         "pcg-cpp",
         "stb"
@@ -545,8 +556,9 @@
       "allowedVersions": "!/^cci\\.[0-9]+$/"
     },
     {
-      "groupName": "Ignore update Android Gradle version for Android API <= 15",
-      "enabled": false,
+      "groupName": "Only update patches of Android Gradle version for Android API <= 15",
+      "enabled": true,
+      "matchUpdateTypes": ["patch"],
       "matchDepNames": [
         "com.android.tools.build:gradle"
       ],
@@ -554,11 +566,12 @@
         "custom.regex",
         "gradle"
       ],
-      "matchCurrentVersion": "/^8\\.2\\.2$/"
+      "matchCurrentVersion": "/^8\\.2\\..+$/"
     },
     {
-      "groupName": "Ignore update Android appcompat version for Android API < 21",
-      "enabled": false,
+      "groupName": "Only update patches of Android appcompat version for Android API < 21",
+      "enabled": true,
+      "matchUpdateTypes": ["patch"],
       "matchDepNames": [
         "androidx.appcompat:appcompat"
       ],
@@ -566,10 +579,11 @@
         "custom.regex",
         "gradle"
       ],
-      "matchCurrentVersion": "/^1\\.6\\.1$/"
+      "matchCurrentVersion": "/^1\\.6\\..+$/"
     },
     {
       "groupName": "Update NDK to stable versions",
+      "enabled": true,
       "matchDepNames": [
         "android/ndk"
       ],
@@ -582,7 +596,17 @@
       "allowedVersions": "/^r?[0-9]+\\.?[0-9a-z]*\\.?[0-9]*.*$/"
     },
     {
+      "groupName": "Only update patches of Gradle for Android API <= 15",
+      "enabled": true,
+      "matchUpdateTypes": ["patch"],
+      "matchDepNames": [
+        "gradle"
+      ],
+      "matchCurrentVersion": "/^8\\.7.+$/"
+    },
+    {
       "groupName": "Update Boost C++ Libraries",
+      "enabled": true,
       "matchDepNames": [
         "boostorg/boost"
       ],
@@ -590,6 +614,7 @@
     },
     {
       "groupName": "Update GoogleTest to a version that supports C++11",
+      "enabled": true,
       "matchDepNames": [
         "google/googletest"
       ],
@@ -598,6 +623,7 @@
     },
     {
       "groupName": "Update MobileRT docker images",
+      "enabled": true,
       "matchDepNames": [
         "ptpuscas/mobile_rt"
       ],
@@ -648,14 +674,6 @@
       ],
       "versioning": "regex:^(?<major>[0-9]+)?\\.?(?<minor>[0-9]+)?.*$",
       "matchCurrentVersion": "!/^14$/"
-    },
-    {
-      "groupName": "Ignore update Gradle for Android API <= 15",
-      "enabled": false,
-      "matchDepNames": [
-        "gradle"
-      ],
-      "matchCurrentVersion": "/^8\\.7$/"
     }
   ]
 }
