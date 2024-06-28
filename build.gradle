@@ -88,7 +88,7 @@ buildscript {
             androidX_tracing_version = '1.0.0'
         }
         if (project.properties["androidX_activity_version"] == null) {
-            androidX_activity_version = '1.7.2'
+            androidX_activity_version = '1.9.0'
         }
 
         final def gradleVersionArray = gradle_version.split("\\.").collect()
