@@ -4,7 +4,7 @@
 
 source 'https://rubygems.org'
 
-ruby '~> 3.3.0'
+ruby '~> 3.2.2'
 
 # Gems for the Github Markdown
 gem 'jekyll', '~> 3.9.3'
