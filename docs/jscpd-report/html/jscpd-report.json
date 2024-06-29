@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-06-29T09:43:18.452Z",
+    "detectionDate": "2024-06-29T11:57:27.760Z",
     "formats": {
       "java": {
         "sources": {
@@ -1937,14 +1937,14 @@
             "newClones": 0
           },
           ".github/workflows/docker.yml": {
-            "lines": 228,
-            "tokens": 1542,
+            "lines": 233,
+            "tokens": 1593,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 19,
             "duplicatedTokens": 104,
-            "percentage": 8.33,
-            "percentageTokens": 6.74,
+            "percentage": 8.15,
+            "percentageTokens": 6.53,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2082,14 +2082,14 @@
           }
         },
         "total": {
-          "lines": 2782,
-          "tokens": 18571,
+          "lines": 2787,
+          "tokens": 18622,
           "sources": 23,
           "clones": 18,
           "duplicatedLines": 454,
           "duplicatedTokens": 2976,
-          "percentage": 16.32,
-          "percentageTokens": 16.02,
+          "percentage": 16.29,
+          "percentageTokens": 15.98,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2205,8 +2205,8 @@
             "newClones": 0
           },
           "scripts/docker.sh": {
-            "lines": 243,
-            "tokens": 1972,
+            "lines": 245,
+            "tokens": 1986,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2254,8 +2254,8 @@
           }
         },
         "total": {
-          "lines": 4154,
-          "tokens": 27730,
+          "lines": 4156,
+          "tokens": 27744,
           "sources": 13,
           "clones": 12,
           "duplicatedLines": 263,
@@ -3164,14 +3164,14 @@
       }
     },
     "total": {
-      "lines": 29234,
-      "tokens": 225433,
+      "lines": 29241,
+      "tokens": 225498,
       "sources": 250,
       "clones": 124,
       "duplicatedLines": 1623,
       "duplicatedTokens": 14350,
       "percentage": 5.55,
-      "percentageTokens": 6.37,
+      "percentageTokens": 6.36,
       "newDuplicatedLines": 0,
       "newClones": 0
     }

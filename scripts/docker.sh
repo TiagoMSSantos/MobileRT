@@ -43,6 +43,8 @@ buildDockerImage() {
   docker build \
     -f deploy/Dockerfile."${dockerBaseOS}" \
     --no-cache=false \
+    --rm=true \
+    --progress=plain \
     --build-arg BASE_IMAGE="${1}" \
     --build-arg BRANCH="${2}" \
     --build-arg BUILD_TYPE=release \
