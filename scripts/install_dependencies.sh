@@ -164,32 +164,46 @@ install_dependencies_red_hat() {
 }
 
 install_dependencies_arch() {
-  # https://wiki.archlinux.org/title/Pacman/Package_signing#Upgrade_system_regularly
-  echo 'Removing packages from cache';
-  rm -rf /var/cache/pacman/pkg;
-  pacman -Sy archlinux-keyring --noconfirm --needed;
-  echo 'Resetting all the keys';
-  pacman-key --init;
-  pacman-key --populate;
-  echo 'Upgrade system';
-  pacman -Syu --noconfirm --needed;
+  echo 'Installing dependencies';
+  pacman -Sy --noconfirm --needed icu;
+  pacman -Sy --noconfirm --needed qt5-base;
   pacman -Sy --noconfirm --needed glibc;
   pacman -Sy --noconfirm --needed lib32-glibc;
-  pacman -Sy --noconfirm --needed vim;
-  pacman -Sy --noconfirm --needed findutils;
-  pacman -Sy --noconfirm --needed cmake;
-  pacman -Sy --noconfirm --needed make;
-  pacman -Sy --noconfirm --needed shellcheck;
-  pacman -Sy --noconfirm --needed git;
-  pacman -Sy --noconfirm --needed git-lfs;
-  pacman -Sy --noconfirm --needed ca-certificates;
-  pacman -Sy --noconfirm --needed which;
-  pacman -Sy --noconfirm --needed qt5-base;
-  pacman -Sy --noconfirm --needed python3;
   pacman -Sy --noconfirm --needed gcc;
-  pacman -Sy --noconfirm --needed lsof;
-  pacman -Sy --noconfirm --needed zip;
-  pacman -Sy --noconfirm --needed unzip;
+
+  if ! command -v cmake > /dev/null; then
+    pacman -Sy --noconfirm --needed cmake;
+  fi
+  if ! command -v vim > /dev/null; then
+    pacman -Sy --noconfirm --needed vim;
+  fi
+  if ! command -v make > /dev/null; then
+    pacman -Sy --noconfirm --needed make;
+  fi
+  if ! command -v shellcheck > /dev/null; then
+    pacman -Sy --noconfirm --needed shellcheck;
+  fi
+  if ! command -v git > /dev/null; then
+    pacman -Sy --noconfirm --needed ca-certificates;
+    pacman -Sy --noconfirm --needed git;
+    pacman -Sy --noconfirm --needed git-lfs;
+  fi
+  if ! command -v which > /dev/null; then
+    pacman -Sy --noconfirm --needed which;
+  fi
+  if ! command -v python3 > /dev/null; then
+    pacman -Sy --noconfirm --needed python3;
+  fi
+  if ! command -v lsof > /dev/null; then
+    pacman -Sy --noconfirm --needed lsof;
+  fi
+  if ! command -v zip > /dev/null; then
+    pacman -Sy --noconfirm --needed zip;
+  fi
+  if ! command -v unzip > /dev/null; then
+    pacman -Sy --noconfirm --needed unzip;
+  fi
+  echo 'Installed dependencies';
 }
 
 install_dependencies_alpine() {

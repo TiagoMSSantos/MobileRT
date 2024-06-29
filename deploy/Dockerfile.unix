@@ -95,14 +95,7 @@ RUN \
       sudo git git-lfs; \
   elif uname -a | grep -iq 'linux' && command -v pacman > /dev/null; then \
     echo 'Detected Arch based Linux'; \
-    rm -rf /var/cache/pacman/pkg; \
-    pacman -Sy archlinux-keyring --noconfirm --needed; \
-    echo 'Resetting all the keys'; \
-    pacman-key --init; \
-    pacman-key --populate; \
-    echo 'Upgrade system'; \
-    pacman -Syu --noconfirm --needed; \
-    pacman -Sy --noconfirm --needed sudo git git-lfs; \
+    pacman -Sy --noconfirm --needed glibc sudo git git-lfs; \
   elif uname -a | grep -iq 'linux' && command -v apk > /dev/null; then \
     echo 'Detected Alpine based Linux'; \
     apk update; \
