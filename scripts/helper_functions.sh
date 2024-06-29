@@ -273,7 +273,8 @@ parallelizeBuild() {
   uname -a;
   if uname -a | grep -iq 'msys'; then
     NCPU_CORES="$(nproc --all)";
-    echo "Assuming Windows with ${NCPU_CORES} cores. But not using them to compile project.";
+    echo "Assuming Windows with ${NCPU_CORES} cores.";
+    MAKEFLAGS="-j$((NCPU_CORES * 2))";
   elif uname -a | grep -iq 'linux' && command -v nproc > /dev/null; then
     NCPU_CORES="$(nproc --all)";
     echo "Assuming Linux with ${NCPU_CORES} cores.";

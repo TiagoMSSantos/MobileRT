@@ -482,7 +482,7 @@ testParallelizeBuild() {
   eval '${_functionName} > /dev/null';
   returnValue="$?";
   unset -f nproc; # Restore original function.
-  expected='-j11';
+  expected='-j22';
   _validateEnvVariableValue 'MAKEFLAGS' "${expected}" "${_testName} Linux";
   assertEqual "${expectedExitCode}" "${returnValue}" "${_testName} Linux";
 
@@ -495,7 +495,7 @@ testParallelizeBuild() {
   eval '${_functionName} > /dev/null';
   returnValue="$?";
   unset -f uname sysctl; # Restore original functions.
-  expected='-j22';
+  expected='-j44';
   _validateEnvVariableValue 'MAKEFLAGS' "${expected}" "${_testName} MacOS";  
   assertEqual "${expectedExitCode}" "${returnValue}" "${_testName} MacOS";
 
