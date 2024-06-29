@@ -477,8 +477,9 @@ testParallelizeBuild() {
 
   _clearEnvVariables;
   # Validate the exit code is 0 if using Linux, and the 'MAKEFLAGS' is properly set.
-  expectedExitCode='0';
+  # Setup mocks:
   nproc() { echo '11'; } # Emulate 11 CPU cores available.
+  expectedExitCode='0';
   eval '${_functionName} > /dev/null';
   returnValue="$?";
   unset -f nproc; # Restore original function.
@@ -500,15 +501,16 @@ testParallelizeBuild() {
   assertEqual "${expectedExitCode}" "${returnValue}" "${_testName} MacOS";
 
   _clearEnvVariables;
-  # Validate the exit code is 0 if using Windows, and the 'MAKEFLAGS' is NOT set.
+  # Validate the exit code is 0 if using Windows, and the 'MAKEFLAGS' is properly set.
   # Setup mocks:
   uname() { echo 'msys'; } # Emulate Windows OS.
+  nproc() { echo '33'; } # Emulate 33 CPU cores available.
   expectedExitCode='0';
   eval '${_functionName} > /dev/null';
   returnValue="$?";
-  unset -f uname; # Restore original function.
-  expected='';
-  _validateEnvVariablesDoNotExist "${_testName} Windows" 'MAKEFLAGS';
+  unset -f uname nproc; # Restore original functions.
+  expected='-j66';
+  _validateEnvVariableValue 'MAKEFLAGS' "${expected}" "${_testName} Windows";
   assertEqual "${expectedExitCode}" "${returnValue}" "${_testName} Windows";
 }
 
