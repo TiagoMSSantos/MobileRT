@@ -315,8 +315,8 @@ install_dependencies_macos() {
     # Recommended Xcode_13.2.app because it seems the only one compatible with MacOS-11 & MacOS-12:
     sudo xcode-select --switch /System/Volumes/Data/Applications/Xcode_13.2.app/Contents/Developer;
   fi
-  if [ "${MAJOR_MAC_VERSION}" = 13 ] || [ "${MAJOR_MAC_VERSION}" = 14 ]; then
-    # To be compatible with MacOS-13 & MacOS-14:
+  if [ "${MAJOR_MAC_VERSION}" = 13 ]; then
+    # To be compatible with MacOS-13:
     sudo xcode-select --switch /System/Volumes/Data/Applications/Xcode_14.1.app/Contents/Developer;
   fi
 }

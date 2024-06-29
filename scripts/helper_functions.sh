@@ -277,11 +277,11 @@ parallelizeBuild() {
   elif uname -a | grep -iq 'linux' && command -v nproc > /dev/null; then
     NCPU_CORES="$(nproc --all)";
     echo "Assuming Linux with ${NCPU_CORES} cores.";
-    MAKEFLAGS="-j${NCPU_CORES}";
+    MAKEFLAGS="-j$((NCPU_CORES * 2))";
   elif uname -a | grep -iq 'darwin' && command -v sysctl > /dev/null; then
     NCPU_CORES="$(sysctl -n hw.logicalcpu)";
     echo "Assuming MacOS with ${NCPU_CORES} cores.";
-    MAKEFLAGS="-j${NCPU_CORES}";
+    MAKEFLAGS="-j$((NCPU_CORES * 2))";
   fi
   export NCPU_CORES;
   export MAKEFLAGS;
