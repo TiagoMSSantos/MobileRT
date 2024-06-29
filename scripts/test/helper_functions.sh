@@ -503,7 +503,7 @@ testParallelizeBuild() {
   _clearEnvVariables;
   # Validate the exit code is 0 if using Windows, and the 'MAKEFLAGS' is properly set.
   # Setup mocks:
-  uname() { echo 'msys'; } # Emulate Windows OS.
+  uname() { echo 'mingw'; } # Emulate MingW in Windows OS.
   nproc() { echo '33'; } # Emulate 33 CPU cores available.
   expectedExitCode='0';
   eval '${_functionName} > /dev/null';

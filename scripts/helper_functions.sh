@@ -271,7 +271,7 @@ capitalizeFirstletter() {
 # Parallelize building of MobileRT.
 parallelizeBuild() {
   uname -a;
-  if uname -a | grep -iq 'msys'; then
+  if uname -a | grep -iq 'mingw'; then
     NCPU_CORES="$(nproc --all)";
     echo "Assuming Windows with ${NCPU_CORES} cores.";
     MAKEFLAGS="-j$((NCPU_CORES * 2))";
