@@ -300,10 +300,10 @@ install_dependencies_macos() {
   fi
   set -e;
 
-  echo 'Checking Qt path.';
-  find /opt/homebrew/opt /opt/homebrew/Cellar /usr/local/opt /usr/local/Cellar /opt/local/libexec -iname "Qt5Config.cmake" 2> /dev/null || true;
-  find /opt/homebrew/opt /opt/homebrew/Cellar /usr/local/opt /usr/local/Cellar /opt/local/libexec -iname "QDialog*" 2> /dev/null || true;
-  find /opt/homebrew/opt/qt@5 /opt/homebrew/Cellar/qt@5 /usr/local/opt/qt@5 /usr/local/Cellar/qt@5 /opt/local/libexec/qt5 -iname "*.dylib*" 2> /dev/null || true;
+  # echo 'Checking Qt path.';
+  # find /opt/homebrew/opt /opt/homebrew/Cellar /usr/local/opt /usr/local/Cellar /opt/local/libexec -iname "Qt5Config.cmake" 2> /dev/null || true;
+  # find /opt/homebrew/opt /opt/homebrew/Cellar /usr/local/opt /usr/local/Cellar /opt/local/libexec -iname "QDialog*" 2> /dev/null || true;
+  # find /opt/homebrew/opt/qt@5 /opt/homebrew/Cellar/qt@5 /usr/local/opt/qt@5 /usr/local/Cellar/qt@5 /opt/local/libexec/qt5 -iname "*.dylib*" 2> /dev/null || true;
 
   MAJOR_MAC_VERSION=$(sw_vers | grep ProductVersion | cut -d ':' -f2 | cut -d '.' -f1 | tr -d '[:space:]');
   echo "MacOS '${MAJOR_MAC_VERSION}' detected";
@@ -311,10 +311,14 @@ install_dependencies_macos() {
   # With Xcode_14.0.1.app, it throws this error on MacOS-12:
   # ld: Assertion failed: (_file->_atomsArrayCount == computedAtomCount && "more atoms allocated than expected")
   # For more information, check: https://stackoverflow.com/questions/73714336/xcode-update-to-version-2395-ld-compile-problem-occurs-computedatomcount-m
-  # Recommended Xcode_13.2.app because it seems the only one compatible with MacOS-11 & MacOS-12:
-  sudo xcode-select --switch /System/Volumes/Data/Applications/Xcode_13.2.app/Contents/Developer || true;
-  # To be compatible with MacOS-13 & MacOS-14:
-  sudo xcode-select --switch /System/Volumes/Data/Applications/Xcode_14.1.app/Contents/Developer || true;
+  if [ "${MAJOR_MAC_VERSION}" = 11 ] || [ "${MAJOR_MAC_VERSION}" = 12 ]; then
+    # Recommended Xcode_13.2.app because it seems the only one compatible with MacOS-11 & MacOS-12:
+    sudo xcode-select --switch /System/Volumes/Data/Applications/Xcode_13.2.app/Contents/Developer;
+  fi
+  if [ "${MAJOR_MAC_VERSION}" = 13 ] || [ "${MAJOR_MAC_VERSION}" = 14 ]; then
+    # To be compatible with MacOS-13 & MacOS-14:
+    sudo xcode-select --switch /System/Volumes/Data/Applications/Xcode_14.1.app/Contents/Developer;
+  fi
 }
 
 install_dependencies_windows() {

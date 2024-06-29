@@ -650,7 +650,7 @@ _waitForEmulatorToBoot() {
 ###############################################################################
 
 # Increase memory for heap.
-export GRADLE_OPTS="-Xms4G -Xmx4G -XX:ActiveProcessorCount=3";
+export GRADLE_OPTS='-Xms4G -Xmx4G -XX:ActiveProcessorCount=4';
 echo 'Prepare traps';
 trap 'catch_signal ${?}' EXIT HUP INT QUIT ILL TRAP ABRT TERM;
 clearOldBuildFiles;

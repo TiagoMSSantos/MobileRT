@@ -104,7 +104,7 @@ runLinter() {
 ###############################################################################
 
 # Increase memory for heap.
-export GRADLE_OPTS="-Xms4G -Xmx4G -XX:ActiveProcessorCount=3";
+export GRADLE_OPTS='-Xms4G -Xmx4G -XX:ActiveProcessorCount=4';
 createReportsFolders;
 runLinter;
 
