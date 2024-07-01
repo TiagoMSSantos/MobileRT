@@ -339,6 +339,15 @@ if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
   endif()
 endif()
 
+if( CMAKE_CXX_COMPILER MATCHES "clang" )
+  unset( COMPILER_SUPPORTS_FLAG )
+  CHECK_CXX_COMPILER_FLAG( "-Wno-redundant-parens" COMPILER_SUPPORTS_FLAG )
+  if( COMPILER_SUPPORTS_FLAG )
+    # Turn off redundant parentheses warning because of Qt moc generated code
+    set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-redundant-parens )
+  endif()
+endif()
+
 if( DEFINED ANDROID_ABI OR CMAKE_CXX_COMPILER MATCHES "clang" )
   # Turn off exit time destructors warning because of the usage of
   # static variables in namespaces
@@ -525,12 +534,6 @@ if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
   if( COMPILER_SUPPORTS_FLAG )
     # Turn off zero as null pointer warning because of Qt generated code
     target_compile_options( ${PROJECT_NAME} PRIVATE -Wno-zero-as-null-pointer-constant )
-  endif()
-  unset( COMPILER_SUPPORTS_FLAG )
-  CHECK_CXX_COMPILER_FLAG( "-Wno-redundant-parens" COMPILER_SUPPORTS_FLAG )
-  if( COMPILER_SUPPORTS_FLAG )
-    # Turn off redundant parentheses warning because of Qt moc generated code
-    target_compile_options( ${PROJECT_NAME} PRIVATE -Wno-redundant-parens )
   endif()
 endif()
 
