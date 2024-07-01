@@ -167,7 +167,7 @@ install_dependencies_arch() {
   echo 'Installing dependencies';
   pacman -Sy --noconfirm --needed --noscriptlet;
   pacman -S --noconfirm --needed --noscriptlet icu qt5-base;
-  pacman -S --noconfirm --needed --noscriptlet gcc ninja;
+  pacman -S --noconfirm --needed --noscriptlet gcc;
 
   if ! command -v cmake > /dev/null; then
     pacman -S --noconfirm --needed --noscriptlet cmake;
