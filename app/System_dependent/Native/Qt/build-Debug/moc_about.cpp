@@ -70,7 +70,7 @@ void About::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void 
         auto *_t = static_cast<About *>(_o);
         (void)_t;
         switch (_id) {
-        case 0: _t->open_link((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 0: _t->open_link((*reinterpret_cast< const QString*>(_a[1]))); break;
         default: ;
         }
     }
