@@ -113,7 +113,7 @@ jobs:
 
     - name: Set up Docker Buildx
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && startsWith(matrix.host_os, 'macos')
+      if: success() && !startsWith(matrix.host_os, 'windows')
       uses: docker/setup-buildx-action@v3
 
     - name: Login to DockerHub Registry

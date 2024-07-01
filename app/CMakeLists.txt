@@ -247,6 +247,11 @@ else()
     # no previous prototype for function 'cmake_automoc_silence_linker_warning588b7c9ac6b8d237cd75c53c7a2339f15629b09ee2655a8f9b16255d443cea18' [-Wmissing-prototypes]
     # due to the usage of `CMAKE_AUTOMOC`.
     set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-missing-prototypes )
+
+    CHECK_CXX_COMPILER_FLAG( "-Wno-unsafe-buffer-usage" COMPILER_SUPPORTS_FLAG )
+    if( COMPILER_SUPPORTS_FLAG )
+      set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-unsafe-buffer-usage )
+    endif()
   endif()
 
   string( TOLOWER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_L )

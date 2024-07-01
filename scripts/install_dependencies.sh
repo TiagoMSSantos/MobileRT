@@ -165,43 +165,42 @@ install_dependencies_red_hat() {
 
 install_dependencies_arch() {
   echo 'Installing dependencies';
-  pacman -Sy --noconfirm --needed icu;
-  pacman -Sy --noconfirm --needed qt5-base;
-  pacman -Sy --noconfirm --needed glibc;
-  pacman -Sy --noconfirm --needed lib32-glibc;
-  pacman -Sy --noconfirm --needed gcc;
+  pacman -Sy --noconfirm --needed --noscriptlet;
+  pacman -S --noconfirm --needed --noscriptlet icu qt5-base;
+  pacman -S --noconfirm --needed --noscriptlet gcc ninja;
 
   if ! command -v cmake > /dev/null; then
-    pacman -Sy --noconfirm --needed cmake;
+    pacman -S --noconfirm --needed --noscriptlet cmake;
   fi
   if ! command -v vim > /dev/null; then
-    pacman -Sy --noconfirm --needed vim;
+    pacman -S --noconfirm --needed --noscriptlet vim;
   fi
   if ! command -v make > /dev/null; then
-    pacman -Sy --noconfirm --needed make;
+    pacman -S --noconfirm --needed --noscriptlet make;
   fi
   if ! command -v shellcheck > /dev/null; then
-    pacman -Sy --noconfirm --needed shellcheck;
+    pacman -S --noconfirm --needed --noscriptlet shellcheck;
   fi
   if ! command -v git > /dev/null; then
-    pacman -Sy --noconfirm --needed ca-certificates;
-    pacman -Sy --noconfirm --needed git;
-    pacman -Sy --noconfirm --needed git-lfs;
+    pacman -S --noconfirm --needed --noscriptlet ca-certificates git;
+  fi
+  if ! command -v git-lfs > /dev/null; then
+    pacman -S --noconfirm --needed --noscriptlet git-lfs;
   fi
   if ! command -v which > /dev/null; then
-    pacman -Sy --noconfirm --needed which;
+    pacman -S --noconfirm --needed --noscriptlet which;
   fi
   if ! command -v python3 > /dev/null; then
-    pacman -Sy --noconfirm --needed python3;
+    pacman -S --noconfirm --needed --noscriptlet python3;
   fi
   if ! command -v lsof > /dev/null; then
-    pacman -Sy --noconfirm --needed lsof;
+    pacman -S --noconfirm --needed --noscriptlet lsof;
   fi
   if ! command -v zip > /dev/null; then
-    pacman -Sy --noconfirm --needed zip;
+    pacman -S --noconfirm --needed --noscriptlet zip;
   fi
   if ! command -v unzip > /dev/null; then
-    pacman -Sy --noconfirm --needed unzip;
+    pacman -S --noconfirm --needed --noscriptlet unzip;
   fi
   echo 'Installed dependencies';
 }

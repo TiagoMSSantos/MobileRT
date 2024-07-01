@@ -265,6 +265,8 @@ build() {
     -DCMAKE_C_COMPILER="${c_compiler}" \
     -DCMAKE_C_SOURCE_FILE_EXTENSIONS="c" \
     -DCMAKE_BUILD_TYPE="${typeWithCapitalLetter}" \
+    -DCMAKE_GENERATOR="Ninja" \
+    -DCMAKE_MAKE_PROGRAM="ninja" \
      "${addConanToolchain}" \
     ../app;
   resCompile=${?};

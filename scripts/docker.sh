@@ -180,7 +180,7 @@ installDockerCommandForMacOS() {
   MAJOR_MAC_VERSION=$(sw_vers | grep ProductVersion | cut -d ':' -f2 | cut -d '.' -f1 | tr -d '[:space:]');
   echo "MacOS '${MAJOR_MAC_VERSION}' detected";
 
-  brew update;
+  # brew update;
   echo 'Avoid homebrew from auto-update itself every time its installed something.';
   export HOMEBREW_NO_AUTO_UPDATE=1;
 
@@ -196,15 +196,15 @@ installDockerCommandForMacOS() {
   brew list docker > /dev/null 2>&1 || brew install --skip-cask-deps homebrew/cask/docker;
   brew list colima > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install colima;
   brew list lima > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install lima;
-  echo 'Install qemu.';
-  brew list qemu > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install qemu;
-  brew list libssh > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install libssh;
-  brew list libslirp > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install libslirp;
-  brew list capstone > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install capstone;
-  brew list dtc > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install dtc;
-  brew list snappy > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install snappy;
-  brew list vde > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install vde;
-  brew list ncurses > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install ncurses;
+  # echo 'Install qemu.';
+  # brew list qemu > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install qemu;
+  # brew list libssh > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install libssh;
+  # brew list libslirp > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install libslirp;
+  # brew list capstone > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install capstone;
+  # brew list dtc > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install dtc;
+  # brew list snappy > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install snappy;
+  # brew list vde > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install vde;
+  # brew list ncurses > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install ncurses;
   set -e;
 
   if [ "${MAJOR_MAC_VERSION}" = 14 ]; then
@@ -217,7 +217,7 @@ installDockerCommandForMacOS() {
     curl -o /tmp/colima.rb -L https://github.com/abiosoft/colima/releases/download/v0.6.8/colima-Darwin-x86_64;
     chmod +x /tmp/colima.rb;
   else
-    ln -s $(which colima) /tmp/colima.rb;
+    ln -s "$(which colima)" /tmp/colima.rb;
   fi
 
   echo 'Start colima.';

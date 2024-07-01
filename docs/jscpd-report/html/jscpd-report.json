@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-06-29T17:17:24.106Z",
+    "detectionDate": "2024-07-01T06:19:11.008Z",
     "formats": {
       "java": {
         "sources": {
@@ -1938,7 +1938,7 @@
           },
           ".github/workflows/docker.yml": {
             "lines": 233,
-            "tokens": 1593,
+            "tokens": 1592,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 19,
@@ -2083,7 +2083,7 @@
         },
         "total": {
           "lines": 2787,
-          "tokens": 18622,
+          "tokens": 18621,
           "sources": 23,
           "clones": 18,
           "duplicatedLines": 454,
@@ -2181,14 +2181,14 @@
             "newClones": 0
           },
           "scripts/install_dependencies.sh": {
-            "lines": 524,
-            "tokens": 4159,
+            "lines": 523,
+            "tokens": 4176,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 42,
             "duplicatedTokens": 120,
-            "percentage": 8.02,
-            "percentageTokens": 2.89,
+            "percentage": 8.03,
+            "percentageTokens": 2.87,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2206,7 +2206,7 @@
           },
           "scripts/docker.sh": {
             "lines": 244,
-            "tokens": 1979,
+            "tokens": 1767,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2217,8 +2217,8 @@
             "newClones": 0
           },
           "scripts/compile_native.sh": {
-            "lines": 310,
-            "tokens": 1816,
+            "lines": 312,
+            "tokens": 1830,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2254,14 +2254,14 @@
           }
         },
         "total": {
-          "lines": 4169,
-          "tokens": 27897,
+          "lines": 4170,
+          "tokens": 27716,
           "sources": 13,
           "clones": 12,
           "duplicatedLines": 263,
           "duplicatedTokens": 1345,
           "percentage": 6.31,
-          "percentageTokens": 4.82,
+          "percentageTokens": 4.85,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2425,8 +2425,8 @@
             "newClones": 0
           },
           "app/CMakeLists.txt": {
-            "lines": 569,
-            "tokens": 3511,
+            "lines": 574,
+            "tokens": 3520,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2450,8 +2450,8 @@
           }
         },
         "total": {
-          "lines": 2236,
-          "tokens": 22037,
+          "lines": 2241,
+          "tokens": 22046,
           "sources": 15,
           "clones": 1,
           "duplicatedLines": 23,
@@ -3164,8 +3164,8 @@
       }
     },
     "total": {
-      "lines": 29254,
-      "tokens": 225651,
+      "lines": 29260,
+      "tokens": 225478,
       "sources": 250,
       "clones": 124,
       "duplicatedLines": 1623,
