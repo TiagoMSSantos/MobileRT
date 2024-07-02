@@ -396,7 +396,7 @@ jobs:
     # Useful step to avoid gradle having to download Gradle dependencies
     # Taken from: https://github.com/marketplace/actions/download-a-build-artifact
     - name: Download Gradle packages artifact
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
       uses: actions/download-artifact@v4
       with:
@@ -605,7 +605,7 @@ jobs:
     # Useful step to avoid gradle having to download Gradle dependencies
     # Taken from: https://github.com/marketplace/actions/download-a-build-artifact
     - name: Download Gradle packages artifact
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
       uses: actions/download-artifact@v4
       with:
@@ -738,7 +738,7 @@ jobs:
     # Useful step to avoid gradle having to download Gradle dependencies
     # Taken from: https://github.com/marketplace/actions/download-a-build-artifact
     - name: Download Gradle packages artifact
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
       uses: actions/download-artifact@v4
       with:
