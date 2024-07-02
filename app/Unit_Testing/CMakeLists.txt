@@ -13,12 +13,8 @@ print_environment()
 # Add compiler flag to auto generated MOC
 ###############################################################################
 if( CMAKE_CXX_COMPILER MATCHES "clang" )
-  unset( COMPILER_SUPPORTS_FLAG )
-  CHECK_CXX_COMPILER_FLAG( "-Wno-redundant-parens" COMPILER_SUPPORTS_FLAG )
-  if( COMPILER_SUPPORTS_FLAG )
-    # Turn off redundant parentheses warning because of Qt moc generated code
-    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-redundant-parens" CACHE STRING "CUSTOM" FORCE )
-  endif()
+  # Turn off redundant parentheses warning because of Qt moc generated code
+  set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-redundant-parens" CACHE STRING "CUSTOM" FORCE )
 endif()
 ###############################################################################
 ###############################################################################
