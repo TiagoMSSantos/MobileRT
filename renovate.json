@@ -270,6 +270,76 @@
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
+        "kotlin_stdlib_jdk8_version = ['\"](?<currentValue>.*)['\"]"
+      ],
+      "depNameTemplate": "org.jetbrains.kotlin:kotlin-stdlib",
+      "datasourceTemplate": "maven",
+      "versioningTemplate": "gradle",
+      "customType": "regex",
+      "registryUrlTemplate": "https://dl.google.com/android/maven2"
+    },
+    {
+      "fileMatch": [
+        "build.gradle"
+      ],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
+        "androidX_annotation_version = ['\"](?<currentValue>.*)['\"]"
+      ],
+      "depNameTemplate": "androidx.annotation:annotation",
+      "datasourceTemplate": "maven",
+      "versioningTemplate": "gradle",
+      "customType": "regex",
+      "registryUrlTemplate": "https://dl.google.com/android/maven2"
+    },
+    {
+      "fileMatch": [
+        "build.gradle"
+      ],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
+        "androidX_startup_version = ['\"](?<currentValue>.*)['\"]"
+      ],
+      "depNameTemplate": "androidx.startup:startup-runtime",
+      "datasourceTemplate": "maven",
+      "versioningTemplate": "gradle",
+      "customType": "regex",
+      "registryUrlTemplate": "https://dl.google.com/android/maven2"
+    },
+    {
+      "fileMatch": [
+        "build.gradle"
+      ],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
+        "powermock_version = ['\"](?<currentValue>.*)['\"]"
+      ],
+      "depNameTemplate": "org.powermock:powermock-api-easymock",
+      "datasourceTemplate": "maven",
+      "versioningTemplate": "gradle",
+      "customType": "regex",
+      "registryUrlTemplate": "https://dl.google.com/android/maven2"
+    },
+    {
+      "fileMatch": [
+        "build.gradle"
+      ],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
+        "jacoco_version = ['\"](?<currentValue>.*)['\"]"
+      ],
+      "depNameTemplate": "org.jacoco:org.jacoco.core",
+      "datasourceTemplate": "maven",
+      "versioningTemplate": "gradle",
+      "customType": "regex",
+      "registryUrlTemplate": "https://dl.google.com/android/maven2"
+    },
+    {
+      "fileMatch": [
+        "build.gradle"
+      ],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
         "gradle_version = ['\"](?<currentValue>.*)['\"]"
       ],
       "depNameTemplate": "com.android.tools.build:gradle",
