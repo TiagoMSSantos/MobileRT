@@ -116,6 +116,48 @@
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
+        "kotlin_stdlib_jdk8_version = ['\"](?<currentValue>.*)['\"]"
+      ],
+      "depNameTemplate": "org.jetbrains.kotlin:kotlin-stdlib",
+      "datasourceTemplate": "maven",
+      "versioningTemplate": "gradle",
+      "customType": "regex",
+      "registryUrlTemplate": "https://repo1.maven.org/maven2/"
+    },
+    {
+      "fileMatch": [
+        "build.gradle"
+      ],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
+        "powermock_version = ['\"](?<currentValue>.*)['\"]"
+      ],
+      "depNameTemplate": "org.powermock:powermock-api-easymock",
+      "datasourceTemplate": "maven",
+      "versioningTemplate": "gradle",
+      "customType": "regex",
+      "registryUrlTemplate": "https://repo1.maven.org/maven2/"
+    },
+    {
+      "fileMatch": [
+        "build.gradle"
+      ],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
+        "jacoco_version = ['\"](?<currentValue>.*)['\"]"
+      ],
+      "depNameTemplate": "org.jacoco:org.jacoco.core",
+      "datasourceTemplate": "maven",
+      "versioningTemplate": "gradle",
+      "customType": "regex",
+      "registryUrlTemplate": "https://repo1.maven.org/maven2/"
+    },
+    {
+      "fileMatch": [
+        "build.gradle"
+      ],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
         "common_libraries_android_framework_version = ['\"](?<currentValue>.*)['\"]"
       ],
       "depNameTemplate": "androidx.core:core-ktx",
@@ -270,20 +312,6 @@
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
-        "kotlin_stdlib_jdk8_version = ['\"](?<currentValue>.*)['\"]"
-      ],
-      "depNameTemplate": "org.jetbrains.kotlin:kotlin-stdlib",
-      "datasourceTemplate": "maven",
-      "versioningTemplate": "gradle",
-      "customType": "regex",
-      "registryUrlTemplate": "https://mvnrepository.com"
-    },
-    {
-      "fileMatch": [
-        "build.gradle"
-      ],
-      "matchStringsStrategy": "any",
-      "matchStrings": [
         "androidX_annotation_version = ['\"](?<currentValue>.*)['\"]"
       ],
       "depNameTemplate": "androidx.annotation:annotation",
@@ -305,34 +333,6 @@
       "versioningTemplate": "gradle",
       "customType": "regex",
       "registryUrlTemplate": "https://maven.google.com"
-    },
-    {
-      "fileMatch": [
-        "build.gradle"
-      ],
-      "matchStringsStrategy": "any",
-      "matchStrings": [
-        "powermock_version = ['\"](?<currentValue>.*)['\"]"
-      ],
-      "depNameTemplate": "org.powermock:powermock-api-easymock",
-      "datasourceTemplate": "maven",
-      "versioningTemplate": "gradle",
-      "customType": "regex",
-      "registryUrlTemplate": "https://mvnrepository.com"
-    },
-    {
-      "fileMatch": [
-        "build.gradle"
-      ],
-      "matchStringsStrategy": "any",
-      "matchStrings": [
-        "jacoco_version = ['\"](?<currentValue>.*)['\"]"
-      ],
-      "depNameTemplate": "org.jacoco:org.jacoco.core",
-      "datasourceTemplate": "maven",
-      "versioningTemplate": "gradle",
-      "customType": "regex",
-      "registryUrlTemplate": "https://mvnrepository.com"
     },
     {
       "fileMatch": [
