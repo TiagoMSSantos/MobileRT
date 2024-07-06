@@ -119,7 +119,7 @@ _clearEnvVariables() {
   unset type compiler recompile;
   unset android_api_version cpu_architecture;
   unset run_test kill_previous;
-  unset MAKEFLAGS;
+  unset NCPU_CORES;
 }
 
 # Helper function which asserts that 2 parameters are equal.
@@ -476,19 +476,19 @@ testParallelizeBuild() {
   _testName="test$(capitalizeFirstletter ${_functionName})";
 
   _clearEnvVariables;
-  # Validate the exit code is 0 if using Linux, and the 'MAKEFLAGS' is properly set.
+  # Validate the exit code is 0 if using Linux, and the 'NCPU_CORES' is properly set.
   # Setup mocks:
   nproc() { echo '11'; } # Emulate 11 CPU cores available.
   expectedExitCode='0';
   eval '${_functionName} > /dev/null';
   returnValue="$?";
   unset -f nproc; # Restore original function.
-  expected='-j22';
-  _validateEnvVariableValue 'MAKEFLAGS' "${expected}" "${_testName} Linux";
+  expected='11';
+  _validateEnvVariableValue 'NCPU_CORES' "${expected}" "${_testName} Linux";
   assertEqual "${expectedExitCode}" "${returnValue}" "${_testName} Linux";
 
   _clearEnvVariables;
-  # Validate the exit code is 0 if using MacOS, and the 'MAKEFLAGS' is properly set.
+  # Validate the exit code is 0 if using MacOS, and the 'NCPU_CORES' is properly set.
   # Setup mocks:
   uname() { echo 'darwin'; } # Emulate MacOS.
   sysctl() { echo '22'; } # Emulate 22 CPU cores available.
@@ -496,21 +496,21 @@ testParallelizeBuild() {
   eval '${_functionName} > /dev/null';
   returnValue="$?";
   unset -f uname sysctl; # Restore original functions.
-  expected='-j44';
-  _validateEnvVariableValue 'MAKEFLAGS' "${expected}" "${_testName} MacOS";  
+  expected='22';
+  _validateEnvVariableValue 'NCPU_CORES' "${expected}" "${_testName} MacOS";  
   assertEqual "${expectedExitCode}" "${returnValue}" "${_testName} MacOS";
 
   _clearEnvVariables;
-  # Validate the exit code is 0 if using Windows, and the 'MAKEFLAGS' is properly set.
+  # Validate the exit code is 0 if using Windows, and the 'NCPU_CORES' is properly set.
   # Setup mocks:
-  uname() { echo 'mingw'; } # Emulate MingW in Windows OS.
+  uname() { echo 'msys'; } # Emulate Windows OS.
   nproc() { echo '33'; } # Emulate 33 CPU cores available.
   expectedExitCode='0';
   eval '${_functionName} > /dev/null';
   returnValue="$?";
   unset -f uname nproc; # Restore original functions.
-  expected='-j66';
-  _validateEnvVariableValue 'MAKEFLAGS' "${expected}" "${_testName} Windows";
+  expected='33';
+  _validateEnvVariableValue 'NCPU_CORES' "${expected}" "${_testName} Windows";
   assertEqual "${expectedExitCode}" "${returnValue}" "${_testName} Windows";
 }
 
