@@ -101,7 +101,7 @@ jobs:
         # Windows
         - name: MSVC
           host_os: windows-2022
-          type: debug
+          type: release
           compiler: g++
           cxx: "C:/PROGRA~2/MICROS~1/2019/Enterprise/VC/Tools/MSVC/14.28.29333/bin/HostX64/x86/cl.exe"
           cc: "C:/PROGRA~2/MICROS~1/2019/Enterprise/VC/Tools/MSVC/14.28.29333/bin/HostX64/x86/cl.exe"

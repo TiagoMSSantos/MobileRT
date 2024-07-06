@@ -130,6 +130,7 @@ RUN \
   setx /M PATH "C:\\Qt\\!QT_VERSION!\\mingw81_64\\bin;!PATH!" && \
   setx /M Qt5_DIR "C:\\Qt\\!QT_VERSION!\\mingw81_64\\lib\\cmake\\Qt5" && \
   setx /M CPLUS_INCLUDE_PATH "!CPLUS_INCLUDE_PATH!;C:\\Qt\\!QT_VERSION!\\mingw81_64\\include;C:\\Qt\\!QT_VERSION!\\mingw81_64\\include\\QtWidgets;C:\\Qt\\!QT_VERSION!\\mingw81_64\\include\\QtGui;C:\\Qt\\!QT_VERSION!\\mingw81_64\\include\\QtCore" && \
+  setx /M CL "/MP !CL!" && \
   dir . && \
   ls -la . && \
   ls -la ./binariesShell && \

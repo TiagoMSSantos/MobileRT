@@ -273,12 +273,18 @@ build() {
   # The compiler might redirect the output to stderr, so we also have to redirect it to the variable.
   compiler_version=$(${compiler} -v 2>&1 || true);
   echo "Compiler version: ${compiler_version}";
-  if echo "${compiler_version}" | grep -q "\.exe.*"; then
-    echo 'Detected C++ compiler for Windows!';
-    JOBS_FLAG='';
+  cmake --help;
+  # shellcheck disable=SC2063
+  if cmake --help | grep -i '*' | grep -iq 'default' && cmake --help | grep -i '*' | grep -iq 'Visual Studio'; then
+    echo 'Detected Visual Studio for Windows!';
+    JOBS_FLAG="-- //p:Configuration=${typeWithCapitalLetter} //m:$((NCPU_CORES * 2)) //p:CL_MPCount=$((NCPU_CORES * 2))";
+  elif cmake --help | grep -i '*' | grep -iq 'default' && cmake --help | grep -i '*' | grep -iq 'unix'; then
+    echo "Detected Make!";
+    JOBS_FLAG="-- -j$((NCPU_CORES * 2))";
   else
-    echo "Didn't detect C++ compiler for Windows!";
-    JOBS_FLAG="-- ${MAKEFLAGS}";
+    echo "Assuming NMake!";
+    export CL="/MP ${CL}";
+    JOBS_FLAG='';
   fi
 
   if [ "${resCompile}" -eq 0 ]; then

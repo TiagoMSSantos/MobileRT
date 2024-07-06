@@ -67,7 +67,7 @@ setPaths() {
 
   if uname -a | grep -iq 'mingw'; then
     BIN_DEBUG_PATH="${MOBILERT_PATH}/build_debug/bin/Debug";
-    BIN_RELEASE_PATH="${MOBILERT_PATH}/build_release/bin/Debug";
+    BIN_RELEASE_PATH="${MOBILERT_PATH}/build_release/bin/Release";
     BIN_DEBUG_EXE="${BIN_DEBUG_PATH}"/AppMobileRTd
     BIN_RELEASE_EXE="${BIN_RELEASE_PATH}"/AppMobileRT
   else

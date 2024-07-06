@@ -271,21 +271,17 @@ capitalizeFirstletter() {
 # Parallelize building of MobileRT.
 parallelizeBuild() {
   uname -a;
-  if uname -a | grep -iq 'mingw'; then
+  if uname -a | grep -iq 'msys' && command -v nproc > /dev/null; then
     NCPU_CORES="$(nproc --all)";
     echo "Assuming Windows with ${NCPU_CORES} cores.";
-    MAKEFLAGS="-j$((NCPU_CORES * 2))";
   elif uname -a | grep -iq 'linux' && command -v nproc > /dev/null; then
     NCPU_CORES="$(nproc --all)";
     echo "Assuming Linux with ${NCPU_CORES} cores.";
-    MAKEFLAGS="-j$((NCPU_CORES * 2))";
   elif uname -a | grep -iq 'darwin' && command -v sysctl > /dev/null; then
     NCPU_CORES="$(sysctl -n hw.logicalcpu)";
     echo "Assuming MacOS with ${NCPU_CORES} cores.";
-    MAKEFLAGS="-j$((NCPU_CORES * 2))";
   fi
   export NCPU_CORES;
-  export MAKEFLAGS;
 }
 
 # Check the files that were modified in the last few minutes.

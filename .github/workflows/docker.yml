@@ -63,7 +63,7 @@ jobs:
         - host_os: ubuntu-latest
           BASE_IMAGE: gentoo/stage3:latest
         - host_os: macos-latest
-          BASE_IMAGE: sickcodes/docker-osx:latest
+          BASE_IMAGE: sickcodes/docker-osx:sonoma
         - host_os: windows-latest
           BASE_IMAGE: mcr.microsoft.com/windows/servercore:ltsc2022
 
@@ -78,6 +78,14 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
       uses: actions/checkout@v4
+
+    - name: Enable KVM group permissions
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success() && startsWith(matrix.host_os, 'ubuntu')
+      run: |
+        echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules;
+        sudo udevadm control --reload-rules;
+        sudo udevadm trigger --name-match=kvm;
 
     - name: Add branch name and version to environment variables
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
