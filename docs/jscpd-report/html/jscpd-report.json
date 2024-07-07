@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-07-07T07:18:46.719Z",
+    "detectionDate": "2024-07-07T10:50:56.252Z",
     "formats": {
       "java": {
         "sources": {
@@ -2181,14 +2181,14 @@
             "newClones": 0
           },
           "scripts/install_dependencies.sh": {
-            "lines": 522,
-            "tokens": 4164,
+            "lines": 521,
+            "tokens": 4152,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 42,
             "duplicatedTokens": 120,
-            "percentage": 8.05,
-            "percentageTokens": 2.88,
+            "percentage": 8.06,
+            "percentageTokens": 2.89,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2217,8 +2217,8 @@
             "newClones": 0
           },
           "scripts/compile_native.sh": {
-            "lines": 316,
-            "tokens": 1944,
+            "lines": 327,
+            "tokens": 2099,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2254,14 +2254,14 @@
           }
         },
         "total": {
-          "lines": 4169,
-          "tokens": 27785,
+          "lines": 4179,
+          "tokens": 27928,
           "sources": 13,
           "clones": 12,
           "duplicatedLines": 263,
           "duplicatedTokens": 1345,
-          "percentage": 6.31,
-          "percentageTokens": 4.84,
+          "percentage": 6.29,
+          "percentageTokens": 4.82,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3164,14 +3164,14 @@
       }
     },
     "total": {
-      "lines": 29281,
-      "tokens": 225671,
+      "lines": 29291,
+      "tokens": 225814,
       "sources": 250,
       "clones": 124,
       "duplicatedLines": 1623,
       "duplicatedTokens": 14350,
       "percentage": 5.54,
-      "percentageTokens": 6.36,
+      "percentageTokens": 6.35,
       "newDuplicatedLines": 0,
       "newClones": 0
     }

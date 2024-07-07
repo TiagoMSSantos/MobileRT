@@ -260,7 +260,35 @@ build() {
   fi
   addCommandToPath "${c_compiler}";
 
-  cmake -DCMAKE_VERBOSE_MAKEFILE=ON \
+  # The compiler might redirect the output to stderr, so we also have to redirect it to the variable.
+  compiler_version=$(${compiler} -v 2>&1 || true);
+  echo "Compiler version: ${compiler_version}";
+  cmake --help;
+  # shellcheck disable=SC2063
+  generator=$(cmake --help | grep -i '*' | grep -v 'default' | cut -d '=' -f1 | cut -d '*' -f2 | cut -d ' ' -f2,3,4,5,6,7,8,9 | sed 's/^[ ]*//;s/[ ]*$//');
+  # shellcheck disable=SC2063
+  if cmake --help | grep -i '*' | grep -iq 'default' && cmake --help | grep -i '*' | grep -iq 'Visual Studio'; then
+    echo 'Detected Visual Studio for Windows!';
+    JOBS_FLAG="-- //p:Configuration=${typeWithCapitalLetter} //m:$((NCPU_CORES * 2)) //p:CL_MPCount=$((NCPU_CORES * 2))";
+    export MAKEFLAGS="//p:Configuration=${typeWithCapitalLetter} //m:$((NCPU_CORES * 2)) //p:CL_MPCount=$((NCPU_CORES * 2))";
+  elif cmake --help | grep -i '*' | grep -iq 'default' && cmake --help | grep -i '*' | grep -iq 'unix'; then
+    echo 'Detected Make!';
+    JOBS_FLAG="-- -j$((NCPU_CORES * 2))";
+    export MAKEFLAGS="-j$((NCPU_CORES * 2))";
+  elif cmake --help | grep -iq 'Visual Studio'; then
+    echo "Didn't find a default generator. Enforcing usage of Unix Makefiles instead!";
+    JOBS_FLAG="-- -j$((NCPU_CORES * 2))";
+    export MAKEFLAGS="-j$((NCPU_CORES * 2))";
+    generator='Unix Makefiles';
+  else
+    echo "Assuming NMake!";
+    export CL="/MP ${CL}";
+    JOBS_FLAG='';
+  fi
+
+  cmake \
+    -G "${generator}" \
+    -DCMAKE_VERBOSE_MAKEFILE=ON \
     -DCMAKE_CXX_COMPILER="${compiler}" \
     -DCMAKE_C_COMPILER="${c_compiler}" \
     -DCMAKE_C_SOURCE_FILE_EXTENSIONS="c" \
@@ -269,23 +297,6 @@ build() {
     ../app;
   resCompile=${?};
   echo 'Called CMake';
-
-  # The compiler might redirect the output to stderr, so we also have to redirect it to the variable.
-  compiler_version=$(${compiler} -v 2>&1 || true);
-  echo "Compiler version: ${compiler_version}";
-  cmake --help;
-  # shellcheck disable=SC2063
-  if cmake --help | grep -i '*' | grep -iq 'default' && cmake --help | grep -i '*' | grep -iq 'Visual Studio'; then
-    echo 'Detected Visual Studio for Windows!';
-    JOBS_FLAG="-- //p:Configuration=${typeWithCapitalLetter} //m:$((NCPU_CORES * 2)) //p:CL_MPCount=$((NCPU_CORES * 2))";
-  elif cmake --help | grep -i '*' | grep -iq 'default' && cmake --help | grep -i '*' | grep -iq 'unix'; then
-    echo "Detected Make!";
-    JOBS_FLAG="-- -j$((NCPU_CORES * 2))";
-  else
-    echo "Assuming NMake!";
-    export CL="/MP ${CL}";
-    JOBS_FLAG='';
-  fi
 
   if [ "${resCompile}" -eq 0 ]; then
     set +u;

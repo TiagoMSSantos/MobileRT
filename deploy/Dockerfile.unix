@@ -95,8 +95,7 @@ RUN \
       sudo git git-lfs; \
   elif uname -a | grep -iq 'linux' && command -v pacman > /dev/null; then \
     echo 'Detected Arch based Linux'; \
-    pacman -Sy --noconfirm --needed --noscriptlet; \
-    pacman -S --noconfirm --needed --noscriptlet glibc git; \
+    pacman -Sy --noconfirm --needed --noscriptlet git; \
   elif uname -a | grep -iq 'linux' && command -v apk > /dev/null; then \
     echo 'Detected Alpine based Linux'; \
     apk update; \
