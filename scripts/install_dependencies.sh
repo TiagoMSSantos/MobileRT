@@ -165,9 +165,8 @@ install_dependencies_red_hat() {
 
 install_dependencies_arch() {
   echo 'Installing dependencies';
-  pacman -Syu --noconfirm --needed --noscriptlet icu;
-  pacman -S --noconfirm --needed --noscriptlet qt5-base;
-  pacman -S --noconfirm --needed --noscriptlet gcc;
+  pacman -Sy --noconfirm --needed --noscriptlet icu libxml2;
+  pacman -S --noconfirm --needed --noscriptlet qt5-base gcc;
 
   if ! command -v cmake > /dev/null; then
     pacman -S --noconfirm --needed --noscriptlet cmake;
