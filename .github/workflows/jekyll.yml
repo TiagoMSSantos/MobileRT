@@ -48,7 +48,7 @@ jobs:
 
       - name: Setup Ruby
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        uses: ruby/setup-ruby@v1.185.0
+        uses: ruby/setup-ruby@v1.186.0
         with:
           ruby-version: '3.2.2' # Not needed with a .ruby-version file
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
