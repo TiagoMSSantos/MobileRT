@@ -20,6 +20,6 @@ group :jekyll_plugins do
 end
 
 # Gems for bash code coverage
-gem 'bashcov'
-gem 'simplecov'
-gem 'simplecov-cobertura'
+gem 'bashcov', '~> 3.1.2'
+gem 'simplecov', '~> 0.22.0'
+gem 'simplecov-cobertura', '~> 2.1.0'
