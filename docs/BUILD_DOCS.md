@@ -2,10 +2,11 @@
 
 ## Build documentation locally
 
-- Necessary to install Ruby 3.3.0.
+- Necessary to install Ruby 3.3.X.
 
 ```shell
-bundle install;
+gem install bundler -v 2.5.7;
+bundle install && bundle update --bundler;
 bundle exec jekyll build --source docs/ docs/_config.yml --trace;
 bundle exec jekyll serve --source docs/ docs/_config.yml --trace;
 ```

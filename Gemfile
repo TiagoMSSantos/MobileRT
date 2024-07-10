@@ -4,18 +4,19 @@
 
 source 'https://rubygems.org'
 
-ruby '~> 3.2.2'
+ruby '~> 3.3'
 
 # Gems for the Github Markdown
-gem 'jekyll', '~> 3.9.3'
+gem 'jekyll', '~> 3.9.5'
+gem 'webrick', '~> 1.8.1'
 
 group :jekyll_plugins do
-  gem 'github-pages', '~> 228', group: :jekyll_plugins
+  gem 'github-pages', '~> 231', group: :jekyll_plugins
+  gem 'jekyll-github-metadata', '~> 2.16.1'
+  gem 'kramdown', '~> 2.4.0'
   gem 'jekyll-theme-primer', '~> 0.6.0'
   gem 'jekyll-sass-converter', '~> 1.5.2'
   gem 'sass', '~> 3.7.4'
-  gem 'jekyll-github-metadata', '~> 2.13.0'
-  gem 'kramdown', '~> 2.3.2'
 end
 
 # Gems for bash code coverage
