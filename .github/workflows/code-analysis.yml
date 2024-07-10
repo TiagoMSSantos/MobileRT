@@ -155,6 +155,8 @@ jobs:
       if: success() && matrix.language == 'cpp'
       run: |
         bundle install && bundle update --bundler;
+        gem install bashcov;
+        gem install simplecov-cobertura;
 
     # Only execute shell unit tests for 'cpp' language because it doesn't matter in which build
     # these tests are executed.
@@ -164,6 +166,7 @@ jobs:
       working-directory: .
       run: |
         bashcov scripts/test/helper_functions.sh;
+        ls -lahp coverage;
 
     - name: Check code coverage report
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -180,6 +183,7 @@ jobs:
         # Check available parameters in: https://github.com/codecov/codecov-action/blob/main/action.yml
         token: ${{ secrets.CODECOV_TOKEN }}
         directory: 'coverage'
+        file: coverage/coverage.xml
 
     - name: Autobuild
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}

@@ -2,7 +2,7 @@
                        // <!--
                        window.initialData = {
   "statistics": {
-    "detectionDate": "2024-07-10T06:12:04.892Z",
+    "detectionDate": "2024-07-10T08:32:59.183Z",
     "formats": {
       "java": {
         "sources": {
@@ -1918,11 +1918,11 @@
             "lines": 414,
             "tokens": 2422,
             "sources": 1,
-            "clones": 8,
-            "duplicatedLines": 182,
-            "duplicatedTokens": 1088,
-            "percentage": 43.96,
-            "percentageTokens": 44.92,
+            "clones": 7,
+            "duplicatedLines": 149,
+            "duplicatedTokens": 925,
+            "percentage": 35.99,
+            "percentageTokens": 38.19,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -1951,14 +1951,14 @@
             "newClones": 0
           },
           ".github/workflows/code-analysis.yml": {
-            "lines": 283,
-            "tokens": 1842,
+            "lines": 288,
+            "tokens": 1853,
             "sources": 1,
-            "clones": 3,
-            "duplicatedLines": 79,
-            "duplicatedTokens": 411,
-            "percentage": 27.92,
-            "percentageTokens": 22.31,
+            "clones": 2,
+            "duplicatedLines": 46,
+            "duplicatedTokens": 248,
+            "percentage": 15.97,
+            "percentageTokens": 13.38,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2084,14 +2084,14 @@
           }
         },
         "total": {
-          "lines": 2803,
-          "tokens": 18728,
+          "lines": 2808,
+          "tokens": 18739,
           "sources": 23,
-          "clones": 18,
-          "duplicatedLines": 454,
-          "duplicatedTokens": 2976,
-          "percentage": 16.2,
-          "percentageTokens": 15.89,
+          "clones": 17,
+          "duplicatedLines": 421,
+          "duplicatedTokens": 2813,
+          "percentage": 14.99,
+          "percentageTokens": 15.01,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3166,14 +3166,14 @@
       }
     },
     "total": {
-      "lines": 29300,
-      "tokens": 225888,
+      "lines": 29305,
+      "tokens": 225899,
       "sources": 250,
-      "clones": 124,
-      "duplicatedLines": 1623,
-      "duplicatedTokens": 14350,
-      "percentage": 5.54,
-      "percentageTokens": 6.35,
+      "clones": 123,
+      "duplicatedLines": 1590,
+      "duplicatedTokens": 14187,
+      "percentage": 5.43,
+      "percentageTokens": 6.28,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -6781,58 +6781,22 @@
     },
     {
       "format": "yaml",
-      "lines": 34,
-      "fragment": "on:\n  workflow_dispatch:\n  push:\n    paths-ignore:\n    - '.github/workflows/**'\n    - '*'\n    - 'app/debug/**'\n    - 'app/release/**'\n    - 'app/third_party/conan/**'\n    - 'app/System_dependent/**'\n    - 'deploy/**'\n    - 'docs/**'\n    - 'scripts/**'\n    - 'WavefrontOBJs/**'\n    - '!app/System_dependent/CMakeLists.txt'\n    - '!gradle/wrapper/gradle-wrapper.properties'\n    - '!scripts/run_tests.sh'\n    - '!scripts/helper_functions.sh'\n    - '!scripts/install_dependencies.sh'\n    - '!app/CMakeLists.txt'\n    - '!codecov.yml'\n    - '!.github/workflows/android.yml'\n    - '!.github/workflows/native.yml'\n    - '!.github/workflows/code-analysis.yml'\n    - '!app/third_party/conan/Native/**'\n    - '!app/System_dependent/Native/**'\n    - '!.github/workflows/android_matrix.json'\n    - '!app/third_party/conan/Android/**'\n    - '!app/System_dependent/Android_JNI/**'\n    - '!scripts/compile_android.sh'\n    - '!scripts/compile_native.sh'\n    - '!scripts/check_android.sh'\n    - '!scripts/run_tests_android.sh'\n    - '!scripts/test/**'",
-      "tokens": 0,
-      "firstFile": {
-        "name": ".github/workflows/code-analysis.yml",
-        "start": 3,
-        "end": 36,
-        "startLoc": {
-          "line": 3,
-          "column": 1,
-          "position": 8
-        },
-        "endLoc": {
-          "line": 36,
-          "column": 19,
-          "position": 171
-        }
-      },
-      "secondFile": {
-        "name": ".github/workflows/native.yml",
-        "start": 3,
-        "end": 36,
-        "startLoc": {
-          "line": 3,
-          "column": 1,
-          "position": 8
-        },
-        "endLoc": {
-          "line": 36,
-          "column": 22,
-          "position": 171
-        }
-      }
-    },
-    {
-      "format": "yaml",
       "lines": 29,
       "fragment": "- '!*.java*'\n    - '!*.kt*'\n    - '!*.c*'\n    - '!*.h*'\n    - '!*gradle*'\n\ndefaults:\n  run:\n    shell: sh\n    working-directory: .\n\nconcurrency:\n  group: ${{ github.workflow }} ${{ github.ref }}\n  cancel-in-progress: true\n\n# Default environment variables.\nenv:\n  GITHUB_STEP_TIMEOUT_SMALL: 4\n  GITHUB_STEP_TIMEOUT_MEDIUM: 10\n  GITHUB_STEP_TIMEOUT_LONG: 30\n\njobs:\n  Build:\n    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'\n\n    strategy:\n      fail-fast: false\n      matrix:\n        # Override automatic language detection by changing the below list",
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/code-analysis.yml",
-        "start": 37,
-        "end": 65,
+        "start": 38,
+        "end": 66,
         "startLoc": {
-          "line": 37,
+          "line": 38,
           "column": 5,
-          "position": 174
+          "position": 179
         },
         "endLoc": {
-          "line": 65,
+          "line": 66,
           "column": 67,
-          "position": 317
+          "position": 322
         }
       },
       "secondFile": {
@@ -6909,17 +6873,17 @@
       },
       "secondFile": {
         "name": ".github/workflows/code-analysis.yml",
-        "start": 84,
-        "end": 102,
+        "start": 85,
+        "end": 103,
         "startLoc": {
-          "line": 84,
+          "line": 85,
           "column": 7,
-          "position": 448
+          "position": 453
         },
         "endLoc": {
-          "line": 102,
+          "line": 103,
           "column": 6,
-          "position": 553
+          "position": 558
         }
       }
     },
@@ -7018,16 +6982,16 @@
       "secondFile": {
         "name": ".github/workflows/android_repeatable.yml",
         "start": 42,
-        "end": 102,
+        "end": 103,
         "startLoc": {
           "line": 42,
           "column": 5,
           "position": 238
         },
         "endLoc": {
-          "line": 102,
+          "line": 103,
           "column": 6,
-          "position": 553
+          "position": 558
         }
       }
     },
