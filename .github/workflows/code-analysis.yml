@@ -21,6 +21,7 @@ on:
     - '!scripts/install_dependencies.sh'
     - '!app/CMakeLists.txt'
     - '!codecov.yml'
+    - '!Gemfile'
     - '!.github/workflows/android.yml'
     - '!.github/workflows/native.yml'
     - '!.github/workflows/code-analysis.yml'
