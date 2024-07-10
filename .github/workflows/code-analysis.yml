@@ -154,9 +154,8 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success() && matrix.language == 'cpp'
       run: |
-        bundle install && bundle update --bundler;
-        gem install bashcov;
-        gem install simplecov-cobertura;
+        bundle config set path.system true;
+        bundle install;
 
     # Only execute shell unit tests for 'cpp' language because it doesn't matter in which build
     # these tests are executed.
