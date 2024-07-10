@@ -36,33 +36,39 @@ jobs:
     steps:
       - name: Checkout
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success()
         uses: actions/checkout@v4
 
       - name: Lint documentation files
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success()
         uses: docker://avtodev/markdown-lint:v1
         with:
           # Check available parameters in: https://github.com/avto-dev/markdown-lint/blob/master/action.yml
           config: 'docs/.markdownlint.json'
           args: 'docs/*.md'
 
-      - name: Setup Ruby
+      - name: Setup Ruby, JRuby and TruffleRuby
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success()
         uses: ruby/setup-ruby@v1.186.0
         with:
-          ruby-version: '3.3' # Not needed with a .ruby-version file
-          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
-          cache-version: 0 # Increment this number if you need to re-download cached gems
+          # Check available parameters in: https://github.com/ruby/setup-ruby/blob/master/action.yml
+          ruby-version: '3.3'
+          bundler-cache: true
+          cache-version: 0
 
       - name: Setup Pages
         id: pages
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success()
         uses: actions/configure-pages@v5
         with:
           generator_config_file: docs/_config.yml
 
       - name: Build with Jekyll
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success()
         env:
           JEKYLL_ENV: production
           PAGES_REPO_NWO: TiagoMSSantos/MobileRT

@@ -145,7 +145,9 @@ jobs:
       uses: ruby/setup-ruby@v1.186.0
       with:
         # Check available parameters in: https://github.com/ruby/setup-ruby/blob/master/action.yml
-        ruby-version: '3.2.2'
+        ruby-version: '3.3'
+        bundler-cache: true
+        cache-version: 0
 
     - name: Install Ruby dependencies
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
