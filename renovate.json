@@ -686,7 +686,7 @@
       "matchDepNames": [
         "gradle"
       ],
-      "matchCurrentVersion": "/^8\\.7.*$/"
+      "matchCurrentVersion": "/^8\\.7$/"
     },
     {
       "groupName": "Update Boost C++ Libraries",
