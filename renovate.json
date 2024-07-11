@@ -681,8 +681,11 @@
       "allowedVersions": "/^r?[0-9]+\\.?[0-9a-z]*\\.?[0-9]*.*$/"
     },
     {
-      "groupName": "Only update patches of Gradle for Android API <= 15",
+      "groupName": "Do not update Gradle for Android API <= 15",
       "enabled": false,
+      "matchDepNames": [
+        "gradle"
+      ],
       "matchManagers": [
         "custom.regex",
         "gradle"
