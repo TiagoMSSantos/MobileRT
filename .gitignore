@@ -80,6 +80,7 @@
 **/Gemfile.lock
 # Ruby Jekyll site served locally
 **/_site
+**/.sass-cache
 
 # Doxygen output
 **/*doxygen*

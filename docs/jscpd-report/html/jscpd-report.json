@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-07-10T18:07:46.743Z",
+    "detectionDate": "2024-07-11T06:51:39.165Z",
     "formats": {
       "java": {
         "sources": {
@@ -1925,8 +1925,8 @@
             "newClones": 0
           },
           ".github/workflows/jekyll.yml": {
-            "lines": 114,
-            "tokens": 723,
+            "lines": 140,
+            "tokens": 827,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2082,14 +2082,14 @@
           }
         },
         "total": {
-          "lines": 2807,
-          "tokens": 18739,
+          "lines": 2833,
+          "tokens": 18843,
           "sources": 23,
           "clones": 17,
           "duplicatedLines": 421,
           "duplicatedTokens": 2813,
-          "percentage": 15,
-          "percentageTokens": 15.01,
+          "percentage": 14.86,
+          "percentageTokens": 14.93,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3164,13 +3164,13 @@
       }
     },
     "total": {
-      "lines": 29304,
-      "tokens": 225899,
+      "lines": 29330,
+      "tokens": 226003,
       "sources": 250,
       "clones": 123,
       "duplicatedLines": 1590,
       "duplicatedTokens": 14187,
-      "percentage": 5.43,
+      "percentage": 5.42,
       "percentageTokens": 6.28,
       "newDuplicatedLines": 0,
       "newClones": 0

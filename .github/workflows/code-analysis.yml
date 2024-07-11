@@ -75,12 +75,12 @@ jobs:
 
     steps:
     - name: Checkout
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       uses: actions/checkout@v4
 
     - name: Set up JDK
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && matrix.language == 'java'
       uses: actions/setup-java@v4
       with:
@@ -101,7 +101,7 @@ jobs:
         cache-dependency-path: '**/build.gradle'
 
     - name: Check available Android versions
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && matrix.language == 'java'
       working-directory: .
       run: |
@@ -134,7 +134,7 @@ jobs:
         packs: codeql/cpp-queries,codeql/java-queries,codeql/ruby-queries
 
     - name: Install dependencies
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && matrix.language == 'cpp'
       working-directory: .
       run: |
@@ -147,11 +147,11 @@ jobs:
       with:
         # Check available parameters in: https://github.com/ruby/setup-ruby/blob/master/action.yml
         ruby-version: '3.3'
-        bundler-cache: true
+        bundler-cache: false
         cache-version: 0
 
     - name: Install Ruby dependencies
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && matrix.language == 'cpp'
       run: |
         bundle config set path.system true;
@@ -160,7 +160,7 @@ jobs:
     # Only execute shell unit tests for 'cpp' language because it doesn't matter in which build
     # these tests are executed.
     - name: Code Coverage Shell script tests
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && matrix.language == 'cpp'
       working-directory: .
       run: |
@@ -249,7 +249,7 @@ jobs:
         ls -lahp ./codeql-results/${{ matrix.language }}.sarif;
 
     - name: Filter SARIF
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       uses: advanced-security/filter-sarif@v1
       with:
