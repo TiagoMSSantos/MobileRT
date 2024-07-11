@@ -644,6 +644,7 @@
       "enabled": false,
       "matchUpdateTypes": ["major", "minor"],
       "matchDepNames": [
+        "custom.regex",
         "com.android.tools.build:gradle"
       ],
       "matchManagers": [
@@ -682,8 +683,8 @@
     {
       "groupName": "Only update patches of Gradle for Android API <= 15",
       "enabled": false,
-      "matchUpdateTypes": ["major", "minor"],
-      "matchDepNames": [
+      "matchManagers": [
+        "custom.regex",
         "gradle"
       ],
       "matchCurrentVersion": "/^8\\.7$/"
