@@ -67,7 +67,7 @@
     "enabled": false
   },
   "bundler": {
-    "enabled": false
+    "enabled": true
   },
   "conan": {
     "enabled": true
