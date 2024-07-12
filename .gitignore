@@ -24,6 +24,7 @@
 **/Makefile*
 **/*.o
 **/*.llvmIR
+**/*.kotlin
 
 # Gradle reports
 **/reports/**
@@ -75,15 +76,14 @@
 **/*.bbl
 **/*.blg
 **/*.synctex.gz
+**/*doxygen*
 
 # Ruby Bundler versions installed
 **/Gemfile.lock
+
 # Ruby Jekyll site served locally
 **/_site
 **/.sass-cache
-
-# Doxygen output
-**/*doxygen*
 
 # Others temporary files
 **/*.d
