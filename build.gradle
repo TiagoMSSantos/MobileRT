@@ -160,7 +160,7 @@ tasks.named('wrapper', Wrapper) {it ->
     } else {
         it.gradleVersion = '8.7'
     }
-    it.distributionUrl = 'https://services.gradle.org/distributions/gradle-' + it.gradleVersion + '-bin.zip'
+    it.distributionUrl = 'https://services.gradle.org/distributions/gradle-' + it.gradleVersion + '-' + it.distributionType.name().toLowerCase() + '.zip'
     println('Gradle wrapper version: ' + it.gradleVersion)
 }
 ///////////////////////////////////////////////////////////////////////////////
