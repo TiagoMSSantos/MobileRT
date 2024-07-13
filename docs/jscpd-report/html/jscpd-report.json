@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-07-13T10:06:26.123Z",
+    "detectionDate": "2024-07-13T10:16:39.824Z",
     "formats": {
       "java": {
         "sources": {
@@ -2365,8 +2365,8 @@
             "newClones": 0
           },
           "docs/README.md": {
-            "lines": 271,
-            "tokens": 2116,
+            "lines": 270,
+            "tokens": 2087,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2450,13 +2450,13 @@
           }
         },
         "total": {
-          "lines": 2244,
-          "tokens": 22109,
+          "lines": 2243,
+          "tokens": 22080,
           "sources": 15,
           "clones": 1,
           "duplicatedLines": 23,
           "duplicatedTokens": 92,
-          "percentage": 1.02,
+          "percentage": 1.03,
           "percentageTokens": 0.42,
           "newDuplicatedLines": 0,
           "newClones": 0
@@ -3164,8 +3164,8 @@
       }
     },
     "total": {
-      "lines": 29318,
-      "tokens": 225979,
+      "lines": 29317,
+      "tokens": 225950,
       "sources": 250,
       "clones": 123,
       "duplicatedLines": 1590,

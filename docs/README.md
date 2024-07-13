@@ -159,7 +159,7 @@ library for instrumented tests
 - [x] Java [EasyMock](https://easymock.org/)
 framework for mocking in unit tests
 - [x] Java [PowerMock for EasyMock](https://github.com/powermock/powermock/wiki/EasyMock)
-  framework to improve mocking in unit tests (allow mocking `final` classes, `native` and `static` methods
+  framework to improve mocking in unit tests since it allows mocking `final` classes, `native` and `static` methods.
 
 ## Supported Operating Systems
 
@@ -239,7 +239,6 @@ framework for mocking in unit tests
 It's necessary the following SDKs in order to compile this project for Android:
 
 - [Android SDK](https://developer.android.com/studio) which should also bring the [Android NDK](https://developer.android.com/ndk) in order to compile the native code.
-  - It's recommended to use the Android Studio `2023.2.1` which is compatible with Gradle [8.2.2](../build.gradle#33) used by this project.
 
 For native **Linux**, **MacOS** and **Windows** support, the `install_dependencies.sh` script should download and install the necessary dependencies, by just calling:
 
@@ -260,8 +259,8 @@ It also supports installing dependencies in the following Operating Systems:
 - MacOS (using Homebrew)
 - Windows (using Chocolatey)
 
-Note that these scripts are tested in Github actions pipeline only, so might assume that some tools were already installed.
-If the distribution you use is not supported, or it's missing the installation of some tool, you can always open an issue or even a pull request :)
+Note that these scripts are tested in Github actions pipeline only, so it might assume that some tools are already installed in the system.
+If the OS you use is not supported, or it's missing the installation of some tool, you can always open an issue or even a pull request.
 
 ## Documentation
 
