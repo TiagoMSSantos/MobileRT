@@ -265,7 +265,6 @@ If the OS you use is not supported, or it's missing the installation of some too
 ## Documentation
 
 <!-- The documentation have the full path to the repository so the URL also work in Docker hub. -->
-This project started as a [Masters' dissertation](https://repositorium.sdum.uminho.pt/handle/1822/66577).  
 Click [here](https://github.com/TiagoMSSantos/MobileRT/blob/master/docs/FEATURES.md) to check the features list that are supported.  
 Click [here](https://github.com/TiagoMSSantos/MobileRT/blob/master/docs/TOOLS.md) to check the code coverage and code duplication commands.  
 Click [here](https://github.com/TiagoMSSantos/MobileRT/blob/master/docs/BUILD_DOCS.md) to build and serve the documentation locally.  

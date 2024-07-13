@@ -360,8 +360,9 @@ clearOldBuildFiles() {
   while [ "${files_being_used}" != '' ] && [ ${retry_files} -lt 10 ]; do
     retry_files=$(( retry_files + 1 ));
     echo "files_being_used: '${files_being_used}'";
+    # Changing IFS to allow finding commands in paths with spaces.
     old_IFS=${IFS};
-    IFS="$(printf '\n')";
+    IFS=$'\n';
     for file_being_used in ${files_being_used}; do
       echo "file_being_used: '${file_being_used}'";
       retry_file=0;
@@ -477,7 +478,15 @@ addCommandToPath() {
     echo "Command '${1}' already available.";
     return 0;
   fi
-  COMMAND_PATHS=$(find /opt/intel/oneapi/compiler ~/.. /usr /c/Program Files -type f -iname "${1}" -or -iname "${1}.exe" 2> /dev/null | grep -i "bin" || true);
+  COMMAND_PATHS=$(find \
+    /opt/intel/oneapi/compiler \
+    ~/.. \
+    /usr \
+    "/c/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Tools/MSVC/14.40.33807/bin/Hostx64/x64" \
+    -type f -iname "${1}" -or -iname "${1}.exe" 2> /dev/null | grep -i "bin" || true);
+  # Changing IFS to allow finding commands in paths with spaces.
+  old_IFS="${IFS}";
+  IFS=$'\n';
   for COMMAND_PATH in ${COMMAND_PATHS}; do
     echo "Command path to executable: ${COMMAND_PATH}";
     echo "Command location Unix: ${COMMAND_PATH%/"${1}"}";
@@ -485,6 +494,7 @@ addCommandToPath() {
     export PATH="${PATH}:${COMMAND_PATH%/"${1}"}";
     export PATH="${PATH}:${COMMAND_PATH%/"${1}.exe"}";
   done;
+  IFS="${old_IFS}";
   if [ -z "${COMMAND_PATHS}" ]; then
     echo "Command '${1}' was not found in the system.";
     return 1;

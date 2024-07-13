@@ -66,8 +66,10 @@ setPaths() {
   echo "MOBILERT_PATH = ${MOBILERT_PATH}";
 
   if uname -a | grep -iq 'mingw'; then
-    BIN_DEBUG_PATH="${MOBILERT_PATH}/build_debug/bin/Debug";
-    BIN_RELEASE_PATH="${MOBILERT_PATH}/build_release/bin/Release";
+    # shellcheck disable=SC2010
+    BIN_DEBUG_PATH="${MOBILERT_PATH}/build_debug/bin/"$(ls "${MOBILERT_PATH}"/build_debug/bin | grep Debug | tr -d '[:space:]' || true);
+    # shellcheck disable=SC2010
+    BIN_RELEASE_PATH="${MOBILERT_PATH}/build_release/bin/"$(ls "${MOBILERT_PATH}"/build_release/bin | grep Release | tr -d '[:space:]' || true);
     BIN_DEBUG_EXE="${BIN_DEBUG_PATH}"/AppMobileRTd
     BIN_RELEASE_EXE="${BIN_RELEASE_PATH}"/AppMobileRT
   else

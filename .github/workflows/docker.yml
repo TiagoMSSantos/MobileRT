@@ -214,7 +214,7 @@ jobs:
         echo "VERSION: ${{ env.VERSION }}";
         . scripts/docker.sh && executeUnitTestsInDockerContainer ${{ env.VERSION }} --gtest_filter=-*Engine*;
 
-    - name: Run unit tests Ray Tracing engine (for code coverage)
+    - name: Run system tests Ray Tracing engine (for code coverage)
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       run: |

@@ -102,9 +102,7 @@ jobs:
         - name: MSVC
           host_os: windows-2022
           type: release
-          compiler: g++
-          cxx: "C:/PROGRA~2/MICROS~1/2019/Enterprise/VC/Tools/MSVC/14.28.29333/bin/HostX64/x86/cl.exe"
-          cc: "C:/PROGRA~2/MICROS~1/2019/Enterprise/VC/Tools/MSVC/14.28.29333/bin/HostX64/x86/cl.exe"
+          compiler: cl
           qt_host: 'windows'
           qt_arch: 'win64_msvc2019_64'
 
@@ -112,10 +110,8 @@ jobs:
           host_os: windows-2019
           type: release
           compiler: g++
-          cxx: "gcc"
-          cc: "g++"
           qt_host: 'windows'
-          qt_arch: 'win64_msvc2019_64'
+          qt_arch: 'win64_mingw81'
 
     name: ${{ matrix.name }} ${{ matrix.host_os }} (${{ matrix.type }})
     runs-on: ${{ matrix.host_os }}
@@ -127,19 +123,21 @@ jobs:
       if: success()
       uses: actions/checkout@v4
 
-    - name: Setup build directory
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success()
-      working-directory: .
-      run: |
-        mkdir -p build_${{ matrix.type }};
-
     - name: Check MacOS Xcode versions
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && startsWith(matrix.host_os, 'macos')
       working-directory: .
       run: |
         ls -lahp /System/Volumes/Data/Applications;
+
+    - name: Check Windows Visual Studio versions
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success() && startsWith(matrix.host_os, 'windows-2022')
+      working-directory: .
+      run: |
+        ls -lahp "C:/Program Files/Microsoft Visual Studio/";
+        ls -lahp "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Tools/MSVC/";
+        ls -lahp "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Tools/MSVC/14.40.33807/bin/Hostx64/x64/cl.exe";
 
     - name: Install MacPorts (MacOS 11)
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
@@ -152,24 +150,24 @@ jobs:
     - name: Install Qt (Windows & MacOS)
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success() && (startsWith(matrix.host_os, 'windows') || startsWith(matrix.host_os, 'macos-11'))
-      uses: jurplel/install-qt-action@v3
+      uses: jurplel/install-qt-action@v4
       # Download Qt from: https://download.qt.io/online/qtsdkrepository/
       with:
         # Check available parameters in: https://github.com/jurplel/install-qt-action/blob/master/action.yml
         version: '5.15.2' # Also update: app/CMakeLists.txt
-        host: '${{ github.qt_host }}'
+        host: '${{ matrix.qt_host }}'
         target: 'desktop'
-        arch: '${{ github.qt_arch }}'
+        arch: '${{ matrix.qt_arch }}'
         dir: '${{ github.workspace }}'
-        install-deps: 'true'
+        install-deps: 'false'
         modules: ''
         cache: 'true'
-        cache-key-prefix: '${{ runner.host_os }}'
+        cache-key-prefix: '${{ matrix.qt_host }}-${{ matrix.qt_arch }}'
         setup-python: 'false'
         set-env: 'true'
         tools-only: 'false'
-        aqtversion: '==2.1.*'
-        py7zrversion: '==0.19.*'
+        aqtversion: '==3.1.*'
+        py7zrversion: '==0.20.*'
         extra: '--external 7z'
 
     - name: Install dependencies
@@ -222,7 +220,7 @@ jobs:
       if: success() && startsWith(matrix.compiler, 'icpx')
       working-directory: .
       run: |
-        gpgKey='GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB';
+        gpgKey='GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB';
         wget https://apt.repos.intel.com/intel-gpg-keys/"${gpgKey}";
         sudo apt-key add "${gpgKey}";
         rm "${gpgKey}";
@@ -261,7 +259,7 @@ jobs:
         echo "Unit tests executable: ${unitTestsExe}";
         LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:$(find ~/.conan -iname 'libgtest.so' | grep -iv 'build' | xargs ls -t | head -1 | xargs dirname)" ${unitTestsExe} --gtest_filter=-*Engine*;
 
-    - name: Run unit tests Ray Tracing engine (for code coverage)
+    - name: Run system tests Ray Tracing engine (for code coverage)
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       working-directory: .

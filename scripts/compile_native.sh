@@ -255,6 +255,8 @@ build() {
     c_compiler='clang';
   elif [ "${compiler}" = 'icpx' ]; then
     c_compiler='icx';
+  elif [ "${compiler}" = 'cl' ]; then
+    c_compiler='cl';
   else
     c_compiler='gcc';
   fi
@@ -268,9 +270,16 @@ build() {
   generator=$(cmake --help | grep -i '*' | grep -v 'default' | cut -d '=' -f1 | cut -d '*' -f2 | cut -d ' ' -f2,3,4,5,6,7,8,9 | sed 's/^[ ]*//;s/[ ]*$//');
   # shellcheck disable=SC2063
   if cmake --help | grep -i '*' | grep -iq 'default' && cmake --help | grep -i '*' | grep -iq 'Visual Studio'; then
-    echo 'Detected Visual Studio for Windows!';
-    JOBS_FLAG="-- //p:Configuration=${typeWithCapitalLetter} //m:$((NCPU_CORES * 2)) //p:CL_MPCount=$((NCPU_CORES * 2))";
-    export MAKEFLAGS="//p:Configuration=${typeWithCapitalLetter} //m:$((NCPU_CORES * 2)) //p:CL_MPCount=$((NCPU_CORES * 2))";
+    if [ "${compiler}" = 'cl' ]; then
+      echo 'Detected Visual Studio for Windows!';
+      JOBS_FLAG="-- //p:Configuration=${typeWithCapitalLetter} //m:$((NCPU_CORES * 2)) //p:CL_MPCount=$((NCPU_CORES * 2))";
+      export MAKEFLAGS="//p:Configuration=${typeWithCapitalLetter} //m:$((NCPU_CORES * 2)) //p:CL_MPCount=$((NCPU_CORES * 2))";
+    else
+      echo 'Detected MinGW!';
+      generator='MinGW Makefiles';
+      JOBS_FLAG="-- -j$((NCPU_CORES * 2))";
+      export MAKEFLAGS="-j$((NCPU_CORES * 2))";
+    fi
   elif cmake --help | grep -i '*' | grep -iq 'default' && cmake --help | grep -i '*' | grep -iq 'unix'; then
     echo 'Detected Make!';
     JOBS_FLAG="-- -j$((NCPU_CORES * 2))";
