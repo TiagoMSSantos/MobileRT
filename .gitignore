@@ -97,3 +97,5 @@
 **/*.dat
 **/node_modules/**
 **/git-hooks
+**/managed_context/**
+**/test_suite_analysis/**
