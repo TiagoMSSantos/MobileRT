@@ -483,7 +483,8 @@ addCommandToPath() {
     ~/.. \
     /usr \
     "/c/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Tools/MSVC/14.40.33807/bin/Hostx64/x64" \
-    -type f -iname "${1}" -or -iname "${1}.exe" 2> /dev/null | grep -i "bin" || true);
+    "/c/Program Files/Microsoft Visual Studio/2022/Enterprise/MSBuild/Current/Bin/amd64" \
+    -type f -iname "${1}" -or -iname "${1}.exe" 2> /dev/null | grep -i "bin" | grep -i "64" || true);
   # Changing IFS to allow finding commands in paths with spaces.
   old_IFS="${IFS}";
   IFS=$'\n';

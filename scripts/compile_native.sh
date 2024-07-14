@@ -272,27 +272,31 @@ build() {
   if cmake --help | grep -i '*' | grep -iq 'default' && cmake --help | grep -i '*' | grep -iq 'Visual Studio'; then
     if [ "${compiler}" = 'cl' ]; then
       echo 'Detected Visual Studio for Windows!';
-      JOBS_FLAG="-- //p:Configuration=${typeWithCapitalLetter} //m:$((NCPU_CORES * 2)) //p:CL_MPCount=$((NCPU_CORES * 2))";
-      export MAKEFLAGS="//p:Configuration=${typeWithCapitalLetter} //m:$((NCPU_CORES * 2)) //p:CL_MPCount=$((NCPU_CORES * 2))";
+      jobsFlags="//p:Configuration=${typeWithCapitalLetter} //m:$((NCPU_CORES * 2)) //p:CL_MPCount=$((NCPU_CORES * 2))";
+      JOBS_FLAGS="-- ${jobsFlags}";
+      export MAKEFLAGS="${jobsFlags}";
     else
       echo 'Detected MinGW!';
       generator='MinGW Makefiles';
-      JOBS_FLAG="-- -j$((NCPU_CORES * 2))";
-      export MAKEFLAGS="-j$((NCPU_CORES * 2))";
+      jobsFlags="-j$((NCPU_CORES * 2))";
+      JOBS_FLAGS="-- ${jobsFlags}";
+      export MAKEFLAGS="${jobsFlags}";
     fi
   elif cmake --help | grep -i '*' | grep -iq 'default' && cmake --help | grep -i '*' | grep -iq 'unix'; then
     echo 'Detected Make!';
-    JOBS_FLAG="-- -j$((NCPU_CORES * 2))";
-    export MAKEFLAGS="-j$((NCPU_CORES * 2))";
+    jobsFlags="-j$((NCPU_CORES * 2))";
+    JOBS_FLAGS="-- ${jobsFlags}";
+    export MAKEFLAGS="${jobsFlags}";
   elif cmake --help | grep -iq 'Visual Studio'; then
     echo "Didn't find a default generator. Enforcing usage of Unix Makefiles instead!";
-    JOBS_FLAG="-- -j$((NCPU_CORES * 2))";
-    export MAKEFLAGS="-j$((NCPU_CORES * 2))";
+    jobsFlags="-j$((NCPU_CORES * 2))";
+    JOBS_FLAGS="-- ${jobsFlags}";
+    export MAKEFLAGS="${jobsFlags}";
     generator='Unix Makefiles';
   else
     echo "Assuming NMake!";
-    export CL="/MP ${CL}";
-    JOBS_FLAG='';
+    export CL="/MP$((NCPU_CORES * 2))";
+    JOBS_FLAGS='';
   fi
 
   cmake \
@@ -309,9 +313,9 @@ build() {
 
   if [ "${resCompile}" -eq 0 ]; then
     set +u;
-    echo "Calling Make with parameters: '${JOBS_FLAG}'";
+    echo "Calling Make with parameters: '${JOBS_FLAGS}'";
     # shellcheck disable=SC2086
-    cmake --build . ${JOBS_FLAG};
+    cmake --build . ${JOBS_FLAGS};
     set -u;
     resCompile=${?};
   else

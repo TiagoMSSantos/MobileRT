@@ -40,7 +40,7 @@ message( STATUS "Setting default compiler flags." )
 set( ANDROID_COMPILER_FLAGS "" CACHE STRING "CUSTOM" FORCE )
 set( CMAKE_CXX_STANDARD "11" CACHE STRING "CUSTOM" FORCE )
 
-if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
+if( NOT "${CMAKE_GENERATOR}" MATCHES "Visual Studio" )
     # PIC: Position Independent Code
     set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -Bsymbolic -Bsymbolic-functions"
       CACHE STRING "CUSTOM" FORCE )
@@ -55,9 +55,14 @@ set( CMAKE_CXX_FLAGS_DEBUG "-D_GLIBCXX_DEBUG" CACHE STRING "CUSTOM" FORCE )
 # in the source file.
 set( CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG -ffunction-sections -fdata-sections"
   CACHE STRING "CUSTOM" FORCE )
-if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
+if( NOT "${CMAKE_GENERATOR}" MATCHES "Visual Studio" )
   set( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3" CACHE STRING "CUSTOM" FORCE )
 endif()
+if( CMAKE_BUILD_TOOL MATCHES "MSBuild" )
+  set( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /O2 /Ot" CACHE STRING "CUSTOM" FORCE )
+  set( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /Od /DEBUG /fsanitize=address" CACHE STRING "CUSTOM" FORCE )
+endif()
+
 set( CMAKE_CXX_FLAGS_RELWITHDEBINFO "" CACHE STRING "CUSTOM" FORCE )
 set( CMAKE_CXX_FLAGS_MINSIZEREL "" CACHE STRING "CUSTOM" FORCE )
 
@@ -67,11 +72,11 @@ message( STATUS "Setting default linker flags." )
 # means. The effect is that every function call within your library will be
 # initially faster since there's no lookup required.
 # This leads to faster load times.
-if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
+if( NOT "${CMAKE_GENERATOR}" MATCHES "Visual Studio" )
   set( CMAKE_EXE_LINKER_FLAGS "-Bsymbolic -Bsymbolic-functions"
     CACHE STRING "CUSTOM" FORCE )
 endif()
-if( CMAKE_HOST_WIN32 MATCHES "1" )
+if( "${CMAKE_GENERATOR}" MATCHES "Visual Studio" )
   set( CMAKE_EXE_LINKER_FLAGS  "-FORCE" CACHE STRING "CUSTOM" FORCE )
 endif()
 set( CMAKE_EXE_LINKER_FLAGS_DEBUG "" CACHE STRING "CUSTOM" FORCE )
@@ -80,7 +85,7 @@ set( CMAKE_EXE_LINKER_FLAGS_DEBUG "" CACHE STRING "CUSTOM" FORCE )
 # functions for use by the C++ runtime type identification features
 # (`dynamic_cast' and `typeid'). If you don't use those parts of the language,
 # you can save some space by using this flag.
-if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
+if( NOT "${CMAKE_GENERATOR}" MATCHES "Visual Studio" )
   set( CMAKE_EXE_LINKER_FLAGS_RELEASE "-O3 -discard-all"
     CACHE STRING "CUSTOM" FORCE )
   set( CMAKE_SHARED_LINKER_FLAGS "-Bsymbolic -Bsymbolic-functions"
@@ -90,13 +95,13 @@ set( CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO "" CACHE STRING "CUSTOM" FORCE )
 set( CMAKE_EXE_LINKER_FLAGS_MINSIZEREL "" CACHE STRING "CUSTOM" FORCE )
 
 set( CMAKE_SHARED_LINKER_FLAGS_DEBUG "" CACHE STRING "CUSTOM" FORCE )
-if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
+if( NOT "${CMAKE_GENERATOR}" MATCHES "Visual Studio" )
   set( CMAKE_SHARED_LINKER_FLAGS_RELEASE "-O3 -discard-all"
     CACHE STRING "CUSTOM" FORCE )
 endif()
 
-if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
-  message( STATUS "Detected not Windows OS." )
+if( NOT "${CMAKE_GENERATOR}" MATCHES "Visual Studio" )
+  message( STATUS "Detected not using MSVC compiler." )
 
   if( DEFINED ANDROID_ABI AND NOT CMAKE_HOST_WIN32 MATCHES "1" )
     # flto: Link Time Optimization
@@ -195,7 +200,9 @@ message( STATUS "Use C++11 in all variants." )
 if( CMAKE_HOST_WIN32 MATCHES "1" AND ( CMAKE_CXX_COMPILER MATCHES "clang" OR CMAKE_CXX_COMPILER MATCHES "g[++]") AND CMAKE_BUILD_TOOL MATCHES "MSBuild" )
   set( COMMON_FLAGS "${COMMON_FLAGS}" /std=c++11 )
 elseif( CMAKE_HOST_WIN32 MATCHES "1" AND CMAKE_BUILD_TOOL MATCHES "MSBuild" )
-  set( COMMON_FLAGS "${COMMON_FLAGS}" /std:c++11 )
+  set( COMMON_FLAGS /std:c++11 )
+  set( COMMON_FLAGS_RELEASE /O2 /Ot )
+  set( COMMON_FLAGS_DEBUG /Od /DEBUG /fsanitize=address )
 else()
   set( COMMON_FLAGS "${COMMON_FLAGS}" -std=c++11 )
   set( COMMON_LINKER_FLAGS "${COMMON_LINKER_FLAGS}" -std=c++11 )
@@ -308,16 +315,16 @@ set( QT_HEADERS
 
 message( STATUS "Setting up common flags." )
 set( COMMON_FLAGS "${COMMON_FLAGS}" -Wall )
-if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
+if( NOT "${CMAKE_GENERATOR}" MATCHES "Visual Studio" )
   set( COMMON_FLAGS "${COMMON_FLAGS}" -pedantic-errors -pedantic )
 endif()
 
-if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
+if( NOT "${CMAKE_GENERATOR}" MATCHES "Visual Studio" )
   set( COMMON_FLAGS "${COMMON_FLAGS}" -Wpedantic -Wextra -Wfatal-errors -Werror )
 endif()
 
-if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
-  message( STATUS "Not using Windows." )
+if( NOT "${CMAKE_GENERATOR}" MATCHES "Visual Studio" )
+  message( STATUS "Not using MSVC compiler." )
   if( DEFINED ANDROID_ABI OR CMAKE_CXX_COMPILER MATCHES "clang"
     OR (CMAKE_CXX_COMPILER MATCHES "g[++]" AND NOT CMAKE_CXX_COMPILER MATCHES "clang")
   )
@@ -354,26 +361,30 @@ if( DEFINED ANDROID_ABI OR CMAKE_CXX_COMPILER MATCHES "clang" )
   set( COMMON_FLAGS "${COMMON_FLAGS}" -Wno-exit-time-destructors )
 endif()
 
-if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
-  set( COMMON_FLAGS_DEBUG -O0 -g3 -fno-optimize-sibling-calls
-    -fno-omit-frame-pointer -fstack-protector-all )
+if( NOT "${CMAKE_GENERATOR}" MATCHES "Visual Studio" )
+  set( COMMON_FLAGS_DEBUG "${COMMON_FLAGS_DEBUG}" -O0 -g3 -fno-optimize-sibling-calls -fno-omit-frame-pointer -fstack-protector-all )
+  set( COMMON_LINKER_FLAGS_DEBUG "${COMMON_LINKER_FLAGS_DEBUG}" -fstack-protector-all )
 endif()
 
 set( COMMON_FLAGS_RELEASE "${COMMON_FLAGS_RELEASE}" -DNDEBUG -ffunction-sections -fdata-sections )
-if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
+if( NOT "${CMAKE_GENERATOR}" MATCHES "Visual Studio" )
   set( COMMON_FLAGS_RELEASE "${COMMON_FLAGS_RELEASE}" -O3 )
   set( COMMON_FLAGS_RELEASE "${COMMON_FLAGS_RELEASE}" -Wno-unused-command-line-argument )
 endif()
 
 message( STATUS "Setting common linker flags." )
-if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
+if( NOT "${CMAKE_GENERATOR}" MATCHES "Visual Studio" )
   set( COMMON_LINKER_FLAGS "${COMMON_LINKER_FLAGS}" -O3 -discard-all )
 endif()
 
-set( COMMON_LINKER_FLAGS_DEBUG "${COMMON_LINKER_FLAGS_DEBUG}" -O0 -g3 -rdynamic )
-
 if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
-  message( STATUS "Detected not Windows OS." )
+  set( COMMON_LINKER_FLAGS_DEBUG "${COMMON_LINKER_FLAGS_DEBUG}" -O0 -g3 -rdynamic )
+else()
+  set( COMMON_LINKER_FLAGS_DEBUG "${COMMON_LINKER_FLAGS_DEBUG}" -O0 -g3 )
+endif()
+
+if( NOT "${CMAKE_GENERATOR}" MATCHES "Visual Studio" )
+  message( STATUS "Detected not using MVSC compiler." )
 
   set( COMMON_LINKER_FLAGS_RELEASE "${COMMON_LINKER_FLAGS_RELEASE}" -flto=full )
 endif()
@@ -523,11 +534,11 @@ target_include_directories( ${PROJECT_NAME} SYSTEM PRIVATE "${GLM_HEADERS}" )
 message( STATUS "Adding compiler flags." )
 target_compile_options( ${PROJECT_NAME} PRIVATE ${COMMON_FLAGS} )
 # Turn off global constructors warnings because of scenes
-if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
+if( NOT "${CMAKE_GENERATOR}" MATCHES "Visual Studio" )
   target_compile_options( ${PROJECT_NAME} PRIVATE -Wno-global-constructors )
 endif()
-if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
-  message( STATUS "Detected not Windows OS." )
+if( NOT "${CMAKE_GENERATOR}" MATCHES "Visual Studio" )
+  message( STATUS "Detected not using MSVC compiler." )
 
   unset( COMPILER_SUPPORTS_FLAG )
   CHECK_CXX_COMPILER_FLAG( "-Wno-zero-as-null-pointer-constant" COMPILER_SUPPORTS_FLAG )
@@ -564,7 +575,7 @@ if( CMAKE_CXX_COMPILER MATCHES "clang" )
 else()
   message( STATUS "Detected GCC compiler." )
 
-  if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
+  if( NOT "${CMAKE_GENERATOR}" MATCHES "Visual Studio" )
     target_compile_options( ${PROJECT_NAME} PRIVATE -Wno-redundant-move )
   endif()
 endif()

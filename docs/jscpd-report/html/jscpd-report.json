@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-07-13T14:44:04.553Z",
+    "detectionDate": "2024-07-14T09:31:34.380Z",
     "formats": {
       "java": {
         "sources": {
@@ -1913,13 +1913,13 @@
             "newClones": 0
           },
           ".github/workflows/native.yml": {
-            "lines": 412,
+            "lines": 416,
             "tokens": 2411,
             "sources": 1,
             "clones": 7,
             "duplicatedLines": 149,
             "duplicatedTokens": 925,
-            "percentage": 36.17,
+            "percentage": 35.82,
             "percentageTokens": 38.37,
             "newDuplicatedLines": 0,
             "newClones": 0
@@ -2082,13 +2082,13 @@
           }
         },
         "total": {
-          "lines": 2831,
+          "lines": 2835,
           "tokens": 18832,
           "sources": 23,
           "clones": 17,
           "duplicatedLines": 421,
           "duplicatedTokens": 2813,
-          "percentage": 14.87,
+          "percentage": 14.85,
           "percentageTokens": 14.94,
           "newDuplicatedLines": 0,
           "newClones": 0
@@ -2193,8 +2193,8 @@
             "newClones": 0
           },
           "scripts/helper_functions.sh": {
-            "lines": 527,
-            "tokens": 3733,
+            "lines": 528,
+            "tokens": 3741,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2217,8 +2217,8 @@
             "newClones": 0
           },
           "scripts/compile_native.sh": {
-            "lines": 336,
-            "tokens": 2187,
+            "lines": 340,
+            "tokens": 2195,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2254,13 +2254,13 @@
           }
         },
         "total": {
-          "lines": 4200,
-          "tokens": 28092,
+          "lines": 4205,
+          "tokens": 28108,
           "sources": 13,
           "clones": 12,
           "duplicatedLines": 263,
           "duplicatedTokens": 1345,
-          "percentage": 6.26,
+          "percentage": 6.25,
           "percentageTokens": 4.79,
           "newDuplicatedLines": 0,
           "newClones": 0
@@ -2294,13 +2294,13 @@
           },
           "app/Unit_Testing/CMakeLists.txt": {
             "lines": 102,
-            "tokens": 616,
+            "tokens": 605,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 23,
             "duplicatedTokens": 92,
             "percentage": 22.55,
-            "percentageTokens": 14.94,
+            "percentageTokens": 15.21,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2317,8 +2317,8 @@
             "newClones": 0
           },
           "app/MobileRT/CMakeLists.txt": {
-            "lines": 71,
-            "tokens": 444,
+            "lines": 70,
+            "tokens": 438,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2425,8 +2425,8 @@
             "newClones": 0
           },
           "app/CMakeLists.txt": {
-            "lines": 577,
-            "tokens": 3537,
+            "lines": 588,
+            "tokens": 3530,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2450,13 +2450,13 @@
           }
         },
         "total": {
-          "lines": 2242,
-          "tokens": 22066,
+          "lines": 2252,
+          "tokens": 22042,
           "sources": 15,
           "clones": 1,
           "duplicatedLines": 23,
           "duplicatedTokens": 92,
-          "percentage": 1.03,
+          "percentage": 1.02,
           "percentageTokens": 0.42,
           "newDuplicatedLines": 0,
           "newClones": 0
@@ -3164,8 +3164,8 @@
       }
     },
     "total": {
-      "lines": 29335,
-      "tokens": 226085,
+      "lines": 29354,
+      "tokens": 226077,
       "sources": 250,
       "clones": 123,
       "duplicatedLines": 1590,
@@ -6712,30 +6712,30 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/native.yml",
-        "start": 375,
-        "end": 387,
+        "start": 379,
+        "end": 391,
         "startLoc": {
-          "line": 375,
+          "line": 379,
           "column": 7,
           "position": 2101
         },
         "endLoc": {
-          "line": 387,
+          "line": 391,
           "column": 2,
           "position": 2244
         }
       },
       "secondFile": {
         "name": ".github/workflows/native.yml",
-        "start": 341,
-        "end": 354,
+        "start": 345,
+        "end": 358,
         "startLoc": {
-          "line": 341,
+          "line": 345,
           "column": 7,
           "position": 1796
         },
         "endLoc": {
-          "line": 354,
+          "line": 358,
           "column": 6,
           "position": 1940
         }

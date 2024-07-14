@@ -36,7 +36,7 @@ target_include_directories( ${PROJECT_NAME} SYSTEM PUBLIC "${GLM_HEADERS}" )
 # Set compiler flags
 ###############################################################################
 message( STATUS "Adding compiler flags." )
-if( NOT CMAKE_HOST_WIN32 MATCHES "1" )
+if( NOT "${CMAKE_GENERATOR}" MATCHES "Visual Studio" )
   # -Wno-date-time because of PCG
   target_compile_options( ${PROJECT_NAME} PUBLIC -Wno-date-time )
 endif()
@@ -57,9 +57,8 @@ else()
     message( STATUS "Detected Linux." )
   endif()
   message( STATUS "Native OS: Linking with pthread." )
-  if( CMAKE_HOST_WIN32 MATCHES "1" )
-    find_package( Threads REQUIRED )
-  else()
+
+  if( NOT "${CMAKE_GENERATOR}" MATCHES "Visual Studio" )
     target_link_libraries( ${PROJECT_NAME} PUBLIC pthread )
   endif()
 endif()
