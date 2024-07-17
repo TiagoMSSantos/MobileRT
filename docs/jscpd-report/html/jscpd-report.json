@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-07-17T17:07:37.379Z",
+    "detectionDate": "2024-07-17T17:59:48.263Z",
     "formats": {
       "java": {
         "sources": {
@@ -2426,7 +2426,7 @@
           },
           "app/CMakeLists.txt": {
             "lines": 596,
-            "tokens": 4006,
+            "tokens": 4004,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2451,7 +2451,7 @@
         },
         "total": {
           "lines": 2260,
-          "tokens": 22518,
+          "tokens": 22516,
           "sources": 15,
           "clones": 1,
           "duplicatedLines": 23,
@@ -3165,7 +3165,7 @@
     },
     "total": {
       "lines": 29372,
-      "tokens": 226600,
+      "tokens": 226598,
       "sources": 250,
       "clones": 123,
       "duplicatedLines": 1590,
