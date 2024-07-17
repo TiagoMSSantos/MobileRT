@@ -3,6 +3,7 @@
 #include "ErrorCode.hpp"
 #include <clocale>
 #include <functional>
+#include <string>
 
 #if !defined(_WIN32) && !defined(__APPLE__)
     // Not available in Windows nor MacOS.
@@ -243,10 +244,20 @@ namespace MobileRT {
                 const ErrorType currentError {getErrorCode()};
                 LOG_ERROR("errorCode: ", currentError.codeText);
 
+                #if defined(_MSVC_LANG)
+                    const ::std::size_t errmsglen {256};
+                    char errmsg[errmsglen]; 
+                    ::strerror_s(errmsg, errmsglen, errno);
+                #endif
+
                 const ::std::string errorMessage {::std::string(message) + '\n' + currentError.codeText + '\n' +
-                                        currentError.description + '\n' +
-                                        ::std::string("errno (") + ::MobileRT::std::to_string(errno) + "): " +
-                                        ::std::strerror(errno)
+                    currentError.description + '\n' +
+                    ::std::string("errno (") + ::MobileRT::std::to_string(errno) + "): " +
+                    #if defined(_MSVC_LANG)
+                        errmsg
+                    #else
+                        ::std::strerror(errno)
+                    #endif
                 };
                 LOG_ERROR("errorMessage: ", errorMessage);
                 printFreeMemory();

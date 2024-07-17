@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-07-17T07:12:22.765Z",
+    "detectionDate": "2024-07-17T13:16:40.078Z",
     "formats": {
       "java": {
         "sources": {
@@ -1225,8 +1225,8 @@
             "newClones": 0
           },
           "app/MobileRT/Utils/Utils.cpp": {
-            "lines": 286,
-            "tokens": 2274,
+            "lines": 296,
+            "tokens": 2327,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -1790,14 +1790,14 @@
           }
         },
         "total": {
-          "lines": 5695,
-          "tokens": 56234,
+          "lines": 5705,
+          "tokens": 56287,
           "sources": 56,
           "clones": 30,
           "duplicatedLines": 282,
           "duplicatedTokens": 4342,
-          "percentage": 4.95,
-          "percentageTokens": 7.72,
+          "percentage": 4.94,
+          "percentageTokens": 7.71,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2425,8 +2425,8 @@
             "newClones": 0
           },
           "app/CMakeLists.txt": {
-            "lines": 586,
-            "tokens": 3542,
+            "lines": 596,
+            "tokens": 3989,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2450,14 +2450,14 @@
           }
         },
         "total": {
-          "lines": 2250,
-          "tokens": 22054,
+          "lines": 2260,
+          "tokens": 22501,
           "sources": 15,
           "clones": 1,
           "duplicatedLines": 23,
           "duplicatedTokens": 92,
           "percentage": 1.02,
-          "percentageTokens": 0.42,
+          "percentageTokens": 0.41,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3164,14 +3164,14 @@
       }
     },
     "total": {
-      "lines": 29352,
-      "tokens": 226083,
+      "lines": 29372,
+      "tokens": 226583,
       "sources": 250,
       "clones": 123,
       "duplicatedLines": 1590,
       "duplicatedTokens": 14187,
-      "percentage": 5.42,
-      "percentageTokens": 6.28,
+      "percentage": 5.41,
+      "percentageTokens": 6.26,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
