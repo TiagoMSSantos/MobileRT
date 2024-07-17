@@ -213,8 +213,8 @@ endif()
 
 message( STATUS "Setting up the name of the OS and the proper interface layer." )
 message( STATUS "Host system: ${CMAKE_HOST_SYSTEM_NAME}." )
-unset( COMPILER_SUPPORTS_FLAG )
 
+unset( COMPILER_SUPPORTS_FLAG CACHE )
 CHECK_CXX_COMPILER_FLAG( "-Wno-extra-semi-stmt" COMPILER_SUPPORTS_FLAG )
 # if( COMPILER_SUPPORTS_FLAG )
 #   set( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wno-extra-semi-stmt" CACHE STRING "CUSTOM" FORCE )
@@ -225,11 +225,11 @@ if( DEFINED ANDROID_ABI )
 
   set( MOBILE_DEPENDENT_HEADERS "${CMAKE_SOURCE_DIR}/System_dependent/Android_JNI" )
   set( COMMON_FLAGS "${COMMON_FLAGS} -stdlib=libc++" )
-  unset( COMPILER_SUPPORTS_FLAG )
+  unset( COMPILER_SUPPORTS_FLAG CACHE )
   CHECK_CXX_COMPILER_FLAG( "-Wno-unsafe-buffer-usage" COMPILER_SUPPORTS_FLAG )
-  # if( COMPILER_SUPPORTS_FLAG )
-  #   set( COMMON_FLAGS "${COMMON_FLAGS} -Wno-unsafe-buffer-usage" )
-  # endif()
+  if( COMPILER_SUPPORTS_FLAG )
+    set( COMMON_FLAGS "${COMMON_FLAGS} -Wno-unsafe-buffer-usage" )
+  endif()
 else()
   message( STATUS "Detected Native OS." )
 
@@ -264,11 +264,11 @@ else()
     # due to the usage of `CMAKE_AUTOMOC`.
     set( COMMON_FLAGS "${COMMON_FLAGS} -Wno-missing-prototypes" )
 
-    unset( COMPILER_SUPPORTS_FLAG )
+    unset( COMPILER_SUPPORTS_FLAG CACHE )
     CHECK_CXX_COMPILER_FLAG( "-Wno-unsafe-buffer-usage" COMPILER_SUPPORTS_FLAG )
-    # if( COMPILER_SUPPORTS_FLAG )
-    #   set( COMMON_FLAGS "${COMMON_FLAGS} -Wno-unsafe-buffer-usage" )
-    # endif()
+    if( COMPILER_SUPPORTS_FLAG )
+      set( COMMON_FLAGS "${COMMON_FLAGS} -Wno-unsafe-buffer-usage" )
+    endif()
   endif()
 
   string( TOLOWER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_L )
@@ -346,7 +346,7 @@ if( NOT "${CMAKE_GENERATOR}" MATCHES "Visual Studio" )
   if( NOT DEFINED ANDROID_ABI AND CMAKE_CXX_COMPILER MATCHES "clang"
     AND CMAKE_HOST_SYSTEM_NAME MATCHES "Darwin"
   )
-    unset( COMPILER_SUPPORTS_FLAG )
+    unset( COMPILER_SUPPORTS_FLAG CACHE )
     CHECK_CXX_COMPILER_FLAG( "-Wno-poison-system-directories" COMPILER_SUPPORTS_FLAG )
     if( COMPILER_SUPPORTS_FLAG )
       set( COMMON_FLAGS "${COMMON_FLAGS} -Wno-poison-system-directories" )
@@ -355,7 +355,7 @@ if( NOT "${CMAKE_GENERATOR}" MATCHES "Visual Studio" )
 endif()
 
 if( CMAKE_CXX_COMPILER MATCHES "clang" )
-  unset( COMPILER_SUPPORTS_FLAG )
+  unset( COMPILER_SUPPORTS_FLAG CACHE )
   CHECK_CXX_COMPILER_FLAG( "-Wno-redundant-parens" COMPILER_SUPPORTS_FLAG )
   if( COMPILER_SUPPORTS_FLAG )
     # Turn off redundant parentheses warning because of Qt moc generated code
@@ -560,7 +560,7 @@ endif()
 if( NOT "${CMAKE_GENERATOR}" MATCHES "Visual Studio" )
   message( STATUS "Detected not using MSVC compiler." )
 
-  unset( COMPILER_SUPPORTS_FLAG )
+  unset( COMPILER_SUPPORTS_FLAG CACHE )
   CHECK_CXX_COMPILER_FLAG( "-Wno-zero-as-null-pointer-constant" COMPILER_SUPPORTS_FLAG )
   if( COMPILER_SUPPORTS_FLAG )
     # Turn off zero as null pointer warning because of Qt generated code
