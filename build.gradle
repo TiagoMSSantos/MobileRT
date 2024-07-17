@@ -38,7 +38,7 @@ buildscript {
 
         if (androidApiVersionValue >= 21) {
             androidX_appcompat_version = '1.7.0'
-            ndk_version = '26.3.11579264'
+            ndk_version = '27.0.12077973'
         }
         if (androidApiVersionValue >= 19) {
             common_libraries_android_framework_version = '1.13.1'
