@@ -20,13 +20,12 @@ print_environment()
 ###############################################################################
 # Check CMake version
 ###############################################################################
-message( STATUS "Recommended CMake version: 3.0+." )
+set( CMAKE_MIN_VERSION "3.3" )
+message( STATUS "Recommended CMake version: ${CMAKE_MIN_VERSION}+." )
 
-cmake_minimum_required( VERSION 3.0...3.0 FATAL_ERROR )
-
-message( STATUS
-  "Setting policies for compatibility with CMake v3.0.")
-cmake_policy( VERSION 3.0 )
+cmake_minimum_required( VERSION ${CMAKE_MIN_VERSION}...${CMAKE_MIN_VERSION} FATAL_ERROR )
+message( STATUS "Setting policies for compatibility with CMake v${CMAKE_MIN_VERSION}.")
+cmake_policy( VERSION ${CMAKE_MIN_VERSION} )
 ###############################################################################
 ###############################################################################
 
@@ -42,8 +41,7 @@ set( CMAKE_CXX_STANDARD "11" CACHE STRING "CUSTOM" FORCE )
 
 if( NOT "${CMAKE_GENERATOR}" MATCHES "Visual Studio" )
     # PIC: Position Independent Code
-    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -Bsymbolic -Bsymbolic-functions"
-      CACHE STRING "CUSTOM" FORCE )
+    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -Bsymbolic -Bsymbolic-functions" CACHE STRING "CUSTOM" FORCE )
 endif()
 # _GLIBCXX_DEBUG: activate debug mode and all the assertions
 set( CMAKE_CXX_FLAGS_DEBUG "-D_GLIBCXX_DEBUG" CACHE STRING "CUSTOM" FORCE )
@@ -273,7 +271,7 @@ if( CMAKE_CXX_COMPILER MATCHES "clang" OR DEFINED ANDROID_ABI )
   message( STATUS "Detected Clang compiler or Android ABI." )
 
   message( STATUS "Adding warning flags." )
-  set( COMMON_FLAGS "${COMMON_FLAGS}" -Weverything -ferror-limit=1 )
+  set( COMMON_FLAGS "${COMMON_FLAGS}" -Weverything -ferror-limit=1 -Wno-switch-default )
 endif()
 
 if( DEFINED ANDROID_ABI AND NOT CMAKE_HOST_WIN32 MATCHES "1" )
