@@ -254,12 +254,34 @@ jobs:
       run: |
         lcov -c -i -d . --no-external -o code_coverage_base.info;
 
+    - name: Set sanitizer configs for Ubuntu
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success() && startsWith(matrix.host_os, 'ubuntu')
+      working-directory: .
+      run: |
+        ls -lahp scripts/sanitizer_ignore.suppr;
+        export ASAN_OPTIONS='suppressions=scripts/sanitizer_ignore.suppr:verbosity=1:strict_string_checks=1:detect_stack_use_after_return=1:check_initialization_order=1:strict_init_order=1:halt_on_error=0:detect_odr_violation=1:detect_leaks=1:detect_container_overflow=1';
+        export LSAN_OPTIONS='suppressions=scripts/sanitizer_ignore.suppr:verbosity=1:strict_string_checks=1';
+        echo "ASAN_OPTIONS=${ASAN_OPTIONS}" >> "${GITHUB_ENV}";
+        echo "LSAN_OPTIONS=${LSAN_OPTIONS}" >> "${GITHUB_ENV}";
+
+    - name: Set sanitizer configs for MacOS
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success() && startsWith(matrix.host_os, 'macos')
+      working-directory: .
+      run: |
+        ls -lahp scripts/sanitizer_ignore.suppr;
+        export ASAN_OPTIONS='suppressions=scripts/sanitizer_ignore.suppr:verbosity=1:strict_string_checks=1:detect_stack_use_after_return=1:check_initialization_order=1:strict_init_order=1:halt_on_error=0:detect_odr_violation=1:detect_container_overflow=1';
+        export LSAN_OPTIONS='suppressions=scripts/sanitizer_ignore.suppr:verbosity=1:strict_string_checks=1';
+        echo "ASAN_OPTIONS=${ASAN_OPTIONS}" >> "${GITHUB_ENV}";
+        echo "LSAN_OPTIONS=${LSAN_OPTIONS}" >> "${GITHUB_ENV}";
+
     - name: Run unit tests
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
-      working-directory: build_${{ matrix.type }}
+      working-directory: .
       run: |
-        unitTestsExe=$(find . -type f -name "UnitTests*" | head -1);
+        unitTestsExe=$(find build_${{ matrix.type }} -type f -name "UnitTests*" | head -1);
         echo "Unit tests executable: ${unitTestsExe}";
         LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:$(find ~/.conan -iname 'libgtest.so' | grep -iv 'build' | xargs ls -t | head -1 | xargs dirname)" ${unitTestsExe} --gtest_filter=-*Engine*;
 
@@ -290,8 +312,16 @@ jobs:
       if: success()
       working-directory: .
       run: |
+        ls -lahp scripts/sanitizer_ignore.suppr;
+        export ASAN_OPTIONS='suppressions=scripts/sanitizer_ignore.suppr:verbosity=1:strict_string_checks=1:detect_stack_use_after_return=1:check_initialization_order=1:strict_init_order=1:halt_on_error=0:detect_odr_violation=1:detect_leaks=1:detect_container_overflow=1';
+        export LSAN_OPTIONS='suppressions=scripts/sanitizer_ignore.suppr:verbosity=1:strict_string_checks=1';
         set +e;
-        sh scripts/profile.sh timeout "${{ matrix.type }}" 100 15;
+        if [ "${{ matrix.type }}" = 'release' ]; then
+          timeoutSeconds='15';
+        else
+          timeoutSeconds='120';
+        fi
+        sh scripts/profile.sh timeout "${{ matrix.type }}" 100 "${timeoutSeconds}";
         returnValue="$?";
         set -e;
         # shellcheck disable=SC1091

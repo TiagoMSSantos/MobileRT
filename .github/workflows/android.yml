@@ -260,7 +260,7 @@ jobs:
 
     - name: Zip Gradle packages
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-      if: success() && matrix.type == 'release' && matrix.android_api == '15'
+      if: success() && matrix.android_api == '15'
       run: |
         set +e;
         du -h -d 1 ${{ env.GRADLE_PATH }};
@@ -314,7 +314,7 @@ jobs:
 
     - name: Upload Gradle packages as artifact
       timeout-minutes: 20
-      if: success() && matrix.type == 'release' && matrix.android_api == '15'
+      if: success() && matrix.android_api == '15'
       uses: actions/upload-artifact@v4
       with:
         # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
@@ -541,7 +541,7 @@ jobs:
 
     - name: Upload APK as artifact
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && matrix.type == 'release' && (matrix.android_api == '15' || matrix.android_api == '21')
+      if: success() && (matrix.android_api == '15' || matrix.android_api == '21')
       uses: actions/upload-artifact@v4
       with:
         # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml

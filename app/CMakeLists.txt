@@ -44,7 +44,7 @@ if( NOT "${CMAKE_GENERATOR}" MATCHES "Visual Studio" )
     set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -Bsymbolic -Bsymbolic-functions" CACHE STRING "CUSTOM" FORCE )
 endif()
 # _GLIBCXX_DEBUG: activate debug mode and all the assertions
-set( CMAKE_CXX_FLAGS_DEBUG "-D_GLIBCXX_DEBUG" CACHE STRING "CUSTOM" FORCE )
+set( CMAKE_CXX_FLAGS_DEBUG "-D_GLIBCXX_DEBUG -D_GLIBCXX_SANITIZE_VECTOR" CACHE STRING "CUSTOM" FORCE )
 # NDEBUG: Deactivate all the assertions
 set( CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG" CACHE STRING "CUSTOM" FORCE )
 if( NOT "${CMAKE_GENERATOR}" MATCHES "Visual Studio" )
@@ -196,6 +196,13 @@ else()
   set( COMMON_LINKER_FLAGS "${COMMON_LINKER_FLAGS}" )
   set( COMMON_LINKER_FLAGS_DEBUG "${COMMON_LINKER_FLAGS_DEBUG}" )
   set( COMMON_LINKER_FLAGS_RELEASE "${COMMON_LINKER_FLAGS_RELEASE}" )
+endif()
+
+if( NOT CMAKE_HOST_WIN32 MATCHES "1" AND NOT DEFINED ANDROID_ABI )
+  set( COMMON_FLAGS_DEBUG "${COMMON_FLAGS_DEBUG} -fsanitize=address" )
+  set( COMMON_LINKER_FLAGS_DEBUG "${COMMON_LINKER_FLAGS_DEBUG} -fsanitize=address" )
+  set( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fsanitize=address" CACHE STRING "CUSTOM" FORCE )
+  set( CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS_DEBUG} -fsanitize=address" CACHE STRING "CUSTOM" FORCE )
 endif()
 ###############################################################################
 ###############################################################################

@@ -6,7 +6,8 @@
 #fun:*__interceptor_strlen*
 
 # third_party
-#src:*tiny_obj_loader*
+#src:*tinyobj*
+#fun:*tinyobj*
 
 # app
 #fun:*work_thread*
