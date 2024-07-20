@@ -200,7 +200,7 @@
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
-        "androidX_test_core_version = ['\"](?<currentValue>.*)['\"]"
+        "androidX_test_rules_version = ['\"](?<currentValue>.*)['\"]"
       ],
       "depNameTemplate": "androidx.test:rules",
       "datasourceTemplate": "maven",
