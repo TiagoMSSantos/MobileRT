@@ -84,7 +84,7 @@ buildscript {
             ndk_version = '23.2.8568313'
         }
         if (project.properties["androidX_tracing_version"] == null) {
-            androidX_tracing_version = '1.1.0'
+            androidX_tracing_version = '1.2.0'
         }
         if (project.properties["androidX_activity_version"] == null) {
             androidX_activity_version = '1.7.2'
