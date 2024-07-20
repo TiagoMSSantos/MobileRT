@@ -489,7 +489,7 @@
       "automerge": true
     },
     {
-      "groupName": "Only update patches of androidx.core:core for Android API < 19",
+      "groupName": "Only update patches of androidx.core:core for Android API >= 19",
       "enabled": false,
       "matchUpdateTypes": ["major", "minor"],
       "matchDepNames": [
@@ -503,7 +503,7 @@
       "matchCurrentVersion": "/^1\\.12\\..+/"
     },
     {
-      "groupName": "Only update patches of androidx.test:runner for Android API < 19",
+      "groupName": "Only update patches of androidx.test:runner for Android API >= 19",
       "enabled": false,
       "matchUpdateTypes": ["major", "minor"],
       "matchDepNames": [
@@ -516,7 +516,7 @@
       "matchCurrentVersion": "/^1\\.5\\..+/"
     },
     {
-      "groupName": "Only update patches of androidx.test:rules for Android API < 19",
+      "groupName": "Only update patches of androidx.test:rules for Android API >= 19",
       "enabled": false,
       "matchUpdateTypes": ["major", "minor"],
       "matchDepNames": [
@@ -529,7 +529,7 @@
       "matchCurrentVersion": "/^1\\.5\\..+/"
     },
     {
-      "groupName": "Only update patches of androidx.test:monitor for Android API < 19",
+      "groupName": "Only update patches of androidx.test:monitor for Android API >= 19",
       "enabled": false,
       "matchUpdateTypes": ["major", "minor"],
       "matchDepNames": [
@@ -542,7 +542,7 @@
       "matchCurrentVersion": "/^1\\.6\\..+/"
     },
     {
-      "groupName": "Only update patches of androidx.test.ext:junit for Android API < 19",
+      "groupName": "Only update patches of androidx.test.ext:junit for Android API >= 19",
       "enabled": false,
       "matchUpdateTypes": ["major", "minor"],
       "matchDepNames": [
@@ -556,7 +556,7 @@
       "matchCurrentVersion": "/^1\\.1\\..+/"
     },
     {
-      "groupName": "Only update patches of androidx.test.espresso for Android API < 19",
+      "groupName": "Only update patches of androidx.test.espresso for Android API >= 19",
       "enabled": false,
       "matchUpdateTypes": ["major", "minor"],
       "matchDepNames": [
@@ -575,7 +575,7 @@
       "matchCurrentVersion": "/^3\\.5\\..+/"
     },
     {
-      "groupName": "Only update patches of androidx.activity:activity for Android API < 19",
+      "groupName": "Only update patches of androidx.activity:activity for Android API >= 19",
       "enabled": false,
       "matchUpdateTypes": ["major", "minor"],
       "matchDepNames": [
@@ -588,7 +588,7 @@
       "matchCurrentVersion": "/^1\\.7\\..+/"
     },
     {
-      "groupName": "Only update patches of androidx.tracing:tracing for Android API < 19",
+      "groupName": "Only update patches of androidx.tracing:tracing for Android API >= 19",
       "enabled": false,
       "matchUpdateTypes": ["major", "minor"],
       "matchDepNames": [
@@ -598,10 +598,10 @@
         "custom.regex",
         "gradle"
       ],
-      "matchCurrentVersion": "/^1\\.0\\..+/"
+      "matchCurrentVersion": "/^1\\.1\\..+/"
     },
     {
-      "groupName": "Only update patches of androidx.emoji2:emoji2 for Android API < 19",
+      "groupName": "Only update patches of androidx.emoji2:emoji2 for Android API >= 19",
       "enabled": false,
       "matchUpdateTypes": ["major", "minor"],
       "matchDepNames": [
@@ -640,7 +640,7 @@
       "allowedVersions": "!/^cci\\.[0-9]+$/"
     },
     {
-      "groupName": "Only update patches of Android Gradle version for Android API <= 15",
+      "groupName": "Only update patches of Android Gradle version for Android API >= 16",
       "enabled": false,
       "matchUpdateTypes": ["major", "minor"],
       "matchDepNames": [
@@ -654,7 +654,7 @@
       "matchCurrentVersion": "/^8\\.2\\..+$/"
     },
     {
-      "groupName": "Only update patches of Android appcompat version for Android API < 21",
+      "groupName": "Only update patches of Android appcompat version for Android API >= 21",
       "enabled": false,
       "matchUpdateTypes": ["major", "minor"],
       "matchDepNames": [
