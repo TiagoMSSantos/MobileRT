@@ -116,20 +116,6 @@
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
-        "kotlin_stdlib_jdk8_version = ['\"](?<currentValue>.*)['\"]"
-      ],
-      "depNameTemplate": "org.jetbrains.kotlin:kotlin-stdlib",
-      "datasourceTemplate": "maven",
-      "versioningTemplate": "gradle",
-      "customType": "regex",
-      "registryUrlTemplate": "https://repo1.maven.org/maven2/"
-    },
-    {
-      "fileMatch": [
-        "build.gradle"
-      ],
-      "matchStringsStrategy": "any",
-      "matchStrings": [
         "powermock_version = ['\"](?<currentValue>.*)['\"]"
       ],
       "depNameTemplate": "org.powermock:powermock-api-easymock",
@@ -151,34 +137,6 @@
       "versioningTemplate": "gradle",
       "customType": "regex",
       "registryUrlTemplate": "https://repo1.maven.org/maven2/"
-    },
-    {
-      "fileMatch": [
-        "build.gradle"
-      ],
-      "matchStringsStrategy": "any",
-      "matchStrings": [
-        "common_libraries_android_framework_version = ['\"](?<currentValue>.*)['\"]"
-      ],
-      "depNameTemplate": "androidx.core:core-ktx",
-      "datasourceTemplate": "maven",
-      "versioningTemplate": "gradle",
-      "customType": "regex",
-      "registryUrlTemplate": "https://maven.google.com"
-    },
-    {
-      "fileMatch": [
-        "build.gradle"
-      ],
-      "matchStringsStrategy": "any",
-      "matchStrings": [
-        "common_libraries_android_framework_version = ['\"](?<currentValue>.*)['\"]"
-      ],
-      "depNameTemplate": "androidx.core:core",
-      "datasourceTemplate": "maven",
-      "versioningTemplate": "gradle",
-      "customType": "regex",
-      "registryUrlTemplate": "https://maven.google.com"
     },
     {
       "fileMatch": [
@@ -214,37 +172,9 @@
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
-        "androidX_test_monitor_version = ['\"](?<currentValue>.*)['\"]"
-      ],
-      "depNameTemplate": "androidx.test:monitor",
-      "datasourceTemplate": "maven",
-      "versioningTemplate": "gradle",
-      "customType": "regex",
-      "registryUrlTemplate": "https://maven.google.com"
-    },
-    {
-      "fileMatch": [
-        "build.gradle"
-      ],
-      "matchStringsStrategy": "any",
-      "matchStrings": [
         "androidX_test_junit_version = ['\"](?<currentValue>.*)['\"]"
       ],
       "depNameTemplate": "androidx.test.ext:junit",
-      "datasourceTemplate": "maven",
-      "versioningTemplate": "gradle",
-      "customType": "regex",
-      "registryUrlTemplate": "https://maven.google.com"
-    },
-    {
-      "fileMatch": [
-        "build.gradle"
-      ],
-      "matchStringsStrategy": "any",
-      "matchStrings": [
-        "androidX_test_junit_version = ['\"](?<currentValue>.*)['\"]"
-      ],
-      "depNameTemplate": "androidx.test.ext:junit-ktx",
       "datasourceTemplate": "maven",
       "versioningTemplate": "gradle",
       "customType": "regex",
@@ -284,51 +214,9 @@
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
-        "androidX_emoji_version = ['\"](?<currentValue>.*)['\"]"
-      ],
-      "depNameTemplate": "androidx.emoji2:emoji2",
-      "datasourceTemplate": "maven",
-      "versioningTemplate": "gradle",
-      "customType": "regex",
-      "registryUrlTemplate": "https://maven.google.com"
-    },
-    {
-      "fileMatch": [
-        "build.gradle"
-      ],
-      "matchStringsStrategy": "any",
-      "matchStrings": [
         "androidX_activity_version = ['\"](?<currentValue>.*)['\"]"
       ],
       "depNameTemplate": "androidx.activity:activity",
-      "datasourceTemplate": "maven",
-      "versioningTemplate": "gradle",
-      "customType": "regex",
-      "registryUrlTemplate": "https://maven.google.com"
-    },
-    {
-      "fileMatch": [
-        "build.gradle"
-      ],
-      "matchStringsStrategy": "any",
-      "matchStrings": [
-        "androidX_annotation_version = ['\"](?<currentValue>.*)['\"]"
-      ],
-      "depNameTemplate": "androidx.annotation:annotation",
-      "datasourceTemplate": "maven",
-      "versioningTemplate": "gradle",
-      "customType": "regex",
-      "registryUrlTemplate": "https://maven.google.com"
-    },
-    {
-      "fileMatch": [
-        "build.gradle"
-      ],
-      "matchStringsStrategy": "any",
-      "matchStrings": [
-        "androidX_startup_version = ['\"](?<currentValue>.*)['\"]"
-      ],
-      "depNameTemplate": "androidx.startup:startup-runtime",
       "datasourceTemplate": "maven",
       "versioningTemplate": "gradle",
       "customType": "regex",

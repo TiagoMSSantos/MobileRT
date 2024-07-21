@@ -12,10 +12,6 @@ plugins {
     // Gradle plugin for running SonarQube analysis.
     id 'org.sonarqube'
 
-    // Pitest provides an ability to perform a mutation testing and calculate a
-    // mutation coverage of a Gradle-based projects with PIT.
-    // id 'info.solidsoft.pitest'
-
     // Generates an HTML dependency report. This report combines the features
     // of the ASCII dependency report and those of the ASCII dependency insight
     // report. For a given project, it generates a tree of the dependencies of
@@ -59,7 +55,6 @@ println('Test type: ' + systemTestType)
 println('ABI Filters: ' + systemAbiFilters)
 
 println('Gradle version: ' + gradle_version)
-println('AndroidX Common libraries Framework version: ' + common_libraries_android_framework_version)
 println('AndroidX appcompat version: ' + androidX_appcompat_version)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -70,7 +65,7 @@ println('AndroidX appcompat version: ' + androidX_appcompat_version)
 ///////////////////////////////////////////////////////////////////////////////
 ext {
     javaDir = file("${projectDir}/src/main/java")
-    kotlinDir = file("${projectDir}/src/main/kotlin")
+    kotlinDir = file("${projectDir}/src/main/java")
 
     mobileRtDir = file("${projectDir}/MobileRT")
     componentsDir = file("${projectDir}/Components")
@@ -207,7 +202,7 @@ android {
     setTestBuildType systemTestType
 
     // Setup required versions to compile
-    setCompileSdkVersion 34
+    setCompileSdkVersion 35
     setBuildToolsVersion '34.0.0'
 
     // Setup signing configurations
@@ -230,7 +225,7 @@ android {
     defaultConfig {
         // The minimum Android API version possible is 14 due to compatibility with Appcompat dependency.
         setMinSdkVersion "${androidApiVersion}"
-        setTargetSdkVersion 34
+        setTargetSdkVersion 35
         setTestInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         testInstrumentationRunnerArguments = ['clearPackageData': 'true', 'disableAnalytics': 'true']
         setApplicationId 'puscas.mobilertapp'
@@ -264,11 +259,11 @@ android {
 
     // Set Java version
     compileOptions {
-        setTargetCompatibility JavaVersion.VERSION_21
-        setSourceCompatibility JavaVersion.VERSION_21
+        setTargetCompatibility androidApiVersionValue >= 16? JavaVersion.VERSION_21 : JavaVersion.VERSION_17
+        setSourceCompatibility androidApiVersionValue >= 16? JavaVersion.VERSION_21 : JavaVersion.VERSION_17
     }
     kotlinOptions {
-        setJvmTarget JavaVersion.VERSION_21.toString()
+        setJvmTarget androidApiVersionValue >= 16? JavaVersion.VERSION_21.toString() : JavaVersion.VERSION_17.toString()
         freeCompilerArgs += [
             '-opt-in=kotlin.RequiresOptIn',
             '-opt-in=kotlinx.coroutines.DelicateCoroutinesApi',
@@ -337,6 +332,7 @@ android {
             jacoco {
                 includeNoLocationClasses = true
                 excludes = ['jdk.internal.*']
+                excludeClassLoaders = ["*ClassLoader*"]
             }
         }
         unitTests.includeAndroidResources = true
@@ -346,6 +342,11 @@ android {
 
     // Add resources directories to tests
     sourceSets {
+        // Source files
+        main {
+            java.srcDirs += [javaDir, kotlinDir, mobileRtDir, componentsDir, scenesDir, systemDependentDir]
+            kotlin.srcDirs += [kotlinDir]
+        }
         // Unit tests
         test {
             resources.srcDirs += ['src/test/resources']
@@ -444,53 +445,27 @@ dependencies {
     println('Adding dependencies for MobileRT.')
     implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
 
-    // Android dependencies
+    println('Adding Android dependencies for MobileRT.')
     implementation "androidx.appcompat:appcompat:${androidX_appcompat_version}"
-    implementation 'androidx.multidex:multidex:2.0.1'
-    implementation "androidx.core:core:${common_libraries_android_framework_version}"
     implementation "androidx.activity:activity:${androidX_activity_version}"
 
-    // Java dependencies
+    println('Adding Java dependencies for MobileRT.')
     implementation 'com.google.guava:guava:33.2.1-jre'
-    implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
     implementation 'net.sourceforge.streamsupport:streamsupport:1.7.4'
-
-    // Kotlin dependencies
-    implementation "androidx.core:core-ktx:${common_libraries_android_framework_version}"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:${kotlin_stdlib_jdk8_version}"
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1'
-
-    // Annotations
-    implementation "androidx.annotation:annotation:${androidX_annotation_version}"
-    implementation "androidx.annotation:annotation-jvm:${androidX_annotation_version}"
-
 
 
     println('Adding dependencies for the instrumentation tests.')
-    androidTestImplementation "androidx.test.espresso:espresso-accessibility:${androidX_test_espresso_version}"
-    androidTestImplementation "androidx.test.espresso:espresso-contrib:${androidX_test_espresso_version}"
-    androidTestImplementation "androidx.test.espresso:espresso-idling-resource:${androidX_test_espresso_version}"
     androidTestImplementation "androidx.test.espresso:espresso-intents:${androidX_test_espresso_version}"
-    androidTestImplementation "androidx.test.espresso:espresso-web:${androidX_test_espresso_version}"
-    androidTestImplementation "androidx.test.espresso.idling:idling-concurrent:${androidX_test_espresso_version}"
-
     androidTestImplementation "androidx.test.ext:junit:${androidX_test_junit_version}"
-    androidTestImplementation "androidx.test.ext:junit-ktx:${androidX_test_junit_version}"
     androidTestImplementation "androidx.test:rules:${androidX_test_rules_version}"
-    androidTestImplementation "androidx.test:monitor:${androidX_test_monitor_version}"
-    androidTestImplementation "androidx.startup:startup-runtime:${androidX_startup_version}"
-    androidTestImplementation "androidx.emoji2:emoji2:${androidX_emoji_version}"
 
-    // Enable tracing
+    println('Enabling tracing for the instrumentation tests.')
     debugImplementation "androidx.tracing:tracing:${androidX_tracing_version}"
     debugImplementation "androidx.test.espresso:espresso-core:${androidX_test_espresso_version}"
     androidTestImplementation "androidx.test:runner:${androidX_test_runner_version}"
 
 
-
-    // Dependencies for the unit tests
     println('Adding dependencies for the unit tests.')
-
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.assertj:assertj-core:3.26.3'
     testImplementation 'org.khronos:opengl-api:gl1.1-android-2.1_r1'
@@ -498,15 +473,6 @@ dependencies {
     testImplementation "org.powermock:powermock-api-easymock:${powermock_version}"
     testImplementation 'org.easymock:easymock:5.3.0'
     testImplementation 'org.springframework:spring-test:6.1.11'
-
-
-    // Dependencies that give errors when added:
-
-//    implementation 'org.apache.commons:commons-text:1.9'
-
-    // Need Android API 26
-    // https://stackoverflow.com/questions/52510370/java-lang-noclassdeffounderror-failed-resolution-of-ljava-time-localdate-erro
-    // Caused by: java.lang.NoClassDefFoundError: java.time.LocalDateTime
 }
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////

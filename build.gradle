@@ -41,12 +41,10 @@ buildscript {
             ndk_version = '27.0.12077973'
         }
         if (androidApiVersionValue >= 19) {
-            common_libraries_android_framework_version = '1.13.1'
             androidX_test_junit_version = '1.2.1'
             androidX_test_runner_version = '1.6.1'
             androidX_test_rules_version = '1.6.1'
             androidX_test_espresso_version = '3.6.1'
-            androidX_test_monitor_version = '1.7.1'
             androidX_tracing_version = '1.2.0'
             androidX_activity_version = '1.9.0'
             if (project.properties["ndk_version"] == null) {
@@ -59,9 +57,6 @@ buildscript {
             gradle_version = '8.2.2'
         }
 
-        if (project.properties["androidX_test_monitor_version"] == null) {
-            androidX_test_monitor_version = '1.6.1'
-        }
         if (project.properties["androidX_test_espresso_version"] == null) {
             androidX_test_espresso_version = '3.5.1'
         }
@@ -77,9 +72,6 @@ buildscript {
         if (project.properties["androidX_appcompat_version"] == null) {
             androidX_appcompat_version = '1.6.1'
         }
-        if (project.properties["common_libraries_android_framework_version"] == null) {
-            common_libraries_android_framework_version = '1.12.0'
-        }
         if (project.properties["ndk_version"] == null) {
             ndk_version = '23.2.8568313'
         }
@@ -93,13 +85,8 @@ buildscript {
         final def gradleVersionArray = gradle_version.split("\\.").collect()
         gradleVersionValue = gradleVersionArray[0] + '.' + gradleVersionArray[1] as Float
 
-        kotlin_stdlib_jdk8_version = '2.0.0'
-        androidX_annotation_version = '1.8.0'
-
         // Test dependencies
         jacoco_version = '0.8.12'
-        androidX_startup_version = '1.1.1'
-        androidX_emoji_version = '1.4.0'
 
         // Unit tests dependencies
         powermock_version = '2.0.9'
@@ -111,7 +98,7 @@ buildscript {
         // Compatibility matrix: https://developer.android.com/build/releases/gradle-plugin#android_gradle_plugin_and_android_studio_compatibility
         classpath "com.android.tools.build:gradle:${gradle_version}"
         classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:5.1.0.4882'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlin_stdlib_jdk8_version}"
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:2.0.0'
         classpath 'com.github.ben-manes:gradle-versions-plugin:0.51.0'
 
         /* To confirm JaCoCo version run: $ sh gradlew buildEnvironment */
@@ -119,9 +106,6 @@ buildscript {
         classpath "org.jacoco:org.jacoco.core:${jacoco_version}"
         classpath "org.jacoco:org.jacoco.report:${jacoco_version}"
         classpath "org.jacoco:org.jacoco.agent:${jacoco_version}"
-
-        // classpath 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.15.0'
-        // classpath 'org.pitest:pitest-command-line:1.15.3'
     }
 }
 ///////////////////////////////////////////////////////////////////////////////
@@ -177,26 +161,4 @@ repositories {
     maven { url 'https://dl.google.com/dl/android/maven2/' }
     maven { url 'https://plugins.gradle.org/m2/'}
     maven { url 'https://jitpack.io' }
-}
-
-// Enforce some dependencies versions because they are used by multiple dependencies
-subprojects {
-    configurations.configureEach {
-        resolutionStrategy {
-            eachDependency { details ->
-                if ('org.jacoco' == details.requested.group) {
-                    details.useVersion "${jacoco_version}"
-                }
-                if ('org.jetbrains.kotlin' == details.requested.group) {
-                    details.useVersion "${kotlin_stdlib_jdk8_version}"
-                }
-                if ('androidx.tracing' == details.requested.group) {
-                    details.useVersion "${androidX_tracing_version}"
-                }
-                if ('androidx.emoji2' == details.requested.group) {
-                    details.useVersion "${androidX_emoji_version}"
-                }
-            }
-        }
-    }
 }
