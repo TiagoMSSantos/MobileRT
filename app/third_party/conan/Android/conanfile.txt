@@ -1,6 +1,6 @@
 [requires]
 boost/1.85.0
-gtest/1.14.0
+gtest/1.15.0
 tinyobjloader/1.0.7
 glm/1.0.1
 stb/cci.20230920
