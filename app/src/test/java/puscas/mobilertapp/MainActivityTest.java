@@ -144,6 +144,7 @@ public final class MainActivityTest {
         PowerMock.replayAll();
         Assertions.assertThatThrownBy(() -> this.targetMainActivityMocked.onCreate(null))
             .as("The MainActivity#onCreate")
+            .extracting(Throwable::getCause)
             .isInstanceOf(failureException.getClass())
             .isEqualTo(failureException);
     }
