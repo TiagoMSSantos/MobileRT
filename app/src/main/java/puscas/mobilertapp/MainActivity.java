@@ -244,7 +244,7 @@ public final class MainActivity extends Activity {
             loadMobileRT();
         } catch (final Exception ex) {
             UtilsLogging.logThrowable(ex, "MainActivity#onCreate");
-            throw ex;
+            throw new RuntimeException(ex);
         }
 
         setCurrentInstance();
