@@ -203,7 +203,7 @@ android {
 
     // Setup required versions to compile
     setCompileSdkVersion androidApiVersionValue >= 16? 35 : 34
-    setBuildToolsVersion '34.0.0'
+    setBuildToolsVersion '35.0.0'
 
     // Setup signing configurations
     signingConfigs {
