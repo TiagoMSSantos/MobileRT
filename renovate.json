@@ -144,34 +144,6 @@
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
-        "androidX_test_runner_version = ['\"](?<currentValue>.*)['\"]"
-      ],
-      "depNameTemplate": "androidx.test:runner",
-      "datasourceTemplate": "maven",
-      "versioningTemplate": "gradle",
-      "customType": "regex",
-      "registryUrlTemplate": "https://maven.google.com"
-    },
-    {
-      "fileMatch": [
-        "build.gradle"
-      ],
-      "matchStringsStrategy": "any",
-      "matchStrings": [
-        "androidX_test_rules_version = ['\"](?<currentValue>.*)['\"]"
-      ],
-      "depNameTemplate": "androidx.test:rules",
-      "datasourceTemplate": "maven",
-      "versioningTemplate": "gradle",
-      "customType": "regex",
-      "registryUrlTemplate": "https://maven.google.com"
-    },
-    {
-      "fileMatch": [
-        "build.gradle"
-      ],
-      "matchStringsStrategy": "any",
-      "matchStrings": [
         "androidX_test_junit_version = ['\"](?<currentValue>.*)['\"]"
       ],
       "depNameTemplate": "androidx.test.ext:junit",
@@ -189,34 +161,6 @@
         "androidX_test_espresso_version = ['\"](?<currentValue>.*)['\"]"
       ],
       "depNameTemplate": "androidx.test.espresso:espresso-core",
-      "datasourceTemplate": "maven",
-      "versioningTemplate": "gradle",
-      "customType": "regex",
-      "registryUrlTemplate": "https://maven.google.com"
-    },
-    {
-      "fileMatch": [
-        "build.gradle"
-      ],
-      "matchStringsStrategy": "any",
-      "matchStrings": [
-        "androidX_tracing_version = ['\"](?<currentValue>.*)['\"]"
-      ],
-      "depNameTemplate": "androidx.tracing:tracing",
-      "datasourceTemplate": "maven",
-      "versioningTemplate": "gradle",
-      "customType": "regex",
-      "registryUrlTemplate": "https://maven.google.com"
-    },
-    {
-      "fileMatch": [
-        "build.gradle"
-      ],
-      "matchStringsStrategy": "any",
-      "matchStrings": [
-        "androidX_activity_version = ['\"](?<currentValue>.*)['\"]"
-      ],
-      "depNameTemplate": "androidx.activity:activity",
       "datasourceTemplate": "maven",
       "versioningTemplate": "gradle",
       "customType": "regex",
@@ -391,32 +335,6 @@
       "matchCurrentVersion": "/^1\\.12\\..+/"
     },
     {
-      "groupName": "Only update patches of androidx.test:runner for Android API >= 19",
-      "enabled": false,
-      "matchUpdateTypes": ["major", "minor"],
-      "matchDepNames": [
-        "androidx.test:runner"
-      ],
-      "matchManagers": [
-        "custom.regex",
-        "gradle"
-      ],
-      "matchCurrentVersion": "/^1\\.5\\..+/"
-    },
-    {
-      "groupName": "Only update patches of androidx.test:rules for Android API >= 19",
-      "enabled": false,
-      "matchUpdateTypes": ["major", "minor"],
-      "matchDepNames": [
-        "androidx.test:rules"
-      ],
-      "matchManagers": [
-        "custom.regex",
-        "gradle"
-      ],
-      "matchCurrentVersion": "/^1\\.5\\..+/"
-    },
-    {
       "groupName": "Only update patches of androidx.test:monitor for Android API >= 19",
       "enabled": false,
       "matchUpdateTypes": ["major", "minor"],
@@ -461,32 +379,6 @@
         "gradle"
       ],
       "matchCurrentVersion": "/^3\\.5\\..+/"
-    },
-    {
-      "groupName": "Only update patches of androidx.activity:activity for Android API >= 19",
-      "enabled": false,
-      "matchUpdateTypes": ["major", "minor"],
-      "matchDepNames": [
-        "androidx.activity:activity"
-      ],
-      "matchManagers": [
-        "custom.regex",
-        "gradle"
-      ],
-      "matchCurrentVersion": "/^1\\.7\\..+/"
-    },
-    {
-      "groupName": "Only update patches of androidx.tracing:tracing for Android API >= 19",
-      "enabled": false,
-      "matchUpdateTypes": ["major", "minor"],
-      "matchDepNames": [
-        "androidx.tracing:tracing"
-      ],
-      "matchManagers": [
-        "custom.regex",
-        "gradle"
-      ],
-      "matchCurrentVersion": "/^1\\.1\\..+/"
     },
     {
       "groupName": "Only update patches of androidx.emoji2:emoji2 for Android API >= 19",

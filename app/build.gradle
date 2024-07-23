@@ -202,7 +202,7 @@ android {
     setTestBuildType systemTestType
 
     // Setup required versions to compile
-    setCompileSdkVersion 35
+    setCompileSdkVersion androidApiVersionValue >= 16? 35 : 34
     setBuildToolsVersion '34.0.0'
 
     // Setup signing configurations
@@ -225,7 +225,7 @@ android {
     defaultConfig {
         // The minimum Android API version possible is 14 due to compatibility with Appcompat dependency.
         setMinSdkVersion "${androidApiVersion}"
-        setTargetSdkVersion 35
+        setTargetSdkVersion androidApiVersionValue >= 16? 35 : 34
         setTestInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         testInstrumentationRunnerArguments = ['clearPackageData': 'true', 'disableAnalytics': 'true']
         setApplicationId 'puscas.mobilertapp'
@@ -447,7 +447,6 @@ dependencies {
 
     println('Adding Android dependencies for MobileRT.')
     implementation "androidx.appcompat:appcompat:${androidX_appcompat_version}"
-    implementation "androidx.activity:activity:${androidX_activity_version}"
 
     println('Adding Java dependencies for MobileRT.')
     implementation 'com.google.guava:guava:33.2.1-jre'
@@ -457,16 +456,12 @@ dependencies {
     println('Adding dependencies for the instrumentation tests.')
     androidTestImplementation "androidx.test.espresso:espresso-intents:${androidX_test_espresso_version}"
     androidTestImplementation "androidx.test.ext:junit:${androidX_test_junit_version}"
-    androidTestImplementation "androidx.test:rules:${androidX_test_rules_version}"
 
     println('Enabling tracing for the instrumentation tests.')
-    debugImplementation "androidx.tracing:tracing:${androidX_tracing_version}"
     debugImplementation "androidx.test.espresso:espresso-core:${androidX_test_espresso_version}"
-    androidTestImplementation "androidx.test:runner:${androidX_test_runner_version}"
 
 
     println('Adding dependencies for the unit tests.')
-    testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.assertj:assertj-core:3.26.3'
     testImplementation 'org.khronos:opengl-api:gl1.1-android-2.1_r1'
     testImplementation "org.powermock:powermock-module-junit4:${powermock_version}"
