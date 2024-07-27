@@ -121,7 +121,7 @@ services:
             KSQL_KSQL_CONNECT_URL: "http://connect:8083"
 
     ksqldb-cli:
-        image: confluentinc/cp-ksqldb-cli:7.6.2
+        image: confluentinc/cp-ksqldb-cli:7.7.0
         container_name: ksqldb-cli
         depends_on:
             - broker
