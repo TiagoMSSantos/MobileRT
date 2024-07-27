@@ -323,7 +323,8 @@
     {
       "groupName": "Update Docker images from Confluentinc",
       "enabled": true,
-      "matchPackageNames": ["/confluentinc/"]
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["confluentinc/**"]
     },
     {
       "groupName": "Only update patches of androidx.core:core for Android API >= 19",
