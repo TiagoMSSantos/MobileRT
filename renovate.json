@@ -321,12 +321,8 @@
       "automerge": true
     },
     {
-      "groupName": "Update Docker images from Confluentinc",
-      "enabled": true,
-      "matchCategories": ["docker"],
-      "matchUpdateTypes": ["major", "minor", "patch"],
-      "matchDatasources": ["docker"],
-      "matchPackageNames": ["/^confluentinc.*$/"]
+      "groupName": "confluentinc",
+      "matchPackageNames": ["**confluentinc**"]
     },
     {
       "groupName": "Only update patches of androidx.core:core for Android API >= 19",
