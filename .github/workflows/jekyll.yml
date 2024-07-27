@@ -9,6 +9,8 @@ name: Deploy Jekyll site to Pages
 on:
   # Runs on pushes targeting any branch
   push:
+    paths-ignore:
+    - 'renovate.json'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
