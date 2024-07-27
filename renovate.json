@@ -339,7 +339,15 @@
         "custom.regex",
         "docker-compose"
       ],
-      "matchDepNames": ["**confluentinc**"],
+      "matchDepNames": [
+        "confluentinc/ksqldb-examples",
+        "confluentinc/cp-zookeeper",
+        "confluentinc/cp-schema-registry",
+        "confluentinc/cp-ksqldb-server",
+        "confluentinc/cp-ksqldb-cli",
+        "confluentinc/cp-kafka-rest",
+        "confluentinc/cp-kafka"
+      ],
       "branchTopic": "confluentinc"
     },
     {
