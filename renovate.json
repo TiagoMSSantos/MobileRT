@@ -332,7 +332,7 @@
       "automerge": true
     },
     {
-      "groupName": "Update Docker images from Confluentinc",
+      "groupName": "Docker images from Confluentinc",
       "enabled": true,
       "matchManagers": [
         "custom.regex",
