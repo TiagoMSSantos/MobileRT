@@ -44,6 +44,14 @@ And the commands to generate the dependency report in `app/build/reports/project
 sh gradlew htmlDependencyReport;
 ```
 
+## Cancel Workflow runs
+
+Here are the commands to cancel the workflow runs from all branches except the master.
+
+```shell
+user=TiagoMSSantos repo=MobileRT; gh api repos/${user}/${repo}/actions/runs --paginate -q '.workflow_runs[] | select(.head_branch != "master") | "\(.id)"' | xargs -n1 -I % gh api repos/${user}/${repo}/actions/runs/%/cancel -X POST;
+```
+
 ## Delete Workflow runs
 
 Here are the commands to delete the workflow runs from all branches except the master.
