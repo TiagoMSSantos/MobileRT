@@ -100,6 +100,17 @@
     },
     {
       "fileMatch": [
+        "deploy\\/docker-compose.ya?ml"
+      ],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
+        "image: (?<depName>.*?):(?<currentValue>.*)"
+      ],
+      "datasourceTemplate": "docker",
+      "customType": "regex"
+    },
+    {
+      "fileMatch": [
         "\\.github\\/workflows\\/.+\\.ya?ml"
       ],
       "matchStringsStrategy": "any",
@@ -323,11 +334,12 @@
     {
       "groupName": "Update Docker images from Confluentinc",
       "groupSlug": "confluentinc",
+      "enabled": true,
       "matchManagers": [
         "custom.regex",
         "docker-compose"
       ],
-      "matchPackageNames": ["**confluentinc**"],
+      "matchDepNames": ["**confluentinc**"],
       "branchTopic": "confluentinc"
     },
     {
