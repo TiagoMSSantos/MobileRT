@@ -326,7 +326,7 @@
       "matchCategories": ["docker"],
       "matchUpdateTypes": ["major", "minor", "patch"],
       "matchDatasources": ["docker"],
-      "matchDepNames": ["confluentinc/**"]
+      "matchPackageNames": ["/^confluentinc.*$/"]
     },
     {
       "groupName": "Only update patches of androidx.core:core for Android API >= 19",
