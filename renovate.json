@@ -321,7 +321,8 @@
       "automerge": true
     },
     {
-      "groupName": "confluentinc",
+      "groupName": "Update Docker images from Confluentinc",
+      "groupSlug": "confluentinc",
       "matchPackageNames": ["**confluentinc**"]
     },
     {
