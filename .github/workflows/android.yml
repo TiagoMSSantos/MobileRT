@@ -23,7 +23,6 @@ on:
     - '!codecov.yml'
     - '!.github/workflows/android.yml'
     - '!.github/workflows/native.yml'
-    - '!.github/workflows/code-analysis.yml'
     - '!app/third_party/conan/Native/**'
     - '!app/System_dependent/Native/**'
     - '!.github/workflows/android_matrix.json'
