@@ -323,6 +323,8 @@
     {
       "groupName": "Update Docker images from Confluentinc",
       "enabled": true,
+      "matchCategories": ["docker"],
+      "matchUpdateTypes": ["major", "minor", "patch"],
       "matchDatasources": ["docker"],
       "matchDepNames": ["confluentinc/**"]
     },
