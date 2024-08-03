@@ -12,6 +12,7 @@ on:
     paths-ignore:
     - 'renovate.json'
     - 'deploy/**'
+    - '!.github/workflows/jekyll.yml'
     - '!docs/**'
     - '!Gemfile*'
 
