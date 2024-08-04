@@ -451,7 +451,7 @@ testAddCommandToPath() {
   # Validate the exit code is 0 after adding the command 'wc' to the PATH environment variable.
   # Setup mocks:
   command() { return 1; } # Emulate command not found.
-  find() { echo '/usr/bin/wc'; } # Emulate command was found.
+  find() { echo "$(which wc)"; } # Emulate command was found.
   expectedExitCode='0';
   commandToAdd='wc';
   eval '$(${_functionName} "${commandToAdd}" > /dev/null)';

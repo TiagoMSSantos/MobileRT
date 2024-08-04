@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-08-04T06:32:24.993Z",
+    "detectionDate": "2024-08-04T06:36:50.882Z",
     "formats": {
       "java": {
         "sources": {
@@ -2122,13 +2122,13 @@
           },
           "scripts/test/helper_functions.sh": {
             "lines": 603,
-            "tokens": 4159,
+            "tokens": 4165,
             "sources": 1,
             "clones": 7,
             "duplicatedLines": 117,
             "duplicatedTokens": 839,
             "percentage": 19.4,
-            "percentageTokens": 20.17,
+            "percentageTokens": 20.14,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2255,7 +2255,7 @@
         },
         "total": {
           "lines": 4212,
-          "tokens": 28182,
+          "tokens": 28188,
           "sources": 13,
           "clones": 12,
           "duplicatedLines": 263,
@@ -3165,7 +3165,7 @@
     },
     "total": {
       "lines": 29426,
-      "tokens": 226961,
+      "tokens": 226967,
       "sources": 250,
       "clones": 122,
       "duplicatedLines": 1557,
