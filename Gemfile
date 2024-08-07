@@ -5,7 +5,7 @@
 source 'https://rubygems.org'
 
 # Gems for the Github Pages
-gem 'github-pages', '~> 231', group: :jekyll_plugins, require: true
+gem 'github-pages', '~> 232', group: :jekyll_plugins, require: true
 
 # Gems for bash code coverage
 group :test do
