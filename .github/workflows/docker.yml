@@ -21,14 +21,12 @@ on:
     - '!.github/workflows/docker.yml'
     - '!app/third_party/conan/Native/**'
     - '!app/System_dependent/CMakeLists.txt'
-    - '!app/System_dependent/Android_JNI/**'
     - '!deploy/Dockerfile*'
     - '!scripts/install_dependencies.sh'
-    - '!scripts/run_tests.sh'
     - '!scripts/helper_functions.sh'
+    - '!scripts/profile.sh'
     - '!scripts/docker.sh'
     - '!scripts/test/docker/dockerfile.sh'
-    - '!scripts/profile.sh'
 
 defaults:
   run:

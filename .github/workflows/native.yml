@@ -15,8 +15,8 @@ on:
     - 'scripts/**'
     - 'WavefrontOBJs/**'
     - '!.github/workflows/native.yml'
+    - '!.github/macports.yml'
     - '!app/System_dependent/CMakeLists.txt'
-    - '!gradle/wrapper/gradle-wrapper.properties'
     - '!scripts/run_tests.sh'
     - '!scripts/helper_functions.sh'
     - '!scripts/install_dependencies.sh'
@@ -24,19 +24,11 @@ on:
     - '!codecov.yml'
     - '!app/third_party/conan/Native/**'
     - '!app/System_dependent/Native/**'
-    - '!.github/workflows/android_matrix.json'
-    - '!app/third_party/conan/Android/**'
-    - '!app/System_dependent/Android_JNI/**'
-    - '!scripts/compile_android.sh'
+    - '!app/src/androidTest/resources/CornellBox/*;'
     - '!scripts/compile_native.sh'
-    - '!scripts/check_android.sh'
-    - '!scripts/run_tests_android.sh'
     - '!scripts/profile.sh'
-    - '!*.java*'
-    - '!*.kt*'
     - '!*.c*'
     - '!*.h*'
-    - '!*gradle*'
 
 defaults:
   run:
@@ -376,7 +368,6 @@ jobs:
         key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.name }}_${{ matrix.host_os }}_${{ matrix.type }}_${{ matrix.compiler }}
         restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.name }}_${{ matrix.host_os }}_${{ matrix.type }}_${{ matrix.compiler }}
         path: |
-          app/build/reports/coverage/androidTest/debug/connected
           code_coverage_base.info
           code_coverage.info
           code_coverage_test.info
@@ -410,7 +401,6 @@ jobs:
         key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.name }}_${{ matrix.host_os }}_${{ matrix.type }}_${{ matrix.compiler }}
         restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ matrix.name }}_${{ matrix.host_os }}_${{ matrix.type }}_${{ matrix.compiler }}
         path: |
-          app/build/reports/coverage/androidTest/debug/connected
           code_coverage_base.info
           code_coverage.info
           code_coverage_test.info

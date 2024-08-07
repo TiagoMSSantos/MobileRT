@@ -10,8 +10,7 @@ on:
   # Runs on pushes targeting any branch
   push:
     paths-ignore:
-    - 'renovate.json'
-    - 'deploy/**'
+    - '**/**'
     - '!.github/workflows/jekyll.yml'
     - '!docs/**'
     - '!Gemfile*'
