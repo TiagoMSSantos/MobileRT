@@ -19,6 +19,7 @@ on:
     - '**/*.java'
     - '**/*.kt'
     - '!.github/workflows/docker.yml'
+    - '!.github/macports.yml'
     - '!app/third_party/conan/Native/**'
     - '!app/System_dependent/CMakeLists.txt'
     - '!deploy/Dockerfile*'
