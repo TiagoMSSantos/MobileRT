@@ -260,7 +260,6 @@ build() {
   else
     c_compiler='gcc';
   fi
-  addCommandToPath "${c_compiler}";
 
   # The compiler might redirect the output to stderr, so we also have to redirect it to the variable.
   compiler_version=$(${compiler} -v 2>&1 || true);
@@ -272,7 +271,7 @@ build() {
   if cmake --help | grep -i '*' | grep -iq 'default' && cmake --help | grep -i '*' | grep -iq 'Visual Studio'; then
     if [ "${compiler}" = 'cl' ]; then
       echo 'Detected Visual Studio for Windows!';
-      jobsFlags="//p:Configuration=${typeWithCapitalLetter} //m:$((NCPU_CORES * 1)) //p:CL_MPCount=$((NCPU_CORES * 1))";
+      jobsFlags="//p:Configuration=${typeWithCapitalLetter} //m:$((NCPU_CORES * 1)) //p:CL_MPCount=$((NCPU_CORES - 1))";
       JOBS_FLAGS="-- ${jobsFlags}";
       export MAKEFLAGS="${jobsFlags}";
     else
