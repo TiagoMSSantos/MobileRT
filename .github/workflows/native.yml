@@ -68,7 +68,7 @@ jobs:
           compiler: clang++
 
         - name: Intel C++
-          host_os: ubuntu-20.04
+          host_os: ubuntu-24.04
           type: release
           compiler: icpx
 
