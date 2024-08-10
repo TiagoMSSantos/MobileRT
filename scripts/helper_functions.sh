@@ -43,8 +43,6 @@ parseArgumentsToCompile() {
         ;;
       c )
         export compiler=${OPTARG};
-        addCommandToPath "${compiler}";
-        checkCommand "${compiler}";
         echo "Setting compiler: ${compiler}";
         ;;
       r )

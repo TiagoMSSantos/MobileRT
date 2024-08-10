@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-08-10T08:54:43.441Z",
+    "detectionDate": "2024-08-10T10:04:13.966Z",
     "formats": {
       "java": {
         "sources": {
@@ -2193,8 +2193,8 @@
             "newClones": 0
           },
           "scripts/helper_functions.sh": {
-            "lines": 528,
-            "tokens": 3751,
+            "lines": 526,
+            "tokens": 3735,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2217,8 +2217,8 @@
             "newClones": 0
           },
           "scripts/compile_native.sh": {
-            "lines": 340,
-            "tokens": 2195,
+            "lines": 339,
+            "tokens": 2187,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2254,14 +2254,14 @@
           }
         },
         "total": {
-          "lines": 4212,
-          "tokens": 28188,
+          "lines": 4209,
+          "tokens": 28164,
           "sources": 13,
           "clones": 12,
           "duplicatedLines": 263,
           "duplicatedTokens": 1345,
-          "percentage": 6.24,
-          "percentageTokens": 4.77,
+          "percentage": 6.25,
+          "percentageTokens": 4.78,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3164,8 +3164,8 @@
       }
     },
     "total": {
-      "lines": 29406,
-      "tokens": 226877,
+      "lines": 29403,
+      "tokens": 226853,
       "sources": 250,
       "clones": 122,
       "duplicatedLines": 1550,
