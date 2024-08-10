@@ -272,13 +272,13 @@ build() {
   if cmake --help | grep -i '*' | grep -iq 'default' && cmake --help | grep -i '*' | grep -iq 'Visual Studio'; then
     if [ "${compiler}" = 'cl' ]; then
       echo 'Detected Visual Studio for Windows!';
-      jobsFlags="//p:Configuration=${typeWithCapitalLetter} //m:$((NCPU_CORES * 2)) //p:CL_MPCount=$((NCPU_CORES * 2))";
+      jobsFlags="//p:Configuration=${typeWithCapitalLetter} //m:$((NCPU_CORES * 1)) //p:CL_MPCount=$((NCPU_CORES * 1))";
       JOBS_FLAGS="-- ${jobsFlags}";
       export MAKEFLAGS="${jobsFlags}";
     else
       echo 'Detected MinGW!';
       generator='MinGW Makefiles';
-      jobsFlags="-j$((NCPU_CORES * 2))";
+      jobsFlags="-j$((NCPU_CORES * 3))";
       JOBS_FLAGS="-- ${jobsFlags}";
       export MAKEFLAGS="${jobsFlags}";
     fi
