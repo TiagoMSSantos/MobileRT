@@ -283,7 +283,7 @@ build() {
     fi
   elif cmake --help | grep -i '*' | grep -iq 'default' && cmake --help | grep -i '*' | grep -iq 'unix'; then
     echo 'Detected Make!';
-    jobsFlags="-j$((NCPU_CORES * 2))";
+    jobsFlags="-j$((NCPU_CORES * 2 - 1))";
     JOBS_FLAGS="-- ${jobsFlags}";
     export MAKEFLAGS="${jobsFlags}";
   elif cmake --help | grep -iq 'Visual Studio'; then
