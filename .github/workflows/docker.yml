@@ -24,6 +24,7 @@ on:
     - '!app/System_dependent/CMakeLists.txt'
     - '!deploy/Dockerfile*'
     - '!scripts/install_dependencies.sh'
+    - '!scripts/compile_native.sh'
     - '!scripts/helper_functions.sh'
     - '!scripts/profile.sh'
     - '!scripts/docker.sh'

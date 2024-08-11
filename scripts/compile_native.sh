@@ -288,7 +288,7 @@ build() {
     export MAKEFLAGS="${jobsFlags}";
   elif cmake --help | grep -iq 'Visual Studio'; then
     echo "Didn't find a default generator. Enforcing usage of Unix Makefiles instead!";
-    jobsFlags="-j$((NCPU_CORES * 2))";
+    jobsFlags="-j$((NCPU_CORES * 3))";
     JOBS_FLAGS="-- ${jobsFlags}";
     export MAKEFLAGS="${jobsFlags}";
     generator='Unix Makefiles';
@@ -312,7 +312,7 @@ build() {
 
   if [ "${resCompile}" -eq 0 ]; then
     set +u;
-    echo "Calling Make with parameters: '${JOBS_FLAGS}'";
+    echo "Calling '${generator}' with parameters: '${JOBS_FLAGS}'";
     # shellcheck disable=SC2086
     cmake --build . ${JOBS_FLAGS};
     set -u;
