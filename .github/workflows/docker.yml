@@ -140,6 +140,7 @@ jobs:
       timeout-minutes: 60
       if: success()
       run: |
+        docker system prune -a --volumes --force;
         docker image pull ${{ matrix.BASE_IMAGE }};
 
     - name: Pull MobileRT Docker image
@@ -148,7 +149,6 @@ jobs:
       run: |
         # shellcheck disable=SC1091
         echo "VERSION: ${{ env.VERSION }}";
-        docker system prune -a --volumes --force;
         . scripts/docker.sh && pullDockerImage ${{ env.VERSION }};
         echo "BUILD_IMAGE=${BUILD_IMAGE}" >> "${GITHUB_ENV}";
 
