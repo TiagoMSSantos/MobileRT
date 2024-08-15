@@ -327,6 +327,7 @@ jobs:
     - name: Upload Gradle packages as artifact
       timeout-minutes: 20
       if: success()
+      continue-on-error: true
       uses: actions/upload-artifact@v4
       with:
         # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
