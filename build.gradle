@@ -28,7 +28,7 @@ buildscript {
     // modules in the project.
     ext {
         systemTestType = System.getProperty('testType', 'debug')
-        final def customAbiFilters = System.getProperty('abiFilters', '["armeabi-v7a", "x86", "arm64-v8a", "x86_64"]')
+        final def customAbiFilters = System.getProperty('abiFilters', '["x86"]')
         systemAbiFilters = new JsonSlurper().parseText(customAbiFilters) as String[]
 
         // The default minimum Android API version possible is 14 due to compatibility with Appcompat dependency.
@@ -134,9 +134,9 @@ tasks.named('wrapper', Wrapper) {it ->
     if (androidApiVersionValue >= 16) {
         it.gradleVersion = '8.10'
     } else {
-        it.gradleVersion = '8.10'
+        it.gradleVersion = '8.9'
     }
-    it.distributionUrl = 'https://services.gradle.org/distributions/gradle-8.10-bin.zip' + it.gradleVersion + '-' + it.distributionType.name().toLowerCase() + '.zip'
+    it.distributionUrl = 'https://services.gradle.org/distributions/gradle-' + it.gradleVersion + '-' + it.distributionType.name().toLowerCase() + '.zip'
     println('Gradle wrapper version: ' + it.gradleVersion)
 }
 ///////////////////////////////////////////////////////////////////////////////

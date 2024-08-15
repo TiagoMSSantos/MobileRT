@@ -183,6 +183,9 @@ jobs:
       if: success() && matrix.language != 'cpp'
       uses: github/codeql-action/autobuild@v3
       continue-on-error: true
+      env:
+        MAKEFLAGS: "-j$(($(nproc --all) * 2 - 1))"
+        GRADLE_OPTS: '-Xms8G -Xmx8G -XX:ActiveProcessorCount=5'
       with:
         # Check available parameters in: https://github.com/github/codeql-action/blob/main/autobuild/action.yml
         token: ${{ github.token }}
