@@ -516,7 +516,10 @@ _validateFileExistsAndHasSomeContent() {
     echo "File '${filePath}' is empty." >&2;
     return 1;
   fi
-  fileSize=$(wc -w "${filePath}" | tr -s ' ' | cut -d ' ' -f1);
+  fileSize=$(cat "${filePath}" | wc -w | tr -d '[:space:]');
+  if [ "${fileSize}" = '' ]; then
+    return 2;
+  fi
   if [ "${fileSize}" -lt 190 ]; then
     echo "File '${filePath}' contains '${fileSize}' words, which is less than 190 words." >&2;
     cat "${filePath}";

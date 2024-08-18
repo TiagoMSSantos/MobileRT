@@ -382,28 +382,28 @@ copyResources() {
   set +e;
   adb shell rm -r ${mobilert_path};
   if [ "${androidApi}" -gt 29 ]; then
-    adb shell 'rm -r '${sdcard_path_android};
+    adb shell 'rm -r '"${sdcard_path_android}";
   fi
   set -e;
 
-  callAdbShellCommandUntilSuccess adb shell 'mkdir -p '${mobilert_path}'; echo ::$?::';
-  callAdbShellCommandUntilSuccess adb shell 'mkdir -p '${sdcard_path_android}'; echo ::$?::';
+  callAdbShellCommandUntilSuccess adb shell 'mkdir -p '"${mobilert_path}"'; echo ::$?::';
+  callAdbShellCommandUntilSuccess adb shell 'mkdir -p '"${sdcard_path_android}"'; echo ::$?::';
 
-  callAdbShellCommandUntilSuccess adb shell 'mkdir -p '${mobilert_path}'/WavefrontOBJs/CornellBox; echo ::$?::';
-  callAdbShellCommandUntilSuccess adb shell 'mkdir -p '${sdcard_path_android}'/WavefrontOBJs/teapot; echo ::$?::';
+  callAdbShellCommandUntilSuccess adb shell 'mkdir -p '"${mobilert_path}"'/WavefrontOBJs/CornellBox; echo ::$?::';
+  callAdbShellCommandUntilSuccess adb shell 'mkdir -p '"${sdcard_path_android}"'/WavefrontOBJs/teapot; echo ::$?::';
 
   echo 'Copy tests resources';
   callCommandUntilSuccess 5 adb push -p app/src/androidTest/resources/CornellBox ${mobilert_path}/WavefrontOBJs;
   set +e;
-  adb push -p app/src/androidTest/resources/teapot ${sdcard_path_android}/WavefrontOBJs;
+  adb push -p app/src/androidTest/resources/teapot "${sdcard_path_android}/WavefrontOBJs";
   set -e;
 
   echo 'Copy File Manager';
   callCommandUntilSuccess 5 adb push -p app/src/androidTest/resources/APKs ${mobilert_path};
 
   echo 'Change resources permissions';
-  callAdbShellCommandUntilSuccess adb shell 'chmod -R 777 '${mobilert_path}'; echo ::$?::';
-  callAdbShellCommandUntilSuccess adb shell 'chmod -R 777 '${sdcard_path_android}'; echo ::$?::';
+  callAdbShellCommandUntilSuccess adb shell 'chmod -R 777 '"${mobilert_path}"'; echo ::$?::';
+  callAdbShellCommandUntilSuccess adb shell 'chmod -R 777 '"${sdcard_path_android}"'; echo ::$?::';
 
   echo 'Install File Manager';
   set +e;
@@ -416,23 +416,23 @@ copyResources() {
     set +e;
     adb shell "pm uninstall ${mobilert_path}/APKs/asus-file-manager-2-8-0-85-230220.apk;";
     set -e;
-    callAdbShellCommandUntilSuccess adb shell 'pm install -r '${mobilert_path}'/APKs/asus-file-manager-2-8-0-85-230220.apk; echo ::$?::';
+    callAdbShellCommandUntilSuccess adb shell 'pm install -r '"${mobilert_path}"'/APKs/asus-file-manager-2-8-0-85-230220.apk; echo ::$?::';
   elif [ "${androidApi}" -gt 29 ]; then
     set +e;
     adb shell "pm uninstall ${mobilert_path}/APKs/com.asus.filemanager_2.7.0.28_220608-1520700140_minAPI30_apkmirror.com.apk;";
     set -e;
-    callAdbShellCommandUntilSuccess adb shell 'pm install -r '${mobilert_path}'/APKs/com.asus.filemanager_2.7.0.28_220608-1520700140_minAPI30_apkmirror.com.apk; echo ::$?::';
+    callAdbShellCommandUntilSuccess adb shell 'pm install -r '"${mobilert_path}"'/APKs/com.asus.filemanager_2.7.0.28_220608-1520700140_minAPI30_apkmirror.com.apk; echo ::$?::';
   elif [ "${androidApi}" -gt 16 ]; then
     set +e;
     adb shell "pm uninstall ${mobilert_path}/APKs/com.asus.filemanager.apk";
     set -e;
-    callAdbShellCommandUntilSuccess adb shell 'pm install -r '${mobilert_path}'/APKs/com.asus.filemanager.apk; echo ::$?::';
+    callAdbShellCommandUntilSuccess adb shell 'pm install -r '"${mobilert_path}"'/APKs/com.asus.filemanager.apk; echo ::$?::';
   elif [ "${androidApi}" -lt 16 ]; then
     set +e;
     adb shell "pm uninstall ${mobilert_path}/APKs/com.estrongs.android.pop_4.2.1.8-10057_minAPI14.apk;";
     set -e;
     # This file manager is compatible with Android 4.0.3 (API 15) which the Asus one is not.
-    callAdbShellCommandUntilSuccess adb shell 'pm install -r '${mobilert_path}'/APKs/com.estrongs.android.pop_4.2.1.8-10057_minAPI14.apk; echo ::$?::';
+    callAdbShellCommandUntilSuccess adb shell 'pm install -r '"${mobilert_path}"'/APKs/com.estrongs.android.pop_4.2.1.8-10057_minAPI14.apk; echo ::$?::';
   fi
 }
 
@@ -478,7 +478,7 @@ runUnitTests() {
   echo "Checking generated id for: ${android_cpu_architecture}";
   # Note: flag `-t` of `ls` is to sort by date (newest first).
   # shellcheck disable=SC2012
-  generatedId=$(find app/.cxx/ -iname "*unittests" -printf "%T@ %Tc %p\n"  -exec readlink -f {} \; \
+  generatedId=$(find app/.cxx/ -iname "*unittests" -exec readlink -f {} \; \
     | sort -n -r \
     | grep "${typeWithDebInfo}/" \
     | grep "${android_cpu_architecture}/" \
@@ -486,10 +486,14 @@ runUnitTests() {
     | tr -s ' ' \
     | cut -d ' ' -f 7 \
     | sed "s/app\/.cxx\/${typeWithDebInfo}\///g" \
-    | sed "s/\/${android_cpu_architecture}\/bin\/UnitTests//g");
+    | sed "s/\/${android_cpu_architecture}\/bin\/UnitTests//g" \
+    | rev \
+    | cut -d '/' -f 1 \
+    | rev \
+  );
   echo "Generated id: ${generatedId}";
   dirUnitTests="${dirUnitTests}/${generatedId}/${android_cpu_architecture}";
-  find app/.cxx/ -iname "*unittests" -printf "%T@ %Tc %p\n"  -exec readlink -f {} \; \
+  find app/.cxx/ -iname "*unittests" -exec readlink -f {} \; \
     | sort -n -r \
     | grep "${typeWithDebInfo}/" \
     | grep "${android_cpu_architecture}/" \
@@ -519,9 +523,9 @@ runUnitTests() {
 
 verifyResources() {
   echo 'Verify resources in SD Card';
-  callCommandUntilSuccess 5 adb shell 'ls -laR '${mobilert_path}/WavefrontOBJs;
-  callCommandUntilSuccess 5 adb shell 'ls -laR '${sdcard_path_android};
-  callCommandUntilSuccess 5 adb shell 'ls -laR '${sdcard_path_android}/WavefrontOBJs;
+  callCommandUntilSuccess 5 adb shell 'ls -laR '"${mobilert_path}/WavefrontOBJs";
+  callCommandUntilSuccess 5 adb shell 'ls -laR '"${sdcard_path_android}";
+  callCommandUntilSuccess 5 adb shell 'ls -laR '"${sdcard_path_android}/WavefrontOBJs";
 
   echo 'Verify memory available on host:';
   if command -v free > /dev/null; then
@@ -571,7 +575,7 @@ runInstrumentationTests() {
     echo "Will install APK: ${apkPath}";
     callCommandUntilSuccess 5 adb push -p "${apkPath}" "${mobilert_path}";
   done;
-  callCommandUntilSuccess 5 adb shell 'ls -la '${mobilert_path};
+  callCommandUntilSuccess 5 adb shell 'ls -la '"${mobilert_path}";
   unlockDevice;
   echo 'Installing both APKs for tests and app.';
   set +e;
@@ -580,8 +584,8 @@ runInstrumentationTests() {
   adb shell rm -r /data/app/puscas.mobilertapp*;
   adb shell ls -la /data/app;
   set -e;
-  callAdbShellCommandUntilSuccess adb shell 'pm install -r '${mobilert_path}'/app-'${type}'.apk; echo ::$?::';
-  callAdbShellCommandUntilSuccess adb shell 'pm install -r '${mobilert_path}'/app-'${type}'-androidTest.apk; echo ::$?::';
+  callAdbShellCommandUntilSuccess adb shell 'pm install -r '"${mobilert_path}"'/app-'"${type}"'.apk; echo ::$?::';
+  callAdbShellCommandUntilSuccess adb shell 'pm install -r '"${mobilert_path}"'/app-'"${type}"'-androidTest.apk; echo ::$?::';
   if { [ "${androidApi}" -gt 22 ] && [ "${androidApi}" -lt 28 ]; }; then
     echo 'Granting read external SD Card to MobileRT.';
     callAdbShellCommandUntilSuccess adb shell 'pm grant puscas.mobilertapp.test android.permission.READ_EXTERNAL_STORAGE; echo ::$?::';

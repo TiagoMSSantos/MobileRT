@@ -479,6 +479,7 @@ testParallelizeBuild() {
   _clearEnvVariables;
   # Validate the exit code is 0 if using Linux, and the 'NCPU_CORES' is properly set.
   # Setup mocks:
+  uname() { echo 'linux'; } # Emulate Linux OS.
   nproc() { echo '11'; } # Emulate 11 CPU cores available.
   expectedExitCode='0';
   eval '${_functionName} > /dev/null';

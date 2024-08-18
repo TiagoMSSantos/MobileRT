@@ -290,10 +290,18 @@ install_dependencies_macos() {
   fi
   set -e;
 
-  echo 'Installing more dependencies.';
-  brew list coreutils > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install coreutils; # To install 'timeout' command.
-  brew list zip > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install zip;
-  brew list unzip > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install unzip;
+  if ! command -v timeout > /dev/null; then
+    echo 'Installing coreutils.';
+    brew list coreutils > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install coreutils || true; # To install 'timeout' command.
+  fi
+  if ! command -v zip > /dev/null; then
+    echo 'Installing zip.';
+    brew list zip > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install zip;
+  fi
+  if ! command -v unzip > /dev/null; then
+    echo 'Installing unzip.';
+    brew list unzip > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install unzip;
+  fi
 
   set +e;
   test -d Qt;
@@ -412,6 +420,12 @@ install_conan() {
 test_commands() {
   echo 'Checking required shell commands.';
 
+  set +u;
+  if [ "${MAJOR_MAC_VERSION}" != 14 ]; then
+    checkCommand timeout;
+  fi
+  set -u;
+
   checkCommand vim;
   checkCommand cmake;
   checkCommand make;
@@ -420,7 +434,6 @@ test_commands() {
   checkCommand git-lfs;
   checkCommand g++;
   checkCommand gcc;
-  checkCommand timeout;
   checkCommand set;
   checkCommand cd;
   checkCommand dirname;
