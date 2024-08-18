@@ -66,23 +66,26 @@ jobs:
         cache: gradle
         cache-dependency-path: '**/build.gradle'
 
+    - name: Set Android CPU Architecture
+      id: set-cpu-arch
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success()
+      run: |
+        if [ "${{ matrix.android_api }}" -gt 29 ]; then
+          echo 'android_arch=\"x86_64\"' >> "${GITHUB_ENV}";
+          echo 'android_emulator_arch=x86_64' >> "${GITHUB_ENV}";
+        else
+          echo 'android_arch=\"x86\"' >> "${GITHUB_ENV}";
+          echo 'android_emulator_arch=x86' >> "${GITHUB_ENV}";
+        fi
+        . scripts/helper_functions.sh && parallelizeBuild && echo "NCPU_CORES=${NCPU_CORES}" >> "${GITHUB_ENV}";
+
     - name: Build ${{ matrix.type }}
       timeout-minutes: 20
       if: success()
       working-directory: .
       run: |
-        sh scripts/compile_android.sh -t ${{ matrix.type }} -a ${{ matrix.android_api }} -r yes -f "\"x86\",\"x86_64\"";
-
-    - name: Set Android CPU Architecture
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success()
-      run: |
-        if [ "${{ matrix.android_api }}" -gt 29 ]; then
-          echo 'ANDROID_ARCH=x86_64' >> "${GITHUB_ENV}";
-        else
-          echo 'ANDROID_ARCH=x86' >> "${GITHUB_ENV}";
-        fi
-        . scripts/helper_functions.sh && parallelizeBuild && echo "NCPU_CORES=${NCPU_CORES}" >> "${GITHUB_ENV}";
+        sh scripts/compile_android.sh -t ${{ matrix.type }} -a ${{ matrix.android_api }} -r yes -f ${{ env.android_arch }};
 
     - name: Enable KVM group permissions
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -100,7 +103,7 @@ jobs:
         # Check available parameters in: https://github.com/ReactiveCircus/android-emulator-runner/blob/main/action.yml
         api-level: ${{ matrix.android_api }}
         target: default
-        arch: ${{ env.ANDROID_ARCH }}
+        arch: ${{ env.android_emulator_arch }}
         disable-animations: true
         disable-spellchecker: true
         channel: stable
@@ -109,7 +112,7 @@ jobs:
         sdcard-path-or-size: 100M
         ram-size: 1024M
         script: |
-          sh scripts/run_tests_android.sh -t ${{ matrix.type }} -r rep_puscas.mobilertapp.${{ matrix.test }} -a ${{ matrix.android_api }} -k false -f "\"x86\",\"x86_64\"";
+          sh scripts/run_tests_android.sh -t ${{ matrix.type }} -r rep_puscas.mobilertapp.${{ matrix.test }} -a ${{ matrix.android_api }} -k false -f ${{ env.android_arch }};
 
     - name: Upload reports as artifact
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
