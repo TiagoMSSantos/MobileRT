@@ -635,8 +635,8 @@ public final class MainActivity extends Activity {
         if (cleanedFilePath.startsWith(devicePath)) {
             return cleanedFilePath;
         }
-        if (cleanedFilePath.startsWith("/emulated/0/")) {
-            return "/storage" + cleanedFilePath;
+        if (cleanedFilePath.startsWith(ConstantsUI.FILE_SEPARATOR + "emulated" + ConstantsUI.FILE_SEPARATOR + "0" + ConstantsUI.FILE_SEPARATOR)) {
+            return ConstantsUI.FILE_SEPARATOR + "storage" + cleanedFilePath;
         }
 
         return devicePath + cleanedFilePath;
@@ -653,10 +653,13 @@ public final class MainActivity extends Activity {
     private static String cleanFilePath(final String filePath) {
         final int removeIndex = filePath.indexOf(ConstantsUI.PATH_SEPARATOR);
         final String startFilePath = removeIndex >= 0 ? filePath.substring(removeIndex) : filePath;
+        final String escapedFileSeparator = Objects.equals(ConstantsUI.FILE_SEPARATOR, "\\")
+            ? ConstantsUI.FILE_SEPARATOR + ConstantsUI.FILE_SEPARATOR
+            : ConstantsUI.FILE_SEPARATOR;
         String cleanedFilePath = startFilePath.replace(ConstantsUI.PATH_SEPARATOR, ConstantsUI.FILE_SEPARATOR);
-        cleanedFilePath = cleanedFilePath.replaceFirst("^/sdcard/", "/");
-        cleanedFilePath = cleanedFilePath.replaceFirst("^/([A-Za-z0-9]){4}-([A-Za-z0-9]){4}/", "/");
-        cleanedFilePath = cleanedFilePath.replaceFirst("^/local/tmp/", "/");
+        cleanedFilePath = cleanedFilePath.replaceFirst("^" + escapedFileSeparator + "sdcard" + escapedFileSeparator, escapedFileSeparator);
+        cleanedFilePath = cleanedFilePath.replaceFirst("^" + escapedFileSeparator + "([A-Za-z0-9]){4}-([A-Za-z0-9]){4}" + escapedFileSeparator, escapedFileSeparator);
+        cleanedFilePath = cleanedFilePath.replaceFirst("^" + escapedFileSeparator + "local" + escapedFileSeparator + "tmp" + escapedFileSeparator, escapedFileSeparator);
         return cleanedFilePath;
     }
 
@@ -671,14 +674,17 @@ public final class MainActivity extends Activity {
         logger.info("validatePathIsAccessible");
         final String path = Objects.requireNonNull(uri.getPath());
 
-        boolean externalStorage1 = path.matches("^/document/([A-Za-z0-9]){4}-([A-Za-z0-9]){4}:.+$");
-        boolean externalStorage2 = path.matches("^/mnt/sdcard/.+$");
-        boolean externalStorage3 = path.matches("^/storage/emulated/0/.+$");
-        boolean externalStorage4 = path.matches("^/storage/([A-Za-z0-9]){4}-([A-Za-z0-9]){4}/.+$");
-        boolean externalStorage5 = path.matches("^/storage/sdcard/.+$");
-        boolean internalStorage = path.matches("^/data/local/tmp/.+$");
+        final String escapedFileSeparator = Objects.equals(ConstantsUI.FILE_SEPARATOR, "\\")
+                ? ConstantsUI.FILE_SEPARATOR + ConstantsUI.FILE_SEPARATOR
+                : ConstantsUI.FILE_SEPARATOR;
+        boolean externalStorage1 = path.matches("^" + escapedFileSeparator + "document" + escapedFileSeparator + "([A-Za-z0-9]){4}-([A-Za-z0-9]){4}:.+$");
+        boolean externalStorage2 = path.matches("^" + escapedFileSeparator + "mnt" + escapedFileSeparator + "sdcard" + escapedFileSeparator + ".+$");
+        boolean externalStorage3 = path.matches("^" + escapedFileSeparator + "storage" + escapedFileSeparator + "emulated" + escapedFileSeparator + "0" + escapedFileSeparator +".+$");
+        boolean externalStorage4 = path.matches("^" + escapedFileSeparator + "storage" + escapedFileSeparator + "([A-Za-z0-9]){4}-([A-Za-z0-9]){4}" + escapedFileSeparator + ".+$");
+        boolean externalStorage5 = path.matches("^" + escapedFileSeparator + "storage" + escapedFileSeparator + "sdcard" + escapedFileSeparator + ".+$");
+        boolean internalStorage1 = path.matches("^" + escapedFileSeparator + "data" + escapedFileSeparator + "local" + escapedFileSeparator + "tmp" + escapedFileSeparator + ".+$");
 
-        if (externalStorage1 || externalStorage2 || externalStorage3 || externalStorage4 || externalStorage5 || internalStorage) {
+        if (externalStorage1 || externalStorage2 || externalStorage3 || externalStorage4 || externalStorage5 || internalStorage1) {
             return;
         }
 

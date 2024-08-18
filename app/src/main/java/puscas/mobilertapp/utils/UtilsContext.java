@@ -79,7 +79,7 @@ public final class UtilsContext {
                         return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
                     }
                     logger.info("Using fallback path since using a SDK API 19+, and hoping this path is right.");
-                    return "/mnt/sdcard";
+                    return ConstantsUI.FILE_SEPARATOR + "mnt" + ConstantsUI.FILE_SEPARATOR + "sdcard";
                 }
             });
 
@@ -132,10 +132,10 @@ public final class UtilsContext {
         // from Android API even though it was possible to create it with ADB and even change the
         // permissions of those files with ADB. That's why, it's not being called here the
         // 'UtilsContext#isPathReadable' method to verify if this fallback path its readable.
-        if (internalStoragePathCleaned.startsWith("/data")) {
+        if (internalStoragePathCleaned.startsWith(ConstantsUI.FILE_SEPARATOR + "data")) {
             logger.info("Since the internal storage path starts with '/data', then it's assuming " +
                     "that the internal storage path is '/data/local/tmp/'.");
-            return "/data/local/tmp/";
+            return ConstantsUI.FILE_SEPARATOR + "data" + ConstantsUI.FILE_SEPARATOR + "local" + ConstantsUI.FILE_SEPARATOR + "tmp" + ConstantsUI.FILE_SEPARATOR;
         }
         final File file = new File(internalStoragePathCleaned);
         if (isPathReadable(file)) {
@@ -291,7 +291,7 @@ public final class UtilsContext {
         // Replace first ':' found in path by '/'
         final int replacePathDivisor = storagePathCleaned.indexOf(":");
         if (replacePathDivisor >= 0) {
-            storagePathCleaned = storagePathCleaned.replaceFirst(":", "/");
+            storagePathCleaned = storagePathCleaned.replaceFirst(":", ConstantsUI.FILE_SEPARATOR);
         }
 
         return storagePathCleaned;

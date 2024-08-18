@@ -52,6 +52,19 @@ public final class MainActivityTest {
     private MainActivity targetMainActivityMocked = null;
 
     /**
+     * The expected internal storage path.
+     */
+    private static final String pathToInternalStorage = ConstantsUI.FILE_SEPARATOR + "data" +
+            ConstantsUI.FILE_SEPARATOR + "local" + ConstantsUI.FILE_SEPARATOR + "tmp";
+
+    /**
+     * The expected internal storage path to read the OBJ file used by these tests.
+     */
+    private static final String pathToOBJFile = pathToInternalStorage + ConstantsUI.FILE_SEPARATOR + "MobileRT" +
+            ConstantsUI.FILE_SEPARATOR + "WavefrontOBJs" + ConstantsUI.FILE_SEPARATOR + "CornellBox" +
+            ConstantsUI.FILE_SEPARATOR + "CornellBox-Water.obj";
+
+    /**
      * Setup method called before each test.
      * <p>
      * Sets the {@link #targetMainActivityMocked}.
@@ -163,7 +176,7 @@ public final class MainActivityTest {
             .andReturn(ImmutableList.of("data", "local", "tmp", "MobileRT", "WavefrontOBJs", "CornellBox", "CornellBox-Water.obj"))
             .anyTimes();
         EasyMock.expect(uriMocked.getPath())
-            .andReturn("/data/local/tmp/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj")
+            .andReturn(pathToOBJFile)
             .anyTimes();
         EasyMock.expect(intentMocked.getData())
             .andReturn(uriMocked)
@@ -172,7 +185,7 @@ public final class MainActivityTest {
 
         PowerMock.mockStatic(UtilsContext.class);
         EasyMock.expect(UtilsContext.getInternalStoragePath(EasyMock.anyObject(Context.class)))
-            .andReturn("/data/local/tmp")
+            .andReturn(pathToInternalStorage)
             .anyTimes();
 
         PowerMock.mockStatic(Environment.class);
@@ -190,7 +203,7 @@ public final class MainActivityTest {
 
         Assertions.assertThat((String) ReflectionTestUtils.getField(this.targetMainActivityMocked, "sceneFilePath"))
             .as("The 'MainActivity#sceneFilePath' field")
-            .isEqualTo("/data/local/tmp/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj");
+            .isEqualTo(pathToOBJFile);
     }
 
     /**
@@ -206,7 +219,7 @@ public final class MainActivityTest {
             .andReturn(ImmutableList.of("file", "sdcard", "MobileRT", "WavefrontOBJs", "CornellBox", "CornellBox-Water.obj"))
             .anyTimes();
         EasyMock.expect(uriMocked.getPath())
-            .andReturn("/data/local/tmp/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj")
+            .andReturn(pathToOBJFile)
             .anyTimes();
         EasyMock.expect(intentMocked.getData())
             .andReturn(uriMocked)
@@ -219,7 +232,7 @@ public final class MainActivityTest {
 
         PowerMock.mockStatic(UtilsContext.class);
         EasyMock.expect(UtilsContext.getInternalStoragePath(EasyMock.anyObject(Context.class)))
-            .andReturn("/data/local/tmp")
+            .andReturn(pathToInternalStorage)
             .anyTimes();
         PowerMock.mockStatic(Environment.class);
         EasyMock.expect(Environment.getExternalStorageDirectory())
@@ -236,6 +249,6 @@ public final class MainActivityTest {
 
         Assertions.assertThat((String) ReflectionTestUtils.getField(this.targetMainActivityMocked, "sceneFilePath"))
             .as("The 'MainActivity#sceneFilePath' field")
-            .isEqualTo("/data/local/tmp/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj");
+            .isEqualTo(pathToOBJFile);
     }
 }
