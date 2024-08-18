@@ -96,12 +96,12 @@ jobs:
 
     - name: Check available Android versions
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && matrix.language == 'java'
+      if: success() && matrix.language == 'java' && !startsWith(runner.os, 'windows')
       working-directory: .
       run: |
         echo 'Available Android versions:';
         du -h -d 1 ${ANDROID_HOME}/ndk;
-        du -h -d 1 ${ANDROID_HOME}/cmake;
+        du -h -d 1 ${ANDROID_HOME}/cmake || true;
         du -h -d 1 ${ANDROID_HOME}/build-tools;
         ls -lahp ${ANDROID_HOME}/platforms;
         ls -lahp ${HOME};
@@ -126,6 +126,44 @@ jobs:
         threads: 3
         debug: false
         packs: codeql/cpp-queries,codeql/java-queries,codeql/ruby-queries
+
+    - name: Set Qt CPU Architecture (Windows & MacOS)
+      id: set-cpu-arch
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success() && (startsWith(runner.os, 'windows') || startsWith(runner.os, 'macos'))
+      run: |
+        if [ "${{ startsWith(runner.os, 'windows') }}" ]; then
+          echo 'qt_host=windows' >> "${GITHUB_ENV}";
+          echo 'qt_arch=win64_msvc2019_64' >> "${GITHUB_ENV}";
+        elif [ "${{ startsWith(runner.os, 'macos') }}" ]; then
+          echo 'qt_host=mac' >> "${GITHUB_ENV}";
+          echo 'qt_arch=clang_64' >> "${GITHUB_ENV}";
+        else
+          exit 1;
+        fi
+
+    - name: Install Qt (Windows & MacOS)
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+      if: success() && (startsWith(runner.os, 'windows') || startsWith(runner.os, 'macos'))
+      uses: jurplel/install-qt-action@v4
+      # Download Qt from: https://download.qt.io/online/qtsdkrepository/
+      with:
+        # Check available parameters in: https://github.com/jurplel/install-qt-action/blob/master/action.yml
+        version: '5.15.2' # Also update: app/CMakeLists.txt
+        host: '${{ env.qt_host }}'
+        target: 'desktop'
+        arch: '${{ env.qt_arch }}'
+        dir: '${{ github.workspace }}'
+        install-deps: 'false'
+        modules: ''
+        cache: 'true'
+        cache-key-prefix: '${{ env.qt_host }}-${{ env.qt_arch }}'
+        setup-python: 'true'
+        set-env: 'true'
+        tools-only: 'false'
+        aqtversion: '==3.1.*'
+        py7zrversion: '==0.20.*'
+        extra: '--external 7z'
 
     - name: Install dependencies
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
