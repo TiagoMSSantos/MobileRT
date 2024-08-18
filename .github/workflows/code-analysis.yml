@@ -133,10 +133,10 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && (startsWith(matrix.host_os, 'windows') || startsWith(matrix.host_os, 'macos'))
       run: |
-        if [ "${{ startsWith(matrix.host_os, 'windows') }}" ]; then
+        if [ ${{ startsWith(matrix.host_os, 'windows') }} = true ]; then
           echo 'qt_host=windows' >> "${GITHUB_ENV}";
           echo 'qt_arch=win64_msvc2019_64' >> "${GITHUB_ENV}";
-        elif [ "${{ startsWith(matrix.host_os, 'macos') }}" ]; then
+        elif [ ${{ startsWith(matrix.host_os, 'macos') }} = true ]; then
           echo 'qt_host=mac' >> "${GITHUB_ENV}";
           echo 'qt_arch=clang_64' >> "${GITHUB_ENV}";
         else
