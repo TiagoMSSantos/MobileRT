@@ -60,11 +60,12 @@ jobs:
         # Override automatic language detection by changing the below list
         # Supported options are ['cpp', 'csharp', 'go', 'java', 'javascript', 'python', 'ruby', 'swift']
         language: ['cpp', 'java']
+        host_os: ['ubuntu-latest']
         # Learn more...
         # https://docs.github.com/en/github/finding-security-vulnerabilities-and-errors-in-your-code/configuring-code-scanning#overriding-automatic-language-detection
 
-    name: Analyze ${{ matrix.language }}
-    runs-on: ubuntu-latest
+    name: Analyze ${{ matrix.language }} (${{ matrix.host_os }})
+    runs-on: ${{ matrix.host_os }}
     timeout-minutes: 30
 
     steps:
@@ -96,7 +97,7 @@ jobs:
 
     - name: Check available Android versions
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && matrix.language == 'java' && !startsWith(runner.os, 'windows')
+      if: success() && matrix.language == 'java' && !startsWith(matrix.host_os, 'windows')
       working-directory: .
       run: |
         echo 'Available Android versions:';
@@ -130,12 +131,12 @@ jobs:
     - name: Set Qt CPU Architecture (Windows & MacOS)
       id: set-cpu-arch
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && (startsWith(runner.os, 'windows') || startsWith(runner.os, 'macos'))
+      if: success() && (startsWith(matrix.host_os, 'windows') || startsWith(matrix.host_os, 'macos'))
       run: |
-        if [ "${{ startsWith(runner.os, 'windows') }}" ]; then
+        if [ "${{ startsWith(matrix.host_os, 'windows') }}" ]; then
           echo 'qt_host=windows' >> "${GITHUB_ENV}";
           echo 'qt_arch=win64_msvc2019_64' >> "${GITHUB_ENV}";
-        elif [ "${{ startsWith(runner.os, 'macos') }}" ]; then
+        elif [ "${{ startsWith(matrix.host_os, 'macos') }}" ]; then
           echo 'qt_host=mac' >> "${GITHUB_ENV}";
           echo 'qt_arch=clang_64' >> "${GITHUB_ENV}";
         else
@@ -144,7 +145,7 @@ jobs:
 
     - name: Install Qt (Windows & MacOS)
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-      if: success() && (startsWith(runner.os, 'windows') || startsWith(runner.os, 'macos'))
+      if: success() && (startsWith(matrix.host_os, 'windows') || startsWith(matrix.host_os, 'macos'))
       uses: jurplel/install-qt-action@v4
       # Download Qt from: https://download.qt.io/online/qtsdkrepository/
       with:
