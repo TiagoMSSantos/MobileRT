@@ -120,12 +120,12 @@ jobs:
 
     - name: Add custom environment variables
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-      if: success()
+      if: success() && !startsWith(matrix.host_os, 'windows')
       working-directory: .
       run: |
         echo 'Available Android versions:';
         du -h -d 1 ${ANDROID_HOME}/ndk;
-        du -h -d 1 ${ANDROID_HOME}/cmake;
+        du -h -d 1 ${ANDROID_HOME}/cmake || true;
         du -h -d 1 ${ANDROID_HOME}/build-tools;
         ls -lahp ${ANDROID_HOME}/platforms;
         ls -lahp ${HOME};
@@ -138,7 +138,7 @@ jobs:
     - name: Download Gradle packages artifact
       id: download-gradle-artifact
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-      if: success()
+      if: success() && !startsWith(matrix.host_os, 'windows')
       uses: dawidd6/action-download-artifact@v6
       continue-on-error: true
       with:
@@ -227,7 +227,7 @@ jobs:
       run: |
         echo "android_arch: ${{ env.android_arch }}";
         echo "android_emulator_arch: ${{ env.android_emulator_arch }}";
-        sudo dmesg; # Print Kernel logs to know from which timestamp the new logs will appear.
+        sudo dmesg || true; # Print Kernel logs to know from which timestamp the new logs will appear.
         sh scripts/compile_android.sh -t ${{ matrix.type }} -r yes -a ${{ matrix.android_api }} -f ${{ env.android_arch }};
 
     - name: Print error logs
@@ -272,7 +272,7 @@ jobs:
 
     - name: Zip Gradle packages
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-      if: success()
+      if: success() && !startsWith(matrix.host_os, 'windows')
       run: |
         set +e;
         du -h -d 1 ${{ env.GRADLE_PATH }};
@@ -326,7 +326,7 @@ jobs:
 
     - name: Upload Gradle packages as artifact
       timeout-minutes: 20
-      if: success()
+      if: success() && !startsWith(matrix.host_os, 'windows')
       continue-on-error: true
       uses: actions/upload-artifact@v4
       with:
@@ -384,12 +384,12 @@ jobs:
 
     - name: Add custom environment variables
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success()
+      if: success() && !startsWith(matrix.host_os, 'windows')
       working-directory: .
       run: |
         echo 'Available Android versions:';
         du -h -d 1 ${ANDROID_HOME}/ndk;
-        du -h -d 1 ${ANDROID_HOME}/cmake;
+        du -h -d 1 ${ANDROID_HOME}/cmake || true;
         du -h -d 1 ${ANDROID_HOME}/build-tools;
         ls -lahp ${ANDROID_HOME}/platforms;
         ls -lahp ${HOME};
@@ -413,7 +413,7 @@ jobs:
     # Taken from: https://github.com/marketplace/actions/download-a-build-artifact
     - name: Download Gradle packages artifact
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-      if: success()
+      if: success() && !startsWith(matrix.host_os, 'windows')
       uses: actions/download-artifact@v4
       with:
         # Check available parameters in: https://github.com/actions/download-artifact/blob/main/action.yml
@@ -422,7 +422,7 @@ jobs:
 
     - name: Extract and check files from gradle artifact
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-      if: success()
+      if: success() && !startsWith(matrix.host_os, 'windows')
       working-directory: .
       run: |
         # shellcheck disable=SC1091
@@ -472,6 +472,7 @@ jobs:
         echo "android_arch: ${{ env.android_arch }}";
         echo "android_emulator_arch: ${{ env.android_emulator_arch }}";
         . scripts/helper_functions.sh && parallelizeBuild && echo "NCPU_CORES=${NCPU_CORES}" >> "${GITHUB_ENV}";
+        mkdir -p ~/.android/avd/Android_Emulator_API_34.avd;
 
     - name: Run Android tests
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
@@ -622,12 +623,12 @@ jobs:
 
     - name: Add custom environment variables
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success()
+      if: success() && !startsWith(matrix.host_os, 'windows')
       working-directory: .
       run: |
         echo 'Available Android versions:';
         du -h -d 1 ${ANDROID_HOME}/ndk;
-        du -h -d 1 ${ANDROID_HOME}/cmake;
+        du -h -d 1 ${ANDROID_HOME}/cmake || true;
         du -h -d 1 ${ANDROID_HOME}/build-tools;
         ls -lahp ${ANDROID_HOME}/platforms;
         ls -lahp ${HOME};
@@ -637,7 +638,7 @@ jobs:
     # Taken from: https://github.com/marketplace/actions/download-a-build-artifact
     - name: Download Gradle packages artifact
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-      if: success()
+      if: success() && !startsWith(matrix.host_os, 'windows')
       uses: actions/download-artifact@v4
       with:
         # Check available parameters in: https://github.com/actions/download-artifact/blob/main/action.yml
@@ -646,7 +647,7 @@ jobs:
 
     - name: Extract and check files from gradle artifact
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-      if: success()
+      if: success() && !startsWith(matrix.host_os, 'windows')
       working-directory: .
       run: |
         # shellcheck disable=SC1091
@@ -774,12 +775,12 @@ jobs:
 
     - name: Add custom environment variables
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success()
+      if: success() && !startsWith(matrix.host_os, 'windows')
       working-directory: .
       run: |
         echo 'Available Android versions:';
         du -h -d 1 ${ANDROID_HOME}/ndk;
-        du -h -d 1 ${ANDROID_HOME}/cmake;
+        du -h -d 1 ${ANDROID_HOME}/cmake || true;
         du -h -d 1 ${ANDROID_HOME}/build-tools;
         ls -lahp ${ANDROID_HOME}/platforms;
         ls -lahp ${HOME};
@@ -789,7 +790,7 @@ jobs:
     # Taken from: https://github.com/marketplace/actions/download-a-build-artifact
     - name: Download Gradle packages artifact
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-      if: success()
+      if: success() && !startsWith(matrix.host_os, 'windows')
       uses: actions/download-artifact@v4
       with:
         # Check available parameters in: https://github.com/actions/download-artifact/blob/main/action.yml
@@ -798,7 +799,7 @@ jobs:
 
     - name: Extract and check files from gradle artifact
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-      if: success()
+      if: success() && !startsWith(matrix.host_os, 'windows')
       working-directory: .
       run: |
         # shellcheck disable=SC1091
