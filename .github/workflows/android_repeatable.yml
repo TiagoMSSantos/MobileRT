@@ -72,11 +72,21 @@ jobs:
       if: success()
       run: |
         if [ "${{ matrix.android_api }}" -gt 29 ]; then
-          echo 'android_arch=\"x86_64\"' >> "${GITHUB_ENV}";
-          echo 'android_emulator_arch=x86_64' >> "${GITHUB_ENV}";
+          if [ "${{ matrix.host_os }}" = "macos-14" ]; then
+            echo 'android_arch=\"arm64-v8a\"' >> "${GITHUB_ENV}";
+            echo 'android_emulator_arch=arm64-v8a' >> "${GITHUB_ENV}";
+          else
+            echo 'android_arch=\"x86_64\"' >> "${GITHUB_ENV}";
+            echo 'android_emulator_arch=x86_64' >> "${GITHUB_ENV}";
+          fi
         else
-          echo 'android_arch=\"x86\"' >> "${GITHUB_ENV}";
-          echo 'android_emulator_arch=x86' >> "${GITHUB_ENV}";
+          if [ "${{ matrix.host_os }}" = "macos-14" ]; then
+            echo 'android_arch=\"arm64-v8a\"' >> "${GITHUB_ENV}";
+            echo 'android_emulator_arch=arm64-v8a' >> "${GITHUB_ENV}";
+          else
+            echo 'android_arch=\"x86\"' >> "${GITHUB_ENV}";
+            echo 'android_emulator_arch=x86' >> "${GITHUB_ENV}";
+          fi
         fi
         . scripts/helper_functions.sh && parallelizeBuild && echo "NCPU_CORES=${NCPU_CORES}" >> "${GITHUB_ENV}";
 
