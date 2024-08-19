@@ -241,12 +241,23 @@ jobs:
         allow-snapshots: false
         allow-checksums: ''
 
+    - name: Set C++ compiler
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success() && matrix.language == 'cpp'
+      working-directory: .
+      run: |
+        if [ ${{ startsWith(matrix.host_os, 'windows') }} = true ]; then
+          echo 'compiler=cl' >> "${GITHUB_ENV}";
+        else
+          echo 'compiler=g++' >> "${GITHUB_ENV}";
+        fi
+
     - name: Build C++
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success() && matrix.language == 'cpp'
       working-directory: .
       run: |
-        sh scripts/compile_native.sh -t debug -c g++ -r yes;
+        sh scripts/compile_native.sh -t debug -c ${{ env.compiler }} -r yes;
 
     # Warning: Valid inputs are ['check_name', 'output', 'upload', 'ram',
     # 'add-snippets', 'threads', 'checkout_path', 'token', 'matrix']
