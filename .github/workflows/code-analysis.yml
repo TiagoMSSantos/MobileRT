@@ -259,8 +259,6 @@ jobs:
       run: |
         sh scripts/compile_native.sh -t debug -c ${{ env.compiler }} -r yes;
 
-    # Warning: Valid inputs are ['check_name', 'output', 'upload', 'ram',
-    # 'add-snippets', 'threads', 'checkout_path', 'token', 'matrix']
     - name: Perform CodeQL Analysis
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
@@ -274,7 +272,6 @@ jobs:
         cleanup-level: brutal
         # The amount of memory in MB that can be used by CodeQL for database finalization and query execution.
         ram: 6144
-        add-snippets: true
         skip-queries: false
         threads: 3
         checkout_path: ${{ github.workspace }}
