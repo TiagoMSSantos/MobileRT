@@ -123,8 +123,6 @@ jobs:
         config-file: .github/codeql/codeql-config.yml
         queries: +security-and-quality
         source-root: .
-        ram: 6144
-        threads: 3
         debug: false
         packs: codeql/cpp-queries,codeql/java-queries,codeql/ruby-queries
 
@@ -270,10 +268,7 @@ jobs:
         upload: never
         # Check cleanup-level in: https://codeql.github.com/docs/codeql-cli/manual/database-cleanup/
         cleanup-level: brutal
-        # The amount of memory in MB that can be used by CodeQL for database finalization and query execution.
-        ram: 6144
         skip-queries: false
-        threads: 3
         checkout_path: ${{ github.workspace }}
         # ref: ${GITHUB_REF} does not match /^refs\/(heads|pull|tags)\/.*$/.
         # sha: ${GITHUB_SHA} does not match /^[0-9a-fA-F]+$/.
