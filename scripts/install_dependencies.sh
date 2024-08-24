@@ -332,11 +332,13 @@ install_dependencies_macos() {
   # For more information, check: https://stackoverflow.com/questions/73714336/xcode-update-to-version-2395-ld-compile-problem-occurs-computedatomcount-m
   if [ "${MAJOR_MAC_VERSION}" = 11 ] || [ "${MAJOR_MAC_VERSION}" = 12 ]; then
     # Recommended Xcode_13.2.app because it seems the only one compatible with MacOS-11 & MacOS-12:
-    sudo xcode-select --switch /System/Volumes/Data/Applications/Xcode_13.2.app/Contents/Developer;
+    sudo xcode-select --switch /System/Volumes/Data/Applications/Xcode_13.2.1.app/Contents/Developer;
+    ls -lahp /System/Volumes/Data/Applications/Xcode_13.2.1.app/Contents/Developer;
   fi
   if [ "${MAJOR_MAC_VERSION}" = 13 ]; then
     # To be compatible with MacOS-13:
     sudo xcode-select --switch /System/Volumes/Data/Applications/Xcode_14.1.app/Contents/Developer;
+    ls -lahp /System/Volumes/Data/Applications/Xcode_14.1.app/Contents/Developer;
   fi
 }
 
