@@ -679,15 +679,15 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
                 const ::std::int32_t materials {static_cast<::std::int32_t> (shader->getMaterials().size())};
                 numLights_ = static_cast<::std::int32_t> (shader->getLights().size());
                 const ::std::int32_t nPrimitives {triangles + spheres + planes};
-                LOG_DEBUG("PLANES = ", planes);
-                LOG_DEBUG("SPHERES = ", spheres);
-                LOG_DEBUG("TRIANGLES = ", triangles);
-                LOG_DEBUG("LIGHTS = ", numLights_);
-                LOG_DEBUG("MATERIALS = ", materials);
-                LOG_DEBUG("TOTAL PRIMITIVES = ", nPrimitives);
-                LOG_DEBUG("width = ", width);
-                LOG_DEBUG("height = ", height);
-                LOG_DEBUG("samplesPixel = ", samplesPixel);
+                LOG_INFO("PLANES = ", planes);
+                LOG_INFO("SPHERES = ", spheres);
+                LOG_INFO("TRIANGLES = ", triangles);
+                LOG_INFO("LIGHTS = ", numLights_);
+                LOG_INFO("MATERIALS = ", materials);
+                LOG_INFO("TOTAL PRIMITIVES = ", nPrimitives);
+                LOG_INFO("width = ", width);
+                LOG_INFO("height = ", height);
+                LOG_INFO("samplesPixel = ", samplesPixel);
                 renderer_ = ::MobileRT::std::make_unique<::MobileRT::Renderer>(
                     ::std::move(shader), ::std::move(camera), ::std::move(samplerPixel),
                     width, height, samplesPixel
@@ -766,6 +766,7 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
 
                 LOG_DEBUG("rtRenderIntoBitmap step 2: ", jniError);
                 ASSERT(jniError == JNI_OK || jniError == JNI_EDETACHED, "JNIEnv not valid.");
+                static_cast<void>(jniError);
                 {
                     MobileRT::checkSystemError("rtRenderIntoBitmap step 2");
                     const jint result {javaVM_->AttachCurrentThread(const_cast<JNIEnv **> (&env), nullptr)};
@@ -787,6 +788,7 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
                     };
                     ASSERT(ret == JNI_OK, "Couldn't lock the Android bitmap pixels.");
                     LOG_DEBUG("ret = ", ret);
+                    static_cast<void> (ret);
                 }
 
                 LOG_DEBUG("rtRenderIntoBitmap step 4");
@@ -796,6 +798,7 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
                     const jint ret {AndroidBitmap_getInfo(env, globalBitmap, &info)};
                     ASSERT(ret == JNI_OK, "Couldn't get the Android bitmap information structure.");
                     LOG_DEBUG("ret = ", ret);
+                    static_cast<void> (ret);
                 }
 
                 LOG_DEBUG("rtRenderIntoBitmap step 5");
@@ -867,9 +870,9 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
                 }
                 const double renderingTime {timeRendering.count()};
                 const ::std::uint64_t castedRays {renderer_->getTotalCastedRays()};
-                LOG_DEBUG("Rendering Time in secs = ", renderingTime);
-                LOG_DEBUG("Casted rays = ", castedRays);
-                LOG_DEBUG("Total Millions rays per second = ", (static_cast<double> (castedRays) / renderingTime) / 1000000L);
+                LOG_INFO("Rendering Time in secs = ", renderingTime);
+                LOG_INFO("Casted rays = ", castedRays);
+                LOG_INFO("Total Millions rays per second = ", (static_cast<double> (castedRays) / renderingTime) / 1000000L);
 
                 state_ = State::IDLE;
                 LOG_DEBUG("rtRenderIntoBitmap finished");
@@ -1043,6 +1046,7 @@ void JNICALL Java_puscas_mobilertapp_MainActivity_readFile(
         MobileRT::checkSystemError("After read file.");
         ASSERT(remainingLength == 0 || remainingLength == fileSize, "File not read entirely.");
         LOG_DEBUG("Read a scene file.");
+        static_cast<void>(remainingLength);
     } else {
         LOG_DEBUG("Will read a texture file.");
         ::std::string texture {};
@@ -1054,6 +1058,7 @@ void JNICALL Java_puscas_mobilertapp_MainActivity_readFile(
         const ::std::string fileName {filePathRaw.substr(filePathRaw.find_last_of('/') + 1, filePathRaw.size())};
         ::Components::OBJLoader::getTextureFromCache(&texturesCache_, ::std::move(texture), static_cast<long> (fileSize), fileName);
         LOG_DEBUG("Read a texture file: ", filePathRaw);
+        static_cast<void>(remainingLength);
     }
 }
 

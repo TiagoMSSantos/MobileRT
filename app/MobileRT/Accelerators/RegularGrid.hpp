@@ -276,7 +276,6 @@ namespace MobileRT {
                         if (intersectedBox) {
                             LOG_DEBUG("Adding primitive ", index, " (", idx, ") to RegularGrid (", typeid(T).name(), ") on coordinates: (", x, ", ", y, ", ", z, ")");
                             const ::std::lock_guard<::std::mutex> lock {this->mutexes_[idx]};
-                            LOG_DEBUG("Acquired lock to add primitive ", index, " (", idx, ") to RegularGrid (", typeid(T).name(), ") on coordinates: (", x, ", ", y, ", ", z, ")");
                             this->grid_[idx].emplace_back(&primitive);
                             LOG_DEBUG("Added primitive ", index, " to RegularGrid (", typeid(T).name(), ") on coordinates: (", x, ", ", y, ", ", z, ")");
                         }
