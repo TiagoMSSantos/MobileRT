@@ -1,5 +1,5 @@
 [requires]
-boost/1.85.0
+boost/1.86.0
 gtest/1.15.0
 tinyobjloader/1.0.7
 glm/1.0.1
