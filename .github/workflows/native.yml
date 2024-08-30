@@ -3,22 +3,21 @@ name: Native (Qt)
 on:
   workflow_dispatch:
   push:
-    paths-ignore:
-    - '*'
-    - '**/*'
-    - '!**/native.yml'
-    - '!**/macports.yml'
-    - '!**/run_tests.sh'
-    - '!**/helper_functions.sh'
-    - '!**/install_dependencies.sh'
-    - '!**/profile.sh'
-    - '!**/compile_native.sh'
-    - '!**/codecov.yml'
-    - '!**/CMakeLists.txt'
-    - '!**/conanfile.txt'
-    - '!**/AndroidTest/resources/**'
-    - '!**/*.c*'
-    - '!**/*.h*'
+    paths:
+    - '!**/*'
+    - '**/native.yml'
+    - '**/macports.yml'
+    - '**/run_tests.sh'
+    - '**/helper_functions.sh'
+    - '**/install_dependencies.sh'
+    - '**/profile.sh'
+    - '**/compile_native.sh'
+    - '**/codecov.yml'
+    - '**/CMakeLists.txt'
+    - '**/conanfile.txt'
+    - '**/AndroidTest/resources/**'
+    - '**/*.c*'
+    - '**/*.h*'
 
 defaults:
   run:
