@@ -126,12 +126,13 @@ jobs:
       working-directory: .
       run: |
         ls -lahp "C:/Program Files/Microsoft Visual Studio/";
+        # Update versions in: scripts/helper_functions.sh#addCommandToPath
         ls -lahp "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/MSBuild/";
         ls -lahp "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/MSBuild/Current/Bin/";
         ls -lahp "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/MSBuild/Current/Bin/amd64/";
         ls -lahp "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/MSBuild/Current/Bin/amd64/MSBuild.exe";
         ls -lahp "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Tools/MSVC/";
-        ls -lahp "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Tools/MSVC/14.40.33807/bin/Hostx64/x64/cl.exe";
+        ls -lahp "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Tools/MSVC/14.41.34120/bin/Hostx64/x64/cl.exe";
 
     - name: Install MacPorts (MacOS 11)
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
