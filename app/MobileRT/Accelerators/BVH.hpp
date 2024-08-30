@@ -126,13 +126,15 @@ namespace MobileRT {
     BVH<T>::BVH(::std::vector<T> &&primitives) {
         if (primitives.empty()) {
             this->boxes_.emplace_back(BVHNode {});
+            LOG_WARN("Empty BVH for '", typeid(T).name(), "' without any primitives.");
             return;
         }
-        LOG_INFO("Building BVH for: ", typeid(T).name());
         const typename ::std::vector<T>::size_type numPrimitives {primitives.size()};
         const typename ::std::vector<T>::size_type maxNodes {numPrimitives * 2 - 1};
         this->boxes_.resize(maxNodes);
+        LOG_INFO("Building BVH for '", typeid(T).name(), "' with '", numPrimitives, "' primitives.");
         build(::std::move(primitives));
+        LOG_INFO("Built BVH for '", typeid(T).name(), "' with '", this->primitives_.size(), "' primitives in '", this->boxes_.size(), "' boxes.");
     }
 
     /**

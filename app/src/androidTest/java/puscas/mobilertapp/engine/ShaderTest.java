@@ -32,7 +32,7 @@ public final class ShaderTest extends AbstractTest {
             ConstantsAndroidTests.CORNELL_BOX_WATER_CAM
         );
 
-        assertRenderScene(Scene.OBJ, Shader.NO_SHADOWS, Accelerator.BVH, 3, 1, false, false);
+        assertRenderScene(Scene.OBJ, Shader.NO_SHADOWS, Accelerator.REG_GRID, 3, 1, false, false);
     }
 
     /**
@@ -48,7 +48,7 @@ public final class ShaderTest extends AbstractTest {
             ConstantsAndroidTests.CORNELL_BOX_WATER_CAM
         );
 
-        assertRenderScene(Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 3, 1, false, false);
+        assertRenderScene(Scene.OBJ, Shader.WHITTED, Accelerator.REG_GRID, 3, 1, false, false);
     }
 
     /**
@@ -80,7 +80,7 @@ public final class ShaderTest extends AbstractTest {
             ConstantsAndroidTests.CORNELL_BOX_WATER_CAM
         );
 
-        assertRenderScene(Scene.OBJ, Shader.DEPTH_MAP, Accelerator.BVH, 3, 1, false, false);
+        assertRenderScene(Scene.OBJ, Shader.DEPTH_MAP, Accelerator.REG_GRID, 3, 1, false, false);
     }
 
     /**
@@ -96,7 +96,7 @@ public final class ShaderTest extends AbstractTest {
             ConstantsAndroidTests.CORNELL_BOX_WATER_CAM
         );
 
-        assertRenderScene(Scene.OBJ, Shader.DIFFUSE, Accelerator.BVH, 3, 1, false, false);
+        assertRenderScene(Scene.OBJ, Shader.DIFFUSE, Accelerator.REG_GRID, 3, 1, false, false);
     }
 
 }

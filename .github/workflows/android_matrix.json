@@ -1,9 +1,9 @@
 {
   "include":
   [
-    { "host_os": "ubuntu-22.04", "android_api": "15", "type": "release" },
-    { "host_os": "ubuntu-20.04", "android_api": "21", "type": "release" },
+    { "host_os": "ubuntu-22.04", "android_api": "15", "type": "debug" },
+    { "host_os": "ubuntu-20.04", "android_api": "21", "type": "debug" },
     { "host_os": "ubuntu-20.04", "android_api": "29", "type": "debug" },
-    { "host_os": "ubuntu-22.04", "android_api": "34", "type": "release" }
+    { "host_os": "ubuntu-22.04", "android_api": "34", "type": "debug" }
   ]
 }

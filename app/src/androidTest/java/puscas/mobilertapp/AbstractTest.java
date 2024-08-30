@@ -78,7 +78,7 @@ public abstract class AbstractTest {
      */
     @NonNull
     @Rule
-    public final TestRule timeoutRule = new Timeout(40L, TimeUnit.MINUTES);
+    public final TestRule timeoutRule = new Timeout(20L, TimeUnit.MINUTES);
 
     /**
      * The {@link ActivityScenario} to create the {@link MainActivity}.
@@ -278,9 +278,9 @@ public abstract class AbstractTest {
 
         UtilsT.startRendering(showRenderWhenPressingButton);
         if (!expectedSameValues) {
-            UtilsContextT.waitUntil(this.activity, Constants.STOP, State.BUSY);
+            UtilsContextT.waitUntil(this.testName.getMethodName(), this.activity, Constants.STOP, State.BUSY);
         }
-        UtilsContextT.waitUntil(this.activity, Constants.RENDER, State.IDLE, State.FINISHED);
+        UtilsContextT.waitUntil(this.testName.getMethodName(), this.activity, Constants.RENDER, State.IDLE, State.FINISHED);
         UtilsT.waitForAppToIdle();
 
         UtilsT.assertRenderButtonText(Constants.RENDER);

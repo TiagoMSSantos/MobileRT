@@ -48,12 +48,16 @@ public final class UtilsContextT {
     /**
      * Helper method that waits until the Ray Tracing engine reaches the expected {@link State}.
      *
+     * @param testName           The name of the current test.
      * @param activity           The {@link MainActivity} of MobileRT.
      * @param expectedButtonText The expected {@link Button} text.
      * @param expectedStates     The expected {@link State}s.
      * @throws TimeoutException If the Ray Tracing engine didn't reach the expected {@link State}.
      */
-    public static void waitUntil(@NonNull final MainActivity activity, final String expectedButtonText, final State... expectedStates) throws TimeoutException {
+    public static void waitUntil(final String testName,
+                                 @NonNull final MainActivity activity,
+                                 final String expectedButtonText,
+                                 final State... expectedStates) throws TimeoutException {
         logger.info("waitUntil start, expected button: " + expectedButtonText + ", expected state(s): " + Arrays.toString(expectedStates));
         final AtomicBoolean done = new AtomicBoolean(false);
         /*
@@ -88,8 +92,8 @@ public final class UtilsContextT {
         logger.info("waitUntil finished");
         if (!done.get()) {
             final State rendererState = renderer.getState();
-            final String errorMessage = "State: '" + rendererState.name() + "' (expecting " + Arrays.toString(expectedStates) + "), Expected button: '" + expectedButtonText + "'";
-            throw new TimeoutException("The Ray Tracing engine didn't reach the expected state. " + errorMessage);
+            final String errorMessage = "Test: " + testName + ", State: '" + rendererState.name() + "' (expecting " + Arrays.toString(expectedStates) + "), Expected button: '" + expectedButtonText + "'.";
+            throw new TimeoutException("The Ray Tracing engine didn't reach the expected state in " + timeSecsToWait + " secs. " + errorMessage);
         }
     }
 

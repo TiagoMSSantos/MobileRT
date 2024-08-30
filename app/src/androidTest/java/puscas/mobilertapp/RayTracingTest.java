@@ -85,7 +85,7 @@ public final class RayTracingTest extends AbstractTest {
             "/path/to/OBJ/file/that/doesn't/exist.obj"
         );
 
-        assertRenderScene(Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 1, 1, true, true);
+        assertRenderScene(Scene.OBJ, Shader.WHITTED, Accelerator.NAIVE, 1, 1, true, true);
     }
 
     /**
@@ -100,7 +100,7 @@ public final class RayTracingTest extends AbstractTest {
         final Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_CANCELED, resultData);
         Intents.intending(IntentMatchers.anyIntent()).respondWith(result);
 
-        assertRenderScene(Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 1, 1, true, true);
+        assertRenderScene(Scene.OBJ, Shader.WHITTED, Accelerator.NAIVE, 1, 1, true, true);
         Intents.intended(IntentMatchers.anyIntent());
     }
 
@@ -121,7 +121,7 @@ public final class RayTracingTest extends AbstractTest {
             ConstantsAndroidTests.CORNELL_BOX_WATER_CAM
         );
 
-        assertRenderScene(Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 2, 1, false, false);
+        assertRenderScene(Scene.OBJ, Shader.WHITTED, Accelerator.REG_GRID, 2, 1, false, false);
     }
 
     /**
@@ -144,7 +144,7 @@ public final class RayTracingTest extends AbstractTest {
             "/MobileRT/WavefrontOBJs/teapot/default.png"
         );
 
-        assertRenderScene(Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 2, 1, false, false);
+        assertRenderScene(Scene.OBJ, Shader.WHITTED, Accelerator.REG_GRID, 2, 1, false, false);
     }
 
     /**

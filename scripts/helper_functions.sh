@@ -38,15 +38,15 @@ parseArgumentsToCompile() {
   while getopts "ht:c:r:" opt; do
     case ${opt} in
       t )
-        export type=${OPTARG};
+        export type="${OPTARG}";
         echo "Setting type: ${type}";
         ;;
       c )
-        export compiler=${OPTARG};
+        export compiler="${OPTARG}";
         echo "Setting compiler: ${compiler}";
         ;;
       r )
-        export recompile=${OPTARG};
+        export recompile="${OPTARG}";
         echo "Setting recompile: ${recompile}";
         ;;
       h )
@@ -63,23 +63,23 @@ parseArgumentsToCompile() {
 parseArgumentsToCompileAndroid() {
   # Reset the index of the last option argument processed by the getopts.
   OPTIND=0;
-  while getopts "ht:c:r:n:m:g:a:f:" opt; do
+  while getopts "ht:c:r:a:f:" opt; do
     case ${opt} in
       a )
-        export android_api_version=${OPTARG};
+        export android_api_version="${OPTARG}";
         ;;
       t )
-        export type=${OPTARG};
+        export type="${OPTARG}";
         ;;
       c )
-        export compiler=${OPTARG};
+        export compiler="${OPTARG}";
         checkCommand "${compiler}";
         ;;
       r )
-        export recompile=${OPTARG};
+        export recompile="${OPTARG}";
         ;;
       f )
-        export cpu_architecture=${OPTARG};
+        export cpu_architecture="${OPTARG}";
         ;;
       h )
         helpCompileAndroid;
@@ -95,22 +95,22 @@ parseArgumentsToCompileAndroid() {
 parseArgumentsToTestAndroid() {
   # Reset the index of the last option argument processed by the getopts.
   OPTIND=0;
-  while getopts "ht:r:k:n:m:g:a:f:" opt; do
+  while getopts "ht:r:k:a:f:" opt; do
     case ${opt} in
       a )
-        export android_api_version=${OPTARG};
+        export android_api_version="${OPTARG}";
         ;;
       t )
-        export type=${OPTARG};
+        export type="${OPTARG}";
         ;;
       r )
-        export run_test=${OPTARG};
+        export run_test="${OPTARG}";
         ;;
       k )
-        export kill_previous=${OPTARG};
+        export kill_previous="${OPTARG}";
         ;;
       f )
-        export cpu_architecture=${OPTARG};
+        export cpu_architecture="${OPTARG}";
         ;;
       h )
         helpTestAndroid;
@@ -126,13 +126,13 @@ parseArgumentsToTestAndroid() {
 parseArgumentsToCheck() {
   # Reset the index of the last option argument processed by the getopts.
   OPTIND=0;
-  while getopts "hm:g:a:n:f:" opt; do
+  while getopts "ha:f:" opt; do
     case ${opt} in
       a )
-        export android_api_version=${OPTARG};
+        export android_api_version="${OPTARG}";
         ;;
       f )
-        export cpu_architecture=${OPTARG};
+        export cpu_architecture="${OPTARG}";
         ;;
       h )
         helpCheck;
@@ -480,7 +480,7 @@ addCommandToPath() {
     /opt/intel/oneapi/compiler \
     ~/.. \
     /usr \
-    "/c/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Tools/MSVC/14.40.33807/bin/Hostx64/x64" \
+    "/c/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Tools/MSVC/14.41.34120/bin/Hostx64/x64" \
     "/c/Program Files/Microsoft Visual Studio/2022/Enterprise/MSBuild/Current/Bin/amd64" \
     -type f -iname "${1}" -or -iname "${1}.exe" 2> /dev/null | grep -i "bin" || true);
   # Changing IFS to allow finding commands in paths with spaces.

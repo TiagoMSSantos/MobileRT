@@ -149,7 +149,7 @@ void Renderer::renderScene(::std::int32_t *const bitmap, const ::std::int32_t ti
                     const ::std::int32_t pixelIndex {yWidth + x};
                     ::std::int32_t *bitmapPixel {&bitmap[pixelIndex]};
                     const ::std::int32_t pixelColor {::MobileRT::incrementalAvg(pixelRgb, *bitmapPixel, sample + 1)};
-                    LOG_DEBUG(
+                    LOG_INFO(
                         "(tid: ", tid, ") pixelIndex: ", pixelIndex,
                         ", bitmapPixel: ", *bitmapPixel,
                         ", pixelColor: ", pixelColor

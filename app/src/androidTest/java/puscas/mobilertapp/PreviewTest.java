@@ -44,14 +44,14 @@ public final class PreviewTest extends AbstractTest {
             ConstantsAndroidTests.CORNELL_BOX_WATER_CAM
         );
 
-        UtilsContextT.waitUntil(this.activity, Constants.RENDER, State.IDLE);
+        UtilsContextT.waitUntil(this.testName.getMethodName(), this.activity, Constants.RENDER, State.IDLE);
         UtilsContextT.resetPickerValues(Scene.OBJ.ordinal(), Accelerator.NAIVE, 99, 99);
 
         UtilsT.startRendering(false);
-        UtilsContextT.waitUntil(this.activity, Constants.STOP, State.BUSY);
+        UtilsContextT.waitUntil(this.testName.getMethodName(), this.activity, Constants.STOP, State.BUSY);
 
         UtilsT.stopRendering();
-        UtilsContextT.waitUntil(this.activity, Constants.RENDER, State.IDLE, State.FINISHED);
+        UtilsContextT.waitUntil(this.testName.getMethodName(), this.activity, Constants.RENDER, State.IDLE, State.FINISHED);
 
         UtilsT.assertRenderButtonText(Constants.RENDER);
         UtilsT.testStateAndBitmap(false);
@@ -69,14 +69,14 @@ public final class PreviewTest extends AbstractTest {
     public void testPreviewSceneOrthographicCamera() throws TimeoutException {
         logger.info("testPreviewSceneOrthographicCamera start");
 
-        UtilsContextT.waitUntil(this.activity, Constants.RENDER, State.IDLE);
+        UtilsContextT.waitUntil(this.testName.getMethodName(), this.activity, Constants.RENDER, State.IDLE);
         UtilsContextT.resetPickerValues(Scene.SPHERES.ordinal(), Accelerator.NAIVE, 99, 99);
 
         UtilsT.startRendering(false);
-        UtilsContextT.waitUntil(this.activity, Constants.STOP, State.BUSY);
+        UtilsContextT.waitUntil(this.testName.getMethodName(), this.activity, Constants.STOP, State.BUSY);
 
         UtilsT.stopRendering();
-        UtilsContextT.waitUntil(this.activity, Constants.RENDER, State.IDLE, State.FINISHED);
+        UtilsContextT.waitUntil(this.testName.getMethodName(), this.activity, Constants.RENDER, State.IDLE, State.FINISHED);
 
         UtilsT.assertRenderButtonText(Constants.RENDER);
         UtilsT.testStateAndBitmap(false);

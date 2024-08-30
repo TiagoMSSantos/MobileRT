@@ -207,7 +207,7 @@ public final class UiTest extends AbstractTest {
      * @param repetitions The number of repetitions.
      */
     private void assertClickRenderButton(final int repetitions) throws TimeoutException {
-        UtilsContextT.resetPickerValues(Scene.CORNELL2.ordinal(), Accelerator.BVH, 99, 99);
+        UtilsContextT.resetPickerValues(Scene.CORNELL2.ordinal(), Accelerator.NAIVE, 99, 99);
 
         final List<String> buttonTextList = ImmutableList.of(Constants.STOP, Constants.RENDER);
         for (int currentIndex = 0; currentIndex < buttonTextList.size() * repetitions; currentIndex++) {
@@ -222,9 +222,9 @@ public final class UiTest extends AbstractTest {
                 .perform(new ViewActionButton(expectedButtonText, false));
 
             if (expectedIndex % 2 == 0) {
-                UtilsContextT.waitUntil(this.activity, expectedButtonText, State.BUSY);
+                UtilsContextT.waitUntil(this.testName.getMethodName(), this.activity, expectedButtonText, State.BUSY);
             } else {
-                UtilsContextT.waitUntil(this.activity, expectedButtonText, State.IDLE, State.FINISHED);
+                UtilsContextT.waitUntil(this.testName.getMethodName(), this.activity, expectedButtonText, State.IDLE, State.FINISHED);
                 UtilsT.waitForAppToIdle();
                 // Only update pickers when app is idle.
                 incrementCountersAndUpdatePickers();
