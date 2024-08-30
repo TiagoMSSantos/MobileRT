@@ -4,6 +4,7 @@ on:
   workflow_dispatch:
   push:
     paths:
+    - '!*'
     - '!**/*'
     - '**/native.yml'
     - '**/macports.yml'
