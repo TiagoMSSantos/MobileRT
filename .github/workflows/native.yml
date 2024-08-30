@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     paths-ignore:
-    - '**/**'
+    - '**/*'
     - '!**/native.yml'
     - '!**/macports.yml'
     - '!**/run_tests.sh'
@@ -15,9 +15,9 @@ on:
     - '!**/codecov.yml'
     - '!**/CMakeLists.txt'
     - '!**/conanfile.txt'
-    - '!**/*est/resources/**'
-    - '!**/.c*'
-    - '!**/.h*'
+    - '!**/AndroidTest/resources/**'
+    - '!**/*.c*'
+    - '!**/*.h*'
 
 defaults:
   run:
