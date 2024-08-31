@@ -63,8 +63,6 @@ jobs:
           BASE_IMAGE: alpine:3.20
         - host_os: ubuntu-latest
           BASE_IMAGE: gentoo/stage3:latest
-        - host_os: macos-latest
-          BASE_IMAGE: sickcodes/docker-osx:sonoma
         - host_os: windows-latest
           BASE_IMAGE: mcr.microsoft.com/windows/servercore:ltsc2022
 
