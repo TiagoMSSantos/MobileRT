@@ -345,7 +345,6 @@ jobs:
 
     outputs:
       matrix-sonar: ${{ steps.set-matrix-sonar.outputs.matrix-sonar }}
-      android-arch: ${{ steps.set-matrix-sonar.outputs.android-arch }}
 
     strategy:
       fail-fast: false
@@ -546,7 +545,6 @@ jobs:
         MATRIX_SONAR=$(echo '${{ toJSON(matrix) }}' | jq -c -s '{"include":[.[]]}');
         echo "Matrix Sonar: ${MATRIX_SONAR}";
         echo "matrix-sonar=${MATRIX_SONAR}" >> ${GITHUB_OUTPUT};
-        echo "android-arch=${{ env.android_arch }}" >> ${GITHUB_OUTPUT};
 
     - name: Add base64 key & Android Build Tools version to environment variables in order to sign APK
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -908,6 +906,22 @@ jobs:
         . scripts/helper_functions.sh && checkPathExists app/.cxx;
         . scripts/helper_functions.sh && checkPathExists app/third_party;
 
+    - name: Set Android CPU Architecture
+      id: set-cpu-arch
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success()
+      run: |
+        if [ "${{ matrix.android_api }}" = 15 ] || [ "${{ matrix.android_api }}" = 21 ]; then
+          echo 'android_arch=\"x86\",\"armeabi-v7a\"' >> "${GITHUB_ENV}";
+          echo 'android_emulator_arch=x86' >> "${GITHUB_ENV}";
+        elif [ "${{ matrix.android_api }}" -gt 29 ]; then
+          echo 'android_arch=\"x86_64\"' >> "${GITHUB_ENV}";
+          echo 'android_emulator_arch=x86_64' >> "${GITHUB_ENV}";
+        else
+          echo 'android_arch=\"x86\"' >> "${GITHUB_ENV}";
+          echo 'android_emulator_arch=x86' >> "${GITHUB_ENV}";
+        fi
+
     - name: Analyze Sonar
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
@@ -919,7 +933,7 @@ jobs:
         GRADLE_OPTS: -Xms8G -Xmx8G -XX:ActiveProcessorCount=5
       run: |
         sh gradlew --profile --parallel \
-          -DabiFilters="[\"${{ needs.AndroidTests.outputs.android-arch }}\"]" \
+          -DabiFilters="[ ${{ env.android_arch }} ]" \
           -DandroidApiVersion=${{ matrix.android_api }} \
           --info --warning-mode all --stacktrace sonar;
 
