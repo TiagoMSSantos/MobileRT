@@ -32,7 +32,7 @@ public final class AcceleratorTest extends AbstractTest {
             ConstantsAndroidTests.CORNELL_BOX_WATER_CAM
         );
 
-        assertRenderScene(Scene.OBJ, Shader.WHITTED, Accelerator.NAIVE, 2, 1, false, false);
+        assertRenderScene(Scene.OBJ, Shader.WHITTED, Accelerator.NAIVE, 1, 1, false, false);
     }
 
     /**
@@ -48,7 +48,7 @@ public final class AcceleratorTest extends AbstractTest {
             ConstantsAndroidTests.CORNELL_BOX_WATER_CAM
         );
 
-        assertRenderScene(Scene.OBJ, Shader.WHITTED, Accelerator.REG_GRID, 4, 1, false, false);
+        assertRenderScene(Scene.OBJ, Shader.WHITTED, Accelerator.REG_GRID, 1, 1, false, false);
     }
 
     /**
