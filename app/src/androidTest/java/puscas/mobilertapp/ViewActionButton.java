@@ -31,7 +31,8 @@ public final class ViewActionButton implements ViewAction {
     /**
      * The expected text for the {@link Button}.
      */
-    @NonNls private final String expectedText;
+    @NonNls
+    private final String expectedText;
 
     /**
      * Whether to do a long click or not.

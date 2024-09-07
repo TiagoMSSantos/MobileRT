@@ -25,7 +25,6 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.google.common.base.Preconditions;
-import com.google.common.util.concurrent.Uninterruptibles;
 
 import org.junit.After;
 import org.junit.Before;
@@ -71,14 +70,14 @@ public abstract class AbstractTest {
      */
     @NonNull
     @ClassRule
-    public static final TestRule timeoutClassRule = new Timeout(40L, TimeUnit.MINUTES);
+    public static final TestRule timeoutClassRule = new Timeout(20L, TimeUnit.MINUTES);
 
     /**
      * The {@link Rule} for the {@link Timeout} for each test.
      */
     @NonNull
     @Rule
-    public final TestRule timeoutRule = new Timeout(20L, TimeUnit.MINUTES);
+    public final TestRule timeoutRule = new Timeout(2L, TimeUnit.MINUTES);
 
     /**
      * The {@link ActivityScenario} to create the {@link MainActivity}.
@@ -124,12 +123,8 @@ public abstract class AbstractTest {
         Preconditions.checkNotNull(this.activity, "The Activity didn't start as expected!");
         grantPermissions();
 
-        // Wait a bit for the permissions to be granted to the app before starting the test.
-        UtilsT.waitForAppToIdle();
-        Uninterruptibles.sleepUninterruptibly(3L, TimeUnit.SECONDS);
-        UtilsT.waitForAppToIdle();
-
         Intents.init();
+        InstrumentationRegistry.getInstrumentation().waitForIdleSync();
         logger.info(methodName + ": " + this.testName.getMethodName() + " started");
     }
 
@@ -150,15 +145,16 @@ public abstract class AbstractTest {
         Preconditions.checkNotNull(this.activity, "The Activity didn't finish as expected!");
 
         logger.info("Will wait for the Activity triggered by the test to finish.");
-        UtilsT.waitForAppToIdle();
+        ViewActionWait.waitFor(0);
+
         while (isActivityRunning(this.activity)) {
             logger.info("Finishing the Activity.");
             this.activity.finish();
-            UtilsT.waitForAppToIdle();
+            InstrumentationRegistry.getInstrumentation().waitForIdleSync();
         }
         // Wait for the app to be closed. Necessary for Android 12+.
         this.mainActivityActivityTestRule.getScenario().close();
-        UtilsT.waitForAppToIdle();
+        InstrumentationRegistry.getInstrumentation().waitForIdleSync();
         logger.info("Activity finished.");
 
         logger.info(methodName + ": " + this.testName.getMethodName() + " finished");
@@ -193,11 +189,10 @@ public abstract class AbstractTest {
      */
     private static void grantPermissions() {
         logger.info("Granting permissions to the MainActivity to be able to read files from an external storage.");
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             // Necessary for the tests and MobileRT to be able to read any file from SD Card on Android 11+, by having the permission: 'MANAGE_EXTERNAL_STORAGE'.
             InstrumentationRegistry.getInstrumentation().getUiAutomation().adoptShellPermissionIdentity();
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             InstrumentationRegistry.getInstrumentation().getUiAutomation().grantRuntimePermission(
                 InstrumentationRegistry.getInstrumentation().getTargetContext().getPackageName(), Manifest.permission.READ_EXTERNAL_STORAGE
             );
@@ -208,14 +203,16 @@ public abstract class AbstractTest {
             InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand("pm grant puscas.mobilertapp android.permission.READ_EXTERNAL_STORAGE");
             InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand("pm grant puscas.mobilertapp.test android.permission.READ_EXTERNAL_STORAGE");
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            waitForPermission(InstrumentationRegistry.getInstrumentation().getTargetContext(), Manifest.permission.READ_EXTERNAL_STORAGE);
-            waitForPermission(InstrumentationRegistry.getInstrumentation().getContext(), Manifest.permission.READ_EXTERNAL_STORAGE);
-        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             waitForPermission(InstrumentationRegistry.getInstrumentation().getTargetContext(), Manifest.permission.MANAGE_EXTERNAL_STORAGE);
             waitForPermission(InstrumentationRegistry.getInstrumentation().getContext(), Manifest.permission.MANAGE_EXTERNAL_STORAGE);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            waitForPermission(InstrumentationRegistry.getInstrumentation().getTargetContext(), Manifest.permission.READ_EXTERNAL_STORAGE);
+            waitForPermission(InstrumentationRegistry.getInstrumentation().getContext(), Manifest.permission.READ_EXTERNAL_STORAGE);
         }
+        ViewActionWait.waitFor(0);
+
         logger.info("Permissions granted.");
     }
 
@@ -226,13 +223,13 @@ public abstract class AbstractTest {
      * @param permission The permission which should be granted.
      */
     private static void waitForPermission(@NonNull final Context context, @NonNull final String permission) {
-        final long timeSecsToWait = 20L;
-        final long advanceSecs = 2L;
-        long currentTimeSecs = 0L;
+        final int timeSecsToWait = 20;
+        final int advanceSecs = 2;
+        final int waitInMilliSecs = advanceSecs * 1000;
+        int currentTimeSecs = 0;
         while (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED && currentTimeSecs < timeSecsToWait) {
             logger.info("Waiting for the permission '" + permission + "' to be granted to the app: " + context.getPackageName());
-            UtilsT.waitForAppToIdle();
-            Uninterruptibles.sleepUninterruptibly(advanceSecs, TimeUnit.SECONDS);
+            ViewActionWait.waitFor(waitInMilliSecs);
             currentTimeSecs += advanceSecs;
         }
         if (ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED) {
@@ -281,11 +278,11 @@ public abstract class AbstractTest {
             UtilsContextT.waitUntil(this.testName.getMethodName(), this.activity, Constants.STOP, State.BUSY);
         }
         UtilsContextT.waitUntil(this.testName.getMethodName(), this.activity, Constants.RENDER, State.IDLE, State.FINISHED);
-        UtilsT.waitForAppToIdle();
+        ViewActionWait.waitFor(0);
 
         UtilsT.assertRenderButtonText(Constants.RENDER);
         UtilsT.testStateAndBitmap(expectedSameValues);
-        UtilsT.waitForAppToIdle();
+        ViewActionWait.waitFor(0);
     }
 
     /**

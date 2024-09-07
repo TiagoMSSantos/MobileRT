@@ -397,10 +397,11 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
     }
 
     /**
-     * Gets an {@code int} which represents the current Ray Tracer engine
-     * {@link State}.
+     * Gets the current {@link State} of MobileRT.
      *
      * @return The current Ray Tracer engine {@link State}.
+     * @implNote This method waits for the {@link #firstFrame} to be {@code false} so it can properly
+     * get the {@link State} of MobileRT.
      */
     @NonNull
     public State getState() {

@@ -89,7 +89,7 @@ public final class UiTest extends AbstractTest {
      * @param expectedValue The expected value for the {@link CheckBox}.
      */
     public static void clickPreviewCheckBox(final boolean expectedValue) {
-        UtilsT.waitForAppToIdle();
+        ViewActionWait.waitFor(0);
         Espresso.onView(ViewMatchers.withId(R.id.preview))
             .inRoot(RootMatchers.isTouchable())
             .check((view, exception) ->
@@ -99,7 +99,7 @@ public final class UiTest extends AbstractTest {
             .check((view, exception) ->
                 assertPreviewCheckBox(view, expectedValue)
             );
-        UtilsT.waitForAppToIdle();
+        ViewActionWait.waitFor(0);
     }
 
     /**
@@ -225,7 +225,7 @@ public final class UiTest extends AbstractTest {
                 UtilsContextT.waitUntil(this.testName.getMethodName(), this.activity, expectedButtonText, State.BUSY);
             } else {
                 UtilsContextT.waitUntil(this.testName.getMethodName(), this.activity, expectedButtonText, State.IDLE, State.FINISHED);
-                UtilsT.waitForAppToIdle();
+                ViewActionWait.waitFor(0);
                 // Only update pickers when app is idle.
                 incrementCountersAndUpdatePickers();
             }

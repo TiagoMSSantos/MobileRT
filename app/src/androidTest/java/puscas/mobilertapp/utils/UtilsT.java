@@ -9,21 +9,20 @@ import androidx.test.espresso.matcher.RootMatchers;
 import androidx.test.espresso.matcher.ViewMatchers;
 
 import com.google.common.base.Preconditions;
-import com.google.common.util.concurrent.Uninterruptibles;
 
 import org.junit.Assert;
 
 import java.lang.reflect.Field;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import java8.util.J8Arrays;
 import puscas.mobilertapp.ConstantsAndroidTests;
 import puscas.mobilertapp.DrawView;
+import puscas.mobilertapp.MainActivity;
 import puscas.mobilertapp.MainRenderer;
 import puscas.mobilertapp.R;
 import puscas.mobilertapp.ViewActionButton;
+import puscas.mobilertapp.ViewActionWait;
 import puscas.mobilertapp.constants.Constants;
 import puscas.mobilertapp.constants.ConstantsMethods;
 import puscas.mobilertapp.constants.State;
@@ -112,9 +111,9 @@ public final class UtilsT {
      */
     public static void startRendering(final boolean expectedSameValues) {
         logger.info("startRendering");
-        waitForAppToIdle();
+        ViewActionWait.waitFor(0);
         assertRenderButtonText(Constants.RENDER);
-        waitForAppToIdle();
+        ViewActionWait.waitFor(0);
         Espresso.onView(ViewMatchers.withId(R.id.renderButton))
             .inRoot(RootMatchers.isTouchable())
             .perform(new ViewActionButton(expectedSameValues ? Constants.RENDER : Constants.STOP, false));
@@ -131,10 +130,8 @@ public final class UtilsT {
             .inRoot(RootMatchers.isTouchable())
             .perform(new ViewActionButton(Constants.RENDER, false));
 
-        // Wait a bit for the app to stop completely.
-        UtilsT.waitForAppToIdle();
-        Uninterruptibles.sleepUninterruptibly(4L, TimeUnit.SECONDS);
-        UtilsT.waitForAppToIdle();
+        // Wait for the app to stop completely.
+        ViewActionWait.waitFor(0);
 
         assertRenderButtonText(Constants.RENDER);
         logger.info("stopRendering" + ConstantsMethods.FINISHED);
@@ -150,7 +147,7 @@ public final class UtilsT {
      */
     public static void testStateAndBitmap(final boolean expectedSameValues) {
         logger.info("testBitmap");
-        waitForAppToIdle();
+        ViewActionWait.waitFor(0);
         Espresso.onView(ViewMatchers.withId(R.id.drawLayout))
             .inRoot(RootMatchers.isTouchable())
             .check((view, exception) -> {
@@ -164,7 +161,7 @@ public final class UtilsT {
                     renderer.getState() == State.IDLE || renderer.getState() == State.FINISHED
                 );
             });
-        waitForAppToIdle();
+        ViewActionWait.waitFor(0);
     }
 
     /**
@@ -201,26 +198,6 @@ public final class UtilsT {
         } catch (final RuntimeException ex) {
             logger.warning("Error: " + ex.getMessage() + "\nCause: " + ex.getCause());
         }
-    }
-
-    /**+
-     * Loops the main thread until the app goes idle.
-     */
-    public static void waitForAppToIdle() {
-        final CountDownLatch latch = new CountDownLatch(1);
-        UtilsT.executeWithCatching(() -> Espresso.onIdle(() -> {
-            latch.countDown();
-            return 0;
-        }));
-        final boolean result;
-        try {
-            result = latch.await(1L, TimeUnit.MINUTES);
-        } catch (final InterruptedException ex) {
-            logger.severe("Error: " + ex.getMessage());
-            throw new RuntimeException(ex);
-        }
-        Assert.assertTrue("The CountDownLatch should be finished.", result);
-        Assert.assertEquals("The CountDownLatch should be zero.", 0L, latch.getCount());
     }
 
 }

@@ -9,11 +9,8 @@ import androidx.test.espresso.matcher.RootMatchers;
 import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.platform.app.InstrumentationRegistry;
 
-import com.google.common.util.concurrent.Uninterruptibles;
-
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
@@ -22,6 +19,7 @@ import puscas.mobilertapp.DrawView;
 import puscas.mobilertapp.MainActivity;
 import puscas.mobilertapp.MainRenderer;
 import puscas.mobilertapp.R;
+import puscas.mobilertapp.ViewActionWait;
 import puscas.mobilertapp.constants.Accelerator;
 import puscas.mobilertapp.constants.Constants;
 import puscas.mobilertapp.constants.ConstantsUI;
@@ -60,20 +58,14 @@ public final class UtilsContextT {
                                  final State... expectedStates) throws TimeoutException {
         logger.info("waitUntil start, expected button: " + expectedButtonText + ", expected state(s): " + Arrays.toString(expectedStates));
         final AtomicBoolean done = new AtomicBoolean(false);
-        /*
-        Only advance 1 second at a time, otherwise the following error can appear:
-            signal 11 (SIGSEGV), code 1 (SEGV_MAPERR), fault addr 0x0000000000000000
-            29878 29878 F DEBUG   : Cause: null pointer dereference
-         */
-        final long advanceSecs = 1L;
+        final int waitInMillis = 1;
 
         final DrawView drawView = UtilsT.getPrivateField(activity, "drawView");
         final MainRenderer renderer = drawView.getRenderer();
 
-        final long timeSecsToWait = Objects.equals(expectedButtonText, Constants.STOP) ? 20L : 120L;
-        for (long currentTimeSecs = 0L; currentTimeSecs < timeSecsToWait && !done.get(); currentTimeSecs += advanceSecs) {
-            Uninterruptibles.sleepUninterruptibly(advanceSecs, TimeUnit.SECONDS);
-
+        final int timeToWaitInMillis = Objects.equals(expectedButtonText, Constants.STOP) ? 20 * 1000 : 120 * 1000;
+        for (int currentTimeMs = 0; currentTimeMs < timeToWaitInMillis && !done.get(); currentTimeMs += waitInMillis) {
+            ViewActionWait.waitFor(waitInMillis);
             Espresso.onView(ViewMatchers.withId(R.id.renderButton))
                 .inRoot(RootMatchers.isTouchable())
                 .check((view, exception) -> {
@@ -86,14 +78,14 @@ public final class UtilsContextT {
                     } else {
                         logger.info("State: '" + rendererState.name() + "' (expecting " + Arrays.toString(expectedStates) + "), Button: '" + renderButtonText + "' (expecting [" + expectedButtonText + "])");
                     }
-                });
+            });
         }
 
         logger.info("waitUntil finished");
         if (!done.get()) {
             final State rendererState = renderer.getState();
             final String errorMessage = "Test: " + testName + ", State: '" + rendererState.name() + "' (expecting " + Arrays.toString(expectedStates) + "), Expected button: '" + expectedButtonText + "'.";
-            throw new TimeoutException("The Ray Tracing engine didn't reach the expected state in " + timeSecsToWait + " secs. " + errorMessage);
+            throw new TimeoutException("The Ray Tracing engine didn't reach the expected state in " + (float) (waitInMillis) / 1000 + " secs. " + errorMessage);
         }
     }
 

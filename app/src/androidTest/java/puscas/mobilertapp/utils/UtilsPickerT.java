@@ -12,6 +12,7 @@ import org.junit.Assert;
 import java.util.logging.Logger;
 
 import puscas.mobilertapp.ViewActionNumberPicker;
+import puscas.mobilertapp.ViewActionWait;
 
 /**
  * Helper class which contains helper methods about the {@link NumberPicker}s for the tests.
@@ -41,7 +42,7 @@ public final class UtilsPickerT {
                                          final int pickerId,
                                          final int expectedValue) {
         logger.info("changePickerValue picker: " + pickerName + ", value: " + expectedValue);
-        UtilsT.waitForAppToIdle();
+        ViewActionWait.waitFor(0);
         Espresso.onView(ViewMatchers.withId(pickerId))
             .inRoot(RootMatchers.isTouchable())
             .perform(new ViewActionNumberPicker(expectedValue))
@@ -51,7 +52,7 @@ public final class UtilsPickerT {
                     expectedValue, numberPicker.getValue()
                 );
             });
-        UtilsT.waitForAppToIdle();
+        ViewActionWait.waitFor(0);
     }
 
 }

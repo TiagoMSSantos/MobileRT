@@ -1,12 +1,9 @@
 package puscas.mobilertapp;
 
-import com.google.common.util.concurrent.Uninterruptibles;
-
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
@@ -38,14 +35,8 @@ public final class PreviewTest extends AbstractTest {
     public void testPreviewScenePerspectiveCamera() throws TimeoutException {
         logger.info("testPreviewScenePerspectiveCamera start");
 
-        mockFileManagerReply(false,
-            ConstantsAndroidTests.CORNELL_BOX_WATER_OBJ,
-            ConstantsAndroidTests.CORNELL_BOX_WATER_MTL,
-            ConstantsAndroidTests.CORNELL_BOX_WATER_CAM
-        );
-
         UtilsContextT.waitUntil(this.testName.getMethodName(), this.activity, Constants.RENDER, State.IDLE);
-        UtilsContextT.resetPickerValues(Scene.OBJ.ordinal(), Accelerator.NAIVE, 99, 99);
+        UtilsContextT.resetPickerValues(Scene.CORNELL.ordinal(), Accelerator.NAIVE, 99, 99);
 
         UtilsT.startRendering(false);
         UtilsContextT.waitUntil(this.testName.getMethodName(), this.activity, Constants.STOP, State.BUSY);

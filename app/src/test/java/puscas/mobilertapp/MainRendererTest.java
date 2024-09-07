@@ -8,8 +8,6 @@ import android.opengl.GLES20;
 
 import androidx.annotation.NonNull;
 
-import com.google.common.util.concurrent.Uninterruptibles;
-
 import org.assertj.core.api.Assertions;
 import org.easymock.EasyMock;
 import org.junit.Test;
@@ -23,7 +21,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.nio.ByteBuffer;
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -254,10 +251,7 @@ public final class MainRendererTest {
 
         final MainRenderer mainRenderer = createMockedMainRenderer();
 
-        final Thread thread = new Thread(() -> {
-            Uninterruptibles.sleepUninterruptibly(1L, TimeUnit.SECONDS);
-            mainRenderer.onDrawFrame(EasyMock.mock(GL10.class));
-        });
+        final Thread thread = new Thread(() -> mainRenderer.onDrawFrame(EasyMock.mock(GL10.class)));
         Assertions.assertThat((boolean) Objects.requireNonNull(ReflectionTestUtils.getField(mainRenderer, "firstFrame")))
             .as("The 1st frame field")
             .isTrue();

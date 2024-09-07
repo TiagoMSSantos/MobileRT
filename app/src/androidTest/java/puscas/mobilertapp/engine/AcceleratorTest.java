@@ -64,7 +64,7 @@ public final class AcceleratorTest extends AbstractTest {
             ConstantsAndroidTests.CORNELL_BOX_WATER_CAM
         );
 
-        assertRenderScene(Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 4, 1, false, false);
+        assertRenderScene(Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 1, 1, false, false);
     }
 
 }
