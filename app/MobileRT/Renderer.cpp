@@ -110,12 +110,12 @@ void Renderer::renderScene(::std::int32_t *const bitmap, const ::std::int32_t ti
     const float pixelWidth {0.5F / this->width_};
     const float pixelHeight {0.5F / this->height_};
     ::glm::vec3 pixelRgb {};
-    LOG_INFO("(tid: ", tid, ") renderScene");
+    LOG_INFO("(tid: ", tid, ") spp: ", this->samplesPixel_, " renderScene");
     const ::std::string currentTidStr {::std::string("renderScene (" + ::std::to_string(tid) + ")")};
     MobileRT::checkSystemError((currentTidStr + " start").c_str());
 
     for (::std::int32_t sample {}; sample < this->samplesPixel_; ++sample) {
-        LOG_INFO("(tid: ", tid, ") renderScene sample: ", sample);
+        LOG_DEBUG("(tid: ", tid, ") renderScene sample: ", sample);
         while (true) {
             const float tile {getTile(sample)};
             LOG_DEBUG("(tid: ", tid, ") Will get tile: ", tile,", bx=", this->blockSizeX_, ", by=", this->blockSizeY_, ", spp=", sample, " (total: ", this->samplesPixel_, ")");
@@ -140,20 +140,20 @@ void Renderer::renderScene(::std::int32_t *const bitmap, const ::std::int32_t ti
                     const float deviationV {(r2 - 0.5F) * 2.0F * pixelHeight};
                     Ray &&ray {this->camera_->generateRay(u, v, deviationU, deviationV)};
                     pixelRgb = {};
-                    LOG_DEBUG(
+                    /*LOG_DEBUG(
                         "(tid: ", tid, ") u: ", u, ", v: ", v,
                         ", deviationU: ", deviationU, ", deviationV: ", deviationV,
                         ", rayId: ", ray.id_, ", depth: ", ray.depth_, ", origin: ", ray.origin_.length(), ", direction: ", ray.direction_.length()
-                    );
+                    );*/
                     this->shader_->rayTrace(&pixelRgb, ::std::move(ray));
                     const ::std::int32_t pixelIndex {yWidth + x};
                     ::std::int32_t *bitmapPixel {&bitmap[pixelIndex]};
                     const ::std::int32_t pixelColor {::MobileRT::incrementalAvg(pixelRgb, *bitmapPixel, sample + 1)};
-                    LOG_INFO(
+                    /*LOG_DEBUG(
                         "(tid: ", tid, ") pixelIndex: ", pixelIndex,
                         ", bitmapPixel: ", *bitmapPixel,
                         ", pixelColor: ", pixelColor
-                    );
+                    );*/
                     *bitmapPixel = pixelColor;
                 }
             }
@@ -163,7 +163,7 @@ void Renderer::renderScene(::std::int32_t *const bitmap, const ::std::int32_t ti
             this->sample_ = sample + 1;
             LOG_DEBUG("(tid: ", tid, ") Sample = ", this->sample_);
         }
-        LOG_INFO("(tid: ", tid, ") renderScene sample: ", sample, " finished");
+        LOG_DEBUG("(tid: ", tid, ") renderScene sample: ", sample, " finished");
     }
     LOG_INFO("(tid: ", tid, ") renderScene finished");
     MobileRT::checkSystemError((currentTidStr + " end").c_str());

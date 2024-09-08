@@ -18,7 +18,6 @@ import java.util.logging.Logger;
 import java8.util.J8Arrays;
 import puscas.mobilertapp.ConstantsAndroidTests;
 import puscas.mobilertapp.DrawView;
-import puscas.mobilertapp.MainActivity;
 import puscas.mobilertapp.MainRenderer;
 import puscas.mobilertapp.R;
 import puscas.mobilertapp.ViewActionButton;
@@ -88,6 +87,20 @@ public final class UtilsT {
      */
     private static void assertRayTracingResultInBitmap(@NonNull final Bitmap bitmap,
                                                        final boolean expectedSameValues) {
+        final boolean bitmapSingleColor = isBitmapSingleColor(bitmap);
+        logger.info("Checking bitmap values.");
+        Assert.assertEquals("The rendered image should have different values.",
+            expectedSameValues, bitmapSingleColor
+        );
+    }
+
+    /**
+     * Whether the {@link Bitmap} only rendered one single color or not.
+     *
+     * @param bitmap The {@link Bitmap} to validate.
+     * @return {@code true} if the {@link Bitmap} only rendered a single color, or {@code false} otherwise.
+     */
+    static boolean isBitmapSingleColor(@NonNull final Bitmap bitmap) {
         final int firstPixel = bitmap.getPixel(0, 0);
         final int width = bitmap.getWidth();
         final int height = bitmap.getHeight();
@@ -96,11 +109,7 @@ public final class UtilsT {
 
         final boolean bitmapSameColor = J8Arrays.stream(pixels)
             .allMatch(pixel -> pixel == firstPixel);
-
-        logger.info("Checking bitmap values.");
-        Assert.assertEquals("The rendered image should have different values.",
-            expectedSameValues, bitmapSameColor
-        );
+        return bitmapSameColor;
     }
 
     /**

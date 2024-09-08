@@ -64,7 +64,7 @@ public final class ViewActionWait implements ViewAction {
     public static void waitFor(final int delayMillis) {
         if (delayMillis == 0) {
             logger.info("Waiting for MobileRT to become idle.");
-        } else {
+        } else if (delayMillis >= 2000) {
             logger.info("Letting MobileRT to continue process for '" + delayMillis + "'ms.");
         }
         Espresso.onView(ViewMatchers.withId(R.id.renderButton))

@@ -286,7 +286,7 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
 
     // Loop over shapes.
     for (::std::uint32_t shapeIndex {threadId}; shapeIndex < shapesSize; shapeIndex += numberOfThreads) {
-        LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") filling scene.");
+        LOG_DEBUG("Thread ", threadId, " (", numberOfThreads, ") filling scene.");
         const auto itShape {this->shapes_.cbegin() + static_cast<::std::int32_t> (shapeIndex)};
         const ::tinyobj::shape_t &shape {*itShape};
 

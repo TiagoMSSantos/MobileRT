@@ -520,8 +520,8 @@ _validateFileExistsAndHasSomeContent() {
   if [ "${fileSize}" = '' ]; then
     return 2;
   fi
-  if [ "${fileSize}" -lt 190 ]; then
-    echo "File '${filePath}' contains '${fileSize}' words, which is less than 190 words." >&2;
+  if [ "${fileSize}" -lt 110 ]; then
+    echo "File '${filePath}' contains '${fileSize}' words, which is less than 110 words." >&2;
     cat "${filePath}";
     return 1;
   fi

@@ -209,16 +209,36 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       run: |
-        if [ "${{ matrix.android_api }}" = 15 ] || [ "${{ matrix.android_api }}" = 21 ]; then
-          echo 'android_arch=\"x86\",\"armeabi-v7a\"' >> "${GITHUB_ENV}";
-          echo 'android_emulator_arch=x86' >> "${GITHUB_ENV}";
-        elif [ "${{ matrix.android_api }}" -gt 29 ]; then
-          echo 'android_arch=\"x86_64\"' >> "${GITHUB_ENV}";
-          echo 'android_emulator_arch=x86_64' >> "${GITHUB_ENV}";
-        else
-          echo 'android_arch=\"x86\"' >> "${GITHUB_ENV}";
-          echo 'android_emulator_arch=x86' >> "${GITHUB_ENV}";
+        set +eu;
+        MAJOR_MAC_VERSION=$(sw_vers | grep ProductVersion | cut -d ':' -f2 | cut -d '.' -f1 | tr -d '[:space:]');
+        if [ "${MAJOR_MAC_VERSION}" != '' ]; then
+          echo "MacOS '${MAJOR_MAC_VERSION}' detected";
         fi
+        set -e;
+        if [ "${MAJOR_MAC_VERSION}" = 14 ]; then
+          if [ "${{ matrix.android_api }}" = 15 ] || [ "${{ matrix.android_api }}" = 21 ]; then
+            echo 'android_arch=\"x86\",\"armeabi-v7a\"' >> "${GITHUB_ENV}";
+            echo 'android_emulator_arch=arm64-v8a' >> "${GITHUB_ENV}";
+          elif [ "${{ matrix.android_api }}" -gt 29 ]; then
+            echo 'android_arch=\"armeabi-v7a\"' >> "${GITHUB_ENV}";
+            echo 'android_emulator_arch=arm64-v8a' >> "${GITHUB_ENV}";
+          else
+            echo 'android_arch=\"x86\"' >> "${GITHUB_ENV}";
+            echo 'android_emulator_arch=arm64-v8a' >> "${GITHUB_ENV}";
+          fi
+        else
+          if [ "${{ matrix.android_api }}" = 15 ] || [ "${{ matrix.android_api }}" = 21 ]; then
+            echo 'android_arch=\"x86\",\"armeabi-v7a\"' >> "${GITHUB_ENV}";
+            echo 'android_emulator_arch=x86' >> "${GITHUB_ENV}";
+          elif [ "${{ matrix.android_api }}" -gt 29 ]; then
+            echo 'android_arch=\"x86_64\"' >> "${GITHUB_ENV}";
+            echo 'android_emulator_arch=x86_64' >> "${GITHUB_ENV}";
+          else
+            echo 'android_arch=\"x86\"' >> "${GITHUB_ENV}";
+            echo 'android_emulator_arch=x86' >> "${GITHUB_ENV}";
+          fi
+        fi
+        set -u;
 
     - name: Build ${{ matrix.type }}
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
@@ -453,16 +473,36 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       run: |
-        if [ "${{ matrix.android_api }}" = 15 ] || [ "${{ matrix.android_api }}" = 21 ]; then
-          echo 'android_arch=\"x86\",\"armeabi-v7a\"' >> "${GITHUB_ENV}";
-          echo 'android_emulator_arch=x86' >> "${GITHUB_ENV}";
-        elif [ "${{ matrix.android_api }}" -gt 29 ]; then
-          echo 'android_arch=\"x86_64\"' >> "${GITHUB_ENV}";
-          echo 'android_emulator_arch=x86_64' >> "${GITHUB_ENV}";
-        else
-          echo 'android_arch=\"x86\"' >> "${GITHUB_ENV}";
-          echo 'android_emulator_arch=x86' >> "${GITHUB_ENV}";
+        set +eu;
+        MAJOR_MAC_VERSION=$(sw_vers | grep ProductVersion | cut -d ':' -f2 | cut -d '.' -f1 | tr -d '[:space:]');
+        if [ "${MAJOR_MAC_VERSION}" != '' ]; then
+          echo "MacOS '${MAJOR_MAC_VERSION}' detected";
         fi
+        set -e;
+        if [ "${MAJOR_MAC_VERSION}" = 14 ]; then
+          if [ "${{ matrix.android_api }}" = 15 ] || [ "${{ matrix.android_api }}" = 21 ]; then
+            echo 'android_arch=\"x86\",\"armeabi-v7a\"' >> "${GITHUB_ENV}";
+            echo 'android_emulator_arch=arm64-v8a' >> "${GITHUB_ENV}";
+          elif [ "${{ matrix.android_api }}" -gt 29 ]; then
+            echo 'android_arch=\"armeabi-v7a\"' >> "${GITHUB_ENV}";
+            echo 'android_emulator_arch=arm64-v8a' >> "${GITHUB_ENV}";
+          else
+            echo 'android_arch=\"x86\"' >> "${GITHUB_ENV}";
+            echo 'android_emulator_arch=arm64-v8a' >> "${GITHUB_ENV}";
+          fi
+        else
+          if [ "${{ matrix.android_api }}" = 15 ] || [ "${{ matrix.android_api }}" = 21 ]; then
+            echo 'android_arch=\"x86\",\"armeabi-v7a\"' >> "${GITHUB_ENV}";
+            echo 'android_emulator_arch=x86' >> "${GITHUB_ENV}";
+          elif [ "${{ matrix.android_api }}" -gt 29 ]; then
+            echo 'android_arch=\"x86_64\"' >> "${GITHUB_ENV}";
+            echo 'android_emulator_arch=x86_64' >> "${GITHUB_ENV}";
+          else
+            echo 'android_arch=\"x86\"' >> "${GITHUB_ENV}";
+            echo 'android_emulator_arch=x86' >> "${GITHUB_ENV}";
+          fi
+        fi
+        set -u;
 
     - name: Set CPU cores
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -501,7 +541,7 @@ jobs:
         force-avd-creation: true
         disable-linux-hw-accel: auto
         enable-hw-keyboard: false
-        emulator-boot-timeout: 900 # It can take more than 5 min to boot, and the tests can take more than 17 min to finish.
+        emulator-boot-timeout: 400 # It can take more than 5 min to boot, and the tests can take more than 17 min to finish.
         script: |
           sh scripts/run_tests_android.sh -t ${{ matrix.type }} -r all -a ${{ matrix.android_api }} -k false -f ${{ env.android_arch }};
 
@@ -683,16 +723,36 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       run: |
-        if [ "${{ matrix.android_api }}" = 15 ] || [ "${{ matrix.android_api }}" = 21 ]; then
-          echo 'android_arch=\"x86\",\"armeabi-v7a\"' >> "${GITHUB_ENV}";
-          echo 'android_emulator_arch=x86' >> "${GITHUB_ENV}";
-        elif [ "${{ matrix.android_api }}" -gt 29 ]; then
-          echo 'android_arch=\"x86_64\"' >> "${GITHUB_ENV}";
-          echo 'android_emulator_arch=x86_64' >> "${GITHUB_ENV}";
-        else
-          echo 'android_arch=\"x86\"' >> "${GITHUB_ENV}";
-          echo 'android_emulator_arch=x86' >> "${GITHUB_ENV}";
+        set +eu;
+        MAJOR_MAC_VERSION=$(sw_vers | grep ProductVersion | cut -d ':' -f2 | cut -d '.' -f1 | tr -d '[:space:]');
+        if [ "${MAJOR_MAC_VERSION}" != '' ]; then
+          echo "MacOS '${MAJOR_MAC_VERSION}' detected";
         fi
+        set -e;
+        if [ "${MAJOR_MAC_VERSION}" = 14 ]; then
+          if [ "${{ matrix.android_api }}" = 15 ] || [ "${{ matrix.android_api }}" = 21 ]; then
+            echo 'android_arch=\"x86\",\"armeabi-v7a\"' >> "${GITHUB_ENV}";
+            echo 'android_emulator_arch=arm64-v8a' >> "${GITHUB_ENV}";
+          elif [ "${{ matrix.android_api }}" -gt 29 ]; then
+            echo 'android_arch=\"armeabi-v7a\"' >> "${GITHUB_ENV}";
+            echo 'android_emulator_arch=arm64-v8a' >> "${GITHUB_ENV}";
+          else
+            echo 'android_arch=\"x86\"' >> "${GITHUB_ENV}";
+            echo 'android_emulator_arch=arm64-v8a' >> "${GITHUB_ENV}";
+          fi
+        else
+          if [ "${{ matrix.android_api }}" = 15 ] || [ "${{ matrix.android_api }}" = 21 ]; then
+            echo 'android_arch=\"x86\",\"armeabi-v7a\"' >> "${GITHUB_ENV}";
+            echo 'android_emulator_arch=x86' >> "${GITHUB_ENV}";
+          elif [ "${{ matrix.android_api }}" -gt 29 ]; then
+            echo 'android_arch=\"x86_64\"' >> "${GITHUB_ENV}";
+            echo 'android_emulator_arch=x86_64' >> "${GITHUB_ENV}";
+          else
+            echo 'android_arch=\"x86\"' >> "${GITHUB_ENV}";
+            echo 'android_emulator_arch=x86' >> "${GITHUB_ENV}";
+          fi
+        fi
+        set -u;
 
     - name: Run unit tests Java
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
@@ -911,13 +971,30 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       run: |
-        if [ "${{ matrix.android_api }}" = 15 ] || [ "${{ matrix.android_api }}" = 21 ]; then
-          echo 'android_arch=\"x86\",\"armeabi-v7a\"' >> "${GITHUB_ENV}";
-        elif [ "${{ matrix.android_api }}" -gt 29 ]; then
-          echo 'android_arch=\"x86_64\"' >> "${GITHUB_ENV}";
-        else
-          echo 'android_arch=\"x86\"' >> "${GITHUB_ENV}";
+        set +eu;
+        MAJOR_MAC_VERSION=$(sw_vers | grep ProductVersion | cut -d ':' -f2 | cut -d '.' -f1 | tr -d '[:space:]');
+        if [ "${MAJOR_MAC_VERSION}" != '' ]; then
+          echo "MacOS '${MAJOR_MAC_VERSION}' detected";
         fi
+        set -e;
+        if [ "${MAJOR_MAC_VERSION}" = 14 ]; then
+          if [ "${{ matrix.android_api }}" = 15 ] || [ "${{ matrix.android_api }}" = 21 ]; then
+            echo 'android_arch=\"x86\",\"armeabi-v7a\"' >> "${GITHUB_ENV}";
+          elif [ "${{ matrix.android_api }}" -gt 29 ]; then
+            echo 'android_arch=\"armeabi-v7a\"' >> "${GITHUB_ENV}";
+          else
+            echo 'android_arch=\"x86\"' >> "${GITHUB_ENV}";
+          fi
+        else
+          if [ "${{ matrix.android_api }}" = 15 ] || [ "${{ matrix.android_api }}" = 21 ]; then
+            echo 'android_arch=\"x86\",\"armeabi-v7a\"' >> "${GITHUB_ENV}";
+          elif [ "${{ matrix.android_api }}" -gt 29 ]; then
+            echo 'android_arch=\"x86_64\"' >> "${GITHUB_ENV}";
+          else
+            echo 'android_arch=\"x86\"' >> "${GITHUB_ENV}";
+          fi
+        fi
+        set -u;
 
     - name: Analyze Sonar
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}

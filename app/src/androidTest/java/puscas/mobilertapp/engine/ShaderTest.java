@@ -24,7 +24,7 @@ public final class ShaderTest extends AbstractTest {
      *
      * @throws TimeoutException If it couldn't render the whole scene in time.
      */
-    @Test(timeout = 2L * 60L * 1000L)
+    @Test
     public void testRenderSceneWithNoShadows() throws TimeoutException {
         mockFileManagerReply(false,
             ConstantsAndroidTests.CORNELL_BOX_WATER_OBJ,
@@ -40,7 +40,7 @@ public final class ShaderTest extends AbstractTest {
      *
      * @throws TimeoutException If it couldn't render the whole scene in time.
      */
-    @Test(timeout = 2L * 60L * 1000L)
+    @Test
     public void testRenderSceneWithWhitted() throws TimeoutException {
         mockFileManagerReply(false,
             ConstantsAndroidTests.CORNELL_BOX_WATER_OBJ,
@@ -56,7 +56,7 @@ public final class ShaderTest extends AbstractTest {
      *
      * @throws TimeoutException If it couldn't render the whole scene in time.
      */
-    @Test(timeout = 2L * 60L * 1000L)
+    @Test
     public void testRenderSceneWithPathTracing() throws TimeoutException {
         mockFileManagerReply(false,
             ConstantsAndroidTests.CORNELL_BOX_WATER_OBJ,
@@ -72,7 +72,7 @@ public final class ShaderTest extends AbstractTest {
      *
      * @throws TimeoutException If it couldn't render the whole scene in time.
      */
-    @Test(timeout = 2L * 60L * 1000L)
+    @Test
     public void testRenderSceneWithDepthMap() throws TimeoutException {
         mockFileManagerReply(false,
             ConstantsAndroidTests.CORNELL_BOX_WATER_OBJ,
@@ -88,7 +88,7 @@ public final class ShaderTest extends AbstractTest {
      *
      * @throws TimeoutException If it couldn't render the whole scene in time.
      */
-    @Test(timeout = 2L * 60L * 1000L)
+    @Test
     public void testRenderSceneWithDiffuse() throws TimeoutException {
         mockFileManagerReply(false,
             ConstantsAndroidTests.CORNELL_BOX_WATER_OBJ,

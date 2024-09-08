@@ -1,6 +1,7 @@
 package puscas.mobilertapp.utils;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.widget.Button;
 
 import androidx.annotation.NonNull;
@@ -74,19 +75,40 @@ public final class UtilsContextT {
                     final State rendererState = renderer.getState();
                     if (Objects.equals(renderButtonText, expectedButtonText) && Arrays.asList(expectedStates).contains(rendererState)) {
                         done.set(true);
-                        logger.info("waitUntil success");
-                    } else {
-                        logger.info("State: '" + rendererState.name() + "' (expecting " + Arrays.toString(expectedStates) + "), Button: '" + renderButtonText + "' (expecting [" + expectedButtonText + "])");
+                        logger.info("waitUntil for button update success");
                     }
             });
         }
 
-        logger.info("waitUntil finished");
         if (!done.get()) {
             final State rendererState = renderer.getState();
             final String errorMessage = "Test: " + testName + ", State: '" + rendererState.name() + "' (expecting " + Arrays.toString(expectedStates) + "), Expected button: '" + expectedButtonText + "'.";
             throw new TimeoutException("The Ray Tracing engine didn't reach the expected state in " + (float) (waitInMillis) / 1000 + " secs. " + errorMessage);
         }
+
+        if (Objects.equals(expectedButtonText, Constants.STOP)) {
+            done.set(false);
+            final int timeToWaitForUpdatedImageInMillis = 2 * 1000;
+            logger.info("Waiting '" + timeToWaitForUpdatedImageInMillis + "'ms for Bitmap to contain some rendered pixels.");
+            for (int currentTimeMs = 0; currentTimeMs < timeToWaitForUpdatedImageInMillis && !done.get(); currentTimeMs += waitInMillis) {
+                ViewActionWait.waitFor(waitInMillis);
+                final Bitmap bitmap = UtilsT.getPrivateField(renderer, "bitmap");
+                final boolean bitmapSingleColor = UtilsT.isBitmapSingleColor(bitmap);
+                if (!bitmapSingleColor) {
+                    done.set(true);
+                    logger.info("waitUntil for bitmap update success");
+                }
+            }
+
+            if (!done.get()) {
+                final Bitmap bitmap = UtilsT.getPrivateField(renderer, "bitmap");
+                final boolean bitmapSingleColor = UtilsT.isBitmapSingleColor(bitmap);
+                final String errorMessage = "Bitmap had no pixel rendered: " + bitmapSingleColor + ".";
+                throw new TimeoutException("The Ray Tracing engine didn't reach the expected state in " + (float) (timeToWaitForUpdatedImageInMillis) / 1000 + " secs. " + errorMessage);
+            }
+        }
+
+        logger.info("waitUntil finished");
     }
 
     /**

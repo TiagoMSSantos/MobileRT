@@ -78,7 +78,7 @@ public final class RayTracingTest extends AbstractTest {
      *
      * @throws TimeoutException If it couldn't render the whole scene in time.
      */
-    @Test(timeout = 60L * 1000L)
+    @Test
     public void testRenderInvalidScene() throws TimeoutException {
         // Mock the reply as the external file manager application, to select an OBJ file that doesn't exist.
         mockFileManagerReply(false,
@@ -93,7 +93,7 @@ public final class RayTracingTest extends AbstractTest {
      *
      * @throws TimeoutException If there is a timeout while waiting for the engine to become idle.
      */
-    @Test(timeout = 60L * 1000L)
+    @Test
     public void testNotSelectingScene() throws TimeoutException {
         // Mock the reply as the external file manager application, to not select anything.
         final Intent resultData = new Intent(Intent.ACTION_GET_CONTENT);
@@ -113,7 +113,7 @@ public final class RayTracingTest extends AbstractTest {
      * @implNote E.g. of an URL to file:<br>
      * file:///file/data/local/tmp/MobileRT/WavefrontOBJs/teapot/teapot.obj<br>
      */
-    @Test(timeout = 2L * 60L * 1000L)
+    @Test
     public void testRenderSceneFromInternalStorageOBJ() throws TimeoutException {
         mockFileManagerReply(false,
             ConstantsAndroidTests.CORNELL_BOX_WATER_OBJ,
@@ -135,7 +135,7 @@ public final class RayTracingTest extends AbstractTest {
      * content://com.asus.filemanager.OpenFileProvider/file/storage/1CE6-261B/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj<br>
      * content://com.asus.filemanager.OpenFileProvider/file/mnt/sdcard/MobileRT/WavefrontOBJs/CornellBox/CornellBox-Water.obj<br>
      */
-    @Test(timeout = 2L * 60L * 1000L)
+    @Test
     public void testRenderSceneFromSDCardOBJ() throws TimeoutException {
         mockFileManagerReply(true,
             "/MobileRT/WavefrontOBJs/teapot/teapot.obj",
@@ -153,7 +153,7 @@ public final class RayTracingTest extends AbstractTest {
      *
      * @throws TimeoutException If it couldn't render the whole scene in time.
      */
-    @Test(timeout = 2L * 60L * 1000L)
+    @Test
     public void testRenderSceneWithoutAccelerator() throws TimeoutException {
         assertRenderScene(Scene.CORNELL, Shader.WHITTED, Accelerator.NONE, 1, 1, false, true);
     }

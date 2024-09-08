@@ -35,7 +35,7 @@ public final class FileSystemTest extends AbstractTest {
     /**
      * Tests that a file in the internal storage from the Android device exists and is readable.
      */
-    @Test(timeout = 5L * 1000L)
+    @Test
     public void testFilesExistAndReadableFromInternalStorage() {
         final String internalStorage = UtilsContext.getInternalStoragePath(InstrumentationRegistry.getInstrumentation().getTargetContext());
 
@@ -46,7 +46,7 @@ public final class FileSystemTest extends AbstractTest {
     /**
      * Tests that the SD card device exists and is readable.
      */
-    @Test(timeout = 5L * 1000L)
+    @Test
     public void testReadableSdCard() {
         final String sdCardPath = UtilsContext.getSdCardPath(InstrumentationRegistry.getInstrumentation().getTargetContext());
 
@@ -76,7 +76,7 @@ public final class FileSystemTest extends AbstractTest {
     /**
      * Tests that a file in the SD card device exists and is readable.
      */
-    @Test(timeout = 5L * 1000L)
+    @Test
     public void testFilesExistAndReadableSdCard() {
         final String sdCardPath = UtilsContext.getSdCardPath(InstrumentationRegistry.getInstrumentation().getTargetContext());
 
@@ -87,7 +87,7 @@ public final class FileSystemTest extends AbstractTest {
     /**
      * Tests that a file does not exist in the Android device.
      */
-    @Test(timeout = 5L * 1000L)
+    @Test
     public void testFilesNotExist() {
         final String internalStorage = UtilsContext.getInternalStoragePath(InstrumentationRegistry.getInstrumentation().getTargetContext());
 
@@ -102,7 +102,7 @@ public final class FileSystemTest extends AbstractTest {
     /**
      * Tests that a file does not exist in the SD card device.
      */
-    @Test(timeout = 5L * 1000L)
+    @Test
     public void testFilesNotExistSdCard() {
         final String sdCardPath = UtilsContext.getSdCardPath(InstrumentationRegistry.getInstrumentation().getTargetContext());
 

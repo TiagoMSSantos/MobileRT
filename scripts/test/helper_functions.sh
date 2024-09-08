@@ -553,31 +553,31 @@ testCheckPathExists() {
   returnValue="$?";
   assertEqual "${expectedExitCode}" "${returnValue}" "${_testName} file is empty";
 
-  # Validate the exit code is 1 if path & file exist but the file has less than 190 words in it.
+  # Validate the exit code is 1 if path & file exist but the file has less than 110 words in it.
   expectedExitCode='1';
   pathToValidate='app';
-  fileToValidate='fileWithLessThan190words.log';
+  fileToValidate='fileWithLessThan110words.log';
   rm -f "${pathToValidate}/${fileToValidate}";
   touch "${pathToValidate}/${fileToValidate}";
-  for VARIABLE in $(seq 1 189); do
+  for VARIABLE in $(seq 1 109); do
     echo "${VARIABLE}" >> "${pathToValidate}/${fileToValidate}";
   done;
   eval '${_functionName} "${pathToValidate}" "${fileToValidate}" > /dev/null 2>&1';
   returnValue="$?";
-  assertEqual "${expectedExitCode}" "${returnValue}" "${_testName} file has less than 190 words";
+  assertEqual "${expectedExitCode}" "${returnValue}" "${_testName} file has less than 110 words";
 
-  # Validate the exit code is 0 if path & file exist and the file has more or equal than 190 words in it.
+  # Validate the exit code is 0 if path & file exist and the file has more or equal than 110 words in it.
   expectedExitCode='0';
   pathToValidate='app';
-  fileToValidate='fileWith190words.log';
+  fileToValidate='fileWith110words.log';
   rm -f "${pathToValidate}/${fileToValidate}";
   touch "${pathToValidate}/${fileToValidate}";
-  for VARIABLE in $(seq 1 190); do
+  for VARIABLE in $(seq 1 110); do
     echo "${VARIABLE}" >> "${pathToValidate}/${fileToValidate}";
   done;
   eval '${_functionName} "${pathToValidate}" "${fileToValidate}" > /dev/null';
   returnValue="$?";
-  assertEqual "${expectedExitCode}" "${returnValue}" "${_testName} file has 190 words";
+  assertEqual "${expectedExitCode}" "${returnValue}" "${_testName} file has 110 words";
 }
 
 

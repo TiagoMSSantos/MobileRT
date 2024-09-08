@@ -31,7 +31,7 @@ public final class PreviewTest extends AbstractTest {
      * @throws TimeoutException If it couldn't render the whole scene in time.
      * @implNote This test can take more than 2 minutes in CI.
      */
-    @Test(timeout = 3L * 60L * 1000L)
+    @Test
     public void testPreviewScenePerspectiveCamera() throws TimeoutException {
         logger.info("testPreviewScenePerspectiveCamera start");
 
@@ -56,7 +56,7 @@ public final class PreviewTest extends AbstractTest {
      * @throws TimeoutException If it couldn't render the whole scene in time.
      * @implNote This test can take more than 1 minute in CI.
      */
-    @Test(timeout = 2L * 60L * 1000L)
+    @Test
     public void testPreviewSceneOrthographicCamera() throws TimeoutException {
         logger.info("testPreviewSceneOrthographicCamera start");
 

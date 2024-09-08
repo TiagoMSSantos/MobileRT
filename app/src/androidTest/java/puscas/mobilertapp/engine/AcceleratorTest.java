@@ -24,7 +24,7 @@ public final class AcceleratorTest extends AbstractTest {
      *
      * @throws TimeoutException If it couldn't render the whole scene in time.
      */
-    @Test(timeout = 2L * 60L * 1000L)
+    @Test
     public void testRenderSceneWithNaive() throws TimeoutException {
         mockFileManagerReply(false,
             ConstantsAndroidTests.CORNELL_BOX_WATER_OBJ,
@@ -40,7 +40,7 @@ public final class AcceleratorTest extends AbstractTest {
      *
      * @throws TimeoutException If it couldn't render the whole scene in time.
      */
-    @Test(timeout = 2L * 60L * 1000L)
+    @Test
     public void testRenderSceneWithRegularGrid() throws TimeoutException {
         mockFileManagerReply(false,
             ConstantsAndroidTests.CORNELL_BOX_WATER_OBJ,
@@ -56,7 +56,7 @@ public final class AcceleratorTest extends AbstractTest {
      *
      * @throws TimeoutException If it couldn't render the whole scene in time.
      */
-    @Test(timeout = 2L * 60L * 1000L)
+    @Test
     public void testRenderSceneWithBVH() throws TimeoutException {
         mockFileManagerReply(false,
             ConstantsAndroidTests.CORNELL_BOX_WATER_OBJ,

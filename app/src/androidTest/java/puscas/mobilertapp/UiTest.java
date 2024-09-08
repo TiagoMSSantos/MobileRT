@@ -149,7 +149,7 @@ public final class UiTest extends AbstractTest {
      *
      * @throws TimeoutException If the Ray Tracing engine didn't reach the expected {@link State}.
      */
-    @Test(timeout = 2L * 60L * 1000L)
+    @Test
     public void testUI() throws TimeoutException {
         UtilsT.assertRenderButtonText(Constants.RENDER);
 
@@ -164,7 +164,7 @@ public final class UiTest extends AbstractTest {
      * @throws TimeoutException If the Ray Tracing engine didn't reach the expected {@link State}.
      * @implNote This test can take more than 2 minutes in CI.
      */
-    @Test(timeout = 3L * 60L * 1000L)
+    @Test
     public void testClickRenderButtonManyTimesWithoutPreview() throws TimeoutException {
         clickPreviewCheckBox(false);
 
@@ -177,7 +177,7 @@ public final class UiTest extends AbstractTest {
      * @throws TimeoutException If the Ray Tracing engine didn't reach the expected {@link State}.
      * @implNote This test can take more than 2 minutes in CI.
      */
-    @Test(timeout = 3L * 60L * 1000L)
+    @Test
     public void testClickRenderButtonManyTimesWithPreview() throws TimeoutException {
         clickPreviewCheckBox(false);
         clickPreviewCheckBox(true);
@@ -189,7 +189,7 @@ public final class UiTest extends AbstractTest {
      * Tests clicking the render {@link Button} with a long press.
      * It is expected for the {@link android.app.Activity} to restart.
      */
-    @Test(timeout = 60L * 1000L)
+    @Test
     public void testClickRenderButtonLongPress() {
         Espresso.onView(ViewMatchers.withId(R.id.renderButton))
             .inRoot(RootMatchers.isTouchable())

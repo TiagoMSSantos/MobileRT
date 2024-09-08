@@ -277,7 +277,7 @@ namespace MobileRT {
                             LOG_DEBUG("Adding primitive ", index, " (", idx, ") to RegularGrid (", typeid(T).name(), ") on coordinates: (", x, ", ", y, ", ", z, ")");
                             const ::std::lock_guard<::std::mutex> lock {this->mutexes_[idx]};
                             this->grid_[idx].emplace_back(&primitive);
-                            LOG_INFO("Added primitive ", index, " to RegularGrid (", typeid(T).name(), ") on coordinates: (", x, ", ", y, ", ", z, ")");
+                            LOG_DEBUG("Added primitive ", index, " to RegularGrid (", typeid(T).name(), ") on coordinates: (", x, ", ", y, ", ", z, ")");
                         }
                     }
                 }
