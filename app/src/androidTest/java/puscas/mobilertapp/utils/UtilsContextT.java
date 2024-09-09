@@ -59,7 +59,7 @@ public final class UtilsContextT {
                                  final State... expectedStates) throws TimeoutException {
         logger.info("waitUntil start, expected button: " + expectedButtonText + ", expected state(s): " + Arrays.toString(expectedStates));
         final AtomicBoolean done = new AtomicBoolean(false);
-        final int waitInMillis = 50;
+        final int waitInMillis = 25;
 
         final DrawView drawView = UtilsT.getPrivateField(activity, "drawView");
         final MainRenderer renderer = drawView.getRenderer();
@@ -88,7 +88,7 @@ public final class UtilsContextT {
 
         if (Objects.equals(expectedButtonText, Constants.STOP)) {
             done.set(false);
-            final int timeToWaitForUpdatedImageInMillis = 3 * 1000;
+            final int timeToWaitForUpdatedImageInMillis = 5 * 1000;
             logger.info("Waiting '" + timeToWaitForUpdatedImageInMillis + "'ms for Bitmap to contain some rendered pixels.");
             for (int currentTimeMs = 0; currentTimeMs < timeToWaitForUpdatedImageInMillis && !done.get(); currentTimeMs += waitInMillis) {
                 ViewActionWait.waitFor(waitInMillis);
