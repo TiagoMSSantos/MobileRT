@@ -59,7 +59,7 @@ public final class UtilsContextT {
                                  final State... expectedStates) throws TimeoutException {
         logger.info("waitUntil start, expected button: " + expectedButtonText + ", expected state(s): " + Arrays.toString(expectedStates));
         final AtomicBoolean done = new AtomicBoolean(false);
-        final int waitInMillis = 25;
+        final int waitInMillis = 20;
 
         final DrawView drawView = UtilsT.getPrivateField(activity, "drawView");
         final MainRenderer renderer = drawView.getRenderer();
