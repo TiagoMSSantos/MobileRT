@@ -59,7 +59,7 @@ public final class UtilsContextT {
                                  final State... expectedStates) throws TimeoutException {
         logger.info("waitUntil start, expected button: " + expectedButtonText + ", expected state(s): " + Arrays.toString(expectedStates));
         final AtomicBoolean done = new AtomicBoolean(false);
-        final int waitInMillis = 1;
+        final int waitInMillis = 100;
 
         final DrawView drawView = UtilsT.getPrivateField(activity, "drawView");
         final MainRenderer renderer = drawView.getRenderer();
@@ -83,7 +83,7 @@ public final class UtilsContextT {
         if (!done.get()) {
             final State rendererState = renderer.getState();
             final String errorMessage = "Test: " + testName + ", State: '" + rendererState.name() + "' (expecting " + Arrays.toString(expectedStates) + "), Expected button: '" + expectedButtonText + "'.";
-            throw new TimeoutException("The Ray Tracing engine didn't reach the expected state in " + (float) (waitInMillis) / 1000 + " secs. " + errorMessage);
+            throw new TimeoutException("The Ray Tracing engine didn't reach the expected state in " + (float) (timeToWaitInMillis) / 1000 + " secs. " + errorMessage);
         }
 
         if (Objects.equals(expectedButtonText, Constants.STOP)) {

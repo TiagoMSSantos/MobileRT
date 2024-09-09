@@ -118,6 +118,7 @@ public abstract class AbstractTest {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         logger.info(methodName + ": " + this.testName.getMethodName());
 
+        InstrumentationRegistry.getInstrumentation().waitForIdleSync();
         this.mainActivityActivityTestRule.getScenario().onActivity(activity -> this.activity = activity);
 
         Preconditions.checkNotNull(this.activity, "The Activity didn't start as expected!");
@@ -137,6 +138,7 @@ public abstract class AbstractTest {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         logger.info(methodName + ": " + this.testName.getMethodName());
 
+        InstrumentationRegistry.getInstrumentation().waitForIdleSync();
         for (final Runnable method : this.closeActions) {
             method.run();
         }
@@ -223,14 +225,13 @@ public abstract class AbstractTest {
      * @param permission The permission which should be granted.
      */
     private static void waitForPermission(@NonNull final Context context, @NonNull final String permission) {
-        final int timeSecsToWait = 20;
-        final int advanceSecs = 2;
-        final int waitInMilliSecs = advanceSecs * 1000;
-        int currentTimeSecs = 0;
-        while (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED && currentTimeSecs < timeSecsToWait) {
+        final int timeToWaitMs = 10 * 1000;
+        final int waitInMilliSecs = 1000;
+        int currentTimeMs = 0;
+        while (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED && currentTimeMs < timeToWaitMs) {
             logger.info("Waiting for the permission '" + permission + "' to be granted to the app: " + context.getPackageName());
             ViewActionWait.waitFor(waitInMilliSecs);
-            currentTimeSecs += advanceSecs;
+            currentTimeMs += waitInMilliSecs;
         }
         if (ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED) {
             logger.info("Permission '" + permission + "' granted to the app: " + context.getPackageName());

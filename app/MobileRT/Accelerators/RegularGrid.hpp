@@ -274,10 +274,10 @@ namespace MobileRT {
                         // do an accurate aabb / primitive intersection test
                         const bool intersectedBox {primitive.intersect(cell)};
                         if (intersectedBox) {
-                            LOG_DEBUG("Adding primitive ", index, " (", idx, ") to RegularGrid (", typeid(T).name(), ") on coordinates: (", x, ", ", y, ", ", z, ")");
+                            // LOG_DEBUG("Adding primitive ", index, " (", idx, ") to RegularGrid (", typeid(T).name(), ") on coordinates: (", x, ", ", y, ", ", z, ")");
                             const ::std::lock_guard<::std::mutex> lock {this->mutexes_[idx]};
                             this->grid_[idx].emplace_back(&primitive);
-                            LOG_DEBUG("Added primitive ", index, " to RegularGrid (", typeid(T).name(), ") on coordinates: (", x, ", ", y, ", ", z, ")");
+                            // LOG_DEBUG("Added primitive ", index, " to RegularGrid (", typeid(T).name(), ") on coordinates: (", x, ", ", y, ", ", z, ")");
                         }
                     }
                 }

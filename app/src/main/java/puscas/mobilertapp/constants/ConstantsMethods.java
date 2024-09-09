@@ -1,7 +1,5 @@
 package puscas.mobilertapp.constants;
 
-import puscas.mobilertapp.utils.UtilsGL;
-
 /**
  * Utility class with the text constants for the names of methods.
  */
@@ -53,10 +51,4 @@ public final class ConstantsMethods {
      * The name of the "getNames" in the {@link Enum} methods.
      */
     public static final String GET_NAMES = "getNames";
-
-    /**
-     * The name of the {@link UtilsGL#run} methods.
-     */
-    public static final String RUN = "run";
-
 }

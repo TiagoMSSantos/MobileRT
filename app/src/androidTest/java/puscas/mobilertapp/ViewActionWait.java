@@ -13,13 +13,11 @@ import java.util.logging.Logger;
 
 /**
  * Auxiliary class which represents a {@link ViewAction} that will just wait for some time.
+ * <p>
+ * This class doesn't need a {@link Logger} because the method {@link ViewActionWait#getDescription()}
+ * is already automatically called for logging purposes.
  */
 public final class ViewActionWait implements ViewAction {
-
-    /**
-     * Logger for this class.
-     */
-    private static final Logger logger = Logger.getLogger(ViewActionWait.class.getSimpleName());
 
     /**
      * The time to wait in milliseconds.
@@ -62,11 +60,6 @@ public final class ViewActionWait implements ViewAction {
      *                    to become idle.
      */
     public static void waitFor(final int delayMillis) {
-        if (delayMillis == 0) {
-            logger.info("Waiting for MobileRT to become idle.");
-        } else if (delayMillis >= 2000) {
-            logger.info("Letting MobileRT to continue process for '" + delayMillis + "'ms.");
-        }
         Espresso.onView(ViewMatchers.withId(R.id.renderButton))
             .perform(new ViewActionWait(delayMillis));
     }

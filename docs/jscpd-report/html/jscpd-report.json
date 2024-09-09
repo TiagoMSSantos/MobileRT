@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-09-08T11:17:29.826Z",
+    "detectionDate": "2024-09-09T07:31:27.506Z",
     "formats": {
       "java": {
         "sources": {
@@ -389,14 +389,14 @@
             "newClones": 0
           },
           "app/src/main/java/puscas/mobilertapp/utils/UtilsGL.java": {
-            "lines": 213,
-            "tokens": 1425,
+            "lines": 209,
+            "tokens": 1381,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 9,
             "duplicatedTokens": 74,
-            "percentage": 4.23,
-            "percentageTokens": 5.19,
+            "percentage": 4.31,
+            "percentageTokens": 5.36,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -581,8 +581,8 @@
             "newClones": 0
           },
           "app/src/main/java/puscas/mobilertapp/constants/ConstantsMethods.java": {
-            "lines": 61,
-            "tokens": 242,
+            "lines": 53,
+            "tokens": 209,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -905,8 +905,8 @@
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/ViewActionWait.java": {
-            "lines": 72,
-            "tokens": 432,
+            "lines": 65,
+            "tokens": 342,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -1001,27 +1001,27 @@
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/AbstractTest.java": {
-            "lines": 327,
-            "tokens": 2827,
+            "lines": 328,
+            "tokens": 2839,
             "sources": 1,
-            "clones": 1,
-            "duplicatedLines": 15,
-            "duplicatedTokens": 114,
-            "percentage": 4.59,
-            "percentageTokens": 4.03,
+            "clones": 3,
+            "duplicatedLines": 25,
+            "duplicatedTokens": 252,
+            "percentage": 7.62,
+            "percentageTokens": 8.88,
             "newDuplicatedLines": 0,
             "newClones": 0
           }
         },
         "total": {
-          "lines": 10255,
-          "tokens": 72044,
+          "lines": 10237,
+          "tokens": 71889,
           "sources": 84,
-          "clones": 61,
-          "duplicatedLines": 582,
-          "duplicatedTokens": 5376,
-          "percentage": 5.68,
-          "percentageTokens": 7.46,
+          "clones": 62,
+          "duplicatedLines": 587,
+          "duplicatedTokens": 5445,
+          "percentage": 5.73,
+          "percentageTokens": 7.57,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -1478,13 +1478,13 @@
           },
           "app/Components/Loaders/OBJLoader.cpp": {
             "lines": 513,
-            "tokens": 6527,
+            "tokens": 6481,
             "sources": 1,
             "clones": 10,
             "duplicatedLines": 120,
             "duplicatedTokens": 1444,
             "percentage": 23.39,
-            "percentageTokens": 22.12,
+            "percentageTokens": 22.28,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -1803,7 +1803,7 @@
         },
         "total": {
           "lines": 5705,
-          "tokens": 56187,
+          "tokens": 56141,
           "sources": 56,
           "clones": 30,
           "duplicatedLines": 282,
@@ -2574,13 +2574,13 @@
           },
           "app/MobileRT/Accelerators/RegularGrid.hpp": {
             "lines": 542,
-            "tokens": 5703,
+            "tokens": 5615,
             "sources": 1,
             "clones": 4,
             "duplicatedLines": 36,
             "duplicatedTokens": 364,
             "percentage": 6.64,
-            "percentageTokens": 6.38,
+            "percentageTokens": 6.48,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -3031,13 +3031,13 @@
         },
         "total": {
           "lines": 3356,
-          "tokens": 25049,
+          "tokens": 24961,
           "sources": 47,
           "clones": 3,
           "duplicatedLines": 29,
           "duplicatedTokens": 314,
           "percentage": 0.86,
-          "percentageTokens": 1.25,
+          "percentageTokens": 1.26,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3164,14 +3164,14 @@
       }
     },
     "total": {
-      "lines": 28677,
-      "tokens": 221326,
+      "lines": 28659,
+      "tokens": 221037,
       "sources": 250,
-      "clones": 112,
-      "duplicatedLines": 1272,
-      "duplicatedTokens": 12063,
-      "percentage": 4.44,
-      "percentageTokens": 5.45,
+      "clones": 113,
+      "duplicatedLines": 1277,
+      "duplicatedTokens": 12132,
+      "percentage": 4.46,
+      "percentageTokens": 5.49,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -5374,6 +5374,42 @@
       }
     },
     {
+      "format": "java",
+      "lines": 6,
+      "fragment": "    public void tearDown() {\n        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();\n        logger.info(methodName + \": \" + this.testName.getMethodName());\n\n        InstrumentationRegistry.getInstrumentation().waitFo",
+      "tokens": 0,
+      "firstFile": {
+        "name": "app/src/androidTest/java/puscas/mobilertapp/AbstractTest.java",
+        "start": 137,
+        "end": 142,
+        "startLoc": {
+          "line": 137,
+          "column": 9,
+          "position": 934
+        },
+        "endLoc": {
+          "line": 142,
+          "column": 4,
+          "position": 1003
+        }
+      },
+      "secondFile": {
+        "name": "app/src/androidTest/java/puscas/mobilertapp/AbstractTest.java",
+        "start": 117,
+        "end": 122,
+        "startLoc": {
+          "line": 117,
+          "column": 6,
+          "position": 752
+        },
+        "endLoc": {
+          "line": 122,
+          "column": 5,
+          "position": 821
+        }
+      }
+    },
+    {
       "format": "cpp",
       "lines": 8,
       "fragment": "icsView->resize(m_config.width + 2, m_config.height + 2);\n}\n\nvoid MainWindow::setImage(const ::MobileRT::Config &config, const bool async) {\n    m_async = async;\n    m_config = config;\n\n    LOG_DEBUG(\"width = \", m_config.width);\n    LOG_DEBUG(\"height = \", m_config.height);\n    LOG_DEBUG(\"async ",
@@ -5889,12 +5925,12 @@
         "startLoc": {
           "line": 463,
           "column": 13,
-          "position": 4977
+          "position": 4889
         },
         "endLoc": {
           "line": 469,
           "column": 13,
-          "position": 5064
+          "position": 4976
         }
       },
       "secondFile": {
@@ -5904,12 +5940,12 @@
         "startLoc": {
           "line": 412,
           "column": 13,
-          "position": 4488
+          "position": 4400
         },
         "endLoc": {
           "line": 418,
           "column": 6,
-          "position": 4575
+          "position": 4487
         }
       }
     },
@@ -5925,12 +5961,12 @@
         "startLoc": {
           "line": 500,
           "column": 2,
-          "position": 5381
+          "position": 5293
         },
         "endLoc": {
           "line": 512,
           "column": 2,
-          "position": 5476
+          "position": 5388
         }
       },
       "secondFile": {
@@ -5940,12 +5976,12 @@
         "startLoc": {
           "line": 480,
           "column": 2,
-          "position": 5191
+          "position": 5103
         },
         "endLoc": {
           "line": 491,
           "column": 5,
-          "position": 5285
+          "position": 5197
         }
       }
     },
@@ -6105,12 +6141,12 @@
         "startLoc": {
           "line": 262,
           "column": 12,
-          "position": 2955
+          "position": 2909
         },
         "endLoc": {
           "line": 275,
           "column": 4,
-          "position": 3112
+          "position": 3066
         }
       },
       "secondFile": {
@@ -6120,12 +6156,12 @@
         "startLoc": {
           "line": 233,
           "column": 5,
-          "position": 2655
+          "position": 2609
         },
         "endLoc": {
           "line": 252,
           "column": 4,
-          "position": 2812
+          "position": 2766
         }
       }
     },
@@ -6141,12 +6177,12 @@
         "startLoc": {
           "line": 390,
           "column": 2,
-          "position": 4788
+          "position": 4742
         },
         "endLoc": {
           "line": 404,
           "column": 2,
-          "position": 4931
+          "position": 4885
         }
       },
       "secondFile": {
@@ -6156,12 +6192,12 @@
         "startLoc": {
           "line": 369,
           "column": 2,
-          "position": 4585
+          "position": 4539
         },
         "endLoc": {
           "line": 383,
           "column": 2,
-          "position": 4728
+          "position": 4682
         }
       }
     },
@@ -6177,12 +6213,12 @@
         "startLoc": {
           "line": 434,
           "column": 21,
-          "position": 5366
+          "position": 5320
         },
         "endLoc": {
           "line": 443,
           "column": 2,
-          "position": 5469
+          "position": 5423
         }
       },
       "secondFile": {
@@ -6192,12 +6228,12 @@
         "startLoc": {
           "line": 390,
           "column": 25,
-          "position": 4782
+          "position": 4736
         },
         "endLoc": {
           "line": 378,
           "column": 2,
-          "position": 4682
+          "position": 4636
         }
       }
     },
@@ -6213,12 +6249,12 @@
         "startLoc": {
           "line": 441,
           "column": 7,
-          "position": 5463
+          "position": 5417
         },
         "endLoc": {
           "line": 459,
           "column": 35,
-          "position": 5684
+          "position": 5638
         }
       },
       "secondFile": {
@@ -6228,12 +6264,12 @@
         "startLoc": {
           "line": 402,
           "column": 9,
-          "position": 4925
+          "position": 4879
         },
         "endLoc": {
           "line": 421,
           "column": 5,
-          "position": 5147
+          "position": 5101
         }
       }
     },

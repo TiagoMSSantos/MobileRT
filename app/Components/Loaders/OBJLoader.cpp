@@ -202,7 +202,7 @@ OBJLoader::triple<::glm::vec2, ::glm::vec2, ::glm::vec2> OBJLoader::normalizeTex
         };
     } else {
         // Normalize the texture coordinates to be between [0, 1]
-        LOG_DEBUG("Normalizing texture coordinates: ", ::std::get<0>(texCoord), ", ", ::std::get<1>(texCoord), ", ", ::std::get<2>(texCoord));
+        // LOG_DEBUG("Normalizing texture coordinates: ", ::std::get<0>(texCoord), ", ", ::std::get<1>(texCoord), ", ", ::std::get<2>(texCoord));
         return triple<::glm::vec2, ::glm::vec2, ::glm::vec2> {
             ::MobileRT::normalize(::std::get<0>(texCoord)),
             ::MobileRT::normalize(::std::get<1>(texCoord)),
