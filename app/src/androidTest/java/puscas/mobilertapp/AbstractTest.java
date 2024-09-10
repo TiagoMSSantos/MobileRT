@@ -32,7 +32,9 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 import org.junit.rules.TestRule;
+import org.junit.rules.TestWatcher;
 import org.junit.rules.Timeout;
+import org.junit.runner.Description;
 
 import java.io.File;
 import java.nio.file.FileSystem;
@@ -99,6 +101,28 @@ public abstract class AbstractTest {
     final public TestName testName = new TestName();
 
     /**
+     * The {@link Rule} to validate all {@link #closeActions} when a test succeeds.
+     */
+    @Rule
+    public final TestRule testWatcher = new TestWatcher() {
+        @Override
+        protected void succeeded(final Description description) {
+            final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+            logger.info(methodName + ": " + testName.getMethodName() + " succeeded");
+            for (final Runnable method : closeActions) {
+                method.run();
+            }
+        }
+
+        @Override
+        protected void finished(final Description description) {
+            final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+            logger.info(methodName + ": " + testName.getMethodName() + " finished");
+            Intents.release();
+        }
+    };
+
+    /**
      * A {@link Deque} to store {@link Runnable}s which should be called at the end of the test.
      * The {@link #tearDown()} method which is called after every test will call use this field and
      * call the method {@link Runnable#run()} of every {@link Runnable} stored temporarily here.
@@ -139,11 +163,6 @@ public abstract class AbstractTest {
         logger.info(methodName + ": " + this.testName.getMethodName());
 
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
-        for (final Runnable method : this.closeActions) {
-            method.run();
-        }
-        Intents.release();
-
         Preconditions.checkNotNull(this.activity, "The Activity didn't finish as expected!");
 
         logger.info("Will wait for the Activity triggered by the test to finish.");

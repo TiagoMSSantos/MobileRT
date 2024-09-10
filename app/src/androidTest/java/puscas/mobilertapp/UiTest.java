@@ -2,6 +2,8 @@ package puscas.mobilertapp;
 
 import static puscas.mobilertapp.ConstantsAndroidTests.BUTTON_MESSAGE;
 
+import android.view.InputDevice;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -95,7 +97,7 @@ public final class UiTest extends AbstractTest {
             .check((view, exception) ->
                 assertPreviewCheckBox(view, !expectedValue)
             )
-            .perform(ViewActions.click())
+            .perform(ViewActions.closeSoftKeyboard(), ViewActions.click(InputDevice.SOURCE_TOUCHSCREEN, MotionEvent.BUTTON_PRIMARY))
             .check((view, exception) ->
                 assertPreviewCheckBox(view, expectedValue)
             );
