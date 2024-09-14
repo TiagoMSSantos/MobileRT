@@ -19,12 +19,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.test.core.app.ActivityScenario;
+import androidx.test.espresso.Espresso;
 import androidx.test.espresso.intent.Intents;
 import androidx.test.espresso.intent.matcher.IntentMatchers;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.google.common.base.Preconditions;
+import com.google.common.util.concurrent.Uninterruptibles;
 
 import org.junit.After;
 import org.junit.Before;
@@ -106,6 +108,12 @@ public abstract class AbstractTest {
     @Rule
     public final TestRule testWatcher = new TestWatcher() {
         @Override
+        protected void starting(final Description description) {
+            InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+            Espresso.onIdle();
+        }
+
+        @Override
         protected void succeeded(final Description description) {
             final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
             logger.info(methodName + ": " + testName.getMethodName() + " succeeded");
@@ -143,6 +151,7 @@ public abstract class AbstractTest {
         logger.info(methodName + ": " + this.testName.getMethodName());
 
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+        Espresso.onIdle();
         this.mainActivityActivityTestRule.getScenario().onActivity(activity -> this.activity = activity);
 
         Preconditions.checkNotNull(this.activity, "The Activity didn't start as expected!");
@@ -150,6 +159,7 @@ public abstract class AbstractTest {
 
         Intents.init();
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+        Espresso.onIdle();
         logger.info(methodName + ": " + this.testName.getMethodName() + " started");
     }
 
@@ -163,19 +173,20 @@ public abstract class AbstractTest {
         logger.info(methodName + ": " + this.testName.getMethodName());
 
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+        Espresso.onIdle();
         Preconditions.checkNotNull(this.activity, "The Activity didn't finish as expected!");
 
         logger.info("Will wait for the Activity triggered by the test to finish.");
-        ViewActionWait.waitFor(0);
-
         while (isActivityRunning(this.activity)) {
             logger.info("Finishing the Activity.");
             this.activity.finish();
             InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+            Espresso.onIdle();
         }
         // Wait for the app to be closed. Necessary for Android 12+.
         this.mainActivityActivityTestRule.getScenario().close();
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+        Espresso.onIdle();
         logger.info("Activity finished.");
 
         logger.info(methodName + ": " + this.testName.getMethodName() + " finished");
@@ -209,6 +220,8 @@ public abstract class AbstractTest {
      * storage.
      */
     private static void grantPermissions() {
+        InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+        Espresso.onIdle();
         logger.info("Granting permissions to the MainActivity to be able to read files from an external storage.");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             // Necessary for the tests and MobileRT to be able to read any file from SD Card on Android 11+, by having the permission: 'MANAGE_EXTERNAL_STORAGE'.
@@ -232,7 +245,8 @@ public abstract class AbstractTest {
             waitForPermission(InstrumentationRegistry.getInstrumentation().getTargetContext(), Manifest.permission.READ_EXTERNAL_STORAGE);
             waitForPermission(InstrumentationRegistry.getInstrumentation().getContext(), Manifest.permission.READ_EXTERNAL_STORAGE);
         }
-        ViewActionWait.waitFor(0);
+        InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+        Espresso.onIdle();
 
         logger.info("Permissions granted.");
     }
@@ -249,7 +263,9 @@ public abstract class AbstractTest {
         int currentTimeMs = 0;
         while (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED && currentTimeMs < timeToWaitMs) {
             logger.info("Waiting for the permission '" + permission + "' to be granted to the app: " + context.getPackageName());
-            ViewActionWait.waitFor(waitInMilliSecs);
+            InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+            Espresso.onIdle();
+            Uninterruptibles.sleepUninterruptibly(waitInMilliSecs, TimeUnit.MILLISECONDS);
             currentTimeMs += waitInMilliSecs;
         }
         if (ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED) {
