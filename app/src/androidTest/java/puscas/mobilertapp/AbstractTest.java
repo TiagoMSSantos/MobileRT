@@ -315,7 +315,6 @@ public abstract class AbstractTest {
      * @param filesPath      The relative path to multiple {@link File}s. The path should be
      *                       relative to the external SD card path or to the internal storage path
      *                       in the Android {@link FileSystem}.
-     *
      * @implNote This method stores a {@link Runnable} into the {@link #closeActions} in order to
      * call it in the {@link #tearDown()} method after every test. This {@link Runnable} verifies
      * whether the expected mocked {@link Intent} used by this method was really received by the

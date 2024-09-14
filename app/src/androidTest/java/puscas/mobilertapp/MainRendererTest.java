@@ -15,7 +15,9 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import puscas.mobilertapp.exceptions.FailureException;
 import puscas.mobilertapp.utils.UtilsGL;
+import puscas.mobilertapp.utils.UtilsLogging;
 import puscas.mobilertapp.utils.UtilsShader;
 import puscas.mobilertapp.utils.UtilsT;
 
@@ -132,11 +134,16 @@ public final class MainRendererTest extends AbstractTest {
         final CountDownLatch latch = new CountDownLatch(1);
         // We need to call `loadShader` method with the GL rendering thread.
         drawView.queueEvent(() -> {
-            final int index = UtilsShader.loadShader(shaderType, shaderCode);
-            shaderIndex.set(index);
-            UtilsGL.run(() -> GLES20.glDeleteShader(index));
-            UtilsGL.run(GLES20::glReleaseShaderCompiler);
-            latch.countDown();
+            try {
+                final int index = UtilsShader.loadShader(shaderType, shaderCode);
+                shaderIndex.set(index);
+                UtilsGL.run(() -> GLES20.glDeleteShader(index));
+            } catch (final FailureException ex) {
+                UtilsLogging.logThrowable(ex, "MainRendererTest#createAndGetIndexOfShader");
+            } finally {
+                UtilsGL.run(GLES20::glReleaseShaderCompiler);
+                latch.countDown();
+            }
         });
         Assert.assertTrue("CountDownLatch has value zero as expected.", latch.await(1L, TimeUnit.MINUTES));
 

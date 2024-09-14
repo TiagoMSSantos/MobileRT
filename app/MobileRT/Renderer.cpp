@@ -118,7 +118,7 @@ void Renderer::renderScene(::std::int32_t *const bitmap, const ::std::int32_t ti
         LOG_DEBUG("(tid: ", tid, ") renderScene sample: ", sample);
         while (true) {
             const float tile {getTile(sample)};
-            LOG_DEBUG("(tid: ", tid, ") Will get tile: ", tile,", bx=", this->blockSizeX_, ", by=", this->blockSizeY_, ", spp=", sample, " (total: ", this->samplesPixel_, ")");
+            // LOG_DEBUG("(tid: ", tid, ") Will get tile: ", tile,", bx=", this->blockSizeX_, ", by=", this->blockSizeY_, ", spp=", sample, " (total: ", this->samplesPixel_, ")");
             if (tile >= 1.0F) {
                 break;
             }
@@ -126,7 +126,7 @@ void Renderer::renderScene(::std::int32_t *const bitmap, const ::std::int32_t ti
             const ::std::int32_t pixel {roundBlock * this->blockSizeX_ % this->resolution_};
             const ::std::int32_t startY {((pixel / this->width_) * this->blockSizeY_) % this->height_};
             const ::std::int32_t endY {startY + this->blockSizeY_};
-            LOG_DEBUG("(tid: ", tid, ") Will render a tile. roundBlock: '", roundBlock, "', pixel: '", pixel, "', startY: '", startY, "', endY: '", endY, "'");
+            // LOG_DEBUG("(tid: ", tid, ") Will render a tile. roundBlock: '", roundBlock, "', pixel: '", pixel, "', startY: '", startY, "', endY: '", endY, "'");
             for (::std::int32_t y {startY}; y < endY; ++y) {
                 const float v {y * invImgHeight};
                 const ::std::int32_t yWidth {y * this->width_};
@@ -157,7 +157,7 @@ void Renderer::renderScene(::std::int32_t *const bitmap, const ::std::int32_t ti
                     *bitmapPixel = pixelColor;
                 }
             }
-            LOG_DEBUG("(tid: ", tid, ") Tile rendered");
+            // LOG_DEBUG("(tid: ", tid, ") Tile rendered");
         }
         if (tid == 0) {
             this->sample_ = sample + 1;

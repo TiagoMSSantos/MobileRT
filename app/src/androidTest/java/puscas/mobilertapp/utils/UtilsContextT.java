@@ -104,7 +104,7 @@ public final class UtilsContextT {
             if (!done.get()) {
                 final Bitmap bitmap = UtilsT.getPrivateField(renderer, "bitmap");
                 final boolean bitmapSingleColor = UtilsT.isBitmapSingleColor(bitmap);
-                final String errorMessage = "Bitmap had no pixel rendered: " + bitmapSingleColor + ".";
+                final String errorMessage = "Test: " + testName + ", Bitmap had no pixel rendered: " + bitmapSingleColor + ".";
                 throw new TimeoutException("The Ray Tracing engine didn't reach the expected state in " + (float) (timeToWaitForUpdatedImageInMillis) / 1000 + " secs. " + errorMessage);
             }
         }

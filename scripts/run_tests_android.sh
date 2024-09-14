@@ -242,6 +242,9 @@ unlockDevice() {
   callCommandUntilSuccess 5 adb devices -l;
   callCommandUntilSuccess 5 adb version;
 
+  callAdbShellCommandUntilSuccess adb shell 'input keyevent 82; echo ::$?::';
+  callAdbShellCommandUntilSuccess adb shell 'input tap 800 400; echo ::$?::';
+
   androidApi=$(adb shell getprop ro.build.version.sdk | tr -d '[:space:]');
   echo "androidApi: '${androidApi}'";
 }
@@ -387,7 +390,9 @@ copyResources() {
   set -e;
 
   callAdbShellCommandUntilSuccess adb shell 'mkdir -p '"${mobilert_path}"'; echo ::$?::';
+  callCommandUntilSuccess 5 adb shell 'ls -laR '"${mobilert_path}";
   callAdbShellCommandUntilSuccess adb shell 'mkdir -p '"${sdcard_path_android}"'; echo ::$?::';
+  callCommandUntilSuccess 5 adb shell 'ls -laR '"${sdcard_path_android}";
 
   callAdbShellCommandUntilSuccess adb shell 'mkdir -p '"${mobilert_path}"'/WavefrontOBJs/CornellBox; echo ::$?::';
   callAdbShellCommandUntilSuccess adb shell 'mkdir -p '"${sdcard_path_android}"'/WavefrontOBJs/teapot; echo ::$?::';
