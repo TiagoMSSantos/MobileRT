@@ -31,6 +31,7 @@ import com.google.common.util.concurrent.Uninterruptibles;
 import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.rules.TestName;
@@ -144,6 +145,15 @@ public abstract class AbstractTest {
      */
     final private Deque<Runnable> closeActions = new ArrayDeque<>();
 
+
+    /**
+     * A setup method which is called first.
+     */
+    @BeforeClass
+    @CallSuper
+    public static void setUpAll() {
+        dismissANRSystemDialog();
+    }
 
     /**
      * Setup method called before each test.
@@ -377,6 +387,21 @@ public abstract class AbstractTest {
         // Temporarily store the assertion that verifies if the application received the expected Intent.
         // And call it in the `teardown` method after every test in order to avoid duplicated code.
         this.closeActions.add(() -> Intents.intended(IntentMatchers.hasAction(resultData.getAction())));
+    }
+
+    /**
+     * Dismiss any "Application Not Responding" (ANR) system dialog that might have appeared.
+     */
+    private static void dismissANRSystemDialog() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand("am broadcast -a android.intent.action.CLOSE_SYSTEM_DIALOGS");
+            InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand("settings put global window_animation_scale 0");
+            InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand("settings put global transition_animation_scale 0");
+            InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand("settings put global animator_duration_scale 0");
+            InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand("pm grant puscas.mobilertapp android.permission.SET_ANIMATION_SCALE");
+            InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand("input keyevent 82");
+            InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand("input tap 800 400");
+        }
     }
 
 }

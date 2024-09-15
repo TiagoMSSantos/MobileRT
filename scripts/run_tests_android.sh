@@ -234,6 +234,7 @@ unlockDevice() {
   _waitForEmulatorToBoot;
 
   echo 'Unlock device';
+  callAdbShellCommandUntilSuccess adb shell 'am broadcast -a android.intent.action.CLOSE_SYSTEM_DIALOGS; echo ::$?::';
   callAdbShellCommandUntilSuccess adb shell 'input keyevent 82; echo ::$?::';
   callAdbShellCommandUntilSuccess adb shell 'input tap 800 400; echo ::$?::';
   callAdbShellCommandUntilSuccess adb shell 'input tap 1000 500; echo ::$?::';
@@ -352,6 +353,20 @@ waitForEmulator() {
     echo "Android emulator didn't start ... will exit.";
     exit 1;
   fi
+
+  echo 'Disable animations';
+  # Error in API 15 & 16: /system/bin/sh: settings: not found
+  if [ "${androidApi}" -gt 16 ]; then
+    callAdbShellCommandUntilSuccess adb shell 'settings put global window_animation_scale 0; echo ::$?::';
+    callAdbShellCommandUntilSuccess adb shell 'settings put global transition_animation_scale 0; echo ::$?::';
+    callAdbShellCommandUntilSuccess adb shell 'settings put global animator_duration_scale 0; echo ::$?::';
+  fi
+
+  echo 'Activate JNI extended checking mode';
+  # Command fails on Android 34.
+  # callAdbShellCommandUntilSuccess adb shell 'setprop dalvik.vm.checkjni true; echo ::$?::';
+  callAdbShellCommandUntilSuccess adb shell 'setprop debug.checkjni 1; echo ::$?::';
+
   unlockDevice;
 }
 
@@ -443,20 +458,6 @@ copyResources() {
 
 startCopyingLogcatToFile() {
   unlockDevice;
-
-  # echo 'Disable animations';
-  # puscas.mobilertapp not found
-  # adb shell pm grant puscas.mobilertapp android.permission.SET_ANIMATION_SCALE;
-
-  # /system/bin/sh: settings: not found
-  # adb shell settings put global window_animation_scale 0.0;
-  # adb shell settings put global transition_animation_scale 0.0;
-  # adb shell settings put global animator_duration_scale 0.0;
-
-  echo 'Activate JNI extended checking mode';
-  # Command fails on Android 34.
-  # callAdbShellCommandUntilSuccess adb shell 'setprop dalvik.vm.checkjni true; echo ::$?::';
-  callAdbShellCommandUntilSuccess adb shell 'setprop debug.checkjni 1; echo ::$?::';
 
   echo 'Clear logcat';
   # -b all -> Unable to open log device '/dev/log/all': No such file or directory
@@ -596,6 +597,10 @@ runInstrumentationTests() {
     callAdbShellCommandUntilSuccess adb shell 'pm grant puscas.mobilertapp.test android.permission.READ_EXTERNAL_STORAGE; echo ::$?::';
     callAdbShellCommandUntilSuccess adb shell 'pm grant puscas.mobilertapp android.permission.READ_EXTERNAL_STORAGE; echo ::$?::';
   fi
+
+  # puscas.mobilertapp not found
+  # adb shell pm grant puscas.mobilertapp android.permission.SET_ANIMATION_SCALE;
+
   echo 'List of instrumented APKs:';
   adb shell 'pm list instrumentation;';
   unlockDevice;
