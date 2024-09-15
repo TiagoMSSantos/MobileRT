@@ -209,13 +209,13 @@ public abstract class AbstractTest {
         while (isActivityRunning(this.activity) && currentTimeSecs < timeToWaitSecs) {
             logger.info("Finishing the Activity.");
             this.activity.finish();
-            // Wait for the app to be closed. Necessary for Android 12+.
-            this.mainActivityActivityTestRule.getScenario().close();
             InstrumentationRegistry.getInstrumentation().waitForIdleSync();
             Espresso.onIdle();
             Uninterruptibles.sleepUninterruptibly(waitInSecs, TimeUnit.SECONDS);
             currentTimeSecs += waitInSecs;
         }
+        // Wait for the app to be closed. Necessary for Android 12+.
+        this.mainActivityActivityTestRule.getScenario().close();
         logger.info("Activity finished: " + !isActivityRunning(this.activity) + " (" + currentTimeSecs + "secs)");
 
         logger.info(methodName + ": " + this.testName.getMethodName() + " finished");
