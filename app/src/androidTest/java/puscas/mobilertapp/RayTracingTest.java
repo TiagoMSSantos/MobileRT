@@ -98,10 +98,10 @@ public final class RayTracingTest extends AbstractTest {
         // Mock the reply as the external file manager application, to not select anything.
         final Intent resultData = new Intent(Intent.ACTION_GET_CONTENT);
         final Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_CANCELED, resultData);
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(result);
+        Intents.intending(IntentMatchers.hasAction(resultData.getAction())).respondWith(result);
 
         assertRenderScene(Scene.OBJ, Shader.WHITTED, Accelerator.NAIVE, 1, 1, true, true);
-        Intents.intended(IntentMatchers.anyIntent());
+        Intents.intended(IntentMatchers.hasAction(resultData.getAction()));
     }
 
     /**

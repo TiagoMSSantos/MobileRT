@@ -28,6 +28,7 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.Uninterruptibles;
 
+import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -114,9 +115,13 @@ public abstract class AbstractTest {
         }
 
         @Override
+        protected void failed(final Throwable exception, final Description description) {
+            logger.severe(testName.getMethodName() + ": failed");
+        }
+
+        @Override
         protected void succeeded(final Description description) {
-            final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-            logger.info(methodName + ": " + testName.getMethodName() + " succeeded");
+            logger.info(testName.getMethodName() + " succeeded");
             for (final Runnable method : closeActions) {
                 method.run();
             }
@@ -124,8 +129,7 @@ public abstract class AbstractTest {
 
         @Override
         protected void finished(final Description description) {
-            final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-            logger.info(methodName + ": " + testName.getMethodName() + " finished");
+            logger.info(testName.getMethodName() + " finished");
             Intents.release();
         }
     };
@@ -158,6 +162,18 @@ public abstract class AbstractTest {
         grantPermissions();
 
         Intents.init();
+        final List<Intent> intents = Intents.getIntents();
+        if (!intents.isEmpty()) {
+            logger.info("Resetting Intents that were missing from previous test.");
+            Intents.intended(Matchers.anyOf(IntentMatchers.hasAction(Intent.ACTION_GET_CONTENT), IntentMatchers.hasAction(Intent.ACTION_MAIN)));
+            Intents.assertNoUnverifiedIntents();
+            Intents.release();
+            Intents.init();
+            Intents.assertNoUnverifiedIntents();
+        }
+        logger.info(methodName + " validating Intents");
+        Intents.assertNoUnverifiedIntents();
+
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
         Espresso.onIdle();
         logger.info(methodName + ": " + this.testName.getMethodName() + " started");
@@ -176,18 +192,21 @@ public abstract class AbstractTest {
         Espresso.onIdle();
         Preconditions.checkNotNull(this.activity, "The Activity didn't finish as expected!");
 
-        logger.info("Will wait for the Activity triggered by the test to finish.");
-        while (isActivityRunning(this.activity)) {
+        final int timeToWaitSecs = 20;
+        logger.info("Will wait for the Activity triggered by the test to finish. Max timeout in secs: " + timeToWaitSecs);
+        final int waitInSecs = 1;
+        int currentTimeSecs = 0;
+        while (isActivityRunning(this.activity) && currentTimeSecs < timeToWaitSecs) {
             logger.info("Finishing the Activity.");
             this.activity.finish();
+            // Wait for the app to be closed. Necessary for Android 12+.
+            this.mainActivityActivityTestRule.getScenario().close();
             InstrumentationRegistry.getInstrumentation().waitForIdleSync();
             Espresso.onIdle();
+            Uninterruptibles.sleepUninterruptibly(waitInSecs, TimeUnit.SECONDS);
+            currentTimeSecs += waitInSecs;
         }
-        // Wait for the app to be closed. Necessary for Android 12+.
-        this.mainActivityActivityTestRule.getScenario().close();
-        InstrumentationRegistry.getInstrumentation().waitForIdleSync();
-        Espresso.onIdle();
-        logger.info("Activity finished.");
+        logger.info("Activity finished: " + !isActivityRunning(this.activity) + " (" + currentTimeSecs + "secs)");
 
         logger.info(methodName + ": " + this.testName.getMethodName() + " finished");
     }
@@ -353,11 +372,11 @@ public abstract class AbstractTest {
             resultData.setData(Uri.fromFile(new File(storagePath + ConstantsUI.FILE_SEPARATOR + filesPath[0])));
         }
         final Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(result);
+        Intents.intending(IntentMatchers.hasAction(resultData.getAction())).respondWith(result);
 
         // Temporarily store the assertion that verifies if the application received the expected Intent.
         // And call it in the `teardown` method after every test in order to avoid duplicated code.
-        this.closeActions.add(() -> Intents.intended(IntentMatchers.anyIntent()));
+        this.closeActions.add(() -> Intents.intended(IntentMatchers.hasAction(resultData.getAction())));
     }
 
 }
