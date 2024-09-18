@@ -544,6 +544,7 @@ jobs:
         emulator-boot-timeout: 400 # It can take more than 5 min to boot, and the tests can take more than 17 min to finish.
         script: |
           sh scripts/run_tests_android.sh -t ${{ matrix.type }} -r all -a ${{ matrix.android_api }} -k false -f ${{ env.android_arch }};
+          echo "Run Android tests finished: ${?}";
 
     - name: Publish Android Test Report
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}

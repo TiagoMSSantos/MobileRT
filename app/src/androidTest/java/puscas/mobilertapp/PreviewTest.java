@@ -1,5 +1,9 @@
 package puscas.mobilertapp;
 
+import androidx.test.espresso.Espresso;
+import androidx.test.espresso.matcher.RootMatchers;
+import androidx.test.espresso.matcher.ViewMatchers;
+
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
@@ -35,9 +39,16 @@ public final class PreviewTest extends AbstractTest {
     public void testPreviewScenePerspectiveCamera() throws TimeoutException {
         logger.info("testPreviewScenePerspectiveCamera start");
 
-        UtilsContextT.waitUntil(this.testName.getMethodName(), this.activity, Constants.RENDER, State.IDLE);
+        ViewActionWait.waitFor(0);
+        Espresso.onView(ViewMatchers.withId(R.id.preview))
+            .inRoot(RootMatchers.isTouchable())
+            .check((view, exception) ->
+                UiTest.assertPreviewCheckBox(view, true)
+            );
+        ViewActionWait.waitFor(0);
         UtilsContextT.resetPickerValues(Scene.CORNELL.ordinal(), Accelerator.NAIVE, 99, 99);
 
+        ViewActionWait.waitFor(0);
         UtilsT.startRendering(false);
         UtilsContextT.waitUntil(this.testName.getMethodName(), this.activity, Constants.STOP, State.BUSY);
 
@@ -60,9 +71,17 @@ public final class PreviewTest extends AbstractTest {
     public void testPreviewSceneOrthographicCamera() throws TimeoutException {
         logger.info("testPreviewSceneOrthographicCamera start");
 
-        UtilsContextT.waitUntil(this.testName.getMethodName(), this.activity, Constants.RENDER, State.IDLE);
+        ViewActionWait.waitFor(0);
+        Espresso.onView(ViewMatchers.withId(R.id.preview))
+            .inRoot(RootMatchers.isTouchable())
+            .check((view, exception) ->
+                UiTest.assertPreviewCheckBox(view, true)
+            );
+        ViewActionWait.waitFor(0);
+
         UtilsContextT.resetPickerValues(Scene.SPHERES.ordinal(), Accelerator.NAIVE, 99, 99);
 
+        ViewActionWait.waitFor(0);
         UtilsT.startRendering(false);
         UtilsContextT.waitUntil(this.testName.getMethodName(), this.activity, Constants.STOP, State.BUSY);
 

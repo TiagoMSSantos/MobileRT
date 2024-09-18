@@ -39,7 +39,6 @@ public final class RayTracingTest extends AbstractTest {
     public static void setUpAll() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         logger.info(methodName);
-        AbstractTest.setUpAll();
 
         logger.info("---------------------------------------------------");
         final String messageDevice = "Device: " + Build.DEVICE;

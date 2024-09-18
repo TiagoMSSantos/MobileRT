@@ -97,7 +97,7 @@ public final class UiTest extends AbstractTest {
             .check((view, exception) ->
                 assertPreviewCheckBox(view, !expectedValue)
             )
-            .perform(ViewActions.closeSoftKeyboard(), ViewActions.click(InputDevice.SOURCE_TOUCHSCREEN, MotionEvent.BUTTON_PRIMARY))
+            .perform(ViewActions.click(InputDevice.SOURCE_TOUCHSCREEN, MotionEvent.BUTTON_PRIMARY))
             .check((view, exception) ->
                 assertPreviewCheckBox(view, expectedValue)
             );
@@ -110,8 +110,8 @@ public final class UiTest extends AbstractTest {
      * @param view          The {@link View}.
      * @param expectedValue The expected value for the {@link CheckBox}.
      */
-    private static void assertPreviewCheckBox(@NonNull final View view,
-                                              final boolean expectedValue) {
+    static void assertPreviewCheckBox(@NonNull final View view,
+                                      final boolean expectedValue) {
         final CheckBox checkbox = view.findViewById(R.id.preview);
         Assert.assertEquals(Constants.CHECK_BOX_MESSAGE, Constants.PREVIEW, checkbox.getText().toString());
         Assert.assertEquals( "Check box has not the expected value", expectedValue, checkbox.isChecked());

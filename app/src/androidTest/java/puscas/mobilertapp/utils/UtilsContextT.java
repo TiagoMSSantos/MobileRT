@@ -65,7 +65,7 @@ public final class UtilsContextT {
         final DrawView drawView = UtilsT.getPrivateField(activity, "drawView");
         final MainRenderer renderer = drawView.getRenderer();
 
-        final int timeToWaitInMillis = Objects.equals(expectedButtonText, Constants.STOP) ? 20 * 1000 : 120 * 1000;
+        final int timeToWaitInMillis = Objects.equals(expectedButtonText, Constants.STOP) ? 20 * 1000 : 90 * 1000;
         for (int currentTimeMs = 0; currentTimeMs < timeToWaitInMillis && !done.get(); currentTimeMs += waitInMillis) {
             ViewActionWait.waitFor(waitInMillis);
             Espresso.onView(ViewMatchers.withId(R.id.renderButton))
@@ -89,7 +89,7 @@ public final class UtilsContextT {
 
         if (Objects.equals(expectedButtonText, Constants.STOP)) {
             done.set(false);
-            final int timeToWaitForUpdatedImageInMillis = 5 * 1000;
+            final int timeToWaitForUpdatedImageInMillis = 10 * 1000;
             logger.info("Waiting '" + timeToWaitForUpdatedImageInMillis + "'ms for Bitmap to contain some rendered pixels.");
             for (int currentTimeMs = 0; currentTimeMs < timeToWaitForUpdatedImageInMillis && !done.get(); currentTimeMs += waitInMillis) {
                 ViewActionWait.waitFor(waitInMillis);

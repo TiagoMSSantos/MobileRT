@@ -53,17 +53,13 @@ public final class ViewActionButton implements ViewAction {
     @NonNull
     @Override
     public Matcher<View> getConstraints() {
-        logger.info("ViewActionButton#getConstraints");
-
         return ViewMatchers.isAssignableFrom(Button.class);
     }
 
     @NonNull
     @Override
     public String getDescription() {
-        logger.info("ViewActionButton#getDescription");
-
-        return "Click button";
+        return "Click button (expected text: '" + this.expectedText + "', long click: '" + this.pressLongClick + "')";
     }
 
     @Override

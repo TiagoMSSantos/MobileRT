@@ -148,14 +148,14 @@ clear_func() {
 catch_signal() {
   echo '';
   echo 'Caught signal';
+  trap - EXIT HUP INT QUIT ILL TRAP ABRT TERM; # Disable traps first, to avoid infinite loop.
 
   clear_func;
   gather_logs_func;
 
-  # Kill all processes in the whole process group, thus killing also descendants.
-  trap - EXIT HUP INT QUIT ILL TRAP ABRT TERM; # Disable traps first, to avoid infinite loop.
-  echo "Killing all processes from the same group process id: '${pid}'";
+  echo "Killing all processes from the same group process id (thus killing also descendants): '${pid}'";
   kill -TERM -"${pid}" || true;
+  echo 'Caught signal finished';
 }
 
 kill_mobilert_processes() {

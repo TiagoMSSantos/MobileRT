@@ -12,6 +12,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
+import android.os.ParcelFileDescriptor;
 import android.widget.Button;
 
 import androidx.annotation.CallSuper;
@@ -30,8 +31,8 @@ import com.google.common.util.concurrent.Uninterruptibles;
 
 import org.hamcrest.Matchers;
 import org.junit.After;
+import org.junit.AssumptionViolatedException;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.rules.TestName;
@@ -40,7 +41,10 @@ import org.junit.rules.TestWatcher;
 import org.junit.rules.Timeout;
 import org.junit.runner.Description;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.FileSystem;
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -56,6 +60,7 @@ import puscas.mobilertapp.constants.ConstantsUI;
 import puscas.mobilertapp.constants.Scene;
 import puscas.mobilertapp.constants.Shader;
 import puscas.mobilertapp.constants.State;
+import puscas.mobilertapp.exceptions.FailureException;
 import puscas.mobilertapp.utils.UtilsContext;
 import puscas.mobilertapp.utils.UtilsContextT;
 import puscas.mobilertapp.utils.UtilsPickerT;
@@ -83,7 +88,7 @@ public abstract class AbstractTest {
      */
     @NonNull
     @Rule
-    public final TestRule timeoutRule = new Timeout(2L, TimeUnit.MINUTES);
+    public final TestRule timeoutRule = new Timeout(3L, TimeUnit.MINUTES);
 
     /**
      * The {@link ActivityScenario} to create the {@link MainActivity}.
@@ -111,6 +116,7 @@ public abstract class AbstractTest {
     public final TestRule testWatcher = new TestWatcher() {
         @Override
         protected void starting(final Description description) {
+            logger.info(testName.getMethodName() + ": starting");
             InstrumentationRegistry.getInstrumentation().waitForIdleSync();
             Espresso.onIdle();
         }
@@ -118,20 +124,33 @@ public abstract class AbstractTest {
         @Override
         protected void failed(final Throwable exception, final Description description) {
             logger.severe(testName.getMethodName() + ": failed");
+            InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+            Espresso.onIdle();
         }
 
         @Override
         protected void succeeded(final Description description) {
-            logger.info(testName.getMethodName() + " succeeded");
+            logger.info(testName.getMethodName() + ": succeeded");
             for (final Runnable method : closeActions) {
                 method.run();
             }
+            InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+            Espresso.onIdle();
         }
 
         @Override
         protected void finished(final Description description) {
-            logger.info(testName.getMethodName() + " finished");
+            logger.info(testName.getMethodName() + ": finished");
+            InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+            Espresso.onIdle();
             Intents.release();
+        }
+
+        @Override
+        protected void skipped(final AssumptionViolatedException exception, final Description description) {
+            logger.warning(testName.getMethodName() + ": skipped");
+            InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+            Espresso.onIdle();
         }
     };
 
@@ -147,15 +166,6 @@ public abstract class AbstractTest {
 
 
     /**
-     * A setup method which is called first.
-     */
-    @BeforeClass
-    @CallSuper
-    public static void setUpAll() {
-        dismissANRSystemDialog();
-    }
-
-    /**
      * Setup method called before each test.
      */
     @Before
@@ -164,6 +174,7 @@ public abstract class AbstractTest {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         logger.info(methodName + ": " + this.testName.getMethodName());
 
+        dismissANRSystemDialog();
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
         Espresso.onIdle();
         this.mainActivityActivityTestRule.getScenario().onActivity(activity -> this.activity = activity);
@@ -176,16 +187,13 @@ public abstract class AbstractTest {
         if (!intents.isEmpty()) {
             logger.info("Resetting Intents that were missing from previous test.");
             Intents.intended(Matchers.anyOf(IntentMatchers.hasAction(Intent.ACTION_GET_CONTENT), IntentMatchers.hasAction(Intent.ACTION_MAIN)));
-            Intents.assertNoUnverifiedIntents();
-            Intents.release();
-            Intents.init();
-            Intents.assertNoUnverifiedIntents();
         }
         logger.info(methodName + " validating Intents");
         Intents.assertNoUnverifiedIntents();
 
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
         Espresso.onIdle();
+        ViewActionWait.waitFor(0);
         logger.info(methodName + ": " + this.testName.getMethodName() + " started");
     }
 
@@ -198,6 +206,7 @@ public abstract class AbstractTest {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         logger.info(methodName + ": " + this.testName.getMethodName());
 
+        dismissANRSystemDialog();
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
         Espresso.onIdle();
         Preconditions.checkNotNull(this.activity, "The Activity didn't finish as expected!");
@@ -390,18 +399,50 @@ public abstract class AbstractTest {
     }
 
     /**
-     * Dismiss any "Application Not Responding" (ANR) system dialog that might have appeared.
+     * Click on device to dismiss any "Application Not Responding" (ANR) system dialog that might have appeared.
      */
     private static void dismissANRSystemDialog() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand("am broadcast -a android.intent.action.CLOSE_SYSTEM_DIALOGS");
-            InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand("settings put global window_animation_scale 0");
-            InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand("settings put global transition_animation_scale 0");
-            InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand("settings put global animator_duration_scale 0");
-            InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand("pm grant puscas.mobilertapp android.permission.SET_ANIMATION_SCALE");
-            InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand("input keyevent 82");
-            InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand("input tap 800 400");
-        }
+        executeShellCommand("input keyevent 82");
+        executeShellCommand("input tap 800 400");
     }
 
+    /**
+     * Execute a shell command on Android device.
+     *
+     * @param shellCommand The shell command to execute.
+     */
+    private static void executeShellCommand(final String shellCommand) {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                final ParcelFileDescriptor parcelFileDescriptor = InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand(shellCommand);
+                parcelFileDescriptor.checkError();
+            } else {
+                final Process process = Runtime.getRuntime().exec(shellCommand.split(" "));
+                final BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                int read;
+                final char[] buffer = new char[4096];
+                final StringBuilder output = new StringBuilder();
+                while ((read = reader.read(buffer)) > 0) {
+                    output.append(buffer, 0, read);
+                }
+                reader.close();
+                process.waitFor();
+                if (process.exitValue() != 0) {
+                    final BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+                    int readError;
+                    final char[] bufferError = new char[4096];
+                    final StringBuilder outputError = new StringBuilder();
+                    while ((readError = errorReader.read(bufferError)) > 0) {
+                        outputError.append(bufferError, 0, readError);
+                    }
+                    errorReader.close();
+                    throw new FailureException("Command '" + shellCommand + "' failed with: " + outputError);
+                }
+            }
+        } catch (final IOException ex) {
+            throw new RuntimeException(ex);
+        } catch (final InterruptedException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
 }

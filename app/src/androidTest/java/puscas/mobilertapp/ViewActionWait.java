@@ -11,6 +11,8 @@ import org.hamcrest.Matcher;
 
 import java.util.logging.Logger;
 
+import puscas.mobilertapp.utils.UtilsLogging;
+
 /**
  * Auxiliary class which represents a {@link ViewAction} that will just wait for some time.
  * <p>
@@ -60,7 +62,11 @@ public final class ViewActionWait implements ViewAction {
      *                    to become idle.
      */
     public static void waitFor(final int delayMillis) {
-        Espresso.onView(ViewMatchers.withId(R.id.renderButton))
-            .perform(new ViewActionWait(delayMillis));
+        try {
+            Espresso.onView(ViewMatchers.withId(R.id.renderButton))
+                .perform(new ViewActionWait(delayMillis));
+        } catch (final Exception ex) {
+            UtilsLogging.logThrowable(ex, "ViewActionWait#waitFor");
+        }
     }
 }

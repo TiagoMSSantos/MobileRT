@@ -205,7 +205,7 @@ public final class UtilsT {
         try {
             method.run();
         } catch (final RuntimeException ex) {
-            logger.warning("Error: " + ex.getMessage() + "\nCause: " + ex.getCause());
+            logger.severe("Error: " + ex.getMessage() + "\nCause: " + ex.getCause());
         }
     }
 
