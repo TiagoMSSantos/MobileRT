@@ -47,6 +47,7 @@ public final class UtilsPickerT {
             .inRoot(RootMatchers.isTouchable())
             .perform(new ViewActionNumberPicker(expectedValue))
             .check((view, exception) -> {
+                UtilsT.rethrowException(exception);
                 final NumberPicker numberPicker = view.findViewById(pickerId);
                 Assert.assertEquals("Number picker '" + pickerName + "' with wrong value",
                     expectedValue, numberPicker.getValue()

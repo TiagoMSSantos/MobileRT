@@ -42,9 +42,10 @@ public final class PreviewTest extends AbstractTest {
         ViewActionWait.waitFor(0);
         Espresso.onView(ViewMatchers.withId(R.id.preview))
             .inRoot(RootMatchers.isTouchable())
-            .check((view, exception) ->
-                UiTest.assertPreviewCheckBox(view, true)
-            );
+            .check((view, exception) -> {
+                UtilsT.rethrowException(exception);
+                UiTest.assertPreviewCheckBox(view, true);
+            });
         ViewActionWait.waitFor(0);
         UtilsContextT.resetPickerValues(Scene.CORNELL.ordinal(), Accelerator.NAIVE, 99, 99);
 
@@ -74,11 +75,11 @@ public final class PreviewTest extends AbstractTest {
         ViewActionWait.waitFor(0);
         Espresso.onView(ViewMatchers.withId(R.id.preview))
             .inRoot(RootMatchers.isTouchable())
-            .check((view, exception) ->
-                UiTest.assertPreviewCheckBox(view, true)
-            );
+            .check((view, exception) -> {
+                UtilsT.rethrowException(exception);
+                UiTest.assertPreviewCheckBox(view, true);
+            });
         ViewActionWait.waitFor(0);
-
         UtilsContextT.resetPickerValues(Scene.SPHERES.ordinal(), Accelerator.NAIVE, 99, 99);
 
         ViewActionWait.waitFor(0);

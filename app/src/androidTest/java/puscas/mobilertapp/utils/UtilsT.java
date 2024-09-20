@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.widget.Button;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.matcher.RootMatchers;
 import androidx.test.espresso.matcher.ViewMatchers;
@@ -160,6 +161,7 @@ public final class UtilsT {
         Espresso.onView(ViewMatchers.withId(R.id.drawLayout))
             .inRoot(RootMatchers.isTouchable())
             .check((view, exception) -> {
+                rethrowException(exception);
                 final DrawView drawView = (DrawView) view;
                 final MainRenderer renderer = drawView.getRenderer();
                 final Bitmap bitmap = getPrivateField(renderer, "bitmap");
@@ -183,6 +185,7 @@ public final class UtilsT {
         Espresso.onView(ViewMatchers.withId(R.id.renderButton))
             .inRoot(RootMatchers.isTouchable())
             .check((view, exception) -> {
+                rethrowException(exception);
                 final Button renderButton = view.findViewById(R.id.renderButton);
                 Assert.assertEquals(
                     ConstantsAndroidTests.BUTTON_MESSAGE,
@@ -206,6 +209,18 @@ public final class UtilsT {
             method.run();
         } catch (final RuntimeException ex) {
             logger.severe("Error: " + ex.getMessage() + "\nCause: " + ex.getCause());
+        }
+    }
+
+    /**
+     * Helper method to rethrow any possible {@link Exception}.
+     *
+     * @param exception The exception to throw.
+     */
+    public static void rethrowException(@Nullable final Exception exception) {
+        if (exception != null) {
+            ViewActionWait.waitFor(0);
+            throw new FailureException(exception);
         }
     }
 

@@ -94,13 +94,15 @@ public final class UiTest extends AbstractTest {
         ViewActionWait.waitFor(0);
         Espresso.onView(ViewMatchers.withId(R.id.preview))
             .inRoot(RootMatchers.isTouchable())
-            .check((view, exception) ->
-                assertPreviewCheckBox(view, !expectedValue)
-            )
+            .check((view, exception) -> {
+                UtilsT.rethrowException(exception);
+                assertPreviewCheckBox(view, !expectedValue);
+            })
             .perform(ViewActions.click(InputDevice.SOURCE_TOUCHSCREEN, MotionEvent.BUTTON_PRIMARY))
-            .check((view, exception) ->
-                assertPreviewCheckBox(view, expectedValue)
-            );
+            .check((view, exception) -> {
+                UtilsT.rethrowException(exception);
+                assertPreviewCheckBox(view, expectedValue);
+            });
         ViewActionWait.waitFor(0);
     }
 
@@ -197,6 +199,7 @@ public final class UiTest extends AbstractTest {
             .inRoot(RootMatchers.isTouchable())
             .perform(new ViewActionButton(Constants.RENDER, true))
             .check((view, exception) -> {
+                UtilsT.rethrowException(exception);
                 final Button button = (Button) view;
                 Assert.assertEquals(BUTTON_MESSAGE, Constants.RENDER, button.getText().toString());
             });

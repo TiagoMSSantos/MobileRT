@@ -71,6 +71,7 @@ public final class UtilsContextT {
             Espresso.onView(ViewMatchers.withId(R.id.renderButton))
                 .inRoot(RootMatchers.isTouchable())
                 .check((view, exception) -> {
+                    UtilsT.rethrowException(exception);
                     final Button renderButton = view.findViewById(R.id.renderButton);
                     final String renderButtonText = renderButton.getText().toString();
                     final State rendererState = renderer.getState();

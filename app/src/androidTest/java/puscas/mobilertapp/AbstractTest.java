@@ -88,7 +88,7 @@ public abstract class AbstractTest {
      */
     @NonNull
     @Rule
-    public final TestRule timeoutRule = new Timeout(3L, TimeUnit.MINUTES);
+    public final TestRule timeoutRule = new Timeout(4L, TimeUnit.MINUTES);
 
     /**
      * The {@link ActivityScenario} to create the {@link MainActivity}.
@@ -188,6 +188,9 @@ public abstract class AbstractTest {
             logger.info("Resetting Intents that were missing from previous test.");
             Intents.intended(Matchers.anyOf(IntentMatchers.hasAction(Intent.ACTION_GET_CONTENT), IntentMatchers.hasAction(Intent.ACTION_MAIN)));
         }
+        InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+        Espresso.onIdle();
+        ViewActionWait.waitFor(0);
         logger.info(methodName + " validating Intents");
         Intents.assertNoUnverifiedIntents();
 

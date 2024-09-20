@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-09-09T07:31:27.506Z",
+    "detectionDate": "2024-09-20T06:51:11.100Z",
     "formats": {
       "java": {
         "sources": {
@@ -641,20 +641,20 @@
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/utils/UtilsT.java": {
-            "lines": 211,
-            "tokens": 1436,
+            "lines": 226,
+            "tokens": 1522,
             "sources": 1,
-            "clones": 2,
-            "duplicatedLines": 13,
-            "duplicatedTokens": 138,
-            "percentage": 6.16,
-            "percentageTokens": 9.61,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/utils/UtilsPickerT.java": {
-            "lines": 57,
-            "tokens": 365,
+            "lines": 58,
+            "tokens": 374,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -665,14 +665,14 @@
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/utils/UtilsContextT.java": {
-            "lines": 136,
-            "tokens": 1381,
+            "lines": 138,
+            "tokens": 1401,
             "sources": 1,
-            "clones": 2,
-            "duplicatedLines": 13,
-            "duplicatedTokens": 138,
-            "percentage": 9.56,
-            "percentageTokens": 9.99,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -872,11 +872,11 @@
             "lines": 998,
             "tokens": 8342,
             "sources": 1,
-            "clones": 0,
-            "duplicatedLines": 0,
-            "duplicatedTokens": 0,
-            "percentage": 0,
-            "percentageTokens": 0,
+            "clones": 1,
+            "duplicatedLines": 6,
+            "duplicatedTokens": 65,
+            "percentage": 0.6,
+            "percentageTokens": 0.78,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -905,8 +905,8 @@
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/ViewActionWait.java": {
-            "lines": 65,
-            "tokens": 342,
+            "lines": 71,
+            "tokens": 389,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -929,7 +929,7 @@
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/ViewActionButton.java": {
-            "lines": 110,
+            "lines": 106,
             "tokens": 801,
             "sources": 1,
             "clones": 0,
@@ -941,44 +941,44 @@
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/UiTest.java": {
-            "lines": 272,
-            "tokens": 2160,
+            "lines": 277,
+            "tokens": 2219,
             "sources": 1,
             "clones": 2,
-            "duplicatedLines": 25,
-            "duplicatedTokens": 187,
-            "percentage": 9.19,
-            "percentageTokens": 8.66,
+            "duplicatedLines": 18,
+            "duplicatedTokens": 148,
+            "percentage": 6.5,
+            "percentageTokens": 6.67,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/RayTracingTest.java": {
             "lines": 160,
-            "tokens": 1072,
+            "tokens": 1082,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 10,
             "duplicatedTokens": 75,
             "percentage": 6.25,
-            "percentageTokens": 7,
+            "percentageTokens": 6.93,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/PreviewTest.java": {
-            "lines": 77,
-            "tokens": 595,
+            "lines": 97,
+            "tokens": 767,
             "sources": 1,
-            "clones": 3,
-            "duplicatedLines": 32,
-            "duplicatedTokens": 333,
-            "percentage": 41.56,
-            "percentageTokens": 55.97,
+            "clones": 5,
+            "duplicatedLines": 54,
+            "duplicatedTokens": 549,
+            "percentage": 55.67,
+            "percentageTokens": 71.58,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/MainRendererTest.java": {
-            "lines": 145,
-            "tokens": 792,
+            "lines": 152,
+            "tokens": 856,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -1001,27 +1001,27 @@
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/AbstractTest.java": {
-            "lines": 328,
-            "tokens": 2839,
+            "lines": 450,
+            "tokens": 4096,
             "sources": 1,
-            "clones": 3,
-            "duplicatedLines": 25,
-            "duplicatedTokens": 252,
-            "percentage": 7.62,
-            "percentageTokens": 8.88,
+            "clones": 4,
+            "duplicatedLines": 28,
+            "duplicatedTokens": 306,
+            "percentage": 6.22,
+            "percentageTokens": 7.47,
             "newDuplicatedLines": 0,
             "newClones": 0
           }
         },
         "total": {
-          "lines": 10237,
-          "tokens": 71889,
+          "lines": 10411,
+          "tokens": 73613,
           "sources": 84,
           "clones": 62,
-          "duplicatedLines": 587,
-          "duplicatedTokens": 5445,
-          "percentage": 5.73,
-          "percentageTokens": 7.57,
+          "duplicatedLines": 586,
+          "duplicatedTokens": 5455,
+          "percentage": 5.63,
+          "percentageTokens": 7.41,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -1706,7 +1706,7 @@
           },
           "app/MobileRT/Renderer.cpp": {
             "lines": 202,
-            "tokens": 2034,
+            "tokens": 1942,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -1803,13 +1803,13 @@
         },
         "total": {
           "lines": 5705,
-          "tokens": 56141,
+          "tokens": 56049,
           "sources": 56,
           "clones": 30,
           "duplicatedLines": 282,
           "duplicatedTokens": 4342,
           "percentage": 4.94,
-          "percentageTokens": 7.73,
+          "percentageTokens": 7.75,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2145,8 +2145,8 @@
             "newClones": 0
           },
           "scripts/run_tests_android.sh": {
-            "lines": 683,
-            "tokens": 4983,
+            "lines": 693,
+            "tokens": 5106,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2194,7 +2194,7 @@
           },
           "scripts/helper_functions.sh": {
             "lines": 529,
-            "tokens": 3789,
+            "tokens": 3793,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2254,14 +2254,14 @@
           }
         },
         "total": {
-          "lines": 4241,
-          "tokens": 28541,
+          "lines": 4251,
+          "tokens": 28668,
           "sources": 13,
           "clones": 12,
           "duplicatedLines": 263,
           "duplicatedTokens": 1345,
-          "percentage": 6.2,
-          "percentageTokens": 4.71,
+          "percentage": 6.19,
+          "percentageTokens": 4.69,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3164,14 +3164,14 @@
       }
     },
     "total": {
-      "lines": 28659,
-      "tokens": 221037,
+      "lines": 28843,
+      "tokens": 222796,
       "sources": 250,
       "clones": 113,
-      "duplicatedLines": 1277,
-      "duplicatedTokens": 12132,
-      "percentage": 4.46,
-      "percentageTokens": 5.49,
+      "duplicatedLines": 1276,
+      "duplicatedTokens": 12142,
+      "percentage": 4.42,
+      "percentageTokens": 5.45,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -4146,78 +4146,6 @@
           "line": 40,
           "column": 6,
           "position": 264
-        }
-      }
-    },
-    {
-      "format": "java",
-      "lines": 9,
-      "fragment": ";\nimport android.graphics.Bitmap;\nimport android.widget.Button;\n\nimport androidx.annotation.NonNull;\nimport androidx.test.espresso.Espresso;\nimport androidx.test.espresso.matcher.RootMatchers;\nimport androidx.test.espresso.matcher.ViewMatchers;\nimport androidx",
-      "tokens": 0,
-      "firstFile": {
-        "name": "app/src/androidTest/java/puscas/mobilertapp/utils/UtilsContextT.java",
-        "start": 3,
-        "end": 11,
-        "startLoc": {
-          "line": 3,
-          "column": 8,
-          "position": 17
-        },
-        "endLoc": {
-          "line": 11,
-          "column": 9,
-          "position": 86
-        }
-      },
-      "secondFile": {
-        "name": "app/src/androidTest/java/puscas/mobilertapp/utils/UtilsT.java",
-        "start": 1,
-        "end": 11,
-        "startLoc": {
-          "line": 1,
-          "column": 6,
-          "position": 7
-        },
-        "endLoc": {
-          "line": 11,
-          "column": 4,
-          "position": 78
-        }
-      }
-    },
-    {
-      "format": "java",
-      "lines": 6,
-      "fragment": ");\n            Espresso.onView(ViewMatchers.withId(R.id.renderButton))\n                .inRoot(RootMatchers.isTouchable())\n                .check((view, exception) -> {\n                    final Button renderButton = view.findViewById(R.id.renderButton);\n                    final",
-      "tokens": 0,
-      "firstFile": {
-        "name": "app/src/androidTest/java/puscas/mobilertapp/utils/UtilsContextT.java",
-        "start": 69,
-        "end": 74,
-        "startLoc": {
-          "line": 69,
-          "column": 13,
-          "position": 553
-        },
-        "endLoc": {
-          "line": 74,
-          "column": 6,
-          "position": 622
-        }
-      },
-      "secondFile": {
-        "name": "app/src/androidTest/java/puscas/mobilertapp/utils/UtilsT.java",
-        "start": 182,
-        "end": 187,
-        "startLoc": {
-          "line": 182,
-          "column": 13,
-          "position": 1232
-        },
-        "endLoc": {
-          "line": 187,
-          "column": 7,
-          "position": 1301
         }
       }
     },
@@ -5236,17 +5164,17 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/src/androidTest/java/puscas/mobilertapp/UiTest.java",
-        "start": 14,
-        "end": 24,
+        "start": 16,
+        "end": 26,
         "startLoc": {
-          "line": 14,
+          "line": 16,
           "column": 13,
-          "position": 116
+          "position": 134
         },
         "endLoc": {
-          "line": 24,
+          "line": 26,
           "column": 5,
-          "position": 189
+          "position": 207
         }
       },
       "secondFile": {
@@ -5272,17 +5200,17 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/src/androidTest/java/puscas/mobilertapp/PreviewTest.java",
-        "start": 1,
-        "end": 11,
+        "start": 5,
+        "end": 15,
         "startLoc": {
-          "line": 1,
-          "column": 12,
-          "position": 5
+          "line": 5,
+          "column": 13,
+          "position": 43
         },
         "endLoc": {
-          "line": 11,
+          "line": 15,
           "column": 10,
-          "position": 80
+          "position": 118
         }
       },
       "secondFile": {
@@ -5303,109 +5231,181 @@
     },
     {
       "format": "java",
-      "lines": 12,
-      "fragment": ".ordinal(), Accelerator.NAIVE, 99, 99);\n\n        UtilsT.startRendering(false);\n        UtilsContextT.waitUntil(this.testName.getMethodName(), this.activity, Constants.STOP, State.BUSY);\n\n        UtilsT.stopRendering();\n        UtilsContextT.waitUntil(this.testName.getMethodName(), this.activity, Constants.RENDER, State.IDLE, State.FINISHED);\n\n        UtilsT.assertRenderButtonText(Constants.RENDER);\n        UtilsT.testStateAndBitmap(false);\n\n        logger.info(\"testPreviewSceneOrthographicCamera finished\"",
+      "lines": 11,
+      "fragment": ");\n\n        ViewActionWait.waitFor(0);\n        Espresso.onView(ViewMatchers.withId(R.id.preview))\n            .inRoot(RootMatchers.isTouchable())\n            .check((view, exception) -> {\n                UtilsT.rethrowException(exception);\n                UiTest.assertPreviewCheckBox(view, true);\n            });\n        ViewActionWait.waitFor(0);\n        UtilsContextT.resetPickerValues(Scene.SPHERES",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/androidTest/java/puscas/mobilertapp/PreviewTest.java",
-        "start": 64,
-        "end": 75,
+        "start": 73,
+        "end": 83,
         "startLoc": {
-          "line": 64,
-          "column": 8,
-          "position": 458
+          "line": 73,
+          "column": 43,
+          "position": 521
         },
         "endLoc": {
-          "line": 75,
-          "column": 46,
-          "position": 587
+          "line": 83,
+          "column": 8,
+          "position": 620
         }
       },
       "secondFile": {
         "name": "app/src/androidTest/java/puscas/mobilertapp/PreviewTest.java",
-        "start": 39,
+        "start": 40,
         "end": 50,
         "startLoc": {
-          "line": 39,
-          "column": 8,
-          "position": 252
+          "line": 40,
+          "column": 42,
+          "position": 248
         },
         "endLoc": {
           "line": 50,
-          "column": 45,
-          "position": 381
+          "column": 8,
+          "position": 347
         }
       }
     },
     {
       "format": "java",
-      "lines": 16,
-      "fragment": ";\n\nimport puscas.mobilertapp.constants.Accelerator;\nimport puscas.mobilertapp.constants.Constants;\nimport puscas.mobilertapp.constants.ConstantsUI;\nimport puscas.mobilertapp.constants.Scene;\nimport puscas.mobilertapp.constants.Shader;\nimport puscas.mobilertapp.constants.State;\nimport puscas.mobilertapp.utils.UtilsContext;\nimport puscas.mobilertapp.utils.UtilsContextT;\nimport puscas.mobilertapp.utils.UtilsPickerT;\nimport puscas.mobilertapp.utils.UtilsT;\n\n/**\n * The abstract class for the Android Instrumentation Tests.\n */",
+      "lines": 13,
+      "fragment": ".ordinal(), Accelerator.NAIVE, 99, 99);\n\n        ViewActionWait.waitFor(0);\n        UtilsT.startRendering(false);\n        UtilsContextT.waitUntil(this.testName.getMethodName(), this.activity, Constants.STOP, State.BUSY);\n\n        UtilsT.stopRendering();\n        UtilsContextT.waitUntil(this.testName.getMethodName(), this.activity, Constants.RENDER, State.IDLE, State.FINISHED);\n\n        UtilsT.assertRenderButtonText(Constants.RENDER);\n        UtilsT.testStateAndBitmap(false);\n\n        logger.info(\"testPreviewSceneOrthographicCamera finished\"",
+      "tokens": 0,
+      "firstFile": {
+        "name": "app/src/androidTest/java/puscas/mobilertapp/PreviewTest.java",
+        "start": 83,
+        "end": 95,
+        "startLoc": {
+          "line": 83,
+          "column": 8,
+          "position": 621
+        },
+        "endLoc": {
+          "line": 95,
+          "column": 46,
+          "position": 759
+        }
+      },
+      "secondFile": {
+        "name": "app/src/androidTest/java/puscas/mobilertapp/PreviewTest.java",
+        "start": 50,
+        "end": 62,
+        "startLoc": {
+          "line": 50,
+          "column": 8,
+          "position": 348
+        },
+        "endLoc": {
+          "line": 62,
+          "column": 45,
+          "position": 486
+        }
+      }
+    },
+    {
+      "format": "java",
+      "lines": 9,
+      "fragment": ";\n\nimport puscas.mobilertapp.constants.Accelerator;\nimport puscas.mobilertapp.constants.Constants;\nimport puscas.mobilertapp.constants.ConstantsUI;\nimport puscas.mobilertapp.constants.Scene;\nimport puscas.mobilertapp.constants.Shader;\nimport puscas.mobilertapp.constants.State;\nimport puscas.mobilertapp.exceptions",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/androidTest/java/puscas/mobilertapp/AbstractTest.java",
-        "start": 45,
-        "end": 60,
+        "start": 55,
+        "end": 63,
         "startLoc": {
-          "line": 45,
+          "line": 55,
           "column": 7,
-          "position": 405
+          "position": 507
         },
         "endLoc": {
-          "line": 60,
-          "column": 4,
-          "position": 519
+          "line": 63,
+          "column": 11,
+          "position": 582
         }
       },
       "secondFile": {
         "name": "app/src/androidTest/java/puscas/mobilertapp/UiTest.java",
-        "start": 28,
-        "end": 42,
+        "start": 30,
+        "end": 37,
         "startLoc": {
-          "line": 28,
+          "line": 30,
           "column": 11,
-          "position": 226
+          "position": 244
         },
         "endLoc": {
-          "line": 42,
-          "column": 4,
-          "position": 339
+          "line": 37,
+          "column": 6,
+          "position": 318
         }
       }
     },
     {
       "format": "java",
-      "lines": 6,
-      "fragment": "    public void tearDown() {\n        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();\n        logger.info(methodName + \": \" + this.testName.getMethodName());\n\n        InstrumentationRegistry.getInstrumentation().waitFo",
+      "lines": 7,
+      "fragment": ";\nimport puscas.mobilertapp.constants.ConstantsUI;\nimport puscas.mobilertapp.constants.Scene;\nimport puscas.mobilertapp.constants.Shader;\nimport puscas.mobilertapp.constants.State;\nimport puscas.mobilertapp.exceptions.FailureException;\nimport puscas.mobilertapp.utils.UtilsContext",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/androidTest/java/puscas/mobilertapp/AbstractTest.java",
-        "start": 137,
-        "end": 142,
+        "start": 58,
+        "end": 64,
         "startLoc": {
-          "line": 137,
-          "column": 9,
-          "position": 934
+          "line": 58,
+          "column": 10,
+          "position": 530
         },
         "endLoc": {
-          "line": 142,
-          "column": 4,
-          "position": 1003
+          "line": 64,
+          "column": 13,
+          "position": 595
+        }
+      },
+      "secondFile": {
+        "name": "app/src/main/java/puscas/mobilertapp/MainActivity.java",
+        "start": 55,
+        "end": 61,
+        "startLoc": {
+          "line": 55,
+          "column": 15,
+          "position": 483
+        },
+        "endLoc": {
+          "line": 61,
+          "column": 6,
+          "position": 548
+        }
+      }
+    },
+    {
+      "format": "java",
+      "lines": 8,
+      "fragment": "llSuper\n    public void tearDown() {\n        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();\n        logger.info(methodName + \": \" + this.testName.getMethodName());\n\n        dismissANRSystemDialog();\n        InstrumentationRegistry.getInstrumentation().waitForIdleSync();\n        Espresso",
+      "tokens": 0,
+      "firstFile": {
+        "name": "app/src/androidTest/java/puscas/mobilertapp/AbstractTest.java",
+        "start": 208,
+        "end": 215,
+        "startLoc": {
+          "line": 208,
+          "column": 9,
+          "position": 1581
+        },
+        "endLoc": {
+          "line": 215,
+          "column": 14,
+          "position": 1664
         }
       },
       "secondFile": {
         "name": "app/src/androidTest/java/puscas/mobilertapp/AbstractTest.java",
-        "start": 117,
-        "end": 122,
+        "start": 173,
+        "end": 180,
         "startLoc": {
-          "line": 117,
+          "line": 173,
           "column": 6,
-          "position": 752
+          "position": 1244
         },
         "endLoc": {
-          "line": 122,
+          "line": 180,
           "column": 5,
-          "position": 821
+          "position": 1327
         }
       }
     },
