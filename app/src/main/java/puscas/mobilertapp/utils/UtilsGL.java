@@ -15,7 +15,6 @@ import javax.microedition.khronos.egl.EGLDisplay;
 import java8.util.function.BiFunction;
 import java8.util.function.Function;
 import java8.util.function.Supplier;
-import puscas.mobilertapp.constants.ConstantsMethods;
 import puscas.mobilertapp.constants.ConstantsRenderer;
 import puscas.mobilertapp.exceptions.FailureException;
 
