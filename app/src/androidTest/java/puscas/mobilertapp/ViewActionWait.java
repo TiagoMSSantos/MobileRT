@@ -29,7 +29,7 @@ public final class ViewActionWait implements ViewAction {
      *
      * @param delayMillis Time to wait in milliseconds.
      */
-    private ViewActionWait(final int delayMillis) {
+    public ViewActionWait(final int delayMillis) {
         this.delayMillis = delayMillis;
     }
 
