@@ -152,7 +152,7 @@ callCommandUntilError() {
   set +e;
   "$@";
   lastResult=${?};
-  while [ "${lastResult}" -ne 0 ] && [ ${_retry} -lt 5 ]; do
+  while [ "${lastResult}" -eq 0 ] && [ ${_retry} -lt 5 ]; do
     _retry=$(( _retry + 1 ));
     "$@";
     lastResult=${?};
