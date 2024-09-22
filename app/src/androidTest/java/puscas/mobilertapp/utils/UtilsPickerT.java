@@ -46,7 +46,7 @@ public final class UtilsPickerT {
         Espresso.onView(ViewMatchers.withId(pickerId))
             .inRoot(RootMatchers.isTouchable())
             .perform(new ViewActionNumberPicker(expectedValue))
-            .perform(new ViewActionWait(10))
+            .perform(new ViewActionWait(0))
             .check((view, exception) -> {
                 UtilsT.rethrowException(exception);
                 final NumberPicker numberPicker = view.findViewById(pickerId);
