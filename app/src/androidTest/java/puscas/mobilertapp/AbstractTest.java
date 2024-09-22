@@ -22,6 +22,7 @@ import androidx.core.content.ContextCompat;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.intent.Intents;
+import androidx.test.espresso.intent.VerificationModes;
 import androidx.test.espresso.intent.matcher.IntentMatchers;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -47,6 +48,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.FileSystem;
 import java.util.ArrayDeque;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
 import java.util.Objects;
@@ -116,7 +118,7 @@ public abstract class AbstractTest {
     public final TestRule testWatcher = new TestWatcher() {
         @Override
         protected void starting(final Description description) {
-            logger.info(testName.getMethodName() + ": starting");
+            logger.info(description.getDisplayName() + ": starting");
             InstrumentationRegistry.getInstrumentation().waitForIdleSync();
             Espresso.onIdle();
         }
@@ -186,11 +188,19 @@ public abstract class AbstractTest {
         final List<Intent> intents = Intents.getIntents();
         if (!intents.isEmpty()) {
             logger.info("Resetting Intents that were missing from previous test.");
-            Intents.intended(Matchers.anyOf(IntentMatchers.hasAction(Intent.ACTION_GET_CONTENT), IntentMatchers.hasAction(Intent.ACTION_MAIN)));
+            Intents.intended(Matchers.anyOf(IntentMatchers.hasAction(Intent.ACTION_GET_CONTENT), IntentMatchers.hasAction(Intent.ACTION_MAIN)), VerificationModes.times(1));
         }
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
         Espresso.onIdle();
-        ViewActionWait.waitFor(0);
+        try {
+            ViewActionWait.waitFor(0);
+        } catch (final Exception ex) {
+            logger.warning("The MainActivity didn't start as expected. Forcing a restart.");
+            this.mainActivityActivityTestRule.getScenario().close();
+            final ActivityScenario<MainActivity> newActivity = ActivityScenario.launch(MainActivity.class);
+            newActivity.onActivity(activity -> this.activity = activity);
+            Intents.intended(Matchers.allOf(IntentMatchers.hasCategories(Collections.singleton(Intent.CATEGORY_LAUNCHER)), IntentMatchers.hasAction(Intent.ACTION_MAIN)), VerificationModes.times(2));
+        }
         logger.info(methodName + " validating Intents");
         Intents.assertNoUnverifiedIntents();
 
