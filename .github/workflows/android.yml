@@ -240,6 +240,21 @@ jobs:
         fi
         set -u;
 
+    - name: Download Android dependencies
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success()
+      run: |
+        if [ "${{ matrix.android_api }}" -lt 19 ]; then
+          ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'ndk;23.2.8568313';
+        fi
+        ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'cmake;3.22.1';
+        ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'build-tools;35.0.0';
+        ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager 'platform-tools' 'platforms;android-35';
+
+        sh gradlew -F 'strict' \
+          -DtestType="${{ matrix.type }}" -DandroidApiVersion="${{ matrix.android_api }}" -DabiFilters="[${{ env.android_arch }}]" \
+          --info --warning-mode all --stacktrace;
+
     - name: Build ${{ matrix.type }}
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
       if: success()
@@ -319,26 +334,26 @@ jobs:
 
         find ${{ env.GRADLE_PATH }}/wrapper/dists -not -iname '*gradle*.zip' -delete;
         find ${{ env.GRADLE_PATH }} -iname "docs" -exec rm -rf {} \;
-        find ${{ env.GRADLE_PATH }} -iname "*.log*" -exec rm {} \;
-        find ${{ env.GRADLE_PATH }} -iname "*.txt*" -exec rm {} \;
-        find ${{ env.GRADLE_PATH }} -iname "*.md*" -exec rm {} \;
-        find ${{ env.GRADLE_PATH }} -iname "*.doc*" -exec rm {} \;
-        find ${{ env.GRADLE_PATH }} -iname "*.xls*" -exec rm {} \;
-        find ${{ env.GRADLE_PATH }} -iname "*.htm*" -exec rm {} \;
-        find ${{ env.GRADLE_PATH }} -iname "*.lock*" -exec rm {} \;
-        find ${{ env.GRADLE_PATH }} -iname "*.lck*" -exec rm {} \;
-        find ${{ env.GRADLE_PATH }} -iname "*.ok*" -exec rm {} \;
-        find ${{ env.GRADLE_PATH }} -iname "*.png*" -exec rm {} \;
-        find ${{ env.GRADLE_PATH }} -iname "*.jpg*" -exec rm {} \;
-        find ${{ env.GRADLE_PATH }} -iname "*.jpeg*" -exec rm {} \;
-        find ${{ env.GRADLE_PATH }} -iname "*.gif*" -exec rm {} \;
-        find ${{ env.GRADLE_PATH }} -name "*README*" -exec rm {} \;
-        find ${{ env.GRADLE_PATH }} -name "*NOTICE*" -exec rm {} \;
-        find ${{ env.GRADLE_PATH }} -name "*LICENSE*" -exec rm {} \;
+        find ${{ env.GRADLE_PATH }} -iname "*.log*" -exec rm -rf {} \;
+        find ${{ env.GRADLE_PATH }} -iname "*.txt*" -exec rm -rf {} \;
+        find ${{ env.GRADLE_PATH }} -iname "*.md*" -exec rm -rf {} \;
+        find ${{ env.GRADLE_PATH }} -iname "*.doc*" -exec rm -rf {} \;
+        find ${{ env.GRADLE_PATH }} -iname "*.xls*" -exec rm -rf {} \;
+        find ${{ env.GRADLE_PATH }} -iname "*.htm*" -exec rm -rf {} \;
+        find ${{ env.GRADLE_PATH }} -iname "*.lock*" -exec rm -rf {} \;
+        find ${{ env.GRADLE_PATH }} -iname "*.lck*" -exec rm -rf {} \;
+        find ${{ env.GRADLE_PATH }} -iname "*.ok*" -exec rm -rf {} \;
+        find ${{ env.GRADLE_PATH }} -iname "*.png*" -exec rm -rf {} \;
+        find ${{ env.GRADLE_PATH }} -iname "*.jpg*" -exec rm -rf {} \;
+        find ${{ env.GRADLE_PATH }} -iname "*.jpeg*" -exec rm -rf {} \;
+        find ${{ env.GRADLE_PATH }} -iname "*.gif*" -exec rm -rf {} \;
+        find ${{ env.GRADLE_PATH }} -name "*README*" -exec rm -rf {} \;
+        find ${{ env.GRADLE_PATH }} -name "*NOTICE*" -exec rm -rf {} \;
+        find ${{ env.GRADLE_PATH }} -name "*LICENSE*" -exec rm -rf {} \;
         find ${{ env.GRADLE_PATH }} -name "transforms" -exec rm -rf {} \;
 
         find ${{ env.GRADLE_PATH }} -empty -exec rm -rf {} \;
-        find ${{ env.GRADLE_PATH }} -size 0 -exec rm {} \;
+        find ${{ env.GRADLE_PATH }} -size 0 -exec rm -rf {} \;
         set -e;
 
         # shellcheck disable=SC1091
@@ -512,6 +527,21 @@ jobs:
         echo "android_emulator_arch: ${{ env.android_emulator_arch }}";
         . scripts/helper_functions.sh && parallelizeBuild && echo "NCPU_CORES=${NCPU_CORES}" >> "${GITHUB_ENV}";
         mkdir -p ~/.android/avd/Android_Emulator_API_34.avd;
+
+    - name: Download Android dependencies
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success()
+      run: |
+        if [ "${{ matrix.android_api }}" -lt 19 ]; then
+          ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'ndk;23.2.8568313';
+        fi
+        ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'cmake;3.22.1';
+        ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'build-tools;35.0.0';
+        ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager 'platform-tools' 'platforms;android-35';
+
+        sh gradlew -F 'strict' \
+          -DtestType="${{ matrix.type }}" -DandroidApiVersion="${{ matrix.android_api }}" -DabiFilters="[${{ env.android_arch }}]" \
+          --info --warning-mode all --stacktrace;
 
     - name: Run Android tests
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
@@ -754,6 +784,14 @@ jobs:
           fi
         fi
         set -u;
+
+    - name: Download Android dependencies
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success()
+      run: |
+        if [ "${{ matrix.android_api }}" -lt 19 ]; then
+          ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'ndk;23.2.8568313';
+        fi
 
     - name: Run unit tests Java
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
@@ -1007,7 +1045,7 @@ jobs:
         # https://docs.sonarqube.org/latest/requirements/prerequisites-and-overview/
         GRADLE_OPTS: -Xms8G -Xmx8G -XX:ActiveProcessorCount=5
       run: |
-        sh gradlew --profile --parallel \
+        sh gradlew --offline --profile --parallel \
           -DabiFilters="[ ${{ env.android_arch }} ]" \
           -DandroidApiVersion=${{ matrix.android_api }} \
           --info --warning-mode all --stacktrace sonar;

@@ -86,10 +86,10 @@ printEnvironment;
 runLinter() {
   # Set path to reports.
   echo 'Print Gradle version';
-  sh gradlew \
+  sh gradlew --offline \
     -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]" \
     --no-rebuild --stop --info --warning-mode fail --stacktrace;
-  sh gradlew \
+  sh gradlew --offline \
     -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]" \
     --no-rebuild --version --info --warning-mode fail --stacktrace;
 

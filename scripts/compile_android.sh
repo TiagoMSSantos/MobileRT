@@ -113,11 +113,12 @@ build() {
   export CMAKE_BUILD_PARALLEL_LEVEL="$((NCPU_CORES * 2 - 1))";
 
   echo 'Calling the Gradle assemble to compile code for Android.';
-  sh gradlew \
+  sh gradlew --offline \
     -DtestType="${type}" -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]" \
     --no-rebuild --stop --info --warning-mode fail --stacktrace;
   echo "Setting Gradle Wrapper to a version that is compatible with Android API: '${android_api_version}'".;
-  sh gradlew wrapper -DtestType="${type}" -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]";
+  sh gradlew --offline wrapper -DtestType="${type}" -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]";
+  echo 'Compiling MobileRT.';
   sh gradlew clean \
     build"${typeWithCapitalLetter}" \
     assemble"${typeWithCapitalLetter}" \
@@ -133,7 +134,7 @@ build() {
     --console plain --info --warning-mode fail --stacktrace;
   resCompile=${?};
   echo 'Compiling APK to execute Android instrumentation tests.';
-  sh gradlew createDebugAndroidTestApkListingFileRedirect \
+  sh gradlew --offline createDebugAndroidTestApkListingFileRedirect \
     -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]" \
     --profile --parallel --console plain --info --warning-mode fail --stacktrace;
   echo 'Android application compiled.';

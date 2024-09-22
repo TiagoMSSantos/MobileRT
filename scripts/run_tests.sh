@@ -88,7 +88,7 @@ runUnitTests() {
   echo 'Calling Gradle test';
   echo 'Increasing ADB timeout to 10 minutes';
   export ADB_INSTALL_TIMEOUT=60000;
-  sh gradlew -\
+  sh gradlew --offline \
     -DtestType="${type}" -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]" \
     -no-rebuild --stop --info --warning-mode fail --stacktrace;
   sh gradlew test"${type}"UnitTest --profile --parallel \
