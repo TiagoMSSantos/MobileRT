@@ -244,14 +244,8 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       run: |
-        if [ "${{ matrix.android_api }}" -lt 19 ]; then
-          ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'ndk;23.2.8568313';
-        fi
         ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'cmake;3.22.1';
-        ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'build-tools;35.0.0';
-        ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager 'platform-tools' 'platforms;android-35';
-
-        sh gradlew -F 'strict' \
+        sh gradlew build --dry-run -Dorg.gradle.configuration-cache=true \
           -DtestType="${{ matrix.type }}" -DandroidApiVersion="${{ matrix.android_api }}" -DabiFilters="[${{ env.android_arch }}]" \
           --info --warning-mode all --stacktrace;
 
@@ -532,14 +526,12 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       run: |
-        if [ "${{ matrix.android_api }}" -lt 19 ]; then
-          ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'ndk;23.2.8568313';
+        if [ "${{ matrix.type }}" = 'debug' ]; then
+          gradle_command='jacocoTestReport';
+        else
+          gradle_command='connectedAndroidTest';
         fi
-        ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'cmake;3.22.1';
-        ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'build-tools;35.0.0';
-        ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager 'platform-tools' 'platforms;android-35';
-
-        sh gradlew -F 'strict' \
+        sh gradlew "${gradle_command}" --dry-run -Dorg.gradle.configuration-cache=true \
           -DtestType="${{ matrix.type }}" -DandroidApiVersion="${{ matrix.android_api }}" -DabiFilters="[${{ env.android_arch }}]" \
           --info --warning-mode all --stacktrace;
 
@@ -789,9 +781,9 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       run: |
-        if [ "${{ matrix.android_api }}" -lt 19 ]; then
-          ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'ndk;23.2.8568313';
-        fi
+        sh gradlew test"${{ matrix.type }}"UnitTest lint --dry-run -Dorg.gradle.configuration-cache=true \
+          -DtestType="${{ matrix.type }}" -DandroidApiVersion="${{ matrix.android_api }}" -DabiFilters="[${{ env.android_arch }}]" \
+          --info --warning-mode all --stacktrace;
 
     - name: Run unit tests Java
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}

@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-09-20T06:51:11.100Z",
+    "detectionDate": "2024-09-22T10:34:49.528Z",
     "formats": {
       "java": {
         "sources": {
@@ -2146,7 +2146,7 @@
           },
           "scripts/run_tests_android.sh": {
             "lines": 693,
-            "tokens": 5106,
+            "tokens": 5116,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2158,13 +2158,13 @@
           },
           "scripts/run_tests.sh": {
             "lines": 121,
-            "tokens": 494,
+            "tokens": 498,
             "sources": 1,
             "clones": 3,
             "duplicatedLines": 131,
             "duplicatedTokens": 373,
             "percentage": 108.26,
-            "percentageTokens": 75.51,
+            "percentageTokens": 74.9,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2229,33 +2229,33 @@
             "newClones": 0
           },
           "scripts/compile_android.sh": {
-            "lines": 184,
-            "tokens": 1003,
+            "lines": 185,
+            "tokens": 1017,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 45,
             "duplicatedTokens": 129,
-            "percentage": 24.46,
-            "percentageTokens": 12.86,
+            "percentage": 24.32,
+            "percentageTokens": 12.68,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "scripts/check_android.sh": {
             "lines": 120,
-            "tokens": 467,
+            "tokens": 473,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 44,
             "duplicatedTokens": 124,
             "percentage": 36.67,
-            "percentageTokens": 26.55,
+            "percentageTokens": 26.22,
             "newDuplicatedLines": 0,
             "newClones": 0
           }
         },
         "total": {
-          "lines": 4251,
-          "tokens": 28668,
+          "lines": 4252,
+          "tokens": 28702,
           "sources": 13,
           "clones": 12,
           "duplicatedLines": 263,
@@ -3164,8 +3164,8 @@
       }
     },
     "total": {
-      "lines": 28843,
-      "tokens": 222796,
+      "lines": 28844,
+      "tokens": 222830,
       "sources": 250,
       "clones": 113,
       "duplicatedLines": 1276,

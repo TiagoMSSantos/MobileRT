@@ -91,7 +91,7 @@ runUnitTests() {
   sh gradlew --offline \
     -DtestType="${type}" -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]" \
     -no-rebuild --stop --info --warning-mode fail --stacktrace;
-  sh gradlew test"${type}"UnitTest --profile --parallel \
+  sh gradlew --offline test"${type}"UnitTest --profile --parallel \
     -DtestType="${type}" -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]" \
     --no-rebuild \
     --console plain --info --warning-mode all --stacktrace;

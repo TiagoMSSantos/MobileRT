@@ -119,7 +119,7 @@ build() {
   echo "Setting Gradle Wrapper to a version that is compatible with Android API: '${android_api_version}'".;
   sh gradlew --offline wrapper -DtestType="${type}" -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]";
   echo 'Compiling MobileRT.';
-  sh gradlew clean \
+  sh gradlew --offline clean \
     build"${typeWithCapitalLetter}" \
     assemble"${typeWithCapitalLetter}" \
     assemble"${typeWithCapitalLetter}"AndroidTest \

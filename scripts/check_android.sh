@@ -94,7 +94,7 @@ runLinter() {
     --no-rebuild --version --info --warning-mode fail --stacktrace;
 
   echo 'Calling the Gradle linter';
-  sh gradlew lint --profile --parallel \
+  sh gradlew --offline lint --profile --parallel \
     -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]" \
     --no-rebuild \
     --console plain --info --warning-mode all --stacktrace;
