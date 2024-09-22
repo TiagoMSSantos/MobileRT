@@ -105,6 +105,14 @@ jobs:
         sudo udevadm control --reload-rules;
         sudo udevadm trigger --name-match=kvm;
 
+    - name: Download Android dependencies
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success()
+      run: |
+        sh gradlew connectedAndroidTest --dry-run -Dorg.gradle.configuration-cache=true \
+          -DtestType="${{ matrix.type }}" -DandroidApiVersion="${{ matrix.android_api }}" -DabiFilters="[${{ env.android_arch }}]" \
+          --info --warning-mode all --stacktrace;
+
     - name: Run Android tests
       timeout-minutes: 20
       if: success() && !startsWith(matrix.host_os, 'windows')
