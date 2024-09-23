@@ -228,7 +228,7 @@ namespace MobileRT {
         const ::std::uint32_t numPrimitives {static_cast<::std::uint32_t> (this->primitives_.size())};
 
         for (::std::int32_t index {static_cast<::std::int32_t>(threadId)}; index < static_cast<::std::int32_t> (numPrimitives); index += static_cast<::std::int32_t>(numberOfThreads)) {
-            LOG_DEBUG("Adding primitive ", index, " to RegularGrid (", typeid(T).name(), ")");
+            // LOG_DEBUG("Adding primitive ", index, " to RegularGrid (", typeid(T).name(), ")");
             ::MobileRT::checkSystemError(::std::string("RegularGrid addPrimitives (" + ::std::to_string(index) + ")").c_str());
             T &primitive {this->primitives_[static_cast<::std::uint32_t> (index)]};
             const AABB bound {primitive.getAABB()};
@@ -255,7 +255,7 @@ namespace MobileRT {
             z2 = ::std::fabs(size[2]) < ::std::numeric_limits<float>::epsilon()? 0 : z2;
             z1 = ::std::min(z1, z2);
 
-            LOG_DEBUG("Looping over candidate cells for primitive ", index, " to RegularGrid (", typeid(T).name(), ") on coordinates: (", x1, "-", x2, ", ", y1, "-", y2, ", ", z1, "-", z2, ")");
+            // LOG_DEBUG("Looping over candidate cells for primitive ", index, " to RegularGrid (", typeid(T).name(), ") on coordinates: (", x1, "-", x2, ", ", y1, "-", y2, ", ", z1, "-", z2, ")");
             for (::std::int32_t x {x1}; x <= x2; ++x) {
                 for (::std::int32_t y {y1}; y <= y2; ++y) {
                     for (::std::int32_t z {z1}; z <= z2; ++z) {
@@ -282,9 +282,10 @@ namespace MobileRT {
                     }
                 }
             }
-            LOG_DEBUG("Added primitive ", index, " to RegularGrid (", typeid(T).name(), ")");
+            // LOG_DEBUG("Added primitive ", index, " to RegularGrid (", typeid(T).name(), ")");
             ::MobileRT::checkSystemError(::std::string("RegularGrid addPrimitives end (" + ::std::to_string(index) + ")").c_str());
         }
+        LOG_INFO("Added '", numPrimitives, "' primitives to RegularGrid ", typeid(T).name(), ": (", dx, ", ", dy, ", ", dz, ")");
     }
 
     /**

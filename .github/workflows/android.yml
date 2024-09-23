@@ -240,11 +240,16 @@ jobs:
         fi
         set -u;
 
+    - name: Download Android CMake
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success() && !startsWith(matrix.host_os, 'windows')
+      run: |
+        ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'cmake;3.22.1';
+
     - name: Download Android dependencies
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       run: |
-        ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'cmake;3.22.1';
         sh gradlew build --dry-run -Dorg.gradle.configuration-cache=true \
           -DtestType="${{ matrix.type }}" -DandroidApiVersion="${{ matrix.android_api }}" -DabiFilters="[${{ env.android_arch }}]" \
           --info --warning-mode all --stacktrace;
