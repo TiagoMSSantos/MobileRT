@@ -90,6 +90,14 @@ jobs:
         fi
         . scripts/helper_functions.sh && parallelizeBuild && echo "NCPU_CORES=${NCPU_CORES}" >> "${GITHUB_ENV}";
 
+    - name: Download Android dependencies
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success()
+      run: |
+        sh gradlew build --dry-run -Dorg.gradle.configuration-cache=true \
+          -DtestType="${{ matrix.type }}" -DandroidApiVersion="${{ matrix.android_api }}" -DabiFilters="[${{ env.android_arch }}]" \
+          --info --warning-mode all --stacktrace;
+
     - name: Build ${{ matrix.type }}
       timeout-minutes: 20
       if: success()
