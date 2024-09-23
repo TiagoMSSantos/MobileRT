@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-09-23T11:13:26.254Z",
+    "detectionDate": "2024-09-23T12:09:00.787Z",
     "formats": {
       "java": {
         "sources": {
@@ -953,14 +953,14 @@
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/RayTracingTest.java": {
-            "lines": 161,
-            "tokens": 1101,
+            "lines": 162,
+            "tokens": 1126,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 10,
             "duplicatedTokens": 75,
-            "percentage": 6.21,
-            "percentageTokens": 6.81,
+            "percentage": 6.17,
+            "percentageTokens": 6.66,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -1001,27 +1001,27 @@
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/AbstractTest.java": {
-            "lines": 460,
-            "tokens": 4251,
+            "lines": 461,
+            "tokens": 4276,
             "sources": 1,
             "clones": 4,
             "duplicatedLines": 28,
             "duplicatedTokens": 306,
-            "percentage": 6.09,
-            "percentageTokens": 7.2,
+            "percentage": 6.07,
+            "percentageTokens": 7.16,
             "newDuplicatedLines": 0,
             "newClones": 0
           }
         },
         "total": {
-          "lines": 10418,
-          "tokens": 73765,
+          "lines": 10420,
+          "tokens": 73815,
           "sources": 84,
           "clones": 62,
           "duplicatedLines": 586,
           "duplicatedTokens": 5455,
           "percentage": 5.62,
-          "percentageTokens": 7.4,
+          "percentageTokens": 7.39,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3164,14 +3164,14 @@
       }
     },
     "total": {
-      "lines": 28860,
-      "tokens": 222960,
+      "lines": 28862,
+      "tokens": 223010,
       "sources": 250,
       "clones": 113,
       "duplicatedLines": 1276,
       "duplicatedTokens": 12142,
       "percentage": 4.42,
-      "percentageTokens": 5.45,
+      "percentageTokens": 5.44,
       "newDuplicatedLines": 0,
       "newClones": 0
     }

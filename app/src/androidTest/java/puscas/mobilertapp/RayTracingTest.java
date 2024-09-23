@@ -97,12 +97,13 @@ public final class RayTracingTest extends AbstractTest {
     @Test
     public void testNotSelectingScene() throws TimeoutException {
         // Mock the reply as the external file manager application, to not select anything.
-        final Intent resultData = MainActivity.createIntentToLoadFiles(InstrumentationRegistry.getInstrumentation().getTargetContext().getPackageName());
-        final Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_CANCELED, resultData);
-        Intents.intending(IntentMatchers.filterEquals(resultData)).respondWith(result);
+        final Intent expectedIntent = MainActivity.createIntentToLoadFiles(InstrumentationRegistry.getInstrumentation().getTargetContext().getPackageName());
+        final Intent resultIntent = MainActivity.createIntentToLoadFiles(InstrumentationRegistry.getInstrumentation().getTargetContext().getPackageName());
+        final Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_CANCELED, resultIntent);
+        Intents.intending(IntentMatchers.filterEquals(expectedIntent)).respondWith(result);
 
         assertRenderScene(Scene.OBJ, Shader.WHITTED, Accelerator.NAIVE, 1, 1, true, true);
-        Intents.intended(IntentMatchers.hasAction(resultData.getAction()));
+        Intents.intended(IntentMatchers.filterEquals(expectedIntent));
     }
 
     /**

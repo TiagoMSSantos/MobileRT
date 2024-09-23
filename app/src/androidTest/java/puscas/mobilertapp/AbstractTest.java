@@ -389,7 +389,8 @@ public abstract class AbstractTest {
      */
     protected void mockFileManagerReply(final boolean externalSdcard, @NonNull final String... filesPath) {
         logger.info(ConstantsAndroidTests.MOCK_FILE_MANAGER_REPLY);
-        final Intent resultData = MainActivity.createIntentToLoadFiles(InstrumentationRegistry.getInstrumentation().getTargetContext().getPackageName());
+        final Intent expectedIntent = MainActivity.createIntentToLoadFiles(InstrumentationRegistry.getInstrumentation().getTargetContext().getPackageName());
+        final Intent resultIntent = MainActivity.createIntentToLoadFiles(InstrumentationRegistry.getInstrumentation().getTargetContext().getPackageName());
         final String storagePath = externalSdcard
             ? UtilsContext.getSdCardPath(InstrumentationRegistry.getInstrumentation().getTargetContext())
             : UtilsContext.getInternalStoragePath(InstrumentationRegistry.getInstrumentation().getTargetContext());
@@ -399,16 +400,16 @@ public abstract class AbstractTest {
             for (int index = 1; index < filesPath.length; ++index) {
                 clipData.addItem(new ClipData.Item(Uri.fromFile(new File(storagePath + ConstantsUI.FILE_SEPARATOR + filesPath[index]))));
             }
-            resultData.setClipData(clipData);
+            resultIntent.setClipData(clipData);
         } else {
-            resultData.setData(Uri.fromFile(new File(storagePath + ConstantsUI.FILE_SEPARATOR + filesPath[0])));
+            resultIntent.setData(Uri.fromFile(new File(storagePath + ConstantsUI.FILE_SEPARATOR + filesPath[0])));
         }
-        final Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
-        Intents.intending(IntentMatchers.filterEquals(resultData)).respondWith(result);
+        final Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultIntent);
+        Intents.intending(IntentMatchers.filterEquals(expectedIntent)).respondWith(result);
 
         // Temporarily store the assertion that verifies if the application received the expected Intent.
         // And call it in the `teardown` method after every test in order to avoid duplicated code.
-        this.closeActions.add(() -> Intents.intended(IntentMatchers.hasAction(resultData.getAction())));
+        this.closeActions.add(() -> Intents.intended(IntentMatchers.filterEquals(expectedIntent)));
     }
 
     /**
