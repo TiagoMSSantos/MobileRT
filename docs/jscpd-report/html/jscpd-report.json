@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-09-23T09:38:19.483Z",
+    "detectionDate": "2024-09-23T11:13:26.254Z",
     "formats": {
       "java": {
         "sources": {
@@ -953,14 +953,14 @@
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/RayTracingTest.java": {
-            "lines": 160,
-            "tokens": 1082,
+            "lines": 161,
+            "tokens": 1101,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 10,
             "duplicatedTokens": 75,
-            "percentage": 6.25,
-            "percentageTokens": 6.93,
+            "percentage": 6.21,
+            "percentageTokens": 6.81,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -1002,25 +1002,25 @@
           },
           "app/src/androidTest/java/puscas/mobilertapp/AbstractTest.java": {
             "lines": 460,
-            "tokens": 4255,
+            "tokens": 4251,
             "sources": 1,
             "clones": 4,
             "duplicatedLines": 28,
             "duplicatedTokens": 306,
             "percentage": 6.09,
-            "percentageTokens": 7.19,
+            "percentageTokens": 7.2,
             "newDuplicatedLines": 0,
             "newClones": 0
           }
         },
         "total": {
-          "lines": 10417,
-          "tokens": 73750,
+          "lines": 10418,
+          "tokens": 73765,
           "sources": 84,
           "clones": 62,
           "duplicatedLines": 586,
           "duplicatedTokens": 5455,
-          "percentage": 5.63,
+          "percentage": 5.62,
           "percentageTokens": 7.4,
           "newDuplicatedLines": 0,
           "newClones": 0
@@ -3164,8 +3164,8 @@
       }
     },
     "total": {
-      "lines": 28859,
-      "tokens": 222945,
+      "lines": 28860,
+      "tokens": 222960,
       "sources": 250,
       "clones": 113,
       "duplicatedLines": 1276,
@@ -5215,17 +5215,17 @@
       },
       "secondFile": {
         "name": "app/src/androidTest/java/puscas/mobilertapp/RayTracingTest.java",
-        "start": 12,
-        "end": 21,
+        "start": 13,
+        "end": 22,
         "startLoc": {
-          "line": 12,
+          "line": 13,
           "column": 12,
-          "position": 90
+          "position": 103
         },
         "endLoc": {
-          "line": 21,
+          "line": 22,
           "column": 6,
-          "position": 164
+          "position": 177
         }
       }
     },

@@ -404,7 +404,7 @@ public abstract class AbstractTest {
             resultData.setData(Uri.fromFile(new File(storagePath + ConstantsUI.FILE_SEPARATOR + filesPath[0])));
         }
         final Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
-        Intents.intending(IntentMatchers.hasAction(resultData.getAction())).respondWith(result);
+        Intents.intending(IntentMatchers.filterEquals(resultData)).respondWith(result);
 
         // Temporarily store the assertion that verifies if the application received the expected Intent.
         // And call it in the `teardown` method after every test in order to avoid duplicated code.
