@@ -94,7 +94,7 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       run: |
-        sh gradlew build --dry-run -Dorg.gradle.configuration-cache=true \
+        sh gradlew build --dry-run -Dorg.gradle.configuration-cache=true --parallel \
           -DtestType="${{ matrix.type }}" -DandroidApiVersion="${{ matrix.android_api }}" -DabiFilters="[${{ env.android_arch }}]" \
           --info --warning-mode all --stacktrace;
 
@@ -117,7 +117,7 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       run: |
-        sh gradlew connectedAndroidTest --dry-run -Dorg.gradle.configuration-cache=true \
+        sh gradlew connectedAndroidTest --dry-run -Dorg.gradle.configuration-cache=true --parallel \
           -DtestType="${{ matrix.type }}" -DandroidApiVersion="${{ matrix.android_api }}" -DabiFilters="[${{ env.android_arch }}]" \
           --info --warning-mode all --stacktrace;
 

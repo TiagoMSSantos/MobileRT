@@ -250,7 +250,7 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       run: |
-        sh gradlew build --dry-run -Dorg.gradle.configuration-cache=true \
+        sh gradlew build --dry-run -Dorg.gradle.configuration-cache=true --parallel \
           -DtestType="${{ matrix.type }}" -DandroidApiVersion="${{ matrix.android_api }}" -DabiFilters="[${{ env.android_arch }}]" \
           --info --warning-mode all --stacktrace;
 
@@ -536,7 +536,7 @@ jobs:
         else
           gradle_command='connectedAndroidTest';
         fi
-        sh gradlew "${gradle_command}" --dry-run -Dorg.gradle.configuration-cache=true \
+        sh gradlew "${gradle_command}" --dry-run -Dorg.gradle.configuration-cache=true --parallel \
           -DtestType="${{ matrix.type }}" -DandroidApiVersion="${{ matrix.android_api }}" -DabiFilters="[${{ env.android_arch }}]" \
           --info --warning-mode all --stacktrace;
 
@@ -786,7 +786,7 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       run: |
-        sh gradlew test"${{ matrix.type }}"UnitTest lint --dry-run -Dorg.gradle.configuration-cache=true \
+        sh gradlew test"${{ matrix.type }}"UnitTest lint --dry-run -Dorg.gradle.configuration-cache=true --parallel \
           -DtestType="${{ matrix.type }}" -DandroidApiVersion="${{ matrix.android_api }}" -DabiFilters="[${{ env.android_arch }}]" \
           --info --warning-mode all --stacktrace;
 
@@ -1037,7 +1037,7 @@ jobs:
       if: success()
       working-directory: .
       run: |
-        sh gradlew --dry-run -Dorg.gradle.configuration-cache=true --profile --parallel \
+        sh gradlew --dry-run -Dorg.gradle.configuration-cache=true --parallel --profile \
           -DabiFilters="[ ${{ env.android_arch }} ]" \
           -DandroidApiVersion=${{ matrix.android_api }} \
           --info --warning-mode all --stacktrace sonar;

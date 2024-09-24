@@ -209,7 +209,7 @@ kill_adb_processes() {
 
 unlockDevice() {
   echo 'unlockDevice called';
-  callCommandUntilSuccess 5 sh gradlew --offline --daemon \
+  callCommandUntilSuccess 5 sh gradlew --offline --parallel --daemon \
     --no-rebuild \
     -DtestType="${type}" -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]" \
     --info --warning-mode fail --stacktrace;
@@ -557,7 +557,7 @@ runInstrumentationTests() {
     for GRADLE_PROCESS in ${GRADLE_PROCESSES}; do
       kill -TERM "${GRADLE_PROCESS}";
     done;
-    sh gradlew --offline --stop \
+    sh gradlew --offline --parallel --stop \
       --no-rebuild \
       -DtestType="${type}" -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]" \
       --info --warning-mode fail --stacktrace;

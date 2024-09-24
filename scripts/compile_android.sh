@@ -113,11 +113,11 @@ build() {
   export CMAKE_BUILD_PARALLEL_LEVEL="$((NCPU_CORES * 2 - 1))";
 
   echo 'Calling the Gradle assemble to compile code for Android.';
-  sh gradlew --offline \
+  sh gradlew --offline --parallel \
     -DtestType="${type}" -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]" \
     --no-rebuild --stop --info --warning-mode fail --stacktrace;
   echo "Setting Gradle Wrapper to a version that is compatible with Android API: '${android_api_version}'".;
-  sh gradlew --offline wrapper -DtestType="${type}" -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]";
+  sh gradlew --offline --parallel wrapper -DtestType="${type}" -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]";
   echo 'Compiling MobileRT.';
   sh gradlew --offline clean \
     build"${typeWithCapitalLetter}" \
