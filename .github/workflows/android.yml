@@ -1032,6 +1032,16 @@ jobs:
         fi
         set -u;
 
+    - name: Download Android dependencies
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success()
+      working-directory: .
+      run: |
+        sh gradlew --dry-run -Dorg.gradle.configuration-cache=true --profile --parallel \
+          -DabiFilters="[ ${{ env.android_arch }} ]" \
+          -DandroidApiVersion=${{ matrix.android_api }} \
+          --info --warning-mode all --stacktrace sonar;
+
     - name: Analyze Sonar
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
