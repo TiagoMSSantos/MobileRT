@@ -115,7 +115,7 @@
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
-        "host_os: (?<depName>.*?)-(?<currentValue>.*)",
+        "host_os: [?(?<depName>.*?)-(?<currentValue>.*)]?",
         "runs-on: (?<depName>.*?)-(?<currentValue>.*)"
       ],
       "datasourceTemplate": "github-runners",
@@ -544,7 +544,7 @@
         "ubuntu"
       ],
       "versioning": "regex:^(?<major>[0-9a-z]+)?\\.?(?<minor>[0-9]+)?.*$",
-      "matchCurrentVersion": "!/^22\\.04$/"
+      "matchCurrentVersion": "!/^24\\.04$/"
     },
     {
       "groupName": "Ignore specific versions of Windows already being used",
