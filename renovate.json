@@ -115,7 +115,7 @@
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
-        "host_os: [?(?<depName>.*?)-(?<currentValue>.*)]?",
+        "host_os: \\[?(?<depName>.*?)-(?<currentValue>.*)\\]?",
         "runs-on: (?<depName>.*?)-(?<currentValue>.*)"
       ],
       "datasourceTemplate": "github-runners",
