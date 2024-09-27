@@ -214,7 +214,7 @@ public final class UiTest extends AbstractTest {
      * @param repetitions The number of repetitions.
      */
     private void assertClickRenderButton(final int repetitions) throws TimeoutException {
-        UtilsContextT.resetPickerValues(Scene.CORNELL2.ordinal(), Accelerator.NAIVE, 99, 99);
+        UtilsContextT.resetPickerValues(Scene.CORNELL2.ordinal(), Accelerator.NAIVE, 99, 1);
 
         final List<String> buttonTextList = ImmutableList.of(Constants.STOP, Constants.RENDER);
         for (int currentIndex = 0; currentIndex < buttonTextList.size() * repetitions; currentIndex++) {

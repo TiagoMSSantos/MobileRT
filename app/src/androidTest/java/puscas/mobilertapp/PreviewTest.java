@@ -47,7 +47,7 @@ public final class PreviewTest extends AbstractTest {
                 UiTest.assertPreviewCheckBox(view, true);
             });
         ViewActionWait.waitFor(0);
-        UtilsContextT.resetPickerValues(Scene.CORNELL.ordinal(), Accelerator.NAIVE, 99, 99);
+        UtilsContextT.resetPickerValues(Scene.CORNELL.ordinal(), Accelerator.NAIVE, 99, 1);
 
         ViewActionWait.waitFor(0);
         UtilsT.startRendering(false);
@@ -80,7 +80,7 @@ public final class PreviewTest extends AbstractTest {
                 UiTest.assertPreviewCheckBox(view, true);
             });
         ViewActionWait.waitFor(0);
-        UtilsContextT.resetPickerValues(Scene.SPHERES.ordinal(), Accelerator.NAIVE, 99, 99);
+        UtilsContextT.resetPickerValues(Scene.SPHERES.ordinal(), Accelerator.NAIVE, 99, 1);
 
         ViewActionWait.waitFor(0);
         UtilsT.startRendering(false);

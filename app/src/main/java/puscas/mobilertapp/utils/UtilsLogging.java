@@ -30,7 +30,7 @@ public final class UtilsLogging {
      */
     public static void logThrowable(@NonNull final Throwable ex,
                                     @NonNull final String methodName) {
-        final String message = methodName + " exception: " + ex.getMessage() + "\n" + Arrays.toString(ex.getStackTrace());
+        final String message = methodName + " " + ex.getClass() + ": " + ex.getMessage() + "\n" + Arrays.toString(ex.getStackTrace());
         logger.severe(message);
     }
 

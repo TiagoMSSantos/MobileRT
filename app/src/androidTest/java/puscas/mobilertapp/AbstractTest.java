@@ -21,6 +21,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.Espresso;
+import androidx.test.espresso.NoActivityResumedException;
 import androidx.test.espresso.intent.Intents;
 import androidx.test.espresso.intent.VerificationModes;
 import androidx.test.espresso.intent.matcher.IntentMatchers;
@@ -65,6 +66,7 @@ import puscas.mobilertapp.constants.State;
 import puscas.mobilertapp.exceptions.FailureException;
 import puscas.mobilertapp.utils.UtilsContext;
 import puscas.mobilertapp.utils.UtilsContextT;
+import puscas.mobilertapp.utils.UtilsLogging;
 import puscas.mobilertapp.utils.UtilsPickerT;
 import puscas.mobilertapp.utils.UtilsT;
 
@@ -187,27 +189,35 @@ public abstract class AbstractTest {
         Intents.init();
         final List<Intent> intents = Intents.getIntents();
         if (!intents.isEmpty()) {
-            logger.info("Resetting Intents that were missing from previous test.");
-            Intents.intended(Matchers.anyOf(IntentMatchers.hasAction(Intent.ACTION_GET_CONTENT), IntentMatchers.hasAction(Intent.ACTION_MAIN)), VerificationModes.times(1));
+            logger.info(this.testName.getMethodName() + ": Resetting Intents that were missing from previous test.");
+            Intents.intended(
+                Matchers.anyOf(IntentMatchers.hasAction(Intent.ACTION_GET_CONTENT), IntentMatchers.hasAction(Intent.ACTION_MAIN)),
+                VerificationModes.times(1)
+            );
         }
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
         Espresso.onIdle();
         try {
             ViewActionWait.waitFor(0);
-        } catch (final Exception ex) {
-            logger.warning("The MainActivity didn't start as expected. Forcing a restart.");
+        } catch (final NoActivityResumedException ex) {
+            UtilsLogging.logThrowable(ex, this.testName.getMethodName() + ": AbstractTest#setUp");
+            logger.warning(this.testName.getMethodName() + ": The MainActivity didn't start as expected. Forcing a restart.");
             this.mainActivityActivityTestRule.getScenario().close();
-            final ActivityScenario<MainActivity> newActivity = ActivityScenario.launch(MainActivity.class);
-            newActivity.onActivity(activity -> this.activity = activity);
-            Intents.intended(Matchers.allOf(IntentMatchers.hasCategories(Collections.singleton(Intent.CATEGORY_LAUNCHER)), IntentMatchers.hasAction(Intent.ACTION_MAIN)), VerificationModes.times(2));
+            try (ActivityScenario<MainActivity> newActivityScenario = ActivityScenario.launch(MainActivity.class)) {
+                newActivityScenario.onActivity(newActivity -> this.activity = newActivity);
+                Intents.intended(
+                    Matchers.allOf(IntentMatchers.hasCategories(Collections.singleton(Intent.CATEGORY_LAUNCHER)), IntentMatchers.hasAction(Intent.ACTION_MAIN)),
+                    VerificationModes.times(2)
+                );
+            }
         }
-        logger.info(methodName + " validating Intents");
+        logger.info(this.testName.getMethodName() + ": " + methodName + " validating Intents");
         Intents.assertNoUnverifiedIntents();
 
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
         Espresso.onIdle();
         ViewActionWait.waitFor(0);
-        logger.info(methodName + ": " + this.testName.getMethodName() + " started");
+        logger.info(this.testName.getMethodName() + " started");
     }
 
     /**
@@ -225,11 +235,11 @@ public abstract class AbstractTest {
         Preconditions.checkNotNull(this.activity, "The Activity didn't finish as expected!");
 
         final int timeToWaitSecs = 20;
-        logger.info("Will wait for the Activity triggered by the test to finish. Max timeout in secs: " + timeToWaitSecs);
+        logger.info(this.testName.getMethodName() + ": Will wait for the Activity triggered by the test to finish. Max timeout in secs: " + timeToWaitSecs);
         final int waitInSecs = 1;
         int currentTimeSecs = 0;
         while (isActivityRunning(this.activity) && currentTimeSecs < timeToWaitSecs) {
-            logger.info("Finishing the Activity.");
+            logger.info(this.testName.getMethodName() + ": Finishing the Activity.");
             this.activity.finish();
             InstrumentationRegistry.getInstrumentation().waitForIdleSync();
             Espresso.onIdle();
@@ -238,9 +248,9 @@ public abstract class AbstractTest {
         }
         // Wait for the app to be closed. Necessary for Android 12+.
         this.mainActivityActivityTestRule.getScenario().close();
-        logger.info("Activity finished: " + !isActivityRunning(this.activity) + " (" + currentTimeSecs + "secs)");
+        logger.info(this.testName.getMethodName() + ": Activity finished: " + !isActivityRunning(this.activity) + " (" + currentTimeSecs + "secs)");
 
-        logger.info(methodName + ": " + this.testName.getMethodName() + " finished");
+        logger.info(this.testName.getMethodName() + " finished");
     }
 
     /**
@@ -409,7 +419,9 @@ public abstract class AbstractTest {
 
         // Temporarily store the assertion that verifies if the application received the expected Intent.
         // And call it in the `teardown` method after every test in order to avoid duplicated code.
-        this.closeActions.add(() -> Intents.intended(IntentMatchers.filterEquals(expectedIntent)));
+        this.closeActions.add(() ->
+            Intents.intended(IntentMatchers.filterEquals(expectedIntent), VerificationModes.times(1))
+        );
     }
 
     /**
