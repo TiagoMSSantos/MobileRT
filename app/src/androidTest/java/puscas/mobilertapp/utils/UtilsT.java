@@ -219,7 +219,6 @@ public final class UtilsT {
      */
     public static void rethrowException(@Nullable final Exception exception) {
         if (exception != null) {
-            ViewActionWait.waitFor(0);
             throw new FailureException(exception);
         }
     }
