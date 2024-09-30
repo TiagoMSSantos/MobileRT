@@ -226,6 +226,7 @@ public final class UtilsContext {
      * @return The number of CPU cores.
      */
     public static int getNumOfCores(@NonNull final Context context) {
+        logger.info("getNumOfCores started");
         final int cores = (Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN)
             ? getNumCoresOldAndroid(context)
             : Runtime.getRuntime().availableProcessors();

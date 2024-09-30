@@ -156,7 +156,7 @@ public final class UtilsT {
      *                           one color.
      */
     public static void testStateAndBitmap(final boolean expectedSameValues) {
-        logger.info("testBitmap");
+        logger.info("testStateAndBitmap: " + expectedSameValues);
         ViewActionWait.waitFor(0);
         Espresso.onView(ViewMatchers.withId(R.id.drawLayout))
             .inRoot(RootMatchers.isTouchable())
@@ -204,7 +204,6 @@ public final class UtilsT {
      * @param method The {@link Runnable} to call.
      */
     public static void executeWithCatching(@NonNull final Runnable method) {
-        logger.info("executeWithCatching");
         try {
             method.run();
         } catch (final RuntimeException ex) {

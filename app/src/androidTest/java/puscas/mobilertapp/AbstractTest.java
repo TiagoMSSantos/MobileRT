@@ -192,8 +192,9 @@ public abstract class AbstractTest {
             logger.info(this.testName.getMethodName() + ": Resetting Intents that were missing from previous test.");
             Intents.intended(
                 Matchers.anyOf(IntentMatchers.hasAction(Intent.ACTION_GET_CONTENT), IntentMatchers.hasAction(Intent.ACTION_MAIN)),
-                VerificationModes.times(1)
+                VerificationModes.times(intents.size())
             );
+            Intents.assertNoUnverifiedIntents();
         }
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
         Espresso.onIdle();
@@ -205,18 +206,20 @@ public abstract class AbstractTest {
             this.mainActivityActivityTestRule.getScenario().close();
             try (ActivityScenario<MainActivity> newActivityScenario = ActivityScenario.launch(MainActivity.class)) {
                 newActivityScenario.onActivity(newActivity -> this.activity = newActivity);
-                Intents.intended(
-                    Matchers.allOf(IntentMatchers.hasCategories(Collections.singleton(Intent.CATEGORY_LAUNCHER)), IntentMatchers.hasAction(Intent.ACTION_MAIN)),
-                    VerificationModes.times(2)
-                );
             }
         }
-        logger.info(this.testName.getMethodName() + ": " + methodName + " validating Intents");
+        InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+        Espresso.onIdle();
+        final List<Intent> intentsToVerify = Intents.getIntents();
+        logger.info(this.testName.getMethodName() + ": " + methodName + " validating '" + intentsToVerify.size() + "' Intents");
+        Intents.intended(
+            Matchers.allOf(IntentMatchers.hasCategories(Collections.singleton(Intent.CATEGORY_LAUNCHER)), IntentMatchers.hasAction(Intent.ACTION_MAIN)),
+            VerificationModes.times(intentsToVerify.size())
+        );
         Intents.assertNoUnverifiedIntents();
 
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
         Espresso.onIdle();
-        ViewActionWait.waitFor(0);
         logger.info(this.testName.getMethodName() + " started");
     }
 
@@ -367,7 +370,7 @@ public abstract class AbstractTest {
         UtilsPickerT.changePickerValue(ConstantsUI.PICKER_ACCELERATOR, R.id.pickerAccelerator, accelerator.ordinal());
         UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SHADER, R.id.pickerShader, shader.ordinal());
 
-        // Make sure these tests do not use preview feature.
+        logger.info("Making sure these tests do not use preview feature.");
         UiTest.clickPreviewCheckBox(false);
 
         UtilsT.startRendering(showRenderWhenPressingButton);

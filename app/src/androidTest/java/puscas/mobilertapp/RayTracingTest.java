@@ -96,14 +96,21 @@ public final class RayTracingTest extends AbstractTest {
      */
     @Test
     public void testNotSelectingScene() throws TimeoutException {
+        logger.info("testNotSelectingScene started");
         // Mock the reply as the external file manager application, to not select anything.
         final Intent expectedIntent = MainActivity.createIntentToLoadFiles(InstrumentationRegistry.getInstrumentation().getTargetContext().getPackageName());
+        logger.info("testNotSelectingScene created expectedIntent");
         final Intent resultIntent = MainActivity.createIntentToLoadFiles(InstrumentationRegistry.getInstrumentation().getTargetContext().getPackageName());
+        logger.info("testNotSelectingScene created resultIntent");
         final Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_CANCELED, resultIntent);
+        logger.info("testNotSelectingScene created result");
         Intents.intending(IntentMatchers.filterEquals(expectedIntent)).respondWith(result);
+        logger.info("testNotSelectingScene created expected Intent");
 
         assertRenderScene(Scene.OBJ, Shader.WHITTED, Accelerator.NAIVE, 1, 1, true, true);
+        logger.info("testNotSelectingScene asserted");
         Intents.intended(IntentMatchers.filterEquals(expectedIntent));
+        logger.info("testNotSelectingScene finished");
     }
 
     /**
