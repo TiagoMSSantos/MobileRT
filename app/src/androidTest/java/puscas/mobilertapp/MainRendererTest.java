@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Logger;
 
 import puscas.mobilertapp.exceptions.FailureException;
 import puscas.mobilertapp.utils.UtilsGL;
@@ -26,6 +27,11 @@ import puscas.mobilertapp.utils.UtilsT;
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public final class MainRendererTest extends AbstractTest {
+
+    /**
+     * Logger for this class.
+     */
+    private static final Logger logger = Logger.getLogger(MainRendererTest.class.getSimpleName());
 
     /**
      * Tests loading a Vertex GLSL shader for the Ray Tracing engine to output the rendered scene.
@@ -131,9 +137,11 @@ public final class MainRendererTest extends AbstractTest {
         Preconditions.checkNotNull(drawView, "drawView shouldn't be null");
 
         final AtomicInteger shaderIndex = new AtomicInteger(-1);
-        final CountDownLatch latch = new CountDownLatch(1);
-        // We need to call `loadShader` method with the GL rendering thread.
+        final CountDownLatch latch = new CountDownLatch(2);
+        drawView.requestRender();
+        logger.info("Calling `UtilsShader#loadShader` method with the GL rendering thread.");
         drawView.queueEvent(() -> {
+            latch.countDown();
             try {
                 final int index = UtilsShader.loadShader(shaderType, shaderCode);
                 shaderIndex.set(index);
@@ -145,7 +153,12 @@ public final class MainRendererTest extends AbstractTest {
                 latch.countDown();
             }
         });
-        Assert.assertTrue("CountDownLatch has value zero as expected.", latch.await(1L, TimeUnit.MINUTES));
+        final String errorMessage = "UtilsShader#loadShader should be called by the GL rendering thread.";
+        try {
+            Assert.assertTrue(errorMessage, latch.await(20L, TimeUnit.SECONDS));
+        } catch (final AssertionError ex) {
+            throw new RuntimeException(errorMessage + " (" + latch + ")", ex);
+        }
 
         return shaderIndex.get();
     }

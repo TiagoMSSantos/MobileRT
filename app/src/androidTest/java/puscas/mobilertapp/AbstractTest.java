@@ -471,6 +471,7 @@ public abstract class AbstractTest {
         } catch (final IOException ex) {
             throw new RuntimeException(ex);
         } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
             throw new RuntimeException(ex);
         }
     }
