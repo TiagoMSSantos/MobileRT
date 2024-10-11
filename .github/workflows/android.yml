@@ -84,7 +84,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.Matrix.outputs.matrix) }}
-    uses: ./.github/workflows/android-template.yml
+    uses: ./.github/templates/android-template.yml
     with:
       host_os: ${{ matrix.host_os }}
       android_api: ${{ matrix.android_api }}
