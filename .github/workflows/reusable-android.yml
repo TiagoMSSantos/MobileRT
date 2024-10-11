@@ -1,4 +1,4 @@
-name: Android template
+name: Reusable Android workflow
 
 on:
   workflow_call:
