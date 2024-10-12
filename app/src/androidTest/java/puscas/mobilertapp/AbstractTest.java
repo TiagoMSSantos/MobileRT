@@ -22,6 +22,7 @@ import androidx.core.content.ContextCompat;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.NoActivityResumedException;
+import androidx.test.espresso.NoMatchingViewException;
 import androidx.test.espresso.intent.Intents;
 import androidx.test.espresso.intent.VerificationModes;
 import androidx.test.espresso.intent.matcher.IntentMatchers;
@@ -205,7 +206,7 @@ public abstract class AbstractTest {
         Espresso.onIdle();
         try {
             ViewActionWait.waitFor(0);
-        } catch (final NoActivityResumedException ex) {
+        } catch (final NoMatchingViewException | NoActivityResumedException ex) {
             UtilsLogging.logThrowable(ex, this.testName.getMethodName() + ": AbstractTest#setUp");
             logger.warning(this.testName.getMethodName() + ": The MainActivity didn't start as expected. Forcing a restart.");
             this.mainActivityActivityTestRule.getScenario().close();

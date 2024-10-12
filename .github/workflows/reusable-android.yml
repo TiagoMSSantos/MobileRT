@@ -903,35 +903,6 @@ jobs:
         run: |
           curl --retry 5 --retry-delay 2 --connect-timeout 2 --data-binary @codecov.yml https://codecov.io/validate;
 
-      - name: Download generated binaries from cache
-        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-        if: success()
-        uses: actions/cache@v4
-        with:
-          # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
-          key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
-          restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
-          fail-on-cache-miss: true
-          path: |
-            app/build
-            app/.cxx
-            app/third_party
-
-      - name: Check binaries' paths
-        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success()
-        run: |
-          # shellcheck disable=SC1091
-          . scripts/helper_functions.sh && checkPathExists app/build;
-          . scripts/helper_functions.sh && checkPathExists app/build/intermediates;
-          . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac;
-          . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/debug;
-          . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/debugUnitTest;
-          . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/debugAndroidTest;
-          . scripts/helper_functions.sh && checkPathExists app/build/tmp/kotlin-classes/debug;
-          . scripts/helper_functions.sh && checkPathExists app/.cxx;
-          . scripts/helper_functions.sh && checkPathExists app/third_party;
-
       - name: Set Android CPU Architecture
         id: set-cpu-arch
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
