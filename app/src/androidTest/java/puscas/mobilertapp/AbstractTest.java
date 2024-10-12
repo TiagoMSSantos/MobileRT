@@ -130,6 +130,11 @@ public abstract class AbstractTest {
             logger.severe(testName.getMethodName() + ": failed");
             InstrumentationRegistry.getInstrumentation().waitForIdleSync();
             Espresso.onIdle();
+            if (exception != null) {
+                // Throw exception to print the test name in the error message.
+                final String errorMessage = testName.getMethodName() + ": " + exception.getMessage();
+                throw new FailureException(errorMessage, exception);
+            }
         }
 
         @Override

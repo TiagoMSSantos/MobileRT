@@ -33,4 +33,14 @@ public final class FailureException extends RuntimeException {
         super(message);
     }
 
+    /**
+     * The constructor for rethrows with message.
+     *
+     * @param message The cause of the exception.
+     * @param cause   The {@link Throwable} to wrap with this exception.
+     */
+    public FailureException(@NonNull final String message, @NonNull final Throwable cause) {
+        super(message, cause);
+    }
+
 }
