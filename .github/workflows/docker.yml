@@ -138,8 +138,13 @@ jobs:
       timeout-minutes: 60
       if: success()
       run: |
-        docker system prune -a --volumes --force;
+        baseImageRegex=$(echo "${{ matrix.BASE_IMAGE }}" | sed 's/:/.*/');
+        echo "baseImageRegex: ${baseImageRegex}";
+        docker images -a;
+        docker images -a | grep -v -e "${baseImageRegex}" -e 'REPOSITORY' | xargs docker rmi -f || true;
+        docker system prune --volumes --force;
         docker image pull ${{ matrix.BASE_IMAGE }};
+        docker images -a;
 
     - name: Pull MobileRT Docker image
       timeout-minutes: 240
