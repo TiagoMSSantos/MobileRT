@@ -139,9 +139,11 @@ jobs:
       if: success()
       run: |
         baseImageRegex=$(echo "${{ matrix.BASE_IMAGE }}" | sed 's/:/.*/');
+        mobilertImageRegex=$(echo "mobile_rt.*${{ env.VERSION }}");
         echo "baseImageRegex: ${baseImageRegex}";
+        echo "mobilertImageRegex: ${mobilertImageRegex}";
         docker images -a;
-        docker images -a | grep -v -e "${baseImageRegex}" -e 'REPOSITORY' | xargs docker rmi -f || true;
+        docker images -a | grep -v -e "${baseImageRegex}" -e "${mobilertImageRegex}" -e 'REPOSITORY' | xargs docker rmi -f || true;
         docker system prune --volumes --force;
         docker image pull ${{ matrix.BASE_IMAGE }};
         docker images -a;
