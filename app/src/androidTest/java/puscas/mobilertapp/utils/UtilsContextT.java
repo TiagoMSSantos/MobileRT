@@ -91,8 +91,8 @@ public final class UtilsContextT {
         if (Objects.equals(expectedButtonText, Constants.STOP)) {
             done.set(false);
             final int timeToWaitForUpdatedImageInMillis = 10 * 1000;
-            // The test 'PreviewTest#testPreviewSceneOrthographicCamera' starts to fail when using 10ms.
-            final int waitInMillisForBitmapUpdate = 5;
+            // The test 'PreviewTest#testPreviewSceneOrthographicCamera' starts to fail when using 4ms.
+            final int waitInMillisForBitmapUpdate = 2;
             logger.info("Waiting '" + timeToWaitForUpdatedImageInMillis + "'ms for Bitmap to contain some rendered pixels.");
             for (int currentTimeMs = 0; currentTimeMs < timeToWaitForUpdatedImageInMillis && !done.get(); currentTimeMs += waitInMillisForBitmapUpdate) {
                 ViewActionWait.waitFor(waitInMillisForBitmapUpdate);
