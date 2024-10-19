@@ -51,14 +51,14 @@ try this ray tracer with ease by using the following commands to get the docker
 image and execute the container:
 
 ```shell
-docker pull ptpuscas/mobile_rt:ubuntu-24.04
-xhost +; docker run -it -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=${DISPLAY} ptpuscas/mobile_rt:ubuntu-24.04
+docker pull ptpuscas/mobile_rt:ubuntu-24.04;
+xhost +; docker run -it -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=${DISPLAY} ptpuscas/mobile_rt:ubuntu-24.04;
 ```
 
 or (still WIP)
 
 ```shell
-xhost +; docker-compose -f deploy/docker-compose.yml up MobileRT
+xhost +; docker-compose -f deploy/docker-compose.yml up MobileRT;
 ```
 
 And a docker container should start and render the conference room model like
@@ -69,7 +69,7 @@ the image above :)
 For the most curious, this is the command used to build the docker image:
 
 ```shell
-docker build -t ptpuscas/mobile_rt:ubuntu-24.04 -f deploy/Dockerfile.unix --no-cache=false --build-arg BUILD_TYPE=release --build-arg BASE_IMAGE=ubuntu:24.04 .
+docker build -t ptpuscas/mobile_rt:ubuntu-24.04 -f deploy/Dockerfile.unix --no-cache=false --build-arg BUILD_TYPE=release --build-arg BASE_IMAGE=ubuntu:24.04 .;
 ```
 
 The docker image is in docker hub:
@@ -84,15 +84,13 @@ It is also needed the [Qt4 or Qt5](https://www.qt.io/) library and the
 [git](https://git-scm.com/) control system to get the code from the repository.
 
 ```shell
-sh scripts/install_dependencies.sh
+sh scripts/install_dependencies.sh;
 ```
 
-Then, to finally compile this code, just create a build directory and compile
-in it, like for example:
+Then, to finally compile this code for the native machine, just execute the following command:
 
 ```shell
-mkdir -p build_Release
-cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=release ../app/
+sh scripts/compile_native.sh -c g++ -t release -r yes;
 ```
 
 ## Run Ray tracer
@@ -104,7 +102,7 @@ To execute the ray tracer just use the `profile.sh` shell script available in th
 The following command should start the ray tracer when executed in the root directory:
 
 ```shell
-sh scripts/profile.sh release
+sh scripts/profile.sh release;
 ```
 
 ## Android
@@ -112,6 +110,19 @@ sh scripts/profile.sh release
 To try this ray tracer for Android just download the
 [APK](https://github.com/TiagoMSSantos/MobileRT/blob/master/app/release/app-release.apk?raw=true)
 file available in the repository.
+
+Or you can compile yourself for Android as well.
+First, install all the necessary dependencies:
+```shell
+sh scripts/install_dependencies.sh;
+sh gradlew build -DandroidApiVersion='<android_api>' -DabiFilters='["<cpu_architecture>"]' --dry-run -Dorg.gradle.configuration-cache=true --parallel --info --warning-mode all --stacktrace;
+```
+
+Then, to finally compile this code for Android, execute the following command:
+
+```shell
+sh scripts/compile_android.sh -c g++ -t release -r yes -a <android_api> -f \"<cpu_architecture>\";
+```
 
 ## Models Wavefront OBJ
 
@@ -243,7 +254,7 @@ It's necessary the following SDKs in order to compile this project for Android:
 For native **Linux**, **MacOS** and **Windows** support, the `install_dependencies.sh` script should download and install the necessary dependencies, by just calling:
 
 ```shell
-sh scripts/install_dependencies.sh
+sh scripts/install_dependencies.sh;
 ```
 
 Note that the script already supports multiple **Linux** distributions like:
