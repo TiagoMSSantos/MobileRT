@@ -113,6 +113,7 @@ file available in the repository.
 
 Or you can compile yourself for Android as well.
 First, install all the necessary dependencies:
+
 ```shell
 sh scripts/install_dependencies.sh;
 sh gradlew build -DandroidApiVersion='<android_api>' -DabiFilters='["<cpu_architecture>"]' --dry-run -Dorg.gradle.configuration-cache=true --parallel --info --warning-mode all --stacktrace;
