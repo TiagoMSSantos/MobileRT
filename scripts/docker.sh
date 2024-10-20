@@ -38,12 +38,14 @@ buildDockerImage() {
   else
     echo 'Building Docker image based on Unix.';
     dockerBaseOS='unix';
+    export DOCKER_BUILDKIT=1;
   fi
 
   docker build \
     -f deploy/Dockerfile."${dockerBaseOS}" \
     --no-cache=false \
     --rm=true \
+    --build-arg BUILDKIT_INLINE_CACHE=1 \
     --build-arg BASE_IMAGE="${1}" \
     --build-arg BRANCH="${2}" \
     --build-arg BUILD_TYPE=release \
@@ -59,6 +61,7 @@ buildDockerImage() {
 # The parameters are:
 # * VERSION
 pullDockerImage() {
+  export DOCKER_BUILDKIT=1;
   rm -f /tmp/fd3;
   exec 3<> /tmp/fd3; # Open file descriptor 3.
   (docker pull ptpuscas/mobile_rt:"${1}" || true) | tee /tmp/fd3;
@@ -79,6 +82,7 @@ pullDockerImage() {
 # The parameters are:
 # * VERSION
 compileMobileRTInDockerContainer() {
+  export DOCKER_BUILDKIT=1;
   if echo "${1}" | grep -iq 'microsoft' || echo "${1}" | grep -iq 'windows'; then
     echo 'Compiling MobileRT in Windows based Docker image.';
     currentPath=$(echo "${PWD}" | sed 's/\\/\//g' | sed 's/\/d\//D:\//' );
@@ -113,6 +117,7 @@ compileMobileRTInDockerContainer() {
 # * VERSION of the docker image
 # * PARAMETERS for the unit tests
 executeUnitTestsInDockerContainer() {
+  export DOCKER_BUILDKIT=1;
   docker run -t \
     -e DISPLAY="${DISPLAY}" \
     --name="mobile_rt_tests_${1}" \
@@ -124,6 +129,7 @@ executeUnitTestsInDockerContainer() {
 # The parameters are:
 # * VERSION
 pushMobileRTDockerImage() {
+  export DOCKER_BUILDKIT=1;
   docker push ptpuscas/mobile_rt:"${1}";
 }
 
@@ -131,6 +137,7 @@ pushMobileRTDockerImage() {
 # The parameters are:
 # * VERSION
 commitMobileRTDockerImage() {
+  export DOCKER_BUILDKIT=1;
   docker commit mobile_rt_built_"${1}" ptpuscas/mobile_rt:"${1}";
   docker rm mobile_rt_built_"${1}";
 }
@@ -139,6 +146,7 @@ commitMobileRTDockerImage() {
 # The parameters are:
 # * VERSION
 squashMobileRTDockerImage() {
+  export DOCKER_BUILDKIT=1;
   _installDockerSquashCommand;
   echo 'docker history 1';
   docker history ptpuscas/mobile_rt:"${1}" || true;

@@ -145,17 +145,17 @@ jobs:
         docker images -a;
         docker images -a | grep -v -e "${baseImageRegex}" -e "${mobilertImageRegex}" -e 'REPOSITORY' | xargs docker rmi -f || true;
         docker system prune --volumes --force;
-        docker image pull ${{ matrix.BASE_IMAGE }};
-        docker images -a;
-
-    - name: Pull MobileRT Docker image
-      timeout-minutes: 240
-      if: success() && (startsWith(matrix.BASE_IMAGE, 'gentoo'))
-      run: |
-        # shellcheck disable=SC1091
-        echo "VERSION: ${{ env.VERSION }}";
-        . scripts/docker.sh && pullDockerImage ${{ env.VERSION }};
+        echo "Pulling docker base image ${{ matrix.BASE_IMAGE }}";
+        docker image pull ${{ matrix.BASE_IMAGE }} &
+        if echo "${{ matrix.BASE_IMAGE }}" | grep -q 'gentoo'; then
+          echo "Pulling MobileRT docker image ${{ env.VERSION }}";
+          . scripts/docker.sh && pullDockerImage ${{ env.VERSION }} &
+          export BUILD_IMAGE='no';
+        fi
+        echo 'Waiting for docker pull.';
+        wait;
         echo "BUILD_IMAGE=${BUILD_IMAGE}" >> "${GITHUB_ENV}";
+        docker images -a;
 
     - name: Windows copy necessary tools to workspace
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -234,7 +234,7 @@ jobs:
       if: success()
       working-directory: .
       run: |
-        if echo "${{ matrix.BASE_IMAGE }}" | grep -q "alpine"; then
+        if echo "${{ matrix.BASE_IMAGE }}" | grep -q 'alpine'; then
           sh scripts/test/docker/dockerfile.sh ${{ env.VERSION }} 143; # Expect SIGTERM (15). 128 + 15 = 143
         else
           sh scripts/test/docker/dockerfile.sh ${{ env.VERSION }};
