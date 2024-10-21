@@ -49,23 +49,15 @@ USER ContainerAdministrator
 # Install chocolatey Package Manager.
 RUN powershell -NoProfile -ExecutionPolicy Bypass -Command "Set-ExecutionPolicy Bypass -Scope Process -Force; \
   [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; \
-  iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))"
+  iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1')); \
+  winrm set winrm/config/winrs '@{MaxMemoryPerShellMB=\"2048\"}';"
 
 RUN \
   # Install cmake: https://community.chocolatey.org/packages/cmake
-  choco install -y cmake --installargs 'ADD_CMAKE_TO_PATH=System' --version=3.13.0 && \
   # Install git: https://community.chocolatey.org/packages/git
-  choco install -y git git-lfs && \
   # Install Qt: https://community.chocolatey.org/packages/qt5-default
-  # To avoid error: mingw (exited 404)
-  (choco install -y qt5-default || echo 'Error installing Qt.')
-
-RUN \
-  # Splitted installation of dependencies to avoid error: 
-  # Running ["VC_redist.x86.exe"] was not successful. Exit code was '1618'. Exit code indicates the following: Another installation currently in progress.
-  # Install Visual C++ Build Tools: https://community.chocolatey.org/packages/visualcpp-build-tools
-  # To avoid error: Response status code does not indicate success: 503 (Service Unavailable).
-  choco install -y visualcpp-build-tools || echo 'Error installing C++ Build Tools.'
+  start /wait /b "install cmake" "choco" install -y cmake --installargs 'ADD_CMAKE_TO_PATH=System' --version=3.13.0 | \
+  choco install -y git git-lfs qt5-default visualcpp-build-tools
 
 RUN \
   # Set system environment variables. ContainerAdministrator must be used so the change is persisted in the image.

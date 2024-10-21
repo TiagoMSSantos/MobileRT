@@ -150,7 +150,11 @@ jobs:
         if echo "${{ matrix.BASE_IMAGE }}" | grep -q 'gentoo'; then
           echo "Pulling MobileRT docker image ${{ env.VERSION }}";
           . scripts/docker.sh && pullDockerImage ${{ env.VERSION }} &
+          pid_docker_pull="$!";
           export BUILD_IMAGE='no';
+          wait ${pid_docker_pull};
+          echo "Squashing MobileRT docker image: ${{ env.VERSION }}";
+          . scripts/docker.sh && squashMobileRTDockerImage ${{ env.VERSION }} &
         fi
         echo 'Waiting for docker pull.';
         wait;
@@ -188,14 +192,6 @@ jobs:
         echo "BRANCH: ${{ env.BRANCH }}";
         echo "VERSION: ${{ env.VERSION }}";
         . scripts/docker.sh && buildDockerImage ${{ matrix.BASE_IMAGE }} ${{ env.BRANCH }} ${{ env.VERSION }};
-
-    - name: Squash Docker image
-      timeout-minutes: 120
-      if: success() && env.BUILD_IMAGE != 'yes' && startsWith(matrix.BASE_IMAGE, 'gentoo')
-      run: |
-        # shellcheck disable=SC1091
-        echo "VERSION: ${{ env.VERSION }}";
-        . scripts/docker.sh && squashMobileRTDockerImage ${{ env.VERSION }};
 
     - name: Build MobileRT
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}

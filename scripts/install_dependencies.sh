@@ -177,7 +177,7 @@ install_dependencies_arch() {
     pacman -S --noconfirm --needed --noscriptlet make;
   fi
   if ! command -v shellcheck > /dev/null; then
-    pacman -S --noconfirm --needed --noscriptlet shellcheck;
+    pacman -S --noconfirm --needed --noscriptlet ghc-libs shellcheck;
   fi
   if ! command -v git > /dev/null; then
     pacman -S --noconfirm --needed --noscriptlet ca-certificates git;
