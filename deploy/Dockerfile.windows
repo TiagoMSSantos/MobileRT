@@ -47,17 +47,19 @@ SHELL ["cmd", "/S", "/V:ON", "/E:ON", "/C"]
 USER ContainerAdministrator
 
 # Install chocolatey Package Manager.
-RUN powershell -NoProfile -ExecutionPolicy Bypass -Command "Set-ExecutionPolicy Bypass -Scope Process -Force; \
+RUN powershell -NoProfile -ExecutionPolicy Bypass -Command " \
+  winrm set winrm/config/winrs '@{MaxMemoryPerShellMB=\"2048\"}'; \
+  Set-ExecutionPolicy Bypass -Scope Process -Force; \
   [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; \
   iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1')); \
-  winrm set winrm/config/winrs '@{MaxMemoryPerShellMB=\"2048\"}';"
+  "
 
 RUN \
   # Install cmake: https://community.chocolatey.org/packages/cmake
+  start /wait /b "install cmake" "choco" install -y cmake --installargs 'ADD_CMAKE_TO_PATH=System' --version=3.13.0 | \
   # Install git: https://community.chocolatey.org/packages/git
   # Install Qt: https://community.chocolatey.org/packages/qt5-default
-  start /wait /b "install cmake" "choco" install -y cmake --installargs 'ADD_CMAKE_TO_PATH=System' --version=3.13.0 | \
-  choco install -y git git-lfs qt5-default visualcpp-build-tools
+  choco install -y git qt5-default
 
 RUN \
   # Set system environment variables. ContainerAdministrator must be used so the change is persisted in the image.
