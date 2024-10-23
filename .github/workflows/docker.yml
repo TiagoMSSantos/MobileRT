@@ -153,14 +153,20 @@ jobs:
           wait ${pid_docker_pull};
           echo "Squashing MobileRT docker image: ${{ env.VERSION }}";
           . scripts/docker.sh && squashMobileRTDockerImage ${{ env.VERSION }} &
+          pid_docker="$!";
         else
           echo "Pulling docker base image ${{ matrix.BASE_IMAGE }}";
           docker image pull ${{ matrix.BASE_IMAGE }} &
+          pid_docker="$!";
         fi
         echo 'Waiting for docker pull.';
-        wait;
+        wait ${pid_docker};
+        dockerStatus=$?;
         echo "BUILD_IMAGE=${BUILD_IMAGE}" >> "${GITHUB_ENV}";
         docker images -a;
+        if [ "${dockerStatus}" != '0' ]; then
+          exit 1;
+        fi
 
     - name: Windows copy necessary tools to workspace
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
