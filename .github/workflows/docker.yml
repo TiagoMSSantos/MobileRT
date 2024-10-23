@@ -177,12 +177,6 @@ jobs:
         $windowsKitsVersion = Get-ChildItem -Path "C:\\Program Files (x86)\\Windows Kits\\10\\bin" | Where {$_.name -match "^[0-9\.]+$"} | Sort-Object -Descending | Select name | Select-Object -ExpandProperty Name | Select -first 1
         Copy-Item -Path "C:\\Program Files (x86)\\Windows Kits\\10\\bin\\$windowsKitsVersion\\x64\\*" -Destination ".\\tools\\binariesResourceCompiler" -Recurse
 
-        Write-Host "Copying nmake binaries to workspace."
-        # Get-ChildItem -Path "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC" -Include nmake.exe -File -Recurse -ErrorAction SilentlyContinue | ForEach-Object{$_.FullName}
-        New-Item -Type dir .\\tools\\binariesNmake
-        $windowsMSVCVersion = Get-ChildItem -Path "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC" | Where {$_.name -match "^[0-9\.]+$"} | Sort-Object -Descending | Select name | Select-Object -ExpandProperty Name | Select -first 1
-        Copy-Item -Path "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\$windowsMSVCVersion\\bin\\Hostx86\\x64\\*" -Destination ".\\tools\\binariesNmake" -Recurse
-
     - name: Build Docker image
       timeout-minutes: 300
       if: success() && env.BUILD_IMAGE == 'yes'

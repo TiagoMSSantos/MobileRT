@@ -129,7 +129,6 @@ RUN \
   ls -la . && \
   ls -la ./binariesShell && \
   ls -la ./binariesResourceCompiler && \
-  ls -la ./binariesNmake && \
   set && \
   sh scripts/install_dependencies.sh && \
   icacls "C:\MobileRT" /c /t /grant:r "Authenticated Users":(OI)(CI)F
@@ -141,7 +140,6 @@ RUN \
   dir . && \
   choco /? && \
   rc /? && \
-  nmake /? && \
   qmake --help
 ###############################################################################
 ###############################################################################
@@ -167,7 +165,6 @@ RUN \
   ls -la ./app/src/androidTest/resources/teapot/teapot.cam && \
   ls -la ./binariesShell && \
   ls -la ./binariesResourceCompiler && \
-  ls -la ./binariesNmake && \
   set && \
   ls -la . && \
   cd

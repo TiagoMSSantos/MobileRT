@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-10-19T09:12:21.558Z",
+    "detectionDate": "2024-10-23T06:51:34.706Z",
     "formats": {
       "java": {
         "sources": {
@@ -1961,14 +1961,14 @@
             "newClones": 0
           },
           ".github/workflows/docker.yml": {
-            "lines": 248,
-            "tokens": 1625,
+            "lines": 238,
+            "tokens": 1404,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 19,
             "duplicatedTokens": 104,
-            "percentage": 7.66,
-            "percentageTokens": 6.4,
+            "percentage": 7.98,
+            "percentageTokens": 7.41,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2106,14 +2106,14 @@
           }
         },
         "total": {
-          "lines": 3104,
-          "tokens": 19969,
+          "lines": 3094,
+          "tokens": 19748,
           "sources": 24,
           "clones": 15,
           "duplicatedLines": 342,
           "duplicatedTokens": 2667,
-          "percentage": 11.02,
-          "percentageTokens": 13.36,
+          "percentage": 11.05,
+          "percentageTokens": 13.51,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2206,7 +2206,7 @@
           },
           "scripts/install_dependencies.sh": {
             "lines": 536,
-            "tokens": 4281,
+            "tokens": 4283,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 42,
@@ -2229,8 +2229,8 @@
             "newClones": 0
           },
           "scripts/docker.sh": {
-            "lines": 244,
-            "tokens": 1767,
+            "lines": 252,
+            "tokens": 1832,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2278,14 +2278,14 @@
           }
         },
         "total": {
-          "lines": 4252,
-          "tokens": 28716,
+          "lines": 4260,
+          "tokens": 28783,
           "sources": 13,
           "clones": 12,
           "duplicatedLines": 263,
           "duplicatedTokens": 1345,
-          "percentage": 6.19,
-          "percentageTokens": 4.68,
+          "percentage": 6.17,
+          "percentageTokens": 4.67,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3188,8 +3188,8 @@
       }
     },
     "total": {
-      "lines": 30019,
-      "tokens": 231133,
+      "lines": 30017,
+      "tokens": 230979,
       "sources": 252,
       "clones": 123,
       "duplicatedLines": 1525,
