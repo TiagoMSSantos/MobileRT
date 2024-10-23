@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-10-23T06:51:34.706Z",
+    "detectionDate": "2024-10-23T07:33:07.403Z",
     "formats": {
       "java": {
         "sources": {
@@ -1961,13 +1961,13 @@
             "newClones": 0
           },
           ".github/workflows/docker.yml": {
-            "lines": 238,
+            "lines": 239,
             "tokens": 1404,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 19,
             "duplicatedTokens": 104,
-            "percentage": 7.98,
+            "percentage": 7.95,
             "percentageTokens": 7.41,
             "newDuplicatedLines": 0,
             "newClones": 0
@@ -2106,7 +2106,7 @@
           }
         },
         "total": {
-          "lines": 3094,
+          "lines": 3095,
           "tokens": 19748,
           "sources": 24,
           "clones": 15,
@@ -3188,7 +3188,7 @@
       }
     },
     "total": {
-      "lines": 30017,
+      "lines": 30018,
       "tokens": 230979,
       "sources": 252,
       "clones": 123,

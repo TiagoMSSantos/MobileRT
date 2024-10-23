@@ -145,8 +145,6 @@ jobs:
         docker images -a;
         docker images -a | grep -v -e "${baseImageRegex}" -e "${mobilertImageRegex}" -e 'REPOSITORY' | xargs docker rmi -f || true;
         docker system prune --volumes --force;
-        echo "Pulling docker base image ${{ matrix.BASE_IMAGE }}";
-        docker image pull ${{ matrix.BASE_IMAGE }} &
         if echo "${{ matrix.BASE_IMAGE }}" | grep -q 'gentoo'; then
           echo "Pulling MobileRT docker image ${{ env.VERSION }}";
           . scripts/docker.sh && pullDockerImage ${{ env.VERSION }} &
@@ -155,6 +153,9 @@ jobs:
           wait ${pid_docker_pull};
           echo "Squashing MobileRT docker image: ${{ env.VERSION }}";
           . scripts/docker.sh && squashMobileRTDockerImage ${{ env.VERSION }} &
+        else
+          echo "Pulling docker base image ${{ matrix.BASE_IMAGE }}";
+          docker image pull ${{ matrix.BASE_IMAGE }} &
         fi
         echo 'Waiting for docker pull.';
         wait;
