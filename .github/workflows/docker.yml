@@ -145,7 +145,7 @@ jobs:
         docker images -a;
         docker images -a | grep -v -e "${baseImageRegex}" -e "${mobilertImageRegex}" -e 'REPOSITORY' | xargs docker rmi -f || true;
         docker system prune --volumes --force;
-        if echo "${{ matrix.BASE_IMAGE }}" | grep -q -e 'gentoo' -e 'windows'; then
+        if echo "${{ matrix.BASE_IMAGE }}" | grep -q -e 'gentoo'; then
           echo "Pulling MobileRT docker image ${{ env.VERSION }}";
           . scripts/docker.sh && pullDockerImage ${{ env.VERSION }} &
           pid_docker_pull="$!";

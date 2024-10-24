@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-10-23T07:33:07.403Z",
+    "detectionDate": "2024-10-24T07:57:18.538Z",
     "formats": {
       "java": {
         "sources": {
@@ -1961,13 +1961,13 @@
             "newClones": 0
           },
           ".github/workflows/docker.yml": {
-            "lines": 239,
+            "lines": 246,
             "tokens": 1404,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 19,
             "duplicatedTokens": 104,
-            "percentage": 7.95,
+            "percentage": 7.72,
             "percentageTokens": 7.41,
             "newDuplicatedLines": 0,
             "newClones": 0
@@ -2106,13 +2106,13 @@
           }
         },
         "total": {
-          "lines": 3095,
+          "lines": 3102,
           "tokens": 19748,
           "sources": 24,
           "clones": 15,
           "duplicatedLines": 342,
           "duplicatedTokens": 2667,
-          "percentage": 11.05,
+          "percentage": 11.03,
           "percentageTokens": 13.51,
           "newDuplicatedLines": 0,
           "newClones": 0
@@ -2229,8 +2229,8 @@
             "newClones": 0
           },
           "scripts/docker.sh": {
-            "lines": 252,
-            "tokens": 1832,
+            "lines": 253,
+            "tokens": 1845,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2278,8 +2278,8 @@
           }
         },
         "total": {
-          "lines": 4260,
-          "tokens": 28783,
+          "lines": 4261,
+          "tokens": 28796,
           "sources": 13,
           "clones": 12,
           "duplicatedLines": 263,
@@ -3188,8 +3188,8 @@
       }
     },
     "total": {
-      "lines": 30018,
-      "tokens": 230979,
+      "lines": 30026,
+      "tokens": 230992,
       "sources": 252,
       "clones": 123,
       "duplicatedLines": 1525,
