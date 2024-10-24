@@ -51,3 +51,12 @@
   fetchRecurseSubmodules = false
   ignore = none
   shallow = true
+
+[submodule "scripts/third_party/docker-squash"]
+  path = scripts/third_party/docker-squash
+  url = https://github.com/shinsenter/docker-squash
+  update = checkout
+  branch = main
+  fetchRecurseSubmodules = false
+  ignore = none
+  shallow = true

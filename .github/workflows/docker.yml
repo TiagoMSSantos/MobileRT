@@ -145,14 +145,15 @@ jobs:
         docker images -a;
         docker images -a | grep -v -e "${baseImageRegex}" -e "${mobilertImageRegex}" -e 'REPOSITORY' | xargs docker rmi -f || true;
         docker system prune --volumes --force;
-        if echo "${{ matrix.BASE_IMAGE }}" | grep -q 'gentoo'; then
+        if echo "${{ matrix.BASE_IMAGE }}" | grep -q -e 'gentoo' -e 'windows'; then
           echo "Pulling MobileRT docker image ${{ env.VERSION }}";
           . scripts/docker.sh && pullDockerImage ${{ env.VERSION }} &
           pid_docker_pull="$!";
           export BUILD_IMAGE='no';
           wait ${pid_docker_pull};
           echo "Squashing MobileRT docker image: ${{ env.VERSION }}";
-          . scripts/docker.sh && squashMobileRTDockerImage ${{ env.VERSION }} &
+          git submodule update --init -- scripts/third_party/docker-squash;
+          sh scripts/third_party/docker-squash/docker-squash.sh ptpuscas/mobile_rt:${{ env.VERSION }} &
           pid_docker="$!";
         else
           echo "Pulling docker base image ${{ matrix.BASE_IMAGE }}";

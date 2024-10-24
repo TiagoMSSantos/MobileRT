@@ -94,6 +94,7 @@ compileMobileRTInDockerContainer() {
   fi
   echo "Current path: ${currentPath}";
   echo "Volume path: ${mobilertVolumeInContainer}";
+  echo "Current commit: $(git log -1 --format=%H-%B)";
   docker run -t \
     --name="mobile_rt_built_${1}" \
     --volume="${currentPath}":"${mobilertVolumeInContainer}" \
