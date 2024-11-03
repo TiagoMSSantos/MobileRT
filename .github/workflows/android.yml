@@ -16,6 +16,7 @@ on:
       - 'WavefrontOBJs/**'
       - '!.github/workflows/android.yml'
       - '!.github/workflows/android_matrix.json'
+      - '!.github/workflows/reusable-android.yml'
       - '!app/System_dependent/CMakeLists.txt'
       - '!gradle/wrapper/gradle-wrapper.properties'
       - '!scripts/run_tests.sh'
