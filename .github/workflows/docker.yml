@@ -118,6 +118,23 @@ jobs:
         # shellcheck disable=SC1091
         . scripts/docker.sh && installDockerCommandForMacOS;
 
+    - name: Windows copy necessary tools to workspace
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success() && env.BUILD_IMAGE == 'yes' && startsWith(matrix.host_os, 'windows')
+      shell: powershell
+      run: |
+        $ErrorActionPreference = 'Stop'
+        Write-Host "Copying shell binaries to workspace."
+        # where.exe sh
+        New-Item -Type dir .\\tools\\binariesShell
+        Copy-Item -Path "C:\\Program Files\\Git\\usr\\bin\\*" -Destination ".\\tools\\binariesShell" -Recurse
+
+        Write-Host "Copying resource compiler binaries to workspace."
+        # Get-ChildItem -Path "C:\\Program Files (x86)\\Windows Kits\\10\\bin" -Include rc.exe -File -Recurse -ErrorAction SilentlyContinue | ForEach-Object{$_.FullName}
+        New-Item -Type dir .\\tools\\binariesResourceCompiler
+        $windowsKitsVersion = Get-ChildItem -Path "C:\\Program Files (x86)\\Windows Kits\\10\\bin" | Where {$_.name -match "^[0-9\.]+$"} | Sort-Object -Descending | Select name | Select-Object -ExpandProperty Name | Select -first 1
+        Copy-Item -Path "C:\\Program Files (x86)\\Windows Kits\\10\\bin\\$windowsKitsVersion\\x64\\*" -Destination ".\\tools\\binariesResourceCompiler" -Recurse
+
     - name: Set up Docker Buildx
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && !startsWith(matrix.host_os, 'windows')
@@ -133,6 +150,136 @@ jobs:
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
         ecr: false
         logout: true
+
+    - name: Install Docker BuildKit and Buildx Windows
+      timeout-minutes: 60
+      if: success() && env.BUILD_IMAGE == 'yes' && startsWith(matrix.host_os, 'windows') && false
+      shell: powershell
+      working-directory: .
+      run: |
+        $ErrorActionPreference = 'Stop'
+        $url = "https://api.github.com/repos/containerd/containerd/releases/latest"
+        $version = (Invoke-RestMethod -Uri $url -UseBasicParsing).tag_name
+        $version = $version -replace "v",""
+        $arch = "amd64"	# arm64 also available
+        Write-Host "Downloading & extracting containerd $version - $arch"
+        curl.exe -LO https://github.com/containerd/containerd/releases/download/v$version/containerd-$version-windows-$arch.tar.gz
+        tar xvf .\containerd-$version-windows-$arch.tar.gz
+        Write-Host "Copy containerd Windows binaries."
+        Copy-Item -Path .\bin -Destination $Env:ProgramFiles\containerd -Recurse -Force
+
+        Write-Host "Add the binaries (containerd, ctr) in $env:Path."
+        $Path = [Environment]::GetEnvironmentVariable("PATH", "Machine") + [IO.Path]::PathSeparator + "$Env:ProgramFiles\containerd"
+        [Environment]::SetEnvironmentVariable( "Path", $Path, "Machine")
+        $Env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+
+        Write-Host "Configuring containerd"
+        containerd config default | Out-File $Env:ProgramFiles\containerd\config.toml -Encoding ascii
+        Get-Content $Env:ProgramFiles\containerd\config.toml
+
+        Write-Host "Register and start containerd service"
+        containerd --register-service
+        Start-Service containerd
+
+        Write-Host "Enable Containers and Microsoft-Hyper-V features."
+        Enable-WindowsOptionalFeature -Online -FeatureName $("Containers","Microsoft-Hyper-V","Microsoft-Windows-Subsystem-Linux","VirtualMachinePlatform") -All
+
+        $url = "https://api.github.com/repos/moby/buildkit/releases/latest"
+        $version = (Invoke-RestMethod -Uri $url -UseBasicParsing).tag_name
+        $version = $version -replace "v",""
+        $arch = "amd64" # arm64 binary available too
+        Write-Host "Downloading buildkit $version - $arch"
+        curl.exe -LO https://github.com/moby/buildkit/releases/download/v$version/buildkit-v$version.windows-$arch.tar.gz
+        Write-Host "Extracting buildkit."
+        tar xvf .\buildkit-v$version.windows-$arch.tar.gz
+
+        Write-Host "Listing buildkit files."
+        Copy-Item -Path ".\bin" -Destination "$Env:ProgramFiles\buildkit" -Recurse -Force
+        Write-Host "Adding `buildkitd` and `buildctl` binaries in the $Env:PATH"
+        $Path = [Environment]::GetEnvironmentVariable("PATH", "Machine") + `
+          [IO.Path]::PathSeparator + "$Env:ProgramFiles\buildkit"
+        Write-Host "Storing the Path variable"
+        [Environment]::SetEnvironmentVariable( "Path", $Path, "Machine")
+        echo "Path=$Path" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+        Write-Host "Checking Path variable"
+        $Env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + `
+          [System.Environment]::GetEnvironmentVariable("Path","User")
+
+        $url = "https://api.github.com/repos/docker/buildx/releases/latest"
+        $version = (Invoke-RestMethod -Uri $url -UseBasicParsing).tag_name
+        $version = $version -replace "v",""
+        $arch = "amd64"
+        Write-Host "Downloading buildx $version - $arch"
+        curl.exe -LO https://github.com/docker/buildx/releases/download/v$version/buildx-v$version.windows-$arch.exe
+        Write-Host "Copying buildx to C:\ProgramData\Docker\cli-plugins"
+        Copy-Item -Path "buildx-v$version.windows-$arch.exe" -Destination "C:\ProgramData\Docker\cli-plugins\docker-buildx.exe" -Force
+        $DOCKER_CLI_EXPERIMENTAL = "enabled"
+        $Env:DOCKER_CLI_EXPERIMENTAL = "enabled"
+        $DOCKER_BUILDKIT = "1"
+        $Env:DOCKER_BUILDKIT = "1"
+
+        $networkName = 'nat'
+        # Get-HnsNetwork is available once you have enabled the 'Hyper-V Host Compute Service' feature
+        # which must have been done at the Quick setup above
+        # Enable-WindowsOptionalFeature -Online -FeatureName containers -All
+        # Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V-All -All
+        # the default one named `nat` should be available
+        $natInfo = Get-HnsNetwork -ErrorAction Ignore | Where-Object { $_.Name -eq $networkName }
+        if ($null -eq $natInfo) {
+          throw "NAT network not found, check if you enabled containers, Hyper-V features and restarted the machine"
+        }
+        $gateway = $natInfo.Subnets[0].GatewayAddress
+        $subnet = $natInfo.Subnets[0].AddressPrefix
+
+        $cniConfPath = "$env:ProgramFiles\containerd\cni\conf\0-containerd-nat.conf"
+        $cniBinDir = "$env:ProgramFiles\containerd\cni\bin"
+        $cniVersion = "0.3.0"
+
+        # get the CNI plugins (binaries)
+        mkdir $cniBinDir -Force
+        curl.exe -LO https://github.com/microsoft/windows-container-networking/releases/download/v$cniVersion/windows-container-networking-cni-amd64-v$cniVersion.zip
+        tar xvf windows-container-networking-cni-amd64-v$cniVersion.zip -C $cniBinDir
+
+        $natConfig = @"
+        {
+          "cniVersion": "$cniVersion",
+          "name": "$networkName",
+          "type": "nat",
+          "master": "Ethernet",
+          "ipam": {
+            "subnet": "$subnet",
+            "routes": [
+              {
+                "gateway": "$gateway"
+              }
+            ]
+          },
+          "capabilities": {
+            "portMappings": true,
+            "dns": true
+          }
+        }
+        "@
+        Set-Content -Path $cniConfPath -Value $natConfig
+
+        Write-Host "Starting buildkitd."
+        Start-Process -NoNewWindow buildkitd -ArgumentList "--containerd-cni-config-path=`"C:\Program Files\containerd\cni\conf\0-containerd-nat.conf`"","--containerd-cni-binary-dir=`"C:\Program Files\containerd\cni\bin`""
+        docker buildx
+        docker buildx install
+        docker buildx version
+        docker buildx create --name buildkit-exp --use --driver=remote npipe:////./pipe/buildkitd    
+        docker buildx use --default --global buildkit-exp
+        docker buildx inspect
+        docker buildx ls
+        buildctl build --help
+
+        Write-Host "Building image"
+        Get-Location
+        Get-ChildItem -Force
+
+        bash -c ". scripts/docker.sh && buildDockerImage ${{ matrix.BASE_IMAGE }} ${{ env.BRANCH }} ${{ env.VERSION }};"
+        if (-not $?) {throw "Failed to build image."}
+        docker images
 
     - name: Pull base Docker image
       timeout-minutes: 60
@@ -168,22 +315,6 @@ jobs:
         if [ "${dockerStatus}" != '0' ]; then
           exit 1;
         fi
-
-    - name: Windows copy necessary tools to workspace
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && env.BUILD_IMAGE == 'yes' && startsWith(matrix.host_os, 'windows')
-      shell: powershell
-      run: |
-        Write-Host "Copying shell binaries to workspace."
-        # where.exe sh
-        New-Item -Type dir .\\tools\\binariesShell
-        Copy-Item -Path "C:\\Program Files\\Git\\usr\\bin\\*" -Destination ".\\tools\\binariesShell" -Recurse
-
-        Write-Host "Copying resource compiler binaries to workspace."
-        # Get-ChildItem -Path "C:\\Program Files (x86)\\Windows Kits\\10\\bin" -Include rc.exe -File -Recurse -ErrorAction SilentlyContinue | ForEach-Object{$_.FullName}
-        New-Item -Type dir .\\tools\\binariesResourceCompiler
-        $windowsKitsVersion = Get-ChildItem -Path "C:\\Program Files (x86)\\Windows Kits\\10\\bin" | Where {$_.name -match "^[0-9\.]+$"} | Sort-Object -Descending | Select name | Select-Object -ExpandProperty Name | Select -first 1
-        Copy-Item -Path "C:\\Program Files (x86)\\Windows Kits\\10\\bin\\$windowsKitsVersion\\x64\\*" -Destination ".\\tools\\binariesResourceCompiler" -Recurse
 
     - name: Build Docker image
       timeout-minutes: 300

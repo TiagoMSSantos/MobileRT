@@ -35,6 +35,9 @@ buildDockerImage() {
   if echo "${1}" | grep -iq 'microsoft' || echo "${1}" | grep -iq 'windows'; then
     echo 'Building Docker image based on Windows.';
     dockerBaseOS='windows';
+    echo 'Adding bin to PATH and expecting the BuildKit is installed there.';
+    export PATH="${PATH}:bin";
+    export DOCKER_BUILDKIT=0;
   else
     echo 'Building Docker image based on Unix.';
     dockerBaseOS='unix';
@@ -50,6 +53,11 @@ buildDockerImage() {
     --build-arg BRANCH="${2}" \
     --build-arg BUILD_TYPE=release \
     .;
+  dockerImageBuilt=$?;
+  if [ "${dockerImageBuilt}" != "0" ]; then
+    echo 'Failed to build image.';
+    exit 1;
+  fi
 
   imageId=$(docker images | awk '{print $3}' | awk 'NR==2');
   echo "MobileRT imageId: ${imageId}";

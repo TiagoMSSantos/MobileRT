@@ -48,10 +48,23 @@ USER ContainerAdministrator
 
 # Install chocolatey Package Manager.
 RUN powershell -NoProfile -ExecutionPolicy Bypass -Command " \
+  Write-Host "Setting up DNS"; \
+  $ErrorActionPreference = 'Stop'; \
+  $ProgressPreference = 'Continue'; \
+  $verbosePreference = 'Continue'; \
+  Get-NetIPInterface -AddressFamily IPv4 | Sort-Object -Property InterfaceMetric -Descending; \
+  netsh interface ipv4 set dnsserver 17 static address=8.8.8.8 register=primary; \
+  $env:chocolateyUseWindowsCompression = 'true'; \
   winrm set winrm/config/winrs '@{MaxMemoryPerShellMB=\"2048\"}'; \
   Set-ExecutionPolicy Bypass -Scope Process -Force; \
+  Write-Host "Setting up Network protocol"; \
+  [Net.ServicePointManager]::SecurityProtocol; \
+  [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; \
   [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; \
-  iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1')); \
+  [System.Net.WebRequest]::DefaultWebProxy.Credentials = [System.Net.CredentialCache]::DefaultCredentials; \
+  [Net.ServicePointManager]::SecurityProtocol; \
+  Write-Host "Downloading chocolatey"; \
+  iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1')); \
   "
 
 RUN \
@@ -62,6 +75,7 @@ RUN \
   choco install -y git qt5-default
 
 RUN \
+  dir P* /X C:\ && \
   # Set system environment variables. ContainerAdministrator must be used so the change is persisted in the image.
   # Set lib path. Windows doesn't use LD_LIBRARY_PATH, but use PATH instead.
   setx /M RC "rc" && \
@@ -69,10 +83,11 @@ RUN \
   setx /M CC "gcc" && \
   setx /M CXXFLAGS "-O3 -std=c++11" && \
   setx /M BUILD_TYPE "!BUILD_TYPE!" && \
-  setx /M PATH "C:\\MobileRT\\binariesShell;C:\\MobileRT\\binariesResourceCompiler;C:\\MobileRT\\binariesNmake;C:\\MobileRT\\libraries;C:\\MobileRT\\build_!BUILD_TYPE!\\lib;!PATH!" && \
+  setx /M PATH "C:\\MobileRT\\binariesShell;C:\\MobileRT\\binariesResourceCompiler;C:\\MobileRT\\libraries;C:\\MobileRT\\build_!BUILD_TYPE!\\lib;!PATH!" && \
   # Configure git.
   git config --system https.postBuffer 1048576000 && \
   git config --system --add safe.directory C:/MobileRT && \
+  echo "Configured git." && \
   set
 
 USER ContainerUser
@@ -85,6 +100,8 @@ USER ContainerUser
 ###############################################################################
 WORKDIR /
 RUN \
+  dir P* /X C:\ && \
+  git --version && \
   # Clone repository.
   git clone https://github.com/TiagoMSSantos/MobileRT.git \
     --shallow-submodules \
@@ -92,8 +109,8 @@ RUN \
     --branch !BRANCH! && \
   cd MobileRT && \
   git lfs pull && \
-  dir .\app\src\androidTest\resources\CornellBox\CornellBox-Water.obj && \
-  dir .\app\src\androidTest\resources\teapot\teapot.obj && \
+  dir P* /X .\\app\\src\\androidTest\\resources\\CornellBox\\CornellBox-Water.obj && \
+  dir P* /X .\\app\\src\\androidTest\\resources\\teapot\\teapot.obj && \
   # Print environment.
   echo "BRANCH: !BRANCH!" && \
   echo "BUILD_TYPE: !BUILD_TYPE!"
@@ -116,7 +133,12 @@ WORKDIR MobileRT
 USER ContainerAdministrator
 
 RUN \
-  sh -c "find /Qt -name bin | cut -d / -f 3" > qt_version.txt && \
+  dir P* /X .\\ && \
+  dir P* /X .\\ && \
+  dir P* /X .\\binariesShell\\sh.exe && \
+  dir P* /X .\\binariesShell\\cut.exe && \
+  dir P* /X .\\binariesShell\\ls.exe && \
+  sh -c "echo ${PWD} && find /Qt -name 'bin' | cut -d / -f 3" > qt_version.txt && \
   for /f "delims=" %x in (qt_version.txt) do set QT_VERSION="%x" && \
   setx /M QT_VERSION "!QT_VERSION: =!"
 
@@ -125,7 +147,7 @@ RUN \
   setx /M Qt5_DIR "C:\\Qt\\!QT_VERSION!\\mingw81_64\\lib\\cmake\\Qt5" && \
   setx /M CPLUS_INCLUDE_PATH "!CPLUS_INCLUDE_PATH!;C:\\Qt\\!QT_VERSION!\\mingw81_64\\include;C:\\Qt\\!QT_VERSION!\\mingw81_64\\include\\QtWidgets;C:\\Qt\\!QT_VERSION!\\mingw81_64\\include\\QtGui;C:\\Qt\\!QT_VERSION!\\mingw81_64\\include\\QtCore" && \
   setx /M CL "/MP !CL!" && \
-  dir . && \
+  dir P* /X . && \
   ls -la . && \
   ls -la ./binariesShell && \
   ls -la ./binariesResourceCompiler && \
@@ -137,7 +159,7 @@ USER ContainerUser
 RUN \
   # Test commands
   set && \
-  dir . && \
+  dir P* /X . && \
   choco /? && \
   rc /? && \
   qmake --help
