@@ -50,7 +50,7 @@ USER ContainerAdministrator
 # Set lib path. Windows doesn't use LD_LIBRARY_PATH, but use PATH instead.
 RUN set
 ENV \
-  PATH="C:\\Windows\\System32;C:\\Windows\\System32\\WindowsPowerShell\\v1.0;C:\\ProgramData\\chocolatey\\bin;C:\\MobileRT\\binariesShell;C:\\MobileRT\\binariesResourceCompiler;C:\\MobileRT\\libraries;C:\\MobileRT\\build_$BUILD_TYPE\\lib;C:\\Program Files\\Git\\bin;C:\\Program Files\\CMake\\bin;$PATH" \
+  PATH="C:\\Windows\\System32;C:\\Windows\\System32\\WindowsPowerShell\\v1.0;C:\\ProgramData\\chocolatey\\bin;C:\\MobileRT\\binariesShell;C:\\MobileRT\\binariesResourceCompiler;C:\\MobileRT\\libraries;C:\\MobileRT\\build_$BUILD_TYPE\\lib;C:\\Program Files\\Git\\bin;C:\\Program Files\\Git LFS\\bin;C:\\Program Files\\CMake\\bin;$PATH" \
   RC="rc" \
   CXX="g++" \
   CC="gcc" \
@@ -112,6 +112,7 @@ RUN \
     --progress \
     --branch !BRANCH! && \
   cd MobileRT && \
+  git lfs install && \
   git lfs pull && \
   dir P* /X .\\app\\src\\androidTest\\resources\\CornellBox\\CornellBox-Water.obj && \
   dir P* /X .\\app\\src\\androidTest\\resources\\teapot\\teapot.obj && \
