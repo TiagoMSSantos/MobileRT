@@ -46,6 +46,18 @@ SHELL ["cmd", "/S", "/V:ON", "/E:ON", "/C"]
 # Users: https://techcommunity.microsoft.com/t5/itops-talk-blog/how-to-change-the-user-account-for-windows-containers/ba-p/3601571
 USER ContainerAdministrator
 
+# Set system environment variables. ContainerAdministrator must be used so the change is persisted in the image.
+# Set lib path. Windows doesn't use LD_LIBRARY_PATH, but use PATH instead.
+ENV \
+  PATH="C:\\Windows\\System32\\WindowsPowerShell\\v1.0;C:\\ProgramData\\chocolatey\\bin;C:\\MobileRT\\binariesShell;C:\\MobileRT\\binariesResourceCompiler;C:\\MobileRT\\libraries;C:\\MobileRT\\build_$BUILD_TYPE\\lib;C:\\Program Files\\Git\\bin;C:\\Program Files\\CMake\\bin;$PATH" \
+  RC="rc" \
+  CXX="g++" \
+  CC="gcc" \
+  CXXFLAGS="-O3 -std=c++11" \
+  BUILD_TYPE="$BUILD_TYPE" \
+  CL="/MP $CL"
+RUN set
+
 # Install chocolatey Package Manager.
 RUN powershell -NoProfile -ExecutionPolicy Bypass -Command " \
   Write-Host "Setting up DNS"; \
@@ -72,18 +84,9 @@ RUN \
   start /wait /b "install cmake" "choco" install -y cmake --installargs 'ADD_CMAKE_TO_PATH=System' --version=3.13.0 | \
   # Install git: https://community.chocolatey.org/packages/git
   # Install Qt: https://community.chocolatey.org/packages/qt5-default
-  choco install -y git qt5-default
+  choco install -y git git-lfs.install qt5-default
 
 RUN \
-  dir P* /X C:\ && \
-  # Set system environment variables. ContainerAdministrator must be used so the change is persisted in the image.
-  # Set lib path. Windows doesn't use LD_LIBRARY_PATH, but use PATH instead.
-  setx /M RC "rc" && \
-  setx /M CXX "g++" && \
-  setx /M CC "gcc" && \
-  setx /M CXXFLAGS "-O3 -std=c++11" && \
-  setx /M BUILD_TYPE "!BUILD_TYPE!" && \
-  setx /M PATH "C:\\MobileRT\\binariesShell;C:\\MobileRT\\binariesResourceCompiler;C:\\MobileRT\\libraries;C:\\MobileRT\\build_!BUILD_TYPE!\\lib;!PATH!" && \
   # Configure git.
   git config --system https.postBuffer 1048576000 && \
   git config --system --add safe.directory C:/MobileRT && \
@@ -99,8 +102,8 @@ USER ContainerUser
 # Get MobileRT contents (required to create docker image in CI)
 ###############################################################################
 WORKDIR /
+
 RUN \
-  dir P* /X C:\ && \
   git --version && \
   # Clone repository.
   git clone https://github.com/TiagoMSSantos/MobileRT.git \
@@ -133,12 +136,10 @@ WORKDIR MobileRT
 USER ContainerAdministrator
 
 RUN \
-  dir P* /X .\\ && \
-  dir P* /X .\\ && \
   dir P* /X .\\binariesShell\\sh.exe && \
   dir P* /X .\\binariesShell\\cut.exe && \
   dir P* /X .\\binariesShell\\ls.exe && \
-  sh -c "echo ${PWD} && find /Qt -name 'bin' | cut -d / -f 3" > qt_version.txt && \
+  sh -c "echo ${PWD} && ls -la /Qt && find /Qt -name 'bin' | cut -d / -f 3" > qt_version.txt && \
   for /f "delims=" %x in (qt_version.txt) do set QT_VERSION="%x" && \
   setx /M QT_VERSION "!QT_VERSION: =!"
 
@@ -146,7 +147,6 @@ RUN \
   setx /M PATH "C:\\Qt\\!QT_VERSION!\\mingw81_64\\bin;!PATH!" && \
   setx /M Qt5_DIR "C:\\Qt\\!QT_VERSION!\\mingw81_64\\lib\\cmake\\Qt5" && \
   setx /M CPLUS_INCLUDE_PATH "!CPLUS_INCLUDE_PATH!;C:\\Qt\\!QT_VERSION!\\mingw81_64\\include;C:\\Qt\\!QT_VERSION!\\mingw81_64\\include\\QtWidgets;C:\\Qt\\!QT_VERSION!\\mingw81_64\\include\\QtGui;C:\\Qt\\!QT_VERSION!\\mingw81_64\\include\\QtCore" && \
-  setx /M CL "/MP !CL!" && \
   dir P* /X . && \
   ls -la . && \
   ls -la ./binariesShell && \
