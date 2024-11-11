@@ -119,7 +119,7 @@ build() {
   echo "Setting Gradle Wrapper to a version that is compatible with Android API: '${android_api_version}'".;
   sh gradlew --offline --parallel wrapper -DtestType="${type}" -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]";
   echo 'Compiling MobileRT.';
-  sh gradlew --offline clean \
+  sh gradlew clean \
     build"${typeWithCapitalLetter}" \
     assemble"${typeWithCapitalLetter}" \
     assemble"${typeWithCapitalLetter}"AndroidTest \
@@ -134,7 +134,7 @@ build() {
     --console plain --info --warning-mode fail --stacktrace;
   resCompile=${?};
   echo 'Compiling APK to execute Android instrumentation tests.';
-  sh gradlew --offline createDebugAndroidTestApkListingFileRedirect \
+  sh gradlew createDebugAndroidTestApkListingFileRedirect \
     -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]" \
     --profile --parallel --console plain --info --warning-mode fail --stacktrace;
   echo 'Android application compiled.';
