@@ -151,6 +151,19 @@ jobs:
         ecr: false
         logout: true
 
+    - name: Delete unnecessary Docker images
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+      if: success()
+      run: |
+        baseImageRegex=$(echo "${{ matrix.BASE_IMAGE }}" | sed 's/:/.*/');
+        mobilertImageRegex=$(echo "mobile_rt.*${{ env.VERSION }}");
+        echo "baseImageRegex: ${baseImageRegex}";
+        echo "mobilertImageRegex: ${mobilertImageRegex}";
+        docker images -a;
+        docker images -a | grep -v "${baseImageRegex}" | grep -v "${mobilertImageRegex}" | grep -v 'REPOSITORY' | xargs docker rmi -f || true;
+        docker system prune --volumes --force;
+        docker images -a;
+
     - name: Install Docker BuildKit and Buildx Windows
       timeout-minutes: 60
       if: success() && env.BUILD_IMAGE == 'yes' && startsWith(matrix.host_os, 'windows') && false
@@ -280,19 +293,6 @@ jobs:
         bash -c ". scripts/docker.sh && buildDockerImage ${{ matrix.BASE_IMAGE }} ${{ env.BRANCH }} ${{ env.VERSION }};"
         if (-not $?) {throw "Failed to build image."}
         docker images
-
-    - name: Delete unnecessary Docker images
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-      if: success()
-      run: |
-        baseImageRegex=$(echo "${{ matrix.BASE_IMAGE }}" | sed 's/:/.*/');
-        mobilertImageRegex=$(echo "mobile_rt.*${{ env.VERSION }}");
-        echo "baseImageRegex: ${baseImageRegex}";
-        echo "mobilertImageRegex: ${mobilertImageRegex}";
-        docker images -a;
-        docker images -a | grep -v -e "${baseImageRegex}" -e "${mobilertImageRegex}" -e 'REPOSITORY' | xargs docker rmi -f || true;
-        docker system prune --volumes --force;
-        docker images -a;
 
     - name: Pull base Docker image
       timeout-minutes: 60
