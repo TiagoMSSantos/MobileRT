@@ -476,8 +476,8 @@ addCommandToPath() {
     echo "Command '${1}' already available.";
     return 0;
   fi
-  visualStudioVersion=$(ls -la /c/Program Files/Microsoft Visual Studio/ | grep -o grep -o ".*[[:digit:]]$" | tail -1 || true);
-  msvcVersion=$(ls -la /c/Program Files/Microsoft Visual Studio/"${visualStudioVersion}"/Enterprise/VC/Tools/MSVC/ | grep -o "[[:digit:]]\.[[:digit:]].*" | tail -1 || true);
+  visualStudioVersion=$(ls -la "/c/Program Files/Microsoft Visual Studio/" | grep -o ".*[[:digit:]]$" | tail -1 || true);
+  msvcVersion=$(ls -la "/c/Program Files/Microsoft Visual Studio/${visualStudioVersion}/Enterprise/VC/Tools/MSVC/" | grep -o "[[:digit:]]\.[[:digit:]].*" | tail -1 || true);
   echo "Detected Visual Studio version: ${visualStudioVersion}";
   echo "Detected Visual Studio C++ Compiler version: ${msvcVersion}";
   COMMAND_PATHS=$(find \
