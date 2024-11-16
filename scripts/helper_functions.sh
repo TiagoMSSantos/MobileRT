@@ -476,12 +476,16 @@ addCommandToPath() {
     echo "Command '${1}' already available.";
     return 0;
   fi
+  visualStudioVersion=$(ls -la /c/Program Files/Microsoft Visual Studio/ | grep -o grep -o ".*[[:digit:]]$" | tail -1 || true);
+  msvcVersion=$(ls -la /c/Program Files/Microsoft Visual Studio/"${visualStudioVersion}"/Enterprise/VC/Tools/MSVC/ | grep -o "[[:digit:]]\.[[:digit:]].*" | tail -1 || true);
+  echo "Detected Visual Studio version: ${visualStudioVersion}";
+  echo "Detected Visual Studio C++ Compiler version: ${msvcVersion}";
   COMMAND_PATHS=$(find \
     /opt/intel/oneapi/compiler \
     ~/.. \
     /usr \
-    "/c/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Tools/MSVC/14.41.34120/bin/Hostx64/x64" \
-    "/c/Program Files/Microsoft Visual Studio/2022/Enterprise/MSBuild/Current/Bin/amd64" \
+    "/c/Program Files/Microsoft Visual Studio/${visualStudioVersion}/Enterprise/VC/Tools/MSVC/${msvcVersion}/bin/Hostx64/x64" \
+    "/c/Program Files/Microsoft Visual Studio/${visualStudioVersion}/Enterprise/MSBuild/Current/Bin/amd64" \
     -type f -iname "${1}" -or -iname "${1}.exe" 2> /dev/null | grep -i "bin" || true);
   # Changing IFS to allow finding commands in paths with spaces.
   old_IFS="${IFS}";

@@ -282,7 +282,7 @@ jobs:
         docker images
 
     - name: Delete unnecessary Docker images
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
       run: |
         baseImageRegex=$(echo "${{ matrix.BASE_IMAGE }}" | sed 's/:/.*/');
