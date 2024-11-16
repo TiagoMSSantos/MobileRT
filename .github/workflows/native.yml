@@ -116,9 +116,9 @@ jobs:
       working-directory: .
       run: |
         ls -lahp "C:/Program Files/Microsoft Visual Studio/";
-        visualStudioVersion=$(ls -la "C:/Program Files/Microsoft Visual Studio/" | grep ".*[[:digit:]]$" | rev | cut -d ' ' -f1 | rev | tail -1);
+        visualStudioVersion=$(ls -la "C:/Program Files/Microsoft Visual Studio/" | grep ".*[[:digit:]]$" | awk '{print $(NF)}' | tail -1);
         echo "Detected Visual Studio version: ${visualStudioVersion}";
-        msvcVersion=$(ls -la "C:/Program Files/Microsoft Visual Studio/${visualStudioVersion}/Enterprise/VC/Tools/MSVC/" | grep "[[:digit:]]\.[[:digit:]].*" | rev | cut -d ' ' -f1 | rev | tail -1);
+        msvcVersion=$(ls -la "C:/Program Files/Microsoft Visual Studio/${visualStudioVersion}/Enterprise/VC/Tools/MSVC/" | grep "[[:digit:]]\.[[:digit:]].*" | awk '{print $(NF)}' | tail -1);
         echo "Detected Visual Studio C++ Compiler version: ${msvcVersion}";
         ls -lahp "C:/Program Files/Microsoft Visual Studio/${msvcVersion}/Enterprise/MSBuild/";
         ls -lahp "C:/Program Files/Microsoft Visual Studio/${msvcVersion}/Enterprise/MSBuild/Current/Bin/";
