@@ -153,6 +153,7 @@ RUN \
   setx /M QT_VERSION "!QT_VERSION: =!"
 
 RUN \
+  dir P* /X C:\Qt\!QT_VERSION!\mingw81_64\bin\qmake.exe && \
   setx /M PATH "C:\\Qt\\!QT_VERSION!\\mingw81_64\\bin;!PATH!" && \
   setx /M Qt5_DIR "C:\\Qt\\!QT_VERSION!\\mingw81_64\\lib\\cmake\\Qt5" && \
   setx /M CPLUS_INCLUDE_PATH "!CPLUS_INCLUDE_PATH!;C:\\Qt\\!QT_VERSION!\\mingw81_64\\include;C:\\Qt\\!QT_VERSION!\\mingw81_64\\include\\QtWidgets;C:\\Qt\\!QT_VERSION!\\mingw81_64\\include\\QtGui;C:\\Qt\\!QT_VERSION!\\mingw81_64\\include\\QtCore" && \
@@ -163,7 +164,14 @@ RUN \
   set && \
   sh scripts/install_dependencies.sh && \
   icacls "C:\MobileRT" /c /t /grant:r "Authenticated Users":(OI)(CI)F
+
 USER ContainerUser
+
+ENV QT_VERSION="5.15.2"
+ENV \
+  PATH="C:\\Qt\\${QT_VERSION}\\mingw81_64\\bin;${PATH}" \
+  Qt5_DIR="C:\\Qt\\${QT_VERSION}\\mingw81_64\\lib\\cmake\\Qt5" \
+  CPLUS_INCLUDE_PATH="C:\\Qt\\${QT_VERSION}\\mingw81_64\\include;C:\\Qt\\${QT_VERSION}\\mingw81_64\\include\\QtWidgets;C:\\Qt\\${QT_VERSION}\\mingw81_64\\include\\QtGui;C:\\Qt\\${QT_VERSION}\\mingw81_64\\include\\QtCore;${CPLUS_INCLUDE_PATH}"
 
 RUN \
   # Test commands
