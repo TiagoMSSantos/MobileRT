@@ -125,7 +125,7 @@ jobs:
         ls -lahp "C:/Program Files/Microsoft Visual Studio/${visualStudioVersion}/Enterprise/MSBuild/Current/Bin/amd64/";
         ls -lahp "C:/Program Files/Microsoft Visual Studio/${visualStudioVersion}/Enterprise/MSBuild/Current/Bin/amd64/MSBuild.exe";
         ls -lahp "C:/Program Files/Microsoft Visual Studio/${visualStudioVersion}/Enterprise/VC/Tools/MSVC/";
-        ls -lahp "C:/Program Files/Microsoft Visual Studio/${visualStudioVersion}/Enterprise/VC/Tools/MSVC/${msvcVersion]/bin/Hostx64/x64/cl.exe";
+        ls -lahp "C:/Program Files/Microsoft Visual Studio/${visualStudioVersion}/Enterprise/VC/Tools/MSVC/${msvcVersion}/bin/Hostx64/x64/cl.exe";
 
     - name: Install MacPorts (MacOS 11)
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
