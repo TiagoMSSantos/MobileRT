@@ -281,8 +281,8 @@ jobs:
         if (-not $?) {throw "Failed to build image."}
         docker images
 
-    - name: Pull base Docker image
-      timeout-minutes: 60
+    - name: Delete unnecessary Docker images
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       run: |
         baseImageRegex=$(echo "${{ matrix.BASE_IMAGE }}" | sed 's/:/.*/');
@@ -292,6 +292,12 @@ jobs:
         docker images -a;
         docker images -a | grep -v -e "${baseImageRegex}" -e "${mobilertImageRegex}" -e 'REPOSITORY' | xargs docker rmi -f || true;
         docker system prune --volumes --force;
+        docker images -a;
+
+    - name: Pull base Docker image
+      timeout-minutes: 60
+      if: success()
+      run: |
         if echo "${{ matrix.BASE_IMAGE }}" | grep -q -e 'gentoo'; then
           echo "Pulling MobileRT docker image ${{ env.VERSION }}";
           . scripts/docker.sh && pullDockerImage ${{ env.VERSION }} &
@@ -299,8 +305,7 @@ jobs:
           export BUILD_IMAGE='no';
           wait ${pid_docker_pull};
           echo "Squashing MobileRT docker image: ${{ env.VERSION }}";
-          git submodule update --init -- scripts/third_party/docker-squash;
-          sh scripts/third_party/docker-squash/docker-squash.sh ptpuscas/mobile_rt:${{ env.VERSION }} &
+          . scripts/docker.sh && squashMobileRTDockerImage ${{ env.VERSION }} &
           pid_docker="$!";
         else
           echo "Pulling docker base image ${{ matrix.BASE_IMAGE }}";
