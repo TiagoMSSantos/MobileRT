@@ -144,9 +144,12 @@ USER ContainerAdministrator
 RUN \
   dir P* /X .\\binariesShell\\sh.exe && \
   dir P* /X .\\binariesShell\\cut.exe && \
-  dir P* /X .\\binariesShell\\ls.exe && \
-  sh -c "echo ${PWD} && ls -la /Qt | grep "[[:digit:]]\.[[:digit:]].*" | rev | cut -d ' ' -f1 | rev | head -1 > qt_version.txt && \
-  for /f "delims=" %%x in ('type qt_version.txt') do set QT_VERSION="%%x" && \
+  dir P* /X .\\binariesShell\\ls.exe
+
+RUN sh -c "echo ${PWD} && ls -la /Qt | grep '[[:digit:]]\.[[:digit:]].*' | awk '{print $(NF)}' | head -1 > qt_version.txt && cat qt_version.txt"
+
+RUN \
+  for /f "delims=" %x in ('type qt_version.txt') do set QT_VERSION="%x" && \
   setx /M QT_VERSION "!QT_VERSION: =!"
 
 RUN \
