@@ -48,6 +48,7 @@ buildDockerImage() {
     -f deploy/Dockerfile."${dockerBaseOS}" \
     --no-cache=false \
     --rm=true \
+    --build-arg PRESQUASH_SCRIPTS='' \
     --build-arg BUILDKIT_INLINE_CACHE=1 \
     --build-arg BASE_IMAGE="${1}" \
     --build-arg BRANCH="${2}" \
