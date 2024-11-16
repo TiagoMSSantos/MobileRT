@@ -116,8 +116,8 @@ jobs:
       working-directory: .
       run: |
         ls -lahp "C:/Program Files/Microsoft Visual Studio/";
-        visualStudioVersion=$(ls -la /c/Program Files/Microsoft Visual Studio/ | grep -o grep -o ".*[[:digit:]]$" | tail -1);
-        msvcVersion=$(ls -la /c/Program Files/Microsoft Visual Studio/"${visualStudioVersion}"/Enterprise/VC/Tools/MSVC/ | grep -o "[[:digit:]]\.[[:digit:]].*" | tail -1);
+        visualStudioVersion=$(ls -la "C:/Program Files/Microsoft Visual Studio/" | grep -o grep -o ".*[[:digit:]]$" | tail -1);
+        msvcVersion=$(ls -la "C:/Program Files/Microsoft Visual Studio/${visualStudioVersion}/Enterprise/VC/Tools/MSVC/" | grep -o "[[:digit:]]\.[[:digit:]].*" | tail -1);
         echo "Detected Visual Studio version: ${visualStudioVersion}";
         echo "Detected Visual Studio C++ Compiler version: ${msvcVersion}";
         ls -lahp "C:/Program Files/Microsoft Visual Studio/${msvcVersion}/Enterprise/MSBuild/";
