@@ -53,7 +53,7 @@ RUN \
   mklink /J "C:\\Git-LFS" "C:\\Program Files\\Git LFS" && \
   set
 ENV \
-  PATH="C:\\Windows;C:\\Windows\\System32;C:\\Windows\\System32\\WindowsPowerShell\\v1.0;C:\\ProgramData\\chocolatey\\bin;C:\\MobileRT\\binariesShell;C:\\MobileRT\\binariesResourceCompiler;C:\\MobileRT\\libraries;C:\\MobileRT\\build_${BUILD_TYPE}\\lib;C:\\Programs\\Git\\bin;C:\\Git-LFS;C:\\Programs\\CMake\\bin;${PATH}" \
+  PATH="C:\\MobileRT\\binariesShell;C:\\Windows;C:\\Windows\\System32;C:\\Windows\\System32\\WindowsPowerShell\\v1.0;C:\\ProgramData\\chocolatey\\bin;C:\\MobileRT\\binariesResourceCompiler;C:\\MobileRT\\libraries;C:\\MobileRT\\build_${BUILD_TYPE}\\lib;C:\\Programs\\Git\\bin;C:\\Git-LFS;C:\\Programs\\CMake\\bin;${PATH}" \
   RC="rc" \
   CXX="g++" \
   CC="gcc" \
@@ -144,7 +144,8 @@ USER ContainerAdministrator
 RUN \
   dir P* /X .\\binariesShell\\sh.exe && \
   dir P* /X .\\binariesShell\\cut.exe && \
-  dir P* /X .\\binariesShell\\ls.exe
+  dir P* /X .\\binariesShell\\ls.exe && \
+  dir P* /X .\\binariesShell\\timeout.exe
 
 RUN sh -c "echo ${PWD} && ls -la /Qt | grep '[[:digit:]]\.[[:digit:]].*' | awk '{print $(NF)}' | head -1 > qt_version.txt && cat qt_version.txt"
 
