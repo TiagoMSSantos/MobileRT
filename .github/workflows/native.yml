@@ -120,12 +120,12 @@ jobs:
         echo "Detected Visual Studio version: ${visualStudioVersion}";
         msvcVersion=$(ls -la "C:/Program Files/Microsoft Visual Studio/${visualStudioVersion}/Enterprise/VC/Tools/MSVC/" | grep "[[:digit:]]\.[[:digit:]].*" | awk '{print $(NF)}' | tail -1);
         echo "Detected Visual Studio C++ Compiler version: ${msvcVersion}";
-        ls -lahp "C:/Program Files/Microsoft Visual Studio/${msvcVersion}/Enterprise/MSBuild/";
-        ls -lahp "C:/Program Files/Microsoft Visual Studio/${msvcVersion}/Enterprise/MSBuild/Current/Bin/";
-        ls -lahp "C:/Program Files/Microsoft Visual Studio/${msvcVersion}/Enterprise/MSBuild/Current/Bin/amd64/";
-        ls -lahp "C:/Program Files/Microsoft Visual Studio/${msvcVersion}/Enterprise/MSBuild/Current/Bin/amd64/MSBuild.exe";
-        ls -lahp "C:/Program Files/Microsoft Visual Studio/${msvcVersion}/Enterprise/VC/Tools/MSVC/";
-        ls -lahp "C:/Program Files/Microsoft Visual Studio/${msvcVersion}/Enterprise/VC/Tools/MSVC/${msvcVersion]/bin/Hostx64/x64/cl.exe";
+        ls -lahp "C:/Program Files/Microsoft Visual Studio/${visualStudioVersion}/Enterprise/MSBuild/";
+        ls -lahp "C:/Program Files/Microsoft Visual Studio/${visualStudioVersion}/Enterprise/MSBuild/Current/Bin/";
+        ls -lahp "C:/Program Files/Microsoft Visual Studio/${visualStudioVersion}/Enterprise/MSBuild/Current/Bin/amd64/";
+        ls -lahp "C:/Program Files/Microsoft Visual Studio/${visualStudioVersion}/Enterprise/MSBuild/Current/Bin/amd64/MSBuild.exe";
+        ls -lahp "C:/Program Files/Microsoft Visual Studio/${visualStudioVersion}/Enterprise/VC/Tools/MSVC/";
+        ls -lahp "C:/Program Files/Microsoft Visual Studio/${visualStudioVersion}/Enterprise/VC/Tools/MSVC/${msvcVersion]/bin/Hostx64/x64/cl.exe";
 
     - name: Install MacPorts (MacOS 11)
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
