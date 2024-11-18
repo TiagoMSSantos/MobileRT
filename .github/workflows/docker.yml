@@ -164,7 +164,7 @@ jobs:
         docker system prune --volumes --force;
         docker images -a;
 
-    - name: Install Docker BuildKit and Buildx Windows
+    - name: Install Docker BuildKit & Buildx & build image Windows
       timeout-minutes: 60
       if: success() && env.BUILD_IMAGE == 'yes' && startsWith(matrix.host_os, 'windows') && false
       shell: powershell

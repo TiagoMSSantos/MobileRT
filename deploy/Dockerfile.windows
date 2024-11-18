@@ -57,9 +57,9 @@ ENV \
   RC="rc" \
   CXX="g++" \
   CC="gcc" \
-  CXXFLAGS="-O3 -std=c++11 ${CXXFLAGS}" \
+  CXXFLAGS="-O3 -std=c++11" \
   BUILD_TYPE="${BUILD_TYPE}" \
-  CL="/MP ${CL}"
+  CL="/MP"
 RUN set
 
 # Install chocolatey Package Manager.
@@ -157,7 +157,7 @@ RUN \
   dir P* /X C:\Qt\!QT_VERSION!\mingw81_64\bin\qmake.exe && \
   setx /M PATH "C:\\Qt\\!QT_VERSION!\\mingw81_64\\bin;!PATH!" && \
   setx /M Qt5_DIR "C:\\Qt\\!QT_VERSION!\\mingw81_64\\lib\\cmake\\Qt5" && \
-  setx /M CPLUS_INCLUDE_PATH "!CPLUS_INCLUDE_PATH!;C:\\Qt\\!QT_VERSION!\\mingw81_64\\include;C:\\Qt\\!QT_VERSION!\\mingw81_64\\include\\QtWidgets;C:\\Qt\\!QT_VERSION!\\mingw81_64\\include\\QtGui;C:\\Qt\\!QT_VERSION!\\mingw81_64\\include\\QtCore" && \
+  setx /M CPLUS_INCLUDE_PATH "C:\\Qt\\!QT_VERSION!\\mingw81_64\\include;C:\\Qt\\!QT_VERSION!\\mingw81_64\\include\\QtWidgets;C:\\Qt\\!QT_VERSION!\\mingw81_64\\include\\QtGui;C:\\Qt\\!QT_VERSION!\\mingw81_64\\include\\QtCore" && \
   dir P* /X . && \
   ls -la . && \
   ls -la ./binariesShell && \
@@ -172,7 +172,7 @@ ENV QT_VERSION="5.15.2"
 ENV \
   PATH="C:\\Qt\\${QT_VERSION}\\mingw81_64\\bin;${PATH}" \
   Qt5_DIR="C:\\Qt\\${QT_VERSION}\\mingw81_64\\lib\\cmake\\Qt5" \
-  CPLUS_INCLUDE_PATH="C:\\Qt\\${QT_VERSION}\\mingw81_64\\include;C:\\Qt\\${QT_VERSION}\\mingw81_64\\include\\QtWidgets;C:\\Qt\\${QT_VERSION}\\mingw81_64\\include\\QtGui;C:\\Qt\\${QT_VERSION}\\mingw81_64\\include\\QtCore;${CPLUS_INCLUDE_PATH}"
+  CPLUS_INCLUDE_PATH="C:\\Qt\\${QT_VERSION}\\mingw81_64\\include;C:\\Qt\\${QT_VERSION}\\mingw81_64\\include\\QtWidgets;C:\\Qt\\${QT_VERSION}\\mingw81_64\\include\\QtGui;C:\\Qt\\${QT_VERSION}\\mingw81_64\\include\\QtCore"
 
 RUN \
   # Test commands
