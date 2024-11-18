@@ -296,7 +296,7 @@ jobs:
 
     - name: Pull base Docker image
       timeout-minutes: 60
-      if: success()
+      if: success() && !startsWith(matrix.host_os, 'windows')
       run: |
         if echo "${{ matrix.BASE_IMAGE }}" | grep -q -e 'gentoo'; then
           echo "Pulling MobileRT docker image ${{ env.VERSION }}";
