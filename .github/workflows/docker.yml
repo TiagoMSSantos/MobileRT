@@ -160,7 +160,7 @@ jobs:
         echo "baseImageRegex: ${baseImageRegex}";
         echo "mobilertImageRegex: ${mobilertImageRegex}";
         docker images -a;
-        docker images -a | grep -v "${baseImageRegex}" | grep -v "${mobilertImageRegex}" | grep -v 'REPOSITORY' | xargs docker rmi -f || true;
+        docker images -a | grep GB | grep -v "${baseImageRegex}" | grep -v "${mobilertImageRegex}" | grep -v 'REPOSITORY' | head -1 | xargs docker rmi -f || true;
         docker system prune --volumes --force;
         docker images -a;
 
