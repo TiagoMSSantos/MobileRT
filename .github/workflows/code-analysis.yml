@@ -213,13 +213,13 @@ jobs:
         # Check available parameters in: https://github.com/codecov/codecov-action/blob/main/action.yml
         token: ${{ secrets.CODECOV_TOKEN }}
         directory: 'coverage'
-        file: coverage/coverage.xml
+        files: coverage/coverage.xml
 
     - name: Autobuild
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
       if: success() && matrix.language != 'cpp'
       uses: github/codeql-action/autobuild@v3
-      continue-on-error: true
+      continue-on-error: false
       env:
         MAKEFLAGS: "-j$(($(nproc --all) * 2 - 1))"
         GRADLE_OPTS: '-Xms8G -Xmx8G -XX:ActiveProcessorCount=5'

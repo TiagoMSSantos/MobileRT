@@ -307,7 +307,7 @@ android {
     packagingOptions {
         resources {
             // Exclude some files from the package due to conflicts from different dependencies
-            excludes += ['META-INF/LICENSE.md', 'META-INF/LICENSE-notice.md', 'META-INF/licenses/ASM']
+            excludes += ['META-INF/LICENSE.md', 'META-INF/LICENSE-notice.md', 'META-INF/licenses/ASM', 'META-INF/versions/9/OSGI-INF/MANIFEST.MF']
         }
     }
 
