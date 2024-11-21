@@ -212,9 +212,7 @@
       "matchStringsStrategy": "combination",
       "matchStrings": [
         "\\s*it.distributionType = \\s*",
-        "\\s*if (androidApiVersionValue >= 16) {",
-        "\\s*it.gradleVersion = ['\"](?<currentValue>.*)['\"]",
-        "\\s*} else {"
+        "\\s*if (androidApiVersionValue >= 16) {\\s*it.gradleVersion = ['\"](?<currentValue>.*)['\"]\\s*} else {"
       ],
       "depNameTemplate": "gradle",
       "datasourceTemplate": "gradle-version",
