@@ -209,9 +209,10 @@
       "fileMatch": [
         "build.gradle"
       ],
-      "matchStringsStrategy": "any",
+      "matchStringsStrategy": "combination",
       "matchStrings": [
-        "it.gradleVersion = ['\"](?<currentValue>.*)['\"]"
+        "\\s*if (androidApiVersionValue >= 16) {\\s*",
+        "\\s*it.gradleVersion = ['\"](?<currentValue>.*)['\"]"
       ],
       "depNameTemplate": "gradle",
       "datasourceTemplate": "gradle-version",
