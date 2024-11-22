@@ -115,7 +115,7 @@
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
-        "host_os: \\[?[']?(?<depName>.*?)-(?<currentValue>.*)[']?\\]?",
+        "host_os: \\[?'?(?<depName>.*?)-(?<currentValue>.*)'?\\]?",
         "runs-on: (?<depName>.*?)-(?<currentValue>.*)"
       ],
       "datasourceTemplate": "github-runners",
@@ -211,7 +211,7 @@
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
-        "\\s*if (androidApiVersionValue >= 16) {\\s*it.gradleVersion = ['\"](?<currentValue>.*)['\"]\\s*} else {"
+        "\\s*if (androidApiVersionValue >= 16) {\\s*it.gradleVersion = ['\"](?<currentValue>.*)['\"]\\s*} else {\\s*it.gradleVersion = "
       ],
       "depNameTemplate": "gradle",
       "datasourceTemplate": "gradle-version",
