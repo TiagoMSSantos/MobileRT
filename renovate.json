@@ -115,7 +115,7 @@
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
-        "host_os: \\[?(?<depName>.*?)-(?<currentValue>.*)\\]?",
+        "host_os: \\[?[']?(?<depName>.*?)-(?<currentValue>.*)[']?\\]?",
         "runs-on: (?<depName>.*?)-(?<currentValue>.*)"
       ],
       "datasourceTemplate": "github-runners",
@@ -209,13 +209,12 @@
       "fileMatch": [
         "build.gradle"
       ],
-      "matchStringsStrategy": "combination",
+      "matchStringsStrategy": "any",
       "matchStrings": [
         "\\s*if (androidApiVersionValue >= 16) {\\s*it.gradleVersion = ['\"](?<currentValue>.*)['\"]\\s*} else {"
       ],
       "depNameTemplate": "gradle",
       "datasourceTemplate": "gradle-version",
-      "versioningTemplate": "gradle",
       "customType": "regex",
       "registryUrlTemplate": "https://services.gradle.org/versions/all"
     },
