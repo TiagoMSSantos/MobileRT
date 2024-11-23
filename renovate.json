@@ -215,7 +215,6 @@
       ],
       "depNameTemplate": "gradle",
       "datasourceTemplate": "gradle-version",
-      "versioningTemplate": "gradle",
       "customType": "regex",
       "registryUrlTemplate": "https://services.gradle.org/versions/all"
     },
