@@ -51,6 +51,7 @@ buildscript {
         }
         if (androidApiVersionValue >= 16) {
             gradle_version = '8.7.2'
+            // bouncycastle_version='1.70'
         } else {
             gradle_version = '8.2.2'
         }
@@ -89,7 +90,7 @@ buildscript {
         println("OS: " + currentOS)
         // Compatibility matrix: https://developer.android.com/build/releases/gradle-plugin#android_gradle_plugin_and_android_studio_compatibility
         classpath "com.android.tools.build:gradle:${gradle_version}"
-        classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:5.1.0.4882'
+        classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:6.0.0.5145'
         classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:2.0.21'
         classpath 'com.github.ben-manes:gradle-versions-plugin:0.51.0'
 
@@ -98,6 +99,8 @@ buildscript {
         classpath "org.jacoco:org.jacoco.core:${jacoco_version}"
         classpath "org.jacoco:org.jacoco.report:${jacoco_version}"
         classpath "org.jacoco:org.jacoco.agent:${jacoco_version}"
+
+        classpath 'org.bouncycastle:bcutil-jdk18on:1.79'
     }
 }
 ///////////////////////////////////////////////////////////////////////////////
