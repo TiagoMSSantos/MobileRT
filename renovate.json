@@ -490,13 +490,18 @@
     {
       "groupName": "Do not update Gradle for Android API <= 15",
       "enabled": false,
+      "matchDatasources": [
+        "gradle-version"
+      ],
       "matchDepNames": [
-        "gradle"
+        "gradle",
+        "gradle-wrapper"
       ],
       "matchManagers": [
         "custom.regex",
         "gradle"
       ],
+      "matchCurrentVersion": "<8.8",
       "matchCurrentValue": "/^8\\.7$/"
     },
     {
