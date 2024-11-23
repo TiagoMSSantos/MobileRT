@@ -211,12 +211,13 @@
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
-        "\\s*if (androidApiVersionValue >= 16) {\\s+it.gradleVersion = ['\"](?<currentValue>[\\d\\.]*)['\"]\\s+} else {\\s+it.gradleVersion = "
+        "\\s*if (androidApiVersionValue >= 16) {\\n\\s*it.gradleVersion = ['\"](?<currentValue>[\\d\\.]*)['\"]\\n",
       ],
-      "depNameTemplate": "gradle/gradle",
-      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "gradle",
+      "datasourceTemplate": "gradle-version",
+      "versioningTemplate": "gradle",
       "customType": "regex",
-      "registryUrlTemplate": "https://github.com"
+      "registryUrlTemplate": "https://services.gradle.org/versions/all"
     },
     {
       "fileMatch": [
