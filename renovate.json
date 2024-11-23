@@ -211,7 +211,7 @@
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
-        "it.gradleVersion = ['\"](?<currentValue>[\\d\\.]*)['\"]"
+        "gradleVersion = ['\"](?<currentValue>.*)['\"]"
       ],
       "depNameTemplate": "gradle",
       "datasourceTemplate": "gradle-version",
