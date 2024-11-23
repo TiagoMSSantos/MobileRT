@@ -497,7 +497,7 @@
         "custom.regex",
         "gradle"
       ],
-      "matchCurrentVersion": "/^8\\.7$/"
+      "matchCurrentValue": "/^8\\.7$/"
     },
     {
       "groupName": "Update Boost C++ Libraries",
