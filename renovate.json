@@ -488,18 +488,6 @@
       "allowedVersions": "/^r?[0-9]+\\.?[0-9a-z]*\\.?[0-9]*.*$/"
     },
     {
-      "groupName": "Do not update Gradle for Android API <= 15",
-      "enabled": false,
-      "matchDepNames": [
-        "gradle"
-      ],
-      "matchManagers": [
-        "custom.regex",
-        "gradle"
-      ],
-      "matchCurrentVersion": "/^8\\.7$/"
-    },
-    {
       "groupName": "Update Boost C++ Libraries",
       "enabled": true,
       "matchDepNames": [
