@@ -213,10 +213,7 @@
       "matchStrings": [
         "gradleVersion = ['\"](?<currentValue>.*)['\"]"
       ],
-      "depNameTemplate": "gradle",
-      "datasourceTemplate": "gradle-version",
-      "customType": "regex",
-      "registryUrlTemplate": "https://services.gradle.org/versions/all"
+      "depNameTemplate": "gradle"
     },
     {
       "fileMatch": [
