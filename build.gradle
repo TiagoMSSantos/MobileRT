@@ -134,7 +134,7 @@ tasks.named('wrapper', Wrapper) {it ->
     if (androidApiVersionValue >= 16) {
         it.gradleVersion = '8.11'
     } else {
-        it.gradleVersion = '8.7'
+        it.gradleVersion = '8.11.1'
     }
     var urlPrefix = 'https://services.gradle.org/distributions/'
     it.distributionUrl = urlPrefix + 'gradle-' + it.gradleVersion + '-' + it.distributionType.name().toLowerCase() + '.zip'
