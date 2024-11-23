@@ -211,7 +211,7 @@
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
-        "\\s*if \\(androidApiVersionValue >= 16\\) {\\n\\s*it.gradleVersion = ['\"](?<currentValue>[\\d\\.]*)['\"]\\n\\s*} else {\\n\\s*it.gradleVersion = ['\"](?<currentValue>[\\d\\.]*)['\"]"
+        "it.gradleVersion = ['\"](?<currentValue>[\\d\\.]*)['\"]"
       ],
       "depNameTemplate": "gradle",
       "datasourceTemplate": "gradle-version",
