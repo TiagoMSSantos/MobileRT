@@ -211,7 +211,7 @@
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
-        "\\s*if \\(androidApiVersionValue >= 16\\) {\\n\\s*it.gradleVersion = ['\"](?<currentValue>[\\d\\.]*)['\"]\\n"
+        "\\s*if \\(androidApiVersionValue >= 16\\) \\{\\n\\s*it.gradleVersion = ['\"](?<currentValue>[\\d\\.]*)['\"]\\n\\s*\\} else \\{\nit.gradleVersion = "
       ],
       "depNameTemplate": "gradle",
       "datasourceTemplate": "gradle-version",
@@ -486,6 +486,18 @@
       "versioning": "regex:^r?(?<major>[0-9]+)\\.?(?<minor>[0-9a-z]+)?\\.?(?<patch>[0-9]+)?-?(?<prerelease>[0-9a-z]+)?(?<compatibility>-.*)?.*$",
       "matchCurrentVersion": "!/^(25\\.2\\.9519653)|(23\\.2\\.8568313)$/",
       "allowedVersions": "/^r?[0-9]+\\.?[0-9a-z]*\\.?[0-9]*.*$/"
+    },
+    {
+      "groupName": "Do not update Gradle for Android API <= 15",
+      "enabled": false,
+      "matchDepNames": [
+        "gradle"
+      ],
+      "matchManagers": [
+        "custom.regex",
+        "gradle"
+      ],
+      "matchCurrentVersion": "/^8\\.7$/"
     },
     {
       "groupName": "Update Boost C++ Libraries",
