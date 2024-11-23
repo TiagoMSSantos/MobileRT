@@ -494,12 +494,11 @@
         "gradle-version"
       ],
       "matchDepNames": [
-        "gradle",
-        "gradle-wrapper"
+        "gradle"
       ],
       "matchManagers": [
         "custom.regex",
-        "gradle"
+        "gradle-wrapper"
       ],
       "matchCurrentVersion": "/^8\\.7$/",
       "matchCurrentValue": "/^8\\.7$/"
