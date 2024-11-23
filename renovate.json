@@ -213,10 +213,10 @@
       "matchStrings": [
         "\\s*if (androidApiVersionValue >= 16) {\\s+it.gradleVersion = ['\"](?<currentValue>[\\d\\.]*)['\"]\\s+} else {\\s+it.gradleVersion = "
       ],
-      "depNameTemplate": "gradle",
-      "datasourceTemplate": "gradle-version",
+      "depNameTemplate": "gradle/gradle",
+      "datasourceTemplate": "github-releases",
       "customType": "regex",
-      "registryUrlTemplate": "https://services.gradle.org/versions/all"
+      "registryUrlTemplate": "https://github.com"
     },
     {
       "fileMatch": [
