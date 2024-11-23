@@ -214,7 +214,8 @@
         "gradleVersion = ['\"](?<currentValue>.*)['\"]"
       ],
       "depNameTemplate": "gradle",
-      "datasourceTemplate": "gradle-version"
+      "datasourceTemplate": "gradle-version",
+      "customType": "regex"
     },
     {
       "fileMatch": [
