@@ -501,7 +501,7 @@
         "custom.regex",
         "gradle"
       ],
-      "matchCurrentVersion": "<8.8",
+      "matchCurrentVersion": "/^8\\.7$/",
       "matchCurrentValue": "/^8\\.7$/"
     },
     {
