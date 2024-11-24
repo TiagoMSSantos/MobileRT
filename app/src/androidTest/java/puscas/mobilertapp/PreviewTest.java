@@ -39,17 +39,17 @@ public final class PreviewTest extends AbstractTest {
     public void testPreviewScenePerspectiveCamera() throws TimeoutException {
         logger.info("testPreviewScenePerspectiveCamera start");
 
-        ViewActionWait.waitFor(0);
+        ViewActionWait.waitForButtonUpdate(0);
         Espresso.onView(ViewMatchers.withId(R.id.preview))
             .inRoot(RootMatchers.isTouchable())
             .check((view, exception) -> {
                 UtilsT.rethrowException(exception);
                 UiTest.assertPreviewCheckBox(view, true);
             });
-        ViewActionWait.waitFor(0);
+        ViewActionWait.waitForButtonUpdate(0);
         UtilsContextT.resetPickerValues(Scene.CORNELL.ordinal(), Accelerator.NAIVE, 99, 1);
 
-        ViewActionWait.waitFor(0);
+        ViewActionWait.waitForButtonUpdate(0);
         UtilsT.startRendering(false);
         UtilsContextT.waitUntil(this.testName.getMethodName(), this.activity, Constants.STOP, State.BUSY);
 
@@ -72,17 +72,17 @@ public final class PreviewTest extends AbstractTest {
     public void testPreviewSceneOrthographicCamera() throws TimeoutException {
         logger.info("testPreviewSceneOrthographicCamera start");
 
-        ViewActionWait.waitFor(0);
+        ViewActionWait.waitForButtonUpdate(0);
         Espresso.onView(ViewMatchers.withId(R.id.preview))
             .inRoot(RootMatchers.isTouchable())
             .check((view, exception) -> {
                 UtilsT.rethrowException(exception);
                 UiTest.assertPreviewCheckBox(view, true);
             });
-        ViewActionWait.waitFor(0);
+        ViewActionWait.waitForButtonUpdate(0);
         UtilsContextT.resetPickerValues(Scene.SPHERES.ordinal(), Accelerator.NAIVE, 99, 1);
 
-        ViewActionWait.waitFor(0);
+        ViewActionWait.waitForButtonUpdate(0);
         UtilsT.startRendering(false);
         UtilsContextT.waitUntil(this.testName.getMethodName(), this.activity, Constants.STOP, State.BUSY);
 

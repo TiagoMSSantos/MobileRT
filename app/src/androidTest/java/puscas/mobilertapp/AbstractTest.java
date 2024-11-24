@@ -205,7 +205,7 @@ public abstract class AbstractTest {
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
         Espresso.onIdle();
         try {
-            ViewActionWait.waitFor(0);
+            ViewActionWait.waitForButtonUpdate(0);
         } catch (final NoMatchingViewException | NoActivityResumedException ex) {
             UtilsLogging.logThrowable(ex, this.testName.getMethodName() + ": AbstractTest#setUp");
             logger.warning(this.testName.getMethodName() + ": The MainActivity didn't start as expected. Forcing a restart.");
@@ -384,11 +384,11 @@ public abstract class AbstractTest {
             UtilsContextT.waitUntil(this.testName.getMethodName(), this.activity, Constants.STOP, State.BUSY);
         }
         UtilsContextT.waitUntil(this.testName.getMethodName(), this.activity, Constants.RENDER, State.IDLE, State.FINISHED);
-        ViewActionWait.waitFor(0);
+        ViewActionWait.waitForButtonUpdate(0);
 
         UtilsT.assertRenderButtonText(Constants.RENDER);
         UtilsT.testStateAndBitmap(expectedSameValues);
-        ViewActionWait.waitFor(0);
+        ViewActionWait.waitForButtonUpdate(0);
     }
 
     /**

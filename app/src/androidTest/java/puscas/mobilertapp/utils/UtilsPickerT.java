@@ -42,7 +42,7 @@ public final class UtilsPickerT {
                                          final int pickerId,
                                          final int expectedValue) {
         logger.info("changePickerValue picker: " + pickerName + ", value: " + expectedValue);
-        ViewActionWait.waitFor(0);
+        ViewActionWait.waitForButtonUpdate(0);
         Espresso.onView(ViewMatchers.withId(pickerId))
             .inRoot(RootMatchers.isTouchable())
             .perform(new ViewActionNumberPicker(expectedValue))
@@ -54,7 +54,7 @@ public final class UtilsPickerT {
                     expectedValue, numberPicker.getValue()
                 );
             });
-        ViewActionWait.waitFor(0);
+        ViewActionWait.waitForButtonUpdate(0);
     }
 
 }

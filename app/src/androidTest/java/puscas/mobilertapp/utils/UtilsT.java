@@ -121,9 +121,9 @@ public final class UtilsT {
      */
     public static void startRendering(final boolean expectedSameValues) {
         logger.info("startRendering");
-        ViewActionWait.waitFor(0);
+        ViewActionWait.waitForButtonUpdate(0);
         assertRenderButtonText(Constants.RENDER);
-        ViewActionWait.waitFor(0);
+        ViewActionWait.waitForButtonUpdate(0);
         Espresso.onView(ViewMatchers.withId(R.id.renderButton))
             .inRoot(RootMatchers.isTouchable())
             .perform(new ViewActionButton(expectedSameValues ? Constants.RENDER : Constants.STOP, false));
@@ -141,7 +141,7 @@ public final class UtilsT {
             .perform(new ViewActionButton(Constants.RENDER, false));
 
         // Wait for the app to stop completely.
-        ViewActionWait.waitFor(0);
+        ViewActionWait.waitForButtonUpdate(0);
 
         assertRenderButtonText(Constants.RENDER);
         logger.info("stopRendering" + ConstantsMethods.FINISHED);
@@ -157,7 +157,7 @@ public final class UtilsT {
      */
     public static void testStateAndBitmap(final boolean expectedSameValues) {
         logger.info("testStateAndBitmap: " + expectedSameValues);
-        ViewActionWait.waitFor(0);
+        ViewActionWait.waitForButtonUpdate(0);
         Espresso.onView(ViewMatchers.withId(R.id.drawLayout))
             .inRoot(RootMatchers.isTouchable())
             .perform(new ViewActionWait(0))
@@ -173,7 +173,7 @@ public final class UtilsT {
                     renderer.getState() == State.IDLE || renderer.getState() == State.FINISHED
                 );
             });
-        ViewActionWait.waitFor(0);
+        ViewActionWait.waitForButtonUpdate(0);
     }
 
     /**

@@ -1,6 +1,8 @@
 package puscas.mobilertapp;
 
+import android.opengl.GLSurfaceView;
 import android.view.View;
+import android.widget.Button;
 
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.UiController;
@@ -58,9 +60,23 @@ public final class ViewActionWait implements ViewAction {
      *
      * @param delayMillis The time to wait in milliseconds. If {@code 0}, then it waits for the app
      *                    to become idle.
+     * @implNote This method awaits for render {@link Button} to become idle.
      */
-    public static void waitFor(final int delayMillis) {
+    public static void waitForButtonUpdate(final int delayMillis) {
         Espresso.onView(ViewMatchers.withId(R.id.renderButton))
+            .perform(new ViewActionWait(delayMillis));
+    }
+
+    /**
+     * Let MobileRT continue processing for some time, or to become idle in case {@code 0} milliseconds
+     * is provided.
+     *
+     * @param delayMillis The time to wait in milliseconds. If {@code 0}, then it waits for the app
+     *                    to become idle.
+     * @implNote This method awaits for {@link GLSurfaceView} to become idle.
+     */
+    public static void waitForBitmapUpdate(final int delayMillis) {
+        Espresso.onView(ViewMatchers.withId(R.id.drawLayout))
             .perform(new ViewActionWait(delayMillis));
     }
 }
