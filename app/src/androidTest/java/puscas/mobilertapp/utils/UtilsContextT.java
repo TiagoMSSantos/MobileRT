@@ -67,8 +67,8 @@ public final class UtilsContextT {
 
         final int timeToWaitInMillis = Objects.equals(expectedButtonText, Constants.STOP) ? 20 * 1000 : 90 * 1000;
         for (int currentTimeMs = 0; currentTimeMs < timeToWaitInMillis && !done.get(); currentTimeMs += waitInMillis) {
-            // RayTracingTest#testRenderSceneWithoutAccelerator starts to fail when using 10ms.
-            ViewActionWait.waitForBitmapUpdate(waitInMillis / 2);
+            // RayTracingTest#testRenderSceneFromSDCardOBJ starts to fail when using 5ms.
+            ViewActionWait.waitForBitmapUpdate(2);
             Espresso.onView(ViewMatchers.withId(R.id.renderButton))
                 .inRoot(RootMatchers.isTouchable())
                 .perform(new ViewActionWait(waitInMillis))
