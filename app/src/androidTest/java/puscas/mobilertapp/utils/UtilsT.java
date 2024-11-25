@@ -157,7 +157,7 @@ public final class UtilsT {
      */
     public static void testStateAndBitmap(final boolean expectedSameValues) {
         logger.info("testStateAndBitmap: " + expectedSameValues);
-        ViewActionWait.waitForButtonUpdate(0);
+        ViewActionWait.waitForBitmapUpdate(0);
         Espresso.onView(ViewMatchers.withId(R.id.drawLayout))
             .inRoot(RootMatchers.isTouchable())
             .perform(new ViewActionWait(0))
