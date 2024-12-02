@@ -50,7 +50,7 @@ buildscript {
             }
         }
         if (androidApiVersionValue >= 16) {
-            gradle_version = '8.7.2'
+            gradle_version = '8.7.3'
         } else {
             gradle_version = '8.2.2'
         }
