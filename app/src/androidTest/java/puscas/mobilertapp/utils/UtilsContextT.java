@@ -59,6 +59,7 @@ public final class UtilsContextT {
                                  final State... expectedStates) throws TimeoutException {
         logger.info("waitUntil start, expected button: " + expectedButtonText + ", expected state(s): " + Arrays.toString(expectedStates));
         final AtomicBoolean done = new AtomicBoolean(false);
+        final AtomicBoolean updatedBitmap = new AtomicBoolean(false);
         // The test 'RayTracingTest#testRenderSceneFromSDCardOB' starts to fail when using 15ms.
         final int waitInMillis = 10;
 
@@ -80,6 +81,14 @@ public final class UtilsContextT {
                     if (Objects.equals(renderButtonText, expectedButtonText) && Arrays.asList(expectedStates).contains(rendererState)) {
                         done.set(true);
                         logger.info("waitUntil for button update success");
+                        if (Objects.equals(expectedButtonText, Constants.STOP)) {
+                            final Bitmap bitmap = UtilsT.getPrivateField(renderer, "bitmap");
+                            final boolean bitmapSingleColor = UtilsT.isBitmapSingleColor(bitmap);
+                            if (!bitmapSingleColor) {
+                                updatedBitmap.set(true);
+                                logger.info("waitUntil for bitmap update success");
+                            }
+                        }
                     }
             });
         }
@@ -91,7 +100,6 @@ public final class UtilsContextT {
         }
 
         if (Objects.equals(expectedButtonText, Constants.STOP)) {
-            done.set(false);
             final int timeToWaitForUpdatedImageInMillis = 10 * 1000;
             // The test 'PreviewTest#testPreviewSceneOrthographicCamera' starts to fail when using 4ms.
             final int waitInMillisForBitmapUpdate = 2;
@@ -101,15 +109,15 @@ public final class UtilsContextT {
                 final Bitmap bitmap = UtilsT.getPrivateField(renderer, "bitmap");
                 final boolean bitmapSingleColor = UtilsT.isBitmapSingleColor(bitmap);
                 if (!bitmapSingleColor) {
-                    done.set(true);
+                    updatedBitmap.set(true);
                     logger.info("waitUntil for bitmap update success");
                 } else {
                     ViewActionWait.waitForBitmapUpdate(waitInMillisForBitmapUpdate);
                 }
                 currentTimeMs += waitInMillisForBitmapUpdate;
-            } while (currentTimeMs < timeToWaitForUpdatedImageInMillis && !done.get());
+            } while (currentTimeMs < timeToWaitForUpdatedImageInMillis && !updatedBitmap.get());
 
-            if (!done.get()) {
+            if (!updatedBitmap.get()) {
                 final Bitmap bitmap = UtilsT.getPrivateField(renderer, "bitmap");
                 final boolean bitmapSingleColor = UtilsT.isBitmapSingleColor(bitmap);
                 final String errorMessage = "Test: " + testName + ", Bitmap had no pixel rendered: " + bitmapSingleColor + ".";

@@ -1,5 +1,7 @@
 package puscas.mobilertapp;
 
+import android.graphics.Bitmap;
+
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.matcher.RootMatchers;
 import androidx.test.espresso.matcher.ViewMatchers;
@@ -83,11 +85,35 @@ public final class PreviewTest extends AbstractTest {
         UtilsContextT.resetPickerValues(Scene.SPHERES.ordinal(), Accelerator.NAIVE, 99, 1);
 
         ViewActionWait.waitForButtonUpdate(0);
+        UtilsT.testStateAndBitmap(true);
         UtilsT.startRendering(false);
         UtilsContextT.waitUntil(this.testName.getMethodName(), this.activity, Constants.STOP, State.BUSY);
+        Espresso.onView(ViewMatchers.withId(R.id.drawLayout))
+            .inRoot(RootMatchers.isTouchable())
+            .perform(new ViewActionWait(0))
+            .check((view, exception) -> {
+                UtilsT.rethrowException(exception);
+                final DrawView drawView = (DrawView) view;
+                final MainRenderer renderer = drawView.getRenderer();
+                final Bitmap bitmap = UtilsT.getPrivateField(renderer, "bitmap");
+                UtilsT.assertRayTracingResultInBitmap(bitmap, false);
+            });
+        ViewActionWait.waitForButtonUpdate(0);
 
         UtilsT.stopRendering();
+        Espresso.onView(ViewMatchers.withId(R.id.drawLayout))
+            .inRoot(RootMatchers.isTouchable())
+            .perform(new ViewActionWait(0))
+            .check((view, exception) -> {
+                UtilsT.rethrowException(exception);
+                final DrawView drawView = (DrawView) view;
+                final MainRenderer renderer = drawView.getRenderer();
+                final Bitmap bitmap = UtilsT.getPrivateField(renderer, "bitmap");
+                UtilsT.assertRayTracingResultInBitmap(bitmap, false);
+            });
+        ViewActionWait.waitForButtonUpdate(0);
         UtilsContextT.waitUntil(this.testName.getMethodName(), this.activity, Constants.RENDER, State.IDLE, State.FINISHED);
+        UtilsT.testStateAndBitmap(false);
 
         UtilsT.assertRenderButtonText(Constants.RENDER);
         UtilsT.testStateAndBitmap(false);

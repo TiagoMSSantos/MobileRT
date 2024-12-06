@@ -86,8 +86,8 @@ public final class UtilsT {
      * @param expectedSameValues Whether the {@link Bitmap} should have have only
      *                           one color.
      */
-    private static void assertRayTracingResultInBitmap(@NonNull final Bitmap bitmap,
-                                                       final boolean expectedSameValues) {
+    public static void assertRayTracingResultInBitmap(@NonNull final Bitmap bitmap,
+                                                      final boolean expectedSameValues) {
         final boolean bitmapSingleColor = isBitmapSingleColor(bitmap);
         logger.info("Checking bitmap values.");
         Assert.assertEquals("The rendered image should have different values.",
@@ -165,13 +165,12 @@ public final class UtilsT {
                 rethrowException(exception);
                 final DrawView drawView = (DrawView) view;
                 final MainRenderer renderer = drawView.getRenderer();
-                final Bitmap bitmap = getPrivateField(renderer, "bitmap");
-                assertRayTracingResultInBitmap(bitmap, expectedSameValues);
-
                 Assert.assertTrue(
                     "State is not the expected",
                     renderer.getState() == State.IDLE || renderer.getState() == State.FINISHED
                 );
+                final Bitmap bitmap = getPrivateField(renderer, "bitmap");
+                assertRayTracingResultInBitmap(bitmap, expectedSameValues);
             });
         ViewActionWait.waitForButtonUpdate(0);
     }
