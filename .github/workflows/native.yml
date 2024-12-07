@@ -64,17 +64,17 @@ jobs:
 
         # MacOS
         - name: G++
-          host_os: macos-14
+          host_os: macos-15
           type: release
           compiler: g++
 
         - name: Clang++
-          host_os: macos-13
+          host_os: macos-14
           type: release
           compiler: clang++
 
         - name: G++
-          host_os: macos-12
+          host_os: macos-13
           type: release
           compiler: g++
 
