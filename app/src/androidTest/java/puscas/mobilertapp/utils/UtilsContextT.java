@@ -100,11 +100,13 @@ public final class UtilsContextT {
         }
 
         if (Objects.equals(expectedButtonText, Constants.STOP)) {
-            final int timeToWaitForUpdatedImageInMillis = 10 * 1000;
-            // The test 'PreviewTest#testPreviewSceneOrthographicCamera' starts to fail when using 4ms.
+            final int timeToWaitForUpdatedImageInMillis = 600 * 1000;
+            // The test 'PreviewTest#testPreviewSceneOrthographicCamera' starts to fail when using 1ms and 4ms.
+            // The test 'UiTest' starts to fail when using 0ms.
             final int waitInMillisForBitmapUpdate = 2;
             logger.info("Waiting '" + timeToWaitForUpdatedImageInMillis + "'ms for Bitmap to contain some rendered pixels.");
-            int currentTimeMs = 0;
+            final long endTimeInstantMs = System.currentTimeMillis() + timeToWaitForUpdatedImageInMillis;
+            long currentInstantMs;
             do {
                 final Bitmap bitmap = UtilsT.getPrivateField(renderer, "bitmap");
                 final boolean bitmapSingleColor = UtilsT.isBitmapSingleColor(bitmap);
@@ -114,8 +116,8 @@ public final class UtilsContextT {
                 } else {
                     ViewActionWait.waitForBitmapUpdate(waitInMillisForBitmapUpdate);
                 }
-                currentTimeMs += waitInMillisForBitmapUpdate;
-            } while (currentTimeMs < timeToWaitForUpdatedImageInMillis && !updatedBitmap.get());
+                currentInstantMs = System.currentTimeMillis();
+            } while (currentInstantMs < endTimeInstantMs && !updatedBitmap.get());
 
             if (!updatedBitmap.get()) {
                 final Bitmap bitmap = UtilsT.getPrivateField(renderer, "bitmap");

@@ -2,7 +2,7 @@
                        // <!--
                        window.initialData = {
   "statistics": {
-    "detectionDate": "2024-11-25T09:32:19.583Z",
+    "detectionDate": "2024-12-07T14:37:18.105Z",
     "formats": {
       "java": {
         "sources": {
@@ -643,8 +643,8 @@
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/utils/UtilsT.java": {
-            "lines": 225,
-            "tokens": 1520,
+            "lines": 224,
+            "tokens": 1519,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -667,8 +667,8 @@
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/utils/UtilsContextT.java": {
-            "lines": 145,
-            "tokens": 1443,
+            "lines": 155,
+            "tokens": 1564,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -967,14 +967,14 @@
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/PreviewTest.java": {
-            "lines": 97,
-            "tokens": 767,
+            "lines": 125,
+            "tokens": 967,
             "sources": 1,
             "clones": 5,
-            "duplicatedLines": 54,
-            "duplicatedTokens": 549,
-            "percentage": 55.67,
-            "percentageTokens": 71.58,
+            "duplicatedLines": 56,
+            "duplicatedTokens": 469,
+            "percentage": 44.8,
+            "percentageTokens": 48.5,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -1016,14 +1016,14 @@
           }
         },
         "total": {
-          "lines": 10495,
-          "tokens": 74457,
+          "lines": 10532,
+          "tokens": 74777,
           "sources": 84,
           "clones": 62,
-          "duplicatedLines": 586,
-          "duplicatedTokens": 5455,
-          "percentage": 5.58,
-          "percentageTokens": 7.33,
+          "duplicatedLines": 587,
+          "duplicatedTokens": 5415,
+          "percentage": 5.57,
+          "percentageTokens": 7.24,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2268,20 +2268,20 @@
           },
           "scripts/check_android.sh": {
             "lines": 120,
-            "tokens": 477,
+            "tokens": 475,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 44,
             "duplicatedTokens": 124,
             "percentage": 36.67,
-            "percentageTokens": 26,
+            "percentageTokens": 26.11,
             "newDuplicatedLines": 0,
             "newClones": 0
           }
         },
         "total": {
           "lines": 4273,
-          "tokens": 28932,
+          "tokens": 28930,
           "sources": 13,
           "clones": 12,
           "duplicatedLines": 263,
@@ -3190,14 +3190,14 @@
       }
     },
     "total": {
-      "lines": 30200,
-      "tokens": 232602,
+      "lines": 30237,
+      "tokens": 232920,
       "sources": 252,
       "clones": 123,
-      "duplicatedLines": 1525,
-      "duplicatedTokens": 14215,
+      "duplicatedLines": 1526,
+      "duplicatedTokens": 14175,
       "percentage": 5.05,
-      "percentageTokens": 6.11,
+      "percentageTokens": 6.09,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -5293,37 +5293,37 @@
     },
     {
       "format": "java",
-      "lines": 13,
-      "fragment": ".ordinal(), Accelerator.NAIVE, 99, 1);\n\n        ViewActionWait.waitForButtonUpdate(0);\n        UtilsT.startRendering(false);\n        UtilsContextT.waitUntil(this.testName.getMethodName(), this.activity, Constants.STOP, State.BUSY);\n\n        UtilsT.stopRendering();\n        UtilsContextT.waitUntil(this.testName.getMethodName(), this.activity, Constants.RENDER, State.IDLE, State.FINISHED);\n\n        UtilsT.assertRenderButtonText(Constants.RENDER);\n        UtilsT.testStateAndBitmap(false);\n\n        logger.info(\"testPreviewSceneOrthographicCamera finished\"",
+      "lines": 14,
+      "fragment": ");\n        Espresso.onView(ViewMatchers.withId(R.id.drawLayout))\n            .inRoot(RootMatchers.isTouchable())\n            .perform(new ViewActionWait(0))\n            .check((view, exception) -> {\n                UtilsT.rethrowException(exception);\n                // TODO: Fix bitmap losing rendered pixels.\n                // final DrawView drawView = (DrawView) view;\n                // final MainRenderer renderer = drawView.getRenderer();\n                // final Bitmap bitmap = UtilsT.getPrivateField(renderer, \"bitmap\");\n                // UtilsT.assertRayTracingResultInBitmap(bitmap, false);\n            });\n        ViewActionWait.waitForButtonUpdate(0);\n        UtilsContextT",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/androidTest/java/puscas/mobilertapp/PreviewTest.java",
-        "start": 83,
-        "end": 95,
+        "start": 102,
+        "end": 115,
         "startLoc": {
-          "line": 83,
-          "column": 8,
-          "position": 621
+          "line": 102,
+          "column": 2,
+          "position": 797
         },
         "endLoc": {
-          "line": 95,
-          "column": 46,
-          "position": 759
+          "line": 115,
+          "column": 14,
+          "position": 895
         }
       },
       "secondFile": {
         "name": "app/src/androidTest/java/puscas/mobilertapp/PreviewTest.java",
-        "start": 50,
-        "end": 62,
+        "start": 88,
+        "end": 102,
         "startLoc": {
-          "line": 50,
-          "column": 8,
-          "position": 348
+          "line": 88,
+          "column": 5,
+          "position": 694
         },
         "endLoc": {
-          "line": 62,
-          "column": 45,
-          "position": 486
+          "line": 102,
+          "column": 7,
+          "position": 793
         }
       }
     },
