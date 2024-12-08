@@ -72,7 +72,7 @@ public final class UtilsContextT {
             ViewActionWait.waitForBitmapUpdate(2);
             Espresso.onView(ViewMatchers.withId(R.id.renderButton))
                 .inRoot(RootMatchers.isTouchable())
-                .perform(new ViewActionWait(waitInMillis))
+                .perform(new ViewActionWait<>(waitInMillis, R.id.renderButton))
                 .check((view, exception) -> {
                     UtilsT.rethrowException(exception);
                     final Button renderButton = view.findViewById(R.id.renderButton);

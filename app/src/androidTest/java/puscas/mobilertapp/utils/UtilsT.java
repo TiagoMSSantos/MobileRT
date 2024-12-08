@@ -160,7 +160,7 @@ public final class UtilsT {
         ViewActionWait.waitForBitmapUpdate(0);
         Espresso.onView(ViewMatchers.withId(R.id.drawLayout))
             .inRoot(RootMatchers.isTouchable())
-            .perform(new ViewActionWait(0))
+            .perform(new ViewActionWait<>(0, R.id.drawLayout))
             .check((view, exception) -> {
                 rethrowException(exception);
                 final DrawView drawView = (DrawView) view;

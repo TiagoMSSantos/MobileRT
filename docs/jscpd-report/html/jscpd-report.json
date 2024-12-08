@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-12-07T14:37:18.105Z",
+    "detectionDate": "2024-12-08T09:58:42.117Z",
     "formats": {
       "java": {
         "sources": {
@@ -642,19 +642,19 @@
           },
           "app/src/androidTest/java/puscas/mobilertapp/utils/UtilsT.java": {
             "lines": 224,
-            "tokens": 1519,
+            "tokens": 1528,
             "sources": 1,
-            "clones": 0,
-            "duplicatedLines": 0,
-            "duplicatedTokens": 0,
-            "percentage": 0,
-            "percentageTokens": 0,
+            "clones": 2,
+            "duplicatedLines": 18,
+            "duplicatedTokens": 176,
+            "percentage": 8.04,
+            "percentageTokens": 11.52,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/utils/UtilsPickerT.java": {
             "lines": 59,
-            "tokens": 386,
+            "tokens": 391,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -666,7 +666,7 @@
           },
           "app/src/androidTest/java/puscas/mobilertapp/utils/UtilsContextT.java": {
             "lines": 155,
-            "tokens": 1564,
+            "tokens": 1573,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -905,8 +905,8 @@
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/ViewActionWait.java": {
-            "lines": 81,
-            "tokens": 415,
+            "lines": 120,
+            "tokens": 716,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -941,14 +941,14 @@
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/UiTest.java": {
-            "lines": 279,
-            "tokens": 2243,
+            "lines": 281,
+            "tokens": 2293,
             "sources": 1,
             "clones": 2,
             "duplicatedLines": 18,
             "duplicatedTokens": 148,
-            "percentage": 6.45,
-            "percentageTokens": 6.6,
+            "percentage": 6.41,
+            "percentageTokens": 6.45,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -966,13 +966,13 @@
           },
           "app/src/androidTest/java/puscas/mobilertapp/PreviewTest.java": {
             "lines": 125,
-            "tokens": 967,
+            "tokens": 985,
             "sources": 1,
             "clones": 5,
-            "duplicatedLines": 56,
-            "duplicatedTokens": 469,
-            "percentage": 44.8,
-            "percentageTokens": 48.5,
+            "duplicatedLines": 48,
+            "duplicatedTokens": 449,
+            "percentage": 38.4,
+            "percentageTokens": 45.58,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -1014,14 +1014,14 @@
           }
         },
         "total": {
-          "lines": 10532,
-          "tokens": 74777,
+          "lines": 10573,
+          "tokens": 75169,
           "sources": 84,
-          "clones": 62,
-          "duplicatedLines": 587,
-          "duplicatedTokens": 5415,
-          "percentage": 5.57,
-          "percentageTokens": 7.24,
+          "clones": 63,
+          "duplicatedLines": 592,
+          "duplicatedTokens": 5493,
+          "percentage": 5.6,
+          "percentageTokens": 7.31,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3188,14 +3188,14 @@
       }
     },
     "total": {
-      "lines": 30237,
-      "tokens": 232920,
+      "lines": 30278,
+      "tokens": 233312,
       "sources": 252,
-      "clones": 123,
-      "duplicatedLines": 1526,
-      "duplicatedTokens": 14175,
-      "percentage": 5.05,
-      "percentageTokens": 6.09,
+      "clones": 124,
+      "duplicatedLines": 1531,
+      "duplicatedTokens": 14253,
+      "percentage": 5.06,
+      "percentageTokens": 6.11,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -5291,8 +5291,44 @@
     },
     {
       "format": "java",
+      "lines": 6,
+      "fragment": ");\n        Espresso.onView(ViewMatchers.withId(R.id.drawLayout))\n            .inRoot(RootMatchers.isTouchable())\n            .perform(new ViewActionWait<>(0, R.id.drawLayout))\n            .check((view, exception) -> {\n                UtilsT",
+      "tokens": 0,
+      "firstFile": {
+        "name": "app/src/androidTest/java/puscas/mobilertapp/PreviewTest.java",
+        "start": 88,
+        "end": 93,
+        "startLoc": {
+          "line": 88,
+          "column": 5,
+          "position": 694
+        },
+        "endLoc": {
+          "line": 93,
+          "column": 7,
+          "position": 763
+        }
+      },
+      "secondFile": {
+        "name": "app/src/androidTest/java/puscas/mobilertapp/utils/UtilsT.java",
+        "start": 160,
+        "end": 165,
+        "startLoc": {
+          "line": 160,
+          "column": 2,
+          "position": 1045
+        },
+        "endLoc": {
+          "line": 165,
+          "column": 17,
+          "position": 1114
+        }
+      }
+    },
+    {
+      "format": "java",
       "lines": 14,
-      "fragment": ");\n        Espresso.onView(ViewMatchers.withId(R.id.drawLayout))\n            .inRoot(RootMatchers.isTouchable())\n            .perform(new ViewActionWait(0))\n            .check((view, exception) -> {\n                UtilsT.rethrowException(exception);\n                // TODO: Fix bitmap losing rendered pixels.\n                // final DrawView drawView = (DrawView) view;\n                // final MainRenderer renderer = drawView.getRenderer();\n                // final Bitmap bitmap = UtilsT.getPrivateField(renderer, \"bitmap\");\n                // UtilsT.assertRayTracingResultInBitmap(bitmap, false);\n            });\n        ViewActionWait.waitForButtonUpdate(0);\n        UtilsContextT",
+      "fragment": ");\n        Espresso.onView(ViewMatchers.withId(R.id.drawLayout))\n            .inRoot(RootMatchers.isTouchable())\n            .perform(new ViewActionWait<>(0, R.id.drawLayout))\n            .check((view, exception) -> {\n                UtilsT.rethrowException(exception);\n                // TODO: Fix bitmap losing rendered pixels.\n                // final DrawView drawView = (DrawView) view;\n                // final MainRenderer renderer = drawView.getRenderer();\n                // final Bitmap bitmap = UtilsT.getPrivateField(renderer, \"bitmap\");\n                // UtilsT.assertRayTracingResultInBitmap(bitmap, false);\n            });\n        ViewActionWait.waitForButtonUpdate(0);\n        UtilsContextT",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/androidTest/java/puscas/mobilertapp/PreviewTest.java",
@@ -5301,27 +5337,27 @@
         "startLoc": {
           "line": 102,
           "column": 2,
-          "position": 797
+          "position": 806
         },
         "endLoc": {
           "line": 115,
           "column": 14,
-          "position": 895
+          "position": 913
         }
       },
       "secondFile": {
-        "name": "app/src/androidTest/java/puscas/mobilertapp/PreviewTest.java",
-        "start": 88,
+        "name": "app/src/androidTest/java/puscas/mobilertapp/utils/UtilsT.java",
+        "start": 160,
         "end": 102,
         "startLoc": {
-          "line": 88,
-          "column": 5,
-          "position": 694
+          "line": 160,
+          "column": 2,
+          "position": 1045
         },
         "endLoc": {
           "line": 102,
           "column": 7,
-          "position": 793
+          "position": 802
         }
       }
     },

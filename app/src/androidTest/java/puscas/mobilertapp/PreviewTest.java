@@ -88,7 +88,7 @@ public final class PreviewTest extends AbstractTest {
         UtilsContextT.waitUntil(this.testName.getMethodName(), this.activity, Constants.STOP, State.BUSY);
         Espresso.onView(ViewMatchers.withId(R.id.drawLayout))
             .inRoot(RootMatchers.isTouchable())
-            .perform(new ViewActionWait(0))
+            .perform(new ViewActionWait<>(0, R.id.drawLayout))
             .check((view, exception) -> {
                 UtilsT.rethrowException(exception);
                 // TODO: Fix bitmap losing rendered pixels.
@@ -102,7 +102,7 @@ public final class PreviewTest extends AbstractTest {
         UtilsT.stopRendering();
         Espresso.onView(ViewMatchers.withId(R.id.drawLayout))
             .inRoot(RootMatchers.isTouchable())
-            .perform(new ViewActionWait(0))
+            .perform(new ViewActionWait<>(0, R.id.drawLayout))
             .check((view, exception) -> {
                 UtilsT.rethrowException(exception);
                 // TODO: Fix bitmap losing rendered pixels.
