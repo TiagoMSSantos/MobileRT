@@ -101,7 +101,7 @@ public final class UiTest extends AbstractTest {
                 assertPreviewCheckBox(view, !expectedValue);
             })
             .perform(ViewActions.click(InputDevice.SOURCE_TOUCHSCREEN, MotionEvent.BUTTON_PRIMARY))
-            .perform(new ViewActionWait<>(0, viewId, expectedValue))
+            .perform(new ViewActionWait<>(10000, viewId, expectedValue))
             .check((view, exception) -> {
                 UtilsT.rethrowException(exception);
                 assertPreviewCheckBox(view, expectedValue);

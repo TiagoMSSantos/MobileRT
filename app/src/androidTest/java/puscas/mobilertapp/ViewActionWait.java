@@ -77,8 +77,8 @@ public final class ViewActionWait<T extends TextView> implements ViewAction {
 
     @Override
     public void perform(final UiController uiController, final View view) {
+        Object value = null;
         if (this.delayMillis == 0) {
-            Object value = null;
             do {
                 uiController.loopMainThreadUntilIdle();
                 if (this.viewId == R.id.preview) {
@@ -87,7 +87,14 @@ public final class ViewActionWait<T extends TextView> implements ViewAction {
                 }
             } while (this.expectedValue != null && !Objects.equals(value, this.expectedValue));
         } else {
-            uiController.loopMainThreadForAtLeast(this.delayMillis);
+            final long endInstantMs = System.currentTimeMillis() + this.delayMillis;
+            do {
+                uiController.loopMainThreadForAtLeast(this.delayMillis);
+                if (this.viewId == R.id.preview) {
+                    final CheckBox checkbox = view.findViewById(this.viewId);
+                    value = checkbox.isChecked();
+                }
+            } while (this.expectedValue != null && !Objects.equals(value, this.expectedValue) && System.currentTimeMillis() < endInstantMs);
         }
     }
 
