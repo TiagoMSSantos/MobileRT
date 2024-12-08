@@ -34,6 +34,7 @@ import com.google.common.util.concurrent.Uninterruptibles;
 
 import org.hamcrest.Matchers;
 import org.junit.After;
+import org.junit.Assume;
 import org.junit.AssumptionViolatedException;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -89,6 +90,11 @@ public abstract class AbstractTest {
     public static final TestRule timeoutClassRule = new Timeout(20L, TimeUnit.MINUTES);
 
     /**
+    * Whether one test already failed or not.
+    */
+    private static boolean oneTestFailed = false;
+
+    /**
      * The {@link Rule} for the {@link Timeout} for each test.
      */
     @NonNull
@@ -122,6 +128,7 @@ public abstract class AbstractTest {
         @Override
         protected void starting(final Description description) {
             logger.info(description.getDisplayName() + ": starting");
+            Assume.assumeFalse(oneTestFailed);
             InstrumentationRegistry.getInstrumentation().waitForIdleSync();
             Espresso.onIdle();
         }
@@ -129,6 +136,7 @@ public abstract class AbstractTest {
         @Override
         protected void failed(final Throwable exception, final Description description) {
             logger.severe(testName.getMethodName() + ": failed");
+            oneTestFailed = true;
             InstrumentationRegistry.getInstrumentation().waitForIdleSync();
             Espresso.onIdle();
             if (exception != null) {
@@ -159,8 +167,6 @@ public abstract class AbstractTest {
         @Override
         protected void skipped(final AssumptionViolatedException exception, final Description description) {
             logger.warning(testName.getMethodName() + ": skipped");
-            InstrumentationRegistry.getInstrumentation().waitForIdleSync();
-            Espresso.onIdle();
         }
     };
 
