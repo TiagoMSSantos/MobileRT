@@ -127,7 +127,7 @@ public abstract class AbstractTest {
     public final TestRule testWatcher = new TestWatcher() {
         @Override
         protected void starting(final Description description) {
-            logger.info(description.getDisplayName() + ": starting");
+            logger.info(description.getDisplayName() + ": test starting");
 
             InstrumentationRegistry.getInstrumentation().waitForIdleSync();
             Espresso.onIdle();
@@ -151,7 +151,7 @@ public abstract class AbstractTest {
 
         @Override
         protected void succeeded(final Description description) {
-            logger.info(testName.getMethodName() + ": succeeded");
+            logger.info(testName.getMethodName() + ": test succeeded");
             Assume.assumeFalse(oneTestFailed);
 
             for (final Runnable method : closeActions) {
@@ -163,7 +163,7 @@ public abstract class AbstractTest {
 
         @Override
         protected void finished(final Description description) {
-            logger.info(testName.getMethodName() + ": finished");
+            logger.info(testName.getMethodName() + ": test finished");
 
             if (!oneTestFailed) {
                 InstrumentationRegistry.getInstrumentation().waitForIdleSync();
@@ -174,7 +174,7 @@ public abstract class AbstractTest {
 
         @Override
         protected void skipped(final AssumptionViolatedException exception, final Description description) {
-            logger.warning(testName.getMethodName() + ": skipped");
+            logger.warning(testName.getMethodName() + ": test skipped");
         }
     };
 

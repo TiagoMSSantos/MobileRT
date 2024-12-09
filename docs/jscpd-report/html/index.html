@@ -2,7 +2,7 @@
                        // <!--
                        window.initialData = {
   "statistics": {
-    "detectionDate": "2024-12-09T12:58:09.558Z",
+    "detectionDate": "2024-12-09T15:09:28.866Z",
     "formats": {
       "java": {
         "sources": {
@@ -7166,7 +7166,7 @@
     {
       "format": "yaml",
       "lines": 20,
-      "fragment": "defaults:\n  run:\n    shell: sh\n    working-directory: .\n\nconcurrency:\n  group: ${{ github.workflow }} ${{ github.ref }}\n  cancel-in-progress: true\n\n# Default environment variables.\nenv:\n  GITHUB_STEP_TIMEOUT_SMALL: 4\n  GITHUB_STEP_TIMEOUT_MEDIUM: 10\n  GITHUB_STEP_TIMEOUT_LONG: 30\n\njobs:\n  Build:\n    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'\n\n    strategy",
+      "fragment": "defaults:\n  run:\n    shell: sh\n    working-directory: .\n\nconcurrency:\n  group: ${{ github.workflow }} ${{ github.ref }}\n  cancel-in-progress: true\n\n# Default environment variables.\nenv:\n  GITHUB_STEP_TIMEOUT_SMALL: 4\n  GITHUB_STEP_TIMEOUT_MEDIUM: 10\n  GITHUB_STEP_TIMEOUT_LONG: 20\n\njobs:\n  Build:\n    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'\n\n    strategy",
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/docker.yml",
@@ -7202,7 +7202,7 @@
     {
       "format": "yaml",
       "lines": 23,
-      "fragment": "defaults:\n  run:\n    shell: sh\n    working-directory: .\n\nconcurrency:\n  group: ${{ github.workflow }} ${{ github.ref }}\n  cancel-in-progress: true\n\n# Default environment variables.\nenv:\n  GITHUB_STEP_TIMEOUT_SMALL: 4\n  GITHUB_STEP_TIMEOUT_MEDIUM: 10\n  GITHUB_STEP_TIMEOUT_LONG: 30\n\njobs:\n  Build:\n    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'\n\n    strategy:\n      fail-fast: false\n      matrix:\n        # Override automatic language detection by changing the below list",
+      "fragment": "defaults:\n  run:\n    shell: sh\n    working-directory: .\n\nconcurrency:\n  group: ${{ github.workflow }} ${{ github.ref }}\n  cancel-in-progress: true\n\n# Default environment variables.\nenv:\n  GITHUB_STEP_TIMEOUT_SMALL: 4\n  GITHUB_STEP_TIMEOUT_MEDIUM: 10\n  GITHUB_STEP_TIMEOUT_LONG: 20\n\njobs:\n  Build:\n    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'\n\n    strategy:\n      fail-fast: false\n      matrix:\n        # Override automatic language detection by changing the below list",
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/code-analysis.yml",
@@ -7274,7 +7274,7 @@
     {
       "format": "yaml",
       "lines": 24,
-      "fragment": "defaults:\n  run:\n    shell: sh\n    working-directory: .\n\nconcurrency:\n  group: ${{ github.workflow }} ${{ github.ref }}\n  cancel-in-progress: true\n\n# Default environment variables.\nenv:\n  GITHUB_STEP_TIMEOUT_SMALL: 4\n  GITHUB_STEP_TIMEOUT_MEDIUM: 10\n  GITHUB_STEP_TIMEOUT_LONG: 30\n\njobs:\n  Build:\n    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'\n\n    strategy:\n      fail-fast: false\n      matrix:\n        include:\n        - test",
+      "fragment": "defaults:\n  run:\n    shell: sh\n    working-directory: .\n\nconcurrency:\n  group: ${{ github.workflow }} ${{ github.ref }}\n  cancel-in-progress: true\n\n# Default environment variables.\nenv:\n  GITHUB_STEP_TIMEOUT_SMALL: 4\n  GITHUB_STEP_TIMEOUT_MEDIUM: 10\n  GITHUB_STEP_TIMEOUT_LONG: 20\n\njobs:\n  Build:\n    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'\n\n    strategy:\n      fail-fast: false\n      matrix:\n        include:\n        - test",
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android_repeatable.yml",
@@ -7346,7 +7346,7 @@
     {
       "format": "yaml",
       "lines": 23,
-      "fragment": "- '!*.java*'\n      - '!*.kt*'\n      - '!*.c*'\n      - '!*.h*'\n      - '!*gradle*'\n\ndefaults:\n  run:\n    shell: sh\n    working-directory: .\n\nconcurrency:\n  group: ${{ github.workflow }} ${{ github.ref }}\n  cancel-in-progress: true\n\n# Default environment variables.\nenv:\n  GITHUB_STEP_TIMEOUT_SMALL: 4\n  GITHUB_STEP_TIMEOUT_MEDIUM: 10\n  GITHUB_STEP_TIMEOUT_LONG: 30\n\njobs:\n  Matrix",
+      "fragment": "- '!*.java*'\n      - '!*.kt*'\n      - '!*.c*'\n      - '!*.h*'\n      - '!*gradle*'\n\ndefaults:\n  run:\n    shell: sh\n    working-directory: .\n\nconcurrency:\n  group: ${{ github.workflow }} ${{ github.ref }}\n  cancel-in-progress: true\n\n# Default environment variables.\nenv:\n  GITHUB_STEP_TIMEOUT_SMALL: 4\n  GITHUB_STEP_TIMEOUT_MEDIUM: 10\n  GITHUB_STEP_TIMEOUT_LONG: 20\n\njobs:\n  Matrix",
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android.yml",
