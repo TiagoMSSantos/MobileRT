@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-12-08T11:30:58.537Z",
+    "detectionDate": "2024-12-09T12:58:09.558Z",
     "formats": {
       "java": {
         "sources": {
@@ -1001,27 +1001,27 @@
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/AbstractTest.java": {
-            "lines": 483,
-            "tokens": 4544,
+            "lines": 501,
+            "tokens": 4621,
             "sources": 1,
-            "clones": 4,
-            "duplicatedLines": 28,
-            "duplicatedTokens": 306,
-            "percentage": 5.8,
-            "percentageTokens": 6.73,
+            "clones": 2,
+            "duplicatedLines": 14,
+            "duplicatedTokens": 140,
+            "percentage": 2.79,
+            "percentageTokens": 3.03,
             "newDuplicatedLines": 0,
             "newClones": 0
           }
         },
         "total": {
-          "lines": 10580,
-          "tokens": 75292,
+          "lines": 10598,
+          "tokens": 75369,
           "sources": 84,
-          "clones": 64,
-          "duplicatedLines": 597,
-          "duplicatedTokens": 5578,
-          "percentage": 5.64,
-          "percentageTokens": 7.41,
+          "clones": 63,
+          "duplicatedLines": 590,
+          "duplicatedTokens": 5495,
+          "percentage": 5.57,
+          "percentageTokens": 7.29,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3188,14 +3188,14 @@
       }
     },
     "total": {
-      "lines": 30285,
-      "tokens": 233435,
+      "lines": 30303,
+      "tokens": 233512,
       "sources": 252,
-      "clones": 125,
-      "duplicatedLines": 1536,
-      "duplicatedTokens": 14338,
-      "percentage": 5.07,
-      "percentageTokens": 6.14,
+      "clones": 124,
+      "duplicatedLines": 1529,
+      "duplicatedTokens": 14255,
+      "percentage": 5.05,
+      "percentageTokens": 6.1,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -5404,17 +5404,17 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/src/androidTest/java/puscas/mobilertapp/AbstractTest.java",
-        "start": 59,
-        "end": 67,
+        "start": 60,
+        "end": 68,
         "startLoc": {
-          "line": 59,
+          "line": 60,
           "column": 7,
-          "position": 551
+          "position": 560
         },
         "endLoc": {
-          "line": 67,
+          "line": 68,
           "column": 11,
-          "position": 626
+          "position": 635
         }
       },
       "secondFile": {
@@ -5440,17 +5440,17 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/src/androidTest/java/puscas/mobilertapp/AbstractTest.java",
-        "start": 62,
-        "end": 68,
+        "start": 63,
+        "end": 69,
         "startLoc": {
-          "line": 62,
+          "line": 63,
           "column": 10,
-          "position": 574
+          "position": 583
         },
         "endLoc": {
-          "line": 68,
+          "line": 69,
           "column": 13,
-          "position": 639
+          "position": 648
         }
       },
       "secondFile": {
@@ -5466,42 +5466,6 @@
           "line": 61,
           "column": 6,
           "position": 548
-        }
-      }
-    },
-    {
-      "format": "java",
-      "lines": 8,
-      "fragment": " */\n    @After\n    @CallSuper\n    public void tearDown() {\n        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();\n        logger.info(methodName + \": \" + this.testName.getMethodName());\n\n        dismissANRSystemDialog();\n        InstrumentationRegistry.getInstrumentation().waitForIdleSy",
-      "tokens": 0,
-      "firstFile": {
-        "name": "app/src/androidTest/java/puscas/mobilertapp/AbstractTest.java",
-        "start": 237,
-        "end": 244,
-        "startLoc": {
-          "line": 237,
-          "column": 9,
-          "position": 1957
-        },
-        "endLoc": {
-          "line": 244,
-          "column": 14,
-          "position": 2040
-        }
-      },
-      "secondFile": {
-        "name": "app/src/androidTest/java/puscas/mobilertapp/AbstractTest.java",
-        "start": 183,
-        "end": 190,
-        "startLoc": {
-          "line": 183,
-          "column": 6,
-          "position": 1360
-        },
-        "endLoc": {
-          "line": 190,
-          "column": 5,
-          "position": 1443
         }
       }
     },

@@ -34,6 +34,7 @@ import com.google.common.util.concurrent.Uninterruptibles;
 
 import org.hamcrest.Matchers;
 import org.junit.After;
+import org.junit.Assume;
 import org.junit.AssumptionViolatedException;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -89,6 +90,11 @@ public abstract class AbstractTest {
     public static final TestRule timeoutClassRule = new Timeout(20L, TimeUnit.MINUTES);
 
     /**
+    * Whether one test already failed or not.
+    */
+    private static boolean oneTestFailed = false;
+
+    /**
      * The {@link Rule} for the {@link Timeout} for each test.
      */
     @NonNull
@@ -122,25 +128,32 @@ public abstract class AbstractTest {
         @Override
         protected void starting(final Description description) {
             logger.info(description.getDisplayName() + ": starting");
+
             InstrumentationRegistry.getInstrumentation().waitForIdleSync();
             Espresso.onIdle();
         }
 
         @Override
         protected void failed(final Throwable exception, final Description description) {
-            logger.severe(testName.getMethodName() + ": failed");
-            InstrumentationRegistry.getInstrumentation().waitForIdleSync();
-            Espresso.onIdle();
-            if (exception != null) {
-                // Throw exception to print the test name in the error message.
-                final String errorMessage = testName.getMethodName() + ": " + exception.getMessage();
-                throw new FailureException(errorMessage, exception);
+            logger.severe(testName.getMethodName() + ": test failed");
+
+            if (!oneTestFailed) {
+                oneTestFailed = true;
+                InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+                Espresso.onIdle();
+                if (exception != null) {
+                    // Throw exception to print the test name in the error message.
+                    final String errorMessage = testName.getMethodName() + ": " + exception.getMessage();
+                    throw new FailureException(errorMessage, exception);
+                }
             }
         }
 
         @Override
         protected void succeeded(final Description description) {
             logger.info(testName.getMethodName() + ": succeeded");
+            Assume.assumeFalse(oneTestFailed);
+
             for (final Runnable method : closeActions) {
                 method.run();
             }
@@ -151,16 +164,17 @@ public abstract class AbstractTest {
         @Override
         protected void finished(final Description description) {
             logger.info(testName.getMethodName() + ": finished");
-            InstrumentationRegistry.getInstrumentation().waitForIdleSync();
-            Espresso.onIdle();
-            Intents.release();
+
+            if (!oneTestFailed) {
+                InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+                Espresso.onIdle();
+                Intents.release();
+            }
         }
 
         @Override
         protected void skipped(final AssumptionViolatedException exception, final Description description) {
             logger.warning(testName.getMethodName() + ": skipped");
-            InstrumentationRegistry.getInstrumentation().waitForIdleSync();
-            Espresso.onIdle();
         }
     };
 
@@ -183,6 +197,7 @@ public abstract class AbstractTest {
     public void setUp() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         logger.info(methodName + ": " + this.testName.getMethodName());
+        Assume.assumeFalse(oneTestFailed);
 
         dismissANRSystemDialog();
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
@@ -226,6 +241,7 @@ public abstract class AbstractTest {
 
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
         Espresso.onIdle();
+
         logger.info(this.testName.getMethodName() + " started");
     }
 
@@ -238,26 +254,28 @@ public abstract class AbstractTest {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         logger.info(methodName + ": " + this.testName.getMethodName());
 
-        dismissANRSystemDialog();
-        InstrumentationRegistry.getInstrumentation().waitForIdleSync();
-        Espresso.onIdle();
-        Preconditions.checkNotNull(this.activity, "The Activity didn't finish as expected!");
-
-        final int timeToWaitSecs = 20;
-        logger.info(this.testName.getMethodName() + ": Will wait for the Activity triggered by the test to finish. Max timeout in secs: " + timeToWaitSecs);
-        final int waitInSecs = 1;
-        int currentTimeSecs = 0;
-        while (isActivityRunning(this.activity) && currentTimeSecs < timeToWaitSecs) {
-            logger.info(this.testName.getMethodName() + ": Finishing the Activity.");
-            this.activity.finish();
+        if (!oneTestFailed) {
+            dismissANRSystemDialog();
             InstrumentationRegistry.getInstrumentation().waitForIdleSync();
             Espresso.onIdle();
-            Uninterruptibles.sleepUninterruptibly(waitInSecs, TimeUnit.SECONDS);
-            currentTimeSecs += waitInSecs;
+            Preconditions.checkNotNull(this.activity, "The Activity didn't finish as expected!");
+
+            final int timeToWaitSecs = 20;
+            logger.info(this.testName.getMethodName() + ": Will wait for the Activity triggered by the test to finish. Max timeout in secs: " + timeToWaitSecs);
+            final int waitInSecs = 1;
+            int currentTimeSecs = 0;
+            while (isActivityRunning(this.activity) && currentTimeSecs < timeToWaitSecs) {
+                logger.info(this.testName.getMethodName() + ": Finishing the Activity.");
+                this.activity.finish();
+                InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+                Espresso.onIdle();
+                Uninterruptibles.sleepUninterruptibly(waitInSecs, TimeUnit.SECONDS);
+                currentTimeSecs += waitInSecs;
+            }
+            // Wait for the app to be closed. Necessary for Android 12+.
+            this.mainActivityActivityTestRule.getScenario().close();
+            logger.info(this.testName.getMethodName() + ": Activity finished: " + !isActivityRunning(this.activity) + " (" + currentTimeSecs + "secs)");
         }
-        // Wait for the app to be closed. Necessary for Android 12+.
-        this.mainActivityActivityTestRule.getScenario().close();
-        logger.info(this.testName.getMethodName() + ": Activity finished: " + !isActivityRunning(this.activity) + " (" + currentTimeSecs + "secs)");
 
         logger.info(this.testName.getMethodName() + " finished");
     }
