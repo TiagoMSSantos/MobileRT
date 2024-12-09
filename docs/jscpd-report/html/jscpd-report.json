@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-12-09T15:09:28.866Z",
+    "detectionDate": "2024-12-09T16:51:47.842Z",
     "formats": {
       "java": {
         "sources": {
@@ -1001,21 +1001,21 @@
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/AbstractTest.java": {
-            "lines": 501,
-            "tokens": 4621,
+            "lines": 500,
+            "tokens": 4615,
             "sources": 1,
             "clones": 2,
             "duplicatedLines": 14,
             "duplicatedTokens": 140,
-            "percentage": 2.79,
+            "percentage": 2.8,
             "percentageTokens": 3.03,
             "newDuplicatedLines": 0,
             "newClones": 0
           }
         },
         "total": {
-          "lines": 10598,
-          "tokens": 75369,
+          "lines": 10597,
+          "tokens": 75363,
           "sources": 84,
           "clones": 63,
           "duplicatedLines": 590,
@@ -3188,8 +3188,8 @@
       }
     },
     "total": {
-      "lines": 30303,
-      "tokens": 233512,
+      "lines": 30302,
+      "tokens": 233506,
       "sources": 252,
       "clones": 124,
       "duplicatedLines": 1529,

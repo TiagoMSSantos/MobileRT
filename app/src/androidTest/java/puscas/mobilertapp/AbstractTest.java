@@ -225,9 +225,8 @@ public abstract class AbstractTest {
             UtilsLogging.logThrowable(ex, this.testName.getMethodName() + ": AbstractTest#setUp");
             logger.warning(this.testName.getMethodName() + ": The MainActivity didn't start as expected. Forcing a restart.");
             this.mainActivityActivityTestRule.getScenario().close();
-            try (ActivityScenario<MainActivity> newActivityScenario = ActivityScenario.launch(MainActivity.class)) {
-                newActivityScenario.onActivity(newActivity -> this.activity = newActivity);
-            }
+            final ActivityScenario<MainActivity> newActivityScenario = ActivityScenario.launch(MainActivity.class);
+            newActivityScenario.onActivity(newActivity -> this.activity = newActivity);
         }
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
         Espresso.onIdle();
