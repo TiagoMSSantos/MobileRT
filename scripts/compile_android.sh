@@ -117,7 +117,7 @@ build() {
     -DtestType="${type}" -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]" \
     --no-rebuild --stop --info --warning-mode fail --stacktrace;
   echo "Setting Gradle Wrapper to a version that is compatible with Android API: '${android_api_version}'".;
-  sh gradlew --offline --parallel wrapper -DtestType="${type}" -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]";
+  sh gradlew --parallel wrapper -DtestType="${type}" -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]";
   echo 'Compiling MobileRT.';
   sh gradlew clean \
     build"${typeWithCapitalLetter}" \
