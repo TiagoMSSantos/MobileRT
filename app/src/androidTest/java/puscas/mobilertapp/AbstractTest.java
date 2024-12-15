@@ -22,7 +22,6 @@ import androidx.core.content.ContextCompat;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.NoActivityResumedException;
-import androidx.test.espresso.NoMatchingViewException;
 import androidx.test.espresso.intent.Intents;
 import androidx.test.espresso.intent.VerificationModes;
 import androidx.test.espresso.intent.matcher.IntentMatchers;
@@ -34,9 +33,11 @@ import com.google.common.util.concurrent.Uninterruptibles;
 
 import org.hamcrest.Matchers;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Assume;
 import org.junit.AssumptionViolatedException;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.rules.TestName;
@@ -99,26 +100,36 @@ public abstract class AbstractTest {
      */
     @NonNull
     @Rule
-    public final TestRule timeoutRule = new Timeout(4L, TimeUnit.MINUTES);
+    public final TestRule timeoutRule = new Timeout(1L, TimeUnit.MINUTES);
 
     /**
      * The {@link ActivityScenario} to create the {@link MainActivity}.
      */
     @NonNull
-    @Rule
-    public final ActivityScenarioRule<MainActivity> mainActivityActivityTestRule = new ActivityScenarioRule<>(MainActivity.class);
+    @ClassRule
+    public static final ActivityScenarioRule<MainActivity> mainActivityActivityTestRule = new ActivityScenarioRule<>(MainActivity.class);
 
     /**
      * The {@link MainActivity} to test.
      */
     @Nullable
-    protected MainActivity activity = null;
+    protected static MainActivity activity = null;
 
     /**
      * The {@link Rule} to get the name of the current test.
      */
     @Rule
     final public TestName testName = new TestName();
+
+    /**
+     * A {@link Deque} to store {@link Runnable}s which should be called at the end of the test.
+     * The {@link #tearDown()} method which is called after every test will call use this field and
+     * call the method {@link Runnable#run()} of every {@link Runnable} stored temporarily here.
+     * <p>
+     * For example, this is useful to store temporarily {@link Runnable}s of methods that will close
+     * a resource at the end of the test.
+     */
+    final private Deque<Runnable> closeActions = new ArrayDeque<>();
 
     /**
      * The {@link Rule} to validate all {@link #closeActions} when a test succeeds.
@@ -128,9 +139,6 @@ public abstract class AbstractTest {
         @Override
         protected void starting(final Description description) {
             logger.info(description.getDisplayName() + ": test starting");
-
-            InstrumentationRegistry.getInstrumentation().waitForIdleSync();
-            Espresso.onIdle();
         }
 
         @Override
@@ -139,8 +147,6 @@ public abstract class AbstractTest {
 
             if (!oneTestFailed) {
                 oneTestFailed = true;
-                InstrumentationRegistry.getInstrumentation().waitForIdleSync();
-                Espresso.onIdle();
                 if (exception != null) {
                     // Throw exception to print the test name in the error message.
                     final String errorMessage = testName.getMethodName() + ": " + exception.getMessage();
@@ -157,8 +163,6 @@ public abstract class AbstractTest {
             for (final Runnable method : closeActions) {
                 method.run();
             }
-            InstrumentationRegistry.getInstrumentation().waitForIdleSync();
-            Espresso.onIdle();
         }
 
         @Override
@@ -166,8 +170,6 @@ public abstract class AbstractTest {
             logger.info(testName.getMethodName() + ": test finished");
 
             if (!oneTestFailed) {
-                InstrumentationRegistry.getInstrumentation().waitForIdleSync();
-                Espresso.onIdle();
                 Intents.release();
             }
         }
@@ -179,15 +181,16 @@ public abstract class AbstractTest {
     };
 
     /**
-     * A {@link Deque} to store {@link Runnable}s which should be called at the end of the test.
-     * The {@link #tearDown()} method which is called after every test will call use this field and
-     * call the method {@link Runnable#run()} of every {@link Runnable} stored temporarily here.
-     * <p>
-     * For example, this is useful to store temporarily {@link Runnable}s of methods that will close
-     * a resource at the end of the test.
+     * Setup method called before all tests.
      */
-    final private Deque<Runnable> closeActions = new ArrayDeque<>();
-
+    @BeforeClass
+    @CallSuper
+    public static void setUpAll() {
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        logger.info(methodName);
+        mainActivityActivityTestRule.getScenario().onActivity(newActivity -> activity = newActivity);
+        grantPermissions();
+    }
 
     /**
      * Setup method called before each test.
@@ -199,13 +202,7 @@ public abstract class AbstractTest {
         logger.info(methodName + ": " + this.testName.getMethodName());
         Assume.assumeFalse(oneTestFailed);
 
-        dismissANRSystemDialog();
-        InstrumentationRegistry.getInstrumentation().waitForIdleSync();
-        Espresso.onIdle();
-        this.mainActivityActivityTestRule.getScenario().onActivity(activity -> this.activity = activity);
-
-        Preconditions.checkNotNull(this.activity, "The Activity didn't start as expected!");
-        grantPermissions();
+        Preconditions.checkNotNull(activity, "The Activity didn't start as expected!");
 
         Intents.init();
         final List<Intent> intents = Intents.getIntents();
@@ -217,19 +214,15 @@ public abstract class AbstractTest {
             );
             Intents.assertNoUnverifiedIntents();
         }
-        InstrumentationRegistry.getInstrumentation().waitForIdleSync();
-        Espresso.onIdle();
         try {
             ViewActionWait.waitForButtonUpdate(0);
-        } catch (final NoMatchingViewException | NoActivityResumedException ex) {
+        } catch (final NoActivityResumedException ex) {
             UtilsLogging.logThrowable(ex, this.testName.getMethodName() + ": AbstractTest#setUp");
             logger.warning(this.testName.getMethodName() + ": The MainActivity didn't start as expected. Forcing a restart.");
-            this.mainActivityActivityTestRule.getScenario().close();
+            mainActivityActivityTestRule.getScenario().close();
             final ActivityScenario<MainActivity> newActivityScenario = ActivityScenario.launch(MainActivity.class);
-            newActivityScenario.onActivity(newActivity -> this.activity = newActivity);
+            newActivityScenario.onActivity(newActivity -> activity = newActivity);
         }
-        InstrumentationRegistry.getInstrumentation().waitForIdleSync();
-        Espresso.onIdle();
         final List<Intent> intentsToVerify = Intents.getIntents();
         logger.info(this.testName.getMethodName() + ": " + methodName + " validating '" + intentsToVerify.size() + "' Intents");
         Intents.intended(
@@ -237,9 +230,6 @@ public abstract class AbstractTest {
             VerificationModes.times(intentsToVerify.size())
         );
         Intents.assertNoUnverifiedIntents();
-
-        InstrumentationRegistry.getInstrumentation().waitForIdleSync();
-        Espresso.onIdle();
 
         logger.info(this.testName.getMethodName() + " started");
     }
@@ -254,29 +244,38 @@ public abstract class AbstractTest {
         logger.info(methodName + ": " + this.testName.getMethodName());
 
         if (!oneTestFailed) {
-            dismissANRSystemDialog();
-            InstrumentationRegistry.getInstrumentation().waitForIdleSync();
-            Espresso.onIdle();
-            Preconditions.checkNotNull(this.activity, "The Activity didn't finish as expected!");
-
-            final int timeToWaitSecs = 20;
-            logger.info(this.testName.getMethodName() + ": Will wait for the Activity triggered by the test to finish. Max timeout in secs: " + timeToWaitSecs);
-            final int waitInSecs = 1;
-            int currentTimeSecs = 0;
-            while (isActivityRunning(this.activity) && currentTimeSecs < timeToWaitSecs) {
-                logger.info(this.testName.getMethodName() + ": Finishing the Activity.");
-                this.activity.finish();
-                InstrumentationRegistry.getInstrumentation().waitForIdleSync();
-                Espresso.onIdle();
-                Uninterruptibles.sleepUninterruptibly(waitInSecs, TimeUnit.SECONDS);
-                currentTimeSecs += waitInSecs;
-            }
-            // Wait for the app to be closed. Necessary for Android 12+.
-            this.mainActivityActivityTestRule.getScenario().close();
-            logger.info(this.testName.getMethodName() + ": Activity finished: " + !isActivityRunning(this.activity) + " (" + currentTimeSecs + "secs)");
+            Preconditions.checkNotNull(activity, "The Activity didn't finish as expected!");
         }
 
         logger.info(this.testName.getMethodName() + " finished");
+    }
+
+    /**
+     * A tear down method which is called last.
+     */
+    @AfterClass
+    public static void tearDownAll() {
+        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        logger.info(methodName);
+
+        if (!oneTestFailed) {
+            Preconditions.checkNotNull(activity, "The Activity didn't finish as expected!");
+
+            final int timeToWaitSecs = 20;
+            logger.info(methodName + ": Will wait for the Activity triggered by the test to finish. Max timeout in secs: " + timeToWaitSecs);
+            final int waitInSecs = 1;
+            int currentTimeSecs = 0;
+            while (isActivityRunning(activity) && currentTimeSecs < timeToWaitSecs) {
+                logger.info(methodName + ": Finishing the Activity.");
+                activity.finish();
+                currentTimeSecs += waitInSecs;
+            }
+            // Wait for the app to be closed. Necessary for Android 12+.
+            mainActivityActivityTestRule.getScenario().close();
+            logger.info(methodName + ": Activity finished: " + !isActivityRunning(activity) + " (" + currentTimeSecs + "secs)");
+        }
+
+        logger.info(methodName + " finished");
     }
 
     /**
@@ -285,7 +284,7 @@ public abstract class AbstractTest {
      * @param activity The {@link Activity} used by the tests.
      * @return {@code true} if it is still running, otherwise {@code false}.
      */
-    private boolean isActivityRunning(@NonNull final Activity activity) {
+    private static boolean isActivityRunning(@NonNull final Activity activity) {
         // Note that 'Activity#isDestroyed' only exists on Android API 17+.
         // More info: https://developer.android.com/reference/android/app/Activity#isDestroyed()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
@@ -398,9 +397,9 @@ public abstract class AbstractTest {
 
         UtilsT.startRendering(showRenderWhenPressingButton);
         if (!expectedSameValues) {
-            UtilsContextT.waitUntil(this.testName.getMethodName(), this.activity, Constants.STOP, State.BUSY);
+            UtilsContextT.waitUntil(this.testName.getMethodName(), activity, Constants.STOP, State.BUSY);
         }
-        UtilsContextT.waitUntil(this.testName.getMethodName(), this.activity, Constants.RENDER, State.IDLE, State.FINISHED);
+        UtilsContextT.waitUntil(this.testName.getMethodName(), activity, Constants.RENDER, State.IDLE, State.FINISHED);
         ViewActionWait.waitForButtonUpdate(0);
 
         UtilsT.assertRenderButtonText(Constants.RENDER);

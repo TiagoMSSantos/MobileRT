@@ -1,8 +1,6 @@
 package puscas.mobilertapp.engine;
 
-import org.junit.FixMethodOrder;
 import org.junit.Test;
-import org.junit.runners.MethodSorters;
 
 import java.util.concurrent.TimeoutException;
 
@@ -14,7 +12,6 @@ import puscas.mobilertapp.constants.Shader;
 /**
  * The test suite for the cameras used in Ray Tracing engine.
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public final class CameraTest extends AbstractTest {
 
     /**

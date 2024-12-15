@@ -11,9 +11,7 @@ import androidx.test.platform.app.InstrumentationRegistry;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
 import org.junit.Test;
-import org.junit.runners.MethodSorters;
 
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
@@ -25,7 +23,6 @@ import puscas.mobilertapp.constants.Shader;
 /**
  * The test suite for the Ray Tracing engine used in {@link MainActivity}.
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public final class RayTracingTest extends AbstractTest {
 
     /**

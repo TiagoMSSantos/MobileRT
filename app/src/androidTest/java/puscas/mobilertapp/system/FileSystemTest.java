@@ -5,9 +5,7 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import com.google.common.collect.ImmutableList;
 
 import org.junit.Assert;
-import org.junit.FixMethodOrder;
 import org.junit.Test;
-import org.junit.runners.MethodSorters;
 
 import java.io.File;
 import java.util.Collections;
@@ -24,7 +22,6 @@ import puscas.mobilertapp.utils.UtilsContext;
 /**
  * The test suite for the File system operations used in {@link MainActivity}.
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public final class FileSystemTest extends AbstractTest {
 
     /**

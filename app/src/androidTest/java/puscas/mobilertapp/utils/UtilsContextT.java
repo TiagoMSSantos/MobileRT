@@ -66,7 +66,7 @@ public final class UtilsContextT {
         final DrawView drawView = UtilsT.getPrivateField(activity, "drawView");
         final MainRenderer renderer = drawView.getRenderer();
 
-        final int timeToWaitInMillis = Objects.equals(expectedButtonText, Constants.STOP) ? 20 * 1000 : 90 * 1000;
+        final int timeToWaitInMillis = Objects.equals(expectedButtonText, Constants.STOP) ? 20 * 1000 : 60 * 1000;
         for (int currentTimeMs = 0; currentTimeMs < timeToWaitInMillis && !done.get(); currentTimeMs += waitInMillis) {
             // RayTracingTest#testRenderSceneFromSDCardOBJ starts to fail when using 5ms.
             ViewActionWait.waitForBitmapUpdate(2);
@@ -100,7 +100,7 @@ public final class UtilsContextT {
         }
 
         if (Objects.equals(expectedButtonText, Constants.STOP)) {
-            final int timeToWaitForUpdatedImageInMillis = 600 * 1000;
+            final int timeToWaitForUpdatedImageInMillis = 60 * 1000;
             // The test 'PreviewTest#testPreviewSceneOrthographicCamera' starts to fail when using 1ms and 4ms.
             // The test 'UiTest' starts to fail when using 0ms.
             final int waitInMillisForBitmapUpdate = 2;

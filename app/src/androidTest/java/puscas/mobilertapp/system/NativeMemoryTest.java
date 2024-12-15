@@ -4,12 +4,8 @@ import static puscas.mobilertapp.ConstantsAndroidTests.NOT_ENOUGH_MEMORY_MESSAGE
 
 import android.os.Debug;
 
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.FixMethodOrder;
 import org.junit.Test;
-import org.junit.runners.MethodSorters;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -17,6 +13,7 @@ import java.util.Collection;
 import java.util.Locale;
 import java.util.logging.Logger;
 
+import puscas.mobilertapp.AbstractTest;
 import puscas.mobilertapp.constants.Constants;
 
 /**
@@ -26,32 +23,12 @@ import puscas.mobilertapp.constants.Constants;
  * native heap memory, as the Android unit tests only have Java heap and not a
  * native heap memory available.
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public final class NativeMemoryTest {
+public final class NativeMemoryTest extends AbstractTest {
 
     /**
      * Logger for this class.
      */
     private static final Logger logger = Logger.getLogger(NativeMemoryTest.class.getSimpleName());
-
-    /**
-     * Setup method called before each test.
-     */
-    @Before
-    public void setUp() {
-        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        logger.info(methodName);
-    }
-
-    /**
-     * Tear down method called after each test.
-     */
-    @After
-    public void tearDown() {
-        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        logger.info(methodName);
-    }
-
 
     /**
      * Tests that allocating heap memory from native memory, makes the available memory decrease as expected.

@@ -1,8 +1,6 @@
 package puscas.mobilertapp.engine;
 
-import org.junit.FixMethodOrder;
 import org.junit.Test;
-import org.junit.runners.MethodSorters;
 
 import java.util.concurrent.TimeoutException;
 
@@ -16,7 +14,6 @@ import puscas.mobilertapp.constants.Shader;
 /**
  * The test suite for the {@link Shader}s used in {@link MainActivity}.
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public final class ShaderTest extends AbstractTest {
 
     /**

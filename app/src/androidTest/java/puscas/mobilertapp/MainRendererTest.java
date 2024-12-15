@@ -6,9 +6,7 @@ import android.opengl.GLSurfaceView;
 import com.google.common.base.Preconditions;
 
 import org.junit.Assert;
-import org.junit.FixMethodOrder;
 import org.junit.Test;
-import org.junit.runners.MethodSorters;
 
 import java.io.InputStream;
 import java.util.concurrent.CountDownLatch;
@@ -25,7 +23,6 @@ import puscas.mobilertapp.utils.UtilsT;
 /**
  * The test suite for the {@link MainRenderer}.
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public final class MainRendererTest extends AbstractTest {
 
     /**

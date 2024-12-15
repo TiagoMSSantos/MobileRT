@@ -19,9 +19,7 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import com.google.common.collect.ImmutableList;
 
 import org.junit.Assert;
-import org.junit.FixMethodOrder;
 import org.junit.Test;
-import org.junit.runners.MethodSorters;
 
 import java.util.List;
 import java.util.concurrent.TimeoutException;
@@ -42,7 +40,6 @@ import puscas.mobilertapp.utils.UtilsT;
 /**
  * The test suite for the User Interface.
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public final class UiTest extends AbstractTest {
 
     /**
