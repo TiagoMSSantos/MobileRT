@@ -182,7 +182,7 @@ jobs:
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success() && !startsWith(inputs.host_os, 'windows')
         run: |
-          ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'cmake;3.22.1';
+          ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'cmake;3.31.1';
 
       - name: Download Android dependencies
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -495,7 +495,7 @@ jobs:
           # Available CI host machines: https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners/about-github-hosted-runners#standard-github-hosted-runners-for-public-repositories
           # Max api level for 32bit is: 29
           api-level: ${{ inputs.android_api }}
-          cmake: 3.22.1
+          cmake: 3.31.1
           target: default
           arch: ${{ env.android_emulator_arch }}
           disable-animations: true
