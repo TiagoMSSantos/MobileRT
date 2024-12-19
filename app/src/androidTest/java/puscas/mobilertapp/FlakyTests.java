@@ -3,6 +3,7 @@ package puscas.mobilertapp;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.matcher.RootMatchers;
 import androidx.test.espresso.matcher.ViewMatchers;
+import androidx.test.filters.FlakyTest;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,6 +39,7 @@ public class FlakyTests extends AbstractTest {
      */
     @Test
     @Order(order = 1)
+    @FlakyTest
     public void testPreviewSceneOrthographicCamera() throws TimeoutException {
         logger.info("PreviewTest#testPreviewSceneOrthographicCamera start");
 
