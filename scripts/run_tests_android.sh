@@ -608,7 +608,7 @@ runInstrumentationTests() {
   if [ "${run_test}" = 'all' ]; then
     echo 'Running all tests';
     mkdir -p app/build/reports/jacoco/jacocoTestReport;
-    callCommandUntilSuccess 1 sh gradlew --offline ${gradle_command} -DtestType="${type}" \
+    callCommandUntilSuccess 0 sh gradlew --offline ${gradle_command} -DtestType="${type}" \
       -DandroidApiVersion="${android_api_version}" \
       -Pandroid.testInstrumentationRunnerArguments.package='puscas' \
       -DabiFilters="[${cpu_architecture}]" \
