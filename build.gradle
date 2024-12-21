@@ -18,10 +18,10 @@ buildscript {
         mavenLocal()
         gradlePluginPortal()
 
-        maven { url 'https://maven.google.com' }
-        maven { url 'https://repo1.maven.org/maven2/' }
-        maven { url 'https://plugins.gradle.org/m2/'}
-        maven { url 'https://jitpack.io' }
+        maven { url = 'https://maven.google.com' }
+        maven { url = 'https://repo1.maven.org/maven2/' }
+        maven { url = 'https://plugins.gradle.org/m2/'}
+        maven { url = 'https://jitpack.io' }
     }
 
     // This block encapsulates custom properties and makes them available to all
@@ -117,11 +117,11 @@ allprojects {
         mavenLocal()
         gradlePluginPortal()
 
-        maven { url 'https://maven.google.com' }
-        maven { url 'https://mvnrepository.com' }
-        maven { url 'https://dl.google.com/dl/android/maven2/' }
-        maven { url 'https://plugins.gradle.org/m2/'}
-        maven { url 'https://jitpack.io' }
+        maven { url = 'https://maven.google.com' }
+        maven { url = 'https://mvnrepository.com' }
+        maven { url = 'https://dl.google.com/dl/android/maven2/' }
+        maven { url = 'https://plugins.gradle.org/m2/'}
+        maven { url = 'https://jitpack.io' }
     }
 }
 ///////////////////////////////////////////////////////////////////////////////
@@ -135,7 +135,7 @@ tasks.named('wrapper', Wrapper) {it ->
     println('Setting Gradle wrapper version')
     it.distributionType = Wrapper.DistributionType.BIN
     if (androidApiVersionValue >= 16) {
-        it.gradleVersion = '8.11.1'
+        it.gradleVersion = '8.12'
     } else {
         it.gradleVersion = '8.7'
     }
@@ -152,9 +152,9 @@ repositories {
     mavenLocal()
     gradlePluginPortal()
 
-    maven { url 'https://maven.google.com' }
-    maven { url 'https://mvnrepository.com' }
-    maven { url 'https://dl.google.com/dl/android/maven2/' }
-    maven { url 'https://plugins.gradle.org/m2/'}
-    maven { url 'https://jitpack.io' }
+    maven { url = 'https://maven.google.com' }
+    maven { url = 'https://mvnrepository.com' }
+    maven { url = 'https://dl.google.com/dl/android/maven2/' }
+    maven { url = 'https://plugins.gradle.org/m2/'}
+    maven { url = 'https://jitpack.io' }
 }

@@ -284,6 +284,7 @@ public abstract class AbstractTest {
      * @param activity The {@link Activity} used by the tests.
      * @return {@code true} if it is still running, otherwise {@code false}.
      */
+    @SuppressWarnings({"deprecation"})
     private static boolean isActivityRunning(@NonNull final Activity activity) {
         // Note that 'Activity#isDestroyed' only exists on Android API 17+.
         // More info: https://developer.android.com/reference/android/app/Activity#isDestroyed()

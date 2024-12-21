@@ -209,11 +209,24 @@ jobs:
         run: |
           ls -lahp .;
           set +e;
-          # Print native JVM stacktrace if possible.
-          cat hs_err_pid*.log;
-          set -e;
-          # Print JVM errors if provided by Kernel, and just check the logs from the last line of the previous call.
+          echo 'Print JVM errors if provided by Kernel, and just check the logs from the last line of the previous call:';
           sudo dmesg;
+          echo 'Print native JVM stacktrace if possible:';
+          cat hs_err_pid*.log;
+          echo 'Print problems report if available:';
+          cat build/reports/problems/problems-report.html;
+          set -e;
+
+      - name: Upload problems reports as artifact
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
+          name: problems-report
+          path: build/reports/problems/problems-report.html
+          if-no-files-found: error
+          retention-days: 90
 
       - name: Check binaries' paths
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}

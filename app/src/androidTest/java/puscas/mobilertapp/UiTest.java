@@ -228,9 +228,9 @@ public final class UiTest extends AbstractTest {
                 .perform(new ViewActionButton(expectedButtonText, false));
 
             if (expectedIndex % 2 == 0) {
-                UtilsContextT.waitUntil(this.testName.getMethodName(), this.activity, expectedButtonText, State.BUSY);
+                UtilsContextT.waitUntil(this.testName.getMethodName(), activity, expectedButtonText, State.BUSY);
             } else {
-                UtilsContextT.waitUntil(this.testName.getMethodName(), this.activity, expectedButtonText, State.IDLE, State.FINISHED);
+                UtilsContextT.waitUntil(this.testName.getMethodName(), activity, expectedButtonText, State.IDLE, State.FINISHED);
                 ViewActionWait.waitForButtonUpdate(0);
                 // Only update pickers when app is idle.
                 incrementCountersAndUpdatePickers();

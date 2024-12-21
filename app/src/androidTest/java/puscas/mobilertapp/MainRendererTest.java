@@ -130,7 +130,7 @@ public final class MainRendererTest extends AbstractTest {
     private int createAndGetIndexOfShader(final String shaderCode, final int shaderType)
         throws InterruptedException {
 
-        final DrawView drawView = UtilsT.getPrivateField(this.activity, "drawView");
+        final DrawView drawView = UtilsT.getPrivateField(activity, "drawView");
         Preconditions.checkNotNull(drawView, "drawView shouldn't be null");
 
         final AtomicInteger shaderIndex = new AtomicInteger(-1);
