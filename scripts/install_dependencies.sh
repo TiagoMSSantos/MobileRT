@@ -122,7 +122,15 @@ install_dependencies_red_hat() {
   yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y epel-release;
   yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False update -y;
   dnf install -y python3-pip;
-  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y ShellCheck;
+  yum update -y;
+  yum search shell;
+  yum list *shell*;
+  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y csmock-plugin-shellcheck;
+  sudo dnf upgrade -y --refresh;
+  dnf search ShellCheck;
+  dnf search shellcheck;
+  dnf search shell;
+  dnf install -y ShellCheck;
   yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y vim;
   yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y findutils;
   yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y gcc-c++;
@@ -144,7 +152,7 @@ install_dependencies_red_hat() {
   yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y libXtst-devel;
   yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y libXinerama-devel;
   yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y libXrandr-devel;
-  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y libXScrnSaver-devel;
+  # yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y libXScrnSaver-devel;
   yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y libXdamage-devel;
   yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y libXv-devel;
   yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y libuuid-devel;
