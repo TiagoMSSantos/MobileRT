@@ -48,10 +48,10 @@ public final class PreviewTest extends AbstractTest {
 
         ViewActionWait.waitForButtonUpdate(0);
         UtilsT.startRendering(false);
-        UtilsContextT.waitUntil(this.testName.getMethodName(), this.activity, Constants.STOP, State.BUSY);
+        UtilsContextT.waitUntil(this.testName.getMethodName(), activity, Constants.STOP, State.BUSY);
 
         UtilsT.stopRendering();
-        UtilsContextT.waitUntil(this.testName.getMethodName(), this.activity, Constants.RENDER, State.IDLE, State.FINISHED);
+        UtilsContextT.waitUntil(this.testName.getMethodName(), activity, Constants.RENDER, State.IDLE, State.FINISHED);
 
         UtilsT.assertRenderButtonText(Constants.RENDER);
         UtilsT.testStateAndBitmap(false);

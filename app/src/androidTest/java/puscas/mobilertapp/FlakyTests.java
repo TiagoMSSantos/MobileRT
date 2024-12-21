@@ -54,7 +54,7 @@ public class FlakyTests extends AbstractTest {
         ViewActionWait.waitForButtonUpdate(0);
         UtilsT.testStateAndBitmap(true);
         UtilsT.startRendering(false);
-        UtilsContextT.waitUntil(this.testName.getMethodName(), this.activity, Constants.STOP, State.BUSY);
+        UtilsContextT.waitUntil(this.testName.getMethodName(), activity, Constants.STOP, State.BUSY);
         Espresso.onView(ViewMatchers.withId(R.id.drawLayout))
                 .inRoot(RootMatchers.isTouchable())
                 .perform(new ViewActionWait<>(0, R.id.drawLayout))
@@ -81,7 +81,7 @@ public class FlakyTests extends AbstractTest {
                     // UtilsT.assertRayTracingResultInBitmap(bitmap, false);
                 });
         ViewActionWait.waitForButtonUpdate(0);
-        UtilsContextT.waitUntil(this.testName.getMethodName(), this.activity, Constants.RENDER, State.IDLE, State.FINISHED);
+        UtilsContextT.waitUntil(this.testName.getMethodName(), activity, Constants.RENDER, State.IDLE, State.FINISHED);
         // TODO: Fix bitmap losing rendered pixels.
         // UtilsT.testStateAndBitmap(false);
 

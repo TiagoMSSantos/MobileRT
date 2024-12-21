@@ -93,7 +93,7 @@ public final class MainActivity extends Activity {
      * have the application {@link Context} and so the method can be static and used anywhere in the
      * codebase.
      */
-    @SuppressWarnings("StaticFieldLeak")
+    @SuppressWarnings({"StaticFieldLeak"})
     private static Activity currentInstance = null;
 
     /*

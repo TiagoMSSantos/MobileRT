@@ -192,8 +192,8 @@ sonar {
 // Android setup
 ///////////////////////////////////////////////////////////////////////////////
 android {
-    namespace 'puscas.mobilertapp'
-    testNamespace 'puscas.mobilertapp.test'
+    namespace = 'puscas.mobilertapp'
+    testNamespace = 'puscas.mobilertapp.test'
 
     // Set NDK version
     setNdkVersion ndk_version
@@ -232,8 +232,8 @@ android {
         setVersionName '1.0'
         setVersionCode 1
         setMultiDexEnabled true
-        testHandleProfiling false
-        testFunctionalTest false
+        testHandleProfiling = false
+        testFunctionalTest = false
         ndk {
             abiFilters systemAbiFilters
             setModuleName 'MobileRT'
@@ -367,7 +367,7 @@ android {
     // Setup linter options
     lint {
         enable 'WrongThreadInterprocedural', 'RtlHardcoded', 'RtlCompat', 'RtlEnabled'
-        lintConfig file('lint.xml')
+        lintConfig = file('lint.xml')
     }
 
     project.gradle.taskGraph.whenReady {
@@ -493,11 +493,11 @@ repositories {
     mavenLocal()
     gradlePluginPortal()
 
-    maven { url 'https://maven.google.com' }
-    maven { url 'https://mvnrepository.com' }
-    maven { url 'https://dl.google.com/dl/android/maven2/' }
-    maven { url 'https://plugins.gradle.org/m2/'}
-    maven { url 'https://jitpack.io' }
+    maven { url = 'https://maven.google.com' }
+    maven { url = 'https://mvnrepository.com' }
+    maven { url = 'https://dl.google.com/dl/android/maven2/' }
+    maven { url = 'https://plugins.gradle.org/m2/'}
+    maven { url = 'https://jitpack.io' }
 }
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
