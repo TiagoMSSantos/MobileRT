@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-12-09T16:51:47.842Z",
+    "detectionDate": "2024-12-21T13:09:37.626Z",
     "formats": {
       "java": {
         "sources": {
@@ -646,9 +646,9 @@
             "sources": 1,
             "clones": 2,
             "duplicatedLines": 18,
-            "duplicatedTokens": 176,
+            "duplicatedTokens": 228,
             "percentage": 8.04,
-            "percentageTokens": 11.52,
+            "percentageTokens": 14.92,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -677,8 +677,8 @@
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/system/NativeMemoryTest.java": {
-            "lines": 147,
-            "tokens": 986,
+            "lines": 124,
+            "tokens": 839,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -689,14 +689,14 @@
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/system/FileSystemTest.java": {
-            "lines": 153,
-            "tokens": 1150,
+            "lines": 150,
+            "tokens": 1123,
             "sources": 1,
-            "clones": 1,
-            "duplicatedLines": 10,
-            "duplicatedTokens": 73,
-            "percentage": 6.54,
-            "percentageTokens": 6.35,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -713,38 +713,38 @@
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/engine/ShaderTest.java": {
-            "lines": 101,
-            "tokens": 557,
+            "lines": 98,
+            "tokens": 530,
             "sources": 1,
-            "clones": 2,
-            "duplicatedLines": 26,
-            "duplicatedTokens": 180,
-            "percentage": 25.74,
-            "percentageTokens": 32.32,
+            "clones": 1,
+            "duplicatedLines": 15,
+            "duplicatedTokens": 93,
+            "percentage": 15.31,
+            "percentageTokens": 17.55,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/engine/CameraTest.java": {
-            "lines": 39,
-            "tokens": 231,
+            "lines": 36,
+            "tokens": 204,
             "sources": 1,
-            "clones": 1,
-            "duplicatedLines": 9,
-            "duplicatedTokens": 67,
-            "percentage": 23.08,
-            "percentageTokens": 29,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/engine/AcceleratorTest.java": {
-            "lines": 69,
-            "tokens": 389,
+            "lines": 66,
+            "tokens": 362,
             "sources": 1,
             "clones": 1,
-            "duplicatedLines": 17,
-            "duplicatedTokens": 113,
-            "percentage": 24.64,
-            "percentageTokens": 29.05,
+            "duplicatedLines": 15,
+            "duplicatedTokens": 93,
+            "percentage": 22.73,
+            "percentageTokens": 25.69,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -870,7 +870,7 @@
           },
           "app/src/main/java/puscas/mobilertapp/MainActivity.java": {
             "lines": 998,
-            "tokens": 8342,
+            "tokens": 8344,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 6,
@@ -941,50 +941,98 @@
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/UiTest.java": {
-            "lines": 281,
-            "tokens": 2293,
+            "lines": 278,
+            "tokens": 2262,
             "sources": 1,
-            "clones": 2,
-            "duplicatedLines": 18,
-            "duplicatedTokens": 148,
-            "percentage": 6.41,
-            "percentageTokens": 6.45,
+            "clones": 1,
+            "duplicatedLines": 8,
+            "duplicatedTokens": 75,
+            "percentage": 2.88,
+            "percentageTokens": 3.32,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/RayTracingTest.java": {
-            "lines": 169,
-            "tokens": 1189,
-            "sources": 1,
-            "clones": 1,
-            "duplicatedLines": 10,
-            "duplicatedTokens": 75,
-            "percentage": 5.92,
-            "percentageTokens": 6.31,
-            "newDuplicatedLines": 0,
-            "newClones": 0
-          },
-          "app/src/androidTest/java/puscas/mobilertapp/PreviewTest.java": {
-            "lines": 125,
-            "tokens": 985,
-            "sources": 1,
-            "clones": 5,
-            "duplicatedLines": 48,
-            "duplicatedTokens": 449,
-            "percentage": 38.4,
-            "percentageTokens": 45.58,
-            "newDuplicatedLines": 0,
-            "newClones": 0
-          },
-          "app/src/androidTest/java/puscas/mobilertapp/MainRendererTest.java": {
-            "lines": 165,
-            "tokens": 991,
+            "lines": 166,
+            "tokens": 1162,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
             "duplicatedTokens": 0,
             "percentage": 0,
             "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "app/src/androidTest/java/puscas/mobilertapp/PreviewTest.java": {
+            "lines": 61,
+            "tokens": 463,
+            "sources": 1,
+            "clones": 2,
+            "duplicatedLines": 26,
+            "duplicatedTokens": 192,
+            "percentage": 42.62,
+            "percentageTokens": 41.47,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "app/src/androidTest/java/puscas/mobilertapp/OrderRunner.java": {
+            "lines": 120,
+            "tokens": 917,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "app/src/androidTest/java/puscas/mobilertapp/Order.java": {
+            "lines": 12,
+            "tokens": 88,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "app/src/androidTest/java/puscas/mobilertapp/MainRendererTest.java": {
+            "lines": 162,
+            "tokens": 962,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "app/src/androidTest/java/puscas/mobilertapp/InvokeMethodIgnoringErrors.java": {
+            "lines": 59,
+            "tokens": 373,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "app/src/androidTest/java/puscas/mobilertapp/FlakyTests.java": {
+            "lines": 98,
+            "tokens": 847,
+            "sources": 1,
+            "clones": 4,
+            "duplicatedLines": 44,
+            "duplicatedTokens": 420,
+            "percentage": 44.9,
+            "percentageTokens": 49.59,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -1002,26 +1050,26 @@
           },
           "app/src/androidTest/java/puscas/mobilertapp/AbstractTest.java": {
             "lines": 500,
-            "tokens": 4615,
+            "tokens": 4521,
             "sources": 1,
             "clones": 2,
             "duplicatedLines": 14,
             "duplicatedTokens": 140,
             "percentage": 2.8,
-            "percentageTokens": 3.03,
+            "percentageTokens": 3.1,
             "newDuplicatedLines": 0,
             "newClones": 0
           }
         },
         "total": {
-          "lines": 10597,
-          "tokens": 75363,
-          "sources": 84,
-          "clones": 63,
-          "duplicatedLines": 590,
-          "duplicatedTokens": 5495,
-          "percentage": 5.57,
-          "percentageTokens": 7.29,
+          "lines": 10778,
+          "tokens": 76632,
+          "sources": 88,
+          "clones": 61,
+          "duplicatedLines": 575,
+          "duplicatedTokens": 5405,
+          "percentage": 5.33,
+          "percentageTokens": 7.05,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -1925,14 +1973,14 @@
             "newClones": 0
           },
           ".github/workflows/reusable-android.yml": {
-            "lines": 985,
-            "tokens": 6911,
+            "lines": 998,
+            "tokens": 6990,
             "sources": 1,
             "clones": 18,
             "duplicatedLines": 445,
             "duplicatedTokens": 3867,
-            "percentage": 45.18,
-            "percentageTokens": 55.95,
+            "percentage": 44.59,
+            "percentageTokens": 55.32,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -1973,14 +2021,14 @@
             "newClones": 0
           },
           ".github/workflows/code-analysis.yml": {
-            "lines": 326,
-            "tokens": 2117,
+            "lines": 332,
+            "tokens": 2170,
             "sources": 1,
             "clones": 3,
             "duplicatedLines": 62,
             "duplicatedTokens": 328,
-            "percentage": 19.02,
-            "percentageTokens": 15.49,
+            "percentage": 18.67,
+            "percentageTokens": 15.12,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2106,14 +2154,14 @@
           }
         },
         "total": {
-          "lines": 3242,
-          "tokens": 21110,
+          "lines": 3261,
+          "tokens": 21242,
           "sources": 24,
           "clones": 15,
           "duplicatedLines": 342,
           "duplicatedTokens": 2667,
-          "percentage": 10.55,
-          "percentageTokens": 12.63,
+          "percentage": 10.49,
+          "percentageTokens": 12.56,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2254,13 +2302,13 @@
           },
           "scripts/compile_android.sh": {
             "lines": 185,
-            "tokens": 1017,
+            "tokens": 1015,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 45,
             "duplicatedTokens": 129,
             "percentage": 24.32,
-            "percentageTokens": 12.68,
+            "percentageTokens": 12.71,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2279,7 +2327,7 @@
         },
         "total": {
           "lines": 4273,
-          "tokens": 28930,
+          "tokens": 28928,
           "sources": 13,
           "clones": 12,
           "duplicatedLines": 263,
@@ -3188,14 +3236,14 @@
       }
     },
     "total": {
-      "lines": 30302,
-      "tokens": 233506,
-      "sources": 252,
-      "clones": 124,
-      "duplicatedLines": 1529,
-      "duplicatedTokens": 14255,
-      "percentage": 5.05,
-      "percentageTokens": 6.1,
+      "lines": 30502,
+      "tokens": 234905,
+      "sources": 256,
+      "clones": 122,
+      "duplicatedLines": 1514,
+      "duplicatedTokens": 14165,
+      "percentage": 4.96,
+      "percentageTokens": 6.03,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -4175,73 +4223,37 @@
     },
     {
       "format": "java",
-      "lines": 10,
-      "fragment": "package puscas.mobilertapp.engine;\n\nimport org.junit.FixMethodOrder;\nimport org.junit.Test;\nimport org.junit.runners.MethodSorters;\n\nimport java.util.concurrent.TimeoutException;\n\nimport puscas.mobilertapp.AbstractTest;\nimport puscas.mobilertapp.constants",
-      "tokens": 0,
-      "firstFile": {
-        "name": "app/src/androidTest/java/puscas/mobilertapp/engine/CameraTest.java",
-        "start": 1,
-        "end": 10,
-        "startLoc": {
-          "line": 1,
-          "column": 1,
-          "position": 0
-        },
-        "endLoc": {
-          "line": 10,
-          "column": 10,
-          "position": 67
-        }
-      },
-      "secondFile": {
-        "name": "app/src/androidTest/java/puscas/mobilertapp/engine/ShaderTest.java",
-        "start": 1,
-        "end": 10,
-        "startLoc": {
-          "line": 1,
-          "column": 1,
-          "position": 0
-        },
-        "endLoc": {
-          "line": 10,
-          "column": 22,
-          "position": 67
-        }
-      }
-    },
-    {
-      "format": "java",
-      "lines": 18,
-      "fragment": "package puscas.mobilertapp.engine;\n\nimport org.junit.FixMethodOrder;\nimport org.junit.Test;\nimport org.junit.runners.MethodSorters;\n\nimport java.util.concurrent.TimeoutException;\n\nimport puscas.mobilertapp.AbstractTest;\nimport puscas.mobilertapp.ConstantsAndroidTests;\nimport puscas.mobilertapp.MainActivity;\nimport puscas.mobilertapp.constants.Accelerator;\nimport puscas.mobilertapp.constants.Scene;\nimport puscas.mobilertapp.constants.Shader;\n\n/**\n * The test suite for the {@link Accelerator}s used in {@link MainActivity}.\n */",
+      "lines": 16,
+      "fragment": "package puscas.mobilertapp.engine;\n\nimport org.junit.Test;\n\nimport java.util.concurrent.TimeoutException;\n\nimport puscas.mobilertapp.AbstractTest;\nimport puscas.mobilertapp.ConstantsAndroidTests;\nimport puscas.mobilertapp.MainActivity;\nimport puscas.mobilertapp.constants.Accelerator;\nimport puscas.mobilertapp.constants.Scene;\nimport puscas.mobilertapp.constants.Shader;\n\n/**\n * The test suite for the {@link Accelerator}s used in {@link MainActivity}.\n */",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/androidTest/java/puscas/mobilertapp/engine/AcceleratorTest.java",
         "start": 1,
-        "end": 18,
+        "end": 16,
         "startLoc": {
           "line": 1,
           "column": 1,
           "position": 0
         },
         "endLoc": {
-          "line": 18,
+          "line": 16,
           "column": 4,
-          "position": 113
+          "position": 93
         }
       },
       "secondFile": {
         "name": "app/src/androidTest/java/puscas/mobilertapp/engine/ShaderTest.java",
         "start": 1,
-        "end": 18,
+        "end": 16,
         "startLoc": {
           "line": 1,
           "column": 1,
           "position": 0
         },
         "endLoc": {
-          "line": 18,
+          "line": 16,
           "column": 4,
-          "position": 113
+          "position": 93
         }
       }
     },
@@ -5219,73 +5231,37 @@
     },
     {
       "format": "java",
-      "lines": 11,
-      "fragment": ";\nimport androidx.test.platform.app.InstrumentationRegistry;\n\nimport com.google.common.collect.ImmutableList;\n\nimport org.junit.Assert;\nimport org.junit.FixMethodOrder;\nimport org.junit.Test;\nimport org.junit.runners.MethodSorters;\n\nimport java.util",
+      "lines": 17,
+      "fragment": ";\n\nimport java.util.concurrent.TimeoutException;\nimport java.util.logging.Logger;\n\nimport puscas.mobilertapp.constants.Accelerator;\nimport puscas.mobilertapp.constants.Constants;\nimport puscas.mobilertapp.constants.Scene;\nimport puscas.mobilertapp.constants.State;\nimport puscas.mobilertapp.utils.UtilsContextT;\nimport puscas.mobilertapp.utils.UtilsT;\n\n/**\n * The tests that should be executed first on the pipeline.\n * <p>\n * These tests should be the flaky ones so the pipeline fails as soon as possible.\n */",
       "tokens": 0,
       "firstFile": {
-        "name": "app/src/androidTest/java/puscas/mobilertapp/UiTest.java",
-        "start": 16,
-        "end": 26,
+        "name": "app/src/androidTest/java/puscas/mobilertapp/FlakyTests.java",
+        "start": 11,
+        "end": 27,
         "startLoc": {
-          "line": 16,
-          "column": 13,
-          "position": 134
+          "line": 11,
+          "column": 8,
+          "position": 85
         },
         "endLoc": {
-          "line": 26,
-          "column": 5,
-          "position": 207
+          "line": 27,
+          "column": 4,
+          "position": 178
         }
       },
       "secondFile": {
-        "name": "app/src/androidTest/java/puscas/mobilertapp/system/FileSystemTest.java",
-        "start": 1,
-        "end": 12,
-        "startLoc": {
-          "line": 1,
-          "column": 7,
-          "position": 7
-        },
-        "endLoc": {
-          "line": 12,
-          "column": 3,
-          "position": 81
-        }
-      }
-    },
-    {
-      "format": "java",
-      "lines": 11,
-      "fragment": ";\n\nimport org.junit.FixMethodOrder;\nimport org.junit.Test;\nimport org.junit.runners.MethodSorters;\n\nimport java.util.concurrent.TimeoutException;\nimport java.util.logging.Logger;\n\nimport puscas.mobilertapp.constants.Accelerator;\nimport puscas.mobilertapp.constants.Constants",
-      "tokens": 0,
-      "firstFile": {
         "name": "app/src/androidTest/java/puscas/mobilertapp/PreviewTest.java",
-        "start": 5,
-        "end": 15,
+        "start": 7,
+        "end": 21,
         "startLoc": {
-          "line": 5,
-          "column": 13,
-          "position": 43
+          "line": 7,
+          "column": 5,
+          "position": 53
         },
         "endLoc": {
-          "line": 15,
-          "column": 10,
-          "position": 118
-        }
-      },
-      "secondFile": {
-        "name": "app/src/androidTest/java/puscas/mobilertapp/RayTracingTest.java",
-        "start": 13,
-        "end": 22,
-        "startLoc": {
-          "line": 13,
-          "column": 12,
-          "position": 103
-        },
-        "endLoc": {
-          "line": 22,
-          "column": 6,
-          "position": 177
+          "line": 21,
+          "column": 4,
+          "position": 146
         }
       }
     },
@@ -5295,33 +5271,33 @@
       "fragment": ");\n\n        ViewActionWait.waitForButtonUpdate(0);\n        Espresso.onView(ViewMatchers.withId(R.id.preview))\n            .inRoot(RootMatchers.isTouchable())\n            .check((view, exception) -> {\n                UtilsT.rethrowException(exception);\n                UiTest.assertPreviewCheckBox(view, true);\n            });\n        ViewActionWait.waitForButtonUpdate(0);\n        UtilsContextT.resetPickerValues(Scene.SPHERES",
       "tokens": 0,
       "firstFile": {
-        "name": "app/src/androidTest/java/puscas/mobilertapp/PreviewTest.java",
-        "start": 73,
-        "end": 83,
+        "name": "app/src/androidTest/java/puscas/mobilertapp/FlakyTests.java",
+        "start": 46,
+        "end": 56,
         "startLoc": {
-          "line": 73,
-          "column": 43,
-          "position": 521
+          "line": 46,
+          "column": 55,
+          "position": 271
         },
         "endLoc": {
-          "line": 83,
+          "line": 56,
           "column": 8,
-          "position": 620
+          "position": 370
         }
       },
       "secondFile": {
         "name": "app/src/androidTest/java/puscas/mobilertapp/PreviewTest.java",
-        "start": 40,
-        "end": 50,
+        "start": 37,
+        "end": 47,
         "startLoc": {
-          "line": 40,
+          "line": 37,
           "column": 42,
-          "position": 248
+          "position": 221
         },
         "endLoc": {
-          "line": 50,
+          "line": 47,
           "column": 8,
-          "position": 347
+          "position": 320
         }
       }
     },
@@ -5331,18 +5307,18 @@
       "fragment": ");\n        Espresso.onView(ViewMatchers.withId(R.id.drawLayout))\n            .inRoot(RootMatchers.isTouchable())\n            .perform(new ViewActionWait<>(0, R.id.drawLayout))\n            .check((view, exception) -> {\n                UtilsT",
       "tokens": 0,
       "firstFile": {
-        "name": "app/src/androidTest/java/puscas/mobilertapp/PreviewTest.java",
-        "start": 88,
-        "end": 93,
+        "name": "app/src/androidTest/java/puscas/mobilertapp/FlakyTests.java",
+        "start": 61,
+        "end": 66,
         "startLoc": {
-          "line": 88,
+          "line": 61,
           "column": 5,
-          "position": 694
+          "position": 442
         },
         "endLoc": {
-          "line": 93,
+          "line": 66,
           "column": 7,
-          "position": 763
+          "position": 511
         }
       },
       "secondFile": {
@@ -5364,36 +5340,36 @@
     {
       "format": "java",
       "lines": 14,
-      "fragment": ");\n        Espresso.onView(ViewMatchers.withId(R.id.drawLayout))\n            .inRoot(RootMatchers.isTouchable())\n            .perform(new ViewActionWait<>(0, R.id.drawLayout))\n            .check((view, exception) -> {\n                UtilsT.rethrowException(exception);\n                // TODO: Fix bitmap losing rendered pixels.\n                // final DrawView drawView = (DrawView) view;\n                // final MainRenderer renderer = drawView.getRenderer();\n                // final Bitmap bitmap = UtilsT.getPrivateField(renderer, \"bitmap\");\n                // UtilsT.assertRayTracingResultInBitmap(bitmap, false);\n            });\n        ViewActionWait.waitForButtonUpdate(0);\n        UtilsContextT",
+      "fragment": ");\n        Espresso.onView(ViewMatchers.withId(R.id.drawLayout))\n            .inRoot(RootMatchers.isTouchable())\n            .perform(new ViewActionWait<>(0, R.id.drawLayout))\n            .check((view, exception) -> {\n                UtilsT.rethrowException(exception);\n                // TODO: Fix bitmap losing rendered pixels.\n                final DrawView drawView = (DrawView) view;\n                final MainRenderer renderer = drawView.getRenderer();\n                final Bitmap bitmap = UtilsT.getPrivateField(renderer, \"bitmap\");\n                UtilsT.assertRayTracingResultInBitmap(bitmap, false);\n            });\n        ViewActionWait.waitForButtonUpdate(0);\n        UtilsContextT",
       "tokens": 0,
       "firstFile": {
-        "name": "app/src/androidTest/java/puscas/mobilertapp/PreviewTest.java",
-        "start": 102,
-        "end": 115,
+        "name": "app/src/androidTest/java/puscas/mobilertapp/FlakyTests.java",
+        "start": 75,
+        "end": 88,
         "startLoc": {
-          "line": 102,
+          "line": 75,
           "column": 2,
-          "position": 806
+          "position": 606
         },
         "endLoc": {
-          "line": 115,
+          "line": 88,
           "column": 14,
-          "position": 913
+          "position": 765
         }
       },
       "secondFile": {
         "name": "app/src/androidTest/java/puscas/mobilertapp/utils/UtilsT.java",
         "start": 160,
-        "end": 102,
+        "end": 75,
         "startLoc": {
           "line": 160,
           "column": 2,
           "position": 1045
         },
         "endLoc": {
-          "line": 102,
+          "line": 75,
           "column": 7,
-          "position": 802
+          "position": 602
         }
       }
     },
@@ -5404,32 +5380,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/src/androidTest/java/puscas/mobilertapp/AbstractTest.java",
-        "start": 60,
-        "end": 68,
+        "start": 61,
+        "end": 69,
         "startLoc": {
-          "line": 60,
+          "line": 61,
           "column": 7,
-          "position": 560
+          "position": 567
         },
         "endLoc": {
-          "line": 68,
+          "line": 69,
           "column": 11,
-          "position": 635
+          "position": 642
         }
       },
       "secondFile": {
         "name": "app/src/androidTest/java/puscas/mobilertapp/UiTest.java",
-        "start": 30,
-        "end": 37,
+        "start": 28,
+        "end": 35,
         "startLoc": {
-          "line": 30,
+          "line": 28,
           "column": 11,
-          "position": 244
+          "position": 224
         },
         "endLoc": {
-          "line": 37,
+          "line": 35,
           "column": 6,
-          "position": 318
+          "position": 298
         }
       }
     },
@@ -5440,17 +5416,17 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/src/androidTest/java/puscas/mobilertapp/AbstractTest.java",
-        "start": 63,
-        "end": 69,
+        "start": 64,
+        "end": 70,
         "startLoc": {
-          "line": 63,
+          "line": 64,
           "column": 10,
-          "position": 583
+          "position": 590
         },
         "endLoc": {
-          "line": 69,
+          "line": 70,
           "column": 13,
-          "position": 648
+          "position": 655
         }
       },
       "secondFile": {
@@ -6844,17 +6820,17 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/reusable-android.yml",
-        "start": 332,
-        "end": 361,
+        "start": 345,
+        "end": 374,
         "startLoc": {
-          "line": 332,
+          "line": 345,
           "column": 5,
-          "position": 2454
+          "position": 2533
         },
         "endLoc": {
-          "line": 361,
+          "line": 374,
           "column": 40,
-          "position": 2650
+          "position": 2729
         }
       },
       "secondFile": {
@@ -6880,32 +6856,32 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/reusable-android.yml",
-        "start": 374,
-        "end": 381,
+        "start": 387,
+        "end": 394,
         "startLoc": {
-          "line": 374,
+          "line": 387,
           "column": 2,
-          "position": 2707
+          "position": 2786
         },
         "endLoc": {
-          "line": 381,
+          "line": 394,
           "column": 5,
-          "position": 2839
+          "position": 2918
         }
       },
       "secondFile": {
         "name": ".github/workflows/reusable-android.yml",
-        "start": 232,
-        "end": 239,
+        "start": 245,
+        "end": 252,
         "startLoc": {
-          "line": 232,
+          "line": 245,
           "column": 2,
-          "position": 1055
+          "position": 1134
         },
         "endLoc": {
-          "line": 239,
+          "line": 252,
           "column": 6,
-          "position": 1187
+          "position": 1266
         }
       }
     },
@@ -6916,32 +6892,32 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/reusable-android.yml",
-        "start": 388,
-        "end": 395,
+        "start": 401,
+        "end": 408,
         "startLoc": {
-          "line": 388,
+          "line": 401,
           "column": 2,
-          "position": 2875
+          "position": 2954
         },
         "endLoc": {
-          "line": 395,
+          "line": 408,
           "column": 5,
-          "position": 3007
+          "position": 3086
         }
       },
       "secondFile": {
         "name": ".github/workflows/reusable-android.yml",
-        "start": 300,
-        "end": 307,
+        "start": 313,
+        "end": 320,
         "startLoc": {
-          "line": 300,
+          "line": 313,
           "column": 2,
-          "position": 2112
+          "position": 2191
         },
         "endLoc": {
-          "line": 307,
+          "line": 320,
           "column": 6,
-          "position": 2244
+          "position": 2323
         }
       }
     },
@@ -6952,32 +6928,32 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/reusable-android.yml",
-        "start": 598,
-        "end": 638,
+        "start": 611,
+        "end": 651,
         "startLoc": {
-          "line": 598,
+          "line": 611,
           "column": 5,
-          "position": 4490
+          "position": 4569
         },
         "endLoc": {
-          "line": 638,
+          "line": 651,
           "column": 7,
-          "position": 4719
+          "position": 4798
         }
       },
       "secondFile": {
         "name": ".github/workflows/reusable-android.yml",
         "start": 32,
-        "end": 373,
+        "end": 386,
         "startLoc": {
           "line": 32,
           "column": 5,
           "position": 175
         },
         "endLoc": {
-          "line": 373,
+          "line": 386,
           "column": 10,
-          "position": 2689
+          "position": 2768
         }
       }
     },
@@ -6988,32 +6964,32 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/reusable-android.yml",
-        "start": 638,
-        "end": 658,
+        "start": 651,
+        "end": 671,
         "startLoc": {
-          "line": 638,
+          "line": 651,
           "column": 7,
-          "position": 4712
+          "position": 4791
         },
         "endLoc": {
-          "line": 658,
+          "line": 671,
           "column": 9,
-          "position": 4944
+          "position": 5023
         }
       },
       "secondFile": {
         "name": ".github/workflows/reusable-android.yml",
-        "start": 387,
-        "end": 407,
+        "start": 400,
+        "end": 420,
         "startLoc": {
-          "line": 387,
+          "line": 400,
           "column": 7,
-          "position": 2850
+          "position": 2929
         },
         "endLoc": {
-          "line": 407,
+          "line": 420,
           "column": 6,
-          "position": 3082
+          "position": 3161
         }
       }
     },
@@ -7024,32 +7000,32 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/reusable-android.yml",
-        "start": 658,
-        "end": 672,
+        "start": 671,
+        "end": 685,
         "startLoc": {
-          "line": 658,
+          "line": 671,
           "column": 7,
-          "position": 4939
+          "position": 5018
         },
         "endLoc": {
-          "line": 672,
+          "line": 685,
           "column": 6,
-          "position": 5112
+          "position": 5191
         }
       },
       "secondFile": {
         "name": ".github/workflows/reusable-android.yml",
-        "start": 373,
-        "end": 387,
+        "start": 386,
+        "end": 400,
         "startLoc": {
-          "line": 373,
+          "line": 386,
           "column": 7,
-          "position": 2682
+          "position": 2761
         },
         "endLoc": {
-          "line": 387,
+          "line": 400,
           "column": 9,
-          "position": 2855
+          "position": 2934
         }
       }
     },
@@ -7060,32 +7036,32 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/reusable-android.yml",
-        "start": 784,
-        "end": 859,
+        "start": 797,
+        "end": 872,
         "startLoc": {
-          "line": 784,
+          "line": 797,
           "column": 11,
-          "position": 5622
+          "position": 5701
         },
         "endLoc": {
-          "line": 859,
+          "line": 872,
           "column": 76,
-          "position": 6190
+          "position": 6269
         }
       },
       "secondFile": {
         "name": ".github/workflows/reusable-android.yml",
         "start": 44,
-        "end": 683,
+        "end": 696,
         "startLoc": {
           "line": 44,
           "column": 11,
           "position": 259
         },
         "endLoc": {
-          "line": 683,
+          "line": 696,
           "column": 76,
-          "position": 5142
+          "position": 5221
         }
       }
     },
@@ -7096,32 +7072,32 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/reusable-android.yml",
-        "start": 871,
-        "end": 879,
+        "start": 884,
+        "end": 892,
         "startLoc": {
-          "line": 871,
+          "line": 884,
           "column": 9,
-          "position": 6279
+          "position": 6358
         },
         "endLoc": {
-          "line": 879,
+          "line": 892,
           "column": 6,
-          "position": 6411
+          "position": 6490
         }
       },
       "secondFile": {
         "name": ".github/workflows/reusable-android.yml",
-        "start": 543,
-        "end": 551,
+        "start": 556,
+        "end": 564,
         "startLoc": {
-          "line": 543,
+          "line": 556,
           "column": 9,
-          "position": 3907
+          "position": 3986
         },
         "endLoc": {
-          "line": 551,
+          "line": 564,
           "column": 4,
-          "position": 4039
+          "position": 4118
         }
       }
     },

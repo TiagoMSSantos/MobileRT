@@ -2,9 +2,13 @@ package puscas.mobilertapp;
 
 import androidx.test.filters.FlakyTest;
 
+import org.junit.Test;
+import org.junit.rules.TestRule;
+import org.junit.rules.Timeout;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
+import org.junit.runners.model.Statement;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,6 +30,11 @@ public class OrderRunner extends BlockJUnit4ClassRunner {
     private static final Logger logger = Logger.getLogger(OrderRunner.class.getSimpleName());
 
     /**
+     * Whether the test has the {@link FlakyTest} annotation or not.
+     */
+    private boolean hasFlakyTestAnnotation = false;
+
+    /**
     * The constructor.
     *
     * @param clazz The class which should be scanned for annotations.
@@ -35,13 +44,18 @@ public class OrderRunner extends BlockJUnit4ClassRunner {
         super(clazz);
     }
 
+    /**
+    * Sort test methods by the defined {@link Order} annotation.
+    * <p>
+    * {@inheritDoc}
+    */
     @Override
     protected List<FrameworkMethod> computeTestMethods() {
         logger.info("Sorting tests execution order.");
         final List<FrameworkMethod> originalTestsOrder = super.computeTestMethods();
         final List<FrameworkMethod> orderedTests = new ArrayList<>(originalTestsOrder);
         Collections.sort(orderedTests, (f1, f2) -> {
-            final FlakyTest o1 = f1.getAnnotation(FlakyTest.class);
+            final Order o1 = f1.getAnnotation(Order.class);
             final Order o2 = f2.getAnnotation(Order.class);
 
             if (o1 == null && o2 == null) {
@@ -54,11 +68,54 @@ public class OrderRunner extends BlockJUnit4ClassRunner {
                 return 1;
             }
 
-            return 0;
+            return o1.order() - o2.order();
         });
         logger.info("Original test execution order: " + Arrays.toString(originalTestsOrder.toArray()));
         logger.info("Sorted test execution order: " + Arrays.toString(orderedTests.toArray()));
 
         return orderedTests;
+    }
+
+    /**
+    * This implementation ignores errors from tests that are marked as {@link FlakyTest flaky} with the annotation.
+    * <p>
+    * {@inheritDoc}
+    *
+    * @param method The {@link FrameworkMethod method} of the test.
+    * @param test   The {@link Test} object.
+    */
+    @Override
+    protected Statement methodInvoker(final FrameworkMethod method, final Object test) {
+        this.hasFlakyTestAnnotation = method.getAnnotation(FlakyTest.class) != null;
+        if (this.hasFlakyTestAnnotation) {
+            return new InvokeMethodIgnoringErrors(method, test);
+        }
+        return super.methodInvoker(method, test);
+    }
+
+    @Override
+    protected Statement withPotentialTimeout(final FrameworkMethod method, final Object test, final Statement next) {
+        this.hasFlakyTestAnnotation = method.getAnnotation(FlakyTest.class) != null;
+        if (this.hasFlakyTestAnnotation) {
+            logger.warning("Ignoring test timeout for the test '" + method.getName() + "' because it is marked as a flaky one.");
+            return next;
+        }
+        return super.withPotentialTimeout(method, test, next);
+    }
+
+    @Override
+    protected List<TestRule> getTestRules(final Object testTarget) {
+        final List<TestRule> testRules = super.getTestRules(testTarget);
+        if (this.hasFlakyTestAnnotation) {
+            final String testClassName = testTarget.getClass().getSimpleName();
+            final String testTimeoutRuleName = Timeout.class.getSimpleName();
+            logger.warning("Ignoring '" + testTimeoutRuleName + "' test rule for the test '" + testClassName + "' because it is marked as a flaky one.");
+            for (final TestRule testRule : testRules) {
+                if (testRule.getClass().getSimpleName().equals(testTimeoutRuleName)) {
+                    testRules.remove(testRule);
+                }
+            }
+        }
+        return testRules;
     }
 }
