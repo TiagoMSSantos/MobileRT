@@ -56,7 +56,7 @@ jobs:
         - host_os: ubuntu-latest
           BASE_IMAGE: ubuntu:24.04
         - host_os: ubuntu-latest
-          BASE_IMAGE: tgagor/centos:stream
+          BASE_IMAGE: tgagor/centos:stream9
         - host_os: ubuntu-latest
           BASE_IMAGE: archlinux/archlinux:base-devel
         - host_os: ubuntu-latest
