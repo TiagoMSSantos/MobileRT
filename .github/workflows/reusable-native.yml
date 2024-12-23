@@ -250,7 +250,7 @@ jobs:
           if [ "${{ inputs.type }}" = 'release' ]; then
             timeoutSeconds='15';
           else
-            timeoutSeconds='120';
+            timeoutSeconds='100';
           fi
           sh scripts/profile.sh timeout "${{ inputs.type }}" 100 "${timeoutSeconds}";
           returnValue="$?";
