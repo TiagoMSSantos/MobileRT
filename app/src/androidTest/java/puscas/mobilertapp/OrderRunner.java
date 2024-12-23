@@ -94,16 +94,6 @@ public class OrderRunner extends BlockJUnit4ClassRunner {
     }
 
     @Override
-    protected Statement withPotentialTimeout(final FrameworkMethod method, final Object test, final Statement next) {
-        this.hasFlakyTestAnnotation = method.getAnnotation(FlakyTest.class) != null;
-        if (this.hasFlakyTestAnnotation) {
-            logger.warning("Ignoring test timeout for the test '" + method.getName() + "' because it is marked as a flaky one.");
-            return next;
-        }
-        return super.withPotentialTimeout(method, test, next);
-    }
-
-    @Override
     protected List<TestRule> getTestRules(final Object testTarget) {
         final List<TestRule> testRules = super.getTestRules(testTarget);
         if (this.hasFlakyTestAnnotation) {
