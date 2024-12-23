@@ -3,14 +3,11 @@ package puscas.mobilertapp;
 import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Intent;
-import android.os.Build;
 
 import androidx.test.espresso.intent.Intents;
 import androidx.test.espresso.intent.matcher.IntentMatchers;
 import androidx.test.platform.app.InstrumentationRegistry;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.concurrent.TimeoutException;
@@ -29,47 +26,6 @@ public final class RayTracingTest extends AbstractTest {
      * Logger for this class.
      */
     private static final Logger logger = Logger.getLogger(RayTracingTest.class.getSimpleName());
-
-    /**
-     * A setup method which is called first.
-     */
-    @BeforeClass
-    public static void setUpAll() {
-        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        logger.info(methodName);
-
-        logger.info("---------------------------------------------------");
-        final String messageDevice = "Device: " + Build.DEVICE;
-        logger.info(messageDevice);
-        final String messageUser = "User: " + Build.USER;
-        logger.info(messageUser);
-        final String messageType = "Type: " + Build.TYPE;
-        logger.info(messageType);
-        final String messageTags = "Tags: " + Build.TAGS;
-        logger.info(messageTags);
-        final String messageHost = "Host: " + Build.HOST;
-        logger.info(messageHost);
-        final String messageFingerPrint = "Fingerprint: " + Build.FINGERPRINT;
-        logger.info(messageFingerPrint);
-        final String messageDisplay = "Display: " + Build.DISPLAY;
-        logger.info(messageDisplay);
-        final String messageBrand = "Brand: " + Build.BRAND;
-        logger.info(messageBrand);
-        final String messageModel = "Model: " + Build.MODEL;
-        logger.info(messageModel);
-        final String messageProduct = "Product: " + Build.PRODUCT;
-        logger.info(messageProduct);
-        logger.info("---------------------------------------------------");
-    }
-
-    /**
-     * A tear down method which is called last.
-     */
-    @AfterClass
-    public static void tearDownAll() {
-        final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        logger.info(methodName);
-    }
 
     /**
      * Tests render a scene from an OBJ file that doesn't exist.

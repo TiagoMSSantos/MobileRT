@@ -16,6 +16,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.annotation.Nullable;
+
 /**
 * The {@link BlockJUnit4ClassRunner JUnit 4 Class Runner} which sorts the tests
 * execution order.
@@ -47,6 +49,9 @@ public class OrderRunner extends BlockJUnit4ClassRunner {
     /**
     * Sort test methods by the defined {@link Order} annotation.
     * <p>
+    * Also, it gives priority to tests annotated with {@link FlakyTest} so they are
+    * executed first.
+    * <p>
     * {@inheritDoc}
     */
     @Override
@@ -55,20 +60,27 @@ public class OrderRunner extends BlockJUnit4ClassRunner {
         final List<FrameworkMethod> originalTestsOrder = super.computeTestMethods();
         final List<FrameworkMethod> orderedTests = new ArrayList<>(originalTestsOrder);
         Collections.sort(orderedTests, (f1, f2) -> {
-            final Order o1 = f1.getAnnotation(Order.class);
-            final Order o2 = f2.getAnnotation(Order.class);
+            final Order orderTest1 = f1.getAnnotation(Order.class);
+            final Order orderTest2 = f2.getAnnotation(Order.class);
+            final FlakyTest flakyTest1 = f1.getAnnotation(FlakyTest.class);
+            final FlakyTest flakyTest2 = f2.getAnnotation(FlakyTest.class);
 
-            if (o1 == null && o2 == null) {
-                return 0;
+            if (orderTest1 == null && orderTest2 == null) {
+                return compareFlakyTests(flakyTest1, flakyTest2);
             }
-            if (o1 != null && o2 == null) {
+            if (orderTest1 != null && orderTest2 == null) {
                 return -1;
             }
-            if (o1 == null) {
+            if (orderTest1 == null) {
                 return 1;
             }
 
-            return o1.order() - o2.order();
+            final int order = orderTest1.order() - orderTest2.order();
+            if (order == 0) {
+                return compareFlakyTests(flakyTest1, flakyTest2);
+            }
+
+            return order;
         });
         logger.info("Original test execution order: " + Arrays.toString(originalTestsOrder.toArray()));
         logger.info("Sorted test execution order: " + Arrays.toString(orderedTests.toArray()));
@@ -107,5 +119,25 @@ public class OrderRunner extends BlockJUnit4ClassRunner {
             }
         }
         return testRules;
+    }
+
+    /**
+     * Helper method which compares 2 {@link Test tests} based if they have the {@link FlakyTest} annotation.
+     *
+     * @param test1 The {@link FlakyTest} of the 1st test.
+     * @param test2 The {@link FlakyTest} of the 2nd test.
+     * @return {@code 0} if they are equal, {@code -1} if the 1st test should be executed first, or {@code 1} if the 2nd test should be executed first.
+     */
+    private int compareFlakyTests(@Nullable final FlakyTest test1, @Nullable final FlakyTest test2) {
+        if (test1 == null && test2 == null) {
+            return 0;
+        }
+        if (test1 != null && test2 != null) {
+            return 0;
+        }
+        if (test1 != null) {
+            return -1;
+        }
+        return 1;
     }
 }

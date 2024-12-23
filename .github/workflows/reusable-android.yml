@@ -339,8 +339,6 @@ jobs:
   AndroidTests:
     needs: [Build]
     name: Android tests ${{ inputs.android_api }} ${{ inputs.type }} (${{ inputs.host_os }})
-    outputs:
-      matrix-sonar: ${{ steps.set-matrix-sonar.outputs.matrix-sonar }}
     runs-on: ${{ inputs.host_os }}
     timeout-minutes: 35
     steps:
@@ -561,15 +559,6 @@ jobs:
           path: |
             app/build/reports
 
-      - name: Set Matrix for Sonar
-        id: set-matrix-sonar
-        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success() && startsWith(inputs.host_os, 'ubuntu') && inputs.type == 'debug'
-        run: |
-          MATRIX_SONAR=$(echo '${{ toJSON(matrix) }}' | jq -c -s '{"include":[.[]]}');
-          echo "Matrix Sonar: ${MATRIX_SONAR}";
-          echo "matrix-sonar=${MATRIX_SONAR}" >> ${GITHUB_OUTPUT};
-
       - name: Add base64 key & Android Build Tools version to environment variables in order to sign APK
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
@@ -602,6 +591,7 @@ jobs:
           path: ${{ steps.sign-apk.outputs.signedFile }}
           if-no-files-found: error
           retention-days: 90
+
 
   UnitTests:
     needs: [Build]
@@ -768,6 +758,7 @@ jobs:
           include_passed: true
           check_retries: true
           fail_on_failure: true
+
 
   Sonar:
     needs: [AndroidTests]

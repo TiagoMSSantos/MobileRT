@@ -100,7 +100,7 @@ public abstract class AbstractTest {
      */
     @NonNull
     @Rule
-    public final TestRule timeoutRule = new Timeout(1L, TimeUnit.MINUTES);
+    public final TestRule timeoutRule = new Timeout(40L, TimeUnit.SECONDS);
 
     /**
      * The {@link ActivityScenario} to create the {@link MainActivity}.
@@ -188,8 +188,32 @@ public abstract class AbstractTest {
     public static void setUpAll() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         logger.info(methodName);
+
         mainActivityActivityTestRule.getScenario().onActivity(newActivity -> activity = newActivity);
         grantPermissions();
+
+        logger.info("---------------------------------------------------");
+        final String messageDevice = "Device: " + Build.DEVICE;
+        logger.info(messageDevice);
+        final String messageUser = "User: " + Build.USER;
+        logger.info(messageUser);
+        final String messageType = "Type: " + Build.TYPE;
+        logger.info(messageType);
+        final String messageTags = "Tags: " + Build.TAGS;
+        logger.info(messageTags);
+        final String messageHost = "Host: " + Build.HOST;
+        logger.info(messageHost);
+        final String messageFingerPrint = "Fingerprint: " + Build.FINGERPRINT;
+        logger.info(messageFingerPrint);
+        final String messageDisplay = "Display: " + Build.DISPLAY;
+        logger.info(messageDisplay);
+        final String messageBrand = "Brand: " + Build.BRAND;
+        logger.info(messageBrand);
+        final String messageModel = "Model: " + Build.MODEL;
+        logger.info(messageModel);
+        final String messageProduct = "Product: " + Build.PRODUCT;
+        logger.info(messageProduct);
+        logger.info("---------------------------------------------------");
     }
 
     /**
