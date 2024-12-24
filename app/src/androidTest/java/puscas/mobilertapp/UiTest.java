@@ -53,11 +53,6 @@ public final class UiTest extends AbstractTest {
     private int counterScene = 0;
 
     /**
-     * The current index of the accelerator in the {@link NumberPicker}.
-     */
-    private int counterAccelerator = 0;
-
-    /**
      * The current index of the shader in the {@link NumberPicker}.
      */
     private int counterShader = 0;
@@ -81,6 +76,66 @@ public final class UiTest extends AbstractTest {
      * The current index of the number of threads in the {@link NumberPicker}.
      */
     private int counterThreads = 0;
+
+    /**
+     * Tests changing all the {@link NumberPicker} and clicking the render
+     * {@link Button} few times.
+     *
+     * @throws TimeoutException If the Ray Tracing engine didn't reach the expected {@link State} before a timeout occurs.
+     */
+    @Test
+    public void testUI() throws TimeoutException {
+        UtilsT.assertRenderButtonText(Constants.RENDER);
+
+        assertClickRenderButton(1);
+        assertPickerNumbers();
+        clickPreviewCheckBox(false);
+    }
+
+    /**
+     * Tests clicking the render {@link Button} many times without preview.
+     *
+     * @throws TimeoutException If the Ray Tracing engine didn't reach the expected {@link State} before a timeout occurs.
+     * @implNote This test can take more than 2 minutes in CI.
+     */
+    @Test
+    public void testClickRenderButtonManyTimesWithoutPreview() throws TimeoutException {
+        clickPreviewCheckBox(false);
+
+        assertClickRenderButton(5);
+    }
+
+    /**
+     * Tests clicking the render {@link Button} many times with preview.
+     *
+     * @throws TimeoutException If the Ray Tracing engine didn't reach the expected {@link State} before a timeout occurs.
+     * @implNote This test can take more than 2 minutes in CI.
+     */
+    @Test
+    public void testClickRenderButtonManyTimesWithPreview() throws TimeoutException {
+        clickPreviewCheckBox(false);
+        clickPreviewCheckBox(true);
+
+        assertClickRenderButton(5);
+    }
+
+    /**
+     * Tests clicking the render {@link Button} with a long press.
+     * It is expected for the {@link android.app.Activity} to restart.
+     */
+    @Test
+    public void testClickRenderButtonLongPress() {
+        Espresso.onView(ViewMatchers.withId(R.id.renderButton))
+            .inRoot(RootMatchers.isTouchable())
+            .perform(new ViewActionButton(Constants.RENDER, true))
+            .perform(new ViewActionWait<>(0, R.id.renderButton))
+            .check((view, exception) -> {
+                UtilsT.rethrowException(exception);
+                final Button button = (Button) view;
+                Assert.assertEquals(BUTTON_MESSAGE, Constants.RENDER, button.getText().toString());
+            });
+        UtilsT.testStateAndBitmap(true);
+    }
 
     /**
      * Helper method which tests clicking the preview {@link CheckBox}.
@@ -148,69 +203,10 @@ public final class UiTest extends AbstractTest {
     }
 
     /**
-     * Tests changing all the {@link NumberPicker} and clicking the render
-     * {@link Button} few times.
-     *
-     * @throws TimeoutException If the Ray Tracing engine didn't reach the expected {@link State}.
-     */
-    @Test
-    public void testUI() throws TimeoutException {
-        UtilsT.assertRenderButtonText(Constants.RENDER);
-
-        assertClickRenderButton(1);
-        assertPickerNumbers();
-        clickPreviewCheckBox(false);
-    }
-
-    /**
-     * Tests clicking the render {@link Button} many times without preview.
-     *
-     * @throws TimeoutException If the Ray Tracing engine didn't reach the expected {@link State}.
-     * @implNote This test can take more than 2 minutes in CI.
-     */
-    @Test
-    public void testClickRenderButtonManyTimesWithoutPreview() throws TimeoutException {
-        clickPreviewCheckBox(false);
-
-        assertClickRenderButton(5);
-    }
-
-    /**
-     * Tests clicking the render {@link Button} many times with preview.
-     *
-     * @throws TimeoutException If the Ray Tracing engine didn't reach the expected {@link State}.
-     * @implNote This test can take more than 2 minutes in CI.
-     */
-    @Test
-    public void testClickRenderButtonManyTimesWithPreview() throws TimeoutException {
-        clickPreviewCheckBox(false);
-        clickPreviewCheckBox(true);
-
-        assertClickRenderButton(5);
-    }
-
-    /**
-     * Tests clicking the render {@link Button} with a long press.
-     * It is expected for the {@link android.app.Activity} to restart.
-     */
-    @Test
-    public void testClickRenderButtonLongPress() {
-        Espresso.onView(ViewMatchers.withId(R.id.renderButton))
-            .inRoot(RootMatchers.isTouchable())
-            .perform(new ViewActionButton(Constants.RENDER, true))
-            .perform(new ViewActionWait<>(0, R.id.renderButton))
-            .check((view, exception) -> {
-                UtilsT.rethrowException(exception);
-                final Button button = (Button) view;
-                Assert.assertEquals(BUTTON_MESSAGE, Constants.RENDER, button.getText().toString());
-            });
-        UtilsT.testStateAndBitmap(true);
-    }
-
-    /**
      * Helper method which tests clicking the render {@link Button}.
      *
      * @param repetitions The number of repetitions.
+     * @throws TimeoutException If the Ray Tracing engine didn't reach the expected {@link State} before a timeout occurs.
      */
     private void assertClickRenderButton(final int repetitions) throws TimeoutException {
         UtilsContextT.resetPickerValues(Scene.CORNELL2.ordinal(), Accelerator.NAIVE, 99, 1);
@@ -245,7 +241,6 @@ public final class UiTest extends AbstractTest {
     private void incrementCountersAndUpdatePickers() {
         final int numCores = UtilsContext.getNumOfCores(InstrumentationRegistry.getInstrumentation().getTargetContext());
         final int finalCounterScene = Math.min(this.counterScene % Scene.values().length, 3);
-        final int finalCounterAccelerator = Math.max(this.counterAccelerator % Accelerator.values().length, 1);
         final int finalCounterShader = Math.max(this.counterShader % Shader.values().length, 0);
         final int finalCounterSpp = Math.max(this.counterSpp % 99, 90);
         final int finalCounterSpl = Math.max(this.counterSpl % 100, 1);
@@ -255,7 +250,6 @@ public final class UiTest extends AbstractTest {
         incrementCounters();
 
         UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SCENE, R.id.pickerScene, finalCounterScene);
-        UtilsPickerT.changePickerValue(ConstantsUI.PICKER_ACCELERATOR, R.id.pickerAccelerator, finalCounterAccelerator);
         UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SHADER, R.id.pickerShader, finalCounterShader);
         UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SAMPLES_PIXEL, R.id.pickerSamplesPixel, finalCounterSpp);
         UtilsPickerT.changePickerValue(ConstantsUI.PICKER_SAMPLES_LIGHT, R.id.pickerSamplesLight, finalCounterSpl);
@@ -268,7 +262,6 @@ public final class UiTest extends AbstractTest {
      */
     private void incrementCounters() {
         this.counterScene++;
-        this.counterAccelerator++;
         this.counterShader++;
         this.counterSpp++;
         this.counterSpl++;

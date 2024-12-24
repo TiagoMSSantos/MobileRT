@@ -51,7 +51,7 @@ public final class UtilsContextT {
      * @param activity           The {@link MainActivity} of MobileRT.
      * @param expectedButtonText The expected {@link Button} text.
      * @param expectedStates     The expected {@link State}s.
-     * @throws TimeoutException If the Ray Tracing engine didn't reach the expected {@link State}.
+     * @throws TimeoutException If the Ray Tracing engine didn't reach the expected {@link State} before a timeout occurs.
      */
     public static void waitUntil(final String testName,
                                  @NonNull final MainActivity activity,
