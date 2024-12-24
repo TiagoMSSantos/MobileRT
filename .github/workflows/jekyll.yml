@@ -10,8 +10,8 @@ on:
   # Runs on pushes targeting any branch
   push:
     paths-ignore:
-    - '**/**'
-    - '!**/jekyll.yml'
+    - '*'
+    - '!.github/workflows/jekyll.yml'
     - '!**/docs/**'
     - '!**/Gemfile*'
 

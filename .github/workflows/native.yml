@@ -4,21 +4,21 @@ on:
   workflow_dispatch:
   push:
     paths-ignore:
-      - '!*'
-      - '!**/*'
-      - '**/native.yml'
-      - '**/macports.yml'
-      - '**/run_tests.sh'
-      - '**/helper_functions.sh'
-      - '**/install_dependencies.sh'
-      - '**/profile.sh'
-      - '**/compile_native.sh'
-      - '**/codecov.yml'
-      - '**/CMakeLists.txt'
-      - '**/conanfile.txt'
-      - '**/AndroidTest/resources/**'
-      - '**/*.c*'
-      - '**/*.h*'
+      - '*'
+      - '!.github/workflows/native.yml'
+      - '!.github/workflows/reusable-native.yml'
+      - '!scripts/helper_functions.sh'
+      - '!scripts/install_dependencies.sh'
+      - '!scripts/profile.sh'
+      - '!scripts/compile_native.sh'
+      - '!scripts/test/utils/utils.sh'
+      - '!codecov.yml'
+      - '!app/third_party/conan/Native/**'
+      - '!**/CMakeLists*'
+      - '!**/AndroidTest/resources/**'
+      - '!**/*.c*'
+      - '!**/*.h*'
+      - '!**/*.ui*'
 
 defaults:
   run:

@@ -5,23 +5,9 @@ on:
   push:
     paths-ignore:
     - '*'
-    - '.github/**'
-    - 'app/debug/**'
-    - 'app/release/**'
-    - 'app/third_party/conan/**'
-    - 'app/System_dependent/**'
-    - 'docs/**'
-    - 'scripts/**'
-    - 'WavefrontOBJs/**'
-    - '*gradle*'
-    - 'deploy/**'
-    - '**/*gradle*'
-    - '**/*.java'
-    - '**/*.kt'
     - '!.github/workflows/docker.yml'
     - '!.github/macports.yml'
     - '!app/third_party/conan/Native/**'
-    - '!app/System_dependent/CMakeLists.txt'
     - '!deploy/Dockerfile*'
     - '!scripts/install_dependencies.sh'
     - '!scripts/compile_native.sh'
@@ -29,6 +15,11 @@ on:
     - '!scripts/profile.sh'
     - '!scripts/docker.sh'
     - '!scripts/test/docker/dockerfile.sh'
+    - '!**/CMakeLists*'
+    - '!**/AndroidTest/resources/**'
+    - '!**/*.c*'
+    - '!**/*.h*'
+    - '!**/*.ui*'
 
 defaults:
   run:
