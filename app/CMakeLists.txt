@@ -20,7 +20,7 @@ print_environment()
 ###############################################################################
 # Check CMake version
 ###############################################################################
-set( CMAKE_MIN_VERSION "3.3" )
+set( CMAKE_MIN_VERSION "3.10" )
 message( STATUS "Recommended CMake version: ${CMAKE_MIN_VERSION}+." )
 
 cmake_minimum_required( VERSION ${CMAKE_MIN_VERSION}...${CMAKE_MIN_VERSION} FATAL_ERROR )
@@ -164,8 +164,10 @@ set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib" )
 set( CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib" )
 set( CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin" )
 
-message( STATUS "CMake will handle Qt moc preprocessor automatically." )
-set( CMAKE_AUTOMOC "ON" )
+if( NOT DEFINED ANDROID_ABI )
+  message( STATUS "CMake will handle Qt moc preprocessor automatically." )
+  set( CMAKE_AUTOMOC "ON" )
+endif()
 
 message( STATUS "Setting up Android Clang with static stdlib." )
 set( ANDROID_TOOLCHAIN "clang" )

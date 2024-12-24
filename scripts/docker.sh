@@ -38,21 +38,29 @@ buildDockerImage() {
     echo 'Adding bin to PATH and expecting the BuildKit is installed there.';
     export PATH="${PATH}:bin";
     export DOCKER_BUILDKIT=0;
+    docker build \
+      -f deploy/Dockerfile."${dockerBaseOS}" \
+      --no-cache=false \
+      --rm=true \
+      --build-arg BASE_IMAGE="${1}" \
+      --build-arg BRANCH="${2}" \
+      --build-arg BUILD_TYPE=release \
+      .;
   else
     echo 'Building Docker image based on Unix.';
     dockerBaseOS='unix';
     export DOCKER_BUILDKIT=1;
+    docker build \
+      -f deploy/Dockerfile."${dockerBaseOS}" \
+      --no-cache=false \
+      --rm=true \
+      --build-arg BUILDKIT_INLINE_CACHE=1 \
+      --build-arg BASE_IMAGE="${1}" \
+      --build-arg BRANCH="${2}" \
+      --build-arg BUILD_TYPE=release \
+      .;
   fi
 
-  docker build \
-    -f deploy/Dockerfile."${dockerBaseOS}" \
-    --no-cache=false \
-    --rm=true \
-    --build-arg BUILDKIT_INLINE_CACHE=1 \
-    --build-arg BASE_IMAGE="${1}" \
-    --build-arg BRANCH="${2}" \
-    --build-arg BUILD_TYPE=release \
-    .;
   dockerImageBuilt=$?;
   if [ "${dockerImageBuilt}" != "0" ]; then
     echo 'Failed to build image.';

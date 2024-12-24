@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-12-24T12:31:51.105Z",
+    "detectionDate": "2024-12-24T16:01:42.346Z",
     "formats": {
       "java": {
         "sources": {
@@ -2289,8 +2289,8 @@
             "newClones": 0
           },
           "scripts/docker.sh": {
-            "lines": 261,
-            "tokens": 1908,
+            "lines": 269,
+            "tokens": 1974,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2338,14 +2338,14 @@
           }
         },
         "total": {
-          "lines": 4273,
-          "tokens": 28928,
+          "lines": 4281,
+          "tokens": 28994,
           "sources": 13,
           "clones": 12,
           "duplicatedLines": 263,
           "duplicatedTokens": 1345,
-          "percentage": 6.15,
-          "percentageTokens": 4.65,
+          "percentage": 6.14,
+          "percentageTokens": 4.64,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2509,8 +2509,8 @@
             "newClones": 0
           },
           "app/CMakeLists.txt": {
-            "lines": 606,
-            "tokens": 4110,
+            "lines": 608,
+            "tokens": 4100,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2534,8 +2534,8 @@
           }
         },
         "total": {
-          "lines": 2290,
-          "tokens": 22808,
+          "lines": 2292,
+          "tokens": 22798,
           "sources": 15,
           "clones": 1,
           "duplicatedLines": 23,
@@ -3248,14 +3248,14 @@
       }
     },
     "total": {
-      "lines": 30500,
-      "tokens": 234813,
+      "lines": 30510,
+      "tokens": 234869,
       "sources": 257,
       "clones": 122,
       "duplicatedLines": 1518,
       "duplicatedTokens": 14171,
       "percentage": 4.98,
-      "percentageTokens": 6.04,
+      "percentageTokens": 6.03,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
