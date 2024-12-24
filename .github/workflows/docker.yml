@@ -5,6 +5,7 @@ on:
   push:
     paths-ignore:
     - '*'
+    - '**/**'
     - '!.github/workflows/docker.yml'
     - '!.github/macports.yml'
     - '!app/third_party/conan/Native/**'

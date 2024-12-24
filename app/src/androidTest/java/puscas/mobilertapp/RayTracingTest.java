@@ -109,15 +109,4 @@ public final class RayTracingTest extends AbstractTest {
         assertRenderScene(Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 1, 1, false, false);
     }
 
-    /**
-     * Tests rendering a scene without any {@link Accelerator}.
-     * It shouldn't render anything and be just a black image.
-     *
-     * @throws TimeoutException If it couldn't render the whole scene in time.
-     */
-    @Test
-    public void testRenderSceneWithoutAccelerator() throws TimeoutException {
-        assertRenderScene(Scene.CORNELL, Shader.WHITTED, Accelerator.NONE, 1, 1, false, true);
-    }
-
 }

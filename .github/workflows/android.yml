@@ -5,6 +5,7 @@ on:
   push:
     paths-ignore:
       - '*'
+      - '**/**'
       - '!.github/workflows/android.yml'
       - '!.github/workflows/android_matrix.json'
       - '!.github/workflows/reusable-android.yml'

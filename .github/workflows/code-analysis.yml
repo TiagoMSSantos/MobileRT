@@ -5,6 +5,7 @@ on:
   push:
     paths-ignore:
     - '*'
+    - '**/**'
     - '!.github/workflows/code-analysis.yml'
     - '!codecov.yml'
     - '!Gemfile'

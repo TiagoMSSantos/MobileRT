@@ -17,6 +17,17 @@ import puscas.mobilertapp.constants.Shader;
 public final class AcceleratorTest extends AbstractTest {
 
     /**
+     * Tests rendering a scene without any {@link Accelerator}.
+     * It shouldn't render anything and be just a black image.
+     *
+     * @throws TimeoutException If it couldn't render the whole scene in time.
+     */
+    @Test
+    public void testRenderSceneWithoutAccelerator() throws TimeoutException {
+        assertRenderScene(Scene.CORNELL, Shader.WHITTED, Accelerator.NONE, 1, 1, false, true);
+    }
+
+    /**
      * Tests rendering a scene with the {@link Accelerator#NAIVE} accelerator.
      *
      * @throws TimeoutException If it couldn't render the whole scene in time.

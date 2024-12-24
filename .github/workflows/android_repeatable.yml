@@ -5,6 +5,7 @@ on:
   push:
     paths-ignore:
     - '*'
+    - '**/**'
     - '!.github/workflows/android_repeatable.yml'
 
 defaults:
