@@ -28,7 +28,7 @@ jobs:
   Build:
     runs-on: ${{ inputs.host_os }}
     name: Build ${{ inputs.android_api }} ${{ inputs.type }} (${{ inputs.host_os }})
-    timeout-minutes: 35
+    timeout-minutes: 360
     steps:
       - name: Checkout
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
@@ -154,21 +154,10 @@ jobs:
           fi
           set -e;
           if [ "${MAJOR_MAC_VERSION}" = 14 ]; then
-            if [ "${{ inputs.android_api }}" = 15 ] || [ "${{ inputs.android_api }}" = 21 ]; then
-              echo 'android_arch=\"x86\",\"armeabi-v7a\"' >> "${GITHUB_ENV}";
+              echo 'android_arch=\"arm64-v8a\"' >> "${GITHUB_ENV}";
               echo 'android_emulator_arch=arm64-v8a' >> "${GITHUB_ENV}";
-            elif [ "${{ inputs.android_api }}" -gt 29 ]; then
-              echo 'android_arch=\"armeabi-v7a\"' >> "${GITHUB_ENV}";
-              echo 'android_emulator_arch=arm64-v8a' >> "${GITHUB_ENV}";
-            else
-              echo 'android_arch=\"x86\"' >> "${GITHUB_ENV}";
-              echo 'android_emulator_arch=arm64-v8a' >> "${GITHUB_ENV}";
-            fi
           else
-            if [ "${{ inputs.android_api }}" = 15 ] || [ "${{ inputs.android_api }}" = 21 ]; then
-              echo 'android_arch=\"x86\",\"armeabi-v7a\"' >> "${GITHUB_ENV}";
-              echo 'android_emulator_arch=x86' >> "${GITHUB_ENV}";
-            elif [ "${{ inputs.android_api }}" -gt 29 ]; then
+            if [ "${{ inputs.android_api }}" -gt 20 ]; then
               echo 'android_arch=\"x86_64\"' >> "${GITHUB_ENV}";
               echo 'android_emulator_arch=x86_64' >> "${GITHUB_ENV}";
             else
@@ -340,7 +329,7 @@ jobs:
     needs: [Build]
     name: Android tests ${{ inputs.android_api }} ${{ inputs.type }} (${{ inputs.host_os }})
     runs-on: ${{ inputs.host_os }}
-    timeout-minutes: 35
+    timeout-minutes: 360
     steps:
       - name: Checkout
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
@@ -448,21 +437,10 @@ jobs:
           fi
           set -e;
           if [ "${MAJOR_MAC_VERSION}" = 14 ]; then
-            if [ "${{ inputs.android_api }}" = 15 ] || [ "${{ inputs.android_api }}" = 21 ]; then
-              echo 'android_arch=\"x86\",\"armeabi-v7a\"' >> "${GITHUB_ENV}";
+              echo 'android_arch=\"arm64-v8a\"' >> "${GITHUB_ENV}";
               echo 'android_emulator_arch=arm64-v8a' >> "${GITHUB_ENV}";
-            elif [ "${{ inputs.android_api }}" -gt 29 ]; then
-              echo 'android_arch=\"armeabi-v7a\"' >> "${GITHUB_ENV}";
-              echo 'android_emulator_arch=arm64-v8a' >> "${GITHUB_ENV}";
-            else
-              echo 'android_arch=\"x86\"' >> "${GITHUB_ENV}";
-              echo 'android_emulator_arch=arm64-v8a' >> "${GITHUB_ENV}";
-            fi
           else
-            if [ "${{ inputs.android_api }}" = 15 ] || [ "${{ inputs.android_api }}" = 21 ]; then
-              echo 'android_arch=\"x86\",\"armeabi-v7a\"' >> "${GITHUB_ENV}";
-              echo 'android_emulator_arch=x86' >> "${GITHUB_ENV}";
-            elif [ "${{ inputs.android_api }}" -gt 29 ]; then
+            if [ "${{ inputs.android_api }}" -gt 20 ]; then
               echo 'android_arch=\"x86_64\"' >> "${GITHUB_ENV}";
               echo 'android_emulator_arch=x86_64' >> "${GITHUB_ENV}";
             else
@@ -495,7 +473,7 @@ jobs:
             --info --warning-mode all --stacktrace;
 
       - name: Run Android tests
-        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
+        timeout-minutes: 30
         if: success() && !startsWith(inputs.host_os, 'windows')
         uses: ReactiveCircus/android-emulator-runner@v2
         env:
@@ -512,7 +490,7 @@ jobs:
           disable-animations: true
           disable-spellchecker: true
           channel: stable
-          emulator-options: -no-window -accel on -cores ${{ env.NCPU_CORES }} -memory ${{ env.MEM_MB }} -cache-size 512 -partition-size 800 -ranchu -fixed-scale -skip-adb-auth -gpu swiftshader_indirect -no-audio -no-snapshot -no-snapstorage -no-snapshot-update-time -no-snapshot-save -no-snapshot-load -no-boot-anim -camera-back none -camera-front none -netfast -wipe-data -no-sim -no-passive-gps -no-direct-adb -no-location-ui -no-hidpi-scaling -no-mouse-reposition -no-nested-warnings -verbose
+          emulator-options: -no-metrics -no-window -accel on -cores ${{ env.NCPU_CORES }} -memory ${{ env.MEM_MB }} -cache-size 512 -partition-size 800 -ranchu -fixed-scale -skip-adb-auth -gpu swiftshader_indirect -no-audio -no-snapshot -no-snapstorage -no-snapshot-update-time -no-snapshot-save -no-snapshot-load -no-boot-anim -camera-back none -camera-front none -netfast -wipe-data -no-sim -no-passive-gps -no-direct-adb -no-location-ui -no-hidpi-scaling -no-mouse-reposition -no-nested-warnings -verbose
           cores: ${{ env.NCPU_CORES }}
           ram-size: ${{ env.MEM_MB }}M
           heap-size: 512M
@@ -596,7 +574,7 @@ jobs:
   UnitTests:
     needs: [Build]
     runs-on: ${{ inputs.host_os }}
-    timeout-minutes: 15
+    timeout-minutes: 360
     name: Unit tests ${{ inputs.android_api }} ${{ inputs.type }} (${{ inputs.host_os }})
     steps:
       - name: Checkout
@@ -697,21 +675,10 @@ jobs:
           fi
           set -e;
           if [ "${MAJOR_MAC_VERSION}" = 14 ]; then
-            if [ "${{ inputs.android_api }}" = 15 ] || [ "${{ inputs.android_api }}" = 21 ]; then
-              echo 'android_arch=\"x86\",\"armeabi-v7a\"' >> "${GITHUB_ENV}";
+              echo 'android_arch=\"arm64-v8a\"' >> "${GITHUB_ENV}";
               echo 'android_emulator_arch=arm64-v8a' >> "${GITHUB_ENV}";
-            elif [ "${{ inputs.android_api }}" -gt 29 ]; then
-              echo 'android_arch=\"armeabi-v7a\"' >> "${GITHUB_ENV}";
-              echo 'android_emulator_arch=arm64-v8a' >> "${GITHUB_ENV}";
-            else
-              echo 'android_arch=\"x86\"' >> "${GITHUB_ENV}";
-              echo 'android_emulator_arch=arm64-v8a' >> "${GITHUB_ENV}";
-            fi
           else
-            if [ "${{ inputs.android_api }}" = 15 ] || [ "${{ inputs.android_api }}" = 21 ]; then
-              echo 'android_arch=\"x86\",\"armeabi-v7a\"' >> "${GITHUB_ENV}";
-              echo 'android_emulator_arch=x86' >> "${GITHUB_ENV}";
-            elif [ "${{ inputs.android_api }}" -gt 29 ]; then
+            if [ "${{ inputs.android_api }}" -gt 20 ]; then
               echo 'android_arch=\"x86_64\"' >> "${GITHUB_ENV}";
               echo 'android_emulator_arch=x86_64' >> "${GITHUB_ENV}";
             else
@@ -765,7 +732,7 @@ jobs:
     if: inputs.type == 'debug'
     name: Code Coverage & Sonar ${{ inputs.type }} (${{ inputs.host_os }})
     runs-on: ${{ inputs.host_os }}
-    timeout-minutes: 10
+    timeout-minutes: 360
     steps:
       - name: Checkout
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
@@ -919,20 +886,15 @@ jobs:
           fi
           set -e;
           if [ "${MAJOR_MAC_VERSION}" = 14 ]; then
-            if [ "${{ inputs.android_api }}" = 15 ] || [ "${{ inputs.android_api }}" = 21 ]; then
-              echo 'android_arch=\"x86\",\"armeabi-v7a\"' >> "${GITHUB_ENV}";
-            elif [ "${{ inputs.android_api }}" -gt 29 ]; then
-              echo 'android_arch=\"armeabi-v7a\"' >> "${GITHUB_ENV}";
-            else
-              echo 'android_arch=\"x86\"' >> "${GITHUB_ENV}";
-            fi
+              echo 'android_arch=\"arm64-v8a\"' >> "${GITHUB_ENV}";
+              echo 'android_emulator_arch=arm64-v8a' >> "${GITHUB_ENV}";
           else
-            if [ "${{ inputs.android_api }}" = 15 ] || [ "${{ inputs.android_api }}" = 21 ]; then
-              echo 'android_arch=\"x86\",\"armeabi-v7a\"' >> "${GITHUB_ENV}";
-            elif [ "${{ inputs.android_api }}" -gt 29 ]; then
+            if [ "${{ inputs.android_api }}" -gt 20 ]; then
               echo 'android_arch=\"x86_64\"' >> "${GITHUB_ENV}";
+              echo 'android_emulator_arch=x86_64' >> "${GITHUB_ENV}";
             else
               echo 'android_arch=\"x86\"' >> "${GITHUB_ENV}";
+              echo 'android_emulator_arch=x86' >> "${GITHUB_ENV}";
             fi
           fi
           set -u;

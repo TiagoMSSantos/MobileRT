@@ -166,7 +166,9 @@ set( CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin" )
 
 if( NOT DEFINED ANDROID_ABI )
   message( STATUS "CMake will handle Qt moc preprocessor automatically." )
-  set( CMAKE_AUTOMOC "ON" )
+  set( CMAKE_AUTOMOC "ON" CACHE STRING "CUSTOM" FORCE )
+else()
+  set( CMAKE_AUTOMOC "OFF" CACHE STRING "CUSTOM" FORCE )
 endif()
 
 message( STATUS "Setting up Android Clang with static stdlib." )

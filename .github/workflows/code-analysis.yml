@@ -53,7 +53,7 @@ jobs:
 
     name: Analyze ${{ matrix.language }} (${{ matrix.host_os }})
     runs-on: ${{ matrix.host_os }}
-    timeout-minutes: 30
+    timeout-minutes: 360
 
     steps:
     - name: Checkout

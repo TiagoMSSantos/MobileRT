@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-12-24T16:01:42.346Z",
+    "detectionDate": "2024-12-25T19:52:58.754Z",
     "formats": {
       "java": {
         "sources": {
@@ -642,13 +642,13 @@
           },
           "app/src/androidTest/java/puscas/mobilertapp/utils/UtilsT.java": {
             "lines": 224,
-            "tokens": 1528,
+            "tokens": 1524,
             "sources": 1,
             "clones": 2,
             "duplicatedLines": 18,
             "duplicatedTokens": 228,
             "percentage": 8.04,
-            "percentageTokens": 14.92,
+            "percentageTokens": 14.96,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -773,14 +773,14 @@
             "newClones": 0
           },
           "app/src/test/java/puscas/mobilertapp/MyEglContextFactoryTest.java": {
-            "lines": 419,
-            "tokens": 3107,
+            "lines": 420,
+            "tokens": 3115,
             "sources": 1,
             "clones": 14,
             "duplicatedLines": 168,
             "duplicatedTokens": 1666,
-            "percentage": 40.1,
-            "percentageTokens": 53.62,
+            "percentage": 40,
+            "percentageTokens": 53.48,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -1062,8 +1062,8 @@
           }
         },
         "total": {
-          "lines": 10773,
-          "tokens": 76514,
+          "lines": 10774,
+          "tokens": 76518,
           "sources": 88,
           "clones": 61,
           "duplicatedLines": 575,
@@ -1985,14 +1985,14 @@
             "newClones": 0
           },
           ".github/workflows/reusable-android.yml": {
-            "lines": 989,
-            "tokens": 6903,
+            "lines": 951,
+            "tokens": 6901,
             "sources": 1,
             "clones": 18,
-            "duplicatedLines": 445,
-            "duplicatedTokens": 3867,
-            "percentage": 44.99,
-            "percentageTokens": 56.02,
+            "duplicatedLines": 448,
+            "duplicatedTokens": 3878,
+            "percentage": 47.11,
+            "percentageTokens": 56.19,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2045,14 +2045,14 @@
             "newClones": 0
           },
           ".github/workflows/android_repeatable.yml": {
-            "lines": 158,
-            "tokens": 948,
+            "lines": 162,
+            "tokens": 963,
             "sources": 1,
             "clones": 2,
-            "duplicatedLines": 50,
-            "duplicatedTokens": 298,
-            "percentage": 31.65,
-            "percentageTokens": 31.43,
+            "duplicatedLines": 53,
+            "duplicatedTokens": 309,
+            "percentage": 32.72,
+            "percentageTokens": 32.09,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2166,14 +2166,14 @@
           }
         },
         "total": {
-          "lines": 3264,
-          "tokens": 21268,
+          "lines": 3230,
+          "tokens": 21281,
           "sources": 25,
           "clones": 15,
-          "duplicatedLines": 346,
-          "duplicatedTokens": 2673,
-          "percentage": 10.6,
-          "percentageTokens": 12.57,
+          "duplicatedLines": 349,
+          "duplicatedTokens": 2684,
+          "percentage": 10.8,
+          "percentageTokens": 12.61,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2229,8 +2229,8 @@
             "newClones": 0
           },
           "scripts/run_tests_android.sh": {
-            "lines": 693,
-            "tokens": 5120,
+            "lines": 700,
+            "tokens": 5128,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2301,8 +2301,8 @@
             "newClones": 0
           },
           "scripts/compile_native.sh": {
-            "lines": 344,
-            "tokens": 2272,
+            "lines": 353,
+            "tokens": 2330,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2338,14 +2338,14 @@
           }
         },
         "total": {
-          "lines": 4281,
-          "tokens": 28994,
+          "lines": 4297,
+          "tokens": 29060,
           "sources": 13,
           "clones": 12,
           "duplicatedLines": 263,
           "duplicatedTokens": 1345,
-          "percentage": 6.14,
-          "percentageTokens": 4.64,
+          "percentage": 6.12,
+          "percentageTokens": 4.63,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2509,8 +2509,8 @@
             "newClones": 0
           },
           "app/CMakeLists.txt": {
-            "lines": 608,
-            "tokens": 4100,
+            "lines": 610,
+            "tokens": 4127,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2534,8 +2534,8 @@
           }
         },
         "total": {
-          "lines": 2292,
-          "tokens": 22798,
+          "lines": 2294,
+          "tokens": 22825,
           "sources": 15,
           "clones": 1,
           "duplicatedLines": 23,
@@ -3248,14 +3248,14 @@
       }
     },
     "total": {
-      "lines": 30510,
-      "tokens": 234869,
+      "lines": 30495,
+      "tokens": 234979,
       "sources": 257,
       "clones": 122,
-      "duplicatedLines": 1518,
-      "duplicatedTokens": 14171,
-      "percentage": 4.98,
-      "percentageTokens": 6.03,
+      "duplicatedLines": 1521,
+      "duplicatedTokens": 14182,
+      "percentage": 4.99,
+      "percentageTokens": 6.04,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -4276,32 +4276,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MyEglContextFactoryTest.java",
-        "start": 268,
-        "end": 280,
+        "start": 269,
+        "end": 281,
         "startLoc": {
-          "line": 268,
+          "line": 269,
           "column": 33,
-          "position": 1840
+          "position": 1848
         },
         "endLoc": {
-          "line": 280,
+          "line": 281,
           "column": 9,
-          "position": 1970
+          "position": 1978
         }
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MyEglContextFactoryTest.java",
-        "start": 241,
-        "end": 253,
+        "start": 242,
+        "end": 254,
         "startLoc": {
-          "line": 241,
+          "line": 242,
           "column": 25,
-          "position": 1637
+          "position": 1645
         },
         "endLoc": {
-          "line": 253,
+          "line": 254,
           "column": 12,
-          "position": 1767
+          "position": 1775
         }
       }
     },
@@ -4312,32 +4312,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MyEglContextFactoryTest.java",
-        "start": 293,
-        "end": 306,
+        "start": 294,
+        "end": 307,
         "startLoc": {
-          "line": 293,
+          "line": 294,
           "column": 18,
-          "position": 2040
+          "position": 2048
         },
         "endLoc": {
-          "line": 306,
+          "line": 307,
           "column": 9,
-          "position": 2178
+          "position": 2186
         }
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MyEglContextFactoryTest.java",
-        "start": 241,
-        "end": 254,
+        "start": 242,
+        "end": 255,
         "startLoc": {
-          "line": 241,
+          "line": 242,
           "column": 25,
-          "position": 1637
+          "position": 1645
         },
         "endLoc": {
-          "line": 254,
+          "line": 255,
           "column": 5,
-          "position": 1775
+          "position": 1783
         }
       }
     },
@@ -4348,32 +4348,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MyEglContextFactoryTest.java",
-        "start": 319,
-        "end": 330,
+        "start": 320,
+        "end": 331,
         "startLoc": {
-          "line": 319,
+          "line": 320,
           "column": 21,
-          "position": 2250
+          "position": 2258
         },
         "endLoc": {
-          "line": 330,
+          "line": 331,
           "column": 28,
-          "position": 2366
+          "position": 2374
         }
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MyEglContextFactoryTest.java",
-        "start": 241,
-        "end": 252,
+        "start": 242,
+        "end": 253,
         "startLoc": {
-          "line": 241,
+          "line": 242,
           "column": 25,
-          "position": 1637
+          "position": 1645
         },
         "endLoc": {
-          "line": 252,
+          "line": 253,
           "column": 18,
-          "position": 1753
+          "position": 1761
         }
       }
     },
@@ -4384,32 +4384,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MyEglContextFactoryTest.java",
-        "start": 331,
-        "end": 340,
+        "start": 332,
+        "end": 341,
         "startLoc": {
-          "line": 331,
+          "line": 332,
           "column": 9,
-          "position": 2369
+          "position": 2377
         },
         "endLoc": {
-          "line": 340,
+          "line": 341,
           "column": 28,
-          "position": 2449
+          "position": 2457
         }
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MyEglContextFactoryTest.java",
-        "start": 304,
-        "end": 312,
+        "start": 305,
+        "end": 313,
         "startLoc": {
-          "line": 304,
+          "line": 305,
           "column": 9,
-          "position": 2156
+          "position": 2164
         },
         "endLoc": {
-          "line": 312,
+          "line": 313,
           "column": 2,
-          "position": 2235
+          "position": 2243
         }
       }
     },
@@ -4420,32 +4420,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MyEglContextFactoryTest.java",
-        "start": 358,
-        "end": 377,
+        "start": 359,
+        "end": 378,
         "startLoc": {
-          "line": 358,
+          "line": 359,
           "column": 26,
-          "position": 2553
+          "position": 2561
         },
         "endLoc": {
-          "line": 377,
+          "line": 378,
           "column": 11,
-          "position": 2748
+          "position": 2756
         }
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MyEglContextFactoryTest.java",
-        "start": 241,
-        "end": 312,
+        "start": 242,
+        "end": 313,
         "startLoc": {
-          "line": 241,
+          "line": 242,
           "column": 25,
-          "position": 1637
+          "position": 1645
         },
         "endLoc": {
-          "line": 312,
+          "line": 313,
           "column": 2,
-          "position": 2235
+          "position": 2243
         }
       }
     },
@@ -4456,32 +4456,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MyEglContextFactoryTest.java",
-        "start": 394,
-        "end": 407,
+        "start": 395,
+        "end": 408,
         "startLoc": {
-          "line": 394,
+          "line": 395,
           "column": 15,
-          "position": 2891
+          "position": 2899
         },
         "endLoc": {
-          "line": 407,
+          "line": 408,
           "column": 6,
-          "position": 2993
+          "position": 3001
         }
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MyEglContextFactoryTest.java",
-        "start": 300,
-        "end": 312,
+        "start": 301,
+        "end": 313,
         "startLoc": {
-          "line": 300,
+          "line": 301,
           "column": 9,
-          "position": 2134
+          "position": 2142
         },
         "endLoc": {
-          "line": 312,
+          "line": 313,
           "column": 2,
-          "position": 2235
+          "position": 2243
         }
       }
     },
@@ -5340,12 +5340,12 @@
         "startLoc": {
           "line": 160,
           "column": 2,
-          "position": 1045
+          "position": 1041
         },
         "endLoc": {
           "line": 165,
           "column": 17,
-          "position": 1114
+          "position": 1110
         }
       }
     },
@@ -5376,7 +5376,7 @@
         "startLoc": {
           "line": 160,
           "column": 2,
-          "position": 1045
+          "position": 1041
         },
         "endLoc": {
           "line": 75,
@@ -6864,19 +6864,19 @@
     {
       "format": "yaml",
       "lines": 30,
-      "fragment": "timeout-minutes: 35\n    steps:\n      - name: Checkout\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n        if: success()\n        uses: actions/checkout@v4\n\n      - name: Set up JDK\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n        if: success()\n        uses: actions/setup-java@v4\n        with:\n          # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml\n          java-version: 21\n          distribution: zulu\n          java-package: jdk\n          architecture: x64\n          check-latest: false\n          server-id: github\n          server-username: GITHUB_ACTOR\n          server-password: GITHUB_TOKEN\n          settings-path: ~/.gradle\n          overwrite-settings: true\n          gpg-private-key: ''\n          gpg-passphrase: GPG_PASSPHRASE\n          cache: gradle\n          cache-dependency-path: '**/build.gradle'\n\n      - name: Add custom environment variables\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL)",
+      "fragment": "timeout-minutes: 360\n    steps:\n      - name: Checkout\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n        if: success()\n        uses: actions/checkout@v4\n\n      - name: Set up JDK\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n        if: success()\n        uses: actions/setup-java@v4\n        with:\n          # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml\n          java-version: 21\n          distribution: zulu\n          java-package: jdk\n          architecture: x64\n          check-latest: false\n          server-id: github\n          server-username: GITHUB_ACTOR\n          server-password: GITHUB_TOKEN\n          settings-path: ~/.gradle\n          overwrite-settings: true\n          gpg-private-key: ''\n          gpg-passphrase: GPG_PASSPHRASE\n          cache: gradle\n          cache-dependency-path: '**/build.gradle'\n\n      - name: Add custom environment variables\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL)",
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/reusable-android.yml",
-        "start": 343,
-        "end": 372,
+        "start": 332,
+        "end": 361,
         "startLoc": {
-          "line": 343,
+          "line": 332,
           "column": 5,
           "position": 2510
         },
         "endLoc": {
-          "line": 372,
+          "line": 361,
           "column": 40,
           "position": 2706
         }
@@ -6904,30 +6904,30 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/reusable-android.yml",
-        "start": 385,
-        "end": 392,
+        "start": 374,
+        "end": 381,
         "startLoc": {
-          "line": 385,
+          "line": 374,
           "column": 2,
           "position": 2763
         },
         "endLoc": {
-          "line": 392,
+          "line": 381,
           "column": 5,
           "position": 2895
         }
       },
       "secondFile": {
         "name": ".github/workflows/reusable-android.yml",
-        "start": 245,
-        "end": 252,
+        "start": 234,
+        "end": 241,
         "startLoc": {
-          "line": 245,
+          "line": 234,
           "column": 2,
           "position": 1134
         },
         "endLoc": {
-          "line": 252,
+          "line": 241,
           "column": 6,
           "position": 1266
         }
@@ -6940,30 +6940,30 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/reusable-android.yml",
-        "start": 399,
-        "end": 406,
+        "start": 388,
+        "end": 395,
         "startLoc": {
-          "line": 399,
+          "line": 388,
           "column": 2,
           "position": 2931
         },
         "endLoc": {
-          "line": 406,
+          "line": 395,
           "column": 5,
           "position": 3063
         }
       },
       "secondFile": {
         "name": ".github/workflows/reusable-android.yml",
-        "start": 313,
-        "end": 320,
+        "start": 302,
+        "end": 309,
         "startLoc": {
-          "line": 313,
+          "line": 302,
           "column": 2,
           "position": 2191
         },
         "endLoc": {
-          "line": 320,
+          "line": 309,
           "column": 6,
           "position": 2323
         }
@@ -6976,30 +6976,30 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/reusable-android.yml",
-        "start": 601,
-        "end": 641,
+        "start": 579,
+        "end": 619,
         "startLoc": {
-          "line": 601,
+          "line": 579,
           "column": 5,
-          "position": 4481
+          "position": 4479
         },
         "endLoc": {
-          "line": 641,
+          "line": 619,
           "column": 7,
-          "position": 4710
+          "position": 4708
         }
       },
       "secondFile": {
         "name": ".github/workflows/reusable-android.yml",
         "start": 32,
-        "end": 384,
+        "end": 373,
         "startLoc": {
           "line": 32,
           "column": 5,
           "position": 175
         },
         "endLoc": {
-          "line": 384,
+          "line": 373,
           "column": 10,
           "position": 2745
         }
@@ -7012,30 +7012,30 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/reusable-android.yml",
-        "start": 641,
-        "end": 661,
+        "start": 619,
+        "end": 639,
         "startLoc": {
-          "line": 641,
+          "line": 619,
           "column": 7,
-          "position": 4703
+          "position": 4701
         },
         "endLoc": {
-          "line": 661,
+          "line": 639,
           "column": 9,
-          "position": 4935
+          "position": 4933
         }
       },
       "secondFile": {
         "name": ".github/workflows/reusable-android.yml",
-        "start": 398,
-        "end": 418,
+        "start": 387,
+        "end": 407,
         "startLoc": {
-          "line": 398,
+          "line": 387,
           "column": 7,
           "position": 2906
         },
         "endLoc": {
-          "line": 418,
+          "line": 407,
           "column": 6,
           "position": 3138
         }
@@ -7048,30 +7048,30 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/reusable-android.yml",
-        "start": 661,
-        "end": 675,
+        "start": 639,
+        "end": 653,
         "startLoc": {
-          "line": 661,
+          "line": 639,
           "column": 7,
-          "position": 4930
+          "position": 4928
         },
         "endLoc": {
-          "line": 675,
+          "line": 653,
           "column": 6,
-          "position": 5103
+          "position": 5101
         }
       },
       "secondFile": {
         "name": ".github/workflows/reusable-android.yml",
-        "start": 384,
-        "end": 398,
+        "start": 373,
+        "end": 387,
         "startLoc": {
-          "line": 384,
+          "line": 373,
           "column": 7,
           "position": 2738
         },
         "endLoc": {
-          "line": 398,
+          "line": 387,
           "column": 9,
           "position": 2911
         }
@@ -7084,32 +7084,32 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/reusable-android.yml",
-        "start": 788,
-        "end": 863,
+        "start": 755,
+        "end": 830,
         "startLoc": {
-          "line": 788,
+          "line": 755,
           "column": 11,
-          "position": 5614
+          "position": 5612
         },
         "endLoc": {
-          "line": 863,
+          "line": 830,
           "column": 76,
-          "position": 6182
+          "position": 6180
         }
       },
       "secondFile": {
         "name": ".github/workflows/reusable-android.yml",
         "start": 44,
-        "end": 686,
+        "end": 664,
         "startLoc": {
           "line": 44,
           "column": 11,
           "position": 259
         },
         "endLoc": {
-          "line": 686,
+          "line": 664,
           "column": 76,
-          "position": 5133
+          "position": 5131
         }
       }
     },
@@ -7120,32 +7120,32 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/reusable-android.yml",
-        "start": 875,
-        "end": 883,
+        "start": 842,
+        "end": 850,
         "startLoc": {
-          "line": 875,
+          "line": 842,
           "column": 9,
-          "position": 6271
+          "position": 6269
         },
         "endLoc": {
-          "line": 883,
+          "line": 850,
           "column": 6,
-          "position": 6403
+          "position": 6401
         }
       },
       "secondFile": {
         "name": ".github/workflows/reusable-android.yml",
-        "start": 554,
-        "end": 562,
+        "start": 532,
+        "end": 540,
         "startLoc": {
-          "line": 554,
+          "line": 532,
           "column": 9,
-          "position": 3963
+          "position": 3961
         },
         "endLoc": {
-          "line": 562,
+          "line": 540,
           "column": 4,
-          "position": 4095
+          "position": 4093
         }
       }
     },
@@ -7295,17 +7295,17 @@
     },
     {
       "format": "yaml",
-      "lines": 28,
-      "fragment": "steps:\n    - name: Checkout\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n      if: success()\n      uses: actions/checkout@v4\n\n    - name: Set up JDK\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n      if: success()\n      uses: actions/setup-java@v4\n      with:\n        # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml\n        java-version: 21\n        distribution: zulu\n        java-package: jdk\n        architecture: x64\n        check-latest: false\n        server-id: github\n        server-username: GITHUB_ACTOR\n        server-password: GITHUB_TOKEN\n        settings-path: ~/.gradle\n        overwrite-settings: true\n        gpg-private-key: ''\n        gpg-passphrase: GPG_PASSPHRASE\n        cache: gradle\n        cache-dependency-path: '**/build.gradle'\n\n    - name: Set",
+      "lines": 31,
+      "fragment": "}}\n    timeout-minutes: 360\n\n    steps:\n    - name: Checkout\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n      if: success()\n      uses: actions/checkout@v4\n\n    - name: Set up JDK\n      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n      if: success()\n      uses: actions/setup-java@v4\n      with:\n        # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml\n        java-version: 21\n        distribution: zulu\n        java-package: jdk\n        architecture: x64\n        check-latest: false\n        server-id: github\n        server-username: GITHUB_ACTOR\n        server-password: GITHUB_TOKEN\n        settings-path: ~/.gradle\n        overwrite-settings: true\n        gpg-private-key: ''\n        gpg-passphrase: GPG_PASSPHRASE\n        cache: gradle\n        cache-dependency-path: '**/build.gradle'\n\n    - name: Set",
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android_repeatable.yml",
-        "start": 43,
+        "start": 40,
         "end": 70,
         "startLoc": {
-          "line": 43,
-          "column": 5,
-          "position": 243
+          "line": 40,
+          "column": 2,
+          "position": 232
         },
         "endLoc": {
           "line": 70,
@@ -7315,12 +7315,12 @@
       },
       "secondFile": {
         "name": ".github/workflows/reusable-android.yml",
-        "start": 32,
+        "start": 331,
         "end": 59,
         "startLoc": {
-          "line": 32,
-          "column": 5,
-          "position": 175
+          "line": 331,
+          "column": 2,
+          "position": 2506
         },
         "endLoc": {
           "line": 59,

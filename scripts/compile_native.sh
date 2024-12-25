@@ -244,10 +244,6 @@ build() {
   addCommandToPath 'cmake';
 
   conanToolchainFile='../build_conan-native/conan_toolchain.cmake';
-  addConanToolchain='';
-  if [ -f "${conanToolchainFile}" ]; then
-    addConanToolchain="-DCMAKE_TOOLCHAIN_FILE=${conanToolchainFile}";
-  fi
 
   echo 'Calling CMake';
   cmake --version;
@@ -303,15 +299,28 @@ build() {
     JOBS_FLAGS='';
   fi
 
-  cmake \
-    -G "${generator}" \
-    -DCMAKE_VERBOSE_MAKEFILE=ON \
-    -DCMAKE_CXX_COMPILER="${compiler}" \
-    -DCMAKE_C_COMPILER="${c_compiler}" \
-    -DCMAKE_C_SOURCE_FILE_EXTENSIONS="c" \
-    -DCMAKE_BUILD_TYPE="${typeWithCapitalLetter}" \
-     "${addConanToolchain}" \
-    ../app;
+  if [ -f "${conanToolchainFile}" ]; then
+    addConanToolchain="-DCMAKE_TOOLCHAIN_FILE=${conanToolchainFile}";
+    cmake \
+      -G "${generator}" \
+      -DCMAKE_VERBOSE_MAKEFILE=ON \
+      -DCMAKE_CXX_COMPILER="${compiler}" \
+      -DCMAKE_C_COMPILER="${c_compiler}" \
+      -DCMAKE_C_SOURCE_FILE_EXTENSIONS="c" \
+      -DCMAKE_BUILD_TYPE="${typeWithCapitalLetter}" \
+       "${addConanToolchain}" \
+      ../app;
+  else
+    cmake \
+      -G "${generator}" \
+      -DCMAKE_VERBOSE_MAKEFILE=ON \
+      -DCMAKE_CXX_COMPILER="${compiler}" \
+      -DCMAKE_C_COMPILER="${c_compiler}" \
+      -DCMAKE_C_SOURCE_FILE_EXTENSIONS="c" \
+      -DCMAKE_BUILD_TYPE="${typeWithCapitalLetter}" \
+      ../app;
+  fi
+
   resCompile=${?};
   echo 'Called CMake';
 

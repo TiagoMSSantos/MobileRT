@@ -473,6 +473,7 @@ startCopyingLogcatToFile() {
 
 runUnitTests() {
   echo 'Copy unit tests to Android emulator.';
+  echo 'Found binary types:';
   ls app/.cxx;
   if [ "${type}" = 'release' ]; then
     typeWithDebInfo='RelWithDebInfo';
@@ -480,32 +481,38 @@ runUnitTests() {
     typeWithDebInfo="${typeWithCapitalLetter}";
   fi
   dirUnitTests="app/.cxx/${typeWithDebInfo}";
+  echo 'Found binary generated ids:';
+  ls "${dirUnitTests}";
   android_cpu_architecture=$(adb shell getprop ro.product.cpu.abi | tr -d '[:space:]');
   echo "Checking generated id for: ${android_cpu_architecture}";
   # Note: flag `-t` of `ls` is to sort by date (newest first).
   # shellcheck disable=SC2012
-  generatedId=$(find app/.cxx/ -iname "*unittests" -exec readlink -f {} \; \
+  generatedId=$(find "${dirUnitTests}" -iname "*unittests" -exec readlink -f {} \; \
     | sort -n -r \
     | grep "${typeWithDebInfo}/" \
-    | grep "${android_cpu_architecture}/" \
+    | grep "${android_cpu_architecture}.*/" \
     | head -1 \
     | tr -s ' ' \
     | cut -d ' ' -f 7 \
     | sed "s/app\/.cxx\/${typeWithDebInfo}\///g" \
-    | sed "s/\/${android_cpu_architecture}\/bin\/UnitTests//g" \
+    | sed -e "s/\/${android_cpu_architecture}.*\/bin\/UnitTests//g" \
     | rev \
     | cut -d '/' -f 1 \
     | rev \
   );
   echo "Generated id: ${generatedId}";
-  dirUnitTests="${dirUnitTests}/${generatedId}/${android_cpu_architecture}";
-  find app/.cxx/ -iname "*unittests" -exec readlink -f {} \; \
+  dirUnitTests="${dirUnitTests}/${generatedId}";
+  echo 'Found binary CPU arch:';
+  ls "${dirUnitTests}";
+  dirUnitTests=$(find "${dirUnitTests}" -iname "*unittests" -exec readlink -f {} \; \
     | sort -n -r \
     | grep "${typeWithDebInfo}/" \
-    | grep "${android_cpu_architecture}/" \
+    | grep "${android_cpu_architecture}.*/" \
+    | sed "s/\/bin\/UnitTests//g" \
     | head -1 \
     | tr -s ' ' \
-    | cut -d ' ' -f 7;
+    | cut -d ' ' -f 7 \
+  );
   echo "Checking generated unit tests binaries: ${dirUnitTests}";
   files=$(ls "${dirUnitTests}");
   echo "Copy unit tests bin: ${files}/bin";

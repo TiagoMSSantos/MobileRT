@@ -95,6 +95,7 @@ public final class MyEglContextFactoryTest {
             @Contract(pure = true)
             @Nullable
             @Override
+            @SuppressWarnings({"deprecation"})
             public EGLSurface eglCreatePixmapSurface(final EGLDisplay display,
                                                      final EGLConfig config,
                                                      final Object native_pixmap,

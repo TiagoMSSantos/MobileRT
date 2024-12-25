@@ -61,7 +61,7 @@ OBJLoader::OBJLoader(::std::istream& isObj, ::std::istream& isMtl) {
         this->numberTriangles_ = 0;
         for (const ::tinyobj::shape_t &shape : this->shapes_) {
             for (const unsigned char numFaceVertices : shape.mesh.num_face_vertices) {
-                const ::std::uint32_t triangles {static_cast<::std::uint32_t>(numFaceVertices / 3)};
+                const ::std::int32_t triangles {static_cast<::std::int32_t>(numFaceVertices / 3)};
                 this->numberTriangles_ += triangles;
             }
         }

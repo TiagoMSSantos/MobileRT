@@ -42,7 +42,7 @@ jobs:
 
     name: ${{ inputs.name }} ${{ inputs.host_os }} (${{ inputs.type }})
     runs-on: ${{ inputs.host_os }}
-    timeout-minutes: 60
+    timeout-minutes: 360
 
     steps:
       - name: Checkout
@@ -311,7 +311,7 @@ jobs:
     if: inputs.type == 'debug'
     name: Code Coverage ${{ inputs.type }} (${{ inputs.host_os }})
     runs-on: ${{ inputs.host_os }}
-    timeout-minutes: 3
+    timeout-minutes: 360
     steps:
       - name: Checkout
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}

@@ -55,6 +55,7 @@ public final class UtilsT {
      *           field from the {@link Object}.
      */
     @NonNull
+    @SuppressWarnings({"unchecked"})
     public static <T> T getPrivateField(@NonNull final Object clazz,
                                         @NonNull final String fieldName) {
         final Field field;
@@ -108,9 +109,8 @@ public final class UtilsT {
         final int[] pixels = new int[width * height];
         bitmap.getPixels(pixels, 0, width, 0, 0, width, height);
 
-        final boolean bitmapSameColor = J8Arrays.stream(pixels)
+        return J8Arrays.stream(pixels)
             .allMatch(pixel -> pixel == firstPixel);
-        return bitmapSameColor;
     }
 
     /**

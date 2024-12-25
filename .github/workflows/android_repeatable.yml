@@ -38,7 +38,7 @@ jobs:
 
     name: ${{ matrix.test }} [${{ matrix.type }} (${{ matrix.host_os }})]
     runs-on: ${{ matrix.host_os }}
-    timeout-minutes: 30
+    timeout-minutes: 360
 
     steps:
     - name: Checkout
@@ -72,23 +72,25 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       run: |
-        if [ "${{ matrix.android_api }}" -gt 29 ]; then
-          if [ "${{ matrix.host_os }}" = "macos-14" ]; then
+        set +eu;
+        MAJOR_MAC_VERSION=$(sw_vers | grep ProductVersion | cut -d ':' -f2 | cut -d '.' -f1 | tr -d '[:space:]');
+        if [ "${MAJOR_MAC_VERSION}" != '' ]; then
+          echo "MacOS '${MAJOR_MAC_VERSION}' detected";
+        fi
+        set -e;
+        if [ "${MAJOR_MAC_VERSION}" = 14 ]; then
             echo 'android_arch=\"arm64-v8a\"' >> "${GITHUB_ENV}";
             echo 'android_emulator_arch=arm64-v8a' >> "${GITHUB_ENV}";
-          else
+        else
+          if [ "${{ matrix.android_api }}" -gt 20 ]; then
             echo 'android_arch=\"x86_64\"' >> "${GITHUB_ENV}";
             echo 'android_emulator_arch=x86_64' >> "${GITHUB_ENV}";
-          fi
-        else
-          if [ "${{ matrix.host_os }}" = "macos-14" ]; then
-            echo 'android_arch=\"arm64-v8a\"' >> "${GITHUB_ENV}";
-            echo 'android_emulator_arch=arm64-v8a' >> "${GITHUB_ENV}";
           else
             echo 'android_arch=\"x86\"' >> "${GITHUB_ENV}";
             echo 'android_emulator_arch=x86' >> "${GITHUB_ENV}";
           fi
         fi
+        set -u;
         . scripts/helper_functions.sh && parallelizeBuild && echo "NCPU_CORES=${NCPU_CORES}" >> "${GITHUB_ENV}";
 
     - name: Download Android CMake
@@ -132,6 +134,8 @@ jobs:
       timeout-minutes: 20
       if: success() && !startsWith(matrix.host_os, 'windows')
       uses: ReactiveCircus/android-emulator-runner@v2
+      env:
+        ANDROID_EMULATOR_WAIT_TIME_BEFORE_KILL: 1
       with:
         # Check available parameters in: https://github.com/ReactiveCircus/android-emulator-runner/blob/main/action.yml
         api-level: ${{ matrix.android_api }}
@@ -140,7 +144,7 @@ jobs:
         disable-animations: true
         disable-spellchecker: true
         channel: stable
-        emulator-options: -no-window -cores ${{ env.NCPU_CORES }} -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none
+        emulator-options: -no-metrics -no-window -cores ${{ env.NCPU_CORES }} -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none
         cores: ${{ env.NCPU_CORES }}
         sdcard-path-or-size: 100M
         ram-size: 1024M

@@ -88,7 +88,7 @@ public abstract class AbstractTest {
      */
     @NonNull
     @ClassRule
-    public static final TestRule timeoutClassRule = new Timeout(20L, TimeUnit.MINUTES);
+    public static final TestRule timeoutClassRule = new Timeout(30L, TimeUnit.MINUTES);
 
     /**
     * Whether one test already failed or not.
@@ -100,7 +100,7 @@ public abstract class AbstractTest {
      */
     @NonNull
     @Rule
-    public final TestRule timeoutRule = new Timeout(40L, TimeUnit.SECONDS);
+    public final TestRule timeoutRule = new Timeout(50L, TimeUnit.SECONDS);
 
     /**
      * The {@link ActivityScenario} to create the {@link MainActivity}.

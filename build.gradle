@@ -28,7 +28,7 @@ buildscript {
     // modules in the project.
     ext {
         systemTestType = System.getProperty('testType', 'debug')
-        final def customAbiFilters = System.getProperty('abiFilters', '["x86"]')
+        final def customAbiFilters = System.getProperty('abiFilters', '["x86","x86_64"]')
         systemAbiFilters = new JsonSlurper().parseText(customAbiFilters) as String[]
 
         // The default minimum Android API version possible is 14 due to compatibility with Appcompat dependency.
