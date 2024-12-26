@@ -93,7 +93,7 @@ jobs:
           #   "failure", "success", "neutral", "cancelled", "skipped", "timed_out", "action_required"
           # Or a workflow status:
           #   "completed", "in_progress", "queued"
-          workflow_conclusion: null
+          workflow_conclusion: ''
           # Optional, will get head commit SHA
           pr: ${{ github.event.pull_request.number }}
           # Optional, no need to specify if PR is

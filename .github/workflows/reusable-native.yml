@@ -37,9 +37,6 @@ jobs:
   Build:
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
 
-    strategy:
-      fail-fast: false
-
     name: ${{ inputs.name }} ${{ inputs.host_os }} (${{ inputs.type }})
     runs-on: ${{ inputs.host_os }}
     timeout-minutes: 360
