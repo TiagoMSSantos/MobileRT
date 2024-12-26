@@ -91,6 +91,13 @@ public abstract class AbstractTest {
     public static final TestRule timeoutClassRule = new Timeout(30L, TimeUnit.MINUTES);
 
     /**
+     * The {@link Rule} of {@link ActivityScenario} to create the {@link MainActivity}.
+     */
+    @NonNull
+    @ClassRule
+    public static final ActivityScenarioRule<MainActivity> mainActivityActivityTestRule = new ActivityScenarioRule<>(MainActivity.class);
+
+    /**
     * Whether one test already failed or not.
     */
     private static boolean oneTestFailed = false;
@@ -103,33 +110,10 @@ public abstract class AbstractTest {
     public final TestRule timeoutRule = new Timeout(50L, TimeUnit.SECONDS);
 
     /**
-     * The {@link ActivityScenario} to create the {@link MainActivity}.
-     */
-    @NonNull
-    @ClassRule
-    public static final ActivityScenarioRule<MainActivity> mainActivityActivityTestRule = new ActivityScenarioRule<>(MainActivity.class);
-
-    /**
-     * The {@link MainActivity} to test.
-     */
-    @Nullable
-    protected static MainActivity activity = null;
-
-    /**
      * The {@link Rule} to get the name of the current test.
      */
     @Rule
-    final public TestName testName = new TestName();
-
-    /**
-     * A {@link Deque} to store {@link Runnable}s which should be called at the end of the test.
-     * The {@link #tearDown()} method which is called after every test will call use this field and
-     * call the method {@link Runnable#run()} of every {@link Runnable} stored temporarily here.
-     * <p>
-     * For example, this is useful to store temporarily {@link Runnable}s of methods that will close
-     * a resource at the end of the test.
-     */
-    final private Deque<Runnable> closeActions = new ArrayDeque<>();
+    public final TestName testName = new TestName();
 
     /**
      * The {@link Rule} to validate all {@link #closeActions} when a test succeeds.
@@ -179,6 +163,22 @@ public abstract class AbstractTest {
             logger.warning(testName.getMethodName() + ": test skipped");
         }
     };
+
+    /**
+     * The {@link Rule} of {@link MainActivity} to test.
+     */
+    @Nullable
+    protected static MainActivity activity = null;
+
+    /**
+     * A {@link Deque} to store {@link Runnable}s which should be called at the end of the test.
+     * The {@link #tearDown()} method which is called after every test will call use this field and
+     * call the method {@link Runnable#run()} of every {@link Runnable} stored temporarily here.
+     * <p>
+     * For example, this is useful to store temporarily {@link Runnable}s of methods that will close
+     * a resource at the end of the test.
+     */
+    final private Deque<Runnable> closeActions = new ArrayDeque<>();
 
     /**
      * Setup method called before all tests.
@@ -479,7 +479,9 @@ public abstract class AbstractTest {
      */
     private static void dismissANRSystemDialog() {
         executeShellCommand("input keyevent 82");
-        executeShellCommand("input tap 800 400");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            executeShellCommand("input tap 800 400");
+        }
     }
 
     /**

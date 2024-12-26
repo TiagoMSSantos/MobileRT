@@ -236,18 +236,23 @@ unlockDevice() {
   echo 'Unlock device';
   callAdbShellCommandUntilSuccess adb shell 'am broadcast -a android.intent.action.CLOSE_SYSTEM_DIALOGS; echo ::$?::';
   callAdbShellCommandUntilSuccess adb shell 'input keyevent 82; echo ::$?::';
-  callAdbShellCommandUntilSuccess adb shell 'input tap 800 400; echo ::$?::';
-  callAdbShellCommandUntilSuccess adb shell 'input tap 1000 500; echo ::$?::';
+
+  androidApi=$(adb shell getprop ro.build.version.sdk | tr -d '[:space:]');
+  echo "androidApi: '${androidApi}'";
+
+  if [ "${androidApi}" -gt 15 ]; then
+    callAdbShellCommandUntilSuccess adb shell 'input tap 800 400; echo ::$?::';
+    callAdbShellCommandUntilSuccess adb shell 'input tap 1000 500; echo ::$?::';
+  fi
 
   callCommandUntilSuccess 5 adb get-state;
   callCommandUntilSuccess 5 adb devices -l;
   callCommandUntilSuccess 5 adb version;
 
   callAdbShellCommandUntilSuccess adb shell 'input keyevent 82; echo ::$?::';
-  callAdbShellCommandUntilSuccess adb shell 'input tap 800 400; echo ::$?::';
-
-  androidApi=$(adb shell getprop ro.build.version.sdk | tr -d '[:space:]');
-  echo "androidApi: '${androidApi}'";
+  if [ "${androidApi}" -gt 15 ]; then
+    callAdbShellCommandUntilSuccess adb shell 'input tap 800 400; echo ::$?::';
+  fi
 }
 
 runEmulator() {
