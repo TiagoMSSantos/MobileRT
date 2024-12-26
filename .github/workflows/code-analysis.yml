@@ -16,10 +16,11 @@ on:
     - '!app/third_party/conan/Native/**'
     - '!app/third_party/conan/Android/**'
     - '!**/CMakeLists*'
-    - '!*.java*'
-    - '!*.kt*'
-    - '!*.c*'
-    - '!*.h*'
+    - '!**/*.java*'
+    - '!**/*.kt*'
+    - '!**/*.c*'
+    - '!**/*.h'
+    - '!**/*.hpp'
     - '!*gradle*'
 
 defaults:

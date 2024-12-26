@@ -2,7 +2,7 @@
                        // <!--
                        window.initialData = {
   "statistics": {
-    "detectionDate": "2024-12-26T12:07:41.524Z",
+    "detectionDate": "2024-12-26T12:32:58.707Z",
     "formats": {
       "java": {
         "sources": {
@@ -1999,14 +1999,14 @@
             "newClones": 0
           },
           ".github/workflows/native.yml": {
-            "lines": 104,
-            "tokens": 624,
+            "lines": 105,
+            "tokens": 629,
             "sources": 1,
             "clones": 1,
-            "duplicatedLines": 22,
-            "duplicatedTokens": 105,
-            "percentage": 21.15,
-            "percentageTokens": 16.83,
+            "duplicatedLines": 23,
+            "duplicatedTokens": 110,
+            "percentage": 21.9,
+            "percentageTokens": 17.49,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2023,26 +2023,26 @@
             "newClones": 0
           },
           ".github/workflows/docker.yml": {
-            "lines": 374,
-            "tokens": 2721,
+            "lines": 375,
+            "tokens": 2726,
             "sources": 1,
             "clones": 3,
-            "duplicatedLines": 67,
-            "duplicatedTokens": 347,
-            "percentage": 17.91,
-            "percentageTokens": 12.75,
+            "duplicatedLines": 68,
+            "duplicatedTokens": 352,
+            "percentage": 18.13,
+            "percentageTokens": 12.91,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           ".github/workflows/code-analysis.yml": {
-            "lines": 319,
-            "tokens": 2105,
+            "lines": 320,
+            "tokens": 2110,
             "sources": 1,
             "clones": 3,
-            "duplicatedLines": 63,
-            "duplicatedTokens": 333,
-            "percentage": 19.75,
-            "percentageTokens": 15.82,
+            "duplicatedLines": 64,
+            "duplicatedTokens": 338,
+            "percentage": 20,
+            "percentageTokens": 16.02,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2059,14 +2059,14 @@
             "newClones": 0
           },
           ".github/workflows/android.yml": {
-            "lines": 82,
-            "tokens": 479,
+            "lines": 83,
+            "tokens": 484,
             "sources": 1,
             "clones": 1,
-            "duplicatedLines": 23,
-            "duplicatedTokens": 110,
-            "percentage": 28.05,
-            "percentageTokens": 22.96,
+            "duplicatedLines": 24,
+            "duplicatedTokens": 115,
+            "percentage": 28.92,
+            "percentageTokens": 23.76,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2168,14 +2168,14 @@
           }
         },
         "total": {
-          "lines": 3227,
-          "tokens": 21270,
+          "lines": 3231,
+          "tokens": 21290,
           "sources": 25,
           "clones": 15,
-          "duplicatedLines": 349,
-          "duplicatedTokens": 2684,
-          "percentage": 10.81,
-          "percentageTokens": 12.62,
+          "duplicatedLines": 351,
+          "duplicatedTokens": 2694,
+          "percentage": 10.86,
+          "percentageTokens": 12.65,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3250,14 +3250,14 @@
       }
     },
     "total": {
-      "lines": 30499,
-      "tokens": 235035,
+      "lines": 30503,
+      "tokens": 235055,
       "sources": 257,
       "clones": 122,
-      "duplicatedLines": 1521,
-      "duplicatedTokens": 14182,
+      "duplicatedLines": 1523,
+      "duplicatedTokens": 14192,
       "percentage": 4.99,
-      "percentageTokens": 6.03,
+      "percentageTokens": 6.04,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -7153,37 +7153,37 @@
     },
     {
       "format": "yaml",
-      "lines": 23,
-      "fragment": "- '!**/CMakeLists*'\n    - '!**/AndroidTest/resources/**'\n    - '!**/*.c*'\n    - '!**/*.h*'\n    - '!**/*.ui*'\n\ndefaults:\n  run:\n    shell: sh\n    working-directory: .\n\nconcurrency:\n  group: ${{ github.workflow }} ${{ github.ref }}\n  cancel-in-progress: true\n\n# Default environment variables.\nenv:\n  GITHUB_STEP_TIMEOUT_SMALL: 4\n  GITHUB_STEP_TIMEOUT_MEDIUM: 10\n  GITHUB_STEP_TIMEOUT_LONG: 20\n\njobs:\n  Build",
+      "lines": 24,
+      "fragment": "- '!**/CMakeLists*'\n    - '!**/AndroidTest/resources/**'\n    - '!**/*.c*'\n    - '!**/*.h'\n    - '!**/*.hpp'\n    - '!**/*.ui*'\n\ndefaults:\n  run:\n    shell: sh\n    working-directory: .\n\nconcurrency:\n  group: ${{ github.workflow }} ${{ github.ref }}\n  cancel-in-progress: true\n\n# Default environment variables.\nenv:\n  GITHUB_STEP_TIMEOUT_SMALL: 4\n  GITHUB_STEP_TIMEOUT_MEDIUM: 10\n  GITHUB_STEP_TIMEOUT_LONG: 20\n\njobs:\n  Build",
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/docker.yml",
         "start": 19,
-        "end": 41,
+        "end": 42,
         "startLoc": {
           "line": 19,
           "column": 5,
           "position": 82
         },
         "endLoc": {
-          "line": 41,
+          "line": 42,
           "column": 6,
-          "position": 187
+          "position": 192
         }
       },
       "secondFile": {
         "name": ".github/workflows/native.yml",
         "start": 18,
-        "end": 40,
+        "end": 41,
         "startLoc": {
           "line": 18,
           "column": 7,
           "position": 79
         },
         "endLoc": {
-          "line": 40,
+          "line": 41,
           "column": 7,
-          "position": 184
+          "position": 189
         }
       }
     },
@@ -7194,32 +7194,32 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/code-analysis.yml",
-        "start": 25,
-        "end": 47,
+        "start": 26,
+        "end": 48,
         "startLoc": {
-          "line": 25,
+          "line": 26,
           "column": 1,
-          "position": 109
+          "position": 114
         },
         "endLoc": {
-          "line": 47,
+          "line": 48,
           "column": 67,
-          "position": 227
+          "position": 232
         }
       },
       "secondFile": {
         "name": ".github/workflows/docker.yml",
-        "start": 25,
-        "end": 47,
+        "start": 26,
+        "end": 48,
         "startLoc": {
-          "line": 25,
+          "line": 26,
           "column": 1,
-          "position": 107
+          "position": 112
         },
         "endLoc": {
-          "line": 47,
+          "line": 48,
           "column": 8,
-          "position": 225
+          "position": 230
         }
       }
     },
@@ -7230,17 +7230,17 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/code-analysis.yml",
-        "start": 67,
-        "end": 85,
+        "start": 68,
+        "end": 86,
         "startLoc": {
-          "line": 67,
+          "line": 68,
           "column": 7,
-          "position": 381
+          "position": 386
         },
         "endLoc": {
-          "line": 85,
+          "line": 86,
           "column": 6,
-          "position": 486
+          "position": 491
         }
       },
       "secondFile": {
@@ -7281,17 +7281,17 @@
       },
       "secondFile": {
         "name": ".github/workflows/docker.yml",
-        "start": 25,
-        "end": 48,
+        "start": 26,
+        "end": 49,
         "startLoc": {
-          "line": 25,
+          "line": 26,
           "column": 1,
-          "position": 107
+          "position": 112
         },
         "endLoc": {
-          "line": 48,
+          "line": 49,
           "column": 8,
-          "position": 231
+          "position": 236
         }
       }
     },
@@ -7333,37 +7333,37 @@
     },
     {
       "format": "yaml",
-      "lines": 24,
-      "fragment": "- '!**/CMakeLists*'\n      - '!*.java*'\n      - '!*.kt*'\n      - '!*.c*'\n      - '!*.h*'\n      - '!*gradle*'\n\ndefaults:\n  run:\n    shell: sh\n    working-directory: .\n\nconcurrency:\n  group: ${{ github.workflow }} ${{ github.ref }}\n  cancel-in-progress: true\n\n# Default environment variables.\nenv:\n  GITHUB_STEP_TIMEOUT_SMALL: 4\n  GITHUB_STEP_TIMEOUT_MEDIUM: 10\n  GITHUB_STEP_TIMEOUT_LONG: 20\n\njobs:\n  Matrix",
+      "lines": 25,
+      "fragment": "- '!**/CMakeLists*'\n    - '!**/*.java*'\n    - '!**/*.kt*'\n    - '!**/*.c*'\n    - '!**/*.h'\n    - '!**/*.hpp'\n    - '!*gradle*'\n\ndefaults:\n  run:\n    shell: sh\n    working-directory: .\n\nconcurrency:\n  group: ${{ github.workflow }} ${{ github.ref }}\n  cancel-in-progress: true\n\n# Default environment variables.\nenv:\n  GITHUB_STEP_TIMEOUT_SMALL: 4\n  GITHUB_STEP_TIMEOUT_MEDIUM: 10\n  GITHUB_STEP_TIMEOUT_LONG: 20\n\njobs:\n  Matrix",
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android.yml",
         "start": 19,
-        "end": 42,
+        "end": 43,
         "startLoc": {
           "line": 19,
-          "column": 7,
+          "column": 5,
           "position": 82
         },
         "endLoc": {
-          "line": 42,
+          "line": 43,
           "column": 7,
-          "position": 192
+          "position": 197
         }
       },
       "secondFile": {
         "name": ".github/workflows/code-analysis.yml",
         "start": 18,
-        "end": 41,
+        "end": 42,
         "startLoc": {
           "line": 18,
           "column": 5,
           "position": 79
         },
         "endLoc": {
-          "line": 41,
+          "line": 42,
           "column": 6,
-          "position": 189
+          "position": 194
         }
       }
     },

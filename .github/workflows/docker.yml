@@ -19,7 +19,8 @@ on:
     - '!**/CMakeLists*'
     - '!**/AndroidTest/resources/**'
     - '!**/*.c*'
-    - '!**/*.h*'
+    - '!**/*.h'
+    - '!**/*.hpp'
     - '!**/*.ui*'
 
 defaults:
