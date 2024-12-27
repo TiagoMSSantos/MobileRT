@@ -132,6 +132,12 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && !startsWith(matrix.host_os, 'windows')
       uses: docker/setup-buildx-action@v3
+      with:
+        # Check available parameters in: https://github.com/docker/setup-buildx-action/blob/master/action.yml
+        version: latest
+        platforms: linux/amd64
+        cache-binary: true
+        cleanup: false
 
     - name: Login to DockerHub Registry
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}

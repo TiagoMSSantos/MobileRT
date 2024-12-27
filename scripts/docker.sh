@@ -80,7 +80,18 @@ pullDockerImage() {
   export DOCKER_BUILDKIT=1;
   rm -f /tmp/fd3;
   exec 3<> /tmp/fd3; # Open file descriptor 3.
-  (docker pull ptpuscas/mobile_rt:"${1}" || true) | tee /tmp/fd3;
+  i=1;
+  parallelizeBuild;
+  echo "Creating '${NCPU_CORES}' processes to perform docker pull.";
+  while [ "${i}" -le "${NCPU_CORES}" ]; do
+    echo "Scheduling docker pull process: ${i}";
+    docker pull ptpuscas/mobile_rt:"${1}" | tee /tmp/fd3 &
+    i=$((i + 1));
+  done
+  echo 'jobs created:';
+  jobs -p;
+  # shellcheck disable=SC2046
+  wait $(jobs -p);
   output=$(cat /tmp/fd3);
   echo "Docker: ${output}";
   if echo "${output}" | grep -q 'up to date' || echo "${output}" | grep -q 'Downloaded newer image for'; then
