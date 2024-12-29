@@ -87,7 +87,7 @@
   "customManagers": [
     {
       "fileMatch": [
-        "Dockerfile",
+        ".*\\/Dockerfile.*",
         "\\.github\\/workflows\\/.+\\.ya?ml"
       ],
       "matchStringsStrategy": "any",
@@ -123,7 +123,7 @@
     },
     {
       "fileMatch": [
-        "build.gradle"
+        ".*build.gradle"
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
@@ -137,7 +137,7 @@
     },
     {
       "fileMatch": [
-        "build.gradle"
+        ".*build.gradle"
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
@@ -151,7 +151,7 @@
     },
     {
       "fileMatch": [
-        "build.gradle"
+        ".*build.gradle"
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
@@ -165,7 +165,7 @@
     },
     {
       "fileMatch": [
-        "build.gradle"
+        ".*build.gradle"
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
@@ -179,7 +179,7 @@
     },
     {
       "fileMatch": [
-        "build.gradle"
+        ".*build.gradle"
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
@@ -193,7 +193,7 @@
     },
     {
       "fileMatch": [
-        "build.gradle"
+        ".*build.gradle"
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
@@ -207,7 +207,7 @@
     },
     {
       "fileMatch": [
-        "build.gradle"
+        ".*build.gradle"
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
@@ -219,7 +219,7 @@
     },
     {
       "fileMatch": [
-        "build.gradle"
+        ".*build.gradle"
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
