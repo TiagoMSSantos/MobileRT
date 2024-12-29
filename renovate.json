@@ -438,7 +438,7 @@
       "matchManagers": [
         "conan"
       ],
-      "versioning": "regex:^(?<major>[0-9]+)\\.?(?<minor>[0-9a-z]+)?\\.?(?<patch>[0-9]+)?.*$",
+      "versioning": "regex:^(cci.)?(?<major>[0-9]+)\\.?(?<minor>[0-9a-z]+)?\\.?(?<patch>[0-9]+)?.*$",
       "allowedVersions": "!/^(cci\\.[0-9]+)|([0-9]+\\.[0-9]+\\.[0-9]+-rc[0-9]+)$/"
     },
     {
@@ -506,6 +506,16 @@
       ],
       "versioning": "regex:^(v|release-)?(?<major>[0-9]+)\\.(?<minor>[0-9]+)\\.(?<patch>[0-9]+)-?(?<prerelease>[0-9a-z]+)?.*$",
       "allowedVersions": "<1.13"
+    },
+    {
+      "groupName": "Update docker images",
+      "enabled": true,
+      "matchManagers": [
+        "custom.regex",
+        "dockerfile"
+      ],
+      "versioning": "regex:^(?<major>[0-9]+)\\.?(?<minor>[0-9a-z]+)?\\.?(?<patch>[0-9]+)?-?(?<compatibility>[a-z]+)?.*$",
+      "pinDigests": false
     },
     {
       "groupName": "Update MobileRT docker images",
