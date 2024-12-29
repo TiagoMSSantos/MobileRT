@@ -78,7 +78,7 @@ jobs:
           echo "MacOS '${MAJOR_MAC_VERSION}' detected";
         fi
         set -e;
-        if [ "${MAJOR_MAC_VERSION}" = 14 ]; then
+        if [ "${MAJOR_MAC_VERSION}" -gt 13 ]; then
             echo 'android_arch=\"arm64-v8a\"' >> "${GITHUB_ENV}";
             echo 'android_emulator_arch=arm64-v8a' >> "${GITHUB_ENV}";
         else
@@ -95,12 +95,18 @@ jobs:
 
     - name: Download Android CMake
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && !startsWith(inputs.host_os, 'windows')
+      if: success() && !startsWith(matrix.host_os, 'windows')
       run: |
         ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'cmake;3.31.1';
 
-    - name: Download Android dependencies
+    - name: Download Android CMake Windows
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success() && startsWith(matrix.host_os, 'windows')
+      run: |
+        ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager.bat --install 'cmake;3.31.1';
+
+    - name: Download Android dependencies
+      timeout-minutes: 5
       if: success()
       run: |
         sh gradlew build --dry-run -Dorg.gradle.configuration-cache=true --parallel \
@@ -148,6 +154,7 @@ jobs:
         cores: ${{ env.NCPU_CORES }}
         sdcard-path-or-size: 100M
         ram-size: 1024M
+        emulator-boot-timeout: 400 # It can take more than 5 min to boot, and the tests can take more than 17 min to finish.
         script: |
           sh scripts/run_tests_android.sh -t ${{ matrix.type }} -r rep_puscas.mobilertapp.${{ matrix.test }} -a ${{ matrix.android_api }} -k false -f ${{ env.android_arch }};
 

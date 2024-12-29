@@ -434,13 +434,19 @@ file( GLOB_RECURSE SCENES_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/Scenes/**.cpp" )
 set( SCENES_SOURCES "${SCENES_SOURCES}" CACHE STRING "CUSTOM" FORCE )
 
 if( NOT DEFINED ANDROID_ABI )
-  message( STATUS "Finding Qt5." )
-  find_package( Qt5 OPTIONAL_COMPONENTS Core Gui Widgets )
-  if( NOT Qt5_FOUND )
-    message( STATUS "Did not find Qt5. Finding Qt4." )
-    find_package( Qt4 OPTIONAL_COMPONENTS QtCore QtGui )
+  message( STATUS "Finding Qt6." )
+  find_package( Qt6 OPTIONAL_COMPONENTS Core Gui Widgets )
+  if( NOT Qt6_FOUND )
+    message( STATUS "Did not find Qt6. Finding Qt5." )
+    find_package( Qt5 OPTIONAL_COMPONENTS Core Gui Widgets )
+    if( NOT Qt5_FOUND )
+      message( STATUS "Did not find Qt5. Finding Qt4." )
+      find_package( Qt4 OPTIONAL_COMPONENTS QtCore QtGui )
+    else()
+      message( STATUS "Found Qt5." )
+    endif()
   else()
-    message( STATUS "Found Qt5." )
+    message( STATUS "Found Qt6." )
   endif()
 endif()
 
@@ -482,27 +488,30 @@ else()
 
   add_executable( ${PROJECT_NAME} ${SCENES_SOURCES} ${MOBILE_DEPENDENT_SOURCES} ${MOBILE_DEPENDENT_SOURCES_QT} )
 
-  message( STATUS "QT_INCLUDES = ${QT_INCLUDES}" )
-  message( STATUS "QT_QTCORE_LIBRARIES = ${QT_QTCORE_LIBRARIES}" )
-  message( STATUS "QT_QTGUI_LIBRARIES = ${QT_QTGUI_LIBRARIES}" )
+  message( STATUS "Qt6Core_INCLUDE_DIRS = " ${Qt6Core_INCLUDE_DIRS} )
+  message( STATUS "Qt6Gui_INCLUDE_DIRS = " ${Qt6Gui_INCLUDE_DIRS} )
+  message( STATUS "Qt6Widgets_INCLUDE_DIRS = " ${Qt6Widgets_INCLUDE_DIRS} )
 
   message( STATUS "Qt5Core_INCLUDE_DIRS = " ${Qt5Core_INCLUDE_DIRS} )
   message( STATUS "Qt5Gui_INCLUDE_DIRS = " ${Qt5Gui_INCLUDE_DIRS} )
   message( STATUS "Qt5Widgets_INCLUDE_DIRS = " ${Qt5Widgets_INCLUDE_DIRS} )
 
-  # Include Qt headers
-  target_include_directories( ${PROJECT_NAME}
-    SYSTEM PRIVATE ${QT_HEADERS}
-    PRIVATE ${QT_HEADERS_RT} )
+  message( STATUS "QT_INCLUDES = ${QT_INCLUDES}" )
+  message( STATUS "QT_QTCORE_LIBRARIES = ${QT_QTCORE_LIBRARIES}" )
+  message( STATUS "QT_QTGUI_LIBRARIES = ${QT_QTGUI_LIBRARIES}" )
 
-  if( Qt5_FOUND )
+  # Include Qt headers
+  target_include_directories( ${PROJECT_NAME} SYSTEM PRIVATE ${QT_HEADERS} PRIVATE ${QT_HEADERS_RT} )
+
+  if( Qt6_FOUND )
+    message( STATUS "Including headers from Qt6." )
+    target_include_directories( ${PROJECT_NAME} SYSTEM PRIVATE ${Qt6Core_INCLUDE_DIRS} ${Qt6Gui_INCLUDE_DIRS} ${Qt6Widgets_INCLUDE_DIRS} )
+  elseif( Qt5_FOUND )
     message( STATUS "Including headers from Qt5." )
-    target_include_directories( ${PROJECT_NAME}
-      SYSTEM PRIVATE ${Qt5Core_INCLUDE_DIRS} ${Qt5Gui_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} )
+    target_include_directories( ${PROJECT_NAME} SYSTEM PRIVATE ${Qt5Core_INCLUDE_DIRS} ${Qt5Gui_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} )
   elseif( Qt4_FOUND )
     message( STATUS "Including headers from Qt4." )
-    target_include_directories( ${PROJECT_NAME}
-      SYSTEM PRIVATE ${QT_INCLUDES} )
+    target_include_directories( ${PROJECT_NAME} SYSTEM PRIVATE ${QT_INCLUDES} )
   endif()
 
   if( CMAKE_HOST_SYSTEM_NAME MATCHES "Darwin" )
@@ -511,17 +520,30 @@ else()
     set( CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH} /usr/local/lib/python3.9/site-packages/cmake/data/CMake.app/Contents/share/cmake-3.22/Modules/" CACHE STRING "CUSTOM" FORCE )
     message( STATUS "CMAKE_MODULE_PATH = ${CMAKE_MODULE_PATH}" )
 
-    if( NOT Qt5_FOUND )
-      message( STATUS "Did not find Qt5. Finding Qt4." )
-      find_package( Qt4 OPTIONAL_COMPONENTS QtCore QtGui )
+    if( NOT Qt6_FOUND )
+      if( NOT Qt5_FOUND )
+        message( STATUS "Did not find Qt6 nor Qt5. Finding Qt4." )
+        find_package( Qt4 OPTIONAL_COMPONENTS QtCore QtGui )
+      endif()
     endif()
 
+    message( STATUS "Linking with default user local path." )
     target_link_libraries( ${PROJECT_NAME} PRIVATE -F/usr/local/lib )
-    # If github action jurplel/install-qt-action was used, then Qt should be at root of project.
+    # If github action jurplel/install-qt-action was used, then Qt should be at root of project. E.g. paths:
+    # * Qt/5.15.2/msvc2019_64/include/QtWidgets/QDialog
+    # * Qt/6.9.0/msvc2022_64/include/QtWidgets/QDialog
+    message( STATUS "Finding lib files from Qt6 or Qt5." )
     file( GLOB QT_LIBS "${CMAKE_SOURCE_DIR}/../Qt/*/*/lib/" )
+    message( STATUS "Linking lib files from Qt6 or Qt5." )
     target_link_libraries( ${PROJECT_NAME} PRIVATE -F${QT_LIBS} )
 
-    if( Qt5_FOUND )
+    if( Qt6_FOUND )
+      message( STATUS "Linking with Qt6." )
+      target_link_libraries( ${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets )
+
+      message( STATUS "Linking with QtWidgets from Qt6 (which Qt4 doesn't have)." )
+      target_link_libraries( ${PROJECT_NAME} PRIVATE "-framework QtWidgets" )
+    elseif( Qt5_FOUND )
       message( STATUS "Linking with Qt5." )
       target_link_libraries( ${PROJECT_NAME} PRIVATE Qt5::Core Qt5::Gui Qt5::Widgets )
 
@@ -535,7 +557,10 @@ else()
   else()
     message( STATUS "Linking Qt." )
 
-    if( Qt5_FOUND )
+    if( Qt6_FOUND )
+      message( STATUS "Linking with Qt6." )
+      target_link_libraries( ${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets )
+    elseif( Qt5_FOUND )
       message( STATUS "Linking with Qt5." )
       target_link_libraries( ${PROJECT_NAME} PRIVATE Qt5::Core Qt5::Gui Qt5::Widgets )
     elseif( Qt4_FOUND )

@@ -243,7 +243,7 @@ installDockerCommandForMacOS() {
   # brew list ncurses > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install ncurses;
   set -e;
 
-  if [ "${MAJOR_MAC_VERSION}" = 14 ]; then
+  if [ "${MAJOR_MAC_VERSION}" -gt 13 ]; then
     echo 'Installing a specific version of colima.';
     rm -rf ~/.colima;
     rm -rf ~/.lima;
@@ -258,10 +258,15 @@ installDockerCommandForMacOS() {
 
   echo 'Start colima.';
   /tmp/colima.rb start --help;
+  parallelizeBuild;
+  memSizeBytes=$(sysctl -n hw.memsize);
+  memSizeGB=$((memSizeBytes / (1024 * 1024 * 1024)));
+  echo "System Memory: ${memSizeGB} GB";
+  df -h;
   set +e;
   # Check available resources: https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners/about-github-hosted-runners#standard-github-hosted-runners-for-public-repositories
   # To setup Colima for MacOS with CPU ARM M1: https://www.tyler-wright.com/using-colima-on-an-m1-m2-mac
-  /tmp/colima.rb start --cpu 4 --memory 7 --disk 14 --mount-type=virtiofs;
+  /tmp/colima.rb start --cpu "${NCPU_CORES}" --memory ${memSizeGB} --disk 14 --mount-type=virtiofs;
   startedColima=$?;
   set -e;
   if [ "${startedColima}" != "0" ]; then

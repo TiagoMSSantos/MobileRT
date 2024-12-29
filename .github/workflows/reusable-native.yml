@@ -18,6 +18,9 @@ on:
       qt_host:
         type: string
         required: false
+      qt_version:
+        type: string
+        required: false
       qt_arch:
         type: string
         required: false
@@ -86,7 +89,7 @@ jobs:
         # Download Qt from: https://download.qt.io/online/qtsdkrepository/
         with:
           # Check available parameters in: https://github.com/jurplel/install-qt-action/blob/master/action.yml
-          version: '5.15.2' # Also update: app/CMakeLists.txt
+          version: '${{ inputs.qt_version }}' # Also update: app/CMakeLists.txt
           host: '${{ inputs.qt_host }}'
           target: 'desktop'
           arch: '${{ inputs.qt_arch }}'
@@ -120,7 +123,7 @@ jobs:
           test -d /usr/local/Cellar/qt@5;
           qtPathFromHomebrewForMacOS13=$?;
           test -d /opt/local/libexec/qt5;
-          qtPathFromMacPortsForMacOS11=$?;
+          qtPathFromMacPortsForMacOS12=$?;
           set -e;
           if [ "${qtPathFromHomebrewForMacOS14}" = '0' ]; then
             echo 'Adding Qt v5 lib path to compiler in MacOS-14';
@@ -136,8 +139,8 @@ jobs:
             echo "Qt5_DIR=/usr/local/Cellar/qt@5/${qtVersion}/lib/cmake/Qt5" >> "${GITHUB_ENV}";
             echo "CPPFLAGS=${CPPFLAGS} -I/usr/local/opt/qt@5/include" >> "${GITHUB_ENV}";
             echo "LDFLAGS=${LDFLAGS} -L/usr/local/opt/qt@5/lib" >> "${GITHUB_ENV}";
-          elif [ "${qtPathFromMacPortsForMacOS11}" = '0' ]; then
-            echo 'Adding Qt v5 lib path to compiler in MacOS-11';
+          elif [ "${qtPathFromMacPortsForMacOS12}" = '0' ]; then
+            echo 'Adding Qt v5 lib path to compiler in MacOS-12';
             echo "Qt5_DIR=/opt/local/lib/cmake/Qt5" >> "${GITHUB_ENV}";
             echo "CPPFLAGS=${CPPFLAGS} -I/opt/local/libexec/qt5/include" >> "${GITHUB_ENV}";
             echo "LDFLAGS=${LDFLAGS} -L/opt/local/libexec/qt5/lib" >> "${GITHUB_ENV}";

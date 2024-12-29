@@ -308,6 +308,9 @@ install_dependencies_macos() {
   qtAlreadyInstalled=$?;
   if [ "${qtAlreadyInstalled}" = '0' ]; then
     echo 'Detected Qt folder in MobileRT root dir. Assuming Qt is already installed there. Not installing Qt via package manager.';
+    # If github action jurplel/install-qt-action was used, then Qt should be at root of project. E.g. paths:
+    # * Qt/5.15.2/msvc2019_64/include/QtWidgets/QDialog
+    # * Qt/6.9.0/msvc2022_64/include/QtWidgets/QDialog
   else
     echo 'Installing Qt via MacPorts.';
     sudo port -bn install qt5;
@@ -330,8 +333,8 @@ install_dependencies_macos() {
   # With Xcode_14.0.1.app, it throws this error on MacOS-12:
   # ld: Assertion failed: (_file->_atomsArrayCount == computedAtomCount && "more atoms allocated than expected")
   # For more information, check: https://stackoverflow.com/questions/73714336/xcode-update-to-version-2395-ld-compile-problem-occurs-computedatomcount-m
-  if [ "${MAJOR_MAC_VERSION}" = 11 ] || [ "${MAJOR_MAC_VERSION}" = 12 ]; then
-    # Recommended Xcode_13.2.app because it seems the only one compatible with MacOS-11 & MacOS-12:
+  if [ "${MAJOR_MAC_VERSION}" = 12 ]; then
+    # Recommended Xcode_13.2.app because it seems the only one compatible with MacOS-12:
     sudo xcode-select --switch /System/Volumes/Data/Applications/Xcode_13.2.1.app/Contents/Developer;
     ls -lahp /System/Volumes/Data/Applications/Xcode_13.2.1.app/Contents/Developer;
   fi
@@ -364,6 +367,9 @@ install_dependencies_windows() {
   set -e;
   if [ "${qtAlreadyInstalled}" = '0' ]; then
     echo 'Detected Qt folder in MobileRT root dir. Assuming Qt is already installed there. Not installing Qt via package manager.';
+    # If github action jurplel/install-qt-action was used, then Qt should be at root of project. E.g. paths:
+    # * Qt/5.15.2/msvc2019_64/include/QtWidgets/QDialog
+    # * Qt/6.9.0/msvc2022_64/include/QtWidgets/QDialog
   else
     echo 'Installing Qt via Chocolatey.';
     # Install Qt: https://community.chocolatey.org/packages/qt5-default
