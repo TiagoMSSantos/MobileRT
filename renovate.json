@@ -437,8 +437,9 @@
         "ubuntu"
       ],
       "matchManagers": [
-        "custom.regex",
-        "dockerfile"
+        "dockerfile",
+        "docker-compose",
+        "custom.regex"
       ],
       "versioning": "ubuntu",
       "allowedVersions": "/^[0-9]+\\.04$/"
