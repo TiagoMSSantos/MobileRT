@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2024-12-29T08:30:42.156Z",
+    "detectionDate": "2024-12-29T08:48:02.717Z",
     "formats": {
       "java": {
         "sources": {
@@ -1961,14 +1961,14 @@
             "newClones": 0
           },
           ".github/workflows/reusable-native.yml": {
-            "lines": 360,
-            "tokens": 2023,
+            "lines": 369,
+            "tokens": 2085,
             "sources": 1,
             "clones": 2,
             "duplicatedLines": 22,
             "duplicatedTokens": 286,
-            "percentage": 6.11,
-            "percentageTokens": 14.14,
+            "percentage": 5.96,
+            "percentageTokens": 13.72,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2154,14 +2154,14 @@
           }
         },
         "total": {
-          "lines": 3258,
-          "tokens": 21465,
+          "lines": 3267,
+          "tokens": 21527,
           "sources": 25,
           "clones": 15,
           "duplicatedLines": 351,
           "duplicatedTokens": 2694,
-          "percentage": 10.77,
-          "percentageTokens": 12.55,
+          "percentage": 10.74,
+          "percentageTokens": 12.51,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3236,8 +3236,8 @@
       }
     },
     "total": {
-      "lines": 30547,
-      "tokens": 235300,
+      "lines": 30556,
+      "tokens": 235362,
       "sources": 256,
       "clones": 121,
       "duplicatedLines": 1507,
@@ -6784,32 +6784,32 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/reusable-native.yml",
-        "start": 324,
-        "end": 335,
+        "start": 333,
+        "end": 344,
         "startLoc": {
-          "line": 324,
+          "line": 333,
           "column": 9,
-          "position": 1713
+          "position": 1775
         },
         "endLoc": {
-          "line": 335,
+          "line": 344,
           "column": 2,
-          "position": 1856
+          "position": 1918
         }
       },
       "secondFile": {
         "name": ".github/workflows/reusable-native.yml",
-        "start": 297,
-        "end": 309,
+        "start": 306,
+        "end": 318,
         "startLoc": {
-          "line": 297,
+          "line": 306,
           "column": 9,
-          "position": 1430
+          "position": 1492
         },
         "endLoc": {
-          "line": 309,
+          "line": 318,
           "column": 6,
-          "position": 1574
+          "position": 1636
         }
       }
     },

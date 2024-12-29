@@ -82,6 +82,15 @@ jobs:
           # Check available parameters in: https://github.com/melusina-org/setup-macports/blob/main/action.yaml
           parameters: '.github/macports.yml'
 
+      - name: Delete Qt path
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success() && (startsWith(inputs.host_os, 'windows') || startsWith(inputs.host_os, 'macos-12'))
+        working-directory: .
+        run: |
+          # This step is to avoid the following error during the step "Install Qt (Windows & MacOS)":
+          # Cannot create output directory : Cannot create a file when that file already exists. : D:\a\MobileRT\MobileRT\Qt\6.9.0\msvc2022_64
+          rm -rf Qt;
+
       - name: Install Qt (Windows & MacOS)
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success() && (startsWith(inputs.host_os, 'windows') || startsWith(inputs.host_os, 'macos-12'))
