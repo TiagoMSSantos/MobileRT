@@ -75,7 +75,7 @@ buildDockerImage() {
 
 # Helper command to pull the MobileRT docker image.
 # The parameters are:
-# * VERSION
+# * IMAGE
 pullDockerImage() {
   export DOCKER_BUILDKIT=1;
   rm -f /tmp/fd3;
@@ -85,7 +85,7 @@ pullDockerImage() {
   echo "Creating '${NCPU_CORES}' processes to perform docker pull.";
   while [ "${i}" -le "${NCPU_CORES}" ]; do
     echo "Scheduling docker pull process: ${i}";
-    docker pull ptpuscas/mobile_rt:"${1}" | tee /tmp/fd3 &
+    docker pull "${1}" | tee /tmp/fd3 &
     i=$((i + 1));
   done
   echo 'jobs created:';
@@ -96,10 +96,8 @@ pullDockerImage() {
   echo "Docker: ${output}";
   if echo "${output}" | grep -q 'up to date' || echo "${output}" | grep -q 'Downloaded newer image for'; then
     echo 'Docker image found!';
-    export BUILD_IMAGE='no';
   else
     echo 'Did not find the Docker image. Will have to build the image.';
-    export BUILD_IMAGE='yes';
   fi
   exec 3>&-; # Close file descriptor 3.
 }

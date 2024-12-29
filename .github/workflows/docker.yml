@@ -295,11 +295,11 @@ jobs:
 
     - name: Pull base Docker image
       timeout-minutes: 60
-      if: success() && !startsWith(matrix.host_os, 'windows')
+      if: success()
       run: |
         if echo "${{ matrix.BASE_IMAGE }}" | grep -q -e 'gentoo'; then
           echo "Pulling MobileRT docker image ${{ env.VERSION }}";
-          . scripts/docker.sh && pullDockerImage ${{ env.VERSION }} &
+          . scripts/docker.sh && pullDockerImage ptpuscas/mobile_rt:${{ env.VERSION }} &
           pid_docker_pull="$!";
           export BUILD_IMAGE='no';
           wait ${pid_docker_pull};
@@ -308,8 +308,9 @@ jobs:
           pid_docker="$!";
         else
           echo "Pulling docker base image ${{ matrix.BASE_IMAGE }}";
-          docker image pull ${{ matrix.BASE_IMAGE }} &
+          . scripts/docker.sh && pullDockerImage ${{ matrix.BASE_IMAGE }} &
           pid_docker="$!";
+          export BUILD_IMAGE='yes';
         fi
         echo 'Waiting for docker pull.';
         wait ${pid_docker};

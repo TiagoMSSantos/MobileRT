@@ -305,6 +305,7 @@ install_dependencies_macos() {
 
   set +e;
   test -d Qt;
+  # shellcheck disable=SC2319
   qtAlreadyInstalled=$?;
   if [ "${qtAlreadyInstalled}" = '0' ]; then
     echo 'Detected Qt folder in MobileRT root dir. Assuming Qt is already installed there. Not installing Qt via package manager.';
@@ -348,7 +349,7 @@ install_dependencies_macos() {
 install_dependencies_windows() {
   if ! command -v cmake > /dev/null; then
     # Install cmake: https://community.chocolatey.org/packages/cmake
-    choco install -y cmake --version=3.13.0;
+    choco install -y cmake --version=3.31.1;
   fi
 
   if ! command -v make > /dev/null; then
