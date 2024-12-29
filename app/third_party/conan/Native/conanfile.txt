@@ -3,7 +3,7 @@ icu/76.1
 qt/6.7.1
 boost/1.86.0
 gtest/1.15.0
-tinyobjloader/1.0.7
+tinyobjloader/2.0.0-rc10
 glm/1.0.1
 stb/cci.20230920
 pcg-cpp/cci.20220409
