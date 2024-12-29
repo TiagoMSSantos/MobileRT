@@ -70,7 +70,7 @@ services:
             SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: 'zookeeper:2181'
 
     connect:
-        image: cnfldemos/kafka-connect-datagen:0.3.2-5.5.0
+        image: cnfldemos/kafka-connect-datagen:0.6.4-7.6.0
         hostname: connect
         container_name: connect
         depends_on:
