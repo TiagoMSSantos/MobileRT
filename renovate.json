@@ -330,6 +330,17 @@
       "automerge": true
     },
     {
+      "groupName": "Update docker images",
+      "enabled": true,
+      "matchManagers": [
+        "dockerfile",
+        "docker-compose",
+        "custom.regex"
+      ],
+      "versioning": "regex:^(?<major>[0-9]+)\\.?(?<minor>[0-9a-z]+)?\\.?(?<patch>[0-9]+)?-?(?<compatibility>[a-z]+)?.*$",
+      "pinDigests": false
+    },
+    {
       "groupName": "Docker images from Confluentinc",
       "enabled": true,
       "matchManagers": [
@@ -506,16 +517,6 @@
       ],
       "versioning": "regex:^(v|release-)?(?<major>[0-9]+)\\.(?<minor>[0-9]+)\\.(?<patch>[0-9]+)-?(?<prerelease>[0-9a-z]+)?.*$",
       "allowedVersions": "<1.13"
-    },
-    {
-      "groupName": "Update docker images",
-      "enabled": true,
-      "matchManagers": [
-        "dockerfile",
-        "docker-compose"
-      ],
-      "versioning": "regex:^(?<major>[0-9]+)\\.?(?<minor>[0-9a-z]+)?\\.?(?<patch>[0-9]+)?-?(?<compatibility>[a-z]+)?.*$",
-      "pinDigests": false
     },
     {
       "groupName": "Update MobileRT docker images",
