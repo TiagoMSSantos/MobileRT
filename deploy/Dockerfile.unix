@@ -87,19 +87,19 @@ RUN \
     echo 'Detected Debian based Linux'; \
     rm /etc/apt/sources.list.d/microsoft-prod.list || true; \
     apt-get update -y; \
-    apt-get install --no-install-recommends -y sudo git git-lfs tzdata; \
+    apt-get install --no-install-recommends -y sudo git tzdata; \
   elif uname -a | grep -iq 'linux' && command -v yum > /dev/null; then \
     echo 'Detected Red Hat based Linux'; \
     yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False update -y; \
     yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y \
-      sudo git git-lfs; \
+      sudo git; \
   elif uname -a | grep -iq 'linux' && command -v pacman > /dev/null; then \
     echo 'Detected Arch based Linux'; \
     pacman -Sy --noconfirm --needed --noscriptlet git; \
   elif uname -a | grep -iq 'linux' && command -v apk > /dev/null; then \
     echo 'Detected Alpine based Linux'; \
     apk update; \
-    apk add sudo git git-lfs; \
+    apk add sudo git; \
   elif uname -a | grep -iq 'linux' && command -v emerge > /dev/null; then \
     echo 'Detected Gentoo based Linux'; \
     echo 'FEATURES="-sandbox -usersandbox -ipc-sandbox -network-sandbox -pid-sandbox"' >> /etc/portage/make.conf; \
@@ -107,7 +107,7 @@ RUN \
     set +e; \
     emerge --sync; \
     set -e; \
-    emerge sudo dev-vcs/git dev-vcs/git-lfs; \
+    emerge sudo dev-vcs/git; \
   else \
     echo 'Assuming Windows OS.'; \
   fi; \
