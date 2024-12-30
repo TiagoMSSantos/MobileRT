@@ -60,7 +60,6 @@ ENV \
   CXXFLAGS="-O3 -std=c++11" \
   BUILD_TYPE="${BUILD_TYPE}" \
   CL="/MP"
-RUN set
 
 # Install chocolatey Package Manager.
 RUN powershell -NoProfile -ExecutionPolicy Bypass -Command " \
@@ -84,18 +83,13 @@ RUN powershell -NoProfile -ExecutionPolicy Bypass -Command " \
   "
 
 RUN \
-  # Install cmake: https://community.chocolatey.org/packages/cmake
-  start /wait /b "install cmake" "choco" install -y cmake --installargs 'ADD_CMAKE_TO_PATH=System' --version=3.31.1 | \
   # Install git: https://community.chocolatey.org/packages/git
-  # Install Qt: https://community.chocolatey.org/packages/qt5-default
-  choco install -y git git-lfs
+  choco install -y git
 
 RUN \
   # Configure git.
   git config --system https.postBuffer 1048576000 && \
   git config --system --add safe.directory C:/MobileRT && \
-  dir P* /X C:\Git-LFS\git-lfs.exe && \
-  git lfs install && \
   echo "Configured git." && \
   set
 
@@ -117,7 +111,6 @@ RUN \
     --progress \
     --branch !BRANCH! && \
   cd MobileRT && \
-  git lfs pull && \
   dir P* /X .\\app\\src\\androidTest\\resources\\CornellBox\\CornellBox-Water.obj && \
   dir P* /X .\\app\\src\\androidTest\\resources\\teapot\\teapot.obj && \
   # Print environment.
@@ -152,11 +145,8 @@ RUN \
   ls -la ./binariesResourceCompiler && \
   set && \
   sh scripts/install_dependencies.sh && \
-  icacls "C:\MobileRT" /c /t /grant:r "Authenticated Users":(OI)(CI)F
-
-RUN sh -c "echo ${PWD} && ls -la /Qt | grep '[[:digit:]]\.[[:digit:]].*' | awk '{print $(NF)}' | head -1 > qt_version.txt && cat qt_version.txt"
-
-RUN \
+  icacls "C:\MobileRT" /c /t /grant:r "Authenticated Users":(OI)(CI)F && \
+  sh -c "echo ${PWD} && ls -la /Qt | grep '[[:digit:]]\.[[:digit:]].*' | awk '{print $(NF)}' | head -1 > qt_version.txt && cat qt_version.txt" && \
   for /f "delims=" %x in ('type qt_version.txt') do set QT_VERSION="%x" && \
   setx /M QT_VERSION "!QT_VERSION: =!"
 
@@ -173,14 +163,6 @@ ENV \
   PATH="C:\\Qt\\${QT_VERSION}\\mingw81_64\\bin;${PATH}" \
   Qt5_DIR="C:\\Qt\\${QT_VERSION}\\mingw81_64\\lib\\cmake\\Qt5" \
   CPLUS_INCLUDE_PATH="C:\\Qt\\${QT_VERSION}\\mingw81_64\\include;C:\\Qt\\${QT_VERSION}\\mingw81_64\\include\\QtWidgets;C:\\Qt\\${QT_VERSION}\\mingw81_64\\include\\QtGui;C:\\Qt\\${QT_VERSION}\\mingw81_64\\include\\QtCore"
-
-RUN \
-  # Test commands
-  set && \
-  dir P* /X . && \
-  choco /? && \
-  rc /? && \
-  qmake --help
 ###############################################################################
 ###############################################################################
 
@@ -189,6 +171,12 @@ RUN \
 # Compile MobileRT
 ###############################################################################
 RUN \
+  # Test commands
+  set && \
+  dir P* /X . && \
+  choco /? && \
+  rc /? && \
+  qmake --help && \
   sh scripts/compile_native.sh -t !BUILD_TYPE! -c g++ -r yes && \
   du -h -d 1 build_!BUILD_TYPE!/bin && \
   du -h -d 1 build_!BUILD_TYPE!/lib && \
