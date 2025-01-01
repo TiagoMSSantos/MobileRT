@@ -135,7 +135,45 @@ compileMobileRTInDockerContainer() {
       && rm -rf build_* \
       && git init \
       && ls -lahp . \
-      && sh scripts/compile_native.sh -t release -c g++ -r yes";
+      && sh scripts/compile_native.sh -t release -c g++ -r yes \
+      && rm -rf app/third_party/boost \
+      && rm -rf app/third_party/glm \
+      && rm -rf app/third_party/googletest \
+      && rm -rf app/third_party/pcg-cpp \
+      && rm -rf app/third_party/stb \
+      && rm -rf app/third_party/tinyobjloader \
+      && rm -rf app/System_dependent/Android_JNI \
+      && rm -rf app/release \
+      && rm -rf app/src/main \
+      && rm -rf app/src/test \
+      && rm -rf app/src/androidTest/java \
+      && rm -rf app/src/androidTest/*.xml \
+      && rm -rf app/src/androidTest/resources/APKs \
+      && rm -rf app/src/androidTest/resources/Shaders \
+      && rm -rf app/src/androidTest/resources/teapot \
+      && rm -rf app/*.classpath \
+      && rm -rf app/*.project \
+      && rm -rf app/*.gradle \
+      && rm -rf app/*.xml \
+      && rm -rf app/*.jks \
+      && rm -rf app/*.pro \
+      && rm -rf .git \
+      && rm -rf .github \
+      && rm -rf docs \
+      && rm -rf gradle \
+      && rm -rf *.yml \
+      && rm -rf *.codedocs \
+      && rm -rf *.dockerignore \
+      && rm -rf *.json \
+      && rm -rf *.project \
+      && rm -rf *.simplecov \
+      && rm -rf *.gradle \
+      && rm -rf Gemfile* \
+      && rm -rf *.properties \
+      && rm -rf gradlew* \
+      && rm -rf Makefile* \
+      && rm -rf **/*.wh.* \
+      ";
 }
 
 # Helper command to execute the MobileRT unit tests in the docker container.
