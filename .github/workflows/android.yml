@@ -43,9 +43,6 @@ jobs:
   Matrix:
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
 
-    strategy:
-      fail-fast: true
-
     name: Set Matrix
     runs-on: ubuntu-latest
     timeout-minutes: 2

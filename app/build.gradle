@@ -371,7 +371,7 @@ android {
     }
 
     project.gradle.taskGraph.whenReady {
-        android.productFlavors.all { flavor ->
+        android.productFlavors.configureEach { flavor ->
             // Capitalize (as Gradle is case-sensitive).
             def flavorName = flavor.name.substring(0, 1).toUpperCase() + flavor.name.substring(1)
             "connected${flavorName}DebugAndroidTest" {
