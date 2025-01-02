@@ -21,7 +21,7 @@ on:
     - '!**/*.c*'
     - '!**/*.h'
     - '!**/*.hpp'
-    - '!*gradle*'
+    - '!**/*gradle*'
 
 defaults:
   run:
