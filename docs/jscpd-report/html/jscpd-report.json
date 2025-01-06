@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2025-01-01T14:50:51.862Z",
+    "detectionDate": "2025-01-06T08:13:28.802Z",
     "formats": {
       "java": {
         "sources": {
@@ -2045,14 +2045,14 @@
             "newClones": 0
           },
           ".github/workflows/android.yml": {
-            "lines": 83,
-            "tokens": 484,
+            "lines": 80,
+            "tokens": 473,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 24,
             "duplicatedTokens": 115,
-            "percentage": 28.92,
-            "percentageTokens": 23.76,
+            "percentage": 30,
+            "percentageTokens": 24.31,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2154,13 +2154,13 @@
           }
         },
         "total": {
-          "lines": 3268,
-          "tokens": 21521,
+          "lines": 3265,
+          "tokens": 21510,
           "sources": 25,
           "clones": 15,
           "duplicatedLines": 351,
           "duplicatedTokens": 2694,
-          "percentage": 10.74,
+          "percentage": 10.75,
           "percentageTokens": 12.52,
           "newDuplicatedLines": 0,
           "newClones": 0
@@ -3236,8 +3236,8 @@
       }
     },
     "total": {
-      "lines": 30598,
-      "tokens": 235366,
+      "lines": 30595,
+      "tokens": 235355,
       "sources": 256,
       "clones": 121,
       "duplicatedLines": 1507,
@@ -7284,7 +7284,7 @@
     {
       "format": "yaml",
       "lines": 25,
-      "fragment": "- '!**/CMakeLists*'\n    - '!**/*.java*'\n    - '!**/*.kt*'\n    - '!**/*.c*'\n    - '!**/*.h'\n    - '!**/*.hpp'\n    - '!*gradle*'\n\ndefaults:\n  run:\n    shell: sh\n    working-directory: .\n\nconcurrency:\n  group: ${{ github.workflow }} ${{ github.ref }}\n  cancel-in-progress: true\n\n# Default environment variables.\nenv:\n  GITHUB_STEP_TIMEOUT_SMALL: 4\n  GITHUB_STEP_TIMEOUT_MEDIUM: 10\n  GITHUB_STEP_TIMEOUT_LONG: 20\n\njobs:\n  Matrix",
+      "fragment": "- '!**/CMakeLists*'\n    - '!**/*.java*'\n    - '!**/*.kt*'\n    - '!**/*.c*'\n    - '!**/*.h'\n    - '!**/*.hpp'\n    - '!**/*gradle*'\n\ndefaults:\n  run:\n    shell: sh\n    working-directory: .\n\nconcurrency:\n  group: ${{ github.workflow }} ${{ github.ref }}\n  cancel-in-progress: true\n\n# Default environment variables.\nenv:\n  GITHUB_STEP_TIMEOUT_SMALL: 4\n  GITHUB_STEP_TIMEOUT_MEDIUM: 10\n  GITHUB_STEP_TIMEOUT_LONG: 20\n\njobs:\n  Matrix",
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android.yml",
