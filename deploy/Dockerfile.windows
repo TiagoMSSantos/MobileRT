@@ -97,8 +97,6 @@ USER ContainerUser
 ###############################################################################
 # Get MobileRT contents (required to create docker image in CI)
 ###############################################################################
-WORKDIR /
-
 RUN \
   git --version && \
   # Clone repository.

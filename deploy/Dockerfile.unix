@@ -61,7 +61,6 @@ ENV \
   LD_LIBRARY_PATH="/MobileRT/libraries:/MobileRT/build_${BUILD_TYPE}/lib" \
   # Set apt-get as non interactive mode
   DEBIAN_FRONTEND="noninteractive"
-WORKDIR /
 ###############################################################################
 ###############################################################################
 
@@ -129,18 +128,11 @@ RUN \
 
 
 ###############################################################################
-# Install dependencies
+# Install dependencies & compile MobileRT
 ###############################################################################
 WORKDIR /MobileRT
-RUN sh scripts/install_dependencies.sh;
-###############################################################################
-###############################################################################
-
-
-###############################################################################
-# Compile MobileRT
-###############################################################################
 RUN \
+  sh scripts/install_dependencies.sh && \
   sh scripts/compile_native.sh -t ${BUILD_TYPE} -c g++ -r yes && \
   du -h -d 1 build_${BUILD_TYPE}/bin && \
   du -h -d 1 build_${BUILD_TYPE}/lib && \
