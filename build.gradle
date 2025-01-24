@@ -54,7 +54,7 @@ buildscript {
             gradle_versions_plugin_version = '0.52.0'
         } else {
             gradle_version = '8.2.2'
-            gradle_versions_plugin_version = '0.51.0'
+            gradle_versions_plugin_version = '0.52.0'
         }
 
         if (project.properties["androidX_test_espresso_version"] == null) {
