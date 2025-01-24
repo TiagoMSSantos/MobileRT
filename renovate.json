@@ -503,6 +503,15 @@
       "matchCurrentValue": "/^8\\.7$/"
     },
     {
+      "groupName": "Do not update Gradle versions plugin for Android API <= 15",
+      "enabled": false,
+      "matchDepNames": [
+        "com.github.ben-manes:gradle-versions-plugin"
+      ],
+      "matchCurrentVersion": "/^0\\.51\\.0$/",
+      "matchCurrentValue": "/^0\\.51\\.0$/"
+    },
+    {
       "groupName": "Update Boost C++ Libraries",
       "enabled": true,
       "matchDepNames": [
