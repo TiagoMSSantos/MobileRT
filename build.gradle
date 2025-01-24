@@ -51,8 +51,10 @@ buildscript {
         }
         if (androidApiVersionValue >= 16) {
             gradle_version = '8.8.0'
+            gradle_versions_plugin_version = '0.52.0'
         } else {
             gradle_version = '8.2.2'
+            gradle_versions_plugin_version = '0.51.0'
         }
 
         if (project.properties["androidX_test_espresso_version"] == null) {
@@ -91,7 +93,7 @@ buildscript {
         classpath "com.android.tools.build:gradle:${gradle_version}"
         classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:6.0.1.5171'
         classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:2.1.0'
-        classpath 'com.github.ben-manes:gradle-versions-plugin:0.51.0'
+        classpath "com.github.ben-manes:gradle-versions-plugin:${gradle_versions_plugin_version}"
 
         /* To confirm JaCoCo version run: $ sh gradlew buildEnvironment */
         /* Resolves issue of incorrect version use in one of jacoco/android plugin inner tasks */
