@@ -42,9 +42,7 @@ buildscript {
         }
         if (androidApiVersionValue >= 19) {
             androidX_test_junit_version = '1.2.1'
-            androidX_test_runner_version = '1.6.1'
             androidX_test_espresso_version = '3.6.1'
-            androidX_tracing_version = '1.2.0'
             if (project.properties["ndk_version"] == null) {
                 ndk_version = '25.2.9519653'
             }
@@ -52,28 +50,20 @@ buildscript {
         if (androidApiVersionValue >= 16) {
             gradle_version = '8.8.0'
             gradle_versions_plugin_version = '0.52.0'
-        } else {
-            gradle_version = '8.2.2'
-            gradle_versions_plugin_version = '0.51.0'
         }
 
-        if (project.properties["androidX_test_espresso_version"] == null) {
-            androidX_test_espresso_version = '3.5.1'
-        }
-        if (project.properties["androidX_test_junit_version"] == null) {
-            androidX_test_junit_version = '1.1.5'
-        }
-        if (project.properties["androidX_test_runner_version"] == null) {
-            androidX_test_runner_version = '1.5.2'
-        }
+        // Default dependencies versions which are used on all Android APIs supported >= 14
         if (project.properties["androidX_appcompat_version"] == null) {
             androidX_appcompat_version = '1.6.1'
         }
         if (project.properties["ndk_version"] == null) {
             ndk_version = '23.2.8568313'
         }
-        if (project.properties["androidX_tracing_version"] == null) {
-            androidX_tracing_version = '1.1.0'
+        if (project.properties["gradle_version"] == null) {
+            gradle_version = '8.2.2'
+        }
+        if (project.properties["gradle_versions_plugin_version"] == null) {
+            gradle_versions_plugin_version = '0.51.0'
         }
 
         final def gradleVersionArray = gradle_version.split("\\.").collect()
@@ -81,6 +71,12 @@ buildscript {
 
         // Test dependencies
         jacoco_version = '0.8.12'
+        if (project.properties["androidX_test_espresso_version"] == null) {
+            androidX_test_espresso_version = '3.5.1'
+        }
+        if (project.properties["androidX_test_junit_version"] == null) {
+            androidX_test_junit_version = '1.1.5'
+        }
 
         // Unit tests dependencies
         powermock_version = '2.0.9'

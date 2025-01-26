@@ -620,7 +620,7 @@ runInstrumentationTests() {
   if [ "${run_test}" = 'all' ]; then
     echo 'Running all tests';
     mkdir -p app/build/reports/jacoco/jacocoTestReport;
-    callCommandUntilSuccess 0 sh gradlew --offline ${gradle_command} -DtestType="${type}" \
+    callCommandUntilSuccess 0 sh gradlew ${gradle_command} -DtestType="${type}" \
       -DandroidApiVersion="${android_api_version}" \
       -Pandroid.testInstrumentationRunnerArguments.package='puscas' \
       -DabiFilters="[${cpu_architecture}]" \
@@ -628,7 +628,7 @@ runInstrumentationTests() {
   elif echo "${run_test}" | grep -q "rep_"; then
     run_test_without_prefix=${run_test#"rep_"};
     echo "Repeatable of test: ${run_test_without_prefix}";
-    callCommandUntilError sh gradlew --offline connectedAndroidTest -DtestType="${type}" \
+    callCommandUntilError sh gradlew connectedAndroidTest -DtestType="${type}" \
       -DandroidApiVersion="${android_api_version}" \
       -Pandroid.testInstrumentationRunnerArguments.class="${run_test_without_prefix}" \
       -DabiFilters="[${cpu_architecture}]" \
