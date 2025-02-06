@@ -117,9 +117,9 @@ RUN \
   git config --global http.sslVerify "false"; \
   # Clone repository
   git clone --depth 1 https://github.com/TiagoMSSantos/MobileRT.git \
-  --shallow-submodules \
-  --progress \
-  --branch ${BRANCH} && \
+    --shallow-submodules \
+    --progress \
+    --branch ${BRANCH} && \
   cd MobileRT && \
   ls -la ./app/src/androidTest/resources/CornellBox/CornellBox-Water.obj && \
   ls -la ./app/src/androidTest/resources/teapot/teapot.obj;

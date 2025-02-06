@@ -100,7 +100,7 @@ USER ContainerUser
 RUN \
   git --version && \
   # Clone repository.
-  git clone https://github.com/TiagoMSSantos/MobileRT.git \
+  git clone --depth 1 https://github.com/TiagoMSSantos/MobileRT.git \
     --shallow-submodules \
     --progress \
     --branch !BRANCH! && \
