@@ -233,6 +233,8 @@ squashMobileRTDockerImage() {
 _installDockerSquashCommand() {
   pip install --upgrade pip --user;
   pip3 install --upgrade pip --user;
+  # Dependencies necessary as mentioned here: https://github.com/google-deepmind/alphafold/issues/867#issuecomment-1984260145
+  pip3 install --force-reinstall 'requests<2.29.0' 'urllib3<2.0';
   python -m pip install --upgrade pip --user || true;
   python3 -m pip install --upgrade pip --user || true;
 
