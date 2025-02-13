@@ -478,7 +478,7 @@ dependencies {
     testImplementation "org.powermock:powermock-module-junit4:${powermock_version}"
     testImplementation "org.powermock:powermock-api-easymock:${powermock_version}"
     testImplementation 'org.easymock:easymock:5.5.0'
-    testImplementation 'org.springframework:spring-test:6.2.2'
+    testImplementation 'org.springframework:spring-test:6.2.3'
 }
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
