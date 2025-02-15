@@ -53,7 +53,7 @@ jobs:
         - host_os: ubuntu-latest
           BASE_IMAGE: archlinux/archlinux:base-devel
         - host_os: ubuntu-latest
-          BASE_IMAGE: alpine:3.21.2
+          BASE_IMAGE: alpine:3.21.3
         - host_os: ubuntu-latest
           BASE_IMAGE: gentoo/stage3:latest
         - host_os: windows-latest
