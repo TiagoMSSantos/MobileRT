@@ -137,7 +137,7 @@ tasks.named('wrapper', Wrapper) {it ->
     println('Setting Gradle wrapper version')
     it.distributionType = Wrapper.DistributionType.BIN
     if (androidApiVersionValue >= 16) {
-        it.gradleVersion = '8.12.1'
+        it.gradleVersion = '8.13'
     } else {
         it.gradleVersion = '8.7'
     }
