@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2025-01-26T10:58:30.269Z",
+    "detectionDate": "2025-02-26T08:01:32.697Z",
     "formats": {
       "java": {
         "sources": {
@@ -2277,8 +2277,8 @@
             "newClones": 0
           },
           "scripts/docker.sh": {
-            "lines": 321,
-            "tokens": 2085,
+            "lines": 323,
+            "tokens": 2100,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2326,13 +2326,13 @@
           }
         },
         "total": {
-          "lines": 4365,
-          "tokens": 29239,
+          "lines": 4367,
+          "tokens": 29254,
           "sources": 13,
           "clones": 12,
           "duplicatedLines": 263,
           "duplicatedTokens": 1345,
-          "percentage": 6.03,
+          "percentage": 6.02,
           "percentageTokens": 4.6,
           "newDuplicatedLines": 0,
           "newClones": 0
@@ -3236,8 +3236,8 @@
       }
     },
     "total": {
-      "lines": 30595,
-      "tokens": 235349,
+      "lines": 30597,
+      "tokens": 235364,
       "sources": 256,
       "clones": 121,
       "duplicatedLines": 1507,

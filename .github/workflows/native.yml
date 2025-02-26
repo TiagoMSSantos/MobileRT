@@ -49,7 +49,7 @@ jobs:
         include:
         # Ubuntu
         - name: G++
-          host_os: ubuntu-20.04
+          host_os: ubuntu-24.04
           type: debug
           compiler: g++
 
