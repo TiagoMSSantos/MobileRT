@@ -48,7 +48,7 @@ buildscript {
             }
         }
         if (androidApiVersionValue >= 16) {
-            gradle_version = '8.8.1'
+            gradle_version = '8.8.2'
             gradle_versions_plugin_version = '0.52.0'
             kotlin_gradle_plugin_version = '2.1.10'
         }
