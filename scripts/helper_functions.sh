@@ -452,7 +452,7 @@ zipFilesForArtifact() {
 
 # Generate code coverage.
 generateCodeCoverage() {
-  lcov -c -d . --no-external -o code_coverage_test.info;
+  lcov -c -d . --no-external --ignore-errors mismatch -o code_coverage_test.info;
   lcov -a code_coverage_base.info -a code_coverage_test.info -o code_coverage.info;
   lcov --remove code_coverage.info '*third_party*' '*build*' '*Unit_Testing*' -o code_coverage_filtered.info;
   genhtml code_coverage_filtered.info -o code_coverage_report --no-branch-coverage -t MobileRT_code_coverage;
