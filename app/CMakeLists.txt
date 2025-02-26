@@ -424,7 +424,7 @@ if( NOT CMAKE_HOST_WIN32 MATCHES "1" AND NOT CMAKE_HOST_SYSTEM_NAME MATCHES "Dar
     message( STATUS "Add code coverage analysis flags for GCC." )
 
     set( COMMON_FLAGS_TEST "-ftest-coverage -fprofile-arcs" )
-    set( COMMON_LINKER_FLAGS_TEST "--coverage -lgcov" )
+    set( COMMON_LINKER_FLAGS_TEST "--coverage -fprofile-update=atomic -lgcov" )
   endif()
 endif()
 
