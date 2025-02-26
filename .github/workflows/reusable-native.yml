@@ -192,7 +192,7 @@ jobs:
         if: success() && startsWith(inputs.host_os, 'ubuntu') && inputs.type == 'debug' && startsWith(inputs.compiler, 'g++')
         working-directory: .
         run: |
-          lcov -c -i -d . --no-external -o code_coverage_base.info;
+          lcov -c -i -d . --no-external --ignore-errors mismatch -o code_coverage_base.info;
 
       - name: Set sanitizer configs for Ubuntu
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
