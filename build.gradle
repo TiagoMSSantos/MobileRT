@@ -48,7 +48,7 @@ buildscript {
             }
         }
         if (androidApiVersionValue >= 16) {
-            gradle_version = '8.8.2'
+            gradle_version = '8.9.0'
             gradle_versions_plugin_version = '0.52.0'
             kotlin_gradle_plugin_version = '2.1.10'
         }
@@ -81,6 +81,9 @@ buildscript {
         if (project.properties["androidX_test_junit_version"] == null) {
             androidX_test_junit_version = '1.1.5'
         }
+        if (project.properties["bouncycastle_version"] == null) {
+            bouncycastle_version = '1.80'
+        }
 
         // Unit tests dependencies
         powermock_version = '2.0.9'
@@ -102,7 +105,8 @@ buildscript {
         classpath "org.jacoco:org.jacoco.agent:${jacoco_version}"
 
         // Required for sonarqube-gradle-plugin:v6
-        classpath 'org.bouncycastle:bcutil-jdk18on:1.80'
+        classpath "org.bouncycastle:bcutil-jdk18on:${bouncycastle_version}"
+        classpath "org.bouncycastle:bcpkix-jdk18on:${bouncycastle_version}"
     }
 }
 ///////////////////////////////////////////////////////////////////////////////
