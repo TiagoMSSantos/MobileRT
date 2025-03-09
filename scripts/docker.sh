@@ -61,8 +61,8 @@ buildDockerImage() {
       .;
   fi
 
-  dockerImageBuilt=$?;
-  if [ "${dockerImageBuilt}" != "0" ]; then
+  dockerImageBuilt="$?";
+  if [ "${dockerImageBuilt}" != '0' ]; then
     echo 'Failed to build image.';
     exit 1;
   fi
@@ -287,8 +287,8 @@ installDockerCommandForMacOS() {
     rm -rf ~/.lima;
     rm -rf ~/Library/Caches/colima;
     rm -rf ~/Library/Caches/lima;
-    # Use version v0.6.8 to fix hanging at level=info msg="Expanding to 14GiB". More info: https://github.com/abiosoft/colima/issues/930
-    curl -o /tmp/colima.rb -L https://github.com/abiosoft/colima/releases/download/v0.6.8/colima-Darwin-x86_64;
+    # Use version >= v0.6.8 to fix hanging at level=info msg="Expanding to 14GiB". More info: https://github.com/abiosoft/colima/issues/930
+    curl -o /tmp/colima.rb -L https://github.com/abiosoft/colima/releases/download/v0.8.1/colima-Darwin-x86_64;
     chmod +x /tmp/colima.rb;
   else
     ln -s "$(which colima)" /tmp/colima.rb;
@@ -305,9 +305,9 @@ installDockerCommandForMacOS() {
   # Check available resources: https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners/about-github-hosted-runners#standard-github-hosted-runners-for-public-repositories
   # To setup Colima for MacOS with CPU ARM M1: https://www.tyler-wright.com/using-colima-on-an-m1-m2-mac
   /tmp/colima.rb start --cpu "${NCPU_CORES}" --memory ${memSizeGB} --disk 14 --mount-type=virtiofs;
-  startedColima=$?;
+  startedColima="$?";
   set -e;
-  if [ "${startedColima}" != "0" ]; then
+  if [ "${startedColima}" != '0' ]; then
     echo 'Starting colima failed. Printing the error logs.';
     cat /Users/runner/.colima/_lima/colima/ha.stderr.log;
     exit 1;

@@ -324,6 +324,7 @@ _killProcessUsingFile() {
     _retry=$(( _retry + 1 ));
     echo "processes_using_file: '${processes_using_file}'";
     process_id_using_file=$(echo "${processes_using_file}" | tr -s ' ' | cut -d ' ' -f 2 | head -1);
+    # shellcheck disable=SC2009
     if ps aux | grep -i "${process_id_using_file}" | grep -iq 'android-studio'; then
       echo "Not killing process: '${process_id_using_file}' because it is the Android Studio";
       return 0;
@@ -481,8 +482,10 @@ addCommandToPath() {
     echo "Command '${1}' already available.";
     return 0;
   fi
+  # shellcheck disable=SC2010
   visualStudioVersion=$(ls -la "/c/Program Files/Microsoft Visual Studio/" | grep ".*[[:digit:]]$" | awk '{print $(NF)}' | tail -1 || true);
   echo "Detected Visual Studio version: ${visualStudioVersion}";
+  # shellcheck disable=SC2010
   msvcVersion=$(ls -la "/c/Program Files/Microsoft Visual Studio/${visualStudioVersion}/Enterprise/VC/Tools/MSVC/" | grep "[[:digit:]]\.[[:digit:]].*" | awk '{print $(NF)}' | tail -1 || true);
   echo "Detected Visual Studio C++ Compiler version: ${msvcVersion}";
   COMMAND_PATHS=$(find \

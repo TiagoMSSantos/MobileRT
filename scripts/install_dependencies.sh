@@ -282,8 +282,8 @@ install_dependencies_macos() {
   sudo port -bn selfupdate;
   echo 'Installing git via MacPorts.';
   sudo port -bn install git git-lfs;
-  installedGit=$?;
-  if [ "${installedGit}" != "0" ]; then
+  installedGit="$?";
+  if [ "${installedGit}" != '0' ]; then
     echo 'Installing git via MacPorts failed. Installing git via Homebrew.';
     brew list git > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install git;
     brew list git-lfs > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install git-lfs;
@@ -306,8 +306,9 @@ install_dependencies_macos() {
   set +e;
   test -d Qt;
   # shellcheck disable=SC2319
-  qtAlreadyInstalled=$?;
+  qtAlreadyInstalled="$?";
   if [ "${qtAlreadyInstalled}" = '0' ]; then
+    set -e;
     echo 'Detected Qt folder in MobileRT root dir. Assuming Qt is already installed there. Not installing Qt via package manager.';
     # If github action jurplel/install-qt-action was used, then Qt should be at root of project. E.g. paths:
     # * Qt/5.15.2/msvc2019_64/include/QtWidgets/QDialog
@@ -315,13 +316,15 @@ install_dependencies_macos() {
   else
     echo 'Installing Qt via MacPorts.';
     sudo port -bn install qt5;
-    installedLibQt=$?;
-    if [ "${installedLibQt}" != "0" ]; then
+    installedLibQt="$?";
+    set -e;
+    if [ "${installedLibQt}" != '0' ]; then
       echo 'Installing Qt via MacPorts failed. Installing Qt via Homebrew.';
+      brew unlink openssl;
+      brew link --overwrite openssl;
       brew list qt@5 > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install qt@5;
     fi
   fi
-  set -e;
 
   # echo 'Checking Qt path.';
   # find /opt/homebrew/opt /opt/homebrew/Cellar /usr/local/opt /usr/local/Cellar /opt/local/libexec -iname "Qt5Config.cmake" 2> /dev/null || true;
@@ -369,7 +372,7 @@ install_dependencies_windows() {
 
   set +e;
   test -d Qt;
-  qtAlreadyInstalled=$?;
+  qtAlreadyInstalled="$?";
   set -e;
   if [ "${qtAlreadyInstalled}" = '0' ]; then
     echo 'Detected Qt folder in MobileRT root dir. Assuming Qt is already installed there. Not installing Qt via package manager.';
