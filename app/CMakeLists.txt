@@ -469,6 +469,7 @@ add_subdirectory( Components )
 add_subdirectory( third_party )
 add_subdirectory( System_dependent )
 add_subdirectory( Unit_Testing )
+add_subdirectory( web-server )
 ###############################################################################
 ###############################################################################
 
@@ -480,13 +481,12 @@ message( STATUS "Adding libs for the interface layer." )
 if( DEFINED ANDROID_ABI )
   message( STATUS "Adding Android JNI layer." )
 
-  add_library( ${PROJECT_NAME} SHARED
-    ${SCENES_SOURCES} ${MOBILE_DEPENDENT_SOURCES} )
+  add_library( ${PROJECT_NAME} SHARED ${SCENES_SOURCES} ${MOBILE_DEPENDENT_SOURCES} )
   target_link_libraries( ${PROJECT_NAME} PRIVATE android jnigraphics )
 else()
   message( STATUS "Adding Linux native Qt layer." )
 
-  add_executable( ${PROJECT_NAME} ${SCENES_SOURCES} ${MOBILE_DEPENDENT_SOURCES} ${MOBILE_DEPENDENT_SOURCES_QT} )
+  add_executable( ${PROJECT_NAME} ${SCENES_SOURCES} ${MOBILE_DEPENDENT_SOURCES} ${MOBILE_DEPENDENT_SOURCES_QT} ${MOBILE_WEB_SERVER_SOURCES} )
 
   message( STATUS "Qt6Core_INCLUDE_DIRS = " ${Qt6Core_INCLUDE_DIRS} )
   message( STATUS "Qt6Gui_INCLUDE_DIRS = " ${Qt6Gui_INCLUDE_DIRS} )
