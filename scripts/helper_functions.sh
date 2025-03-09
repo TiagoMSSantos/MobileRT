@@ -525,7 +525,7 @@ _validateFileExistsAndHasSomeContent() {
     echo "File '${filePath}' is empty." >&2;
     return 1;
   fi
-  fileSize=$(cat "${filePath}" | wc -w | tr -d '[:space:]');
+  fileSize=$(wc -w "${filePath}" | awk '{print $1}' | tr -d '[:space:]');
   if [ "${fileSize}" = '' ]; then
     return 2;
   fi
