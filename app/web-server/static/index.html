@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta property="og:title" content="MobileRT">
+        <meta property="og:description" content="A Rust-powered web server for MobileRT">
+        <meta property="og:image" content="/static/preview-image.png">
+        <meta property="og:url" content="http://localhost:3030/mobilert">
+        <title>MobileRT</title>
+        <link rel="icon" href="/static/favicon.ico">
+        <link rel="preload" href="/static/script.js" as="script">
+        <script src="/static/script.js" defer></script>
+    </head>
+    <body>
+        <main>
+            <h1>MobileRT in Rust web server</h1>
+            <div class="button-container">
+                <button id="restartButton">Restart</button>
+                <input type="text" id="selectObj" placeholder="Enter a path to OBJ">
+            </div>
+            <img id="bitmap" src="data:image/bmp;base64," alt="A dynamically updated bitmap image rendered by the server" loading="lazy">
+        </main>
+        <style>
+        main {
+            display: flex;
+            flex-direction: column; /* Stack elements vertically */
+            align-items: center; /* Center elements horizontally */
+            gap: 1rem; /* Add spacing between elements */
+        }
+        .button-container {
+            display: flex; /* Align buttons horizontally */
+            gap: 1rem; /* Add spacing between buttons */
+        }
+        #restartButton, #selectObj {
+            padding: 0px 0px; /* Adjust button size */
+            font-size: 1rem; /* Adjust font size */
+            cursor: pointer;
+            position: relative; 
+            top: -40px; /* Move buttons upwards */
+            margin: 0px
+        }
+        #bitmap {
+            max-width: 100%; /* Ensure image is responsive */
+            height: auto;
+            margin-top: -55px;
+        }
+        </style>
+    </body>
+</html>

@@ -14,7 +14,6 @@ protected:
         config.samplesPixel = 1;
         config.samplesLight = 1;
         config.repeats = 1;
-        config.printStdOut = true;
         config.objFilePath = ::std::string {""};
         config.mtlFilePath = ::std::string {""};
         config.camFilePath = ::std::string {""};

@@ -75,11 +75,6 @@ namespace MobileRT {
          * The acceleration structure to use.
          */
         ::std::int32_t accelerator;
-
-        /**
-         * Whether or not the logs should be redirected to the standard output.
-         */
-        bool printStdOut;
     };
 }//namespace MobileRT
 

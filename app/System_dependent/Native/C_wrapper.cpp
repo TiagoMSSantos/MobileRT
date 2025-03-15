@@ -37,18 +37,10 @@ static void work_thread(::MobileRT::Config &config) {
     // Reset all errors due to Qt.
     errno = 0;
     try {
-        ::std::ostringstream ss {""};
-        ::std::streambuf *old_buf_stdout {};
-        ::std::streambuf *old_buf_stderr {};
         ::std::chrono::duration<double> timeCreating {};
         ::std::chrono::duration<double> timeRendering {};
         ::std::chrono::duration<double> timeLoading {};
         ::std::chrono::duration<double> timeFilling {};
-        if (!config.printStdOut) {
-            // Turn off redirection of logs to standard output
-            old_buf_stdout = ::std::cout.rdbuf(ss.rdbuf());
-            old_buf_stderr = ::std::cerr.rdbuf(ss.rdbuf());
-        }
         {
             // Print debug information
             LOG_DEBUG("width = ", config.width);
@@ -60,7 +52,6 @@ static void work_thread(::MobileRT::Config &config) {
             LOG_DEBUG("samplesLight = ", config.samplesLight);
             LOG_DEBUG("repeats = ", config.repeats);
             LOG_DEBUG("accelerator = ", config.accelerator);
-            LOG_DEBUG("printStdOut = ", config.printStdOut);
             LOG_DEBUG("objFilePath = ", config.objFilePath);
             LOG_DEBUG("mtlFilePath = ", config.mtlFilePath);
             LOG_DEBUG("camFilePath = ", config.camFilePath);
@@ -235,11 +226,6 @@ static void work_thread(::MobileRT::Config &config) {
 
             timeRendering = chronoEndRendering - chronoStartRendering;
             LOG_INFO("Finished rendering scene");
-        }
-        if (!config.printStdOut) {
-            // Turn on redirection of logs to standard output
-            ::std::cout.rdbuf(old_buf_stdout);
-            ::std::cerr.rdbuf(old_buf_stderr);
         }
 
         // Print some latencies

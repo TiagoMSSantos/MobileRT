@@ -480,8 +480,7 @@ message( STATUS "Adding libs for the interface layer." )
 if( DEFINED ANDROID_ABI )
   message( STATUS "Adding Android JNI layer." )
 
-  add_library( ${PROJECT_NAME} SHARED
-    ${SCENES_SOURCES} ${MOBILE_DEPENDENT_SOURCES} )
+  add_library( ${PROJECT_NAME} SHARED ${SCENES_SOURCES} ${MOBILE_DEPENDENT_SOURCES} )
   target_link_libraries( ${PROJECT_NAME} PRIVATE android jnigraphics )
 else()
   message( STATUS "Adding Linux native Qt layer." )

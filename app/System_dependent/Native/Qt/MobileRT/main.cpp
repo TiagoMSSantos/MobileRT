@@ -50,15 +50,11 @@ int main(int argc, char **argv) {
     const char *const pathMtl {argv[11]};
     const char *const pathCam {argv[12]};
 
-    ::std::istringstream ssPrintStdOut (argv[13]);
-    ::std::istringstream ssAsync (argv[14]);
-    ::std::istringstream ssShowImage (argv[15]);
-    bool printStdOut {true};
+    ::std::istringstream ssAsync (argv[13]);
+    ::std::istringstream ssShowImage (argv[14]);
     bool async {true};
     bool showImage {true};
 
-    ssPrintStdOut >> ::std::boolalpha;
-    ssPrintStdOut >> printStdOut;
     ssAsync >> ::std::boolalpha >> async;
     ssShowImage >> ::std::boolalpha >> showImage;
     
@@ -78,7 +74,6 @@ int main(int argc, char **argv) {
     config.samplesLight = samplesLight;
     config.repeats = repeats;
     config.accelerator = accelerator;
-    config.printStdOut = printStdOut;
     config.objFilePath = ::std::string {pathObj};
     config.mtlFilePath = ::std::string {pathMtl};
     config.camFilePath = ::std::string {pathCam};
