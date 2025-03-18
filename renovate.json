@@ -311,6 +311,12 @@
   ],
   "packageRules": [
     {
+      "matchPackageNames": [
+        "*"
+      ],
+      "rangeStrategy": "replace"
+    },
+    {
       "matchCategories": [
         "docker"
       ],
