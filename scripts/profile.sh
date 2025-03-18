@@ -182,7 +182,6 @@ setArguments() {
   WIDTH='900';
   HEIGHT='900';
   REP='1';
-  PRINT='false';
   ASYNC='false';
   SHOWIMAGE='false';
   SEP='-';
@@ -198,7 +197,6 @@ setArguments() {
   SHADER='1';
   SCENE='4';
   ACC='3';
-  PRINT='true';
   SHOWIMAGE='true';
   ASYNC='true';
   SPP='1';
@@ -243,7 +241,7 @@ execute() {
   #perf record -g --call-graph 'fp' -- \
   "${BIN_RELEASE_EXE}" \
     "${THREAD}" "${SHADER}" "${SCENE}" "${SPP}" "${SPL}" "${WIDTH}" "${HEIGHT}" "${ACC}" \
-    "${REP}" "${OBJ}" "${MTL}" "${CAM}" "${PRINT}" "${ASYNC}" "${SHOWIMAGE}";
+    "${REP}" "${OBJ}" "${MTL}" "${CAM}" "${ASYNC}" "${SHOWIMAGE}";
   #perf report -g '' --show-nr-samples --hierarchy;
 }
 
@@ -275,7 +273,7 @@ debug() {
   # gdb --args \
   "${BIN_DEBUG_EXE}" \
     "${THREAD}" "${SHADER}" "${SCENE}" "${SPP}" "${SPL}" "${WIDTH}" "${HEIGHT}" "${ACC}" \
-    "${REP}" "${OBJ}" "${MTL}" "${CAM}" "${PRINT}" "${ASYNC}" "${SHOWIMAGE}";
+    "${REP}" "${OBJ}" "${MTL}" "${CAM}" "${ASYNC}" "${SHOWIMAGE}";
 }
 
 # Params:
@@ -315,7 +313,7 @@ executeTimeout() {
   QT_QPA_PLATFORM='offscreen' timeout "${3}" \
     "${BIN_PATH_EXE}" \
       "${THREAD}" "${SHADER}" "${SCENE}" "${SPP}" "${SPL}" "${WIDTH}" "${HEIGHT}" "${ACC}" \
-      "${REP}" "${OBJ}" "${MTL}" "${CAM}" "${PRINT}" "${ASYNC}" "${SHOWIMAGE}";
+      "${REP}" "${OBJ}" "${MTL}" "${CAM}" "${ASYNC}" "${SHOWIMAGE}";
   returnValue="$?";
   return "${returnValue}";
 }
@@ -370,7 +368,7 @@ profile() {
 
             "${BIN_RELEASE_PATH}"/AppMobileRT \
               "${THREAD}" "${SHADER}" "${SCENE}" "${SPP}" "${SPL}" "${WIDTH}" "${HEIGHT}" "${ACC}" "${REP}" \
-              "${OBJ}" "${MTL}" "${CAM}" "${PRINT}" "${ASYNC}" "${SHOWIMAGE}" |
+              "${OBJ}" "${MTL}" "${CAM}" "${ASYNC}" "${SHOWIMAGE}" |
               awk -v threads="${THREAD}" -f "${PLOT_SCRIPTS_PATH}"/parser_out.awk 2>&1 |
               tee -a "${PLOT_GRAPHS}"/"${PLOT_FILE}".dat;
 
@@ -430,7 +428,7 @@ executePerf() {
   QT_QPA_PLATFORM='offscreen' perf stat --detailed --detailed --detailed --verbose --output perf.log -- \
     "${BIN_PATH_EXE}" \
     "${THREAD}" "${SHADER}" "${SCENE}" "${SPP}" "${SPL}" "${WIDTH}" "${HEIGHT}" "${ACC}" \
-    "${REP}" "${OBJ}" "${MTL}" "${CAM}" "${PRINT}" "${ASYNC}" "${SHOWIMAGE}";
+    "${REP}" "${OBJ}" "${MTL}" "${CAM}" "${ASYNC}" "${SHOWIMAGE}";
   # perf report -i 'perf.data' -g '' --show-nr-samples --hierarchy --header > perf.log;
   echo 'Perf results:';
   cat perf.log;

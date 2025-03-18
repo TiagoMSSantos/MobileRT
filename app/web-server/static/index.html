@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta property="og:title" content="MobileRT">
+        <meta property="og:description" content="A Rust-powered web server for MobileRT">
+        <meta property="og:image" content="/static/preview-image.png">
+        <meta property="og:url" content="http://localhost:3030/mobilert">
+        <title>MobileRT</title>
+        <link rel="icon" href="/static/favicon.ico">
+        <link rel="preload" href="/static/script.js" as="script">
+        <script src="/static/script.js" defer></script>
+    </head>
+    <body>
+        <main>
+            <h1>MobileRT in Rust web server</h1>
+            <div class="button-container">
+                <button id="restartButton">Restart</button>
+                <input type="text" id="selectObj" placeholder="Enter a path to OBJ">
+            </div>
+            <img id="bitmap" src="" alt="A dynamically updated bitmap image rendered by the server" loading="lazy">
+        </main>
+        <style>
+        main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+        .button-container {
+            display: flex;
+            gap: 1rem;
+        }
+        #restartButton, #selectObj {
+            padding: 0px 0px;
+            font-size: 1rem;
+            cursor: pointer;
+            position: relative; 
+            top: -40px;
+            margin: 0px;
+        }
+        #bitmap {
+            max-width: 100%;
+            height: auto;
+            margin-top: -55px;
+        }
+        </style>
+    </body>
+</html>

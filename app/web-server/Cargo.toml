@@ -1,0 +1,30 @@
+[package]
+# Package metadata
+name = "web_server"  # Snake_case as required by Rust crates.
+version = "0.0.1"    # Initial version.
+edition = "2021"     # Using the latest supported edition.
+
+# For more keys and definitions: https://doc.rust-lang.org/cargo/reference/manifest.html
+
+
+[dependencies]
+# Dependencies for production code.
+anyhow = "^1.0"             # Error handling.
+bytes = "^1.10"             # For handling byte buffers.
+libc = "^0.2"               # C library compatibility.
+serde_json = "^1.0"         # JSON serialization/deserialization.
+tokio = { version = "^1.44", features = ["full"] }  # Async runtime.
+tokio-stream = "^0.1"       # Tokio stream utilities.
+warp = "^0.3"               # HTTP/REST API framework.
+futures-util = "^0.3"       # Utilities for async futures.
+
+
+[dev-dependencies]
+# Dependencies for development and testing.
+futures = "^0.3"             # Base futures library for testing.
+tokio-tungstenite = "^0.26"  # WebSocket support for tests.
+
+
+[build-dependencies]
+# Dependencies for build scripts.
+cc = "^1.2"  # Compile and link C/C++ code.

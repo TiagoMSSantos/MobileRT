@@ -21,7 +21,6 @@
 **/WavefrontOBJs/**
 *libraries*
 **/*.so
-**/Makefile*
 **/*.o
 **/*.llvmIR
 **/*.kotlin
@@ -80,6 +79,9 @@
 
 # Ruby Bundler versions installed
 **/Gemfile.lock
+
+# Cargo temporary files
+**/Cargo.lock
 
 # Ruby Jekyll site served locally
 **/_site

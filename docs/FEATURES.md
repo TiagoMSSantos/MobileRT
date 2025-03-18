@@ -213,6 +213,9 @@
 
 - [x] Create Makefile to boot local K8s cluster
 - [x] Create Helm Chart for MobileRT
+- [x] Create MobileRT web server
+  - [x] Use Rust
+  - [x] Use Tokio framework
 - [ ] Deploy MobileRT into cloud server
   - [ ] Deploy into AWS EC2 instance
 - [ ] Deploy MobileRT into Kubernetes environment
