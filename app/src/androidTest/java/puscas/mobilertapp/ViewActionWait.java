@@ -16,7 +16,7 @@ import org.hamcrest.Matcher;
 import java.util.Objects;
 import java.util.logging.Logger;
 
-import javax.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 /**
  * Auxiliary class which represents a {@link ViewAction} that will just wait for some time.
