@@ -6,6 +6,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.UiController;
 import androidx.test.espresso.ViewAction;
@@ -15,8 +16,6 @@ import org.hamcrest.Matcher;
 
 import java.util.Objects;
 import java.util.logging.Logger;
-
-import javax.annotation.Nullable;
 
 /**
  * Auxiliary class which represents a {@link ViewAction} that will just wait for some time.

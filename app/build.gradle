@@ -460,7 +460,7 @@ dependencies {
     implementation "androidx.appcompat:appcompat:${androidX_appcompat_version}"
 
     println('Adding Java dependencies for MobileRT.')
-    implementation 'com.google.guava:guava:33.4.0-jre'
+    implementation 'com.google.guava:guava:33.4.5-jre'
     implementation 'net.sourceforge.streamsupport:streamsupport:1.7.4'
 
 

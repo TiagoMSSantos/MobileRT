@@ -1,5 +1,6 @@
 package puscas.mobilertapp;
 
+import androidx.annotation.Nullable;
 import androidx.test.filters.FlakyTest;
 
 import org.junit.Test;
@@ -15,8 +16,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
-
-import javax.annotation.Nullable;
 
 /**
 * The {@link BlockJUnit4ClassRunner JUnit 4 Class Runner} which sorts the tests

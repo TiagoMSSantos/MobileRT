@@ -41,8 +41,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Logger;
 
-import javax.annotation.Nonnull;
-
 import java8.util.Optional;
 import java8.util.stream.IntStreams;
 import java8.util.stream.StreamSupport;
@@ -497,7 +495,7 @@ public final class MainActivity extends Activity {
      * @return An array of {@link File}s that are in the desired path.
      */
     @NonNull
-    private static File[] getFilesFromDirectory(@Nonnull final Uri uri) {
+    private static File[] getFilesFromDirectory(@NonNull final Uri uri) {
         final File baseFile = new File(Objects.requireNonNull(uri.getPath()));
         final File[] files;
         if (baseFile.isDirectory()) {
