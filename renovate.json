@@ -535,13 +535,12 @@
       "extractVersion": "^boost-(?<version>.*)$"
     },
     {
-      "groupName": "Update GoogleTest to a version that supports C++11",
+      "groupName": "Update GoogleTest to a version that supports C++17",
       "enabled": true,
       "matchDepNames": [
         "google/googletest"
       ],
-      "versioning": "regex:^(v|release-)?(?<major>[0-9]+)\\.(?<minor>[0-9]+)\\.(?<patch>[0-9]+)-?(?<prerelease>[0-9a-z]+)?.*$",
-      "allowedVersions": "<1.13"
+      "versioning": "regex:^(v|release-)?(?<major>[0-9]+)\\.(?<minor>[0-9]+)\\.(?<patch>[0-9]+)-?(?<prerelease>[0-9a-z]+)?.*$"
     },
     {
       "groupName": "Update MobileRT docker images",

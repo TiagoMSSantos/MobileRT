@@ -202,8 +202,8 @@ android {
     setTestBuildType systemTestType
 
     // Setup required versions to compile
-    setCompileSdkVersion androidApiVersionValue >= 16? 35 : 34
-    setBuildToolsVersion '35.0.0'
+    setCompileSdkVersion androidApiVersionValue >= 16? 36 : 34
+    setBuildToolsVersion '36.0.0'
 
     // Setup signing configurations
     signingConfigs {
@@ -225,7 +225,7 @@ android {
     defaultConfig {
         // The minimum Android API version possible is 14 due to compatibility with Appcompat dependency.
         setMinSdkVersion "${androidApiVersion}"
-        setTargetSdkVersion androidApiVersionValue >= 16? 35 : 34
+        setTargetSdkVersion androidApiVersionValue >= 16? 36 : 34
         setTestInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         testInstrumentationRunnerArguments = ['clearPackageData': 'true', 'disableAnalytics': 'true']
         setApplicationId 'puscas.mobilertapp'
@@ -253,17 +253,17 @@ android {
     externalNativeBuild {
         cmake {
             setPath 'CMakeLists.txt'
-            setVersion '3.31.1'
+            setVersion '3.31.6'
         }
     }
 
     // Set Java version
     compileOptions {
-        setTargetCompatibility androidApiVersionValue >= 16? JavaVersion.VERSION_21 : JavaVersion.VERSION_17
-        setSourceCompatibility androidApiVersionValue >= 16? JavaVersion.VERSION_21 : JavaVersion.VERSION_17
+        setTargetCompatibility JavaVersion.VERSION_21
+        setSourceCompatibility JavaVersion.VERSION_21
     }
     kotlinOptions {
-        setJvmTarget androidApiVersionValue >= 16? JavaVersion.VERSION_21.toString() : JavaVersion.VERSION_17.toString()
+        setJvmTarget JavaVersion.VERSION_21.toString()
         freeCompilerArgs += [
             '-opt-in=kotlin.RequiresOptIn',
             '-opt-in=kotlinx.coroutines.DelicateCoroutinesApi',

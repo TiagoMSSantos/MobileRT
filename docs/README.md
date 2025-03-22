@@ -79,7 +79,7 @@ The docker image is in docker hub:
 
 It is also possible to clone this repository and compile this ray tracer by
 yourself.
-To compile it, it is essential to install cmake and have a C++11 compiler.
+To compile it, it is essential to install cmake and have a C++17 compiler.
 It is also needed the [Qt4 or Qt5](https://www.qt.io/) library and the
 [git](https://git-scm.com/) control system to get the code from the repository.
 
@@ -189,7 +189,7 @@ framework for mocking in unit tests
       <td style="text-align:center">4.4W<br>(API 20)<br><img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25" alt="red"></td>
       <td style="text-align:center">5.0<br>(API 21)<br><img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25" alt="green"></td>
       <td style="text-align:center">10<br>(API 29)<br><img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25" alt="green"></td>
-      <td style="text-align:center">14<br>(API 34)<br><img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25" alt="green"></td>
+      <td style="text-align:center">15<br>(API 35)<br><img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25" alt="green"></td>
     </tr>
     <tr>
       <td style="text-align:center"><b>MacOS</b></td>

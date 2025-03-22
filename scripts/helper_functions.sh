@@ -454,7 +454,7 @@ zipFilesForArtifact() {
 # Generate code coverage.
 generateCodeCoverage() {
   echo 'Generating code coverage';
-  lcov -c -d . --no-external --ignore-errors mismatch -o code_coverage_test.info;
+  lcov -c -d . --no-external --ignore-errors mismatch --ignore-errors negative -o code_coverage_test.info;
   echo 'Merging code coverage';
   lcov -a code_coverage_base.info -a code_coverage_test.info -o code_coverage.info;
   echo 'Removing coverage of third party code and of tests';

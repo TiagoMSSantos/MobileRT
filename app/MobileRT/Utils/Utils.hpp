@@ -330,6 +330,8 @@ namespace MobileRT {
          * 201402L <=> C++14
          * 201703L <=> C++17
          * 202002L <=> C++20
+         * 202302L <=> C++23
+         * 202612L <=> C++26
          */
         #if __cplusplus < 201402L
             /**
@@ -363,7 +365,7 @@ namespace MobileRT {
 
         /*
          * Its necessary to force a C++ version that is not set in the CMakeLists
-         * because with older NDKs, it supports C++11 but this std::to_string is
+         * because with older NDKs, it supports C++17 but this std::to_string is
          * not implemented there.
          */
         #if __cplusplus < 201703L

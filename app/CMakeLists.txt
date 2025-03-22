@@ -197,7 +197,7 @@ if( NOT CMAKE_GENERATOR MATCHES "Visual Studio" )
   set( COMMON_LINKER_FLAGS_DEBUG "${COMMON_LINKER_FLAGS_DEBUG} -O0 -g3" )
   set( COMMON_LINKER_FLAGS_RELEASE "${COMMON_LINKER_FLAGS_RELEASE} -O3" )
 else()
-  set( COMMON_FLAGS "${COMMON_FLAGS} /std:c11 /fastfail /sdl /Wall" )
+  set( COMMON_FLAGS "${COMMON_FLAGS} /std:c17 /fastfail /sdl /Wall" )
   set( COMMON_FLAGS_DEBUG "${COMMON_FLAGS_DEBUG} /Od /DEBUG" )
   set( COMMON_FLAGS_RELEASE "${COMMON_FLAGS_RELEASE} /O2 /Ot" )
   set( COMMON_LINKER_FLAGS "${COMMON_LINKER_FLAGS}" )
@@ -214,15 +214,15 @@ endif()
 ###############################################################################
 ###############################################################################
 
-message( STATUS "Use C++11 in all variants." )
+message( STATUS "Use C++17 in all variants." )
 if( CMAKE_HOST_WIN32 MATCHES "1" AND ( CMAKE_CXX_COMPILER MATCHES "clang" OR CMAKE_CXX_COMPILER MATCHES "g[++]") AND CMAKE_BUILD_TOOL MATCHES "MSBuild" )
-  set( COMMON_FLAGS "${COMMON_FLAGS} /std=c++11" )
+  set( COMMON_FLAGS "${COMMON_FLAGS} /std=c++17" )
 elseif( "${CMAKE_GENERATOR}" MATCHES "Visual Studio" )
   set( COMMON_FLAGS_RELEASE "${COMMON_FLAGS_RELEASE} /O2 /Ot" )
   set( COMMON_FLAGS_DEBUG "${COMMON_FLAGS_DEBUG} /Od /DEBUG" )
 else()
-  set( COMMON_FLAGS "${COMMON_FLAGS} -std=c++11" )
-  set( COMMON_LINKER_FLAGS "${COMMON_LINKER_FLAGS} -std=c++11" )
+  set( COMMON_FLAGS "${COMMON_FLAGS} -std=c++17" )
+  set( COMMON_LINKER_FLAGS "${COMMON_LINKER_FLAGS} -std=c++17" )
 endif()
 
 message( STATUS "Setting up the name of the OS and the proper interface layer." )
@@ -351,7 +351,7 @@ if( NOT "${CMAKE_GENERATOR}" MATCHES "Visual Studio" )
   )
     message( STATUS "Detected Android or Clang compiler. or GCC compiler." )
   endif()
-  # Turn off C++98 pedantic warning so it can use C++11 features
+  # Turn off C++98 pedantic warning so it can use >= C++11 features
   set( COMMON_FLAGS "${COMMON_FLAGS} -Wno-c++98-compat-pedantic" )
   # Turn off padded warning because some classes still need padding
   set( COMMON_FLAGS "${COMMON_FLAGS} -Wno-padded" )

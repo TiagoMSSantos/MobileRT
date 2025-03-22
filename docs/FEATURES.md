@@ -115,8 +115,7 @@
 
 ## Building process
 
-- [x] Compatible with C++11 compilers
-- [ ] Compatible with C++03 compilers
+- [x] Compatible with C++17 compilers
 - [x] Compatible with GNU C++ Compiler (g++)
 - [x] Compatible with Clang++
 - [x] Compatible with MinGW (g++)

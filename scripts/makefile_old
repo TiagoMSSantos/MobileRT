@@ -18,7 +18,7 @@ LIBRARIES_APP := $(shell pkg-config --libs gtk+-2.0) -pthread
 LIBRARIES_MOBILERT := $(shell find ./third-party/**/build/* \
 -regextype gnu-awk -iname "*.a" -printf '-L./%h\n' | uniq)
 
-CXXFLAGS := -std=c++14 -fPIC $(INCLUDES)
+CXXFLAGS := -std=c++17 -fPIC $(INCLUDES)
 CXXFLAGS += -Wall -Wpedantic -Wextra -MMD -pedantic -Wfatal-errors
 CXXFLAGS += -Wno-padded -Wno-float-equal
 CXXFLAGS += -fno-exceptions -fno-asynchronous-unwind-tables -fno-rtti
@@ -182,7 +182,7 @@ tidy:
 	./MobileRT/src/main/cpp/*/*.*pp \
 	./MobileRT/src/main/cpp/*/*/*.*pp \
 	./Components/src/main/cpp/*/*/*.*pp \
-	-- -std=c++14 -ferror-limit=1 \
+	-- -std=c++17 -ferror-limit=1 \
 	-I./MobileRT/src/main/cpp \
 	-I./Components/src/main/cpp \
 	-isystem./third-party \
