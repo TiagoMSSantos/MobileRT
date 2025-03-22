@@ -532,7 +532,8 @@
       "matchDepNames": [
         "boostorg/boost"
       ],
-      "extractVersion": "^boost-(?<version>.*)$"
+      "extractVersion": "^boost-(?<version>.*)$",
+      "allowedVersions": "!/beta/"
     },
     {
       "groupName": "Update GoogleTest to a version that supports C++17",
