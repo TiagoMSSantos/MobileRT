@@ -223,7 +223,9 @@ jobs:
         run: |
           unitTestsExe=$(find build_${{ inputs.type }} -type f -name "UnitTests*" | head -1);
           echo "Unit tests executable: ${unitTestsExe}";
-          LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:$(find ~/.conan -iname 'libgtest.so' | grep -iv 'build' | xargs ls -t | head -1 | xargs dirname)" ${unitTestsExe} --gtest_filter=-*Engine*;
+          gtestPath=$(find ~/.conan -iname 'libgtest.so' | grep -iv 'build' | xargs ls -t | head -1 | xargs dirname);
+          echo "gtestPath: ${gtestPath}";
+          LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${gtestPath}" ${unitTestsExe} --gtest_filter=-*Engine*;
 
       - name: Run system tests Ray Tracing engine (for code coverage)
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -235,7 +237,9 @@ jobs:
           ls -la ./app/src/androidTest/resources/CornellBox/CornellBox-Water.cam;
           unitTestsExe=$(find build_${{ inputs.type }} -type f -name "UnitTests*" | head -1);
           echo "Unit tests executable: ${unitTestsExe}";
-          LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:$(find ~/.conan -iname 'libgtest.so' | grep -iv 'build' | xargs ls -t | head -1 | xargs dirname)" ${unitTestsExe} --gtest_filter=*Engine*;
+          gtestPath=$(find ~/.conan -iname 'libgtest.so' | grep -iv 'build' | xargs ls -t | head -1 | xargs dirname);
+          echo "gtestPath: ${gtestPath}";
+          LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${gtestPath}" ${unitTestsExe} --gtest_filter=*Engine*;
 
       - name: Create symbolic links for Qt in MacOS
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}

@@ -580,7 +580,11 @@ runInstrumentationTests() {
         files of '/dev/goldfish_pipe' and never freeing them.";
       echo 'This might make the device restart!';
       set +e;
-      adb shell ps | grep -ine "graphics.allocator" | tr -s ' ' | cut -d ' ' -f 2 | xargs adb shell kill;
+      pidsToKill=$(adb shell ps | grep -ine "graphics.allocator" | tr -s ' ' | cut -d ' ' -f 2);
+      for pidToKill in ${pidsToKill}; do
+        echo "Killing Android process: '${pidToKill}'";
+        adb shell kill "${pidToKill}";
+      done;
       set -e;
     fi
   fi
