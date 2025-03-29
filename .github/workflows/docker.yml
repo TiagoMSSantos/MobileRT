@@ -159,7 +159,7 @@ jobs:
         echo "baseImageRegex: ${baseImageRegex}";
         echo "mobilertImageRegex: ${mobilertImageRegex}";
         docker images -a;
-        imagesToDelete=$(docker images -a | grep GB | grep -v "${baseImageRegex}" | grep -v "${mobilertImageRegex}" | grep -v 'REPOSITORY' | head -1);
+        imagesToDelete=$(docker images -a | grep GB | grep -v "${baseImageRegex}" | grep -v "${mobilertImageRegex}" | grep -v 'REPOSITORY' | head -1 | tr -s ' ' | cut -d ' ' -f3);
         echo "imagesToDelete: '${imagesToDelete}'";
         for imageToDelete in ${imagesToDelete}; do
           echo "imageToDelete: '${imageToDelete}'";

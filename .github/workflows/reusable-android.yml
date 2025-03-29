@@ -174,7 +174,7 @@ jobs:
           ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'cmake;3.31.6';
 
       - name: Download Android dependencies
-        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        timeout-minutes: 5
         if: success()
         run: |
           sh gradlew build --dry-run -Dorg.gradle.configuration-cache=true --parallel \
