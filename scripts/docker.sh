@@ -16,9 +16,15 @@
 ###############################################################################
 ###############################################################################
 
+# Check docker commands available in the system.
+checkDockerCommands() {
+  echo 'Docker commands detected:';
+  echo "${PATH}" | sed 's/:/ /g' | xargs ls 2> /dev/null | grep -i docker 2> /dev/null || true;
+}
+
 # Helper command to check the available version of the docker command.
 checkAvailableVersion() {
-  echo "${PATH}" | sed 's/:/ /g' | xargs ls 2> /dev/null | grep -i docker 2> /dev/null || true;
+  checkDockerCommands;
   docker --version;
 }
 
@@ -313,8 +319,7 @@ installDockerCommandForMacOS() {
     exit 1;
   fi
 
-  echo 'Docker commands detected:';
-  echo "${PATH}" | sed 's/:/ /g' | xargs ls 2> /dev/null | grep -i docker 2> /dev/null || true;
+  checkDockerCommands;
 
   echo 'Validating docker command works.';
   docker --version;

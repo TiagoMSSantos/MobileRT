@@ -274,13 +274,12 @@ runEmulator() {
     echo 'Killing previous process';
     set +e;
     # shellcheck disable=SC2009
-    ps aux |
-      grep -v "grep" |
-      grep -v "${pid}" |
-      grep -i "${script_name}" |
-      tr -s ' ' |
-      cut -d ' ' -f 2 |
-      xargs kill;
+    pidsToKill=$(ps aux | grep -v "grep" | grep -v "${pid}" | grep -i "${script_name}" | tr -s ' ' | cut -d ' ' -f 2);
+    echo "Killing processes: '${pidsToKill}'";
+    for pidToKill in ${pidsToKill}; do
+      echo "Killing process: '${pidToKill}'";
+      kill "${pidToKill}";
+    done;
     set -e;
   fi
 
