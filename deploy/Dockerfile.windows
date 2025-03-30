@@ -178,8 +178,16 @@ RUN \
   rm -rfv docs && \
   rm -rfv documentation && \
   rm -rfv git-hooks && \
-  rm -rfv gradle && \
+  rm -rfv gradle* && \
   rm -rfv .git && \
+  rm -rfv Gemfile && \
+  rm -rfv Makefile && \
+  rm -rfv build && \
+  rm -rfv build-wrapper-linux-x86-64 && \
+  rm -rfv *.gradle && \
+  rm -rfv *.properties && \
+  rm -rfv test-reporter-latest-* && \
+  rm -rfv renovate* && \
   ls -la ./app/src/androidTest/resources/CornellBox/CornellBox-Water.obj && \
   ls -la ./app/src/androidTest/resources/CornellBox/CornellBox-Water.mtl && \
   ls -la ./app/src/androidTest/resources/CornellBox/CornellBox-Water.cam && \

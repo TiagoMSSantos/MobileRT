@@ -30,13 +30,14 @@ message( STATUS "Adding unit tests source files." )
 file( GLOB GTEST_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp" )
 
 if( NOT DEFINED ANDROID_ABI )
-  # Add native Ray Tracing engine tests if it's not for Android, so the code coverage is more accurate.
-  # Also, since these engine tests use the native 'System_Dependent' dependency, it won't work in Android.
+  message( STATUS "Adding native Ray Tracing engine tests if it's not for Android, so the code coverage is more accurate." )
+  message( STATUS "Also, since these engine tests use the native 'System_Dependent' dependency, it won't work in Android." )
   file( GLOB GTEST_SOURCES_RAY_TRACING "${CMAKE_CURRENT_SOURCE_DIR}/engine/*.cpp" )
-  set( GTEST_SOURCES "${GTEST_SOURCES};${GTEST_SOURCES_RAY_TRACING}" CACHE STRING "CUSTOM" FORCE )
+  message( STATUS "Adding the following test classes: ${GTEST_SOURCES_RAY_TRACING}" )
+  list( APPEND GTEST_SOURCES ${GTEST_SOURCES_RAY_TRACING} )
 endif()
 
-message( STATUS "Creating executable." )
+message( STATUS "Creating unit test executable with the following test classes: ${GTEST_SOURCES}" )
 add_executable( ${PROJECT_NAME} ${GTEST_SOURCES} ${MOBILE_DEPENDENT_SOURCES} ${SCENES_SOURCES} )
 
 if( DEFINED CONAN )

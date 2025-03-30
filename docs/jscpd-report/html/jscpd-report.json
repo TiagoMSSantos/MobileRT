@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2025-03-22T17:03:26.933Z",
+    "detectionDate": "2025-03-30T13:12:33.394Z",
     "formats": {
       "java": {
         "sources": {
@@ -1645,8 +1645,8 @@
             "newClones": 0
           },
           "app/Unit_Testing/TestMain.cpp": {
-            "lines": 44,
-            "tokens": 65,
+            "lines": 57,
+            "tokens": 167,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -1850,14 +1850,14 @@
           }
         },
         "total": {
-          "lines": 5743,
-          "tokens": 56455,
+          "lines": 5756,
+          "tokens": 56557,
           "sources": 57,
           "clones": 30,
           "duplicatedLines": 280,
           "duplicatedTokens": 4322,
-          "percentage": 4.88,
-          "percentageTokens": 7.66,
+          "percentage": 4.86,
+          "percentageTokens": 7.64,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -1973,26 +1973,26 @@
             "newClones": 0
           },
           ".github/workflows/reusable-native.yml": {
-            "lines": 369,
-            "tokens": 2085,
+            "lines": 372,
+            "tokens": 2024,
             "sources": 1,
-            "clones": 2,
-            "duplicatedLines": 22,
-            "duplicatedTokens": 286,
-            "percentage": 5.96,
-            "percentageTokens": 13.72,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           ".github/workflows/reusable-android.yml": {
-            "lines": 951,
-            "tokens": 6901,
+            "lines": 946,
+            "tokens": 6702,
             "sources": 1,
-            "clones": 18,
-            "duplicatedLines": 448,
-            "duplicatedTokens": 3878,
-            "percentage": 47.11,
-            "percentageTokens": 56.19,
+            "clones": 12,
+            "duplicatedLines": 404,
+            "duplicatedTokens": 3086,
+            "percentage": 42.71,
+            "percentageTokens": 46.05,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2021,13 +2021,13 @@
             "newClones": 0
           },
           ".github/workflows/docker.yml": {
-            "lines": 382,
+            "lines": 387,
             "tokens": 2751,
             "sources": 1,
             "clones": 3,
             "duplicatedLines": 68,
             "duplicatedTokens": 352,
-            "percentage": 17.8,
+            "percentage": 17.57,
             "percentageTokens": 12.8,
             "newDuplicatedLines": 0,
             "newClones": 0
@@ -2046,13 +2046,13 @@
           },
           ".github/workflows/android_repeatable.yml": {
             "lines": 169,
-            "tokens": 1011,
+            "tokens": 1004,
             "sources": 1,
             "clones": 2,
             "duplicatedLines": 53,
             "duplicatedTokens": 309,
             "percentage": 31.36,
-            "percentageTokens": 30.56,
+            "percentageTokens": 30.78,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2166,14 +2166,14 @@
           }
         },
         "total": {
-          "lines": 3265,
-          "tokens": 21510,
+          "lines": 3268,
+          "tokens": 21243,
           "sources": 25,
-          "clones": 15,
-          "duplicatedLines": 351,
-          "duplicatedTokens": 2694,
-          "percentage": 10.75,
-          "percentageTokens": 12.52,
+          "clones": 11,
+          "duplicatedLines": 318,
+          "duplicatedTokens": 2155,
+          "percentage": 9.73,
+          "percentageTokens": 10.14,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2229,8 +2229,8 @@
             "newClones": 0
           },
           "scripts/run_tests_android.sh": {
-            "lines": 705,
-            "tokens": 5167,
+            "lines": 708,
+            "tokens": 5202,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2289,8 +2289,8 @@
             "newClones": 0
           },
           "scripts/docker.sh": {
-            "lines": 323,
-            "tokens": 2104,
+            "lines": 328,
+            "tokens": 2081,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2301,8 +2301,8 @@
             "newClones": 0
           },
           "scripts/compile_native.sh": {
-            "lines": 353,
-            "tokens": 2330,
+            "lines": 358,
+            "tokens": 2387,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2338,14 +2338,14 @@
           }
         },
         "total": {
-          "lines": 4376,
-          "tokens": 29306,
+          "lines": 4389,
+          "tokens": 29375,
           "sources": 13,
           "clones": 12,
           "duplicatedLines": 263,
           "duplicatedTokens": 1345,
-          "percentage": 6.01,
-          "percentageTokens": 4.59,
+          "percentage": 5.99,
+          "percentageTokens": 4.58,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2389,14 +2389,14 @@
             "newClones": 0
           },
           "app/Unit_Testing/CMakeLists.txt": {
-            "lines": 102,
-            "tokens": 605,
+            "lines": 103,
+            "tokens": 643,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 23,
             "duplicatedTokens": 92,
-            "percentage": 22.55,
-            "percentageTokens": 15.21,
+            "percentage": 22.33,
+            "percentageTokens": 14.31,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2521,8 +2521,8 @@
             "newClones": 0
           },
           "app/CMakeLists.txt": {
-            "lines": 634,
-            "tokens": 4260,
+            "lines": 635,
+            "tokens": 4290,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2546,8 +2546,8 @@
           }
         },
         "total": {
-          "lines": 2337,
-          "tokens": 23006,
+          "lines": 2339,
+          "tokens": 23074,
           "sources": 16,
           "clones": 1,
           "duplicatedLines": 23,
@@ -3260,14 +3260,14 @@
       }
     },
     "total": {
-      "lines": 30655,
-      "tokens": 235851,
+      "lines": 30686,
+      "tokens": 235823,
       "sources": 258,
-      "clones": 121,
-      "duplicatedLines": 1505,
-      "duplicatedTokens": 14079,
-      "percentage": 4.91,
-      "percentageTokens": 5.97,
+      "clones": 117,
+      "duplicatedLines": 1472,
+      "duplicatedTokens": 13540,
+      "percentage": 4.8,
+      "percentageTokens": 5.74,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -6787,53 +6787,17 @@
       },
       "secondFile": {
         "name": "app/Unit_Testing/CMakeLists.txt",
-        "start": 69,
-        "end": 81,
+        "start": 70,
+        "end": 82,
         "startLoc": {
-          "line": 69,
+          "line": 70,
           "column": 2,
-          "position": 355
+          "position": 393
         },
         "endLoc": {
-          "line": 81,
+          "line": 82,
           "column": 4,
-          "position": 436
-        }
-      }
-    },
-    {
-      "format": "yaml",
-      "lines": 12,
-      "fragment": "uses: actions/cache@v4\n        with:\n          # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml\n          key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.name }}_${{ inputs.host_os }}_${{ inputs.type }}_${{ inputs.compiler }}\n          restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.name }}_${{ inputs.host_os }}_${{ inputs.type }}_${{ inputs.compiler }}\n          path: |\n            code_coverage_base.info\n            code_coverage.info\n            code_coverage_test.info\n            code_coverage_filtered.info\n\n      -",
-      "tokens": 0,
-      "firstFile": {
-        "name": ".github/workflows/reusable-native.yml",
-        "start": 333,
-        "end": 344,
-        "startLoc": {
-          "line": 333,
-          "column": 9,
-          "position": 1775
-        },
-        "endLoc": {
-          "line": 344,
-          "column": 2,
-          "position": 1918
-        }
-      },
-      "secondFile": {
-        "name": ".github/workflows/reusable-native.yml",
-        "start": 306,
-        "end": 318,
-        "startLoc": {
-          "line": 306,
-          "column": 9,
-          "position": 1492
-        },
-        "endLoc": {
-          "line": 318,
-          "column": 6,
-          "position": 1636
+          "position": 474
         }
       }
     },
@@ -6844,17 +6808,17 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/reusable-android.yml",
-        "start": 332,
-        "end": 361,
+        "start": 328,
+        "end": 357,
         "startLoc": {
-          "line": 332,
+          "line": 328,
           "column": 5,
-          "position": 2510
+          "position": 2385
         },
         "endLoc": {
-          "line": 361,
+          "line": 357,
           "column": 40,
-          "position": 2706
+          "position": 2581
         }
       },
       "secondFile": {
@@ -6875,253 +6839,145 @@
     },
     {
       "format": "yaml",
-      "lines": 8,
-      "fragment": "}}\n        if: success()\n        uses: actions/cache@v4\n        with:\n          # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml\n          key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}\n          restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}\n          fail-on-cache-miss: true",
-      "tokens": 0,
-      "firstFile": {
-        "name": ".github/workflows/reusable-android.yml",
-        "start": 374,
-        "end": 381,
-        "startLoc": {
-          "line": 374,
-          "column": 2,
-          "position": 2763
-        },
-        "endLoc": {
-          "line": 381,
-          "column": 5,
-          "position": 2895
-        }
-      },
-      "secondFile": {
-        "name": ".github/workflows/reusable-android.yml",
-        "start": 234,
-        "end": 241,
-        "startLoc": {
-          "line": 234,
-          "column": 2,
-          "position": 1134
-        },
-        "endLoc": {
-          "line": 241,
-          "column": 6,
-          "position": 1266
-        }
-      }
-    },
-    {
-      "format": "yaml",
-      "lines": 8,
-      "fragment": "}}\n        if: success()\n        uses: actions/cache@v4\n        with:\n          # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml\n          key: gradle_packages_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}\n          restore-keys: gradle_packages_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}\n          fail-on-cache-miss: true",
-      "tokens": 0,
-      "firstFile": {
-        "name": ".github/workflows/reusable-android.yml",
-        "start": 388,
-        "end": 395,
-        "startLoc": {
-          "line": 388,
-          "column": 2,
-          "position": 2931
-        },
-        "endLoc": {
-          "line": 395,
-          "column": 5,
-          "position": 3063
-        }
-      },
-      "secondFile": {
-        "name": ".github/workflows/reusable-android.yml",
-        "start": 302,
-        "end": 309,
-        "startLoc": {
-          "line": 302,
-          "column": 2,
-          "position": 2191
-        },
-        "endLoc": {
-          "line": 309,
-          "column": 6,
-          "position": 2323
-        }
-      }
-    },
-    {
-      "format": "yaml",
       "lines": 41,
       "fragment": "steps:\n      - name: Checkout\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n        if: success()\n        uses: actions/checkout@v4\n\n      - name: Set up JDK\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n        if: success()\n        uses: actions/setup-java@v4\n        with:\n          # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml\n          java-version: 21\n          distribution: zulu\n          java-package: jdk\n          architecture: x64\n          check-latest: false\n          server-id: github\n          server-username: GITHUB_ACTOR\n          server-password: GITHUB_TOKEN\n          settings-path: ~/.gradle\n          overwrite-settings: true\n          gpg-private-key: ''\n          gpg-passphrase: GPG_PASSPHRASE\n          cache: gradle\n          cache-dependency-path: '**/build.gradle'\n\n      - name: Add custom environment variables\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success() && !startsWith(inputs.host_os, 'windows')\n        working-directory: .\n        run: |\n          echo 'Available Android versions:';\n          du -h -d 1 ${ANDROID_HOME}/ndk;\n          du -h -d 1 ${ANDROID_HOME}/cmake || true;\n          du -h -d 1 ${ANDROID_HOME}/build-tools;\n          ls -lahp ${ANDROID_HOME}/platforms;\n          ls -lahp ${HOME};\n          echo \"GRADLE_PATH=${HOME}/.gradle\" >> \"${GITHUB_ENV}\";\n\n      - name: Download gradle",
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/reusable-android.yml",
-        "start": 579,
-        "end": 619,
+        "start": 574,
+        "end": 614,
         "startLoc": {
-          "line": 579,
+          "line": 574,
           "column": 5,
-          "position": 4479
+          "position": 4294
         },
         "endLoc": {
-          "line": 619,
+          "line": 614,
           "column": 7,
-          "position": 4708
+          "position": 4523
         }
       },
       "secondFile": {
         "name": ".github/workflows/reusable-android.yml",
         "start": 32,
-        "end": 373,
+        "end": 369,
         "startLoc": {
           "line": 32,
           "column": 5,
           "position": 175
         },
         "endLoc": {
-          "line": 373,
+          "line": 369,
           "column": 10,
-          "position": 2745
+          "position": 2620
         }
       }
     },
     {
       "format": "yaml",
       "lines": 21,
-      "fragment": "- name: Download gradle packages from cache\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n        if: success()\n        uses: actions/cache@v4\n        with:\n          # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml\n          key: gradle_packages_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}\n          restore-keys: gradle_packages_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}\n          fail-on-cache-miss: true\n          path: |\n            ${{ env.GRADLE_PATH }}/gradle-packages.zip\n\n      - name: Extract and check files from gradle artifact\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n        if: success() && !startsWith(inputs.host_os, 'windows')\n        working-directory: .\n        run: |\n          # shellcheck disable=SC1091\n          . scripts/helper_functions.sh && extractFilesFromArtifact ${{ env.GRADLE_PATH }};\n\n      - name: Download",
+      "fragment": "- name: Download gradle packages from cache\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n        if: success()\n        uses: actions/cache/restore@v4\n        with:\n          # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml\n          key: gradle_packages_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}\n          restore-keys: gradle_packages_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}\n          fail-on-cache-miss: true\n          path: |\n            ${{ env.GRADLE_PATH }}/gradle-packages.zip\n\n      - name: Extract and check files from gradle artifact\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n        if: success() && !startsWith(inputs.host_os, 'windows')\n        working-directory: .\n        run: |\n          # shellcheck disable=SC1091\n          . scripts/helper_functions.sh && extractFilesFromArtifact ${{ env.GRADLE_PATH }};\n\n      - name: Download",
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/reusable-android.yml",
-        "start": 619,
-        "end": 639,
+        "start": 614,
+        "end": 634,
         "startLoc": {
-          "line": 619,
+          "line": 614,
           "column": 7,
-          "position": 4701
+          "position": 4516
         },
         "endLoc": {
-          "line": 639,
+          "line": 634,
           "column": 9,
-          "position": 4933
+          "position": 4748
         }
       },
       "secondFile": {
         "name": ".github/workflows/reusable-android.yml",
-        "start": 387,
-        "end": 407,
+        "start": 383,
+        "end": 403,
         "startLoc": {
-          "line": 387,
+          "line": 383,
           "column": 7,
-          "position": 2906
+          "position": 2781
         },
         "endLoc": {
-          "line": 407,
+          "line": 403,
           "column": 6,
-          "position": 3138
+          "position": 3013
         }
       }
     },
     {
       "format": "yaml",
       "lines": 15,
-      "fragment": "- name: Download generated binaries from cache\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n        if: success()\n        uses: actions/cache@v4\n        with:\n          # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml\n          key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}\n          restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}\n          fail-on-cache-miss: true\n          path: |\n            app/build\n            app/.cxx\n            app/third_party\n\n      - name: Check",
+      "fragment": "- name: Download generated binaries from cache\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n        if: success()\n        uses: actions/cache/restore@v4\n        with:\n          # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml\n          key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}\n          restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}\n          fail-on-cache-miss: true\n          path: |\n            app/build\n            app/.cxx\n            app/third_party\n\n      - name: Check",
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/reusable-android.yml",
-        "start": 639,
-        "end": 653,
+        "start": 634,
+        "end": 648,
         "startLoc": {
-          "line": 639,
+          "line": 634,
           "column": 7,
-          "position": 4928
+          "position": 4743
         },
         "endLoc": {
-          "line": 653,
+          "line": 648,
           "column": 6,
-          "position": 5101
+          "position": 4916
         }
       },
       "secondFile": {
         "name": ".github/workflows/reusable-android.yml",
-        "start": 373,
-        "end": 387,
+        "start": 369,
+        "end": 383,
         "startLoc": {
-          "line": 373,
+          "line": 369,
           "column": 7,
-          "position": 2738
+          "position": 2613
         },
         "endLoc": {
-          "line": 387,
+          "line": 383,
           "column": 9,
-          "position": 2911
+          "position": 2786
         }
       }
     },
     {
       "format": "yaml",
       "lines": 76,
-      "fragment": "java-version: 21\n          distribution: zulu\n          java-package: jdk\n          architecture: x64\n          check-latest: false\n          server-id: github\n          server-username: GITHUB_ACTOR\n          server-password: GITHUB_TOKEN\n          settings-path: ~/.gradle\n          overwrite-settings: true\n          gpg-private-key: ''\n          gpg-passphrase: GPG_PASSPHRASE\n          cache: gradle\n          cache-dependency-path: '**/build.gradle'\n\n      - name: Add custom environment variables\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success() && !startsWith(inputs.host_os, 'windows')\n        working-directory: .\n        run: |\n          echo 'Available Android versions:';\n          du -h -d 1 ${ANDROID_HOME}/ndk;\n          du -h -d 1 ${ANDROID_HOME}/cmake || true;\n          du -h -d 1 ${ANDROID_HOME}/build-tools;\n          ls -lahp ${ANDROID_HOME}/platforms;\n          ls -lahp ${HOME};\n          echo \"GRADLE_PATH=${HOME}/.gradle\" >> \"${GITHUB_ENV}\";\n\n      - name: Download gradle packages from cache\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n        if: success()\n        uses: actions/cache@v4\n        with:\n          # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml\n          key: gradle_packages_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}\n          restore-keys: gradle_packages_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}\n          fail-on-cache-miss: true\n          path: |\n            ${{ env.GRADLE_PATH }}/gradle-packages.zip\n\n      - name: Extract and check files from gradle artifact\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n        if: success() && !startsWith(inputs.host_os, 'windows')\n        working-directory: .\n        run: |\n          # shellcheck disable=SC1091\n          . scripts/helper_functions.sh && extractFilesFromArtifact ${{ env.GRADLE_PATH }};\n\n      - name: Download generated binaries from cache\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n        if: success()\n        uses: actions/cache@v4\n        with:\n          # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml\n          key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}\n          restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}\n          fail-on-cache-miss: true\n          path: |\n            app/build\n            app/.cxx\n            app/third_party\n\n      - name: Check binaries' paths\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success()\n        run: |\n          # shellcheck disable=SC1091\n          . scripts/helper_functions.sh && checkPathExists app/build;\n          . scripts/helper_functions.sh && checkPathExists app/build/intermediates;\n          . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac;\n          . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/debug;\n          . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/debugUnitTest;\n          . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/debugAndroidTest;\n          . scripts/helper_functions.sh && checkPathExists app/build/tmp/kotlin-classes/debug;\n          . scripts/helper_functions.sh && checkPathExists app/.cxx;\n          . scripts/helper_functions.sh && checkPathExists app/third_party;",
+      "fragment": "java-version: 21\n          distribution: zulu\n          java-package: jdk\n          architecture: x64\n          check-latest: false\n          server-id: github\n          server-username: GITHUB_ACTOR\n          server-password: GITHUB_TOKEN\n          settings-path: ~/.gradle\n          overwrite-settings: true\n          gpg-private-key: ''\n          gpg-passphrase: GPG_PASSPHRASE\n          cache: gradle\n          cache-dependency-path: '**/build.gradle'\n\n      - name: Add custom environment variables\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success() && !startsWith(inputs.host_os, 'windows')\n        working-directory: .\n        run: |\n          echo 'Available Android versions:';\n          du -h -d 1 ${ANDROID_HOME}/ndk;\n          du -h -d 1 ${ANDROID_HOME}/cmake || true;\n          du -h -d 1 ${ANDROID_HOME}/build-tools;\n          ls -lahp ${ANDROID_HOME}/platforms;\n          ls -lahp ${HOME};\n          echo \"GRADLE_PATH=${HOME}/.gradle\" >> \"${GITHUB_ENV}\";\n\n      - name: Download gradle packages from cache\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n        if: success()\n        uses: actions/cache/restore@v4\n        with:\n          # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml\n          key: gradle_packages_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}\n          restore-keys: gradle_packages_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}\n          fail-on-cache-miss: true\n          path: |\n            ${{ env.GRADLE_PATH }}/gradle-packages.zip\n\n      - name: Extract and check files from gradle artifact\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n        if: success() && !startsWith(inputs.host_os, 'windows')\n        working-directory: .\n        run: |\n          # shellcheck disable=SC1091\n          . scripts/helper_functions.sh && extractFilesFromArtifact ${{ env.GRADLE_PATH }};\n\n      - name: Download generated binaries from cache\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n        if: success()\n        uses: actions/cache/restore@v4\n        with:\n          # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml\n          key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}\n          restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}\n          fail-on-cache-miss: true\n          path: |\n            app/build\n            app/.cxx\n            app/third_party\n\n      - name: Check binaries' paths\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success()\n        run: |\n          # shellcheck disable=SC1091\n          . scripts/helper_functions.sh && checkPathExists app/build;\n          . scripts/helper_functions.sh && checkPathExists app/build/intermediates;\n          . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac;\n          . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/debug;\n          . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/debugUnitTest;\n          . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/debugAndroidTest;\n          . scripts/helper_functions.sh && checkPathExists app/build/tmp/kotlin-classes/debug;\n          . scripts/helper_functions.sh && checkPathExists app/.cxx;\n          . scripts/helper_functions.sh && checkPathExists app/third_party;",
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/reusable-android.yml",
-        "start": 755,
-        "end": 830,
+        "start": 750,
+        "end": 825,
         "startLoc": {
-          "line": 755,
+          "line": 750,
           "column": 11,
-          "position": 5612
+          "position": 5420
         },
         "endLoc": {
-          "line": 830,
+          "line": 825,
           "column": 76,
-          "position": 6180
+          "position": 5988
         }
       },
       "secondFile": {
         "name": ".github/workflows/reusable-android.yml",
         "start": 44,
-        "end": 664,
+        "end": 659,
         "startLoc": {
           "line": 44,
           "column": 11,
           "position": 259
         },
         "endLoc": {
-          "line": 664,
+          "line": 659,
           "column": 76,
-          "position": 5131
-        }
-      }
-    },
-    {
-      "format": "yaml",
-      "lines": 9,
-      "fragment": "uses: actions/cache@v4\n        with:\n          # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml\n          key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}\n          restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}\n          path: |\n            app/build/reports\n\n      - name: Check",
-      "tokens": 0,
-      "firstFile": {
-        "name": ".github/workflows/reusable-android.yml",
-        "start": 842,
-        "end": 850,
-        "startLoc": {
-          "line": 842,
-          "column": 9,
-          "position": 6269
-        },
-        "endLoc": {
-          "line": 850,
-          "column": 6,
-          "position": 6401
-        }
-      },
-      "secondFile": {
-        "name": ".github/workflows/reusable-android.yml",
-        "start": 532,
-        "end": 540,
-        "startLoc": {
-          "line": 532,
-          "column": 9,
-          "position": 3961
-        },
-        "endLoc": {
-          "line": 540,
-          "column": 4,
-          "position": 4093
+          "position": 4946
         }
       }
     },
@@ -7291,12 +7147,12 @@
       },
       "secondFile": {
         "name": ".github/workflows/reusable-android.yml",
-        "start": 331,
+        "start": 327,
         "end": 59,
         "startLoc": {
-          "line": 331,
+          "line": 327,
           "column": 2,
-          "position": 2506
+          "position": 2381
         },
         "endLoc": {
           "line": 59,

@@ -3,7 +3,20 @@
 ::std::int32_t main (::std::int32_t argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
     const ::std::int32_t res {RUN_ALL_TESTS()};
-    return res;
+    // No test was executed.
+    if (::testing::UnitTest::GetInstance()->test_to_run_count() == 0) {
+        return 1;
+    }
+    // No test passed.
+    if (::testing::UnitTest::GetInstance()->successful_test_count() == 0) {
+        return 1;
+    }
+    if (res != 0) {
+        // Some tests failed.
+        return res;
+    }
+    // All tests passed!
+    return 0;
 }
 
 /*

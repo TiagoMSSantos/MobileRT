@@ -21,11 +21,12 @@ print_environment()
 # Check CMake version
 ###############################################################################
 set( CMAKE_MIN_VERSION "3.10" )
-message( STATUS "Recommended CMake version: ${CMAKE_MIN_VERSION}+." )
+message( STATUS "Recommended CMake version: ${CMAKE_MIN_VERSION}+" )
+message( STATUS "Detected CMake version: ${CMAKE_VERSION}" )
 
-cmake_minimum_required( VERSION ${CMAKE_MIN_VERSION}...${CMAKE_MIN_VERSION} FATAL_ERROR )
+cmake_minimum_required( VERSION ${CMAKE_MIN_VERSION}...${CMAKE_VERSION} FATAL_ERROR )
 message( STATUS "Setting policies for compatibility with CMake v${CMAKE_MIN_VERSION}.")
-cmake_policy( VERSION ${CMAKE_MIN_VERSION} )
+cmake_policy( VERSION ${CMAKE_MIN_VERSION}...${CMAKE_VERSION} )
 ###############################################################################
 ###############################################################################
 

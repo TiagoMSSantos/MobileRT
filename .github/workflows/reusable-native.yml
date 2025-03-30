@@ -307,11 +307,10 @@ jobs:
       - name: Upload coverage to cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success() && startsWith(inputs.host_os, 'ubuntu') && inputs.type == 'debug' && startsWith(inputs.compiler, 'g++')
-        uses: actions/cache@v4
+        uses: actions/cache/save@v4
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
           key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.name }}_${{ inputs.host_os }}_${{ inputs.type }}_${{ inputs.compiler }}
-          restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.name }}_${{ inputs.host_os }}_${{ inputs.type }}_${{ inputs.compiler }}
           path: |
             code_coverage_base.info
             code_coverage.info
@@ -334,7 +333,7 @@ jobs:
       - name: Download reports from cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
-        uses: actions/cache@v4
+        uses: actions/cache/restore@v4
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
           key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.name }}_${{ inputs.host_os }}_${{ inputs.type }}_${{ inputs.compiler }}

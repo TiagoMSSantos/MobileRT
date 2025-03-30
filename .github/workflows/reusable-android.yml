@@ -174,7 +174,7 @@ jobs:
           ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'cmake;3.31.6';
 
       - name: Download Android dependencies
-        timeout-minutes: 5
+        timeout-minutes: 6
         if: success()
         run: |
           sh gradlew build --dry-run -Dorg.gradle.configuration-cache=true --parallel \
@@ -233,12 +233,10 @@ jobs:
       - name: Upload generated binaries to cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
-        uses: actions/cache@v4
+        uses: actions/cache/save@v4
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
           key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
-          restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
-          fail-on-cache-miss: false
           path: |
             app/build
             app/.cxx
@@ -301,12 +299,10 @@ jobs:
       - name: Upload gradle packages to cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
-        uses: actions/cache@v4
+        uses: actions/cache/save@v4
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
           key: gradle_packages_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
-          restore-keys: gradle_packages_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
-          fail-on-cache-miss: false
           path: |
             ${{ env.GRADLE_PATH }}/gradle-packages.zip
 
@@ -373,7 +369,7 @@ jobs:
       - name: Download generated binaries from cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success()
-        uses: actions/cache@v4
+        uses: actions/cache/restore@v4
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
           key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
@@ -387,7 +383,7 @@ jobs:
       - name: Download gradle packages from cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success()
-        uses: actions/cache@v4
+        uses: actions/cache/restore@v4
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
           key: gradle_packages_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
@@ -460,7 +456,7 @@ jobs:
           mkdir -p ~/.android/avd/Android_Emulator_API_34.avd;
 
       - name: Download Android dependencies
-        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        timeout-minutes: 6
         if: success()
         run: |
           if [ "${{ inputs.type }}" = 'debug' ]; then
@@ -529,11 +525,10 @@ jobs:
       - name: Upload reports to cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success() && startsWith(inputs.host_os, 'ubuntu') && inputs.type == 'debug'
-        uses: actions/cache@v4
+        uses: actions/cache/save@v4
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
           key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
-          restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
           path: |
             app/build/reports
 
@@ -619,7 +614,7 @@ jobs:
       - name: Download gradle packages from cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success()
-        uses: actions/cache@v4
+        uses: actions/cache/restore@v4
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
           key: gradle_packages_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
@@ -639,7 +634,7 @@ jobs:
       - name: Download generated binaries from cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success()
-        uses: actions/cache@v4
+        uses: actions/cache/restore@v4
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
           key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
@@ -689,7 +684,7 @@ jobs:
           set -u;
 
       - name: Download Android dependencies
-        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        timeout-minutes: 6
         if: success()
         run: |
           sh gradlew test"${{ inputs.type }}"UnitTest lint --dry-run -Dorg.gradle.configuration-cache=true --parallel \
@@ -783,7 +778,7 @@ jobs:
       - name: Download gradle packages from cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success()
-        uses: actions/cache@v4
+        uses: actions/cache/restore@v4
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
           key: gradle_packages_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
@@ -803,7 +798,7 @@ jobs:
       - name: Download generated binaries from cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success()
-        uses: actions/cache@v4
+        uses: actions/cache/restore@v4
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
           key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
@@ -839,7 +834,7 @@ jobs:
       - name: Download reports from cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success() && startsWith(inputs.host_os, 'ubuntu')
-        uses: actions/cache@v4
+        uses: actions/cache/restore@v4
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
           key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
@@ -900,7 +895,7 @@ jobs:
           set -u;
 
       - name: Download Android dependencies
-        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        timeout-minutes: 6
         if: success()
         working-directory: .
         run: |

@@ -299,6 +299,9 @@ build() {
     JOBS_FLAGS='';
   fi
 
+  # Set CMAKE_POLICY_VERSION_MINIMUM to avoid errors with CMake v4 when building third party dependencies.
+  cmakeVersion=$(cmake --version | grep -i version | tr -s ' ' | cut -d ' ' -f 3);
+  echo "CMake version: ${cmakeVersion}";
   if [ -f "${conanToolchainFile}" ]; then
     addConanToolchain="-DCMAKE_TOOLCHAIN_FILE=${conanToolchainFile}";
     cmake \
@@ -308,6 +311,7 @@ build() {
       -DCMAKE_C_COMPILER="${c_compiler}" \
       -DCMAKE_C_SOURCE_FILE_EXTENSIONS="c" \
       -DCMAKE_BUILD_TYPE="${typeWithCapitalLetter}" \
+      -DCMAKE_POLICY_VERSION_MINIMUM="${cmakeVersion}" \
        "${addConanToolchain}" \
       ../app;
   else
@@ -318,10 +322,11 @@ build() {
       -DCMAKE_C_COMPILER="${c_compiler}" \
       -DCMAKE_C_SOURCE_FILE_EXTENSIONS="c" \
       -DCMAKE_BUILD_TYPE="${typeWithCapitalLetter}" \
+      -DCMAKE_POLICY_VERSION_MINIMUM="${cmakeVersion}" \
       ../app;
   fi
 
-  resCompile=${?};
+  resCompile="${?}";
   echo 'Called CMake';
 
   if [ "${resCompile}" -eq 0 ]; then
@@ -330,7 +335,7 @@ build() {
     # shellcheck disable=SC2086
     cmake --build . ${JOBS_FLAGS};
     set -u;
-    resCompile=${?};
+    resCompile="${?}";
   else
     echo 'Compilation: cmake failed';
   fi

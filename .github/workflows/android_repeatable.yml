@@ -106,7 +106,7 @@ jobs:
         ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager.bat --install 'cmake;3.31.6';
 
     - name: Download Android dependencies
-      timeout-minutes: 5
+      timeout-minutes: 6
       if: success()
       run: |
         sh gradlew build --dry-run -Dorg.gradle.configuration-cache=true --parallel \
@@ -129,7 +129,7 @@ jobs:
         sudo udevadm trigger --name-match=kvm;
 
     - name: Download Android dependencies
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      timeout-minutes: 6
       if: success()
       run: |
         sh gradlew connectedAndroidTest --dry-run -Dorg.gradle.configuration-cache=true --parallel \
