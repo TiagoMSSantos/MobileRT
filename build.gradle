@@ -74,7 +74,7 @@ buildscript {
         gradleVersionValue = gradleVersionArray[0] + '.' + gradleVersionArray[1] as Float
 
         // Test dependencies
-        jacoco_version = '0.8.12'
+        jacoco_version = '0.8.13'
         if (project.properties["androidX_test_espresso_version"] == null) {
             androidX_test_espresso_version = '3.5.1'
         }
