@@ -1,0 +1,14 @@
+{
+  "include":
+  [
+    { "name": "G++", "host_os": "ubuntu-24.04", "type": "debug", "compiler": "g++" },
+    { "name": "Clang++", "host_os": "ubuntu-22.04", "type": "release", "compiler": "clang++" },
+    { "name": "Intel C++", "host_os": "ubuntu-24.04", "type": "release", "compiler": "icpx" },
+    { "name": "G++", "host_os": "macos-15", "type": "release", "compiler": "g++" },
+    { "name": "Clang++", "host_os": "macos-14", "type": "release", "compiler": "clang++" },
+    { "name": "G++", "host_os": "macos-13", "type": "release", "compiler": "g++" },
+    { "name": "MSVC", "host_os": "windows-2025", "type": "release", "compiler": "cl", "qt_host": "windows", "qt_version": "6.9.0", "qt_arch": "win64_msvc2022_64" },
+    { "name": "MSVC", "host_os": "windows-2022", "type": "release", "compiler": "cl", "qt_host": "windows", "qt_version": "5.15.2", "qt_arch": "win64_msvc2019_64" },
+    { "name": "MinGW", "host_os": "windows-2019", "type": "release", "compiler": "g++", "qt_host": "windows", "qt_version": "5.12.0", "qt_arch": "win64_mingw73" }
+  ]
+}
