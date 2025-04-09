@@ -232,6 +232,20 @@
     },
     {
       "fileMatch": [
+        ".*build.gradle"
+      ],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
+        "guava_version = ['\"](?<currentValue>.*)['\"]"
+      ],
+      "depNameTemplate": "com.google.guava:guava",
+      "datasourceTemplate": "maven",
+      "versioningTemplate": "gradle",
+      "customType": "regex",
+      "registryUrlTemplate": "https://maven.google.com"
+    },
+    {
+      "fileMatch": [
         "app\\/third_party\\/CMakeLists\\.txt"
       ],
       "matchStringsStrategy": "any",
@@ -498,6 +512,19 @@
       "versioning": "regex:^r?(?<major>[0-9]+)\\.?(?<minor>[0-9a-z]+)?\\.?(?<patch>[0-9]+)?-?(?<prerelease>[0-9a-z]+)?(?<compatibility>-.*)?.*$",
       "matchCurrentVersion": "!/^(25\\.2\\.9519653)|(23\\.2\\.8568313)$/",
       "allowedVersions": "/^r?[0-9]+\\.?[0-9a-z]*\\.?[0-9]*.*$/"
+    },
+    {
+      "groupName": "Only update Guava version for Android API >= 26",
+      "enabled": false,
+      "matchUpdateTypes": ["major", "minor"],
+      "matchDepNames": [
+        "com.google.guava:guava"
+      ],
+      "matchManagers": [
+        "custom.regex",
+        "gradle"
+      ],
+      "matchCurrentVersion": "!/^33\\.4\\.6-android$/"
     },
     {
       "groupName": "Do not update Gradle for Android API <= 15",
