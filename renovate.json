@@ -524,7 +524,7 @@
         "custom.regex",
         "gradle"
       ],
-      "matchCurrentVersion": "!/^33\\.4\\.6-android$/"
+      "matchCurrentVersion": "!/^33\\.4\\.6\\-android$/"
     },
     {
       "groupName": "Do not update Gradle for Android API <= 15",
