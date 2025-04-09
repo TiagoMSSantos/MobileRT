@@ -516,7 +516,7 @@
     {
       "groupName": "Only update Guava version for Android API >= 26",
       "enabled": false,
-      "matchUpdateTypes": ["major", "minor"],
+      "matchUpdateTypes": ["major", "minor", "patch"],
       "matchDepNames": [
         "com.google.guava:guava"
       ],
