@@ -242,7 +242,7 @@
       "datasourceTemplate": "maven",
       "versioningTemplate": "gradle",
       "customType": "regex",
-      "registryUrlTemplate": "https://maven.google.com"
+      "registryUrlTemplate": "https://repo1.maven.org/maven2/"
     },
     {
       "fileMatch": [
