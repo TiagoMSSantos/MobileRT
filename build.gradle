@@ -37,7 +37,7 @@ buildscript {
         androidApiVersionValue = androidApiVersionArray[0] as Float
 
         if (androidApiVersionValue >= 26) {
-            guava_version = '33.4.7-android'
+            guava_version = '33.4.7-jre'
         }
         if (androidApiVersionValue >= 21) {
             androidX_appcompat_version = '1.7.0'
@@ -73,7 +73,7 @@ buildscript {
             kotlin_gradle_plugin_version = '2.1.0'
         }
         if (project.properties["guava_version"] == null) {
-            guava_version = '33.4.6-android'
+            guava_version = '33.4.6-jre'
         }
 
         final def gradleVersionArray = gradle_version.split("\\.").collect()
