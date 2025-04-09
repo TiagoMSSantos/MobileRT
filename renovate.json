@@ -354,8 +354,7 @@
       "enabled": true,
       "matchManagers": [
         "dockerfile",
-        "docker-compose",
-        "custom.regex"
+        "docker-compose"
       ],
       "versioning": "regex:^(?<major>[0-9]+)\\.?(?<minor>[0-9a-z]+)?\\.?(?<patch>[0-9]+)?-?(?<compatibility>[a-z]+)?.*$",
       "pinDigests": false
@@ -520,11 +519,7 @@
       "matchDepNames": [
         "com.google.guava:guava"
       ],
-      "matchManagers": [
-        "custom.regex",
-        "gradle"
-      ],
-      "matchCurrentVersion": "!/^33\\.4\\.6\\-android$/"
+      "matchCurrentVersion": "!/^33\\.4\\.6\\-.+$/"
     },
     {
       "groupName": "Do not update Gradle for Android API <= 15",
