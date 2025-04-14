@@ -37,7 +37,7 @@ buildscript {
         androidApiVersionValue = androidApiVersionArray[0] as Float
 
         if (androidApiVersionValue >= 26) {
-            guava_version = '33.4.7-jre'
+            guava_version = '33.4.8-jre'
         }
         if (androidApiVersionValue >= 21) {
             androidX_appcompat_version = '1.7.0'
