@@ -347,6 +347,7 @@ android {
         main {
             java.srcDirs += [javaDir, kotlinDir, mobileRtDir, componentsDir, scenesDir, systemDependentDir]
             kotlin.srcDirs += [kotlinDir]
+            jniLibs.srcDirs = ['src/main/jniLibs']
         }
         // Unit tests
         test {

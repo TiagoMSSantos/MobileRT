@@ -257,13 +257,13 @@ jobs:
         working-directory: .
         run: |
           ls -lahp scripts/sanitizer_ignore.suppr;
-          export ASAN_OPTIONS='suppressions=scripts/sanitizer_ignore.suppr:verbosity=1:strict_string_checks=1:detect_stack_use_after_return=1:check_initialization_order=1:strict_init_order=1:halt_on_error=0:detect_odr_violation=1:detect_leaks=1:detect_container_overflow=1';
+          export ASAN_OPTIONS='suppressions=scripts/sanitizer_ignore.suppr:verbosity=1:strict_string_checks=1:detect_stack_use_after_return=1:check_initialization_order=1:strict_init_order=1:halt_on_error=1:detect_odr_violation=1:detect_leaks=1:detect_container_overflow=1:max_uar_stack_size_log=128';
           export LSAN_OPTIONS='suppressions=scripts/sanitizer_ignore.suppr:verbosity=1:strict_string_checks=1';
           set +e;
           if [ "${{ inputs.type }}" = 'release' ]; then
             timeoutSeconds='15';
           else
-            timeoutSeconds='100';
+            timeoutSeconds='110';
           fi
           sh scripts/profile.sh timeout "${{ inputs.type }}" 100 "${timeoutSeconds}";
           returnValue="$?";
@@ -371,3 +371,45 @@ jobs:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         run: |
           curl --retry 5 --retry-delay 2 --connect-timeout 2 -s https://codecov.io/bash | bash -s -- -c -F aFlag build_${{ inputs.type }} -v;
+
+      - name: Setup Ruby, JRuby and TruffleRuby
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success()
+        uses: ruby/setup-ruby@v1
+        with:
+          # Check available parameters in: https://github.com/ruby/setup-ruby/blob/master/action.yml
+          ruby-version: '3.3'
+          bundler-cache: false
+          cache-version: 0
+
+      - name: Install Ruby dependencies
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success()
+        run: |
+          bundle config set path.system true;
+          bundle install;
+
+      - name: Code Coverage Shell script tests
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success()
+        working-directory: .
+        run: |
+          bashcov scripts/test/helper_functions.sh;
+          ls -lahp coverage;
+
+      - name: Check code coverage report
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success()
+        run: |
+          # shellcheck disable=SC1091
+          . scripts/helper_functions.sh && checkPathExists coverage coverage.xml;
+
+      - name: Upload reports to Codecov
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success()
+        uses: codecov/codecov-action@v5
+        with:
+          # Check available parameters in: https://github.com/codecov/codecov-action/blob/main/action.yml
+          token: ${{ secrets.CODECOV_TOKEN }}
+          directory: 'coverage'
+          files: coverage/coverage.xml

@@ -147,6 +147,7 @@ execute_process(COMMAND git submodule foreach "git pull --rebase --progress || t
 ###############################################################################
 message( STATUS "Adding third party dependencies." )
 
+set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC" )
 #add_subdirectory( glm )
 
 
@@ -156,8 +157,7 @@ endif( TARGET Components )
 
 
 # Remove Link Time Optimization for Google Test.
-string( REPLACE "-flto=full" "" CMAKE_CXX_FLAGS_RELEASE
-  ${CMAKE_CXX_FLAGS_RELEASE} )
+string( REPLACE "-flto=full" "" CMAKE_CXX_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE} )
 string( REPLACE "  " " " CMAKE_CXX_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE} )
 
 add_subdirectory( googletest )
@@ -167,12 +167,10 @@ set( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -flto=full" )
 
 
 # This work via conan but not for all environments.
-target_include_directories( MobileRT SYSTEM PRIVATE
-  "${CMAKE_CURRENT_SOURCE_DIR}/stb" )
+target_include_directories( MobileRT SYSTEM PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/stb" )
 
 
-target_include_directories( MobileRT SYSTEM PUBLIC
-  "${CMAKE_CURRENT_SOURCE_DIR}/pcg-cpp/include" )
+target_include_directories( MobileRT SYSTEM PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/pcg-cpp/include" )
 
 # Add dependencies headers installed from conan package manager.
 target_include_directories( MobileRT SYSTEM PUBLIC ${CMAKE_INCLUDE_PATH} )
@@ -186,7 +184,7 @@ target_include_directories( MobileRT SYSTEM PUBLIC ${CMAKE_INCLUDE_PATH} )
 message( STATUS "Adding C++ Boost dependencies." )
 set( BOOST_PATH "${CMAKE_CURRENT_SOURCE_DIR}/boost/libs" )
 
-message( STATUS "Updating and adding all C++ Boost modules used." )
+message( STATUS "Updating and adding C++ Boost modules used." )
 foreach( submodule assert config core mpl preprocessor utility type_traits static_assert range iterator sort )
   execute_process( COMMAND git submodule update --init --rebase
     ${BOOST_PATH}/${submodule}
@@ -196,5 +194,17 @@ foreach( submodule assert config core mpl preprocessor utility type_traits stati
   target_include_directories( MobileRT SYSTEM PUBLIC "${BOOST_PATH}/${submodule}/include" )
   target_include_directories( MobileRT SYSTEM PUBLIC "${BOOST_PATH}/${submodule}/conversion/include" )
 endforeach( submodule )
+
+if( CMAKE_HOST_SYSTEM MATCHES "Linux" )
+  message( STATUS "Updating and adding Linux only C++ Boost modules used." )
+  foreach( submodule stacktrace predef container_hash )
+    execute_process( COMMAND git submodule update --init --rebase
+      ${BOOST_PATH}/${submodule}
+      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/boost )
+    execute_process( COMMAND git checkout --progress -f ${BOOST_VERSION}
+      WORKING_DIRECTORY ${BOOST_PATH}/${submodule} )
+    target_include_directories( MobileRT SYSTEM PUBLIC "${BOOST_PATH}/${submodule}/include" )
+  endforeach( submodule )
+endif()
 ###############################################################################
 ###############################################################################

@@ -520,6 +520,11 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
 
         const ::std::int32_t res {
             [&]() -> ::std::int32_t {
+                #if !defined(_WIN32) && !defined(__APPLE__)
+                    // Only catch SIGSEGV for Linux systems, since boost stacktrace doesn't work on Windows nor MacOS.
+                    LOG_INFO("Setting up SIGSEGV signal catch.");
+                    ::std::signal(SIGSEGV, ::MobileRT::signalHandler);
+                #endif
                 LOG_DEBUG("Acquiring lock");
                 const ::std::lock_guard<::std::mutex> lock {mutex_};
                 renderer_ = nullptr;
@@ -808,7 +813,7 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
                     ASSERT(result == JNI_OK, "Couldn't detach the current thread from JVM.");
                     static_cast<void> (result);
                 }
-                LOG_DEBUG("WILL START TO RENDER");
+                LOG_INFO("WILL START TO RENDER");
                 MobileRT::checkSystemError("starting render timer");
                 const ::std::chrono::time_point<::std::chrono::system_clock> chronoStartRendering {::std::chrono::system_clock::now()};
                 while (state_ == State::BUSY && rep > 0) {
@@ -827,7 +832,7 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
                 }
                 const ::std::chrono::time_point<::std::chrono::system_clock> chronoEndRendering {::std::chrono::system_clock::now()};
                 timeRendering = chronoEndRendering - chronoStartRendering;
-                LOG_DEBUG("RENDER FINISHED");
+                LOG_INFO("RENDER FINISHED");
                 finishedRendering_ = true;
                 rendered_.notify_all();
                 {

@@ -66,6 +66,43 @@ jobs:
           echo "Matrix: ${MATRIX}";
           echo "matrix=${MATRIX}" >> ${GITHUB_OUTPUT};
 
+      - name: Check code coverage runs in current branch
+        id: check_status
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BRANCH=${GITHUB_REF#refs/heads/};
+          echo "BRANCH: ${BRANCH}";
+          echo "GITHUB_REPOSITORY: ${GITHUB_REPOSITORY}";
+          response_running=$(curl -s -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/workflows/native.yml/runs?status=in_progress&branch=${BRANCH}");
+          response_queued=$(curl -s -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/workflows/native.yml/runs?status=queued&branch=${BRANCH}");
+          echo "response obtained";
+          workflows_running=$(printf '%s\n' "${response_running}" | jq '.total_count');
+          workflows_queued=$(printf '%s\n' "${response_queued}" | jq '.total_count');
+          echo "workflows running: ${workflows_running}";
+          echo "workflows queued: ${workflows_queued}";
+          workflows_all=$((workflows_running + workflows_queued));
+          echo "workflows all: ${workflows_all}";
+          echo "workflows_all=${workflows_all}" >> ${GITHUB_OUTPUT};
+
+      - name: Trigger code coverage if not running
+        if: steps.check_status.outputs.workflows_all == '0'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BRANCH=${GITHUB_REF#refs/heads/};
+          echo "BRANCH: ${BRANCH}";
+          echo "GITHUB_REPOSITORY: ${GITHUB_REPOSITORY}";
+          curl -X POST \
+            -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/workflows/native.yml/dispatches \
+            -d "{\"ref\":\"${BRANCH}\",\"inputs\":{\"code-coverage-only\":\"true\"}}";
+
   Android:
     needs: [Matrix]
     name: Android ${{ matrix.android_api }} ${{ matrix.type }} (${{ matrix.host_os }})

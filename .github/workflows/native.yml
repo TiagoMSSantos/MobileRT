@@ -2,11 +2,16 @@ name: Native (Qt)
 
 on:
   workflow_dispatch:
+    inputs:
+      code-coverage-only:
+        type: boolean
+        required: false
   push:
     paths-ignore:
       - '*'
       - '**/**'
       - '!.github/workflows/native.yml'
+      - '!.github/workflows/native_matrix.json'
       - '!.github/workflows/reusable-native.yml'
       - '!scripts/helper_functions.sh'
       - '!scripts/install_dependencies.sh'
@@ -38,72 +43,39 @@ env:
   GITHUB_STEP_TIMEOUT_LONG: 20
 
 jobs:
+  Matrix:
+    name: Set Matrix
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+
+    steps:
+      - name: Checkout
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success()
+        uses: actions/checkout@v4
+
+      - name: Set Matrix
+        id: set-matrix
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success()
+        run: |
+          if [ "${{ inputs.code-coverage-only }}" = 'true' ]; then
+            MATRIX='{"include":[{"name":"G++","host_os":"ubuntu-24.04","type":"debug","compiler":"g++"}]}';
+          else
+            MATRIX=$(echo $(cat .github/workflows/native_matrix.json) | sed 's/ //g');
+          fi
+          echo "Matrix: ${MATRIX}";
+          echo "matrix=${MATRIX}" >> ${GITHUB_OUTPUT};
+
   Native:
+    needs: [Matrix]
     name: Native ${{ matrix.type }} ${{ matrix.compiler }} (${{ matrix.host_os }})
-
-    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
-
     strategy:
-      fail-fast: true
-      matrix:
-        include:
-        # Ubuntu
-        - name: G++
-          host_os: ubuntu-24.04
-          type: debug
-          compiler: g++
-
-        - name: Clang++
-          host_os: ubuntu-22.04
-          type: release
-          compiler: clang++
-
-        - name: Intel C++
-          host_os: ubuntu-24.04
-          type: release
-          compiler: icpx
-
-        # MacOS
-        - name: G++
-          host_os: macos-15
-          type: release
-          compiler: g++
-
-        - name: Clang++
-          host_os: macos-14
-          type: release
-          compiler: clang++
-
-        - name: G++
-          host_os: macos-13
-          type: release
-          compiler: g++
-
-        # Windows
-        - name: MSVC
-          host_os: windows-2025
-          type: release
-          compiler: cl
-          qt_host: 'windows'
-          qt_version: '6.9.0'
-          qt_arch: 'win64_msvc2022_64'
-
-        - name: MSVC
-          host_os: windows-2022
-          type: release
-          compiler: cl
-          qt_host: 'windows'
-          qt_version: '5.15.2'
-          qt_arch: 'win64_msvc2019_64'
-
-        - name: MinGW
-          host_os: windows-2019
-          type: release
-          compiler: g++
-          qt_host: 'windows'
-          qt_version: '5.12.0'
-          qt_arch: 'win64_mingw73'
-
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.Matrix.outputs.matrix) }}
     uses: ./.github/workflows/reusable-native.yml
     with:
       name: ${{ matrix.name }}

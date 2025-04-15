@@ -249,6 +249,7 @@ static void work_thread(::MobileRT::Config &config) {
     }
     // Force the calling Ray Tracing engine destructors, which is useful for the unit tests.
     renderer_.reset(nullptr);
+    ::std::cout << ::std::flush;
 }
 
 /**
@@ -258,6 +259,7 @@ void stopRender() {
     if (renderer_ != nullptr) {
         renderer_->stopRender();
     }
+    ::std::cout << ::std::flush;
 }
 
 /**
@@ -273,4 +275,5 @@ void RayTrace(::MobileRT::Config &config, const bool async) {
     } else {
         work_thread(config);
     }
+    ::std::cout << ::std::flush;
 }

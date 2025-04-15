@@ -1,21 +1,32 @@
 #include <gtest/gtest.h>
+#include "MobileRT/Utils/Utils.hpp"
+#include <iostream>
 
 ::std::int32_t main (::std::int32_t argc, char **argv) {
+    #if !defined(_WIN32) && !defined(__APPLE__)
+        // Only catch SIGSEGV for Linux systems, since boost stacktrace doesn't work on Windows nor MacOS.
+        ::std::cout << "Setting up SIGSEGV signal catch." << ::std::endl;
+        ::std::signal(SIGSEGV, ::MobileRT::signalHandler);
+    #endif
+
+    ::std::cout << "Starting unit tests." << ::std::endl;
     ::testing::InitGoogleTest(&argc, argv);
+    ::std::cout << "Initialized GoogleTest." << ::std::endl;
     const ::std::int32_t res {RUN_ALL_TESTS()};
-    // No test was executed.
+    ::std::cout << "Executed unit tests." << ::std::endl;
     if (::testing::UnitTest::GetInstance()->test_to_run_count() == 0) {
+        ::std::cerr << "No test was executed." << ::std::endl;
         return 1;
     }
-    // No test passed.
     if (::testing::UnitTest::GetInstance()->successful_test_count() == 0) {
+        ::std::cerr << "No test passed." << ::std::endl;
         return 1;
     }
     if (res != 0) {
-        // Some tests failed.
+        ::std::cerr << "Some tests failed." << ::std::endl;
         return res;
     }
-    // All tests passed!
+    ::std::cout << "All tests passed!" << ::std::endl;
     return 0;
 }
 
@@ -54,7 +65,7 @@ ASSERT_NEAR(val1, val2, abs_error);	EXPECT_NEAR(val1, val2, abs_error);	the diff
 
 						How to Write a Death Test
 Fatal assertion									Nonfatal assertion					Verifies
-ASSERT_DEATH(statement, regex);					EXPECT_DEATH(statement, regex);		statement crashes with the given error
-ASSERT_DEATH_IF_SUPPORTED(statement, regex);	EXPECT_DEATH_IF_SUPPORTED(statement, regex);	if death tests are supported, verifies that statement crashes with the given error; otherwise verifies nothing
-ASSERT_EXIT(statement, predicate, regex);		EXPECT_EXIT(statement, predicate, regex);	statement exits with the given error and its exit code matches predicate
+ASSERT_DEATH(statement, regex);					EXPECT_DEATH(statement, regex);		            statement crashes with the given error
+ASSERT_DEATH_IF_SUPPORTED(statement, regex);	EXPECT_DEATH_IF_SUPPORTED(statement, regex);    if death tests are supported, verifies that statement crashes with the given error; otherwise verifies nothing
+ASSERT_EXIT(statement, predicate, regex);		EXPECT_EXIT(statement, predicate, regex);	    statement exits with the given error and its exit code matches predicate
 */

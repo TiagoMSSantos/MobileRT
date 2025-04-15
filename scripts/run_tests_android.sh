@@ -529,6 +529,9 @@ runUnitTests() {
 
   echo 'Run unit tests';
   if [ "${type}" = 'debug' ]; then
+    echo 'Enabling AddressSanitizer';
+    adb shell setprop debug.asan.enabled true;
+    adb shell setprop debug.asan.options detect_leaks=1:verbosity=1:shadow_mapping=1;
     # Ignore unit tests that should crash the system because of a failing assert.
     adb shell "LD_LIBRARY_PATH=${mobilert_path} ${mobilert_path}/UnitTests --gtest_filter=-*.TestInvalid*; echo "'$?'" > ${mobilert_path}/unit_tests_result.log";
   else
@@ -620,6 +623,11 @@ runInstrumentationTests() {
   adb shell 'pm list instrumentation;';
   unlockDevice;
 
+  if [ "${type}" = 'debug' ]; then
+    echo 'Enabling AddressSanitizer';
+    adb shell setprop debug.asan.enabled true;
+    adb shell setprop debug.asan.options detect_leaks=1:verbosity=1:shadow_mapping=1;
+  fi
   if [ "${run_test}" = 'all' ]; then
     echo 'Running all tests';
     mkdir -p app/build/reports/jacoco/jacocoTestReport;

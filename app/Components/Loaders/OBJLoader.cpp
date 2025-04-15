@@ -76,8 +76,8 @@ bool OBJLoader::fillScene(Scene *const scene,
                           ::std::string filePath,
                           ::std::unordered_map<::std::string, ::MobileRT::Texture> texturesCache) {
     ::MobileRT::checkSystemError("Starting to fill scene.");
-    LOG_INFO("FILLING SCENE with ", this->numberTriangles_, " triangles in ", this->shapes_.size(), " shapes & ", this->materials_.size(), " materials");
     filePath = filePath.substr(0, filePath.find_last_of('/')) + '/';
+    LOG_INFO("FILLING SCENE '" + filePath, "' with ", this->numberTriangles_, " triangles in ", this->shapes_.size(), " shapes & ", this->materials_.size(), " materials");
     ::std::mutex mutex {};
 
     const ::std::uint32_t numChildren {::std::thread::hardware_concurrency()};
@@ -286,7 +286,7 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
 
     // Loop over shapes.
     for (::std::uint32_t shapeIndex {threadId}; shapeIndex < shapesSize; shapeIndex += numberOfThreads) {
-        LOG_DEBUG("Thread ", threadId, " (", numberOfThreads, ") filling scene.");
+        LOG_DEBUG("Thread ", threadId, " (", numberOfThreads, ") filling scene '", filePath, "'.");
         const auto itShape {this->shapes_.cbegin() + static_cast<::std::int32_t> (shapeIndex)};
         const ::tinyobj::shape_t &shape {*itShape};
 
@@ -294,14 +294,14 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
         ::std::int32_t indexOffset {0};
         // The number of vertices per face.
         const ::std::int32_t faces {static_cast<::std::int32_t> (shape.mesh.num_face_vertices.size())};
-        LOG_DEBUG("Loading shape: ", shapeIndex);
+        LOG_DEBUG("Thread ", threadId, " (", numberOfThreads, ") Loading shape: ", shapeIndex);
         for (::std::int32_t face = 0; face < faces; ++face) {
             const auto itFace {shape.mesh.num_face_vertices.cbegin() + face};
             const ::std::int32_t faceVertices {static_cast<::std::int32_t>(*itFace)};
 
             if (faceVertices % 3 != 0) {// If the number of vertices in the face is not multiple of 3,
                                         // then it does not make a triangle.
-                LOG_DEBUG("num_face_vertices [", face, "] = '", faceVertices, "'");
+                LOG_DEBUG("Thread ", threadId, " (", numberOfThreads, ") num_face_vertices [", face, "] = '", faceVertices, "'");
                 continue;
             }
 
@@ -461,39 +461,59 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
             indexOffset += faceVertices;
 
             if (triangles.size() > 0 && triangles.size() % 100000 == 0) {
-                LOG_DEBUG("Triangle ", triangles.size(), " position at ", triangles.back());
+                LOG_DEBUG("Thread ", threadId, " (", numberOfThreads, ") Triangle ", triangles.size(), " position at ", triangles.back(), ", scene '", filePath, "'.");
             } else if (lights.size() > 0 && lights.size() % 1000 == 0) {
-                LOG_DEBUG("Light ", lights.size(), " position at: ", lights.back()->getPosition(), ", radiance: ", lights.back()->radiance_.Le_);
+                LOG_DEBUG("Thread ", threadId, " (", numberOfThreads, ") Light ", lights.size(), " position at: ", lights.back()->getPosition(), ", radiance: ", lights.back()->radiance_.Le_, ", scene '", filePath, "'.");
             }
         } // The number of vertices per face.
     } // Loop over shapes.
 
     {
         const ::std::lock_guard<::std::mutex> lock {*mutex};
+        LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Local triangles: ", triangles.size(), ", total: ", scene->triangles_.size(), ", scene '", filePath, "'.");
         if (triangles.size() > 0) {
-            LOG_INFO("Local triangles: ", triangles.size(), ", total: ", scene->triangles_.size(), ", last triangle: ", triangles.back());
+            LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Local triangles: ", triangles.size(), ", total: ", scene->triangles_.size(), ", last triangle: ", triangles.back(), ", scene '", filePath, "'.");
         }
+        LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Local lights: ", lights.size(), ", total: ", scene->lights_.size(), ", scene '", filePath, "'.");
         if (lights.size() > 0) {
             const ::std::unique_ptr<Light> &light {lights.back()};
             const ::glm::vec3 &lightPos {light->getPosition()};
             const ::glm::vec3 &lightRadiance {light->radiance_.Le_};
-            LOG_INFO("Local lights:  ", lights.size(), ", total: ", scene->lights_.size(), ", last light: ", lightPos, ", radiance: ", lightRadiance);
+            LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Local lights: ", lights.size(), ", total: ", scene->lights_.size(), ", last light: ", lightPos, ", radiance: ", lightRadiance, ", scene '", filePath, "'.");
         }
 
-        scene->triangles_.reserve(scene->triangles_.size() + triangles.size());
-        ::std::move(::std::begin(triangles), ::std::end(triangles), ::std::back_inserter(scene->triangles_));
+        if (triangles.size() > 0) {
+            LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Reserving memory to add new triangles.");
+            scene->triangles_.reserve(scene->triangles_.size() + triangles.size());
+            LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Moving new triangles to the scene.");
+            ::std::move(::std::begin(triangles), ::std::end(triangles), ::std::back_inserter(scene->triangles_));
+            LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Moved new triangles to the scene.");
+        }
 
-        scene->lights_.reserve(scene->lights_.size() + lights.size());
-        ::std::move(::std::begin(lights), ::std::end(lights), ::std::back_inserter(scene->lights_));
+        if (lights.size() > 0) {
+            LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Reserving memory to add new lights.");
+            scene->lights_.reserve(scene->lights_.size() + lights.size());
+            LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Moving new lights to the scene.");
+            ::std::move(::std::begin(lights), ::std::end(lights), ::std::back_inserter(scene->lights_));
+            LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Added new lights to the scene.");
+        }
     }
 
+    LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Clearing triangles 1.");
     triangles.clear();
+    LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Clearing triangles 2.");
     triangles.shrink_to_fit();
+    LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Clearing triangles 3.");
     ::std::vector<Triangle> {}.swap(triangles);
+    LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Clearing triangles 4.");
 
+    LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Clearing lights 1.");
     lights.clear();
+    LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Clearing lights 2.");
     lights.shrink_to_fit();
+    LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Clearing lights 3.");
     ::std::vector<::std::unique_ptr<Light>> {}.swap(lights);
+    LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Clearing lights 4.");
 }
 
 /**

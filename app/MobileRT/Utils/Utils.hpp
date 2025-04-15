@@ -21,7 +21,19 @@
 #include <thread>
 #include <vector>
 
+#if !defined(_WIN32) && !defined(__APPLE__)
+    // Not available in Windows nor MacOS.
+    #include <boost/stacktrace.hpp>
+
+    // Only used in Linux & Android.
+    #include <csignal>
+#endif
+
 namespace MobileRT {
+
+#if !defined(_WIN32) && !defined(__APPLE__)
+    [[noreturn]] void signalHandler(int signum);
+#endif
 
 #ifndef NDEBUG
     /**

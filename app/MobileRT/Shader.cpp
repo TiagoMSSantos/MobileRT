@@ -70,10 +70,13 @@ void Shader::initializeAccelerators(Scene scene) {
     }
     ::MobileRT::checkSystemError("initializeAccelerators end");
     this->lights_ = ::std::move(scene.lights_);
+    ::MobileRT::checkSystemError("initializeAccelerators end 1");
     LOG_INFO("accelerator = ", this->accelerator_);
-    LOG_INFO("materials = ", this->materials_.size());
-    LOG_INFO("lights = ", this->lights_.size());
     ::MobileRT::checkSystemError("initializeAccelerators end 2");
+    LOG_INFO("materials = ", this->materials_.size());
+    ::MobileRT::checkSystemError("initializeAccelerators end 3");
+    LOG_INFO("lights = ", this->lights_.size());
+    ::MobileRT::checkSystemError("initializeAccelerators end 4");
 }
 
 /**

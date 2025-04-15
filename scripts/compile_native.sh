@@ -312,6 +312,7 @@ build() {
       -DCMAKE_C_SOURCE_FILE_EXTENSIONS="c" \
       -DCMAKE_BUILD_TYPE="${typeWithCapitalLetter}" \
       -DCMAKE_POLICY_VERSION_MINIMUM="${cmakeVersion}" \
+      -DBOOST_STACKTRACE_GNU_SOURCE_NOT_REQUIRED='true' \
        "${addConanToolchain}" \
       ../app;
   else
@@ -323,6 +324,8 @@ build() {
       -DCMAKE_C_SOURCE_FILE_EXTENSIONS="c" \
       -DCMAKE_BUILD_TYPE="${typeWithCapitalLetter}" \
       -DCMAKE_POLICY_VERSION_MINIMUM="${cmakeVersion}" \
+      -DCMAKE_PREFIX_PATH='/usr/lib/x86_64-linux-gnu/cmake/Qt5' \
+      -DBOOST_STACKTRACE_GNU_SOURCE_NOT_REQUIRED='true' \
       ../app;
   fi
 

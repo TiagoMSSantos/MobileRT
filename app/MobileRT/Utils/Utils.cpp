@@ -13,6 +13,14 @@
 
 namespace MobileRT {
 
+    #if !defined(_WIN32) && !defined(__APPLE__)
+        [[noreturn]] void signalHandler(int signum) {
+            LOG_ERROR("Segmentation fault (signal ", signum, ") captured!");
+            LOG_ERROR("Backtrace:\n", ::boost::stacktrace::stacktrace());
+            ::std::exit(EXIT_FAILURE);
+        }
+    #endif
+
     // Public methods
     /**
      * Calculates the highest value that is smaller than the first parameter and is a multiple of

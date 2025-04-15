@@ -159,50 +159,6 @@ jobs:
       run: |
         sh scripts/install_dependencies.sh;
 
-    - name: Setup Ruby, JRuby and TruffleRuby
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && matrix.language == 'cpp'
-      uses: ruby/setup-ruby@v1
-      with:
-        # Check available parameters in: https://github.com/ruby/setup-ruby/blob/master/action.yml
-        ruby-version: '3.3'
-        bundler-cache: false
-        cache-version: 0
-
-    - name: Install Ruby dependencies
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && matrix.language == 'cpp'
-      run: |
-        bundle config set path.system true;
-        bundle install;
-
-    # Only execute shell unit tests for 'cpp' language because it doesn't matter in which build
-    # these tests are executed.
-    - name: Code Coverage Shell script tests
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && matrix.language == 'cpp'
-      working-directory: .
-      run: |
-        bashcov scripts/test/helper_functions.sh;
-        ls -lahp coverage;
-
-    - name: Check code coverage report
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && matrix.language == 'cpp'
-      run: |
-        # shellcheck disable=SC1091
-        . scripts/helper_functions.sh && checkPathExists coverage coverage.xml;
-
-    - name: Upload reports to Codecov
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && matrix.language == 'cpp'
-      uses: codecov/codecov-action@v5
-      with:
-        # Check available parameters in: https://github.com/codecov/codecov-action/blob/main/action.yml
-        token: ${{ secrets.CODECOV_TOKEN }}
-        directory: 'coverage'
-        files: coverage/coverage.xml
-
     - name: Download Android CMake
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && !startsWith(inputs.host_os, 'windows') && matrix.language != 'cpp'

@@ -146,7 +146,9 @@ namespace MobileRT {
         LOG_INFO("PRIMITIVES = ", this->primitives_.size());
 
         ::MobileRT::checkSystemError("RegularGrid constructor before adding primitives");
-        addPrimitives();
+        if (!this->primitives_.empty()) {
+            addPrimitives();
+        }
 
         ::MobileRT::checkSystemError("RegularGrid constructor end");
     }
@@ -285,7 +287,7 @@ namespace MobileRT {
             // LOG_DEBUG("Added primitive ", index, " to RegularGrid (", typeid(T).name(), ")");
             ::MobileRT::checkSystemError(::std::string("RegularGrid addPrimitives end (" + ::std::to_string(index) + ")").c_str());
         }
-        LOG_INFO("Added '", numPrimitives, "' primitives to RegularGrid ", typeid(T).name(), ": (", dx, ", ", dy, ", ", dz, ")");
+        LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Added '", numPrimitives, "' primitives to RegularGrid ", typeid(T).name(), ": (", dx, ", ", dy, ", ", dz, ")");
     }
 
     /**
