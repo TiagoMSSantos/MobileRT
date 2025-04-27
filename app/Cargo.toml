@@ -1,0 +1,18 @@
+[package]
+name = "hello_world"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "my_library"
+path = "src/lib.rs"
+crate-type = ["cdylib"]
+
+[dependencies]
+core = { version = '1.0.0', optional = false, package = 'rustc-std-workspace-core' }
+
+[features]
+std = []
+
+[package.metadata.docs.rs]
+features = ["std"]
