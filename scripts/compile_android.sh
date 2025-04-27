@@ -131,7 +131,7 @@ build() {
     compile"${typeWithCapitalLetter}"UnitTestSources \
     --profile --parallel \
     -DtestType="${type}" -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]" \
-    --console plain --info --warning-mode fail --stacktrace;
+    --console plain --info --warning-mode all --stacktrace;
   resCompile=${?};
   echo 'Compiling APK to execute Android instrumentation tests.';
   sh gradlew createDebugAndroidTestApkListingFileRedirect \

@@ -177,7 +177,7 @@ jobs:
         timeout-minutes: 6
         if: success()
         run: |
-          sh gradlew build --dry-run -Dorg.gradle.configuration-cache=true --parallel \
+          sh gradlew build --dry-run -Dorg.gradle.configuration-cache=false --parallel \
             -DtestType="${{ inputs.type }}" -DandroidApiVersion="${{ inputs.android_api }}" -DabiFilters="[${{ env.android_arch }}]" \
             --info --warning-mode all --stacktrace;
 
@@ -464,7 +464,7 @@ jobs:
           else
             gradle_command='connectedAndroidTest';
           fi
-          sh gradlew "${gradle_command}" --dry-run -Dorg.gradle.configuration-cache=true --parallel \
+          sh gradlew "${gradle_command}" --dry-run -Dorg.gradle.configuration-cache=false --parallel \
             -DtestType="${{ inputs.type }}" -DandroidApiVersion="${{ inputs.android_api }}" -DabiFilters="[${{ env.android_arch }}]" \
             --info --warning-mode all --stacktrace;
 
@@ -687,7 +687,7 @@ jobs:
         timeout-minutes: 6
         if: success()
         run: |
-          sh gradlew test"${{ inputs.type }}"UnitTest lint --dry-run -Dorg.gradle.configuration-cache=true --parallel \
+          sh gradlew test"${{ inputs.type }}"UnitTest lint --dry-run -Dorg.gradle.configuration-cache=false --parallel \
             -DtestType="${{ inputs.type }}" -DandroidApiVersion="${{ inputs.android_api }}" -DabiFilters="[${{ env.android_arch }}]" \
             --info --warning-mode all --stacktrace;
 
@@ -699,6 +699,32 @@ jobs:
           echo "android_arch: ${{ env.android_arch }}";
           echo "android_emulator_arch: ${{ env.android_emulator_arch }}";
           sh scripts/run_tests.sh -t ${{ inputs.type }} -a ${{ inputs.android_api }} -f ${{ env.android_arch }};
+
+      - name: Print error logs
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: failure()
+        working-directory: .
+        run: |
+          ls -lahp .;
+          set +e;
+          echo 'Print JVM errors if provided by Kernel, and just check the logs from the last line of the previous call:';
+          sudo dmesg;
+          echo 'Print native JVM stacktrace if possible:';
+          cat hs_err_pid*.log;
+          echo 'Print problems report if available:';
+          cat build/reports/problems/problems-report.html;
+          set -e;
+
+      - name: Upload problems reports as artifact
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
+          name: problems-report
+          path: build/reports/problems/problems-report.html
+          if-no-files-found: error
+          retention-days: 90
 
       - name: Run linter
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}

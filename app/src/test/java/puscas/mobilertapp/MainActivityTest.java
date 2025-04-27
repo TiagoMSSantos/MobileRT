@@ -76,6 +76,7 @@ public final class MainActivityTest {
      * the others should be the real ones.<br>
      * This is necessary to mock only some methods from the Android API.
      */
+    @SuppressWarnings("unchecked")
     @Before
     public void setUp() throws Exception {
         logger.info("setUp");

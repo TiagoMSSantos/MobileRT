@@ -148,6 +148,7 @@ public final class DrawViewTest {
      * @implNote Can't validate call to the {@link MainActivity#showUiMessage(String)} method due
      * to conflicts with mocks.
      */
+    @SuppressWarnings("unchecked")
     @Test
     public void testRenderSceneWithLowMemory() throws Exception {
         MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
