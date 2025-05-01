@@ -41,7 +41,7 @@ buildscript {
         }
         if (androidApiVersionValue >= 21) {
             androidX_appcompat_version = '1.7.0'
-            ndk_version = '28.0.13004108'
+            ndk_version = '28.1.13356709'
         }
         if (androidApiVersionValue >= 19) {
             androidX_test_junit_version = '1.2.1'
@@ -147,7 +147,7 @@ tasks.named('wrapper', Wrapper) {it ->
     println('Setting Gradle wrapper version')
     it.distributionType = Wrapper.DistributionType.BIN
     if (androidApiVersionValue >= 16) {
-        it.gradleVersion = '8.13'
+        it.gradleVersion = '8.14'
     } else {
         it.gradleVersion = '8.7'
     }
