@@ -235,8 +235,10 @@ jobs:
         if: success()
         uses: actions/cache/save@v4
         with:
-          # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
+          # Check available parameters in: https://github.com/actions/cache/blob/main/save/action.yml
           key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
+          enableCrossOsArchive: false
+          upload-chunk-size: 536870912
           path: |
             app/build
             app/.cxx
@@ -301,8 +303,10 @@ jobs:
         if: success()
         uses: actions/cache/save@v4
         with:
-          # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
+          # Check available parameters in: https://github.com/actions/cache/blob/main/save/action.yml
           key: gradle_packages_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
+          enableCrossOsArchive: false
+          upload-chunk-size: 536870912
           path: |
             ${{ env.GRADLE_PATH }}/gradle-packages.zip
 
@@ -527,8 +531,10 @@ jobs:
         if: success() && startsWith(inputs.host_os, 'ubuntu') && inputs.type == 'debug'
         uses: actions/cache/save@v4
         with:
-          # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
+          # Check available parameters in: https://github.com/actions/cache/blob/main/save/action.yml
           key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
+          enableCrossOsArchive: false
+          upload-chunk-size: 536870912
           path: |
             app/build/reports
 

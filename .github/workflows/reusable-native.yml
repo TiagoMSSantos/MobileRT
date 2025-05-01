@@ -309,8 +309,10 @@ jobs:
         if: success() && startsWith(inputs.host_os, 'ubuntu') && inputs.type == 'debug' && startsWith(inputs.compiler, 'g++')
         uses: actions/cache/save@v4
         with:
-          # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
+          # Check available parameters in: https://github.com/actions/cache/blob/main/save/action.yml
           key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.name }}_${{ inputs.host_os }}_${{ inputs.type }}_${{ inputs.compiler }}
+          enableCrossOsArchive: false
+          upload-chunk-size: 536870912
           path: |
             code_coverage_base.info
             code_coverage.info
