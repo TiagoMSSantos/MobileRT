@@ -13,13 +13,13 @@ buildscript {
 
     // Setup necessary repositories to get third party dependencies
     repositories {
-        google()
-        mavenCentral()
-        mavenLocal()
         gradlePluginPortal()
-
-        maven { url = 'https://maven.google.com' }
+        mavenCentral()
+        google()
+        mavenLocal()
+        maven { url = 'https://mvnrepository.com' }
         maven { url = 'https://repo1.maven.org/maven2/' }
+        maven { url = 'https://maven.google.com' }
         maven { url = 'https://plugins.gradle.org/m2/'}
         maven { url = 'https://jitpack.io' }
     }
@@ -120,27 +120,6 @@ buildscript {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// Setup necessary repositories to get third party dependencies
-///////////////////////////////////////////////////////////////////////////////
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-        mavenLocal()
-        gradlePluginPortal()
-
-        maven { url = 'https://maven.google.com' }
-        maven { url = 'https://mvnrepository.com' }
-        maven { url = 'https://dl.google.com/dl/android/maven2/' }
-        maven { url = 'https://plugins.gradle.org/m2/'}
-        maven { url = 'https://jitpack.io' }
-    }
-}
-///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
-
-
-///////////////////////////////////////////////////////////////////////////////
 // Allow to use different versions of Gradle depending on the Android API version
 ///////////////////////////////////////////////////////////////////////////////
 tasks.named('wrapper', Wrapper) {it ->
@@ -158,20 +137,10 @@ tasks.named('wrapper', Wrapper) {it ->
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-repositories {
-    google()
-    mavenCentral()
-    mavenLocal()
-    gradlePluginPortal()
 
-    maven { url = 'https://maven.google.com' }
-    maven { url = 'https://mvnrepository.com' }
-    maven { url = 'https://dl.google.com/dl/android/maven2/' }
-    maven { url = 'https://plugins.gradle.org/m2/'}
-    maven { url = 'https://jitpack.io' }
-}
-
+///////////////////////////////////////////////////////////////////////////////
 // Enforce some dependencies versions because they are used by multiple dependencies
+///////////////////////////////////////////////////////////////////////////////
 subprojects {
     configurations.configureEach {
         resolutionStrategy {
@@ -183,3 +152,5 @@ subprojects {
         }
     }
 }
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////

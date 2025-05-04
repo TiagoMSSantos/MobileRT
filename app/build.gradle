@@ -277,7 +277,6 @@ android {
             setJniDebuggable true
             setTestCoverageEnabled true
             setVersionNameSuffix 'd'
-            setRenderscriptDebuggable true
             setRenderscriptOptimLevel 0
             setMinifyEnabled false
             setSigningConfig signingConfigs.Puscas
@@ -290,7 +289,6 @@ android {
             setJniDebuggable false
             setTestCoverageEnabled false
             setVersionNameSuffix 'r'
-            setRenderscriptDebuggable false
             setRenderscriptOptimLevel 3
             setMinifyEnabled false
             setSigningConfig signingConfigs.Puscas
@@ -334,6 +332,8 @@ android {
                 includeNoLocationClasses = true
                 excludes = ['jdk.internal.*']
                 excludeClassLoaders = ["*ClassLoader*"]
+                // Explicitly set the JaCoCo destination file so it's known immediately
+                destinationFile = file("${DEFAULT_BUILD_DIR_NAME}/jacoco/")
             }
         }
         unitTests.includeAndroidResources = true
@@ -480,25 +480,6 @@ dependencies {
     testImplementation "org.powermock:powermock-api-easymock:${powermock_version}"
     testImplementation 'org.easymock:easymock:5.5.0'
     testImplementation 'org.springframework:spring-test:6.2.6'
-}
-///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
-
-
-///////////////////////////////////////////////////////////////////////////////
-// Add third party repositories
-///////////////////////////////////////////////////////////////////////////////
-repositories {
-    google()
-    mavenCentral()
-    mavenLocal()
-    gradlePluginPortal()
-
-    maven { url = 'https://maven.google.com' }
-    maven { url = 'https://mvnrepository.com' }
-    maven { url = 'https://dl.google.com/dl/android/maven2/' }
-    maven { url = 'https://plugins.gradle.org/m2/'}
-    maven { url = 'https://jitpack.io' }
 }
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
