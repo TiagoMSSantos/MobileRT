@@ -86,9 +86,9 @@
   },
   "customManagers": [
     {
-      "fileMatch": [
-        ".*\\/Dockerfile.*",
-        "\\.github\\/workflows\\/.+\\.ya?ml"
+      "managerFilePatterns": [
+        "/.*\\/Dockerfile.*/",
+        "/\\.github\\/workflows\\/.+\\.ya?ml/"
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
@@ -99,8 +99,8 @@
       "customType": "regex"
     },
     {
-      "fileMatch": [
-        "deploy\\/docker-compose.ya?ml"
+      "managerFilePatterns": [
+        "/deploy\\/docker-compose.ya?ml/"
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
@@ -110,8 +110,8 @@
       "customType": "regex"
     },
     {
-      "fileMatch": [
-        "\\.github\\/workflows\\/.+\\.ya?ml"
+      "managerFilePatterns": [
+        "/\\.github\\/workflows\\/.+\\.ya?ml/"
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
@@ -122,8 +122,8 @@
       "customType": "regex"
     },
     {
-      "fileMatch": [
-        ".*build.gradle"
+      "managerFilePatterns": [
+        "/.*build.gradle/"
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
@@ -136,8 +136,8 @@
       "registryUrlTemplate": "https://repo1.maven.org/maven2/"
     },
     {
-      "fileMatch": [
-        ".*build.gradle"
+      "managerFilePatterns": [
+        "/.*build.gradle/"
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
@@ -150,8 +150,8 @@
       "registryUrlTemplate": "https://repo1.maven.org/maven2/"
     },
     {
-      "fileMatch": [
-        ".*build.gradle"
+      "managerFilePatterns": [
+        "/.*build.gradle/"
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
@@ -164,8 +164,8 @@
       "registryUrlTemplate": "https://maven.google.com"
     },
     {
-      "fileMatch": [
-        ".*build.gradle"
+      "managerFilePatterns": [
+        "/.*build.gradle/"
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
@@ -178,8 +178,8 @@
       "registryUrlTemplate": "https://maven.google.com"
     },
     {
-      "fileMatch": [
-        ".*build.gradle"
+      "managerFilePatterns": [
+        "/.*build.gradle/"
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
@@ -192,8 +192,8 @@
       "registryUrlTemplate": "https://maven.google.com"
     },
     {
-      "fileMatch": [
-        ".*build.gradle"
+      "managerFilePatterns": [
+        "/.*build.gradle/"
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
@@ -206,8 +206,8 @@
       "registryUrlTemplate": "https://maven.google.com"
     },
     {
-      "fileMatch": [
-        ".*build.gradle"
+      "managerFilePatterns": [
+        "/.*build.gradle/"
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
@@ -218,8 +218,8 @@
       "customType": "regex"
     },
     {
-      "fileMatch": [
-        ".*build.gradle"
+      "managerFilePatterns": [
+        "/.*build.gradle/"
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
@@ -231,8 +231,8 @@
       "registryUrlTemplate": "https://github.com"
     },
     {
-      "fileMatch": [
-        ".*build.gradle"
+      "managerFilePatterns": [
+        "/.*build.gradle/"
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
@@ -245,8 +245,8 @@
       "registryUrlTemplate": "https://repo1.maven.org/maven2/"
     },
     {
-      "fileMatch": [
-        "app\\/third_party\\/CMakeLists\\.txt"
+      "managerFilePatterns": [
+        "/app\\/third_party\\/CMakeLists\\.txt/"
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
@@ -258,8 +258,8 @@
       "registryUrlTemplate": "https://github.com"
     },
     {
-      "fileMatch": [
-        "app\\/third_party\\/CMakeLists\\.txt"
+      "managerFilePatterns": [
+        "/app\\/third_party\\/CMakeLists\\.txt/"
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
@@ -271,8 +271,8 @@
       "registryUrlTemplate": "https://github.com"
     },
     {
-      "fileMatch": [
-        "app\\/third_party\\/CMakeLists\\.txt"
+      "managerFilePatterns": [
+        "/app\\/third_party\\/CMakeLists\\.txt/"
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
@@ -284,8 +284,8 @@
       "registryUrlTemplate": "https://github.com"
     },
     {
-      "fileMatch": [
-        "app\\/third_party\\/CMakeLists\\.txt"
+      "managerFilePatterns": [
+        "/app\\/third_party\\/CMakeLists\\.txt/"
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
@@ -297,8 +297,8 @@
       "registryUrlTemplate": "https://github.com"
     },
     {
-      "fileMatch": [
-        "app\\/third_party\\/CMakeLists\\.txt"
+      "managerFilePatterns": [
+        "/app\\/third_party\\/CMakeLists\\.txt/"
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
@@ -310,8 +310,8 @@
       "registryUrlTemplate": "https://github.com"
     },
     {
-      "fileMatch": [
-        "app\\/third_party\\/CMakeLists\\.txt"
+      "managerFilePatterns": [
+        "/app\\/third_party\\/CMakeLists\\.txt/"
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
@@ -345,7 +345,11 @@
       "pinDigests": false
     },
     {
-      "matchUpdateTypes": ["major", "minor", "patch"],
+      "matchUpdateTypes": [
+        "major",
+        "minor",
+        "patch"
+      ],
       "enabled": true,
       "automerge": true
     },
@@ -379,7 +383,10 @@
     {
       "groupName": "Only update patches of androidx.core:core for Android API >= 19",
       "enabled": false,
-      "matchUpdateTypes": ["major", "minor"],
+      "matchUpdateTypes": [
+        "major",
+        "minor"
+      ],
       "matchDepNames": [
         "androidx.core:core-ktx",
         "androidx.core:core"
@@ -393,7 +400,10 @@
     {
       "groupName": "Only update patches of androidx.test:monitor for Android API >= 19",
       "enabled": false,
-      "matchUpdateTypes": ["major", "minor"],
+      "matchUpdateTypes": [
+        "major",
+        "minor"
+      ],
       "matchDepNames": [
         "androidx.test:monitor"
       ],
@@ -406,7 +416,10 @@
     {
       "groupName": "Only update patches of androidx.test.ext:junit for Android API >= 19",
       "enabled": false,
-      "matchUpdateTypes": ["major", "minor"],
+      "matchUpdateTypes": [
+        "major",
+        "minor"
+      ],
       "matchDepNames": [
         "androidx.test.ext:junit",
         "androidx.test.ext:junit-ktx"
@@ -420,7 +433,10 @@
     {
       "groupName": "Only update patches of androidx.test.espresso for Android API >= 19",
       "enabled": false,
-      "matchUpdateTypes": ["major", "minor"],
+      "matchUpdateTypes": [
+        "major",
+        "minor"
+      ],
       "matchDepNames": [
         "androidx.test.espresso:espresso-accessibility",
         "androidx.test.espresso:espresso-contrib",
@@ -439,7 +455,10 @@
     {
       "groupName": "Only update patches of androidx.emoji2:emoji2 for Android API >= 19",
       "enabled": false,
-      "matchUpdateTypes": ["major", "minor"],
+      "matchUpdateTypes": [
+        "major",
+        "minor"
+      ],
       "matchDepNames": [
         "androidx.emoji2:emoji2"
       ],
@@ -475,7 +494,10 @@
     {
       "groupName": "Only update patches of Android Gradle version for Android API >= 16",
       "enabled": false,
-      "matchUpdateTypes": ["major", "minor"],
+      "matchUpdateTypes": [
+        "major",
+        "minor"
+      ],
       "matchDepNames": [
         "custom.regex",
         "com.android.tools.build:gradle"
@@ -489,7 +511,10 @@
     {
       "groupName": "Only update patches of Android appcompat version for Android API >= 21",
       "enabled": false,
-      "matchUpdateTypes": ["major", "minor"],
+      "matchUpdateTypes": [
+        "major",
+        "minor"
+      ],
       "matchDepNames": [
         "androidx.appcompat:appcompat"
       ],
