@@ -38,12 +38,17 @@ plugins {
 // Get system components versions from properties
 ///////////////////////////////////////////////////////////////////////////////
 println('Reading system properties.')
+println('Gradle version: ' + gradle_version)
+println('Gradle major version: ' + gradleVersionMajor)
+println('Gradle minor version: ' + gradleVersionMinor)
 def javaBinariesPath, javaUnitTestBinaries, javaAndroidTestBinaries
-if (gradleVersionValue >= 8.3) {
+if (gradleVersionMajor >= 8 && gradleVersionMinor >= 3) {
+    println('Gradle version is more recent than 8.3 so using new path to classes.')
     javaBinariesPath = 'compileDebugJavaWithJavac/classes/'
     javaUnitTestBinaries = 'compileDebugUnitTestJavaWithJavac/classes/'
     javaAndroidTestBinaries = 'compileDebugAndroidTestJavaWithJavac/classes/'
 } else {
+    println('Gradle version is older than 8.3, so using legacy path to classes.')
     javaBinariesPath = 'classes/'
     javaUnitTestBinaries = 'classes/'
     javaAndroidTestBinaries = 'classes/'
@@ -53,8 +58,6 @@ println('Android API version: ' + androidApiVersion)
 println('NDK version: ' + ndk_version)
 println('Test type: ' + systemTestType)
 println('ABI Filters: ' + systemAbiFilters)
-
-println('Gradle version: ' + gradle_version)
 println('AndroidX appcompat version: ' + androidX_appcompat_version)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////

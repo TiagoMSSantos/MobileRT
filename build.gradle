@@ -33,8 +33,12 @@ buildscript {
 
         // The default minimum Android API version possible is 14 due to compatibility with Appcompat dependency.
         androidApiVersion = System.getProperty('androidApiVersion', '14')
-        final def androidApiVersionArray = androidApiVersion.split("\\.").collect()
-        androidApiVersionValue = androidApiVersionArray[0] as Float
+        final def androidApiVersionArray = androidApiVersion.split("\\.")
+        final def androidApiVersionValueStr = androidApiVersionArray[0]
+        androidApiVersionValue = androidApiVersionValueStr.toInteger()
+        println('Android version 1: ' + androidApiVersion)
+        println('Android version 2: ' + androidApiVersionValueStr)
+        println('Android version 3: ' + androidApiVersionValue)
 
         if (androidApiVersionValue >= 26) {
             guava_version = '33.4.8-jre'
@@ -51,7 +55,7 @@ buildscript {
             }
         }
         if (androidApiVersionValue >= 16) {
-            gradle_version = '8.9.2'
+            gradle_version = '8.10.0'
             gradle_versions_plugin_version = '0.52.0'
             kotlin_gradle_plugin_version = '2.1.10'
         }
@@ -76,8 +80,9 @@ buildscript {
             guava_version = '33.4.6-jre'
         }
 
-        final def gradleVersionArray = gradle_version.split("\\.").collect()
-        gradleVersionValue = gradleVersionArray[0] + '.' + gradleVersionArray[1] as Float
+        final def gradleVersionArray = gradle_version.split("\\.")
+        gradleVersionMajor = gradleVersionArray[0].toInteger()
+        gradleVersionMinor = gradleVersionArray[1].toInteger()
 
         // Test dependencies
         jacoco_version = '0.8.13'
