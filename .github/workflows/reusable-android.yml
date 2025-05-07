@@ -213,7 +213,9 @@ jobs:
         with:
           # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
           name: problems-report
-          path: build/reports/problems/problems-report.html
+          path: |
+            build/reports
+            app/build/reports
           if-no-files-found: error
           retention-days: 90
 
@@ -505,6 +507,34 @@ jobs:
             sh scripts/run_tests_android.sh -t ${{ inputs.type }} -r all -a ${{ inputs.android_api }} -k false -f ${{ env.android_arch }};
             echo "Run Android tests finished: ${?}";
 
+      - name: Print error logs
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: failure()
+        working-directory: .
+        run: |
+          ls -lahp .;
+          set +e;
+          echo 'Print JVM errors if provided by Kernel, and just check the logs from the last line of the previous call:';
+          sudo dmesg;
+          echo 'Print native JVM stacktrace if possible:';
+          cat hs_err_pid*.log;
+          echo 'Print problems report if available:';
+          cat build/reports/problems/problems-report.html;
+          set -e;
+
+      - name: Upload problems reports as artifact
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
+          name: problems-report
+          path: |
+            build/reports
+            app/build/reports
+          if-no-files-found: error
+          retention-days: 90
+
       - name: Publish Android Test Report
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success() || failure() # always run even if the previous step fails
@@ -728,7 +758,9 @@ jobs:
         with:
           # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
           name: problems-report
-          path: build/reports/problems/problems-report.html
+          path: |
+            build/reports
+            app/build/reports
           if-no-files-found: error
           retention-days: 90
 
@@ -950,6 +982,34 @@ jobs:
             -DabiFilters="[ ${{ env.android_arch }} ]" \
             -DandroidApiVersion=${{ inputs.android_api }} \
             --info --warning-mode all --stacktrace sonar;
+
+      - name: Print error logs
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: failure()
+        working-directory: .
+        run: |
+          ls -lahp .;
+          set +e;
+          echo 'Print JVM errors if provided by Kernel, and just check the logs from the last line of the previous call:';
+          sudo dmesg;
+          echo 'Print native JVM stacktrace if possible:';
+          cat hs_err_pid*.log;
+          echo 'Print problems report if available:';
+          cat build/reports/problems/problems-report.html;
+          set -e;
+
+      - name: Upload problems reports as artifact
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
+          name: problems-report
+          path: |
+            build/reports
+            app/build/reports
+          if-no-files-found: error
+          retention-days: 90
 
       - name: Check sonar path
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
