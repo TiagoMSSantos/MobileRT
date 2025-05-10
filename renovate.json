@@ -543,6 +543,10 @@
       "matchDepNames": [
         "com.google.guava:guava"
       ],
+      "matchManagers": [
+        "custom.regex",
+        "gradle"
+      ],
       "allowedVersions": "/-android$/"
     },
     {
@@ -550,6 +554,10 @@
       "enabled": true,
       "matchDepNames": [
         "com.google.guava:guava"
+      ],
+      "matchManagers": [
+        "custom.regex",
+        "gradle"
       ],
       "allowedVersions": "/-jre$/"
     },

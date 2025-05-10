@@ -34,6 +34,9 @@ buildscript {
         // The default minimum Android API version possible is 14 due to compatibility with Appcompat dependency.
         androidApiVersion = System.getProperty('androidApiVersion', '14')
         final def androidApiVersionArray = androidApiVersion.split("\\.")
+        if (androidApiVersionArray.size() > 1) {
+            throw new GradleException("Android API version has an unexpected minor version: " + androidApiVersionArray);
+        }
         final def androidApiVersionValueStr = androidApiVersionArray[0]
         androidApiVersionValue = androidApiVersionValueStr.toInteger()
         println('Android version 1: ' + androidApiVersion)
