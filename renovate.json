@@ -550,18 +550,6 @@
       "allowedVersions": "/-android$/"
     },
     {
-      "groupName": "Update Guava to JRE version as fallback",
-      "enabled": true,
-      "matchDepNames": [
-        "com.google.guava:guava"
-      ],
-      "matchManagers": [
-        "custom.regex",
-        "gradle"
-      ],
-      "allowedVersions": "/-jre$/"
-    },
-    {
       "groupName": "Do not update Gradle for Android API <= 15",
       "enabled": false,
       "matchDepNames": [
