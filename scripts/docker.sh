@@ -156,7 +156,6 @@ compileMobileRTInDockerContainer() {
       && rm -rf app/src/androidTest/*.xml \
       && rm -rf app/src/androidTest/resources/APKs \
       && rm -rf app/src/androidTest/resources/Shaders \
-      && rm -rf app/src/androidTest/resources/teapot \
       && rm -rf app/*.classpath \
       && rm -rf app/*.project \
       && rm -rf app/*.gradle \

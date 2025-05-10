@@ -22,9 +22,9 @@
         ::std::cerr << "No test passed." << ::std::endl;
         return 1;
     }
-    if (res != 0) {
+    if (res != 0 || ::testing::UnitTest::GetInstance()->failed_test_count() != 0) {
         ::std::cerr << "Some tests failed." << ::std::endl;
-        return res;
+        return 1;
     }
     ::std::cout << "All tests passed!" << ::std::endl;
     return 0;

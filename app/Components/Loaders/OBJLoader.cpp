@@ -16,13 +16,13 @@ using ::MobileRT::Triangle;
 using ::MobileRT::Sampler;
 
 OBJLoader::OBJLoader(::std::istream& isObj, ::std::istream& isMtl) {
+    LOG_INFO("Setting exception mask for the OBJ file stream.");
     isObj.exceptions(
-        isObj.exceptions() | ::std::ifstream::goodbit | ::std::ifstream::badbit |
-        ::std::ifstream::failbit
+        isObj.exceptions() | ::std::ifstream::goodbit | ::std::ifstream::badbit
     );
+    LOG_INFO("Setting exception mask for the MTL file stream.");
     isMtl.exceptions(
-        isMtl.exceptions() | ::std::ifstream::goodbit | ::std::ifstream::badbit |
-        ::std::ifstream::failbit
+        isMtl.exceptions() | ::std::ifstream::goodbit | ::std::ifstream::badbit
     );
     ::tinyobj::MaterialStreamReader matStreamReader {isMtl};
 
@@ -47,7 +47,7 @@ OBJLoader::OBJLoader(::std::istream& isObj, ::std::istream& isMtl) {
     errno = 0;
     MobileRT::checkSystemError("After LoadObj.");
 
-    LOG_DEBUG("Called tinyobj::LoadObj");
+    LOG_INFO("Called tinyobj::LoadObj");
 
     if (!errors.empty()) {
         LOG_ERROR("Error: '", errors, "'");
@@ -66,6 +66,8 @@ OBJLoader::OBJLoader(::std::istream& isObj, ::std::istream& isMtl) {
             }
         }
         this->isProcessed_ = true;
+    } else {
+        LOG_ERROR("Call to tinyobj::LoadObj failed.");
     }
 
     LOG_INFO("Called tinyobj::LoadObj and loaded ", this->numberTriangles_, " triangles");
@@ -301,7 +303,7 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
 
             if (faceVertices % 3 != 0) {// If the number of vertices in the face is not multiple of 3,
                                         // then it does not make a triangle.
-                LOG_DEBUG("Thread ", threadId, " (", numberOfThreads, ") num_face_vertices [", face, "] = '", faceVertices, "'");
+                LOG_WARN("Thread ", threadId, " (", numberOfThreads, ") num_face_vertices [", face, "] = '", faceVertices, "'");
                 continue;
             }
 

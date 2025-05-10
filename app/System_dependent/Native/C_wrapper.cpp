@@ -55,6 +55,7 @@ static void work_thread(::MobileRT::Config &config) {
             LOG_DEBUG("objFilePath = ", config.objFilePath);
             LOG_DEBUG("mtlFilePath = ", config.mtlFilePath);
             LOG_DEBUG("camFilePath = ", config.camFilePath);
+            LOG_INFO("Starting MobileRT");
 
             const float ratio {static_cast<float> (config.width) / config.height};
             ::MobileRT::Scene scene {};
@@ -90,7 +91,7 @@ static void work_thread(::MobileRT::Config &config) {
                     break;
 
                 default: {
-                    LOG_DEBUG("OBJLoader starting loading scene");
+                    LOG_INFO("OBJLoader starting loading scene. OBJ: ", config.objFilePath, ", MTL: ", config.mtlFilePath);
                     const ::std::chrono::time_point<::std::chrono::system_clock> chronoStartLoading {::std::chrono::system_clock::now()};
                     ::std::ifstream ifObj {config.objFilePath};
                     ::std::ifstream ifMtl {config.mtlFilePath};
@@ -249,7 +250,7 @@ static void work_thread(::MobileRT::Config &config) {
     }
     // Force the calling Ray Tracing engine destructors, which is useful for the unit tests.
     renderer_.reset(nullptr);
-    ::std::cout << ::std::flush;
+    LOG_INFO("work_thread ended.");
 }
 
 /**
@@ -259,7 +260,7 @@ void stopRender() {
     if (renderer_ != nullptr) {
         renderer_->stopRender();
     }
-    ::std::cout << ::std::flush;
+    LOG_INFO("Renderer stopped.");
 }
 
 /**
@@ -275,5 +276,5 @@ void RayTrace(::MobileRT::Config &config, const bool async) {
     } else {
         work_thread(config);
     }
-    ::std::cout << ::std::flush;
+    LOG_INFO("RayTrace ended.");
 }

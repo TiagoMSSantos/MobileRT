@@ -15,20 +15,31 @@ namespace Dependent {
     inline void printError(const ::std::string &log);
 }//namespace Dependent
 
+// Flush all buffers known.
 static void flush() {
-#ifndef NDEBUG // Force flush if in debug mode.
     ::std::cout << ::std::flush;
+    ::std::wcout << ::std::flush;
+    ::std::cerr << ::std::flush;
+    ::std::wcerr << ::std::flush;
+    ::std::clog << ::std::flush;
+    ::std::wclog << ::std::flush;
+}
+
+// Force flush if in debug mode.
+static void flushIfDebugMode() {
+#ifndef NDEBUG
+    flush();
 #endif
 }
 
 void Dependent::printDebug(const ::std::string &log) {
     __android_log_print(ANDROID_LOG_DEBUG, "LOG", "%s", log.c_str());
-    flush();
+    flushIfDebugMode();
 }
 
 void Dependent::printInfo(const ::std::string &log) {
     __android_log_print(ANDROID_LOG_INFO, "LOG", "%s", log.c_str());
-    flush();
+    flushIfDebugMode();
 }
 
 void Dependent::printWarn(const ::std::string &log) {
