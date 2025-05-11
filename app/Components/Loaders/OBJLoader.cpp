@@ -399,7 +399,9 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
                             .build()
                         };
                         {
+                            LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Adding light of shape: ", shapeIndex, ", with material ID: ", materialId, ", scene: ", filePath, ", shapeIndex: ", shapeIndex, ", vertex: ", vertex, ", face: ", face);
                             lights.emplace_back(::MobileRT::std::make_unique<AreaLight>(material, lambda(), triangle));
+                            LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Added light of shape: ", shapeIndex, ", with material ID: ", materialId, ", scene: ", filePath, ", shapeIndex: ", shapeIndex, ", vertex: ", vertex, ", face: ", face);
                         }
                     } else {
                         // If it is a primitive.
@@ -475,6 +477,7 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
             } // Loop over vertices in the face.
 
             indexOffset += faceVertices;
+            LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Triangle: ", triangles.size(), ", scene '", filePath, "', shapeIndex: ", shapeIndex, ", face: ", face, ", shapeIndex: ", shapeIndex);
 
             if (triangles.size() > 0 && triangles.size() % 100000 == 0) {
                 LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Triangle ", triangles.size(), " position at ", triangles.back(), ", scene '", filePath, "', shapeIndex: ", shapeIndex, ", face: ", face);
@@ -484,9 +487,9 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
         } // The number of vertices per face.
     } // Loop over shapes.
 
+    LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Local triangles: ", triangles.size(), ", total: ", scene->triangles_.size(), ", scene '", filePath, "'.");
     {
         const ::std::lock_guard<::std::mutex> lock {*mutex};
-        LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Local triangles: ", triangles.size(), ", total: ", scene->triangles_.size(), ", scene '", filePath, "'.");
         if (triangles.size() > 0) {
             LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Local triangles: ", triangles.size(), ", total: ", scene->triangles_.size(), ", last triangle: ", triangles.back(), ", scene '", filePath, "'.");
         }
