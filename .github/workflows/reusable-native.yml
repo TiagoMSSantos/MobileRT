@@ -50,6 +50,13 @@ jobs:
         if: success()
         uses: actions/checkout@v4
 
+      - name: Validate codecov report
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success() && inputs.type == 'debug'
+        working-directory: .
+        run: |
+          curl --fail-with-body --retry 5 --retry-delay 2 --connect-timeout 2 --data-binary @codecov.yml https://codecov.io/validate;
+
       - name: Check MacOS Xcode versions
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success() && startsWith(inputs.host_os, 'macos')
@@ -358,13 +365,6 @@ jobs:
           ./test-reporter-latest-linux-amd64 format-coverage -t lcov code_coverage_filtered.info;
           ./test-reporter-latest-linux-amd64 upload-coverage;
 
-      - name: Validate codecov report
-        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success()
-        working-directory: .
-        run: |
-          curl --retry 5 --retry-delay 2 --connect-timeout 2 --data-binary @codecov.yml https://codecov.io/validate;
-
       - name: Send codecov report
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
@@ -372,7 +372,7 @@ jobs:
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         run: |
-          curl --retry 5 --retry-delay 2 --connect-timeout 2 -s https://codecov.io/bash | bash -s -- -c -F aFlag build_${{ inputs.type }} -v;
+          curl --fail-with-body --retry 5 --retry-delay 2 --connect-timeout 2 -s https://codecov.io/bash | bash -s -- -c build_${{ inputs.type }} -v;
 
       - name: Setup Ruby, JRuby and TruffleRuby
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}

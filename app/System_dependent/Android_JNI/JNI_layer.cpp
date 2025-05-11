@@ -605,7 +605,7 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
                             &scene,
                             []() {return ::MobileRT::std::make_unique<Components::StaticPCG>();},
                             objFilePath,
-                            texturesCache_
+                            &texturesCache_
                         )};
                         texturesCache_.clear();
                         MobileRT::checkSystemError("rtInitialize after filling scene");

@@ -76,7 +76,7 @@ OBJLoader::OBJLoader(::std::istream& isObj, ::std::istream& isMtl) {
 bool OBJLoader::fillScene(Scene *const scene,
                           const ::std::function<::std::unique_ptr<Sampler>()> lambda,
                           ::std::string filePath,
-                          ::std::unordered_map<::std::string, ::MobileRT::Texture> texturesCache) {
+                          ::std::unordered_map<::std::string, ::MobileRT::Texture> *const texturesCache) {
     ::MobileRT::checkSystemError("Starting to fill scene.");
     filePath = filePath.substr(0, filePath.find_last_of('/')) + '/';
     LOG_INFO("FILLING SCENE '" + filePath, "' with ", this->numberTriangles_, " triangles in ", this->shapes_.size(), " shapes & ", this->materials_.size(), " materials");
@@ -91,13 +91,16 @@ bool OBJLoader::fillScene(Scene *const scene,
     threads.reserve(numChildren);
     LOG_INFO("Created mutex and it will fill the scene using ", numChildren + 1, " threads");
     for (::std::uint32_t i {}; i < numChildren; ++i) {
-        threads.emplace_back(&OBJLoader::fillSceneThreadWork, this, i, numChildren + 1, scene, lambda, filePath, &texturesCache, &mutex);
+        threads.emplace_back(&OBJLoader::fillSceneThreadWork, this, i, numChildren + 1, scene, lambda, filePath, texturesCache, &mutex);
     }
-    fillSceneThreadWork(numChildren, numChildren + 1, scene, lambda, filePath, &texturesCache, &mutex);
-    for (::std::thread &thread : threads) {
+    fillSceneThreadWork(numChildren, numChildren + 1, scene, lambda, filePath, texturesCache, &mutex);
+    for (::std::uint32_t i {}; i < numChildren; ++i) {
+        ::std::thread &thread {threads[i]};
+        LOG_INFO("Waiting for thread '", i, "' with id '", thread.get_id(), "'.");
         thread.join();
     }
 
+    LOG_INFO("Waited for all threads.");
     ASSERT(static_cast<::std::int32_t> (scene->triangles_.size()), this->numberTriangles_, "Number of triangles in the scene is not correct.");
     ::MobileRT::checkSystemError("Filled Scene");
 
@@ -198,13 +201,14 @@ OBJLoader::triple<::glm::vec2, ::glm::vec2, ::glm::vec2> OBJLoader::normalizeTex
 ) {
     if (!texture.isValid()) {// If the texture is not valid.
         // Reset texture coordinates to -1.
-        LOG_DEBUG("Resetting texture coordinates to: -1");
+        LOG_INFO("Texture not valid. Resetting texture coordinates to: -1");
         return triple<::glm::vec2, ::glm::vec2, ::glm::vec2> {
             ::glm::vec2 {-1}, ::glm::vec2 {-1}, ::glm::vec2 {-1}
         };
     } else {
         // Normalize the texture coordinates to be between [0, 1]
         // LOG_DEBUG("Normalizing texture coordinates: ", ::std::get<0>(texCoord), ", ", ::std::get<1>(texCoord), ", ", ::std::get<2>(texCoord));
+        LOG_INFO("Normalizing the texture coordinates to be between [0, 1]");
         return triple<::glm::vec2, ::glm::vec2, ::glm::vec2> {
             ::MobileRT::normalize(::std::get<0>(texCoord)),
             ::MobileRT::normalize(::std::get<1>(texCoord)),
@@ -261,14 +265,18 @@ const Texture& OBJLoader::getTextureFromCache(
 
     if (itTexture == texturesCache->cend()) {// If the texture is not in the cache.
         const ::std::string texturePath {filePath + texPath};
+        LOG_INFO("Loading texture: ", texturePath);
         Texture &&texture {Texture::createTexture(texturePath)};
         ::std::pair<::std::string, Texture> &&pair {::std::make_pair(texPath, ::std::move(texture))};
         const Texture *res {nullptr};
+        LOG_INFO("Adding texture ", texturePath, " to the cache.");
         const ::std::pair<::std::unordered_map<::std::string, Texture>::iterator, bool> pairResult {texturesCache->emplace(::std::move(pair))}; // Add it to the cache.
         res = &(::std::get<0>(pairResult)->second);
+        LOG_INFO("Added texture ", texturePath, " to the cache.");
         return *res;
     }
 
+    LOG_INFO("Getting texture ", texPath, " from cache.");
     return texturesCache->find(texPath)->second;// Get texture from cache.
 }
 
@@ -296,7 +304,7 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
         ::std::int32_t indexOffset {0};
         // The number of vertices per face.
         const ::std::int32_t faces {static_cast<::std::int32_t> (shape.mesh.num_face_vertices.size())};
-        LOG_DEBUG("Thread ", threadId, " (", numberOfThreads, ") Loading shape: ", shapeIndex);
+        LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Loading shape: ", shapeIndex, ", scene: ", filePath);
         for (::std::int32_t face = 0; face < faces; ++face) {
             const auto itFace {shape.mesh.num_face_vertices.cbegin() + face};
             const ::std::int32_t faceVertices {static_cast<::std::int32_t>(*itFace)};
@@ -323,6 +331,7 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
 
                 // If it contains material.
                 if (materialId >= 0) {
+                    LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Loading shape: ", shapeIndex, " loading material: ", materialId, ", scene: ", filePath, ", shapeIndex: ", shapeIndex, ", vertex: ", vertex, ", face: ", face);
                     const auto itMaterial {this->materials_.cbegin() + static_cast<::std::int32_t> (materialId)};
                     const ::tinyobj::material_t &mat {*itMaterial};
                     const ::glm::vec3 &diffuse {::MobileRT::toVec3(mat.diffuse)};
@@ -336,6 +345,7 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
                     Texture texture {};
                     ::std::tuple<::glm::vec2, ::glm::vec2, ::glm::vec2> texCoord {::std::make_tuple(::glm::vec2 {-1}, ::glm::vec2 {-1}, ::glm::vec2 {-1})};
                     if (hasTexture && hasCoordTex) {
+                        LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Loading shape: ", shapeIndex, " loading texture for material: ", materialId, ", scene: ", filePath, ", shapeIndex: ", shapeIndex, ", vertex: ", vertex, ", face: ", face);
                         const auto itTexCoords1 {
                             this->attrib_.texcoords.cbegin() +
                             2 * static_cast<::std::int32_t> (idx1.texcoord_index)
@@ -361,12 +371,16 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
                             ::glm::vec2 {tx1, ty1}, ::glm::vec2 {tx2, ty2}, ::glm::vec2 {tx3, ty3}
                         };
 
+                        LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Loading shape: ", shapeIndex, " adding texture to the cache for material: ", materialId, ", scene: ", filePath, ", shapeIndex: ", shapeIndex, ", vertex: ", vertex, ", face: ", face);
                         texture = getTextureFromCache(texturesCache, filePath, mat.diffuse_texname);
+                        LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Loading shape: ", shapeIndex, " normalizing texture coordinates to be between [0, 1] for the material: ", materialId, ", scene: ", filePath, ", shapeIndex: ", shapeIndex, ", vertex: ", vertex, ", face: ", face);
                         texCoord = normalizeTexCoord(texture, texCoord);
+                        LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Loading shape: ", shapeIndex, " normalized texture coordinates to be between [0, 1] for the material: ", materialId, ", scene: ", filePath, ", shapeIndex: ", shapeIndex, ", vertex: ", vertex, ", face: ", face);
                     }
 
                     Material material {diffuse, specular, transmittance, indexRefraction, emission, texture};
                     if (::MobileRT::hasPositiveValue(emission)) {
+                        LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Loading shape: ", shapeIndex, " the material is a light source with ID: ", materialId, ", scene: ", filePath, ", shapeIndex: ", shapeIndex, ", vertex: ", vertex, ", face: ", face);
                         // If the primitive is a light source.
                         const Triangle &triangle {
                             Triangle::Builder(
@@ -463,9 +477,9 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
             indexOffset += faceVertices;
 
             if (triangles.size() > 0 && triangles.size() % 100000 == 0) {
-                LOG_DEBUG("Thread ", threadId, " (", numberOfThreads, ") Triangle ", triangles.size(), " position at ", triangles.back(), ", scene '", filePath, "'.");
+                LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Triangle ", triangles.size(), " position at ", triangles.back(), ", scene '", filePath, "', shapeIndex: ", shapeIndex, ", face: ", face);
             } else if (lights.size() > 0 && lights.size() % 1000 == 0) {
-                LOG_DEBUG("Thread ", threadId, " (", numberOfThreads, ") Light ", lights.size(), " position at: ", lights.back()->getPosition(), ", radiance: ", lights.back()->radiance_.Le_, ", scene '", filePath, "'.");
+                LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Light ", lights.size(), " position at: ", lights.back()->getPosition(), ", radiance: ", lights.back()->radiance_.Le_, ", scene '", filePath, "', shapeIndex: ", shapeIndex, ", face: ", face);
             }
         } // The number of vertices per face.
     } // Loop over shapes.

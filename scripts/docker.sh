@@ -99,13 +99,16 @@ pullDockerImage() {
   # shellcheck disable=SC2046
   wait $(jobs -p);
   output=$(cat /tmp/fd3);
-  echo "Docker: ${output}";
+  echo "Docker: '${output}'";
+  exec 3>&-; # Close file descriptor 3.
   if echo "${output}" | grep -q 'up to date' || echo "${output}" | grep -q 'Downloaded newer image for'; then
     echo 'Docker image found!';
+  elif echo "${output}" | grep -q 'toomanyrequests' || echo "${output}" | grep -q 'reached your pull rate limit' || [ -z "${output}" ]; then
+    echo 'Failed to pull the docker image.';
+    exit 1;
   else
     echo 'Did not find the Docker image. Will have to build the image.';
   fi
-  exec 3>&-; # Close file descriptor 3.
 }
 
 # Helper command to update and compile the MobileRT in a docker container.

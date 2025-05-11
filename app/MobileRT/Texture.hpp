@@ -50,6 +50,21 @@ namespace MobileRT {
         static Texture createTexture(::std::string &&texture, long size);
 
         static Texture createTexture(const ::std::string &texturePath);
+
+    private:
+        static Texture doCreateTexture(::std::uint8_t *const textureData,
+                                       ::std::int32_t width,
+                                       ::std::int32_t height,
+                                       ::std::int32_t channels,
+                                       const ::std::string &texturePath);
+
+        static void throwExceptionIfInvalidTexture(const ::std::uint8_t *const textureData,
+                                                   ::std::int32_t width,
+                                                   ::std::int32_t height,
+                                                   ::std::int32_t channels,
+                                                   const ::std::string &texturePath);
+
+        static void throwExceptionIfInvalidTexture(int info, const ::std::string &texturePath);
     };
 }//namespace MobileRT
 

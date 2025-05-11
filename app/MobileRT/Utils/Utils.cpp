@@ -15,6 +15,7 @@ namespace MobileRT {
 
     #if !defined(_WIN32) && !defined(__APPLE__)
         [[noreturn]] void signalHandler(int signum) {
+            // Check signal.h to identify the signal.
             LOG_ERROR("Segmentation fault (signal ", signum, ") captured!");
             LOG_ERROR("Backtrace:\n", ::boost::stacktrace::stacktrace());
             ::std::exit(EXIT_FAILURE);

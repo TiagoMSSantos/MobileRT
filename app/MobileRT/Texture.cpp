@@ -55,30 +55,13 @@ Texture::Texture(
  * @return A new texture.
  */
 Texture Texture::createTexture(::std::string &&textureBinary, const long size) {
-    ::std::int32_t width {};
-    ::std::int32_t height {};
-    ::std::int32_t channels {};
-    LOG_INFO("Loading Texture with size: ", size);
-    const int info {stbi_info_from_memory(reinterpret_cast<unsigned char const *> (textureBinary.c_str()), static_cast<int> (size), &width, &height, &channels)};
-    if (info <= 0 || size <= 0) {
-        const char *error {stbi_failure_reason()};
-        LOG_ERROR("Error reading texture: ", error);
-        throw ::std::runtime_error {error};
-    }
-    ::std::uint8_t *const data {stbi_load_from_memory(reinterpret_cast<unsigned char const *> (textureBinary.c_str()), static_cast<int> (size), &width, &height, &channels, 0)};
-    if (data == nullptr || width <= 0 || height <= 0 || channels <= 0) {
-        const char *error {stbi_failure_reason()};
-        LOG_ERROR("Error reading texture: ", error);
-        throw ::std::runtime_error {error};
-    }
-    ::std::shared_ptr<::std::uint8_t> pointer {data, [](::std::uint8_t *const internalData) {
-        stbi_image_free(internalData);
-        LOG_DEBUG("Deleted texture");
-    }};
-    Texture texture {pointer, width, height, channels};
-    ::MobileRT::checkSystemError("Created Texture.");
-    LOG_INFO("Created Texture.");
-    return texture;
+    ::std::int32_t width {}, height {}, channels {};
+    LOG_INFO("Loading Texture from memory with size: ", size);
+    ::MobileRT::checkSystemError("Loading Texture from memory");
+    const int textureInfo {stbi_info_from_memory(reinterpret_cast<unsigned char const *> (textureBinary.c_str()), static_cast<int> (size), &width, &height, &channels)};
+    throwExceptionIfInvalidTexture(textureInfo, "from memory");
+    ::std::uint8_t *const textureData {stbi_load_from_memory(reinterpret_cast<unsigned char const *> (textureBinary.c_str()), static_cast<int> (size), &width, &height, &channels, 0)};
+    return doCreateTexture(textureData, width, height, channels, "from memory");
 }
 
 /**
@@ -88,30 +71,13 @@ Texture Texture::createTexture(::std::string &&textureBinary, const long size) {
  * @return A new texture.
  */
 Texture Texture::createTexture(const ::std::string &texturePath) {
-    ::std::int32_t width {};
-    ::std::int32_t height {};
-    ::std::int32_t channels {};
+    ::std::int32_t width {}, height {}, channels {};
     LOG_INFO("Loading Texture from: ", texturePath);
     ::MobileRT::checkSystemError(("Loading Texture from: " + texturePath).c_str());
-    const int info {stbi_info(texturePath.c_str(), &width, &height, &channels)};
-    if (info <= 0) {
-        const char *error {stbi_failure_reason()};
-        LOG_ERROR(("Error reading texture '" + texturePath + "': " + error).c_str());
-        throw ::std::runtime_error {("Error reading texture '" + texturePath + "': " + error)};
-    }
-    ::std::uint8_t *const data {stbi_load(texturePath.c_str(), &width, &height, &channels, 0)};
-    if (data == nullptr || width <= 0 || height <= 0 || channels <= 0) {
-        const char *error {stbi_failure_reason()};
-        LOG_ERROR("Error reading texture: ", error);
-        throw ::std::runtime_error {error};
-    }
-    ::std::shared_ptr<::std::uint8_t> pointer {data, [](::std::uint8_t *const internalData) {
-        stbi_image_free(internalData);
-    }};
-    Texture texture {pointer, width, height, channels};
-    ::MobileRT::checkSystemError(("Created Texture: " + texturePath).c_str());
-    LOG_INFO("Created Texture: ", texturePath);
-    return texture;
+    const int textureInfo {stbi_info(texturePath.c_str(), &width, &height, &channels)};
+    throwExceptionIfInvalidTexture(textureInfo, texturePath);
+    ::std::uint8_t *const textureData {stbi_load(texturePath.c_str(), &width, &height, &channels, 0)};
+    return doCreateTexture(textureData, width, height, channels, texturePath);
 }
 
 /**
@@ -136,4 +102,68 @@ bool Texture::operator==(const Texture &texture) const {
  */
 bool Texture::isValid() const {
     return this->width_ > 0 && this->height_ > 0 && this->channels_ > 0 && this->image_ != nullptr;
+}
+
+/**
+ * Create a new Texture using the provided data.
+ *
+ * @param textureData The texture binary data.
+ * @param width       The width of the texture.
+ * @param height      The height of the texture.
+ * @param channels    The number of channel colors of the texture.
+ * @param texturePath The file path to the texture.
+ * @return A new texture.
+ */
+Texture Texture::doCreateTexture(::std::uint8_t *const textureData,
+                                 const ::std::int32_t width,
+                                 const ::std::int32_t height,
+                                 const ::std::int32_t channels,
+                                 const ::std::string &texturePath) {
+    throwExceptionIfInvalidTexture(textureData, width, height, channels, texturePath);
+    // Necessary to copy the texture file path into the lambda, since it should be already deleted when delete of texture is called.
+    ::std::shared_ptr<::std::uint8_t> pointer {textureData, [=](::std::uint8_t *const internalData) {
+        stbi_image_free(internalData);
+        LOG_DEBUG("Deleted texture: ", texturePath);
+    }};
+    Texture texture {pointer, width, height, channels};
+    ::MobileRT::checkSystemError(("Created Texture: " + texturePath).c_str());
+    LOG_INFO("Created Texture: ", texturePath);
+    return texture;
+}
+
+/**
+ * Throw exception if the provided texture data is invalid.
+ *
+ * @param textureData The texture binary data.
+ * @param width       The width of the texture.
+ * @param height      The height of the texture.
+ * @param channels    The number of channel colors of the texture.
+ * @param texturePath The file path to the texture.
+ * @throws std::runtime_error If texture data is invalid.
+ */
+void Texture::throwExceptionIfInvalidTexture(const ::std::uint8_t *const textureData,
+                                             const ::std::int32_t width,
+                                             const ::std::int32_t height,
+                                             const ::std::int32_t channels,
+                                             const ::std::string &texturePath) {
+    if (textureData == nullptr || width <= 0 || height <= 0 || channels <= 0) {
+        const char *error {stbi_failure_reason()};
+        LOG_ERROR("Error reading texture '", texturePath, "': ", error);
+        throw ::std::runtime_error {error};
+    }
+}
+
+/**
+ * Throw exception if the provided texture information from STB library is invalid.
+ *
+ * @param textureInfo The texture information from STB library.
+ * @param texturePath The file path to the texture.
+ * @throws std::runtime_error If texture information from STB library is invalid.
+ */
+void Texture::throwExceptionIfInvalidTexture(const int textureInfo, const ::std::string &texturePath) {
+    if (textureInfo <= 0) {
+        const char *error {stbi_failure_reason()};
+        LOG_ERROR(("Error reading texture '" + texturePath + "': " + error).c_str());
+        throw ::std::runtime_error {("Error reading texture '" + texturePath + "': " + error)};
+    }
 }

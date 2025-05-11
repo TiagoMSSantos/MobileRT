@@ -320,7 +320,7 @@ namespace MobileRT {
         #define ASSERT(condition, ...) \
         do { \
             if (!(condition)) { \
-                LOG_DEBUG("Assertion '", #condition, "': ",  __VA_ARGS__); \
+                LOG_ERROR("Assertion '", #condition, "': ",  __VA_ARGS__); \
                 BOOST_ASSERT_MSG(condition, ::MobileRT::convertToString(__VA_ARGS__).c_str()); \
             } \
         } while (false)

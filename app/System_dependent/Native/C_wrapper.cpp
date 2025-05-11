@@ -25,6 +25,7 @@
 #include <cstring>
 #include <fstream>
 #include <functional>
+#include <limits>
 
 static ::std::unique_ptr<::MobileRT::Renderer> renderer_ {};
 
@@ -109,7 +110,7 @@ static void work_thread(::MobileRT::Config &config) {
                         &scene,
                         []() { return ::MobileRT::std::make_unique<Components::StaticHaltonSeq> (); },
                         config.objFilePath,
-                        texturesCache
+                        &texturesCache
                     )};
                     if (!sceneBuilt) {
                         LOG_ERROR("OBJLOADER could not load the scene.");
@@ -226,11 +227,11 @@ static void work_thread(::MobileRT::Config &config) {
             ::MobileRT::checkSystemError("Rendering ended");
 
             timeRendering = chronoEndRendering - chronoStartRendering;
-            LOG_INFO("Finished rendering scene");
+            LOG_INFO("Finished rendering scene in ", timeRendering.count(), " secs");
         }
 
         // Print some latencies
-        const double renderingTime {timeRendering.count()};
+        const double renderingTime {timeRendering.count() <= 0 ? ::std::numeric_limits<double>::lowest() : timeRendering.count()};
         const ::std::uint64_t castedRays {renderer_->getTotalCastedRays()};
         LOG_INFO("Loading Time in secs = ", timeLoading.count());
         LOG_INFO("Filling Time in secs = ", timeFilling.count());

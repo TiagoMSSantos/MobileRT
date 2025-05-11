@@ -35,6 +35,13 @@ jobs:
         if: success()
         uses: actions/checkout@v4
 
+      - name: Validate codecov report
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success() && inputs.type == 'debug'
+        working-directory: .
+        run: |
+          curl --fail-with-body --retry 5 --retry-delay 2 --connect-timeout 2 --data-binary @codecov.yml https://codecov.io/validate;
+
       - name: Set up JDK
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success()
@@ -174,7 +181,7 @@ jobs:
           ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'cmake;3.31.6';
 
       - name: Download Android dependencies
-        timeout-minutes: 6
+        timeout-minutes: 8
         if: success()
         run: |
           sh gradlew build --dry-run -Dorg.gradle.configuration-cache=false --parallel \
@@ -462,7 +469,7 @@ jobs:
           mkdir -p ~/.android/avd/Android_Emulator_API_34.avd;
 
       - name: Download Android dependencies
-        timeout-minutes: 6
+        timeout-minutes: 8
         if: success()
         run: |
           if [ "${{ inputs.type }}" = 'debug' ]; then
@@ -720,7 +727,7 @@ jobs:
           set -u;
 
       - name: Download Android dependencies
-        timeout-minutes: 6
+        timeout-minutes: 8
         if: success()
         run: |
           sh gradlew test"${{ inputs.type }}"UnitTest lint --dry-run -Dorg.gradle.configuration-cache=false --parallel \
@@ -926,13 +933,6 @@ jobs:
           ../../../../test-reporter-latest-linux-amd64 format-coverage -t jacoco ../../../build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml;
           ../../../../test-reporter-latest-linux-amd64 upload-coverage;
 
-      - name: Validate codecov report
-        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success()
-        working-directory: .
-        run: |
-          curl --retry 5 --retry-delay 2 --connect-timeout 2 --data-binary @codecov.yml https://codecov.io/validate;
-
       - name: Set Android CPU Architecture
         id: set-cpu-arch
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -959,7 +959,7 @@ jobs:
           set -u;
 
       - name: Download Android dependencies
-        timeout-minutes: 6
+        timeout-minutes: 8
         if: success()
         working-directory: .
         run: |
@@ -1025,7 +1025,7 @@ jobs:
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         run: |
-          curl --retry 5 --retry-delay 2 --connect-timeout 2 -s https://codecov.io/bash | bash -s -- -c -F aFlag -f app/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml -v;
+          curl --fail-with-body --retry 5 --retry-delay 2 --connect-timeout 2 -s https://codecov.io/bash | bash -s -- -c -f app/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml -v;
 
       - name: Upload reports as artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}

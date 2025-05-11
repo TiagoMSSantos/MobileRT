@@ -51,12 +51,38 @@ parsers:
       macro: false
 
 comment:
-  layout: "reach,diff,flags,tree"
+  layout: "header, diff, flags, components, reach, tree"  # show component info in the PR comment
   behavior: "default"
   require_changes: false
-  require_head: no
-  require_base: no
+  require_head: false
+  require_base: false
   show_carryforward_flags: false
 
 github_checks:
   annotations: true
+
+component_management:
+  default_rules:  # default rules that will be inherited by all components
+    statuses:
+      - type: project # in this case every component that doesn't have a status defined will have a project type one
+        target: auto
+  individual_components:
+    - component_id: module_android  # this is an identifier that should not be changed
+      name: Android  # this is a display name, and can be changed freely
+      paths:
+        - app/**/*.java
+        - app/**/*.kt
+        - app/System_dependent/Android_JNI/**
+    - component_id: module_native
+      name: Native
+      paths:
+        - app/**/*.cpp
+        - app/**/*.hpp
+        - app/**/*.h
+        - "!app/System_dependent/**"
+        - app/System_dependent/Native/**
+    - component_id: module_shell_scripts
+      name: Shell scripts
+      paths:
+        - scripts/*.sh
+        - scripts/**/*.sh

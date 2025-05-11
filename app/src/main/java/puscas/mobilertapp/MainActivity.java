@@ -443,7 +443,7 @@ public final class MainActivity extends Activity {
 
         try {
             if (data != null && Objects.equals(resultCode, Activity.RESULT_OK)) {
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && data.getClipData() != null) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && data.getClipData() != null) {
                     final ClipData clipData = data.getClipData();
                     final int numFiles = clipData.getItemCount();
                     logger.info("Will read every selected file: " + numFiles);

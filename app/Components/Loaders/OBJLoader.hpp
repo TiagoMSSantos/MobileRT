@@ -43,7 +43,7 @@ namespace Components {
         bool fillScene(::MobileRT::Scene *scene,
                        ::std::function<::std::unique_ptr<::MobileRT::Sampler>()> lambda,
                        ::std::string filePath,
-                       ::std::unordered_map<::std::string, ::MobileRT::Texture> texturesCache) final;
+                       ::std::unordered_map<::std::string, ::MobileRT::Texture> *const texturesCache) final;
 
     private:
         triple<::glm::vec3, ::glm::vec3, ::glm::vec3> loadNormal(
