@@ -460,6 +460,7 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
                         )
                     };
                     ::std::int32_t materialIndex {-1};
+                    LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Loading shape: ", shapeIndex, " without texture, scene: ", filePath, ", shapeIndex: ", shapeIndex, ", vertex: ", vertex, ", face: ", face);
                     {
                         const ::std::lock_guard<::std::mutex> lock {*mutex};
                         const auto itFoundMat {::std::find(scene->materials_.begin(), scene->materials_.end(), material)};
@@ -477,7 +478,7 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
             } // Loop over vertices in the face.
 
             indexOffset += faceVertices;
-            LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Triangle: ", triangles.size(), ", scene '", filePath, "', shapeIndex: ", shapeIndex, ", face: ", face, ", shapeIndex: ", shapeIndex);
+            LOG_DEBUG("Thread ", threadId, " (", numberOfThreads, ") Triangle: ", triangles.size(), ", scene '", filePath, "', shapeIndex: ", shapeIndex, ", face: ", face, ", shapeIndex: ", shapeIndex);
 
             if (triangles.size() > 0 && triangles.size() % 100000 == 0) {
                 LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Triangle ", triangles.size(), " position at ", triangles.back(), ", scene '", filePath, "', shapeIndex: ", shapeIndex, ", face: ", face);
