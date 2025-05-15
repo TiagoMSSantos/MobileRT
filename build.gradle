@@ -105,7 +105,7 @@ buildscript {
         println("OS: " + currentOS)
         // Compatibility matrix: https://developer.android.com/build/releases/gradle-plugin#android_gradle_plugin_and_android_studio_compatibility
         classpath "com.android.tools.build:gradle:${gradle_version}"
-        classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:6.1.0.5360'
+        classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:6.2.0.5505'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlin_gradle_plugin_version}"
         classpath "com.github.ben-manes:gradle-versions-plugin:${gradle_versions_plugin_version}"
 
