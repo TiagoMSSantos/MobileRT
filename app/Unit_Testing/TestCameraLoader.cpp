@@ -5,6 +5,7 @@ class TestCameraLoader : public testing::Test {
 protected:
 
     void SetUp() final {
+        errno = 0;
     }
 
     void TearDown() final {

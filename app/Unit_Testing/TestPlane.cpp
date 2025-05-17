@@ -9,6 +9,7 @@ protected:
     Plane *plane {};
 
     void SetUp () final {
+        errno = 0;
         plane = new Plane {::glm::vec3 {-1, 0, 0}, ::glm::vec3 {1, 0, 0}, -1};
     }
 

@@ -7,6 +7,7 @@ using ::MobileRT::Ray;
 class TestIntersection : public testing::Test {
 protected:
     void SetUp () final {
+        errno = 0;
     }
 
     void TearDown () final {

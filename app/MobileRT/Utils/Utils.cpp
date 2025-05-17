@@ -244,47 +244,39 @@ namespace MobileRT {
      * @param message The message to be logged in the `std::runtime_error` that might be thrown.
      */
     void checkSystemError(const char *const message) {
-        try {
-            // Ignore the following errors, because they are set by some Android C++ functions:
-            // * Invalid argument
-            // * Resource unavailable, try again
-            if (errno != 0 && errno != EWOULDBLOCK && errno != EINVAL) {// if there is an error
-                LOG_ERROR("ERROR 1: ", errno);
-                const ErrorType currentError {getErrorCode()};
-                LOG_ERROR("errorCode: ", currentError.codeText);
+        // Ignore the following errors, because they are set by some Android C++ functions:
+        // * Invalid argument
+        // * Resource unavailable, try again
+        if (errno != 0 && errno != EWOULDBLOCK && errno != EINVAL) {// if there is an error
+            LOG_ERROR("ERROR 1: ", errno);
+            const ErrorType currentError {getErrorCode()};
+            LOG_ERROR("errorCode: ", currentError.codeText);
 
+            #if defined(_MSVC_LANG)
+                const ::std::size_t errmsglen {256};
+                char errmsg[errmsglen];
+                ::strerror_s(errmsg, errmsglen, errno);
+            #endif
+
+            const ::std::string errorMessage {::std::string(message) + '\n' + currentError.codeText + '\n' +
+                currentError.description + '\n' +
+                ::std::string("errno (") + ::MobileRT::std::to_string(errno) + "): " +
                 #if defined(_MSVC_LANG)
-                    const ::std::size_t errmsglen {256};
-                    char errmsg[errmsglen]; 
-                    ::strerror_s(errmsg, errmsglen, errno);
+                    errmsg
+                #else
+                    ::std::strerror(errno)
                 #endif
+            };
+            LOG_ERROR("errorMessage: ", errorMessage);
+            printFreeMemory();
 
-                const ::std::string errorMessage {::std::string(message) + '\n' + currentError.codeText + '\n' +
-                    currentError.description + '\n' +
-                    ::std::string("errno (") + ::MobileRT::std::to_string(errno) + "): " +
-                    #if defined(_MSVC_LANG)
-                        errmsg
-                    #else
-                        ::std::strerror(errno)
-                    #endif
-                };
-                LOG_ERROR("errorMessage: ", errorMessage);
-                printFreeMemory();
-
-                // Necessary to reset the error code so the Android Instrumentation
-                // Tests that test failures, like trying to read an OBJ that
-                // doesn't exist, can proceed to the next tests.
-                // Otherwise, those tests can throw:
-                // signal 11 (SIGSEGV), code 1 (SEGV_MAPERR), fault addr deadbaad
-                errno = 0;
-                throw ::std::runtime_error {errorMessage};
-            }
-        } catch (const ::std::bad_function_call &exception) {
-            LOG_ERROR("exception: ", exception.what());
-        } catch (const ::std::exception &exception) {
-            LOG_ERROR("exception: ", exception.what());
-        } catch (...) {
-            LOG_ERROR("Unknown error");
+            // Necessary to reset the error code so the Android Instrumentation
+            // Tests that test failures, like trying to read an OBJ that
+            // doesn't exist, can proceed to the next tests.
+            // Otherwise, those tests can throw:
+            // signal 11 (SIGSEGV), code 1 (SEGV_MAPERR), fault addr deadbaad
+            errno = 0;
+            throw ::std::runtime_error {errorMessage};
         }
     }
 

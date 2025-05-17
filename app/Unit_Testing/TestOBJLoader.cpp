@@ -12,6 +12,7 @@ protected:
     };
 
     void SetUp() final {
+        errno = 0;
         ASSERT_TRUE(this->scene.triangles_.empty());
         ASSERT_TRUE(this->scene.spheres_.empty());
         ASSERT_TRUE(this->scene.planes_.empty());
@@ -42,6 +43,7 @@ f 1 2 3
 
     const ::std::istringstream isObj {objDefinition};
     const ::std::istringstream isMtl {mtlDefinition};
+
     ::Components::OBJLoader objLoader {::std::istream {isObj.rdbuf()}, ::std::istream {isMtl.rdbuf()}};
     ASSERT_TRUE(objLoader.isProcessed());
     ASSERT_TRUE(objLoader.fillScene(&this->scene, this->samplerForLights, "test", &this->texturesCache));

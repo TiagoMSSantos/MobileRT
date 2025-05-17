@@ -14,6 +14,7 @@ protected:
     Triangle *triangle {};
 
     void SetUp () final {
+        errno = 0;
         triangle = new Triangle(
             Triangle::Builder(
                 ::glm::vec3 {0, 0, 0},

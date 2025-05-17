@@ -6,6 +6,7 @@ using ::MobileRT::AABB;
 class TestAABB : public testing::Test {
 protected:
     void SetUp () final {
+        errno = 0;
     }
 
     void TearDown () final {

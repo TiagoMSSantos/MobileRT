@@ -8,6 +8,7 @@ protected:
     ::MobileRT::Config config {};
 
     void SetUp () final {
+        errno = 0;
         config.width = 30;
         config.height = 30;
         config.threads = 3;
