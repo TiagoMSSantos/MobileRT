@@ -94,9 +94,7 @@ static void work_thread(::MobileRT::Config &config) {
                 default: {
                     LOG_INFO("OBJLoader starting loading scene. OBJ: ", config.objFilePath, ", MTL: ", config.mtlFilePath);
                     const ::std::chrono::time_point<::std::chrono::system_clock> chronoStartLoading {::std::chrono::system_clock::now()};
-                    ::std::ifstream ifObj {config.objFilePath};
-                    ::std::ifstream ifMtl {config.mtlFilePath};
-                    ::Components::OBJLoader objLoader {ifObj, ifMtl};
+                    ::Components::OBJLoader objLoader {::std::ifstream {config.objFilePath}, ::std::ifstream {config.mtlFilePath}};
                     if (!objLoader.isProcessed()) {
                         LOG_ERROR("Error occurred while loading scene.");
                         exit(1);
@@ -165,24 +163,24 @@ static void work_thread(::MobileRT::Config &config) {
                 }
 
                 case 3: {
-                shader_ = ::MobileRT::std::make_unique<::Components::DepthMap> (
-                    ::std::move(scene), maxDist, ::MobileRT::Shader::Accelerator(config.accelerator)
-                );
+                    shader_ = ::MobileRT::std::make_unique<::Components::DepthMap> (
+                        ::std::move(scene), maxDist, ::MobileRT::Shader::Accelerator(config.accelerator)
+                    );
                     break;
                 }
 
                 case 4: {
-                shader_ = ::MobileRT::std::make_unique<::Components::DiffuseMaterial> (
-                    ::std::move(scene), ::MobileRT::Shader::Accelerator(config.accelerator)
-                );
-                break;
+                    shader_ = ::MobileRT::std::make_unique<::Components::DiffuseMaterial> (
+                        ::std::move(scene), ::MobileRT::Shader::Accelerator(config.accelerator)
+                    );
+                    break;
                 }
 
                 default: {
-                shader_ = ::MobileRT::std::make_unique<::Components::NoShadows> (
-                    ::std::move(scene), config.samplesLight, ::MobileRT::Shader::Accelerator(config.accelerator)
-                );
-                break;
+                    shader_ = ::MobileRT::std::make_unique<::Components::NoShadows> (
+                        ::std::move(scene), config.samplesLight, ::MobileRT::Shader::Accelerator(config.accelerator)
+                    );
+                    break;
                 }
             }
             // Stop timer

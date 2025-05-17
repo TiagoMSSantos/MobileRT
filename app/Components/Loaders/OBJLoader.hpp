@@ -28,7 +28,7 @@ namespace Components {
     public:
         explicit OBJLoader() = delete;
 
-        explicit OBJLoader(::std::istream& isObj, ::std::istream& isMtl);
+        explicit OBJLoader(::std::istream&& isObj, ::std::istream&& isMtl);
 
         OBJLoader(const OBJLoader &objLoader) = delete;
 
@@ -41,7 +41,7 @@ namespace Components {
         OBJLoader &operator=(OBJLoader &&objLoader) noexcept = delete;
 
         bool fillScene(::MobileRT::Scene *scene,
-                       ::std::function<::std::unique_ptr<::MobileRT::Sampler>()> lambda,
+                       ::std::function<::std::unique_ptr<::MobileRT::Sampler>()> createSamplerLambda,
                        ::std::string filePath,
                        ::std::unordered_map<::std::string, ::MobileRT::Texture> *const texturesCache) final;
 
@@ -69,7 +69,7 @@ namespace Components {
         void fillSceneThreadWork(::std::uint32_t threadId,
                                  ::std::uint32_t numberOfThreads,
                                  ::MobileRT::Scene *const scene,
-                                 const ::std::function<::std::unique_ptr<::MobileRT::Sampler>()> &lambda,
+                                 const ::std::function<::std::unique_ptr<::MobileRT::Sampler>()> &createSamplerLambda,
                                  const ::std::string &filePath,
                                  ::std::unordered_map<::std::string, ::MobileRT::Texture> *const texturesCache,
                                  ::std::mutex *const mutex);

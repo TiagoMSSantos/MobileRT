@@ -35,7 +35,7 @@ jobs:
         if: success()
         uses: actions/checkout@v4
 
-      - name: Validate codecov report
+      - name: Validate codecov config
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success() && inputs.type == 'debug'
         working-directory: .

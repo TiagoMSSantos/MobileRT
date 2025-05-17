@@ -579,14 +579,10 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
 
                         const ::std::istringstream isObj {objDefinition_};
                         const ::std::istringstream isMtl {mtlDefinition_};
-                        ::std::istream iObj {isObj.rdbuf()};
-                        ::std::istream iMtl {isMtl.rdbuf()};
-                        ::Components::OBJLoader objLoader {iObj, iMtl};
+                        ::Components::OBJLoader objLoader {::std::istream {isObj.rdbuf()}, ::std::istream {isMtl.rdbuf()}};
                         objDefinition_.clear();
                         mtlDefinition_.clear();
                         camDefinition_.clear();
-                        iObj.clear();
-                        iMtl.clear();
                         objDefinition_.erase();
                         mtlDefinition_.erase();
                         camDefinition_.erase();

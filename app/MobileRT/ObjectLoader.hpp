@@ -43,15 +43,15 @@ namespace MobileRT {
         /**
          * Fills the scene with the triangles loaded from a geometry file, like .OBJ and .MTL.
          *
-         * @param scene         The scene to fill with geometry.
-         * @param lambda        A lambda which returns a sampler.
-         * @param filePath      The file path to the main scene file.
-         * @param texturesCache The cache used for texture files. This is necessary if the textures need to be loaded and cached beforehand.
-         *                      E.g.: For Android devices, the texture files need to be loaded with Java code due to permissions.
+         * @param scene               The scene to fill with geometry.
+         * @param createSamplerLambda A lambda which returns a sampler.
+         * @param filePath            The file path to the main scene file.
+         * @param texturesCache       The cache used for texture files. This is necessary if the textures need to be loaded and cached beforehand.
+         *                            E.g.: For Android devices, the texture files need to be loaded with Java code due to permissions.
          * @return True if it succeeded to fill the scene or false otherwise.
          */
         virtual bool fillScene(Scene *scene,
-                               ::std::function<::std::unique_ptr<Sampler>()> lambda,
+                               ::std::function<::std::unique_ptr<Sampler>()> createSamplerLambda,
                                ::std::string filePath,
                                ::std::unordered_map<::std::string, ::MobileRT::Texture> *const texturesCache) = 0;
     };

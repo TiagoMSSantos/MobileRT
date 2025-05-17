@@ -25,13 +25,13 @@ protected:
     }
 
     void TearDown () final {
+        delete this->triangle;
     }
 
     ~TestTriangle () override;
 };
 
 TestTriangle::~TestTriangle () {
-    delete triangle;
 }
 
 namespace {

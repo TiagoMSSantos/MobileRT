@@ -15,7 +15,7 @@ using ::MobileRT::Texture;
 using ::MobileRT::Triangle;
 using ::MobileRT::Sampler;
 
-OBJLoader::OBJLoader(::std::istream& isObj, ::std::istream& isMtl) {
+OBJLoader::OBJLoader(::std::istream&& isObj, ::std::istream&& isMtl) {
     LOG_INFO("Setting exception mask for the OBJ file stream.");
     isObj.exceptions(
         isObj.exceptions() | ::std::ifstream::goodbit | ::std::ifstream::badbit
@@ -70,11 +70,11 @@ OBJLoader::OBJLoader(::std::istream& isObj, ::std::istream& isMtl) {
         LOG_ERROR("Call to tinyobj::LoadObj failed.");
     }
 
-    LOG_INFO("Called tinyobj::LoadObj and loaded ", this->numberTriangles_, " triangles");
+    LOG_INFO("Called tinyobj::LoadObj and loaded '", this->numberTriangles_, "' triangles");
 }
 
 bool OBJLoader::fillScene(Scene *const scene,
-                          const ::std::function<::std::unique_ptr<Sampler>()> lambda,
+                          const ::std::function<::std::unique_ptr<Sampler>()> createSamplerLambda,
                           ::std::string filePath,
                           ::std::unordered_map<::std::string, ::MobileRT::Texture> *const texturesCache) {
     ::MobileRT::checkSystemError("Starting to fill scene.");
@@ -91,22 +91,24 @@ bool OBJLoader::fillScene(Scene *const scene,
     threads.reserve(numChildren);
     LOG_INFO("Created mutex and it will fill the scene using ", numChildren + 1, " threads");
     for (::std::uint32_t i {}; i < numChildren; ++i) {
-        threads.emplace_back(&OBJLoader::fillSceneThreadWork, this, i, numChildren + 1, scene, lambda, filePath, texturesCache, &mutex);
+        threads.emplace_back(&OBJLoader::fillSceneThreadWork, this, i, numChildren + 1, scene, createSamplerLambda, filePath, texturesCache, &mutex);
     }
-    fillSceneThreadWork(numChildren, numChildren + 1, scene, lambda, filePath, texturesCache, &mutex);
+    fillSceneThreadWork(numChildren, numChildren + 1, scene, createSamplerLambda, filePath, texturesCache, &mutex);
     for (::std::uint32_t i {}; i < numChildren; ++i) {
         ::std::thread &thread {threads[i]};
         LOG_INFO("Waiting for thread '", i, "' with id '", thread.get_id(), "'.");
         thread.join();
     }
-
     LOG_INFO("Waited for all threads.");
-    ASSERT(static_cast<::std::int32_t> (scene->triangles_.size()), this->numberTriangles_, "Number of triangles in the scene is not correct.");
-    ::MobileRT::checkSystemError("Filled Scene");
 
-    LOG_INFO("Total triangles loaded: ", scene->triangles_.size());
-    LOG_INFO("Total lights loaded:  ", scene->lights_.size());
-    LOG_INFO("Total materials loaded:  ", scene->materials_.size());
+    LOG_INFO("Total triangles loaded: ", scene->triangles_.size(), ", expected triangles + lights: ", this->numberTriangles_);
+    LOG_INFO("Total lights loaded: ", scene->lights_.size());
+    LOG_INFO("Total materials loaded: ", scene->materials_.size());
+    ASSERT(
+        static_cast<::std::int32_t> (scene->triangles_.size() + scene->lights_.size()) == this->numberTriangles_,
+        "Number of triangles in the scene is not correct."
+    );
+    ::MobileRT::checkSystemError("Filled Scene");
 
     return true;
 }
@@ -286,7 +288,7 @@ const Texture& OBJLoader::getTextureFromCache(
 void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
                                     const ::std::uint32_t numberOfThreads,
                                     Scene *const scene,
-                                    const ::std::function<::std::unique_ptr<Sampler>()> &lambda,
+                                    const ::std::function<::std::unique_ptr<Sampler>()> &createSamplerLambda,
                                     const ::std::string &filePath,
                                     ::std::unordered_map<::std::string, ::MobileRT::Texture> *const texturesCache,
                                     ::std::mutex *const mutex) {
@@ -400,7 +402,7 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
                         };
                         {
                             LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Adding light of shape: ", shapeIndex, ", with material ID: ", materialId, ", scene: ", filePath, ", shapeIndex: ", shapeIndex, ", vertex: ", vertex, ", face: ", face);
-                            lights.emplace_back(::MobileRT::std::make_unique<AreaLight>(material, lambda(), triangle));
+                            lights.emplace_back(::MobileRT::std::make_unique<AreaLight>(material, createSamplerLambda(), triangle));
                             LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Added light of shape: ", shapeIndex, ", with material ID: ", materialId, ", scene: ", filePath, ", shapeIndex: ", shapeIndex, ", vertex: ", vertex, ", face: ", face);
                         }
                     } else {
@@ -523,17 +525,12 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
     triangles.clear();
     LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Clearing triangles 2.");
     triangles.shrink_to_fit();
-    LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Clearing triangles 3.");
-    ::std::vector<Triangle> {}.swap(triangles);
-    LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Clearing triangles 4.");
 
     LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Clearing lights 1.");
     lights.clear();
     LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Clearing lights 2.");
     lights.shrink_to_fit();
     LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Clearing lights 3.");
-    ::std::vector<::std::unique_ptr<Light>> {}.swap(lights);
-    LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Clearing lights 4.");
 }
 
 /**

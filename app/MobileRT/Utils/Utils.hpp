@@ -310,27 +310,30 @@ namespace MobileRT {
         return parsedValues;
     }
 
-
-    #ifndef NDEBUG
-        /**
-         * If in debug mode, then the `ASSERT` macro will call the the assert
-         * macro from C++ Boost framework `BOOST_ASSERT_MSG` and then terminate
-         * the application with a printed error.
-         */
-        #define ASSERT(condition, ...) \
+    /**
+     * The `ASSERT` macro will call the the assert macro from C++ Boost framework
+     * `BOOST_ASSERT_MSG` and then terminate the application with the error logged.
+     */
+    #define ASSERT(condition, ...) \
         do { \
             if (!(condition)) { \
                 LOG_ERROR("Assertion '", #condition, "': ",  __VA_ARGS__); \
                 BOOST_ASSERT_MSG(condition, ::MobileRT::convertToString(__VA_ARGS__).c_str()); \
             } \
         } while (false)
+
+    #ifndef NDEBUG
+        /**
+         * If in debug mode, then the `ASSERT_DEBUG` macro will call the `ASSERT` macro.
+         */
+        #define ASSERT_DEBUG(condition, ...) ASSERT(condition, ...)
     #else
         /**
-         * If in release mode, then the `ASSERT` macro should do nothing, to
-         * eventually make the compiler optimize and remove it from the
+         * If in release mode, then the `ASSERT_DEBUG` macro should do nothing,
+         * to eventually make the compiler optimize and remove it from the
          * generated binary code.
          */
-        #define ASSERT(condition, ...) do { } while (false)
+        #define ASSERT_DEBUG(condition, ...) do { } while (false)
     #endif
 
 

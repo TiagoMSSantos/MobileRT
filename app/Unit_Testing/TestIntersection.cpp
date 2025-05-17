@@ -49,8 +49,7 @@ TEST_F(TestIntersection, TestInvalidConstructor2) {
     const ::glm::vec2 texCoords {0.4F, 0.6F};
     Ray ray {::glm::vec3 {1.0F}, ::glm::vec3 {}, 0, false};
 
-    ASSERT_DEBUG_DEATH(const Intersection intersection
-        (::std::move(ray), intPoint, dist, normal, primitive, materialIndex, texCoords);, "");
+    ASSERT_DEBUG_DEATH(const Intersection intersection(::std::move(ray), intPoint, dist, normal, primitive, materialIndex, texCoords);, "");
 }
 
 /**
