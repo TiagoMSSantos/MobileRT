@@ -2,7 +2,7 @@
                        // <!--
                        window.initialData = {
   "statistics": {
-    "detectionDate": "2025-05-17T16:24:14.776Z",
+    "detectionDate": "2025-05-17T19:27:16.831Z",
     "formats": {
       "java": {
         "sources": {
@@ -1551,14 +1551,14 @@
             "newClones": 0
           },
           "app/Components/Loaders/OBJLoader.cpp": {
-            "lines": 550,
-            "tokens": 7588,
+            "lines": 552,
+            "tokens": 7605,
             "sources": 1,
-            "clones": 8,
-            "duplicatedLines": 88,
-            "duplicatedTokens": 1088,
-            "percentage": 16,
-            "percentageTokens": 14.34,
+            "clones": 10,
+            "duplicatedLines": 110,
+            "duplicatedTokens": 1234,
+            "percentage": 19.93,
+            "percentageTokens": 16.23,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -1731,8 +1731,8 @@
             "newClones": 0
           },
           "app/MobileRT/Texture.cpp": {
-            "lines": 161,
-            "tokens": 1428,
+            "lines": 167,
+            "tokens": 1510,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -1876,14 +1876,14 @@
           }
         },
         "total": {
-          "lines": 6102,
-          "tokens": 60883,
+          "lines": 6110,
+          "tokens": 60982,
           "sources": 58,
-          "clones": 34,
-          "duplicatedLines": 342,
-          "duplicatedTokens": 5238,
-          "percentage": 5.6,
-          "percentageTokens": 8.6,
+          "clones": 35,
+          "duplicatedLines": 353,
+          "duplicatedTokens": 5311,
+          "percentage": 5.78,
+          "percentageTokens": 8.71,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3274,14 +3274,14 @@
       }
     },
     "total": {
-      "lines": 30233,
-      "tokens": 234282,
+      "lines": 30241,
+      "tokens": 234381,
       "sources": 259,
-      "clones": 117,
-      "duplicatedLines": 1360,
-      "duplicatedTokens": 13070,
-      "percentage": 4.5,
-      "percentageTokens": 5.58,
+      "clones": 118,
+      "duplicatedLines": 1371,
+      "duplicatedTokens": 13143,
+      "percentage": 4.53,
+      "percentageTokens": 5.61,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -6277,37 +6277,73 @@
     },
     {
       "format": "cpp",
+      "lines": 12,
+      "fragment": "d::pair<::std::unordered_map<::std::string, Texture>::iterator, bool> pairResult {texturesCache->emplace(::std::move(pair))};\n        LOG_INFO(\"Added texture \", texturePath, \" to the cache.\");\n        const Texture &res {::std::get<0>(pairResult)->second};\n        return res;\n    }\n\n    LOG_INFO(\"Get",
+      "tokens": 0,
+      "firstFile": {
+        "name": "app/Components/Loaders/OBJLoader.cpp",
+        "start": 278,
+        "end": 289,
+        "startLoc": {
+          "line": 278,
+          "column": 12,
+          "position": 3163
+        },
+        "endLoc": {
+          "line": 289,
+          "column": 4,
+          "position": 3236
+        }
+      },
+      "secondFile": {
+        "name": "app/Components/Loaders/OBJLoader.cpp",
+        "start": 246,
+        "end": 263,
+        "startLoc": {
+          "line": 246,
+          "column": 8,
+          "position": 2830
+        },
+        "endLoc": {
+          "line": 263,
+          "column": 4,
+          "position": 2903
+        }
+      }
+    },
+    {
+      "format": "cpp",
       "lines": 15,
       "fragment": ", face: \", face);\n                        }\n                    } else {\n                        // If it is a primitive.\n                        Triangle::Builder builder {\n                            Triangle::Builder(\n                                ::std::get<0> (vertices), ::std::get<1> (vertices), ::std::get<2> (vertices)\n                            )\n                            .withNormals(\n                                ::std::get<0>(normal),\n                                ::std::get<1>(normal),\n                                ::std::get<2>(normal)\n                            )\n                            .withTexCoords(\n                                ::std::get<0>(texCoor",
       "tokens": 0,
       "firstFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 410,
-        "end": 424,
+        "start": 412,
+        "end": 426,
         "startLoc": {
-          "line": 410,
+          "line": 412,
           "column": 2,
-          "position": 5347
+          "position": 5364
         },
         "endLoc": {
-          "line": 424,
+          "line": 426,
           "column": 2,
-          "position": 5490
+          "position": 5507
         }
       },
       "secondFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 387,
-        "end": 401,
+        "start": 389,
+        "end": 403,
         "startLoc": {
-          "line": 387,
+          "line": 389,
           "column": 2,
-          "position": 5040
+          "position": 5057
         },
         "endLoc": {
-          "line": 401,
+          "line": 403,
           "column": 2,
-          "position": 5183
+          "position": 5200
         }
       }
     },
@@ -6318,32 +6354,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 454,
-        "end": 463,
+        "start": 456,
+        "end": 465,
         "startLoc": {
-          "line": 454,
+          "line": 456,
           "column": 21,
-          "position": 5925
+          "position": 5942
         },
         "endLoc": {
-          "line": 463,
+          "line": 465,
           "column": 2,
-          "position": 6028
+          "position": 6045
         }
       },
       "secondFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 410,
-        "end": 396,
+        "start": 412,
+        "end": 398,
         "startLoc": {
-          "line": 410,
+          "line": 412,
           "column": 25,
-          "position": 5341
+          "position": 5358
         },
         "endLoc": {
-          "line": 396,
+          "line": 398,
           "column": 2,
-          "position": 5137
+          "position": 5154
         }
       }
     },
@@ -6354,32 +6390,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 465,
-        "end": 480,
+        "start": 467,
+        "end": 482,
         "startLoc": {
-          "line": 465,
+          "line": 467,
           "column": 2,
-          "position": 6089
+          "position": 6106
         },
         "endLoc": {
-          "line": 480,
+          "line": 482,
           "column": 35,
-          "position": 6289
+          "position": 6306
         }
       },
       "secondFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 426,
-        "end": 441,
+        "start": 428,
+        "end": 443,
         "startLoc": {
-          "line": 426,
+          "line": 428,
           "column": 2,
-          "position": 5506
+          "position": 5523
         },
         "endLoc": {
-          "line": 441,
+          "line": 443,
           "column": 5,
-          "position": 5706
+          "position": 5723
         }
       }
     },
