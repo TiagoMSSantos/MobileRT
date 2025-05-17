@@ -238,14 +238,17 @@ const Texture& OBJLoader::getTextureFromCache(
     const ::std::unordered_map<::std::string, Texture>::iterator itTexture {texturesCache->find(texPath)};
 
     if (itTexture == texturesCache->cend()) { // If the texture is not in the cache.
-        Texture &&texture {Texture::createTexture(::std::move(textureBinary), size)};
-        ::std::pair<::std::string, Texture> &&pair {::std::make_pair(texPath, ::std::move(texture))};
-        const Texture *res {nullptr};
-        const ::std::pair<::std::unordered_map<::std::string, Texture>::iterator, bool> pairResult {texturesCache->emplace(::std::move(pair))}; // Add it to the cache.
-        res = &(::std::get<0>(pairResult)->second);
-        return *res;
+        LOG_INFO("Loading texture: ", texPath);
+        Texture texture {Texture::createTexture(::std::move(textureBinary), size)};
+        ::std::pair<::std::string, Texture> pair {::std::make_pair(texPath, ::std::move(texture))};
+        LOG_INFO("Adding texture ", texPath, " to the cache.");
+        const ::std::pair<::std::unordered_map<::std::string, Texture>::iterator, bool> pairResult {texturesCache->emplace(::std::move(pair))};
+        LOG_INFO("Added texture ", texPath, " to the cache.");
+        const Texture &res {::std::get<0>(pairResult)->second};
+        return res;
     }
 
+    LOG_INFO("Getting texture ", texPath, " from cache.");
     return texturesCache->find(texPath)->second;// Get texture from cache.
 }
 
@@ -268,14 +271,13 @@ const Texture& OBJLoader::getTextureFromCache(
     if (itTexture == texturesCache->cend()) {// If the texture is not in the cache.
         const ::std::string texturePath {filePath + texPath};
         LOG_INFO("Loading texture: ", texturePath);
-        Texture &&texture {Texture::createTexture(texturePath)};
-        ::std::pair<::std::string, Texture> &&pair {::std::make_pair(texPath, ::std::move(texture))};
-        const Texture *res {nullptr};
+        Texture texture {Texture::createTexture(texturePath)};
+        ::std::pair<::std::string, Texture> pair {::std::make_pair(texPath, ::std::move(texture))};
         LOG_INFO("Adding texture ", texturePath, " to the cache.");
-        const ::std::pair<::std::unordered_map<::std::string, Texture>::iterator, bool> pairResult {texturesCache->emplace(::std::move(pair))}; // Add it to the cache.
-        res = &(::std::get<0>(pairResult)->second);
+        const ::std::pair<::std::unordered_map<::std::string, Texture>::iterator, bool> pairResult {texturesCache->emplace(::std::move(pair))};
         LOG_INFO("Added texture ", texturePath, " to the cache.");
-        return *res;
+        const Texture &res {::std::get<0>(pairResult)->second};
+        return res;
     }
 
     LOG_INFO("Getting texture ", texPath, " from cache.");

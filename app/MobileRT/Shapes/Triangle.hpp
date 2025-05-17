@@ -90,21 +90,21 @@ namespace MobileRT {
 
         public:
             explicit Builder(
-                    const ::glm::vec3 &pointA,
-                    const ::glm::vec3 &pointB,
-                    const ::glm::vec3 &pointC
+                const ::glm::vec3 &pointA,
+                const ::glm::vec3 &pointB,
+                const ::glm::vec3 &pointC
             ) noexcept;
 
             Builder withNormals(
-                    const ::glm::vec3 &normalA,
-                    const ::glm::vec3 &normalB,
-                    const ::glm::vec3 &normalC
+                const ::glm::vec3 &normalA,
+                const ::glm::vec3 &normalB,
+                const ::glm::vec3 &normalC
             );
 
             Builder withTexCoords(
-                    const ::glm::vec2 &texCoordA,
-                    const ::glm::vec2 &texCoordB,
-                    const ::glm::vec2 &texCoordC
+                const ::glm::vec2 &texCoordA,
+                const ::glm::vec2 &texCoordB,
+                const ::glm::vec2 &texCoordC
             );
 
             Builder withMaterialIndex(::std::int32_t materialIndex);
