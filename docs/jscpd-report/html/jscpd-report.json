@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2025-05-17T19:27:16.831Z",
+    "detectionDate": "2025-05-18T10:55:24.466Z",
     "formats": {
       "java": {
         "sources": {
@@ -953,14 +953,14 @@
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/UiTest.java": {
-            "lines": 271,
-            "tokens": 2186,
+            "lines": 284,
+            "tokens": 2288,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 8,
             "duplicatedTokens": 75,
-            "percentage": 2.95,
-            "percentageTokens": 3.43,
+            "percentage": 2.82,
+            "percentageTokens": 3.28,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -1062,14 +1062,14 @@
           }
         },
         "total": {
-          "lines": 10777,
-          "tokens": 76525,
+          "lines": 10790,
+          "tokens": 76627,
           "sources": 88,
           "clones": 61,
           "duplicatedLines": 572,
           "duplicatedTokens": 5387,
-          "percentage": 5.31,
-          "percentageTokens": 7.04,
+          "percentage": 5.3,
+          "percentageTokens": 7.03,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3272,8 +3272,8 @@
       }
     },
     "total": {
-      "lines": 30241,
-      "tokens": 234381,
+      "lines": 30254,
+      "tokens": 234483,
       "sources": 259,
       "clones": 118,
       "duplicatedLines": 1371,
@@ -5431,17 +5431,17 @@
       },
       "secondFile": {
         "name": "app/src/androidTest/java/puscas/mobilertapp/UiTest.java",
-        "start": 28,
-        "end": 35,
+        "start": 29,
+        "end": 36,
         "startLoc": {
-          "line": 28,
+          "line": 29,
           "column": 11,
-          "position": 224
+          "position": 235
         },
         "endLoc": {
-          "line": 35,
+          "line": 36,
           "column": 6,
-          "position": 298
+          "position": 309
         }
       }
     },

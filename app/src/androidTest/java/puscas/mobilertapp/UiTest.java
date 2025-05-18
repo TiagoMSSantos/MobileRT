@@ -11,6 +11,7 @@ import android.widget.NumberPicker;
 
 import androidx.annotation.NonNull;
 import androidx.test.espresso.Espresso;
+import androidx.test.espresso.PerformException;
 import androidx.test.espresso.action.ViewActions;
 import androidx.test.espresso.matcher.RootMatchers;
 import androidx.test.espresso.matcher.ViewMatchers;
@@ -34,6 +35,7 @@ import puscas.mobilertapp.constants.Shader;
 import puscas.mobilertapp.constants.State;
 import puscas.mobilertapp.utils.UtilsContext;
 import puscas.mobilertapp.utils.UtilsContextT;
+import puscas.mobilertapp.utils.UtilsLogging;
 import puscas.mobilertapp.utils.UtilsPickerT;
 import puscas.mobilertapp.utils.UtilsT;
 
@@ -151,8 +153,19 @@ public final class UiTest extends AbstractTest {
             .check((view, exception) -> {
                 UtilsT.rethrowException(exception);
                 assertPreviewCheckBox(view, !expectedValue);
-            })
-            .perform(ViewActions.click(InputDevice.SOURCE_TOUCHSCREEN, MotionEvent.BUTTON_PRIMARY))
+            });
+
+        while(true) {
+            try {
+                Espresso.onView(ViewMatchers.withId(viewId))
+                    .perform(ViewActions.click(InputDevice.SOURCE_TOUCHSCREEN, MotionEvent.BUTTON_PRIMARY));
+                break;
+            } catch (final PerformException ex) {
+                UtilsLogging.logThrowable(ex, "clickPreviewCheckBox");
+            }
+        }
+
+        Espresso.onView(ViewMatchers.withId(viewId))
             .perform(new ViewActionWait<>(10000, viewId, expectedValue))
             .check((view, exception) -> {
                 UtilsT.rethrowException(exception);
