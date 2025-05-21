@@ -55,8 +55,19 @@ namespace Components {
             const ::tinyobj::shape_t &shape,
             ::std::int32_t indexOffset) const;
 
-        const ::MobileRT::Texture& getTextureFromCache(
+        /**
+         * Helper method that gets a Texture from a cache passed by a parameter.
+         * If the cache does not have the texture, then it will create one and add it in it.
+         *
+         * @param texturesCache The cache for the textures.
+         * @param mutexCache    Mutex for the texture cache.
+         * @param filePath      The path to the directory of the texture file.
+         * @param texPath       The texture file name.
+         * @return The texture loaded.
+         */
+        static ::MobileRT::Texture getTextureFromCache(
             ::std::unordered_map<::std::string, ::MobileRT::Texture> *const texturesCache,
+            ::std::mutex *const mutexCache,
             const ::std::string &filePath,
             const ::std::string &texPath
         );
@@ -65,17 +76,27 @@ namespace Components {
         * Fill the scene with the loaded triangles.
         * <p>
         * This method is called by the fillScene method with multiple threads.
+        *
+        * @param threadId            The thread ID.
+        * @param numberOfThreads     Total number of threads.
+        * @param scene               The scene to fill.
+        * @param mutexScene          Mutex for the scene.
+        * @param createSamplerLambda A function to create a Sampler.
+        * @param filePath            The path to the scene files.
+        * @param texturesCache       The cache for the textures.
+        * @param mutexCache          Mutex for the texture cache.
         */
         void fillSceneThreadWork(::std::uint32_t threadId,
                                  ::std::uint32_t numberOfThreads,
                                  ::MobileRT::Scene *const scene,
+                                 ::std::mutex *const mutexScene,
                                  const ::std::function<::std::unique_ptr<::MobileRT::Sampler>()> &createSamplerLambda,
                                  const ::std::string &filePath,
                                  ::std::unordered_map<::std::string, ::MobileRT::Texture> *const texturesCache,
-                                 ::std::mutex *const mutex);
+                                 ::std::mutex *const mutexCache);
 
     public:
-        static const ::MobileRT::Texture& getTextureFromCache(
+        static ::MobileRT::Texture getTextureFromCache(
             ::std::unordered_map<::std::string, ::MobileRT::Texture> *const texturesCache,
             ::std::string &&textureBinary,
             long size,

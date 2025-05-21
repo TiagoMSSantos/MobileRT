@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2025-05-18T10:55:24.466Z",
+    "detectionDate": "2025-05-21T18:53:00.598Z",
     "formats": {
       "java": {
         "sources": {
@@ -1549,14 +1549,14 @@
             "newClones": 0
           },
           "app/Components/Loaders/OBJLoader.cpp": {
-            "lines": 552,
-            "tokens": 7605,
+            "lines": 533,
+            "tokens": 7477,
             "sources": 1,
-            "clones": 10,
-            "duplicatedLines": 110,
-            "duplicatedTokens": 1234,
-            "percentage": 19.93,
-            "percentageTokens": 16.23,
+            "clones": 8,
+            "duplicatedLines": 88,
+            "duplicatedTokens": 1088,
+            "percentage": 16.51,
+            "percentageTokens": 14.55,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -1874,14 +1874,14 @@
           }
         },
         "total": {
-          "lines": 6110,
-          "tokens": 60982,
+          "lines": 6091,
+          "tokens": 60854,
           "sources": 58,
-          "clones": 35,
-          "duplicatedLines": 353,
-          "duplicatedTokens": 5311,
-          "percentage": 5.78,
-          "percentageTokens": 8.71,
+          "clones": 34,
+          "duplicatedLines": 342,
+          "duplicatedTokens": 5238,
+          "percentage": 5.61,
+          "percentageTokens": 8.61,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2897,8 +2897,8 @@
             "newClones": 0
           },
           "app/Components/Loaders/OBJLoader.hpp": {
-            "lines": 78,
-            "tokens": 786,
+            "lines": 99,
+            "tokens": 809,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -3138,8 +3138,8 @@
           }
         },
         "total": {
-          "lines": 3409,
-          "tokens": 25260,
+          "lines": 3430,
+          "tokens": 25283,
           "sources": 47,
           "clones": 3,
           "duplicatedLines": 29,
@@ -3272,14 +3272,14 @@
       }
     },
     "total": {
-      "lines": 30254,
-      "tokens": 234483,
+      "lines": 30256,
+      "tokens": 234378,
       "sources": 259,
-      "clones": 118,
-      "duplicatedLines": 1371,
-      "duplicatedTokens": 13143,
-      "percentage": 4.53,
-      "percentageTokens": 5.61,
+      "clones": 117,
+      "duplicatedLines": 1360,
+      "duplicatedTokens": 13070,
+      "percentage": 4.49,
+      "percentageTokens": 5.58,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -6244,68 +6244,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 165,
-        "end": 171,
+        "start": 166,
+        "end": 172,
         "startLoc": {
-          "line": 165,
+          "line": 166,
           "column": 1,
-          "position": 1795
+          "position": 1815
         },
         "endLoc": {
-          "line": 171,
+          "line": 172,
           "column": 3,
-          "position": 1893
+          "position": 1913
         }
       },
       "secondFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 126,
-        "end": 133,
+        "start": 127,
+        "end": 134,
         "startLoc": {
-          "line": 126,
+          "line": 127,
           "column": 1,
-          "position": 1247
+          "position": 1267
         },
         "endLoc": {
-          "line": 133,
+          "line": 134,
           "column": 6,
-          "position": 1346
-        }
-      }
-    },
-    {
-      "format": "cpp",
-      "lines": 12,
-      "fragment": "d::pair<::std::unordered_map<::std::string, Texture>::iterator, bool> pairResult {texturesCache->emplace(::std::move(pair))};\n        LOG_INFO(\"Added texture \", texturePath, \" to the cache.\");\n        const Texture &res {::std::get<0>(pairResult)->second};\n        return res;\n    }\n\n    LOG_INFO(\"Get",
-      "tokens": 0,
-      "firstFile": {
-        "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 278,
-        "end": 289,
-        "startLoc": {
-          "line": 278,
-          "column": 12,
-          "position": 3163
-        },
-        "endLoc": {
-          "line": 289,
-          "column": 4,
-          "position": 3236
-        }
-      },
-      "secondFile": {
-        "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 246,
-        "end": 263,
-        "startLoc": {
-          "line": 246,
-          "column": 8,
-          "position": 2830
-        },
-        "endLoc": {
-          "line": 263,
-          "column": 4,
-          "position": 2903
+          "position": 1366
         }
       }
     },
@@ -6316,32 +6280,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 412,
-        "end": 426,
+        "start": 403,
+        "end": 417,
         "startLoc": {
-          "line": 412,
+          "line": 403,
           "column": 2,
-          "position": 5364
+          "position": 5329
         },
         "endLoc": {
-          "line": 426,
+          "line": 417,
           "column": 2,
-          "position": 5507
+          "position": 5472
         }
       },
       "secondFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 389,
-        "end": 403,
+        "start": 380,
+        "end": 394,
         "startLoc": {
-          "line": 389,
+          "line": 380,
           "column": 2,
-          "position": 5057
+          "position": 5022
         },
         "endLoc": {
-          "line": 403,
+          "line": 394,
           "column": 2,
-          "position": 5200
+          "position": 5165
         }
       }
     },
@@ -6352,68 +6316,68 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 456,
-        "end": 465,
+        "start": 447,
+        "end": 456,
         "startLoc": {
-          "line": 456,
+          "line": 447,
           "column": 21,
-          "position": 5942
+          "position": 5907
         },
         "endLoc": {
-          "line": 465,
+          "line": 456,
           "column": 2,
-          "position": 6045
+          "position": 6010
         }
       },
       "secondFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 412,
-        "end": 398,
+        "start": 403,
+        "end": 389,
         "startLoc": {
-          "line": 412,
+          "line": 403,
           "column": 25,
-          "position": 5358
+          "position": 5323
         },
         "endLoc": {
-          "line": 398,
+          "line": 389,
           "column": 2,
-          "position": 5154
+          "position": 5119
         }
       }
     },
     {
       "format": "cpp",
       "lines": 16,
-      "fragment": "readId, \" (\", numberOfThreads, \") Loading shape: \", shapeIndex, \" without texture, scene: \", filePath, \", shapeIndex: \", shapeIndex, \", vertex: \", vertex, \", face: \", face);\n                    {\n                        const ::std::lock_guard<::std::mutex> lock {*mutex};\n                        const auto itFoundMat {::std::find(scene->materials_.begin(), scene->materials_.end(), material)};\n                        if (itFoundMat != scene->materials_.cend()) {\n                            // If the material is already in the scene.\n                            materialIndex = static_cast<::std::int32_t> (itFoundMat - scene->materials_.cbegin());\n                        } else {\n                            // If the scene doesn't have material yet.\n                            materialIndex = static_cast<::std::int32_t> (scene->materials_.size());\n                            scene->materials_.emplace_back(::std::move(material));\n                        }\n          ",
+      "fragment": "readId, \" (\", numberOfThreads, \") Loading shape: \", shapeIndex, \" without texture, scene: \", filePath, \", shapeIndex: \", shapeIndex, \", vertex: \", vertex, \", face: \", face);\n                    {\n                        const ::std::lock_guard<::std::mutex> lock {*mutexScene};\n                        const auto itFoundMat {::std::find(scene->materials_.begin(), scene->materials_.end(), material)};\n                        if (itFoundMat != scene->materials_.cend()) {\n                            // If the material is already in the scene.\n                            materialIndex = static_cast<::std::int32_t> (itFoundMat - scene->materials_.cbegin());\n                        } else {\n                            // If the scene doesn't have material yet.\n                            materialIndex = static_cast<::std::int32_t> (scene->materials_.size());\n                            scene->materials_.emplace_back(::std::move(material));\n                        }\n          ",
       "tokens": 0,
       "firstFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 467,
-        "end": 482,
+        "start": 458,
+        "end": 473,
         "startLoc": {
-          "line": 467,
+          "line": 458,
           "column": 2,
-          "position": 6106
+          "position": 6071
         },
         "endLoc": {
-          "line": 482,
+          "line": 473,
           "column": 35,
-          "position": 6306
+          "position": 6271
         }
       },
       "secondFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 428,
-        "end": 443,
+        "start": 419,
+        "end": 434,
         "startLoc": {
-          "line": 428,
+          "line": 419,
           "column": 2,
-          "position": 5523
+          "position": 5488
         },
         "endLoc": {
-          "line": 443,
+          "line": 434,
           "column": 5,
-          "position": 5723
+          "position": 5688
         }
       }
     },

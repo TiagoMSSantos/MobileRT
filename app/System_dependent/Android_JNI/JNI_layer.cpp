@@ -520,11 +520,8 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
 
         const ::std::int32_t res {
             [&]() -> ::std::int32_t {
-                #if !defined(_WIN32) && !defined(__APPLE__)
-                    // Only catch SIGSEGV for Linux systems, since boost stacktrace doesn't work on Windows nor MacOS.
-                    LOG_INFO("Setting up SIGSEGV signal catch.");
-                    ::std::signal(SIGSEGV, ::MobileRT::signalHandler);
-                #endif
+                LOG_INFO("Setting up SIGSEGV signal catch.");
+                ::std::signal(SIGSEGV, ::MobileRT::signalHandler);
                 LOG_DEBUG("Acquiring lock");
                 const ::std::lock_guard<::std::mutex> lock {mutex_};
                 renderer_ = nullptr;
@@ -756,6 +753,8 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
 
         const ::std::function<void()> lambda {
             [=]() -> void {
+                LOG_INFO("Setting up SIGSEGV signal catch.");
+                ::std::signal(SIGSEGV, ::MobileRT::signalHandler);
                 ::std::chrono::duration<double> timeRendering {};
 
                 LOG_DEBUG("rtRenderIntoBitmap step 1");
