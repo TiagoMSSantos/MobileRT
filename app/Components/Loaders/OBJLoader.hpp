@@ -80,7 +80,9 @@ namespace Components {
         * @param threadId            The thread ID.
         * @param numberOfThreads     Total number of threads.
         * @param scene               The scene to fill.
-        * @param mutexScene          Mutex for the scene.
+        * @param mutexSceneTriangles Mutex for the triangles in the scene.
+        * @param mutexSceneMaterials Mutex for the materials in the scene.
+        * @param mutexSceneLights    Mutex for the lights in the scene.
         * @param createSamplerLambda A function to create a Sampler.
         * @param filePath            The path to the scene files.
         * @param texturesCache       The cache for the textures.
@@ -89,7 +91,9 @@ namespace Components {
         void fillSceneThreadWork(::std::uint32_t threadId,
                                  ::std::uint32_t numberOfThreads,
                                  ::MobileRT::Scene *const scene,
-                                 ::std::mutex *const mutexScene,
+                                 ::std::mutex *const mutexSceneTriangles,
+                                 ::std::mutex *const mutexSceneMaterials,
+                                 ::std::mutex *const mutexSceneLights,
                                  const ::std::function<::std::unique_ptr<::MobileRT::Sampler>()> &createSamplerLambda,
                                  const ::std::string &filePath,
                                  ::std::unordered_map<::std::string, ::MobileRT::Texture> *const texturesCache,

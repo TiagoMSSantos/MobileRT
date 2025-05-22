@@ -80,7 +80,9 @@ bool OBJLoader::fillScene(Scene *const scene,
     ::MobileRT::checkSystemError("Starting to fill scene.");
     filePath = filePath.substr(0, filePath.find_last_of('/')) + '/';
     LOG_INFO("FILLING SCENE '" + filePath, "' with ", this->numberTriangles_, " triangles in ", this->shapes_.size(), " shapes & ", this->materials_.size(), " materials");
-    ::std::mutex mutexScene {};
+    ::std::mutex mutexSceneTriangles {};
+    ::std::mutex mutexSceneMaterials {};
+    ::std::mutex mutexSceneLights {};
     ::std::mutex mutexCache {};
 
     const ::std::uint32_t numChildren {::std::thread::hardware_concurrency()};
@@ -92,9 +94,13 @@ bool OBJLoader::fillScene(Scene *const scene,
     threads.reserve(numChildren);
     LOG_INFO("Created mutex and it will fill the scene using ", numChildren + 1, " threads");
     for (::std::uint32_t i {}; i < numChildren; ++i) {
-        threads.emplace_back(&OBJLoader::fillSceneThreadWork, this, i, numChildren + 1, scene, &mutexScene, createSamplerLambda, filePath, texturesCache, &mutexCache);
+        threads.emplace_back(&OBJLoader::fillSceneThreadWork, this,
+            i, numChildren + 1, scene, &mutexSceneTriangles, &mutexSceneMaterials, &mutexSceneLights, createSamplerLambda, filePath, texturesCache, &mutexCache
+        );
     }
-    fillSceneThreadWork(numChildren, numChildren + 1, scene, &mutexScene, createSamplerLambda, filePath, texturesCache, &mutexCache);
+    fillSceneThreadWork(
+        numChildren, numChildren + 1, scene, &mutexSceneTriangles, &mutexSceneMaterials, &mutexSceneLights, createSamplerLambda, filePath, texturesCache, &mutexCache
+    );
     for (::std::uint32_t i {}; i < numChildren; ++i) {
         ::std::thread &thread {threads[i]};
         LOG_INFO("Waiting for thread '", i, "' with id '", thread.get_id(), "'.");
@@ -256,9 +262,7 @@ Texture OBJLoader::getTextureFromCache(
     const ::std::string &filePath,
     const ::std::string &texPath
 ) {
-    mutexCache->lock();
     if (texturesCache->find(texPath) == texturesCache->cend()) {// If the texture is not in the cache.
-        mutexCache->unlock();
         const ::std::string texturePath {filePath + texPath};
         LOG_INFO("Loading texture: ", texturePath);
         Texture texture {Texture::createTexture(texturePath)};
@@ -269,8 +273,6 @@ Texture OBJLoader::getTextureFromCache(
         LOG_INFO("Added texture ", texturePath, " to the cache.");
         Texture res {::std::get<0>(pairResult)->second};
         return res;
-    } else {
-        mutexCache->unlock();
     }
 
     LOG_INFO("Getting texture ", texPath, " from cache.");
@@ -280,7 +282,9 @@ Texture OBJLoader::getTextureFromCache(
 void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
                                     const ::std::uint32_t numberOfThreads,
                                     Scene *const scene,
-                                    ::std::mutex *const mutexScene,
+                                    ::std::mutex *const mutexSceneTriangles,
+                                    ::std::mutex *const mutexSceneMaterials,
+                                    ::std::mutex *const mutexSceneLights,
                                     const ::std::function<::std::unique_ptr<Sampler>()> &createSamplerLambda,
                                     const ::std::string &filePath,
                                     ::std::unordered_map<::std::string, ::MobileRT::Texture> *const texturesCache,
@@ -418,7 +422,7 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
 
                         ::std::int32_t materialIndex {-1};
                         {
-                            const ::std::lock_guard<::std::mutex> lock {*mutexScene};
+                            const ::std::lock_guard<::std::mutex> lock {*mutexSceneMaterials};
                             const auto itFoundMat {::std::find(scene->materials_.begin(), scene->materials_.end(), material)};
                             if (itFoundMat != scene->materials_.cend()) {
                                 // If the material is already in the scene.
@@ -457,7 +461,7 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
                     ::std::int32_t materialIndex {-1};
                     LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Loading shape: ", shapeIndex, " without texture, scene: ", filePath, ", shapeIndex: ", shapeIndex, ", vertex: ", vertex, ", face: ", face);
                     {
-                        const ::std::lock_guard<::std::mutex> lock {*mutexScene};
+                        const ::std::lock_guard<::std::mutex> lock {*mutexSceneMaterials};
                         const auto itFoundMat {::std::find(scene->materials_.begin(), scene->materials_.end(), material)};
                         if (itFoundMat != scene->materials_.cend()) {
                             // If the material is already in the scene.
@@ -475,43 +479,41 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
             indexOffset += faceVertices;
             LOG_DEBUG("Thread ", threadId, " (", numberOfThreads, ") Triangle: ", triangles.size(), ", scene '", filePath, "', shapeIndex: ", shapeIndex, ", face: ", face, ", shapeIndex: ", shapeIndex);
 
-            if (triangles.size() > 0 && triangles.size() % 100000 == 0) {
+            if (!triangles.empty() && triangles.size() % 100000 == 0) {
                 LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Triangle ", triangles.size(), " position at ", triangles.back(), ", scene '", filePath, "', shapeIndex: ", shapeIndex, ", face: ", face);
-            } else if (lights.size() > 0 && lights.size() % 1000 == 0) {
+            } else if (!lights.empty() && lights.size() % 1000 == 0) {
                 LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Light ", lights.size(), " position at: ", lights.back()->getPosition(), ", radiance: ", lights.back()->radiance_.Le_, ", scene '", filePath, "', shapeIndex: ", shapeIndex, ", face: ", face);
             }
         } // The number of vertices per face.
     } // Loop over shapes.
 
     LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Local triangles: ", triangles.size(), ", total: ", scene->triangles_.size(), ", scene '", filePath, "'.");
-    if (triangles.size() > 0) {
+    if (!triangles.empty()) {
         LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Local triangles: ", triangles.size(), ", total: ", scene->triangles_.size(), ", last triangle: ", triangles.back(), ", scene '", filePath, "'.");
     }
     LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Local lights: ", lights.size(), ", total: ", scene->lights_.size(), ", scene '", filePath, "'.");
-    if (lights.size() > 0) {
+    if (!lights.empty()) {
         const ::std::unique_ptr<Light> &light {lights.back()};
         const ::glm::vec3 &lightPos {light->getPosition()};
         const ::glm::vec3 &lightRadiance {light->radiance_.Le_};
         LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Local lights: ", lights.size(), ", total: ", scene->lights_.size(), ", last light: ", lightPos, ", radiance: ", lightRadiance, ", scene '", filePath, "'.");
     }
 
-    if (triangles.size() > 0) {
-        const ::std::lock_guard<::std::mutex> lock {*mutexScene};
-        LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Reserving memory to add new triangles.");
+    LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Reserving memory to add new triangles if necessary.");
+    if (!triangles.empty()) {
+        const ::std::lock_guard<::std::mutex> lock {*mutexSceneTriangles};
         scene->triangles_.reserve(scene->triangles_.size() + triangles.size());
-        LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Moving new triangles to the scene.");
         ::std::move(::std::begin(triangles), ::std::end(triangles), ::std::back_inserter(scene->triangles_));
-        LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Moved new triangles to the scene.");
     }
+    LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Moved any new triangles to the scene.");
 
-    if (lights.size() > 0) {
-        const ::std::lock_guard<::std::mutex> lock {*mutexScene};
-        LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Reserving memory to add new lights.");
+    LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Reserving memory to add new lights.");
+    if (!lights.empty()) {
+        const ::std::lock_guard<::std::mutex> lock {*mutexSceneLights};
         scene->lights_.reserve(scene->lights_.size() + lights.size());
-        LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Moving new lights to the scene.");
         ::std::move(::std::begin(lights), ::std::end(lights), ::std::back_inserter(scene->lights_));
-        LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Added new lights to the scene.");
     }
+    LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Added any new lights to the scene.");
 
     LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") finished.");
 }
