@@ -5,14 +5,15 @@
 #include <functional>
 #include <string>
 
+// Not available in Windows nor MacOS.
 #if !defined(_WIN32) && !defined(__APPLE__)
-    // Not available in Windows nor MacOS.
     #include <sys/sysinfo.h>
     #include <unistd.h>
 #endif
 
 namespace MobileRT {
 
+    // Only catch signals for Linux systems, since boost stacktrace doesn't work on Windows nor MacOS.
     #if !defined(_WIN32) && !defined(__APPLE__)
         [[noreturn]] void signalHandler(int signum) {
             // Check signal.h to identify the signal.
@@ -268,7 +269,10 @@ namespace MobileRT {
                 #endif
             };
             LOG_ERROR("ErrorMessage: ", errorMessage);
-            LOG_ERROR("Backtrace:\n", ::boost::stacktrace::stacktrace());
+            // Only print stack trace for Linux systems, since boost stacktrace doesn't work on Windows nor MacOS.
+            #if !defined(_WIN32) && !defined(__APPLE__)
+                LOG_ERROR("Backtrace:\n", ::boost::stacktrace::stacktrace());
+            #endif
             printFreeMemory();
 
             // Necessary to reset the error code so the Android Instrumentation
@@ -282,11 +286,11 @@ namespace MobileRT {
     }
 
     /**
-     * Prints the current memory that is free related to the available one.
+     * Logs the current memory that is free related to the available one.
      */
     void printFreeMemory() {
+        // Only check available memory for Linux systems, since it doesn't work on Windows nor MacOS.
         #if !defined(_WIN32) && !defined(__APPLE__)
-            // Only check available memory for Linux systems, since it doesn't work on Windows nor MacOS.
             // Check: https://blog.kowalczyk.info/article/j/guide-to-predefined-macros-in-c-compilers-gcc-clang-msvc-etc..html
             // Linux and Linux-derived           __linux__
             // Android                           __ANDROID__ (implies __linux__)

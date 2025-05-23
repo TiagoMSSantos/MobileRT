@@ -3,8 +3,8 @@
 #include <iostream>
 
 ::std::int32_t main (::std::int32_t argc, char **argv) {
+    // Only catch SIGSEGV for Linux systems, since boost stacktrace doesn't work on Windows nor MacOS.
     #if !defined(_WIN32) && !defined(__APPLE__)
-        // Only catch SIGSEGV for Linux systems, since boost stacktrace doesn't work on Windows nor MacOS.
         ::std::cout << "Setting up SIGSEGV signal catch." << ::std::endl;
         ::std::signal(SIGSEGV, ::MobileRT::signalHandler);
     #endif

@@ -31,6 +31,7 @@
 
 namespace MobileRT {
 
+// Only catch signals for Linux systems, since boost stacktrace doesn't work on Windows nor MacOS.
 #if !defined(_WIN32) && !defined(__APPLE__)
     [[noreturn]] void signalHandler(int signum);
 #endif
