@@ -267,7 +267,8 @@ namespace MobileRT {
                     ::std::strerror(errno)
                 #endif
             };
-            LOG_ERROR("errorMessage: ", errorMessage);
+            LOG_ERROR("ErrorMessage: ", errorMessage);
+            LOG_ERROR("Backtrace:\n", ::boost::stacktrace::stacktrace());
             printFreeMemory();
 
             // Necessary to reset the error code so the Android Instrumentation

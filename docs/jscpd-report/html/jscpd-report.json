@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2025-05-22T07:29:34.502Z",
+    "detectionDate": "2025-05-23T05:37:39.863Z",
     "formats": {
       "java": {
         "sources": {
@@ -1309,8 +1309,8 @@
             "newClones": 0
           },
           "app/MobileRT/Utils/Utils.cpp": {
-            "lines": 297,
-            "tokens": 2301,
+            "lines": 298,
+            "tokens": 2318,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -1729,8 +1729,8 @@
             "newClones": 0
           },
           "app/MobileRT/Texture.cpp": {
-            "lines": 167,
-            "tokens": 1510,
+            "lines": 164,
+            "tokens": 1468,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -1874,8 +1874,8 @@
           }
         },
         "total": {
-          "lines": 6093,
-          "tokens": 60835,
+          "lines": 6091,
+          "tokens": 60810,
           "sources": 58,
           "clones": 34,
           "duplicatedLines": 342,
@@ -3272,8 +3272,8 @@
       }
     },
     "total": {
-      "lines": 30262,
-      "tokens": 234383,
+      "lines": 30260,
+      "tokens": 234358,
       "sources": 259,
       "clones": 117,
       "duplicatedLines": 1360,

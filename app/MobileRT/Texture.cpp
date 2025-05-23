@@ -74,13 +74,10 @@ Texture Texture::createTexture(const ::std::string &texturePath) {
     ::std::int32_t width {}, height {}, channels {};
     LOG_INFO("Loading Texture from: ", texturePath);
     ::MobileRT::checkSystemError(("Loading Texture from: " + texturePath).c_str());
-    LOG_INFO("Calling stbi_info for: ", texturePath.c_str());
     const int textureInfo {stbi_info(texturePath.c_str(), &width, &height, &channels)};
-    LOG_INFO("Called stbi_info for: ", texturePath.c_str(), ", finished with: ", textureInfo);
+    LOG_DEBUG("Called stbi_info for: ", texturePath.c_str(), ", finished with: ", textureInfo);
     throwExceptionIfInvalidTexture(textureInfo, texturePath);
-    LOG_INFO("Calling stbi_load for: ", texturePath.c_str());
     ::std::uint8_t *const textureData {stbi_load(texturePath.c_str(), &width, &height, &channels, 0)};
-    LOG_INFO("Called stbi_load for: ", texturePath.c_str());
     return doCreateTexture(textureData, width, height, channels, texturePath);
 }
 
@@ -128,7 +125,7 @@ Texture Texture::doCreateTexture(::std::uint8_t *const textureData,
     ::std::shared_ptr<::std::uint8_t> pointer {textureData, [=](::std::uint8_t *const internalData) {
         LOG_INFO("Deleting texture: ", texturePath);
         stbi_image_free(internalData);
-        LOG_INFO("Deleted texture: ", texturePath);
+        LOG_DEBUG("Deleted texture: ", texturePath);
     }};
     LOG_INFO("Creating Texture: ", texturePath);
     Texture texture {pointer, width, height, channels};
