@@ -15,7 +15,7 @@ namespace MobileRT {
 
     static ::std::array<ErrorType, 55> getErrorType() {
         ::std::array<ErrorType, 55> errorType = {{
-            {0, "SUCCESS" , "Success"},              // 0
+            {0, "SUCCESS" , "Success"},                                       // 0
             // Errors from errno-base.h
             NewError(EPERM, "Operation not permitted"),                       // 1
             NewError(ENOENT, "No such file or directory"),                    // 2

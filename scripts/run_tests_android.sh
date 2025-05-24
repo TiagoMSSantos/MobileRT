@@ -466,8 +466,14 @@ startCopyingLogcatToFile() {
   echo 'Clear logcat';
   # -b all -> Unable to open log device '/dev/log/all': No such file or directory
   # -b crash -> Unable to open log device '/dev/log/crash': No such file or directory
-  callAdbShellCommandUntilSuccess adb shell 'logcat -b main -b system -b radio -b events -c; echo ::$?::';
-  callAdbShellCommandUntilSuccess adb shell 'logcat -c; echo ::$?::';
+  if [ "${androidApi}" -gt 15 ]; then
+    bufferSize='-G 10M';
+  else
+    # Android API 15 doesn't support the `-G` flag to change logcat buffer size.
+    bufferSize='';
+  fi
+  callAdbShellCommandUntilSuccess adb shell 'logcat '"${bufferSize}"' -b main -b system -b radio -b events -c; echo ::$?::';
+  callAdbShellCommandUntilSuccess adb shell 'logcat '"${bufferSize}"' -c; echo ::$?::';
 
   echo 'Copy realtime logcat to file';
   adb logcat -v threadtime "*":V | tee "${reports_path}"/logcat_"${type}".log 2>&1 &

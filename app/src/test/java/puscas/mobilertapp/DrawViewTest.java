@@ -52,7 +52,6 @@ public final class DrawViewTest {
      */
     @Test
     public void testGetActivity() {
-        MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
         MemberModifier.suppress(MemberModifier.method(MainRenderer.class, "setBitmap"));
 
         final ContextWrapper contextWrapperMocked = EasyMock.mock(ContextWrapper.class);
@@ -87,7 +86,6 @@ public final class DrawViewTest {
      */
     @Test
     public void testGetActivityFailure() {
-        MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
         MemberModifier.suppress(MemberModifier.method(MainRenderer.class, "setBitmap"));
 
         final DrawView drawViewMocked = EasyMock.partialMockBuilder(DrawView.class)
@@ -118,7 +116,6 @@ public final class DrawViewTest {
      */
     @Test
     public void testSetViewAndActivityManager() {
-        MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
         MemberModifier.suppress(MemberModifier.method(MainRenderer.class, "setBitmap"));
 
         final DrawView drawViewMocked = EasyMock.partialMockBuilder(DrawView.class)
@@ -151,7 +148,6 @@ public final class DrawViewTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testRenderSceneWithLowMemory() throws Exception {
-        MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
         MemberModifier.suppress(MemberModifier.method(MainActivity.class, "showUiMessage"));
 
         final DrawView drawView = EasyMock.partialMockBuilder(DrawView.class)
@@ -231,7 +227,6 @@ public final class DrawViewTest {
      */
     @Test
     public void testWaitLastTaskInterrupt() throws ExecutionException, InterruptedException, TimeoutException {
-        MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
         MemberModifier.suppress(MemberModifier.method(MainRenderer.class, "setBitmap"));
 
         final DrawView drawViewMocked = EasyMock.partialMockBuilder(DrawView.class)
@@ -260,7 +255,6 @@ public final class DrawViewTest {
      */
     @Test
     public void testOnWindowFocusChanged() {
-        MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
         MemberModifier.suppress(MemberModifier.method(MainRenderer.class, "setBitmap"));
 
         final DrawView drawViewMocked = EasyMock.partialMockBuilder(DrawView.class)

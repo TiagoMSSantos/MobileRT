@@ -240,7 +240,6 @@ public final class MyEglContextFactoryTest {
      */
     @Test
     public void testInvalidCreateContext() {
-        MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
         MemberModifier.suppress(MemberModifier.method(MainRenderer.class, "setBitmap"));
 
         final Context context = new MainActivity();
@@ -267,7 +266,6 @@ public final class MyEglContextFactoryTest {
      */
     @Test
     public void testExceptionWhenCreatingContext() {
-        MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
         MemberModifier.suppress(MemberModifier.method(MainRenderer.class, "setBitmap"));
 
         final Context context = new MainActivity();
@@ -292,7 +290,6 @@ public final class MyEglContextFactoryTest {
      */
     @Test
     public void testCreateContext() {
-        MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
         MemberModifier.suppress(MemberModifier.method(MainRenderer.class, "setBitmap"));
 
         final Context context = new MainActivity();
@@ -318,7 +315,6 @@ public final class MyEglContextFactoryTest {
      */
     @Test
     public void testCreateNewContext() {
-        MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
         MemberModifier.suppress(MemberModifier.method(MainRenderer.class, "setBitmap"));
 
         final Context context = new MainActivity();
@@ -357,7 +353,6 @@ public final class MyEglContextFactoryTest {
      */
     @Test
     public void testInvalidDestroyContext() {
-        MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
         MemberModifier.suppress(MemberModifier.method(MainRenderer.class, "setBitmap"));
 
         final Context context = new MainActivity();
@@ -386,7 +381,6 @@ public final class MyEglContextFactoryTest {
      */
     @Test
     public void testDestroyContext() {
-        MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
         final DrawView drawViewMocked = EasyMock.mock(DrawView.class);
         EasyMock.expect(drawViewMocked.isChangingConfigs())
             .andReturn(true)

@@ -309,7 +309,6 @@ class RenderTask private constructor(
         printText()
         this.requestRender.run()
         stopTask()
-        MainActivity.resetErrno()
         this.finishRender.run()
         this.buttonRender.setText(R.string.render)
         val message = "onPostExecute" + ConstantsMethods.FINISHED

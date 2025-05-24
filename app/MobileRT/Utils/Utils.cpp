@@ -246,34 +246,14 @@ namespace MobileRT {
      */
     void checkSystemError(const char *const message) {
         // Ignore the following errors, because they are set by some Android C++ functions:
-        // * Invalid argument
         // * Resource unavailable, try again
-        if (errno != 0 && errno != EWOULDBLOCK && errno != EINVAL) {// if there is an error
-            LOG_ERROR("ERROR 1: ", errno);
-            const ErrorType currentError {getErrorCode()};
-            LOG_ERROR("errorCode: ", currentError.codeText);
-
-            #if defined(_MSVC_LANG)
-                const ::std::size_t errmsglen {256};
-                char errmsg[errmsglen];
-                ::strerror_s(errmsg, errmsglen, errno);
-            #endif
-
-            const ::std::string errorMessage {::std::string(message) + '\n' + currentError.codeText + '\n' +
-                currentError.description + '\n' +
-                ::std::string("errno (") + ::MobileRT::std::to_string(errno) + "): " +
-                #if defined(_MSVC_LANG)
-                    errmsg
-                #else
-                    ::std::strerror(errno)
-                #endif
-            };
+        // * Invalid argument
+        // * Socket operation on non-socket
+        if (errno != 0 && errno != EWOULDBLOCK && errno != EINVAL && errno != ENOTSOCK) {// if there is an error
+            const ::std::string errorMessage {getErrorMessage(message)};
             LOG_ERROR("ErrorMessage: ", errorMessage);
-            // Only print stack trace for Linux systems, since boost stacktrace doesn't work on Windows nor MacOS.
-            #if !defined(_WIN32) && !defined(__APPLE__)
-                LOG_ERROR("Backtrace:\n", ::boost::stacktrace::stacktrace());
-            #endif
-            printFreeMemory();
+            logStackTrace();
+            logFreeMemory();
 
             // Necessary to reset the error code so the Android Instrumentation
             // Tests that test failures, like trying to read an OBJ that
@@ -288,7 +268,7 @@ namespace MobileRT {
     /**
      * Logs the current memory that is free related to the available one.
      */
-    void printFreeMemory() {
+    void logFreeMemory() {
         // Only check available memory for Linux systems, since it doesn't work on Windows nor MacOS.
         #if !defined(_WIN32) && !defined(__APPLE__)
             // Check: https://blog.kowalczyk.info/article/j/guide-to-predefined-macros-in-c-compilers-gcc-clang-msvc-etc..html
@@ -303,9 +283,45 @@ namespace MobileRT {
             // AsmJS                             __asmjs__
             // Fuschia                           __Fuchsia__
             const int bytesInMegabyte {1048576};
-            LOG_INFO("Free memory: ",  (sysconf(_SC_AVPHYS_PAGES) * sysconf(_SC_PAGESIZE)) / bytesInMegabyte,
+            LOG_ERROR("Free memory: ",  (sysconf(_SC_AVPHYS_PAGES) * sysconf(_SC_PAGESIZE)) / bytesInMegabyte,
                 " MB [Available memory: ",  (sysconf(_SC_PHYS_PAGES) * sysconf(_SC_PAGESIZE)) / bytesInMegabyte, " MB]");
         #endif
+    }
+
+    /**
+     * Logs the current stack trace as error.
+     */
+    void logStackTrace() {
+        // Only log stack trace for Linux systems, since boost stacktrace doesn't work on Windows nor MacOS.
+        #if !defined(_WIN32) && !defined(__APPLE__)
+            LOG_ERROR("Stack trace:\n", ::boost::stacktrace::stacktrace());
+        #endif
+    }
+
+    /**
+     * Gets the current errno error.
+     * 
+     * @param message Additional message to be logged.
+     */
+    ::std::string getErrorMessage(const char *const message) {
+        #if defined(_MSVC_LANG)
+            const ::std::size_t errmsglen {256};
+            char errmsg[errmsglen];
+            ::strerror_s(errmsg, errmsglen, errno);
+        #endif
+        const ErrorType currentError {getErrorCode()};
+        const ::std::string errorMessage {
+            ::std::string(message) + '\n' +
+            ::std::string("errorCode: ") + currentError.codeText + '\n' +
+            currentError.description + '\n' +
+            ::std::string("errno (") + ::MobileRT::std::to_string(errno) + "): " +
+            #if defined(_MSVC_LANG)
+                errmsg
+            #else
+                ::std::strerror(errno)
+            #endif
+        };
+        return errorMessage;
     }
 
 }//namespace MobileRT

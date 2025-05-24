@@ -127,8 +127,10 @@ static void handleException(JNIEnv *const env,
 
 extern "C"
 ::std::int32_t JNI_OnLoad(JavaVM *const jvm, void * /*reserved*/) {
-    // Reset errno to avoid "errno EINVAL (22): Invalid argument".
-    errno = 0;
+    if (errno == ENOENT) {
+        // Ignore no such file or directory
+        errno = 0;
+    }
     MobileRT::checkSystemError("JNI_OnLoad start");
     LOG_DEBUG("JNI_OnLoad");
     javaVM_.reset(jvm);
@@ -431,6 +433,11 @@ void Java_puscas_mobilertapp_DrawView_rtStopRender(
     jobject /*thiz*/,
     jboolean wait
 ) {
+    if (errno == ENOENT || errno == EBADF) {
+        // Ignore no such file or directory
+        // Ignore bad file descriptor
+        errno = 0;
+    }
     MobileRT::checkSystemError("rtStopRender start");
     {
         LOG_DEBUG("Will get lock");
@@ -718,6 +725,10 @@ void Java_puscas_mobilertapp_MainRenderer_rtFinishRender(
     JNIEnv *env,
     jobject /*thiz*/
 ) {
+    if (errno == EBADF) {
+        // Ignore bad file descriptor
+        errno = 0;
+    }
     MobileRT::checkSystemError("rtFinishRender start");
 
     {
@@ -745,6 +756,10 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
     jobject localBitmap,
     jint nThreads
 ) {
+    if (errno == ENOENT) {
+        // Ignore no such file or directory
+        errno = 0;
+    }
     MobileRT::checkSystemError("rtRenderIntoBitmap start");
     LOG_DEBUG("rtRenderIntoBitmap");
     LOG_DEBUG("nThreads = ", nThreads);
@@ -770,10 +785,6 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
                 {
                     MobileRT::checkSystemError("rtRenderIntoBitmap step 2");
                     const jint result {javaVM_->AttachCurrentThread(const_cast<JNIEnv **> (&env), nullptr)};
-                    if (errno == EINVAL) {
-                        // Ignore invalid argument (necessary for Android API 16)
-                        errno = 0;
-                    }
                     MobileRT::checkSystemError("rtRenderIntoBitmap step 3");
                     ASSERT(result == JNI_OK, "Couldn't attach current thread to JVM.");
                     static_cast<void> (result);
@@ -839,10 +850,6 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
                     {
                         MobileRT::checkSystemError("rtRenderIntoBitmap step 6");
                         const jint result {javaVM_->AttachCurrentThread(const_cast<JNIEnv **> (&env), nullptr)};
-                        if (errno == EINVAL) {
-                            // Ignore invalid argument (necessary for Android API 16)
-                            errno = 0;
-                        }
                         MobileRT::checkSystemError("rtRenderIntoBitmap step 7");
                         ASSERT(result == JNI_OK, "Couldn't attach current thread to JVM.");
                         static_cast<void> (result);
@@ -881,10 +888,6 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
 
         MobileRT::checkSystemError("rtRenderIntoBitmap creating thread");
         thread_ = ::MobileRT::std::make_unique<::std::thread>(lambda);
-        if (errno == EINVAL) {
-            // Ignore invalid argument (necessary for Android API 16)
-            errno = 0;
-        }
         MobileRT::checkSystemError("rtRenderIntoBitmap detaching thread");
         thread_->detach();
 
@@ -905,6 +908,12 @@ extern "C"
     JNIEnv *env,
     jobject /*thiz*/
 ) {
+    if (errno == EBADF || errno == ETIMEDOUT || errno == EEXIST) {
+        // Ignore bad file descriptor
+        // Ignore connection timed out
+        // Ignore file exists
+        errno = 0;
+    }
     MobileRT::checkSystemError("rtGetState start");
 
     const ::std::int32_t res {static_cast<::std::int32_t> (state_.load())};
@@ -920,7 +929,7 @@ float Java_puscas_mobilertapp_RenderTask_rtGetFps(
 ) {
     if (errno == ETIMEDOUT || errno == EBADF) {
         // Ignore connection timed out
-        // Ignore bad file descriptor (necessary for Android API 24)
+        // Ignore bad file descriptor
         errno = 0;
     }
     MobileRT::checkSystemError("rtGetFps start");
@@ -946,7 +955,7 @@ extern "C"
     jobject /*thiz*/
 ) {
     if (errno == EBADF) {
-        // Ignore bad file descriptor (necessary for Android API 24)
+        // Ignore bad file descriptor
         errno = 0;
     }
     MobileRT::checkSystemError("rtGetSample start");
@@ -968,6 +977,10 @@ extern "C"
     jobject /*thiz*/,
     jint size
 ) {
+    if (errno == ENOENT) {
+        // Ignore no such file or directory
+        errno = 0;
+    }
     MobileRT::checkSystemError("rtResize start");
 
     const ::std::int32_t res{
@@ -981,17 +994,6 @@ extern "C"
 }
 
 extern "C"
-void Java_puscas_mobilertapp_MainActivity_resetErrno(
-    JNIEnv *env,
-    jclass /*thiz*/
-) {
-    errno = 0;
-    MobileRT::checkSystemError("resetErrno start");
-    env->ExceptionClear();
-    MobileRT::checkSystemError("resetErrno finish");
-}
-
-extern "C"
 JNIEXPORT
 void JNICALL Java_puscas_mobilertapp_MainActivity_readFile(
         JNIEnv *env,
@@ -1000,11 +1002,11 @@ void JNICALL Java_puscas_mobilertapp_MainActivity_readFile(
         jlong fileSize,
         jstring jFilePath
 ) {
-    if (errno == EACCES || errno == ENOTSOCK || errno == EPERM || errno == ENOENT) {
-        // Ignore permission denied before reading the file.
-        // Ignore socket operation on non-socket.
-        // Ignore operation not permitted.
-        // Ignore no such file or directory.
+    if (errno == EACCES || errno == EPERM || errno == ENOENT || errno == EEXIST) {
+        // Ignore permission denied before reading the file
+        // Ignore operation not permitted
+        // Ignore no such file or directory
+        // Ignore file exists
         errno = 0;
     }
     jboolean isCopy {JNI_FALSE};
@@ -1039,7 +1041,7 @@ void JNICALL Java_puscas_mobilertapp_MainActivity_readFile(
     ASSERT(fileSize > 0, "File size not valid.");
 
     if (file != nullptr) {
-        LOG_DEBUG("Will read a scene file.");
+        LOG_INFO("Will read a scene file.");
         file->resize(static_cast<::std::size_t> (fileSize));
         MobileRT::checkSystemError("Before read file.");
         const long remainingLength {::read(fileDescriptor, &(*file)[0], static_cast<unsigned int>(fileSize))};
@@ -1048,7 +1050,7 @@ void JNICALL Java_puscas_mobilertapp_MainActivity_readFile(
         LOG_DEBUG("Read a scene file.");
         static_cast<void>(remainingLength);
     } else {
-        LOG_DEBUG("Will read a texture file.");
+        LOG_INFO("Will read a texture file.");
         ::std::string texture {};
         texture.resize(static_cast<::std::size_t> (fileSize));
         MobileRT::checkSystemError("Before read file.");

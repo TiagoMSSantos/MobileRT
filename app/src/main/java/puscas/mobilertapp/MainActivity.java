@@ -363,7 +363,6 @@ public final class MainActivity extends Activity {
         super.onDestroy();
         logger.info(ConstantsMethods.ON_DESTROY);
 
-        MainActivity.resetErrno(); // Avoid 'bad file descriptor' error.
         this.drawView.onDetachedFromWindow();
         this.drawView.setVisibility(View.INVISIBLE);
 
@@ -573,11 +572,6 @@ public final class MainActivity extends Activity {
      *     parameter and is a multiple of the number of tiles.
      */
     private native int rtResize(int size);
-
-    /**
-     * Resets the C `errno` error code to 0.
-     */
-    public static native void resetErrno();
 
     /**
      * Reads a file from a file descriptor natively.
@@ -925,7 +919,6 @@ public final class MainActivity extends Activity {
                 .map(value -> (value + 1.0) * 0.1)
                 .map(value -> value * value)
                 .mapToObj(value -> {
-                    resetErrno(); // Necessary to avoid 'EWOULDBLOCK'.
                     final int width = rtResize((int) Math.round(widthView * value));
                     final int height = rtResize((int) Math.round(heightView * value));
                     return String.valueOf(width) + 'x' + height;

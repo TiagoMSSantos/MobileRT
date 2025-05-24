@@ -146,8 +146,6 @@ public final class MainRendererTest {
      */
     @Test
     public void testSetBitmap() {
-        MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
-
         final Bitmap bitmapMocked = EasyMock.createNiceMock(Bitmap.class);
         EasyMock.expect(bitmapMocked.isRecycled())
             .andReturn(true)
@@ -420,7 +418,6 @@ public final class MainRendererTest {
                 .anyTimes();
 
             PowerMock.replayAll();
-            MemberModifier.suppress(MemberModifier.method(MainActivity.class, "resetErrno"));
             mainRenderer = PowerMock.createNicePartialMockAndInvokeDefaultConstructor(MainRenderer.class, "initPreviewArrays", "rtRenderIntoBitmap");
 
             PowerMock.expectPrivate(mainRenderer, "initPreviewArrays").andVoid().anyTimes();

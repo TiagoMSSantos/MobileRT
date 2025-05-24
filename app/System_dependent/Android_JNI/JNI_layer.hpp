@@ -81,13 +81,6 @@ jint JNICALL Java_puscas_mobilertapp_MainActivity_rtResize(
 
 extern "C"
 JNIEXPORT
-void JNICALL Java_puscas_mobilertapp_MainActivity_resetErrno(
-    JNIEnv *env,
-    jclass /*thiz*/
-);
-
-extern "C"
-JNIEXPORT
 void JNICALL Java_puscas_mobilertapp_MainActivity_readFile(
         JNIEnv *env,
         jobject thiz,

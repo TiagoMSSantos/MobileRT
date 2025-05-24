@@ -381,27 +381,23 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
                     if (::MobileRT::hasPositiveValue(emission)) {
                         LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Loading shape: ", shapeIndex, " the material is a light source with ID: ", materialId, ", scene: ", filePath, ", shapeIndex: ", shapeIndex, ", vertex: ", vertex, ", face: ", face);
                         // If the primitive is a light source.
-                        const Triangle &triangle {
+                        Triangle triangle {
                             Triangle::Builder(
                                 ::std::get<0> (vertices), ::std::get<1> (vertices), ::std::get<2> (vertices)
                             )
                             .withNormals(
-                                ::std::get<0>(normal),
-                                ::std::get<1>(normal),
-                                ::std::get<2>(normal)
+                                ::std::get<0>(normal), ::std::get<1>(normal), ::std::get<2>(normal)
                             )
                             .withTexCoords(
-                                ::std::get<0>(texCoord),
-                                ::std::get<1>(texCoord),
-                                ::std::get<2>(texCoord)
+                                ::std::get<0>(texCoord), ::std::get<1>(texCoord), ::std::get<2>(texCoord)
                             )
                             .build()
                         };
-                        {
-                            LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Adding light of shape: ", shapeIndex, ", with material ID: ", materialId, ", scene: ", filePath, ", shapeIndex: ", shapeIndex, ", vertex: ", vertex, ", face: ", face);
-                            lights.emplace_back(::MobileRT::std::make_unique<AreaLight>(material, createSamplerLambda(), triangle));
-                            LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Added light of shape: ", shapeIndex, ", with material ID: ", materialId, ", scene: ", filePath, ", shapeIndex: ", shapeIndex, ", vertex: ", vertex, ", face: ", face);
-                        }
+                        LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Creating light of shape: ", shapeIndex, ", with material ID: ", materialId, ", scene: ", filePath, ", shapeIndex: ", shapeIndex, ", vertex: ", vertex, ", face: ", face);
+                        ::std::unique_ptr<AreaLight> areaLight {::MobileRT::std::make_unique<AreaLight> (::std::move(material), createSamplerLambda(), ::std::move(triangle))};
+                        LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Adding light of shape: ", shapeIndex, ", with material ID: ", materialId, ", scene: ", filePath, ", shapeIndex: ", shapeIndex, ", vertex: ", vertex, ", face: ", face);
+                        lights.emplace_back(::std::move(areaLight));
+                        LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Added light of shape: ", shapeIndex, ", with material ID: ", materialId, ", scene: ", filePath, ", shapeIndex: ", shapeIndex, ", vertex: ", vertex, ", face: ", face);
                     } else {
                         // If it is a primitive.
                         Triangle::Builder builder {
@@ -409,14 +405,10 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
                                 ::std::get<0> (vertices), ::std::get<1> (vertices), ::std::get<2> (vertices)
                             )
                             .withNormals(
-                                ::std::get<0>(normal),
-                                ::std::get<1>(normal),
-                                ::std::get<2>(normal)
+                                ::std::get<0>(normal), ::std::get<1>(normal), ::std::get<2>(normal)
                             )
                             .withTexCoords(
-                                ::std::get<0>(texCoord),
-                                ::std::get<1>(texCoord),
-                                ::std::get<2>(texCoord)
+                                ::std::get<0>(texCoord), ::std::get<1>(texCoord), ::std::get<2>(texCoord)
                             )
                         };
 
@@ -453,9 +445,7 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
                             ::std::get<0> (vertices), ::std::get<1> (vertices), ::std::get<2> (vertices)
                         )
                         .withNormals(
-                            ::std::get<0>(normal),
-                            ::std::get<1>(normal),
-                            ::std::get<2>(normal)
+                            ::std::get<0>(normal), ::std::get<1>(normal), ::std::get<2>(normal)
                         )
                     };
                     ::std::int32_t materialIndex {-1};
@@ -499,7 +489,7 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
         LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Local lights: ", lights.size(), ", total: ", scene->lights_.size(), ", last light: ", lightPos, ", radiance: ", lightRadiance, ", scene '", filePath, "'.");
     }
 
-    LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Reserving memory to add new triangles if necessary.");
+    LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Reserving memory to add '", triangles.size(), "' new triangles.");
     if (!triangles.empty()) {
         const ::std::lock_guard<::std::mutex> lock {*mutexSceneTriangles};
         scene->triangles_.reserve(scene->triangles_.size() + triangles.size());
@@ -507,7 +497,7 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
     }
     LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Moved any new triangles to the scene.");
 
-    LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Reserving memory to add new lights.");
+    LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Reserving memory to add '", lights.size(), "' new lights.");
     if (!lights.empty()) {
         const ::std::lock_guard<::std::mutex> lock {*mutexSceneLights};
         scene->lights_.reserve(scene->lights_.size() + lights.size());

@@ -232,7 +232,6 @@ public final class DrawView extends GLSurfaceView {
     synchronized void renderScene(@NonNull final Config config) {
         logger.info(ConstantsMethods.RENDER_SCENE);
 
-        MainActivity.resetErrno();
         stopDrawing();
         waitLastTask();
         rtStartRender(false);
@@ -330,7 +329,6 @@ public final class DrawView extends GLSurfaceView {
     void createScene(final Config config) throws LowMemoryException {
         logger.info("createScene");
 
-        MainActivity.resetErrno();
         final int numPrimitives = this.renderer.rtInitialize(config);
         if (numPrimitives <= -1) {
             throw new FailureException("Couldn't load the scene.");
@@ -359,7 +357,6 @@ public final class DrawView extends GLSurfaceView {
         final Activity activity = getActivity();
         this.changingConfigs = activity.isChangingConfigurations();
 
-        MainActivity.resetErrno();
         stopDrawing();
         setVisibility(View.GONE);
 
@@ -408,7 +405,6 @@ public final class DrawView extends GLSurfaceView {
     void finishRenderer() {
         logger.info("finishRenderer");
 
-        MainActivity.resetErrno();
         this.renderer.rtFinishRender();
         this.renderer.freeArrays();
     }
@@ -422,7 +418,6 @@ public final class DrawView extends GLSurfaceView {
      */
     State getRayTracerState() {
         logger.info("getRayTracerState");
-        MainActivity.resetErrno();
 
         return this.renderer.getState();
     }

@@ -134,7 +134,11 @@ namespace MobileRT {
 
     void checkSystemError(const char *message);
 
-    void printFreeMemory();
+    ::std::string getErrorMessage(const char *message);
+
+    void logFreeMemory();
+
+    void logStackTrace();
 
    /**
     * Helper method which adds a parameter into the ostringstream.
@@ -225,8 +229,8 @@ namespace MobileRT {
             const ::std::uint32_t index {static_cast<::std::uint32_t> (::std::distance(values->begin(), itValues))};
             *itValues = ::MobileRT::haltonSequence(index, 2);
         }
-        static ::std::random_device randomDevice {};
-        static ::std::mt19937 generator {randomDevice()};
+        thread_local static ::std::random_device randomDevice {};
+        thread_local static ::std::mt19937 generator {randomDevice()};
         ::std::shuffle(values->begin(), values->end(), generator);
     }
 
@@ -241,9 +245,9 @@ namespace MobileRT {
       */
     template<typename T, ::std::size_t S>
     void fillArrayWithMersenneTwister(::std::array<T, S> *const values) {
-        static ::std::uniform_real_distribution<float> uniformDist {0.0F, 1.0F};
-        static ::std::random_device randomDevice {};
-        static ::std::mt19937 generator {randomDevice()};
+        thread_local static ::std::uniform_real_distribution<float> uniformDist {0.0F, 1.0F};
+        thread_local static ::std::random_device randomDevice {};
+        thread_local static ::std::mt19937 generator {randomDevice()};
         ::std::generate(values->begin(), values->end(), []() {return uniformDist(generator);});
     }
 
@@ -258,9 +262,9 @@ namespace MobileRT {
       */
     template<typename T, ::std::size_t S>
     void fillArrayWithPCG(::std::array<T, S> *const values) {
-        static ::pcg_extras::seed_seq_from<::std::random_device> seedSource {};
-        static ::pcg32 generator(seedSource);
-        static ::std::uniform_real_distribution<float> uniformDist {0.0F, 1.0F};
+        thread_local static ::pcg_extras::seed_seq_from<::std::random_device> seedSource {};
+        thread_local static ::pcg32 generator(seedSource);
+        thread_local static ::std::uniform_real_distribution<float> uniformDist {0.0F, 1.0F};
         ::std::generate(values->begin(), values->end(), []() {return uniformDist(generator);});
     }
 
@@ -319,6 +323,11 @@ namespace MobileRT {
         do { \
             if (!(condition)) { \
                 LOG_ERROR("Assertion '", #condition, "': ",  __VA_ARGS__); \
+                if (errno != 0) { \
+                    LOG_ERROR("ErrorMessage: ", ::MobileRT::getErrorMessage("Assertion failed")); \
+                    ::MobileRT::logStackTrace(); \
+                    ::MobileRT::logFreeMemory(); \
+                } \
                 BOOST_ASSERT_MSG(condition, ::MobileRT::convertToString(__VA_ARGS__).c_str()); \
             } \
         } while (false)

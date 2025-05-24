@@ -70,10 +70,6 @@ void Renderer::renderFrame(::std::int32_t *const bitmap, const ::std::int32_t nu
     for (::std::int32_t i {}; i < numChildren; ++i) {
         threads.emplace_back(&Renderer::renderScene, this, bitmap, i);
     }
-    if (errno == EINVAL) {
-        // Ignore invalid argument (necessary for Android API 16)
-        errno = 0;
-    }
     MobileRT::checkSystemError("Created render threads");
     renderScene(bitmap, numChildren);
     MobileRT::checkSystemError("Rendered scene");

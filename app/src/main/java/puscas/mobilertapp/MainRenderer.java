@@ -413,7 +413,6 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
             logger.info("Waited for the onDraw to start the RT engine!!!");
         }
 
-        MainActivity.resetErrno();
         return Optional.ofNullable(this.renderTask)
             .map(task -> State.values()[task.rtGetState()])
             .orElse(State.IDLE);
@@ -650,10 +649,6 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         this.configResolutionView = configResolutionView;
 
         this.bitmap = Bitmap.createBitmap(configResolution.getWidth(), configResolution.getHeight(), Bitmap.Config.ARGB_8888);
-        // For some reason, only from Android 4.2+, the method `Bitmap.createBitmap` sets the
-        // `errno` to `ENOMEM` which means that the system didn't have enough memory to do some
-        // operation, so we set the `errno` back to 0 here.
-        MainActivity.resetErrno();
         this.bitmap.eraseColor(Color.BLACK);
         validateBitmap(this.bitmap);
 
@@ -957,7 +952,6 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
                     this.bitmap = renderSceneIntoBitmap();
                 }
 
-                MainActivity.resetErrno();
                 rtRenderIntoBitmap(this.bitmap, this.numThreads);
             } catch (final Exception ex) {
                 UtilsLogging.logThrowable(ex, "MainRenderer#onDrawFrame");
