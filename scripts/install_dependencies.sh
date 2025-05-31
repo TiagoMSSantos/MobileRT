@@ -94,7 +94,7 @@ install_dependencies() {
 install_dependencies_debian() {
   sudo rm /etc/apt/sources.list.d/microsoft-prod.list || true;
   echo 'Updating APT repositories.';
-  sudo apt-get update -y --fix-missing;
+  sudo apt-get update -y --fix-missing || true;
   echo 'Installing APT dependencies.';
   sudo apt-get install --no-install-recommends -y \
     xorg-dev \

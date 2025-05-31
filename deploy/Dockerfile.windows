@@ -54,7 +54,6 @@ ENV \
   CXX="g++" \
   CC="gcc" \
   CXXFLAGS="-O3 -std=c++20" \
-  CMAKE_CXX_STANDARD="20" \
   BUILD_TYPE="${BUILD_TYPE}" \
   CL="/MP"
 

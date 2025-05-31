@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2025-05-31T13:13:56.441Z",
+    "detectionDate": "2025-05-31T13:46:22.704Z",
     "formats": {
       "java": {
         "sources": {
@@ -2290,7 +2290,7 @@
           },
           "scripts/install_dependencies.sh": {
             "lines": 554,
-            "tokens": 4396,
+            "tokens": 4400,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 42,
@@ -2363,7 +2363,7 @@
         },
         "total": {
           "lines": 4419,
-          "tokens": 29704,
+          "tokens": 29708,
           "sources": 13,
           "clones": 12,
           "duplicatedLines": 263,
@@ -3285,7 +3285,7 @@
     },
     "total": {
       "lines": 30343,
-      "tokens": 235737,
+      "tokens": 235741,
       "sources": 260,
       "clones": 117,
       "duplicatedLines": 1347,
