@@ -84,7 +84,7 @@ jobs:
         id: download-gradle-artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success() && !startsWith(inputs.host_os, 'windows')
-        uses: dawidd6/action-download-artifact@v9
+        uses: dawidd6/action-download-artifact@v10
         continue-on-error: true
         with:
           # Check available parameters in: https://github.com/dawidd6/action-download-artifact/blob/master/action.yml
