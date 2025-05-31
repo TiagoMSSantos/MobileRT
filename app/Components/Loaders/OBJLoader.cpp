@@ -468,7 +468,7 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
             indexOffset += faceVertices;
             LOG_DEBUG("Thread ", threadId, " (", numberOfThreads, ") Triangle: ", triangles.size(), ", scene '", filePath, "', shapeIndex: ", shapeIndex, ", face: ", face, ", shapeIndex: ", shapeIndex);
 
-            if (!triangles.empty() && triangles.size() % 100'000 == 0) {
+            if (!triangles.empty() && triangles.size() % 10'000 == 0) {
                 LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Triangle ", triangles.size(), " position at ", triangles.back(), ", scene '", filePath, "', shapeIndex: ", shapeIndex, ", face: ", face);
             } else if (!lights.empty() && lights.size() % 1'000 == 0) {
                 LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Light ", lights.size(), " position at: ", lights.back()->getPosition(), ", radiance: ", lights.back()->radiance_.Le_, ", scene '", filePath, "', shapeIndex: ", shapeIndex, ", face: ", face);
