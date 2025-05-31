@@ -70,7 +70,7 @@ if echo "${1}" | grep -q 'osx'; then
   MOBILERT_TIMEOUT='45';
 elif echo "${1}" | grep -q 'windows'; then
   # Increase timeout for Windows docker image.
-  MOBILERT_TIMEOUT='300';
+  MOBILERT_TIMEOUT='600';
 else
   MOBILERT_TIMEOUT='15';
 fi
