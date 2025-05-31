@@ -93,7 +93,9 @@ install_dependencies() {
 
 install_dependencies_debian() {
   sudo rm /etc/apt/sources.list.d/microsoft-prod.list || true;
-  sudo apt-get update -y;
+  echo 'Updating APT repositories.';
+  sudo apt-get update -y --fix-missing;
+  echo 'Installing APT dependencies.';
   sudo apt-get install --no-install-recommends -y \
     xorg-dev \
     x11-xserver-utils \
