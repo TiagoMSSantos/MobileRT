@@ -235,13 +235,13 @@ endif()
 if( CMAKE_HOST_WIN32 MATCHES "1" AND CMAKE_BUILD_TOOL MATCHES "MSBuild" AND "cxx_std_20" IN_LIST CMAKE_CXX_COMPILE_FEATURES )
   # Windows with C++20 support
   set( CMAKE_CXX_STANDARD "20" CACHE STRING "CUSTOM" FORCE )
-  message( STATUS "Setting /std:c++20" )
-  set( COMMON_FLAGS "${COMMON_FLAGS} /std:c++20" )
+  message( STATUS "Setting /std:c++20 /Zc:__cplusplus" )
+  set( COMMON_FLAGS "${COMMON_FLAGS} /std:c++20 /Zc:__cplusplus" )
 elseif( CMAKE_HOST_WIN32 MATCHES "1" AND CMAKE_BUILD_TOOL MATCHES "MSBuild" )
   # Windows with C++17 support
   set( CMAKE_CXX_STANDARD "17" CACHE STRING "CUSTOM" FORCE )
-  message( STATUS "Setting /std:c++17" )
-  set( COMMON_FLAGS "${COMMON_FLAGS} /std:c++17" )
+  message( STATUS "Setting /std:c++17 /Zc:__cplusplus" )
+  set( COMMON_FLAGS "${COMMON_FLAGS} /std:c++17 /Zc:__cplusplus" )
 endif()
 
 if( "${CMAKE_GENERATOR}" MATCHES "Visual Studio" )
