@@ -329,7 +329,7 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
 
                 // If it contains material.
                 if (materialId >= 0) {
-                    LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Loading shape: ", shapeIndex, " loading material: ", materialId, ", scene: ", filePath, ", shapeIndex: ", shapeIndex, ", vertex: ", vertex, ", face: ", face);
+                    LOG_DEBUG("Thread ", threadId, " (", numberOfThreads, ") Loading shape: ", shapeIndex, " loading material: ", materialId, ", scene: ", filePath, ", shapeIndex: ", shapeIndex, ", vertex: ", vertex, ", face: ", face);
                     const auto itMaterial {this->materials_.cbegin() + static_cast<::std::int32_t> (materialId)};
                     const ::tinyobj::material_t &mat {*itMaterial};
                     const ::glm::vec3 &diffuse {::MobileRT::toVec3(mat.diffuse)};
