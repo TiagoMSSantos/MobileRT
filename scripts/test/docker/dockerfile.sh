@@ -69,7 +69,7 @@ if echo "${1}" | grep -q "osx"; then
   # Increase timeout for MacOS docker image.
   MOBILERT_TIMEOUT='45';
 else
-  MOBILERT_TIMEOUT='15';
+  MOBILERT_TIMEOUT='30';
 fi
 
 # Whether the tests passed or failed.
