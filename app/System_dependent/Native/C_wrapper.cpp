@@ -239,7 +239,7 @@ static void work_thread(::MobileRT::Config &config) {
         LOG_INFO("width = ", config.width);
         LOG_INFO("height = ", config.height);
 
-        LOG_INFO("Total Millions rays per second = ", (static_cast<double> (castedRays) / renderingTime) / 1000000L);
+        LOG_INFO("Total Millions rays per second = ", (static_cast<double> (castedRays) / renderingTime) / 1'000'000L);
     } catch (const ::std::bad_alloc &badAlloc) {
         LOG_ERROR("badAlloc: ", badAlloc.what());
     } catch (const ::std::exception &exception) {

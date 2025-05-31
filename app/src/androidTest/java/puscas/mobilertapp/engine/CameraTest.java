@@ -21,7 +21,7 @@ public final class CameraTest extends AbstractTest {
      */
     @Test
     public void testRenderSceneWithOrthographic() throws TimeoutException {
-        assertRenderScene(Scene.SPHERES, Shader.WHITTED, Accelerator.NAIVE, 1, 1, false, false);
+        assertRenderScene(Scene.SPHERES, Shader.WHITTED, Accelerator.NAIVE, 20, 1, false, false);
     }
 
     /**
@@ -31,7 +31,7 @@ public final class CameraTest extends AbstractTest {
      */
     @Test
     public void testRenderSceneWithPerspective() throws TimeoutException {
-        assertRenderScene(Scene.CORNELL, Shader.WHITTED, Accelerator.NAIVE, 1, 1, false, false);
+        assertRenderScene(Scene.CORNELL, Shader.WHITTED, Accelerator.NAIVE, 20, 1, false, false);
     }
 
 }

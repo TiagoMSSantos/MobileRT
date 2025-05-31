@@ -165,7 +165,6 @@ add_subdirectory( googletest )
 # Add Link Time Optimization again.
 set( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -flto=full" )
 
-
 # This work via conan but not for all environments.
 target_include_directories( MobileRT SYSTEM PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/stb" )
 

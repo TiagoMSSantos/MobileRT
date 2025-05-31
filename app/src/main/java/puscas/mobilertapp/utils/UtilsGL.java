@@ -177,7 +177,7 @@ public final class UtilsGL {
         final int numTextures = 1;
         final int[] textureHandle = new int[numTextures];
         run(() -> GLES20.glGenTextures(numTextures, textureHandle, 0));
-        if (textureHandle[0] == 0) {
+        if (textureHandle[0] <= 0) {
             final String msg = "Error loading texture.";
             throw new FailureException(msg);
         }

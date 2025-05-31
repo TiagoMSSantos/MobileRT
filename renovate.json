@@ -586,7 +586,7 @@
       "allowedVersions": "!/beta/"
     },
     {
-      "groupName": "Update GoogleTest to a version that supports C++17",
+      "groupName": "Update GoogleTest to a version that supports C++20",
       "enabled": true,
       "matchDepNames": [
         "google/googletest"

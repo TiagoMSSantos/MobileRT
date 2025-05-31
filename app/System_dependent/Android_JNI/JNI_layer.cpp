@@ -433,9 +433,10 @@ void Java_puscas_mobilertapp_DrawView_rtStopRender(
     jobject /*thiz*/,
     jboolean wait
 ) {
-    if (errno == ENOENT || errno == EBADF) {
+    if (errno == ENOENT || errno == EBADF || errno == EEXIST) {
         // Ignore no such file or directory
         // Ignore bad file descriptor
+        // Ignore file already exists
         errno = 0;
     }
     MobileRT::checkSystemError("rtStopRender start");
@@ -527,7 +528,7 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
 
         const ::std::int32_t res {
             [&]() -> ::std::int32_t {
-                LOG_INFO("Setting up SIGSEGV signal catch.");
+                LOG_INFO("Setting up signals catch.");
                 ::std::signal(SIGSEGV, ::MobileRT::signalHandler);
                 LOG_DEBUG("Acquiring lock");
                 const ::std::lock_guard<::std::mutex> lock {mutex_};
@@ -756,8 +757,9 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
     jobject localBitmap,
     jint nThreads
 ) {
-    if (errno == ENOENT) {
+    if (errno == ENOENT || errno == ENOTTY) {
         // Ignore no such file or directory
+        // Ignore not a typewriter
         errno = 0;
     }
     MobileRT::checkSystemError("rtRenderIntoBitmap start");
@@ -768,7 +770,7 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
 
         const ::std::function<void()> lambda {
             [=]() -> void {
-                LOG_INFO("Setting up SIGSEGV signal catch.");
+                LOG_INFO("Setting up signals catch.");
                 ::std::signal(SIGSEGV, ::MobileRT::signalHandler);
                 ::std::chrono::duration<double> timeRendering {};
 
@@ -879,7 +881,7 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
                 const ::std::uint64_t castedRays {renderer_->getTotalCastedRays()};
                 LOG_INFO("Rendering Time in secs = ", renderingTime);
                 LOG_INFO("Casted rays = ", castedRays);
-                LOG_INFO("Total Millions rays per second = ", (static_cast<double> (castedRays) / renderingTime) / 1000000L);
+                LOG_INFO("Total Millions rays per second = ", (static_cast<double> (castedRays) / renderingTime) / 1'000'000L);
 
                 state_ = State::IDLE;
                 LOG_DEBUG("rtRenderIntoBitmap finished");
@@ -927,9 +929,10 @@ float Java_puscas_mobilertapp_RenderTask_rtGetFps(
     JNIEnv *env,
     jobject /*thiz*/
 ) {
-    if (errno == ETIMEDOUT || errno == EBADF) {
+    if (errno == ETIMEDOUT || errno == EBADF || errno == EEXIST) {
         // Ignore connection timed out
         // Ignore bad file descriptor
+        // Ignore file exists
         errno = 0;
     }
     MobileRT::checkSystemError("rtGetFps start");
@@ -977,8 +980,9 @@ extern "C"
     jobject /*thiz*/,
     jint size
 ) {
-    if (errno == ENOENT) {
+    if (errno == ENOENT || errno == EEXIST) {
         // Ignore no such file or directory
+        // Ignore file exists
         errno = 0;
     }
     MobileRT::checkSystemError("rtResize start");

@@ -3,10 +3,11 @@
 #include <iostream>
 
 ::std::int32_t main (::std::int32_t argc, char **argv) {
-    // Only catch SIGSEGV for Linux systems, since boost stacktrace doesn't work on Windows nor MacOS.
+    // Only catch signals for Linux systems, since boost stacktrace doesn't work on Windows nor MacOS.
     #if !defined(_WIN32) && !defined(__APPLE__)
-        ::std::cout << "Setting up SIGSEGV signal catch." << ::std::endl;
+        ::std::cout << "Setting up signals catch." << ::std::endl;
         ::std::signal(SIGSEGV, ::MobileRT::signalHandler);
+        ::std::signal(SIGKILL, ::MobileRT::signalHandler);
     #endif
 
     ::std::cout << "Starting unit tests." << ::std::endl;
@@ -14,11 +15,11 @@
     ::std::cout << "Initialized GoogleTest." << ::std::endl;
     const ::std::int32_t res {RUN_ALL_TESTS()};
     ::std::cout << "Executed unit tests." << ::std::endl;
-    if (::testing::UnitTest::GetInstance()->test_to_run_count() == 0) {
+    if (::testing::UnitTest::GetInstance()->test_to_run_count() <= 0) {
         ::std::cerr << "No test was executed." << ::std::endl;
         return 1;
     }
-    if (::testing::UnitTest::GetInstance()->successful_test_count() == 0) {
+    if (::testing::UnitTest::GetInstance()->successful_test_count() <= 0) {
         ::std::cerr << "No test passed." << ::std::endl;
         return 1;
     }

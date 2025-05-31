@@ -15,10 +15,12 @@ namespace MobileRT {
 
     // Only catch signals for Linux systems, since boost stacktrace doesn't work on Windows nor MacOS.
     #if !defined(_WIN32) && !defined(__APPLE__)
-        [[noreturn]] void signalHandler(int signum) {
+        [[noreturn]] void signalHandler(const int signum) {
             // Check signal.h to identify the signal.
-            LOG_ERROR("Segmentation fault (signal ", signum, ") captured!");
-            LOG_ERROR("Backtrace:\n", ::boost::stacktrace::stacktrace());
+            LOG_ERROR("Caught signal ", signum);
+            LOG_ERROR("ErrorMessage: ", getErrorMessage("Signal handler called"));
+            logStackTrace();
+            logFreeMemory();
             ::std::exit(EXIT_FAILURE);
         }
     #endif

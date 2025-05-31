@@ -216,8 +216,7 @@ OBJLoader::triple<::glm::vec2, ::glm::vec2, ::glm::vec2> OBJLoader::normalizeTex
         };
     } else {
         // Normalize the texture coordinates to be between [0, 1]
-        // LOG_DEBUG("Normalizing texture coordinates: ", ::std::get<0>(texCoord), ", ", ::std::get<1>(texCoord), ", ", ::std::get<2>(texCoord));
-        LOG_INFO("Normalizing the texture coordinates to be between [0, 1]");
+        LOG_INFO("Normalizing texture coordinates: ", ::std::get<0>(texCoord), ", ", ::std::get<1>(texCoord), ", ", ::std::get<2>(texCoord));
         return triple<::glm::vec2, ::glm::vec2, ::glm::vec2> {
             ::MobileRT::normalize(::std::get<0>(texCoord)),
             ::MobileRT::normalize(::std::get<1>(texCoord)),
@@ -295,7 +294,7 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
 
     // Loop over shapes.
     for (::std::uint32_t shapeIndex {threadId}; shapeIndex < shapesSize; shapeIndex += numberOfThreads) {
-        LOG_DEBUG("Thread ", threadId, " (", numberOfThreads, ") filling scene '", filePath, "'.");
+        LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") filling scene '", filePath, "'.");
         const auto itShape {this->shapes_.cbegin() + static_cast<::std::int32_t> (shapeIndex)};
         const ::tinyobj::shape_t &shape {*itShape};
 
@@ -330,7 +329,7 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
 
                 // If it contains material.
                 if (materialId >= 0) {
-                    LOG_DEBUG("Thread ", threadId, " (", numberOfThreads, ") Loading shape: ", shapeIndex, " loading material: ", materialId, ", scene: ", filePath, ", shapeIndex: ", shapeIndex, ", vertex: ", vertex, ", face: ", face);
+                    LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Loading shape: ", shapeIndex, " loading material: ", materialId, ", scene: ", filePath, ", shapeIndex: ", shapeIndex, ", vertex: ", vertex, ", face: ", face);
                     const auto itMaterial {this->materials_.cbegin() + static_cast<::std::int32_t> (materialId)};
                     const ::tinyobj::material_t &mat {*itMaterial};
                     const ::glm::vec3 &diffuse {::MobileRT::toVec3(mat.diffuse)};
@@ -467,11 +466,11 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
             } // Loop over vertices in the face.
 
             indexOffset += faceVertices;
-            LOG_DEBUG("Thread ", threadId, " (", numberOfThreads, ") Triangle: ", triangles.size(), ", scene '", filePath, "', shapeIndex: ", shapeIndex, ", face: ", face, ", shapeIndex: ", shapeIndex);
+            LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Triangle: ", triangles.size(), ", scene '", filePath, "', shapeIndex: ", shapeIndex, ", face: ", face, ", shapeIndex: ", shapeIndex);
 
-            if (!triangles.empty() && triangles.size() % 100000 == 0) {
+            if (!triangles.empty() && triangles.size() % 100'000 == 0) {
                 LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Triangle ", triangles.size(), " position at ", triangles.back(), ", scene '", filePath, "', shapeIndex: ", shapeIndex, ", face: ", face);
-            } else if (!lights.empty() && lights.size() % 1000 == 0) {
+            } else if (!lights.empty() && lights.size() % 1'000 == 0) {
                 LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Light ", lights.size(), " position at: ", lights.back()->getPosition(), ", radiance: ", lights.back()->radiance_.Le_, ", scene '", filePath, "', shapeIndex: ", shapeIndex, ", face: ", face);
             }
         } // The number of vertices per face.

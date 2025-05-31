@@ -79,7 +79,7 @@ The docker image is in docker hub:
 
 It is also possible to clone this repository and compile this ray tracer by
 yourself.
-To compile it, it is essential to install cmake and have a C++17 compiler.
+To compile it, it is essential to install cmake and have a C++20 compiler.
 It is also needed the [Qt4 or Qt5](https://www.qt.io/) library and the
 [git](https://git-scm.com/) control system to get the code from the repository.
 

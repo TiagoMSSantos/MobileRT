@@ -79,7 +79,7 @@ public final class UtilsShader {
                                  @NonNull final String source) {
         logger.info("loadShader");
         final int shader = UtilsGL.run(() -> GLES20.glCreateShader(shaderType));
-        if (shader == 0) {
+        if (shader <= 0) {
             logger.info("loadShader error 1");
             final int glError = GLES20.glGetError();
             final String msgError = GLUtils.getEGLErrorString(glError);
@@ -91,7 +91,7 @@ public final class UtilsShader {
         UtilsGL.run(() -> GLES20.glCompileShader(shader));
         final int[] compiled = new int[1];
         UtilsGL.run(() -> GLES20.glGetShaderiv(shader, GLES20.GL_COMPILE_STATUS, compiled, 0));
-        if (compiled[0] == 0) {
+        if (compiled[0] <= 0) {
             logger.info("loadShader error 2");
             final int glError = GLES20.glGetError();
             final String informationLog = UtilsGL.run(() -> GLES20.glGetShaderInfoLog(shader));

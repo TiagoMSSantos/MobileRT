@@ -21,9 +21,9 @@ MainWindow::MainWindow(QWidget *parent) :
     m_ui->graphicsView->setScene(m_graphicsScene);
     m_ui->graphicsView->show();
 
-    // Only catch SIGSEGV for Linux systems, since boost stacktrace doesn't work on Windows nor MacOS.
+    // Only catch signals for Linux systems, since boost stacktrace doesn't work on Windows nor MacOS.
     #if !defined(_WIN32) && !defined(__APPLE__)
-        ::std::cout << "Setting up SIGSEGV signal catch." << ::std::endl;
+        ::std::cout << "Setting up signals catch." << ::std::endl;
         ::std::signal(SIGSEGV, ::MobileRT::signalHandler);
     #endif
 }
@@ -69,7 +69,7 @@ void MainWindow::restart() {
 
     m_timer = new QTimer(this);
     connect(m_timer, SIGNAL(timeout()), this, SLOT(update_image()));
-    m_timer->start(1000);
+    m_timer->start(1'000);
 
     this->resize(m_config.width + 2, m_config.height + 70);
     m_ui->graphicsView->resize(m_config.width + 2, m_config.height + 2);
@@ -96,7 +96,7 @@ void MainWindow::setImage(const ::MobileRT::Config &config, const bool async) {
 
     m_timer = new QTimer(this);
     connect(m_timer, SIGNAL(timeout()), this, SLOT(update_image()));
-    m_timer->start(1000);
+    m_timer->start(1'000);
 
     this->resize(m_config.width + 2, m_config.height + 70);
     m_ui->graphicsView->resize(m_config.width + 2, m_config.height + 2);

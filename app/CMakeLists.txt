@@ -38,13 +38,12 @@ message( STATUS "Adding custom default flags for all third party projects." )
 
 message( STATUS "Setting default compiler flags." )
 set( ANDROID_COMPILER_FLAGS "" CACHE STRING "CUSTOM" FORCE )
-set( CMAKE_CXX_STANDARD "17" CACHE STRING "CUSTOM" FORCE )
 
 if( NOT "${CMAKE_GENERATOR}" MATCHES "Visual Studio" )
-    # PIC: Position Independent Code
-    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -Bsymbolic -Bsymbolic-functions" CACHE STRING "CUSTOM" FORCE )
-    set( CMAKE_SHARED_LINKER_FLAGS "-fPIC" CACHE STRING "CUSTOM" FORCE )
-    set( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fPIC" CACHE STRING "CUSTOM" FORCE )
+  # PIC: Position Independent Code
+  set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -Bsymbolic -Bsymbolic-functions" CACHE STRING "CUSTOM" FORCE )
+  set( CMAKE_SHARED_LINKER_FLAGS "-fPIC" CACHE STRING "CUSTOM" FORCE )
+  set( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fPIC" CACHE STRING "CUSTOM" FORCE )
 endif()
 # _GLIBCXX_DEBUG: activate debug mode and all the assertions
 set( CMAKE_CXX_FLAGS_DEBUG "-D_GLIBCXX_DEBUG -D_GLIBCXX_SANITIZE_VECTOR" CACHE STRING "CUSTOM" FORCE )
@@ -200,7 +199,7 @@ if( NOT CMAKE_GENERATOR MATCHES "Visual Studio" )
   set( COMMON_LINKER_FLAGS_DEBUG "${COMMON_LINKER_FLAGS_DEBUG} -O0 -g3" )
   set( COMMON_LINKER_FLAGS_RELEASE "${COMMON_LINKER_FLAGS_RELEASE} -O3" )
 else()
-  set( COMMON_FLAGS "${COMMON_FLAGS} /std:c17 /fastfail /sdl /Wall" )
+  set( COMMON_FLAGS "${COMMON_FLAGS} /std:c20 /fastfail /sdl /Wall" )
   set( COMMON_FLAGS_DEBUG "${COMMON_FLAGS_DEBUG} /Od /DEBUG" )
   set( COMMON_FLAGS_RELEASE "${COMMON_FLAGS_RELEASE} /O2 /Ot" )
   set( COMMON_LINKER_FLAGS "${COMMON_LINKER_FLAGS}" )
@@ -217,15 +216,38 @@ endif()
 ###############################################################################
 ###############################################################################
 
-message( STATUS "Use C++17 in all variants." )
-if( CMAKE_HOST_WIN32 MATCHES "1" AND ( CMAKE_CXX_COMPILER MATCHES "clang" OR CMAKE_CXX_COMPILER MATCHES "g[++]") AND CMAKE_BUILD_TOOL MATCHES "MSBuild" )
-  set( COMMON_FLAGS "${COMMON_FLAGS} /std=c++17" )
-elseif( "${CMAKE_GENERATOR}" MATCHES "Visual Studio" )
+unset( COMPILER_SUPPORTS_FLAG CACHE )
+CHECK_CXX_COMPILER_FLAG( "-std=c++20" COMPILER_SUPPORTS_FLAG )
+if( ( NOT DEFINED ANDROID_ABI AND COMPILER_SUPPORTS_FLAG AND "cxx_std_20" IN_LIST CMAKE_CXX_COMPILE_FEATURES ) OR
+( DEFINED ANDROID_ABI AND COMPILER_SUPPORTS_FLAG AND "cxx_std_20" IN_LIST CMAKE_CXX_COMPILE_FEATURES AND NOT CMAKE_ANDROID_NDK MATCHES "/ndk/23.2.8568313" ) )
+  # Unix based OS with C++20 support
+  message( STATUS "Setting -std=c++20" )
+  set( CMAKE_CXX_STANDARD "20" CACHE STRING "CUSTOM" FORCE )
+  set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20" CACHE STRING "CUSTOM" FORCE )
+  set( COMMON_LINKER_FLAGS "${COMMON_LINKER_FLAGS} -std=c++20" )
+elseif( NOT CMAKE_BUILD_TOOL MATCHES "MSBuild" AND "cxx_std_17" IN_LIST CMAKE_CXX_COMPILE_FEATURES )
+  # Unix based with C++17 support
+  set( CMAKE_CXX_STANDARD "17" CACHE STRING "CUSTOM" FORCE )
+  message( STATUS "Setting -std=c++17" )
+  set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17" CACHE STRING "CUSTOM" FORCE )
+  set( COMMON_LINKER_FLAGS "${COMMON_LINKER_FLAGS} -std=c++17" )
+endif()
+if( CMAKE_HOST_WIN32 MATCHES "1" AND CMAKE_BUILD_TOOL MATCHES "MSBuild" AND "cxx_std_20" IN_LIST CMAKE_CXX_COMPILE_FEATURES )
+  # Windows with C++20 support
+  set( CMAKE_CXX_STANDARD "20" CACHE STRING "CUSTOM" FORCE )
+  message( STATUS "Setting /std:c++20" )
+  set( COMMON_FLAGS "${COMMON_FLAGS} /std:c++20" )
+elseif( CMAKE_HOST_WIN32 MATCHES "1" AND CMAKE_BUILD_TOOL MATCHES "MSBuild" )
+  # Windows with C++17 support
+  set( CMAKE_CXX_STANDARD "17" CACHE STRING "CUSTOM" FORCE )
+  message( STATUS "Setting /std:c++17" )
+  set( COMMON_FLAGS "${COMMON_FLAGS} /std:c++17" )
+endif()
+
+if( "${CMAKE_GENERATOR}" MATCHES "Visual Studio" )
+  message( STATUS "Setting /O2 /Ot for release & /Od /DEBUG for debug" )
   set( COMMON_FLAGS_RELEASE "${COMMON_FLAGS_RELEASE} /O2 /Ot" )
   set( COMMON_FLAGS_DEBUG "${COMMON_FLAGS_DEBUG} /Od /DEBUG" )
-else()
-  set( COMMON_FLAGS "${COMMON_FLAGS} -std=c++17" )
-  set( COMMON_LINKER_FLAGS "${COMMON_LINKER_FLAGS} -std=c++17" )
 endif()
 
 message( STATUS "Setting up the name of the OS and the proper interface layer." )

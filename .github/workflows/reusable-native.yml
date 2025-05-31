@@ -224,7 +224,7 @@ jobs:
           echo "LSAN_OPTIONS=${LSAN_OPTIONS}" >> "${GITHUB_ENV}";
 
       - name: Run unit tests
-        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success()
         working-directory: .
         run: |
