@@ -65,11 +65,11 @@ else
   expectedReturnValue="${2}"; # Expects a custom return value.
 fi
 
-if echo "${1}" | grep -q "osx"; then
-  # Increase timeout for MacOS docker image.
+if echo "${1}" | grep -q 'osx' || echo "${1}" | grep -q 'windows'; then
+  # Increase timeout for MacOS and Windows docker image.
   MOBILERT_TIMEOUT='45';
 else
-  MOBILERT_TIMEOUT='30';
+  MOBILERT_TIMEOUT='15';
 fi
 
 # Whether the tests passed or failed.
