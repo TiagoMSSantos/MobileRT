@@ -94,9 +94,7 @@ install_dependencies() {
 install_dependencies_debian() {
   sudo rm /etc/apt/sources.list.d/microsoft-prod.list || true;
   echo 'Updating APT repositories.';
-  set +e;
-  sudo apt-get update -y;
-  set -e;
+  sudo apt-get update -y || true;
   echo 'Installing APT dependencies.';
   sudo apt-get install --no-install-recommends -y \
     xorg-dev \
@@ -116,11 +114,11 @@ install_dependencies_debian() {
     g++ build-essential cmake make \
     lcov \
     python3 python3-pip python3-dev python3-setuptools \
-    cpulimit lsof zip unzip;
+    cpulimit lsof zip unzip || true;
   echo 'Installing dependencies that conan might use.';
   sudo apt-get install --no-install-recommends -y clang libc++-dev libc++abi-dev;
   echo 'Checking Qt path.';
-  find /usr/include/x86_64-linux-gnu/qt5 /usr/lib/x86_64-linux-gnu/cmake/Qt5 -name "Qt[0-9]Config.cmake" -o -name "QDialog*" 2> /dev/null | grep -z /;
+  find /usr/include/*-linux-gnu/qt5 /usr/lib/*-linux-gnu/cmake/Qt5 -name "Qt[0-9]Config.cmake" -o -name "QDialog*" 2> /dev/null | grep -z /;
   echo "Found Qt: ${?}";
 }
 

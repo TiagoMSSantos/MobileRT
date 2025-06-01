@@ -147,10 +147,6 @@ execute_process(COMMAND git submodule foreach "git pull --rebase --progress || t
 ###############################################################################
 message( STATUS "Adding third party dependencies." )
 
-set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC" )
-#add_subdirectory( glm )
-
-
 if( TARGET Components )
   add_subdirectory( tinyobjloader )
 endif( TARGET Components )
