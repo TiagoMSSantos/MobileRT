@@ -208,13 +208,13 @@ callAdbShellCommandUntilSuccess() {
   set +e;
   echo "Calling ADB shell command until success '$*'";
   output=$("$@");
-  echo "Output of command: '${output}'";
+  # echo "Output of command: '${output}'";
   lastResult=$(echo "${output}" | grep '::.*::' | sed 's/:://g'| tr -d '[:space:]');
   echo "result: '${lastResult}'";
   while [ "${lastResult}" != '0' ] && [ ${_retry} -lt 60 ]; do
     _retry=$(( _retry + 1 ));
     output=$("$@");
-    echo "Output of command: '${output}'";
+    # echo "Output of command: '${output}'";
     lastResult=$(echo "${output}" | grep '::.*::' | sed 's/:://g' | tr -d '[:space:]');
     echo "Retry: ${_retry} of command '$*'; result: '${lastResult}'";
     sleep 3;

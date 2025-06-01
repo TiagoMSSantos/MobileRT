@@ -114,7 +114,7 @@ static void work_thread(::MobileRT::Config &config) {
                         LOG_ERROR("OBJLOADER could not load the scene.");
                         return;
                     }
-                    ::MobileRT::checkSystemError("Filled Scene.");
+                    ::MobileRT::checkSystemError("Scene built.");
                     const ::std::chrono::time_point<::std::chrono::system_clock> chronoEndFilling {::std::chrono::system_clock::now()};
                     timeFilling = chronoEndFilling - chronoStartFilling;
                     texturesCache.clear();

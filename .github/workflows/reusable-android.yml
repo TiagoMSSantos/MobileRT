@@ -195,7 +195,6 @@ jobs:
         run: |
           echo "android_arch: ${{ env.android_arch }}";
           echo "android_emulator_arch: ${{ env.android_emulator_arch }}";
-          sudo dmesg || true; # Print Kernel logs to know from which timestamp the new logs will appear.
           sh scripts/compile_android.sh -t ${{ inputs.type }} -r yes -a ${{ inputs.android_api }} -f ${{ env.android_arch }};
 
       - name: Print error logs
@@ -206,11 +205,9 @@ jobs:
           ls -lahp .;
           set +e;
           echo 'Print JVM errors if provided by Kernel, and just check the logs from the last line of the previous call:';
-          sudo dmesg;
+          sudo dmesg -T;
           echo 'Print native JVM stacktrace if possible:';
           cat hs_err_pid*.log;
-          echo 'Print problems report if available:';
-          cat build/reports/problems/problems-report.html;
           set -e;
 
       - name: Upload problems reports as artifact
@@ -522,11 +519,9 @@ jobs:
           ls -lahp .;
           set +e;
           echo 'Print JVM errors if provided by Kernel, and just check the logs from the last line of the previous call:';
-          sudo dmesg;
+          sudo dmesg -T;
           echo 'Print native JVM stacktrace if possible:';
           cat hs_err_pid*.log;
-          echo 'Print problems report if available:';
-          cat build/reports/problems/problems-report.html;
           set -e;
 
       - name: Upload problems reports as artifact
@@ -751,11 +746,9 @@ jobs:
           ls -lahp .;
           set +e;
           echo 'Print JVM errors if provided by Kernel, and just check the logs from the last line of the previous call:';
-          sudo dmesg;
+          sudo dmesg -T;
           echo 'Print native JVM stacktrace if possible:';
           cat hs_err_pid*.log;
-          echo 'Print problems report if available:';
-          cat build/reports/problems/problems-report.html;
           set -e;
 
       - name: Upload problems reports as artifact
@@ -991,11 +984,9 @@ jobs:
           ls -lahp .;
           set +e;
           echo 'Print JVM errors if provided by Kernel, and just check the logs from the last line of the previous call:';
-          sudo dmesg;
+          sudo dmesg -T;
           echo 'Print native JVM stacktrace if possible:';
           cat hs_err_pid*.log;
-          echo 'Print problems report if available:';
-          cat build/reports/problems/problems-report.html;
           set -e;
 
       - name: Upload problems reports as artifact

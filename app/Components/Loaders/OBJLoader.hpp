@@ -104,12 +104,13 @@ namespace Components {
             ::std::unordered_map<::std::string, ::MobileRT::Texture> *const texturesCache,
             ::std::string &&textureBinary,
             long size,
-            const ::std::string &texPath);
+            const ::std::string &texPath
+        );
 
     private:
         static triple<::glm::vec2, ::glm::vec2, ::glm::vec2> normalizeTexCoord(
-            const MobileRT::Texture &texture,
-            const ::std::tuple<::glm::vec2, ::glm::vec2, ::glm::vec2> &texCoord);
+            const ::std::tuple<::glm::vec2, ::glm::vec2, ::glm::vec2> &texCoord
+        );
     };
 }//namespace Components
 

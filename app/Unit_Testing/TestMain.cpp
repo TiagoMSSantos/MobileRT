@@ -7,7 +7,7 @@
     #if !defined(_WIN32) && !defined(__APPLE__)
         ::std::cout << "Setting up signals catch." << ::std::endl;
         ::std::signal(SIGSEGV, ::MobileRT::signalHandler);
-        ::std::signal(SIGKILL, ::MobileRT::signalHandler);
+        ::std::signal(SIGABRT, ::MobileRT::signalHandler);
     #endif
 
     ::std::cout << "Starting unit tests." << ::std::endl;

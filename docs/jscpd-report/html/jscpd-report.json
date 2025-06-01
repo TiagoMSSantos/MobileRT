@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2025-05-31T16:01:29.486Z",
+    "detectionDate": "2025-06-01T14:30:47.388Z",
     "formats": {
       "java": {
         "sources": {
@@ -1177,14 +1177,14 @@
       "cpp": {
         "sources": {
           "app/System_dependent/Native/Qt/MobileRT/mainwindow.cpp": {
-            "lines": 157,
-            "tokens": 1618,
+            "lines": 158,
+            "tokens": 1634,
             "sources": 1,
             "clones": 4,
             "duplicatedLines": 38,
             "duplicatedTokens": 446,
-            "percentage": 24.2,
-            "percentageTokens": 27.56,
+            "percentage": 24.05,
+            "percentageTokens": 27.29,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -1309,8 +1309,8 @@
             "newClones": 0
           },
           "app/MobileRT/Utils/Utils.cpp": {
-            "lines": 321,
-            "tokens": 2409,
+            "lines": 319,
+            "tokens": 2387,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -1549,14 +1549,14 @@
             "newClones": 0
           },
           "app/Components/Loaders/OBJLoader.cpp": {
-            "lines": 524,
-            "tokens": 7589,
+            "lines": 514,
+            "tokens": 7529,
             "sources": 1,
             "clones": 8,
             "duplicatedLines": 76,
             "duplicatedTokens": 1076,
-            "percentage": 14.5,
-            "percentageTokens": 14.18,
+            "percentage": 14.79,
+            "percentageTokens": 14.29,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -1741,8 +1741,8 @@
             "newClones": 0
           },
           "app/MobileRT/Texture.cpp": {
-            "lines": 164,
-            "tokens": 1468,
+            "lines": 165,
+            "tokens": 1484,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -1886,14 +1886,14 @@
           }
         },
         "total": {
-          "lines": 6177,
-          "tokens": 62081,
+          "lines": 6167,
+          "tokens": 62031,
           "sources": 59,
           "clones": 34,
           "duplicatedLines": 336,
           "duplicatedTokens": 5234,
-          "percentage": 5.44,
-          "percentageTokens": 8.43,
+          "percentage": 5.45,
+          "percentageTokens": 8.44,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2289,20 +2289,20 @@
             "newClones": 0
           },
           "scripts/install_dependencies.sh": {
-            "lines": 554,
-            "tokens": 4400,
+            "lines": 557,
+            "tokens": 4407,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 42,
             "duplicatedTokens": 120,
-            "percentage": 7.58,
-            "percentageTokens": 2.73,
+            "percentage": 7.54,
+            "percentageTokens": 2.72,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "scripts/helper_functions.sh": {
             "lines": 541,
-            "tokens": 3918,
+            "tokens": 3908,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2362,8 +2362,8 @@
           }
         },
         "total": {
-          "lines": 4419,
-          "tokens": 29708,
+          "lines": 4422,
+          "tokens": 29705,
           "sources": 13,
           "clones": 12,
           "duplicatedLines": 263,
@@ -2909,8 +2909,8 @@
             "newClones": 0
           },
           "app/Components/Loaders/OBJLoader.hpp": {
-            "lines": 103,
-            "tokens": 833,
+            "lines": 104,
+            "tokens": 826,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -3150,8 +3150,8 @@
           }
         },
         "total": {
-          "lines": 3432,
-          "tokens": 25317,
+          "lines": 3433,
+          "tokens": 25310,
           "sources": 47,
           "clones": 3,
           "duplicatedLines": 29,
@@ -3284,8 +3284,8 @@
       }
     },
     "total": {
-      "lines": 30343,
-      "tokens": 235741,
+      "lines": 30337,
+      "tokens": 235681,
       "sources": 260,
       "clones": 117,
       "duplicatedLines": 1347,
@@ -5500,32 +5500,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/System_dependent/Native/Qt/MobileRT/mainwindow.cpp",
-        "start": 84,
-        "end": 91,
+        "start": 85,
+        "end": 92,
         "startLoc": {
-          "line": 84,
+          "line": 85,
           "column": 8,
-          "position": 690
+          "position": 706
         },
         "endLoc": {
-          "line": 91,
+          "line": 92,
           "column": 10,
-          "position": 786
+          "position": 802
         }
       },
       "secondFile": {
         "name": "app/System_dependent/Native/Qt/MobileRT/mainwindow.cpp",
-        "start": 59,
-        "end": 66,
+        "start": 60,
+        "end": 67,
         "startLoc": {
-          "line": 59,
+          "line": 60,
           "column": 2,
-          "position": 373
+          "position": 389
         },
         "endLoc": {
-          "line": 66,
+          "line": 67,
           "column": 3,
-          "position": 469
+          "position": 485
         }
       }
     },
@@ -5536,32 +5536,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/System_dependent/Native/Qt/MobileRT/mainwindow.cpp",
-        "start": 93,
-        "end": 105,
+        "start": 94,
+        "end": 106,
         "startLoc": {
-          "line": 93,
+          "line": 94,
           "column": 12,
-          "position": 818
+          "position": 834
         },
         "endLoc": {
-          "line": 105,
+          "line": 106,
           "column": 14,
-          "position": 945
+          "position": 961
         }
       },
       "secondFile": {
         "name": "app/System_dependent/Native/Qt/MobileRT/mainwindow.cpp",
-        "start": 66,
-        "end": 78,
+        "start": 67,
+        "end": 79,
         "startLoc": {
-          "line": 66,
+          "line": 67,
           "column": 2,
-          "position": 493
+          "position": 509
         },
         "endLoc": {
-          "line": 78,
+          "line": 79,
           "column": 9,
-          "position": 620
+          "position": 636
         }
       }
     },
@@ -6288,36 +6288,36 @@
     {
       "format": "cpp",
       "lines": 11,
-      "fragment": "x, \", vertex: \", vertex, \", face: \", face);\n                    } else {\n                        // If it is a primitive.\n                        Triangle::Builder builder {\n                            Triangle::Builder(\n                                ::std::get<0> (vertices), ::std::get<1> (vertices), ::std::get<2> (vertices)\n                            )\n                            .withNormals(\n                                ::std::get<0>(normal), ::std::get<1>(normal), ::std::get<2>(normal)\n                            )\n                            .with",
+      "fragment": "\", vertex, \", face: \", face);\n                    } else {\n                        // If it is a primitive with material.\n                        Triangle::Builder builder {\n                            Triangle::Builder(\n                                ::std::get<0> (vertices), ::std::get<1> (vertices), ::std::get<2> (vertices)\n                            )\n                            .withNormals(\n                                ::std::get<0>(normal), ::std::get<1>(normal), ::std::get<2>(normal)\n                            )\n                            .with",
       "tokens": 0,
       "firstFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 402,
-        "end": 412,
+        "start": 392,
+        "end": 402,
         "startLoc": {
-          "line": 402,
+          "line": 392,
           "column": 2,
-          "position": 5479
+          "position": 5419
         },
         "endLoc": {
-          "line": 412,
+          "line": 402,
           "column": 2,
-          "position": 5618
+          "position": 5558
         }
       },
       "secondFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 383,
-        "end": 393,
+        "start": 373,
+        "end": 383,
         "startLoc": {
-          "line": 383,
+          "line": 373,
           "column": 2,
-          "position": 5095
+          "position": 5035
         },
         "endLoc": {
-          "line": 393,
+          "line": 383,
           "column": 2,
-          "position": 5234
+          "position": 5174
         }
       }
     },
@@ -6328,32 +6328,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 442,
-        "end": 449,
+        "start": 432,
+        "end": 439,
         "startLoc": {
-          "line": 442,
+          "line": 432,
           "column": 21,
-          "position": 6053
+          "position": 5993
         },
         "endLoc": {
-          "line": 449,
+          "line": 439,
           "column": 2,
-          "position": 6154
+          "position": 6094
         }
       },
       "secondFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 402,
-        "end": 390,
+        "start": 392,
+        "end": 380,
         "startLoc": {
-          "line": 402,
+          "line": 392,
           "column": 25,
-          "position": 5473
+          "position": 5413
         },
         "endLoc": {
-          "line": 390,
+          "line": 380,
           "column": 2,
-          "position": 5190
+          "position": 5130
         }
       }
     },
@@ -6364,32 +6364,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 451,
-        "end": 466,
+        "start": 441,
+        "end": 456,
         "startLoc": {
-          "line": 451,
+          "line": 441,
           "column": 2,
-          "position": 6215
+          "position": 6155
         },
         "endLoc": {
-          "line": 466,
+          "line": 456,
           "column": 35,
-          "position": 6415
+          "position": 6355
         }
       },
       "secondFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 414,
-        "end": 429,
+        "start": 404,
+        "end": 419,
         "startLoc": {
-          "line": 414,
+          "line": 404,
           "column": 2,
-          "position": 5634
+          "position": 5574
         },
         "endLoc": {
-          "line": 429,
+          "line": 419,
           "column": 5,
-          "position": 5834
+          "position": 5774
         }
       }
     },

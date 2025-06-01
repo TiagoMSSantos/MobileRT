@@ -43,8 +43,6 @@ namespace MobileRT {
 
         ::glm::vec3 loadColor(const ::glm::vec2 &texCoords) const;
 
-        bool isValid() const;
-
         bool operator==(const Texture &texture) const;
 
         static Texture createTexture(::std::string &&texture, long size);
@@ -52,6 +50,8 @@ namespace MobileRT {
         static Texture createTexture(const ::std::string &texturePath);
 
     private:
+        bool isValid() const;
+
         static Texture doCreateTexture(::std::uint8_t *const textureData,
                                        ::std::int32_t width,
                                        ::std::int32_t height,

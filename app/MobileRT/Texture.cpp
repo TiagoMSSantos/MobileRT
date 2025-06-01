@@ -26,6 +26,7 @@ Texture::Texture(
     width_ {width},
     height_ {height},
     channels_ {channels} {
+    ASSERT(isValid() == true, "Texture should be valid.");
 }
 
 /**

@@ -249,9 +249,7 @@ namespace MobileRT {
     void checkSystemError(const char *const message) {
         // Ignore the following errors, because they are set by some Android C++ functions:
         // * Resource unavailable, try again
-        // * Invalid argument
-        // * Socket operation on non-socket
-        if (errno != 0 && errno != EWOULDBLOCK && errno != EINVAL && errno != ENOTSOCK) {// if there is an error
+        if (errno != 0 && errno != EWOULDBLOCK) {// if there is an error
             const ::std::string errorMessage {getErrorMessage(message)};
             LOG_ERROR("ErrorMessage: ", errorMessage);
             logStackTrace();

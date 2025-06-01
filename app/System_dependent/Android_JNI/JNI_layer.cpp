@@ -115,41 +115,48 @@ static void handleException(JNIEnv *const env,
                             const ::std::exception &exception,
                             const char *const exceptionName) {
     const jclass clazz {env->FindClass(exceptionName)};
+    ASSERT(clazz != nullptr, "Exception not found.");
+
     const jint res {env->ThrowNew(clazz, exception.what())};
-    if (res != 0) {
-        LOG_ERROR("ERROR: ", res);
-    } else {
-        LOG_ERROR(exceptionName, " thrown");
-    }
+    ASSERT(res == JNI_OK, "Exception not found.");
+
+    LOG_ERROR(exceptionName, " thrown");
+
     state_ = State::IDLE;
     finishedRendering_ = true;
 }
 
 extern "C"
-::std::int32_t JNI_OnLoad(JavaVM *const jvm, void * /*reserved*/) {
-    if (errno == ENOENT) {
-        // Ignore no such file or directory
-        errno = 0;
-    }
-    MobileRT::checkSystemError("JNI_OnLoad start");
-    LOG_DEBUG("JNI_OnLoad");
+::std::int32_t JNI_OnLoad(::JavaVM *const jvm, void * /*reserved*/) {
+    errno = 0;
+    LOG_INFO("JNI_OnLoad start");
+
     javaVM_.reset(jvm);
 
-    JNIEnv *jniEnv {};
-    {
-        const jint result {javaVM_->GetEnv(reinterpret_cast<void **> (&jniEnv), JNI_VERSION_1_6)};
-        ASSERT(result == JNI_OK, "JNI was not loaded properly.");
-        static_cast<void> (result);
-    }
-    ASSERT(jniEnv != nullptr, "JNIEnv was not loaded properly.");
-    jniEnv->ExceptionClear();
     MobileRT::checkSystemError("JNI_OnLoad finish");
+    LOG_INFO("JNI_OnLoad finish");
     return JNI_VERSION_1_6;
 }
 
 extern "C"
 void JNI_OnUnload(JavaVM *const /*jvm*/, void * /*reserved*/) {
-    LOG_DEBUG("JNI_OnUnload");
+    errno = 0;
+    LOG_INFO("JNI_OnUnload start");
+
+    // Free all memory.
+    renderer_.reset();
+    javaVM_.reset();
+    thread_.reset();
+    objDefinition_.clear();
+    objDefinition_.shrink_to_fit();
+    mtlDefinition_.clear();
+    mtlDefinition_.shrink_to_fit();
+    camDefinition_.clear();
+    camDefinition_.shrink_to_fit();
+    texturesCache_.clear();
+
+    MobileRT::checkSystemError("JNI_OnUnload finish");
+    LOG_INFO("JNI_OnUnload finish");
 }
 
 extern "C"
@@ -157,7 +164,8 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitCameraArray(
     JNIEnv *env,
     jobject /*thiz*/
 ) {
-    MobileRT::checkSystemError("rtInitCameraArray start");
+    errno = 0;
+
     try {
         jobject directBuffer {};
         {
@@ -237,6 +245,7 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitCameraArray(
     } catch (...) {
         handleException(env, ::std::exception{}, "java/lang/RuntimeException");
     }
+
     MobileRT::checkSystemError("rtInitCameraArray finish");
     return nullptr;
 }
@@ -246,7 +255,8 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitVerticesArray(
     JNIEnv *env,
     jobject /*thiz*/
 ) {
-    MobileRT::checkSystemError("rtInitVerticesArray start");
+    errno = 0;
+
     try {
         jobject directBuffer {};
         {
@@ -317,7 +327,8 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtInitColorsArray(
     JNIEnv *env,
     jobject /*thiz*/
 ) {
-    MobileRT::checkSystemError("rtInitColorsArray start");
+    errno = 0;
+
     try {
         jobject directBuffer {};
         {
@@ -411,8 +422,9 @@ void Java_puscas_mobilertapp_DrawView_rtStartRender(
     jobject /*thiz*/,
     jboolean wait
 ) {
+    errno = 0;
+
     try {
-        MobileRT::checkSystemError("rtStartRender start");
         if (wait) {
             ::std::unique_lock<::std::mutex> lock {mutex_};
             rendered_.wait(lock, [&] { return finishedRendering_.load(); });
@@ -433,13 +445,8 @@ void Java_puscas_mobilertapp_DrawView_rtStopRender(
     jobject /*thiz*/,
     jboolean wait
 ) {
-    if (errno == ENOENT || errno == EBADF || errno == EEXIST) {
-        // Ignore no such file or directory
-        // Ignore bad file descriptor
-        // Ignore file already exists
-        errno = 0;
-    }
-    MobileRT::checkSystemError("rtStopRender start");
+    errno = 0;
+
     {
         LOG_DEBUG("Will get lock");
         state_ = State::STOPPED;
@@ -475,8 +482,9 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
     jobject /*thiz*/,
     jobject localConfig
 ) {
-    MobileRT::checkSystemError("rtInitialize start");
-    LOG_DEBUG("INITIALIZE");
+    errno = 0;
+    LOG_INFO("rtInitialize start");
+
     try {
         const jclass configClass {env->GetObjectClass(localConfig)};
 
@@ -530,6 +538,7 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
             [&]() -> ::std::int32_t {
                 LOG_INFO("Setting up signals catch.");
                 ::std::signal(SIGSEGV, ::MobileRT::signalHandler);
+                ::std::signal(SIGABRT, ::MobileRT::signalHandler);
                 LOG_DEBUG("Acquiring lock");
                 const ::std::lock_guard<::std::mutex> lock {mutex_};
                 renderer_ = nullptr;
@@ -588,9 +597,6 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
                         objDefinition_.clear();
                         mtlDefinition_.clear();
                         camDefinition_.clear();
-                        objDefinition_.erase();
-                        mtlDefinition_.erase();
-                        camDefinition_.erase();
                         objDefinition_.shrink_to_fit();
                         mtlDefinition_.shrink_to_fit();
                         camDefinition_.shrink_to_fit();
@@ -726,11 +732,7 @@ void Java_puscas_mobilertapp_MainRenderer_rtFinishRender(
     JNIEnv *env,
     jobject /*thiz*/
 ) {
-    if (errno == EBADF) {
-        // Ignore bad file descriptor
-        errno = 0;
-    }
-    MobileRT::checkSystemError("rtFinishRender start");
+    errno = 0;
 
     {
         const ::std::lock_guard<::std::mutex> lock {mutex_};
@@ -747,6 +749,7 @@ void Java_puscas_mobilertapp_MainRenderer_rtFinishRender(
         finishedRendering_ = true;
         env->ExceptionClear();
     }
+
     MobileRT::checkSystemError("rtFinishRender finish");
 }
 
@@ -757,71 +760,43 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
     jobject localBitmap,
     jint nThreads
 ) {
-    if (errno == ENOENT || errno == ENOTTY) {
-        // Ignore no such file or directory
-        // Ignore not a typewriter
-        errno = 0;
-    }
-    MobileRT::checkSystemError("rtRenderIntoBitmap start");
-    LOG_DEBUG("rtRenderIntoBitmap");
+    errno = 0;
+    LOG_DEBUG("rtRenderIntoBitmap start");
+
     LOG_DEBUG("nThreads = ", nThreads);
     try {
         jobject globalBitmap {static_cast<jobject> (env->NewGlobalRef(localBitmap))};
+        ASSERT(globalBitmap != nullptr, "globalBitmap should be valid.");
 
         const ::std::function<void()> lambda {
+            // Necessary to copy the global reference of jobject.
             [=]() -> void {
                 LOG_INFO("Setting up signals catch.");
                 ::std::signal(SIGSEGV, ::MobileRT::signalHandler);
-                ::std::chrono::duration<double> timeRendering {};
+                ::std::signal(SIGABRT, ::MobileRT::signalHandler);
 
-                LOG_DEBUG("rtRenderIntoBitmap step 1");
-                ASSERT(env != nullptr, "JNIEnv not valid.");
-                MobileRT::checkSystemError("rtRenderIntoBitmap step 1");
-                const jint jniError {
-                    javaVM_->GetEnv(reinterpret_cast<void **> (const_cast<JNIEnv **> (&env)), JNI_VERSION_1_6)
-                };
-
-                LOG_DEBUG("rtRenderIntoBitmap step 2: ", jniError);
-                ASSERT(jniError == JNI_OK || jniError == JNI_EDETACHED, "JNIEnv not valid.");
-                static_cast<void>(jniError);
+                JNIEnv *jniEnv {};
+                LOG_INFO("rtRenderIntoBitmap step 1");
                 {
-                    MobileRT::checkSystemError("rtRenderIntoBitmap step 2");
-                    const jint result {javaVM_->AttachCurrentThread(const_cast<JNIEnv **> (&env), nullptr)};
-                    MobileRT::checkSystemError("rtRenderIntoBitmap step 3");
+                    MobileRT::checkSystemError("rtRenderIntoBitmap step 1");
+                    const jint result {javaVM_->AttachCurrentThread(const_cast<JNIEnv **> (&jniEnv), nullptr)};
                     ASSERT(result == JNI_OK, "Couldn't attach current thread to JVM.");
-                    static_cast<void> (result);
+                    ASSERT(jniEnv != nullptr, "JNIEnv not valid.");
+                    errno = 0;
                 }
-
-                LOG_DEBUG("rtRenderIntoBitmap step 3");
+                LOG_INFO("rtRenderIntoBitmap step 2");
                 ::std::int32_t *dstPixels {};
                 {
-                    const jint ret {
-                        AndroidBitmap_lockPixels(env, globalBitmap,
-                                                 reinterpret_cast<void **> (&dstPixels))
-                    };
-                    ASSERT(ret == JNI_OK, "Couldn't lock the Android bitmap pixels.");
-                    LOG_DEBUG("ret = ", ret);
-                    static_cast<void> (ret);
+                    MobileRT::checkSystemError("rtRenderIntoBitmap step 2");
+                    const jint result {AndroidBitmap_lockPixels(jniEnv, globalBitmap, reinterpret_cast<void **> (&dstPixels))};
+                    ASSERT(result == JNI_OK, "Couldn't lock the Android bitmap pixels.");
+                    ASSERT(dstPixels != nullptr, "Couldn't obtain the bitmap pixels.");
+                    errno = 0;
                 }
 
-                LOG_DEBUG("rtRenderIntoBitmap step 4");
-                AndroidBitmapInfo info {};
-                {
-                    MobileRT::checkSystemError("rtRenderIntoBitmap step 4");
-                    const jint ret {AndroidBitmap_getInfo(env, globalBitmap, &info)};
-                    ASSERT(ret == JNI_OK, "Couldn't get the Android bitmap information structure.");
-                    LOG_DEBUG("ret = ", ret);
-                    static_cast<void> (ret);
-                }
-
-                LOG_DEBUG("rtRenderIntoBitmap step 5");
-                ::std::int32_t rep {1};
-                {
-                    const jint result {javaVM_->DetachCurrentThread()};
-                    ASSERT(result == JNI_OK, "Couldn't detach the current thread from JVM.");
-                    static_cast<void> (result);
-                }
                 LOG_INFO("WILL START TO RENDER");
+
+                ::std::int32_t rep {1};
                 MobileRT::checkSystemError("starting render timer");
                 const ::std::chrono::time_point<::std::chrono::system_clock> chronoStartRendering {::std::chrono::system_clock::now()};
                 while (state_ == State::BUSY && rep > 0) {
@@ -839,7 +814,7 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
                     rep--;
                 }
                 const ::std::chrono::time_point<::std::chrono::system_clock> chronoEndRendering {::std::chrono::system_clock::now()};
-                timeRendering = chronoEndRendering - chronoStartRendering;
+                ::std::chrono::duration<double> timeRendering {chronoEndRendering - chronoStartRendering};
                 LOG_INFO("RENDER FINISHED");
                 finishedRendering_ = true;
                 rendered_.notify_all();
@@ -850,31 +825,21 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
                         LOG_DEBUG("STATE = FINISHED");
                     }
                     {
-                        MobileRT::checkSystemError("rtRenderIntoBitmap step 6");
-                        const jint result {javaVM_->AttachCurrentThread(const_cast<JNIEnv **> (&env), nullptr)};
-                        MobileRT::checkSystemError("rtRenderIntoBitmap step 7");
-                        ASSERT(result == JNI_OK, "Couldn't attach current thread to JVM.");
-                        static_cast<void> (result);
-                    }
-                    {
-                        const jint result{AndroidBitmap_unlockPixels(env, globalBitmap)};
+                        MobileRT::checkSystemError("rtRenderIntoBitmap step 3");
+                        const jint result {AndroidBitmap_unlockPixels(jniEnv, globalBitmap)};
                         ASSERT(result == JNI_OK, "Couldn't unlock the Android bitmap pixels.");
-                        static_cast<void> (result);
+                        dstPixels = nullptr;
+                        errno = 0;
                     }
 
-                    env->DeleteGlobalRef(globalBitmap);
+                    jniEnv->DeleteGlobalRef(globalBitmap);
+                    jniEnv->ExceptionClear();
                     {
-                        const jint result {
-                            javaVM_->GetEnv(reinterpret_cast<void **> (const_cast<JNIEnv **> (&env)), JNI_VERSION_1_6)
-                        };
-                        ASSERT(result == JNI_OK, "JNIEnv not valid.");
-                        static_cast<void> (result);
-                    }
-                    env->ExceptionClear();
-                    {
+                        MobileRT::checkSystemError("rtRenderIntoBitmap step 4");
                         const jint result {javaVM_->DetachCurrentThread()};
                         ASSERT(result == JNI_OK, "Couldn't detach the current thread from JVM.");
-                        static_cast<void> (result);
+                        jniEnv = nullptr;
+                        errno = 0;
                     }
                 }
                 const double renderingTime {timeRendering.count()};
@@ -910,13 +875,7 @@ extern "C"
     JNIEnv *env,
     jobject /*thiz*/
 ) {
-    if (errno == EBADF || errno == ETIMEDOUT || errno == EEXIST) {
-        // Ignore bad file descriptor
-        // Ignore connection timed out
-        // Ignore file exists
-        errno = 0;
-    }
-    MobileRT::checkSystemError("rtGetState start");
+    errno = 0;
 
     const ::std::int32_t res {static_cast<::std::int32_t> (state_.load())};
     env->ExceptionClear();
@@ -929,13 +888,8 @@ float Java_puscas_mobilertapp_RenderTask_rtGetFps(
     JNIEnv *env,
     jobject /*thiz*/
 ) {
-    if (errno == ETIMEDOUT || errno == EBADF || errno == EEXIST) {
-        // Ignore connection timed out
-        // Ignore bad file descriptor
-        // Ignore file exists
-        errno = 0;
-    }
-    MobileRT::checkSystemError("rtGetFps start");
+    errno = 0;
+
     env->ExceptionClear();
     MobileRT::checkSystemError("rtGetFps finish");
     return fps_;
@@ -946,7 +900,8 @@ jlong Java_puscas_mobilertapp_RenderTask_rtGetTimeRenderer(
     JNIEnv *env,
     jobject /*thiz*/
 ) {
-    MobileRT::checkSystemError("rtGetTimeRenderer start");
+    errno = 0;
+
     env->ExceptionClear();
     MobileRT::checkSystemError("rtGetTimeRenderer finish");
     return timeRenderer_;
@@ -957,11 +912,8 @@ extern "C"
     JNIEnv *env,
     jobject /*thiz*/
 ) {
-    if (errno == EBADF) {
-        // Ignore bad file descriptor
-        errno = 0;
-    }
-    MobileRT::checkSystemError("rtGetSample start");
+    errno = 0;
+
     ::std::int32_t sample {};
     {
         const ::std::lock_guard<::std::mutex> lock {mutex_};
@@ -970,6 +922,7 @@ extern "C"
         }
     }
     env->ExceptionClear();
+
     MobileRT::checkSystemError("rtGetSample finish");
     return sample;
 }
@@ -980,12 +933,7 @@ extern "C"
     jobject /*thiz*/,
     jint size
 ) {
-    if (errno == ENOENT || errno == EEXIST) {
-        // Ignore no such file or directory
-        // Ignore file exists
-        errno = 0;
-    }
-    MobileRT::checkSystemError("rtResize start");
+    errno = 0;
 
     const ::std::int32_t res{
         ::MobileRT::roundDownToMultipleOf(
@@ -993,6 +941,7 @@ extern "C"
         )
     };
     env->ExceptionClear();
+
     MobileRT::checkSystemError("rtResize finish");
     return res;
 }
@@ -1006,16 +955,15 @@ void JNICALL Java_puscas_mobilertapp_MainActivity_readFile(
         jlong fileSize,
         jstring jFilePath
 ) {
-    if (errno == EACCES || errno == EPERM || errno == ENOENT || errno == EEXIST) {
-        // Ignore permission denied before reading the file
-        // Ignore operation not permitted
-        // Ignore no such file or directory
-        // Ignore file exists
-        errno = 0;
-    }
+    errno = 0;
+
     jboolean isCopy {JNI_FALSE};
     const ::std::string filePathRaw {env->GetStringUTFChars(jFilePath, &isCopy)};
+    ASSERT(filePathRaw.empty() == false, "GetStringUTFChars failed.");
+
     const ::std::string typeStr {filePathRaw.substr(filePathRaw.find_last_of("."), filePathRaw.size())};
+    ASSERT(typeStr.empty() == false, "substr failed.");
+
     const int type {
           typeStr == ".obj" ? 0
         : typeStr == ".mtl" ? 1
@@ -1045,16 +993,15 @@ void JNICALL Java_puscas_mobilertapp_MainActivity_readFile(
     ASSERT(fileSize > 0, "File size not valid.");
 
     if (file != nullptr) {
-        LOG_INFO("Will read a scene file.");
+        LOG_INFO("Will read a scene file: ", filePathRaw);
         file->resize(static_cast<::std::size_t> (fileSize));
         MobileRT::checkSystemError("Before read file.");
         const long remainingLength {::read(fileDescriptor, &(*file)[0], static_cast<unsigned int>(fileSize))};
         MobileRT::checkSystemError("After read file.");
         ASSERT(remainingLength == 0 || remainingLength == fileSize, "File not read entirely.");
-        LOG_DEBUG("Read a scene file.");
-        static_cast<void>(remainingLength);
+        LOG_INFO("Read a scene file: ", filePathRaw);
     } else {
-        LOG_INFO("Will read a texture file.");
+        LOG_INFO("Will read a texture file: ", filePathRaw);
         ::std::string texture {};
         texture.resize(static_cast<::std::size_t> (fileSize));
         MobileRT::checkSystemError("Before read file.");
@@ -1063,8 +1010,7 @@ void JNICALL Java_puscas_mobilertapp_MainActivity_readFile(
         ASSERT(remainingLength == 0 || remainingLength == fileSize, "File not read entirely.");
         const ::std::string fileName {filePathRaw.substr(filePathRaw.find_last_of('/') + 1, filePathRaw.size())};
         ::Components::OBJLoader::getTextureFromCache(&texturesCache_, ::std::move(texture), static_cast<long> (fileSize), fileName);
-        LOG_DEBUG("Read a texture file: ", filePathRaw);
-        static_cast<void>(remainingLength);
+        LOG_INFO("Read a texture file: ", filePathRaw);
     }
 }
 
@@ -1073,8 +1019,10 @@ extern "C"
     JNIEnv *env,
     jobject /*thiz*/
 ) {
-    MobileRT::checkSystemError("rtGetNumberOfLights start");
+    errno = 0;
+
     env->ExceptionClear();
+
     MobileRT::checkSystemError("rtGetNumberOfLights finish");
     return numLights_;
 }
@@ -1085,12 +1033,15 @@ jobject Java_puscas_mobilertapp_MainRenderer_rtFreeNativeBuffer(
     jobject /*thiz*/,
     jobject bufferRef
 ) {
-    MobileRT::checkSystemError("rtFreeNativeBuffer start");
+    errno = 0;
+
     if (bufferRef != nullptr) {
         void *buffer{env->GetDirectBufferAddress(bufferRef)};
+        ASSERT(buffer != nullptr, "GetDirectBufferAddress failed.");
         float *const floatBuffer{static_cast<float *> (buffer)};
         delete[] floatBuffer;
     }
+
     MobileRT::checkSystemError("rtFreeNativeBuffer finish");
     return nullptr;
 }

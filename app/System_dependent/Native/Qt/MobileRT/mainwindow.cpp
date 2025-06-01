@@ -25,6 +25,7 @@ MainWindow::MainWindow(QWidget *parent) :
     #if !defined(_WIN32) && !defined(__APPLE__)
         ::std::cout << "Setting up signals catch." << ::std::endl;
         ::std::signal(SIGSEGV, ::MobileRT::signalHandler);
+        ::std::signal(SIGABRT, ::MobileRT::signalHandler);
     #endif
 }
 

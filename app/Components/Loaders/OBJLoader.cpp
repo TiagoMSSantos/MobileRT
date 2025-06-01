@@ -200,29 +200,18 @@ OBJLoader::triple<::glm::vec3, ::glm::vec3, ::glm::vec3> OBJLoader::loadNormal(
 /**
  * Helper method that normalizes the texture coordinates.
  *
- * @param texture  The texture of the texture coordinates.
  * @param texCoord The texture coordinates to normalize.
  * @return The normalized texture coordinates.
  */
 OBJLoader::triple<::glm::vec2, ::glm::vec2, ::glm::vec2> OBJLoader::normalizeTexCoord(
-    const Texture &texture,
     const triple<::glm::vec2, ::glm::vec2, ::glm::vec2> &texCoord
 ) {
-    if (!texture.isValid()) {// If the texture is not valid.
-        // Reset texture coordinates to -1.
-        LOG_INFO("Texture not valid. Resetting texture coordinates to: -1");
-        return triple<::glm::vec2, ::glm::vec2, ::glm::vec2> {
-            ::glm::vec2 {-1}, ::glm::vec2 {-1}, ::glm::vec2 {-1}
-        };
-    } else {
-        // Normalize the texture coordinates to be between [0, 1]
-        LOG_INFO("Normalizing texture coordinates: ", ::std::get<0>(texCoord), ", ", ::std::get<1>(texCoord), ", ", ::std::get<2>(texCoord));
-        return triple<::glm::vec2, ::glm::vec2, ::glm::vec2> {
-            ::MobileRT::normalize(::std::get<0>(texCoord)),
-            ::MobileRT::normalize(::std::get<1>(texCoord)),
-            ::MobileRT::normalize(::std::get<2>(texCoord))
-        };
-    }
+    LOG_INFO("Normalizing texture coordinates: ", ::std::get<0>(texCoord), ", ", ::std::get<1>(texCoord), ", ", ::std::get<2>(texCoord));
+    return triple<::glm::vec2, ::glm::vec2, ::glm::vec2> {
+        ::MobileRT::normalize(::std::get<0>(texCoord)),
+        ::MobileRT::normalize(::std::get<1>(texCoord)),
+        ::MobileRT::normalize(::std::get<2>(texCoord))
+    };
 }
 
 /**
@@ -368,12 +357,13 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
                         texCoord = triple<::glm::vec2, ::glm::vec2, ::glm::vec2> {
                             ::glm::vec2 {tx1, ty1}, ::glm::vec2 {tx2, ty2}, ::glm::vec2 {tx3, ty3}
                         };
+                        LOG_WARN("Thread ", threadId, " (", numberOfThreads, ") Loading shape: ", shapeIndex, " normalizing texture coordinates to be between [0, 1] for the material: ", materialId, ", scene: ", filePath, ", shapeIndex: ", shapeIndex, ", vertex: ", vertex, ", face: ", face);
+                        texCoord = normalizeTexCoord(texCoord);
+                        LOG_WARN("Thread ", threadId, " (", numberOfThreads, ") Loading shape: ", shapeIndex, " normalized texture coordinates to be between [0, 1] for the material: ", materialId, ", scene: ", filePath, ", shapeIndex: ", shapeIndex, ", vertex: ", vertex, ", face: ", face);
 
-                        LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Loading shape: ", shapeIndex, " adding texture to the cache for material: ", materialId, ", scene: ", filePath, ", shapeIndex: ", shapeIndex, ", vertex: ", vertex, ", face: ", face);
+                        LOG_WARN("Thread ", threadId, " (", numberOfThreads, ") Loading shape: ", shapeIndex, " adding texture to the cache for material: ", materialId, ", scene: ", filePath, ", shapeIndex: ", shapeIndex, ", vertex: ", vertex, ", face: ", face);
                         texture = getTextureFromCache(texturesCache, mutexCache, filePath, mat.diffuse_texname);
-                        LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Loading shape: ", shapeIndex, " normalizing texture coordinates to be between [0, 1] for the material: ", materialId, ", scene: ", filePath, ", shapeIndex: ", shapeIndex, ", vertex: ", vertex, ", face: ", face);
-                        texCoord = normalizeTexCoord(texture, texCoord);
-                        LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Loading shape: ", shapeIndex, " normalized texture coordinates to be between [0, 1] for the material: ", materialId, ", scene: ", filePath, ", shapeIndex: ", shapeIndex, ", vertex: ", vertex, ", face: ", face);
+                        LOG_WARN("Thread ", threadId, " (", numberOfThreads, ") Loading shape: ", shapeIndex, " added texture to the cache for material: ", materialId, ", scene: ", filePath, ", shapeIndex: ", shapeIndex, ", vertex: ", vertex, ", face: ", face);
                     }
 
                     Material material {diffuse, specular, transmittance, indexRefraction, emission, ::std::move(texture)};
@@ -398,7 +388,7 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
                         lights.emplace_back(::std::move(areaLight));
                         LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Added light of shape: ", shapeIndex, ", with material ID: ", materialId, ", scene: ", filePath, ", shapeIndex: ", shapeIndex, ", vertex: ", vertex, ", face: ", face);
                     } else {
-                        // If it is a primitive.
+                        // If it is a primitive with material.
                         Triangle::Builder builder {
                             Triangle::Builder(
                                 ::std::get<0> (vertices), ::std::get<1> (vertices), ::std::get<2> (vertices)
@@ -427,7 +417,7 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
                         triangles.emplace_back(builder.withMaterialIndex(materialIndex).build());
                     }
                 } else {
-                    // If it doesn't contain material.
+                    // If it is a primitive that doesn't contain material.
                     const auto itColor {this->attrib_.colors.cbegin() + 3 * idx1.vertex_index};
                     const float red {*(itColor + 0)};
                     const float green {*(itColor + 1)};
