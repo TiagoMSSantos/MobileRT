@@ -25,8 +25,7 @@ endif()
 # Set headers
 ###############################################################################
 message( STATUS "Adding MobileRT and third party headers." )
-target_include_directories( ${PROJECT_NAME} SYSTEM PUBLIC
-  "${THIRD_PARTY_HEADERS}" )
+target_include_directories( ${PROJECT_NAME} SYSTEM PUBLIC "${THIRD_PARTY_HEADERS}" )
 target_include_directories( ${PROJECT_NAME} PRIVATE "${MOBILE_RT_HEADERS}" )
 target_include_directories( ${PROJECT_NAME} PUBLIC "${MOBILE_RC_HEADERS}" )
 ###############################################################################

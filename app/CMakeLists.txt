@@ -176,6 +176,17 @@ endif()
 message( STATUS "Setting up Android Clang with static stdlib." )
 set( ANDROID_TOOLCHAIN "clang" )
 set( ANDROID_STL "c++_static" )
+
+message( STATUS "Checking if CMAKE_CXX_FLAGS_INIT flag has -stdlib=libc++: ${CMAKE_CXX_FLAGS_INIT}" )
+if( "${CMAKE_CXX_FLAGS_INIT}" MATCHES "[-]stdlib=libc[++]" )
+  message( STATUS "Adding -stdlib=libc++" )
+  set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++" CACHE STRING "CUSTOM" FORCE )
+endif()
+
+if( "${CMAKE_CXX_BYTE_ORDER}" MATCHES "LITTLE_ENDIAN" )
+  message( STATUS "Make pcg_uint128.hpp:57 to work wih little endian architecture of ARM CPUs." )
+  add_compile_definitions( PCG_LITTLE_ENDIAN=1 )
+endif()
 ###############################################################################
 ###############################################################################
 
@@ -504,12 +515,11 @@ add_subdirectory( Unit_Testing )
 message( STATUS "Adding libs for the interface layer." )
 if( DEFINED ANDROID_ABI )
   message( STATUS "Adding Android JNI layer." )
-
   add_library( ${PROJECT_NAME} SHARED ${SCENES_SOURCES} ${MOBILE_DEPENDENT_SOURCES} )
+
   target_link_libraries( ${PROJECT_NAME} PRIVATE android jnigraphics )
 else()
   message( STATUS "Adding Linux native Qt layer." )
-
   add_executable( ${PROJECT_NAME} ${SCENES_SOURCES} ${MOBILE_DEPENDENT_SOURCES} ${MOBILE_DEPENDENT_SOURCES_QT} )
 
   message( STATUS "Qt6Core_INCLUDE_DIRS = " ${Qt6Core_INCLUDE_DIRS} )

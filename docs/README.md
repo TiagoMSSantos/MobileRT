@@ -201,9 +201,9 @@ framework for mocking in unit tests
     </tr>
     <tr>
       <td style="text-align:center"><b>Windows</b></td>
-      <td style="text-align:center">Server 2016<br><img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25" alt="gray"></td>
       <td style="text-align:center">Server 2019<br><img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25" alt="green"></td>
       <td style="text-align:center">Server 2022<br><img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25" alt="green"></td>
+      <td style="text-align:center">Server 2025<br><img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25" alt="green"></td>
       <td style="text-align:center">10<br><img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25" alt="red"></td>
       <td style="text-align:center">11<br><img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25" alt="red"></td>
     </tr>
@@ -225,11 +225,11 @@ framework for mocking in unit tests
     </tr>
     <tr>
       <td style="text-align:center"><b>Alpine</b></td>
-      <td style="text-align:center">3.17<br><img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25" alt="gray"></td>
       <td style="text-align:center">3.18<br><img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25" alt="gray"></td>
       <td style="text-align:center">3.19<br><img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25" alt="gray"></td>
       <td style="text-align:center">3.20<br><img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25" alt="gray"></td>
-      <td style="text-align:center">3.21<br><img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25" alt="green"></td>
+      <td style="text-align:center">3.21<br><img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25" alt="gray"></td>
+      <td style="text-align:center">3.22<br><img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25" alt="green"></td>
     </tr>
     <tr>
       <td style="text-align:center"><b>Arch Linux</b></td>

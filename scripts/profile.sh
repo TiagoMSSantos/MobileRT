@@ -66,6 +66,8 @@ setPaths() {
   echo "MOBILERT_PATH = ${MOBILERT_PATH}";
 
   if uname -a | grep -iq 'mingw'; then
+    ls -lahp "${MOBILERT_PATH}/build_debug/bin/" || true;
+    ls -lahp "${MOBILERT_PATH}/build_release/bin/" || true;
     # shellcheck disable=SC2010
     BIN_DEBUG_PATH="${MOBILERT_PATH}/build_debug/bin/"$(ls "${MOBILERT_PATH}"/build_debug/bin | grep Debug | tr -d '[:space:]' || true);
     # shellcheck disable=SC2010
@@ -291,25 +293,44 @@ executeTimeout() {
   fi
   set -u;
 
-  echo '';
-  echo "THREAD = ${THREAD}";
-  echo "SHADER = ${SHADER}";
-  echo "SCENE = ${SCENE}";
-  echo "ACC = ${ACC}";
-  echo "ASYNC = ${ASYNC}";
-  echo "WIDTH = ${WIDTH}";
-  echo "HEIGHT = ${HEIGHT}";
-
   set +u;
   if [ "${1}" = 'release' ]; then
     echo 'Executing in release mode.';
+    ls -lahp "${MOBILERT_PATH}/build_release/bin/" || true;
+    ls -lahp "${MOBILERT_PATH}/build_release/bin/Release" || true;
     BIN_PATH_EXE="${BIN_RELEASE_EXE}";
   elif [ "${1}" = 'debug' ]; then
     echo 'Executing in debug mode.';
+    ls -lahp "${MOBILERT_PATH}/build_debug/bin/" || true;
+    ls -lahp "${MOBILERT_PATH}/build_debug/bin/Debug" || true;
     BIN_PATH_EXE="${BIN_DEBUG_EXE}";
   fi
   set -u;
 
+  echo '';
+  echo "BIN_DEBUG_PATH = ${BIN_DEBUG_PATH}";
+  echo "BIN_RELEASE_PATH = ${BIN_RELEASE_PATH}";
+  echo "BIN_DEBUG_EXE = ${BIN_DEBUG_EXE}";
+  echo "BIN_RELEASE_EXE = ${BIN_RELEASE_EXE}";
+  echo "BIN_PATH_EXE = ${BIN_PATH_EXE}";
+  echo "THREAD = ${THREAD}";
+  echo "SHADER = ${SHADER}";
+  echo "SCENE = ${SCENE}";
+  echo "SPP = ${SPP}";
+  echo "SPL = ${SPL}";
+  echo "WIDTH = ${WIDTH}";
+  echo "HEIGHT = ${HEIGHT}";
+  echo "ACC = ${ACC}";
+  echo "REP = ${REP}";
+  echo "OBJ = ${OBJ}";
+  echo "MTL = ${MTL}";
+  echo "CAM = ${CAM}";
+  echo "ASYNC = ${ASYNC}";
+  echo "SHOWIMAGE = ${SHOWIMAGE}";
+  ls -lahp "${BIN_PATH_EXE}";
+  ls -lahp "${OBJ}";
+  ls -lahp "${MTL}";
+  ls -lahp "${CAM}";
   QT_QPA_PLATFORM='offscreen' timeout "${3}" \
     "${BIN_PATH_EXE}" \
       "${THREAD}" "${SHADER}" "${SCENE}" "${SPP}" "${SPL}" "${WIDTH}" "${HEIGHT}" "${ACC}" \

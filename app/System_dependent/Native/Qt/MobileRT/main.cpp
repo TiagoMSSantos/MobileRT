@@ -7,6 +7,7 @@
 #include <cmath>
 
 int main(int argc, char **argv) {
+    LOG_ERROR("Starting MobileRT QT app");
     /*
      * ${THREAD} ${SHADER} ${SCENE} ${SPP} ${SPL} ${WIDTH} ${HEIGHT} ${ACC} ${REP} \
             ${OBJ} ${MTL} ${CAM} ${PRINT} ${ASYNC} ${SHOWIMAGE}
@@ -21,7 +22,7 @@ int main(int argc, char **argv) {
 
     if (argc != 15) {
         LOG_ERROR("Wrong number of arguments: ", argc, ", must be 15");
-        for (int i = 0; i < argc - 1; ++i) {
+        for (int i {1}; i < argc; ++i) {
             LOG_ERROR(i, " ", argv[i]);
         }
         ::std::exit(1);
@@ -59,6 +60,7 @@ int main(int argc, char **argv) {
     ssShowImage >> ::std::boolalpha >> showImage;
     
     if (!showImage) {
+        LOG_WARN("Will not start because it wasn't requested to show image.");
         return 0;
     }
 
@@ -82,8 +84,10 @@ int main(int argc, char **argv) {
     mainWindow.show();
 
     if (!async) {
+        LOG_WARN("Finished synchronously.");
         return 0;
     }
 
+    LOG_WARN("Executing asynchronously.");
     return application.exec();
 }

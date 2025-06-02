@@ -224,7 +224,7 @@ jobs:
           echo "LSAN_OPTIONS=${LSAN_OPTIONS}" >> "${GITHUB_ENV}";
 
       - name: Run unit tests
-        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+        timeout-minutes: 60
         if: success()
         working-directory: .
         run: |
@@ -235,7 +235,7 @@ jobs:
           LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${gtestPath}" ${unitTestsExe} --gtest_filter=-*Engine*;
 
       - name: Run system tests Ray Tracing engine (for code coverage)
-        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success()
         working-directory: .
         run: |

@@ -110,11 +110,12 @@ install_dependencies_debian() {
     findutils \
     sudo git git-lfs ca-certificates shellcheck \
     libatomic1 \
-    qtbase5-dev \
     g++ build-essential cmake make \
     lcov \
     python3 python3-pip python3-dev python3-setuptools \
     cpulimit lsof zip unzip || true;
+  echo 'Installing Qt';
+  sudo apt-get install --no-install-recommends -y qtbase5-dev;
   echo 'Installing dependencies that conan might use.';
   sudo apt-get install --no-install-recommends -y clang libc++-dev libc++abi-dev;
   echo 'Checking Qt path.';
