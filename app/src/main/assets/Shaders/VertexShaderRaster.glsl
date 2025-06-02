@@ -26,7 +26,7 @@ varying vec4 fragmentColor;
 
 // Main to calculate the position and color for each vertex in gl_Position and
 // fragmentColor
-void main () {
+void main() {
     // Output the position for this vertex
     gl_Position = uniformProjectionMatrix * uniformViewMatrix * uniformModelMatrix * vertexPosition;
     // Output the color for this vertex

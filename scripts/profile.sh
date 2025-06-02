@@ -331,10 +331,9 @@ executeTimeout() {
   ls -lahp "${OBJ}";
   ls -lahp "${MTL}";
   ls -lahp "${CAM}";
-  QT_QPA_PLATFORM='offscreen' timeout "${3}" \
-    "${BIN_PATH_EXE}" \
-      "${THREAD}" "${SHADER}" "${SCENE}" "${SPP}" "${SPL}" "${WIDTH}" "${HEIGHT}" "${ACC}" \
-      "${REP}" "${OBJ}" "${MTL}" "${CAM}" "${ASYNC}" "${SHOWIMAGE}";
+  QT_QPA_PLATFORM='offscreen' timeout "${3}" "${BIN_PATH_EXE}" \
+    "${THREAD}" "${SHADER}" "${SCENE}" "${SPP}" "${SPL}" "${WIDTH}" "${HEIGHT}" "${ACC}" \
+    "${REP}" "${OBJ}" "${MTL}" "${CAM}" "${ASYNC}" "${SHOWIMAGE}";
   returnValue="$?";
   return "${returnValue}";
 }

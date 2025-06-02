@@ -6,19 +6,12 @@
 #include <QApplication>
 #include <cmath>
 
-int main(int argc, char **argv) {
-    LOG_ERROR("Starting MobileRT QT app");
+int main(int argc, char **const argv) {
+    LOG_WARN("Starting MobileRT Qt app");
     /*
-     * ${THREAD} ${SHADER} ${SCENE} ${SPP} ${SPL} ${WIDTH} ${HEIGHT} ${ACC} ${REP} \
-            ${OBJ} ${MTL} ${CAM} ${PRINT} ${ASYNC} ${SHOWIMAGE}
+        ${THREAD} ${SHADER} ${SCENE} ${SPP} ${SPL} ${WIDTH} ${HEIGHT} ${ACC} ${REP} \
+        ${OBJ} ${MTL} ${CAM} ${PRINT} ${ASYNC} ${SHOWIMAGE}
      */
-//    const char* argv[] {"appName",
-//        "2", "2", "4", "1", "1", "800", "800", "3", "1",
-//        "WavefrontOBJs/conference/conference.obj",
-//        "WavefrontOBJs/conference/conference.mtl",
-//        "WavefrontOBJs/conference/conference.cam",
-//        "true", "true", "true"};
-//    argc = 15;
 
     if (argc != 15) {
         LOG_ERROR("Wrong number of arguments: ", argc, ", must be 15");
@@ -34,15 +27,15 @@ int main(int argc, char **argv) {
     const ::std::int32_t samplesPixel {static_cast<::std::int32_t> (strtol(argv[4], nullptr, 0))};
     const ::std::int32_t samplesLight {static_cast<::std::int32_t> (strtol(argv[5], nullptr, 0))};
 
-    const ::std::int32_t width {
-            ::MobileRT::roundDownToMultipleOf(static_cast<::std::int32_t> (strtol(argv[6], nullptr, 0)),
-                                              static_cast<::std::int32_t> (::std::sqrt(
-                                                      ::MobileRT::NumberOfTiles)))};
+    const ::std::int32_t width {::MobileRT::roundDownToMultipleOf(
+        static_cast<::std::int32_t> (strtol(argv[6], nullptr, 0)),
+        static_cast<::std::int32_t> (::std::sqrt(::MobileRT::NumberOfTiles))
+    )};
 
-    const ::std::int32_t height {
-            ::MobileRT::roundDownToMultipleOf(static_cast<::std::int32_t> (strtol(argv[7], nullptr, 0)),
-                                              static_cast<::std::int32_t> (::std::sqrt(
-                                                      ::MobileRT::NumberOfTiles)))};
+    const ::std::int32_t height {::MobileRT::roundDownToMultipleOf(
+        static_cast<::std::int32_t> (strtol(argv[7], nullptr, 0)),
+        static_cast<::std::int32_t> (::std::sqrt(::MobileRT::NumberOfTiles))
+    )};
 
     const ::std::int32_t accelerator {static_cast<::std::int32_t> (strtol(argv[8], nullptr, 0))};
 
@@ -58,13 +51,15 @@ int main(int argc, char **argv) {
 
     ssAsync >> ::std::boolalpha >> async;
     ssShowImage >> ::std::boolalpha >> showImage;
-    
+
     if (!showImage) {
         LOG_WARN("Will not start because it wasn't requested to show image.");
         return 0;
     }
 
-    QApplication application {argc, const_cast<char**> (argv)};
+    LOG_WARN("Creating Qt app");
+    QApplication application {argc, argv};
+    LOG_WARN("Created Qt app");
     MainWindow mainWindow {};
     ::MobileRT::Config config {};
     config.width = width;
@@ -80,7 +75,9 @@ int main(int argc, char **argv) {
     config.mtlFilePath = ::std::string {pathMtl};
     config.camFilePath = ::std::string {pathCam};
 
+    LOG_WARN("Configuring Qt");
     mainWindow.setImage(config, async);
+    LOG_WARN("Starting Qt");
     mainWindow.show();
 
     if (!async) {
@@ -88,6 +85,6 @@ int main(int argc, char **argv) {
         return 0;
     }
 
-    LOG_WARN("Executing asynchronously.");
+    LOG_WARN("Executing Qt app asynchronously.");
     return application.exec();
 }

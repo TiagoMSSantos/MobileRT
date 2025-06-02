@@ -267,7 +267,7 @@ build() {
   if cmake --help | grep -i '*' | grep -iq 'default' && cmake --help | grep -i '*' | grep -iq 'Visual Studio'; then
     if [ "${compiler}" = 'cl' ]; then
       echo 'Detected Visual Studio for Windows!';
-      jobsFlags="//p:Configuration=${typeWithCapitalLetter} //m:$((NCPU_CORES * 1)) //p:CL_MPCount=$((NCPU_CORES - 1))";
+      jobsFlags="//p:Configuration=${typeWithCapitalLetter} //m:$((NCPU_CORES * 1)) //p:CL_MPCount=$((NCPU_CORES - 1)) //p:StopOnFirstFailure=true";
       JOBS_FLAGS="-- ${jobsFlags}";
       export MAKEFLAGS="${jobsFlags}";
       export CMAKE_BUILD_PARALLEL_LEVEL="$((NCPU_CORES - 1))";

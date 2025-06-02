@@ -18,7 +18,7 @@ varying vec2 fragmentTexCoord;
 
 // Main to calculate the position and texture coordinate for each vertex in
 // gl_Position and fragmentTexCoord
-void main () {
+void main() {
     // Output the position for this vertex
     gl_Position = vertexPosition;
     // Output the texture coordinates for this vertex

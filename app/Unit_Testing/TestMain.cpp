@@ -2,7 +2,7 @@
 #include "MobileRT/Utils/Utils.hpp"
 #include <iostream>
 
-::std::int32_t main (::std::int32_t argc, char **argv) {
+::std::int32_t main(::std::int32_t argc, char **const argv) {
     // Only catch signals for Linux systems, since boost stacktrace doesn't work on Windows nor MacOS.
     #if !defined(_WIN32) && !defined(__APPLE__)
         ::std::cout << "Setting up signals catch." << ::std::endl;

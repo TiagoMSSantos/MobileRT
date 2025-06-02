@@ -19,7 +19,7 @@ float toneMap (const float value) {
 }
 
 // Main to calculate the color for each pixel in gl_FragColor
-void main () {
+void main() {
     // Get the color for this pixel (interpolated from the nearest vertices)
     vec4 color = texture2D(uniformTexture, fragmentTexCoord);
 

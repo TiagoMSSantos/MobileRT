@@ -10,7 +10,7 @@ precision lowp float;
 varying vec4 fragmentColor;
 
 // Main to calculate the color for each pixel in gl_FragColor
-void main () {
+void main() {
     // Output the color for this pixel
     gl_FragColor = fragmentColor;
 }
