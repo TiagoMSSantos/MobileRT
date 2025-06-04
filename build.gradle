@@ -93,7 +93,7 @@ buildscript {
             androidX_test_junit_version = '1.1.5'
         }
         if (project.properties["bouncycastle_version"] == null) {
-            bouncycastle_version = '1.80'
+            bouncycastle_version = '1.81'
         }
 
         // Unit tests dependencies
