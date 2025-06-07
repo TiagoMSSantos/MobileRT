@@ -97,13 +97,13 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && !startsWith(matrix.host_os, 'windows')
       run: |
-        ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'cmake;3.31.6';
+        ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'cmake;4.0.2';
 
     - name: Download Android CMake Windows
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && startsWith(matrix.host_os, 'windows')
       run: |
-        ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager.bat --install 'cmake;3.31.6';
+        ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager.bat --install 'cmake;4.0.2';
 
     - name: Download Android dependencies
       timeout-minutes: 8

@@ -299,33 +299,23 @@ build() {
     JOBS_FLAGS='';
   fi
 
-  # Set CMAKE_POLICY_VERSION_MINIMUM to avoid errors with CMake v4 when building third party dependencies.
   cmakeVersion=$(cmake --version | grep -i version | tr -s ' ' | cut -d ' ' -f 3);
   echo "CMake version: ${cmakeVersion}";
   if [ -f "${conanToolchainFile}" ]; then
     addConanToolchain="-DCMAKE_TOOLCHAIN_FILE=${conanToolchainFile}";
     cmake \
       -G "${generator}" \
-      -DCMAKE_VERBOSE_MAKEFILE=ON \
       -DCMAKE_CXX_COMPILER="${compiler}" \
       -DCMAKE_C_COMPILER="${c_compiler}" \
-      -DCMAKE_C_SOURCE_FILE_EXTENSIONS="c" \
       -DCMAKE_BUILD_TYPE="${typeWithCapitalLetter}" \
-      -DCMAKE_POLICY_VERSION_MINIMUM="${cmakeVersion}" \
-      -DBOOST_STACKTRACE_GNU_SOURCE_NOT_REQUIRED='true' \
        "${addConanToolchain}" \
       ../app;
   else
     cmake \
       -G "${generator}" \
-      -DCMAKE_VERBOSE_MAKEFILE=ON \
       -DCMAKE_CXX_COMPILER="${compiler}" \
       -DCMAKE_C_COMPILER="${c_compiler}" \
-      -DCMAKE_C_SOURCE_FILE_EXTENSIONS="c" \
       -DCMAKE_BUILD_TYPE="${typeWithCapitalLetter}" \
-      -DCMAKE_POLICY_VERSION_MINIMUM="${cmakeVersion}" \
-      -DCMAKE_PREFIX_PATH='/usr/lib/x86_64-linux-gnu/cmake/Qt5' \
-      -DBOOST_STACKTRACE_GNU_SOURCE_NOT_REQUIRED='true' \
       ../app;
   fi
 

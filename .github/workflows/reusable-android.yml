@@ -64,8 +64,8 @@ jobs:
           cache-dependency-path: '**/build.gradle'
 
       - name: Add custom environment variables
-        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-        if: success() && !startsWith(inputs.host_os, 'windows')
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
+        if: success()
         working-directory: .
         run: |
           echo 'Available Android versions:';
@@ -150,7 +150,6 @@ jobs:
           set -e;
 
       - name: Set Android CPU Architecture
-        id: set-cpu-arch
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
         run: |
@@ -178,7 +177,13 @@ jobs:
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success() && !startsWith(inputs.host_os, 'windows')
         run: |
-          ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'cmake;3.31.6';
+          ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'cmake;4.0.2';
+
+      - name: Download Android CMake Windows
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success() && startsWith(inputs.host_os, 'windows')
+        run: |
+          ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager.bat --install 'cmake;4.0.2';
 
       - name: Download Android dependencies
         timeout-minutes: 8
@@ -235,6 +240,7 @@ jobs:
           . scripts/helper_functions.sh && checkPathExists app/build/tmp/kotlin-classes/debug;
           . scripts/helper_functions.sh && checkPathExists app/.cxx;
           . scripts/helper_functions.sh && checkPathExists app/third_party;
+          . scripts/helper_functions.sh && checkPathExists ${{ env.GRADLE_PATH }};
 
       - name: Upload generated binaries to cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -306,7 +312,7 @@ jobs:
 
       - name: Upload gradle packages to cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success()
+        if: success() && !startsWith(inputs.host_os, 'windows')
         uses: actions/cache/save@v4
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/save/action.yml
@@ -318,7 +324,7 @@ jobs:
 
       - name: Upload Gradle packages as artifact
         timeout-minutes: 20
-        if: success() && !startsWith(inputs.host_os, 'windows') && strategy.job-index == 0
+        if: success() && strategy.job-index == 0 && !startsWith(inputs.host_os, 'windows')
         continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
@@ -364,8 +370,8 @@ jobs:
           cache-dependency-path: '**/build.gradle'
 
       - name: Add custom environment variables
-        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success() && !startsWith(inputs.host_os, 'windows')
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
+        if: success()
         working-directory: .
         run: |
           echo 'Available Android versions:';
@@ -392,7 +398,7 @@ jobs:
 
       - name: Download gradle packages from cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-        if: success()
+        if: success() && !startsWith(inputs.host_os, 'windows')
         uses: actions/cache/restore@v4
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
@@ -422,6 +428,7 @@ jobs:
           . scripts/helper_functions.sh && checkPathExists app/build/tmp/kotlin-classes/debug;
           . scripts/helper_functions.sh && checkPathExists app/.cxx;
           . scripts/helper_functions.sh && checkPathExists app/third_party;
+          . scripts/helper_functions.sh && checkPathExists ${{ env.GRADLE_PATH }};
 
       - name: Enable KVM group permissions
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -432,7 +439,6 @@ jobs:
           sudo udevadm trigger --name-match=kvm;
 
       - name: Set Android CPU Architecture
-        id: set-cpu-arch
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
         run: |
@@ -490,7 +496,7 @@ jobs:
           # Available CI host machines: https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners/about-github-hosted-runners#standard-github-hosted-runners-for-public-repositories
           # Max api level for 32bit is: 29
           api-level: ${{ inputs.android_api }}
-          cmake: 3.31.6
+          cmake: 4.0.2
           target: default
           arch: ${{ env.android_emulator_arch }}
           disable-animations: true
@@ -637,8 +643,8 @@ jobs:
           cache-dependency-path: '**/build.gradle'
 
       - name: Add custom environment variables
-        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success() && !startsWith(inputs.host_os, 'windows')
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
+        if: success()
         working-directory: .
         run: |
           echo 'Available Android versions:';
@@ -651,7 +657,7 @@ jobs:
 
       - name: Download gradle packages from cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-        if: success()
+        if: success() && !startsWith(inputs.host_os, 'windows')
         uses: actions/cache/restore@v4
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
@@ -695,9 +701,9 @@ jobs:
           . scripts/helper_functions.sh && checkPathExists app/build/tmp/kotlin-classes/debug;
           . scripts/helper_functions.sh && checkPathExists app/.cxx;
           . scripts/helper_functions.sh && checkPathExists app/third_party;
+          . scripts/helper_functions.sh && checkPathExists ${{ env.GRADLE_PATH }};
 
       - name: Set Android CPU Architecture
-        id: set-cpu-arch
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
         run: |
@@ -827,8 +833,8 @@ jobs:
           cache-dependency-path: '**/build.gradle'
 
       - name: Add custom environment variables
-        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success() && !startsWith(inputs.host_os, 'windows')
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
+        if: success()
         working-directory: .
         run: |
           echo 'Available Android versions:';
@@ -841,7 +847,7 @@ jobs:
 
       - name: Download gradle packages from cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-        if: success()
+        if: success() && !startsWith(inputs.host_os, 'windows')
         uses: actions/cache/restore@v4
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
@@ -887,6 +893,7 @@ jobs:
           . scripts/helper_functions.sh && checkPathExists app/build/tmp/kotlin-classes/debug;
           . scripts/helper_functions.sh && checkPathExists app/.cxx;
           . scripts/helper_functions.sh && checkPathExists app/third_party;
+          . scripts/helper_functions.sh && checkPathExists ${{ env.GRADLE_PATH }};
 
       - name: Create report's folders
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -903,6 +910,7 @@ jobs:
           # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
           key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
           restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
+          fail-on-cache-miss: true
           path: |
             app/build/reports
 
@@ -921,13 +929,21 @@ jobs:
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
         run: |
+          env;
           # shellcheck disable=SC1091
-          . ${{ github.workspace }}/scripts/helper_functions.sh && prepareBinaries ${{ github.workspace }};
-          ../../../../test-reporter-latest-linux-amd64 format-coverage -t jacoco ../../../build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml;
-          ../../../../test-reporter-latest-linux-amd64 upload-coverage;
+          . scripts/helper_functions.sh && prepareBinaries "${GITHUB_WORKSPACE}";
+          host_os=$(echo "${RUNNER_OS}" | tr '[:upper:]' '[:lower:]');
+          cpu_architecture=$(echo "${RUNNER_ARCH}" | tr '[:upper:]' '[:lower:]');
+          if [ "${cpu_architecture}" = 'x64' ]; then
+            cpu_architecture='amd64';
+          fi
+          if [ "${cpu_architecture}" = 'macos' ]; then
+            cpu_architecture='darwin';
+          fi
+          ../../../../test-reporter-latest-${host_os}-${cpu_architecture} format-coverage -t jacoco ../../../build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml;
+          ../../../../test-reporter-latest-${host_os}-${cpu_architecture} upload-coverage;
 
       - name: Set Android CPU Architecture
-        id: set-cpu-arch
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
         run: |

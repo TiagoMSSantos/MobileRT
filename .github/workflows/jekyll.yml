@@ -19,6 +19,11 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+defaults:
+  run:
+    shell: sh
+    working-directory: .
+
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
@@ -39,6 +44,7 @@ jobs:
   # Build job
   build:
     runs-on: ubuntu-latest
+    name: Build
     steps:
       - name: Checkout
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -47,7 +53,7 @@ jobs:
 
       - name: Lint documentation files
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success()
+        if: success() && runner.os == 'Linux'
         uses: docker://avtodev/markdown-lint:v1
         with:
           # Check available parameters in: https://github.com/avto-dev/markdown-lint/blob/master/action.yml
@@ -92,7 +98,7 @@ jobs:
 
       - name: Doxygen build
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success()
+        if: success() && runner.os == 'Linux'
         uses: mattnotmitt/doxygen-action@v1
         with:
           # Check available parameters in: https://github.com/mattnotmitt/doxygen-action/blob/master/action.yml
@@ -102,7 +108,7 @@ jobs:
 
       - name: Sync README with docker hub
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success()
+        if: success() && runner.os == 'Linux'
         uses: ms-jpq/sync-dockerhub-readme@v1
         with:
           # Check available parameters in: https://github.com/ms-jpq/sync-dockerhub-readme/blob/whale/action.yml
@@ -131,6 +137,7 @@ jobs:
   # Deployment job (only on master branch)
   deploy:
     runs-on: ubuntu-latest
+    name: Deploy
     needs: build
     if: ${{ contains(github.ref, 'master')}}
     environment:

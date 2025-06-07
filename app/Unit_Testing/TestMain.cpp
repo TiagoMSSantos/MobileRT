@@ -3,12 +3,9 @@
 #include <iostream>
 
 ::std::int32_t main(::std::int32_t argc, char **const argv) {
-    // Only catch signals for Linux systems, since boost stacktrace doesn't work on Windows nor MacOS.
-    #if !defined(_WIN32) && !defined(__APPLE__)
-        ::std::cout << "Setting up signals catch." << ::std::endl;
-        ::std::signal(SIGSEGV, ::MobileRT::signalHandler);
-        ::std::signal(SIGABRT, ::MobileRT::signalHandler);
-    #endif
+    ::std::cout << "Setting up signals catch." << ::std::endl;
+    ::std::signal(SIGSEGV, ::MobileRT::signalHandler);
+    ::std::signal(SIGABRT, ::MobileRT::signalHandler);
 
     ::std::cout << "Starting unit tests." << ::std::endl;
     ::testing::InitGoogleTest(&argc, argv);

@@ -27,6 +27,7 @@ message( STATUS "Detected CMake version: ${CMAKE_VERSION}" )
 cmake_minimum_required( VERSION ${CMAKE_MIN_VERSION}...${CMAKE_VERSION} FATAL_ERROR )
 message( STATUS "Setting policies for compatibility with CMake v${CMAKE_MIN_VERSION}.")
 cmake_policy( VERSION ${CMAKE_MIN_VERSION}...${CMAKE_VERSION} )
+set( CMAKE_POLICY_VERSION_MINIMUM "${CMAKE_VERSION}" )
 ###############################################################################
 ###############################################################################
 
@@ -38,6 +39,8 @@ message( STATUS "Adding custom default flags for all third party projects." )
 
 message( STATUS "Setting default compiler flags." )
 set( ANDROID_COMPILER_FLAGS "" CACHE STRING "CUSTOM" FORCE )
+set( CMAKE_C_SOURCE_FILE_EXTENSIONS "c" CACHE STRING "CUSTOM" FORCE )
+set( BOOST_STACKTRACE_GNU_SOURCE_NOT_REQUIRED "true" CACHE STRING "CUSTOM" FORCE )
 
 if( NOT "${CMAKE_GENERATOR}" MATCHES "Visual Studio" )
   # PIC: Position Independent Code
@@ -187,6 +190,11 @@ if( "${CMAKE_CXX_BYTE_ORDER}" MATCHES "LITTLE_ENDIAN" )
   message( STATUS "Make pcg_uint128.hpp:57 to work wih little endian architecture of ARM CPUs." )
   add_compile_definitions( PCG_LITTLE_ENDIAN=1 )
 endif()
+
+if( CMAKE_HOST_SYSTEM_NAME MATCHES "Windows" OR CMAKE_HOST_SYSTEM_NAME MATCHES "Darwin" )
+  message( STATUS "Set BOOST_STACKTRACE_NOT_SUPPORTED as this is not Linux Host OS." )
+  add_compile_definitions( BOOST_STACKTRACE_NOT_SUPPORTED=1 )
+endif()
 ###############################################################################
 ###############################################################################
 
@@ -230,7 +238,9 @@ endif()
 unset( COMPILER_SUPPORTS_FLAG CACHE )
 CHECK_CXX_COMPILER_FLAG( "-std=c++20" COMPILER_SUPPORTS_FLAG )
 if( ( NOT DEFINED ANDROID_ABI AND COMPILER_SUPPORTS_FLAG AND "cxx_std_20" IN_LIST CMAKE_CXX_COMPILE_FEATURES ) OR
-( DEFINED ANDROID_ABI AND COMPILER_SUPPORTS_FLAG AND "cxx_std_20" IN_LIST CMAKE_CXX_COMPILE_FEATURES AND NOT CMAKE_ANDROID_NDK MATCHES "/ndk/23.2.8568313" ) )
+  ( DEFINED ANDROID_ABI AND COMPILER_SUPPORTS_FLAG AND "cxx_std_20" IN_LIST CMAKE_CXX_COMPILE_FEATURES AND
+  ( NOT CMAKE_ANDROID_NDK MATCHES "/ndk/23.2.8568313" AND NOT CMAKE_ANDROID_NDK MATCHES "/ndk/25.2.9519653" ))
+)
   # Unix based OS with C++20 support
   message( STATUS "Setting -std=c++20" )
   set( CMAKE_CXX_STANDARD "20" CACHE STRING "CUSTOM" FORCE )
@@ -454,16 +464,16 @@ if( NOT "${CMAKE_GENERATOR}" MATCHES "Visual Studio" )
 endif()
 
 if( NOT CMAKE_HOST_WIN32 MATCHES "1" AND NOT CMAKE_HOST_SYSTEM_NAME MATCHES "Darwin" )
-  message( STATUS "Detected not Windows OS." )
-
+  message( STATUS "Detected not Windows nor MacOS." )
   if( CMAKE_CXX_COMPILER MATCHES "g[++]" AND NOT CMAKE_CXX_COMPILER MATCHES "clang" )
-    message( STATUS "Add code coverage analysis flags for GCC." )
-
-    set( COMMON_FLAGS_TEST "-ftest-coverage -fprofile-arcs" )
-    set( COMMON_LINKER_FLAGS_TEST "--coverage -fprofile-update=atomic -lgcov" )
+    message( STATUS "Add -lgcov flag for GCC to enable code coverage." )
+    set( COMMON_LINKER_FLAGS_TEST "-lgcov" )
   endif()
 endif()
 
+message( STATUS "Add code coverage analysis flags for GCC." )
+set( COMMON_FLAGS_TEST "-ftest-coverage -fprofile-arcs" )
+set( COMMON_LINKER_FLAGS_TEST "${COMMON_LINKER_FLAGS_TEST} --coverage -fprofile-update=atomic" )
 
 message( STATUS "Adding scenes source files." )
 file( GLOB_RECURSE SCENES_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/Scenes/**.cpp" )

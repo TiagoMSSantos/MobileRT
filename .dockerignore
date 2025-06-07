@@ -84,8 +84,7 @@
 **/*.Doxyfile*
 **/*coverage*
 **/Gemfile
-**/test-reporter-latest-linux-amd64
-**/test-reporter-latest-darwin-amd64
+**/test-reporter-latest-*
 
 !build_*
 !WavefrontOBJs/conference*

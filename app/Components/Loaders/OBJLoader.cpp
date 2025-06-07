@@ -16,6 +16,7 @@ using ::MobileRT::Triangle;
 using ::MobileRT::Sampler;
 
 OBJLoader::OBJLoader(::std::istream&& isObj, ::std::istream&& isMtl) {
+    MobileRT::checkSystemError("Constructing OBJLoader.");
     LOG_INFO("Setting exception mask for the OBJ file stream.");
     isObj.exceptions(
         isObj.exceptions() | ::std::ifstream::goodbit | ::std::ifstream::badbit
@@ -24,6 +25,7 @@ OBJLoader::OBJLoader(::std::istream&& isObj, ::std::istream&& isMtl) {
     isMtl.exceptions(
         isMtl.exceptions() | ::std::ifstream::goodbit | ::std::ifstream::badbit
     );
+    errno = 0;
     ::tinyobj::MaterialStreamReader matStreamReader {isMtl};
 
     ::tinyobj::MaterialStreamReader *matStreamReaderPtr {&matStreamReader};

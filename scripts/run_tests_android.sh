@@ -466,10 +466,11 @@ startCopyingLogcatToFile() {
   echo 'Clear logcat';
   # -b all -> Unable to open log device '/dev/log/all': No such file or directory
   # -b crash -> Unable to open log device '/dev/log/crash': No such file or directory
-  if [ "${androidApi}" -gt 15 ]; then
+  # TODO: Validate whether '-G' flag is supported by Android 20.
+  if [ "${androidApi}" -gt 19 ]; then
     bufferSize='-G 10M';
   else
-    # Android API 15 doesn't support the `-G` flag to change logcat buffer size.
+    # Android API <= 19 doesn't support the `-G` flag to change logcat buffer size.
     bufferSize='';
   fi
   callAdbShellCommandUntilSuccess adb shell 'logcat '"${bufferSize}"' -b main -b system -b radio -b events -c; echo ::$?::';

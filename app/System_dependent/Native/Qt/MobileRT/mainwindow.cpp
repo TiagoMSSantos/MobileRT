@@ -21,12 +21,9 @@ MainWindow::MainWindow(QWidget *parent) :
     m_ui->graphicsView->setScene(m_graphicsScene);
     m_ui->graphicsView->show();
 
-    // Only catch signals for Linux systems, since boost stacktrace doesn't work on Windows nor MacOS.
-    #if !defined(_WIN32) && !defined(__APPLE__)
-        ::std::cout << "Setting up signals catch." << ::std::endl;
-        ::std::signal(SIGSEGV, ::MobileRT::signalHandler);
-        ::std::signal(SIGABRT, ::MobileRT::signalHandler);
-    #endif
+    ::std::cout << "Setting up signals catch." << ::std::endl;
+    ::std::signal(SIGSEGV, ::MobileRT::signalHandler);
+    ::std::signal(SIGABRT, ::MobileRT::signalHandler);
 }
 
 MainWindow::~MainWindow() {

@@ -104,10 +104,13 @@ public abstract class AbstractTest {
 
     /**
      * The {@link Rule} for the {@link Timeout} for each test.
+     * <p>
+     * Note that in MacOS the Android emulator is slower and thus might need a higher timeout.
+     * Using 90 seconds seems to be enough.
      */
     @NonNull
     @Rule
-    public final TestRule timeoutRule = new Timeout(50L, TimeUnit.SECONDS);
+    public final TestRule timeoutRule = new Timeout(90L, TimeUnit.SECONDS);
 
     /**
      * The {@link Rule} to get the name of the current test.

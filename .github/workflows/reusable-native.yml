@@ -123,7 +123,12 @@ jobs:
         if: success()
         working-directory: .
         run: |
+          env;
           sh scripts/install_dependencies.sh;
+          export PATH="/c/ProgramData/chocolatey/lib/lcov/tools/bin:${PATH}";
+          echo "PATH: ${PATH}";
+          echo 'Storing PATH in workflow environment variables.';
+          echo "PATH=${PATH}" >> "${GITHUB_ENV}";
 
       - name: Check Qt path installation MacOS
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -193,7 +198,7 @@ jobs:
 
       - name: Generate code coverage base
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success() && startsWith(inputs.host_os, 'ubuntu') && inputs.type == 'debug' && startsWith(inputs.compiler, 'g++')
+        if: success() && inputs.type == 'debug' && startsWith(inputs.compiler, 'g++') && startsWith(inputs.host_os, 'ubuntu')
         working-directory: .
         run: |
           lcov -c -i -d . --no-external --ignore-errors mismatch -o code_coverage_base.info;
@@ -232,7 +237,7 @@ jobs:
           LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${gtestPath}" ${unitTestsExe} --gtest_filter=-*Engine*;
 
       - name: Run system tests Ray Tracing engine (for code coverage)
-        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+        timeout-minutes: 30
         if: success()
         working-directory: .
         run: |
@@ -302,15 +307,15 @@ jobs:
 
       - name: Generate code coverage
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success() && startsWith(inputs.host_os, 'ubuntu') && inputs.type == 'debug' && startsWith(inputs.compiler, 'g++')
+        if: success() && inputs.type == 'debug' && startsWith(inputs.compiler, 'g++') && startsWith(inputs.host_os, 'ubuntu')
         working-directory: .
         run: |
           # shellcheck disable=SC1091
           . scripts/helper_functions.sh && generateCodeCoverage;
 
-      - name: Upload coverage to cache
+      - name: Upload code coverage to cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success() && startsWith(inputs.host_os, 'ubuntu') && inputs.type == 'debug' && startsWith(inputs.compiler, 'g++')
+        if: success() && inputs.type == 'debug' && startsWith(inputs.compiler, 'g++') && startsWith(inputs.host_os, 'ubuntu')
         uses: actions/cache/save@v4
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/save/action.yml
@@ -344,6 +349,7 @@ jobs:
           # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
           key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.name }}_${{ inputs.host_os }}_${{ inputs.type }}_${{ inputs.compiler }}
           restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.name }}_${{ inputs.host_os }}_${{ inputs.type }}_${{ inputs.compiler }}
+          fail-on-cache-miss: true
           path: |
             code_coverage_base.info
             code_coverage.info
@@ -357,10 +363,19 @@ jobs:
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
         run: |
+          env;
           # shellcheck disable=SC1091
-          . scripts/helper_functions.sh && prepareBinaries ${{ github.workspace }};
-          ./test-reporter-latest-linux-amd64 format-coverage -t lcov code_coverage_filtered.info;
-          ./test-reporter-latest-linux-amd64 upload-coverage;
+          . scripts/helper_functions.sh && prepareBinaries "${GITHUB_WORKSPACE}";
+          host_os=$(echo "${RUNNER_OS}" | tr '[:upper:]' '[:lower:]');
+          cpu_architecture=$(echo "${RUNNER_ARCH}" | tr '[:upper:]' '[:lower:]');
+          if [ "${cpu_architecture}" = 'x64' ]; then
+            cpu_architecture='amd64';
+          fi
+          if [ "${cpu_architecture}" = 'macos' ]; then
+            cpu_architecture='darwin';
+          fi
+          ./test-reporter-latest-${host_os}-${cpu_architecture} format-coverage -t lcov code_coverage_filtered.info;
+          ./test-reporter-latest-${host_os}-${cpu_architecture} upload-coverage;
 
       - name: Send codecov report
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}

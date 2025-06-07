@@ -311,9 +311,10 @@ checkPathExists() {
 # Parameters:
 # * Optional - path to MobileRT
 prepareBinaries() {
+  echo "Parameter: ${1}";
   rootDir="${1:-${PWD}}";
-  chmod +x "${rootDir}"/test-reporter-latest-linux-amd64;
-  chmod +x "${rootDir}"/test-reporter-latest-darwin-amd64;
+  echo "rootDir: ${rootDir}";
+  chmod +x "${rootDir}"/test-reporter-latest-*;
 }
 
 # Private method which kills a process that is using a file.

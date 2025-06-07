@@ -20,21 +20,21 @@
 #include <sstream>
 #include <thread>
 #include <vector>
+#include <csignal>
 
-#if !defined(_WIN32) && !defined(__APPLE__)
+#if !defined(BOOST_STACKTRACE_NOT_SUPPORTED) && !defined(_WIN32) && !defined(__APPLE__)
     // Not available in Windows nor MacOS.
     #include <boost/stacktrace.hpp>
-
-    // Only used in Linux & Android.
-    #include <csignal>
 #endif
 
 namespace MobileRT {
 
-// Only catch signals for Linux systems, since boost stacktrace doesn't work on Windows nor MacOS.
-#if !defined(_WIN32) && !defined(__APPLE__)
+    /**
+     * Handle a signal.
+     *
+     * @param signum The number of the signal received.
+     */
     [[noreturn]] void signalHandler(int signum);
-#endif
 
 #ifndef NDEBUG
     /**

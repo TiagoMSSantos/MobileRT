@@ -13,17 +13,14 @@
 
 namespace MobileRT {
 
-    // Only catch signals for Linux systems, since boost stacktrace doesn't work on Windows nor MacOS.
-    #if !defined(_WIN32) && !defined(__APPLE__)
-        [[noreturn]] void signalHandler(const int signum) {
-            // Check signal.h to identify the signal.
-            LOG_ERROR("Caught signal ", signum);
-            LOG_ERROR("ErrorMessage: ", getErrorMessage("Signal handler called"));
-            logStackTrace();
-            logFreeMemory();
-            ::std::exit(EXIT_FAILURE);
-        }
-    #endif
+    [[noreturn]] void signalHandler(const int signum) {
+        // Check signal.h to identify the signal.
+        LOG_ERROR("Caught signal ", signum);
+        LOG_ERROR("ErrorMessage: ", getErrorMessage("Signal handler called"));
+        logStackTrace();
+        logFreeMemory();
+        ::std::exit(EXIT_FAILURE);
+    }
 
     // Public methods
     /**
@@ -249,7 +246,8 @@ namespace MobileRT {
     void checkSystemError(const char *const message) {
         // Ignore the following errors, because they are set by some Android C++ functions:
         // * Resource unavailable, try again
-        if (errno != 0 && errno != EWOULDBLOCK) {// if there is an error
+        // * Invalid argument
+        if (errno != 0 && errno != EWOULDBLOCK && errno != EINVAL) {// if there is an error
             const ::std::string errorMessage {getErrorMessage(message)};
             LOG_ERROR("ErrorMessage: ", errorMessage);
             logStackTrace();
@@ -293,7 +291,7 @@ namespace MobileRT {
      */
     void logStackTrace() {
         // Only log stack trace for Linux systems, since boost stacktrace doesn't work on Windows nor MacOS.
-        #if !defined(_WIN32) && !defined(__APPLE__)
+        #if !defined(BOOST_STACKTRACE_NOT_SUPPORTED) && !defined(_WIN32) && !defined(__APPLE__)
             LOG_ERROR("Stack trace:\n", ::boost::stacktrace::stacktrace());
         #endif
     }

@@ -66,6 +66,7 @@ install_dependencies() {
   if uname -a | grep -iq 'linux' && command -v apt-get > /dev/null; then
     echo 'Detected Debian based Linux';
     install_dependencies_debian;
+    checkCommand lcov;
   elif uname -a | grep -iq 'linux' && command -v yum > /dev/null; then
     echo 'Detected Red Hat based Linux';
     install_dependencies_red_hat;
@@ -81,10 +82,12 @@ install_dependencies() {
   elif uname -a | grep -iq 'darwin' && command -v brew > /dev/null; then
     echo 'Detected MacOS';
     install_dependencies_macos;
+    checkCommand lcov;
   elif uname -a | grep -iq 'msys' && command -v choco > /dev/null; then
     echo 'Detected Windows';
     # Requires running chocolatey in an elevated command shell.
     install_dependencies_windows;
+    checkCommand lcov;
   else
     echo 'Detected unknown Operating System';
   fi
@@ -308,6 +311,10 @@ install_dependencies_macos() {
     echo 'Installing unzip.';
     brew list unzip > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install unzip;
   fi
+  if ! command -v lcov > /dev/null; then
+    echo 'Installing lcov.';
+    brew list lcov > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install lcov;
+  fi
 
   set +e;
   test -d Qt;
@@ -374,6 +381,13 @@ install_dependencies_windows() {
   if ! command -v shellcheck > /dev/null; then
     # Install shellcheck: https://community.chocolatey.org/packages/shellcheck
     choco install -y shellcheck;
+  fi
+
+  if ! command -v lcov > /dev/null; then
+    # Install lcov: https://community.chocolatey.org/packages/lcov
+    choco install -y lcov;
+    ls -lahp /c/ProgramData/chocolatey/lib/lcov/tools/bin;
+    export PATH="/c/ProgramData/chocolatey/lib/lcov/tools/bin:${PATH}";
   fi
 
   set +e;
