@@ -331,7 +331,7 @@ jobs:
 
   Sonar:
     needs: [Build]
-    if: inputs.type == 'debug'
+    if: inputs.type == 'debug' && startsWith(inputs.compiler, 'g++')
     name: Code Coverage ${{ inputs.type }} (${{ inputs.host_os }})
     runs-on: ${{ inputs.host_os }}
     timeout-minutes: 360

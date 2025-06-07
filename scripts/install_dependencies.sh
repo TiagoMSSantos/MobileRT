@@ -315,6 +315,10 @@ install_dependencies_macos() {
     echo 'Installing lcov.';
     brew list lcov > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install lcov;
   fi
+  if ! command -v shellcheck > /dev/null; then
+    echo 'Installing shellcheck.';
+    brew list shellcheck > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install shellcheck;
+  fi
 
   set +e;
   test -d Qt;
@@ -386,7 +390,6 @@ install_dependencies_windows() {
   if ! command -v lcov > /dev/null; then
     # Install lcov: https://community.chocolatey.org/packages/lcov
     choco install -y lcov;
-    ls -lahp /c/ProgramData/chocolatey/lib/lcov/tools/bin;
     export PATH="/c/ProgramData/chocolatey/lib/lcov/tools/bin:${PATH}";
   fi
 
@@ -524,6 +527,7 @@ test_commands() {
   checkCommand unzip;
   checkCommand ranlib;
   checkCommand ar;
+  checkCommand shellcheck;
 
   if uname -a | grep -iq 'darwin'; then
     # Only available in MacOS.
@@ -536,7 +540,6 @@ test_commands() {
     # Not available in MacOS & Windows.
     checkCommand free;
     checkCommand setsid;
-    checkCommand shellcheck;
   fi
 
   if ! uname -a | grep -iq 'msys'; then

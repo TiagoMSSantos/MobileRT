@@ -931,7 +931,7 @@ jobs:
         run: |
           env;
           # shellcheck disable=SC1091
-          . scripts/helper_functions.sh && prepareBinaries "${GITHUB_WORKSPACE}";
+          . ${{ github.workspace }}/scripts/helper_functions.sh && prepareBinaries "${GITHUB_WORKSPACE}";
           host_os=$(echo "${RUNNER_OS}" | tr '[:upper:]' '[:lower:]');
           cpu_architecture=$(echo "${RUNNER_ARCH}" | tr '[:upper:]' '[:lower:]');
           if [ "${cpu_architecture}" = 'x64' ]; then
