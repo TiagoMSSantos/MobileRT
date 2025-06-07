@@ -455,7 +455,12 @@ zipFilesForArtifact() {
 # Generate code coverage.
 generateCodeCoverage() {
   echo 'Generating code coverage';
-  lcov -c -d . --no-external --ignore-errors mismatch --ignore-errors negative -o code_coverage_test.info;
+  uname -a;
+  if uname -a | grep -iq 'msys'; then
+    lcov -c -d . --no-external --ignore-errors inconsistent,format,negative -o code_coverage_test.info;
+  else
+    lcov -c -d . --no-external --ignore-errors mismatch,inconsistent,format,negative -o code_coverage_test.info;
+  fi
   echo 'Merging code coverage';
   lcov -a code_coverage_base.info -a code_coverage_test.info -o code_coverage.info;
   echo 'Removing coverage of third party code and of tests';

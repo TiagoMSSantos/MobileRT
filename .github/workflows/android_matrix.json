@@ -1,9 +1,15 @@
 {
   "include":
   [
-    { "host_os": "ubuntu-24.04", "android_api": "15", "type": "release" },
-    { "host_os": "ubuntu-22.04", "android_api": "21", "type": "release" },
-    { "host_os": "ubuntu-22.04", "android_api": "29", "type": "debug" },
-    { "host_os": "ubuntu-24.04", "android_api": "35", "type": "release" }
+    { "host_os": "macos-13", "android_api": "15", "type": "debug" },
+    { "host_os": "windows-latest", "android_api": "15", "type": "debug" },
+    { "host_os": "windows-latest", "android_api": "17", "type": "debug" },
+    { "host_os": "macos-13", "android_api": "18", "type": "debug" },
+    { "host_os": "windows-latest", "android_api": "19", "type": "debug" },
+    { "host_os": "macos-13", "android_api": "19", "type": "debug" },
+    { "host_os": "windows-latest", "android_api": "20", "type": "debug" },
+    { "host_os": "macos-13", "android_api": "20", "type": "debug" },
+    { "host_os": "windows-latest", "android_api": "24", "type": "debug" },
+    { "host_os": "macos-13", "android_api": "25", "type": "debug" }
   ]
 }

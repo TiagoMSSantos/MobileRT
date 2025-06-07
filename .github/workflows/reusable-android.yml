@@ -559,14 +559,16 @@ jobs:
 
       - name: Check report's paths
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success() && startsWith(inputs.host_os, 'ubuntu') && inputs.type == 'debug'
+        if: success() && inputs.type == 'debug'
         run: |
+          find . -iname "*jacocoTestReport*";
+          ls -lahp app/build/reports/jacoco/;
           # shellcheck disable=SC1091
           . scripts/helper_functions.sh && checkPathExists app/build/reports/jacoco/jacocoTestReport jacocoTestReport.xml;
 
       - name: Upload reports to cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success() && startsWith(inputs.host_os, 'ubuntu') && inputs.type == 'debug'
+        if: success() && inputs.type == 'debug'
         uses: actions/cache/save@v4
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/save/action.yml
@@ -904,7 +906,7 @@ jobs:
 
       - name: Download reports from cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success() && startsWith(inputs.host_os, 'ubuntu')
+        if: success()
         uses: actions/cache/restore@v4
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
