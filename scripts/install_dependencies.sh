@@ -390,7 +390,7 @@ install_dependencies_windows() {
   if ! command -v lcov > /dev/null; then
     # Install lcov: https://community.chocolatey.org/packages/lcov
     choco install -y lcov;
-    export PATH="/c/ProgramData/chocolatey/lib/lcov/tools/bin:${PATH}";
+    export PATH="/c/ProgramData/chocolatey/lib/lcov/tools/bin:../ProgramData/chocolatey/lib/lcov/tools/bin:${PATH}";
   fi
 
   set +e;
