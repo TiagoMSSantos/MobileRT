@@ -456,10 +456,14 @@ zipFilesForArtifact() {
 generateCodeCoverage() {
   echo 'Generating code coverage';
   uname -a;
-  if uname -a | grep -iq 'msys'; then
-    lcov -c -d . --no-external -o code_coverage_test.info;
-  else
+  lcov --version;
+  if lcov --version | grep -iq 'version 2.'; then
+    echo 'Detected LCOV version 2.';
     lcov -c -d . --no-external --ignore-errors mismatch,inconsistent,format,negative,corrupt -o code_coverage_test.info;
+  else
+    # LCOV v1 doesn't support flags mismatch & inconsistent & format.
+    echo 'Detected LCOV version 1.';
+    lcov -c -d . --no-external -o code_coverage_test.info;
   fi
   echo 'Merging code coverage';
   lcov --ignore-errors inconsistent,format,corrupt -a code_coverage_base.info -a code_coverage_test.info -o code_coverage.info;

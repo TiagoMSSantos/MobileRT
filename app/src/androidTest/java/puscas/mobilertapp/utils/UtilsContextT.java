@@ -66,7 +66,8 @@ public final class UtilsContextT {
         final DrawView drawView = UtilsT.getPrivateField(activity, "drawView");
         final MainRenderer renderer = drawView.getRenderer();
 
-        final int timeToWaitInMillis = Objects.equals(expectedButtonText, Constants.STOP) ? 20 * 1000 : 60 * 1000;
+        // 20 seconds might not be enough for UiTest#testUI when Android emulator doesn´t have hardware acceleration enabled.
+        final int timeToWaitInMillis = Objects.equals(expectedButtonText, Constants.STOP) ? 30 * 1000 : 60 * 1000;
         for (int currentTimeMs = 0; currentTimeMs < timeToWaitInMillis && !done.get(); currentTimeMs += waitInMillis) {
             // RayTracingTest#testRenderSceneFromSDCardOBJ starts to fail when using 5ms.
             ViewActionWait.waitForBitmapUpdate(2);

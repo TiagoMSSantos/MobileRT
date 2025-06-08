@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2025-06-08T06:38:27.603Z",
+    "detectionDate": "2025-06-08T08:47:25.515Z",
     "formats": {
       "java": {
         "sources": {
@@ -665,8 +665,8 @@
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/utils/UtilsContextT.java": {
-            "lines": 155,
-            "tokens": 1573,
+            "lines": 156,
+            "tokens": 1576,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -1062,8 +1062,8 @@
           }
         },
         "total": {
-          "lines": 10760,
-          "tokens": 76251,
+          "lines": 10761,
+          "tokens": 76254,
           "sources": 88,
           "clones": 61,
           "duplicatedLines": 565,
@@ -2009,7 +2009,7 @@
             "newClones": 0
           },
           ".github/workflows/reusable-native.yml": {
-            "lines": 437,
+            "lines": 440,
             "tokens": 2277,
             "sources": 1,
             "clones": 0,
@@ -2190,13 +2190,13 @@
           }
         },
         "total": {
-          "lines": 2391,
+          "lines": 2394,
           "tokens": 14665,
           "sources": 24,
           "clones": 6,
           "duplicatedLines": 131,
           "duplicatedTokens": 694,
-          "percentage": 5.48,
+          "percentage": 5.47,
           "percentageTokens": 4.73,
           "newDuplicatedLines": 0,
           "newClones": 0
@@ -2301,8 +2301,8 @@
             "newClones": 0
           },
           "scripts/helper_functions.sh": {
-            "lines": 547,
-            "tokens": 3963,
+            "lines": 551,
+            "tokens": 3984,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2362,13 +2362,13 @@
           }
         },
         "total": {
-          "lines": 4455,
-          "tokens": 30095,
+          "lines": 4459,
+          "tokens": 30116,
           "sources": 13,
           "clones": 11,
           "duplicatedLines": 244,
           "duplicatedTokens": 1205,
-          "percentage": 5.48,
+          "percentage": 5.47,
           "percentageTokens": 4,
           "newDuplicatedLines": 0,
           "newClones": 0
@@ -3284,13 +3284,13 @@
       }
     },
     "total": {
-      "lines": 30420,
-      "tokens": 236354,
+      "lines": 30428,
+      "tokens": 236378,
       "sources": 260,
       "clones": 116,
       "duplicatedLines": 1328,
       "duplicatedTokens": 12793,
-      "percentage": 4.37,
+      "percentage": 4.36,
       "percentageTokens": 5.41,
       "newDuplicatedLines": 0,
       "newClones": 0
