@@ -455,11 +455,16 @@ zipFilesForArtifact() {
 # Generate code coverage.
 generateCodeCoverage() {
   echo 'Generating code coverage';
-  lcov -c -d . --no-external --ignore-errors mismatch --ignore-errors negative -o code_coverage_test.info;
+  uname -a;
+  if uname -a | grep -iq 'msys'; then
+    lcov -c -d . --no-external -o code_coverage_test.info;
+  else
+    lcov -c -d . --no-external --ignore-errors mismatch,inconsistent,format,negative,corrupt -o code_coverage_test.info;
+  fi
   echo 'Merging code coverage';
-  lcov -a code_coverage_base.info -a code_coverage_test.info -o code_coverage.info;
+  lcov --ignore-errors inconsistent,format,corrupt -a code_coverage_base.info -a code_coverage_test.info -o code_coverage.info;
   echo 'Removing coverage of third party code and of tests';
-  lcov --remove code_coverage.info '*third_party*' '*build*' '*Unit_Testing*' -o code_coverage_filtered.info;
+  lcov --ignore-errors format --remove code_coverage.info '*third_party*' '*build*' '*Unit_Testing*' -o code_coverage_filtered.info;
   echo 'Generating HTML page with code coverage';
   genhtml code_coverage_filtered.info -o code_coverage_report --no-branch-coverage -t MobileRT_code_coverage;
   echo 'Validating code coverage files';

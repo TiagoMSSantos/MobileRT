@@ -559,14 +559,14 @@ jobs:
 
       - name: Check report's paths
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success() && startsWith(inputs.host_os, 'ubuntu') && inputs.type == 'debug'
+        if: success() && inputs.type == 'debug'
         run: |
           # shellcheck disable=SC1091
           . scripts/helper_functions.sh && checkPathExists app/build/reports/jacoco/jacocoTestReport jacocoTestReport.xml;
 
       - name: Upload reports to cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success() && startsWith(inputs.host_os, 'ubuntu') && inputs.type == 'debug'
+        if: success() && inputs.type == 'debug'
         uses: actions/cache/save@v4
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/save/action.yml
@@ -904,7 +904,7 @@ jobs:
 
       - name: Download reports from cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success() && startsWith(inputs.host_os, 'ubuntu')
+        if: success()
         uses: actions/cache/restore@v4
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
@@ -933,12 +933,12 @@ jobs:
           # shellcheck disable=SC1091
           . ${{ github.workspace }}/scripts/helper_functions.sh && prepareBinaries "${GITHUB_WORKSPACE}";
           host_os=$(echo "${RUNNER_OS}" | tr '[:upper:]' '[:lower:]');
+          if [ "${host_os}" = 'macos' ]; then
+            host_os='darwin';
+          fi
           cpu_architecture=$(echo "${RUNNER_ARCH}" | tr '[:upper:]' '[:lower:]');
           if [ "${cpu_architecture}" = 'x64' ]; then
             cpu_architecture='amd64';
-          fi
-          if [ "${cpu_architecture}" = 'macos' ]; then
-            cpu_architecture='darwin';
           fi
           ../../../../test-reporter-latest-${host_os}-${cpu_architecture} format-coverage -t jacoco ../../../build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml;
           ../../../../test-reporter-latest-${host_os}-${cpu_architecture} upload-coverage;
@@ -1044,3 +1044,4 @@ jobs:
           path: app/build/reports
           if-no-files-found: error
           retention-days: 90
+          overwrite: true

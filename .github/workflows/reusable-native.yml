@@ -198,10 +198,15 @@ jobs:
 
       - name: Generate code coverage base
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success() && inputs.type == 'debug' && startsWith(inputs.compiler, 'g++') && startsWith(inputs.host_os, 'ubuntu')
+        if: success() && inputs.type == 'debug' && startsWith(inputs.compiler, 'g++')
         working-directory: .
         run: |
-          lcov -c -i -d . --no-external --ignore-errors mismatch -o code_coverage_base.info;
+          uname -a;
+          if uname -a | grep -iq 'msys'; then
+            lcov -c -i -d . --no-external -o code_coverage_base.info;
+          else
+            lcov -c -i -d . --no-external --ignore-errors mismatch,inconsistent,format -o code_coverage_base.info;
+          fi
 
       - name: Set sanitizer configs for Ubuntu
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -237,7 +242,7 @@ jobs:
           LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${gtestPath}" ${unitTestsExe} --gtest_filter=-*Engine*;
 
       - name: Run system tests Ray Tracing engine (for code coverage)
-        timeout-minutes: 30
+        timeout-minutes: 50
         if: success()
         working-directory: .
         run: |
@@ -307,7 +312,7 @@ jobs:
 
       - name: Generate code coverage
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success() && inputs.type == 'debug' && startsWith(inputs.compiler, 'g++') && startsWith(inputs.host_os, 'ubuntu')
+        if: success() && inputs.type == 'debug' && startsWith(inputs.compiler, 'g++')
         working-directory: .
         run: |
           # shellcheck disable=SC1091
@@ -315,7 +320,7 @@ jobs:
 
       - name: Upload code coverage to cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success() && inputs.type == 'debug' && startsWith(inputs.compiler, 'g++') && startsWith(inputs.host_os, 'ubuntu')
+        if: success() && inputs.type == 'debug' && startsWith(inputs.compiler, 'g++')
         uses: actions/cache/save@v4
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/save/action.yml
@@ -366,15 +371,19 @@ jobs:
           env;
           # shellcheck disable=SC1091
           . scripts/helper_functions.sh && prepareBinaries "${GITHUB_WORKSPACE}";
+          echo 'Discovering current OS.';
           host_os=$(echo "${RUNNER_OS}" | tr '[:upper:]' '[:lower:]');
+          if [ "${host_os}" = 'macos' ]; then
+            host_os='darwin';
+          fi
+          echo 'Discovering CPU architecture.';
           cpu_architecture=$(echo "${RUNNER_ARCH}" | tr '[:upper:]' '[:lower:]');
           if [ "${cpu_architecture}" = 'x64' ]; then
             cpu_architecture='amd64';
           fi
-          if [ "${cpu_architecture}" = 'macos' ]; then
-            cpu_architecture='darwin';
-          fi
+          echo 'Formatting code coverage.';
           ./test-reporter-latest-${host_os}-${cpu_architecture} format-coverage -t lcov code_coverage_filtered.info;
+          echo 'Uploading code coverage.';
           ./test-reporter-latest-${host_os}-${cpu_architecture} upload-coverage;
 
       - name: Send codecov report
