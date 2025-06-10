@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2025-06-08T08:47:25.515Z",
+    "detectionDate": "2025-06-10T11:57:28.780Z",
     "formats": {
       "java": {
         "sources": {
@@ -665,7 +665,7 @@
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/utils/UtilsContextT.java": {
-            "lines": 156,
+            "lines": 158,
             "tokens": 1576,
             "sources": 1,
             "clones": 0,
@@ -1062,7 +1062,7 @@
           }
         },
         "total": {
-          "lines": 10761,
+          "lines": 10763,
           "tokens": 76254,
           "sources": 88,
           "clones": 61,
@@ -2009,8 +2009,8 @@
             "newClones": 0
           },
           ".github/workflows/reusable-native.yml": {
-            "lines": 440,
-            "tokens": 2277,
+            "lines": 442,
+            "tokens": 2289,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2190,8 +2190,8 @@
           }
         },
         "total": {
-          "lines": 2394,
-          "tokens": 14665,
+          "lines": 2396,
+          "tokens": 14677,
           "sources": 24,
           "clones": 6,
           "duplicatedLines": 131,
@@ -2253,8 +2253,8 @@
             "newClones": 0
           },
           "scripts/run_tests_android.sh": {
-            "lines": 726,
-            "tokens": 5369,
+            "lines": 728,
+            "tokens": 5375,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2362,8 +2362,8 @@
           }
         },
         "total": {
-          "lines": 4459,
-          "tokens": 30116,
+          "lines": 4461,
+          "tokens": 30122,
           "sources": 13,
           "clones": 11,
           "duplicatedLines": 244,
@@ -3284,8 +3284,8 @@
       }
     },
     "total": {
-      "lines": 30428,
-      "tokens": 236378,
+      "lines": 30434,
+      "tokens": 236396,
       "sources": 260,
       "clones": 116,
       "duplicatedLines": 1328,

@@ -249,8 +249,8 @@ jobs:
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/save/action.yml
           key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
-          enableCrossOsArchive: false
           upload-chunk-size: 536870912
+          enableCrossOsArchive: false
           path: |
             app/build
             app/.cxx
@@ -317,8 +317,8 @@ jobs:
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/save/action.yml
           key: gradle_packages_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
-          enableCrossOsArchive: false
           upload-chunk-size: 536870912
+          enableCrossOsArchive: false
           path: |
             ${{ env.GRADLE_PATH }}/gradle-packages.zip
 
@@ -387,10 +387,12 @@ jobs:
         if: success()
         uses: actions/cache/restore@v4
         with:
-          # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
+          # Check available parameters in: https://github.com/actions/cache/blob/main/restore/action.yml
           key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
           restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
+          enableCrossOsArchive: false
           fail-on-cache-miss: true
+          lookup-only: false
           path: |
             app/build
             app/.cxx
@@ -401,10 +403,12 @@ jobs:
         if: success() && !startsWith(inputs.host_os, 'windows')
         uses: actions/cache/restore@v4
         with:
-          # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
+          # Check available parameters in: https://github.com/actions/cache/blob/main/restore/action.yml
           key: gradle_packages_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
           restore-keys: gradle_packages_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
+          enableCrossOsArchive: false
           fail-on-cache-miss: true
+          lookup-only: false
           path: |
             ${{ env.GRADLE_PATH }}/gradle-packages.zip
 
@@ -571,8 +575,8 @@ jobs:
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/save/action.yml
           key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
-          enableCrossOsArchive: false
           upload-chunk-size: 536870912
+          enableCrossOsArchive: false
           path: |
             app/build/reports
 
@@ -660,10 +664,12 @@ jobs:
         if: success() && !startsWith(inputs.host_os, 'windows')
         uses: actions/cache/restore@v4
         with:
-          # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
+          # Check available parameters in: https://github.com/actions/cache/blob/main/restore/action.yml
           key: gradle_packages_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
           restore-keys: gradle_packages_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
+          enableCrossOsArchive: false
           fail-on-cache-miss: true
+          lookup-only: false
           path: |
             ${{ env.GRADLE_PATH }}/gradle-packages.zip
 
@@ -680,10 +686,12 @@ jobs:
         if: success()
         uses: actions/cache/restore@v4
         with:
-          # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
+          # Check available parameters in: https://github.com/actions/cache/blob/main/restore/action.yml
           key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
           restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
+          enableCrossOsArchive: false
           fail-on-cache-miss: true
+          lookup-only: false
           path: |
             app/build
             app/.cxx
@@ -850,10 +858,12 @@ jobs:
         if: success() && !startsWith(inputs.host_os, 'windows')
         uses: actions/cache/restore@v4
         with:
-          # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
+          # Check available parameters in: https://github.com/actions/cache/blob/main/restore/action.yml
           key: gradle_packages_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
           restore-keys: gradle_packages_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
+          enableCrossOsArchive: false
           fail-on-cache-miss: true
+          lookup-only: false
           path: |
             ${{ env.GRADLE_PATH }}/gradle-packages.zip
 
@@ -870,10 +880,12 @@ jobs:
         if: success()
         uses: actions/cache/restore@v4
         with:
-          # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
+          # Check available parameters in: https://github.com/actions/cache/blob/main/restore/action.yml
           key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
           restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
+          enableCrossOsArchive: false
           fail-on-cache-miss: true
+          lookup-only: false
           path: |
             app/build
             app/.cxx
@@ -907,10 +919,12 @@ jobs:
         if: success()
         uses: actions/cache/restore@v4
         with:
-          # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
+          # Check available parameters in: https://github.com/actions/cache/blob/main/restore/action.yml
           key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
           restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
+          enableCrossOsArchive: false
           fail-on-cache-miss: true
+          lookup-only: false
           path: |
             app/build/reports
 

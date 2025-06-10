@@ -641,7 +641,9 @@ runInstrumentationTests() {
   if [ "${run_test}" = 'all' ]; then
     echo 'Running all tests';
     mkdir -p app/build/reports/jacoco/jacocoTestReport;
-    callCommandUntilSuccess 0 sh gradlew ${gradle_command} -DtestType="${type}" \
+    # Allow to execute the tests a 2nd time in case it fails.
+    # This allows for tests to pass when using Android emulator without hardware acceleration (e.g.: MacOS on Github Actions).
+    callCommandUntilSuccess 1 sh gradlew ${gradle_command} -DtestType="${type}" \
       -DandroidApiVersion="${android_api_version}" \
       -Pandroid.testInstrumentationRunnerArguments.package='puscas' \
       -DabiFilters="[${cpu_architecture}]" \
