@@ -52,7 +52,7 @@ jobs:
 
       - name: Validate codecov config
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success() && inputs.type == 'debug'
+        if: success() && inputs.type == 'debug' && startsWith(inputs.compiler, 'g++')
         working-directory: .
         run: |
           curl --fail-with-body --retry 5 --retry-delay 2 --connect-timeout 2 --data-binary @codecov.yml https://codecov.io/validate;
@@ -123,12 +123,9 @@ jobs:
         if: success()
         working-directory: .
         run: |
-          env;
           sh scripts/install_dependencies.sh;
-          export PATH="/c/ProgramData/chocolatey/lib/lcov/tools/bin:${PATH}";
-          echo "PATH: ${PATH}";
-          echo 'Storing PATH in workflow environment variables.';
-          echo "PATH=${PATH}" >> "${GITHUB_ENV}";
+          echo 'Adding path to lcov (windows only) in PATH environment variable.';
+          echo "/c/ProgramData/chocolatey/lib/lcov/tools/bin" >> ${GITHUB_PATH};
 
       - name: Check Qt path installation MacOS
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}

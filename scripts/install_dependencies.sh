@@ -390,7 +390,7 @@ install_dependencies_windows() {
   if ! command -v lcov > /dev/null; then
     # Install lcov: https://community.chocolatey.org/packages/lcov
     choco install -y lcov;
-    export PATH="/c/ProgramData/chocolatey/lib/lcov/tools/bin:../ProgramData/chocolatey/lib/lcov/tools/bin:${PATH}";
+    export PATH="${PATH}:/c/ProgramData/chocolatey/lib/lcov/tools/bin:../ProgramData/chocolatey/lib/lcov/tools/bin";
   fi
 
   set +e;
@@ -441,8 +441,8 @@ install_conan() {
   echo 'Installed conan!';
   pip3 install clang;
 
-  PATH=$(pip3 list -v | grep -i cmake | tr -s ' ' | cut -d ' ' -f 3 | head -1):${PATH};
-  PATH=$(pip3 list -v | grep -i conan | tr -s ' ' | cut -d ' ' -f 3 | head -1):${PATH};
+  PATH=${PATH}:$(pip3 list -v | grep -i cmake | tr -s ' ' | cut -d ' ' -f 3 | head -1);
+  PATH=${PATH}:$(pip3 list -v | grep -i conan | tr -s ' ' | cut -d ' ' -f 3 | head -1);
 
   addCommandToPath 'conan';
 

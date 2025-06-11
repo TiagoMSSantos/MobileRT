@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2025-06-10T11:57:28.780Z",
+    "detectionDate": "2025-06-11T08:14:08.512Z",
     "formats": {
       "java": {
         "sources": {
@@ -2009,8 +2009,8 @@
             "newClones": 0
           },
           ".github/workflows/reusable-native.yml": {
-            "lines": 442,
-            "tokens": 2289,
+            "lines": 439,
+            "tokens": 2296,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2190,8 +2190,8 @@
           }
         },
         "total": {
-          "lines": 2396,
-          "tokens": 14677,
+          "lines": 2393,
+          "tokens": 14684,
           "sources": 24,
           "clones": 6,
           "duplicatedLines": 131,
@@ -2290,13 +2290,13 @@
           },
           "scripts/install_dependencies.sh": {
             "lines": 573,
-            "tokens": 4593,
+            "tokens": 4588,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 42,
             "duplicatedTokens": 120,
             "percentage": 7.33,
-            "percentageTokens": 2.61,
+            "percentageTokens": 2.62,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2363,7 +2363,7 @@
         },
         "total": {
           "lines": 4461,
-          "tokens": 30122,
+          "tokens": 30117,
           "sources": 13,
           "clones": 11,
           "duplicatedLines": 244,
@@ -3284,8 +3284,8 @@
       }
     },
     "total": {
-      "lines": 30434,
-      "tokens": 236396,
+      "lines": 30431,
+      "tokens": 236398,
       "sources": 260,
       "clones": 116,
       "duplicatedLines": 1328,
