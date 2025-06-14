@@ -1,0 +1,6 @@
+{
+  "include":
+  [
+    { "host_os": "macos-13", "android_api": "22", "type": "debug" }
+  ]
+}

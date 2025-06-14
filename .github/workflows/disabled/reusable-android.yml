@@ -489,7 +489,7 @@ jobs:
             --info --warning-mode all --stacktrace;
 
       - name: Run Android tests
-        timeout-minutes: 30
+        timeout-minutes: 50
         if: success() && !startsWith(inputs.host_os, 'windows')
         uses: ReactiveCircus/android-emulator-runner@v2
         env:

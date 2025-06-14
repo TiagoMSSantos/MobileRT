@@ -126,6 +126,7 @@ jobs:
           sh scripts/install_dependencies.sh;
           echo 'Adding path to lcov (windows only) in PATH environment variable.';
           echo "/c/ProgramData/chocolatey/lib/lcov/tools/bin" >> ${GITHUB_PATH};
+          echo "/c/tools/git/bin" >> ${GITHUB_PATH};
 
       - name: Check Qt path installation MacOS
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -363,31 +364,6 @@ jobs:
             code_coverage_test.info
             code_coverage_filtered.info
 
-      - name: Send code climate report
-        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success()
-        working-directory: .
-        env:
-          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-        run: |
-          env;
-          # shellcheck disable=SC1091
-          . scripts/helper_functions.sh && prepareBinaries "${GITHUB_WORKSPACE}";
-          echo 'Discovering current OS.';
-          host_os=$(echo "${RUNNER_OS}" | tr '[:upper:]' '[:lower:]');
-          if [ "${host_os}" = 'macos' ]; then
-            host_os='darwin';
-          fi
-          echo 'Discovering CPU architecture.';
-          cpu_architecture=$(echo "${RUNNER_ARCH}" | tr '[:upper:]' '[:lower:]');
-          if [ "${cpu_architecture}" = 'x64' ]; then
-            cpu_architecture='amd64';
-          fi
-          echo 'Formatting code coverage.';
-          ./test-reporter-latest-${host_os}-${cpu_architecture} format-coverage -t lcov code_coverage_filtered.info;
-          echo 'Uploading code coverage.';
-          ./test-reporter-latest-${host_os}-${cpu_architecture} upload-coverage;
-
       - name: Send codecov report
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
@@ -417,9 +393,14 @@ jobs:
       - name: Code Coverage Shell script tests
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
+        shell: bash
         working-directory: .
         run: |
-          bashcov scripts/test/helper_functions.sh;
+          # Install new version of bash for code coverage.
+          brew list bash > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install bash || true;
+          ls -lahp /opt/homebrew/Cellar/bash/5.2.37;
+          ls -lahp /opt/homebrew/Cellar/bash/5.2.37/bin;
+          bashcov --bash-path /opt/homebrew/Cellar/bash/5.2.37/bin  scripts/test/helper_functions.sh;
           ls -lahp coverage;
           . scripts/helper_functions.sh && checkCodeCoverageIsNotZero coverage coverage.xml;
 

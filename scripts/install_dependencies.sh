@@ -319,6 +319,8 @@ install_dependencies_macos() {
     echo 'Installing shellcheck.';
     brew list shellcheck > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install shellcheck;
   fi
+  # Install new version of bash for code coverage.
+  brew list bash > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install bash;
 
   set +e;
   test -d Qt;
@@ -392,6 +394,13 @@ install_dependencies_windows() {
     choco install -y lcov;
     export PATH="${PATH}:/c/ProgramData/chocolatey/lib/lcov/tools/bin:../ProgramData/chocolatey/lib/lcov/tools/bin";
   fi
+
+  bash --version;
+  choco install -y git.portable;
+  ls -lahp /c/tools/git;
+  ls -lahp /c/tools/git/bin;
+  export PATH="${PATH}:/c/tools/git/bin";
+  bash --version;
 
   set +e;
   test -d Qt;

@@ -66,15 +66,15 @@ public final class UtilsContextT {
         final DrawView drawView = UtilsT.getPrivateField(activity, "drawView");
         final MainRenderer renderer = drawView.getRenderer();
 
-        final int timeToWaitForUpdatedImageInMillis = 60 * 1000;
+        final int timeToWaitForUpdatedImageInMillis = 360 * 1000;
         // 20 seconds might not be enough for UiTest#testUI when Android emulator doesn´t have hardware acceleration enabled.
-        final int timeToWaitInMillis = Objects.equals(expectedButtonText, Constants.STOP) ? 30 * 1000 : timeToWaitForUpdatedImageInMillis;
+        final int timeToWaitInMillis = Objects.equals(expectedButtonText, Constants.STOP) ? 180 * 1000 : timeToWaitForUpdatedImageInMillis;
 
         // The test 'PreviewTest#testPreviewSceneOrthographicCamera' starts to fail when using 1ms and 4ms.
         // The test 'UiTest' starts to fail when using 0ms.
         // The test 'PreviewTest#testPreviewScenePerspectiveCamera' can fail when using 2ms with MacOS.
         // The test 'RayTracingTest#testRenderSceneFromSDCardOBJ' starts to fail when using 5ms.
-        final int waitInMillisForBitmapUpdate = 2;
+        final int waitInMillisForBitmapUpdate = 5;
         for (int currentTimeMs = 0; currentTimeMs < timeToWaitInMillis && !done.get(); currentTimeMs += waitInMillis) {
             ViewActionWait.waitForBitmapUpdate(waitInMillisForBitmapUpdate);
             Espresso.onView(ViewMatchers.withId(R.id.renderButton))

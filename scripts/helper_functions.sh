@@ -504,6 +504,16 @@ _validateCodeCoverage() {
   _validateFileExistsAndHasSomeContent code_coverage_test.info;
   _validateFileExistsAndHasSomeContent code_coverage.info;
   _validateFileExistsAndHasSomeContent code_coverage_filtered.info;
+
+  ls -lahp ./;
+  echo 'code_coverage_base.info:';
+  cat code_coverage_base.info;
+  echo 'code_coverage_test.info:';
+  cat code_coverage_test.info;
+  echo 'code_coverage.info:';
+  cat code_coverage.info;
+  echo 'code_coverage_filtered.info:';
+  cat code_coverage_filtered.info;
 }
 
 # Add command to the PATH environment variable.

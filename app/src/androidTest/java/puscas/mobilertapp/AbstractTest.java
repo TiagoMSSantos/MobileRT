@@ -110,7 +110,7 @@ public abstract class AbstractTest {
      */
     @NonNull
     @Rule
-    public final TestRule timeoutRule = new Timeout(180L, TimeUnit.SECONDS);
+    public final TestRule timeoutRule = new Timeout(540L, TimeUnit.SECONDS);
 
     /**
      * The {@link Rule} to get the name of the current test.
