@@ -307,6 +307,29 @@ checkPathExists() {
   _validateFileExistsAndHasSomeContent "${1}"/"${2}";
 }
 
+# Check if code coverage report is not zero.
+# Parameters:
+# * path to the code coverage report file
+# * code coverage report file
+checkCodeCoverageIsNotZero() {
+  checkPathExists "${1}" "${2}";
+  set +e;
+  grep -iq 'lines-valid="0"' "${1}"/"${2}";
+  returnValue="$?";
+  if [ "${returnValue}" = '0' ]; then
+    set -e;
+    echo 'Code coverage report is not valid.';
+    return 1;
+  fi
+  grep -iq 'lines-covered="0"' "${1}"/"${2}";
+  returnValue="$?";
+  set -e;
+  if [ "${returnValue}" = '0' ]; then
+    echo 'Code coverage report is empty.';
+    return 1;
+  fi
+}
+
 # Change the mode of all binaries/scripts to be able to be executed.
 # Parameters:
 # * Optional - path to MobileRT
