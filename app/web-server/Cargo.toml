@@ -22,7 +22,7 @@ futures-util = "^0.3"       # Utilities for async futures.
 [dev-dependencies]
 # Dependencies for development and testing.
 futures = "^0.3"             # Base futures library for testing.
-tokio-tungstenite = "^0.26"  # WebSocket support for tests.
+tokio-tungstenite = "^0.27"  # WebSocket support for tests.
 
 
 [build-dependencies]
