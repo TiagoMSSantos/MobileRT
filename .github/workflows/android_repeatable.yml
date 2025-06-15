@@ -7,6 +7,7 @@ on:
     - '*'
     - '**/**'
     - '!.github/workflows/android_repeatable.yml'
+    - '!.github/workflows/android_repeatable-matrix.json'
 
 defaults:
   run:
@@ -24,17 +25,37 @@ env:
   GITHUB_STEP_TIMEOUT_LONG: 20
 
 jobs:
+  Matrix:
+    name: Set Matrix
+    runs-on: macos-latest
+    timeout-minutes: 2
+
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+
+    steps:
+      - name: Checkout
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success()
+        uses: actions/checkout@v4
+
+      - name: Set Matrix
+        id: set-matrix
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success()
+        run: |
+          MATRIX=$(echo $(cat .github/workflows/android_repeatable-matrix.json) | sed 's/ //g');
+          echo "Matrix: ${MATRIX}";
+          echo "matrix=${MATRIX}" >> ${GITHUB_OUTPUT};
+
+
   Build:
+    needs: [Matrix]
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
 
     strategy:
       fail-fast: false
-      matrix:
-        include:
-        - test: RayTracingTest#testRenderSceneFromSDCardOBJ
-          type: debug
-          host_os: ubuntu-latest
-          android_api: 30
+      matrix: ${{ fromJSON(needs.Matrix.outputs.matrix) }}
 
     name: ${{ matrix.test }} [${{ matrix.type }} (${{ matrix.host_os }})]
     runs-on: ${{ matrix.host_os }}
@@ -68,7 +89,6 @@ jobs:
         cache-dependency-path: '**/build.gradle'
 
     - name: Set Android CPU Architecture
-      id: set-cpu-arch
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       run: |

@@ -11,7 +11,7 @@ on:
       - '*'
       - '**/**'
       - '!.github/workflows/native.yml'
-      - '!.github/workflows/native_matrix.json'
+      - '!.github/workflows/native-matrix.json'
       - '!.github/workflows/reusable-native.yml'
       - '!scripts/helper_functions.sh'
       - '!scripts/install_dependencies.sh'
@@ -45,7 +45,7 @@ env:
 jobs:
   Matrix:
     name: Set Matrix
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     timeout-minutes: 2
 
     outputs:
@@ -63,9 +63,9 @@ jobs:
         if: success()
         run: |
           if [ "${{ inputs.code-coverage-only }}" = 'true' ]; then
-            MATRIX='{"include":[{"name":"G++","host_os":"ubuntu-24.04","type":"debug","compiler":"g++"}]}';
+            MATRIX='{"include":[{"host_os":"ubuntu-24.04","type":"debug","compiler":"g++"}]}';
           else
-            MATRIX=$(echo $(cat .github/workflows/native_matrix.json) | sed 's/ //g');
+            MATRIX=$(echo $(cat .github/workflows/native-matrix.json) | sed 's/ //g');
           fi
           echo "Matrix: ${MATRIX}";
           echo "matrix=${MATRIX}" >> ${GITHUB_OUTPUT};
@@ -78,11 +78,9 @@ jobs:
       matrix: ${{ fromJSON(needs.Matrix.outputs.matrix) }}
     uses: ./.github/workflows/reusable-native.yml
     with:
-      name: ${{ matrix.name }}
       host_os: ${{ matrix.host_os }}
       type: ${{ matrix.type }}
       compiler: ${{ matrix.compiler }}
-      qt_host: ${{ matrix.qt_host }}
       qt_version: ${{ matrix.qt_version }}
       qt_arch: ${{ matrix.qt_arch }}
     # If you might want to use a secret in the build or test job then you would need to pass secrets, inherit disables secret isolation

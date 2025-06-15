@@ -954,7 +954,9 @@ jobs:
           if [ "${cpu_architecture}" = 'x64' ]; then
             cpu_architecture='amd64';
           fi
+          echo 'Formatting code coverage';
           ../../../../test-reporter-latest-${host_os}-${cpu_architecture} format-coverage -t jacoco ../../../build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml;
+          echo 'Uploading code coverage.';
           ../../../../test-reporter-latest-${host_os}-${cpu_architecture} upload-coverage;
 
       - name: Set Android CPU Architecture

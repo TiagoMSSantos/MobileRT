@@ -3,9 +3,6 @@ name: Reusable Native workflow
 on:
   workflow_call:
     inputs:
-      name:
-        type: string
-        required: true
       host_os:
         type: string
         required: true
@@ -15,9 +12,6 @@ on:
       compiler:
         type: string
         required: true
-      qt_host:
-        type: string
-        required: false
       qt_version:
         type: string
         required: false
@@ -40,7 +34,7 @@ jobs:
   Build:
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
 
-    name: ${{ inputs.name }} ${{ inputs.host_os }} (${{ inputs.type }})
+    name: ${{ inputs.compiler }} ${{ inputs.host_os }} (${{ inputs.type }})
     runs-on: ${{ inputs.host_os }}
     timeout-minutes: 360
 
@@ -66,7 +60,7 @@ jobs:
 
       - name: Check Windows Visual Studio versions
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success() && startsWith(inputs.name, 'MSVC')
+        if: success() && inputs.compiler == 'cl'
         working-directory: .
         run: |
           ls -lahp "C:/Program Files/Microsoft Visual Studio/";
@@ -98,6 +92,18 @@ jobs:
           # Cannot create output directory : Cannot create a file when that file already exists. : D:\a\MobileRT\MobileRT\Qt\6.9.0\msvc2022_64
           rm -rf Qt;
 
+      - name: Set Qt CPU Architecture (Windows & MacOS)
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success() && (startsWith(inputs.host_os, 'windows') || startsWith(inputs.host_os, 'macos-12'))
+        run: |
+          if [ ${{ startsWith(inputs.host_os, 'windows') }} = true ]; then
+            echo 'qt_host=windows' >> "${GITHUB_ENV}";
+          elif [ ${{ startsWith(inputs.host_os, 'macos') }} = true ]; then
+            echo 'qt_host=mac' >> "${GITHUB_ENV}";
+          else
+            exit 1;
+          fi
+
       - name: Install Qt (Windows & MacOS)
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success() && (startsWith(inputs.host_os, 'windows') || startsWith(inputs.host_os, 'macos-12'))
@@ -106,14 +112,14 @@ jobs:
         with:
           # Check available parameters in: https://github.com/jurplel/install-qt-action/blob/master/action.yml
           version: '${{ inputs.qt_version }}' # Also update: app/CMakeLists.txt
-          host: '${{ inputs.qt_host }}'
+          host: '${{ env.qt_host }}'
           target: 'desktop'
           arch: '${{ inputs.qt_arch }}'
           dir: '${{ github.workspace }}'
           install-deps: 'false'
           modules: ''
           cache: 'true'
-          cache-key-prefix: '${{ inputs.qt_host }}-${{ inputs.qt_arch }}'
+          cache-key-prefix: '${{ env.qt_host }}-${{ inputs.qt_arch }}'
           setup-python: 'true'
           set-env: 'true'
           py7zrversion: '>=1.0.0'
@@ -198,6 +204,7 @@ jobs:
         if: success() && inputs.type == 'debug' && startsWith(inputs.compiler, 'g++')
         working-directory: .
         run: |
+          g++ --version;
           lcov --version;
           if lcov --version | grep -iq 'version 2.'; then
             echo 'Detected LCOV version 2.';
@@ -324,7 +331,7 @@ jobs:
         uses: actions/cache/save@v4
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/save/action.yml
-          key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.name }}_${{ inputs.host_os }}_${{ inputs.type }}_${{ inputs.compiler }}
+          key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.host_os }}_${{ inputs.type }}_${{ inputs.compiler }}
           upload-chunk-size: 536870912
           enableCrossOsArchive: false
           path: |
@@ -352,8 +359,8 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/restore/action.yml
-          key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.name }}_${{ inputs.host_os }}_${{ inputs.type }}_${{ inputs.compiler }}
-          restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.name }}_${{ inputs.host_os }}_${{ inputs.type }}_${{ inputs.compiler }}
+          key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.host_os }}_${{ inputs.type }}_${{ inputs.compiler }}
+          restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.host_os }}_${{ inputs.type }}_${{ inputs.compiler }}
           enableCrossOsArchive: false
           fail-on-cache-miss: true
           lookup-only: false
@@ -384,9 +391,9 @@ jobs:
             cpu_architecture='amd64';
           fi
           echo 'Formatting code coverage.';
-          ./test-reporter-latest-${host_os}-${cpu_architecture} format-coverage -t lcov code_coverage_filtered.info;
+          ./test-reporter-latest-${host_os}-${cpu_architecture} format-coverage -d -t lcov code_coverage_filtered.info;
           echo 'Uploading code coverage.';
-          ./test-reporter-latest-${host_os}-${cpu_architecture} upload-coverage;
+          ./test-reporter-latest-${host_os}-${cpu_architecture} upload-coverage -d;
 
       - name: Send codecov report
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -403,7 +410,7 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           # Check available parameters in: https://github.com/ruby/setup-ruby/blob/master/action.yml
-          ruby-version: '3.3'
+          ruby-version: '3.4'
           bundler-cache: false
           cache-version: 0
 

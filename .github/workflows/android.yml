@@ -62,7 +62,7 @@ jobs:
         if: success()
         run: |
           # Android usage: https://apilevels.com/
-          MATRIX=$(echo $(cat .github/workflows/android_matrix.json) | sed 's/ //g');
+          MATRIX=$(echo $(cat .github/workflows/android-matrix.json) | sed 's/ //g');
           echo "Matrix: ${MATRIX}";
           echo "matrix=${MATRIX}" >> ${GITHUB_OUTPUT};
 

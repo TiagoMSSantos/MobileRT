@@ -110,13 +110,13 @@ testMobileRTContainer() {
   exec 3>&-; # Close file descriptor 3.
   set -e;
 
-  # TODO: Increase the number of chars in Windows terminal lines. Currently only shows 80 chars per line.
   echo 'Validating if MobileRT finished rendering the Conference scene.';
   ls -lahp "${_logFile}";
-  grep -qne 'Finished rendering sc' "${_logFile}";
-  grep -qne 'cene' "${_logFile}";
-  grep -qne 'Total Millions rays p' "${_logFile}";
-  grep -qne 'per second = ' "${_logFile}";
+  grep -qne 'Executing Qt app asynchronously.' "${_logFile}";
+  grep -qne 'RayTrace ended.' "${_logFile}";
+  grep -qne 'Finished rendering scene' "${_logFile}";
+  grep -qne 'Total Millions rays per second' "${_logFile}";
+  grep -qne 'work_thread ended.' "${_logFile}";
   echo 'Validating number of primitives and lights.';
   grep -qne 'TRIANGLES = 331179' "${_logFile}";
   grep -qne 'LIGHTS = 2' "${_logFile}";

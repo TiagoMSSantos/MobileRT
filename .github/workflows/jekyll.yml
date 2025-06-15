@@ -13,6 +13,7 @@ on:
     - '*'
     - '**/**'
     - '!.github/workflows/jekyll.yml'
+    - '!.github/workflows/jekyll-matrix.json'
     - '!**/docs/**'
     - '!**/Gemfile*'
 
@@ -41,10 +42,41 @@ env:
   GITHUB_STEP_TIMEOUT_SMALL: 4
 
 jobs:
-  # Build job
-  build:
+  Matrix:
+    name: Set Matrix
     runs-on: ubuntu-latest
-    name: Build
+    timeout-minutes: 2
+
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+
+    steps:
+      - name: Checkout
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success()
+        uses: actions/checkout@v4
+
+      - name: Set Matrix
+        id: set-matrix
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success()
+        run: |
+          MATRIX=$(echo $(cat .github/workflows/jekyll-matrix.json) | sed 's/ //g');
+          echo "Matrix: ${MATRIX}";
+          echo "matrix=${MATRIX}" >> ${GITHUB_OUTPUT};
+
+
+  Build:
+    needs: [Matrix]
+
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.Matrix.outputs.matrix) }}
+
+    name: Build ${{ matrix.host_os }}
+    runs-on: ${{ matrix.host_os }}
+    timeout-minutes: 5
+
     steps:
       - name: Checkout
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -66,7 +98,7 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           # Check available parameters in: https://github.com/ruby/setup-ruby/blob/master/action.yml
-          ruby-version: '3.3'
+          ruby-version: '3.4'
           bundler-cache: false
           cache-version: 0
 
@@ -132,14 +164,22 @@ jobs:
           # Check available parameters in: https://github.com/actions/upload-pages-artifact/blob/main/action.yml
           name: github-pages
           path: _site
-          retention-days: 1
+          retention-days: 90
+
 
   # Deployment job (only on master branch)
-  deploy:
-    runs-on: ubuntu-latest
-    name: Deploy
-    needs: build
-    if: ${{ contains(github.ref, 'master')}}
+  Deploy:
+    needs: [Matrix, Build]
+    if: ${{ contains(github.ref, 'master') }}
+
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.Matrix.outputs.matrix) }}
+
+    name: Deploy ${{ matrix.host_os }}
+    runs-on: ${{ matrix.host_os }}
+    timeout-minutes: 2
+
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

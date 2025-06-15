@@ -7,6 +7,7 @@ on:
     - '*'
     - '**/**'
     - '!.github/workflows/docker.yml'
+    - '!.github/workflows/docker-matrix.json'
     - '!.github/macports.yml'
     - '!app/third_party/conan/Native/**'
     - '!deploy/Dockerfile*'
@@ -39,27 +40,39 @@ env:
   GITHUB_STEP_TIMEOUT_LONG: 20
 
 jobs:
+  Matrix:
+    name: Set Matrix
+    runs-on: macos-latest
+    timeout-minutes: 2
+
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+
+    steps:
+      - name: Checkout
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success()
+        uses: actions/checkout@v4
+
+      - name: Set Matrix
+        id: set-matrix
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success()
+        run: |
+          MATRIX=$(echo $(cat .github/workflows/docker-matrix.json) | sed 's/ //g');
+          echo "Matrix: ${MATRIX}";
+          echo "matrix=${MATRIX}" >> ${GITHUB_OUTPUT};
+
+
   Build:
+    needs: [Matrix]
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
 
     strategy:
       fail-fast: false
-      matrix:
-        include:
-        - host_os: ubuntu-latest
-          BASE_IMAGE: ubuntu:24.04
-        - host_os: ubuntu-latest
-          BASE_IMAGE: tgagor/centos:stream9
-        - host_os: ubuntu-latest
-          BASE_IMAGE: archlinux/archlinux:base-devel
-        - host_os: ubuntu-latest
-          BASE_IMAGE: alpine:3.22.0
-        - host_os: ubuntu-latest
-          BASE_IMAGE: gentoo/stage3:latest
-        - host_os: windows-latest
-          BASE_IMAGE: mcr.microsoft.com/windows/servercore:ltsc2022
+      matrix: ${{ fromJSON(needs.Matrix.outputs.matrix) }}
 
-    name: ${{ matrix.BASE_IMAGE }} (${{ matrix.host_os }})
+    name: ${{ matrix.base_image }} (${{ matrix.host_os }})
     runs-on: ${{ matrix.host_os }}
     # Necessary timeout of +/- 300 min to be able to build MobileRT with gentoo.
     # That's why we try to pull a previously available version and update it with a new layer instead.
@@ -84,7 +97,7 @@ jobs:
       if: success()
       shell: bash
       env:
-        BASE_IMAGE: ${{ matrix.BASE_IMAGE }}
+        BASE_IMAGE: ${{ matrix.base_image }}
       run: |
         export BRANCH=${GITHUB_REF#refs/heads/};
         echo "BRANCH: ${BRANCH}";
@@ -105,8 +118,6 @@ jobs:
     - name: Install docker MacOS
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
       if: success() && startsWith(matrix.host_os, 'macos')
-      env:
-        BASE_IMAGE: ${{ matrix.BASE_IMAGE }}
       run: |
         # shellcheck disable=SC1091
         . scripts/docker.sh && installDockerCommandForMacOS;
@@ -154,7 +165,7 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
       run: |
-        baseImageRegex=$(echo "${{ matrix.BASE_IMAGE }}" | sed 's/:/.*/');
+        baseImageRegex=$(echo "${{ matrix.base_image }}" | sed 's/:/.*/');
         mobilertImageRegex=$(echo "mobile_rt.*${{ env.VERSION }}");
         echo "baseImageRegex: ${baseImageRegex}";
         echo "mobilertImageRegex: ${mobilertImageRegex}";
@@ -294,7 +305,7 @@ jobs:
         Get-Location
         Get-ChildItem -Force
 
-        bash -c ". scripts/docker.sh && buildDockerImage ${{ matrix.BASE_IMAGE }} ${{ env.BRANCH }} ${{ env.VERSION }};"
+        bash -c ". scripts/docker.sh && buildDockerImage ${{ matrix.base_image }} ${{ env.BRANCH }} ${{ env.VERSION }};"
         if (-not $?) {throw "Failed to build image."}
         docker images
 
@@ -302,7 +313,7 @@ jobs:
       timeout-minutes: 60
       if: success()
       run: |
-        if echo "${{ matrix.BASE_IMAGE }}" | grep -q -e 'gentoo'; then
+        if echo "${{ matrix.base_image }}" | grep -q -e 'gentoo'; then
           echo "Pulling MobileRT docker image ${{ env.VERSION }}";
           . scripts/docker.sh && pullDockerImage ptpuscas/mobile_rt:${{ env.VERSION }} &
           pid_docker_pull="$!";
@@ -312,8 +323,8 @@ jobs:
           . scripts/docker.sh && squashMobileRTDockerImage ${{ env.VERSION }} &
           pid_docker="$!";
         else
-          echo "Pulling docker base image ${{ matrix.BASE_IMAGE }}";
-          . scripts/docker.sh && pullDockerImage ${{ matrix.BASE_IMAGE }} &
+          echo "Pulling docker base image ${{ matrix.base_image }}";
+          . scripts/docker.sh && pullDockerImage ${{ matrix.base_image }} &
           pid_docker="$!";
           export BUILD_IMAGE='yes';
         fi
@@ -331,10 +342,10 @@ jobs:
       if: success() && env.BUILD_IMAGE == 'yes'
       run: |
         # shellcheck disable=SC1091
-        echo "BASE_IMAGE: ${{ matrix.BASE_IMAGE }}";
+        echo "base_image: ${{ matrix.base_image }}";
         echo "BRANCH: ${{ env.BRANCH }}";
         echo "VERSION: ${{ env.VERSION }}";
-        . scripts/docker.sh && buildDockerImage ${{ matrix.BASE_IMAGE }} ${{ env.BRANCH }} ${{ env.VERSION }};
+        . scripts/docker.sh && buildDockerImage ${{ matrix.base_image }} ${{ env.BRANCH }} ${{ env.VERSION }};
 
     - name: Build MobileRT
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
@@ -373,7 +384,7 @@ jobs:
       if: success()
       working-directory: .
       run: |
-        if echo "${{ matrix.BASE_IMAGE }}" | grep -q 'alpine'; then
+        if echo "${{ matrix.base_image }}" | grep -q 'alpine'; then
           sh scripts/test/docker/dockerfile.sh ${{ env.VERSION }} 143; # Expect SIGTERM (15). 128 + 15 = 143
         else
           sh scripts/test/docker/dockerfile.sh ${{ env.VERSION }};

@@ -7,6 +7,7 @@ on:
     - '*'
     - '**/**'
     - '!.github/workflows/code-analysis.yml'
+    - '!.github/workflows/code-analysis-matrix.json'
     - '!codecov.yml'
     - '!Gemfile'
     - '!scripts/install_dependencies.sh'
@@ -39,18 +40,39 @@ env:
   GITHUB_STEP_TIMEOUT_LONG: 20
 
 jobs:
+  Matrix:
+    name: Set Matrix
+    runs-on: macos-latest
+    timeout-minutes: 2
+
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+
+    steps:
+      - name: Checkout
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success()
+        uses: actions/checkout@v4
+
+      - name: Set Matrix
+        id: set-matrix
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success()
+        run: |
+          MATRIX=$(echo $(cat .github/workflows/code-analysis-matrix.json) | sed 's/ //g');
+          echo "Matrix: ${MATRIX}";
+          echo "matrix=${MATRIX}" >> ${GITHUB_OUTPUT};
+
+
   Build:
+    needs: [Matrix]
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
 
     strategy:
       fail-fast: false
-      matrix:
-        # Override automatic language detection by changing the below list
-        # Supported options are ['cpp', 'csharp', 'go', 'java', 'javascript', 'python', 'ruby', 'swift']
-        language: ['cpp', 'java']
-        host_os: ['ubuntu-latest']
-        # Learn more...
-        # https://docs.github.com/en/github/finding-security-vulnerabilities-and-errors-in-your-code/configuring-code-scanning#overriding-automatic-language-detection
+      matrix: ${{ fromJSON(needs.Matrix.outputs.matrix) }}
+      # Supported options are ['c-cpp', 'csharp', 'go', 'java-kotlin', 'javascript-typescript', 'python', 'ruby', 'swift', 'actions']
+      # Learn more: https://docs.github.com/en/code-security/code-scanning/creating-an-advanced-setup-for-code-scanning/customizing-your-advanced-setup-for-code-scanning#changing-the-languages-that-are-analyzed
 
     name: Analyze ${{ matrix.language }} (${{ matrix.host_os }})
     runs-on: ${{ matrix.host_os }}
@@ -64,7 +86,7 @@ jobs:
 
     - name: Set up JDK
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && matrix.language == 'java'
+      if: success() && matrix.language == 'java-kotlin'
       uses: actions/setup-java@v4
       with:
         # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml
@@ -85,7 +107,7 @@ jobs:
 
     - name: Check available Android versions
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
-      if: success() && matrix.language == 'java'
+      if: success() && matrix.language == 'java-kotlin'
       working-directory: .
       run: |
         echo 'Available Android versions:';
@@ -115,14 +137,13 @@ jobs:
         packs: codeql/cpp-queries,codeql/java-queries,codeql/ruby-queries
 
     - name: Set Qt CPU Architecture (Windows & MacOS)
-      id: set-cpu-arch
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && (startsWith(matrix.host_os, 'windows') || startsWith(matrix.host_os, 'macos'))
       run: |
-        if [ ${{ startsWith(matrix.host_os, 'windows') }} = true ]; then
+        if [ ${{ startsWith(inputs.host_os, 'windows') }} = true ]; then
           echo 'qt_host=windows' >> "${GITHUB_ENV}";
           echo 'qt_arch=win64_msvc2019_64' >> "${GITHUB_ENV}";
-        elif [ ${{ startsWith(matrix.host_os, 'macos') }} = true ]; then
+        elif [ ${{ startsWith(inputs.host_os, 'macos') }} = true ]; then
           echo 'qt_host=mac' >> "${GITHUB_ENV}";
           echo 'qt_arch=clang_64' >> "${GITHUB_ENV}";
         else
@@ -154,14 +175,14 @@ jobs:
 
     - name: Install dependencies
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && matrix.language == 'cpp'
+      if: success() && matrix.language == 'c-cpp'
       working-directory: .
       run: |
         sh scripts/install_dependencies.sh;
 
     - name: Download Android CMake
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && matrix.language != 'cpp' && !startsWith(matrix.host_os, 'windows')
+      if: success() && matrix.language != 'c-cpp' && !startsWith(matrix.host_os, 'windows')
       run: |
         ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'cmake;4.0.2';
 
@@ -173,7 +194,7 @@ jobs:
 
     - name: Autobuild
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
-      if: success() && matrix.language != 'cpp'
+      if: success() && matrix.language != 'c-cpp'
       uses: github/codeql-action/autobuild@v3
       continue-on-error: false
       env:
@@ -187,7 +208,7 @@ jobs:
 
     - name: Validate Gradle Wrapper
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && matrix.language == 'java'
+      if: success() && matrix.language == 'java-kotlin'
       uses: gradle/actions/wrapper-validation@v4
       with:
         # Check available parameters in: https://github.com/gradle/actions/blob/main/wrapper-validation/action.yml
@@ -197,7 +218,7 @@ jobs:
 
     - name: Set C++ compiler
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && matrix.language == 'cpp'
+      if: success() && matrix.language == 'c-cpp'
       working-directory: .
       run: |
         if [ ${{ startsWith(matrix.host_os, 'windows') }} = true ]; then
@@ -208,7 +229,7 @@ jobs:
 
     - name: Build C++
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
-      if: success() && matrix.language == 'cpp'
+      if: success() && matrix.language == 'c-cpp'
       working-directory: .
       run: |
         sh scripts/compile_native.sh -t debug -c ${{ env.compiler }} -r yes;
@@ -241,7 +262,16 @@ jobs:
       working-directory: .
       run: |
         ls -lahp ./codeql-results;
-        ls -lahp ./codeql-results/${{ matrix.language }}.sarif;
+        if [ "${{ matrix.language }}" = 'c-cpp' ]; then
+          LANGUAGE='cpp';
+        elif [ "${{ matrix.language }}" = 'java-kotlin' ]; then
+          LANGUAGE='java';
+        else
+          LANGUAGE="${{ matrix.language }}";
+        fi
+        echo "LANGUAGE: ${LANGUAGE}";
+        echo "LANGUAGE=${LANGUAGE}" >> ${GITHUB_ENV};
+        ls -lahp ./codeql-results/${LANGUAGE}.sarif;
 
     - name: Filter SARIF
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -251,8 +281,8 @@ jobs:
         # Check available parameters in: https://github.com/advanced-security/filter-sarif/blob/main/action.yml
         patterns: |
           -**/*third_party*/**/*:**
-        input: ./codeql-results/${{ matrix.language }}.sarif
-        output: ./codeql-results/${{ matrix.language }}-filtered.sarif
+        input: ./codeql-results/${{ env.LANGUAGE }}.sarif
+        output: ./codeql-results/${{ env.LANGUAGE }}-filtered.sarif
 
     - name: Validate CodeQL output was generated
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -260,8 +290,8 @@ jobs:
       working-directory: .
       run: |
         ls -lahp ./codeql-results;
-        ls -lahp ./codeql-results/${{ matrix.language }}.sarif;
-        ls -lahp ./codeql-results/${{ matrix.language }}-filtered.sarif;
+        ls -lahp ./codeql-results/${{ env.LANGUAGE }}.sarif;
+        ls -lahp ./codeql-results/${{ env.LANGUAGE }}-filtered.sarif;
 
     - name: Upload SARIF
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -269,7 +299,7 @@ jobs:
       uses: github/codeql-action/upload-sarif@v3
       with:
         # Check available parameters in: https://github.com/github/codeql-action/blob/main/upload-sarif/action.yml
-        sarif_file: ./codeql-results/${{ matrix.language }}-filtered.sarif
+        sarif_file: ./codeql-results/${{ env.LANGUAGE }}-filtered.sarif
 
     - name: Upload reports as artifact
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -277,7 +307,9 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
-        name: sarif_${{ matrix.language }}-artifacts
+        name: sarif_${{ matrix.language }}_${{ matrix.host_os }}-artifacts
         path: codeql-results
         if-no-files-found: error
         retention-days: 90
+        overwrite: true
+        include-hidden-files: true

@@ -192,8 +192,8 @@ executeUnitTestsInDockerContainer() {
   export DOCKER_BUILDKIT=1;
   docker run -t \
     -e DISPLAY="${DISPLAY}" \
-    --name="mobile_rt_tests_${1}" \
-    ptpuscas/mobile_rt:"${1}" "./build_release/bin/UnitTests ${2}";
+    --name="mobile_rt_tests_${1}" ptpuscas/mobile_rt:"${1}" \
+    "./build_release/bin/UnitTests ${2}";
   docker rm --force --volumes "mobile_rt_tests_${1}";
 }
 
