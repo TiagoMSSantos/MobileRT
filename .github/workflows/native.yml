@@ -63,7 +63,7 @@ jobs:
         if: success()
         run: |
           if [ "${{ inputs.code-coverage-only }}" = 'true' ]; then
-            MATRIX='{"include":[{"host_os":"ubuntu-24.04","type":"debug","compiler":"g++"}]}';
+            MATRIX='{"include":[{"host_os":"ubuntu-latest","type":"debug","compiler":"g++"}]}';
           else
             MATRIX=$(echo $(cat .github/workflows/native-matrix.json) | sed 's/ //g');
           fi

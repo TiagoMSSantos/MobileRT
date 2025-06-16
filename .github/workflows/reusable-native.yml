@@ -402,7 +402,7 @@ jobs:
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         run: |
-          curl --fail-with-body --retry 5 --retry-delay 2 --connect-timeout 2 -s https://codecov.io/bash | bash -s -- -c build_${{ inputs.type }} -v;
+          curl --fail-with-body --retry 5 --retry-delay 2 --connect-timeout 2 -s https://codecov.io/bash | bash -s -- -v -Z -c build_${{ inputs.type }};
 
       - name: Setup Ruby, JRuby and TruffleRuby
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -436,6 +436,8 @@ jobs:
         uses: codecov/codecov-action@v5
         with:
           # Check available parameters in: https://github.com/codecov/codecov-action/blob/main/action.yml
-          token: ${{ secrets.CODECOV_TOKEN }}
           directory: 'coverage'
+          fail_ci_if_error: true
           files: coverage/coverage.xml
+          token: ${{ secrets.CODECOV_TOKEN }}
+          verbose: true

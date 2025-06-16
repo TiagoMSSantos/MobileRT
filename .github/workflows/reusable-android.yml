@@ -1048,7 +1048,7 @@ jobs:
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         run: |
-          curl --fail-with-body --retry 5 --retry-delay 2 --connect-timeout 2 -s https://codecov.io/bash | bash -s -- -c -f app/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml -v;
+          curl --fail-with-body --retry 5 --retry-delay 2 --connect-timeout 2 -s https://codecov.io/bash | bash -s -- -v -Z -c -f app/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml;
 
       - name: Upload reports as artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
