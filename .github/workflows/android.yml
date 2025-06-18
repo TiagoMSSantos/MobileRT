@@ -52,9 +52,11 @@ jobs:
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
 
-    # Sets permissions of the GITHUB_TOKEN to allow trigger another jobs
+    # Sets permissions of the GITHUB_TOKEN to allow trigger another jobs and publish test results
     permissions:
       actions: write
+      checks: write
+      pull-requests: write # only required if `comment: true` was enabled
 
     steps:
       - name: Checkout
