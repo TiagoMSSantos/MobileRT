@@ -24,6 +24,8 @@ on:
     - '!**/*.hpp'
     - '!**/*.ui*'
 
+permissions: {}
+
 defaults:
   run:
     shell: sh
@@ -183,7 +185,6 @@ jobs:
       timeout-minutes: 60
       if: success() && env.BUILD_IMAGE == 'yes' && startsWith(matrix.host_os, 'windows') && false
       shell: powershell
-      working-directory: .
       run: |
         $ErrorActionPreference = 'Stop'
         $url = "https://api.github.com/repos/containerd/containerd/releases/latest"
@@ -382,7 +383,6 @@ jobs:
     - name: Run Dockerfile unit tests
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
-      working-directory: .
       run: |
         if echo "${{ matrix.base_image }}" | grep -q 'alpine'; then
           sh scripts/test/docker/dockerfile.sh ${{ env.VERSION }} 143; # Expect SIGTERM (15). 128 + 15 = 143

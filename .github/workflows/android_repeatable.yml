@@ -9,6 +9,8 @@ on:
     - '!.github/workflows/android_repeatable.yml'
     - '!.github/workflows/android_repeatable-matrix.json'
 
+permissions: {}
+
 defaults:
   run:
     shell: sh
@@ -136,7 +138,6 @@ jobs:
     - name: Build ${{ matrix.type }}
       timeout-minutes: 20
       if: success()
-      working-directory: .
       run: |
         sh scripts/compile_android.sh -t ${{ matrix.type }} -a ${{ matrix.android_api }} -r yes -f ${{ env.android_arch }};
 

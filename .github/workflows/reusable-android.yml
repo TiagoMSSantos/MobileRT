@@ -13,6 +13,8 @@ on:
         type: string
         required: true
 
+permissions: {}
+
 defaults:
   run:
     shell: sh
@@ -38,7 +40,6 @@ jobs:
       - name: Validate codecov config
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success() && inputs.type == 'debug'
-        working-directory: .
         run: |
           curl --fail-with-body --retry 5 --retry-delay 2 --connect-timeout 2 --data-binary @codecov.yml https://codecov.io/validate;
 
@@ -66,7 +67,6 @@ jobs:
       - name: Add custom environment variables
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
         if: success()
-        working-directory: .
         run: |
           echo 'Available Android versions:';
           du -h -d 1 ${ANDROID_HOME}/ndk;
@@ -141,7 +141,6 @@ jobs:
       - name: Extract and check files from gradle artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success() && steps.download-gradle-artifact.outcome == 'success'
-        working-directory: .
         run: |
           # shellcheck disable=SC1091
           . scripts/helper_functions.sh && extractFilesFromArtifact ${{ env.GRADLE_PATH }};
@@ -196,7 +195,6 @@ jobs:
       - name: Build ${{ inputs.type }}
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
         if: success()
-        working-directory: .
         run: |
           echo "android_arch: ${{ env.android_arch }}";
           echo "android_emulator_arch: ${{ env.android_emulator_arch }}";
@@ -205,7 +203,6 @@ jobs:
       - name: Print error logs
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: failure()
-        working-directory: .
         run: |
           ls -lahp .;
           set +e;
@@ -372,7 +369,6 @@ jobs:
       - name: Add custom environment variables
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
         if: success()
-        working-directory: .
         run: |
           echo 'Available Android versions:';
           du -h -d 1 ${ANDROID_HOME}/ndk;
@@ -415,7 +411,6 @@ jobs:
       - name: Extract and check files from gradle artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success() && !startsWith(inputs.host_os, 'windows')
-        working-directory: .
         run: |
           # shellcheck disable=SC1091
           . scripts/helper_functions.sh && extractFilesFromArtifact ${{ env.GRADLE_PATH }};
@@ -524,7 +519,6 @@ jobs:
       - name: Print error logs
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: failure()
-        working-directory: .
         run: |
           ls -lahp .;
           set +e;
@@ -583,7 +577,6 @@ jobs:
       - name: Add base64 key & Android Build Tools version to environment variables in order to sign APK
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
-        working-directory: .
         run: |
           echo "BASE64_KEY=$(openssl base64 < app/MobileRT.jks | tr -d '[:space:]')" >> "${GITHUB_ENV}";
           echo 'ANDROID_BUILD_TOOLS_VERSION=34.0.0' >> "${GITHUB_ENV}";
@@ -649,7 +642,6 @@ jobs:
       - name: Add custom environment variables
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
         if: success()
-        working-directory: .
         run: |
           echo 'Available Android versions:';
           du -h -d 1 ${ANDROID_HOME}/ndk;
@@ -676,7 +668,6 @@ jobs:
       - name: Extract and check files from gradle artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success() && !startsWith(inputs.host_os, 'windows')
-        working-directory: .
         run: |
           # shellcheck disable=SC1091
           . scripts/helper_functions.sh && extractFilesFromArtifact ${{ env.GRADLE_PATH }};
@@ -746,7 +737,6 @@ jobs:
       - name: Run unit tests Java
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success()
-        working-directory: .
         run: |
           echo "android_arch: ${{ env.android_arch }}";
           echo "android_emulator_arch: ${{ env.android_emulator_arch }}";
@@ -755,7 +745,6 @@ jobs:
       - name: Print error logs
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: failure()
-        working-directory: .
         run: |
           ls -lahp .;
           set +e;
@@ -781,7 +770,6 @@ jobs:
       - name: Run linter
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success()
-        working-directory: .
         run: |
           sh scripts/check_android.sh -a ${{ inputs.android_api }} -f ${{ env.android_arch }};
 
@@ -843,7 +831,6 @@ jobs:
       - name: Add custom environment variables
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
         if: success()
-        working-directory: .
         run: |
           echo 'Available Android versions:';
           du -h -d 1 ${ANDROID_HOME}/ndk;
@@ -870,7 +857,6 @@ jobs:
       - name: Extract and check files from gradle artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success() && !startsWith(inputs.host_os, 'windows')
-        working-directory: .
         run: |
           # shellcheck disable=SC1091
           . scripts/helper_functions.sh && extractFilesFromArtifact ${{ env.GRADLE_PATH }};
@@ -910,7 +896,6 @@ jobs:
       - name: Create report's folders
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
-        working-directory: .
         run: |
           mkdir -p app/build/reports;
 
@@ -931,7 +916,6 @@ jobs:
       - name: Check files from reports cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
-        working-directory: .
         run: |
           # shellcheck disable=SC1091
           . scripts/helper_functions.sh && checkPathExists app/build/reports/jacoco/jacocoTestReport jacocoTestReport.xml;
@@ -986,7 +970,6 @@ jobs:
       - name: Download Android dependencies
         timeout-minutes: 8
         if: success()
-        working-directory: .
         run: |
           sh gradlew --dry-run -Dorg.gradle.configuration-cache=true --parallel --profile \
             -DabiFilters="[ ${{ env.android_arch }} ]" \
@@ -996,7 +979,6 @@ jobs:
       - name: Analyze Sonar
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
-        working-directory: .
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners/about-github-hosted-runners#standard-github-hosted-runners-for-public-repositories
@@ -1011,7 +993,6 @@ jobs:
       - name: Print error logs
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: failure()
-        working-directory: .
         run: |
           ls -lahp .;
           set +e;
@@ -1044,7 +1025,6 @@ jobs:
       - name: Send codecov report
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
-        working-directory: .
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         run: |

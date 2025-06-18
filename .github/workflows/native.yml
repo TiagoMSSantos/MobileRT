@@ -27,6 +27,8 @@ on:
       - '!**/*.hpp'
       - '!**/*.ui*'
 
+permissions: {}
+
 defaults:
   run:
     shell: sh
