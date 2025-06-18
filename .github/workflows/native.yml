@@ -79,6 +79,11 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJSON(needs.Matrix.outputs.matrix) }}
     uses: ./.github/workflows/reusable-native.yml
+
+    # Sets permissions of the GITHUB_TOKEN to allow delete cache
+    permissions:
+      actions: write
+
     with:
       host_os: ${{ matrix.host_os }}
       type: ${{ matrix.type }}

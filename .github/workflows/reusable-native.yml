@@ -40,6 +40,10 @@ jobs:
     runs-on: ${{ inputs.host_os }}
     timeout-minutes: 360
 
+    # Sets permissions of the GITHUB_TOKEN to allow delete cache
+    permissions:
+      actions: write
+
     steps:
       - name: Checkout
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}

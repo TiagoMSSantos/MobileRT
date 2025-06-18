@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2025-06-18T07:38:21.166Z",
+    "detectionDate": "2025-06-18T18:51:32.125Z",
     "formats": {
       "java": {
         "sources": {
@@ -2009,8 +2009,8 @@
             "newClones": 0
           },
           ".github/workflows/reusable-native.yml": {
-            "lines": 425,
-            "tokens": 2164,
+            "lines": 429,
+            "tokens": 2178,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2021,14 +2021,14 @@
             "newClones": 0
           },
           ".github/workflows/native.yml": {
-            "lines": 88,
-            "tokens": 503,
+            "lines": 93,
+            "tokens": 518,
             "sources": 1,
             "clones": 4,
             "duplicatedLines": 143,
             "duplicatedTokens": 779,
-            "percentage": 162.5,
-            "percentageTokens": 154.87,
+            "percentage": 153.76,
+            "percentageTokens": 150.39,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2081,14 +2081,14 @@
             "newClones": 0
           },
           ".github/workflows/android.yml": {
-            "lines": 123,
-            "tokens": 598,
+            "lines": 130,
+            "tokens": 627,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 27,
             "duplicatedTokens": 126,
-            "percentage": 21.95,
-            "percentageTokens": 21.07,
+            "percentage": 20.77,
+            "percentageTokens": 20.1,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2190,14 +2190,14 @@
           }
         },
         "total": {
-          "lines": 2486,
-          "tokens": 15035,
+          "lines": 2502,
+          "tokens": 15093,
           "sources": 24,
           "clones": 6,
           "duplicatedLines": 188,
           "duplicatedTokens": 1010,
-          "percentage": 7.56,
-          "percentageTokens": 6.72,
+          "percentage": 7.51,
+          "percentageTokens": 6.69,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3284,8 +3284,8 @@
       }
     },
     "total": {
-      "lines": 30552,
-      "tokens": 236956,
+      "lines": 30568,
+      "tokens": 237014,
       "sources": 260,
       "clones": 116,
       "duplicatedLines": 1385,

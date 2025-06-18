@@ -117,9 +117,9 @@ jobs:
       matrix: ${{ fromJSON(needs.Matrix.outputs.matrix) }}
     uses: ./.github/workflows/reusable-android.yml
 
-    # Sets permissions of the GITHUB_TOKEN to allow publish test results
+    # Sets permissions of the GITHUB_TOKEN to allow delete cache and publish test results
     permissions:
-      contents: read
+      actions: write
       checks: write
       pull-requests: write # only required if `comment: true` was enabled
 

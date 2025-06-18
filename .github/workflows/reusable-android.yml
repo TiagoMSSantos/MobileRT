@@ -31,6 +31,11 @@ jobs:
     runs-on: ${{ inputs.host_os }}
     name: Build ${{ inputs.android_api }} ${{ inputs.type }} (${{ inputs.host_os }})
     timeout-minutes: 360
+
+    # Sets permissions of the GITHUB_TOKEN to allow delete cache
+    permissions:
+      actions: write
+
     steps:
       - name: Checkout
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
@@ -340,9 +345,9 @@ jobs:
     runs-on: ${{ inputs.host_os }}
     timeout-minutes: 360
 
-    # Sets permissions of the GITHUB_TOKEN to allow publish test results
+    # Sets permissions of the GITHUB_TOKEN to allow delete cache and publish test results
     permissions:
-      contents: read
+      actions: write
       checks: write
       pull-requests: write # only required if `comment: true` was enabled
 
@@ -642,7 +647,6 @@ jobs:
 
     # Sets permissions of the GITHUB_TOKEN to allow publish test results
     permissions:
-      contents: read
       checks: write
       pull-requests: write # only required if `comment: true` was enabled
 
