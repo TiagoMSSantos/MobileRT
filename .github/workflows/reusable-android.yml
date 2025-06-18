@@ -572,7 +572,7 @@ jobs:
           include_empty_in_summary: true
           include_time_in_summary: true
           simplified_summary: false
-          comment: true
+          comment: false
           updateComment: true
           annotate_notice: true
           follow_symlink: true
@@ -830,7 +830,7 @@ jobs:
           include_empty_in_summary: true
           include_time_in_summary: true
           simplified_summary: false
-          comment: true
+          comment: false
           updateComment: true
           annotate_notice: true
           follow_symlink: true
