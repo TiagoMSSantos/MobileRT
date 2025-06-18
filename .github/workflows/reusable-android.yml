@@ -339,6 +339,12 @@ jobs:
     name: Android tests ${{ inputs.android_api }} ${{ inputs.type }} (${{ inputs.host_os }})
     runs-on: ${{ inputs.host_os }}
     timeout-minutes: 360
+
+    # Sets permissions of the GITHUB_TOKEN to allow publish test results
+    permissions:
+      checks: write
+      pull-requests: write # only required if `comment: true` was enabled
+
     steps:
       - name: Checkout
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
@@ -547,13 +553,33 @@ jobs:
         uses: mikepenz/action-junit-report@v5
         with:
           # Check available parameters in: https://github.com/mikepenz/action-junit-report/blob/main/action.yml
-          check_name: 'Android Test Report - API ${{ inputs.android_api }} ${{ inputs.type }} (${{ inputs.host_os }})'
           report_paths: '**/build/**/*-results/**/TEST-*.xml'
+          annotate_only: false
+          check_annotations: true
+          update_check: true
+          check_name: 'Android Test Report - API ${{ inputs.android_api }} ${{ inputs.type }} (${{ inputs.host_os }})'
+          fail_on_failure: true
+          fail_on_parse_error: true
           require_tests: true
           require_passed_tests: true
           include_passed: true
           check_retries: true
-          fail_on_failure: true
+          job_summary: true
+          detailed_summary: true
+          flaky_summary: true
+          verbose_summary: true
+          skip_success_summary: false
+          include_empty_in_summary: true
+          include_time_in_summary: true
+          simplified_summary: false
+          comment: true
+          updateComment: true
+          annotate_notice: true
+          follow_symlink: true
+          skip_annotations: false
+          truncate_stack_traces: false
+          resolve_ignore_classname: false
+          skip_comment_without_tests: false
 
       - name: Check report's paths
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -612,6 +638,12 @@ jobs:
     runs-on: ${{ inputs.host_os }}
     timeout-minutes: 360
     name: Unit tests ${{ inputs.android_api }} ${{ inputs.type }} (${{ inputs.host_os }})
+
+    # Sets permissions of the GITHUB_TOKEN to allow publish test results
+    permissions:
+      checks: write
+      pull-requests: write # only required if `comment: true` was enabled
+
     steps:
       - name: Checkout
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
@@ -779,13 +811,33 @@ jobs:
         uses: mikepenz/action-junit-report@v5
         with:
           # Check available parameters in: https://github.com/mikepenz/action-junit-report/blob/main/action.yml
-          check_name: 'Unit Test Report - API ${{ inputs.android_api }} ${{ inputs.type }} (${{ inputs.host_os }})'
           report_paths: '**/build/**/*-results/**/TEST-*.xml'
+          annotate_only: false
+          check_annotations: true
+          update_check: true
+          check_name: 'Unit Test Report - API ${{ inputs.android_api }} ${{ inputs.type }} (${{ inputs.host_os }})'
+          fail_on_failure: true
+          fail_on_parse_error: true
           require_tests: true
           require_passed_tests: true
           include_passed: true
           check_retries: true
-          fail_on_failure: true
+          job_summary: true
+          detailed_summary: true
+          flaky_summary: true
+          verbose_summary: true
+          skip_success_summary: false
+          include_empty_in_summary: true
+          include_time_in_summary: true
+          simplified_summary: false
+          comment: true
+          updateComment: true
+          annotate_notice: true
+          follow_symlink: true
+          skip_annotations: false
+          truncate_stack_traces: false
+          resolve_ignore_classname: false
+          skip_comment_without_tests: false
 
 
   Sonar:
