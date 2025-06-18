@@ -342,6 +342,7 @@ jobs:
 
     # Sets permissions of the GITHUB_TOKEN to allow publish test results
     permissions:
+      contents: read
       checks: write
       pull-requests: write # only required if `comment: true` was enabled
 
@@ -641,6 +642,7 @@ jobs:
 
     # Sets permissions of the GITHUB_TOKEN to allow publish test results
     permissions:
+      contents: read
       checks: write
       pull-requests: write # only required if `comment: true` was enabled
 
