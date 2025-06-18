@@ -52,11 +52,9 @@ jobs:
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
 
-    # Sets permissions of the GITHUB_TOKEN to allow trigger another jobs and publish test results
+    # Sets permissions of the GITHUB_TOKEN to allow trigger another jobs
     permissions:
       actions: write
-      checks: write
-      pull-requests: write # only required if `comment: true` was enabled
 
     steps:
       - name: Checkout
@@ -118,6 +116,12 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJSON(needs.Matrix.outputs.matrix) }}
     uses: ./.github/workflows/reusable-android.yml
+
+    # Sets permissions of the GITHUB_TOKEN to allow publish test results
+    permissions:
+      checks: write
+      pull-requests: write # only required if `comment: true` was enabled
+
     with:
       host_os: ${{ matrix.host_os }}
       android_api: ${{ matrix.android_api }}
