@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2025-06-19T13:43:17.109Z",
+    "detectionDate": "2025-06-19T14:22:40.070Z",
     "formats": {
       "java": {
         "sources": {
@@ -2057,13 +2057,13 @@
             "newClones": 0
           },
           ".github/workflows/code-analysis.yml": {
-            "lines": 311,
+            "lines": 312,
             "tokens": 1958,
             "sources": 1,
             "clones": 3,
             "duplicatedLines": 84,
             "duplicatedTokens": 444,
-            "percentage": 27.01,
+            "percentage": 26.92,
             "percentageTokens": 22.68,
             "newDuplicatedLines": 0,
             "newClones": 0
@@ -2190,7 +2190,7 @@
           }
         },
         "total": {
-          "lines": 2512,
+          "lines": 2513,
           "tokens": 15168,
           "sources": 24,
           "clones": 6,
@@ -3284,7 +3284,7 @@
       }
     },
     "total": {
-      "lines": 30577,
+      "lines": 30578,
       "tokens": 237173,
       "sources": 260,
       "clones": 116,

@@ -279,6 +279,7 @@ jobs:
         # Check available parameters in: https://github.com/advanced-security/filter-sarif/blob/main/action.yml
         patterns: |
           -**/*third_party*/**/*:**
+          -**/*build_*/**/*:**
         input: ./codeql-results/${{ env.LANGUAGE }}.sarif
         output: ./codeql-results/${{ env.LANGUAGE }}-filtered.sarif
 
