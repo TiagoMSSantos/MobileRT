@@ -388,7 +388,8 @@
       ],
       "matchDepNames": [
         "actions/*",
-        "github/*"
+        "github/*",
+        "advanced-security/*"
       ],
       "pinDigests": false
     },
