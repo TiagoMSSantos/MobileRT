@@ -441,7 +441,7 @@ public final class MainActivity extends Activity {
         logger.info("onActivityResult requestCode: " + requestCode + ", resultCode: " + resultCode);
 
         try {
-            if (data != null && Objects.equals(resultCode, Activity.RESULT_OK)) {
+            if (resultCode == Activity.RESULT_OK && data != null) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && data.getClipData() != null) {
                     final ClipData clipData = data.getClipData();
                     final int numFiles = clipData.getItemCount();
@@ -449,9 +449,7 @@ public final class MainActivity extends Activity {
                     for (int i = 0; i < numFiles; ++i) {
                         final ClipData.Item item = clipData.getItemAt(i);
                         final Uri uri = item.getUri();
-                        if (uri == null) {
-                            throw new FailureException("There is no URI to a File! [" + i + "]");
-                        }
+                        validatePath(uri);
                         final String filePath = getPathFromFile(uri);
                         readFile(uri);
                         if (filePath.endsWith(".obj")) {
@@ -461,9 +459,7 @@ public final class MainActivity extends Activity {
                 } else {
                     logger.info("Will read every file in a path.");
                     final Uri uri = data.getData();
-                    if (uri == null || uri.getPath() == null) {
-                        throw new FailureException("There is no URI to a File!");
-                    }
+                    validatePath(uri);
                     final String filePath = getPathFromFile(uri);
                     if (filePath.endsWith(".obj")) {
                         this.sceneFilePath = filePath;
@@ -482,6 +478,35 @@ public final class MainActivity extends Activity {
             MainActivity.showUiMessage(ConstantsToast.COULD_NOT_RENDER_THE_SCENE + ex.getMessage());
         }
         logger.info("onActivityResult finished");
+    }
+
+    /**
+     * Validate that the provided {@link Uri path} is valid.
+     * <p>
+     * A path is considered valid if it belongs to:
+     * <ul>
+     * <li> Internal storage;
+     * <li> External SD card;
+     * </ul>
+     * @param uri The {@link Uri} to a path in Android filesystem.
+     */
+    private void validatePath(final Uri uri) {
+        if (uri == null || uri.getPath() == null) {
+            throw new FailureException("There is no URI to a File!");
+        }
+        final List<String> allowedPaths = List.of(UtilsContext.getSdCardPath(this), UtilsContext.getInternalStoragePath(this));
+        final boolean isAllowedPath;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            final Path normalizedPath = FileSystems.getDefault().getPath(uri.getPath()).normalize();
+            final String normalizedPathStr = UtilsContext.cleanStoragePath(normalizedPath.toFile().getAbsolutePath());
+            isAllowedPath = allowedPaths.stream().anyMatch(normalizedPathStr::startsWith);
+        } else {
+            final String normalizedPath = Files.simplifyPath(new File(Objects.requireNonNull(uri.getPath())).getAbsolutePath());
+            isAllowedPath = StreamSupport.stream(allowedPaths).anyMatch(normalizedPath::startsWith);
+        }
+        if (!isAllowedPath) {
+            throw new SecurityException("The provided file path is not from a safe internal storage or external SD Card path.");
+        }
     }
 
     /**
@@ -690,19 +715,6 @@ public final class MainActivity extends Activity {
      */
     private void readFile(@NonNull final Uri uri) {
         logger.info("readFile");
-        final List<String> allowedPaths = List.of(UtilsContext.getSdCardPath(this), UtilsContext.getInternalStoragePath(this));
-        final boolean isAllowedPath;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            final Path normalizedPath = FileSystems.getDefault().getPath(uri.getPath()).normalize();
-            final String normalizedPathStr = UtilsContext.cleanStoragePath(normalizedPath.toFile().getAbsolutePath());
-            isAllowedPath = allowedPaths.stream().anyMatch(normalizedPathStr::startsWith);
-        } else {
-            final String normalizedPath = Files.simplifyPath(new File(Objects.requireNonNull(uri.getPath())).getAbsolutePath());
-            isAllowedPath = StreamSupport.stream(allowedPaths).anyMatch(normalizedPath::startsWith);
-        }
-        if (!isAllowedPath) {
-            throw new SecurityException("The provided file path is not from a safe internal storage or external SD Card path.");
-        }
 
         final String filePath = getPathFromFile(uri);
         logger.info("Will read the following file: '" + filePath + "'");
