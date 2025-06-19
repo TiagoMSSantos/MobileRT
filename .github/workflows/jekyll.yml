@@ -127,7 +127,7 @@ jobs:
       - name: Doxygen build
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success() && runner.os == 'Linux'
-        uses: mattnotmitt/doxygen-action@v1
+        uses: mattnotmitt/doxygen-action@b84fe17600245bb5db3d6c247cc274ea98c15a3b # v1
         with:
           # Check available parameters in: https://github.com/mattnotmitt/doxygen-action/blob/master/action.yml
           doxyfile-path: ".codedocs" # Path to Doxyfile (default is ./Doxyfile)
@@ -137,7 +137,7 @@ jobs:
       - name: Sync README with docker hub
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success() && runner.os == 'Linux'
-        uses: ms-jpq/sync-dockerhub-readme@v1
+        uses: ms-jpq/sync-dockerhub-readme@e2991ea1ba48832e73555cdbd5b82f5a2e91ee9b # v1
         with:
           # Check available parameters in: https://github.com/ms-jpq/sync-dockerhub-readme/blob/whale/action.yml
           username: ${{ secrets.DOCKERHUB_USERNAME }}

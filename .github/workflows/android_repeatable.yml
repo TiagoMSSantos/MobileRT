@@ -160,7 +160,7 @@ jobs:
     - name: Run Android tests
       timeout-minutes: 20
       if: success() && !startsWith(matrix.host_os, 'windows')
-      uses: ReactiveCircus/android-emulator-runner@v2
+      uses: ReactiveCircus/android-emulator-runner@1dcd0090116d15e7c562f8db72807de5e036a4ed # v2
       env:
         ANDROID_EMULATOR_WAIT_TIME_BEFORE_KILL: 1
       with:
