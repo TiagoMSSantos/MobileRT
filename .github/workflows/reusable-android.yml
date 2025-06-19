@@ -32,6 +32,9 @@ jobs:
     name: Build ${{ inputs.android_api }} ${{ inputs.type }} (${{ inputs.host_os }})
     timeout-minutes: 360
 
+    strategy:
+      fail-fast: true
+
     # Sets permissions of the GITHUB_TOKEN to allow delete cache
     permissions:
       actions: write
