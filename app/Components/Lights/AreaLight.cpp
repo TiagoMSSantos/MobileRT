@@ -8,7 +8,7 @@ using ::MobileRT::Intersection;
 AreaLight::AreaLight(
     Material radiance,
     ::std::unique_ptr<Sampler> samplerPointLight,
-    ::MobileRT::Triangle triangle) :
+    ::MobileRT::Triangle &&triangle) :
         Light {::std::move(radiance)},
         triangle_ {::std::move(triangle)},
         samplerPointLight_ {::std::move(samplerPointLight)} {

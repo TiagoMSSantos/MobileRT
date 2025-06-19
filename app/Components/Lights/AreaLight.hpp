@@ -26,7 +26,7 @@ namespace Components {
         explicit AreaLight(
             ::MobileRT::Material radiance,
             ::std::unique_ptr<::MobileRT::Sampler> samplerPointLight,
-            ::MobileRT::Triangle triangle);
+            ::MobileRT::Triangle &&triangle);
 
         AreaLight(const AreaLight &areaLight) = delete;
 

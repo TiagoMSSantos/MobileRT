@@ -154,7 +154,7 @@ Scene cornellBox2_Scene(Scene scene) {
     ::std::unique_ptr<Sampler> samplerPoint1 {::MobileRT::std::make_unique<StaticHaltonSeq> ()};
     ::std::unique_ptr<Sampler> samplerPoint2 {::MobileRT::std::make_unique<StaticHaltonSeq> ()};
 
-    const Triangle triangle1 {
+    Triangle triangle1 {
         Triangle::Builder(
             ::glm::vec3{-0.25F, 0.99F, -0.25F},
             ::glm::vec3{0.25F, 0.99F, -0.25F},
@@ -163,7 +163,7 @@ Scene cornellBox2_Scene(Scene scene) {
         .build()
     };
 
-    const Triangle triangle2 {
+    Triangle triangle2 {
         Triangle::Builder(
             ::glm::vec3{0.25F, 0.99F, 0.25F},
             ::glm::vec3{-0.25F, 0.99F, 0.25F},
@@ -175,13 +175,13 @@ Scene cornellBox2_Scene(Scene scene) {
     scene.lights_.emplace_back(::MobileRT::std::make_unique<AreaLight> (
         lightMat,
         ::std::move(samplerPoint1),
-        triangle1
+        ::std::move(triangle1)
     ));
 
     scene.lights_.emplace_back(::MobileRT::std::make_unique<AreaLight> (
         lightMat,
         ::std::move(samplerPoint2),
-        triangle2
+        ::std::move(triangle2)
     ));
 
     const Triangle triangle3 {

@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2025-06-19T12:44:43.753Z",
+    "detectionDate": "2025-06-19T13:43:17.109Z",
     "formats": {
       "java": {
         "sources": {
@@ -1586,7 +1586,7 @@
           },
           "app/Components/Lights/AreaLight.cpp": {
             "lines": 38,
-            "tokens": 404,
+            "tokens": 405,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -1633,8 +1633,8 @@
             "newClones": 0
           },
           "app/Unit_Testing/TestTriangle.cpp": {
-            "lines": 427,
-            "tokens": 4161,
+            "lines": 426,
+            "tokens": 4235,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -1730,13 +1730,13 @@
           },
           "app/Scenes/Scenes.cpp": {
             "lines": 293,
-            "tokens": 3184,
+            "tokens": 3192,
             "sources": 1,
             "clones": 2,
             "duplicatedLines": 16,
             "duplicatedTokens": 148,
             "percentage": 5.46,
-            "percentageTokens": 4.65,
+            "percentageTokens": 4.64,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -1886,14 +1886,14 @@
           }
         },
         "total": {
-          "lines": 6162,
-          "tokens": 62069,
+          "lines": 6161,
+          "tokens": 62152,
           "sources": 59,
           "clones": 34,
           "duplicatedLines": 336,
           "duplicatedTokens": 5234,
           "percentage": 5.45,
-          "percentageTokens": 8.43,
+          "percentageTokens": 8.42,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2010,7 +2010,7 @@
           },
           ".github/workflows/reusable-native.yml": {
             "lines": 432,
-            "tokens": 2191,
+            "tokens": 2197,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2034,37 +2034,37 @@
           },
           ".github/workflows/jekyll.yml": {
             "lines": 194,
-            "tokens": 1154,
+            "tokens": 1156,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 19,
             "duplicatedTokens": 110,
             "percentage": 9.79,
-            "percentageTokens": 9.53,
+            "percentageTokens": 9.52,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           ".github/workflows/docker.yml": {
             "lines": 398,
-            "tokens": 2778,
+            "tokens": 2780,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 46,
             "duplicatedTokens": 243,
             "percentage": 11.56,
-            "percentageTokens": 8.75,
+            "percentageTokens": 8.74,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           ".github/workflows/code-analysis.yml": {
             "lines": 311,
-            "tokens": 1956,
+            "tokens": 1958,
             "sources": 1,
             "clones": 3,
             "duplicatedLines": 84,
             "duplicatedTokens": 444,
             "percentage": 27.01,
-            "percentageTokens": 22.7,
+            "percentageTokens": 22.68,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2191,7 +2191,7 @@
         },
         "total": {
           "lines": 2512,
-          "tokens": 15156,
+          "tokens": 15168,
           "sources": 24,
           "clones": 6,
           "duplicatedLines": 188,
@@ -2946,7 +2946,7 @@
           },
           "app/Components/Lights/AreaLight.hpp": {
             "lines": 39,
-            "tokens": 261,
+            "tokens": 262,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -3151,7 +3151,7 @@
         },
         "total": {
           "lines": 3432,
-          "tokens": 25303,
+          "tokens": 25304,
           "sources": 47,
           "clones": 3,
           "duplicatedLines": 29,
@@ -3284,8 +3284,8 @@
       }
     },
     "total": {
-      "lines": 30578,
-      "tokens": 237077,
+      "lines": 30577,
+      "tokens": 237173,
       "sources": 260,
       "clones": 116,
       "duplicatedLines": 1385,
@@ -6945,12 +6945,12 @@
         "startLoc": {
           "line": 208,
           "column": 9,
-          "position": 2049
+          "position": 2057
         },
         "endLoc": {
           "line": 216,
           "column": 25,
-          "position": 2123
+          "position": 2131
         }
       },
       "secondFile": {

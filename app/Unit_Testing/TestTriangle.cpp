@@ -11,22 +11,21 @@ using ::MobileRT::Triangle;
 
 class TestTriangle : public testing::Test {
 protected:
-    Triangle *triangle {};
+    ::std::unique_ptr<Triangle> triangle {};
 
     void SetUp () final {
         errno = 0;
-        triangle = new Triangle(
+        this->triangle = ::MobileRT::std::make_unique<Triangle> (
             Triangle::Builder(
                 ::glm::vec3 {0, 0, 0},
                 ::glm::vec3 {0, 1, 0},
                 ::glm::vec3 {0, 0, 1}
             )
-                .build()
+            .build()
         );
     }
 
     void TearDown () final {
-        delete this->triangle;
     }
 
     ~TestTriangle () override;
@@ -222,7 +221,7 @@ TEST_F(TestTriangle, AABB) {
 TEST_F(TestTriangle, intersectBoxInside01) {
     const ::glm::vec3 min {-1, -1, -1};
     const ::glm::vec3 max {2, 2, 2};
-    assertBoxIntersectsTriangle(min, max, *this->triangle);
+    assertBoxIntersectsTriangle(min, max, *this->triangle.get());
 }
 
 /**
@@ -231,7 +230,7 @@ TEST_F(TestTriangle, intersectBoxInside01) {
 TEST_F(TestTriangle, intersectBoxInside02) {
     const ::glm::vec3 min {0, 0, 0};
     const ::glm::vec3 max {3, 3, 3};
-    assertBoxIntersectsTriangle(min, max, *this->triangle);
+    assertBoxIntersectsTriangle(min, max, *this->triangle.get());
 }
 
 /**
@@ -240,7 +239,7 @@ TEST_F(TestTriangle, intersectBoxInside02) {
 TEST_F(TestTriangle, intersectBoxInside03) {
     const ::glm::vec3 min {0, 0, 0};
     const ::glm::vec3 max {0, 1, 1};
-    assertBoxIntersectsTriangle(min, max, *this->triangle);
+    assertBoxIntersectsTriangle(min, max, *this->triangle.get());
 }
 
 /**
@@ -249,7 +248,7 @@ TEST_F(TestTriangle, intersectBoxInside03) {
 TEST_F(TestTriangle, intersectBoxInside04) {
     const ::glm::vec3 min {0, 0, 0};
     const ::glm::vec3 max {0, 0.5, 0.5};
-    assertBoxIntersectsTriangle(min, max, *this->triangle);
+    assertBoxIntersectsTriangle(min, max, *this->triangle.get());
 }
 
 /**
@@ -258,13 +257,13 @@ TEST_F(TestTriangle, intersectBoxInside04) {
 TEST_F(TestTriangle, intersectBoxInside05) {
     const ::glm::vec3 min {-1, -1, -1};
     const ::glm::vec3 max {0.1F, 0.1F, 0.1F};
-    assertBoxIntersectsTriangle(min, max, *this->triangle);
+    assertBoxIntersectsTriangle(min, max, *this->triangle.get());
 }
 
 TEST_F(TestTriangle, intersectBoxInside06) {
     const ::glm::vec3 min {-1, 0.4F, 0.4F};
     const ::glm::vec3 max {1, 1.4F, 1.4F};
-    assertBoxIntersectsTriangle(min, max, *this->triangle);
+    assertBoxIntersectsTriangle(min, max, *this->triangle.get());
 }
 
 /**
@@ -348,7 +347,7 @@ TEST_F(TestTriangle, OperatorMORE) {
 TEST_F(TestTriangle, intersectRayInside01) {
     const ::glm::vec3 orig {2, 0, 0};
     const ::glm::vec3 dir {::glm::vec3 {0, 0, 0} - orig};
-    assertRayTriangle(orig, dir, *this->triangle, true);
+    assertRayTriangle(orig, dir, *this->triangle.get(), true);
 }
 
 /**
@@ -357,7 +356,7 @@ TEST_F(TestTriangle, intersectRayInside01) {
 TEST_F(TestTriangle, intersectRayInside02) {
     const ::glm::vec3 orig {2, 0, 0};
     const ::glm::vec3 dir {::glm::vec3 {0, 1, 0} - orig};
-    assertRayTriangle(orig, dir, *this->triangle, true);
+    assertRayTriangle(orig, dir, *this->triangle.get(), true);
 }
 
 /**
@@ -366,7 +365,7 @@ TEST_F(TestTriangle, intersectRayInside02) {
 TEST_F(TestTriangle, intersectRayInside03) {
     const ::glm::vec3 orig {2, 0, 0};
     const ::glm::vec3 dir {::glm::vec3 {0, 0, 1} - orig};
-    assertRayTriangle(orig, dir, *this->triangle, true);
+    assertRayTriangle(orig, dir, *this->triangle.get(), true);
 }
 
 /**
@@ -375,7 +374,7 @@ TEST_F(TestTriangle, intersectRayInside03) {
 TEST_F(TestTriangle, intersectRayOutside01) {
     const ::glm::vec3 orig {2, 0, 0};
     const ::glm::vec3 dir {::glm::vec3 {0, 1.000001, 0} - orig};
-    assertRayTriangle(orig, dir, *this->triangle, false);
+    assertRayTriangle(orig, dir, *this->triangle.get(), false);
 }
 
 /**
@@ -384,7 +383,7 @@ TEST_F(TestTriangle, intersectRayOutside01) {
 TEST_F(TestTriangle, intersectRayOutside02) {
     const ::glm::vec3 orig {2, 0, 0};
     const ::glm::vec3 dir {::glm::vec3 {0, 0, 1.000001} - orig};
-    assertRayTriangle(orig, dir, *this->triangle, false);
+    assertRayTriangle(orig, dir, *this->triangle.get(), false);
 }
 
 /**
@@ -393,7 +392,7 @@ TEST_F(TestTriangle, intersectRayOutside02) {
 TEST_F(TestTriangle, intersectRayOutside03) {
     const ::glm::vec3 orig {2, 2, 2};
     const ::glm::vec3 dir {::glm::vec3 {0.000001, 0, 0} - orig};
-    assertRayTriangle(orig, dir, *this->triangle, false);
+    assertRayTriangle(orig, dir, *this->triangle.get(), false);
 }
 
 /**
@@ -402,7 +401,7 @@ TEST_F(TestTriangle, intersectRayOutside03) {
 TEST_F(TestTriangle, intersectRayOutside04) {
     const ::glm::vec3 orig {2, 2, 2};
     const ::glm::vec3 dir {::glm::vec3 {-1, 0, 0} - orig};
-    assertRayTriangle(orig, dir, *this->triangle, false);
+    assertRayTriangle(orig, dir, *this->triangle.get(), false);
 }
 
 /**
@@ -411,7 +410,7 @@ TEST_F(TestTriangle, intersectRayOutside04) {
 TEST_F(TestTriangle, intersectRayOutside05) {
     const ::glm::vec3 orig {2, 0, 0};
     const ::glm::vec3 dir {::glm::vec3 {0, -0.000001, 0} - orig};
-    assertRayTriangle(orig, dir, *this->triangle, false);
+    assertRayTriangle(orig, dir, *this->triangle.get(), false);
 }
 
 /**
@@ -420,7 +419,7 @@ TEST_F(TestTriangle, intersectRayOutside05) {
 TEST_F(TestTriangle, intersectRayOutside06) {
     const ::glm::vec3 orig {2, 0, 0};
     const ::glm::vec3 dir {::glm::vec3 {0, 0, -0.000001} - orig};
-    assertRayTriangle(orig, dir, *this->triangle, false);
+    assertRayTriangle(orig, dir, *this->triangle.get(), false);
 }
 
 /**
@@ -430,5 +429,5 @@ TEST_F(TestTriangle, intersectRayOutside06) {
 TEST_F(TestTriangle, intersectRayFromPrimitive) {
     const ::glm::vec3 orig {2, 0, 0};
     const ::glm::vec3 dir {::glm::vec3 {0, 0, 0} - orig};
-    assertRayTriangle(orig, dir, *this->triangle, false, this->triangle);
+    assertRayTriangle(orig, dir, *this->triangle.get(), false, this->triangle.get());
 }
