@@ -489,10 +489,11 @@ public final class MainActivity extends Activity {
      * <li> External SD card;
      * </ul>
      * @param uri The {@link Uri} to a path in Android filesystem.
+     * @throws IllegalArgumentException If the path is not valid.
      */
     private void validatePath(final Uri uri) {
         if (uri == null || uri.getPath() == null) {
-            throw new FailureException("There is no URI to a File!");
+            throw new IllegalArgumentException("There is no URI to a File!");
         }
         final List<String> allowedPaths = List.of(UtilsContext.getSdCardPath(this), UtilsContext.getInternalStoragePath(this));
         final boolean isAllowedPath;
@@ -505,7 +506,7 @@ public final class MainActivity extends Activity {
             isAllowedPath = StreamSupport.stream(allowedPaths).anyMatch(normalizedPath::startsWith);
         }
         if (!isAllowedPath) {
-            throw new SecurityException("The provided file path is not from a safe internal storage or external SD Card path.");
+            throw new IllegalArgumentException("The provided file path is not from a safe internal storage or external SD Card path.");
         }
     }
 
