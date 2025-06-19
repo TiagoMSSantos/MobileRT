@@ -562,7 +562,7 @@ jobs:
           report_paths: '**/build/**/*-results/**/TEST-*.xml'
           annotate_only: false
           check_annotations: true
-          update_check: true
+          update_check: false # Possible bug: https://github.com/mikepenz/action-junit-report/issues/927
           check_name: 'Android Test Report - API ${{ inputs.android_api }} ${{ inputs.type }} (${{ inputs.host_os }})'
           fail_on_failure: true
           fail_on_parse_error: true
@@ -820,7 +820,7 @@ jobs:
           report_paths: '**/build/**/*-results/**/TEST-*.xml'
           annotate_only: false
           check_annotations: true
-          update_check: true
+          update_check: false # Possible bug: https://github.com/mikepenz/action-junit-report/issues/927
           check_name: 'Unit Test Report - API ${{ inputs.android_api }} ${{ inputs.type }} (${{ inputs.host_os }})'
           fail_on_failure: true
           fail_on_parse_error: true
