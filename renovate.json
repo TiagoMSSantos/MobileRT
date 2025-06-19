@@ -57,8 +57,9 @@
     "groupName": "all patch updates"
   },
   "digest": {
-    "enabled": false,
-    "automerge": false
+    "enabled": true,
+    "automerge": false,
+    "groupName": "all digest updates"
   },
   "regex": {
     "enabled": true
@@ -342,7 +343,7 @@
         "action"
       ],
       "enabled": true,
-      "pinDigests": false
+      "pinDigests": true
     },
     {
       "matchUpdateTypes": [
