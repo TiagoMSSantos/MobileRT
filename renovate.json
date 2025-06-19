@@ -387,7 +387,8 @@
         "github-actions"
       ],
       "matchDepNames": [
-        "actions/*"
+        "actions/*",
+        "github/*"
       ],
       "pinDigests": false
     },
