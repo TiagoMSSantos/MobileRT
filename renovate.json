@@ -382,6 +382,16 @@
       ]
     },
     {
+      "groupName": "Do NOT pin commit hash on 1st party Github actions",
+      "matchManagers": [
+        "github-actions"
+      ],
+      "matchDepNames": [
+        "actions/*"
+      ],
+      "pinDigests": false
+    },
+    {
       "groupName": "Only update patches of androidx.core:core for Android API >= 19",
       "enabled": false,
       "matchUpdateTypes": [
