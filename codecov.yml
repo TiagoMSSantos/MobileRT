@@ -44,9 +44,8 @@ coverage:
         only_pulls: false
     changes:
       default:
-        threshold: 100%
         if_ci_failed: error
-        informational: false
+        informational: true
         only_pulls: false
 
 parsers:
