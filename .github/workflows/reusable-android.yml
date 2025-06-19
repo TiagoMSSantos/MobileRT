@@ -92,7 +92,7 @@ jobs:
         id: download-gradle-artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success() && !startsWith(inputs.host_os, 'windows')
-        uses: dawidd6/action-download-artifact@v11
+        uses: dawidd6/action-download-artifact@ac66b43f0e6a346234dd65d4d0c8fbb31cb316e5 # v11
         continue-on-error: true
         with:
           # Check available parameters in: https://github.com/dawidd6/action-download-artifact/blob/master/action.yml
@@ -501,7 +501,7 @@ jobs:
       - name: Run Android tests
         timeout-minutes: 30
         if: success() && !startsWith(inputs.host_os, 'windows')
-        uses: ReactiveCircus/android-emulator-runner@v2
+        uses: ReactiveCircus/android-emulator-runner@1dcd0090116d15e7c562f8db72807de5e036a4ed # v2
         env:
           ANDROID_EMULATOR_WAIT_TIME_BEFORE_KILL: 1
           MEM_MB: 1024
@@ -559,7 +559,7 @@ jobs:
       - name: Publish Android Test Report
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success() || failure() # always run even if the previous step fails
-        uses: mikepenz/action-junit-report@v5
+        uses: mikepenz/action-junit-report@a83fd2b5d58d4fc702e690c1ea688d702d28d281 # v5
         with:
           # Check available parameters in: https://github.com/mikepenz/action-junit-report/blob/main/action.yml
           report_paths: '**/build/**/*-results/**/TEST-*.xml'
@@ -817,7 +817,7 @@ jobs:
       - name: Publish Unit Test Report
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success() || failure() # always run even if the previous step fails
-        uses: mikepenz/action-junit-report@v5
+        uses: mikepenz/action-junit-report@a83fd2b5d58d4fc702e690c1ea688d702d28d281 # v5
         with:
           # Check available parameters in: https://github.com/mikepenz/action-junit-report/blob/main/action.yml
           report_paths: '**/build/**/*-results/**/TEST-*.xml'
