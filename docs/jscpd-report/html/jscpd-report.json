@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2025-06-18T18:51:32.125Z",
+    "detectionDate": "2025-06-19T12:44:43.753Z",
     "formats": {
       "java": {
         "sources": {
@@ -2009,8 +2009,8 @@
             "newClones": 0
           },
           ".github/workflows/reusable-native.yml": {
-            "lines": 429,
-            "tokens": 2178,
+            "lines": 432,
+            "tokens": 2191,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2034,49 +2034,49 @@
           },
           ".github/workflows/jekyll.yml": {
             "lines": 194,
-            "tokens": 1150,
+            "tokens": 1154,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 19,
             "duplicatedTokens": 110,
             "percentage": 9.79,
-            "percentageTokens": 9.57,
+            "percentageTokens": 9.53,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           ".github/workflows/docker.yml": {
             "lines": 398,
-            "tokens": 2774,
+            "tokens": 2778,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 46,
             "duplicatedTokens": 243,
             "percentage": 11.56,
-            "percentageTokens": 8.76,
+            "percentageTokens": 8.75,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           ".github/workflows/code-analysis.yml": {
             "lines": 311,
-            "tokens": 1954,
+            "tokens": 1956,
             "sources": 1,
             "clones": 3,
             "duplicatedLines": 84,
             "duplicatedTokens": 444,
             "percentage": 27.01,
-            "percentageTokens": 22.72,
+            "percentageTokens": 22.7,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           ".github/workflows/android_repeatable.yml": {
             "lines": 190,
-            "tokens": 1115,
+            "tokens": 1117,
             "sources": 1,
             "clones": 2,
             "duplicatedLines": 57,
             "duplicatedTokens": 318,
             "percentage": 30,
-            "percentageTokens": 28.52,
+            "percentageTokens": 28.47,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2165,8 +2165,8 @@
             "newClones": 0
           },
           "codecov.yml": {
-            "lines": 86,
-            "tokens": 444,
+            "lines": 93,
+            "tokens": 482,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2190,14 +2190,14 @@
           }
         },
         "total": {
-          "lines": 2502,
-          "tokens": 15093,
+          "lines": 2512,
+          "tokens": 15156,
           "sources": 24,
           "clones": 6,
           "duplicatedLines": 188,
           "duplicatedTokens": 1010,
-          "percentage": 7.51,
-          "percentageTokens": 6.69,
+          "percentage": 7.48,
+          "percentageTokens": 6.66,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3284,8 +3284,8 @@
       }
     },
     "total": {
-      "lines": 30568,
-      "tokens": 237014,
+      "lines": 30578,
+      "tokens": 237077,
       "sources": 260,
       "clones": 116,
       "duplicatedLines": 1385,

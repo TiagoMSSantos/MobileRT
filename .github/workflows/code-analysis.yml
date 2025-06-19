@@ -158,7 +158,7 @@ jobs:
     - name: Install Qt (Windows & MacOS)
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success() && (startsWith(matrix.host_os, 'windows') || startsWith(matrix.host_os, 'macos'))
-      uses: jurplel/install-qt-action@v4
+      uses: jurplel/install-qt-action@v4.3.0
       # Download Qt from: https://download.qt.io/online/qtsdkrepository/
       with:
         # Check available parameters in: https://github.com/jurplel/install-qt-action/blob/master/action.yml

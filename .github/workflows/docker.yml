@@ -112,7 +112,7 @@ jobs:
     - name: Install MacPorts (MacOS 11)
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success() && startsWith(matrix.host_os, 'macos-11')
-      uses: melusina-org/setup-macports@v1
+      uses: melusina-org/setup-macports@v1.1.4
       with:
         # Check available parameters in: https://github.com/melusina-org/setup-macports/blob/main/action.yaml
         parameters: '.github/macports.yml'
