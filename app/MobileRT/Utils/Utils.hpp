@@ -379,12 +379,12 @@ namespace MobileRT {
              *
              * @tparam T    The type of the object to construct.
              * @tparam Args The type of the arguments.
-             * @param args The arguments to build the object.
+             * @param allArgs The arguments to build the object.
              * @return A unique_ptr of an object of type T.
              */
             template<typename T, typename... Args>
-            ::std::unique_ptr<T> make_unique(Args &&... args) {
-                return ::std::make_unique<T>(::std::forward<Args>(args)...);
+            ::std::unique_ptr<T> make_unique(Args &&... allArgs) {
+                return ::std::make_unique<T>(::std::forward<Args>(allArgs)...);
             }
         #endif
 

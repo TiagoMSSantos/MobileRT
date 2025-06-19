@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2025-06-19T14:22:40.070Z",
+    "detectionDate": "2025-06-19T15:06:56.714Z",
     "formats": {
       "java": {
         "sources": {
@@ -1790,7 +1790,7 @@
           },
           "app/MobileRT/Renderer.cpp": {
             "lines": 198,
-            "tokens": 1915,
+            "tokens": 2007,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -1887,13 +1887,13 @@
         },
         "total": {
           "lines": 6161,
-          "tokens": 62152,
+          "tokens": 62244,
           "sources": 59,
           "clones": 34,
           "duplicatedLines": 336,
           "duplicatedTokens": 5234,
           "percentage": 5.45,
-          "percentageTokens": 8.42,
+          "percentageTokens": 8.41,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2694,13 +2694,13 @@
           },
           "app/MobileRT/Accelerators/RegularGrid.hpp": {
             "lines": 545,
-            "tokens": 5586,
+            "tokens": 5779,
             "sources": 1,
             "clones": 4,
             "duplicatedLines": 36,
             "duplicatedTokens": 364,
             "percentage": 6.61,
-            "percentageTokens": 6.52,
+            "percentageTokens": 6.3,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -3151,13 +3151,13 @@
         },
         "total": {
           "lines": 3432,
-          "tokens": 25304,
+          "tokens": 25497,
           "sources": 47,
           "clones": 3,
           "duplicatedLines": 29,
           "duplicatedTokens": 314,
           "percentage": 0.84,
-          "percentageTokens": 1.24,
+          "percentageTokens": 1.23,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3285,13 +3285,13 @@
     },
     "total": {
       "lines": 30578,
-      "tokens": 237173,
+      "tokens": 237458,
       "sources": 260,
       "clones": 116,
       "duplicatedLines": 1385,
       "duplicatedTokens": 13109,
       "percentage": 4.53,
-      "percentageTokens": 5.53,
+      "percentageTokens": 5.52,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -6081,12 +6081,12 @@
         "startLoc": {
           "line": 466,
           "column": 13,
-          "position": 4860
+          "position": 5053
         },
         "endLoc": {
           "line": 472,
           "column": 13,
-          "position": 4947
+          "position": 5140
         }
       },
       "secondFile": {
@@ -6096,12 +6096,12 @@
         "startLoc": {
           "line": 415,
           "column": 13,
-          "position": 4371
+          "position": 4564
         },
         "endLoc": {
           "line": 421,
           "column": 6,
-          "position": 4458
+          "position": 4651
         }
       }
     },
@@ -6117,12 +6117,12 @@
         "startLoc": {
           "line": 503,
           "column": 2,
-          "position": 5264
+          "position": 5457
         },
         "endLoc": {
           "line": 515,
           "column": 2,
-          "position": 5359
+          "position": 5552
         }
       },
       "secondFile": {
@@ -6132,12 +6132,12 @@
         "startLoc": {
           "line": 483,
           "column": 2,
-          "position": 5074
+          "position": 5267
         },
         "endLoc": {
           "line": 494,
           "column": 5,
-          "position": 5168
+          "position": 5361
         }
       }
     },
