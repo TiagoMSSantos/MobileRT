@@ -125,7 +125,7 @@ namespace MobileRT {
     template<typename T>
     BVH<T>::BVH(::std::vector<T> &&primitives) {
         if (primitives.empty()) {
-            this->boxes_.emplace_back(BVHNode {});
+            this->boxes_.emplace_back();
             LOG_WARN("Empty BVH for '", typeid(T).name(), "' without any primitives.");
             return;
         }
@@ -186,7 +186,7 @@ namespace MobileRT {
         for (::std::uint32_t i {}; i < primitivesSize; ++i) {
             const T &primitive {primitives [i]};
             AABB &&box {primitive.getAABB()};
-            buildNodes.emplace_back(BuildNode {::std::move(box), static_cast<::std::int32_t> (i)});
+            buildNodes.emplace_back(::std::move(box), static_cast<::std::int32_t> (i));
         }
 
         do {

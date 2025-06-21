@@ -6,8 +6,8 @@ on:
     paths-ignore:
     - '*'
     - '**/**'
-    - '!.github/workflows/code-analysis.yml'
-    - '!.github/workflows/code-analysis-matrix.json'
+    - '!.github/workflows/codeql.yml'
+    - '!.github/workflows/codeql-matrix.json'
     - '!codecov.yml'
     - '!Gemfile'
     - '!scripts/install_dependencies.sh'
@@ -61,7 +61,7 @@ jobs:
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
         run: |
-          MATRIX=$(echo $(cat .github/workflows/code-analysis-matrix.json) | sed 's/ //g');
+          MATRIX=$(echo $(cat .github/workflows/codeql-matrix.json) | sed 's/ //g');
           echo "Matrix: ${MATRIX}";
           echo "matrix=${MATRIX}" >> ${GITHUB_OUTPUT};
 
