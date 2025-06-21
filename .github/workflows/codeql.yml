@@ -235,7 +235,7 @@ jobs:
 
     - name: Build C++
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
-      if: success() && (matrix.language == 'c-cpp' || matrix.language == 'rust')
+      if: success() && matrix.language == 'c-cpp'
       run: |
         sh scripts/compile_native.sh -t debug -c ${{ env.compiler }} -r yes;
 
@@ -244,6 +244,7 @@ jobs:
       if: success() && matrix.language == 'rust'
       working-directory: ${{ env.source_root }}
       run: |
+        sh scripts/compile_native.sh -t release -c ${{ env.compiler }} -r yes;
         make build;
 
     - name: Perform CodeQL Analysis
