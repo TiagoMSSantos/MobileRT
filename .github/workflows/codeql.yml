@@ -122,11 +122,7 @@ jobs:
         ls -lahp ${ANDROID_HOME}/platforms;
         ls -lahp ${HOME};
 
-    # Initializes the CodeQL tools for scanning.
-    # Valid inputs are ['tools', 'languages', 'token', 'matrix', 'config-file', 'queries']
-    # Queries: must be a built-in suite (security-extended or security-and-quality),
-    # a relative path, or be of the form "owner/repo[/path]@ref"
-    - name: Initialize CodeQL
+    - name: Initialize CodeQL tools for scanning
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       uses: github/codeql-action/init@v3
@@ -136,10 +132,8 @@ jobs:
         token: ${{ github.token }}
         matrix: ${{ toJson(matrix) }}
         config-file: .github/codeql/codeql-config.yml
-        queries: +security-and-quality
         source-root: .
-        debug: false
-        packs: codeql/cpp-queries,codeql/java-queries,codeql/ruby-queries
+        debug: true
 
     - name: Set Qt CPU Architecture (Windows & MacOS)
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}

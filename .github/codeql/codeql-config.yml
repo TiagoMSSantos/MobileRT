@@ -14,6 +14,22 @@ name: "My CodeQL config"
 
 disable-default-queries: false
 
+queries:
+  - name: Queries from security-extended, plus maintainability and reliability queries
+    uses: security-and-quality
+packs:
+  - codeql/cpp-queries
+  - codeql/cpp-all
+  - codeql/java-queries
+  - codeql/java-all
+  - codeql/ruby-queries
+  - codeql/ruby-all
+  - codeql/actions-queries
+  - codeql/actions-all
+  - codeql/rust-queries
+  - codeql/rust-all
+  - codeql/yaml
+
 #paths:
 #  - app/MobileRT
 #  - app/Components
