@@ -111,6 +111,16 @@ jobs:
         cache: gradle
         cache-dependency-path: '**/build.gradle'
 
+    - name: Add project root path
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
+      if: success()
+      run: |
+        if [ ${{ matrix.language }} = 'rust' ]; then
+          echo 'source_root=app/web-server' >> "${GITHUB_ENV}";
+        else
+          echo 'source_root=.' >> "${GITHUB_ENV}";
+        fi
+
     - name: Check available Android versions
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
       if: success() && matrix.language == 'java-kotlin'
@@ -134,7 +144,7 @@ jobs:
         token: ${{ github.token }}
         matrix: ${{ toJson(matrix) }}
         config-file: .github/codeql/codeql-config.yml
-        source-root: .
+        source-root: ${{ env.source_root }}
         debug: true
 
     - name: Set Qt CPU Architecture (Windows & MacOS)
