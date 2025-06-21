@@ -211,7 +211,7 @@ jobs:
         # Check available parameters in: https://github.com/github/codeql-action/blob/main/autobuild/action.yml
         token: ${{ github.token }}
         matrix: ${{ toJson(matrix) }}
-        working-directory: ${{ github.workspace }}
+        working-directory: ${{ env.source_root }}
 
     - name: Validate Gradle Wrapper
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
