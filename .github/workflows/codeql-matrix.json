@@ -3,6 +3,7 @@
   [
     { "host_os": "ubuntu-latest", "language": "c-cpp" },
     { "host_os": "ubuntu-latest", "language": "java-kotlin" },
-    { "host_os": "ubuntu-latest", "language": "actions" }
+    { "host_os": "ubuntu-latest", "language": "actions" },
+    { "host_os": "ubuntu-latest", "language": "rust" }
   ]
 }
