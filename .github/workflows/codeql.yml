@@ -183,7 +183,7 @@ jobs:
 
     - name: Install dependencies
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && matrix.language == 'c-cpp'
+      if: success() && (matrix.language == 'c-cpp' || matrix.language == 'rust')
       run: |
         sh scripts/install_dependencies.sh;
 
@@ -225,7 +225,7 @@ jobs:
 
     - name: Set C++ compiler
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && matrix.language == 'c-cpp'
+      if: success() && (matrix.language == 'c-cpp' || matrix.language == 'rust')
       run: |
         if [ ${{ startsWith(matrix.host_os, 'windows') }} = true ]; then
           echo 'compiler=cl' >> "${GITHUB_ENV}";
@@ -235,7 +235,7 @@ jobs:
 
     - name: Build C++
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
-      if: success() && matrix.language == 'c-cpp'
+      if: success() && (matrix.language == 'c-cpp' || matrix.language == 'rust')
       run: |
         sh scripts/compile_native.sh -t debug -c ${{ env.compiler }} -r yes;
 
