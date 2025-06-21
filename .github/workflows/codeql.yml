@@ -189,7 +189,7 @@ jobs:
 
     - name: Download Android CMake
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && matrix.language != 'c-cpp' && !startsWith(matrix.host_os, 'windows')
+      if: success() && matrix.language == 'java' && !startsWith(matrix.host_os, 'windows')
       run: |
         ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'cmake;4.0.2';
 
@@ -201,7 +201,7 @@ jobs:
 
     - name: Autobuild
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
-      if: success() && matrix.language != 'c-cpp'
+      if: success() && matrix.language == 'java-kotlin'
       uses: github/codeql-action/autobuild@v3
       continue-on-error: false
       env:
@@ -238,6 +238,13 @@ jobs:
       if: success() && matrix.language == 'c-cpp'
       run: |
         sh scripts/compile_native.sh -t debug -c ${{ env.compiler }} -r yes;
+
+    - name: Build Rust Web Server
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
+      if: success() && matrix.language == 'rust'
+      working-directory: ${{ env.source_root }}
+      run: |
+        make build;
 
     - name: Perform CodeQL Analysis
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
