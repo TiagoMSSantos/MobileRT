@@ -30,6 +30,7 @@ build: clean libcpp.so
 	cargo build -j8
 
 libcpp.so: src/lib.cpp ../Scenes/Scenes.cpp ../System_dependent/Native/*.cpp
+	cmake -B build ../
 	g++ $(INCLUDE_PATHS) -fPIC -c $^
 	g++ -shared -o $@ *.o
 
