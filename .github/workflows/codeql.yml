@@ -242,9 +242,9 @@ jobs:
     - name: Build Rust Web Server
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
       if: success() && matrix.language == 'rust'
-      working-directory: ${{ env.source_root }}
       run: |
         sh scripts/compile_native.sh -t release -c ${{ env.compiler }} -r yes;
+        cd ${{ env.source_root }};
         make build;
 
     - name: Perform CodeQL Analysis
