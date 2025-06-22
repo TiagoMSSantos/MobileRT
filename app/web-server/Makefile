@@ -1,4 +1,4 @@
-.PHONY: build clean run test
+.PHONY: build_release build_debug clean run test
 
 BOOST_INCLUDE = ../third_party/boost/libs
 INCLUDE_PATHS = -I../ \
@@ -26,8 +26,11 @@ LD_PATH := ../../build_release/lib
 clean:
 	rm -rf $(CLEAN_FILES) || true
 
-build: clean libcpp.so
-	cargo build -j8
+build_release: clean libcpp.so
+	cargo build --release -j8
+
+build_debug: clean libcpp.so
+	RUSTFLAGS=-g cargo build -j8
 
 libcpp.so: src/lib.cpp ../Scenes/Scenes.cpp ../System_dependent/Native/*.cpp
 	g++ $(INCLUDE_PATHS) -fPIC -c $^

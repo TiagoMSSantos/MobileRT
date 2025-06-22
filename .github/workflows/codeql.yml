@@ -195,7 +195,7 @@ jobs:
 
     - name: Download Android CMake Windows
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && startsWith(matrix.host_os, 'windows')
+      if: success() && matrix.language == 'java-kotlin' && startsWith(matrix.host_os, 'windows')
       run: |
         ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager.bat --install 'cmake;4.0.2';
 
@@ -245,7 +245,7 @@ jobs:
       run: |
         sh scripts/compile_native.sh -t release -c ${{ env.compiler }} -r yes;
         cd ${{ env.source_root }};
-        make build;
+        make build_debug;
 
     - name: Perform CodeQL Analysis
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
@@ -278,6 +278,8 @@ jobs:
           LANGUAGE='cpp';
         elif [ "${{ matrix.language }}" = 'java-kotlin' ]; then
           LANGUAGE='java';
+        elif [ "${{ matrix.language }}" = 'javascript-typescript' ]; then
+          LANGUAGE='javascript';
         else
           LANGUAGE="${{ matrix.language }}";
         fi
@@ -292,8 +294,10 @@ jobs:
       with:
         # Check available parameters in: https://github.com/advanced-security/filter-sarif/blob/main/action.yml
         patterns: |
-          -**/*third_party*/**/*:**
-          -**/*build_*/**/*:**
+          -**/third_party/**/*:**
+          -**/build_*/**/*:**
+          -**/build/**/*:**
+          -**/jscpd-report/**/*:**
         input: ./codeql-results/${{ env.LANGUAGE }}.sarif
         output: ./codeql-results/${{ env.LANGUAGE }}-filtered.sarif
 
