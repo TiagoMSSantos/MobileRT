@@ -298,6 +298,7 @@ jobs:
           -**/build_*/**/*:**
           -**/build/**/*:**
           -**/jscpd-report/**/*:**
+          -**/mobilert-chart/**/*:**
         input: ./codeql-results/${{ env.LANGUAGE }}.sarif
         output: ./codeql-results/${{ env.LANGUAGE }}-filtered.sarif
 
