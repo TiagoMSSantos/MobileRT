@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2025-06-22T08:15:57.308Z",
+    "detectionDate": "2025-06-22T10:37:22.386Z",
     "formats": {
       "java": {
         "sources": {
@@ -2045,14 +2045,14 @@
             "newClones": 0
           },
           ".github/workflows/codeql.yml": {
-            "lines": 331,
-            "tokens": 2061,
+            "lines": 334,
+            "tokens": 2076,
             "sources": 1,
-            "clones": 3,
-            "duplicatedLines": 84,
-            "duplicatedTokens": 444,
-            "percentage": 25.38,
-            "percentageTokens": 21.54,
+            "clones": 2,
+            "duplicatedLines": 57,
+            "duplicatedTokens": 318,
+            "percentage": 17.07,
+            "percentageTokens": 15.32,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2072,17 +2072,17 @@
             "lines": 130,
             "tokens": 627,
             "sources": 1,
-            "clones": 1,
-            "duplicatedLines": 27,
-            "duplicatedTokens": 126,
-            "percentage": 20.77,
-            "percentageTokens": 20.1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           ".github/codeql/codeql-config.yml": {
-            "lines": 39,
-            "tokens": 186,
+            "lines": 34,
+            "tokens": 153,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2178,14 +2178,14 @@
           }
         },
         "total": {
-          "lines": 2546,
-          "tokens": 15404,
+          "lines": 2544,
+          "tokens": 15386,
           "sources": 24,
-          "clones": 6,
-          "duplicatedLines": 188,
-          "duplicatedTokens": 1010,
-          "percentage": 7.38,
-          "percentageTokens": 6.56,
+          "clones": 5,
+          "duplicatedLines": 161,
+          "duplicatedTokens": 884,
+          "percentage": 6.33,
+          "percentageTokens": 5.75,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3272,14 +3272,14 @@
       }
     },
     "total": {
-      "lines": 29619,
-      "tokens": 229403,
+      "lines": 29617,
+      "tokens": 229385,
       "sources": 259,
-      "clones": 115,
-      "duplicatedLines": 1380,
-      "duplicatedTokens": 13071,
-      "percentage": 4.66,
-      "percentageTokens": 5.7,
+      "clones": 114,
+      "duplicatedLines": 1353,
+      "duplicatedTokens": 12945,
+      "percentage": 4.57,
+      "percentageTokens": 5.64,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -7036,17 +7036,17 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/codeql.yml",
-        "start": 27,
-        "end": 66,
+        "start": 30,
+        "end": 69,
         "startLoc": {
-          "line": 27,
+          "line": 30,
           "column": 1,
-          "position": 119
+          "position": 134
         },
         "endLoc": {
-          "line": 66,
+          "line": 69,
           "column": 55,
-          "position": 332
+          "position": 347
         }
       },
       "secondFile": {
@@ -7123,53 +7123,17 @@
       },
       "secondFile": {
         "name": ".github/workflows/codeql.yml",
-        "start": 96,
-        "end": 114,
+        "start": 99,
+        "end": 117,
         "startLoc": {
-          "line": 96,
+          "line": 99,
           "column": 7,
-          "position": 537
+          "position": 552
         },
         "endLoc": {
-          "line": 114,
+          "line": 117,
           "column": 4,
-          "position": 642
-        }
-      }
-    },
-    {
-      "format": "yaml",
-      "lines": 28,
-      "fragment": "- '!**/CMakeLists*'\n    - '!**/*.java*'\n    - '!**/*.kt*'\n    - '!**/*.c*'\n    - '!**/*.h'\n    - '!**/*.hpp'\n    - '!**/*gradle*'\n\npermissions: {}\n\ndefaults:\n  run:\n    shell: sh\n    working-directory: .\n\nconcurrency:\n  group: ${{ github.workflow }} ${{ github.ref }}\n  cancel-in-progress: true\n\n# Default environment variables.\nenv:\n  GITHUB_STEP_TIMEOUT_SMALL: 4\n  GITHUB_STEP_TIMEOUT_MEDIUM: 10\n  GITHUB_STEP_TIMEOUT_LONG: 20\n\njobs:\n  Matrix:\n    if",
-      "tokens": 0,
-      "firstFile": {
-        "name": ".github/workflows/android.yml",
-        "start": 19,
-        "end": 46,
-        "startLoc": {
-          "line": 19,
-          "column": 5,
-          "position": 82
-        },
-        "endLoc": {
-          "line": 46,
-          "column": 3,
-          "position": 208
-        }
-      },
-      "secondFile": {
-        "name": ".github/workflows/codeql.yml",
-        "start": 19,
-        "end": 46,
-        "startLoc": {
-          "line": 19,
-          "column": 5,
-          "position": 84
-        },
-        "endLoc": {
-          "line": 46,
-          "column": 5,
-          "position": 210
+          "position": 657
         }
       }
     },

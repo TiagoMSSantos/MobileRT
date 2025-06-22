@@ -8,6 +8,7 @@ on:
     - '**/**'
     - '!.github/workflows/codeql.yml'
     - '!.github/workflows/codeql-matrix.json'
+    - '!.github/codeql/codeql-config.yml'
     - '!codecov.yml'
     - '!Gemfile'
     - '!scripts/install_dependencies.sh'
@@ -23,6 +24,8 @@ on:
     - '!**/*.h'
     - '!**/*.hpp'
     - '!**/*gradle*'
+    - '!**/*.rs'
+    - '!**/*.js'
 
 permissions: {}
 
