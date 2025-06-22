@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2025-06-22T10:37:22.386Z",
+    "detectionDate": "2025-06-22T13:53:52.419Z",
     "formats": {
       "java": {
         "sources": {
@@ -2045,13 +2045,13 @@
             "newClones": 0
           },
           ".github/workflows/codeql.yml": {
-            "lines": 334,
+            "lines": 338,
             "tokens": 2076,
             "sources": 1,
             "clones": 2,
             "duplicatedLines": 57,
             "duplicatedTokens": 318,
-            "percentage": 17.07,
+            "percentage": 16.86,
             "percentageTokens": 15.32,
             "newDuplicatedLines": 0,
             "newClones": 0
@@ -2081,8 +2081,8 @@
             "newClones": 0
           },
           ".github/codeql/codeql-config.yml": {
-            "lines": 34,
-            "tokens": 153,
+            "lines": 38,
+            "tokens": 173,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2178,14 +2178,14 @@
           }
         },
         "total": {
-          "lines": 2544,
-          "tokens": 15386,
+          "lines": 2552,
+          "tokens": 15406,
           "sources": 24,
           "clones": 5,
           "duplicatedLines": 161,
           "duplicatedTokens": 884,
-          "percentage": 6.33,
-          "percentageTokens": 5.75,
+          "percentage": 6.31,
+          "percentageTokens": 5.74,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3272,8 +3272,8 @@
       }
     },
     "total": {
-      "lines": 29617,
-      "tokens": 229385,
+      "lines": 29625,
+      "tokens": 229405,
       "sources": 259,
       "clones": 114,
       "duplicatedLines": 1353,
