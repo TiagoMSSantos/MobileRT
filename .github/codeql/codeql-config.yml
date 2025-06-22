@@ -19,16 +19,11 @@ queries:
     uses: security-and-quality
 packs:
   - codeql/cpp-queries
-  - codeql/cpp-all
   - codeql/java-queries
-  - codeql/java-all
-  - codeql/ruby-queries
-  - codeql/ruby-all
   - codeql/actions-queries
-  - codeql/actions-all
+  - codeql/ruby-queries
   - codeql/rust-queries
-  - codeql/rust-all
-  - codeql/yaml
+  - codeql/javascript-queries
 
 paths:
   - '**/**'
