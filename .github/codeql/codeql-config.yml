@@ -26,10 +26,11 @@ packs:
   - codeql/javascript-queries
 
 paths:
-  - '**/**'
+  - '**/MobileRT/**'
 paths-ignore:
   - '**/third_party/**'
   - '**/build_*/**'
   - '**/build/**'
   - '**/jscpd-report/**'
   - '**/mobilert-chart/templates/**'
+  - '**/.rustup/**'
