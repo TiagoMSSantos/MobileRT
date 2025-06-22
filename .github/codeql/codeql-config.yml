@@ -35,3 +35,5 @@ paths-ignore:
   - '**/mobilert-chart/templates/**'
   - '**/target/**'
   - '**/.rustup/**'
+  - '**/.cargo/**'
+  - '**/hostedtoolcache/**'

@@ -304,6 +304,8 @@ jobs:
           -**/mobilert-chart/templates/**/*:**
           -**/target/**/*:**
           -**/.rustup/**/*:**
+          -**/.cargo/**/*:**
+          -**/hostedtoolcache/**/*:**
         input: ./codeql-results/${{ env.LANGUAGE }}.sarif
         output: ./codeql-results/${{ env.LANGUAGE }}-filtered.sarif
 
