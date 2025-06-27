@@ -78,7 +78,6 @@ jobs:
         java-version: 21
         distribution: zulu
         java-package: jdk
-        architecture: x64
         check-latest: false
         server-id: github
         server-username: GITHUB_ACTOR
@@ -100,7 +99,7 @@ jobs:
           echo "MacOS '${MAJOR_MAC_VERSION}' detected";
         fi
         set -e;
-        if [ "${MAJOR_MAC_VERSION}" -gt 13 ]; then
+        if ${{ endsWith(matrix.host_os, '-arm') }} = true || "${MAJOR_MAC_VERSION}" -gt 13; then
             echo 'android_arch=\"arm64-v8a\"' >> "${GITHUB_ENV}";
             echo 'android_emulator_arch=arm64-v8a' >> "${GITHUB_ENV}";
         else
@@ -117,7 +116,7 @@ jobs:
 
     - name: Download Android CMake
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && !startsWith(matrix.host_os, 'windows')
+      if: success() && !startsWith(matrix.host_os, 'windows') && !endsWith(matrix.host_os, '-arm')
       run: |
         ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'cmake;4.0.2';
 

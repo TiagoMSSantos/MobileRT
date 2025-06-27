@@ -452,8 +452,8 @@ public abstract class AbstractTest {
      */
     protected void mockFileManagerReply(final boolean externalSdcard, @NonNull final String... filesPath) {
         logger.info(ConstantsAndroidTests.MOCK_FILE_MANAGER_REPLY);
-        final Intent expectedIntent = MainActivity.createIntentToLoadFiles(InstrumentationRegistry.getInstrumentation().getTargetContext().getPackageName());
-        final Intent resultIntent = MainActivity.createIntentToLoadFiles(InstrumentationRegistry.getInstrumentation().getTargetContext().getPackageName());
+        final Intent expectedIntent = MainActivity.createIntentToLoadFiles();
+        final Intent resultIntent = MainActivity.createIntentToLoadFiles();
         final String storagePath = externalSdcard
             ? UtilsContext.getSdCardPath(InstrumentationRegistry.getInstrumentation().getTargetContext())
             : UtilsContext.getInternalStoragePath(InstrumentationRegistry.getInstrumentation().getTargetContext());

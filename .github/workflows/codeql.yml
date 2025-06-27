@@ -102,7 +102,6 @@ jobs:
         java-version: 21
         distribution: zulu
         java-package: jdk
-        architecture: x64
         check-latest: false
         server-id: github
         server-username: GITHUB_ACTOR

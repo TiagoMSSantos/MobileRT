@@ -414,13 +414,12 @@ public final class MainActivity extends Activity {
      * Helper method which creates an {@link Intent} with the goal to ask Android System to read
      * some files by an external file manager.
      *
-     * @param packageName The name of the Android package.
      * @return The {@link Intent} to load files.
      */
-    public static Intent createIntentToLoadFiles(@NonNull final String packageName) {
+    public static Intent createIntentToLoadFiles() {
         final String message = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
-            ? "Requesting Intent to load a file for: '" + packageName + "' (has shared/external file access: " + Environment.isExternalStorageManager() + ")"
-            : "Requesting Intent to load a file for: '" + packageName + "'";
+            ? "Requesting Intent to load a file for 'MobileRT' (has shared/external file access: " + Environment.isExternalStorageManager() + ")"
+            : "Requesting Intent to load a file for 'MobileRT'";
         logger.info(message);
         final Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.putExtra(Intent.EXTRA_TITLE, "Select an OBJ file to load.");
@@ -782,7 +781,7 @@ public final class MainActivity extends Activity {
      */
     private void callFileManager() {
         logger.info("callFileManager");
-        final Intent intent = createIntentToLoadFiles(getPackageName());
+        final Intent intent = createIntentToLoadFiles();
         try {
             startActivityForResult(intent, OPEN_FILE_REQUEST_CODE);
         } catch (final ActivityNotFoundException ex) {

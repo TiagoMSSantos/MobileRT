@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2025-06-22T13:53:52.419Z",
+    "detectionDate": "2025-06-27T19:37:36.985Z",
     "formats": {
       "java": {
         "sources": {
@@ -954,7 +954,7 @@
           },
           "app/src/androidTest/java/puscas/mobilertapp/RayTracingTest.java": {
             "lines": 111,
-            "tokens": 672,
+            "tokens": 646,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -1038,26 +1038,26 @@
           },
           "app/src/androidTest/java/puscas/mobilertapp/AbstractTest.java": {
             "lines": 529,
-            "tokens": 4835,
+            "tokens": 4809,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 8,
             "duplicatedTokens": 75,
             "percentage": 1.51,
-            "percentageTokens": 1.55,
+            "percentageTokens": 1.56,
             "newDuplicatedLines": 0,
             "newClones": 0
           }
         },
         "total": {
           "lines": 9786,
-          "tokens": 68060,
+          "tokens": 68008,
           "sources": 87,
           "clones": 60,
           "duplicatedLines": 562,
           "duplicatedTokens": 5223,
           "percentage": 5.74,
-          "percentageTokens": 7.67,
+          "percentageTokens": 7.68,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2045,26 +2045,26 @@
             "newClones": 0
           },
           ".github/workflows/codeql.yml": {
-            "lines": 338,
-            "tokens": 2076,
+            "lines": 337,
+            "tokens": 2070,
             "sources": 1,
             "clones": 2,
-            "duplicatedLines": 57,
-            "duplicatedTokens": 318,
-            "percentage": 16.86,
-            "percentageTokens": 15.32,
+            "duplicatedLines": 56,
+            "duplicatedTokens": 312,
+            "percentage": 16.62,
+            "percentageTokens": 15.07,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           ".github/workflows/android_repeatable.yml": {
-            "lines": 190,
-            "tokens": 1117,
+            "lines": 189,
+            "tokens": 1119,
             "sources": 1,
             "clones": 2,
-            "duplicatedLines": 57,
-            "duplicatedTokens": 318,
-            "percentage": 30,
-            "percentageTokens": 28.47,
+            "duplicatedLines": 56,
+            "duplicatedTokens": 312,
+            "percentage": 29.63,
+            "percentageTokens": 27.88,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2178,14 +2178,14 @@
           }
         },
         "total": {
-          "lines": 2552,
-          "tokens": 15406,
+          "lines": 2550,
+          "tokens": 15402,
           "sources": 24,
           "clones": 5,
-          "duplicatedLines": 161,
-          "duplicatedTokens": 884,
-          "percentage": 6.31,
-          "percentageTokens": 5.74,
+          "duplicatedLines": 160,
+          "duplicatedTokens": 878,
+          "percentage": 6.27,
+          "percentageTokens": 5.7,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3272,13 +3272,13 @@
       }
     },
     "total": {
-      "lines": 29625,
-      "tokens": 229405,
+      "lines": 29623,
+      "tokens": 229349,
       "sources": 259,
       "clones": 114,
-      "duplicatedLines": 1353,
-      "duplicatedTokens": 12945,
-      "percentage": 4.57,
+      "duplicatedLines": 1352,
+      "duplicatedTokens": 12939,
+      "percentage": 4.56,
       "percentageTokens": 5.64,
       "newDuplicatedLines": 0,
       "newClones": 0
@@ -7103,37 +7103,37 @@
     },
     {
       "format": "yaml",
-      "lines": 19,
-      "fragment": "uses: actions/setup-java@v4\n      with:\n        # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml\n        java-version: 21\n        distribution: zulu\n        java-package: jdk\n        architecture: x64\n        check-latest: false\n        server-id: github\n        server-username: GITHUB_ACTOR\n        server-password: GITHUB_TOKEN\n        settings-path: ~/.gradle\n        overwrite-settings: true\n        gpg-private-key: ''\n        gpg-passphrase: GPG_PASSPHRASE\n        cache: gradle\n        cache-dependency-path: '**/build.gradle'\n\n    - name: Set",
+      "lines": 18,
+      "fragment": "uses: actions/setup-java@v4\n      with:\n        # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml\n        java-version: 21\n        distribution: zulu\n        java-package: jdk\n        check-latest: false\n        server-id: github\n        server-username: GITHUB_ACTOR\n        server-password: GITHUB_TOKEN\n        settings-path: ~/.gradle\n        overwrite-settings: true\n        gpg-private-key: ''\n        gpg-passphrase: GPG_PASSPHRASE\n        cache: gradle\n        cache-dependency-path: '**/build.gradle'\n\n    - name: Set",
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android_repeatable.yml",
         "start": 75,
-        "end": 93,
+        "end": 92,
         "startLoc": {
           "line": 75,
           "column": 7,
           "position": 439
         },
         "endLoc": {
-          "line": 93,
+          "line": 92,
           "column": 4,
-          "position": 544
+          "position": 538
         }
       },
       "secondFile": {
         "name": ".github/workflows/codeql.yml",
         "start": 99,
-        "end": 117,
+        "end": 116,
         "startLoc": {
           "line": 99,
           "column": 7,
           "position": 552
         },
         "endLoc": {
-          "line": 117,
+          "line": 116,
           "column": 4,
-          "position": 657
+          "position": 651
         }
       }
     },

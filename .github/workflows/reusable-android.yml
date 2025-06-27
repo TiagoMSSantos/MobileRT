@@ -60,7 +60,6 @@ jobs:
           java-version: 21
           distribution: zulu
           java-package: jdk
-          architecture: x64
           check-latest: false
           server-id: github
           server-username: GITHUB_ACTOR
@@ -166,7 +165,7 @@ jobs:
             echo "MacOS '${MAJOR_MAC_VERSION}' detected";
           fi
           set -e;
-          if [ "${MAJOR_MAC_VERSION}" -gt 13 ]; then
+          if ${{ endsWith(inputs.host_os, '-arm') }} = true || "${MAJOR_MAC_VERSION}" -gt 13; then
               echo 'android_arch=\"arm64-v8a\"' >> "${GITHUB_ENV}";
               echo 'android_emulator_arch=arm64-v8a' >> "${GITHUB_ENV}";
           else
@@ -369,7 +368,6 @@ jobs:
           java-version: 21
           distribution: zulu
           java-package: jdk
-          architecture: x64
           check-latest: false
           server-id: github
           server-username: GITHUB_ACTOR
@@ -462,7 +460,7 @@ jobs:
             echo "MacOS '${MAJOR_MAC_VERSION}' detected";
           fi
           set -e;
-          if [ "${MAJOR_MAC_VERSION}" -gt 13 ]; then
+          if ${{ endsWith(inputs.host_os, '-arm') }} = true || "${MAJOR_MAC_VERSION}" -gt 13; then
               echo 'android_arch=\"arm64-v8a\"' >> "${GITHUB_ENV}";
               echo 'android_emulator_arch=arm64-v8a' >> "${GITHUB_ENV}";
           else
@@ -668,7 +666,6 @@ jobs:
           java-version: 21
           distribution: zulu
           java-package: jdk
-          architecture: x64
           check-latest: false
           server-id: github
           server-username: GITHUB_ACTOR
@@ -753,7 +750,7 @@ jobs:
             echo "MacOS '${MAJOR_MAC_VERSION}' detected";
           fi
           set -e;
-          if [ "${MAJOR_MAC_VERSION}" -gt 13 ]; then
+          if ${{ endsWith(inputs.host_os, '-arm') }} = true || "${MAJOR_MAC_VERSION}" -gt 13; then
               echo 'android_arch=\"arm64-v8a\"' >> "${GITHUB_ENV}";
               echo 'android_emulator_arch=arm64-v8a' >> "${GITHUB_ENV}";
           else
@@ -877,7 +874,6 @@ jobs:
           java-version: 21
           distribution: zulu
           java-package: jdk
-          architecture: x64
           check-latest: false
           server-id: github
           server-username: GITHUB_ACTOR
@@ -1014,7 +1010,7 @@ jobs:
             echo "MacOS '${MAJOR_MAC_VERSION}' detected";
           fi
           set -e;
-          if [ "${MAJOR_MAC_VERSION}" -gt 13 ]; then
+          if ${{ endsWith(inputs.host_os, '-arm') }} = true || "${MAJOR_MAC_VERSION}" -gt 13; then
               echo 'android_arch=\"arm64-v8a\"' >> "${GITHUB_ENV}";
               echo 'android_emulator_arch=arm64-v8a' >> "${GITHUB_ENV}";
           else
