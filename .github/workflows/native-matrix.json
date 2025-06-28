@@ -2,7 +2,7 @@
   "include":
   [
     { "host_os": "ubuntu-24.04", "type": "debug", "compiler": "g++" },
-    { "host_os": "ubuntu-22.04", "type": "release", "compiler": "clang++" },
+    { "host_os": "ubuntu-22.04-arm", "type": "release", "compiler": "clang++" },
     { "host_os": "ubuntu-24.04", "type": "release", "compiler": "icpx" },
     { "host_os": "macos-15", "type": "release", "compiler": "g++" },
     { "host_os": "macos-14", "type": "release", "compiler": "clang++" },
