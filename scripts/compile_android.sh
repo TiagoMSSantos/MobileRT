@@ -108,9 +108,9 @@ build() {
   echo 'Increasing ADB timeout to 10 minutes.';
   export ADB_INSTALL_TIMEOUT=60000;
 
-  jobsFlags="-j$((NCPU_CORES * 2 - 1))";
-  export MAKEFLAGS="${jobsFlags}";
   export CMAKE_BUILD_PARALLEL_LEVEL="$((NCPU_CORES * 2 - 1))";
+  jobsFlags="-j${CMAKE_BUILD_PARALLEL_LEVEL}";
+  export MAKEFLAGS="${jobsFlags}";
 
   echo 'Calling the Gradle assemble to compile code for Android.';
   sh gradlew --offline --parallel \

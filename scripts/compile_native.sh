@@ -267,35 +267,35 @@ build() {
   if cmake --help | grep -i '*' | grep -iq 'default' && cmake --help | grep -i '*' | grep -iq 'Visual Studio'; then
     if [ "${compiler}" = 'cl' ]; then
       echo 'Detected Visual Studio for Windows!';
-      jobsFlags="//p:Configuration=${typeWithCapitalLetter} //m:$((NCPU_CORES * 1)) //p:CL_MPCount=$((NCPU_CORES - 1)) //p:StopOnFirstFailure=true";
+      export CMAKE_BUILD_PARALLEL_LEVEL="$((NCPU_CORES))";
+      jobsFlags="//p:Configuration=${typeWithCapitalLetter} //m:${CMAKE_BUILD_PARALLEL_LEVEL} //p:CL_MPCount=${CMAKE_BUILD_PARALLEL_LEVEL} //p:StopOnFirstFailure=true";
       JOBS_FLAGS="-- ${jobsFlags}";
       export MAKEFLAGS="${jobsFlags}";
-      export CMAKE_BUILD_PARALLEL_LEVEL="$((NCPU_CORES - 1))";
     else
       echo 'Detected MinGW!';
-      generator='MinGW Makefiles';
-      jobsFlags="-j$((NCPU_CORES * 3))";
+      export CMAKE_BUILD_PARALLEL_LEVEL="$((NCPU_CORES * 3))";
+      jobsFlags="-j${CMAKE_BUILD_PARALLEL_LEVEL}";
       JOBS_FLAGS="-- ${jobsFlags}";
       export MAKEFLAGS="${jobsFlags}";
-      export CMAKE_BUILD_PARALLEL_LEVEL="$((NCPU_CORES * 3))";
+      generator='MinGW Makefiles';
     fi
   elif cmake --help | grep -i '*' | grep -iq 'default' && cmake --help | grep -i '*' | grep -iq 'unix'; then
     echo 'Detected Make!';
-    jobsFlags="-j$((NCPU_CORES * 2 - 1))";
+    export CMAKE_BUILD_PARALLEL_LEVEL="$((NCPU_CORES * 2 - 1))";
+    jobsFlags="-j${CMAKE_BUILD_PARALLEL_LEVEL}";
     JOBS_FLAGS="-- ${jobsFlags}";
     export MAKEFLAGS="${jobsFlags}";
-    export CMAKE_BUILD_PARALLEL_LEVEL="$((NCPU_CORES * 2 - 1))";
   elif cmake --help | grep -iq 'Visual Studio'; then
     echo "Didn't find a default generator. Enforcing usage of Unix Makefiles instead!";
-    jobsFlags="-j$((NCPU_CORES * 3))";
+    export CMAKE_BUILD_PARALLEL_LEVEL="$((NCPU_CORES * 3))";
+    jobsFlags="-j${CMAKE_BUILD_PARALLEL_LEVEL}";
     JOBS_FLAGS="-- ${jobsFlags}";
     export MAKEFLAGS="${jobsFlags}";
-    export CMAKE_BUILD_PARALLEL_LEVEL="$((NCPU_CORES * 3))";
     generator='Unix Makefiles';
   else
     echo "Assuming NMake!";
-    export CL="/MP$((NCPU_CORES * 2))";
     export CMAKE_BUILD_PARALLEL_LEVEL="$((NCPU_CORES * 2))";
+    export CL="/MP${CMAKE_BUILD_PARALLEL_LEVEL}";
     JOBS_FLAGS='';
   fi
 
