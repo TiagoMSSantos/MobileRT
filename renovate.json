@@ -624,7 +624,7 @@
         "github-runners"
       ],
       "versioning": "regex:^(?<major>[0-9a-z]+)?\\.?(?<minor>[0-9]+)?.*$",
-      "matchCurrentValue": "/-latest/"
+      "matchCurrentValue": "/latest/"
     },
     {
       "groupName": "Ignore specific versions of Ubuntu already being used",
