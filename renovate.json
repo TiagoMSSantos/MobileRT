@@ -88,6 +88,19 @@
   "customManagers": [
     {
       "managerFilePatterns": [
+        "/\\.github\\/workflows\\/.+\\.ya?ml/",
+        "/\\.github\\/workflows\\/.+-matrix\\.json/"
+      ],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
+        "host_os: \"?\\[?'?(?<depName>.*?)-(?<currentValue>[\\d\\w\\.\\-]*)'?\\]?\"?",
+        "runs-on: (?<depName>.*?)-(?<currentValue>.*)"
+      ],
+      "datasourceTemplate": "github-runners",
+      "customType": "regex"
+    },
+    {
+      "managerFilePatterns": [
         "/.*\\/Dockerfile.*/",
         "/\\.github\\/workflows\\/.+\\.ya?ml/"
       ],
@@ -108,18 +121,6 @@
         "image: (?<depName>.*?):(?<currentValue>.*)"
       ],
       "datasourceTemplate": "docker",
-      "customType": "regex"
-    },
-    {
-      "managerFilePatterns": [
-        "/\\.github\\/workflows\\/.+\\.ya?ml/"
-      ],
-      "matchStringsStrategy": "any",
-      "matchStrings": [
-        "host_os: \\[?'?(?<depName>.*?)-(?<currentValue>[\\d\\w\\.\\-]*)'?\\]?",
-        "runs-on: (?<depName>.*?)-(?<currentValue>.*)"
-      ],
-      "datasourceTemplate": "github-runners",
       "customType": "regex"
     },
     {
