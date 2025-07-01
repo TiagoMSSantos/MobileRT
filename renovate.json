@@ -109,7 +109,7 @@
       "matchStrings": [
         "BASE_IMAGE=(?<depName>.*?):(?<currentValue>.*)",
         "BASE_IMAGE: (?<depName>.*?):(?<currentValue>.*)",
-        "base_image\"?: \"?(?<depName>.*?):(?<currentValue>.*)\"?.*\\}?"
+        "base_image\"?: \"?(?<depName>.*?):(?<currentValue>.*)\"?.*}"
       ],
       "datasourceTemplate": "docker",
       "customType": "regex"
@@ -618,15 +618,6 @@
       "pinDigests": false
     },
     {
-      "groupName": "Ignore update Operating Systems on Github Runners if latest is used",
-      "enabled": false,
-      "matchDatasources": [
-        "github-runners"
-      ],
-      "versioning": "regex:^(?<major>[0-9a-z]+)?\\.?(?<minor>[0-9]+)?.*$",
-      "matchCurrentValue": "/latest/"
-    },
-    {
       "groupName": "Ignore specific versions of Ubuntu already being used",
       "enabled": false,
       "matchDatasources": [
@@ -636,7 +627,7 @@
         "ubuntu"
       ],
       "versioning": "regex:^(?<major>[0-9a-z]+)?\\.?(?<minor>[0-9]+)?.*$",
-      "matchCurrentVersion": "!/^24\\.04$/"
+      "matchCurrentValue": "!/^24\\.04$/"
     },
     {
       "groupName": "Ignore specific versions of Windows already being used",
@@ -648,7 +639,7 @@
         "windows"
       ],
       "versioning": "regex:^(?<major>[0-9]+)?\\.?(?<minor>[0-9]+)?.*$",
-      "matchCurrentVersion": "!/^2025$/"
+      "matchCurrentValue": "!/^2025$/"
     },
     {
       "groupName": "Ignore specific versions of MacOS already being used",
@@ -660,7 +651,7 @@
         "macos"
       ],
       "versioning": "regex:^(?<major>[0-9]+)?\\.?(?<minor>[0-9]+)?.*$",
-      "matchCurrentVersion": "!/^15$/"
+      "matchCurrentValue": "!/^15$/"
     }
   ]
 }
