@@ -102,12 +102,14 @@
     {
       "managerFilePatterns": [
         "/.*\\/Dockerfile.*/",
-        "/\\.github\\/workflows\\/.+\\.ya?ml/"
+        "/\\.github\\/workflows\\/.+\\.ya?ml/",
+        "/\\.github\\/workflows\\/docker-matrix\\.json/"
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
         "BASE_IMAGE=(?<depName>.*?):(?<currentValue>.*)",
-        "BASE_IMAGE: (?<depName>.*?):(?<currentValue>.*)"
+        "BASE_IMAGE: (?<depName>.*?):(?<currentValue>.*)",
+        "base_image\"?: \"?(?<depName>.*?):(?<currentValue>.*)\"?"
       ],
       "datasourceTemplate": "docker",
       "customType": "regex"
