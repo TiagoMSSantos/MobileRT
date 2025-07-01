@@ -109,7 +109,7 @@
       "matchStrings": [
         "BASE_IMAGE=(?<depName>.*?):(?<currentValue>.*)",
         "BASE_IMAGE: (?<depName>.*?):(?<currentValue>.*)",
-        "base_image\"?: \"?(?<depName>.*?):(?<currentValue>.*)\"? }"
+        "base_image\": \"(?<depName>.*?):(?<currentValue>.*)\" }"
       ],
       "datasourceTemplate": "docker",
       "customType": "regex"
