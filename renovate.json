@@ -365,6 +365,9 @@
         "dockerfile",
         "docker-compose"
       ],
+      "matchDatasources": [
+        "docker"
+      ],
       "versioning": "regex:^(?<major>[0-9a-z]+)\\.?(?<minor>[0-9a-z]+)?\\.?(?<patch>[0-9]+)?-?(?<compatibility>[a-z]+)?.*$",
       "pinDigests": false
     },
@@ -489,6 +492,9 @@
       "enabled": true,
       "matchManagers": [
         "custom.regex",
+        "conan"
+      ],
+      "matchDatasources": [
         "conan"
       ],
       "versioning": "regex:^(cci.)?(?<major>[0-9]+)\\.?(?<minor>[0-9a-z]+)?\\.?(?<patch>[0-9]+)?.*$",
