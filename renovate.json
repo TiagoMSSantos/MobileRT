@@ -358,6 +358,14 @@
       "automerge": true
     },
     {
+      "groupName": "Update Github Runners",
+      "enabled": true,
+      "matchDatasources": [
+        "github-runners"
+      ],
+      "versioning": "regex:^(?<major>[0-9a-z]+)\\.?(?<minor>[0-9]+)?\\.?(?<patch>[0-9]+)?-?(?<compatibility>[a-z]+)?$"
+    },
+    {
       "groupName": "Update docker images",
       "enabled": true,
       "matchManagers": [
