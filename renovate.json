@@ -372,6 +372,18 @@
       "pinDigests": false
     },
     {
+      "groupName": "Update Github releases",
+      "enabled": true,
+      "matchManagers": [
+        "custom.regex",
+        "git-submodules"
+      ],
+      "matchDatasources": [
+        "github-releases"
+      ],
+      "versioning": "regex:^v?(?<major>[0-9a-z]+)\\.?(?<minor>[0-9]+)?\\.?(?<patch>[0-9]+)?$"
+    },
+    {
       "groupName": "Do NOT pin commit hash on 1st party Github actions",
       "matchManagers": [
         "custom.regex",
