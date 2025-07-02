@@ -376,7 +376,7 @@
       "matchDatasources": [
         "docker"
       ],
-      "versioning": "regex:^(?<major>[0-9a-z]+)\\.?(?<minor>[0-9a-z]+)?\\.?(?<patch>[0-9]+)?-?(?<compatibility>[a-z]+)?.*$",
+      "versioning": "regex:^(?<major>[0-9a-z]+)\\.?(?<minor>[0-9a-z]+)?\\.?(?<patch>[0-9]+)?-?(?<compatibility>[a-z]+)?$",
       "pinDigests": false
     },
     {
@@ -517,7 +517,7 @@
       "matchDatasources": [
         "conan"
       ],
-      "versioning": "regex:^(cci.)?(?<major>[0-9]+)\\.?(?<minor>[0-9a-z]+)?\\.?(?<patch>[0-9]+)?.*$",
+      "versioning": "regex:^(cci.)?(?<major>[0-9]+)\\.?(?<minor>[0-9a-z]+)?\\.?(?<patch>[0-9]+)?$",
       "allowedVersions": "!/^(cci\\.[0-9]+)|([0-9]+\\.[0-9]+\\.[0-9]+-rc[0-9]+)$/"
     },
     {
@@ -561,9 +561,9 @@
       "matchManagers": [
         "custom.regex"
       ],
-      "versioning": "regex:^r?(?<major>[0-9]+)\\.?(?<minor>[0-9a-z]+)?\\.?(?<patch>[0-9]+)?-?(?<prerelease>[0-9a-z]+)?(?<compatibility>-.*)?.*$",
+      "versioning": "regex:^r?(?<major>[0-9]+)\\.?(?<minor>[0-9a-z]+)?\\.?(?<patch>[0-9]+)?-?(?<prerelease>[0-9a-z]+)?(?<compatibility>-.*)?$",
       "matchCurrentVersion": "!/^(25\\.2\\.9519653)|(23\\.2\\.8568313)$/",
-      "allowedVersions": "/^r?[0-9]+\\.?[0-9a-z]*\\.?[0-9]*.*$/"
+      "allowedVersions": "/^r?[0-9]+\\.?[0-9a-z]*\\.?[0-9]*$/"
     },
     {
       "groupName": "Update Guava to Android version",
@@ -619,7 +619,7 @@
       "matchDepNames": [
         "google/googletest"
       ],
-      "versioning": "regex:^(v|release-)?(?<major>[0-9]+)\\.(?<minor>[0-9]+)\\.(?<patch>[0-9]+)-?(?<prerelease>[0-9a-z]+)?.*$"
+      "versioning": "regex:^(v|release-)?(?<major>[0-9]+)\\.(?<minor>[0-9]+)\\.(?<patch>[0-9]+)-?(?<prerelease>[0-9a-z]+)?$"
     },
     {
       "groupName": "Update MobileRT docker images",
@@ -627,7 +627,7 @@
       "matchDepNames": [
         "ptpuscas/mobile_rt"
       ],
-      "versioning": "regex:^(?<compatibility>[a-z]+)-(?<major>[0-9]+)\\.(?<minor>[0-9]+)\\.?(?<patch>[0-9]+)?-?(?<prerelease>[0-9a-z]+)?.*$",
+      "versioning": "regex:^(?<compatibility>[a-z]+)-(?<major>[0-9]+)\\.(?<minor>[0-9]+)\\.?(?<patch>[0-9]+)?-?(?<prerelease>[0-9a-z]+)?$",
       "pinDigests": false
     },
     {
@@ -639,7 +639,7 @@
       "matchDepNames": [
         "ubuntu"
       ],
-      "versioning": "regex:^(?<major>[0-9a-z]+)?\\.?(?<minor>[0-9]+)?$",
+      "versioning": "regex:^(?<major>[0-9a-z]+)\\.?(?<minor>[0-9]+)?$",
       "matchCurrentValue": "!/^24\\.04$/"
     },
     {
@@ -651,7 +651,7 @@
       "matchDepNames": [
         "macos"
       ],
-      "versioning": "regex:^(?<major>[0-9a-z]+)?\\.?(?<minor>[0-9]+)?$",
+      "versioning": "regex:^(?<major>[0-9a-z]+)\\.?(?<minor>[0-9]+)?$",
       "matchCurrentValue": "!/^15$/"
     },
     {
@@ -663,7 +663,7 @@
       "matchDepNames": [
         "windows"
       ],
-      "versioning": "regex:^(?<major>[0-9a-z]+)?\\.?(?<minor>[0-9]+)?$",
+      "versioning": "regex:^(?<major>[0-9a-z]+)\\.?(?<minor>[0-9]+)?$",
       "matchCurrentValue": "!/^2025$/"
     }
   ]
