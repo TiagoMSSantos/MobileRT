@@ -376,7 +376,7 @@
       "matchDatasources": [
         "docker"
       ],
-      "versioning": "regex:^(?<major>[0-9a-z]+)\\.?(?<minor>[0-9a-z]+)?\\.?(?<patch>[0-9]+)?-?(?<compatibility>[a-z]+)?$",
+      "versioning": "regex:^(?<major>[0-9a-z]+)\\.?(?<minor>[0-9a-z]+)?\\.?(?<patch>[0-9]+)?-?(?<compatibility>[a-z0-9.]+)?$",
       "pinDigests": false
     },
     {
