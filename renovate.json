@@ -631,20 +631,8 @@
       "matchDepNames": [
         "ubuntu"
       ],
-      "versioning": "regex:^(?<major>[0-9a-z]+)?\\.?(?<minor>[0-9]+)?.*$",
+      "versioning": "regex:^(?<major>[0-9a-z]+)?\\.?(?<minor>[0-9]+)?$",
       "matchCurrentValue": "!/^24\\.04$/"
-    },
-    {
-      "groupName": "Ignore specific versions of Windows already being used",
-      "enabled": false,
-      "matchDatasources": [
-        "github-runners"
-      ],
-      "matchDepNames": [
-        "windows"
-      ],
-      "versioning": "regex:^(?<major>[0-9]+)?\\.?(?<minor>[0-9]+)?.*$",
-      "matchCurrentValue": "!/^2025$/"
     },
     {
       "groupName": "Ignore specific versions of MacOS already being used",
@@ -655,8 +643,20 @@
       "matchDepNames": [
         "macos"
       ],
-      "versioning": "regex:^(?<major>[0-9]+)?\\.?(?<minor>[0-9]+)?.*$",
+      "versioning": "regex:^(?<major>[0-9a-z]+)?\\.?(?<minor>[0-9]+)?$",
       "matchCurrentValue": "!/^15$/"
+    },
+    {
+      "groupName": "Ignore specific versions of Windows already being used",
+      "enabled": false,
+      "matchDatasources": [
+        "github-runners"
+      ],
+      "matchDepNames": [
+        "windows"
+      ],
+      "versioning": "regex:^(?<major>[0-9a-z]+)?\\.?(?<minor>[0-9]+)?$",
+      "matchCurrentValue": "!/^2025$/"
     }
   ]
 }
