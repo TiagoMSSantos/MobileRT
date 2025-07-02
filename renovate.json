@@ -364,7 +364,7 @@
         "dockerfile",
         "docker-compose"
       ],
-      "versioning": "regex:^(?<major>[0-9]+)\\.?(?<minor>[0-9a-z]+)?\\.?(?<patch>[0-9]+)?-?(?<compatibility>[a-z]+)?.*$",
+      "versioning": "regex:^(?<major>[0-9a-z]+)\\.?(?<minor>[0-9a-z]+)?\\.?(?<patch>[0-9]+)?-?(?<compatibility>[a-z]+)?.*$",
       "pinDigests": false
     },
     {
