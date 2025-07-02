@@ -109,7 +109,7 @@
       "matchStrings": [
         "BASE_IMAGE=(?<depName>.*?):(?<currentValue>.*)",
         "BASE_IMAGE: (?<depName>.*?):(?<currentValue>.*)",
-        "base_image\": \"(?<depName>.*?):(?<currentValue>.*)\" }"
+        "base_image\": \"(?<depName>.*?):(?<currentValue>.*)\".*}"
       ],
       "datasourceTemplate": "docker",
       "customType": "regex"
@@ -361,6 +361,7 @@
       "groupName": "Update docker images",
       "enabled": true,
       "matchManagers": [
+        "custom.regex",
         "dockerfile",
         "docker-compose"
       ],
@@ -368,25 +369,9 @@
       "pinDigests": false
     },
     {
-      "groupName": "Docker images from Confluentinc",
-      "enabled": true,
-      "matchManagers": [
-        "custom.regex",
-        "docker-compose"
-      ],
-      "matchDepNames": [
-        "confluentinc/ksqldb-examples",
-        "confluentinc/cp-zookeeper",
-        "confluentinc/cp-schema-registry",
-        "confluentinc/cp-ksqldb-server",
-        "confluentinc/cp-ksqldb-cli",
-        "confluentinc/cp-kafka-rest",
-        "confluentinc/cp-kafka"
-      ]
-    },
-    {
       "groupName": "Do NOT pin commit hash on 1st party Github actions",
       "matchManagers": [
+        "custom.regex",
         "github-actions"
       ],
       "matchDepNames": [
@@ -491,6 +476,7 @@
         "ubuntu"
       ],
       "matchManagers": [
+        "custom.regex",
         "dockerfile",
         "docker-compose",
         "custom.regex"
@@ -502,6 +488,7 @@
       "groupName": "Update conan dependencies",
       "enabled": true,
       "matchManagers": [
+        "custom.regex",
         "conan"
       ],
       "versioning": "regex:^(cci.)?(?<major>[0-9]+)\\.?(?<minor>[0-9a-z]+)?\\.?(?<patch>[0-9]+)?.*$",
