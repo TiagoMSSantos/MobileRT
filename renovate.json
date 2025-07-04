@@ -636,6 +636,11 @@
       "matchDatasources": [
         "github-runners"
       ],
+      "matchPackageNames": [
+        "ubuntu",
+        "macos",
+        "windows"
+      ],
       "matchDepNames": [
         "ubuntu",
         "macos",
