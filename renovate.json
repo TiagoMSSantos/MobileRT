@@ -631,40 +631,18 @@
       "pinDigests": false
     },
     {
-      "groupName": "Ignore specific versions of Ubuntu already being used",
+      "groupName": "Ignore specific versions of Github runners already being used",
       "enabled": false,
       "matchDatasources": [
         "github-runners"
       ],
       "matchDepNames": [
-        "ubuntu"
-      ],
-      "versioning": "loose",
-      "matchCurrentValue": "!/^24\\.04$/"
-    },
-    {
-      "groupName": "Ignore specific versions of MacOS already being used",
-      "enabled": false,
-      "matchDatasources": [
-        "github-runners"
-      ],
-      "matchDepNames": [
-        "macos"
-      ],
-      "versioning": "loose",
-      "matchCurrentValue": "!/^15$/"
-    },
-    {
-      "groupName": "Ignore specific versions of Windows already being used",
-      "enabled": false,
-      "matchDatasources": [
-        "github-runners"
-      ],
-      "matchDepNames": [
+        "ubuntu",
+        "macos",
         "windows"
       ],
       "versioning": "loose",
-      "matchCurrentValue": "!/^2025$/"
+      "matchCurrentValue": "!/^(24\\.04)|(15)|(2025)$/"
     }
   ]
 }
