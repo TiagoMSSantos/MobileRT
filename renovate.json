@@ -639,7 +639,7 @@
       "matchDepNames": [
         "ubuntu"
       ],
-      "versioning": "regex:^(?<major>[0-9]+)?\\.?(?<minor>[0-9]+)?\\.?(?<patch>[0-9]+)?-?(?<compatibility>[a-z]+)?$",
+      "versioning": "regex:^(latest|(?<major>[0-9]+)?\\.?(?<minor>[0-9]+)?\\.?(?<patch>[0-9]+)?-?(?<compatibility>[a-z]+)?)$",
       "matchCurrentValue": "!/^24\\.04$/"
     },
     {
