@@ -363,7 +363,7 @@
       "matchDatasources": [
         "github-runners"
       ],
-      "versioning": "regex:^(latest|(?<major>[0-9]+)?\\.?(?<minor>[0-9]+)?\\.?(?<patch>[0-9]+)?-?(?<compatibility>[a-z]+)?)$"
+      "versioning": "loose"
     },
     {
       "groupName": "Update docker images",
@@ -639,7 +639,7 @@
       "matchDepNames": [
         "ubuntu"
       ],
-      "versioning": "regex:^(latest|(?<major>[0-9]+)?\\.?(?<minor>[0-9]+)?\\.?(?<patch>[0-9]+)?-?(?<compatibility>[a-z]+)?)$",
+      "versioning": "loose",
       "matchCurrentValue": "!/^24\\.04$/"
     },
     {
@@ -651,7 +651,7 @@
       "matchDepNames": [
         "macos"
       ],
-      "versioning": "regex:^(?<major>[0-9]+)?\\.?(?<minor>[0-9]+)?\\.?(?<patch>[0-9]+)?-?(?<compatibility>[a-z]+)?$",
+      "versioning": "loose",
       "matchCurrentValue": "!/^15$/"
     },
     {
@@ -663,7 +663,7 @@
       "matchDepNames": [
         "windows"
       ],
-      "versioning": "regex:^(?<major>[0-9]+)?\\.?(?<minor>[0-9]+)?\\.?(?<patch>[0-9]+)?-?(?<compatibility>[a-z]+)?$",
+      "versioning": "loose",
       "matchCurrentValue": "!/^2025$/"
     }
   ]
