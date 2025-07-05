@@ -36,6 +36,7 @@ import java.io.File;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -521,6 +522,7 @@ public final class MainActivity extends Activity {
     @NonNull
     private static File[] getFilesFromDirectory(@NonNull final Uri uri) {
         final File baseFile = new File(Objects.requireNonNull(uri.getPath()));
+        validatePath(baseFile);
         final File[] files;
         if (baseFile.isDirectory()) {
             files = baseFile.listFiles();
@@ -531,6 +533,33 @@ public final class MainActivity extends Activity {
             throw new FailureException("It couldn't list the files in the selected path. Are you sure the necessary permissions were given?");
         }
         return files;
+    }
+
+    /**
+     * Validates that the given file path is within a safe directory.
+     *
+     * @param file The {@link File} to validate.
+     */
+    private static void validatePath(@NonNull final File file) {
+        try {
+            final File dirExternalSDCard = new File(Environment.getExternalStorageDirectory(), "MobileRT").getCanonicalFile();
+            final File resolvedFile = file.getCanonicalFile();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                if (!resolvedFile.toPath().startsWith(dirExternalSDCard.toPath())) {
+                    throw new IllegalArgumentException("Invalid file path: " + resolvedFile);
+                }
+            } else {
+                final String normalizedPath = Files.simplifyPath(file.getAbsolutePath());
+                final boolean isAllowedPath = StreamSupport.stream(Collections.singletonList(dirExternalSDCard))
+                    .map(allowedDir -> allowedDir.getAbsolutePath())
+                    .anyMatch(normalizedPath::startsWith);
+                if (!isAllowedPath) {
+                    throw new IllegalArgumentException("The provided file path is not from a safe internal storage or external SD Card path.");
+                }
+            }
+        } catch (final Exception ex) {
+            throw new FailureException("Path validation failed: " + ex.getMessage(), ex);
+        }
     }
 
     /**
