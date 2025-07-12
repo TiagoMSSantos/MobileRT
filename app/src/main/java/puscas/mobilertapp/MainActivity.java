@@ -529,17 +529,18 @@ public final class MainActivity extends Activity {
                 new File(Environment.getDataDirectory(), "local" + ConstantsUI.FILE_SEPARATOR + "tmp" + ConstantsUI.FILE_SEPARATOR + "MobileRT").getCanonicalFile()
             );
             final File canonicalFile = file.getCanonicalFile();
+            final String allowedPathsStr = Arrays.toString(allowedPaths.toArray());
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 final Path pathToValidate = canonicalFile.toPath();
                 // TODO: CodeQL reports security issue if we validate file path is in internal storage: /data/local/tmp/MobileRT
                 if (!pathToValidate.startsWith(allowedPaths.get(0).toPath()) && !pathToValidate.startsWith(allowedPaths.get(1).toPath())) {
-                    throw new IllegalArgumentException("Invalid file path: " + canonicalFile);
+                    throw new IllegalArgumentException("The provided file path '" + canonicalFile + "' is not from a safe internal storage or external SD Card path. Allowed paths: " + allowedPathsStr);
                 }
             } else {
                 // TODO: CodeQL reports security issue if we use absolutePath (String) to validate path is in allowed paths
                 final String normalizedPathToValidate = canonicalFile.getAbsolutePath();
                 if (!normalizedPathToValidate.startsWith(allowedPaths.get(0).getAbsolutePath()) && !normalizedPathToValidate.startsWith(allowedPaths.get(1).getAbsolutePath())) {
-                    throw new IllegalArgumentException("Invalid file path: " + canonicalFile);
+                    throw new IllegalArgumentException("The provided file path '" + canonicalFile + "' is not from a safe internal storage or external SD Card path. Allowed paths: " + allowedPathsStr);
                 }
             }
         } catch (final IOException ex) {
