@@ -453,7 +453,6 @@ public final class MainActivity extends Activity {
                             throw new FailureException("Selected file is not valid.");
                         }
                         final File file = new File(Objects.requireNonNull(uri.getPath()));
-                        logger.info("Will read file: " + file);
                         validatePath(file);
                         final String filePath = getPathFromFile(uri);
                         readFile(uri);
@@ -468,7 +467,6 @@ public final class MainActivity extends Activity {
                         throw new FailureException("Selected file is not valid.");
                     }
                     final File baseFile = new File(Objects.requireNonNull(uri.getPath()));
-                    logger.info("Will read every file in the path: " + baseFile);
                     validatePath(baseFile);
                     final String filePath = getPathFromFile(uri);
                     if (filePath.endsWith(".obj")) {
@@ -703,7 +701,7 @@ public final class MainActivity extends Activity {
      * @param file The {@link File} reference for the file.
      */
     private static void validatePathIsAccessible(@NonNull final File file) {
-        logger.info("validatePathIsAccessible: " + file);
+        logger.info("validatePathIsAccessible");
         final String path = file.getAbsolutePath();
 
         final String escapedFileSeparator = Objects.equals(ConstantsUI.FILE_SEPARATOR, "\\")
