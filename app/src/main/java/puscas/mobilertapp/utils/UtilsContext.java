@@ -60,34 +60,10 @@ public final class UtilsContext {
     public static String getSdCardPath(@NonNull final Context context) {
         logger.info("Getting SD card path.");
 
-        // The new method to get the SD card path.
-        // This method returns an array of File with null (so is not working properly yet).
-        // This is why it is still needed to use the old (deprecated) approach to guarantee
-        // compatibility with most Androids.
-        final File[] externalFilesDirs = ContextCompat.getExternalFilesDirs(context, null);
+        final String sdCardPath = getSdCardFilePath(context).getAbsolutePath();
+        logger.info("SD card path: " + sdCardPath);
 
-        final String sdCardPath = Optional.of(externalFilesDirs)
-            .map(dirs -> dirs.length > 1 ? dirs[1] : dirs[0])
-            .map(File::getAbsolutePath)
-            .orElseGet(() -> {
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-                    logger.info("Using the old (deprecated) approach to retrieve the SD Card path.");
-                    return Environment.getExternalStorageDirectory().getAbsolutePath();
-                } else {
-                    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
-                        logger.info("Using the new approach to retrieve the SD Card path.");
-                        return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
-                    }
-                    logger.info("Using fallback path since using a SDK API 19+, and hoping this path is right.");
-                    return ConstantsUI.FILE_SEPARATOR + "mnt" + ConstantsUI.FILE_SEPARATOR + "sdcard";
-                }
-            });
-
-        final String sdCardPathCleaned = cleanStoragePath(sdCardPath);
-        final String message = "SD card path: " + sdCardPathCleaned;
-        logger.info(message);
-
-        final File file = new File(sdCardPathCleaned);
+        final File file = new File(sdCardPath);
         if (isPathReadable(file)) {
             return file.getAbsolutePath();
         }
@@ -108,23 +84,8 @@ public final class UtilsContext {
     public static String getInternalStoragePath(@NonNull final Context context) {
         logger.info("Getting internal storage path.");
 
-        final File dataDir = ContextCompat.getDataDir(context);
-
-        final String internalStoragePath = Optional.ofNullable(dataDir)
-            .map(File::getAbsolutePath)
-            .orElseGet(() -> {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                    // The new method to retrieve the internal storage path.
-                    return Environment.getStorageDirectory().getAbsolutePath();
-                } else {
-                    // In case using a SDK API < 30, then just give up and hope this path is right.
-                    return context.getFilesDir().getPath();
-                }
-            });
-
-        final String internalStoragePathCleaned = cleanStoragePath(internalStoragePath);
-        final String message = "Internal storage path: " + internalStoragePathCleaned;
-        logger.info(message);
+        final String internalStoragePath = getInternalStorageFilePath(context).getAbsolutePath();
+        logger.info("Internal storage path: " + internalStoragePath);
 
         // If the internal storage path starts with '/data', then it's assumed that it's '/data/local/tmp'.
         // Because the shell scripts are already trying to copy some OBJ files to '/data/local/tmp' by
@@ -132,17 +93,63 @@ public final class UtilsContext {
         // from Android API even though it was possible to create it with ADB and even change the
         // permissions of those files with ADB. That's why, it's not being called here the
         // 'UtilsContext#isPathReadable' method to verify if this fallback path its readable.
-        if (internalStoragePathCleaned.startsWith(ConstantsUI.FILE_SEPARATOR + "data")) {
+        if (internalStoragePath.startsWith(ConstantsUI.FILE_SEPARATOR + "data")) {
             logger.info("Since the internal storage path starts with '/data', then it's assuming " +
-                    "that the internal storage path is '/data/local/tmp/'.");
-            return ConstantsUI.FILE_SEPARATOR + "data" + ConstantsUI.FILE_SEPARATOR + "local" + ConstantsUI.FILE_SEPARATOR + "tmp" + ConstantsUI.FILE_SEPARATOR;
+                    "that the internal storage path is correct.");
+            return internalStoragePath;
         }
-        final File file = new File(internalStoragePathCleaned);
+        final File file = new File(internalStoragePath);
         if (isPathReadable(file)) {
             return file.getAbsolutePath();
         }
 
         throw new IllegalArgumentException("The internal storage path '" + file.getAbsolutePath() + "' can't be read.");
+    }
+
+    /**
+     * Gets the {@link File path} to the external SD card.
+     *
+     * @param context The {@link Context} of the Android system.
+     * @return The {@link File path} to the SD card.
+     * @implNote This method still uses the deprecated method
+     *     {@link Environment#getExternalStorageDirectory()} in order to be
+     *     compatible with Android 4.1.
+     */
+    public static File getSdCardFilePath(@NonNull final Context context) {
+        // The new method to get the SD card path.
+        // This method returns an array of File with null (so is not working properly yet).
+        // This is why it is still needed to use the old (deprecated) approach to guarantee
+        // compatibility with most Androids.
+        return Optional.of(ContextCompat.getExternalFilesDirs(context, null))
+            .map(dirs -> dirs.length > 1 ? dirs[1] : dirs[0])
+            .orElseGet(() -> {
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+                    logger.info("Using the old (deprecated) approach to retrieve the SD Card path.");
+                    return Environment.getExternalStorageDirectory();
+                } else {
+                    logger.info("Using fallback path since using a SDK API 19+, and hoping this path is right.");
+                    return new File(ConstantsUI.FILE_SEPARATOR + "mnt" + ConstantsUI.FILE_SEPARATOR + "sdcard");
+                }
+            });
+    }
+
+    /**
+     * Gets the {@link File path} to the internal storage.
+     *
+     * @param context The {@link Context} of the Android system.
+     * @return The {@link File path} to the internal storage.
+     */
+    public static File getInternalStorageFilePath(@NonNull final Context context) {
+        return Optional.of(ContextCompat.getDataDir(context))
+            .orElseGet(() -> {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    logger.info("Using the new approach to retrieve the internal storage path.");
+                    return Environment.getStorageDirectory();
+                } else {
+                    logger.info("Since using a SDK API < 30, then using old method to retrieve internal storage path.");
+                    return context.getFilesDir();
+                }
+            });
     }
 
     /**
