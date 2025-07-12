@@ -54,8 +54,7 @@ public final class MainActivityTest {
     /**
      * The expected internal storage path.
      */
-    private static final String pathToInternalStorage = ConstantsUI.FILE_SEPARATOR + "data" +
-        ConstantsUI.FILE_SEPARATOR + "local" + ConstantsUI.FILE_SEPARATOR + "tmp";
+    private static final String pathToInternalStorage = ConstantsUI.FILE_SEPARATOR + "data";
 
     /**
      * The expected external storage path.
@@ -66,9 +65,10 @@ public final class MainActivityTest {
     /**
      * The expected internal storage path to read the OBJ file used by these tests.
      */
-    private static final String pathToOBJFile = pathToInternalStorage + ConstantsUI.FILE_SEPARATOR + "MobileRT" +
-            ConstantsUI.FILE_SEPARATOR + "WavefrontOBJs" + ConstantsUI.FILE_SEPARATOR + "CornellBox" +
-            ConstantsUI.FILE_SEPARATOR + "CornellBox-Water.obj";
+    private static final String pathToOBJFile = pathToInternalStorage + ConstantsUI.FILE_SEPARATOR + "local" + ConstantsUI.FILE_SEPARATOR + "tmp" +
+        ConstantsUI.FILE_SEPARATOR + "MobileRT" +
+        ConstantsUI.FILE_SEPARATOR + "WavefrontOBJs" + ConstantsUI.FILE_SEPARATOR + "CornellBox" +
+        ConstantsUI.FILE_SEPARATOR + "CornellBox-Water.obj";
 
     /**
      * Setup method called before each test.
@@ -192,7 +192,7 @@ public final class MainActivityTest {
 
         PowerMock.mockStatic(UtilsContext.class);
         EasyMock.expect(UtilsContext.getInternalStoragePath(EasyMock.anyObject(Context.class)))
-            .andReturn(pathToInternalStorage)
+            .andReturn(pathToInternalStorage + ConstantsUI.FILE_SEPARATOR + "local" + ConstantsUI.FILE_SEPARATOR + "tmp")
             .anyTimes();
         EasyMock.expect(UtilsContext.getSdCardPath(EasyMock.anyObject(Context.class)))
             .andReturn(pathToExternalStorage)
@@ -200,7 +200,10 @@ public final class MainActivityTest {
 
         PowerMock.mockStatic(Environment.class);
         EasyMock.expect(Environment.getExternalStorageDirectory())
-            .andReturn(new File(""))
+            .andReturn(new File(pathToExternalStorage))
+            .anyTimes();
+        EasyMock.expect(Environment.getDataDirectory())
+            .andReturn(new File(pathToInternalStorage))
             .anyTimes();
         PowerMock.replayAll();
 
@@ -242,14 +245,17 @@ public final class MainActivityTest {
 
         PowerMock.mockStatic(UtilsContext.class);
         EasyMock.expect(UtilsContext.getInternalStoragePath(EasyMock.anyObject(Context.class)))
-            .andReturn(pathToInternalStorage)
+            .andReturn(pathToInternalStorage + ConstantsUI.FILE_SEPARATOR + "local" + ConstantsUI.FILE_SEPARATOR + "tmp")
             .anyTimes();
         EasyMock.expect(UtilsContext.getSdCardPath(EasyMock.anyObject(Context.class)))
             .andReturn(pathToExternalStorage)
             .anyTimes();
         PowerMock.mockStatic(Environment.class);
         EasyMock.expect(Environment.getExternalStorageDirectory())
-            .andReturn(new File("/mockedSDCard"))
+            .andReturn(new File(pathToExternalStorage))
+            .anyTimes();
+        EasyMock.expect(Environment.getDataDirectory())
+            .andReturn(new File(pathToInternalStorage))
             .anyTimes();
         PowerMock.replayAll();
 

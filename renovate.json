@@ -241,21 +241,6 @@
       "registryUrlTemplate": "https://github.com"
     },
     {
-      "description": "Update Guava",
-      "managerFilePatterns": [
-        "/.*build.gradle/"
-      ],
-      "matchStringsStrategy": "any",
-      "matchStrings": [
-        "guava_version = ['\"](?<currentValue>.*)['\"]"
-      ],
-      "depNameTemplate": "com.google.guava:guava",
-      "datasourceTemplate": "maven",
-      "versioningTemplate": "gradle",
-      "customType": "regex",
-      "registryUrlTemplate": "https://repo1.maven.org/maven2/"
-    },
-    {
       "description": "Update Boost",
       "managerFilePatterns": [
         "/app\\/third_party\\/CMakeLists\\.txt/"
@@ -610,15 +595,6 @@
       ],
       "matchCurrentVersion": "/^0\\.51\\.0$/",
       "matchCurrentValue": "/^0\\.51\\.0$/"
-    },
-    {
-      "groupName": "Do not update Kotlin Gradle plugin for Android API <= 15",
-      "enabled": false,
-      "matchDepNames": [
-        "org.jetbrains.kotlin:kotlin-gradle-plugin"
-      ],
-      "matchCurrentVersion": "/^2\\.1\\.0$/",
-      "matchCurrentValue": "/^2\\.1\\.0$/"
     },
     {
       "groupName": "Update Boost C++ Libraries",

@@ -33,6 +33,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -448,7 +449,9 @@ public final class MainActivity extends Activity {
                     for (int i = 0; i < numFiles; ++i) {
                         final ClipData.Item item = clipData.getItemAt(i);
                         final Uri uri = item.getUri();
-                        validatePath(uri);
+                        if (uri == null) {
+                            throw new FailureException("Selected file is not valid.");
+                        }
                         final String filePath = getPathFromFile(uri);
                         readFile(uri);
                         if (filePath.endsWith(".obj")) {
@@ -458,7 +461,9 @@ public final class MainActivity extends Activity {
                 } else {
                     logger.info("Will read every file in a path.");
                     final Uri uri = data.getData();
-                    validatePath(uri);
+                    if (uri == null) {
+                        throw new FailureException("Selected file is not valid.");
+                    }
                     final String filePath = getPathFromFile(uri);
                     if (filePath.endsWith(".obj")) {
                         this.sceneFilePath = filePath;
@@ -480,36 +485,6 @@ public final class MainActivity extends Activity {
     }
 
     /**
-     * Validate that the provided {@link Uri path} is valid.
-     * <p>
-     * A path is considered valid if it belongs to:
-     * <ul>
-     * <li> Internal storage;
-     * <li> External SD card;
-     * </ul>
-     * @param uri The {@link Uri} to a path in Android filesystem.
-     * @throws IllegalArgumentException If the path is not valid.
-     */
-    private void validatePath(final Uri uri) {
-        if (uri == null || uri.getPath() == null) {
-            throw new IllegalArgumentException("There is no URI to a File!");
-        }
-        final List<String> allowedPaths = List.of(UtilsContext.getSdCardPath(this), UtilsContext.getInternalStoragePath(this));
-        final boolean isAllowedPath;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            final Path normalizedPath = FileSystems.getDefault().getPath(uri.getPath()).normalize();
-            final String normalizedPathStr = UtilsContext.cleanStoragePath(normalizedPath.toFile().getAbsolutePath());
-            isAllowedPath = allowedPaths.stream().anyMatch(normalizedPathStr::startsWith);
-        } else {
-            final String normalizedPath = Files.simplifyPath(new File(Objects.requireNonNull(uri.getPath())).getAbsolutePath());
-            isAllowedPath = StreamSupport.stream(allowedPaths).anyMatch(normalizedPath::startsWith);
-        }
-        if (!isAllowedPath) {
-            throw new IllegalArgumentException("The provided file path is not from a safe internal storage or external SD Card path.");
-        }
-    }
-
-    /**
      * Gets the files from the directory path received via parameter.
      * <p>
      * If the provided path is to a file instead of a directory, then this method lists all files
@@ -521,6 +496,7 @@ public final class MainActivity extends Activity {
     @NonNull
     private static File[] getFilesFromDirectory(@NonNull final Uri uri) {
         final File baseFile = new File(Objects.requireNonNull(uri.getPath()));
+        validatePath(baseFile);
         final File[] files;
         if (baseFile.isDirectory()) {
             files = baseFile.listFiles();
@@ -531,6 +507,41 @@ public final class MainActivity extends Activity {
             throw new FailureException("It couldn't list the files in the selected path. Are you sure the necessary permissions were given?");
         }
         return files;
+    }
+
+    /**
+     * Validates that the given file path is within a safe directory.
+     * A path is considered valid if it belongs to:
+     * <ul>
+     * <li> Internal storage;
+     * <li> External SD card;
+     * </ul>
+     *
+     * @param file The {@link File} to validate.
+     */
+    private static void validatePath(@NonNull final File file) {
+        try {
+            final List<File> allowedPaths = List.of(
+                new File(Environment.getExternalStorageDirectory(), "MobileRT").getCanonicalFile(),
+                new File(Environment.getDataDirectory(), "local" + ConstantsUI.FILE_SEPARATOR + "tmp" + ConstantsUI.FILE_SEPARATOR + "MobileRT").getCanonicalFile()
+            );
+            final File canonicalFile = file.getCanonicalFile();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                final Path pathToValidate = canonicalFile.toPath();
+                // TODO: CodeQL reports security issue if we validate file path is in internal storage: /data/local/tmp/MobileRT
+                if (!pathToValidate.startsWith(allowedPaths.get(0).toPath()) && !pathToValidate.startsWith(allowedPaths.get(1).toPath())) {
+                    throw new IllegalArgumentException("Invalid file path: " + canonicalFile);
+                }
+            } else {
+                // TODO: CodeQL reports security issue if we use absolutePath (String) to validate path is in allowed paths
+                final String normalizedPathToValidate = canonicalFile.getAbsolutePath();
+                if (!normalizedPathToValidate.startsWith(allowedPaths.get(0).getAbsolutePath()) && !normalizedPathToValidate.startsWith(allowedPaths.get(1).getAbsolutePath())) {
+                    throw new IllegalArgumentException("Invalid file path: " + canonicalFile);
+                }
+            }
+        } catch (final IOException ex) {
+            throw new IllegalArgumentException("Path validation failed: " + ex.getMessage(), ex);
+        }
     }
 
     /**
@@ -692,8 +703,8 @@ public final class MainActivity extends Activity {
         final String path = Objects.requireNonNull(uri.getPath());
 
         final String escapedFileSeparator = Objects.equals(ConstantsUI.FILE_SEPARATOR, "\\")
-                ? ConstantsUI.FILE_SEPARATOR + ConstantsUI.FILE_SEPARATOR
-                : ConstantsUI.FILE_SEPARATOR;
+            ? ConstantsUI.FILE_SEPARATOR + ConstantsUI.FILE_SEPARATOR
+            : ConstantsUI.FILE_SEPARATOR;
         boolean externalStorage1 = path.matches("^" + escapedFileSeparator + "document" + escapedFileSeparator + "([A-Za-z0-9]){4}-([A-Za-z0-9]){4}:.+$");
         boolean externalStorage2 = path.matches("^" + escapedFileSeparator + "mnt" + escapedFileSeparator + "sdcard" + escapedFileSeparator + ".+$");
         boolean externalStorage3 = path.matches("^" + escapedFileSeparator + "storage" + escapedFileSeparator + "emulated" + escapedFileSeparator + "0" + escapedFileSeparator +".+$");

@@ -92,7 +92,7 @@ public final class UtilsContext {
             return file.getAbsolutePath();
         }
 
-        throw new FailureException("The SD card path '" + file.getAbsolutePath() + "' can't be read.");
+        throw new IllegalArgumentException("The SD card path '" + file.getAbsolutePath() + "' can't be read.");
     }
 
     /**
@@ -142,7 +142,7 @@ public final class UtilsContext {
             return file.getAbsolutePath();
         }
 
-        throw new FailureException("The internal storage path '" + file.getAbsolutePath() + "' can't be read.");
+        throw new IllegalArgumentException("The internal storage path '" + file.getAbsolutePath() + "' can't be read.");
     }
 
     /**

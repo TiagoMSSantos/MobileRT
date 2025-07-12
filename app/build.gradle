@@ -266,11 +266,7 @@ android {
         setSourceCompatibility JavaVersion.VERSION_21
     }
     kotlinOptions {
-        setJvmTarget JavaVersion.VERSION_21.toString()
-        freeCompilerArgs += [
-            '-opt-in=kotlin.RequiresOptIn',
-            '-opt-in=kotlinx.coroutines.DelicateCoroutinesApi',
-        ]
+        jvmTarget = '21'
     }
 
     // Set build types
@@ -462,9 +458,10 @@ dependencies {
 
     println('Adding Android dependencies for MobileRT.')
     implementation "androidx.appcompat:appcompat:${androidX_appcompat_version}"
+    implementation "androidx.core:core-ktx:${androidX_core_version}"
 
     println('Adding Java dependencies for MobileRT.')
-    implementation "com.google.guava:guava:${guava_version}"
+    implementation 'com.google.guava:guava:33.4.8-android'
     implementation 'net.sourceforge.streamsupport:streamsupport:1.7.4'
 
 

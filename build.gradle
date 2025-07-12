@@ -55,9 +55,9 @@ buildscript {
             }
         }
         if (androidApiVersionValue >= 16) {
+            androidX_core_version = '1.16.0'
             gradle_version = '8.11.1'
             gradle_versions_plugin_version = '0.52.0'
-            kotlin_gradle_plugin_version = '2.1.10'
         }
 
         // Default dependencies versions which are used on all Android APIs supported >= 14
@@ -67,17 +67,14 @@ buildscript {
         if (project.properties["ndk_version"] == null) {
             ndk_version = '23.2.8568313'
         }
+        if (project.properties["androidX_core_version"] == null) {
+            androidX_core_version = '1.12.0'
+        }
         if (project.properties["gradle_version"] == null) {
             gradle_version = '8.2.2'
         }
         if (project.properties["gradle_versions_plugin_version"] == null) {
             gradle_versions_plugin_version = '0.51.0'
-        }
-        if (project.properties["kotlin_gradle_plugin_version"] == null) {
-            kotlin_gradle_plugin_version = '2.1.0'
-        }
-        if (project.properties["guava_version"] == null) {
-            guava_version = '33.4.8-android'
         }
 
         final def gradleVersionArray = gradle_version.split("\\.")
@@ -106,7 +103,7 @@ buildscript {
         // Compatibility matrix: https://developer.android.com/build/releases/gradle-plugin#android_gradle_plugin_and_android_studio_compatibility
         classpath "com.android.tools.build:gradle:${gradle_version}"
         classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:6.2.0.5505'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlin_gradle_plugin_version}"
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:2.2.0'
         classpath "com.github.ben-manes:gradle-versions-plugin:${gradle_versions_plugin_version}"
 
         /* To confirm JaCoCo version run: $ sh gradlew buildEnvironment */
