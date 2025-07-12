@@ -521,18 +521,18 @@ public final class MainActivity extends Activity {
      *
      * @param file The {@link File} to validate.
      */
-    private static void validatePath(@NonNull final File file) {
+    private void validatePath(@NonNull final File file) {
         validatePathIsAccessible(file);
         try {
             final List<File> allowedPaths = List.of(
-                new File(Environment.getExternalStorageDirectory(), "MobileRT").getCanonicalFile(),
-                new File(Environment.getDataDirectory(), "local" + ConstantsUI.FILE_SEPARATOR + "tmp" + ConstantsUI.FILE_SEPARATOR + "MobileRT").getCanonicalFile()
+                new File(UtilsContext.getSdCardFilePath(this), "MobileRT").getCanonicalFile(),
+                new File(UtilsContext.getInternalStorageFilePath(this), "MobileRT").getCanonicalFile()
             );
             final File canonicalFile = file.getCanonicalFile();
             final String allowedPathsStr = Arrays.toString(allowedPaths.toArray());
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 final Path pathToValidate = canonicalFile.toPath();
-                // TODO: CodeQL reports security issue if we validate file path is in internal storage: /data/local/tmp/MobileRT
+                // TODO: CodeQL reports security issue if we validate file path is in internal storage
                 if (!pathToValidate.startsWith(allowedPaths.get(0).toPath()) && !pathToValidate.startsWith(allowedPaths.get(1).toPath())) {
                     throw new IllegalArgumentException("The provided file path '" + canonicalFile + "' is not from a safe internal storage or external SD Card path. Allowed paths: " + allowedPathsStr);
                 }
@@ -714,8 +714,9 @@ public final class MainActivity extends Activity {
         boolean externalStorage4 = path.matches("^" + escapedFileSeparator + "storage" + escapedFileSeparator + "([A-Za-z0-9]){4}-([A-Za-z0-9]){4}" + escapedFileSeparator + ".+$");
         boolean externalStorage5 = path.matches("^" + escapedFileSeparator + "storage" + escapedFileSeparator + "sdcard" + escapedFileSeparator + ".+$");
         boolean internalStorage1 = path.matches("^" + escapedFileSeparator + "data" + escapedFileSeparator + "local" + escapedFileSeparator + "tmp" + escapedFileSeparator + ".+$");
+        boolean internalStorage2 = path.matches("^" + escapedFileSeparator + "data" + escapedFileSeparator + "MobileRT" + escapedFileSeparator + ".+$");
 
-        if (externalStorage1 || externalStorage2 || externalStorage3 || externalStorage4 || externalStorage5 || internalStorage1) {
+        if (externalStorage1 || externalStorage2 || externalStorage3 || externalStorage4 || externalStorage5 || internalStorage1 || internalStorage2) {
             return;
         }
 
