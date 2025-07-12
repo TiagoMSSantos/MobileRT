@@ -452,6 +452,9 @@ public final class MainActivity extends Activity {
                         if (uri == null) {
                             throw new FailureException("Selected file is not valid.");
                         }
+                        final File file = new File(Objects.requireNonNull(uri.getPath()));
+                        logger.info("Will read file: " + file);
+                        validatePath(file);
                         final String filePath = getPathFromFile(uri);
                         readFile(uri);
                         if (filePath.endsWith(".obj")) {
@@ -464,11 +467,14 @@ public final class MainActivity extends Activity {
                     if (uri == null) {
                         throw new FailureException("Selected file is not valid.");
                     }
+                    final File baseFile = new File(Objects.requireNonNull(uri.getPath()));
+                    logger.info("Will read every file in the path: " + baseFile);
+                    validatePath(baseFile);
                     final String filePath = getPathFromFile(uri);
                     if (filePath.endsWith(".obj")) {
                         this.sceneFilePath = filePath;
                     }
-                    final File[] files = getFilesFromDirectory(uri);
+                    final File[] files = getFilesFromDirectory(baseFile);
                     for(final File file : files) {
                         readFile(Uri.fromFile(file));
                     }
@@ -490,13 +496,11 @@ public final class MainActivity extends Activity {
      * If the provided path is to a file instead of a directory, then this method lists all files
      * inside the directory containing that file.
      *
-     * @param uri The {@link Uri} pointing to a path.
+     * @param baseFile The {@link File} pointing to a path.
      * @return An array of {@link File}s that are in the desired path.
      */
     @NonNull
-    private static File[] getFilesFromDirectory(@NonNull final Uri uri) {
-        final File baseFile = new File(Objects.requireNonNull(uri.getPath()));
-        validatePath(baseFile);
+    private static File[] getFilesFromDirectory(@NonNull final File baseFile) {
         final File[] files;
         if (baseFile.isDirectory()) {
             files = baseFile.listFiles();
@@ -520,6 +524,7 @@ public final class MainActivity extends Activity {
      * @param file The {@link File} to validate.
      */
     private static void validatePath(@NonNull final File file) {
+        validatePathIsAccessible(file);
         try {
             final List<File> allowedPaths = List.of(
                 new File(Environment.getExternalStorageDirectory(), "MobileRT").getCanonicalFile(),
@@ -635,7 +640,6 @@ public final class MainActivity extends Activity {
     @NonNull
     private String getPathFromFile(@NonNull final Uri uri) {
         logger.info("Parsing path:" + Arrays.toString(uri.getPathSegments().toArray()));
-        validatePathIsAccessible(uri);
 
         final String filePath = StreamSupport.stream(uri.getPathSegments())
             .skip(1L)
@@ -692,15 +696,15 @@ public final class MainActivity extends Activity {
     }
 
     /**
-     * Validates that the user selected path in {@link Uri} can be read safely.
-     * If the {@link Uri path} that the user selected can be dangerous, like '/data', '/system',
+     * Validates that the user selected path in {@link File} can be read safely.
+     * If the {@link File path} that the user selected can be dangerous, like '/data', '/system',
      * then a {@link SecurityException} is thrown.
      *
-     * @param uri The {@link Uri} reference for the file.
+     * @param file The {@link File} reference for the file.
      */
-    private void validatePathIsAccessible(@NonNull final Uri uri) {
-        logger.info("validatePathIsAccessible");
-        final String path = Objects.requireNonNull(uri.getPath());
+    private static void validatePathIsAccessible(@NonNull final File file) {
+        logger.info("validatePathIsAccessible: " + file);
+        final String path = file.getAbsolutePath();
 
         final String escapedFileSeparator = Objects.equals(ConstantsUI.FILE_SEPARATOR, "\\")
             ? ConstantsUI.FILE_SEPARATOR + ConstantsUI.FILE_SEPARATOR
@@ -716,7 +720,7 @@ public final class MainActivity extends Activity {
             return;
         }
 
-        throw new SecurityException("User shouldn't try to read files from the path: '" + uri.getPath() + "'");
+        throw new SecurityException("User shouldn't try to read files from the path: '" + file + "'");
     }
 
     /**
