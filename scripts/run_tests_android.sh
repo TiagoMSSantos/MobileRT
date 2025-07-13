@@ -396,7 +396,7 @@ copyResources() {
     # If there is no SD card volume mounted on /storage/ path, then use the legacy path.
     sdcard_path_android='/mnt/sdcard/MobileRT';
   else
-    sdcard_path_android="${sdcard_path_android}/MobileRT";
+    sdcard_path_android="${sdcard_path_android}/Android/data/puscas.mobilertapp/files/MobileRT";
   fi
   echo "sdcard_path_android: '${sdcard_path_android}'";
 

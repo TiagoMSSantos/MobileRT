@@ -456,7 +456,7 @@ public abstract class AbstractTest {
         final Intent resultIntent = MainActivity.createIntentToLoadFiles();
         final String storagePath = externalSdcard
             ? UtilsContext.getSdCardPath(InstrumentationRegistry.getInstrumentation().getTargetContext())
-            : UtilsContext.getInternalStoragePath(InstrumentationRegistry.getInstrumentation().getTargetContext());
+            : UtilsContext.getInternalStoragePath();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             final Uri firstFile = Uri.fromFile(new File(storagePath + ConstantsUI.FILE_SEPARATOR + filesPath[0]));
             final ClipData clipData = new ClipData(new ClipDescription("Scene", new String[]{"*" + ConstantsUI.FILE_SEPARATOR + "*"}), new ClipData.Item(firstFile));

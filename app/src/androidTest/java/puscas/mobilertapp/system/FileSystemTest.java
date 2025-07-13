@@ -34,9 +34,9 @@ public final class FileSystemTest extends AbstractTest {
      */
     @Test
     public void testFilesExistAndReadableFromInternalStorage() {
-        final String internalStorage = UtilsContext.getInternalStoragePath(InstrumentationRegistry.getInstrumentation().getTargetContext());
+        final String internalStorage = UtilsContext.getInternalStoragePath();
 
-        final List<String> paths = Collections.singletonList(internalStorage + Constants.OBJ_FILE_CORNELL_BOX);
+        final List<String> paths = Collections.singletonList(internalStorage + ConstantsUI.FILE_SEPARATOR + Constants.OBJ_FILE_CORNELL_BOX);
         validatePathsExist(paths);
     }
 
@@ -86,11 +86,11 @@ public final class FileSystemTest extends AbstractTest {
      */
     @Test
     public void testFilesNotExist() {
-        final String internalStorage = UtilsContext.getInternalStoragePath(InstrumentationRegistry.getInstrumentation().getTargetContext());
+        final String internalStorage = UtilsContext.getInternalStoragePath();
 
         final List<String> paths = ImmutableList.<String>builder().add(
             Constants.EMPTY_FILE,
-            internalStorage + Constants.OBJ_FILE_NOT_EXISTS
+            internalStorage + ConstantsUI.FILE_SEPARATOR + Constants.OBJ_FILE_NOT_EXISTS
         ).build();
 
         validatePathsNotExist(paths);
