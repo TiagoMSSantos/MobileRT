@@ -498,9 +498,10 @@ public final class MainActivity extends Activity {
      * @return An array of {@link File}s that are in the desired path.
      */
     @NonNull
-    private static File[] getFilesFromDirectory(@NonNull final File baseFile) {
+    private File[] getFilesFromDirectory(@NonNull final File baseFile) {
         File[] files = null;
-        if (baseFile.isDirectory() && !baseFile.isFile()) {
+        validatePath(baseFile);
+        if (baseFile.isDirectory()) {
             logger.info("Reading files from directory.");
             files = baseFile.listFiles();
         }
