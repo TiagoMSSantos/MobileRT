@@ -535,7 +535,7 @@ public final class MainActivity extends Activity {
             final File canonicalFile = file.getCanonicalFile();
             final String normalizedPathToValidate = canonicalFile.getAbsolutePath();
             if (normalizedPathToValidate.contains("..")) {
-                throw new IllegalArgumentException("Invalid canonical file path.");
+                throw new IllegalArgumentException("Invalid file path: " + canonicalFile);
             }
             final String allowedPathsStr = Arrays.toString(allowedPaths.toArray());
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -549,7 +549,7 @@ public final class MainActivity extends Activity {
                 }
             }
         } catch (final IOException ex) {
-            throw new IllegalArgumentException("Path validation failed: " + ex.getMessage(), ex);
+            throw new IllegalArgumentException("Path '" + file + "' validation failed: " + ex.getMessage(), ex);
         }
     }
 
