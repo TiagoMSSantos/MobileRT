@@ -65,9 +65,6 @@
     "automerge": false,
     "groupName": "all digest updates"
   },
-  "regex": {
-    "enabled": true
-  },
   "git-submodules": {
     "description": "Disabled git-submodules updates because Renovate already uses regex to update git-submodules. Check third_party custom managers below",
     "enabled": false
