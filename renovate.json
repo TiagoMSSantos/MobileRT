@@ -499,8 +499,7 @@
       "matchManagers": [
         "custom.regex",
         "dockerfile",
-        "docker-compose",
-        "custom.regex"
+        "docker-compose"
       ],
       "versioning": "ubuntu",
       "allowedVersions": "/^[0-9]+\\.04$/"
@@ -556,8 +555,8 @@
       "matchDepNames": [
         "android/ndk"
       ],
-      "matchManagers": [
-        "custom.regex"
+      "matchDatasources": [
+        "github-releases"
       ],
       "versioning": "regex:^r?(?<major>[0-9]+)\\.?(?<minor>[0-9a-z]+)?\\.?(?<patch>[0-9]+)?-?(?<prerelease>[0-9a-z]+)?(?<compatibility>-.*)?$",
       "matchCurrentVersion": "!/^(25\\.2\\.9519653)|(23\\.2\\.8568313)$/",
