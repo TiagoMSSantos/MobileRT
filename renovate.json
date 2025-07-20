@@ -381,9 +381,13 @@
       "groupName": "Update Github releases",
       "enabled": true,
       "matchDatasources": [
-        "github-releases"
+        "git-refs",
+        "git-tags",
+        "github-release-attachments",
+        "github-releases",
+        "github-tags"
       ],
-      "versioning": "regex:^v?(?<major>[0-9a-z]+)\\.?(?<minor>[0-9]+)?\\.?(?<patch>[0-9]+)?$"
+      "versioning": "regex:^v?r?(?<major>[0-9a-z]+)\\.?(?<minor>[0-9]+)?\\.?(?<patch>[0-9]+)?$"
     },
     {
       "groupName": "Do NOT pin commit hash on 1st party Github actions",
