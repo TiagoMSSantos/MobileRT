@@ -45,7 +45,7 @@ buildscript {
 
         if (androidApiVersionValue >= 21) {
             androidX_appcompat_version = '1.7.1'
-            ndk_version = '28.1.13356709'
+            ndk_version = '28.2.13676358'
         }
         if (androidApiVersionValue >= 19) {
             androidX_test_junit_version = '1.2.1'
