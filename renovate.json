@@ -375,6 +375,19 @@
       "automerge": true
     },
     {
+      "description": "Do not allow automerge when updating digest",
+      "matchUpdateTypes": [
+        "pin",
+        "pinDigest",
+        "digest",
+        "lockFileMaintenance",
+        "rollback",
+        "replacement"
+      ],
+      "enabled": true,
+      "automerge": false
+    },
+    {
       "groupName": "Update Github Runners",
       "enabled": true,
       "matchDatasources": [
@@ -398,6 +411,11 @@
     },
     {
       "groupName": "Do NOT pin commit hash on 1st party Github actions",
+      "matchUpdateTypes": [
+        "major",
+        "minor",
+        "patch"
+      ],
       "matchManagers": [
         "custom.regex",
         "github-actions"
