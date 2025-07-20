@@ -43,6 +43,9 @@
   ],
   "automergeStrategy": "rebase",
   "automergeType": "pr",
+  "vulnerabilityAlerts": {
+    "enabled": true
+  },
   "major": {
     "description": "Allow dependencies to update to new major versions",
     "enabled": true,
@@ -51,12 +54,18 @@
   "minor": {
     "description": "Allow dependencies to update to new minor versions",
     "enabled": true,
-    "automerge": true
+    "automerge": true,
+    "ignorePaths": [
+      ".github/workflows/*.yml"
+    ]
   },
   "patch": {
     "description": "Allow dependencies to update to new patch versions",
     "enabled": true,
     "automerge": true,
+    "ignorePaths": [
+      ".github/workflows/*.yml"
+    ],
     "groupName": "all patch updates"
   },
   "digest": {
@@ -331,7 +340,7 @@
       "matchPackageNames": [
         "*"
       ],
-      "versioning": "loose",
+      "versioning": "regex:^r?(?<major>[0-9a-z]+)\\.?(?<minor>[0-9a-z]+)?\\.?(?<patch>[0-9a-z]+)?-?(?<prerelease>[0-9a-z]+)?(?<compatibility>-.*)?$",
       "rangeStrategy": "replace",
       "enabled": true,
       "pinDigests": false
