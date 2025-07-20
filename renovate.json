@@ -548,6 +548,8 @@
         "android/ndk"
       ],
       "matchDatasources": [
+        "git-refs",
+        "git-tags",
         "github-release-attachments",
         "github-releases",
         "github-tags"
