@@ -51,18 +51,12 @@
   "minor": {
     "description": "Allow dependencies to update to new minor versions",
     "enabled": true,
-    "automerge": true,
-    "matchDepTypes": [
-      "!/action/"
-    ]
+    "automerge": true
   },
   "patch": {
     "description": "Allow dependencies to update to new patch versions",
     "enabled": true,
     "automerge": true,
-    "matchDepTypes": [
-      "!/action/"
-    ],
     "groupName": "all patch updates"
   },
   "digest": {
@@ -351,8 +345,10 @@
       ],
       "matchUpdateTypes": [
         "major",
-        "minor",
-        "patch"
+        "lockFileMaintenance",
+        "rollback",
+        "bump",
+        "replacement"
       ],
       "matchDatasources": [
         "git-refs",
