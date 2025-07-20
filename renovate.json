@@ -380,10 +380,6 @@
     {
       "groupName": "Update Github releases",
       "enabled": true,
-      "matchManagers": [
-        "custom.regex",
-        "git-submodules"
-      ],
       "matchDatasources": [
         "github-releases"
       ],
@@ -507,10 +503,6 @@
     {
       "groupName": "Update conan dependencies",
       "enabled": true,
-      "matchManagers": [
-        "custom.regex",
-        "conan"
-      ],
       "matchDatasources": [
         "conan"
       ],
