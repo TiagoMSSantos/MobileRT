@@ -54,7 +54,7 @@ jobs:
       - name: Set up JDK
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success()
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v4.7.1
         with:
           # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml
           java-version: 21
@@ -362,7 +362,7 @@ jobs:
       - name: Set up JDK
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success()
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v4.7.1
         with:
           # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml
           java-version: 21
@@ -660,7 +660,7 @@ jobs:
       - name: Set up JDK
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success()
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v4.7.1
         with:
           # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml
           java-version: 21
@@ -867,7 +867,7 @@ jobs:
       - name: Set up JDK
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success()
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v4.7.1
         with:
           # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml
           # Sonar recommended JVM: https://docs.sonarqube.org/latest/requirements/prerequisites-and-overview/
