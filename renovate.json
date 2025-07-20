@@ -51,12 +51,18 @@
   "minor": {
     "description": "Allow dependencies to update to new minor versions",
     "enabled": true,
-    "automerge": true
+    "automerge": true,
+    "matchDepTypes": [
+      "!/action/"
+    ]
   },
   "patch": {
     "description": "Allow dependencies to update to new patch versions",
     "enabled": true,
     "automerge": true,
+    "matchDepTypes": [
+      "!/action/"
+    ],
     "groupName": "all patch updates"
   },
   "digest": {
