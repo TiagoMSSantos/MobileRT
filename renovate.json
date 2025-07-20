@@ -436,7 +436,8 @@
         "custom.regex",
         "gradle"
       ],
-      "matchCurrentVersion": "/^1\\.12\\..+/"
+      "matchCurrentVersion": "/^1\\.12\\..+/",
+      "matchCurrentValue": "/^1\\.12\\..+/"
     },
     {
       "groupName": "Only update patches of androidx.test:monitor for Android API >= 19",
@@ -452,7 +453,8 @@
         "custom.regex",
         "gradle"
       ],
-      "matchCurrentVersion": "/^1\\.6\\..+/"
+      "matchCurrentVersion": "/^1\\.6\\..+/",
+      "matchCurrentValue": "/^1\\.6\\..+/"
     },
     {
       "groupName": "Only update patches of androidx.test.ext:junit for Android API >= 19",
@@ -469,7 +471,8 @@
         "custom.regex",
         "gradle"
       ],
-      "matchCurrentVersion": "/^1\\.1\\..+/"
+      "matchCurrentVersion": "/^1\\.1\\..+/",
+      "matchCurrentValue": "/^1\\.1\\..+/"
     },
     {
       "groupName": "Only update patches of androidx.test.espresso for Android API >= 19",
@@ -491,7 +494,8 @@
         "custom.regex",
         "gradle"
       ],
-      "matchCurrentVersion": "/^3\\.5\\..+/"
+      "matchCurrentVersion": "/^3\\.5\\..+/",
+      "matchCurrentValue": "/^3\\.5\\..+/"
     },
     {
       "groupName": "Only update patches of androidx.emoji2:emoji2 for Android API >= 19",
@@ -507,7 +511,8 @@
         "custom.regex",
         "gradle"
       ],
-      "matchCurrentVersion": "/^1\\.2\\..+/"
+      "matchCurrentVersion": "/^1\\.2\\..+/",
+      "matchCurrentValue": "/^1\\.2\\..+/"
     },
     {
       "groupName": "Ubuntu to LTS versions",
@@ -546,7 +551,8 @@
         "custom.regex",
         "gradle"
       ],
-      "matchCurrentVersion": "/^8\\.2\\..+$/"
+      "matchCurrentVersion": "/^8\\.2\\..+$/",
+      "matchCurrentValue": "/^8\\.2\\..+$/"
     },
     {
       "groupName": "Only update patches of Android appcompat version for Android API >= 21",
@@ -562,7 +568,8 @@
         "custom.regex",
         "gradle"
       ],
-      "matchCurrentVersion": "/^1\\.6\\..+$/"
+      "matchCurrentVersion": "/^1\\.6\\..+$/",
+      "matchCurrentValue": "/^1\\.6\\..+$/"
     },
     {
       "groupName": "Do not update older NDK versions",
@@ -578,7 +585,8 @@
         "github-tags"
       ],
       "versioning": "regex:^r?(?<major>[0-9]+)\\.?(?<minor>[0-9a-z]+)?\\.?(?<patch>[0-9]+)?-?(?<prerelease>[0-9a-z]+)?(?<compatibility>-.*)?$",
-      "matchCurrentVersion": "/^(25\\.2\\.9519653)|(23\\.2\\.8568313)$/"
+      "matchCurrentVersion": "/^(25\\.2\\.9519653)|(23\\.2\\.8568313)$/",
+      "matchCurrentValue": "/^(25\\.2\\.9519653)|(23\\.2\\.8568313)$/"
     },
     {
       "groupName": "Guava to Android version",
@@ -653,6 +661,7 @@
         "windows"
       ],
       "versioning": "loose",
+      "matchCurrentVersion": "!/^(24\\.04)|(15)|(2025)$/",
       "matchCurrentValue": "!/^(24\\.04)|(15)|(2025)$/"
     }
   ]
