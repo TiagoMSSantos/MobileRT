@@ -324,10 +324,27 @@
   ],
   "packageRules": [
     {
+      "description": "Enable all by default",
+      "matchDatasources": [
+        "*"
+      ],
       "matchPackageNames": [
         "*"
       ],
-      "rangeStrategy": "replace"
+      "rangeStrategy": "replace",
+      "enabled": true
+    },
+    {
+      "groupName": "Update Github releases",
+      "enabled": true,
+      "matchDatasources": [
+        "git-refs",
+        "git-tags",
+        "github-release-attachments",
+        "github-releases",
+        "github-tags"
+      ],
+      "versioning": "regex:^v?r?(?<major>[0-9a-z]+)\\.?(?<minor>[0-9a-z]+)?\\.?(?<patch>[0-9a-z]+)?-?(?<prerelease>[0-9a-z]+)?(?<compatibility>-.*)?$"
     },
     {
       "description": "Update Docker, but not to specific digest versions",
@@ -376,18 +393,6 @@
       ],
       "versioning": "regex:^(?<major>[0-9a-z]+)\\.?(?<minor>[0-9a-z]+)?\\.?(?<patch>[0-9]+)?-?(?<compatibility>[a-z0-9.]+)?$",
       "pinDigests": false
-    },
-    {
-      "groupName": "Update Github releases",
-      "enabled": true,
-      "matchDatasources": [
-        "git-refs",
-        "git-tags",
-        "github-release-attachments",
-        "github-releases",
-        "github-tags"
-      ],
-      "versioning": "regex:^v?r?(?<major>[0-9a-z]+)\\.?(?<minor>[0-9]+)?\\.?(?<patch>[0-9]+)?$"
     },
     {
       "groupName": "Do NOT pin commit hash on 1st party Github actions",
@@ -546,8 +551,8 @@
       "matchCurrentVersion": "/^1\\.6\\..+$/"
     },
     {
-      "groupName": "Update NDK to stable versions",
-      "enabled": true,
+      "groupName": "Do not update older NDK versions",
+      "enabled": false,
       "matchDepNames": [
         "android/ndk"
       ],
@@ -559,8 +564,7 @@
         "github-tags"
       ],
       "versioning": "regex:^r?(?<major>[0-9]+)\\.?(?<minor>[0-9a-z]+)?\\.?(?<patch>[0-9]+)?-?(?<prerelease>[0-9a-z]+)?(?<compatibility>-.*)?$",
-      "matchCurrentVersion": "!/^(25\\.2\\.9519653)|(23\\.2\\.8568313)$/",
-      "allowedVersions": "/^r?[0-9]+\\.?[0-9a-z]*\\.?[0-9]*$/"
+      "matchCurrentVersion": "/^(25\\.2\\.9519653)|(23\\.2\\.8568313)$/"
     },
     {
       "groupName": "Update Guava to Android version",
