@@ -368,6 +368,11 @@
       "matchDepTypes": [
         "action"
       ],
+      "matchDepNames": [
+        "!/actions/",
+        "!/github/",
+        "!/advanced-security/"
+      ],
       "enabled": true,
       "pinDigests": true
     },
@@ -395,7 +400,7 @@
       "automerge": false
     },
     {
-      "groupName": "Update Github Runners",
+      "groupName": "Github Runners",
       "enabled": true,
       "matchDatasources": [
         "github-runners"
@@ -403,7 +408,7 @@
       "versioning": "loose"
     },
     {
-      "groupName": "Update docker images",
+      "groupName": "Docker images",
       "enabled": true,
       "matchManagers": [
         "custom.regex",
@@ -414,24 +419,6 @@
         "docker"
       ],
       "versioning": "regex:^(?<major>[0-9a-z]+)\\.?(?<minor>[0-9a-z]+)?\\.?(?<patch>[0-9]+)?-?(?<compatibility>[a-z0-9.]+)?$",
-      "pinDigests": false
-    },
-    {
-      "groupName": "Do NOT pin commit hash on 1st party Github actions",
-      "matchUpdateTypes": [
-        "major",
-        "minor",
-        "patch"
-      ],
-      "matchManagers": [
-        "custom.regex",
-        "github-actions"
-      ],
-      "matchDepNames": [
-        "actions/*",
-        "github/*",
-        "advanced-security/*"
-      ],
       "pinDigests": false
     },
     {
@@ -523,7 +510,7 @@
       "matchCurrentVersion": "/^1\\.2\\..+/"
     },
     {
-      "groupName": "Update Ubuntu to LTS versions",
+      "groupName": "Ubuntu to LTS versions",
       "enabled": true,
       "matchDepNames": [
         "ubuntu"
@@ -537,7 +524,7 @@
       "allowedVersions": "/^[0-9]+\\.04$/"
     },
     {
-      "groupName": "Update conan dependencies",
+      "groupName": "Conan dependencies",
       "enabled": true,
       "matchDatasources": [
         "conan"
@@ -594,7 +581,7 @@
       "matchCurrentVersion": "/^(25\\.2\\.9519653)|(23\\.2\\.8568313)$/"
     },
     {
-      "groupName": "Update Guava to Android version",
+      "groupName": "Guava to Android version",
       "enabled": true,
       "matchDepNames": [
         "com.google.guava:guava"
@@ -624,7 +611,7 @@
       "matchCurrentValue": "/^0\\.51\\.0$/"
     },
     {
-      "groupName": "Update Boost C++ Libraries",
+      "groupName": "Boost C++ Libraries",
       "enabled": true,
       "matchDepNames": [
         "boostorg/boost"
@@ -633,7 +620,7 @@
       "allowedVersions": "!/beta/"
     },
     {
-      "groupName": "Update GoogleTest to a version that supports C++20",
+      "groupName": "GoogleTest to a version that supports C++20",
       "enabled": true,
       "matchDepNames": [
         "google/googletest"
@@ -641,7 +628,7 @@
       "versioning": "regex:^(v|release-)?(?<major>[0-9]+)\\.(?<minor>[0-9]+)\\.(?<patch>[0-9]+)-?(?<prerelease>[0-9a-z]+)?$"
     },
     {
-      "groupName": "Update MobileRT docker images",
+      "groupName": "MobileRT docker images",
       "enabled": true,
       "matchDepNames": [
         "ptpuscas/mobile_rt"
