@@ -332,11 +332,13 @@
         "*"
       ],
       "rangeStrategy": "replace",
-      "enabled": true
+      "enabled": true,
+      "pinDigests": false
     },
     {
       "groupName": "Update Github releases",
       "enabled": true,
+      "pinDigests": false,
       "matchDatasources": [
         "git-refs",
         "git-tags",
