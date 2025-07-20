@@ -336,9 +336,17 @@
       "pinDigests": false
     },
     {
-      "groupName": "Update Github releases",
+      "groupName": "Github releases",
       "enabled": true,
       "pinDigests": false,
+      "matchDepTypes": [
+        "!/action/"
+      ],
+      "matchUpdateTypes": [
+        "major",
+        "minor",
+        "patch"
+      ],
       "matchDatasources": [
         "git-refs",
         "git-tags",
