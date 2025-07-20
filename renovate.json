@@ -353,8 +353,7 @@
         "github-release-attachments",
         "github-releases",
         "github-tags"
-      ],
-      "versioning": "regex:^v?r?(?<major>[0-9a-z]+)\\.?(?<minor>[0-9a-z]+)?\\.?(?<patch>[0-9a-z]+)?-?(?<prerelease>[0-9a-z]+)?(?<compatibility>-.*)?$"
+      ]
     },
     {
       "description": "Update Docker, but not to specific digest versions",
