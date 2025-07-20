@@ -50,7 +50,7 @@ jobs:
       - name: Checkout
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
 
       - name: Set Matrix
         id: set-matrix
@@ -77,7 +77,7 @@ jobs:
       - name: Checkout
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
 
       - name: Lint documentation files
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -102,7 +102,7 @@ jobs:
         id: pages
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
         with:
           # Check available parameters in: https://github.com/actions/configure-pages/blob/main/action.yml
           generator_config_file: docs/_config.yml
@@ -127,7 +127,7 @@ jobs:
       - name: Doxygen build
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success() && runner.os == 'Linux'
-        uses: mattnotmitt/doxygen-action@b84fe17600245bb5db3d6c247cc274ea98c15a3b # v1
+        uses: mattnotmitt/doxygen-action@b84fe17600245bb5db3d6c247cc274ea98c15a3b # v1.12
         with:
           # Check available parameters in: https://github.com/mattnotmitt/doxygen-action/blob/master/action.yml
           doxyfile-path: ".codedocs" # Path to Doxyfile (default is ./Doxyfile)
@@ -154,7 +154,7 @@ jobs:
 
       - name: Upload artifact
         # Automatically uploads an artifact from the './_site' directory by default
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
         with:
           # Check available parameters in: https://github.com/actions/upload-pages-artifact/blob/main/action.yml
           name: github-pages
@@ -188,7 +188,7 @@ jobs:
       - name: Deploy to GitHub Pages
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4
         with:
           # Check available parameters in: https://github.com/actions/deploy-pages/blob/main/action.yml
           artifact_name: github-pages

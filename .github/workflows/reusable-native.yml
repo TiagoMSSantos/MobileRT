@@ -51,7 +51,7 @@ jobs:
       - name: Checkout
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success()
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
 
       - name: Validate codecov config
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -320,7 +320,7 @@ jobs:
       - name: Upload code coverage to cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success() && inputs.type == 'debug' && startsWith(inputs.compiler, 'g++')
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@5a3ec84eff668545956fd18022155c47e93e2684 # v4
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/save/action.yml
           key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.host_os }}_${{ inputs.type }}_${{ inputs.compiler }}
@@ -344,12 +344,12 @@ jobs:
       - name: Checkout
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success()
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
 
       - name: Download reports from cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@5a3ec84eff668545956fd18022155c47e93e2684 # v4
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/restore/action.yml
           key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.host_os }}_${{ inputs.type }}_${{ inputs.compiler }}
@@ -423,7 +423,7 @@ jobs:
       - name: Upload reports to Codecov
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
-        uses: codecov/codecov-action@18283e04ce6e62d37312384ff67231eb8fd56d24 # v5
+        uses: codecov/codecov-action@18283e04ce6e62d37312384ff67231eb8fd56d24 # v5.4.3
         with:
           # Check available parameters in: https://github.com/codecov/codecov-action/blob/main/action.yml
           directory: 'coverage'

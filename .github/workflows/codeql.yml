@@ -57,7 +57,7 @@ jobs:
       - name: Checkout
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
 
       - name: Set Matrix
         id: set-matrix
@@ -91,12 +91,12 @@ jobs:
     - name: Checkout
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
-      uses: actions/checkout@v4
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
 
     - name: Set up JDK
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && matrix.language == 'java-kotlin'
-      uses: actions/setup-java@v4
+      uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 # v4
       with:
         # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml
         java-version: 21
@@ -137,7 +137,7 @@ jobs:
     - name: Initialize CodeQL tools for scanning
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
-      uses: github/codeql-action/init@v3
+      uses: github/codeql-action/init@181d5eefc20863364f96762470ba6f862bdef56b # v3
       env:
         CODEQL_ENABLE_EXPERIMENTAL_FEATURES: 'true'
       with:
@@ -204,7 +204,7 @@ jobs:
     - name: Autobuild
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
       if: success() && matrix.language == 'java-kotlin'
-      uses: github/codeql-action/autobuild@v3
+      uses: github/codeql-action/autobuild@181d5eefc20863364f96762470ba6f862bdef56b # v3
       continue-on-error: false
       env:
         MAKEFLAGS: "-j$(($(nproc --all) * 2 - 1))"
@@ -218,7 +218,7 @@ jobs:
     - name: Validate Gradle Wrapper
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && matrix.language == 'java-kotlin'
-      uses: gradle/actions/wrapper-validation@ac638b010cf58a27ee6c972d7336334ccaf61c96 # v4
+      uses: gradle/actions/wrapper-validation@ac638b010cf58a27ee6c972d7336334ccaf61c96 # v4.4.1
       with:
         # Check available parameters in: https://github.com/gradle/actions/blob/main/wrapper-validation/action.yml
         min-wrapper-count: 1
@@ -252,7 +252,7 @@ jobs:
     - name: Perform CodeQL Analysis
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
-      uses: github/codeql-action/analyze@v3
+      uses: github/codeql-action/analyze@181d5eefc20863364f96762470ba6f862bdef56b # v3
       with:
         # Check available parameters in: https://github.com/github/codeql-action/blob/main/analyze/action.yml
         check_name: CodeQL
@@ -292,7 +292,7 @@ jobs:
     - name: Filter SARIF
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
-      uses: advanced-security/filter-sarif@v1
+      uses: advanced-security/filter-sarif@f3b8118a9349d88f7b1c0c488476411145b6270d # v1
       with:
         # Check available parameters in: https://github.com/advanced-security/filter-sarif/blob/main/action.yml
         patterns: |
@@ -319,7 +319,7 @@ jobs:
     - name: Upload SARIF
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
-      uses: github/codeql-action/upload-sarif@v3
+      uses: github/codeql-action/upload-sarif@181d5eefc20863364f96762470ba6f862bdef56b # v3
       with:
         # Check available parameters in: https://github.com/github/codeql-action/blob/main/upload-sarif/action.yml
         sarif_file: ./codeql-results/${{ env.LANGUAGE }}-filtered.sarif
@@ -327,7 +327,7 @@ jobs:
     - name: Upload reports as artifact
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
       with:
         # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
         name: sarif_${{ matrix.language }}_${{ matrix.host_os }}-artifacts
