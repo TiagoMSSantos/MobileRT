@@ -4,7 +4,7 @@
     { "host_os": "ubuntu-latest", "base_image": "ubuntu:24.04" },
     { "host_os": "ubuntu-latest", "base_image": "tgagor/centos:stream9" },
     { "host_os": "ubuntu-latest", "base_image": "archlinux/archlinux:base-devel" },
-    { "host_os": "ubuntu-latest", "base_image": "alpine:3.22.1" },
+    { "host_os": "ubuntu-latest", "base_image": "alpine:20190228" },
     { "host_os": "ubuntu-latest", "base_image": "gentoo/stage3:latest" },
     { "host_os": "windows-latest", "base_image": "mcr.microsoft.com/windows/servercore:ltsc2022" }
   ]
