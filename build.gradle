@@ -48,7 +48,7 @@ buildscript {
             ndk_version = '28.1.13356709'
         }
         if (androidApiVersionValue >= 19) {
-            androidX_test_junit_version = '1.2.1'
+            androidX_test_junit_version = '1.3.0-rc01'
             androidX_test_espresso_version = '3.6.1'
             if (project.properties["ndk_version"] == null) {
                 ndk_version = '25.2.9519653'
