@@ -102,7 +102,7 @@ jobs:
         id: pages
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v5.0.0
         with:
           # Check available parameters in: https://github.com/actions/configure-pages/blob/main/action.yml
           generator_config_file: docs/_config.yml
@@ -154,7 +154,7 @@ jobs:
 
       - name: Upload artifact
         # Automatically uploads an artifact from the './_site' directory by default
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v3.0.1
         with:
           # Check available parameters in: https://github.com/actions/upload-pages-artifact/blob/main/action.yml
           name: github-pages
@@ -188,7 +188,7 @@ jobs:
       - name: Deploy to GitHub Pages
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v4.0.5
         with:
           # Check available parameters in: https://github.com/actions/deploy-pages/blob/main/action.yml
           artifact_name: github-pages
