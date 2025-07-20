@@ -54,7 +54,7 @@ jobs:
       - name: Checkout
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.2.2
 
       - name: Set Matrix
         id: set-matrix
@@ -84,7 +84,7 @@ jobs:
     - name: Checkout
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
-      uses: actions/checkout@v4
+      uses: actions/checkout@v4.2.2
 
     - name: Enable KVM group permissions
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
