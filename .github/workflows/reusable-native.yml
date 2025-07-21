@@ -385,7 +385,7 @@ jobs:
           echo 'Formatting code coverage.';
           ./test-reporter-latest-${host_os}-${cpu_architecture} format-coverage -d -t lcov code_coverage_filtered.info;
           echo 'Uploading code coverage.';
-          ./test-reporter-latest-${host_os}-${cpu_architecture} upload-coverage -d;
+          ./test-reporter-latest-${host_os}-${cpu_architecture} upload-coverage -d || true;
 
       - name: Send codecov report
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}

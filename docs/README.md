@@ -24,19 +24,10 @@
 [![codecov](https://codecov.io/gh/TiagoMSSantos/MobileRT/branch/master/graph/badge.svg)](https://app.codecov.io/gh/TiagoMSSantos/MobileRT/tree/master)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=TiagoMSSantos_MobileRT&metric=alert_status)](https://sonarcloud.io/dashboard?id=TiagoMSSantos_MobileRT)
 
-<!-- 
-[![Test Coverage](https://api.codeclimate.com/v1/badges/6a80c282c888f405d779/test_coverage)](https://codeclimate.com/github/TiagoMSSantos/MobileRT/test_coverage)
--->
-
 [//]: # (Static analysis)
-[![Maintainability](https://api.codeclimate.com/v1/badges/6a80c282c888f405d779/maintainability)](https://codeclimate.com/github/TiagoMSSantos/MobileRT/maintainability)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/c4f4fb76bb934fe6980b969e7c8aac0e)](https://app.codacy.com/gh/TiagoMSSantos/MobileRT/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 [![Copy Paste Status](https://tiagomssantos.github.io/MobileRT/jscpd-report/jscpd-badge.svg)](https://tiagomssantos.github.io/MobileRT/jscpd-report/jscpd-report)
 [![Docker Pulls](https://img.shields.io/docker/pulls/ptpuscas/mobile_rt)](https://hub.docker.com/r/ptpuscas/mobile_rt)
-
-<!-- Code beat server fails sometimes analysing the pull requests.
-[![codebeat badge](https://codebeat.co/assets/svg/badges/B-66bd63-dcc2e015f60fd0645631f8e7891440fb04fff8acc238aa755faf7de8c0ff7e2b.svg)](https://codebeat.co/projects/github-com-tiagomssantos-mobilert-master)
--->
 
 <!-- The images have the full path to the repository so they also appear in Docker hub. -->
 <img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/Example_Android.gif" alt="MobileRT: Android" width="400"/>

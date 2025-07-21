@@ -998,7 +998,7 @@ jobs:
           echo 'Formatting code coverage';
           ../../../../test-reporter-latest-${host_os}-${cpu_architecture} format-coverage -t jacoco ../../../build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml;
           echo 'Uploading code coverage.';
-          ../../../../test-reporter-latest-${host_os}-${cpu_architecture} upload-coverage;
+          ../../../../test-reporter-latest-${host_os}-${cpu_architecture} upload-coverage || true;
 
       - name: Set Android CPU Architecture
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
