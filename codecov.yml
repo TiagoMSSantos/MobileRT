@@ -36,7 +36,7 @@ coverage:
         if_ci_failed: error
         informational: false
         only_pulls: false
-      Shell scripts:
+      Shell-scripts:
         target: 5%
         threshold: 1%
         if_ci_failed: error
