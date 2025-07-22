@@ -24,6 +24,9 @@ coverage:
     default_rules:
       flag_coverage_not_uploaded_behavior: include
     project:
+      Android:
+        target: 72%
+        threshold: 1%
       default:
         target: 56%
         # Note that code coverage requires the following tests to validate the whole codebase:
@@ -57,7 +60,7 @@ parsers:
       macro: false
 
 comment:
-  layout: "header, diff, flags, components, reach, tree"  # show component info in the PR comment
+  layout: "header, diff, flags, components, reach, tree, files"  # show component info in the PR comment
   behavior: "default"
   require_changes: false
   require_head: false
