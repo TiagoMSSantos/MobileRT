@@ -30,18 +30,31 @@ coverage:
         if_ci_failed: error
         informational: false
         only_pulls: false
+        paths:
+          - app/**/*.java
+          - app/**/*.kt
+          - app/System_dependent/Android_JNI/**
       Native:
         target: 88%
         threshold: 1%
         if_ci_failed: error
         informational: false
         only_pulls: false
-      Shell_scripts:
+        paths:
+          - app/**/*.cpp
+          - app/**/*.hpp
+          - app/**/*.h
+          - "!app/System_dependent/**"
+          - app/System_dependent/Native/**
+      Shell-scripts:
         target: 5%
         threshold: 1%
         if_ci_failed: error
         informational: false
         only_pulls: false
+        paths:
+          - scripts/*.sh
+          - scripts/**/*.sh
       default:
         # Note that code coverage requires the following tests to validate the whole codebase:
         # * Android tests (from Android workflow)
@@ -53,6 +66,7 @@ coverage:
         if_ci_failed: error
         informational: false
         only_pulls: false
+        removed_code_behavior: off
     patch:
       default:
         target: auto
@@ -67,12 +81,17 @@ coverage:
         only_pulls: false
 
 parsers:
+  jacoco:
+    partials_as_hits: false
   gcov:
     branch_detection:
       conditional: true
       loop: true
       method: false
       macro: false
+  cobertura:
+    partials_as_hits: false
+    handle_missing_conditions: false
 
 comment:
   layout: "header, diff, flags, components, reach, tree, files"  # show component info in the PR comment
@@ -106,7 +125,7 @@ component_management:
         - "!app/System_dependent/**"
         - app/System_dependent/Native/**
     - component_id: module_shell_scripts
-      name: Shell_scripts
+      name: Shell-scripts
       paths:
         - scripts/*.sh
         - scripts/**/*.sh
