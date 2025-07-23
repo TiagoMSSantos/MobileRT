@@ -66,7 +66,6 @@ coverage:
         if_ci_failed: error
         informational: false
         only_pulls: false
-        removed_code_behavior: adjust_base
     patch:
       default:
         target: auto
