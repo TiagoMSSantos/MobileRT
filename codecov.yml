@@ -106,7 +106,7 @@ component_management:
         - "!app/System_dependent/**"
         - app/System_dependent/Native/**
     - component_id: module_shell_scripts
-      name: Shell scripts
+      name: Shell_scripts
       paths:
         - scripts/*.sh
         - scripts/**/*.sh
