@@ -96,7 +96,7 @@ coverage:
         informational: false
         only_pulls: false
         if_not_found: failure
-        removed_code_behavior: false
+        removed_code_behavior: adjust_base
 
 parsers:
   jacoco:
