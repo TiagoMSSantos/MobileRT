@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2025-07-21T07:27:28.596Z",
+    "detectionDate": "2025-07-24T05:28:39.433Z",
     "formats": {
       "java": {
         "sources": {
@@ -1997,8 +1997,8 @@
             "newClones": 0
           },
           ".github/workflows/reusable-native.yml": {
-            "lines": 432,
-            "tokens": 2197,
+            "lines": 408,
+            "tokens": 2139,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2153,8 +2153,8 @@
             "newClones": 0
           },
           "codecov.yml": {
-            "lines": 93,
-            "tokens": 482,
+            "lines": 148,
+            "tokens": 789,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2178,14 +2178,14 @@
           }
         },
         "total": {
-          "lines": 2550,
-          "tokens": 15402,
+          "lines": 2581,
+          "tokens": 15651,
           "sources": 24,
           "clones": 5,
           "duplicatedLines": 160,
           "duplicatedTokens": 878,
-          "percentage": 6.27,
-          "percentageTokens": 5.7,
+          "percentage": 6.2,
+          "percentageTokens": 5.61,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2449,8 +2449,8 @@
             "newClones": 0
           },
           "docs/TOOLS.md": {
-            "lines": 86,
-            "tokens": 672,
+            "lines": 84,
+            "tokens": 654,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2558,8 +2558,8 @@
           }
         },
         "total": {
-          "lines": 2373,
-          "tokens": 23619,
+          "lines": 2371,
+          "tokens": 23601,
           "sources": 16,
           "clones": 1,
           "duplicatedLines": 23,
@@ -3272,14 +3272,14 @@
       }
     },
     "total": {
-      "lines": 29619,
-      "tokens": 229154,
+      "lines": 29648,
+      "tokens": 229385,
       "sources": 259,
       "clones": 113,
       "duplicatedLines": 1361,
       "duplicatedTokens": 13034,
-      "percentage": 4.6,
-      "percentageTokens": 5.69,
+      "percentage": 4.59,
+      "percentageTokens": 5.68,
       "newDuplicatedLines": 0,
       "newClones": 0
     }

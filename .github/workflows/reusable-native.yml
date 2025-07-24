@@ -363,30 +363,6 @@ jobs:
             code_coverage_test.info
             code_coverage_filtered.info
 
-      - name: Send code climate report
-        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success()
-        env:
-          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-        run: |
-          env;
-          # shellcheck disable=SC1091
-          . scripts/helper_functions.sh && prepareBinaries "${GITHUB_WORKSPACE}";
-          echo 'Discovering current OS.';
-          host_os=$(echo "${RUNNER_OS}" | tr '[:upper:]' '[:lower:]');
-          if [ "${host_os}" = 'macos' ]; then
-            host_os='darwin';
-          fi
-          echo 'Discovering CPU architecture.';
-          cpu_architecture=$(echo "${RUNNER_ARCH}" | tr '[:upper:]' '[:lower:]');
-          if [ "${cpu_architecture}" = 'x64' ]; then
-            cpu_architecture='amd64';
-          fi
-          echo 'Formatting code coverage.';
-          ./test-reporter-latest-${host_os}-${cpu_architecture} format-coverage -d -t lcov code_coverage_filtered.info;
-          echo 'Uploading code coverage.';
-          ./test-reporter-latest-${host_os}-${cpu_architecture} upload-coverage -d || true;
-
       - name: Send codecov report
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()

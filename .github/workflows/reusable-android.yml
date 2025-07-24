@@ -977,29 +977,6 @@ jobs:
           # shellcheck disable=SC1091
           . scripts/helper_functions.sh && checkPathExists app/build/reports/jacoco/jacocoTestReport jacocoTestReport.xml;
 
-      - name: Send code climate report
-        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success()
-        working-directory: app/src/main/java
-        env:
-          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-        run: |
-          env;
-          # shellcheck disable=SC1091
-          . ${{ github.workspace }}/scripts/helper_functions.sh && prepareBinaries "${GITHUB_WORKSPACE}";
-          host_os=$(echo "${RUNNER_OS}" | tr '[:upper:]' '[:lower:]');
-          if [ "${host_os}" = 'macos' ]; then
-            host_os='darwin';
-          fi
-          cpu_architecture=$(echo "${RUNNER_ARCH}" | tr '[:upper:]' '[:lower:]');
-          if [ "${cpu_architecture}" = 'x64' ]; then
-            cpu_architecture='amd64';
-          fi
-          echo 'Formatting code coverage';
-          ../../../../test-reporter-latest-${host_os}-${cpu_architecture} format-coverage -t jacoco ../../../build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml;
-          echo 'Uploading code coverage.';
-          ../../../../test-reporter-latest-${host_os}-${cpu_architecture} upload-coverage || true;
-
       - name: Set Android CPU Architecture
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
