@@ -595,7 +595,7 @@ jobs:
           # Check available parameters in: https://github.com/codecov/test-results-action/blob/main/action.yml
           token: ${{ secrets.CODECOV_TOKEN }}
           codecov_yml_path: codecov.yml
-          directory: app/build/test-results
+          directory: app/build/outputs/androidTest-results
           disable_search: false
           fail_ci_if_error: true
           flags: Android-Instrumentation-Tests
