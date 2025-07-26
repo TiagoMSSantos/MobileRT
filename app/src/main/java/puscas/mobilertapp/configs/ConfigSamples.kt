@@ -6,6 +6,7 @@ package puscas.mobilertapp.configs
  * @property samplesPixel The number of samples per pixel.
  * @property samplesLight The number of samples per light.
  */
+@ConsistentCopyVisibility
 data class ConfigSamples private constructor(
     val samplesPixel : Int,
     val samplesLight : Int,

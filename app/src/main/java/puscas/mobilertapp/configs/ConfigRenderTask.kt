@@ -22,6 +22,7 @@ import puscas.mobilertapp.constants.State
  * @property buttonRender   The [Button] which can start and stop the Ray Tracer engine.
  *   It is important to let the [RenderTask] update its state after the rendering process.
  */
+@ConsistentCopyVisibility
 data class ConfigRenderTask private constructor(
     val requestRender : Runnable,
     val finishRender : Runnable,

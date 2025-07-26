@@ -17,6 +17,7 @@ import java.nio.Buffer
  *                              Additionally, the symbolic constant GL_BGRA is accepted by glVertexAttribPointer.
  *                              The initial value is 4.
  */
+@ConsistentCopyVisibility
 data class ConfigGlAttribute private constructor(
     val attributeName : String,
     val buffer : Buffer,

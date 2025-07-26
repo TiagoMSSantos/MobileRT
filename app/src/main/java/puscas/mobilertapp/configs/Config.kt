@@ -18,6 +18,7 @@ import java.lang.annotation.Native
  * @property threads          The number of threads.
  * @property rasterize        Whether the Ray Tracing engine should render a preview frame.
  */
+@ConsistentCopyVisibility
 data class Config private constructor(
     @Native val scene: Int,
     @Native val shader: Int,

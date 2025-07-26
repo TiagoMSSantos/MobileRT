@@ -8,6 +8,7 @@ import java.lang.annotation.Native
  * @property width  The width.
  * @property height The height.
  */
+@ConsistentCopyVisibility
 data class ConfigResolution private constructor(
     @Native val width: Int,
     @Native val height: Int,
