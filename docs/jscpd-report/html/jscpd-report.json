@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2025-07-26T11:13:15.884Z",
+    "detectionDate": "2025-07-26T12:03:08.277Z",
     "formats": {
       "java": {
         "sources": {
@@ -953,8 +953,8 @@
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/RayTracingTest.java": {
-            "lines": 111,
-            "tokens": 646,
+            "lines": 110,
+            "tokens": 633,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -1050,8 +1050,8 @@
           }
         },
         "total": {
-          "lines": 9795,
-          "tokens": 67871,
+          "lines": 9794,
+          "tokens": 67858,
           "sources": 87,
           "clones": 59,
           "duplicatedLines": 571,
@@ -1101,8 +1101,8 @@
             "newClones": 0
           },
           "app/src/main/java/puscas/mobilertapp/configs/ConfigRenderTask.kt": {
-            "lines": 59,
-            "tokens": 439,
+            "lines": 58,
+            "tokens": 431,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -1137,8 +1137,8 @@
             "newClones": 0
           },
           "app/src/main/java/puscas/mobilertapp/RenderTask.kt": {
-            "lines": 335,
-            "tokens": 1997,
+            "lines": 338,
+            "tokens": 2025,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -1150,8 +1150,8 @@
           }
         },
         "total": {
-          "lines": 694,
-          "tokens": 3935,
+          "lines": 696,
+          "tokens": 3955,
           "sources": 7,
           "clones": 0,
           "duplicatedLines": 0,
@@ -3272,8 +3272,8 @@
       }
     },
     "total": {
-      "lines": 29653,
-      "tokens": 229397,
+      "lines": 29654,
+      "tokens": 229404,
       "sources": 259,
       "clones": 113,
       "duplicatedLines": 1361,

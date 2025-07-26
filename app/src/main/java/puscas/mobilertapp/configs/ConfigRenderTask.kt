@@ -3,14 +3,13 @@ package puscas.mobilertapp.configs
 import android.graphics.Bitmap
 import android.widget.Button
 import android.widget.TextView
-import puscas.mobilertapp.DrawView
 import puscas.mobilertapp.RenderTask
 import puscas.mobilertapp.constants.State
 
 /**
  * The configurator for the [RenderTask].
  *
- * @property requestRender  A [Runnable] to the [DrawView.requestRender] method which is called in the [RenderTask.timer].
+ * @property requestRender  A [Runnable] to the [puscas.mobilertapp.DrawView.requestRender] method which is called in the [RenderTask.timer].
  * @property finishRender   A [Runnable] method which stops the Ray Tracer engine and sets the [RenderTask.stateT] to [State.IDLE].
  * @property updateInterval The interval in `TimeUnit.MILLISECONDS` between each call to the [RenderTask.timer].
  * @property numLights      The number of lights in the scene.

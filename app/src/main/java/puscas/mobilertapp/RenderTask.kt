@@ -6,6 +6,7 @@ import android.os.SystemClock
 import android.widget.Button
 import android.widget.TextView
 import com.google.common.base.Preconditions
+import kotlinx.coroutines.DelicateCoroutinesApi
 import puscas.mobilertapp.configs.ConfigRenderTask
 import puscas.mobilertapp.constants.Constants
 import puscas.mobilertapp.constants.ConstantsMethods
@@ -14,6 +15,7 @@ import puscas.mobilertapp.constants.ConstantsUI
 import puscas.mobilertapp.constants.State
 import puscas.mobilertapp.utils.AsyncTaskCoroutine
 import puscas.mobilertapp.utils.Utils
+import puscas.mobilertapp.utils.UtilsLogging
 import java.math.RoundingMode
 import java.text.NumberFormat
 import java.util.Locale
@@ -37,6 +39,7 @@ import java.util.logging.Logger
  * @property textView       The [TextView] which outputs debug information about the Ray Tracer engine like the current rendering time and the fps.
  * @property buttonRender   The [Button] which starts and stops the rendering process. This is needed in order to change its text at the end of the rendering process.
  */
+@OptIn(DelicateCoroutinesApi::class)
 class RenderTask private constructor(
     private val requestRender : Runnable,
     private val finishRender: Runnable,
@@ -284,12 +287,12 @@ class RenderTask private constructor(
     override fun doInBackground() {
         logger.info("doInBackground")
         try {
-            this.executorService.scheduleAtFixedRate(
+            this.executorService.scheduleWithFixedDelay(
                 this.timer, 0L,
                 this.updateInterval, TimeUnit.MILLISECONDS
             )
-        } catch (ex: Throwable) {
-            logger.severe("doInBackground failed")
+        } catch (ex: Exception) {
+            UtilsLogging.logException(ex, "RenderTask#doInBackground")
             return
         }
         waitForTaskToFinish()

@@ -144,7 +144,7 @@ public final class MainRendererTest extends AbstractTest {
                 shaderIndex.set(index);
                 UtilsGL.run(() -> GLES20.glDeleteShader(index));
             } catch (final FailureException ex) {
-                UtilsLogging.logThrowable(ex, this.testName.getMethodName() + ": MainRendererTest#createAndGetIndexOfShader");
+                UtilsLogging.logException(ex, this.testName.getMethodName() + ": MainRendererTest#createAndGetIndexOfShader");
             } finally {
                 UtilsGL.run(GLES20::glReleaseShaderCompiler);
                 latch.countDown();

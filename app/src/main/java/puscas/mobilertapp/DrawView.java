@@ -198,7 +198,7 @@ public final class DrawView extends GLSurfaceView {
         try {
             this.renderer.checksFreeMemory(1, () -> {});
         } catch (final Exception ex) {
-            UtilsLogging.logThrowable(ex, "DrawView#setViewAndActivityManager");
+            UtilsLogging.logException(ex, "DrawView#setViewAndActivityManager");
             throw new FailureException(ex);
         }
 
@@ -244,10 +244,10 @@ public final class DrawView extends GLSurfaceView {
                 startRayTracing(config);
                 return Boolean.TRUE;
             } catch (final LowMemoryException ex) {
-                UtilsLogging.logThrowable(ex, "DrawView#renderScene");
+                UtilsLogging.logException(ex, "DrawView#renderScene");
                 MainActivity.showUiMessage(ConstantsToast.DEVICE_WITHOUT_ENOUGH_MEMORY + ex.getMessage());
             } catch (final Exception ex) {
-                UtilsLogging.logThrowable(ex, "DrawView#renderScene");
+                UtilsLogging.logException(ex, "DrawView#renderScene");
                 renderer.resetStats();
                 MainActivity.showUiMessage(ConstantsToast.COULD_NOT_LOAD_THE_SCENE + ex.getMessage());
             }
@@ -306,9 +306,9 @@ public final class DrawView extends GLSurfaceView {
                 try {
                     task.getSecond().get(1L, TimeUnit.DAYS);
                 } catch (final ExecutionException | TimeoutException | RuntimeException ex) {
-                    UtilsLogging.logThrowable(ex, "DrawView#waitLastTask");
+                    UtilsLogging.logException(ex, "DrawView#waitLastTask");
                 } catch (final InterruptedException ex) {
-                    UtilsLogging.logThrowable(ex, "DrawView#waitLastTask");
+                    UtilsLogging.logException(ex, "DrawView#waitLastTask");
                     Thread.currentThread().interrupt();
                 } finally {
                     Utils.handleInterruption("DrawView#waitLastTask");

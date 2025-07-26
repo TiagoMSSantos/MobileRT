@@ -30,11 +30,9 @@ import androidx.annotation.Nullable;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.io.Files;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
@@ -222,7 +220,7 @@ public final class MainActivity extends Activity {
             numberPicker.setMinValue(minValue);
             numberPicker.setMaxValue(names.length);
         } catch (final NumberFormatException ex) {
-            UtilsLogging.logThrowable(ex, "MainActivity#initializePicker");
+            UtilsLogging.logException(ex, "MainActivity#initializePicker");
             numberPicker.setMinValue(0);
             numberPicker.setMaxValue(names.length - 1);
         }
@@ -242,7 +240,7 @@ public final class MainActivity extends Activity {
         try {
             loadMobileRT();
         } catch (final Exception ex) {
-            UtilsLogging.logThrowable(ex, "MainActivity#onCreate");
+            UtilsLogging.logException(ex, "MainActivity#onCreate");
             throw new FailureException(ex);
         }
 
@@ -319,7 +317,7 @@ public final class MainActivity extends Activity {
             try {
                 startRender(this.sceneFilePath);
             } catch (final Exception ex) {
-                UtilsLogging.logThrowable(ex, "MainActivity#onPostResume");
+                UtilsLogging.logException(ex, "MainActivity#onPostResume");
                 showUiMessage(Objects.requireNonNull(ex.getMessage()));
             }
         }
@@ -482,7 +480,7 @@ public final class MainActivity extends Activity {
                 this.sceneFilePath = null;
             }
         } catch (final Exception ex) {
-            UtilsLogging.logThrowable(ex, "MainActivity#onActivityResult");
+            UtilsLogging.logException(ex, "MainActivity#onActivityResult");
             MainActivity.showUiMessage(ConstantsToast.COULD_NOT_RENDER_THE_SCENE + ex.getMessage());
         }
         logger.info("onActivityResult finished");
@@ -574,7 +572,7 @@ public final class MainActivity extends Activity {
             final String messageFinished = ConstantsMethods.START_RENDER + ConstantsMethods.FINISHED;
             logger.info(messageFinished);
         } catch (final Exception ex) {
-            UtilsLogging.logThrowable(ex, "MainActivity#startRender");
+            UtilsLogging.logException(ex, "MainActivity#startRender");
             MainActivity.showUiMessage(ConstantsToast.COULD_NOT_RENDER_THE_SCENE + ex.getMessage());
         }
     }
@@ -751,7 +749,7 @@ public final class MainActivity extends Activity {
             // Important: Native layer shouldn't assume ownership of this fd and close it.
             readFile(fileDescriptor, fileSize, filePath);
         } catch (final Exception ex) {
-            UtilsLogging.logThrowable(ex, "MainActivity#readFile");
+            UtilsLogging.logException(ex, "MainActivity#readFile");
             throw new FailureException(ex);
         }
         logger.info("Path '" + filePath +"' already read.");
@@ -808,7 +806,7 @@ public final class MainActivity extends Activity {
         try {
             startActivityForResult(intent, OPEN_FILE_REQUEST_CODE);
         } catch (final ActivityNotFoundException ex) {
-            UtilsLogging.logThrowable(ex, "MainActivity#callFileManager");
+            UtilsLogging.logException(ex, "MainActivity#callFileManager");
             Toast.makeText(this, ConstantsToast.PLEASE_INSTALL_FILE_MANAGER, Toast.LENGTH_LONG)
                 .show();
         }

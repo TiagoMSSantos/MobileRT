@@ -23,12 +23,12 @@ public final class UtilsLogging {
     }
 
     /**
-     * Helper method that prints the message of a {@link Throwable}.
+     * Helper method that prints the message of an {@link Exception}.
      *
-     * @param ex         The {@link Throwable} to print.
+     * @param ex         The {@link Exception} to print.
      * @param methodName The name of the method to appear in the logs.
      */
-    public static void logThrowable(@NonNull final Throwable ex,
+    public static void logException(@NonNull final Exception ex,
                                     @NonNull final String methodName) {
         final String message = methodName + " " + ex.getClass() + ": " + ex.getMessage() + "\n" + Arrays.toString(ex.getStackTrace());
         logger.severe(message);

@@ -161,7 +161,7 @@ public final class UiTest extends AbstractTest {
                     .perform(ViewActions.click(InputDevice.SOURCE_TOUCHSCREEN, MotionEvent.BUTTON_PRIMARY));
                 break;
             } catch (final PerformException ex) {
-                UtilsLogging.logThrowable(ex, "clickPreviewCheckBox");
+                UtilsLogging.logException(ex, "clickPreviewCheckBox");
             }
         }
 

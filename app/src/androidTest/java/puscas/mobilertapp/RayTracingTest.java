@@ -6,7 +6,6 @@ import android.content.Intent;
 
 import androidx.test.espresso.intent.Intents;
 import androidx.test.espresso.intent.matcher.IntentMatchers;
-import androidx.test.platform.app.InstrumentationRegistry;
 
 import org.junit.Test;
 

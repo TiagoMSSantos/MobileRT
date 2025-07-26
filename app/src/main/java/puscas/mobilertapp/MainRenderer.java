@@ -954,7 +954,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
 
                 rtRenderIntoBitmap(this.bitmap, this.numThreads);
             } catch (final Exception ex) {
-                UtilsLogging.logThrowable(ex, "MainRenderer#onDrawFrame");
+                UtilsLogging.logException(ex, "MainRenderer#onDrawFrame");
                 MainActivity.showUiMessage(ConstantsToast.COULD_NOT_RENDER_THE_SCENE + ex.getMessage());
                 MainActivity.resetRenderButton();
                 return;

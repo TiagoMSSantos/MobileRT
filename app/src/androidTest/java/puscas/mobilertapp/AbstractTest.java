@@ -244,7 +244,7 @@ public abstract class AbstractTest {
         try {
             ViewActionWait.waitForButtonUpdate(0);
         } catch (final NoActivityResumedException ex) {
-            UtilsLogging.logThrowable(ex, this.testName.getMethodName() + ": AbstractTest#setUp");
+            UtilsLogging.logException(ex, this.testName.getMethodName() + ": AbstractTest#setUp");
             logger.warning(this.testName.getMethodName() + ": The MainActivity didn't start as expected. Forcing a restart.");
             mainActivityActivityTestRule.getScenario().close();
             final ActivityScenario<MainActivity> newActivityScenario = ActivityScenario.launch(MainActivity.class);

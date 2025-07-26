@@ -187,7 +187,7 @@ public final class UtilsContext {
         try (InputStream inputStream = assetManager.open(filePath)) {
             text = Utils.readTextFromInputStream(inputStream);
         } catch (final IOException ex) {
-            UtilsLogging.logThrowable(ex, "UtilsContext#readTextAsset");
+            UtilsLogging.logException(ex, "UtilsContext#readTextAsset");
             throw new FailureException(ex);
         }
         return text;
