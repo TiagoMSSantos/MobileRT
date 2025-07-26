@@ -6,7 +6,7 @@ on:
     paths-ignore:
     - '*'
     - '**/**'
-    - '!.github/workflows/codeql.yml'
+    - '!.github/workflows/*.yml'
     - '!.github/workflows/codeql-matrix.json'
     - '!.github/codeql/codeql-config.yml'
     - '!codecov.yml'
