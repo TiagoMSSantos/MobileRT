@@ -598,8 +598,8 @@ jobs:
           directory: app/build/test-results
           disable_search: false
           fail_ci_if_error: true
-          flags: Android
-          name: Android-test-results
+          flags: Android-Instrumentation-Tests
+          name: Android-instrumentation-test-results
           verbose: true
           version: latest
           working-directory: .
@@ -871,8 +871,8 @@ jobs:
           directory: app/build/test-results
           disable_search: false
           fail_ci_if_error: true
-          flags: Android
-          name: Unit-test-results
+          flags: Android-Unit-Tests
+          name: Android-unit-test-results
           verbose: true
           version: latest
           working-directory: .

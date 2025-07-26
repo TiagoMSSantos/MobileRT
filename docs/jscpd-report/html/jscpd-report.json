@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2025-07-24T05:28:39.433Z",
+    "detectionDate": "2025-07-26T08:20:30.394Z",
     "formats": {
       "java": {
         "sources": {
@@ -2154,7 +2154,7 @@
           },
           "codecov.yml": {
             "lines": 148,
-            "tokens": 789,
+            "tokens": 791,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2179,7 +2179,7 @@
         },
         "total": {
           "lines": 2581,
-          "tokens": 15651,
+          "tokens": 15653,
           "sources": 24,
           "clones": 5,
           "duplicatedLines": 160,
@@ -3273,7 +3273,7 @@
     },
     "total": {
       "lines": 29648,
-      "tokens": 229385,
+      "tokens": 229387,
       "sources": 259,
       "clones": 113,
       "duplicatedLines": 1361,
