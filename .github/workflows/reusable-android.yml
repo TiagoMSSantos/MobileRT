@@ -589,14 +589,20 @@ jobs:
           skip_comment_without_tests: false
 
       - name: Upload Android Test results to Codecov
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() }} # Always run even if the previous step fails
         uses: codecov/test-results-action@v1
         with:
           # Check available parameters in: https://github.com/codecov/test-results-action/blob/main/action.yml
-          files: '**/build/**/*-results/**/TEST-*.xml'
+          token: ${{ secrets.CODECOV_TOKEN }}
+          codecov_yml_path: codecov.yml
+          directory: app/build/test-results
+          disable_search: false
+          fail_ci_if_error: true
           flags: Android
           name: Android-test-results
-          token: ${{ secrets.CODECOV_TOKEN }}
+          verbose: true
+          version: latest
+          working-directory: .
 
       - name: Check report's paths
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -856,15 +862,20 @@ jobs:
           skip_comment_without_tests: false
 
       - name: Upload Unit Test results to Codecov
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() }} # Always run even if the previous step fails
         uses: codecov/test-results-action@v1
         with:
           # Check available parameters in: https://github.com/codecov/test-results-action/blob/main/action.yml
-          files: '**/build/**/*-results/**/TEST-*.xml'
+          token: ${{ secrets.CODECOV_TOKEN }}
+          codecov_yml_path: codecov.yml
+          directory: app/build/test-results
+          disable_search: false
+          fail_ci_if_error: true
           flags: Android
           name: Unit-test-results
-          token: ${{ secrets.CODECOV_TOKEN }}
-
+          verbose: true
+          version: latest
+          working-directory: .
 
   Sonar:
     needs: [AndroidTests]
