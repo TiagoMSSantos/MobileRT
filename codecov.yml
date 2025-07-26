@@ -95,8 +95,8 @@ coverage:
         if_ci_failed: error
         informational: false
         only_pulls: false
-        if_not_found: failure
-        removed_code_behavior: adjust_base
+        if_not_found: success # Ignore failures like "codecov/changes - X files have indirect coverage changes not visible in diff"
+        removed_code_behavior: false
 
 parsers:
   jacoco:

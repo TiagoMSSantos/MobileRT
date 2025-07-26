@@ -556,7 +556,7 @@ jobs:
 
       - name: Publish Android Test Report
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success() || failure() # always run even if the previous step fails
+        if: ${{ !cancelled() }} # Always run even if the previous step fails
         uses: mikepenz/action-junit-report@3585e9575db828022551b4231f165eb59a0e74e3 # v5
         with:
           # Check available parameters in: https://github.com/mikepenz/action-junit-report/blob/main/action.yml
@@ -587,6 +587,16 @@ jobs:
           truncate_stack_traces: false
           resolve_ignore_classname: false
           skip_comment_without_tests: false
+
+      - name: Upload Android Test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          # Check available parameters in: https://github.com/codecov/test-results-action/blob/main/action.yml
+          files: '**/build/**/*-results/**/TEST-*.xml'
+          flags: Android
+          name: Android-test-results
+          token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Check report's paths
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -813,7 +823,7 @@ jobs:
 
       - name: Publish Unit Test Report
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success() || failure() # always run even if the previous step fails
+        if: ${{ !cancelled() }} # Always run even if the previous step fails
         uses: mikepenz/action-junit-report@3585e9575db828022551b4231f165eb59a0e74e3 # v5
         with:
           # Check available parameters in: https://github.com/mikepenz/action-junit-report/blob/main/action.yml
@@ -844,6 +854,16 @@ jobs:
           truncate_stack_traces: false
           resolve_ignore_classname: false
           skip_comment_without_tests: false
+
+      - name: Upload Unit Test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          # Check available parameters in: https://github.com/codecov/test-results-action/blob/main/action.yml
+          files: '**/build/**/*-results/**/TEST-*.xml'
+          flags: Android
+          name: Unit-test-results
+          token: ${{ secrets.CODECOV_TOKEN }}
 
 
   Sonar:
