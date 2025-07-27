@@ -160,7 +160,7 @@ namespace MobileRT {
     * @param oss The ostringstream to add the parameters.
     * @param parameter The parameter to add in the ostringstream.
     */
-    template <typename Type>
+    template<typename Type>
     void addToStringStream(::std::ostringstream *oss, const Type& parameter) {
         *oss << parameter;
     }
@@ -174,7 +174,7 @@ namespace MobileRT {
      * @param parameter The first parameter of the list to add.
      * @param args The rest of the arguments.
      */
-    template <typename First, typename... Args>
+    template<typename First, typename... Args>
     void addToStringStream(::std::ostringstream *oss, const First& parameter, Args &&... args) {
         addToStringStream(oss, parameter);
         addToStringStream(oss, args...);
@@ -187,7 +187,7 @@ namespace MobileRT {
      * @param args The arguments to convert to string.
      * @return A string containing all the parameters.
      */
-    template <typename... Args>
+    template<typename... Args>
     ::std::string convertToString(Args &&... args) {
         ::std::ostringstream oss {""};
         addToStringStream(&oss, args...);
@@ -385,7 +385,7 @@ namespace MobileRT {
             template<typename T, typename... Args>
             ::std::unique_ptr<T> make_unique(Args &&... args) {
                 // Use cast to avoid CodeQL false positive.
-                const ::std::size_t sizeOfArgs {sizeof...(args)};
+                const ::std::size_t sizeOfArgs {sizeof args...};
                 static_cast<void> (sizeOfArgs);
                 return ::std::make_unique<T>(::std::forward<Args>(args)...);
             }
@@ -405,7 +405,7 @@ namespace MobileRT {
              * @param str The object to be converted to std::string.
              * @return The object in std::string format.
              */
-            template <typename T> ::std::string to_string(const T& str) {
+            template<typename T> ::std::string to_string(const T& str) {
                 ::std::ostringstream stm {""};
                 stm << str ;
                 return stm.str() ;
@@ -418,7 +418,7 @@ namespace MobileRT {
              * @param str The object to be converted to std::string.
              * @return The object in std::string format.
              */
-            template <typename T> ::std::string to_string(const T& str) {
+            template<typename T> ::std::string to_string(const T& str) {
                 return ::std::to_string(str);
             }
         #endif
