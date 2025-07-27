@@ -8,7 +8,7 @@ protected:
     ::MobileRT::Scene scene {};
     ::std::unordered_map<::std::string, ::MobileRT::Texture> texturesCache {};
     const ::std::function<::std::unique_ptr<::MobileRT::Sampler>()> samplerForLights {
-        []() {return ::MobileRT::std::make_unique<Components::Constant>(0);}
+        []() {return ::MobileRT::std::make_unique<Components::Constant>(0.0F);}
     };
 
     void SetUp() final {

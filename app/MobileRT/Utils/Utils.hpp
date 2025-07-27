@@ -384,8 +384,10 @@ namespace MobileRT {
              */
             template<typename T, typename... Args>
             ::std::unique_ptr<T> make_unique(Args &&... args) {
-                // TODO: Use std::make_unique when CodeQL stops reporting a false positive "Unused local variable" with it.
-                return ::std::unique_ptr<T>(new T(::std::forward<Args>(args)...));
+                // Use cast to avoid CodeQL false positive.
+                const ::std::size_t sizeOfArgs {sizeof...(args)};
+                static_cast<void> (sizeOfArgs);
+                return ::std::make_unique<T>(::std::forward<Args>(args)...);
             }
         #endif
 
