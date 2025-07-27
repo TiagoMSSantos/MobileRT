@@ -35,7 +35,6 @@ checkAvailableVersion() {
 # * BRANCH
 # * VERSION
 buildDockerImage() {
-  prepareBinaries .;
   du -h -d 1 scripts;
 
   if echo "${1}" | grep -iq 'microsoft' || echo "${1}" | grep -iq 'windows'; then

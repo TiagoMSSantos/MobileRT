@@ -330,16 +330,6 @@ checkCodeCoverageIsNotZero() {
   fi
 }
 
-# Change the mode of all binaries/scripts to be able to be executed.
-# Parameters:
-# * Optional - path to MobileRT
-prepareBinaries() {
-  echo "Parameter: ${1}";
-  rootDir="${1:-${PWD}}";
-  echo "rootDir: ${rootDir}";
-  chmod +x "${rootDir}"/test-reporter-latest-*;
-}
-
 # Private method which kills a process that is using a file.
 _killProcessUsingFile() {
   processes_using_file=$(lsof "${1}" | tail -n +2 | tr -s ' ');

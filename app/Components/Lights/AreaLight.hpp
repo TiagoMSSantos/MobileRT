@@ -23,10 +23,7 @@ namespace Components {
     public:
         explicit AreaLight() = delete;
 
-        explicit AreaLight(
-            ::MobileRT::Material radiance,
-            ::std::unique_ptr<::MobileRT::Sampler> samplerPointLight,
-            ::MobileRT::Triangle &&triangle);
+        explicit AreaLight(::MobileRT::Material radiance, ::std::unique_ptr<::MobileRT::Sampler> samplerPointLight, ::MobileRT::Triangle &&triangle);
 
         AreaLight(const AreaLight &areaLight) = delete;
 

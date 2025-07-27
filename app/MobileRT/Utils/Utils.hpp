@@ -384,7 +384,10 @@ namespace MobileRT {
              */
             template<typename T, typename... Args>
             ::std::unique_ptr<T> make_unique(Args &&... allArgs) {
-                return ::std::make_unique<T>(::std::forward<Args>(allArgs)...);
+                auto&& argsToBuildObject {::std::make_tuple(::std::forward<Args>(allArgs)...)};
+                return ::std::apply([](auto&&... args) {
+                    return ::std::make_unique<T>(::std::forward<Args>(args)...);
+                }, argsToBuildObject);
             }
         #endif
 
