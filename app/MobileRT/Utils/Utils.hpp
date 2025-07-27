@@ -385,8 +385,7 @@ namespace MobileRT {
             template<typename T, typename... Args>
             ::std::unique_ptr<T> make_unique(Args &&... args) {
                 // Use cast to avoid CodeQL false positive.
-                const ::std::size_t sizeOfArgs {sizeof args...};
-                static_cast<void> (sizeOfArgs);
+                static_cast<void> (sizeof...(args));
                 return ::std::make_unique<T>(::std::forward<Args>(args)...);
             }
         #endif
