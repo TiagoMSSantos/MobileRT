@@ -52,7 +52,7 @@ fi
 type='release';
 recompile='no';
 android_api_version='14';
-cpu_architecture='"x86","x86_64"';
+cpu_architecture='"x86_64"';
 parallelizeBuild;
 
 printEnvironment() {

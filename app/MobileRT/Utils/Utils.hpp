@@ -166,6 +166,18 @@ namespace MobileRT {
     }
 
     /**
+     * Helper method which adds a parameter into the ostringstream.
+     *
+     * @tparam Type The type of the argument.
+     * @param oss The ostringstream to add the parameters.
+     * @param parameter The parameter to add in the ostringstream.
+     */
+    template<typename Type>
+    void addToStringStream(::std::ostringstream *oss, const ::std::unique_ptr<Type>& parameter) {
+        *oss << *parameter;
+    }
+
+    /**
      * Helper method which add a parameter into the ostringstream.
      *
      * @tparam First The type of the first argument.
@@ -384,8 +396,9 @@ namespace MobileRT {
              */
             template<typename T, typename... Args>
             ::std::unique_ptr<T> make_unique(Args &&... args) {
-                // Use cast to avoid CodeQL false positive.
-                static_cast<void> (sizeof...(args));
+                // Use log to avoid CodeQL false positive.
+                const ::std::size_t numberOfArgs {sizeof...(args)};
+                LOG_INFO("Called make_unique of ", typeid(T).name(), " with numberOfArgs: ", numberOfArgs);
                 return ::std::make_unique<T>(::std::forward<Args>(args)...);
             }
         #endif
