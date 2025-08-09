@@ -638,6 +638,10 @@ runInstrumentationTests() {
     adb shell setprop debug.asan.enabled true;
     adb shell setprop debug.asan.options detect_leaks=1:verbosity=1:shadow_mapping=1;
   fi
+
+  echo "Setting Gradle Wrapper to a version that is compatible with Android API: '${android_api_version}'".;
+  sh gradlew --parallel wrapper -DtestType="${type}" -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]";
+
   if [ "${run_test}" = 'all' ]; then
     echo 'Running all tests';
     mkdir -p app/build/reports/jacoco/jacocoTestReport;
