@@ -201,6 +201,14 @@ jobs:
       run: |
         ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager.bat --install 'cmake;4.0.2';
 
+    - name: Setting Gradle Wrapper version
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success() && matrix.language == 'java-kotlin'
+      run: |
+        android_api_version=15;
+        echo "Setting Gradle Wrapper to a version that is compatible with Android API: '${android_api_version}'".;
+        sh gradlew --parallel wrapper -DandroidApiVersion="${android_api_version}";
+
     - name: Autobuild
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
       if: success() && matrix.language == 'java-kotlin'
