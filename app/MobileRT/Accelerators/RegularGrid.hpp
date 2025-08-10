@@ -3,6 +3,7 @@
 
 #include "MobileRT/Accelerators/AABB.hpp"
 #include "MobileRT/Scene.hpp"
+#include "MobileRT/Utils/Utils.hpp"
 #include <mutex>
 #include <glm/glm.hpp>
 #include <vector>

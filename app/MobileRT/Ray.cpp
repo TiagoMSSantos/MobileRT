@@ -1,4 +1,7 @@
 #include "MobileRT/Ray.hpp"
+
+#include "MobileRT/Utils/Utils.hpp"
+
 #include <atomic>
 
 using ::MobileRT::Ray;

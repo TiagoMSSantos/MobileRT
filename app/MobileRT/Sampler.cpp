@@ -1,5 +1,7 @@
 #include "MobileRT/Sampler.hpp"
 
+#include <cmath>
+
 using ::MobileRT::Sampler;
 
 /**

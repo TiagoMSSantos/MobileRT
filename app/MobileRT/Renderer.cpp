@@ -1,4 +1,5 @@
 #include "MobileRT/Renderer.hpp"
+#include "MobileRT/Utils/Utils.hpp"
 #include <thread>
 #include <vector>
 

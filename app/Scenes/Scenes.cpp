@@ -1,8 +1,12 @@
+#include "Scenes/Scenes.hpp"
+
+#include "Components/Cameras/Orthographic.hpp"
+#include "Components/Cameras/Perspective.hpp"
 #include "Components/Lights/AreaLight.hpp"
 #include "Components/Lights/PointLight.hpp"
 #include "Components/Samplers/MersenneTwister.hpp"
 #include "Components/Samplers/StaticHaltonSeq.hpp"
-#include "Scenes/Scenes.hpp"
+#include "MobileRT/Utils/Utils.hpp"
 
 #include <glm/glm.hpp>
 

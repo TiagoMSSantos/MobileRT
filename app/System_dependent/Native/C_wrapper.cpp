@@ -145,19 +145,19 @@ static void work_thread(::MobileRT::Config &config) {
             switch (config.shader) {
                 case 1: {
                     shader_ = ::MobileRT::std::make_unique<::Components::Whitted> (
-                    ::std::move(scene), config.samplesLight, ::MobileRT::Shader::Accelerator(config.accelerator)
+                        ::std::move(scene), config.samplesLight, ::MobileRT::Shader::Accelerator(config.accelerator)
                     );
                     break;
                 }
 
                 case 2: {
                     ::std::unique_ptr<MobileRT::Sampler> samplerRussianRoulette {
-                            ::MobileRT::std::make_unique<::Components::StaticHaltonSeq> ()
+                        ::MobileRT::std::make_unique<::Components::StaticHaltonSeq> ()
                     };
 
                     shader_ = ::MobileRT::std::make_unique<::Components::PathTracer> (
-                    ::std::move(scene), ::std::move(samplerRussianRoulette), config.samplesLight,
-                    ::MobileRT::Shader::Accelerator(config.accelerator)
+                        ::std::move(scene), ::std::move(samplerRussianRoulette), config.samplesLight,
+                        ::MobileRT::Shader::Accelerator(config.accelerator)
                     );
                     break;
                 }

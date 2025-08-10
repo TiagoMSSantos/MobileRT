@@ -1,4 +1,7 @@
 #include "Components/Samplers/StaticHaltonSeq.hpp"
+
+#include "MobileRT/Utils/Utils.hpp"
+
 #include <array>
 
 using ::Components::StaticHaltonSeq;

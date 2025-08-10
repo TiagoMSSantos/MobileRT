@@ -22,6 +22,7 @@
 #include "Components/Shaders/Whitted.hpp"
 #include "MobileRT/Renderer.hpp"
 #include "MobileRT/Scene.hpp"
+#include "MobileRT/Utils/Utils.hpp"
 #include "Scenes/Scenes.hpp"
 
 #include <android/bitmap.h>

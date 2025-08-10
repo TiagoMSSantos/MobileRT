@@ -1,4 +1,7 @@
 #include "MobileRT/Shapes/Triangle.hpp"
+
+#include "MobileRT/Utils/Utils.hpp"
+
 #include <cmath>
 #include <functional>
 

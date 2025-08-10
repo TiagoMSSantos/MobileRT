@@ -3,6 +3,7 @@
 
 #include "MobileRT/Intersection.hpp"
 #include "MobileRT/Ray.hpp"
+#include "MobileRT/Utils/Utils.hpp"
 #include <vector>
 
 namespace MobileRT {

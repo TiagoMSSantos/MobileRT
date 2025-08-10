@@ -1,4 +1,7 @@
 #include "Components/Samplers/StaticPCG.hpp"
+
+#include "MobileRT/Utils/Utils.hpp"
+
 #include <array>
 #include <pcg_random.hpp>
 

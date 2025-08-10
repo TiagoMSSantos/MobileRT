@@ -4,7 +4,6 @@
 #include "MobileRT/Camera.hpp"
 #include "MobileRT/Sampler.hpp"
 #include "MobileRT/Shader.hpp"
-#include "MobileRT/Utils/Utils.hpp"
 #include <cmath>
 #include <thread>
 

@@ -4,7 +4,6 @@
 #include "MobileRT/Material.hpp"
 #include "MobileRT/Ray.hpp"
 #include "MobileRT/Utils/Constants.hpp"
-#include "MobileRT/Utils/Utils.hpp"
 #include <glm/glm.hpp>
 
 namespace MobileRT {

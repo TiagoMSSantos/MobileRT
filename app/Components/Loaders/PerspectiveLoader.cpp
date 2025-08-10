@@ -1,5 +1,6 @@
 #include "Components/Loaders/PerspectiveLoader.hpp"
 #include "Components/Cameras/Perspective.hpp"
+#include "MobileRT/Utils/Utils.hpp"
 #include <fstream>
 #include <sstream>
 #include <string>

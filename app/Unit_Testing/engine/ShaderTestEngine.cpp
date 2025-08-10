@@ -1,7 +1,9 @@
 #include "System_dependent/Native/C_wrapper.h"
-#include <gtest/gtest.h>
 
+#include "MobileRT/Utils/Utils.hpp"
 #include "MobileRT/Shader.hpp"
+
+#include <gtest/gtest.h>
 
 class ShaderTestEngine : public testing::Test {
 protected:

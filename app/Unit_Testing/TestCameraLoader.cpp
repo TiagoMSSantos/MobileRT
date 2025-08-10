@@ -1,4 +1,5 @@
 #include "Components/Loaders/PerspectiveLoader.hpp"
+#include "Components/Cameras/Perspective.hpp"
 #include <gtest/gtest.h>
 
 class TestCameraLoader : public testing::Test {

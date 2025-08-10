@@ -1,5 +1,7 @@
 #include "Components/Samplers/HaltonSeq.hpp"
 
+#include "MobileRT/Utils/Utils.hpp"
+
 using ::Components::HaltonSeq;
 
 HaltonSeq::HaltonSeq(const ::std::uint32_t width, const ::std::uint32_t height,

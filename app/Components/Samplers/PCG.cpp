@@ -1,4 +1,6 @@
 #include "Components/Samplers/PCG.hpp"
+
+#include <random>
 #include <pcg_random.hpp>
 
 using ::Components::PCG;

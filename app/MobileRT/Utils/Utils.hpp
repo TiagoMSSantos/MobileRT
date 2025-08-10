@@ -2,12 +2,17 @@
 #define MOBILERT_UTILS_UTILS_HPP
 
 #include "Utils_dependent.hpp"
+#include "MobileRT/Material.hpp"
+#include "MobileRT/Sampler.hpp"
+#include "MobileRT/Scene.hpp"
 
 #include <algorithm>
 #include <array>
 #include <boost/assert.hpp>
 #include <chrono>
 #include <cmath>
+#include <csignal>
+#include <functional>
 #include <glm/ext.hpp>
 #include <glm/glm.hpp>
 
@@ -19,8 +24,8 @@
 #include <string>
 #include <sstream>
 #include <thread>
+#include <type_traits>
 #include <vector>
-#include <csignal>
 
 #if !defined(BOOST_STACKTRACE_NOT_SUPPORTED) && !defined(_WIN32) && !defined(__APPLE__)
     // Not available in Windows nor MacOS.
@@ -149,8 +154,82 @@ namespace MobileRT {
     * @param parameter The parameter to add in the ostringstream.
     */
     template<::std::int32_t S, typename T>
-    void addToStringStream(::std::ostringstream *oss, const ::glm::vec<S, T>& parameter) {
+    void addToStringStream(::std::ostringstream *const oss, const ::glm::vec<S, T>& parameter) {
         *oss << ::glm::to_string(parameter);
+    }
+
+    /**
+     * Helper method which adds a parameter into the ostringstream.
+     *
+     * @param oss The ostringstream to add the parameters.
+     * @param parameter The parameter to add in the ostringstream.
+     */
+    [[maybe_unused]]
+    static void addToStringStream(::std::ostringstream *const oss, const ::std::string& parameter) {
+        *oss << parameter;
+    }
+
+    /**
+     * Helper method which adds a parameter into the ostringstream.
+     *
+     * @param oss The ostringstream to add the parameters.
+     * @param parameter The parameter to add in the ostringstream.
+     */
+    [[maybe_unused]]
+    static void addToStringStream(::std::ostringstream *const oss, const Material& parameter) {
+        *oss << ::glm::to_string(parameter.Le_);
+        *oss << ::glm::to_string(parameter.Kd_);
+        *oss << ::glm::to_string(parameter.Ks_);
+        *oss << ::glm::to_string(parameter.Kt_);
+        *oss << parameter.refractiveIndice_;
+    }
+
+    /**
+     * Helper method which adds a parameter into the ostringstream.
+     *
+     * @param oss The ostringstream to add the parameters.
+     * @param parameter The parameter to add in the ostringstream.
+     */
+    [[maybe_unused]]
+    static void addToStringStream(::std::ostringstream *const oss, const Sampler& parameter) {
+        *oss << parameter.sample_;
+        *oss << parameter.domainSize_;
+        *oss << parameter.samples_;
+    }
+
+    /**
+     * Helper method which adds a parameter into the ostringstream.
+     *
+     * @param oss The ostringstream to add the parameters.
+     * @param parameter The parameter to add in the ostringstream.
+     */
+    [[maybe_unused]]
+    static void addToStringStream(::std::ostringstream *const oss, const Scene& parameter) {
+        *oss << typeid(parameter).name();
+    }
+
+    /**
+     * Helper method which adds a parameter into the ostringstream.
+     *
+     * @tparam T The type of the function.
+     * @param oss The ostringstream to add the parameters.
+     * @param parameter The parameter to add in the ostringstream.
+     */
+    template<typename T>
+    void addToStringStream(::std::ostringstream *const oss, const ::std::function<T>& parameter) {
+        *oss << typeid(parameter).name();
+    }
+
+    /**
+     * Helper method which adds a parameter into the ostringstream.
+     *
+     * @tparam Type The type of the argument.
+     * @param oss The ostringstream to add the parameters.
+     * @param parameter The parameter to add in the ostringstream.
+     */
+    template<typename Type, typename ::std::enable_if<!::std::is_class<Type>::value>::type* = nullptr>
+    void addToStringStream(::std::ostringstream *const oss, const Type& parameter) {
+        *oss << parameter;
     }
 
    /**
@@ -160,9 +239,9 @@ namespace MobileRT {
     * @param oss The ostringstream to add the parameters.
     * @param parameter The parameter to add in the ostringstream.
     */
-    template<typename Type>
-    void addToStringStream(::std::ostringstream *oss, const Type& parameter) {
-        *oss << parameter;
+    template<typename Type, typename ::std::enable_if<::std::is_class<Type>::value>::type* = nullptr>
+    void addToStringStream(::std::ostringstream *const oss, const Type& parameter) {
+       *oss << typeid(parameter).name();
     }
 
     /**
@@ -173,8 +252,9 @@ namespace MobileRT {
      * @param parameter The parameter to add in the ostringstream.
      */
     template<typename Type>
-    void addToStringStream(::std::ostringstream *oss, const ::std::unique_ptr<Type>& parameter) {
-        *oss << *parameter;
+    void addToStringStream(::std::ostringstream *const oss, const ::std::unique_ptr<Type>& parameter) {
+        const Type& parameterConst {*parameter};
+        addToStringStream(oss, parameterConst);
     }
 
     /**
@@ -187,7 +267,7 @@ namespace MobileRT {
      * @param args The rest of the arguments.
      */
     template<typename First, typename... Args>
-    void addToStringStream(::std::ostringstream *oss, const First& parameter, Args &&... args) {
+    void addToStringStream(::std::ostringstream *const oss, const First& parameter, Args &&... args) {
         addToStringStream(oss, parameter);
         addToStringStream(oss, args...);
     }
@@ -397,8 +477,7 @@ namespace MobileRT {
             template<typename T, typename... Args>
             ::std::unique_ptr<T> make_unique(Args &&... args) {
                 // Use log to avoid CodeQL false positive.
-                const ::std::size_t numberOfArgs {sizeof...(args)};
-                LOG_INFO("Called make_unique of ", typeid(T).name(), " with numberOfArgs: ", numberOfArgs);
+                LOG_INFO("Called make_unique of ", typeid(T).name(), " with args: ", args...);
                 return ::std::make_unique<T>(::std::forward<Args>(args)...);
             }
         #endif

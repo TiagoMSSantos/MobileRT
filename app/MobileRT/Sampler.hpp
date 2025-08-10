@@ -2,7 +2,7 @@
 #define MOBILERT_SAMPLER_HPP
 
 #include "MobileRT/Utils/Constants.hpp"
-#include "MobileRT/Utils/Utils.hpp"
+#include <array>
 #include <atomic>
 #include <limits>
 

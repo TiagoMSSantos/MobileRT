@@ -1,5 +1,7 @@
 #include "MobileRT/Intersection.hpp"
 
+#include "MobileRT/Utils/Utils.hpp"
+
 using ::MobileRT::Intersection;
 using ::MobileRT::Ray;
 

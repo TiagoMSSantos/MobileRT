@@ -3,9 +3,7 @@
 
 #include "MobileRT/CameraLoader.hpp"
 
-#include "Components/Cameras/Perspective.hpp"
 #include <fstream>
-#include <string>
 
 namespace Components {
 

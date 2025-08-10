@@ -1,4 +1,7 @@
 #include "MobileRT/Shapes/Sphere.hpp"
+
+#include "MobileRT/Utils/Utils.hpp"
+
 #include <algorithm>
 
 using ::MobileRT::AABB;

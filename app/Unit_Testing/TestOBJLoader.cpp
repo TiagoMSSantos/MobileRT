@@ -1,5 +1,6 @@
 #include "Components/Loaders/OBJLoader.hpp"
 #include "Components/Samplers/Constant.hpp"
+#include "MobileRT/Utils/Utils.hpp"
 #include <gtest/gtest.h>
 
 class TestOBJLoader : public testing::Test {

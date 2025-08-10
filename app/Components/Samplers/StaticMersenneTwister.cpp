@@ -1,4 +1,7 @@
 #include "Components/Samplers/StaticMersenneTwister.hpp"
+
+#include "MobileRT/Utils/Utils.hpp"
+
 #include <array>
 
 using ::Components::StaticMersenneTwister;

@@ -1,5 +1,7 @@
 #include "MobileRT/Shapes/Plane.hpp"
 
+#include "MobileRT/Utils/Utils.hpp"
+
 using ::MobileRT::AABB;
 using ::MobileRT::Plane;
 using ::MobileRT::Intersection;

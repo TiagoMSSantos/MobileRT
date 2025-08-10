@@ -4,7 +4,6 @@
 #include "MobileRT/Light.hpp"
 #include "MobileRT/Sampler.hpp"
 #include "MobileRT/Shapes/Triangle.hpp"
-#include "MobileRT/Utils/Utils.hpp"
 #include <memory>
 
 namespace Components {

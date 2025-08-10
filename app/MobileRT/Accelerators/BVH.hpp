@@ -4,6 +4,7 @@
 #include "MobileRT/Accelerators/AABB.hpp"
 #include "MobileRT/Intersection.hpp"
 #include "MobileRT/Scene.hpp"
+#include "MobileRT/Utils/Utils.hpp"
 #include <algorithm>
 #include <array>
 #include <boost/sort/spreadsort/spreadsort.hpp>

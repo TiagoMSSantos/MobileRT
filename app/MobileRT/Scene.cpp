@@ -1,5 +1,7 @@
 #include "MobileRT/Scene.hpp"
 
+#include "MobileRT/Utils/Utils.hpp"
+
 using ::MobileRT::AABB;
 using ::MobileRT::Scene;
 using ::MobileRT::Plane;

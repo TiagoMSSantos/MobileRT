@@ -1,5 +1,6 @@
 #include "Components/Loaders/OBJLoader.hpp"
 #include "Components/Lights/AreaLight.hpp"
+#include "MobileRT/Utils/Utils.hpp"
 #include <cstring>
 #include <fstream>
 #include <thread>
