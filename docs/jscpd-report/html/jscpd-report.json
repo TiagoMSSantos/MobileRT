@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2025-08-10T11:30:46.731Z",
+    "detectionDate": "2025-08-12T06:51:30.303Z",
     "formats": {
       "java": {
         "sources": {
@@ -2609,8 +2609,8 @@
             "newClones": 0
           },
           "app/MobileRT/Utils/Utils.hpp": {
-            "lines": 467,
-            "tokens": 2832,
+            "lines": 444,
+            "tokens": 2699,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -3138,13 +3138,13 @@
           }
         },
         "total": {
-          "lines": 3516,
-          "tokens": 26047,
+          "lines": 3493,
+          "tokens": 25914,
           "sources": 47,
           "clones": 3,
           "duplicatedLines": 29,
           "duplicatedTokens": 314,
-          "percentage": 0.82,
+          "percentage": 0.83,
           "percentageTokens": 1.21,
           "newDuplicatedLines": 0,
           "newClones": 0
@@ -3272,8 +3272,8 @@
       }
     },
     "total": {
-      "lines": 29741,
-      "tokens": 230025,
+      "lines": 29718,
+      "tokens": 229892,
       "sources": 259,
       "clones": 113,
       "duplicatedLines": 1361,
