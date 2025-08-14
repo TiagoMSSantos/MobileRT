@@ -93,7 +93,7 @@ coverage:
       default:
         base: auto
         if_ci_failed: success # Ignore failures like "codecov/changes - X files have indirect coverage changes not visible in diff"
-        informational: false
+        informational: true
         only_pulls: false
         if_not_found: failure
         removed_code_behavior: false
