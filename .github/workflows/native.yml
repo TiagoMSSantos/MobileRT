@@ -6,6 +6,7 @@ on:
       code-coverage-only:
         type: boolean
         required: false
+        description: Code coverage only
   push:
     paths-ignore:
       - '*'
