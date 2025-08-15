@@ -26,7 +26,7 @@ coverage:
       flag_coverage_not_uploaded_behavior: include
     project:
       Android:
-        target: 72%
+        target: 79%
         threshold: 1%
         base: auto
         if_ci_failed: error
@@ -37,6 +37,7 @@ coverage:
         paths:
           - app/**/*.java
           - app/**/*.kt
+          - "!app/System_dependent/**"
           - app/System_dependent/Android_JNI/**
       Native:
         target: 88%
@@ -133,6 +134,7 @@ component_management:
       paths:
         - app/**/*.java
         - app/**/*.kt
+        - "!app/System_dependent/**"
         - app/System_dependent/Android_JNI/**
     - component_id: module_native
       name: Native
