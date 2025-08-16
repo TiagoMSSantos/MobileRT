@@ -29,7 +29,6 @@ import java8.util.Optional;
 import kotlin.Pair;
 import puscas.mobilertapp.configs.Config;
 import puscas.mobilertapp.configs.ConfigResolution;
-import puscas.mobilertapp.constants.ConstantsError;
 import puscas.mobilertapp.constants.ConstantsMethods;
 import puscas.mobilertapp.constants.ConstantsRenderer;
 import puscas.mobilertapp.constants.ConstantsToast;
@@ -176,10 +175,7 @@ public final class DrawView extends GLSurfaceView {
         while (!(context instanceof Activity) && context instanceof ContextWrapper) {
             context = ((ContextWrapper) context).getBaseContext();
         }
-        if (context instanceof Activity) {
-            return (Activity) context;
-        }
-        throw new IllegalStateException(ConstantsError.UNABLE_TO_FIND_AN_ACTIVITY + context);
+        return (Activity) context;
     }
 
     /**
@@ -293,7 +289,8 @@ public final class DrawView extends GLSurfaceView {
      * Waits for the result of the last task submitted to the {@link ExecutorService}.
      */
     void waitLastTask() {
-        logger.info("waitLastTask");
+        final String methodName = "DrawView#waitLastTask";
+        logger.info(methodName);
 
         while (this.lastTask != null && ((ThreadPoolExecutor) this.executorService).getCompletedTaskCount() <= this.lastTask.getFirst()) {
             logger.info("Waiting for last task to finish create the renderer.");
@@ -306,12 +303,12 @@ public final class DrawView extends GLSurfaceView {
                 try {
                     task.getSecond().get(1L, TimeUnit.DAYS);
                 } catch (final ExecutionException | TimeoutException | RuntimeException ex) {
-                    UtilsLogging.logException(ex, "DrawView#waitLastTask");
+                    UtilsLogging.logException(ex, methodName);
                 } catch (final InterruptedException ex) {
-                    UtilsLogging.logException(ex, "DrawView#waitLastTask");
+                    UtilsLogging.logException(ex, methodName);
                     Thread.currentThread().interrupt();
                 } finally {
-                    Utils.handleInterruption("DrawView#waitLastTask");
+                    Utils.handleInterruption(methodName);
                 }
             });
 
@@ -350,9 +347,10 @@ public final class DrawView extends GLSurfaceView {
 
     @Override
     public void onPause() {
-        logger.info("onPause");
+        final String methodName = "onPause";
+        logger.info(methodName);
         super.onPause();
-        logger.info("onPause");
+        logger.info(methodName);
 
         final Activity activity = getActivity();
         this.changingConfigs = activity.isChangingConfigurations();
@@ -360,7 +358,7 @@ public final class DrawView extends GLSurfaceView {
         stopDrawing();
         setVisibility(View.GONE);
 
-        final String message = "onPause" + ConstantsMethods.FINISHED;
+        final String message = methodName + ConstantsMethods.FINISHED;
         logger.info(message);
     }
 

@@ -69,7 +69,6 @@
 **/.jscpd.json
 **/.project
 **/.simplecov
-**/build-wrapper-linux-x86-64
 **/*.gradle
 **/sonar-project.properties
 **/deploy

@@ -106,8 +106,7 @@ public final class DrawViewTest {
         EasyMock.replay(drawViewMocked, contextMocked, baseContextMocked);
         Assertions.assertThatThrownBy(drawViewMocked::getActivity)
             .as("The call to DrawView#getActivity method")
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessageContaining(ConstantsError.UNABLE_TO_FIND_AN_ACTIVITY);
+            .isInstanceOf(ClassCastException.class);
     }
 
     /**

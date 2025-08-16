@@ -5,7 +5,7 @@ import org.junit.Test;
 import java.util.concurrent.TimeoutException;
 
 import puscas.mobilertapp.AbstractTest;
-import puscas.mobilertapp.ConstantsAndroidTests;
+import puscas.mobilertapp.ConstantsAndroid;
 import puscas.mobilertapp.MainActivity;
 import puscas.mobilertapp.constants.Accelerator;
 import puscas.mobilertapp.constants.Scene;
@@ -35,9 +35,9 @@ public final class AcceleratorTest extends AbstractTest {
     @Test
     public void testRenderSceneWithNaive() throws TimeoutException {
         mockFileManagerReply(false,
-            ConstantsAndroidTests.CORNELL_BOX_WATER_OBJ,
-            ConstantsAndroidTests.CORNELL_BOX_WATER_MTL,
-            ConstantsAndroidTests.CORNELL_BOX_WATER_CAM
+            ConstantsAndroid.CORNELL_BOX_WATER_OBJ,
+            ConstantsAndroid.CORNELL_BOX_WATER_MTL,
+            ConstantsAndroid.CORNELL_BOX_WATER_CAM
         );
 
         assertRenderScene(Scene.OBJ, Shader.WHITTED, Accelerator.NAIVE, 1, 1, false, false);
@@ -51,9 +51,9 @@ public final class AcceleratorTest extends AbstractTest {
     @Test
     public void testRenderSceneWithRegularGrid() throws TimeoutException {
         mockFileManagerReply(false,
-            ConstantsAndroidTests.CORNELL_BOX_WATER_OBJ,
-            ConstantsAndroidTests.CORNELL_BOX_WATER_MTL,
-            ConstantsAndroidTests.CORNELL_BOX_WATER_CAM
+            ConstantsAndroid.CORNELL_BOX_WATER_OBJ,
+            ConstantsAndroid.CORNELL_BOX_WATER_MTL,
+            ConstantsAndroid.CORNELL_BOX_WATER_CAM
         );
 
         assertRenderScene(Scene.OBJ, Shader.WHITTED, Accelerator.REG_GRID, 1, 1, false, false);
@@ -67,9 +67,9 @@ public final class AcceleratorTest extends AbstractTest {
     @Test
     public void testRenderSceneWithBVH() throws TimeoutException {
         mockFileManagerReply(false,
-            ConstantsAndroidTests.CORNELL_BOX_WATER_OBJ,
-            ConstantsAndroidTests.CORNELL_BOX_WATER_MTL,
-            ConstantsAndroidTests.CORNELL_BOX_WATER_CAM
+            ConstantsAndroid.CORNELL_BOX_WATER_OBJ,
+            ConstantsAndroid.CORNELL_BOX_WATER_MTL,
+            ConstantsAndroid.CORNELL_BOX_WATER_CAM
         );
 
         assertRenderScene(Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 1, 1, false, false);

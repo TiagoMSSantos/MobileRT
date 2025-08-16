@@ -3,12 +3,12 @@ package puscas.mobilertapp;
 /**
  * Helper class which contains helper constants for the tests.
  */
-public final class ConstantsTests {
+public final class Constants {
 
     /**
      * Private constructor to avoid creating instances.
      */
-    private ConstantsTests() {
+    private Constants() {
         throw new UnsupportedOperationException("Not implemented.");
     }
 

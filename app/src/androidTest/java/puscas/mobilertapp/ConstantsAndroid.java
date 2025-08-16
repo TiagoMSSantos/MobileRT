@@ -7,12 +7,12 @@ import java.io.File;
 /**
  * Helper class which contains helper constants for the tests.
  */
-public final class ConstantsAndroidTests {
+public final class ConstantsAndroid {
 
     /**
      * Private constructor to avoid creating instances.
      */
-    private ConstantsAndroidTests() {
+    private ConstantsAndroid() {
         throw new UnsupportedOperationException("Not implemented.");
     }
 

@@ -23,7 +23,7 @@ public final class CustomNumberPickerTest {
     /**
      * The partial mocked {@link CustomNumberPicker} to be used by the tests.
      */
-    final private ViewManager targetCustomNumberPicker = new CustomNumberPicker(EasyMock.mock(Context.class), EasyMock.mock(AttributeSet.class));
+    private final ViewManager targetCustomNumberPicker = new CustomNumberPicker(EasyMock.mock(Context.class), EasyMock.mock(AttributeSet.class));
 
     /**
      * Tests that the {@link CustomNumberPicker#addView(View, ViewGroup.LayoutParams)}

@@ -17,7 +17,7 @@ import java.lang.reflect.Field;
 import java.util.logging.Logger;
 
 import java8.util.J8Arrays;
-import puscas.mobilertapp.ConstantsAndroidTests;
+import puscas.mobilertapp.ConstantsAndroid;
 import puscas.mobilertapp.DrawView;
 import puscas.mobilertapp.MainRenderer;
 import puscas.mobilertapp.R;
@@ -188,7 +188,7 @@ public final class UtilsT {
                 rethrowException(exception);
                 final Button renderButton = view.findViewById(R.id.renderButton);
                 Assert.assertEquals(
-                    ConstantsAndroidTests.BUTTON_MESSAGE,
+                    ConstantsAndroid.BUTTON_MESSAGE,
                     expectedText,
                     renderButton.getText().toString()
                 );

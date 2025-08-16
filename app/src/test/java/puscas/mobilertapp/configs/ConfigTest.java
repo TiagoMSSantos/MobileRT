@@ -64,11 +64,11 @@ public final class ConfigTest {
 
         Assertions.assertThat(config.getThreads())
             .as("Number of threads not the expected value.")
-            .isEqualTo(0);
+            .isZero();
 
         Assertions.assertThat(config.getRasterize())
             .as("Rasterize field not the expected value.")
-            .isEqualTo(false);
+            .isFalse();
     }
 
     /**

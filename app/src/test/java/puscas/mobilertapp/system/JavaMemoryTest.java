@@ -1,6 +1,6 @@
 package puscas.mobilertapp.system;
 
-import static puscas.mobilertapp.ConstantsTests.NOT_ENOUGH_MEMORY_MESSAGE;
+import static puscas.mobilertapp.Constants.NOT_ENOUGH_MEMORY_MESSAGE;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Test;

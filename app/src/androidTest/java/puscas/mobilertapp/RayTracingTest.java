@@ -77,9 +77,9 @@ public final class RayTracingTest extends AbstractTest {
     @Test
     public void testRenderSceneFromInternalStorageOBJ() throws TimeoutException {
         mockFileManagerReply(false,
-            ConstantsAndroidTests.CORNELL_BOX_WATER_OBJ,
-            ConstantsAndroidTests.CORNELL_BOX_WATER_MTL,
-            ConstantsAndroidTests.CORNELL_BOX_WATER_CAM
+            ConstantsAndroid.CORNELL_BOX_WATER_OBJ,
+            ConstantsAndroid.CORNELL_BOX_WATER_MTL,
+            ConstantsAndroid.CORNELL_BOX_WATER_CAM
         );
 
         assertRenderScene(Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 1, 1, false, false);

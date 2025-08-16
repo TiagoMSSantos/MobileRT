@@ -1,6 +1,6 @@
 package puscas.mobilertapp;
 
-import static puscas.mobilertapp.ConstantsAndroidTests.BUTTON_MESSAGE;
+import static puscas.mobilertapp.ConstantsAndroid.BUTTON_MESSAGE;
 
 import android.view.InputDevice;
 import android.view.MotionEvent;

@@ -1,6 +1,6 @@
 package puscas.mobilertapp.system;
 
-import static puscas.mobilertapp.ConstantsAndroidTests.NOT_ENOUGH_MEMORY_MESSAGE;
+import static puscas.mobilertapp.ConstantsAndroid.NOT_ENOUGH_MEMORY_MESSAGE;
 
 import android.os.Debug;
 

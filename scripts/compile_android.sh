@@ -95,16 +95,6 @@ clearAllBuildFiles() {
 }
 
 build() {
-  build_wrapper="";
-  if echo "${type}" | grep -iq 'debug' && uname -a | grep -iq 'linux'; then
-    # Download Build Wrapper from: https://docs.sonarqube.org/latest/analyzing-source-code/languages/c-family/
-    # * https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip
-    # * https://sonarcloud.io/static/cpp/build-wrapper-macosx-x86.zip
-    # * https://sonarcloud.io/static/cpp/build-wrapper-win-x86.zip
-    # shellcheck disable=SC2034
-    build_wrapper="./build-wrapper-linux-x86-64 --out-dir build_wrapper_output_directory";
-  fi
-
   echo 'Increasing ADB timeout to 10 minutes.';
   export ADB_INSTALL_TIMEOUT=60000;
 

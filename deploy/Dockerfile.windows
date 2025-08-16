@@ -184,7 +184,6 @@ RUN \
   rm -rfv Gemfile && \
   rm -rfv Makefile && \
   rm -rfv build && \
-  rm -rfv build-wrapper-linux-x86-64 && \
   rm -rfv *.gradle && \
   rm -rfv *.properties && \
   rm -rfv test-reporter-latest-* && \

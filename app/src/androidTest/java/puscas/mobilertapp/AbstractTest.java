@@ -12,7 +12,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
-import android.os.ParcelFileDescriptor;
 import android.widget.Button;
 
 import androidx.annotation.CallSuper;
@@ -46,10 +45,7 @@ import org.junit.rules.TestWatcher;
 import org.junit.rules.Timeout;
 import org.junit.runner.Description;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.file.FileSystem;
 import java.util.ArrayDeque;
 import java.util.Collections;
@@ -181,7 +177,7 @@ public abstract class AbstractTest {
      * For example, this is useful to store temporarily {@link Runnable}s of methods that will close
      * a resource at the end of the test.
      */
-    final private Deque<Runnable> closeActions = new ArrayDeque<>();
+    private final Deque<Runnable> closeActions = new ArrayDeque<>();
 
     /**
      * Setup method called before all tests.
@@ -451,7 +447,7 @@ public abstract class AbstractTest {
      * tested application. This is done to avoid duplicated code.
      */
     protected void mockFileManagerReply(final boolean externalSdcard, @NonNull final String... filesPath) {
-        logger.info(ConstantsAndroidTests.MOCK_FILE_MANAGER_REPLY);
+        logger.info(ConstantsAndroid.MOCK_FILE_MANAGER_REPLY);
         final Intent expectedIntent = MainActivity.createIntentToLoadFiles();
         final Intent resultIntent = MainActivity.createIntentToLoadFiles();
         final String storagePath = externalSdcard
@@ -475,56 +471,5 @@ public abstract class AbstractTest {
         this.closeActions.add(() ->
             Intents.intended(IntentMatchers.filterEquals(expectedIntent), VerificationModes.times(1))
         );
-    }
-
-    /**
-     * Click on device to dismiss any "Application Not Responding" (ANR) system dialog that might have appeared.
-     */
-    private static void dismissANRSystemDialog() {
-        executeShellCommand("input keyevent 82");
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            executeShellCommand("input tap 800 400");
-        }
-    }
-
-    /**
-     * Execute a shell command on Android device.
-     *
-     * @param shellCommand The shell command to execute.
-     */
-    private static void executeShellCommand(final String shellCommand) {
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                final ParcelFileDescriptor parcelFileDescriptor = InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand(shellCommand);
-                parcelFileDescriptor.checkError();
-            } else {
-                final Process process = Runtime.getRuntime().exec(shellCommand.split(" "));
-                final BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-                int read;
-                final char[] buffer = new char[4096];
-                final StringBuilder output = new StringBuilder();
-                while ((read = reader.read(buffer)) > 0) {
-                    output.append(buffer, 0, read);
-                }
-                reader.close();
-                process.waitFor();
-                if (process.exitValue() != 0) {
-                    final BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-                    int readError;
-                    final char[] bufferError = new char[4096];
-                    final StringBuilder outputError = new StringBuilder();
-                    while ((readError = errorReader.read(bufferError)) > 0) {
-                        outputError.append(bufferError, 0, readError);
-                    }
-                    errorReader.close();
-                    throw new FailureException("Command '" + shellCommand + "' failed with: " + outputError);
-                }
-            }
-        } catch (final IOException ex) {
-            throw new RuntimeException(ex);
-        } catch (final InterruptedException ex) {
-            Thread.currentThread().interrupt();
-            throw new RuntimeException(ex);
-        }
     }
 }

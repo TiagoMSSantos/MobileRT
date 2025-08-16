@@ -5,7 +5,7 @@ import org.junit.Test;
 import java.util.concurrent.TimeoutException;
 
 import puscas.mobilertapp.AbstractTest;
-import puscas.mobilertapp.ConstantsAndroidTests;
+import puscas.mobilertapp.ConstantsAndroid;
 import puscas.mobilertapp.MainActivity;
 import puscas.mobilertapp.constants.Accelerator;
 import puscas.mobilertapp.constants.Scene;
@@ -24,9 +24,9 @@ public final class ShaderTest extends AbstractTest {
     @Test
     public void testRenderSceneWithNoShadows() throws TimeoutException {
         mockFileManagerReply(false,
-            ConstantsAndroidTests.CORNELL_BOX_WATER_OBJ,
-            ConstantsAndroidTests.CORNELL_BOX_WATER_MTL,
-            ConstantsAndroidTests.CORNELL_BOX_WATER_CAM
+            ConstantsAndroid.CORNELL_BOX_WATER_OBJ,
+            ConstantsAndroid.CORNELL_BOX_WATER_MTL,
+            ConstantsAndroid.CORNELL_BOX_WATER_CAM
         );
 
         assertRenderScene(Scene.OBJ, Shader.NO_SHADOWS, Accelerator.BVH, 1, 1, false, false);
@@ -40,9 +40,9 @@ public final class ShaderTest extends AbstractTest {
     @Test
     public void testRenderSceneWithWhitted() throws TimeoutException {
         mockFileManagerReply(false,
-            ConstantsAndroidTests.CORNELL_BOX_WATER_OBJ,
-            ConstantsAndroidTests.CORNELL_BOX_WATER_MTL,
-            ConstantsAndroidTests.CORNELL_BOX_WATER_CAM
+            ConstantsAndroid.CORNELL_BOX_WATER_OBJ,
+            ConstantsAndroid.CORNELL_BOX_WATER_MTL,
+            ConstantsAndroid.CORNELL_BOX_WATER_CAM
         );
 
         assertRenderScene(Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 1, 1, false, false);
@@ -56,9 +56,9 @@ public final class ShaderTest extends AbstractTest {
     @Test
     public void testRenderSceneWithPathTracing() throws TimeoutException {
         mockFileManagerReply(false,
-            ConstantsAndroidTests.CORNELL_BOX_WATER_OBJ,
-            ConstantsAndroidTests.CORNELL_BOX_WATER_MTL,
-            ConstantsAndroidTests.CORNELL_BOX_WATER_CAM
+            ConstantsAndroid.CORNELL_BOX_WATER_OBJ,
+            ConstantsAndroid.CORNELL_BOX_WATER_MTL,
+            ConstantsAndroid.CORNELL_BOX_WATER_CAM
         );
 
         assertRenderScene(Scene.OBJ, Shader.PATH_TRACING, Accelerator.BVH, 1, 1, false, false);
@@ -72,9 +72,9 @@ public final class ShaderTest extends AbstractTest {
     @Test
     public void testRenderSceneWithDepthMap() throws TimeoutException {
         mockFileManagerReply(false,
-            ConstantsAndroidTests.CORNELL_BOX_WATER_OBJ,
-            ConstantsAndroidTests.CORNELL_BOX_WATER_MTL,
-            ConstantsAndroidTests.CORNELL_BOX_WATER_CAM
+            ConstantsAndroid.CORNELL_BOX_WATER_OBJ,
+            ConstantsAndroid.CORNELL_BOX_WATER_MTL,
+            ConstantsAndroid.CORNELL_BOX_WATER_CAM
         );
 
         assertRenderScene(Scene.OBJ, Shader.DEPTH_MAP, Accelerator.BVH, 1, 1, false, false);
@@ -88,9 +88,9 @@ public final class ShaderTest extends AbstractTest {
     @Test
     public void testRenderSceneWithDiffuse() throws TimeoutException {
         mockFileManagerReply(false,
-            ConstantsAndroidTests.CORNELL_BOX_WATER_OBJ,
-            ConstantsAndroidTests.CORNELL_BOX_WATER_MTL,
-            ConstantsAndroidTests.CORNELL_BOX_WATER_CAM
+            ConstantsAndroid.CORNELL_BOX_WATER_OBJ,
+            ConstantsAndroid.CORNELL_BOX_WATER_MTL,
+            ConstantsAndroid.CORNELL_BOX_WATER_CAM
         );
 
         assertRenderScene(Scene.OBJ, Shader.DIFFUSE, Accelerator.BVH, 1, 1, false, false);
