@@ -1,25 +1,22 @@
 package puscas.mobilertapp.configs
 
-import android.graphics.Bitmap
 import android.widget.Button
 import android.widget.TextView
-import puscas.mobilertapp.RenderTask
-import puscas.mobilertapp.constants.State
 
 /**
- * The configurator for the [RenderTask].
+ * The configurator for the [puscas.mobilertapp.RenderTask].
  *
- * @property requestRender  A [Runnable] to the [puscas.mobilertapp.DrawView.requestRender] method which is called in the [RenderTask.timer].
- * @property finishRender   A [Runnable] method which stops the Ray Tracer engine and sets the [RenderTask.stateT] to [State.IDLE].
- * @property updateInterval The interval in `TimeUnit.MILLISECONDS` between each call to the [RenderTask.timer].
+ * @property requestRender  A [Runnable] to the [puscas.mobilertapp.DrawView.requestRender] method which is called in the [puscas.mobilertapp.RenderTask.timer].
+ * @property finishRender   A [Runnable] method which stops the Ray Tracer engine and sets the [puscas.mobilertapp.RenderTask.stateT] to [puscas.mobilertapp.constants.State.IDLE].
+ * @property updateInterval The interval in `TimeUnit.MILLISECONDS` between each call to the [puscas.mobilertapp.RenderTask.timer].
  * @property numLights      The number of lights in the scene.
- * @property resolution     The resolution of the [Bitmap] where the Ray Tracer engine will render the scene.
+ * @property resolution     The resolution of the [android.graphics.Bitmap] where the Ray Tracer engine will render the scene.
  * @property samples        The number of samples to be used by the Ray Tracing engine.
  * @property textView       The [TextView] which will output the debug information about the Ray Tracer engine.
  * @property numThreads     The number of threads to be used by the Ray Tracer engine.
  * @property numPrimitives  The number of primitives in the scene.
  * @property buttonRender   The [Button] which can start and stop the Ray Tracer engine.
- *   It is important to let the [RenderTask] update its state after the rendering process.
+ *   It is important to let the [puscas.mobilertapp.RenderTask] update its state after the rendering process.
  */
 @ConsistentCopyVisibility
 data class ConfigRenderTask private constructor(

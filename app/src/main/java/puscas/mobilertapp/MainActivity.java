@@ -81,6 +81,16 @@ public final class MainActivity extends Activity {
     private static final int REQUIRED_OPENGL_VERSION = 0x20000;
 
     /**
+     * The name of the folder for external SD card in Android.
+     */
+    private static final String SD_CARD_FOLDER = "sdcard";
+
+    /**
+     * The name of the folder for the storages in Android.
+     */
+    private static final String STORAGE_FOLDER = "storage";
+
+    /**
      * The current active instance of {@link MainActivity}.
      * <p>
      * This is probably a very bad idea but got not better solution to simplify the showing of
@@ -647,16 +657,14 @@ public final class MainActivity extends Activity {
         final String filePath = StreamSupport.stream(uri.getPathSegments())
             .skip(1L)
             .reduce("", (accumulator, segment) -> accumulator + ConstantsUI.FILE_SEPARATOR + segment);
-        final String sdCardFolder = "sdcard";
-        final String storageFolder = "storage";
         final boolean externalSDCardPath =
-                uri.getPathSegments().get(0).matches(sdCardFolder)
+                uri.getPathSegments().get(0).matches(SD_CARD_FOLDER)
             || (uri.getPathSegments().size() > 1 && uri.getPathSegments().get(1).matches("^([A-Za-z0-9]){4}-([A-Za-z0-9]){4}:.+$"))
             || (uri.getPathSegments().size() > 1 && uri.getPathSegments().get(1).matches("^([A-Za-z0-9]){4}-([A-Za-z0-9]){4}$"))
             || (uri.getPathSegments().size() > 2 && uri.getPathSegments().get(2).matches("^([A-Za-z0-9]){4}-([A-Za-z0-9]){4}$"))
-            || (uri.getPathSegments().get(0).matches("^mnt$") && uri.getPathSegments().get(1).matches("^" + sdCardFolder + "$"))
-            || (uri.getPathSegments().get(0).matches("^" + storageFolder + "$") && uri.getPathSegments().get(1).matches("^" + sdCardFolder + "$"))
-            || (uri.getPathSegments().get(0).matches("^" + storageFolder + "$") && uri.getPathSegments().get(1).matches("^emulated$") && uri.getPathSegments().get(2).matches("^0$"))
+            || (uri.getPathSegments().get(0).matches("^mnt$") && uri.getPathSegments().get(1).matches("^" + SD_CARD_FOLDER + "$"))
+            || (uri.getPathSegments().get(0).matches("^" + STORAGE_FOLDER + "$") && uri.getPathSegments().get(1).matches("^" + SD_CARD_FOLDER + "$"))
+            || (uri.getPathSegments().get(0).matches("^" + STORAGE_FOLDER + "$") && uri.getPathSegments().get(1).matches("^emulated$") && uri.getPathSegments().get(2).matches("^0$"))
             || filePath.contains(Environment.getExternalStorageDirectory().getAbsolutePath());
 
         final String devicePath;
@@ -675,7 +683,7 @@ public final class MainActivity extends Activity {
             return cleanedFilePath;
         }
         if (cleanedFilePath.startsWith(ConstantsUI.FILE_SEPARATOR + "emulated" + ConstantsUI.FILE_SEPARATOR + "0" + ConstantsUI.FILE_SEPARATOR)) {
-            return ConstantsUI.FILE_SEPARATOR + storageFolder + cleanedFilePath;
+            return ConstantsUI.FILE_SEPARATOR + STORAGE_FOLDER + cleanedFilePath;
         }
 
         return devicePath + cleanedFilePath;

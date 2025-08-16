@@ -108,19 +108,15 @@ public final class UtilsContext {
      *
      * @param context The {@link Context} of the Android system.
      * @return The {@link File path} to the SD card.
-     * @implNote This method still uses the deprecated method
+     * @implNote This method still uses the old method
      *     {@link Environment#getExternalStorageDirectory()} in order to be
      *     compatible with Android 4.1.
      */
     public static File getSdCardFilePath(@NonNull final Context context) {
-        // The new method to get the SD card path.
-        // This method returns an array of File with null (so is not working properly yet).
-        // This is why it is still needed to use the old (deprecated) approach to guarantee
-        // compatibility with most Androids.
         return Optional.of(ContextCompat.getExternalFilesDirs(context, null))
             .map(dirs -> dirs.length > 1 ? dirs[1] : dirs[0])
             .orElseGet(() -> {
-                logger.info("Using the old (deprecated) approach to retrieve the SD Card path.");
+                logger.info("Using the old approach to retrieve the SD Card path.");
                 return Environment.getExternalStorageDirectory();
             });
     }
