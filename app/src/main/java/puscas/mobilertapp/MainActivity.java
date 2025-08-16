@@ -704,7 +704,7 @@ public final class MainActivity extends Activity {
             ? ConstantsUI.FILE_SEPARATOR + ConstantsUI.FILE_SEPARATOR
             : ConstantsUI.FILE_SEPARATOR;
         String cleanedFilePath = startFilePath.replace(ConstantsUI.PATH_SEPARATOR, ConstantsUI.FILE_SEPARATOR);
-        cleanedFilePath = cleanedFilePath.replaceFirst("^" + escapedFileSeparator + "sdcard" + escapedFileSeparator, escapedFileSeparator);
+        cleanedFilePath = cleanedFilePath.replaceFirst("^" + escapedFileSeparator + SD_CARD_FOLDER + escapedFileSeparator, escapedFileSeparator);
         cleanedFilePath = cleanedFilePath.replaceFirst("^" + escapedFileSeparator + "([A-Za-z0-9]){4}-([A-Za-z0-9]){4}" + escapedFileSeparator, escapedFileSeparator);
         cleanedFilePath = cleanedFilePath.replaceFirst("^" + escapedFileSeparator + "local" + escapedFileSeparator + "tmp" + escapedFileSeparator, escapedFileSeparator);
         return cleanedFilePath;
@@ -725,10 +725,10 @@ public final class MainActivity extends Activity {
             ? ConstantsUI.FILE_SEPARATOR + ConstantsUI.FILE_SEPARATOR
             : ConstantsUI.FILE_SEPARATOR;
         boolean externalStorage1 = path.matches("^" + escapedFileSeparator + "document" + escapedFileSeparator + "([A-Za-z0-9]){4}-([A-Za-z0-9]){4}:.+$");
-        boolean externalStorage2 = path.matches("^" + escapedFileSeparator + "mnt" + escapedFileSeparator + "sdcard" + escapedFileSeparator + ".+$");
-        boolean externalStorage3 = path.matches("^" + escapedFileSeparator + "storage" + escapedFileSeparator + "emulated" + escapedFileSeparator + "0" + escapedFileSeparator +".+$");
-        boolean externalStorage4 = path.matches("^" + escapedFileSeparator + "storage" + escapedFileSeparator + "([A-Za-z0-9]){4}-([A-Za-z0-9]){4}" + escapedFileSeparator + ".+$");
-        boolean externalStorage5 = path.matches("^" + escapedFileSeparator + "storage" + escapedFileSeparator + "sdcard" + escapedFileSeparator + ".+$");
+        boolean externalStorage2 = path.matches("^" + escapedFileSeparator + "mnt" + escapedFileSeparator + SD_CARD_FOLDER + escapedFileSeparator + ".+$");
+        boolean externalStorage3 = path.matches("^" + escapedFileSeparator + STORAGE_FOLDER + escapedFileSeparator + "emulated" + escapedFileSeparator + "0" + escapedFileSeparator +".+$");
+        boolean externalStorage4 = path.matches("^" + escapedFileSeparator + STORAGE_FOLDER + escapedFileSeparator + "([A-Za-z0-9]){4}-([A-Za-z0-9]){4}" + escapedFileSeparator + ".+$");
+        boolean externalStorage5 = path.matches("^" + escapedFileSeparator + STORAGE_FOLDER + escapedFileSeparator + SD_CARD_FOLDER + escapedFileSeparator + ".+$");
         boolean internalStorage1 = path.matches("^" + escapedFileSeparator + "data" + escapedFileSeparator + "local" + escapedFileSeparator + "tmp" + escapedFileSeparator + ".+$");
         boolean internalStorage2 = path.matches("^" + escapedFileSeparator + "data" + escapedFileSeparator + "data" + escapedFileSeparator + "puscas.mobilertapp" + escapedFileSeparator + ".+$");
         boolean internalStorage3 = path.matches("^" + escapedFileSeparator + "data" + escapedFileSeparator + "user" + escapedFileSeparator + "0" + escapedFileSeparator + "puscas.mobilertapp" + escapedFileSeparator + ".+$");
