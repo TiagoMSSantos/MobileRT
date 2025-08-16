@@ -136,6 +136,9 @@ component_management:
         - app/**/*.kt
         - "!app/System_dependent/**"
         - app/System_dependent/Android_JNI/**
+      statuses:
+        - type: project
+          target: 79%
     - component_id: module_native
       name: Native
       paths:
@@ -144,8 +147,14 @@ component_management:
         - app/**/*.h
         - "!app/System_dependent/**"
         - app/System_dependent/Native/**
+      statuses:
+        - type: project
+          target: 88%
     - component_id: module_shell_scripts
       name: Shell-scripts
       paths:
         - scripts/*.sh
         - scripts/**/*.sh
+      statuses:
+        - type: project
+          target: 5%
