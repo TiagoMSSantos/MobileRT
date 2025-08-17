@@ -92,7 +92,7 @@ public final class MyEglContextFactory implements GLSurfaceView.EGLContextFactor
                                @NonNull final EGLContext context) {
         logger.info("destroyContext");
 
-        if (this.isChangingConfigsSupplier.get()) {
+        if (Boolean.TRUE.equals(this.isChangingConfigsSupplier.get())) {
             this.eglContext = context;
         } else if (!egl10.eglDestroyContext(display, context)) {
             throw new UnsupportedOperationException(

@@ -101,10 +101,10 @@ abstract class AsyncTaskCoroutine protected constructor(
      */
     @DelicateCoroutinesApi
     protected fun publishProgressAsync() {
-        var job: Deferred<Unit> = GlobalScope.async(context = dispatcherForeground, start = CoroutineStart.DEFAULT, block = {
+        val job: Deferred<Unit> = GlobalScope.async(context = dispatcherForeground, start = CoroutineStart.DEFAULT, block = {
             onProgressUpdate()
         })
-        logger.info("publishProgressAsync: " + job?.isCompleted)
+        logger.info("publishProgressAsync: " + job.isCompleted)
     }
 
     /**
@@ -119,7 +119,7 @@ abstract class AsyncTaskCoroutine protected constructor(
      */
     @DelicateCoroutinesApi
     fun executeAsync() {
-        var job: Deferred<Unit> = GlobalScope.async(context = dispatcherForeground, start = CoroutineStart.DEFAULT, block = {
+        val job: Deferred<Unit> = GlobalScope.async(context = dispatcherForeground, start = CoroutineStart.DEFAULT, block = {
             onPreExecute()
             lastJob = GlobalScope.async(context = dispatcherBackground, start = CoroutineStart.DEFAULT, block = {
                 doInBackground()
@@ -127,7 +127,7 @@ abstract class AsyncTaskCoroutine protected constructor(
             (lastJob ?: return@async).await()
             onPostExecute()
         })
-        logger.info("executeAsync: " + job?.isCompleted)
+        logger.info("executeAsync: " + job.isCompleted)
     }
 
     /**
