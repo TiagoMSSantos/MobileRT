@@ -61,16 +61,16 @@ public final class MyEglContextFactoryTest {
         return new EGL10() {
             @Contract(pure = true)
             @Override
-            public boolean eglChooseConfig(final EGLDisplay display, final int[] attrib_list,
-                                           final EGLConfig[] configs, final int config_size,
-                                           final int[] num_config) {
+            public boolean eglChooseConfig(final EGLDisplay display, final int[] attribList,
+                                           final EGLConfig[] configs, final int configSize,
+                                           final int[] numConfig) {
                 return false;
             }
 
             @Contract(pure = true)
             @Override
             public boolean eglCopyBuffers(final EGLDisplay display, final EGLSurface surface,
-                                          final Object native_pixmap) {
+                                          final Object nativePixmap) {
                 return false;
             }
 
@@ -78,8 +78,8 @@ public final class MyEglContextFactoryTest {
             @Nullable
             @Override
             public EGLContext eglCreateContext(final EGLDisplay display, final EGLConfig config,
-                                               final EGLContext share_context,
-                                               final int[] attrib_list) {
+                                               final EGLContext shareContext,
+                                               final int[] attribList) {
                 return eglContextReturnedByMock;
             }
 
@@ -88,7 +88,7 @@ public final class MyEglContextFactoryTest {
             @Override
             public EGLSurface eglCreatePbufferSurface(final EGLDisplay display,
                                                       final EGLConfig config,
-                                                      final int[] attrib_list) {
+                                                      final int[] attribList) {
                 return null;
             }
 
@@ -98,8 +98,8 @@ public final class MyEglContextFactoryTest {
             @SuppressWarnings({"deprecation"})
             public EGLSurface eglCreatePixmapSurface(final EGLDisplay display,
                                                      final EGLConfig config,
-                                                     final Object native_pixmap,
-                                                     final int[] attrib_list) {
+                                                     final Object nativePixmap,
+                                                     final int[] attribList) {
                 return null;
             }
 
@@ -108,8 +108,8 @@ public final class MyEglContextFactoryTest {
             @Override
             public EGLSurface eglCreateWindowSurface(final EGLDisplay display,
                                                      final EGLConfig config,
-                                                     final Object native_window,
-                                                     final int[] attrib_list) {
+                                                     final Object nativeWindow,
+                                                     final int[] attribList) {
                 return null;
             }
 
@@ -135,7 +135,7 @@ public final class MyEglContextFactoryTest {
             @Contract(pure = true)
             @Override
             public boolean eglGetConfigs(final EGLDisplay display, final EGLConfig[] configs,
-                                         final int config_size, final int[] num_config) {
+                                         final int configSize, final int[] numConfig) {
                 return false;
             }
 
@@ -163,7 +163,7 @@ public final class MyEglContextFactoryTest {
             @Contract(pure = true)
             @Nullable
             @Override
-            public EGLDisplay eglGetDisplay(final Object native_display) {
+            public EGLDisplay eglGetDisplay(final Object nativeDisplay) {
                 return null;
             }
 
@@ -175,7 +175,7 @@ public final class MyEglContextFactoryTest {
 
             @Contract(pure = true)
             @Override
-            public boolean eglInitialize(final EGLDisplay display, final int[] major_minor) {
+            public boolean eglInitialize(final EGLDisplay display, final int[] majorMinor) {
                 return false;
             }
 
@@ -245,7 +245,7 @@ public final class MyEglContextFactoryTest {
         final Context context = new MainActivity();
         final DrawView drawView = new DrawView(context);
 
-        final GLSurfaceView.EGLContextFactory myEGLContextFactory = new MyEglContextFactory(drawView);
+        final GLSurfaceView.EGLContextFactory myEGLContextFactory = new MyEglContextFactory(drawView::isChangingConfigs);
         final EGL10 egl = createEGL();
 
         // Values to be returned by the EGL10 mocked.
@@ -271,7 +271,7 @@ public final class MyEglContextFactoryTest {
         final Context context = new MainActivity();
         final DrawView drawView = new DrawView(context);
 
-        final GLSurfaceView.EGLContextFactory myEGLContextFactory = new MyEglContextFactory(drawView);
+        final GLSurfaceView.EGLContextFactory myEGLContextFactory = new MyEglContextFactory(drawView::isChangingConfigs);
         final EGL10 egl = createEGL();
 
         // Values to be returned by the EGL10 mocked.
@@ -295,7 +295,7 @@ public final class MyEglContextFactoryTest {
         final Context context = new MainActivity();
         final DrawView drawView = new DrawView(context);
 
-        final GLSurfaceView.EGLContextFactory myEGLContextFactory = new MyEglContextFactory(drawView);
+        final GLSurfaceView.EGLContextFactory myEGLContextFactory = new MyEglContextFactory(drawView::isChangingConfigs);
         final EGL10 egl = createEGL();
 
         // Values to be returned by the EGL10 mocked.
@@ -320,7 +320,7 @@ public final class MyEglContextFactoryTest {
         final Context context = new MainActivity();
         final DrawView drawView = new DrawView(context);
 
-        final GLSurfaceView.EGLContextFactory myEGLContextFactory = new MyEglContextFactory(drawView);
+        final GLSurfaceView.EGLContextFactory myEGLContextFactory = new MyEglContextFactory(drawView::isChangingConfigs);
         final EGL10 egl = createEGL();
 
         // Values to be returned by the EGL10 mocked.
@@ -358,7 +358,7 @@ public final class MyEglContextFactoryTest {
         final Context context = new MainActivity();
         final DrawView drawView = new DrawView(context);
 
-        final GLSurfaceView.EGLContextFactory myEGLContextFactory = new MyEglContextFactory(drawView);
+        final GLSurfaceView.EGLContextFactory myEGLContextFactory = new MyEglContextFactory(drawView::isChangingConfigs);
         final EGL10 egl = createEGL();
 
         // Values to be returned by the EGL10 mocked.
@@ -386,7 +386,7 @@ public final class MyEglContextFactoryTest {
             .andReturn(true)
             .anyTimes();
 
-        final GLSurfaceView.EGLContextFactory myEGLContextFactory = new MyEglContextFactory(drawViewMocked);
+        final GLSurfaceView.EGLContextFactory myEGLContextFactory = new MyEglContextFactory(drawViewMocked::isChangingConfigs);
         final EGL10 egl = createEGL();
 
         // Values to be returned by the EGL10 mocked.

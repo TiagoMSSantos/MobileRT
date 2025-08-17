@@ -26,4 +26,14 @@ public final class LowMemoryExceptionTest {
         throw new LowMemoryException(message);
     }
 
+    /**
+     * Tests the constructor that receives both parameters.
+     */
+    @Test(expected = LowMemoryException.class)
+    public void testConstructorWithBothParameters() throws LowMemoryException {
+        final String message = "Test";
+        final IndexOutOfBoundsException indexOutOfBoundsException = new IndexOutOfBoundsException("Test");
+        throw new LowMemoryException(message, indexOutOfBoundsException);
+    }
+
 }

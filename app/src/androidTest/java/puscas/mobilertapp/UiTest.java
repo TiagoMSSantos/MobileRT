@@ -17,8 +17,6 @@ import androidx.test.espresso.matcher.RootMatchers;
 import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.platform.app.InstrumentationRegistry;
 
-import com.google.common.collect.ImmutableList;
-
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -224,7 +222,7 @@ public final class UiTest extends AbstractTest {
     private void assertClickRenderButton(final int repetitions) throws TimeoutException {
         UtilsContextT.resetPickerValues(Scene.CORNELL2.ordinal(), Accelerator.NAIVE, 99, 1);
 
-        final List<String> buttonTextList = ImmutableList.of(Constants.STOP, Constants.RENDER);
+        final List<String> buttonTextList = List.of(Constants.STOP, Constants.RENDER);
         for (int currentIndex = 0; currentIndex < buttonTextList.size() * repetitions; currentIndex++) {
             final String message = "currentIndex = " + currentIndex;
             logger.info(message);

@@ -110,7 +110,7 @@ public final class DrawView extends GLSurfaceView {
      * @return The {@link #changingConfigs}.
      */
     public boolean isChangingConfigs() {
-        return changingConfigs;
+        return this.changingConfigs;
     }
 
     /**
@@ -120,7 +120,7 @@ public final class DrawView extends GLSurfaceView {
      */
     @VisibleForTesting
     public MainRenderer getRenderer() {
-        return renderer;
+        return this.renderer;
     }
 
     /**
@@ -130,7 +130,7 @@ public final class DrawView extends GLSurfaceView {
         logger.info("initEglContextFactory start");
         this.changingConfigs = false;
 
-        final GLSurfaceView.EGLContextFactory eglContextFactory = new MyEglContextFactory(this);
+        final GLSurfaceView.EGLContextFactory eglContextFactory = new MyEglContextFactory(this::isChangingConfigs);
         setEGLContextClientVersion(MyEglContextFactory.EGL_CONTEXT_CLIENT_VERSION);
         setEGLContextFactory(eglContextFactory);
 

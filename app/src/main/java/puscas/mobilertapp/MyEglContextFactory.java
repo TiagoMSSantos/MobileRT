@@ -6,6 +6,7 @@ import android.opengl.GLSurfaceView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java8.util.function.Supplier;
 import java.util.logging.Logger;
 
 import javax.microedition.khronos.egl.EGL10;
@@ -33,10 +34,10 @@ public final class MyEglContextFactory implements GLSurfaceView.EGLContextFactor
     static final int EGL_CONTEXT_CLIENT_VERSION = 2;
 
     /**
-     * The {@link GLSurfaceView} to be used to get the
+     * The {@link Supplier} to be used to get the
      * {@link Activity#isChangingConfigurations()}.
      */
-    private final DrawView drawView;
+    private final Supplier<Boolean> isChangingConfigsSupplier;
 
     /**
      * The {@link EGLContext} in order to prevent its destruction.
@@ -46,10 +47,10 @@ public final class MyEglContextFactory implements GLSurfaceView.EGLContextFactor
     /**
      * The constructor.
      *
-     * @param drawView The {@link GLSurfaceView} to be used to get the {@link Activity#isChangingConfigurations()}.
+     * @param isChangingConfigsSupplier The {@link Supplier} to be used to get the {@link Activity#isChangingConfigurations()}.
      */
-    MyEglContextFactory(final DrawView drawView) {
-        this.drawView = drawView;
+    MyEglContextFactory(final Supplier<Boolean> isChangingConfigsSupplier) {
+        this.isChangingConfigsSupplier = isChangingConfigsSupplier;
     }
 
     @Nullable
@@ -91,7 +92,7 @@ public final class MyEglContextFactory implements GLSurfaceView.EGLContextFactor
                                @NonNull final EGLContext context) {
         logger.info("destroyContext");
 
-        if (this.drawView.isChangingConfigs()) {
+        if (this.isChangingConfigsSupplier.get()) {
             this.eglContext = context;
         } else if (!egl10.eglDestroyContext(display, context)) {
             throw new UnsupportedOperationException(
