@@ -954,6 +954,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
 
                 rtRenderIntoBitmap(this.bitmap, this.numThreads);
                 createAndLaunchRenderTask();
+                drawBitmap(this.bitmap);
             } catch (final Exception ex) {
                 UtilsLogging.logException(ex, "MainRenderer#onDrawFrame");
                 MainActivity.showUiMessage(ConstantsToast.COULD_NOT_RENDER_THE_SCENE + ex.getMessage());
@@ -964,10 +965,10 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
 
             final String message = "onDrawFirstFrame" + ConstantsMethods.FINISHED;
             logger.info(message);
+        } else {
+            drawBitmap(this.bitmap);
+            logger.info("onDrawFrame finished");
         }
-
-        drawBitmap(this.bitmap);
-        logger.info("onDrawFrame finished");
     }
 
     /**
