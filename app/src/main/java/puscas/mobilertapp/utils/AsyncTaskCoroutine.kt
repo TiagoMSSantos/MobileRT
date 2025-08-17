@@ -1,5 +1,6 @@
 package puscas.mobilertapp.utils
 
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -14,8 +15,14 @@ import java.util.logging.Logger
  * An abstract class which simulates the deprecated [android.os.AsyncTask] from Java.
  *
  * This implementation uses Kotlin coroutines for the asynchronous tasks.
+ *
+ * @property dispatcherForeground A [Dispatchers] which will execute on Android UI main thread.
+ * @property dispatcherBackground A [Dispatchers] which will execute on a background thread.
  */
-abstract class AsyncTaskCoroutine {
+abstract class AsyncTaskCoroutine protected constructor(
+    private val dispatcherForeground: CoroutineDispatcher = Dispatchers.Main,
+    private val dispatcherBackground: CoroutineDispatcher = Dispatchers.IO
+) {
 
     /**
      * The [Logger] for this class.
@@ -94,7 +101,7 @@ abstract class AsyncTaskCoroutine {
      */
     @DelicateCoroutinesApi
     protected fun publishProgressAsync() {
-        GlobalScope.async(context = Dispatchers.Main, start = CoroutineStart.DEFAULT, block = {
+        GlobalScope.async(context = dispatcherForeground, start = CoroutineStart.DEFAULT, block = {
             onProgressUpdate()
         })
     }
@@ -111,9 +118,9 @@ abstract class AsyncTaskCoroutine {
      */
     @DelicateCoroutinesApi
     fun executeAsync() {
-        GlobalScope.async(context = Dispatchers.Main, start = CoroutineStart.DEFAULT, block = {
+        GlobalScope.async(context = dispatcherForeground, start = CoroutineStart.DEFAULT, block = {
             onPreExecute()
-            lastJob = GlobalScope.async(context = Dispatchers.IO, start = CoroutineStart.DEFAULT, block = {
+            lastJob = GlobalScope.async(context = dispatcherBackground, start = CoroutineStart.DEFAULT, block = {
                 doInBackground()
             })
             (lastJob ?: return@async).await()
@@ -127,7 +134,7 @@ abstract class AsyncTaskCoroutine {
     fun waitToFinish() {
         logger.info("waitToFinish")
 
-        runBlocking(Dispatchers.IO) {
+        runBlocking(dispatcherBackground) {
             logger.info("waitToFinish 1")
             val finished: Unit? = lastJob?.await()
             logger.info("waitToFinish 2: $finished")
