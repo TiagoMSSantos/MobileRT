@@ -239,7 +239,6 @@ public final class MainActivity extends Activity {
         numberPicker.setValue(defaultValue);
         numberPicker.setDisplayedValues(names);
 
-        // TODO: For Android API < 15, this method crashes, so it's necessary to investigate it.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             numberPicker.setWrapSelectorWheel(true);
         }
@@ -254,7 +253,7 @@ public final class MainActivity extends Activity {
             throw new FailureException(ex);
         }
 
-        setCurrentInstance();
+        setCurrentInstance(this);
         super.onCreate(savedInstanceState);
         logger.info("onCreate start");
 
@@ -457,29 +456,19 @@ public final class MainActivity extends Activity {
                     for (int i = 0; i < numFiles; ++i) {
                         final ClipData.Item item = clipData.getItemAt(i);
                         final Uri uri = item.getUri();
-                        if (uri == null) {
-                            throw new FailureException("Selected file is not valid.");
-                        }
-                        final File file = new File(Objects.requireNonNull(uri.getPath()));
+                        final File file = new File(Objects.requireNonNull(Objects.requireNonNull(uri).getPath()));
                         validatePath(file);
                         final String filePath = getPathFromFile(uri);
                         readFile(uri);
-                        if (filePath.endsWith(".obj")) {
-                            this.sceneFilePath = filePath;
-                        }
+                        setSceneFilePathIfObjFile(filePath);
                     }
                 } else {
                     logger.info("Will read every file in a path.");
                     final Uri uri = data.getData();
-                    if (uri == null) {
-                        throw new FailureException("Selected file is not valid.");
-                    }
-                    final File baseFile = new File(Objects.requireNonNull(uri.getPath()));
+                    final File baseFile = new File(Objects.requireNonNull(Objects.requireNonNull(uri).getPath()));
                     validatePath(baseFile);
                     final String filePath = getPathFromFile(uri);
-                    if (filePath.endsWith(".obj")) {
-                        this.sceneFilePath = filePath;
-                    }
+                    setSceneFilePathIfObjFile(filePath);
                     final File[] files = getFilesFromDirectory(baseFile);
                     for(final File file : files) {
                         readFile(Uri.fromFile(file));
@@ -559,6 +548,17 @@ public final class MainActivity extends Activity {
             }
         } catch (final IOException ex) {
             throw new IllegalArgumentException("Path '" + file + "' validation failed: " + ex.getMessage(), ex);
+        }
+    }
+
+    /**
+     * Set the {@link #sceneFilePath} if the provided path is for an OBJ file.
+     *
+     * @param filePath The path to a file.
+     */
+    private void setSceneFilePathIfObjFile(final String filePath) {
+        if (filePath.endsWith(".obj")) {
+            this.sceneFilePath = filePath;
         }
     }
 
@@ -657,15 +657,7 @@ public final class MainActivity extends Activity {
         final String filePath = StreamSupport.stream(uri.getPathSegments())
             .skip(1L)
             .reduce("", (accumulator, segment) -> accumulator + ConstantsUI.FILE_SEPARATOR + segment);
-        final boolean externalSDCardPath =
-                uri.getPathSegments().get(0).matches(SD_CARD_FOLDER)
-            || (uri.getPathSegments().size() > 1 && uri.getPathSegments().get(1).matches("^([A-Za-z0-9]){4}-([A-Za-z0-9]){4}:.+$"))
-            || (uri.getPathSegments().size() > 1 && uri.getPathSegments().get(1).matches("^([A-Za-z0-9]){4}-([A-Za-z0-9]){4}$"))
-            || (uri.getPathSegments().size() > 2 && uri.getPathSegments().get(2).matches("^([A-Za-z0-9]){4}-([A-Za-z0-9]){4}$"))
-            || (uri.getPathSegments().get(0).matches("^mnt$") && uri.getPathSegments().get(1).matches("^" + SD_CARD_FOLDER + "$"))
-            || (uri.getPathSegments().get(0).matches("^" + STORAGE_FOLDER + "$") && uri.getPathSegments().get(1).matches("^" + SD_CARD_FOLDER + "$"))
-            || (uri.getPathSegments().get(0).matches("^" + STORAGE_FOLDER + "$") && uri.getPathSegments().get(1).matches("^emulated$") && uri.getPathSegments().get(2).matches("^0$"))
-            || filePath.contains(Environment.getExternalStorageDirectory().getAbsolutePath());
+        final boolean externalSDCardPath = isPathFromExternalSdCard(uri) || filePath.contains(Environment.getExternalStorageDirectory().getAbsolutePath());
 
         final String devicePath;
         if (externalSDCardPath) {
@@ -687,6 +679,22 @@ public final class MainActivity extends Activity {
         }
 
         return devicePath + cleanedFilePath;
+    }
+
+    /**
+     * Checks whether the provided path in {@link Uri} format is from an external SD card or not.
+     *
+     * @param uri The {@link Uri} for a file path.
+     * @return {@code true} if the provided file path is from an external SD card, or {@code false} otherwise.
+     */
+    private static boolean isPathFromExternalSdCard(@NonNull final Uri uri) {
+        return uri.getPathSegments().get(0).matches(SD_CARD_FOLDER)
+            || (uri.getPathSegments().size() > 1 && uri.getPathSegments().get(1).matches("^([A-Za-z0-9]){4}-([A-Za-z0-9]){4}:.+$"))
+            || (uri.getPathSegments().size() > 1 && uri.getPathSegments().get(1).matches("^([A-Za-z0-9]){4}-([A-Za-z0-9]){4}$"))
+            || (uri.getPathSegments().size() > 2 && uri.getPathSegments().get(2).matches("^([A-Za-z0-9]){4}-([A-Za-z0-9]){4}$"))
+            || (uri.getPathSegments().get(0).matches("^mnt$") && uri.getPathSegments().get(1).matches("^" + SD_CARD_FOLDER + "$"))
+            || (uri.getPathSegments().get(0).matches("^" + STORAGE_FOLDER + "$") && uri.getPathSegments().get(1).matches("^" + SD_CARD_FOLDER + "$"))
+            || (uri.getPathSegments().get(0).matches("^" + STORAGE_FOLDER + "$") && uri.getPathSegments().get(1).matches("^emulated$") && uri.getPathSegments().get(2).matches("^0$"));
     }
 
     /**
@@ -946,7 +954,6 @@ public final class MainActivity extends Activity {
         this.pickerResolutions.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
         this.pickerResolutions.setValue(pickerSizes);
 
-        // TODO: For Android API < 15, this method crashes, so it's necessary to investigate it.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             this.pickerResolutions.setWrapSelectorWheel(true);
         }
@@ -988,7 +995,6 @@ public final class MainActivity extends Activity {
         this.pickerThreads.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
         this.pickerThreads.setValue(pickerThreads);
 
-        // TODO: For Android API < 15, this method crashes, so it's necessary to investigate it.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             this.pickerThreads.setWrapSelectorWheel(true);
         }
@@ -1026,9 +1032,11 @@ public final class MainActivity extends Activity {
 
     /**
      * Sets the {@link #currentInstance}.
+     *
+     * @param activity The {@link Activity} to set.
      */
-    private void setCurrentInstance() {
-        currentInstance = this;
+    private static void setCurrentInstance(final Activity activity) {
+        currentInstance = activity;
     }
 
 }

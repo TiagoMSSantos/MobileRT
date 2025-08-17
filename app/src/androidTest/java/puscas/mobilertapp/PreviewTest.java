@@ -95,7 +95,6 @@ public final class PreviewTest extends AbstractTest {
             .perform(new ViewActionWait<>(0, R.id.drawLayout))
             .check((view, exception) -> {
                 UtilsT.rethrowException(exception);
-                // TODO: Fix bitmap losing rendered pixels.
                 final DrawView drawView = (DrawView) view;
                 final MainRenderer renderer = drawView.getRenderer();
                 final Bitmap bitmap = UtilsT.getPrivateField(renderer, "bitmap");
@@ -109,7 +108,6 @@ public final class PreviewTest extends AbstractTest {
             .perform(new ViewActionWait<>(0, R.id.drawLayout))
             .check((view, exception) -> {
                 UtilsT.rethrowException(exception);
-                // TODO: Fix bitmap losing rendered pixels.
                 final DrawView drawView = (DrawView) view;
                 final MainRenderer renderer = drawView.getRenderer();
                 final Bitmap bitmap = UtilsT.getPrivateField(renderer, "bitmap");
@@ -117,11 +115,9 @@ public final class PreviewTest extends AbstractTest {
             });
         ViewActionWait.waitForButtonUpdate(0);
         UtilsContextT.waitUntil(this.testName.getMethodName(), activity, Constants.RENDER, State.IDLE, State.FINISHED);
-        // TODO: Fix bitmap losing rendered pixels.
         UtilsT.testStateAndBitmap(false);
 
         UtilsT.assertRenderButtonText(Constants.RENDER);
-        // TODO: Fix bitmap losing rendered pixels.
         UtilsT.testStateAndBitmap(false);
 
         logger.info("testPreviewSceneOrthographicCamera finished");
