@@ -113,7 +113,7 @@ public final class UtilsContext {
      *     compatible with Android 4.1.
      */
     public static File getSdCardFilePath(@NonNull final Context context) {
-        return Optional.of(ContextCompat.getExternalFilesDirs(context, null))
+        return Optional.of(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT ? context.getExternalFilesDirs(null) : null)
             .map(dirs -> dirs.length > 1 ? dirs[1] : dirs[0])
             .orElseGet(() -> {
                 logger.info("Using the old approach to retrieve the SD Card path.");
