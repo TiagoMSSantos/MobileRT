@@ -180,7 +180,7 @@ framework for mocking in unit tests
       <td style="text-align:center">4.4W<br>(API 20)<br><img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/cross_red.png" width="25" height="25" alt="red"></td>
       <td style="text-align:center">5.0<br>(API 21)<br><img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25" alt="green"></td>
       <td style="text-align:center">10<br>(API 29)<br><img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25" alt="green"></td>
-      <td style="text-align:center">15<br>(API 35)<br><img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25" alt="green"></td>
+      <td style="text-align:center">16<br>(API 36)<br><img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25" alt="green"></td>
     </tr>
     <tr>
       <td style="text-align:center"><b>MacOS</b></td>

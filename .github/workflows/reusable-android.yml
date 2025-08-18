@@ -506,7 +506,7 @@ jobs:
           # Max api level for 32bit is: 29
           api-level: ${{ inputs.android_api }}
           cmake: 4.0.2
-          target: default
+          target: google_apis
           arch: ${{ env.android_emulator_arch }}
           disable-animations: true
           disable-spellchecker: true
