@@ -158,8 +158,8 @@ sonar {
 
         // Additional properties provided for projects that have the Java-base or Java plugin applied
         property 'sonar.sourceEncoding', 'UTF-8'
-        property 'sonar.java.source', JavaVersion.VERSION_21
-        property 'sonar.java.target', JavaVersion.VERSION_21
+        property 'sonar.java.source', JavaVersion.VERSION_21.toString()
+        property 'sonar.java.target', JavaVersion.VERSION_21.toString()
         property 'sonar.sources', 'src/main/java'
         property 'sonar.tests', 'src/test/java, src/androidTest/java'
         property 'sonar.java.binaries', "build/intermediates/javac/debug/${javaBinariesPath},build/tmp/kotlin-classes/debug/"

@@ -7,7 +7,7 @@ import java.io.Serial;
 /**
  * An {@link Exception} which represents the system with low memory.
  */
-public final class LowMemoryException extends RuntimeException {
+public final class LowMemoryException extends Exception {
 
     /**
      * The Serial UUID.

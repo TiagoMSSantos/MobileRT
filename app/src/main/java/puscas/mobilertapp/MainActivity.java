@@ -657,7 +657,7 @@ public final class MainActivity extends Activity {
         final String filePath = StreamSupport.stream(uri.getPathSegments())
             .skip(1L)
             .reduce("", (accumulator, segment) -> accumulator + ConstantsUI.FILE_SEPARATOR + segment);
-        final boolean externalSDCardPath = isPathFromExternalSdCard(uri) || filePath.contains(Environment.getExternalStorageDirectory().getAbsolutePath());
+        final boolean externalSDCardPath = isPathFromExternalSdCard(uri) || filePath.contains(UtilsContext.getSdCardFilePath(this).getAbsolutePath());
 
         final String devicePath;
         if (externalSDCardPath) {
