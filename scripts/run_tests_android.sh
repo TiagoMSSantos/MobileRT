@@ -609,7 +609,7 @@ runInstrumentationTests() {
   echo "Will install the following APKs: ${apksPath}";
   for apkPath in ${apksPath}; do
     echo "Will install APK: ${apkPath}";
-    ls -lahp ${apkPath};
+    ls -lahp "${apkPath}";
     callCommandUntilSuccess 5 adb push -p "${apkPath}" "${mobilert_path}";
   done;
   callCommandUntilSuccess 5 adb shell 'ls -la '"${mobilert_path}";
