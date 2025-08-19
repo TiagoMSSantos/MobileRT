@@ -62,7 +62,7 @@ buildscript {
             gradle_version = '8.12.1'
             gradle_versions_plugin_version = '0.52.0'
             if (project.properties["androidX_core_version"] == null) {
-                androidX_core_version = '1.16.0'
+                androidX_core_version = '1.15.0'
             }
         }
 
