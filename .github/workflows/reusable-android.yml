@@ -643,7 +643,7 @@ jobs:
 
       - name: Upload APK as artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success() && (inputs.android_api == '15' || inputs.android_api == '21')
+        if: success()
         uses: actions/upload-artifact@v4
         with:
           # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
