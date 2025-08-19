@@ -487,7 +487,7 @@
       "matchCurrentValue": "/^1\\.1\\..+/"
     },
     {
-      "groupName": "Only update patches of androidx.test.espresso for Android API >= 19",
+      "groupName": "Only update patches of androidx.test.espresso for Android API >= 20",
       "enabled": false,
       "matchUpdateTypes": [
         "major",
@@ -506,8 +506,8 @@
         "custom.regex",
         "gradle"
       ],
-      "matchCurrentVersion": "/^3\\.5\\..+/",
-      "matchCurrentValue": "/^3\\.5\\..+/"
+      "matchCurrentVersion": "/^(3\\.5\\.1)|(3\\.6\\.1)$/",
+      "matchCurrentValue": "/^(3\\.5\\.1)|(3\\.6\\.1)$/"
     },
     {
       "groupName": "Only update patches of androidx.emoji2:emoji2 for Android API >= 19",
