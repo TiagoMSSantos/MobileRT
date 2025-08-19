@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2025-08-18T18:43:52.298Z",
+    "detectionDate": "2025-08-19T07:33:45.721Z",
     "formats": {
       "java": {
         "sources": {
@@ -2163,29 +2163,17 @@
             "percentageTokens": 0,
             "newDuplicatedLines": 0,
             "newClones": 0
-          },
-          ".bettercodehub.yml": {
-            "lines": 27,
-            "tokens": 126,
-            "sources": 1,
-            "clones": 0,
-            "duplicatedLines": 0,
-            "duplicatedTokens": 0,
-            "percentage": 0,
-            "percentageTokens": 0,
-            "newDuplicatedLines": 0,
-            "newClones": 0
           }
         },
         "total": {
-          "lines": 2598,
-          "tokens": 15771,
-          "sources": 24,
+          "lines": 2571,
+          "tokens": 15645,
+          "sources": 23,
           "clones": 5,
           "duplicatedLines": 160,
           "duplicatedTokens": 878,
-          "percentage": 6.16,
-          "percentageTokens": 5.57,
+          "percentage": 6.22,
+          "percentageTokens": 5.61,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2241,8 +2229,8 @@
             "newClones": 0
           },
           "scripts/run_tests_android.sh": {
-            "lines": 732,
-            "tokens": 5414,
+            "lines": 735,
+            "tokens": 5448,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2350,14 +2338,14 @@
           }
         },
         "total": {
-          "lines": 4476,
-          "tokens": 30235,
+          "lines": 4479,
+          "tokens": 30269,
           "sources": 13,
           "clones": 11,
           "duplicatedLines": 244,
           "duplicatedTokens": 1205,
           "percentage": 5.45,
-          "percentageTokens": 3.99,
+          "percentageTokens": 3.98,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2485,8 +2473,8 @@
             "newClones": 0
           },
           "docs/FEATURES.md": {
-            "lines": 216,
-            "tokens": 2465,
+            "lines": 217,
+            "tokens": 2481,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2558,8 +2546,8 @@
           }
         },
         "total": {
-          "lines": 2371,
-          "tokens": 23601,
+          "lines": 2372,
+          "tokens": 23617,
           "sources": 16,
           "clones": 1,
           "duplicatedLines": 23,
@@ -3272,14 +3260,14 @@
       }
     },
     "total": {
-      "lines": 29666,
-      "tokens": 229470,
-      "sources": 259,
+      "lines": 29643,
+      "tokens": 229394,
+      "sources": 258,
       "clones": 113,
       "duplicatedLines": 1359,
       "duplicatedTokens": 13045,
       "percentage": 4.58,
-      "percentageTokens": 5.68,
+      "percentageTokens": 5.69,
       "newDuplicatedLines": 0,
       "newClones": 0
     }

@@ -108,6 +108,7 @@
 
 - [x] Support Linux's UI with Qt 4
 - [x] Support Linux's UI with Qt 5
+- [x] Support Linux's UI with Qt 6
 - [x] Support options menu in GUI
 - [x] Support about menu in GUI
 - [x] Support for selection of OBJ files in GUI

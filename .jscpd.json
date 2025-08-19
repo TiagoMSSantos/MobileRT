@@ -6,7 +6,10 @@
   "ignore": [
     "**/.gradle/**",
     "**/.idea/**",
+    "**/.kotlin/**",
+    "**/.vscode/**",
     "**/build*/**",
+    "**/coverage/**",
     "**/.cxx/**",
     "**/third_party/**",
     "**/WavefrontOBJs/**"

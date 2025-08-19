@@ -3,7 +3,7 @@
 - A portable Ray Tracing (RT) engine for multiple devices.
 - Already available interfaces for:
   - Android (through **Java** + **JNI** and **C**)
-  - Linux, MacOS, Windows (through **Qt** 4 or 5)
+  - Linux, MacOS, Windows (through **Qt** 5 or 6)
 - Compatible with C++ compilers:
   - GNU C++ Compiler (g++)
   - Clang++
@@ -71,7 +71,7 @@ The docker image is in docker hub:
 It is also possible to clone this repository and compile this ray tracer by
 yourself.
 To compile it, it is essential to install cmake and have a C++20 compiler.
-It is also needed the [Qt4 or Qt5](https://www.qt.io/) library and the
+It is also needed the [Qt5 or Qt6](https://www.qt.io/) library and the
 [git](https://git-scm.com/) control system to get the code from the repository.
 
 ```shell
@@ -143,7 +143,7 @@ for the assertions
 library to help in the vector math
 - [x] C++ [tinyobjloader](https://github.com/tinyobjloader/tinyobjloader)
 library to load Wavefront OBJ model files
-- [x] C++ [Qt4 or Qt5](https://www.qt.io/)
+- [x] C++ [Qt5 or Qt6](https://www.qt.io/)
 framework for Linux interface
 - [x] C++ [Google Test](https://github.com/google/googletest)
 framework for unit tests
