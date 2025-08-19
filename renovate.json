@@ -483,8 +483,8 @@
         "custom.regex",
         "gradle"
       ],
-      "matchCurrentVersion": "/^(1\\.1\\.5)|(1\\.2\\.0)$/",
-      "matchCurrentValue": "/^(1\\.1\\.5)|(1\\.2\\.0)$/"
+      "matchCurrentVersion": "/^(1\\.1\\.5)|(1\\.2\\.1)$/",
+      "matchCurrentValue": "/^(1\\.1\\.5)|(1\\.2\\.1)$/"
     },
     {
       "groupName": "Only update patches of androidx.test.espresso for Android API >= 21",
