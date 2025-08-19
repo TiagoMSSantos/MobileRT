@@ -603,10 +603,13 @@ runInstrumentationTests() {
   fi
   set -eu;
 
+  adb shell df;
   echo 'Searching for APK to install in Android emulator.';
-  apksPath=$(find . -iname "*.apk" | grep -i "output");
+  apksPath=$(find . -iname "*.apk" | grep -i "output" | grep -i "${type}");
+  echo "Will install the following APKs: ${apksPath}";
   for apkPath in ${apksPath}; do
     echo "Will install APK: ${apkPath}";
+    ls -lahp ${apkPath};
     callCommandUntilSuccess 5 adb push -p "${apkPath}" "${mobilert_path}";
   done;
   callCommandUntilSuccess 5 adb shell 'ls -la '"${mobilert_path}";
