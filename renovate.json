@@ -469,7 +469,7 @@
       "matchCurrentValue": "/^1\\.6\\..+/"
     },
     {
-      "groupName": "Only update patches of androidx.test.ext:junit for Android API >= 19",
+      "groupName": "Only update patches of androidx.test.ext:junit for Android API >= 21",
       "enabled": false,
       "matchUpdateTypes": [
         "major",
@@ -483,8 +483,8 @@
         "custom.regex",
         "gradle"
       ],
-      "matchCurrentVersion": "/^1\\.1\\..+/",
-      "matchCurrentValue": "/^1\\.1\\..+/"
+      "matchCurrentVersion": "/^(1\\.1\\.5)|(1\\.2\\.0)$/",
+      "matchCurrentValue": "/^(1\\.1\\.5)|(1\\.2\\.0)$/"
     },
     {
       "groupName": "Only update patches of androidx.test.espresso for Android API >= 21",
