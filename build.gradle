@@ -52,7 +52,7 @@ buildscript {
         }
         if (androidApiVersionValue >= 19) {
             if (project.properties["androidX_test_junit_version"] == null) {
-                androidX_test_junit_version = '1.2.0'
+                androidX_test_junit_version = '1.2.1'
             }
             if (project.properties["androidX_test_espresso_version"] == null) {
                 androidX_test_espresso_version = '3.6.1'
