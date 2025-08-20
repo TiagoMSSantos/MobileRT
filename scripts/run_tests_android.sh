@@ -540,6 +540,8 @@ runUnitTests() {
     adb shell setprop debug.asan.enabled true;
     adb shell setprop debug.asan.options detect_leaks=1:verbosity=1:shadow_mapping=1;
   fi
+  callCommandUntilSuccess 5 adb shell 'ls -la '"${mobilert_path}/UnitTests";
+  callCommandUntilSuccess 5 adb shell 'ls -laR '"${mobilert_path}";
   adb shell "LD_LIBRARY_PATH=${mobilert_path} ${mobilert_path}/UnitTests; echo "'$?'" > ${mobilert_path}/unit_tests_result.log";
   adb pull "${mobilert_path}"/unit_tests_result.log .;
   resUnitTests=$(cat "unit_tests_result.log");

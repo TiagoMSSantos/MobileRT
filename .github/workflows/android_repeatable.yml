@@ -103,7 +103,7 @@ jobs:
             echo 'android_arch=\"arm64-v8a\"' >> "${GITHUB_ENV}";
             echo 'android_emulator_arch=arm64-v8a' >> "${GITHUB_ENV}";
         else
-          if [ "${{ matrix.android_api }}" -gt 20 ]; then
+          if [ "${{ matrix.android_api }}" -gt 20 ] && [ "${{ matrix.android_api }}" != 22 ] && [ "${{ matrix.android_api }}" != 27 ]; then
             echo 'android_arch=\"x86_64\"' >> "${GITHUB_ENV}";
             echo 'android_emulator_arch=x86_64' >> "${GITHUB_ENV}";
           else
@@ -165,14 +165,15 @@ jobs:
       with:
         # Check available parameters in: https://github.com/ReactiveCircus/android-emulator-runner/blob/main/action.yml
         api-level: ${{ matrix.android_api }}
-        target: default
+        target: google_apis
         arch: ${{ env.android_emulator_arch }}
         disable-animations: true
         disable-spellchecker: true
         channel: stable
         emulator-options: -no-metrics -no-window -cores ${{ env.NCPU_CORES }} -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none
         cores: ${{ env.NCPU_CORES }}
-        sdcard-path-or-size: 100M
+        disk-size: 10240M
+        sdcard-path-or-size: 2048M
         ram-size: 1024M
         emulator-boot-timeout: 400 # It can take more than 5 min to boot, and the tests can take more than 17 min to finish.
         script: |

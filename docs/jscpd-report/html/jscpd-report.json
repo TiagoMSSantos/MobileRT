@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2025-08-19T11:31:07.729Z",
+    "detectionDate": "2025-08-20T14:07:18.569Z",
     "formats": {
       "java": {
         "sources": {
@@ -2057,14 +2057,14 @@
             "newClones": 0
           },
           ".github/workflows/android_repeatable.yml": {
-            "lines": 189,
-            "tokens": 1119,
+            "lines": 190,
+            "tokens": 1125,
             "sources": 1,
             "clones": 2,
             "duplicatedLines": 56,
             "duplicatedTokens": 312,
-            "percentage": 29.63,
-            "percentageTokens": 27.88,
+            "percentage": 29.47,
+            "percentageTokens": 27.73,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2166,8 +2166,8 @@
           }
         },
         "total": {
-          "lines": 2571,
-          "tokens": 15645,
+          "lines": 2572,
+          "tokens": 15651,
           "sources": 23,
           "clones": 5,
           "duplicatedLines": 160,
@@ -2229,8 +2229,8 @@
             "newClones": 0
           },
           "scripts/run_tests_android.sh": {
-            "lines": 735,
-            "tokens": 5448,
+            "lines": 737,
+            "tokens": 5478,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2338,8 +2338,8 @@
           }
         },
         "total": {
-          "lines": 4479,
-          "tokens": 30269,
+          "lines": 4481,
+          "tokens": 30299,
           "sources": 13,
           "clones": 11,
           "duplicatedLines": 244,
@@ -3260,8 +3260,8 @@
       }
     },
     "total": {
-      "lines": 29643,
-      "tokens": 229394,
+      "lines": 29646,
+      "tokens": 229430,
       "sources": 258,
       "clones": 113,
       "duplicatedLines": 1359,
