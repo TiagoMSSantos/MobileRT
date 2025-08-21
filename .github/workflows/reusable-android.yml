@@ -228,6 +228,8 @@ jobs:
             app/build/reports
           if-no-files-found: error
           retention-days: 90
+          overwrite: true
+          include-hidden-files: true
 
       - name: Check binaries' paths
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -336,6 +338,7 @@ jobs:
           retention-days: 90
           compression-level: 9
           overwrite: true
+          include-hidden-files: true
 
 
   AndroidTests:
@@ -550,6 +553,8 @@ jobs:
             app/build/reports
           if-no-files-found: error
           retention-days: 90
+          overwrite: true
+          include-hidden-files: true
 
       - name: Publish Android Test Report
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -651,6 +656,8 @@ jobs:
           path: ${{ steps.sign-apk.outputs.signedFile }}
           if-no-files-found: error
           retention-days: 90
+          overwrite: true
+          include-hidden-files: true
 
 
   UnitTests:
@@ -817,6 +824,8 @@ jobs:
             app/build/reports
           if-no-files-found: error
           retention-days: 90
+          overwrite: true
+          include-hidden-files: true
 
       - name: Run linter
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
@@ -1076,6 +1085,8 @@ jobs:
             app/build/reports
           if-no-files-found: error
           retention-days: 90
+          overwrite: true
+          include-hidden-files: true
 
       - name: Check sonar path
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -1098,8 +1109,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
-          name: reports
+          name: reports_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
           path: app/build/reports
           if-no-files-found: error
           retention-days: 90
           overwrite: true
+          include-hidden-files: true

@@ -185,7 +185,9 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
-        name: reports_${{ matrix.type }}_${{ matrix.host_os }}-artifacts
+        name: reports_${{ matrix.android_api }}_${{ matrix.type }}_${{ matrix.host_os }}-artifacts
         path: app/build/reports
         if-no-files-found: error
         retention-days: 90
+        overwrite: true
+        include-hidden-files: true
