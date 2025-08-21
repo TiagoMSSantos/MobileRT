@@ -396,7 +396,11 @@ copyResources() {
     # If there is no SD card volume mounted on /storage/ path, then use the legacy path.
     sdcard_path_android='/mnt/sdcard/MobileRT';
   else
-    sdcard_path_android="${sdcard_path_android}/Android/data/puscas.mobilertapp/files/MobileRT";
+    if [ "${androidApi}" = '18' ]; then
+      sdcard_path_android="${sdcard_path_android}/MobileRT";
+    else
+      sdcard_path_android="${sdcard_path_android}/Android/data/puscas.mobilertapp/files/MobileRT";
+    fi
   fi
   echo "sdcard_path_android: '${sdcard_path_android}'";
 
@@ -660,11 +664,7 @@ runInstrumentationTests() {
   elif echo "${run_test}" | grep -q "rep_"; then
     run_test_without_prefix=${run_test#"rep_"};
     echo "Repeatable of test: ${run_test_without_prefix}";
-    callCommandUntilError sh gradlew connectedAndroidTest -DtestType="${type}" \
-      -DandroidApiVersion="${android_api_version}" \
-      -Pandroid.testInstrumentationRunnerArguments.class="${run_test_without_prefix}" \
-      -DabiFilters="[${cpu_architecture}]" \
-      --console plain --parallel --info --warning-mode all --stacktrace;
+    callCommandUntilError _executeAndroidTests;
   else
     echo "Running test: ${run_test}";
     sh gradlew --offline connectedAndroidTest -DtestType="${type}" \
@@ -677,6 +677,20 @@ runInstrumentationTests() {
   pid_instrumentation_tests="$!";
   echo 'Android test(s) executed!';
   echo "pid of instrumentation tests: '${pid_instrumentation_tests}'";
+}
+
+_executeAndroidTests() {
+  echo "Copying OBJ to ${sdcard_path_android}/WavefrontOBJs";
+  adb shell 'mkdir -p '"${sdcard_path_android}"'/WavefrontOBJs/teapot;';
+  adb push -p app/src/androidTest/resources/teapot "${sdcard_path_android}/WavefrontOBJs";
+  echo "Validating OBJ was copied to ${sdcard_path_android}/WavefrontOBJs/teapot/teapot.obj";
+  adb shell "ls -la ${sdcard_path_android}/WavefrontOBJs/teapot/teapot.obj";
+  echo "Running test: ${run_test_without_prefix}";
+  sh gradlew connectedAndroidTest -DtestType="${type}" \
+    -DandroidApiVersion="${android_api_version}" \
+    -Pandroid.testInstrumentationRunnerArguments.class="${run_test_without_prefix}" \
+    -DabiFilters="[${cpu_architecture}]" \
+    --console plain --parallel --info --warning-mode all --stacktrace;
 }
 
 _restartAdbProcesses() {

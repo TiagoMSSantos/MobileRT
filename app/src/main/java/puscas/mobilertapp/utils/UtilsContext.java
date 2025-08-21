@@ -223,68 +223,6 @@ public final class UtilsContext {
     }
 
     /**
-     * Helper method that cleans the path to the external SD Card or to the internal storage.
-     * This is useful for some devices since the {@link #getSdCardPath(Context)}
-     * method might get the SD Card path with some extra paths at the end.
-     *
-     * @param storagePath The path to the storage to clean.
-     * @return A cleaned storage path.
-     */
-    @NonNull
-    public static String cleanStoragePath(@NonNull final String storagePath) {
-        String storagePathCleaned = storagePath;
-
-        // Remove Android path
-        final int removeIndexAndroid = storagePathCleaned.indexOf("Android");
-        if (removeIndexAndroid >= 1) {
-            storagePathCleaned = storagePathCleaned.substring(0, removeIndexAndroid - 1);
-        }
-
-        // Remove data path
-        final int removeIndexData = storagePathCleaned.indexOf("data/puscas.mobilertapp");
-        if (removeIndexData >= 1) {
-            storagePathCleaned = storagePathCleaned.substring(0, removeIndexData - 1);
-        }
-
-        // Remove user path
-        final int removeIndexUser = storagePathCleaned.indexOf("user/0/puscas.mobilertapp");
-        if (removeIndexUser >= 1) {
-            storagePathCleaned = storagePathCleaned.substring(0, removeIndexUser - 1);
-        }
-
-        // Remove document raw path
-        final int removeDocumentRaw = storagePathCleaned.indexOf("/document/raw:");
-        if (removeDocumentRaw == 0) {
-            storagePathCleaned = storagePathCleaned.substring(14);
-        }
-
-        // Remove path starting with '/file/'
-        final int removeFileType = storagePathCleaned.indexOf("/file/");
-        if (removeFileType == 0) {
-            storagePathCleaned = storagePathCleaned.substring(5);
-        }
-
-        // Remove path ending with '/Download'
-        final boolean removeDownloadPath = storagePathCleaned.endsWith("/Download");
-        if (removeDownloadPath) {
-            storagePathCleaned = storagePathCleaned.substring(0, storagePathCleaned.length() - 9);
-        }
-
-        // Replace prefix document path
-        if (storagePathCleaned.startsWith("/document/")) {
-            storagePathCleaned = storagePathCleaned.replaceFirst("/document/", "/storage/");
-        }
-
-        // Replace first ':' found in path by '/'
-        final int replacePathDivisor = storagePathCleaned.indexOf(":");
-        if (replacePathDivisor >= 0) {
-            storagePathCleaned = storagePathCleaned.replaceFirst(":", ConstantsUI.FILE_SEPARATOR);
-        }
-
-        return storagePathCleaned;
-    }
-
-    /**
      * Load the GLSL shaders from files where the paths are given via argument.
      *
      * @param context      The {@link Context} of the Android system.

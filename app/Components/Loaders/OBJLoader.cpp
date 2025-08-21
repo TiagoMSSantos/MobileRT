@@ -207,7 +207,6 @@ OBJLoader::triple<::glm::vec3, ::glm::vec3, ::glm::vec3> OBJLoader::loadNormal(
 OBJLoader::triple<::glm::vec2, ::glm::vec2, ::glm::vec2> OBJLoader::normalizeTexCoord(
     const triple<::glm::vec2, ::glm::vec2, ::glm::vec2> &texCoord
 ) {
-    LOG_INFO("Normalizing texture coordinates: ", ::std::get<0>(texCoord), ", ", ::std::get<1>(texCoord), ", ", ::std::get<2>(texCoord));
     return triple<::glm::vec2, ::glm::vec2, ::glm::vec2> {
         ::MobileRT::normalize(::std::get<0>(texCoord)),
         ::MobileRT::normalize(::std::get<1>(texCoord)),
@@ -241,7 +240,6 @@ Texture OBJLoader::getTextureFromCache(
         return res;
     }
 
-    LOG_INFO("Getting texture ", texPath, " from cache.");
     return texturesCache->find(texPath)->second;
 }
 
@@ -264,7 +262,6 @@ Texture OBJLoader::getTextureFromCache(
         return res;
     }
 
-    LOG_INFO("Getting texture ", texPath, " from cache.");
     return texturesCache->find(texPath)->second;
 }
 
@@ -360,8 +357,6 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
                         };
                         LOG_WARN("Thread ", threadId, " (", numberOfThreads, ") Loading shape: ", shapeIndex, " normalizing texture coordinates to be between [0, 1] for the material: ", materialId, ", scene: ", filePath, ", shapeIndex: ", shapeIndex, ", vertex: ", vertex, ", face: ", face);
                         texCoord = normalizeTexCoord(texCoord);
-                        LOG_WARN("Thread ", threadId, " (", numberOfThreads, ") Loading shape: ", shapeIndex, " normalized texture coordinates to be between [0, 1] for the material: ", materialId, ", scene: ", filePath, ", shapeIndex: ", shapeIndex, ", vertex: ", vertex, ", face: ", face);
-
                         LOG_WARN("Thread ", threadId, " (", numberOfThreads, ") Loading shape: ", shapeIndex, " adding texture to the cache for material: ", materialId, ", scene: ", filePath, ", shapeIndex: ", shapeIndex, ", vertex: ", vertex, ", face: ", face);
                         texture = getTextureFromCache(texturesCache, mutexCache, filePath, mat.diffuse_texname);
                         LOG_WARN("Thread ", threadId, " (", numberOfThreads, ") Loading shape: ", shapeIndex, " added texture to the cache for material: ", materialId, ", scene: ", filePath, ", shapeIndex: ", shapeIndex, ", vertex: ", vertex, ", face: ", face);
@@ -369,7 +364,6 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
 
                     Material material {diffuse, specular, transmittance, indexRefraction, emission, ::std::move(texture)};
                     if (::MobileRT::hasPositiveValue(emission)) {
-                        LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Loading shape: ", shapeIndex, " the material is a light source with ID: ", materialId, ", scene: ", filePath, ", shapeIndex: ", shapeIndex, ", vertex: ", vertex, ", face: ", face);
                         // If the primitive is a light source.
                         Triangle triangle {
                             Triangle::Builder(
@@ -470,6 +464,10 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
     LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Local triangles: ", triangles.size(), ", total: ", scene->triangles_.size(), ", scene '", filePath, "'.");
     if (!triangles.empty()) {
         LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Local triangles: ", triangles.size(), ", total: ", scene->triangles_.size(), ", last triangle: ", triangles.back(), ", scene '", filePath, "'.");
+
+        const ::std::lock_guard<::std::mutex> lock {*mutexSceneTriangles};
+        scene->triangles_.reserve(scene->triangles_.size() + triangles.size());
+        ::std::move(::std::begin(triangles), ::std::end(triangles), ::std::back_inserter(scene->triangles_));
     }
     LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Local lights: ", lights.size(), ", total: ", scene->lights_.size(), ", scene '", filePath, "'.");
     if (!lights.empty()) {
@@ -477,23 +475,11 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
         const ::glm::vec3 &lightPos {light->getPosition()};
         const ::glm::vec3 &lightRadiance {light->radiance_.Le_};
         LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Local lights: ", lights.size(), ", total: ", scene->lights_.size(), ", last light: ", lightPos, ", radiance: ", lightRadiance, ", scene '", filePath, "'.");
-    }
 
-    LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Reserving memory to add '", triangles.size(), "' new triangles.");
-    if (!triangles.empty()) {
-        const ::std::lock_guard<::std::mutex> lock {*mutexSceneTriangles};
-        scene->triangles_.reserve(scene->triangles_.size() + triangles.size());
-        ::std::move(::std::begin(triangles), ::std::end(triangles), ::std::back_inserter(scene->triangles_));
-    }
-    LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Moved any new triangles to the scene.");
-
-    LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Reserving memory to add '", lights.size(), "' new lights.");
-    if (!lights.empty()) {
         const ::std::lock_guard<::std::mutex> lock {*mutexSceneLights};
         scene->lights_.reserve(scene->lights_.size() + lights.size());
         ::std::move(::std::begin(lights), ::std::end(lights), ::std::back_inserter(scene->lights_));
     }
-    LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Added any new lights to the scene.");
 
     LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") finished.");
 }

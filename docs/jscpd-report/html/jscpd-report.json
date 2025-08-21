@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2025-08-20T14:07:18.569Z",
+    "detectionDate": "2025-08-21T08:45:59.425Z",
     "formats": {
       "java": {
         "sources": {
@@ -401,8 +401,8 @@
             "newClones": 0
           },
           "app/src/main/java/puscas/mobilertapp/utils/UtilsContext.java": {
-            "lines": 343,
-            "tokens": 2324,
+            "lines": 281,
+            "tokens": 1857,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -810,13 +810,13 @@
           },
           "app/src/test/java/puscas/mobilertapp/MainActivityTest.java": {
             "lines": 284,
-            "tokens": 2391,
+            "tokens": 2394,
             "sources": 1,
             "clones": 5,
-            "duplicatedLines": 98,
-            "duplicatedTokens": 979,
-            "percentage": 34.51,
-            "percentageTokens": 40.95,
+            "duplicatedLines": 108,
+            "duplicatedTokens": 1121,
+            "percentage": 38.03,
+            "percentageTokens": 46.83,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -1050,14 +1050,14 @@
           }
         },
         "total": {
-          "lines": 9737,
-          "tokens": 67368,
+          "lines": 9675,
+          "tokens": 66904,
           "sources": 87,
           "clones": 59,
-          "duplicatedLines": 569,
-          "duplicatedTokens": 5329,
-          "percentage": 5.84,
-          "percentageTokens": 7.91,
+          "duplicatedLines": 574,
+          "duplicatedTokens": 5400,
+          "percentage": 5.93,
+          "percentageTokens": 8.07,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -1537,14 +1537,14 @@
             "newClones": 0
           },
           "app/Components/Loaders/OBJLoader.cpp": {
-            "lines": 514,
-            "tokens": 7536,
+            "lines": 500,
+            "tokens": 7226,
             "sources": 1,
             "clones": 8,
             "duplicatedLines": 76,
             "duplicatedTokens": 1076,
-            "percentage": 14.79,
-            "percentageTokens": 14.28,
+            "percentage": 15.2,
+            "percentageTokens": 14.89,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -1874,14 +1874,14 @@
           }
         },
         "total": {
-          "lines": 6144,
-          "tokens": 62145,
+          "lines": 6130,
+          "tokens": 61835,
           "sources": 59,
           "clones": 34,
           "duplicatedLines": 334,
           "duplicatedTokens": 5227,
-          "percentage": 5.44,
-          "percentageTokens": 8.41,
+          "percentage": 5.45,
+          "percentageTokens": 8.45,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2229,8 +2229,8 @@
             "newClones": 0
           },
           "scripts/run_tests_android.sh": {
-            "lines": 737,
-            "tokens": 5478,
+            "lines": 751,
+            "tokens": 5583,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2338,14 +2338,14 @@
           }
         },
         "total": {
-          "lines": 4481,
-          "tokens": 30299,
+          "lines": 4495,
+          "tokens": 30404,
           "sources": 13,
           "clones": 11,
           "duplicatedLines": 244,
           "duplicatedTokens": 1205,
-          "percentage": 5.45,
-          "percentageTokens": 3.98,
+          "percentage": 5.43,
+          "percentageTokens": 3.96,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3260,14 +3260,14 @@
       }
     },
     "total": {
-      "lines": 29646,
-      "tokens": 229430,
+      "lines": 29584,
+      "tokens": 228761,
       "sources": 258,
       "clones": 113,
-      "duplicatedLines": 1359,
-      "duplicatedTokens": 13045,
-      "percentage": 4.58,
-      "percentageTokens": 5.69,
+      "duplicatedLines": 1364,
+      "duplicatedTokens": 13116,
+      "percentage": 4.61,
+      "percentageTokens": 5.73,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -4931,32 +4931,32 @@
     },
     {
       "format": "java",
-      "lines": 9,
-      "fragment": ", \"MobileRT\", \"WavefrontOBJs\", \"CornellBox\", \"CornellBox-Water.obj\"))\n            .anyTimes();\n        EasyMock.expect(uriMocked.getPath())\n            .andReturn(PATH_TO_OBJ_FILE)\n            .anyTimes();\n        EasyMock.expect(intentMocked.getData())\n            .andReturn(uriMocked)\n            .anyTimes();\n        final",
+      "lines": 14,
+      "fragment": "() {\n        final Intent intentMocked = EasyMock.mock(Intent.class);\n\n        final Uri uriMocked = EasyMock.mock(Uri.class);\n        EasyMock.expect(uriMocked.getPathSegments())\n            .andReturn(List.of(\"data\", \"local\", \"tmp\", \"MobileRT\", \"WavefrontOBJs\", \"CornellBox\", \"CornellBox-Water.obj\"))\n            .anyTimes();\n        EasyMock.expect(uriMocked.getPath())\n            .andReturn(PATH_TO_OBJ_FILE)\n            .anyTimes();\n        EasyMock.expect(intentMocked.getData())\n            .andReturn(uriMocked)\n            .anyTimes();\n        final",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainActivityTest.java",
-        "start": 238,
+        "start": 233,
         "end": 246,
         "startLoc": {
-          "line": 238,
-          "column": 9,
-          "position": 1874
+          "line": 233,
+          "column": 37,
+          "position": 1806
         },
         "endLoc": {
           "line": 246,
           "column": 6,
-          "position": 1949
+          "position": 1952
         }
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainActivityTest.java",
-        "start": 183,
+        "start": 178,
         "end": 191,
         "startLoc": {
-          "line": 183,
-          "column": 6,
-          "position": 1353
+          "line": 178,
+          "column": 38,
+          "position": 1282
         },
         "endLoc": {
           "line": 191,
@@ -4977,12 +4977,12 @@
         "startLoc": {
           "line": 248,
           "column": 9,
-          "position": 2017
+          "position": 2020
         },
         "endLoc": {
           "line": 285,
           "column": 2,
-          "position": 2391
+          "position": 2394
         }
       },
       "secondFile": {
@@ -6196,32 +6196,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 393,
-        "end": 403,
+        "start": 387,
+        "end": 397,
         "startLoc": {
-          "line": 393,
+          "line": 387,
           "column": 2,
-          "position": 5427
+          "position": 5247
         },
         "endLoc": {
-          "line": 403,
+          "line": 397,
           "column": 2,
-          "position": 5566
+          "position": 5386
         }
       },
       "secondFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 374,
-        "end": 384,
+        "start": 368,
+        "end": 378,
         "startLoc": {
-          "line": 374,
+          "line": 368,
           "column": 2,
-          "position": 5043
+          "position": 4863
         },
         "endLoc": {
-          "line": 384,
+          "line": 378,
           "column": 2,
-          "position": 5182
+          "position": 5002
         }
       }
     },
@@ -6232,32 +6232,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 433,
-        "end": 440,
+        "start": 427,
+        "end": 434,
         "startLoc": {
-          "line": 433,
+          "line": 427,
           "column": 21,
-          "position": 6001
+          "position": 5821
         },
         "endLoc": {
-          "line": 440,
+          "line": 434,
           "column": 2,
-          "position": 6102
+          "position": 5922
         }
       },
       "secondFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 393,
-        "end": 381,
+        "start": 387,
+        "end": 375,
         "startLoc": {
-          "line": 393,
+          "line": 387,
           "column": 25,
-          "position": 5421
+          "position": 5241
         },
         "endLoc": {
-          "line": 381,
+          "line": 375,
           "column": 2,
-          "position": 5138
+          "position": 4958
         }
       }
     },
@@ -6268,32 +6268,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 442,
-        "end": 457,
+        "start": 436,
+        "end": 451,
         "startLoc": {
-          "line": 442,
+          "line": 436,
           "column": 2,
-          "position": 6163
+          "position": 5983
         },
         "endLoc": {
-          "line": 457,
+          "line": 451,
           "column": 35,
-          "position": 6363
+          "position": 6183
         }
       },
       "secondFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 405,
-        "end": 420,
+        "start": 399,
+        "end": 414,
         "startLoc": {
-          "line": 405,
+          "line": 399,
           "column": 2,
-          "position": 5582
+          "position": 5402
         },
         "endLoc": {
-          "line": 420,
+          "line": 414,
           "column": 5,
-          "position": 5782
+          "position": 5602
         }
       }
     },

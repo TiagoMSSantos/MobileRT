@@ -235,7 +235,7 @@ public final class MainActivityTest {
 
         final Uri uriMocked = EasyMock.mock(Uri.class);
         EasyMock.expect(uriMocked.getPathSegments())
-            .andReturn(List.of("file", "sdcard", "MobileRT", "WavefrontOBJs", "CornellBox", "CornellBox-Water.obj"))
+            .andReturn(List.of("data", "local", "tmp", "MobileRT", "WavefrontOBJs", "CornellBox", "CornellBox-Water.obj"))
             .anyTimes();
         EasyMock.expect(uriMocked.getPath())
             .andReturn(PATH_TO_OBJ_FILE)

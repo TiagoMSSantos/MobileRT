@@ -652,10 +652,9 @@ public final class MainActivity extends Activity {
      */
     @NonNull
     private String getPathFromFile(@NonNull final Uri uri) {
-        logger.info("Parsing path:" + Arrays.toString(uri.getPathSegments().toArray()));
+        logger.info("Parsing path: " + Arrays.toString(uri.getPathSegments().toArray()));
 
         final String filePath = StreamSupport.stream(uri.getPathSegments())
-            .skip(1L)
             .reduce("", (accumulator, segment) -> accumulator + ConstantsUI.FILE_SEPARATOR + segment);
         final boolean externalSDCardPath = isPathFromExternalSdCard(uri) || filePath.contains(UtilsContext.getSdCardFilePath(this).getAbsolutePath());
 
@@ -714,7 +713,8 @@ public final class MainActivity extends Activity {
         String cleanedFilePath = startFilePath.replace(ConstantsUI.PATH_SEPARATOR, ConstantsUI.FILE_SEPARATOR);
         cleanedFilePath = cleanedFilePath.replaceFirst("^" + escapedFileSeparator + SD_CARD_FOLDER + escapedFileSeparator, escapedFileSeparator);
         cleanedFilePath = cleanedFilePath.replaceFirst("^" + escapedFileSeparator + "([A-Za-z0-9]){4}-([A-Za-z0-9]){4}" + escapedFileSeparator, escapedFileSeparator);
-        cleanedFilePath = cleanedFilePath.replaceFirst("^" + escapedFileSeparator + "local" + escapedFileSeparator + "tmp" + escapedFileSeparator, escapedFileSeparator);
+        cleanedFilePath = cleanedFilePath.replaceFirst("^" + escapedFileSeparator + "data" + escapedFileSeparator + "local" + escapedFileSeparator + "tmp" + escapedFileSeparator, escapedFileSeparator);
+        cleanedFilePath = cleanedFilePath.replaceFirst("^" + escapedFileSeparator + STORAGE_FOLDER + escapedFileSeparator + SD_CARD_FOLDER + escapedFileSeparator + "Android" + escapedFileSeparator + "data" + escapedFileSeparator + "puscas.mobilertapp" + escapedFileSeparator + "files" + escapedFileSeparator, escapedFileSeparator);
         return cleanedFilePath;
     }
 
