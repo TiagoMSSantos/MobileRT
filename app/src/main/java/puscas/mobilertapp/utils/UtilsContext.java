@@ -61,7 +61,10 @@ public final class UtilsContext {
         logger.info("Getting SD card path.");
 
         final File sdCardPath = getSdCardFilePath(context);
-        logger.info("SD card path: " + sdCardPath);
+        logger.info("Files in SD card path '" + sdCardPath + "': ");
+        for(final File file : Objects.requireNonNull(sdCardPath.listFiles())) {
+            logger.info("Detected path in SD Card: " + file);
+        }
 
         if (isPathReadable(sdCardPath)) {
             return sdCardPath.getAbsolutePath();
@@ -113,7 +116,7 @@ public final class UtilsContext {
      *     compatible with Android 4.1.
      */
     public static File getSdCardFilePath(@NonNull final Context context) {
-        return Optional.ofNullable(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT ? context.getExternalFilesDirs(null) : null)
+        return Optional.ofNullable(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1 ? context.getExternalFilesDirs(null) : null)
             .map(dirs -> dirs.length > 1 ? dirs[1] : dirs[0])
             .orElseGet(() -> {
                 logger.info("Using the old approach to retrieve the SD Card path.");
