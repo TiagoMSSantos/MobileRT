@@ -172,7 +172,7 @@ jobs:
         channel: stable
         emulator-options: -no-metrics -no-window -cores ${{ env.NCPU_CORES }} -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none
         cores: ${{ env.NCPU_CORES }}
-        disk-size: 10240M
+        disk-size: 10000M
         sdcard-path-or-size: 2048M
         ram-size: 1024M
         emulator-boot-timeout: 400 # It can take more than 5 min to boot, and the tests can take more than 17 min to finish.

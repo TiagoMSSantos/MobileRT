@@ -656,6 +656,8 @@ runInstrumentationTests() {
     mkdir -p app/build/reports/jacoco/jacocoTestReport;
     # Allow to execute the tests a 2nd time in case it fails.
     # This allows for tests to pass when using Android emulator without hardware acceleration (e.g.: MacOS on Github Actions).
+    echo "Validating OBJ was copied to ${sdcard_path_android}/WavefrontOBJs/teapot/teapot.obj";
+    adb shell "ls -la ${sdcard_path_android}/WavefrontOBJs/teapot/teapot.obj";
     callCommandUntilSuccess 1 sh gradlew ${gradle_command} -DtestType="${type}" \
       -DandroidApiVersion="${android_api_version}" \
       -Pandroid.testInstrumentationRunnerArguments.package='puscas' \
@@ -667,6 +669,8 @@ runInstrumentationTests() {
     callCommandUntilError _executeAndroidTests;
   else
     echo "Running test: ${run_test}";
+    echo "Validating OBJ was copied to ${sdcard_path_android}/WavefrontOBJs/teapot/teapot.obj";
+    adb shell "ls -la ${sdcard_path_android}/WavefrontOBJs/teapot/teapot.obj";
     sh gradlew --offline connectedAndroidTest -DtestType="${type}" \
       -DandroidApiVersion="${android_api_version}" \
       -Pandroid.testInstrumentationRunnerArguments.class="${run_test}" \
