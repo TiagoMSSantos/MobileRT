@@ -66,9 +66,15 @@ jobs:
         id: set-matrix
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
+        shell: bash
         run: |
           # Android usage: https://apilevels.com/
           MATRIX=$(echo $(cat .github/workflows/android-matrix.json) | sed 's/ //g');
+          randomAndroidApi=$(shuf -i17-35 -n1);
+          while [ "${randomAndroidApi}" = '19' ] || [ "${randomAndroidApi}" = '20' ] || [ "${randomAndroidApi}" = '21' ]; do
+            randomAndroidApi=$(shuf -i17-35 -n1);
+          done
+          MATRIX=${MATRIX/XY/$randomAndroidApi};
           echo "Matrix: ${MATRIX}";
           echo "matrix=${MATRIX}" >> ${GITHUB_OUTPUT};
 
