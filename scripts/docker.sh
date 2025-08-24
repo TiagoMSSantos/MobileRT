@@ -309,7 +309,7 @@ installDockerCommandForMacOS() {
   echo "System Memory: ${memSizeGB} GB";
   df -h;
   set +e;
-  # Check available resources: https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners/about-github-hosted-runners#standard-github-hosted-runners-for-public-repositories
+  # Check available resources: https://docs.github.com/en/actions/reference/runners/github-hosted-runners#standard-github-hosted-runners-for-public-repositories
   # To setup Colima for MacOS with CPU ARM M1: https://www.tyler-wright.com/using-colima-on-an-m1-m2-mac
   /tmp/colima.rb start --cpu "${NCPU_CORES}" --memory ${memSizeGB} --disk 14 --mount-type=virtiofs;
   startedColima="$?";

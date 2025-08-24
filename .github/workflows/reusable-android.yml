@@ -517,7 +517,7 @@ jobs:
           MEM_MB: 1024
         with:
           # Check available parameters in: https://github.com/ReactiveCircus/android-emulator-runner/blob/main/action.yml
-          # Available CI host machines: https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners/about-github-hosted-runners#standard-github-hosted-runners-for-public-repositories
+          # Available CI host machines: https://docs.github.com/en/actions/reference/runners/github-hosted-runners#standard-github-hosted-runners-for-public-repositories
           # Max api level for 32bit is: 29
           api-level: ${{ inputs.android_api }}
           cmake: 4.0.2

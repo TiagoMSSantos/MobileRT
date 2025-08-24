@@ -186,7 +186,7 @@ framework for mocking in unit tests
       <td style="text-align:center"><b>MacOS</b></td>
       <td style="text-align:center">11<br><img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25" alt="gray"></td>
       <td style="text-align:center">12<br><img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25" alt="gray"></td>
-      <td style="text-align:center">13<br><img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25" alt="green"></td>
+      <td style="text-align:center">13<br><img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_gray.png" width="25" height="25" alt="green"></td>
       <td style="text-align:center">14<br><img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25" alt="green"></td>
       <td style="text-align:center">15<br><img src="https://raw.githubusercontent.com/TiagoMSSantos/MobileRT/master/docs/checkmark_green.png" width="25" height="25" alt="green"></td>
     </tr>

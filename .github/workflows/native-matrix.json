@@ -2,11 +2,10 @@
   "include":
   [
     { "host_os": "ubuntu-22.04", "type": "debug", "compiler": "g++" },
-    { "host_os": "ubuntu-22.04-arm", "type": "release", "compiler": "clang++" },
+    { "host_os": "ubuntu-24.04-arm", "type": "release", "compiler": "clang++" },
     { "host_os": "ubuntu-24.04", "type": "release", "compiler": "icpx" },
     { "host_os": "macos-15", "type": "release", "compiler": "g++" },
     { "host_os": "macos-14", "type": "release", "compiler": "clang++" },
-    { "host_os": "macos-13", "type": "release", "compiler": "g++" },
     { "host_os": "windows-2025", "type": "release", "compiler": "cl", "qt_version": "6.7.3", "qt_arch": "win64_msvc2019_64" },
     { "host_os": "windows-2022", "type": "release", "compiler": "g++", "qt_version": "5.15.2", "qt_arch": "win64_mingw81" },
     { "host_os": "windows-11-arm", "type": "release", "compiler": "cl", "qt_version": "6.10.0", "qt_arch": "win64_msvc2022_arm64_cross_compiled" }
