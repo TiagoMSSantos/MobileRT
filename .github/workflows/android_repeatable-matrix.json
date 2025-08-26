@@ -1,6 +1,7 @@
 {
   "include":
   [
-    { "test": "RayTracingTest#testRenderSceneFromSDCardOBJ", "host_os": "ubuntu-latest", "android_api": "22", "type": "debug" }
+    { "test": "RayTracingTest#testRenderSceneFromSDCardOBJ", "host_os": "ubuntu-latest", "android_api": "18", "type": "debug" },
+    { "test": "RayTracingTest#testRenderSceneFromSDCardOBJ", "host_os": "ubuntu-latest", "android_api": "33", "type": "debug" }
   ]
 }
