@@ -59,7 +59,7 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJSON(needs.Matrix.outputs.matrix) }}
 
-    name: ${{ matrix.test }} [${{ matrix.type }} (${{ matrix.host_os }})]
+    name: ${{ matrix.test }} Android ${{ matrix.android_api }} [${{ matrix.type }} (${{ matrix.host_os }})]
     runs-on: ${{ matrix.host_os }}
     timeout-minutes: 360
 
