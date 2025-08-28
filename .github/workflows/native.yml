@@ -14,6 +14,7 @@ on:
       - '!.github/workflows/native.yml'
       - '!.github/workflows/native-matrix.json'
       - '!.github/workflows/reusable-native.yml'
+      - '!Gemfile'
       - '!scripts/helper_functions.sh'
       - '!scripts/install_dependencies.sh'
       - '!scripts/profile.sh'
