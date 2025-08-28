@@ -168,7 +168,7 @@ jobs:
               echo 'android_arch=\"arm64-v8a\"' >> "${GITHUB_ENV}";
               echo 'android_emulator_arch=arm64-v8a' >> "${GITHUB_ENV}";
           else
-            if [ "${{ inputs.android_api }}" -gt 20 ] && [ "${{ inputs.android_api }}" != 22 ] && [ "${{ inputs.android_api }}" != 27 ]; then
+            if [ "${{ inputs.android_api }}" -gt 30 ]; then
               echo 'android_arch=\"x86_64\"' >> "${GITHUB_ENV}";
               echo 'android_emulator_arch=x86_64' >> "${GITHUB_ENV}";
             else
@@ -476,7 +476,7 @@ jobs:
               echo 'android_arch=\"arm64-v8a\"' >> "${GITHUB_ENV}";
               echo 'android_emulator_arch=arm64-v8a' >> "${GITHUB_ENV}";
           else
-            if [ "${{ inputs.android_api }}" -gt 20 ] && [ "${{ inputs.android_api }}" != 22 ] && [ "${{ inputs.android_api }}" != 27 ]; then
+            if [ "${{ inputs.android_api }}" -gt 30 ]; then
               echo 'android_arch=\"x86_64\"' >> "${GITHUB_ENV}";
               echo 'android_emulator_arch=x86_64' >> "${GITHUB_ENV}";
             else
@@ -518,7 +518,7 @@ jobs:
         with:
           # Check available parameters in: https://github.com/ReactiveCircus/android-emulator-runner/blob/main/action.yml
           # Available CI host machines: https://docs.github.com/en/actions/reference/runners/github-hosted-runners#standard-github-hosted-runners-for-public-repositories
-          # Max api level for 32bit is: 29
+          # Max api level for 32bit is: 30
           api-level: ${{ inputs.android_api }}
           cmake: 4.0.2
           target: google_apis
@@ -788,7 +788,7 @@ jobs:
               echo 'android_arch=\"arm64-v8a\"' >> "${GITHUB_ENV}";
               echo 'android_emulator_arch=arm64-v8a' >> "${GITHUB_ENV}";
           else
-            if [ "${{ inputs.android_api }}" -gt 20 ] && [ "${{ inputs.android_api }}" != 22 ] && [ "${{ inputs.android_api }}" != 27 ]; then
+            if [ "${{ inputs.android_api }}" -gt 30 ]; then
               echo 'android_arch=\"x86_64\"' >> "${GITHUB_ENV}";
               echo 'android_emulator_arch=x86_64' >> "${GITHUB_ENV}";
             else
@@ -1044,7 +1044,7 @@ jobs:
               echo 'android_arch=\"arm64-v8a\"' >> "${GITHUB_ENV}";
               echo 'android_emulator_arch=arm64-v8a' >> "${GITHUB_ENV}";
           else
-            if [ "${{ inputs.android_api }}" -gt 20 ] && [ "${{ inputs.android_api }}" != 22 ] && [ "${{ inputs.android_api }}" != 27 ]; then
+            if [ "${{ inputs.android_api }}" -gt 30 ]; then
               echo 'android_arch=\"x86_64\"' >> "${GITHUB_ENV}";
               echo 'android_emulator_arch=x86_64' >> "${GITHUB_ENV}";
             else
