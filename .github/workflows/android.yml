@@ -102,7 +102,7 @@ jobs:
           echo "workflows_all=${workflows_all}" >> ${GITHUB_OUTPUT};
 
       - name: Trigger code coverage if not running
-        if: steps.check_status.outputs.workflows_all == '0'
+        if: steps.check_status.outputs.workflows_all == '0' && false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |

@@ -102,6 +102,28 @@ build() {
   jobsFlags="-j${CMAKE_BUILD_PARALLEL_LEVEL}";
   export MAKEFLAGS="${jobsFlags}";
 
+  if [ "${type}" -gt 15 ]; then
+    echo 'Downloading Android dependencies for build.';
+    sh gradlew build \
+      --dry-run -Dorg.gradle.configuration-cache=true --parallel \
+      -DtestType="${type}" -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]" \
+      --info --warning-mode all --stacktrace;
+    echo 'Downloading Android dependencies for unit tests.';
+    sh gradlew test"${type}"UnitTest \
+      --dry-run -Dorg.gradle.configuration-cache=true --parallel \
+      -DtestType="${type}" -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]" \
+      --info --warning-mode all --stacktrace;
+    echo 'Downloading Android dependencies for linter.';
+    sh gradlew lint \
+      --dry-run -Dorg.gradle.configuration-cache=true --parallel \
+      -DtestType="${type}" -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]" \
+      --info --warning-mode all --stacktrace;
+  fi
+  echo 'Downloading Android dependencies for Sonar.';
+  sh gradlew sonar \
+    --dry-run -Dorg.gradle.configuration-cache=true --parallel \
+    -DtestType="${type}" -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]" \
+    --info --warning-mode all --stacktrace;
   echo 'Calling the Gradle assemble to compile code for Android.';
   sh gradlew --offline --parallel \
     -DtestType="${type}" -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]" \

@@ -189,16 +189,18 @@ jobs:
       run: |
         sh scripts/install_dependencies.sh;
 
-    - name: Download Android CMake
+    - name: Download Android SDK components
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && matrix.language == 'java-kotlin' && !startsWith(matrix.host_os, 'windows')
       run: |
+        ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'ndk;23.2.8568313';
         ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'cmake;4.0.2';
 
-    - name: Download Android CMake Windows
+    - name: Download Android SDK components Windows
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && matrix.language == 'java-kotlin' && startsWith(matrix.host_os, 'windows')
       run: |
+        ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager.bat --install 'ndk;23.2.8568313';
         ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager.bat --install 'cmake;4.0.2';
 
     - name: Setting Gradle Wrapper version

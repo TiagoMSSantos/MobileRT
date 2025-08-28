@@ -150,9 +150,6 @@ jobs:
         run: |
           # shellcheck disable=SC1091
           . scripts/helper_functions.sh && extractFilesFromArtifact ${{ env.GRADLE_PATH }};
-          set +e;
-          find ${{ env.GRADLE_PATH }} -name "transforms" -exec rm -rf {} \;
-          set -e;
 
       - name: Set Android CPU Architecture
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -178,25 +175,31 @@ jobs:
           fi
           set -u;
 
-      - name: Download Android CMake
+      - name: Download Android SDK components
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success() && !startsWith(inputs.host_os, 'windows')
+        if: success() && !startsWith(inputs.host_os, 'windows') && !endsWith(inputs.host_os, '-arm')
         run: |
+          if [ "${{ inputs.android_api }}" -ge 21 ]; then
+            ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'ndk;28.2.13676358';
+          elif [ "${{ inputs.android_api }}" -ge 19 ]; then
+            ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'ndk;25.2.9519653';
+          else
+            ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'ndk;23.2.8568313';
+          fi
           ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'cmake;4.0.2';
 
-      - name: Download Android CMake Windows
+      - name: Download Android SDK components Windows
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success() && startsWith(inputs.host_os, 'windows')
         run: |
+          if [ "${{ inputs.android_api }}" -ge 21 ]; then
+            ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager.bat --install 'ndk;28.2.13676358';
+          elif [ "${{ inputs.android_api }}" -ge 19 ]; then
+            ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager.bat --install 'ndk;25.2.9519653';
+          else
+            ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager.bat --install 'ndk;23.2.8568313';
+          fi
           ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager.bat --install 'cmake;4.0.2';
-
-      - name: Download Android dependencies
-        timeout-minutes: 8
-        if: success()
-        run: |
-          sh gradlew build --dry-run -Dorg.gradle.configuration-cache=false --parallel \
-            -DtestType="${{ inputs.type }}" -DandroidApiVersion="${{ inputs.android_api }}" -DabiFilters="[${{ env.android_arch }}]" \
-            --info --warning-mode all --stacktrace;
 
       - name: Build ${{ inputs.type }}
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
@@ -493,20 +496,6 @@ jobs:
           echo "android_arch: ${{ env.android_arch }}";
           echo "android_emulator_arch: ${{ env.android_emulator_arch }}";
           . scripts/helper_functions.sh && parallelizeBuild && echo "NCPU_CORES=${NCPU_CORES}" >> "${GITHUB_ENV}";
-          mkdir -p ~/.android/avd/Android_Emulator_API_34.avd;
-
-      - name: Download Android dependencies
-        timeout-minutes: 8
-        if: success()
-        run: |
-          if [ "${{ inputs.type }}" = 'debug' ]; then
-            gradle_command='jacocoTestReport';
-          else
-            gradle_command='connectedAndroidTest';
-          fi
-          sh gradlew "${gradle_command}" --dry-run -Dorg.gradle.configuration-cache=false --parallel \
-            -DtestType="${{ inputs.type }}" -DandroidApiVersion="${{ inputs.android_api }}" -DabiFilters="[${{ env.android_arch }}]" \
-            --info --warning-mode all --stacktrace;
 
       - name: Run Android tests
         timeout-minutes: 30
@@ -798,14 +787,6 @@ jobs:
           fi
           set -u;
 
-      - name: Download Android dependencies
-        timeout-minutes: 8
-        if: success()
-        run: |
-          sh gradlew test"${{ inputs.type }}"UnitTest lint --dry-run -Dorg.gradle.configuration-cache=false --parallel \
-            -DtestType="${{ inputs.type }}" -DandroidApiVersion="${{ inputs.android_api }}" -DabiFilters="[${{ env.android_arch }}]" \
-            --info --warning-mode all --stacktrace;
-
       - name: Run unit tests Java
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success()
@@ -1054,15 +1035,6 @@ jobs:
           fi
           set -u;
 
-      - name: Download Android dependencies
-        timeout-minutes: 8
-        if: success()
-        run: |
-          sh gradlew --dry-run -Dorg.gradle.configuration-cache=true --parallel --profile \
-            -DabiFilters="[ ${{ env.android_arch }} ]" \
-            -DandroidApiVersion=${{ inputs.android_api }} \
-            --info --warning-mode all --stacktrace sonar;
-
       - name: Analyze Sonar
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
@@ -1072,6 +1044,11 @@ jobs:
           # https://docs.sonarqube.org/latest/requirements/prerequisites-and-overview/
           GRADLE_OPTS: -Xms8G -Xmx8G -XX:ActiveProcessorCount=5
         run: |
+          sh gradlew --dry-run -Dorg.gradle.configuration-cache=true \
+            --profile --parallel \
+            -DabiFilters="[ ${{ env.android_arch }} ]" \
+            -DandroidApiVersion=${{ inputs.android_api }} \
+            --info --warning-mode all --stacktrace sonar;
           sh gradlew --offline --profile --parallel \
             -DabiFilters="[ ${{ env.android_arch }} ]" \
             -DandroidApiVersion=${{ inputs.android_api }} \

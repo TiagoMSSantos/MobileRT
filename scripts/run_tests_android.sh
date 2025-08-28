@@ -348,6 +348,18 @@ waitForEmulator() {
   echo 'Finding at least 1 Android device on.';
   _waitForEmulatorToBoot;
 
+  if [ "${type}" = 'debug' ]; then
+    gradleAndroidTestsCommand='jacocoTestReport';
+  else
+    gradleAndroidTestsCommand='connectedAndroidTest';
+  fi
+  if [ "${android_api_version}" -gt 15 ]; then
+    echo 'Downloading Android dependencies for Android tests.';
+    sh gradlew "${gradleAndroidTestsCommand}" \
+      --dry-run -Dorg.gradle.configuration-cache=true --parallel \
+      -DtestType="${type}" -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]" \
+      --info --warning-mode all --stacktrace;
+  fi
   unlockDevice;
 
   adb_devices_running=$(callCommandUntilSuccess 5 adb devices | grep -v 'List of devices attached' || true);
