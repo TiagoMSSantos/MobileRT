@@ -65,7 +65,7 @@ buildscript {
             }
         }
         if (androidApiVersionValue >= 16) {
-            gradle_version = '8.12.1'
+            gradle_version = '8.12.2'
             gradle_versions_plugin_version = '0.52.0'
         }
 
