@@ -2,7 +2,7 @@
                        // <!--
                        window.initialData = {
   "statistics": {
-    "detectionDate": "2025-08-31T11:50:28.815Z",
+    "detectionDate": "2025-08-31T12:37:01.726Z",
     "formats": {
       "java": {
         "sources": {
@@ -2015,10 +2015,10 @@
             "tokens": 546,
             "sources": 1,
             "clones": 4,
-            "duplicatedLines": 155,
-            "duplicatedTokens": 831,
-            "percentage": 158.16,
-            "percentageTokens": 152.2,
+            "duplicatedLines": 146,
+            "duplicatedTokens": 794,
+            "percentage": 148.98,
+            "percentageTokens": 145.42,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2035,14 +2035,14 @@
             "newClones": 0
           },
           ".github/workflows/docker.yml": {
-            "lines": 404,
-            "tokens": 2806,
+            "lines": 405,
+            "tokens": 2809,
             "sources": 1,
             "clones": 1,
-            "duplicatedLines": 49,
-            "duplicatedTokens": 256,
-            "percentage": 12.13,
-            "percentageTokens": 9.12,
+            "duplicatedLines": 40,
+            "duplicatedTokens": 219,
+            "percentage": 9.88,
+            "percentageTokens": 7.8,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2168,14 +2168,14 @@
           }
         },
         "total": {
-          "lines": 2638,
-          "tokens": 15892,
+          "lines": 2639,
+          "tokens": 15895,
           "sources": 23,
           "clones": 5,
-          "duplicatedLines": 172,
-          "duplicatedTokens": 930,
-          "percentage": 6.52,
-          "percentageTokens": 5.85,
+          "duplicatedLines": 163,
+          "duplicatedTokens": 893,
+          "percentage": 6.18,
+          "percentageTokens": 5.62,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3274,14 +3274,14 @@
       }
     },
     "total": {
-      "lines": 29730,
-      "tokens": 229963,
+      "lines": 29731,
+      "tokens": 229966,
       "sources": 259,
       "clones": 113,
-      "duplicatedLines": 1376,
-      "duplicatedTokens": 13168,
-      "percentage": 4.63,
-      "percentageTokens": 5.73,
+      "duplicatedLines": 1367,
+      "duplicatedTokens": 13131,
+      "percentage": 4.6,
+      "percentageTokens": 5.71,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -6961,32 +6961,32 @@
     },
     {
       "format": "yaml",
-      "lines": 50,
-      "fragment": "- '!**/CMakeLists*'\n    - '!**/AndroidTest/resources/**'\n    - '!**/*.c*'\n    - '!**/*.h'\n    - '!**/*.hpp'\n    - '!**/*.ui*'\n\npermissions: {}\n\ndefaults:\n  run:\n    shell: sh\n    working-directory: .\n\nconcurrency:\n  group: ${{ github.workflow }} ${{ github.ref }}\n  cancel-in-progress: true\n\n# Default environment variables.\nenv:\n  GITHUB_STEP_TIMEOUT_SMALL: 4\n  GITHUB_STEP_TIMEOUT_MEDIUM: 10\n  GITHUB_STEP_TIMEOUT_LONG: 20\n\njobs:\n  Matrix:\n    name: Set Matrix\n    runs-on: macos-latest\n    timeout-minutes: 2\n\n    outputs:\n      matrix: ${{ steps.set-matrix.outputs.matrix }}\n\n    steps:\n      - name: Checkout\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success()\n        uses: actions/checkout@v5\n        with:\n          # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml\n          lfs: true\n\n      - name: Set Matrix\n        id: set-matrix\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success()\n        run: |\n          MATRIX=$(echo $(cat .github/workflows/docker-matrix.json) | sed 's/ //g');\n          echo \"Matrix: ${MATRIX}\";\n          echo \"matrix=${MATRIX}\" >> ${GITHUB_OUTPUT};",
+      "lines": 41,
+      "fragment": "defaults:\n  run:\n    shell: sh\n    working-directory: .\n\nconcurrency:\n  group: ${{ github.workflow }} ${{ github.ref }}\n  cancel-in-progress: true\n\n# Default environment variables.\nenv:\n  GITHUB_STEP_TIMEOUT_SMALL: 4\n  GITHUB_STEP_TIMEOUT_MEDIUM: 10\n  GITHUB_STEP_TIMEOUT_LONG: 20\n\njobs:\n  Matrix:\n    name: Set Matrix\n    runs-on: macos-latest\n    timeout-minutes: 2\n\n    outputs:\n      matrix: ${{ steps.set-matrix.outputs.matrix }}\n\n    steps:\n      - name: Checkout\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success()\n        uses: actions/checkout@v5\n        with:\n          # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml\n          lfs: true\n\n      - name: Set Matrix\n        id: set-matrix\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success()\n        run: |\n          MATRIX=$(echo $(cat .github/workflows/docker-matrix.json) | sed 's/ //g');\n          echo \"Matrix: ${MATRIX}\";\n          echo \"matrix=${MATRIX}\" >> ${GITHUB_OUTPUT};",
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/docker.yml",
-        "start": 20,
-        "end": 69,
+        "start": 30,
+        "end": 70,
         "startLoc": {
-          "line": 20,
-          "column": 5,
-          "position": 87
+          "line": 30,
+          "column": 1,
+          "position": 127
         },
         "endLoc": {
-          "line": 69,
+          "line": 70,
           "column": 55,
-          "position": 343
+          "position": 346
         }
       },
       "secondFile": {
         "name": ".github/workflows/native.yml",
-        "start": 25,
+        "start": 34,
         "end": 78,
         "startLoc": {
-          "line": 25,
-          "column": 7,
-          "position": 119
+          "line": 34,
+          "column": 1,
+          "position": 156
         },
         "endLoc": {
           "line": 78,

@@ -24,7 +24,8 @@ on:
     - '!**/*.hpp'
     - '!**/*.ui*'
 
-permissions: {}
+permissions:
+  contents: read
 
 defaults:
   run:
