@@ -97,7 +97,10 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       run: |
+        ls -lahp app/src/androidTest/resources/CornellBox/;
+        git lfs checkout app/src/androidTest/resources/CornellBox/;
         git lfs pull;
+        ls -lahp app/src/androidTest/resources/CornellBox/;
 
     - name: Enable KVM group permissions
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
