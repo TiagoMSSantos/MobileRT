@@ -192,7 +192,7 @@ executeUnitTestsInDockerContainer() {
   docker run -t \
     -e DISPLAY="${DISPLAY}" \
     --name="mobile_rt_tests_${1}" ptpuscas/mobile_rt:"${1}" \
-    "ls -lahp app/src/androidTest/resources/CornellBox/CornellBox-Water.obj && ls -lahp app/src/androidTest/resources/CornellBox/CornellBox-Water.mtl && ls -lahp app/src/androidTest/resources/CornellBox/CornellBox-Water.cam && cat app/src/androidTest/resources/CornellBox/CornellBox-Water.cam && ./build_release/bin/UnitTests ${2}";
+    "git lfs pull && ls -lahp app/src/androidTest/resources/CornellBox/CornellBox-Water.obj && ls -lahp app/src/androidTest/resources/CornellBox/CornellBox-Water.mtl && ls -lahp app/src/androidTest/resources/CornellBox/CornellBox-Water.cam && cat app/src/androidTest/resources/CornellBox/CornellBox-Water.cam && ./build_release/bin/UnitTests ${2}";
   docker rm --force --volumes "mobile_rt_tests_${1}";
 }
 
