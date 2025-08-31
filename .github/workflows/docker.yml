@@ -387,6 +387,9 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       run: |
+        ls -lahp app/src/androidTest/resources/CornellBox/CornellBox-Water.obj;
+        ls -lahp app/src/androidTest/resources/CornellBox/CornellBox-Water.mtl;
+        ls -lahp app/src/androidTest/resources/CornellBox/CornellBox-Water.cam;
         # shellcheck disable=SC1091
         echo "VERSION: ${{ env.VERSION }}";
         . scripts/docker.sh && executeUnitTestsInDockerContainer ${{ env.VERSION }} --gtest_filter=-*Engine*;
@@ -395,6 +398,9 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       run: |
+        ls -lahp app/src/androidTest/resources/CornellBox/CornellBox-Water.obj;
+        ls -lahp app/src/androidTest/resources/CornellBox/CornellBox-Water.mtl;
+        ls -lahp app/src/androidTest/resources/CornellBox/CornellBox-Water.cam;
         # shellcheck disable=SC1091
         echo "VERSION: ${{ env.VERSION }}";
         . scripts/docker.sh && executeUnitTestsInDockerContainer ${{ env.VERSION }} --gtest_filter=*Engine*;
