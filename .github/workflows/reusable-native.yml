@@ -48,7 +48,10 @@ jobs:
       - name: Checkout
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success()
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
+        with:
+          # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml
+          lfs: true
 
       - name: Validate codecov config
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -341,7 +344,10 @@ jobs:
       - name: Checkout
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success()
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
+        with:
+          # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml
+          lfs: true
 
       - name: Download reports from cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}

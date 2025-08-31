@@ -1,5 +1,3 @@
-t perspective
-p 0.0 0.7 3.0
-l 0.0 0.7 -1.0
-u 0.0 1.0 0.0
-f 45 45
+version https://git-lfs.github.com/spec/v1
+oid sha256:55276d21387c2bffe4a46825f138357152363802c3de195a9761259cf3d984c9
+size 65

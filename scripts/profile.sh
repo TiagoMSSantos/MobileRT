@@ -134,8 +134,7 @@ setScene() {
     # SCN="${OBJS_PATH}/dragon/dragon";
     # SCN="${OBJS_PATH}/sponza/sponza";
     # SCN="${OBJS_PATH}/powerplant/powerplant";
-    # SCN="${OBJS_PATH}/San_Miguel/san-miguel";
-    # SCN="${OBJS_PATH}/San_Miguel/san-miguel-low-poly";
+    # SCN="${OBJS_PATH}/san_miguel_mobilert/san_miguel_mobilert";
     # SCN="${OBJS_PATH}/CornellBox/CornellBox-Empty-CO";
     # SCN="${OBJS_PATH}/CornellBox/CornellBox-Empty-Squashed";
     # SCN="${OBJS_PATH}/CornellBox/CornellBox-Empty-White";
