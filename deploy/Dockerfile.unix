@@ -121,6 +121,7 @@ RUN \
     --progress \
     --branch ${BRANCH} && \
   cd MobileRT && \
+  git lfs install && \
   git lfs pull && \
   ls -la ./app/src/androidTest/resources/CornellBox/CornellBox-Water.obj && \
   ls -la ./app/src/androidTest/resources/teapot/teapot.obj;
