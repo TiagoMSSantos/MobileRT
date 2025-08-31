@@ -120,8 +120,8 @@ RUN \
     --shallow-submodules \
     --progress \
     --branch ${BRANCH} && \
-  git lfs pull && \
   cd MobileRT && \
+  git lfs pull && \
   ls -la ./app/src/androidTest/resources/CornellBox/CornellBox-Water.obj && \
   ls -la ./app/src/androidTest/resources/teapot/teapot.obj;
 ###############################################################################
