@@ -2,7 +2,7 @@
                        // <!--
                        window.initialData = {
   "statistics": {
-    "detectionDate": "2025-08-31T14:39:31.005Z",
+    "detectionDate": "2025-08-31T15:28:02.428Z",
     "formats": {
       "java": {
         "sources": {
@@ -7070,7 +7070,7 @@
     {
       "format": "yaml",
       "lines": 18,
-      "fragment": "uses: actions/setup-java@v4\n      with:\n        # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml\n        java-version: 21\n        distribution: zulu\n        java-package: jdk\n        check-latest: false\n        server-id: github\n        server-username: GITHUB_ACTOR\n        server-password: GITHUB_TOKEN\n        settings-path: ~/.gradle\n        overwrite-settings: true\n        gpg-private-key: ''\n        gpg-passphrase: GPG_PASSPHRASE\n        cache: gradle\n        cache-dependency-path: '**/build.gradle'\n\n    - name: Delete",
+      "fragment": "uses: actions/setup-java@v5\n      with:\n        # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml\n        java-version: 21\n        distribution: zulu\n        java-package: jdk\n        check-latest: false\n        server-id: github\n        server-username: GITHUB_ACTOR\n        server-password: GITHUB_TOKEN\n        settings-path: ~/.gradle\n        overwrite-settings: true\n        gpg-private-key: ''\n        gpg-passphrase: GPG_PASSPHRASE\n        cache: gradle\n        cache-dependency-path: '**/build.gradle'\n\n    - name: Delete",
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android_repeatable.yml",

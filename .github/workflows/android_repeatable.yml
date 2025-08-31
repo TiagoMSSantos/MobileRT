@@ -78,7 +78,7 @@ jobs:
     - name: Set up JDK
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
-      uses: actions/setup-java@v4
+      uses: actions/setup-java@v5
       with:
         # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml
         java-version: 21
