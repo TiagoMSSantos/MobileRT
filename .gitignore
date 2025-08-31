@@ -6,6 +6,8 @@
 **/.fuse*
 **/.gradle
 **/.settings
+**/.project
+**/.classpath
 
 # Qt temporary files
 **/System_dependent/**/*build*/
