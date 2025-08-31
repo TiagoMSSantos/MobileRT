@@ -390,6 +390,7 @@ jobs:
         ls -lahp app/src/androidTest/resources/CornellBox/CornellBox-Water.obj;
         ls -lahp app/src/androidTest/resources/CornellBox/CornellBox-Water.mtl;
         ls -lahp app/src/androidTest/resources/CornellBox/CornellBox-Water.cam;
+        cat app/src/androidTest/resources/CornellBox/CornellBox-Water.cam;
         # shellcheck disable=SC1091
         echo "VERSION: ${{ env.VERSION }}";
         . scripts/docker.sh && executeUnitTestsInDockerContainer ${{ env.VERSION }} --gtest_filter=-*Engine*;
@@ -401,6 +402,7 @@ jobs:
         ls -lahp app/src/androidTest/resources/CornellBox/CornellBox-Water.obj;
         ls -lahp app/src/androidTest/resources/CornellBox/CornellBox-Water.mtl;
         ls -lahp app/src/androidTest/resources/CornellBox/CornellBox-Water.cam;
+        cat app/src/androidTest/resources/CornellBox/CornellBox-Water.cam;
         # shellcheck disable=SC1091
         echo "VERSION: ${{ env.VERSION }}";
         . scripts/docker.sh && executeUnitTestsInDockerContainer ${{ env.VERSION }} --gtest_filter=*Engine*;
