@@ -83,7 +83,7 @@ RUN \
     iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1')); \
   " && \
   # Install git: https://community.chocolatey.org/packages/git
-  choco install -y git && \
+  choco install -y git git-lfs && \
   # Configure git.
   git config --system https.postBuffer 1048576000 && \
   git config --system --add safe.directory C:/MobileRT && \
@@ -105,6 +105,7 @@ RUN \
     --shallow-submodules \
     --progress \
     --branch !BRANCH! && \
+  git lfs pull && \
   cd MobileRT && \
   dir P* /X .\\app\\src\\androidTest\\resources\\CornellBox\\CornellBox-Water.obj && \
   dir P* /X .\\app\\src\\androidTest\\resources\\teapot\\teapot.obj && \

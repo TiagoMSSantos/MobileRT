@@ -86,19 +86,19 @@ RUN \
     echo 'Detected Debian based Linux'; \
     rm /etc/apt/sources.list.d/microsoft-prod.list || true; \
     apt-get update -y; \
-    apt-get install --no-install-recommends -y sudo git tzdata; \
+    apt-get install --no-install-recommends -y sudo git git-lfs tzdata; \
   elif uname -a | grep -iq 'linux' && command -v yum > /dev/null; then \
     echo 'Detected Red Hat based Linux'; \
     yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False update -y; \
     yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y \
-      sudo git; \
+      sudo git git-lfs; \
   elif uname -a | grep -iq 'linux' && command -v pacman > /dev/null; then \
     echo 'Detected Arch based Linux'; \
-    pacman -Sy --noconfirm --needed --noscriptlet git; \
+    pacman -Sy --noconfirm --needed --noscriptlet git git-lfs; \
   elif uname -a | grep -iq 'linux' && command -v apk > /dev/null; then \
     echo 'Detected Alpine based Linux'; \
     apk update; \
-    apk add sudo git; \
+    apk add sudo git git-lfs; \
   elif uname -a | grep -iq 'linux' && command -v emerge > /dev/null; then \
     echo 'Detected Gentoo based Linux'; \
     echo 'FEATURES="-sandbox -usersandbox -ipc-sandbox -network-sandbox -pid-sandbox"' >> /etc/portage/make.conf; \
@@ -106,7 +106,7 @@ RUN \
     set +e; \
     emerge --sync; \
     set -e; \
-    emerge sudo dev-vcs/git; \
+    emerge sudo dev-vcs/git dev-vcs/git-lfs; \
   else \
     echo 'Assuming Windows OS.'; \
   fi; \
@@ -120,6 +120,7 @@ RUN \
     --shallow-submodules \
     --progress \
     --branch ${BRANCH} && \
+  git lfs pull && \
   cd MobileRT && \
   ls -la ./app/src/androidTest/resources/CornellBox/CornellBox-Water.obj && \
   ls -la ./app/src/androidTest/resources/teapot/teapot.obj;
