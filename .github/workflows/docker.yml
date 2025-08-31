@@ -349,6 +349,9 @@ jobs:
       timeout-minutes: 300
       if: success() && env.BUILD_IMAGE == 'yes'
       run: |
+        ls -lahp app/src/androidTest/resources/CornellBox/CornellBox-Water.obj;
+        ls -lahp app/src/androidTest/resources/CornellBox/CornellBox-Water.mtl;
+        ls -lahp app/src/androidTest/resources/CornellBox/CornellBox-Water.cam;
         # shellcheck disable=SC1091
         echo "base_image: ${{ matrix.base_image }}";
         echo "BRANCH: ${{ env.BRANCH }}";
