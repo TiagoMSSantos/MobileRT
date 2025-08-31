@@ -93,6 +93,12 @@ jobs:
         # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml
         lfs: true
 
+    - name: Checkout lfs
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success()
+      run: |
+        git lfs pull;
+
     - name: Enable KVM group permissions
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && startsWith(matrix.host_os, 'ubuntu') && !endsWith(matrix.host_os, 'arm')
