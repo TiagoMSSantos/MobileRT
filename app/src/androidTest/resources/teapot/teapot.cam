@@ -1,3 +1,5 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:10ce807ccfcb1f0d526f505dd42ba30ace6705db8c9ca2738b7f33d798c1d035
-size 71
+t perspective
+p 0.0 30.0 -200.0
+l 0.0 30.0 100.0
+u 0.0 1.0 0.0
+f 45 45
